@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1565120845707.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "FCE009B0",
+    "lastKnownWriteTime" : 1565121439,
+    "last_content_update" : 1565121439606,
+    "path" : "D:/Projects/Programming/univariateML/R/mlgamma.R",
+    "project_path" : "R/mlgamma.R",
+    "properties" : {
+        "cursorPosition" : "48,21",
+        "scrollLine" : "40",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

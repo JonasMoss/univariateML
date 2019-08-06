@@ -1,0 +1,17 @@
+Package: univariateML
+Type: Package
+Title: Maximum Likelihood Estimation for Univariate Densities
+Version: 0.1.0
+Author: Jonas Moss
+Maintainer: Jonas Moss <jonas.gjertsen@gmail.com>
+Description: Fast and robust maximum likelihood estimation for some univariate
+    densities.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: assertthat
+Suggests: testthat,
+    extraDistr,
+    knitr
+RoxygenNote: 6.1.1
+VignetteBuilder: knitr

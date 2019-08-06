@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1565115815810.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "1F872E65",
+    "lastKnownWriteTime" : 1565115886,
+    "last_content_update" : 1565115991092,
+    "path" : "D:/Projects/Programming/univariateML/tests/testthat/test_mllnorm.R",
+    "project_path" : "tests/testthat/test_mllnorm.R",
+    "properties" : {
+        "cursorPosition" : "2,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

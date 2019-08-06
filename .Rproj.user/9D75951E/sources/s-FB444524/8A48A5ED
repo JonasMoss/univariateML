@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1565121247173.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "8A48A5ED",
+    "lastKnownWriteTime" : 1565121516,
+    "last_content_update" : 1565121516351,
+    "path" : "D:/Projects/Programming/univariateML/tests/testthat/test_mlgamma.R",
+    "project_path" : "tests/testthat/test_mlgamma.R",
+    "properties" : {
+        "cursorPosition" : "38,40",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
