@@ -79,7 +79,7 @@
 The likelihood is
 \begin_inset Formula 
 \[
-\prod_{i=1}^{n}\frac{x}{\sigma^{2}}e^{-\frac{x^{2}}{2\sigma^{2}}}
+\prod_{i=1}^{n}\frac{\beta^{\alpha}}{\Gamma\left(\alpha\right)}x_{i}^{\alpha-1}e^{-\beta x_{i}}
 \]
 
 \end_inset
@@ -90,7 +90,7 @@ And the log-likelihood is:
 \begin_layout Standard
 \begin_inset Formula 
 \[
-n\left[L-\log\sigma^{2}-\frac{1}{2\sigma^{2}}M\right]
+n\left[\alpha\log\beta-\log\Gamma\left(\alpha\right)+\left(\alpha-1\right)L-\beta M\right]
 \]
 
 \end_inset
@@ -100,29 +100,14 @@ Where
 \end_inset
 
  and 
-\begin_inset Formula $M=\frac{1}{n}\sum_{i=1}^{n}x^{2}$
+\begin_inset Formula $M=\frac{1}{n}\sum_{i=1}^{n}x$
 \end_inset
 
 .
 \end_layout
 
 \begin_layout Standard
-The ML is 
-\begin_inset Formula $\widehat{\sigma^{2}}=\frac{1}{2}M$
-\end_inset
-
-, hence the likelihood at the maximum is
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-n\left[L-\log\frac{1}{2}M-1\right]
-\]
-
-\end_inset
-
-
+[Derive one-dimensional optimization.]
 \end_layout
 
 \end_body
