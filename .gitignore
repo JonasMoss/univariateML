@@ -35,8 +35,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .Rproj.user
-.RData
-.Rhistory
+
 .Rbuildignore
 inst/doc
 vignettes/*.R
