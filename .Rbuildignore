@@ -15,3 +15,5 @@
 ^paper$
 ^todo.txt$
 ^docs$
+^workspace$
+^univariateML.Rproj$
