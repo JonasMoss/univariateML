@@ -29,3 +29,12 @@ From inside `R`, use one of the following commands:
 # install.packages("devtools")
 devtools::install_github("JonasMoss/univariateML")
 ```
+
+## Supported Densities
+
+| Name                     | Package | Parameters        | Density |  |
+| ------------------------ | ------- | ----------------- | ------- |  |
+| Normal distribution      | stats   | `mean`, `sd`      | `dnorm` |  |
+| Exponential distribution | stats   | `rate`            | `dexp`  |  |
+| Beta distibution         | stats   | `shape1`,`shape2` | `dbeta` |  |
+|                          |         |                   |         |  |

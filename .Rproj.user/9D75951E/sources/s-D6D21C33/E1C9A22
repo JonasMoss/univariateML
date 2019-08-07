@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1565167307959.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2994780687",
+    "id" : "E1C9A22",
+    "lastKnownWriteTime" : 1565168728,
+    "last_content_update" : 1565168728839,
+    "path" : "D:/Projects/Programming/univariateML/README.Rmd",
+    "project_path" : "README.Rmd",
+    "properties" : {
+        "cursorPosition" : "50,0",
+        "scrollLine" : "36"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
