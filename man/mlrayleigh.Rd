@@ -12,8 +12,8 @@ mlrayleigh(x, na.rm = FALSE)
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{location} and \code{scale}.
+A named numeric vector with the maximum likelihood estimate for
+   \code{sigma}.
 }
 \description{
 Calculates the \code{sigma} parameter as the square root of half the
