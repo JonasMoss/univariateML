@@ -37,6 +37,5 @@ Temporary Items
 .Rproj.user
 .RData
 .Rhistory
-.Rbuildignore
 inst/doc
 vignettes/*.R
