@@ -85,7 +85,7 @@
 \end_inset
 
 here 
-\begin_inset Formula $S\left(\lambda\right)=\left\{ \frac{1}{n}\sum_{i=1}^{n}\log\left(1+λx_{i}\right)\right\} $
+\begin_inset Formula $S\left(\lambda\right)=\frac{1}{n}\sum_{i=1}^{n}\log\left(1+λx_{i}\right)$
 \end_inset
 
 .
@@ -243,6 +243,52 @@ This requires sums as
 
  each iteration.
  One more
+\end_layout
+
+\begin_layout Section
+Analysis
+\end_layout
+
+\begin_layout Standard
+As 
+\begin_inset Formula $\lambda\to0$
+\end_inset
+
+, 
+\begin_inset Formula $S\left(\lambda\right)\to0$
+\end_inset
+
+ and 
+\begin_inset Formula $\kappa\to\infty$
+\end_inset
+
+.
+ By Taylor, 
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{1}{n}\sum_{i=1}^{n}\log\left(1+λx_{i}\right) & \approx & \frac{λ}{n}\sum_{i=1}^{n}x_{i}\\
+ & = & \lambda\overline{x}
+\end{eqnarray*}
+
+\end_inset
+
+when 
+\begin_inset Formula $\lambda\to0$
+\end_inset
+
+.
+ The density converges to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left(1+λx\right)^{-\left(1/\lambda\overline{x}+1\right)}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \end_body

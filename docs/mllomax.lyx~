@@ -85,7 +85,7 @@
 \end_inset
 
 here 
-\begin_inset Formula $S\left(\lambda\right)=\left\{ \frac{1}{n}\sum_{i=1}^{n}\log\left(1+λx_{i}\right)\right\} $
+\begin_inset Formula $S\left(\lambda\right)=\frac{1}{n}\sum_{i=1}^{n}\log\left(1+λx_{i}\right)$
 \end_inset
 
 .
@@ -169,7 +169,9 @@ S''\left(\lambda\right) & = & -\frac{1}{n}\sum_{i=1}^{n}\frac{x_{i}^{2}}{\left(1
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray*}
-\frac{l'\left(\lambda\right)}{l''\left(\lambda\right)} & =
+\frac{l'\left(\lambda\right)}{l''\left(\lambda\right)} & = & \frac{S\left(\lambda\right)\lambda^{-1}-S'\left(\lambda\right)-S\left(\lambda\right)S'\left(\lambda\right)}{S\left(\lambda\right)\left(-\frac{1}{\lambda^{2}}-\frac{S\left(\lambda\right)S''\left(\lambda\right)-S'\left(\lambda\right)^{2}}{S\left(\lambda\right)^{2}}-S''\left(\lambda\right)\right)}\\
+ & = & S\left(\lambda\right)^{2}\frac{S\left(\lambda\right)\lambda-\lambda^{2}S'\left(\lambda\right)-\lambda^{2}S\left(\lambda\right)S'\left(\lambda\right)}{S\left(\lambda\right)\left(-S\left(\lambda\right)^{2}-S\left(\lambda\right)S''\left(\lambda\right)-S'\left(\lambda\right)^{2}-S\left(\lambda\right)^{2}S''\left(\lambda\right)\right)}\\
+ &  & S\left(\lambda\right)\frac{S\left(\lambda\right)\lambda-\lambda^{2}S'\left(\lambda\right)-\lambda^{2}S\left(\lambda\right)S'\left(\lambda\right)}{\left(-S\left(\lambda\right)^{2}-\lambda^{2}S\left(\lambda\right)S''\left(\lambda\right)-S'\left(\lambda\right)^{2}-\lambda^{2}S\left(\lambda\right)^{2}S''\left(\lambda\right)\right)}
 \end{eqnarray*}
 
 \end_inset
