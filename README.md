@@ -30,11 +30,31 @@ From inside `R`, use one of the following commands:
 devtools::install_github("JonasMoss/univariateML")
 ```
 
-## Supported Densities
+## Implemented Densities
 
-| Name                     | Package | Parameters        | Density |  |
-| ------------------------ | ------- | ----------------- | ------- |  |
-| Normal distribution      | stats   | `mean`, `sd`      | `dnorm` |  |
-| Exponential distribution | stats   | `rate`            | `dexp`  |  |
-| Beta distibution         | stats   | `shape1`,`shape2` | `dbeta` |  |
-|                          |         |                   |         |  |
+Maximum likelihood estimation has been implemented for the following
+densites. *Note:* Not all of them have been tested, not all of includes
+a `logLik` attribute, and they do not adhere to a common interface
+yet.
+
+| Name                       | Package    | Parameters                  | Density     | Support      |
+| -------------------------- | ---------- | --------------------------- | ----------- | ------------ |
+| Normal distribution        | stats      | `mean`, `sd`                | `dnorm`     | R            |
+| Exponential distribution   | stats      | `rate`                      | `dexp`      | \[0, ∞)      |
+| Beta distibution           | stats      | `shape1`,`shape2`           | `dbeta`     | (0, 1)       |
+| Gamma distribution         | stats      | `shape`,`rate`              | `dgamma`    | (0, ∞)       |
+| Weibull distribution       | stats      | `shape`,`scale`             | `dweibull`  | (0, ∞)       |
+| Log-normal distribution    | stats      | `meanlog`, `sdlog`          | `dlnorm`    | (0, ∞)       |
+| Logistic distributon       | stats      | `location`,`scale`          | `dlogis`    | R            |
+| Cauchy distributon         | stats      | `location`,`scale`          | `dcauchy`   | R            |
+| Uniform distribution       | stats      | `min`, `max`                | `dunif`     | \[min, max\] |
+| Gumbel distribution        | extraDistr | `mu`, `sigma`               | `dgumbel`   | R            |
+| Kumaraswamy distribution   | extraDistr | `a`, `b`                    | `dkumar`    | (0, 1)       |
+| Beta prime distribution    | extraDistr | `shape1`, `shape2`, `scale` | `dbetapr`   | (0, ∞)       |
+| Wald distribution          | extraDistr | `mu`, `lambda`              | `dwald`     | (0, ∞)       |
+| Laplace distribution       | extraDistr | `mu`, `sigma`               | `dlaplace`  | R            |
+| Rayleigh distribution      | extraDistr | `sigma`                     | `drayleigh` | \[0, ∞)      |
+| Pareto distribution        | extraDistr | `a`, `b`                    | `dpareto`   | \[b, ∞)      |
+| Power distribution         | extraDistr | `alpha`, `beta`             | `dpower`    | \[0, a)      |
+| Lomax distribution         | extraDistr | `lambda`, `kappa`           | `dlomax`    | \[0, ∞)      |
+| Inverse gamma distribution | extraDistr | `alpha`, `beta`             | `dinvgamma` | (0, ∞)       |

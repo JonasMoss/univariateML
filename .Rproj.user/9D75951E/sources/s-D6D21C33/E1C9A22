@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "2994780687",
+    "hash" : "0",
     "id" : "E1C9A22",
-    "lastKnownWriteTime" : 1565168728,
-    "last_content_update" : 1565168728839,
+    "lastKnownWriteTime" : 1565176426,
+    "last_content_update" : 1565176426019,
     "path" : "D:/Projects/Programming/univariateML/README.Rmd",
     "project_path" : "README.Rmd",
     "properties" : {
-        "cursorPosition" : "50,0",
-        "scrollLine" : "36"
+        "cursorPosition" : "42,60",
+        "scrollLine" : "35"
     },
     "read_only" : false,
     "read_only_alternatives" : [
