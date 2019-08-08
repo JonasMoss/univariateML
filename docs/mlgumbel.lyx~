@@ -76,6 +76,25 @@
 \begin_body
 
 \begin_layout Standard
+The likelihood is
+\begin_inset Formula 
+\[
+\prod_{i=1}^{n}\sqrt{\frac{\lambda}{2\pi x^{3}}}\exp\left(-\frac{\lambda\left(x-\mu\right)^{2}}{2\mu^{2}x}\right)
+\]
+
+\end_inset
+
+And the log-likelihood is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+n\left[-\frac{3}{2}L+\frac{1}{2}\log\lambda-\frac{1}{2}\log2\pi-\frac{\lambda}{2\mu^{2}}\frac{1}{n}\sum_{i=1}^{n}\frac{\left(x_{i}-\mu\right)^{2}}{x}\right]
+\]
+
+\end_inset
+
 
 \end_layout
 

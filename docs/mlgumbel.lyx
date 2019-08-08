@@ -79,7 +79,7 @@
 The likelihood is
 \begin_inset Formula 
 \[
-\prod_{i=1}^{n}\sqrt{\frac{\lambda}{2\pi x^{3}}}\exp\left(-\frac{\lambda\left(x-\mu\right)^{2}}{2\mu^{2}x}\right)
+\prod_{i=1}^{n}\frac{1}{\beta}e^{-\left(\frac{x_{i}-\mu}{\beta}+e^{-\frac{x_{i}-\mu}{\beta}}\right)}
 \]
 
 \end_inset
@@ -90,8 +90,20 @@ And the log-likelihood is:
 \begin_layout Standard
 \begin_inset Formula 
 \[
-n\left[-\frac{3}{2}L+\frac{1}{2}\log\lambda-\frac{1}{2}\log2\pi-\frac{\lambda}{2\mu^{2}}\frac{1}{n}\sum_{i=1}^{n}\frac{\left(x_{i}-\mu\right)^{2}}{x}\right]
+-n\left[\log\beta+\frac{1}{\beta}\left(M-\mu\right)+S\left(\mu,\beta\right)\right]
 \]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+M & = & \frac{1}{n}\sum_{i=1}^{n}x_{i}\\
+S\left(\mu,\beta\right) & = & \frac{1}{n}\sum_{i=1}^{n}e^{-\frac{x_{i}-\mu}{\beta}}
+\end{eqnarray*}
 
 \end_inset
 
