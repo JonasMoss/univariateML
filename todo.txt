@@ -58,7 +58,7 @@ Make base ML:
 		dexp				✓		✓		✓		✓		✓		Explicit solution.
 		dlnorm				✓		✓		✓		✓		✓		Explicit solution.
 		dnorm				✓		✓		✓		✓		✓		Explicit solution.
-		dunif				✓				✓						Explicit solution.
+		dunif				✓		✓		✓		✓		✓		Explicit solution.
 		dcauchy				✓		✓		✓		✓		✓		Note: Check for unimodality; add exact solutions for n < 5.
 		dlogis				✓		✓		✓		✓		✓		Search literature for existence of solutions.
 		dchisq														Low priority; not used for modelling often.
@@ -73,8 +73,8 @@ Make base ML:
 		Laplace				✓		✓		✓		✓		✓		Explicit solution.
 		Wald 				✓		✓		✓		✓		✓		Explicit solution.
 		Rayleigh			✓		✓		✓		✓		✓		Explicit solution.
-		Pareto				✓				✓						Explicit solution.
-		PowerDist			✓				✓						Explicit solution.
+		Pareto				✓		✓		✓		✓		✓		Explicit solution.
+		PowerDist			✓				✓						Explicit solution. The extraDistr setup is arguably wrong.
 		Lomax				✓		✓		✓		✓		✓		Single-dimensional Newton-Raphson; non-concave and does not always exist. Look at more later.
 		Frechet														Transformation of Weibull modula minimum.
 		TruncNormal													Sufficient statistics; numerically unstable?
