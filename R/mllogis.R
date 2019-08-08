@@ -29,6 +29,7 @@ mllogis = function(x, na.rm = FALSE) {
   attr(object, "density") = "stats::dlogis"
   attr(object, "logLik") = -values$minimum
   attr(object, "support") = c(-Inf , Inf)
+  attr(object, "n") = length(x)
   object
 
 }
