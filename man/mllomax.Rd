@@ -4,7 +4,7 @@
 \alias{mllomax}
 \title{Estimates the parameters of the Lomax distribution by maximum likelihood}
 \usage{
-mllomax(x, na.rm = FALSE, start = 1/stats::median(x),
+mllomax(x, na.rm = FALSE, start = stats::median(x),
   rel.tol = .Machine$double.eps^0.25, iterlim = 100)
 }
 \arguments{
@@ -13,7 +13,7 @@ mllomax(x, na.rm = FALSE, start = 1/stats::median(x),
 \item{na.rm}{logical. Should missing values be removed?}
 
 \item{start}{An optional starting value for the \code{lambda} parameter.
-Defaults to \code{1/median(x)}.}
+Defaults to \code{median(x)}.}
 
 \item{rel.tol}{Relative accuracy requested.}
 

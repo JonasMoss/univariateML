@@ -245,5 +245,253 @@ This requires sums as
  One more
 \end_layout
 
+\begin_layout Section
+Analysis
+\end_layout
+
+\begin_layout Standard
+As 
+\begin_inset Formula $\lambda\to0$
+\end_inset
+
+, 
+\begin_inset Formula $S\left(\lambda\right)\to0$
+\end_inset
+
+ and 
+\begin_inset Formula $\kappa\to\infty$
+\end_inset
+
+.
+ By Taylor, 
+\begin_inset Formula $\frac{1}{n}\sum_{i=1}^{n}\log\left(1+λx_{i}\right)\approx\frac{λ}{n}\sum_{i=1}^{n}x_{i}=\lambda\overline{x}$
+\end_inset
+
+ when 
+\begin_inset Formula $\lambda\to0$
+\end_inset
+
+, hence 
+\begin_inset Formula $\kappa\left(\lambda\right)\to\lambda^{-1}\overline{x}^{-1}$
+\end_inset
+
+.The density 
+\begin_inset Formula $λκ\left(1+λx\right)^{-\left(\kappa+1\right)}$
+\end_inset
+
+ is approximately equal to 
+\begin_inset Formula $λκ\left(1+λx\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}$
+\end_inset
+
+ when 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is small enough.
+ Since 
+\begin_inset Formula $λκ\left(1+λx\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}\to\overline{x}^{-1}e^{-\overline{x}^{-1}x}$
+\end_inset
+
+, the maximum likelihood estimator converges to an exponential density.
+\end_layout
+
+\begin_layout Subsection
+Concavity
+\end_layout
+
+\begin_layout Standard
+The second derivative:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+-\frac{1}{\lambda^{2}}-\frac{S\left(\lambda\right)S''\left(\lambda\right)-S'\left(\lambda\right)^{2}}{S\left(\lambda\right)^{2}}-S''\left(\lambda\right)\\
+-\frac{1}{\lambda^{2}}-S''\left(\lambda\right)\left(1+\frac{1}{S\left(\lambda\right)}\right)+\left(\frac{S'\left(\lambda\right)}{S\left(\lambda\right)}\right)^{2}
+\end{eqnarray*}
+
+\end_inset
+
+Here 
+\begin_inset Formula $-S''\left(\lambda\right)\left(1+\frac{1}{S\left(\lambda\right)}\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\left(\frac{S'\left(\lambda\right)}{S\left(\lambda\right)}\right)^{2}$
+\end_inset
+
+ are always positive.
+ 
+\begin_inset Formula $l''$
+\end_inset
+
+ is positive when
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-S''\left(\lambda\right)\left(1+\frac{1}{S\left(\lambda\right)}\right)+\left(\frac{S'\left(\lambda\right)}{S\left(\lambda\right)}\right)^{2}\geq\frac{1}{\lambda^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+S\left(\lambda\right) & = & \frac{1}{n}\sum_{i=1}^{n}\log\left(1+λx_{i}\right)\\
+S'\left(\lambda\right) & = & \frac{1}{n}\sum_{i=1}^{n}\frac{x_{i}}{1+\lambda x_{i}}\\
+S''\left(\lambda\right) & = & -\frac{1}{n}\sum_{i=1}^{n}\frac{x_{i}^{2}}{\left(1+\lambda x_{i}\right)^{2}}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+1.) Show it has a global minimum.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{1}{\lambda}-\frac{S'\left(\lambda\right)}{S\left(\lambda\right)}-S'\left(\lambda\right) & = & 0\\
+ & \Updownarrow\\
+1 & = & \lambda S'\left(\lambda\right)\left(1+\frac{1}{S\left(\lambda\right)}\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+2.) (Maybe first for one 
+\begin_inset Formula $x$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+S\left(\lambda\right) & = & \log\left(1+λx\right)\\
+S'\left(\lambda\right) & = & \frac{x}{1+\lambda x}\\
+S''\left(\lambda\right) & = & -\frac{x^{2}}{\left(1+\lambda x\right)^{2}}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+.
+\end_layout
+
+\begin_layout Standard
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+-\frac{1}{\lambda^{2}}-\frac{S\left(\lambda\right)S''\left(\lambda\right)+S''\left(\lambda\right)}{S\left(\lambda\right)^{2}}-S''\left(\lambda\right)\\
+-\frac{1}{\lambda^{2}}+\frac{x^{2}}{\left(1+\lambda x\right)^{2}}\left(1+\frac{1}{\log\left(1+λx\right)}+\frac{1}{\log\left(1+λx\right)^{2}}\right) & \leq & 0\\
+\frac{\lambda^{2}x^{2}}{\left(1+\lambda x\right)^{2}}\left(1+\frac{1}{\log\left(1+λx\right)}+\frac{1}{\log\left(1+λx\right)^{2}}\right) & \leq & 1\\
+\lambda^{2}x^{2}\left(\log\left(1+λx\right)^{2}+\log\left(1+λx\right)+1\right) & \leq & \left(1+\lambda x\right)^{2}\log\left(1+λx\right)^{2}\\
+ & \leq & \left(\lambda^{2}x^{2}+2\lambda x+1\right)\log\left(1+λx\right)^{2}\\
+\\
+\lambda^{2}x^{2}\left(\log\left(1+λx\right)+1\right) & \leq & \left(2\lambda x+1\right)\log\left(1+λx\right)^{2}\\
+\\
+\\
+\\
+-\frac{1}{\lambda^{2}}-S''\left(\lambda\right)\left(1+\frac{1}{S\left(\lambda\right)}\right)+\left(\frac{S'\left(\lambda\right)}{S\left(\lambda\right)}\right)^{2}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+.
+\end_layout
+
+\begin_layout Standard
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+1=\frac{\lambda}{1+\lambda x}\left(1+\frac{1}{\log\left(1+λ\right)}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Limits
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $\kappa=\frac{\mu}{\lambda}$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda\to0$
+\end_inset
+
+, 
+\begin_inset Formula $f\left(x;\lambda,\kappa\right)\to\mu e^{-\mu\lambda}$
+\end_inset
+
+.
+ Consequences:
+\end_layout
+
+\begin_layout Standard
+1.) All CIs for 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ must include an open interval arbitrarily close to 
+\begin_inset Formula $0$
+\end_inset
+
+ with positive probability.
+\end_layout
+
+\begin_layout Standard
+2.) All 
+\begin_inset Formula $k$
+\end_inset
+
+ (central) moments are infinite if 
+\begin_inset Formula $\kappa<k$
+\end_inset
+
+.
+ Since this happens along the sequence above, all CIs of the moments must
+ include 
+\begin_inset Formula $\infty$
+\end_inset
+
+ with positive probability.
+\end_layout
+
+\begin_layout Standard
+Can it converge to, say, a Rayleigh?
+\end_layout
+
 \end_body
 \end_document
