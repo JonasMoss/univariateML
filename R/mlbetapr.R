@@ -1,7 +1,8 @@
 #' Estimates the parameter of the Beta prime distribution using maximum likelihood
 #'
-#' Transforms the data and uses \code{stat::nlm} to estimate the parameters
-#'     of the Beta distribution.
+#' This function does not estimate the scale parameter for the \code{BetaPrime}
+#'     distribution. Transforms the data and uses \code{stat::nlm} to estimate
+#'     the parameters of the Beta distribution.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
@@ -14,14 +15,22 @@
 #' @details For \code{type}, the option \code{none} is fastest.
 #' @export
 
-mlbetapr = function(x, na.rm = TRUE, start = NULL, type = c("none", "gradient", "hessian")) {
+mlbetapr = function(x, na.rm = FALSE, start = NULL,
+                    type = c("none", "gradient", "hessian")) {
 
   if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   assertthat::assert_that(min(x) > 0)
 
-  object = mlbeta(x/(x + 1), start, type)
+  val1 = mean(log(x))
+  val2 = mean(log(1 + x))
+  object = mlbeta(x/(x + 1), na.rm = FALSE, start, type)
+  alpha = object[1]
+  beta = object[2]
   class(object) = "univariateML"
   attr(object, "model") = "BetaPrime"
+  attr(object, "logLik") = unname(-length(x)*(lbeta(alpha, beta) -
+                                                (alpha - 1)*val1 +
+                                                (alpha + beta)*val2))
   object
 
 

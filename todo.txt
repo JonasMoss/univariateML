@@ -66,16 +66,16 @@ Make base ML:
 		dt															Low priority; not used for modelling often.
 		dwilcox														No implementation: Never used for modelling.
 	extraDistr:
-		Gumbel				✓		✓		✓						Reduced to 1-dim; Solution reusing values.
-		Kumaraswamy 		✓		✓		✓						Reduced to 1-dim; Solution reusing values.
-		BetaPrime			✓				✓						Transformation of beta. Sufficient statistics.
-		InvGamma			✓				✓						Transformation of Gamma. Sufficient statistics.
+		InvGamma			✓		✓		✓		✓		✓		Transformation of Gamma. Sufficient statistics.
 		Laplace				✓		✓		✓		✓		✓		Explicit solution.
 		Wald 				✓		✓		✓		✓		✓		Explicit solution.
 		Rayleigh			✓		✓		✓		✓		✓		Explicit solution.
 		Pareto				✓		✓		✓		✓		✓		Explicit solution.
-		PowerDist			✓				✓						Explicit solution. The extraDistr setup is arguably wrong.
 		Lomax				✓		✓		✓		✓		✓		Single-dimensional Newton-Raphson; non-concave and does not always exist. Look at more later.
+		Gumbel				✓		✓		✓		✓		✓		Reduced to 1-dim; Solution reusing values.
+		Kumaraswamy 		✓		✓		✓		✓		✓		Reduced to 1-dim; Solution reusing values.
+		BetaPrime			✓		✓		✓		✓		✓		Transformation of beta. Sufficient statistics.
+		PowerDist			✓		✓		✓		✓		✓		Explicit solution. The extraDistr setup is arguably wrong.
 		Frechet														Transformation of Weibull modula minimum.
 		TruncNormal													Sufficient statistics; numerically unstable?
 		GEV															Asymptotic normality holds

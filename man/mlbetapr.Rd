@@ -4,7 +4,7 @@
 \alias{mlbetapr}
 \title{Estimates the parameter of the Beta prime distribution using maximum likelihood}
 \usage{
-mlbetapr(x, na.rm = TRUE, start = NULL, type = c("none", "gradient",
+mlbetapr(x, na.rm = FALSE, start = NULL, type = c("none", "gradient",
   "hessian"))
 }
 \arguments{
@@ -23,8 +23,9 @@ A named numeric vector with maximum likelihood estimates for
 \code{shape1} and \code{shap2}.
 }
 \description{
-Transforms the data and uses \code{stat::nlm} to estimate the parameters
-    of the Beta distribution.
+This function does not estimate the scale parameter for the \code{BetaPrime}
+    distribution. Transforms the data and uses \code{stat::nlm} to estimate
+    the parameters of the Beta distribution.
 }
 \details{
 For \code{type}, the option \code{none} is fastest.
