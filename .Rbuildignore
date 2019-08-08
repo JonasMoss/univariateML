@@ -17,3 +17,4 @@
 ^docs$
 ^workspace$
 ^univariateML.Rproj$
+^codecov\.yml$

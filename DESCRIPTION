@@ -10,8 +10,10 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: assertthat
-Suggests: testthat,
+Suggests: 
+    testthat,
     extraDistr,
-    knitr
+    knitr,
+    covr
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
