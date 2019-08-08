@@ -9,12 +9,14 @@
 #' @export
 
 
-mlunif = function(x, na.rm = TRUE) {
+mlunif = function(x, na.rm = FALSE) {
   if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-
-  object = c(min(x), max(x))
-  names(object) = c("alpha", "beta")
+  n = length(x)
+  max_ = max(x)
+  min_ = min(x)
+  object = c(min = min_, max = max_)
   class(object) = "univariateML"
-  attr(object, "density") = "Uniform"
+  attr(object, "model") = "Uniform"
+  attr(object, "logLik") = -n*log(max_ - min_)
   object
 }
