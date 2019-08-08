@@ -52,6 +52,7 @@ mlgumbel = function(x, na.rm = FALSE, sigma0 = 1, rel.tol = .Machine$double.eps^
   class(object) = "univariateML"
   attr(object, "model") = "Gumbel"
   attr(object, "logLik") = -length(x)*(log(sigma) + 1/sigma*(mean_x - mu) + S)
+  attr(object, "support") = c(-Inf, Inf)
   object
 
 }

@@ -21,5 +21,6 @@ mlnorm = function(x, na.rm = FALSE) {
   class(object) = "univariateML"
   attr(object, "model") = "Normal"
   attr(object, "logLik") = -n/2*(1 + log(2*pi) + 2*log(sigma))
+  attr(object, "support") = c(-Inf, Inf)
   object
 }

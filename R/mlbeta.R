@@ -71,6 +71,7 @@ mlbeta = function(x, na.rm = FALSE, start = NULL,
   class(object) = "univariateML"
   attr(object, "model") = "Beta"
   attr(object, "logLik") = -length(x)*stats::setNames(objective(object), NULL)
+  attr(object, "support") = c(0, 1)
   object
 
 }

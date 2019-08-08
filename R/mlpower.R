@@ -22,5 +22,6 @@ mlpower = function(x, na.rm = FALSE, epsilon = .Machine$double.eps^0.5) {
   class(object) = "univariateML"
   attr(object, "model") = "PowerDist"
   attr(object, "logLik") = length(x)*(log(beta) - beta*log(alpha) + (beta - 1)*M)
+  attr(object, "support") = c(0, alpha)
   object
 }

@@ -25,6 +25,7 @@ mlwald = function(x, na.rm = FALSE) {
   class(object) = "univariateML"
   attr(object, "model") = "Wald"
   attr(object, "logLik") = -n/2*(3*L - log(lambda) + log(2*pi) + lambda/mu^2*S)
+  attr(object, "support") = c(0, Inf)
   object
 }
 

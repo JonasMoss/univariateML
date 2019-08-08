@@ -31,6 +31,7 @@ mlbetapr = function(x, na.rm = FALSE, start = NULL,
   attr(object, "logLik") = unname(-length(x)*(lbeta(alpha, beta) -
                                                 (alpha - 1)*val1 +
                                                 (alpha + beta)*val2))
+  attr(object, "support") = c(0, Inf)
   object
 
 

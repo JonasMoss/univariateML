@@ -20,6 +20,7 @@ mlpareto = function(x, na.rm = FALSE) {
   class(object) = "univariateML"
   attr(object, "model") = "Pareto"
   attr(object, "logLik") = length(x)*(log(a) + a*log(b) - (a + 1)*M)
+  attr(object, "support") = c(b, Inf)
   object
 
 }

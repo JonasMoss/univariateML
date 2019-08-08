@@ -16,5 +16,6 @@ mlexp = function(x, na.rm = FALSE) {
   class(object) = "univariateML"
   attr(object, "model") = "Exponential"
   attr(object, "logLik") = length(x)*(log(rate) - 1)
+  attr(object, "support") = c(0, Inf)
   object
 }

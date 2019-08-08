@@ -27,6 +27,7 @@ mllogis = function(x, na.rm = FALSE) {
   class(object) = "univariateML"
   attr(object, "model") = "Logistic"
   attr(object, "logLik") = -values$minimum
+  attr(object, "support") = c(-Inf , Inf)
   object
 
 }

@@ -49,5 +49,6 @@ mlgamma = function(x,  na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
   attr(object, "model") = "Gamma"
   attr(object, "logLik") = n*(shape*log(rate) - log(gamma(shape)) +
                                 (shape - 1)*L - rate*mean_hat)
+  attr(object, "support") = c(0, Inf)
   object
 }
