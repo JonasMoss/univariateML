@@ -4,7 +4,7 @@
 \alias{mlunif}
 \title{Estimates the parameters of uniform density using maximum likelihood}
 \usage{
-mlunif(x, na.rm = TRUE)
+mlunif(x, na.rm = FALSE)
 }
 \arguments{
 \item{x}{The data from which the estimate is to be computed.}

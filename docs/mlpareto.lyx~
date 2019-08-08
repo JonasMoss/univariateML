@@ -76,6 +76,78 @@
 \begin_body
 
 \begin_layout Standard
+The likelihood is 
+\begin_inset Formula 
+\[
+\prod_{i=1}^{n}ab^{a}x_{i}^{-\left(a+1\right)}1_{x\geq b}
+\]
+
+\end_inset
+
+Hence the log-likelihood is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+l\left(a,b\right)=n\log a+na\log b-\left(a+1\right)\sum_{i=1}^{n}\log x_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The likelihood is increasing in 
+\begin_inset Formula $b$
+\end_inset
+
+ until 
+\begin_inset Formula $b>x_{i}$
+\end_inset
+
+ for some 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ when it is infinite.
+ Thus 
+\begin_inset Formula $\widehat{b}=\min x_{i}$
+\end_inset
+
+.
+ The derivatives of 
+\begin_inset Formula $l$
+\end_inset
+
+ with respect to 
+\begin_inset Formula $a$
+\end_inset
+
+ is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{dl\left(a,b\right)}{da} & = & \frac{n}{a}+n\log b-\sum_{i=1}^{n}\log x_{i}
+\end{eqnarray*}
+
+\end_inset
+
+Thus, denoting 
+\begin_inset Formula $G=\frac{1}{n}\sum_{i=1}^{n}\log\left(x_{i}\right)$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray*}
+a^{-1} & = & G-\log b
+\end{eqnarray*}
+
+\end_inset
+
 
 \end_layout
 

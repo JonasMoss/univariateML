@@ -79,7 +79,7 @@
 The likelihood is
 \begin_inset Formula 
 \[
-\prod_{i=1}^{n}\frac{x}{\sigma^{2}}e^{-\frac{x^{2}}{2\sigma^{2}}}
+\prod_{i=1}^{n}\sqrt{\frac{\lambda}{2\pi x^{3}}}\exp\left(-\frac{\lambda\left(x-\mu\right)^{2}}{2\mu^{2}x}\right)
 \]
 
 \end_inset
@@ -90,7 +90,7 @@ And the log-likelihood is:
 \begin_layout Standard
 \begin_inset Formula 
 \[
-n\left[L-\log\sigma^{2}-\frac{1}{2\sigma^{2}}M\right]
+n\left[-\frac{3}{2}L+\frac{1}{2}\log\lambda-\frac{1}{2}\log2\pi-\frac{\lambda}{2\mu^{2}}\frac{1}{n}\sum_{i=1}^{n}\frac{\left(x_{i}-\mu\right)^{2}}{x}\right]
 \]
 
 \end_inset
@@ -99,25 +99,22 @@ Where
 \begin_inset Formula $L=\frac{1}{n}\sum_{i=1}^{n}\log\left(x_{i}\right)$
 \end_inset
 
- and 
-\begin_inset Formula $M=\frac{1}{n}\sum_{i=1}^{n}x^{2}$
-\end_inset
-
 .
-\end_layout
-
-\begin_layout Standard
-The ML is 
-\begin_inset Formula $\widehat{\sigma^{2}}=\frac{1}{2}M$
+ Since the ML of 
+\begin_inset Formula $\mu$
 \end_inset
 
-, hence the likelihood at the maximum is
+ is the empirical mean, 
+\begin_inset Formula $S=\frac{1}{n}\sum_{i=1}^{n}\frac{\left(x_{i}-\mu\right)^{2}}{x}=\frac{1}{n}\sum_{i=1}^{n}\frac{\left(x_{i}-\overline{x}\right)^{2}}{x}$
+\end_inset
+
+ at the maximum.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-n\left[L-\log\frac{1}{2}M-1\right]
+-\frac{n}{2}\left[3L-\log\lambda+\log2\pi+\frac{\lambda}{\mu^{2}}S\right]
 \]
 
 \end_inset

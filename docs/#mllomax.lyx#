@@ -75,6 +75,26 @@
 
 \begin_body
 
+\begin_layout Section
+Method of Moments
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\widehat{\alpha} & = & \frac{s^{2}-\overline{x}^{2}}{\frac{1}{2}s^{2}-\overline{x}^{2}}\\
+\widehat{\lambda} & = & \overline{x}\left(\widehat{\alpha}-1\right)
+\end{eqnarray*}
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Likelihood
+\end_layout
+
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray*}
@@ -452,7 +472,7 @@ If
 \end_inset
 
 , 
-\begin_inset Formula $f\left(x;\lambda,\kappa\right)\to\mu e^{-\mu\lambda}$
+\begin_inset Formula $f\left(x;\lambda,\kappa\right)\to\mu e^{-\mu x}$
 \end_inset
 
 .
@@ -465,7 +485,7 @@ If
 \end_inset
 
  with positive probability.
- With the reverse parameterization, all CIs must be of infinite length with
+ With the inverse parameterization, all CIs must be of infinite length with
  positive probability.
 \end_layout
 

@@ -123,21 +123,6 @@ Where
 \end_layout
 
 \begin_layout Standard
-The ML is 
-\begin_inset Formula $\widehat{\sigma^{2}}=\frac{1}{2}M$
-\end_inset
-
-, hence the likelihood at the maximum is
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-n\left[L-\log\frac{1}{2}M-1\right]
-\]
-
-\end_inset
-
 
 \end_layout
 

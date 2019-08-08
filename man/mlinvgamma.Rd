@@ -4,10 +4,13 @@
 \alias{mlinvgamma}
 \title{Estimates the parameter of the Inverse Gamma distribution using maximum likelihood}
 \usage{
-mlinvgamma(x, rel.tol = .Machine$double.eps^0.25, iterlim = 100)
+mlinvgamma(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
+  iterlim = 100)
 }
 \arguments{
 \item{x}{The data from which the estimate is to be computed.}
+
+\item{na.rm}{logical. Should missing values be removed?}
 
 \item{rel.tol}{Relative accuracy requested.}
 
@@ -16,7 +19,7 @@ iterations to be performed before the program is terminated.}
 }
 \value{
 A named numeric vector with maximum likelihood estimates for
-\code{shape} and \code{rate}.
+\code{alpha} and \code{beta}.
 }
 \description{
 Transforms the data and uses Newton-Raphson to estimate the parameters of the Gamma distribution.

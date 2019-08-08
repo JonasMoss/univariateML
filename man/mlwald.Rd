@@ -18,6 +18,6 @@ A named numeric vector with maximum likelihood estimates for
 }
 \description{
 The maximum likelihood estimate of \code{mu} is the empirical mean and the
-    maximum likelihood estimate of \code{lambda} is the difference between
+    maximum likelihood estimate of \code{1/lambda} is the difference between
     the mean of reciprocals and the reciprocal of the mean.
 }

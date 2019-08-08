@@ -151,5 +151,20 @@ a^{-1} & = & G-\log b
 
 \end_layout
 
+\begin_layout Standard
+At the maxium, the log-likelihood is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+n\left(\log a+a\log b-\left(a+1\right)G\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
 \end_body
 \end_document
