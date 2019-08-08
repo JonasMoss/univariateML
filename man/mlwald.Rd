@@ -2,7 +2,8 @@
 % Please edit documentation in R/mlwald.R
 \name{mlwald}
 \alias{mlwald}
-\title{Estimates the parameter of the Wald (inverse Gaussian) distribution using maximum likelihood}
+\title{Estimates the parameter of the Wald (inverse Gaussian) distribution using
+    maximum likelihood}
 \usage{
 mlwald(x, na.rm = FALSE)
 }

@@ -1,7 +1,8 @@
-#' Estimates the parameter of the Wald (inverse Gaussian) distribution using maximum likelihood
+#' Estimates the parameter of the Wald (inverse Gaussian) distribution using
+#'     maximum likelihood
 #'
 #' The maximum likelihood estimate of \code{mu} is the empirical mean and the
-#'     maximum likelihood estimate of \code{lambda} is the difference between
+#'     maximum likelihood estimate of \code{1/lambda} is the difference between
 #'     the mean of reciprocals and the reciprocal of the mean.
 #'
 #' @param x The data from which the estimate is to be computed.
@@ -15,11 +16,15 @@ mlwald = function(x, na.rm = FALSE) {
   assertthat::assert_that(min(x) > 0)
   n = length(x)
 
-  mu = mean(mu)
-  object = c(mu = mu, lambda = mean(1/x) - 1/mu)
+  mu = mean(x)
+  lambda = 1/(mean(1/x) - 1/mu)
+  object = c(mu = mu, lambda = lambda)
+  L = mean(log(x))
+  S = mean((x - mean(x))^2/x)
 
   class(object) = "univariateML"
-  attr(object, "density") = "extraDistr::dwald"
+  attr(object, "model") = "Wald"
+  attr(object, "logLik") = -n/2*(3*L - log(lambda) + log(2*pi) + lambda/mu^2*S)
   object
 }
 
