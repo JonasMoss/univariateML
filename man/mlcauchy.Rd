@@ -13,7 +13,7 @@ mlcauchy(x, na.rm = FALSE)
 }
 \value{
 A named numeric vector with maximum likelihood estimates for
-\code{mean} and \code{sd}.
+\code{location} and \code{scale}.
 }
 \description{
 Calculates the estimates using \code{nlm} and an exponential transform of the
