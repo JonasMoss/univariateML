@@ -3,6 +3,7 @@
 #' Uses Newton-Raphson to estimate the parameters of the Kumaraswamy distribution.
 #'
 #' @param x The data from which the estimate is to be computed.
+#' @param na.rm logical. Should missing values be removed?
 #' @param a0 An optional starting value for the \code{a} parameter.
 #' @param rel.tol Relative accuracy requested.
 #' @param iterlim A positive integer specifying the maximum number of
@@ -16,13 +17,14 @@
 #'      Kumaraswamy, Ponnambalam. "A generalized probability density function for double-bounded random processes." Journal of Hydrology 46.1-2 (1980): 79-88.
 #' @export
 
-mlkumar = function(x, a0 = 1, rel.tol = .Machine$double.eps^0.25,
+mlkumar = function(x, na.rm = FALSE, a0 = 1, rel.tol = .Machine$double.eps^0.25,
                     iterlim = 100) {
 
-  rel.tol_str = deparse(substitute(rel.tol))
-
+  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   assertthat::assert_that(min(x) > 0)
   assertthat::assert_that(max(x) < 1)
+
+  rel.tol_str = deparse(substitute(rel.tol))
 
   logs = log(x)
 
@@ -59,6 +61,8 @@ mlkumar = function(x, a0 = 1, rel.tol = .Machine$double.eps^0.25,
 
   object = c(a = a, b = b)
   class(object) = "univariateML"
-  attr(object, "density") = "extraDistr::dkumar"
+  attr(object, "model") = "Kumaraswamy"
+  attr(object, "logLik") = length(x)*(log(a) + log(b) + (a - 1)*mean(log(x)) +
+                                        -1 + 1/b)
   object
 }
