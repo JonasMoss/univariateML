@@ -4,10 +4,13 @@
 \alias{mlkumar}
 \title{Estimates the parameter of a Kumaraswamy distribution by maximum likelihood}
 \usage{
-mlkumar(x, a0 = 1, rel.tol = .Machine$double.eps^0.25, iterlim = 100)
+mlkumar(x, na.rm = FALSE, a0 = 1, rel.tol = .Machine$double.eps^0.25,
+  iterlim = 100)
 }
 \arguments{
 \item{x}{The data from which the estimate is to be computed.}
+
+\item{na.rm}{logical. Should missing values be removed?}
 
 \item{a0}{An optional starting value for the \code{a} parameter.}
 

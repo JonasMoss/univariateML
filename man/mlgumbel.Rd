@@ -4,13 +4,15 @@
 \alias{mlgumbel}
 \title{Estimates the parameter of a Gumbel distribution by maximum likelihood}
 \usage{
-mlgumbel(x, scale0 = 1, rel.tol = .Machine$double.eps^0.25,
-  iterlim = 100)
+mlgumbel(x, na.rm = FALSE, sigma0 = 1,
+  rel.tol = .Machine$double.eps^0.25, iterlim = 100)
 }
 \arguments{
 \item{x}{The data from which the estimate is to be computed.}
 
-\item{scale0}{An optional starting value for the \code{scale} parameter.}
+\item{na.rm}{logical. Should missing values be removed?}
+
+\item{sigma0}{An optional starting value for the \code{sigma} parameter.}
 
 \item{rel.tol}{Relative accuracy requested.}
 
@@ -19,7 +21,7 @@ iterations to be performed before the program is terminated.}
 }
 \value{
 A named numeric vector with maximum likelihood estimates for
-\code{shape} and \code{scale}.
+\code{shape} and \code{sigma}.
 }
 \description{
 Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
