@@ -39,22 +39,22 @@ yet.
 
 | Name                       | Package    | Parameters                  | Density     | Support      |
 | -------------------------- | ---------- | --------------------------- | ----------- | ------------ |
-| Normal distribution        | stats      | `mean`, `sd`                | `dnorm`     | R            |
+| Normal distribution        | stats      | `mean`, `sd`                | `dnorm`     | ℝ            |
+| Logistic distributon       | stats      | `location`,`scale`          | `dlogis`    | ℝ            |
+| Cauchy distributon         | stats      | `location`,`scale`          | `dcauchy`   | ℝ            |
+| Gumbel distribution        | extraDistr | `mu`, `sigma`               | `dgumbel`   | ℝ            |
+| Laplace distribution       | extraDistr | `mu`, `sigma`               | `dlaplace`  | ℝ            |
 | Exponential distribution   | stats      | `rate`                      | `dexp`      | \[0, ∞)      |
-| Beta distibution           | stats      | `shape1`,`shape2`           | `dbeta`     | (0, 1)       |
+| Lomax distribution         | extraDistr | `lambda`, `kappa`           | `dlomax`    | \[0, ∞)      |
+| Rayleigh distribution      | extraDistr | `sigma`                     | `drayleigh` | \[0, ∞)      |
 | Gamma distribution         | stats      | `shape`,`rate`              | `dgamma`    | (0, ∞)       |
 | Weibull distribution       | stats      | `shape`,`scale`             | `dweibull`  | (0, ∞)       |
 | Log-normal distribution    | stats      | `meanlog`, `sdlog`          | `dlnorm`    | (0, ∞)       |
-| Logistic distributon       | stats      | `location`,`scale`          | `dlogis`    | R            |
-| Cauchy distributon         | stats      | `location`,`scale`          | `dcauchy`   | R            |
-| Uniform distribution       | stats      | `min`, `max`                | `dunif`     | \[min, max\] |
-| Gumbel distribution        | extraDistr | `mu`, `sigma`               | `dgumbel`   | R            |
-| Kumaraswamy distribution   | extraDistr | `a`, `b`                    | `dkumar`    | (0, 1)       |
+| Inverse gamma distribution | extraDistr | `alpha`, `beta`             | `dinvgamma` | (0, ∞)       |
 | Beta prime distribution    | extraDistr | `shape1`, `shape2`, `scale` | `dbetapr`   | (0, ∞)       |
 | Wald distribution          | extraDistr | `mu`, `lambda`              | `dwald`     | (0, ∞)       |
-| Laplace distribution       | extraDistr | `mu`, `sigma`               | `dlaplace`  | R            |
-| Rayleigh distribution      | extraDistr | `sigma`                     | `drayleigh` | \[0, ∞)      |
-| Pareto distribution        | extraDistr | `a`, `b`                    | `dpareto`   | \[b, ∞)      |
+| Beta distibution           | stats      | `shape1`,`shape2`           | `dbeta`     | (0, 1)       |
+| Kumaraswamy distribution   | extraDistr | `a`, `b`                    | `dkumar`    | (0, 1)       |
+| Uniform distribution       | stats      | `min`, `max`                | `dunif`     | \[min, max\] |
 | Power distribution         | extraDistr | `alpha`, `beta`             | `dpower`    | \[0, a)      |
-| Lomax distribution         | extraDistr | `lambda`, `kappa`           | `dlomax`    | \[0, ∞)      |
-| Inverse gamma distribution | extraDistr | `alpha`, `beta`             | `dinvgamma` | (0, ∞)       |
+| Pareto distribution        | extraDistr | `a`, `b`                    | `dpareto`   | \[b, ∞)      |
