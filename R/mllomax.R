@@ -53,6 +53,7 @@ mllomax = function(x, na.rm = FALSE, start = stats::median(x),
   class(object) = c("univariateML")
   attr(object, "logLik") = n*(log(lambda) - log(S) - S - 1)
   attr(object, "model") = "Lomax"
+  attr(object, "density") = "extraDistr::dlomax"
   attr(object, "support") = c(0, Inf)
   object
 

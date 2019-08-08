@@ -62,6 +62,7 @@ mlkumar = function(x, na.rm = FALSE, a0 = 1, rel.tol = .Machine$double.eps^0.25,
   object = c(a = a, b = b)
   class(object) = "univariateML"
   attr(object, "model") = "Kumaraswamy"
+  attr(object, "density") = "extraDistr::dkumar"
   attr(object, "logLik") = length(x)*(log(a) + log(b) + (a - 1)*mean(log(x)) +
                                         -1 + 1/b)
   attr(object, "support") = c(0, 1)

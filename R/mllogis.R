@@ -26,6 +26,7 @@ mllogis = function(x, na.rm = FALSE) {
              scale = exp(values$estimate[2]))
   class(object) = "univariateML"
   attr(object, "model") = "Logistic"
+  attr(object, "density") = "stats::dlogis"
   attr(object, "logLik") = -values$minimum
   attr(object, "support") = c(-Inf , Inf)
   object

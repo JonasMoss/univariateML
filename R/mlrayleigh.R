@@ -18,6 +18,7 @@ mlrayleigh = function(x, na.rm = FALSE) {
   object = c(sigma = sigma)
   class(object) = "univariateML"
   attr(object, "model") = "Rayleigh"
+  attr(object, "density") = "extraDistr::drayleigh"
   attr(object, "logLik") = length(x)*(mean(log(x) - 2*log(sigma) - 1))
   attr(object, "support") = c(0, Inf)
   object

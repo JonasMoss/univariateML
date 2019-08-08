@@ -25,6 +25,7 @@ mlinvgamma = function(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25, iter
   beta = object[2]
   class(object) = "univariateML"
   attr(object, "model") = "InvGamma"
+  attr(object, "density") = "extraDistr::dinvgamma"
   attr(object, "logLik") = unname(length(x)*(alpha*log(beta) - log(gamma(alpha)) +
                                 -(alpha + 1)*L - beta*M))
   attr(object, "support") = c(0, Inf)

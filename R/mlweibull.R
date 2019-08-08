@@ -54,6 +54,7 @@ mlweibull = function(x, na.rm = FALSE, shape0 = 2,
   object = c(shape = shape, scale = scale)
   class(object) = "univariateML"
   attr(object, "model") = "Weibull"
+  attr(object, "density") = "stats::dweibull"
   attr(object, "logLik") = n*(log(shape) - log(scale) +
                 (shape - 1)*(l_hat - log(scale)) - scale^-shape*shape_sum)
   attr(object, "support") = c(0, Inf)

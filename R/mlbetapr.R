@@ -28,6 +28,7 @@ mlbetapr = function(x, na.rm = FALSE, start = NULL,
   beta = object[2]
   class(object) = "univariateML"
   attr(object, "model") = "BetaPrime"
+  attr(object, "density") = "extraDistr::dbetapr"
   attr(object, "logLik") = unname(-length(x)*(lbeta(alpha, beta) -
                                                 (alpha - 1)*val1 +
                                                 (alpha + beta)*val2))

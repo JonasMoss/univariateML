@@ -19,6 +19,7 @@ mllaplace = function(x, na.rm = FALSE) {
              sigma = sigma)
   class(object) = "univariateML"
   attr(object, "model") = "Laplace"
+  attr(object, "density") = "extraDistr::dlaplace"
   attr(object, "logLik") = -length(x)*(1 + log(2*sigma))
   attr(object, "support") = c(-Inf, Inf)
   object

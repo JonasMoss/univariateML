@@ -30,6 +30,7 @@ mlcauchy = function(x, na.rm = FALSE) {
 
   class(object) = "univariateML"
   attr(object, "model") = "Cauchy"
+  attr(object, "density") = "stats::dcauchy"
   attr(object, "logLik") = -values$minimum
   attr(object, "support") = c(-Inf, Inf)
   object

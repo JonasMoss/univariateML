@@ -17,6 +17,7 @@ mlunif = function(x, na.rm = FALSE) {
   object = c(min = min_, max = max_)
   class(object) = "univariateML"
   attr(object, "model") = "Uniform"
+  attr(object, "density") = "stats::dunif"
   attr(object, "logLik") = -n*log(max_ - min_)
   attr(object, "support") = c(min, max)
   object

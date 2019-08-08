@@ -70,6 +70,7 @@ mlbeta = function(x, na.rm = FALSE, start = NULL,
   names(object) = c("shape1", "shape2")
   class(object) = "univariateML"
   attr(object, "model") = "Beta"
+  attr(object, "density") = "stats::dbeta"
   attr(object, "logLik") = -length(x)*stats::setNames(objective(object), NULL)
   attr(object, "support") = c(0, 1)
   object
