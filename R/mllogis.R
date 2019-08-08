@@ -19,13 +19,14 @@ mllogis = function(x, na.rm = FALSE) {
   start = c(m, log(mad))
 
   f = function(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
-  values = stats::nlm(f = f,
-                      p = start)$estimate
+  values = suppressWarnings(stats::nlm(f = f,
+                      p = start))
 
-  object = c(location = values[1],
-             scale = exp(values[2]))
+  object = c(location = values$estimate[1],
+             scale = exp(values$estimate[2]))
   class(object) = "univariateML"
   attr(object, "model") = "Logistic"
+  attr(object, "logLik") = -values$minimum
   object
 
 }
