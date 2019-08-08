@@ -22,5 +22,6 @@ mllaplace = function(x, na.rm = FALSE) {
   attr(object, "density") = "extraDistr::dlaplace"
   attr(object, "logLik") = -length(x)*(1 + log(2*sigma))
   attr(object, "support") = c(-Inf, Inf)
+  attr(object, "n") = length(x)
   object
 }

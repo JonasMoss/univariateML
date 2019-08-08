@@ -27,6 +27,7 @@ mlwald = function(x, na.rm = FALSE) {
   attr(object, "density") = "extraDistr::dwald"
   attr(object, "logLik") = -n/2*(3*L - log(lambda) + log(2*pi) + lambda/mu^2*S)
   attr(object, "support") = c(0, Inf)
+  attr(object, "n") = length(x)
   object
 }
 

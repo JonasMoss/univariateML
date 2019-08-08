@@ -22,6 +22,7 @@ mlpareto = function(x, na.rm = FALSE) {
   attr(object, "density") = "extraDistr::dpareto"
   attr(object, "logLik") = length(x)*(log(a) + a*log(b) - (a + 1)*M)
   attr(object, "support") = c(b, Inf)
+  attr(object, "n") = length(x)
   object
 
 }
