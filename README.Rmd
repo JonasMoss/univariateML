@@ -88,8 +88,6 @@ and quantile functions (`qml`).
 
 ## Implemented Densities
 Maximum likelihood estimation has been implemented for the following densites.
-*Note:* Not all of them have been tested, not all of includes a `logLik` 
-attribute, and they do not adhere to a common interface yet.
 
 | Name                       | Package    | Parameters                  | Density     | Support    |
 |----------------------------|------------|-----------------------------|-------------|------------|
@@ -113,3 +111,11 @@ attribute, and they do not adhere to a common interface yet.
 | Power distribution         | extraDistr | `alpha`, `beta`             | `dpower`    | [0, a)     |
 | Pareto distribution        | extraDistr | `a`, `b`                    | `dpareto`   | [b, ∞)     |
 
+*Note:* The Lomax distribution has not been properly tested yet.
+
+## How to Contribute or Get Help
+If you encounter a bug, have a feature request or need some help, open a [Github issue](https://github.com/JonasMoss/univariateML/issues). Create a pull requests
+to contribute. This project follows a [Contributor Code of Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md).
+
+Please open an issue and or make a pull request if you want another univariate 
+distribution to be added to the package. 

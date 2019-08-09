@@ -88,10 +88,10 @@ bootstraps = replicate(n = 1000,
 # Calculcate approximate 95% CIs.
 quantile(bootstraps[1,  ], c(0.025, 0.975))
 #>     2.5%    97.5% 
-#> 71.44227 74.65300
+#> 71.43023 74.64514
 quantile(bootstraps[2,  ], c(0.025, 0.975))
 #>      2.5%     97.5% 
-#>  8.451142 10.949905
+#>  8.400477 10.900481
 ```
 
 You can also use density functions (`dml`), cumulative distribution
@@ -100,9 +100,7 @@ functions (`pml`), and quantile functions (`qml`).
 ## Implemented Densities
 
 Maximum likelihood estimation has been implemented for the following
-densites. *Note:* Not all of them have been tested, not all of includes
-a `logLik` attribute, and they do not adhere to a common interface
-yet.
+densites.
 
 | Name                       | Package    | Parameters         | Density     | Support      |
 | -------------------------- | ---------- | ------------------ | ----------- | ------------ |
@@ -125,3 +123,16 @@ yet.
 | Uniform distribution       | stats      | `min`, `max`       | `dunif`     | \[min, max\] |
 | Power distribution         | extraDistr | `alpha`, `beta`    | `dpower`    | \[0, a)      |
 | Pareto distribution        | extraDistr | `a`, `b`           | `dpareto`   | \[b, ∞)      |
+
+*Note:* The Lomax distribution has not been properly tested yet.
+
+## How to Contribute or Get Help
+
+If you encounter a bug, have a feature request or need some help, open a
+[Github issue](https://github.com/JonasMoss/univariateML/issues). Create
+a pull requests to contribute. This project follows a [Contributor Code
+of
+Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md).
+
+Please open an issue and or make a pull request if you want another
+univariate distribution to be added to the package.
