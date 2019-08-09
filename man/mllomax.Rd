@@ -4,7 +4,7 @@
 \alias{mllomax}
 \title{Estimates the parameters of the Lomax distribution by maximum likelihood}
 \usage{
-mllomax(x, na.rm = FALSE, start = stats::median(x),
+mllomax(x, na.rm = FALSE, start = NULL,
   rel.tol = .Machine$double.eps^0.25, iterlim = 100)
 }
 \arguments{
