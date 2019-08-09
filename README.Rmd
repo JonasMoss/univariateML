@@ -37,6 +37,26 @@ From inside `R`, use one of the following commands:
 devtools::install_github("JonasMoss/univariateML")
 ```
 
+## Examples
+
+### Model Selection
+The `airquality` contains daily air quality measurements in New York from May to
+September 1973. To choose a model for the wind speed measurements from this 
+data set we will use AIC.
+
+```{R}
+library("univariateML")
+AIC(mlbetapr(airquality$Wind),
+    mlexp(airquality$Wind),
+    mlinvgamma(airquality$Wind),
+    mlgamma(airquality$Wind),
+    mllnorm(airquality$Wind),
+    mlrayleigh(airquality$Wind),
+    mlwald(airquality$Wind),
+    mlweibull(airquality$Wind))
+```
+The superior AIC of the Weibull distribution makes it a reasonable choice. 
+
 ## Implemented Densities
 Maximum likelihood estimation has been implemented for the following densites.
 *Note:* Not all of them have been tested, not all of includes a `logLik` 

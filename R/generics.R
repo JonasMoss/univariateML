@@ -7,11 +7,16 @@
 #
 # }
 
+#' @export
 logLik.univariateML = function(object, ...) {
   val = attr(object, "logLik")
   attr(val, "nobs") = attr(object, "n")
   attr(val, "df")   = length(object)
   class(val) = "logLik"
   val
+}
 
+#' @export
+coef.univariateML = function(object, ...) {
+  as.numeric(object)
 }
