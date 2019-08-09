@@ -70,24 +70,24 @@ coef.univariateML = function(object, ...) {
 }
 
 #' @export
-summary.univariateML <- function(x, ...) {
-  data.name =  deparse(as.list(attr(x, "call"))$x)
+summary.univariateML <- function(object, ...) {
+  data.name =  deparse(as.list(attr(object, "call"))$x)
   digits = list(...)$digits
-  cat("\nMaximum likelihood for the", attr(x, "model"), "model \n",
-      "\nCall: ", deparse(attr(x, "call")), "\n\nEstimates: \n")
-  print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
-  cat("\nData:            ", data.name, " (", attr(x, "n"), " obs.)\n",
-      "Support:         (", attr(x, "support")[1], ", ", attr(x, "support")[2],   ")\n",
-      "Density:         ", attr(x, "density"), "\n",
-      "Log-likelihood:  ", attr(x, "logLik"), "\n",
+  cat("\nMaximum likelihood for the", attr(object, "model"), "model \n",
+      "\nCall: ", deparse(attr(object, "call")), "\n\nEstimates: \n")
+  print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
+  cat("\nData:            ", data.name, " (", attr(object, "n"), " obs.)\n",
+      "Support:         (", attr(object, "support")[1], ", ", attr(object, "support")[2],   ")\n",
+      "Density:         ", attr(object, "density"), "\n",
+      "Log-likelihood:  ", attr(object, "logLik"), "\n",
       sep = "")
-  invisible(x)
+  invisible(object)
 }
 
 #' @export
-print.univariateML <- function(object, ...) {
+print.univariateML <- function(x, ...) {
   digits = list(...)$digits
-  cat("Maximum likelihood estimates for the", attr(object, "model"), "model \n")
-  print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
-  invisible(object)
+  cat("Maximum likelihood estimates for the", attr(x, "model"), "model \n")
+  print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
+  invisible(x)
 }
