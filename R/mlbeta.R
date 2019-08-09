@@ -74,6 +74,7 @@ mlbeta = function(x, na.rm = FALSE, start = NULL,
   attr(object, "logLik") = -length(x)*stats::setNames(objective(object), NULL)
   attr(object, "support") = c(0, 1)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 
 }

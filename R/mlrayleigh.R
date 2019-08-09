@@ -22,6 +22,7 @@ mlrayleigh = function(x, na.rm = FALSE) {
   attr(object, "logLik") = length(x)*(mean(log(x) - 2*log(sigma) - 1))
   attr(object, "support") = c(0, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 
 }

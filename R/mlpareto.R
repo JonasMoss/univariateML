@@ -23,6 +23,7 @@ mlpareto = function(x, na.rm = FALSE) {
   attr(object, "logLik") = length(x)*(log(a) + a*log(b) - (a + 1)*M)
   attr(object, "support") = c(b, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 
 }

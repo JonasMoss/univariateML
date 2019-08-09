@@ -9,8 +9,8 @@ tiny_data= extraDistr::rlaplace(10, 0, 1)
 expect_error(mllaplace(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mllaplace(small_data),
-             mllaplace(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mllaplace(small_data)),
+             coef(mllaplace(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mllaplace(small_data, na.rm = TRUE)

@@ -36,8 +36,8 @@ expect_error(mlkumar(c(tiny_data, 0)))
 expect_error(mlkumar(c(tiny_data, 1)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlkumar(small_data),
-             mlkumar(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlkumar(small_data)),
+             coef(mlkumar(c(small_data, NA), na.rm = TRUE)))
 
 est = mlkumar(tiny_data)
 ## Check class.

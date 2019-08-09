@@ -33,8 +33,8 @@ expect_error(mllomax(c(tiny_data, NA)))
 expect_error(mllomax(c(0, tiny_data)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mllomax(small_data),
-             mllomax(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mllomax(small_data)),
+             coef(mllomax(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mllomax(small_data, na.rm = TRUE)

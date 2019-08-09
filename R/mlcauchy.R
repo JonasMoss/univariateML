@@ -34,6 +34,7 @@ mlcauchy = function(x, na.rm = FALSE) {
   attr(object, "logLik") = -values$minimum
   attr(object, "support") = c(-Inf, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 
 }

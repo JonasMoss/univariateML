@@ -18,10 +18,10 @@ expect_equal(mle1, as.numeric(mlbeta(small_data)), tolerance = 1e-5)
 expect_equal(mle2, as.numeric(mlbeta(tiny_data)), tolerance = 1e-5)
 
 ## Checks the control parameters.
-expect_equal(mlbeta(tiny_data, type = "gradient"),
-             mlbeta(tiny_data), tolerance = 1e-5)
-expect_equal(mlbeta(small_data, type = "gradient"),
-             mlbeta(small_data, type = "hessian"), tolerance = 1e-5)
+expect_equal(coef(mlbeta(tiny_data, type = "gradient")),
+             coef(mlbeta(tiny_data)), tolerance = 1e-5)
+expect_equal(coef(mlbeta(small_data, type = "gradient")),
+             coef(mlbeta(small_data, type = "hessian")), tolerance = 1e-5)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlbeta(c(0, tiny_data)))
@@ -29,8 +29,8 @@ expect_error(mlbeta(c(tiny_data, 1)))
 expect_error(mlbeta(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlbeta(small_data),
-             mlbeta(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlbeta(small_data)),
+             coef(mlbeta(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mlbeta(small_data, na.rm = TRUE)

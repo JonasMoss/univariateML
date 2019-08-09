@@ -9,8 +9,8 @@ tiny_data= stats::rlnorm(10, 0, 1)
 expect_error(mllnorm(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mllnorm(small_data),
-             mllnorm(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mllnorm(small_data)),
+             coef(mllnorm(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mllnorm(small_data, na.rm = TRUE)

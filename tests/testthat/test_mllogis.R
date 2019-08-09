@@ -63,8 +63,8 @@ expect_equal(-mle4$minimum, attr(mllogis(large_data), "logLik"), tolerance = 1e-
 expect_error(mllogis(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mllogis(small_data),
-             mllogis(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mllogis(small_data)),
+             coef(mllogis(c(small_data, NA), na.rm = TRUE)))
 
 ## Check class.
 est = mllogis(small_data, na.rm = TRUE)

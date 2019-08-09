@@ -55,6 +55,7 @@ mlgumbel = function(x, na.rm = FALSE, sigma0 = 1, rel.tol = .Machine$double.eps^
   attr(object, "logLik") = -length(x)*(log(sigma) + 1/sigma*(mean_x - mu) + S)
   attr(object, "support") = c(-Inf, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 
 }

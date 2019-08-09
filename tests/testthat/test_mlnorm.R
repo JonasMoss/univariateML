@@ -9,8 +9,8 @@ tiny_data= rnorm(10, 0, 1)
 expect_error(mlnorm(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlnorm(small_data),
-             mlnorm(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlnorm(small_data)),
+             coef(mlnorm(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mlnorm(small_data, na.rm = TRUE)

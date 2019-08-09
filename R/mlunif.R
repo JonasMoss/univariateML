@@ -21,5 +21,6 @@ mlunif = function(x, na.rm = FALSE) {
   attr(object, "logLik") = -n*log(max_ - min_)
   attr(object, "support") = c(min, max)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 }

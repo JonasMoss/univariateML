@@ -10,8 +10,8 @@ expect_error(mlrayleigh(c(-.1, tiny_data)))
 expect_error(mlrayleigh(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlrayleigh(small_data),
-             mlrayleigh(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlrayleigh(small_data)),
+             coef(mlrayleigh(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mlrayleigh(small_data, na.rm = TRUE)

@@ -22,8 +22,8 @@ expect_error(mlpareto(c(tiny_data, 0)))
 expect_error(mlpareto(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlpareto(small_data),
-             mlpareto(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlpareto(small_data)),
+             coef(mlpareto(c(small_data, NA), na.rm = TRUE)))
 
 ## Check class.
 est = mlpareto(small_data, na.rm = TRUE)

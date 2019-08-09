@@ -2,6 +2,8 @@
 
 S3method(coef,univariateML)
 S3method(logLik,univariateML)
+S3method(print,univariateML)
+S3method(summary,univariateML)
 export(dml)
 export(mlbeta)
 export(mlbetapr)

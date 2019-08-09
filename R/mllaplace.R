@@ -23,5 +23,6 @@ mllaplace = function(x, na.rm = FALSE) {
   attr(object, "logLik") = -length(x)*(1 + log(2*sigma))
   attr(object, "support") = c(-Inf, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 }

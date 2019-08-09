@@ -29,18 +29,18 @@ expect_equal(-mle_small$minimum, attr(mlbetapr(small_data), "logLik"), tolerance
 expect_equal(-mle_medium$minimum, attr(mlbetapr(medium_data), "logLik"), tolerance = 1e-5)
 
 ## Checks the control parameters.
-expect_equal(mlbetapr(tiny_data, type = "gradient"),
-             mlbetapr(tiny_data), tolerance = 1e-4)
-expect_equal(mlbetapr(small_data, type = "gradient"),
-             mlbetapr(small_data, type = "hessian"), tolerance = 1e-4)
+expect_equal(coef(mlbetapr(tiny_data, type = "gradient")),
+             coef(mlbetapr(tiny_data)), tolerance = 1e-4)
+expect_equal(coef(mlbetapr(small_data, type = "gradient")),
+             coef(mlbetapr(small_data, type = "hessian")), tolerance = 1e-4)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlbetapr(c(0, tiny_data)))
 expect_error(mlbetapr(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlbetapr(small_data),
-             mlbetapr(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlbetapr(small_data)),
+             coef(mlbetapr(c(small_data, NA), na.rm = TRUE)))
 
 ## Check class.
 expect_equal(attr(mlbetapr(tiny_data), "model"), "BetaPrime")

@@ -34,8 +34,8 @@ expect_equal(-mle3$minimum, attr(mlpower(medium_data), "logLik"), tolerance = 1e
 expect_error(mlpower(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlpower(small_data),
-             mlpower(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlpower(small_data)),
+             coef(mlpower(c(small_data, NA), na.rm = TRUE)))
 
 est = mlpower(tiny_data)
 

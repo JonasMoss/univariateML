@@ -26,8 +26,8 @@ expect_error(mlgamma(c(tiny_data, NA)))
 expect_error(mlgamma(c(tiny_data, 0)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlgamma(small_data),
-             mlgamma(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlgamma(small_data)),
+             coef(mlgamma(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mlgamma(small_data, na.rm = TRUE)

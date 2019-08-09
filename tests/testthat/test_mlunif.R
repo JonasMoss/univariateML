@@ -21,8 +21,8 @@ expect_equal(sum(dunif(large_data, min = min(large_data), max = max(large_data),
 expect_error(mlunif(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlunif(small_data),
-             mlunif(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlunif(small_data)),
+             coef(mlunif(c(small_data, NA), na.rm = TRUE)))
 
 ## Check class.
 est = mlunif(small_data, na.rm = TRUE)

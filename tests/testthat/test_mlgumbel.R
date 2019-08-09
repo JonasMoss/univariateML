@@ -34,8 +34,8 @@ expect_warning(mlgumbel(tiny_data, iterlim = 1))
 expect_error(mlgumbel(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlgumbel(small_data),
-             mlgumbel(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlgumbel(small_data)),
+             coef(mlgumbel(c(small_data, NA), na.rm = TRUE)))
 
 est = mlgumbel(tiny_data)
 ## Check class.

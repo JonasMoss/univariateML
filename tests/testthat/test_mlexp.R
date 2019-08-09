@@ -10,8 +10,8 @@ expect_error(mlexp(c(-.1, tiny_data)))
 expect_error(mlexp(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlexp(small_data),
-             mlexp(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlexp(small_data)),
+             coef(mlexp(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mlexp(small_data, na.rm = TRUE)

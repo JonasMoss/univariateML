@@ -42,8 +42,8 @@ expect_error(mlwald(c(tiny_data, 0)))
 expect_error(mlwald(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlwald(small_data),
-             mlwald(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlwald(small_data)),
+             coef(mlwald(c(small_data, NA), na.rm = TRUE)))
 
 ## Check class.
 est = mlwald(small_data, na.rm = TRUE)

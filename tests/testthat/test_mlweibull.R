@@ -25,8 +25,8 @@ expect_error(mlweibull(c(tiny_data, NA)))
 expect_error(mlweibull(c(0, tiny_data)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlweibull(small_data),
-             mlweibull(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlweibull(small_data)),
+             coef(mlweibull(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mlweibull(small_data, na.rm = TRUE)

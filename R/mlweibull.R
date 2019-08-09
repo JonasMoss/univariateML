@@ -59,6 +59,7 @@ mlweibull = function(x, na.rm = FALSE, shape0 = 2,
                 (shape - 1)*(l_hat - log(scale)) - scale^-shape*shape_sum)
   attr(object, "support") = c(0, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 
 }

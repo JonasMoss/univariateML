@@ -34,6 +34,7 @@ mlbetapr = function(x, na.rm = FALSE, start = NULL,
                                                 (alpha + beta)*val2))
   attr(object, "support") = c(0, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 
 

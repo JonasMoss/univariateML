@@ -25,5 +25,6 @@ mlpower = function(x, na.rm = FALSE, epsilon = .Machine$double.eps^0.5) {
   attr(object, "logLik") = length(x)*(log(beta) - beta*log(alpha) + (beta - 1)*M)
   attr(object, "support") = c(0, alpha)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 }

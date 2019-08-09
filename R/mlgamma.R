@@ -52,5 +52,6 @@ mlgamma = function(x,  na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
                                 (shape - 1)*L - rate*mean_hat)
   attr(object, "support") = c(0, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 }

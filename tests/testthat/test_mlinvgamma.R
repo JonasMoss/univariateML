@@ -26,8 +26,8 @@ expect_error(mlinvgamma(c(tiny_data, NA)))
 expect_error(mlinvgamma(c(tiny_data, 0)))
 
 ## Checks that na.rm works as intended.
-expect_equal(mlinvgamma(small_data),
-             mlinvgamma(c(small_data, NA), na.rm = TRUE))
+expect_equal(coef(mlinvgamma(small_data)),
+             coef(mlinvgamma(c(small_data, NA), na.rm = TRUE)))
 
 ## Is the log-likelihood correct?
 est = mlinvgamma(small_data, na.rm = TRUE)

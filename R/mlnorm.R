@@ -24,5 +24,6 @@ mlnorm = function(x, na.rm = FALSE) {
   attr(object, "logLik") = -n/2*(1 + log(2*pi) + 2*log(sigma))
   attr(object, "support") = c(-Inf, Inf)
   attr(object, "n") = length(x)
+  attr(object, "call") = match.call()
   object
 }
