@@ -14,7 +14,7 @@
 #' \code{lambda} and \code{kappa}.
 #' @export
 
-mllomax = function(x, na.rm = FALSE, start = stats::median(x),
+mllomax = function(x, na.rm = FALSE, start = NULL,
                    rel.tol = .Machine$double.eps^0.25,
                    iterlim = 100) {
 
@@ -24,9 +24,12 @@ mllomax = function(x, na.rm = FALSE, start = stats::median(x),
   rel.tol_str = deparse(substitute(rel.tol))
   n = length(x)
 
-  # Check if
-
-  lambda0 = start
+  if(is.null(start)) {
+    s = mean(x^2)
+    m = mean(x)
+    alpha = (s - m^2)/(0.5*s - m^2)
+    lambda0 = 1/(m*(max(alpha, 1.1) - 1))
+  }
 
   for(i in 1:iterlim) {
     S = mean(log(1 + lambda0*x))
@@ -37,8 +40,21 @@ mllomax = function(x, na.rm = FALSE, start = stats::median(x),
     lambda = lambda0 - top/bottom
 
     if(abs((lambda0 - lambda)/lambda0) < rel.tol) break
-    if(lambda < 0.00001) stop("The maximum likelihood estimator of the Lomax distribution does not exist. ")
+
+    if(lambda < 0.00001) {
+      stop("The maximum likelihood estimator of the Lomax distribution does not exist. ")
+    }
+
     lambda0 = lambda
+  }
+
+  loglik = function(lambda, x) {
+      S = mean(log(1 + lambda*x))
+      -log(lambda) + log(S) + S + 1
+  }
+
+  if(loglik(0.000001, x) < loglik(lambda, x)) {
+    stop("The maximum likelihood estimator of the Lomax distribution does not exist. ")
   }
 
   if(i == iterlim) {

@@ -6,14 +6,14 @@
 # lambdas = seq(0, 100, by = 0.01)
 #
 #
-# f1 = function(lambda, x) {
-#
-#   sapply(lambda, function(lambda) {
-#     S = mean(log(1 + lambda*x))
-#     -log(lambda) + log(S) + S + 1
-#   })
-#
-# }
+f1 = function(lambda, x) {
+
+  sapply(lambda, function(lambda) {
+    S = mean(log(1 + lambda*x))
+    -log(lambda) + log(S) + S + 1
+  })
+
+}
 #
 #
 # plot(lambdas, f1(lambdas, tiny_data))
