@@ -32,6 +32,11 @@ rml(n = n, obj)
 \item{n}{number of observations. If \code{length(n) > 1}, the length is
 taken to be the number required.}
 }
+\value{
+\code{dml} gives the density, \code{pml} gives the distribution
+    function, \code{qml} gives the quantile function, and \code{rml}
+    generates random deviates.
+}
 \description{
 Density, distribution function, quantile function and random generation for
    a univariate distribution estimated by maximum likelihood.

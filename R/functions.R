@@ -12,7 +12,7 @@
 #'     \code{log(p)}.
 #' @param lower.tail logical; if \code{TRUE} (default), the probabilites are
 #'     \eqn{P[X \le x]} otherwise, \eqn{P[X > x]}
-#' @return \code{dml gives the density, \code{pml} gives the distribution
+#' @return \code{dml} gives the density, \code{pml} gives the distribution
 #'     function, \code{qml} gives the quantile function, and \code{rml}
 #'     generates random deviates.
 #' @name MaximumLikelihood
