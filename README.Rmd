@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
 An `R` package for quick and easy maximum likelihood estimation of univariate densities.
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(out.width='750px', dpi=200)
 ```
@@ -56,6 +56,35 @@ AIC(mlbetapr(airquality$Wind),
     mlweibull(airquality$Wind))
 ```
 The superior AIC of the Weibull distribution makes it a reasonable choice. 
+
+### Plotting
+The package supports easy plotting of the fitted densities. 
+
+```{r plot_example, echo = TRUE}
+plot(mlbeta(USArrests$Rape/100), lwd = 2, lty = 2)
+lines(mlkumar(USArrests$Rape/100), lwd = 2, col = "red")
+rug(USArrests$Rape/100)
+
+```
+
+### Random variate generation 
+By using already implemented random variable generators, it is possible to do
+for instance parametric boostrap easily.
+
+```{r bootstrap_example, echo = TRUE}
+obj = mlgumbel(airquality$Temp)
+n = length(airquality$Temp)
+bootstraps = replicate(n = 1000, 
+                       expr = mlgumbel(rml(n, obj)))
+
+# Calculcate approximate 95% CIs.
+quantile(bootstraps[1,  ], c(0.025, 0.975))
+quantile(bootstraps[2,  ], c(0.025, 0.975))
+
+```
+
+You can also use density functions (`dml`), cumulative distribution functions (`pml`), 
+and quantile functions (`qml`).
 
 ## Implemented Densities
 Maximum likelihood estimation has been implemented for the following densites.

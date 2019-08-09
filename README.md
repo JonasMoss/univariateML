@@ -30,7 +30,9 @@ From inside `R`, use one of the following commands:
 devtools::install_github("JonasMoss/univariateML")
 ```
 
-## Example
+## Examples
+
+### Model Selection
 
 The `airquality` contains daily air quality measurements in New York
 from May to September 1973. To choose a model for the wind speed
@@ -56,6 +58,44 @@ AIC(mlbetapr(airquality$Wind),
 #> mlwald(airquality$Wind)      2  846.0295
 #> mlweibull(airquality$Wind)   2  820.9584
 ```
+
+The superior AIC of the Weibull distribution makes it a reasonable
+choice.
+
+### Plotting
+
+The package supports easy plotting of the fitted densities.
+
+``` r
+plot(mlbeta(USArrests$Rape/100), lwd = 2, lty = 2)
+lines(mlkumar(USArrests$Rape/100), lwd = 2, col = "red")
+rug(USArrests$Rape/100)
+```
+
+<img src="man/figures/README-plot_example-1.png" width="750px" />
+
+### Random variate generation
+
+By using already implemented random variable generators, it is possible
+to do for instance parametric boostrap easily.
+
+``` r
+obj = mlgumbel(airquality$Temp)
+n = length(airquality$Temp)
+bootstraps = replicate(n = 1000, 
+                       expr = mlgumbel(rml(n, obj)))
+
+# Calculcate approximate 95% CIs.
+quantile(bootstraps[1,  ], c(0.025, 0.975))
+#>     2.5%    97.5% 
+#> 71.44227 74.65300
+quantile(bootstraps[2,  ], c(0.025, 0.975))
+#>      2.5%     97.5% 
+#>  8.451142 10.949905
+```
+
+You can also use density functions (`dml`), cumulative distribution
+functions (`pml`), and quantile functions (`qml`).
 
 ## Implemented Densities
 
