@@ -6,6 +6,7 @@
 	  class(object) = "univariateML"
 	  attr(object, "model") = "Beta"
 	  attr(object, "logLik") = 
+	  attr(object, "support" = c(-Inf, Inf)
 	  object
 	
 Documentation of functions: Later.
@@ -30,14 +31,8 @@ univariateML class:
 	- Attributes:
 		- Name of the class.
 		- Package of the class.
-		- Asymptotic covariance matrix at applicable parameters. // maybe wait with this?
 		- Log-likelihood.
 
-Make list / enviroment containing information such as
-	- Support;
-	- Name and namespace of densities etc.
-	- Does likelihood theory apply? For which parameters?
-	
 Make generics:
 	- logLik (and AIC, BIC by extension)
 	- confint (asymptotic theory) // maybe wait with this?
