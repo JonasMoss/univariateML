@@ -1,4 +1,4 @@
-context("mlcuachy")
+context("mllogis")
 
 ## Data generation.
 set.seed(313)
