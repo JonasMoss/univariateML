@@ -18,8 +18,8 @@ univariate densities.
 
 ## Overview
 
-This package provided fast and robust maximum likelihood estimation for
-a selection of univariate densities. This is work in progress.
+This package provided fast and easy maximum likelihood estimation for a
+selection of univariate densities. This is work in progress.
 
 ## Installation
 
@@ -88,10 +88,10 @@ bootstraps = replicate(n = 1000,
 # Calculcate approximate 95% CIs.
 quantile(bootstraps[1,  ], c(0.025, 0.975))
 #>     2.5%    97.5% 
-#> 71.43023 74.64514
+#> 71.44006 74.68014
 quantile(bootstraps[2,  ], c(0.025, 0.975))
 #>      2.5%     97.5% 
-#>  8.400477 10.900481
+#>  8.512211 10.946314
 ```
 
 You can also use density functions (`dml`), cumulative distribution
