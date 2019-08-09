@@ -29,6 +29,8 @@ mllomax = function(x, na.rm = FALSE, start = NULL,
     m = mean(x)
     alpha = (s - m^2)/(0.5*s - m^2)
     lambda0 = 1/(m*(max(alpha, 1.1) - 1))
+  } else {
+    lambda0 = start
   }
 
   for(i in 1:iterlim) {

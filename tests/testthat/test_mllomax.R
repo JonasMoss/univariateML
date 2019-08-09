@@ -20,13 +20,17 @@ mle4 = suppressWarnings(nlm(function(p) {
   -sum(extraDistr::dlomax(large_data, p[1], p[2], log = TRUE))
 }, p = c(1,1))$estimate)
 
-expect_error(mllomax(tiny_data))
+
 expect_equal(mle2, as.numeric(mllomax(small_data)), tolerance = 1e-3)
 expect_equal(mle3, as.numeric(mllomax(medium_data)), tolerance = 1e-3)
 expect_equal(mle4, as.numeric(mllomax(large_data)), tolerance = 1e-3)
 
 ## Checks warning with small iterlim.
 expect_warning(mllomax(small_data, iterlim = 1))
+
+## Error when the MLE does not exist.
+expect_error(mllomax(airquality$Wind))
+expect_error(mllomax(tiny_data, start = median(tiny_data)))
 
 ## Finds errors with na and data out of bounds.
 expect_error(mllomax(c(tiny_data, NA)))
