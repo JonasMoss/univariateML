@@ -90,7 +90,34 @@ Log-likelihood:
 \begin_layout Standard
 \begin_inset Formula 
 \[
--n\log\left[\textrm{B}\left(\alpha,\beta\right)\right]+\left(\alpha-1\right)\sum_{i=1}^{n}\log\left(x_{i}\right)+\left(\beta-1\right)\sum_{i=1}^{n}\log\left(1-x_{i}\right)
+-n\left[\log\left[\textrm{B}\left(\alpha,\beta\right)\right]-\left(\alpha-1\right)\frac{1}{n}\sum_{i=1}^{n}\log\left(x_{i}\right)+\left(\alpha+\beta\right)\frac{1}{n}\sum_{i=1}^{n}\log\left(1+x_{i}\right)\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Haha
+\end_layout
+
+\begin_layout Standard
+Likelihood:
+\begin_inset Formula 
+\[
+\prod_{i=1}^{n}\frac{1}{\sigma}\frac{\left(x_{i}/\sigma\right)^{\alpha-1}\left(1+x_{i}/\sigma\right)^{\beta-1}}{\textrm{B}\left(\alpha,\beta\right)}
+\]
+
+\end_inset
+
+Log-likelihood:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-n\left[\log\left[\textrm{B}\left(\alpha,\beta\right)\right]+\left(\alpha-1\right)\frac{1}{n}\sum_{i=1}^{n}\log\left(x_{i}\right)-\log\sigma+\left(\beta-1\right)\sum_{i=1}^{n}\log\left(1+x_{i}/\sigma\right)\right]
 \]
 
 \end_inset

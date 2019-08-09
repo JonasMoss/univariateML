@@ -76,6 +76,25 @@
 \begin_body
 
 \begin_layout Standard
+Likelihood:
+\begin_inset Formula 
+\[
+\prod_{i=1}^{n}\frac{x_{i}^{\alpha-1}\left(1+x_{i}\right)^{\beta-1}}{\textrm{B}\left(\alpha,\beta\right)}
+\]
+
+\end_inset
+
+Log-likelihood:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-n\log\left[\textrm{B}\left(\alpha,\beta\right)\right]+\left(\alpha-1\right)\sum_{i=1}^{n}\log\left(x_{i}\right)+\left(\beta-1\right)\sum_{i=1}^{n}\log\left(1-x_{i}\right)
+\]
+
+\end_inset
+
 
 \end_layout
 
