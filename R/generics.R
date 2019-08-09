@@ -22,18 +22,24 @@ coef.univariateML = function(object, ...) {
 }
 
 #' @export
-print.univariateML <- function(x, ...) {
+summary.univariateML <- function(x, ...) {
   data.name =  deparse(as.list(attr(x, "call"))$x)
   digits = list(...)$digits
   cat("\nMaximum likelihood for the", attr(x, "model"), "model \n",
       "\nCall: ", deparse(attr(x, "call")), "\n\nEstimates: \n")
   print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
-  cat("\nData:      ", data.name, " (", attr(x, "n"), " obs.)\n",
-      "Support:   (", attr(x, "support")[1], ", ", attr(x, "support")[2],   ")\n",
-      "Density:   ", attr(x, "density"), "\n",
+  cat("\nData:            ", data.name, " (", attr(x, "n"), " obs.)\n",
+      "Support:         (", attr(x, "support")[1], ", ", attr(x, "support")[2],   ")\n",
+      "Density:         ", attr(x, "density"), "\n",
+      "Log-likelihood:  ", attr(x, "logLik"), "\n",
       sep = "")
   invisible(x)
 }
 
 #' @export
-summary.univariateML <- function(object, ...) print(object, ...)
+print.univariateML <- function(object, ...) {
+  digits = list(...)$digits
+  cat("Maximum likelihood estimates for the", attr(object, "model"), "model \n")
+  print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
+  invisible(object)
+}
