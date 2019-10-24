@@ -1,68 +1,9 @@
-#' Wrangles arguments for use in ppml and qqml functions.
+#' Probability Plots Using Maximum Likelihood Estimates
 #'
-#' @param y The input data.
-#' @param obj Function or \code{"univariateML"} object.
-#' @param datax logical; if true, plots the data on the x axis.
-#' @param ... Arguments passed to \code{plot} or \code{points} down the line.
-#' @keywords internal
-
-ppqq_wrangler = function(y, obj, datax, pp, ...) {
-
-  ## Nas are removed by default in this function, following qqplot.
-
-  y = y[!is.na(y)]
-
-  ## Error message straight out of stats::qqplot.
-  if (0 == (n <- length(y))) stop("y is empty or has only NAs")
-
-  ## I must check if the object is a "univariateML" object or a function that
-  ## returns a "univariateML" object. If neither, an error is thrown.
-
-  if(inherits(obj, "univariateML")) {
-    obj = obj
-  } else {
-    obj = obj(y)
-  }
-
-  n = length(y)
-
-  if(pp) {
-    x = ((1:n)/(n+1))[order(order(y))]
-    y = pml(q = y, obj = obj)
-  } else {
-    x = qml((1:n)/(n+1), obj = obj)[order(order(y))]
-  }
-
-
-  defaults = list(main = paste0(attr(obj, "model"), " P-P plot"),
-                  ylab = "Density",
-                  xlab = "x",
-                  lwd  = 1)
-
-  args = listmerge(x = defaults,
-                   y = list(...))
-
-  if(!datax) {
-    args$x = x
-    args$y = y
-  } else {
-    args$x = y
-    args$y = x
-  }
-
-  pp = NULL
-  pp$value =  if (datax) list(x = y, y = x) else list(x = x, y = y)
-  pp$args = args
-  pp
-
-}
-
-#' Make Probability Plots Using Maximum Likelihood Estimates
-#'
-#' Quantile-quantile plots and Probability-probability plots using maximum
+#' Make quantile-quantile plots and probability-probability plots using maximum
 #'   likelihood estimation.
 #'
-#' qqmlplot produces a quantile-quantile plot (Q-Q plot) of the values in
+#' \code{qqmlplot} produces a quantile-quantile plot (Q-Q plot) of the values in
 #' \code{y} with respect to the distribution defined by \code{obj}, which is
 #' either a \code{univariateML} object or a function returning a
 #' \code{univariateML} object when called with \code{y}. \code{qqmlline} adds a
@@ -75,7 +16,7 @@ ppqq_wrangler = function(y, obj, datax, pp, ...) {
 #' probability-probability plots (or P-P plots). They behave similarily to the
 #' quantile-quantile plot functions.
 #'
-#' This function is modelled after \code{stats::qqnorm}.
+#' This function is modelled after \link[stats]{qqnorm}.
 #'
 #' Graphical parameters may be given as arguments to all the functions below.
 #'
@@ -92,10 +33,30 @@ ppqq_wrangler = function(y, obj, datax, pp, ...) {
 #'   Corresponding quantile pairs define the line drawn.
 #' @param qtype The \code{type} of quantile computation used in \code{quantile}.
 #' @param ... Graphical parameters.
+#' @return For \code{qqmlplot}, \code{qqmlpoints}, \code{ppmlplot}, and
+#'   \code{ppmlpoints}, a list with components \code{x} (plotted on the x axis)
+#'   and \code{y} (plotted on the y axis). \code{qqmlline} and \code{ppmlline}
+#'   returns nothing.
+#'
 #' @examples
-#'   (add examples)
+#'   ## Make a single probability plot with a line.
+#'
+#'   obj = mlgamma(Nile)
+#'   qqmlplot(Nile, obj)
+#'   qqmlline(Nile, obj)
+#'
+#'   ## Make multiple probability plots. datax = TRUE must be used to make this
+#'   ## look good.
+#'
+#'   ppmlplot(airquality$Wind, mlgamma, main = "Many P-P plots")
+#'   ppmlpoints(airquality$Wind, mlexp, col = "red")
+#'   ppmlpoints(airquality$Wind, mlweibull, col = "purple")
+#'   ppmlpoints(airquality$Wind, mllnorm, col = "blue")
+#'
+#' @name ProbabilityPlots
+#' @export
 #' @references
-#'   (add references to pp plots and qq plots)
+#'   M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968, Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
 
 ppmlplot = function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
 
@@ -105,8 +66,12 @@ ppmlplot = function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
 
 }
 
-ppmlline = function(...) abline(a = 0, b = 1, ...)
+#' @rdname ProbabilityPlots
+#' @export
+ppmlline = function(...) graphics::abline(a = 0, b = 1, ...)
 
+#' @rdname ProbabilityPlots
+#' @export
 ppmlpoints = function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
 
   pp = ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
@@ -115,6 +80,8 @@ ppmlpoints = function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
 
 }
 
+#' @rdname ProbabilityPlots
+#' @export
 qqmlplot = function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
 
   qq = ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
@@ -123,8 +90,30 @@ qqmlplot = function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
 
 }
 
-qqmlline = function(...) abline(a = 0, b = 1, ...)
+#' @rdname ProbabilityPlots
+#' @export
+qqmlline = function(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
+                    ...) {
 
+  obj = to_univariateML(y, obj)
+  y = stats::quantile(y, probs, names = FALSE, type = qtype, na.rm = TRUE)
+  x = qml(probs, obj)
+
+  if (datax) {
+    slope <- diff(x)/diff(y)
+    int <- x[1L] - slope * y[1L]
+  }
+
+  else {
+    slope <- diff(y)/diff(x)
+    int <- y[1L] - slope * x[1L]
+  }
+
+  graphics::abline(int, slope, ...)
+}
+
+#' @rdname ProbabilityPlots
+#' @export
 qqmlpoints = function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
 
   qq = ppqq_wrangler(y, obj, datax, pp = FALSE, ...)

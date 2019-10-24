@@ -19,3 +19,8 @@ Invisible copy of \code{x}.
 \description{
 The \code{plot} method for \code{univariateML} objects.
 }
+\examples{
+   plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")
+   lines(mlgamma(datasets::precip), lty = 2)
+   rug(datasets::precip)
+}
