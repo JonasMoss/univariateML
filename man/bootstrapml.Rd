@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{bootstrapml}
 \alias{bootstrapml}
-\title{arametric Bootstrap on Distributions Fitted with Maximum Likelihood}
+\title{Parametric Bootstrap on Distributions Fitted with Maximum Likelihood}
 \usage{
 bootstrapml(obj, Nreps = 1000, map = identity,
   reducer = stats::quantile, ...)
@@ -15,8 +15,8 @@ bootstrapml(obj, Nreps = 1000, map = identity,
 \item{map}{A function of the parameters of the \code{univariateML} object.
 Defaults to the identity.}
 
-\item{reducer}{A reducer function. Defaults to \code{stats::quantile} with default
-argument \code{probs = c(0.025, 0.975)}.}
+\item{reducer}{A reducer function. Defaults to \code{stats::quantile} with
+default argument \code{probs = c(0.025, 0.975)}.}
 
 \item{...}{Passed to reduce.}
 }
@@ -24,5 +24,31 @@ argument \code{probs = c(0.025, 0.975)}.}
 The transposed map-reduced bootstrap samples.
 }
 \description{
-arametric Bootstrap on Distributions Fitted with Maximum Likelihood
+Parametric Bootstrap on Distributions Fitted with Maximum Likelihood
+}
+\examples{
+\dontrun{
+  set.seed(1)
+  obj = mlgamma(mtcars$qsec)
+
+  ## Calculate c(0.025, 0.975) confidence interval for the gamma parameters.
+  bootstrapml(obj)
+
+  #            2.5\%      97.5\%
+  # shape 68.624945 160.841557
+  # rate   3.896915   9.089194
+
+  ## The mean of a gamma distribution is shape/rate. Now we calculate a
+  ## parametric bootstrap confidence interval for the mean with confidence
+  ## limits c(0.05, 0.95)
+
+  bootstrapml(obj, map = function(x) x[1]/x[2], probs = c(0.05, 0.95))
+
+  #       5\%      95\%
+  # 17.33962 18.31253
+
+  ## Print a histogram of the bootstrapped estimates from an exponential.
+  obj = mlexp(mtcars$qsec)
+  hist(bootstrapml(obj, reducer = identity))
+}
 }
