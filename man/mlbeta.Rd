@@ -15,12 +15,12 @@ mlbeta(x, na.rm = FALSE, start = NULL, type = c("none", "gradient",
 \item{start}{Optional starting parameter values for the minimization.
 Passed to the \code{stats::nlm} function.}
 
-\item{type}{Whether a dedicated \code{gradient} or \code{hessian} should be
-passed to \code{stats::nlm}.}
+\item{type}{Whether a dedicated \code{"gradient"}, \code{"hessian"}, or
+\code{"none"} should be passed to \code{stats::nlm}.}
 }
 \value{
 A named numeric vector with maximum likelihood estimates for
-\code{shape1} and \code{shap2}.
+ \code{shape1} and \code{shape2}.
 }
 \description{
 Uses \code{stat::nlm} to estimate the parameters of the Beta distribution.

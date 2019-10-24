@@ -5,11 +5,11 @@
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @param start Optional starting parameter values for the minimization.
-#' Passed to the \code{stats::nlm} function.
-#' @param type Whether a dedicated \code{gradient} or \code{hessian} should be
-#' passed to \code{stats::nlm}.
+#'   Passed to the \code{stats::nlm} function.
+#' @param type Whether a dedicated \code{"gradient"}, \code{"hessian"}, or
+#'  \code{"none"} should be passed to \code{stats::nlm}.
 #' @return A named numeric vector with maximum likelihood estimates for
-#' \code{shape1} and \code{shap2}.
+#'  \code{shape1} and \code{shape2}.
 #' @details For \code{type}, the option \code{none} is fastest.
 #' @export
 
