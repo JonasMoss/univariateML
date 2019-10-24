@@ -107,6 +107,7 @@ summary.univariateML <- function(object, ...) {
 #' @export
 print.univariateML <- function(x, ...) {
   digits = list(...)$digits
+  if(is.null(digits)) digits = 4
   cat("Maximum likelihood estimates for the", attr(x, "model"), "model \n")
   print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
   invisible(x)
