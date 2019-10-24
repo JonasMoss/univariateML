@@ -44,11 +44,10 @@ plot_wrangler = function(x, range, points = FALSE, ...) {
 #' @param range range of \code{x} values to plot, i.e. \code{c(lower, upper)}.
 #' @param ... parameters passed to \code{plot}, \code{lines}, or \code{points}.
 #' @return Invisible copy of \code{x}.
-#' @example
+#' @examples
 #'    plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")
 #'    lines(mlgamma(datasets::precip), lty = 2)
 #'    rug(datasets::precip)
-
 #' @export
 plot.univariateML = function(x, range = NULL, ...) {
 
