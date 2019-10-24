@@ -1,3 +1,10 @@
+#' Wrangles arguments for use in the plot, lines and points functions.
+#'
+#' @param x The input data.
+#' @param range Range of the data.
+#' @param points Boolean; should points be ploted by default?
+#' @keywords internal
+
 plot_wrangler = function(x, range, points = FALSE, ...) {
 
   if(is.null(range)) {
@@ -28,6 +35,19 @@ plot_wrangler = function(x, range, points = FALSE, ...) {
 
 }
 
+#' Plot, Lines and Points Methods for Maximum Likelihood Estimates
+#'
+#' The \code{plot} method for \code{univariateML} objects.
+#'
+#' @export
+#' @param x a \code{univariateML} object.
+#' @param range range of \code{x} values to plot, i.e. \code{c(lower, upper)}.
+#' @param ... parameters passed to \code{plot}, \code{lines}, or \code{points}.
+#' @return Invisible copy of \code{x}.
+#' @example
+#'    plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")
+#'    lines(mlgamma(datasets::precip), lty = 2)
+#'    rug(datasets::precip)
 
 #' @export
 plot.univariateML = function(x, range = NULL, ...) {
