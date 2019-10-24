@@ -1,0 +1,21 @@
+
+set.seed(313)
+y = rexp(1000)
+obj = mlgamma(y)
+obj2 = mlweibull(y)
+obj3 = mlexp(y)
+obj4 = mllnorm(y)
+ppmlplot(y, obj, datax = TRUE)
+ppmlpoints(y, obj2, datax = TRUE, col = "red")
+ppmlpoints(y, obj3, datax = TRUE, col = "blue")
+ppmlpoints(y, obj4, datax = TRUE, col = "purple")
+ppmlline()
+
+
+set.seed(313)
+y = rexp(100)
+qqmlplot(y, mlgamma, datax = TRUE)
+qqmlpoints(y, mlweibull, datax = TRUE, col = "red")
+qqmlpoints(y, mlexp, datax = TRUE, col = "blue")
+qqmlpoints(y, mllnorm, datax = TRUE, col = "purple")
+qqmlline()
