@@ -52,7 +52,7 @@ AIC(mlbetapr(airquality$Wind),
     mlgamma(airquality$Wind),
     mllnorm(airquality$Wind),
     mlrayleigh(airquality$Wind),
-    mlwald(airquality$Wind),
+    mlinvgauss(airquality$Wind),
     mlweibull(airquality$Wind))
 ```
 The superior AIC of the Weibull distribution makes it a reasonable choice. 
@@ -67,18 +67,65 @@ rug(USArrests$Rape/100)
 
 ```
 
+### Probability Plots
+
 ### Parametric Bootstrap
-By using already implemented random variable generators, it is possible to do
-for instance parametric boostrap easily.
+This package has builtin suppor for parametric bootstrap.
 
 ```{r bootstrap_example, echo = TRUE}
+# Calculate two-sided 95% confidence intervals for the two Gumbel parameters.
 obj = mlgumbel(airquality$Temp)
-boostrapml(obj)
-
+bootstrapml(obj)
 ```
 
-You can also use density functions (`dml`), cumulative distribution functions (`pml`), 
-and quantile functions (`qml`).
+Using the `map` function you can calculate functions of the parameters as well.
+The `map` function takes one vector argument containing the estimated parameters 
+of the distribution and it applied to each bootstrap iteration. 
+The mean of a Gumbel distribution is `shape + beta*gamma`, where gamma is the
+Euler–Mascheroni constant (which can be calculcated by calling `-digamma(1)`). 
+
+```{r bootstrap_example_mean, echo = TRUE}
+# Calculate two-sided 95% confidence intervals for the two Gumbel parameters.
+bootstrapml(obj, map = function(x) x[1] - x[2]*digamma(1), probs = c(0.05, 0.95))
+```
+
+The parameter `probs` is passed to the `quantile` function, and can be used to
+control the confidence limits of the confidence interval. In the example above
+it is `c(0.05, 0.95)`, which yields a 90% confidence interval.
+
+The `bootstrapml` function has support for reducers via the `reducer` argument.
+After `map` is applied, we are left with a k-dimensional array of values, where
+k is the parameter dimension of the distribution (i.e. for the Gumbel 
+distribution k is 2). `reducer`  is applied to each row of this array.
+The default reducer is `quantile`, but reducers such as `identity` can also be 
+useful-
+
+```{r bootstrap_example_historgram, echo = TRUE}
+# Make histogram of the bootstrap samples.
+hist(bootstrapml(obj, 
+                 map = function(x) x[1] - x[2]*digamma(1), 
+                 reducer = identity),
+     main = "Boostrap Samples",
+     xlab = "x",
+     freq = FALSE)
+```
+
+
+### Distribution Functions
+Density functions (`dml`), cumulative distribution functions (`pml`), 
+quantile functions (`qml`), and random variate generation (`rml`) is supported 
+too.
+
+```{r functions, echo = TRUE}
+# Compare empirical cumulative distribution to the true cumulative distribution.
+set.seed(313)
+obj = mlgamma(attenu$accel)
+q = seq(0, 1, length.out = 100)
+plot(q, pml(q, obj), type = "l", ylab = "Cumulative Probability")
+r = rml(100, obj)
+lines(ecdf(r))
+```
+
 
 ## Implemented Densities
 Maximum likelihood estimation has been implemented for the following densites.

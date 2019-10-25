@@ -46,7 +46,7 @@ AIC(mlbetapr(airquality$Wind),
     mlgamma(airquality$Wind),
     mllnorm(airquality$Wind),
     mlrayleigh(airquality$Wind),
-    mlwald(airquality$Wind),
+    mlinvgauss(airquality$Wind),
     mlweibull(airquality$Wind))
 #>                             df       AIC
 #> mlbetapr(airquality$Wind)    2  859.2844
@@ -55,7 +55,7 @@ AIC(mlbetapr(airquality$Wind),
 #> mlgamma(airquality$Wind)     2  825.0259
 #> mllnorm(airquality$Wind)     2  839.7377
 #> mlrayleigh(airquality$Wind)  1  856.8326
-#> mlwald(airquality$Wind)      2  846.0295
+#> mlinvgauss(airquality$Wind)  2  846.0295
 #> mlweibull(airquality$Wind)   2  820.9584
 ```
 
@@ -74,57 +74,106 @@ rug(USArrests$Rape/100)
 
 <img src="man/figures/README-plot_example-1.png" width="750px" />
 
-### Random variate generation
+### Probability Plots
 
-By using already implemented random variable generators, it is possible
-to do for instance parametric boostrap easily.
+### Parametric Bootstrap
+
+This package has builtin suppor for parametric
+bootstrap.
 
 ``` r
+# Calculate two-sided 95% confidence intervals for the two Gumbel parameters.
 obj = mlgumbel(airquality$Temp)
-n = length(airquality$Temp)
-bootstraps = replicate(n = 1000, 
-                       expr = mlgumbel(rml(n, obj)))
-
-# Calculcate approximate 95% CIs.
-quantile(bootstraps[1,  ], c(0.025, 0.975))
-#>     2.5%    97.5% 
-#> 71.44006 74.68014
-quantile(bootstraps[2,  ], c(0.025, 0.975))
-#>      2.5%     97.5% 
-#>  8.512211 10.946314
+bootstrapml(obj)
+#>            2.5%    97.5%
+#> mu    71.368393 74.67159
+#> sigma  8.506768 10.87087
 ```
 
-You can also use density functions (`dml`), cumulative distribution
-functions (`pml`), and quantile functions (`qml`).
+Using the `map` function you can calculate functions of the parameters
+as well. The `map` function takes one vector argument containing the
+estimated parameters of the distribution and it applied to each
+bootstrap iteration. The mean of a Gumbel distribution is `shape +
+beta*gamma`, where gamma is the Euler–Mascheroni constant (which can be
+calculcated by calling
+`-digamma(1)`).
+
+``` r
+# Calculate two-sided 95% confidence intervals for the two Gumbel parameters.
+bootstrapml(obj, map = function(x) x[1] - x[2]*digamma(1), probs = c(0.05, 0.95))
+#>       5%      95% 
+#> 77.08515 80.23095
+```
+
+The parameter `probs` is passed to the `quantile` function, and can be
+used to control the confidence limits of the confidence interval. In the
+example above it is `c(0.05, 0.95)`, which yields a 90% confidence
+interval.
+
+The `bootstrapml` function has support for reducers via the `reducer`
+argument. After `map` is applied, we are left with a k-dimensional array
+of values, where k is the parameter dimension of the distribution
+(i.e. for the Gumbel distribution k is 2). `reducer` is applied to each
+row of this array. The default reducer is `quantile`, but reducers such
+as `identity` can also be useful-
+
+``` r
+# Make histogram of the bootstrap samples.
+hist(bootstrapml(obj, 
+                 map = function(x) x[1] - x[2]*digamma(1), 
+                 reducer = identity),
+     main = "Boostrap Samples",
+     xlab = "x",
+     freq = FALSE)
+```
+
+<img src="man/figures/README-bootstrap_example_historgram-1.png" width="750px" />
+
+### Distribution Functions
+
+Density functions (`dml`), cumulative distribution functions (`pml`),
+quantile functions (`qml`), and random variate generation (`rml`) is
+supported
+too.
+
+``` r
+# Compare empirical cumulative distribution to the true cumulative distribution.
+set.seed(313)
+obj = mlgamma(attenu$accel)
+q = seq(0, 1, length.out = 100)
+plot(q, pml(q, obj), type = "l", ylab = "Cumulative Probability")
+r = rml(100, obj)
+lines(ecdf(r))
+```
+
+<img src="man/figures/README-functions-1.png" width="750px" />
 
 ## Implemented Densities
 
 Maximum likelihood estimation has been implemented for the following
 densites.
 
-| Name                       | Package    | Parameters         | Density     | Support      |
-| -------------------------- | ---------- | ------------------ | ----------- | ------------ |
-| Normal distribution        | stats      | `mean`, `sd`       | `dnorm`     | ℝ            |
-| Logistic distributon       | stats      | `location`,`scale` | `dlogis`    | ℝ            |
-| Cauchy distributon         | stats      | `location`,`scale` | `dcauchy`   | ℝ            |
-| Gumbel distribution        | extraDistr | `mu`, `sigma`      | `dgumbel`   | ℝ            |
-| Laplace distribution       | extraDistr | `mu`, `sigma`      | `dlaplace`  | ℝ            |
-| Exponential distribution   | stats      | `rate`             | `dexp`      | \[0, ∞)      |
-| Lomax distribution         | extraDistr | `lambda`, `kappa`  | `dlomax`    | \[0, ∞)      |
-| Rayleigh distribution      | extraDistr | `sigma`            | `drayleigh` | \[0, ∞)      |
-| Gamma distribution         | stats      | `shape`,`rate`     | `dgamma`    | (0, ∞)       |
-| Weibull distribution       | stats      | `shape`,`scale`    | `dweibull`  | (0, ∞)       |
-| Log-normal distribution    | stats      | `meanlog`, `sdlog` | `dlnorm`    | (0, ∞)       |
-| Inverse gamma distribution | extraDistr | `alpha`, `beta`    | `dinvgamma` | (0, ∞)       |
-| Beta prime distribution    | extraDistr | `shape1`, `shape2` | `dbetapr`   | (0, ∞)       |
-| Wald distribution          | extraDistr | `mu`, `lambda`     | `dwald`     | (0, ∞)       |
-| Beta distibution           | stats      | `shape1`,`shape2`  | `dbeta`     | (0, 1)       |
-| Kumaraswamy distribution   | extraDistr | `a`, `b`           | `dkumar`    | (0, 1)       |
-| Uniform distribution       | stats      | `min`, `max`       | `dunif`     | \[min, max\] |
-| Power distribution         | extraDistr | `alpha`, `beta`    | `dpower`    | \[0, a)      |
-| Pareto distribution        | extraDistr | `a`, `b`           | `dpareto`   | \[b, ∞)      |
-
-*Note:* The Lomax distribution has not been properly tested yet.
+| Name                          | Package    | Parameters         | Density     | Support      |
+| ----------------------------- | ---------- | ------------------ | ----------- | ------------ |
+| Normal distribution           | stats      | `mean`, `sd`       | `dnorm`     | ℝ            |
+| Logistic distributon          | stats      | `location`,`scale` | `dlogis`    | ℝ            |
+| Cauchy distributon            | stats      | `location`,`scale` | `dcauchy`   | ℝ            |
+| Gumbel distribution           | extraDistr | `mu`, `sigma`      | `dgumbel`   | ℝ            |
+| Laplace distribution          | extraDistr | `mu`, `sigma`      | `dlaplace`  | ℝ            |
+| Exponential distribution      | stats      | `rate`             | `dexp`      | \[0, ∞)      |
+| Lomax distribution            | extraDistr | `lambda`, `kappa`  | `dlomax`    | \[0, ∞)      |
+| Rayleigh distribution         | extraDistr | `sigma`            | `drayleigh` | \[0, ∞)      |
+| Gamma distribution            | stats      | `shape`,`rate`     | `dgamma`    | (0, ∞)       |
+| Weibull distribution          | stats      | `shape`,`scale`    | `dweibull`  | (0, ∞)       |
+| Log-normal distribution       | stats      | `meanlog`, `sdlog` | `dlnorm`    | (0, ∞)       |
+| Inverse gamma distribution    | extraDistr | `alpha`, `beta`    | `dinvgamma` | (0, ∞)       |
+| Beta prime distribution       | extraDistr | `shape1`, `shape2` | `dbetapr`   | (0, ∞)       |
+| Inverse Gaussian distribution | statmod    | `mean`, `shape`    | `dinvgauss` | (0, ∞)       |
+| Beta distibution              | stats      | `shape1`,`shape2`  | `dbeta`     | (0, 1)       |
+| Kumaraswamy distribution      | extraDistr | `a`, `b`           | `dkumar`    | (0, 1)       |
+| Uniform distribution          | stats      | `min`, `max`       | `dunif`     | \[min, max\] |
+| Power distribution            | extraDistr | `alpha`, `beta`    | `dpower`    | \[0, a)      |
+| Pareto distribution           | extraDistr | `a`, `b`           | `dpareto`   | \[b, ∞)      |
 
 ## How to Contribute or Get Help
 
