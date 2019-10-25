@@ -22,7 +22,7 @@ The maximum likelihood estimate of \code{meanlog} is the empirical mean of the
     log-transformed data.
 }
 \details{
-For the density function of the log normal distribution see \link[stat]{dlnorm}.
+For the density function of the log normal distribution see \link[stats]{dlnorm}.
 }
 \examples{
 mllnorm(precip)

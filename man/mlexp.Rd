@@ -19,7 +19,7 @@ A named numeric vector with maximum likelihood estimates for
 The maximum likelihood estimate of \code{rate} is the inverse sample mean.
 }
 \details{
-For the density function of the exponential distribution see \link[stat]{dexp}.
+For the density function of the exponential distribution see \link[stats]{dexp}.
 }
 \examples{
 mlexp(precip)

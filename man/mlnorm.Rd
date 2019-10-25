@@ -21,7 +21,7 @@ The maximum likelihood estimate of \code{mean} is the empirical mean and the
     biased sample variance.
 }
 \details{
-For the density function of the normal distribution see \link[stat]{dnorm}.
+For the density function of the normal distribution see \link[stats]{dnorm}.
 }
 \examples{
 mlnorm(precip)
