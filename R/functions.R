@@ -3,6 +3,7 @@
 #' Density, distribution function, quantile function and random generation for
 #'    a univariate distribution estimated by maximum likelihood.
 #'
+#'
 #' @param x,q vector of quantiles.
 #' @param p vector of probabilities.
 #' @param n number of observations. If \code{length(n) > 1}, the length is
@@ -15,6 +16,8 @@
 #' @return \code{dml} gives the density, \code{pml} gives the distribution
 #'     function, \code{qml} gives the quantile function, and \code{rml}
 #'     generates random deviates.
+#' @examples
+#'     ##
 #' @name MaximumLikelihood
 #' @export
 dml = function(x, obj, log = FALSE)
@@ -27,9 +30,8 @@ pml = function(q = q, obj, lower.tail = TRUE, log.p = FALSE)
 
 #' @rdname MaximumLikelihood
 #' @export
-qml = function(p = p, obj, lower.tail = TRUE, log.p = FALSE) {
+qml = function(p = p, obj, lower.tail = TRUE, log.p = FALSE)
   univariateML_to_function(obj, type = "q")(p = p, lower.tail = lower.tail, log.p = log.p)
-}
 
 #' @rdname MaximumLikelihood
 #' @export

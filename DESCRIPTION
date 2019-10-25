@@ -9,10 +9,11 @@ Description: Fast and robust maximum likelihood estimation for some univariate
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: assertthat
+Imports: assertthat,
+    extraDistr,
+    statmod
 Suggests: 
     testthat,
-    extraDistr,
     knitr,
     covr
 RoxygenNote: 6.1.1

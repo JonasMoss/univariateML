@@ -67,19 +67,13 @@ rug(USArrests$Rape/100)
 
 ```
 
-### Random variate generation 
+### Parametric Bootstrap
 By using already implemented random variable generators, it is possible to do
 for instance parametric boostrap easily.
 
 ```{r bootstrap_example, echo = TRUE}
 obj = mlgumbel(airquality$Temp)
-n = length(airquality$Temp)
-bootstraps = replicate(n = 1000, 
-                       expr = mlgumbel(rml(n, obj)))
-
-# Calculcate approximate 95% CIs.
-quantile(bootstraps[1,  ], c(0.025, 0.975))
-quantile(bootstraps[2,  ], c(0.025, 0.975))
+boostrapml(obj)
 
 ```
 
@@ -89,29 +83,27 @@ and quantile functions (`qml`).
 ## Implemented Densities
 Maximum likelihood estimation has been implemented for the following densites.
 
-| Name                       | Package    | Parameters                  | Density     | Support    |
-|----------------------------|------------|-----------------------------|-------------|------------|
-| Normal distribution        | stats      | `mean`, `sd`                | `dnorm`     | ℝ          | 
-| Logistic distributon       | stats      | `location`,`scale`          | `dlogis`    | ℝ          |
-| Cauchy distributon         | stats      | `location`,`scale`          | `dcauchy`   | ℝ          |
-| Gumbel distribution        | extraDistr | `mu`, `sigma`               | `dgumbel`   | ℝ          |
-| Laplace distribution       | extraDistr | `mu`, `sigma`               | `dlaplace`  | ℝ          |
-| Exponential distribution   | stats      | `rate`                      | `dexp`      | [0, ∞)     |
-| Lomax distribution         | extraDistr | `lambda`, `kappa`           | `dlomax`    | [0, ∞)     |
-| Rayleigh distribution      | extraDistr | `sigma`                     | `drayleigh` | [0, ∞)     |
-| Gamma distribution         | stats      | `shape`,`rate`              | `dgamma`    | (0, ∞)     |
-| Weibull distribution       | stats      | `shape`,`scale`             | `dweibull`  | (0, ∞)     |
-| Log-normal distribution    | stats      | `meanlog`, `sdlog`          | `dlnorm`    | (0, ∞)     |
-| Inverse gamma distribution | extraDistr | `alpha`, `beta`             | `dinvgamma` | (0, ∞)     |
-| Beta prime distribution    | extraDistr | `shape1`, `shape2`          | `dbetapr`   | (0, ∞)     |
-| Wald distribution          | extraDistr | `mu`, `lambda`              | `dwald`     | (0, ∞)     |
-| Beta distibution           | stats      | `shape1`,`shape2`           | `dbeta`     | (0, 1)     | 
-| Kumaraswamy distribution   | extraDistr | `a`, `b`                    | `dkumar`    | (0, 1)     |
-| Uniform distribution       | stats      | `min`, `max`                | `dunif`     | [min, max] |
-| Power distribution         | extraDistr | `alpha`, `beta`             | `dpower`    | [0, a)     |
-| Pareto distribution        | extraDistr | `a`, `b`                    | `dpareto`   | [b, ∞)     |
-
-*Note:* The Lomax distribution has not been properly tested yet.
+| Name                          | Package    | Parameters                  | Density     | Support    |
+|-------------------------------|------------|-----------------------------|-------------|------------|
+| Normal distribution           | stats      | `mean`, `sd`                | `dnorm`     | ℝ          | 
+| Logistic distributon          | stats      | `location`,`scale`          | `dlogis`    | ℝ          |
+| Cauchy distributon            | stats      | `location`,`scale`          | `dcauchy`   | ℝ          |
+| Gumbel distribution           | extraDistr | `mu`, `sigma`               | `dgumbel`   | ℝ          |
+| Laplace distribution          | extraDistr | `mu`, `sigma`               | `dlaplace`  | ℝ          |
+| Exponential distribution      | stats      | `rate`                      | `dexp`      | [0, ∞)     |
+| Lomax distribution            | extraDistr | `lambda`, `kappa`           | `dlomax`    | [0, ∞)     |
+| Rayleigh distribution         | extraDistr | `sigma`                     | `drayleigh` | [0, ∞)     |
+| Gamma distribution            | stats      | `shape`,`rate`              | `dgamma`    | (0, ∞)     |
+| Weibull distribution          | stats      | `shape`,`scale`             | `dweibull`  | (0, ∞)     |
+| Log-normal distribution       | stats      | `meanlog`, `sdlog`          | `dlnorm`    | (0, ∞)     |
+| Inverse gamma distribution    | extraDistr | `alpha`, `beta`             | `dinvgamma` | (0, ∞)     |
+| Beta prime distribution       | extraDistr | `shape1`, `shape2`          | `dbetapr`   | (0, ∞)     |
+| Inverse Gaussian distribution | statmod    | `mean`, `shape`             | `dinvgauss` | (0, ∞)     |
+| Beta distibution              | stats      | `shape1`,`shape2`           | `dbeta`     | (0, 1)     | 
+| Kumaraswamy distribution      | extraDistr | `a`, `b`                    | `dkumar`    | (0, 1)     |
+| Uniform distribution          | stats      | `min`, `max`                | `dunif`     | [min, max] |
+| Power distribution            | extraDistr | `alpha`, `beta`             | `dpower`    | [0, a)     |
+| Pareto distribution           | extraDistr | `a`, `b`                    | `dpareto`   | [b, ∞)     |
 
 ## How to Contribute or Get Help
 If you encounter a bug, have a feature request or need some help, open a [Github issue](https://github.com/JonasMoss/univariateML/issues). Create a pull requests
