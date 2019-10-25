@@ -13,6 +13,7 @@
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{shape1} and \code{shap2}.
 #' @details For \code{type}, the option \code{none} is fastest.
+#' @example mlbetapr(airquality$Temp)
 #' @export
 
 mlbetapr = function(x, na.rm = FALSE, start = NULL,

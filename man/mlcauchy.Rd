@@ -21,3 +21,13 @@ Calculates the estimates using \code{nlm} and an exponential transform of the
     the edge case where no maximum likelihood estimator exists and error is
     thrown.
 }
+\details{
+For the density function of the Beta distribution see \link[extraDistr]{dcauchy}.
+}
+\references{
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 16. Wiley, New York.
+}
+\seealso{
+\link[extraDistr]{dcauchy} for the Cauchy density, \link[stats]{nlm} for the
+  optimizer this function uses.
+}

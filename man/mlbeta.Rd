@@ -26,5 +26,14 @@ A named numeric vector with maximum likelihood estimates for
 Uses \code{stat::nlm} to estimate the parameters of the Beta distribution.
 }
 \details{
+For the density function of the Beta distribution see \link[stats]{dbeta}.
+
 For \code{type}, the option \code{none} is fastest.
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
+}
+\seealso{
+\link[stats]{dbeta} for the Beta density, \link[stats]{nlm} for the
+  optimizer this function uses.
 }
