@@ -20,3 +20,15 @@ The maximum likelihood estimate of \code{mu} is the sample median while the
    maximum likelihood estimate of \code{sigma} is mean absolute deviation
    from the median.
 }
+\details{
+For the density function of the Laplace distribution see \link[extraDistr]{dlaplace}.
+}
+\examples{
+mllaplace(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
+}
+\seealso{
+\link[extraDistr]{dlaplace} for the Laplace density.
+}

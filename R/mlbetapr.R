@@ -4,6 +4,8 @@
 #'     distribution. Transforms the data and uses \code{stat::nlm} to estimate
 #'     the parameters of the Beta distribution.
 #'
+#' For the density function of the Beta prime distribution see \link[extraDistr]{dbetapr}.
+#'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @param start Optional starting parameter values for the minimization.
@@ -13,7 +15,11 @@
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{shape1} and \code{shap2}.
 #' @details For \code{type}, the option \code{none} is fastest.
-#' @example mlbetapr(airquality$Temp)
+#' @seealso \link[extraDistr]{dbetapr} for the Beta prime density, \link[stats]{nlm} for the
+#'   optimizer this function uses, \link{mlbeta} for the Beta distribution maximum
+#'   likelihood estimator.
+#' @examples AIC(mlbetapr(USArrests$Rape))
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 #' @export
 
 mlbetapr = function(x, na.rm = FALSE, start = NULL,

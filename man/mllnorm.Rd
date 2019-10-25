@@ -21,3 +21,15 @@ The maximum likelihood estimate of \code{meanlog} is the empirical mean of the
     is the square root of the biased sample variance based on the
     log-transformed data.
 }
+\details{
+For the density function of the log normal distribution see \link[stat]{dlnorm}.
+}
+\examples{
+mllnorm(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
+}
+\seealso{
+\link[stats]{dlnorm} for the log normal density.
+}

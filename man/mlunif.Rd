@@ -18,3 +18,15 @@ A named numeric vector with maximum likelihood estimates for
 \description{
 The estimates are \code{min(x)} and \code{max(x)}.
 }
+\details{
+For the density function of the logistic distribution see \link[stats]{dunif}.
+}
+\examples{
+mlunif(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
+}
+\seealso{
+\link[stats]{dunif} for the uniform density.
+}

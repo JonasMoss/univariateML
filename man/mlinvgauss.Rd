@@ -21,3 +21,15 @@ The maximum likelihood estimate of \code{mean} is the empirical mean and the
     maximum likelihood estimate of \code{1/shape} is the difference between
     the mean of reciprocals and the reciprocal of the mean.
 }
+\details{
+For the density function of the Inverse Gamma distribution see \link[statmod]{dinvgauss}.
+}
+\examples{
+mlinvgauss(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
+}
+\seealso{
+\link[statmod]{dinvgauss} for the Inverse Gaussian density.
+}

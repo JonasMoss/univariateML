@@ -16,5 +16,19 @@ A named numeric vector with maximum likelihood estimates for
     \code{a} and \code{b}.
 }
 \description{
-Estimates the parameter of the Pareto distribution using maximum likelihood
+The maximum likelihood estimate of \code{b} is the minimum of \code{x} and the
+    maximum likelihood estimate of \code{a} is
+    \code{1/(mean(log(x)) - log(b))}.
+}
+\details{
+For the density function of the Pareto distribution see \link[extraDistr]{dpareto}.
+}
+\examples{
+mlpareto(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
+}
+\seealso{
+\link[extraDistr]{dpareto} for the Pareto density.
 }

@@ -4,10 +4,15 @@
 #'     maximum likelihood estimate of \code{sd} is the square root of the
 #'     biased sample variance.
 #'
+#' For the density function of the normal distribution see \link[stats]{dnorm}.
+#'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{mean} and \code{sd}.
+#' @examples mlnorm(precip)
+#' @seealso \link[stats]{dnorm} for the normal density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export
 
 mlnorm = function(x, na.rm = FALSE) {

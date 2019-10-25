@@ -26,3 +26,15 @@ A named numeric vector with maximum likelihood estimates for
 \description{
 Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
 }
+\details{
+For the density function of the Gumbel distribution see \link[extraDistr]{dgumbel}.
+}
+\examples{
+mlgumbel(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
+}
+\seealso{
+\link[extraDistr]{dgumbel} for the Gumbel density.
+}

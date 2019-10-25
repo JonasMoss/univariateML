@@ -26,3 +26,15 @@ A named numeric vector with maximum likelihood estimates for
 \description{
 Uses Newton-Raphson to estimate the parameters of the Weibull distribution.
 }
+\details{
+For the density function of the Weibull distribution see \link[stats]{dweibull}.
+}
+\examples{
+BIC(mlweibull(precip))
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
+}
+\seealso{
+\link[stats]{dweibull} for the Weibull density.
+}

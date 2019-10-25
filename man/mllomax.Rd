@@ -27,3 +27,19 @@ A named numeric vector with maximum likelihood estimates for
 \description{
 Uses Newton-Raphson to estimate the parameters of the Lomax distribution.
 }
+\details{
+For the density function of the Lomax distribution see \link[extraDistr]{dlomax}.
+The maximum likelihood estimate will frequently fail to exist. This is due to
+the parameterization of the function which does not take into account that
+it converges to an exponential when ### fill in with refs. ###
+}
+\examples{
+set.seed(3)
+   mllomax(extraDistr::rlomax(100, 2, 4))
+}
+\references{
+Kleiber, Christian; Kotz, Samuel (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley Series in Probability and Statistics, 470, John Wiley & Sons, p. 60
+}
+\seealso{
+\link[extraDistr]{dlomax} for the Lomax density.
+}

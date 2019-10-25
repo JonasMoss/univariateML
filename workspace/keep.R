@@ -1,3 +1,13 @@
+## Checklist:
+
+# 1.) Add example,
+# 2.) Add reference to density in details.
+# 3.) Add reference to density in see also.
+# 4.) Add reference
+
+
+
+
 #' @example mlbetapr(airquality$Temp)
 #' @example mlbeta(USArrests$Rape/100)
 #'  plot(mlcauchy(airquality$Temp))

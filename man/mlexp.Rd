@@ -18,3 +18,15 @@ A named numeric vector with maximum likelihood estimates for
 \description{
 The maximum likelihood estimate of \code{rate} is the inverse sample mean.
 }
+\details{
+For the density function of the exponential distribution see \link[stat]{dexp}.
+}
+\examples{
+mlexp(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
+}
+\seealso{
+\link[stats]{dexp} for the exponential density.
+}

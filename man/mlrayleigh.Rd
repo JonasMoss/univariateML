@@ -19,3 +19,15 @@ A named numeric vector with the maximum likelihood estimate for
 Calculates the \code{sigma} parameter as the square root of half the
    empirical second moment.
 }
+\details{
+For the density function of the Rayleigh distribution see \link[extraDistr]{drayleigh}.
+}
+\examples{
+mlrayleigh(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
+}
+\seealso{
+\link[extraDistr]{drayleigh} for the Rayleigh density.
+}

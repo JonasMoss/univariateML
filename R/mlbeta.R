@@ -16,7 +16,7 @@
 #' @seealso \link[stats]{dbeta} for the Beta density, \link[stats]{nlm} for the
 #'   optimizer this function uses.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
-#' @example AIC(mlbeta(USArrests$Rape/100))
+#' @examples AIC(mlbeta(USArrests$Rape/100))
 #' @export
 
 mlbeta = function(x, na.rm = FALSE, start = NULL,

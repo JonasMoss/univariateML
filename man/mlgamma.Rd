@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlgamma.R
 \name{mlgamma}
 \alias{mlgamma}
-\title{Estimates the parameter of the Gamma distribution using maximum likelihood}
+\title{Estimates the parameters of the Gamma distribution using maximum likelihood}
 \usage{
 mlgamma(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
   iterlim = 100)
@@ -24,6 +24,16 @@ A named numeric vector with maximum likelihood estimates for
 \description{
 Uses Newton-Raphson to estimate the parameters of the Gamma distribution.
 }
+\details{
+For the density function of the Gamma distribution see \link[stats]{dgamma}.
+}
+\examples{
+mlgamma(precip)
+}
 \references{
 Choi, S. C, and R. Wette. "Maximum likelihood estimation of the parameters of the gamma distribution and their bias." Technometrics 11.4 (1969): 683-690.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
+}
+\seealso{
+\link[stats]{dgamma} for the Gamma density.
 }

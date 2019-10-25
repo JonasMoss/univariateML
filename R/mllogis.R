@@ -5,10 +5,16 @@
 #'     the edge case where no maximum likelihood estimator exists and error is
 #'     thrown.
 #'
+#' For the density function of the logistic distribution see \link[stats]{dlogis}.
+#'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{location} and \code{scale}.
+#' @examples mllogis(precip)
+#' @seealso \link[stats]{dlogis} for the Logistic density, \link[stats]{nlm} for the
+#'   optimizer this function uses.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York.
 #' @export
 
 mllogis = function(x, na.rm = FALSE) {

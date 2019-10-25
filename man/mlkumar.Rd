@@ -26,8 +26,17 @@ A named numeric vector with maximum likelihood estimates for
 \description{
 Uses Newton-Raphson to estimate the parameters of the Kumaraswamy distribution.
 }
+\details{
+For the density function of the Kumaraswamy distribution see \link[extraDistr]{dkumar}.
+}
+\examples{
+AIC(mlkumar(USArrests$Rape/100))
+}
 \references{
 Jones, M. C. "Kumaraswamy's distribution: A beta-type distribution with some tractability advantages." Statistical Methodology 6.1 (2009): 70-81.
 
      Kumaraswamy, Ponnambalam. "A generalized probability density function for double-bounded random processes." Journal of Hydrology 46.1-2 (1980): 79-88.
+}
+\seealso{
+\link[extraDistr]{dkumar} for the Beta density.
 }

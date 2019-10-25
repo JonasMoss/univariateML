@@ -2,6 +2,8 @@
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Kumaraswamy distribution.
 #'
+#' For the density function of the Kumaraswamy distribution see \link[extraDistr]{dkumar}.
+#'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @param a0 An optional starting value for the \code{a} parameter.
@@ -11,7 +13,8 @@
 #'
 #' @return A named numeric vector with maximum likelihood estimates for
 #'     \code{a} and \code{b}.
-#'
+#' @seealso \link[extraDistr]{dkumar} for the Beta density.
+#' @examples AIC(mlkumar(USArrests$Rape/100))
 #' @references Jones, M. C. "Kumaraswamy's distribution: A beta-type distribution with some tractability advantages." Statistical Methodology 6.1 (2009): 70-81.
 #'
 #'      Kumaraswamy, Ponnambalam. "A generalized probability density function for double-bounded random processes." Journal of Hydrology 46.1-2 (1980): 79-88.

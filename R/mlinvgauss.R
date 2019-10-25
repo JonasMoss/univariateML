@@ -5,10 +5,15 @@
 #'     maximum likelihood estimate of \code{1/shape} is the difference between
 #'     the mean of reciprocals and the reciprocal of the mean.
 #'
+#' For the density function of the Inverse Gamma distribution see \link[statmod]{dinvgauss}.
+#'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{mean} and \code{shape}.
+#' @examples mlinvgauss(precip)
+#' @seealso \link[statmod]{dinvgauss} for the Inverse Gaussian density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
 #' @export
 
 mlinvgauss= function(x, na.rm = FALSE) {

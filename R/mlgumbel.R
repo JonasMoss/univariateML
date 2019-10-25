@@ -2,6 +2,8 @@
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
 #'
+#' For the density function of the Gumbel distribution see \link[extraDistr]{dgumbel}.
+#'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @param sigma0 An optional starting value for the \code{sigma} parameter.
@@ -11,6 +13,9 @@
 #'
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{shape} and \code{sigma}.
+#' @examples mlgumbel(precip)
+#' @seealso \link[extraDistr]{dgumbel} for the Gumbel density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
 #' @export
 
 mlgumbel = function(x, na.rm = FALSE, sigma0 = 1, rel.tol = .Machine$double.eps^0.25,

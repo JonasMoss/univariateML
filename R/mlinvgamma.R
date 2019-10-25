@@ -2,6 +2,8 @@
 #'
 #' Transforms the data and uses Newton-Raphson to estimate the parameters of the Gamma distribution.
 #'
+#' For the density function of the Gamma distribution see \link[extraDistr]{dinvgamma}.
+#'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @param rel.tol Relative accuracy requested.
@@ -9,7 +11,11 @@
 #' iterations to be performed before the program is terminated.
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{alpha} and \code{beta}.
+#' @examples mlinvgamma(precip)
+#' @seealso \link[extraDistr]{dinvgamma} for the Inverse Gamma density.
 #' @references Choi, S. C, and R. Wette. "Maximum likelihood estimation of the parameters of the gamma distribution and their bias." Technometrics 11.4 (1969): 683-690.
+#' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
+#' Witkovsky, V. (2001). "Computing the Distribution of a Linear Combination of Inverted Gamma Variables". Kybernetika. 37 (1): 79–90
 #' @export
 
 

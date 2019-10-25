@@ -5,10 +5,15 @@
 #'     is the square root of the biased sample variance based on the
 #'     log-transformed data.
 #'
+#' For the density function of the log normal distribution see \link[stats]{dlnorm}.
+#'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{meanlog} and \code{sdlog}.
+#' @examples mllnorm(precip)
+#' @seealso \link[stats]{dlnorm} for the log normal density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 #' @export
 
 mllnorm = function(x, na.rm = FALSE) {

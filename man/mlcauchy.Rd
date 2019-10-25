@@ -22,12 +22,15 @@ Calculates the estimates using \code{nlm} and an exponential transform of the
     thrown.
 }
 \details{
-For the density function of the Beta distribution see \link[extraDistr]{dcauchy}.
+For the density function of the Cauchy distribution see \link[stats]{dcauchy}.
+}
+\examples{
+mlcauchy(airquality$Temp)
 }
 \references{
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 16. Wiley, New York.
 }
 \seealso{
-\link[extraDistr]{dcauchy} for the Cauchy density, \link[stats]{nlm} for the
+\link[stats]{dcauchy} for the Cauchy density, \link[stats]{nlm} for the
   optimizer this function uses.
 }
