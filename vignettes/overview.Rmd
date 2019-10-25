@@ -22,14 +22,59 @@ models.
 * Plot the data together with density estimates.
 * Compute confidence intervals using parameteric bootstrap.
 
+This vignette shows you how to use the tools of `univariateML` to do exploratory
+data analysis on 
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+# Mortality in Ancient Egypt
+
+The dataset `egypt` contains contains the age at death of 141 Roman era Egyptian
+mummies. 
+
+```{r, egypt}
+egypt
+hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
 ```
 
-```{r setup}
-library(univariateML)
+# Comparing Many Models with AIC
+Since all the data is positive we will only try densities support on the positive
+half-line. 
+
+```{r, AIC}
+library("univariateML")
+AIC(mlbetapr(egypt$age),
+    mlexp(egypt$age),
+    mlinvgamma(egypt$age),
+    mlgamma(egypt$age),
+    mllnorm(egypt$age),
+    mlrayleigh(egypt$age),
+    mlinvgauss(egypt$age),
+    mlweibull(egypt$age))
 ```
+
+The [Weibull](https://en.wikipedia.org/wiki/Weibull_distribution) and
+[Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) models stand out.
+
+# Quantile-quantile Plots
+Now we will investigate how the two models differ with a quantile-quantile plots
+, or Q-Q plots for short.
+
+```{r, qqplots}
+qqmlplot(egypt$age, mlweibull, datax = TRUE, main = "QQ Plot for Ancient Egypt")
+qqmlpoints(egypt$age, mlgamma, datax = TRUE, col = "red")
+qqmlline(egypt$age, mlweibull, datax = TRUE)
+qqmlline(egypt$age, mlgamma, datax = TRUE, col = "red")
+```
+
+The QQ plot shows that neither Weibull nor Gamma fits the data very well. 
+
+# Plot Densities
+
+```{r plot_example, echo = TRUE}
+hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
+lines(mlweibull(egypt$age), lwd = 2, lty = 2, ylim = c(0, 0.025))
+lines(mlgamma(egypt$age), lwd = 2, col = "red")
+rug(egypt$age)
+
+```
+
+# Confidence Intervals with Parametric Bootstrap
