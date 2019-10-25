@@ -2,7 +2,7 @@
 #'
 #' The maximum likelihood estimate of \code{alpha} is the maximum of \code{x} +
 #'     \code{epsilon} (see the details) and the maximum likelihood estimate of
-#'     \code{beta} is \code{1/(log(alpha) -mean(log(x)))}.
+#'     \code{beta} is \code{1/(log(alpha)-mean(log(x)))}.
 #'
 #' For the density function of the power distribution see \link[extraDistr]{dpower}.
 #'     The maximum likelihood estimator of \code{alpha} does not exist, strictly

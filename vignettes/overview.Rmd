@@ -1,0 +1,35 @@
+---
+title: "Overview of univariateML"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+When dealing with univariate data you want to do one or more of
+* Find a good model for the data.
+* Estimate parameters for your candidate models.
+* Get an idea about the uncertainty of your estimates.
+
+The `unvariateML` package has a fast and reliable functions to help you with 
+these tasks. The core of the package are more than 20 functions for fast 
+and thoroughly tested calculation of maximum likelihood estimates for univariate 
+models. 
+
+* Compare the fit of your candidate models with `AIC` or `BIC`.
+* Look at QQ plots or PP plots of your data.
+* Plot the data together with density estimates.
+* Compute confidence intervals using parameteric bootstrap.
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(univariateML)
+```
