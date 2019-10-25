@@ -78,3 +78,52 @@ rug(egypt$age)
 ```
 
 # Confidence Intervals with Parametric Bootstrap
+
+```{r bootstrap_example, echo = TRUE}
+# Calculate two-sided 95% confidence intervals for the two Gumbel parameters.
+bootstrapml(mlweibull(egypt$age))
+bootstrapml(mlgamma(egypt$age))
+```
+
+These confidence intervals are not directly comparable since the parameters do 
+not mean the same. So let us take a look at a a parameter with a familiar 
+interpretation, namely the mean. 
+
+The mean of the Weibull distribution with parameters `shape` and `scale` is 
+`scale*gamma(1 + 1/shape)`. On the other hand, the mean of the 
+Gamma distribution with parameters `shape` and `rate` is
+`shape/rate`. 
+
+```{r bootstrap_example_mean, echo = TRUE}
+# Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
+bootstrapml(mlweibull(egypt$age), 
+            map = function(x) x[2]*gamma(1 + 1/x[1]), 
+            probs = c(0.05, 0.95))
+bootstrapml(mlgamma(egypt$age), 
+            map = function(x) x[1]/x[2],
+            probs = c(0.05, 0.95))
+```
+
+We could also be interested in the quantiles of the underlying distribution,
+for instance the median:
+
+```{r bootstrap_example_median, echo = TRUE}
+# Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
+bootstrapml(mlweibull(egypt$age), 
+            map = function(x) qweibull(0.5, x[1], x[2]), 
+            probs = c(0.05, 0.95))
+bootstrapml(mlgamma(egypt$age), 
+            map = function(x) qgamma(0.5, x[1], x[2]), 
+            probs = c(0.05, 0.95))
+```
+
+We can also plot the bootstrap samples.
+
+```{r bootstrap_example_historgram, echo = TRUE}
+
+hist(bootstrapml(mlweibull(egypt$age), 
+                 map = function(x) x[2]*gamma(1 + 1/x[1]), 
+                 reducer = identity),
+     main = "Boostrap Samples of the Mean",
+     xlab = "x",
+     freq = FALSE)
