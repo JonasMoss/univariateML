@@ -16,5 +16,6 @@
 ^todo.txt$
 ^docs$
 ^workspace$
+^data_raw$
 ^univariateML.Rproj$
 ^codecov\.yml$

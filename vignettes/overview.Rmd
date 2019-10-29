@@ -2,8 +2,8 @@
 title: "Overview of univariateML"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Overview}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -31,7 +31,8 @@ The dataset `egypt` contains contains the age at death of 141 Roman era Egyptian
 mummies. 
 
 ```{r, egypt}
-egypt
+library("univariateML")
+head(egypt)
 hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
 ```
 
@@ -40,7 +41,6 @@ Since all the data is positive we will only try densities support on the positiv
 half-line. 
 
 ```{r, AIC}
-library("univariateML")
 AIC(mlbetapr(egypt$age),
     mlexp(egypt$age),
     mlinvgamma(egypt$age),
