@@ -1,49 +1,4 @@
-﻿Each function:
-	Add na.rm as second argument to each function and the test.
-	Add test for support of x.
-	Add object to each function, e.g:
-	  names(object) = c("shape1", "shape2")
-	  class(object) = "univariateML"
-	  attr(object, "model") = "Beta"
-	  attr(object, "logLik") = 
-	  attr(object, "support" = c(-Inf, Inf)
-	  object
-	
-Documentation of functions: Later.
-
-Standardized interface, eg:
-	- x
-	- na.rm: Remove or not remove NAs.
-	- method: List of function-specific parameters, if applicable.
-	- control: List of control parameters to the optimizer, if applicable.
-
-Standardized tests:
-	- Check response to NA:
-		1. Error when data contains NA and na.rm = FALSE (default)
-		2. Same response for NA and non-NA.
-	- Make covr 100%: Use all control and method combinations.
-	- Check for correctness on minimal examples:
-		- parameter estimates
-		- log-likelihood
-
-univariateML class:
-	- Named numeric vector of parameters corresponding to the first parameters of some density.
-	- Attributes:
-		- Name of the class.
-		- Package of the class.
-		- Log-likelihood.
-
-Make generics:
-	- logLik (and AIC, BIC by extension)
-	- confint (asymptotic theory) // maybe wait with this?
-	- dml, pml, qml, rml (wrapper around already existing functions)
-	- plot, lines, points
-	- print, summary
-	
-Make functions:
-	- qqml (qqplot for univariateML objects)
-
-Make "standardized" tests
+﻿Make "standardized" tests
 
 Make base ML:
 	stats:					Basic 	Tests	Ver		Na.rm	LogLik	Notes 
@@ -60,6 +15,7 @@ Make base ML:
 		df															Low priority; not used for modelling often.
 		dt															Low priority; not used for modelling often.
 		dwilcox														No implementation: Never used for modelling.
+		
 	extraDistr:
 		InvGamma			✓		✓		✓		✓		✓		Transformation of Gamma. Sufficient statistics.
 		Laplace				✓		✓		✓		✓		✓		Explicit solution.
