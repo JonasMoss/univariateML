@@ -37,18 +37,19 @@ plot_wrangler = function(x, range, points = FALSE, ...) {
 
 #' Plot, Lines and Points Methods for Maximum Likelihood Estimates
 #'
-#' The \code{plot} method for \code{univariateML} objects.
+#' The \code{plot}, \code{lines}, and \code{points} methods for \code{univariateML} objects.
 #'
 #' @export
 #' @param x a \code{univariateML} object.
 #' @param range range of \code{x} values to plot, i.e. \code{c(lower, upper)}.
 #' @param ... parameters passed to \code{plot}, \code{lines}, or \code{points}.
-#' @return Invisible copy of \code{x}.
+#' @return An invisible copy of \code{x}.
 #' @examples
-#'    plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")
-#'    lines(mlgamma(datasets::precip), lty = 2)
-#'    rug(datasets::precip)
+#' plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")
+#' lines(mlgamma(datasets::precip), lty = 2)
+#' rug(datasets::precip)
 #' @export
+#'
 plot.univariateML = function(x, range = NULL, ...) {
 
   args = plot_wrangler(x, range, points = FALSE, ...)
@@ -58,6 +59,7 @@ plot.univariateML = function(x, range = NULL, ...) {
 }
 
 #' @export
+#' @rdname plot.univariateML
 lines.univariateML = function(x, range = NULL, ...) {
 
   args = plot_wrangler(x, range, points = FALSE, ...)
@@ -67,6 +69,7 @@ lines.univariateML = function(x, range = NULL, ...) {
 }
 
 #' @export
+#' @rdname plot.univariateML
 points.univariateML = function(x, range = NULL, ...) {
   args = plot_wrangler(x, range, points = TRUE, ...)
   do.call(graphics::points, args)

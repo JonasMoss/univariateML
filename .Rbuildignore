@@ -19,3 +19,5 @@
 ^data_raw$
 ^univariateML.Rproj$
 ^codecov\.yml$
+figure$
+cache$
