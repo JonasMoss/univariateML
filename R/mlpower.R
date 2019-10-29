@@ -1,10 +1,10 @@
-#' Estimates the parameter of the power distribution using maximum likelihood
+#' Power distribution maximum likelihood estimation
 #'
 #' The maximum likelihood estimate of \code{alpha} is the maximum of \code{x} +
 #'     \code{epsilon} (see the details) and the maximum likelihood estimate of
 #'     \code{beta} is \code{1/(log(alpha)-mean(log(x)))}.
 #'
-#' For the density function of the power distribution see \link[extraDistr]{dpower}.
+#' For the density function of the power distribution see \link[extraDistr]{PowerDist}.
 #'     The maximum likelihood estimator of \code{alpha} does not exist, strictly
 #'     speaking. This is because \code{x} is supported \code{c(0, alpha)} with
 #'     an open endpoint on alpha in the \code{extraDistr} implementation of
@@ -19,7 +19,7 @@
 #' @return A named numeric vector with maximum likelihood estimates for
 #'     \code{alpha} and \code{beta}.
 #' @examples mlpower(precip)
-#' @seealso \link[extraDistr]{dpower} for the power density. \link{mlpareto} for
+#' @seealso \link[extraDistr]{PowerDist} for the power density. \link{Pareto} for
 #'    the closely related Pareto distribution.
 #' @references
 #' Arslan, G. "A new characterization of the power distribution." Journal of Computational and Applied Mathematics 260 (2014): 99-102.

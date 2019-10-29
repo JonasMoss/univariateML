@@ -1,17 +1,17 @@
-#' Estimates the parameter of the Laplace distribution using maximum likelihood
+#' Laplace distribution maximum likelihood estimation
 #'
 #' The maximum likelihood estimate of \code{mu} is the sample median while the
 #'    maximum likelihood estimate of \code{sigma} is mean absolute deviation
 #'    from the median.
 #'
-#' For the density function of the Laplace distribution see \link[extraDistr]{dlaplace}.
+#' For the density function of the Laplace distribution see \link[extraDistr]{Laplace}.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{mu} and \code{sigma}.
 #' @examples mllaplace(precip)
-#' @seealso \link[extraDistr]{dlaplace} for the Laplace density.
+#' @seealso \link[extraDistr]{Laplace} for the Laplace density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
 #' @export
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlbeta.R
 \name{mlbeta}
 \alias{mlbeta}
-\title{Estimates the parameter of the Beta distribution using maximum likelihood}
+\title{Beta distribution maximum likelihood estimation}
 \usage{
 mlbeta(x, na.rm = FALSE, start = NULL, type = c("none", "gradient",
   "hessian"))
@@ -26,7 +26,7 @@ A named numeric vector with maximum likelihood estimates for
 Uses \code{stat::nlm} to estimate the parameters of the Beta distribution.
 }
 \details{
-For the density function of the Beta distribution see \link[stats]{dbeta}.
+For the density function of the Beta distribution see \link[stats]{Beta}.
 
 For \code{type}, the option \code{none} is fastest.
 }
@@ -37,6 +37,6 @@ AIC(mlbeta(USArrests$Rape/100))
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 }
 \seealso{
-\link[stats]{dbeta} for the Beta density, \link[stats]{nlm} for the
+\link[stats]{Beta} for the Beta density, \link[stats]{nlm} for the
   optimizer this function uses.
 }

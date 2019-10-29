@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlrayleigh.R
 \name{mlrayleigh}
 \alias{mlrayleigh}
-\title{Estimates the parameter of the Rayleigh distribution using maximum likelihood}
+\title{Rayleigh distribution maximum likelihood estimation}
 \usage{
 mlrayleigh(x, na.rm = FALSE)
 }
@@ -20,7 +20,7 @@ Calculates the \code{sigma} parameter as the square root of half the
    empirical second moment.
 }
 \details{
-For the density function of the Rayleigh distribution see \link[extraDistr]{drayleigh}.
+For the density function of the Rayleigh distribution see \link[extraDistr]{Rayleigh}.
 }
 \examples{
 mlrayleigh(precip)
@@ -29,5 +29,5 @@ mlrayleigh(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
 }
 \seealso{
-\link[extraDistr]{drayleigh} for the Rayleigh density.
+\link[extraDistr]{Rayleigh} for the Rayleigh density.
 }

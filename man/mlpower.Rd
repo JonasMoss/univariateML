@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlpower.R
 \name{mlpower}
 \alias{mlpower}
-\title{Estimates the parameter of the power distribution using maximum likelihood}
+\title{Power distribution maximum likelihood estimation}
 \usage{
 mlpower(x, na.rm = FALSE, epsilon = .Machine$double.eps^0.5)
 }
@@ -24,7 +24,7 @@ The maximum likelihood estimate of \code{alpha} is the maximum of \code{x} +
     \code{beta} is \code{1/(log(alpha)-mean(log(x)))}.
 }
 \details{
-For the density function of the power distribution see \link[extraDistr]{dpower}.
+For the density function of the power distribution see \link[extraDistr]{PowerDist}.
     The maximum likelihood estimator of \code{alpha} does not exist, strictly
     speaking. This is because \code{x} is supported \code{c(0, alpha)} with
     an open endpoint on alpha in the \code{extraDistr} implementation of
@@ -39,6 +39,6 @@ mlpower(precip)
 Arslan, G. "A new characterization of the power distribution." Journal of Computational and Applied Mathematics 260 (2014): 99-102.
 }
 \seealso{
-\link[extraDistr]{dpower} for the power density. \link{mlpareto} for
+\link[extraDistr]{PowerDist} for the power density. \link{Pareto} for
    the closely related Pareto distribution.
 }

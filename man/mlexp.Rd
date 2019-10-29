@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlexp.R
 \name{mlexp}
 \alias{mlexp}
-\title{Estimates the parameter of the exponential distribution using maximum likelihood}
+\title{Exponential distribution maximum likelihood estimation}
 \usage{
 mlexp(x, na.rm = FALSE)
 }
@@ -19,7 +19,7 @@ A named numeric vector with maximum likelihood estimates for
 The maximum likelihood estimate of \code{rate} is the inverse sample mean.
 }
 \details{
-For the density function of the exponential distribution see \link[stats]{dexp}.
+For the density function of the exponential distribution see \link[stats]{Exponential}.
 }
 \examples{
 mlexp(precip)
@@ -28,5 +28,5 @@ mlexp(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 }
 \seealso{
-\link[stats]{dexp} for the exponential density.
+\link[stats]{Exponential} for the exponential density.
 }

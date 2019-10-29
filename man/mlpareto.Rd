@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlpareto.R
 \name{mlpareto}
 \alias{mlpareto}
-\title{Estimates the parameter of the Pareto distribution using maximum likelihood}
+\title{Pareto distribution maximum likelihood estimation}
 \usage{
 mlpareto(x, na.rm = FALSE)
 }
@@ -21,7 +21,7 @@ The maximum likelihood estimate of \code{b} is the minimum of \code{x} and the
     \code{1/(mean(log(x)) - log(b))}.
 }
 \details{
-For the density function of the Pareto distribution see \link[extraDistr]{dpareto}.
+For the density function of the Pareto distribution see \link[extraDistr]{Pareto}.
 }
 \examples{
 mlpareto(precip)
@@ -30,5 +30,5 @@ mlpareto(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
 }
 \seealso{
-\link[extraDistr]{dpareto} for the Pareto density.
+\link[extraDistr]{Pareto} for the Pareto density.
 }

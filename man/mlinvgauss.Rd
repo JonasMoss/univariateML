@@ -2,8 +2,7 @@
 % Please edit documentation in R/mlinvgauss.R
 \name{mlinvgauss}
 \alias{mlinvgauss}
-\title{Estimates the parameter of the inverse Gaussian (Wald) distribution using
-    maximum likelihood}
+\title{Inverse Gaussian (Wald) maximum likelihood estimation}
 \usage{
 mlinvgauss(x, na.rm = FALSE)
 }
@@ -22,7 +21,7 @@ The maximum likelihood estimate of \code{mean} is the empirical mean and the
     the mean of reciprocals and the reciprocal of the mean.
 }
 \details{
-For the density function of the Inverse Gamma distribution see \link[statmod]{dinvgauss}.
+For the density function of the Inverse Gamma distribution see \link[statmod]{invgauss}.
 }
 \examples{
 mlinvgauss(precip)
@@ -31,5 +30,5 @@ mlinvgauss(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
 }
 \seealso{
-\link[statmod]{dinvgauss} for the Inverse Gaussian density.
+\link[statmod]{invgauss} for the Inverse Gaussian density.
 }

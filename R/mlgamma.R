@@ -1,8 +1,8 @@
-#' Estimates the parameters of the Gamma distribution using maximum likelihood
+#' Gamma distribution maximum likelihood estimation
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Gamma distribution.
 #'
-#' For the density function of the Gamma distribution see \link[stats]{dgamma}.
+#' For the density function of the Gamma distribution see \link[stats]{GammaDist}.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
@@ -12,7 +12,7 @@
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{shape} and \code{rate}.
 #' @examples mlgamma(precip)
-#' @seealso \link[stats]{dgamma} for the Gamma density.
+#' @seealso \link[stats]{GammaDist} for the Gamma density.
 #' @references Choi, S. C, and R. Wette. "Maximum likelihood estimation of the parameters of the gamma distribution and their bias." Technometrics 11.4 (1969): 683-690.
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
 #' @export

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mllnorm.R
 \name{mllnorm}
 \alias{mllnorm}
-\title{Estimates the parameter of the log-normal distribution using maximum likelihood}
+\title{Log-normal distribution maximum likelihood estimation}
 \usage{
 mllnorm(x, na.rm = FALSE)
 }
@@ -22,7 +22,7 @@ The maximum likelihood estimate of \code{meanlog} is the empirical mean of the
     log-transformed data.
 }
 \details{
-For the density function of the log normal distribution see \link[stats]{dlnorm}.
+For the density function of the log normal distribution see \link[stats]{Lognormal}.
 }
 \examples{
 mllnorm(precip)
@@ -31,5 +31,5 @@ mllnorm(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 }
 \seealso{
-\link[stats]{dlnorm} for the log normal density.
+\link[stats]{Lognormal} for the log normal density.
 }

@@ -1,8 +1,8 @@
-#' Estimates the parameter of the Beta distribution using maximum likelihood
+#' Beta distribution maximum likelihood estimation
 #'
 #' Uses \code{stat::nlm} to estimate the parameters of the Beta distribution.
 #'
-#' For the density function of the Beta distribution see \link[stats]{dbeta}.
+#' For the density function of the Beta distribution see \link[stats]{Beta}.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
@@ -13,7 +13,7 @@
 #' @return A named numeric vector with maximum likelihood estimates for
 #'  \code{shape1} and \code{shape2}.
 #' @details For \code{type}, the option \code{none} is fastest.
-#' @seealso \link[stats]{dbeta} for the Beta density, \link[stats]{nlm} for the
+#' @seealso \link[stats]{Beta} for the Beta density, \link[stats]{nlm} for the
 #'   optimizer this function uses.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 #' @examples AIC(mlbeta(USArrests$Rape/100))

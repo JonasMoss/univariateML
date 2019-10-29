@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlnorm.R
 \name{mlnorm}
 \alias{mlnorm}
-\title{Estimates the parameter of the normal distribution using maximum likelihood}
+\title{Normal distribution maximum likelihood estimation}
 \usage{
 mlnorm(x, na.rm = FALSE)
 }
@@ -21,7 +21,7 @@ The maximum likelihood estimate of \code{mean} is the empirical mean and the
     biased sample variance.
 }
 \details{
-For the density function of the normal distribution see \link[stats]{dnorm}.
+For the density function of the normal distribution see \link[stats]{Normal}.
 }
 \examples{
 mlnorm(precip)
@@ -30,5 +30,5 @@ mlnorm(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 }
 \seealso{
-\link[stats]{dnorm} for the normal density.
+\link[stats]{Normal} for the normal density.
 }

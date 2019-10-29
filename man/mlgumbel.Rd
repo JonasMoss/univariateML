@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlgumbel.R
 \name{mlgumbel}
 \alias{mlgumbel}
-\title{Estimates the parameter of a Gumbel distribution by maximum likelihood}
+\title{umbel distribution maximum likelihood estimation}
 \usage{
 mlgumbel(x, na.rm = FALSE, sigma0 = 1,
   rel.tol = .Machine$double.eps^0.25, iterlim = 100)
@@ -27,7 +27,7 @@ A named numeric vector with maximum likelihood estimates for
 Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
 }
 \details{
-For the density function of the Gumbel distribution see \link[extraDistr]{dgumbel}.
+For the density function of the Gumbel distribution see \link[extraDistr]{Gumbel}.
 }
 \examples{
 mlgumbel(precip)
@@ -36,5 +36,5 @@ mlgumbel(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
 }
 \seealso{
-\link[extraDistr]{dgumbel} for the Gumbel density.
+\link[extraDistr]{Gumbel} for the Gumbel density.
 }

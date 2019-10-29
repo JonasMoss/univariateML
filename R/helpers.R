@@ -39,7 +39,7 @@ univariateML_to_function = function(obj, type = c("d", "p", "q", "r", "ml")){
 #' Data and function to 'univariateML'
 #' @param y Data to transform.
 #' @param obj Function to apply.
-#'
+#' @keywords internal
 
 to_univariateML = function(y, obj) {
 

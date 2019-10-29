@@ -1,15 +1,15 @@
-#' Estimates the parameter of the exponential distribution using maximum likelihood
+#' Exponential distribution maximum likelihood estimation
 #'
 #' The maximum likelihood estimate of \code{rate} is the inverse sample mean.
 #'
-#' For the density function of the exponential distribution see \link[stats]{dexp}.
+#' For the density function of the exponential distribution see \link[stats]{Exponential}.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{rate}.
 #' @examples mlexp(precip)
-#' @seealso \link[stats]{dexp} for the exponential density.
+#' @seealso \link[stats]{Exponential} for the exponential density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 #' @export
 

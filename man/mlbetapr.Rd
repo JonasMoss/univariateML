@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlbetapr.R
 \name{mlbetapr}
 \alias{mlbetapr}
-\title{Estimates the parameter of the Beta prime distribution using maximum likelihood}
+\title{Beta prime distribution maximum likelihood estimation}
 \usage{
 mlbetapr(x, na.rm = FALSE, start = NULL, type = c("none", "gradient",
   "hessian"))
@@ -28,7 +28,7 @@ This function does not estimate the scale parameter for the \code{BetaPrime}
     the parameters of the Beta distribution.
 }
 \details{
-For the density function of the Beta prime distribution see \link[extraDistr]{dbetapr}.
+For the density function of the Beta prime distribution see \link[extraDistr]{BetaPrime}.
 
 For \code{type}, the option \code{none} is fastest.
 }
@@ -39,7 +39,7 @@ AIC(mlbetapr(USArrests$Rape))
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 }
 \seealso{
-\link[extraDistr]{dbetapr} for the Beta prime density, \link[stats]{nlm} for the
+\link[extraDistr]{BetaPrime} for the Beta prime density, \link[stats]{nlm} for the
   optimizer this function uses, \link{mlbeta} for the Beta distribution maximum
   likelihood estimator.
 }

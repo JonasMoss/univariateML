@@ -1,15 +1,15 @@
-#' Estimates the parameters of uniform density using maximum likelihood
+#' Uniform distribution maximum likelihood estimation
 #'
 #' The estimates are \code{min(x)} and \code{max(x)}.
 #'
-#' For the density function of the logistic distribution see \link[stats]{dunif}.
+#' For the density function of the logistic distribution see \link[stats]{Uniform}.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{min} and \code{max}.
 #' @examples mlunif(precip)
-#' @seealso \link[stats]{dunif} for the uniform density.
+#' @seealso \link[stats]{Uniform} for the uniform density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
 #' @export
 

@@ -1,8 +1,8 @@
-#' Estimates the parameter of a Weibull distribution by maximum likelihood
+#' Weibull distribution maximum likelihood estimation
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Weibull distribution.
 #'
-#' For the density function of the Weibull distribution see \link[stats]{dweibull}.
+#' For the density function of the Weibull distribution see \link[stats]{Weibull}.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
@@ -13,7 +13,7 @@
 #'
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{shape} and \code{scale}.
-#' @seealso \link[stats]{dweibull} for the Weibull density.
+#' @seealso \link[stats]{Weibull} for the Weibull density.
 #' @examples BIC(mlweibull(precip))
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
 #' @export

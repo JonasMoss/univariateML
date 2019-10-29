@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlweibull.R
 \name{mlweibull}
 \alias{mlweibull}
-\title{Estimates the parameter of a Weibull distribution by maximum likelihood}
+\title{Weibull distribution maximum likelihood estimation}
 \usage{
 mlweibull(x, na.rm = FALSE, shape0 = 2,
   rel.tol = .Machine$double.eps^0.25, iterlim = 100)
@@ -27,7 +27,7 @@ A named numeric vector with maximum likelihood estimates for
 Uses Newton-Raphson to estimate the parameters of the Weibull distribution.
 }
 \details{
-For the density function of the Weibull distribution see \link[stats]{dweibull}.
+For the density function of the Weibull distribution see \link[stats]{Weibull}.
 }
 \examples{
 BIC(mlweibull(precip))
@@ -36,5 +36,5 @@ BIC(mlweibull(precip))
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
 }
 \seealso{
-\link[stats]{dweibull} for the Weibull density.
+\link[stats]{Weibull} for the Weibull density.
 }

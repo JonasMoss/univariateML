@@ -1,8 +1,8 @@
-#' Estimates the parameter of a Kumaraswamy distribution by maximum likelihood
+#' Kumaraswamy distribution maximum likelihood estimation
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Kumaraswamy distribution.
 #'
-#' For the density function of the Kumaraswamy distribution see \link[extraDistr]{dkumar}.
+#' For the density function of the Kumaraswamy distribution see \link[extraDistr]{Kumaraswamy}.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
@@ -13,7 +13,7 @@
 #'
 #' @return A named numeric vector with maximum likelihood estimates for
 #'     \code{a} and \code{b}.
-#' @seealso \link[extraDistr]{dkumar} for the Beta density.
+#' @seealso \link[extraDistr]{Kumaraswamy} for the Kumaraswamy density.
 #' @examples AIC(mlkumar(USArrests$Rape/100))
 #' @references Jones, M. C. "Kumaraswamy's distribution: A beta-type distribution with some tractability advantages." Statistical Methodology 6.1 (2009): 70-81.
 #'

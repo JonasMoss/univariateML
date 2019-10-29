@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlkumar.R
 \name{mlkumar}
 \alias{mlkumar}
-\title{Estimates the parameter of a Kumaraswamy distribution by maximum likelihood}
+\title{Kumaraswamy distribution maximum likelihood estimation}
 \usage{
 mlkumar(x, na.rm = FALSE, a0 = 1, rel.tol = .Machine$double.eps^0.25,
   iterlim = 100)
@@ -27,7 +27,7 @@ A named numeric vector with maximum likelihood estimates for
 Uses Newton-Raphson to estimate the parameters of the Kumaraswamy distribution.
 }
 \details{
-For the density function of the Kumaraswamy distribution see \link[extraDistr]{dkumar}.
+For the density function of the Kumaraswamy distribution see \link[extraDistr]{Kumaraswamy}.
 }
 \examples{
 AIC(mlkumar(USArrests$Rape/100))
@@ -38,5 +38,5 @@ Jones, M. C. "Kumaraswamy's distribution: A beta-type distribution with some tra
      Kumaraswamy, Ponnambalam. "A generalized probability density function for double-bounded random processes." Journal of Hydrology 46.1-2 (1980): 79-88.
 }
 \seealso{
-\link[extraDistr]{dkumar} for the Beta density.
+\link[extraDistr]{Kumaraswamy} for the Kumaraswamy density.
 }

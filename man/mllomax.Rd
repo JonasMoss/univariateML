@@ -2,7 +2,7 @@
 % Please edit documentation in R/mllomax.R
 \name{mllomax}
 \alias{mllomax}
-\title{Estimates the parameters of the Lomax distribution by maximum likelihood}
+\title{Lomax distribution maximum likelihood estimation}
 \usage{
 mllomax(x, na.rm = FALSE, start = NULL,
   rel.tol = .Machine$double.eps^0.25, iterlim = 100)
@@ -28,7 +28,7 @@ A named numeric vector with maximum likelihood estimates for
 Uses Newton-Raphson to estimate the parameters of the Lomax distribution.
 }
 \details{
-For the density function of the Lomax distribution see \link[extraDistr]{dlomax}.
+For the density function of the Lomax distribution see \link[extraDistr]{Lomax}.
 The maximum likelihood estimate will frequently fail to exist. This is due to
 the parameterization of the function which does not take into account that
 it converges to an exponential when ### fill in with refs. ###
@@ -41,5 +41,5 @@ set.seed(3)
 Kleiber, Christian; Kotz, Samuel (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley Series in Probability and Statistics, 470, John Wiley & Sons, p. 60
 }
 \seealso{
-\link[extraDistr]{dlomax} for the Lomax density.
+\link[extraDistr]{Lomax} for the Lomax density.
 }

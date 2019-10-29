@@ -2,7 +2,7 @@
 % Please edit documentation in R/mllaplace.R
 \name{mllaplace}
 \alias{mllaplace}
-\title{Estimates the parameter of the Laplace distribution using maximum likelihood}
+\title{Laplace distribution maximum likelihood estimation}
 \usage{
 mllaplace(x, na.rm = FALSE)
 }
@@ -21,7 +21,7 @@ The maximum likelihood estimate of \code{mu} is the sample median while the
    from the median.
 }
 \details{
-For the density function of the Laplace distribution see \link[extraDistr]{dlaplace}.
+For the density function of the Laplace distribution see \link[extraDistr]{Laplace}.
 }
 \examples{
 mllaplace(precip)
@@ -30,5 +30,5 @@ mllaplace(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
 }
 \seealso{
-\link[extraDistr]{dlaplace} for the Laplace density.
+\link[extraDistr]{Laplace} for the Laplace density.
 }

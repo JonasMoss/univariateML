@@ -1,10 +1,10 @@
-#' Estimates the parameter of the Beta prime distribution using maximum likelihood
+#' Beta prime distribution maximum likelihood estimation
 #'
 #' This function does not estimate the scale parameter for the \code{BetaPrime}
 #'     distribution. Transforms the data and uses \code{stat::nlm} to estimate
 #'     the parameters of the Beta distribution.
 #'
-#' For the density function of the Beta prime distribution see \link[extraDistr]{dbetapr}.
+#' For the density function of the Beta prime distribution see \link[extraDistr]{BetaPrime}.
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
@@ -15,7 +15,7 @@
 #' @return A named numeric vector with maximum likelihood estimates for
 #' \code{shape1} and \code{shap2}.
 #' @details For \code{type}, the option \code{none} is fastest.
-#' @seealso \link[extraDistr]{dbetapr} for the Beta prime density, \link[stats]{nlm} for the
+#' @seealso \link[extraDistr]{BetaPrime} for the Beta prime density, \link[stats]{nlm} for the
 #'   optimizer this function uses, \link{mlbeta} for the Beta distribution maximum
 #'   likelihood estimator.
 #' @examples AIC(mlbetapr(USArrests$Rape))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlunif.R
 \name{mlunif}
 \alias{mlunif}
-\title{Estimates the parameters of uniform density using maximum likelihood}
+\title{Uniform distribution maximum likelihood estimation}
 \usage{
 mlunif(x, na.rm = FALSE)
 }
@@ -19,7 +19,7 @@ A named numeric vector with maximum likelihood estimates for
 The estimates are \code{min(x)} and \code{max(x)}.
 }
 \details{
-For the density function of the logistic distribution see \link[stats]{dunif}.
+For the density function of the logistic distribution see \link[stats]{Uniform}.
 }
 \examples{
 mlunif(precip)
@@ -28,5 +28,5 @@ mlunif(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
 }
 \seealso{
-\link[stats]{dunif} for the uniform density.
+\link[stats]{Uniform} for the uniform density.
 }
