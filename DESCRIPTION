@@ -14,7 +14,9 @@ Depends:
 Imports: assertthat,
     extraDistr,
     statmod,
-    tibble
+    tibble,
+    logitnorm,
+    actuar
 Suggests: 
     testthat,
     knitr,

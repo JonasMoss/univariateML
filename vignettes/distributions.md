@@ -52,3 +52,24 @@ to provide no information about derivatives to `nlm`.
 | Likelihood | $\prod_{i=1}^{n}x^{\alpha-1}\left(1-x\right)^{\beta-1}/\textrm{B}\left(\alpha,\beta\right)$ |
 | Log-likelihood | $-n\log\left[\textrm{B}\left(\alpha,\beta\right)\right]+\left(\alpha-1\right)\sum_{i=1}^{n}\log\left(x_{i}\right)+\left(\beta-1\right)\sum_{i=1}^{n}\log\left(1-x_{i}\right)$ |
 | Analytic solution? | No |
+
+### Logit-Normal Distribution
+The [logit-normal distribution](https://en.wikipedia.org/wiki/Logit-normal_distribution) 
+is such that $\log{Y}-\log(1-Y)$ is normal when $Y$ is logit-normal. Its maxmimum 
+likelihood estimator can be calculcated by transforming the data back the normal
+using the logit transform. 
+
+#### Mathematics
+
+In this table $G=n^{-1}\sum_{i=1}^{n}\log x_{i}$ and $H=n^{-1}\sum_{i=1}^{n}\log\left(1-x_{i}\right)$.
+
+| Name | Value |
+| ---- | ----- |
+| Parameters | $\mu$, $\sigma$ |
+| Likelihood | $\prod_{i=1}^{n}\sigma^{-1/2}\left(2\pi\right)^{-1/2}x_{i}^{-1}\left(1-x_{i}\right)^{-1}\exp\left[-\left(\textrm{logit}\left(x_{i}\right)-\mu\right)^{2}/\left(2\sigma^{2}\right)\right]$ |
+| Log-likelihood | $-\frac{n}{2}\left\{ \frac{1}{n}\left[\sum_{i=1}^{n}\frac{1}{\sigma^{2}}\left(\textrm{logit}\left(x_{i}\right)-\mu\right)^{2}\right]+2\log\sigma+\log2\pi\right\} -n\left(H+G\right)$ |
+| Analytic solution? | Yes |
+| Maximal log-likelihood | $-n\left[2+\log\widehat{\sigma}+\frac{1}{2}\log2\pi+G+H\right]$ |
+
+
+## The `unvariateML` S3 Class
