@@ -7,6 +7,8 @@ tiny_data= stats::rlnorm(10, 0, 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mllnorm(c(tiny_data, NA)))
+expect_error(mllnorm(c(tiny_data, -1)))
+expect_error(mllnorm(c(tiny_data, 0)))
 
 ## Checks that na.rm works as intended.
 expect_equal(coef(mllnorm(small_data)),

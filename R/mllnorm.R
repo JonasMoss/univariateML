@@ -18,7 +18,7 @@
 
 mllnorm = function(x, na.rm = FALSE) {
   if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  assertthat::assert_that(min(x) >= 0)
+  assertthat::assert_that(min(x) > 0)
   y = log(x)
   n = length(x)
   meanlog = mean(y)
