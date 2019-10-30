@@ -48,22 +48,22 @@
 #'   mtext("pml(x, obj, log = TRUE)", adj = 0)
 #'   mtext("log(pml(x, obj))", col = "red", adj = 1)
 #'
-#' @name MaximumLikelihood
+#' @name MaximumLikelihoodDistribution
 #' @export
 dml = function(x, obj, log = FALSE)
   univariateML_to_function(obj, type = "d")(x = x, log = log)
 
-#' @rdname MaximumLikelihood
+#' @rdname MaximumLikelihoodDistribution
 #' @export
 pml = function(q = q, obj, lower.tail = TRUE, log.p = FALSE)
   univariateML_to_function(obj, type = "p")(q = q, lower.tail = lower.tail, log.p = log.p)
 
-#' @rdname MaximumLikelihood
+#' @rdname MaximumLikelihoodDistribution
 #' @export
 qml = function(p = p, obj, lower.tail = TRUE, log.p = FALSE)
   univariateML_to_function(obj, type = "q")(p = p, lower.tail = lower.tail, log.p = log.p)
 
-#' @rdname MaximumLikelihood
+#' @rdname MaximumLikelihoodDistribution
 #' @export
 rml = function(n = n, obj)
   univariateML_to_function(obj, type = "r")(n = n)
