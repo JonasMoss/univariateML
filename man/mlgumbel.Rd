@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlgumbel.R
 \name{mlgumbel}
 \alias{mlgumbel}
-\title{umbel distribution maximum likelihood estimation}
+\title{Gumbel distribution maximum likelihood estimation}
 \usage{
 mlgumbel(x, na.rm = FALSE, sigma0 = 1,
   rel.tol = .Machine$double.eps^0.25, iterlim = 100)

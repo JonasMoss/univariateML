@@ -1,4 +1,4 @@
-#' umbel distribution maximum likelihood estimation
+#' Gumbel distribution maximum likelihood estimation
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
 #'

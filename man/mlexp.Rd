@@ -9,7 +9,8 @@ mlexp(x, na.rm = FALSE)
 \arguments{
 \item{x}{The data from which the estimate is to be computed.}
 
-\item{na.rm}{logical. Should missing values be removed?}
+\item{na.rm}{logical. Should missing values be removed? If \code{FALSE},
+the function fails when \code{x} contains missing values.}
 }
 \value{
 A named numeric vector with maximum likelihood estimates for

@@ -820,6 +820,55 @@ If
 Logit-Normal Distribution
 \end_layout
 
+\begin_layout Standard
+Likelihood:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\prod_{i=1}^{n}\sigma^{-1/2}\left(2\pi\right)^{-1/2}x_{i}^{-1}\left(1-x_{i}\right)^{-1}\exp\left[-\left(\textrm{logit}\left(x_{i}\right)-\mu\right)^{2}/\left(2\sigma^{2}\right)\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Log-likelihood:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-\frac{n}{2}\left\{ \frac{1}{n}\left[\sum_{i=1}^{n}\frac{1}{\sigma^{2}}\left(\textrm{logit}\left(x_{i}\right)-\mu\right)^{2}\right]+2\log\sigma+\log2\pi\right\} -n\left(H+G\right)
+\]
+
+\end_inset
+
+At the maximum this equals
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-n\left[2+\log\widehat{\sigma}+\frac{1}{2}\log2\pi+G+H\right],
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $G=n^{-1}\sum_{i=1}^{n}\log x_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $H=n^{-1}\sum_{i=1}^{n}\log\left(1-x_{i}\right)$
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Normal Distribution
 \end_layout
