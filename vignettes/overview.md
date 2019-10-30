@@ -2,7 +2,7 @@
 title: "Overview of univariateML"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Overview}
+  %\VignetteIndexEntry{Overview of univariateML}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
@@ -123,8 +123,8 @@ bootstrapml(mlweibull(egypt$age))
 
 ```
 ##            2.5%     97.5%
-## shape  1.234795  1.607961
-## scale 29.637574 37.810770
+## shape  1.246788  1.616233
+## scale 29.506260 38.131920
 ```
 
 ```r
@@ -133,8 +133,8 @@ bootstrapml(mlgamma(egypt$age))
 
 ```
 ##             2.5%      97.5%
-## shape 1.33523113 2.05105101
-## rate  0.04221784 0.06838931
+## shape 1.33650610 1.99794139
+## rate  0.04207126 0.06868779
 ```
 
 These confidence intervals are not directly comparable since the parameters do 
@@ -156,7 +156,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.62724 33.71330
+## 27.70964 33.93543
 ```
 
 ```r
@@ -166,8 +166,8 @@ bootstrapml(mlgamma(egypt$age),
 ```
 
 ```
-##      5%     95% 
-## 27.5262 34.0265
+##       5%      95% 
+## 27.33411 34.22503
 ```
 
 We could also be interested in the quantiles of the underlying distribution,
@@ -183,7 +183,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 22.82238 28.96460
+## 23.03775 28.83034
 ```
 
 ```r
@@ -194,7 +194,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 21.91465 27.45316
+## 21.87403 27.68279
 ```
 
 We can also plot the bootstrap samples.

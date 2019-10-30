@@ -1,5 +1,5 @@
 ---
-title: "Copulas Modelling"
+title: "Copula Modelling"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{my-vignette}
