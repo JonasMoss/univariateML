@@ -75,34 +75,6 @@
 
 \begin_body
 
-\begin_layout Standard
-Rules:
-\end_layout
-
-\begin_layout Standard
-1.) The likelihood;
-\end_layout
-
-\begin_layout Standard
-2.) The log-likelihood;
-\end_layout
-
-\begin_layout Standard
-3.) If analytical solution, derive it.
-\end_layout
-
-\begin_layout Standard
-4.) If no analytical solution: Comment why.
-\end_layout
-
-\begin_layout Standard
-5.) If custom Newton-Raphson explain why.
-\end_layout
-
-\begin_layout Standard
-6.)
-\end_layout
-
 \begin_layout Section
 Beta Distribution
 \end_layout
@@ -111,7 +83,7 @@ Beta Distribution
 Likelihood:
 \begin_inset Formula 
 \[
-\prod_{i=1}^{n}\frac{x^{\alpha-1}\left(1-x\right)^{\beta-1}}{\textrm{B}\left(\alpha,\beta\right)}
+\prod_{i=1}^{n}x^{\alpha-1}\left(1-x\right)^{\beta-1}/\textrm{B}\left(\alpha,\beta\right)
 \]
 
 \end_inset
@@ -1101,6 +1073,10 @@ n\left[L-\log\frac{1}{2}M-1\right]
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+Inverse Gamma
 \end_layout
 
 \begin_layout Section
