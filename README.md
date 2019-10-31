@@ -18,11 +18,11 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 ## Overview
 
 An `R`-package for fast, easy, and reliable maximum likelihood
-estimation for a selection of parameteric univariate densities. In
-addition to basic estimation capabilities, this package support
-visualization through `plot` and `qqmlplot`, model selection by `AIC`
-and `BIC`, and confidence sets through the parametric bootstrap with
-`bootstrapml`.
+estimation for a [selection](/vignettes/distributions.html) of
+parameteric univariate densities. In addition to basic estimation
+capabilities, this package support visualization through `plot` and
+`qqmlplot`, model selection by `AIC` and `BIC`, and confidence sets
+through the parametric bootstrap with `bootstrapml`.
 
 ## Installation
 
@@ -55,19 +55,21 @@ lines(mlweibull(egypt$age))
 For an overview of the package and its features see the [overview
 vignette](/vignettes/overview.html). For a list of implemented densities
 see the start of the [details vignette](/vignettes/distributions.html).
-For an application of the package to copula modelling see the [copula
+For an illustration of how this package can make an otherwise long and
+laborious process much simpler, see the [copula
 vignette](/vignettes/copula.html).
 
 ## How to Contribute or Get Help
 
 If you encounter a bug, have a feature request or need some help, open a
-[Github issue](https://github.com/JonasMoss/univariateML/issues). Create
-a pull requests to contribute. This project follows a [Contributor Code
-of
-Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md).
-
-If you want to contribute a new maximum likelihood estimator to this
-package please read [this
-page](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
-If you miss a particular estimator, make an issue explaining why its
+[Github issue](https://github.com/JonasMoss/univariateML/issues). If you
+miss a particular estimator, make an issue explaining why its
 implementation should be prioritized.
+
+We encourage you to make a pull request if you wish to make a
+contribution to this package. If you wish to contribute a new maximum
+likelihood estimator to this package please read [this page
+first](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
+
+This project follows a [Contributor Code of
+Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md).
