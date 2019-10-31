@@ -33,7 +33,7 @@ by `AIC` and `BIC`, and confidence sets through the parametric bootstrap with
 `bootstrapml`.
 
 ## Installation
-From inside `R`, use one of the following commands:
+From inside `R`, use the following command:
 ```{r install, echo = TRUE, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("JonasMoss/univariateML")
