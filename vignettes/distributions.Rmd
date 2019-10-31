@@ -1,16 +1,11 @@
 ---
-title: "Distribution Details"
+title: "Implemented Densities"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Distribution Details}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
-
-This vignette supplies some details about each distribution with maximum 
-likelihood estimation implemented in this package. 
-
-## Implemented Distributions
 
 These are the currently implemented distributions. 
 
@@ -48,65 +43,17 @@ For instance, to find the documentation for the log-gamma distribution write
 ?actuar::dlgamma
 ```
 
-## Comments on the Distributions
-### Beta Distribution
+## Comments
+### Lomax Distribution
+The maximum likelihood estimator of the [Lomax distribution](https://en.wikipedia.org/wiki/Lomax_distribution) frequently fails to 
+exist. For assume $\kappa\to\lambda^{-1}\overline{x}^{-1}$ and $\lambda\to0$. The density $\lambda\kappa\left(1+\lambda x\right)^{-\left(\kappa+1\right)}$
+is approximately equal to $\lambda\kappa\left(1+\lambda x\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}$
+when $\lambda$ is small enough. Since $\lambda\kappa\left(1+\lambda x\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}\to\overline{x}^{-1}e^{-\overline{x}^{-1}x}$,
+the density converges to an exponential density. 
 
-The [Beta distribution](https://en.wikipedia.org/wiki/Beta_distribution) is the
-most widely distribution on the unit interval. It has a two-dimensional sufficient
-satistic and can be calculated very efficiently using `stats::nlm`. The implementation
-allows to supply `stats::nlm` with a Hessian or a gradient, but the fastest option is
-to provide no information about derivatives to `nlm`.
-
-#### Mathematics
-| Name | Value |
-| ---- | ----- |
-| Parameters | $\alpha$, $\beta$ |
-| Likelihood | $\prod_{i=1}^{n}x^{\alpha-1}\left(1-x\right)^{\beta-1}/\textrm{B}\left(\alpha,\beta\right)$ |
-| Log-likelihood | $-n\log\left[\textrm{B}\left(\alpha,\beta\right)\right]+\left(\alpha-1\right)\sum_{i=1}^{n}\log\left(x_{i}\right)+\left(\beta-1\right)\sum_{i=1}^{n}\log\left(1-x_{i}\right)$ |
-| Analytic solution? | No |
-
-### Logit-Normal Distribution
-A variable $Y$ is [logit-normal distributed](https://en.wikipedia.org/wiki/Logit-normal_distribution) 
-if it is such that $\log{Y}-\log(1-Y)$ is normal. Its maxmimum 
-likelihood estimator can be calculcated by transforming the data back the normal
-using the logit transform. 
-
-Its density function can be found in the decicated `logitnorm` package.
-
-#### Mathematics
-
-In this table $G=n^{-1}\sum_{i=1}^{n}\log x_{i}$ and $H=n^{-1}\sum_{i=1}^{n}\log\left(1-x_{i}\right)$.
-
-| Name | Value |
-| ---- | ----- |
-| Parameters | $\mu$, $\sigma$ |
-| Likelihood | $\prod_{i=1}^{n}\sigma^{-1/2}\left(2\pi\right)^{-1/2}x_{i}^{-1}\left(1-x_{i}\right)^{-1}\exp\left[-\left(\textrm{logit}\left(x_{i}\right)-\mu\right)^{2}/\left(2\sigma^{2}\right)\right]$ |
-| Log-likelihood | $-\frac{n}{2}\left\{ \frac{1}{n}\left[\sum_{i=1}^{n}\frac{1}{\sigma^{2}}\left(\textrm{logit}\left(x_{i}\right)-\mu\right)^{2}\right]+2\log\sigma+\log2\pi\right\} -n\left(H+G\right)$ |
-| Analytic solution? | Yes |
-| Maximal log-likelihood | $-n\left[2+\log\widehat{\sigma}+\frac{1}{2}\log2\pi+G+H\right]$ |
-
-
-### Log-logistic Distribution.
-
-If $Y$ is such that $\log Y$ is [logistic](https://en.wikipedia.org/wiki/Logistic_distribution) then $Y$ is [log-logistic](https://en.wikipedia.org/wiki/Log-logistic_distribution). Its maximum
-likelihood estimator is found by transforming the data back to a logistic distribution and 
-then using `mllogistic`
-
-Its density function can be found in the `actuar` package.
-
-### Log-gamma Distribution.
-
-If $Y$ is such that $\log Y$ is [gamma](https://en.wikipedia.org/wiki/Gamma_distribution) then $Y$ is log-gamma. Its maximum likelihood estimator is found by  transforming the data back to a gamma distribution and 
-then using `mlgamma`
-
-Its density function can be found in the `actuar` package.
-
-### Inverse Weibull Distribution.
-
-If $Y$ is such that $Y^{-1}$ is [Weibull](https://en.wikipedia.org/wiki/Gamma_distribution) then $Y$ is Inverse Weibull. Its maximum likelihood estimator is found by  transforming the data back to a Weibull distribution and 
-then using `mlweibull`
-
-Its density function can be found in the `actuar` package.
-
-
-## The `unvariateML` S3 Class
+```{r lomax}
+eps = 0.1
+x = seq(0, 3, length.out = 100)
+plot(dexp, 0, 3)
+lines(x, extraDistr::dlomax(x, lambda = eps, kappa = 1/eps), col = "red")
+```

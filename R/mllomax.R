@@ -5,7 +5,8 @@
 #' For the density function of the Lomax distribution see \link[extraDistr]{Lomax}.
 #' The maximum likelihood estimate will frequently fail to exist. This is due to
 #' the parameterization of the function which does not take into account that
-#' it converges to an exponential when ### fill in with refs. ###
+#' the density converges to an exponential along certain values of the parameters,
+#' see \code{vignette("Distribution Details", package = "univariateML")}.
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
