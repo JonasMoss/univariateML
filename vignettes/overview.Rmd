@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 5) 
+```
+
 When dealing with univariate data you want to do one or more of
 * Find a good model for the data.
 * Estimate parameters for your candidate models.
