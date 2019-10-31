@@ -24,7 +24,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
 #' @export
 
-mlweibull = function(x, na.rm = FALSE, shape0 = 2,
+mlweibull = function(x, na.rm = FALSE, shape0 = 1,
                      rel.tol = .Machine$double.eps^0.25,
                      iterlim = 100) {
 
