@@ -64,5 +64,8 @@ a pull requests to contribute. This project follows a [Contributor Code
 of
 Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md).
 
-Please open an issue and or make a pull request if you want another
-univariate distribution to be added to the package.
+If you want to contribute a new maximum likelihood estimator to this
+package please read [this
+page](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
+If you miss a particular estimator, make an issue explaining why its
+implementation should be prioritized.
