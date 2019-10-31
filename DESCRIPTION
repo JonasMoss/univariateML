@@ -13,7 +13,6 @@ Depends:
     R (>= 2.10)
 Imports: assertthat,
     extraDistr,
-    statmod,
     tibble,
     logitnorm,
     actuar

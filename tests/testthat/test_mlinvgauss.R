@@ -2,27 +2,27 @@ context("mlcuachy")
 
 ## Data generation.
 set.seed(313)
-tiny_data = statmod::rinvgauss(10, 1, 7)
-small_data = statmod::rinvgauss(100, 10, 3)
-medium_data = statmod::rinvgauss(1000, 1/2, 2)
-large_data = statmod::rinvgauss(10000, 20, 13)
+tiny_data = actuar::rinvgauss(10, 1, 7)
+small_data = actuar::rinvgauss(100, 10, 3)
+medium_data = actuar::rinvgauss(1000, 1/2, 2)
+large_data = actuar::rinvgauss(10000, 20, 13)
 
 ## Checks if the ML is correct.
 
 mle1 = suppressWarnings(nlm(function(p) {
-  -sum(statmod::dinvgauss(tiny_data, p[1], p[2], log = TRUE))
+  -sum(actuar::dinvgauss(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(1, 7)))
 
 mle2 = suppressWarnings(nlm(function(p) {
-  -sum(statmod::dinvgauss(small_data, p[1], p[2], log = TRUE))
+  -sum(actuar::dinvgauss(small_data, p[1], p[2], log = TRUE))
 }, p = c(10, 3)))
 
 mle3 = suppressWarnings(nlm(function(p) {
-  -sum(statmod::dinvgauss(medium_data, p[1], p[2], log = TRUE))
+  -sum(actuar::dinvgauss(medium_data, p[1], p[2], log = TRUE))
 }, p = c(1/2, 2)))
 
 mle4 = suppressWarnings(nlm(function(p) {
-  -sum(statmod::dinvgauss(large_data, p[1], p[2], log = TRUE))
+  -sum(actuar::dinvgauss(large_data, p[1], p[2], log = TRUE))
 }, p = c(20, 13)))
 
 ## Checks estimates.

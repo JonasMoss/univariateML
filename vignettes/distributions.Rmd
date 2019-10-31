@@ -14,27 +14,39 @@ likelihood estimation implemented in this package.
 
 These are the currently implemented distributions. 
 
-| Name                          | Package    | Parameters         | Estimator    | Support        | 
-| ----------------------------- | ---------- | ------------------ | ------------ | -------------- | 
-| Normal distribution           | stats      | `mean`, `sd`       | `mlnorm`     | $\mathbb{R}$   | 
-| Logistic distributon          | stats      | `location`,`scale` | `mllogis`    | $\mathbb{R}$   | 
-| Cauchy distributon            | stats      | `location`,`scale` | `mlcauchy`   | $\mathbb{R}$   | 
-| Gumbel distribution           | extraDistr | `mu`, `sigma`      | `mlgumbel`   | $\mathbb{R}$   | 
-| Laplace distribution          | extraDistr | `mu`, `sigma`      | `mllaplace`  | $\mathbb{R}$   | 
-| Exponential distribution      | stats      | `rate`             | `mlexp`      | $[0, \infty)$  | 
-| Lomax distribution            | extraDistr | `lambda`, `kappa`  | `mllomax`    | $[0, \infty)$  | 
-| Rayleigh distribution         | extraDistr | `sigma`            | `mlrayleigh` | $[0, \infty)$  | 
-| Gamma distribution            | stats      | `shape`,`rate`     | `mlgamma`    | $(0, \infty)$  | 
-| Weibull distribution          | stats      | `shape`,`scale`    | `mlweibull`  | $(0, \infty)$  |
-| Log-normal distribution       | stats      | `meanlog`, `sdlog` | `mllnorm`    | $(0, \infty)$  |
-| Inverse gamma distribution    | extraDistr | `alpha`, `beta`    | `mlinvgamma` | $(0, \infty)$  |
-| Beta prime distribution       | extraDistr | `shape1`, `shape2` | `mlbetapr`   | $(0, \infty)$  |
-| Inverse Gaussian distribution | statmod    | `mean`, `shape`    | `mlinvgauss` | $(0, \infty)$  |
-| Beta distibution              | stats      | `shape1`,`shape2`  | `mlbeta`     | $(0, 1)$       |
-| Kumaraswamy distribution      | extraDistr | `a`, `b`           | `mlkumar`    | $(0, 1)$       |
-| Uniform distribution          | stats      | `min`, `max`       | `mlunif`     | $[\min, \max]$ |
-| Power distribution            | extraDistr | `alpha`, `beta`    | `mlpower`    | $[0, a)$       |
-| Pareto distribution           | extraDistr | `a`, `b`           | `mlpareto`   | $[b, \infty)$  |
+| Name                          | Package    | Parameters            | Estimator      | Support        | 
+| ----------------------------- | ---------- | --------------------- | -------------- | -------------- | 
+| Cauchy distributon            | stats      | `location`,`scale`    | `mlcauchy`     | $\mathbb{R}$   | 
+| Gumbel distribution           | extraDistr | `mu`, `sigma`         | `mlgumbel`     | $\mathbb{R}$   | 
+| Laplace distribution          | extraDistr | `mu`, `sigma`         | `mllaplace`    | $\mathbb{R}$   | 
+| Logistic distributon          | stats      | `location`,`scale`    | `mllogis`      | $\mathbb{R}$   | 
+| Normal distribution           | stats      | `mean`, `sd`          | `mlnorm`       | $\mathbb{R}$   | 
+| Beta prime distribution       | extraDistr | `shape1`, `shape2`    | `mlbetapr`     | $(0, \infty)$  |
+| Exponential distribution      | stats      | `rate`                | `mlexp`        | $[0, \infty)$  | 
+| Gamma distribution            | stats      | `shape`,`rate`        | `mlgamma`      | $(0, \infty)$  | 
+| Inverse gamma distribution    | extraDistr | `alpha`, `beta`       | `mlinvgamma`   | $(0, \infty)$  |
+| Inverse Gaussian distribution | actuar     | `mean`, `shape`       | `mlinvgauss`   | $(0, \infty)$  |
+| Inverse Weibull distribution  | actuar     | `shape`, `rate`       | `mlinvweibull` | $(0, \infty)$  |
+| Log-logistic distribution     | actuar     | `shape`, `rate`       | `mlllogis`     | $(0, \infty)$  |
+| Log-normal distribution       | stats      | `meanlog`, `sdlog`    | `mllnorm`      | $(0, \infty)$  |
+| Lomax distribution            | extraDistr | `lambda`, `kappa`     | `mllomax`      | $[0, \infty)$  | 
+| Rayleigh distribution         | extraDistr | `sigma`               | `mlrayleigh`   | $[0, \infty)$  | 
+| Weibull distribution          | stats      | `shape`,`scale`       | `mlweibull`    | $(0, \infty)$  |
+| Log-gamma distribution        | actuar     | `shapelog`, `ratelog` | `mllgamma`     | $(1, \infty)$  |
+| Pareto distribution           | extraDistr | `a`, `b`              | `mlpareto`     | $[b, \infty)$  |
+| Beta distibution              | stats      | `shape1`,`shape2`     | `mlbeta`       | $(0, 1)$       |
+| Kumaraswamy distribution      | extraDistr | `a`, `b`              | `mlkumar`      | $(0, 1)$       |
+| Logit-normal                  | logitnorm  | `mu`, `sigma`         | `mllogitnorm`  | $(0, 1)$       |
+| Uniform distribution          | stats      | `min`, `max`          | `mlunif`       | $[\min, \max]$ |
+| Power distribution            | extraDistr | `alpha`, `beta`       | `mlpower`      | $[0, a)$       |
+
+This package follows a naming convention for the `ml***` functions. To access the
+documentation of the distribution associated with an `ml***` function, write `package::d***`. 
+For instance, to find the documentation for the log-gamma distribution write
+
+```{r docs, eval = FALSE}
+?actuar::dlgamma
+```
 
 ## Comments on the Distributions
 ### Beta Distribution
