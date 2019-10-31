@@ -14,27 +14,40 @@ likelihood estimation implemented in this package.
 
 These are the currently implemented distributions. 
 
-| Name                          | Package    | Parameters         | Estimator    | Support        | 
-| ----------------------------- | ---------- | ------------------ | ------------ | -------------- | 
-| Normal distribution           | stats      | `mean`, `sd`       | `mlnorm`     | $\mathbb{R}$   | 
-| Logistic distributon          | stats      | `location`,`scale` | `mllogis`    | $\mathbb{R}$   | 
-| Cauchy distributon            | stats      | `location`,`scale` | `mlcauchy`   | $\mathbb{R}$   | 
-| Gumbel distribution           | extraDistr | `mu`, `sigma`      | `mlgumbel`   | $\mathbb{R}$   | 
-| Laplace distribution          | extraDistr | `mu`, `sigma`      | `mllaplace`  | $\mathbb{R}$   | 
-| Exponential distribution      | stats      | `rate`             | `mlexp`      | $[0, \infty)$  | 
-| Lomax distribution            | extraDistr | `lambda`, `kappa`  | `mllomax`    | $[0, \infty)$  | 
-| Rayleigh distribution         | extraDistr | `sigma`            | `mlrayleigh` | $[0, \infty)$  | 
-| Gamma distribution            | stats      | `shape`,`rate`     | `mlgamma`    | $(0, \infty)$  | 
-| Weibull distribution          | stats      | `shape`,`scale`    | `mlweibull`  | $(0, \infty)$  |
-| Log-normal distribution       | stats      | `meanlog`, `sdlog` | `mllnorm`    | $(0, \infty)$  |
-| Inverse gamma distribution    | extraDistr | `alpha`, `beta`    | `mlinvgamma` | $(0, \infty)$  |
-| Beta prime distribution       | extraDistr | `shape1`, `shape2` | `mlbetapr`   | $(0, \infty)$  |
-| Inverse Gaussian distribution | statmod    | `mean`, `shape`    | `mlinvgauss` | $(0, \infty)$  |
-| Beta distibution              | stats      | `shape1`,`shape2`  | `mlbeta`     | $(0, 1)$       |
-| Kumaraswamy distribution      | extraDistr | `a`, `b`           | `mlkumar`    | $(0, 1)$       |
-| Uniform distribution          | stats      | `min`, `max`       | `mlunif`     | $[\min, \max]$ |
-| Power distribution            | extraDistr | `alpha`, `beta`    | `mlpower`    | $[0, a)$       |
-| Pareto distribution           | extraDistr | `a`, `b`           | `mlpareto`   | $[b, \infty)$  |
+| Name                          | Package    | Parameters            | Estimator      | Support        | 
+| ----------------------------- | ---------- | --------------------- | -------------- | -------------- | 
+| Cauchy distributon            | stats      | `location`,`scale`    | `mlcauchy`     | $\mathbb{R}$   | 
+| Gumbel distribution           | extraDistr | `mu`, `sigma`         | `mlgumbel`     | $\mathbb{R}$   | 
+| Laplace distribution          | extraDistr | `mu`, `sigma`         | `mllaplace`    | $\mathbb{R}$   | 
+| Logistic distributon          | stats      | `location`,`scale`    | `mllogis`      | $\mathbb{R}$   | 
+| Normal distribution           | stats      | `mean`, `sd`          | `mlnorm`       | $\mathbb{R}$   | 
+| Beta prime distribution       | extraDistr | `shape1`, `shape2`    | `mlbetapr`     | $(0, \infty)$  |
+| Exponential distribution      | stats      | `rate`                | `mlexp`        | $[0, \infty)$  | 
+| Gamma distribution            | stats      | `shape`,`rate`        | `mlgamma`      | $(0, \infty)$  | 
+| Inverse gamma distribution    | extraDistr | `alpha`, `beta`       | `mlinvgamma`   | $(0, \infty)$  |
+| Inverse Gaussian distribution | actuar     | `mean`, `shape`       | `mlinvgauss`   | $(0, \infty)$  |
+| Inverse Weibull distribution  | actuar     | `shape`, `rate`       | `mlinvweibull` | $(0, \infty)$  |
+| Log-logistic distribution     | actuar     | `shape`, `rate`       | `mlllogis`     | $(0, \infty)$  |
+| Log-normal distribution       | stats      | `meanlog`, `sdlog`    | `mllnorm`      | $(0, \infty)$  |
+| Lomax distribution            | extraDistr | `lambda`, `kappa`     | `mllomax`      | $[0, \infty)$  | 
+| Rayleigh distribution         | extraDistr | `sigma`               | `mlrayleigh`   | $[0, \infty)$  | 
+| Weibull distribution          | stats      | `shape`,`scale`       | `mlweibull`    | $(0, \infty)$  |
+| Log-gamma distribution        | actuar     | `shapelog`, `ratelog` | `mllgamma`     | $(1, \infty)$  |
+| Pareto distribution           | extraDistr | `a`, `b`              | `mlpareto`     | $[b, \infty)$  |
+| Beta distibution              | stats      | `shape1`,`shape2`     | `mlbeta`       | $(0, 1)$       |
+| Kumaraswamy distribution      | extraDistr | `a`, `b`              | `mlkumar`      | $(0, 1)$       |
+| Logit-normal                  | logitnorm  | `mu`, `sigma`         | `mllogitnorm`  | $(0, 1)$       |
+| Uniform distribution          | stats      | `min`, `max`          | `mlunif`       | $[\min, \max]$ |
+| Power distribution            | extraDistr | `alpha`, `beta`       | `mlpower`      | $[0, a)$       |
+
+This package follows a naming convention for the `ml***` functions. To access the
+documentation of the distribution associated with an `ml***` function, write `package::d***`. 
+For instance, to find the documentation for the log-gamma distribution write
+
+
+```r
+?actuar::dlgamma
+```
 
 ## Comments on the Distributions
 ### Beta Distribution
@@ -54,10 +67,12 @@ to provide no information about derivatives to `nlm`.
 | Analytic solution? | No |
 
 ### Logit-Normal Distribution
-The [logit-normal distribution](https://en.wikipedia.org/wiki/Logit-normal_distribution) 
-is such that $\log{Y}-\log(1-Y)$ is normal when $Y$ is logit-normal. Its maxmimum 
+A variable $Y$ is [logit-normal distributed](https://en.wikipedia.org/wiki/Logit-normal_distribution) 
+if it is such that $\log{Y}-\log(1-Y)$ is normal. Its maxmimum 
 likelihood estimator can be calculcated by transforming the data back the normal
 using the logit transform. 
+
+Its density function can be found in the decicated `logitnorm` package.
 
 #### Mathematics
 
@@ -70,6 +85,29 @@ In this table $G=n^{-1}\sum_{i=1}^{n}\log x_{i}$ and $H=n^{-1}\sum_{i=1}^{n}\log
 | Log-likelihood | $-\frac{n}{2}\left\{ \frac{1}{n}\left[\sum_{i=1}^{n}\frac{1}{\sigma^{2}}\left(\textrm{logit}\left(x_{i}\right)-\mu\right)^{2}\right]+2\log\sigma+\log2\pi\right\} -n\left(H+G\right)$ |
 | Analytic solution? | Yes |
 | Maximal log-likelihood | $-n\left[2+\log\widehat{\sigma}+\frac{1}{2}\log2\pi+G+H\right]$ |
+
+
+### Log-logistic Distribution.
+
+If $Y$ is such that $\log Y$ is [logistic](https://en.wikipedia.org/wiki/Logistic_distribution) then $Y$ is [log-logistic](https://en.wikipedia.org/wiki/Log-logistic_distribution). Its maximum
+likelihood estimator is found by transforming the data back to a logistic distribution and 
+then using `mllogistic`
+
+Its density function can be found in the `actuar` package.
+
+### Log-gamma Distribution.
+
+If $Y$ is such that $\log Y$ is [gamma](https://en.wikipedia.org/wiki/Gamma_distribution) then $Y$ is log-gamma. Its maximum likelihood estimator is found by  transforming the data back to a gamma distribution and 
+then using `mlgamma`
+
+Its density function can be found in the `actuar` package.
+
+### Inverse Weibull Distribution.
+
+If $Y$ is such that $Y^{-1}$ is [Weibull](https://en.wikipedia.org/wiki/Gamma_distribution) then $Y$ is Inverse Weibull. Its maximum likelihood estimator is found by  transforming the data back to a Weibull distribution and 
+then using `mlweibull`
+
+Its density function can be found in the `actuar` package.
 
 
 ## The `unvariateML` S3 Class
