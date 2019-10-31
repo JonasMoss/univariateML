@@ -4,7 +4,7 @@
 #'
 #' For the density function of the Kumaraswamy distribution see \link[extraDistr]{Kumaraswamy}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param a0 An optional starting value for the \code{a} parameter.
 #' @param rel.tol Relative accuracy requested.

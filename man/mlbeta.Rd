@@ -8,7 +8,7 @@ mlbeta(x, na.rm = FALSE, start = NULL, type = c("none", "gradient",
   "hessian"))
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 

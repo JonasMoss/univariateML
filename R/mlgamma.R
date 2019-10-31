@@ -4,7 +4,7 @@
 #'
 #' For the density function of the Gamma distribution see \link[stats]{GammaDist}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param rel.tol Relative accuracy requested.
 #' @param iterlim A positive integer specifying the maximum number of

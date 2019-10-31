@@ -7,7 +7,7 @@
 #'
 #' For the density function of the logistic distribution see \link[stats]{Logistic}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @return \code{mllogis} returns an object of \link[base]{class} \code{univariateML}. This
 #'    is a named numeric vector with maximum likelihood estimates for \code{location} and \code{scale} and the following attributes:

@@ -4,7 +4,7 @@
 #'
 #' For the density function of the exponential distribution see \link[stats]{Exponential}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed? If \code{FALSE},
 #'   the function fails when \code{x} contains missing values.
 #' @return \code{mlexp} returns an object of \link[base]{class} \code{univariateML}. This

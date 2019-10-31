@@ -6,7 +6,7 @@
 #'
 #' For the density function of the Pareto distribution see \link[extraDistr]{Pareto}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @return \code{mlpareto} returns an object of \link[base]{class} \code{univariateML}. This
 #'    is a named numeric vector with maximum likelihood estimates for \code{a} and \code{b} and the following attributes:

@@ -7,7 +7,7 @@
 #'
 #' For the density function of the logit-normal distribution see \link[logitnorm]{dlogitnorm}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @return \code{mllogitnorm} returns an object of \link[base]{class} \code{univariateML}. This
 #'    is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{sigma} and the following attributes:

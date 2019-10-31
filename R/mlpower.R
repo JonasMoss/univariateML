@@ -12,7 +12,7 @@
 #'     the maximum likelihood estimator. To overcome this problem, we add
 #'     a possibly user specified \code{epsilon} to \code{max(x)}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param epsilon Positive number added to \code{max(x)} as an approximation
 #'    to the maximum likelihood.

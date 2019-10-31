@@ -4,7 +4,7 @@
 #'
 #' For the density function of the logistic distribution see \link[stats]{Uniform}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @return \code{mlunif} returns an object of \link[base]{class} \code{univariateML}. This
 #'    is a named numeric vector with maximum likelihood estimates for \code{min} and \code{max} and the following attributes:

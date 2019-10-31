@@ -6,7 +6,7 @@
 #'
 #' For the density function of the normal distribution see \link[stats]{Normal}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @return \code{mlnorm} returns an object of \link[base]{class} \code{univariateML}. This
 #'    is a named numeric vector with maximum likelihood estimates for \code{mean} and \code{sd} and the following attributes:

@@ -6,7 +6,7 @@
 #'
 #' For the density function of the Beta prime distribution see \link[extraDistr]{BetaPrime}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param start Optional starting parameter values for the minimization.
 #' Passed to the \code{stats::nlm} function.

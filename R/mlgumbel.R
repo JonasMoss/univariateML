@@ -4,7 +4,7 @@
 #'
 #' For the density function of the Gumbel distribution see \link[extraDistr]{Gumbel}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param sigma0 An optional starting value for the \code{sigma} parameter.
 #' @param rel.tol Relative accuracy requested.

@@ -7,7 +7,7 @@
 mlexp(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed? If \code{FALSE},
 the function fails when \code{x} contains missing values.}

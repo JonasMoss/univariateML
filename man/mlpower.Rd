@@ -7,7 +7,7 @@
 mlpower(x, na.rm = FALSE, epsilon = .Machine$double.eps^0.5)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 

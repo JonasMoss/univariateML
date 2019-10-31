@@ -5,7 +5,7 @@
 #'
 #' For the density function of the log normal distribution see \link[actuar]{Loggamma}.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param rel.tol Relative accuracy; passed to \code{mlgamma}.
 #' @param iterlim A positive integer specifying the maximum number of

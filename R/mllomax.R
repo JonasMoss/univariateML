@@ -7,7 +7,7 @@
 #' the parameterization of the function which does not take into account that
 #' it converges to an exponential when ### fill in with refs. ###
 #'
-#' @param x The data from which the estimate is to be computed.
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param start An optional starting value for the \code{lambda} parameter.
 #'    Defaults to \code{median(x)}.
