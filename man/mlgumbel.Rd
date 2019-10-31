@@ -20,7 +20,14 @@ mlgumbel(x, na.rm = FALSE, sigma0 = 1,
 iterations to be performed before the program is terminated.}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
+\code{mlgumbel} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{s} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 \code{shape} and \code{sigma}.
 }
 \description{

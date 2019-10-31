@@ -13,8 +13,14 @@ mlexp(x, na.rm = FALSE)
 the function fails when \code{x} contains missing values.}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{rate}.
+\code{mlexp} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{rate} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The maximum likelihood estimate of \code{rate} is the inverse sample mean.

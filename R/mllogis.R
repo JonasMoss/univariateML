@@ -9,8 +9,14 @@
 #'
 #' @param x The data from which the estimate is to be computed.
 #' @param na.rm logical. Should missing values be removed?
-#' @return A named numeric vector with maximum likelihood estimates for
-#' \code{location} and \code{scale}.
+#' @return \code{mllogis} returns an object of \link[base]{class} \code{univariateML}. This
+#'    is a named numeric vector with maximum likelihood estimates for \code{location} and \code{scale} and the following attributes:
+#'     \item{\code{model}}{The name of the model.}
+#'     \item{\code{density}}{The density associated with the estimates.}
+#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
+#'     \item{\code{support}}{The support of the density.}
+#'     \item{\code{n}}{The number of observations.}
+#'     \item{\code{call}}{The call as captured my \code{match.call}}
 #' @examples mllogis(precip)
 #' @seealso \link[stats]{Logistic} for the Logistic density, \link[stats]{nlm} for the
 #'   optimizer this function uses.

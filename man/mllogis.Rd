@@ -12,8 +12,14 @@ mllogis(x, na.rm = FALSE)
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{location} and \code{scale}.
+\code{mllogis} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{location} and \code{scale} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 Calculates the estimates using \code{nlm} and an exponential transform of the

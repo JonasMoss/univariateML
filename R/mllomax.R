@@ -15,8 +15,14 @@
 #' @param iterlim A positive integer specifying the maximum number of
 #' iterations to be performed before the program is terminated.
 #'
-#' @return A named numeric vector with maximum likelihood estimates for
-#' \code{lambda} and \code{kappa}.
+#' @return \code{mllomax} returns an object of \link[base]{class} \code{univariateML}. This
+#'    is a named numeric vector with maximum likelihood estimates for \code{lambda} and \code{kappa} and the following attributes:
+#'     \item{\code{model}}{The name of the model.}
+#'     \item{\code{density}}{The density associated with the estimates.}
+#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
+#'     \item{\code{support}}{The support of the density.}
+#'     \item{\code{n}}{The number of observations.}
+#'     \item{\code{call}}{The call as captured my \code{match.call}}
 #' @seealso \link[extraDistr]{Lomax} for the Lomax density.
 #' @references Kleiber, Christian; Kotz, Samuel (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley Series in Probability and Statistics, 470, John Wiley & Sons, p. 60
 #' @examples set.seed(3)

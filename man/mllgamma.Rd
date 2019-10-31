@@ -19,8 +19,14 @@ iterations to be performed before the program is terminated. Passed to
 \code{mlgamma}.}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{shapelog} and \code{ratelog}.
+\code{mllgamma} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{shapelog} and \code{ratelog} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The maximum likelihood estimate of \code{shapelog} and \code{ratelog} are calculated

@@ -16,8 +16,14 @@
 #' @param na.rm logical. Should missing values be removed?
 #' @param epsilon Positive number added to \code{max(x)} as an approximation
 #'    to the maximum likelihood.
-#' @return A named numeric vector with maximum likelihood estimates for
-#'     \code{alpha} and \code{beta}.
+#' @return \code{mlpower} returns an object of \link[base]{class} \code{univariateML}. This
+#'    is a named numeric vector with maximum likelihood estimates for \code{alpha} and \code{beta} and the following attributes:
+#'     \item{\code{model}}{The name of the model.}
+#'     \item{\code{density}}{The density associated with the estimates.}
+#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
+#'     \item{\code{support}}{The support of the density.}
+#'     \item{\code{n}}{The number of observations.}
+#'     \item{\code{call}}{The call as captured my \code{match.call}}
 #' @examples mlpower(precip)
 #' @seealso \link[extraDistr]{PowerDist} for the power density. \link{Pareto} for
 #'    the closely related Pareto distribution.

@@ -19,8 +19,14 @@ Passed to the \code{stats::nlm} function.}
 passed to \code{stats::nlm}.}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{shape1} and \code{shap2}.
+\code{mlbetapr} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{shape1} and \code{shape2} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 This function does not estimate the scale parameter for the \code{BetaPrime}

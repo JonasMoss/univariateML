@@ -19,8 +19,14 @@ Passed to the \code{stats::nlm} function.}
 \code{"none"} should be passed to \code{stats::nlm}.}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
- \code{shape1} and \code{shape2}.
+\code{mlbeta} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{shape1} and \code{shape2} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 Uses \code{stat::nlm} to estimate the parameters of the Beta distribution.
