@@ -4,7 +4,7 @@
 \alias{mlweibull}
 \title{Weibull distribution maximum likelihood estimation}
 \usage{
-mlweibull(x, na.rm = FALSE, shape0 = 2,
+mlweibull(x, na.rm = FALSE, shape0 = 1,
   rel.tol = .Machine$double.eps^0.25, iterlim = 100)
 }
 \arguments{
