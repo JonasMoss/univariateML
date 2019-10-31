@@ -35,7 +35,7 @@ mlinvweibull = function(x, na.rm = FALSE) {
 
   class(object) = "univariateML"
   attr(object, "model") = "InverseWeibull"
-  attr(object, "density") = "actuary::dinvweibull"
+  attr(object, "density") = "actuar::dinvweibull"
   attr(object, "logLik") =  unname(n*(log(shape) + shape*(log(scale) - G) -
                                         scale^shape*Ma - G))
   attr(object, "support") = c(0, Inf)

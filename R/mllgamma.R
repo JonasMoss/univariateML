@@ -36,7 +36,7 @@ mllgamma = function(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
   K = mean(log(y))
   names(object) = c("shapelog", "ratelog")
   attr(object, "model") = "Loggamma"
-  attr(object, "density") = "actuary::dlgamma"
+  attr(object, "density") = "actuar::dlgamma"
   attr(object, "support") = c(1, Inf)
   attr(object, "logLik") = unname(n*(shapelog*log(ratelog) - log(gamma(shapelog)) +
                                   (shapelog - 1)*K - (ratelog + 1)*L))
