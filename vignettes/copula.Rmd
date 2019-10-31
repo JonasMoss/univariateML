@@ -44,7 +44,7 @@ AICs("age")
 ```
 
 But we are most interested in the functions with minimal AIC:
-```{r, full_call_diamter}
+```{r, partial_call}
 sapply(X = c("diameter", "height", "shell_weight", "age"), 
        FUN = function(x) names(AICs(x))[1])
 ```
