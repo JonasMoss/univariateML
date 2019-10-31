@@ -1,11 +1,13 @@
 ---
-title: "Implemented Densities"
+title: "Distributions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Distribution Details}
+  %\VignetteIndexEntry{Distribution}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
+
+
 
 These are the currently implemented distributions. 
 
@@ -44,7 +46,7 @@ For instance, to find the documentation for the log-gamma distribution write
 ?actuar::dlgamma
 ```
 
-## Comments
+## Problematic Distributions
 ### Lomax Distribution
 The maximum likelihood estimator of the [Lomax distribution](https://en.wikipedia.org/wiki/Lomax_distribution) frequently fails to 
 exist. For assume $\kappa\to\lambda^{-1}\overline{x}^{-1}$ and $\lambda\to0$. The density $\lambda\kappa\left(1+\lambda x\right)^{-\left(\kappa+1\right)}$
@@ -56,7 +58,7 @@ the density converges to an exponential density.
 ```r
 eps = 0.1
 x = seq(0, 3, length.out = 100)
-plot(dexp, 0, 3)
+plot(dexp, 0, 3, xlab = "x", ylab = "Density", main = "Exponential and Lomax")
 lines(x, extraDistr::dlomax(x, lambda = eps, kappa = 1/eps), col = "red")
 ```
 

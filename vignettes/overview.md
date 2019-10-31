@@ -7,6 +7,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
 When dealing with univariate data you want to do one or more of
 * Find a good model for the data.
 * Estimate parameters for your candidate models.
@@ -54,7 +56,12 @@ hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
 
 ![plot of chunk egypt](figure/egypt-1.png)
 
-# Comparing Many Models with AIC
+## Comparing Many Models with AIC
+The [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) is a handy 
+and easy to use model selection tool, as it only depends on the loglikelihood and
+number of parameters of the models. The \code{AIC} generic in `R` can take multiple
+models, and the lower the \code{AIC} the better.
+
 Since all the data is positive we will only try densities support on the positive
 half-line. 
 
@@ -87,7 +94,8 @@ AIC(mlbetapr(egypt$age),
 ```
 
 The [Weibull](https://en.wikipedia.org/wiki/Weibull_distribution) and
-[Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) models stand out.
+[Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) models stand out with
+an AIC far below the other candidate models.
 
 To see the parameter estimates of `mlweibull(egypt$age)` just print it:
 
@@ -124,8 +132,8 @@ summary(mlweibull(egypt$age))
 ## Log-likelihood:  -613.1144
 ```
 
-# Quantile-quantile Plots
-Now we will investigate how the two models differ with a quantile-quantile plots, or Q-Q plots for short.
+## Quantile-quantile Plots
+Now we will investigate how the two models differ with [https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot](quantile-quantile plots), or Q-Q plots for short.
 
 
 ```r
@@ -138,11 +146,11 @@ qqmlline(egypt$age, mlgamma, datax = TRUE, col = "red")
 
 ![plot of chunk qqplots](figure/qqplots-1.png)
 
-The QQ plot shows that neither Weibull nor Gamma fits the data very well.
+The Q-Q plot shows that neither Weibull nor Gamma fits the data very well.
 
-If you prefer PP plots to QQ plots take a look at `?ppplotml` instead. 
+If you prefer P-P plots to Q-Q plots take a look at `?ppplotml` instead. 
 
-# Plot Densities
+## Plot Densities
 
 Use the `plot`, `lines` and `points` generics to plot the densities.
 
@@ -157,9 +165,10 @@ rug(egypt$age)
 ![plot of chunk plot_example](figure/plot_example-1.png)
 
 
-# Confidence Intervals with Parametric Bootstrap
+## Confidence Intervals with Parametric Bootstrap
 
-You can use parametric bootstrap to calculate confidence intervals using either
+Now we want to get an idea about the uncertainties of our model parameters. 
+Do do this we can do a parametric bootstrap to calculate confidence intervals using either
 `bootstrapml` or `confint`. While `bootstrapml` allows you to calculate any
 functional of the parameters and manipulate them afterwards, `confint` is restricted
 to the main parameters of the model.
@@ -172,8 +181,8 @@ bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
 
 ```
 ##            2.5%     97.5%
-## shape  1.248513  1.593447
-## scale 29.634274 37.551923
+## shape  1.247094  1.602796
+## scale 29.677225 37.611388
 ```
 
 ```r
@@ -182,8 +191,8 @@ bootstrapml(mlgamma(egypt$age))
 
 ```
 ##             2.5%      97.5%
-## shape 1.31899493 2.04927946
-## rate  0.04144207 0.06894402
+## shape 1.28831004 2.04744768
+## rate  0.04091899 0.06916701
 ```
 
 These confidence intervals are not directly comparable. That is, the `scale` parameter in
@@ -195,13 +204,12 @@ The mean of the Weibull distribution with parameters `shape` and `scale` is
 Gamma distribution with parameters `shape` and `rate` is
 `shape/rate`. 
 
-The `probs` argument can be used to modify the limits of confidence interval. No
-we will calculate two 90% confidence intervals for the mean. One assumes the
-Weibull distribution, one assumes the Gamma distribution.
+The `probs` argument can be used to modify the limits of confidence interval. Now
+we will calculate two 90% confidence intervals for the mean. 
 
 
 ```r
-# Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
+# Calculate two-sided 90% confidence intervals for the mean of a Weibull.
 bootstrapml(mlweibull(egypt$age), 
             map = function(x) x[2]*gamma(1 + 1/x[1]), 
             probs = c(0.05, 0.95))
@@ -209,10 +217,11 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.62647 33.74531
+## 27.70631 33.86676
 ```
 
 ```r
+# Calculate two-sided 90% confidence intervals for the mean of a Gamma.
 bootstrapml(mlgamma(egypt$age), 
             map = function(x) x[1]/x[2],
             probs = c(0.05, 0.95))
@@ -220,10 +229,10 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.33740 34.16127
+## 27.29624 33.89027
 ```
 
-We could also be interested in the quantiles of the underlying distribution,
+We are be interested in the quantiles of the underlying distribution,
 for instance the median:
 
 
@@ -236,7 +245,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 23.08245 29.03518
+## 22.93239 28.88371
 ```
 
 ```r
@@ -247,7 +256,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 22.03031 27.56861
+## 21.77523 27.57328
 ```
 
 We can also plot the bootstrap samples.
@@ -265,7 +274,7 @@ hist(bootstrapml(mlweibull(egypt$age),
 ![plot of chunk bootstrap_example_historgram](figure/bootstrap_example_historgram-1.png)
 
 
-# Density, CDF, quantiles and random variate generation
+## Density, CDF, quantiles and random variate generation
 
 The functions `dml`, `pml`, `qml` and `rml` can be used to calculate densities,
 cumulative probabilities, quantiles, and generate random variables. Here are

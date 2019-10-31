@@ -41,7 +41,12 @@ head(egypt)
 hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
 ```
 
-# Comparing Many Models with AIC
+## Comparing Many Models with AIC
+The [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) is a handy 
+and easy to use model selection tool, as it only depends on the loglikelihood and
+number of parameters of the models. The \code{AIC} generic in `R` can take multiple
+models, and the lower the \code{AIC} the better.
+
 Since all the data is positive we will only try densities support on the positive
 half-line. 
 
@@ -59,7 +64,8 @@ AIC(mlbetapr(egypt$age),
 ```
 
 The [Weibull](https://en.wikipedia.org/wiki/Weibull_distribution) and
-[Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) models stand out.
+[Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) models stand out with
+an AIC far below the other candidate models.
 
 To see the parameter estimates of `mlweibull(egypt$age)` just print it:
 ```{r print}
@@ -72,8 +78,8 @@ mlweibull(egypt$age)
 summary(mlweibull(egypt$age))
 ```
 
-# Quantile-quantile Plots
-Now we will investigate how the two models differ with a quantile-quantile plots, or Q-Q plots for short.
+## Quantile-quantile Plots
+Now we will investigate how the two models differ with [https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot](quantile-quantile plots), or Q-Q plots for short.
 
 ```{r, qqplots}
 qqmlplot(egypt$age, mlweibull, datax = TRUE, main = "QQ Plot for Ancient Egypt")
@@ -83,11 +89,11 @@ qqmlline(egypt$age, mlweibull, datax = TRUE)
 qqmlline(egypt$age, mlgamma, datax = TRUE, col = "red")
 ```
 
-The QQ plot shows that neither Weibull nor Gamma fits the data very well.
+The Q-Q plot shows that neither Weibull nor Gamma fits the data very well.
 
-If you prefer PP plots to QQ plots take a look at `?ppplotml` instead. 
+If you prefer P-P plots to Q-Q plots take a look at `?ppplotml` instead. 
 
-# Plot Densities
+## Plot Densities
 
 Use the `plot`, `lines` and `points` generics to plot the densities.
 
@@ -100,9 +106,10 @@ rug(egypt$age)
 ```
 
 
-# Confidence Intervals with Parametric Bootstrap
+## Confidence Intervals with Parametric Bootstrap
 
-You can use parametric bootstrap to calculate confidence intervals using either
+Now we want to get an idea about the uncertainties of our model parameters. 
+Do do this we can do a parametric bootstrap to calculate confidence intervals using either
 `bootstrapml` or `confint`. While `bootstrapml` allows you to calculate any
 functional of the parameters and manipulate them afterwards, `confint` is restricted
 to the main parameters of the model.
@@ -122,21 +129,21 @@ The mean of the Weibull distribution with parameters `shape` and `scale` is
 Gamma distribution with parameters `shape` and `rate` is
 `shape/rate`. 
 
-The `probs` argument can be used to modify the limits of confidence interval. No
-we will calculate two 90% confidence intervals for the mean. One assumes the
-Weibull distribution, one assumes the Gamma distribution.
+The `probs` argument can be used to modify the limits of confidence interval. Now
+we will calculate two 90% confidence intervals for the mean. 
 
 ```{r bootstrap_example_mean, echo = TRUE}
-# Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
+# Calculate two-sided 90% confidence intervals for the mean of a Weibull.
 bootstrapml(mlweibull(egypt$age), 
             map = function(x) x[2]*gamma(1 + 1/x[1]), 
             probs = c(0.05, 0.95))
+# Calculate two-sided 90% confidence intervals for the mean of a Gamma.
 bootstrapml(mlgamma(egypt$age), 
             map = function(x) x[1]/x[2],
             probs = c(0.05, 0.95))
 ```
 
-We could also be interested in the quantiles of the underlying distribution,
+We are be interested in the quantiles of the underlying distribution,
 for instance the median:
 
 ```{r bootstrap_example_median, echo = TRUE}
@@ -162,7 +169,7 @@ hist(bootstrapml(mlweibull(egypt$age),
 ```
 
 
-# Density, CDF, quantiles and random variate generation
+## Density, CDF, quantiles and random variate generation
 
 The functions `dml`, `pml`, `qml` and `rml` can be used to calculate densities,
 cumulative probabilities, quantiles, and generate random variables. Here are
