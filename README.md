@@ -35,7 +35,7 @@ devtools::install_github("JonasMoss/univariateML")
 
 ## Usage
 
-The core of `univariateML` are the `ml***` functions, where `****` is a
+The core of `univariateML` are the `ml***` functions, where `***` is a
 distribution suffix such as `norm`, `gamma`, or `weibull`.
 
 ``` r
@@ -59,11 +59,12 @@ lines(mlweibull(egypt$age))
 ## Documentation
 
 For an overview of the package and its features see the [overview
-vignette](/vignettes/overview.html). For a list of implemented densities
-see the start of the [details vignette](/vignettes/distributions.html).
+vignette](https://univariateml.netlify.com/articles/overview.html). For
+a list of implemented densities see the start of the [distributions
+vignette](https://univariateml.netlify.com/articles/distributions.html).
 For an illustration of how this package can make an otherwise long and
 laborious process much simpler, see the [copula
-vignette](/vignettes/copula.html).
+vignette](https://univariateml.netlify.com/articles/copula.html).
 
 ## How to Contribute or Get Help
 
@@ -78,4 +79,4 @@ likelihood estimator to this package please read [this page
 first](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
 
 This project follows a [Contributor Code of
-Conduct](/code-of-conduct.md).
+Conduct](/CODE-OF-CONDUCT.md).

@@ -2,7 +2,7 @@
 title: "Distributions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Distribution}
+  %\VignetteIndexEntry{Distributions}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,10 +15,10 @@ These are the currently implemented distributions.
 
 | Name                          | Package    | Parameters            | Estimator      | Support        | 
 | ----------------------------- | ---------- | --------------------- | -------------- | -------------- | 
-| Cauchy distributon            | stats      | `location`,`scale`    | `mlcauchy`     | $\mathbb{R}$   | 
+| Cauchy distribution            | stats      | `location`,`scale`    | `mlcauchy`     | $\mathbb{R}$   | 
 | Gumbel distribution           | extraDistr | `mu`, `sigma`         | `mlgumbel`     | $\mathbb{R}$   | 
 | Laplace distribution          | extraDistr | `mu`, `sigma`         | `mllaplace`    | $\mathbb{R}$   | 
-| Logistic distributon          | stats      | `location`,`scale`    | `mllogis`      | $\mathbb{R}$   | 
+| Logistic distribution          | stats      | `location`,`scale`    | `mllogis`      | $\mathbb{R}$   | 
 | Normal distribution           | stats      | `mean`, `sd`          | `mlnorm`       | $\mathbb{R}$   | 
 | Beta prime distribution       | extraDistr | `shape1`, `shape2`    | `mlbetapr`     | $(0, \infty)$  |
 | Exponential distribution      | stats      | `rate`                | `mlexp`        | $[0, \infty)$  | 
@@ -33,7 +33,7 @@ These are the currently implemented distributions.
 | Weibull distribution          | stats      | `shape`,`scale`       | `mlweibull`    | $(0, \infty)$  |
 | Log-gamma distribution        | actuar     | `shapelog`, `ratelog` | `mllgamma`     | $(1, \infty)$  |
 | Pareto distribution           | extraDistr | `a`, `b`              | `mlpareto`     | $[b, \infty)$  |
-| Beta distibution              | stats      | `shape1`,`shape2`     | `mlbeta`       | $(0, 1)$       |
+| Beta distribution              | stats      | `shape1`,`shape2`     | `mlbeta`       | $(0, 1)$       |
 | Kumaraswamy distribution      | extraDistr | `a`, `b`              | `mlkumar`      | $(0, 1)$       |
 | Logit-normal                  | logitnorm  | `mu`, `sigma`         | `mllogitnorm`  | $(0, 1)$       |
 | Uniform distribution          | stats      | `min`, `max`          | `mlunif`       | $[\min, \max]$ |

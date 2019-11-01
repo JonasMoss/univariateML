@@ -7,10 +7,10 @@
 \format{A \link[tibble]{tibble} with 4,177 observations and 9 variables:
   \describe{
     \item{sex}{Sex of the abolone, \code{F} is female, \code{M} male, and \code{I} infant.}
-    \item{length}{Longest shell measurement.}
-    \item{diameter}{Diameter perpendicular to length.}
-    \item{height}{Height with with meat in shell.}
-    \item{whole_weight}{Grams	whole abalone.}
+    \item{length}{Longest shell measurement in mm.}
+    \item{diameter}{Diameter (in mm) perpendicular to length.}
+    \item{height}{Height (in mm) with with meat in shell.}
+    \item{whole_weight}{Grams whole abalone.}
     \item{shucked_weight}{Grams weight of meat.}
     \item{viscera_weight}{Grams gut weight (after bleeding).}
     \item{shell_weight}{Grams after being dried.}
