@@ -6,6 +6,9 @@ dist: trusty
 cache: packages
 latex: false
 
+apt_packages:
+  - libgsl-dev
+  
 jobs:
   include:
   - r: devel
