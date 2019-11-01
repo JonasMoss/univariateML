@@ -10,7 +10,7 @@ apt_packages:
   - libgsl-dev
   
 brew_packages: 
-  - libgsl-dev
+  - gsl
   
 jobs:
   include:
