@@ -21,3 +21,5 @@
 ^codecov\.yml$
 figure$
 cache$
+^_pkgdown\.yml$
+^pkgdown$
