@@ -33,7 +33,10 @@ From inside `R`, use the following command:
 devtools::install_github("JonasMoss/univariateML")
 ```
 
-## Example Usage
+## Usage
+
+The core of `univariateML` are the `ml***` functions, where `****` is a
+distribution suffix such as `norm`, `gamma`, or `weibull`.
 
 ``` r
 library("univariateML")
@@ -42,6 +45,9 @@ mlweibull(egypt$age)
 #>  shape   scale  
 #>  1.404  33.564
 ```
+
+Now we can visually assess the fit of the Weibull model to the `egypt`
+data with a plot.
 
 ``` r
 hist(egypt$age, freq = FALSE, xlab = "Mortality", main = "Egypt")
@@ -72,4 +78,4 @@ likelihood estimator to this package please read [this page
 first](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
 
 This project follows a [Contributor Code of
-Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md).
+Conduct](/code-of-conduct.md).
