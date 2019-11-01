@@ -15,6 +15,7 @@
 ^paper$
 ^todo.txt$
 ^docs$
+^CODE-OF-CONDUCT.md$
 ^workspace$
 ^data_raw$
 ^univariateML.Rproj$
