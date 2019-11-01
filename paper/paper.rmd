@@ -31,7 +31,7 @@ densities [@johnson1970continuous, Chapter 17 & 21].
 ```{r figure, height = 9, width = 9}
 # install.packages("univariateML")
 library("univariateML")
-hist(egypt$age, freq = FALSE, main = "Mortality in Egypt", xlab = "Mortality")
+hist(egypt$age, freq = FALSE, main = "Mortality", xlab = "Mortality")
 lines(mlweibull(egypt$age)) # Plots a Weibull fit.
 lines(mlgamma(egypt$age), col = "red")  # Plots a Gamma fit.
 ```

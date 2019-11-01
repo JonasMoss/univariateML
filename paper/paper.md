@@ -36,7 +36,7 @@ of the Weibull and Gamma densities (Johnson, Kotz, and Balakrishnan
 ``` r
 # install.packages("univariateML")
 library("univariateML")
-hist(egypt$age, freq = FALSE, main = "Mortality in Egypt", xlab = "Mortality")
+hist(egypt$age, freq = FALSE, main = "Mortality", xlab = "Mortality")
 lines(mlweibull(egypt$age)) # Plots a Weibull fit.
 lines(mlgamma(egypt$age), col = "red")  # Plots a Gamma fit.
 ```
@@ -48,8 +48,7 @@ data best. This can be done using tools of model selection such as the
 `AIC` (Akaike 1998).
 
 ``` r
-AIC(mlweibull(egypt$age),
-    mlgamma(egypt$age))
+AIC(mlweibull(egypt$age), mlgamma(egypt$age))
 # >                      df      AIC
 # > mlweibull(egypt$age)  2 1230.229
 # > mlgamma(egypt$age)    2 1234.772
