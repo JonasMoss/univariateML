@@ -40,7 +40,7 @@ lines(mlgamma(egypt$age), col = "red")  # Plots a Gamma fit.
 
 ![Egypt mortality data](paper_files/figure-gfm/figure-1.png)
 
-Another natural question is to ask which among several models fits the
+Another natural question to ask is which among several models fits the
 data best. This can be done using tools of model selection such as the
 `AIC` (Akaike 1998).
 
