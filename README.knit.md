@@ -6,13 +6,7 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-"
-)
-```
+
 
 # univariateML <img src="man/figures/logo.png" align="right" width="100" height="70" />
 [![Build Status](https://travis-ci.org/JonasMoss/univariateML.svg?branch=master)](https://travis-ci.org/JonasMoss/univariateML)
@@ -20,11 +14,7 @@ knitr::opts_chunk$set(
 [![Coverage Status](https://codecov.io/gh/JonasMoss/univariateML/branch/master/graph/badge.svg)](https://codecov.io/gh/JonasMoss/univariateML?branch=master)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)`
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(out.width='750px', dpi=200)
-set.seed(313)
-```
+
 
 ## Overview
 An `R`-package for fast, easy, and reliable maximum likelihood estimation for a 
@@ -35,7 +25,8 @@ by `AIC` and `BIC`, and confidence sets through the parametric bootstrap with
 
 ## Installation
 Use the following command from inside `R`:
-```{r install, echo = TRUE, eval = FALSE}
+
+```r
 # install.packages("devtools")
 devtools::install_github("JonasMoss/univariateML")
 ```
@@ -45,18 +36,25 @@ devtools::install_github("JonasMoss/univariateML")
 The core of `univariateML` are the `ml***` functions, where `***` is a 
 distribution suffix such as `norm`, `gamma`, or `weibull`.
 
-```{R, mlweibull}
+
+```r
 library("univariateML")
 mlweibull(egypt$age)
+#> Maximum likelihood estimates for the Weibull model 
+#>  shape   scale  
+#>  1.404  33.564
 ```
 
 Now we can visually assess the fit of the Weibull model to the `egypt` data with
 a plot.
 
-```{R, weibull_plot}
+
+```r
 hist(egypt$age, freq = FALSE, xlab = "Mortality", main = "Egypt")
 lines(mlweibull(egypt$age))
 ```
+
+<img src="man/figures/README-weibull_plot-1.png" width="750px" />
 
 ## Documentation
 For an overview of the package and its features see the 
