@@ -2,9 +2,15 @@
 % Please edit documentation in R/generics.R
 \name{plot.univariateML}
 \alias{plot.univariateML}
+\alias{lines.univariateML}
+\alias{points.univariateML}
 \title{Plot, Lines and Points Methods for Maximum Likelihood Estimates}
 \usage{
 \method{plot}{univariateML}(x, range = NULL, ...)
+
+\method{lines}{univariateML}(x, range = NULL, ...)
+
+\method{points}{univariateML}(x, range = NULL, ...)
 }
 \arguments{
 \item{x}{a \code{univariateML} object.}
@@ -14,8 +20,13 @@
 \item{...}{parameters passed to \code{plot}, \code{lines}, or \code{points}.}
 }
 \value{
-Invisible copy of \code{x}.
+An invisible copy of \code{x}.
 }
 \description{
-The \code{plot} method for \code{univariateML} objects.
+The \code{plot}, \code{lines}, and \code{points} methods for \code{univariateML} objects.
+}
+\examples{
+plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")
+lines(mlgamma(datasets::precip), lty = 2)
+rug(datasets::precip)
 }

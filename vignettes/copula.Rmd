@@ -1,0 +1,82 @@
+---
+title: "Vine Copula Modeling"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: copula.bib
+---
+
+In this vignette we will do some copula modeling.
+
+Following @ko2019focused we will take a look at three measurements of the
+abalones, namely `diameter`, `height`, `shell_weight` and `rings`. 
+
+```{r}
+library("univariateML")
+
+data = dplyr::filter(abalone, height < 0.5)
+data$age = data$rings + 1.5
+
+AICs = function(variable) {
+  
+  x = data[[variable]]
+  
+  models = c("mlgumbel", "mllaplace", "mllogis", "mlnorm", "mlexp", "mlgamma", 
+             "mlinvgamma", "mlinvgauss", "mlinvweibull", "mlllogis", "mllnorm", 
+             "mlrayleigh", "mlweibull", "mllgamma", "mlpareto", "mlbeta", "mlkumar",
+             "mllogitnorm")
+  
+  FUN = function(name, x = NULL) tryCatch(expr = eval(call(name, x)), 
+                                                 error = function(e) NULL)
+
+  fits = Filter(Negate(is.null), sapply(X = models, FUN = FUN, x = x))
+  sort(sapply(fits, AIC))
+}
+
+```
+
+Calling this function returns a 
+
+```{r, full_call_diamter}
+AICs("age")
+```
+
+But we are most interested in the functions with minimal AIC:
+```{r, partial_call}
+sapply(X = c("diameter", "height", "shell_weight", "age"), 
+       FUN = function(x) names(AICs(x))[1])
+```
+
+Now we use the `RVineCopSelect` from the package `VineCopula` on the transformed
+margins of `abelone`.
+
+We will examine two elliptical copulas and three Archimedean copulas. The elliptical 
+copulas are the Gaussian copula and the *t*-copula, whule the Archimedean copulas
+are the Joe copula, the Clayton copula, and the Gumbel copula.
+
+
+```{r, AIC_copula, warning = FALSE, cache = TRUE}
+y = as.matrix(dplyr::transmute(data, 
+                     diameter = pml(diameter, mlkumar(diameter)),
+                     height = pml(height, mlnorm(height)),
+                     shell_weight = pml(shell_weight, mlweibull(shell_weight)),
+                     age = pml(age, mllnorm(rings))))
+
+copulas = list(normal = copula::normalCopula(dim = 4, dispstr = "un"),
+               t = copula::tCopula(dim = 4, dispstr = "un"),
+               joe = copula::joeCopula(dim = 4),
+               clayton = copula::claytonCopula(dim = 4),
+               gumbel = copula::gumbelCopula(dim = 4))
+
+fits = sapply(copulas,
+              function(x) copula::fitCopula(x, data = y, method = "mpl"))
+
+sapply(fits, AIC)
+```
+
+The *t*-copula is the clear winner of the AIC competition. The Archimedean 
+copulas perform particularily poorly.
+
+## References

@@ -1,16 +1,28 @@
-#' Estimates the parameter of the Beta distribution using maximum likelihood
+#' Beta distribution maximum likelihood estimation
 #'
 #' Uses \code{stat::nlm} to estimate the parameters of the Beta distribution.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' For the density function of the Beta distribution see \link[stats]{Beta}.
+#'
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param start Optional starting parameter values for the minimization.
-#' Passed to the \code{stats::nlm} function.
-#' @param type Whether a dedicated \code{gradient} or \code{hessian} should be
-#' passed to \code{stats::nlm}.
-#' @return A named numeric vector with maximum likelihood estimates for
-#' \code{shape1} and \code{shap2}.
+#'   Passed to the \code{stats::nlm} function.
+#' @param type Whether a dedicated \code{"gradient"}, \code{"hessian"}, or
+#'  \code{"none"} should be passed to \code{stats::nlm}.
+#' @return \code{mlbeta} returns an object of \link[base]{class} \code{univariateML}. This
+#'    is a named numeric vector with maximum likelihood estimates for \code{shape1} and \code{shape2} and the following attributes:
+#'     \item{\code{model}}{The name of the model.}
+#'     \item{\code{density}}{The density associated with the estimates.}
+#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
+#'     \item{\code{support}}{The support of the density.}
+#'     \item{\code{n}}{The number of observations.}
+#'     \item{\code{call}}{The call as captured my \code{match.call}}
 #' @details For \code{type}, the option \code{none} is fastest.
+#' @seealso \link[stats]{Beta} for the Beta density, \link[stats]{nlm} for the
+#'   optimizer this function uses.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
+#' @examples AIC(mlbeta(USArrests$Rape/100))
 #' @export
 
 mlbeta = function(x, na.rm = FALSE, start = NULL,

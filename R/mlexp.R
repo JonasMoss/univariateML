@@ -1,11 +1,23 @@
-#' Estimates the parameter of the exponential distribution using maximum likelihood
+#' Exponential distribution maximum likelihood estimation
 #'
 #' The maximum likelihood estimate of \code{rate} is the inverse sample mean.
 #'
-#' @param x The data from which the estimate is to be computed.
-#' @param na.rm logical. Should missing values be removed?
-#' @return A named numeric vector with maximum likelihood estimates for
-#' \code{rate}.
+#' For the density function of the exponential distribution see \link[stats]{Exponential}.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed? If \code{FALSE},
+#'   the function fails when \code{x} contains missing values.
+#' @return \code{mlexp} returns an object of \link[base]{class} \code{univariateML}. This
+#'    is a named numeric vector with maximum likelihood estimates for \code{rate} and the following attributes:
+#'     \item{\code{model}}{The name of the model.}
+#'     \item{\code{density}}{The density associated with the estimates.}
+#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
+#'     \item{\code{support}}{The support of the density.}
+#'     \item{\code{n}}{The number of observations.}
+#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' @examples mlexp(precip)
+#' @seealso \link[stats]{Exponential} for the exponential density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 #' @export
 
 mlexp = function(x, na.rm = FALSE) {

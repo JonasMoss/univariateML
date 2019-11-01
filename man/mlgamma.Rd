@@ -2,13 +2,13 @@
 % Please edit documentation in R/mlgamma.R
 \name{mlgamma}
 \alias{mlgamma}
-\title{Estimates the parameter of the Gamma distribution using maximum likelihood}
+\title{Gamma distribution maximum likelihood estimation}
 \usage{
 mlgamma(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
   iterlim = 100)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
@@ -18,12 +18,28 @@ mlgamma(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
 iterations to be performed before the program is terminated.}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{shape} and \code{rate}.
+\code{mlgamma} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{shape} and \code{rate} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 Uses Newton-Raphson to estimate the parameters of the Gamma distribution.
 }
+\details{
+For the density function of the Gamma distribution see \link[stats]{GammaDist}.
+}
+\examples{
+mlgamma(precip)
+}
 \references{
 Choi, S. C, and R. Wette. "Maximum likelihood estimation of the parameters of the gamma distribution and their bias." Technometrics 11.4 (1969): 683-690.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
+}
+\seealso{
+\link[stats]{GammaDist} for the Gamma density.
 }

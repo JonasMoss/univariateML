@@ -1,17 +1,26 @@
-#' Estimates the parameter of a Kumaraswamy distribution by maximum likelihood
+#' Kumaraswamy distribution maximum likelihood estimation
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Kumaraswamy distribution.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' For the density function of the Kumaraswamy distribution see \link[extraDistr]{Kumaraswamy}.
+#'
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param a0 An optional starting value for the \code{a} parameter.
 #' @param rel.tol Relative accuracy requested.
 #' @param iterlim A positive integer specifying the maximum number of
 #'     iterations to be performed before the program is terminated.
 #'
-#' @return A named numeric vector with maximum likelihood estimates for
-#'     \code{a} and \code{b}.
-#'
+#' @return \code{mlkumar} returns an object of \link[base]{class} \code{univariateML}. This
+#'    is a named numeric vector with maximum likelihood estimates for \code{a} and \code{b} and the following attributes:
+#'     \item{\code{model}}{The name of the model.}
+#'     \item{\code{density}}{The density associated with the estimates.}
+#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
+#'     \item{\code{support}}{The support of the density.}
+#'     \item{\code{n}}{The number of observations.}
+#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' @seealso \link[extraDistr]{Kumaraswamy} for the Kumaraswamy density.
+#' @examples AIC(mlkumar(USArrests$Rape/100))
 #' @references Jones, M. C. "Kumaraswamy's distribution: A beta-type distribution with some tractability advantages." Statistical Methodology 6.1 (2009): 70-81.
 #'
 #'      Kumaraswamy, Ponnambalam. "A generalized probability density function for double-bounded random processes." Journal of Hydrology 46.1-2 (1980): 79-88.

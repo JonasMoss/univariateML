@@ -2,22 +2,41 @@
 % Please edit documentation in R/mlcauchy.R
 \name{mlcauchy}
 \alias{mlcauchy}
-\title{Estimates the parameter of the Cauchy distribution using maximum likelihood}
+\title{Cauchy distribution maximum likelihood estimation}
 \usage{
 mlcauchy(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{location} and \code{scale}.
+\code{mlcauchy} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{location} and \code{scale} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 Calculates the estimates using \code{nlm} and an exponential transform of the
     location parameter. If \code{n < 5}, an exact solution is reported. In
     the edge case where no maximum likelihood estimator exists and error is
     thrown.
+}
+\details{
+For the density function of the Cauchy distribution see \link[stats]{Cauchy}.
+}
+\examples{
+mlcauchy(airquality$Temp)
+}
+\references{
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 16. Wiley, New York.
+}
+\seealso{
+\link[stats]{Cauchy} for the Cauchy density, \link[stats]{nlm} for the
+  optimizer this function uses.
 }

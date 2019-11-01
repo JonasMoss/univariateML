@@ -2,22 +2,41 @@
 % Please edit documentation in R/mllogis.R
 \name{mllogis}
 \alias{mllogis}
-\title{Estimates the parameter of the logistic distribution using maximum likelihood}
+\title{Logistic distribution maximum likelihood estimation}
 \usage{
 mllogis(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{location} and \code{scale}.
+\code{mllogis} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{location} and \code{scale} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 Calculates the estimates using \code{nlm} and an exponential transform of the
     location parameter. If \code{n < 5}, an exact solution is reported. In
     the edge case where no maximum likelihood estimator exists and error is
     thrown.
+}
+\details{
+For the density function of the logistic distribution see \link[stats]{Logistic}.
+}
+\examples{
+mllogis(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York.
+}
+\seealso{
+\link[stats]{Logistic} for the Logistic density, \link[stats]{nlm} for the
+  optimizer this function uses.
 }

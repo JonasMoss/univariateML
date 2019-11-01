@@ -2,20 +2,38 @@
 % Please edit documentation in R/mlrayleigh.R
 \name{mlrayleigh}
 \alias{mlrayleigh}
-\title{Estimates the parameter of the Rayleigh distribution using maximum likelihood}
+\title{Rayleigh distribution maximum likelihood estimation}
 \usage{
 mlrayleigh(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-A named numeric vector with the maximum likelihood estimate for
-   \code{sigma}.
+\code{mlrayleigh} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{sigma} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 Calculates the \code{sigma} parameter as the square root of half the
    empirical second moment.
+}
+\details{
+For the density function of the Rayleigh distribution see \link[extraDistr]{Rayleigh}.
+}
+\examples{
+mlrayleigh(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
+}
+\seealso{
+\link[extraDistr]{Rayleigh} for the Rayleigh density.
 }

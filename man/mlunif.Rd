@@ -2,19 +2,37 @@
 % Please edit documentation in R/mlunif.R
 \name{mlunif}
 \alias{mlunif}
-\title{Estimates the parameters of uniform density using maximum likelihood}
+\title{Uniform distribution maximum likelihood estimation}
 \usage{
 mlunif(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{min} and \code{max}.
+\code{mlunif} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{min} and \code{max} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The estimates are \code{min(x)} and \code{max(x)}.
+}
+\details{
+For the density function of the logistic distribution see \link[stats]{Uniform}.
+}
+\examples{
+mlunif(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
+}
+\seealso{
+\link[stats]{Uniform} for the uniform density.
 }

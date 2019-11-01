@@ -2,13 +2,13 @@
 % Please edit documentation in R/mlinvgamma.R
 \name{mlinvgamma}
 \alias{mlinvgamma}
-\title{Estimates the parameter of the Inverse Gamma distribution using maximum likelihood}
+\title{Inverse Gamma distribution maximum likelihood estimation}
 \usage{
 mlinvgamma(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
   iterlim = 100)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
@@ -24,6 +24,17 @@ A named numeric vector with maximum likelihood estimates for
 \description{
 Transforms the data and uses Newton-Raphson to estimate the parameters of the Gamma distribution.
 }
+\details{
+For the density function of the Gamma distribution see \link[extraDistr]{InvGamma}.
+}
+\examples{
+mlinvgamma(precip)
+}
 \references{
 Choi, S. C, and R. Wette. "Maximum likelihood estimation of the parameters of the gamma distribution and their bias." Technometrics 11.4 (1969): 683-690.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
+Witkovsky, V. (2001). "Computing the Distribution of a Linear Combination of Inverted Gamma Variables". Kybernetika. 37 (1): 79–90
+}
+\seealso{
+\link[extraDistr]{InvGamma} for the Inverse Gamma density.
 }

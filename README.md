@@ -13,126 +13,69 @@ Status](https://codecov.io/gh/JonasMoss/univariateML/branch/master/graph/badge.s
 has not yet been a stable, usable release suitable for the
 public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
-An `R` package for quick and easy maximum likelihood estimation of
-univariate densities.
+<!-- [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)` -->
 
 ## Overview
 
-This package provided fast and easy maximum likelihood estimation for a
-selection of univariate densities. This is work in progress.
+An `R`-package for fast, easy, and reliable maximum likelihood
+estimation for a [selection](/vignettes/distributions.html) of
+parameteric univariate densities. In addition to basic estimation
+capabilities, this package support visualization through `plot` and
+`qqmlplot`, model selection by `AIC` and `BIC`, and confidence sets
+through the parametric bootstrap with `bootstrapml`.
 
 ## Installation
 
-From inside `R`, use one of the following commands:
+From inside `R`, use the following command:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("JonasMoss/univariateML")
 ```
 
-## Examples
+## Usage
 
-### Model Selection
-
-The `airquality` contains daily air quality measurements in New York
-from May to September 1973. To choose a model for the wind speed
-measurements from this data set we will use AIC.
+The core of `univariateML` are the `ml***` functions, where `****` is a
+distribution suffix such as `norm`, `gamma`, or `weibull`.
 
 ``` r
 library("univariateML")
-AIC(mlbetapr(airquality$Wind),
-    mlexp(airquality$Wind),
-    mlinvgamma(airquality$Wind),
-    mlgamma(airquality$Wind),
-    mllnorm(airquality$Wind),
-    mlrayleigh(airquality$Wind),
-    mlwald(airquality$Wind),
-    mlweibull(airquality$Wind))
-#>                             df       AIC
-#> mlbetapr(airquality$Wind)    2  859.2844
-#> mlexp(airquality$Wind)       1 1011.2883
-#> mlinvgamma(airquality$Wind)  2  868.5739
-#> mlgamma(airquality$Wind)     2  825.0259
-#> mllnorm(airquality$Wind)     2  839.7377
-#> mlrayleigh(airquality$Wind)  1  856.8326
-#> mlwald(airquality$Wind)      2  846.0295
-#> mlweibull(airquality$Wind)   2  820.9584
+mlweibull(egypt$age)
+#> Maximum likelihood estimates for the Weibull model 
+#>  shape   scale  
+#>  1.404  33.564
 ```
 
-The superior AIC of the Weibull distribution makes it a reasonable
-choice.
-
-### Plotting
-
-The package supports easy plotting of the fitted densities.
+Now we can visually assess the fit of the Weibull model to the `egypt`
+data with a plot.
 
 ``` r
-plot(mlbeta(USArrests$Rape/100), lwd = 2, lty = 2)
-lines(mlkumar(USArrests$Rape/100), lwd = 2, col = "red")
-rug(USArrests$Rape/100)
+hist(egypt$age, freq = FALSE, xlab = "Mortality", main = "Egypt")
+lines(mlweibull(egypt$age))
 ```
 
-<img src="man/figures/README-plot_example-1.png" width="750px" />
+<img src="man/figures/README-weibull_plot-1.png" width="750px" />
 
-### Random variate generation
+## Documentation
 
-By using already implemented random variable generators, it is possible
-to do for instance parametric boostrap easily.
-
-``` r
-obj = mlgumbel(airquality$Temp)
-n = length(airquality$Temp)
-bootstraps = replicate(n = 1000, 
-                       expr = mlgumbel(rml(n, obj)))
-
-# Calculcate approximate 95% CIs.
-quantile(bootstraps[1,  ], c(0.025, 0.975))
-#>     2.5%    97.5% 
-#> 71.44006 74.68014
-quantile(bootstraps[2,  ], c(0.025, 0.975))
-#>      2.5%     97.5% 
-#>  8.512211 10.946314
-```
-
-You can also use density functions (`dml`), cumulative distribution
-functions (`pml`), and quantile functions (`qml`).
-
-## Implemented Densities
-
-Maximum likelihood estimation has been implemented for the following
-densites.
-
-| Name                       | Package    | Parameters         | Density     | Support      |
-| -------------------------- | ---------- | ------------------ | ----------- | ------------ |
-| Normal distribution        | stats      | `mean`, `sd`       | `dnorm`     | ℝ            |
-| Logistic distributon       | stats      | `location`,`scale` | `dlogis`    | ℝ            |
-| Cauchy distributon         | stats      | `location`,`scale` | `dcauchy`   | ℝ            |
-| Gumbel distribution        | extraDistr | `mu`, `sigma`      | `dgumbel`   | ℝ            |
-| Laplace distribution       | extraDistr | `mu`, `sigma`      | `dlaplace`  | ℝ            |
-| Exponential distribution   | stats      | `rate`             | `dexp`      | \[0, ∞)      |
-| Lomax distribution         | extraDistr | `lambda`, `kappa`  | `dlomax`    | \[0, ∞)      |
-| Rayleigh distribution      | extraDistr | `sigma`            | `drayleigh` | \[0, ∞)      |
-| Gamma distribution         | stats      | `shape`,`rate`     | `dgamma`    | (0, ∞)       |
-| Weibull distribution       | stats      | `shape`,`scale`    | `dweibull`  | (0, ∞)       |
-| Log-normal distribution    | stats      | `meanlog`, `sdlog` | `dlnorm`    | (0, ∞)       |
-| Inverse gamma distribution | extraDistr | `alpha`, `beta`    | `dinvgamma` | (0, ∞)       |
-| Beta prime distribution    | extraDistr | `shape1`, `shape2` | `dbetapr`   | (0, ∞)       |
-| Wald distribution          | extraDistr | `mu`, `lambda`     | `dwald`     | (0, ∞)       |
-| Beta distibution           | stats      | `shape1`,`shape2`  | `dbeta`     | (0, 1)       |
-| Kumaraswamy distribution   | extraDistr | `a`, `b`           | `dkumar`    | (0, 1)       |
-| Uniform distribution       | stats      | `min`, `max`       | `dunif`     | \[min, max\] |
-| Power distribution         | extraDistr | `alpha`, `beta`    | `dpower`    | \[0, a)      |
-| Pareto distribution        | extraDistr | `a`, `b`           | `dpareto`   | \[b, ∞)      |
-
-*Note:* The Lomax distribution has not been properly tested yet.
+For an overview of the package and its features see the [overview
+vignette](/vignettes/overview.html). For a list of implemented densities
+see the start of the [details vignette](/vignettes/distributions.html).
+For an illustration of how this package can make an otherwise long and
+laborious process much simpler, see the [copula
+vignette](/vignettes/copula.html).
 
 ## How to Contribute or Get Help
 
 If you encounter a bug, have a feature request or need some help, open a
-[Github issue](https://github.com/JonasMoss/univariateML/issues). Create
-a pull requests to contribute. This project follows a [Contributor Code
-of
-Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.md).
+[Github issue](https://github.com/JonasMoss/univariateML/issues). If you
+miss a particular estimator, make an issue explaining why its
+implementation should be prioritized.
 
-Please open an issue and or make a pull request if you want another
-univariate distribution to be added to the package.
+We encourage you to make a pull request if you wish to make a
+contribution to this package. If you wish to contribute a new maximum
+likelihood estimator to this package please read [this page
+first](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
+
+This project follows a [Contributor Code of
+Conduct](/code-of-conduct.md).

@@ -1,0 +1,24 @@
+destination: docs
+
+authors:
+  Jonas Moss:
+    href: https://burnishedmossite.netlify.com
+
+reference:
+  - title: Maximum likelihood estimators
+    contents:
+    - starts_with("ml")
+  - title: Data analysis aids
+    contents:
+    - bootstrapml
+    - confint.univariateML
+    - ProbabilityPlots
+    - plot.univariateML
+    - MaximumLikelihoodDistribution
+  - title: Data sets
+    contents:
+    - abalone
+    - egypt
+  - title: Package docs
+    contents:
+    - univariateML-package

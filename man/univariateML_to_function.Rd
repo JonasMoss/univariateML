@@ -5,7 +5,7 @@
 \title{Transform a univariateML object to a quantile, CDF, density or random
    variate generation.}
 \usage{
-univariateML_to_function(obj, type = c("d", "p", "q", "r"))
+univariateML_to_function(obj, type = c("d", "p", "q", "r", "ml"))
 }
 \arguments{
 \item{obj}{A univariateML object.}

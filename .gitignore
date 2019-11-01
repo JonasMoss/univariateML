@@ -39,3 +39,4 @@ Temporary Items
 .Rhistory
 inst/doc
 vignettes/*.R
+docs/

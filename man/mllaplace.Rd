@@ -2,21 +2,39 @@
 % Please edit documentation in R/mllaplace.R
 \name{mllaplace}
 \alias{mllaplace}
-\title{Estimates the parameter of the Laplace distribution using maximum likelihood}
+\title{Laplace distribution maximum likelihood estimation}
 \usage{
 mllaplace(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{The data from which the estimate is to be computed.}
+\item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-A named numeric vector with maximum likelihood estimates for
-\code{mu} and \code{sigma}.
+\code{mllaplace} returns an object of \link[base]{class} \code{univariateML}. This
+   is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{sigma} and the following attributes:
+    \item{\code{model}}{The name of the model.}
+    \item{\code{density}}{The density associated with the estimates.}
+    \item{\code{logLik}}{The loglikelihood at the maximum.}
+    \item{\code{support}}{The support of the density.}
+    \item{\code{n}}{The number of observations.}
+    \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The maximum likelihood estimate of \code{mu} is the sample median while the
    maximum likelihood estimate of \code{sigma} is mean absolute deviation
    from the median.
+}
+\details{
+For the density function of the Laplace distribution see \link[extraDistr]{Laplace}.
+}
+\examples{
+mllaplace(precip)
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
+}
+\seealso{
+\link[extraDistr]{Laplace} for the Laplace density.
 }

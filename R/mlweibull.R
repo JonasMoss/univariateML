@@ -1,19 +1,30 @@
-#' Estimates the parameter of a Weibull distribution by maximum likelihood
+#' Weibull distribution maximum likelihood estimation
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Weibull distribution.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' For the density function of the Weibull distribution see \link[stats]{Weibull}.
+#'
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param shape0 An optional starting value for the \code{shape} parameter.
 #' @param rel.tol Relative accuracy requested.
 #' @param iterlim A positive integer specifying the maximum number of
 #' iterations to be performed before the program is terminated.
 #'
-#' @return A named numeric vector with maximum likelihood estimates for
-#' \code{shape} and \code{scale}.
+#' @return \code{mlweibull} returns an object of \link[base]{class} \code{univariateML}. This
+#'    is a named numeric vector with maximum likelihood estimates for \code{shape} and \code{scale} and the following attributes:
+#'     \item{\code{model}}{The name of the model.}
+#'     \item{\code{density}}{The density associated with the estimates.}
+#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
+#'     \item{\code{support}}{The support of the density.}
+#'     \item{\code{n}}{The number of observations.}
+#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' @seealso \link[stats]{Weibull} for the Weibull density.
+#' @examples BIC(mlweibull(precip))
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
 #' @export
 
-mlweibull = function(x, na.rm = FALSE, shape0 = 2,
+mlweibull = function(x, na.rm = FALSE, shape0 = 1,
                      rel.tol = .Machine$double.eps^0.25,
                      iterlim = 100) {
 

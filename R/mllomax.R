@@ -1,8 +1,14 @@
-#' Estimates the parameters of the Lomax distribution by maximum likelihood
+#' Lomax distribution maximum likelihood estimation
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Lomax distribution.
 #'
-#' @param x The data from which the estimate is to be computed.
+#' For the density function of the Lomax distribution see \link[extraDistr]{Lomax}.
+#' The maximum likelihood estimate will frequently fail to exist. This is due to
+#' the parameterization of the function which does not take into account that
+#' the density converges to an exponential along certain values of the parameters,
+#' see \code{vignette("Distribution Details", package = "univariateML")}.
+#'
+#' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param start An optional starting value for the \code{lambda} parameter.
 #'    Defaults to \code{median(x)}.
@@ -10,8 +16,18 @@
 #' @param iterlim A positive integer specifying the maximum number of
 #' iterations to be performed before the program is terminated.
 #'
-#' @return A named numeric vector with maximum likelihood estimates for
-#' \code{lambda} and \code{kappa}.
+#' @return \code{mllomax} returns an object of \link[base]{class} \code{univariateML}. This
+#'    is a named numeric vector with maximum likelihood estimates for \code{lambda} and \code{kappa} and the following attributes:
+#'     \item{\code{model}}{The name of the model.}
+#'     \item{\code{density}}{The density associated with the estimates.}
+#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
+#'     \item{\code{support}}{The support of the density.}
+#'     \item{\code{n}}{The number of observations.}
+#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' @seealso \link[extraDistr]{Lomax} for the Lomax density.
+#' @references Kleiber, Christian; Kotz, Samuel (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley Series in Probability and Statistics, 470, John Wiley & Sons, p. 60
+#' @examples set.seed(3)
+#'    mllomax(extraDistr::rlomax(100, 2, 4))
 #' @export
 
 mllomax = function(x, na.rm = FALSE, start = NULL,
