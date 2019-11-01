@@ -36,7 +36,7 @@ lines(mlweibull(egypt$age)) # Plots a Weibull fit.
 lines(mlgamma(egypt$age), col = "red")  # Plots a Gamma fit.
 ```
 
-Another natural question is to ask which among several models fits the data best.
+Another natural question to ask is which among several models fits the data best.
 This can be done using tools of model selection such as the `AIC` [@akaike1998information].
 
 ```{r, AIC}
