@@ -12,8 +12,8 @@ authors:
 affiliations:
  - name: University of Oslo
    index: 1
+date: 1 November 2019   
 bibliography: paper.bib
-date: 1 November 2019
 ---
 
 # Summary
@@ -38,7 +38,7 @@ lines(mlweibull(egypt$age)) # Plots a Weibull fit.
 lines(mlgamma(egypt$age), col = "red")  # Plots a Gamma fit.
 ```
 
-![](paper_files/figure-gfm/figure-1.png)<!-- -->
+![Egypt mortality data](paper_files/figure-gfm/figure-1.png)
 
 Another natural question is to ask which among several models fits the
 data best. This can be done using tools of model selection such as the
