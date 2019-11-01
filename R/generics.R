@@ -2,7 +2,7 @@
 #'
 #' @param x The input data.
 #' @param range Range of the data.
-#' @param points Boolean; should points be ploted by default?
+#' @param points Boolean; should points be plotted by default?
 #' @keywords internal
 
 plot_wrangler = function(x, range, points = FALSE, ...) {
@@ -116,7 +116,7 @@ print.univariateML = function(x, ...) {
 }
 
 
-#' Confidence Intervals for Maximum Likelihood Esimates
+#' Confidence Intervals for Maximum Likelihood Estimates
 #'
 #' Computes a confidence interval for one or more parameters in a \code{unvariateML}
 #'    object.
@@ -128,7 +128,7 @@ print.univariateML = function(x, ...) {
 #'
 #' @param object An object of class \code{univariateML}.
 #' @param parm Vector of strings; the parameters to calculate a confidence
-#'    interval for. Each paramater must be a member of \code{names(object)}.
+#'    interval for. Each parameter must be a member of \code{names(object)}.
 #' @param level The confidence level.
 #' @param Nreps Number of bootstrap iterations. Passed to \code{\link{bootstrapml}}.
 #' @param ... Additional arguments passed to \code{\link{bootstrapml}}.

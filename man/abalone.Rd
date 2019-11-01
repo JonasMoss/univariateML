@@ -6,7 +6,7 @@
 \title{Abalone data}
 \format{A \link[tibble]{tibble} with 4,177 observations and 9 variables:
   \describe{
-    \item{sex}{Sex of the abolone, \code{F} is female, \code{M} male, and \code{I} infant.}
+    \item{sex}{Sex of the abalone, \code{F} is female, \code{M} male, and \code{I} infant.}
     \item{length}{Longest shell measurement.}
     \item{diameter}{Diameter perpendicular to length.}
     \item{height}{Height with with meat in shell.}

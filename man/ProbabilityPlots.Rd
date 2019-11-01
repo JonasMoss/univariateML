@@ -68,7 +68,7 @@ an existing plot.
 probability-probability plots (or P-P plots). They behave similarily to the
 quantile-quantile plot functions.
 
-This function is modelled after \link[stats]{qqnorm}.
+This function is modeled after \link[stats]{qqnorm}.
 
 Graphical parameters may be given as arguments to all the functions below.
 }

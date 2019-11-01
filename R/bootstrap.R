@@ -5,7 +5,7 @@
 #'    random variates is completely determined by the \code{unvariateML} object
 #'    \code{object}.
 #'
-#' For each boostrap iteration a maximum likelihood estimate is calculated using
+#' For each bootstrap iteration a maximum likelihood estimate is calculated using
 #'    the \code{ml***} function specified by \code{object}. The resulting numeric
 #'    vector is then passed to \code{map}. The values returned by \code{map} is collected in
 #'    an array and the \code{reducer} is called on each row of the array.

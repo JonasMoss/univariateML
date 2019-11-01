@@ -43,7 +43,7 @@ hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
 
 ## Comparing Many Models with AIC
 The [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) is a handy 
-and easy to use model selection tool, as it only depends on the loglikelihood and
+and easy to use model selection tool, as it only depends on the log-likelihood and
 number of parameters of the models. The \code{AIC} generic in `R` can take multiple
 models, and the lower the \code{AIC} the better.
 
@@ -158,7 +158,7 @@ bootstrapml(mlgamma(egypt$age),
 
 We can also plot the bootstrap samples.
 
-```{r bootstrap_example_historgram, echo = TRUE}
+```{r bootstrap_example_histogram, echo = TRUE}
 
 hist(bootstrapml(mlweibull(egypt$age), 
                  map = function(x) x[2]*gamma(1 + 1/x[1]), 

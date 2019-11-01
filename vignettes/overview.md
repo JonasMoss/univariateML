@@ -58,7 +58,7 @@ hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
 
 ## Comparing Many Models with AIC
 The [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) is a handy 
-and easy to use model selection tool, as it only depends on the loglikelihood and
+and easy to use model selection tool, as it only depends on the log-likelihood and
 number of parameters of the models. The \code{AIC} generic in `R` can take multiple
 models, and the lower the \code{AIC} the better.
 
@@ -181,8 +181,8 @@ bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
 
 ```
 ##            2.5%     97.5%
-## shape  1.247094  1.602796
-## scale 29.677225 37.611388
+## shape  1.240222  1.598819
+## scale 29.832718 37.970605
 ```
 
 ```r
@@ -191,8 +191,8 @@ bootstrapml(mlgamma(egypt$age))
 
 ```
 ##             2.5%      97.5%
-## shape 1.28831004 2.04744768
-## rate  0.04091899 0.06916701
+## shape 1.31838219 2.01474787
+## rate  0.04137277 0.06922667
 ```
 
 These confidence intervals are not directly comparable. That is, the `scale` parameter in
@@ -217,7 +217,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.70631 33.86676
+## 27.48769 33.62750
 ```
 
 ```r
@@ -229,7 +229,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.29624 33.89027
+## 27.52567 34.00995
 ```
 
 We are be interested in the quantiles of the underlying distribution,
@@ -245,7 +245,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 22.93239 28.88371
+## 22.91788 28.69435
 ```
 
 ```r
@@ -256,7 +256,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 21.77523 27.57328
+## 21.85929 27.41170
 ```
 
 We can also plot the bootstrap samples.
@@ -271,7 +271,7 @@ hist(bootstrapml(mlweibull(egypt$age),
      freq = FALSE)
 ```
 
-![plot of chunk bootstrap_example_historgram](figure/bootstrap_example_historgram-1.png)
+![plot of chunk bootstrap_example_histogram](figure/bootstrap_example_histogram-1.png)
 
 
 ## Density, CDF, quantiles and random variate generation

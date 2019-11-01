@@ -16,7 +16,7 @@ having priority; if \code{template}, named the elements of
 y not in x will be discarded after merging.}
 }
 \value{
-A merged list where conflicts are solved in favour
+A merged list where conflicts are solved in favor
 of y. Does not preserve ordering.
 }
 \description{

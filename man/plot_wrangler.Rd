@@ -11,7 +11,7 @@ plot_wrangler(x, range, points = FALSE, ...)
 
 \item{range}{Range of the data.}
 
-\item{points}{Boolean; should points be ploted by default?}
+\item{points}{Boolean; should points be plotted by default?}
 }
 \description{
 Wrangles arguments for use in the plot, lines and points functions.

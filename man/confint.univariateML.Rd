@@ -2,7 +2,7 @@
 % Please edit documentation in R/generics.R
 \name{confint.univariateML}
 \alias{confint.univariateML}
-\title{Confidence Intervals for Maximum Likelihood Esimates}
+\title{Confidence Intervals for Maximum Likelihood Estimates}
 \usage{
 \method{confint}{univariateML}(object, parm = NULL, level = 0.95,
   Nreps = 1000, ...)
@@ -11,7 +11,7 @@
 \item{object}{An object of class \code{univariateML}.}
 
 \item{parm}{Vector of strings; the parameters to calculate a confidence
-interval for. Each paramater must be a member of \code{names(object)}.}
+interval for. Each parameter must be a member of \code{names(object)}.}
 
 \item{level}{The confidence level.}
 

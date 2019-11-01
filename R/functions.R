@@ -21,7 +21,7 @@
 #' @param obj an \code{univariateML} object.
 #' @param log,log.p logical; if \code{TRUE}, the probabilities p are gives as
 #'     \code{log(p)}.
-#' @param lower.tail logical; if \code{TRUE} (default), the probabilites are
+#' @param lower.tail logical; if \code{TRUE} (default), the probabilities are
 #'     \eqn{P[X \le x]} otherwise, \eqn{P[X > x]}
 #' @return \code{dml} gives the density, \code{pml} gives the distribution
 #'     function, \code{qml} gives the quantile function, and \code{rml}

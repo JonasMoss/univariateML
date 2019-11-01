@@ -24,7 +24,7 @@ rml(n = n, obj)
 \item{log, log.p}{logical; if \code{TRUE}, the probabilities p are gives as
 \code{log(p)}.}
 
-\item{lower.tail}{logical; if \code{TRUE} (default), the probabilites are
+\item{lower.tail}{logical; if \code{TRUE} (default), the probabilities are
 \eqn{P[X \le x]} otherwise, \eqn{P[X > x]}}
 
 \item{p}{vector of probabilities.}

@@ -7,7 +7,7 @@
 #' @param type If \code{merge}, the list will be merge with y
 #' having priority; if \code{template}, named the elements of
 #' y not in x will be discarded after merging.
-#' @return A merged list where conflicts are solved in favour
+#' @return A merged list where conflicts are solved in favor
 #' of y. Does not preserve ordering.
 
 # examples \dontrun{
