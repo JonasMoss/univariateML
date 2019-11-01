@@ -21,7 +21,7 @@ bibliography: paper.bib
 # Summary
 
 `univariateML` is an R [@r] package for doing univariate maximum likelihood estimation [@lecam1990ml]. 
-It supports more than 20 densities, the most popular generics such as `plot`, `AIC`, and `confint`, and a simple parametric bootstrap [@efron1994introduction] interface.
+It supports more than 20 densities, the most popular generic functions such as `plot`, `AIC`, and `confint`, and a simple parametric bootstrap [@efron1994introduction] interface.
 
 When looking at univariate data it is natural to ask if there is a known 
 parametric density that fits the data well. The following example uses the 
@@ -36,7 +36,7 @@ lines(mlweibull(egypt$age)) # Plots a Weibull fit.
 lines(mlgamma(egypt$age), col = "red")  # Plots a Gamma fit.
 ```
 
-Another natural question is to ask which among several model fits the data best.
+Another natural question is to ask which among several models fits the data best.
 This can be done using tools of model selection such as the `AIC` [@akaike1998information].
 
 ```{r, AIC}
