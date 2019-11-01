@@ -204,12 +204,12 @@
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="co"># Calculate two-sided 95% confidence intervals for the two Gumbel parameters.</span></a>
 <a class="sourceLine" id="cb12-2" title="2"><span class="kw"><a href="../reference/bootstrapml.html">bootstrapml</a></span>(<span class="kw"><a href="../reference/mlweibull.html">mlweibull</a></span>(egypt<span class="op">$</span>age)) <span class="co"># same as confint(mlweibull(egypt$age))</span></a></code></pre></div>
 <pre><code>##            2.5%     97.5%
-## shape  1.242705  1.603914
-## scale 29.349965 37.637655</code></pre>
+## shape  1.247017  1.619317
+## scale 29.619163 37.637959</code></pre>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw"><a href="../reference/bootstrapml.html">bootstrapml</a></span>(<span class="kw"><a href="../reference/mlgamma.html">mlgamma</a></span>(egypt<span class="op">$</span>age))</a></code></pre></div>
-<pre><code>##            2.5%      97.5%
-## shape 1.3316448 2.01518210
-## rate  0.0414308 0.06849029</code></pre>
+<pre><code>##             2.5%      97.5%
+## shape 1.33779098 2.02867519
+## rate  0.04199794 0.06907014</code></pre>
 <p>These confidence intervals are not directly comparable. That is, the <code>scale</code> parameter in the Weibull model is not directly comparable to the <code>rate</code> parameter in the gamma model. So let us take a look at a a parameter with a familiar interpretation, namely the mean.</p>
 <p>The mean of the Weibull distribution with parameters <code>shape</code> and <code>scale</code> is <code>scale*gamma(1 + 1/shape)</code>. On the other hand, the mean of the Gamma distribution with parameters <code>shape</code> and <code>rate</code> is <code>shape/rate</code>.</p>
 <p>The <code>probs</code> argument can be used to modify the limits of confidence interval. Now we will calculate two 90% confidence intervals for the mean.</p>
@@ -218,25 +218,25 @@
 <a class="sourceLine" id="cb16-3" title="3">            <span class="dt">map =</span> <span class="cf">function</span>(x) x[<span class="dv">2</span>]<span class="op">*</span><span class="kw"><a href="https://rdrr.io/r/base/Special.html">gamma</a></span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>x[<span class="dv">1</span>]), </a>
 <a class="sourceLine" id="cb16-4" title="4">            <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</a></code></pre></div>
 <pre><code>##       5%      95% 
-## 27.49581 33.74289</code></pre>
+## 27.56712 33.53905</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="co"># Calculate two-sided 90% confidence intervals for the mean of a Gamma.</span></a>
 <a class="sourceLine" id="cb18-2" title="2"><span class="kw"><a href="../reference/bootstrapml.html">bootstrapml</a></span>(<span class="kw"><a href="../reference/mlgamma.html">mlgamma</a></span>(egypt<span class="op">$</span>age), </a>
 <a class="sourceLine" id="cb18-3" title="3">            <span class="dt">map =</span> <span class="cf">function</span>(x) x[<span class="dv">1</span>]<span class="op">/</span>x[<span class="dv">2</span>],</a>
 <a class="sourceLine" id="cb18-4" title="4">            <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</a></code></pre></div>
 <pre><code>##       5%      95% 
-## 27.57080 33.94806</code></pre>
+## 27.43645 33.97557</code></pre>
 <p>We are be interested in the quantiles of the underlying distribution, for instance the median:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="co"># Calculate two-sided 90% confidence intervals for the two Gumbel parameters.</span></a>
 <a class="sourceLine" id="cb20-2" title="2"><span class="kw"><a href="../reference/bootstrapml.html">bootstrapml</a></span>(<span class="kw"><a href="../reference/mlweibull.html">mlweibull</a></span>(egypt<span class="op">$</span>age), </a>
 <a class="sourceLine" id="cb20-3" title="3">            <span class="dt">map =</span> <span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/stats/Weibull.html">qweibull</a></span>(<span class="fl">0.5</span>, x[<span class="dv">1</span>], x[<span class="dv">2</span>]), </a>
 <a class="sourceLine" id="cb20-4" title="4">            <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</a></code></pre></div>
 <pre><code>##       5%      95% 
-## 22.76717 29.04699</code></pre>
+## 22.94221 28.99996</code></pre>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1"><span class="kw"><a href="../reference/bootstrapml.html">bootstrapml</a></span>(<span class="kw"><a href="../reference/mlgamma.html">mlgamma</a></span>(egypt<span class="op">$</span>age), </a>
 <a class="sourceLine" id="cb22-2" title="2">            <span class="dt">map =</span> <span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/stats/GammaDist.html">qgamma</a></span>(<span class="fl">0.5</span>, x[<span class="dv">1</span>], x[<span class="dv">2</span>]), </a>
 <a class="sourceLine" id="cb22-3" title="3">            <span class="dt">probs =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</a></code></pre></div>
 <pre><code>##       5%      95% 
-## 21.98605 27.53830</code></pre>
+## 21.78457 27.67686</code></pre>
 <p>We can also plot the bootstrap samples.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span>(<span class="kw"><a href="../reference/bootstrapml.html">bootstrapml</a></span>(<span class="kw"><a href="../reference/mlweibull.html">mlweibull</a></span>(egypt<span class="op">$</span>age), </a>
 <a class="sourceLine" id="cb24-2" title="2">                 <span class="dt">map =</span> <span class="cf">function</span>(x) x[<span class="dv">2</span>]<span class="op">*</span><span class="kw"><a href="https://rdrr.io/r/base/Special.html">gamma</a></span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>x[<span class="dv">1</span>]), </a>

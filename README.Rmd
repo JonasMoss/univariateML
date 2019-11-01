@@ -35,7 +35,7 @@ by `AIC` and `BIC`, and confidence sets through the parametric bootstrap with
 `bootstrapml`.
 
 ## Installation
-From inside `R`, use the following command:
+Use the following command from inside `R`:
 ```{r install, echo = TRUE, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("JonasMoss/univariateML")
@@ -43,7 +43,7 @@ devtools::install_github("JonasMoss/univariateML")
 
 ## Usage
 
-The core of `univariateML` are the `ml***` functions, where `****` is a 
+The core of `univariateML` are the `ml***` functions, where `***` is a 
 distribution suffix such as `norm`, `gamma`, or `weibull`.
 
 ```{R, mlweibull}

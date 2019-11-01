@@ -26,7 +26,7 @@ through the parametric bootstrap with `bootstrapml`.
 
 ## Installation
 
-From inside `R`, use the following command:
+Use the following command from inside `R`:
 
 ``` r
 # install.packages("devtools")
@@ -35,7 +35,7 @@ devtools::install_github("JonasMoss/univariateML")
 
 ## Usage
 
-The core of `univariateML` are the `ml***` functions, where `****` is a
+The core of `univariateML` are the `ml***` functions, where `***` is a
 distribution suffix such as `norm`, `gamma`, or `weibull`.
 
 ``` r
@@ -78,4 +78,4 @@ likelihood estimator to this package please read [this page
 first](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
 
 This project follows a [Contributor Code of
-Conduct](/code-of-conduct.md).
+Conduct](/CODE-OF-CONDUCT.md).
