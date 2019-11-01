@@ -1,6 +1,22 @@
-univariateML: An R package for maximum likelihood estimation of
-univariate densities
-================
+---
+title: 'univariateML: An R package for maximum likelihood estimation of univariate densities'
+tags:
+  - R
+  - statistics
+  - maximum likelihood
+  - density estimation
+authors:
+  - name: Jonas Moss
+    orcid: 0000-0002-6876-6964
+    affiliation: 1
+affiliations:
+ - name: University of Oslo
+   index: 1
+output:
+  github_document:
+    html_preview: true
+bibliography: paper.bib
+---
 
 # Summary
 
