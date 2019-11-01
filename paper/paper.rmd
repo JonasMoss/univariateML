@@ -19,51 +19,14 @@ bibliography: paper.bib
 ---
 
 # Summary
-Estimation of univariate densities is one of the most basic tasks of statistics.
 
+`univariateML` is an R [@r] package for doing univariate maximum likelihood estimation [@lecam1990ml]. 
+It supports more than 20 densities, the most popular generics such as `plot`, `AIC`, and `confint`, and a simple parametric bootstrap [@efron1994introduction] interface.
 
-
-It is often necessary to estimate a probability density non-parametrically, that is, without 
-making strong parametric assumptions such as normality. 
-This R [@r] package provides a non-parametric density estimator that can take advantage of some of the knowledge the user has about the probability density.
-
-Kernel density estimation [@silverman2018density] is a popular method for non-parametric density estimation based on placing kernels on each data point. @hjort_glad_1995 extended kernel density estimation with *parametric starts*.
-The parametric start is a parametric density that is multiplied with the kernel
-estimate. When the data-generating density is reasonably close to the parametric
-start density, kernel density estimation with that parametric start will outperform
-ordinary kernel density estimation.
-
-Moreover, when estimating densities on the half-open interval $\left[0,\infty\right)$ and bounded intervals, such as $\left[0, 1\right]$, symmetric kernels are prone to serious boundary bias that should be corrected [@marron1994transformations]. 
-Asymmetric kernels have been designed to avoid boundary bias and many of them are implemented in `kdensity` in addition to the classical symmetric kernels.
-For the unit interval, the Gaussian copula kernel of @jones2007miscellanea and the beta kernels of @chen1999beta are supported. 
-The gamma kernel of @chen2000probability is available for the half-open interval.
-
-The supported non-parametric starts include the normal, Laplace, Gumbel, 
-exponential, gamma, log-normal, inverse Gaussian, Weibull, Beta, and Kumaraswamy
-densities. The parameters of all parametric starts are estimated using maximum 
-likelihood. The implemented bandwidth selectors are the classical bandwidth 
-selectors from `stats`, unbiased cross-validation, the Hermite polynomial method 
-from @hjort_glad_1995, and the tailored bandwidth selector for the Gaussian 
-copula method of @jones2007miscellanea. User-defined parametric starts, 
-kernels and bandwidth selectors can also be set. 
-
-Several `R` packages deal with kernel estimation, see @deng2011 for an overview. 
-While no other `R` package handles density estimation with parametric starts, 
-several packages supports methods that handle boundary bias. @evmix provides a 
-variety of boundary bias correction methods in the `bckden` functions. @kde1d 
-corrects for boundary bias using probit or logarithmically transformed 
-local polynomial kernel density estimation. @logKDE corrects for 
-boundary bias on the half line using a logarithmic transform. @ks supports 
-boundary correction through the `kde.boundary` function, while @Ake corrects 
-for boundary bias using asymmetric kernels.
-
-The following example uses the `airquality` data set from the built-in
-R package `datasets`. Since the data is positive we use Chen's gamma kernel. 
-As the data is likely to be better approximated by a gamma distribution than a 
-uniform distribution, we use the gamma parametric start. The plotted density is
-in figure 1, where the gamma distribution with parameters estimated by maximum 
-likelihood is in red and the ordinary kernel density estimate in blue. 
-Notice the boundary bias of the ordinary kernel density estimator. 
+When looking at univariate data it is natural to ask if there is a known 
+parametric density that fits the data well. The following example uses the 
+`egypt` [@pearson1902egypt] data set included in the package and a plot of the Weibull and Gamma
+densities [@johnson1970continuous, Chapter 17 & 21]. 
 
 ```{r figure, height = 9, width = 9}
 # install.packages("univariateML")
@@ -72,5 +35,25 @@ hist(egypt$age, freq = FALSE, main = "Mortality in Egypt", xlab = "Mortality")
 lines(mlweibull(egypt$age)) # Plots a Weibull fit.
 lines(mlgamma(egypt$age), col = "red")  # Plots a Gamma fit.
 ```
+
+Another natural question is to ask which among several model fits the data best.
+This can be done using tools of model selection such as the `AIC` [@akaike1998information].
+
+```{r, AIC}
+AIC(mlweibull(egypt$age),
+    mlgamma(egypt$age))
+```
+
+Problems involving estimation of univariate densities are common in statistics. 
+Estimation of univariate densities is used in for instance exploratory data analysis, 
+in the estimation of copulas [@ko2019focused],
+as parametric starts in density estimation [@hjort_glad_1995; @moss2019kdensity], 
+and is of interest in and of itself. 
+
+The purpose of `univariateML` is to make maximum likelihood estimation quick, 
+easy, and free of bugs. It has custom made optimizers for each supported density.
+This is in contrast to the `mle` function in the built-in `R` package `stats4`,
+which supports far more general maximum likelihood estimation through numerical
+optimization on a supplied negative log-likelihood function.
 
 # References
