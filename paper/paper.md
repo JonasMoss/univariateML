@@ -16,6 +16,7 @@ output:
   github_document:
     html_preview: true
 bibliography: paper.bib
+date: 1 November 2019
 ---
 
 # Summary
