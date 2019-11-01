@@ -5,7 +5,6 @@ sudo: false
 dist: trusty
 cache: packages
 latex: false
-before_install: R -e 'source("https://install-github.me/r-lib/remotes")'
 
 jobs:
   include:
