@@ -16,8 +16,9 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 ## Overview
 
 An `R`-package for fast, easy, and reliable maximum likelihood
-estimation for a [selection](/vignettes/distributions.html) of
-parametric univariate densities. In addition to basic estimation
+estimation for a
+[selection](https://univariateml.netlify.com/articles/distributions.html)
+of parametric univariate densities. In addition to basic estimation
 capabilities, this package support visualization through `plot` and
 `qqmlplot`, model selection by `AIC` and `BIC`, and confidence sets
 through the parametric bootstrap with `bootstrapml`.
