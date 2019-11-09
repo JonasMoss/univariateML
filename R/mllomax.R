@@ -35,6 +35,7 @@ mllomax = function(x, na.rm = FALSE, start = NULL,
                    iterlim = 100) {
 
   if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+  ml_input_checker(x)
   assertthat::assert_that(min(x) >= 0)
 
   rel.tol_str = deparse(substitute(rel.tol))

@@ -50,3 +50,16 @@ listmerge = function(x, y, type = c("merge", "template")) {
   }
 
 }
+
+#' Input Checker for ML functions
+#'
+#' Checks that `x` in the ML functions is numeric and has only one dimension.
+#'
+#' @param x input to a `ML***` function.
+#' @return `NULL`
+
+ml_input_checker = function(x) {
+  assertthat::assert_that(is.numeric(x))
+  msg = paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
+  assertthat::assert_that(NCOL(x) == 1, msg = msg)
+}

@@ -25,7 +25,8 @@
 
 mlcauchy = function(x, na.rm = FALSE) {
 
-  if(na.rm) x = x[!is.na(x)]
+  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+  ml_input_checker(x)
 
   m = stats::median(x)
   mad = stats::median(abs(x - m))

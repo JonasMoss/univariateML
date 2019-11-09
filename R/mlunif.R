@@ -22,6 +22,8 @@
 
 mlunif = function(x, na.rm = FALSE) {
   if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+  ml_input_checker(x)
+
   n = length(x)
   max_ = max(x)
   min_ = min(x)

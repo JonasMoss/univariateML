@@ -28,6 +28,7 @@ mlgumbel = function(x, na.rm = FALSE, sigma0 = 1, rel.tol = .Machine$double.eps^
                     iterlim = 100) {
 
   if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+  ml_input_checker(x)
 
   rel.tol_str = deparse(substitute(rel.tol))
   mean_x = mean(x)
