@@ -7,12 +7,13 @@
 #' \code{qml} is the quantile function, and \code{rml} is the random variable
 #' generator.
 #'
-#' These functions work like their counterparts in `stats`, e.g. \link[stats]{Normal}.
-#' The \code{univariateML} object contains both maximum likelihood estimates
-#' and the identity of the model these estimates were calculated under. These
-#' functions are wrappers around underlying density, distribution, quantile and
-#' random generation functions where unknown parameters are filled with the
-#' maximum likelihood estimates. See the example.
+#' These functions work like their counterparts in `stats`, e.g.
+#' \link[stats]{Normal}. The \code{univariateML} object contains both maximum
+#' likelihood estimates and the identity of the model these estimates were
+#' calculated under. These functions are wrappers around underlying density,
+#' distribution, quantile and random generation functions where unknown
+#' parameters are filled with the maximum likelihood estimates.
+#' See the example.
 #'
 #' @param x,q vector of quantiles.
 #' @param p vector of probabilities.
@@ -60,13 +61,20 @@ dml <- function(x, obj, log = FALSE) {
 #' @rdname MaximumLikelihoodDistribution
 #' @export
 pml <- function(q = q, obj, lower.tail = TRUE, log.p = FALSE) {
-  univariateML_to_function(obj, type = "p")(q = q, lower.tail = lower.tail, log.p = log.p)
+  univariateML_to_function(obj, type = "p")(
+    q = q,
+    lower.tail = lower.tail,
+    log.p = log.p
+  )
 }
 
 #' @rdname MaximumLikelihoodDistribution
 #' @export
 qml <- function(p = p, obj, lower.tail = TRUE, log.p = FALSE) {
-  univariateML_to_function(obj, type = "q")(p = p, lower.tail = lower.tail, log.p = log.p)
+  univariateML_to_function(obj, type = "q")(
+    p = p,
+    lower.tail = lower.tail,
+    log.p = log.p)
 }
 
 #' @rdname MaximumLikelihoodDistribution

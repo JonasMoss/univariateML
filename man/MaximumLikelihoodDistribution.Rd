@@ -46,12 +46,13 @@ Density, distribution function, quantile function and random generation for
 \code{qml} is the quantile function, and \code{rml} is the random variable
 generator.
 
-These functions work like their counterparts in `stats`, e.g. \link[stats]{Normal}.
-The \code{univariateML} object contains both maximum likelihood estimates
-and the identity of the model these estimates were calculated under. These
-functions are wrappers around underlying density, distribution, quantile and
-random generation functions where unknown parameters are filled with the
-maximum likelihood estimates. See the example.
+These functions work like their counterparts in `stats`, e.g.
+\link[stats]{Normal}. The \code{univariateML} object contains both maximum
+likelihood estimates and the identity of the model these estimates were
+calculated under. These functions are wrappers around underlying density,
+distribution, quantile and random generation functions where unknown
+parameters are filled with the maximum likelihood estimates.
+See the example.
 }
 \examples{
 ## Simple example
