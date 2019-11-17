@@ -30,7 +30,7 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   string <- univariateML_to_string(obj, type = type)
   fun <- eval(parse(text = string))
   if (type %in% c("d", "p", "q", "r")) {
-    for (i in 1:length(obj)) formals(fun)[[names(obj)[i]]] <- unname(obj[i])
+    for (i in seq_along(obj)) formals(fun)[[names(obj)[i]]] <- unname(obj[i])
   }
   fun
 }
@@ -44,7 +44,8 @@ to_univariateML <- function(y, obj) {
   if (inherits(obj, "univariateML")) {
     obj <- obj
   } else {
-    msg <- "obj must be either a functiona returning a univariateML object or an univariateML object."
+    msg <- paste0("obj must be either a function returning a univariateML ",
+            "object or an univariateML object.")
     tryCatch(
       {
         obj <- obj(y)
