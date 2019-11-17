@@ -24,31 +24,34 @@
 #'     \item{\code{support}}{The support of the density.}
 #'     \item{\code{n}}{The number of observations.}
 #'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @examples mlpower(precip)
+#' @examples
+#' mlpower(precip)
 #' @seealso \link[extraDistr]{PowerDist} for the power density. \link{Pareto} for
 #'    the closely related Pareto distribution.
 #' @references
 #' Arslan, G. "A new characterization of the power distribution." Journal of Computational and Applied Mathematics 260 (2014): 99-102.
 #' @export
 
-mlpower = function(x, na.rm = FALSE, epsilon = .Machine$double.eps^0.5) {
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mlpower <- function(x, na.rm = FALSE, epsilon = .Machine$double.eps^0.5) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) >= 0)
 
-  M = mean(log(x))
-  alpha = max(x) + epsilon
-  beta = 1/(log(alpha) - M)
+  M <- mean(log(x))
+  alpha <- max(x) + epsilon
+  beta <- 1 / (log(alpha) - M)
 
-  object = c(alpha = alpha,
-             beta = beta)
+  object <- c(
+    alpha = alpha,
+    beta = beta
+  )
 
-  class(object) = "univariateML"
-  attr(object, "model") = "PowerDist"
-  attr(object, "density") = "extraDistr::dpower"
-  attr(object, "logLik") = length(x)*(log(beta) - beta*log(alpha) + (beta - 1)*M)
-  attr(object, "support") = c(0, alpha)
-  attr(object, "n") = length(x)
-  attr(object, "call") = match.call()
+  class(object) <- "univariateML"
+  attr(object, "model") <- "PowerDist"
+  attr(object, "density") <- "extraDistr::dpower"
+  attr(object, "logLik") <- length(x) * (log(beta) - beta * log(alpha) + (beta - 1) * M)
+  attr(object, "support") <- c(0, alpha)
+  attr(object, "n") <- length(x)
+  attr(object, "call") <- match.call()
   object
 }

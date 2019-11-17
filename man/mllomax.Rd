@@ -42,7 +42,7 @@ see \code{vignette("Distribution Details", package = "univariateML")}.
 }
 \examples{
 set.seed(3)
-   mllomax(extraDistr::rlomax(100, 2, 4))
+mllomax(extraDistr::rlomax(100, 2, 4))
 }
 \references{
 Kleiber, Christian; Kotz, Samuel (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley Series in Probability and Statistics, 470, John Wiley & Sons, p. 60

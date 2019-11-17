@@ -37,7 +37,7 @@ For the density function of the Beta distribution see \link[stats]{Beta}.
 For \code{type}, the option \code{none} is fastest.
 }
 \examples{
-AIC(mlbeta(USArrests$Rape/100))
+AIC(mlbeta(USArrests$Rape / 100))
 }
 \references{
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.

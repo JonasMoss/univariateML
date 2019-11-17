@@ -19,36 +19,35 @@
 #'     \item{\code{support}}{The support of the density.}
 #'     \item{\code{n}}{The number of observations.}
 #'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @examples mllgamma(precip)
+#' @examples
+#' mllgamma(precip)
 #' @seealso \link[actuar]{Loggamma} for the log normal density.
 #' @references Hogg, R. V. and Klugman, S. A. (1984), Loss Distributions, Wiley.
 #'
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
 
-mllgamma = function(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
-                   iterlim = 100) {
-
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mllgamma <- function(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
+                     iterlim = 100) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 1)
 
-  y = log(x)
-  n = length(x)
+  y <- log(x)
+  n <- length(x)
 
-  object = mlgamma(y, na.rm = na.rm, rel.tol = rel.tol, iterlim = iterlim)
-  shapelog = object[1]
-  ratelog = object[2]
-  L = mean(y)
-  K = mean(log(y))
-  names(object) = c("shapelog", "ratelog")
-  attr(object, "model") = "Loggamma"
-  attr(object, "density") = "actuar::dlgamma"
-  attr(object, "support") = c(1, Inf)
-  attr(object, "logLik") = unname(n*(shapelog*log(ratelog) - log(gamma(shapelog)) +
-                                  (shapelog - 1)*K - (ratelog + 1)*L))
+  object <- mlgamma(y, na.rm = na.rm, rel.tol = rel.tol, iterlim = iterlim)
+  shapelog <- object[1]
+  ratelog <- object[2]
+  L <- mean(y)
+  K <- mean(log(y))
+  names(object) <- c("shapelog", "ratelog")
+  attr(object, "model") <- "Loggamma"
+  attr(object, "density") <- "actuar::dlgamma"
+  attr(object, "support") <- c(1, Inf)
+  attr(object, "logLik") <- unname(n * (shapelog * log(ratelog) - log(gamma(shapelog)) +
+    (shapelog - 1) * K - (ratelog + 1) * L))
 
-  attr(object, "call") = match.call()
+  attr(object, "call") <- match.call()
   object
-
 }

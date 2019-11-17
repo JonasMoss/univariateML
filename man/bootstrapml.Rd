@@ -46,29 +46,30 @@ By default the \code{map} function is the identity and the default \code{reducer
 }
 \examples{
 \dontrun{
-  set.seed(1)
-  object = mlgamma(mtcars$qsec)
+set.seed(1)
+object <- mlgamma(mtcars$qsec)
 
-  ## Calculate c(0.025, 0.975) confidence interval for the gamma parameters.
-  bootstrapml(object)
+## Calculate c(0.025, 0.975) confidence interval for the gamma parameters.
+bootstrapml(object)
 
-  #            2.5\%      97.5\%
-  # shape 68.624945 160.841557
-  # rate   3.896915   9.089194
+#            2.5\%      97.5\%
+# shape 68.624945 160.841557
+# rate   3.896915   9.089194
 
-  ## The mean of a gamma distribution is shape/rate. Now we calculate a
-  ## parametric bootstrap confidence interval for the mean with confidence
-  ## limits c(0.05, 0.95)
+## The mean of a gamma distribution is shape/rate. Now we calculate a
+## parametric bootstrap confidence interval for the mean with confidence
+## limits c(0.05, 0.95)
 
-  bootstrapml(object, map = function(x) x[1]/x[2], probs = c(0.05, 0.95))
+bootstrapml(object, map = function(x) x[1] / x[2], probs = c(0.05, 0.95))
 
-  #       5\%      95\%
-  # 17.33962 18.31253
+#       5\%      95\%
+# 17.33962 18.31253
 
-  ## Print a histogram of the bootstrapped estimates from an exponential.
-  object = mlexp(mtcars$qsec)
-  hist(bootstrapml(object, reducer = identity))
+## Print a histogram of the bootstrapped estimates from an exponential.
+object <- mlexp(mtcars$qsec)
+hist(bootstrapml(object, reducer = identity))
 }
+
 }
 \references{
 Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap. CRC press.

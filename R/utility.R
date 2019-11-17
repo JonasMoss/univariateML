@@ -23,32 +23,30 @@
 #    listmerge(x, y, type = "merge")
 #    listmerge(x, y, type = "template")}
 
-listmerge = function(x, y, type = c("merge", "template")) {
+listmerge <- function(x, y, type = c("merge", "template")) {
+  type <- match.arg(type)
 
-  type = match.arg(type)
-
-  if(length(y) == 0) {
+  if (length(y) == 0) {
     return(x)
   }
 
   ## Keep and not-keep are quite different.
-  if(type == "merge") {
-    matches = match(names(y), names(x))
-    elements_to_discard = matches[!is.na(matches)]
-    if(length(elements_to_discard) == 0)  {
-      combined = c(y, x)
-    } else{
-      combined = c(y, x[-elements_to_discard])
+  if (type == "merge") {
+    matches <- match(names(y), names(x))
+    elements_to_discard <- matches[!is.na(matches)]
+    if (length(elements_to_discard) == 0) {
+      combined <- c(y, x)
+    } else {
+      combined <- c(y, x[-elements_to_discard])
     }
     return(combined)
   }
 
-  if(type == "template") {
-    matches = match(names(x), names(y))
-    x[!is.na(matches)] = y[matches[!is.na(matches)]]
+  if (type == "template") {
+    matches <- match(names(x), names(y))
+    x[!is.na(matches)] <- y[matches[!is.na(matches)]]
     return(x)
   }
-
 }
 
 #' Input Checker for ML functions
@@ -58,8 +56,8 @@ listmerge = function(x, y, type = c("merge", "template")) {
 #' @param x input to a `ML***` function.
 #' @return `NULL`
 
-ml_input_checker = function(x) {
+ml_input_checker <- function(x) {
   assertthat::assert_that(is.numeric(x))
-  msg = paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
+  msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
   assertthat::assert_that(NCOL(x) == 1, msg = msg)
 }

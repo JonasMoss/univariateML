@@ -39,73 +39,65 @@
 #'   returns nothing.
 #'
 #' @examples
-#'   ## Make a single probability plot with a line.
+#' ## Make a single probability plot with a line.
 #'
-#'   obj = mlgamma(Nile)
-#'   qqmlplot(Nile, obj)
-#'   qqmlline(Nile, obj)
+#' obj <- mlgamma(Nile)
+#' qqmlplot(Nile, obj)
+#' qqmlline(Nile, obj)
 #'
-#'   ## Make multiple probability plots. datax = TRUE must be used to make this
-#'   ## look good.
+#' ## Make multiple probability plots. datax = TRUE must be used to make this
+#' ## look good.
 #'
-#'   ppmlplot(airquality$Wind, mlgamma, main = "Many P-P plots")
-#'   ppmlpoints(airquality$Wind, mlexp, col = "red")
-#'   ppmlpoints(airquality$Wind, mlweibull, col = "purple")
-#'   ppmlpoints(airquality$Wind, mllnorm, col = "blue")
-#'
+#' ppmlplot(airquality$Wind, mlgamma, main = "Many P-P plots")
+#' ppmlpoints(airquality$Wind, mlexp, col = "red")
+#' ppmlpoints(airquality$Wind, mlweibull, col = "purple")
+#' ppmlpoints(airquality$Wind, mllnorm, col = "blue")
 #' @name ProbabilityPlots
 #' @export
 #' @references
 #'   M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968, Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
 
-ppmlplot = function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
-
-  pp = ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
-  if(plot.it) do.call(graphics::plot, pp$args)
+ppmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
+  pp <- ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
+  if (plot.it) do.call(graphics::plot, pp$args)
   invisible(pp$value)
-
 }
 
 #' @rdname ProbabilityPlots
 #' @export
-ppmlline = function(...) graphics::abline(a = 0, b = 1, ...)
+ppmlline <- function(...) graphics::abline(a = 0, b = 1, ...)
 
 #' @rdname ProbabilityPlots
 #' @export
-ppmlpoints = function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
-
-  pp = ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
-  if(plot.it) do.call(graphics::points, pp$args)
+ppmlpoints <- function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
+  pp <- ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
+  if (plot.it) do.call(graphics::points, pp$args)
   invisible(pp$value)
-
 }
 
 #' @rdname ProbabilityPlots
 #' @export
-qqmlplot = function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
-
-  qq = ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
-  if(plot.it) do.call(graphics::plot, qq$args)
+qqmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
+  qq <- ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
+  if (plot.it) do.call(graphics::plot, qq$args)
   invisible(qq$value)
-
 }
 
 #' @rdname ProbabilityPlots
 #' @export
-qqmlline = function(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
-                    ...) {
-
-  obj = to_univariateML(y, obj)
-  y = stats::quantile(y, probs, names = FALSE, type = qtype, na.rm = TRUE)
-  x = qml(probs, obj)
+qqmlline <- function(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
+                     ...) {
+  obj <- to_univariateML(y, obj)
+  y <- stats::quantile(y, probs, names = FALSE, type = qtype, na.rm = TRUE)
+  x <- qml(probs, obj)
 
   if (datax) {
-    slope <- diff(x)/diff(y)
+    slope <- diff(x) / diff(y)
     int <- x[1L] - slope * y[1L]
   }
 
   else {
-    slope <- diff(y)/diff(x)
+    slope <- diff(y) / diff(x)
     int <- y[1L] - slope * x[1L]
   }
 
@@ -114,11 +106,8 @@ qqmlline = function(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
 
 #' @rdname ProbabilityPlots
 #' @export
-qqmlpoints = function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
-
-  qq = ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
-  if(plot.it) do.call(graphics::points, qq$args)
+qqmlpoints <- function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
+  qq <- ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
+  if (plot.it) do.call(graphics::points, qq$args)
   invisible(qq$value)
-
 }
-

@@ -20,33 +20,36 @@
 #' @seealso \link[stats]{Cauchy} for the Cauchy density, \link[stats]{nlm} for the
 #'   optimizer this function uses.
 #' @references  #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 16. Wiley, New York.
-#' @examples mlcauchy(airquality$Temp)
+#' @examples
+#' mlcauchy(airquality$Temp)
 #' @export
 
-mlcauchy = function(x, na.rm = FALSE) {
-
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mlcauchy <- function(x, na.rm = FALSE) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
-  m = stats::median(x)
-  mad = stats::median(abs(x - m))
+  m <- stats::median(x)
+  mad <- stats::median(abs(x - m))
 
-  start = c(m, mad)
+  start <- c(m, mad)
 
-  f = function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
-  values = suppressWarnings(stats::nlm(f = f,
-                      p = start))
+  f <- function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
+  values <- suppressWarnings(stats::nlm(
+    f = f,
+    p = start
+  ))
 
-  object = c(location = values$estimate[1],
-             scale = exp(values$estimate[2]))
+  object <- c(
+    location = values$estimate[1],
+    scale = exp(values$estimate[2])
+  )
 
-  class(object) = "univariateML"
-  attr(object, "model") = "Cauchy"
-  attr(object, "density") = "stats::dcauchy"
-  attr(object, "logLik") = -values$minimum
-  attr(object, "support") = c(-Inf, Inf)
-  attr(object, "n") = length(x)
-  attr(object, "call") = match.call()
+  class(object) <- "univariateML"
+  attr(object, "model") <- "Cauchy"
+  attr(object, "density") <- "stats::dcauchy"
+  attr(object, "logLik") <- -values$minimum
+  attr(object, "support") <- c(-Inf, Inf)
+  attr(object, "n") <- length(x)
+  attr(object, "call") <- match.call()
   object
-
 }

@@ -54,25 +54,28 @@ random generation functions where unknown parameters are filled with the
 maximum likelihood estimates. See the example.
 }
 \examples{
-  ## Simple example
-  obj = mlnorm(airquality$Wind)
-  dml(0.5, obj) == dnorm(0.5, mean = obj[1], sd = obj[2])
+## Simple example
+obj <- mlnorm(airquality$Wind)
+dml(0.5, obj) == dnorm(0.5, mean = obj[1], sd = obj[2])
 
-  ## We study the Beta prime model applied to the airquality data set.
-  obj = mlbetapr(airquality$Wind)
+## We study the Beta prime model applied to the airquality data set.
+obj <- mlbetapr(airquality$Wind)
 
-  ## Example copied from 'stats::dnorm'.
-  par(mfrow = c(2,1))
-  plot(function(x) dml(x, obj, log = TRUE), from = 0, to = 20,
-       main = "Logarithm of Density", ylab = NA, lwd = 2)
-  curve(log(dml(x, obj)), add = TRUE, col = "red", lwd = 2, lty = 2)
-  mtext("dml(x, obj, log = TRUE)", adj = 0)
-  mtext("log(dml(x, obj))", col = "red", adj = 1)
+## Example copied from 'stats::dnorm'.
+par(mfrow = c(2, 1))
+plot(function(x) dml(x, obj, log = TRUE),
+  from = 0, to = 20,
+  main = "Logarithm of Density", ylab = NA, lwd = 2
+)
+curve(log(dml(x, obj)), add = TRUE, col = "red", lwd = 2, lty = 2)
+mtext("dml(x, obj, log = TRUE)", adj = 0)
+mtext("log(dml(x, obj))", col = "red", adj = 1)
 
-  plot(function(x) pml(x, obj, log = TRUE), from = 0, to = 20,
-       main = "Logarithm of Cumulative Probability", ylab = NA, lwd = 2)
-  curve(log(pml(x, obj)), add = TRUE, col = "red", lwd = 2, lty = 2)
-  mtext("pml(x, obj, log = TRUE)", adj = 0)
-  mtext("log(pml(x, obj))", col = "red", adj = 1)
-
+plot(function(x) pml(x, obj, log = TRUE),
+  from = 0, to = 20,
+  main = "Logarithm of Cumulative Probability", ylab = NA, lwd = 2
+)
+curve(log(pml(x, obj)), add = TRUE, col = "red", lwd = 2, lty = 2)
+mtext("pml(x, obj, log = TRUE)", adj = 0)
+mtext("log(pml(x, obj))", col = "red", adj = 1)
 }

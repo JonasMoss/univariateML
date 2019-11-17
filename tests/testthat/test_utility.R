@@ -1,13 +1,17 @@
 context("utility")
 
-x = list(a = 5,
-         b = 0,
-         c = "a",
-         d = NULL)
+x <- list(
+  a = 5,
+  b = 0,
+  c = "a",
+  d = NULL
+)
 
-y = list(a = 3,
-         b = 7,
-         f = NA)
+y <- list(
+  a = 3,
+  b = 7,
+  f = NA
+)
 
 expect_equal(listmerge(x, y, type = "merge")$b, 7)
 expect_null(listmerge(x, y, type = "template")$f, NULL)

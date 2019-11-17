@@ -36,7 +36,7 @@ Uses Newton-Raphson to estimate the parameters of the Kumaraswamy distribution.
 For the density function of the Kumaraswamy distribution see \link[extraDistr]{Kumaraswamy}.
 }
 \examples{
-AIC(mlkumar(USArrests$Rape/100))
+AIC(mlkumar(USArrests$Rape / 100))
 }
 \references{
 Jones, M. C. "Kumaraswamy's distribution: A beta-type distribution with some tractability advantages." Statistical Methodology 6.1 (2009): 70-81.

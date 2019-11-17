@@ -15,26 +15,26 @@
 #'     \item{\code{support}}{The support of the density.}
 #'     \item{\code{n}}{The number of observations.}
 #'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @examples mlrayleigh(precip)
+#' @examples
+#' mlrayleigh(precip)
 #' @seealso \link[extraDistr]{Rayleigh} for the Rayleigh density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
 #' @export
 
-mlrayleigh = function(x, na.rm = FALSE) {
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mlrayleigh <- function(x, na.rm = FALSE) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
   assertthat::assert_that(min(x) >= 0)
 
-  sigma = sqrt(1/2*mean(x^2))
-  object = c(sigma = sigma)
-  class(object) = "univariateML"
-  attr(object, "model") = "Rayleigh"
-  attr(object, "density") = "extraDistr::drayleigh"
-  attr(object, "logLik") = length(x)*(mean(log(x) - 2*log(sigma) - 1))
-  attr(object, "support") = c(0, Inf)
-  attr(object, "n") = length(x)
-  attr(object, "call") = match.call()
+  sigma <- sqrt(1 / 2 * mean(x^2))
+  object <- c(sigma = sigma)
+  class(object) <- "univariateML"
+  attr(object, "model") <- "Rayleigh"
+  attr(object, "density") <- "extraDistr::drayleigh"
+  attr(object, "logLik") <- length(x) * (mean(log(x) - 2 * log(sigma) - 1))
+  attr(object, "support") <- c(0, Inf)
+  attr(object, "n") <- length(x)
+  attr(object, "call") <- match.call()
   object
-
 }

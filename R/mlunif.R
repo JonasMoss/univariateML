@@ -14,26 +14,27 @@
 #'     \item{\code{support}}{The support of the density.}
 #'     \item{\code{n}}{The number of observations.}
 #'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @examples mlunif(precip)
+#' @examples
+#' mlunif(precip)
 #' @seealso \link[stats]{Uniform} for the uniform density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
 #' @export
 
 
-mlunif = function(x, na.rm = FALSE) {
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mlunif <- function(x, na.rm = FALSE) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
-  n = length(x)
-  max_ = max(x)
-  min_ = min(x)
-  object = c(min = min_, max = max_)
-  class(object) = "univariateML"
-  attr(object, "model") = "Uniform"
-  attr(object, "density") = "stats::dunif"
-  attr(object, "logLik") = -n*log(max_ - min_)
-  attr(object, "support") = c(min, max)
-  attr(object, "n") = length(x)
-  attr(object, "call") = match.call()
+  n <- length(x)
+  max_ <- max(x)
+  min_ <- min(x)
+  object <- c(min = min_, max = max_)
+  class(object) <- "univariateML"
+  attr(object, "model") <- "Uniform"
+  attr(object, "density") <- "stats::dunif"
+  attr(object, "logLik") <- -n * log(max_ - min_)
+  attr(object, "support") <- c(min, max)
+  attr(object, "n") <- length(x)
+  attr(object, "call") <- match.call()
   object
 }

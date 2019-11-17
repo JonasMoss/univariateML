@@ -31,7 +31,7 @@ The maximum likelihood estimate of \code{mu} is the empirical mean of the
 For the density function of the logit-normal distribution see \link[logitnorm]{dlogitnorm}.
 }
 \examples{
-AIC(mllogitnorm(USArrests$Rape/100))
+AIC(mllogitnorm(USArrests$Rape / 100))
 }
 \references{
 Atchison, J., & Shen, S. M. (1980). Logistic-normal distributions: Some properties and uses. Biometrika, 67(2), 261-272.

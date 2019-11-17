@@ -34,10 +34,10 @@ Computes a confidence interval for one or more parameters in a \code{unvariateML
    The confidence intervals are parametric bootstrap percentile intervals with limits \code{(1-level)/2} and \code{1 - (1-level)}.
 }
 \examples{
-  object = mlinvgauss(airquality$Wind)
-  confint(object) # 95\% confidence interval for mean and shape
-  confint(object, "mean") # 95\% confidence interval for the mean parameter
-  # confint(object, "variance") # Fails since 'variance isn't a main parameter.
+object <- mlinvgauss(airquality$Wind)
+confint(object) # 95\% confidence interval for mean and shape
+confint(object, "mean") # 95\% confidence interval for the mean parameter
+# confint(object, "variance") # Fails since 'variance isn't a main parameter.
 }
 \seealso{
 \code{\link[stats]{confint}} for the generic function and \code{\link{bootstrapml}} for the

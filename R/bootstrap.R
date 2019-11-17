@@ -35,53 +35,51 @@
 #' @seealso \code{\link{confint}} for an application of \code{bootstrapml}.
 #' @examples
 #' \dontrun{
-#'   set.seed(1)
-#'   object = mlgamma(mtcars$qsec)
+#' set.seed(1)
+#' object <- mlgamma(mtcars$qsec)
 #'
-#'   ## Calculate c(0.025, 0.975) confidence interval for the gamma parameters.
-#'   bootstrapml(object)
+#' ## Calculate c(0.025, 0.975) confidence interval for the gamma parameters.
+#' bootstrapml(object)
 #'
-#'   #            2.5%      97.5%
-#'   # shape 68.624945 160.841557
-#'   # rate   3.896915   9.089194
+#' #            2.5%      97.5%
+#' # shape 68.624945 160.841557
+#' # rate   3.896915   9.089194
 #'
-#'   ## The mean of a gamma distribution is shape/rate. Now we calculate a
-#'   ## parametric bootstrap confidence interval for the mean with confidence
-#'   ## limits c(0.05, 0.95)
+#' ## The mean of a gamma distribution is shape/rate. Now we calculate a
+#' ## parametric bootstrap confidence interval for the mean with confidence
+#' ## limits c(0.05, 0.95)
 #'
-#'   bootstrapml(object, map = function(x) x[1]/x[2], probs = c(0.05, 0.95))
+#' bootstrapml(object, map = function(x) x[1] / x[2], probs = c(0.05, 0.95))
 #'
-#'   #       5%      95%
-#'   # 17.33962 18.31253
+#' #       5%      95%
+#' # 17.33962 18.31253
 #'
-#'   ## Print a histogram of the bootstrapped estimates from an exponential.
-#'   object = mlexp(mtcars$qsec)
-#'   hist(bootstrapml(object, reducer = identity))
+#' ## Print a histogram of the bootstrapped estimates from an exponential.
+#' object <- mlexp(mtcars$qsec)
+#' hist(bootstrapml(object, reducer = identity))
 #' }
+#'
+bootstrapml <- function(object, Nreps = 1000, map = identity,
+                        reducer = stats::quantile, ...) {
+  r_fun <- univariateML_to_function(object, type = "r")
+  ml_fun <- univariateML_to_function(object, type = "ml")
+  bootstraps <- replicate(n = Nreps, expr = ml_fun(r_fun(attr(object, "n"))))
 
-bootstrapml = function(object, Nreps = 1000, map = identity,
-                       reducer = stats::quantile, ...) {
+  defaults <- list()
 
-  r_fun = univariateML_to_function(object, type = "r")
-  ml_fun = univariateML_to_function(object, type = "ml")
-  bootstraps = replicate(n = Nreps, expr = ml_fun(r_fun(attr(object, "n"))))
+  if (identical(reducer, stats::quantile)) defaults <- list(probs = c(0.025, 0.975))
 
-  defaults = list()
+  arguments <- listmerge(x = defaults, y = list(...))
 
-  if(identical(reducer, stats::quantile)) defaults = list(probs = c(0.025, 0.975))
-
-  arguments = listmerge(x = defaults, y = list(...))
-
-  if(is.null(dim(bootstraps))) {
-    mapped = sapply(bootstraps, map)
+  if (is.null(dim(bootstraps))) {
+    mapped <- sapply(bootstraps, map)
   } else {
-    mapped = apply(bootstraps, 2, map)
+    mapped <- apply(bootstraps, 2, map)
   }
 
-  if(is.null(dim(mapped))) {
+  if (is.null(dim(mapped))) {
     do.call(function(...) reducer(mapped, ...), arguments)
   } else {
     do.call(function(...) t(apply(mapped, 1, reducer, ...)), arguments)
   }
-
 }

@@ -17,32 +17,33 @@
 #'     \item{\code{support}}{The support of the density.}
 #'     \item{\code{n}}{The number of observations.}
 #'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @examples AIC(mllogitnorm(USArrests$Rape/100))
+#' @examples
+#' AIC(mllogitnorm(USArrests$Rape / 100))
 #' @seealso link[dlogitnorm]{dlogitnorm}for the normal density.
 #' @references Atchison, J., & Shen, S. M. (1980). Logistic-normal distributions: Some properties and uses. Biometrika, 67(2), 261-272.
 #' @export
 
-mllogitnorm = function(x, na.rm = FALSE) {
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mllogitnorm <- function(x, na.rm = FALSE) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
   assertthat::assert_that(min(x) > 0)
   assertthat::assert_that(max(x) < 1)
 
-  n = length(x)
-  y = stats::qlogis(x)
-  mu = mean(y)
-  sigma = sqrt(stats::var(y)*(n-1)/n)
+  n <- length(x)
+  y <- stats::qlogis(x)
+  mu <- mean(y)
+  sigma <- sqrt(stats::var(y) * (n - 1) / n)
 
-  H = mean(log(x))
-  G = mean(log(1 - x))
-  object = c(mu = mu, sigma = sigma)
-  class(object) = c("univariateML")
-  attr(object, "model") = "LogitNormal"
-  attr(object, "density") = "logitnorm::dlogitnorm"
-  attr(object, "logLik") = -n/2*(1 + log(2*pi) + 2*log(sigma) + 2*H + 2*G)
-  attr(object, "support") = c(0, 1)
-  attr(object, "n") = length(x)
-  attr(object, "call") = match.call()
+  H <- mean(log(x))
+  G <- mean(log(1 - x))
+  object <- c(mu = mu, sigma = sigma)
+  class(object) <- c("univariateML")
+  attr(object, "model") <- "LogitNormal"
+  attr(object, "density") <- "logitnorm::dlogitnorm"
+  attr(object, "logLik") <- -n / 2 * (1 + log(2 * pi) + 2 * log(sigma) + 2 * H + 2 * G)
+  attr(object, "support") <- c(0, 1)
+  attr(object, "n") <- length(x)
+  attr(object, "call") <- match.call()
   object
 }

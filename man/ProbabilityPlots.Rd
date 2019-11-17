@@ -73,20 +73,19 @@ This function is modeled after \link[stats]{qqnorm}.
 Graphical parameters may be given as arguments to all the functions below.
 }
 \examples{
-  ## Make a single probability plot with a line.
+## Make a single probability plot with a line.
 
-  obj = mlgamma(Nile)
-  qqmlplot(Nile, obj)
-  qqmlline(Nile, obj)
+obj <- mlgamma(Nile)
+qqmlplot(Nile, obj)
+qqmlline(Nile, obj)
 
-  ## Make multiple probability plots. datax = TRUE must be used to make this
-  ## look good.
+## Make multiple probability plots. datax = TRUE must be used to make this
+## look good.
 
-  ppmlplot(airquality$Wind, mlgamma, main = "Many P-P plots")
-  ppmlpoints(airquality$Wind, mlexp, col = "red")
-  ppmlpoints(airquality$Wind, mlweibull, col = "purple")
-  ppmlpoints(airquality$Wind, mllnorm, col = "blue")
-
+ppmlplot(airquality$Wind, mlgamma, main = "Many P-P plots")
+ppmlpoints(airquality$Wind, mlexp, col = "red")
+ppmlpoints(airquality$Wind, mlweibull, col = "purple")
+ppmlpoints(airquality$Wind, mllnorm, col = "blue")
 }
 \references{
 M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968, Pages 1–17, https://doi.org/10.1093/biomet/55.1.1

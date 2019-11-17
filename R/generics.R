@@ -5,34 +5,35 @@
 #' @param points Boolean; should points be plotted by default?
 #' @keywords internal
 
-plot_wrangler = function(x, range, points = FALSE, ...) {
-
-  if(is.null(range)) {
-    if(abs(attr(x, "support")[1]) + abs(attr(x, "support")[2]) < Inf) {
-      limits = attr(x, "support")
+plot_wrangler <- function(x, range, points = FALSE, ...) {
+  if (is.null(range)) {
+    if (abs(attr(x, "support")[1]) + abs(attr(x, "support")[2]) < Inf) {
+      limits <- attr(x, "support")
     } else if (abs(attr(x, "support")[1]) == 0 & abs(attr(x, "support")[2]) == Inf) {
-      limits = c(0, qml(0.99, x))
+      limits <- c(0, qml(0.99, x))
     } else {
-      limits = qml(c(0.01, 0.99), x)
+      limits <- qml(c(0.01, 0.99), x)
     }
 
-    range = seq(limits[1], limits[2], length.out = 1000)
-
+    range <- seq(limits[1], limits[2], length.out = 1000)
   }
 
-  defaults = list(type = if(points) "p" else "l",
-                  main = paste0(attr(x, "model"), " model"),
-                  ylab = "Density",
-                  xlab = "x",
-                  lwd  = 1)
+  defaults <- list(
+    type = if (points) "p" else "l",
+    main = paste0(attr(x, "model"), " model"),
+    ylab = "Density",
+    xlab = "x",
+    lwd = 1
+  )
 
-  args = listmerge(x = defaults,
-                   y = list(...))
+  args <- listmerge(
+    x = defaults,
+    y = list(...)
+  )
 
-  args$x = range
-  args$y = dml(args$x, x)
+  args$x <- range
+  args$y <- dml(args$x, x)
   args
-
 }
 
 #' Plot, Lines and Points Methods for Maximum Likelihood Estimates
@@ -50,66 +51,64 @@ plot_wrangler = function(x, range, points = FALSE, ...) {
 #' rug(datasets::precip)
 #' @export
 #'
-plot.univariateML = function(x, range = NULL, ...) {
-
-  args = plot_wrangler(x, range, points = FALSE, ...)
+plot.univariateML <- function(x, range = NULL, ...) {
+  args <- plot_wrangler(x, range, points = FALSE, ...)
   do.call(graphics::plot, args)
   invisible(x)
-
 }
 
 #' @export
 #' @rdname plot.univariateML
-lines.univariateML = function(x, range = NULL, ...) {
-
-  args = plot_wrangler(x, range, points = FALSE, ...)
+lines.univariateML <- function(x, range = NULL, ...) {
+  args <- plot_wrangler(x, range, points = FALSE, ...)
   do.call(graphics::lines, args)
   invisible(x)
-
 }
 
 #' @export
 #' @rdname plot.univariateML
-points.univariateML = function(x, range = NULL, ...) {
-  args = plot_wrangler(x, range, points = TRUE, ...)
+points.univariateML <- function(x, range = NULL, ...) {
+  args <- plot_wrangler(x, range, points = TRUE, ...)
   do.call(graphics::points, args)
   invisible(x)
-
 }
 
 #' @export
-logLik.univariateML = function(object, ...) {
-  val = attr(object, "logLik")
-  attr(val, "nobs") = attr(object, "n")
-  attr(val, "df")   = length(object)
-  class(val) = "logLik"
+logLik.univariateML <- function(object, ...) {
+  val <- attr(object, "logLik")
+  attr(val, "nobs") <- attr(object, "n")
+  attr(val, "df") <- length(object)
+  class(val) <- "logLik"
   val
 }
 
 #' @export
-coef.univariateML = function(object, ...) {
+coef.univariateML <- function(object, ...) {
   stats::setNames(as.numeric(object), names(object))
 }
 
 #' @export
-summary.univariateML = function(object, ...) {
-  data.name =  deparse(as.list(attr(object, "call"))$x)
-  digits = list(...)$digits
-  cat("\nMaximum likelihood for the", attr(object, "model"), "model \n",
-      "\nCall: ", deparse(attr(object, "call")), "\n\nEstimates: \n")
+summary.univariateML <- function(object, ...) {
+  data.name <- deparse(as.list(attr(object, "call"))$x)
+  digits <- list(...)$digits
+  cat(
+    "\nMaximum likelihood for the", attr(object, "model"), "model \n",
+    "\nCall: ", deparse(attr(object, "call")), "\n\nEstimates: \n"
+  )
   print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
   cat("\nData:            ", data.name, " (", attr(object, "n"), " obs.)\n",
-      "Support:         (", attr(object, "support")[1], ", ", attr(object, "support")[2],   ")\n",
-      "Density:         ", attr(object, "density"), "\n",
-      "Log-likelihood:  ", attr(object, "logLik"), "\n",
-      sep = "")
+    "Support:         (", attr(object, "support")[1], ", ", attr(object, "support")[2], ")\n",
+    "Density:         ", attr(object, "density"), "\n",
+    "Log-likelihood:  ", attr(object, "logLik"), "\n",
+    sep = ""
+  )
   invisible(object)
 }
 
 #' @export
-print.univariateML = function(x, ...) {
-  digits = list(...)$digits
-  if(is.null(digits)) digits = 4
+print.univariateML <- function(x, ...) {
+  digits <- list(...)$digits
+  if (is.null(digits)) digits <- 4
   cat("Maximum likelihood estimates for the", attr(x, "model"), "model \n")
   print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
   invisible(x)
@@ -138,23 +137,23 @@ print.univariateML = function(x, ...) {
 #'    function used to calculate the confidence intervals.
 #' @export
 #' @examples
-#'   object = mlinvgauss(airquality$Wind)
-#'   confint(object) # 95% confidence interval for mean and shape
-#'   confint(object, "mean") # 95% confidence interval for the mean parameter
-#'   # confint(object, "variance") # Fails since 'variance isn't a main parameter.
-confint.univariateML = function(object, parm = NULL, level = 0.95, Nreps = 1000, ...) {
+#' object <- mlinvgauss(airquality$Wind)
+#' confint(object) # 95% confidence interval for mean and shape
+#' confint(object, "mean") # 95% confidence interval for the mean parameter
+#' # confint(object, "variance") # Fails since 'variance isn't a main parameter.
+confint.univariateML <- function(object, parm = NULL, level = 0.95, Nreps = 1000, ...) {
+  if (is.null(parm)) parm <- names(object)
 
-  if(is.null(parm)) parm = names(object)
+  assertthat::assert_that(all(parm %in% names(object)),
+    msg =
+      "'parm' must contain valid parameter names or be NULL"
+  )
 
-  assertthat::assert_that(all(parm %in% names(object)), msg =
-                            "'parm' must contain valid parameter names or be NULL")
+  indices <- which(names(object) %in% parm)
 
-  indices = which(names(object) %in% parm)
+  map <- function(x) x[indices]
 
-  map = function(x) x[indices]
-
-  probs = c((1 - level)/2, 1 - (1 - level)/2)
+  probs <- c((1 - level) / 2, 1 - (1 - level) / 2)
 
   bootstrapml(object, map = map, probs = probs, Nreps = Nreps, ...)
-
 }

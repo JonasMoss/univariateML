@@ -16,25 +16,28 @@
 #'     \item{\code{support}}{The support of the density.}
 #'     \item{\code{n}}{The number of observations.}
 #'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @examples mllaplace(precip)
+#' @examples
+#' mllaplace(precip)
 #' @seealso \link[extraDistr]{Laplace} for the Laplace density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
 #' @export
 
-mllaplace = function(x, na.rm = FALSE) {
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mllaplace <- function(x, na.rm = FALSE) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
-  mu = stats::median(x)
-  sigma = mean(abs(x - mu))
-  object = c(mu = mu,
-             sigma = sigma)
-  class(object) = "univariateML"
-  attr(object, "model") = "Laplace"
-  attr(object, "density") = "extraDistr::dlaplace"
-  attr(object, "logLik") = -length(x)*(1 + log(2*sigma))
-  attr(object, "support") = c(-Inf, Inf)
-  attr(object, "n") = length(x)
-  attr(object, "call") = match.call()
+  mu <- stats::median(x)
+  sigma <- mean(abs(x - mu))
+  object <- c(
+    mu = mu,
+    sigma = sigma
+  )
+  class(object) <- "univariateML"
+  attr(object, "model") <- "Laplace"
+  attr(object, "density") <- "extraDistr::dlaplace"
+  attr(object, "logLik") <- -length(x) * (1 + log(2 * sigma))
+  attr(object, "support") <- c(-Inf, Inf)
+  attr(object, "n") <- length(x)
+  attr(object, "call") <- match.call()
   object
 }

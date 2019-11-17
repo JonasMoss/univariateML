@@ -24,32 +24,30 @@
 #' @seealso \link[extraDistr]{BetaPrime} for the Beta prime density, \link[stats]{nlm} for the
 #'   optimizer this function uses, \link{mlbeta} for the Beta distribution maximum
 #'   likelihood estimator.
-#' @examples AIC(mlbetapr(USArrests$Rape))
+#' @examples
+#' AIC(mlbetapr(USArrests$Rape))
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 #' @export
 
-mlbetapr = function(x, na.rm = FALSE, start = NULL,
-                    type = c("none", "gradient", "hessian")) {
-
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mlbetapr <- function(x, na.rm = FALSE, start = NULL,
+                     type = c("none", "gradient", "hessian")) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)
 
-  val1 = mean(log(x))
-  val2 = mean(log(1 + x))
-  object = mlbeta(x/(x + 1), na.rm = FALSE, start, type)
-  alpha = object[1]
-  beta = object[2]
-  class(object) = "univariateML"
-  attr(object, "model") = "BetaPrime"
-  attr(object, "density") = "extraDistr::dbetapr"
-  attr(object, "logLik") = unname(-length(x)*(lbeta(alpha, beta) -
-                                                (alpha - 1)*val1 +
-                                                (alpha + beta)*val2))
-  attr(object, "support") = c(0, Inf)
-  attr(object, "n") = length(x)
-  attr(object, "call") = match.call()
+  val1 <- mean(log(x))
+  val2 <- mean(log(1 + x))
+  object <- mlbeta(x / (x + 1), na.rm = FALSE, start, type)
+  alpha <- object[1]
+  beta <- object[2]
+  class(object) <- "univariateML"
+  attr(object, "model") <- "BetaPrime"
+  attr(object, "density") <- "extraDistr::dbetapr"
+  attr(object, "logLik") <- unname(-length(x) * (lbeta(alpha, beta) -
+    (alpha - 1) * val1 +
+    (alpha + beta) * val2))
+  attr(object, "support") <- c(0, Inf)
+  attr(object, "n") <- length(x)
+  attr(object, "call") <- match.call()
   object
-
-
 }

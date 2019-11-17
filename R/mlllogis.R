@@ -15,7 +15,8 @@
 #'     \item{\code{support}}{The support of the density.}
 #'     \item{\code{n}}{The number of observations.}
 #'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @examples mllnorm(precip)
+#' @examples
+#' mllnorm(precip)
 #' @seealso \link[actuar]{Loglogistic} for the log-logistic density.
 #' @references Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.
 #'
@@ -24,24 +25,24 @@
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
 
-mlllogis = function(x, na.rm = FALSE) {
-  if(na.rm) x = x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
+mlllogis <- function(x, na.rm = FALSE) {
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)
 
-  y = log(x)
-  n = length(x)
+  y <- log(x)
+  n <- length(x)
 
-  object = mllogis(y)
-  class(object) = "univariateML"
-  names(object) = c("shape", "rate")
-  object[1] = exp(object[1])
-  object[2] = 1/object[2]
+  object <- mllogis(y)
+  class(object) <- "univariateML"
+  names(object) <- c("shape", "rate")
+  object[1] <- exp(object[1])
+  object[2] <- 1 / object[2]
 
-  attr(object, "model") = "Loglogistic"
-  attr(object, "density") = "actuar::dllogis"
-  attr(object, "logLik") = sum(actuar::dllogis(x, object[1], object[2], log = TRUE))
-  attr(object, "support") = c(0, Inf)
-  attr(object, "call") = match.call()
+  attr(object, "model") <- "Loglogistic"
+  attr(object, "density") <- "actuar::dllogis"
+  attr(object, "logLik") <- sum(actuar::dllogis(x, object[1], object[2], log = TRUE))
+  attr(object, "support") <- c(0, Inf)
+  attr(object, "call") <- match.call()
   object
 }

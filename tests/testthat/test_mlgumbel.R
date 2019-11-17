@@ -2,20 +2,20 @@ context("mlgumbel")
 
 ## Data generation.
 set.seed(313)
-small_data = extraDistr::rgumbel(100, 1, 1)
-tiny_data = extraDistr::rgumbel(10, 3, 7)
-medium_data = extraDistr::rgumbel(1000, 9, 11)
+small_data <- extraDistr::rgumbel(100, 1, 1)
+tiny_data <- extraDistr::rgumbel(10, 3, 7)
+medium_data <- extraDistr::rgumbel(1000, 9, 11)
 
 ## Checks if the ML is correct.
-mle1 = suppressWarnings(nlm(function(p) {
+mle1 <- suppressWarnings(nlm(function(p) {
   -sum(extraDistr::dgumbel(small_data, p[1], p[2], log = TRUE))
-}, p = c(1,1)))
+}, p = c(1, 1)))
 
-mle2 = nlm(function(p) {
+mle2 <- nlm(function(p) {
   -sum(extraDistr::dgumbel(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(3, 7))
 
-mle3 = nlm(function(p) {
+mle3 <- nlm(function(p) {
   -sum(extraDistr::dgumbel(medium_data, p[1], p[2], log = TRUE))
 }, p = c(9, 11))
 
@@ -34,10 +34,12 @@ expect_warning(mlgumbel(tiny_data, iterlim = 1))
 expect_error(mlgumbel(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
-expect_equal(coef(mlgumbel(small_data)),
-             coef(mlgumbel(c(small_data, NA), na.rm = TRUE)))
+expect_equal(
+  coef(mlgumbel(small_data)),
+  coef(mlgumbel(c(small_data, NA), na.rm = TRUE))
+)
 
-est = mlgumbel(tiny_data)
+est <- mlgumbel(tiny_data)
 ## Check class.
 expect_equal(attr(est, "model"), "Gumbel")
 expect_equal(class(est), "univariateML")
