@@ -44,8 +44,10 @@ to_univariateML <- function(y, obj) {
   if (inherits(obj, "univariateML")) {
     obj <- obj
   } else {
-    msg <- paste0("obj must be either a function returning a univariateML ",
-            "object or an univariateML object.")
+    msg <- paste0(
+      "obj must be either a function returning a univariateML ",
+      "object or an univariateML object."
+    )
     tryCatch(
       {
         obj <- obj(y)
