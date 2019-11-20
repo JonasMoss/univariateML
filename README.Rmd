@@ -72,4 +72,4 @@ If you miss a particular estimator, make an issue explaining why its implementat
 We encourage you to make a pull request if you wish to make a contribution to this package. 
 If you wish to contribute a new maximum likelihood estimator to this package please read [this page first](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities). 
 
-This project follows a [Contributor Code of Conduct](/CODE-OF-CONDUCT.md).
+This project follows a [Contributor Code of Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html).
