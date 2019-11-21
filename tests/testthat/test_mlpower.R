@@ -14,20 +14,36 @@ mle1 <- suppressWarnings(nlm(function(p) {
 }, p = 1))
 
 mle2 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(tiny_data, max(tiny_data) + epsilon, p, log = TRUE))
+  -sum(extraDistr::dpower(tiny_data, max(tiny_data) + epsilon, p,
+    log = TRUE
+  ))
 }, p = 7))
 
 mle3 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(medium_data, max(medium_data) + epsilon, p, log = TRUE))
+  -sum(extraDistr::dpower(medium_data, max(medium_data) + epsilon, p,
+    log = TRUE
+  ))
 }, p = 11))
 
-expect_equal(mle1$estimate, as.numeric(mlpower(small_data))[2], tolerance = 1e-5)
-expect_equal(mle2$estimate, as.numeric(mlpower(tiny_data))[2], tolerance = 1e-5)
-expect_equal(mle3$estimate, as.numeric(mlpower(medium_data))[2], tolerance = 1e-5)
+expect_equal(mle1$estimate, as.numeric(mlpower(small_data))[2],
+  tolerance = 1e-5
+)
+expect_equal(mle2$estimate, as.numeric(mlpower(tiny_data))[2],
+  tolerance = 1e-5
+)
+expect_equal(mle3$estimate, as.numeric(mlpower(medium_data))[2],
+  tolerance = 1e-5
+)
 
-expect_equal(-mle1$minimum, attr(mlpower(small_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle2$minimum, attr(mlpower(tiny_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle3$minimum, attr(mlpower(medium_data), "logLik"), tolerance = 1e-5)
+expect_equal(-mle1$minimum, attr(mlpower(small_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle2$minimum, attr(mlpower(tiny_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle3$minimum, attr(mlpower(medium_data), "logLik"),
+  tolerance = 1e-5
+)
 
 
 ## Finds errors with na and data out of bounds.

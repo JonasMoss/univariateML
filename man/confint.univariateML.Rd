@@ -15,7 +15,8 @@ interval for. Each parameter must be a member of \code{names(object)}.}
 
 \item{level}{The confidence level.}
 
-\item{Nreps}{Number of bootstrap iterations. Passed to \code{\link{bootstrapml}}.}
+\item{Nreps}{Number of bootstrap iterations. Passed to
+\code{\link{bootstrapml}}.}
 
 \item{...}{Additional arguments passed to \code{\link{bootstrapml}}.}
 }
@@ -24,14 +25,17 @@ A matrix or vector with columns giving lower and upper confidence
    limits for each parameter in \code{parm}.
 }
 \description{
-Computes a confidence interval for one or more parameters in a \code{unvariateML}
-   object.
+Computes a confidence interval for one or more parameters in a
+   \code{unvariateML} object.
 }
 \details{
-\code{confint.univariateML} is a wrapper for  \code{\link{bootstrapml}} that computes
-   confidence intervals for the main parameters of \code{object}. The main parameters of \code{object} are
-   the members of \code{names(object)}. For instance,the main parameters of an object obtained from  \code{mlnorm} are  \code{mean} and  \code{sd}.
-   The confidence intervals are parametric bootstrap percentile intervals with limits \code{(1-level)/2} and \code{1 - (1-level)}.
+\code{confint.univariateML} is a wrapper for  \code{\link{bootstrapml}} that
+   computes confidence intervals for the main parameters of \code{object}.
+   The main parameters of \code{object} are the members of
+   \code{names(object)}. For instance, the main parameters of an object
+   obtained from  \code{mlnorm} are  \code{mean} and  \code{sd}. The
+   confidence intervals are parametric bootstrap percentile intervals
+   with limits \code{(1-level)/2} and \code{1 - (1-level)}.
 }
 \examples{
 object <- mlinvgauss(airquality$Wind)
@@ -40,6 +44,7 @@ confint(object, "mean") # 95\% confidence interval for the mean parameter
 # confint(object, "variance") # Fails since 'variance isn't a main parameter.
 }
 \seealso{
-\code{\link[stats]{confint}} for the generic function and \code{\link{bootstrapml}} for the
-   function used to calculate the confidence intervals.
+\code{\link[stats]{confint}} for the generic function and
+   \code{\link{bootstrapml}} for the function used to calculate the
+   confidence intervals.
 }

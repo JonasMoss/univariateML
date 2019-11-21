@@ -19,8 +19,10 @@ Passed to the \code{stats::nlm} function.}
 \code{"none"} should be passed to \code{stats::nlm}.}
 }
 \value{
-\code{mlbeta} returns an object of \link[base]{class} \code{univariateML}. This
-   is a named numeric vector with maximum likelihood estimates for \code{shape1} and \code{shape2} and the following attributes:
+\code{mlbeta} returns an object of \link[base]{class}
+   \code{univariateML}. This is a named numeric vector with maximum
+   likelihood estimates for \code{shape1} and \code{shape2} and the
+   following attributes:
     \item{\code{model}}{The name of the model.}
     \item{\code{density}}{The density associated with the estimates.}
     \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -40,7 +42,8 @@ For \code{type}, the option \code{none} is fastest.
 AIC(mlbeta(USArrests$Rape / 100))
 }
 \references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 }
 \seealso{
 \link[stats]{Beta} for the Beta density, \link[stats]{nlm} for the

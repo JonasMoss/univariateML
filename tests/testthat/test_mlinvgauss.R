@@ -26,16 +26,32 @@ mle4 <- suppressWarnings(nlm(function(p) {
 }, p = c(20, 13)))
 
 ## Checks estimates.
-expect_equal(mle1$estimate, as.numeric(mlinvgauss(tiny_data)), tolerance = 1e-5)
-expect_equal(mle2$estimate, as.numeric(mlinvgauss(small_data)), tolerance = 1e-5)
-expect_equal(mle3$estimate, as.numeric(mlinvgauss(medium_data)), tolerance = 1e-5)
-expect_equal(mle4$estimate, as.numeric(mlinvgauss(large_data)), tolerance = 1e-5)
+expect_equal(mle1$estimate, as.numeric(mlinvgauss(tiny_data)),
+  tolerance = 1e-5
+)
+expect_equal(mle2$estimate, as.numeric(mlinvgauss(small_data)),
+  tolerance = 1e-5
+)
+expect_equal(mle3$estimate, as.numeric(mlinvgauss(medium_data)),
+  tolerance = 1e-5
+)
+expect_equal(mle4$estimate, as.numeric(mlinvgauss(large_data)),
+  tolerance = 1e-5
+)
 
 ## Checks logLiks.
-expect_equal(-mle1$minimum, attr(mlinvgauss(tiny_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle2$minimum, attr(mlinvgauss(small_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle3$minimum, attr(mlinvgauss(medium_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle4$minimum, attr(mlinvgauss(large_data), "logLik"), tolerance = 1e-5)
+expect_equal(-mle1$minimum, attr(mlinvgauss(tiny_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle2$minimum, attr(mlinvgauss(small_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle3$minimum, attr(mlinvgauss(medium_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle4$minimum, attr(mlinvgauss(large_data), "logLik"),
+  tolerance = 1e-5
+)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlinvgauss(c(tiny_data, 0)))

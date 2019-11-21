@@ -6,10 +6,11 @@
 #' @keywords internal
 
 plot_wrangler <- function(x, range, points = FALSE, ...) {
+  support <- attr(x, "support")
   if (is.null(range)) {
-    if (abs(attr(x, "support")[1]) + abs(attr(x, "support")[2]) < Inf) {
-      limits <- attr(x, "support")
-    } else if (abs(attr(x, "support")[1]) == 0 & abs(attr(x, "support")[2]) == Inf) {
+    if (abs(support[1]) + abs(support[2]) < Inf) {
+      limits <- support
+    } else if (abs(support[1]) == 0 & abs(support[2]) == Inf) {
       limits <- c(0, qml(0.99, x))
     } else {
       limits <- qml(c(0.01, 0.99), x)
@@ -38,7 +39,8 @@ plot_wrangler <- function(x, range, points = FALSE, ...) {
 
 #' Plot, Lines and Points Methods for Maximum Likelihood Estimates
 #'
-#' The \code{plot}, \code{lines}, and \code{points} methods for \code{univariateML} objects.
+#' The \code{plot}, \code{lines}, and \code{points} methods for
+#'    \code{univariateML} objects.
 #'
 #' @export
 #' @param x a \code{univariateML} object.
@@ -91,13 +93,14 @@ coef.univariateML <- function(object, ...) {
 summary.univariateML <- function(object, ...) {
   data.name <- deparse(as.list(attr(object, "call"))$x)
   digits <- list(...)$digits
+  support <- attr(object, "support")
   cat(
     "\nMaximum likelihood for the", attr(object, "model"), "model \n",
     "\nCall: ", deparse(attr(object, "call")), "\n\nEstimates: \n"
   )
   print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
   cat("\nData:            ", data.name, " (", attr(object, "n"), " obs.)\n",
-    "Support:         (", attr(object, "support")[1], ", ", attr(object, "support")[2], ")\n",
+    "Support:         (", support[1], ", ", support[2], ")\n",
     "Density:         ", attr(object, "density"), "\n",
     "Log-likelihood:  ", attr(object, "logLik"), "\n",
     sep = ""
@@ -117,31 +120,40 @@ print.univariateML <- function(x, ...) {
 
 #' Confidence Intervals for Maximum Likelihood Estimates
 #'
-#' Computes a confidence interval for one or more parameters in a \code{unvariateML}
-#'    object.
+#' Computes a confidence interval for one or more parameters in a
+#'    \code{unvariateML} object.
 #'
-#' \code{confint.univariateML} is a wrapper for  \code{\link{bootstrapml}} that computes
-#'    confidence intervals for the main parameters of \code{object}. The main parameters of \code{object} are
-#'    the members of \code{names(object)}. For instance,the main parameters of an object obtained from  \code{mlnorm} are  \code{mean} and  \code{sd}.
-#'    The confidence intervals are parametric bootstrap percentile intervals with limits \code{(1-level)/2} and \code{1 - (1-level)}.
+#' \code{confint.univariateML} is a wrapper for  \code{\link{bootstrapml}} that
+#'    computes confidence intervals for the main parameters of \code{object}.
+#'    The main parameters of \code{object} are the members of
+#'    \code{names(object)}. For instance, the main parameters of an object
+#'    obtained from  \code{mlnorm} are  \code{mean} and  \code{sd}. The
+#'    confidence intervals are parametric bootstrap percentile intervals
+#'    with limits \code{(1-level)/2} and \code{1 - (1-level)}.
 #'
 #' @param object An object of class \code{univariateML}.
 #' @param parm Vector of strings; the parameters to calculate a confidence
 #'    interval for. Each parameter must be a member of \code{names(object)}.
 #' @param level The confidence level.
-#' @param Nreps Number of bootstrap iterations. Passed to \code{\link{bootstrapml}}.
+#' @param Nreps Number of bootstrap iterations. Passed to
+#'    \code{\link{bootstrapml}}.
 #' @param ... Additional arguments passed to \code{\link{bootstrapml}}.
 #' @return A matrix or vector with columns giving lower and upper confidence
 #'    limits for each parameter in \code{parm}.
-#' @seealso \code{\link[stats]{confint}} for the generic function and \code{\link{bootstrapml}} for the
-#'    function used to calculate the confidence intervals.
+#' @seealso \code{\link[stats]{confint}} for the generic function and
+#'    \code{\link{bootstrapml}} for the function used to calculate the
+#'    confidence intervals.
 #' @export
 #' @examples
 #' object <- mlinvgauss(airquality$Wind)
 #' confint(object) # 95% confidence interval for mean and shape
 #' confint(object, "mean") # 95% confidence interval for the mean parameter
 #' # confint(object, "variance") # Fails since 'variance isn't a main parameter.
-confint.univariateML <- function(object, parm = NULL, level = 0.95, Nreps = 1000, ...) {
+confint.univariateML <- function(object,
+                                 parm = NULL,
+                                 level = 0.95,
+                                 Nreps = 1000,
+                                 ...) {
   if (is.null(parm)) parm <- names(object)
 
   assertthat::assert_that(all(parm %in% names(object)),

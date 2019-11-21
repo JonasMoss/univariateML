@@ -62,10 +62,18 @@ expect_equal(c(mle4$estimate[1], exp(mle4$estimate[2])),
 )
 
 ## Checks logLiks.
-expect_equal(-mle1$minimum, attr(mllogis(tiny_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle2$minimum, attr(mllogis(small_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle3$minimum, attr(mllogis(medium_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle4$minimum, attr(mllogis(large_data), "logLik"), tolerance = 1e-5)
+expect_equal(-mle1$minimum, attr(mllogis(tiny_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle2$minimum, attr(mllogis(small_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle3$minimum, attr(mllogis(medium_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle4$minimum, attr(mllogis(large_data), "logLik"),
+  tolerance = 1e-5
+)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mllogis(c(tiny_data, NA)))

@@ -10,19 +10,6 @@
 #' @return A merged list where conflicts are solved in favor
 #' of y. Does not preserve ordering.
 
-# examples \dontrun{
-#     x = list(a = 5,
-#              b = 0,
-#              c = "a",
-#              d = NULL)
-#
-#     y = list(a = 3,
-#              b = 7,
-#              f = NA)
-#
-#    listmerge(x, y, type = "merge")
-#    listmerge(x, y, type = "template")}
-
 listmerge <- function(x, y, type = c("merge", "template")) {
   type <- match.arg(type)
 

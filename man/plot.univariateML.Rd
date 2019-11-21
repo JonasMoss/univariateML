@@ -23,7 +23,8 @@
 An invisible copy of \code{x}.
 }
 \description{
-The \code{plot}, \code{lines}, and \code{points} methods for \code{univariateML} objects.
+The \code{plot}, \code{lines}, and \code{points} methods for
+   \code{univariateML} objects.
 }
 \examples{
 plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")

@@ -33,9 +33,9 @@ argument.}
 
 \item{plot.it}{Logical; should the result be plotted?}
 
-\item{datax}{Logical; should \code{y} be plotted on the \code{x}-axis? Defaults
-to \code{FALSE} in \code{qqmlplot} and \code{ppmlplot} bu \code{TRUE} in
-\code{qqmlpoints} and \code{ppmlpoints}.}
+\item{datax}{Logical; should \code{y} be plotted on the \code{x}-axis?
+Defaults to \code{FALSE} in \code{qqmlplot} and \code{ppmlplot} but
+\code{TRUE} in \code{qqmlpoints} and \code{ppmlpoints}.}
 
 \item{...}{Graphical parameters.}
 
@@ -88,5 +88,7 @@ ppmlpoints(airquality$Wind, mlweibull, col = "purple")
 ppmlpoints(airquality$Wind, mllnorm, col = "blue")
 }
 \references{
-M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968, Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
+M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis
+  for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968,
+  Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
 }

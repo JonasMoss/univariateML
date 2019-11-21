@@ -8,21 +8,33 @@ medium_data <- stats::runif(1000, 1 / 2, 2)
 large_data <- stats::runif(10000, 13, 20)
 
 ## Checks logLiks.
-expect_equal(sum(dunif(tiny_data, min = min(tiny_data), max = max(tiny_data), log = TRUE)),
-  attr(mlunif(tiny_data), "logLik"),
-  tolerance = 1e-5
+expect_equal(sum(dunif(tiny_data,
+  min = min(tiny_data),
+  max = max(tiny_data), log = TRUE
+)),
+attr(mlunif(tiny_data), "logLik"),
+tolerance = 1e-5
 )
-expect_equal(sum(dunif(small_data, min = min(small_data), max = max(small_data), log = TRUE)),
-  attr(mlunif(small_data), "logLik"),
-  tolerance = 1e-5
+expect_equal(sum(dunif(small_data,
+  min = min(small_data),
+  max = max(small_data), log = TRUE
+)),
+attr(mlunif(small_data), "logLik"),
+tolerance = 1e-5
 )
-expect_equal(sum(dunif(medium_data, min = min(medium_data), max = max(medium_data), log = TRUE)),
-  attr(mlunif(medium_data), "logLik"),
-  tolerance = 1e-5
+expect_equal(sum(dunif(medium_data,
+  min = min(medium_data),
+  max = max(medium_data), log = TRUE
+)),
+attr(mlunif(medium_data), "logLik"),
+tolerance = 1e-5
 )
-expect_equal(sum(dunif(large_data, min = min(large_data), max = max(large_data), log = TRUE)),
-  attr(mlunif(large_data), "logLik"),
-  tolerance = 1e-5
+expect_equal(sum(dunif(large_data,
+  min = min(large_data),
+  max = max(large_data), log = TRUE
+)),
+attr(mlunif(large_data), "logLik"),
+tolerance = 1e-5
 )
 
 ## Finds errors with na and data out of bounds.

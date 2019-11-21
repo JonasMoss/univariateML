@@ -19,13 +19,25 @@ mle3 <- nlm(function(p) {
   -sum(extraDistr::dgumbel(medium_data, p[1], p[2], log = TRUE))
 }, p = c(9, 11))
 
-expect_equal(mle1$estimate, as.numeric(mlgumbel(small_data)), tolerance = 1e-5)
-expect_equal(mle2$estimate, as.numeric(mlgumbel(tiny_data)), tolerance = 1e-5)
-expect_equal(mle3$estimate, as.numeric(mlgumbel(medium_data)), tolerance = 1e-5)
+expect_equal(mle1$estimate, as.numeric(mlgumbel(small_data)),
+  tolerance = 1e-5
+)
+expect_equal(mle2$estimate, as.numeric(mlgumbel(tiny_data)),
+  tolerance = 1e-5
+)
+expect_equal(mle3$estimate, as.numeric(mlgumbel(medium_data)),
+  tolerance = 1e-5
+)
 
-expect_equal(-mle1$minimum, attr(mlgumbel(small_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle2$minimum, attr(mlgumbel(tiny_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle3$minimum, attr(mlgumbel(medium_data), "logLik"), tolerance = 1e-5)
+expect_equal(-mle1$minimum, attr(mlgumbel(small_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle2$minimum, attr(mlgumbel(tiny_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle3$minimum, attr(mlgumbel(medium_data), "logLik"),
+  tolerance = 1e-5
+)
 
 ## Checks warning with small iterlim.
 expect_warning(mlgumbel(tiny_data, iterlim = 1))

@@ -31,7 +31,6 @@ mlllogis <- function(x, na.rm = FALSE) {
   assertthat::assert_that(min(x) > 0)
 
   y <- log(x)
-  n <- length(x)
 
   object <- mllogis(y)
   class(object) <- "univariateML"

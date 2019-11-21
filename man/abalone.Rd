@@ -6,7 +6,8 @@
 \title{Abalone data}
 \format{A \link[tibble]{tibble} with 4,177 observations and 9 variables:
   \describe{
-    \item{sex}{Sex of the abalone, \code{F} is female, \code{M} male, and \code{I} infant.}
+    \item{sex}{Sex of the abalone, \code{F} is female, \code{M} male, and
+               \code{I} infant.}
     \item{length}{Longest shell measurement.}
     \item{diameter}{Diameter perpendicular to length.}
     \item{height}{Height with with meat in shell.}
@@ -17,7 +18,9 @@
     \item{rings}{+1.5 gives the age in years.}
   }}
 \source{
-Dua, D. and Graff, C. (2019). UCI Machine Learning Repository \url{http://archive.ics.uci.edu/ml}. Irvine, CA: University of California, School of Information and Computer Science.
+Dua, D. and Graff, C. (2019). UCI Machine Learning Repository
+\url{http://archive.ics.uci.edu/ml}. Irvine, CA: University of California,
+School of Information and Computer Science.
 }
 \usage{
 abalone
@@ -33,6 +36,7 @@ See the web page \url{https://archive.ics.uci.edu/ml/datasets/Abalone} for
 abalone
 }
 \references{
-Ko, V., Hjort, N. L., & Hobaek Haff, I. (2019). Focused information criteria for copulas. Scandinavian Journal of Statistics.
+Ko, V., Hjort, N. L., & Hobaek Haff, I. (2019). Focused information
+  criteria for copulas. Scandinavian Journal of Statistics.
 }
 \keyword{datasets}

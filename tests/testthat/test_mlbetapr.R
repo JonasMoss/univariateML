@@ -19,14 +19,26 @@ mle_medium <- suppressWarnings(nlm(function(p) {
   -sum(extraDistr::dbetapr(medium_data, p[1], p[2], log = TRUE))
 }, p = c(11, 0.3)))
 
-expect_equal(mle_tiny$estimate, as.numeric(mlbetapr(tiny_data)), tolerance = 1e-5)
-expect_equal(mle_small$estimate, as.numeric(mlbetapr(small_data)), tolerance = 1e-5)
-expect_equal(mle_medium$estimate, as.numeric(mlbetapr(medium_data)), tolerance = 1e-5)
+expect_equal(mle_tiny$estimate, as.numeric(mlbetapr(tiny_data)),
+  tolerance = 1e-5
+)
+expect_equal(mle_small$estimate, as.numeric(mlbetapr(small_data)),
+  tolerance = 1e-5
+)
+expect_equal(mle_medium$estimate, as.numeric(mlbetapr(medium_data)),
+  tolerance = 1e-5
+)
 
 ## Checks logLiks.
-expect_equal(-mle_tiny$minimum, attr(mlbetapr(tiny_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle_small$minimum, attr(mlbetapr(small_data), "logLik"), tolerance = 1e-5)
-expect_equal(-mle_medium$minimum, attr(mlbetapr(medium_data), "logLik"), tolerance = 1e-5)
+expect_equal(-mle_tiny$minimum, attr(mlbetapr(tiny_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle_small$minimum, attr(mlbetapr(small_data), "logLik"),
+  tolerance = 1e-5
+)
+expect_equal(-mle_medium$minimum, attr(mlbetapr(medium_data), "logLik"),
+  tolerance = 1e-5
+)
 
 ## Checks the control parameters.
 expect_equal(coef(mlbetapr(tiny_data, type = "gradient")),

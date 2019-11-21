@@ -26,9 +26,9 @@
 #'   a \code{univariateML} object when called with \code{y} as its only
 #'   argument.
 #' @param plot.it Logical; should the result be plotted?
-#' @param datax Logical; should \code{y} be plotted on the \code{x}-axis? Defaults
-#'   to \code{FALSE} in \code{qqmlplot} and \code{ppmlplot} bu \code{TRUE} in
-#'   \code{qqmlpoints} and \code{ppmlpoints}.
+#' @param datax Logical; should \code{y} be plotted on the \code{x}-axis?
+#'   Defaults to \code{FALSE} in \code{qqmlplot} and \code{ppmlplot} but
+#'   \code{TRUE} in \code{qqmlpoints} and \code{ppmlpoints}.
 #' @param probs Numeric vector of length two, representing probabilities.
 #'   Corresponding quantile pairs define the line drawn.
 #' @param qtype The \code{type} of quantile computation used in \code{quantile}.
@@ -55,7 +55,9 @@
 #' @name ProbabilityPlots
 #' @export
 #' @references
-#'   M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968, Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
+#'   M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis
+#'   for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968,
+#'   Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
 
 ppmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
   pp <- ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
