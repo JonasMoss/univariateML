@@ -21,7 +21,8 @@ are three things you need to include to make your example reproducible:
 1.  **Packages** should be loaded at the top of the script, so it's easy to
     see which ones the example needs.
 
-2.  Make sure the **data** is easily available to us when we verify your bug.
+2.  Make sure any potential  **data** is easily available to us when we verify 
+    your issue.
   
 3.  Spend a little bit of time ensuring that your **code** is easy for others to
     read:
@@ -85,10 +86,6 @@ Pull requests will be evaluated against a seven point checklist:
 1.  If you're adding new parameters or a new function, you'll also need
     to document them with [roxygen](https://github.com/klutometis/roxygen).
     Make sure to re-run `devtools::document()` on the code before submitting.
-
-    Currently, `univariateML` uses the development version of roxygen2, which you
-    can get with `install_github("klutometis/roxygen")`. This will be
-    available on CRAN in the near future.
 
 1.  If fixing a bug or adding a new feature to a function,
     please add a [testthat](https://github.com/r-lib/testthat) unit test.
