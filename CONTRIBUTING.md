@@ -103,5 +103,5 @@ accepted as is. All PRs require review and approval from at least one member of 
 Finally, remember that `univariateML` is an in-development package. 
 We honorably welcome pull requests and contributions. 
 
-This file is a lightly modified version of the code of conduction of the 
+This file is a lightly modified version of `CONTRIBUTE.md` of the 
 `R` package [`cvcqv`](https://github.com/MaaniBeigy/cvcqv) available [here.](https://github.com/MaaniBeigy/cvcqv/blob/master/CONTRIBUTING.md)
