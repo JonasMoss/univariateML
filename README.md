@@ -67,15 +67,5 @@ vignette](https://univariateml.netlify.com/articles/copula.html).
 
 ## How to Contribute or Get Help
 
-If you encounter a bug, have a feature request or need some help, open a
-[Github issue](https://github.com/JonasMoss/univariateML/issues). If you
-miss a particular estimator, make an issue explaining why its
-implementation should be prioritized.
-
-We encourage you to make a pull request if you wish to make a
-contribution to this package. If you wish to contribute a new maximum
-likelihood estimator to this package please read [this page
-first](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
-
-This project follows a [Contributor Code of
-Conduct](/CODE-OF-CONDUCT.md).
+Please read `CONTRIBUTING.md` for details about how to contribute or get
+help.
