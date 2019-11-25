@@ -40,3 +40,4 @@ Temporary Items
 inst/doc
 vignettes/*.R
 docs/
+README_cache/

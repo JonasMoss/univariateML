@@ -25,3 +25,4 @@ cache$
 ^pkgdown$
 ^LICENSE\.md$
 ^CONTRIBUTING.md$
+^README_cache$
