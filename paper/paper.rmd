@@ -50,10 +50,39 @@ in the estimation of copulas [@ko2019focused],
 as parametric starts in density estimation [@hjort_glad_1995; @moss2019kdensity], 
 and is of interest in and of itself. 
 
-The purpose of `univariateML` is to make maximum likelihood estimation quick, 
-easy, and free of bugs. It has custom made optimizers for each supported density.
+`univariateML` exists to simplify the whole process of doing inference with univariate densities.
+For most densities implemented in `R` the maximum likelihood estimates can easily
+be computed using numerical optimization functions such as `stats::nlm` and
+`stats::optim` on the negative log-likelihood, but there are three problems 
+with this solution strategy:
+
+1. It takes much time to program, especially if you wish to try out many densities and
+   wish to do make for instance `qqplot` or density plots.
+2. It is bug prone.
+3. The estimation itself can be slow when `$n$` is large. The time lost quickly adds up
+   when doing the parametric bootstrap or another procedure requiring repeated calls to
+   the estimating function.
+
+In short, it is inconvenient to program these solutions by hand.
+
+`univariateML` has custom made optimizers for each supported density.
 This is in contrast to the `mle` function in the built-in `R` package `stats4`,
 which supports far more general maximum likelihood estimation through numerical
 optimization on a supplied negative log-likelihood function.
+
+Analytic formulas for the maximum likelihood estimates are used whenever 
+they exist. Most estimators without analytic solutions have a custom made 
+Newton-Raphson solver. The speedup can be substantial, as seen in the following 
+Gamma distribution example:
+
+```{R, Gamma, warning = FALSE, cache = TRUE}
+set.seed(313)
+x <- rgamma(500, 2, 7)
+
+microbenchmark::microbenchmark(
+  univariateML = univariateML::mlgamma(x),
+  naive = nlm(function(p) -sum(dgamma(x, p[1], p[2], log = TRUE)), p = c(1, 1)))
+
+```
 
 # References
