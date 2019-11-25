@@ -61,9 +61,9 @@ lines(mlweibull(egypt$age))
 
 Analytic formulae for the maximum likelihood estimates are used whenever
 they exist. Most `ml***` functions without analytic solutions have a
-custom made Newton-Raphson solver. These can be much faster than the
-naïve solvers using `nlm` or `optim`. For example, `mlbeta` has a large
-speedup.
+custom made Newton-Raphson solver. These can be much faster than a naïve
+solution using `nlm` or `optim`. For example, `mlbeta` has a large
+speedup over the naïve solution using `nlm`.
 
 ``` r
 # install.packages("microbenchmark")
