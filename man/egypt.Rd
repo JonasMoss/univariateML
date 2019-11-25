@@ -35,7 +35,6 @@ Spiegelberg, W. (1901). Aegyptische und Griechische Eigennamen aus
 }
 \seealso{
 The source of the data is
-\url{https://feb.kuleuven.be/public/u0043181/modelselection/
-datasets/egyptlives_data.txt}
+\url{https://feb.kuleuven.be/public/u0043181/modelselection/datasets/egyptlives_data.txt}
 }
 \keyword{datasets}
