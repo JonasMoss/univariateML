@@ -91,7 +91,11 @@ Pull requests will be evaluated against a seven point checklist:
     please add a [testthat](https://github.com/r-lib/testthat) unit test.
     
 1.  If you wish to provide a new maximum likelihood estimator please read
-    the [wiki article](https://github.com/JonasMoss/univariateML/wiki/Adding-New-Densities).
+    the *Implementing New Densities* section below. 
+
+1.  Make better algorithms for maximum likelihood estimation if you can
+    but please prepared to document the superiority of your new implementation.
+    
 
 This seems like a lot of work but don't worry if your pull request isn't 
 perfect. It's a learning process and members of the `univariateML` team will be 
@@ -103,5 +107,20 @@ accepted as is. All PRs require review and approval from at least one member of 
 Finally, remember that `univariateML` is an in-development package. 
 We honorably welcome pull requests and contributions. 
 
+## Implementing New Densities
+
+0. Make sure there is a CRAN package containing at least the density function. That is, `package::dyourdensity` is possible to import. If this does not exist your pull request won't be accepted.
+
+1. Search the literature and try to find algorithms. Try to program a fast and reliable algorithm. If you fail to find good custom algorithms, use `nlm`, `constrOptim` or something similar. This is the approach taken in `mlcauchy` and `mllogis`. `mlbeta` also uses `nlm` but does so intelligently and is much faster than `mlcauchy` and `mllogit`.
+
+2. Program an `ml***` function following the pattern already established by the other `ml***` functions. In particular, be sure to return the correct kind of object, be sure to test for `na` and numbers out of bounds, and try to make a fast variant of of `logLik` attribute. 
+
+3. Add tests. There are plenty of patterns in the `test_that` directory. Be sure to test different kinds of options if applicable (see e.g. `mlbeta`). You *must* have 100% code coverage; run `covr::report()`. Please make more tests rather than fewer.
+ 
+4. If the distribution has some strange behavior, such as `mllomax` has, add the appropriate section to the distributions vignette.
+
+5. Make a pull request!
+
+## Acknowledgements
 This file is a lightly modified version of `CONTRIBUTE.md` of the 
 `R` package [`cvcqv`](https://github.com/MaaniBeigy/cvcqv) available [here.](https://github.com/MaaniBeigy/cvcqv/blob/master/CONTRIBUTING.md)
