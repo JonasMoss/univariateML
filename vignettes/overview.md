@@ -10,6 +10,7 @@ vignette: >
 
 
 When dealing with univariate data you want to do one or more of
+
 * Find a good model for the data.
 * Estimate parameters for your candidate models.
 * Get an idea about the uncertainty of your estimates.
@@ -168,7 +169,7 @@ rug(egypt$age)
 ## Confidence Intervals with Parametric Bootstrap
 
 Now we want to get an idea about the uncertainties of our model parameters. 
-Do do this we can do a parametric bootstrap to calculate confidence intervals using either
+Do to this we can do a parametric bootstrap to calculate confidence intervals using either
 `bootstrapml` or `confint`. While `bootstrapml` allows you to calculate any
 functional of the parameters and manipulate them afterwards, `confint` is restricted
 to the main parameters of the model.
@@ -181,8 +182,8 @@ bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
 
 ```
 ##            2.5%     97.5%
-## shape  1.240222  1.598819
-## scale 29.832718 37.970605
+## shape  1.250344  1.616963
+## scale 29.607607 37.750506
 ```
 
 ```r
@@ -191,8 +192,8 @@ bootstrapml(mlgamma(egypt$age))
 
 ```
 ##             2.5%      97.5%
-## shape 1.31838219 2.01474787
-## rate  0.04137277 0.06922667
+## shape 1.34432954 2.03663781
+## rate  0.04113922 0.06793162
 ```
 
 These confidence intervals are not directly comparable. That is, the `scale` parameter in
@@ -217,7 +218,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.48769 33.62750
+## 27.62843 33.73309
 ```
 
 ```r
@@ -229,7 +230,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.52567 34.00995
+## 27.53158 33.91414
 ```
 
 We are be interested in the quantiles of the underlying distribution,
@@ -245,7 +246,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 22.91788 28.69435
+## 23.03270 28.99678
 ```
 
 ```r
@@ -256,7 +257,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 21.85929 27.41170
+## 21.83003 27.51890
 ```
 
 We can also plot the bootstrap samples.

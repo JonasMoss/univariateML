@@ -14,7 +14,7 @@ using `univariateML` and the `copula` package.
 
 A **copula** is a function describing the dependency among a set of 
 one-dimensional distributions. If both the marginal distributions and the copula
-is know, the entire multivariate distribution is known too.
+is known, the entire multivariate distribution is known too.
 
 Suppose we look at a multivariate distribution as the pair of a copula and its marginals.
 Then a natural model selection using is to
@@ -26,7 +26,7 @@ This two-step procedure is commonly used due to its simplicity. The procedure mu
 be carried out this order since the marginal data cannot be transformed to the
 unit interval unless we know the marginal distributions. 
 
-The `univariateML` can be used to speed up task 1, while the `copula` package can be used to do task 2.
+The `univariateML` can be used for task 1, while the `copula` package can be used to do task 2.
 
 ## Abalone data
 
@@ -76,8 +76,8 @@ AICs = function(variable) {
 ```
 
 This function returns a vector of AICs for each model where `ml***` didn't fail.
-When it fails it is since the support of the data doesn't not match the density, e.g.
-when `-1` is fed to the exponential density.
+When it fails it is since the support of the data doesn't not match the density, 
+for instance when `-1` is fed to the exponential density.
 
 ```{r, full_call_diamter}
 AICs("age")

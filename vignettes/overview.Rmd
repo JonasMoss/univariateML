@@ -13,6 +13,7 @@ knitr::opts_chunk$set(fig.width = 6, fig.height = 5)
 ```
 
 When dealing with univariate data you want to do one or more of
+
 * Find a good model for the data.
 * Estimate parameters for your candidate models.
 * Get an idea about the uncertainty of your estimates.
@@ -109,7 +110,7 @@ rug(egypt$age)
 ## Confidence Intervals with Parametric Bootstrap
 
 Now we want to get an idea about the uncertainties of our model parameters. 
-Do do this we can do a parametric bootstrap to calculate confidence intervals using either
+Do to this we can do a parametric bootstrap to calculate confidence intervals using either
 `bootstrapml` or `confint`. While `bootstrapml` allows you to calculate any
 functional of the parameters and manipulate them afterwards, `confint` is restricted
 to the main parameters of the model.
