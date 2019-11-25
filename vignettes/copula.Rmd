@@ -2,11 +2,16 @@
 title: "Copula Modeling"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
+  %\VignetteIndexEntry{Copula Modeling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: copula.bib
 ---
+
+```{R depends, echo = FALSE}
+if (!require("copula")) install.packages("copula", dependencies = TRUE)
+if (!require("dplyr")) install.packages("dplyr", dependencies = TRUE)
+```
 
 This vignette shows how to model multivariate distributions with 
 [copulas](https://en.wikipedia.org/wiki/Copula_(probability_theory))
