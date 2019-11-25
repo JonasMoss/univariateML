@@ -12,9 +12,7 @@ authors:
 affiliations:
  - name: University of Oslo
    index: 1
-output:
-  github_document:
-    html_preview: true
+date: 25 November 2019
 bibliography: paper.bib
 ---
 
