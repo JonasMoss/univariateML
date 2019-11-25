@@ -62,8 +62,8 @@ be computed using numerical optimization functions such as `stats::nlm` and
 `stats::optim` on the negative log-likelihood, but there are three problems 
 with this solution strategy:
 
-1. It takes much time to program, especially if we wish to try out many densities and
-   wish to make for instance `qqplot` or density plots.
+1. It takes much time to program, especially if we want to try out many densities, to
+   make density plots, and calculate the AIC for all of them.
 2. It is bug prone.
 3. The estimation itself can be slow when the sample size is large. The time lost quickly adds up
    when doing the parametric bootstrap or another procedure requiring repeated calls to
