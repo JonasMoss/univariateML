@@ -30,8 +30,10 @@ set.seed(313)
 An `R`-package for fast, easy, and reliable maximum likelihood estimation for a 
 [selection](https://univariateml.netlify.com/articles/distributions.html) of parametric univariate densities. In addition to basic estimation capabilities,
 this package support visualization through `plot` and `qqmlplot`, model selection
-by `AIC` and `BIC`, and confidence sets through the parametric bootstrap with
-`bootstrapml`.
+by `AIC` and `BIC`, confidence sets through the parametric bootstrap with
+`bootstrapml`, and convenience functions such as the density, distribution 
+function, quantile function, and random sampling at the estimated distribution
+parameters.
 
 ## Installation
 Use the following command from inside `R`:
@@ -57,6 +59,27 @@ a plot.
 hist(egypt$age, freq = FALSE, xlab = "Mortality", main = "Egypt")
 lines(mlweibull(egypt$age))
 ```
+
+## Implementations
+
+Analytic formulae for the maximum likelihood estimates are used whenever
+they exist. Most `ml***` functions without analytic solutions have a custom made
+Newton-Raphson solver. These can be much faster than the naïve solvers using 
+`nlm` or `optim`. For example, `mlbeta` has a large speedup.
+
+```{R, beta, warning = FALSE, cache = TRUE}
+# install.packages("microbenchmark")
+set.seed(313)
+x <- rbeta(500, 2, 7)
+
+microbenchmark::microbenchmark(
+  univariateML = univariateML::mlbeta(x),
+  naive = nlm(function(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1)))
+
+```
+
+The maximum likelihood estimators in this package have all been subject to
+testing, see the `tests` folder for details.
 
 ## Documentation
 For an overview of the package and its features see the 
