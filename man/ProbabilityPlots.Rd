@@ -65,7 +65,7 @@ the \code{probs} quantiles, by default the first and third quartiles.
 an existing plot.
 
 \code{ppmlplot}, \code{ppmlline}, and \code{ppmlpoints} produce
-probability-probability plots (or P-P plots). They behave similarily to the
+probability-probability plots (or P-P plots). They behave similarly to the
 quantile-quantile plot functions.
 
 This function is modeled after \link[stats]{qqnorm}.
