@@ -15,8 +15,9 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 
 ## Overview
 
-An `R`-package for fast, easy, and reliable maximum likelihood
-estimation for a
+[`univariateML`](https://univariateml.netlify.com/index.html) is an
+`R`-package for fast, easy, and reliable maximum likelihood estimation
+for a
 [selection](https://univariateml.netlify.com/articles/distributions.html)
 of parametric univariate densities. In addition to basic estimation
 capabilities, this package support visualization through `plot` and
@@ -84,9 +85,7 @@ to testing, see the `tests` folder for details.
 
 ## Documentation
 
-This package has a
-[website](https://univariateml.netlify.com/index.html). For an overview
-of the package and its features see the [overview
+For an overview of the package and its features see the [overview
 vignette](https://univariateml.netlify.com/articles/overview.html). For
 a list of implemented densities see the start of the [details
 vignette](https://univariateml.netlify.com/articles/distributions.html).
