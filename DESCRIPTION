@@ -2,7 +2,6 @@ Package: univariateML
 Type: Package
 Title: Maximum Likelihood Estimation for Univariate Densities
 Version: 1.0.0
-Author: Jonas Moss
 Authors@R: c(
     person("Jonas", "Moss", , "jonas.gjertsen@gmail.com", role = c("aut", "cre"), 
       comment = c(ORCID = "0000-0002-6876-6964")
