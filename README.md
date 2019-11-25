@@ -85,7 +85,7 @@ to testing, see the `tests` folder for details.
 ## Documentation
 
 This package has a
-[website](https://univariateml.netlify.com/index.html)). For an overview
+[website](https://univariateml.netlify.com/index.html). For an overview
 of the package and its features see the [overview
 vignette](https://univariateml.netlify.com/articles/overview.html). For
 a list of implemented densities see the start of the [details
