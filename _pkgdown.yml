@@ -4,6 +4,19 @@ authors:
   Jonas Moss:
     href: https://burnishedmossite.netlify.com
 
+
+navbar:
+  components:
+    articles:
+      text: Vignettes
+      menu:
+      - text: 'Overview of univariateML'
+        href: articles/overview.html
+      - text: 'Distributions'
+        href: articles/distributions.html
+      - text: 'Copula Modeling'
+        href: articles/copula.html
+
 reference:
   - title: Maximum likelihood estimators
     contents:
