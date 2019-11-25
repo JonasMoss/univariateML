@@ -42,7 +42,7 @@ mlgamma <- function(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
 
   ## The Newton-Raphson steps.
   for (i in 1:iterlim) {
-    shape <- shape0 - (1 / (1 / shape0 - trigamma(shape0)) * (log(shape0) - digamma(shape0) - s))
+    shape <- shape0 - (log(shape0) - digamma(shape0) - s)/(1 / shape0 - trigamma(shape0))
     if (abs((shape - shape0) / shape0) < rel.tol) break
     shape0 <- shape
   }
