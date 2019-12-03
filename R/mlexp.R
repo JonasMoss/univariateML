@@ -7,6 +7,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed? If `FALSE`,
 #'   the function fails when `x` contains missing values.
+#' @param ... currently affects nothing.
 #' @return `mlexp` returns an object of [class][base::class] `univariateML`. This
 #'    is a named numeric vector with maximum likelihood estimates for `rate` and the following attributes:
 #'     \item{`model`}{The name of the model.}
@@ -21,7 +22,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 #' @export
 
-mlexp <- function(x, na.rm = FALSE) {
+mlexp <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) >= 0)
