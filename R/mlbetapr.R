@@ -4,16 +4,15 @@
 #'     distribution. Transforms the data and uses `stat::nlm` to estimate
 #'     the parameters of the Beta distribution.
 #'
-#' For the density function of the Beta prime distribution see [BetaPrime][extraDistr::BetaPrime].
+#' For the density function of the Beta prime distribution see
+#'     [BetaPrime][extraDistr::BetaPrime].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param start Optional starting parameter values for the minimization.
-#' Passed to the `stats::nlm` function.
-#' @param type Whether a dedicated `gradient` or `hessian` should be
-#' passed to `stats::nlm`.
-#' @return `mlbetapr` returns an object of [class][base::class] `univariateML`. This
-#'    is a named numeric vector with maximum likelihood estimates for `shape1` and `shape2` and the following attributes:
+#' @param ... passed to [`mlbeta`][mlbeta].
+#' @return `mlbetapr` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shape1` and `shape2` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -21,23 +20,23 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @details For `type`, the option `none` is fastest.
-#' @seealso [BetaPrime][extraDistr::BetaPrime] for the Beta prime density, [nlm][stats::nlm] for the
-#'   optimizer this function uses, [mlbeta] for the Beta distribution maximum
-#'   likelihood estimator.
+#' @seealso [BetaPrime][extraDistr::BetaPrime] for the Beta prime density,
+#'   [nlm][stats::nlm] for the optimizer this function uses, [mlbeta] for
+#'   the Beta distribution maximum likelihood estimator.
 #' @examples
 #' AIC(mlbetapr(USArrests$Rape))
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 #' @export
 
-mlbetapr <- function(x, na.rm = FALSE, start = NULL,
-                     type = c("none", "gradient", "hessian")) {
+mlbetapr <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)
 
   val1 <- mean(log(x))
   val2 <- mean(log(1 + x))
-  object <- mlbeta(x / (x + 1), na.rm = FALSE, start, type)
+  object <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
   alpha <- object[1]
   beta <- object[2]
   class(object) <- "univariateML"
