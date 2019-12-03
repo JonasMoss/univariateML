@@ -6,10 +6,10 @@
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param start Optional starting parameter values for the minimization.
-#'   Passed to the `stats::nlm` function.
-#' @param type Whether a dedicated `"gradient"`, `"hessian"`, or
-#'  `"none"` should be passed to `stats::nlm`.
+#' @param ... `start` contains optional starting parameter values for the
+#'   minimization, passed to the `stats::nlm` function. `type` specifies whether
+#'   a dedicated `"gradient"`, `"hessian"`, or `"none"` should be passed to
+#'   `stats::nlm`.
 #' @return `mlbeta` returns an object of [class][base::class]
 #'    `univariateML`. This is a named numeric vector with maximum
 #'    likelihood estimates for `shape1` and `shape2` and the
@@ -30,19 +30,22 @@
 #' AIC(mlbeta(USArrests$Rape / 100))
 #' @export
 
-mlbeta <- function(x, na.rm = FALSE, start = NULL,
-                   type = c("none", "gradient", "hessian")) {
+mlbeta <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)
   assertthat::assert_that(max(x) < 1)
 
-  type <- match.arg(type)
-
   val1 <- mean(log(x))
   val2 <- mean(log(1 - x))
 
-  if (is.null(start)) {
+  dots <- list(...)
+  type <- if(!is.null(dots$type)) dots$type else "none"
+  type <- match.arg(type, c("none", "gradient", "hessian"))
+
+  if(!is.null(dots$start)) {
+    start <- dots$start
+  } else {
     G1 <- exp(val1)
     G2 <- exp(val2)
     denom <- 1 / 2 * (1 / (1 - G1 - G2))

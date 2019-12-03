@@ -4,19 +4,17 @@
 \alias{mlbeta}
 \title{Beta distribution maximum likelihood estimation}
 \usage{
-mlbeta(x, na.rm = FALSE, start = NULL, type = c("none", "gradient",
-  "hessian"))
+mlbeta(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{start}{Optional starting parameter values for the minimization.
-Passed to the \code{stats::nlm} function.}
-
-\item{type}{Whether a dedicated \code{"gradient"}, \code{"hessian"}, or
-\code{"none"} should be passed to \code{stats::nlm}.}
+\item{...}{\code{start} contains optional starting parameter values for the
+minimization, passed to the \code{stats::nlm} function. \code{type} specifies whether
+a dedicated \code{"gradient"}, \code{"hessian"}, or \code{"none"} should be passed to
+\code{stats::nlm}.}
 }
 \value{
 \code{mlbeta} returns an object of \link[base:class]{class}
