@@ -4,16 +4,19 @@
 \alias{mllnorm}
 \title{Log-normal distribution maximum likelihood estimation}
 \usage{
-mllnorm(x, na.rm = FALSE)
+mllnorm(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
+
+\item{...}{currently affects nothing.}
 }
 \value{
-\code{mllonorm} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{meanlog} and \code{sdlog} and the following attributes:
+\code{mllonorm} returns an object of \link[base:class]{class} \code{univariateML}.
+This is a named numeric vector with maximum likelihood estimates for
+\code{meanlog} and \code{sdlog} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -28,13 +31,15 @@ is the square root of the biased sample variance based on the
 log-transformed data.
 }
 \details{
-For the density function of the log normal distribution see \link[stats:Lognormal]{Lognormal}.
+For the density function of the log normal distribution see
+\link[stats:Lognormal]{Lognormal}.
 }
 \examples{
 mllnorm(precip)
 }
 \references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 }
 \seealso{
 \link[stats:Lognormal]{Lognormal} for the log normal density.

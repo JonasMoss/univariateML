@@ -4,36 +4,40 @@
 \alias{mlinvgamma}
 \title{Inverse Gamma distribution maximum likelihood estimation}
 \usage{
-mlinvgamma(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
-  iterlim = 100)
+mlinvgamma(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{rel.tol}{Relative accuracy requested.}
-
-\item{iterlim}{A positive integer specifying the maximum number of
-iterations to be performed before the program is terminated.}
+\item{...}{passed to \code{\link{mlgamma}}.}
 }
 \value{
 A named numeric vector with maximum likelihood estimates for
 \code{alpha} and \code{beta}.
 }
 \description{
-Transforms the data and uses Newton-Raphson to estimate the parameters of the Gamma distribution.
+Transforms the data and uses Newton-Raphson to estimate the parameters of
+the Gamma distribution.
 }
 \details{
-For the density function of the Gamma distribution see \link[extraDistr:InvGamma]{InvGamma}.
+For the density function of the inverse Gamma distribution see
+\link[extraDistr:InvGamma]{InvGamma}.
 }
 \examples{
 mlinvgamma(precip)
 }
 \references{
-Choi, S. C, and R. Wette. "Maximum likelihood estimation of the parameters of the gamma distribution and their bias." Technometrics 11.4 (1969): 683-690.
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
-Witkovsky, V. (2001). "Computing the Distribution of a Linear Combination of Inverted Gamma Variables". Kybernetika. 37 (1): 79–90
+Choi, S. C, and R. Wette. "Maximum likelihood estimation of
+the parameters of the gamma distribution and their bias."
+Technometrics 11.4 (1969): 683-690.
+
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
+
+Witkovsky, V. (2001). "Computing the Distribution of a Linear Combination
+of Inverted Gamma Variables". Kybernetika. 37 (1): 79–90
 }
 \seealso{
 \link[extraDistr:InvGamma]{InvGamma} for the Inverse Gamma density.

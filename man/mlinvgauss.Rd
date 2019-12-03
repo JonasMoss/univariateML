@@ -4,16 +4,19 @@
 \alias{mlinvgauss}
 \title{Inverse Gaussian (Wald) maximum likelihood estimation}
 \usage{
-mlinvgauss(x, na.rm = FALSE)
+mlinvgauss(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
+
+\item{...}{currently affects nothing.}
 }
 \value{
-\code{mlinvgauss} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{mean} and \code{shape} and the following attributes:
+\code{mlinvgauss} returns an object of \link[base:class]{class}
+\code{univariateML}. This is a named numeric vector with maximum likelihood
+estimates for \code{mean} and \code{shape} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -27,14 +30,17 @@ maximum likelihood estimate of \code{1/shape} is the difference between
 the mean of reciprocals and the reciprocal of the mean.
 }
 \details{
-For the density function of the Inverse Gamma distribution see \link[actuar:InverseGaussian]{InverseGaussian}.
+For the density function of the Inverse Gamma distribution see
+\link[actuar:InverseGaussian]{InverseGaussian}.
 }
 \examples{
 mlinvgauss(precip)
 }
 \references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
 }
 \seealso{
-\link[actuar:InverseGaussian]{InverseGaussian} for the Inverse Gaussian density.
+\link[actuar:InverseGaussian]{InverseGaussian} for the
+Inverse Gaussian density.
 }

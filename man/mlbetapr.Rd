@@ -4,23 +4,19 @@
 \alias{mlbetapr}
 \title{Beta prime distribution maximum likelihood estimation}
 \usage{
-mlbetapr(x, na.rm = FALSE, start = NULL, type = c("none", "gradient",
-  "hessian"))
+mlbetapr(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{start}{Optional starting parameter values for the minimization.
-Passed to the \code{stats::nlm} function.}
-
-\item{type}{Whether a dedicated \code{gradient} or \code{hessian} should be
-passed to \code{stats::nlm}.}
+\item{...}{passed to \code{\link{mlbeta}}.}
 }
 \value{
-\code{mlbetapr} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{shape1} and \code{shape2} and the following attributes:
+\code{mlbetapr} returns an object of \link[base:class]{class} \code{univariateML}.
+This is a named numeric vector with maximum likelihood estimates for
+\code{shape1} and \code{shape2} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -34,7 +30,8 @@ distribution. Transforms the data and uses \code{stat::nlm} to estimate
 the parameters of the Beta distribution.
 }
 \details{
-For the density function of the Beta prime distribution see \link[extraDistr:BetaPrime]{BetaPrime}.
+For the density function of the Beta prime distribution see
+\link[extraDistr:BetaPrime]{BetaPrime}.
 
 For \code{type}, the option \code{none} is fastest.
 }
@@ -42,10 +39,11 @@ For \code{type}, the option \code{none} is fastest.
 AIC(mlbetapr(USArrests$Rape))
 }
 \references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 }
 \seealso{
-\link[extraDistr:BetaPrime]{BetaPrime} for the Beta prime density, \link[stats:nlm]{nlm} for the
-optimizer this function uses, \link{mlbeta} for the Beta distribution maximum
-likelihood estimator.
+\link[extraDistr:BetaPrime]{BetaPrime} for the Beta prime density,
+\link[stats:nlm]{nlm} for the optimizer this function uses, \link{mlbeta} for
+the Beta distribution maximum likelihood estimator.
 }

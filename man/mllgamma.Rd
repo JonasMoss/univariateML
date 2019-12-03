@@ -4,23 +4,19 @@
 \alias{mllgamma}
 \title{Log-gamma distribution maximum likelihood estimation}
 \usage{
-mllgamma(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
-  iterlim = 100)
+mllgamma(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{rel.tol}{Relative accuracy; passed to \code{mlgamma}.}
-
-\item{iterlim}{A positive integer specifying the maximum number of
-iterations to be performed before the program is terminated. Passed to
-\code{mlgamma}.}
+\item{...}{passed to \code{\link{mlgamma}}.}
 }
 \value{
-\code{mllgamma} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{shapelog} and \code{ratelog} and the following attributes:
+\code{mllgamma} returns an object of \link[base:class]{class} \code{univariateML}.
+This is a named numeric vector with maximum likelihood estimates for
+\code{shapelog} and \code{ratelog} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -33,7 +29,8 @@ The maximum likelihood estimate of \code{shapelog} and \code{ratelog} are calcul
 by calling \code{\link[=mlgamma]{mlgamma()}} on the transformed data.
 }
 \details{
-For the density function of the log normal distribution see \link[actuar:Loggamma]{Loggamma}.
+For the density function of the log normal distribution see
+\link[actuar:Loggamma]{Loggamma}.
 }
 \examples{
 mllgamma(precip)
@@ -41,7 +38,8 @@ mllgamma(precip)
 \references{
 Hogg, R. V. and Klugman, S. A. (1984), Loss Distributions, Wiley.
 
-Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37.
+Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
+actuarial science. Journal of Statistical Software, 25(7), 1-37.
 }
 \seealso{
 \link[actuar:Loggamma]{Loggamma} for the log normal density.

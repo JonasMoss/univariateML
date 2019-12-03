@@ -4,18 +4,14 @@
 \alias{mlnaka}
 \title{Nakagami distribution maximum likelihood estimation}
 \usage{
-mlnaka(x, na.rm = FALSE, rel.tol = .Machine$double.eps^0.25,
-  iterlim = 100)
+mlnaka(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{rel.tol}{Relative accuracy requested.}
-
-\item{iterlim}{A positive integer specifying the maximum number of
-iterations to be performed before the program is terminated.}
+\item{...}{passed to \code{\link{mlgamma}}.}
 }
 \value{
 \code{mlgamma} returns an object of \link[base:class]{class}

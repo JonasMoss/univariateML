@@ -4,24 +4,23 @@
 \alias{mlgumbel}
 \title{Gumbel distribution maximum likelihood estimation}
 \usage{
-mlgumbel(x, na.rm = FALSE, sigma0 = 1,
-  rel.tol = .Machine$double.eps^0.25, iterlim = 100)
+mlgumbel(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{sigma0}{An optional starting value for the \code{sigma} parameter.}
-
-\item{rel.tol}{Relative accuracy requested.}
-
-\item{iterlim}{A positive integer specifying the maximum number of
-iterations to be performed before the program is terminated.}
+\item{...}{\code{sigma0} is an optional starting value defaulting to \code{1}.
+\code{rel.tol} is the relative accuracy requested, defaults to
+\code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
+specifying the maximum number of iterations to be performed before the
+program is terminated (defaults to \code{100}).}
 }
 \value{
-\code{mlgumbel} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{s} and the following attributes:
+\code{mlgumbel} returns an object of \link[base:class]{class} \code{univariateML}.
+This is a named numeric vector with maximum likelihood estimates for \code{mu}
+and \code{s} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -34,7 +33,8 @@ is a named numeric vector with maximum likelihood estimates for \code{mu} and \c
 Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
 }
 \details{
-For the density function of the Gumbel distribution see \link[extraDistr:Gumbel]{Gumbel}.
+For the density function of the Gumbel distribution see
+\link[extraDistr:Gumbel]{Gumbel}.
 }
 \examples{
 mlgumbel(precip)

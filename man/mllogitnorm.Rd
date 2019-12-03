@@ -4,16 +4,19 @@
 \alias{mllogitnorm}
 \title{Logit-Normal distribution maximum likelihood estimation}
 \usage{
-mllogitnorm(x, na.rm = FALSE)
+mllogitnorm(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
+
+\item{...}{currently affects nothing.}
 }
 \value{
-\code{mllogitnorm} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{sigma} and the following attributes:
+\code{mllogitnorm} returns an object of \link[base:class]{class}
+\code{univariateML}. This is a named numeric vector with maximum likelihood
+estimates for \code{mu} and \code{sigma} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -28,13 +31,15 @@ logit transformed data and the maximum likelihood estimate of
 biased sample variance.
 }
 \details{
-For the density function of the logit-normal distribution see \link[logitnorm:dlogitnorm]{dlogitnorm}.
+For the density function of the logit-normal distribution see
+\link[logitnorm:dlogitnorm]{dlogitnorm}.
 }
 \examples{
 AIC(mllogitnorm(USArrests$Rape / 100))
 }
 \references{
-Atchison, J., & Shen, S. M. (1980). Logistic-normal distributions: Some properties and uses. Biometrika, 67(2), 261-272.
+Atchison, J., & Shen, S. M. (1980). Logistic-normal
+distributions: Some properties and uses. Biometrika, 67(2), 261-272.
 }
 \seealso{
 link[dlogitnorm]{dlogitnorm}for the normal density.

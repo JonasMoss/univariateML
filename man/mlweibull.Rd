@@ -4,24 +4,23 @@
 \alias{mlweibull}
 \title{Weibull distribution maximum likelihood estimation}
 \usage{
-mlweibull(x, na.rm = FALSE, shape0 = 1,
-  rel.tol = .Machine$double.eps^0.25, iterlim = 100)
+mlweibull(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{shape0}{An optional starting value for the \code{shape} parameter.}
-
-\item{rel.tol}{Relative accuracy requested.}
-
-\item{iterlim}{A positive integer specifying the maximum number of
-iterations to be performed before the program is terminated.}
+\item{...}{\code{shape0} is an optional starting value for the \code{shape} parameter.
+\code{rel.tol} is the relative accuracy requested, defaults
+to \code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
+specifying the maximum number of iterations to be performed before the
+program is terminated (defaults to \code{100}).}
 }
 \value{
-\code{mlweibull} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{shape} and \code{scale} and the following attributes:
+\code{mlweibull} returns an object of \link[base:class]{class} \code{univariateML}.
+This is a named numeric vector with maximum likelihood estimates for
+\code{shape} and \code{scale} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -33,13 +32,15 @@ is a named numeric vector with maximum likelihood estimates for \code{shape} and
 Uses Newton-Raphson to estimate the parameters of the Weibull distribution.
 }
 \details{
-For the density function of the Weibull distribution see \link[stats:Weibull]{Weibull}.
+For the density function of the Weibull distribution see
+\link[stats:Weibull]{Weibull}.
 }
 \examples{
 BIC(mlweibull(precip))
 }
 \references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
+Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
 }
 \seealso{
 \link[stats:Weibull]{Weibull} for the Weibull density.

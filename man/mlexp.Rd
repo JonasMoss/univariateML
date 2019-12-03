@@ -4,17 +4,20 @@
 \alias{mlexp}
 \title{Exponential distribution maximum likelihood estimation}
 \usage{
-mlexp(x, na.rm = FALSE)
+mlexp(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed? If \code{FALSE},
 the function fails when \code{x} contains missing values.}
+
+\item{...}{currently affects nothing.}
 }
 \value{
-\code{mlexp} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{rate} and the following attributes:
+\code{mlexp} returns an object of \link[base:class]{class} \code{univariateML}.
+This is a named numeric vector with maximum likelihood estimates for
+\code{rate} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -26,13 +29,15 @@ is a named numeric vector with maximum likelihood estimates for \code{rate} and 
 The maximum likelihood estimate of \code{rate} is the inverse sample mean.
 }
 \details{
-For the density function of the exponential distribution see \link[stats:Exponential]{Exponential}.
+For the density function of the exponential distribution see
+\link[stats:Exponential]{Exponential}.
 }
 \examples{
 mlexp(precip)
 }
 \references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 }
 \seealso{
 \link[stats:Exponential]{Exponential} for the exponential density.

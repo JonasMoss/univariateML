@@ -4,16 +4,19 @@
 \alias{mlinvweibull}
 \title{Inverse Weibull distribution maximum likelihood estimation}
 \usage{
-mlinvweibull(x, na.rm = FALSE)
+mlinvweibull(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
+
+\item{...}{passed to \code{\link{mlweibull}}.}
 }
 \value{
-\code{mlinvweibull} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{shape} and \code{rate} and the following attributes:
+\code{mlinvweibull} returns an object of \link[base:class]{class}
+\code{univariateML}. This is a named numeric vector with maximum likelihood
+estimates for \code{shape} and \code{rate} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -23,21 +26,26 @@ is a named numeric vector with maximum likelihood estimates for \code{shape} and
 }
 \description{
 The maximum likelihood estimate of \code{shape} and \code{rate} are calculated
-by calling \code{\link[=mlweibull]{mlweibull()}} on the transformed data.
+by calling \code{\link{mlweibull}} on the transformed data.
 }
 \details{
-For the density function of the log normal distribution see \link[actuar:InverseWeibull]{InverseWeibull}.
+For the density function of the log normal distribution see
+\link[actuar:InverseWeibull]{InverseWeibull}.
 }
 \examples{
 mlinvweibull(precip)
 }
 \references{
-Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.
+Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions
+in Economics and Actuarial Sciences, Wiley.
 
-Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley.
+Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models,
+From Data to Decisions, Fourth Edition, Wiley.
 
-Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37.
+Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
+actuarial science. Journal of Statistical Software, 25(7), 1-37.
 }
 \seealso{
-\link[actuar:InverseWeibull]{InverseWeibull} for the Inverse Weibull density.
+\link[actuar:InverseWeibull]{InverseWeibull} for the Inverse Weibull
+density.
 }

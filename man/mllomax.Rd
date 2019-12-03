@@ -4,25 +4,23 @@
 \alias{mllomax}
 \title{Lomax distribution maximum likelihood estimation}
 \usage{
-mllomax(x, na.rm = FALSE, start = NULL,
-  rel.tol = .Machine$double.eps^0.25, iterlim = 100)
+mllomax(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{a (non-empty) numeric vector of data values.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{start}{An optional starting value for the \code{lambda} parameter.
-Defaults to \code{median(x)}.}
-
-\item{rel.tol}{Relative accuracy requested.}
-
-\item{iterlim}{A positive integer specifying the maximum number of
-iterations to be performed before the program is terminated.}
+\item{...}{\code{lambda0} an optional starting value for the \code{lambda} parameter.
+Defaults to \code{median(x)}. \code{rel.tol} is the relative accuracy requested,
+defaults to \code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
+specifying the maximum number of iterations to be performed before the
+program is terminated (defaults to \code{100}).}
 }
 \value{
-\code{mllomax} returns an object of \link[base:class]{class} \code{univariateML}. This
-is a named numeric vector with maximum likelihood estimates for \code{lambda} and \code{kappa} and the following attributes:
+\code{mllomax} returns an object of \link[base:class]{class} \code{univariateML}.
+This is a named numeric vector with maximum likelihood estimates for
+\code{lambda} and \code{kappa} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -34,18 +32,21 @@ is a named numeric vector with maximum likelihood estimates for \code{lambda} an
 Uses Newton-Raphson to estimate the parameters of the Lomax distribution.
 }
 \details{
-For the density function of the Lomax distribution see \link[extraDistr:Lomax]{Lomax}.
-The maximum likelihood estimate will frequently fail to exist. This is due to
-the parameterization of the function which does not take into account that
-the density converges to an exponential along certain values of the parameters,
-see \code{vignette("Distribution Details", package = "univariateML")}.
+For the density function of the Lomax distribution see
+\link[extraDistr:Lomax]{Lomax}. The maximum likelihood estimate will frequently
+fail to exist. This is due to the parameterization of the function which
+does not take into account that the density converges to an exponential
+along certain values of the parameters, see
+\code{vignette("Distribution Details", package = "univariateML")}.
 }
 \examples{
 set.seed(3)
 mllomax(extraDistr::rlomax(100, 2, 4))
 }
 \references{
-Kleiber, Christian; Kotz, Samuel (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley Series in Probability and Statistics, 470, John Wiley & Sons, p. 60
+Kleiber, Christian; Kotz, Samuel (2003), Statistical Size
+Distributions in Economics and Actuarial Sciences, Wiley Series in
+Probability and Statistics, 470, John Wiley & Sons, p. 60
 }
 \seealso{
 \link[extraDistr:Lomax]{Lomax} for the Lomax density.
