@@ -16,6 +16,7 @@ output:
   github_document:
     html_preview: true
 bibliography: paper.bib
+date: 25 November 2019
 ---
 
 # Summary
@@ -72,8 +73,15 @@ optimization on a supplied negative log-likelihood function.
 
 Analytic formulas for the maximum likelihood estimates are used whenever 
 they exist. Most estimators without analytic solutions have a custom made 
-Newton-Raphson solver. The speedup can be substantial, as seen in the following 
-Gamma distribution example:
+Newton-Raphson solver. 
+
+`Rfast` [@Rfast] is an `R` package with many univariate density estimators 
+implemented with custom Newton-Raphson and has faster implementations than 
+`univariateML`. The two packages differ mainly in focus: While `univariateML` 
+is focused on user friendly univariate density estimation, `Rfast` aims to have the
+fastest possible implementations of many kinds of functions.
+
+The speedup can be substantial, as seen in the following Gamma distribution example.
 
 ```{R, Gamma, warning = FALSE, cache = TRUE}
 set.seed(313)
@@ -81,6 +89,7 @@ x <- rgamma(500, 2, 7)
 
 microbenchmark::microbenchmark(
   univariateML = univariateML::mlgamma(x),
+  Rfast = Rfast::gammamle(x),
   naive = nlm(function(p) -sum(dgamma(x, p[1], p[2], log = TRUE)), p = c(1, 1)))
 
 ```

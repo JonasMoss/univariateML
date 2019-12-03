@@ -71,14 +71,22 @@ with this solution strategy:
 
 In short, it is inconvenient to program these solutions by hand.
 
-`univariateML` has custom made optimizers for each supported density.
+`univariateML` has custom made optimizers for almost every supported density.
 This is in contrast to the `mle` function in the built-in `R` package `stats4`,
 which supports far more general maximum likelihood estimation through numerical
 optimization on a supplied negative log-likelihood function.
 
 Analytic formulas for the maximum likelihood estimates are used whenever 
 they exist. Most estimators without analytic solutions have a custom made 
-Newton-Raphson solver. The speedup can be substantial, as seen in the following 
+Newton-Raphson solver. 
+
+`Rfast` [@Rfast] is an `R` package with many univariate density estimators 
+implemented with custom Newton-Raphson. `univariateML` and `Rfast` differst 
+mainly in focus: While `univariateML` aims to be well-tested and safe, and is 
+focused on univariate density estimation only, `Rfast` aims to have the fastest
+possible implementations of many kinds of functions.
+
+The speedup involed in using either can be substantial, as seen in the following 
 Gamma distribution example:
 
 ``` r
@@ -95,5 +103,6 @@ microbenchmark::microbenchmark(
     ##          expr     min       lq      mean   median       uq     max neval
     ##  univariateML   606.2   792.75  1093.802   991.60  1073.65  7346.8   100
     ##         naive 26276.8 28647.45 30616.039 29209.85 30378.25 69477.2   100
+
 
 # References
