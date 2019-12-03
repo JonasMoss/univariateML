@@ -1,24 +1,24 @@
 #' Normal distribution maximum likelihood estimation
 #'
-#' The maximum likelihood estimate of \code{mean} is the empirical mean and the
-#'     maximum likelihood estimate of \code{sd} is the square root of the
+#' The maximum likelihood estimate of `mean` is the empirical mean and the
+#'     maximum likelihood estimate of `sd` is the square root of the
 #'     biased sample variance.
 #'
-#' For the density function of the normal distribution see \link[stats]{Normal}.
+#' For the density function of the normal distribution see [Normal][stats::Normal].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @return \code{mlnorm} returns an object of \link[base]{class} \code{univariateML}. This
-#'    is a named numeric vector with maximum likelihood estimates for \code{mean} and \code{sd} and the following attributes:
-#'     \item{\code{model}}{The name of the model.}
-#'     \item{\code{density}}{The density associated with the estimates.}
-#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
-#'     \item{\code{support}}{The support of the density.}
-#'     \item{\code{n}}{The number of observations.}
-#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' @return `mlnorm` returns an object of [class][base::class] `univariateML`. This
+#'    is a named numeric vector with maximum likelihood estimates for `mean` and `sd` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mlnorm(precip)
-#' @seealso \link[stats]{Normal} for the normal density.
+#' @seealso [Normal][stats::Normal] for the normal density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export
 

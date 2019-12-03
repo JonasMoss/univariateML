@@ -12,22 +12,22 @@ mlnorm(x, na.rm = FALSE)
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-\code{mlnorm} returns an object of \link[base]{class} \code{univariateML}. This
-   is a named numeric vector with maximum likelihood estimates for \code{mean} and \code{sd} and the following attributes:
-    \item{\code{model}}{The name of the model.}
-    \item{\code{density}}{The density associated with the estimates.}
-    \item{\code{logLik}}{The loglikelihood at the maximum.}
-    \item{\code{support}}{The support of the density.}
-    \item{\code{n}}{The number of observations.}
-    \item{\code{call}}{The call as captured my \code{match.call}}
+\code{mlnorm} returns an object of \link[base:class]{class} \code{univariateML}. This
+is a named numeric vector with maximum likelihood estimates for \code{mean} and \code{sd} and the following attributes:
+\item{\code{model}}{The name of the model.}
+\item{\code{density}}{The density associated with the estimates.}
+\item{\code{logLik}}{The loglikelihood at the maximum.}
+\item{\code{support}}{The support of the density.}
+\item{\code{n}}{The number of observations.}
+\item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The maximum likelihood estimate of \code{mean} is the empirical mean and the
-    maximum likelihood estimate of \code{sd} is the square root of the
-    biased sample variance.
+maximum likelihood estimate of \code{sd} is the square root of the
+biased sample variance.
 }
 \details{
-For the density function of the normal distribution see \link[stats]{Normal}.
+For the density function of the normal distribution see \link[stats:Normal]{Normal}.
 }
 \examples{
 mlnorm(precip)
@@ -36,5 +36,5 @@ mlnorm(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 }
 \seealso{
-\link[stats]{Normal} for the normal density.
+\link[stats:Normal]{Normal} for the normal density.
 }

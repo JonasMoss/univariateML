@@ -13,20 +13,20 @@ mlexp(x, na.rm = FALSE)
 the function fails when \code{x} contains missing values.}
 }
 \value{
-\code{mlexp} returns an object of \link[base]{class} \code{univariateML}. This
-   is a named numeric vector with maximum likelihood estimates for \code{rate} and the following attributes:
-    \item{\code{model}}{The name of the model.}
-    \item{\code{density}}{The density associated with the estimates.}
-    \item{\code{logLik}}{The loglikelihood at the maximum.}
-    \item{\code{support}}{The support of the density.}
-    \item{\code{n}}{The number of observations.}
-    \item{\code{call}}{The call as captured my \code{match.call}}
+\code{mlexp} returns an object of \link[base:class]{class} \code{univariateML}. This
+is a named numeric vector with maximum likelihood estimates for \code{rate} and the following attributes:
+\item{\code{model}}{The name of the model.}
+\item{\code{density}}{The density associated with the estimates.}
+\item{\code{logLik}}{The loglikelihood at the maximum.}
+\item{\code{support}}{The support of the density.}
+\item{\code{n}}{The number of observations.}
+\item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The maximum likelihood estimate of \code{rate} is the inverse sample mean.
 }
 \details{
-For the density function of the exponential distribution see \link[stats]{Exponential}.
+For the density function of the exponential distribution see \link[stats:Exponential]{Exponential}.
 }
 \examples{
 mlexp(precip)
@@ -35,5 +35,5 @@ mlexp(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 }
 \seealso{
-\link[stats]{Exponential} for the exponential density.
+\link[stats:Exponential]{Exponential} for the exponential density.
 }

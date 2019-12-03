@@ -1,27 +1,27 @@
 #' Log-gamma distribution maximum likelihood estimation
 #'
-#' The maximum likelihood estimate of \code{shapelog} and \code{ratelog} are calculated
-#'   by calling \code{\link{mlgamma}} on the transformed data.
+#' The maximum likelihood estimate of `shapelog` and `ratelog` are calculated
+#'   by calling [mlgamma()] on the transformed data.
 #'
-#' For the density function of the log normal distribution see \link[actuar]{Loggamma}.
+#' For the density function of the log normal distribution see [Loggamma][actuar::Loggamma].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param rel.tol Relative accuracy; passed to \code{mlgamma}.
+#' @param rel.tol Relative accuracy; passed to `mlgamma`.
 #' @param iterlim A positive integer specifying the maximum number of
 #' iterations to be performed before the program is terminated. Passed to
-#' \code{mlgamma}.
-#' @return \code{mllgamma} returns an object of \link[base]{class} \code{univariateML}. This
-#'    is a named numeric vector with maximum likelihood estimates for \code{shapelog} and \code{ratelog} and the following attributes:
-#'     \item{\code{model}}{The name of the model.}
-#'     \item{\code{density}}{The density associated with the estimates.}
-#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
-#'     \item{\code{support}}{The support of the density.}
-#'     \item{\code{n}}{The number of observations.}
-#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' `mlgamma`.
+#' @return `mllgamma` returns an object of [class][base::class] `univariateML`. This
+#'    is a named numeric vector with maximum likelihood estimates for `shapelog` and `ratelog` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mllgamma(precip)
-#' @seealso \link[actuar]{Loggamma} for the log normal density.
+#' @seealso [Loggamma][actuar::Loggamma] for the log normal density.
 #' @references Hogg, R. V. and Klugman, S. A. (1984), Loss Distributions, Wiley.
 #'
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37.

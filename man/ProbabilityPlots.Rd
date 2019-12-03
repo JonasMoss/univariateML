@@ -46,13 +46,13 @@ Corresponding quantile pairs define the line drawn.}
 }
 \value{
 For \code{qqmlplot}, \code{qqmlpoints}, \code{ppmlplot}, and
-  \code{ppmlpoints}, a list with components \code{x} (plotted on the x axis)
-  and \code{y} (plotted on the y axis). \code{qqmlline} and \code{ppmlline}
-  returns nothing.
+\code{ppmlpoints}, a list with components \code{x} (plotted on the x axis)
+and \code{y} (plotted on the y axis). \code{qqmlline} and \code{ppmlline}
+returns nothing.
 }
 \description{
 Make quantile-quantile plots and probability-probability plots using maximum
-  likelihood estimation.
+likelihood estimation.
 }
 \details{
 \code{qqmlplot} produces a quantile-quantile plot (Q-Q plot) of the values in
@@ -68,7 +68,7 @@ an existing plot.
 probability-probability plots (or P-P plots). They behave similarly to the
 quantile-quantile plot functions.
 
-This function is modeled after \link[stats]{qqnorm}.
+This function is modeled after \link[stats:qqnorm]{qqnorm}.
 
 Graphical parameters may be given as arguments to all the functions below.
 }
@@ -89,6 +89,6 @@ ppmlpoints(airquality$Wind, mllnorm, col = "blue")
 }
 \references{
 M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis
-  for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968,
-  Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
+for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968,
+Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
 }

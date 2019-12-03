@@ -39,14 +39,14 @@ plot_wrangler <- function(x, range, points = FALSE, ...) {
 
 #' Plot, Lines and Points Methods for Maximum Likelihood Estimates
 #'
-#' The \code{plot}, \code{lines}, and \code{points} methods for
-#'    \code{univariateML} objects.
+#' The `plot`, `lines`, and `points` methods for
+#'    `univariateML` objects.
 #'
 #' @export
-#' @param x a \code{univariateML} object.
-#' @param range range of \code{x} values to plot, i.e. \code{c(lower, upper)}.
-#' @param ... parameters passed to \code{plot}, \code{lines}, or \code{points}.
-#' @return An invisible copy of \code{x}.
+#' @param x a `univariateML` object.
+#' @param range range of `x` values to plot, i.e. `c(lower, upper)`.
+#' @param ... parameters passed to `plot`, `lines`, or `points`.
+#' @return An invisible copy of `x`.
 #' @examples
 #' plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")
 #' lines(mlgamma(datasets::precip), lty = 2)
@@ -121,27 +121,27 @@ print.univariateML <- function(x, ...) {
 #' Confidence Intervals for Maximum Likelihood Estimates
 #'
 #' Computes a confidence interval for one or more parameters in a
-#'    \code{unvariateML} object.
+#'    `unvariateML` object.
 #'
-#' \code{confint.univariateML} is a wrapper for  \code{\link{bootstrapml}} that
-#'    computes confidence intervals for the main parameters of \code{object}.
-#'    The main parameters of \code{object} are the members of
-#'    \code{names(object)}. For instance, the main parameters of an object
-#'    obtained from  \code{mlnorm} are  \code{mean} and  \code{sd}. The
+#' `confint.univariateML` is a wrapper for  [bootstrapml()] that
+#'    computes confidence intervals for the main parameters of `object`.
+#'    The main parameters of `object` are the members of
+#'    `names(object)`. For instance, the main parameters of an object
+#'    obtained from  `mlnorm` are  `mean` and  `sd`. The
 #'    confidence intervals are parametric bootstrap percentile intervals
-#'    with limits \code{(1-level)/2} and \code{1 - (1-level)}.
+#'    with limits `(1-level)/2` and `1 - (1-level)`.
 #'
-#' @param object An object of class \code{univariateML}.
+#' @param object An object of class `univariateML`.
 #' @param parm Vector of strings; the parameters to calculate a confidence
-#'    interval for. Each parameter must be a member of \code{names(object)}.
+#'    interval for. Each parameter must be a member of `names(object)`.
 #' @param level The confidence level.
 #' @param Nreps Number of bootstrap iterations. Passed to
-#'    \code{\link{bootstrapml}}.
-#' @param ... Additional arguments passed to \code{\link{bootstrapml}}.
+#'    [bootstrapml()].
+#' @param ... Additional arguments passed to [bootstrapml()].
 #' @return A matrix or vector with columns giving lower and upper confidence
-#'    limits for each parameter in \code{parm}.
-#' @seealso \code{\link[stats]{confint}} for the generic function and
-#'    \code{\link{bootstrapml}} for the function used to calculate the
+#'    limits for each parameter in `parm`.
+#' @seealso [stats::confint()] for the generic function and
+#'    [bootstrapml()] for the function used to calculate the
 #'    confidence intervals.
 #' @export
 #' @examples

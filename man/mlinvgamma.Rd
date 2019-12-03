@@ -25,7 +25,7 @@ A named numeric vector with maximum likelihood estimates for
 Transforms the data and uses Newton-Raphson to estimate the parameters of the Gamma distribution.
 }
 \details{
-For the density function of the Gamma distribution see \link[extraDistr]{InvGamma}.
+For the density function of the Gamma distribution see \link[extraDistr:InvGamma]{InvGamma}.
 }
 \examples{
 mlinvgamma(precip)
@@ -36,5 +36,5 @@ Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distr
 Witkovsky, V. (2001). "Computing the Distribution of a Linear Combination of Inverted Gamma Variables". Kybernetika. 37 (1): 79–90
 }
 \seealso{
-\link[extraDistr]{InvGamma} for the Inverse Gamma density.
+\link[extraDistr:InvGamma]{InvGamma} for the Inverse Gamma density.
 }

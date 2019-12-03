@@ -2,24 +2,24 @@
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Weibull distribution.
 #'
-#' For the density function of the Weibull distribution see \link[stats]{Weibull}.
+#' For the density function of the Weibull distribution see [Weibull][stats::Weibull].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param shape0 An optional starting value for the \code{shape} parameter.
+#' @param shape0 An optional starting value for the `shape` parameter.
 #' @param rel.tol Relative accuracy requested.
 #' @param iterlim A positive integer specifying the maximum number of
 #' iterations to be performed before the program is terminated.
 #'
-#' @return \code{mlweibull} returns an object of \link[base]{class} \code{univariateML}. This
-#'    is a named numeric vector with maximum likelihood estimates for \code{shape} and \code{scale} and the following attributes:
-#'     \item{\code{model}}{The name of the model.}
-#'     \item{\code{density}}{The density associated with the estimates.}
-#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
-#'     \item{\code{support}}{The support of the density.}
-#'     \item{\code{n}}{The number of observations.}
-#'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @seealso \link[stats]{Weibull} for the Weibull density.
+#' @return `mlweibull` returns an object of [class][base::class] `univariateML`. This
+#'    is a named numeric vector with maximum likelihood estimates for `shape` and `scale` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @seealso [Weibull][stats::Weibull] for the Weibull density.
 #' @examples
 #' BIC(mlweibull(precip))
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.

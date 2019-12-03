@@ -2,26 +2,26 @@
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
 #'
-#' For the density function of the Gumbel distribution see \link[extraDistr]{Gumbel}.
+#' For the density function of the Gumbel distribution see [Gumbel][extraDistr::Gumbel].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param sigma0 An optional starting value for the \code{sigma} parameter.
+#' @param sigma0 An optional starting value for the `sigma` parameter.
 #' @param rel.tol Relative accuracy requested.
 #' @param iterlim A positive integer specifying the maximum number of
 #' iterations to be performed before the program is terminated.
-#' @return \code{mlgumbel} returns an object of \link[base]{class} \code{univariateML}. This
-#'    is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{s} and the following attributes:
-#'     \item{\code{model}}{The name of the model.}
-#'     \item{\code{density}}{The density associated with the estimates.}
-#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
-#'     \item{\code{support}}{The support of the density.}
-#'     \item{\code{n}}{The number of observations.}
-#'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' \code{shape} and \code{sigma}.
+#' @return `mlgumbel` returns an object of [class][base::class] `univariateML`. This
+#'    is a named numeric vector with maximum likelihood estimates for `mu` and `s` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' `shape` and `sigma`.
 #' @examples
 #' mlgumbel(precip)
-#' @seealso \link[extraDistr]{Gumbel} for the Gumbel density.
+#' @seealso [Gumbel][extraDistr::Gumbel] for the Gumbel density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
 #' @export
 

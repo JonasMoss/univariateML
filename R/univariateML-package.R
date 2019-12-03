@@ -1,6 +1,6 @@
 #' univariateML
 #'
-#' An \code{R}-package for fast, easy, and reliable maximum likelihood
+#' An `R`-package for fast, easy, and reliable maximum likelihood
 #' estimation for a selection of parametric univariate densities.
 #'
 #' Data analysis often requires the estimation of univariate densities.
@@ -12,11 +12,11 @@
 #' \itemize{
 #'   \item Support maximum likelihood estimation of a large selection of
 #'         densities.
-#'   \item Supports plenty of generics such as \code{plot} and \code{AIC} to
+#'   \item Supports plenty of generics such as `plot` and `AIC` to
 #'         aid your data analysis.
 #' }
 #'
 #' Read the vignettes to learn more about univariateML:
-#' \code{browseVignettes(package = "univariateML")}
+#' `browseVignettes(package = "univariateML")`
 #'
 "_PACKAGE"

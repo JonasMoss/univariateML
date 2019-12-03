@@ -1,28 +1,28 @@
 #' Beta prime distribution maximum likelihood estimation
 #'
-#' This function does not estimate the scale parameter for the \code{BetaPrime}
-#'     distribution. Transforms the data and uses \code{stat::nlm} to estimate
+#' This function does not estimate the scale parameter for the `BetaPrime`
+#'     distribution. Transforms the data and uses `stat::nlm` to estimate
 #'     the parameters of the Beta distribution.
 #'
-#' For the density function of the Beta prime distribution see \link[extraDistr]{BetaPrime}.
+#' For the density function of the Beta prime distribution see [BetaPrime][extraDistr::BetaPrime].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param start Optional starting parameter values for the minimization.
-#' Passed to the \code{stats::nlm} function.
-#' @param type Whether a dedicated \code{gradient} or \code{hessian} should be
-#' passed to \code{stats::nlm}.
-#' @return \code{mlbetapr} returns an object of \link[base]{class} \code{univariateML}. This
-#'    is a named numeric vector with maximum likelihood estimates for \code{shape1} and \code{shape2} and the following attributes:
-#'     \item{\code{model}}{The name of the model.}
-#'     \item{\code{density}}{The density associated with the estimates.}
-#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
-#'     \item{\code{support}}{The support of the density.}
-#'     \item{\code{n}}{The number of observations.}
-#'     \item{\code{call}}{The call as captured my \code{match.call}}
-#' @details For \code{type}, the option \code{none} is fastest.
-#' @seealso \link[extraDistr]{BetaPrime} for the Beta prime density, \link[stats]{nlm} for the
-#'   optimizer this function uses, \link{mlbeta} for the Beta distribution maximum
+#' Passed to the `stats::nlm` function.
+#' @param type Whether a dedicated `gradient` or `hessian` should be
+#' passed to `stats::nlm`.
+#' @return `mlbetapr` returns an object of [class][base::class] `univariateML`. This
+#'    is a named numeric vector with maximum likelihood estimates for `shape1` and `shape2` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @details For `type`, the option `none` is fastest.
+#' @seealso [BetaPrime][extraDistr::BetaPrime] for the Beta prime density, [nlm][stats::nlm] for the
+#'   optimizer this function uses, [mlbeta] for the Beta distribution maximum
 #'   likelihood estimator.
 #' @examples
 #' AIC(mlbetapr(USArrests$Rape))

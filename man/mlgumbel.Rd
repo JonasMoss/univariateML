@@ -20,21 +20,21 @@ mlgumbel(x, na.rm = FALSE, sigma0 = 1,
 iterations to be performed before the program is terminated.}
 }
 \value{
-\code{mlgumbel} returns an object of \link[base]{class} \code{univariateML}. This
-   is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{s} and the following attributes:
-    \item{\code{model}}{The name of the model.}
-    \item{\code{density}}{The density associated with the estimates.}
-    \item{\code{logLik}}{The loglikelihood at the maximum.}
-    \item{\code{support}}{The support of the density.}
-    \item{\code{n}}{The number of observations.}
-    \item{\code{call}}{The call as captured my \code{match.call}}
+\code{mlgumbel} returns an object of \link[base:class]{class} \code{univariateML}. This
+is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{s} and the following attributes:
+\item{\code{model}}{The name of the model.}
+\item{\code{density}}{The density associated with the estimates.}
+\item{\code{logLik}}{The loglikelihood at the maximum.}
+\item{\code{support}}{The support of the density.}
+\item{\code{n}}{The number of observations.}
+\item{\code{call}}{The call as captured my \code{match.call}}
 \code{shape} and \code{sigma}.
 }
 \description{
 Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
 }
 \details{
-For the density function of the Gumbel distribution see \link[extraDistr]{Gumbel}.
+For the density function of the Gumbel distribution see \link[extraDistr:Gumbel]{Gumbel}.
 }
 \examples{
 mlgumbel(precip)
@@ -43,5 +43,5 @@ mlgumbel(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
 }
 \seealso{
-\link[extraDistr]{Gumbel} for the Gumbel density.
+\link[extraDistr:Gumbel]{Gumbel} for the Gumbel density.
 }

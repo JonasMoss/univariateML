@@ -34,20 +34,20 @@ taken to be the number required.}
 }
 \value{
 \code{dml} gives the density, \code{pml} gives the distribution
-    function, \code{qml} gives the quantile function, and \code{rml}
-    generates random deviates.
+function, \code{qml} gives the quantile function, and \code{rml}
+generates random deviates.
 }
 \description{
 Density, distribution function, quantile function and random generation for
-   a univariate distribution estimated by maximum likelihood.
+a univariate distribution estimated by maximum likelihood.
 }
 \details{
 \code{dml} is the density, \code{pml} is the distribution function,
 \code{qml} is the quantile function, and \code{rml} is the random variable
 generator.
 
-These functions work like their counterparts in `stats`, e.g.
-\link[stats]{Normal}. The \code{univariateML} object contains both maximum
+These functions work like their counterparts in \code{stats}, e.g.
+\link[stats:Normal]{Normal}. The \code{univariateML} object contains both maximum
 likelihood estimates and the identity of the model these estimates were
 calculated under. These functions are wrappers around underlying density,
 distribution, quantile and random generation functions where unknown

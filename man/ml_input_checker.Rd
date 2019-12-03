@@ -7,11 +7,11 @@
 ml_input_checker(x)
 }
 \arguments{
-\item{x}{input to a `ML***` function.}
+\item{x}{input to a \code{ML***} function.}
 }
 \value{
-`NULL`
+\code{NULL}
 }
 \description{
-Checks that `x` in the ML functions is numeric and has only one dimension.
+Checks that \code{x} in the ML functions is numeric and has only one dimension.
 }

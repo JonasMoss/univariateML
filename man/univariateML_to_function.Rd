@@ -3,7 +3,7 @@
 \name{univariateML_to_function}
 \alias{univariateML_to_function}
 \title{Transform a univariateML object to a quantile, CDF, density or random
-   variate generation.}
+variate generation.}
 \usage{
 univariateML_to_function(obj, type = c("d", "p", "q", "r", "ml"))
 }
@@ -17,6 +17,6 @@ A string
 }
 \description{
 Transform a univariateML object to a quantile, CDF, density or random
-   variate generation.
+variate generation.
 }
 \keyword{internal}

@@ -3,12 +3,12 @@
 #' Density, distribution function, quantile function and random generation for
 #'    a univariate distribution estimated by maximum likelihood.
 #'
-#' \code{dml} is the density, \code{pml} is the distribution function,
-#' \code{qml} is the quantile function, and \code{rml} is the random variable
+#' `dml` is the density, `pml` is the distribution function,
+#' `qml` is the quantile function, and `rml` is the random variable
 #' generator.
 #'
 #' These functions work like their counterparts in `stats`, e.g.
-#' \link[stats]{Normal}. The \code{univariateML} object contains both maximum
+#' [Normal][stats::Normal]. The `univariateML` object contains both maximum
 #' likelihood estimates and the identity of the model these estimates were
 #' calculated under. These functions are wrappers around underlying density,
 #' distribution, quantile and random generation functions where unknown
@@ -17,15 +17,15 @@
 #'
 #' @param x,q vector of quantiles.
 #' @param p vector of probabilities.
-#' @param n number of observations. If \code{length(n) > 1}, the length is
+#' @param n number of observations. If `length(n) > 1`, the length is
 #'     taken to be the number required.
-#' @param obj an \code{univariateML} object.
-#' @param log,log.p logical; if \code{TRUE}, the probabilities p are gives as
-#'     \code{log(p)}.
-#' @param lower.tail logical; if \code{TRUE} (default), the probabilities are
+#' @param obj an `univariateML` object.
+#' @param log,log.p logical; if `TRUE`, the probabilities p are gives as
+#'     `log(p)`.
+#' @param lower.tail logical; if `TRUE` (default), the probabilities are
 #'     \eqn{P[X \le x]} otherwise, \eqn{P[X > x]}
-#' @return \code{dml} gives the density, \code{pml} gives the distribution
-#'     function, \code{qml} gives the quantile function, and \code{rml}
+#' @return `dml` gives the density, `pml` gives the distribution
+#'     function, `qml` gives the quantile function, and `rml`
 #'     generates random deviates.
 #' @examples
 #' ## Simple example

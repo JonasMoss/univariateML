@@ -1,23 +1,23 @@
 #' Inverse Weibull distribution maximum likelihood estimation
 #'
-#' The maximum likelihood estimate of \code{shape} and \code{rate} are calculated
-#'   by calling \code{\link{mlweibull}} on the transformed data.
+#' The maximum likelihood estimate of `shape` and `rate` are calculated
+#'   by calling [mlweibull()] on the transformed data.
 #'
-#' For the density function of the log normal distribution see \link[actuar]{InverseWeibull}.
+#' For the density function of the log normal distribution see [InverseWeibull][actuar::InverseWeibull].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @return \code{mlinvweibull} returns an object of \link[base]{class} \code{univariateML}. This
-#'    is a named numeric vector with maximum likelihood estimates for \code{shape} and \code{rate} and the following attributes:
-#'     \item{\code{model}}{The name of the model.}
-#'     \item{\code{density}}{The density associated with the estimates.}
-#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
-#'     \item{\code{support}}{The support of the density.}
-#'     \item{\code{n}}{The number of observations.}
-#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' @return `mlinvweibull` returns an object of [class][base::class] `univariateML`. This
+#'    is a named numeric vector with maximum likelihood estimates for `shape` and `rate` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mlinvweibull(precip)
-#' @seealso \link[actuar]{InverseWeibull} for the Inverse Weibull density.
+#' @seealso [InverseWeibull][actuar::InverseWeibull] for the Inverse Weibull density.
 #' @references Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.
 #'
 #' Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley.

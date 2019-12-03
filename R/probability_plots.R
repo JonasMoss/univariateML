@@ -3,39 +3,39 @@
 #' Make quantile-quantile plots and probability-probability plots using maximum
 #'   likelihood estimation.
 #'
-#' \code{qqmlplot} produces a quantile-quantile plot (Q-Q plot) of the values in
-#' \code{y} with respect to the distribution defined by \code{obj}, which is
-#' either a \code{univariateML} object or a function returning a
-#' \code{univariateML} object when called with \code{y}. \code{qqmlline} adds a
+#' `qqmlplot` produces a quantile-quantile plot (Q-Q plot) of the values in
+#' `y` with respect to the distribution defined by `obj`, which is
+#' either a `univariateML` object or a function returning a
+#' `univariateML` object when called with `y`. `qqmlline` adds a
 #' line to a “theoretical”, quantile-quantile plot which passes through
-#' the \code{probs} quantiles, by default the first and third quartiles.
-#' \code{qqmlpoints}behaves like \code{stats::points} and adds a Q-Q plot to
+#' the `probs` quantiles, by default the first and third quartiles.
+#' `qqmlpoints`behaves like `stats::points` and adds a Q-Q plot to
 #' an existing plot.
 #'
-#' \code{ppmlplot}, \code{ppmlline}, and \code{ppmlpoints} produce
+#' `ppmlplot`, `ppmlline`, and `ppmlpoints` produce
 #' probability-probability plots (or P-P plots). They behave similarly to the
 #' quantile-quantile plot functions.
 #'
-#' This function is modeled after \link[stats]{qqnorm}.
+#' This function is modeled after [qqnorm][stats::qqnorm].
 #'
 #' Graphical parameters may be given as arguments to all the functions below.
 #'
-#' @param y Numeric vector; The data to plot on the \code{y} axis when
-#'   \code{datax} is \code{FALSE}.
-#' @param obj Either an \code{univariateML} object or a function that returns
-#'   a \code{univariateML} object when called with \code{y} as its only
+#' @param y Numeric vector; The data to plot on the `y` axis when
+#'   `datax` is `FALSE`.
+#' @param obj Either an `univariateML` object or a function that returns
+#'   a `univariateML` object when called with `y` as its only
 #'   argument.
 #' @param plot.it Logical; should the result be plotted?
-#' @param datax Logical; should \code{y} be plotted on the \code{x}-axis?
-#'   Defaults to \code{FALSE} in \code{qqmlplot} and \code{ppmlplot} but
-#'   \code{TRUE} in \code{qqmlpoints} and \code{ppmlpoints}.
+#' @param datax Logical; should `y` be plotted on the `x`-axis?
+#'   Defaults to `FALSE` in `qqmlplot` and `ppmlplot` but
+#'   `TRUE` in `qqmlpoints` and `ppmlpoints`.
 #' @param probs Numeric vector of length two, representing probabilities.
 #'   Corresponding quantile pairs define the line drawn.
-#' @param qtype The \code{type} of quantile computation used in \code{quantile}.
+#' @param qtype The `type` of quantile computation used in `quantile`.
 #' @param ... Graphical parameters.
-#' @return For \code{qqmlplot}, \code{qqmlpoints}, \code{ppmlplot}, and
-#'   \code{ppmlpoints}, a list with components \code{x} (plotted on the x axis)
-#'   and \code{y} (plotted on the y axis). \code{qqmlline} and \code{ppmlline}
+#' @return For `qqmlplot`, `qqmlpoints`, `ppmlplot`, and
+#'   `ppmlpoints`, a list with components `x` (plotted on the x axis)
+#'   and `y` (plotted on the y axis). `qqmlline` and `ppmlline`
 #'   returns nothing.
 #'
 #' @examples

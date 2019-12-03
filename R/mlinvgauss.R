@@ -1,24 +1,24 @@
 #' Inverse Gaussian (Wald) maximum likelihood estimation
 #'
-#' The maximum likelihood estimate of \code{mean} is the empirical mean and the
-#'     maximum likelihood estimate of \code{1/shape} is the difference between
+#' The maximum likelihood estimate of `mean` is the empirical mean and the
+#'     maximum likelihood estimate of `1/shape` is the difference between
 #'     the mean of reciprocals and the reciprocal of the mean.
 #'
-#' For the density function of the Inverse Gamma distribution see \link[actuar]{InverseGaussian}.
+#' For the density function of the Inverse Gamma distribution see [InverseGaussian][actuar::InverseGaussian].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @return \code{mlinvgauss} returns an object of \link[base]{class} \code{univariateML}. This
-#'    is a named numeric vector with maximum likelihood estimates for \code{mean} and \code{shape} and the following attributes:
-#'     \item{\code{model}}{The name of the model.}
-#'     \item{\code{density}}{The density associated with the estimates.}
-#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
-#'     \item{\code{support}}{The support of the density.}
-#'     \item{\code{n}}{The number of observations.}
-#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' @return `mlinvgauss` returns an object of [class][base::class] `univariateML`. This
+#'    is a named numeric vector with maximum likelihood estimates for `mean` and `shape` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mlinvgauss(precip)
-#' @seealso \link[actuar]{InverseGaussian} for the Inverse Gaussian density.
+#' @seealso [InverseGaussian][actuar::InverseGaussian] for the Inverse Gaussian density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
 #' @export
 

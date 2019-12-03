@@ -12,22 +12,22 @@ mllaplace(x, na.rm = FALSE)
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-\code{mllaplace} returns an object of \link[base]{class} \code{univariateML}. This
-   is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{sigma} and the following attributes:
-    \item{\code{model}}{The name of the model.}
-    \item{\code{density}}{The density associated with the estimates.}
-    \item{\code{logLik}}{The loglikelihood at the maximum.}
-    \item{\code{support}}{The support of the density.}
-    \item{\code{n}}{The number of observations.}
-    \item{\code{call}}{The call as captured my \code{match.call}}
+\code{mllaplace} returns an object of \link[base:class]{class} \code{univariateML}. This
+is a named numeric vector with maximum likelihood estimates for \code{mu} and \code{sigma} and the following attributes:
+\item{\code{model}}{The name of the model.}
+\item{\code{density}}{The density associated with the estimates.}
+\item{\code{logLik}}{The loglikelihood at the maximum.}
+\item{\code{support}}{The support of the density.}
+\item{\code{n}}{The number of observations.}
+\item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The maximum likelihood estimate of \code{mu} is the sample median while the
-   maximum likelihood estimate of \code{sigma} is mean absolute deviation
-   from the median.
+maximum likelihood estimate of \code{sigma} is mean absolute deviation
+from the median.
 }
 \details{
-For the density function of the Laplace distribution see \link[extraDistr]{Laplace}.
+For the density function of the Laplace distribution see \link[extraDistr:Laplace]{Laplace}.
 }
 \examples{
 mllaplace(precip)
@@ -36,5 +36,5 @@ mllaplace(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
 }
 \seealso{
-\link[extraDistr]{Laplace} for the Laplace density.
+\link[extraDistr:Laplace]{Laplace} for the Laplace density.
 }

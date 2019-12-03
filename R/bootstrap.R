@@ -2,33 +2,33 @@
 #'
 #' The parametric bootstrap is a resampling technique using random variates
 #'    from a known parametric distribution. In this function the distribution
-#'    of the random variates is completely determined by the \code{unvariateML}
-#'    object \code{object}.
+#'    of the random variates is completely determined by the `unvariateML`
+#'    object `object`.
 #'
 #' For each bootstrap iteration a maximum likelihood estimate is calculated
-#'    using the \code{ml***} function specified by \code{object}. The resulting
-#'    numeric vector is then passed to \code{map}. The values returned by
-#'    \code{map} is collected in an array and the \code{reducer} is called on
+#'    using the `ml***` function specified by `object`. The resulting
+#'    numeric vector is then passed to `map`. The values returned by
+#'    `map` is collected in an array and the `reducer` is called on
 #'    each row of the array.
 #'
-#' By default the \code{map} function is the identity and the default
-#'    \code{reducer} is the quantile function taking the argument \code{probs},
-#'    which defaults to \code{c(0.025, 0.975)}. This corresponds to a 95\%
+#' By default the `map` function is the identity and the default
+#'    `reducer` is the quantile function taking the argument `probs`,
+#'    which defaults to `c(0.025, 0.975)`. This corresponds to a 95\%
 #'    basic percentile confidence interval and is also reported by
-#'    \code{\link{confint}}
+#'    [confint()]
 #'
-#' \emph{Note:} The default confidence intervals are percentile intervals,
+#' *Note:* The default confidence intervals are percentile intervals,
 #'    not empirical intervals. These confidence intervals will in some cases
 #'    have poor coverage as they are not studentized, see e.g. Carpenter,
 #'    J., & Bithell, J. (2000).
 #'
-#' @param object A \code{univariateML} object.
+#' @param object A `univariateML` object.
 #' @param reps Positive integer. The number of bootstrap samples.
-#' @param map A function of the parameters of the \code{univariateML} object.
+#' @param map A function of the parameters of the `univariateML` object.
 #'   Defaults to the identity.
-#' @param reducer A reducer function. Defaults to \code{stats::quantile} with
-#'   default argument \code{probs = c(0.025, 0.975)}.
-#' @param ... Passed to \code{reducer}.
+#' @param reducer A reducer function. Defaults to `stats::quantile` with
+#'   default argument `probs = c(0.025, 0.975)`.
+#' @param ... Passed to `reducer`.
 #' @return The transposed map-reduced bootstrap samples.
 #' @export
 #' @references
@@ -39,7 +39,7 @@
 #'   when, which, what? A practical guide for medical statisticians.
 #'   Statistics in medicine, 19(9), 1141-1164.
 #'
-#' @seealso \code{\link{confint}} for an application of \code{bootstrapml}.
+#' @seealso [confint()] for an application of `bootstrapml`.
 #' @examples
 #' \dontrun{
 #' set.seed(1)

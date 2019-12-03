@@ -1,23 +1,23 @@
 #' Exponential distribution maximum likelihood estimation
 #'
-#' The maximum likelihood estimate of \code{rate} is the inverse sample mean.
+#' The maximum likelihood estimate of `rate` is the inverse sample mean.
 #'
-#' For the density function of the exponential distribution see \link[stats]{Exponential}.
+#' For the density function of the exponential distribution see [Exponential][stats::Exponential].
 #'
 #' @param x a (non-empty) numeric vector of data values.
-#' @param na.rm logical. Should missing values be removed? If \code{FALSE},
-#'   the function fails when \code{x} contains missing values.
-#' @return \code{mlexp} returns an object of \link[base]{class} \code{univariateML}. This
-#'    is a named numeric vector with maximum likelihood estimates for \code{rate} and the following attributes:
-#'     \item{\code{model}}{The name of the model.}
-#'     \item{\code{density}}{The density associated with the estimates.}
-#'     \item{\code{logLik}}{The loglikelihood at the maximum.}
-#'     \item{\code{support}}{The support of the density.}
-#'     \item{\code{n}}{The number of observations.}
-#'     \item{\code{call}}{The call as captured my \code{match.call}}
+#' @param na.rm logical. Should missing values be removed? If `FALSE`,
+#'   the function fails when `x` contains missing values.
+#' @return `mlexp` returns an object of [class][base::class] `univariateML`. This
+#'    is a named numeric vector with maximum likelihood estimates for `rate` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mlexp(precip)
-#' @seealso \link[stats]{Exponential} for the exponential density.
+#' @seealso [Exponential][stats::Exponential] for the exponential density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 #' @export
 

@@ -12,23 +12,23 @@ mllnorm(x, na.rm = FALSE)
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-\code{mllonorm} returns an object of \link[base]{class} \code{univariateML}. This
-   is a named numeric vector with maximum likelihood estimates for \code{meanlog} and \code{sdlog} and the following attributes:
-    \item{\code{model}}{The name of the model.}
-    \item{\code{density}}{The density associated with the estimates.}
-    \item{\code{logLik}}{The loglikelihood at the maximum.}
-    \item{\code{support}}{The support of the density.}
-    \item{\code{n}}{The number of observations.}
-    \item{\code{call}}{The call as captured my \code{match.call}}
+\code{mllonorm} returns an object of \link[base:class]{class} \code{univariateML}. This
+is a named numeric vector with maximum likelihood estimates for \code{meanlog} and \code{sdlog} and the following attributes:
+\item{\code{model}}{The name of the model.}
+\item{\code{density}}{The density associated with the estimates.}
+\item{\code{logLik}}{The loglikelihood at the maximum.}
+\item{\code{support}}{The support of the density.}
+\item{\code{n}}{The number of observations.}
+\item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The maximum likelihood estimate of \code{meanlog} is the empirical mean of the
-    log-transformed data and the maximum likelihood estimate of \code{sdlog}
-    is the square root of the biased sample variance based on the
-    log-transformed data.
+log-transformed data and the maximum likelihood estimate of \code{sdlog}
+is the square root of the biased sample variance based on the
+log-transformed data.
 }
 \details{
-For the density function of the log normal distribution see \link[stats]{Lognormal}.
+For the density function of the log normal distribution see \link[stats:Lognormal]{Lognormal}.
 }
 \examples{
 mllnorm(precip)
@@ -37,5 +37,5 @@ mllnorm(precip)
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 }
 \seealso{
-\link[stats]{Lognormal} for the log normal density.
+\link[stats:Lognormal]{Lognormal} for the log normal density.
 }

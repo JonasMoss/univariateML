@@ -3,7 +3,7 @@
 \name{univariateML_to_string}
 \alias{univariateML_to_string}
 \title{Transform a univariateML object to a string specifying quantile, CDF,
-    density or random variate generation.}
+density or random variate generation.}
 \usage{
 univariateML_to_string(obj, type = c("d", "p", "q", "r", "ml"))
 }
@@ -17,6 +17,6 @@ A string
 }
 \description{
 Transform a univariateML object to a string specifying quantile, CDF,
-    density or random variate generation.
+density or random variate generation.
 }
 \keyword{internal}

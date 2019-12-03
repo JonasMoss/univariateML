@@ -12,21 +12,21 @@ mlinvweibull(x, na.rm = FALSE)
 \item{na.rm}{logical. Should missing values be removed?}
 }
 \value{
-\code{mlinvweibull} returns an object of \link[base]{class} \code{univariateML}. This
-   is a named numeric vector with maximum likelihood estimates for \code{shape} and \code{rate} and the following attributes:
-    \item{\code{model}}{The name of the model.}
-    \item{\code{density}}{The density associated with the estimates.}
-    \item{\code{logLik}}{The loglikelihood at the maximum.}
-    \item{\code{support}}{The support of the density.}
-    \item{\code{n}}{The number of observations.}
-    \item{\code{call}}{The call as captured my \code{match.call}}
+\code{mlinvweibull} returns an object of \link[base:class]{class} \code{univariateML}. This
+is a named numeric vector with maximum likelihood estimates for \code{shape} and \code{rate} and the following attributes:
+\item{\code{model}}{The name of the model.}
+\item{\code{density}}{The density associated with the estimates.}
+\item{\code{logLik}}{The loglikelihood at the maximum.}
+\item{\code{support}}{The support of the density.}
+\item{\code{n}}{The number of observations.}
+\item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
 The maximum likelihood estimate of \code{shape} and \code{rate} are calculated
-  by calling \code{\link{mlweibull}} on the transformed data.
+by calling \code{\link[=mlweibull]{mlweibull()}} on the transformed data.
 }
 \details{
-For the density function of the log normal distribution see \link[actuar]{InverseWeibull}.
+For the density function of the log normal distribution see \link[actuar:InverseWeibull]{InverseWeibull}.
 }
 \examples{
 mlinvweibull(precip)
@@ -39,5 +39,5 @@ Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data 
 Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37.
 }
 \seealso{
-\link[actuar]{InverseWeibull} for the Inverse Weibull density.
+\link[actuar:InverseWeibull]{InverseWeibull} for the Inverse Weibull density.
 }

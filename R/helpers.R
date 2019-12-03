@@ -63,9 +63,9 @@ to_univariateML <- function(y, obj) {
 #' Wrangles arguments for use in ppml and qqml functions.
 #'
 #' @param y The input data.
-#' @param obj Function or \code{"univariateML"} object.
+#' @param obj Function or `"univariateML"` object.
 #' @param datax logical; if true, plots the data on the x axis.
-#' @param ... Arguments passed to \code{plot} or \code{points} down the line.
+#' @param ... Arguments passed to `plot` or `points` down the line.
 #' @keywords internal
 
 ppqq_wrangler <- function(y, obj, datax, pp, ...) {
