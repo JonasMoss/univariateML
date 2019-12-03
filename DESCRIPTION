@@ -16,7 +16,8 @@ Imports: assertthat,
     extraDistr,
     tibble,
     logitnorm,
-    actuar
+    actuar,
+    nakagami
 Suggests: 
     testthat,
     knitr,
@@ -28,3 +29,4 @@ RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 URL: https://github.com/JonasMoss/univariateML, https://univariateml.netlify.com/
 BugReports: https://github.com/JonasMoss/univariateML/issues
+Roxygen: list(markdown = TRUE)
