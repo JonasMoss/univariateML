@@ -14,19 +14,23 @@ expect_equal(
   names(formals(univariateML_to_function(obj, "d"))),
   c("x", "mean", "sd", "log")
 )
+
 expect_equal(
   names(formals(univariateML_to_function(obj, "p"))),
   c("q", "mean", "sd", "lower.tail", "log.p")
 )
+
 expect_equal(
   names(formals(univariateML_to_function(obj, "q"))),
   c("p", "mean", "sd", "lower.tail", "log.p")
 )
+
 expect_equal(
   names(formals(univariateML_to_function(obj, "r"))),
   c("n", "mean", "sd")
 )
+
 expect_equal(
   names(formals(univariateML_to_function(obj, "ml"))),
-  c("x", "na.rm")
+  c("x", "na.rm", "...")
 )

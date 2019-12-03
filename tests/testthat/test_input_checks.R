@@ -8,9 +8,9 @@ for (dens in densities) {
   eval(call("expect_error", call(dens, NA)))
 }
 
-forms_rhs = c("x","na.rm","...")
+forms_rhs <- c("x", "na.rm", "...")
 for (dens in densities) {
   eval(call("context", paste0("Formals: ", dens)))
-  forms_lhs = names(eval(call("formals", dens)))
+  forms_lhs <- names(eval(call("formals", dens)))
   expect_equal(forms_lhs, forms_rhs)
 }
