@@ -49,7 +49,7 @@ to_univariateML <- function(y, obj) {
       "object or an univariateML object."
     )
     tryCatch({
-      obj <- obj(y)
+        obj <- obj(y)
       },
       error = function(cond) stop(msg)
     )

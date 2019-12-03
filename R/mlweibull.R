@@ -37,12 +37,15 @@ mlweibull <- function(x, na.rm = FALSE, ...) {
 
   dots <- list(...)
 
-  shape0 <- if(!is.null(dots$sigma0)) dots$shape0 else 1
+  shape0 <- if (!is.null(dots$sigma0)) dots$shape0 else 1
 
-  rel.tol <- if(!is.null(dots$rel.tol)) dots$rel.tol else
+  rel.tol <- if (!is.null(dots$rel.tol)) {
+    dots$rel.tol
+  } else {
     .Machine$double.eps^0.25
+  }
 
-  iterlim <- if(!is.null(dots$iterlim)) dots$iterlim else 100
+  iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
 
   log_x <- log(x)
   l_hat <- mean(log_x)
@@ -72,7 +75,7 @@ mlweibull <- function(x, na.rm = FALSE, ...) {
   }
 
   ## Given the shape, the scale is easy to compute.
-  scale <- (mean(x^shape))^(1 / shape)
+  scale <- (mean(x^shape)) ^ (1 / shape)
   shape_sum <- mean(x^shape)
   n <- length(x)
   object <- c(shape = shape, scale = scale)

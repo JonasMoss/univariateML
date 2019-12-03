@@ -2,12 +2,15 @@
 #'
 #' The estimates are `min(x)` and `max(x)`.
 #'
-#' For the density function of the logistic distribution see [Uniform][stats::Uniform].
+#' For the density function of the logistic distribution see
+#'    [Uniform][stats::Uniform].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @return `mlunif` returns an object of [class][base::class] `univariateML`. This
-#'    is a named numeric vector with maximum likelihood estimates for `min` and `max` and the following attributes:
+#' @param ... currently affects nothing.
+#' @return `mlunif` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for `min`
+#'    and `max` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -17,11 +20,12 @@
 #' @examples
 #' mlunif(precip)
 #' @seealso [Uniform][stats::Uniform] for the uniform density.
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
 #' @export
 
 
-mlunif <- function(x, na.rm = FALSE) {
+mlunif <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 

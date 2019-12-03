@@ -3,12 +3,15 @@
 #' Calculates the `sigma` parameter as the square root of half the
 #'    empirical second moment.
 #'
-#' For the density function of the Rayleigh distribution see [Rayleigh][extraDistr::Rayleigh].
+#' For the density function of the Rayleigh distribution see
+#' [Rayleigh][extraDistr::Rayleigh].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @return `mlrayleigh` returns an object of [class][base::class] `univariateML`. This
-#'    is a named numeric vector with maximum likelihood estimates for `sigma` and the following attributes:
+#' @param ... currently affects nothing.
+#' @return `mlrayleigh` returns an object of [class][base::class]
+#'    `univariateML`. This is a named numeric vector with maximum likelihood
+#'    estimates for `sigma` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -18,10 +21,11 @@
 #' @examples
 #' mlrayleigh(precip)
 #' @seealso [Rayleigh][extraDistr::Rayleigh] for the Rayleigh density.
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
+#' Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
 #' @export
 
-mlrayleigh <- function(x, na.rm = FALSE) {
+mlrayleigh <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 

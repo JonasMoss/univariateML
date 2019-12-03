@@ -5,12 +5,15 @@
 #'     is the square root of the biased sample variance based on the
 #'     log-transformed data.
 #'
-#' For the density function of the log normal distribution see [Lognormal][stats::Lognormal].
+#' For the density function of the log normal distribution see
+#'     [Lognormal][stats::Lognormal].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @return `mllonorm` returns an object of [class][base::class] `univariateML`. This
-#'    is a named numeric vector with maximum likelihood estimates for `meanlog` and `sdlog` and the following attributes:
+#' @param ... currently affects nothing.
+#' @return `mllonorm` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `meanlog` and `sdlog` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -20,10 +23,11 @@
 #' @examples
 #' mllnorm(precip)
 #' @seealso [Lognormal][stats::Lognormal] for the log normal density.
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 #' @export
 
-mllnorm <- function(x, na.rm = FALSE) {
+mllnorm <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)
@@ -35,7 +39,8 @@ mllnorm <- function(x, na.rm = FALSE) {
   class(object) <- "univariateML"
   attr(object, "model") <- "Lognormal"
   attr(object, "density") <- "stats::dlnorm"
-  attr(object, "logLik") <- -n / 2 * (1 + log(2 * pi) + 2 * log(sdlog) + 2 * meanlog)
+  attr(object, "logLik") <-
+    -n / 2 * (1 + log(2 * pi) + 2 * log(sdlog) + 2 * meanlog)
   attr(object, "support") <- c(0, Inf)
   attr(object, "n") <- length(x)
   attr(object, "call") <- match.call()

@@ -38,11 +38,17 @@ mlgamma <- function(x, na.rm = FALSE, ...) {
 
   dots <- list(...)
 
-  rel.tol <- if(!is.null(dots$rel.tol)) dots$rel.tol else
+  rel.tol <- if (!is.null(dots$rel.tol)) {
+    dots$rel.tol
+  } else {
     .Machine$double.eps^0.25
+  }
 
-  iterlim <- if(!is.null(dots$iterlim)) dots$iterlim else
+  iterlim <- if (!is.null(dots$iterlim)) {
+    dots$iterlim
+  } else {
     100
+  }
 
   n <- length(x)
   mean_hat <- mean(x)
@@ -54,7 +60,7 @@ mlgamma <- function(x, na.rm = FALSE, ...) {
 
   ## The Newton-Raphson steps.
   for (i in 1:iterlim) {
-    shape <- shape0 - (log(shape0) - digamma(shape0) - s)/
+    shape <- shape0 - (log(shape0) - digamma(shape0) - s) /
       (1 / shape0 - trigamma(shape0))
     if (abs((shape - shape0) / shape0) < rel.tol) break
     shape0 <- shape

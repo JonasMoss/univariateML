@@ -2,14 +2,16 @@
 #'
 #' The maximum likelihood estimate of `rate` is the inverse sample mean.
 #'
-#' For the density function of the exponential distribution see [Exponential][stats::Exponential].
+#' For the density function of the exponential distribution see
+#'    [Exponential][stats::Exponential].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed? If `FALSE`,
 #'   the function fails when `x` contains missing values.
 #' @param ... currently affects nothing.
-#' @return `mlexp` returns an object of [class][base::class] `univariateML`. This
-#'    is a named numeric vector with maximum likelihood estimates for `rate` and the following attributes:
+#' @return `mlexp` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `rate` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -19,7 +21,8 @@
 #' @examples
 #' mlexp(precip)
 #' @seealso [Exponential][stats::Exponential] for the exponential density.
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 #' @export
 
 mlexp <- function(x, na.rm = FALSE, ...) {

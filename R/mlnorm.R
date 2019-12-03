@@ -4,12 +4,15 @@
 #'     maximum likelihood estimate of `sd` is the square root of the
 #'     biased sample variance.
 #'
-#' For the density function of the normal distribution see [Normal][stats::Normal].
+#' For the density function of the normal distribution see
+#' [Normal][stats::Normal].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @return `mlnorm` returns an object of [class][base::class] `univariateML`. This
-#'    is a named numeric vector with maximum likelihood estimates for `mean` and `sd` and the following attributes:
+#' @param ... currently affects nothing.
+#' @return `mlnorm` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `mean` and `sd` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -19,10 +22,11 @@
 #' @examples
 #' mlnorm(precip)
 #' @seealso [Normal][stats::Normal] for the normal density.
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export
 
-mlnorm <- function(x, na.rm = FALSE) {
+mlnorm <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   n <- length(x)

@@ -34,14 +34,23 @@ mlgumbel <- function(x, na.rm = FALSE, ...) {
 
   dots <- list(...)
 
-  sigma0 <- if(!is.null(dots$sigma0)) dots$sigma0 else
+  sigma0 <- if (!is.null(dots$sigma0)) {
+    dots$sigma0
+  } else {
     1
+  }
 
-  rel.tol <- if(!is.null(dots$rel.tol)) dots$rel.tol else
+  rel.tol <- if (!is.null(dots$rel.tol)) {
+    dots$rel.tol
+  } else {
     .Machine$double.eps^0.25
+  }
 
-  iterlim <- if(!is.null(dots$iterlim)) dots$iterlim else
+  iterlim <- if (!is.null(dots$iterlim)) {
+    dots$iterlim
+  } else {
     100
+  }
 
 
   mean_x <- mean(x)
@@ -71,14 +80,15 @@ mlgumbel <- function(x, na.rm = FALSE, ...) {
 
   ## Given the sigma, the mu is easy to compute.
   mu <- -sigma * log(mean(exp(-x / sigma)))
-  S <- mean(exp(-(x - mu) / sigma))
+  S <- mean(exp(- (x - mu) / sigma))
 
 
   object <- c(mu = mu, sigma = sigma)
   class(object) <- "univariateML"
   attr(object, "model") <- "Gumbel"
   attr(object, "density") <- "extraDistr::dgumbel"
-  attr(object, "logLik") <- -length(x) * (log(sigma) + 1 / sigma * (mean_x - mu) + S)
+  attr(object, "logLik") <-
+    -length(x) * (log(sigma) + 1 / sigma * (mean_x - mu) + S)
   attr(object, "support") <- c(-Inf, Inf)
   attr(object, "n") <- length(x)
   attr(object, "call") <- match.call()

@@ -40,10 +40,10 @@ mlbeta <- function(x, na.rm = FALSE, ...) {
   val2 <- mean(log(1 - x))
 
   dots <- list(...)
-  type <- if(!is.null(dots$type)) dots$type else "none"
+  type <- if (!is.null(dots$type)) dots$type else "none"
   type <- match.arg(type, c("none", "gradient", "hessian"))
 
-  if(!is.null(dots$start)) {
+  if (!is.null(dots$start)) {
     start <- dots$start
   } else {
     G1 <- exp(val1)
@@ -92,7 +92,7 @@ mlbeta <- function(x, na.rm = FALSE, ...) {
   class(object) <- "univariateML"
   attr(object, "model") <- "Beta"
   attr(object, "density") <- "stats::dbeta"
-  attr(object, "logLik") <- - length(x) *
+  attr(object, "logLik") <- -length(x) *
     stats::setNames(objective(object), NULL)
   attr(object, "support") <- c(0, 1)
   attr(object, "n") <- length(x)

@@ -1,16 +1,17 @@
 #' Logistic distribution maximum likelihood estimation
 #'
-#' Calculates the estimates using `nlm` and an exponential transform of the
-#'     location parameter. If `n < 5`, an exact solution is reported. In
-#'     the edge case where no maximum likelihood estimator exists and error is
-#'     thrown.
+#' Calculates the estimates using `nlm` with an exponential transform of the
+#'     location parameter.
 #'
-#' For the density function of the logistic distribution see [Logistic][stats::Logistic].
+#' For the density function of the logistic distribution see
+#'     [Logistic][stats::Logistic].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @return `mllogis` returns an object of [class][base::class] `univariateML`. This
-#'    is a named numeric vector with maximum likelihood estimates for `location` and `scale` and the following attributes:
+#' @param ... currently affects nothing.
+#' @return `mllogis` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `location` and `scale` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -19,12 +20,13 @@
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mllogis(precip)
-#' @seealso [Logistic][stats::Logistic] for the Logistic density, [nlm][stats::nlm] for the
-#'   optimizer this function uses.
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York.
+#' @seealso [Logistic][stats::Logistic] for the Logistic density,
+#'   [nlm][stats::nlm] for the optimizer this function uses.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York.
 #' @export
 
-mllogis <- function(x, na.rm = FALSE) {
+mllogis <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
@@ -42,6 +44,7 @@ mllogis <- function(x, na.rm = FALSE) {
     location = values$estimate[1],
     scale = exp(values$estimate[2])
   )
+
   class(object) <- "univariateML"
   attr(object, "model") <- "Logistic"
   attr(object, "density") <- "stats::dlogis"
