@@ -2,16 +2,19 @@
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
 #'
-#' For the density function of the Gumbel distribution see [Gumbel][extraDistr::Gumbel].
+#' For the density function of the Gumbel distribution see
+#'    [Gumbel][extraDistr::Gumbel].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param sigma0 An optional starting value for the `sigma` parameter.
-#' @param rel.tol Relative accuracy requested.
-#' @param iterlim A positive integer specifying the maximum number of
-#' iterations to be performed before the program is terminated.
-#' @return `mlgumbel` returns an object of [class][base::class] `univariateML`. This
-#'    is a named numeric vector with maximum likelihood estimates for `mu` and `s` and the following attributes:
+#' @param ... `sigma0` is an optional starting value defaulting to `1`.
+#'     `rel.tol` is the relative accuracy requested, defaults to
+#'     `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'     specifying the maximum number of iterations to be performed before the
+#'     program is terminated (defaults to `100`).
+#' @return `mlgumbel` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for `mu`
+#'    and `s` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -25,12 +28,22 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
 #' @export
 
-mlgumbel <- function(x, na.rm = FALSE, sigma0 = 1, rel.tol = .Machine$double.eps^0.25,
-                     iterlim = 100) {
+mlgumbel <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
-  rel.tol_str <- deparse(substitute(rel.tol))
+  dots <- list(...)
+
+  sigma0 <- if(!is.null(dots$sigma0)) dots$sigma0 else
+    1
+
+  rel.tol <- if(!is.null(dots$rel.tol)) dots$rel.tol else
+    .Machine$double.eps^0.25
+
+  iterlim <- if(!is.null(dots$iterlim)) dots$iterlim else
+    100
+
+
   mean_x <- mean(x)
 
   for (i in 1:iterlim) {
@@ -52,7 +65,7 @@ mlgumbel <- function(x, na.rm = FALSE, sigma0 = 1, rel.tol = .Machine$double.eps
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
       " before the relative tolerance requirement (rel.tol = ",
-      rel.tol_str, ")."
+      rel.tol, ")."
     ))
   }
 
