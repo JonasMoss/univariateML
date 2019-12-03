@@ -6,7 +6,8 @@ Authors@R: c(
     person("Jonas", "Moss", , "jonas.gjertsen@gmail.com", role = c("aut", "cre"), 
       comment = c(ORCID = "0000-0002-6876-6964")
     ))
-Description: Make univariate density estimation easier, quicker, and more reliable. 
+Description: User-friendly maximum likelihood estimation of univariate 
+    densities.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
