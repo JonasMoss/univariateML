@@ -12,6 +12,8 @@ Status](https://codecov.io/gh/JonasMoss/univariateML/branch/master/graph/badge.s
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.01863/status.svg)](https://doi.org/10.21105/joss.01863)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/univariateML)](https://cran.r-project.org/package=univariateML)
 
 ## Overview
 
