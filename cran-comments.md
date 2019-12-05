@@ -1,3 +1,9 @@
+## Resubmission
+
+* There is no reasonable reference about the methods I can add in the
+  Description field in the form Authors (year) <doi:.....>.
+* Fixed invalid URI in vignette.
+
 ## Test environments
 * local Windows 10, R version R version 3.6.1
 * Windows Server 2012 (on AppVeyor) R version 3.6.1 Patched (2019-10-31 r77367)
