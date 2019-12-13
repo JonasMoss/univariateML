@@ -1,8 +1,9 @@
 ## Resubmission
 
-* There is no reasonable reference about the methods I can add in the
-  Description field in the form Authors (year) <doi:.....>.
-* Fixed invalid URI in vignette.
+* Added reference to Fisher (1921) for maximum likelihood estimation.
+* Removed installation of packages in copula vignette.
+* Replaced \dontrun{} by \donttest{} in Rd-files.
+* Removed examples using par(mfrow = c(2, 1))
 
 ## Test environments
 * local Windows 10, R version R version 3.6.1
