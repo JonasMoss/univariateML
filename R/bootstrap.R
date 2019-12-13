@@ -41,7 +41,7 @@
 #'
 #' @seealso [confint()] for an application of `bootstrapml`.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' set.seed(1)
 #' object <- mlgamma(mtcars$qsec)
 #'
