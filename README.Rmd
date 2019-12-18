@@ -39,8 +39,13 @@ function, quantile function, and random sampling at the estimated distribution
 parameters.
 
 ## Installation
-Use the following command from inside `R`:
+Use the following command from inside `R` to install from CRAN.
 ```{r install, echo = TRUE, eval = FALSE}
+install.packages("univariateML")
+```
+
+Or install the development version from Github.
+```{r install_github, echo = TRUE, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("JonasMoss/univariateML")
 ```

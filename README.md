@@ -29,7 +29,13 @@ random sampling at the estimated distribution parameters.
 
 ## Installation
 
-Use the following command from inside `R`:
+Use the following command from inside `R` to install from CRAN.
+
+``` r
+install.packages("univariateML")
+```
+
+Or install the development version from Github.
 
 ``` r
 # install.packages("devtools")
@@ -76,9 +82,9 @@ microbenchmark::microbenchmark(
   univariateML = univariateML::mlbeta(x),
   naive = nlm(function(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1)))
 #> Unit: microseconds
-#>          expr     min       lq      mean   median       uq     max neval
-#>  univariateML   864.2  1102.90  1305.743  1192.30  1340.95  6007.9   100
-#>         naive 36398.0 39097.35 41108.804 40530.15 43035.50 50693.3   100
+#>          expr       min        lq      mean    median        uq      max neval
+#>  univariateML   925.401  1339.002  2309.141  1708.051  2065.551  41581.2   100
+#>         naive 44287.601 47740.601 54418.306 51779.401 57391.700 104036.7   100
 ```
 
 The maximum likelihood estimators in this package have all been subject
