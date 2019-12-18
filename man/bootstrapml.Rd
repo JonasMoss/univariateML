@@ -48,7 +48,7 @@ have poor coverage as they are not studentized, see e.g. Carpenter,
 J., & Bithell, J. (2000).
 }
 \examples{
-\dontrun{
+\donttest{
 set.seed(1)
 object <- mlgamma(mtcars$qsec)
 

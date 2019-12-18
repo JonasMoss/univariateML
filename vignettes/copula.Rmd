@@ -8,16 +8,6 @@ vignette: >
 bibliography: copula.bib
 ---
 
-```{R depends, echo = FALSE}
-if (!require("copula")) install.packages("copula", 
-                                         dependencies = TRUE,
-                                         repos = "http://cran.us.r-project.org")
-
-if (!require("dplyr")) install.packages("dplyr", 
-                                        dependencies = TRUE,
-                                        repos = "http://cran.us.r-project.org")
-```
-
 This vignette shows how to model multivariate distributions with 
 [copulas](https://en.wikipedia.org/wiki/Copula_(probability_theory))
 using `univariateML` and the `copula` package. 

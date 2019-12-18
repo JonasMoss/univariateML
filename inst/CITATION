@@ -1,0 +1,16 @@
+citHeader("To cite univariateML in publications, please use:")
+
+citEntry(entry="Article",
+  doi = "10.21105/joss.01863",
+  url = "https://doi.org/10.21105/joss.01863",
+  year = "2019",
+  month = "dec",
+  publisher = "The Open Journal",
+  volume = "4",
+  number = "44",
+  pages = "1863",
+  author = "Jonas Moss",
+  title = "univariateML: An R package for maximum likelihood estimation of univariate densities",
+  journal = "Journal of Open Source Software",
+  textVersion = "Moss, (2019). univariateML: An R package for maximum likelihood estimation of univariate densities. Journal of Open Source Software, 4(44), 1863, https://doi.org/10.21105/joss.01863"
+)

@@ -80,7 +80,7 @@ summary(mlweibull(egypt$age))
 ```
 
 ## Quantile-quantile Plots
-Now we will investigate how the two models differ with [https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot](quantile-quantile plots), or Q-Q plots for short.
+Now we will investigate how the two models differ with [quantile-quantile plots](https://en.wikipedia.org/wiki/Q-Q_plot), or Q-Q plots for short.
 
 ```{r, qqplots}
 qqmlplot(egypt$age, mlweibull, datax = TRUE, main = "QQ Plot for Ancient Egypt")

@@ -134,7 +134,7 @@ summary(mlweibull(egypt$age))
 ```
 
 ## Quantile-quantile Plots
-Now we will investigate how the two models differ with [https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot](quantile-quantile plots), or Q-Q plots for short.
+Now we will investigate how the two models differ with [quantile-quantile plots](https://en.wikipedia.org/wiki/Q-Q_plot), or Q-Q plots for short.
 
 
 ```r
@@ -182,8 +182,8 @@ bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
 
 ```
 ##            2.5%     97.5%
-## shape  1.250344  1.616963
-## scale 29.607607 37.750506
+## shape  1.246644  1.614056
+## scale 29.301693 38.126512
 ```
 
 ```r
@@ -192,8 +192,8 @@ bootstrapml(mlgamma(egypt$age))
 
 ```
 ##             2.5%      97.5%
-## shape 1.34432954 2.03663781
-## rate  0.04113922 0.06793162
+## shape 1.33568486 2.04379587
+## rate  0.04193431 0.06895511
 ```
 
 These confidence intervals are not directly comparable. That is, the `scale` parameter in
@@ -218,7 +218,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.62843 33.73309
+## 27.53889 33.76252
 ```
 
 ```r
@@ -230,7 +230,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.53158 33.91414
+## 27.31093 34.40263
 ```
 
 We are be interested in the quantiles of the underlying distribution,
@@ -246,7 +246,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 23.03270 28.99678
+## 22.93329 28.84853
 ```
 
 ```r
@@ -257,7 +257,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 21.83003 27.51890
+## 21.81757 27.57722
 ```
 
 We can also plot the bootstrap samples.

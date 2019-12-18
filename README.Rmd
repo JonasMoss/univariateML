@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/JonasMoss/univariateML?branch=master&svg=true)](https://ci.appveyor.com/project/JonasMoss/univariateML)
 [![Coverage Status](https://codecov.io/gh/JonasMoss/univariateML/branch/master/graph/badge.svg)](https://codecov.io/gh/JonasMoss/univariateML?branch=master)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.01863/status.svg)](https://doi.org/10.21105/joss.01863)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/univariateML)](https://cran.r-project.org/package=univariateML)
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -37,8 +39,13 @@ function, quantile function, and random sampling at the estimated distribution
 parameters.
 
 ## Installation
-Use the following command from inside `R`:
+Use the following command from inside `R` to install from CRAN.
 ```{r install, echo = TRUE, eval = FALSE}
+install.packages("univariateML")
+```
+
+Or install the development version from Github.
+```{r install_github, echo = TRUE, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("JonasMoss/univariateML")
 ```
