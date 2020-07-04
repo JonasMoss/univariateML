@@ -18,7 +18,8 @@ Imports: assertthat,
     tibble,
     logitnorm,
     actuar,
-    nakagami
+    nakagami,
+    fGarch
 Suggests: 
     testthat,
     knitr,
@@ -26,7 +27,7 @@ Suggests:
     rmarkdown,
     copula,
     dplyr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 URL: https://github.com/JonasMoss/univariateML, https://univariateml.netlify.com/
 BugReports: https://github.com/JonasMoss/univariateML/issues
