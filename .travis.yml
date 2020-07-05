@@ -2,12 +2,12 @@
 
 language: R
 sudo: required
-dist: trusty
+dist: bionic
 cache: packages
 latex: false
 
 apt_packages:
-  - libgsl0-dev
+  - libgsl-dev
 
 brew_packages:
   - gsl
