@@ -8,7 +8,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... currently affects nothing.
-#' @return `mlt` returns an object of [class][base::class] `univariateML`.
+#' @return `mlstd` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
 #'    the parameters `mean`, `sd`, `nu` and the following attributes:
 #'     \item{`model`}{The name of the model.}
@@ -18,7 +18,7 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
-#' mlt(precip)
+#' mlstd(precip)
 #' @seealso [std][fGarch::std] for the Student-t density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.

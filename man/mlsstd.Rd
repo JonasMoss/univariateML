@@ -14,7 +14,7 @@ mlsstd(x, na.rm = FALSE, ...)
 \item{...}{currently affects nothing.}
 }
 \value{
-\code{mlt} returns an object of \link[base:class]{class} \code{univariateML}.
+\code{mlsstd} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for
 the parameters \code{mean}, \code{sd}, \code{nu}, \code{xi} and the following attributes:
 \item{\code{model}}{The name of the model.}
@@ -29,15 +29,15 @@ Joint maximum likelihood estimation as implemented by \link[fGarch:sstdFit]{fGar
 }
 \details{
 For the density function of the Student t distribution see
-\link[fGarch:sstd]{sstd}.
+\link[fGarch:sstd]{dsstd}.
 }
 \examples{
-mlt(precip)
+mlsstd(precip)
 }
 \references{
 Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
 Tails and Skewness, Preprint.
 }
 \seealso{
-\link[fGarch:sstd]{sstd} for the Skew Student-t density.
+\link[fGarch:sstd]{dsstd} for the Skew Student-t density.
 }

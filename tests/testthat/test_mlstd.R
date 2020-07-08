@@ -15,7 +15,7 @@ expect_equal(
 )
 
 ## Is the log-likelihood correct?
-est <- suppressWarnings(mlstd(small_data, na.rm = TRUE))
+est <- mlstd(small_data, na.rm = TRUE)
 expect_equal(
   sum(fGarch::dstd(small_data, est[1], est[2], est[3], log = TRUE)),
   attr(est, "logLik")

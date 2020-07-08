@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlstd.R
 \name{mlstd}
 \alias{mlstd}
-\title{Student t distribution maximum likelihood estimation}
+\title{Student-t distribution maximum likelihood estimation}
 \usage{
 mlstd(x, na.rm = FALSE, ...)
 }
@@ -14,7 +14,7 @@ mlstd(x, na.rm = FALSE, ...)
 \item{...}{currently affects nothing.}
 }
 \value{
-\code{mlt} returns an object of \link[base:class]{class} \code{univariateML}.
+\code{mlstd} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for
 the parameters \code{mean}, \code{sd}, \code{nu} and the following attributes:
 \item{\code{model}}{The name of the model.}
@@ -32,12 +32,12 @@ For the density function of the Student t distribution see
 \link[fGarch:std]{std}.
 }
 \examples{
-mlt(precip)
+mlstd(precip)
 }
 \references{
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 }
 \seealso{
-\link[fGarch:std]{std} for the Student t density.
+\link[fGarch:std]{std} for the Student-t density.
 }
