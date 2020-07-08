@@ -10,8 +10,8 @@ expect_error(mlstd(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
 expect_equal(
-  suppressWarnings(coef(mlstd(small_data))),
-  suppressWarnings(coef(mlstd(c(small_data, NA), na.rm = TRUE)))
+  coef(mlstd(small_data)),
+  coef(mlstd(c(small_data, NA), na.rm = TRUE))
 )
 
 ## Is the log-likelihood correct?

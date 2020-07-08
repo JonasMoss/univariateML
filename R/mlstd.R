@@ -28,7 +28,7 @@ mlstd <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
-  fit <- fGarch::stdFit(x)
+  fit <- suppressWarnings(fGarch::stdFit(x))
   object <- fit[["par"]]
   class(object) <- "univariateML"
   attr(object, "model") <- "Student t"
