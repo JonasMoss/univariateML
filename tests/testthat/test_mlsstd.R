@@ -1,23 +1,23 @@
-context("mlstd")
+context("mlsstd")
 
 ## Data generation.
 set.seed(313)
-small_data <- fGarch::rstd(100, 2, 3, 4)
-tiny_data <- fGarch::rstd(100, 2, 3, 4)
+small_data <- fGarch::rsstd(100)
+tiny_data <- fGarch::rsstd(100)
 
 ## Finds errors with na and data out of bounds.
-expect_error(mlstd(c(tiny_data, NA)))
+expect_error(mlsstd(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
 expect_equal(
-  coef(mlstd(small_data)),
-  coef(mlstd(c(small_data, NA), na.rm = TRUE))
+  coef(mlsstd(small_data)),
+  coef(mlsstd(c(small_data, NA), na.rm = TRUE))
 )
 
 ## Is the log-likelihood correct?
-est <- suppressWarnings(mlstd(small_data, na.rm = TRUE))
+est <- suppressWarnings(mlsstd(small_data, na.rm = TRUE))
 expect_equal(
-  sum(fGarch::dstd(small_data, est[1], est[2], est[3], log = TRUE)),
+  sum(fGarch::dsstd(small_data, est[1], est[2], est[3], est[4], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -45,5 +45,5 @@ expect_equal(
 
 
 ## Check class.
-expect_equal(attr(est, "model"), "Student-t")
+expect_equal(attr(est, "model"), "Skew Student-t")
 expect_equal(class(est), "univariateML")
