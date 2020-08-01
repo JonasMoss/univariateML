@@ -3,12 +3,12 @@
 #' Selects the best model by log-likelihood, AIC, or BIC.
 #'
 #' @param x a (non-empty) numeric vector of data values.
-#' @param families a character vector containing the distribution families to
-#'   select from; see `print(univariateML_families)`.
+#' @param models a character vector containing the distribution models to
+#'   select from; see `print(univariateML_models)`.
 #' @param criterion the model selection criterion.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... unused.
-#' @return `mlselect` returns an object of [class][base::class]
+#' @return `model_select` returns an object of [class][base::class]
 #'    `univariateML`. This is a named numeric vector with maximum likelihood
 #'    estimates for the parameters of the best fitting model and the following
 #'    attributes:
@@ -19,26 +19,26 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
-#' mlselect(precip)
+#' model_select(precip)
 #' @seealso
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate
 #' Distributions, Volume 1, Chapter 17. Wiley, New York.
 #'
 #' @export
 
-mlselect <- function(x, families = univariateML_families,
+model_select <- function(x, models = univariateML_models,
                      criterion = c("aic", "bic", "loglik"),
                      na.rm = FALSE, ...) {
-  check_families(families)
+  check_models(models)
   criterion <- match.arg(criterion)
 
-  mlf <- sapply(paste0("ml", families), function(x) eval(parse(text = x)))
+  mlf <- sapply(paste0("ml", models), function(x) eval(parse(text = x)))
   fits <- lapply(mlf, function(f) try(f(x, na.rm = na.rm), silent = TRUE))
 
   ## catch out-of-bounds errors (and similar)
   error_inds <- sapply(fits, function(fit) inherits(fit, "try-error"))
-  error_msgs <- sapply(fits[error_inds], as.character)
   if (all(error_inds)) {
+    error_msgs <- sapply(fits[error_inds], as.character)
     details <- paste0("(", names(error_msgs), ") ",  error_msgs)
     stop("couldn't fit any model.\n", details)
   }
@@ -54,19 +54,19 @@ mlselect <- function(x, families = univariateML_families,
   fits[[which.min(crits)]]
 }
 
-#' Implemented distribution families
+#' Implemented models
 #'
 #' @examples
-#' print(univariateML_families)
+#' print(univariateML_models)
 #' @export
-univariateML_families <- substring(densities, first = 3)
+univariateML_models <- substring(densities, first = 3)
 
-check_families <- function(families) {
-  is_implemented <- families %in% univariateML_families
+check_models <- function(models) {
+  is_implemented <- models %in% univariateML_models
   if (any(!is_implemented)) {
     stop(
       "The following families are not implemented: ",
-         paste0(families[!is_implemented], collapse = ", "),
-         ".\n See `print(univariateML_families)` for allowed values.")
+         paste0(models[!is_implemented], collapse = ", "),
+         ".\n See `print(univariateML_models)` for allowed values.")
   }
 }
