@@ -43,26 +43,39 @@
 #' @name MaximumLikelihoodDistribution
 #' @export
 dml <- function(x, obj, log = FALSE) {
-  univariateML_to_function(obj, type = "d")(x = x, log = log)
+  fun <- univariateML_to_function(obj, type = "d")
+  if (!("log" %in% names(formals(fun)))) {
+    log(fun(x = x))
+  } else {
+    fun(x = x, log = log)
+  }
 }
 
 #' @rdname MaximumLikelihoodDistribution
 #' @export
 pml <- function(q = q, obj, lower.tail = TRUE, log.p = FALSE) {
-  univariateML_to_function(obj, type = "p")(
-    q = q,
-    lower.tail = lower.tail,
-    log.p = log.p
-  )
+  fun <- univariateML_to_function(obj, type = "p")
+  if (!all(c("log.p", "lower.tail") %in% names(formals(fun)))) {
+    p <- fun(q = q)
+    if (!lower.tail) p <- 1 - p
+    if (log.p) p <- log(p)
+    p
+  } else {
+    fun(q = q, lower.tail = lower.tail, log.p = log.p)
+  }
 }
 
 #' @rdname MaximumLikelihoodDistribution
 #' @export
 qml <- function(p = p, obj, lower.tail = TRUE, log.p = FALSE) {
-  univariateML_to_function(obj, type = "q")(
-    p = p,
-    lower.tail = lower.tail,
-    log.p = log.p)
+  fun <- univariateML_to_function(obj, type = "q")
+  if (!all(c("log.p", "lower.tail") %in% names(formals(fun)))) {
+    if (!lower.tail) p <- 1 - p
+    if (log.p) p <- exp(p)
+    fun(p = p)
+  } else {
+    fun(p = p, lower.tail = lower.tail, log.p = log.p)
+  }
 }
 
 #' @rdname MaximumLikelihoodDistribution
