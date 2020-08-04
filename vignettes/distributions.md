@@ -1,66 +1,247 @@
----
-title: "Distributions"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Distributions}
-  %\VignetteEngine{knitr::knitr}
-  %\VignetteEncoding{UTF-8}
----
+These are the currently implemented distributions.
 
+<table style="width:100%;">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 20%" />
+<col style="width: 9%" />
+<col style="width: 22%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>univariateML function</th>
+<th>Package</th>
+<th>Parameters</th>
+<th>Support</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Cauchy distribution</td>
+<td><code>mlcauchy</code></td>
+<td>stats</td>
+<td><code>location</code>,<code>scale</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="even">
+<td>Gumbel distribution</td>
+<td><code>mlgumbel</code></td>
+<td>extraDistr</td>
+<td><code>mu</code>, <code>sigma</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="odd">
+<td>Laplace distribution</td>
+<td><code>mllaplace</code></td>
+<td>extraDistr</td>
+<td><code>mu</code>, <code>sigma</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="even">
+<td>Logistic distribution</td>
+<td><code>mllogis</code></td>
+<td>stats</td>
+<td><code>location</code>,<code>scale</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="odd">
+<td>Normal distribution</td>
+<td><code>mlnorm</code></td>
+<td>stats</td>
+<td><code>mean</code>, <code>sd</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="even">
+<td>Student t distribution</td>
+<td><code>mlstd</code></td>
+<td>fGarch</td>
+<td><code>mean</code>, <code>sd</code>, <code>nu</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="odd">
+<td>Generalized Error distribution</td>
+<td><code>mlged</code></td>
+<td>fGarch</td>
+<td><code>mean</code>, <code>sd</code>, <code>nu</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="even">
+<td>Skew Normal distribution</td>
+<td><code>mlsnorm</code></td>
+<td>fGarch</td>
+<td><code>mean</code>, <code>sd</code>, <code>xi</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="odd">
+<td>Skew Student t distribution</td>
+<td><code>mlsstd</code></td>
+<td>fGarch</td>
+<td><code>mean</code>, <code>sd</code>, <code>nu</code>, <code>xi</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="even">
+<td>Skew Generalized Error distribution</td>
+<td><code>mlsged</code></td>
+<td>fGarch</td>
+<td><code>mean</code>, <code>sd</code>, <code>nu</code>, <code>xi</code></td>
+<td><span class="math inline">ℝ</span></td>
+</tr>
+<tr class="odd">
+<td>Beta prime distribution</td>
+<td><code>mlbetapr</code></td>
+<td>extraDistr</td>
+<td><code>shape1</code>, <code>shape2</code></td>
+<td><span class="math inline">(0, ∞)</span></td>
+</tr>
+<tr class="even">
+<td>Exponential distribution</td>
+<td><code>mlexp</code></td>
+<td>stats</td>
+<td><code>rate</code></td>
+<td><span class="math inline">[0, ∞)</span></td>
+</tr>
+<tr class="odd">
+<td>Gamma distribution</td>
+<td><code>mlgamma</code></td>
+<td>stats</td>
+<td><code>shape</code>,<code>rate</code></td>
+<td><span class="math inline">(0, ∞)</span></td>
+</tr>
+<tr class="even">
+<td>Inverse gamma distribution</td>
+<td><code>mlinvgamma</code></td>
+<td>extraDistr</td>
+<td><code>alpha</code>, <code>beta</code></td>
+<td><span class="math inline">(0, ∞)</span></td>
+</tr>
+<tr class="odd">
+<td>Inverse Gaussian distribution</td>
+<td><code>mlinvgauss</code></td>
+<td>actuar</td>
+<td><code>mean</code>, <code>shape</code></td>
+<td><span class="math inline">(0, ∞)</span></td>
+</tr>
+<tr class="even">
+<td>Inverse Weibull distribution</td>
+<td><code>mlinvweibull</code></td>
+<td>actuar</td>
+<td><code>shape</code>, <code>rate</code></td>
+<td><span class="math inline">(0, ∞)</span></td>
+</tr>
+<tr class="odd">
+<td>Log-logistic distribution</td>
+<td><code>mlllogis</code></td>
+<td>actuar</td>
+<td><code>shape</code>, <code>rate</code></td>
+<td><span class="math inline">(0, ∞)</span></td>
+</tr>
+<tr class="even">
+<td>Log-normal distribution</td>
+<td><code>mllnorm</code></td>
+<td>stats</td>
+<td><code>meanlog</code>, <code>sdlog</code></td>
+<td><span class="math inline">(0, ∞)</span></td>
+</tr>
+<tr class="odd">
+<td>Lomax distribution</td>
+<td><code>mllomax</code></td>
+<td>extraDistr</td>
+<td><code>lambda</code>, <code>kappa</code></td>
+<td><span class="math inline">[0, ∞)</span></td>
+</tr>
+<tr class="even">
+<td>Rayleigh distribution</td>
+<td><code>mlrayleigh</code></td>
+<td>extraDistr</td>
+<td><code>sigma</code></td>
+<td><span class="math inline">[0, ∞)</span></td>
+</tr>
+<tr class="odd">
+<td>Weibull distribution</td>
+<td><code>mlweibull</code></td>
+<td>stats</td>
+<td><code>shape</code>,<code>scale</code></td>
+<td><span class="math inline">(0, ∞)</span></td>
+</tr>
+<tr class="even">
+<td>Log-gamma distribution</td>
+<td><code>mllgamma</code></td>
+<td>actuar</td>
+<td><code>shapelog</code>, <code>ratelog</code></td>
+<td><span class="math inline">(1, ∞)</span></td>
+</tr>
+<tr class="odd">
+<td>Pareto distribution</td>
+<td><code>mlpareto</code></td>
+<td>extraDistr</td>
+<td><code>a</code>, <code>b</code></td>
+<td><span class="math inline">[<em>b</em>, ∞)</span></td>
+</tr>
+<tr class="even">
+<td>Beta distribution</td>
+<td><code>mlbeta</code></td>
+<td>stats</td>
+<td><code>shape1</code>,<code>shape2</code></td>
+<td><span class="math inline">(0, 1)</span></td>
+</tr>
+<tr class="odd">
+<td>Kumaraswamy distribution</td>
+<td><code>mlkumar</code></td>
+<td>extraDistr</td>
+<td><code>a</code>, <code>b</code></td>
+<td><span class="math inline">(0, 1)</span></td>
+</tr>
+<tr class="even">
+<td>Logit-normal</td>
+<td><code>mllogitnorm</code></td>
+<td>logitnorm</td>
+<td><code>mu</code>, <code>sigma</code></td>
+<td><span class="math inline">(0, 1)</span></td>
+</tr>
+<tr class="odd">
+<td>Uniform distribution</td>
+<td><code>mlunif</code></td>
+<td>stats</td>
+<td><code>min</code>, <code>max</code></td>
+<td><span class="math inline">[min , max ]</span></td>
+</tr>
+<tr class="even">
+<td>Power distribution</td>
+<td><code>mlpower</code></td>
+<td>extraDistr</td>
+<td><code>alpha</code>, <code>beta</code></td>
+<td><span class="math inline">[0, <em>a</em>)</span></td>
+</tr>
+</tbody>
+</table>
 
+This package follows a naming convention for the `ml***` functions. To
+access the documentation of the distribution associated with an `ml***`
+function, write `package::d***`. For instance, to find the documentation
+for the log-gamma distribution write
 
-These are the currently implemented distributions. 
+    ?actuar::dlgamma
 
-| Name                          | univariateML function     | Package    | Parameters            | Support        | 
-| ----------------------------- | ------------------------- | ---------- | --------------------- | -------------- | 
-| Cauchy distribution           | `mlcauchy`                | stats      | `location`,`scale`    | $\mathbb{R}$   | 
-| Gumbel distribution           | `mlgumbel`                | extraDistr | `mu`, `sigma`         | $\mathbb{R}$   | 
-| Laplace distribution          | `mllaplace`               | extraDistr | `mu`, `sigma`         | $\mathbb{R}$   | 
-| Logistic distribution         | `mllogis`                 | stats      | `location`,`scale`    | $\mathbb{R}$   | 
-| Normal distribution           | `mlnorm`                  | stats      | `mean`, `sd`          | $\mathbb{R}$   | 
-| Beta prime distribution       | `mlbetapr`                | extraDistr | `shape1`, `shape2`    | $(0, \infty)$  |
-| Exponential distribution      | `mlexp`                   | stats      | `rate`                | $[0, \infty)$  | 
-| Gamma distribution            | `mlgamma`                 | stats      | `shape`,`rate`        | $(0, \infty)$  | 
-| Inverse gamma distribution    | `mlinvgamma`              | extraDistr | `alpha`, `beta`       | $(0, \infty)$  |
-| Inverse Gaussian distribution | `mlinvgauss`              | actuar     | `mean`, `shape`       | $(0, \infty)$  |
-| Inverse Weibull distribution  | `mlinvweibull`            | actuar     | `shape`, `rate`       | $(0, \infty)$  |
-| Log-logistic distribution     | `mlllogis`                | actuar     | `shape`, `rate`       | $(0, \infty)$  |
-| Log-normal distribution       | `mllnorm`                 | stats      | `meanlog`, `sdlog`    | $(0, \infty)$  |
-| Lomax distribution            | `mllomax`                 | extraDistr | `lambda`, `kappa`     | $[0, \infty)$  | 
-| Rayleigh distribution         | `mlrayleigh`              | extraDistr | `sigma`               | $[0, \infty)$  | 
-| Weibull distribution          | `mlweibull`               | stats      | `shape`,`scale`       | $(0, \infty)$  |
-| Log-gamma distribution        | `mllgamma`                | actuar     | `shapelog`, `ratelog` | $(1, \infty)$  |
-| Pareto distribution           | `mlpareto`                | extraDistr | `a`, `b`              | $[b, \infty)$  |
-| Beta distribution             | `mlbeta`                  | stats      | `shape1`,`shape2`     | $(0, 1)$       |
-| Kumaraswamy distribution      | `mlkumar`                 | extraDistr | `a`, `b`              | $(0, 1)$       |
-| Logit-normal                  | `mllogitnorm`             | logitnorm  | `mu`, `sigma`         | $(0, 1)$       |
-| Uniform distribution          | `mlunif`                  | stats      | `min`, `max`          | $[\min, \max]$ |
-| Power distribution            | `mlpower`                 | extraDistr | `alpha`, `beta`       | $[0, a)$       |
+Problematic Distributions
+-------------------------
 
-
-This package follows a naming convention for the `ml***` functions. To access the
-documentation of the distribution associated with an `ml***` function, write `package::d***`. 
-For instance, to find the documentation for the log-gamma distribution write
-
-
-```r
-?actuar::dlgamma
-```
-
-## Problematic Distributions
 ### Lomax Distribution
-The maximum likelihood estimator of the [Lomax distribution](https://en.wikipedia.org/wiki/Lomax_distribution) frequently fails to 
-exist. For assume $\kappa\to\lambda^{-1}\overline{x}^{-1}$ and $\lambda\to0$. The density $\lambda\kappa\left(1+\lambda x\right)^{-\left(\kappa+1\right)}$
-is approximately equal to $\lambda\kappa\left(1+\lambda x\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}$
-when $\lambda$ is small enough. Since $\lambda\kappa\left(1+\lambda x\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}\to\overline{x}^{-1}e^{-\overline{x}^{-1}x}$,
-the density converges to an exponential density. 
 
+The maximum likelihood estimator of the [Lomax
+distribution](https://en.wikipedia.org/wiki/Lomax_distribution)
+frequently fails to exist. For assume
+$\\kappa\\to\\lambda^{-1}\\overline{x}^{-1}$ and *λ* → 0. The density
+*λ**κ*(1+*λ**x*)<sup> − (*κ*+1)</sup> is approximately equal to
+$\\lambda\\kappa\\left(1+\\lambda x\\right)^{-\\left(\\lambda^{-1}\\overline{x}^{-1}+1\\right)}$
+when *λ* is small enough. Since
+$\\lambda\\kappa\\left(1+\\lambda x\\right)^{-\\left(\\lambda^{-1}\\overline{x}^{-1}+1\\right)}\\to\\overline{x}^{-1}e^{-\\overline{x}^{-1}x}$,
+the density converges to an exponential density.
 
-```r
-eps = 0.1
-x = seq(0, 3, length.out = 100)
-plot(dexp, 0, 3, xlab = "x", ylab = "Density", main = "Exponential and Lomax")
-lines(x, extraDistr::dlomax(x, lambda = eps, kappa = 1/eps), col = "red")
-```
+    eps = 0.1
+    x = seq(0, 3, length.out = 100)
+    plot(dexp, 0, 3, xlab = "x", ylab = "Density", main = "Exponential and Lomax")
+    lines(x, extraDistr::dlomax(x, lambda = eps, kappa = 1/eps), col = "red")
 
-![plot of chunk lomax](figure/lomax-1.png)
+![](/data/dev/r/univariateML/vignettes/distributions_files/figure-markdown_strict/lomax-1.png)
