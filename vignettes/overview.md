@@ -1,257 +1,323 @@
+---
+title: "Overview of univariateML"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Overview of univariateML}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
 When dealing with univariate data you want to do one or more of
 
--   Find a good model for the data.
--   Estimate parameters for your candidate models.
--   Get an idea about the uncertainty of your estimates.
+* Find a good model for the data.
+* Estimate parameters for your candidate models.
+* Get an idea about the uncertainty of your estimates.
 
-The `unvariateML` package has a fast and reliable functions to help you
-with these tasks. The core of the package are more than 20 functions for
-fast and thoroughly tested calculation of maximum likelihood estimates
-for univariate models.
+The `unvariateML` package has a fast and reliable functions to help you with 
+these tasks. The core of the package are more than 20 functions for fast 
+and thoroughly tested calculation of maximum likelihood estimates for univariate 
+models. 
 
--   Compare the fit of your candidate models with `AIC` or `BIC`.
--   Look at QQ plots or PP plots of your data.
--   Plot the data together with density estimates.
--   Compute confidence intervals using parametric bootstrap.
+* Compare the fit of your candidate models with `AIC` or `BIC`.
+* Look at QQ plots or PP plots of your data.
+* Plot the data together with density estimates.
+* Compute confidence intervals using parametric bootstrap.
 
-This vignette shows you how to use the tools of `univariateML` to do
-exploratory data analysis.
+This vignette shows you how to use the tools of `univariateML` to do exploratory
+data analysis.
 
-Mortality in Ancient Egypt
-==========================
+# Mortality in Ancient Egypt
 
-The dataset `egypt` contains contains the age at death of 141 Roman era
-Egyptian mummies. Our first task is to find a univariate model that fits
-this data.
+The dataset `egypt` contains contains the age at death of 141 Roman era Egyptian
+mummies. Our first task is to find a univariate model that fits this data.
 
-    library("univariateML")
-    head(egypt)
 
-    ## # A tibble: 6 x 2
-    ##     age sex  
-    ##   <dbl> <chr>
-    ## 1  1.5  male 
-    ## 2  1.83 male 
-    ## 3  2    male 
-    ## 4  2    male 
-    ## 5  3    male 
-    ## 6  3    male
+```r
+library("univariateML")
+head(egypt)
+```
 
-    hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
+```
+## # A tibble: 6 x 2
+##     age sex  
+##   <dbl> <chr>
+## 1  1.5  male 
+## 2  1.83 male 
+## 3  2    male 
+## 4  2    male 
+## 5  3    male 
+## 6  3    male
+```
 
-![](/data/dev/r/univariateML/vignettes/overview_files/figure-markdown_strict/egypt-1.png)
+```r
+hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
+```
 
-Comparing Many Models with AIC
-------------------------------
+![plot of chunk egypt](figure/egypt-1.png)
 
-The [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) is
-a handy and easy to use model selection tool, as it only depends on the
-log-likelihood and number of parameters of the models. The generic in
-`R` can take multiple models, and the lower the the better.
+## Comparing Many Models with AIC
+The [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion) is a handy 
+and easy to use model selection tool, as it only depends on the log-likelihood and
+number of parameters of the models. The \code{AIC} generic in `R` can take multiple
+models, and the lower the \code{AIC} the better.
 
-Since all the data is positive we will only try densities support on the
-positive half-line.
+Since all the data is positive we will only try densities support on the positive
+half-line. 
 
-    AIC(mlbetapr(egypt$age),
-        mlexp(egypt$age),
-        mlinvgamma(egypt$age),
-        mlgamma(egypt$age),
-        mllnorm(egypt$age),
-        mlrayleigh(egypt$age),
-        mlinvgauss(egypt$age),
-        mlweibull(egypt$age),
-        mlinvweibull(egypt$age),
-        mllgamma(egypt$age))
 
-    ##                         df      AIC
-    ## mlbetapr(egypt$age)      2 1312.464
-    ## mlexp(egypt$age)         1 1249.553
-    ## mlinvgamma(egypt$age)    2 1322.949
-    ## mlgamma(egypt$age)       2 1234.772
-    ## mllnorm(egypt$age)       2 1263.874
-    ## mlrayleigh(egypt$age)    1 1260.217
-    ## mlinvgauss(egypt$age)    2 1287.124
-    ## mlweibull(egypt$age)     2 1230.229
-    ## mlinvweibull(egypt$age)  2 1319.120
-    ## mllgamma(egypt$age)      2 1314.187
+```r
+AIC(mlbetapr(egypt$age),
+    mlexp(egypt$age),
+    mlinvgamma(egypt$age),
+    mlgamma(egypt$age),
+    mllnorm(egypt$age),
+    mlrayleigh(egypt$age),
+    mlinvgauss(egypt$age),
+    mlweibull(egypt$age),
+    mlinvweibull(egypt$age),
+    mllgamma(egypt$age))
+```
+
+```
+##                         df      AIC
+## mlbetapr(egypt$age)      2 1312.464
+## mlexp(egypt$age)         1 1249.553
+## mlinvgamma(egypt$age)    2 1322.949
+## mlgamma(egypt$age)       2 1234.772
+## mllnorm(egypt$age)       2 1263.874
+## mlrayleigh(egypt$age)    1 1260.217
+## mlinvgauss(egypt$age)    2 1287.124
+## mlweibull(egypt$age)     2 1230.229
+## mlinvweibull(egypt$age)  2 1319.120
+## mllgamma(egypt$age)      2 1314.187
+```
 
 The [Weibull](https://en.wikipedia.org/wiki/Weibull_distribution) and
-[Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) models stand
-out with an AIC far below the other candidate models.
+[Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) models stand out with
+an AIC far below the other candidate models.
 
 To see the parameter estimates of `mlweibull(egypt$age)` just print it:
 
-    mlweibull(egypt$age)
+```r
+mlweibull(egypt$age)
+```
 
-    ## Maximum likelihood estimates for the Weibull model 
-    ##  shape   scale  
-    ##  1.404  33.564
+```
+## Maximum likelihood estimates for the Weibull model 
+##  shape   scale  
+##  1.404  33.564
+```
 
-`mlweibull(egypt$age)` is a `univariateML` object. For more details
-about it call `summary`:
+`mlweibull(egypt$age)` is a `univariateML` object. For more details about it call `summary`:
 
-    summary(mlweibull(egypt$age))
 
-    ## 
-    ## Maximum likelihood for the Weibull model 
-    ##  
-    ## Call:  mlweibull(x = egypt$age) 
-    ## 
-    ## Estimates: 
-    ##     shape      scale  
-    ##  1.404158  33.563564  
-    ## 
-    ## Data:            egypt$age (141 obs.)
-    ## Support:         (0, Inf)
-    ## Density:         stats::dweibull
-    ## Log-likelihood:  -613.1144
+```r
+summary(mlweibull(egypt$age))
+```
 
-Automatically select the best model
------------------------------------
+```
+## 
+## Maximum likelihood for the Weibull model 
+##  
+## Call:  mlweibull(x = egypt$age) 
+## 
+## Estimates: 
+##     shape      scale  
+##  1.404158  33.563564  
+## 
+## Data:            egypt$age (141 obs.)
+## Support:         (0, Inf)
+## Density:         stats::dweibull
+## Log-likelihood:  -613.1144
+```
 
-The model selection process can be automatized with
-`model_select(egypt$age)`:
+## Automatically select the best model
 
-    model_select(egypt$age, models = c("gamma", "weibull"))
+The model selection process can be automatized with `model_select(egypt$age)`:
 
-    ## Maximum likelihood estimates for the Weibull model 
-    ##  shape   scale  
-    ##  1.404  33.564
+```r
+model_select(egypt$age, models = c("gamma", "weibull"))
+```
 
-Quantile-quantile Plots
------------------------
+```
+## Maximum likelihood estimates for the Weibull model 
+##  shape   scale  
+##  1.404  33.564
+```
 
-Now we will investigate how the two models differ with
-[quantile-quantile plots](https://en.wikipedia.org/wiki/Q-Q_plot), or
-Q-Q plots for short.
 
-    qqmlplot(egypt$age, mlweibull, datax = TRUE, main = "QQ Plot for Ancient Egypt")
-    # Can also use qqmlplot(mlweibull(egypt$age), datax = TRUE) directly.
-    qqmlpoints(egypt$age, mlgamma, datax = TRUE, col = "red")
-    qqmlline(egypt$age, mlweibull, datax = TRUE)
-    qqmlline(egypt$age, mlgamma, datax = TRUE, col = "red")
+## Quantile-quantile Plots
+Now we will investigate how the two models differ with [quantile-quantile plots](https://en.wikipedia.org/wiki/Q-Q_plot), or Q-Q plots for short.
 
-![](/data/dev/r/univariateML/vignettes/overview_files/figure-markdown_strict/qqplots-1.png)
 
-The Q-Q plot shows that neither Weibull nor Gamma fits the data very
-well.
+```r
+qqmlplot(egypt$age, mlweibull, datax = TRUE, main = "QQ Plot for Ancient Egypt")
+# Can also use qqmlplot(mlweibull(egypt$age), datax = TRUE) directly.
+qqmlpoints(egypt$age, mlgamma, datax = TRUE, col = "red")
+qqmlline(egypt$age, mlweibull, datax = TRUE)
+qqmlline(egypt$age, mlgamma, datax = TRUE, col = "red")
+```
 
-If you prefer P-P plots to Q-Q plots take a look at `?ppplotml` instead.
+![plot of chunk qqplots](figure/qqplots-1.png)
 
-Plot Densities
---------------
+The Q-Q plot shows that neither Weibull nor Gamma fits the data very well.
+
+If you prefer P-P plots to Q-Q plots take a look at `?ppplotml` instead. 
+
+## Plot Densities
 
 Use the `plot`, `lines` and `points` generics to plot the densities.
 
-    hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
-    lines(mlweibull(egypt$age), lwd = 2, lty = 2, ylim = c(0, 0.025))
-    lines(mlgamma(egypt$age), lwd = 2, col = "red")
-    rug(egypt$age)
 
-![](/data/dev/r/univariateML/vignettes/overview_files/figure-markdown_strict/plot_example-1.png)
+```r
+hist(egypt$age, main = "Mortality in Ancient Egypt", freq = FALSE)
+lines(mlweibull(egypt$age), lwd = 2, lty = 2, ylim = c(0, 0.025))
+lines(mlgamma(egypt$age), lwd = 2, col = "red")
+rug(egypt$age)
+```
 
-Confidence Intervals with Parametric Bootstrap
-----------------------------------------------
+![plot of chunk plot_example](figure/plot_example-1.png)
 
-Now we want to get an idea about the uncertainties of our model
-parameters. Do to this we can do a parametric bootstrap to calculate
-confidence intervals using either `bootstrapml` or `confint`. While
-`bootstrapml` allows you to calculate any functional of the parameters
-and manipulate them afterwards, `confint` is restricted to the main
-parameters of the model.
 
-    # Calculate two-sided 95% confidence intervals for the two Gumbel parameters.
-    bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
+## Confidence Intervals with Parametric Bootstrap
 
-    ##            2.5%     97.5%
-    ## shape  1.247771  1.616295
-    ## scale 29.649321 37.708993
+Now we want to get an idea about the uncertainties of our model parameters. 
+Do to this we can do a parametric bootstrap to calculate confidence intervals using either
+`bootstrapml` or `confint`. While `bootstrapml` allows you to calculate any
+functional of the parameters and manipulate them afterwards, `confint` is restricted
+to the main parameters of the model.
 
-    bootstrapml(mlgamma(egypt$age))
 
-    ##             2.5%      97.5%
-    ## shape 1.32648945 2.04236380
-    ## rate  0.04188031 0.06754262
+```r
+# Calculate two-sided 95% confidence intervals for the two Gumbel parameters.
+bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
+```
 
-These confidence intervals are not directly comparable. That is, the
-`scale` parameter in the Weibull model is not directly comparable to the
-`rate` parameter in the gamma model. So let us take a look at a a
-parameter with a familiar interpretation, namely the mean.
+```
+##            2.5%     97.5%
+## shape  1.250854  1.625907
+## scale 29.449353 37.808082
+```
 
-The mean of the Weibull distribution with parameters `shape` and `scale`
-is `scale*gamma(1 + 1/shape)`. On the other hand, the mean of the Gamma
-distribution with parameters `shape` and `rate` is `shape/rate`.
+```r
+bootstrapml(mlgamma(egypt$age))
+```
 
-The `probs` argument can be used to modify the limits of confidence
-interval. Now we will calculate two 90% confidence intervals for the
-mean.
+```
+##             2.5%      97.5%
+## shape 1.33644654 2.00570892
+## rate  0.04192819 0.06874457
+```
 
-    # Calculate two-sided 90% confidence intervals for the mean of a Weibull.
-    bootstrapml(mlweibull(egypt$age), 
-                map = function(x) x[2]*gamma(1 + 1/x[1]), 
-                probs = c(0.05, 0.95))
+These confidence intervals are not directly comparable. That is, the `scale` parameter in
+the Weibull model is not directly comparable to the `rate` parameter in the gamma model. 
+So let us take a look at a a parameter with a familiar interpretation, namely the mean. 
 
-    ##       5%      95% 
-    ## 27.78758 33.76227
+The mean of the Weibull distribution with parameters `shape` and `scale` is 
+`scale*gamma(1 + 1/shape)`. On the other hand, the mean of the 
+Gamma distribution with parameters `shape` and `rate` is
+`shape/rate`. 
 
-    # Calculate two-sided 90% confidence intervals for the mean of a Gamma.
-    bootstrapml(mlgamma(egypt$age), 
-                map = function(x) x[1]/x[2],
-                probs = c(0.05, 0.95))
+The `probs` argument can be used to modify the limits of confidence interval. Now
+we will calculate two 90% confidence intervals for the mean. 
 
-    ##       5%      95% 
-    ## 27.53536 34.01846
+
+```r
+# Calculate two-sided 90% confidence intervals for the mean of a Weibull.
+bootstrapml(mlweibull(egypt$age), 
+            map = function(x) x[2]*gamma(1 + 1/x[1]), 
+            probs = c(0.05, 0.95))
+```
+
+```
+##       5%      95% 
+## 27.56746 33.62809
+```
+
+```r
+# Calculate two-sided 90% confidence intervals for the mean of a Gamma.
+bootstrapml(mlgamma(egypt$age), 
+            map = function(x) x[1]/x[2],
+            probs = c(0.05, 0.95))
+```
+
+```
+##       5%      95% 
+## 27.56208 34.03641
+```
 
 We are be interested in the quantiles of the underlying distribution,
 for instance the median:
 
-    # Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
-    bootstrapml(mlweibull(egypt$age), 
-                map = function(x) qweibull(0.5, x[1], x[2]), 
-                probs = c(0.05, 0.95))
 
-    ##       5%      95% 
-    ## 22.94633 29.03091
+```r
+# Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
+bootstrapml(mlweibull(egypt$age), 
+            map = function(x) qweibull(0.5, x[1], x[2]), 
+            probs = c(0.05, 0.95))
+```
 
-    bootstrapml(mlgamma(egypt$age), 
-                map = function(x) qgamma(0.5, x[1], x[2]), 
-                probs = c(0.05, 0.95))
+```
+##       5%      95% 
+## 23.13011 28.75253
+```
 
-    ##       5%      95% 
-    ## 21.86781 27.75510
+```r
+bootstrapml(mlgamma(egypt$age), 
+            map = function(x) qgamma(0.5, x[1], x[2]), 
+            probs = c(0.05, 0.95))
+```
+
+```
+##       5%      95% 
+## 22.07217 27.93177
+```
 
 We can also plot the bootstrap samples.
 
-    hist(bootstrapml(mlweibull(egypt$age), 
-                     map = function(x) x[2]*gamma(1 + 1/x[1]), 
-                     reducer = identity),
-         main = "Bootstrap Samples of the Mean",
-         xlab = "x",
-         freq = FALSE)
 
-![](/data/dev/r/univariateML/vignettes/overview_files/figure-markdown_strict/bootstrap_example_histogram-1.png)
+```r
+hist(bootstrapml(mlweibull(egypt$age), 
+                 map = function(x) x[2]*gamma(1 + 1/x[1]), 
+                 reducer = identity),
+     main = "Bootstrap Samples of the Mean",
+     xlab = "x",
+     freq = FALSE)
+```
 
-Density, CDF, quantiles and random variate generation
------------------------------------------------------
+![plot of chunk bootstrap_example_histogram](figure/bootstrap_example_histogram-1.png)
 
-The functions `dml`, `pml`, `qml` and `rml` can be used to calculate
-densities, cumulative probabilities, quantiles, and generate random
-variables. Here are 10 random observations from the most likely
-distribution of Egyptian mortalities given the Weibull model.
 
-    set.seed(313)
-    rml(10, mlweibull(egypt$age))
+## Density, CDF, quantiles and random variate generation
 
-    ##  [1] 25.90552 59.64456 13.36882 44.29378 12.22563 17.66144 54.57633 22.86824 11.48328 19.94814
+The functions `dml`, `pml`, `qml` and `rml` can be used to calculate densities,
+cumulative probabilities, quantiles, and generate random variables. Here are
+$10$ random observations from the most likely distribution of Egyptian mortalities given
+the Weibull model.
 
-Compare the empirical distribution of the random variates to the true
-cumulative probability.
 
-    set.seed(313)
-    obj = mlweibull(egypt$age)
-    q = seq(0, max(egypt$age), length.out = 100)
-    plot(q, pml(q, obj), type = "l", ylab = "Cumulative Probability")
-    r = rml(100, obj)
-    lines(ecdf(r))
+```r
+set.seed(313)
+rml(10, mlweibull(egypt$age))
+```
 
-![](/data/dev/r/univariateML/vignettes/overview_files/figure-markdown_strict/cumulative%20probability-1.png)
+```
+##  [1] 25.90552 59.64456 13.36882 44.29378 12.22563 17.66144 54.57633 22.86824
+##  [9] 11.48328 19.94814
+```
+
+Compare the empirical distribution of the random variates to the true cumulative probability.
+
+
+```r
+set.seed(313)
+obj = mlweibull(egypt$age)
+q = seq(0, max(egypt$age), length.out = 100)
+plot(q, pml(q, obj), type = "l", ylab = "Cumulative Probability")
+r = rml(100, obj)
+lines(ecdf(r))
+```
+
+![plot of chunk cumulative probability](figure/cumulative probability-1.png)
