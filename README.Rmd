@@ -68,6 +68,39 @@ hist(egypt$age, freq = FALSE, xlab = "Mortality", main = "Egypt")
 lines(mlweibull(egypt$age))
 ```
 
+## Supported densities
+
+| Name                                | univariateML function  | Package    | 
+| ----------------------------------- | ---------------------- | ---------- | 
+| Cauchy distribution                 | `mlcauchy`             | stats      | 
+| Gumbel distribution                 | `mlgumbel`             | extraDistr | 
+| Laplace distribution                | `mllaplace`            | extraDistr | 
+| Logistic distribution               | `mllogis`              | stats      | 
+| Normal distribution                 | `mlnorm`               | stats      | 
+| Student t distribution              | `mlstd`                | fGarch     | 
+| Generalized Error distribution      | `mlged`                | fGarch     | 
+| Skew Normal distribution            | `mlsnorm`              | fGarch     | 
+| Skew Student t distribution         | `mlsstd`               | fGarch     | 
+| Skew Generalized Error distribution | `mlsged`               | fGarch     | 
+| Beta prime distribution             | `mlbetapr`             | extraDistr |
+| Exponential distribution            | `mlexp`                | stats      | 
+| Gamma distribution                  | `mlgamma`              | stats      | 
+| Inverse gamma distribution          | `mlinvgamma`           | extraDistr |
+| Inverse Gaussian distribution       | `mlinvgauss`           | actuar     |
+| Inverse Weibull distribution        | `mlinvweibull`         | actuar     |
+| Log-logistic distribution           | `mlllogis`             | actuar     |
+| Log-normal distribution             | `mllnorm`              | stats      |
+| Lomax distribution                  | `mllomax`              | extraDistr | 
+| Rayleigh distribution               | `mlrayleigh`           | extraDistr | 
+| Weibull distribution                | `mlweibull`            | stats      |
+| Log-gamma distribution              | `mllgamma`             | actuar     |
+| Pareto distribution                 | `mlpareto`             | extraDistr |
+| Beta distribution                   | `mlbeta`               | stats      |
+| Kumaraswamy distribution            | `mlkumar`              | extraDistr |
+| Logit-normal                        | `mllogitnorm`          | logitnorm  |
+| Uniform distribution                | `mlunif`               | stats      |
+| Power distribution                  | `mlpower`              | extraDistr |
+
 ## Implementations
 
 Analytic formulae for the maximum likelihood estimates are used whenever
@@ -88,12 +121,11 @@ microbenchmark::microbenchmark(
 ```
 
 The maximum likelihood estimators in this package have all been subject to
-testing, see the `tests` folder for details.
+testing, see the `tests` folder for details. 
 
 ## Documentation
 For an overview of the package and its features see the 
 [overview vignette](https://univariateml.netlify.com/articles/overview.html). 
-For a list of implemented densities see the start of the [details vignette](https://univariateml.netlify.com/articles/distributions.html). 
 For an illustration of how this package can make an otherwise long and 
 laborious process much simpler, see the [copula vignette](https://univariateml.netlify.com/articles/copula.html).
 
