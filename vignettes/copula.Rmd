@@ -1,6 +1,7 @@
 ---
 title: "Copula Modeling"
 output: rmarkdown::html_vignette
+bibliography: copula.bib
 vignette: >
   %\VignetteIndexEntry{Copula Modeling}
   %\VignetteEngine{knitr::rmarkdown}
@@ -17,10 +18,10 @@ one-dimensional distributions. If both the marginal distributions and the copula
 is known, the entire multivariate distribution is known too.
 
 Suppose we look at a multivariate distribution as the pair of a copula and its marginals.
-Then a natural model selection using is to
+Then a natural model selection method is to 
 
-1.) select the marginal distributions using the [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion);
-2.) select a copula using the marginal data transformed to the unit interval, again using the AIC.
+1. Select the marginal distributions using the [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion).
+2. Select a copula using the marginal data transformed to the unit interval, again using the AIC.
 
 This two-step procedure is commonly used due to its simplicity. The procedure must 
 be carried out this order since the marginal data cannot be transformed to the
@@ -64,7 +65,6 @@ Optionally, we can use all implemented models with
 ```{r, all_models}
 univariateML_models
 ```
-
 
 The next step is to fit all models, compute the AIC, and select the best model.
 This is exactly what `model_select()` does.
