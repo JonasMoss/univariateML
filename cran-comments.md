@@ -10,7 +10,13 @@
 * macOS 10.13.6 (on Travis-CI), R version R 4.0.2
 
 ## R CMD check results
-There were no ERRORs, WARNINGs or NOTEs. 
+There were no ERRORs or WARNINGs. 
+
+NOTEs: Some platforms claim 
+"Namespaces in Imports field not imported from:
+  ‘extraDistr’ ‘logitnorm’ ‘nakagami’ ‘tibble’
+  All declared Imports should be used."
+These are false alarms. All imported packages are used.
 
 ## Downstream dependencies
 There are no downstream dependencies.

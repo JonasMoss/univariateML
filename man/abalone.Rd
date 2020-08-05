@@ -21,7 +21,7 @@ A \link[tibble:tibble]{tibble} with 4,177 observations and 9 variables:
 }
 \source{
 Dua, D. and Graff, C. (2019). UCI Machine Learning Repository
-\url{http://archive.ics.uci.edu/ml}. Irvine, CA: University of California,
+\url{https://archive.ics.uci.edu/ml/}. Irvine, CA: University of California,
 School of Information and Computer Science.
 }
 \usage{
