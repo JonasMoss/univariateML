@@ -4,8 +4,13 @@
 \alias{bootstrapml}
 \title{Parametric Bootstrap on Distributions Fitted with Maximum Likelihood}
 \usage{
-bootstrapml(object, reps = 1000, map = identity,
-  reducer = stats::quantile, ...)
+bootstrapml(
+  object,
+  reps = 1000,
+  map = identity,
+  reducer = stats::quantile,
+  ...
+)
 }
 \arguments{
 \item{object}{A \code{univariateML} object.}
@@ -31,14 +36,14 @@ object \code{object}.
 }
 \details{
 For each bootstrap iteration a maximum likelihood estimate is calculated
-using the \code{ml***} function specified by \code{object}. The resulting
+using the \verb{ml***} function specified by \code{object}. The resulting
 numeric vector is then passed to \code{map}. The values returned by
 \code{map} is collected in an array and the \code{reducer} is called on
 each row of the array.
 
 By default the \code{map} function is the identity and the default
 \code{reducer} is the quantile function taking the argument \code{probs},
-which defaults to \code{c(0.025, 0.975)}. This corresponds to a 95\%
+which defaults to \code{c(0.025, 0.975)}. This corresponds to a 95\\%
 basic percentile confidence interval and is also reported by
 \code{\link[=confint]{confint()}}
 

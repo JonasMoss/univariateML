@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlsstd.R
 \name{mlsstd}
 \alias{mlsstd}
-\title{Skew Student-t distribution maximum likelihood estimation}
+\title{Skew Student t-distribution maximum likelihood estimation}
 \usage{
 mlsstd(x, na.rm = FALSE, ...)
 }
@@ -25,11 +25,11 @@ the parameters \code{mean}, \code{sd}, \code{nu}, \code{xi} and the following at
 \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
-Joint maximum likelihood estimation as implemented by \link[fGarch:sstdFit]{fGarch::sstdFit}.
+Joint maximum likelihood estimation as implemented by \link[fGarch:dist-sstdFit]{fGarch::sstdFit}.
 }
 \details{
-For the density function of the Student t distribution see
-\link[fGarch:sstd]{dsstd}.
+For the density function of the skew Student t-distribution see
+\link[fGarch:dist-sstd]{sstd}.
 }
 \examples{
 mlsstd(precip)
@@ -39,5 +39,5 @@ Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
 Tails and Skewness, Preprint.
 }
 \seealso{
-\link[fGarch:sstd]{dsstd} for the Skew Student-t density.
+\link[fGarch:dist-sstd]{sstd} for the Skew Student t-density.
 }

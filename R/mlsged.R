@@ -2,8 +2,8 @@
 #'
 #' Joint maximum likelihood estimation as implemented by [fGarch::sgedFit].
 #'
-#' For the density function of the Student t distribution see
-#' [dsged][fGarch::sged].
+#' For the density function of the Student t-distribution see
+#' [sged][fGarch::sged].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
@@ -11,14 +11,15 @@
 #' @return `mlsged` returns an object of [class][base::class] `univariateML`.
 #'   This is a named numeric vector with maximum likelihood estimates for the
 #'   parameters `mean`, `sd`, `nu`, `xi`, and the following attributes:
-#'   \item{`model`}{The name of the model.} \item{`density`}{The density
-#'   associated with the estimates.} \item{`logLik`}{The loglikelihood at the
-#'   maximum.} \item{`support`}{The support of the density.} \item{`n`}{The
-#'   number of observations.} \item{`call`}{The call as captured my
-#'   `match.call`}
+#'   \item{`model`}{The name of the model.}
+#'   \item{`density`}{The density associated with the estimates.}
+#'   \item{`logLik`}{The loglikelihood at the maximum.}
+#'   \item{`support`}{The support of the density.}
+#'   \item{`n`}{The number of observations.}
+#'   \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mlsged(precip)
-#' @seealso [dsged][fGarch::sged] for the Student-t density.
+#' @seealso [sged][fGarch::sged] for the Student t-density.
 #' @references Nelson D.B. (1991); Conditional Heteroscedasticity in Asset
 #'   Returns: A New Approach, Econometrica, 59, 347–370.
 #'

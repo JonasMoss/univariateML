@@ -18,7 +18,8 @@ model_select(
 \item{models}{a character vector containing the distribution models to
 select from; see \code{print(univariateML_models)}.}
 
-\item{criterion}{the model selection criterion.}
+\item{criterion}{the model selection criterion. Must be one of \code{"aic"},
+\code{"bic"}, and \code{"loglik"}.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 

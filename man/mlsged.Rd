@@ -17,18 +17,19 @@ mlsged(x, na.rm = FALSE, ...)
 \code{mlsged} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for the
 parameters \code{mean}, \code{sd}, \code{nu}, \code{xi}, and the following attributes:
-\item{\code{model}}{The name of the model.} \item{\code{density}}{The density
-associated with the estimates.} \item{\code{logLik}}{The loglikelihood at the
-maximum.} \item{\code{support}}{The support of the density.} \item{\code{n}}{The
-number of observations.} \item{\code{call}}{The call as captured my
-\code{match.call}}
+\item{\code{model}}{The name of the model.}
+\item{\code{density}}{The density associated with the estimates.}
+\item{\code{logLik}}{The loglikelihood at the maximum.}
+\item{\code{support}}{The support of the density.}
+\item{\code{n}}{The number of observations.}
+\item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
-Joint maximum likelihood estimation as implemented by \link[fGarch:sgedFit]{fGarch::sgedFit}.
+Joint maximum likelihood estimation as implemented by \link[fGarch:dist-sgedFit]{fGarch::sgedFit}.
 }
 \details{
-For the density function of the Student t distribution see
-\link[fGarch:sged]{dsged}.
+For the density function of the Student t-distribution see
+\link[fGarch:dist-sged]{sged}.
 }
 \examples{
 mlsged(precip)
@@ -41,5 +42,5 @@ Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat Tails and
 Skewness, Preprint.
 }
 \seealso{
-\link[fGarch:sged]{dsged} for the Student-t density.
+\link[fGarch:dist-sged]{sged} for the Student t-density.
 }

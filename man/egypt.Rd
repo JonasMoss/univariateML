@@ -4,11 +4,13 @@
 \name{egypt}
 \alias{egypt}
 \title{Mortality data from ancient Egypt}
-\format{A \link[tibble:tibble]{tibble} with 141 observations and 2 variables:
+\format{
+A \link[tibble:tibble]{tibble} with 141 observations and 2 variables:
 \describe{
 \item{age}{Age at death.}
 \item{sex}{Sex of deceased; 82 males and 49 females.}
-}}
+}
+}
 \usage{
 egypt
 }

@@ -18,8 +18,7 @@ ppmlpoints(y, obj, plot.it = TRUE, datax = TRUE, ...)
 
 qqmlplot(y, obj, plot.it = TRUE, datax = FALSE, ...)
 
-qqmlline(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
-  ...)
+qqmlline(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7, ...)
 
 qqmlpoints(y, obj, plot.it = TRUE, datax = TRUE, ...)
 }

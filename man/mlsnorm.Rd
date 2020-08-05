@@ -25,11 +25,11 @@ the parameters \code{mean}, \code{sd}, \code{xi} and the following attributes:
 \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
-Joint maximum likelihood estimation as implemented by \link[fGarch:snormFit]{fGarch::snormFit}.
+Joint maximum likelihood estimation as implemented by \link[fGarch:dist-snormFit]{fGarch::snormFit}.
 }
 \details{
 For the density function of the Student t distribution see
-\link[fGarch:snorm]{dsnorm}.
+\link[fGarch:dist-snorm]{dsnorm}.
 }
 \examples{
 mlsnorm(precip)
@@ -39,5 +39,5 @@ Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
 Tails and Skewness, Preprint.
 }
 \seealso{
-\link[fGarch:snorm]{dsnorm} for the Student-t density.
+\link[fGarch:dist-snorm]{dsnorm} for the Student-t density.
 }

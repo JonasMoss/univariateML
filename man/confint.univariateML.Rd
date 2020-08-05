@@ -4,8 +4,7 @@
 \alias{confint.univariateML}
 \title{Confidence Intervals for Maximum Likelihood Estimates}
 \usage{
-\method{confint}{univariateML}(object, parm = NULL, level = 0.95,
-  Nreps = 1000, ...)
+\method{confint}{univariateML}(object, parm = NULL, level = 0.95, Nreps = 1000, ...)
 }
 \arguments{
 \item{object}{An object of class \code{univariateML}.}

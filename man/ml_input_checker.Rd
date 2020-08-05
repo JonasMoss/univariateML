@@ -7,7 +7,7 @@
 ml_input_checker(x)
 }
 \arguments{
-\item{x}{input to a \code{ML***} function.}
+\item{x}{input to a \verb{ML***} function.}
 }
 \value{
 \code{NULL}

@@ -1,9 +1,9 @@
-#' Skew Student-t distribution maximum likelihood estimation
+#' Skew Student t-distribution maximum likelihood estimation
 #'
 #' Joint maximum likelihood estimation as implemented by [fGarch::sstdFit].
 #'
-#' For the density function of the Student t distribution see
-#' [dsstd][fGarch::sstd].
+#' For the density function of the skew Student t-distribution see
+#' [sstd][fGarch::sstd].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
@@ -19,7 +19,7 @@
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mlsstd(precip)
-#' @seealso [dsstd][fGarch::sstd] for the Skew Student-t density.
+#' @seealso [sstd][fGarch::sstd] for the Skew Student t-density.
 #' @references Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
 #'     Tails and Skewness, Preprint.
 #' @export

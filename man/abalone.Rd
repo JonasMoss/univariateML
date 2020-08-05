@@ -4,7 +4,8 @@
 \name{abalone}
 \alias{abalone}
 \title{Abalone data}
-\format{A \link[tibble:tibble]{tibble} with 4,177 observations and 9 variables:
+\format{
+A \link[tibble:tibble]{tibble} with 4,177 observations and 9 variables:
 \describe{
 \item{sex}{Sex of the abalone, \code{F} is female, \code{M} male, and
 \code{I} infant.}
@@ -16,7 +17,8 @@
 \item{viscera_weight}{Grams gut weight (after bleeding).}
 \item{shell_weight}{Grams after being dried.}
 \item{rings}{+1.5 gives the age in years.}
-}}
+}
+}
 \source{
 Dua, D. and Graff, C. (2019). UCI Machine Learning Repository
 \url{http://archive.ics.uci.edu/ml}. Irvine, CA: University of California,

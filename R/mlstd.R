@@ -2,8 +2,8 @@
 #'
 #' Joint maximum likelihood estimation as implemented by [fGarch::stdFit].
 #'
-#' For the density function of the Student t distribution see
-#' [dstd][fGarch::std].
+#' For the density function of the Student t-distribution see
+#' [std][fGarch::std].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
@@ -19,7 +19,7 @@
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mlstd(precip)
-#' @seealso [dstd][fGarch::std] for the Student-t density.
+#' @seealso [std][fGarch::std] for the Student-t density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export

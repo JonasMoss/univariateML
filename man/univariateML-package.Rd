@@ -36,6 +36,6 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jonas Moss \email{jonas.gjertsen@gmail.com} (0000-0002-6876-6964)
+\strong{Maintainer}: Jonas Moss \email{jonas.gjertsen@gmail.com} (\href{https://orcid.org/0000-0002-6876-6964}{ORCID})
 
 }

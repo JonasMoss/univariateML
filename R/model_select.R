@@ -5,7 +5,8 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param models a character vector containing the distribution models to
 #'   select from; see `print(univariateML_models)`.
-#' @param criterion the model selection criterion.
+#' @param criterion the model selection criterion. Must be one of `"aic"`,
+#'   `"bic"`, and `"loglik"`.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... unused.
 #' @return `model_select` returns an object of [class][base::class]

@@ -25,11 +25,11 @@ the parameters \code{mean}, \code{sd}, \code{nu} and the following attributes:
 \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
-Joint maximum likelihood estimation as implemented by \link[fGarch:stdFit]{fGarch::stdFit}.
+Joint maximum likelihood estimation as implemented by \link[fGarch:dist-stdFit]{fGarch::stdFit}.
 }
 \details{
-For the density function of the Student t distribution see
-\link[fGarch:std]{dstd}.
+For the density function of the Student t-distribution see
+\link[fGarch:dist-std]{std}.
 }
 \examples{
 mlstd(precip)
@@ -39,5 +39,5 @@ Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 }
 \seealso{
-\link[fGarch:std]{dstd} for the Student-t density.
+\link[fGarch:dist-std]{std} for the Student-t density.
 }
