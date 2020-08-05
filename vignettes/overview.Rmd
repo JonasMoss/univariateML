@@ -79,6 +79,14 @@ mlweibull(egypt$age)
 summary(mlweibull(egypt$age))
 ```
 
+## Automatically select the best model
+
+The model selection process can be automatized with `model_select(egypt$age)`:
+```{r model_select}
+model_select(egypt$age, models = c("gamma", "weibull"))
+```
+
+
 ## Quantile-quantile Plots
 Now we will investigate how the two models differ with [quantile-quantile plots](https://en.wikipedia.org/wiki/Q-Q_plot), or Q-Q plots for short.
 

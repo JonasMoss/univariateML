@@ -5,7 +5,7 @@ vignette: >
   %\VignetteIndexEntry{Copula Modeling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: copula.bib
+  bibliography: copula.bib
 ---
 
 This vignette shows how to model multivariate distributions with 
@@ -37,56 +37,40 @@ library("univariateML")
 head(abalone)
 ```
 
-Following @ko2019focused we will take a look at four measurements of the abalones, namely `diameter`, `height`, `shell_weight` and `age`. The variable `age` is not present in the `abalone` data, but is defined as `age = rings + 1.5`. Moreover, there are two outliers in the `height` data at at $1.13$ and $0.52$. We will remove these outliers.
+Following @ko2019focused we will take a look at four measurements of the abalones, 
+namely `diameter`, `height`, `shell_weight` and `age`. The variable `age` is not 
+present in the `abalone` data, but is defined as `age = rings + 1.5`. Moreover, 
+there are two outliers in the `height` data at at $1.13$ and $0.52$. We will 
+remove these outliers and all columns we don't need in the following.
 
 ```{r, make_data, fig.width = 6, fig.height = 5} 
 
 data = dplyr::filter(abalone, height < 0.5)
 data$age = data$rings + 1.5
-hist(data$height, main =" Abalone height", xlab = "Height in mm")
-
+data = data[c("diameter", "height", "shell_weight", "age")]
+hist(data$height, main = "Abalone height", xlab = "Height in mm")
 ```
 
 Let's continue doing step 1. First we must decide on a set of models to try out.
 ```{r, models}
-models = c("mlgumbel", "mllaplace", "mllogis", "mlnorm", "mlexp", "mlgamma", 
-             "mlinvgamma", "mlinvgauss", "mlinvweibull", "mlllogis", "mllnorm", 
-             "mlrayleigh", "mlweibull", "mllgamma", "mlpareto", "mlbeta", "mlkumar",
-             "mllogitnorm")
+models = c("gumbel", "laplace", "logis", "norm", "exp", "gamma", 
+           "invgamma", "invgauss", "invweibull", "llogis", "lnorm", 
+           "rayleigh", "weibull", "lgamma", "pareto", "beta", "kumar",
+           "logitnorm")
 length(models)
 ```
 
-
-The nest step is to define a function that calculates the AIC for all our candidate models
-over every margin.
-
-```{r, AICs}
-#' Calculate AICs for a column 
-#' @param variable The variable to calculate AICs for.
-#' @return A named vector of AICs.
-
-AICs = function(variable) {
-  x = data[[variable]]
-  FUN = function(name, x = NULL) tryCatch(expr = eval(call(name, x)), 
-                                                 error = function(e) NULL)
-  fits = Filter(Negate(is.null), sapply(X = models, FUN = FUN, x = x))
-  sort(sapply(fits, AIC))
-}
-
+Optionally, we can use all implemented models with
+```{r, all_models}
+univariateML_models
 ```
 
-This function returns a vector of AICs for each model where `ml***` didn't fail.
-When it fails it is since the support of the data doesn't not match the density, 
-for instance when `-1` is fed to the exponential density.
 
-```{r, full_call_diamter}
-AICs("age")
-```
+The next step is to fit all models, compute the AIC, and select the best model.
+This is exactly what `model_select()` does.
 
-But we are most interested in the models with smallest AICs.
-```{r, partial_call}
-sapply(X = c("diameter", "height", "shell_weight", "age"), 
-       FUN = function(x) names(AICs(x))[1])
+```{r, margin_select}
+margin_fits <- lapply(data, model_select, models = models, criterion = "aic")
 ```
 
 Now we use the `fitCopula` from the package `copula` on the transformed margins of `abalone`.
@@ -99,11 +83,7 @@ are the Joe copula, the Clayton copula, and the Gumbel copula.
 ```{r, AIC_copula, warning = FALSE, cache = TRUE}
 
 # Transform the marginals to the unit interval.
-y = as.matrix(dplyr::transmute(data, 
-                     diameter = pml(diameter, mlkumar(diameter)),
-                     height = pml(height, mlnorm(height)),
-                     shell_weight = pml(shell_weight, mlweibull(shell_weight)),
-                     age = pml(age, mllnorm(rings))))
+y = sapply(seq_along(data), function(j) pml(data[[j]], margin_fits[[j]]))
 
 # The copulas described above.
 copulas = list(normal = copula::normalCopula(dim = 4, dispstr = "un"),
