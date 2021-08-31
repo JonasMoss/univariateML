@@ -16,12 +16,12 @@ obj_2 <- mlllogis(tiny_data)
 
 expect_equal(
   unname(obj_1[1]),
-  unname(log(obj_2)[1])
+  unname(-log(obj_2)[2])
 )
 
 expect_equal(
   unname(obj_1[2]),
-  unname(1 / (obj_2)[2])
+  unname(1 / obj_2[1])
 )
 
 ## Checks that na.rm works as intended.
