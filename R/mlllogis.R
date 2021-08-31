@@ -1,6 +1,6 @@
 #' Log-logistic distribution maximum likelihood estimation
 #'
-#' The maximum likelihood estimate of `shape` and `rate` are calculated
+#' The maximum likelihood estimate of `shape` and `scale` are calculated
 #'    by transforming the data back to the logistic model and applying
 #'    [`mllogis`][mllogis].
 #'
@@ -12,7 +12,7 @@
 #' @param ... passed to [`mllogis`][mllogis].
 #' @return `mlllogis` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
-#'    `shape` and `rate` and the following attributes:
+#'    `shape` and `scale` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -41,9 +41,9 @@ mlllogis <- function(x, na.rm = FALSE, ...) {
 
   object <- mllogis(y)
   class(object) <- "univariateML"
-  names(object) <- c("shape", "rate")
-  object[1] <- exp(object[1])
-  object[2] <- 1 / object[2]
+  names(object) <- c("shape", "scale")
+  object[1] <- 1 / object[2]
+  object[2] <- exp(object[1])
 
   attr(object, "model") <- "Loglogistic"
   attr(object, "density") <- "actuar::dllogis"
