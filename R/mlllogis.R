@@ -48,6 +48,7 @@ mlllogis <- function(x, na.rm = FALSE, ...) {
 
   attr(object, "model") <- "Loglogistic"
   attr(object, "density") <- "actuar::dllogis"
+  attr(object, "n") <- length(x)
   attr(object, "logLik") <-
     sum(actuar::dllogis(x, object[1], object[2], log = TRUE))
   attr(object, "support") <- c(0, Inf)
