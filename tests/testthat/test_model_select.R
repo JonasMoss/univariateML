@@ -26,8 +26,16 @@ est <- mlnorm(small_data)
 attr(est, "call") <- str2lang("f(x = x, na.rm = na.rm)")
 expect_equal(
   est,
-  model_select(small_data, models = c("norm", "cauchy"), criterion = "loglik"),
-  model_select(small_data, models = c("norm", "cauchy"), criterion = "aic"),
+  model_select(small_data, models = c("norm", "cauchy"), criterion = "loglik")
+)
+
+expect_equal(
+  est,
+  model_select(small_data, models = c("norm", "cauchy"), criterion = "aic")
+)
+
+expect_equal(
+  est,
   model_select(small_data, models = c("norm", "cauchy"), criterion = "bic")
 )
 
