@@ -3,17 +3,12 @@
 
 # univariateML <img src="man/figures/logo.png" align="right" width="100" height="70" />
 
-[![Build
-Status](https://travis-ci.org/JonasMoss/univariateML.svg?branch=master)](https://travis-ci.org/JonasMoss/univariateML)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/JonasMoss/univariateML?branch=master&svg=true)](https://ci.appveyor.com/project/JonasMoss/univariateML)
-[![Coverage
-Status](https://codecov.io/gh/JonasMoss/univariateML/branch/master/graph/badge.svg)](https://codecov.io/gh/JonasMoss/univariateML?branch=master)
+[![R-CMD-check](https://github.com/JonasMoss/univariateML/workflows/R-CMD-check/badge.svg)](https://github.com/JonasMoss/univariateML/actions)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.01863/status.svg)](https://doi.org/10.21105/joss.01863)
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/univariateML)](https://cran.r-project.org/package=univariateML)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/univariateML)](https://cran.r-project.org/package=univariateML)
 
 ## Overview
 
@@ -68,7 +63,7 @@ lines(mlweibull(egypt$age))
 ## Supported densities
 
 | Name                                | univariateML function | Package    |
-| ----------------------------------- | --------------------- | ---------- |
+|-------------------------------------|-----------------------|------------|
 | Cauchy distribution                 | `mlcauchy`            | stats      |
 | Gumbel distribution                 | `mlgumbel`            | extraDistr |
 | Laplace distribution                | `mllaplace`           | extraDistr |
@@ -115,9 +110,9 @@ microbenchmark::microbenchmark(
   univariateML = univariateML::mlbeta(x),
   naive = nlm(function(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1)))
 #> Unit: microseconds
-#>          expr     min       lq      mean  median      uq     max neval
-#>  univariateML   289.7   345.10   412.137   392.5   452.3  1224.4   100
-#>         naive 11414.1 11703.25 12143.335 11883.6 12179.4 28018.6   100
+#>          expr     min       lq      mean   median       uq     max neval
+#>  univariateML   259.2   348.75   557.959   447.05   536.40  5103.5   100
+#>         naive 15349.1 15978.35 16955.165 16365.45 17082.25 48941.4   100
 ```
 
 The maximum likelihood estimators in this package have all been subject

@@ -26,3 +26,4 @@ cache$
 ^LICENSE\.md$
 ^CONTRIBUTING.md$
 ^README_cache$
+^\.github$
