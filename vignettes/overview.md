@@ -197,8 +197,8 @@ bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
 
 ```
 ##            2.5%     97.5%
-## shape  1.250854  1.625907
-## scale 29.449353 37.808082
+## shape  1.256207  1.603411
+## scale 29.679244 37.930756
 ```
 
 ```r
@@ -207,8 +207,8 @@ bootstrapml(mlgamma(egypt$age))
 
 ```
 ##             2.5%      97.5%
-## shape 1.33644654 2.00570892
-## rate  0.04192819 0.06874457
+## shape 1.31768253 2.05486827
+## rate  0.04181084 0.07000275
 ```
 
 These confidence intervals are not directly comparable. That is, the `scale` parameter in
@@ -233,7 +233,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.56746 33.62809
+## 27.71850 33.63068
 ```
 
 ```r
@@ -245,7 +245,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 27.56208 34.03641
+## 27.51567 34.14295
 ```
 
 We are be interested in the quantiles of the underlying distribution,
@@ -261,7 +261,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ```
 ##       5%      95% 
-## 23.13011 28.75253
+## 22.97247 28.87069
 ```
 
 ```r
@@ -272,7 +272,7 @@ bootstrapml(mlgamma(egypt$age),
 
 ```
 ##       5%      95% 
-## 22.07217 27.93177
+## 21.88226 27.64080
 ```
 
 We can also plot the bootstrap samples.
