@@ -42,3 +42,4 @@ vignettes/*.R
 docs/
 README_cache/
 CRAN-RELEASE
+docs
