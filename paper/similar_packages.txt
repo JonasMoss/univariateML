@@ -1,1 +1,0 @@
-`mle` of `stats4`, included in base R.
