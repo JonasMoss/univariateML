@@ -27,7 +27,8 @@ Suggests:
     rmarkdown,
     markdown,
     copula,
-    dplyr
+    dplyr,
+    covr
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 URL: https://github.com/JonasMoss/univariateML

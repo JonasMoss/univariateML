@@ -4,6 +4,8 @@
 # univariateML <img src="man/figures/logo.png" align="right" width="100" height="70" />
 
 [![R-CMD-check](https://github.com/JonasMoss/univariateML/workflows/R-CMD-check/badge.svg)](https://github.com/JonasMoss/univariateML/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/JonasMoss/univariateML/branch/master/graph/badge.svg)](https://app.codecov.io/gh/JonasMoss/univariateML?branch=master)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
