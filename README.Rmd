@@ -27,9 +27,9 @@ set.seed(313)
 ```
 
 ## Overview
-[`univariateML`](https://univariateml.netlify.com/index.html) is an `R`-package for
+[`univariateML`](https://univariateml.netlify.app/index.html) is an `R`-package for
 user-friendly maximum likelihood estimation of a
-[selection](https://univariateml.netlify.com/articles/distributions.html) of parametric univariate densities. In addition to basic estimation capabilities,
+[selection](https://univariateml.netlify.app/articles/distributions.html) of parametric univariate densities. In addition to basic estimation capabilities,
 this package support visualization through `plot` and `qqmlplot`, model selection
 by `AIC` and `BIC`, confidence sets through the parametric bootstrap with
 `bootstrapml`, and convenience functions such as the density, distribution 
@@ -123,9 +123,9 @@ testing, see the `tests` folder for details.
 
 ## Documentation
 For an overview of the package and its features see the 
-[overview vignette](https://univariateml.netlify.com/articles/overview.html). 
+[overview vignette](https://univariateml.netlify.app/articles/overview.html). 
 For an illustration of how this package can make an otherwise long and 
-laborious process much simpler, see the [copula vignette](https://univariateml.netlify.com/articles/copula.html).
+laborious process much simpler, see the [copula vignette](https://univariateml.netlify.app/articles/copula.html).
 
 ## How to Contribute or Get Help
 
