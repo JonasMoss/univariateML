@@ -39,7 +39,6 @@
 #'   from = 0, to = 20,
 #'   main = "Logarithm of Density", ylab = NA, lwd = 2
 #' )
-#'
 #' @name MaximumLikelihoodDistribution
 #' @export
 dml <- function(x, obj, log = FALSE) {

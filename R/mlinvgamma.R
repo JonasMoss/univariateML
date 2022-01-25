@@ -43,7 +43,7 @@ mlinvgamma <- function(x, na.rm = FALSE, ...) {
   attr(object, "density") <- "extraDistr::dinvgamma"
   attr(object, "logLik") <-
     unname(length(x) * (alpha * log(beta) - log(gamma(alpha)) +
-      - (alpha + 1) * L - beta * M))
+      -(alpha + 1) * L - beta * M))
   attr(object, "support") <- c(0, Inf)
   attr(object, "n") <- length(x)
   attr(object, "call") <- match.call()

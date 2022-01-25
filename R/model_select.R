@@ -28,8 +28,8 @@
 #' @export
 
 model_select <- function(x, models = univariateML_models,
-                     criterion = c("aic", "bic", "loglik"),
-                     na.rm = FALSE, ...) {
+                         criterion = c("aic", "bic", "loglik"),
+                         na.rm = FALSE, ...) {
   check_models(models)
   criterion <- match.arg(criterion)
 
@@ -40,14 +40,13 @@ model_select <- function(x, models = univariateML_models,
   error_inds <- sapply(fits, function(fit) inherits(fit, "try-error"))
   if (all(error_inds)) {
     error_msgs <- sapply(fits[error_inds], as.character)
-    details <- paste0("(", names(error_msgs), ") ",  error_msgs)
+    details <- paste0("(", names(error_msgs), ") ", error_msgs)
     stop("couldn't fit any model.\n", details)
   }
 
   ## select best model
   fits <- fits[!error_inds]
-  crits <- switch(
-    criterion,
+  crits <- switch(criterion,
     "loglik" = -sapply(fits, stats::logLik),
     "aic"    = sapply(fits, stats::AIC),
     "bic"    = sapply(fits, stats::BIC)
@@ -67,7 +66,8 @@ check_models <- function(models) {
   if (any(!is_implemented)) {
     stop(
       "The following families are not implemented: ",
-         paste0(models[!is_implemented], collapse = ", "),
-         ".\n See `print(univariateML_models)` for allowed values.")
+      paste0(models[!is_implemented], collapse = ", "),
+      ".\n See `print(univariateML_models)` for allowed values."
+    )
   }
 }

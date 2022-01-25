@@ -14,10 +14,10 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 
 ## Overview
 
-[`univariateML`](https://jonasmoss.github.io/index.html) is an
-`R`-package for user-friendly maximum likelihood estimation of a
-[selection](https://jonasmoss.github.io/articles/distributions.html) of
-parametric univariate densities. In addition to basic estimation
+[`univariateML`](https://jonasmoss.github.io/univariateML/index.html) is
+an `R`-package for user-friendly maximum likelihood estimation of a
+[selection](https://jonasmoss.github.io/univariateML/articles/distributions.html)
+of parametric univariate densities. In addition to basic estimation
 capabilities, this package support visualization through `plot` and
 `qqmlplot`, model selection by `AIC` and `BIC`, confidence sets through
 the parametric bootstrap with `bootstrapml`, and convenience functions
@@ -123,10 +123,10 @@ to testing, see the `tests` folder for details.
 ## Documentation
 
 For an overview of the package and its features see the [overview
-vignette](https://jonasmoss.github.io/articles/overview.html). For an
-illustration of how this package can make an otherwise long and
+vignette](https://jonasmoss.github.io/univariateML/articles/overview.html).
+For an illustration of how this package can make an otherwise long and
 laborious process much simpler, see the [copula
-vignette](https://jonasmoss.github.io/articles/copula.html).
+vignette](https://jonasmoss.github.io/univariateML/articles/copula.html).
 
 ## How to Contribute or Get Help
 

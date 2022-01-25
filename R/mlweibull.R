@@ -75,7 +75,7 @@ mlweibull <- function(x, na.rm = FALSE, ...) {
   }
 
   ## Given the shape, the scale is easy to compute.
-  scale <- (mean(x^shape)) ^ (1 / shape)
+  scale <- (mean(x^shape))^(1 / shape)
   shape_sum <- mean(x^shape)
   n <- length(x)
   object <- c(shape = shape, scale = scale)

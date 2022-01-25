@@ -31,6 +31,6 @@ Suggests:
     covr
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
-URL: https://github.com/JonasMoss/univariateML
+URL: https://github.com/JonasMoss/univariateML, https://jonasmoss.github.io/univariateML/
 BugReports: https://github.com/JonasMoss/univariateML/issues
 Roxygen: list(markdown = TRUE)

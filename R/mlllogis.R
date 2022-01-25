@@ -41,8 +41,8 @@ mlllogis <- function(x, na.rm = FALSE, ...) {
 
   object <- mllogis(y)
   object[1] <- exp(-object[1])
-  object[2] <- 1/object[2]
-  object = rev(object)
+  object[2] <- 1 / object[2]
+  object <- rev(object)
   class(object) <- "univariateML"
   names(object) <- c("shape", "rate")
 

@@ -80,7 +80,7 @@ mlgumbel <- function(x, na.rm = FALSE, ...) {
 
   ## Given the sigma, the mu is easy to compute.
   mu <- -sigma * log(mean(exp(-x / sigma)))
-  S <- mean(exp(- (x - mu) / sigma))
+  S <- mean(exp(-(x - mu) / sigma))
 
 
   object <- c(mu = mu, sigma = sigma)

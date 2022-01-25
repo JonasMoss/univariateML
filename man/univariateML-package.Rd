@@ -30,6 +30,7 @@ Read the vignettes to learn more about univariateML:
 Useful links:
 \itemize{
   \item \url{https://github.com/JonasMoss/univariateML}
+  \item \url{https://jonasmoss.github.io/univariateML/}
   \item Report bugs at \url{https://github.com/JonasMoss/univariateML/issues}
 }
 

@@ -96,9 +96,7 @@ qqmlline <- function(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
   if (datax) {
     slope <- diff(x) / diff(y)
     int <- x[1L] - slope * y[1L]
-  }
-
-  else {
+  } else {
     slope <- diff(y) / diff(x)
     int <- y[1L] - slope * x[1L]
   }

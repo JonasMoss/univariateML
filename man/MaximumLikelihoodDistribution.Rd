@@ -66,5 +66,4 @@ plot(function(x) dml(x, obj, log = TRUE),
   from = 0, to = 20,
   main = "Logarithm of Density", ylab = NA, lwd = 2
 )
-
 }
