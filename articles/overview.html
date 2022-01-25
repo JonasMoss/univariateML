@@ -210,13 +210,13 @@
 <code class="sourceCode R"><span class="co"># Calculate two-sided 95% confidence intervals for the two Gumbel parameters.</span>
 <span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span> <span class="co"># same as confint(mlweibull(egypt$age))</span></code></pre></div>
 <pre><code><span class="co">##            2.5%     97.5%</span>
-<span class="co">## shape  1.245265  1.633578</span>
-<span class="co">## scale 29.637221 37.966963</span></code></pre>
+<span class="co">## shape  1.260186  1.630788</span>
+<span class="co">## scale 29.476207 37.397979</span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##             2.5%      97.5%</span>
-<span class="co">## shape 1.32063094 2.04494582</span>
-<span class="co">## rate  0.04175345 0.06965108</span></code></pre>
+<pre><code><span class="co">##            2.5%      97.5%</span>
+<span class="co">## shape 1.2962684 2.02818055</span>
+<span class="co">## rate  0.0412794 0.06764184</span></code></pre>
 <p>These confidence intervals are not directly comparable. That is, the <code>scale</code> parameter in the Weibull model is not directly comparable to the <code>rate</code> parameter in the gamma model. So let us take a look at a a parameter with a familiar interpretation, namely the mean.</p>
 <p>The mean of the Weibull distribution with parameters <code>shape</code> and <code>scale</code> is <code>scale*gamma(1 + 1/shape)</code>. On the other hand, the mean of the Gamma distribution with parameters <code>shape</code> and <code>rate</code> is <code>shape/rate</code>.</p>
 <p>The <code>probs</code> argument can be used to modify the limits of confidence interval. Now we will calculate two 90% confidence intervals for the mean.</p>
@@ -226,14 +226,14 @@
             map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">gamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span><span class="op">/</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, 
             probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##       5%      95% </span>
-<span class="co">## 27.60487 33.71763</span></code></pre>
+<span class="co">## 27.72862 33.47433</span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate two-sided 90% confidence intervals for the mean of a Gamma.</span>
 <span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>, 
             map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">/</span><span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,
             probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##       5%      95% </span>
-<span class="co">## 27.58473 34.00721</span></code></pre>
+<span class="co">## 27.32948 34.34186</span></code></pre>
 <p>We are be interested in the quantiles of the underlying distribution, for instance the median:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate two-sided 90% confidence intervals for the two Gumbel parameters.</span>
@@ -241,13 +241,13 @@
             map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">qweibull</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, 
             probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##       5%      95% </span>
-<span class="co">## 23.10312 28.84421</span></code></pre>
+<span class="co">## 23.13221 28.89143</span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>, 
             map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">qgamma</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, 
             probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##       5%      95% </span>
-<span class="co">## 21.77007 27.63784</span></code></pre>
+<span class="co">## 21.98916 27.63861</span></code></pre>
 <p>We can also plot the bootstrap samples.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>, 
