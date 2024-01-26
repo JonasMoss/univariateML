@@ -1,7 +1,7 @@
 Package: univariateML
 Type: Package
 Title: Maximum Likelihood Estimation for Univariate Densities
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: c(
     person("Jonas", "Moss", , "jonas.gjertsen@gmail.com", role = c("aut", "cre"), 
       comment = c(ORCID = "0000-0002-6876-6964")),
@@ -29,7 +29,7 @@ Suggests:
     copula,
     dplyr,
     covr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.0
 VignetteBuilder: knitr
 URL: https://github.com/JonasMoss/univariateML, https://jonasmoss.github.io/univariateML/
 BugReports: https://github.com/JonasMoss/univariateML/issues

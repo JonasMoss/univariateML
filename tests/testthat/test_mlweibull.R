@@ -40,3 +40,13 @@ expect_equal(
 ## Check class.
 expect_equal(attr(est, "model"), "Weibull")
 expect_equal(class(est), "univariateML")
+
+
+## Check support.
+expect_equal(class(attr(est, "support")), "numeric")
+
+
+## Check support.
+expect_equal(class(attr(est, "support")), "numeric")
+
+

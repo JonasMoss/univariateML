@@ -32,3 +32,9 @@ expect_equal(class(est), "univariateML")
 
 # Check names.
 expect_equal(names(est), c("shape", "rate"))
+
+
+## Check support.
+expect_equal(class(attr(est, "support")), "numeric")
+
+

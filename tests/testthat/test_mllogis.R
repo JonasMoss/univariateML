@@ -88,3 +88,9 @@ expect_equal(
 est <- mllogis(small_data, na.rm = TRUE)
 expect_equal(attr(est, "model"), "Logistic")
 expect_equal(class(est), "univariateML")
+
+
+## Check support.
+expect_equal(class(attr(est, "support")), "numeric")
+
+

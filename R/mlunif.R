@@ -37,7 +37,7 @@ mlunif <- function(x, na.rm = FALSE, ...) {
   attr(object, "model") <- "Uniform"
   attr(object, "density") <- "stats::dunif"
   attr(object, "logLik") <- -n * log(max_ - min_)
-  attr(object, "support") <- c(min, max)
+  attr(object, "support") <- c(min_, max_)
   attr(object, "n") <- length(x)
   attr(object, "call") <- match.call()
   object
