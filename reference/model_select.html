@@ -78,7 +78,7 @@ select from; see <code>print(univariateML_models)</code>.</p></dd>
 
 <dt>criterion</dt>
 <dd><p>the model selection criterion. Must be one of <code>"aic"</code>,
-<code>"bic"</code>, and <code>"loglik"</code>.</p></dd>
+<code>"bic"</code>, and <code>"loglik"</code>. Defaults to <code>"aic"</code>.</p></dd>
 
 
 <dt>na.rm</dt>
@@ -126,10 +126,27 @@ Distributions, Volume 1, Chapter 17. Wiley, New York.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">model_select</span><span class="op">(</span><span class="va">precip</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Select among all possible models.</span></span></span>
+<span class="r-in"><span><span class="fu">model_select</span><span class="op">(</span><span class="va">precip</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum likelihood estimates for the Skew Normal model </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    mean       sd       xi  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 34.6957  13.5471   0.8088  </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># View possible models to fit.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">univariateML_models</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "beta"       "betapr"     "cauchy"     "exp"        "gamma"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "ged"        "gumbel"     "invgamma"   "invgauss"   "invweibull"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "kumar"      "laplace"    "lgamma"     "llogis"     "lnorm"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "logis"      "logitnorm"  "lomax"      "naka"       "norm"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "pareto"     "power"      "rayleigh"   "sged"       "snorm"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26] "sstd"       "std"        "unif"       "weibull"   </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Try out only gamma, Weibull, and exponential.</span></span></span>
+<span class="r-in"><span><span class="fu">model_select</span><span class="op">(</span><span class="va">precip</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"weibull"</span>, <span class="st">"exp"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Maximum likelihood estimates for the Weibull model </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  shape   scale  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2.829  39.084  </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
