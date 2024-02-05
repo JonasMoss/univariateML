@@ -45,19 +45,20 @@ there are two outliers in the `height` data at at $1.13$ and $0.52$. We will
 remove these outliers and all columns we don't need in the following.
 
 ```{r, make_data, fig.width = 6, fig.height = 5} 
-
-data = dplyr::filter(abalone, height < 0.5)
-data$age = data$rings + 1.5
-data = data[c("diameter", "height", "shell_weight", "age")]
+data <- dplyr::filter(abalone, height < 0.5)
+data$age <- data$rings + 1.5
+data <- data[c("diameter", "height", "shell_weight", "age")]
 hist(data$height, main = "Abalone height", xlab = "Height in mm")
 ```
 
 Let's continue doing step 1. First we must decide on a set of models to try out.
 ```{r, models}
-models = c("gumbel", "laplace", "logis", "norm", "exp", "gamma", 
-           "invgamma", "invgauss", "invweibull", "llogis", "lnorm", 
-           "rayleigh", "weibull", "lgamma", "pareto", "beta", "kumar",
-           "logitnorm")
+models <- c(
+  "gumbel", "laplace", "logis", "norm", "exp", "gamma",
+  "invgamma", "invgauss", "invweibull", "llogis", "lnorm",
+  "rayleigh", "weibull", "lgamma", "pareto", "beta", "kumar",
+  "logitnorm"
+)
 length(models)
 ```
 
@@ -81,19 +82,22 @@ are the Joe copula, the Clayton copula, and the Gumbel copula.
 
 
 ```{r, AIC_copula, warning = FALSE, cache = TRUE}
-
 # Transform the marginals to the unit interval.
-y = sapply(seq_along(data), function(j) pml(data[[j]], margin_fits[[j]]))
+y <- sapply(seq_along(data), function(j) pml(data[[j]], margin_fits[[j]]))
 
 # The copulas described above.
-copulas = list(normal = copula::normalCopula(dim = 4, dispstr = "un"),
-               t = copula::tCopula(dim = 4, dispstr = "un"),
-               joe = copula::joeCopula(dim = 4),
-               clayton = copula::claytonCopula(dim = 4),
-               gumbel = copula::gumbelCopula(dim = 4))
+copulas <- list(
+  normal = copula::normalCopula(dim = 4, dispstr = "un"),
+  t = copula::tCopula(dim = 4, dispstr = "un"),
+  joe = copula::joeCopula(dim = 4),
+  clayton = copula::claytonCopula(dim = 4),
+  gumbel = copula::gumbelCopula(dim = 4)
+)
 
-fits = sapply(copulas,
-              function(x) copula::fitCopula(x, data = y, method = "mpl"))
+fits <- sapply(
+  copulas,
+  function(x) copula::fitCopula(x, data = y, method = "mpl")
+)
 
 sapply(fits, AIC)
 ```

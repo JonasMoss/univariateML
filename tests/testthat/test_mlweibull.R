@@ -48,5 +48,3 @@ expect_equal(class(attr(est, "support")), "numeric")
 
 ## Check support.
 expect_equal(class(attr(est, "support")), "numeric")
-
-

@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(out.width='750px', dpi=200)
+knitr::opts_chunk$set(out.width = "750px", dpi = 200)
 set.seed(313)
 ```
 
@@ -115,8 +115,8 @@ x <- rbeta(500, 2, 7)
 
 microbenchmark::microbenchmark(
   univariateML = univariateML::mlbeta(x),
-  naive = nlm(function(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1)))
-
+  naive = nlm(function(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1))
+)
 ```
 
 The maximum likelihood estimators in this package have all been subject to

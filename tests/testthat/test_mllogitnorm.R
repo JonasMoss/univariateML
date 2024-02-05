@@ -32,5 +32,3 @@ expect_equal(class(est), c("univariateML"))
 
 ## Check support.
 expect_equal(class(attr(est, "support")), "numeric")
-
-

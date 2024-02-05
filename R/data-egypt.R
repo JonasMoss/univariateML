@@ -17,7 +17,7 @@
 #'
 #' @references
 #'   Spiegelberg, W. (1901). Aegyptische und Griechische Eigennamen aus
-#'   Mumientiketten der Römischen Kaiserzeit.
+#'   Mumientiketten der R<U+00F6>mischen Kaiserzeit.
 #'
 #'   Pearson, K. (1902). On the change in expectation of life in man during a
 #'   period of circa 2000 years. Biometrika, 1(2), 261-264.

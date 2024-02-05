@@ -39,5 +39,3 @@ expect_equal(names(est), c("shapelog", "ratelog"))
 
 ## Check support.
 expect_equal(class(attr(est, "support")), "numeric")
-
-

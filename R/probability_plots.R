@@ -7,7 +7,7 @@
 #' `y` with respect to the distribution defined by `obj`, which is
 #' either a `univariateML` object or a function returning a
 #' `univariateML` object when called with `y`. `qqmlline` adds a
-#' line to a “theoretical”, quantile-quantile plot which passes through
+#' line to a <U+201C>theoretical<U+201D>, quantile-quantile plot which passes through
 #' the `probs` quantiles, by default the first and third quartiles.
 #' `qqmlpoints`behaves like `stats::points` and adds a Q-Q plot to
 #' an existing plot.
@@ -57,7 +57,7 @@
 #' @references
 #'   M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis
 #'   for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968,
-#'   Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
+#'   Pages 1<U+2013>17, https://doi.org/10.1093/biomet/55.1.1
 
 ppmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
   pp <- ppqq_wrangler(y, obj, datax, pp = TRUE, ...)

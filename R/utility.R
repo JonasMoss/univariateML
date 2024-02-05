@@ -1,4 +1,3 @@
-
 #' Merges two lists.
 #'
 #' @keywords internal

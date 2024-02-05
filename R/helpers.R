@@ -70,7 +70,6 @@ to_univariateML <- function(y, obj) {
 #' @keywords internal
 
 ppqq_wrangler <- function(y, obj, datax, pp, ...) {
-
   ## Nas are removed by default in this function, following qqplot.
 
   y <- y[!is.na(y)]

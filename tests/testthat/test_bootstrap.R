@@ -8,13 +8,14 @@ obj2 <- mlexp(x)
 
 # Different reducer and map.
 set.seed(313)
-expect_equal(c(bootstrapml(obj,
-  reps = 2,
-  map = function(x) x[1] / x[2],
-  reducer = mean
-)),
-0.4352018,
-tolerance = 1e-5
+expect_equal(
+  c(bootstrapml(obj,
+    reps = 2,
+    map = function(x) x[1] / x[2],
+    reducer = mean
+  )),
+  0.4352018,
+  tolerance = 1e-5
 )
 
 # Different reducer and map.
