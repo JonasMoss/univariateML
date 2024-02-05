@@ -6,7 +6,7 @@
 #' @param models a character vector containing the distribution models to
 #'   select from; see `print(univariateML_models)`.
 #' @param criterion the model selection criterion. Must be one of `"aic"`,
-#'   `"bic"`, and `"loglik"`.
+#'   `"bic"`, and `"loglik"`. Defaults to `"aic"`.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... unused.
 #' @return `model_select` returns an object of [class][base::class]
@@ -20,7 +20,15 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
+#' # Select among all possible models.
 #' model_select(precip)
+#'
+#' # View possible models to fit.
+#' print(univariateML_models)
+#'
+#' # Try out only gamma, Weibull, and exponential.
+#' model_select(precip, c("gamma", "weibull", "exp"))
+#'
 #' @seealso
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate
 #' Distributions, Volume 1, Chapter 17. Wiley, New York.
@@ -53,13 +61,6 @@ model_select <- function(x, models = univariateML_models,
   )
   fits[[which.min(crits)]]
 }
-
-#' Implemented models
-#'
-#' @examples
-#' print(univariateML_models)
-#' @export
-univariateML_models <- substring(densities, first = 3)
 
 check_models <- function(models) {
   is_implemented <- models %in% univariateML_models
