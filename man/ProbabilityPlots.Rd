@@ -58,7 +58,7 @@ likelihood estimation.
 \code{y} with respect to the distribution defined by \code{obj}, which is
 either a \code{univariateML} object or a function returning a
 \code{univariateML} object when called with \code{y}. \code{qqmlline} adds a
-line to a “theoretical”, quantile-quantile plot which passes through
+line to a <U+201C>theoretical<U+201D>, quantile-quantile plot which passes through
 the \code{probs} quantiles, by default the first and third quartiles.
 \code{qqmlpoints}behaves like \code{stats::points} and adds a Q-Q plot to
 an existing plot.
@@ -89,5 +89,5 @@ ppmlpoints(airquality$Wind, mllnorm, col = "blue")
 \references{
 M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis
 for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968,
-Pages 1–17, https://doi.org/10.1093/biomet/55.1.1
+Pages 1<U+2013>17, https://doi.org/10.1093/biomet/55.1.1
 }

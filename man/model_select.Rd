@@ -19,7 +19,7 @@ model_select(
 select from; see \code{print(univariateML_models)}.}
 
 \item{criterion}{the model selection criterion. Must be one of \code{"aic"},
-\code{"bic"}, and \code{"loglik"}.}
+\code{"bic"}, and \code{"loglik"}. Defaults to \code{"aic"}.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
@@ -41,7 +41,15 @@ attributes:
 Selects the best model by log-likelihood, AIC, or BIC.
 }
 \examples{
+# Select among all possible models.
 model_select(precip)
+
+# View possible models to fit.
+print(univariateML_models)
+
+# Try out only gamma, Weibull, and exponential.
+model_select(precip, c("gamma", "weibull", "exp"))
+
 }
 \seealso{
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate

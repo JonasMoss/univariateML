@@ -37,7 +37,7 @@ Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
 
 Witkovsky, V. (2001). "Computing the Distribution of a Linear Combination
-of Inverted Gamma Variables". Kybernetika. 37 (1): 79–90
+of Inverted Gamma Variables". Kybernetika. 37 (1): 79<U+2013>90
 }
 \seealso{
 \link[extraDistr:InvGamma]{InvGamma} for the Inverse Gamma density.

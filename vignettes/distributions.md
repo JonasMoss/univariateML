@@ -62,10 +62,10 @@ the density converges to an exponential density.
 
 
 ```r
-eps = 0.1
-x = seq(0, 3, length.out = 100)
+eps <- 0.1
+x <- seq(0, 3, length.out = 100)
 plot(dexp, 0, 3, xlab = "x", ylab = "Density", main = "Exponential and Lomax")
-lines(x, extraDistr::dlomax(x, lambda = eps, kappa = 1/eps), col = "red")
+lines(x, extraDistr::dlomax(x, lambda = eps, kappa = 1 / eps), col = "red")
 ```
 
 ![plot of chunk lomax](figure/lomax-1.png)

@@ -36,7 +36,7 @@ mlged(precip)
 }
 \references{
 Nelson D.B. (1991); Conditional Heteroscedasticity in Asset
-Returns: A New Approach, Econometrica, 59, 347–370.
+Returns: A New Approach, Econometrica, 59, 347<U+2013>370.
 
 Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat Tails and
 Skewness, Preprint.

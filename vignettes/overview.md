@@ -40,7 +40,7 @@ head(egypt)
 ```
 
 ```
-## # A tibble: 6 x 2
+## # A tibble: 6 × 2
 ##     age sex  
 ##   <dbl> <chr>
 ## 1  1.5  male 
@@ -68,16 +68,18 @@ half-line.
 
 
 ```r
-AIC(mlbetapr(egypt$age),
-    mlexp(egypt$age),
-    mlinvgamma(egypt$age),
-    mlgamma(egypt$age),
-    mllnorm(egypt$age),
-    mlrayleigh(egypt$age),
-    mlinvgauss(egypt$age),
-    mlweibull(egypt$age),
-    mlinvweibull(egypt$age),
-    mllgamma(egypt$age))
+AIC(
+  mlbetapr(egypt$age),
+  mlexp(egypt$age),
+  mlinvgamma(egypt$age),
+  mlgamma(egypt$age),
+  mllnorm(egypt$age),
+  mlrayleigh(egypt$age),
+  mlinvgauss(egypt$age),
+  mlweibull(egypt$age),
+  mlinvweibull(egypt$age),
+  mllgamma(egypt$age)
+)
 ```
 
 ```
@@ -197,8 +199,8 @@ bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
 
 ```
 ##            2.5%     97.5%
-## shape  1.256207  1.603411
-## scale 29.679244 37.930756
+## shape  1.248992  1.635196
+## scale 29.714318 37.815242
 ```
 
 ```r
@@ -206,9 +208,9 @@ bootstrapml(mlgamma(egypt$age))
 ```
 
 ```
-##             2.5%      97.5%
-## shape 1.31768253 2.05486827
-## rate  0.04181084 0.07000275
+##             2.5%     97.5%
+## shape 1.31984812 2.0721554
+## rate  0.04155794 0.0696278
 ```
 
 These confidence intervals are not directly comparable. That is, the `scale` parameter in
@@ -226,26 +228,28 @@ we will calculate two 90% confidence intervals for the mean.
 
 ```r
 # Calculate two-sided 90% confidence intervals for the mean of a Weibull.
-bootstrapml(mlweibull(egypt$age), 
-            map = function(x) x[2]*gamma(1 + 1/x[1]), 
-            probs = c(0.05, 0.95))
+bootstrapml(mlweibull(egypt$age),
+  map = function(x) x[2] * gamma(1 + 1 / x[1]),
+  probs = c(0.05, 0.95)
+)
 ```
 
 ```
 ##       5%      95% 
-## 27.71850 33.63068
+## 27.33487 33.68436
 ```
 
 ```r
 # Calculate two-sided 90% confidence intervals for the mean of a Gamma.
-bootstrapml(mlgamma(egypt$age), 
-            map = function(x) x[1]/x[2],
-            probs = c(0.05, 0.95))
+bootstrapml(mlgamma(egypt$age),
+  map = function(x) x[1] / x[2],
+  probs = c(0.05, 0.95)
+)
 ```
 
 ```
 ##       5%      95% 
-## 27.51567 34.14295
+## 27.34205 33.80681
 ```
 
 We are be interested in the quantiles of the underlying distribution,
@@ -254,37 +258,42 @@ for instance the median:
 
 ```r
 # Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
-bootstrapml(mlweibull(egypt$age), 
-            map = function(x) qweibull(0.5, x[1], x[2]), 
-            probs = c(0.05, 0.95))
+bootstrapml(mlweibull(egypt$age),
+  map = function(x) qweibull(0.5, x[1], x[2]),
+  probs = c(0.05, 0.95)
+)
 ```
 
 ```
 ##       5%      95% 
-## 22.97247 28.87069
+## 22.91574 28.82940
 ```
 
 ```r
-bootstrapml(mlgamma(egypt$age), 
-            map = function(x) qgamma(0.5, x[1], x[2]), 
-            probs = c(0.05, 0.95))
+bootstrapml(mlgamma(egypt$age),
+  map = function(x) qgamma(0.5, x[1], x[2]),
+  probs = c(0.05, 0.95)
+)
 ```
 
 ```
 ##       5%      95% 
-## 21.88226 27.64080
+## 21.80467 27.64940
 ```
 
 We can also plot the bootstrap samples.
 
 
 ```r
-hist(bootstrapml(mlweibull(egypt$age), 
-                 map = function(x) x[2]*gamma(1 + 1/x[1]), 
-                 reducer = identity),
-     main = "Bootstrap Samples of the Mean",
-     xlab = "x",
-     freq = FALSE)
+hist(
+  bootstrapml(mlweibull(egypt$age),
+    map = function(x) x[2] * gamma(1 + 1 / x[1]),
+    reducer = identity
+  ),
+  main = "Bootstrap Samples of the Mean",
+  xlab = "x",
+  freq = FALSE
+)
 ```
 
 ![plot of chunk bootstrap_example_histogram](figure/bootstrap_example_histogram-1.png)
@@ -313,10 +322,10 @@ Compare the empirical distribution of the random variates to the true cumulative
 
 ```r
 set.seed(313)
-obj = mlweibull(egypt$age)
-q = seq(0, max(egypt$age), length.out = 100)
+obj <- mlweibull(egypt$age)
+q <- seq(0, max(egypt$age), length.out = 100)
 plot(q, pml(q, obj), type = "l", ylab = "Cumulative Probability")
-r = rml(100, obj)
+r <- rml(100, obj)
 lines(ecdf(r))
 ```
 
