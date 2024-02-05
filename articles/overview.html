@@ -240,13 +240,13 @@ the model.</p>
 <code class="sourceCode R"><span><span class="co"># Calculate two-sided 95% confidence intervals for the two Gumbel parameters.</span></span>
 <span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span> <span class="co"># same as confint(mlweibull(egypt$age))</span></span></code></pre></div>
 <pre><code><span><span class="co">##            2.5%     97.5%</span></span>
-<span><span class="co">## shape  1.247901  1.616927</span></span>
-<span><span class="co">## scale 29.547426 37.916103</span></span></code></pre>
+<span><span class="co">## shape  1.242941  1.625041</span></span>
+<span><span class="co">## scale 29.812896 38.039005</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##            2.5%     97.5%</span></span>
-<span><span class="co">## shape 1.3028231 2.0312219</span></span>
-<span><span class="co">## rate  0.0415595 0.0683431</span></span></code></pre>
+<pre><code><span><span class="co">##             2.5%      97.5%</span></span>
+<span><span class="co">## shape 1.33737775 2.03223380</span></span>
+<span><span class="co">## rate  0.04120681 0.06822472</span></span></code></pre>
 <p>These confidence intervals are not directly comparable. That is, the
 <code>scale</code> parameter in the Weibull model is not directly
 comparable to the <code>rate</code> parameter in the gamma model. So let
@@ -267,7 +267,7 @@ for the mean.</p>
 <span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       5%      95% </span></span>
-<span><span class="co">## 27.46068 33.82386</span></span></code></pre>
+<span><span class="co">## 27.66788 33.67035</span></span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate two-sided 90% confidence intervals for the mean of a Gamma.</span></span>
 <span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
@@ -275,7 +275,7 @@ for the mean.</p>
 <span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       5%      95% </span></span>
-<span><span class="co">## 27.34666 34.00954</span></span></code></pre>
+<span><span class="co">## 27.23868 33.80332</span></span></code></pre>
 <p>We are be interested in the quantiles of the underlying distribution,
 for instance the median:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -285,14 +285,14 @@ for instance the median:</p>
 <span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       5%      95% </span></span>
-<span><span class="co">## 23.17441 28.99167</span></span></code></pre>
+<span><span class="co">## 23.03794 29.20766</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
 <span>  map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">qgamma</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       5%      95% </span></span>
-<span><span class="co">## 21.87457 27.61062</span></span></code></pre>
+<span><span class="co">## 21.76814 27.52931</span></span></code></pre>
 <p>We can also plot the bootstrap samples.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span></span>
