@@ -4,7 +4,7 @@
 \alias{plot_wrangler}
 \title{Wrangles arguments for use in the plot, lines and points functions.}
 \usage{
-plot_wrangler(x, range, points = FALSE, ...)
+plot_wrangler(x, range, points = FALSE, kind, ...)
 }
 \arguments{
 \item{x}{The input data.}

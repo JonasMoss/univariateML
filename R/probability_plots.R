@@ -18,6 +18,9 @@
 #'
 #' This function is modeled after [qqnorm][stats::qqnorm].
 #'
+#' Quantile-quantile plots and probability-probability plots are only supported
+#' for continuous distributions.
+#'
 #' Graphical parameters may be given as arguments to all the functions below.
 #'
 #' @param y Numeric vector; The data to plot on the `y` axis when

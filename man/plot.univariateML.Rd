@@ -6,16 +6,18 @@
 \alias{points.univariateML}
 \title{Plot, Lines and Points Methods for Maximum Likelihood Estimates}
 \usage{
-\method{plot}{univariateML}(x, range = NULL, ...)
+\method{plot}{univariateML}(x, range = NULL, kind = c("d", "p", "q"), ...)
 
-\method{lines}{univariateML}(x, range = NULL, ...)
+\method{lines}{univariateML}(x, range = NULL, kind = c("d", "p", "q"), ...)
 
-\method{points}{univariateML}(x, range = NULL, ...)
+\method{points}{univariateML}(x, range = NULL, kind = c("d", "p", "q"), ...)
 }
 \arguments{
 \item{x}{a \code{univariateML} object.}
 
 \item{range}{range of \code{x} values to plot, i.e. \code{c(lower, upper)}.}
+
+\item{kind}{can be \code{density}, \code{probability}, or \code{quantile}.}
 
 \item{...}{parameters passed to \code{plot}, \code{lines}, or \code{points}.}
 }
