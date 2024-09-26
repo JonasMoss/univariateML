@@ -42,5 +42,5 @@ Atchison, J., & Shen, S. M. (1980). Logistic-normal
 distributions: Some properties and uses. Biometrika, 67(2), 261-272.
 }
 \seealso{
-link[dlogitnorm]{dlogitnorm}for the normal density.
+\link[stats:Normal]{Normal} for the normal density.
 }

@@ -5,27 +5,46 @@
 #' @param points Boolean; should points be plotted by default?
 #' @keywords internal
 
-plot_wrangler <- function(x, range, points = FALSE, ...) {
+plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
+  continuous <- if(is.null(attr(x,"continuous"))) TRUE else FALSE
   support <- attr(x, "support")
   if (is.null(range)) {
     if (abs(support[1]) + abs(support[2]) < Inf) {
       limits <- support
     } else if (abs(support[1]) == 0 & abs(support[2]) == Inf) {
-      limits <- c(0, qml(0.99, x))
+      limits <- c(0, qml(0.995, x))
     } else {
-      limits <- qml(c(0.01, 0.99), x)
+      limits <- qml(c(0.005, 0.995), x)
     }
 
-    range <- seq(limits[1], limits[2], length.out = 1000)
+    limits_untransformed <- limits
+    if(kind == "q") limits <- pml(limits, x)
+
+    range <- if (continuous) {
+      seq(limits[1], limits[2], length.out = 1000)
+    } else {
+      if(kind == "q") {
+        pml(seq(limits_untransformed[1], limits_untransformed[2]), x)
+      } else {
+        seq(limits[1], limits[2])
+      }
+    }
   }
 
+  ylab <- list(d="Density",p="Cumulative probability",q="Quantile")
+  xlab <- list(d="x",p="Quantile",q="Cumulative probability")
   defaults <- list(
     type = if (points) "p" else "l",
     main = paste0(attr(x, "model"), " model"),
-    ylab = "Density",
-    xlab = "x",
+    ylab = ylab[[kind]],
+    xlab = xlab[[kind]],
     lwd = 1
   )
+
+  if(!continuous) {
+    defaults$pch = 20
+    defaults$type = if (points) "p" else "b"
+  }
 
   args <- listmerge(
     x = defaults,
@@ -33,7 +52,13 @@ plot_wrangler <- function(x, range, points = FALSE, ...) {
   )
 
   args$x <- range
-  args$y <- dml(args$x, x)
+  args$y <- if(kind == "d") {
+    dml(args$x, x)
+  } else if (kind == "p") {
+    pml(args$x, x)
+  } else {
+    qml(args$x, x)
+  }
   args
 }
 
@@ -45,6 +70,7 @@ plot_wrangler <- function(x, range, points = FALSE, ...) {
 #' @export
 #' @param x a `univariateML` object.
 #' @param range range of `x` values to plot, i.e. `c(lower, upper)`.
+#' @param kind can be `density`, `probability`, or `quantile`.
 #' @param ... parameters passed to `plot`, `lines`, or `points`.
 #' @return An invisible copy of `x`.
 #' @examples
@@ -53,24 +79,27 @@ plot_wrangler <- function(x, range, points = FALSE, ...) {
 #' rug(datasets::precip)
 #' @export
 #'
-plot.univariateML <- function(x, range = NULL, ...) {
-  args <- plot_wrangler(x, range, points = FALSE, ...)
+plot.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+  kind <- match.arg(kind)
+  args <- plot_wrangler(x, range, points = FALSE, kind = kind, ...)
   do.call(graphics::plot, args)
   invisible(x)
 }
 
 #' @export
 #' @rdname plot.univariateML
-lines.univariateML <- function(x, range = NULL, ...) {
-  args <- plot_wrangler(x, range, points = FALSE, ...)
+lines.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+  kind <- match.arg(kind)
+  args <- plot_wrangler(x, range, points = FALSE, kind = kind, ...)
   do.call(graphics::lines, args)
   invisible(x)
 }
 
 #' @export
 #' @rdname plot.univariateML
-points.univariateML <- function(x, range = NULL, ...) {
-  args <- plot_wrangler(x, range, points = TRUE, ...)
+points.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+  kind <- match.arg(kind)
+  args <- plot_wrangler(x, range, points = TRUE, kind = kind,...)
   do.call(graphics::points, args)
   invisible(x)
 }

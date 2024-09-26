@@ -14,7 +14,7 @@ mllnorm(x, na.rm = FALSE, ...)
 \item{...}{currently affects nothing.}
 }
 \value{
-\code{mllonorm} returns an object of \link[base:class]{class} \code{univariateML}.
+\code{mllnorm} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for
 \code{meanlog} and \code{sdlog} and the following attributes:
 \item{\code{model}}{The name of the model.}

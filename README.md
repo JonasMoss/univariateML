@@ -17,12 +17,13 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [`univariateML`](https://jonasmoss.github.io/univariateML/index.html) is
 an `R`-package for user-friendly maximum likelihood estimation of a
 [selection](https://jonasmoss.github.io/univariateML/articles/distributions.html)
-of parametric univariate densities. In addition to basic estimation
-capabilities, this package support visualization through `plot` and
-`qqmlplot`, model selection by `AIC` and `BIC`, confidence sets through
-the parametric bootstrap with `bootstrapml`, and convenience functions
-such as the density, distribution function, quantile function, and
-random sampling at the estimated distribution parameters.
+of parametric univariate densities and probability mass functions. In
+addition to basic estimation capabilities, this package support
+visualization through `plot` and `qqmlplot`, model selection by `AIC`
+and `BIC`, confidence sets through the parametric bootstrap with
+`bootstrapml`, and convenience functions such as the density,
+distribution function, quantile function, and random sampling at the
+estimated distribution parameters.
 
 ## Installation
 
@@ -94,6 +95,7 @@ lines(mlweibull(egypt$age))
 | Logit-normal                        | `mllogitnorm`         | logitnorm  |
 | Uniform distribution                | `mlunif`              | stats      |
 | Power distribution                  | `mlpower`             | extraDistr |
+| Poisson distribution                | `mlpois`              | stats      |
 
 ## Implementations
 
@@ -110,11 +112,12 @@ x <- rbeta(500, 2, 7)
 
 microbenchmark::microbenchmark(
   univariateML = univariateML::mlbeta(x),
-  naive = nlm(function(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1)))
+  naive = nlm(function(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1))
+)
 #> Unit: microseconds
-#>          expr     min       lq      mean   median       uq     max neval
-#>  univariateML   259.2   348.75   557.959   447.05   536.40  5103.5   100
-#>         naive 15349.1 15978.35 16955.165 16365.45 17082.25 48941.4   100
+#>          expr     min       lq      mean   median       uq      max neval
+#>  univariateML   205.1   329.85   800.077   464.35   730.35  13938.4   100
+#>         naive 10665.9 11773.30 21428.104 15233.70 28628.65 103372.1   100
 ```
 
 The maximum likelihood estimators in this package have all been subject

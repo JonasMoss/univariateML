@@ -11,7 +11,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... currently affects nothing.
-#' @return `mllonorm` returns an object of [class][base::class] `univariateML`.
+#' @return `mllnorm` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
 #'    `meanlog` and `sdlog` and the following attributes:
 #'     \item{`model`}{The name of the model.}

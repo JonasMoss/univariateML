@@ -20,8 +20,6 @@
 #' @examples
 #' mlpois(precip)
 #' @seealso [Poisson][stats::Poisson] for the Poisson density.
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
-#' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export
 
 mlpois <- function(x, na.rm = FALSE, ...) {
@@ -36,7 +34,6 @@ mlpois <- function(x, na.rm = FALSE, ...) {
   attr(object, "model") <- "Poisson"
   attr(object, "continuous") = FALSE
   attr(object, "density") <- "stats::dpois"
-  # logLik from ChatGPT; verified correct with sum(stats::dpois(x, lambda, log = TRUE))
   attr(object, "logLik") <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))
   attr(object, "support") <- c(0, Inf)
   attr(object, "n") <- length(x)

@@ -9,7 +9,7 @@ ppqq_wrangler(y, obj, datax, pp, ...)
 \arguments{
 \item{y}{The input data.}
 
-\item{obj}{Function or \code{"univariateML"} object.}
+\item{obj}{Function or continuous \code{"univariateML"} object.}
 
 \item{datax}{logical; if true, plots the data on the x axis.}
 
