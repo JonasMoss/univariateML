@@ -1,19 +1,16 @@
 ## Release summary
 
-* Fixed error in mlllogis.
-* Removed artifical bound on mlnaka.
-* Fixed error in test of model selection that used expect_equal incorrectly,
-  inadvertently calling all.equal with four arguments.
-* Now passes CRAN on r-devel.
+* Fixed error in mlunif.
+* Improved documentation for model_select.
+* Improved documentation for univariateML_models.
 
 ## Test environments
-Using Github actions, with:
+Used standard Github actions:
 os: macOS-latest,    r: 'release'
 os: windows-latest,  r: 'release'
 os: ubuntu-latest,   r: 'devel'
 os: ubuntu-latest,   r: 'release'
-Does not work with oldrel-1, as `actuar`, a dependency of this package, 
-requires R 4.1.0.
+os: ubuntu-latest,   r: 'oldrel-1'
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
@@ -26,3 +23,4 @@ These are false alarms. All imported packages are used.
 
 ## Downstream dependencies
 kdensity: No problems.
+svines: No problems.
