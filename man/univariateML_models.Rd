@@ -5,7 +5,7 @@
 \alias{univariateML_models}
 \title{Implemented models}
 \format{
-An object of class \code{character} of length 29.
+An object of class \code{character} of length 30.
 }
 \usage{
 univariateML_models
@@ -14,6 +14,6 @@ univariateML_models
 Vector of all supported models in \code{univariateML}.
 }
 \details{
-The currently supported models are \link{mlbeta}, \link{mlbetapr}, \link{mlcauchy}, \link{mlexp}, \link{mlgamma}, \link{mlged}, \link{mlgumbel}, \link{mlinvgamma}, \link{mlinvgauss}, \link{mlinvweibull}, \link{mlkumar}, \link{mllaplace}, \link{mllgamma}, \link{mlllogis}, \link{mllnorm}, \link{mllogis}, \link{mllogitnorm}, \link{mllomax}, \link{mlnaka}, \link{mlnorm}, \link{mlpareto}, \link{mlpower}, \link{mlrayleigh}, \link{mlsged}, \link{mlsnorm}, \link{mlsstd}, \link{mlstd}, \link{mlunif}, \link{mlweibull}
+The currently supported models are \link{mlbeta}, \link{mlbetapr}, \link{mlcauchy}, \link{mlexp}, \link{mlgamma}, \link{mlged}, \link{mlgumbel}, \link{mlinvgamma}, \link{mlinvgauss}, \link{mlinvweibull}, \link{mlkumar}, \link{mllaplace}, \link{mllgamma}, \link{mlllogis}, \link{mllnorm}, \link{mllogis}, \link{mllogitnorm}, \link{mllomax}, \link{mlnaka}, \link{mlnorm}, \link{mlpareto}, \link{mlpois}, \link{mlpower}, \link{mlrayleigh}, \link{mlsged}, \link{mlsnorm}, \link{mlsstd}, \link{mlstd}, \link{mlunif}, \link{mlweibull}
 }
 \keyword{datasets}

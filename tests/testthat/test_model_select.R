@@ -17,8 +17,8 @@ expect_error(model_select(tiny_data, criterion = "cv"))
 
 ## Checks that na.rm works as intended.
 expect_equal(
-  coef(model_select(small_data)),
-  coef(model_select(c(small_data, NA), na.rm = TRUE))
+  coef(model_select(small_data, models = c("norm", "cauchy"))),
+  coef(model_select(c(small_data, NA), models = c("norm", "cauchy"), na.rm = TRUE))
 )
 
 ## Does it find the correct model?

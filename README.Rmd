@@ -30,7 +30,7 @@ set.seed(313)
 ## Overview
 [`univariateML`](https://jonasmoss.github.io/univariateML/index.html) is an `R`-package for
 user-friendly maximum likelihood estimation of a
-[selection](https://jonasmoss.github.io/univariateML/articles/distributions.html) of parametric univariate densities. In addition to basic estimation capabilities,
+[selection](https://jonasmoss.github.io/univariateML/articles/distributions.html) of parametric univariate densities and probability mass functions. In addition to basic estimation capabilities,
 this package support visualization through `plot` and `qqmlplot`, model selection
 by `AIC` and `BIC`, confidence sets through the parametric bootstrap with
 `bootstrapml`, and convenience functions such as the density, distribution 
@@ -99,6 +99,7 @@ lines(mlweibull(egypt$age))
 | Logit-normal                        | `mllogitnorm`          | logitnorm  |
 | Uniform distribution                | `mlunif`               | stats      |
 | Power distribution                  | `mlpower`              | extraDistr |
+| Poisson distribution                | `mlpois`               | stats      |
 
 ## Implementations
 

@@ -22,7 +22,7 @@
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' AIC(mllogitnorm(USArrests$Rape / 100))
-#' @seealso link[dlogitnorm]{dlogitnorm}for the normal density.
+#' @seealso [Normal][stats::dnorm] for the normal density.
 #' @references Atchison, J., & Shen, S. M. (1980). Logistic-normal
 #' distributions: Some properties and uses. Biometrika, 67(2), 261-272.
 #' @export

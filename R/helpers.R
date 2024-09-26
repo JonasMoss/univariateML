@@ -64,12 +64,16 @@ to_univariateML <- function(y, obj) {
 #' Wrangles arguments for use in ppml and qqml functions.
 #'
 #' @param y The input data.
-#' @param obj Function or `"univariateML"` object.
+#' @param obj Function or continuous `"univariateML"` object.
 #' @param datax logical; if true, plots the data on the x axis.
 #' @param ... Arguments passed to `plot` or `points` down the line.
 #' @keywords internal
 
 ppqq_wrangler <- function(y, obj, datax, pp, ...) {
+
+  if (!is.null(attr(obj, "continuous"))) {
+    stop("QQ and PP plots are only supported for continuous distributions.")
+  }
   ## Nas are removed by default in this function, following qqplot.
 
   y <- y[!is.na(y)]

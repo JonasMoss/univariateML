@@ -69,6 +69,9 @@ quantile-quantile plot functions.
 
 This function is modeled after \link[stats:qqnorm]{qqnorm}.
 
+Quantile-quantile plots and probability-probability plots are only supported
+for continuous distributions.
+
 Graphical parameters may be given as arguments to all the functions below.
 }
 \examples{
