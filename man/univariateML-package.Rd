@@ -41,7 +41,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item Thomas Nagler \email{mail@tnagler.com} [contributor]
-  \item Chitu Okoli [contributor]
+  \item Chitu Okoli \email{chitu.okoli@concordia.ca} [contributor]
 }
 
 }

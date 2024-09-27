@@ -32,7 +32,7 @@ mlpois <- function(x, na.rm = FALSE, ...) {
   object <- c(lambda = lambda)
   class(object) <- "univariateML"
   attr(object, "model") <- "Poisson"
-  attr(object, "continuous") = FALSE
+  attr(object, "continuous") <- FALSE
   attr(object, "density") <- "stats::dpois"
   attr(object, "logLik") <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))
   attr(object, "support") <- c(0, Inf)

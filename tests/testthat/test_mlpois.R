@@ -17,7 +17,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlpois(small_data, na.rm = TRUE)
 expect_equal(
-  sum(dpois(small_data, est['lambda'], log = TRUE)),
+  sum(dpois(small_data, est["lambda"], log = TRUE)),
   attr(est, "logLik")
 )
 

@@ -17,26 +17,29 @@
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
 #'     \item{`support`}{The support of the density.}
 #'     \item{`n`}{The number of observations.}
-#'     \item{`call`}{The call as captured my `match.call`}
+#'     \item{`call`}{The call as captured by `match.call`}
+#'     \item{`continuous`}{Is the density continuous or discrete?}
 #' @examples
 #' mlexp(precip)
 #' @seealso [Exponential][stats::Exponential] for the exponential density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 #' @export
+mlexp <- \(x, na.rm = TRUE, ...) {}
 
-mlexp <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) >= 0)
-  rate <- 1 / mean(x)
-  object <- c(rate = rate)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Exponential"
-  attr(object, "density") <- "stats::dexp"
-  attr(object, "logLik") <- length(x) * (log(rate) - 1)
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+mlexp <- decorator("mlexp")
+
+mlexp_ <- \(x, ...) {
+  estimates <- 1 / mean(x)
+  logLik <- length(x) * (log(estimates) - 1)
+  list(estimates = estimates, logLik = logLik)
 }
+
+metadata$mlexp <- list(
+  "model" = "Exponential",
+  "density" = "stats::dexp",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("rate"),
+  "class" = "mlfun"
+)

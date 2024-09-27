@@ -1,3 +1,65 @@
+#' Decorate estimator
+#'
+#' The decorator constructs an `ml***`. It first checks the input arguments,
+#'    then call the defined estimator (with elements `estimates` and `logLik`),
+#'    and the optional parameter `support`, then adds the required attributes.
+#'
+#' @param name Name of the `ml***` function.
+#' @return The proper `ml***` function.
+#' @keywords internal
+decorator <- \(name) {
+  \(x, na.rm = FALSE, ...) {
+    x <- ml_check_modify(x, na.rm = na.rm, name = name)
+    n <- length(x)
+    out <- rlang::exec(paste0(name, "_"), x = x, ...)
+
+    params <- list(logLik = out$logLik, call = deparse(match.call()), n = n)
+    univariateML_construct(out$estimates, name = name, params = params)
+  }
+}
+
+#' Construct `univariateML` object.
+#'
+#' @param estimates The estimated parameters
+#' @param name Name of the `ml***` function.
+#' @param params List of `loglik`, `call`, and `n`.
+#' @return Object of class `univariateML`
+
+univariateML_construct <- \(estimates, name, params) {
+  estimates <- unname(estimates)
+  class <- "univariateML"
+  args <- c(.Data = list(estimates), params, metadata[[name]], class = class)
+  object <- do.call(structure, args)
+  attr(object, "call") <- str2lang(attr(object, "call"))
+  object
+}
+
+
+ml_check_modify <- function(x, na.rm, name) {
+  assertthat::assert_that(is.numeric(x))
+  msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
+  assertthat::assert_that(NCOL(x) == 1, msg = msg)
+  msg <- "NA in input when na.rm = FALSE"
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x), msg = msg)
+
+  support <- metadata[[name]]$support
+
+  msg <- "x not in the support of the data"
+  if (support@closed[1]) {
+    assertthat::assert_that(min(x) >= support[[1]], msg = msg)
+  } else {
+    assertthat::assert_that(min(x) > support[[1]], msg = msg)
+  }
+
+  if (support@closed[2]) {
+    assertthat::assert_that(max(x) <= support[[2]], msg = msg)
+  } else {
+    assertthat::assert_that(max(x) < support[[2]], msg = msg)
+  }
+
+  x
+}
+
 #' Transform a univariateML object to a string specifying quantile, CDF,
 #'     density or random variate generation.
 #'
@@ -60,6 +122,18 @@ to_univariateML <- function(y, obj) {
   obj
 }
 
+#' Input Checker for ML functions
+#'
+#' Checks that `x` in the ML functions is numeric and has only one dimension.
+#'
+#' @param x input to a `ML***` function.
+#' @return `NULL`
+
+ml_input_checker <- function(x) {
+  assertthat::assert_that(is.numeric(x))
+  msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
+  assertthat::assert_that(NCOL(x) == 1, msg = msg)
+}
 
 #' Wrangles arguments for use in ppml and qqml functions.
 #'
@@ -70,7 +144,6 @@ to_univariateML <- function(y, obj) {
 #' @keywords internal
 
 ppqq_wrangler <- function(y, obj, datax, pp, ...) {
-
   if (!is.null(attr(obj, "continuous"))) {
     stop("QQ and PP plots are only supported for continuous distributions.")
   }

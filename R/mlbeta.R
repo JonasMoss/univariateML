@@ -29,12 +29,12 @@
 #' @examples
 #' AIC(mlbeta(USArrests$Rape / 100))
 #' @export
+mlbeta <- function(x, na.rm = FALSE, ...) {}
 
-mlbeta <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
-  assertthat::assert_that(max(x) < 1)
+mlbeta <- decorator("mlbeta")
+
+mlbeta_ <- function(x, ...) {
+  n <- length(x)
 
   val1 <- mean(log(x))
   val2 <- mean(log(1 - x))
@@ -87,15 +87,15 @@ mlbeta <- function(x, na.rm = FALSE, ...) {
     beta_objective <- objective
   }
 
-  object <- stats::nlm(beta_objective, p = start, typsize = start)$estimate
-  names(object) <- c("shape1", "shape2")
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Beta"
-  attr(object, "density") <- "stats::dbeta"
-  attr(object, "logLik") <- -length(x) *
-    stats::setNames(objective(object), NULL)
-  attr(object, "support") <- c(0, 1)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  fit <- stats::nlm(beta_objective, p = start, typsize = start)
+  list(estimates = fit$estimate, logLik = -n * fit$minimum)
 }
+
+metadata$mlbeta <- list(
+  "model" = "Beta",
+  "density" = "stats::dbeta",
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("shape1", "shape2"),
+  "class" = "mlfun"
+)

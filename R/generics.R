@@ -6,24 +6,24 @@
 #' @keywords internal
 
 plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
-  continuous <- if(is.null(attr(x,"continuous"))) TRUE else FALSE
+  continuous <- if (is.null(attr(x, "continuous"))) TRUE else attr(x, "continuous")
   support <- attr(x, "support")
   if (is.null(range)) {
-    if (abs(support[1]) + abs(support[2]) < Inf) {
-      limits <- support
-    } else if (abs(support[1]) == 0 & abs(support[2]) == Inf) {
+    if (abs(support[[1]]) + abs(support[[2]]) < Inf) {
+      limits <- as.numeric(support)
+    } else if (abs(support[[1]]) == 0 & abs(support[[2]]) == Inf) {
       limits <- c(0, qml(0.995, x))
     } else {
       limits <- qml(c(0.005, 0.995), x)
     }
 
     limits_untransformed <- limits
-    if(kind == "q") limits <- pml(limits, x)
+    if (kind == "q") limits <- pml(limits, x)
 
     range <- if (continuous) {
       seq(limits[1], limits[2], length.out = 1000)
     } else {
-      if(kind == "q") {
+      if (kind == "q") {
         pml(seq(limits_untransformed[1], limits_untransformed[2]), x)
       } else {
         seq(limits[1], limits[2])
@@ -31,8 +31,8 @@ plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
     }
   }
 
-  ylab <- list(d="Density",p="Cumulative probability",q="Quantile")
-  xlab <- list(d="x",p="Quantile",q="Cumulative probability")
+  ylab <- list(d = "Density", p = "Cumulative probability", q = "Quantile")
+  xlab <- list(d = "x", p = "Quantile", q = "Cumulative probability")
   defaults <- list(
     type = if (points) "p" else "l",
     main = paste0(attr(x, "model"), " model"),
@@ -41,9 +41,9 @@ plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
     lwd = 1
   )
 
-  if(!continuous) {
-    defaults$pch = 20
-    defaults$type = if (points) "p" else "b"
+  if (!continuous) {
+    defaults$pch <- 20
+    defaults$type <- if (points) "p" else "b"
   }
 
   args <- listmerge(
@@ -52,7 +52,7 @@ plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
   )
 
   args$x <- range
-  args$y <- if(kind == "d") {
+  args$y <- if (kind == "d") {
     dml(args$x, x)
   } else if (kind == "p") {
     pml(args$x, x)
@@ -99,7 +99,7 @@ lines.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
 #' @rdname plot.univariateML
 points.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
   kind <- match.arg(kind)
-  args <- plot_wrangler(x, range, points = TRUE, kind = kind,...)
+  args <- plot_wrangler(x, range, points = TRUE, kind = kind, ...)
   do.call(graphics::points, args)
   invisible(x)
 }
@@ -129,7 +129,7 @@ summary.univariateML <- function(object, ...) {
   )
   print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
   cat("\nData:            ", data.name, " (", attr(object, "n"), " obs.)\n",
-    "Support:         (", support[1], ", ", support[2], ")\n",
+    "Support:         (", support[[1]], ", ", support[[2]], ")\n",
     "Density:         ", attr(object, "density"), "\n",
     "Log-likelihood:  ", attr(object, "logLik"), "\n",
     sep = ""

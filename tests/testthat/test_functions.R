@@ -25,8 +25,8 @@ for (i in 1:length(dists)) {
   expect_equal(
     dml(1, obj),
     do.call(
-      paste0("d", dist),  # ddist()
-      c(1, as.list(obj))  # 1 as input plus all dist parameters
+      paste0("d", dist), # ddist()
+      c(1, as.list(obj)) # 1 as input plus all dist parameters
     )
   )
 
@@ -34,10 +34,11 @@ for (i in 1:length(dists)) {
   expect_equal(
     pml(1, obj, log.p = TRUE),
     do.call(
-      paste0("p", dist),  # pdist()
+      paste0("p", dist), # pdist()
       # 1 as input plus all dist parameters
       c(
-        1, log.p = TRUE,
+        1,
+        log.p = TRUE,
         as.list(obj)
       )
     )
@@ -47,10 +48,11 @@ for (i in 1:length(dists)) {
   expect_equal(
     qml(0.9, obj, lower.tail = TRUE),
     do.call(
-      paste0("q", dist),  # qdist()
+      paste0("q", dist), # qdist()
       # 0.9 as input plus all dist parameters
       c(
-        0.9, lower.tail = TRUE,
+        0.9,
+        lower.tail = TRUE,
         as.list(obj)
       )
     )
@@ -66,8 +68,8 @@ for (i in 1:length(dists)) {
     (function() {
       set.seed(seed)
       do.call(
-        paste0("r", dist),  # rdist()
-        c(1, as.list(obj))  # 1 as input plus all dist parameters
+        paste0("r", dist), # rdist()
+        c(1, as.list(obj)) # 1 as input plus all dist parameters
       )
     })()
   )

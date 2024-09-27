@@ -18,7 +18,8 @@
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
 #'     \item{`support`}{The support of the density.}
 #'     \item{`n`}{The number of observations.}
-#'     \item{`call`}{The call as captured my `match.call`}
+#'     \item{`call`}{The call as captured by `match.call`}
+#'     \item{`continuous`}{Is the density continuous or discrete?}
 #' @examples
 #' mlgamma(precip)
 #' @seealso [Nakagami][nakagami::Nakagami] for the Nakagami distribution.
@@ -32,30 +33,31 @@
 #' Distributions, Volume 1, Chapter 17. Wiley, New York.
 #'
 #' @export
+mlnaka <- \(x, na.rm = TRUE, ...) {}
 
-mlnaka <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+mlnaka <- decorator("mlnaka")
+
+mlnaka_ <- function(x, ...) {
+  estimates <- mlgamma(x^2, na.rm = TRUE, ...)
+  estimates["rate"] <- 1 / estimates["rate"] * estimates["shape"]
   n <- length(x)
 
-  object <- mlgamma(x^2, na.rm = na.rm, ...)
+  shape <- estimates[1]
+  scale <- estimates[2]
 
-  object["rate"] <- 1 / object["rate"] * object["shape"]
-  names(object) <- c("shape", "scale")
-
-  shape <- object["shape"]
-  scale <- object["scale"]
-
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Nakagami"
-  attr(object, "density") <- "nakagami::dnaka"
-  attr(object, "logLik") <-
+  logLik <-
     unname(n * (shape * log(shape) + log(2) -
       lgamma(shape) - shape * log(scale)) +
       (2 * shape - 1) * sum(log(x)) - shape / scale * sum(x^2))
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+
+  list(estimates = estimates, logLik = logLik)
 }
+
+metadata$mlnaka <- list(
+  "model" = "Nakagami",
+  "density" = "nakagami::dnaka",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("shape", "scale"),
+  "class" = "mlfun"
+)

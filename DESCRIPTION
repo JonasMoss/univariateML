@@ -21,7 +21,9 @@ Imports: assertthat,
     logitnorm,
     actuar,
     nakagami,
-    fGarch
+    fGarch,
+    rlang,
+    intervals
 Suggests: 
     testthat,
     knitr,
