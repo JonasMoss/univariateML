@@ -91,7 +91,7 @@ qqmlplot <- \(y, obj, plot.it = TRUE, datax = FALSE, ...) {
 #' @rdname ProbabilityPlots
 #' @export
 qqmlline <- \(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
-                     ...) {
+  ...) {
   obj <- to_univariateML(y, obj)
   y <- stats::quantile(y, probs, names = FALSE, type = qtype, na.rm = TRUE)
   x <- qml(probs, obj)

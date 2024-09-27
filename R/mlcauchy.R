@@ -27,11 +27,11 @@
 #' @examples
 #' mlcauchy(airquality$Temp)
 #' @export
+mlcauchy <- \(x, na.rm = FALSE, ...) {}
 
-mlcauchy <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+mlcauchy <- decorator("mlcauchy")
 
+mlcauchy_ <- \(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))
 
@@ -43,17 +43,19 @@ mlcauchy <- \(x, na.rm = FALSE, ...) {
     p = start
   ))
 
-  object <- c(
+  estimates <- c(
     location = values$estimate[1],
     scale = exp(values$estimate[2])
   )
 
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Cauchy"
-  attr(object, "density") <- "stats::dcauchy"
-  attr(object, "logLik") <- -values$minimum
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = -values$minimum)
 }
+
+metadata$mlcauchy <- list(
+  "model" = "Cauchy",
+  "density" = "stats::dcauchy",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("location", "scale"),
+  "class" = "mlfun"
+)

@@ -179,10 +179,10 @@ print.univariateML <- \(x, ...) {
 #' confint(object, "mean") # 95% confidence interval for the mean parameter
 #' # confint(object, "variance") # Fails since 'variance isn't a main parameter.
 confint.univariateML <- \(object,
-                                 parm = NULL,
-                                 level = 0.95,
-                                 Nreps = 1000,
-                                 ...) {
+  parm = NULL,
+  level = 0.95,
+  Nreps = 1000,
+  ...) {
   if (is.null(parm)) parm <- names(object)
 
   assertthat::assert_that(all(parm %in% names(object)),

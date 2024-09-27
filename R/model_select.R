@@ -36,8 +36,8 @@
 #' @export
 
 model_select <- \(x, models = univariateML_models,
-                         criterion = c("aic", "bic", "loglik"),
-                         na.rm = FALSE, ...) {
+  criterion = c("aic", "bic", "loglik"),
+  na.rm = FALSE, ...) {
   check_models(models)
   criterion <- match.arg(criterion)
 

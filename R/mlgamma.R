@@ -30,12 +30,11 @@
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
 #' @export
+mlgamma <- \(x, na.rm = FALSE, ...) {}
 
-mlgamma <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+mlgamma <- decorator("mlgamma")
 
+mlgamma_ <- \(x, ...) {
   dots <- list(...)
 
   rel.tol <- if (!is.null(dots$rel.tol)) {
@@ -77,14 +76,20 @@ mlgamma <- \(x, na.rm = FALSE, ...) {
   ## Given the shape, the rate is easy to compute.
   rate <- shape / mean_hat
 
-  object <- c(shape = shape, rate = rate)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Gamma"
-  attr(object, "density") <- "stats::dgamma"
-  attr(object, "logLik") <- n * (shape * log(rate) - log(gamma(shape)) +
+  estimates <- c(shape = shape, rate = rate)
+  logLik <- n * (shape * log(rate) - log(gamma(shape)) +
     (shape - 1) * L - rate * mean_hat)
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+
+  list(estimates = estimates, logLik = logLik)
 }
+
+
+metadata$mlgamma <- list(
+  "model" = "Gamma",
+  "density" = "stats::dgamma",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("shape", "rate"),
+  "class" = "mlfun"
+)
+
