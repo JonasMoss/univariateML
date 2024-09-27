@@ -62,7 +62,7 @@
 #'   for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968,
 #'   Pages 1<U+2013>17, https://doi.org/10.1093/biomet/55.1.1
 
-ppmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
+ppmlplot <- \(y, obj, plot.it = TRUE, datax = FALSE, ...) {
   pp <- ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
   if (plot.it) do.call(graphics::plot, pp$args)
   invisible(pp$value)
@@ -70,11 +70,11 @@ ppmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
 
 #' @rdname ProbabilityPlots
 #' @export
-ppmlline <- function(...) graphics::abline(a = 0, b = 1, ...)
+ppmlline <- \(...) graphics::abline(a = 0, b = 1, ...)
 
 #' @rdname ProbabilityPlots
 #' @export
-ppmlpoints <- function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
+ppmlpoints <- \(y, obj, plot.it = TRUE, datax = TRUE, ...) {
   pp <- ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
   if (plot.it) do.call(graphics::points, pp$args)
   invisible(pp$value)
@@ -82,7 +82,7 @@ ppmlpoints <- function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
 
 #' @rdname ProbabilityPlots
 #' @export
-qqmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
+qqmlplot <- \(y, obj, plot.it = TRUE, datax = FALSE, ...) {
   qq <- ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
   if (plot.it) do.call(graphics::plot, qq$args)
   invisible(qq$value)
@@ -90,7 +90,7 @@ qqmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
 
 #' @rdname ProbabilityPlots
 #' @export
-qqmlline <- function(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
+qqmlline <- \(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
                      ...) {
   obj <- to_univariateML(y, obj)
   y <- stats::quantile(y, probs, names = FALSE, type = qtype, na.rm = TRUE)
@@ -109,7 +109,7 @@ qqmlline <- function(y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
 
 #' @rdname ProbabilityPlots
 #' @export
-qqmlpoints <- function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
+qqmlpoints <- \(y, obj, plot.it = TRUE, datax = TRUE, ...) {
   qq <- ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
   if (plot.it) do.call(graphics::points, qq$args)
   invisible(qq$value)

@@ -27,7 +27,7 @@
 #'   Skewness, Preprint.
 #' @export
 
-mlsged <- function(x, na.rm = FALSE, ...) {
+mlsged <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 

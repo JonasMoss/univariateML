@@ -37,7 +37,7 @@ mlnaka <- \(x, na.rm = TRUE, ...) {}
 
 mlnaka <- decorator("mlnaka")
 
-mlnaka_ <- function(x, ...) {
+mlnaka_ <- \(x, ...) {
   estimates <- mlgamma(x^2, na.rm = TRUE, ...)
   estimates["rate"] <- 1 / estimates["rate"] * estimates["shape"]
   n <- length(x)

@@ -68,7 +68,7 @@ bootstrapml(object)
 ## parametric bootstrap confidence interval for the mean with confidence
 ## limits c(0.05, 0.95)
 
-bootstrapml(object, map = function(x) x[1] / x[2], probs = c(0.05, 0.95))
+bootstrapml(object, map = \(x) x[1] / x[2], probs = c(0.05, 0.95))
 
 #       5\%      95\%
 # 17.33962 18.31253

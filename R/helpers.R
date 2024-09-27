@@ -35,7 +35,7 @@ univariateML_construct <- \(estimates, name, params) {
 }
 
 
-ml_check_modify <- function(x, na.rm, name) {
+ml_check_modify <- \(x, na.rm, name) {
   assertthat::assert_that(is.numeric(x))
   msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
   assertthat::assert_that(NCOL(x) == 1, msg = msg)
@@ -68,7 +68,7 @@ ml_check_modify <- function(x, na.rm, name) {
 #' @return A string
 #' @keywords internal
 
-univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
+univariateML_to_string <- \(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
   if (type %in% c("d", "p", "q", "r")) {
     strings <- strsplit(attr(obj, "density"), "::")[[1]]
@@ -87,7 +87,7 @@ univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
 #' @return A string
 #' @keywords internal
 
-univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
+univariateML_to_function <- \(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
   string <- univariateML_to_string(obj, type = type)
   fun <- eval(parse(text = string))
@@ -102,7 +102,7 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
 #' @param obj Function to apply.
 #' @keywords internal
 
-to_univariateML <- function(y, obj) {
+to_univariateML <- \(y, obj) {
   if (inherits(obj, "univariateML")) {
     obj <- obj
   } else {
@@ -114,7 +114,7 @@ to_univariateML <- function(y, obj) {
       {
         obj <- obj(y)
       },
-      error = function(cond) stop(msg)
+      error = \(cond) stop(msg)
     )
     stopifnot(inherits(obj, "univariateML"))
   }
@@ -129,7 +129,7 @@ to_univariateML <- function(y, obj) {
 #' @param x input to a `ML***` function.
 #' @return `NULL`
 
-ml_input_checker <- function(x) {
+ml_input_checker <- \(x) {
   assertthat::assert_that(is.numeric(x))
   msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
   assertthat::assert_that(NCOL(x) == 1, msg = msg)
@@ -143,7 +143,7 @@ ml_input_checker <- function(x) {
 #' @param ... Arguments passed to `plot` or `points` down the line.
 #' @keywords internal
 
-ppqq_wrangler <- function(y, obj, datax, pp, ...) {
+ppqq_wrangler <- \(y, obj, datax, pp, ...) {
   if (!is.null(attr(obj, "continuous"))) {
     stop("QQ and PP plots are only supported for continuous distributions.")
   }

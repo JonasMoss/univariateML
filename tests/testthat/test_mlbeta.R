@@ -6,11 +6,11 @@ small_data <- runif(100)
 tiny_data <- rbeta(10, 2, 7)
 
 ## Checks if the ML is correct.
-mle1 <- nlm(function(p) {
+mle1 <- nlm(\(p) {
   -mean(dbeta(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 
-mle2 <- nlm(function(p) {
+mle2 <- nlm(\(p) {
   -mean(dbeta(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 

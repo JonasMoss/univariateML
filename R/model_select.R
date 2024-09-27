@@ -35,17 +35,17 @@
 #'
 #' @export
 
-model_select <- function(x, models = univariateML_models,
+model_select <- \(x, models = univariateML_models,
                          criterion = c("aic", "bic", "loglik"),
                          na.rm = FALSE, ...) {
   check_models(models)
   criterion <- match.arg(criterion)
 
-  mlf <- sapply(paste0("ml", models), function(x) eval(parse(text = x)))
-  fits <- lapply(mlf, function(f) try(f(x, na.rm = na.rm), silent = TRUE))
+  mlf <- sapply(paste0("ml", models), \(x) eval(parse(text = x)))
+  fits <- lapply(mlf, \(f) try(f(x, na.rm = na.rm), silent = TRUE))
 
   ## catch out-of-bounds errors (and similar)
-  error_inds <- sapply(fits, function(fit) inherits(fit, "try-error"))
+  error_inds <- sapply(fits, \(fit) inherits(fit, "try-error"))
   if (all(error_inds)) {
     error_msgs <- sapply(fits[error_inds], as.character)
     details <- paste0("(", names(error_msgs), ") ", error_msgs)
@@ -62,7 +62,7 @@ model_select <- function(x, models = univariateML_models,
   fits[[which.min(crits)]]
 }
 
-check_models <- function(models) {
+check_models <- \(models) {
   is_implemented <- models %in% univariateML_models
   if (any(!is_implemented)) {
     stop(

@@ -28,7 +28,7 @@
 #' mlcauchy(airquality$Temp)
 #' @export
 
-mlcauchy <- function(x, na.rm = FALSE, ...) {
+mlcauchy <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
@@ -37,7 +37,7 @@ mlcauchy <- function(x, na.rm = FALSE, ...) {
 
   start <- c(m, mad)
 
-  f <- function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
+  f <- \(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
   values <- suppressWarnings(stats::nlm(
     f = f,
     p = start

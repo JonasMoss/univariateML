@@ -27,7 +27,7 @@
 #' @export
 
 
-mlinvgamma <- function(x, na.rm = FALSE, ...) {
+mlinvgamma <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)

@@ -35,7 +35,7 @@
 #' mllomax(extraDistr::rlomax(100, 2, 4))
 #' @export
 
-mllomax <- function(x, na.rm = FALSE, ...) {
+mllomax <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) >= 0)
@@ -81,7 +81,7 @@ mllomax <- function(x, na.rm = FALSE, ...) {
     lambda0 <- lambda
   }
 
-  loglik <- function(lambda, x) {
+  loglik <- \(lambda, x) {
     S <- mean(log(1 + lambda * x))
     -log(lambda) + log(S) + S + 1
   }

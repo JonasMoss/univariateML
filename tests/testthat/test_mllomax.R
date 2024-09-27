@@ -8,15 +8,15 @@ medium_data <- extraDistr::rlomax(1000, 1 / 2, 2)
 large_data <- extraDistr::rlomax(10000, 20, 13)
 
 ## Checks if the ML is correct.
-mle2 <- suppressWarnings(nlm(function(p) {
+mle2 <- suppressWarnings(nlm(\(p) {
   -sum(extraDistr::dlomax(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 
-mle3 <- suppressWarnings(nlm(function(p) {
+mle3 <- suppressWarnings(nlm(\(p) {
   -sum(extraDistr::dlomax(medium_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 
-mle4 <- suppressWarnings(nlm(function(p) {
+mle4 <- suppressWarnings(nlm(\(p) {
   -sum(extraDistr::dlomax(large_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 

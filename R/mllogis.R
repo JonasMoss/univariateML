@@ -26,7 +26,7 @@
 #' Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York.
 #' @export
 
-mllogis <- function(x, na.rm = FALSE, ...) {
+mllogis <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
 
@@ -34,7 +34,7 @@ mllogis <- function(x, na.rm = FALSE, ...) {
   mad <- stats::median(abs(x - m))
   start <- c(m, log(mad))
 
-  f <- function(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
+  f <- \(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
   values <- suppressWarnings(stats::nlm(
     f = f,
     p = start

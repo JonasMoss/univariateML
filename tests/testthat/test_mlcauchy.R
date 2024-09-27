@@ -9,19 +9,19 @@ large_data <- stats::rcauchy(10000, 20, 13)
 
 ## Checks if the ML is correct.
 
-mle1 <- suppressWarnings(nlm(function(p) {
+mle1 <- suppressWarnings(nlm(\(p) {
   -sum(stats::dcauchy(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1)))
 
-mle2 <- suppressWarnings(nlm(function(p) {
+mle2 <- suppressWarnings(nlm(\(p) {
   -sum(stats::dcauchy(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1)))
 
-mle3 <- suppressWarnings(nlm(function(p) {
+mle3 <- suppressWarnings(nlm(\(p) {
   -sum(stats::dcauchy(medium_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1)))
 
-mle4 <- suppressWarnings(nlm(function(p) {
+mle4 <- suppressWarnings(nlm(\(p) {
   -sum(stats::dcauchy(large_data, p[1], p[2], log = TRUE))
 }, p = c(
   stats::median(large_data),

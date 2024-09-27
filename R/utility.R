@@ -9,7 +9,7 @@
 #' @return A merged list where conflicts are solved in favor
 #' of y. Does not preserve ordering.
 
-listmerge <- function(x, y, type = c("merge", "template")) {
+listmerge <- \(x, y, type = c("merge", "template")) {
   type <- match.arg(type)
 
   if (length(y) == 0) {

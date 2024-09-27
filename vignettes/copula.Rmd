@@ -83,7 +83,7 @@ are the Joe copula, the Clayton copula, and the Gumbel copula.
 
 ```{r, AIC_copula, warning = FALSE, cache = TRUE}
 # Transform the marginals to the unit interval.
-y <- sapply(seq_along(data), function(j) pml(data[[j]], margin_fits[[j]]))
+y <- sapply(seq_along(data), \(j) pml(data[[j]], margin_fits[[j]]))
 
 # The copulas described above.
 copulas <- list(
@@ -96,7 +96,7 @@ copulas <- list(
 
 fits <- sapply(
   copulas,
-  function(x) copula::fitCopula(x, data = y, method = "mpl")
+  \(x) copula::fitCopula(x, data = y, method = "mpl")
 )
 
 sapply(fits, AIC)

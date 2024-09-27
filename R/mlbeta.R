@@ -29,11 +29,11 @@
 #' @examples
 #' AIC(mlbeta(USArrests$Rape / 100))
 #' @export
-mlbeta <- function(x, na.rm = FALSE, ...) {}
+mlbeta <- \(x, na.rm = FALSE, ...) {}
 
 mlbeta <- decorator("mlbeta")
 
-mlbeta_ <- function(x, ...) {
+mlbeta_ <- \(x, ...) {
   n <- length(x)
 
   val1 <- mean(log(x))
@@ -52,11 +52,11 @@ mlbeta_ <- function(x, ...) {
     start <- c(1 / 2 + G1 * denom, 1 / 2 + G2 * denom)
   }
 
-  objective <- function(p) {
+  objective <- \(p) {
     lbeta(p[1], p[2]) - (p[1] - 1) * val1 - (p[2] - 1) * val2
   }
 
-  gradient <- function(p) {
+  gradient <- \(p) {
     digamma_alpha_beta <- digamma(p[1] + p[2])
     c(
       digamma(p[1]) - digamma_alpha_beta - val1,
@@ -65,19 +65,19 @@ mlbeta_ <- function(x, ...) {
   }
 
   if (type == "gradient") {
-    beta_objective <- function(p) {
+    beta_objective <- \(p) {
       result <- objective(p)
       attr(result, "gradient") <- gradient(p)
       result
     }
   } else if (type == "hessian") {
-    hessian <- function(p) {
+    hessian <- \(p) {
       trigamma_alpha_beta <- -trigamma(p[1] + p[2])
       matrix(trigamma_alpha_beta, nrow = 2, ncol = 2) +
         diag(c(trigamma(p[1]), trigamma(p[2])))
     }
 
-    beta_objective <- function(p) {
+    beta_objective <- \(p) {
       result <- objective(p)
       attr(result, "gradient") <- gradient(p)
       attr(result, "hessian") <- hessian(p)

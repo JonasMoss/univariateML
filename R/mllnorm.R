@@ -27,7 +27,7 @@
 #' Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 #' @export
 
-mllnorm <- function(x, na.rm = FALSE, ...) {
+mllnorm <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)

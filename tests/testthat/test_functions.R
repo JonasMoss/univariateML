@@ -61,11 +61,11 @@ for (i in 1:length(dists)) {
   # Validate rdist.
   # Seeds must be reset repeatedly to ensure perfect random replication.
   expect_equal(
-    (function() {
+    (\() {
       set.seed(seed)
       rml(1, obj)
     })(),
-    (function() {
+    (\() {
       set.seed(seed)
       do.call(
         paste0("r", dist), # rdist()

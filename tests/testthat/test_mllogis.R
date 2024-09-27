@@ -13,7 +13,7 @@ m <- stats::median(tiny_data)
 mad <- stats::median(abs(tiny_data - m))
 start <- c(m, log(mad))
 
-mle1 <- suppressWarnings(nlm(function(p) {
+mle1 <- suppressWarnings(nlm(\(p) {
   -sum(stats::dlogis(tiny_data, p[1], exp(p[2]), log = TRUE))
 }, p = start))
 
@@ -22,7 +22,7 @@ m <- stats::median(small_data)
 mad <- stats::median(abs(small_data - m))
 start <- c(m, log(mad))
 
-mle2 <- suppressWarnings(nlm(function(p) {
+mle2 <- suppressWarnings(nlm(\(p) {
   -sum(stats::dlogis(small_data, p[1], exp(p[2]), log = TRUE))
 }, p = start))
 
@@ -31,7 +31,7 @@ m <- stats::median(medium_data)
 mad <- stats::median(abs(medium_data - m))
 start <- c(m, log(mad))
 
-mle3 <- suppressWarnings(nlm(function(p) {
+mle3 <- suppressWarnings(nlm(\(p) {
   -sum(stats::dlogis(medium_data, p[1], exp(p[2]), log = TRUE))
 }, p = start))
 
@@ -39,7 +39,7 @@ m <- stats::median(large_data)
 mad <- stats::median(abs(large_data - m))
 start <- c(m, log(mad))
 
-mle4 <- suppressWarnings(nlm(function(p) {
+mle4 <- suppressWarnings(nlm(\(p) {
   -sum(stats::dlogis(large_data, p[1], exp(p[2]), log = TRUE))
 }, p = start))
 
