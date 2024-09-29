@@ -28,25 +28,20 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlweibull <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlweibull <- decorator("mlweibull")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+metadata$mlweibull <- list(
+  "model" = "Weibull",
+  "density" = "stats::dweibull",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("shape", "scale"),
   "class" = "mlfun"
 )
 
-mlweibull <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
-  assertthat::assert_that(min(x) > 0)
-
+mlweibull_ <- \(x, na.rm = FALSE, ...) {
   dots <- list(...)
 
   shape0 <- if (!is.null(dots$sigma0)) dots$shape0 else 1
@@ -90,14 +85,8 @@ mlweibull <- \(x, na.rm = FALSE, ...) {
   scale <- (mean(x^shape))^(1 / shape)
   shape_sum <- mean(x^shape)
   n <- length(x)
-  object <- c(shape = shape, scale = scale)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Weibull"
-  attr(object, "density") <- "stats::dweibull"
-  attr(object, "logLik") <- n * (log(shape) - log(scale) +
+  estimates <- c(shape, scale)
+  logLik <- n * (log(shape) - log(scale) +
     (shape - 1) * (l_hat - log(scale)) - scale^-shape * shape_sum)
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = logLik)
 }

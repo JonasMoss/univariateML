@@ -25,23 +25,20 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mllogis <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mllogis <- decorator("mllogis")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
+metadata$mllogis <- list(
+  "model" = "Logistic",
+  "density" = "stats::dlogis",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("location", "scale"),
   "class" = "mlfun"
 )
 
-mllogis <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
+mllogis_ <- \(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))
   start <- c(m, log(mad))
@@ -52,17 +49,11 @@ mllogis <- \(x, na.rm = FALSE, ...) {
     p = start
   ))
 
-  object <- c(
+  estimates <- c(
     location = values$estimate[1],
     scale = exp(values$estimate[2])
   )
 
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Logistic"
-  attr(object, "density") <- "stats::dlogis"
-  attr(object, "logLik") <- -values$minimum
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  logLik <- -values$minimum
+  list(estimates = estimates, logLik = logLik)
 }

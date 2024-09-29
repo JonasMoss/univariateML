@@ -30,7 +30,11 @@ univariateML_construct <- \(estimates, name, params) {
   class <- "univariateML"
   args <- c(.Data = list(estimates), params, metadata[[name]], class = class)
   object <- do.call(structure, args)
-  attr(object, "call") <- str2lang(attr(object, "call"))
+  attr(object, "call") <- if(length(attr(object, "call")) == 0) {
+    str2lang(attr(object, "call"))
+  } else {
+    NULL
+  }
   object
 }
 
@@ -144,7 +148,7 @@ ml_input_checker <- \(x) {
 #' @keywords internal
 
 ppqq_wrangler <- \(y, obj, datax, pp, ...) {
-  if (!is.null(attr(obj, "continuous"))) {
+  if (!(attr(obj, "continuous"))) {
     stop("QQ and PP plots are only supported for continuous distributions.")
   }
   ## Nas are removed by default in this function, following qqplot.

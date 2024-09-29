@@ -1,4 +1,4 @@
-context("mlgumbel")
+context("mlkumar")
 
 ## Data generation.
 set.seed(313)

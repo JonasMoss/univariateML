@@ -25,34 +25,26 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlnorm <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlnorm <- decorator("mlnorm")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
+metadata$mlnorm <- list(
+  "model" = "Normal",
+  "density" = "stats::dnorm",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("mean", "sd"),
   "class" = "mlfun"
 )
 
-mlnorm <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+mlnorm_ <- \(x, ...) {
   n <- length(x)
 
   mu <- mean(x)
   sigma <- sqrt(stats::var(x) * (n - 1) / n)
 
-  object <- c(mean = mu, sd = sigma)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Normal"
-  attr(object, "density") <- "stats::dnorm"
-  attr(object, "logLik") <- -n / 2 * (1 + log(2 * pi) + 2 * log(sigma))
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(mu, sigma)
+  logLik <- -n / 2 * (1 + log(2 * pi) + 2 * log(sigma))
+  list(estimates = estimates, logLik = logLik)
 }

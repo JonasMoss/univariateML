@@ -23,31 +23,20 @@
 #' @references Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
 #'     Tails and Skewness, Preprint.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlsnorm <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlsnorm <- decorator("mlsnorm")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
+metadata$mlsnorm <- list(
+  "model" = "Skew Normal",
+  "density" = "fGarch::dsnorm",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("mean", "sd", "xi"),
   "class" = "mlfun"
 )
 
-mlsnorm <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
+mlsnorm_ <- \(x, ...) {
   fit <- suppressWarnings(fGarch::snormFit(x))
-  object <- fit[["par"]]
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Skew Normal"
-  attr(object, "density") <- "fGarch::dsnorm"
-  attr(object, "logLik") <- -fit$objective
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = fit[["par"]], logLik = -fit$objective)
 }

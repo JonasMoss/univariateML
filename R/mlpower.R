@@ -34,24 +34,20 @@
 #' Arslan, G. "A new characterization of the power distribution."
 #' Journal of Computational and Applied Mathematics 260 (2014): 99-102.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlpower <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlpower <- decorator("mlpower")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+metadata$mlpower <- list(
+  "model" = "PowerDist",
+  "density" = "extraDistr::dpower",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("alpha", "beta"),
   "class" = "mlfun"
 )
 
-mlpower <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) >= 0)
-
+mlpower_ <- \(x, ...) {
   dots <- list(...)
   epsilon <- if (!is.null(dots$epsilon)) {
     dots$epsilon
@@ -63,18 +59,8 @@ mlpower <- \(x, na.rm = FALSE, ...) {
   alpha <- max(x) + epsilon
   beta <- 1 / (log(alpha) - M)
 
-  object <- c(
-    alpha = alpha,
-    beta = beta
-  )
-
-  class(object) <- "univariateML"
-  attr(object, "model") <- "PowerDist"
-  attr(object, "density") <- "extraDistr::dpower"
-  attr(object, "logLik") <-
+  estimates <- c(alpha,beta)
+  logLik <-
     length(x) * (log(beta) - beta * log(alpha) + (beta - 1) * M)
-  attr(object, "support") <- c(0, alpha)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = logLik)
 }

@@ -21,34 +21,22 @@
 #' mlpois(precip)
 #' @seealso [Poisson][stats::Poisson] for the Poisson density.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlpois <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlpois <- decorator("mlpois")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+metadata$mlpois <- list(
+  "model" = "Poisson",
+  "density" = "stats::dpois",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("lambda"),
   "class" = "mlfun"
 )
 
-mlpois <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+mlpois_ <- \(x, na.rm = FALSE, ...) {
   n <- length(x)
-
   lambda <- mean(x)
-
-  object <- c(lambda = lambda)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Poisson"
-  attr(object, "continuous") <- FALSE
-  attr(object, "density") <- "stats::dpois"
-  attr(object, "logLik") <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  logLik <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))
+  list(estimates = lambda, logLik = logLik)
 }

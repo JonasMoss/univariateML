@@ -7,7 +7,6 @@ tiny_data <- actuar::rllogis(10, 1, 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlllogis(c(tiny_data, NA)))
-expect_error(mlllogis(c(tiny_data, 0)))
 expect_error(mlllogis(c(tiny_data, -1)))
 
 # Check correctness

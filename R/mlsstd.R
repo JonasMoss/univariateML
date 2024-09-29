@@ -23,32 +23,20 @@
 #' @references Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
 #'     Tails and Skewness, Preprint.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlsstd <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlsstd <- decorator("mlsstd")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
+metadata$mlsstd <- list(
+  "model" = "Skew Student-t",
+  "density" = "fGarch::dsstd",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("mean","sd","nu","xi"),
   "class" = "mlfun"
 )
 
-mlsstd <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
+mlsstd_ <- \(x, ...) {
   fit <- suppressWarnings(fGarch::sstdFit(x))
-
-  object <- fit[["estimate"]]
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Skew Student-t"
-  attr(object, "density") <- "fGarch::dsstd"
-  attr(object, "logLik") <- -fit$minimum
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = fit[["estimate"]], logLik = -fit$minimum)
 }

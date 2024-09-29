@@ -23,21 +23,18 @@ expect_equal(
 
 ## Does it find the correct model?
 est <- mlnorm(small_data)
+est_aic <- model_select(small_data, models = c("norm", "cauchy"), criterion = "aic")
+est_select <- model_select(small_data, models = c("norm", "cauchy"), criterion = "loglik")
+est_bic <- model_select(small_data, models = c("norm", "cauchy"), criterion = "bic")
+
 attr(est, "call") <- str2lang("f(x = x, na.rm = na.rm)")
-expect_equal(
-  est,
-  model_select(small_data, models = c("norm", "cauchy"), criterion = "loglik")
-)
+attr(est_aic, "call") <- str2lang("f(x = x, na.rm = na.rm)")
+attr(est_select, "call") <- str2lang("f(x = x, na.rm = na.rm)")
+attr(est_bic, "call") <- str2lang("f(x = x, na.rm = na.rm)")
 
-expect_equal(
-  est,
-  model_select(small_data, models = c("norm", "cauchy"), criterion = "aic")
-)
-
-expect_equal(
-  est,
-  model_select(small_data, models = c("norm", "cauchy"), criterion = "bic")
-)
+expect_equal(est, est_aic)
+expect_equal(est, est_select)
+expect_equal(est, est_bic)
 
 ## Check class.
 est <- model_select(small_data, models = c("norm", "cauchy"))

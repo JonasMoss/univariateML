@@ -23,31 +23,20 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlstd <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlstd <- decorator("mlstd")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
+metadata$mlstd <- list(
+  "model" = "Student-t",
+  "density" = "fGarch::dstd",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("mean", "sd", "nu"),
   "class" = "mlfun"
 )
 
-mlstd <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
+mlstd_ <- \(x, ...) {
   fit <- suppressWarnings(fGarch::stdFit(x))
-  object <- fit[["par"]]
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Student-t"
-  attr(object, "density") <- "fGarch::dstd"
-  attr(object, "logLik") <- -fit$objective
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = fit[["par"]], logLik = -fit$objective)
 }

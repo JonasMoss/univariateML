@@ -26,35 +26,26 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mllnorm <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mllnorm <- decorator("mllnorm")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+metadata$mllnorm <- list(
+  "model" = "Lognormal",
+  "density" = "stats::dlnorm",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("meanlog", "sdlog"),
   "class" = "mlfun"
 )
 
-mllnorm <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+mllnorm_ <- \(x, na.rm = FALSE, ...) {
   y <- log(x)
   n <- length(x)
   meanlog <- mean(y)
   sdlog <- sqrt(stats::var(y) * (n - 1) / n)
-  object <- c(meanlog = meanlog, sdlog = sdlog)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Lognormal"
-  attr(object, "density") <- "stats::dlnorm"
-  attr(object, "logLik") <-
+  estimates <- c(meanlog = meanlog, sdlog = sdlog)
+  logLik <-
     -n / 2 * (1 + log(2 * pi) + 2 * log(sdlog) + 2 * meanlog)
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = logLik)
 }

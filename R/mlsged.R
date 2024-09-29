@@ -26,31 +26,20 @@
 #'   Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat Tails and
 #'   Skewness, Preprint.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlsged <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlsged <- decorator("mlsged")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
+metadata$mlsged <- list(
+  "model" = "Skew Generalized Error",
+  "density" = "fGarch::dsged",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("mean","sd","nu","xi"),
   "class" = "mlfun"
 )
 
-mlsged <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
+mlsged_ <- \(x, ...) {
   fit <- suppressWarnings(fGarch::sgedFit(x))
-  object <- fit[["par"]]
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Skew Generalized Error"
-  attr(object, "density") <- "fGarch::dsged"
-  attr(object, "logLik") <- -fit$objective
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = fit[["par"]], logLik = -fit$objective)
 }

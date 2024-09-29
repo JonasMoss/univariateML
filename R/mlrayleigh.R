@@ -24,33 +24,21 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlrayleigh <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlrayleigh <- decorator("mlrayleigh")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+metadata$mlrayleigh <- list(
+  "model" = "Rayleigh",
+  "density" = "extraDistr::drayleigh",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("sigma"),
   "class" = "mlfun"
 )
 
-mlrayleigh <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
-  assertthat::assert_that(min(x) >= 0)
-
+mlrayleigh_ <- \(x, na.rm = FALSE, ...) {
   sigma <- sqrt(1 / 2 * mean(x^2))
-  object <- c(sigma = sigma)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Rayleigh"
-  attr(object, "density") <- "extraDistr::drayleigh"
-  attr(object, "logLik") <- length(x) * (mean(log(x) - 2 * log(sigma) - 1))
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  logLik <- length(x) * (mean(log(x) - 2 * log(sigma) - 1))
+  list(estimates = sigma, logLik = logLik)
 }

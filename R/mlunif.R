@@ -23,34 +23,23 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlunif <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlunif <- decorator("mlunif")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
+metadata$mlunif <- list(
+  "model" = "Uniform",
+  "density" = "stats::dunif",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("min", "max"),
   "class" = "mlfun"
 )
 
 
-mlunif <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
-  n <- length(x)
+mlunif_ <- \(x, ...) {
   max_ <- max(x)
   min_ <- min(x)
-  object <- c(min = min_, max = max_)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Uniform"
-  attr(object, "density") <- "stats::dunif"
-  attr(object, "logLik") <- -n * log(max_ - min_)
-  attr(object, "support") <- c(min_, max_)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+
+  list(estimates = c(min_, max_), logLik = -length(x) * log(max_ - min_))
 }

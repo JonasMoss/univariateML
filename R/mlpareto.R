@@ -25,36 +25,25 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlpareto <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mlpareto <- decorator("mlpareto")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+metadata$mlpareto <- list(
+  "model" = "Pareto",
+  "density" = "extraDistr::dpareto",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("a", "b"),
   "class" = "mlfun"
 )
 
-mlpareto <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
-
+mlpareto_ <- \(x, ...) {
   M <- mean(log(x))
   b <- min(x)
   a <- 1 / (M - log(b))
 
-  object <- c(a = a, b = b)
-
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Pareto"
-  attr(object, "density") <- "extraDistr::dpareto"
-  attr(object, "logLik") <- length(x) * (log(a) + a * log(b) - (a + 1) * M)
-  attr(object, "support") <- c(b, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(a, b)
+  logLik <- length(x) * (log(a) + a * log(b) - (a + 1) * M)
+  list(estimates = estimates, logLik = logLik)
 }

@@ -39,20 +39,15 @@ mlkumar <- \(x, na.rm = FALSE, ...) {}
 mlkumar <- decorator("mlkumar")
 
 metadata$mlkumar <- list(
-  "model" = "kumar",
+  "model" = "Kumaraswamy",
   "density" = "extraDistr::dkumar",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("a", "b"),
   "class" = "mlfun"
 )
 
 mlkumar_ <- \(x, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
-  assertthat::assert_that(max(x) < 1)
-
   dots <- list(...)
 
   a0 <- if (!is.null(dots$a0)) dots$a0 else 1
@@ -99,14 +94,7 @@ mlkumar_ <- \(x, ...) {
   ## Given the shape, the scale is easy to compute.
   b <- -1 / mean(log(1 - x^a))
 
-  object <- c(a = a, b = b)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Kumaraswamy"
-  attr(object, "density") <- "extraDistr::dkumar"
-  attr(object, "logLik") <-
-    length(x) * (log(a) + log(b) + (a - 1) * mean(log(x)) + -1 + 1 / b)
-  attr(object, "support") <- c(0, 1)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(a = a, b = b)
+  logLik <- length(x) * (log(a) + log(b) + (a - 1) * mean(log(x)) + -1 + 1 / b)
+  list(estimates = estimates, logLik = logLik)
 }

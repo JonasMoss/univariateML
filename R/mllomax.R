@@ -34,23 +34,21 @@
 #' set.seed(3)
 #' mllomax(extraDistr::rlomax(100, 2, 4))
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mllomax <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
+mllomax <- decorator("mllomax")
 
-metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+metadata$mllomax <- list(
+  "model" = "Lomax",
+  "density" = "extraDistr::dlomax",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
   "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
+  "names" = c("lambda", "kappa"),
   "class" = "mlfun"
 )
 
-mllomax <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) >= 0)
+mllomax_ <- \(x, ...) {
+
   n <- length(x)
 
   dots <- list(...)
@@ -111,16 +109,8 @@ mllomax <- \(x, na.rm = FALSE, ...) {
   }
 
   S <- mean(log(1 + lambda * x))
-  object <- c(
-    lambda = lambda,
-    kappa = 1 / mean(log(1 + lambda * x))
-  )
-  class(object) <- c("univariateML")
-  attr(object, "logLik") <- n * (log(lambda) - log(S) - S - 1)
-  attr(object, "model") <- "Lomax"
-  attr(object, "density") <- "extraDistr::dlomax"
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(lambda, 1 / mean(log(1 + lambda * x)))
+  logLik <- n * (log(lambda) - log(S) - S - 1)
+  list(estimates = estimates, logLik = logLik)
+
 }
