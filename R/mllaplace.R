@@ -25,23 +25,23 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
 #' @export
+mllaplace <- \(x, na.rm = FALSE, ...) {}
 
-mllaplace <- \(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+mllaplace <- decorator("mllaplace")
 
+metadata$mllaplace <- list(
+  "model" = "Laplace",
+  "density" = "extraDistr::dlaplace",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("mu", "sigma"),
+  "class" = "mlfun"
+)
+
+mllaplace_ <- \(x, ...) {
   mu <- stats::median(x)
   sigma <- mean(abs(x - mu))
-  object <- c(
-    mu = mu,
-    sigma = sigma
-  )
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Laplace"
-  attr(object, "density") <- "extraDistr::dlaplace"
-  attr(object, "logLik") <- -length(x) * (1 + log(2 * sigma))
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(mu = mu, sigma = sigma)
+  logLik <- -length(x) * (1 + log(2 * sigma))
+  list(estimates = estimates, logLik = logLik)
 }

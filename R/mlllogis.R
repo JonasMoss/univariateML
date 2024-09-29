@@ -31,6 +31,18 @@
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
 #' actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
+mlgumbel <- \(x, na.rm = FALSE, ...) {}
+
+mlgumbel <- decorator("mlgumbel")
+
+metadata$mlgumbel <- list(
+  "model" = "Gumbel",
+  "density" = "extraDistr::dgumbel",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("mu", "sigma"),
+  "class" = "mlfun"
+)
 
 mlllogis <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))

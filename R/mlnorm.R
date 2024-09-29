@@ -25,6 +25,18 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export
+mlgumbel <- \(x, na.rm = FALSE, ...) {}
+
+mlgumbel <- decorator("mlgumbel")
+
+metadata$mlgumbel <- list(
+  "model" = "Gumbel",
+  "density" = "extraDistr::dgumbel",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("mu", "sigma"),
+  "class" = "mlfun"
+)
 
 mlnorm <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))

@@ -34,8 +34,20 @@
 #' for double-bounded random processes." Journal of Hydrology 46.1-2 (1980):
 #' 79-88.
 #' @export
+mlkumar <- \(x, na.rm = FALSE, ...) {}
 
-mlkumar <- \(x, na.rm = FALSE, ...) {
+mlkumar <- decorator("mlkumar")
+
+metadata$mlkumar <- list(
+  "model" = "kumar",
+  "density" = "extraDistr::dkumar",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("mu", "sigma"),
+  "class" = "mlfun"
+)
+
+mlkumar_ <- \(x, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)

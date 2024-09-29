@@ -26,8 +26,20 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
 #' @export
+mlinvgauss <- \(x, na.rm = FALSE, ...) {}
 
-mlinvgauss <- \(x, na.rm = FALSE, ...) {
+mlinvgauss <- decorator("mlinvgauss")
+
+metadata$mlinvgauss <- list(
+  "model" = "invgauss",
+  "density" = "extraDistr::dinvgauss",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("mu", "sigma"),
+  "class" = "mlfun"
+)
+
+mlinvgauss_ <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)

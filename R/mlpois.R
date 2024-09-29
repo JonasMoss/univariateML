@@ -21,6 +21,18 @@
 #' mlpois(precip)
 #' @seealso [Poisson][stats::Poisson] for the Poisson density.
 #' @export
+mlgumbel <- \(x, na.rm = FALSE, ...) {}
+
+mlgumbel <- decorator("mlgumbel")
+
+metadata$mlgumbel <- list(
+  "model" = "Gumbel",
+  "density" = "extraDistr::dgumbel",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("mu", "sigma"),
+  "class" = "mlfun"
+)
 
 mlpois <- \(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))

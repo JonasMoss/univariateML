@@ -31,8 +31,20 @@
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
 #' actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
+mlinvweibull <- \(x, na.rm = FALSE, ...) {}
 
-mlinvweibull <- \(x, na.rm = FALSE, ...) {
+mlinvweibull <- decorator("mlinvweibull")
+
+metadata$mlinvweibull <- list(
+  "model" = "invweibull",
+  "density" = "extraDistr::dinvweibull",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "continuous" = TRUE,
+  "names" = c("mu", "sigma"),
+  "class" = "mlfun"
+)
+
+mlinvweibull_ <- \(x, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)

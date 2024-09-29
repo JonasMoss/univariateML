@@ -1,4 +1,4 @@
-context("mlcuachy")
+context("mlinvgauss")
 
 ## Data generation.
 set.seed(313)
