@@ -36,19 +36,14 @@
 #' @export
 mllomax <- \(x, na.rm = FALSE, ...) {}
 
-mllomax <- decorator("mllomax")
-
 metadata$mllomax <- list(
   "model" = "Lomax",
   "density" = "extraDistr::dlomax",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("lambda", "kappa"),
-  "class" = "mlfun"
+  "names" = c("lambda", "kappa")
 )
 
 mllomax_ <- \(x, ...) {
-
   n <- length(x)
 
   dots <- list(...)
@@ -112,5 +107,4 @@ mllomax_ <- \(x, ...) {
   estimates <- c(lambda, 1 / mean(log(1 + lambda * x)))
   logLik <- n * (log(lambda) - log(S) - S - 1)
   list(estimates = estimates, logLik = logLik)
-
 }

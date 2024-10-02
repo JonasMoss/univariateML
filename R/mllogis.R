@@ -27,15 +27,11 @@
 #' @export
 mllogis <- \(x, na.rm = FALSE, ...) {}
 
-mllogis <- decorator("mllogis")
-
 metadata$mllogis <- list(
   "model" = "Logistic",
   "density" = "stats::dlogis",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("location", "scale"),
-  "class" = "mlfun"
+  "names" = c("location", "scale")
 )
 
 mllogis_ <- \(x, ...) {

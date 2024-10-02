@@ -35,7 +35,12 @@
 #' @export
 mlnaka <- \(x, na.rm = TRUE, ...) {}
 
-mlnaka <- decorator("mlnaka")
+metadata$mlnaka <- list(
+  "model" = "Nakagami",
+  "density" = "nakagami::dnaka",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape", "scale")
+)
 
 mlnaka_ <- \(x, ...) {
   estimates <- mlgamma(x^2, na.rm = TRUE, ...)
@@ -52,12 +57,3 @@ mlnaka_ <- \(x, ...) {
 
   list(estimates = estimates, logLik = logLik)
 }
-
-metadata$mlnaka <- list(
-  "model" = "Nakagami",
-  "density" = "nakagami::dnaka",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("shape", "scale"),
-  "class" = "mlfun"
-)

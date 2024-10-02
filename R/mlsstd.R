@@ -25,15 +25,11 @@
 #' @export
 mlsstd <- \(x, na.rm = FALSE, ...) {}
 
-mlsstd <- decorator("mlsstd")
-
 metadata$mlsstd <- list(
   "model" = "Skew Student-t",
   "density" = "fGarch::dsstd",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mean","sd","nu","xi"),
-  "class" = "mlfun"
+  "names" = c("mean", "sd", "nu", "xi")
 )
 
 mlsstd_ <- \(x, ...) {

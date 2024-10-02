@@ -23,18 +23,14 @@
 #' @export
 mlpois <- \(x, na.rm = FALSE, ...) {}
 
-mlpois <- decorator("mlpois")
-
 metadata$mlpois <- list(
   "model" = "Poisson",
   "density" = "stats::dpois",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "continuous" = TRUE,
-  "names" = c("lambda"),
-  "class" = "mlfun"
+  "names" = c("lambda")
 )
 
-mlpois_ <- \(x, na.rm = FALSE, ...) {
+mlpois_ <- \(x, ...) {
   n <- length(x)
   lambda <- mean(x)
   logLik <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))

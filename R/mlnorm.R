@@ -27,15 +27,11 @@
 #' @export
 mlnorm <- \(x, na.rm = FALSE, ...) {}
 
-mlnorm <- decorator("mlnorm")
-
 metadata$mlnorm <- list(
   "model" = "Normal",
   "density" = "stats::dnorm",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mean", "sd"),
-  "class" = "mlfun"
+  "names" = c("mean", "sd")
 )
 
 mlnorm_ <- \(x, ...) {

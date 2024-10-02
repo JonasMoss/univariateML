@@ -27,15 +27,11 @@
 #' @export
 mlpareto <- \(x, na.rm = FALSE, ...) {}
 
-mlpareto <- decorator("mlpareto")
-
 metadata$mlpareto <- list(
   "model" = "Pareto",
   "density" = "extraDistr::dpareto",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("a", "b"),
-  "class" = "mlfun"
+  "support" = stats::setNames(intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)), c("a", "Inf")),
+  "names" = c("a", "b")
 )
 
 mlpareto_ <- \(x, ...) {

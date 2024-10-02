@@ -25,21 +25,15 @@
 #' @export
 mlunif <- \(x, na.rm = FALSE, ...) {}
 
-mlunif <- decorator("mlunif")
-
 metadata$mlunif <- list(
   "model" = "Uniform",
   "density" = "stats::dunif",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("min", "max"),
-  "class" = "mlfun"
+  "support" = stats::setNames(intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)), c("min", "max")),
+  "names" = c("min", "max")
 )
-
 
 mlunif_ <- \(x, ...) {
   max_ <- max(x)
   min_ <- min(x)
-
   list(estimates = c(min_, max_), logLik = -length(x) * log(max_ - min_))
 }

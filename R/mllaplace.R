@@ -27,15 +27,11 @@
 #' @export
 mllaplace <- \(x, na.rm = FALSE, ...) {}
 
-mllaplace <- decorator("mllaplace")
-
 metadata$mllaplace <- list(
   "model" = "Laplace",
   "density" = "extraDistr::dlaplace",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
-  "class" = "mlfun"
+  "names" = c("mu", "sigma")
 )
 
 mllaplace_ <- \(x, ...) {

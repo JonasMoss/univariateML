@@ -27,15 +27,11 @@
 #' @export
 mlinvgamma <- \(x, na.rm = FALSE, ...) {}
 
-mlinvgamma <- decorator("mlinvgamma")
-
 metadata$mlinvgamma <- list(
   "model" = "InvGamma",
   "density" = "extraDistr::dinvgamma",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("alpha", "beta"),
-  "class" = "mlfun"
+  "names" = c("alpha", "beta")
 )
 
 mlinvgamma_ <- \(x, ...) {
@@ -46,7 +42,7 @@ mlinvgamma_ <- \(x, ...) {
   L <- mean(log(x))
   M <- mean(1 / x)
   logLik <- length(x) * (alpha * log(beta) - log(gamma(alpha)) +
-      -(alpha + 1) * L - beta * M)
+    -(alpha + 1) * L - beta * M)
 
   list(estimates = gamma_ml$estimates, logLik = unname(logLik))
 }

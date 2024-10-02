@@ -26,18 +26,14 @@
 #' @export
 mlrayleigh <- \(x, na.rm = FALSE, ...) {}
 
-mlrayleigh <- decorator("mlrayleigh")
-
 metadata$mlrayleigh <- list(
   "model" = "Rayleigh",
   "density" = "extraDistr::drayleigh",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("sigma"),
-  "class" = "mlfun"
+  "names" = c("sigma")
 )
 
-mlrayleigh_ <- \(x, na.rm = FALSE, ...) {
+mlrayleigh_ <- \(x, ...) {
   sigma <- sqrt(1 / 2 * mean(x^2))
   logLik <- length(x) * (mean(log(x) - 2 * log(sigma) - 1))
   list(estimates = sigma, logLik = logLik)

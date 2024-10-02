@@ -28,18 +28,14 @@
 #' @export
 mllgamma <- \(x, na.rm = FALSE, ...) {}
 
-mllgamma <- decorator("mllgamma")
-
 metadata$mllgamma <- list(
   "model" = "Loggamma",
   "density" = "actuar::dlgamma",
   "support" = intervals::Intervals(c(1, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("shapelog", "ratelog"),
-  "class" = "mlfun"
+  "names" = c("shapelog", "ratelog")
 )
 
-mllgamma_ <- \(x,...) {
+mllgamma_ <- \(x, ...) {
   y <- log(x)
   n <- length(x)
   estimates <- mlgamma_(y, ...)$estimates
