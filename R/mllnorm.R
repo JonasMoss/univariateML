@@ -28,18 +28,14 @@
 #' @export
 mllnorm <- \(x, na.rm = FALSE, ...) {}
 
-mllnorm <- decorator("mllnorm")
-
 metadata$mllnorm <- list(
   "model" = "Lognormal",
   "density" = "stats::dlnorm",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("meanlog", "sdlog"),
-  "class" = "mlfun"
+  "names" = c("meanlog", "sdlog")
 )
 
-mllnorm_ <- \(x, na.rm = FALSE, ...) {
+mllnorm_ <- \(x, ...) {
   y <- log(x)
   n <- length(x)
   meanlog <- mean(y)

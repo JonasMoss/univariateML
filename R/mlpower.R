@@ -36,15 +36,11 @@
 #' @export
 mlpower <- \(x, na.rm = FALSE, ...) {}
 
-mlpower <- decorator("mlpower")
-
 metadata$mlpower <- list(
   "model" = "PowerDist",
   "density" = "extraDistr::dpower",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("alpha", "beta"),
-  "class" = "mlfun"
+  "names" = c("alpha", "beta")
 )
 
 mlpower_ <- \(x, ...) {
@@ -59,7 +55,7 @@ mlpower_ <- \(x, ...) {
   alpha <- max(x) + epsilon
   beta <- 1 / (log(alpha) - M)
 
-  estimates <- c(alpha,beta)
+  estimates <- c(alpha, beta)
   logLik <-
     length(x) * (log(beta) - beta * log(alpha) + (beta - 1) * M)
   list(estimates = estimates, logLik = logLik)

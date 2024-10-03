@@ -28,15 +28,11 @@
 #' @export
 mllogitnorm <- \(x, na.rm = FALSE, ...) {}
 
-mllogitnorm <- decorator("mllogitnorm")
-
 metadata$mllogitnorm <- list(
   "model" = "LogitNormal",
   "density" = "logitnorm::dlogitnorm",
   "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
-  "class" = "mlfun"
+  "names" = c("mu", "sigma")
 )
 
 mllogitnorm_ <- \(x, ...) {

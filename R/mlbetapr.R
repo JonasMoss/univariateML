@@ -30,8 +30,12 @@
 #' @export
 mlbetapr <- \(x, na.rm = FALSE, ...) {}
 
-mlbetapr <- decorator("mlbetapr")
-
+metadata$mlbetapr <- list(
+  "model" = "BetaPrime",
+  "density" = "extraDistr::dbetapr",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("shape1", "shape2")
+)
 
 mlbetapr_ <- \(x, ...) {
   val1 <- mean(log(x))
@@ -43,14 +47,4 @@ mlbetapr_ <- \(x, ...) {
     (alpha - 1) * val1 +
     (alpha + beta) * val2))
   list(estimates = estimates, logLik = logLik)
-
 }
-
-metadata$mlbetapr <- list(
-  "model" = "BetaPrime",
-  "density" = "extraDistr::dbetapr",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("shape1", "shape2"),
-  "class" = "mlfun"
-)

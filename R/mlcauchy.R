@@ -29,33 +29,23 @@
 #' @export
 mlcauchy <- \(x, na.rm = FALSE, ...) {}
 
-mlcauchy <- decorator("mlcauchy")
-
-mlcauchy_ <- \(x, ...) {
-  m <- stats::median(x)
-  mad <- stats::median(abs(x - m))
-
-  start <- c(m, mad)
-
-  f <- \(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
-  values <- suppressWarnings(stats::nlm(
-    f = f,
-    p = start
-  ))
-
-  estimates <- c(
-    location = values$estimate[1],
-    scale = exp(values$estimate[2])
-  )
-
-  list(estimates = estimates, logLik = -values$minimum)
-}
-
 metadata$mlcauchy <- list(
   "model" = "Cauchy",
   "density" = "stats::dcauchy",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("location", "scale"),
-  "class" = "mlfun"
+  "names" = c("location", "scale")
 )
+
+mlcauchy_ <- \(x, ...) {
+  m <- stats::median(x)
+  mad <- stats::median(abs(x - m))
+  start <- c(m, mad)
+
+  f <- \(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
+  values <- suppressWarnings(stats::nlm(f = f, p = start))
+
+  list(
+    estimates = c(values$estimate[1], exp(values$estimate[2])),
+    logLik = -values$minimum
+  )
+}

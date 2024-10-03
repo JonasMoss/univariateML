@@ -31,7 +31,12 @@
 #' @export
 mlbeta <- \(x, na.rm = FALSE, ...) {}
 
-mlbeta <- decorator("mlbeta")
+metadata$mlbeta <- list(
+  "model" = "Beta",
+  "density" = "stats::dbeta",
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
+  "names" = c("shape1", "shape2")
+)
 
 mlbeta_ <- \(x, ...) {
   n <- length(x)
@@ -90,12 +95,3 @@ mlbeta_ <- \(x, ...) {
   fit <- stats::nlm(beta_objective, p = start, typsize = start)
   list(estimates = fit$estimate, logLik = -n * fit$minimum)
 }
-
-metadata$mlbeta <- list(
-  "model" = "Beta",
-  "density" = "stats::dbeta",
-  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("shape1", "shape2"),
-  "class" = "mlfun"
-)

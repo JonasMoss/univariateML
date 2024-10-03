@@ -33,15 +33,11 @@
 #' @export
 mlinvweibull <- \(x, na.rm = FALSE, ...) {}
 
-mlinvweibull <- decorator("mlinvweibull")
-
 metadata$mlinvweibull <- list(
   "model" = "InverseWeibull",
   "density" = "actuar::dinvweibull",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("shape", "rate"),
-  "class" = "mlfun"
+  "names" = c("shape", "rate")
 )
 
 mlinvweibull_ <- \(x, ...) {

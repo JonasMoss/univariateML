@@ -28,20 +28,14 @@
 #' @export
 mlged <- \(x, na.rm = FALSE, ...) {}
 
-mlged <- decorator("mlged")
+metadata$mlged <- list(
+  "model" = "Generalized Error",
+  "density" = "fGarch::dged",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "sd", "nu")
+)
 
 mlged_ <- \(x, ...) {
   fit <- suppressWarnings(fGarch::gedFit(x))
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }
-
-metadata$mlged <- list(
-  "model" = "Generalized Error",
-  "density" = "fGarch::dged",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mean", "sd", "nu"),
-  "class" = "mlfun"
-)
-
-

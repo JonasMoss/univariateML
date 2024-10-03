@@ -29,15 +29,11 @@
 #' @export
 mlgumbel <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- decorator("mlgumbel")
-
 metadata$mlgumbel <- list(
   "model" = "Gumbel",
   "density" = "extraDistr::dgumbel",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mu", "sigma"),
-  "class" = "mlfun"
+  "names" = c("mu", "sigma")
 )
 
 mlgumbel_ <- \(x, ...) {

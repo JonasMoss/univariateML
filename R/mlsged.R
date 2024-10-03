@@ -28,15 +28,11 @@
 #' @export
 mlsged <- \(x, na.rm = FALSE, ...) {}
 
-mlsged <- decorator("mlsged")
-
 metadata$mlsged <- list(
   "model" = "Skew Generalized Error",
   "density" = "fGarch::dsged",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mean","sd","nu","xi"),
-  "class" = "mlfun"
+  "names" = c("mean", "sd", "nu", "xi")
 )
 
 mlsged_ <- \(x, ...) {

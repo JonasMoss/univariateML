@@ -28,15 +28,11 @@
 #' @export
 mlinvgauss <- \(x, na.rm = FALSE, ...) {}
 
-mlinvgauss <- decorator("mlinvgauss")
-
 metadata$mlinvgauss <- list(
   "model" = "Inverse Gaussian",
   "density" = "actuar::dinvgauss",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mean", "shape"),
-  "class" = "mlfun"
+  "names" = c("mean", "shape")
 )
 
 mlinvgauss_ <- \(x, ...) {

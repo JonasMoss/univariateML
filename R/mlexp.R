@@ -27,19 +27,15 @@
 #' @export
 mlexp <- \(x, na.rm = TRUE, ...) {}
 
-mlexp <- decorator("mlexp")
+metadata$mlexp <- list(
+  "model" = "Exponential",
+  "density" = "stats::dexp",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("rate")
+)
 
 mlexp_ <- \(x, ...) {
   estimates <- 1 / mean(x)
   logLik <- length(x) * (log(estimates) - 1)
   list(estimates = estimates, logLik = logLik)
 }
-
-metadata$mlexp <- list(
-  "model" = "Exponential",
-  "density" = "stats::dexp",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("rate"),
-  "class" = "mlfun"
-)

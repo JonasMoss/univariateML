@@ -8,6 +8,7 @@
 #' @return The proper `ml***` function.
 #' @keywords internal
 decorator <- \(name) {
+  force(name)
   \(x, na.rm = FALSE, ...) {
     x <- ml_check_modify(x, na.rm = na.rm, name = name)
     n <- length(x)
@@ -30,7 +31,7 @@ univariateML_construct <- \(estimates, name, params) {
   class <- "univariateML"
   args <- c(.Data = list(estimates), params, metadata[[name]], class = class)
   object <- do.call(structure, args)
-  attr(object, "call") <- if(length(attr(object, "call")) == 0) {
+  attr(object, "call") <- if (length(attr(object, "call")) == 0) {
     str2lang(attr(object, "call"))
   } else {
     NULL

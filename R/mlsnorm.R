@@ -25,15 +25,11 @@
 #' @export
 mlsnorm <- \(x, na.rm = FALSE, ...) {}
 
-mlsnorm <- decorator("mlsnorm")
-
 metadata$mlsnorm <- list(
   "model" = "Skew Normal",
   "density" = "fGarch::dsnorm",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("mean", "sd", "xi"),
-  "class" = "mlfun"
+  "names" = c("mean", "sd", "xi")
 )
 
 mlsnorm_ <- \(x, ...) {

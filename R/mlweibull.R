@@ -30,18 +30,14 @@
 #' @export
 mlweibull <- \(x, na.rm = FALSE, ...) {}
 
-mlweibull <- decorator("mlweibull")
-
 metadata$mlweibull <- list(
   "model" = "Weibull",
   "density" = "stats::dweibull",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("shape", "scale"),
-  "class" = "mlfun"
+  "names" = c("shape", "scale")
 )
 
-mlweibull_ <- \(x, na.rm = FALSE, ...) {
+mlweibull_ <- \(x, ...) {
   dots <- list(...)
 
   shape0 <- if (!is.null(dots$sigma0)) dots$shape0 else 1

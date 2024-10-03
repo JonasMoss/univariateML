@@ -32,16 +32,13 @@
 #' @export
 mlgamma <- \(x, na.rm = FALSE, ...) {}
 
-mlgamma <- decorator("mlgamma")
-
 metadata$mlgamma <- list(
   "model" = "Gamma",
   "density" = "stats::dgamma",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("shape", "rate"),
-  "class" = "mlfun"
+  "names" = c("shape", "rate")
 )
+
 mlgamma_ <- \(x, ...) {
   dots <- list(...)
 

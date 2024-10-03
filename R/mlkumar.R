@@ -36,15 +36,11 @@
 #' @export
 mlkumar <- \(x, na.rm = FALSE, ...) {}
 
-mlkumar <- decorator("mlkumar")
-
 metadata$mlkumar <- list(
   "model" = "Kumaraswamy",
   "density" = "extraDistr::dkumar",
   "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "continuous" = TRUE,
-  "names" = c("a", "b"),
-  "class" = "mlfun"
+  "names" = c("a", "b")
 )
 
 mlkumar_ <- \(x, ...) {
