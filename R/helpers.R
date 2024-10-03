@@ -36,6 +36,22 @@ univariateML_construct <- \(estimates, name, params) {
   } else {
     NULL
   }
+
+  if(metadata[[name]]$support@type == "R") {
+    attr(object, "continuous") = TRUE
+  } else {
+    attr(object, "continuous") = FALSE
+  }
+
+  support_names <- names(metadata[[name]]$support)
+  if(is.null(support_names)) {
+    attr(object, "support") <- c(metadata[[name]]$support@.Data)
+  } else {
+    support <- attr(object, "support")
+    values <- as.list(stats::setNames(estimates, metadata[[name]]$names))
+    supp <- unname(sapply(names(support), \(x) with(values, eval(str2lang(x)))))
+    attr(object, "support") <- supp
+  }
   object
 }
 
