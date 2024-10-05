@@ -34,6 +34,9 @@ mlbetapr <- function(x, na.rm = FALSE, ...) {
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)
 
+  # Make a minimal reference to extraDistr package so that R-CMD-CHECK recognizes it
+  invisible(extraDistr::dbetapr)
+
   val1 <- mean(log(x))
   val2 <- mean(log(1 + x))
   object <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
