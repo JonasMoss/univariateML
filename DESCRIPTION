@@ -6,7 +6,7 @@ Authors@R: c(
     person("Jonas", "Moss", , "jonas.gjertsen@gmail.com", role = c("aut", "cre"), 
       comment = c(ORCID = "0000-0002-6876-6964")),
     person("Thomas", "Nagler", , "mail@tnagler.com", role = c("ctb")),
-    person("Chitu", "Okoli", , "chitu.okoli@concordia.ca", role = c("ctb"))
+    person("Chitu", "Okoli", , "chitu.okoli@skema.edu", role = c("ctb"))
     )
 Description: User-friendly maximum likelihood estimation (Fisher (1921) 
     <doi:10.1098/rsta.1922.0009>) of univariate densities.

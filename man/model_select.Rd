@@ -9,6 +9,7 @@ model_select(
   models = univariateML_models,
   criterion = c("aic", "bic", "loglik"),
   na.rm = FALSE,
+  rtn_class = "univariateML",
   ...
 )
 }
@@ -23,11 +24,17 @@ select from; see \code{print(univariateML_models)}.}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
+\item{rtn_class}{character length 1. "univariateML" (default) if the function
+should return the single best model; "data.frame" if a tibble data frame
+of all results should be returned, sorted by decreasing model performance.}
+
 \item{...}{unused.}
 }
 \value{
-\code{model_select} returns an object of \link[base:class]{class}
-\code{univariateML}. This is a named numeric vector with maximum likelihood
+The return value depends on the \code{rtn_class} argument.
+For \code{rtn_class = "univariateML"} (default), \code{model_select} returns
+an object of \link[base:class]{class} #'    \code{univariateML}.
+This is a named numeric vector with maximum likelihood
 estimates for the parameters of the best fitting model and the following
 attributes:
 \item{\code{model}}{The name of the model.}
@@ -36,6 +43,22 @@ attributes:
 \item{\code{support}}{The support of the density.}
 \item{\code{n}}{The number of observations.}
 \item{\code{call}}{The call as captured my \code{match.call}}
+
+For \code{rtn_class = "data.frame"}, \code{model_select} returns a tibble data frame
+with the following columns:
+\item{\code{model}}{The name of the model.}
+\item{\verb{d_loglik, d_aic, d_bic}}{See \verb{loglik, aic, bic}.}
+\item{\verb{loglik, aic, bic}}{The negative loglikelihood at the maximum,
+the AIC, and the BIC, respectively. The minimum of each of these is noted
+and then subtracted from each value to give their delta versions
+\verb{d_loglik, d_aic, d_bic}}. So, the model with the lowest AIC will
+have \code{d_aic} of 0; the \code{d_aic} of all the other models shows how much higher
+their AICs are from the minimum. The same goes with \code{d_loglik} and \code{d_bic}.
+\item{\code{ml}}{The internal code name for the model.}
+\item{\code{univariateML}}{The \code{univariateML} object for the model. This is
+identical to the value returned for \code{rtn_class = "univariateML"}; for
+\code{rtn_class = "data.frame"}, this object is returned for all tested models,
+not just the best one.}
 }
 \description{
 Selects the best model by log-likelihood, AIC, or BIC.
