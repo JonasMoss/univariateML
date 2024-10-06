@@ -34,6 +34,9 @@ mllogitnorm <- function(x, na.rm = FALSE, ...) {
   assertthat::assert_that(min(x) > 0)
   assertthat::assert_that(max(x) < 1)
 
+  # Make a minimal reference to logitnorm package so that R-CMD-CHECK recognizes it
+  invisible(logitnorm::dlogitnorm)
+
   n <- length(x)
   y <- stats::qlogis(x)
   mu <- mean(y)

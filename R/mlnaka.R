@@ -37,6 +37,10 @@ mlnaka <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
   ml_input_checker(x)
   assertthat::assert_that(min(x) > 0)
+
+  # Make a minimal reference to nakagami package so that R-CMD-CHECK recognizes it
+  invisible(nakagami::dnaka)
+
   n <- length(x)
 
   object <- mlgamma(x^2, na.rm = na.rm, ...)
