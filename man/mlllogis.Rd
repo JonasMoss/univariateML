@@ -11,7 +11,7 @@ mlllogis(x, na.rm = FALSE, ...)
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{...}{passed to \code{\link{mlogis}}.}
+\item{...}{passed to \code{\link{mllogis}}.}
 }
 \value{
 \code{mllogis} returns an object of \link[base:class]{class} \code{univariateML}.
@@ -27,7 +27,7 @@ This is a named numeric vector with maximum likelihood estimates for
 \description{
 The maximum likelihood estimate of \code{shape} and \code{rate} are calculated
 by transforming the data back to the logistic model and applying
-\code{\link{mlogis}}.
+\code{\link{mllogis}}.
 }
 \details{
 For the density function of the log-logistic distribution see

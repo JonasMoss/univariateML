@@ -2,14 +2,14 @@
 #'
 #' The maximum likelihood estimate of `shape` and `rate` are calculated
 #'    by transforming the data back to the logistic model and applying
-#'    [`mlogis`][mlogis].
+#'    [`mllogis`][mllogis].
 #'
 #' For the density function of the log-logistic distribution see
 #'    [Loglogistic][actuar::Loglogistic]
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param ... passed to [`mlogis`][mlogis].
+#' @param ... passed to [`mllogis`][mllogis].
 #' @return `mllogis` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
 #'    `shape` and `rate` and the following attributes:

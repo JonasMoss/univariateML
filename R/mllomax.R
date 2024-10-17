@@ -3,11 +3,13 @@
 #' Uses Newton-Raphson to estimate the parameters of the Lomax distribution.
 #'
 #' For the density function of the Lomax distribution see
-#' [Lomax][extraDistr::Lomax]. The maximum likelihood estimate will frequently
-#' fail to exist. This is due to the parameterization of the function which
-#' does not take into account that the density converges to an exponential
-#' along certain values of the parameters, see
-#' `vignette("Distribution Details", package = "univariateML")`.
+#' [Lomax][extraDistr::Lomax].
+#'
+#' The likelihood estimator of the Lomax distribution may be unbounded. When this
+#'    happens, the likelihood converges to an exponential distribution with parameter
+#'    equal to the mean of the data. This is the natural limiting case for the Lomax
+#'    distribution, and it is reasonable to use `mlexp` in this case. See
+#'    `vignette("Distribution Details", package = "univariateML")` for details.
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
@@ -33,6 +35,12 @@
 #' @examples
 #' set.seed(3)
 #' mllomax(extraDistr::rlomax(100, 2, 4))
+#'
+#' # The maximum likelihood estimator may fail if the data is exponential.
+#' \dontrun{
+#'   set.seed(5)
+#'   mllomax(rexp(10))
+#' }
 #' @export
 mllomax <- \(x, na.rm = FALSE, ...) {}
 
@@ -80,7 +88,7 @@ mllomax_ <- \(x, ...) {
     if (abs((lambda0 - lambda) / lambda0) < rel.tol) break
 
     if (lambda < 0.00001) {
-      stop("The maximum likelihood estimator does not exist. ")
+      stop("The maximum likelihood estimator does not exist. Use `mlexp` to fit an exponential distribution.")
     }
 
     lambda0 <- lambda
@@ -92,7 +100,7 @@ mllomax_ <- \(x, ...) {
   }
 
   if (loglik(0.000001, x) < loglik(lambda, x)) {
-    stop("The maximum likelihood estimator does not exist. ")
+    stop("The maximum likelihood estimator does not exist. Use `mlexp` to fit an exponential distribution.")
   }
 
   if (i == iterlim) {
@@ -104,7 +112,8 @@ mllomax_ <- \(x, ...) {
   }
 
   S <- mean(log(1 + lambda * x))
-  estimates <- c(lambda, 1 / mean(log(1 + lambda * x)))
-  logLik <- n * (log(lambda) - log(S) - S - 1)
+  estimates <- c(lambda, 1 / S)
+  # eariler: n * (log(lambda) - log(S) - S - 1) is numerically inaccurate.
+  logLik <- sum(extraDistr::dlomax(x, lambda, 1/S, log = TRUE))
   list(estimates = estimates, logLik = logLik)
 }

@@ -18,7 +18,7 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
-#' mlpois(precip)
+#' mlpois(ChickWeight$weight)
 #' @seealso [Poisson][stats::Poisson] for the Poisson density.
 #' @export
 mlpois <- \(x, na.rm = FALSE, ...) {}

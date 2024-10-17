@@ -105,8 +105,6 @@ sapply(fits, AIC)
 The *t*-copula is the clear winner of the AIC competition. The Archimedean 
 copulas perform particularly poorly.
 
-Hence our final model is the *t*-copula with Kumaraswamy (`mlkumar`) marginal distribution for
-`diameter`, normal marginal distribution for `height`, Weibull marginal distribution for `shell_weight`,
-and log normal marginal distribution for `age`.
+Hence our final model is the *t*-copula with Kumaraswamy (`mlkumar`) marginal distribution for `diameter`, normal marginal distribution for `height`, Weibull marginal distribution for `shell_weight`, and log normal marginal distribution for `age`.
 
 ## References

@@ -1,7 +1,7 @@
-#' Zipfdistribution maximum likelihood estimation
+#' Zipf distribution maximum likelihood estimation
 #'
-#' For the density function of the Zipfdistribution see
-#' [Zipf][stats::dzipf].
+#' For the density function of the Zipf distribution see
+#' [Zipf][sads::dzipf].
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
@@ -16,8 +16,8 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
-#' mlpois(precip)
-#' @seealso [Zipf][stats::dzipf] for the density.
+#' mlzipf(precip)
+#' @seealso [Zipf][sads::dzipf] for the density.
 #' @export
 mlzipf <- \(x, na.rm = FALSE, ...) {}
 
@@ -25,20 +25,60 @@ metadata$mlzipf <- list(
   "model" = "Zipf",
   "density" = "sads::dzipf",
   "support" = stats::setNames(intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"), c("1", "N")),
-  "names" = c("N", "shape")
+  "names" = c("N", "s")
 )
 
 mlzipf_ <- \(x, ...) {
-  n <- length(x)
-  dots <- dots(...)
-  if(is.null(dots$N)) N <- max(x)
+
+  dots <- list(...)
   N <- max(x)
+  n <- length(x)
+  sum_lx <- sum(log(x))
+  log_seq <- log(seq(N))
+  log_seq2 <- log(seq(N))^2
 
-  h <- \(N, shape) sum(1/seq(1, N)^shape)
-  f <- \(N, shape) -shape * sum(log(x)) - n * log(h(N, shape))
+  if(sum_lx == 0) {
+    warning("All observations are equal to 1. The maximum likelihood estimator is not unique.")
+    return(list(estimates = c(N, 1), logLik = 0))
+  }
+
+  rel.tol <- if (!is.null(dots$rel.tol)) {
+    dots$rel.tol
+  } else {
+    .Machine$double.eps^0.25
+  }
+
+  iterlim <- if (!is.null(dots$iterlim)) {
+    dots$iterlim
+  } else {
+    100
+  }
+
+  shape0 <- 1
+
+  for (i in 1:iterlim) {
+    sum_shape <- sum(1/seq(1, N)^shape0)
+    sum_log_hs <- sum(1/seq(1, N)^shape0 * log_seq)
+    sum_log2_hs <- sum(1/seq(1, N)^shape0 * log_seq2)
+    top = sum_log_hs / sum_shape
+    bottom = -n*sum_log2_hs / sum_shape + n*top^2
+    shape <- shape0 - (n*top - sum_lx)/bottom
+    if (abs((shape - shape0) / shape0) < rel.tol) break
+    shape0 <- shape
+  }
+
+  if (i == iterlim) {
+    warning(paste0(
+      "The iteration limit (iterlim = ", iterlim, ") was reached",
+      " before the relative tolerance requirement (rel.tol = ",
+      rel.tol, ")."
+    ))
+  }
 
 
-  res <- sapply(73:10, \(N) optimize(\(shape) -f(N, shape), c(0, 10)))
+  h <- \(shape) sum(1/seq(1, N)^shape)
+  f <- \(shape) -shape * sum_lx - n * log(h(shape))
 
+  logLik = f(shape)
   list(estimates = c(N, shape), logLik = logLik)
 }

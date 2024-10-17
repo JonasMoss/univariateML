@@ -23,7 +23,9 @@ Imports: assertthat,
     nakagami,
     fGarch,
     rlang,
-    intervals
+    intervals,
+    Rfast,
+    pracma
 Suggests: 
     testthat,
     knitr,

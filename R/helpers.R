@@ -31,7 +31,7 @@ univariateML_construct <- \(estimates, name, params) {
   class <- "univariateML"
   args <- c(.Data = list(estimates), params, metadata[[name]], class = class)
   object <- do.call(structure, args)
-  attr(object, "call") <- if (length(attr(object, "call")) == 0) {
+  attr(object, "call") <- if (length(attr(object, "call")) == 1) {
     str2lang(attr(object, "call"))
   } else {
     NULL
@@ -154,80 +154,4 @@ ml_input_checker <- \(x) {
   assertthat::assert_that(is.numeric(x))
   msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
   assertthat::assert_that(NCOL(x) == 1, msg = msg)
-}
-
-#' Wrangles arguments for use in ppml and qqml functions.
-#'
-#' @param y The input data.
-#' @param obj Function or continuous `"univariateML"` object.
-#' @param datax logical; if true, plots the data on the x axis.
-#' @param ... Arguments passed to `plot` or `points` down the line.
-#' @keywords internal
-
-ppqq_wrangler <- \(y, obj, datax, pp, ...) {
-  if (!(attr(obj, "continuous"))) {
-    stop("QQ and PP plots are only supported for continuous distributions.")
-  }
-  ## Nas are removed by default in this function, following qqplot.
-
-  y <- y[!is.na(y)]
-
-  ## Error message straight out of stats::qqplot.
-  if (0 == length(y)) stop("y is empty or has only NAs")
-
-  ## I must check if the object is a "univariateML" object or a function that
-  ## returns a "univariateML" object. If neither, an error is thrown.
-
-  obj <- to_univariateML(y, obj)
-
-  n <- length(y)
-
-  if (pp) {
-    x <- ((1:n) / (n + 1))[order(order(y))]
-    y <- pml(q = y, obj = obj)
-  } else {
-    x <- qml((1:n) / (n + 1), obj = obj)[order(order(y))]
-  }
-
-
-  defaults <- list(lwd = 1)
-
-  if (!pp) {
-    defaults$main <- paste0(attr(obj, "model"), " Q-Q plot")
-    if (!datax) {
-      defaults$ylab <- "Sample Quantiles"
-      defaults$xlab <- "Approximate Theoretical Quantiles"
-    } else {
-      defaults$ylab <- "Approximate Theoretical Quantiles"
-      defaults$xlab <- "Sample Quantiles"
-    }
-  } else {
-    defaults$main <- paste0(attr(obj, "model"), " P-P plot")
-    if (!datax) {
-      defaults$ylab <- "Sample Cumulative Probability"
-      defaults$xlab <- "Theoretical Cumulative Probability"
-    } else {
-      defaults$ylab <- "Theoretical Cumulative Probability"
-      defaults$xlab <- "Sample Cumulative Probability"
-    }
-  }
-
-
-  args <- listmerge(
-    x = defaults,
-    y = list(...)
-  )
-
-  if (!datax) {
-    args$x <- x
-    args$y <- y
-  } else {
-    args$x <- y
-    args$y <- x
-  }
-
-  pp <- NULL
-  pp$value <- if (datax) list(x = y, y = x) else list(x = x, y = y)
-  pp$args <- args
-  pp
 }
