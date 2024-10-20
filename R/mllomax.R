@@ -14,7 +14,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... `lambda0` an optional starting value for the `lambda` parameter.
-#'    Defaults to `median(x)`. `rel.tol` is the relative accuracy requested,
+#'    Defaults to `median(x)`. `reltol` is the relative accuracy requested,
 #'    defaults to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'    specifying the maximum number of iterations to be performed before the
 #'    program is terminated (defaults to `100`).
@@ -38,8 +38,8 @@
 #'
 #' # The maximum likelihood estimator may fail if the data is exponential.
 #' \dontrun{
-#'   set.seed(5)
-#'   mllomax(rexp(10))
+#' set.seed(5)
+#' mllomax(rexp(10))
 #' }
 #' @export
 mllomax <- \(x, na.rm = FALSE, ...) {}
@@ -56,8 +56,8 @@ mllomax_ <- \(x, ...) {
 
   dots <- list(...)
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
+  reltol <- if (!is.null(dots$reltol)) {
+    dots$reltol
   } else {
     .Machine$double.eps^0.25
   }
@@ -85,7 +85,7 @@ mllomax_ <- \(x, ...) {
     bottom <- -1 / lambda0^2 - S2 / S + (S1 / S)^2 - S2
     lambda <- lambda0 - top / bottom
 
-    if (abs((lambda0 - lambda) / lambda0) < rel.tol) break
+    if (abs((lambda0 - lambda) / lambda0) < reltol) break
 
     if (lambda < 0.00001) {
       stop("The maximum likelihood estimator does not exist. Use `mlexp` to fit an exponential distribution.")
@@ -106,14 +106,14 @@ mllomax_ <- \(x, ...) {
   if (i == iterlim) {
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
     ))
   }
 
   S <- mean(log(1 + lambda * x))
   estimates <- c(lambda, 1 / S)
   # eariler: n * (log(lambda) - log(S) - S - 1) is numerically inaccurate.
-  logLik <- sum(extraDistr::dlomax(x, lambda, 1/S, log = TRUE))
+  logLik <- sum(extraDistr::dlomax(x, lambda, 1 / S, log = TRUE))
   list(estimates = estimates, logLik = logLik)
 }

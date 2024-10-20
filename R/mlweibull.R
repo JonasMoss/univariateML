@@ -8,7 +8,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... `shape0` is an optional starting value for the `shape` parameter.
-#'     `rel.tol` is the relative accuracy requested, defaults
+#'     `reltol` is the relative accuracy requested, defaults
 #'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'     specifying the maximum number of iterations to be performed before the
 #'     program is terminated (defaults to `100`).
@@ -42,8 +42,8 @@ mlweibull_ <- \(x, ...) {
 
   shape0 <- if (!is.null(dots$sigma0)) dots$shape0 else 1
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
+  reltol <- if (!is.null(dots$reltol)) {
+    dots$reltol
   } else {
     .Machine$double.eps^0.25
   }
@@ -64,7 +64,7 @@ mlweibull_ <- \(x, ...) {
     bottom <- -1 / shape0^2 + A^2 - B
     shape <- shape0 - top / bottom
 
-    if (abs((shape0 - shape) / shape0) < rel.tol) break
+    if (abs((shape0 - shape) / shape0) < reltol) break
 
     shape0 <- shape
   }
@@ -72,8 +72,8 @@ mlweibull_ <- \(x, ...) {
   if (i == iterlim) {
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
     ))
   }
 

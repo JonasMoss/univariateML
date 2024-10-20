@@ -11,7 +11,7 @@ mlgamma(x, na.rm = FALSE, ...)
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{...}{\code{rel.tol} is the relative accuracy requested, defaults
+\item{...}{\code{reltol} is the relative accuracy requested, defaults
 to \code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
 specifying the maximum number of iterations to be performed before the
 program is terminated (defaults to \code{100}).}

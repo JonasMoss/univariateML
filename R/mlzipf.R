@@ -29,7 +29,6 @@ metadata$mlzipf <- list(
 )
 
 mlzipf_ <- \(x, ...) {
-
   dots <- list(...)
   N <- max(x)
   n <- length(x)
@@ -37,13 +36,13 @@ mlzipf_ <- \(x, ...) {
   log_seq <- log(seq(N))
   log_seq2 <- log(seq(N))^2
 
-  if(sum_lx == 0) {
+  if (sum_lx == 0) {
     warning("All observations are equal to 1. The maximum likelihood estimator is not unique.")
     return(list(estimates = c(N, 1), logLik = 0))
   }
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
+  reltol <- if (!is.null(dots$reltol)) {
+    dots$reltol
   } else {
     .Machine$double.eps^0.25
   }
@@ -57,28 +56,28 @@ mlzipf_ <- \(x, ...) {
   shape0 <- 1
 
   for (i in 1:iterlim) {
-    sum_shape <- sum(1/seq(1, N)^shape0)
-    sum_log_hs <- sum(1/seq(1, N)^shape0 * log_seq)
-    sum_log2_hs <- sum(1/seq(1, N)^shape0 * log_seq2)
-    top = sum_log_hs / sum_shape
-    bottom = -n*sum_log2_hs / sum_shape + n*top^2
-    shape <- shape0 - (n*top - sum_lx)/bottom
-    if (abs((shape - shape0) / shape0) < rel.tol) break
+    sum_shape <- sum(1 / seq(1, N)^shape0)
+    sum_log_hs <- sum(1 / seq(1, N)^shape0 * log_seq)
+    sum_log2_hs <- sum(1 / seq(1, N)^shape0 * log_seq2)
+    top <- sum_log_hs / sum_shape
+    bottom <- -n * sum_log2_hs / sum_shape + n * top^2
+    shape <- shape0 - (n * top - sum_lx) / bottom
+    if (abs((shape - shape0) / shape0) < reltol) break
     shape0 <- shape
   }
 
   if (i == iterlim) {
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
     ))
   }
 
 
-  h <- \(shape) sum(1/seq(1, N)^shape)
+  h <- \(shape) sum(1 / seq(1, N)^shape)
   f <- \(shape) -shape * sum_lx - n * log(h(shape))
 
-  logLik = f(shape)
+  logLik <- f(shape)
   list(estimates = c(N, shape), logLik = logLik)
 }

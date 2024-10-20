@@ -19,7 +19,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... The arguments `size` can be specified to only return the ml of `prob`.
-#'    `rel.tol` is the relative accuracy requested,
+#'    `reltol` is the relative accuracy requested,
 #'    defaults to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'    specifying the maximum number of iterations to be performed before the
 #'    program is terminated (defaults to `100`).
@@ -35,7 +35,7 @@
 #' @examples
 #' # The likelihood will often be unbounded.
 #' \dontrun{
-#'  mlbinom(ChickWeight$weight)
+#' mlbinom(ChickWeight$weight)
 #' }
 #' # Provide a size
 #' mlbinom(ChickWeight$weight, size = 400)
@@ -45,11 +45,11 @@
 #' @seealso [Binomial][stats::dbinom] for the density.
 #' @export
 #' @references
-#' Olkin, I., Petkau, A. J., & Zidek, J. V. (1981). A comparison of n Estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637–642. https://doi.org/10.1080/01621459.1981.10477697
+#' Olkin, I., Petkau, A. J., & Zidek, J. V. (1981). A comparison of n Estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642. https://doi.org/10.1080/01621459.1981.10477697
 #'
-#' Carroll, R. J., & Lombard, F. (1985). A Note on N Estimators for the Binomial Distribution. Journal of the American Statistical Association, 80(390), 423–426. https://doi.org/10.1080/01621459.1985.10478134
+#' Carroll, R. J., & Lombard, F. (1985). A Note on N Estimators for the Binomial Distribution. Journal of the American Statistical Association, 80(390), 423-426. https://doi.org/10.1080/01621459.1985.10478134
 #'
-#' DasGupta, A., & Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1–2), 391–404. https://doi.org/10.1016/j.jspi.2004.02.019
+#' DasGupta, A., & Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1-2), 391-404. https://doi.org/10.1016/j.jspi.2004.02.019
 
 
 mlbinom <- \(x, na.rm = FALSE, ...) {}
@@ -62,7 +62,6 @@ metadata$mlbinom <- list(
 )
 
 mlbinom_ <- \(x, ...) {
-
   dots <- list(...)
 
   n <- length(x)
@@ -79,16 +78,16 @@ mlbinom_ <- \(x, ...) {
       sum(counts * lchoose(size, uniques))
   }
 
-  if(!is.null(dots$size)) {
+  if (!is.null(dots$size)) {
     size <- dots$size
-    if(size < max(x)) {
+    if (size < max(x)) {
       stop("`size` is smaller than `max(x)`.")
     }
-    prob = x_bar / size
+    prob <- x_bar / size
     return(list(estimates = c(size, prob), logLik = l(size)))
   }
 
-  if(mean(x) / (stats::var(x) * (n - 1) / n) <= 1) {
+  if (mean(x) / (stats::var(x) * (n - 1) / n) <= 1) {
     stop("The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument.")
   }
 
@@ -99,13 +98,13 @@ mlbinom_ <- \(x, ...) {
   }
 
   hessian <- \(size) {
-    n * x_bar / (size*(size-x_bar)) +
-      n*trigamma(size + 1) -
-      sum(counts * trigamma(size-uniques+1))
+    n * x_bar / (size * (size - x_bar)) +
+      n * trigamma(size + 1) -
+      sum(counts * trigamma(size - uniques + 1))
   }
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
+  reltol <- if (!is.null(dots$reltol)) {
+    dots$reltol
   } else {
     .Machine$double.eps^0.25
   }
@@ -120,7 +119,7 @@ mlbinom_ <- \(x, ...) {
 
   for (i in 1:iterlim) {
     size <- size0 - grad(size0) / hessian(size0)
-    if (abs((size0 - size) / size0) < rel.tol) break
+    if (abs((size0 - size) / size0) < reltol) break
 
     size0 <- size
   }

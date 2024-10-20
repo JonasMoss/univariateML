@@ -37,14 +37,14 @@ univariateML_construct <- \(estimates, name, params) {
     NULL
   }
 
-  if(metadata[[name]]$support@type == "R") {
-    attr(object, "continuous") = TRUE
+  if (metadata[[name]]$support@type == "R") {
+    attr(object, "continuous") <- TRUE
   } else {
-    attr(object, "continuous") = FALSE
+    attr(object, "continuous") <- FALSE
   }
 
   support_names <- names(metadata[[name]]$support)
-  if(is.null(support_names)) {
+  if (is.null(support_names)) {
     attr(object, "support") <- c(metadata[[name]]$support@.Data)
   } else {
     support <- attr(object, "support")

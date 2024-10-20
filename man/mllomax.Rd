@@ -12,7 +12,7 @@ mllomax(x, na.rm = FALSE, ...)
 \item{na.rm}{logical. Should missing values be removed?}
 
 \item{...}{\code{lambda0} an optional starting value for the \code{lambda} parameter.
-Defaults to \code{median(x)}. \code{rel.tol} is the relative accuracy requested,
+Defaults to \code{median(x)}. \code{reltol} is the relative accuracy requested,
 defaults to \code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
 specifying the maximum number of iterations to be performed before the
 program is terminated (defaults to \code{100}).}
@@ -47,8 +47,8 @@ mllomax(extraDistr::rlomax(100, 2, 4))
 
 # The maximum likelihood estimator may fail if the data is exponential.
 \dontrun{
-  set.seed(5)
-  mllomax(rexp(10))
+set.seed(5)
+mllomax(rexp(10))
 }
 }
 \references{

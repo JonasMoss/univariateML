@@ -9,7 +9,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... `a0` is an optional starting value for the `a` parameter.
-#'     `rel.tol` is the relative accuracy requested, defaults
+#'     `reltol` is the relative accuracy requested, defaults
 #'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'     specifying the maximum number of iterations to be performed before the
 #'     program is terminated (defaults to `100`).
@@ -48,8 +48,8 @@ mlkumar_ <- \(x, ...) {
 
   a0 <- if (!is.null(dots$a0)) dots$a0 else 1
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
+  reltol <- if (!is.null(dots$reltol)) {
+    dots$reltol
   } else {
     .Machine$double.eps^0.25
   }
@@ -75,15 +75,15 @@ mlkumar_ <- \(x, ...) {
       (T1diff + T2diff / T3 + 1 / a0 * (T2 / T3)^2)
 
     a <- a0 - f / fdiff
-    if (abs((a0 - a) / a0) < rel.tol) break
+    if (abs((a0 - a) / a0) < reltol) break
     a0 <- a
   }
 
   if (i == iterlim) {
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
     ))
   }
 

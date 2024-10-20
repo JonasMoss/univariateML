@@ -5,11 +5,7 @@
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param ... The arguments `size` can be specified to only return the ml of `prob`.
-#'    `rel.tol` is the relative accuracy requested,
-#'    defaults to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
-#'    specifying the maximum number of iterations to be performed before the
-#'    program is terminated (defaults to `100`).
+#' @param ... Not currently in use.
 #' @return `mlzip` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
 #'    `lambda` and `pi` and the following attributes:
@@ -33,15 +29,18 @@ metadata$mlzip <- list(
 )
 
 mlzip_ <- \(x, ...) {
-
   r_0 <- mean(x == 0)
   x_bar <- mean(x)
 
-  if (r_0 > exp(-x_bar)) {
+  if (r_0 == 1) {
+    pi <- 1
+    lambda <- 1
+    warning("All observations equal to 0; the maximum likelihood estimator is not unique.")
+  } else if (r_0 > exp(-x_bar)) {
     x_bar <- mean(x)
-    gamma <- x_bar / (1-r_0)
+    gamma <- x_bar / (1 - r_0)
     lambda <- pracma::lambertWp(-gamma * exp(-gamma)) + gamma
-    pi <- (r_0 - exp(-lambda))/(1-exp(-lambda))
+    pi <- (r_0 - exp(-lambda)) / (1 - exp(-lambda))
   } else {
     pi <- 0
     lambda <- x_bar

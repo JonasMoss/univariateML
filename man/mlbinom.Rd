@@ -12,7 +12,7 @@ mlbinom(x, na.rm = FALSE, ...)
 \item{na.rm}{logical. Should missing values be removed?}
 
 \item{...}{The arguments \code{size} can be specified to only return the ml of \code{prob}.
-\code{rel.tol} is the relative accuracy requested,
+\code{reltol} is the relative accuracy requested,
 defaults to \code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
 specifying the maximum number of iterations to be performed before the
 program is terminated (defaults to \code{100}).}
@@ -49,7 +49,7 @@ See, e.g., Carroll and Lomard (1985) and DasGupta and Rubin (2005).
 \examples{
 # The likelihood will often be unbounded.
 \dontrun{
- mlbinom(ChickWeight$weight)
+mlbinom(ChickWeight$weight)
 }
 # Provide a size
 mlbinom(ChickWeight$weight, size = 400)
@@ -58,11 +58,11 @@ mlbinom(ChickWeight$weight, size = 400)
 mlpois(ChickWeight$weight)
 }
 \references{
-Olkin, I., Petkau, A. J., & Zidek, J. V. (1981). A comparison of n Estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637–642. https://doi.org/10.1080/01621459.1981.10477697
+Olkin, I., Petkau, A. J., & Zidek, J. V. (1981). A comparison of n Estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642. https://doi.org/10.1080/01621459.1981.10477697
 
-Carroll, R. J., & Lombard, F. (1985). A Note on N Estimators for the Binomial Distribution. Journal of the American Statistical Association, 80(390), 423–426. https://doi.org/10.1080/01621459.1985.10478134
+Carroll, R. J., & Lombard, F. (1985). A Note on N Estimators for the Binomial Distribution. Journal of the American Statistical Association, 80(390), 423-426. https://doi.org/10.1080/01621459.1985.10478134
 
-DasGupta, A., & Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1–2), 391–404. https://doi.org/10.1016/j.jspi.2004.02.019
+DasGupta, A., & Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1-2), 391-404. https://doi.org/10.1016/j.jspi.2004.02.019
 }
 \seealso{
 \link[stats:Binomial]{Binomial} for the density.

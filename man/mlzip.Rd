@@ -11,11 +11,7 @@ mlzip(x, na.rm = FALSE, ...)
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{...}{The arguments \code{size} can be specified to only return the ml of \code{prob}.
-\code{rel.tol} is the relative accuracy requested,
-defaults to \code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
-specifying the maximum number of iterations to be performed before the
-program is terminated (defaults to \code{100}).}
+\item{...}{Not currently in use.}
 }
 \value{
 \code{mlzip} returns an object of \link[base:class]{class} \code{univariateML}.

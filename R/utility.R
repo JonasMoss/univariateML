@@ -34,3 +34,17 @@ listmerge <- \(x, y, type = c("merge", "template")) {
     return(x)
   }
 }
+
+get_reltol <- \(dots) {
+  if (!is.null(dots$reltol)) {
+    dots$reltol
+  } else if (!is.null(dots$rel.tol)) {
+    dots$rel.tol
+  } else {
+    .Machine$double.eps^0.25
+  }
+}
+
+get_iterlim <- \(dots) {
+  if (!is.null(dots$iterlim)) dots$iterlim else 100
+}

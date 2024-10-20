@@ -7,7 +7,7 @@
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param ... `rel.tol` is the relative accuracy requested, defaults
+#' @param ... `reltol` is the relative accuracy requested, defaults
 #'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'     specifying the maximum number of iterations to be performed before the
 #'     program is terminated (defaults to `100`).
@@ -42,8 +42,8 @@ metadata$mlgamma <- list(
 mlgamma_ <- \(x, ...) {
   dots <- list(...)
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
+  reltol <- if (!is.null(dots$reltol)) {
+    dots$reltol
   } else {
     .Machine$double.eps^0.25
   }
@@ -66,15 +66,15 @@ mlgamma_ <- \(x, ...) {
   for (i in 1:iterlim) {
     shape <- shape0 - (log(shape0) - digamma(shape0) - s) /
       (1 / shape0 - trigamma(shape0))
-    if (abs((shape - shape0) / shape0) < rel.tol) break
+    if (abs((shape - shape0) / shape0) < reltol) break
     shape0 <- shape
   }
 
   if (i == iterlim) {
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
     ))
   }
 

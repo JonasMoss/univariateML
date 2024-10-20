@@ -8,7 +8,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... `sigma0` is an optional starting value defaulting to `1`.
-#'     `rel.tol` is the relative accuracy requested, defaults to
+#'     `reltol` is the relative accuracy requested, defaults to
 #'     `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'     specifying the maximum number of iterations to be performed before the
 #'     program is terminated (defaults to `100`).
@@ -45,8 +45,8 @@ mlgumbel_ <- \(x, ...) {
     1
   }
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
+  reltol <- if (!is.null(dots$reltol)) {
+    dots$reltol
   } else {
     .Machine$double.eps^0.25
   }
@@ -69,7 +69,7 @@ mlgumbel_ <- \(x, ...) {
 
     sigma <- sigma0 - top / bottom
 
-    if (abs((sigma0 - sigma) / sigma0) < rel.tol) break
+    if (abs((sigma0 - sigma) / sigma0) < reltol) break
 
     sigma0 <- sigma
   }
@@ -77,8 +77,8 @@ mlgumbel_ <- \(x, ...) {
   if (i == iterlim) {
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
     ))
   }
 
