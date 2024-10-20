@@ -41,10 +41,6 @@ mlnbinom_ <- \(x, ...) {
   x_bar <- mean(x)
   get_prob <- \(size) size / (x_bar + size)
 
-  x_bar2 <- mean(x^2)
-  p = 1 - (x_bar/(x_bar2-x_bar^2))
-  size = (1-p)*x_bar/p
-
   if (is.null(dots$size)) {
     if(mean(x) == 0) {
       warning("All observations are 0; the maximum likelihood estimator is not unique.")
@@ -54,10 +50,12 @@ mlnbinom_ <- \(x, ...) {
       f <- \(size) sum(digamma(x + size)) - n * digamma(size) + n * log(get_prob(size))
       df <- \(size) sum(trigamma(x + size)) - n * trigamma(size) + n * dget_prob(size)
 
-      # Start at method of moments estimates.
-      x_bar2 <- mean(x^2)
-      p = 1 - (x_bar/(x_bar2-x_bar^2))
-      size0 = (1-p)*x_bar/p
+      # Start at method of moments estimate.
+      x_var <- var(x)
+      if(x_var*(n-1)/n<x_bar) {
+        stop("The maximum likelihood estimator does not exists for underdispersed data. Use `mlpois` instead.")
+      }
+      size0 = x_bar^2 / (x_var - x_bar)
 
       for (i in seq(iterlim)) {
         size <- size0 - f(size0) / df(size0)
