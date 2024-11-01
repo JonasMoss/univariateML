@@ -38,8 +38,6 @@ listmerge <- \(x, y, type = c("merge", "template")) {
 get_reltol <- \(dots) {
   if (!is.null(dots$reltol)) {
     dots$reltol
-  } else if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
   } else {
     .Machine$double.eps^0.25
   }
