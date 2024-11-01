@@ -15,7 +15,7 @@ dists <- list(
   pois = rpois(10, 3)
 )
 
-for (i in 1:length(dists)) {
+for (i in seq_along(length(dists))) {
   dist <- names(dists)[i]
   x <- dists[[i]]
 
@@ -25,17 +25,15 @@ for (i in 1:length(dists)) {
   expect_equal(
     dml(1, obj),
     do.call(
-      paste0("d", dist), # ddist()
-      c(1, as.list(obj)) # 1 as input plus all dist parameters
+      paste0("d", dist),
+      c(1, as.list(obj))
     )
   )
 
-  # Validate pdist
   expect_equal(
     pml(1, obj, log.p = TRUE),
     do.call(
-      paste0("p", dist), # pdist()
-      # 1 as input plus all dist parameters
+      paste0("p", dist),
       c(
         1,
         log.p = TRUE,
@@ -44,12 +42,10 @@ for (i in 1:length(dists)) {
     )
   )
 
-  # Validate qdist
   expect_equal(
     qml(0.9, obj, lower.tail = TRUE),
     do.call(
-      paste0("q", dist), # qdist()
-      # 0.9 as input plus all dist parameters
+      paste0("q", dist),
       c(
         0.9,
         lower.tail = TRUE,
@@ -58,8 +54,6 @@ for (i in 1:length(dists)) {
     )
   )
 
-  # Validate rdist.
-  # Seeds must be reset repeatedly to ensure perfect random replication.
   expect_equal(
     (\() {
       set.seed(seed)
@@ -68,8 +62,8 @@ for (i in 1:length(dists)) {
     (\() {
       set.seed(seed)
       do.call(
-        paste0("r", dist), # rdist()
-        c(1, as.list(obj)) # 1 as input plus all dist parameters
+        paste0("r", dist),
+        c(1, as.list(obj))
       )
     })()
   )

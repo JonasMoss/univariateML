@@ -51,12 +51,12 @@ mlpower_ <- \(x, ...) {
     .Machine$double.eps^0.5
   }
 
-  M <- mean(log(x))
+  m <- mean(log(x))
   alpha <- max(x) + epsilon
-  beta <- 1 / (log(alpha) - M)
+  beta <- 1 / (log(alpha) - m)
 
   estimates <- c(alpha, beta)
   logLik <-
-    length(x) * (log(beta) - beta * log(alpha) + (beta - 1) * M)
+    length(x) * (log(beta) - beta * log(alpha) + (beta - 1) * m)
   list(estimates = estimates, logLik = logLik)
 }

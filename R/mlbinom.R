@@ -25,7 +25,7 @@
 #'    program is terminated (defaults to `100`).
 #' @return `mlbinom` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
-#'    `mean` and `sd` and the following attributes:
+#'    `size` and `prob` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -47,6 +47,8 @@
 #' @references
 #' Olkin, I., Petkau, A. J., & Zidek, J. V. (1981). A comparison of n Estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642. https://doi.org/10.1080/01621459.1981.10477697
 #'
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#'
 #' Carroll, R. J., & Lombard, F. (1985). A Note on N Estimators for the Binomial Distribution. Journal of the American Statistical Association, 80(390), 423-426. https://doi.org/10.1080/01621459.1985.10478134
 #'
 #' DasGupta, A., & Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1-2), 391-404. https://doi.org/10.1016/j.jspi.2004.02.019
@@ -63,6 +65,8 @@ metadata$mlbinom <- list(
 
 mlbinom_ <- \(x, ...) {
   dots <- list(...)
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   n <- length(x)
   x_bar <- mean(x)
@@ -103,21 +107,9 @@ mlbinom_ <- \(x, ...) {
       sum(counts * trigamma(size - uniques + 1))
   }
 
-  reltol <- if (!is.null(dots$reltol)) {
-    dots$reltol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) {
-    dots$iterlim
-  } else {
-    100
-  }
-
   size0 <- max(x)
 
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     size <- size0 - grad(size0) / hessian(size0)
     if (abs((size0 - size) / size0) < reltol) break
 

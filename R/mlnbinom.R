@@ -12,7 +12,7 @@
 #'    program is terminated (defaults to `100`).
 #' @return `mlnbinom` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
-#'    `mean` and `sd` and the following attributes:
+#'    `size` and `prob` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -22,6 +22,8 @@
 #' @examples
 #' mlpois(precip)
 #' @seealso [Negative binomial][stats::dnbinom] for the density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
 mlnbinom <- \(x, na.rm = FALSE, ...) {}
 
@@ -42,7 +44,7 @@ mlnbinom_ <- \(x, ...) {
   get_prob <- \(size) size / (x_bar + size)
 
   if (is.null(dots$size)) {
-    if(mean(x) == 0) {
+    if (mean(x) == 0) {
       warning("All observations are 0; the maximum likelihood estimator is not unique.")
       size <- 1
     } else {
@@ -51,11 +53,11 @@ mlnbinom_ <- \(x, ...) {
       df <- \(size) sum(trigamma(x + size)) - n * trigamma(size) + n * dget_prob(size)
 
       # Start at method of moments estimate.
-      x_var <- var(x)
-      if(x_var*(n-1)/n<x_bar) {
-        stop("The maximum likelihood estimator does not exists for underdispersed data. Use `mlpois` instead.")
+      x_var <- stats::var(x)
+      if (x_var * (n - 1) / n < x_bar) {
+        stop("The maximum likelihood estimator does not exists for underdispersed data, but converges to a Poisson. Use `mlpois` instead.")
       }
-      size0 = x_bar^2 / (x_var - x_bar)
+      size0 <- x_bar^2 / (x_var - x_bar)
 
       for (i in seq(iterlim)) {
         size <- size0 - f(size0) / df(size0)

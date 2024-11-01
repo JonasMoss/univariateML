@@ -11,7 +11,7 @@ plot_wrangler <- \(x, range, points = FALSE, kind, ...) {
   if (is.null(range)) {
     if (abs(support[[1]]) + abs(support[[2]]) < Inf) {
       limits <- as.numeric(support)
-    } else if (abs(support[[1]]) == 0 & abs(support[[2]]) == Inf) {
+    } else if (abs(support[[1]]) == 0 && abs(support[[2]]) == Inf) {
       limits <- c(0, qml(0.995, x))
     } else {
       limits <- qml(c(0.005, 0.995), x)

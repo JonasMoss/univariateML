@@ -16,7 +16,7 @@ mlgeom(x, na.rm = FALSE, ...)
 \value{
 \code{mlgeom} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for
-\code{mean} and \code{sd} and the following attributes:
+\code{prob} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -30,6 +30,9 @@ For the density function of the Geometric distribution see
 }
 \examples{
 mlpois(precip)
+}
+\references{
+Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 }
 \seealso{
 \link[stats:Geometric]{Geometric} for the density.

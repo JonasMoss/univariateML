@@ -28,8 +28,17 @@ This is a named numeric vector with maximum likelihood estimates for
 For the density function of the Zipf distribution see
 \link[sads:dzipf]{Zipf}.
 }
+\details{
+This function follows the same format as every other function in the package,
+but most applications of Zipf's law use rank-abundance data. See, e.g., \link[sads:fitrad]{sads::fitzipf}
+for estimation of this sort of data.
+}
 \examples{
-mlzipf(precip)
+AIC(mlzipf(corbet)) # 2729.536
+AIC(mllgser(corbet)) # 2835.883
+}
+\references{
+Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 }
 \seealso{
 \link[sads:dzipf]{Zipf} for the density.

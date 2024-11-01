@@ -52,21 +52,9 @@ metadata$mllomax <- list(
 )
 
 mllomax_ <- \(x, ...) {
-  n <- length(x)
-
   dots <- list(...)
-
-  reltol <- if (!is.null(dots$reltol)) {
-    dots$reltol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) {
-    dots$iterlim
-  } else {
-    100
-  }
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   if (is.null(dots$lambda0)) {
     s <- mean(x^2)
@@ -77,7 +65,7 @@ mllomax_ <- \(x, ...) {
     lambda0 <- dots$lambda0
   }
 
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     S <- mean(log(1 + lambda0 * x))
     S1 <- mean(x / (1 + lambda0 * x))
     S2 <- -mean(x^2 / (1 + lambda0 * x)^2)

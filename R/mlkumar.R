@@ -45,20 +45,14 @@ metadata$mlkumar <- list(
 
 mlkumar_ <- \(x, ...) {
   dots <- list(...)
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   a0 <- if (!is.null(dots$a0)) dots$a0 else 1
 
-  reltol <- if (!is.null(dots$reltol)) {
-    dots$reltol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
-
   logs <- log(x)
 
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     xa <- x^a0
     T1 <- a0 * mean(logs / (1 - xa))
     T2 <- a0 * mean(logs * (xa / (1 - xa)))

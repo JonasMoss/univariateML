@@ -41,18 +41,8 @@ metadata$mlgamma <- list(
 
 mlgamma_ <- \(x, ...) {
   dots <- list(...)
-
-  reltol <- if (!is.null(dots$reltol)) {
-    dots$reltol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) {
-    dots$iterlim
-  } else {
-    100
-  }
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   n <- length(x)
   mean_hat <- mean(x)
@@ -63,7 +53,7 @@ mlgamma_ <- \(x, ...) {
   shape0 <- 1 / (12 * s) * (3 - s + sqrt((s - 3)^2 + 24 * s))
 
   ## The Newton-Raphson steps.
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     shape <- shape0 - (log(shape0) - digamma(shape0) - s) /
       (1 / shape0 - trigamma(shape0))
     if (abs((shape - shape0) / shape0) < reltol) break
@@ -82,8 +72,7 @@ mlgamma_ <- \(x, ...) {
   rate <- shape / mean_hat
 
   estimates <- c(shape = shape, rate = rate)
-  logLik <- n * (shape * log(rate) - log(gamma(shape)) +
-    (shape - 1) * L - rate * mean_hat)
+  logLik <- n * (shape * log(rate) - log(gamma(shape)) + (shape - 1) * L - rate * mean_hat)
 
   list(estimates = estimates, logLik = logLik)
 }

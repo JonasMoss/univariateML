@@ -3,6 +3,10 @@
 #' For the density function of the Zipf distribution see
 #' [Zipf][sads::dzipf].
 #'
+#' This function follows the same format as every other function in the package,
+#' but most applications of Zipf's law use rank-abundance data. See, e.g., [sads::fitzipf]
+#' for estimation of this sort of data.
+#'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Not currently in use.
@@ -16,8 +20,11 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
-#' mlzipf(precip)
+#' AIC(mlzipf(corbet)) # 2729.536
+#' AIC(mllgser(corbet)) # 2835.883
 #' @seealso [Zipf][sads::dzipf] for the density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
 mlzipf <- \(x, na.rm = FALSE, ...) {}
 
@@ -30,6 +37,9 @@ metadata$mlzipf <- list(
 
 mlzipf_ <- \(x, ...) {
   dots <- list(...)
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
+
   N <- max(x)
   n <- length(x)
   sum_lx <- sum(log(x))
@@ -41,21 +51,9 @@ mlzipf_ <- \(x, ...) {
     return(list(estimates = c(N, 1), logLik = 0))
   }
 
-  reltol <- if (!is.null(dots$reltol)) {
-    dots$reltol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) {
-    dots$iterlim
-  } else {
-    100
-  }
-
   shape0 <- 1
 
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     sum_shape <- sum(1 / seq(1, N)^shape0)
     sum_log_hs <- sum(1 / seq(1, N)^shape0 * log_seq)
     sum_log2_hs <- sum(1 / seq(1, N)^shape0 * log_seq2)

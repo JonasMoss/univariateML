@@ -9,7 +9,7 @@
 #' @keywords internal
 decorator <- \(name) {
   force(name)
-  \(x, na.rm = FALSE, ...) {
+  fun <- \(x, na.rm = FALSE, ...) {
     x <- ml_check_modify(x, na.rm = na.rm, name = name)
     n <- length(x)
     out <- rlang::exec(paste0(name, "_"), x = x, ...)
@@ -17,6 +17,11 @@ decorator <- \(name) {
     params <- list(logLik = out$logLik, call = deparse(match.call()), n = n)
     univariateML_construct(out$estimates, name = name, params = params)
   }
+  meta <- metadata[[name]]
+  meta$parameters <- meta$names
+  meta$names <- NULL
+  attributes(fun) <- c(meta, attributes(fun))
+  fun
 }
 
 #' Construct `univariateML` object.
@@ -141,17 +146,4 @@ to_univariateML <- \(y, obj) {
   }
 
   obj
-}
-
-#' Input Checker for ML functions
-#'
-#' Checks that `x` in the ML functions is numeric and has only one dimension.
-#'
-#' @param x input to a `ML***` function.
-#' @return `NULL`
-
-ml_input_checker <- \(x) {
-  assertthat::assert_that(is.numeric(x))
-  msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
-  assertthat::assert_that(NCOL(x) == 1, msg = msg)
 }

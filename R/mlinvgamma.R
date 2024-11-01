@@ -41,8 +41,7 @@ mlinvgamma_ <- \(x, ...) {
 
   L <- mean(log(x))
   M <- mean(1 / x)
-  logLik <- length(x) * (alpha * log(beta) - log(gamma(alpha)) +
-    -(alpha + 1) * L - beta * M)
+  logLik <- length(x) * (alpha * log(beta) - log(gamma(alpha)) - (alpha + 1) * L - beta * M)
 
   list(estimates = gamma_ml$estimates, logLik = unname(logLik))
 }

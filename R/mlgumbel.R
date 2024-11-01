@@ -38,6 +38,8 @@ metadata$mlgumbel <- list(
 
 mlgumbel_ <- \(x, ...) {
   dots <- list(...)
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   sigma0 <- if (!is.null(dots$sigma0)) {
     dots$sigma0
@@ -45,21 +47,9 @@ mlgumbel_ <- \(x, ...) {
     1
   }
 
-  reltol <- if (!is.null(dots$reltol)) {
-    dots$reltol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) {
-    dots$iterlim
-  } else {
-    100
-  }
-
   mean_x <- mean(x)
 
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     A <- sum(x * exp(-x / sigma0))
     B <- sum(exp(-x / sigma0))
     C <- sum(x^2 * exp(-x / sigma0))

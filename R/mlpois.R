@@ -10,7 +10,7 @@
 #' @param ... currently affects nothing.
 #' @return `mlpois` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
-#'    `mean` and `sd` and the following attributes:
+#'    `lambda` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -20,6 +20,8 @@
 #' @examples
 #' mlpois(ChickWeight$weight)
 #' @seealso [Poisson][stats::Poisson] for the Poisson density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
 mlpois <- \(x, na.rm = FALSE, ...) {}
 

@@ -31,6 +31,9 @@ For the density function of the zeero-inflated Poisson distribution see
 \examples{
 mlzip(precip)
 }
+\references{
+Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+}
 \seealso{
 \link[extraDistr:ZIP]{Zero-inflated Poisson distribution} for the density.
 }

@@ -1,7 +1,7 @@
 Package: univariateML
 Type: Package
 Title: Maximum Likelihood Estimation for Univariate Densities
-Version: 1.2.0
+Version: 1.5.0
 Authors@R: c(
     person("Jonas", "Moss", , "jonas.gjertsen@gmail.com", role = c("aut", "cre"), 
       comment = c(ORCID = "0000-0002-6876-6964")),
@@ -25,7 +25,8 @@ Imports: assertthat,
     rlang,
     intervals,
     Rfast,
-    pracma
+    pracma,
+    sads
 Suggests: 
     testthat,
     knitr,

@@ -39,22 +39,16 @@ metadata$mlweibull <- list(
 
 mlweibull_ <- \(x, ...) {
   dots <- list(...)
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   shape0 <- if (!is.null(dots$sigma0)) dots$shape0 else 1
-
-  reltol <- if (!is.null(dots$reltol)) {
-    dots$reltol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
 
   log_x <- log(x)
   l_hat <- mean(log_x)
   log_xsq <- log_x^2
 
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     shape0_lsum <- mean(x^shape0 * log_x)
     shape0_lsum_sqr <- mean(x^shape0 * log_xsq)
     shape0_sum <- mean(x^shape0)

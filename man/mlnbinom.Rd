@@ -20,7 +20,7 @@ program is terminated (defaults to \code{100}).}
 \value{
 \code{mlnbinom} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for
-\code{mean} and \code{sd} and the following attributes:
+\code{size} and \code{prob} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -34,6 +34,9 @@ For the density function of the Negative binomial distribution see
 }
 \examples{
 mlpois(precip)
+}
+\references{
+Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 }
 \seealso{
 \link[stats:NegBinomial]{Negative binomial} for the density.
