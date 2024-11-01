@@ -4,6 +4,11 @@ set.seed(313)
 x <- rnorm(10, 2, 3)
 obj <- mlnorm(x)
 
+decorated <- decorator("mlunif")
+names <- c("model","density","support","parameters","srcref")
+expect_equal(names(attributes(decorated)), names)
+
+
 expect_equal(univariateML_to_string(obj, "d"), "stats::dnorm")
 expect_equal(univariateML_to_string(obj, "p"), "stats::pnorm")
 expect_equal(univariateML_to_string(obj, "q"), "stats::qnorm")
