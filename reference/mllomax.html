@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">univariateML</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p><code>lambda0</code> an optional starting value for the <code>lambda</code> parameter.
-Defaults to <code>median(x)</code>. <code>rel.tol</code> is the relative accuracy requested,
+Defaults to <code>median(x)</code>. <code>reltol</code> is the relative accuracy requested,
 defaults to <code>.Machine$double.eps^0.25</code>. <code>iterlim</code> is a positive integer
 specifying the maximum number of iterations to be performed before the
 program is terminated (defaults to <code>100</code>).</p></dd>
@@ -93,11 +93,12 @@ This is a named numeric vector with maximum likelihood estimates for
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For the density function of the Lomax distribution see
-<a href="https://rdrr.io/pkg/extraDistr/man/Lomax.html" class="external-link">Lomax</a>. The maximum likelihood estimate will frequently
-fail to exist. This is due to the parameterization of the function which
-does not take into account that the density converges to an exponential
-along certain values of the parameters, see
-<code>vignette("Distribution Details", package = "univariateML")</code>.</p>
+<a href="https://rdrr.io/pkg/extraDistr/man/Lomax.html" class="external-link">Lomax</a>.</p>
+<p>The likelihood estimator of the Lomax distribution may be unbounded. When this
+happens, the likelihood converges to an exponential distribution with parameter
+equal to the mean of the data. This is the natural limiting case for the Lomax
+distribution, and it is reasonable to use <code>mlexp</code> in this case. See
+<code>vignette("Distribution Details", package = "univariateML")</code> for details.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -117,6 +118,12 @@ Probability and Statistics, 470, John Wiley &amp; Sons, p. 60</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum likelihood estimates for the Lomax model </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> lambda   kappa  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1.054   6.764  </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The maximum likelihood estimator may fail if the data is exponential.</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mllomax</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

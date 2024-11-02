@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">univariateML</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,6 +132,7 @@ the positive half-line.</p>
 <span>  <span class="fu"><a href="../reference/mlinvweibull.html">mlinvweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="../reference/mllgamma.html">mllgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Loading required package: intervals</span></span></code></pre>
 <pre><code><span><span class="co">##                         df      AIC</span></span>
 <span><span class="co">## mlbetapr(egypt$age)      2 1312.464</span></span>
 <span><span class="co">## mlexp(egypt$age)         1 1249.553</span></span>
@@ -148,14 +149,14 @@ and <a href="https://en.wikipedia.org/wiki/Gamma_distribution" class="external-l
 models stand out with an AIC far below the other candidate models.</p>
 <p>To see the parameter estimates of <code>mlweibull(egypt$age)</code>
 just print it:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Maximum likelihood estimates for the Weibull model </span></span>
 <span><span class="co">##  shape   scale  </span></span>
 <span><span class="co">##  1.404  33.564</span></span></code></pre>
 <p><code>mlweibull(egypt$age)</code> is a <code>univariateML</code>
 object. For more details about it call <code>summary</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Maximum likelihood for the Weibull model </span></span>
@@ -176,7 +177,7 @@ object. For more details about it call <code>summary</code>:</p>
 </h3>
 <p>The model selection process can be automatized with
 <code>model_select(egypt$age)</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_select.html">model_select</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span>, models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="st">"weibull"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Maximum likelihood estimates for the Weibull model </span></span>
 <span><span class="co">##  shape   scale  </span></span>
@@ -187,7 +188,7 @@ object. For more details about it call <code>summary</code>:</p>
 </h3>
 <p>Now we will investigate how the two models differ with <a href="https://en.wikipedia.org/wiki/Q-Q_plot" class="external-link">quantile-quantile
 plots</a>, or Q-Q plots for short.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ProbabilityPlots.html">qqmlplot</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span>, <span class="va">mlweibull</span>, datax <span class="op">=</span> <span class="cn">TRUE</span>, main <span class="op">=</span> <span class="st">"QQ Plot for Ancient Egypt"</span><span class="op">)</span></span>
 <span><span class="co"># Can also use qqmlplot(mlweibull(egypt$age), datax = TRUE) directly.</span></span>
 <span><span class="fu"><a href="../reference/ProbabilityPlots.html">qqmlpoints</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span>, <span class="va">mlgamma</span>, datax <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
@@ -204,7 +205,7 @@ well.</p>
 </h3>
 <p>Use the <code>plot</code>, <code>lines</code> and <code>points</code>
 generics to plot the densities.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span>, main <span class="op">=</span> <span class="st">"Mortality in Ancient Egypt"</span>, freq <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.025</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
@@ -221,13 +222,13 @@ confidence intervals using either <code>bootstrapml</code> or
 calculate any functional of the parameters and manipulate them
 afterwards, <code>confint</code> is restricted to the main parameters of
 the model.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate two-sided 95% confidence intervals for the two Gumbel parameters.</span></span>
 <span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span> <span class="co"># same as confint(mlweibull(egypt$age))</span></span></code></pre></div>
 <pre><code><span><span class="co">##            2.5%     97.5%</span></span>
 <span><span class="co">## shape  1.254423  1.605348</span></span>
 <span><span class="co">## scale 29.508024 37.593804</span></span></code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##             2.5%      97.5%</span></span>
 <span><span class="co">## shape 1.33060626 2.03281196</span></span>
@@ -245,44 +246,44 @@ the Gamma distribution with parameters <code>shape</code> and
 <p>The <code>probs</code> argument can be used to modify the limits of
 confidence interval. Now we will calculate two 90% confidence intervals
 for the mean.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate two-sided 90% confidence intervals for the mean of a Weibull.</span></span>
 <span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
-<span>  map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">gamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>  map <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">gamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       5%      95% </span></span>
 <span><span class="co">## 27.51011 33.73273</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate two-sided 90% confidence intervals for the mean of a Gamma.</span></span>
 <span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
-<span>  map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">/</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
+<span>  map <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">/</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
 <span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       5%      95% </span></span>
 <span><span class="co">## 27.53893 34.11073</span></span></code></pre>
 <p>We are be interested in the quantiles of the underlying distribution,
 for instance the median:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate two-sided 90% confidence intervals for the two Gumbel parameters.</span></span>
 <span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
-<span>  map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">qweibull</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>  map <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">qweibull</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       5%      95% </span></span>
 <span><span class="co">## 22.94823 28.81159</span></span></code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlgamma.html">mlgamma</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
-<span>  map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">qgamma</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>  map <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">qgamma</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       5%      95% </span></span>
 <span><span class="co">## 21.95519 27.63972</span></span></code></pre>
 <p>We can also plot the bootstrap samples.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/bootstrapml.html">bootstrapml</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
-<span>    map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">gamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    map <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">gamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    reducer <span class="op">=</span> <span class="va">identity</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  main <span class="op">=</span> <span class="st">"Bootstrap Samples of the Mean"</span>,</span>
@@ -300,14 +301,14 @@ probabilities, quantiles, and generate random variables. Here are
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
 random observations from the most likely distribution of Egyptian
 mortalities given the Weibull model.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">313</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/MaximumLikelihoodDistribution.html">rml</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] 25.90552 59.64456 13.36882 44.29378 12.22563 17.66144 54.57633 22.86824</span></span>
 <span><span class="co">##  [9] 11.48328 19.94814</span></span></code></pre>
 <p>Compare the empirical distribution of the random variates to the true
 cumulative probability.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">313</span><span class="op">)</span></span>
 <span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
