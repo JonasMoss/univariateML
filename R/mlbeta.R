@@ -35,7 +35,8 @@ metadata$mlbeta <- list(
   "model" = "Beta",
   "density" = "stats::dbeta",
   "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "names" = c("shape1", "shape2")
+  "names" = c("shape1", "shape2"),
+  "defaults" = c(2, 3)
 )
 
 mlbeta_ <- \(x, ...) {

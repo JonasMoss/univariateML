@@ -5,8 +5,8 @@ x <- rnorm(10, 2, 3)
 obj <- mlnorm(x)
 
 decorated <- decorator("mlunif")
-names <- c("model","density","support","parameters","srcref")
-expect_equal(names(attributes(decorated)), names)
+names <- c("model", "density", "support", "default", "parameters")
+expect_equal(names(attributes(decorated))[1:5], names)
 
 
 expect_equal(univariateML_to_string(obj, "d"), "stats::dnorm")

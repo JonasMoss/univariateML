@@ -29,7 +29,8 @@ metadata$mlunif <- list(
   "model" = "Uniform",
   "density" = "stats::dunif",
   "support" = stats::setNames(intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)), c("min", "max")),
-  "names" = c("min", "max")
+  "names" = c("min", "max"),
+  "default" = c(0, 1)
 )
 
 mlunif_ <- \(x, ...) {

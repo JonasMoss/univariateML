@@ -60,7 +60,8 @@ metadata$mlbinom <- list(
   "model" = "Binomial",
   "density" = "stats::dbinom",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("size", "prob")
+  "names" = c("size", "prob"),
+  "default" = c(10, 0.5)
 )
 
 mlbinom_ <- \(x, ...) {

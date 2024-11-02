@@ -31,7 +31,8 @@ metadata$mlinvgamma <- list(
   "model" = "InvGamma",
   "density" = "extraDistr::dinvgamma",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("alpha", "beta")
+  "names" = c("alpha", "beta"),
+  "default" = c(3, 4)
 )
 
 mlinvgamma_ <- \(x, ...) {

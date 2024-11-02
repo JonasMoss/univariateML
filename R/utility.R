@@ -35,6 +35,7 @@ listmerge <- \(x, y, type = c("merge", "template")) {
   }
 }
 
+#' @keywords internal
 get_reltol <- \(dots) {
   if (!is.null(dots$reltol)) {
     dots$reltol
@@ -43,6 +44,35 @@ get_reltol <- \(dots) {
   }
 }
 
+#' @keywords internal
 get_iterlim <- \(dots) {
   if (!is.null(dots$iterlim)) dots$iterlim else 100
+}
+
+#' @keywords internal
+check_iterlim <- \(i, iterlim, reltol) {
+  if (i == iterlim) {
+    warning(paste0(
+      "The iteration limit (iterlim = ", iterlim, ") was reached",
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
+    ))
+  }
+}
+
+#' Simulate `n` observations from a `ml***` string using default parameters.
+#' @param dens `ml***` string.
+#' @param n Number of samples to take.
+#' @keywords internal
+simulate_default <- \(dens, n) {
+  to_rdist <- \(x) {
+    strings <- strsplit(x, "::")[[1]]
+    substring(strings[2], first = 1, last = 1) <- "r"
+    paste0(strings[1], "::", strings[2])
+  }
+  params <- metadata[[dens]]$default
+  names(params) <- metadata[[dens]]$names
+  params["n"] <- n
+  rdist <- to_rdist(metadata[[dens]]$density)
+  rlang::exec(parse(text = rdist)[[1]], !!!as.list(params))
 }

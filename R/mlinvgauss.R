@@ -32,7 +32,8 @@ metadata$mlinvgauss <- list(
   "model" = "Inverse Gaussian",
   "density" = "actuar::dinvgauss",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "shape")
+  "names" = c("mean", "shape"),
+  "default" = c(3, 4)
 )
 
 mlinvgauss_ <- \(x, ...) {

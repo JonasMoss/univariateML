@@ -31,7 +31,8 @@ metadata$mlexp <- list(
   "model" = "Exponential",
   "density" = "stats::dexp",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("rate")
+  "names" = c("rate"),
+  "default" = 1
 )
 
 mlexp_ <- \(x, ...) {

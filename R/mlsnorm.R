@@ -29,7 +29,8 @@ metadata$mlsnorm <- list(
   "model" = "Skew Normal",
   "density" = "fGarch::dsnorm",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "xi")
+  "names" = c("mean", "sd", "xi"),
+  "default" = c(0, 1, 3)
 )
 
 mlsnorm_ <- \(x, ...) {

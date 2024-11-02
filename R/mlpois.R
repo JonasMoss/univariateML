@@ -29,7 +29,8 @@ metadata$mlpois <- list(
   "model" = "Poisson",
   "density" = "stats::dpois",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("lambda")
+  "names" = c("lambda"),
+  "default" = 2
 )
 
 mlpois_ <- \(x, ...) {

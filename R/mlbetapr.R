@@ -34,7 +34,8 @@ metadata$mlbetapr <- list(
   "model" = "BetaPrime",
   "density" = "extraDistr::dbetapr",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("shape1", "shape2")
+  "names" = c("shape1", "shape2"),
+  "default" = c(2, 3)
 )
 
 mlbetapr_ <- \(x, ...) {

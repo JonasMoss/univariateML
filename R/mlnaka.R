@@ -39,7 +39,8 @@ metadata$mlnaka <- list(
   "model" = "Nakagami",
   "density" = "nakagami::dnaka",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape", "scale")
+  "names" = c("shape", "scale"),
+  "default" = c(2, 3)
 )
 
 mlnaka_ <- \(x, ...) {

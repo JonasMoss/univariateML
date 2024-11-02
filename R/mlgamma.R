@@ -36,7 +36,8 @@ metadata$mlgamma <- list(
   "model" = "Gamma",
   "density" = "stats::dgamma",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape", "rate")
+  "names" = c("shape", "rate"),
+  "default" = c(2, 2)
 )
 
 mlgamma_ <- \(x, ...) {
@@ -60,13 +61,7 @@ mlgamma_ <- \(x, ...) {
     shape0 <- shape
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (reltol = ",
-      reltol, ")."
-    ))
-  }
+  check_iterlim(i, iterlim, reltol)
 
   ## Given the shape, the rate is easy to compute.
   rate <- shape / mean_hat

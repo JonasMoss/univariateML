@@ -37,7 +37,8 @@ metadata$mlinvweibull <- list(
   "model" = "InverseWeibull",
   "density" = "actuar::dinvweibull",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape", "rate")
+  "names" = c("shape", "rate"),
+  "default" = c(2, 3)
 )
 
 mlinvweibull_ <- \(x, ...) {

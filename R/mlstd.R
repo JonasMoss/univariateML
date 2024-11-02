@@ -29,7 +29,8 @@ metadata$mlstd <- list(
   "model" = "Student-t",
   "density" = "fGarch::dstd",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "nu")
+  "names" = c("mean", "sd", "nu"),
+  "default" = c(0, 1, 3)
 )
 
 mlstd_ <- \(x, ...) {

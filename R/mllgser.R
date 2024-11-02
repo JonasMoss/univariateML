@@ -45,10 +45,14 @@ metadata$mllgser <- list(
   "model" = "Logarithmic series",
   "density" = "extraDistr::dlgser",
   "support" = intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("theta")
+  "names" = c("theta"),
+  "default" = 0.9
 )
 
 mllgser_ <- \(x, ...) {
+  if (sum(x) == length(x)) {
+    stop("All observations equals 1; the maximum likelihood estimator does not exist.")
+  }
   x_bar <- mean(x)
   xi <- -x_bar * pracma::lambertWn(-exp(-1 / x_bar) / x_bar) - 1
   theta <- xi / (xi + 1)

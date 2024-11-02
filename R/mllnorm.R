@@ -32,7 +32,8 @@ metadata$mllnorm <- list(
   "model" = "Lognormal",
   "density" = "stats::dlnorm",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("meanlog", "sdlog")
+  "names" = c("meanlog", "sdlog"),
+  "default" = c(0, 1)
 )
 
 mllnorm_ <- \(x, ...) {

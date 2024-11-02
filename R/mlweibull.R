@@ -34,7 +34,8 @@ metadata$mlweibull <- list(
   "model" = "Weibull",
   "density" = "stats::dweibull",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("shape", "scale")
+  "names" = c("shape", "scale"),
+  "default" = c(3, 4)
 )
 
 mlweibull_ <- \(x, ...) {
@@ -63,13 +64,7 @@ mlweibull_ <- \(x, ...) {
     shape0 <- shape
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (reltol = ",
-      reltol, ")."
-    ))
-  }
+  check_iterlim(i, iterlim, reltol)
 
   ## Given the shape, the scale is easy to compute.
   scale <- (mean(x^shape))^(1 / shape)

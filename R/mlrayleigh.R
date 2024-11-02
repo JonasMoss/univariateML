@@ -30,7 +30,8 @@ metadata$mlrayleigh <- list(
   "model" = "Rayleigh",
   "density" = "extraDistr::drayleigh",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("sigma")
+  "names" = c("sigma"),
+  "default" = 2
 )
 
 mlrayleigh_ <- \(x, ...) {

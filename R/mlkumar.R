@@ -40,7 +40,8 @@ metadata$mlkumar <- list(
   "model" = "Kumaraswamy",
   "density" = "extraDistr::dkumar",
   "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "names" = c("a", "b")
+  "names" = c("a", "b"),
+  "default" = c(2, 3)
 )
 
 mlkumar_ <- \(x, ...) {
@@ -73,13 +74,7 @@ mlkumar_ <- \(x, ...) {
     a0 <- a
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (reltol = ",
-      reltol, ")."
-    ))
-  }
+  check_iterlim(i, iterlim, reltol)
 
   ## Given the shape, the scale is easy to compute.
   b <- -1 / mean(log(1 - x^a))

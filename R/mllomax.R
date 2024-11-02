@@ -48,7 +48,8 @@ metadata$mllomax <- list(
   "model" = "Lomax",
   "density" = "extraDistr::dlomax",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("lambda", "kappa")
+  "names" = c("lambda", "kappa"),
+  "default" = c(1, 2)
 )
 
 mllomax_ <- \(x, ...) {
@@ -91,13 +92,7 @@ mllomax_ <- \(x, ...) {
     stop("The maximum likelihood estimator does not exist. Use `mlexp` to fit an exponential distribution.")
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (reltol = ",
-      reltol, ")."
-    ))
-  }
+  check_iterlim(i, iterlim, reltol)
 
   S <- mean(log(1 + lambda * x))
   estimates <- c(lambda, 1 / S)

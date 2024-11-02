@@ -37,7 +37,8 @@ metadata$mlllogis <- list(
   "model" = "Loglogistic",
   "density" = "actuar::dllogis",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("shape", "rate")
+  "names" = c("shape", "rate"),
+  "default" = c(1, 2)
 )
 
 mlllogis_ <- \(x, ...) {

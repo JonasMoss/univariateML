@@ -29,7 +29,8 @@ metadata$mlsstd <- list(
   "model" = "Skew Student-t",
   "density" = "fGarch::dsstd",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "nu", "xi")
+  "names" = c("mean", "sd", "nu", "xi"),
+  "default" = c(0, 1, 3, 2)
 )
 
 mlsstd_ <- \(x, ...) {

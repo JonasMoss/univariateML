@@ -27,7 +27,8 @@ metadata$mlgeom <- list(
   "model" = "Geometric",
   "density" = "stats::dgeom",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("prob")
+  "names" = c("prob"),
+  "default" = 0.5
 )
 
 mlgeom_ <- \(x, ...) {

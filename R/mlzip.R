@@ -27,7 +27,8 @@ metadata$mlzip <- list(
   "model" = "Zero-inflated Poisson",
   "density" = "extraDistr::dzip",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("lambda", "pi")
+  "names" = c("lambda", "pi"),
+  "default" = c(1, 0.5)
 )
 
 mlzip_ <- \(x, ...) {

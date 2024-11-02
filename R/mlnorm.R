@@ -31,7 +31,8 @@ metadata$mlnorm <- list(
   "model" = "Normal",
   "density" = "stats::dnorm",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd")
+  "names" = c("mean", "sd"),
+  "default" = c(0, 1)
 )
 
 mlnorm_ <- \(x, ...) {

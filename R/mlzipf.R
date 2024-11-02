@@ -32,7 +32,8 @@ metadata$mlzipf <- list(
   "model" = "Zipf",
   "density" = "sads::dzipf",
   "support" = stats::setNames(intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"), c("1", "N")),
-  "names" = c("N", "s")
+  "names" = c("N", "s"),
+  "default" = c(3, 0.5)
 )
 
 mlzipf_ <- \(x, ...) {
@@ -64,14 +65,7 @@ mlzipf_ <- \(x, ...) {
     shape0 <- shape
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (reltol = ",
-      reltol, ")."
-    ))
-  }
-
+  check_iterlim(i, iterlim, reltol)
 
   h <- \(shape) sum(1 / seq(1, N)^shape)
   f <- \(shape) -shape * sum_lx - n * log(h(shape))

@@ -32,7 +32,8 @@ metadata$mllgamma <- list(
   "model" = "Loggamma",
   "density" = "actuar::dlgamma",
   "support" = intervals::Intervals(c(1, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shapelog", "ratelog")
+  "names" = c("shapelog", "ratelog"),
+  "default" = c(2, 3)
 )
 
 mllgamma_ <- \(x, ...) {

@@ -31,7 +31,8 @@ metadata$mlpareto <- list(
   "model" = "Pareto",
   "density" = "extraDistr::dpareto",
   "support" = stats::setNames(intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)), c("a", "Inf")),
-  "names" = c("a", "b")
+  "names" = c("a", "b"),
+  "default" = c(1, 2)
 )
 
 mlpareto_ <- \(x, ...) {

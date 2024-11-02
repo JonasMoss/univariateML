@@ -32,7 +32,8 @@ metadata$mlsged <- list(
   "model" = "Skew Generalized Error",
   "density" = "fGarch::dsged",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "nu", "xi")
+  "names" = c("mean", "sd", "nu", "xi"),
+  "default" = c(0, 1, 3, 3)
 )
 
 mlsged_ <- \(x, ...) {

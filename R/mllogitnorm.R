@@ -32,7 +32,8 @@ metadata$mllogitnorm <- list(
   "model" = "LogitNormal",
   "density" = "logitnorm::dlogitnorm",
   "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "names" = c("mu", "sigma")
+  "names" = c("mu", "sigma"),
+  "default" = c(2, 3)
 )
 
 mllogitnorm_ <- \(x, ...) {

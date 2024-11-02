@@ -33,7 +33,8 @@ metadata$mlcauchy <- list(
   "model" = "Cauchy",
   "density" = "stats::dcauchy",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("location", "scale")
+  "names" = c("location", "scale"),
+  "default" = c(0, 1)
 )
 
 mlcauchy_ <- \(x, ...) {

@@ -31,7 +31,8 @@ metadata$mllaplace <- list(
   "model" = "Laplace",
   "density" = "extraDistr::dlaplace",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mu", "sigma")
+  "names" = c("mu", "sigma"),
+  "default" = c(0, 1)
 )
 
 mllaplace_ <- \(x, ...) {

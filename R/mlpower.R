@@ -40,7 +40,8 @@ metadata$mlpower <- list(
   "model" = "PowerDist",
   "density" = "extraDistr::dpower",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("alpha", "beta")
+  "names" = c("alpha", "beta"),
+  "default" = c(1, 2)
 )
 
 mlpower_ <- \(x, ...) {

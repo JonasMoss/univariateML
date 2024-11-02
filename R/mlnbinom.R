@@ -31,7 +31,8 @@ metadata$mlnbinom <- list(
   "model" = "Negative binomial",
   "density" = "stats::dnbinom",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("size", "prob")
+  "names" = c("size", "prob"),
+  "default" = c(10, 0.3)
 )
 
 mlnbinom_ <- \(x, ...) {

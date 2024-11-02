@@ -33,7 +33,8 @@ metadata$mlgumbel <- list(
   "model" = "Gumbel",
   "density" = "extraDistr::dgumbel",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mu", "sigma")
+  "names" = c("mu", "sigma"),
+  "default" = c(3, 3)
 )
 
 mlgumbel_ <- \(x, ...) {
@@ -64,13 +65,7 @@ mlgumbel_ <- \(x, ...) {
     sigma0 <- sigma
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (reltol = ",
-      reltol, ")."
-    ))
-  }
+  check_iterlim(i, iterlim, reltol)
 
   ## Given the sigma, the mu is easy to compute.
   mu <- -sigma * log(mean(exp(-x / sigma)))
