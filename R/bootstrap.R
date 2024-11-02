@@ -56,7 +56,7 @@
 #' ## parametric bootstrap confidence interval for the mean with confidence
 #' ## limits c(0.05, 0.95)
 #'
-#' bootstrapml(object, map = function(x) x[1] / x[2], probs = c(0.05, 0.95))
+#' bootstrapml(object, map = \(x) x[1] / x[2], probs = c(0.05, 0.95))
 #'
 #' #       5%      95%
 #' # 17.33962 18.31253
@@ -66,8 +66,8 @@
 #' hist(bootstrapml(object, reducer = identity))
 #' }
 #'
-bootstrapml <- function(object, reps = 1000, map = identity,
-                        reducer = stats::quantile, ...) {
+bootstrapml <- \(object, reps = 1000, map = identity,
+  reducer = stats::quantile, ...) {
   r_fun <- univariateML_to_function(object, type = "r")
   ml_fun <- univariateML_to_function(object, type = "ml")
   bootstraps <- replicate(n = reps, expr = ml_fun(r_fun(attr(object, "n"))))
@@ -87,8 +87,8 @@ bootstrapml <- function(object, reps = 1000, map = identity,
   }
 
   if (is.null(dim(mapped))) {
-    do.call(function(...) reducer(mapped, ...), arguments)
+    do.call(\(...) reducer(mapped, ...), arguments)
   } else {
-    do.call(function(...) t(apply(mapped, 1, reducer, ...)), arguments)
+    do.call(\(...) t(apply(mapped, 1, reducer, ...)), arguments)
   }
 }

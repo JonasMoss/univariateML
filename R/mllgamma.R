@@ -26,28 +26,27 @@
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
 #' actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
+mllgamma <- \(x, na.rm = FALSE, ...) {}
 
-mllgamma <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 1)
+metadata$mllgamma <- list(
+  "model" = "Loggamma",
+  "density" = "actuar::dlgamma",
+  "support" = intervals::Intervals(c(1, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shapelog", "ratelog"),
+  "default" = c(2, 3)
+)
 
+mllgamma_ <- \(x, ...) {
   y <- log(x)
   n <- length(x)
-
-  object <- mlgamma(y, na.rm = na.rm, ...)
-  shapelog <- object[1]
-  ratelog <- object[2]
+  estimates <- mlgamma_(y, ...)$estimates
+  shapelog <- estimates[1]
+  ratelog <- estimates[2]
   L <- mean(y)
   K <- mean(log(y))
-  names(object) <- c("shapelog", "ratelog")
-  attr(object, "model") <- "Loggamma"
-  attr(object, "density") <- "actuar::dlgamma"
-  attr(object, "support") <- c(1, Inf)
-  attr(object, "logLik") <-
+  logLik <-
     unname(n * (shapelog * log(ratelog) - log(gamma(shapelog)) +
       (shapelog - 1) * K - (ratelog + 1) * L))
 
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = logLik)
 }

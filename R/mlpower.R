@@ -34,12 +34,17 @@
 #' Arslan, G. "A new characterization of the power distribution."
 #' Journal of Computational and Applied Mathematics 260 (2014): 99-102.
 #' @export
+mlpower <- \(x, na.rm = FALSE, ...) {}
 
-mlpower <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) >= 0)
+metadata$mlpower <- list(
+  "model" = "PowerDist",
+  "density" = "extraDistr::dpower",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("alpha", "beta"),
+  "default" = c(1, 2)
+)
 
+mlpower_ <- \(x, ...) {
   dots <- list(...)
   epsilon <- if (!is.null(dots$epsilon)) {
     dots$epsilon
@@ -47,22 +52,12 @@ mlpower <- function(x, na.rm = FALSE, ...) {
     .Machine$double.eps^0.5
   }
 
-  M <- mean(log(x))
+  m <- mean(log(x))
   alpha <- max(x) + epsilon
-  beta <- 1 / (log(alpha) - M)
+  beta <- 1 / (log(alpha) - m)
 
-  object <- c(
-    alpha = alpha,
-    beta = beta
-  )
-
-  class(object) <- "univariateML"
-  attr(object, "model") <- "PowerDist"
-  attr(object, "density") <- "extraDistr::dpower"
-  attr(object, "logLik") <-
-    length(x) * (log(beta) - beta * log(alpha) + (beta - 1) * M)
-  attr(object, "support") <- c(0, alpha)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(alpha, beta)
+  logLik <-
+    length(x) * (log(beta) - beta * log(alpha) + (beta - 1) * m)
+  list(estimates = estimates, logLik = logLik)
 }

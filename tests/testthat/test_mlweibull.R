@@ -6,11 +6,11 @@ small_data <- rweibull(100, 1, 1)
 tiny_data <- rweibull(10, 3, 7)
 
 ## Checks if the ML is correct.
-mle1 <- nlm(function(p) {
+mle1 <- nlm(\(p) {
   -mean(dweibull(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 
-mle2 <- nlm(function(p) {
+mle2 <- nlm(\(p) {
   -mean(dweibull(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(3, 7))$estimate
 
@@ -43,8 +43,8 @@ expect_equal(class(est), "univariateML")
 
 
 ## Check support.
-expect_equal(class(attr(est, "support")), "numeric")
+expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
 
 ## Check support.
-expect_equal(class(attr(est, "support")), "numeric")
+expect_equal(class(attr(est, "support"))[[1]], "numeric")

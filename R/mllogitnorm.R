@@ -26,17 +26,17 @@
 #' @references Atchison, J., & Shen, S. M. (1980). Logistic-normal
 #' distributions: Some properties and uses. Biometrika, 67(2), 261-272.
 #' @export
+mllogitnorm <- \(x, na.rm = FALSE, ...) {}
 
-mllogitnorm <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+metadata$mllogitnorm <- list(
+  "model" = "LogitNormal",
+  "density" = "logitnorm::dlogitnorm",
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
+  "names" = c("mu", "sigma"),
+  "default" = c(2, 3)
+)
 
-  assertthat::assert_that(min(x) > 0)
-  assertthat::assert_that(max(x) < 1)
-
-  # Make a minimal reference to logitnorm package so that R-CMD-CHECK recognizes it
-  invisible(logitnorm::dlogitnorm)
-
+mllogitnorm_ <- \(x, ...) {
   n <- length(x)
   y <- stats::qlogis(x)
   mu <- mean(y)
@@ -44,14 +44,9 @@ mllogitnorm <- function(x, na.rm = FALSE, ...) {
 
   H <- mean(log(x))
   G <- mean(log(1 - x))
-  object <- c(mu = mu, sigma = sigma)
-  class(object) <- c("univariateML")
-  attr(object, "model") <- "LogitNormal"
-  attr(object, "density") <- "logitnorm::dlogitnorm"
-  attr(object, "logLik") <-
+
+  estimates <- c(mu = mu, sigma = sigma)
+  logLik <-
     -n / 2 * (1 + log(2 * pi) + 2 * log(sigma) + 2 * H + 2 * G)
-  attr(object, "support") <- c(0, 1)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = logLik)
 }

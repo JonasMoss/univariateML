@@ -11,7 +11,7 @@ set.seed(313)
 expect_equal(
   c(bootstrapml(obj,
     reps = 2,
-    map = function(x) x[1] / x[2],
+    map = \(x) x[1] / x[2],
     reducer = mean
   )),
   0.4352018,

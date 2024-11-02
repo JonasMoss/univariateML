@@ -23,22 +23,18 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
 #' @export
+mlunif <- \(x, na.rm = FALSE, ...) {}
 
+metadata$mlunif <- list(
+  "model" = "Uniform",
+  "density" = "stats::dunif",
+  "support" = stats::setNames(intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)), c("min", "max")),
+  "names" = c("min", "max"),
+  "default" = c(0, 1)
+)
 
-mlunif <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-
-  n <- length(x)
+mlunif_ <- \(x, ...) {
   max_ <- max(x)
   min_ <- min(x)
-  object <- c(min = min_, max = max_)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Uniform"
-  attr(object, "density") <- "stats::dunif"
-  attr(object, "logLik") <- -n * log(max_ - min_)
-  attr(object, "support") <- c(min_, max_)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = c(min_, max_), logLik = -length(x) * log(max_ - min_))
 }

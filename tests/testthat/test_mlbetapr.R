@@ -7,15 +7,15 @@ small_data <- extraDistr::rbetapr(100, 3, 8)
 medium_data <- extraDistr::rbetapr(1000, 11, 0.3)
 
 ## Checks if the ML is correct.
-mle_tiny <- suppressWarnings(nlm(function(p) {
+mle_tiny <- suppressWarnings(nlm(\(p) {
   -sum(extraDistr::dbetapr(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(0.5, 10)))
 
-mle_small <- nlm(function(p) {
+mle_small <- nlm(\(p) {
   -sum(extraDistr::dbetapr(small_data, p[1], p[2], log = TRUE))
 }, p = c(3, 8))
 
-mle_medium <- suppressWarnings(nlm(function(p) {
+mle_medium <- suppressWarnings(nlm(\(p) {
   -sum(extraDistr::dbetapr(medium_data, p[1], p[2], log = TRUE))
 }, p = c(11, 0.3)))
 
@@ -67,4 +67,4 @@ expect_equal(class(est), "univariateML")
 
 
 ## Check support.
-expect_equal(class(attr(est, "support")), "numeric")
+expect_equal(class(attr(est, "support"))[[1]], "numeric")

@@ -23,7 +23,8 @@ attributes:
 \item{\code{logLik}}{The loglikelihood at the maximum.}
 \item{\code{support}}{The support of the density.}
 \item{\code{n}}{The number of observations.}
-\item{\code{call}}{The call as captured my \code{match.call}}
+\item{\code{call}}{The call as captured by \code{match.call}}
+\item{\code{continuous}}{Is the density continuous or discrete?}
 }
 \description{
 The maximum likelihood estimates of \code{shape} and \code{scale} are calculated by

@@ -8,7 +8,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... `sigma0` is an optional starting value defaulting to `1`.
-#'     `rel.tol` is the relative accuracy requested, defaults to
+#'     `reltol` is the relative accuracy requested, defaults to
 #'     `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'     specifying the maximum number of iterations to be performed before the
 #'     program is terminated (defaults to `100`).
@@ -27,12 +27,20 @@
 #' @seealso [Gumbel][extraDistr::Gumbel] for the Gumbel density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
 #' @export
+mlgumbel <- \(x, na.rm = FALSE, ...) {}
 
-mlgumbel <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+metadata$mlgumbel <- list(
+  "model" = "Gumbel",
+  "density" = "extraDistr::dgumbel",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mu", "sigma"),
+  "default" = c(3, 3)
+)
 
+mlgumbel_ <- \(x, ...) {
   dots <- list(...)
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   sigma0 <- if (!is.null(dots$sigma0)) {
     dots$sigma0
@@ -40,22 +48,9 @@ mlgumbel <- function(x, na.rm = FALSE, ...) {
     1
   }
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) {
-    dots$iterlim
-  } else {
-    100
-  }
-
-
   mean_x <- mean(x)
 
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     A <- sum(x * exp(-x / sigma0))
     B <- sum(exp(-x / sigma0))
     C <- sum(x^2 * exp(-x / sigma0))
@@ -65,32 +60,18 @@ mlgumbel <- function(x, na.rm = FALSE, ...) {
 
     sigma <- sigma0 - top / bottom
 
-    if (abs((sigma0 - sigma) / sigma0) < rel.tol) break
+    if (abs((sigma0 - sigma) / sigma0) < reltol) break
 
     sigma0 <- sigma
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
-    ))
-  }
+  check_iterlim(i, iterlim, reltol)
 
   ## Given the sigma, the mu is easy to compute.
   mu <- -sigma * log(mean(exp(-x / sigma)))
   S <- mean(exp(-(x - mu) / sigma))
 
-
-  object <- c(mu = mu, sigma = sigma)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Gumbel"
-  attr(object, "density") <- "extraDistr::dgumbel"
-  attr(object, "logLik") <-
-    -length(x) * (log(sigma) + 1 / sigma * (mean_x - mu) + S)
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(mu = mu, sigma = sigma)
+  logLik <- -length(x) * (log(sigma) + 1 / sigma * (mean_x - mu) + S)
+  list(estimates = estimates, logLik = logLik)
 }

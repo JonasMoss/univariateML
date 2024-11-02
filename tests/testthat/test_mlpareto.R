@@ -46,7 +46,7 @@ expect_equal(
 )
 
 ## Finds errors with na and data out of bounds.
-expect_error(mlpareto(c(tiny_data, 0)))
+expect_error(mlpareto(c(tiny_data, -1)))
 expect_error(mlpareto(c(tiny_data, NA)))
 
 ## Checks that na.rm works as intended.
@@ -62,4 +62,4 @@ expect_equal(class(est), "univariateML")
 
 
 ## Check support.
-expect_equal(class(attr(est, "support")), "numeric")
+expect_equal(class(attr(est, "support"))[[1]], "numeric")

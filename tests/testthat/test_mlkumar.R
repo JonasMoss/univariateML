@@ -1,4 +1,4 @@
-context("mlgumbel")
+context("mlkumar")
 
 ## Data generation.
 set.seed(313)
@@ -7,15 +7,15 @@ tiny_data <- extraDistr::rkumar(10, 3, 7)
 medium_data <- extraDistr::rkumar(1000, 9, 11)
 
 ## Checks if the ML is correct.
-mle1 <- suppressWarnings(nlm(function(p) {
+mle1 <- suppressWarnings(nlm(\(p) {
   -sum(extraDistr::dkumar(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1)))
 
-mle2 <- nlm(function(p) {
+mle2 <- nlm(\(p) {
   -sum(extraDistr::dkumar(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(3, 7))
 
-mle3 <- nlm(function(p) {
+mle3 <- nlm(\(p) {
   -sum(extraDistr::dkumar(medium_data, p[1], p[2], log = TRUE))
 }, p = c(9, 11))
 
@@ -60,4 +60,4 @@ expect_equal(class(est), "univariateML")
 
 
 ## Check support.
-expect_equal(class(attr(est, "support")), "numeric")
+expect_equal(class(attr(est, "support"))[[1]], "numeric")

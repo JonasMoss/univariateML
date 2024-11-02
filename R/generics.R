@@ -5,25 +5,25 @@
 #' @param points Boolean; should points be plotted by default?
 #' @keywords internal
 
-plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
-  continuous <- if(is.null(attr(x,"continuous"))) TRUE else FALSE
+plot_wrangler <- \(x, range, points = FALSE, kind, ...) {
+  continuous <- if (is.null(attr(x, "continuous"))) TRUE else attr(x, "continuous")
   support <- attr(x, "support")
   if (is.null(range)) {
-    if (abs(support[1]) + abs(support[2]) < Inf) {
-      limits <- support
-    } else if (abs(support[1]) == 0 & abs(support[2]) == Inf) {
+    if (abs(support[[1]]) + abs(support[[2]]) < Inf) {
+      limits <- as.numeric(support)
+    } else if (abs(support[[1]]) == 0 && abs(support[[2]]) == Inf) {
       limits <- c(0, qml(0.995, x))
     } else {
       limits <- qml(c(0.005, 0.995), x)
     }
 
     limits_untransformed <- limits
-    if(kind == "q") limits <- pml(limits, x)
+    if (kind == "q") limits <- pml(limits, x)
 
     range <- if (continuous) {
       seq(limits[1], limits[2], length.out = 1000)
     } else {
-      if(kind == "q") {
+      if (kind == "q") {
         pml(seq(limits_untransformed[1], limits_untransformed[2]), x)
       } else {
         seq(limits[1], limits[2])
@@ -31,8 +31,8 @@ plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
     }
   }
 
-  ylab <- list(d="Density",p="Cumulative probability",q="Quantile")
-  xlab <- list(d="x",p="Quantile",q="Cumulative probability")
+  ylab <- list(d = "Density", p = "Cumulative probability", q = "Quantile")
+  xlab <- list(d = "x", p = "Quantile", q = "Cumulative probability")
   defaults <- list(
     type = if (points) "p" else "l",
     main = paste0(attr(x, "model"), " model"),
@@ -41,9 +41,9 @@ plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
     lwd = 1
   )
 
-  if(!continuous) {
-    defaults$pch = 20
-    defaults$type = if (points) "p" else "b"
+  if (!continuous) {
+    defaults$pch <- 20
+    defaults$type <- if (points) "p" else "b"
   }
 
   args <- listmerge(
@@ -52,7 +52,7 @@ plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
   )
 
   args$x <- range
-  args$y <- if(kind == "d") {
+  args$y <- if (kind == "d") {
     dml(args$x, x)
   } else if (kind == "p") {
     pml(args$x, x)
@@ -79,7 +79,7 @@ plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
 #' rug(datasets::precip)
 #' @export
 #'
-plot.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+plot.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
   kind <- match.arg(kind)
   args <- plot_wrangler(x, range, points = FALSE, kind = kind, ...)
   do.call(graphics::plot, args)
@@ -88,7 +88,7 @@ plot.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
 
 #' @export
 #' @rdname plot.univariateML
-lines.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+lines.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
   kind <- match.arg(kind)
   args <- plot_wrangler(x, range, points = FALSE, kind = kind, ...)
   do.call(graphics::lines, args)
@@ -97,15 +97,15 @@ lines.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
 
 #' @export
 #' @rdname plot.univariateML
-points.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+points.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
   kind <- match.arg(kind)
-  args <- plot_wrangler(x, range, points = TRUE, kind = kind,...)
+  args <- plot_wrangler(x, range, points = TRUE, kind = kind, ...)
   do.call(graphics::points, args)
   invisible(x)
 }
 
 #' @export
-logLik.univariateML <- function(object, ...) {
+logLik.univariateML <- \(object, ...) {
   val <- attr(object, "logLik")
   attr(val, "nobs") <- attr(object, "n")
   attr(val, "df") <- length(object)
@@ -114,12 +114,12 @@ logLik.univariateML <- function(object, ...) {
 }
 
 #' @export
-coef.univariateML <- function(object, ...) {
+coef.univariateML <- \(object, ...) {
   stats::setNames(as.numeric(object), names(object))
 }
 
 #' @export
-summary.univariateML <- function(object, ...) {
+summary.univariateML <- \(object, ...) {
   data.name <- deparse(as.list(attr(object, "call"))$x)
   digits <- list(...)$digits
   support <- attr(object, "support")
@@ -129,7 +129,7 @@ summary.univariateML <- function(object, ...) {
   )
   print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
   cat("\nData:            ", data.name, " (", attr(object, "n"), " obs.)\n",
-    "Support:         (", support[1], ", ", support[2], ")\n",
+    "Support:         (", support[[1]], ", ", support[[2]], ")\n",
     "Density:         ", attr(object, "density"), "\n",
     "Log-likelihood:  ", attr(object, "logLik"), "\n",
     sep = ""
@@ -138,7 +138,7 @@ summary.univariateML <- function(object, ...) {
 }
 
 #' @export
-print.univariateML <- function(x, ...) {
+print.univariateML <- \(x, ...) {
   digits <- list(...)$digits
   if (is.null(digits)) digits <- 4
   cat("Maximum likelihood estimates for the", attr(x, "model"), "model \n")
@@ -178,11 +178,11 @@ print.univariateML <- function(x, ...) {
 #' confint(object) # 95% confidence interval for mean and shape
 #' confint(object, "mean") # 95% confidence interval for the mean parameter
 #' # confint(object, "variance") # Fails since 'variance isn't a main parameter.
-confint.univariateML <- function(object,
-                                 parm = NULL,
-                                 level = 0.95,
-                                 Nreps = 1000,
-                                 ...) {
+confint.univariateML <- \(object,
+  parm = NULL,
+  level = 0.95,
+  Nreps = 1000,
+  ...) {
   if (is.null(parm)) parm <- names(object)
 
   assertthat::assert_that(all(parm %in% names(object)),
@@ -192,7 +192,7 @@ confint.univariateML <- function(object,
 
   indices <- which(names(object) %in% parm)
 
-  map <- function(x) x[indices]
+  map <- \(x) x[indices]
 
   probs <- c((1 - level) / 2, 1 - (1 - level) / 2)
 

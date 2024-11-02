@@ -31,29 +31,28 @@
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
 #' actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
+mlinvweibull <- \(x, na.rm = FALSE, ...) {}
 
-mlinvweibull <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+metadata$mlinvweibull <- list(
+  "model" = "InverseWeibull",
+  "density" = "actuar::dinvweibull",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape", "rate"),
+  "default" = c(2, 3)
+)
 
+mlinvweibull_ <- \(x, ...) {
   y <- 1 / x
   n <- length(x)
 
-  object <- mlweibull(y, ...)
-  names(object) <- c("shape", "rate")
+  estimates <- mlweibull_(y, ...)$estimates
 
-  shape <- object[1]
-  scale <- 1 / object[2]
+  shape <- estimates[1]
+  scale <- 1 / estimates[2]
   G <- mean(log(x))
   Ma <- mean(x^-shape)
 
-  class(object) <- "univariateML"
-  attr(object, "model") <- "InverseWeibull"
-  attr(object, "density") <- "actuar::dinvweibull"
-  attr(object, "logLik") <- unname(n * (log(shape) + shape * (log(scale) - G) -
+  logLik <- unname(n * (log(shape) + shape * (log(scale) - G) -
     scale^shape * Ma - G))
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = logLik)
 }

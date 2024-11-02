@@ -26,19 +26,17 @@
 #'   Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat Tails and
 #'   Skewness, Preprint.
 #' @export
+mlged <- \(x, na.rm = FALSE, ...) {}
 
-mlged <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+metadata$mlged <- list(
+  "model" = "Generalized Error",
+  "density" = "fGarch::dged",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "sd", "nu"),
+  "default" = c(0, 1, 3)
+)
 
+mlged_ <- \(x, ...) {
   fit <- suppressWarnings(fGarch::gedFit(x))
-  object <- fit[["par"]]
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Generalized Error"
-  attr(object, "density") <- "fGarch::dged"
-  attr(object, "logLik") <- -fit$objective
-  attr(object, "support") <- c(-Inf, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = fit[["par"]], logLik = -fit$objective)
 }

@@ -16,7 +16,7 @@ mlpois(x, na.rm = FALSE, ...)
 \value{
 \code{mlpois} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for
-\code{mean} and \code{sd} and the following attributes:
+\code{lambda} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}
@@ -32,7 +32,10 @@ For the density function of the Poisson distribution see
 \link[stats:Poisson]{Poisson}.
 }
 \examples{
-mlpois(precip)
+mlpois(ChickWeight$weight)
+}
+\references{
+Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 }
 \seealso{
 \link[stats:Poisson]{Poisson} for the Poisson density.

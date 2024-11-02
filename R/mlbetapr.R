@@ -28,28 +28,24 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 #' @export
+mlbetapr <- \(x, na.rm = FALSE, ...) {}
 
-mlbetapr <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+metadata$mlbetapr <- list(
+  "model" = "BetaPrime",
+  "density" = "extraDistr::dbetapr",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("shape1", "shape2"),
+  "default" = c(2, 3)
+)
 
-  # Make a minimal reference to extraDistr package so that R-CMD-CHECK recognizes it
-  invisible(extraDistr::dbetapr)
-
+mlbetapr_ <- \(x, ...) {
   val1 <- mean(log(x))
   val2 <- mean(log(1 + x))
-  object <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
-  alpha <- object[1]
-  beta <- object[2]
-  class(object) <- "univariateML"
-  attr(object, "model") <- "BetaPrime"
-  attr(object, "density") <- "extraDistr::dbetapr"
-  attr(object, "logLik") <- unname(-length(x) * (lbeta(alpha, beta) -
+  estimates <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
+  alpha <- estimates[1]
+  beta <- estimates[2]
+  logLik <- unname(-length(x) * (lbeta(alpha, beta) -
     (alpha - 1) * val1 +
     (alpha + beta) * val2))
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = logLik)
 }

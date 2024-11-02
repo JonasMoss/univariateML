@@ -26,26 +26,25 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
 #' @export
+mlinvgauss <- \(x, na.rm = FALSE, ...) {}
 
-mlinvgauss <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+metadata$mlinvgauss <- list(
+  "model" = "Inverse Gaussian",
+  "density" = "actuar::dinvgauss",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "shape"),
+  "default" = c(3, 4)
+)
+
+mlinvgauss_ <- \(x, ...) {
   n <- length(x)
-
   mu <- mean(x)
   lambda <- 1 / (mean(1 / x) - 1 / mu)
-  object <- c(mean = mu, shape = lambda)
+  estimates <- c(mu, lambda)
+
   L <- mean(log(x))
   S <- mean((x - mean(x))^2 / x)
 
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Inverse Gaussian"
-  attr(object, "density") <- "actuar::dinvgauss"
-  attr(object, "logLik") <-
-    -n / 2 * (3 * L - log(lambda) + log(2 * pi) + lambda / mu^2 * S)
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  logLik <- -n / 2 * (3 * L - log(lambda) + log(2 * pi) + lambda / mu^2 * S)
+  list(estimates = estimates, logLik = logLik)
 }

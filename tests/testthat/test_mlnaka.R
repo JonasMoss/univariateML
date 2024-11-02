@@ -7,11 +7,11 @@ tiny_data <- nakagami::rnaka(10, 7, 7)
 data3 <- c(0, tiny_data)
 
 ## Checks if the ML is correct.
-mle1 <- nlm(function(p) {
+mle1 <- nlm(\(p) {
   -mean(nakagami::dnaka(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 
-mle2 <- nlm(function(p) {
+mle2 <- nlm(\(p) {
   -mean(nakagami::dnaka(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(7, 7))$estimate
 
@@ -44,4 +44,4 @@ expect_equal(class(est), "univariateML")
 
 
 ## Check support.
-expect_equal(class(attr(est, "support")), "numeric")
+expect_equal(class(attr(est, "support"))[[1]], "numeric")

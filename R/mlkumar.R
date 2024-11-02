@@ -9,7 +9,7 @@
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... `a0` is an optional starting value for the `a` parameter.
-#'     `rel.tol` is the relative accuracy requested, defaults
+#'     `reltol` is the relative accuracy requested, defaults
 #'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'     specifying the maximum number of iterations to be performed before the
 #'     program is terminated (defaults to `100`).
@@ -34,28 +34,26 @@
 #' for double-bounded random processes." Journal of Hydrology 46.1-2 (1980):
 #' 79-88.
 #' @export
+mlkumar <- \(x, na.rm = FALSE, ...) {}
 
-mlkumar <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
-  assertthat::assert_that(max(x) < 1)
+metadata$mlkumar <- list(
+  "model" = "Kumaraswamy",
+  "density" = "extraDistr::dkumar",
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
+  "names" = c("a", "b"),
+  "default" = c(2, 3)
+)
 
+mlkumar_ <- \(x, ...) {
   dots <- list(...)
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   a0 <- if (!is.null(dots$a0)) dots$a0 else 1
 
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
-
   logs <- log(x)
 
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     xa <- x^a0
     T1 <- a0 * mean(logs / (1 - xa))
     T2 <- a0 * mean(logs * (xa / (1 - xa)))
@@ -72,29 +70,16 @@ mlkumar <- function(x, na.rm = FALSE, ...) {
       (T1diff + T2diff / T3 + 1 / a0 * (T2 / T3)^2)
 
     a <- a0 - f / fdiff
-    if (abs((a0 - a) / a0) < rel.tol) break
+    if (abs((a0 - a) / a0) < reltol) break
     a0 <- a
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
-    ))
-  }
+  check_iterlim(i, iterlim, reltol)
 
   ## Given the shape, the scale is easy to compute.
   b <- -1 / mean(log(1 - x^a))
 
-  object <- c(a = a, b = b)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Kumaraswamy"
-  attr(object, "density") <- "extraDistr::dkumar"
-  attr(object, "logLik") <-
-    length(x) * (log(a) + log(b) + (a - 1) * mean(log(x)) + -1 + 1 / b)
-  attr(object, "support") <- c(0, 1)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(a = a, b = b)
+  logLik <- length(x) * (log(a) + log(b) + (a - 1) * mean(log(x)) + -1 + 1 / b)
+  list(estimates = estimates, logLik = logLik)
 }

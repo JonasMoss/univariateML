@@ -9,7 +9,7 @@
 #' @return A merged list where conflicts are solved in favor
 #' of y. Does not preserve ordering.
 
-listmerge <- function(x, y, type = c("merge", "template")) {
+listmerge <- \(x, y, type = c("merge", "template")) {
   type <- match.arg(type)
 
   if (length(y) == 0) {
@@ -35,15 +35,44 @@ listmerge <- function(x, y, type = c("merge", "template")) {
   }
 }
 
-#' Input Checker for ML functions
-#'
-#' Checks that `x` in the ML functions is numeric and has only one dimension.
-#'
-#' @param x input to a `ML***` function.
-#' @return `NULL`
+#' @keywords internal
+get_reltol <- \(dots) {
+  if (!is.null(dots$reltol)) {
+    dots$reltol
+  } else {
+    .Machine$double.eps^0.25
+  }
+}
 
-ml_input_checker <- function(x) {
-  assertthat::assert_that(is.numeric(x))
-  msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
-  assertthat::assert_that(NCOL(x) == 1, msg = msg)
+#' @keywords internal
+get_iterlim <- \(dots) {
+  if (!is.null(dots$iterlim)) dots$iterlim else 100
+}
+
+#' @keywords internal
+check_iterlim <- \(i, iterlim, reltol) {
+  if (i == iterlim) {
+    warning(paste0(
+      "The iteration limit (iterlim = ", iterlim, ") was reached",
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
+    ))
+  }
+}
+
+#' Simulate `n` observations from a `ml***` string using default parameters.
+#' @param dens `ml***` string.
+#' @param n Number of samples to take.
+#' @keywords internal
+simulate_default <- \(dens, n) {
+  to_rdist <- \(x) {
+    strings <- strsplit(x, "::")[[1]]
+    substring(strings[2], first = 1, last = 1) <- "r"
+    paste0(strings[1], "::", strings[2])
+  }
+  params <- metadata[[dens]]$default
+  names(params) <- metadata[[dens]]$names
+  params["n"] <- n
+  rdist <- to_rdist(metadata[[dens]]$density)
+  rlang::exec(parse(text = rdist)[[1]], !!!as.list(params))
 }

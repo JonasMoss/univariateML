@@ -10,7 +10,7 @@
 #' @param ... currently affects nothing.
 #' @return `mlpois` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
-#'    `mean` and `sd` and the following attributes:
+#'    `lambda` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}
@@ -18,25 +18,24 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
-#' mlpois(precip)
+#' mlpois(ChickWeight$weight)
 #' @seealso [Poisson][stats::Poisson] for the Poisson density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
+mlpois <- \(x, na.rm = FALSE, ...) {}
 
-mlpois <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+metadata$mlpois <- list(
+  "model" = "Poisson",
+  "density" = "stats::dpois",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  "names" = c("lambda"),
+  "default" = 2
+)
+
+mlpois_ <- \(x, ...) {
   n <- length(x)
-
   lambda <- mean(x)
-
-  object <- c(lambda = lambda)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Poisson"
-  attr(object, "continuous") = FALSE
-  attr(object, "density") <- "stats::dpois"
-  attr(object, "logLik") <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  logLik <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))
+  list(estimates = lambda, logLik = logLik)
 }

@@ -26,23 +26,23 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 #' @export
+mllnorm <- \(x, na.rm = FALSE, ...) {}
 
-mllnorm <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+metadata$mllnorm <- list(
+  "model" = "Lognormal",
+  "density" = "stats::dlnorm",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("meanlog", "sdlog"),
+  "default" = c(0, 1)
+)
+
+mllnorm_ <- \(x, ...) {
   y <- log(x)
   n <- length(x)
   meanlog <- mean(y)
   sdlog <- sqrt(stats::var(y) * (n - 1) / n)
-  object <- c(meanlog = meanlog, sdlog = sdlog)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Lognormal"
-  attr(object, "density") <- "stats::dlnorm"
-  attr(object, "logLik") <-
+  estimates <- c(meanlog = meanlog, sdlog = sdlog)
+  logLik <-
     -n / 2 * (1 + log(2 * pi) + 2 * log(sdlog) + 2 * meanlog)
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  list(estimates = estimates, logLik = logLik)
 }

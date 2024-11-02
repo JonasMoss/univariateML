@@ -25,24 +25,22 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
 #' @export
+mlpareto <- \(x, na.rm = FALSE, ...) {}
 
-mlpareto <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+metadata$mlpareto <- list(
+  "model" = "Pareto",
+  "density" = "extraDistr::dpareto",
+  "support" = stats::setNames(intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)), c("a", "Inf")),
+  "names" = c("a", "b"),
+  "default" = c(1, 2)
+)
 
+mlpareto_ <- \(x, ...) {
   M <- mean(log(x))
   b <- min(x)
   a <- 1 / (M - log(b))
 
-  object <- c(a = a, b = b)
-
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Pareto"
-  attr(object, "density") <- "extraDistr::dpareto"
-  attr(object, "logLik") <- length(x) * (log(a) + a * log(b) - (a + 1) * M)
-  attr(object, "support") <- c(b, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(a, b)
+  logLik <- length(x) * (log(a) + a * log(b) - (a + 1) * M)
+  list(estimates = estimates, logLik = logLik)
 }

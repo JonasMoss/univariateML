@@ -14,7 +14,7 @@ mlllogis(x, na.rm = FALSE, ...)
 \item{...}{passed to \code{\link{mllogis}}.}
 }
 \value{
-\code{mlllogis} returns an object of \link[base:class]{class} \code{univariateML}.
+\code{mllogis} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for
 \code{shape} and \code{rate} and the following attributes:
 \item{\code{model}}{The name of the model.}

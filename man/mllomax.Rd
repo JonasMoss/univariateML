@@ -12,7 +12,7 @@ mllomax(x, na.rm = FALSE, ...)
 \item{na.rm}{logical. Should missing values be removed?}
 
 \item{...}{\code{lambda0} an optional starting value for the \code{lambda} parameter.
-Defaults to \code{median(x)}. \code{rel.tol} is the relative accuracy requested,
+Defaults to \code{median(x)}. \code{reltol} is the relative accuracy requested,
 defaults to \code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
 specifying the maximum number of iterations to be performed before the
 program is terminated (defaults to \code{100}).}
@@ -33,15 +33,23 @@ Uses Newton-Raphson to estimate the parameters of the Lomax distribution.
 }
 \details{
 For the density function of the Lomax distribution see
-\link[extraDistr:Lomax]{Lomax}. The maximum likelihood estimate will frequently
-fail to exist. This is due to the parameterization of the function which
-does not take into account that the density converges to an exponential
-along certain values of the parameters, see
-\code{vignette("Distribution Details", package = "univariateML")}.
+\link[extraDistr:Lomax]{Lomax}.
+
+The likelihood estimator of the Lomax distribution may be unbounded. When this
+happens, the likelihood converges to an exponential distribution with parameter
+equal to the mean of the data. This is the natural limiting case for the Lomax
+distribution, and it is reasonable to use \code{mlexp} in this case. See
+\code{vignette("Distribution Details", package = "univariateML")} for details.
 }
 \examples{
 set.seed(3)
 mllomax(extraDistr::rlomax(100, 2, 4))
+
+# The maximum likelihood estimator may fail if the data is exponential.
+\dontrun{
+set.seed(5)
+mllomax(rexp(10))
+}
 }
 \references{
 Kleiber, Christian; Kotz, Samuel (2003), Statistical Size

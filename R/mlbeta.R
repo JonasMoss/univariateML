@@ -29,12 +29,18 @@
 #' @examples
 #' AIC(mlbeta(USArrests$Rape / 100))
 #' @export
+mlbeta <- \(x, na.rm = FALSE, ...) {}
 
-mlbeta <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
-  assertthat::assert_that(max(x) < 1)
+metadata$mlbeta <- list(
+  "model" = "Beta",
+  "density" = "stats::dbeta",
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
+  "names" = c("shape1", "shape2"),
+  "defaults" = c(2, 3)
+)
+
+mlbeta_ <- \(x, ...) {
+  n <- length(x)
 
   val1 <- mean(log(x))
   val2 <- mean(log(1 - x))
@@ -52,11 +58,11 @@ mlbeta <- function(x, na.rm = FALSE, ...) {
     start <- c(1 / 2 + G1 * denom, 1 / 2 + G2 * denom)
   }
 
-  objective <- function(p) {
+  objective <- \(p) {
     lbeta(p[1], p[2]) - (p[1] - 1) * val1 - (p[2] - 1) * val2
   }
 
-  gradient <- function(p) {
+  gradient <- \(p) {
     digamma_alpha_beta <- digamma(p[1] + p[2])
     c(
       digamma(p[1]) - digamma_alpha_beta - val1,
@@ -65,19 +71,19 @@ mlbeta <- function(x, na.rm = FALSE, ...) {
   }
 
   if (type == "gradient") {
-    beta_objective <- function(p) {
+    beta_objective <- \(p) {
       result <- objective(p)
       attr(result, "gradient") <- gradient(p)
       result
     }
   } else if (type == "hessian") {
-    hessian <- function(p) {
+    hessian <- \(p) {
       trigamma_alpha_beta <- -trigamma(p[1] + p[2])
       matrix(trigamma_alpha_beta, nrow = 2, ncol = 2) +
         diag(c(trigamma(p[1]), trigamma(p[2])))
     }
 
-    beta_objective <- function(p) {
+    beta_objective <- \(p) {
       result <- objective(p)
       attr(result, "gradient") <- gradient(p)
       attr(result, "hessian") <- hessian(p)
@@ -87,15 +93,6 @@ mlbeta <- function(x, na.rm = FALSE, ...) {
     beta_objective <- objective
   }
 
-  object <- stats::nlm(beta_objective, p = start, typsize = start)$estimate
-  names(object) <- c("shape1", "shape2")
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Beta"
-  attr(object, "density") <- "stats::dbeta"
-  attr(object, "logLik") <- -length(x) *
-    stats::setNames(objective(object), NULL)
-  attr(object, "support") <- c(0, 1)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  fit <- stats::nlm(beta_objective, p = start, typsize = start)
+  list(estimates = fit$estimate, logLik = -n * fit$minimum)
 }

@@ -25,27 +25,24 @@
 #' of Inverted Gamma Variables". Kybernetika. 37 (1): 79<U+2013>90
 #'
 #' @export
+mlinvgamma <- \(x, na.rm = FALSE, ...) {}
 
+metadata$mlinvgamma <- list(
+  "model" = "InvGamma",
+  "density" = "extraDistr::dinvgamma",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("alpha", "beta"),
+  "default" = c(3, 4)
+)
 
-mlinvgamma <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+mlinvgamma_ <- \(x, ...) {
+  gamma_ml <- mlgamma_(1 / x, ...)
+  alpha <- gamma_ml$estimates[1]
+  beta <- gamma_ml$estimates[2]
 
-  object <- mlgamma(1 / x, na.rm = FALSE, ...)
   L <- mean(log(x))
   M <- mean(1 / x)
-  names(object) <- c("alpha", "beta")
-  alpha <- object[1]
-  beta <- object[2]
-  class(object) <- "univariateML"
-  attr(object, "model") <- "InvGamma"
-  attr(object, "density") <- "extraDistr::dinvgamma"
-  attr(object, "logLik") <-
-    unname(length(x) * (alpha * log(beta) - log(gamma(alpha)) +
-      -(alpha + 1) * L - beta * M))
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  logLik <- length(x) * (alpha * log(beta) - log(gamma(alpha)) - (alpha + 1) * L - beta * M)
+
+  list(estimates = gamma_ml$estimates, logLik = unname(logLik))
 }

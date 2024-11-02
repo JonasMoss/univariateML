@@ -7,7 +7,7 @@
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param ... `rel.tol` is the relative accuracy requested, defaults
+#' @param ... `reltol` is the relative accuracy requested, defaults
 #'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'     specifying the maximum number of iterations to be performed before the
 #'     program is terminated (defaults to `100`).
@@ -30,25 +30,20 @@
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
 #' @export
+mlgamma <- \(x, na.rm = FALSE, ...) {}
 
-mlgamma <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
-  assertthat::assert_that(min(x) > 0)
+metadata$mlgamma <- list(
+  "model" = "Gamma",
+  "density" = "stats::dgamma",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape", "rate"),
+  "default" = c(2, 2)
+)
 
+mlgamma_ <- \(x, ...) {
   dots <- list(...)
-
-  rel.tol <- if (!is.null(dots$rel.tol)) {
-    dots$rel.tol
-  } else {
-    .Machine$double.eps^0.25
-  }
-
-  iterlim <- if (!is.null(dots$iterlim)) {
-    dots$iterlim
-  } else {
-    100
-  }
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
 
   n <- length(x)
   mean_hat <- mean(x)
@@ -59,32 +54,20 @@ mlgamma <- function(x, na.rm = FALSE, ...) {
   shape0 <- 1 / (12 * s) * (3 - s + sqrt((s - 3)^2 + 24 * s))
 
   ## The Newton-Raphson steps.
-  for (i in 1:iterlim) {
+  for (i in seq(iterlim)) {
     shape <- shape0 - (log(shape0) - digamma(shape0) - s) /
       (1 / shape0 - trigamma(shape0))
-    if (abs((shape - shape0) / shape0) < rel.tol) break
+    if (abs((shape - shape0) / shape0) < reltol) break
     shape0 <- shape
   }
 
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (rel.tol = ",
-      rel.tol, ")."
-    ))
-  }
+  check_iterlim(i, iterlim, reltol)
 
   ## Given the shape, the rate is easy to compute.
   rate <- shape / mean_hat
 
-  object <- c(shape = shape, rate = rate)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Gamma"
-  attr(object, "density") <- "stats::dgamma"
-  attr(object, "logLik") <- n * (shape * log(rate) - log(gamma(shape)) +
-    (shape - 1) * L - rate * mean_hat)
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  estimates <- c(shape = shape, rate = rate)
+  logLik <- n * (shape * log(rate) - log(gamma(shape)) + (shape - 1) * L - rate * mean_hat)
+
+  list(estimates = estimates, logLik = logLik)
 }

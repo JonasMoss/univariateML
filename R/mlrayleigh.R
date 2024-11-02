@@ -24,21 +24,18 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
 #' @export
+mlrayleigh <- \(x, na.rm = FALSE, ...) {}
 
-mlrayleigh <- function(x, na.rm = FALSE, ...) {
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x))
-  ml_input_checker(x)
+metadata$mlrayleigh <- list(
+  "model" = "Rayleigh",
+  "density" = "extraDistr::drayleigh",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("sigma"),
+  "default" = 2
+)
 
-  assertthat::assert_that(min(x) >= 0)
-
+mlrayleigh_ <- \(x, ...) {
   sigma <- sqrt(1 / 2 * mean(x^2))
-  object <- c(sigma = sigma)
-  class(object) <- "univariateML"
-  attr(object, "model") <- "Rayleigh"
-  attr(object, "density") <- "extraDistr::drayleigh"
-  attr(object, "logLik") <- length(x) * (mean(log(x) - 2 * log(sigma) - 1))
-  attr(object, "support") <- c(0, Inf)
-  attr(object, "n") <- length(x)
-  attr(object, "call") <- match.call()
-  object
+  logLik <- length(x) * (mean(log(x) - 2 * log(sigma) - 1))
+  list(estimates = sigma, logLik = logLik)
 }
