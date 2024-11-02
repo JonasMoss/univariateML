@@ -48,6 +48,7 @@
 <span>  models <span class="op">=</span> <span class="va">univariateML_models</span>,</span>
 <span>  criterion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"aic"</span>, <span class="st">"bic"</span>, <span class="st">"loglik"</span><span class="op">)</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rtn_class <span class="op">=</span> <span class="st">"univariateML"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -74,14 +75,22 @@ select from; see <code>print(univariateML_models)</code>.</p></dd>
 <dd><p>logical. Should missing values be removed?</p></dd>
 
 
+<dt id="arg-rtn-class">rtn_class<a class="anchor" aria-label="anchor" href="#arg-rtn-class"></a></dt>
+<dd><p>character length 1. "univariateML" (default) if the function
+should return the single best model; "data.frame" if a tibble data frame
+of all results should be returned, sorted by decreasing model performance.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>unused.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>model_select</code> returns an object of <a href="https://rdrr.io/r/base/class.html" class="external-link">class</a>
-<code>univariateML</code>. This is a named numeric vector with maximum likelihood
+    <p>The return value depends on the <code>rtn_class</code> argument.
+For <code>rtn_class = "univariateML"</code> (default), <code>model_select</code> returns
+an object of <a href="https://rdrr.io/r/base/class.html" class="external-link">class</a> #'    <code>univariateML</code>.
+This is a named numeric vector with maximum likelihood
 estimates for the parameters of the best fitting model and the following
 attributes:</p>
 <dl><dt><code>model</code></dt>
@@ -101,6 +110,32 @@ attributes:</p>
 
 <dt><code>call</code></dt>
 <dd><p>The call as captured my <code>match.call</code></p></dd>
+
+
+</dl><p>For <code>rtn_class = "data.frame"</code>, <code>model_select</code> returns a tibble data frame
+with the following columns:</p>
+<dl><dt><code>model</code></dt>
+<dd><p>The name of the model.</p></dd>
+
+<dt><code>d_loglik, d_aic, d_bic</code></dt>
+<dd><p>See <code>loglik, aic, bic</code>.</p></dd>
+
+<dt><code>loglik, aic, bic</code></dt>
+<dd><p>The negative loglikelihood at the maximum,
+the AIC, and the BIC, respectively. The minimum of each of these is noted
+and then subtracted from each value to give their delta versions
+<code>d_loglik, d_aic, d_bic</code></p></dd>
+</dl><p>. So, the model with the lowest AIC will
+have <code>d_aic</code> of 0; the <code>d_aic</code> of all the other models shows how much higher
+their AICs are from the minimum. The same goes with <code>d_loglik</code> and <code>d_bic</code>.</p>
+<dl><dt><code>ml</code></dt>
+<dd><p>The internal code name for the model.</p></dd>
+
+<dt><code>univariateML</code></dt>
+<dd><p>The <code>univariateML</code> object for the model. This is
+identical to the value returned for <code>rtn_class = "univariateML"</code>; for
+<code>rtn_class = "data.frame"</code>, this object is returned for all tested models,
+not just the best one.</p></dd>
 
 </dl></div>
     <div class="section level2">
