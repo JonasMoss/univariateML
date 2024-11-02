@@ -83,6 +83,12 @@ ml_check_modify <- \(x, na.rm, name) {
     assertthat::assert_that(max(x) < support[[2]], msg = msg)
   }
 
+  if (support@type == "Z") {
+    if (sum(abs(x - floor(x)) != 0)) {
+      stop("Non-integral inputs for discrete density.")
+    }
+  }
+
   x
 }
 

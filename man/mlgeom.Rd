@@ -29,7 +29,7 @@ For the density function of the Geometric distribution see
 \link[stats:Geometric]{Geometric}.
 }
 \examples{
-mlpois(precip)
+mlgeom(corbet)
 }
 \references{
 Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.

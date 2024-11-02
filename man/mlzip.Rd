@@ -29,7 +29,7 @@ For the density function of the zeero-inflated Poisson distribution see
 \link[extraDistr:ZIP]{Zero-inflated Poisson distribution}.
 }
 \examples{
-mlzip(precip)
+mlzip(corbet)
 }
 \references{
 Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.

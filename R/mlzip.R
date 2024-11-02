@@ -16,7 +16,7 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
-#' mlzip(precip)
+#' mlzip(corbet)
 #' @references
 #' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @seealso [Zero-inflated Poisson distribution][extraDistr::dzip] for the density.

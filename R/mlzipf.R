@@ -12,7 +12,7 @@
 #' @param ... Not currently in use.
 #' @return `mlzipf` returns an object of [class][base::class] `univariateML`.
 #'    This is a named numeric vector with maximum likelihood estimates for
-#'    `mean` and `sd` and the following attributes:
+#'    `N` and `s` and the following attributes:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`density`}{The density associated with the estimates.}
 #'     \item{`logLik`}{The loglikelihood at the maximum.}

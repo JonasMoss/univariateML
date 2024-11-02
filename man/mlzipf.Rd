@@ -16,7 +16,7 @@ mlzipf(x, na.rm = FALSE, ...)
 \value{
 \code{mlzipf} returns an object of \link[base:class]{class} \code{univariateML}.
 This is a named numeric vector with maximum likelihood estimates for
-\code{mean} and \code{sd} and the following attributes:
+\code{N} and \code{s} and the following attributes:
 \item{\code{model}}{The name of the model.}
 \item{\code{density}}{The density associated with the estimates.}
 \item{\code{logLik}}{The loglikelihood at the maximum.}

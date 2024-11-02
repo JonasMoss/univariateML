@@ -16,7 +16,7 @@
 #'     \item{`n`}{The number of observations.}
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
-#' mlpois(precip)
+#' mlgeom(corbet)
 #' @seealso [Geometric][stats::dgeom] for the density.
 #' @references
 #' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.

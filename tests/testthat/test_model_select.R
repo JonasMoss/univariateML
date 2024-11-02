@@ -40,3 +40,13 @@ expect_equal(est, est_bic)
 est <- model_select(small_data, models = c("norm", "cauchy"))
 expect_equal(attr(est, "model"), "Normal")
 expect_equal(class(est), "univariateML")
+
+
+## Test data frame version
+est <- model_select(small_data, models = c("norm", "cauchy", "zipf"), type = "continuous", return = "all")
+expect(est |> inherits("data.frame"), "est is not a data frame")
+expect_equal(est$model, c("Normal", "Cauchy"))
+expect_equal(
+  c(est$d_logLik[[1]], est$d_AIC[[1]], est$d_BIC[[1]]),
+  c(0, 0, 0)
+)
