@@ -28,7 +28,7 @@
 #'     \item{`call`}{The call as captured my `match.call`}
 #' @examples
 #' mlpower(precip)
-#' @seealso [PowerDist][extraDistr::PowerDist] for the power density. [Pareto]
+#' @seealso [PowerDist][extraDistr::PowerDist] for the power density. [extraDistr::Pareto]
 #'    for the closely related Pareto distribution.
 #' @references
 #' Arslan, G. "A new characterization of the power distribution."

@@ -48,6 +48,6 @@ Arslan, G. "A new characterization of the power distribution."
 Journal of Computational and Applied Mathematics 260 (2014): 99-102.
 }
 \seealso{
-\link[extraDistr:PowerDist]{PowerDist} for the power density. \link{Pareto}
+\link[extraDistr:PowerDist]{PowerDist} for the power density. \link[extraDistr:Pareto]{extraDistr::Pareto}
 for the closely related Pareto distribution.
 }
