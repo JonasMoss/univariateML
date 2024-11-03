@@ -104,10 +104,11 @@ mlbinom_ <- \(x, ...) {
     f/df
   }
 
-  size0 <- max(x)
-  size_cand <- newton_raphson_1d(f_over_df, size0, ...)
 
-  size_cands <- c(floor(size_cand), ceiling(size_cand))
+  size0 <- max(x)
+  size_cand <- newton_raphson_1d(f_over_df, size0)
+
+  size_cands <- c(size0, floor(size_cand), ceiling(size_cand))
   log_liks <- sapply(size_cands, log_likelihood)
   size <- size_cands[which.max(log_liks)]
 
