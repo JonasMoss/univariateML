@@ -41,33 +41,24 @@ metadata$mlgamma <- list(
 )
 
 mlgamma_ <- \(x, ...) {
-  dots <- list(...)
-  reltol <- get_reltol(dots)
-  iterlim <- get_iterlim(dots)
 
   n <- length(x)
   mean_hat <- mean(x)
-  L <- mean(log(x))
-  s <- log(mean_hat) - L
+  lx_bar <- mean(log(x))
+  s <- log(mean_hat) - lx_bar
 
-  ## This start estimator is very close to the ML estimator already.
-  shape0 <- 1 / (12 * s) * (3 - s + sqrt((s - 3)^2 + 24 * s))
-
-  ## The Newton-Raphson steps.
-  for (i in seq(iterlim)) {
-    shape <- shape0 - (log(shape0) - digamma(shape0) - s) /
-      (1 / shape0 - trigamma(shape0))
-    if (abs((shape - shape0) / shape0) < reltol) break
-    shape0 <- shape
+  f_over_df <- \(shape0) {
+    (log(shape0) - digamma(shape0) - s) / (1 / shape0 - trigamma(shape0))
   }
 
-  check_iterlim(i, iterlim, reltol)
+  ## Starting estimator is close to the ML estimator of shape.
+  shape0 <- 1 / (12 * s) * (3 - s + sqrt((s - 3)^2 + 24 * s))
+  shape <- newton_raphson_1d(f_over_df, shape0, ...)
 
-  ## Given the shape, the rate is easy to compute.
   rate <- shape / mean_hat
 
   estimates <- c(shape = shape, rate = rate)
-  logLik <- n * (shape * log(rate) - log(gamma(shape)) + (shape - 1) * L - rate * mean_hat)
+  logLik <- n * (shape * log(rate) - log(gamma(shape)) + (shape - 1) * lx_bar - rate * mean_hat)
 
   list(estimates = estimates, logLik = logLik)
 }
