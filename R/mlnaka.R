@@ -44,10 +44,10 @@ metadata$mlnaka <- list(
 )
 
 mlnaka_ <- \(x, ...) {
-  estimates <- mlgamma(x^2, na.rm = TRUE, ...)
+  estimates <- mlgamma_(x^2, ...)$estimates
   estimates["rate"] <- 1 / estimates["rate"] * estimates["shape"]
-  n <- length(x)
 
+  n <- length(x)
   shape <- estimates[1]
   scale <- estimates[2]
 
