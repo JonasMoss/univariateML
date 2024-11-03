@@ -60,6 +60,10 @@ mlzipf_ <- \(x, ...) {
   shape0 <- 1
   shape <- newton_raphson_1d(f_over_df, shape0, ...)
 
+  if(shape < 0) {
+    stop("Optimal shape parameter is less than 0. The maximum likelihood estimator does not exist.")
+  }
+
   logLik <- -shape * sum_lx - n * log(sum(1 / seq(1, N)^shape))
   list(estimates = c(N, shape), logLik = logLik)
 }
