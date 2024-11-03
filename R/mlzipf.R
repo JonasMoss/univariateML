@@ -37,10 +37,6 @@ metadata$mlzipf <- list(
 )
 
 mlzipf_ <- \(x, ...) {
-  dots <- list(...)
-  reltol <- get_reltol(dots)
-  iterlim <- get_iterlim(dots)
-
   N <- max(x)
   n <- length(x)
   sum_lx <- sum(log(x))
@@ -60,6 +56,7 @@ mlzipf_ <- \(x, ...) {
     bottom <- -n * sum_log2_hs / sum_shape + n * top^2
     (n * top - sum_lx) / bottom
   }
+
   shape0 <- 1
   shape <- newton_raphson_1d(f_over_df, shape0, ...)
 
