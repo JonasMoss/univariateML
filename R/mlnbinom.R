@@ -37,41 +37,36 @@ metadata$mlnbinom <- list(
 
 mlnbinom_ <- \(x, ...) {
   dots <- list(...)
-  reltol <- get_reltol(dots)
-  iterlim <- get_iterlim(dots)
-
   n <- length(x)
   x_bar <- mean(x)
-  get_prob <- \(size) size / (x_bar + size)
 
   if (is.null(dots$size)) {
-    if (mean(x) == 0) {
+    if (x_bar == 0) {
       warning("All observations are 0; the maximum likelihood estimator is not unique.")
       size <- 1
     } else {
-      dget_prob <- \(size) x_bar / (size^2 + x_bar * size)
-      f <- \(size) sum(digamma(x + size)) - n * digamma(size) + n * log(get_prob(size))
-      df <- \(size) sum(trigamma(x + size)) - n * trigamma(size) + n * dget_prob(size)
-
-      # Start at method of moments estimate.
       x_var <- stats::var(x)
+
       if (x_var * (n - 1) / n < x_bar) {
         stop("The maximum likelihood estimator does not exists for underdispersed data, but converges to a Poisson. Use `mlpois` instead.")
       }
-      size0 <- x_bar^2 / (x_var - x_bar)
 
-      for (i in seq(iterlim)) {
-        size <- size0 - f(size0) / df(size0)
-        if (abs((size0 - size) / size0) < reltol) break
-
-        size0 <- size
+      f_over_df <- \(size) {
+        prob <- size / (x_bar + size)
+        dprob <- x_bar / (size^2 + x_bar * size)
+        f <- sum(digamma(x + size)) - n * digamma(size) + n * log(prob)
+        df <- sum(trigamma(x + size)) - n * trigamma(size) + n * dprob
+        f / df
       }
+
+      size0 <- x_bar^2 / (x_var - x_bar)
+      size <- newton_raphson_1d(f_over_df, size0, ...)
     }
   } else {
     size <- dots$size
   }
 
-  prob <- get_prob(size)
+  prob <- size / (x_bar + size)
   logLik <- sum(lgamma(x + size)) - sum(lfactorial(x)) - n * lgamma(size) +
     n * size * log(prob) + n * log(1 - prob) * x_bar
 

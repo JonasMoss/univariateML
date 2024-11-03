@@ -38,40 +38,25 @@ metadata$mlgumbel <- list(
 )
 
 mlgumbel_ <- \(x, ...) {
+  x_bar <- mean(x)
+  f_over_df <- \(sigma0) {
+    a <- sum(x * exp(-x / sigma0))
+    b <- sum(exp(-x / sigma0))
+    c <- sum(x^2 * exp(-x / sigma0))
+
+    f <- x_bar - sigma0 - a / b
+    df <- -1 - 1 / sigma0^2 * (c / b - (a / b)^2)
+
+    f / df
+  }
+
   dots <- list(...)
-  reltol <- get_reltol(dots)
-  iterlim <- get_iterlim(dots)
+  sigma0 <- if (!is.null(dots$sigma0)) dots$sigma0 else 1
+  sigma <- newton_raphson_1d(f_over_df, sigma0, ...)
 
-  sigma0 <- if (!is.null(dots$sigma0)) {
-    dots$sigma0
-  } else {
-    1
-  }
-
-  mean_x <- mean(x)
-
-  for (i in seq(iterlim)) {
-    A <- sum(x * exp(-x / sigma0))
-    B <- sum(exp(-x / sigma0))
-    C <- sum(x^2 * exp(-x / sigma0))
-
-    top <- mean_x - sigma0 - A / B
-    bottom <- -1 - 1 / sigma0^2 * (C / B - (A / B)^2)
-
-    sigma <- sigma0 - top / bottom
-
-    if (abs((sigma0 - sigma) / sigma0) < reltol) break
-
-    sigma0 <- sigma
-  }
-
-  check_iterlim(i, iterlim, reltol)
-
-  ## Given the sigma, the mu is easy to compute.
   mu <- -sigma * log(mean(exp(-x / sigma)))
-  S <- mean(exp(-(x - mu) / sigma))
+  s <- mean(exp(-(x - mu) / sigma))
+  logLik <- -length(x) * (log(sigma) + 1 / sigma * (x_bar - mu) + s)
 
-  estimates <- c(mu = mu, sigma = sigma)
-  logLik <- -length(x) * (log(sigma) + 1 / sigma * (mean_x - mu) + S)
-  list(estimates = estimates, logLik = logLik)
+  list(estimates = c(mu = mu, sigma = sigma), logLik = logLik)
 }

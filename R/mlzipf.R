@@ -52,24 +52,17 @@ mlzipf_ <- \(x, ...) {
     return(list(estimates = c(N, 1), logLik = 0))
   }
 
-  shape0 <- 1
-
-  for (i in seq(iterlim)) {
+  f_over_df <- \(shape0) {
     sum_shape <- sum(1 / seq(1, N)^shape0)
     sum_log_hs <- sum(1 / seq(1, N)^shape0 * log_seq)
     sum_log2_hs <- sum(1 / seq(1, N)^shape0 * log_seq2)
     top <- sum_log_hs / sum_shape
     bottom <- -n * sum_log2_hs / sum_shape + n * top^2
-    shape <- shape0 - (n * top - sum_lx) / bottom
-    if (abs((shape - shape0) / shape0) < reltol) break
-    shape0 <- shape
+    (n * top - sum_lx) / bottom
   }
+  shape0 <- 1
+  shape <- newton_raphson_1d(f_over_df, shape0, ...)
 
-  check_iterlim(i, iterlim, reltol)
-
-  h <- \(shape) sum(1 / seq(1, N)^shape)
-  f <- \(shape) -shape * sum_lx - n * log(h(shape))
-
-  logLik <- f(shape)
+  logLik <- -shape * sum_lx - n * log(sum(1 / seq(1, N)^shape))
   list(estimates = c(N, shape), logLik = logLik)
 }
