@@ -107,8 +107,10 @@ mlbinom_ <- \(x, ...) {
   size0 <- max(x)
   size_cands <- size0
   if(size0 != 1) {
-    size_cand <- newton_raphson_1d(f_over_df, size0)
-    size_cands <- c(size0, floor(size_cand), ceiling(size_cand))
+    if(f_over_df(size0) > 0) {
+      size_cand <- newton_raphson_1d(f_over_df, size0)
+      size_cands <- c(size0, floor(size_cand), ceiling(size_cand))
+    }
   }
 
   log_liks <- sapply(size_cands, log_likelihood)
