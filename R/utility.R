@@ -91,15 +91,13 @@ newton_raphson_1d <- \(f_over_df, param0, ...) {
 
   for (i in seq(iterlim)) {
     param <- param0 - f_over_df(param0)
-    if(is.nan(param)) {
-      stop("NaN in Newton--Raphson iteration.")
-      break
-    }
 
-    if (abs((param - param0) / param0) < reltol) break
+    if (is.nan(param)) stop("NaN in Newton--Raphson iteration.")
+    if (abs((param0 - param) / param0) < reltol) break
+
     param0 <- param
   }
 
   check_iterlim(i, iterlim, reltol)
-  param0
+  param
 }
