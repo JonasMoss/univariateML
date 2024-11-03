@@ -97,9 +97,9 @@ model_select <- \(x, models = univariateML_models,
 
   fits <- fits[order(fits[[criterion]]), ]
 
-  fits$d_logLik <- fits$LOGLIK - min(fits$LOGLIK)
-  fits$d_AIC <- fits$AIC - min(fits$AIC)
-  fits$d_BIC <- fits$BIC - min(fits$BIC)
+  fits$d_logLik <- fits$LOGLIK - min(fits$LOGLIK, na.rm = TRUE)
+  fits$d_AIC <- fits$AIC - min(fits$AIC, na.rm = TRUE)
+  fits$d_BIC <- fits$BIC - min(fits$BIC, na.rm = TRUE)
   fits$p <- sapply(fits$univariateML, length)
   fits$logLik <- fits$LOGLIK
 
