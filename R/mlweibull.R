@@ -39,39 +39,32 @@ metadata$mlweibull <- list(
 )
 
 mlweibull_ <- \(x, ...) {
-  dots <- list(...)
-  reltol <- get_reltol(dots)
-  iterlim <- get_iterlim(dots)
-
-  shape0 <- if (!is.null(dots$sigma0)) dots$shape0 else 1
-
+  n <- length(x)
   log_x <- log(x)
   l_hat <- mean(log_x)
   log_xsq <- log_x^2
 
-  for (i in seq(iterlim)) {
+  f_over_df <- \(shape0) {
     shape0_lsum <- mean(x^shape0 * log_x)
     shape0_lsum_sqr <- mean(x^shape0 * log_xsq)
     shape0_sum <- mean(x^shape0)
-    A <- shape0_lsum / shape0_sum
-    B <- shape0_lsum_sqr / shape0_sum
-    top <- 1 / shape0 + l_hat - A
-    bottom <- -1 / shape0^2 + A^2 - B
-    shape <- shape0 - top / bottom
-
-    if (abs((shape0 - shape) / shape0) < reltol) break
-
-    shape0 <- shape
+    a <- shape0_lsum / shape0_sum
+    b <- shape0_lsum_sqr / shape0_sum
+    f <- 1 / shape0 + l_hat - a
+    df <- -1 / shape0^2 + a^2 - b
+    f / df
   }
 
-  check_iterlim(i, iterlim, reltol)
+  dots <- list(...)
+  shape0 <- if (!is.null(dots$sigma0)) dots$shape0 else 1
 
-  ## Given the shape, the scale is easy to compute.
-  scale <- (mean(x^shape))^(1 / shape)
-  shape_sum <- mean(x^shape)
-  n <- length(x)
+  shape <- newton_raphson_1d(f_over_df, shape0, ...)
+
+  shape_mean <- mean(x^shape)
+  scale <- shape_mean^(1 / shape)
+
   estimates <- c(shape, scale)
   logLik <- n * (log(shape) - log(scale) +
-    (shape - 1) * (l_hat - log(scale)) - scale^-shape * shape_sum)
+    (shape - 1) * (l_hat - log(scale)) - scale^-shape * shape_mean)
   list(estimates = estimates, logLik = logLik)
 }
