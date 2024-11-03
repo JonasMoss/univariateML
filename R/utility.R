@@ -35,31 +35,6 @@ listmerge <- \(x, y, type = c("merge", "template")) {
   }
 }
 
-#' @keywords internal
-get_reltol <- \(dots) {
-  if (!is.null(dots$reltol)) {
-    dots$reltol
-  } else {
-    .Machine$double.eps^0.25
-  }
-}
-
-#' @keywords internal
-get_iterlim <- \(dots) {
-  if (!is.null(dots$iterlim)) dots$iterlim else 100
-}
-
-#' @keywords internal
-check_iterlim <- \(i, iterlim, reltol) {
-  if (i == iterlim) {
-    warning(paste0(
-      "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (reltol = ",
-      reltol, ")."
-    ))
-  }
-}
-
 #' Simulate `n` observations from a `ml***` string using default parameters.
 #' @param dens `ml***` string.
 #' @param n Number of samples to take.
@@ -100,4 +75,29 @@ newton_raphson_1d <- \(f_over_df, param0, ...) {
 
   check_iterlim(i, iterlim, reltol)
   param
+}
+
+#' @keywords internal
+get_reltol <- \(dots) {
+  if (!is.null(dots$reltol)) {
+    dots$reltol
+  } else {
+    .Machine$double.eps^0.25
+  }
+}
+
+#' @keywords internal
+get_iterlim <- \(dots) {
+  if (!is.null(dots$iterlim)) dots$iterlim else 100
+}
+
+#' @keywords internal
+check_iterlim <- \(i, iterlim, reltol) {
+  if (i == iterlim) {
+    warning(paste0(
+      "The iteration limit (iterlim = ", iterlim, ") was reached",
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
+    ))
+  }
 }
