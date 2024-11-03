@@ -39,13 +39,11 @@ metadata$mlbetapr <- list(
 )
 
 mlbetapr_ <- \(x, ...) {
-  val1 <- mean(log(x))
-  val2 <- mean(log(1 + x))
   estimates <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
   alpha <- estimates[1]
   beta <- estimates[2]
   logLik <- unname(-length(x) * (lbeta(alpha, beta) -
-    (alpha - 1) * val1 +
-    (alpha + beta) * val2))
+    (alpha - 1) * mean(log(x)) +
+    (alpha + beta) * mean(log(1 + x))))
   list(estimates = estimates, logLik = logLik)
 }
