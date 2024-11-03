@@ -76,3 +76,30 @@ simulate_default <- \(dens, n) {
   rdist <- to_rdist(metadata[[dens]]$density)
   rlang::exec(parse(text = rdist)[[1]], !!!as.list(params))
 }
+
+#' One-dimensional Newton--Raphson
+#' @param f_over_df The term f(x_0) / f'(x_0) in Newton--Raphson.
+#' @param param0 Starting parameter, typically from method of moments estimates.
+#' @param iterlim Iteration limit.
+#' @param reltol Relative tolerance.
+#' @return Newton--Raphson estimate.
+#' @keywords internal
+newton_raphson_1d <- \(f_over_df, param0, ...) {
+  dots <- list(...)
+  reltol <- get_reltol(dots)
+  iterlim <- get_iterlim(dots)
+
+  for (i in seq(iterlim)) {
+    param <- param0 - f_over_df(param0)
+    if(is.nan(param)) {
+      stop("NaN in Newton--Raphson iteration.")
+      break
+    }
+
+    if (abs((param - param0) / param0) < reltol) break
+    param0 <- param
+  }
+
+  check_iterlim(i, iterlim, reltol)
+  param0
+}
