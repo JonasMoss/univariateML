@@ -56,7 +56,7 @@ mlweibull_ <- \(x, ...) {
   }
 
   dots <- list(...)
-  shape0 <- if (!is.null(dots$sigma0)) dots$shape0 else 1
+  shape0 <- if (!is.null(dots$shape0)) dots$shape0 else 1
 
   shape <- newton_raphson_1d(f_over_df, shape0, ...)
 
