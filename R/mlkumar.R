@@ -45,23 +45,18 @@ metadata$mlkumar <- list(
 )
 
 mlkumar_ <- \(x, ...) {
-  dots <- list(...)
-  reltol <- get_reltol(dots)
-  iterlim <- get_iterlim(dots)
+  n <- length(x)
+  log_x <- log(x)
 
-  a0 <- if (!is.null(dots$a0)) dots$a0 else 1
-
-  logs <- log(x)
-
-  for (i in seq(iterlim)) {
+  f_over_df <- \(a0) {
     xa <- x^a0
-    T1 <- a0 * mean(logs / (1 - xa))
-    T2 <- a0 * mean(logs * (xa / (1 - xa)))
+    T1 <- a0 * mean(log_x / (1 - xa))
+    T2 <- a0 * mean(log_x * (xa / (1 - xa)))
     T3 <- mean(log(1 - xa))
     f <- 1 / a0 * (1 + T1 + T2 / T3)
 
-    C <- mean(logs^2 * (xa / (1 - xa)^2))
-    D <- mean(logs^2 * (xa / (1 - xa)))
+    C <- mean(log_x^2 * (xa / (1 - xa)^2))
+    D <- mean(log_x^2 * (xa / (1 - xa)))
 
     T1diff <- 1 / a0 * T1 + a0 * C
     T2diff <- 1 / a0 * T2 + 1 / a0 * T2^2 + a0 * D
@@ -69,17 +64,15 @@ mlkumar_ <- \(x, ...) {
     fdiff <- -1 / a0^2 * f + 1 / a0 *
       (T1diff + T2diff / T3 + 1 / a0 * (T2 / T3)^2)
 
-    a <- a0 - f / fdiff
-    if (abs((a0 - a) / a0) < reltol) break
-    a0 <- a
+    f / fdiff
   }
 
-  check_iterlim(i, iterlim, reltol)
-
-  ## Given the shape, the scale is easy to compute.
+  dots <- list(...)
+  a0 <- if (!is.null(dots$a0)) dots$a0 else 1
+  a <- newton_raphson_1d(f_over_df, a0, ...)
   b <- -1 / mean(log(1 - x^a))
 
   estimates <- c(a = a, b = b)
-  logLik <- length(x) * (log(a) + log(b) + (a - 1) * mean(log(x)) + -1 + 1 / b)
+  logLik <- n * (log(a) + log(b) + (a - 1) * mean(log_x) + -1 + 1 / b)
   list(estimates = estimates, logLik = logLik)
 }
