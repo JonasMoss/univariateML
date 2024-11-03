@@ -66,8 +66,6 @@ metadata$mlbinom <- list(
 
 mlbinom_ <- \(x, ...) {
   dots <- list(...)
-  reltol <- get_reltol(dots)
-  iterlim <- get_iterlim(dots)
 
   n <- length(x)
   x_bar <- mean(x)
@@ -75,8 +73,7 @@ mlbinom_ <- \(x, ...) {
   counts <- Rfast::Table(x)
   uniques <- as.numeric(names(counts))
 
-
-  l <- \(size) {
+  log_likelihood <- \(size) {
     n * x_bar * log(x_bar) +
       n * (size - x_bar) * log(size - x_bar) -
       n * size * log(size) +
@@ -85,43 +82,35 @@ mlbinom_ <- \(x, ...) {
 
   if (!is.null(dots$size)) {
     size <- dots$size
-    if (size < max(x)) {
-      stop("`size` is smaller than `max(x)`.")
-    }
+    if (size < max(x)) stop("`size` is smaller than `max(x)`.")
     prob <- x_bar / size
-    return(list(estimates = c(size, prob), logLik = l(size)))
+    return(list(estimates = c(size, prob), logLik = log_likelihood(size)))
   }
 
   if (mean(x) / (stats::var(x) * (n - 1) / n) <= 1) {
     stop("The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument.")
   }
 
-  grad <- \(size) {
-    n * (log(size - x_bar) - log(size)) +
+  f_over_df <- \(size) {
+    size_m_x <- size - x_bar
+    f <- n * (log(size_m_x) - log(size)) +
       n * digamma(size + 1) -
       sum(counts * digamma(size - uniques + 1))
-  }
 
-  hessian <- \(size) {
-    n * x_bar / (size * (size - x_bar)) +
+    df <- n * x_bar / (size * size_m_x) +
       n * trigamma(size + 1) -
       sum(counts * trigamma(size - uniques + 1))
+
+    f/df
   }
 
   size0 <- max(x)
+  size_cand <- newton_raphson_1d(f_over_df, size0, ...)
 
-  for (i in seq(iterlim)) {
-    size <- size0 - grad(size0) / hessian(size0)
-    if (abs((size0 - size) / size0) < reltol) break
+  size_cands <- c(floor(size_cand), ceiling(size_cand))
+  log_liks <- sapply(size_cands, log_likelihood)
+  size <- size_cands[which.max(log_liks)]
 
-    size0 <- size
-  }
-
-  sizes <- c(floor(size), ceiling(size))
-  likelihoods <- sapply(sizes, l)
-  size <- sizes[which.max(likelihoods)]
-  logLik <- max(likelihoods)
-  prob <- x_bar / size
-
-  list(estimates = c(size, prob), logLik = logLik)
+  list(estimates = c(size = size, prob = x_bar / size),
+       logLik = max(log_liks))
 }
