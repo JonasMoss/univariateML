@@ -38,19 +38,8 @@ metadata$mllogis <- list(
 mllogis_ <- \(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))
-  start <- c(m, log(mad))
-
   f <- \(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
-  values <- suppressWarnings(stats::nlm(
-    f = f,
-    p = start
-  ))
-
-  estimates <- c(
-    location = values$estimate[1],
-    scale = exp(values$estimate[2])
-  )
-
-  logLik <- -values$minimum
-  list(estimates = estimates, logLik = logLik)
+  values <- suppressWarnings(stats::nlm(f = f,p = c(m, log(mad))))
+  list(estimates = c(values$estimate[1], exp(values$estimate[2])),
+       logLik = -values$minimum)
 }
