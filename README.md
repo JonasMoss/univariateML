@@ -48,6 +48,7 @@ distribution suffix such as `norm`, `gamma`, or `weibull`.
 ``` r
 library("univariateML")
 mlweibull(egypt$age)
+#> Loading required package: intervals
 #> Maximum likelihood estimates for the Weibull model 
 #>  shape   scale  
 #>  1.404  33.564
@@ -63,7 +64,9 @@ lines(mlweibull(egypt$age))
 
 <img src="man/figures/README-weibull_plot-1.png" width="750px" />
 
-## Supported densities
+## Supported distributions
+
+### Continuous distributions
 
 | Name                                | univariateML function | Package    |
 |-------------------------------------|-----------------------|------------|
@@ -95,7 +98,23 @@ lines(mlweibull(egypt$age))
 | Logit-normal                        | `mllogitnorm`         | logitnorm  |
 | Uniform distribution                | `mlunif`              | stats      |
 | Power distribution                  | `mlpower`             | extraDistr |
-| Poisson distribution                | `mlpois`              | stats      |
+| Gompertz distribution               | `mlgompertz`          | extraDistr |
+| Burr distribution                   | `mlburr`              | actuar     |
+| Inverse Burr distribution           | `mlinvburr`           | actuar     |
+| Birnbaum-Saunders                   | `mlfatigue`           | extraDistr |
+
+### Discrete distributions
+
+| Name                               | univariateML function | Package    |
+|------------------------------------|-----------------------|------------|
+| Poisson distribution               | `mlpois`              | stats      |
+| Negative binomial distribution     | `mlnbinom`            | stats      |
+| Binomial distribution              | `mlbinom`             | stats      |
+| Geometric distribution             | `mlgeom`              | stats      |
+| Zipf distribution                  | `mlzipf`              | sads       |
+| Zero-inflated Poisson distribution | `mlzip`               | extraDistr |
+| Discrete uniform distribution      | `mldunif`             | extraDistr |
+| Logarithmic series distribution    | `mldunif`             | extraDistr |
 
 ## Implementations
 
@@ -115,9 +134,9 @@ microbenchmark::microbenchmark(
   naive = nlm(\(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1))
 )
 #> Unit: microseconds
-#>          expr     min       lq      mean   median       uq      max neval
-#>  univariateML   205.1   329.85   800.077   464.35   730.35  13938.4   100
-#>         naive 10665.9 11773.30 21428.104 15233.70 28628.65 103372.1   100
+#>          expr    min      lq     mean median     uq     max neval
+#>  univariateML  201.4  244.05  349.978  365.6  422.2   791.9   100
+#>         naive 8289.4 8652.60 9170.378 8915.3 9288.0 18723.0   100
 ```
 
 The maximum likelihood estimators in this package have all been subject

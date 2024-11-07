@@ -67,8 +67,9 @@ hist(egypt$age, freq = FALSE, xlab = "Mortality", main = "Egypt")
 lines(mlweibull(egypt$age))
 ```
 
-## Supported densities
+## Supported distributions
 
+### Continuous distributions
 | Name                                | univariateML function  | Package    | 
 | ----------------------------------- | ---------------------- | ---------- | 
 | Cauchy distribution                 | `mlcauchy`             | stats      | 
@@ -99,7 +100,23 @@ lines(mlweibull(egypt$age))
 | Logit-normal                        | `mllogitnorm`          | logitnorm  |
 | Uniform distribution                | `mlunif`               | stats      |
 | Power distribution                  | `mlpower`              | extraDistr |
+| Gompertz distribution               | `mlgompertz`           | extraDistr |
+| Burr distribution                   | `mlburr`               | actuar     |
+| Inverse Burr distribution           | `mlinvburr`            | actuar     |
+| Birnbaum-Saunders                   | `mlfatigue`            | extraDistr |
+
+### Discrete distributions
+
+| Name                                | univariateML function  | Package    | 
+| ----------------------------------- | ---------------------- | ---------- | 
 | Poisson distribution                | `mlpois`               | stats      |
+| Negative binomial distribution      | `mlnbinom`             | stats      |
+| Binomial distribution               | `mlbinom`              | stats      |
+| Geometric distribution              | `mlgeom`               | stats      |
+| Zipf distribution                   | `mlzipf`               | sads       |
+| Zero-inflated Poisson distribution  | `mlzip`                | extraDistr |
+| Discrete uniform distribution       | `mldunif`              | extraDistr |
+| Logarithmic series distribution     | `mldunif`              | extraDistr |
 
 ## Implementations
 
@@ -122,6 +139,7 @@ microbenchmark::microbenchmark(
 
 The maximum likelihood estimators in this package have all been subject to
 testing, see the `tests` folder for details. 
+
 
 ## Documentation
 For an overview of the package and its features see the 
