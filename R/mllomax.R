@@ -5,16 +5,15 @@
 #' For the density function of the Lomax distribution see
 #' [Lomax][extraDistr::Lomax].
 #'
-#' The likelihood estimator of the Lomax distribution may be unbounded. When this
+#' The likelihood estimator of the Lomax distribution is unbounded when `mean(x^2) < 2*mean(x)^2`. When this
 #'    happens, the likelihood converges to an exponential distribution with parameter
 #'    equal to the mean of the data. This is the natural limiting case for the Lomax
-#'    distribution, and it is reasonable to use `mlexp` in this case. See
-#'    `vignette("Distribution Details", package = "univariateML")` for details.
+#'    distribution, and it is reasonable to use `mlexp` in this case.
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... `lambda0` an optional starting value for the `lambda` parameter.
-#'    Defaults to `median(x)`. `reltol` is the relative accuracy requested,
+#'    `reltol` is the relative accuracy requested,
 #'    defaults to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'    specifying the maximum number of iterations to be performed before the
 #'    program is terminated (defaults to `100`).
@@ -44,7 +43,7 @@
 #' @export
 mllomax <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mllomax <- list(
+univariateML_metadata$mllomax <- list(
   "model" = "Lomax",
   "density" = "extraDistr::dlomax",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
@@ -53,6 +52,13 @@ metadata$mllomax <- list(
 )
 
 mllomax_ <- \(x, ...) {
+  s <- mean(x^2)
+  m <- mean(x)
+
+  if(s < 2*m^2) {
+    stop("The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution.")
+  }
+
   f_over_df <- \(lambda0) {
     S <- mean(log(1 + lambda0 * x))
     S1 <- mean(x / (1 + lambda0 * x))
@@ -62,26 +68,15 @@ mllomax_ <- \(x, ...) {
     f / df
   }
 
-  dots <- list(...)
-  if (is.null(dots$lambda0)) {
-    s <- mean(x^2)
-    m <- mean(x)
-    alpha <- (s - m^2) / (0.5 * s - m^2)
-    lambda0 <- 1 / (m * (max(alpha, 1.1) - 1))
-  } else {
-    lambda0 <- dots$lambda0
-  }
+  alpha0 <- 2 * (s - m^2) / (s - 2 * m^2)
+  lambda0 <- 1 / (m * (alpha0 - 1))
+
+  if (!is.null(list(...)$lambda0)) lambda0 <- list(...)$lambda0
 
   lambda <- newton_raphson_1d(f_over_df, lambda0, ...)
+  kappa <- 1/mean(log(1 + lambda * x))
 
-  s <- \(lambda) mean(log(1 + lambda * x))
+  loglik <- sum(extraDistr::dlomax(x, lambda, kappa, log = TRUE))
 
-  loglik <- \(lambda) sum(extraDistr::dlomax(x, lambda, 1 / s(lambda), log = TRUE))
-  logLik <- loglik(lambda)
-
-  if (loglik(0.000001) > logLik) {
-    stop("The maximum likelihood estimator does not exist. Use `mlexp` to fit an exponential distribution.")
-  }
-
-  list(estimates = c(lambda, 1 / s(lambda)), logLik = logLik)
+  list(estimates = c(lambda, kappa), logLik = loglik)
 }
