@@ -27,7 +27,7 @@
 #' @export
 mlexp <- \(x, na.rm = TRUE, ...) {}
 
-metadata$mlexp <- list(
+univariateML_metadata$mlexp <- list(
   "model" = "Exponential",
   "density" = "stats::dexp",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),

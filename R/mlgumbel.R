@@ -29,7 +29,7 @@
 #' @export
 mlgumbel <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlgumbel <- list(
+univariateML_metadata$mlgumbel <- list(
   "model" = "Gumbel",
   "density" = "extraDistr::dgumbel",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),

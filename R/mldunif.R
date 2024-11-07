@@ -23,7 +23,7 @@
 #' @export
 mldunif <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mldunif <- list(
+univariateML_metadata$mldunif <- list(
   "model" = "Discrete uniform",
   "density" = "extraDistr::ddunif",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "Z"),

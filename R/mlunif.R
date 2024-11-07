@@ -25,7 +25,7 @@
 #' @export
 mlunif <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlunif <- list(
+univariateML_metadata$mlunif <- list(
   "model" = "Uniform",
   "density" = "stats::dunif",
   "support" = stats::setNames(intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)), c("min", "max")),

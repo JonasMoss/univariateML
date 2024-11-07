@@ -27,7 +27,7 @@
 #' @export
 mlnorm <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlnorm <- list(
+univariateML_metadata$mlnorm <- list(
   "model" = "Normal",
   "density" = "stats::dnorm",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),

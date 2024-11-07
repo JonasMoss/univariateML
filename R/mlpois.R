@@ -25,7 +25,7 @@
 #' @export
 mlpois <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlpois <- list(
+univariateML_metadata$mlpois <- list(
   "model" = "Poisson",
   "density" = "stats::dpois",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),

@@ -35,7 +35,7 @@
 #' @export
 mlnaka <- \(x, na.rm = TRUE, ...) {}
 
-metadata$mlnaka <- list(
+univariateML_metadata$mlnaka <- list(
   "model" = "Nakagami",
   "density" = "nakagami::dnaka",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),

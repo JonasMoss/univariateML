@@ -27,7 +27,7 @@
 #' @export
 mlinvgamma <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlinvgamma <- list(
+univariateML_metadata$mlinvgamma <- list(
   "model" = "InvGamma",
   "density" = "extraDistr::dinvgamma",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),

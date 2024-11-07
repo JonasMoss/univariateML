@@ -27,7 +27,7 @@
 #' @export
 mlnbinom <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlnbinom <- list(
+univariateML_metadata$mlnbinom <- list(
   "model" = "Negative binomial",
   "density" = "stats::dnbinom",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),

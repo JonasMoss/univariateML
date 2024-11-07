@@ -28,7 +28,7 @@
 
 mlfatigue <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlfatigue <- list(
+univariateML_metadata$mlfatigue <- list(
   "model" = "Birnbaum-Saunders",
   "density" = "extraDistr::dfatigue",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),

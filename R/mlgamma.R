@@ -32,7 +32,7 @@
 #' @export
 mlgamma <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlgamma <- list(
+univariateML_metadata$mlgamma <- list(
   "model" = "Gamma",
   "density" = "stats::dgamma",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),

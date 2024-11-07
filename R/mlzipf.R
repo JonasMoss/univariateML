@@ -28,7 +28,7 @@
 #' @export
 mlzipf <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlzipf <- list(
+univariateML_metadata$mlzipf <- list(
   "model" = "Zipf",
   "density" = "sads::dzipf",
   "support" = stats::setNames(intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"), c("1", "N")),

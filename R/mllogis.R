@@ -27,7 +27,7 @@
 #' @export
 mllogis <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mllogis <- list(
+univariateML_metadata$mllogis <- list(
   "model" = "Logistic",
   "density" = "stats::dlogis",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
@@ -41,5 +41,6 @@ mllogis_ <- \(x, ...) {
   f <- \(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
   values <- suppressWarnings(stats::nlm(f = f,p = c(m, log(mad))))
   list(estimates = c(values$estimate[1], exp(values$estimate[2])),
-       logLik = -values$minimum)
+       logLik = -values$minimum,
+       i = values$iterations)
 }

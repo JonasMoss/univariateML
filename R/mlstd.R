@@ -25,7 +25,7 @@
 #' @export
 mlstd <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlstd <- list(
+univariateML_metadata$mlstd <- list(
   "model" = "Student-t",
   "density" = "fGarch::dstd",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),

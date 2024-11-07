@@ -41,7 +41,7 @@
 
 mllgser <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mllgser <- list(
+univariateML_metadata$mllgser <- list(
   "model" = "Logarithmic series",
   "density" = "extraDistr::dlgser",
   "support" = intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"),

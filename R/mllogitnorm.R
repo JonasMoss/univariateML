@@ -28,7 +28,7 @@
 #' @export
 mllogitnorm <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mllogitnorm <- list(
+univariateML_metadata$mllogitnorm <- list(
   "model" = "LogitNormal",
   "density" = "logitnorm::dlogitnorm",
   "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),

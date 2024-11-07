@@ -23,7 +23,7 @@
 #' @export
 mlgeom <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlgeom <- list(
+univariateML_metadata$mlgeom <- list(
   "model" = "Geometric",
   "density" = "stats::dgeom",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),

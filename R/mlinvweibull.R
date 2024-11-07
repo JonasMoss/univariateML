@@ -33,7 +33,7 @@
 #' @export
 mlinvweibull <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlinvweibull <- list(
+univariateML_metadata$mlinvweibull <- list(
   "model" = "InverseWeibull",
   "density" = "actuar::dinvweibull",
   "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),

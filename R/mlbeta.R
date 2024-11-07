@@ -6,10 +6,7 @@
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param ... `start` contains optional starting parameter values for the
-#'   minimization, passed to the `stats::nlm` function. `type` specifies whether
-#'   a dedicated `"gradient"`, `"hessian"`, or `"none"` should be passed to
-#'   `stats::nlm`.
+#' @param ... Ignored.
 #' @return `mlbeta` returns an object of [class][base::class]
 #'    `univariateML`. This is a named numeric vector with maximum
 #'    likelihood estimates for `shape1` and `shape2` and the
@@ -31,7 +28,7 @@
 #' @export
 mlbeta <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlbeta <- list(
+univariateML_metadata$mlbeta <- list(
   "model" = "Beta",
   "density" = "stats::dbeta",
   "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
@@ -40,59 +37,36 @@ metadata$mlbeta <- list(
 )
 
 mlbeta_ <- \(x, ...) {
+  s <- mean(log(x)); r <- mean(log(1 - x))
+  g1 <- exp(s); g2 <- exp(r)
+  b <- log(0.5 + 0.5 * g2 / (1 - (g1 + g2)))
   n <- length(x)
 
-  val1 <- mean(log(x))
-  val2 <- mean(log(1 - x))
+  reltol <- .Machine$double.eps^0.25
+  iterlim <- 100
 
-  dots <- list(...)
-  type <- if (!is.null(dots$type)) dots$type else "none"
-  type <- match.arg(type, c("none", "gradient", "hessian"))
+  for (i in seq(iterlim)) {
+    exp_b <- exp(b)
+    digamma_b_r <- digamma(exp_b) - r
+    trigamma_b <- trigamma(exp_b)
 
-  if (!is.null(dots$start)) {
-    start <- dots$start
-  } else {
-    G1 <- exp(val1)
-    G2 <- exp(val2)
-    denom <- 1 / 2 * (1 / (1 - G1 - G2))
-    start <- c(1 / 2 + G1 * denom, 1 / 2 + G2 * denom)
+    # Inverts digamma(s-r+psi(exp(b)))
+    y <- s+digamma_b_r
+    a <- 1/log(1+exp(-y))
+    a <- a + (y - digamma(a)) / trigamma(a)
+    a <- a + (y - digamma(a)) / trigamma(a)
+    a <- a + (y - digamma(a)) / trigamma(a)
+
+    # Construct derivative and hessian
+    f <- exp_b * (digamma_b_r - digamma(a+exp_b))
+    df <- f + exp_b^2 * (trigamma_b - trigamma(a+exp_b) * (trigamma_b/trigamma(a)+1))
+
+    b0 <- b - f/df
+    if (abs((b0 - b) / b0) < reltol) break
+    b <- b0
   }
 
-  objective <- \(p) {
-    lbeta(p[1], p[2]) - (p[1] - 1) * val1 - (p[2] - 1) * val2
-  }
-
-  gradient <- \(p) {
-    digamma_alpha_beta <- digamma(p[1] + p[2])
-    c(
-      digamma(p[1]) - digamma_alpha_beta - val1,
-      digamma(p[2]) - digamma_alpha_beta - val2
-    )
-  }
-
-  if (type == "gradient") {
-    beta_objective <- \(p) {
-      result <- objective(p)
-      attr(result, "gradient") <- gradient(p)
-      result
-    }
-  } else if (type == "hessian") {
-    hessian <- \(p) {
-      trigamma_alpha_beta <- -trigamma(p[1] + p[2])
-      matrix(trigamma_alpha_beta, nrow = 2, ncol = 2) +
-        diag(c(trigamma(p[1]), trigamma(p[2])))
-    }
-
-    beta_objective <- \(p) {
-      result <- objective(p)
-      attr(result, "gradient") <- gradient(p)
-      attr(result, "hessian") <- hessian(p)
-      result
-    }
-  } else {
-    beta_objective <- objective
-  }
-
-  fit <- stats::nlm(beta_objective, p = start, typsize = start)
-  list(estimates = fit$estimate, logLik = -n * fit$minimum)
+  list(estimates = c(a, exp_b),
+       logLik = n*((a-1)*s + (exp_b-1)*r - lbeta(a,exp_b)),
+       i = i)
 }

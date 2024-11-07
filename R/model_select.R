@@ -115,7 +115,7 @@ filter_models <- \(models, type) {
     return(models)
   }
   type_ <- if (type == "continuous") "R" else "Z"
-  Filter(\(model) metadata[[paste0("ml", model)]]$support@type == type_, models)
+  Filter(\(model) univariateML_metadata[[paste0("ml", model)]]$support@type == type_, models)
 }
 
 check_models <- \(models) {

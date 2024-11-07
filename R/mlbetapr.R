@@ -30,7 +30,7 @@
 #' @export
 mlbetapr <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlbetapr <- list(
+univariateML_metadata$mlbetapr <- list(
   "model" = "BetaPrime",
   "density" = "extraDistr::dbetapr",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),

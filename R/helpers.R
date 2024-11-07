@@ -17,7 +17,7 @@ decorator <- \(name) {
     params <- list(logLik = out$logLik, call = deparse(match.call()), n = n)
     univariateML_construct(out$estimates, name = name, params = params)
   }
-  meta <- metadata[[name]]
+  meta <- univariateML_metadata[[name]]
   meta$parameters <- meta$names
   meta$names <- NULL
   attributes(fun) <- c(meta, attributes(fun))
@@ -34,7 +34,7 @@ decorator <- \(name) {
 univariateML_construct <- \(estimates, name, params) {
   estimates <- unname(estimates)
   class <- "univariateML"
-  args <- c(.Data = list(estimates), params, metadata[[name]], class = class)
+  args <- c(.Data = list(estimates), params, univariateML_metadata[[name]], class = class)
   object <- do.call(structure, args)
   attr(object, "call") <- if (length(attr(object, "call")) == 1) {
     str2lang(attr(object, "call"))
@@ -42,18 +42,18 @@ univariateML_construct <- \(estimates, name, params) {
     NULL
   }
 
-  if (metadata[[name]]$support@type == "R") {
+  if (univariateML_metadata[[name]]$support@type == "R") {
     attr(object, "continuous") <- TRUE
   } else {
     attr(object, "continuous") <- FALSE
   }
 
-  support_names <- names(metadata[[name]]$support)
+  support_names <- names(univariateML_metadata[[name]]$support)
   if (is.null(support_names)) {
-    attr(object, "support") <- c(metadata[[name]]$support@.Data)
+    attr(object, "support") <- c(univariateML_metadata[[name]]$support@.Data)
   } else {
     support <- attr(object, "support")
-    values <- as.list(stats::setNames(estimates, metadata[[name]]$names))
+    values <- as.list(stats::setNames(estimates, univariateML_metadata[[name]]$names))
     supp <- unname(sapply(names(support), \(x) with(values, eval(str2lang(x)))))
     attr(object, "support") <- supp
   }
@@ -68,7 +68,7 @@ ml_check_modify <- \(x, na.rm, name) {
   msg <- "NA in input when na.rm = FALSE"
   if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x), msg = msg)
 
-  support <- metadata[[name]]$support
+  support <- univariateML_metadata[[name]]$support
 
   msg <- "x not in the support of the data"
   if (support@closed[1]) {

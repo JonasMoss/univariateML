@@ -23,7 +23,7 @@
 #' @export
 mlzip <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlzip <- list(
+univariateML_metadata$mlzip <- list(
   "model" = "Zero-inflated Poisson",
   "density" = "extraDistr::dzip",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),

@@ -27,7 +27,7 @@
 #' @export
 mlpareto <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlpareto <- list(
+univariateML_metadata$mlpareto <- list(
   "model" = "Pareto",
   "density" = "extraDistr::dpareto",
   "support" = stats::setNames(intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)), c("a", "Inf")),

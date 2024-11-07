@@ -28,7 +28,7 @@
 #' @export
 mlged <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlged <- list(
+univariateML_metadata$mlged <- list(
   "model" = "Generalized Error",
   "density" = "fGarch::dged",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),

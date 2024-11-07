@@ -23,7 +23,7 @@ for (model in univariateML_models) {
 
 rm(fun)
 
-out <- metadata[["mlunif"]]
+out <- univariateML_metadata[["mlunif"]]
 out$names_ <- out$names
 out$names <- NULL
 `attributes<-`(mlunif, out)

@@ -25,7 +25,7 @@
 #' @export
 mlsnorm <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlsnorm <- list(
+univariateML_metadata$mlsnorm <- list(
   "model" = "Skew Normal",
   "density" = "fGarch::dsnorm",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),

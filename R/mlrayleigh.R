@@ -26,7 +26,7 @@
 #' @export
 mlrayleigh <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlrayleigh <- list(
+univariateML_metadata$mlrayleigh <- list(
   "model" = "Rayleigh",
   "density" = "extraDistr::drayleigh",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),

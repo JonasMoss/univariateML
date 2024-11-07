@@ -29,7 +29,7 @@
 #' @export
 mlcauchy <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlcauchy <- list(
+univariateML_metadata$mlcauchy <- list(
   "model" = "Cauchy",
   "density" = "stats::dcauchy",
   "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),

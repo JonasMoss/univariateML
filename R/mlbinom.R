@@ -56,7 +56,7 @@
 
 mlbinom <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlbinom <- list(
+univariateML_metadata$mlbinom <- list(
   "model" = "Binomial",
   "density" = "stats::dbinom",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),

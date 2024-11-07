@@ -36,7 +36,7 @@
 #' @export
 mlpower <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlpower <- list(
+univariateML_metadata$mlpower <- list(
   "model" = "PowerDist",
   "density" = "extraDistr::dpower",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),

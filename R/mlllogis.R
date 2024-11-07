@@ -33,7 +33,7 @@
 #' @export
 mlllogis <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlllogis <- list(
+univariateML_metadata$mlllogis <- list(
   "model" = "Loglogistic",
   "density" = "actuar::dllogis",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),

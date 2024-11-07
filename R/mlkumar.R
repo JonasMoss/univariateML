@@ -36,7 +36,7 @@
 #' @export
 mlkumar <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlkumar <- list(
+univariateML_metadata$mlkumar <- list(
   "model" = "Kumaraswamy",
   "density" = "extraDistr::dkumar",
   "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),

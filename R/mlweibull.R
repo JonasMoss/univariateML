@@ -30,7 +30,7 @@
 #' @export
 mlweibull <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlweibull <- list(
+univariateML_metadata$mlweibull <- list(
   "model" = "Weibull",
   "density" = "stats::dweibull",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
@@ -41,8 +41,8 @@ metadata$mlweibull <- list(
 mlweibull_ <- \(x, ...) {
   n <- length(x)
   log_x <- log(x)
-  l_hat <- mean(log_x)
   log_xsq <- log_x^2
+  l_hat <- mean(log_x)
 
   f_over_df <- \(shape0) {
     shape0_lsum <- mean(x^shape0 * log_x)
@@ -56,7 +56,7 @@ mlweibull_ <- \(x, ...) {
   }
 
   dots <- list(...)
-  shape0 <- if (!is.null(dots$shape0)) dots$shape0 else 1
+  shape0 <- if (!is.null(dots$shape0)) dots$shape0 else 1.2825/sd(log_x)
 
   shape <- newton_raphson_1d(f_over_df, shape0, ...)
 
