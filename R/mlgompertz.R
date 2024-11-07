@@ -31,7 +31,7 @@
 #' @export
 mlgompertz <- \(x, na.rm = FALSE, ...) {}
 
-metadata$mlgompertz <- list(
+univariateML_metadata$mlgompertz <- list(
   "model" = "Gompertz",
   "density" = "extraDistr::dgompertz",
   "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
@@ -40,8 +40,15 @@ metadata$mlgompertz <- list(
 )
 
 mlgompertz_ <- \(x, ...) {
+
+
   n <- length(x)
   x_sum <- sum(x)
+  x_var <- var(x) * (n-1)/n
+  if(x_sum / n < sqrt(x_var)) {
+    stop("The maximum likelihood estimator of the b parameter Gompertz distribution does not exist since the data is overdispersed. The exponential distribution will yield a better fit.")
+  }
+
   f_over_df <- \(b) {
     exp_bx <- exp(b * x)
     sum_bx <- sum(exp_bx)
@@ -54,17 +61,15 @@ mlgompertz_ <- \(x, ...) {
     da <- -n * r / s^2
     d2a <- n / s^2 * (b * (2 * sum_bx_x^2 / s - sum_bx_x2) - 2 * sum_bx_x)
 
-    f <- x_sum - a / b^2 * r + n * da / a - da / b * s
+    f <- n * da / a + x_sum
     df <- n * (a * d2a - da^2) / a^2
     f / df
   }
 
-  b <- newton_raphson_1d(f_over_df, 1, ...)
-  if (b <= 0) {
-    warning("The maximum likelihood estimator of the b parameter Gompertz distribution is non-positive, and is replaced by 1e-06. The exponential distribution is likely to give a better fit.")
-    b <- 1e-06
-  }
+  b <- newton_raphson_1d(f_over_df, 10e-2, ...)
+
   a <- b * n / (sum(exp(b * x)) - n)
+  a <- max(a, 1e-09)
 
   list(estimates = c(a, b),
        logLik = sum(extraDistr::dgompertz(x, a, b, log = TRUE)))
