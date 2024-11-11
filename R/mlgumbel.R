@@ -51,7 +51,7 @@ mlgumbel_ <- \(x, ...) {
   }
 
   dots <- list(...)
-  sigma0 <- if (!is.null(dots$sigma0)) dots$sigma0 else 1
+  sigma0 <- if (!is.null(dots$sigma0)) dots$sigma0 else sqrt(var(x)*6) / pi
   sigma <- newton_raphson_1d(f_over_df, sigma0, ...)
 
   mu <- -sigma * log(mean(exp(-x / sigma)))
