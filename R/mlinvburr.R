@@ -38,6 +38,8 @@ univariateML_metadata$mlinvburr <- list(
 
 mlinvburr_ <- \(x, ...) {
   params <- mlburr_(x)$estimates
-  list(estimates = params,
-       logLik = sum(actuar::dinvburr(x, params[1], params[2], log = TRUE)))
+  list(
+    estimates = params,
+    logLik = sum(actuar::dinvburr(x, params[1], params[2], log = TRUE))
+  )
 }

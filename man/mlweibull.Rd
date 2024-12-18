@@ -29,11 +29,11 @@ This is a named numeric vector with maximum likelihood estimates for
 \item{\code{call}}{The call as captured my \code{match.call}}
 }
 \description{
-Uses Newton-Raphson to estimate the parameters of the Weibull distribution.
-}
-\details{
 For the density function of the Weibull distribution see
 \link[stats:Weibull]{Weibull}.
+}
+\details{
+Uses \link{mlgumbel} to estimate the parameters of the Weibull distribution.
 }
 \examples{
 BIC(mlweibull(precip))

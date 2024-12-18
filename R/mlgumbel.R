@@ -7,8 +7,7 @@
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
-#' @param ... `sigma0` is an optional starting value defaulting to `1`.
-#'     `reltol` is the relative accuracy requested, defaults to
+#' @param ... `reltol` is the relative accuracy requested, defaults to
 #'     `.Machine$double.eps^0.25`. `iterlim` is a positive integer
 #'     specifying the maximum number of iterations to be performed before the
 #'     program is terminated (defaults to `100`).
@@ -38,25 +37,31 @@ univariateML_metadata$mlgumbel <- list(
 )
 
 mlgumbel_ <- \(x, ...) {
-  x_bar <- mean(x)
+  x_bar <- sum(x) / length(x)
+  estimates <- mlgumbel_estimate(x - x_bar, ...)
+  mu <- estimates[1] + x_bar
+  sigma <- estimates[2]
+  logLik <- -length(x) * (log(sigma) + (x_bar - mu) / sigma + 1)
+  list(estimates = c(mu = mu, sigma = sigma), logLik = logLik)
+}
+
+mlgumbel_estimate <- \(x, ...) {
+  x2 <- x^2
   f_over_df <- \(sigma0) {
-    a <- sum(x * exp(-x / sigma0))
-    b <- sum(exp(-x / sigma0))
-    c <- sum(x^2 * exp(-x / sigma0))
-
-    f <- x_bar - sigma0 - a / b
-    df <- -1 - 1 / sigma0^2 * (c / b - (a / b)^2)
-
+    neg_sigma_inv <- -1 / sigma0
+    exps <- exp(x * neg_sigma_inv)
+    psi0 <- sum(exps)
+    psi1 <- sum(x * exps) / psi0
+    psi2 <- sum(x2 * exps) / psi0 - psi1^2
+    f <- sigma0 + psi1
+    df <- 1 + neg_sigma_inv^2 * psi2
     f / df
   }
 
-  dots <- list(...)
-  sigma0 <- if (!is.null(dots$sigma0)) dots$sigma0 else sqrt(var(x)*6) / pi
+  sigma0 <- sqrt(sum(x^2) / length(x)) * 2.45 / pi * (1 - 1 / length(x))
   sigma <- newton_raphson_1d(f_over_df, sigma0, ...)
-
-  mu <- -sigma * log(mean(exp(-x / sigma)))
-  s <- mean(exp(-(x - mu) / sigma))
-  logLik <- -length(x) * (log(sigma) + 1 / sigma * (x_bar - mu) + s)
-
-  list(estimates = c(mu = mu, sigma = sigma), logLik = logLik)
+  neg_sigma_inv <- -1 / sigma
+  psi0 <- sum(exp(x * neg_sigma_inv))
+  mu <- -sigma * log(psi0 / length(x))
+  c(mu, sigma)
 }

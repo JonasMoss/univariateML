@@ -12,7 +12,7 @@ mllomax(x, na.rm = FALSE, ...)
 \item{na.rm}{logical. Should missing values be removed?}
 
 \item{...}{\code{lambda0} an optional starting value for the \code{lambda} parameter.
-Defaults to \code{median(x)}. \code{reltol} is the relative accuracy requested,
+\code{reltol} is the relative accuracy requested,
 defaults to \code{.Machine$double.eps^0.25}. \code{iterlim} is a positive integer
 specifying the maximum number of iterations to be performed before the
 program is terminated (defaults to \code{100}).}
@@ -35,11 +35,10 @@ Uses Newton-Raphson to estimate the parameters of the Lomax distribution.
 For the density function of the Lomax distribution see
 \link[extraDistr:Lomax]{Lomax}.
 
-The likelihood estimator of the Lomax distribution may be unbounded. When this
+The likelihood estimator of the Lomax distribution is unbounded when \code{mean(x^2) < 2*mean(x)^2}. When this
 happens, the likelihood converges to an exponential distribution with parameter
 equal to the mean of the data. This is the natural limiting case for the Lomax
-distribution, and it is reasonable to use \code{mlexp} in this case. See
-\code{vignette("Distribution Details", package = "univariateML")} for details.
+distribution, and it is reasonable to use \code{mlexp} in this case.
 }
 \examples{
 set.seed(3)

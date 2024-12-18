@@ -78,15 +78,26 @@ newton_raphson_1d <- \(f_over_df, param0, print = FALSE, ...) {
       reltol, ")."
     ))
   }
-
   param
+}
+
+#' Returns appropriate starting value
+#' @param default Function to calculate default parameter value.
+#' @param name Name of default starting value.
+#' @return Default value if `name` is not present
+get_start <- \(default, name, ...) {
+  dots <- list(...)
+  if (!is.null(dots[[name]])) {
+    return(dots[[name]])
+  }
+  default()
 }
 
 
 #' Inverse digamma function
 #'
 #' Calculates the inverse digamma function using Newton--Raphson. Works for
-#' y > -500.
+#' y > -500. Uses Newton--Raphson with relative tolerance of eps^0.25.
 #'
 #' The number of iterations are few, 1 for most input values, especially those
 #' that are large. The starting value is the lower bound found by Batir (2017).
@@ -99,15 +110,14 @@ inverse_digamma <- \(y) {
     stop("y must be greater than -500")
   }
 
-  param0 <- 1/log(1+exp(-y))
+  param0 <- 1 / log1p(exp(-y))
   reltol <- .Machine$double.eps^0.25
 
   for (i in seq(5)) {
-      param <- param0 + (y - Rfast::Digamma(param0)) / Rfast::Trigamma(param0)
-      if (abs((param0 - param) / param0) < reltol) break
-      param0 <- param
+    param <- param0 + (y - digamma(param0)) / trigamma(param0)
+    if (abs((param0 - param) / param0) < reltol) break
+    param0 <- param
   }
 
   param0
-
 }

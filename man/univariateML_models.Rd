@@ -5,7 +5,7 @@
 \alias{univariateML_models}
 \title{Implemented models}
 \format{
-An object of class \code{character} of length 36.
+An object of class \code{character} of length 42.
 }
 \usage{
 univariateML_models
@@ -14,6 +14,6 @@ univariateML_models
 Vector of all supported models in \code{univariateML}.
 }
 \details{
-The currently supported models are \link{mlbeta}, \link{mlbetapr}, \link{mlbinom}, \link{mlcauchy}, \link{mlexp}, \link{mlgamma}, \link{mlged}, \link{mlgeom}, \link{mlgumbel}, \link{mlinvgamma}, \link{mlinvgauss}, \link{mlinvweibull}, \link{mlkumar}, \link{mllaplace}, \link{mllgamma}, \link{mllgser}, \link{mlllogis}, \link{mllnorm}, \link{mllogis}, \link{mllogitnorm}, \link{mllomax}, \link{mlnaka}, \link{mlnbinom}, \link{mlnorm}, \link{mlpareto}, \link{mlpois}, \link{mlpower}, \link{mlrayleigh}, \link{mlsged}, \link{mlsnorm}, \link{mlsstd}, \link{mlstd}, \link{mlunif}, \link{mlweibull}, \link{mlzip}, \link{mlzipf}
+The currently supported models are \link{mlbeta}, \link{mlbetapr}, \link{mlbinom}, \link{mlburr}, \link{mlcauchy}, \link{mldunif}, \link{mlexp}, \link{mlfatigue}, \link{mlgamma}, \link{mlged}, \link{mlgeom}, \link{mlgompertz}, \link{mlgumbel}, \link{mlinvburr}, \link{mlinvgamma}, \link{mlinvgauss}, \link{mlinvweibull}, \link{mlkumar}, \link{mllaplace}, \link{mllgamma}, \link{mllgser}, \link{mlllogis}, \link{mllnorm}, \link{mllogis}, \link{mllogitnorm}, \link{mllomax}, \link{mlnaka}, \link{mlnbinom}, \link{mlnorm}, \link{mlparalogis}, \link{mlpareto}, \link{mlpois}, \link{mlpower}, \link{mlrayleigh}, \link{mlsged}, \link{mlsnorm}, \link{mlsstd}, \link{mlstd}, \link{mlunif}, \link{mlweibull}, \link{mlzip}, \link{mlzipf}
 }
 \keyword{datasets}

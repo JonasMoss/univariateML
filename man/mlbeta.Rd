@@ -11,10 +11,7 @@ mlbeta(x, na.rm = FALSE, ...)
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{...}{\code{start} contains optional starting parameter values for the
-minimization, passed to the \code{stats::nlm} function. \code{type} specifies whether
-a dedicated \code{"gradient"}, \code{"hessian"}, or \code{"none"} should be passed to
-\code{stats::nlm}.}
+\item{...}{Ignored.}
 }
 \value{
 \code{mlbeta} returns an object of \link[base:class]{class}

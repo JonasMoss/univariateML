@@ -1,4 +1,4 @@
-# Generating automatic tests for input checks.
+# Generating automatic tests.
 
 forms_rhs <- c("x", "na.rm", "...")
 for (dens in densities) {

@@ -9,63 +9,78 @@ vignette: >
 
 
 
-These are the currently implemented distributions. 
+The implemented distributions are found in `univariateML_models`.
 
-| Name                                | univariateML function  | Package    | Parameters               | Support        | 
-| ----------------------------------- | ---------------------- | ---------- | ------------------------ | -------------- | 
-| Cauchy distribution                 | `mlcauchy`             | stats      | `location`,`scale`       | $\mathbb{R}$   | 
-| Gumbel distribution                 | `mlgumbel`             | extraDistr | `mu`, `sigma`            | $\mathbb{R}$   | 
-| Laplace distribution                | `mllaplace`            | extraDistr | `mu`, `sigma`            | $\mathbb{R}$   | 
-| Logistic distribution               | `mllogis`              | stats      | `location`,`scale`       | $\mathbb{R}$   | 
-| Normal distribution                 | `mlnorm`               | stats      | `mean`, `sd`             | $\mathbb{R}$   | 
-| Student t distribution              | `mlstd`                | fGarch     | `mean`, `sd`, `nu`       | $\mathbb{R}$   | 
-| Generalized Error distribution      | `mlged`                | fGarch     | `mean`, `sd`, `nu`       | $\mathbb{R}$   | 
-| Skew Normal distribution            | `mlsnorm`              | fGarch     | `mean`, `sd`, `xi`       | $\mathbb{R}$   | 
-| Skew Student t distribution         | `mlsstd`               | fGarch     | `mean`, `sd`, `nu`, `xi` | $\mathbb{R}$   | 
-| Skew Generalized Error distribution | `mlsged`               | fGarch     | `mean`, `sd`, `nu`, `xi` | $\mathbb{R}$   | 
-| Beta prime distribution             | `mlbetapr`             | extraDistr | `shape1`, `shape2`       | $(0, \infty)$  |
-| Exponential distribution            | `mlexp`                | stats      | `rate`                   | $[0, \infty)$  | 
-| Gamma distribution                  | `mlgamma`              | stats      | `shape`,`rate`           | $(0, \infty)$  | 
-| Inverse gamma distribution          | `mlinvgamma`           | extraDistr | `alpha`, `beta`          | $(0, \infty)$  |
-| Inverse Gaussian distribution       | `mlinvgauss`           | actuar     | `mean`, `shape`          | $(0, \infty)$  |
-| Inverse Weibull distribution        | `mlinvweibull`         | actuar     | `shape`, `rate`          | $(0, \infty)$  |
-| Log-logistic distribution           | `mlllogis`             | actuar     | `shape`, `rate`          | $(0, \infty)$  |
-| Log-normal distribution             | `mllnorm`              | stats      | `meanlog`, `sdlog`       | $(0, \infty)$  |
-| Lomax distribution                  | `mllomax`              | extraDistr | `lambda`, `kappa`        | $[0, \infty)$  | 
-| Rayleigh distribution               | `mlrayleigh`           | extraDistr | `sigma`                  | $[0, \infty)$  | 
-| Weibull distribution                | `mlweibull`            | stats      | `shape`,`scale`          | $(0, \infty)$  |
-| Log-gamma distribution              | `mllgamma`             | actuar     | `shapelog`, `ratelog`    | $(1, \infty)$  |
-| Pareto distribution                 | `mlpareto`             | extraDistr | `a`, `b`                 | $[b, \infty)$  |
-| Beta distribution                   | `mlbeta`               | stats      | `shape1`,`shape2`        | $(0, 1)$       |
-| Kumaraswamy distribution            | `mlkumar`              | extraDistr | `a`, `b`                 | $(0, 1)$       |
-| Logit-normal                        | `mllogitnorm`          | logitnorm  | `mu`, `sigma`            | $(0, 1)$       |
-| Uniform distribution                | `mlunif`               | stats      | `min`, `max`             | $[\min, \max]$ |
-| Power distribution                  | `mlpower`              | extraDistr | `alpha`, `beta`          | $[0, a)$       |
 
+``` r
+univariateML_models
+```
+
+```
+##  [1] "beta"       "betapr"     "binom"      "burr"       "cauchy"    
+##  [6] "dunif"      "exp"        "fatigue"    "gamma"      "ged"       
+## [11] "geom"       "gompertz"   "gumbel"     "invburr"    "invgamma"  
+## [16] "invgauss"   "invweibull" "kumar"      "laplace"    "lgamma"    
+## [21] "lgser"      "llogis"     "lnorm"      "logis"      "logitnorm" 
+## [26] "lomax"      "naka"       "nbinom"     "norm"       "paralogis" 
+## [31] "pareto"     "pois"       "power"      "rayleigh"   "sged"      
+## [36] "snorm"      "sstd"       "std"        "unif"       "weibull"   
+## [41] "zip"        "zipf"
+```
 
 This package follows a naming convention for the `ml***` functions. To access the
 documentation of the distribution associated with an `ml***` function, write `package::d***`. 
 For instance, to find the documentation for the log-gamma distribution write
 
 
-```r
+``` r
 ?actuar::dlgamma
 ```
 
-## Problematic Distributions
-### Lomax Distribution
-The maximum likelihood estimator of the [Lomax distribution](https://en.wikipedia.org/wiki/Lomax_distribution) frequently fails to 
-exist. For assume $\kappa\to\lambda^{-1}\overline{x}^{-1}$ and $\lambda\to0$. The density $\lambda\kappa\left(1+\lambda x\right)^{-\left(\kappa+1\right)}$
-is approximately equal to $\lambda\kappa\left(1+\lambda x\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}$
-when $\lambda$ is small enough. Since $\lambda\kappa\left(1+\lambda x\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}\to\overline{x}^{-1}e^{-\overline{x}^{-1}x}$,
-the density converges to an exponential density. 
 
+Additional information about the models can found in `univariateML_metadata`.
 
-```r
-eps <- 0.1
-x <- seq(0, 3, length.out = 100)
-plot(dexp, 0, 3, xlab = "x", ylab = "Density", main = "Exponential and Lomax")
-lines(x, extraDistr::dlomax(x, lambda = eps, kappa = 1 / eps), col = "red")
+``` r
+univariateML_metadata[["mllgser"]]
 ```
 
-![plot of chunk lomax](figure/lomax-1.png)
+```
+## $model
+## [1] "Logarithmic series"
+## 
+## $density
+## [1] "extraDistr::dlgser"
+## 
+## $support
+## Object of class Intervals
+## 1 interval over Z:
+## [1, Inf)
+## 
+## $names
+## [1] "theta"
+## 
+## $default
+## [1] 0.9
+```
+
+From the metadata you can read that 
+
+* `mllgser` estimates the parameters `N` and `s`.
+* Its a discrete distribution on $1,2,3,...$,
+* Its density function is `extraDistr::dlgser`.
+
+## Problematic Distributions
+Some estimation procedures will fail under certain circumstances. Sometimes due to numerical problems,
+but also because the maximum likelihood estimator fails to exist. Here is a possibly non-exhaustive list of known problematic distributions.
+
+### Discrete distributions
+* **Binomial**. The maximum likelihood estimator does not exist for underdispersed data (when $size$ is estimated). There is an increasing sequence of estimates $size$, $p$ so that the binomial likelihood converges to a Poisson, however.
+* **Negative binomial.** The same sort of problem occurs with the negative binomial, which converges to a Poisson for some data sets.
+* **Lomax.** Here we have convergence to an exponential for certain data sets.
+* **Zipf.** The optimal shape parameter may be negative, which still defines a density, but is not supported by `extraDistr`.
+* **Logarithic series distribution.** When all observations are $1$ the estimator does not exist, as the "actual" maximum likelihood estimator is the point mass on $0$.
+
+### Continuous distributions
+* **Gompertz.** Here we have a similar problem, with some parameters outside the range of the distribution converging to a density function with a different support. When the `b` parameter tends towards 0, the Gompertz tends towards an exponential. A failing estimation indicates the exponential has a better fit.
+* **Lomax.** Here we have convergence to an exponential for certain data sets.
+* **Burr**. The Burr distribution tends to the Pareto distribution when `shape1*shape2` converges to a constant while `shape2` tends to infinity.  

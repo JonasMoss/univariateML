@@ -101,13 +101,13 @@ mlbinom_ <- \(x, ...) {
       n * trigamma(size + 1) -
       sum(counts * trigamma(size - uniques + 1))
 
-    f/df
+    f / df
   }
 
   size0 <- max(x)
   size_cands <- size0
-  if(size0 != 1) {
-    if(f_over_df(size0) > 0) {
+  if (size0 != 1) {
+    if (f_over_df(size0) > 0) {
       size_cand <- newton_raphson_1d(f_over_df, size0)
       size_cands <- c(size0, floor(size_cand), ceiling(size_cand))
     }
@@ -116,6 +116,8 @@ mlbinom_ <- \(x, ...) {
   log_liks <- sapply(size_cands, log_likelihood)
   size <- size_cands[which.max(log_liks)]
 
-  list(estimates = c(size = size, prob = x_bar / size),
-       logLik = max(log_liks))
+  list(
+    estimates = c(size = size, prob = x_bar / size),
+    logLik = max(log_liks)
+  )
 }

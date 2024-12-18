@@ -55,7 +55,7 @@ mllomax_ <- \(x, ...) {
   s <- mean(x^2)
   m <- mean(x)
 
-  if(s < 2*m^2) {
+  if (s < 2 * m^2) {
     stop("The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution.")
   }
 
@@ -74,7 +74,7 @@ mllomax_ <- \(x, ...) {
   if (!is.null(list(...)$lambda0)) lambda0 <- list(...)$lambda0
 
   lambda <- newton_raphson_1d(f_over_df, lambda0, ...)
-  kappa <- 1/mean(log(1 + lambda * x))
+  kappa <- 1 / mean(log(1 + lambda * x))
 
   loglik <- sum(extraDistr::dlomax(x, lambda, kappa, log = TRUE))
 
