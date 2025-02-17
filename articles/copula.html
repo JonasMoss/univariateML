@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Copula Modeling">
 </head>
 <body>
@@ -149,14 +149,15 @@ to try out.</p>
 <p>Optionally, we can use all implemented models with</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">univariateML_models</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] "beta"       "betapr"     "binom"      "cauchy"     "exp"       </span></span>
-<span><span class="co">##  [6] "gamma"      "ged"        "geom"       "gumbel"     "invgamma"  </span></span>
-<span><span class="co">## [11] "invgauss"   "invweibull" "kumar"      "laplace"    "lgamma"    </span></span>
-<span><span class="co">## [16] "lgser"      "llogis"     "lnorm"      "logis"      "logitnorm" </span></span>
-<span><span class="co">## [21] "lomax"      "naka"       "nbinom"     "norm"       "pareto"    </span></span>
-<span><span class="co">## [26] "pois"       "power"      "rayleigh"   "sged"       "snorm"     </span></span>
-<span><span class="co">## [31] "sstd"       "std"        "unif"       "weibull"    "zip"       </span></span>
-<span><span class="co">## [36] "zipf"</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] "beta"       "betapr"     "binom"      "burr"       "cauchy"    </span></span>
+<span><span class="co">##  [6] "dunif"      "exp"        "fatigue"    "gamma"      "ged"       </span></span>
+<span><span class="co">## [11] "geom"       "gompertz"   "gumbel"     "invburr"    "invgamma"  </span></span>
+<span><span class="co">## [16] "invgauss"   "invweibull" "kumar"      "laplace"    "lgamma"    </span></span>
+<span><span class="co">## [21] "lgser"      "llogis"     "lnorm"      "logis"      "logitnorm" </span></span>
+<span><span class="co">## [26] "lomax"      "naka"       "nbinom"     "norm"       "paralogis" </span></span>
+<span><span class="co">## [31] "pareto"     "pois"       "power"      "rayleigh"   "sged"      </span></span>
+<span><span class="co">## [36] "snorm"      "sstd"       "std"        "unif"       "weibull"   </span></span>
+<span><span class="co">## [41] "zip"        "zipf"</span></span></code></pre>
 <p>The next step is to fit all models, compute the AIC, and select the
 best model. This is exactly what <code><a href="../reference/model_select.html">model_select()</a></code> does.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">

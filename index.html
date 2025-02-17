@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Maximum Likelihood Estimation for Univariate Densities">
 <meta name="description" content="User-friendly maximum likelihood estimation (Fisher (1921) &lt;doi:10.1098/rsta.1922.0009&gt;) of univariate densities.">
 <meta property="og:description" content="User-friendly maximum likelihood estimation (Fisher (1921) &lt;doi:10.1098/rsta.1922.0009&gt;) of univariate densities.">
@@ -89,6 +89,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/JonasMoss/univariateML" class="external-link">"univariateML"</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/mlweibull.html">mlweibull</a></span><span class="op">(</span><span class="va">egypt</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: intervals</span></span>
 <span><span class="co">#&gt; Maximum likelihood estimates for the Weibull model </span></span>
 <span><span class="co">#&gt;  shape   scale  </span></span>
 <span><span class="co">#&gt;  1.404  33.564</span></span></code></pre></div>
@@ -99,8 +100,11 @@
 <p><img src="reference/figures/README-weibull_plot-1.png" width="750px"></p>
 </div>
 <div class="section level2">
-<h2 id="supported-densities">Supported densities<a class="anchor" aria-label="anchor" href="#supported-densities"></a>
+<h2 id="supported-distributions">Supported distributions<a class="anchor" aria-label="anchor" href="#supported-distributions"></a>
 </h2>
+<div class="section level3">
+<h3 id="continuous-distributions">Continuous distributions<a class="anchor" aria-label="anchor" href="#continuous-distributions"></a>
+</h3>
 <table style="width:100%;" class="table">
 <colgroup>
 <col width="51%">
@@ -254,12 +258,86 @@
 <td>extraDistr</td>
 </tr>
 <tr class="odd">
+<td>Gompertz distribution</td>
+<td><code>mlgompertz</code></td>
+<td>extraDistr</td>
+</tr>
+<tr class="even">
+<td>Burr distribution</td>
+<td><code>mlburr</code></td>
+<td>actuar</td>
+</tr>
+<tr class="odd">
+<td>Inverse Burr distribution</td>
+<td><code>mlinvburr</code></td>
+<td>actuar</td>
+</tr>
+<tr class="even">
+<td>Birnbaum-Saunders</td>
+<td><code>mlfatigue</code></td>
+<td>extraDistr</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="discrete-distributions">Discrete distributions<a class="anchor" aria-label="anchor" href="#discrete-distributions"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="32%">
+<col width="16%">
+</colgroup>
+<thead><tr class="header">
+<th>Name</th>
+<th>univariateML function</th>
+<th>Package</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
 <td>Poisson distribution</td>
 <td><code>mlpois</code></td>
 <td>stats</td>
 </tr>
+<tr class="even">
+<td>Negative binomial distribution</td>
+<td><code>mlnbinom</code></td>
+<td>stats</td>
+</tr>
+<tr class="odd">
+<td>Binomial distribution</td>
+<td><code>mlbinom</code></td>
+<td>stats</td>
+</tr>
+<tr class="even">
+<td>Geometric distribution</td>
+<td><code>mlgeom</code></td>
+<td>stats</td>
+</tr>
+<tr class="odd">
+<td>Zipf distribution</td>
+<td><code>mlzipf</code></td>
+<td>sads</td>
+</tr>
+<tr class="even">
+<td>Zero-inflated Poisson distribution</td>
+<td><code>mlzip</code></td>
+<td>extraDistr</td>
+</tr>
+<tr class="odd">
+<td>Discrete uniform distribution</td>
+<td><code>mldunif</code></td>
+<td>extraDistr</td>
+</tr>
+<tr class="even">
+<td>Logarithmic series distribution</td>
+<td><code>mldunif</code></td>
+<td>extraDistr</td>
+</tr>
 </tbody>
 </table>
+</div>
 </div>
 <div class="section level2">
 <h2 id="implementations">Implementations<a class="anchor" aria-label="anchor" href="#implementations"></a>
@@ -275,9 +353,9 @@
 <span>  naive <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/nlm.html" class="external-link">nlm</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">dbeta</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">p</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">p</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>, p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Unit: microseconds</span></span>
-<span><span class="co">#&gt;          expr     min       lq      mean   median       uq      max neval</span></span>
-<span><span class="co">#&gt;  univariateML   205.1   329.85   800.077   464.35   730.35  13938.4   100</span></span>
-<span><span class="co">#&gt;         naive 10665.9 11773.30 21428.104 15233.70 28628.65 103372.1   100</span></span></code></pre></div>
+<span><span class="co">#&gt;          expr    min      lq     mean median     uq     max neval</span></span>
+<span><span class="co">#&gt;  univariateML  201.4  244.05  349.978  365.6  422.2   791.9   100</span></span>
+<span><span class="co">#&gt;         naive 8289.4 8652.60 9170.378 8915.3 9288.0 18723.0   100</span></span></code></pre></div>
 <p>The maximum likelihood estimators in this package have all been subject to testing, see the <code>tests</code> folder for details.</p>
 </div>
 <div class="section level2">

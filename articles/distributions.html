@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Distributions">
 </head>
 <body>
@@ -71,308 +71,114 @@
 
     
     
-<p>These are the currently implemented distributions.</p>
-<table style="width:100%;" class="table">
-<colgroup>
-<col width="33%">
-<col width="20%">
-<col width="9%">
-<col width="22%">
-<col width="13%">
-</colgroup>
-<thead><tr class="header">
-<th>Name</th>
-<th>univariateML function</th>
-<th>Package</th>
-<th>Parameters</th>
-<th>Support</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Cauchy distribution</td>
-<td><code>mlcauchy</code></td>
-<td>stats</td>
-<td>
-<code>location</code>,<code>scale</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Gumbel distribution</td>
-<td><code>mlgumbel</code></td>
-<td>extraDistr</td>
-<td>
-<code>mu</code>, <code>sigma</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Laplace distribution</td>
-<td><code>mllaplace</code></td>
-<td>extraDistr</td>
-<td>
-<code>mu</code>, <code>sigma</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Logistic distribution</td>
-<td><code>mllogis</code></td>
-<td>stats</td>
-<td>
-<code>location</code>,<code>scale</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Normal distribution</td>
-<td><code>mlnorm</code></td>
-<td>stats</td>
-<td>
-<code>mean</code>, <code>sd</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Student t distribution</td>
-<td><code>mlstd</code></td>
-<td>fGarch</td>
-<td>
-<code>mean</code>, <code>sd</code>, <code>nu</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Generalized Error distribution</td>
-<td><code>mlged</code></td>
-<td>fGarch</td>
-<td>
-<code>mean</code>, <code>sd</code>, <code>nu</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Skew Normal distribution</td>
-<td><code>mlsnorm</code></td>
-<td>fGarch</td>
-<td>
-<code>mean</code>, <code>sd</code>, <code>xi</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Skew Student t distribution</td>
-<td><code>mlsstd</code></td>
-<td>fGarch</td>
-<td>
-<code>mean</code>, <code>sd</code>, <code>nu</code>,
-<code>xi</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Skew Generalized Error distribution</td>
-<td><code>mlsged</code></td>
-<td>fGarch</td>
-<td>
-<code>mean</code>, <code>sd</code>, <code>nu</code>,
-<code>xi</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Beta prime distribution</td>
-<td><code>mlbetapr</code></td>
-<td>extraDistr</td>
-<td>
-<code>shape1</code>, <code>shape2</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Exponential distribution</td>
-<td><code>mlexp</code></td>
-<td>stats</td>
-<td><code>rate</code></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Gamma distribution</td>
-<td><code>mlgamma</code></td>
-<td>stats</td>
-<td>
-<code>shape</code>,<code>rate</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Inverse gamma distribution</td>
-<td><code>mlinvgamma</code></td>
-<td>extraDistr</td>
-<td>
-<code>alpha</code>, <code>beta</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Inverse Gaussian distribution</td>
-<td><code>mlinvgauss</code></td>
-<td>actuar</td>
-<td>
-<code>mean</code>, <code>shape</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Inverse Weibull distribution</td>
-<td><code>mlinvweibull</code></td>
-<td>actuar</td>
-<td>
-<code>shape</code>, <code>rate</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Log-logistic distribution</td>
-<td><code>mlllogis</code></td>
-<td>actuar</td>
-<td>
-<code>shape</code>, <code>rate</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Log-normal distribution</td>
-<td><code>mllnorm</code></td>
-<td>stats</td>
-<td>
-<code>meanlog</code>, <code>sdlog</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Lomax distribution</td>
-<td><code>mllomax</code></td>
-<td>extraDistr</td>
-<td>
-<code>lambda</code>, <code>kappa</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Rayleigh distribution</td>
-<td><code>mlrayleigh</code></td>
-<td>extraDistr</td>
-<td><code>sigma</code></td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Weibull distribution</td>
-<td><code>mlweibull</code></td>
-<td>stats</td>
-<td>
-<code>shape</code>,<code>scale</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Log-gamma distribution</td>
-<td><code>mllgamma</code></td>
-<td>actuar</td>
-<td>
-<code>shapelog</code>, <code>ratelog</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Pareto distribution</td>
-<td><code>mlpareto</code></td>
-<td>extraDistr</td>
-<td>
-<code>a</code>, <code>b</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>b</mi><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[b, \infty)</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Beta distribution</td>
-<td><code>mlbeta</code></td>
-<td>stats</td>
-<td>
-<code>shape1</code>,<code>shape2</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Kumaraswamy distribution</td>
-<td><code>mlkumar</code></td>
-<td>extraDistr</td>
-<td>
-<code>a</code>, <code>b</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Logit-normal</td>
-<td><code>mllogitnorm</code></td>
-<td>logitnorm</td>
-<td>
-<code>mu</code>, <code>sigma</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math></td>
-</tr>
-<tr class="odd">
-<td>Uniform distribution</td>
-<td><code>mlunif</code></td>
-<td>stats</td>
-<td>
-<code>min</code>, <code>max</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mo>min</mo><mo>,</mo><mo>max</mo><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[\min, \max]</annotation></semantics></math></td>
-</tr>
-<tr class="even">
-<td>Power distribution</td>
-<td><code>mlpower</code></td>
-<td>extraDistr</td>
-<td>
-<code>alpha</code>, <code>beta</code>
-</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">[0, a)</annotation></semantics></math></td>
-</tr>
-</tbody>
-</table>
+<p>The implemented distributions are found in
+<code>univariateML_models</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/JonasMoss/univariateML" class="external-link">"univariateML"</a></span><span class="op">)</span></span>
+<span><span class="va">univariateML_models</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] "beta"       "betapr"     "binom"      "burr"       "cauchy"    </span></span>
+<span><span class="co">##  [6] "dunif"      "exp"        "fatigue"    "gamma"      "ged"       </span></span>
+<span><span class="co">## [11] "geom"       "gompertz"   "gumbel"     "invburr"    "invgamma"  </span></span>
+<span><span class="co">## [16] "invgauss"   "invweibull" "kumar"      "laplace"    "lgamma"    </span></span>
+<span><span class="co">## [21] "lgser"      "llogis"     "lnorm"      "logis"      "logitnorm" </span></span>
+<span><span class="co">## [26] "lomax"      "naka"       "nbinom"     "norm"       "paralogis" </span></span>
+<span><span class="co">## [31] "pareto"     "pois"       "power"      "rayleigh"   "sged"      </span></span>
+<span><span class="co">## [36] "snorm"      "sstd"       "std"        "unif"       "weibull"   </span></span>
+<span><span class="co">## [41] "zip"        "zipf"</span></span></code></pre>
 <p>This package follows a naming convention for the <code>ml***</code>
 functions. To access the documentation of the distribution associated
 with an <code>ml***</code> function, write <code>package::d***</code>.
 For instance, to find the documentation for the log-gamma distribution
 write</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="fu">actuar</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/actuar/man/Loggamma.html" class="external-link">dlgamma</a></span></span></code></pre></div>
+<p>Additional information about the models can found in
+<code>univariateML_metadata</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">univariateML_metadata</span><span class="op">[[</span><span class="st">"mllgser"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## $model</span></span>
+<span><span class="co">## [1] "Logarithmic series"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $density</span></span>
+<span><span class="co">## [1] "extraDistr::dlgser"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $support</span></span></code></pre>
+<pre><code><span><span class="co">## Loading required package: intervals</span></span></code></pre>
+<pre><code><span><span class="co">## Object of class Intervals</span></span>
+<span><span class="co">## 1 interval over Z:</span></span>
+<span><span class="co">## [1, Inf)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $names</span></span>
+<span><span class="co">## [1] "theta"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $default</span></span>
+<span><span class="co">## [1] 0.9</span></span></code></pre>
+<p>From the metadata you can read that</p>
+<ul>
+<li>
+<code>mllgser</code> estimates the parameters <code>N</code> and
+<code>s</code>.</li>
+<li>Its a discrete distribution on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">1,2,3,...</annotation></semantics></math>,</li>
+<li>Its density function is <code><a href="https://rdrr.io/pkg/extraDistr/man/LogSeries.html" class="external-link">extraDistr::dlgser</a></code>.</li>
+</ul>
 <div class="section level2">
 <h2 id="problematic-distributions">Problematic Distributions<a class="anchor" aria-label="anchor" href="#problematic-distributions"></a>
 </h2>
+<p>Some estimation procedures will fail under certain circumstances.
+Sometimes due to numerical problems, but also because the maximum
+likelihood estimator fails to exist. Here is a possibly non-exhaustive
+list of known problematic distributions.</p>
 <div class="section level3">
-<h3 id="lomax-distribution">Lomax Distribution<a class="anchor" aria-label="anchor" href="#lomax-distribution"></a>
+<h3 id="discrete-distributions">Discrete distributions<a class="anchor" aria-label="anchor" href="#discrete-distributions"></a>
 </h3>
-<p>The maximum likelihood estimator of the <a href="https://en.wikipedia.org/wiki/Lomax_distribution" class="external-link">Lomax
-distribution</a> frequently fails to exist. For assume
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>κ</mi><mo>→</mo><msup><mi>λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mover><mi>x</mi><mo accent="true">¯</mo></mover><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\kappa\to\lambda^{-1}\overline{x}^{-1}</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda\to0</annotation></semantics></math>.
-The density
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mi>κ</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>λ</mi><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>κ</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup></mrow><annotation encoding="application/x-tex">\lambda\kappa\left(1+\lambda x\right)^{-\left(\kappa+1\right)}</annotation></semantics></math>
-is approximately equal to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mi>κ</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>λ</mi><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mover><mi>x</mi><mo accent="true">¯</mo></mover><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup></mrow><annotation encoding="application/x-tex">\lambda\kappa\left(1+\lambda x\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}</annotation></semantics></math>
-when
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
-is small enough. Since
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mi>κ</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>λ</mi><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>λ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mover><mi>x</mi><mo accent="true">¯</mo></mover><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup><mo>→</mo><msup><mover><mi>x</mi><mo accent="true">¯</mo></mover><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>e</mi><mrow><mo>−</mo><msup><mover><mi>x</mi><mo accent="true">¯</mo></mover><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>x</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\lambda\kappa\left(1+\lambda x\right)^{-\left(\lambda^{-1}\overline{x}^{-1}+1\right)}\to\overline{x}^{-1}e^{-\overline{x}^{-1}x}</annotation></semantics></math>,
-the density converges to an exponential density.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dexp</span>, <span class="fl">0</span>, <span class="fl">3</span>, xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"Density"</span>, main <span class="op">=</span> <span class="st">"Exponential and Lomax"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu">extraDistr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/extraDistr/man/Lomax.html" class="external-link">dlomax</a></span><span class="op">(</span><span class="va">x</span>, lambda <span class="op">=</span> <span class="va">eps</span>, kappa <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">eps</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="distributions_files/figure-html/lomax-1.png" width="576"></p>
+<ul>
+<li>
+<strong>Binomial</strong>. The maximum likelihood estimator does not
+exist for underdispersed data (when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>i</mi><mi>z</mi><mi>e</mi></mrow><annotation encoding="application/x-tex">size</annotation></semantics></math>
+is estimated). There is an increasing sequence of estimates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>i</mi><mi>z</mi><mi>e</mi></mrow><annotation encoding="application/x-tex">size</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+so that the binomial likelihood converges to a Poisson, however.</li>
+<li>
+<strong>Negative binomial.</strong> The same sort of problem occurs
+with the negative binomial, which converges to a Poisson for some data
+sets.</li>
+<li>
+<strong>Lomax.</strong> Here we have convergence to an exponential
+for certain data sets.</li>
+<li>
+<strong>Zipf.</strong> The optimal shape parameter may be negative,
+which still defines a density, but is not supported by
+<code>extraDistr</code>.</li>
+<li>
+<strong>Logarithic series distribution.</strong> When all
+observations are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+the estimator does not exist, as the “actual” maximum likelihood
+estimator is the point mass on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="continuous-distributions">Continuous distributions<a class="anchor" aria-label="anchor" href="#continuous-distributions"></a>
+</h3>
+<ul>
+<li>
+<strong>Gompertz.</strong> Here we have a similar problem, with some
+parameters outside the range of the distribution converging to a density
+function with a different support. When the <code>b</code> parameter
+tends towards 0, the Gompertz tends towards an exponential. A failing
+estimation indicates the exponential has a better fit.</li>
+<li>
+<strong>Lomax.</strong> Here we have convergence to an exponential
+for certain data sets.</li>
+<li>
+<strong>Burr</strong>. The Burr distribution tends to the Pareto
+distribution when <code>shape1*shape2</code> converges to a constant
+while <code>shape2</code> tends to infinity.</li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
