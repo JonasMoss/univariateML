@@ -4,16 +4,14 @@
 \alias{newton_raphson_1d}
 \title{One-dimensional Newton--Raphson}
 \usage{
-newton_raphson_1d(f_over_df, param0, print = FALSE, ...)
+newton_raphson_1d(f_over_df, param0, ...)
 }
 \arguments{
 \item{f_over_df}{The term f(x_0) / f'(x_0) in Newton--Raphson.}
 
 \item{param0}{Starting parameter, typically from method of moments estimates.}
 
-\item{iterlim}{Iteration limit.}
-
-\item{reltol}{Relative tolerance.}
+\item{...}{Optional \code{iterlim} and \code{reltol} parameters.}
 }
 \value{
 Newton--Raphson estimate.

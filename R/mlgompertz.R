@@ -42,7 +42,7 @@ univariateML_metadata$mlgompertz <- list(
 mlgompertz_ <- \(x, ...) {
   n <- length(x)
   x_sum <- sum(x)
-  x_var <- var(x) * (n - 1) / n
+  x_var <- stats::var(x) * (n - 1) / n
   if (x_sum / n < sqrt(x_var)) {
     stop("The maximum likelihood estimator of the b parameter Gompertz distribution does not exist since the data is overdispersed. The exponential distribution will yield a better fit.")
   }

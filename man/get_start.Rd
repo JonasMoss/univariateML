@@ -10,6 +10,8 @@ get_start(default, name, ...)
 \item{default}{Function to calculate default parameter value.}
 
 \item{name}{Name of default starting value.}
+
+\item{...}{Parameter list containing an element \code{name}.}
 }
 \value{
 Default value if \code{name} is not present

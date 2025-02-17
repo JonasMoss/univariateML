@@ -18,5 +18,5 @@ The number of iterations are few, 1 for most input values, especially those
 that are large. The starting value is the lower bound found by Batir (2017).
 }
 \references{
-Batir, N. (2017). Inequalities for the inverses of the polygamma functions. In arXiv \link{math.CA}. arXiv. http://arxiv.org/abs/1705.06547
+Batir, N. (2017). Inequalities for the inverses of the polygamma functions. arXiv. http://arxiv.org/abs/1705.06547
 }

@@ -55,11 +55,10 @@ simulate_default <- \(dens, n) {
 #' One-dimensional Newton--Raphson
 #' @param f_over_df The term f(x_0) / f'(x_0) in Newton--Raphson.
 #' @param param0 Starting parameter, typically from method of moments estimates.
-#' @param iterlim Iteration limit.
-#' @param reltol Relative tolerance.
+#' @param ... Optional `iterlim` and `reltol` parameters.
 #' @return Newton--Raphson estimate.
 #' @keywords internal
-newton_raphson_1d <- \(f_over_df, param0, print = FALSE, ...) {
+newton_raphson_1d <- \(f_over_df, param0, ...) {
   dots <- list(...)
   reltol <- if (!is.null(dots$reltol)) dots$reltol else .Machine$double.eps^0.25
   iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
@@ -84,6 +83,7 @@ newton_raphson_1d <- \(f_over_df, param0, print = FALSE, ...) {
 #' Returns appropriate starting value
 #' @param default Function to calculate default parameter value.
 #' @param name Name of default starting value.
+#' @param ... Parameter list containing an element `name`.
 #' @return Default value if `name` is not present
 get_start <- \(default, name, ...) {
   dots <- list(...)
@@ -103,7 +103,7 @@ get_start <- \(default, name, ...) {
 #' that are large. The starting value is the lower bound found by Batir (2017).
 #'
 #' @param y Values to invert.
-#' @references Batir, N. (2017). Inequalities for the inverses of the polygamma functions. In arXiv [math.CA]. arXiv. http://arxiv.org/abs/1705.06547
+#' @references Batir, N. (2017). Inequalities for the inverses of the polygamma functions. arXiv. http://arxiv.org/abs/1705.06547
 
 inverse_digamma <- \(y) {
   if (y < -500) {
