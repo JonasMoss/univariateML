@@ -87,13 +87,14 @@ model_select <- \(x, models = univariateML_models,
   }
 
   fits <- tibble::tibble(
-    model = sapply(fits, \(x) attr(x, "model")) |> unname(),
-    "LOGLIK" = -sapply(fits, stats::logLik) |> unname(),
-    "AIC" = sapply(fits, stats::AIC) |> unname(),
-    "BIC" = sapply(fits, stats::BIC) |> unname(),
-    "ml" = names(fits) |> gsub("^ml", "", x = _),
-    "univariateML" = fits
+    model = unname(sapply(fits, function(x) attr(x, "model"))),
+    LOGLIK = unname(-sapply(fits, stats::logLik)),
+    AIC = unname(sapply(fits, stats::AIC)),
+    BIC = unname(sapply(fits, stats::BIC)),
+    ml = gsub("^ml", "", names(fits)),
+    univariateML = fits
   )
+
 
   fits <- fits[order(fits[[criterion]]), ]
 

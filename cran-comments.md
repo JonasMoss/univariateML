@@ -1,6 +1,7 @@
 ## Release summary
 
-* Add support for 7 discrete distributions.
+* Fixed two notes regarding pipes and bibentry.
+* Add support for many more distributions.
 * Add support for plotting for CDFs and quantile functions.
 * Option for returning tables in `model_select`.
 * Add model attributes to `ml***` objects.
@@ -23,5 +24,4 @@ NOTEs: Some platforms claim
 These are false alarms. All imported packages are used.
 
 ## Downstream dependencies
-kdensity: No problems.
-svines: No problems.
+There are no problems except for package `kdensity`. I have submitted an updated version of `kdensity` that handles these problems.
