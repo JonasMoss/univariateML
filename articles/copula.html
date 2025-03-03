@@ -65,7 +65,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Copula Modeling</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JonasMoss/univariateML/blob/v1.5.0/vignettes/copula.Rmd" class="external-link"><code>vignettes/copula.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JonasMoss/univariateML/blob/master/vignettes/copula.Rmd" class="external-link"><code>vignettes/copula.Rmd</code></a></small>
       <div class="d-none name"><code>copula.Rmd</code></div>
     </div>
 
@@ -172,7 +172,7 @@ The elliptical copulas are the Gaussian copula and the
 Clayton copula, and the Gumbel copula.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Transform the marginals to the unit interval.</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, \<span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="fu"><a href="../reference/MaximumLikelihoodDistribution.html">pml</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span>, <span class="va">margin_fits</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="fu"><a href="../reference/MaximumLikelihoodDistribution.html">pml</a></span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span>, <span class="va">margin_fits</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The copulas described above.</span></span>
 <span><span class="va">copulas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -185,7 +185,7 @@ Clayton copula, and the Gumbel copula.</p>
 <span></span>
 <span><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span></span>
 <span>  <span class="va">copulas</span>,</span>
-<span>  \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">copula</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/copula/man/fitCopula.html" class="external-link">fitCopula</a></span><span class="op">(</span><span class="va">x</span>, data <span class="op">=</span> <span class="va">y</span>, method <span class="op">=</span> <span class="st">"mpl"</span><span class="op">)</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">copula</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/copula/man/fitCopula.html" class="external-link">fitCopula</a></span><span class="op">(</span><span class="va">x</span>, data <span class="op">=</span> <span class="va">y</span>, method <span class="op">=</span> <span class="st">"mpl"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">fits</span>, <span class="va">AIC</span><span class="op">)</span></span></code></pre></div>
