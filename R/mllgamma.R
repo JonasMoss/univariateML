@@ -26,7 +26,7 @@
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
 #' actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
-mllgamma <- \(x, na.rm = FALSE, ...) {}
+mllgamma <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mllgamma <- list(
   "model" = "Loggamma",
@@ -36,7 +36,7 @@ univariateML_metadata$mllgamma <- list(
   "default" = c(2, 3)
 )
 
-mllgamma_ <- \(x, ...) {
+mllgamma_ <- function(x, ...) {
   y <- log(x)
   n <- length(x)
   estimates <- mlgamma_(y, ...)$estimates

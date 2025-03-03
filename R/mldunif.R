@@ -21,7 +21,7 @@
 #' @references
 #' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
-mldunif <- \(x, na.rm = FALSE, ...) {}
+mldunif <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mldunif <- list(
   "model" = "Discrete uniform",
@@ -31,7 +31,7 @@ univariateML_metadata$mldunif <- list(
   "default" = c(2, 10)
 )
 
-mldunif_ <- \(x, ...) {
+mldunif_ <- function(x, ...) {
   n <- length(x)
   estimates <- c(min(x), max(x))
   list(

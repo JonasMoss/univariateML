@@ -30,7 +30,7 @@
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
 #' @export
-mlgamma <- \(x, na.rm = FALSE, ...) {}
+mlgamma <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlgamma <- list(
   "model" = "Gamma",
@@ -40,13 +40,13 @@ univariateML_metadata$mlgamma <- list(
   "default" = c(2, 2)
 )
 
-mlgamma_ <- \(x, ...) {
+mlgamma_ <- function(x, ...) {
   n <- length(x)
   mean_hat <- sum(x) / n
   lx_bar <- sum(log(x)) / n
   s <- log(mean_hat) - lx_bar
 
-  f_over_df <- \(shape0) {
+  f_over_df <- function(shape0) {
     (log(shape0) - digamma(shape0) - s) / (1 / shape0 - trigamma(shape0))
   }
 

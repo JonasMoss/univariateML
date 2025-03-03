@@ -31,7 +31,7 @@
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
 #' actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
-mlinvweibull <- \(x, na.rm = FALSE, ...) {}
+mlinvweibull <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlinvweibull <- list(
   "model" = "InverseWeibull",
@@ -41,7 +41,7 @@ univariateML_metadata$mlinvweibull <- list(
   "default" = c(2, 3)
 )
 
-mlinvweibull_ <- \(x, ...) {
+mlinvweibull_ <- function(x, ...) {
   y <- 1 / x
   n <- length(x)
 

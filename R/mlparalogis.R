@@ -23,7 +23,7 @@
 #' @references Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.
 #' Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley.
 #' @export
-mlparalogis <- \(x, na.rm = FALSE, ...) {}
+mlparalogis <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlparalogis <- list(
   "model" = "Paralogistic",
@@ -33,14 +33,14 @@ univariateML_metadata$mlparalogis <- list(
   "default" = c(1)
 )
 
-mlparalogis_ <- \(x, ...) {
+mlparalogis_ <- function(x, ...) {
   n <- length(x)
   log_x <- log(x)
   log_x2 <- log_x^2
   s <- sum(log_x) / n
   n <- length(x)
 
-  f_over_df <- \(shape) {
+  f_over_df <- function(shape) {
     x_shape <- x^shape
     x_div <- x_shape / (1 + x_shape)
     r <- sum(log(1 + x_shape)) / n
@@ -57,7 +57,7 @@ mlparalogis_ <- \(x, ...) {
   dots <- list(...)
   if (!is.null(dots$shape0)) shape0 <- dots$shape0
   shape <- newton_raphson_1d(f_over_df, shape0)
-  rn <- \(shape) sum(log(1 + x^shape))
+  rn <- function(shape) sum(log(1 + x^shape))
   loglik <- 2 * n * log(shape) + (shape - 1) * n * s - (shape + 1) * rn(shape)
 
   list(estimates = c(shape), logLik = loglik)

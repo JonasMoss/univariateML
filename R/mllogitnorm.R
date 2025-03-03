@@ -26,7 +26,7 @@
 #' @references Atchison, J., & Shen, S. M. (1980). Logistic-normal
 #' distributions: Some properties and uses. Biometrika, 67(2), 261-272.
 #' @export
-mllogitnorm <- \(x, na.rm = FALSE, ...) {}
+mllogitnorm <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mllogitnorm <- list(
   "model" = "LogitNormal",
@@ -36,7 +36,7 @@ univariateML_metadata$mllogitnorm <- list(
   "default" = c(2, 3)
 )
 
-mllogitnorm_ <- \(x, ...) {
+mllogitnorm_ <- function(x, ...) {
   n <- length(x)
   y <- stats::qlogis(x)
   mu <- mean(y)

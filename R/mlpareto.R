@@ -25,7 +25,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
 #' @export
-mlpareto <- \(x, na.rm = FALSE, ...) {}
+mlpareto <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlpareto <- list(
   "model" = "Pareto",
@@ -35,7 +35,7 @@ univariateML_metadata$mlpareto <- list(
   "default" = c(1, 2)
 )
 
-mlpareto_ <- \(x, ...) {
+mlpareto_ <- function(x, ...) {
   m <- mean(log(x))
   b <- min(x)
   a <- 1 / (m - log(b))

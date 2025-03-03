@@ -26,7 +26,7 @@
 #' @seealso [Gumbel][extraDistr::Gumbel] for the Gumbel density.
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
 #' @export
-mlgumbel <- \(x, na.rm = FALSE, ...) {}
+mlgumbel <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlgumbel <- list(
   "model" = "Gumbel",
@@ -36,7 +36,7 @@ univariateML_metadata$mlgumbel <- list(
   "default" = c(3, 3)
 )
 
-mlgumbel_ <- \(x, ...) {
+mlgumbel_ <- function(x, ...) {
   x_bar <- sum(x) / length(x)
   estimates <- mlgumbel_estimate(x - x_bar, ...)
   mu <- estimates[1] + x_bar
@@ -45,9 +45,9 @@ mlgumbel_ <- \(x, ...) {
   list(estimates = c(mu = mu, sigma = sigma), logLik = logLik)
 }
 
-mlgumbel_estimate <- \(x, ...) {
+mlgumbel_estimate <- function(x, ...) {
   x2 <- x^2
-  f_over_df <- \(sigma0) {
+  f_over_df <- function(sigma0) {
     neg_sigma_inv <- -1 / sigma0
     exps <- exp(x * neg_sigma_inv)
     psi0 <- sum(exps)

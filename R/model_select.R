@@ -51,10 +51,11 @@
 #'
 #' @export
 
-model_select <- \(x, models = univariateML_models,
-  criterion = c("AIC", "BIC", "logLik"),
-  na.rm = FALSE, type = c("both", "discrete", "continuous"),
-  return = c("best", "all"), ...) {
+model_select <- function(
+    x, models = univariateML_models,
+    criterion = c("AIC", "BIC", "logLik"),
+    na.rm = FALSE, type = c("both", "discrete", "continuous"),
+    return = c("best", "all"), ...) {
   return <- match.arg(return)
   type <- match.arg(type)
 
@@ -65,10 +66,10 @@ model_select <- \(x, models = univariateML_models,
   check_models(models)
   models <- filter_models(models, type)
 
-  mlf <- sapply(paste0("ml", models), \(x) eval(parse(text = x)))
-  fits <- lapply(mlf, \(f) try(f(x, na.rm = na.rm), silent = TRUE))
+  mlf <- sapply(paste0("ml", models), function(x) eval(parse(text = x)))
+  fits <- lapply(mlf, function(f) try(f(x, na.rm = na.rm), silent = TRUE))
 
-  error_inds <- sapply(fits, \(fit) inherits(fit, "try-error"))
+  error_inds <- sapply(fits, function(fit) inherits(fit, "try-error"))
   if (all(error_inds)) {
     error_msgs <- sapply(fits[error_inds], as.character)
     details <- paste0("(", names(error_msgs), ") ", error_msgs)
@@ -111,15 +112,15 @@ model_select <- \(x, models = univariateML_models,
   fits
 }
 
-filter_models <- \(models, type) {
+filter_models <- function(models, type) {
   if (type == "both") {
     return(models)
   }
   type_ <- if (type == "continuous") "R" else "Z"
-  Filter(\(model) univariateML_metadata[[paste0("ml", model)]]$support@type == type_, models)
+  Filter(function(model) univariateML_metadata[[paste0("ml", model)]]$support@type == type_, models)
 }
 
-check_models <- \(models) {
+check_models <- function(models) {
   is_implemented <- models %in% univariateML_models
   if (any(!is_implemented)) {
     stop(

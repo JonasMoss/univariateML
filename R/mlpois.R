@@ -23,7 +23,7 @@
 #' @references
 #' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
-mlpois <- \(x, na.rm = FALSE, ...) {}
+mlpois <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlpois <- list(
   "model" = "Poisson",
@@ -33,7 +33,7 @@ univariateML_metadata$mlpois <- list(
   "default" = 2
 )
 
-mlpois_ <- \(x, ...) {
+mlpois_ <- function(x, ...) {
   n <- length(x)
   lambda <- mean(x)
   logLik <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))

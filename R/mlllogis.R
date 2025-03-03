@@ -31,7 +31,7 @@
 #' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
 #' actuarial science. Journal of Statistical Software, 25(7), 1-37.
 #' @export
-mlllogis <- \(x, na.rm = FALSE, ...) {}
+mlllogis <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlllogis <- list(
   "model" = "Loglogistic",
@@ -41,7 +41,7 @@ univariateML_metadata$mlllogis <- list(
   "default" = c(1, 2)
 )
 
-mlllogis_ <- \(x, ...) {
+mlllogis_ <- function(x, ...) {
   y <- log(x)
   estimates <- mllogis_(y)$estimates
   estimates[1] <- exp(-estimates[1])

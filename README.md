@@ -131,7 +131,7 @@ x <- rbeta(500, 2, 7)
 
 microbenchmark::microbenchmark(
   univariateML = univariateML::mlbeta(x),
-  naive = nlm(\(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1))
+  naive = nlm(function(p) -sum(dbeta(x, p[1], p[2], log = TRUE)), p = c(1, 1))
 )
 #> Unit: microseconds
 #>          expr    min      lq     mean median     uq     max neval

@@ -9,7 +9,7 @@
 #' @return A merged list where conflicts are solved in favor
 #' of y. Does not preserve ordering.
 
-listmerge <- \(x, y, type = c("merge", "template")) {
+listmerge <- function(x, y, type = c("merge", "template")) {
   type <- match.arg(type)
 
   if (length(y) == 0) {
@@ -39,8 +39,8 @@ listmerge <- \(x, y, type = c("merge", "template")) {
 #' @param dens `ml***` string.
 #' @param n Number of samples to take.
 #' @keywords internal
-simulate_default <- \(dens, n) {
-  to_rdist <- \(x) {
+simulate_default <- function(dens, n) {
+  to_rdist <- function(x) {
     strings <- strsplit(x, "::")[[1]]
     substring(strings[2], first = 1, last = 1) <- "r"
     paste0(strings[1], "::", strings[2])
@@ -58,7 +58,7 @@ simulate_default <- \(dens, n) {
 #' @param ... Optional `iterlim` and `reltol` parameters.
 #' @return Newton--Raphson estimate.
 #' @keywords internal
-newton_raphson_1d <- \(f_over_df, param0, ...) {
+newton_raphson_1d <- function(f_over_df, param0, ...) {
   dots <- list(...)
   reltol <- if (!is.null(dots$reltol)) dots$reltol else .Machine$double.eps^0.25
   iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
@@ -85,7 +85,7 @@ newton_raphson_1d <- \(f_over_df, param0, ...) {
 #' @param name Name of default starting value.
 #' @param ... Parameter list containing an element `name`.
 #' @return Default value if `name` is not present
-get_start <- \(default, name, ...) {
+get_start <- function(default, name, ...) {
   dots <- list(...)
   if (!is.null(dots[[name]])) {
     return(dots[[name]])
@@ -105,7 +105,7 @@ get_start <- \(default, name, ...) {
 #' @param y Values to invert.
 #' @references Batir, N. (2017). Inequalities for the inverses of the polygamma functions. arXiv. http://arxiv.org/abs/1705.06547
 
-inverse_digamma <- \(y) {
+inverse_digamma <- function(y) {
   if (y < -500) {
     stop("y must be greater than -500")
   }

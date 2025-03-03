@@ -5,7 +5,7 @@
 #' @param points Boolean; should points be plotted by default?
 #' @keywords internal
 
-plot_wrangler <- \(x, range, points = FALSE, kind, ...) {
+plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
   continuous <- if (is.null(attr(x, "continuous"))) TRUE else attr(x, "continuous")
   support <- attr(x, "support")
   if (is.null(range)) {
@@ -79,7 +79,7 @@ plot_wrangler <- \(x, range, points = FALSE, kind, ...) {
 #' rug(datasets::precip)
 #' @export
 #'
-plot.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
+plot.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
   kind <- match.arg(kind)
   args <- plot_wrangler(x, range, points = FALSE, kind = kind, ...)
   do.call(graphics::plot, args)
@@ -88,7 +88,7 @@ plot.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
 
 #' @export
 #' @rdname plot.univariateML
-lines.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
+lines.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
   kind <- match.arg(kind)
   args <- plot_wrangler(x, range, points = FALSE, kind = kind, ...)
   do.call(graphics::lines, args)
@@ -97,7 +97,7 @@ lines.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
 
 #' @export
 #' @rdname plot.univariateML
-points.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
+points.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
   kind <- match.arg(kind)
   args <- plot_wrangler(x, range, points = TRUE, kind = kind, ...)
   do.call(graphics::points, args)
@@ -105,7 +105,7 @@ points.univariateML <- \(x, range = NULL, kind = c("d", "p", "q"), ...) {
 }
 
 #' @export
-logLik.univariateML <- \(object, ...) {
+logLik.univariateML <- function(object, ...) {
   val <- attr(object, "logLik")
   attr(val, "nobs") <- attr(object, "n")
   attr(val, "df") <- length(object)
@@ -114,12 +114,12 @@ logLik.univariateML <- \(object, ...) {
 }
 
 #' @export
-coef.univariateML <- \(object, ...) {
+coef.univariateML <- function(object, ...) {
   stats::setNames(as.numeric(object), names(object))
 }
 
 #' @export
-summary.univariateML <- \(object, ...) {
+summary.univariateML <- function(object, ...) {
   data.name <- deparse(as.list(attr(object, "call"))$x)
   digits <- list(...)$digits
   support <- attr(object, "support")
@@ -138,7 +138,7 @@ summary.univariateML <- \(object, ...) {
 }
 
 #' @export
-print.univariateML <- \(x, ...) {
+print.univariateML <- function(x, ...) {
   digits <- list(...)$digits
   if (is.null(digits)) digits <- 4
   cat("Maximum likelihood estimates for the", attr(x, "model"), "model \n")
@@ -178,11 +178,12 @@ print.univariateML <- \(x, ...) {
 #' confint(object) # 95% confidence interval for mean and shape
 #' confint(object, "mean") # 95% confidence interval for the mean parameter
 #' # confint(object, "variance") # Fails since 'variance isn't a main parameter.
-confint.univariateML <- \(object,
-  parm = NULL,
-  level = 0.95,
-  Nreps = 1000,
-  ...) {
+confint.univariateML <- function(
+    object,
+    parm = NULL,
+    level = 0.95,
+    Nreps = 1000,
+    ...) {
   if (is.null(parm)) parm <- names(object)
 
   assertthat::assert_that(all(parm %in% names(object)),
@@ -192,7 +193,7 @@ confint.univariateML <- \(object,
 
   indices <- which(names(object) %in% parm)
 
-  map <- \(x) x[indices]
+  map <- function(x) x[indices]
 
   probs <- c((1 - level) / 2, 1 - (1 - level) / 2)
 

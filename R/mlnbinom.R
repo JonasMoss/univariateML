@@ -25,7 +25,7 @@
 #' @references
 #' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
-mlnbinom <- \(x, na.rm = FALSE, ...) {}
+mlnbinom <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlnbinom <- list(
   "model" = "Negative binomial",
@@ -35,7 +35,7 @@ univariateML_metadata$mlnbinom <- list(
   "default" = c(10, 0.3)
 )
 
-mlnbinom_ <- \(x, ...) {
+mlnbinom_ <- function(x, ...) {
   dots <- list(...)
   n <- length(x)
   x_bar <- mean(x)
@@ -51,7 +51,7 @@ mlnbinom_ <- \(x, ...) {
         stop("The maximum likelihood estimator does not exists for underdispersed data, but converges to a Poisson. Use `mlpois` instead.")
       }
 
-      f_over_df <- \(size) {
+      f_over_df <- function(size) {
         prob <- size / (x_bar + size)
         dprob <- x_bar / (size^2 + x_bar * size)
         f <- sum(digamma(x + size)) - n * digamma(size) + n * log(prob)

@@ -229,7 +229,7 @@ we will calculate two 90% confidence intervals for the mean.
 ``` r
 # Calculate two-sided 90% confidence intervals for the mean of a Weibull.
 bootstrapml(mlweibull(egypt$age),
-  map = \(x) x[2] * gamma(1 + 1 / x[1]),
+  map = function(x) x[2] * gamma(1 + 1 / x[1]),
   probs = c(0.05, 0.95)
 )
 ```
@@ -242,7 +242,7 @@ bootstrapml(mlweibull(egypt$age),
 ``` r
 # Calculate two-sided 90% confidence intervals for the mean of a Gamma.
 bootstrapml(mlgamma(egypt$age),
-  map = \(x) x[1] / x[2],
+  map = function(x) x[1] / x[2],
   probs = c(0.05, 0.95)
 )
 ```
@@ -259,7 +259,7 @@ for instance the median:
 ``` r
 # Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
 bootstrapml(mlweibull(egypt$age),
-  map = \(x) qweibull(0.5, x[1], x[2]),
+  map = function(x) qweibull(0.5, x[1], x[2]),
   probs = c(0.05, 0.95)
 )
 ```
@@ -271,7 +271,7 @@ bootstrapml(mlweibull(egypt$age),
 
 ``` r
 bootstrapml(mlgamma(egypt$age),
-  map = \(x) qgamma(0.5, x[1], x[2]),
+  map = function(x) qgamma(0.5, x[1], x[2]),
   probs = c(0.05, 0.95)
 )
 ```
@@ -287,7 +287,7 @@ We can also plot the bootstrap samples.
 ``` r
 hist(
   bootstrapml(mlweibull(egypt$age),
-    map = \(x) x[2] * gamma(1 + 1 / x[1]),
+    map = function(x) x[2] * gamma(1 + 1 / x[1]),
     reducer = identity
   ),
   main = "Bootstrap Samples of the Mean",

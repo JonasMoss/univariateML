@@ -25,7 +25,7 @@
 #' of Inverted Gamma Variables". Kybernetika. 37 (1): 79<U+2013>90
 #'
 #' @export
-mlinvgamma <- \(x, na.rm = FALSE, ...) {}
+mlinvgamma <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlinvgamma <- list(
   "model" = "InvGamma",
@@ -35,7 +35,7 @@ univariateML_metadata$mlinvgamma <- list(
   "default" = c(3, 4)
 )
 
-mlinvgamma_ <- \(x, ...) {
+mlinvgamma_ <- function(x, ...) {
   gamma_ml <- mlgamma_(1 / x, ...)
   alpha <- gamma_ml$estimates[1]
   beta <- gamma_ml$estimates[2]

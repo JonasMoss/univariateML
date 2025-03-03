@@ -27,7 +27,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
 #' @export
-mlburr <- \(x, na.rm = FALSE, ...) {}
+mlburr <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlburr <- list(
   "model" = "Burr",
@@ -38,7 +38,7 @@ univariateML_metadata$mlburr <- list(
 )
 
 
-mlburr_ <- \(x, ...) {
+mlburr_ <- function(x, ...) {
   if (all(x >= 1)) {
     stop("The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlburr` to fit a Pareto distribution.")
   }
@@ -46,7 +46,7 @@ mlburr_ <- \(x, ...) {
   n <- length(x)
   log_x <- log(x)
   lx_sum <- sum(log_x)
-  f_over_df <- \(c) {
+  f_over_df <- function(c) {
     x_c <- x^c
     x_c_div <- x_c / (x_c + 1)
     g <- sum(log(1 + x_c))

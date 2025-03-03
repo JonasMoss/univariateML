@@ -28,7 +28,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
 #' @export
-mlweibull <- \(x, na.rm = FALSE, ...) {}
+mlweibull <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlweibull <- list(
   "model" = "Weibull",
@@ -38,7 +38,7 @@ univariateML_metadata$mlweibull <- list(
   "default" = c(3, 4)
 )
 
-mlweibull_ <- \(x, ...) {
+mlweibull_ <- function(x, ...) {
   log_x <- -log(x)
   s <- -sum(log_x) / length(x)
   estimates <- mlgumbel_estimate(-log(x) + s, ...)

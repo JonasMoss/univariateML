@@ -27,7 +27,7 @@
 #' @examples
 #' mlcauchy(airquality$Temp)
 #' @export
-mlcauchy <- \(x, na.rm = FALSE, ...) {}
+mlcauchy <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlcauchy <- list(
   "model" = "Cauchy",
@@ -37,12 +37,12 @@ univariateML_metadata$mlcauchy <- list(
   "default" = c(0, 1)
 )
 
-mlcauchy_ <- \(x, ...) {
+mlcauchy_ <- function(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))
   start <- c(m, mad)
 
-  f <- \(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
+  f <- function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
   values <- suppressWarnings(stats::nlm(f = f, p = start))
 
   list(

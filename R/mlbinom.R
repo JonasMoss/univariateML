@@ -54,7 +54,7 @@
 #' DasGupta, A., & Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1-2), 391-404. https://doi.org/10.1016/j.jspi.2004.02.019
 
 
-mlbinom <- \(x, na.rm = FALSE, ...) {}
+mlbinom <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlbinom <- list(
   "model" = "Binomial",
@@ -64,7 +64,7 @@ univariateML_metadata$mlbinom <- list(
   "default" = c(10, 0.5)
 )
 
-mlbinom_ <- \(x, ...) {
+mlbinom_ <- function(x, ...) {
   dots <- list(...)
 
   n <- length(x)
@@ -73,7 +73,7 @@ mlbinom_ <- \(x, ...) {
   counts <- Rfast::Table(x)
   uniques <- as.numeric(names(counts))
 
-  log_likelihood <- \(size) {
+  log_likelihood <- function(size) {
     n * x_bar * log(x_bar) +
       n * (size - x_bar) * log(size - x_bar) -
       n * size * log(size) +
@@ -91,7 +91,7 @@ mlbinom_ <- \(x, ...) {
     stop("The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument.")
   }
 
-  f_over_df <- \(size) {
+  f_over_df <- function(size) {
     size_m_x <- size - x_bar
     f <- n * (log(size_m_x) - log(size)) +
       n * digamma(size + 1) -

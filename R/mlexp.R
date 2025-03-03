@@ -25,7 +25,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
 #' @export
-mlexp <- \(x, na.rm = TRUE, ...) {}
+mlexp <- function(x, na.rm = TRUE, ...) {}
 
 univariateML_metadata$mlexp <- list(
   "model" = "Exponential",
@@ -35,7 +35,7 @@ univariateML_metadata$mlexp <- list(
   "default" = 1
 )
 
-mlexp_ <- \(x, ...) {
+mlexp_ <- function(x, ...) {
   estimates <- 1 / mean(x)
   logLik <- length(x) * (log(estimates) - 1)
   list(estimates = estimates, logLik = logLik)

@@ -29,7 +29,7 @@
 #' @seealso [Gompertz][extraDistr::Gompertz] for the Gompertz density.
 #' @references Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision. MPIDR WORKING PAPER WP 2012-008. https://www.demogr.mpg.de/papers/working/wp-2012-008.pdf
 #' @export
-mlgompertz <- \(x, na.rm = FALSE, ...) {}
+mlgompertz <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlgompertz <- list(
   "model" = "Gompertz",
@@ -39,7 +39,7 @@ univariateML_metadata$mlgompertz <- list(
   "default" = c(1, 1)
 )
 
-mlgompertz_ <- \(x, ...) {
+mlgompertz_ <- function(x, ...) {
   n <- length(x)
   x_sum <- sum(x)
   x_var <- stats::var(x) * (n - 1) / n
@@ -47,7 +47,7 @@ mlgompertz_ <- \(x, ...) {
     stop("The maximum likelihood estimator of the b parameter Gompertz distribution does not exist since the data is overdispersed. The exponential distribution will yield a better fit.")
   }
 
-  f_over_df <- \(b) {
+  f_over_df <- function(b) {
     exp_bx <- exp(b * x)
     sum_bx <- sum(exp_bx)
     sum_bx_x <- sum(x * exp_bx)

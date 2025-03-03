@@ -23,7 +23,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
 #' @export
-mlunif <- \(x, na.rm = FALSE, ...) {}
+mlunif <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlunif <- list(
   "model" = "Uniform",
@@ -33,7 +33,7 @@ univariateML_metadata$mlunif <- list(
   "default" = c(0, 1)
 )
 
-mlunif_ <- \(x, ...) {
+mlunif_ <- function(x, ...) {
   max_ <- max(x)
   min_ <- min(x)
   list(estimates = c(min_, max_), logLik = -length(x) * log(max_ - min_))

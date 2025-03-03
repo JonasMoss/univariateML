@@ -1,6 +1,6 @@
 x <- rgamma(100, 100, 0.1)
-#x <- rbeta(100, 2, 7)
-#x <- extraDistr::rgumbel(100, 1, 1)
+# x <- rbeta(100, 2, 7)
+# x <- extraDistr::rgumbel(100, 1, 1)
 mlgumbel_(x)
 
 res <- replicate(10000, {
@@ -17,19 +17,19 @@ microbenchmark::microbenchmark(mlgumbel_2(x), mlgumbel_(x))
 y <- seq(0.01, 0.25, 0.01)
 mean(sapply(y, g))
 
-#mu + beta*digamma(1) = mean(x)
-#mu - beta*log(log(2)) = median(x)
+# mu + beta*digamma(1) = mean(x)
+# mu - beta*log(log(2)) = median(x)
 
-#beta*digamma(1) + median(x) + beta * log(log(2) = mean(x)
-beta <- (mean(x) -  median(x)) / (digamma(1) + log(log(2)))
+# beta*digamma(1) + median(x) + beta * log(log(2) = mean(x)
+beta <- (mean(x) - median(x)) / (digamma(1) + log(log(2)))
 
 # mu = qnorm(0.25) + beta*log(-log(0.25))
 # qnorm(0.75) - qnorm(0.25) = beta*log(-log(0.25)) -  beta*log(-log(0.75))
 
-g <- \(p) (quantile(x, p) - quantile(x, 1-p))/(log(-log(1-p)) - log(-log(p)))
+g <- function(p) (quantile(x, p) - quantile(x, 1 - p)) / (log(-log(1 - p)) - log(-log(p)))
 
 
-f <- Vectorize(\(shape) {
+f <- Vectorize(function(shape) {
   shape_mean <- mean(x^shape)
   scale <- shape_mean^(1 / shape)
   sum(dweibull(x, shape, scale, log = TRUE))
@@ -42,7 +42,7 @@ y <- -log(x)
 
 
 beta <- sqrt(var(x) * 6) / pi
-mu <- mean(x) + beta*digamma(1)
+mu <- mean(x) + beta * digamma(1)
 
 
 x1 <- extraDistr::rgumbel(100, 100, 0.001)
@@ -53,7 +53,7 @@ mlgumbel(x1 - mean(x1))[1] + mean(x1)
 x <- extraDistr::rgumbel(1000, 100, 0.001)
 
 hist(x)
-hist((x - mu)/beta)
+hist((x - mu) / beta)
 hist(extraDistr::rgumbel(1000, 0, 1))
 
 x <- extraDistr::rgumbel(100, 0.01, 0.001)
@@ -61,17 +61,17 @@ mlgumbel_(x)
 mlgumbel_2(x)
 microbenchmark::microbenchmark(mlgumbel_(x), mlgumbel_2(x), mlgumbel_3(x), times = 10000)
 
-mu <- mean(x) + beta*digamma(1)
+mu <- mean(x) + beta * digamma(1)
 beta <- sqrt(var(x) * 6) / pi
 mlgumbel(x)
-mlgumbel((x - mu)/beta)
+mlgumbel((x - mu) / beta)
 
-mu <- mean(x) + beta*digamma(1)
-mlgumbel((x - mu)/beta)[2] * beta
-mlgumbel((x - mu)/beta)[1]*beta + mu
+mu <- mean(x) + beta * digamma(1)
+mlgumbel((x - mu) / beta)[2] * beta
+mlgumbel((x - mu) / beta)[1] * beta + mu
 mlgumbel(x)
 
-mlgumbel_2 <- \(x, ...) {
+mlgumbel_2 <- function(x, ...) {
   x_bar <- sum(x) / length(x)
   sd_x <- sd(x)
   beta <- sd_x * sqrt(6) / pi
@@ -86,8 +86,8 @@ mlgumbel_2 <- \(x, ...) {
   list(estimates = c(mu = mu, sigma = sigma), logLik = logLik)
 }
 
-mlgumbel_estimate2 <- \(x, ...) {
-  f_over_df <- \(sigma0) {
+mlgumbel_estimate2 <- function(x, ...) {
+  f_over_df <- function(sigma0) {
     inv_sigma0 <- 1 / sigma0
     exps <- exp(-x * inv_sigma0)
     psi0 <- sum(exps)
@@ -103,7 +103,7 @@ mlgumbel_estimate2 <- \(x, ...) {
 }
 
 
-mlgumbel_3 <- \(x, ...) {
+mlgumbel_3 <- function(x, ...) {
   x_bar <- sum(x) / length(x)
   estimates <- mlgumbel_estimate3(x - x_bar, ...)
   mu <- estimates[1] + x_bar
@@ -112,8 +112,8 @@ mlgumbel_3 <- \(x, ...) {
   list(estimates = c(mu = mu, sigma = sigma), logLik = logLik)
 }
 
-mlgumbel_estimate3 <- \(x, ...) {
-  f_over_df <- \(sigma0) {
+mlgumbel_estimate3 <- function(x, ...) {
+  f_over_df <- function(sigma0) {
     inv_sigma0 <- 1 / sigma0
     exps <- exp(-x * inv_sigma0)
     psi0 <- sum(exps)
@@ -131,10 +131,3 @@ mlgumbel_estimate3 <- \(x, ...) {
   mu <- -sigma * log(sum(exp(-x / sigma)) / length(x))
   c(mu, sigma)
 }
-
-
-
-
-
-
-

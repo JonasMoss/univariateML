@@ -25,7 +25,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
 #' @export
-mllaplace <- \(x, na.rm = FALSE, ...) {}
+mllaplace <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mllaplace <- list(
   "model" = "Laplace",
@@ -35,7 +35,7 @@ univariateML_metadata$mllaplace <- list(
   "default" = c(0, 1)
 )
 
-mllaplace_ <- \(x, ...) {
+mllaplace_ <- function(x, ...) {
   mu <- stats::median(x)
   sigma <- mean(abs(x - mu))
   estimates <- c(mu = mu, sigma = sigma)

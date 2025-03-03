@@ -9,17 +9,17 @@ medium_data <- extraDistr::rpower(1000, 9, 11)
 epsilon <- .Machine$double.eps^0.5
 
 ## Checks if the ML is correct.
-mle1 <- suppressWarnings(nlm(\(p) {
+mle1 <- suppressWarnings(nlm(function(p) {
   -sum(extraDistr::dpower(small_data, max(small_data) + epsilon, p, log = TRUE))
 }, p = 1))
 
-mle2 <- suppressWarnings(nlm(\(p) {
+mle2 <- suppressWarnings(nlm(function(p) {
   -sum(extraDistr::dpower(tiny_data, max(tiny_data) + epsilon, p,
     log = TRUE
   ))
 }, p = 7))
 
-mle3 <- suppressWarnings(nlm(\(p) {
+mle3 <- suppressWarnings(nlm(function(p) {
   -sum(extraDistr::dpower(medium_data, max(medium_data) + epsilon, p,
     log = TRUE
   ))

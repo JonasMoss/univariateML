@@ -39,7 +39,7 @@
 #' @seealso [Logarithmic series][extraDistr::dlgser] for the density.
 #' @export
 
-mllgser <- \(x, na.rm = FALSE, ...) {}
+mllgser <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mllgser <- list(
   "model" = "Logarithmic series",
@@ -49,7 +49,7 @@ univariateML_metadata$mllgser <- list(
   "default" = 0.9
 )
 
-mllgser_ <- \(x, ...) {
+mllgser_ <- function(x, ...) {
   if (sum(x) == length(x)) {
     stop("All observations equals 1; the maximum likelihood estimator does not exist.")
   }

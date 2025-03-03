@@ -23,7 +23,7 @@
 #' @references Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
 #'     Tails and Skewness, Preprint.
 #' @export
-mlsnorm <- \(x, na.rm = FALSE, ...) {}
+mlsnorm <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlsnorm <- list(
   "model" = "Skew Normal",
@@ -33,7 +33,7 @@ univariateML_metadata$mlsnorm <- list(
   "default" = c(0, 1, 3)
 )
 
-mlsnorm_ <- \(x, ...) {
+mlsnorm_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::snormFit(x))
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }

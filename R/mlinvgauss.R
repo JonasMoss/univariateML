@@ -26,7 +26,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
 #' @export
-mlinvgauss <- \(x, na.rm = FALSE, ...) {}
+mlinvgauss <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlinvgauss <- list(
   "model" = "Inverse Gaussian",
@@ -36,7 +36,7 @@ univariateML_metadata$mlinvgauss <- list(
   "default" = c(3, 4)
 )
 
-mlinvgauss_ <- \(x, ...) {
+mlinvgauss_ <- function(x, ...) {
   n <- length(x)
   mu <- mean(x)
   lambda <- 1 / (mean(1 / x) - 1 / mu)

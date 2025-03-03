@@ -23,7 +23,7 @@
 #' @references Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
 #'     Tails and Skewness, Preprint.
 #' @export
-mlsstd <- \(x, na.rm = FALSE, ...) {}
+mlsstd <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlsstd <- list(
   "model" = "Skew Student-t",
@@ -33,7 +33,7 @@ univariateML_metadata$mlsstd <- list(
   "default" = c(0, 1, 3, 2)
 )
 
-mlsstd_ <- \(x, ...) {
+mlsstd_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::sstdFit(x))
   list(estimates = fit[["estimate"]], logLik = -fit$minimum)
 }

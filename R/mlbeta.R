@@ -26,7 +26,7 @@
 #' @examples
 #' AIC(mlbeta(USArrests$Rape / 100))
 #' @export
-mlbeta <- \(x, na.rm = FALSE, ...) {}
+mlbeta <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlbeta <- list(
   "model" = "Beta",
@@ -36,7 +36,7 @@ univariateML_metadata$mlbeta <- list(
   "defaults" = c(2, 3)
 )
 
-mlbeta_ <- \(x, ...) {
+mlbeta_ <- function(x, ...) {
   s <- mean(log(x))
   r <- mean(log(1 - x))
   g1 <- exp(s)

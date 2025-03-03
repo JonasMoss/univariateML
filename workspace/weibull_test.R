@@ -32,12 +32,12 @@ microbenchmark::microbenchmark(mlweibull_(x), mlgumbel_(-log(x)),mlbeta(y), mlga
 microbenchmark::microbenchmark(mlweibull1_(x))
 
 
-mlweibull1_ <- \(x, ...) {
+mlweibull1_ <- function(x, ...) {
   n <- length(x)
   log_x <- log(x)
   l_hat <- mean(log_x)
 
-  iterate <- \(shape0) {
+  iterate <- function(shape0) {
     #lshape0 <- log(shape0)
     #x_shape0 <- exp(log_x*lshape0)
     x_shape0 <- x^shape0
@@ -57,14 +57,14 @@ mlweibull1_ <- \(x, ...) {
   newton_raphson_1d(iterate, 1.2825 / sd(log_x))
 }
 
-mlweibull2_ <- \(x, ...) {
+mlweibull2_ <- function(x, ...) {
   n <- length(x)
   log_x <- log(x)
   log_xsq <- log_x^2
   log_xcube <- log_x^3
   l_hat <- mean(log_x)
 
-  iterate <- \(shape0) {
+  iterate <- function(shape0) {
     x_shape0 <- x^shape0
 
     psi0 <- mean(x_shape0)
@@ -79,7 +79,7 @@ mlweibull2_ <- \(x, ...) {
 
     h <- f1 / f2
 
-    \(step) {
+    function(step) {
       if (step) {
         psi3 <- mean(x_shape0 * log_xcube)
         lpsi3 <- psi3 / psi0 - 3*lpsi2*lpsi1 - lpsi1^3
@@ -93,7 +93,7 @@ mlweibull2_ <- \(x, ...) {
   iter(iterate, 1.2825 / sd(log_x))
 }
 
-iter <- \(iterate, param0) {
+iter <- function(iterate, param0) {
   reltol <- .Machine$double.eps^0.25
   iterlim <- 100
 
@@ -142,7 +142,7 @@ microbenchmark::microbenchmark(mlweibull1_(x), mlweibull2_(x))
 
 
 
-f_over_df <- \(shape0) {
+f_over_df <- function(shape0) {
   x_shape0 <- x^shape0
   shape0_lsum <- sum(x_shape0 * log_x)
   shape0_lsum_sqr <- sum(x_shape0 * log_x^2)

@@ -26,7 +26,7 @@
 #' @references
 #' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
-mlzipf <- \(x, na.rm = FALSE, ...) {}
+mlzipf <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlzipf <- list(
   "model" = "Zipf",
@@ -36,7 +36,7 @@ univariateML_metadata$mlzipf <- list(
   "default" = c(3, 0.5)
 )
 
-mlzipf_ <- \(x, ...) {
+mlzipf_ <- function(x, ...) {
   N <- max(x)
   n <- length(x)
   sum_lx <- sum(log(x))
@@ -49,7 +49,7 @@ mlzipf_ <- \(x, ...) {
     return(list(estimates = c(N, 1), logLik = 0))
   }
 
-  f_over_df <- \(shape0) {
+  f_over_df <- function(shape0) {
     div_seq_shape0 <- div_seq^shape0
     sum_shape <- sum(div_seq_shape0)
     sum_log_hs <- sum(div_seq_shape0 * log_seq)

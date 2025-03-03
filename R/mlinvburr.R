@@ -26,7 +26,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
 #' Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
 #' @export
-mlinvburr <- \(x, na.rm = FALSE, ...) {}
+mlinvburr <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlinvburr <- list(
   "model" = "Inverse Burr",
@@ -36,7 +36,7 @@ univariateML_metadata$mlinvburr <- list(
   "default" = c(1, 2)
 )
 
-mlinvburr_ <- \(x, ...) {
+mlinvburr_ <- function(x, ...) {
   params <- mlburr_(x)$estimates
   list(
     estimates = params,

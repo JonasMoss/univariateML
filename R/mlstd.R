@@ -23,7 +23,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
 #' @export
-mlstd <- \(x, na.rm = FALSE, ...) {}
+mlstd <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlstd <- list(
   "model" = "Student-t",
@@ -33,7 +33,7 @@ univariateML_metadata$mlstd <- list(
   "default" = c(0, 1, 3)
 )
 
-mlstd_ <- \(x, ...) {
+mlstd_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::stdFit(x))
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }

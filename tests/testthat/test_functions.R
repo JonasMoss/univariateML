@@ -55,11 +55,11 @@ for (i in seq_along(length(dists))) {
   )
 
   expect_equal(
-    (\() {
+    (function() {
       set.seed(seed)
       rml(1, obj)
     })(),
-    (\() {
+    (function() {
       set.seed(seed)
       do.call(
         paste0("r", dist),

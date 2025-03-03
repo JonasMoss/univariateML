@@ -26,7 +26,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
 #' @export
-mllnorm <- \(x, na.rm = FALSE, ...) {}
+mllnorm <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mllnorm <- list(
   "model" = "Lognormal",
@@ -36,7 +36,7 @@ univariateML_metadata$mllnorm <- list(
   "default" = c(0, 1)
 )
 
-mllnorm_ <- \(x, ...) {
+mllnorm_ <- function(x, ...) {
   y <- log(x)
   n <- length(x)
   meanlog <- mean(y)

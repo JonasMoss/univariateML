@@ -21,7 +21,7 @@
 #' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @seealso [Zero-inflated Poisson distribution][extraDistr::dzip] for the density.
 #' @export
-mlzip <- \(x, na.rm = FALSE, ...) {}
+mlzip <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlzip <- list(
   "model" = "Zero-inflated Poisson",
@@ -31,7 +31,7 @@ univariateML_metadata$mlzip <- list(
   "default" = c(1, 0.5)
 )
 
-mlzip_ <- \(x, ...) {
+mlzip_ <- function(x, ...) {
   r_0 <- mean(x == 0)
   x_bar <- mean(x)
 

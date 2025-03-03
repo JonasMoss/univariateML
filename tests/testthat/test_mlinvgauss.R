@@ -9,19 +9,19 @@ large_data <- actuar::rinvgauss(10000, 20, 13)
 
 ## Checks if the ML is correct.
 
-mle1 <- suppressWarnings(nlm(\(p) {
+mle1 <- suppressWarnings(nlm(function(p) {
   -sum(actuar::dinvgauss(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(1, 7)))
 
-mle2 <- suppressWarnings(nlm(\(p) {
+mle2 <- suppressWarnings(nlm(function(p) {
   -sum(actuar::dinvgauss(small_data, p[1], p[2], log = TRUE))
 }, p = c(10, 3)))
 
-mle3 <- suppressWarnings(nlm(\(p) {
+mle3 <- suppressWarnings(nlm(function(p) {
   -sum(actuar::dinvgauss(medium_data, p[1], p[2], log = TRUE))
 }, p = c(1 / 2, 2)))
 
-mle4 <- suppressWarnings(nlm(\(p) {
+mle4 <- suppressWarnings(nlm(function(p) {
   -sum(actuar::dinvgauss(large_data, p[1], p[2], log = TRUE))
 }, p = c(20, 13)))
 

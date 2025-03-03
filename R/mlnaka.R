@@ -33,7 +33,7 @@
 #' Distributions, Volume 1, Chapter 17. Wiley, New York.
 #'
 #' @export
-mlnaka <- \(x, na.rm = TRUE, ...) {}
+mlnaka <- function(x, na.rm = TRUE, ...) {}
 
 univariateML_metadata$mlnaka <- list(
   "model" = "Nakagami",
@@ -43,7 +43,7 @@ univariateML_metadata$mlnaka <- list(
   "default" = c(2, 3)
 )
 
-mlnaka_ <- \(x, ...) {
+mlnaka_ <- function(x, ...) {
   estimates <- mlgamma_(x^2, ...)$estimates
   estimates["rate"] <- 1 / estimates["rate"] * estimates["shape"]
 

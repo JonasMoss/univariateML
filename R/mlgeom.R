@@ -21,7 +21,7 @@
 #' @references
 #' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
 #' @export
-mlgeom <- \(x, na.rm = FALSE, ...) {}
+mlgeom <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlgeom <- list(
   "model" = "Geometric",
@@ -31,7 +31,7 @@ univariateML_metadata$mlgeom <- list(
   "default" = 0.5
 )
 
-mlgeom_ <- \(x, ...) {
+mlgeom_ <- function(x, ...) {
   n <- length(x)
   prob <- 1 / (mean(x) + 1)
   logLik <- sum(x * log(1 - prob)) + n * log(prob)

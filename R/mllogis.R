@@ -25,7 +25,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York.
 #' @export
-mllogis <- \(x, na.rm = FALSE, ...) {}
+mllogis <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mllogis <- list(
   "model" = "Logistic",
@@ -35,10 +35,10 @@ univariateML_metadata$mllogis <- list(
   "default" = c(0, 1)
 )
 
-mllogis_ <- \(x, ...) {
+mllogis_ <- function(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))
-  f <- \(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
+  f <- function(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
   values <- suppressWarnings(stats::nlm(f = f, p = c(m, log(mad))))
   list(
     estimates = c(values$estimate[1], exp(values$estimate[2])),

@@ -88,7 +88,7 @@ the Archimedean copulas are the Joe copula, the Clayton copula, and the
 Gumbel copula.
 
     # Transform the marginals to the unit interval.
-    y = sapply(seq_along(data), \(j) pml(data[[j]], margin_fits[[j]]))
+    y = sapply(seq_along(data), function(j) pml(data[[j]], margin_fits[[j]]))
 
     # The copulas described above.
     copulas = list(normal = copula::normalCopula(dim = 4, dispstr = "un"),
@@ -98,7 +98,7 @@ Gumbel copula.
                    gumbel = copula::gumbelCopula(dim = 4))
 
     fits = sapply(copulas,
-                  \(x) copula::fitCopula(x, data = y, method = "mpl"))
+                  function(x) copula::fitCopula(x, data = y, method = "mpl"))
 
     sapply(fits, AIC)
 

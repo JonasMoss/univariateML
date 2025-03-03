@@ -34,7 +34,7 @@
 #' for double-bounded random processes." Journal of Hydrology 46.1-2 (1980):
 #' 79-88.
 #' @export
-mlkumar <- \(x, na.rm = FALSE, ...) {}
+mlkumar <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlkumar <- list(
   "model" = "Kumaraswamy",
@@ -44,11 +44,11 @@ univariateML_metadata$mlkumar <- list(
   "default" = c(2, 3)
 )
 
-mlkumar_ <- \(x, ...) {
+mlkumar_ <- function(x, ...) {
   n <- length(x)
   log_x <- log(x)
 
-  f_over_df <- \(a0) {
+  f_over_df <- function(a0) {
     xa <- x^a0
     T1 <- a0 * mean(log_x / (1 - xa))
     T2 <- a0 * mean(log_x * (xa / (1 - xa)))

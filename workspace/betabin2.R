@@ -1,9 +1,9 @@
-mlbbinom_ <- \(x, size, ...) {
+mlbbinom_ <- function(x, size, ...) {
   tab <- Rfast::Table(x)
   uniques <- as.integer(names(tab))
   n <- length(x)
 
-  f <- \(p) {
+  f <- function(p) {
     alpha <- p[1]
     beta <- p[2]
     sum_lbeta <- sum(lbeta(uniques + alpha, beta + size - uniques) * tab)

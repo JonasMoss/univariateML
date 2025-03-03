@@ -41,7 +41,7 @@
 #' mllomax(rexp(10))
 #' }
 #' @export
-mllomax <- \(x, na.rm = FALSE, ...) {}
+mllomax <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mllomax <- list(
   "model" = "Lomax",
@@ -51,7 +51,7 @@ univariateML_metadata$mllomax <- list(
   "default" = c(1, 2)
 )
 
-mllomax_ <- \(x, ...) {
+mllomax_ <- function(x, ...) {
   s <- mean(x^2)
   m <- mean(x)
 
@@ -59,7 +59,7 @@ mllomax_ <- \(x, ...) {
     stop("The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution.")
   }
 
-  f_over_df <- \(lambda0) {
+  f_over_df <- function(lambda0) {
     S <- mean(log(1 + lambda0 * x))
     S1 <- mean(x / (1 + lambda0 * x))
     S2 <- -mean(x^2 / (1 + lambda0 * x)^2)

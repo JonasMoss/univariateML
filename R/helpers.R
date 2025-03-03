@@ -7,9 +7,9 @@
 #' @param name Name of the `ml***` function.
 #' @return The proper `ml***` function.
 #' @keywords internal
-decorator <- \(name) {
+decorator <- function(name) {
   force(name)
-  fun <- \(x, na.rm = FALSE, ...) {
+  fun <- function(x, na.rm = FALSE, ...) {
     x <- ml_check_modify(x, na.rm = na.rm, name = name)
     n <- length(x)
     out <- rlang::exec(paste0(name, "_"), x = x, ...)
@@ -31,7 +31,7 @@ decorator <- \(name) {
 #' @param params List of `loglik`, `call`, and `n`.
 #' @return Object of class `univariateML`
 
-univariateML_construct <- \(estimates, name, params) {
+univariateML_construct <- function(estimates, name, params) {
   estimates <- unname(estimates)
   class <- "univariateML"
   args <- c(.Data = list(estimates), params, univariateML_metadata[[name]], class = class)
@@ -54,14 +54,14 @@ univariateML_construct <- \(estimates, name, params) {
   } else {
     support <- attr(object, "support")
     values <- as.list(stats::setNames(estimates, univariateML_metadata[[name]]$names))
-    supp <- unname(sapply(names(support), \(x) with(values, eval(str2lang(x)))))
+    supp <- unname(sapply(names(support), function(x) with(values, eval(str2lang(x)))))
     attr(object, "support") <- supp
   }
   object
 }
 
 
-ml_check_modify <- \(x, na.rm, name) {
+ml_check_modify <- function(x, na.rm, name) {
   assertthat::assert_that(is.numeric(x))
   msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
   assertthat::assert_that(NCOL(x) == 1, msg = msg)
@@ -100,7 +100,7 @@ ml_check_modify <- \(x, na.rm, name) {
 #' @return A string
 #' @keywords internal
 
-univariateML_to_string <- \(obj, type = c("d", "p", "q", "r", "ml")) {
+univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
   if (type %in% c("d", "p", "q", "r")) {
     strings <- strsplit(attr(obj, "density"), "::")[[1]]
@@ -119,7 +119,7 @@ univariateML_to_string <- \(obj, type = c("d", "p", "q", "r", "ml")) {
 #' @return A string
 #' @keywords internal
 
-univariateML_to_function <- \(obj, type = c("d", "p", "q", "r", "ml")) {
+univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
   string <- univariateML_to_string(obj, type = type)
   fun <- eval(parse(text = string))
@@ -134,7 +134,7 @@ univariateML_to_function <- \(obj, type = c("d", "p", "q", "r", "ml")) {
 #' @param obj Function to apply.
 #' @keywords internal
 
-to_univariateML <- \(y, obj) {
+to_univariateML <- function(y, obj) {
   if (inherits(obj, "univariateML")) {
     obj <- obj
   } else {
@@ -146,7 +146,7 @@ to_univariateML <- \(y, obj) {
       {
         obj <- obj(y)
       },
-      error = \(cond) stop(msg)
+      error = function(cond) stop(msg)
     )
     stopifnot(inherits(obj, "univariateML"))
   }

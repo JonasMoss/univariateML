@@ -26,7 +26,7 @@
 #'   Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat Tails and
 #'   Skewness, Preprint.
 #' @export
-mlsged <- \(x, na.rm = FALSE, ...) {}
+mlsged <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlsged <- list(
   "model" = "Skew Generalized Error",
@@ -36,7 +36,7 @@ univariateML_metadata$mlsged <- list(
   "default" = c(0, 1, 3, 3)
 )
 
-mlsged_ <- \(x, ...) {
+mlsged_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::sgedFit(x))
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }

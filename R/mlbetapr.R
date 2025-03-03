@@ -28,7 +28,7 @@
 #' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
 #' Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
 #' @export
-mlbetapr <- \(x, na.rm = FALSE, ...) {}
+mlbetapr <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlbetapr <- list(
   "model" = "BetaPrime",
@@ -38,7 +38,7 @@ univariateML_metadata$mlbetapr <- list(
   "default" = c(2, 3)
 )
 
-mlbetapr_ <- \(x, ...) {
+mlbetapr_ <- function(x, ...) {
   estimates <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
   alpha <- estimates[1]
   beta <- estimates[2]

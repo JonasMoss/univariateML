@@ -1,7 +1,7 @@
-f <- \(n) {
-  g <- Vectorize(\(i) (-1)^(i+1) * factorial(i))
+f <- function(n) {
+  g <- Vectorize(function(i) (-1)^(i + 1) * factorial(i))
   values <- g(seq(n))
-  h <- \(m) kStatistics::e_eBellPol(n = n, m = m, values)
+  h <- function(m) kStatistics::e_eBellPol(n = n, m = m, values)
   sapply(seq(n), h)
 }
 

@@ -34,7 +34,7 @@
 #' Arslan, G. "A new characterization of the power distribution."
 #' Journal of Computational and Applied Mathematics 260 (2014): 99-102.
 #' @export
-mlpower <- \(x, na.rm = FALSE, ...) {}
+mlpower <- function(x, na.rm = FALSE, ...) {}
 
 univariateML_metadata$mlpower <- list(
   "model" = "PowerDist",
@@ -44,7 +44,7 @@ univariateML_metadata$mlpower <- list(
   "default" = c(1, 2)
 )
 
-mlpower_ <- \(x, ...) {
+mlpower_ <- function(x, ...) {
   dots <- list(...)
   epsilon <- if (!is.null(dots$epsilon)) {
     dots$epsilon

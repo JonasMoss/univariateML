@@ -1,7 +1,7 @@
 densities <- list.files("R")
-densities <- densities[sapply(densities, \(x) substr(x, 1, 2) == "ml")]
+densities <- densities[sapply(densities, function(x) substr(x, 1, 2) == "ml")]
 densities <- densities[!grepl("select", densities)]
-densities <- unname(unlist(sapply(densities, \(x) strsplit(x, ".R"))))
+densities <- unname(unlist(sapply(densities, function(x) strsplit(x, ".R"))))
 
 
 #' Implemented models
@@ -32,7 +32,7 @@ out$names <- NULL
 # but are used only through eval-call in the code, which is invisible to the
 # CRAN checks.
 
-zzz <- \() {
+zzz <- function() {
   invisible(extraDistr::dbetapr)
   invisible(logitnorm::dlogitnorm)
   invisible(tibble::tibble)

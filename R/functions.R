@@ -35,13 +35,13 @@
 #' obj <- mlbetapr(airquality$Wind)
 #'
 #' # Plot the logarithm of the beta prime distribution.
-#' plot(\(x) dml(x, obj, log = TRUE),
+#' plot(function(x) dml(x, obj, log = TRUE),
 #'   from = 0, to = 20,
 #'   main = "Logarithm of Density", ylab = NA, lwd = 2
 #' )
 #' @name MaximumLikelihoodDistribution
 #' @export
-dml <- \(x, obj, log = FALSE) {
+dml <- function(x, obj, log = FALSE) {
   fun <- univariateML_to_function(obj, type = "d")
   if (!("log" %in% names(formals(fun)))) {
     log(fun(x = x))
@@ -52,7 +52,7 @@ dml <- \(x, obj, log = FALSE) {
 
 #' @rdname MaximumLikelihoodDistribution
 #' @export
-pml <- \(q = q, obj, lower.tail = TRUE, log.p = FALSE) {
+pml <- function(q = q, obj, lower.tail = TRUE, log.p = FALSE) {
   fun <- univariateML_to_function(obj, type = "p")
   if (!all(c("log.p", "lower.tail") %in% names(formals(fun)))) {
     p <- fun(q = q)
@@ -66,7 +66,7 @@ pml <- \(q = q, obj, lower.tail = TRUE, log.p = FALSE) {
 
 #' @rdname MaximumLikelihoodDistribution
 #' @export
-qml <- \(p = p, obj, lower.tail = TRUE, log.p = FALSE) {
+qml <- function(p = p, obj, lower.tail = TRUE, log.p = FALSE) {
   fun <- univariateML_to_function(obj, type = "q")
   if (!all(c("log.p", "lower.tail") %in% names(formals(fun)))) {
     if (!lower.tail) p <- 1 - p
@@ -79,6 +79,6 @@ qml <- \(p = p, obj, lower.tail = TRUE, log.p = FALSE) {
 
 #' @rdname MaximumLikelihoodDistribution
 #' @export
-rml <- \(n = n, obj) {
+rml <- function(n = n, obj) {
   univariateML_to_function(obj, type = "r")(n = n)
 }

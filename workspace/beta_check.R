@@ -8,7 +8,7 @@ b <- log(0.5 + 0.5 * g2 / (1 - (g1 + g2)))
 b <- 1
 n <- length(x)
 
-a <- \(b) {
+a <- function(b) {
   exp_b <- exp(b)
   digamma_b_r <- digamma(exp_b) - r
   trigamma_b <- trigamma(exp_b)
@@ -24,6 +24,6 @@ a <- \(b) {
 
 numDeriv::grad(a, exp(b))
 a_ <- a(exp(b))
--trigamma(a_ + exp(b)) / (trigamma(a_) + trigamma(a_+exp(b)))
+-trigamma(a_ + exp(b)) / (trigamma(a_) + trigamma(a_ + exp(b)))
 
 digamma(a_) - s + r - digamma(exp(b))
