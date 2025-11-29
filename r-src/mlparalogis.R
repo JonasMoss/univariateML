@@ -1,37 +1,5 @@
-#' Paralogistic distribution maximum likelihood estimation
-#'
-#' This function estimates the only the shape parameters of the Paralogistic distribution.
-#' The rate is set to 1.
-#'
-#' For the density function of the Paralogistic distribution see [Paralogistic][actuar::dparalogis].
-#'
-#' @param x a (non-empty) numeric vector of data values.
-#' @param na.rm logical. Should missing values be removed?
-#' @param ... currently affects nothing.
-#' @return `mlparalogis` returns an object of [class][base::class] `univariateML`.
-#'    This is a named numeric vector with maximum likelihood estimates for
-#'    `shape` and the following attributes:
-#'     \item{`model`}{The name of the model.}
-#'     \item{`density`}{The density associated with the estimates.}
-#'     \item{`logLik`}{The loglikelihood at the maximum.}
-#'     \item{`support`}{The support of the density.}
-#'     \item{`n`}{The number of observations.}
-#'     \item{`call`}{The call as captured my `match.call`}
-#' @examples
-#' mlparalogis(abalone$length)
-#' @seealso [Paralogistic][actuar::dparalogis] for the paralogistic density.
-#' @references Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.
-#' Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley.
-#' @export
 mlparalogis <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlparalogis <- list(
-  "model" = "Paralogistic",
-  "density" = "actuar::dparalogis",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape"),
-  "default" = c(1)
-)
 
 mlparalogis_ <- function(x, ...) {
   n <- length(x)

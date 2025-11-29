@@ -1,35 +1,5 @@
-#' Zero-inflated Poisson distribution maximum likelihood estimation
-#'
-#' For the density function of the zeero-inflated Poisson distribution see
-#' [Zero-inflated Poisson distribution][extraDistr::dzip].
-#'
-#' @param x a (non-empty) numeric vector of data values.
-#' @param na.rm logical. Should missing values be removed?
-#' @param ... Not currently in use.
-#' @return `mlzip` returns an object of [class][base::class] `univariateML`.
-#'    This is a named numeric vector with maximum likelihood estimates for
-#'    `lambda` and `pi` and the following attributes:
-#'     \item{`model`}{The name of the model.}
-#'     \item{`density`}{The density associated with the estimates.}
-#'     \item{`logLik`}{The loglikelihood at the maximum.}
-#'     \item{`support`}{The support of the density.}
-#'     \item{`n`}{The number of observations.}
-#'     \item{`call`}{The call as captured my `match.call`}
-#' @examples
-#' mlzip(corbet)
-#' @references
-#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
-#' @seealso [Zero-inflated Poisson distribution][extraDistr::dzip] for the density.
-#' @export
 mlzip <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlzip <- list(
-  "model" = "Zero-inflated Poisson",
-  "density" = "extraDistr::dzip",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("lambda", "pi"),
-  "default" = c(1, 0.5)
-)
 
 mlzip_ <- function(x, ...) {
   r_0 <- mean(x == 0)

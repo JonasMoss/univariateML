@@ -1,39 +1,5 @@
-#' Gompertz distribution maximum likelihood estimation
-#'
-#' Uses Newton-Raphson to estimate the parameters of the Gompertz distribution.
-#'
-#' For the density function of the Gompertz distribution see
-#' [Gompertz][extraDistr::Gompertz].
-#'
-#' @param x a (non-empty) numeric vector of data values.
-#' @param na.rm logical. Should missing values be removed?
-#' @param ... `reltol` is the relative accuracy requested, defaults
-#'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
-#'     specifying the maximum number of iterations to be performed before the
-#'     program is terminated (defaults to `100`).
-#' @return `mlgompertz` returns an object of [class][base::class] `univariateML`.
-#'    This is a named numeric vector with maximum likelihood estimates for
-#'    `a` and `b` and the following attributes:
-#'     \item{`model`}{The name of the model.}
-#'     \item{`density`}{The density associated with the estimates.}
-#'     \item{`logLik`}{The loglikelihood at the maximum.}
-#'     \item{`support`}{The support of the density.}
-#'     \item{`n`}{The number of observations.}
-#'     \item{`call`}{The call as captured my `match.call`}
-#' @examples
-#' mlgompertz(precip)
-#' @seealso [Gompertz][extraDistr::Gompertz] for the Gompertz density.
-#' @references Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision. MPIDR WORKING PAPER WP 2012-008. https://www.demogr.mpg.de/papers/working/wp-2012-008.pdf
-#' @export
 mlgompertz <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlgompertz <- list(
-  "model" = "Gompertz",
-  "density" = "extraDistr::dgompertz",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("a", "b"),
-  "default" = c(1, 1)
-)
 
 mlgompertz_ <- function(x, ...) {
   n <- length(x)

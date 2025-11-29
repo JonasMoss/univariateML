@@ -1,40 +1,5 @@
-#' Zipf distribution maximum likelihood estimation
-#'
-#' For the density function of the Zipf distribution see
-#' [Zipf][sads::dzipf].
-#'
-#' This function follows the same format as every other function in the package,
-#' but most applications of Zipf's law use rank-abundance data. See, e.g., [sads::fitzipf]
-#' for estimation of this sort of data.
-#'
-#' @param x a (non-empty) numeric vector of data values.
-#' @param na.rm logical. Should missing values be removed?
-#' @param ... Not currently in use.
-#' @return `mlzipf` returns an object of [class][base::class] `univariateML`.
-#'    This is a named numeric vector with maximum likelihood estimates for
-#'    `N` and `s` and the following attributes:
-#'     \item{`model`}{The name of the model.}
-#'     \item{`density`}{The density associated with the estimates.}
-#'     \item{`logLik`}{The loglikelihood at the maximum.}
-#'     \item{`support`}{The support of the density.}
-#'     \item{`n`}{The number of observations.}
-#'     \item{`call`}{The call as captured my `match.call`}
-#' @examples
-#' AIC(mlzipf(corbet)) # 2729.536
-#' AIC(mllgser(corbet)) # 2835.883
-#' @seealso [Zipf][sads::dzipf] for the density.
-#' @references
-#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
-#' @export
 mlzipf <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlzipf <- list(
-  "model" = "Zipf",
-  "density" = "sads::dzipf",
-  "support" = stats::setNames(intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"), c("1", "N")),
-  "names" = c("N", "s"),
-  "default" = c(3, 0.5)
-)
 
 mlzipf_ <- function(x, ...) {
   N <- max(x)

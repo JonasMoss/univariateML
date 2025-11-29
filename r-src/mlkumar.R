@@ -1,48 +1,5 @@
-#' Kumaraswamy distribution maximum likelihood estimation
-#'
-#' Uses Newton-Raphson to estimate the parameters of the Kumaraswamy
-#'     distribution.
-#'
-#' For the density function of the Kumaraswamy distribution see
-#'     [Kumaraswamy][extraDistr::Kumaraswamy].
-#'
-#' @param x a (non-empty) numeric vector of data values.
-#' @param na.rm logical. Should missing values be removed?
-#' @param ... `a0` is an optional starting value for the `a` parameter.
-#'     `reltol` is the relative accuracy requested, defaults
-#'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
-#'     specifying the maximum number of iterations to be performed before the
-#'     program is terminated (defaults to `100`).
-#'
-#' @return `mlkumar` returns an object of [class][base::class] `univariateML`.
-#'    This is a named numeric vector with maximum likelihood estimates for `a`
-#'    and `b` and the following attributes:
-#'     \item{`model`}{The name of the model.}
-#'     \item{`density`}{The density associated with the estimates.}
-#'     \item{`logLik`}{The loglikelihood at the maximum.}
-#'     \item{`support`}{The support of the density.}
-#'     \item{`n`}{The number of observations.}
-#'     \item{`call`}{The call as captured my `match.call`}
-#' @seealso [Kumaraswamy][extraDistr::Kumaraswamy] for the Kumaraswamy density.
-#' @examples
-#' AIC(mlkumar(USArrests$Rape / 100))
-#' @references Jones, M. C. "Kumaraswamy's distribution: A beta-type
-#' distribution with some tractability advantages." Statistical Methodology
-#' 6.1 (2009): 70-81.
-#'
-#' Kumaraswamy, Ponnambalam. "A generalized probability density function
-#' for double-bounded random processes." Journal of Hydrology 46.1-2 (1980):
-#' 79-88.
-#' @export
 mlkumar <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlkumar <- list(
-  "model" = "Kumaraswamy",
-  "density" = "extraDistr::dkumar",
-  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "names" = c("a", "b"),
-  "default" = c(2, 3)
-)
 
 kumar_lmom <- function(mu, sigma2) {
   neuler <- digamma(1) # Negative Euler-Mascheroni constant

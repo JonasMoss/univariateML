@@ -1,40 +1,5 @@
-#' Log-normal distribution maximum likelihood estimation
-#'
-#' The maximum likelihood estimate of `meanlog` is the empirical mean of the
-#'     log-transformed data and the maximum likelihood estimate of `sdlog`
-#'     is the square root of the biased sample variance based on the
-#'     log-transformed data.
-#'
-#' For the density function of the log normal distribution see
-#'     [Lognormal][stats::Lognormal].
-#'
-#' @param x a (non-empty) numeric vector of data values.
-#' @param na.rm logical. Should missing values be removed?
-#' @param ... currently affects nothing.
-#' @return `mllnorm` returns an object of [class][base::class] `univariateML`.
-#'    This is a named numeric vector with maximum likelihood estimates for
-#'    `meanlog` and `sdlog` and the following attributes:
-#'     \item{`model`}{The name of the model.}
-#'     \item{`density`}{The density associated with the estimates.}
-#'     \item{`logLik`}{The loglikelihood at the maximum.}
-#'     \item{`support`}{The support of the density.}
-#'     \item{`n`}{The number of observations.}
-#'     \item{`call`}{The call as captured my `match.call`}
-#' @examples
-#' mllnorm(precip)
-#' @seealso [Lognormal][stats::Lognormal] for the log normal density.
-#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
-#' Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
-#' @export
 mllnorm <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mllnorm <- list(
-  "model" = "Lognormal",
-  "density" = "stats::dlnorm",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("meanlog", "sdlog"),
-  "default" = c(0, 1)
-)
 
 mllnorm_ <- function(x, ...) {
   y <- log(x)
