@@ -1,8 +1,6 @@
 # This file is auto-generated from r-src via scripts/gen_estimators_from_rsrc.R
 # Do not edit by hand.
 
-generated_models <- c("mlbeta", "mlbetapr", "mlbinom", "mlburr", "mlcauchy", "mldunif", "mlexp", "mlfatigue", "mlgamma", "mlged", "mlgeom", "mlgompertz", "mlgumbel", "mlinvburr", "mlinvgamma", "mlinvgauss", "mlinvweibull", "mlkumar", "mllaplace", "mllgamma", "mllgser", "mlllogis", "mllnorm", "mllogis", "mllogitnorm", "mllomax", "mlnaka", "mlnbinom", "mlnorm", "mlparalogis", "mlpareto", "mlpois", "mlpower", "mlrayleigh", "mlsged", "mlsnorm", "mlsstd", "mlstd", "mlunif", "mlweibull", "mlzip", "mlzipf")
-
 #' Beta distribution maximum likelihood estimation
 #'
 #' Uses `stat::nlm` to estimate the parameters of the Beta distribution.
@@ -33,13 +31,6 @@ generated_models <- c("mlbeta", "mlbetapr", "mlbinom", "mlburr", "mlcauchy", "ml
 #' @export
 mlbeta <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlbeta <- list(
-  "model" = "Beta",
-  "density" = "stats::dbeta",
-  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "names" = c("shape1", "shape2"),
-  "defaults" = c(2, 3)
-)
 
 mlbeta_ <- function(x, ...) {
   n <- length(x)
@@ -115,13 +106,6 @@ mlbeta_ <- function(x, ...) {
 #' @export
 mlbetapr <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlbetapr <- list(
-  "model" = "BetaPrime",
-  "density" = "extraDistr::dbetapr",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("shape1", "shape2"),
-  "default" = c(2, 3)
-)
 
 mlbetapr_ <- function(x, ...) {
   estimates <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
@@ -191,13 +175,6 @@ mlbetapr_ <- function(x, ...) {
 
 mlbinom <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlbinom <- list(
-  "model" = "Binomial",
-  "density" = "stats::dbinom",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("size", "prob"),
-  "default" = c(10, 0.5)
-)
 
 mlbinom_ <- function(x, ...) {
   dots <- list(...)
@@ -288,13 +265,6 @@ mlbinom_ <- function(x, ...) {
 #' @export
 mlburr <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlburr <- list(
-  "model" = "Burr",
-  "density" = "actuar::dburr",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape1", "shape2"),
-  "default" = c(1, 2)
-)
 
 
 mlburr_ <- function(x, ...) {
@@ -359,13 +329,6 @@ mlburr_ <- function(x, ...) {
 #' @export
 mlcauchy <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlcauchy <- list(
-  "model" = "Cauchy",
-  "density" = "stats::dcauchy",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("location", "scale"),
-  "default" = c(0, 1)
-)
 
 mlcauchy_ <- function(x, ...) {
   m <- stats::median(x)
@@ -406,13 +369,6 @@ mlcauchy_ <- function(x, ...) {
 #' @export
 mldunif <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mldunif <- list(
-  "model" = "Discrete uniform",
-  "density" = "extraDistr::ddunif",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "Z"),
-  "names" = c("min", "max"),
-  "default" = c(2, 10)
-)
 
 mldunif_ <- function(x, ...) {
   n <- length(x)
@@ -452,13 +408,6 @@ mldunif_ <- function(x, ...) {
 #' @export
 mlexp <- function(x, na.rm = TRUE, ...) {}
 
-univariateML_metadata$mlexp <- list(
-  "model" = "Exponential",
-  "density" = "stats::dexp",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("rate"),
-  "default" = 1
-)
 
 mlexp_ <- function(x, ...) {
   estimates <- 1 / mean(x)
@@ -496,13 +445,6 @@ mlexp_ <- function(x, ...) {
 
 mlfatigue <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlfatigue <- list(
-  "model" = "Birnbaum-Saunders",
-  "density" = "extraDistr::dfatigue",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("alpha", "beta", "mu"),
-  "default" = c(3, 2, 0)
-)
 
 mlfatigue_ <- function(x, ...) {
   n <- length(x)
@@ -563,13 +505,6 @@ mlfatigue_ <- function(x, ...) {
 #' @export
 mlgamma <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlgamma <- list(
-  "model" = "Gamma",
-  "density" = "stats::dgamma",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape", "rate"),
-  "default" = c(2, 2)
-)
 
 mlgamma_ <- function(x, ...) {
   n <- length(x)
@@ -621,13 +556,6 @@ mlgamma_ <- function(x, ...) {
 #' @export
 mlged <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlged <- list(
-  "model" = "Generalized Error",
-  "density" = "fGarch::dged",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "nu"),
-  "default" = c(0, 1, 3)
-)
 
 mlged_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::gedFit(x))
@@ -659,13 +587,6 @@ mlged_ <- function(x, ...) {
 #' @export
 mlgeom <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlgeom <- list(
-  "model" = "Geometric",
-  "density" = "stats::dgeom",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("prob"),
-  "default" = 0.5
-)
 
 mlgeom_ <- function(x, ...) {
   n <- length(x)
@@ -703,13 +624,6 @@ mlgeom_ <- function(x, ...) {
 #' @export
 mlgompertz <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlgompertz <- list(
-  "model" = "Gompertz",
-  "density" = "extraDistr::dgompertz",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("a", "b"),
-  "default" = c(1, 1)
-)
 
 mlgompertz_ <- function(x, ...) {
   n <- length(x)
@@ -777,13 +691,6 @@ mlgompertz_ <- function(x, ...) {
 #' @export
 mlgumbel <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlgumbel <- list(
-  "model" = "Gumbel",
-  "density" = "extraDistr::dgumbel",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mu", "sigma"),
-  "default" = c(3, 3)
-)
 
 mlgumbel_ <- function(x, ...) {
   x_bar <- sum(x) / length(x)
@@ -868,13 +775,6 @@ mlgumbel_estimate <- function(x, ...) {
 #' @export
 mlinvburr <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlinvburr <- list(
-  "model" = "Inverse Burr",
-  "density" = "actuar::dinvburr",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape1", "shape2"),
-  "default" = c(1, 2)
-)
 
 mlinvburr_ <- function(x, ...) {
   params <- mlburr_(1/x)$estimates
@@ -913,13 +813,6 @@ mlinvburr_ <- function(x, ...) {
 #' @export
 mlinvgamma <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlinvgamma <- list(
-  "model" = "InvGamma",
-  "density" = "extraDistr::dinvgamma",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("alpha", "beta"),
-  "default" = c(3, 4)
-)
 
 mlinvgamma_ <- function(x, ...) {
   gamma_ml <- mlgamma_(1 / x, ...)
@@ -963,13 +856,6 @@ mlinvgamma_ <- function(x, ...) {
 #' @export
 mlinvgauss <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlinvgauss <- list(
-  "model" = "Inverse Gaussian",
-  "density" = "actuar::dinvgauss",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "shape"),
-  "default" = c(3, 4)
-)
 
 mlinvgauss_ <- function(x, ...) {
   n <- length(x)
@@ -1019,13 +905,6 @@ mlinvgauss_ <- function(x, ...) {
 #' @export
 mlinvweibull <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlinvweibull <- list(
-  "model" = "InverseWeibull",
-  "density" = "actuar::dinvweibull",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape", "rate"),
-  "default" = c(2, 3)
-)
 
 mlinvweibull_ <- function(x, ...) {
 
@@ -1087,13 +966,6 @@ mlinvweibull_ <- function(x, ...) {
 #' @export
 mlkumar <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlkumar <- list(
-  "model" = "Kumaraswamy",
-  "density" = "extraDistr::dkumar",
-  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "names" = c("a", "b"),
-  "default" = c(2, 3)
-)
 
 kumar_lmom <- function(mu, sigma2) {
   neuler <- digamma(1) # Negative Euler-Mascheroni constant
@@ -1194,13 +1066,6 @@ mlkumar_ <- function(x, ...) {
 #' @export
 mllaplace <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mllaplace <- list(
-  "model" = "Laplace",
-  "density" = "extraDistr::dlaplace",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mu", "sigma"),
-  "default" = c(0, 1)
-)
 
 mllaplace_ <- function(x, ...) {
   mu <- stats::median(x)
@@ -1240,13 +1105,6 @@ mllaplace_ <- function(x, ...) {
 #' @export
 mllgamma <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mllgamma <- list(
-  "model" = "Loggamma",
-  "density" = "actuar::dlgamma",
-  "support" = intervals::Intervals(c(1, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shapelog", "ratelog"),
-  "default" = c(2, 3)
-)
 
 mllgamma_ <- function(x, ...) {
   y <- log(x)
@@ -1306,13 +1164,6 @@ mllgamma_ <- function(x, ...) {
 
 mllgser <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mllgser <- list(
-  "model" = "Logarithmic series",
-  "density" = "extraDistr::dlgser",
-  "support" = intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("theta"),
-  "default" = 0.9
-)
 
 mllgser_ <- function(x, ...) {
   if (sum(x) == length(x)) {
@@ -1361,13 +1212,6 @@ mllgser_ <- function(x, ...) {
 #' @export
 mlllogis <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlllogis <- list(
-  "model" = "Loglogistic",
-  "density" = "actuar::dllogis",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("shape", "rate"),
-  "default" = c(1, 2)
-)
 
 mlllogis_ <- function(x, ...) {
   y <- log(x)
@@ -1409,13 +1253,6 @@ mlllogis_ <- function(x, ...) {
 #' @export
 mllnorm <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mllnorm <- list(
-  "model" = "Lognormal",
-  "density" = "stats::dlnorm",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("meanlog", "sdlog"),
-  "default" = c(0, 1)
-)
 
 mllnorm_ <- function(x, ...) {
   y <- log(x)
@@ -1457,13 +1294,6 @@ mllnorm_ <- function(x, ...) {
 #' @export
 mllogis <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mllogis <- list(
-  "model" = "Logistic",
-  "density" = "stats::dlogis",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("location", "scale"),
-  "default" = c(0, 1)
-)
 
 mllogis_ <- function(x, ...) {
   m <- stats::median(x)
@@ -1507,13 +1337,6 @@ mllogis_ <- function(x, ...) {
 #' @export
 mllogitnorm <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mllogitnorm <- list(
-  "model" = "LogitNormal",
-  "density" = "logitnorm::dlogitnorm",
-  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
-  "names" = c("mu", "sigma"),
-  "default" = c(2, 3)
-)
 
 mllogitnorm_ <- function(x, ...) {
   n <- length(x)
@@ -1575,13 +1398,6 @@ mllogitnorm_ <- function(x, ...) {
 #' @export
 mllomax <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mllomax <- list(
-  "model" = "Lomax",
-  "density" = "extraDistr::dlomax",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("lambda", "kappa"),
-  "default" = c(1, 2)
-)
 
 mllomax_ <- function(x, ...) {
   n <- length(x)
@@ -1652,13 +1468,6 @@ mllomax_ <- function(x, ...) {
 #' @export
 mlnaka <- function(x, na.rm = TRUE, ...) {}
 
-univariateML_metadata$mlnaka <- list(
-  "model" = "Nakagami",
-  "density" = "nakagami::dnaka",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape", "scale"),
-  "default" = c(2, 3)
-)
 
 mlnaka_ <- function(x, ...) {
   estimates <- mlgamma_(x^2, ...)$estimates
@@ -1705,13 +1514,6 @@ mlnaka_ <- function(x, ...) {
 #' @export
 mlnbinom <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlnbinom <- list(
-  "model" = "Negative binomial",
-  "density" = "stats::dnbinom",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("size", "prob"),
-  "default" = c(10, 0.3)
-)
 
 mlnbinom_ <- function(x, ...) {
   dots <- list(...)
@@ -1780,13 +1582,6 @@ mlnbinom_ <- function(x, ...) {
 #' @export
 mlnorm <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlnorm <- list(
-  "model" = "Normal",
-  "density" = "stats::dnorm",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd"),
-  "default" = c(0, 1)
-)
 
 mlnorm_ <- function(x, ...) {
   n <- length(x)
@@ -1826,13 +1621,6 @@ mlnorm_ <- function(x, ...) {
 #' @export
 mlparalogis <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlparalogis <- list(
-  "model" = "Paralogistic",
-  "density" = "actuar::dparalogis",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape"),
-  "default" = c(1)
-)
 
 mlparalogis_ <- function(x, ...) {
   n <- length(x)
@@ -1893,13 +1681,6 @@ mlparalogis_ <- function(x, ...) {
 #' @export
 mlpareto <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlpareto <- list(
-  "model" = "Pareto",
-  "density" = "extraDistr::dpareto",
-  "support" = stats::setNames(intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)), c("a", "Inf")),
-  "names" = c("a", "b"),
-  "default" = c(1, 2)
-)
 
 mlpareto_ <- function(x, ...) {
   m <- mean(log(x))
@@ -1938,13 +1719,6 @@ mlpareto_ <- function(x, ...) {
 #' @export
 mlpois <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlpois <- list(
-  "model" = "Poisson",
-  "density" = "stats::dpois",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("lambda"),
-  "default" = 2
-)
 
 mlpois_ <- function(x, ...) {
   n <- length(x)
@@ -1991,13 +1765,6 @@ mlpois_ <- function(x, ...) {
 #' @export
 mlpower <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlpower <- list(
-  "model" = "PowerDist",
-  "density" = "extraDistr::dpower",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("alpha", "beta"),
-  "default" = c(1, 2)
-)
 
 mlpower_ <- function(x, ...) {
   dots <- list(...)
@@ -2045,13 +1812,6 @@ mlpower_ <- function(x, ...) {
 #' @export
 mlrayleigh <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlrayleigh <- list(
-  "model" = "Rayleigh",
-  "density" = "extraDistr::drayleigh",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
-  "names" = c("sigma"),
-  "default" = 2
-)
 
 mlrayleigh_ <- function(x, ...) {
   sigma <- sqrt(1 / 2 * mean(x^2))
@@ -2089,13 +1849,6 @@ mlrayleigh_ <- function(x, ...) {
 #' @export
 mlsged <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlsged <- list(
-  "model" = "Skew Generalized Error",
-  "density" = "fGarch::dsged",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "nu", "xi"),
-  "default" = c(0, 1, 3, 3)
-)
 
 mlsged_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::sgedFit(x))
@@ -2129,13 +1882,6 @@ mlsged_ <- function(x, ...) {
 #' @export
 mlsnorm <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlsnorm <- list(
-  "model" = "Skew Normal",
-  "density" = "fGarch::dsnorm",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "xi"),
-  "default" = c(0, 1, 3)
-)
 
 mlsnorm_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::snormFit(x))
@@ -2169,13 +1915,6 @@ mlsnorm_ <- function(x, ...) {
 #' @export
 mlsstd <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlsstd <- list(
-  "model" = "Skew Student-t",
-  "density" = "fGarch::dsstd",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "nu", "xi"),
-  "default" = c(0, 1, 3, 2)
-)
 
 mlsstd_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::sstdFit(x))
@@ -2209,13 +1948,6 @@ mlsstd_ <- function(x, ...) {
 #' @export
 mlstd <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlstd <- list(
-  "model" = "Student-t",
-  "density" = "fGarch::dstd",
-  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("mean", "sd", "nu"),
-  "default" = c(0, 1, 3)
-)
 
 mlstd_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::stdFit(x))
@@ -2249,13 +1981,6 @@ mlstd_ <- function(x, ...) {
 #' @export
 mlunif <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlunif <- list(
-  "model" = "Uniform",
-  "density" = "stats::dunif",
-  "support" = stats::setNames(intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)), c("min", "max")),
-  "names" = c("min", "max"),
-  "default" = c(0, 1)
-)
 
 mlunif_ <- function(x, ...) {
   max_ <- max(x)
@@ -2295,13 +2020,6 @@ mlunif_ <- function(x, ...) {
 #' @export
 mlweibull <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlweibull <- list(
-  "model" = "Weibull",
-  "density" = "stats::dweibull",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
-  "names" = c("shape", "scale"),
-  "default" = c(3, 4)
-)
 
 mlweibull_ <- function(x, ...) {
   log_x <- -log(x)
@@ -2338,13 +2056,6 @@ mlweibull_ <- function(x, ...) {
 #' @export
 mlzip <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlzip <- list(
-  "model" = "Zero-inflated Poisson",
-  "density" = "extraDistr::dzip",
-  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
-  "names" = c("lambda", "pi"),
-  "default" = c(1, 0.5)
-)
 
 mlzip_ <- function(x, ...) {
   r_0 <- mean(x == 0)
@@ -2399,13 +2110,6 @@ mlzip_ <- function(x, ...) {
 #' @export
 mlzipf <- function(x, na.rm = FALSE, ...) {}
 
-univariateML_metadata$mlzipf <- list(
-  "model" = "Zipf",
-  "density" = "sads::dzipf",
-  "support" = stats::setNames(intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"), c("1", "N")),
-  "names" = c("N", "s"),
-  "default" = c(3, 0.5)
-)
 
 mlzipf_ <- function(x, ...) {
   N <- max(x)
