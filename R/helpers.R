@@ -14,7 +14,7 @@ decorator <- function(name) {
     n <- length(x)
     out <- rlang::exec(paste0(name, "_"), x = x, ...)
 
-    params <- list(logLik = out$logLik, call = deparse(match.call()), n = n)
+    params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)
     univariateML_construct(out$estimates, name = name, params = params)
   }
   meta <- univariateML_metadata[[name]]

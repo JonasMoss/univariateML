@@ -76,7 +76,7 @@ mllomax_ <- function(x, ...) {
   alpha0 <- 2 * (s - m2) / (s - 2 * m2)
   lambda0 <- 1 / (m * (alpha0 - 1))
 
-  lambda <- newton_raphson_1d(f_over_df, lambda0)
+  lambda <- newton_raphson_1d(f_over_df, lambda0, ...)
   kappa <- n / sum(log1p(lambda * x))
   loglik <- n * (log(kappa) + log(lambda) - 1 - 1/kappa)
 

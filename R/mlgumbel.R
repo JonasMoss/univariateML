@@ -41,12 +41,16 @@ mlgumbel_ <- function(x, ...) {
   estimates <- mlgumbel_estimate(x - x_bar, ...)
   mu <- estimates[1] + x_bar
   sigma <- estimates[2]
-  logLik <- -length(x) * (log(sigma) + (x_bar - mu) / sigma + 1)
+  logLik <- sum(extraDistr::dgumbel(x, mu, sigma, log = TRUE))
   list(estimates = c(mu = mu, sigma = sigma), logLik = logLik, iterations = estimates[3])
 }
 
 mlgumbel_estimate <- function(x, ...) {
   x2 <- x^2
+  dots <- list(...)
+  reltol <- if (!is.null(dots$reltol)) dots$reltol else .Machine$double.eps^0.25
+  iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
+
   f_over_df <- function(sigma0) {
     neg_sigma_inv <- -1 / sigma0
     exps <- exp(x * neg_sigma_inv)
@@ -58,14 +62,25 @@ mlgumbel_estimate <- function(x, ...) {
     f / df
   }
 
-  reltol <- .Machine$double.eps^0.5
-  iterlim <- 100
   sigma0 <- sqrt(sum(x2) / length(x)) * 2.45 / pi
+  sigma <- sigma0
 
-  for (i in seq(iterlim)) {
-    sigma <- sigma0 - f_over_df(sigma0)
-    if (abs(sigma0 - sigma) < abs(sigma0) * reltol) break
-    sigma0 <- sigma
+  for (i in seq_len(iterlim)) {
+    sigma_new <- sigma - f_over_df(sigma)
+    if (is.nan(sigma_new)) stop("NaN in Newton--Raphson iteration.")
+    if (abs((sigma_new - sigma) / sigma_new) < reltol) {
+      sigma <- sigma_new
+      break
+    }
+    sigma <- sigma_new
+  }
+
+  if (i == iterlim) {
+    warning(paste0(
+      "The iteration limit (iterlim = ", iterlim, ") was reached",
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
+    ))
   }
 
   neg_sigma_inv <- -1 / sigma
