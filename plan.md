@@ -1,29 +1,31 @@
 # Plan
 
-## Goals
-- Clean the repo into a CRAN-friendly state (no stray plots, caches, compiled binaries, or scratch notebooks).
-- Get back to an R CMD check-compliant package baseline.
-- Set up a clear path to move estimators to Rcpp/RcppArmadillo with scripted R code generation.
+## Immediate focus
+- Keep current R implementation working and CRAN-clean while we build generators.
+- Define machine-readable metadata and docs sources as the single truth for all estimators.
 
-## Immediate steps
-1) Snapshot current state (done on branch `cleanup/initial-pass` with commit `chore: snapshot current state`).
-2) Purge non-package artifacts: Rplot*.png and other plot exports, vignette cache files under `vignettes/copula_cache/`, scratch/workspace scripts, generated `out`/`show.sh`, and compiled objects like `src/*.o` and `src/univariateML.so`.
-3) Tighten ignore rules for build outputs, vignette caches, workspace scratch, and generated plots.
-4) Ensure sources are consistent: keep only source `.cpp`/`R` files that should ship; remove stale binaries; regenerate any required Rcpp exports cleanly.
-5) Run devtools/rhub checks locally (as feasible) and fix check NOTES/WARNINGS/ERRORS to reach R CMD check compliance.
+## Artifacts to introduce (near term)
+- `metadata/models.json` (or YAML): per-model fields: name/id, params (names, order, defaults), data support (interval bounds + closed flags), density identifier, sampler for tests, start-value hints, per-model validation hooks (e.g., Lomax moment condition), optional optimization options.
+- `metadata/docs.json`: per-model text blocks: title, description, details, references, examples (with seeds), seealso, aliases. Shared snippets allowed.
+- Justfile targets for generation: `gen-r` (wrappers, roxygen), `gen-bindings` (Rcpp glue stubs), `regen-all` (end-to-end), `check`.
 
-## Next-phase prep
-- Add a Justfile and helper scripts to generate R wrappers from C++ (Rcpp/RcppArmadillo), so estimators share a consistent interface and can be built standalone.
-- Incrementally port estimators to C++ (prioritizing the heavy ones), validating against existing R implementations and tests.
-- Expand tests to cover numerical edge cases and match-stats across R/C++ implementations.
+## Pipeline sketch
+1) Parser reads metadata+docs → emits:
+   - R wrappers `ml<dist>()` as thin decorators around `.Call` bindings.
+   - R metadata registration (`univariateML_metadata`) and `zzz` registrar (no filesystem scanning).
+   - Roxygen blocks from docs.json.
+   - C++ binding stubs that call core C++ APIs (to be added), returning estimates/logLik/iters.
+2) Core C++ stays Armadillo-only (no Rcpp types). RcppArmadillo layer only in generated bindings.
+3) Tests: generate smoke tests per model (simulate with defaults, fit, recompute logLik via R density), plus A/B checks against legacy R implementations while porting.
 
-## Check/cleanup checklist (from latest R CMD check)
-- Fix test failures (11): log-likelihood attribute name mismatches and missing warnings in mlgumbel, mlinvweibull, mllomax, mlweibull; determine if tests or code are at fault.
-- R/utility.R has non-ASCII chars; replace with ASCII or escapes.
-- Rd mismatch: `inverse_digamma.Rd` usage/doc arguments inconsistent (x vs y); align aliases/usage/docs.
-- Makevars non-portable: remove `-march=native`, `-Ofast`, `-fopenmp` etc., and GNU make extensions; switch to portable defaults.
-- Top-level NOTE: add `plan.md` to `.Rbuildignore` (or relocate) to silence.
-- Avoid ::: self-namespace call to `newton_raphson_1d`; refactor to export/internal access cleanly.
-- OpenMP macro NOTE: align SHLIB_OPENMP_* flags if keeping OpenMP, or drop OpenMP for CRAN portability.
-- Compilation flags NOTE: ensure we rely on R’s defaults; avoid custom hardening flags that trigger notes.
-- Future timestamp NOTE: likely harmless unless clock skew; monitor.
+## Steps
+1) Finish stabilizing current R package (done: tests passing, CRAN notes resolved except env/compiler notes).
+2) Draft metadata schema and docs schema; add example entries for 1–2 models (e.g., gumbel, weibull).
+3) Write generator scripts + Justfile stubs to produce R wrappers/metadata/zzz and binding skeletons (no core C++ change yet).
+4) Implement core C++ for one model using Armadillo-only API; wire generated binding/wrapper; validate vs existing tests.
+5) Incrementally port remaining models, removing hand-written R as each is migrated; expand metadata/docs entries.
+6) Add minimal GitHub Actions later (R CMD check + codegen sanity).
+
+## Notes
+- Maintain portable build flags and optional OpenMP guarded in C++; keep CRAN-safe defaults.
+- Plan for standalone C++ by keeping core under `include/univariate_ml/` and isolating Rcpp to bindings.
