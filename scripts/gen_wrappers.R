@@ -1,9 +1,11 @@
 # Generates explicit ml*** wrappers from metadata.
 # Run via: Rscript scripts/gen_wrappers.R
 
-suppressPackageStartupMessages(library(jsonlite))
+if (!requireNamespace("jsonlite", quietly = TRUE)) {
+  stop("jsonlite is required to run this generator.")
+}
 
-models <- fromJSON("metadata/models.json", simplifyDataFrame = FALSE)$models
+models <- jsonlite::fromJSON("metadata/models.json", simplifyDataFrame = FALSE)$models
 
 gen_wrapper <- function(model) {
   fname <- paste0("ml", model$id)
