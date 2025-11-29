@@ -40,7 +40,7 @@ univariateML_metadata$mlburr <- list(
 
 mlburr_ <- function(x, ...) {
   if (all(x >= 1)) {
-    stop("The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlburr` to fit a Pareto distribution.")
+    stop("The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlpareto` to fit a Pareto distribution.")
   }
 
   n <- length(x)
@@ -57,9 +57,9 @@ mlburr_ <- function(x, ...) {
     f / df
   }
 
-  # Moment approximation to c from linear regression.
-  c0 <- 0.385 / (sum(log_x * log_x) / n)^(1 / 3)
-  # c0 <- 4.953032*(sum(log_x * log_x) / n)^(-0.46)
+  mu <- lx_sum / n
+  sigma2 <- sum(log_x^2) / n - mu^2
+  c0 <- burr_lmom(mu, sigma2)[2]
   c <- newton_raphson_1d(f_over_df, c0, ...)
   k <- n / sum(log(1 + x^c))
 

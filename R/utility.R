@@ -70,6 +70,8 @@ newton_raphson_1d <- function(f_over_df, param0, ...) {
     param0 <- param
   }
 
+  #print(paste0("Iter: ", i))
+
   if (i == iterlim) {
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
@@ -105,19 +107,53 @@ get_start <- function(default, name, ...) {
 #' @param y Values to invert.
 #' @references Batir, N. (2017). Inequalities for the inverses of the polygamma functions. arXiv. http://arxiv.org/abs/1705.06547
 
-inverse_digamma <- function(y) {
-  if (y < -500) {
-    stop("y must be greater than -500")
+inverse_digamma <- function(x) {
+  γ <- 0.57721566490153286060
+  ζ3  <- 1.2020569031595942854
+  y <- if (x < -3.5) {
+    t  <- x + γ
+    -1/t + (pi^2/6)/t^3 + (ζ3/2)/t^4
+  } else if (x > 2) {
+    0.5 / log1p(exp(-x)) + 0.5*(exp(x) + 0.5)
+  } else {
+    1 / log1p(exp(-x))
   }
 
-  param0 <- 1 / log1p(exp(-y))
-  reltol <- .Machine$double.eps^0.25
-
-  for (i in seq(5)) {
-    param <- param0 + (y - digamma(param0)) / trigamma(param0)
-    if (abs((param0 - param) / param0) < reltol) break
-    param0 <- param
+  for (k in 1:6) {
+    r <- digamma(y) - x
+    y <- y - r / trigamma(y)
+    if (abs(r) < 8*.Machine$double.eps) break
   }
-
-  param0
+  print(k)
+  y
 }
+
+
+
+#' Log-moments estimator for Burr c parameter
+#'
+#' @param m1 Expected log moment.
+#' @param m2 Variance log moment.
+#' @return Estimated c in Burr.
+logmom_burr_c <- function(m1, m2) {
+  psi1_1 <- trigamma(1)
+
+  f_over_df <- function(c) {
+    k <- inverse_digamma(digamma(1) - c * m1)
+
+    psi1_k <- trigamma(k)
+    psi2_k <- psigamma(k, deriv = 2)
+
+    c_2 <- c^(-2)
+    c_3 <- c^(-3)
+    term1_prime <- -2 * c_3 * (psi1_1 + psi1_k)
+    term2_prime <- c_2  * (psi2_k * (-m1 / psi1_k))
+
+    f <- c_2* (psi1_1 + psi1_k) - m2
+    df <- term1_prime + term2_prime
+    f / df
+  }
+
+  univariateML:::newton_raphson_1d(f_over_df, pi / sqrt(3 * m2))
+}
+

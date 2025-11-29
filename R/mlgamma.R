@@ -55,7 +55,7 @@ mlgamma_ <- function(x, ...) {
   rate <- shape / mean_hat
 
   estimates <- c(shape = shape, rate = rate)
-  logLik <- n * (shape * log(rate) - log(gamma(shape)) + (shape - 1) * lx_bar - rate * mean_hat)
+  logLik <- n * (shape * log(rate) - lgamma(shape) + (shape - 1) * lx_bar - rate * mean_hat)
 
   list(estimates = estimates, logLik = logLik)
 }

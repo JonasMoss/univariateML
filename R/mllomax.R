@@ -52,31 +52,33 @@ univariateML_metadata$mllomax <- list(
 )
 
 mllomax_ <- function(x, ...) {
-  s <- mean(x^2)
-  m <- mean(x)
+  n <- length(x)
+  m <- sum(x) / n
+  s <- sum(x^2) / n
+  m2 <- m^2
 
-  if (s < 2 * m^2) {
+  if (s < 2 * m2) {
     stop("The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution.")
   }
-
   f_over_df <- function(lambda0) {
-    S <- mean(log(1 + lambda0 * x))
-    S1 <- mean(x / (1 + lambda0 * x))
-    S2 <- -mean(x^2 / (1 + lambda0 * x)^2)
-    f <- 1 / lambda0 - S1 / S - S1
-    df <- -1 / lambda0^2 - S2 / S + (S1 / S)^2 - S2
+    lambda0_x1p <- 1 + lambda0 * x
+    x_div <- x / lambda0_x1p
+    S <- sum(log(lambda0_x1p)) / n
+    S1 <- sum(x_div) / n
+    S2 <- sum(x_div^2) / n
+
+    psi <- S1 / S
+    f <- 1 / lambda0 - psi - S1
+    df <- psi^2 + S2 / S + S2 - 1 / lambda0^2
     f / df
   }
 
-  alpha0 <- 2 * (s - m^2) / (s - 2 * m^2)
+  alpha0 <- 2 * (s - m2) / (s - 2 * m2)
   lambda0 <- 1 / (m * (alpha0 - 1))
 
-  if (!is.null(list(...)$lambda0)) lambda0 <- list(...)$lambda0
-
-  lambda <- newton_raphson_1d(f_over_df, lambda0, ...)
-  kappa <- 1 / mean(log(1 + lambda * x))
-
-  loglik <- sum(extraDistr::dlomax(x, lambda, kappa, log = TRUE))
+  lambda <- newton_raphson_1d(f_over_df, lambda0)
+  kappa <- n / sum(log1p(lambda * x))
+  loglik <- n * (log(kappa) + log(lambda) - 1 - 1/kappa)
 
   list(estimates = c(lambda, kappa), logLik = loglik)
 }

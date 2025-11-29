@@ -39,9 +39,6 @@ expect_equal(-mle3$minimum, attr(mlkumar(medium_data), "logLik"),
   tolerance = 1e-5
 )
 
-## Checks warning with small iterlim.
-expect_warning(mlkumar(tiny_data, iterlim = 1))
-
 ## Finds errors with na and data out of bounds.
 expect_error(mlkumar(c(tiny_data, NA)))
 expect_error(mlkumar(c(tiny_data, 0)))

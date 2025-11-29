@@ -1,0 +1,4337 @@
+## DESCRIPTION
+```
+Package: univariateML
+Type: Package
+Title: Maximum Likelihood Estimation for Univariate Densities
+Version: 1.5.0
+Authors@R: c(
+    person("Jonas", "Moss", , "jonas.gjertsen@gmail.com", role = c("aut", "cre"), 
+      comment = c(ORCID = "0000-0002-6876-6964")),
+    person("Thomas", "Nagler", , "mail@tnagler.com", role = c("ctb")),
+    person("Chitu", "Okoli", , "chitu.okoli@skema.edu", role = c("ctb"))
+    )
+Description: User-friendly maximum likelihood estimation (Fisher (1921) 
+    <doi:10.1098/rsta.1922.0009>) of univariate densities.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 2.10)
+Imports: 
+    assertthat,
+    extraDistr,
+    tibble,
+    logitnorm,
+    actuar,
+    nakagami,
+    fGarch,
+    rlang,
+    intervals,
+    Rfast,
+    pracma,
+    sads,
+    Rcpp
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown,
+    markdown,
+    copula,
+    dplyr,
+    covr
+RoxygenNote: 7.3.2
+VignetteBuilder: knitr
+URL: https://github.com/JonasMoss/univariateML, https://jonasmoss.github.io/univariateML/
+BugReports: https://github.com/JonasMoss/univariateML/issues
+Roxygen: list(markdown = TRUE)
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo,
+    BH
+```
+
+## R source files (R/)
+
+### R/aaa.R
+
+```r
+#' Metadata for `univariateML` models.
+#' @export
+univariateML_metadata <- list()
+```
+
+### R/bootstrap.R
+
+```r
+#' Parametric Bootstrap on Distributions Fitted with Maximum Likelihood
+#'
+#' The parametric bootstrap is a resampling technique using random variates
+#'    from a known parametric distribution. In this function the distribution
+#'    of the random variates is completely determined by the `unvariateML`
+#'    object `object`.
+#'
+#' For each bootstrap iteration a maximum likelihood estimate is calculated
+#'    using the `ml***` function specified by `object`. The resulting
+#'    numeric vector is then passed to `map`. The values returned by
+#'    `map` is collected in an array and the `reducer` is called on
+#'    each row of the array.
+#'
+#' By default the `map` function is the identity and the default
+#'    `reducer` is the quantile function taking the argument `probs`,
+#'    which defaults to `c(0.025, 0.975)`. This corresponds to a 95\%
+#'    basic percentile confidence interval and is also reported by
+#'    [confint()]
+#'
+#' *Note:* The default confidence intervals are percentile intervals,
+#'    not empirical intervals. These confidence intervals will in some cases
+#'    have poor coverage as they are not studentized, see e.g. Carpenter,
+#'    J., & Bithell, J. (2000).
+#'
+#' @param object A `univariateML` object.
+#' @param reps Positive integer. The number of bootstrap samples.
+#' @param map A function of the parameters of the `univariateML` object.
+#'   Defaults to the identity.
+#' @param reducer A reducer function. Defaults to `stats::quantile` with
+#'   default argument `probs = c(0.025, 0.975)`.
+#' @param ... Passed to `reducer`.
+#' @return The transposed map-reduced bootstrap samples.
+#' @export
+#' @references
+#'   Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap.
+#'   CRC press.
+#'
+#'   Carpenter, J., & Bithell, J. (2000). Bootstrap confidence intervals:
+#'   when, which, what? A practical guide for medical statisticians.
+#'   Statistics in medicine, 19(9), 1141-1164.
+#'
+#' @seealso [confint()] for an application of `bootstrapml`.
+#' @examples
+#' \donttest{
+#' set.seed(1)
+#' object <- mlgamma(mtcars$qsec)
+#'
+#' ## Calculate c(0.025, 0.975) confidence interval for the gamma parameters.
+#' bootstrapml(object)
+#'
+#' #            2.5%      97.5%
+#' # shape 68.624945 160.841557
+#' # rate   3.896915   9.089194
+#'
+#' ## The mean of a gamma distribution is shape/rate. Now we calculate a
+#' ## parametric bootstrap confidence interval for the mean with confidence
+#' ## limits c(0.05, 0.95)
+#'
+#' bootstrapml(object, map = function(x) x[1] / x[2], probs = c(0.05, 0.95))
+#'
+#' #       5%      95%
+#' # 17.33962 18.31253
+#'
+#' ## Print a histogram of the bootstrapped estimates from an exponential.
+#' object <- mlexp(mtcars$qsec)
+#' hist(bootstrapml(object, reducer = identity))
+#' }
+#'
+bootstrapml <- function(
+    object, reps = 1000, map = identity,
+    reducer = stats::quantile, ...) {
+  r_fun <- univariateML_to_function(object, type = "r")
+  ml_fun <- univariateML_to_function(object, type = "ml")
+  bootstraps <- replicate(n = reps, expr = ml_fun(r_fun(attr(object, "n"))))
+
+  defaults <- list()
+
+  if (identical(reducer, stats::quantile)) {
+    defaults <- list(probs = c(0.025, 0.975))
+  }
+
+  arguments <- listmerge(x = defaults, y = list(...))
+
+  if (is.null(dim(bootstraps))) {
+    mapped <- sapply(bootstraps, map)
+  } else {
+    mapped <- apply(bootstraps, 2, map)
+  }
+
+  if (is.null(dim(mapped))) {
+    do.call(function(...) reducer(mapped, ...), arguments)
+  } else {
+    do.call(function(...) t(apply(mapped, 1, reducer, ...)), arguments)
+  }
+}
+```
+
+### R/data-abalone.R
+
+```r
+#' Abalone data
+#'
+#' Physical measurements of 4177 abalones, a species of sea snail.
+#'
+#' See the web page <https://archive.ics.uci.edu/ml/datasets/Abalone> for
+#'    more information about the data set.
+#'
+#' @format A [tibble][tibble::tibble] with 4,177 observations and 9 variables:
+#'   \describe{
+#'     \item{sex}{Sex of the abalone, `F` is female, `M` male, and
+#'                `I` infant.}
+#'     \item{length}{Longest shell measurement.}
+#'     \item{diameter}{Diameter perpendicular to length.}
+#'     \item{height}{Height with with meat in shell.}
+#'     \item{whole_weight}{Grams	whole abalone.}
+#'     \item{shucked_weight}{Grams weight of meat.}
+#'     \item{viscera_weight}{Grams gut weight (after bleeding).}
+#'     \item{shell_weight}{Grams after being dried.}
+#'     \item{rings}{+1.5 gives the age in years.}
+#'   }
+#'
+#' @source Dua, D. and Graff, C. (2019). UCI Machine Learning Repository
+#' <https://archive.ics.uci.edu/ml/>. Irvine, CA: University of California,
+#' School of Information and Computer Science.
+#'
+#' @references
+#'   Ko, V., Hjort, N. L., & Hobaek Haff, I. (2019). Focused information
+#'   criteria for copulas. Scandinavian Journal of Statistics.
+#' @examples
+#' abalone
+"abalone"
+```
+
+### R/data-corbet.R
+
+```r
+#' Frequencies of butterflies collected in Malaya
+#'
+#' Species abundance data from 1943; a classical application of the logarithmic
+#'   series distribution.
+#'
+#' @format A vector of size 501 containing integer observations between 1 and 24.
+#'
+#' @references
+#'  Fisher, R. A., Corbet, A. S., & Williams, C. B. (1943). The relation between the number of species and the number of individuals in a random sample of an animal population. The Journal of Animal Ecology, 12(1), 42. https://doi.org/10.2307/1411
+#' @examples
+#' corbet
+"corbet"
+```
+
+### R/data-egypt.R
+
+```r
+#' Mortality data from ancient Egypt
+#'
+#' Age at death of 141 Roman era Egyptian mummies.
+#'
+#' This data was collected by Spiegelberg (1901) and analyzed by Karl Pearson
+#'    (1902) in the first volume of Biometrika. It was analyzed by
+#'    Claeskens & Hjort (2008) and the data is based on their transcription.
+#'
+#' @seealso The source of the data is
+#' <https://feb.kuleuven.be/public/u0043181/modelselection/datasets/egyptlives_data.txt>
+#'
+#' @format A [tibble][tibble::tibble] with 141 observations and 2 variables:
+#'   \describe{
+#'     \item{age}{Age at death.}
+#'     \item{sex}{Sex of deceased; 82 males and 49 females.}
+#'   }
+#'
+#' @references
+#'   Spiegelberg, W. (1901). Aegyptische und Griechische Eigennamen aus
+#'   Mumientiketten der R<U+00F6>mischen Kaiserzeit.
+#'
+#'   Pearson, K. (1902). On the change in expectation of life in man during a
+#'   period of circa 2000 years. Biometrika, 1(2), 261-264.
+#'
+#'   Claeskens, G., & Hjort, N. L. (2008). Model selection and model averaging.
+#'   Cambridge University Press.
+#' @examples
+#' egypt
+"egypt"
+```
+
+### R/densities.R
+
+```r
+```
+
+### R/functions.R
+
+```r
+#' Maximum likelihood estimated distribution
+#'
+#' Density, distribution function, quantile function and random generation for
+#'    a univariate distribution estimated by maximum likelihood.
+#'
+#' `dml` is the density, `pml` is the distribution function,
+#' `qml` is the quantile function, and `rml` is the random variable
+#' generator.
+#'
+#' These functions work like their counterparts in `stats`, e.g.
+#' [Normal][stats::Normal]. The `univariateML` object contains both maximum
+#' likelihood estimates and the identity of the model these estimates were
+#' calculated under. These functions are wrappers around underlying density,
+#' distribution, quantile and random generation functions where unknown
+#' parameters are filled with the maximum likelihood estimates.
+#' See the example.
+#'
+#' @param x,q vector of quantiles.
+#' @param p vector of probabilities.
+#' @param n number of observations. If `length(n) > 1`, the length is
+#'     taken to be the number required.
+#' @param obj an `univariateML` object.
+#' @param log,log.p logical; if `TRUE`, the probabilities p are gives as
+#'     `log(p)`.
+#' @param lower.tail logical; if `TRUE` (default), the probabilities are
+#'     \eqn{P[X \le x]} otherwise, \eqn{P[X > x]}
+#' @return `dml` gives the density, `pml` gives the distribution
+#'     function, `qml` gives the quantile function, and `rml`
+#'     generates random deviates.
+#' @examples
+#' ## Simple example
+#' obj <- mlnorm(airquality$Wind)
+#' dml(0.5, obj) == dnorm(0.5, mean = obj[1], sd = obj[2])
+#'
+#' obj <- mlbetapr(airquality$Wind)
+#'
+#' # Plot the logarithm of the beta prime distribution.
+#' plot(function(x) dml(x, obj, log = TRUE),
+#'   from = 0, to = 20,
+#'   main = "Logarithm of Density", ylab = NA, lwd = 2
+#' )
+#' @name MaximumLikelihoodDistribution
+#' @export
+dml <- function(x, obj, log = FALSE) {
+  fun <- univariateML_to_function(obj, type = "d")
+  if (!("log" %in% names(formals(fun)))) {
+    log(fun(x = x))
+  } else {
+    fun(x = x, log = log)
+  }
+}
+
+#' @rdname MaximumLikelihoodDistribution
+#' @export
+pml <- function(q = q, obj, lower.tail = TRUE, log.p = FALSE) {
+  fun <- univariateML_to_function(obj, type = "p")
+  if (!all(c("log.p", "lower.tail") %in% names(formals(fun)))) {
+    p <- fun(q = q)
+    if (!lower.tail) p <- 1 - p
+    if (log.p) p <- log(p)
+    p
+  } else {
+    fun(q = q, lower.tail = lower.tail, log.p = log.p)
+  }
+}
+
+#' @rdname MaximumLikelihoodDistribution
+#' @export
+qml <- function(p = p, obj, lower.tail = TRUE, log.p = FALSE) {
+  fun <- univariateML_to_function(obj, type = "q")
+  if (!all(c("log.p", "lower.tail") %in% names(formals(fun)))) {
+    if (!lower.tail) p <- 1 - p
+    if (log.p) p <- exp(p)
+    fun(p = p)
+  } else {
+    fun(p = p, lower.tail = lower.tail, log.p = log.p)
+  }
+}
+
+#' @rdname MaximumLikelihoodDistribution
+#' @export
+rml <- function(n = n, obj) {
+  univariateML_to_function(obj, type = "r")(n = n)
+}
+```
+
+### R/generics.R
+
+```r
+#' Wrangles arguments for use in the plot, lines and points functions.
+#'
+#' @param x The input data.
+#' @param range Range of the data.
+#' @param points Boolean; should points be plotted by default?
+#' @keywords internal
+
+plot_wrangler <- function(x, range, points = FALSE, kind, ...) {
+  continuous <- if (is.null(attr(x, "continuous"))) TRUE else attr(x, "continuous")
+  support <- attr(x, "support")
+  if (is.null(range)) {
+    if (abs(support[[1]]) + abs(support[[2]]) < Inf) {
+      limits <- as.numeric(support)
+    } else if (abs(support[[1]]) == 0 && abs(support[[2]]) == Inf) {
+      limits <- c(0, qml(0.995, x))
+    } else {
+      limits <- qml(c(0.005, 0.995), x)
+    }
+
+    limits_untransformed <- limits
+    if (kind == "q") limits <- pml(limits, x)
+
+    range <- if (continuous) {
+      seq(limits[1], limits[2], length.out = 1000)
+    } else {
+      if (kind == "q") {
+        pml(seq(limits_untransformed[1], limits_untransformed[2]), x)
+      } else {
+        seq(limits[1], limits[2])
+      }
+    }
+  }
+
+  ylab <- list(d = "Density", p = "Cumulative probability", q = "Quantile")
+  xlab <- list(d = "x", p = "Quantile", q = "Cumulative probability")
+  defaults <- list(
+    type = if (points) "p" else "l",
+    main = paste0(attr(x, "model"), " model"),
+    ylab = ylab[[kind]],
+    xlab = xlab[[kind]],
+    lwd = 1
+  )
+
+  if (!continuous) {
+    defaults$pch <- 20
+    defaults$type <- if (points) "p" else "b"
+  }
+
+  args <- listmerge(
+    x = defaults,
+    y = list(...)
+  )
+
+  args$x <- range
+  args$y <- if (kind == "d") {
+    dml(args$x, x)
+  } else if (kind == "p") {
+    pml(args$x, x)
+  } else {
+    qml(args$x, x)
+  }
+  args
+}
+
+#' Plot, Lines and Points Methods for Maximum Likelihood Estimates
+#'
+#' The `plot`, `lines`, and `points` methods for
+#'    `univariateML` objects.
+#'
+#' @export
+#' @param x a `univariateML` object.
+#' @param range range of `x` values to plot, i.e. `c(lower, upper)`.
+#' @param kind can be `density`, `probability`, or `quantile`.
+#' @param ... parameters passed to `plot`, `lines`, or `points`.
+#' @return An invisible copy of `x`.
+#' @examples
+#' plot(mlweibull(datasets::precip), main = "Annual Precipitation in US Cities")
+#' lines(mlgamma(datasets::precip), lty = 2)
+#' rug(datasets::precip)
+#' @export
+#'
+plot.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+  kind <- match.arg(kind)
+  args <- plot_wrangler(x, range, points = FALSE, kind = kind, ...)
+  do.call(graphics::plot, args)
+  invisible(x)
+}
+
+#' @export
+#' @rdname plot.univariateML
+lines.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+  kind <- match.arg(kind)
+  args <- plot_wrangler(x, range, points = FALSE, kind = kind, ...)
+  do.call(graphics::lines, args)
+  invisible(x)
+}
+
+#' @export
+#' @rdname plot.univariateML
+points.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
+  kind <- match.arg(kind)
+  args <- plot_wrangler(x, range, points = TRUE, kind = kind, ...)
+  do.call(graphics::points, args)
+  invisible(x)
+}
+
+#' @export
+logLik.univariateML <- function(object, ...) {
+  val <- attr(object, "logLik")
+  attr(val, "nobs") <- attr(object, "n")
+  attr(val, "df") <- length(object)
+  class(val) <- "logLik"
+  val
+}
+
+#' @export
+coef.univariateML <- function(object, ...) {
+  stats::setNames(as.numeric(object), names(object))
+}
+
+#' @export
+summary.univariateML <- function(object, ...) {
+  data.name <- deparse(as.list(attr(object, "call"))$x)
+  digits <- list(...)$digits
+  support <- attr(object, "support")
+  cat(
+    "\nMaximum likelihood for the", attr(object, "model"), "model \n",
+    "\nCall: ", deparse(attr(object, "call")), "\n\nEstimates: \n"
+  )
+  print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
+  cat("\nData:            ", data.name, " (", attr(object, "n"), " obs.)\n",
+    "Support:         (", support[[1]], ", ", support[[2]], ")\n",
+    "Density:         ", attr(object, "density"), "\n",
+    "Log-likelihood:  ", attr(object, "logLik"), "\n",
+    sep = ""
+  )
+  invisible(object)
+}
+
+#' @export
+print.univariateML <- function(x, ...) {
+  digits <- list(...)$digits
+  if (is.null(digits)) digits <- 4
+  cat("Maximum likelihood estimates for the", attr(x, "model"), "model \n")
+  print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
+  invisible(x)
+}
+
+
+#' Confidence Intervals for Maximum Likelihood Estimates
+#'
+#' Computes a confidence interval for one or more parameters in a
+#'    `unvariateML` object.
+#'
+#' `confint.univariateML` is a wrapper for  [bootstrapml()] that
+#'    computes confidence intervals for the main parameters of `object`.
+#'    The main parameters of `object` are the members of
+#'    `names(object)`. For instance, the main parameters of an object
+#'    obtained from  `mlnorm` are  `mean` and  `sd`. The
+#'    confidence intervals are parametric bootstrap percentile intervals
+#'    with limits `(1-level)/2` and `1 - (1-level)`.
+#'
+#' @param object An object of class `univariateML`.
+#' @param parm Vector of strings; the parameters to calculate a confidence
+#'    interval for. Each parameter must be a member of `names(object)`.
+#' @param level The confidence level.
+#' @param Nreps Number of bootstrap iterations. Passed to
+#'    [bootstrapml()].
+#' @param ... Additional arguments passed to [bootstrapml()].
+#' @return A matrix or vector with columns giving lower and upper confidence
+#'    limits for each parameter in `parm`.
+#' @seealso [stats::confint()] for the generic function and
+#'    [bootstrapml()] for the function used to calculate the
+#'    confidence intervals.
+#' @export
+#' @examples
+#' object <- mlinvgauss(airquality$Wind)
+#' confint(object) # 95% confidence interval for mean and shape
+#' confint(object, "mean") # 95% confidence interval for the mean parameter
+#' # confint(object, "variance") # Fails since 'variance isn't a main parameter.
+confint.univariateML <- function(
+    object,
+    parm = NULL,
+    level = 0.95,
+    Nreps = 1000,
+    ...) {
+  if (is.null(parm)) parm <- names(object)
+
+  assertthat::assert_that(all(parm %in% names(object)),
+    msg =
+      "'parm' must contain valid parameter names or be NULL"
+  )
+
+  indices <- which(names(object) %in% parm)
+
+  map <- function(x) x[indices]
+
+  probs <- c((1 - level) / 2, 1 - (1 - level) / 2)
+
+  bootstrapml(object, map = map, probs = probs, Nreps = Nreps, ...)
+}
+```
+
+### R/helpers.R
+
+```r
+#' Decorate estimator
+#'
+#' The decorator constructs an `ml***`. It first checks the input arguments,
+#'    then call the defined estimator (with elements `estimates` and `logLik`),
+#'    and the optional parameter `support`, then adds the required attributes.
+#'
+#' @param name Name of the `ml***` function.
+#' @return The proper `ml***` function.
+#' @keywords internal
+decorator <- function(name) {
+  force(name)
+  fun <- function(x, na.rm = FALSE, ...) {
+    x <- ml_check_modify(x, na.rm = na.rm, name = name)
+    n <- length(x)
+    out <- rlang::exec(paste0(name, "_"), x = x, ...)
+
+    params <- list(logLik = out$logLik, call = deparse(match.call()), n = n)
+    univariateML_construct(out$estimates, name = name, params = params)
+  }
+  meta <- univariateML_metadata[[name]]
+  meta$parameters <- meta$names
+  meta$names <- NULL
+  attributes(fun) <- c(meta, attributes(fun))
+  fun
+}
+
+#' Construct `univariateML` object.
+#'
+#' @param estimates The estimated parameters
+#' @param name Name of the `ml***` function.
+#' @param params List of `loglik`, `call`, and `n`.
+#' @return Object of class `univariateML`
+
+univariateML_construct <- function(estimates, name, params) {
+  estimates <- unname(estimates)
+  class <- "univariateML"
+  args <- c(.Data = list(estimates), params, univariateML_metadata[[name]], class = class)
+  object <- do.call(structure, args)
+  attr(object, "call") <- if (length(attr(object, "call")) == 1) {
+    str2lang(attr(object, "call"))
+  } else {
+    NULL
+  }
+
+  if (univariateML_metadata[[name]]$support@type == "R") {
+    attr(object, "continuous") <- TRUE
+  } else {
+    attr(object, "continuous") <- FALSE
+  }
+
+  support_names <- names(univariateML_metadata[[name]]$support)
+  if (is.null(support_names)) {
+    attr(object, "support") <- c(univariateML_metadata[[name]]$support@.Data)
+  } else {
+    support <- attr(object, "support")
+    values <- as.list(stats::setNames(estimates, univariateML_metadata[[name]]$names))
+    supp <- unname(sapply(names(support), function(x) with(values, eval(str2lang(x)))))
+    attr(object, "support") <- supp
+  }
+  object
+}
+
+
+ml_check_modify <- function(x, na.rm, name) {
+  assertthat::assert_that(is.numeric(x))
+  msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
+  assertthat::assert_that(NCOL(x) == 1, msg = msg)
+  msg <- "NA in input when na.rm = FALSE"
+  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x), msg = msg)
+
+  support <- univariateML_metadata[[name]]$support
+
+  msg <- "x not in the support of the data"
+  if (support@closed[1]) {
+    assertthat::assert_that(min(x) >= support[[1]], msg = msg)
+  } else {
+    assertthat::assert_that(min(x) > support[[1]], msg = msg)
+  }
+
+  if (support@closed[2]) {
+    assertthat::assert_that(max(x) <= support[[2]], msg = msg)
+  } else {
+    assertthat::assert_that(max(x) < support[[2]], msg = msg)
+  }
+
+  if (support@type == "Z") {
+    if (sum(abs(x - floor(x)) != 0)) {
+      stop("Non-integral inputs for discrete density.")
+    }
+  }
+
+  x
+}
+
+#' Transform a univariateML object to a string specifying quantile, CDF,
+#'     density or random variate generation.
+#'
+#' @param obj A univariateML object.
+#' @param type A type.
+#' @return A string
+#' @keywords internal
+
+univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
+  type <- match.arg(type)
+  if (type %in% c("d", "p", "q", "r")) {
+    strings <- strsplit(attr(obj, "density"), "::")[[1]]
+    substring(strings[2], first = 1, last = 1) <- type
+    paste0(strings[1], "::", strings[2])
+  } else {
+    paste0(type, substring(strsplit(attr(obj, "density"), "::")[[1]][2], 2))
+  }
+}
+
+#' Transform a univariateML object to a quantile, CDF, density or random
+#'    variate generation.
+#'
+#' @param obj A univariateML object.
+#' @param type A type.
+#' @return A string
+#' @keywords internal
+
+univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
+  type <- match.arg(type)
+  string <- univariateML_to_string(obj, type = type)
+  fun <- eval(parse(text = string))
+  if (type %in% c("d", "p", "q", "r")) {
+    for (i in seq_along(obj)) formals(fun)[[names(obj)[i]]] <- unname(obj[i])
+  }
+  fun
+}
+
+#' Data and function to 'univariateML'
+#' @param y Data to transform.
+#' @param obj Function to apply.
+#' @keywords internal
+
+to_univariateML <- function(y, obj) {
+  if (inherits(obj, "univariateML")) {
+    obj <- obj
+  } else {
+    msg <- paste0(
+      "obj must be either a function returning a univariateML ",
+      "object or an univariateML object."
+    )
+    tryCatch(
+      {
+        obj <- obj(y)
+      },
+      error = function(cond) stop(msg)
+    )
+    stopifnot(inherits(obj, "univariateML"))
+  }
+
+  obj
+}
+```
+
+### R/mlbetapr.R
+
+```r
+#' Beta prime distribution maximum likelihood estimation
+#'
+#' This function does not estimate the scale parameter for the `BetaPrime`
+#'     distribution. Transforms the data and uses `stat::nlm` to estimate
+#'     the parameters of the Beta distribution.
+#'
+#' For the density function of the Beta prime distribution see
+#'     [BetaPrime][extraDistr::BetaPrime].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... passed to [`mlbeta`][mlbeta].
+#' @return `mlbetapr` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shape1` and `shape2` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @details For `type`, the option `none` is fastest.
+#' @seealso [BetaPrime][extraDistr::BetaPrime] for the Beta prime density,
+#'   [nlm][stats::nlm] for the optimizer this function uses, [mlbeta] for
+#'   the Beta distribution maximum likelihood estimator.
+#' @examples
+#' AIC(mlbetapr(USArrests$Rape))
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
+#' @export
+mlbetapr <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlbetapr <- list(
+  "model" = "BetaPrime",
+  "density" = "extraDistr::dbetapr",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("shape1", "shape2"),
+  "default" = c(2, 3)
+)
+
+mlbetapr_ <- function(x, ...) {
+  estimates <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
+  alpha <- estimates[1]
+  beta <- estimates[2]
+  logLik <- unname(-length(x) * (lbeta(alpha, beta) -
+    (alpha - 1) * mean(log(x)) +
+    (alpha + beta) * mean(log(1 + x))))
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlbeta.R
+
+```r
+#' Beta distribution maximum likelihood estimation
+#'
+#' Uses `stat::nlm` to estimate the parameters of the Beta distribution.
+#'
+#' For the density function of the Beta distribution see [Beta][stats::Beta].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Ignored.
+#' @return `mlbeta` returns an object of [class][base::class]
+#'    `univariateML`. This is a named numeric vector with maximum
+#'    likelihood estimates for `shape1` and `shape2` and the
+#'    following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @details For `type`, the option `none` is fastest.
+#' @seealso [Beta][stats::Beta] for the Beta density, [nlm][stats::nlm] for the
+#'   optimizer this function uses.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York.
+#'
+#' @examples
+#' AIC(mlbeta(USArrests$Rape / 100))
+#' @export
+mlbeta <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlbeta <- list(
+  "model" = "Beta",
+  "density" = "stats::dbeta",
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
+  "names" = c("shape1", "shape2"),
+  "defaults" = c(2, 3)
+)
+
+mlbeta_ <- function(x, ...) {
+  n <- length(x)
+  s <- sum(log(x)) / n
+  r <- sum(log1p(-x)) / n
+
+  reltol <- .Machine$double.eps^0.5
+  iterlim <- 100
+
+  m <- sum(x) / n
+  v <- sum(x^2) / n - m^2
+  nu <- m * (1 - m) / v - 1
+  b <- log((1 - m) * nu)
+
+  for (i in seq(iterlim)) {
+    exp_b <- exp(b)
+    digamma_b_r <- digamma(exp_b) - r
+    trigamma_b <- trigamma(exp_b)
+
+    # Inverts digamma(s-r+digamma(exp(b)))
+    y <- s + digamma_b_r
+    a <- 1 / log(1 + exp(-y))
+    a <- a + (y - digamma(a)) / trigamma(a)
+    a <- a + (y - digamma(a)) / trigamma(a)
+    a <- a + (y - digamma(a)) / trigamma(a)
+
+    # Construct derivative and hessian
+    f <- exp_b * (digamma_b_r - digamma(a + exp_b))
+    df <- f + exp_b^2 * (trigamma_b - trigamma(a + exp_b) * (trigamma_b / trigamma(a) + 1))
+
+    b0 <- b - f / df
+    if (abs((b0 - b) / b0) < reltol) break
+    b <- b0
+  }
+
+  list(
+    estimates = c(a, exp_b),
+    logLik = n * ((a - 1) * s + (exp_b - 1) * r - lbeta(a, exp_b)),
+    i = i
+  )
+}
+
+```
+
+### R/mlbinom.R
+
+```r
+#' Binomial distribution maximum likelihood estimation
+#'
+#' For the density function of the Binomial distribution see
+#' [Binomial][stats::dbinom].
+#'
+#' The estimator computes both the `size` and `prob` parameter by default. Be aware
+#'   that the likelihood will often be unbounded. According to Olkin et al. (1981),
+#'   the likelihood is unbounded when \eqn{\hat{\mu}/\hat{\sigma}^2 \leq 1},
+#'   where \eqn{\hat{\sigma}^2} is the biased sample variance. When the likelihood
+#'   is unbounded,the maximum likelihood estimator can be regarded as a [Poisson][stats::dpois]
+#'   with `lambda` parameter equal to the mean of the observation.
+#'
+#' When \eqn{\hat{\mu}/\hat{\sigma}^2 \leq 1} and `size` is not supplied by the user,
+#'   an error is cast. If `size` is provided and `size < max(x)`, an error is cast.
+#'
+#' The maximum likelihood estimator of `size` is unstable, and improvements exist.
+#'   See, e.g., Carroll and Lomard (1985) and DasGupta and Rubin (2005).
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... The arguments `size` can be specified to only return the ml of `prob`.
+#'    `reltol` is the relative accuracy requested,
+#'    defaults to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'    specifying the maximum number of iterations to be performed before the
+#'    program is terminated (defaults to `100`).
+#' @return `mlbinom` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `size` and `prob` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' # The likelihood will often be unbounded.
+#' \dontrun{
+#' mlbinom(ChickWeight$weight)
+#' }
+#' # Provide a size
+#' mlbinom(ChickWeight$weight, size = 400)
+#'
+#' # Or use mlpoiss, the limiting likelihood of the binomial.
+#' mlpois(ChickWeight$weight)
+#' @seealso [Binomial][stats::dbinom] for the density.
+#' @export
+#' @references
+#' Olkin, I., Petkau, A. J., & Zidek, J. V. (1981). A comparison of n Estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642. https://doi.org/10.1080/01621459.1981.10477697
+#'
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#'
+#' Carroll, R. J., & Lombard, F. (1985). A Note on N Estimators for the Binomial Distribution. Journal of the American Statistical Association, 80(390), 423-426. https://doi.org/10.1080/01621459.1985.10478134
+#'
+#' DasGupta, A., & Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1-2), 391-404. https://doi.org/10.1016/j.jspi.2004.02.019
+
+
+mlbinom <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlbinom <- list(
+  "model" = "Binomial",
+  "density" = "stats::dbinom",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  "names" = c("size", "prob"),
+  "default" = c(10, 0.5)
+)
+
+mlbinom_ <- function(x, ...) {
+  dots <- list(...)
+
+  n <- length(x)
+  x_bar <- mean(x)
+  n <- length(x)
+  counts <- Rfast::Table(x)
+  uniques <- as.numeric(names(counts))
+
+  log_likelihood <- function(size) {
+    n * x_bar * log(x_bar) +
+      n * (size - x_bar) * log(size - x_bar) -
+      n * size * log(size) +
+      sum(counts * lchoose(size, uniques))
+  }
+
+  if (!is.null(dots$size)) {
+    size <- dots$size
+    if (size < max(x)) stop("`size` is smaller than `max(x)`.")
+    prob <- x_bar / size
+    return(list(estimates = c(size, prob), logLik = log_likelihood(size)))
+  }
+
+  if (mean(x) / (stats::var(x) * (n - 1) / n) <= 1) {
+    stop("The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument.")
+  }
+
+  f_over_df <- function(size) {
+    size_m_x <- size - x_bar
+    f <- n * (log(size_m_x) - log(size)) +
+      n * digamma(size + 1) -
+      sum(counts * digamma(size - uniques + 1))
+
+    df <- n * x_bar / (size * size_m_x) +
+      n * trigamma(size + 1) -
+      sum(counts * trigamma(size - uniques + 1))
+
+    f / df
+  }
+
+  size0 <- max(x)
+  size_cands <- size0
+  if (size0 != 1) {
+    if (f_over_df(size0) > 0) {
+      size_cand <- newton_raphson_1d(f_over_df, size0)
+      size_cands <- c(size0, floor(size_cand), ceiling(size_cand))
+    }
+  }
+
+  log_liks <- sapply(size_cands, log_likelihood)
+  size <- size_cands[which.max(log_liks)]
+
+  list(
+    estimates = c(size = size, prob = x_bar / size),
+    logLik = max(log_liks)
+  )
+}
+```
+
+### R/mlburr.R
+
+```r
+#' Burr distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimator fails to exist when the data contains no values
+#' strictly smaller than 1. Then the likelihood converges
+#' to the likelihood of the [Pareto distribution][mlpareto] in this case.
+#'
+#' This function estimates the only the shape parameters of the Burr distribution.
+#' The shape is set to 1.
+#'
+#' For the density function of the Burr distribution see [Burr][actuar::dburr].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlburr` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shape1` and `shape2` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlburr(abalone$length)
+#' @seealso [Burr][actuar::dburr] for the Burr density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
+#' Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
+#' @export
+mlburr <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlburr <- list(
+  "model" = "Burr",
+  "density" = "actuar::dburr",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape1", "shape2"),
+  "default" = c(1, 2)
+)
+
+
+mlburr_ <- function(x, ...) {
+  if (all(x >= 1)) {
+    stop("The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlpareto` to fit a Pareto distribution.")
+  }
+
+  n <- length(x)
+  log_x <- log(x)
+  lx_sum <- sum(log_x)
+  f_over_df <- function(c) {
+    x_c <- x^c
+    x_c_div <- x_c / (x_c + 1)
+    g <- sum(log(1 + x_c))
+    dg <- sum(log_x * x_c_div)
+    d2g <- sum(log_x^2 * x_c_div) - sum((log_x * x_c_div)^2)
+    f <- n / c - n * dg / g + lx_sum - dg
+    df <- -n / c^2 - n * (g * d2g - dg^2) / g^2 - d2g
+    f / df
+  }
+
+  # Moment approximation to c from linear regression.
+  c0 <- 0.385 / (sum(log_x * log_x) / n)^(1 / 3)
+  # c0 <- 4.953032*(sum(log_x * log_x) / n)^(-0.46)
+  c <- newton_raphson_1d(f_over_df, c0, ...)
+  k <- n / sum(log(1 + x^c))
+
+  list(
+    estimates = c(k, c),
+    logLik = sum(actuar::dburr(x, k, c, log = TRUE))
+  )
+}
+```
+
+### R/mlcauchy.R
+
+```r
+#' Cauchy distribution maximum likelihood estimation
+#'
+#' Calculates the estimates using `nlm` and an exponential transform of the
+#'     location parameter. If `n < 5`, an exact solution is reported. In
+#'     the edge case where no maximum likelihood estimator exists and error is
+#'     thrown.
+#'
+#' For the density function of the Cauchy distribution see
+#'     [Cauchy][stats::Cauchy].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlcauchy` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `location` and `scale` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @seealso [Cauchy][stats::Cauchy] for the Cauchy density, [nlm][stats::nlm]
+#'   for the optimizer this function uses.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 16. Wiley, New York.
+#' @examples
+#' mlcauchy(airquality$Temp)
+#' @export
+mlcauchy <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlcauchy <- list(
+  "model" = "Cauchy",
+  "density" = "stats::dcauchy",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("location", "scale"),
+  "default" = c(0, 1)
+)
+
+mlcauchy_ <- function(x, ...) {
+  m <- stats::median(x)
+  mad <- stats::median(abs(x - m))
+  start <- c(m, mad)
+
+  f <- function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
+  values <- suppressWarnings(stats::nlm(f = f, p = start))
+
+  list(
+    estimates = c(values$estimate[1], exp(values$estimate[2])),
+    logLik = -values$minimum
+  )
+}
+```
+
+### R/mldunif.R
+
+```r
+#' Discrete uniform distribution maximum likelihood estimation
+#'
+#' For the density function of the Discrete uniform distribution see
+#' [DiscreteUniform][extraDistr::ddunif].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... not in use.
+#' @return `mldunif` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `min` and `max` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mldunif(corbet)
+#' @seealso [DiscreteUniform][extraDistr::ddunif] for the density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#' @export
+mldunif <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mldunif <- list(
+  "model" = "Discrete uniform",
+  "density" = "extraDistr::ddunif",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "Z"),
+  "names" = c("min", "max"),
+  "default" = c(2, 10)
+)
+
+mldunif_ <- function(x, ...) {
+  n <- length(x)
+  estimates <- c(min(x), max(x))
+  list(
+    estimates = estimates,
+    logLik = -n * log(estimates[2] - estimates[1] + 1)
+  )
+}
+```
+
+### R/mlexp.R
+
+```r
+#' Exponential distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `rate` is the inverse sample mean.
+#'
+#' For the density function of the exponential distribution see
+#'    [Exponential][stats::Exponential].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed? If `FALSE`,
+#'   the function fails when `x` contains missing values.
+#' @param ... currently affects nothing.
+#' @return `mlexp` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `rate` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured by `match.call`}
+#'     \item{`continuous`}{Is the density continuous or discrete?}
+#' @examples
+#' mlexp(precip)
+#' @seealso [Exponential][stats::Exponential] for the exponential density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York.
+#' @export
+mlexp <- function(x, na.rm = TRUE, ...) {}
+
+univariateML_metadata$mlexp <- list(
+  "model" = "Exponential",
+  "density" = "stats::dexp",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("rate"),
+  "default" = 1
+)
+
+mlexp_ <- function(x, ...) {
+  estimates <- 1 / mean(x)
+  logLik <- length(x) * (log(estimates) - 1)
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlfatigue.R
+
+```r
+#' Gamma distribution maximum likelihood estimation
+#'
+#' Uses Newton-Raphson to estimate the parameters of the Birnbaum--Saunders distribution.
+#' The parameter `mu` is set to `0`, hence only `alpha` and `beta` are estmated.
+#'
+#' For the density function of the Birnbaum--Saunders distribution see
+#' [BirnbaumSaunders][extraDistr::dfatigue].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... `reltol` is the relative accuracy requested, defaults
+#'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'     specifying the maximum number of iterations to be performed before the
+#'     program is terminated (defaults to `100`).
+#' @return `mlfatigue` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `alpha` and `beta`, with `mu=0`, and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlfatigue(precip)
+#' @references From, S. G., & Li, L. (2006). Estimation of the parameters of the Birnbaum<U+2013>Saunders distribution. Communications in Statistics: Theory and Methods, 35(12), 2157<U+2013>2169. https://doi.org/10.1080/03610920600853563
+#' @export
+
+mlfatigue <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlfatigue <- list(
+  "model" = "Birnbaum-Saunders",
+  "density" = "extraDistr::dfatigue",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("alpha", "beta", "mu"),
+  "default" = c(3, 2, 0)
+)
+
+mlfatigue_ <- function(x, ...) {
+  n <- length(x)
+  x_bar <- sum(x) / n
+  x_inv_bar <- n / sum(1 / x)
+
+  f_over_df <- function(beta) {
+    xi <- n / sum(1 / (x + beta))
+    dxi <- sum(1 / (x + beta)^2) * xi^2 / n
+    f <- beta^2 - beta * (2 * x_inv_bar + xi) + x_inv_bar * (x_bar + xi)
+    df <- 2 * beta - (2 * x_inv_bar + xi) - beta * dxi + x_inv_bar * dxi
+    f / df
+  }
+
+  # Starting parameter: Method of moments solution.
+  sqrt_x <- sqrt(x)
+  beta0 <- sum(sqrt_x) / sum(1 / sqrt_x)
+  beta <- newton_raphson_1d(f_over_df, beta0, ...)
+
+  alpha <- sqrt(x_bar / beta + beta / x_inv_bar)
+
+  estimates <- c(alpha = alpha, beta = beta, mu = 0)
+  logLik <- sum(extraDistr::dfatigue(x, alpha, beta, 0, log = TRUE))
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlgamma.R
+
+```r
+#' Gamma distribution maximum likelihood estimation
+#'
+#' Uses Newton-Raphson to estimate the parameters of the Gamma distribution.
+#'
+#' For the density function of the Gamma distribution see
+#' [GammaDist][stats::GammaDist].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... `reltol` is the relative accuracy requested, defaults
+#'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'     specifying the maximum number of iterations to be performed before the
+#'     program is terminated (defaults to `100`).
+#' @return `mlgamma` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shape` and `rate` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlgamma(precip)
+#' @seealso [GammaDist][stats::GammaDist] for the Gamma density.
+#' @references Choi, S. C, and R. Wette. "Maximum likelihood estimation
+#' of the parameters of the gamma distribution and their bias."
+#' Technometrics 11.4 (1969): 683-690.
+#'
+#' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
+#' Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
+#' @export
+mlgamma <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlgamma <- list(
+  "model" = "Gamma",
+  "density" = "stats::dgamma",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape", "rate"),
+  "default" = c(2, 2)
+)
+
+mlgamma_ <- function(x, ...) {
+  n <- length(x)
+  mean_hat <- sum(x) / n
+  lx_bar <- sum(log(x)) / n
+  s <- log(mean_hat) - lx_bar
+
+  f_over_df <- function(shape0) {
+    (log(shape0) - digamma(shape0) - s) / (1 / shape0 - trigamma(shape0))
+  }
+
+  shape0 <- 1 / (12 * s) * (3 - s + sqrt((s - 3)^2 + 24 * s)) * 0.9989 + 0.0102
+  shape <- newton_raphson_1d(f_over_df, shape0, ...)
+  rate <- shape / mean_hat
+
+  estimates <- c(shape = shape, rate = rate)
+  logLik <- n * (shape * log(rate) - lgamma(shape) + (shape - 1) * lx_bar - rate * mean_hat)
+
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlged.R
+
+```r
+#' Generalized Error distribution maximum likelihood estimation
+#'
+#' Joint maximum likelihood estimation as implemented by [fGarch::gedFit].
+#'
+#' For the density function of the Student t-distribution see
+#' [ged][fGarch::ged].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlged` returns an object of [class][base::class] `univariateML`.
+#'   This is a named numeric vector with maximum likelihood estimates for the
+#'   parameters `mean`, `sd`, `nu` and the following attributes:
+#'   \item{`model`}{The name of the model.}
+#'   \item{`density`}{The density associated with the estimates.}
+#'   \item{`logLik`}{The loglikelihood at the maximum.}
+#'   \item{`support`}{The support of the density.}
+#'   \item{`n`}{The number of observations.}
+#'   \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlged(precip)
+#' @seealso [ged][fGarch::ged] for the Student t-density.
+#' @references Nelson D.B. (1991); Conditional Heteroscedasticity in Asset
+#'   Returns: A New Approach, Econometrica, 59, 347<U+2013>370.
+#'
+#'   Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat Tails and
+#'   Skewness, Preprint.
+#' @export
+mlged <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlged <- list(
+  "model" = "Generalized Error",
+  "density" = "fGarch::dged",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "sd", "nu"),
+  "default" = c(0, 1, 3)
+)
+
+mlged_ <- function(x, ...) {
+  fit <- suppressWarnings(fGarch::gedFit(x))
+  list(estimates = fit[["par"]], logLik = -fit$objective)
+}
+```
+
+### R/mlgeom.R
+
+```r
+#' Geometric distribution maximum likelihood estimation
+#'
+#' For the density function of the Geometric distribution see
+#' [Geometric][stats::dgeom].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... not in use.
+#' @return `mlgeom` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `prob` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlgeom(corbet)
+#' @seealso [Geometric][stats::dgeom] for the density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#' @export
+mlgeom <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlgeom <- list(
+  "model" = "Geometric",
+  "density" = "stats::dgeom",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  "names" = c("prob"),
+  "default" = 0.5
+)
+
+mlgeom_ <- function(x, ...) {
+  n <- length(x)
+  prob <- 1 / (mean(x) + 1)
+  logLik <- sum(x * log(1 - prob)) + n * log(prob)
+  list(estimates = prob, logLik = logLik)
+}
+```
+
+### R/mlgompertz.R
+
+```r
+#' Gompertz distribution maximum likelihood estimation
+#'
+#' Uses Newton-Raphson to estimate the parameters of the Gompertz distribution.
+#'
+#' For the density function of the Gompertz distribution see
+#' [Gompertz][extraDistr::Gompertz].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... `reltol` is the relative accuracy requested, defaults
+#'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'     specifying the maximum number of iterations to be performed before the
+#'     program is terminated (defaults to `100`).
+#' @return `mlgompertz` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `a` and `b` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlgompertz(precip)
+#' @seealso [Gompertz][extraDistr::Gompertz] for the Gompertz density.
+#' @references Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision. MPIDR WORKING PAPER WP 2012-008. https://www.demogr.mpg.de/papers/working/wp-2012-008.pdf
+#' @export
+mlgompertz <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlgompertz <- list(
+  "model" = "Gompertz",
+  "density" = "extraDistr::dgompertz",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("a", "b"),
+  "default" = c(1, 1)
+)
+
+mlgompertz_ <- function(x, ...) {
+  n <- length(x)
+  x_sum <- sum(x)
+  x_var <- stats::var(x) * (n - 1) / n
+  if (x_sum / n < sqrt(x_var)) {
+    stop("The maximum likelihood estimator of the b parameter Gompertz distribution does not exist since the data is overdispersed. The exponential distribution will yield a better fit.")
+  }
+
+  f_over_df <- function(b) {
+    exp_bx <- exp(b * x)
+    sum_bx <- sum(exp_bx)
+    sum_bx_x <- sum(x * exp_bx)
+    sum_bx_x2 <- sum(x^2 * exp_bx)
+    s <- sum_bx - n
+    r <- b * sum_bx_x - s
+
+    a <- b * n / s
+    da <- -n * r / s^2
+    d2a <- n / s^2 * (b * (2 * sum_bx_x^2 / s - sum_bx_x2) - 2 * sum_bx_x)
+
+    f <- n * da / a + x_sum
+    df <- n * (a * d2a - da^2) / a^2
+    f / df
+  }
+
+  b <- newton_raphson_1d(f_over_df, 10e-2, ...)
+
+  a <- b * n / (sum(exp(b * x)) - n)
+  a <- max(a, 1e-09)
+
+  list(
+    estimates = c(a, b),
+    logLik = sum(extraDistr::dgompertz(x, a, b, log = TRUE))
+  )
+}
+```
+
+### R/mlgumbel.R
+
+```r
+#' Gumbel distribution maximum likelihood estimation
+#'
+#' Uses Newton-Raphson to estimate the parameters of the Gumbel distribution.
+#'
+#' For the density function of the Gumbel distribution see
+#'    [Gumbel][extraDistr::Gumbel].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... `reltol` is the relative accuracy requested, defaults to
+#'     `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'     specifying the maximum number of iterations to be performed before the
+#'     program is terminated (defaults to `100`).
+#' @return `mlgumbel` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for `mu`
+#'    and `s` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' `shape` and `sigma`.
+#' @examples
+#' mlgumbel(precip)
+#' @seealso [Gumbel][extraDistr::Gumbel] for the Gumbel density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
+#' @export
+mlgumbel <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlgumbel <- list(
+  "model" = "Gumbel",
+  "density" = "extraDistr::dgumbel",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mu", "sigma"),
+  "default" = c(3, 3)
+)
+
+mlgumbel_ <- function(x, ...) {
+  x_bar <- sum(x) / length(x)
+  estimates <- mlgumbel_estimate(x - x_bar, ...)
+  mu <- estimates[1] + x_bar
+  sigma <- estimates[2]
+  logLik <- -length(x) * (log(sigma) + (x_bar - mu) / sigma + 1)
+  list(estimates = c(mu = mu, sigma = sigma), logLik = logLik)
+}
+
+mlgumbel_estimate <- function(x, ...) {
+  x2 <- x^2
+  f_over_df <- function(sigma0) {
+    neg_sigma_inv <- -1 / sigma0
+    exps <- exp(x * neg_sigma_inv)
+    psi0 <- sum(exps)
+    psi1 <- sum(x * exps) / psi0
+    psi2 <- sum(x2 * exps) / psi0 - psi1^2
+    f <- sigma0 + psi1
+    df <- 1 + neg_sigma_inv^2 * psi2
+    f / df
+  }
+
+  sigma0 <- sqrt(sum(x^2) / length(x)) * 2.45 / pi * (1 - 1 / length(x))
+  sigma <- newton_raphson_1d(f_over_df, sigma0, ...)
+  neg_sigma_inv <- -1 / sigma
+  psi0 <- sum(exp(x * neg_sigma_inv))
+  mu <- -sigma * log(psi0 / length(x))
+  c(mu, sigma)
+}
+```
+
+### R/mlinvburr.R
+
+```r
+#' Inverse Burr distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimator fails to exist when the data contains no values
+#' strictly greater than 1. Then the likelihood converges
+#' to the likelihood of the [Pareto distribution][mlpareto] in this case.
+#'
+#' `mlinvburr(x)` calls `mlburr(1/x)` internally.
+#'
+#' For the density function of the Inverse Burr distribution see [Inverse Burr][actuar::dinvburr].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlburr` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shape1` and `shape2` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlburr(abalone$length)
+#' @seealso [Inverse Burr][actuar::dinvburr] for the Inverse Burr density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
+#' Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
+#' @export
+mlinvburr <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlinvburr <- list(
+  "model" = "Inverse Burr",
+  "density" = "actuar::dinvburr",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape1", "shape2"),
+  "default" = c(1, 2)
+)
+
+mlinvburr_ <- function(x, ...) {
+  params <- mlburr_(x)$estimates
+  list(
+    estimates = params,
+    logLik = sum(actuar::dinvburr(x, params[1], params[2], log = TRUE))
+  )
+}
+```
+
+### R/mlinvgamma.R
+
+```r
+#' Inverse Gamma distribution maximum likelihood estimation
+#'
+#' Transforms the data and uses Newton-Raphson to estimate the parameters of
+#' the Gamma distribution.
+#'
+#' For the density function of the inverse Gamma distribution see
+#' [InvGamma][extraDistr::InvGamma].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... passed to [`mlgamma`][mlgamma].
+#' @return A named numeric vector with maximum likelihood estimates for
+#' `alpha` and `beta`.
+#' @examples
+#' mlinvgamma(precip)
+#' @seealso [InvGamma][extraDistr::InvGamma] for the Inverse Gamma density.
+#' @references Choi, S. C, and R. Wette. "Maximum likelihood estimation of
+#' the parameters of the gamma distribution and their bias."
+#' Technometrics 11.4 (1969): 683-690.
+#'
+#' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York.
+#'
+#' Witkovsky, V. (2001). "Computing the Distribution of a Linear Combination
+#' of Inverted Gamma Variables". Kybernetika. 37 (1): 79<U+2013>90
+#'
+#' @export
+mlinvgamma <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlinvgamma <- list(
+  "model" = "InvGamma",
+  "density" = "extraDistr::dinvgamma",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("alpha", "beta"),
+  "default" = c(3, 4)
+)
+
+mlinvgamma_ <- function(x, ...) {
+  gamma_ml <- mlgamma_(1 / x, ...)
+  alpha <- gamma_ml$estimates[1]
+  beta <- gamma_ml$estimates[2]
+
+  L <- mean(log(x))
+  M <- mean(1 / x)
+  logLik <- length(x) * (alpha * log(beta) - log(gamma(alpha)) - (alpha + 1) * L - beta * M)
+
+  list(estimates = gamma_ml$estimates, logLik = unname(logLik))
+}
+```
+
+### R/mlinvgauss.R
+
+```r
+#' Inverse Gaussian (Wald) maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `mean` is the empirical mean and the
+#'     maximum likelihood estimate of `1/shape` is the difference between
+#'     the mean of reciprocals and the reciprocal of the mean.
+#'
+#' For the density function of the Inverse Gamma distribution see
+#'     [InverseGaussian][actuar::InverseGaussian].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlinvgauss` returns an object of [class][base::class]
+#'    `univariateML`. This is a named numeric vector with maximum likelihood
+#'    estimates for `mean` and `shape` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlinvgauss(precip)
+#' @seealso [InverseGaussian][actuar::InverseGaussian] for the
+#' Inverse Gaussian density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York.
+#' @export
+mlinvgauss <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlinvgauss <- list(
+  "model" = "Inverse Gaussian",
+  "density" = "actuar::dinvgauss",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "shape"),
+  "default" = c(3, 4)
+)
+
+mlinvgauss_ <- function(x, ...) {
+  n <- length(x)
+  mu <- mean(x)
+  lambda <- 1 / (mean(1 / x) - 1 / mu)
+  estimates <- c(mu, lambda)
+
+  L <- mean(log(x))
+  S <- mean((x - mean(x))^2 / x)
+
+  logLik <- -n / 2 * (3 * L - log(lambda) + log(2 * pi) + lambda / mu^2 * S)
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlinvweibull.R
+
+```r
+#' Inverse Weibull distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `shape` and `rate` are calculated
+#'   by calling [`mlweibull`][mlweibull] on the transformed data.
+#'
+#' For the density function of the log normal distribution see
+#' [InverseWeibull][actuar::InverseWeibull].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... passed to [`mlweibull`][mlweibull].
+#' @return `mlinvweibull` returns an object of [class][base::class]
+#'    `univariateML`. This is a named numeric vector with maximum likelihood
+#'    estimates for `shape` and `rate` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlinvweibull(precip)
+#' @seealso [InverseWeibull][actuar::InverseWeibull] for the Inverse Weibull
+#'    density.
+#' @references Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions
+#' in Economics and Actuarial Sciences, Wiley.
+#'
+#' Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models,
+#' From Data to Decisions, Fourth Edition, Wiley.
+#'
+#' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
+#' actuarial science. Journal of Statistical Software, 25(7), 1-37.
+#' @export
+mlinvweibull <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlinvweibull <- list(
+  "model" = "InverseWeibull",
+  "density" = "actuar::dinvweibull",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape", "rate"),
+  "default" = c(2, 3)
+)
+
+mlinvweibull_ <- function(x, ...) {
+
+  log_x <- log(x)
+  n <- length(x)
+  s <- -sum(log_x) / n
+
+  estimates <- mlgumbel_estimate(log_x + s, ...)
+  rate_log <- -estimates[1] + s
+
+  rate <- exp(rate_log)
+  shape <- 1 / estimates[2]
+
+  #r <- sum(exp(-log_x * shape)) / n
+  #scale <- 1/rate
+  #r <- (scale^shape)^2
+  #r <- scale^shape * r
+  # r <- 1
+
+  logLik <- n * (log(shape) + shape * (-rate_log + s) - 1 + s)
+  list(estimates = c(shape, rate), logLik = logLik)
+}
+```
+
+### R/mlkumar.R
+
+```r
+#' Kumaraswamy distribution maximum likelihood estimation
+#'
+#' Uses Newton-Raphson to estimate the parameters of the Kumaraswamy
+#'     distribution.
+#'
+#' For the density function of the Kumaraswamy distribution see
+#'     [Kumaraswamy][extraDistr::Kumaraswamy].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... `a0` is an optional starting value for the `a` parameter.
+#'     `reltol` is the relative accuracy requested, defaults
+#'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'     specifying the maximum number of iterations to be performed before the
+#'     program is terminated (defaults to `100`).
+#'
+#' @return `mlkumar` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for `a`
+#'    and `b` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @seealso [Kumaraswamy][extraDistr::Kumaraswamy] for the Kumaraswamy density.
+#' @examples
+#' AIC(mlkumar(USArrests$Rape / 100))
+#' @references Jones, M. C. "Kumaraswamy's distribution: A beta-type
+#' distribution with some tractability advantages." Statistical Methodology
+#' 6.1 (2009): 70-81.
+#'
+#' Kumaraswamy, Ponnambalam. "A generalized probability density function
+#' for double-bounded random processes." Journal of Hydrology 46.1-2 (1980):
+#' 79-88.
+#' @export
+mlkumar <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlkumar <- list(
+  "model" = "Kumaraswamy",
+  "density" = "extraDistr::dkumar",
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
+  "names" = c("a", "b"),
+  "default" = c(2, 3)
+)
+
+kumar_lmom <- function(mu, sigma2) {
+  neuler <- digamma(1) # Negative Euler-Mascheroni constant
+  basel <- pi^2 / 6 # trigamma(1)
+
+  f_over_df <- function(a) {
+    b <- inverse_digamma(neuler - a * mu)
+    tri <- trigamma(b)
+    tetra <- psigamma(b, deriv = 2)
+
+    f <- a * tri * (basel - tri - a^2 * sigma2)
+    df <- a * tetra * mu - 2 * tri * (basel + tri)
+    f / df
+  }
+
+  a <- univariateML:::newton_raphson_1d(f_over_df, sqrt(basel / sigma2))
+  # b is inverse_digamma(neuler - a * mu) - 1
+  a
+}
+
+mlkumar_ <- function(x, ...) {
+  n <- length(x)
+  log_x <- log(x)
+  n_div <- 1 / n
+
+  f_over_df <- function(a) {
+    xa <- exp(a * log_x)
+    xa_div <- xa / (1 - xa) * log_x
+
+    t1 <- sum(log_x / (1 - xa)) * n_div
+    t2 <- sum(xa_div) * n_div
+    t3 <- sum(log1p(-xa)) * n_div
+    t4 <- sum(xa_div^2) * n_div
+    t5 <- sum(xa_div * log_x) * n_div
+
+    s1 <- t2 / t3
+    s2 <- ((t2^2 + t5) / t3 + t4)
+    s3 <- t1 + s1
+
+    f <- a * s3 + 1
+    df <- a * (s1^2 + s2) + s3 - f / a
+
+    f / df
+  }
+
+  ## Starting value for Newton--Raphson
+  mu <- sum(log_x) * n_div
+  sigma2 <- sum(log_x^2) * n_div - mu^2
+  a0 <- kumar_lmom(mu, sigma2)
+
+  ## Newton--Raphson for a.
+  reltol <- .Machine$double.eps^0.5
+  iterlim <- 100
+  for (i in seq(iterlim)) {
+    a <- a0 - f_over_df(a0)
+    if (abs(a0 - a) < abs(a0) * reltol) break
+    a0 <- a
+  }
+
+  a <- a0
+  b <- -n / sum(log1p(-x^a))
+
+  list(
+    estimates = c(a = a, b = b),
+    logLik = n * (log(a) + log(b) + (a - 1) * mu + 1 / b - 1)
+  )
+}
+```
+
+### R/mllaplace.R
+
+```r
+#' Laplace distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `mu` is the sample median while the
+#'    maximum likelihood estimate of `sigma` is mean absolute deviation
+#'    from the median.
+#'
+#' For the density function of the Laplace distribution see
+#' [Laplace][extraDistr::Laplace].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mllaplace` returns an object of [class][base::class]
+#'    `univariateML`. This is a named numeric vector with maximum likelihood
+#'    estimates for `mu` and `sigma` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mllaplace(precip)
+#' @seealso [Laplace][extraDistr::Laplace] for the Laplace density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York.
+#' @export
+mllaplace <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mllaplace <- list(
+  "model" = "Laplace",
+  "density" = "extraDistr::dlaplace",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mu", "sigma"),
+  "default" = c(0, 1)
+)
+
+mllaplace_ <- function(x, ...) {
+  mu <- stats::median(x)
+  sigma <- mean(abs(x - mu))
+  estimates <- c(mu = mu, sigma = sigma)
+  logLik <- -length(x) * (1 + log(2 * sigma))
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mllgamma.R
+
+```r
+#' Log-gamma distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `shapelog` and `ratelog` are calculated
+#'   by calling [mlgamma()] on the transformed data.
+#'
+#' For the density function of the log normal distribution see
+#'   [Loggamma][actuar::Loggamma].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... passed to [`mlgamma`][mlgamma].
+#' @return `mllgamma` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shapelog` and `ratelog` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mllgamma(precip)
+#' @seealso [Loggamma][actuar::Loggamma] for the log normal density.
+#' @references Hogg, R. V. and Klugman, S. A. (1984), Loss Distributions, Wiley.
+#'
+#' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
+#' actuarial science. Journal of Statistical Software, 25(7), 1-37.
+#' @export
+mllgamma <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mllgamma <- list(
+  "model" = "Loggamma",
+  "density" = "actuar::dlgamma",
+  "support" = intervals::Intervals(c(1, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shapelog", "ratelog"),
+  "default" = c(2, 3)
+)
+
+mllgamma_ <- function(x, ...) {
+  y <- log(x)
+  n <- length(x)
+  estimates <- mlgamma_(y, ...)$estimates
+  shapelog <- estimates[1]
+  ratelog <- estimates[2]
+  L <- mean(y)
+  K <- mean(log(y))
+  logLik <-
+    unname(n * (shapelog * log(ratelog) - log(gamma(shapelog)) +
+      (shapelog - 1) * K - (ratelog + 1) * L))
+
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mllgser.R
+
+```r
+#' Logarithmic series distribution maximum likelihood estimation
+#'
+#' For the density function of the Logarithmic series distribution see
+#' [Logarithmic series][extraDistr::dlgser]. For an example data set, see [corbet].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Not in use.
+#' @return `mllgser` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `theta`.
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' theta_hat <- mllgser(corbet)
+#'
+#' # The corbert data contains observations from 1 to 24.
+#' observed <- table(corbet)
+#'
+#' # The chi square test evaluated at the maximum likelihood is highly significant.
+#' expected <- extraDistr::dlgser(1:24, theta_hat)
+#' chisq.test(observed, p = expected / sum(expected))
+#'
+#' # But chi square test evaluated at 0.997 (used in Corbet) is not.
+#' expected <- extraDistr::dlgser(1:24, 0.997)
+#' chisq.test(observed, p = expected / sum(expected))
+#'
+#' # The chi square for `dzipf` is similar.
+#' expected <- sads::dzipf(1:24, mlzipf(corbet)[1], mlzipf(corbet)[2]) * length(corbet)
+#' chisq.test(observed, p = expected / sum(expected))
+#' @references
+#' Fisher, R. A., Corbet, A. S., & Williams, C. B. (1943). The relation between the number of species and the number of individuals in a random sample of an animal population. The Journal of Animal Ecology, 12(1), 42. https://doi.org/10.2307/1411
+#'
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#' @seealso [Logarithmic series][extraDistr::dlgser] for the density.
+#' @export
+
+mllgser <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mllgser <- list(
+  "model" = "Logarithmic series",
+  "density" = "extraDistr::dlgser",
+  "support" = intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  "names" = c("theta"),
+  "default" = 0.9
+)
+
+mllgser_ <- function(x, ...) {
+  if (sum(x) == length(x)) {
+    stop("All observations equals 1; the maximum likelihood estimator does not exist.")
+  }
+  x_bar <- mean(x)
+  xi <- -x_bar * pracma::lambertWn(-exp(-1 / x_bar) / x_bar) - 1
+  theta <- xi / (xi + 1)
+  logLik <- sum(extraDistr::dlgser(x, theta, log = TRUE))
+
+  list(estimates = theta, logLik = logLik)
+}
+```
+
+### R/mlllogis.R
+
+```r
+#' Log-logistic distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `shape` and `rate` are calculated
+#'    by transforming the data back to the logistic model and applying
+#'    [`mllogis`][mllogis].
+#'
+#' For the density function of the log-logistic distribution see
+#'    [Loglogistic][actuar::Loglogistic]
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... passed to [`mllogis`][mllogis].
+#' @return `mllogis` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shape` and `rate` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mllnorm(precip)
+#' @seealso [Loglogistic][actuar::Loglogistic] for the log-logistic density.
+#' @references Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions
+#' in Economics and Actuarial Sciences, Wiley.
+#'
+#' Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models,
+#' From Data to Decisions, Fourth Edition, Wiley.
+#'
+#' Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for
+#' actuarial science. Journal of Statistical Software, 25(7), 1-37.
+#' @export
+mlllogis <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlllogis <- list(
+  "model" = "Loglogistic",
+  "density" = "actuar::dllogis",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("shape", "rate"),
+  "default" = c(1, 2)
+)
+
+mlllogis_ <- function(x, ...) {
+  y <- log(x)
+  estimates <- mllogis_(y)$estimates
+  estimates[1] <- exp(-estimates[1])
+  estimates[2] <- 1 / estimates[2]
+  estimates <- rev(estimates)
+  logLik <- sum(actuar::dllogis(x, estimates[1], estimates[2], log = TRUE))
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mllnorm.R
+
+```r
+#' Log-normal distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `meanlog` is the empirical mean of the
+#'     log-transformed data and the maximum likelihood estimate of `sdlog`
+#'     is the square root of the biased sample variance based on the
+#'     log-transformed data.
+#'
+#' For the density function of the log normal distribution see
+#'     [Lognormal][stats::Lognormal].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mllnorm` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `meanlog` and `sdlog` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mllnorm(precip)
+#' @seealso [Lognormal][stats::Lognormal] for the log normal density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York.
+#' @export
+mllnorm <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mllnorm <- list(
+  "model" = "Lognormal",
+  "density" = "stats::dlnorm",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("meanlog", "sdlog"),
+  "default" = c(0, 1)
+)
+
+mllnorm_ <- function(x, ...) {
+  y <- log(x)
+  n <- length(x)
+  meanlog <- mean(y)
+  sdlog <- sqrt(stats::var(y) * (n - 1) / n)
+  estimates <- c(meanlog = meanlog, sdlog = sdlog)
+  logLik <-
+    -n / 2 * (1 + log(2 * pi) + 2 * log(sdlog) + 2 * meanlog)
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mllogis.R
+
+```r
+#' Logistic distribution maximum likelihood estimation
+#'
+#' Calculates the estimates using `nlm` with an exponential transform of the
+#'     location parameter.
+#'
+#' For the density function of the logistic distribution see
+#'     [Logistic][stats::Logistic].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mllogis` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `location` and `scale` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mllogis(precip)
+#' @seealso [Logistic][stats::Logistic] for the Logistic density,
+#'   [nlm][stats::nlm] for the optimizer this function uses.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York.
+#' @export
+mllogis <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mllogis <- list(
+  "model" = "Logistic",
+  "density" = "stats::dlogis",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("location", "scale"),
+  "default" = c(0, 1)
+)
+
+mllogis_ <- function(x, ...) {
+  m <- stats::median(x)
+  mad <- stats::median(abs(x - m))
+  f <- function(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
+  values <- suppressWarnings(stats::nlm(f = f, p = c(m, log(mad))))
+  list(
+    estimates = c(values$estimate[1], exp(values$estimate[2])),
+    logLik = -values$minimum,
+    i = values$iterations
+  )
+}
+```
+
+### R/mllogitnorm.R
+
+```r
+#' Logit-Normal distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `mu` is the empirical mean of the
+#'     logit transformed data and the maximum likelihood estimate of
+#'     `sigma` is the square root of the logit transformed
+#'     biased sample variance.
+#'
+#' For the density function of the logit-normal distribution see
+#'    [dlogitnorm][logitnorm::dlogitnorm].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mllogitnorm` returns an object of [class][base::class]
+#'    `univariateML`. This is a named numeric vector with maximum likelihood
+#'    estimates for `mu` and `sigma` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' AIC(mllogitnorm(USArrests$Rape / 100))
+#' @seealso [Normal][stats::dnorm] for the normal density.
+#' @references Atchison, J., & Shen, S. M. (1980). Logistic-normal
+#' distributions: Some properties and uses. Biometrika, 67(2), 261-272.
+#' @export
+mllogitnorm <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mllogitnorm <- list(
+  "model" = "LogitNormal",
+  "density" = "logitnorm::dlogitnorm",
+  "support" = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE)),
+  "names" = c("mu", "sigma"),
+  "default" = c(2, 3)
+)
+
+mllogitnorm_ <- function(x, ...) {
+  n <- length(x)
+  y <- stats::qlogis(x)
+  mu <- mean(y)
+  sigma <- sqrt(stats::var(y) * (n - 1) / n)
+
+  H <- mean(log(x))
+  G <- mean(log(1 - x))
+
+  estimates <- c(mu = mu, sigma = sigma)
+  logLik <-
+    -n / 2 * (1 + log(2 * pi) + 2 * log(sigma) + 2 * H + 2 * G)
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mllomax.R
+
+```r
+#' Lomax distribution maximum likelihood estimation
+#'
+#' Uses Newton-Raphson to estimate the parameters of the Lomax distribution.
+#'
+#' For the density function of the Lomax distribution see
+#' [Lomax][extraDistr::Lomax].
+#'
+#' The likelihood estimator of the Lomax distribution is unbounded when `mean(x^2) < 2*mean(x)^2`. When this
+#'    happens, the likelihood converges to an exponential distribution with parameter
+#'    equal to the mean of the data. This is the natural limiting case for the Lomax
+#'    distribution, and it is reasonable to use `mlexp` in this case.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... `lambda0` an optional starting value for the `lambda` parameter.
+#'    `reltol` is the relative accuracy requested,
+#'    defaults to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'    specifying the maximum number of iterations to be performed before the
+#'    program is terminated (defaults to `100`).
+#'
+#' @return `mllomax` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `lambda` and `kappa` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @seealso [Lomax][extraDistr::Lomax] for the Lomax density.
+#' @references Kleiber, Christian; Kotz, Samuel (2003), Statistical Size
+#' Distributions in Economics and Actuarial Sciences, Wiley Series in
+#' Probability and Statistics, 470, John Wiley & Sons, p. 60
+#' @examples
+#' set.seed(3)
+#' mllomax(extraDistr::rlomax(100, 2, 4))
+#'
+#' # The maximum likelihood estimator may fail if the data is exponential.
+#' \dontrun{
+#' set.seed(5)
+#' mllomax(rexp(10))
+#' }
+#' @export
+mllomax <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mllomax <- list(
+  "model" = "Lomax",
+  "density" = "extraDistr::dlomax",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("lambda", "kappa"),
+  "default" = c(1, 2)
+)
+
+mllomax_ <- function(x, ...) {
+  n <- length(x)
+  m <- sum(x) / n
+  s <- sum(x^2) / n
+  m2 <- m^2
+
+  if (s < 2 * m2) {
+    stop("The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution.")
+  }
+  f_over_df <- function(lambda0) {
+    lambda0_x1p <- 1 + lambda0 * x
+    x_div <- x / lambda0_x1p
+    S <- sum(log(lambda0_x1p)) / n
+    S1 <- sum(x_div) / n
+    S2 <- sum(x_div^2) / n
+
+    psi <- S1 / S
+    f <- 1 / lambda0 - psi - S1
+    df <- psi^2 + S2 / S + S2 - 1 / lambda0^2
+    f / df
+  }
+
+  alpha0 <- 2 * (s - m2) / (s - 2 * m2)
+  lambda0 <- 1 / (m * (alpha0 - 1))
+
+  lambda <- newton_raphson_1d(f_over_df, lambda0)
+  kappa <- n / sum(log1p(lambda * x))
+  loglik <- n * (log(kappa) + log(lambda) - 1 - 1/kappa)
+
+  list(estimates = c(lambda, kappa), logLik = loglik)
+}
+```
+
+### R/mlnaka.R
+
+```r
+#' Nakagami distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimates of `shape` and `scale` are calculated by
+#'     calling `mlgamma` on the transformed data.
+#'
+#' For the density function of the Nakagami distribution see
+#'     [Nakagami][nakagami::Nakagami].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... passed to [`mlgamma`][mlgamma].
+#' @return `mlgamma` returns an object of [class][base::class]
+#'    `univariateML`. This is a named numeric vector with maximum
+#'    likelihood estimates for `shape` and `rate` and the following
+#'    attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured by `match.call`}
+#'     \item{`continuous`}{Is the density continuous or discrete?}
+#' @examples
+#' mlgamma(precip)
+#' @seealso [Nakagami][nakagami::Nakagami] for the Nakagami distribution.
+#'    [GammaDist][stats::GammaDist] for the closely related Gamma density.
+#'    See [`mlgamma`][mlgamma] for the machinery underlying this function.
+#' @references Choi, S. C, and R. Wette. "Maximum likelihood estimation of the
+#' parameters of the gamma distribution and their bias." Technometrics 11.4
+#' (1969): 683-690.
+#'
+#' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate
+#' Distributions, Volume 1, Chapter 17. Wiley, New York.
+#'
+#' @export
+mlnaka <- function(x, na.rm = TRUE, ...) {}
+
+univariateML_metadata$mlnaka <- list(
+  "model" = "Nakagami",
+  "density" = "nakagami::dnaka",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape", "scale"),
+  "default" = c(2, 3)
+)
+
+mlnaka_ <- function(x, ...) {
+  estimates <- mlgamma_(x^2, ...)$estimates
+  estimates["rate"] <- 1 / estimates["rate"] * estimates["shape"]
+
+  n <- length(x)
+  shape <- estimates[1]
+  scale <- estimates[2]
+
+  logLik <-
+    unname(n * (shape * log(shape) + log(2) -
+      lgamma(shape) - shape * log(scale)) +
+      (2 * shape - 1) * sum(log(x)) - shape / scale * sum(x^2))
+
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlnbinom.R
+
+```r
+#' Negative binomial distribution maximum likelihood estimation
+#'
+#' For the density function of the Negative binomial distribution see
+#' [Negative binomial][stats::dnbinom].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... The arguments `size` can be specified to only return the ml of `prob`.
+#'    `reltol` is the relative accuracy requested,
+#'    defaults to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'    specifying the maximum number of iterations to be performed before the
+#'    program is terminated (defaults to `100`).
+#' @return `mlnbinom` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `size` and `prob` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlnbinom(corbet)
+#' @seealso [Negative binomial][stats::dnbinom] for the density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#' @export
+mlnbinom <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlnbinom <- list(
+  "model" = "Negative binomial",
+  "density" = "stats::dnbinom",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  "names" = c("size", "prob"),
+  "default" = c(10, 0.3)
+)
+
+mlnbinom_ <- function(x, ...) {
+  dots <- list(...)
+  n <- length(x)
+  x_bar <- mean(x)
+
+  if (is.null(dots$size)) {
+    if (x_bar == 0) {
+      warning("All observations are 0; the maximum likelihood estimator is not unique.")
+      size <- 1
+    } else {
+      x_var <- stats::var(x)
+
+      if (x_var * (n - 1) / n < x_bar) {
+        stop("The maximum likelihood estimator does not exists for underdispersed data, but converges to a Poisson. Use `mlpois` instead.")
+      }
+
+      f_over_df <- function(size) {
+        prob <- size / (x_bar + size)
+        dprob <- x_bar / (size^2 + x_bar * size)
+        f <- sum(digamma(x + size)) - n * digamma(size) + n * log(prob)
+        df <- sum(trigamma(x + size)) - n * trigamma(size) + n * dprob
+        f / df
+      }
+
+      size0 <- x_bar^2 / (x_var - x_bar)
+      size <- newton_raphson_1d(f_over_df, size0, ...)
+    }
+  } else {
+    size <- dots$size
+  }
+
+  prob <- size / (x_bar + size)
+  logLik <- sum(lgamma(x + size)) - sum(lfactorial(x)) - n * lgamma(size) +
+    n * size * log(prob) + n * log(1 - prob) * x_bar
+
+  list(estimates = c(size, prob), logLik = logLik)
+}
+```
+
+### R/mlnorm.R
+
+```r
+#' Normal distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `mean` is the empirical mean and the
+#'     maximum likelihood estimate of `sd` is the square root of the
+#'     biased sample variance.
+#'
+#' For the density function of the normal distribution see
+#' [Normal][stats::Normal].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlnorm` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `mean` and `sd` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlnorm(precip)
+#' @seealso [Normal][stats::Normal] for the normal density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
+#' @export
+mlnorm <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlnorm <- list(
+  "model" = "Normal",
+  "density" = "stats::dnorm",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "sd"),
+  "default" = c(0, 1)
+)
+
+mlnorm_ <- function(x, ...) {
+  n <- length(x)
+
+  mu <- mean(x)
+  sigma <- sqrt(stats::var(x) * (n - 1) / n)
+
+  estimates <- c(mu, sigma)
+  logLik <- -n / 2 * (1 + log(2 * pi) + 2 * log(sigma))
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlparalogis.R
+
+```r
+#' Paralogistic distribution maximum likelihood estimation
+#'
+#' This function estimates the only the shape parameters of the Paralogistic distribution.
+#' The rate is set to 1.
+#'
+#' For the density function of the Paralogistic distribution see [Paralogistic][actuar::dparalogis].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlparalogis` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shape` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlparalogis(abalone$length)
+#' @seealso [Paralogistic][actuar::dparalogis] for the paralogistic density.
+#' @references Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.
+#' Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley.
+#' @export
+mlparalogis <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlparalogis <- list(
+  "model" = "Paralogistic",
+  "density" = "actuar::dparalogis",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape"),
+  "default" = c(1)
+)
+
+mlparalogis_ <- function(x, ...) {
+  n <- length(x)
+  log_x <- log(x)
+  log_x2 <- log_x^2
+  s <- sum(log_x) / n
+  n <- length(x)
+
+  f_over_df <- function(shape) {
+    x_shape <- x^shape
+    x_div <- x_shape / (1 + x_shape)
+    r <- sum(log(1 + x_shape)) / n
+    r_grad <- sum(x_div * log_x) / n
+    r_hessian <- sum(x_div * log_x2) / n - sum(x_div * x_div * log_x2) / n
+
+    f <- 2 / shape + s - r - (shape + 1) * r_grad
+    df <- -2 / shape^2 - 2 * r_grad - (shape + 1) * r_hessian
+    f / df
+  }
+
+  # Approximate method of moments solution
+  shape0 <- max(3 / (1 - mean(x)), 0.1)
+  dots <- list(...)
+  if (!is.null(dots$shape0)) shape0 <- dots$shape0
+  shape <- newton_raphson_1d(f_over_df, shape0)
+  rn <- function(shape) sum(log(1 + x^shape))
+  loglik <- 2 * n * log(shape) + (shape - 1) * n * s - (shape + 1) * rn(shape)
+
+  list(estimates = c(shape), logLik = loglik)
+}
+```
+
+### R/mlpareto.R
+
+```r
+#' Pareto distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `b` is the minimum of `x` and the
+#'     maximum likelihood estimate of `a` is
+#'     `1/(mean(log(x)) - log(b))`.
+#'
+#' For the density function of the Pareto distribution see
+#'    [Pareto][extraDistr::Pareto].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlpareto` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `a` and `b` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlpareto(precip)
+#' @seealso [Pareto][extraDistr::Pareto] for the Pareto density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
+#' Univariate Distributions, Volume 1, Chapter 20. Wiley, New York.
+#' @export
+mlpareto <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlpareto <- list(
+  "model" = "Pareto",
+  "density" = "extraDistr::dpareto",
+  "support" = stats::setNames(intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)), c("a", "Inf")),
+  "names" = c("a", "b"),
+  "default" = c(1, 2)
+)
+
+mlpareto_ <- function(x, ...) {
+  m <- mean(log(x))
+  b <- min(x)
+  a <- 1 / (m - log(b))
+
+  estimates <- c(a, b)
+  logLik <- length(x) * (log(a) + a * log(b) - (a + 1) * m)
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlpois.R
+
+```r
+#' Poisson distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `lambda` is the empirical mean.
+#'
+#' For the density function of the Poisson distribution see
+#' [Poisson][stats::Poisson].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlpois` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `lambda` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlpois(ChickWeight$weight)
+#' @seealso [Poisson][stats::Poisson] for the Poisson density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#' @export
+mlpois <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlpois <- list(
+  "model" = "Poisson",
+  "density" = "stats::dpois",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  "names" = c("lambda"),
+  "default" = 2
+)
+
+mlpois_ <- function(x, ...) {
+  n <- length(x)
+  lambda <- mean(x)
+  logLik <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))
+  list(estimates = lambda, logLik = logLik)
+}
+```
+
+### R/mlpower.R
+
+```r
+#' Power distribution maximum likelihood estimation
+#'
+#' The maximum likelihood estimate of `alpha` is the maximum of `x` +
+#'     `epsilon` (see the details) and the maximum likelihood estimate of
+#'     `beta` is `1/(log(alpha)-mean(log(x)))`.
+#'
+#' For the density function of the power distribution see
+#'     [PowerDist][extraDistr::PowerDist]. The maximum likelihood estimator of
+#'     `alpha` does not exist, strictly
+#'     speaking. This is because `x` is supported `c(0, alpha)` with
+#'     an open endpoint on alpha in the `extraDistr` implementation of
+#'     `dpower`. If the endpoint was closed, `max(x)` would have been
+#'     the maximum likelihood estimator. To overcome this problem, we add
+#'     a possibly user specified `epsilon` to `max(x)`.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... `epsilon` is a positive number added to `max(x)` as an to the
+#'     maximum likelihood. Defaults to `.Machine$double.eps^0.5`.
+#' @return `mlpower` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `alpha` and `beta` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlpower(precip)
+#' @seealso [PowerDist][extraDistr::PowerDist] for the power density. [extraDistr::Pareto]
+#'    for the closely related Pareto distribution.
+#' @references
+#' Arslan, G. "A new characterization of the power distribution."
+#' Journal of Computational and Applied Mathematics 260 (2014): 99-102.
+#' @export
+mlpower <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlpower <- list(
+  "model" = "PowerDist",
+  "density" = "extraDistr::dpower",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("alpha", "beta"),
+  "default" = c(1, 2)
+)
+
+mlpower_ <- function(x, ...) {
+  dots <- list(...)
+  epsilon <- if (!is.null(dots$epsilon)) {
+    dots$epsilon
+  } else {
+    .Machine$double.eps^0.5
+  }
+
+  m <- mean(log(x))
+  alpha <- max(x) + epsilon
+  beta <- 1 / (log(alpha) - m)
+
+  estimates <- c(alpha, beta)
+  logLik <-
+    length(x) * (log(beta) - beta * log(alpha) + (beta - 1) * m)
+  list(estimates = estimates, logLik = logLik)
+}
+```
+
+### R/mlrayleigh.R
+
+```r
+#' Rayleigh distribution maximum likelihood estimation
+#'
+#' Calculates the `sigma` parameter as the square root of half the
+#'    empirical second moment.
+#'
+#' For the density function of the Rayleigh distribution see
+#' [Rayleigh][extraDistr::Rayleigh].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlrayleigh` returns an object of [class][base::class]
+#'    `univariateML`. This is a named numeric vector with maximum likelihood
+#'    estimates for `sigma` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlrayleigh(precip)
+#' @seealso [Rayleigh][extraDistr::Rayleigh] for the Rayleigh density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
+#' Univariate Distributions, Volume 1, Chapter 18. Wiley, New York.
+#' @export
+mlrayleigh <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlrayleigh <- list(
+  "model" = "Rayleigh",
+  "density" = "extraDistr::drayleigh",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE)),
+  "names" = c("sigma"),
+  "default" = 2
+)
+
+mlrayleigh_ <- function(x, ...) {
+  sigma <- sqrt(1 / 2 * mean(x^2))
+  logLik <- length(x) * (mean(log(x) - 2 * log(sigma) - 1))
+  list(estimates = sigma, logLik = logLik)
+}
+```
+
+### R/mlsged.R
+
+```r
+#' Skew Generalized Error distribution maximum likelihood estimation
+#'
+#' Joint maximum likelihood estimation as implemented by [fGarch::sgedFit].
+#'
+#' For the density function of the Student t-distribution see
+#' [sged][fGarch::sged].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlsged` returns an object of [class][base::class] `univariateML`.
+#'   This is a named numeric vector with maximum likelihood estimates for the
+#'   parameters `mean`, `sd`, `nu`, `xi`, and the following attributes:
+#'   \item{`model`}{The name of the model.}
+#'   \item{`density`}{The density associated with the estimates.}
+#'   \item{`logLik`}{The loglikelihood at the maximum.}
+#'   \item{`support`}{The support of the density.}
+#'   \item{`n`}{The number of observations.}
+#'   \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlsged(precip)
+#' @seealso [sged][fGarch::sged] for the Student t-density.
+#' @references Nelson D.B. (1991); Conditional Heteroscedasticity in Asset
+#'   Returns: A New Approach, Econometrica, 59, 347<U+2013>370.
+#'
+#'   Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat Tails and
+#'   Skewness, Preprint.
+#' @export
+mlsged <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlsged <- list(
+  "model" = "Skew Generalized Error",
+  "density" = "fGarch::dsged",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "sd", "nu", "xi"),
+  "default" = c(0, 1, 3, 3)
+)
+
+mlsged_ <- function(x, ...) {
+  fit <- suppressWarnings(fGarch::sgedFit(x))
+  list(estimates = fit[["par"]], logLik = -fit$objective)
+}
+```
+
+### R/mlsnorm.R
+
+```r
+#' Skew Normal distribution maximum likelihood estimation
+#'
+#' Joint maximum likelihood estimation as implemented by [fGarch::snormFit].
+#'
+#' For the density function of the Student t distribution see
+#' [dsnorm][fGarch::snorm].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlsnorm` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    the parameters `mean`, `sd`, `xi` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlsnorm(precip)
+#' @seealso [dsnorm][fGarch::snorm] for the Student-t density.
+#' @references Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
+#'     Tails and Skewness, Preprint.
+#' @export
+mlsnorm <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlsnorm <- list(
+  "model" = "Skew Normal",
+  "density" = "fGarch::dsnorm",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "sd", "xi"),
+  "default" = c(0, 1, 3)
+)
+
+mlsnorm_ <- function(x, ...) {
+  fit <- suppressWarnings(fGarch::snormFit(x))
+  list(estimates = fit[["par"]], logLik = -fit$objective)
+}
+```
+
+### R/mlsstd.R
+
+```r
+#' Skew Student t-distribution maximum likelihood estimation
+#'
+#' Joint maximum likelihood estimation as implemented by [fGarch::sstdFit].
+#'
+#' For the density function of the skew Student t-distribution see
+#' [sstd][fGarch::sstd].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlsstd` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    the parameters `mean`, `sd`, `nu`, `xi` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlsstd(precip)
+#' @seealso [sstd][fGarch::sstd] for the Skew Student t-density.
+#' @references Fernandez C., Steel M.F.J. (2000); On Bayesian Modelling of Fat
+#'     Tails and Skewness, Preprint.
+#' @export
+mlsstd <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlsstd <- list(
+  "model" = "Skew Student-t",
+  "density" = "fGarch::dsstd",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "sd", "nu", "xi"),
+  "default" = c(0, 1, 3, 2)
+)
+
+mlsstd_ <- function(x, ...) {
+  fit <- suppressWarnings(fGarch::sstdFit(x))
+  list(estimates = fit[["estimate"]], logLik = -fit$minimum)
+}
+```
+
+### R/mlstd.R
+
+```r
+#' Student-t distribution maximum likelihood estimation
+#'
+#' Joint maximum likelihood estimation as implemented by [fGarch::stdFit].
+#'
+#' For the density function of the Student t-distribution see
+#' [std][fGarch::std].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlstd` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    the parameters `mean`, `sd`, `nu` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlstd(precip)
+#' @seealso [std][fGarch::std] for the Student-t density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York.
+#' @export
+mlstd <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlstd <- list(
+  "model" = "Student-t",
+  "density" = "fGarch::dstd",
+  "support" = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("mean", "sd", "nu"),
+  "default" = c(0, 1, 3)
+)
+
+mlstd_ <- function(x, ...) {
+  fit <- suppressWarnings(fGarch::stdFit(x))
+  list(estimates = fit[["par"]], logLik = -fit$objective)
+}
+```
+
+### R/mlunif.R
+
+```r
+#' Uniform distribution maximum likelihood estimation
+#'
+#' The estimates are `min(x)` and `max(x)`.
+#'
+#' For the density function of the logistic distribution see
+#'    [Uniform][stats::Uniform].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... currently affects nothing.
+#' @return `mlunif` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for `min`
+#'    and `max` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlunif(precip)
+#' @seealso [Uniform][stats::Uniform] for the uniform density.
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995)
+#' Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York.
+#' @export
+mlunif <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlunif <- list(
+  "model" = "Uniform",
+  "density" = "stats::dunif",
+  "support" = stats::setNames(intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE)), c("min", "max")),
+  "names" = c("min", "max"),
+  "default" = c(0, 1)
+)
+
+mlunif_ <- function(x, ...) {
+  max_ <- max(x)
+  min_ <- min(x)
+  list(estimates = c(min_, max_), logLik = -length(x) * log(max_ - min_))
+}
+```
+
+### R/mlweibull.R
+
+```r
+#' Weibull distribution maximum likelihood estimation
+#'
+#' For the density function of the Weibull distribution see
+#'    [Weibull][stats::Weibull].
+#'
+#' Uses [mlgumbel] to estimate the parameters of the Weibull distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... `shape0` is an optional starting value for the `shape` parameter.
+#'     `reltol` is the relative accuracy requested, defaults
+#'     to `.Machine$double.eps^0.25`. `iterlim` is a positive integer
+#'     specifying the maximum number of iterations to be performed before the
+#'     program is terminated (defaults to `100`).
+#'
+#' @return `mlweibull` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `shape` and `scale` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @seealso [Weibull][stats::Weibull] for the Weibull density.
+#' @examples
+#' BIC(mlweibull(precip))
+#' @references Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous
+#' Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
+#' @export
+mlweibull <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlweibull <- list(
+  "model" = "Weibull",
+  "density" = "stats::dweibull",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE)),
+  "names" = c("shape", "scale"),
+  "default" = c(3, 4)
+)
+
+mlweibull_ <- function(x, ...) {
+  log_x <- -log(x)
+  s <- -sum(log_x) / length(x)
+  estimates <- mlgumbel_estimate(log_x + s, ...)
+  scale <- exp(-estimates[1] + s)[1]
+  shape <- 1 / estimates[2]
+  logLik <- length(x) * (log(shape / scale) + (shape - 1) * (s - log(scale)) - 1)
+  list(estimates = c(shape, scale), logLik = logLik)
+}
+```
+
+### R/mlzipf.R
+
+```r
+#' Zipf distribution maximum likelihood estimation
+#'
+#' For the density function of the Zipf distribution see
+#' [Zipf][sads::dzipf].
+#'
+#' This function follows the same format as every other function in the package,
+#' but most applications of Zipf's law use rank-abundance data. See, e.g., [sads::fitzipf]
+#' for estimation of this sort of data.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Not currently in use.
+#' @return `mlzipf` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `N` and `s` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' AIC(mlzipf(corbet)) # 2729.536
+#' AIC(mllgser(corbet)) # 2835.883
+#' @seealso [Zipf][sads::dzipf] for the density.
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#' @export
+mlzipf <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlzipf <- list(
+  "model" = "Zipf",
+  "density" = "sads::dzipf",
+  "support" = stats::setNames(intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"), c("1", "N")),
+  "names" = c("N", "s"),
+  "default" = c(3, 0.5)
+)
+
+mlzipf_ <- function(x, ...) {
+  N <- max(x)
+  n <- length(x)
+  sum_lx <- sum(log(x))
+  log_seq <- log(seq(N))
+  log_seq2 <- log(seq(N))^2
+  div_seq <- 1 / seq(1, N)
+
+  if (sum_lx == 0) {
+    warning("All observations are equal to 1. The maximum likelihood estimator is not unique.")
+    return(list(estimates = c(N, 1), logLik = 0))
+  }
+
+  f_over_df <- function(shape0) {
+    div_seq_shape0 <- div_seq^shape0
+    sum_shape <- sum(div_seq_shape0)
+    sum_log_hs <- sum(div_seq_shape0 * log_seq)
+    sum_log2_hs <- sum(div_seq_shape0 * log_seq2)
+    top <- sum_log_hs / sum_shape
+    bottom <- -n * sum_log2_hs / sum_shape + n * top^2
+    (n * top - sum_lx) / bottom
+  }
+
+  shape0 <- 1
+  shape <- newton_raphson_1d(f_over_df, shape0, ...)
+
+  if (shape < 0) {
+    stop("Optimal shape parameter is less than 0. The maximum likelihood estimator does not exist.")
+  }
+
+  logLik <- -shape * sum_lx - n * log(sum(1 / seq(1, N)^shape))
+  list(estimates = c(N, shape), logLik = logLik)
+}
+```
+
+### R/mlzip.R
+
+```r
+#' Zero-inflated Poisson distribution maximum likelihood estimation
+#'
+#' For the density function of the zeero-inflated Poisson distribution see
+#' [Zero-inflated Poisson distribution][extraDistr::dzip].
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Not currently in use.
+#' @return `mlzip` returns an object of [class][base::class] `univariateML`.
+#'    This is a named numeric vector with maximum likelihood estimates for
+#'    `lambda` and `pi` and the following attributes:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`density`}{The density associated with the estimates.}
+#'     \item{`logLik`}{The loglikelihood at the maximum.}
+#'     \item{`support`}{The support of the density.}
+#'     \item{`n`}{The number of observations.}
+#'     \item{`call`}{The call as captured my `match.call`}
+#' @examples
+#' mlzip(corbet)
+#' @references
+#' Johnson, N. L., Kemp, A. W., & Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell.
+#' @seealso [Zero-inflated Poisson distribution][extraDistr::dzip] for the density.
+#' @export
+mlzip <- function(x, na.rm = FALSE, ...) {}
+
+univariateML_metadata$mlzip <- list(
+  "model" = "Zero-inflated Poisson",
+  "density" = "extraDistr::dzip",
+  "support" = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  "names" = c("lambda", "pi"),
+  "default" = c(1, 0.5)
+)
+
+mlzip_ <- function(x, ...) {
+  r_0 <- mean(x == 0)
+  x_bar <- mean(x)
+
+  if (r_0 == 1) {
+    pi <- 1
+    lambda <- 1
+    warning("All observations equal to 0; the maximum likelihood estimator is not unique.")
+  } else if (r_0 > exp(-x_bar)) {
+    x_bar <- mean(x)
+    gamma <- x_bar / (1 - r_0)
+    lambda <- pracma::lambertWp(-gamma * exp(-gamma)) + gamma
+    pi <- (r_0 - exp(-lambda)) / (1 - exp(-lambda))
+  } else {
+    pi <- 0
+    lambda <- x_bar
+  }
+
+  logLik <- sum(extraDistr::dzip(x, lambda, pi, log = TRUE))
+
+  list(estimates = c(lambda, pi), logLik = logLik)
+}
+```
+
+### R/model_select.R
+
+```r
+#' Fit multiple models and select the best fit
+#'
+#' Selects the best model by log-likelihood, aic, or bic.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param models a character vector containing the distribution models to
+#'   select from; see `print(univariateML_models)`. Defaults to all implemented models.
+#' @param criterion the model selection criterion. Must be one of `"AIC"`,
+#'   `"BIC"`, and `"logLik"`, ignoring case. Defaults to `"AIC"`.
+#' @param na.rm logical. Should missing values be removed?
+#' @param type Either `"both"`, `"discrete"`, or `"continuous"`. The supplied `models`
+#'   vector is restricted to the desired class.
+#' @param return character length 1. "univariateML" (default) if the function
+#'   should return the single best model; "all" if a tibble data frame
+#'   of all results should be returned, sorted by decreasing model performance.
+#' @param ... unused.
+#' @return The return value depends on the `return` argument.
+#'    For `return = "best"` (default), `model_select` returns
+#'    an object of [class][base::class] `univariateML`
+#'
+#'    For `return = "all"`, `model_select` returns a tibble data frame
+#'    with the following columns:
+#'     \item{`model`}{The name of the model.}
+#'     \item{`d_loglik, d_aic, d_bic`}{See `loglik, aic, bic`.}
+#'     \item{`p`}{Number of parameters fitted.}
+#'     \item{`loglik, aic, bic`}{The negative log-likelihood at the maximum,
+#'     the aic, and the bic, respectively. The minimum of each of these is noted
+#'     and then subtracted from each value to give their delta versions
+#'     `d_loglik, d_aic, d_bic`}. So, the model with the lowest aic will
+#'     have `d_aic` of 0; the `d_aic` of all the other models shows how much higher
+#'     their aics are from the minimum. The same goes with `d_loglik` and `d_bic`.
+#'     \item{`ml`}{The internal code name for the model.}
+#'     \item{`univariateML`}{The `univariateML` object for the model. This is
+#'     `return = "all"`, this object is returned for all tested models.}
+#' @examples
+#' # Select among all possible continuous models.
+#' model_select(precip, type = "continuous")
+#'
+#' # View possible models to fit.
+#' print(univariateML_models)
+#'
+#' # Try out only gamma, Weibull, and exponential.
+#' model_select(precip, c("gamma", "weibull", "exp"))
+#'
+#' # Fit the discrete `corbet` data to all available discrete models
+#' model_select(corbet, type = "discrete", return = "all")
+#'
+#' @seealso
+#' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate
+#' Distributions, Volume 1, Chapter 17. Wiley, New York.
+#'
+#' @export
+
+model_select <- function(
+    x, models = univariateML_models,
+    criterion = c("AIC", "BIC", "logLik"),
+    na.rm = FALSE, type = c("both", "discrete", "continuous"),
+    return = c("best", "all"), ...) {
+  return <- match.arg(return)
+  type <- match.arg(type)
+
+  if (missing(criterion)) criterion <- "aic"
+  criterion <- match.arg(tolower(criterion[1]), choices = c("aic", "bic", "loglik"))
+  criterion <- toupper(criterion)
+
+  check_models(models)
+  models <- filter_models(models, type)
+
+  mlf <- sapply(paste0("ml", models), function(x) eval(parse(text = x)))
+  fits <- lapply(mlf, function(f) try(f(x, na.rm = na.rm), silent = TRUE))
+
+  error_inds <- sapply(fits, function(fit) inherits(fit, "try-error"))
+  if (all(error_inds)) {
+    error_msgs <- sapply(fits[error_inds], as.character)
+    details <- paste0("(", names(error_msgs), ") ", error_msgs)
+    stop("Couldn't fit any model.\n", details)
+  }
+
+  fits <- fits[!error_inds]
+
+  if (return == "best") {
+    crits <- switch(criterion,
+      "LOGLIK" = -sapply(fits, stats::logLik),
+      "AIC"    = sapply(fits, stats::AIC),
+      "BIC"    = sapply(fits, stats::BIC)
+    )
+    return(fits[[which.min(crits)]])
+  }
+
+  fits <- tibble::tibble(
+    model = unname(sapply(fits, function(x) attr(x, "model"))),
+    LOGLIK = unname(-sapply(fits, stats::logLik)),
+    AIC = unname(sapply(fits, stats::AIC)),
+    BIC = unname(sapply(fits, stats::BIC)),
+    ml = gsub("^ml", "", names(fits)),
+    univariateML = fits
+  )
+
+
+  fits <- fits[order(fits[[criterion]]), ]
+
+  fits$d_logLik <- fits$LOGLIK - min(fits$LOGLIK, na.rm = TRUE)
+  fits$d_AIC <- fits$AIC - min(fits$AIC, na.rm = TRUE)
+  fits$d_BIC <- fits$BIC - min(fits$BIC, na.rm = TRUE)
+  fits$p <- sapply(fits$univariateML, length)
+  fits$logLik <- -fits$LOGLIK
+
+  fits <- fits[, c(
+    "model", "d_logLik", "d_AIC", "d_BIC", "logLik", "p", "AIC", "BIC", "ml", "univariateML"
+  )]
+
+  fits
+}
+
+filter_models <- function(models, type) {
+  if (type == "both") {
+    return(models)
+  }
+  type_ <- if (type == "continuous") "R" else "Z"
+  Filter(function(model) univariateML_metadata[[paste0("ml", model)]]$support@type == type_, models)
+}
+
+check_models <- function(models) {
+  is_implemented <- models %in% univariateML_models
+  if (any(!is_implemented)) {
+    stop(
+      "The following families are not implemented: ",
+      paste0(models[!is_implemented], collapse = ", "),
+      ".\n See `print(univariateML_models)` for allowed values."
+    )
+  }
+}
+```
+
+### R/probability_plots.R
+
+```r
+#' Probability Plots Using Maximum Likelihood Estimates
+#'
+#' Make quantile-quantile plots and probability-probability plots using maximum
+#'   likelihood estimation.
+#'
+#' `qqmlplot` produces a quantile-quantile plot (Q-Q plot) of the values in
+#' `y` with respect to the distribution defined by `obj`, which is
+#' either a `univariateML` object or a function returning a
+#' `univariateML` object when called with `y`. `qqmlline` adds a
+#' line to a <U+201C>theoretical<U+201D>, quantile-quantile plot which passes through
+#' the `probs` quantiles, by default the first and third quartiles.
+#' `qqmlpoints`behaves like `stats::points` and adds a Q-Q plot to
+#' an existing plot.
+#'
+#' `ppmlplot`, `ppmlline`, and `ppmlpoints` produce
+#' probability-probability plots (or P-P plots). They behave similarly to the
+#' quantile-quantile plot functions.
+#'
+#' This function is modeled after [qqnorm][stats::qqnorm].
+#'
+#' Quantile-quantile plots and probability-probability plots are only supported
+#' for continuous distributions.
+#'
+#' Graphical parameters may be given as arguments to all the functions below.
+#'
+#' @param y Numeric vector; The data to plot on the `y` axis when
+#'   `datax` is `FALSE`.
+#' @param obj Either an `univariateML` object or a function that returns
+#'   a `univariateML` object when called with `y` as its only
+#'   argument.
+#' @param plot.it Logical; should the result be plotted?
+#' @param datax Logical; should `y` be plotted on the `x`-axis?
+#'   Defaults to `FALSE` in `qqmlplot` and `ppmlplot` but
+#'   `TRUE` in `qqmlpoints` and `ppmlpoints`.
+#' @param probs Numeric vector of length two, representing probabilities.
+#'   Corresponding quantile pairs define the line drawn.
+#' @param qtype The `type` of quantile computation used in `quantile`.
+#' @param ... Graphical parameters.
+#' @return For `qqmlplot`, `qqmlpoints`, `ppmlplot`, and
+#'   `ppmlpoints`, a list with components `x` (plotted on the x axis)
+#'   and `y` (plotted on the y axis). `qqmlline` and `ppmlline`
+#'   returns nothing.
+#'
+#' @examples
+#' ## Make a single probability plot with a line.
+#'
+#' obj <- mlgamma(Nile)
+#' qqmlplot(Nile, obj)
+#' qqmlline(Nile, obj)
+#'
+#' ## Make multiple probability plots. datax = TRUE must be used to make this
+#' ## look good.
+#'
+#' ppmlplot(airquality$Wind, mlgamma, main = "Many P-P plots")
+#' ppmlpoints(airquality$Wind, mlexp, col = "red")
+#' ppmlpoints(airquality$Wind, mlweibull, col = "purple")
+#' ppmlpoints(airquality$Wind, mllnorm, col = "blue")
+#' @name ProbabilityPlots
+#' @export
+#' @references
+#'   M. B. Wilk, R. Gnadadesikan, Probability plotting methods for the analysis
+#'   for the analysis of data, Biometrika, Volume 55, Issue 1, March 1968,
+#'   Pages 1<U+2013>17, https://doi.org/10.1093/biomet/55.1.1
+
+ppmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
+  pp <- ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
+  if (plot.it) do.call(graphics::plot, pp$args)
+  invisible(pp$value)
+}
+
+#' @rdname ProbabilityPlots
+#' @export
+ppmlline <- function(...) graphics::abline(a = 0, b = 1, ...)
+
+#' @rdname ProbabilityPlots
+#' @export
+ppmlpoints <- function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
+  pp <- ppqq_wrangler(y, obj, datax, pp = TRUE, ...)
+  if (plot.it) do.call(graphics::points, pp$args)
+  invisible(pp$value)
+}
+
+#' @rdname ProbabilityPlots
+#' @export
+qqmlplot <- function(y, obj, plot.it = TRUE, datax = FALSE, ...) {
+  qq <- ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
+  if (plot.it) do.call(graphics::plot, qq$args)
+  invisible(qq$value)
+}
+
+#' @rdname ProbabilityPlots
+#' @export
+qqmlline <- function(
+    y, obj, datax = FALSE, probs = c(0.25, 0.75), qtype = 7,
+    ...) {
+  obj <- to_univariateML(y, obj)
+  y <- stats::quantile(y, probs, names = FALSE, type = qtype, na.rm = TRUE)
+  x <- qml(probs, obj)
+
+  if (datax) {
+    slope <- diff(x) / diff(y)
+    int <- x[1L] - slope * y[1L]
+  } else {
+    slope <- diff(y) / diff(x)
+    int <- y[1L] - slope * x[1L]
+  }
+
+  graphics::abline(int, slope, ...)
+}
+
+#' @rdname ProbabilityPlots
+#' @export
+qqmlpoints <- function(y, obj, plot.it = TRUE, datax = TRUE, ...) {
+  qq <- ppqq_wrangler(y, obj, datax, pp = FALSE, ...)
+  if (plot.it) do.call(graphics::points, qq$args)
+  invisible(qq$value)
+}
+
+
+#' Wrangles arguments for use in ppml and qqml functions.
+#'
+#' @param y The input data.
+#' @param obj Function or continuous `"univariateML"` object.
+#' @param datax logical; if true, plots the data on the x axis.
+#' @param ... Arguments passed to `plot` or `points` down the line.
+#' @keywords internal
+
+ppqq_wrangler <- function(y, obj, datax, pp, ...) {
+  ## Nas are removed by default in this function, following qqplot.
+
+  y <- y[!is.na(y)]
+
+  ## Error message straight out of stats::qqplot.
+  if (0 == length(y)) stop("y is empty or has only NAs")
+
+  ## I must check if the object is a "univariateML" object or a function that
+  ## returns a "univariateML" object. If neither, an error is thrown.
+
+  obj <- to_univariateML(y, obj)
+
+  if (!(attr(obj, "continuous"))) {
+    stop("QQ and PP plots are only supported for continuous distributions.")
+  }
+
+  n <- length(y)
+
+  if (pp) {
+    x <- ((1:n) / (n + 1))[order(order(y))]
+    y <- pml(q = y, obj = obj)
+  } else {
+    x <- qml((1:n) / (n + 1), obj = obj)[order(order(y))]
+  }
+
+
+  defaults <- list(lwd = 1)
+
+  if (!pp) {
+    defaults$main <- paste0(attr(obj, "model"), " Q-Q plot")
+    if (!datax) {
+      defaults$ylab <- "Sample Quantiles"
+      defaults$xlab <- "Approximate Theoretical Quantiles"
+    } else {
+      defaults$ylab <- "Approximate Theoretical Quantiles"
+      defaults$xlab <- "Sample Quantiles"
+    }
+  } else {
+    defaults$main <- paste0(attr(obj, "model"), " P-P plot")
+    if (!datax) {
+      defaults$ylab <- "Sample Cumulative Probability"
+      defaults$xlab <- "Theoretical Cumulative Probability"
+    } else {
+      defaults$ylab <- "Theoretical Cumulative Probability"
+      defaults$xlab <- "Sample Cumulative Probability"
+    }
+  }
+
+
+  args <- listmerge(
+    x = defaults,
+    y = list(...)
+  )
+
+  if (!datax) {
+    args$x <- x
+    args$y <- y
+  } else {
+    args$x <- y
+    args$y <- x
+  }
+
+  pp <- NULL
+  pp$value <- if (datax) list(x = y, y = x) else list(x = x, y = y)
+  pp$args <- args
+  pp
+}
+```
+
+### R/RcppExports.R
+
+```r
+# Generated by using Rcpp::compileAttributes() -> do not edit by hand
+# Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
+
+burr_lmom <- function(mu, sigma2) {
+    .Call(`_univariateML_burr_lmom`, mu, sigma2)
+}
+
+mlburr_rcpp <- function(x, tol = 1.220703e-4, max_iter = 100L) {
+    .Call(`_univariateML_mlburr_rcpp`, x, tol, max_iter)
+}
+
+logmom1_c <- function(mu, sigma2, tol = 1.220703e-4, max_iter = 100L) {
+    .Call(`_univariateML_logmom1_c`, mu, sigma2, tol, max_iter)
+}
+
+mlburr_cpp <- function(x, tol = 1.220703e-4, max_iter = 100L) {
+    .Call(`_univariateML_mlburr_cpp`, x, tol, max_iter)
+}
+
+```
+
+### R/univariateML-package.R
+
+```r
+#' univariateML
+#'
+#' An `R`-package for fast, easy, and reliable maximum likelihood
+#' estimation for a selection of parametric univariate densities.
+#'
+#' Data analysis often requires the estimation of univariate densities.
+#' Maximum likelihood estimation is sensible for almost every univariate
+#' density used in practice. Moreover, the maximum likelihood estimator is
+#' typically consistent and efficient.
+#'
+#' The purpose of this package is to
+#' \itemize{
+#'   \item Support maximum likelihood estimation of a large selection of
+#'         densities.
+#'   \item Supports plenty of generics such as `plot` and `AIC` to
+#'         aid your data analysis.
+#' }
+#'
+#' Read the vignettes to learn more about univariateML:
+#' `browseVignettes(package = "univariateML")`
+#'
+"_PACKAGE"
+
+## usethis namespace: start
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib univariateML, .registration = TRUE
+## usethis namespace: end
+NULL
+```
+
+### R/utility.R
+
+```r
+#' Merges two lists.
+#'
+#' @keywords internal
+#' @param x A list of default arguments.
+#' @param y A list of supplied arguments
+#' @param type If `merge`, the list will be merge with y
+#' having priority; if `template`, named the elements of
+#' y not in x will be discarded after merging.
+#' @return A merged list where conflicts are solved in favor
+#' of y. Does not preserve ordering.
+
+listmerge <- function(x, y, type = c("merge", "template")) {
+  type <- match.arg(type)
+
+  if (length(y) == 0) {
+    return(x)
+  }
+
+  ## Keep and not-keep are quite different.
+  if (type == "merge") {
+    matches <- match(names(y), names(x))
+    elements_to_discard <- matches[!is.na(matches)]
+    if (length(elements_to_discard) == 0) {
+      combined <- c(y, x)
+    } else {
+      combined <- c(y, x[-elements_to_discard])
+    }
+    return(combined)
+  }
+
+  if (type == "template") {
+    matches <- match(names(x), names(y))
+    x[!is.na(matches)] <- y[matches[!is.na(matches)]]
+    return(x)
+  }
+}
+
+#' Simulate `n` observations from a `ml***` string using default parameters.
+#' @param dens `ml***` string.
+#' @param n Number of samples to take.
+#' @keywords internal
+simulate_default <- function(dens, n) {
+  to_rdist <- function(x) {
+    strings <- strsplit(x, "::")[[1]]
+    substring(strings[2], first = 1, last = 1) <- "r"
+    paste0(strings[1], "::", strings[2])
+  }
+  params <- univariateML_metadata[[dens]]$default
+  names(params) <- univariateML_metadata[[dens]]$names
+  params["n"] <- n
+  rdist <- to_rdist(univariateML_metadata[[dens]]$density)
+  rlang::exec(parse(text = rdist)[[1]], !!!as.list(params))
+}
+
+#' One-dimensional Newton--Raphson
+#' @param f_over_df The term f(x_0) / f'(x_0) in Newton--Raphson.
+#' @param param0 Starting parameter, typically from method of moments estimates.
+#' @param ... Optional `iterlim` and `reltol` parameters.
+#' @return Newton--Raphson estimate.
+#' @keywords internal
+newton_raphson_1d <- function(f_over_df, param0, ...) {
+  dots <- list(...)
+  reltol <- if (!is.null(dots$reltol)) dots$reltol else .Machine$double.eps^0.25
+  iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
+
+  for (i in seq(iterlim)) {
+    param <- param0 - f_over_df(param0)
+    if (is.nan(param)) stop("NaN in Newton--Raphson iteration.")
+    if (abs((param0 - param) / param0) < reltol) break
+    param0 <- param
+  }
+
+  #print(paste0("Iter: ", i))
+
+  if (i == iterlim) {
+    warning(paste0(
+      "The iteration limit (iterlim = ", iterlim, ") was reached",
+      " before the relative tolerance requirement (reltol = ",
+      reltol, ")."
+    ))
+  }
+  param
+}
+
+#' Returns appropriate starting value
+#' @param default Function to calculate default parameter value.
+#' @param name Name of default starting value.
+#' @param ... Parameter list containing an element `name`.
+#' @return Default value if `name` is not present
+get_start <- function(default, name, ...) {
+  dots <- list(...)
+  if (!is.null(dots[[name]])) {
+    return(dots[[name]])
+  }
+  default()
+}
+
+
+#' Inverse digamma function
+#'
+#' Calculates the inverse digamma function using Newton--Raphson. Works for
+#' y > -500. Uses Newton--Raphson with relative tolerance of eps^0.25.
+#'
+#' The number of iterations are few, 1 for most input values, especially those
+#' that are large. The starting value is the lower bound found by Batir (2017).
+#'
+#' @param y Values to invert.
+#' @references Batir, N. (2017). Inequalities for the inverses of the polygamma functions. arXiv. http://arxiv.org/abs/1705.06547
+
+inverse_digamma <- function(x) {
+  γ <- 0.57721566490153286060
+  ζ3  <- 1.2020569031595942854
+  if (x + γ < -30) {
+    t  <- x + γ
+    y  <- -1/t + (pi^2/6)/t^3 + (ζ3/2)/t^4
+    k <- 1
+  } else {
+    y <- 1 / log1p(exp(-x))
+    r <- digamma(y) - x
+    y <- y - r / trigamma(y)
+    r <- digamma(y) - x
+    y <- y - r / trigamma(y)
+  }
+
+  for (k in 1:2) {
+    r <- digamma(y) - x
+    y <- y - r / trigamma(y)
+    if (abs(r) < 1e-14) break
+  }
+  y
+}
+
+
+
+#' Log-moments estimator for Burr c parameter
+#'
+#' @param m1 Expected log moment.
+#' @param m2 Variance log moment.
+#' @return Estimated c in Burr.
+logmom_burr_c <- function(m1, m2) {
+  psi1_1 <- trigamma(1)
+
+  f_over_df <- function(c) {
+    k <- inverse_digamma(digamma(1) - c * m1)
+
+    psi1_k <- trigamma(k)
+    psi2_k <- psigamma(k, deriv = 2)
+
+    c_2 <- c^(-2)
+    c_3 <- c^(-3)
+    term1_prime <- -2 * c_3 * (psi1_1 + psi1_k)
+    term2_prime <- c_2  * (psi2_k * (-m1 / psi1_k))
+
+    f <- c_2* (psi1_1 + psi1_k) - m2
+    df <- term1_prime + term2_prime
+    f / df
+  }
+
+  univariateML:::newton_raphson_1d(f_over_df, pi / sqrt(3 * m2))
+}
+
+```
+
+### R/zzz.R
+
+```r
+densities <- list.files("R")
+densities <- densities[sapply(densities, function(x) substr(x, 1, 2) == "ml")]
+densities <- densities[!grepl("select", densities)]
+densities <- unname(unlist(sapply(densities, function(x) strsplit(x, ".R"))))
+
+
+#' Implemented models
+#'
+#' Vector of all supported models in `univariateML`.
+#'
+#' The currently supported models are `r paste0("[ml",paste0(univariateML_models, "]"))`
+#'
+#' @export
+univariateML_models <- substring(densities, first = 3)
+
+
+# This function populate all (currently empty) univariateML functions.
+
+for (model in univariateML_models) {
+  fun <- paste0("ml", model)
+  assign(fun, decorator(fun))
+}
+
+rm(fun)
+
+out <- univariateML_metadata[["mlunif"]]
+out$names_ <- out$names
+out$names <- NULL
+`attributes<-`(mlunif, out)
+
+# These imports are made to pass a CRAN note. The imports are not redundant,
+# but are used only through eval-call in the code, which is invisible to the
+# CRAN checks.
+
+zzz <- function() {
+  invisible(extraDistr::dbetapr)
+  invisible(logitnorm::dlogitnorm)
+  invisible(tibble::tibble)
+  invisible(nakagami::dnaka)
+  invisible(intervals::Intervals)
+  invisible(sads::dzipf)
+}
+```
+
+## src/ directory structure (only .cpp)
+
+```
+```
+
+## src/ C++ source files
+
+
+### src/burr.cpp
+
+```cpp
+// [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::plugins(openmp)]]
+#include <RcppArmadillo.h>
+#include <Rmath.h>         // for Rf_digamma, Rf_psigamma
+#include <cmath>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+#include <limits>
+
+// ——— compile-time constants ———
+constexpr double NEULER_CST = -0.5772156649015328606;      // = digamma(1)
+constexpr double BASEL_CST  = M_PI*M_PI / 6.0;            // = trigamma(1)
+constexpr double PI_C       = M_PI;
+
+// ——— inline logistic helpers ———
+static inline double logit(double p) noexcept {
+  return std::log(p / (1.0 - p));
+}
+static inline double logistic(double x) noexcept {
+  double e = std::exp(-x);
+  return 1.0 / (1.0 + e);
+}
+static inline double logistic_pdf(double x) noexcept {
+  double L = logistic(x);
+  return L * (1.0 - L);
+}
+static inline double qlogis(double p, double loc, double scale) noexcept {
+  return loc + scale * logit(p);
+}
+static inline double plogis(double x, double loc, double scale) noexcept {
+  return 1.0 / (1.0 + std::exp(-(x - loc) / scale));
+}
+
+Rcpp::NumericVector f_lower_inv_rcpp(double cv) {
+  // starting-value constants
+  const double loc = -0.5495872, scl = 0.6103216;
+  const double cv_lo = 0.1, cv_hi = 0.95;
+  const double eps   = 1e-15;
+
+  // — start k—
+  double k;
+  if (cv < cv_lo) {
+    k = 1.0 - std::sqrt(2.0 * cv / BASEL_CST);
+  } else if (cv > cv_hi) {
+    k = std::sqrt((1.0 - cv) / (cv * BASEL_CST));
+  } else {
+    double y = std::min(1.0 - eps, std::max(eps, 1.0 - cv));
+    double x0_log = qlogis(y, loc, scl);
+    k = plogis(x0_log, loc, scl);
+  }
+  k = std::min(1.0 - eps, std::max(eps, k));
+
+  // parameterize in x = logit(k)
+  double x0 = logit(k);
+
+  const double reltol = std::sqrt(std::numeric_limits<double>::epsilon());
+  const int    maxit  = 100;
+  int          iter   = 0;
+
+  for (; iter < maxit; ++iter) {
+    // k, polygamma
+    double kk    = logistic(x0);
+    double di    = Rf_psigamma(kk, 0);
+    double tri   = Rf_psigamma(kk, 1);
+    double tetra = Rf_psigamma(kk, 2);
+
+    // f(x)
+    double pd    = di - NEULER_CST;
+    double bpt   = BASEL_CST + tri;
+    double f     = (pd*pd)/bpt - cv;
+
+    // f'(x) = f'_k * d k/d x
+    double fpk   = ((2.0*pd*tri*bpt) - (pd*pd*tetra)) / (bpt*bpt);
+    double df    = fpk * logistic_pdf(x0);
+
+    // Newton step
+    double step  = f/df;
+    double x1    = x0 - step;
+    if (std::abs(x1 - x0) < (std::abs(x0)*reltol + 1e-3*reltol)) {
+      x0 = x1;
+      break;
+    }
+    x0 = x1;
+  }
+
+  double k_out = logistic(x0);
+  return Rcpp::NumericVector::create(
+    Rcpp::_["k"]    = k_out,
+    Rcpp::_["iter"] = iter+1
+  );
+}
+
+Rcpp::NumericVector f_upper_inv_rcpp(double cv) {
+  const double thr  = 0.2;
+  const double eps  = 1e-9;
+
+  // — start k—
+  double k0;
+  if (cv < thr) {
+    k0 = 1.0 + std::sqrt(2.0 * cv / BASEL_CST);
+  } else {
+    k0 = std::exp(std::sqrt(cv * BASEL_CST));
+  }
+  k0 = std::max(1.0 + eps, k0);
+
+  // parameterize in x = log(k - 1)
+  double x0 = std::log(k0 - 1.0);
+
+  const double reltol = std::sqrt(std::numeric_limits<double>::epsilon());
+  const int    maxit  = 100;
+  int          iter   = 0;
+
+  for (; iter < maxit; ++iter) {
+    double kk    = std::exp(x0) + 1.0;
+    double di    = Rf_psigamma(kk, 0);
+    double tri   = Rf_psigamma(kk, 1);
+    double tetra = Rf_psigamma(kk, 2);
+
+    double pd    = di - NEULER_CST;
+    double bpt   = BASEL_CST + tri;
+    double f     = (pd*pd)/bpt - cv;
+
+    double fpk   = ((2.0*pd*tri*bpt) - (pd*pd*tetra)) / (bpt*bpt);
+    double df    = fpk * std::exp(x0);
+
+    double step  = f/df;
+    double x1    = x0 - step;
+    if (std::abs(x1 - x0) < (std::abs(x0)*reltol + 1e-3*reltol)) {
+      x0 = x1;
+      break;
+    }
+    x0 = x1;
+  }
+
+  double k_out = std::exp(x0) + 1.0;
+  return Rcpp::NumericVector::create(
+    Rcpp::_["k"]    = k_out,
+    Rcpp::_["iter"] = iter+1
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericVector burr_lmom(double mu, double sigma2) {
+  double k_hat = NA_REAL, c_hat = NA_REAL;
+  int    iter  = 0;
+
+  if (sigma2 > 0 && std::abs(mu) >= std::numeric_limits<double>::epsilon()) {
+    double cv = mu*mu / sigma2;
+    if (mu > 0) {
+      auto res = f_lower_inv_rcpp(cv);
+      k_hat = res["k"]; iter = res["iter"];
+    } else {
+      auto res = f_upper_inv_rcpp(cv);
+      k_hat = res["k"]; iter = res["iter"];
+    }
+    double t1 = Rf_psigamma(k_hat, 1);
+    double csq = (BASEL_CST + t1) / sigma2;
+    if (csq > 0) c_hat = std::sqrt(csq);
+  } else if (std::abs(mu) < std::numeric_limits<double>::epsilon()) {
+    k_hat = 1.0;
+    double t1 = Rf_psigamma(1.0,1);
+    double csq = (BASEL_CST + t1) / sigma2;
+    if (csq > 0) c_hat = std::sqrt(csq);
+  }
+
+  return Rcpp::NumericVector::create(
+    Rcpp::_["k"]    = k_hat,
+    Rcpp::_["c"]    = c_hat,
+    Rcpp::_["iter"] = iter
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericVector mlburr_rcpp(const arma::vec& x,
+                               double tol = 1.220703e-4,
+                               int max_iter = 100) {
+  const int    n     = x.n_elem;
+  const double nd    = double(n);
+  arma::vec     log_x = arma::log(x);
+  const double  sum_l = arma::sum(log_x);
+
+  const double* __restrict xp   = x.memptr();
+  const double* __restrict lxp  = log_x.memptr();
+
+  double m1 = sum_l/nd;
+  double m2 = (arma::dot(log_x, log_x)/nd) - m1*m1;
+
+  double c = burr_lmom(m1, m2)[1];
+
+  double step = 0.0;
+
+  for(int iter=0; iter<max_iter; ++iter){
+    double g=0.0, dg=0.0, d2g1=0.0, d2g2=0.0;
+#pragma omp simd reduction(+:g,dg,d2g1,d2g2)
+    for(int i=0; i<n; ++i){
+      double lx = lxp[i];
+      double xc = std::exp(c * lx);
+      double ip = xc + 1.0;
+      double t  = xc / ip;
+      g    += std::log1p(xc);
+      dg   += lx * t;
+      d2g1 += lx*lx * t;
+      d2g2 += (lx * t)*(lx * t);
+    }
+    double d2g = d2g1 - d2g2;
+    double g2  = g*g, c2 = c*c;
+    double f   = nd/c - nd*dg/g + sum_l - dg;
+    double df  = -nd/c2 - nd*(g*d2g - dg*dg)/g2 - d2g;
+
+    step = f/df;
+    c   -= step;
+    if (std::fabs(step) < tol) break;
+  }
+
+  arma::vec xc_final = arma::exp(c*log_x);
+  double g_final     = arma::sum(arma::log1p(xc_final));
+  double k           = nd / g_final;
+
+  Rcpp::NumericVector out = Rcpp::NumericVector::create(k, c);
+  out.names() = Rcpp::CharacterVector::create("shape1","shape2");
+  return out;
+}
+```
+
+### src/inverse_digamma.cpp
+
+```cpp
+// [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::plugins(openmp)]]
+#include <RcppArmadillo.h>
+#include <Rmath.h>         // for Rf_digamma, Rf_psigamma
+#include <cmath>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+static const double GAMMA_C    = 0.57721566490153286060;
+static const double ZETA3_C    = 1.2020569031595942854;
+static const double PI_C       = M_PI;
+static const double PI_SQ_C    = PI_C * PI_C;
+static const double PSI1_C     = Rf_digamma(1.0);    // ≈ -0.577
+static const double PSI1_1_C   = Rf_psigamma(1.0,1); // ≈ 1.645 (π²/6)
+
+inline double inverse_digamma_scalar(double x) {
+  double y, r;
+  if (x + GAMMA_C < -30.0) {
+    double t     = x + GAMMA_C;
+    double t_inv = 1.0/t, t3 = t_inv*t_inv*t_inv;
+    y = -t_inv + (PI_SQ_C/6.0)*t3 + (ZETA3_C/2.0)*t3*t_inv;
+  } else {
+    y = 1.0/std::log1p(std::exp(-x));
+    for (int i=0; i<2; ++i) {
+      r = Rf_digamma(y) - x;
+      y -= r / Rf_psigamma(y,1);
+    }
+  }
+  for (int k = 0; k < 2; ++k) {
+    r = Rf_digamma(y) - x;
+    if (std::fabs(r) < 1e-14) break;
+    y -= r / Rf_psigamma(y,1);
+  }
+  return y;
+}
+
+// [[Rcpp::export]]
+inline double logmom1_c(double mu, double sigma2,
+                        const double tol = 1.220703e-4,
+                        const int max_iter = 100) {
+  double c = PI_C/std::sqrt(3.0*sigma2), step=0.0;
+  for(int iter=0; iter<max_iter; ++iter){
+    double k     = inverse_digamma_scalar(PSI1_C - c*mu);
+    double psi1k = Rf_psigamma(k,1);
+    double psi2k = Rf_psigamma(k,2);
+
+    double c_inv = 1.0/c, c2 = c_inv*c_inv, c3 = c2*c_inv;
+    double f     = c2*(PSI1_1_C + psi1k) - sigma2;
+    double dk_dc = -mu/psi1k;
+    double df    = -2.0*c3*(PSI1_1_C + psi1k) + c2*psi2k*dk_dc;
+
+    step = f/df;
+    c   -= step;
+    if (std::fabs(step) < tol) break;
+  }
+  return c;
+}
+
+
+// [[Rcpp::export]]
+Rcpp::NumericVector mlburr_cpp(const arma::vec& x,
+                                            double tol = 1.220703e-4,
+                                            int max_iter = 100) {
+  const int    n     = x.n_elem;
+  const double nd    = double(n);
+  arma::vec     log_x = arma::log(x);
+  const double  sum_l = arma::sum(log_x);
+
+  const double* __restrict xp   = x.memptr();
+  const double* __restrict lxp  = log_x.memptr();
+
+  double m1 = sum_l/nd;
+  double m2 = (arma::dot(log_x, log_x)/nd) - m1*m1;
+
+  double c = (m1 * m1 > m2 && m1 > 0) ? PI_C / sqrt(3 * m2) : logmom1_c(m1, m2, tol, max_iter);
+
+  double step = 0.0;
+
+  for(int iter=0; iter<max_iter; ++iter){
+    double g=0.0, dg=0.0, d2g1=0.0, d2g2=0.0;
+#pragma omp simd reduction(+:g,dg,d2g1,d2g2)
+    for(int i=0; i<n; ++i){
+      double lx = lxp[i];
+      double xc = std::exp(c * lx);
+      double ip = xc + 1.0;
+      double t  = xc / ip;
+      g    += std::log1p(xc);
+      dg   += lx * t;
+      d2g1 += lx*lx * t;
+      d2g2 += (lx * t)*(lx * t);
+    }
+    double d2g = d2g1 - d2g2;
+    double g2  = g*g, c2 = c*c;
+    double f   = nd/c - nd*dg/g + sum_l - dg;
+    double df  = -nd/c2 - nd*(g*d2g - dg*dg)/g2 - d2g;
+
+    step = f/df;
+    c   -= step;
+    if (std::fabs(step) < tol) break;
+  }
+
+  arma::vec xc_final = arma::exp(c*log_x);
+  double g_final     = arma::sum(arma::log1p(xc_final));
+  double k           = nd / g_final;
+
+  Rcpp::NumericVector out = Rcpp::NumericVector::create(k, c);
+  out.names() = Rcpp::CharacterVector::create("shape1","shape2");
+  return out;
+}
+```
+
+### src/kumar.cpp
+
+```cpp
+```
+
+### src/RcppExports.cpp
+
+```cpp
+// Generated by using Rcpp::compileAttributes() -> do not edit by hand
+// Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
+
+#include <RcppArmadillo.h>
+#include <Rcpp.h>
+
+using namespace Rcpp;
+
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
+// burr_lmom
+Rcpp::NumericVector burr_lmom(double mu, double sigma2);
+RcppExport SEXP _univariateML_burr_lmom(SEXP muSEXP, SEXP sigma2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
+    rcpp_result_gen = Rcpp::wrap(burr_lmom(mu, sigma2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlburr_rcpp
+Rcpp::NumericVector mlburr_rcpp(const arma::vec& x, double tol, int max_iter);
+RcppExport SEXP _univariateML_mlburr_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlburr_rcpp(x, tol, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// logmom1_c
+inline double logmom1_c(double mu, double sigma2, const double tol, const int max_iter);
+RcppExport SEXP _univariateML_logmom1_c(SEXP muSEXP, SEXP sigma2SEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(logmom1_c(mu, sigma2, tol, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlburr_cpp
+Rcpp::NumericVector mlburr_cpp(const arma::vec& x, double tol, int max_iter);
+RcppExport SEXP _univariateML_mlburr_cpp(SEXP xSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlburr_cpp(x, tol, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_univariateML_burr_lmom", (DL_FUNC) &_univariateML_burr_lmom, 2},
+    {"_univariateML_mlburr_rcpp", (DL_FUNC) &_univariateML_mlburr_rcpp, 3},
+    {"_univariateML_logmom1_c", (DL_FUNC) &_univariateML_logmom1_c, 4},
+    {"_univariateML_mlburr_cpp", (DL_FUNC) &_univariateML_mlburr_cpp, 3},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_univariateML(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
+```
+
+> Document generated at sø. 27. april 07:26:18 +0200 2025 by generate_pkg_doc.sh

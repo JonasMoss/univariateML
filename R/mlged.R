@@ -1,8 +1,8 @@
-#' Generalized Error distribution maximum likelihood estimation
+#' Generalized error distribution maximum likelihood estimation
 #'
 #' Joint maximum likelihood estimation as implemented by [fGarch::gedFit].
 #'
-#' For the density function of the Student t-distribution see
+#' For the density function of the generalized error distribution see
 #' [ged][fGarch::ged].
 #'
 #' @param x a (non-empty) numeric vector of data values.

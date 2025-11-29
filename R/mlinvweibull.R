@@ -42,17 +42,23 @@ univariateML_metadata$mlinvweibull <- list(
 )
 
 mlinvweibull_ <- function(x, ...) {
-  y <- 1 / x
+
+  log_x <- log(x)
   n <- length(x)
+  s <- -sum(log_x) / n
 
-  estimates <- mlweibull_(y, ...)$estimates
+  estimates <- mlgumbel_estimate(log_x + s, ...)
+  rate_log <- -estimates[1] + s
 
-  shape <- estimates[1]
-  scale <- 1 / estimates[2]
-  G <- mean(log(x))
-  Ma <- mean(x^-shape)
+  rate <- exp(rate_log)
+  shape <- 1 / estimates[2]
 
-  logLik <- unname(n * (log(shape) + shape * (log(scale) - G) -
-    scale^shape * Ma - G))
-  list(estimates = estimates, logLik = logLik)
+  #r <- sum(exp(-log_x * shape)) / n
+  #scale <- 1/rate
+  #r <- (scale^shape)^2
+  #r <- scale^shape * r
+  # r <- 1
+
+  logLik <- n * (log(shape) + shape * (-rate_log + s) - 1 + s)
+  list(estimates = c(shape, rate), logLik = logLik)
 }

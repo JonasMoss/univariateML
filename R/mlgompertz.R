@@ -2,10 +2,6 @@
 #'
 #' Uses Newton-Raphson to estimate the parameters of the Gompertz distribution.
 #'
-#' For some data sets the maximum likelihood estimator of `b` fails to exist
-#'  since the root of the profile maximum likelihood equation is non-positive.
-#'  The value `1e-06` is returned in this case, along with a warning.
-#'
 #' For the density function of the Gompertz distribution see
 #' [Gompertz][extraDistr::Gompertz].
 #'

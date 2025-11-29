@@ -38,7 +38,7 @@ univariateML_metadata$mlfatigue <- list(
 
 mlfatigue_ <- function(x, ...) {
   n <- length(x)
-  x_bar <- mean(x)
+  x_bar <- sum(x) / n
   x_inv_bar <- n / sum(1 / x)
 
   f_over_df <- function(beta) {
@@ -50,7 +50,8 @@ mlfatigue_ <- function(x, ...) {
   }
 
   # Starting parameter: Method of moments solution.
-  beta0 <- sum(sqrt(x)) / sum(1 / sqrt(x))
+  sqrt_x <- sqrt(x)
+  beta0 <- sum(sqrt_x) / sum(1 / sqrt_x)
   beta <- newton_raphson_1d(f_over_df, beta0, ...)
 
   alpha <- sqrt(x_bar / beta + beta / x_inv_bar)

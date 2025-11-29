@@ -20,3 +20,9 @@
 #' `browseVignettes(package = "univariateML")`
 #'
 "_PACKAGE"
+
+## usethis namespace: start
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib univariateML, .registration = TRUE
+## usethis namespace: end
+NULL

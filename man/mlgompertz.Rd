@@ -31,10 +31,6 @@ This is a named numeric vector with maximum likelihood estimates for
 Uses Newton-Raphson to estimate the parameters of the Gompertz distribution.
 }
 \details{
-For some data sets the maximum likelihood estimator of \code{b} fails to exist
-since the root of the profile maximum likelihood equation is non-positive.
-The value \code{1e-06} is returned in this case, along with a warning.
-
 For the density function of the Gompertz distribution see
 \link[extraDistr:Gompertz]{Gompertz}.
 }

@@ -13,6 +13,7 @@ The implemented distributions are found in `univariateML_models`.
 
 
 ``` r
+library("univariateML")
 univariateML_models
 ```
 

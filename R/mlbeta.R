@@ -37,15 +37,17 @@ univariateML_metadata$mlbeta <- list(
 )
 
 mlbeta_ <- function(x, ...) {
-  s <- mean(log(x))
-  r <- mean(log(1 - x))
-  g1 <- exp(s)
-  g2 <- exp(r)
-  b <- log(0.5 + 0.5 * g2 / (1 - (g1 + g2)))
   n <- length(x)
+  s <- sum(log(x)) / n
+  r <- sum(log1p(-x)) / n
 
-  reltol <- .Machine$double.eps^0.25
+  reltol <- .Machine$double.eps^0.5
   iterlim <- 100
+
+  m <- sum(x) / n
+  v <- sum(x^2) / n - m^2
+  nu <- m * (1 - m) / v - 1
+  b <- log((1 - m) * nu)
 
   for (i in seq(iterlim)) {
     exp_b <- exp(b)
@@ -74,3 +76,4 @@ mlbeta_ <- function(x, ...) {
     i = i
   )
 }
+

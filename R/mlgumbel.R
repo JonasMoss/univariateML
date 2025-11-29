@@ -42,7 +42,7 @@ mlgumbel_ <- function(x, ...) {
   mu <- estimates[1] + x_bar
   sigma <- estimates[2]
   logLik <- -length(x) * (log(sigma) + (x_bar - mu) / sigma + 1)
-  list(estimates = c(mu = mu, sigma = sigma), logLik = logLik)
+  list(estimates = c(mu = mu, sigma = sigma), logLik = logLik, iterations = estimates[3])
 }
 
 mlgumbel_estimate <- function(x, ...) {
@@ -58,10 +58,18 @@ mlgumbel_estimate <- function(x, ...) {
     f / df
   }
 
-  sigma0 <- sqrt(sum(x^2) / length(x)) * 2.45 / pi * (1 - 1 / length(x))
-  sigma <- newton_raphson_1d(f_over_df, sigma0, ...)
+  reltol <- .Machine$double.eps^0.5
+  iterlim <- 100
+  sigma0 <- sqrt(sum(x2) / length(x)) * 2.45 / pi
+
+  for (i in seq(iterlim)) {
+    sigma <- sigma0 - f_over_df(sigma0)
+    if (abs(sigma0 - sigma) < abs(sigma0) * reltol) break
+    sigma0 <- sigma
+  }
+
   neg_sigma_inv <- -1 / sigma
   psi0 <- sum(exp(x * neg_sigma_inv))
   mu <- -sigma * log(psi0 / length(x))
-  c(mu, sigma)
+  c(mu, sigma, iterations = i)
 }
