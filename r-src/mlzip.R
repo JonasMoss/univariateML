@@ -1,6 +1,3 @@
-mlzip <- function(x, na.rm = FALSE, ...) {}
-
-
 mlzip_ <- function(x, ...) {
   r_0 <- mean(x == 0)
   x_bar <- mean(x)

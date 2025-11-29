@@ -850,9 +850,6 @@ mlweibull_ <- function(x, ...) {
   list(estimates = c(shape, scale), logLik = logLik)
 }
 
-mlzip <- function(x, na.rm = FALSE, ...) {}
-
-
 mlzip_ <- function(x, ...) {
   r_0 <- mean(x == 0)
   x_bar <- mean(x)
@@ -875,9 +872,6 @@ mlzip_ <- function(x, ...) {
 
   list(estimates = c(lambda, pi), logLik = logLik)
 }
-
-mlzipf <- function(x, na.rm = FALSE, ...) {}
-
 
 mlzipf_ <- function(x, ...) {
   N <- max(x)

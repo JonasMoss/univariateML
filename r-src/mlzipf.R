@@ -1,6 +1,3 @@
-mlzipf <- function(x, na.rm = FALSE, ...) {}
-
-
 mlzipf_ <- function(x, ...) {
   N <- max(x)
   n <- length(x)
