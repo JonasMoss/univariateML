@@ -4,7 +4,7 @@
 \alias{inverse_digamma}
 \title{Inverse digamma function}
 \usage{
-inverse_digamma(x)
+inverse_digamma(y)
 }
 \arguments{
 \item{y}{Values to invert.}

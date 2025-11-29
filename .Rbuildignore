@@ -28,3 +28,4 @@ cache$
 ^README_cache$
 ^\.github$
 ^CRAN-SUBMISSION$
+^plan\.md$

@@ -107,12 +107,13 @@ get_start <- function(default, name, ...) {
 #' @param y Values to invert.
 #' @references Batir, N. (2017). Inequalities for the inverses of the polygamma functions. arXiv. http://arxiv.org/abs/1705.06547
 
-inverse_digamma <- function(x) {
-  γ <- 0.57721566490153286060
-  ζ3  <- 1.2020569031595942854
+inverse_digamma <- function(y) {
+  gamma_const <- 0.57721566490153286060
+  zeta3  <- 1.2020569031595942854
+  x <- y
   y <- if (x < -3.5) {
-    t  <- x + γ
-    -1/t + (pi^2/6)/t^3 + (ζ3/2)/t^4
+    t  <- x + gamma_const
+    -1/t + (pi^2/6)/t^3 + (zeta3/2)/t^4
   } else if (x > 2) {
     0.5 / log1p(exp(-x)) + 0.5*(exp(x) + 0.5)
   } else {
@@ -124,7 +125,6 @@ inverse_digamma <- function(x) {
     y <- y - r / trigamma(y)
     if (abs(r) < 8*.Machine$double.eps) break
   }
-  print(k)
   y
 }
 
@@ -154,6 +154,5 @@ logmom_burr_c <- function(m1, m2) {
     f / df
   }
 
-  univariateML:::newton_raphson_1d(f_over_df, pi / sqrt(3 * m2))
+  newton_raphson_1d(f_over_df, pi / sqrt(3 * m2))
 }
-
