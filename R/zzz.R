@@ -16,9 +16,13 @@ univariateML_models <- substring(densities, first = 3)
 
 # This function populate all (currently empty) univariateML functions.
 
+generated_models <- c("mlgumbel", "mlweibull")
+
 for (model in univariateML_models) {
   fun <- paste0("ml", model)
-  assign(fun, decorator(fun))
+  if (!(fun %in% generated_models)) {
+    assign(fun, decorator(fun))
+  }
 }
 
 rm(fun)
