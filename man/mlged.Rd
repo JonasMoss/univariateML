@@ -2,7 +2,7 @@
 % Please edit documentation in R/mlged.R
 \name{mlged}
 \alias{mlged}
-\title{Generalized Error distribution maximum likelihood estimation}
+\title{Generalized error distribution maximum likelihood estimation}
 \usage{
 mlged(x, na.rm = FALSE, ...)
 }
@@ -28,7 +28,7 @@ parameters \code{mean}, \code{sd}, \code{nu} and the following attributes:
 Joint maximum likelihood estimation as implemented by \link[fGarch:dist-gedFit]{fGarch::gedFit}.
 }
 \details{
-For the density function of the Student t-distribution see
+For the density function of the generalized error distribution see
 \link[fGarch:dist-ged]{ged}.
 }
 \examples{
