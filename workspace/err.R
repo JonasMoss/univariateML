@@ -1,5 +1,0 @@
-set.seed(7)
-x <- actuar::rinvweibull(20, shapes[5], rates[5])
-frechetr::mle(x)
-frechetr::lhk(x)
-frechetr::mlme(x)
