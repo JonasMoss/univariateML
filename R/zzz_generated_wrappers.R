@@ -19,3 +19,21 @@ mlweibull <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlweibull", params = params)
 }
 
+# Generated wrapper for Gamma
+mlgamma <- function(x, na.rm = FALSE, ...) {
+  x <- ml_check_modify(x, na.rm = na.rm, name = "mlgamma")
+  n <- length(x)
+  out <- mlgamma_(x = x, ...)
+  params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)
+  univariateML_construct(out$estimates, name = "mlgamma", params = params)
+}
+
+# Generated wrapper for Lomax
+mllomax <- function(x, na.rm = FALSE, ...) {
+  x <- ml_check_modify(x, na.rm = na.rm, name = "mllomax")
+  n <- length(x)
+  out <- mllomax_(x = x, ...)
+  params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)
+  univariateML_construct(out$estimates, name = "mllomax", params = params)
+}
+

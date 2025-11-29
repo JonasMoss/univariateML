@@ -47,6 +47,54 @@
       "start_hints": { "method": "gumbel-transform", "notes": "fit to -log(x) via Gumbel, shape = 1/sigma" },
       "validation_hooks": [],
       "legacy_impl": "R/mlweibull.R"
+    },
+    {
+      "id": "gamma",
+      "name": "Gamma",
+      "density": "stats::dgamma",
+      "support": { "type": "R+", "lower": 0, "upper": null, "closed": [false, false] },
+      "params": [
+        {
+          "name": "shape",
+          "role": "shape",
+          "default": 2,
+          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+        },
+        {
+          "name": "rate",
+          "role": "rate",
+          "default": 2,
+          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+        }
+      ],
+      "sampler": "stats::rgamma",
+      "start_hints": { "method": "method-of-moments", "notes": "shape = mean^2/var, rate = mean/var" },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlgamma.R"
+    },
+    {
+      "id": "lomax",
+      "name": "Lomax",
+      "density": "extraDistr::dlomax",
+      "support": { "type": "R+", "lower": 0, "upper": null, "closed": [false, false] },
+      "params": [
+        {
+          "name": "lambda",
+          "role": "scale",
+          "default": 1,
+          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+        },
+        {
+          "name": "kappa",
+          "role": "shape",
+          "default": 2,
+          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+        }
+      ],
+      "sampler": "extraDistr::rlomax",
+      "start_hints": { "method": "moment-constraints", "notes": "requires mean(x^2) >= 2*mean(x)^2; fallback to exp otherwise" },
+      "validation_hooks": ["lomax_moment_check"],
+      "legacy_impl": "R/mllomax.R"
     }
   ]
 }

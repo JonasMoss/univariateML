@@ -21,6 +21,28 @@
         "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York."
       ],
       "examples": ["BIC(mlweibull(precip))"]
+    },
+    {
+      "id": "gamma",
+      "title": "Gamma distribution maximum likelihood estimation",
+      "description": "Joint maximum likelihood estimation of Gamma shape and rate.",
+      "details": "Uses Newton–Raphson on log-parameters with method-of-moments starts.",
+      "seealso": ["stats::Gamma"],
+      "references": [
+        "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1. Wiley, New York."
+      ],
+      "examples": ["mlgamma(faithful$eruptions)"]
+    },
+    {
+      "id": "lomax",
+      "title": "Lomax distribution maximum likelihood estimation",
+      "description": "Estimates Lomax (Pareto Type II) parameters via Newton–Raphson.",
+      "details": "Checks the moment condition mean(x^2) >= 2*mean(x)^2; otherwise suggests exponential fit.",
+      "seealso": ["extraDistr::Lomax"],
+      "references": [
+        "Kleiber, C. and Kotz, S. (2003) Statistical Size Distributions in Economics and Actuarial Sciences. Wiley."
+      ],
+      "examples": ["set.seed(3); mllomax(extraDistr::rlomax(100, 2, 4))"]
     }
   ]
 }

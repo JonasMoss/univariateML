@@ -16,7 +16,7 @@ univariateML_models <- substring(densities, first = 3)
 
 # This function populate all (currently empty) univariateML functions.
 
-generated_models <- c("mlgumbel", "mlweibull")
+generated_models <- c("mlgumbel", "mlweibull", "mlgamma", "mllomax")
 
 for (model in univariateML_models) {
   fun <- paste0("ml", model)
