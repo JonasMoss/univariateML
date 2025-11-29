@@ -1,6 +1,3 @@
-mlkumar <- function(x, na.rm = FALSE, ...) {}
-
-
 kumar_lmom <- function(mu, sigma2) {
   neuler <- digamma(1) # Negative Euler-Mascheroni constant
   basel <- pi^2 / 6 # trigamma(1)

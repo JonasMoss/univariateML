@@ -1,6 +1,3 @@
-mllogitnorm <- function(x, na.rm = FALSE, ...) {}
-
-
 mllogitnorm_ <- function(x, ...) {
   n <- length(x)
   y <- stats::qlogis(x)

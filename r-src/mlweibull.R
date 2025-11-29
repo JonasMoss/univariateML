@@ -1,6 +1,3 @@
-mlweibull <- function(x, na.rm = FALSE, ...) {}
-
-
 mlweibull_ <- function(x, ...) {
   log_x <- -log(x)
   s <- -sum(log_x) / length(x)

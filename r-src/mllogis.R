@@ -1,6 +1,3 @@
-mllogis <- function(x, na.rm = FALSE, ...) {}
-
-
 mllogis_ <- function(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))

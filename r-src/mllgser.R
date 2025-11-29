@@ -1,6 +1,3 @@
-mllgser <- function(x, na.rm = FALSE, ...) {}
-
-
 mllgser_ <- function(x, ...) {
   if (sum(x) == length(x)) {
     stop("All observations equals 1; the maximum likelihood estimator does not exist.")

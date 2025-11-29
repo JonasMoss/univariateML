@@ -1,6 +1,3 @@
-mllgamma <- function(x, na.rm = FALSE, ...) {}
-
-
 mllgamma_ <- function(x, ...) {
   y <- log(x)
   n <- length(x)

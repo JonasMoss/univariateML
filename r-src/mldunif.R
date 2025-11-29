@@ -1,6 +1,3 @@
-mldunif <- function(x, na.rm = FALSE, ...) {}
-
-
 mldunif_ <- function(x, ...) {
   n <- length(x)
   estimates <- c(min(x), max(x))

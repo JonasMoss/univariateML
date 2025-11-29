@@ -1,6 +1,3 @@
-mlllogis <- function(x, na.rm = FALSE, ...) {}
-
-
 mlllogis_ <- function(x, ...) {
   y <- log(x)
   estimates <- mllogis_(y)$estimates

@@ -1,6 +1,3 @@
-mlinvweibull <- function(x, na.rm = FALSE, ...) {}
-
-
 mlinvweibull_ <- function(x, ...) {
 
   log_x <- log(x)

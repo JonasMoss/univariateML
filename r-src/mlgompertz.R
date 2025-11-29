@@ -1,6 +1,3 @@
-mlgompertz <- function(x, na.rm = FALSE, ...) {}
-
-
 mlgompertz_ <- function(x, ...) {
   n <- length(x)
   x_sum <- sum(x)

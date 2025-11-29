@@ -1,6 +1,3 @@
-mlunif <- function(x, na.rm = FALSE, ...) {}
-
-
 mlunif_ <- function(x, ...) {
   max_ <- max(x)
   min_ <- min(x)

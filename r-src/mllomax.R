@@ -1,6 +1,3 @@
-mllomax <- function(x, na.rm = FALSE, ...) {}
-
-
 mllomax_ <- function(x, ...) {
   n <- length(x)
   m <- sum(x) / n

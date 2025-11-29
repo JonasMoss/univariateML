@@ -1,7 +1,3 @@
-mlburr <- function(x, na.rm = FALSE, ...) {}
-
-
-
 mlburr_ <- function(x, ...) {
   if (all(x >= 1)) {
     stop("The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlpareto` to fit a Pareto distribution.")

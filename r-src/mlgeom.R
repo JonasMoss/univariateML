@@ -1,6 +1,3 @@
-mlgeom <- function(x, na.rm = FALSE, ...) {}
-
-
 mlgeom_ <- function(x, ...) {
   n <- length(x)
   prob <- 1 / (mean(x) + 1)

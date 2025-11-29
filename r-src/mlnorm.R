@@ -1,6 +1,3 @@
-mlnorm <- function(x, na.rm = FALSE, ...) {}
-
-
 mlnorm_ <- function(x, ...) {
   n <- length(x)
 

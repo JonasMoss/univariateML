@@ -1,6 +1,3 @@
-mllaplace <- function(x, na.rm = FALSE, ...) {}
-
-
 mllaplace_ <- function(x, ...) {
   mu <- stats::median(x)
   sigma <- mean(abs(x - mu))

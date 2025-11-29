@@ -1,6 +1,3 @@
-mlpower <- function(x, na.rm = FALSE, ...) {}
-
-
 mlpower_ <- function(x, ...) {
   dots <- list(...)
   epsilon <- if (!is.null(dots$epsilon)) {

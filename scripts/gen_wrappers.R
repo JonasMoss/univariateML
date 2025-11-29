@@ -34,6 +34,6 @@ cat(
   header, "\n\n",
   "generated_models <- c(\"", paste0(generated_names, collapse = "\", \""), "\")\n\n",
   paste0(wrappers, collapse = ""),
-  file = "R/zzz_generated_wrappers.R",
+  file = "R/aaa_generated_wrappers.R",
   sep = ""
 )

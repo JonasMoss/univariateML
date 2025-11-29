@@ -1,6 +1,3 @@
-mlbetapr <- function(x, na.rm = FALSE, ...) {}
-
-
 mlbetapr_ <- function(x, ...) {
   estimates <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
   alpha <- estimates[1]

@@ -1,6 +1,3 @@
-mlbeta <- function(x, na.rm = FALSE, ...) {}
-
-
 mlbeta_ <- function(x, ...) {
   n <- length(x)
   s <- sum(log(x)) / n

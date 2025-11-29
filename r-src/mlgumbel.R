@@ -1,6 +1,3 @@
-mlgumbel <- function(x, na.rm = FALSE, ...) {}
-
-
 mlgumbel_ <- function(x, ...) {
   x_bar <- sum(x) / length(x)
   estimates <- mlgumbel_estimate(x - x_bar, ...)

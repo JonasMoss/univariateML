@@ -1,6 +1,3 @@
-mlcauchy <- function(x, na.rm = FALSE, ...) {}
-
-
 mlcauchy_ <- function(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))

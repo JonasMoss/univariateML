@@ -1,6 +1,3 @@
-mlpois <- function(x, na.rm = FALSE, ...) {}
-
-
 mlpois_ <- function(x, ...) {
   n <- length(x)
   lambda <- mean(x)

@@ -1,6 +1,3 @@
-mlfatigue <- function(x, na.rm = FALSE, ...) {}
-
-
 mlfatigue_ <- function(x, ...) {
   n <- length(x)
   x_bar <- sum(x) / n

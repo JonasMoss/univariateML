@@ -1,9 +1,6 @@
 # This file is auto-generated from r-src via scripts/gen_estimators_from_rsrc.R
 # Do not edit by hand.
 
-mlbeta <- function(x, na.rm = FALSE, ...) {}
-
-
 mlbeta_ <- function(x, ...) {
   n <- length(x)
   s <- sum(log(x)) / n
@@ -46,9 +43,6 @@ mlbeta_ <- function(x, ...) {
 }
 
 
-mlbetapr <- function(x, na.rm = FALSE, ...) {}
-
-
 mlbetapr_ <- function(x, ...) {
   estimates <- mlbeta(x / (x + 1), na.rm = FALSE, ...)
   alpha <- estimates[1]
@@ -58,9 +52,6 @@ mlbetapr_ <- function(x, ...) {
     (alpha + beta) * mean(log(1 + x))))
   list(estimates = estimates, logLik = logLik)
 }
-
-mlbinom <- function(x, na.rm = FALSE, ...) {}
-
 
 mlbinom_ <- function(x, ...) {
   dots <- list(...)
@@ -120,10 +111,6 @@ mlbinom_ <- function(x, ...) {
   )
 }
 
-mlburr <- function(x, na.rm = FALSE, ...) {}
-
-
-
 mlburr_ <- function(x, ...) {
   if (all(x >= 1)) {
     stop("The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlpareto` to fit a Pareto distribution.")
@@ -155,9 +142,6 @@ mlburr_ <- function(x, ...) {
   )
 }
 
-mlcauchy <- function(x, na.rm = FALSE, ...) {}
-
-
 mlcauchy_ <- function(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))
@@ -172,9 +156,6 @@ mlcauchy_ <- function(x, ...) {
   )
 }
 
-mldunif <- function(x, na.rm = FALSE, ...) {}
-
-
 mldunif_ <- function(x, ...) {
   n <- length(x)
   estimates <- c(min(x), max(x))
@@ -184,17 +165,11 @@ mldunif_ <- function(x, ...) {
   )
 }
 
-mlexp <- function(x, na.rm = TRUE, ...) {}
-
-
 mlexp_ <- function(x, ...) {
   estimates <- 1 / mean(x)
   logLik <- length(x) * (log(estimates) - 1)
   list(estimates = estimates, logLik = logLik)
 }
-
-mlfatigue <- function(x, na.rm = FALSE, ...) {}
-
 
 mlfatigue_ <- function(x, ...) {
   n <- length(x)
@@ -221,9 +196,6 @@ mlfatigue_ <- function(x, ...) {
   list(estimates = estimates, logLik = logLik)
 }
 
-mlgamma <- function(x, na.rm = FALSE, ...) {}
-
-
 mlgamma_ <- function(x, ...) {
   n <- length(x)
   mean_hat <- sum(x) / n
@@ -244,16 +216,10 @@ mlgamma_ <- function(x, ...) {
   list(estimates = estimates, logLik = logLik)
 }
 
-mlged <- function(x, na.rm = FALSE, ...) {}
-
-
 mlged_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::gedFit(x))
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }
-
-mlgeom <- function(x, na.rm = FALSE, ...) {}
-
 
 mlgeom_ <- function(x, ...) {
   n <- length(x)
@@ -261,9 +227,6 @@ mlgeom_ <- function(x, ...) {
   logLik <- sum(x * log(1 - prob)) + n * log(prob)
   list(estimates = prob, logLik = logLik)
 }
-
-mlgompertz <- function(x, na.rm = FALSE, ...) {}
-
 
 mlgompertz_ <- function(x, ...) {
   n <- length(x)
@@ -300,9 +263,6 @@ mlgompertz_ <- function(x, ...) {
     logLik = sum(extraDistr::dgompertz(x, a, b, log = TRUE))
   )
 }
-
-mlgumbel <- function(x, na.rm = FALSE, ...) {}
-
 
 mlgumbel_ <- function(x, ...) {
   x_bar <- sum(x) / length(x)
@@ -357,9 +317,6 @@ mlgumbel_estimate <- function(x, ...) {
   c(mu, sigma, iterations = i)
 }
 
-mlinvburr <- function(x, na.rm = FALSE, ...) {}
-
-
 mlinvburr_ <- function(x, ...) {
   params <- mlburr_(1/x)$estimates
   list(
@@ -367,9 +324,6 @@ mlinvburr_ <- function(x, ...) {
     logLik = sum(actuar::dinvburr(x, params[1], params[2], log = TRUE))
   )
 }
-
-mlinvgamma <- function(x, na.rm = FALSE, ...) {}
-
 
 mlinvgamma_ <- function(x, ...) {
   gamma_ml <- mlgamma_(1 / x, ...)
@@ -383,9 +337,6 @@ mlinvgamma_ <- function(x, ...) {
   list(estimates = gamma_ml$estimates, logLik = unname(logLik))
 }
 
-mlinvgauss <- function(x, na.rm = FALSE, ...) {}
-
-
 mlinvgauss_ <- function(x, ...) {
   n <- length(x)
   mu <- mean(x)
@@ -398,9 +349,6 @@ mlinvgauss_ <- function(x, ...) {
   logLik <- -n / 2 * (3 * L - log(lambda) + log(2 * pi) + lambda / mu^2 * S)
   list(estimates = estimates, logLik = logLik)
 }
-
-mlinvweibull <- function(x, na.rm = FALSE, ...) {}
-
 
 mlinvweibull_ <- function(x, ...) {
 
@@ -423,9 +371,6 @@ mlinvweibull_ <- function(x, ...) {
   logLik <- n * (log(shape) + shape * (-rate_log + s) - 1 + s)
   list(estimates = c(shape, rate), logLik = logLik)
 }
-
-mlkumar <- function(x, na.rm = FALSE, ...) {}
-
 
 kumar_lmom <- function(mu, sigma2) {
   neuler <- digamma(1) # Negative Euler-Mascheroni constant
@@ -497,9 +442,6 @@ mlkumar_ <- function(x, ...) {
   )
 }
 
-mllaplace <- function(x, na.rm = FALSE, ...) {}
-
-
 mllaplace_ <- function(x, ...) {
   mu <- stats::median(x)
   sigma <- mean(abs(x - mu))
@@ -507,9 +449,6 @@ mllaplace_ <- function(x, ...) {
   logLik <- -length(x) * (1 + log(2 * sigma))
   list(estimates = estimates, logLik = logLik)
 }
-
-mllgamma <- function(x, na.rm = FALSE, ...) {}
-
 
 mllgamma_ <- function(x, ...) {
   y <- log(x)
@@ -526,9 +465,6 @@ mllgamma_ <- function(x, ...) {
   list(estimates = estimates, logLik = logLik)
 }
 
-mllgser <- function(x, na.rm = FALSE, ...) {}
-
-
 mllgser_ <- function(x, ...) {
   if (sum(x) == length(x)) {
     stop("All observations equals 1; the maximum likelihood estimator does not exist.")
@@ -541,9 +477,6 @@ mllgser_ <- function(x, ...) {
   list(estimates = theta, logLik = logLik)
 }
 
-mlllogis <- function(x, na.rm = FALSE, ...) {}
-
-
 mlllogis_ <- function(x, ...) {
   y <- log(x)
   estimates <- mllogis_(y)$estimates
@@ -553,9 +486,6 @@ mlllogis_ <- function(x, ...) {
   logLik <- sum(actuar::dllogis(x, estimates[1], estimates[2], log = TRUE))
   list(estimates = estimates, logLik = logLik)
 }
-
-mllnorm <- function(x, na.rm = FALSE, ...) {}
-
 
 mllnorm_ <- function(x, ...) {
   y <- log(x)
@@ -568,9 +498,6 @@ mllnorm_ <- function(x, ...) {
   list(estimates = estimates, logLik = logLik)
 }
 
-mllogis <- function(x, na.rm = FALSE, ...) {}
-
-
 mllogis_ <- function(x, ...) {
   m <- stats::median(x)
   mad <- stats::median(abs(x - m))
@@ -582,9 +509,6 @@ mllogis_ <- function(x, ...) {
     i = values$iterations
   )
 }
-
-mllogitnorm <- function(x, na.rm = FALSE, ...) {}
-
 
 mllogitnorm_ <- function(x, ...) {
   n <- length(x)
@@ -600,9 +524,6 @@ mllogitnorm_ <- function(x, ...) {
     -n / 2 * (1 + log(2 * pi) + 2 * log(sigma) + 2 * H + 2 * G)
   list(estimates = estimates, logLik = logLik)
 }
-
-mllomax <- function(x, na.rm = FALSE, ...) {}
-
 
 mllomax_ <- function(x, ...) {
   n <- length(x)
@@ -636,9 +557,6 @@ mllomax_ <- function(x, ...) {
   list(estimates = c(lambda, kappa), logLik = loglik)
 }
 
-mlnaka <- function(x, na.rm = TRUE, ...) {}
-
-
 mlnaka_ <- function(x, ...) {
   estimates <- mlgamma_(x^2, ...)$estimates
   estimates["rate"] <- 1 / estimates["rate"] * estimates["shape"]
@@ -654,9 +572,6 @@ mlnaka_ <- function(x, ...) {
 
   list(estimates = estimates, logLik = logLik)
 }
-
-mlnbinom <- function(x, na.rm = FALSE, ...) {}
-
 
 mlnbinom_ <- function(x, ...) {
   dots <- list(...)
@@ -696,9 +611,6 @@ mlnbinom_ <- function(x, ...) {
   list(estimates = c(size, prob), logLik = logLik)
 }
 
-mlnorm <- function(x, na.rm = FALSE, ...) {}
-
-
 mlnorm_ <- function(x, ...) {
   n <- length(x)
 
@@ -709,9 +621,6 @@ mlnorm_ <- function(x, ...) {
   logLik <- -n / 2 * (1 + log(2 * pi) + 2 * log(sigma))
   list(estimates = estimates, logLik = logLik)
 }
-
-mlparalogis <- function(x, na.rm = FALSE, ...) {}
-
 
 mlparalogis_ <- function(x, ...) {
   n <- length(x)
@@ -743,9 +652,6 @@ mlparalogis_ <- function(x, ...) {
   list(estimates = c(shape), logLik = loglik)
 }
 
-mlpareto <- function(x, na.rm = FALSE, ...) {}
-
-
 mlpareto_ <- function(x, ...) {
   m <- mean(log(x))
   b <- min(x)
@@ -756,18 +662,12 @@ mlpareto_ <- function(x, ...) {
   list(estimates = estimates, logLik = logLik)
 }
 
-mlpois <- function(x, na.rm = FALSE, ...) {}
-
-
 mlpois_ <- function(x, ...) {
   n <- length(x)
   lambda <- mean(x)
   logLik <- -n * lambda + sum(x) * log(lambda) - sum(lgamma(x + 1))
   list(estimates = lambda, logLik = logLik)
 }
-
-mlpower <- function(x, na.rm = FALSE, ...) {}
-
 
 mlpower_ <- function(x, ...) {
   dots <- list(...)
@@ -787,58 +687,37 @@ mlpower_ <- function(x, ...) {
   list(estimates = estimates, logLik = logLik)
 }
 
-mlrayleigh <- function(x, na.rm = FALSE, ...) {}
-
-
 mlrayleigh_ <- function(x, ...) {
   sigma <- sqrt(1 / 2 * mean(x^2))
   logLik <- length(x) * (mean(log(x) - 2 * log(sigma) - 1))
   list(estimates = sigma, logLik = logLik)
 }
 
-mlsged <- function(x, na.rm = FALSE, ...) {}
-
-
 mlsged_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::sgedFit(x))
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }
-
-mlsnorm <- function(x, na.rm = FALSE, ...) {}
-
 
 mlsnorm_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::snormFit(x))
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }
 
-mlsstd <- function(x, na.rm = FALSE, ...) {}
-
-
 mlsstd_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::sstdFit(x))
   list(estimates = fit[["estimate"]], logLik = -fit$minimum)
 }
-
-mlstd <- function(x, na.rm = FALSE, ...) {}
-
 
 mlstd_ <- function(x, ...) {
   fit <- suppressWarnings(fGarch::stdFit(x))
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }
 
-mlunif <- function(x, na.rm = FALSE, ...) {}
-
-
 mlunif_ <- function(x, ...) {
   max_ <- max(x)
   min_ <- min(x)
   list(estimates = c(min_, max_), logLik = -length(x) * log(max_ - min_))
 }
-
-mlweibull <- function(x, na.rm = FALSE, ...) {}
-
 
 mlweibull_ <- function(x, ...) {
   log_x <- -log(x)

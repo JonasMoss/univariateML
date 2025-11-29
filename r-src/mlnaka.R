@@ -1,6 +1,3 @@
-mlnaka <- function(x, na.rm = TRUE, ...) {}
-
-
 mlnaka_ <- function(x, ...) {
   estimates <- mlgamma_(x^2, ...)$estimates
   estimates["rate"] <- 1 / estimates["rate"] * estimates["shape"]

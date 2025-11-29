@@ -1,6 +1,3 @@
-mlpareto <- function(x, na.rm = FALSE, ...) {}
-
-
 mlpareto_ <- function(x, ...) {
   m <- mean(log(x))
   b <- min(x)

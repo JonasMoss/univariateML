@@ -1,6 +1,3 @@
-mlinvburr <- function(x, na.rm = FALSE, ...) {}
-
-
 mlinvburr_ <- function(x, ...) {
   params <- mlburr_(1/x)$estimates
   list(

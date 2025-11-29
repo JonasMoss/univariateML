@@ -1,6 +1,3 @@
-mlparalogis <- function(x, na.rm = FALSE, ...) {}
-
-
 mlparalogis_ <- function(x, ...) {
   n <- length(x)
   log_x <- log(x)

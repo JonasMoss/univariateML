@@ -1,6 +1,3 @@
-mlnbinom <- function(x, na.rm = FALSE, ...) {}
-
-
 mlnbinom_ <- function(x, ...) {
   dots <- list(...)
   n <- length(x)

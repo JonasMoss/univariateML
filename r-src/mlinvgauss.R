@@ -1,6 +1,3 @@
-mlinvgauss <- function(x, na.rm = FALSE, ...) {}
-
-
 mlinvgauss_ <- function(x, ...) {
   n <- length(x)
   mu <- mean(x)

@@ -1,6 +1,3 @@
-mlinvgamma <- function(x, na.rm = FALSE, ...) {}
-
-
 mlinvgamma_ <- function(x, ...) {
   gamma_ml <- mlgamma_(1 / x, ...)
   alpha <- gamma_ml$estimates[1]

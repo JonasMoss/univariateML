@@ -1,6 +1,3 @@
-mlgamma <- function(x, na.rm = FALSE, ...) {}
-
-
 mlgamma_ <- function(x, ...) {
   n <- length(x)
   mean_hat <- sum(x) / n

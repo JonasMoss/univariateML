@@ -1,6 +1,3 @@
-mlbinom <- function(x, na.rm = FALSE, ...) {}
-
-
 mlbinom_ <- function(x, ...) {
   dots <- list(...)
 
