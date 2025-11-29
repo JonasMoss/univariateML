@@ -28,5 +28,12 @@ header <- paste(
 )
 
 wrappers <- vapply(models, gen_wrapper, character(1))
+generated_names <- vapply(models, function(m) paste0("ml", m$id), character(1))
 
-cat(header, "\n\n", paste0(wrappers, collapse = ""), file = "R/zzz_generated_wrappers.R")
+cat(
+  header, "\n\n",
+  "generated_models <- c(\"", paste0(generated_names, collapse = "\", \""), "\")\n\n",
+  paste0(wrappers, collapse = ""),
+  file = "R/zzz_generated_wrappers.R",
+  sep = ""
+)

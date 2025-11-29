@@ -13,10 +13,11 @@ densities <- unname(unlist(sapply(densities, function(x) strsplit(x, ".R"))))
 #' @export
 univariateML_models <- substring(densities, first = 3)
 
+# Allow generated wrappers to opt-out of decorator assignment.
+if (!exists("generated_models")) generated_models <- character(0)
+
 
 # This function populate all (currently empty) univariateML functions.
-
-generated_models <- c("mlgumbel", "mlweibull", "mlgamma", "mllomax")
 
 for (model in univariateML_models) {
   fun <- paste0("ml", model)

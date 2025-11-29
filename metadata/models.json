@@ -1,100 +1,1704 @@
 {
   "models": [
     {
-      "id": "gumbel",
-      "name": "Gumbel",
-      "density": "extraDistr::dgumbel",
-      "support": { "type": "R", "lower": null, "upper": null, "closed": [false, false] },
+      "id": "beta",
+      "name": "Beta",
+      "density": "stats::dbeta",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": 1,
+        "closed": [false, false]
+      },
       "params": [
         {
-          "name": "mu",
-          "role": "location",
-          "default": 3,
-          "support": { "lower": null, "upper": null, "closed": [false, false] }
+          "name": "shape1",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
         },
         {
-          "name": "sigma",
-          "role": "scale",
+          "name": "shape2",
+          "role": null,
           "default": 3,
-          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
         }
       ],
-      "sampler": "extraDistr::rgumbel",
-      "start_hints": { "method": "center-and-scale", "notes": "center x and solve for sigma via Newton-Raphson" },
+      "sampler": "stats::rbeta",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
       "validation_hooks": [],
-      "legacy_impl": "R/mlgumbel.R"
+      "legacy_impl": "R/mlbeta.R"
     },
     {
-      "id": "weibull",
-      "name": "Weibull",
-      "density": "stats::dweibull",
-      "support": { "type": "R+", "lower": 0, "upper": null, "closed": [false, false] },
+      "id": "betapr",
+      "name": "BetaPrime",
+      "density": "extraDistr::dbetapr",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
       "params": [
         {
-          "name": "shape",
-          "role": "shape",
+          "name": "shape1",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "shape2",
+          "role": null,
           "default": 3,
-          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rbetapr",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlbetapr.R"
+    },
+    {
+      "id": "binom",
+      "name": "Binomial",
+      "density": "stats::dbinom",
+      "support": {
+        "type": "Z",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "size",
+          "role": null,
+          "default": 10,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "prob",
+          "role": null,
+          "default": 0.5,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rbinom",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlbinom.R"
+    },
+    {
+      "id": "burr",
+      "name": "Burr",
+      "density": "actuar::dburr",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "shape1",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "shape2",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "actuar::rburr",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlburr.R"
+    },
+    {
+      "id": "cauchy",
+      "name": "Cauchy",
+      "density": "stats::dcauchy",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "location",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
         },
         {
           "name": "scale",
-          "role": "scale",
-          "default": 4,
-          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
         }
       ],
-      "sampler": "stats::rweibull",
-      "start_hints": { "method": "gumbel-transform", "notes": "fit to -log(x) via Gumbel, shape = 1/sigma" },
+      "sampler": "stats::rcauchy",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
       "validation_hooks": [],
-      "legacy_impl": "R/mlweibull.R"
+      "legacy_impl": "R/mlcauchy.R"
+    },
+    {
+      "id": "dunif",
+      "name": "Discrete uniform",
+      "density": "extraDistr::ddunif",
+      "support": {
+        "type": "Z",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "min",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "max",
+          "role": null,
+          "default": 10,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rdunif",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mldunif.R"
+    },
+    {
+      "id": "exp",
+      "name": "Exponential",
+      "density": "stats::dexp",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "rate",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rexp",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlexp.R"
+    },
+    {
+      "id": "fatigue",
+      "name": "Birnbaum-Saunders",
+      "density": "extraDistr::dfatigue",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "alpha",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "beta",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "mu",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rfatigue",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlfatigue.R"
     },
     {
       "id": "gamma",
       "name": "Gamma",
       "density": "stats::dgamma",
-      "support": { "type": "R+", "lower": 0, "upper": null, "closed": [false, false] },
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
       "params": [
         {
           "name": "shape",
-          "role": "shape",
+          "role": null,
           "default": 2,
-          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
         },
         {
           "name": "rate",
-          "role": "rate",
+          "role": null,
           "default": 2,
-          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
         }
       ],
       "sampler": "stats::rgamma",
-      "start_hints": { "method": "method-of-moments", "notes": "shape = mean^2/var, rate = mean/var" },
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
       "validation_hooks": [],
       "legacy_impl": "R/mlgamma.R"
+    },
+    {
+      "id": "ged",
+      "name": "Generalized Error",
+      "density": "fGarch::dged",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mean",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sd",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "nu",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "fGarch::rged",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlged.R"
+    },
+    {
+      "id": "geom",
+      "name": "Geometric",
+      "density": "stats::dgeom",
+      "support": {
+        "type": "Z",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "prob",
+          "role": null,
+          "default": 0.5,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rgeom",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlgeom.R"
+    },
+    {
+      "id": "gompertz",
+      "name": "Gompertz",
+      "density": "extraDistr::dgompertz",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "a",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "b",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rgompertz",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlgompertz.R"
+    },
+    {
+      "id": "gumbel",
+      "name": "Gumbel",
+      "density": "extraDistr::dgumbel",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mu",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sigma",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rgumbel",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlgumbel.R"
+    },
+    {
+      "id": "invburr",
+      "name": "Inverse Burr",
+      "density": "actuar::dinvburr",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "shape1",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "shape2",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "actuar::rinvburr",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlinvburr.R"
+    },
+    {
+      "id": "invgamma",
+      "name": "InvGamma",
+      "density": "extraDistr::dinvgamma",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "alpha",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "beta",
+          "role": null,
+          "default": 4,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rinvgamma",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlinvgamma.R"
+    },
+    {
+      "id": "invgauss",
+      "name": "Inverse Gaussian",
+      "density": "actuar::dinvgauss",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mean",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "shape",
+          "role": null,
+          "default": 4,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "actuar::rinvgauss",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlinvgauss.R"
+    },
+    {
+      "id": "invweibull",
+      "name": "InverseWeibull",
+      "density": "actuar::dinvweibull",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "shape",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "rate",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "actuar::rinvweibull",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlinvweibull.R"
+    },
+    {
+      "id": "kumar",
+      "name": "Kumaraswamy",
+      "density": "extraDistr::dkumar",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": 1,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "a",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "b",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rkumar",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlkumar.R"
+    },
+    {
+      "id": "laplace",
+      "name": "Laplace",
+      "density": "extraDistr::dlaplace",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mu",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sigma",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rlaplace",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mllaplace.R"
+    },
+    {
+      "id": "lgamma",
+      "name": "Loggamma",
+      "density": "actuar::dlgamma",
+      "support": {
+        "type": "R",
+        "lower": 1,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "shapelog",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "ratelog",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "actuar::rlgamma",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mllgamma.R"
+    },
+    {
+      "id": "lgser",
+      "name": "Logarithmic series",
+      "density": "extraDistr::dlgser",
+      "support": {
+        "type": "Z",
+        "lower": 1,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "theta",
+          "role": null,
+          "default": 0.9,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rlgser",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mllgser.R"
+    },
+    {
+      "id": "llogis",
+      "name": "Loglogistic",
+      "density": "actuar::dllogis",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "shape",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "rate",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "actuar::rllogis",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlllogis.R"
+    },
+    {
+      "id": "lnorm",
+      "name": "Lognormal",
+      "density": "stats::dlnorm",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "meanlog",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sdlog",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rlnorm",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mllnorm.R"
+    },
+    {
+      "id": "logis",
+      "name": "Logistic",
+      "density": "stats::dlogis",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "location",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "scale",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rlogis",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mllogis.R"
+    },
+    {
+      "id": "logitnorm",
+      "name": "LogitNormal",
+      "density": "logitnorm::dlogitnorm",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": 1,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mu",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sigma",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "logitnorm::rlogitnorm",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mllogitnorm.R"
     },
     {
       "id": "lomax",
       "name": "Lomax",
       "density": "extraDistr::dlomax",
-      "support": { "type": "R+", "lower": 0, "upper": null, "closed": [false, false] },
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
       "params": [
         {
           "name": "lambda",
-          "role": "scale",
+          "role": null,
           "default": 1,
-          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
         },
         {
           "name": "kappa",
-          "role": "shape",
+          "role": null,
           "default": 2,
-          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
         }
       ],
       "sampler": "extraDistr::rlomax",
-      "start_hints": { "method": "moment-constraints", "notes": "requires mean(x^2) >= 2*mean(x)^2; fallback to exp otherwise" },
-      "validation_hooks": ["lomax_moment_check"],
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
       "legacy_impl": "R/mllomax.R"
+    },
+    {
+      "id": "naka",
+      "name": "Nakagami",
+      "density": "nakagami::dnaka",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "shape",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "scale",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "nakagami::rnaka",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlnaka.R"
+    },
+    {
+      "id": "nbinom",
+      "name": "Negative binomial",
+      "density": "stats::dnbinom",
+      "support": {
+        "type": "Z",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "size",
+          "role": null,
+          "default": 10,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "prob",
+          "role": null,
+          "default": 0.3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rnbinom",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlnbinom.R"
+    },
+    {
+      "id": "norm",
+      "name": "Normal",
+      "density": "stats::dnorm",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mean",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sd",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rnorm",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlnorm.R"
+    },
+    {
+      "id": "paralogis",
+      "name": "Paralogistic",
+      "density": "actuar::dparalogis",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "shape",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "actuar::rparalogis",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlparalogis.R"
+    },
+    {
+      "id": "pareto",
+      "name": "Pareto",
+      "density": "extraDistr::dpareto",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "a",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "b",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rpareto",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlpareto.R"
+    },
+    {
+      "id": "pois",
+      "name": "Poisson",
+      "density": "stats::dpois",
+      "support": {
+        "type": "Z",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "lambda",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rpois",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlpois.R"
+    },
+    {
+      "id": "power",
+      "name": "PowerDist",
+      "density": "extraDistr::dpower",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "alpha",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "beta",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rpower",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlpower.R"
+    },
+    {
+      "id": "rayleigh",
+      "name": "Rayleigh",
+      "density": "extraDistr::drayleigh",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "sigma",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rrayleigh",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlrayleigh.R"
+    },
+    {
+      "id": "sged",
+      "name": "Skew Generalized Error",
+      "density": "fGarch::dsged",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mean",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sd",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "nu",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "xi",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "fGarch::rsged",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlsged.R"
+    },
+    {
+      "id": "snorm",
+      "name": "Skew Normal",
+      "density": "fGarch::dsnorm",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mean",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sd",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "xi",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "fGarch::rsnorm",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlsnorm.R"
+    },
+    {
+      "id": "sstd",
+      "name": "Skew Student-t",
+      "density": "fGarch::dsstd",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mean",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sd",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "nu",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "xi",
+          "role": null,
+          "default": 2,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "fGarch::rsstd",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlsstd.R"
+    },
+    {
+      "id": "std",
+      "name": "Student-t",
+      "density": "fGarch::dstd",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "mean",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "sd",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "nu",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "fGarch::rstd",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlstd.R"
+    },
+    {
+      "id": "unif",
+      "name": "Uniform",
+      "density": "stats::dunif",
+      "support": {
+        "type": "R",
+        "lower": null,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "min",
+          "role": null,
+          "default": 0,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "max",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::runif",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlunif.R"
+    },
+    {
+      "id": "weibull",
+      "name": "Weibull",
+      "density": "stats::dweibull",
+      "support": {
+        "type": "R",
+        "lower": 0,
+        "upper": null,
+        "closed": [false, false]
+      },
+      "params": [
+        {
+          "name": "shape",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "scale",
+          "role": null,
+          "default": 4,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "stats::rweibull",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlweibull.R"
+    },
+    {
+      "id": "zip",
+      "name": "Zero-inflated Poisson",
+      "density": "extraDistr::dzip",
+      "support": {
+        "type": "Z",
+        "lower": 0,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "lambda",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "pi",
+          "role": null,
+          "default": 0.5,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "extraDistr::rzip",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlzip.R"
+    },
+    {
+      "id": "zipf",
+      "name": "Zipf",
+      "density": "sads::dzipf",
+      "support": {
+        "type": "Z",
+        "lower": 1,
+        "upper": null,
+        "closed": [true, false]
+      },
+      "params": [
+        {
+          "name": "N",
+          "role": null,
+          "default": 3,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        },
+        {
+          "name": "s",
+          "role": null,
+          "default": 0.5,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [false, false]
+          }
+        }
+      ],
+      "sampler": "sads::rzipf",
+      "start_hints": {
+        "method": null,
+        "notes": null
+      },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlzipf.R"
     }
   ]
 }
