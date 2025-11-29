@@ -1,0 +1,52 @@
+{
+  "models": [
+    {
+      "id": "gumbel",
+      "name": "Gumbel",
+      "density": "extraDistr::dgumbel",
+      "support": { "type": "R", "lower": null, "upper": null, "closed": [false, false] },
+      "params": [
+        {
+          "name": "mu",
+          "role": "location",
+          "default": 3,
+          "support": { "lower": null, "upper": null, "closed": [false, false] }
+        },
+        {
+          "name": "sigma",
+          "role": "scale",
+          "default": 3,
+          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+        }
+      ],
+      "sampler": "extraDistr::rgumbel",
+      "start_hints": { "method": "center-and-scale", "notes": "center x and solve for sigma via Newton-Raphson" },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlgumbel.R"
+    },
+    {
+      "id": "weibull",
+      "name": "Weibull",
+      "density": "stats::dweibull",
+      "support": { "type": "R+", "lower": 0, "upper": null, "closed": [false, false] },
+      "params": [
+        {
+          "name": "shape",
+          "role": "shape",
+          "default": 3,
+          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+        },
+        {
+          "name": "scale",
+          "role": "scale",
+          "default": 4,
+          "support": { "lower": 0, "upper": null, "closed": [false, false] }
+        }
+      ],
+      "sampler": "stats::rweibull",
+      "start_hints": { "method": "gumbel-transform", "notes": "fit to -log(x) via Gumbel, shape = 1/sigma" },
+      "validation_hooks": [],
+      "legacy_impl": "R/mlweibull.R"
+    }
+  ]
+}

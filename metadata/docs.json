@@ -1,0 +1,26 @@
+{
+  "models": [
+    {
+      "id": "gumbel",
+      "title": "Gumbel distribution maximum likelihood estimation",
+      "description": "Uses Newton–Raphson to estimate the parameters of the Gumbel distribution.",
+      "details": "Estimates mu and sigma by centering the data and iterating on sigma; log-likelihood is computed with extraDistr::dgumbel.",
+      "seealso": ["extraDistr::Gumbel"],
+      "references": [
+        "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York."
+      ],
+      "examples": ["mlgumbel(precip)"]
+    },
+    {
+      "id": "weibull",
+      "title": "Weibull distribution maximum likelihood estimation",
+      "description": "Uses a Gumbel transformation to estimate the Weibull parameters.",
+      "details": "Transforms x via -log(x), calls the Gumbel estimator on the shifted data, and maps back to shape/scale.",
+      "seealso": ["stats::Weibull"],
+      "references": [
+        "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York."
+      ],
+      "examples": ["BIC(mlweibull(precip))"]
+    }
+  ]
+}
