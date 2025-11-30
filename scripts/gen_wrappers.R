@@ -1,4 +1,4 @@
-# Generates explicit ml*** wrappers from metadata.
+# Generates explicit ml*** wrappers from metadata + docs.
 # Run via: Rscript scripts/gen_wrappers.R
 
 if (!requireNamespace("jsonlite", quietly = TRUE)) {
@@ -6,11 +6,45 @@ if (!requireNamespace("jsonlite", quietly = TRUE)) {
 }
 
 models <- jsonlite::fromJSON("metadata/models.json", simplifyDataFrame = FALSE)$models
+docs_raw <- tryCatch(
+  jsonlite::fromJSON("metadata/docs.json", simplifyDataFrame = FALSE)$models,
+  error = function(...) list()
+)
+docs_by_id <- setNames(docs_raw, vapply(docs_raw, function(d) d$id, character(1)))
+
+nl <- function(...) paste0(..., collapse = "")
+
+gen_doc <- function(model) {
+  d <- docs_by_id[[model$id]]
+  title <- if (!is.null(d$title)) d$title else nl(model$name, " maximum likelihood estimation")
+  desc <- if (!is.null(d$description)) d$description else "Maximum likelihood estimation for this distribution."
+  details <- d$details %||% NULL
+  seealso <- d$seealso %||% NULL
+  refs <- d$references %||% NULL
+  examples <- d$examples %||% NULL
+
+  block <- c(
+    nl("#' ", title),
+    "#'",
+    nl("#' ", desc),
+    if (!is.null(details)) c("#'", nl("#' ", details)) else NULL,
+    "#'",
+    "#' @param x a (non-empty) numeric vector of data values.",
+    "#' @param na.rm logical. Should missing values be removed?",
+    "#' @param ... Optional control arguments passed to the optimizer/estimator.",
+    "#' @return An object of class `univariateML` with estimates and attributes.",
+    if (!is.null(seealso)) c("#' @seealso", paste0("#'   ", seealso)) else NULL,
+    if (!is.null(refs)) c("#' @references", paste0("#'   ", refs)) else NULL,
+    if (!is.null(examples)) c("#' @examples", paste0("#' ", examples)) else NULL,
+    "#' @export"
+  )
+  paste0(block, collapse = "\n")
+}
 
 gen_wrapper <- function(model) {
   fname <- paste0("ml", model$id)
   paste0(
-    "# Generated wrapper for ", model$name, "\n",
+    gen_doc(model), "\n",
     fname, " <- function(x, na.rm = FALSE, ...) {\n",
     "  x <- ml_check_modify(x, na.rm = na.rm, name = \"", fname, "\")\n",
     "  n <- length(x)\n",

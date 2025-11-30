@@ -3,7 +3,15 @@
 
 generated_models <- c("mlbeta", "mlbetapr", "mlbinom", "mlburr", "mlcauchy", "mldunif", "mlexp", "mlfatigue", "mlgamma", "mlged", "mlgeom", "mlgompertz", "mlgumbel", "mlinvburr", "mlinvgamma", "mlinvgauss", "mlinvweibull", "mlkumar", "mllaplace", "mllgamma", "mllgser", "mlllogis", "mllnorm", "mllogis", "mllogitnorm", "mllomax", "mlnaka", "mlnbinom", "mlnorm", "mlparalogis", "mlpareto", "mlpois", "mlpower", "mlrayleigh", "mlsged", "mlsnorm", "mlsstd", "mlstd", "mlunif", "mlweibull", "mlzip", "mlzipf")
 
-# Generated wrapper for Beta
+#' Beta maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlbeta <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlbeta")
   n <- length(x)
@@ -12,7 +20,15 @@ mlbeta <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlbeta", params = params)
 }
 
-# Generated wrapper for BetaPrime
+#' BetaPrime maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlbetapr <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlbetapr")
   n <- length(x)
@@ -21,7 +37,15 @@ mlbetapr <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlbetapr", params = params)
 }
 
-# Generated wrapper for Binomial
+#' Binomial maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlbinom <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlbinom")
   n <- length(x)
@@ -30,7 +54,15 @@ mlbinom <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlbinom", params = params)
 }
 
-# Generated wrapper for Burr
+#' Burr maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlburr <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlburr")
   n <- length(x)
@@ -39,7 +71,15 @@ mlburr <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlburr", params = params)
 }
 
-# Generated wrapper for Cauchy
+#' Cauchy maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlcauchy <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlcauchy")
   n <- length(x)
@@ -48,7 +88,15 @@ mlcauchy <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlcauchy", params = params)
 }
 
-# Generated wrapper for Discrete uniform
+#' Discrete uniform maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mldunif <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mldunif")
   n <- length(x)
@@ -57,7 +105,15 @@ mldunif <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mldunif", params = params)
 }
 
-# Generated wrapper for Exponential
+#' Exponential maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlexp <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlexp")
   n <- length(x)
@@ -66,7 +122,15 @@ mlexp <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlexp", params = params)
 }
 
-# Generated wrapper for Birnbaum-Saunders
+#' Birnbaum-Saunders maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlfatigue <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlfatigue")
   n <- length(x)
@@ -75,7 +139,23 @@ mlfatigue <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlfatigue", params = params)
 }
 
-# Generated wrapper for Gamma
+#' Gamma distribution maximum likelihood estimation
+#'
+#' Joint maximum likelihood estimation of Gamma shape and rate.
+#'
+#' Uses Newton–Raphson on log-parameters with method-of-moments starts.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @seealso
+#'   stats::Gamma
+#' @references
+#'   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1. Wiley, New York.
+#' @examples
+#' mlgamma(faithful$eruptions)
+#' @export
 mlgamma <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlgamma")
   n <- length(x)
@@ -84,7 +164,15 @@ mlgamma <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlgamma", params = params)
 }
 
-# Generated wrapper for Generalized Error
+#' Generalized Error maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlged <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlged")
   n <- length(x)
@@ -93,7 +181,15 @@ mlged <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlged", params = params)
 }
 
-# Generated wrapper for Geometric
+#' Geometric maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlgeom <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlgeom")
   n <- length(x)
@@ -102,7 +198,15 @@ mlgeom <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlgeom", params = params)
 }
 
-# Generated wrapper for Gompertz
+#' Gompertz maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlgompertz <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlgompertz")
   n <- length(x)
@@ -111,7 +215,23 @@ mlgompertz <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlgompertz", params = params)
 }
 
-# Generated wrapper for Gumbel
+#' Gumbel distribution maximum likelihood estimation
+#'
+#' Uses Newton–Raphson to estimate the parameters of the Gumbel distribution.
+#'
+#' Estimates mu and sigma by centering the data and iterating on sigma; log-likelihood is computed with extraDistr::dgumbel.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @seealso
+#'   extraDistr::Gumbel
+#' @references
+#'   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
+#' @examples
+#' mlgumbel(precip)
+#' @export
 mlgumbel <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlgumbel")
   n <- length(x)
@@ -120,7 +240,15 @@ mlgumbel <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlgumbel", params = params)
 }
 
-# Generated wrapper for Inverse Burr
+#' Inverse Burr maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlinvburr <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlinvburr")
   n <- length(x)
@@ -129,7 +257,15 @@ mlinvburr <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlinvburr", params = params)
 }
 
-# Generated wrapper for InvGamma
+#' InvGamma maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlinvgamma <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlinvgamma")
   n <- length(x)
@@ -138,7 +274,15 @@ mlinvgamma <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlinvgamma", params = params)
 }
 
-# Generated wrapper for Inverse Gaussian
+#' Inverse Gaussian maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlinvgauss <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlinvgauss")
   n <- length(x)
@@ -147,7 +291,15 @@ mlinvgauss <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlinvgauss", params = params)
 }
 
-# Generated wrapper for InverseWeibull
+#' InverseWeibull maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlinvweibull <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlinvweibull")
   n <- length(x)
@@ -156,7 +308,15 @@ mlinvweibull <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlinvweibull", params = params)
 }
 
-# Generated wrapper for Kumaraswamy
+#' Kumaraswamy maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlkumar <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlkumar")
   n <- length(x)
@@ -165,7 +325,15 @@ mlkumar <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlkumar", params = params)
 }
 
-# Generated wrapper for Laplace
+#' Laplace maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mllaplace <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mllaplace")
   n <- length(x)
@@ -174,7 +342,15 @@ mllaplace <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mllaplace", params = params)
 }
 
-# Generated wrapper for Loggamma
+#' Loggamma maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mllgamma <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mllgamma")
   n <- length(x)
@@ -183,7 +359,15 @@ mllgamma <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mllgamma", params = params)
 }
 
-# Generated wrapper for Logarithmic series
+#' Logarithmic series maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mllgser <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mllgser")
   n <- length(x)
@@ -192,7 +376,15 @@ mllgser <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mllgser", params = params)
 }
 
-# Generated wrapper for Loglogistic
+#' Loglogistic maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlllogis <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlllogis")
   n <- length(x)
@@ -201,7 +393,15 @@ mlllogis <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlllogis", params = params)
 }
 
-# Generated wrapper for Lognormal
+#' Lognormal maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mllnorm <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mllnorm")
   n <- length(x)
@@ -210,7 +410,15 @@ mllnorm <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mllnorm", params = params)
 }
 
-# Generated wrapper for Logistic
+#' Logistic maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mllogis <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mllogis")
   n <- length(x)
@@ -219,7 +427,15 @@ mllogis <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mllogis", params = params)
 }
 
-# Generated wrapper for LogitNormal
+#' LogitNormal maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mllogitnorm <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mllogitnorm")
   n <- length(x)
@@ -228,7 +444,23 @@ mllogitnorm <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mllogitnorm", params = params)
 }
 
-# Generated wrapper for Lomax
+#' Lomax distribution maximum likelihood estimation
+#'
+#' Estimates Lomax (Pareto Type II) parameters via Newton–Raphson.
+#'
+#' Checks the moment condition mean(x^2) >= 2*mean(x)^2; otherwise suggests exponential fit.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @seealso
+#'   extraDistr::Lomax
+#' @references
+#'   Kleiber, C. and Kotz, S. (2003) Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
+#' @examples
+#' set.seed(3); mllomax(extraDistr::rlomax(100, 2, 4))
+#' @export
 mllomax <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mllomax")
   n <- length(x)
@@ -237,7 +469,15 @@ mllomax <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mllomax", params = params)
 }
 
-# Generated wrapper for Nakagami
+#' Nakagami maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlnaka <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlnaka")
   n <- length(x)
@@ -246,7 +486,15 @@ mlnaka <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlnaka", params = params)
 }
 
-# Generated wrapper for Negative binomial
+#' Negative binomial maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlnbinom <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlnbinom")
   n <- length(x)
@@ -255,7 +503,15 @@ mlnbinom <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlnbinom", params = params)
 }
 
-# Generated wrapper for Normal
+#' Normal maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlnorm <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlnorm")
   n <- length(x)
@@ -264,7 +520,15 @@ mlnorm <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlnorm", params = params)
 }
 
-# Generated wrapper for Paralogistic
+#' Paralogistic maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlparalogis <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlparalogis")
   n <- length(x)
@@ -273,7 +537,15 @@ mlparalogis <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlparalogis", params = params)
 }
 
-# Generated wrapper for Pareto
+#' Pareto maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlpareto <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlpareto")
   n <- length(x)
@@ -282,7 +554,15 @@ mlpareto <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlpareto", params = params)
 }
 
-# Generated wrapper for Poisson
+#' Poisson maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlpois <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlpois")
   n <- length(x)
@@ -291,7 +571,15 @@ mlpois <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlpois", params = params)
 }
 
-# Generated wrapper for PowerDist
+#' PowerDist maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlpower <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlpower")
   n <- length(x)
@@ -300,7 +588,15 @@ mlpower <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlpower", params = params)
 }
 
-# Generated wrapper for Rayleigh
+#' Rayleigh maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlrayleigh <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlrayleigh")
   n <- length(x)
@@ -309,7 +605,15 @@ mlrayleigh <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlrayleigh", params = params)
 }
 
-# Generated wrapper for Skew Generalized Error
+#' Skew Generalized Error maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlsged <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlsged")
   n <- length(x)
@@ -318,7 +622,15 @@ mlsged <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlsged", params = params)
 }
 
-# Generated wrapper for Skew Normal
+#' Skew Normal maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlsnorm <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlsnorm")
   n <- length(x)
@@ -327,7 +639,15 @@ mlsnorm <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlsnorm", params = params)
 }
 
-# Generated wrapper for Skew Student-t
+#' Skew Student-t maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlsstd <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlsstd")
   n <- length(x)
@@ -336,7 +656,15 @@ mlsstd <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlsstd", params = params)
 }
 
-# Generated wrapper for Student-t
+#' Student-t maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlstd <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlstd")
   n <- length(x)
@@ -345,7 +673,15 @@ mlstd <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlstd", params = params)
 }
 
-# Generated wrapper for Uniform
+#' Uniform maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlunif <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlunif")
   n <- length(x)
@@ -354,7 +690,23 @@ mlunif <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlunif", params = params)
 }
 
-# Generated wrapper for Weibull
+#' Weibull distribution maximum likelihood estimation
+#'
+#' Uses a Gumbel transformation to estimate the Weibull parameters.
+#'
+#' Transforms x via -log(x), calls the Gumbel estimator on the shifted data, and maps back to shape/scale.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @seealso
+#'   stats::Weibull
+#' @references
+#'   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
+#' @examples
+#' BIC(mlweibull(precip))
+#' @export
 mlweibull <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlweibull")
   n <- length(x)
@@ -363,7 +715,15 @@ mlweibull <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlweibull", params = params)
 }
 
-# Generated wrapper for Zero-inflated Poisson
+#' Zero-inflated Poisson maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlzip <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlzip")
   n <- length(x)
@@ -372,7 +732,15 @@ mlzip <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlzip", params = params)
 }
 
-# Generated wrapper for Zipf
+#' Zipf maximum likelihood estimation
+#'
+#' Maximum likelihood estimation for this distribution.
+#'
+#' @param x a (non-empty) numeric vector of data values.
+#' @param na.rm logical. Should missing values be removed?
+#' @param ... Optional control arguments passed to the optimizer/estimator.
+#' @return An object of class `univariateML` with estimates and attributes.
+#' @export
 mlzipf <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlzipf")
   n <- length(x)
