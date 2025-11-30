@@ -22,6 +22,7 @@
 
 ## Style Guide
 - C++17, Armadillo containers; avoid raw pointers; prefer `auto` judiciously.
+- Rcpp bindings should take `arma::vec` (or other Armadillo types) directly; pure cores also operate on Armadillo containers, no `NumericVector`.
 - No OpenMP; guard any future parallel code with `_OPENMP` and keep defaults off.
 - clang-format enforced (add `.clang-format`).
 - Error handling: use Rust-like error handling with enums.

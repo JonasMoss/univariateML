@@ -1,4 +1,5 @@
-#include <Rcpp.h>
+// [[Rcpp::depends(RcppArmadillo)]]
+#include <RcppArmadillo.h>
 #include <algorithm>
 #include <cmath>
 
@@ -8,23 +9,21 @@ struct CauchyResult {
   int iterations;
 };
 
-static CauchyResult fit_cauchy(const Rcpp::NumericVector& x, double tol = 1e-8, int maxit = 100) {
-  int n = x.size();
+static CauchyResult fit_cauchy(const arma::vec& x, double tol = 1e-8, int maxit = 100) {
+  int n = static_cast<int>(x.n_elem);
   if (n == 0) Rcpp::stop("x must have positive length");
 
-  Rcpp::NumericVector xc = Rcpp::clone(x);
-  double* cptr = &xc[0];
-  std::nth_element(cptr, cptr + n/2, cptr + n);
-  double mu = cptr[n/2];
+  std::vector<double> data(x.begin(), x.end());
+  std::nth_element(data.begin(), data.begin() + n/2, data.end());
+  double mu = data[n/2];
 
   for (int i = 0; i < n; ++i) {
-    cptr[i] = std::fabs(cptr[i] - mu);
+    data[i] = std::fabs(data[i] - mu);
   }
-  std::nth_element(cptr, cptr + n/2, cptr + n);
-  double theta = std::log(cptr[n/2] + std::numeric_limits<double>::epsilon());
+  std::nth_element(data.begin(), data.begin() + n/2, data.end());
+  double theta = std::log(data[n/2] + std::numeric_limits<double>::epsilon());
 
   double dmu = 0.0, dth = 0.0;
-  double* xp = &xc[0]; // reuse xc buffer for access speed (original x clone)
 
   int iter;
   for (iter = 1; iter <= maxit; ++iter) {
@@ -33,7 +32,7 @@ static CauchyResult fit_cauchy(const Rcpp::NumericVector& x, double tol = 1e-8, 
 
     double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0, sum5 = 0.0;
     for (int i = 0; i < n; ++i) {
-      double z  = (xp[i] - mu) * inv_s;
+      double z  = (x[i] - mu) * inv_s;
       double z2 = z * z;
       double d1 = 1.0 + z2;
       double i1 = 1.0 / d1;
@@ -66,7 +65,7 @@ static CauchyResult fit_cauchy(const Rcpp::NumericVector& x, double tol = 1e-8, 
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericVector mlcauchy_rcpp(Rcpp::NumericVector x,
+Rcpp::NumericVector mlcauchy_rcpp(const arma::vec& x,
                    double tol   = 1e-8,
                    int    maxit = 100) {
   CauchyResult res = fit_cauchy(x, tol, maxit);

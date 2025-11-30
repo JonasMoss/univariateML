@@ -1,6 +1,7 @@
-#include <Rcpp.h>
+// [[Rcpp::depends(RcppArmadillo)]]
+#include <RcppArmadillo.h>
 #include <cmath>
-#include <vector>
+#include <stdexcept>
 
 namespace {
 
@@ -10,10 +11,10 @@ struct LogisticResult {
   int iterations;
 };
 
-LogisticResult logistic_mle(const std::vector<double>& x,
+LogisticResult logistic_mle(const arma::vec& x,
                             double tol,
                             int maxit) {
-  const int n = static_cast<int>(x.size());
+  const int n = static_cast<int>(x.n_elem);
   if (n == 0) {
     throw std::invalid_argument("x must have positive length");
   }
@@ -83,11 +84,10 @@ LogisticResult logistic_mle(const std::vector<double>& x,
 } // namespace
 
 // [[Rcpp::export]]
-Rcpp::List mllogis_fast(Rcpp::NumericVector x,
+Rcpp::List mllogis_fast(const arma::vec& x,
                         double tol   = 1.490116e-08,
                         int    maxit = 100) {
-  std::vector<double> data = Rcpp::as< std::vector<double> >(x);
-  auto res = logistic_mle(data, tol, maxit);
+  auto res = logistic_mle(x, tol, maxit);
 
   return Rcpp::List::create(
     Rcpp::_["estimates"]  = Rcpp::NumericVector::create(

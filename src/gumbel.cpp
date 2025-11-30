@@ -1,4 +1,5 @@
-#include <Rcpp.h>
+// [[Rcpp::depends(RcppArmadillo)]]
+#include <RcppArmadillo.h>
 #include <cmath>
 #include <limits>
 
@@ -9,9 +10,9 @@ struct GumbelResult {
 };
 
 // Pure C++ core: Newton iterations on log(sigma), then compute mu.
-static GumbelResult fit_gumbel_newton(const Rcpp::NumericVector& x) {
-  const int n = x.size();
-  const double* xp = x.begin();
+static GumbelResult fit_gumbel_newton(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  const double* xp = x.memptr();
 
   double sum_x = 0.0;
   double sum_x2 = 0.0;
@@ -64,7 +65,7 @@ static GumbelResult fit_gumbel_newton(const Rcpp::NumericVector& x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericVector ml_gumbel_rcpp(const Rcpp::NumericVector& x) {
+Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec& x) {
   GumbelResult res = fit_gumbel_newton(x);
   Rcpp::NumericVector out(3);
   out[0] = res.mu;
