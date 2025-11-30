@@ -30,3 +30,6 @@ cache$
 ^CRAN-SUBMISSION$
 ^plan\.md$
 ^r-src$
+^scripts$
+^Justfile$
+^metadata$
