@@ -1,31 +1,27 @@
-# Plan
+# Plan: reorganize R sources and generation
 
-## Immediate focus
-- Keep current R implementation working and CRAN-clean while we build generators.
-- Define machine-readable metadata and docs sources as the single truth for all estimators.
+## Goal
+- Keep `R/` for generated artifacts only; move handwritten R code to `r-src/` (structured subdirs).
+- Run codegen via Justfile (or scripts) to produce `R/` outputs; keep generators out of `R/`.
 
-## Artifacts to introduce (near term)
-- `metadata/models.json` (or YAML): per-model fields: name/id, params (names, order, defaults), data support (interval bounds + closed flags), density identifier, sampler for tests, start-value hints, per-model validation hooks (e.g., Lomax moment condition), optional optimization options.
-- `metadata/docs.json`: per-model text blocks: title, description, details, references, examples (with seeds), seealso, aliases. Shared snippets allowed.
-- Justfile targets for generation: `gen-r` (wrappers, roxygen), `gen-bindings` (Rcpp glue stubs), `regen-all` (end-to-end), `check`.
-
-## Pipeline sketch
-1) Parser reads metadata+docs → emits:
-   - R wrappers `ml<dist>()` as thin decorators around `.Call` bindings.
-   - R metadata registration (`univariateML_metadata`) and `zzz` registrar (no filesystem scanning).
-   - Roxygen blocks from docs.json.
-   - C++ binding stubs that call core C++ APIs (to be added), returning estimates/logLik/iters.
-2) Core C++ stays Armadillo-only (no Rcpp types). RcppArmadillo layer only in generated bindings.
-3) Tests: generate smoke tests per model (simulate with defaults, fit, recompute logLik via R density), plus A/B checks against legacy R implementations while porting.
+## Target layout and naming
+- `r-src/ml/`: estimator implementations (`ml*_` functions, no docs/metadata).
+- `r-src/util/`: shared helpers (rename sensibly: `helpers.R`, `constructors.R`, `checks.R`, etc.; avoid `util_utility.R`).
+- `r-src/generators/`: generator scripts (`gen_wrappers.R`, `gen_metadata.R`, `gen_estimators_from_rsrc.R`).
+- `metadata/`: JSON for models/docs.
+- `R/` (generated only):
+  - `ml_metadata.R` (from models.json)
+  - `ml_estimators.R` (concatenated `_` implementations)
+  - `ml_wrappers.R` (wrappers with roxygen)
+  - existing `zzz.R` (decorator registration) expects generated_models from metadata.
 
 ## Steps
-1) Finish stabilizing current R package (done: tests passing, CRAN notes resolved except env/compiler notes).
-2) Draft metadata schema and docs schema; add example entries for 1–2 models (e.g., gumbel, weibull).
-3) Write generator scripts + Justfile stubs to produce R wrappers/metadata/zzz and binding skeletons (no core C++ change yet).
-4) Implement core C++ for one model using Armadillo-only API; wire generated binding/wrapper; validate vs existing tests.
-5) Incrementally port remaining models, removing hand-written R as each is migrated; expand metadata/docs entries.
-6) Add minimal GitHub Actions later (R CMD check + codegen sanity).
+1) Move handwritten R helpers from `R/` to `r-src/util/`; adjust generators to read from `r-src` only.
+2) Rename generator outputs to `R/ml_metadata.R`, `R/ml_estimators.R`, `R/ml_wrappers.R`; update generator scripts accordingly.
+3) Relocate generator scripts into `r-src/generators/` (or keep in `scripts/` but ignored by build); update paths and Justfile targets (`regen`, `regen-wrappers`, `regen-metadata`, `regen-estimators`).
+4) Update `.Rbuildignore` to exclude `r-src/` and generator scripts; ensure `R/` contains only generated files plus `zzz.R`.
+5) Regenerate outputs and run tests to confirm.
 
 ## Notes
-- Maintain portable build flags and optional OpenMP guarded in C++; keep CRAN-safe defaults.
-- Plan for standalone C++ by keeping core under `include/univariate_ml/` and isolating Rcpp to bindings.
+- Preserve current functionality/tests; keep `generated_models`/metadata flow intact.
+- Ensure load order: metadata → estimators → wrappers → `zzz.R`.

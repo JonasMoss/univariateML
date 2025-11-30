@@ -54,4 +54,4 @@ for (m in models) {
   )
 }
 
-writeLines(blocks, "R/aaa_generated_metadata.R")
+writeLines(blocks, "R/ml00_metadata.R")

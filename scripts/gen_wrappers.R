@@ -13,15 +13,22 @@ docs_raw <- tryCatch(
 docs_by_id <- setNames(docs_raw, vapply(docs_raw, function(d) d$id, character(1)))
 
 nl <- function(...) paste0(..., collapse = "")
+fallback <- function(x, default) if (is.null(x) || length(x) == 0) default else x
 
 gen_doc <- function(model) {
   d <- docs_by_id[[model$id]]
-  title <- if (!is.null(d$title)) d$title else nl(model$name, " maximum likelihood estimation")
-  desc <- if (!is.null(d$description)) d$description else "Maximum likelihood estimation for this distribution."
-  details <- d$details %||% NULL
-  seealso <- d$seealso %||% NULL
-  refs <- d$references %||% NULL
-  examples <- d$examples %||% NULL
+  title <- fallback(if (!is.null(d)) d$title else NULL, nl(model$name, " maximum likelihood estimation"))
+  desc <- fallback(if (!is.null(d)) d$description else NULL, "Maximum likelihood estimation for this distribution.")
+  lower <- fallback(model$support$lower, "-Inf")
+  upper <- fallback(model$support$upper, "Inf")
+  details <- fallback(if (!is.null(d)) d$details else NULL,
+    nl("Density: ", model$density, "; support: [", lower, ", ", upper, ").")
+  )
+  seealso <- fallback(if (!is.null(d)) d$seealso else NULL, model$density)
+  refs <- fallback(if (!is.null(d)) d$references else NULL, character(0))
+  examples <- fallback(if (!is.null(d)) d$examples else NULL,
+    nl("set.seed(1); ", paste0("ml", model$id), "(simulate_default(\"", paste0("ml", model$id), "\", 100))")
+  )
 
   block <- c(
     nl("#' ", title),
@@ -34,7 +41,7 @@ gen_doc <- function(model) {
     "#' @param ... Optional control arguments passed to the optimizer/estimator.",
     "#' @return An object of class `univariateML` with estimates and attributes.",
     if (!is.null(seealso)) c("#' @seealso", paste0("#'   ", seealso)) else NULL,
-    if (!is.null(refs)) c("#' @references", paste0("#'   ", refs)) else NULL,
+    if (length(refs)) c("#' @references", paste0("#'   ", refs)) else NULL,
     if (!is.null(examples)) c("#' @examples", paste0("#' ", examples)) else NULL,
     "#' @export"
   )
@@ -68,6 +75,6 @@ cat(
   header, "\n\n",
   "generated_models <- c(\"", paste0(generated_names, collapse = "\", \""), "\")\n\n",
   paste0(wrappers, collapse = ""),
-  file = "R/aaa_generated_wrappers.R",
+  file = "R/ml02_wrappers.R",
   sep = ""
 )
