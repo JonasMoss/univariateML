@@ -30,3 +30,13 @@
 ## Notes
 - Preserve current functionality/tests; keep `generated_models`/metadata flow intact.
 - Ensure load order: metadata → estimators → wrappers → util pkg/zzz.
+
+## Justfile (proposed tasks)
+- `clean-r`: remove generated files in `R/` except `RcppExports.R`.
+- `gen-metadata`: `Rscript scripts/gen_metadata.R`.
+- `gen-estimators`: `Rscript scripts/gen_estimators_from_rsrc.R`.
+- `gen-wrappers`: `Rscript scripts/gen_wrappers.R`.
+- `gen-utils`: `Rscript scripts/gen_utils_copy.R` (copies `code_*`, data files, and `pkg_*` into `R/`).
+- `regen`: run `clean-r` then all gens in order (metadata → estimators → wrappers → utils).
+- `rcpp-attrs`: `Rscript -e "Rcpp::compileAttributes()"` to regenerate `RcppExports.*`.
+- `test`: run `regen` then `devtools::load_all()` + `devtools::test(filter=NULL)`.
