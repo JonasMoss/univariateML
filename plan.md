@@ -33,10 +33,8 @@
 
 ## Justfile (proposed tasks)
 - `clean-r`: remove generated files in `R/` except `RcppExports.R`.
-- `gen-metadata`: `Rscript scripts/gen_metadata.R`.
-- `gen-estimators`: `Rscript scripts/gen_estimators_from_rsrc.R`.
-- `gen-wrappers`: `Rscript scripts/gen_wrappers.R`.
-- `gen-utils`: `Rscript scripts/gen_utils_copy.R` (copies `code_*`, data files, and `pkg_*` into `R/`).
-- `regen`: run `clean-r` then all gens in order (metadata → estimators → wrappers → utils).
-- `rcpp-attrs`: `Rscript -e "Rcpp::compileAttributes()"` to regenerate `RcppExports.*`.
-- `test`: run `regen` then `devtools::load_all()` + `devtools::test(filter=NULL)`.
+- `gen`: run gens in order (metadata → estimators → wrappers → utils):  
+  `Rscript scripts/gen_metadata.R && Rscript scripts/gen_estimators_from_rsrc.R && Rscript scripts/gen_wrappers.R && Rscript scripts/gen_utils_copy.R`
+- `regen`: `clean-r` then `gen`.
+- `test`: `regen` then `Rscript -e "suppressMessages(devtools::load_all('.')); devtools::test(filter=NULL)"`.
+- `check`: `regen` then `Rscript -e "devtools::check(document = FALSE, run_dont_test = FALSE)"`.
