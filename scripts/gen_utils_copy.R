@@ -10,10 +10,10 @@ for (f in code_files) {
   file.copy(f, file.path(dst_dir, paste0("code_", basename(f))), overwrite = TRUE)
 }
 
-# data files copied as-is
+# data files prefixed with data_
 data_files <- list.files("r-src/data", pattern = "\\.R$", full.names = TRUE)
 for (f in data_files) {
-  file.copy(f, file.path(dst_dir, basename(f)), overwrite = TRUE)
+  file.copy(f, file.path(dst_dir, paste0("data_", basename(f))), overwrite = TRUE)
 }
 
 # pkg_* files (e.g., zzz.R, univariateML-package.R)
