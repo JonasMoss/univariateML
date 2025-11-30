@@ -96,94 +96,39 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlcauchy_rcpp
-List mlcauchy_rcpp(NumericVector x, double tol, int maxit);
+Rcpp::NumericVector mlcauchy_rcpp(Rcpp::NumericVector x, double tol, int maxit);
 RcppExport SEXP _univariateML_mlcauchy_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
     rcpp_result_gen = Rcpp::wrap(mlcauchy_rcpp(x, tol, maxit));
     return rcpp_result_gen;
 END_RCPP
 }
-// ml_gumbel_halley_rcpp
-Rcpp::NumericVector ml_gumbel_halley_rcpp(const Rcpp::NumericVector& x);
-RcppExport SEXP _univariateML_ml_gumbel_halley_rcpp(SEXP xSEXP) {
+// ml_gumbel_rcpp
+Rcpp::NumericVector ml_gumbel_rcpp(const Rcpp::NumericVector& x);
+RcppExport SEXP _univariateML_ml_gumbel_rcpp(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(ml_gumbel_halley_rcpp(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ml_gumbel_newt_rcpp
-Rcpp::NumericVector ml_gumbel_newt_rcpp(const Rcpp::NumericVector& x);
-RcppExport SEXP _univariateML_ml_gumbel_newt_rcpp(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(ml_gumbel_newt_rcpp(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ml_gumbel_halley2_rcpp
-Rcpp::NumericVector ml_gumbel_halley2_rcpp(const Rcpp::NumericVector& x);
-RcppExport SEXP _univariateML_ml_gumbel_halley2_rcpp(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(ml_gumbel_halley2_rcpp(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ml_gumbel_newt2_rcpp
-Rcpp::NumericVector ml_gumbel_newt2_rcpp(const Rcpp::NumericVector& x);
-RcppExport SEXP _univariateML_ml_gumbel_newt2_rcpp(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(ml_gumbel_newt2_rcpp(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ml_gumbel_halley_fast
-Rcpp::NumericVector ml_gumbel_halley_fast(const Rcpp::NumericVector& x);
-RcppExport SEXP _univariateML_ml_gumbel_halley_fast(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(ml_gumbel_halley_fast(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ml_gumbel_newt_fast
-Rcpp::NumericVector ml_gumbel_newt_fast(const Rcpp::NumericVector& x);
-RcppExport SEXP _univariateML_ml_gumbel_newt_fast(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(ml_gumbel_newt_fast(x));
+    rcpp_result_gen = Rcpp::wrap(ml_gumbel_rcpp(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // logmom1_c
-inline double logmom1_c(double mu, double sigma2, const double tol, const int max_iter);
+double logmom1_c(double mu, double sigma2, double tol, int max_iter);
 RcppExport SEXP _univariateML_logmom1_c(SEXP muSEXP, SEXP sigma2SEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type mu(muSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
-    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< const int >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
     rcpp_result_gen = Rcpp::wrap(logmom1_c(mu, sigma2, tol, max_iter));
     return rcpp_result_gen;
 END_RCPP
@@ -202,12 +147,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mllogis_fast
-List mllogis_fast(NumericVector x, double tol, int maxit);
+Rcpp::List mllogis_fast(Rcpp::NumericVector x, double tol, int maxit);
 RcppExport SEXP _univariateML_mllogis_fast(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
     rcpp_result_gen = Rcpp::wrap(mllogis_fast(x, tol, maxit));
@@ -224,12 +169,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlburr_rcpp2", (DL_FUNC) &_univariateML_mlburr_rcpp2, 3},
     {"_univariateML_mlburr_rcpp", (DL_FUNC) &_univariateML_mlburr_rcpp, 4},
     {"_univariateML_mlcauchy_rcpp", (DL_FUNC) &_univariateML_mlcauchy_rcpp, 3},
-    {"_univariateML_ml_gumbel_halley_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_halley_rcpp, 1},
-    {"_univariateML_ml_gumbel_newt_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_newt_rcpp, 1},
-    {"_univariateML_ml_gumbel_halley2_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_halley2_rcpp, 1},
-    {"_univariateML_ml_gumbel_newt2_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_newt2_rcpp, 1},
-    {"_univariateML_ml_gumbel_halley_fast", (DL_FUNC) &_univariateML_ml_gumbel_halley_fast, 1},
-    {"_univariateML_ml_gumbel_newt_fast", (DL_FUNC) &_univariateML_ml_gumbel_newt_fast, 1},
+    {"_univariateML_ml_gumbel_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_rcpp, 1},
     {"_univariateML_logmom1_c", (DL_FUNC) &_univariateML_logmom1_c, 4},
     {"_univariateML_mlburr_cpp", (DL_FUNC) &_univariateML_mlburr_cpp, 3},
     {"_univariateML_mllogis_fast", (DL_FUNC) &_univariateML_mllogis_fast, 3},

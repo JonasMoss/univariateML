@@ -24,7 +24,8 @@
 - C++17, Armadillo containers; avoid raw pointers; prefer `auto` judiciously.
 - No OpenMP; guard any future parallel code with `_OPENMP` and keep defaults off.
 - clang-format enforced (add `.clang-format`).
-- Error handling: throw `std::runtime_error` in core; translate to R errors in bindings.
+- Error handling: use Rust-like error handling with enums.
+- **Never** use `using`. Always be explicit.
 - Logging/prints: none in core; return warnings in `result.warn`.
 
 ## Porting Steps
