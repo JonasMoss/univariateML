@@ -8,7 +8,7 @@ if (!requireNamespace("jsonlite", quietly = TRUE)) {
 meta <- jsonlite::fromJSON("metadata/models.json", simplifyDataFrame = FALSE)$models
 generated_names <- vapply(meta, function(m) paste0("ml", m$id), character(1))
 
-sources <- list.files("r-src", pattern = "\\.R$", full.names = TRUE)
+sources <- list.files("r-src/ml", pattern = "\\.R$", full.names = TRUE)
 sources <- sort(sources)
 
 strip_metadata_blocks <- function(lines) {
