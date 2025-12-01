@@ -21,3 +21,7 @@ mllogis_fast <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mllogis_fast`, x, tol, maxit)
 }
 
+inverse_digamma <- function(x) {
+    .Call(`_univariateML_inverse_digamma`, x)
+}
+

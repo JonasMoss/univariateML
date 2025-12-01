@@ -76,6 +76,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// inverse_digamma
+Rcpp::NumericVector inverse_digamma(Rcpp::NumericVector x);
+RcppExport SEXP _univariateML_inverse_digamma(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(inverse_digamma(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_burr_lmom", (DL_FUNC) &_univariateML_burr_lmom, 2},
@@ -83,6 +94,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlcauchy_rcpp", (DL_FUNC) &_univariateML_mlcauchy_rcpp, 3},
     {"_univariateML_ml_gumbel_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_rcpp, 3},
     {"_univariateML_mllogis_fast", (DL_FUNC) &_univariateML_mllogis_fast, 3},
+    {"_univariateML_inverse_digamma", (DL_FUNC) &_univariateML_inverse_digamma, 1},
     {NULL, NULL, 0}
 };
 
