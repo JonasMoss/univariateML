@@ -16,3 +16,7 @@ test: regen
 
 check: regen
 	Rscript -e "devtools::check(document = FALSE, run_dont_test = FALSE)"
+
+bench model="burr" sizes="50,200,1000" reps="5" out="bench_results/bench.csv":
+	mkdir -p bench_results
+	Rscript scripts/bench_cpp.R --model {{model}} --sizes {{sizes}} --reps {{reps}} --out {{out}}
