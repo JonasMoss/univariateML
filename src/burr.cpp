@@ -3,6 +3,7 @@
 #include <Rmath.h>
 #include <cmath>
 #include <limits>
+#include "ml_common.hpp"
 
 namespace {
 
@@ -179,7 +180,7 @@ BurrLmomResult burr_lmom_core(double mu, double sigma2, bool use_logit_lower = t
   double c_hat = NA_REAL;
   int iter = 0;
 
-  const double eps = std::numeric_limits<double>::epsilon();
+  const double eps = kEps;
 
   if (sigma2 > 0.0 && std::abs(mu) >= eps) {
     double cv = (mu * mu) / sigma2;

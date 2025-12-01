@@ -1,7 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include <cmath>
-#include <limits>
+#include "ml_common.hpp"
 
 struct GumbelResult {
   double mu;
@@ -10,7 +10,9 @@ struct GumbelResult {
 };
 
 // Pure C++ core: Newton iterations on log(sigma), then compute mu.
-static GumbelResult fit_gumbel_newton(const arma::vec& x) {
+static GumbelResult fit_gumbel_newton(const arma::vec& x,
+                                      double tol,
+                                      int maxit) {
   const int n = static_cast<int>(x.n_elem);
   const double* xp = x.memptr();
 
@@ -25,8 +27,6 @@ static GumbelResult fit_gumbel_newton(const arma::vec& x) {
   const double var0 = sum_x2 / n - xbar * xbar;
 
   double theta = std::log(std::sqrt(var0) * 2.45 / M_PI);
-  const int maxit = 100;
-  const double reltol = std::sqrt(std::numeric_limits<double>::epsilon());
   int iter = 0;
 
   for (iter = 1; iter <= maxit; ++iter) {
@@ -50,7 +50,7 @@ static GumbelResult fit_gumbel_newton(const arma::vec& x) {
     const double dth = f / (df * sigma);
 
     theta -= dth;
-    if (std::abs(dth) < std::abs(theta) * reltol) break;
+    if (std::abs(dth) < std::abs(theta) * tol) break;
   }
 
   const double sigma = std::exp(theta);
@@ -65,8 +65,10 @@ static GumbelResult fit_gumbel_newton(const arma::vec& x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec& x) {
-  GumbelResult res = fit_gumbel_newton(x);
+Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec& x,
+                                   double tol = 1e-8,
+                                   int maxit = 100) {
+  GumbelResult res = fit_gumbel_newton(x, tol, maxit);
   Rcpp::NumericVector out(3);
   out[0] = res.mu;
   out[1] = res.sigma;

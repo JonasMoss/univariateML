@@ -2,6 +2,7 @@
 #include <RcppArmadillo.h>
 #include <algorithm>
 #include <cmath>
+#include "ml_common.hpp"
 
 struct CauchyResult {
   double mu;
@@ -21,7 +22,7 @@ static CauchyResult fit_cauchy(const arma::vec& x, double tol = 1e-8, int maxit 
     data[i] = std::fabs(data[i] - mu);
   }
   std::nth_element(data.begin(), data.begin() + n/2, data.end());
-  double theta = std::log(data[n/2] + std::numeric_limits<double>::epsilon());
+  double theta = std::log(data[n/2] + kEps);
 
   double dmu = 0.0, dth = 0.0;
 

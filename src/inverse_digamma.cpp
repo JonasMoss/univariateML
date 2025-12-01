@@ -3,6 +3,7 @@
 #include <Rmath.h>
 #include <cmath>
 #include <limits>
+#include "ml_common.hpp"
 
 namespace {
 

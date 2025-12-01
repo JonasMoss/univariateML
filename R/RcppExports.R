@@ -33,8 +33,8 @@ mlcauchy_rcpp <- function(x, tol = 1e-8, maxit = 100L) {
     .Call(`_univariateML_mlcauchy_rcpp`, x, tol, maxit)
 }
 
-ml_gumbel_rcpp <- function(x) {
-    .Call(`_univariateML_ml_gumbel_rcpp`, x)
+ml_gumbel_rcpp <- function(x, tol = 1e-8, maxit = 100L) {
+    .Call(`_univariateML_ml_gumbel_rcpp`, x, tol, maxit)
 }
 
 logmom1_c <- function(mu, sigma2, tol = 1.220703e-4, max_iter = 100L) {

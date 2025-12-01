@@ -109,13 +109,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // ml_gumbel_rcpp
-Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec& x);
-RcppExport SEXP _univariateML_ml_gumbel_rcpp(SEXP xSEXP) {
+Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec& x, double tol, int maxit);
+RcppExport SEXP _univariateML_ml_gumbel_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(ml_gumbel_rcpp(x));
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(ml_gumbel_rcpp(x, tol, maxit));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -169,7 +171,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlburr_rcpp2", (DL_FUNC) &_univariateML_mlburr_rcpp2, 3},
     {"_univariateML_mlburr_rcpp", (DL_FUNC) &_univariateML_mlburr_rcpp, 4},
     {"_univariateML_mlcauchy_rcpp", (DL_FUNC) &_univariateML_mlcauchy_rcpp, 3},
-    {"_univariateML_ml_gumbel_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_rcpp, 1},
+    {"_univariateML_ml_gumbel_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_rcpp, 3},
     {"_univariateML_logmom1_c", (DL_FUNC) &_univariateML_logmom1_c, 4},
     {"_univariateML_mlburr_cpp", (DL_FUNC) &_univariateML_mlburr_cpp, 3},
     {"_univariateML_mllogis_fast", (DL_FUNC) &_univariateML_mllogis_fast, 3},
