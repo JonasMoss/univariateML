@@ -11,63 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// f_lower_inv_rcpp2
-Rcpp::NumericVector f_lower_inv_rcpp2(double cv);
-RcppExport SEXP _univariateML_f_lower_inv_rcpp2(SEXP cvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type cv(cvSEXP);
-    rcpp_result_gen = Rcpp::wrap(f_lower_inv_rcpp2(cv));
-    return rcpp_result_gen;
-END_RCPP
-}
-// f_lower_inv_rcpp
-Rcpp::NumericVector f_lower_inv_rcpp(double cv);
-RcppExport SEXP _univariateML_f_lower_inv_rcpp(SEXP cvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type cv(cvSEXP);
-    rcpp_result_gen = Rcpp::wrap(f_lower_inv_rcpp(cv));
-    return rcpp_result_gen;
-END_RCPP
-}
-// f_upper_inv_rcpp
-Rcpp::NumericVector f_upper_inv_rcpp(double cv);
-RcppExport SEXP _univariateML_f_upper_inv_rcpp(SEXP cvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type cv(cvSEXP);
-    rcpp_result_gen = Rcpp::wrap(f_upper_inv_rcpp(cv));
-    return rcpp_result_gen;
-END_RCPP
-}
-// burr_lmom2
-Rcpp::NumericVector burr_lmom2(double mu, double sigma2);
-RcppExport SEXP _univariateML_burr_lmom2(SEXP muSEXP, SEXP sigma2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
-    rcpp_result_gen = Rcpp::wrap(burr_lmom2(mu, sigma2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// burr_lmom
-Rcpp::NumericVector burr_lmom(double mu, double sigma2);
-RcppExport SEXP _univariateML_burr_lmom(SEXP muSEXP, SEXP sigma2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
-    rcpp_result_gen = Rcpp::wrap(burr_lmom(mu, sigma2));
-    return rcpp_result_gen;
-END_RCPP
-}
 // mlburr_rcpp
 Rcpp::NumericVector mlburr_rcpp(const arma::vec& x, Rcpp::Nullable<Rcpp::NumericVector> init, double tol, int maxit);
 RcppExport SEXP _univariateML_mlburr_rcpp(SEXP xSEXP, SEXP initSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
@@ -108,20 +51,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// logmom1_c
-double logmom1_c(double mu, double sigma2, double tol, int maxit);
-RcppExport SEXP _univariateML_logmom1_c(SEXP muSEXP, SEXP sigma2SEXP, SEXP tolSEXP, SEXP maxitSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
-    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    rcpp_result_gen = Rcpp::wrap(logmom1_c(mu, sigma2, tol, maxit));
-    return rcpp_result_gen;
-END_RCPP
-}
 // mllogis_fast
 Rcpp::List mllogis_fast(const arma::vec& x, double tol, int maxit);
 RcppExport SEXP _univariateML_mllogis_fast(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
@@ -137,15 +66,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_univariateML_f_lower_inv_rcpp2", (DL_FUNC) &_univariateML_f_lower_inv_rcpp2, 1},
-    {"_univariateML_f_lower_inv_rcpp", (DL_FUNC) &_univariateML_f_lower_inv_rcpp, 1},
-    {"_univariateML_f_upper_inv_rcpp", (DL_FUNC) &_univariateML_f_upper_inv_rcpp, 1},
-    {"_univariateML_burr_lmom2", (DL_FUNC) &_univariateML_burr_lmom2, 2},
-    {"_univariateML_burr_lmom", (DL_FUNC) &_univariateML_burr_lmom, 2},
     {"_univariateML_mlburr_rcpp", (DL_FUNC) &_univariateML_mlburr_rcpp, 4},
     {"_univariateML_mlcauchy_rcpp", (DL_FUNC) &_univariateML_mlcauchy_rcpp, 3},
     {"_univariateML_ml_gumbel_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_rcpp, 3},
-    {"_univariateML_logmom1_c", (DL_FUNC) &_univariateML_logmom1_c, 4},
     {"_univariateML_mllogis_fast", (DL_FUNC) &_univariateML_mllogis_fast, 3},
     {NULL, NULL, 0}
 };
