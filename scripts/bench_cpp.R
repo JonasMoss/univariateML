@@ -81,17 +81,16 @@ mk_generator <- function(model_row) {
   }
   fn <- resolve_fun(sampler)
   if (is.null(fn)) stop(sprintf("Sampler '%s' not found", sampler))
-  params <- model_row$params[[1]]
-  defaults <- params$default
-  names(defaults) <- params$name
-  function(n) {
-    do.call(fn, c(list(n = n), as.list(defaults)))
+  function(params, n) {
+    do.call(fn, c(list(n = n), params))
   }
 }
 
-bench_candidates <- function(funcs, generator, sizes, reps, tol, maxit) {
-  seeds <- seq_along(sizes)
-  rows <- tibble(size = sizes, seed = seeds)
+bench_candidates <- function(funcs, generator, param_sets, sizes, reps, tol, maxit) {
+  rows <- tidyr::crossing(tibble(size = sizes),
+                          tibble(param_id = seq_along(param_sets))) %>%
+    mutate(seed = row_number(),
+           params = map(param_id, ~ param_sets[[.x]]))
 
   run_once <- function(func_name, x) {
     fn <- get(func_name, envir = asNamespace("univariateML"))
@@ -102,9 +101,9 @@ bench_candidates <- function(funcs, generator, sizes, reps, tol, maxit) {
 
   rows %>%
     mutate(
-      data = map2(size, seed, ~ {
-        set.seed(.y)
-        generator(.x)
+      data = pmap(list(size = size, seed = seed, params = params), function(size, seed, params) {
+        set.seed(seed)
+        generator(params, size)
       }),
       preflight = map(data, ~ {
         map(funcs, function(f) {
@@ -125,7 +124,7 @@ bench_candidates <- function(funcs, generator, sizes, reps, tol, maxit) {
                 c(exprs, times = reps, unit = "ms"))
       })
     ) %>%
-    select(size, preflight, bench) %>%
+    select(size, param_id, preflight, bench) %>%
     mutate(summary = map2(bench, preflight, ~ {
       if (is.null(.x)) return(NULL)
       s <- summary(.x)
@@ -134,12 +133,23 @@ bench_candidates <- function(funcs, generator, sizes, reps, tol, maxit) {
       s$error <- .y$error[match(s$expression, .y$func)]
       s
     })) %>%
-    select(size, summary) %>%
+    select(size, param_id, summary) %>%
     tidyr::unnest(summary)
 }
 
 model_row <- load_model_meta(model_id)
 gen <- mk_generator(model_row)
+
+param_sets <- {
+  base <- model_row$params[[1]]
+  defaults <- setNames(as.list(base$default), base$name)
+  bp <- model_row$bench_params[[1]]
+  if (is.null(bp) || length(bp) == 0) {
+    list(defaults)
+  } else {
+    lapply(seq_len(nrow(bp)), function(i) as.list(bp[i, ]))
+  }
+}
 
 detect_funcs <- function(model_id) {
   ns <- asNamespace("univariateML")
@@ -158,6 +168,7 @@ maxit_default <- 100
 res <- bench_candidates(
   funcs = funcs,
   generator = gen,
+  param_sets = param_sets,
   sizes = sizes,
   reps = reps,
   tol = tol_default,
@@ -169,7 +180,7 @@ if (nrow(res) == 0) {
 }
 
 out <- res %>%
-  select(expression, size, median, lq, uq, iter, error) %>%
-  arrange(size, expression)
+  select(expression, size, param_id, median, lq, uq, iter, error) %>%
+  arrange(param_id, size, expression)
 
 print(out)
