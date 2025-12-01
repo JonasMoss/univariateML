@@ -24,6 +24,8 @@
 - C++17, Armadillo containers; avoid raw pointers; prefer `auto` judiciously.
 - Rcpp bindings should take `arma::vec` (or other Armadillo types) directly; pure cores also operate on Armadillo containers, no `NumericVector`.
 - No OpenMP; guard any future parallel code with `_OPENMP` and keep defaults off.
+- Prefer range-based loops and Armadillo algorithms over explicit indexing when readability/performance permit.
+- Use `std::variant` (or similar tagged types) for fallible operations; avoid naked `throw` in core code where possible.
 - clang-format enforced (add `.clang-format`).
 - Error handling: use Rust-like error handling with enums.
 - **Never** use `using`. Always be explicit.
