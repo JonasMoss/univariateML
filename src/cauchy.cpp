@@ -71,8 +71,8 @@ static CauchyOutcome fit_cauchy(const arma::vec& x, double tol = kTolDefault, in
 
 // [[Rcpp::export]]
 Rcpp::NumericVector mlcauchy_rcpp(const arma::vec& x,
-                   double tol   = kTolDefault,
-                   int    maxit = kMaxIterDefault) {
+                   double tol   = 1.220703e-4,
+                   int    maxit = 100) {
   CauchyOutcome res = fit_cauchy(x, tol, maxit);
   if (std::holds_alternative<std::string>(res)) {
     Rcpp::stop(std::get<std::string>(res));

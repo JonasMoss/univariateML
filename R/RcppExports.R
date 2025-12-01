@@ -5,23 +5,19 @@ burr_lmom <- function(mu, sigma2) {
     .Call(`_univariateML_burr_lmom`, mu, sigma2)
 }
 
-mlburr_rcpp <- function(x, init = NULL, tol, maxit) {
+mlburr_rcpp <- function(x, init = NULL, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mlburr_rcpp`, x, init, tol, maxit)
 }
 
-mlcauchy_rcpp <- function(x, tol, maxit) {
+mlcauchy_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mlcauchy_rcpp`, x, tol, maxit)
 }
 
-ml_gumbel_rcpp <- function(x, tol, maxit) {
+ml_gumbel_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_ml_gumbel_rcpp`, x, tol, maxit)
 }
 
-inverse_digamma <- function(x) {
-    .Call(`_univariateML_inverse_digamma`, x)
-}
-
-mllogis_fast <- function(x, tol, maxit) {
+mllogis_fast <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mllogis_fast`, x, tol, maxit)
 }
 

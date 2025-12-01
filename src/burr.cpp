@@ -265,7 +265,7 @@ Rcpp::NumericVector burr_lmom(double mu, double sigma2) {
 Rcpp::NumericVector
 mlburr_rcpp(const arma::vec &x,
             Rcpp::Nullable<Rcpp::NumericVector> init = R_NilValue,
-            double tol = kTolDefault, int maxit = kMaxIterDefault) {
+            double tol = 1.220703e-4, int maxit = 100) {
   const double nd = static_cast<double>(x.n_elem);
   arma::vec log_x = arma::log(x);
   double m1 = arma::accu(log_x) / nd;
@@ -281,7 +281,7 @@ mlburr_rcpp(const arma::vec &x,
   } else {
     c0 = burr_lmom_core(m1, m2, true).c;
     if (Rcpp::NumericVector::is_na(c0) || c0 <= 0.0) {
-      Rcpp::stop("Failed to get a valid initial c from burr_lmom()");
+      Rcpp::stop("Failed to get a valid initial c from log-moments estimator.");
     }
   }
 
