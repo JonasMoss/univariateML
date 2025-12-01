@@ -21,10 +21,6 @@ burr_lmom <- function(mu, sigma2) {
     .Call(`_univariateML_burr_lmom`, mu, sigma2)
 }
 
-mlburr_rcpp2 <- function(x, tol, maxit) {
-    .Call(`_univariateML_mlburr_rcpp2`, x, tol, maxit)
-}
-
 mlburr_rcpp <- function(x, init = NULL, tol, maxit) {
     .Call(`_univariateML_mlburr_rcpp`, x, init, tol, maxit)
 }
@@ -39,10 +35,6 @@ ml_gumbel_rcpp <- function(x, tol, maxit) {
 
 logmom1_c <- function(mu, sigma2, tol, maxit) {
     .Call(`_univariateML_logmom1_c`, mu, sigma2, tol, maxit)
-}
-
-mlburr_cpp <- function(x, tol, maxit) {
-    .Call(`_univariateML_mlburr_cpp`, x, tol, maxit)
 }
 
 mllogis_fast <- function(x, tol, maxit) {

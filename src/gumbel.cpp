@@ -1,9 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
-#include <RcppArmadillo.h>
-#include <cmath>
-#include <string>
-#include <variant>
 #include "ml_common.hpp"
+#include <RcppArmadillo.h>
 
 struct GumbelResult {
   double mu;
@@ -14,11 +11,11 @@ struct GumbelResult {
 using GumbelOutcome = std::variant<GumbelResult, std::string>;
 
 // Pure C++ core: Newton iterations on log(sigma), then compute mu.
-static GumbelOutcome fit_gumbel_newton(const arma::vec& x,
+static GumbelOutcome fit_gumbel_newton(const arma::vec &x,
                                        double tol = kTolDefault,
-                                       int maxit  = kMaxIterDefault) {
+                                       int maxit = kMaxIterDefault) {
   const int n = static_cast<int>(x.n_elem);
-  const double* xp = x.memptr();
+  const double *xp = x.memptr();
 
   if (n == 0) {
     return std::string("x must have positive length");
@@ -27,7 +24,7 @@ static GumbelOutcome fit_gumbel_newton(const arma::vec& x,
   double sum_x = 0.0;
   double sum_x2 = 0.0;
   for (double xi : x) {
-    sum_x  += xi;
+    sum_x += xi;
     sum_x2 += xi * xi;
   }
   const double xbar = sum_x / n;
@@ -50,14 +47,15 @@ static GumbelOutcome fit_gumbel_newton(const arma::vec& x,
       psi2 += v * v * e;
     }
     psi1 /= psi0;
-    psi2  = psi2 / psi0 - psi1 * psi1;
+    psi2 = psi2 / psi0 - psi1 * psi1;
 
-    const double f   = sigma + psi1;
-    const double df  = 1.0 + psi2 * (invs * invs);
+    const double f = sigma + psi1;
+    const double df = 1.0 + psi2 * (invs * invs);
     const double dth = f / (df * sigma);
 
     theta -= dth;
-    if (std::abs(dth) < std::abs(theta) * tol) break;
+    if (std::abs(dth) < std::abs(theta) * tol)
+      break;
   }
 
   const double sigma = std::exp(theta);
@@ -72,8 +70,7 @@ static GumbelOutcome fit_gumbel_newton(const arma::vec& x,
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec& x,
-                                   double tol = kTolDefault,
+Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec &x, double tol = kTolDefault,
                                    int maxit = kMaxIterDefault) {
   GumbelOutcome res = fit_gumbel_newton(x, tol, maxit);
   if (std::holds_alternative<std::string>(res)) {

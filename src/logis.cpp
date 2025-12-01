@@ -1,10 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
-#include <RcppArmadillo.h>
-#include <cmath>
-#include <stdexcept>
-#include <string>
-#include <variant>
 #include "ml_common.hpp"
+#include <RcppArmadillo.h>
 
 namespace {
 
@@ -16,9 +12,7 @@ struct LogisticResult {
 
 using LogisticOutcome = std::variant<LogisticResult, std::string>;
 
-LogisticOutcome logistic_mle(const arma::vec& x,
-                             double tol,
-                             int maxit) {
+LogisticOutcome logistic_mle(const arma::vec &x, double tol, int maxit) {
   const int n = static_cast<int>(x.n_elem);
   if (n == 0) {
     return std::string("x must have positive length");
@@ -26,11 +20,11 @@ LogisticOutcome logistic_mle(const arma::vec& x,
 
   // One-pass mean/variance (Welford)
   double mean = 0.0;
-  double M2   = 0.0;
+  double M2 = 0.0;
   for (int i = 0; i < n; ++i) {
     double diff = x[i] - mean;
     mean += diff / static_cast<double>(i + 1);
-    M2   += diff * (x[i] - mean);
+    M2 += diff * (x[i] - mean);
   }
 
   double mu = mean;
@@ -41,22 +35,22 @@ LogisticOutcome logistic_mle(const arma::vec& x,
   double theta = std::log(std::sqrt(sample_var) * std::sqrt(3.0) / M_PI);
 
   for (int iter = 0; iter < maxit; ++iter) {
-    const double inv_s  = std::exp(-theta);
+    const double inv_s = std::exp(-theta);
     const double inv_s2 = inv_s * inv_s;
 
     double U1 = 0.0, U2 = 0.0;
     double sum_c2 = 0.0, sum_tz = 0.0, sum_z2c2 = 0.0;
 
     for (double xi : x) {
-      double z  = (xi - mu) * inv_s;
-      double h  = 0.5 * z;
+      double z = (xi - mu) * inv_s;
+      double h = 0.5 * z;
       double th = std::tanh(h);
       double c2 = 1.0 - th * th;
 
-      U1       += th;
-      U2       += z * th;
-      sum_c2   += c2;
-      sum_tz   += th + 0.5 * z * c2;
+      U1 += th;
+      U2 += z * th;
+      sum_c2 += c2;
+      sum_tz += th + 0.5 * z * c2;
       sum_z2c2 += z * z * c2;
     }
 
@@ -72,10 +66,10 @@ LogisticOutcome logistic_mle(const arma::vec& x,
       break;
     }
 
-    double dmu    = ( J22 * U1 - J12 * U2) / det;
+    double dmu = (J22 * U1 - J12 * U2) / det;
     double dtheta = (-J12 * U1 + J11 * U2) / det;
 
-    mu    += dmu;
+    mu += dmu;
     theta += dtheta;
 
     if (std::max(std::fabs(dmu), std::fabs(dtheta)) < tol) {
@@ -89,9 +83,8 @@ LogisticOutcome logistic_mle(const arma::vec& x,
 } // namespace
 
 // [[Rcpp::export]]
-Rcpp::List mllogis_fast(const arma::vec& x,
-                        double tol   = kTolDefault,
-                        int    maxit = kMaxIterDefault) {
+Rcpp::List mllogis_fast(const arma::vec &x, double tol = kTolDefault,
+                        int maxit = kMaxIterDefault) {
   LogisticOutcome res = logistic_mle(x, tol, maxit);
   if (std::holds_alternative<std::string>(res)) {
     Rcpp::stop(std::get<std::string>(res));
@@ -99,10 +92,7 @@ Rcpp::List mllogis_fast(const arma::vec& x,
   LogisticResult ok = std::get<LogisticResult>(res);
 
   return Rcpp::List::create(
-    Rcpp::_["estimates"]  = Rcpp::NumericVector::create(
-      Rcpp::_["mu"]    = ok.mu,
-      Rcpp::_["scale"] = ok.scale
-    ),
-    Rcpp::_["iterations"] = ok.iterations
-  );
+      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+          Rcpp::_["mu"] = ok.mu, Rcpp::_["scale"] = ok.scale),
+      Rcpp::_["iterations"] = ok.iterations);
 }
