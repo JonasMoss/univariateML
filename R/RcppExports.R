@@ -81,3 +81,23 @@ mllogitnorm_rcpp <- function(x) {
     .Call(`_univariateML_mllogitnorm_rcpp`, x)
 }
 
+mlweibull_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlweibull_rcpp`, x, tol, maxit)
+}
+
+mlinvweibull_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlinvweibull_rcpp`, x, tol, maxit)
+}
+
+mlinvgamma_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlinvgamma_rcpp`, x, tol, maxit)
+}
+
+mlinvgauss_rcpp <- function(x) {
+    .Call(`_univariateML_mlinvgauss_rcpp`, x)
+}
+
+mllomax_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mllomax_rcpp`, x, tol, maxit)
+}
+

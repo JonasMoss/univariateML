@@ -9,12 +9,15 @@
   - Gamma/Lgamma (mlgamma_rcpp)
   - Binomial (mlbinom_rcpp)
   - Lognormal/logit-normal (mllnorm_rcpp, mllogitnorm_rcpp)
+  - Weibull / InvWeibull
+  - InvGamma / InvGauss
+  - Lomax
   - inverse_digamma helper
   - Closed-form: exp, unif, pois, norm, laplace, geom, pareto, rayleigh
 
 - Priority ports (start with easy):
-  - **Done**: beta/betapr, gamma/lgamma, binom, lognormal/logit-normal, closed-form exp/unif/pois/norm/laplace/geom/pareto/rayleigh.
-  - **Next easy/medium**: mlnorm/mllaplace (R wrappers already using C++ core but revisit if needed), mlzip/mlzipf, mlnbinom, gompertz, kumar, weibull, lomax, naka, invgamma/invweibull/invgauss, llogis/logis nlm variant.
+  - **Done**: beta/betapr, gamma/lgamma, binom, lognormal/logit-normal, weibull/invweibull, invgamma/invgauss, lomax, closed-form exp/unif/pois/norm/laplace/geom/pareto/rayleigh.
+  - **Next easy/medium**: mlzip/mlzipf, mlnbinom, gompertz, kumar, weibull/logis variants (nlm), naka, invburr, invweibull refinements, invgauss checks, llogis/logis nlm variant.
 
 - Medium:
   - gompertz (Newton with exp sums)
@@ -32,6 +35,6 @@
   - Export only ML-facing Rcpp in `src/ml_exports.cpp` with literal defaults (tol=1.220703e-4, maxit=100).
 
 - Next steps:
-  1) Tackle the remaining easy/medium ports (mlzip/mlzipf, mlnbinom, gompertz, kumar, weibull, lomax, naka, invgamma/invweibull/invgauss, llogis/logis variant) and wire to `ml_exports.cpp`.
+  1) Tackle the remaining easy/medium ports (mlzip/mlzipf, mlnbinom, gompertz, kumar, naka, invburr, llogis/logis variant) and wire to `ml_exports.cpp`.
   2) Add benchmarks/validations for the new ports (iterations, convergence flags, edge-case parameters).
   3) Leave hard/external-optimizer models for a later pass or alternative implementations.

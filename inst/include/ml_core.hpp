@@ -745,4 +745,168 @@ inline ClosedResult logitnorm_mle(const arma::vec& x) {
   return {arma::vec({mu, sigma}), logLik};
 }
 
+// ---------- Weibull (via Gumbel transform) ----------
+struct WeibullResult {
+  double shape;
+  double scale;
+  double logLik;
+  int iterations;
+};
+
+inline WeibullResult weibull_mle(const arma::vec& x,
+                                 double tol = kTolDefault,
+                                 int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  arma::vec log_x = -arma::log(x);
+  const double s  = -arma::accu(log_x) / static_cast<double>(n);
+  arma::vec shifted = log_x + s;
+
+  GumbelResult g = fit_gumbel_newton(shifted, tol, maxit);
+  const double shape = 1.0 / g.sigma;
+  const double scale = std::exp(-g.mu + s);
+  const double logLik = static_cast<double>(n) *
+    (std::log(shape / scale) + (shape - 1.0) * (s - std::log(scale)) - 1.0);
+
+  return {shape, scale, logLik, g.iterations};
+}
+
+// ---------- Inverse Weibull (via Gumbel transform) ----------
+struct InvWeibullResult {
+  double shape;
+  double rate;
+  double logLik;
+  int iterations;
+};
+
+inline InvWeibullResult invweibull_mle(const arma::vec& x,
+                                       double tol = kTolDefault,
+                                       int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  arma::vec log_x = arma::log(x);
+  const double s  = -arma::accu(log_x) / static_cast<double>(n);
+  arma::vec shifted = log_x + s;
+
+  GumbelResult g = fit_gumbel_newton(shifted, tol, maxit);
+  const double rate_log = -g.mu + s;
+  const double rate     = std::exp(rate_log);
+  const double shape    = 1.0 / g.sigma;
+  const double logLik   = static_cast<double>(n) *
+    (std::log(shape) + shape * (-rate_log + s) - 1.0 + s);
+
+  return {shape, rate, logLik, g.iterations};
+}
+
+// ---------- Inverse Gamma ----------
+struct InvGammaResult {
+  double shape;
+  double rate;
+  double logLik;
+  int iterations;
+};
+
+inline InvGammaResult invgamma_mle(const arma::vec& x,
+                                   double tol = kTolDefault,
+                                   int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  arma::vec invx = 1.0 / x;
+  GammaResult g  = gamma_mle(invx, tol, maxit);
+
+  const double L = arma::mean(arma::log(x));
+  const double M = arma::mean(invx);
+  const double logLik = static_cast<double>(n) *
+    (g.shape * std::log(g.rate) - std::lgamma(g.shape) -
+     (g.shape + 1.0) * L - g.rate * M);
+
+  return {g.shape, g.rate, logLik, g.iterations};
+}
+
+// ---------- Inverse Gaussian (closed form) ----------
+struct InvGaussResult {
+  double mu;
+  double lambda;
+  double logLik;
+};
+
+inline InvGaussResult invgauss_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL};
+
+  const double mu     = arma::mean(x);
+  const double invx   = arma::mean(1.0 / x);
+  const double lambda = 1.0 / (invx - 1.0 / mu);
+  const double L      = arma::mean(arma::log(x));
+  const double S      = arma::mean(arma::square(x - mu) / x);
+  const double logLik = -0.5 * static_cast<double>(n) *
+    (3.0 * L - std::log(lambda) + std::log(2.0 * M_PI) + lambda / (mu * mu) * S);
+
+  return {mu, lambda, logLik};
+}
+
+// ---------- Lomax ----------
+struct LomaxResult {
+  double lambda;
+  double kappa;
+  double logLik;
+  int iterations;
+};
+
+inline LomaxResult lomax_mle(const arma::vec& x,
+                             double tol = kTolDefault,
+                             int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  const double m   = arma::mean(x);
+  const double s   = arma::mean(arma::square(x));
+  const double m2  = m * m;
+  if (s < 2.0 * m2) {
+    return {NA_REAL, NA_REAL, NA_REAL, 0};
+  }
+
+  const double alpha0  = 2.0 * (s - m2) / (s - 2.0 * m2);
+  double lambda = 1.0 / (m * (alpha0 - 1.0));
+  if (lambda <= 0.0 || !std::isfinite(lambda)) {
+    return {NA_REAL, NA_REAL, NA_REAL, 0};
+  }
+
+  int iter = 0;
+  for (iter = 1; iter <= maxit; ++iter) {
+    arma::vec lambda_x1p = 1.0 + lambda * x;
+    arma::vec x_div      = x / lambda_x1p;
+
+    const double S  = arma::mean(arma::log(lambda_x1p));
+    const double S1 = arma::mean(x_div);
+    const double S2 = arma::mean(arma::square(x_div));
+
+    const double psi = S1 / S;
+    const double f   = 1.0 / lambda - psi - S1;
+    const double df  = psi * psi + S2 / S + S2 - 1.0 / (lambda * lambda);
+
+    const double step   = f / df;
+    const double lambda_new = lambda - step;
+    if (lambda_new <= 0.0 || !std::isfinite(lambda_new)) {
+      return {NA_REAL, NA_REAL, NA_REAL, iter};
+    }
+
+    if (std::abs(step) < (std::abs(lambda) * tol + tol)) {
+      lambda = lambda_new;
+      break;
+    }
+    lambda = lambda_new;
+  }
+
+  const double kappa = static_cast<double>(n) /
+    arma::accu(arma::log1p(lambda * x));
+  const double logLik = static_cast<double>(n) *
+    (std::log(kappa) + std::log(lambda) - 1.0 - 1.0 / kappa);
+
+  return {lambda, kappa, logLik, iter};
+}
+
 } // namespace mlcore

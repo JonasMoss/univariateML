@@ -244,3 +244,78 @@ Rcpp::List mllogitnorm_rcpp(const arma::vec& x) {
     Rcpp::_["logLik"] = res.logLik
   );
 }
+
+// [[Rcpp::export]]
+Rcpp::List mlweibull_rcpp(const arma::vec& x,
+                          double tol = 1.220703e-4,
+                          int maxit = 100) {
+  auto res = mlcore::weibull_mle(x, tol, maxit);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["shape"] = res.shape,
+      Rcpp::_["scale"] = res.scale
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlinvweibull_rcpp(const arma::vec& x,
+                             double tol = 1.220703e-4,
+                             int maxit = 100) {
+  auto res = mlcore::invweibull_mle(x, tol, maxit);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["shape"] = res.shape,
+      Rcpp::_["rate"]  = res.rate
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlinvgamma_rcpp(const arma::vec& x,
+                           double tol = 1.220703e-4,
+                           int maxit = 100) {
+  auto res = mlcore::invgamma_mle(x, tol, maxit);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["shape"] = res.shape,
+      Rcpp::_["rate"]  = res.rate
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlinvgauss_rcpp(const arma::vec& x) {
+  auto res = mlcore::invgauss_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["mu"]     = res.mu,
+      Rcpp::_["lambda"] = res.lambda
+    ),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mllomax_rcpp(const arma::vec& x,
+                        double tol = 1.220703e-4,
+                        int maxit = 100) {
+  auto res = mlcore::lomax_mle(x, tol, maxit);
+  if (!std::isfinite(res.lambda) || !std::isfinite(res.kappa)) {
+    Rcpp::stop("Lomax MLE failed to converge (check dispersion/inputs)");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["lambda"] = res.lambda,
+      Rcpp::_["kappa"]  = res.kappa
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
