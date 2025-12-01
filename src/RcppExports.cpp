@@ -214,6 +214,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mlbinom_rcpp
+Rcpp::List mlbinom_rcpp(const Rcpp::IntegerVector& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlbinom_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlbinom_rcpp(x, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mllnorm_rcpp
+Rcpp::List mllnorm_rcpp(const arma::vec& x);
+RcppExport SEXP _univariateML_mllnorm_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(mllnorm_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mllogitnorm_rcpp
+Rcpp::List mllogitnorm_rcpp(const arma::vec& x);
+RcppExport SEXP _univariateML_mllogitnorm_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(mllogitnorm_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_burr_lmom", (DL_FUNC) &_univariateML_burr_lmom, 2},
@@ -233,6 +268,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlgeom_rcpp", (DL_FUNC) &_univariateML_mlgeom_rcpp, 1},
     {"_univariateML_mlpareto_rcpp", (DL_FUNC) &_univariateML_mlpareto_rcpp, 1},
     {"_univariateML_mlrayleigh_rcpp", (DL_FUNC) &_univariateML_mlrayleigh_rcpp, 1},
+    {"_univariateML_mlbinom_rcpp", (DL_FUNC) &_univariateML_mlbinom_rcpp, 3},
+    {"_univariateML_mllnorm_rcpp", (DL_FUNC) &_univariateML_mllnorm_rcpp, 1},
+    {"_univariateML_mllogitnorm_rcpp", (DL_FUNC) &_univariateML_mllogitnorm_rcpp, 1},
     {NULL, NULL, 0}
 };
 

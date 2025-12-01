@@ -5,12 +5,16 @@
   - Cauchy (mlcauchy_rcpp)
   - Gumbel (ml_gumbel_rcpp)
   - Logistic (mllogis_fast)
+  - Beta/Betapr (mlbeta_rcpp, mlbetapr_rcpp)
+  - Gamma/Lgamma (mlgamma_rcpp)
+  - Binomial (mlbinom_rcpp)
+  - Lognormal/logit-normal (mllnorm_rcpp, mllogitnorm_rcpp)
   - inverse_digamma helper
+  - Closed-form: exp, unif, pois, norm, laplace, geom, pareto, rayleigh
 
 - Priority ports (start with easy):
-  - **beta / betapr**: Newton on digamma/trigamma; invert-digamma already available. Easy.
-  - **gamma / lgamma**: Newton on shape (digamma/trigamma), rate/shape-log via mean/log-mean. Easy.
-  - **closed-form/easy**: d-unif, exp, geom, pois, binom? (binom medium), norm/lognormal (lwnorm), pareto, rayleigh, dunif/unif, laplace, mllaplace, mlnorm, mlnbinom, mlzip, mlzipf (medium), mllogitnorm, mllnorm.
+  - **Done**: beta/betapr, gamma/lgamma, binom, lognormal/logit-normal, closed-form exp/unif/pois/norm/laplace/geom/pareto/rayleigh.
+  - **Next easy/medium**: mlnorm/mllaplace (R wrappers already using C++ core but revisit if needed), mlzip/mlzipf, mlnbinom, gompertz, kumar, weibull, lomax, naka, invgamma/invweibull/invgauss, llogis/logis nlm variant.
 
 - Medium:
   - gompertz (Newton with exp sums)
@@ -28,6 +32,6 @@
   - Export only ML-facing Rcpp in `src/ml_exports.cpp` with literal defaults (tol=1.220703e-4, maxit=100).
 
 - Next steps:
-  1) Port beta/betapr and gamma/lgamma to C++ core + exports.
-  2) Add a sweep of easy closed-form ports (exp, geom, unif, pareto, rayleigh, laplace, norm/lognorm, pois, etc.).
-  3) Migrate remaining medium items incrementally; hard ones last or revisit with alternative approaches.
+  1) Tackle the remaining easy/medium ports (mlzip/mlzipf, mlnbinom, gompertz, kumar, weibull, lomax, naka, invgamma/invweibull/invgauss, llogis/logis variant) and wire to `ml_exports.cpp`.
+  2) Add benchmarks/validations for the new ports (iterations, convergence flags, edge-case parameters).
+  3) Leave hard/external-optimizer models for a later pass or alternative implementations.

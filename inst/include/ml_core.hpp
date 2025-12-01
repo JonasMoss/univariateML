@@ -656,4 +656,93 @@ inline ClosedResult rayleigh_mle(const arma::vec& x) {
   return {arma::vec({sigma}), logLik};
 }
 
+// Binomial (Newton on size)
+struct BinomResult {
+  double size;
+  double prob;
+  double logLik;
+  int iterations;
+};
+
+inline BinomResult binom_mle(const arma::ivec& x, double tol, int maxit) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+  double x_bar = arma::mean(arma::conv_to<arma::vec>::from(x));
+  double var   = arma::var(arma::conv_to<arma::vec>::from(x), 1); // population var
+  if (x_bar / var <= 1.0) {
+    return {NA_REAL, NA_REAL, NA_REAL, 0};
+  }
+
+  int max_x = x.max();
+  // counts
+  arma::ivec uniq = arma::unique(x);
+  arma::ivec counts(uniq.n_elem, arma::fill::zeros);
+  for (arma::uword i = 0; i < uniq.n_elem; ++i) {
+    counts[i] = static_cast<int>(arma::accu(x == uniq[i]));
+  }
+
+  auto log_likelihood = [&](double size) {
+    double prob = x_bar / size;
+    double ll = n * x_bar * std::log(prob) + n * (size - x_bar) * std::log(1.0 - prob);
+    for (int i = 0; i < uniq.n_elem; ++i) {
+      ll += counts[i] * std::lgamma(size + 1.0)
+        - counts[i] * std::lgamma(static_cast<double>(uniq[i]) + 1.0)
+        - counts[i] * std::lgamma(size - static_cast<double>(uniq[i]) + 1.0);
+    }
+    return ll;
+  };
+
+  auto f_over_df = [&](double size) {
+    double size_m_x = size - x_bar;
+    double f = n * (std::log(size_m_x) - std::log(size))
+      + n * Rf_digamma(size + 1.0);
+    double df = n * x_bar / (size * size_m_x)
+      + n * Rf_psigamma(size + 1.0, 1);
+    for (arma::uword i = 0; i < uniq.n_elem; ++i) {
+      double arg = size - static_cast<double>(uniq[i]) + 1.0;
+      f  -= counts[i] * Rf_digamma(arg);
+      df -= counts[i] * Rf_psigamma(arg, 1);
+    }
+
+    return f / df;
+  };
+
+  double size0 = static_cast<double>(max_x);
+  double size = size0;
+  for (int i = 1; i <= maxit; ++i) {
+    double step = f_over_df(size);
+    size -= step;
+    if (std::abs(step) < tol) {
+      double prob = x_bar / size;
+      double ll = log_likelihood(size);
+      return {size, prob, ll, i};
+    }
+  }
+  double prob = x_bar / size;
+  double ll = log_likelihood(size);
+  return {size, prob, ll, maxit};
+}
+
+inline ClosedResult lognormal_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  arma::vec y = arma::log(x);
+  double meanlog = arma::mean(y);
+  double sdlog   = std::sqrt(arma::var(y, 1));
+  double logLik  = -0.5 * n * (std::log(2 * M_PI * sdlog * sdlog) + 1.0)
+    - arma::accu(arma::log(x));
+  return {arma::vec({meanlog, sdlog}), logLik};
+}
+
+inline ClosedResult logitnorm_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  arma::vec y = arma::log(x / (1.0 - x));
+  double mu = arma::mean(y);
+  double sigma = std::sqrt(arma::var(y, 1));
+  double logLik = -0.5 * n * (std::log(2 * M_PI * sigma * sigma) + 1.0)
+    - arma::accu(arma::log(x % (1.0 - x)));
+  return {arma::vec({mu, sigma}), logLik};
+}
+
 } // namespace mlcore

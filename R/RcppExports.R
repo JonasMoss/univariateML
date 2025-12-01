@@ -69,3 +69,15 @@ mlrayleigh_rcpp <- function(x) {
     .Call(`_univariateML_mlrayleigh_rcpp`, x)
 }
 
+mlbinom_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlbinom_rcpp`, x, tol, maxit)
+}
+
+mllnorm_rcpp <- function(x) {
+    .Call(`_univariateML_mllnorm_rcpp`, x)
+}
+
+mllogitnorm_rcpp <- function(x) {
+    .Call(`_univariateML_mllogitnorm_rcpp`, x)
+}
+

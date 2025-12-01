@@ -207,3 +207,40 @@ Rcpp::List mlrayleigh_rcpp(const arma::vec& x) {
     Rcpp::_["logLik"] = res.logLik
   );
 }
+
+// [[Rcpp::export]]
+Rcpp::List mlbinom_rcpp(const Rcpp::IntegerVector& x,
+                        double tol = 1.220703e-4,
+                        int maxit = 100) {
+  arma::ivec xi = Rcpp::as<arma::ivec>(x);
+  auto res = mlcore::binom_mle(xi, tol, maxit);
+  if (res.iterations == 0 || !std::isfinite(res.size)) {
+    Rcpp::stop("Binomial MLE failed (check dispersion/inputs)");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["size"] = res.size,
+                                                       Rcpp::_["prob"] = res.prob),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mllnorm_rcpp(const arma::vec& x) {
+  auto res = mlcore::lognormal_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["meanlog"] = res.estimates[0],
+                                                       Rcpp::_["sdlog"]  = res.estimates[1]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mllogitnorm_rcpp(const arma::vec& x) {
+  auto res = mlcore::logitnorm_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["mu"] = res.estimates[0],
+                                                       Rcpp::_["sigma"] = res.estimates[1]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
