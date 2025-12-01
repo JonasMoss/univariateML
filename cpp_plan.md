@@ -24,12 +24,17 @@
 - C++17, Armadillo containers; avoid raw pointers; prefer `auto` judiciously.
 - Rcpp bindings should take `arma::vec` (or other Armadillo types) directly; pure cores also operate on Armadillo containers, no `NumericVector`.
 - No OpenMP; guard any future parallel code with `_OPENMP` and keep defaults off.
-- Prefer range-based loops and Armadillo algorithms over explicit indexing when readability/performance permit.
+- Prefer range-based loops and Armadillo algorithms over explicit indexing when readability/performance permit; avoid manual indexing unless necessary for speed.
+- Always name iteration/count arguments `maxit`; always name tolerance argument `tol` (use for both absolute/relative checks).
 - Use `std::variant` (or similar tagged types) for fallible operations; avoid naked `throw` in core code where possible.
 - clang-format enforced (add `.clang-format`).
 - Error handling: use Rust-like error handling with enums.
 - **Never** use `using`. Always be explicit.
 - Logging/prints: none in core; return warnings in `result.warn`.
+
+## Specifics
+- Use `maxit` for maximal iterations.
+- Use `tol` for both absolute and relative tolerance
 
 ## Porting Steps
 1) Set up directory structure under `inst/cpp/` (or `src/core/`) with `include/` and `src/`, add `.clang-format`.
