@@ -150,6 +150,18 @@ param_sets <- {
     lapply(seq_len(nrow(bp)), function(i) as.list(bp[i, ]))
   }
 }
+params_df <- dplyr::bind_rows(
+  lapply(seq_along(param_sets), function(i) {
+    tibble::as_tibble_row(param_sets[[i]]) %>%
+      mutate(param_id = i, .before = 1)
+  })
+)
+params_df$param_label <- params_df %>%
+  select(-param_id) %>%
+  pmap_chr(function(...) {
+    vals <- list(...)
+    paste(paste(names(vals), signif(unlist(vals), 4), sep = "="), collapse = ", ")
+  })
 
 detect_funcs <- function(model_id) {
   ns <- asNamespace("univariateML")
@@ -180,7 +192,25 @@ if (nrow(res) == 0) {
 }
 
 out <- res %>%
-  select(expression, size, param_id, median, lq, uq, iter, error) %>%
+  select(expression, size, param_id, mean, median, lq, uq, iter, error) %>%
+  left_join(params_df, by = "param_id") %>%
   arrange(param_id, size, expression)
 
-print(out)
+cat("\nDetailed timings (ms):\n")
+print(out %>% select(expression, size, param_label, mean, iter, error))
+
+cat("\nSummary by parameter set:\n")
+print(
+  out %>%
+    group_by(expression, param_label) %>%
+    summarise(mean_mean = mean(mean), mean_iter = mean(iter, na.rm = TRUE), .groups = "drop") %>%
+    arrange(param_label, expression)
+)
+
+cat("\nOverall summary (across parameter sets and sizes):\n")
+print(
+  out %>%
+    group_by(expression) %>%
+    summarise(mean_mean = mean(mean), mean_iter = mean(iter, na.rm = TRUE), .groups = "drop") %>%
+    arrange(expression)
+)
