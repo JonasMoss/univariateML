@@ -466,15 +466,8 @@ mllgamma_ <- function(x, ...) {
 }
 
 mllgser_ <- function(x, ...) {
-  if (sum(x) == length(x)) {
-    stop("All observations equals 1; the maximum likelihood estimator does not exist.")
-  }
-  x_bar <- mean(x)
-  xi <- -x_bar * pracma::lambertWn(-exp(-1 / x_bar) / x_bar) - 1
-  theta <- xi / (xi + 1)
-  logLik <- sum(extraDistr::dlgser(x, theta, log = TRUE))
-
-  list(estimates = theta, logLik = logLik)
+  res <- mllgser_rcpp(as.integer(x))
+  list(estimates = unname(res$estimates), logLik = res$logLik)
 }
 
 mlllogis_ <- function(x, ...) {
@@ -499,14 +492,16 @@ mllnorm_ <- function(x, ...) {
 }
 
 mllogis_ <- function(x, ...) {
-  m <- stats::median(x)
-  mad <- stats::median(abs(x - m))
-  f <- function(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
-  values <- suppressWarnings(stats::nlm(f = f, p = c(m, log(mad))))
+  fit <- mllogis_fast(x, tol = 1e-12, maxit = 1000)
+  start <- unname(fit$estimates)
+  negloglik <- function(par) -sum(stats::dlogis(x, par[1], par[2], log = TRUE))
+  opt <- stats::optim(start, negloglik, method = "BFGS", control = list(reltol = 1e-12, maxit = 100))
+  estimates <- opt$par
+  logLik <- -opt$value
   list(
-    estimates = c(values$estimate[1], exp(values$estimate[2])),
-    logLik = -values$minimum,
-    i = values$iterations
+    estimates = estimates,
+    logLik = logLik,
+    iterations = fit$iterations + opt$counts["function"]
   )
 }
 

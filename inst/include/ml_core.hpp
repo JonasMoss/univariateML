@@ -55,6 +55,7 @@ struct BurrLmomResult {
 struct BurrMLE {
   double shape1;
   double shape2;
+  double logLik;
   int iterations;
 };
 
@@ -290,19 +291,24 @@ inline BurrMLE burr_mle_core(const arma::vec &x, double c_start, double tol,
   double g_final     = arma::sum(arma::log1p(xc_final));
   double k           = nd / g_final;
 
-  return {k, c, (iter == maxit ? maxit : iter)};
+  const double logLik = nd * (std::log(k) + std::log(c)) +
+    (k - 1.0) * sum_l -
+    (c + 1.0) * arma::accu(arma::log1p(arma::pow(x, k)));
+
+  return {k, c, logLik, (iter == maxit ? maxit : iter)};
 }
 
 // ---------- Cauchy ----------
 struct CauchyResult {
   double mu;
   double scale;
+  double logLik;
   int iterations;
 };
 
 inline CauchyResult fit_cauchy(const arma::vec &x, double tol, int maxit) {
   int n = static_cast<int>(x.n_elem);
-  if (n == 0) return {0.0, 0.0, 0}; // wrapper will stop
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0}; // wrapper will stop
 
   std::vector<double> data(x.begin(), x.end());
   std::nth_element(data.begin(), data.begin() + n / 2, data.end());
@@ -352,13 +358,19 @@ inline CauchyResult fit_cauchy(const arma::vec &x, double tol, int maxit) {
     if (std::max(std::fabs(dmu), std::fabs(dth)) < tol) break;
   }
 
-  return CauchyResult{mu, std::exp(theta), iter};
+  double scale = std::exp(theta);
+  arma::vec z = (x - mu) / scale;
+  double logLik = -static_cast<double>(n) * std::log(M_PI * scale)
+    - arma::accu(arma::log1p(arma::square(z)));
+
+  return CauchyResult{mu, scale, logLik, iter};
 }
 
 // ---------- Gumbel ----------
 struct GumbelResult {
   double mu;
   double sigma;
+  double logLik;
   int iterations;
 };
 
@@ -410,13 +422,18 @@ inline GumbelResult fit_gumbel_newton(const arma::vec &x, double tol, int maxit)
   }
   const double mu = -sigma * std::log(sum_e / n) + xbar;
 
-  return GumbelResult{mu, sigma, iter};
+  arma::vec z = (x - mu) / sigma;
+  double logLik = -static_cast<double>(n) * std::log(sigma) -
+    arma::accu(z) - arma::accu(arma::exp(-z));
+
+  return GumbelResult{mu, sigma, logLik, iter};
 }
 
 // ---------- Logistic ----------
 struct LogisticResult {
   double mu;
   double scale;
+  double logLik;
   int iterations;
 };
 
@@ -441,7 +458,8 @@ inline LogisticResult logistic_mle(const arma::vec& x,
   }
   double theta = std::log(std::sqrt(sample_var) * std::sqrt(3.0) / M_PI);
 
-  for (int iter = 0; iter < maxit; ++iter) {
+  int iter = 0;
+  for (iter = 0; iter < maxit; ++iter) {
     const double inv_s  = std::exp(-theta);
     const double inv_s2 = inv_s * inv_s;
 
@@ -475,12 +493,15 @@ inline LogisticResult logistic_mle(const arma::vec& x,
     mu    += dmu;
     theta += dtheta;
 
-    if (std::max(std::fabs(dmu), std::fabs(dtheta)) < tol) {
-      return {mu, std::exp(theta), iter + 1};
-    }
+    if (std::max(std::fabs(dmu), std::fabs(dtheta)) < tol) break;
   }
 
-  return {mu, std::exp(theta), maxit};
+  double scale = std::exp(theta);
+  arma::vec z  = (x - mu) / scale;
+  double logLik = -static_cast<double>(n) * std::log(scale) -
+    arma::accu(z) - 2.0 * arma::accu(arma::log1p(arma::exp(-z)));
+
+  return {mu, scale, logLik, iter == maxit ? maxit : iter + 1};
 }
 
 // ---------- Beta ----------

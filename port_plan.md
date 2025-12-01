@@ -5,7 +5,6 @@
 
 - Remaining (hard/external optimizer or not yet tackled):
   - ged, sged, std/sstd, paralogis (stats4::mle)
-  - gser (Lambert W variant)
 
 - R-source cleanup to align with C++:
   - Replace legacy R implementations in `r-src/ml` for ported models with thin wrappers calling the corresponding `*_rcpp` functions (preserve logLik/iterations where needed).

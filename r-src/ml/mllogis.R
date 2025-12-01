@@ -1,11 +1,13 @@
 mllogis_ <- function(x, ...) {
-  m <- stats::median(x)
-  mad <- stats::median(abs(x - m))
-  f <- function(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
-  values <- suppressWarnings(stats::nlm(f = f, p = c(m, log(mad))))
+  fit <- mllogis_fast(x, tol = 1e-12, maxit = 1000)
+  start <- unname(fit$estimates)
+  negloglik <- function(par) -sum(stats::dlogis(x, par[1], par[2], log = TRUE))
+  opt <- stats::optim(start, negloglik, method = "BFGS", control = list(reltol = 1e-12, maxit = 100))
+  estimates <- opt$par
+  logLik <- -opt$value
   list(
-    estimates = c(values$estimate[1], exp(values$estimate[2])),
-    logLik = -values$minimum,
-    i = values$iterations
+    estimates = estimates,
+    logLik = logLik,
+    iterations = fit$iterations + opt$counts["function"]
   )
 }

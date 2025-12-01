@@ -38,6 +38,7 @@ mlburr_rcpp(const arma::vec &x,
   mlcore::BurrMLE res = mlcore::burr_mle_core(x, c0, tol, maxit);
   return Rcpp::NumericVector::create(Rcpp::_["shape1"] = res.shape1,
                                      Rcpp::_["shape2"] = res.shape2,
+                                     Rcpp::_["logLik"] = res.logLik,
                                      Rcpp::_["iter"] = res.iterations);
 }
 
@@ -53,6 +54,7 @@ Rcpp::NumericVector mlcauchy_rcpp(const arma::vec &x,
   return Rcpp::NumericVector::create(
     Rcpp::_["mu"]    = res.mu,
     Rcpp::_["scale"] = res.scale,
+    Rcpp::_["logLik"] = res.logLik,
     Rcpp::_["iterations"] = res.iterations
   );
 }
@@ -65,8 +67,9 @@ Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec &x, double tol = 1.220703e-4,
   Rcpp::NumericVector out(3);
   out[0] = res.mu;
   out[1] = res.sigma;
-  out[2] = res.iterations;
-  out.names() = Rcpp::CharacterVector::create("mu", "sigma", "iterations");
+  out[2] = res.logLik;
+  out[3] = res.iterations;
+  out.names() = Rcpp::CharacterVector::create("mu", "sigma", "logLik", "iterations");
   return out;
 }
 
@@ -80,6 +83,7 @@ Rcpp::List mllogis_fast(const arma::vec &x, double tol = 1.220703e-4,
       Rcpp::_["mu"]    = res.mu,
       Rcpp::_["scale"] = res.scale
     ),
+    Rcpp::_["logLik"] = res.logLik,
     Rcpp::_["iterations"] = res.iterations
   );
 }
