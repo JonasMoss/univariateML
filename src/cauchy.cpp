@@ -2,6 +2,8 @@
 #include <RcppArmadillo.h>
 #include <algorithm>
 #include <cmath>
+#include <string>
+#include <variant>
 #include "ml_common.hpp"
 
 struct CauchyResult {
@@ -10,9 +12,11 @@ struct CauchyResult {
   int iterations;
 };
 
-static CauchyResult fit_cauchy(const arma::vec& x, double tol = 1e-8, int maxit = 100) {
+using CauchyOutcome = std::variant<CauchyResult, std::string>;
+
+static CauchyOutcome fit_cauchy(const arma::vec& x, double tol = 1e-8, int maxit = 100) {
   int n = static_cast<int>(x.n_elem);
-  if (n == 0) Rcpp::stop("x must have positive length");
+  if (n == 0) return std::string("x must have positive length");
 
   std::vector<double> data(x.begin(), x.end());
   std::nth_element(data.begin(), data.begin() + n/2, data.end());
@@ -69,11 +73,15 @@ static CauchyResult fit_cauchy(const arma::vec& x, double tol = 1e-8, int maxit 
 Rcpp::NumericVector mlcauchy_rcpp(const arma::vec& x,
                    double tol   = 1e-8,
                    int    maxit = 100) {
-  CauchyResult res = fit_cauchy(x, tol, maxit);
+  CauchyOutcome res = fit_cauchy(x, tol, maxit);
+  if (std::holds_alternative<std::string>(res)) {
+    Rcpp::stop(std::get<std::string>(res));
+  }
+  CauchyResult ok = std::get<CauchyResult>(res);
   Rcpp::NumericVector out = Rcpp::NumericVector::create(
-    Rcpp::_["mu"]    = res.mu,
-    Rcpp::_["scale"] = res.scale,
-    Rcpp::_["iterations"] = res.iterations
+    Rcpp::_["mu"]    = ok.mu,
+    Rcpp::_["scale"] = ok.scale,
+    Rcpp::_["iterations"] = ok.iterations
   );
   return out;
 }

@@ -1,6 +1,8 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include <cmath>
+#include <string>
+#include <variant>
 #include "ml_common.hpp"
 
 struct GumbelResult {
@@ -9,12 +11,18 @@ struct GumbelResult {
   int iterations;
 };
 
+using GumbelOutcome = std::variant<GumbelResult, std::string>;
+
 // Pure C++ core: Newton iterations on log(sigma), then compute mu.
-static GumbelResult fit_gumbel_newton(const arma::vec& x,
-                                      double tol,
-                                      int maxit) {
+static GumbelOutcome fit_gumbel_newton(const arma::vec& x,
+                                       double tol,
+                                       int maxit) {
   const int n = static_cast<int>(x.n_elem);
   const double* xp = x.memptr();
+
+  if (n == 0) {
+    return std::string("x must have positive length");
+  }
 
   double sum_x = 0.0;
   double sum_x2 = 0.0;
@@ -68,11 +76,15 @@ static GumbelResult fit_gumbel_newton(const arma::vec& x,
 Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec& x,
                                    double tol = 1e-8,
                                    int maxit = 100) {
-  GumbelResult res = fit_gumbel_newton(x, tol, maxit);
+  GumbelOutcome res = fit_gumbel_newton(x, tol, maxit);
+  if (std::holds_alternative<std::string>(res)) {
+    Rcpp::stop(std::get<std::string>(res));
+  }
+  GumbelResult ok = std::get<GumbelResult>(res);
   Rcpp::NumericVector out(3);
-  out[0] = res.mu;
-  out[1] = res.sigma;
-  out[2] = res.iterations;
+  out[0] = ok.mu;
+  out[1] = ok.sigma;
+  out[2] = ok.iterations;
   out.names() = Rcpp::CharacterVector::create("mu", "sigma", "iterations");
   return out;
 }

@@ -2,6 +2,8 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include <stdexcept>
+#include <string>
+#include <variant>
 
 namespace {
 
@@ -11,12 +13,14 @@ struct LogisticResult {
   int iterations;
 };
 
-LogisticResult logistic_mle(const arma::vec& x,
-                            double tol,
-                            int maxit) {
+using LogisticOutcome = std::variant<LogisticResult, std::string>;
+
+LogisticOutcome logistic_mle(const arma::vec& x,
+                             double tol,
+                             int maxit) {
   const int n = static_cast<int>(x.n_elem);
   if (n == 0) {
-    throw std::invalid_argument("x must have positive length");
+    return std::string("x must have positive length");
   }
 
   // One-pass mean/variance (Welford)
@@ -74,11 +78,11 @@ LogisticResult logistic_mle(const arma::vec& x,
     theta += dtheta;
 
     if (std::max(std::fabs(dmu), std::fabs(dtheta)) < tol) {
-      return {mu, std::exp(theta), iter + 1};
+      return LogisticResult{mu, std::exp(theta), iter + 1};
     }
   }
 
-  return {mu, std::exp(theta), maxit};
+  return LogisticResult{mu, std::exp(theta), maxit};
 }
 
 } // namespace
@@ -87,13 +91,17 @@ LogisticResult logistic_mle(const arma::vec& x,
 Rcpp::List mllogis_fast(const arma::vec& x,
                         double tol   = 1.490116e-08,
                         int    maxit = 100) {
-  auto res = logistic_mle(x, tol, maxit);
+  LogisticOutcome res = logistic_mle(x, tol, maxit);
+  if (std::holds_alternative<std::string>(res)) {
+    Rcpp::stop(std::get<std::string>(res));
+  }
+  LogisticResult ok = std::get<LogisticResult>(res);
 
   return Rcpp::List::create(
     Rcpp::_["estimates"]  = Rcpp::NumericVector::create(
-      Rcpp::_["mu"]    = res.mu,
-      Rcpp::_["scale"] = res.scale
+      Rcpp::_["mu"]    = ok.mu,
+      Rcpp::_["scale"] = ok.scale
     ),
-    Rcpp::_["iterations"] = res.iterations
+    Rcpp::_["iterations"] = ok.iterations
   );
 }
