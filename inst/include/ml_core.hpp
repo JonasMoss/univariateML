@@ -625,4 +625,35 @@ inline ClosedResult laplace_mle(const arma::vec& x) {
   return {arma::vec({mu, sigma}), logLik};
 }
 
+inline ClosedResult geom_mle(const arma::ivec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  double prob = 1.0 / (arma::mean(arma::conv_to<arma::vec>::from(x)) + 1.0);
+  double logLik = 0.0;
+  for (int i = 0; i < n; ++i) {
+    logLik += Rf_dgeom(static_cast<double>(x[i]), prob, 1);
+  }
+  return {arma::vec({prob}), logLik};
+}
+
+inline ClosedResult pareto_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  double xmin = x.min();
+  if (xmin <= 0.0) return {arma::vec(), NA_REAL};
+  double alpha = n / arma::accu(arma::log(x / xmin));
+  double logLik = n * std::log(alpha) + n * alpha * std::log(xmin) - (alpha + 1.0) * arma::accu(arma::log(x));
+  return {arma::vec({alpha, xmin}), logLik};
+}
+
+inline ClosedResult rayleigh_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  double sigma2 = arma::mean(arma::square(x)) / 2.0;
+  if (sigma2 <= 0.0) return {arma::vec(), NA_REAL};
+  double sigma = std::sqrt(sigma2);
+  double logLik = arma::accu(arma::log(x)) - 2.0 * n * std::log(sigma) - arma::accu(arma::square(x)) / (2.0 * sigma2);
+  return {arma::vec({sigma}), logLik};
+}
+
 } // namespace mlcore

@@ -181,6 +181,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mlgeom_rcpp
+Rcpp::List mlgeom_rcpp(const Rcpp::IntegerVector& x);
+RcppExport SEXP _univariateML_mlgeom_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlgeom_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlpareto_rcpp
+Rcpp::List mlpareto_rcpp(const arma::vec& x);
+RcppExport SEXP _univariateML_mlpareto_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlpareto_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlrayleigh_rcpp
+Rcpp::List mlrayleigh_rcpp(const arma::vec& x);
+RcppExport SEXP _univariateML_mlrayleigh_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlrayleigh_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_burr_lmom", (DL_FUNC) &_univariateML_burr_lmom, 2},
@@ -197,6 +230,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlpois_rcpp", (DL_FUNC) &_univariateML_mlpois_rcpp, 1},
     {"_univariateML_mlnorm_rcpp", (DL_FUNC) &_univariateML_mlnorm_rcpp, 1},
     {"_univariateML_mllaplace_rcpp", (DL_FUNC) &_univariateML_mllaplace_rcpp, 1},
+    {"_univariateML_mlgeom_rcpp", (DL_FUNC) &_univariateML_mlgeom_rcpp, 1},
+    {"_univariateML_mlpareto_rcpp", (DL_FUNC) &_univariateML_mlpareto_rcpp, 1},
+    {"_univariateML_mlrayleigh_rcpp", (DL_FUNC) &_univariateML_mlrayleigh_rcpp, 1},
     {NULL, NULL, 0}
 };
 

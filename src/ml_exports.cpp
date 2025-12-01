@@ -178,3 +178,32 @@ Rcpp::List mllaplace_rcpp(const arma::vec& x) {
     Rcpp::_["logLik"] = res.logLik
   );
 }
+
+// [[Rcpp::export]]
+Rcpp::List mlgeom_rcpp(const Rcpp::IntegerVector& x) {
+  arma::ivec xi = Rcpp::as<arma::ivec>(x);
+  auto res = mlcore::geom_mle(xi);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["prob"] = res.estimates[0]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlpareto_rcpp(const arma::vec& x) {
+  auto res = mlcore::pareto_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["shape"] = res.estimates[0],
+                                                       Rcpp::_["min"] = res.estimates[1]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlrayleigh_rcpp(const arma::vec& x) {
+  auto res = mlcore::rayleigh_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["sigma"] = res.estimates[0]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}

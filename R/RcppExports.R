@@ -57,3 +57,15 @@ mllaplace_rcpp <- function(x) {
     .Call(`_univariateML_mllaplace_rcpp`, x)
 }
 
+mlgeom_rcpp <- function(x) {
+    .Call(`_univariateML_mlgeom_rcpp`, x)
+}
+
+mlpareto_rcpp <- function(x) {
+    .Call(`_univariateML_mlpareto_rcpp`, x)
+}
+
+mlrayleigh_rcpp <- function(x) {
+    .Call(`_univariateML_mlrayleigh_rcpp`, x)
+}
+
