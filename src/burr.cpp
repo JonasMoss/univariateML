@@ -255,6 +255,13 @@ BurrMLE burr_mle_core(const arma::vec &x, double c_start, double tol,
 } // namespace
 
 // [[Rcpp::export]]
+Rcpp::NumericVector burr_lmom(double mu, double sigma2) {
+  auto res = burr_lmom_core(mu, sigma2, true);
+  return Rcpp::NumericVector::create(Rcpp::_["k"] = res.k, Rcpp::_["c"] = res.c,
+                                     Rcpp::_["iter"] = res.iterations);
+}
+
+// [[Rcpp::export]]
 Rcpp::NumericVector
 mlburr_rcpp(const arma::vec &x,
             Rcpp::Nullable<Rcpp::NumericVector> init = R_NilValue,

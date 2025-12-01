@@ -11,6 +11,18 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// burr_lmom
+Rcpp::NumericVector burr_lmom(double mu, double sigma2);
+RcppExport SEXP _univariateML_burr_lmom(SEXP muSEXP, SEXP sigma2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
+    rcpp_result_gen = Rcpp::wrap(burr_lmom(mu, sigma2));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mlburr_rcpp
 Rcpp::NumericVector mlburr_rcpp(const arma::vec& x, Rcpp::Nullable<Rcpp::NumericVector> init, double tol, int maxit);
 RcppExport SEXP _univariateML_mlburr_rcpp(SEXP xSEXP, SEXP initSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
@@ -51,6 +63,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// inverse_digamma
+Rcpp::NumericVector inverse_digamma(Rcpp::NumericVector x);
+RcppExport SEXP _univariateML_inverse_digamma(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(inverse_digamma(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mllogis_fast
 Rcpp::List mllogis_fast(const arma::vec& x, double tol, int maxit);
 RcppExport SEXP _univariateML_mllogis_fast(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
@@ -66,9 +89,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_univariateML_burr_lmom", (DL_FUNC) &_univariateML_burr_lmom, 2},
     {"_univariateML_mlburr_rcpp", (DL_FUNC) &_univariateML_mlburr_rcpp, 4},
     {"_univariateML_mlcauchy_rcpp", (DL_FUNC) &_univariateML_mlcauchy_rcpp, 3},
     {"_univariateML_ml_gumbel_rcpp", (DL_FUNC) &_univariateML_ml_gumbel_rcpp, 3},
+    {"_univariateML_inverse_digamma", (DL_FUNC) &_univariateML_inverse_digamma, 1},
     {"_univariateML_mllogis_fast", (DL_FUNC) &_univariateML_mllogis_fast, 3},
     {NULL, NULL, 0}
 };
