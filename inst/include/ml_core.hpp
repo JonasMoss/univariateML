@@ -483,4 +483,146 @@ inline LogisticResult logistic_mle(const arma::vec& x,
   return {mu, std::exp(theta), maxit};
 }
 
+// ---------- Beta ----------
+struct BetaResult {
+  double alpha;
+  double beta;
+  double logLik;
+  int iterations;
+};
+
+inline BetaResult beta_mle(const arma::vec& x, double tol, int maxit) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  double s = arma::sum(arma::log(x)) / n;
+  double r = arma::sum(arma::log(1.0 - x)) / n;
+  double m = arma::mean(x);
+  double v = arma::mean(arma::square(x)) - m * m;
+
+  double nu = m * (1.0 - m) / v - 1.0;
+  double b  = std::log((1.0 - m) * nu);
+
+  int iter = 0;
+  double alpha = NA_REAL;
+  for (iter = 1; iter <= maxit; ++iter) {
+    double exp_b      = std::exp(b);
+    double digamma_b  = Rf_digamma(exp_b);
+    double trigamma_b = Rf_psigamma(exp_b, 1);
+
+    double y = s + digamma_b - r;
+
+    // invert digamma for a with a few NR steps
+    alpha = 1.0 / std::log1p(std::exp(-y));
+    for (int k = 0; k < 3; ++k) {
+      double ra = Rf_digamma(alpha) - y;
+      alpha    -= ra / Rf_psigamma(alpha, 1);
+    }
+
+    double f  = exp_b * (digamma_b - r - Rf_digamma(alpha + exp_b));
+    double df = f + exp_b * exp_b *
+      (trigamma_b - Rf_psigamma(alpha + exp_b, 1) * (trigamma_b / Rf_psigamma(alpha,1) + 1.0));
+
+    double b0 = b - f / df;
+    if (std::abs((b0 - b) / b0) < tol) {
+      b = b0;
+      break;
+    }
+    b = b0;
+  }
+
+  double beta = std::exp(b);
+  double logLik = n * ((alpha - 1.0) * s + (beta - 1.0) * r - std::lgamma(alpha) - std::lgamma(beta) + std::lgamma(alpha + beta));
+  return {alpha, beta, logLik, iter};
+}
+
+// ---------- Gamma ----------
+struct GammaResult {
+  double shape;
+  double rate;
+  double logLik;
+  int iterations;
+};
+
+inline GammaResult gamma_mle(const arma::vec& x, double tol, int maxit) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  double mean_hat = arma::mean(x);
+  double lx_bar   = arma::mean(arma::log(x));
+  double s        = std::log(mean_hat) - lx_bar;
+
+  auto f_over_df = [s](double shape0) {
+    return (std::log(shape0) - Rf_digamma(shape0) - s) /
+           (1.0 / shape0 - Rf_psigamma(shape0, 1));
+  };
+
+  double shape0 = 1.0 / (12.0 * s) * (3.0 - s + std::sqrt((s - 3.0) * (s - 3.0) + 24.0 * s)) * 0.9989 + 0.0102;
+  double shape  = shape0;
+  int iter = 0;
+  for (iter = 1; iter <= maxit; ++iter) {
+    double step = f_over_df(shape);
+    shape      -= step;
+    if (std::abs(step) < tol) break;
+  }
+  double rate = shape / mean_hat;
+  double logLik = n * (shape * std::log(rate) - std::lgamma(shape) + (shape - 1.0) * lx_bar - rate * mean_hat);
+  return {shape, rate, logLik, iter};
+}
+
+// ---------- Simple closed-form ----------
+struct ClosedResult {
+  arma::vec estimates;
+  double logLik;
+};
+
+inline ClosedResult exp_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  double lambda = 1.0 / arma::mean(x);
+  double logLik = n * std::log(lambda) - lambda * arma::accu(x);
+  return {arma::vec({lambda}), logLik};
+}
+
+inline ClosedResult unif_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  double a = x.min();
+  double b = x.max();
+  if (b <= a) return {arma::vec(), NA_REAL};
+  double logLik = -n * std::log(b - a);
+  return {arma::vec({a, b}), logLik};
+}
+
+inline ClosedResult pois_mle(const arma::ivec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  double lambda = arma::mean(arma::conv_to<arma::vec>::from(x));
+  double logLik = 0.0;
+  for (int i = 0; i < n; ++i) {
+    logLik += Rf_dpois(static_cast<double>(x[i]), lambda, 1);
+  }
+  return {arma::vec({lambda}), logLik};
+}
+
+inline ClosedResult norm_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  double mu = arma::mean(x);
+  double var = arma::accu(arma::square(x - mu)) / n;
+  double sigma = std::sqrt(var);
+  double logLik = -0.5 * n * (std::log(2 * M_PI * var) + 1.0);
+  return {arma::vec({mu, sigma}), logLik};
+}
+
+inline ClosedResult laplace_mle(const arma::vec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {arma::vec(), NA_REAL};
+  arma::vec sorted = arma::sort(x);
+  double mu = sorted[n/2];
+  double sigma = arma::mean(arma::abs(x - mu));
+  double logLik = -n * (1.0 + std::log(2.0 * sigma));
+  return {arma::vec({mu, sigma}), logLik};
+}
+
 } // namespace mlcore

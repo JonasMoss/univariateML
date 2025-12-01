@@ -94,3 +94,87 @@ Rcpp::NumericVector inverse_digamma(Rcpp::NumericVector x) {
   return out;
 }
 
+// Beta
+// [[Rcpp::export]]
+Rcpp::List mlbeta_rcpp(const arma::vec& x, double tol = 1.220703e-4, int maxit = 100) {
+  auto res = mlcore::beta_mle(x, tol, maxit);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["alpha"] = res.alpha,
+      Rcpp::_["beta"]  = res.beta
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlbetapr_rcpp(const arma::vec& x, double tol = 1.220703e-4, int maxit = 100) {
+  // transform to beta on y = x/(x+1)
+  arma::vec y = x / (x + 1.0);
+  return mlbeta_rcpp(y, tol, maxit);
+}
+
+// Gamma
+// [[Rcpp::export]]
+Rcpp::List mlgamma_rcpp(const arma::vec& x, double tol = 1.220703e-4, int maxit = 100) {
+  auto res = mlcore::gamma_mle(x, tol, maxit);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["shape"] = res.shape,
+      Rcpp::_["rate"]  = res.rate
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// Closed-form easy ones
+// [[Rcpp::export]]
+Rcpp::List mlexp_rcpp(const arma::vec& x) {
+  auto res = mlcore::exp_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["rate"] = res.estimates[0]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlunif_rcpp(const arma::vec& x) {
+  auto res = mlcore::unif_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["min"] = res.estimates[0],
+                                                       Rcpp::_["max"] = res.estimates[1]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlpois_rcpp(const Rcpp::IntegerVector& x) {
+  arma::ivec xi = Rcpp::as<arma::ivec>(x);
+  auto res = mlcore::pois_mle(xi);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["lambda"] = res.estimates[0]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlnorm_rcpp(const arma::vec& x) {
+  auto res = mlcore::norm_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["mean"] = res.estimates[0],
+                                                       Rcpp::_["sd"]   = res.estimates[1]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mllaplace_rcpp(const arma::vec& x) {
+  auto res = mlcore::laplace_mle(x);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["mu"] = res.estimates[0],
+                                                       Rcpp::_["sigma"] = res.estimates[1]),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}

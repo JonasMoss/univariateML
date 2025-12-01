@@ -25,3 +25,35 @@ inverse_digamma <- function(x) {
     .Call(`_univariateML_inverse_digamma`, x)
 }
 
+mlbeta_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlbeta_rcpp`, x, tol, maxit)
+}
+
+mlbetapr_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlbetapr_rcpp`, x, tol, maxit)
+}
+
+mlgamma_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlgamma_rcpp`, x, tol, maxit)
+}
+
+mlexp_rcpp <- function(x) {
+    .Call(`_univariateML_mlexp_rcpp`, x)
+}
+
+mlunif_rcpp <- function(x) {
+    .Call(`_univariateML_mlunif_rcpp`, x)
+}
+
+mlpois_rcpp <- function(x) {
+    .Call(`_univariateML_mlpois_rcpp`, x)
+}
+
+mlnorm_rcpp <- function(x) {
+    .Call(`_univariateML_mlnorm_rcpp`, x)
+}
+
+mllaplace_rcpp <- function(x) {
+    .Call(`_univariateML_mllaplace_rcpp`, x)
+}
+
