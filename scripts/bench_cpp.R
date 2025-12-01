@@ -1,34 +1,44 @@
 #!/usr/bin/env Rscript
 
-# Generic benchmarking harness for Rcpp estimator variants.
+# Generic benchmarking harness for Rcpp estimator variants (console output only).
 # Usage:
 #   Rscript scripts/bench_cpp.R --model burr --sizes 50,200,1000 --reps 5
 
 suppressMessages({
-  library(bench)
+  library(microbenchmark)
   library(dplyr)
   library(tidyr)
   library(purrr)
   library(jsonlite)
   library(univariateML)
-  library(readr)
+  library(devtools)
 })
+
+devtools::load_all(quiet = TRUE)
 
 args <- commandArgs(trailingOnly = TRUE)
 get_arg <- function(flag, default = NULL) {
   idx <- which(args == flag)
-  if (length(idx) == 0) return(default)
+  if (length(idx) == 0) {
+    return(default)
+  }
   if (idx == length(args)) stop(sprintf("Missing value for %s", flag))
   args[idx + 1]
 }
 
-model_id <- get_arg("--model", "burr")
-sizes    <- as.numeric(strsplit(get_arg("--sizes", "50,200,1000")[[1]], ",")[[1]])
-reps     <- as.integer(get_arg("--reps", "5"))
-out_path <- get_arg("--out", NA_character_)
+strip_prefix <- function(val, flag) {
+  if (is.null(val) || is.na(val)) return(val)
+  sub(paste0("^", flag, "=?"), "", val)
+}
+
+model_id <- strip_prefix(get_arg("--model", "burr"), "model")
+sizes <- as.numeric(strsplit(strip_prefix(get_arg("--sizes", "50,200,1000"), "sizes"), ",")[[1]])
+reps <- as.integer(strip_prefix(get_arg("--reps", "5"), "reps"))
 
 resolve_fun <- function(qualified) {
-  if (is.null(qualified) || is.na(qualified) || qualified == "") return(NULL)
+  if (is.null(qualified) || is.na(qualified) || qualified == "") {
+    return(NULL)
+  }
   parts <- strsplit(qualified, "::")[[1]]
   if (length(parts) == 2) {
     getExportedValue(parts[1], parts[2])
@@ -38,10 +48,18 @@ resolve_fun <- function(qualified) {
 }
 
 extract_iterations <- function(res) {
-  if (inherits(res, "error")) return(NA_real_)
-  if (is.list(res) && "iterations" %in% names(res)) return(as.numeric(res$iterations))
-  if (is.numeric(res) && "iterations" %in% names(res)) return(as.numeric(res["iterations"]))
-  if (is.numeric(res) && "iter" %in% names(res)) return(as.numeric(res["iter"]))
+  if (inherits(res, "error")) {
+    return(NA_real_)
+  }
+  if (is.list(res) && "iterations" %in% names(res)) {
+    return(as.numeric(res$iterations))
+  }
+  if (is.numeric(res) && "iterations" %in% names(res)) {
+    return(as.numeric(res["iterations"]))
+  }
+  if (is.numeric(res) && "iter" %in% names(res)) {
+    return(as.numeric(res["iter"]))
+  }
   NA_real_
 }
 
@@ -88,23 +106,36 @@ bench_candidates <- function(funcs, generator, sizes, reps, tol, maxit) {
         set.seed(.y)
         generator(.x)
       }),
-      bench = map(data, ~ bench::mark(
-        !!!setNames(
-          lapply(funcs, function(f) {
-            function() run_once(f, .x)
-          }),
-          funcs
-        ),
-        iterations = reps,
-        check = FALSE
-      ))
+      preflight = map(data, ~ {
+        map(funcs, function(f) {
+          res <- run_once(f, .x)
+          tibble(func = f,
+                 ok = !inherits(res, "error"),
+                 iter = extract_iterations(res),
+                 error = if (inherits(res, "error")) conditionMessage(res) else NA_character_)
+        }) %>% bind_rows()
+      }),
+      bench = map2(data, preflight, ~ {
+        ok_funcs <- .y %>% filter(ok) %>% pull(func)
+        if (length(ok_funcs) == 0) return(NULL)
+        exprs <- setNames(lapply(ok_funcs, function(f) {
+          bquote(run_once(.(f), .x))
+        }), ok_funcs)
+        do.call(microbenchmark::microbenchmark,
+                c(exprs, times = reps, unit = "ms"))
+      })
     ) %>%
-    select(size, bench) %>%
-    tidyr::unnest(bench) %>%
-    mutate(
-      iter = map_dbl(result, extract_iterations),
-      error = map_chr(result, ~ if (inherits(.x, "error")) conditionMessage(.x) else NA_character_)
-    )
+    select(size, preflight, bench) %>%
+    mutate(summary = map2(bench, preflight, ~ {
+      if (is.null(.x)) return(NULL)
+      s <- summary(.x)
+      s$expression <- as.character(s$expr)
+      s$iter <- .y$iter[match(s$expression, .y$func)]
+      s$error <- .y$error[match(s$expression, .y$func)]
+      s
+    })) %>%
+    select(size, summary) %>%
+    tidyr::unnest(summary)
 }
 
 model_row <- load_model_meta(model_id)
@@ -112,9 +143,10 @@ gen <- mk_generator(model_row)
 
 detect_funcs <- function(model_id) {
   ns <- asNamespace("univariateML")
-  base <- paste0("ml", model_id, "_rcpp")
-  cands <- ls(ns, pattern = paste0("^", base, "(_.*)?$"))
-  if (length(cands) == 0) stop(sprintf("No Rcpp functions found matching %s in univariateML namespace", base))
+  prefix <- paste0("ml", model_id, "_")
+  patt <- paste0("^(", prefix, "rcpp.*|", prefix, "cpp.*)$")
+  cands <- ls(ns, pattern = patt)
+  if (length(cands) == 0) stop(sprintf("No Rcpp functions found matching %s in univariateML namespace", prefix))
   cands
 }
 
@@ -132,8 +164,12 @@ res <- bench_candidates(
   maxit = maxit_default
 )
 
-if (!is.na(out_path)) {
-  readr::write_csv(res, out_path)
-} else {
-  print(res %>% select(expression, size, median, iter, error, mem_alloc))
+if (nrow(res) == 0) {
+  stop("No successful benchmarks to report.")
 }
+
+out <- res %>%
+  select(expression, size, median, lq, uq, iter, error) %>%
+  arrange(size, expression)
+
+print(out)
