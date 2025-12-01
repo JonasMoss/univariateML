@@ -12,19 +12,24 @@
   - Weibull / InvWeibull
   - InvGamma / InvGauss
   - Lomax
+  - NegBinom
+  - Zip / Zipf
+  - Gompertz
+  - Kumaraswamy
+  - Nakagami
+  - InvBurr
   - inverse_digamma helper
   - Closed-form: exp, unif, pois, norm, laplace, geom, pareto, rayleigh
 
 - Priority ports (start with easy):
-  - **Done**: beta/betapr, gamma/lgamma, binom, lognormal/logit-normal, weibull/invweibull, invgamma/invgauss, lomax, closed-form exp/unif/pois/norm/laplace/geom/pareto/rayleigh.
-  - **Next easy/medium**: mlzip/mlzipf, mlnbinom, gompertz, kumar, weibull/logis variants (nlm), naka, invburr, invweibull refinements, invgauss checks, llogis/logis nlm variant.
+  - **Done**: beta/betapr, gamma/lgamma, binom, lognormal/logit-normal, weibull/invweibull, invgamma/invgauss, lomax, negbinom, zip/zipf, gompertz, kumar, nakagami, invburr, closed-form exp/unif/pois/norm/laplace/geom/pareto/rayleigh.
+  - **Next easy/medium**: mlnbinom checks, llogis/logis nlm variant, naka refinements, any remaining nlm-based variants we still rely on.
 
 - Medium:
   - gompertz (Newton with exp sums)
   - kumar (Newton on a with polygamma)
-  - invgamma, invweibull, invgauss (Newton / transforms)
-  - weibull (Newton on shape)
-  - lomax, naka, nbino
+  - invburr (transform + Newton)
+  - naka, nbino
   - llogis/nlm-based logis; logis uses external nlm
 
 - Hard (external optimizers/other packages):

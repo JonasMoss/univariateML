@@ -81,6 +81,34 @@ mllogitnorm_rcpp <- function(x) {
     .Call(`_univariateML_mllogitnorm_rcpp`, x)
 }
 
+mlzip_rcpp <- function(x) {
+    .Call(`_univariateML_mlzip_rcpp`, x)
+}
+
+mlzipf_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlzipf_rcpp`, x, tol, maxit)
+}
+
+mlnbinom_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlnbinom_rcpp`, x, tol, maxit)
+}
+
+mlnaka_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlnaka_rcpp`, x, tol, maxit)
+}
+
+mlgompertz_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlgompertz_rcpp`, x, tol, maxit)
+}
+
+mlkumar_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlkumar_rcpp`, x, tol, maxit)
+}
+
+mlinvburr_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+    .Call(`_univariateML_mlinvburr_rcpp`, x, tol, maxit)
+}
+
 mlweibull_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mlweibull_rcpp`, x, tol, maxit)
 }

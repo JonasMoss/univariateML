@@ -246,6 +246,128 @@ Rcpp::List mllogitnorm_rcpp(const arma::vec& x) {
 }
 
 // [[Rcpp::export]]
+Rcpp::List mlzip_rcpp(const Rcpp::IntegerVector& x) {
+  arma::ivec xi = Rcpp::as<arma::ivec>(x);
+  auto res = mlcore::zip_mle(xi);
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["lambda"] = res.lambda,
+      Rcpp::_["pi"]     = res.pi
+    ),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlzipf_rcpp(const Rcpp::IntegerVector& x,
+                       double tol = 1.220703e-4,
+                       int maxit = 100) {
+  arma::ivec xi = Rcpp::as<arma::ivec>(x);
+  auto res = mlcore::zipf_mle(xi, tol, maxit);
+  if (!std::isfinite(res.shape)) {
+    Rcpp::stop("Zipf MLE failed to converge (check data)");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["N"]     = res.N,
+      Rcpp::_["shape"] = res.shape
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlnbinom_rcpp(const Rcpp::IntegerVector& x,
+                         double tol = 1.220703e-4,
+                         int maxit = 100) {
+  arma::ivec xi = Rcpp::as<arma::ivec>(x);
+  auto res = mlcore::nbinom_mle(xi, tol, maxit);
+  if (!std::isfinite(res.size) || !std::isfinite(res.prob)) {
+    Rcpp::stop("Negative binomial MLE failed (check dispersion/inputs)");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["size"] = res.size,
+      Rcpp::_["prob"] = res.prob
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlnaka_rcpp(const arma::vec& x,
+                       double tol = 1.220703e-4,
+                       int maxit = 100) {
+  auto res = mlcore::naka_mle(x, tol, maxit);
+  if (!std::isfinite(res.shape) || !std::isfinite(res.scale)) {
+    Rcpp::stop("Nakagami MLE failed");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["shape"] = res.shape,
+      Rcpp::_["scale"] = res.scale
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlgompertz_rcpp(const arma::vec& x,
+                           double tol = 1.220703e-4,
+                           int maxit = 100) {
+  auto res = mlcore::gompertz_mle(x, tol, maxit);
+  if (!std::isfinite(res.a) || !std::isfinite(res.b)) {
+    Rcpp::stop("Gompertz MLE failed");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["a"] = res.a,
+      Rcpp::_["b"] = res.b
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlkumar_rcpp(const arma::vec& x,
+                        double tol = 1.220703e-4,
+                        int maxit = 100) {
+  auto res = mlcore::kumar_mle(x, tol, maxit);
+  if (!std::isfinite(res.a) || !std::isfinite(res.b)) {
+    Rcpp::stop("Kumaraswamy MLE failed");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["a"] = res.a,
+      Rcpp::_["b"] = res.b
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+
+// [[Rcpp::export]]
+Rcpp::List mlinvburr_rcpp(const arma::vec& x,
+                          double tol = 1.220703e-4,
+                          int maxit = 100) {
+  auto res = mlcore::invburr_mle(x, tol, maxit);
+  if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2)) {
+    Rcpp::stop("Inverse Burr MLE failed");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+      Rcpp::_["shape1"] = res.shape1,
+      Rcpp::_["shape2"] = res.shape2
+    ),
+    Rcpp::_["logLik"] = res.logLik,
+    Rcpp::_["iterations"] = res.iterations
+  );
+}
+// [[Rcpp::export]]
 Rcpp::List mlweibull_rcpp(const arma::vec& x,
                           double tol = 1.220703e-4,
                           int maxit = 100) {

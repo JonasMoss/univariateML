@@ -249,6 +249,95 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mlzip_rcpp
+Rcpp::List mlzip_rcpp(const Rcpp::IntegerVector& x);
+RcppExport SEXP _univariateML_mlzip_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlzip_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlzipf_rcpp
+Rcpp::List mlzipf_rcpp(const Rcpp::IntegerVector& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlzipf_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlzipf_rcpp(x, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlnbinom_rcpp
+Rcpp::List mlnbinom_rcpp(const Rcpp::IntegerVector& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlnbinom_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlnbinom_rcpp(x, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlnaka_rcpp
+Rcpp::List mlnaka_rcpp(const arma::vec& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlnaka_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlnaka_rcpp(x, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlgompertz_rcpp
+Rcpp::List mlgompertz_rcpp(const arma::vec& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlgompertz_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlgompertz_rcpp(x, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlkumar_rcpp
+Rcpp::List mlkumar_rcpp(const arma::vec& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlkumar_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlkumar_rcpp(x, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mlinvburr_rcpp
+Rcpp::List mlinvburr_rcpp(const arma::vec& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlinvburr_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlinvburr_rcpp(x, tol, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mlweibull_rcpp
 Rcpp::List mlweibull_rcpp(const arma::vec& x, double tol, int maxit);
 RcppExport SEXP _univariateML_mlweibull_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
@@ -334,6 +423,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlbinom_rcpp", (DL_FUNC) &_univariateML_mlbinom_rcpp, 3},
     {"_univariateML_mllnorm_rcpp", (DL_FUNC) &_univariateML_mllnorm_rcpp, 1},
     {"_univariateML_mllogitnorm_rcpp", (DL_FUNC) &_univariateML_mllogitnorm_rcpp, 1},
+    {"_univariateML_mlzip_rcpp", (DL_FUNC) &_univariateML_mlzip_rcpp, 1},
+    {"_univariateML_mlzipf_rcpp", (DL_FUNC) &_univariateML_mlzipf_rcpp, 3},
+    {"_univariateML_mlnbinom_rcpp", (DL_FUNC) &_univariateML_mlnbinom_rcpp, 3},
+    {"_univariateML_mlnaka_rcpp", (DL_FUNC) &_univariateML_mlnaka_rcpp, 3},
+    {"_univariateML_mlgompertz_rcpp", (DL_FUNC) &_univariateML_mlgompertz_rcpp, 3},
+    {"_univariateML_mlkumar_rcpp", (DL_FUNC) &_univariateML_mlkumar_rcpp, 3},
+    {"_univariateML_mlinvburr_rcpp", (DL_FUNC) &_univariateML_mlinvburr_rcpp, 3},
     {"_univariateML_mlweibull_rcpp", (DL_FUNC) &_univariateML_mlweibull_rcpp, 3},
     {"_univariateML_mlinvweibull_rcpp", (DL_FUNC) &_univariateML_mlinvweibull_rcpp, 3},
     {"_univariateML_mlinvgamma_rcpp", (DL_FUNC) &_univariateML_mlinvgamma_rcpp, 3},

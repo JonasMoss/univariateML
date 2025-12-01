@@ -909,4 +909,384 @@ inline LomaxResult lomax_mle(const arma::vec& x,
   return {lambda, kappa, logLik, iter};
 }
 
+// ---------- Zero-inflated Poisson ----------
+struct ZipResult {
+  double lambda;
+  double pi;
+  double logLik;
+};
+
+inline double lambertw0(double z, double tol = 1e-12, int maxit = 30) {
+  // Principal branch, z in [-1/e, 0]
+  if (z == 0.0) return 0.0;
+  double w;
+  if (std::abs(z) < 1e-3) {
+    // series approximation
+    w = z - z * z + 1.5 * z * z * z;
+  } else {
+    w = std::log(-z);
+  }
+  for (int i = 0; i < maxit; ++i) {
+    const double e = std::exp(w);
+    const double f = w * e - z;
+    const double p = w + 1.0;
+    const double t = (p > 0.0) ? (f / (e * p)) : f / (e * p);
+    const double step = t * (1.0 + 0.5 * t * (w + 2.0) / p);
+    w -= step;
+    if (std::abs(step) < (std::abs(w) * tol + tol)) break;
+  }
+  return w;
+}
+
+inline ZipResult zip_mle(const arma::ivec& x) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL};
+
+  const double r0     = arma::mean(arma::conv_to<arma::vec>::from(x == 0));
+  const double x_bar  = arma::mean(arma::conv_to<arma::vec>::from(x));
+
+  double lambda = 0.0;
+  double pi     = 0.0;
+
+  if (r0 == 1.0) {
+    lambda = 1.0;
+    pi     = 1.0;
+  } else if (r0 > std::exp(-x_bar)) {
+    const double gamma = x_bar / (1.0 - r0);
+    const double z     = -gamma * std::exp(-gamma);
+    const double w     = lambertw0(z);
+    lambda = w + gamma;
+    pi     = (r0 - std::exp(-lambda)) / (1.0 - std::exp(-lambda));
+  } else {
+    pi     = 0.0;
+    lambda = x_bar;
+  }
+
+  double logLik = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const int xi = x[i];
+    if (xi == 0) {
+      logLik += std::log(pi + (1.0 - pi) * std::exp(-lambda));
+    } else {
+      logLik += std::log(1.0 - pi) + xi * std::log(lambda) - lambda - std::lgamma(xi + 1.0);
+    }
+  }
+
+  return {lambda, pi, logLik};
+}
+
+// ---------- Zipf ----------
+struct ZipfResult {
+  double N;
+  double shape;
+  double logLik;
+  int iterations;
+};
+
+inline ZipfResult zipf_mle(const arma::ivec& x,
+                           double tol = kTolDefault,
+                           int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  const int N = x.max();
+  arma::vec seq = arma::regspace<arma::vec>(1, N);
+  arma::vec log_seq = arma::log(seq);
+  arma::vec log_seq2 = arma::square(log_seq);
+  arma::vec div_seq = 1.0 / seq;
+
+  const double sum_lx = arma::accu(arma::log(arma::conv_to<arma::vec>::from(x)));
+  if (sum_lx == 0.0) {
+    return {static_cast<double>(N), 1.0, 0.0, 0};
+  }
+
+  auto f_over_df = [&](double shape0) {
+    arma::vec pow = arma::pow(div_seq, shape0);
+    const double sum_shape   = arma::accu(pow);
+    const double sum_log_hs  = arma::dot(pow, log_seq);
+    const double sum_log2_hs = arma::dot(pow, log_seq2);
+    const double top    = sum_log_hs / sum_shape;
+    const double bottom = -static_cast<double>(n) * sum_log2_hs / sum_shape +
+                          static_cast<double>(n) * top * top;
+    return (static_cast<double>(n) * top - sum_lx) / bottom;
+  };
+
+  double shape = 1.0;
+  int iter = 0;
+  for (iter = 1; iter <= maxit; ++iter) {
+    double step = f_over_df(shape);
+    shape -= step;
+    if (shape < 0.0 || !std::isfinite(shape)) break;
+    if (std::abs(step) < (std::abs(shape) * tol + tol)) break;
+  }
+  if (shape < 0.0) {
+    return {static_cast<double>(N), NA_REAL, NA_REAL, iter};
+  }
+
+  arma::vec pow = arma::pow(div_seq, shape);
+  const double logLik = -shape * sum_lx - static_cast<double>(n) * std::log(arma::accu(pow));
+  return {static_cast<double>(N), shape, logLik, iter};
+}
+
+// ---------- Negative binomial ----------
+struct NbinomResult {
+  double size;
+  double prob;
+  double logLik;
+  int iterations;
+};
+
+inline NbinomResult nbinom_mle(const arma::ivec& x,
+                               double tol = kTolDefault,
+                               int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  const double x_bar = arma::mean(arma::conv_to<arma::vec>::from(x));
+  if (x_bar == 0.0) {
+    return {1.0, 0.5, 0.0, 0};
+  }
+
+  const double var_hat = arma::var(arma::conv_to<arma::vec>::from(x), 1);
+  if (var_hat < x_bar) {
+    return {NA_REAL, NA_REAL, NA_REAL, 0};
+  }
+
+  arma::ivec uniq = arma::unique(x);
+  arma::ivec counts(uniq.n_elem, arma::fill::zeros);
+  for (arma::uword i = 0; i < uniq.n_elem; ++i) {
+    counts[i] = arma::accu(x == uniq[i]);
+  }
+
+  auto log_likelihood = [&](double size) {
+    double prob = size / (x_bar + size);
+    double ll = 0.0;
+    for (arma::uword i = 0; i < uniq.n_elem; ++i) {
+      double xi = static_cast<double>(uniq[i]);
+      ll += counts[i] * (Rf_lgammafn(xi + size) - Rf_lgammafn(xi + 1.0));
+    }
+    ll -= static_cast<double>(n) * Rf_lgammafn(size);
+    ll += static_cast<double>(n) * size * std::log(prob);
+    ll += static_cast<double>(n) * std::log(1.0 - prob) * x_bar;
+    return ll;
+  };
+
+  auto f_over_df = [&](double size) {
+    const double prob  = size / (x_bar + size);
+    const double dprob = x_bar / (size * size + x_bar * size);
+
+    double f  = 0.0;
+    double df = 0.0;
+    for (arma::uword i = 0; i < uniq.n_elem; ++i) {
+      double arg = size + static_cast<double>(uniq[i]);
+      f  += counts[i] * Rf_digamma(arg);
+      df += counts[i] * Rf_psigamma(arg, 1);
+    }
+    f  -= static_cast<double>(n) * Rf_digamma(size);
+    df -= static_cast<double>(n) * Rf_psigamma(size, 1);
+    f  += static_cast<double>(n) * std::log(prob);
+    df += static_cast<double>(n) * dprob;
+    return f / df;
+  };
+
+  double size = (x_bar * x_bar) / (var_hat - x_bar);
+  int iter = 0;
+  for (iter = 1; iter <= maxit; ++iter) {
+    double step = f_over_df(size);
+    size -= step;
+    if (size <= 0.0 || !std::isfinite(size)) {
+      return {NA_REAL, NA_REAL, NA_REAL, iter};
+    }
+    if (std::abs(step) < (std::abs(size) * tol + tol)) break;
+  }
+
+  const double prob = size / (x_bar + size);
+  const double ll   = log_likelihood(size);
+  return {size, prob, ll, iter};
+}
+
+// ---------- Nakagami ----------
+struct NakaResult {
+  double shape;
+  double scale;
+  double logLik;
+  int iterations;
+};
+
+inline NakaResult naka_mle(const arma::vec& x,
+                           double tol = kTolDefault,
+                           int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+  arma::vec x2 = arma::square(x);
+  GammaResult g = gamma_mle(x2, tol, maxit);
+  double shape = g.shape;
+  double scale = (shape / g.rate);
+
+  const double logLik =
+    static_cast<double>(n) * (shape * std::log(shape) + std::log(2.0) -
+    std::lgamma(shape) - shape * std::log(scale)) +
+    (2.0 * shape - 1.0) * arma::accu(arma::log(x)) -
+    (shape / scale) * arma::accu(x2);
+
+  return {shape, scale, logLik, g.iterations};
+}
+
+// ---------- Gompertz ----------
+struct GompertzResult {
+  double a;
+  double b;
+  double logLik;
+  int iterations;
+};
+
+inline GompertzResult gompertz_mle(const arma::vec& x,
+                                   double tol = kTolDefault,
+                                   int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  const double x_sum = arma::accu(x);
+  const double x_var = arma::var(x, 1);
+  if (x_sum / static_cast<double>(n) < std::sqrt(x_var)) {
+    return {NA_REAL, NA_REAL, NA_REAL, 0};
+  }
+
+  auto f_over_df = [&](double b) {
+    arma::vec exp_bx = arma::exp(b * x);
+    const double sum_bx   = arma::accu(exp_bx);
+    const double sum_bx_x = arma::dot(x, exp_bx);
+    const double sum_bx_x2 = arma::dot(arma::square(x), exp_bx);
+
+    const double s  = sum_bx - static_cast<double>(n);
+    const double r  = b * sum_bx_x - s;
+
+    const double a  = b * static_cast<double>(n) / s;
+    const double da = -static_cast<double>(n) * r / (s * s);
+    const double d2a = static_cast<double>(n) / (s * s) *
+      (b * (2.0 * sum_bx_x * sum_bx_x / s - sum_bx_x2) - 2.0 * sum_bx_x);
+
+    const double f  = static_cast<double>(n) * da / a + x_sum;
+    const double df = static_cast<double>(n) * (a * d2a - da * da) / (a * a);
+    return f / df;
+  };
+
+  double b = 1e-1;
+  int iter = 0;
+  for (iter = 1; iter <= maxit; ++iter) {
+    double step = f_over_df(b);
+    b -= step;
+    if (b <= 0.0 || !std::isfinite(b)) {
+      return {NA_REAL, NA_REAL, NA_REAL, iter};
+    }
+    if (std::abs(step) < (std::abs(b) * tol + tol)) break;
+  }
+
+  arma::vec exp_bx = arma::exp(b * x);
+  const double a = b * static_cast<double>(n) / (arma::accu(exp_bx) - static_cast<double>(n));
+  const double logLik = static_cast<double>(n) * std::log(a) +
+    b * arma::accu(x) -
+    (a / b) * (arma::accu(exp_bx) - static_cast<double>(n));
+  return {a, b, logLik, iter};
+}
+
+// ---------- Kumaraswamy ----------
+struct KumarResult {
+  double a;
+  double b;
+  double logLik;
+  int iterations;
+};
+
+inline KumarResult kumar_mle(const arma::vec& x,
+                             double tol = kTolDefault,
+                             int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  const double mu = arma::mean(arma::log(x));
+  const double sigma2 = arma::mean(arma::square(arma::log(x))) - mu * mu;
+
+  auto f_over_df_lmom = [&](double a0) {
+    const double b = inverse_digamma_scalar(-0.5772156649015328606 - a0 * mu);
+    const double tri = Rf_psigamma(b, 1);
+    const double tetra = Rf_psigamma(b, 2);
+    const double basel = M_PI * M_PI / 6.0;
+    const double f = a0 * tri * (basel - tri - a0 * a0 * sigma2);
+    const double df = a0 * tetra * mu - 2.0 * tri * (basel + tri);
+    return f / df;
+  };
+
+  double a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
+  for (int i = 0; i < maxit; ++i) {
+    const double step = f_over_df_lmom(a0);
+    a0 -= step;
+    if (std::abs(step) < (std::abs(a0) * tol + tol)) break;
+  }
+  if (a0 <= 0.0) a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
+
+  auto f_over_df = [&](double a) {
+    arma::vec xa = arma::exp(a * arma::log(x));
+    arma::vec z  = arma::log(x) / (1.0 - xa);
+
+    const double alpha = arma::mean(arma::log1p(-xa));
+    const double beta  = arma::mean(xa % z);
+    const double gamma = arma::mean(xa % arma::square(z));
+
+    const double f  = 1.0 / a + mu + (1.0 / alpha + 1.0) * beta;
+    const double df = -1.0 / (a * a) + (gamma * alpha + beta * beta) / (alpha * alpha) + gamma;
+    return f / df;
+  };
+
+  double a = a0;
+  int iter = 0;
+  for (iter = 1; iter <= maxit; ++iter) {
+    double step = f_over_df(a);
+    a -= step;
+    if (a <= 0.0 || !std::isfinite(a)) {
+      return {NA_REAL, NA_REAL, NA_REAL, iter};
+    }
+    if (std::abs(step) < (std::abs(a) * tol + tol)) break;
+  }
+
+  const double b = -static_cast<double>(n) / arma::accu(arma::log1p(-arma::pow(x, a)));
+  const double logLik = static_cast<double>(n) * (std::log(a) + std::log(b)) +
+    (a - 1.0) * arma::accu(arma::log(x)) + (b - 1.0) * arma::accu(arma::log1p(-arma::pow(x, a)));
+
+  return {a, b, logLik, iter};
+}
+
+// ---------- Inverse Burr ----------
+struct InvBurrResult {
+  double shape1;
+  double shape2;
+  double logLik;
+  int iterations;
+};
+
+inline InvBurrResult invburr_mle(const arma::vec& x,
+                                 double tol = kTolDefault,
+                                 int maxit = kMaxIterDefault) {
+  const int n = static_cast<int>(x.n_elem);
+  if (n == 0) return {0.0, 0.0, NA_REAL, 0};
+
+  arma::vec invx = 1.0 / x;
+  double m1 = arma::mean(arma::log(invx));
+  double m2 = arma::var(arma::log(invx), 1);
+
+  BurrLmomResult init = burr_lmom_core(m1, m2, true);
+  if (!std::isfinite(init.c) || init.c <= 0.0) {
+    return {NA_REAL, NA_REAL, NA_REAL, 0};
+  }
+  BurrMLE res = burr_mle_core(invx, init.c, tol, maxit);
+
+  const double c = res.shape1;
+  const double k = res.shape2;
+  const double logLik = static_cast<double>(n) * (std::log(c * k))
+    - (c + 1.0) * arma::accu(arma::log(x))
+    - (k + 1.0) * arma::accu(arma::log1p(arma::pow(x, -c)));
+
+  return {c, k, logLik, res.iterations};
+}
+
 } // namespace mlcore
