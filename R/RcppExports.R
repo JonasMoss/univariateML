@@ -21,31 +21,31 @@ burr_lmom <- function(mu, sigma2) {
     .Call(`_univariateML_burr_lmom`, mu, sigma2)
 }
 
-mlburr_rcpp2 <- function(x, tol = 1.220703e-4, max_iter = 100L) {
-    .Call(`_univariateML_mlburr_rcpp2`, x, tol, max_iter)
+mlburr_rcpp2 <- function(x, tol, maxit) {
+    .Call(`_univariateML_mlburr_rcpp2`, x, tol, maxit)
 }
 
-mlburr_rcpp <- function(x, init = NULL, tol = 1.220703e-4, max_iter = 100L) {
-    .Call(`_univariateML_mlburr_rcpp`, x, init, tol, max_iter)
+mlburr_rcpp <- function(x, init = NULL, tol, maxit) {
+    .Call(`_univariateML_mlburr_rcpp`, x, init, tol, maxit)
 }
 
-mlcauchy_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+mlcauchy_rcpp <- function(x, tol, maxit) {
     .Call(`_univariateML_mlcauchy_rcpp`, x, tol, maxit)
 }
 
-ml_gumbel_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
+ml_gumbel_rcpp <- function(x, tol, maxit) {
     .Call(`_univariateML_ml_gumbel_rcpp`, x, tol, maxit)
 }
 
-logmom1_c <- function(mu, sigma2, tol = 1.220703e-4, max_iter = 100L) {
-    .Call(`_univariateML_logmom1_c`, mu, sigma2, tol, max_iter)
+logmom1_c <- function(mu, sigma2, tol, maxit) {
+    .Call(`_univariateML_logmom1_c`, mu, sigma2, tol, maxit)
 }
 
-mlburr_cpp <- function(x, tol = 1.220703e-4, max_iter = 100L) {
-    .Call(`_univariateML_mlburr_cpp`, x, tol, max_iter)
+mlburr_cpp <- function(x, tol, maxit) {
+    .Call(`_univariateML_mlburr_cpp`, x, tol, maxit)
 }
 
-mllogis_fast <- function(x, tol = 1.220703e-4, maxit = 100L) {
+mllogis_fast <- function(x, tol, maxit) {
     .Call(`_univariateML_mllogis_fast`, x, tol, maxit)
 }
 

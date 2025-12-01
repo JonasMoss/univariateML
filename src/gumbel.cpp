@@ -15,8 +15,8 @@ using GumbelOutcome = std::variant<GumbelResult, std::string>;
 
 // Pure C++ core: Newton iterations on log(sigma), then compute mu.
 static GumbelOutcome fit_gumbel_newton(const arma::vec& x,
-                                       double tol,
-                                       int maxit) {
+                                       double tol = kTolDefault,
+                                       int maxit  = kMaxIterDefault) {
   const int n = static_cast<int>(x.n_elem);
   const double* xp = x.memptr();
 
@@ -26,8 +26,7 @@ static GumbelOutcome fit_gumbel_newton(const arma::vec& x,
 
   double sum_x = 0.0;
   double sum_x2 = 0.0;
-  for (int i = 0; i < n; ++i) {
-    double xi = xp[i];
+  for (double xi : x) {
     sum_x  += xi;
     sum_x2 += xi * xi;
   }
@@ -74,8 +73,8 @@ static GumbelOutcome fit_gumbel_newton(const arma::vec& x,
 
 // [[Rcpp::export]]
 Rcpp::NumericVector ml_gumbel_rcpp(const arma::vec& x,
-                                   double tol = 1.220703e-4,
-                                   int maxit = 100) {
+                                   double tol = kTolDefault,
+                                   int maxit = kMaxIterDefault) {
   GumbelOutcome res = fit_gumbel_newton(x, tol, maxit);
   if (std::holds_alternative<std::string>(res)) {
     Rcpp::stop(std::get<std::string>(res));

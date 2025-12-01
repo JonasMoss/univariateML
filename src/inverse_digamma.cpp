@@ -122,15 +122,15 @@ BurrMLE burr_mle_from_c(const arma::vec& x,
 
 // [[Rcpp::export]]
 double logmom1_c(double mu, double sigma2,
-                 double tol = 1.220703e-4,
-                 int max_iter = 100) {
-  return logmom1_c_core(mu, sigma2, tol, max_iter);
+                 double tol = kTolDefault,
+                 int maxit = kMaxIterDefault) {
+  return logmom1_c_core(mu, sigma2, tol, maxit);
 }
 
 // [[Rcpp::export]]
 Rcpp::NumericVector mlburr_cpp(const arma::vec& x,
-                               double tol = 1.220703e-4,
-                               int max_iter = 100) {
+                               double tol = kTolDefault,
+                               int maxit = kMaxIterDefault) {
   const double nd = static_cast<double>(x.n_elem);
   arma::vec log_x = arma::log(x);
   double m1 = arma::accu(log_x) / nd;
@@ -138,9 +138,9 @@ Rcpp::NumericVector mlburr_cpp(const arma::vec& x,
 
   double c_start = (m1 * m1 > m2 && m1 > 0)
     ? PI_C / std::sqrt(3 * m2)
-    : logmom1_c_core(m1, m2, tol, max_iter);
+    : logmom1_c_core(m1, m2, tol, maxit);
 
-  auto res = burr_mle_from_c(x, c_start, tol, max_iter);
+  auto res = burr_mle_from_c(x, c_start, tol, maxit);
   Rcpp::NumericVector out = Rcpp::NumericVector::create(res.shape1, res.shape2);
   out.names() = Rcpp::CharacterVector::create("shape1", "shape2");
   return out;

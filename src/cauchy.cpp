@@ -14,7 +14,7 @@ struct CauchyResult {
 
 using CauchyOutcome = std::variant<CauchyResult, std::string>;
 
-static CauchyOutcome fit_cauchy(const arma::vec& x, double tol = 1.220703e-4, int maxit = 100) {
+static CauchyOutcome fit_cauchy(const arma::vec& x, double tol = kTolDefault, int maxit = kMaxIterDefault) {
   int n = static_cast<int>(x.n_elem);
   if (n == 0) return std::string("x must have positive length");
 
@@ -71,8 +71,8 @@ static CauchyOutcome fit_cauchy(const arma::vec& x, double tol = 1.220703e-4, in
 
 // [[Rcpp::export]]
 Rcpp::NumericVector mlcauchy_rcpp(const arma::vec& x,
-                   double tol   = 1.220703e-4,
-                   int    maxit = 100) {
+                   double tol   = kTolDefault,
+                   int    maxit = kMaxIterDefault) {
   CauchyOutcome res = fit_cauchy(x, tol, maxit);
   if (std::holds_alternative<std::string>(res)) {
     Rcpp::stop(std::get<std::string>(res));

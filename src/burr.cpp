@@ -29,7 +29,9 @@ struct RootResult {
   int iterations;
 };
 
-RootResult invert_lower_logit(double cv) {
+RootResult invert_lower_logit(double cv,
+                              double tol = kTolDefault,
+                              int maxit  = kMaxIterDefault) {
   const double loc   = -0.5495872;
   const double scl   = 0.6103216;
   const double cv_lo = 0.1;
@@ -49,9 +51,6 @@ RootResult invert_lower_logit(double cv) {
   k0 = std::min(1.0 - eps, std::max(eps, k0));
 
   double x = logit(k0);
-  const double reltol = kTolDefault;
-  const int    maxit  = kMaxIterDefault;
-
   int iter = 0;
   for (; iter < maxit; ++iter) {
     double k     = logistic(x);
@@ -68,7 +67,7 @@ RootResult invert_lower_logit(double cv) {
 
     double step = f / df;
     double x1   = x - step;
-    if (std::abs(x1 - x) < (std::abs(x) * reltol + 1e-3 * reltol)) {
+    if (std::abs(x1 - x) < (std::abs(x) * tol + 1e-3 * tol)) {
       x = x1;
       break;
     }
@@ -78,7 +77,9 @@ RootResult invert_lower_logit(double cv) {
   return {logistic(x), iter + 1};
 }
 
-RootResult invert_lower_log(double cv) {
+RootResult invert_lower_log(double cv,
+                            double tol = kTolDefault,
+                            int maxit  = kMaxIterDefault) {
   const double loc   = -0.5495872;
   const double scl   = 0.6103216;
   const double cv_lo = 0.1;
@@ -98,9 +99,6 @@ RootResult invert_lower_log(double cv) {
   k0 = std::max(eps, std::min(1.0 - eps, k0));
 
   double p         = std::log(k0);
-  const double rel = kTolDefault;
-  const int    maxit = kMaxIterDefault;
-
   int iter = 0;
   for (; iter < maxit; ++iter) {
     double k     = std::exp(p);
@@ -117,7 +115,7 @@ RootResult invert_lower_log(double cv) {
 
     double step = f / dfp;
     double p1   = p - step;
-    if (std::abs(p1 - p) < (std::abs(p) * rel + 1e-3 * rel)) {
+    if (std::abs(p1 - p) < (std::abs(p) * tol + 1e-3 * tol)) {
       p = p1;
       break;
     }
@@ -127,7 +125,9 @@ RootResult invert_lower_log(double cv) {
   return {std::exp(p), iter + 1};
 }
 
-RootResult invert_upper(double cv) {
+RootResult invert_upper(double cv,
+                        double tol = kTolDefault,
+                        int maxit  = kMaxIterDefault) {
   const double thr = 0.2;
   const double eps = 1e-9;
 
@@ -140,9 +140,6 @@ RootResult invert_upper(double cv) {
   k0 = std::max(1.0 + eps, k0);
 
   double x = std::log(k0 - 1.0);
-  const double reltol = kTolDefault;
-  const int    maxit  = kMaxIterDefault;
-
   int iter = 0;
   for (; iter < maxit; ++iter) {
     double kk    = std::exp(x) + 1.0;
@@ -159,7 +156,7 @@ RootResult invert_upper(double cv) {
 
     double step = f / df;
     double x1   = x - step;
-    if (std::abs(x1 - x) < (std::abs(x) * reltol + 1e-3 * reltol)) {
+    if (std::abs(x1 - x) < (std::abs(x) * tol + 1e-3 * tol)) {
       x = x1;
       break;
     }
@@ -216,7 +213,7 @@ struct BurrMLE {
 BurrMLE burr_mle_core(const arma::vec& x,
                       double c_start,
                       double tol,
-                      int max_iter) {
+                      int maxit) {
   const int    n   = static_cast<int>(x.n_elem);
   const double nd  = static_cast<double>(n);
   arma::vec    log_x = arma::log(x);
@@ -225,7 +222,7 @@ BurrMLE burr_mle_core(const arma::vec& x,
 
   double logc = std::log(c_start);
   int iter = 0;
-  for (; iter < max_iter; ++iter) {
+  for (; iter < maxit; ++iter) {
     double c = std::exp(logc);
 
     double g = 0.0, dg = 0.0, d2g1 = 0.0, d2g2 = 0.0;
@@ -261,7 +258,7 @@ BurrMLE burr_mle_core(const arma::vec& x,
   double g_final = arma::sum(arma::log1p(xc_final));
   double k = nd / g_final;
 
-  return {k, c, (iter == max_iter ? max_iter : iter)};
+  return {k, c, (iter == maxit ? maxit : iter)};
 }
 
 } // namespace
@@ -315,8 +312,8 @@ Rcpp::NumericVector burr_lmom(double mu, double sigma2) {
 
 // [[Rcpp::export]]
 Rcpp::NumericVector mlburr_rcpp2(const arma::vec& x,
-                                 double tol = 1.220703e-4,
-                                 int max_iter = 100) {
+                                 double tol = kTolDefault,
+                                 int maxit = kMaxIterDefault) {
   const double nd    = static_cast<double>(x.n_elem);
   arma::vec log_x    = arma::log(x);
   double m1          = arma::accu(log_x) / nd;
@@ -327,7 +324,7 @@ Rcpp::NumericVector mlburr_rcpp2(const arma::vec& x,
     Rcpp::stop("Failed to compute starting value for c");
   }
 
-  auto res = burr_mle_core(x, c0, tol, max_iter);
+  auto res = burr_mle_core(x, c0, tol, maxit);
   Rcpp::NumericVector out = Rcpp::NumericVector::create(res.shape1, res.shape2);
   out.names() = Rcpp::CharacterVector::create("shape1", "shape2");
   return out;
@@ -336,8 +333,8 @@ Rcpp::NumericVector mlburr_rcpp2(const arma::vec& x,
 // [[Rcpp::export]]
 Rcpp::NumericVector mlburr_rcpp(const arma::vec& x,
                                 Rcpp::Nullable<Rcpp::NumericVector> init = R_NilValue,
-                                double tol = 1.220703e-4,
-                                int max_iter = 100) {
+                                double tol = kTolDefault,
+                                int maxit = kMaxIterDefault) {
   const double nd    = static_cast<double>(x.n_elem);
   arma::vec log_x    = arma::log(x);
   double m1          = arma::accu(log_x) / nd;
@@ -357,7 +354,7 @@ Rcpp::NumericVector mlburr_rcpp(const arma::vec& x,
     }
   }
 
-  auto res = burr_mle_core(x, c0, tol, max_iter);
+  auto res = burr_mle_core(x, c0, tol, maxit);
   return Rcpp::NumericVector::create(
     Rcpp::_["shape1"] = res.shape1,
     Rcpp::_["shape2"] = res.shape2,

@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <variant>
+#include "ml_common.hpp"
 
 namespace {
 
@@ -89,8 +90,8 @@ LogisticOutcome logistic_mle(const arma::vec& x,
 
 // [[Rcpp::export]]
 Rcpp::List mllogis_fast(const arma::vec& x,
-                        double tol   = 1.220703e-4,
-                        int    maxit = 100) {
+                        double tol   = kTolDefault,
+                        int    maxit = kMaxIterDefault) {
   LogisticOutcome res = logistic_mle(x, tol, maxit);
   if (std::holds_alternative<std::string>(res)) {
     Rcpp::stop(std::get<std::string>(res));

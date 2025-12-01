@@ -69,29 +69,29 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlburr_rcpp2
-Rcpp::NumericVector mlburr_rcpp2(const arma::vec& x, double tol, int max_iter);
-RcppExport SEXP _univariateML_mlburr_rcpp2(SEXP xSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+Rcpp::NumericVector mlburr_rcpp2(const arma::vec& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlburr_rcpp2(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(mlburr_rcpp2(x, tol, max_iter));
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlburr_rcpp2(x, tol, maxit));
     return rcpp_result_gen;
 END_RCPP
 }
 // mlburr_rcpp
-Rcpp::NumericVector mlburr_rcpp(const arma::vec& x, Rcpp::Nullable<Rcpp::NumericVector> init, double tol, int max_iter);
-RcppExport SEXP _univariateML_mlburr_rcpp(SEXP xSEXP, SEXP initSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+Rcpp::NumericVector mlburr_rcpp(const arma::vec& x, Rcpp::Nullable<Rcpp::NumericVector> init, double tol, int maxit);
+RcppExport SEXP _univariateML_mlburr_rcpp(SEXP xSEXP, SEXP initSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type init(initSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(mlburr_rcpp(x, init, tol, max_iter));
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlburr_rcpp(x, init, tol, maxit));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -122,29 +122,29 @@ BEGIN_RCPP
 END_RCPP
 }
 // logmom1_c
-double logmom1_c(double mu, double sigma2, double tol, int max_iter);
-RcppExport SEXP _univariateML_logmom1_c(SEXP muSEXP, SEXP sigma2SEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+double logmom1_c(double mu, double sigma2, double tol, int maxit);
+RcppExport SEXP _univariateML_logmom1_c(SEXP muSEXP, SEXP sigma2SEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type mu(muSEXP);
     Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(logmom1_c(mu, sigma2, tol, max_iter));
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(logmom1_c(mu, sigma2, tol, maxit));
     return rcpp_result_gen;
 END_RCPP
 }
 // mlburr_cpp
-Rcpp::NumericVector mlburr_cpp(const arma::vec& x, double tol, int max_iter);
-RcppExport SEXP _univariateML_mlburr_cpp(SEXP xSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
+Rcpp::NumericVector mlburr_cpp(const arma::vec& x, double tol, int maxit);
+RcppExport SEXP _univariateML_mlburr_cpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
-    rcpp_result_gen = Rcpp::wrap(mlburr_cpp(x, tol, max_iter));
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlburr_cpp(x, tol, maxit));
     return rcpp_result_gen;
 END_RCPP
 }
