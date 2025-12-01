@@ -89,7 +89,7 @@ LogisticOutcome logistic_mle(const arma::vec& x,
 
 // [[Rcpp::export]]
 Rcpp::List mllogis_fast(const arma::vec& x,
-                        double tol   = 1.490116e-08,
+                        double tol   = 1.220703e-4,
                         int    maxit = 100) {
   LogisticOutcome res = logistic_mle(x, tol, maxit);
   if (std::holds_alternative<std::string>(res)) {

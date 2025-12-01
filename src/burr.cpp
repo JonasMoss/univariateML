@@ -49,8 +49,8 @@ RootResult invert_lower_logit(double cv) {
   k0 = std::min(1.0 - eps, std::max(eps, k0));
 
   double x = logit(k0);
-  const double reltol = std::sqrt(std::numeric_limits<double>::epsilon());
-  const int    maxit  = 100;
+  const double reltol = kTolDefault;
+  const int    maxit  = kMaxIterDefault;
 
   int iter = 0;
   for (; iter < maxit; ++iter) {
@@ -98,8 +98,8 @@ RootResult invert_lower_log(double cv) {
   k0 = std::max(eps, std::min(1.0 - eps, k0));
 
   double p         = std::log(k0);
-  const double rel = std::sqrt(std::numeric_limits<double>::epsilon());
-  const int    maxit = 100;
+  const double rel = kTolDefault;
+  const int    maxit = kMaxIterDefault;
 
   int iter = 0;
   for (; iter < maxit; ++iter) {
@@ -140,8 +140,8 @@ RootResult invert_upper(double cv) {
   k0 = std::max(1.0 + eps, k0);
 
   double x = std::log(k0 - 1.0);
-  const double reltol = std::sqrt(std::numeric_limits<double>::epsilon());
-  const int    maxit  = 100;
+  const double reltol = kTolDefault;
+  const int    maxit  = kMaxIterDefault;
 
   int iter = 0;
   for (; iter < maxit; ++iter) {

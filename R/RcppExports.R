@@ -29,11 +29,11 @@ mlburr_rcpp <- function(x, init = NULL, tol = 1.220703e-4, max_iter = 100L) {
     .Call(`_univariateML_mlburr_rcpp`, x, init, tol, max_iter)
 }
 
-mlcauchy_rcpp <- function(x, tol = 1e-8, maxit = 100L) {
+mlcauchy_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mlcauchy_rcpp`, x, tol, maxit)
 }
 
-ml_gumbel_rcpp <- function(x, tol = 1e-8, maxit = 100L) {
+ml_gumbel_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_ml_gumbel_rcpp`, x, tol, maxit)
 }
 
@@ -45,7 +45,7 @@ mlburr_cpp <- function(x, tol = 1.220703e-4, max_iter = 100L) {
     .Call(`_univariateML_mlburr_cpp`, x, tol, max_iter)
 }
 
-mllogis_fast <- function(x, tol = 1.490116e-08, maxit = 100L) {
+mllogis_fast <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mllogis_fast`, x, tol, maxit)
 }
 
