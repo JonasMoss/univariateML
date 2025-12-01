@@ -367,6 +367,19 @@ Rcpp::List mlinvburr_rcpp(const arma::vec& x,
     Rcpp::_["iterations"] = res.iterations
   );
 }
+
+// [[Rcpp::export]]
+Rcpp::List mllgser_rcpp(const Rcpp::IntegerVector& x) {
+  arma::ivec xi = Rcpp::as<arma::ivec>(x);
+  auto res = mlcore::lgser_mle(xi);
+  if (!std::isfinite(res.theta)) {
+    Rcpp::stop("Logarithmic-series MLE failed");
+  }
+  return Rcpp::List::create(
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["theta"] = res.theta),
+    Rcpp::_["logLik"] = res.logLik
+  );
+}
 // [[Rcpp::export]]
 Rcpp::List mlweibull_rcpp(const arma::vec& x,
                           double tol = 1.220703e-4,

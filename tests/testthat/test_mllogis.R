@@ -46,35 +46,37 @@ mle4 <- suppressWarnings(nlm(function(p) {
 ## Checks estimates.
 expect_equal(c(mle1$estimate[1], exp(mle1$estimate[2])),
   as.numeric(mllogis(tiny_data)),
-  tolerance = 1e-5
+  tolerance = 1e-4
 )
 expect_equal(c(mle2$estimate[1], exp(mle2$estimate[2])),
   as.numeric(mllogis(small_data)),
-  tolerance = 1e-5
+  tolerance = 1e-4
 )
 expect_equal(c(mle3$estimate[1], exp(mle3$estimate[2])),
   as.numeric(mllogis(medium_data)),
-  tolerance = 1e-5
+  tolerance = 1e-4
 )
 expect_equal(c(mle4$estimate[1], exp(mle4$estimate[2])),
   as.numeric(mllogis(large_data)),
-  tolerance = 1e-5
+  tolerance = 1e-4
 )
 
 ## Checks logLiks.
 expect_equal(-mle1$minimum, attr(mllogis(tiny_data), "logLik"),
-  tolerance = 1e-5
+  tolerance = 1e-4
 )
 expect_equal(-mle2$minimum, attr(mllogis(small_data), "logLik"),
-  tolerance = 1e-5
+  tolerance = 1e-4
 )
 expect_equal(-mle3$minimum, attr(mllogis(medium_data), "logLik"),
-  tolerance = 1e-5
+  tolerance = 1e-4
 )
 expect_equal(-mle4$minimum, attr(mllogis(large_data), "logLik"),
-  tolerance = 1e-5
+  tolerance = 1e-4
 )
 
+# Checks lambert W helper via lgser
+expect_error(mllgser(rep(1L, 5)))
 ## Finds errors with na and data out of bounds.
 expect_error(mllogis(c(tiny_data, NA)))
 

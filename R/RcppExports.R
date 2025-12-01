@@ -109,6 +109,10 @@ mlinvburr_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mlinvburr_rcpp`, x, tol, maxit)
 }
 
+mllgser_rcpp <- function(x) {
+    .Call(`_univariateML_mllgser_rcpp`, x)
+}
+
 mlweibull_rcpp <- function(x, tol = 1.220703e-4, maxit = 100L) {
     .Call(`_univariateML_mlweibull_rcpp`, x, tol, maxit)
 }

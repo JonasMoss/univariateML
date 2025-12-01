@@ -1,45 +1,16 @@
 ## C++ Port Plan
 
-- Current C++ (via `src/ml_exports.cpp` + `inst/include/ml_core.hpp`):
-  - Burr (mlburr_rcpp, burr_lmom)
-  - Cauchy (mlcauchy_rcpp)
-  - Gumbel (ml_gumbel_rcpp)
-  - Logistic (mllogis_fast)
-  - Beta/Betapr (mlbeta_rcpp, mlbetapr_rcpp)
-  - Gamma/Lgamma (mlgamma_rcpp)
-  - Binomial (mlbinom_rcpp)
-  - Lognormal/logit-normal (mllnorm_rcpp, mllogitnorm_rcpp)
-  - Weibull / InvWeibull
-  - InvGamma / InvGauss
-  - Lomax
-  - NegBinom
-  - Zip / Zipf
-  - Gompertz
-  - Kumaraswamy
-  - Nakagami
-  - InvBurr
-  - inverse_digamma helper
-  - Closed-form: exp, unif, pois, norm, laplace, geom, pareto, rayleigh
+- Current C++ coverage (via `src/ml_exports.cpp` + `inst/include/ml_core.hpp`):
+  - Core ports: burr, cauchy, gumbel, logistic, beta/betapr, gamma, binomial, lognormal/logit-normal, weibull/invweibull, invgamma/invgauss, lomax, negbinom, zip/zipf, gompertz, kumar, nakagami, invburr, lgser, plus closed-form exp/unif/pois/norm/laplace/geom/pareto/rayleigh, inverse_digamma helper.
 
-- Priority ports (start with easy):
-  - **Done**: beta/betapr, gamma/lgamma, binom, lognormal/logit-normal, weibull/invweibull, invgamma/invgauss, lomax, negbinom, zip/zipf, gompertz, kumar, nakagami, invburr, closed-form exp/unif/pois/norm/laplace/geom/pareto/rayleigh.
-  - **Next easy/medium**: mlnbinom checks, llogis/logis nlm variant, naka refinements, any remaining nlm-based variants we still rely on.
+- Remaining (hard/external optimizer or not yet tackled):
+  - ged, sged, std/sstd, paralogis (stats4::mle)
+  - gser (Lambert W variant)
 
-- Medium:
-  - gompertz (Newton with exp sums)
-  - kumar (Newton on a with polygamma)
-  - invburr (transform + Newton)
-  - naka, nbino
-  - llogis/nlm-based logis; logis uses external nlm
-
-- Hard (external optimizers/other packages):
-  - ged, sged, std/sstd, paralogis (stats4::mle), gser (Lambert W)
-
-- Naming/layout:
-  - Keep pure cores in `inst/include/ml_core.hpp` (per-model helpers).
-  - Export only ML-facing Rcpp in `src/ml_exports.cpp` with literal defaults (tol=1.220703e-4, maxit=100).
+- R-source cleanup to align with C++:
+  - Replace legacy R implementations in `r-src/ml` for ported models with thin wrappers calling the corresponding `*_rcpp` functions (preserve logLik/iterations where needed).
+  - Remove any now-redundant R metadata/comments from those files.
 
 - Next steps:
-  1) Tackle the remaining easy/medium ports (mlzip/mlzipf, mlnbinom, gompertz, kumar, naka, invburr, llogis/logis variant) and wire to `ml_exports.cpp`.
-  2) Add benchmarks/validations for the new ports (iterations, convergence flags, edge-case parameters).
-  3) Leave hard/external-optimizer models for a later pass or alternative implementations.
+  1) Sweep `r-src/ml` and convert ported models to delegate to the C++ wrappers; leave only hard models with R implementations.
+  2) Add benchmarks/validations for the remaining hard models or consider alternative implementations to avoid external optimizers.

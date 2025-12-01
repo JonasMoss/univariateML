@@ -338,6 +338,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mllgser_rcpp
+Rcpp::List mllgser_rcpp(const Rcpp::IntegerVector& x);
+RcppExport SEXP _univariateML_mllgser_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(mllgser_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mlweibull_rcpp
 Rcpp::List mlweibull_rcpp(const arma::vec& x, double tol, int maxit);
 RcppExport SEXP _univariateML_mlweibull_rcpp(SEXP xSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
@@ -430,6 +441,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlgompertz_rcpp", (DL_FUNC) &_univariateML_mlgompertz_rcpp, 3},
     {"_univariateML_mlkumar_rcpp", (DL_FUNC) &_univariateML_mlkumar_rcpp, 3},
     {"_univariateML_mlinvburr_rcpp", (DL_FUNC) &_univariateML_mlinvburr_rcpp, 3},
+    {"_univariateML_mllgser_rcpp", (DL_FUNC) &_univariateML_mllgser_rcpp, 1},
     {"_univariateML_mlweibull_rcpp", (DL_FUNC) &_univariateML_mlweibull_rcpp, 3},
     {"_univariateML_mlinvweibull_rcpp", (DL_FUNC) &_univariateML_mlinvweibull_rcpp, 3},
     {"_univariateML_mlinvgamma_rcpp", (DL_FUNC) &_univariateML_mlinvgamma_rcpp, 3},
