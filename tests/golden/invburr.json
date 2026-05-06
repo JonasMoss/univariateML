@@ -1,0 +1,17 @@
+{
+  "id": "invburr",
+  "name": "Inverse Burr",
+  "n": 500,
+  "seed": 13121,
+  "sampler": "actuar::rinvburr",
+  "sampler_args": {
+    "shape1": 1,
+    "shape2": 2
+  },
+  "estimates": {
+    "shape1": 1.0286005460469165,
+    "shape2": 2.1411632236775722
+  },
+  "logLik": -626.17596410455894,
+  "n_obs": 500
+}

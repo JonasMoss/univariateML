@@ -1,0 +1,19 @@
+{
+  "id": "snorm",
+  "name": "Skew Normal",
+  "n": 500,
+  "seed": 12904,
+  "sampler": "univariateML::rsnorm",
+  "sampler_args": {
+    "mean": 0,
+    "sd": 1,
+    "xi": 3
+  },
+  "estimates": {
+    "mean": 0.024205977813997095,
+    "sd": 1.0290195443660139,
+    "xi": 3.2683330120739376
+  },
+  "logLik": -655.97502189112561,
+  "n_obs": 500
+}

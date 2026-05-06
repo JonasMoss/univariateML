@@ -1,0 +1,17 @@
+{
+  "id": "dunif",
+  "name": "Discrete uniform",
+  "n": 500,
+  "seed": 12879,
+  "sampler": "extraDistr::rdunif",
+  "sampler_args": {
+    "min": 2,
+    "max": 10
+  },
+  "estimates": {
+    "min": 2,
+    "max": 10
+  },
+  "logLik": -1098.6122886681098,
+  "n_obs": 500
+}

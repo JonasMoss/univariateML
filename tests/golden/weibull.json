@@ -1,0 +1,17 @@
+{
+  "id": "weibull",
+  "name": "Weibull",
+  "n": 500,
+  "seed": 13101,
+  "sampler": "stats::rweibull",
+  "sampler_args": {
+    "shape": 3,
+    "scale": 4
+  },
+  "estimates": {
+    "shape": 2.9155677520153174,
+    "scale": 3.9611127867921829
+  },
+  "logLik": -845.92464231981762,
+  "n_obs": 500
+}

@@ -1,0 +1,17 @@
+{
+  "id": "power",
+  "name": "PowerDist",
+  "n": 500,
+  "seed": 12902,
+  "sampler": "extraDistr::rpower",
+  "sampler_args": {
+    "alpha": 1,
+    "beta": 2
+  },
+  "estimates": {
+    "alpha": 0.99980672082501054,
+    "beta": 2.0804423132415328
+  },
+  "logLik": 106.72041810011834,
+  "n_obs": 500
+}

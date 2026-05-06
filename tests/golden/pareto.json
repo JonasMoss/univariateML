@@ -1,0 +1,17 @@
+{
+  "id": "pareto",
+  "name": "Pareto",
+  "n": 500,
+  "seed": 12996,
+  "sampler": "extraDistr::rpareto",
+  "sampler_args": {
+    "a": 1,
+    "b": 2
+  },
+  "estimates": {
+    "a": 0.92779086053471371,
+    "b": 2.0054134964356316
+  },
+  "logLik": -1424.3141611248107,
+  "n_obs": 500
+}

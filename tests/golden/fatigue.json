@@ -1,0 +1,19 @@
+{
+  "id": "fatigue",
+  "name": "Birnbaum-Saunders",
+  "n": 500,
+  "seed": 13086,
+  "sampler": "extraDistr::rfatigue",
+  "sampler_args": {
+    "alpha": 3,
+    "beta": 2,
+    "mu": 0
+  },
+  "estimates": {
+    "alpha": 3.1890858167960725,
+    "beta": 1.9642698224159276,
+    "mu": 0
+  },
+  "logLik": -1360.3920598111592,
+  "n_obs": 500
+}

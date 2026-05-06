@@ -1,0 +1,17 @@
+{
+  "id": "gamma",
+  "name": "Gamma",
+  "n": 500,
+  "seed": 12860,
+  "sampler": "stats::rgamma",
+  "sampler_args": {
+    "shape": 2,
+    "rate": 2
+  },
+  "estimates": {
+    "shape": 2.0111085699314599,
+    "rate": 2.0781823106469202
+  },
+  "logLik": -424.82576494602876,
+  "n_obs": 500
+}

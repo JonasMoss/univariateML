@@ -1,0 +1,15 @@
+{
+  "id": "exp",
+  "name": "Exponential",
+  "n": 500,
+  "seed": 12678,
+  "sampler": "stats::rexp",
+  "sampler_args": {
+    "rate": 1
+  },
+  "estimates": {
+    "rate": 0.95680545745115442
+  },
+  "logLik": -522.07759597211236,
+  "n_obs": 500
+}

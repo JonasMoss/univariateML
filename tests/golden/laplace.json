@@ -1,0 +1,17 @@
+{
+  "id": "laplace",
+  "name": "Laplace",
+  "n": 500,
+  "seed": 13067,
+  "sampler": "extraDistr::rlaplace",
+  "sampler_args": {
+    "mu": 0,
+    "sigma": 1
+  },
+  "estimates": {
+    "mu": 0.026230155024677515,
+    "sigma": 0.97155239828856854
+  },
+  "logLik": -832.14355219485003,
+  "n_obs": 500
+}

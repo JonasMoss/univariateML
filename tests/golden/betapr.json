@@ -1,0 +1,17 @@
+{
+  "id": "betapr",
+  "name": "BetaPrime",
+  "n": 500,
+  "seed": 12983,
+  "sampler": "extraDistr::rbetapr",
+  "sampler_args": {
+    "shape1": 2,
+    "shape2": 3
+  },
+  "estimates": {
+    "shape1": 2.0505659401619298,
+    "shape2": 3.1646768129195664
+  },
+  "logLik": -439.63382234630103,
+  "n_obs": 500
+}

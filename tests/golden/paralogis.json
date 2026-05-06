@@ -1,0 +1,15 @@
+{
+  "id": "paralogis",
+  "name": "Paralogistic",
+  "n": 500,
+  "seed": 13307,
+  "sampler": "actuar::rparalogis",
+  "sampler_args": {
+    "shape": 1
+  },
+  "estimates": {
+    "shape": 0.99358164572443219
+  },
+  "logLik": -1035.3156258996489,
+  "n_obs": 500
+}

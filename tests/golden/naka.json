@@ -1,0 +1,17 @@
+{
+  "id": "naka",
+  "name": "Nakagami",
+  "n": 500,
+  "seed": 12756,
+  "sampler": "univariateML::rnaka",
+  "sampler_args": {
+    "shape": 2,
+    "scale": 3
+  },
+  "estimates": {
+    "shape": 2.016154151357489,
+    "scale": 2.7348472736045379
+  },
+  "logLik": -412.81990212231869,
+  "n_obs": 500
+}

@@ -1,0 +1,21 @@
+{
+  "id": "sstd",
+  "name": "Skew Student-t",
+  "n": 500,
+  "seed": 12791,
+  "sampler": "univariateML::rsstd",
+  "sampler_args": {
+    "mean": 0,
+    "sd": 1,
+    "nu": 3,
+    "xi": 2
+  },
+  "estimates": {
+    "mean": -0.39875022834669005,
+    "sd": 1.2650446142290293,
+    "nu": 3.3018752696756044,
+    "xi": 1.7620458272548807
+  },
+  "logLik": -881.54579374605703,
+  "n_obs": 500
+}

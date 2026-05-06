@@ -1,0 +1,17 @@
+{
+  "id": "norm",
+  "name": "Normal",
+  "n": 500,
+  "seed": 12789,
+  "sampler": "stats::rnorm",
+  "sampler_args": {
+    "mean": 0,
+    "sd": 1
+  },
+  "estimates": {
+    "mean": 0.00027587149470130614,
+    "sd": 0.96576233285965152
+  },
+  "logLik": -692.05051296388604,
+  "n_obs": 500
+}

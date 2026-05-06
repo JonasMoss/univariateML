@@ -1,0 +1,17 @@
+{
+  "id": "invgamma",
+  "name": "InvGamma",
+  "n": 500,
+  "seed": 13193,
+  "sampler": "extraDistr::rinvgamma",
+  "sampler_args": {
+    "alpha": 3,
+    "beta": 4
+  },
+  "estimates": {
+    "alpha": 2.9749963617100446,
+    "beta": 4.045134299078514
+  },
+  "logLik": -707.04489619097387,
+  "n_obs": 500
+}

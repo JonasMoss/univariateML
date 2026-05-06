@@ -1,0 +1,17 @@
+{
+  "id": "logitnorm",
+  "name": "LogitNormal",
+  "n": 500,
+  "seed": 13332,
+  "sampler": "univariateML::rlogitnorm",
+  "sampler_args": {
+    "mu": 2,
+    "sigma": 3
+  },
+  "estimates": {
+    "mu": 1.8915275687203221,
+    "sigma": 2.9889512555765663
+  },
+  "logLik": 315.7025882530545,
+  "n_obs": 500
+}

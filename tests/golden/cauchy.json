@@ -1,0 +1,17 @@
+{
+  "id": "cauchy",
+  "name": "Cauchy",
+  "n": 500,
+  "seed": 12982,
+  "sampler": "stats::rcauchy",
+  "sampler_args": {
+    "location": 0,
+    "scale": 1
+  },
+  "estimates": {
+    "location": -0.020991818112250052,
+    "scale": 1.0586087784963103
+  },
+  "logLik": -1303.5000220648517,
+  "n_obs": 500
+}

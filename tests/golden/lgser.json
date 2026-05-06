@@ -1,0 +1,15 @@
+{
+  "id": "lgser",
+  "name": "Logarithmic series",
+  "n": 500,
+  "seed": 12886,
+  "sampler": "extraDistr::rlgser",
+  "sampler_args": {
+    "theta": 0.90000000000000002
+  },
+  "estimates": {
+    "theta": 0.90585347205447009
+  },
+  "logLik": -1065.6449777933472,
+  "n_obs": 500
+}

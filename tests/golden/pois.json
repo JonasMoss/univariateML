@@ -1,0 +1,15 @@
+{
+  "id": "pois",
+  "name": "Poisson",
+  "n": 500,
+  "seed": 12788,
+  "sampler": "stats::rpois",
+  "sampler_args": {
+    "lambda": 2
+  },
+  "estimates": {
+    "lambda": 2.0619999999999998
+  },
+  "logLik": -858.81465399713022,
+  "n_obs": 500
+}

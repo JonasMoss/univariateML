@@ -1,0 +1,17 @@
+{
+  "id": "lomax",
+  "name": "Lomax",
+  "n": 500,
+  "seed": 12890,
+  "sampler": "extraDistr::rlomax",
+  "sampler_args": {
+    "lambda": 1,
+    "kappa": 2
+  },
+  "estimates": {
+    "lambda": 0.89420181105133911,
+    "kappa": 2.1392120575895031
+  },
+  "logLik": -409.42403193121248,
+  "n_obs": 500
+}

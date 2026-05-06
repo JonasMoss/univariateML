@@ -1,0 +1,19 @@
+{
+  "id": "std",
+  "name": "Student-t",
+  "n": 500,
+  "seed": 12676,
+  "sampler": "univariateML::rstd",
+  "sampler_args": {
+    "mean": 0,
+    "sd": 1,
+    "nu": 3
+  },
+  "estimates": {
+    "mean": -0.0062603516765858932,
+    "sd": 0.83950568811356219,
+    "nu": 3.9776672819316472
+  },
+  "logLik": -579.48078242137774,
+  "n_obs": 500
+}

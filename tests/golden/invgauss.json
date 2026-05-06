@@ -1,0 +1,17 @@
+{
+  "id": "invgauss",
+  "name": "Inverse Gaussian",
+  "n": 500,
+  "seed": 13225,
+  "sampler": "actuar::rinvgauss",
+  "sampler_args": {
+    "mean": 3,
+    "shape": 4
+  },
+  "estimates": {
+    "mean": 2.9842743536745311,
+    "shape": 4.1167677662848039
+  },
+  "logLik": -963.83083981271238,
+  "n_obs": 500
+}

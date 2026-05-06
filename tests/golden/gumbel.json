@@ -1,0 +1,17 @@
+{
+  "id": "gumbel",
+  "name": "Gumbel",
+  "n": 500,
+  "seed": 12981,
+  "sampler": "extraDistr::rgumbel",
+  "sampler_args": {
+    "mu": 3,
+    "sigma": 3
+  },
+  "estimates": {
+    "mu": 2.964923020698754,
+    "sigma": 3.021078660513882
+  },
+  "logLik": -1344.32856927987,
+  "n_obs": 500
+}

@@ -1,0 +1,17 @@
+{
+  "id": "unif",
+  "name": "Uniform",
+  "n": 500,
+  "seed": 12779,
+  "sampler": "stats::runif",
+  "sampler_args": {
+    "min": 0,
+    "max": 1
+  },
+  "estimates": {
+    "min": 0.00049096113070845604,
+    "max": 0.99773416132666171
+  },
+  "logLik": 1.3803033874703496,
+  "n_obs": 500
+}

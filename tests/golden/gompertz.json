@@ -1,0 +1,17 @@
+{
+  "id": "gompertz",
+  "name": "Gompertz",
+  "n": 500,
+  "seed": 13233,
+  "sampler": "extraDistr::rgompertz",
+  "sampler_args": {
+    "a": 1,
+    "b": 1
+  },
+  "estimates": {
+    "a": 1.0315502393403755,
+    "b": 0.92068005179462231
+  },
+  "logLik": -208.33563320070988,
+  "n_obs": 500
+}

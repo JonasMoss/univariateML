@@ -1,0 +1,17 @@
+{
+  "id": "burr",
+  "name": "Burr",
+  "n": 500,
+  "seed": 12788,
+  "sampler": "actuar::rburr",
+  "sampler_args": {
+    "shape1": 1,
+    "shape2": 2
+  },
+  "estimates": {
+    "shape1": 1.0770366660673756,
+    "shape2": 1.9857562895421235
+  },
+  "logLik": -614.50736878780322,
+  "n_obs": 500
+}

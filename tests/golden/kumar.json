@@ -1,0 +1,17 @@
+{
+  "id": "kumar",
+  "name": "Kumaraswamy",
+  "n": 500,
+  "seed": 12889,
+  "sampler": "extraDistr::rkumar",
+  "sampler_args": {
+    "a": 2,
+    "b": 3
+  },
+  "estimates": {
+    "a": 1.8209018202800991,
+    "b": 2.8113618707552392
+  },
+  "logLik": 93.240851221745402,
+  "n_obs": 500
+}

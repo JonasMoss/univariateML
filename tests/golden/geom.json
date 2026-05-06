@@ -1,0 +1,15 @@
+{
+  "id": "geom",
+  "name": "Geometric",
+  "n": 500,
+  "seed": 12769,
+  "sampler": "stats::rgeom",
+  "sampler_args": {
+    "prob": 0.5
+  },
+  "estimates": {
+    "prob": 0.51334702258726905
+  },
+  "logLik": -674.77829005326987,
+  "n_obs": 500
+}

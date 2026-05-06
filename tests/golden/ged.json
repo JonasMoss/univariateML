@@ -1,0 +1,19 @@
+{
+  "id": "ged",
+  "name": "Generalized Error",
+  "n": 500,
+  "seed": 12649,
+  "sampler": "univariateML::rged",
+  "sampler_args": {
+    "mean": 0,
+    "sd": 1,
+    "nu": 3
+  },
+  "estimates": {
+    "mean": -0.032188372896649366,
+    "sd": 1.006208608565057,
+    "nu": 2.7845403893570326
+  },
+  "logLik": -708.05382546889155,
+  "n_obs": 500
+}

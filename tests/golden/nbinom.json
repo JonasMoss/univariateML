@@ -1,0 +1,17 @@
+{
+  "id": "nbinom",
+  "name": "Negative binomial",
+  "n": 500,
+  "seed": 12988,
+  "sampler": "stats::rnbinom",
+  "sampler_args": {
+    "size": 10,
+    "prob": 0.29999999999999999
+  },
+  "estimates": {
+    "size": 10.391389312561435,
+    "prob": 0.30610275261185826
+  },
+  "logLik": -1778.80214279965,
+  "n_obs": 500
+}

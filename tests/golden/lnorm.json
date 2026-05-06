@@ -1,0 +1,17 @@
+{
+  "id": "lnorm",
+  "name": "Lognormal",
+  "n": 500,
+  "seed": 12897,
+  "sampler": "stats::rlnorm",
+  "sampler_args": {
+    "meanlog": 0,
+    "sdlog": 1
+  },
+  "estimates": {
+    "meanlog": 0.036788402618589962,
+    "sdlog": 1.0117188656704625
+  },
+  "logLik": -733.68883368694094,
+  "n_obs": 500
+}

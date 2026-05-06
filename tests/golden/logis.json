@@ -1,0 +1,17 @@
+{
+  "id": "logis",
+  "name": "Logistic",
+  "n": 500,
+  "seed": 12887,
+  "sampler": "stats::rlogis",
+  "sampler_args": {
+    "location": 0,
+    "scale": 1
+  },
+  "estimates": {
+    "location": -0.054183601372140885,
+    "scale": 1.0081430589945095
+  },
+  "logLik": -1002.4579022784053,
+  "n_obs": 500
+}

@@ -1,0 +1,15 @@
+{
+  "id": "rayleigh",
+  "name": "Rayleigh",
+  "n": 500,
+  "seed": 13198,
+  "sampler": "extraDistr::rrayleigh",
+  "sampler_args": {
+    "sigma": 2
+  },
+  "estimates": {
+    "sigma": 1.9899508407142226
+  },
+  "logLik": -805.62848261557724,
+  "n_obs": 500
+}

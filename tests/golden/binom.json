@@ -1,0 +1,17 @@
+{
+  "id": "binom",
+  "name": "Binomial",
+  "n": 500,
+  "seed": 12878,
+  "sampler": "stats::rbinom",
+  "sampler_args": {
+    "size": 10,
+    "prob": 0.5
+  },
+  "estimates": {
+    "size": 9,
+    "prob": 0.55800000000000005
+  },
+  "logLik": -939.91704883835462,
+  "n_obs": 500
+}

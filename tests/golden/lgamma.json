@@ -1,0 +1,17 @@
+{
+  "id": "lgamma",
+  "name": "Loggamma",
+  "n": 500,
+  "seed": 12968,
+  "sampler": "actuar::rlgamma",
+  "sampler_args": {
+    "shapelog": 2,
+    "ratelog": 3
+  },
+  "estimates": {
+    "shapelog": 2.1373595543187505,
+    "ratelog": 3.0107793934854157
+  },
+  "logLik": -615.77320921436262,
+  "n_obs": 500
+}

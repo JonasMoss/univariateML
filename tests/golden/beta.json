@@ -1,0 +1,17 @@
+{
+  "id": "beta",
+  "name": "Beta",
+  "n": 500,
+  "seed": 12757,
+  "sampler": "stats::rbeta",
+  "sampler_args": {
+    "shape1": 2,
+    "shape2": 3
+  },
+  "estimates": {
+    "shape1": 2.346657773566831,
+    "shape2": 3.555724895181072
+  },
+  "logLik": 147.78133991463616,
+  "n_obs": 500
+}

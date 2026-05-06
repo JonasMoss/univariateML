@@ -1,0 +1,17 @@
+{
+  "id": "llogis",
+  "name": "Loglogistic",
+  "n": 500,
+  "seed": 12995,
+  "sampler": "actuar::rllogis",
+  "sampler_args": {
+    "shape": 1,
+    "rate": 2
+  },
+  "estimates": {
+    "shape": 0.92746170367817227,
+    "rate": 2.0160259085482672
+  },
+  "logLik": -690.51985729704347,
+  "n_obs": 500
+}

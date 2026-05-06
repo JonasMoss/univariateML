@@ -1,0 +1,17 @@
+{
+  "id": "invweibull",
+  "name": "InverseWeibull",
+  "n": 500,
+  "seed": 13434,
+  "sampler": "actuar::rinvweibull",
+  "sampler_args": {
+    "shape": 2,
+    "rate": 3
+  },
+  "estimates": {
+    "shape": 1.9288194548404549,
+    "rate": 2.9117045644132644
+  },
+  "logLik": -74.600099674988712,
+  "n_obs": 500
+}

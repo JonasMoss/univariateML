@@ -1,0 +1,21 @@
+{
+  "id": "sged",
+  "name": "Skew Generalized Error",
+  "n": 500,
+  "seed": 12764,
+  "sampler": "univariateML::rsged",
+  "sampler_args": {
+    "mean": 0,
+    "sd": 1,
+    "nu": 3,
+    "xi": 3
+  },
+  "estimates": {
+    "mean": -0.085629346884119259,
+    "sd": 0.9552033280178055,
+    "nu": 2.8069553839397461,
+    "xi": 2.7611261998127357
+  },
+  "logLik": -642.61695987924531,
+  "n_obs": 500
+}
