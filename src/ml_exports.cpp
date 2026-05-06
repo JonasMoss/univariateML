@@ -1,7 +1,6 @@
-// [[Rcpp::depends(RcppArmadillo)]]
 #include "ml/core/rcpp_glue.hpp"
 #include "ml/ml.hpp"
-#include <RcppArmadillo.h>
+#include <Rcpp.h>
 
 // [[Rcpp::export]]
 Rcpp::List mlburr_(const Rcpp::NumericVector &x,
