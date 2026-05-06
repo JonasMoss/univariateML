@@ -36,6 +36,62 @@
 - Use `maxit` for maximal iterations.
 - Use `tol` for both absolute and relative tolerance
 
+## Multi-D optimiser
+
+Estimators that need a multi-parameter fit use the hand-rolled BFGS in
+`src/ml/core/bfgs.hpp`. It's a header-only quasi-Newton minimiser with
+backtracking Armijo line search and the standard two-rank update applied
+directly to the inverse-Hessian approximation.
+
+Cost concept (compile-time):
+
+  int    dim() const
+  double operator()(const double *theta) const
+  void   gradient(const double *theta, double *g) const
+
+If you only have an objective and not an analytic gradient, wrap in
+`mlcore::finite_diff_cost<Cost>` from `src/ml/core/finite_diff.hpp`; that
+adapter supplies a central-difference gradient. All six fGarch-family
+estimators (paralogis, std, ged, snorm, sstd, sged) use this path.
+
+For unconstrained reparametrisation, see `src/ml/core/reparam.hpp`:
+`from_log` / `to_log` and `from_log_shift` / `to_log_shift` (e.g. nu > 2
+for Student-t / sstd).
+
+### Tolerances
+
+`BfgsControl` exposes three convergence rules; **any one** fires:
+
+  - `||g||_2          < grad_tol`              (default 1e-6)
+  - `||theta_new - theta||_inf < step_tol * (||theta||_inf + step_tol)` (default 1e-8)
+  - `(f_old - f_new)  < reltol * (|f_old| + reltol)` (default **1e-12**)
+
+The reltol default is intentionally tight: at the standard `kFitTol = 1.22e-4`
+the f-relative criterion fires on the asymptotic flat approach to an MLE long
+before the gradient is actually small. Estimators that need to satisfy a
+score-residual gate should map their user-facing `tol` onto `grad_tol`, not
+`reltol`.
+
+### Score-residual gate
+
+Each multi-D estimator's doctest pairs the golden check with a
+`finite_diff_gradient` evaluation at the recovered MLE:
+
+  CHECK( ||g||_2 < 1e-3 )
+
+This catches the "fake-fit" class of bug — a parameter implicitly fixed
+during fitting will leave a non-zero score component there, regardless of
+what optimiser produced the result. Independent of optimiser trajectory;
+survives golden regeneration.
+
+### Wrapper failure handling
+
+Match `nlminb`'s behaviour: only `Rcpp::stop` on truly invalid output (NaN
+in any returned parameter) or `InvalidStart` (data isn't fittable). On
+plain BFGS iteration-limit hits, return whatever theta_hat the optimiser
+landed on — downstream consumers that ran with the legacy fGarch path
+expect to get a usable result back, not an error.
+
 ## Porting Steps
 1) Set up directory structure under `inst/cpp/` (or `src/core/`) with `include/` and `src/`, add `.clang-format`.
 2) Add a minimal core scaffold: `types.hpp` (result/options), `checks.hpp` (support/NA checks), `optim.hpp` (Newton-Raphson helper).
