@@ -29,3 +29,11 @@ bench model="burr" sizes="50,200,1000" reps="5":
 # change). After regen, inspect the diff before committing.
 goldens:
 	Rscript scripts/gen_goldens.R
+
+# Build & run the standalone C++ test harness (mlcore_tests).
+# Currently links against the system R install; WS3 task #4 will swap in
+# a vendored standalone Rmath so this works without R on PATH.
+cpp-test:
+	cmake -S tests/cpp -B tests/cpp/build
+	cmake --build tests/cpp/build
+	cd tests/cpp/build && ctest --output-on-failure

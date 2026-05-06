@@ -33,3 +33,4 @@ cache$
 ^scripts$
 ^Justfile$
 ^metadata$
+^tests/cpp$
