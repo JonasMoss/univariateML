@@ -7,6 +7,7 @@
 
 #include "../../src/ml/core/bfgs.hpp"
 #include "../../src/ml/core/finite_diff.hpp"
+#include "../../src/ml/core/reparam.hpp"
 
 #include <cmath>
 
@@ -88,4 +89,18 @@ TEST_CASE("bfgs: finite_diff_gradient matches analytic gradient on Rosenbrock") 
   mlcore::finite_diff_gradient(c, t, g_fd);
   CHECK(g_fd[0] == doctest::Approx(g_ana[0]).epsilon(1e-6));
   CHECK(g_fd[1] == doctest::Approx(g_ana[1]).epsilon(1e-6));
+}
+
+TEST_CASE("reparam: log round-trip") {
+  for (double x : {0.5, 1.0, 7.25, 1e-3, 1e3}) {
+    CHECK(mlcore::from_log(mlcore::to_log(x)) ==
+          doctest::Approx(x).epsilon(1e-15));
+  }
+}
+
+TEST_CASE("reparam: log_shift round-trip with c = 2 (nu > 2)") {
+  for (double x : {2.5, 3.0, 8.0, 100.0}) {
+    CHECK(mlcore::from_log_shift(mlcore::to_log_shift(x, 2.0), 2.0) ==
+          doctest::Approx(x).epsilon(1e-15));
+  }
 }
