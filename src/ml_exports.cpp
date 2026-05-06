@@ -245,8 +245,9 @@ Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mllnorm_(const arma::vec &x) {
-  auto res = mlcore::lognormal_mle(x);
+Rcpp::List mllnorm_(const Rcpp::NumericVector &x) {
+  auto res = mlcore::lognormal_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["meanlog"] = res.meanlog, Rcpp::_["sdlog"] = res.sdlog),
@@ -254,8 +255,9 @@ Rcpp::List mllnorm_(const arma::vec &x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List mllogitnorm_(const arma::vec &x) {
-  auto res = mlcore::logitnorm_mle(x);
+Rcpp::List mllogitnorm_(const Rcpp::NumericVector &x) {
+  auto res = mlcore::logitnorm_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] =
           Rcpp::NumericVector::create(Rcpp::_["mu"] = res.mu,

@@ -715,23 +715,23 @@ BEGIN_RCPP
 END_RCPP
 }
 // mllnorm_
-Rcpp::List mllnorm_(const arma::vec& x);
+Rcpp::List mllnorm_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mllnorm_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mllnorm_(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // mllogitnorm_
-Rcpp::List mllogitnorm_(const arma::vec& x);
+Rcpp::List mllogitnorm_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mllogitnorm_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mllogitnorm_(x));
     return rcpp_result_gen;
 END_RCPP

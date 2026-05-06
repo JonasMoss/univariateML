@@ -8,6 +8,8 @@
 #include "estimators/exponential.hpp"
 #include "estimators/geometric.hpp"
 #include "estimators/laplace.hpp"
+#include "estimators/lognormal.hpp"
+#include "estimators/logitnormal.hpp"
 #include "estimators/normal.hpp"
 #include "estimators/pareto.hpp"
 #include "estimators/poisson.hpp"
@@ -884,42 +886,6 @@ inline BinomResult binom_mle(const arma::ivec &x,
 
   double prob = x_bar / best_size;
   return {best_size, prob, best_ll, iterations, BinomStatus::Ok};
-}
-
-struct LognormalResult {
-  double meanlog;
-  double sdlog;
-  double logLik;
-};
-
-struct LogitnormResult {
-  double mu;
-  double sigma;
-  double logLik;
-};
-
-inline LognormalResult lognormal_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  arma::vec y = arma::log(x);
-  double meanlog = arma::mean(y);
-  double sdlog = std::sqrt(arma::var(y, 1));
-  double logLik = -0.5 * n * (std::log(2 * M_PI * sdlog * sdlog) + 1.0) -
-                  arma::accu(arma::log(x));
-  return {meanlog, sdlog, logLik};
-}
-
-inline LogitnormResult logitnorm_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  arma::vec y = arma::log(x / (1.0 - x));
-  double mu = arma::mean(y);
-  double sigma = std::sqrt(arma::var(y, 1));
-  double logLik = -0.5 * n * (std::log(2 * M_PI * sigma * sigma) + 1.0) -
-                  arma::accu(arma::log(x % (1.0 - x)));
-  return {mu, sigma, logLik};
 }
 
 // ---------- Weibull (via Gumbel transform) ----------
