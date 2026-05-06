@@ -561,6 +561,25 @@ Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
 }
 
 // [[Rcpp::export]]
+Rcpp::List mlsnorm_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
+                    int iterlim = 200) {
+  auto res = mlcore::snorm_mle(mlcore::as_span(x), tol, iterlim);
+  if (res.status == mlcore::SnormStatus::InvalidStart) {
+    Rcpp::stop("Skew-normal MLE requires at least 2 finite observations with "
+               "positive variance.");
+  }
+  if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
+      !std::isfinite(res.xi)) {
+    Rcpp::stop("Skew-normal MLE failed to converge (check inputs)");
+  }
+  return Rcpp::List::create(
+      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+          Rcpp::_["mean"] = res.mu, Rcpp::_["sd"] = res.sigma,
+          Rcpp::_["xi"] = res.xi),
+      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
+}
+
+// [[Rcpp::export]]
 Rcpp::List mlged_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                   int iterlim = 200) {
   auto res = mlcore::ged_mle(mlcore::as_span(x), tol, iterlim);
