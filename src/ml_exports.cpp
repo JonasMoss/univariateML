@@ -172,8 +172,9 @@ Rcpp::List mlpois_(const Rcpp::IntegerVector &x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlnorm_(const arma::vec &x) {
-  auto res = mlcore::norm_mle(x);
+Rcpp::List mlnorm_(const Rcpp::NumericVector &x) {
+  auto res =
+      mlcore::norm_mle(mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mean"] = res.mean, Rcpp::_["sd"] = res.sd),

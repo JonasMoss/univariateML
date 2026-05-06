@@ -646,12 +646,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlnorm_
-Rcpp::List mlnorm_(const arma::vec& x);
+Rcpp::List mlnorm_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mlnorm_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mlnorm_(x));
     return rcpp_result_gen;
 END_RCPP

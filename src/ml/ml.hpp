@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "core/span.hpp"
+#include "estimators/normal.hpp"
 #include "special/special.hpp"
 #include <RcppArmadillo.h>
 #include <cmath>
@@ -828,12 +830,6 @@ inline FatigueResult fatigue_mle(const arma::vec &x, double tol, int maxit) {
   return {alpha, beta, logLik, iter};
 }
 
-struct NormResult {
-  double mean;
-  double sd;
-  double logLik;
-};
-
 struct LaplaceResult {
   double mu;
   double sigma;
@@ -855,17 +851,6 @@ struct RayleighResult {
   double sigma;
   double logLik;
 };
-
-inline NormResult norm_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  double mu = arma::mean(x);
-  double var = arma::accu(arma::square(x - mu)) / n;
-  double sigma = std::sqrt(var);
-  double logLik = -0.5 * n * (std::log(2 * M_PI * var) + 1.0);
-  return {mu, sigma, logLik};
-}
 
 inline LaplaceResult laplace_mle(const arma::vec &x) {
   const int n = static_cast<int>(x.n_elem);
