@@ -498,12 +498,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlcauchy_
-Rcpp::List mlcauchy_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlcauchy_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlcauchy_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlcauchy_(x, tol, iterlim));
@@ -511,12 +511,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlgumbel_
-Rcpp::List mlgumbel_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlgumbel_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlgumbel_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlgumbel_(x, tol, iterlim));

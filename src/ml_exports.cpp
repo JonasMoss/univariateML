@@ -42,9 +42,11 @@ Rcpp::List mlburr_(const arma::vec &x,
 
 // Cauchy
 // [[Rcpp::export]]
-Rcpp::List mlcauchy_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlcauchy_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                      int iterlim = 100) {
-  mlcore::CauchyResult res = mlcore::fit_cauchy(x, tol, iterlim);
+  mlcore::CauchyResult res = mlcore::fit_cauchy(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
+      iterlim);
   if (res.iterations == 0) {
     Rcpp::stop("x must have positive length");
   }
@@ -56,12 +58,14 @@ Rcpp::List mlcauchy_(const arma::vec &x, double tol = 1.220703e-4,
 
 // Gumbel
 // [[Rcpp::export]]
-Rcpp::List mlgumbel_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlgumbel_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                      int iterlim = 100) {
   if (iterlim <= 1) {
     Rcpp::warning("iteration limit reached");
   }
-  mlcore::GumbelResult res = mlcore::fit_gumbel_newton(x, tol, iterlim);
+  mlcore::GumbelResult res = mlcore::fit_gumbel_newton(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
+      iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mu"] = res.mu, Rcpp::_["sigma"] = res.sigma),

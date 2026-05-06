@@ -4,9 +4,11 @@
 #pragma once
 
 #include "core/span.hpp"
+#include "estimators/cauchy.hpp"
 #include "estimators/discrete_uniform.hpp"
 #include "estimators/exponential.hpp"
 #include "estimators/geometric.hpp"
+#include "estimators/gumbel.hpp"
 #include "estimators/inverse_gaussian.hpp"
 #include "estimators/laplace.hpp"
 #include "estimators/lognormal.hpp"
@@ -321,141 +323,6 @@ inline BurrMLE burr_mle_core(const arma::vec &x, double c_start, double tol,
                         (k + 1.0) * arma::accu(arma::log1p(xc_final));
 
   return {k, c, logLik, (iter == maxit ? maxit : iter), BurrStatus::Ok};
-}
-
-// ---------- Cauchy ----------
-struct CauchyResult {
-  double mu;
-  double scale;
-  double logLik;
-  int iterations;
-};
-
-inline CauchyResult fit_cauchy(const arma::vec &x, double tol, int maxit) {
-  int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0}; // wrapper will stop
-
-  std::vector<double> data(x.begin(), x.end());
-  std::nth_element(data.begin(), data.begin() + n / 2, data.end());
-  double mu = data[n / 2];
-
-  for (int i = 0; i < n; ++i) {
-    data[i] = std::fabs(data[i] - mu);
-  }
-  std::nth_element(data.begin(), data.begin() + n / 2, data.end());
-  double theta = std::log(data[n / 2] + kEps);
-
-  double dmu = 0.0, dth = 0.0;
-
-  int iter;
-  for (iter = 1; iter <= maxit; ++iter) {
-    const double inv_s = std::exp(-theta);
-    const double inv_s2 = inv_s * inv_s;
-
-    double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0, sum5 = 0.0;
-    for (int i = 0; i < n; ++i) {
-      double z = (x[i] - mu) * inv_s;
-      double z2 = z * z;
-      double d1 = 1.0 + z2;
-      double i1 = 1.0 / d1;
-      double i2 = i1 * i1;
-
-      sum1 += z * i1;
-      sum2 += (z2 - 1) * i1;
-      sum3 += (1 - z2) * i2;
-      sum4 += z * i2;
-      sum5 += z2 * i2;
-    }
-
-    double U_mu = 2 * inv_s * sum1;
-    double U_th = 1.0 * sum2;
-    double H_mm = 2 * inv_s2 * sum3;
-    double H_mth = 4 * inv_s * sum4;
-    double H_thth = 4 * sum5;
-
-    double det = H_mm * H_thth - H_mth * H_mth;
-    dmu = (H_thth * U_mu - H_mth * U_th) / det;
-    dth = (-H_mth * U_mu + H_mm * U_th) / det;
-
-    mu += dmu;
-    theta += dth;
-
-    if (std::max(std::fabs(dmu), std::fabs(dth)) < tol)
-      break;
-  }
-
-  double scale = std::exp(theta);
-  arma::vec z = (x - mu) / scale;
-  double logLik = -static_cast<double>(n) * std::log(M_PI * scale) -
-                  arma::accu(arma::log1p(arma::square(z)));
-
-  return CauchyResult{mu, scale, logLik, iter};
-}
-
-// ---------- Gumbel ----------
-struct GumbelResult {
-  double mu;
-  double sigma;
-  double logLik;
-  int iterations;
-};
-
-inline GumbelResult fit_gumbel_newton(const arma::vec &x, double tol,
-                                      int maxit) {
-  const int n = static_cast<int>(x.n_elem);
-  const double *xp = x.memptr();
-
-  double sum_x = 0.0;
-  double sum_x2 = 0.0;
-  for (double xi : x) {
-    sum_x += xi;
-    sum_x2 += xi * xi;
-  }
-  const double xbar = sum_x / n;
-  const double var0 = sum_x2 / n - xbar * xbar;
-
-  double theta = std::log(std::sqrt(var0) * 2.45 / M_PI);
-  int iter = 0;
-
-  for (iter = 1; iter <= maxit; ++iter) {
-    const double sigma = std::exp(theta);
-    const double invs = 1.0 / sigma;
-    const double negs = -invs;
-
-    double psi0 = 0.0, psi1 = 0.0, psi2 = 0.0;
-    for (int i = 0; i < n; ++i) {
-      const double v = xp[i] - xbar;
-      const double e = std::exp(v * negs);
-      psi0 += e;
-      psi1 += v * e;
-      psi2 += v * v * e;
-    }
-    psi1 /= psi0;
-    psi2 = psi2 / psi0 - psi1 * psi1;
-
-    const double f = sigma + psi1;
-    const double df = 1.0 + psi2 * (invs * invs);
-    const double dth = f / (df * sigma);
-
-    theta -= dth;
-    if (std::abs(dth) < std::abs(theta) * tol)
-      break;
-  }
-
-  const double sigma = std::exp(theta);
-  const double invsF = -1.0 / sigma;
-  double sum_e = 0.0;
-  for (int i = 0; i < n; ++i) {
-    sum_e += std::exp((xp[i] - xbar) * invsF);
-  }
-  const double mu = -sigma * std::log(sum_e / n) + xbar;
-
-  arma::vec z = (x - mu) / sigma;
-  double logLik = -static_cast<double>(n) * std::log(sigma) - arma::accu(z) -
-                  arma::accu(arma::exp(-z));
-
-  return GumbelResult{mu, sigma, logLik, iter};
 }
 
 // ---------- Logistic ----------
@@ -881,7 +748,9 @@ inline WeibullResult weibull_mle(const arma::vec &x, double tol = kTolDefault,
   const double s = -arma::accu(log_x) / static_cast<double>(n);
   arma::vec shifted = log_x + s;
 
-  GumbelResult g = fit_gumbel_newton(shifted, tol, maxit);
+  GumbelResult g = fit_gumbel_newton(
+      span{shifted.memptr(), static_cast<std::size_t>(shifted.n_elem)}, tol,
+      maxit);
   const double shape = 1.0 / g.sigma;
   const double scale = std::exp(-g.mu + s);
   const double logLik =
@@ -910,7 +779,9 @@ inline InvWeibullResult invweibull_mle(const arma::vec &x,
   const double s = -arma::accu(log_x) / static_cast<double>(n);
   arma::vec shifted = log_x + s;
 
-  GumbelResult g = fit_gumbel_newton(shifted, tol, maxit);
+  GumbelResult g = fit_gumbel_newton(
+      span{shifted.memptr(), static_cast<std::size_t>(shifted.n_elem)}, tol,
+      maxit);
   const double rate_log = -g.mu + s;
   const double rate = std::exp(rate_log);
   const double shape = 1.0 / g.sigma;
