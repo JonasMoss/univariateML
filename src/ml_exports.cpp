@@ -2,6 +2,12 @@
 #include "ml/ml.hpp"
 #include <Rcpp.h>
 
+// Pull the in-tree polygamma port (used by mlcore::special::digamma /
+// trigamma / tetragamma / psigamma) into this translation unit. R's
+// package build only compiles .cpp at the top level of src/, so subdir
+// implementations have to be aggregated like distribution_exports.cpp does.
+#include "ml/special/polygamma.cpp"
+
 // [[Rcpp::export]]
 Rcpp::List mlburr_(const Rcpp::NumericVector &x,
                    Rcpp::Nullable<Rcpp::NumericVector> init = R_NilValue,

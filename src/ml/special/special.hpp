@@ -1,40 +1,26 @@
 // Centralized special functions used by the ML core.
-// Currently thin wrappers around Rmath; replace implementations here to
-// decouple from R.
+//
+// The polygamma family (digamma, trigamma, tetragamma, psigamma) routes
+// through src/ml/special/polygamma.cpp — the in-tree dpsifn port — so the
+// standalone test harness can build without linking Rmath. dnorm/dpois/dgeom
+// inline their formulas directly. lgamma/lbeta use std::lgamma.
 
 #pragma once
 
 #include "constants.hpp"
-#include <Rmath.h>
+#include "polygamma.hpp"
 #include <cmath>
-
-// Rmath.h aliases dozens of common identifiers (beta, gamma, dnorm, lbeta,
-// digamma, ...) to their Rf_* equivalents via #define, polluting the global
-// namespace. Undef the ones we either call here directly or that collide
-// with field/variable names elsewhere in the project. New estimator
-// headers downstream can then use names like `beta` freely.
-#undef digamma
-#undef trigamma
-#undef tetragamma
-#undef psigamma
-#undef lgamma
-#undef lbeta
-#undef dnorm
-#undef dpois
-#undef dgeom
-#undef beta
-#undef gamma
 
 namespace mlcore {
 namespace special {
 
-inline double digamma(double x) { return Rf_digamma(x); }
+inline double digamma(double x) { return psigamma_deriv(x, 0); }
 
-inline double trigamma(double x) { return Rf_psigamma(x, 1); }
+inline double trigamma(double x) { return psigamma_deriv(x, 1); }
 
-inline double tetragamma(double x) { return Rf_psigamma(x, 2); }
+inline double tetragamma(double x) { return psigamma_deriv(x, 2); }
 
-inline double psigamma(double x, int deriv) { return Rf_psigamma(x, deriv); }
+inline double psigamma(double x, int deriv) { return psigamma_deriv(x, deriv); }
 
 inline double lgamma(double x) { return std::lgamma(x); }
 
