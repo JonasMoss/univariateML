@@ -550,12 +550,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlbeta_
-Rcpp::List mlbeta_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlbeta_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlbeta_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlbeta_(x, tol, iterlim));
@@ -563,12 +563,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlbetapr_
-Rcpp::List mlbetapr_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlbetapr_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlbetapr_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlbetapr_(x, tol, iterlim));
@@ -801,12 +801,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlkumar_
-Rcpp::List mlkumar_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlkumar_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlkumar_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlkumar_(x, tol, iterlim));

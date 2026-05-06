@@ -99,9 +99,9 @@ Rcpp::List mlllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 
 // Beta
 // [[Rcpp::export]]
-Rcpp::List mlbeta_(const arma::vec &x, double tol = 1.490116e-08,
+Rcpp::List mlbeta_(const Rcpp::NumericVector &x, double tol = 1.490116e-08,
                    int iterlim = 100) {
-  auto res = mlcore::beta_mle(x, tol, iterlim);
+  auto res = mlcore::beta_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
@@ -109,9 +109,10 @@ Rcpp::List mlbeta_(const arma::vec &x, double tol = 1.490116e-08,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlbetapr_(const arma::vec &x, double tol = 1.490116e-08,
+Rcpp::List mlbetapr_(const Rcpp::NumericVector &x, double tol = 1.490116e-08,
                      int iterlim = 100) {
-  mlcore::BetaPrimeResult res = mlcore::betapr_mle(x, tol, iterlim);
+  mlcore::BetaPrimeResult res =
+      mlcore::betapr_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
@@ -409,9 +410,9 @@ Rcpp::List mlgompertz_(const arma::vec &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlkumar_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlkumar_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
-  auto res = mlcore::kumar_mle(x, tol, iterlim);
+  auto res = mlcore::kumar_mle(mlcore::as_span(x), tol, iterlim);
   if (!std::isfinite(res.a) || !std::isfinite(res.b)) {
     Rcpp::stop("Kumaraswamy MLE failed");
   }

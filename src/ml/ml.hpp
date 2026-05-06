@@ -3,7 +3,10 @@
 
 #pragma once
 
+#include "core/inverse_digamma.hpp"
 #include "core/span.hpp"
+#include "estimators/beta.hpp"
+#include "estimators/beta_prime.hpp"
 #include "estimators/cauchy.hpp"
 #include "estimators/discrete_uniform.hpp"
 #include "estimators/exponential.hpp"
@@ -13,6 +16,7 @@
 #include "estimators/inverse_gamma.hpp"
 #include "estimators/inverse_gaussian.hpp"
 #include "estimators/inverse_weibull.hpp"
+#include "estimators/kumaraswamy.hpp"
 #include "estimators/laplace.hpp"
 #include "estimators/logistic.hpp"
 #include "estimators/loglogistic.hpp"
@@ -37,35 +41,6 @@ inline constexpr double kTolDefault = std::sqrt(kSqrtEps); // epsilon^(1/4)
 inline constexpr int kMaxIterDefault = 100;
 
 namespace mlcore {
-
-// ---------- inverse digamma ----------
-inline double inverse_digamma_scalar(double x) {
-  constexpr double GAMMA_C = 0.57721566490153286060;
-  constexpr double ZETA3_C = 1.2020569031595942854;
-  constexpr double PI_C = M_PI;
-  constexpr double PI_SQ_C = PI_C * PI_C;
-
-  double y, r;
-  if (x + GAMMA_C < -30.0) {
-    double t = x + GAMMA_C;
-    double t_inv = 1.0 / t;
-    double t3 = t_inv * t_inv * t_inv;
-    y = -t_inv + (PI_SQ_C / 6.0) * t3 + (ZETA3_C / 2.0) * t3 * t_inv;
-  } else {
-    y = 1.0 / std::log1p(std::exp(-x));
-    for (int i = 0; i < 2; ++i) {
-      r = ::mlcore::special::digamma(y) - x;
-      y -= r / ::mlcore::special::trigamma(y);
-    }
-  }
-  for (int k = 0; k < 2; ++k) {
-    r = ::mlcore::special::digamma(y) - x;
-    if (std::fabs(r) < 1e-14)
-      break;
-    y -= r / ::mlcore::special::trigamma(y);
-  }
-  return y;
-}
 
 // ---------- Burr ----------
 struct RootResult {
@@ -330,89 +305,6 @@ inline BurrMLE burr_mle_core(const arma::vec &x, double c_start, double tol,
                         (k + 1.0) * arma::accu(arma::log1p(xc_final));
 
   return {k, c, logLik, (iter == maxit ? maxit : iter), BurrStatus::Ok};
-}
-
-// ---------- Beta ----------
-struct BetaResult {
-  double alpha;
-  double beta;
-  double logLik;
-  int iterations;
-};
-
-inline BetaResult beta_mle(const arma::vec &x, double tol, int maxit) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-
-  double s = arma::sum(arma::log(x)) / n;
-  double r = arma::sum(arma::log(1.0 - x)) / n;
-  double m = arma::mean(x);
-  double v = arma::mean(arma::square(x)) - m * m;
-
-  double nu = m * (1.0 - m) / v - 1.0;
-  double b = std::log((1.0 - m) * nu);
-
-  int iter = 0;
-  double alpha = NA_REAL;
-  for (iter = 1; iter <= maxit; ++iter) {
-    double exp_b = std::exp(b);
-    double digamma_b = ::mlcore::special::digamma(exp_b);
-    double trigamma_b = ::mlcore::special::trigamma(exp_b);
-
-    double y = s + digamma_b - r;
-
-    // invert digamma for a with a few NR steps
-    alpha = 1.0 / std::log1p(std::exp(-y));
-    for (int k = 0; k < 3; ++k) {
-      double ra = ::mlcore::special::digamma(alpha) - y;
-      alpha -= ra / ::mlcore::special::trigamma(alpha);
-    }
-
-    double f = exp_b * (digamma_b - r - ::mlcore::special::digamma(alpha + exp_b));
-    double df =
-        f + exp_b * exp_b *
-                (trigamma_b - ::mlcore::special::trigamma(alpha + exp_b) *
-                                  (trigamma_b / ::mlcore::special::trigamma(alpha) + 1.0));
-
-    double b0 = b - f / df;
-    if (std::abs((b0 - b) / b0) < tol) {
-      b = b0;
-      break;
-    }
-    b = b0;
-  }
-
-  double beta = std::exp(b);
-  double logLik =
-      n * ((alpha - 1.0) * s + (beta - 1.0) * r - std::lgamma(alpha) -
-           std::lgamma(beta) + std::lgamma(alpha + beta));
-  return {alpha, beta, logLik, iter};
-}
-
-// ---------- Beta prime ----------
-struct BetaPrimeResult {
-  double alpha;
-  double beta;
-  double logLik;
-  int iterations;
-};
-
-inline BetaPrimeResult betapr_mle(const arma::vec &x, double tol, int maxit) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-
-  arma::vec y = x / (1.0 + x);
-  BetaResult br = beta_mle(y, tol, maxit);
-
-  double sum_logx = arma::sum(arma::log(x));
-  double sum_log1px = arma::sum(arma::log1p(x));
-  double logLik = (br.alpha - 1.0) * sum_logx -
-                  (br.alpha + br.beta) * sum_log1px -
-                  static_cast<double>(n) * ::mlcore::special::lbeta(br.alpha, br.beta);
-
-  return {br.alpha, br.beta, logLik, br.iterations};
 }
 
 // ---------- Fatigue life (Birnbaum-Saunders) ----------
@@ -966,77 +858,6 @@ inline GompertzResult gompertz_mle(const arma::vec &x, double tol = kTolDefault,
   return {a, b, logLik, iter, GompertzStatus::Ok};
 }
 
-// ---------- Kumaraswamy ----------
-struct KumarResult {
-  double a;
-  double b;
-  double logLik;
-  int iterations;
-};
-
-inline KumarResult kumar_mle(const arma::vec &x, double tol = kTolDefault,
-                             int maxit = kMaxIterDefault) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-
-  const double mu = arma::mean(arma::log(x));
-  const double sigma2 = arma::mean(arma::square(arma::log(x))) - mu * mu;
-
-  auto f_over_df_lmom = [&](double a0) {
-    const double b = inverse_digamma_scalar(-0.5772156649015328606 - a0 * mu);
-    const double tri = ::mlcore::special::trigamma(b);
-    const double tetra = ::mlcore::special::tetragamma(b);
-    const double basel = M_PI * M_PI / 6.0;
-    const double f = a0 * tri * (basel - tri - a0 * a0 * sigma2);
-    const double df = a0 * tetra * mu - 2.0 * tri * (basel + tri);
-    return f / df;
-  };
-
-  double a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
-  for (int i = 0; i < maxit; ++i) {
-    const double step = f_over_df_lmom(a0);
-    a0 -= step;
-    if (std::abs(step) < (std::abs(a0) * tol + tol))
-      break;
-  }
-  if (a0 <= 0.0)
-    a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
-
-  auto f_over_df = [&](double a) {
-    arma::vec xa = arma::exp(a * arma::log(x));
-    arma::vec z = arma::log(x) / (1.0 - xa);
-
-    const double alpha = arma::mean(arma::log1p(-xa));
-    const double beta = arma::mean(xa % z);
-    const double gamma = arma::mean(xa % arma::square(z));
-
-    const double f = 1.0 / a + mu + (1.0 / alpha + 1.0) * beta;
-    const double df = -1.0 / (a * a) +
-                      (gamma * alpha + beta * beta) / (alpha * alpha) + gamma;
-    return f / df;
-  };
-
-  double a = a0;
-  int iter = 0;
-  for (iter = 1; iter <= maxit; ++iter) {
-    double step = f_over_df(a);
-    a -= step;
-    if (a <= 0.0 || !std::isfinite(a)) {
-      return {NA_REAL, NA_REAL, NA_REAL, iter};
-    }
-    if (std::abs(step) < (std::abs(a) * tol + tol))
-      break;
-  }
-
-  const double b =
-      -static_cast<double>(n) / arma::accu(arma::log1p(-arma::pow(x, a)));
-  const double logLik = static_cast<double>(n) * (std::log(a) + std::log(b)) +
-                        (a - 1.0) * arma::accu(arma::log(x)) +
-                        (b - 1.0) * arma::accu(arma::log1p(-arma::pow(x, a)));
-
-  return {a, b, logLik, iter};
-}
 
 // ---------- Inverse Burr ----------
 struct InvBurrResult {
