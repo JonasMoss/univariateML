@@ -4,7 +4,11 @@
 #pragma once
 
 #include "core/span.hpp"
+#include "estimators/geometric.hpp"
+#include "estimators/laplace.hpp"
 #include "estimators/normal.hpp"
+#include "estimators/pareto.hpp"
+#include "estimators/rayleigh.hpp"
 #include "special/special.hpp"
 #include <RcppArmadillo.h>
 #include <cmath>
@@ -828,77 +832,6 @@ inline FatigueResult fatigue_mle(const arma::vec &x, double tol, int maxit) {
   }
 
   return {alpha, beta, logLik, iter};
-}
-
-struct LaplaceResult {
-  double mu;
-  double sigma;
-  double logLik;
-};
-
-struct GeomResult {
-  double prob;
-  double logLik;
-};
-
-struct ParetoResult {
-  double shape;
-  double min;
-  double logLik;
-};
-
-struct RayleighResult {
-  double sigma;
-  double logLik;
-};
-
-inline LaplaceResult laplace_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  arma::vec sorted = arma::sort(x);
-  double mu = sorted[n / 2];
-  double sigma = arma::mean(arma::abs(x - mu));
-  double logLik = -n * (1.0 + std::log(2.0 * sigma));
-  return {mu, sigma, logLik};
-}
-
-inline GeomResult geom_mle(const arma::ivec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL};
-  double prob = 1.0 / (arma::mean(arma::conv_to<arma::vec>::from(x)) + 1.0);
-  double logLik = 0.0;
-  for (int i = 0; i < n; ++i) {
-    logLik += ::mlcore::special::dgeom(static_cast<double>(x[i]), prob, 1);
-  }
-  return {prob, logLik};
-}
-
-inline ParetoResult pareto_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  double xmin = x.min();
-  if (xmin <= 0.0)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  double alpha = n / arma::accu(arma::log(x / xmin));
-  double logLik = n * std::log(alpha) + n * alpha * std::log(xmin) -
-                  (alpha + 1.0) * arma::accu(arma::log(x));
-  return {alpha, xmin, logLik};
-}
-
-inline RayleighResult rayleigh_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL};
-  double sigma2 = arma::mean(arma::square(x)) / 2.0;
-  if (sigma2 <= 0.0)
-    return {NA_REAL, NA_REAL};
-  double sigma = std::sqrt(sigma2);
-  double logLik = arma::accu(arma::log(x)) - 2.0 * n * std::log(sigma) -
-                  arma::accu(arma::square(x)) / (2.0 * sigma2);
-  return {sigma, logLik};
 }
 
 // Binomial (Newton on size)

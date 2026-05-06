@@ -182,8 +182,9 @@ Rcpp::List mlnorm_(const Rcpp::NumericVector &x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List mllaplace_(const arma::vec &x) {
-  auto res = mlcore::laplace_mle(x);
+Rcpp::List mllaplace_(const Rcpp::NumericVector &x) {
+  auto res = mlcore::laplace_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["mu"] = res.mu,
                                 Rcpp::_["sigma"] = res.sigma),
@@ -192,16 +193,17 @@ Rcpp::List mllaplace_(const arma::vec &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mlgeom_(const Rcpp::IntegerVector &x) {
-  arma::ivec xi = Rcpp::as<arma::ivec>(x);
-  auto res = mlcore::geom_mle(xi);
+  auto res = mlcore::geom_mle(
+      mlcore::ispan{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["prob"] = res.prob),
                             Rcpp::_["logLik"] = res.logLik);
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlpareto_(const arma::vec &x) {
-  auto res = mlcore::pareto_mle(x);
+Rcpp::List mlpareto_(const Rcpp::NumericVector &x) {
+  auto res = mlcore::pareto_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["shape"] = res.shape,
                                 Rcpp::_["min"] = res.min),
@@ -209,8 +211,9 @@ Rcpp::List mlpareto_(const arma::vec &x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlrayleigh_(const arma::vec &x) {
-  auto res = mlcore::rayleigh_mle(x);
+Rcpp::List mlrayleigh_(const Rcpp::NumericVector &x) {
+  auto res = mlcore::rayleigh_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["sigma"] = res.sigma),
                             Rcpp::_["logLik"] = res.logLik);

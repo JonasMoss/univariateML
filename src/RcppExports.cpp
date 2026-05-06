@@ -657,12 +657,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mllaplace_
-Rcpp::List mllaplace_(const arma::vec& x);
+Rcpp::List mllaplace_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mllaplace_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mllaplace_(x));
     return rcpp_result_gen;
 END_RCPP
@@ -679,23 +679,23 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlpareto_
-Rcpp::List mlpareto_(const arma::vec& x);
+Rcpp::List mlpareto_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mlpareto_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mlpareto_(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // mlrayleigh_
-Rcpp::List mlrayleigh_(const arma::vec& x);
+Rcpp::List mlrayleigh_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mlrayleigh_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mlrayleigh_(x));
     return rcpp_result_gen;
 END_RCPP
