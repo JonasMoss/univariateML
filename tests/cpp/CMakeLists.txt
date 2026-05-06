@@ -49,6 +49,19 @@ target_compile_options(mlcore_tests PRIVATE
 # then drops `-lR` because no symbol has been demanded yet.
 target_link_libraries(mlcore_tests PRIVATE ${R_LDFLAGS_LIST})
 
+# --- the BFGS smoke-test binary -------------------------------------------
+add_executable(bfgs_tests test_bfgs.cpp)
+set_target_properties(bfgs_tests PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+target_include_directories(bfgs_tests PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src)
+
+target_compile_options(bfgs_tests PRIVATE
+  -Wall -Wextra -Wpedantic ${R_CPPFLAGS_LIST})
+
+target_link_libraries(bfgs_tests PRIVATE ${R_LDFLAGS_LIST})
+
 # --- ctest registration ----------------------------------------------------
 enable_testing()
 add_test(
@@ -57,3 +70,8 @@ add_test(
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 set_tests_properties(mlcore_tests PROPERTIES
   ENVIRONMENT "UMVL_GOLDEN_DIR=${CMAKE_CURRENT_SOURCE_DIR}/../golden")
+
+add_test(
+  NAME bfgs_tests
+  COMMAND bfgs_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
