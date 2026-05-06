@@ -120,9 +120,9 @@ Rcpp::List mlbetapr_(const arma::vec &x, double tol = 1.490116e-08,
 
 // Gamma
 // [[Rcpp::export]]
-Rcpp::List mlgamma_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
-  auto res = mlcore::gamma_mle(x, tol, iterlim);
+  auto res = mlcore::gamma_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
@@ -377,9 +377,9 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlnaka_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                    int iterlim = 100) {
-  auto res = mlcore::naka_mle(x, tol, iterlim);
+  auto res = mlcore::naka_mle(mlcore::as_span(x), tol, iterlim);
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale)) {
     Rcpp::stop("Nakagami MLE failed");
   }
@@ -476,9 +476,9 @@ Rcpp::List mlinvweibull_(const Rcpp::NumericVector &x,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlinvgamma_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlinvgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                        int iterlim = 100) {
-  auto res = mlcore::invgamma_mle(x, tol, iterlim);
+  auto res = mlcore::invgamma_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
@@ -500,17 +500,26 @@ Rcpp::List mlpower_(const Rcpp::NumericVector &x,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mllgamma_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                      int iterlim = 100) {
-  arma::vec y = arma::log(x);
-  auto res = mlcore::gamma_mle(y, tol, iterlim);
-  double shapelog = res.shape;
-  double ratelog = res.rate;
-  double n = static_cast<double>(x.n_elem);
-  double L = arma::mean(y);
-  double K = arma::mean(arma::log(y));
-  double logLik = n * (shapelog * std::log(ratelog) - std::lgamma(shapelog) +
-                       (shapelog - 1.0) * K - (ratelog + 1.0) * L);
+  const std::size_t n = static_cast<std::size_t>(x.size());
+  std::vector<double> y(n);
+  double sum_y = 0.0, sum_log_y = 0.0;
+  for (std::size_t i = 0; i < n; ++i) {
+    y[i] = std::log(x[i]);
+    sum_y += y[i];
+    sum_log_y += std::log(y[i]);
+  }
+  auto res =
+      mlcore::gamma_mle(mlcore::span{y.data(), n}, tol, iterlim);
+  const double shapelog = res.shape;
+  const double ratelog = res.rate;
+  const double dn = static_cast<double>(n);
+  const double L = sum_y / dn;
+  const double K = sum_log_y / dn;
+  const double logLik =
+      dn * (shapelog * std::log(ratelog) - std::lgamma(shapelog) +
+            (shapelog - 1.0) * K - (ratelog + 1.0) * L);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shapelog"] = shapelog, Rcpp::_["ratelog"] = ratelog),

@@ -7,8 +7,10 @@
 #include "estimators/cauchy.hpp"
 #include "estimators/discrete_uniform.hpp"
 #include "estimators/exponential.hpp"
+#include "estimators/gamma.hpp"
 #include "estimators/geometric.hpp"
 #include "estimators/gumbel.hpp"
+#include "estimators/inverse_gamma.hpp"
 #include "estimators/inverse_gaussian.hpp"
 #include "estimators/inverse_weibull.hpp"
 #include "estimators/laplace.hpp"
@@ -16,6 +18,7 @@
 #include "estimators/loglogistic.hpp"
 #include "estimators/lognormal.hpp"
 #include "estimators/logitnormal.hpp"
+#include "estimators/nakagami.hpp"
 #include "estimators/normal.hpp"
 #include "estimators/pareto.hpp"
 #include "estimators/poisson.hpp"
@@ -412,47 +415,6 @@ inline BetaPrimeResult betapr_mle(const arma::vec &x, double tol, int maxit) {
   return {br.alpha, br.beta, logLik, br.iterations};
 }
 
-// ---------- Gamma ----------
-struct GammaResult {
-  double shape;
-  double rate;
-  double logLik;
-  int iterations;
-};
-
-inline GammaResult gamma_mle(const arma::vec &x, double tol, int maxit) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-
-  double mean_hat = arma::mean(x);
-  double lx_bar = arma::mean(arma::log(x));
-  double s = std::log(mean_hat) - lx_bar;
-
-  auto f_over_df = [s](double shape0) {
-    return (std::log(shape0) - ::mlcore::special::digamma(shape0) - s) /
-           (1.0 / shape0 - ::mlcore::special::trigamma(shape0));
-  };
-
-  double shape0 = 1.0 / (12.0 * s) *
-                      (3.0 - s + std::sqrt((s - 3.0) * (s - 3.0) + 24.0 * s)) *
-                      0.9989 +
-                  0.0102;
-  double shape = shape0;
-  int iter = 0;
-  for (iter = 1; iter <= maxit; ++iter) {
-    double step = f_over_df(shape);
-    shape -= step;
-    if (std::abs(step) < tol)
-      break;
-  }
-  double rate = shape / mean_hat;
-  double logLik = n * (shape * std::log(rate) - std::lgamma(shape) +
-                       (shape - 1.0) * lx_bar - rate * mean_hat);
-  return {shape, rate, logLik, iter};
-}
-
-
 // ---------- Fatigue life (Birnbaum-Saunders) ----------
 struct FatigueResult {
   double alpha;
@@ -627,32 +589,6 @@ inline BinomResult binom_mle(const arma::ivec &x,
 
   double prob = x_bar / best_size;
   return {best_size, prob, best_ll, iterations, BinomStatus::Ok};
-}
-
-// ---------- Inverse Gamma ----------
-struct InvGammaResult {
-  double shape;
-  double rate;
-  double logLik;
-  int iterations;
-};
-
-inline InvGammaResult invgamma_mle(const arma::vec &x, double tol = kTolDefault,
-                                   int maxit = kMaxIterDefault) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-
-  arma::vec invx = 1.0 / x;
-  GammaResult g = gamma_mle(invx, tol, maxit);
-
-  const double L = arma::mean(arma::log(x));
-  const double M = arma::mean(invx);
-  const double logLik = static_cast<double>(n) *
-                        (g.shape * std::log(g.rate) - std::lgamma(g.shape) -
-                         (g.shape + 1.0) * L - g.rate * M);
-
-  return {g.shape, g.rate, logLik, g.iterations};
 }
 
 // ---------- Lomax ----------
@@ -963,33 +899,6 @@ inline NbinomResult nbinom_mle(const arma::ivec &x, double tol = kTolDefault,
   const double prob = size / (x_bar + size);
   const double ll = log_likelihood(size);
   return {size, prob, ll, iter, false};
-}
-
-// ---------- Nakagami ----------
-struct NakaResult {
-  double shape;
-  double scale;
-  double logLik;
-  int iterations;
-};
-
-inline NakaResult naka_mle(const arma::vec &x, double tol = kTolDefault,
-                           int maxit = kMaxIterDefault) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-  arma::vec x2 = arma::square(x);
-  GammaResult g = gamma_mle(x2, tol, maxit);
-  double shape = g.shape;
-  double scale = (shape / g.rate);
-
-  const double logLik =
-      static_cast<double>(n) * (shape * std::log(shape) + std::log(2.0) -
-                                std::lgamma(shape) - shape * std::log(scale)) +
-      (2.0 * shape - 1.0) * arma::accu(arma::log(x)) -
-      (shape / scale) * arma::accu(x2);
-
-  return {shape, scale, logLik, g.iterations};
 }
 
 // ---------- Gompertz ----------

@@ -576,12 +576,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlgamma_
-Rcpp::List mlgamma_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlgamma_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlgamma_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlgamma_(x, tol, iterlim));
@@ -775,12 +775,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlnaka_
-Rcpp::List mlnaka_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlnaka_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlnaka_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlnaka_(x, tol, iterlim));
@@ -864,12 +864,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlinvgamma_
-Rcpp::List mlinvgamma_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlinvgamma_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlinvgamma_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlinvgamma_(x, tol, iterlim));
@@ -889,12 +889,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mllgamma_
-Rcpp::List mllgamma_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mllgamma_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mllgamma_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mllgamma_(x, tol, iterlim));
