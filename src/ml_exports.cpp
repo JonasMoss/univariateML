@@ -561,6 +561,25 @@ Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
 }
 
 // [[Rcpp::export]]
+Rcpp::List mlstd_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
+                  int iterlim = 200) {
+  auto res = mlcore::student_t_mle(mlcore::as_span(x), tol, iterlim);
+  if (res.status == mlcore::StudentTStatus::InvalidStart) {
+    Rcpp::stop("Student-t MLE requires at least 2 finite observations with "
+               "positive variance.");
+  }
+  if (res.status != mlcore::StudentTStatus::Ok || !std::isfinite(res.mu) ||
+      !std::isfinite(res.sigma) || !std::isfinite(res.nu)) {
+    Rcpp::stop("Student-t MLE failed to converge (check inputs)");
+  }
+  return Rcpp::List::create(
+      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+          Rcpp::_["mean"] = res.mu, Rcpp::_["sd"] = res.sigma,
+          Rcpp::_["nu"] = res.nu),
+      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
+}
+
+// [[Rcpp::export]]
 Rcpp::List mlparalogis_(const Rcpp::NumericVector &x,
                         double tol = 1.220703e-4, int iterlim = 100) {
   auto res =

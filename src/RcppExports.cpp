@@ -912,6 +912,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mlstd_
+Rcpp::List mlstd_(const Rcpp::NumericVector& x, double tol, int iterlim);
+RcppExport SEXP _univariateML_mlstd_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlstd_(x, tol, iterlim));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mlparalogis_
 Rcpp::List mlparalogis_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlparalogis_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
@@ -1115,6 +1128,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlpower_", (DL_FUNC) &_univariateML_mlpower_, 2},
     {"_univariateML_mllgamma_", (DL_FUNC) &_univariateML_mllgamma_, 3},
     {"_univariateML_mlinvgauss_", (DL_FUNC) &_univariateML_mlinvgauss_, 1},
+    {"_univariateML_mlstd_", (DL_FUNC) &_univariateML_mlstd_, 3},
     {"_univariateML_mlparalogis_", (DL_FUNC) &_univariateML_mlparalogis_, 3},
     {"_univariateML_mllomax_", (DL_FUNC) &_univariateML_mllomax_, 3},
     {"_univariateML_special_digamma_cpp", (DL_FUNC) &_univariateML_special_digamma_cpp, 1},

@@ -44,6 +44,7 @@
 #include "estimators/poisson.hpp"
 #include "estimators/power.hpp"
 #include "estimators/rayleigh.hpp"
+#include "estimators/student_t.hpp"
 #include "estimators/uniform.hpp"
 #include "estimators/weibull.hpp"
 #include "estimators/zip.hpp"

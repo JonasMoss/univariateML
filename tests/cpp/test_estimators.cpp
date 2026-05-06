@@ -20,7 +20,7 @@
 // the mapping explicitly.
 //
 // Skipped here (no mlcore implementation yet, R-side only):
-//   ged, sged, snorm, sstd, std       (WS4 in progress)
+//   ged, sged, snorm, sstd       (WS4 in progress)
 //   lgamma is wrapper-only; covered by re-running gamma_mle on log(x).
 //
 // Each WS4 estimator additionally pairs the golden check with a
@@ -296,6 +296,23 @@ TEST_CASE("fatigue") {
   // Wrapper hardcodes mu=0; golden also stores 0.
   CHECK(g.estimates.at("mu") == 0.0);
   CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("std (Student-t with location/scale)") {
+  auto g = load("std");
+  auto r = mlcore::student_t_mle(mltest::as_span(g.data), kFitTol, 200);
+  CHECK(r.mu == APPROX(g.estimates.at("mean")));
+  CHECK(r.sigma == APPROX(g.estimates.at("sd")));
+  CHECK(r.nu == APPROX(g.estimates.at("nu")));
+  CHECK(r.logLik == APPROX(g.logLik));
+
+  mlcore::StudentTCost cost{mltest::as_span(g.data)};
+  const double phi_hat[3] = {r.mu, std::log(r.sigma), std::log(r.nu - 2.0)};
+  double grad[3];
+  mlcore::finite_diff_gradient(cost, phi_hat, grad);
+  const double gnorm =
+      std::sqrt(grad[0] * grad[0] + grad[1] * grad[1] + grad[2] * grad[2]);
+  CHECK(gnorm < 1e-3);
 }
 
 TEST_CASE("paralogis") {

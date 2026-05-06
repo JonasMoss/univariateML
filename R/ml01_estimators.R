@@ -21,8 +21,3 @@ mlsstd_ <- function(x, ...) {
   list(estimates = fit[["par"]], logLik = -fit$objective)
 }
 
-mlstd_ <- function(x, ...) {
-  fit <- suppressWarnings(stdFit(x, ...))
-  list(estimates = fit[["par"]], logLik = -fit$objective)
-}
-
