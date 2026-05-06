@@ -7,6 +7,7 @@
 #include "core/span.hpp"
 #include "estimators/beta.hpp"
 #include "estimators/beta_prime.hpp"
+#include "estimators/binomial.hpp"
 #include "estimators/burr.hpp"
 #include "estimators/cauchy.hpp"
 #include "estimators/discrete_uniform.hpp"
@@ -22,12 +23,14 @@
 #include "estimators/inverse_weibull.hpp"
 #include "estimators/kumaraswamy.hpp"
 #include "estimators/laplace.hpp"
+#include "estimators/log_series.hpp"
 #include "estimators/logistic.hpp"
 #include "estimators/loglogistic.hpp"
 #include "estimators/lognormal.hpp"
 #include "estimators/lomax.hpp"
 #include "estimators/logitnormal.hpp"
 #include "estimators/nakagami.hpp"
+#include "estimators/negative_binomial.hpp"
 #include "estimators/normal.hpp"
 #include "estimators/pareto.hpp"
 #include "estimators/poisson.hpp"
@@ -35,6 +38,8 @@
 #include "estimators/rayleigh.hpp"
 #include "estimators/uniform.hpp"
 #include "estimators/weibull.hpp"
+#include "estimators/zip.hpp"
+#include "estimators/zipf.hpp"
 #include "special/special.hpp"
 #include <RcppArmadillo.h>
 #include <cmath>
@@ -281,27 +286,9 @@ inline BurrMLE burr_mle_core(const arma::vec &x, double c_start, double tol,
 }
 #endif
 
-// Binomial (Newton on size)
-enum class BinomStatus {
-  Ok = 0,
-  SizeTooSmall,
-  Underdispersed,
-  IterationFailure
-};
 
-struct BinomResult {
-  double size;
-  double prob;
-  double logLik;
-  int iterations;
-  BinomStatus status;
-};
-
-inline double lchoose(double n, double k) {
-  return ::mlcore::special::lgamma(n + 1.0) - ::mlcore::special::lgamma(k + 1.0) - ::mlcore::special::lgamma(n - k + 1.0);
-}
-
-inline BinomResult binom_mle(const arma::ivec &x,
+#if 0
+inline BinomResult binom_mle_legacy(const arma::ivec &x,
                              Rcpp::Nullable<double> size_arg, double tol,
                              int maxit) {
   const int n = static_cast<int>(x.n_elem);
@@ -396,8 +383,10 @@ inline BinomResult binom_mle(const arma::ivec &x,
   double prob = x_bar / best_size;
   return {best_size, prob, best_ll, iterations, BinomStatus::Ok};
 }
+#endif
 
-// ---------- Zero-inflated Poisson ----------
+// ---------- Zero-inflated Poisson (legacy, migrated) ----------
+#if 0
 struct ZipResult {
   double lambda;
   double pi;
@@ -636,5 +625,6 @@ inline NbinomResult nbinom_mle(const arma::ivec &x, double tol = kTolDefault,
   const double ll = log_likelihood(size);
   return {size, prob, ll, iter, false};
 }
+#endif
 
 } // namespace mlcore

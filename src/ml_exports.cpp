@@ -257,8 +257,10 @@ Rcpp::List mlrayleigh_(const Rcpp::NumericVector &x) {
 Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
                     Rcpp::Nullable<double> size = R_NilValue,
                     double tol = 1.220703e-4, int iterlim = 100) {
-  arma::ivec xi = Rcpp::as<arma::ivec>(x);
-  auto res = mlcore::binom_mle(xi, size, tol, iterlim);
+  const double size_or_nan = size.isNotNull()
+                                 ? Rcpp::as<double>(size)
+                                 : std::numeric_limits<double>::quiet_NaN();
+  auto res = mlcore::binom_mle(mlcore::as_ispan(x), size_or_nan, tol, iterlim);
   if (res.status == mlcore::BinomStatus::SizeTooSmall) {
     Rcpp::stop("`size` is smaller than `max(x)`.");
   }
@@ -303,8 +305,7 @@ Rcpp::List mlzip_(const Rcpp::IntegerVector &x) {
       std::all_of(x.begin(), x.end(), [](int v) { return v == 0; })) {
     Rcpp::warning("all observations are zero");
   }
-  arma::ivec xi = Rcpp::as<arma::ivec>(x);
-  auto res = mlcore::zip_mle(xi);
+  auto res = mlcore::zip_mle(mlcore::as_ispan(x));
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["lambda"] = res.lambda, Rcpp::_["pi"] = res.pi),
@@ -314,7 +315,6 @@ Rcpp::List mlzip_(const Rcpp::IntegerVector &x) {
 // [[Rcpp::export]]
 Rcpp::List mlzipf_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
                    int iterlim = 100) {
-  arma::ivec xi = Rcpp::as<arma::ivec>(x);
   if (x.size() == 0) {
     Rcpp::stop("x must have positive length");
   }
@@ -323,7 +323,7 @@ Rcpp::List mlzipf_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
     Rcpp::warning("all observations are zero");
   }
 
-  auto res = mlcore::zipf_mle(xi, tol, iterlim);
+  auto res = mlcore::zipf_mle(mlcore::as_ispan(x), tol, iterlim);
   if (res.status == mlcore::ZipfStatus::AllOnes) {
     Rcpp::warning("All observations are equal to 1. The maximum likelihood "
                   "estimator is not unique.");
@@ -356,9 +356,10 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
     Rcpp::warning("All observations are 0; the maximum likelihood estimator is "
                   "not unique.");
   }
-  arma::ivec xi = Rcpp::as<arma::ivec>(x);
+  double sum_x = 0.0;
+  for (int v : x) sum_x += static_cast<double>(v);
+  const double x_bar = sum_x / static_cast<double>(x.size());
 
-  double x_bar = arma::mean(arma::conv_to<arma::vec>::from(xi));
   double size_out = NA_REAL;
   double prob_out = NA_REAL;
   double loglik_out = NA_REAL;
@@ -368,7 +369,7 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
     size_out = static_cast<double>(Rcpp::as<int>(size));
     prob_out = size_out / (x_bar + size_out);
     double ll = 0.0;
-    for (int v : xi) {
+    for (int v : x) {
       ll += Rf_dnbinom(static_cast<double>(v), size_out, prob_out,
                        /*give_log=*/1);
     }
@@ -376,10 +377,10 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
   } else {
     if (x_bar == 0.0) {
       size_out = 1.0;
-      prob_out = 1.0; // logLik -> -Inf, but tests only check warning/estimate
+      prob_out = 1.0;
       loglik_out = R_NegInf;
     } else {
-      auto res = mlcore::nbinom_mle(xi, tol, iterlim);
+      auto res = mlcore::nbinom_mle(mlcore::as_ispan(x), tol, iterlim);
       if (res.underdispersed) {
         Rcpp::stop("The maximum likelihood estimator does not exist for "
                    "underdispersed data, but converges to a Poisson. Use "
@@ -461,8 +462,7 @@ Rcpp::List mlinvburr_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 
 // [[Rcpp::export]]
 Rcpp::List mllgser_(const Rcpp::IntegerVector &x) {
-  arma::ivec xi = Rcpp::as<arma::ivec>(x);
-  auto res = mlcore::lgser_mle(xi);
+  auto res = mlcore::lgser_mle(mlcore::as_ispan(x));
   if (res.all_ones) {
     Rcpp::stop("All observations equals 1; the maximum likelihood estimator "
                "does not exist.");
