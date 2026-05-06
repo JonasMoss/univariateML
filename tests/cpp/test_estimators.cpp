@@ -1,18 +1,27 @@
 // C++ regression tests for the standalone ML core.
 //
-// Each test case:
+// Each TEST_CASE:
 //  1. Loads tests/golden/<id>.json (data + recorded estimates + logLik).
-//  2. Runs the corresponding mlcore::*_mle() function.
-//  3. Asserts params and logLik to 1e-10 vs the recorded values.
+//  2. Runs the corresponding mlcore::*_mle() function on the same data.
+//  3. Asserts each parameter and the logLik to 1e-10 vs the recorded values.
 //
-// The R-side test_golden_regression.R provides the equivalent check
-// from the wrapper layer at 1e-12. This harness is the analog
-// guarantee from the C++ side: refactors that don't change algorithms
-// must reproduce the goldens, even with no R install on PATH (once
-// WS3's standalone-Rmath build lands).
+// The R-side test_golden_regression.R checks the same thing through the
+// Rcpp wrapper layer at 1e-12. This C++ harness verifies the analog from
+// the standalone side: refactors that don't change algorithms must
+// reproduce the goldens, even with no R install on PATH (once WS3 task #4
+// vendors a standalone Rmath build).
 //
-// New cases will be added as remaining estimators are migrated and
-// the harness expands (see WS3 task #3).
+// Estimate-key mapping
+// --------------------
+// Golden "estimates" keys come from metadata/models.json (canonical param
+// names). C++ Result struct fields come from the estimator-author choice.
+// They do not always match (e.g. golden "a"/"b" vs CauchyResult.mu/scale,
+// pareto's "a"/"b" vs ParetoResult.shape/min). Each test below resolves
+// the mapping explicitly.
+//
+// Skipped here (no mlcore implementation yet, R-side only):
+//   ged, paralogis, sged, snorm, sstd, std       (WS4)
+//   lgamma is wrapper-only; covered by re-running gamma_mle on log(x).
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
@@ -22,14 +31,18 @@
 
 #include <cstdlib>
 #include <string>
+#include <vector>
 
 namespace {
 
+// Relative tolerance vs the goldens. R-side is 1e-12; we hold ourselves to
+// 1e-10 here to absorb the trivial FP drift that comes from skipping the
+// Rcpp wrapper layer (e.g. one fewer assignment-induced rounding).
 constexpr double kTol = 1e-10;
 
 std::string golden_path(const std::string &id) {
-  // CMake passes UMVL_GOLDEN_DIR; fall back to a relative path for
-  // editor-driven runs (run from the package root).
+  // CMake passes UMVL_GOLDEN_DIR via ctest env; fall back to a relative
+  // path so the binary can be run by hand from the package root.
   const char *dir = std::getenv("UMVL_GOLDEN_DIR");
   std::string base = dir ? dir : "tests/golden";
   return base + "/" + id + ".json";
@@ -39,27 +52,358 @@ mltest::Golden load(const std::string &id) {
   return mltest::load_golden(golden_path(id));
 }
 
+std::vector<int> as_ints(const std::vector<double> &v) {
+  std::vector<int> out;
+  out.reserve(v.size());
+  for (double d : v) out.push_back(static_cast<int>(d));
+  return out;
+}
+
+mlcore::ispan as_ispan(const std::vector<int> &v) {
+  return {v.data(), v.size()};
+}
+
+#define APPROX(x) doctest::Approx(x).epsilon(kTol)
+
+// Default tol/maxit used by the Rcpp wrappers in src/ml_exports.cpp.
+// Most estimators use kFitTol; beta/betapr/power use the tighter
+// kFitTolTight = sqrt(.Machine$double.eps).
+constexpr double kFitTol = 1.220703e-4;
+constexpr double kFitTolTight = 1.490116e-08;
+constexpr int kFitMaxit = 100;
+
 }  // namespace
 
-TEST_CASE("normal MLE matches golden") {
-  const auto g = load("norm");
-  const auto fit = mlcore::norm_mle(mltest::as_span(g.data));
-  CHECK(fit.mean == doctest::Approx(g.estimates.at("mean")).epsilon(kTol));
-  CHECK(fit.sd == doctest::Approx(g.estimates.at("sd")).epsilon(kTol));
-  CHECK(fit.logLik == doctest::Approx(g.logLik).epsilon(kTol));
+// -- closed-form continuous --------------------------------------------------
+
+TEST_CASE("norm") {
+  auto g = load("norm");
+  auto r = mlcore::norm_mle(mltest::as_span(g.data));
+  CHECK(r.mean == APPROX(g.estimates.at("mean")));
+  CHECK(r.sd == APPROX(g.estimates.at("sd")));
+  CHECK(r.logLik == APPROX(g.logLik));
 }
 
-TEST_CASE("exponential MLE matches golden") {
-  const auto g = load("exp");
-  const auto fit = mlcore::exp_mle(mltest::as_span(g.data));
-  CHECK(fit.rate == doctest::Approx(g.estimates.at("rate")).epsilon(kTol));
-  CHECK(fit.logLik == doctest::Approx(g.logLik).epsilon(kTol));
+TEST_CASE("exp") {
+  auto g = load("exp");
+  auto r = mlcore::exp_mle(mltest::as_span(g.data));
+  CHECK(r.rate == APPROX(g.estimates.at("rate")));
+  CHECK(r.logLik == APPROX(g.logLik));
 }
 
-TEST_CASE("laplace MLE matches golden") {
-  const auto g = load("laplace");
-  const auto fit = mlcore::laplace_mle(mltest::as_span(g.data));
-  CHECK(fit.mu == doctest::Approx(g.estimates.at("mu")).epsilon(kTol));
-  CHECK(fit.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(kTol));
-  CHECK(fit.logLik == doctest::Approx(g.logLik).epsilon(kTol));
+TEST_CASE("laplace") {
+  auto g = load("laplace");
+  auto r = mlcore::laplace_mle(mltest::as_span(g.data));
+  CHECK(r.mu == APPROX(g.estimates.at("mu")));
+  CHECK(r.sigma == APPROX(g.estimates.at("sigma")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("rayleigh") {
+  auto g = load("rayleigh");
+  auto r = mlcore::rayleigh_mle(mltest::as_span(g.data));
+  CHECK(r.sigma == APPROX(g.estimates.at("sigma")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("unif") {
+  auto g = load("unif");
+  auto r = mlcore::unif_mle(mltest::as_span(g.data));
+  CHECK(r.min == APPROX(g.estimates.at("min")));
+  CHECK(r.max == APPROX(g.estimates.at("max")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("pareto") {
+  auto g = load("pareto");
+  auto r = mlcore::pareto_mle(mltest::as_span(g.data));
+  // golden "a" → ParetoResult.shape, "b" → .min
+  CHECK(r.shape == APPROX(g.estimates.at("a")));
+  CHECK(r.min == APPROX(g.estimates.at("b")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("lnorm") {
+  auto g = load("lnorm");
+  auto r = mlcore::lognormal_mle(mltest::as_span(g.data));
+  CHECK(r.meanlog == APPROX(g.estimates.at("meanlog")));
+  CHECK(r.sdlog == APPROX(g.estimates.at("sdlog")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("logitnorm") {
+  auto g = load("logitnorm");
+  auto r = mlcore::logitnorm_mle(mltest::as_span(g.data));
+  CHECK(r.mu == APPROX(g.estimates.at("mu")));
+  CHECK(r.sigma == APPROX(g.estimates.at("sigma")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("invgauss") {
+  auto g = load("invgauss");
+  auto r = mlcore::invgauss_mle(mltest::as_span(g.data));
+  CHECK(r.mu == APPROX(g.estimates.at("mean")));
+  CHECK(r.lambda == APPROX(g.estimates.at("shape")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("power") {
+  auto g = load("power");
+  auto r = mlcore::power_mle(mltest::as_span(g.data), kFitTolTight);
+  CHECK(r.alpha == APPROX(g.estimates.at("alpha")));
+  CHECK(r.beta == APPROX(g.estimates.at("beta")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+// -- iterative continuous ----------------------------------------------------
+
+TEST_CASE("cauchy") {
+  auto g = load("cauchy");
+  auto r = mlcore::fit_cauchy(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.mu == APPROX(g.estimates.at("location")));
+  CHECK(r.scale == APPROX(g.estimates.at("scale")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("gumbel") {
+  auto g = load("gumbel");
+  auto r = mlcore::fit_gumbel_newton(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.mu == APPROX(g.estimates.at("mu")));
+  CHECK(r.sigma == APPROX(g.estimates.at("sigma")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("logis") {
+  auto g = load("logis");
+  auto r = mlcore::logistic_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.mu == APPROX(g.estimates.at("location")));
+  CHECK(r.scale == APPROX(g.estimates.at("scale")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("llogis") {
+  auto g = load("llogis");
+  auto r = mlcore::loglogistic_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape == APPROX(g.estimates.at("shape")));
+  CHECK(r.rate == APPROX(g.estimates.at("rate")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("weibull") {
+  auto g = load("weibull");
+  auto r = mlcore::weibull_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape == APPROX(g.estimates.at("shape")));
+  CHECK(r.scale == APPROX(g.estimates.at("scale")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("invweibull") {
+  auto g = load("invweibull");
+  auto r =
+      mlcore::invweibull_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape == APPROX(g.estimates.at("shape")));
+  CHECK(r.rate == APPROX(g.estimates.at("rate")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("gamma") {
+  auto g = load("gamma");
+  auto r = mlcore::gamma_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape == APPROX(g.estimates.at("shape")));
+  CHECK(r.rate == APPROX(g.estimates.at("rate")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("invgamma") {
+  auto g = load("invgamma");
+  auto r = mlcore::invgamma_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape == APPROX(g.estimates.at("alpha")));
+  CHECK(r.rate == APPROX(g.estimates.at("beta")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("naka") {
+  auto g = load("naka");
+  auto r = mlcore::naka_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape == APPROX(g.estimates.at("shape")));
+  CHECK(r.scale == APPROX(g.estimates.at("scale")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("beta") {
+  auto g = load("beta");
+  auto r = mlcore::beta_mle(mltest::as_span(g.data), kFitTolTight, kFitMaxit);
+  CHECK(r.alpha == APPROX(g.estimates.at("shape1")));
+  CHECK(r.beta == APPROX(g.estimates.at("shape2")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("betapr") {
+  auto g = load("betapr");
+  auto r = mlcore::betapr_mle(mltest::as_span(g.data), kFitTolTight, kFitMaxit);
+  CHECK(r.alpha == APPROX(g.estimates.at("shape1")));
+  CHECK(r.beta == APPROX(g.estimates.at("shape2")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("kumar") {
+  auto g = load("kumar");
+  auto r = mlcore::kumar_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.a == APPROX(g.estimates.at("a")));
+  CHECK(r.b == APPROX(g.estimates.at("b")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("burr") {
+  auto g = load("burr");
+  // Wrapper seeds c via burr_lmom from log moments.
+  const std::size_t n = g.data.size();
+  double sum_lx = 0.0, sum_lx_sq = 0.0;
+  for (double v : g.data) {
+    const double lx = std::log(v);
+    sum_lx += lx;
+    sum_lx_sq += lx * lx;
+  }
+  const double m1 = sum_lx / static_cast<double>(n);
+  const double m2 = sum_lx_sq / static_cast<double>(n) - m1 * m1;
+  const double c0 = mlcore::burr_lmom_core(m1, m2, true).c;
+  auto r = mlcore::burr_mle_core(mltest::as_span(g.data), c0, kFitTol,
+                                 kFitMaxit);
+  CHECK(r.shape1 == APPROX(g.estimates.at("shape1")));
+  CHECK(r.shape2 == APPROX(g.estimates.at("shape2")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("invburr") {
+  auto g = load("invburr");
+  auto r = mlcore::invburr_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape1 == APPROX(g.estimates.at("shape1")));
+  CHECK(r.shape2 == APPROX(g.estimates.at("shape2")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("fatigue") {
+  auto g = load("fatigue");
+  auto r = mlcore::fatigue_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.alpha == APPROX(g.estimates.at("alpha")));
+  CHECK(r.beta == APPROX(g.estimates.at("beta")));
+  // Wrapper hardcodes mu=0; golden also stores 0.
+  CHECK(g.estimates.at("mu") == 0.0);
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("lomax") {
+  auto g = load("lomax");
+  auto r = mlcore::lomax_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.lambda == APPROX(g.estimates.at("lambda")));
+  CHECK(r.kappa == APPROX(g.estimates.at("kappa")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("gompertz") {
+  auto g = load("gompertz");
+  auto r = mlcore::gompertz_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.a == APPROX(g.estimates.at("a")));
+  CHECK(r.b == APPROX(g.estimates.at("b")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("lgamma (wrapper-only: gamma on log(x))") {
+  auto g = load("lgamma");
+  // Replicate mllgamma_ wrapper: y = log(x); shapelog/ratelog from gamma_mle;
+  // logLik recomputed with the log-gamma density.
+  std::vector<double> y;
+  y.reserve(g.data.size());
+  for (double v : g.data) y.push_back(std::log(v));
+  auto r = mlcore::gamma_mle(mltest::as_span(y), kFitTol, kFitMaxit);
+  CHECK(r.shape == APPROX(g.estimates.at("shapelog")));
+  CHECK(r.rate == APPROX(g.estimates.at("ratelog")));
+  // logLik for log-gamma is recomputed by the wrapper; match here.
+  const double dn = static_cast<double>(g.data.size());
+  double sum_y = 0.0, sum_log_y = 0.0;
+  for (double v : g.data) {
+    const double ly = std::log(v);
+    sum_y += ly;
+    sum_log_y += std::log(ly);
+  }
+  const double L = sum_y / dn;
+  const double K = sum_log_y / dn;
+  const double logLik =
+      dn * (r.shape * std::log(r.rate) - std::lgamma(r.shape) +
+            (r.shape - 1.0) * K - (r.rate + 1.0) * L);
+  CHECK(logLik == APPROX(g.logLik));
+}
+
+// -- discrete ---------------------------------------------------------------
+
+TEST_CASE("pois") {
+  auto g = load("pois");
+  auto v = as_ints(g.data);
+  auto r = mlcore::pois_mle(as_ispan(v));
+  CHECK(r.lambda == APPROX(g.estimates.at("lambda")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("geom") {
+  auto g = load("geom");
+  auto v = as_ints(g.data);
+  auto r = mlcore::geom_mle(as_ispan(v));
+  CHECK(r.prob == APPROX(g.estimates.at("prob")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("dunif") {
+  auto g = load("dunif");
+  auto v = as_ints(g.data);
+  auto r = mlcore::dunif_mle(as_ispan(v));
+  CHECK(r.min == APPROX(g.estimates.at("min")));
+  CHECK(r.max == APPROX(g.estimates.at("max")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("binom") {
+  auto g = load("binom");
+  auto v = as_ints(g.data);
+  // size_or_nan: estimate size when NaN. Wrapper passes NaN by default.
+  auto r = mlcore::binom_mle(as_ispan(v),
+                             std::numeric_limits<double>::quiet_NaN(),
+                             kFitTol, kFitMaxit);
+  CHECK(r.size == APPROX(g.estimates.at("size")));
+  CHECK(r.prob == APPROX(g.estimates.at("prob")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("nbinom") {
+  auto g = load("nbinom");
+  auto v = as_ints(g.data);
+  auto r = mlcore::nbinom_mle(as_ispan(v), kFitTol, kFitMaxit);
+  CHECK(r.size == APPROX(g.estimates.at("size")));
+  CHECK(r.prob == APPROX(g.estimates.at("prob")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("zip") {
+  auto g = load("zip");
+  auto v = as_ints(g.data);
+  auto r = mlcore::zip_mle(as_ispan(v));
+  CHECK(r.lambda == APPROX(g.estimates.at("lambda")));
+  CHECK(r.pi == APPROX(g.estimates.at("pi")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("lgser") {
+  auto g = load("lgser");
+  auto v = as_ints(g.data);
+  auto r = mlcore::lgser_mle(as_ispan(v));
+  CHECK(r.theta == APPROX(g.estimates.at("theta")));
+  CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("zipf") {
+  auto g = load("zipf");
+  auto v = as_ints(g.data);
+  auto r = mlcore::zipf_mle(as_ispan(v), kFitTol, kFitMaxit);
+  CHECK(r.N == APPROX(g.estimates.at("N")));
+  CHECK(r.shape == APPROX(g.estimates.at("s")));
+  CHECK(r.logLik == APPROX(g.logLik));
 }

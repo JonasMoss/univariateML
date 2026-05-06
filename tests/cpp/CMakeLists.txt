@@ -43,7 +43,11 @@ target_include_directories(mlcore_tests PRIVATE
 target_compile_options(mlcore_tests PRIVATE
   -Wall -Wextra -Wpedantic ${R_CPPFLAGS_LIST})
 
-target_link_options(mlcore_tests PRIVATE ${R_LDFLAGS_LIST})
+# Pass R's link flags via target_link_libraries so they land *after*
+# the object files on the link line. With CMake's `target_link_options`
+# the flags are emitted before, and Fedora's default `-Wl,--as-needed`
+# then drops `-lR` because no symbol has been demanded yet.
+target_link_libraries(mlcore_tests PRIVATE ${R_LDFLAGS_LIST})
 
 # --- ctest registration ----------------------------------------------------
 enable_testing()
