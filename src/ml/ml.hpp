@@ -21,6 +21,7 @@
 #include "estimators/exponential.hpp"
 #include "estimators/fatigue.hpp"
 #include "estimators/gamma.hpp"
+#include "estimators/ged.hpp"
 #include "estimators/geometric.hpp"
 #include "estimators/gompertz.hpp"
 #include "estimators/gumbel.hpp"

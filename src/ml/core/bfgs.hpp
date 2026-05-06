@@ -145,8 +145,8 @@ inline BfgsResult bfgs_minimize(Cost &cost, const double *theta0,
           reset_attempted = true;
           continue;
         }
-        return {std::move(theta), f, std::move(grad),
-                detail::l2_norm(grad.data(), n), iter, fevals,
+        const double gnorm = detail::l2_norm(grad.data(), n);
+        return {std::move(theta), f, std::move(grad), gnorm, iter, fevals,
                 BfgsStatus::LineSearchFailure};
       }
 
@@ -171,15 +171,15 @@ inline BfgsResult bfgs_minimize(Cost &cost, const double *theta0,
           reset_attempted = true;
           continue;
         }
-        return {std::move(theta), f, std::move(grad),
-                detail::l2_norm(grad.data(), n), iter, fevals,
+        const double gnorm = detail::l2_norm(grad.data(), n);
+        return {std::move(theta), f, std::move(grad), gnorm, iter, fevals,
                 BfgsStatus::LineSearchFailure};
       }
 
       cost.gradient(theta_new.data(), grad_new.data());
       if (!detail::is_finite_vec(grad_new.data(), n)) {
-        return {std::move(theta), f, std::move(grad),
-                detail::l2_norm(grad.data(), n), iter, fevals,
+        const double gnorm = detail::l2_norm(grad.data(), n);
+        return {std::move(theta), f, std::move(grad), gnorm, iter, fevals,
                 BfgsStatus::IterationFailure};
       }
 
