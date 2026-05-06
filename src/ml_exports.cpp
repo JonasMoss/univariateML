@@ -135,8 +135,9 @@ Rcpp::List mlfatigue_(const arma::vec &x, double tol = 1.220703e-4,
 
 // Closed-form easy ones
 // [[Rcpp::export]]
-Rcpp::List mlexp_(const arma::vec &x) {
-  auto res = mlcore::exp_mle(x);
+Rcpp::List mlexp_(const Rcpp::NumericVector &x) {
+  auto res = mlcore::exp_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] =
           Rcpp::NumericVector::create(Rcpp::_["rate"] = res.rate),
@@ -144,8 +145,9 @@ Rcpp::List mlexp_(const arma::vec &x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlunif_(const arma::vec &x) {
-  auto res = mlcore::unif_mle(x);
+Rcpp::List mlunif_(const Rcpp::NumericVector &x) {
+  auto res = mlcore::unif_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["min"] = res.min, Rcpp::_["max"] = res.max),
@@ -154,8 +156,8 @@ Rcpp::List mlunif_(const arma::vec &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mldunif_(const Rcpp::IntegerVector &x) {
-  arma::ivec xi = Rcpp::as<arma::ivec>(x);
-  auto res = mlcore::dunif_mle(xi);
+  auto res = mlcore::dunif_mle(
+      mlcore::ispan{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["min"] = res.min, Rcpp::_["max"] = res.max),
@@ -164,8 +166,8 @@ Rcpp::List mldunif_(const Rcpp::IntegerVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mlpois_(const Rcpp::IntegerVector &x) {
-  arma::ivec xi = Rcpp::as<arma::ivec>(x);
-  auto res = mlcore::pois_mle(xi);
+  auto res = mlcore::pois_mle(
+      mlcore::ispan{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["lambda"] = res.lambda),
                             Rcpp::_["logLik"] = res.logLik);

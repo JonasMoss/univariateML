@@ -4,11 +4,15 @@
 #pragma once
 
 #include "core/span.hpp"
+#include "estimators/discrete_uniform.hpp"
+#include "estimators/exponential.hpp"
 #include "estimators/geometric.hpp"
 #include "estimators/laplace.hpp"
 #include "estimators/normal.hpp"
 #include "estimators/pareto.hpp"
+#include "estimators/poisson.hpp"
 #include "estimators/rayleigh.hpp"
+#include "estimators/uniform.hpp"
 #include "special/special.hpp"
 #include <RcppArmadillo.h>
 #include <cmath>
@@ -705,74 +709,6 @@ inline GammaResult gamma_mle(const arma::vec &x, double tol, int maxit) {
   return {shape, rate, logLik, iter};
 }
 
-// ---------- Simple closed-form ----------
-struct ExpResult {
-  double rate;
-  double logLik;
-};
-
-struct UnifResult {
-  double min;
-  double max;
-  double logLik;
-};
-
-struct DiscreteUnifResult {
-  double min;
-  double max;
-  double logLik;
-};
-
-struct PoisResult {
-  double lambda;
-  double logLik;
-};
-
-inline ExpResult exp_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL};
-  double lambda = 1.0 / arma::mean(x);
-  double logLik = n * std::log(lambda) - lambda * arma::accu(x);
-  return {lambda, logLik};
-}
-
-inline UnifResult unif_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  double a = x.min();
-  double b = x.max();
-  if (b <= a)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  double logLik = -n * std::log(b - a);
-  return {a, b, logLik};
-}
-
-inline DiscreteUnifResult dunif_mle(const arma::ivec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  int a = x.min();
-  int b = x.max();
-  if (b < a)
-    return {NA_REAL, NA_REAL, NA_REAL};
-  double logLik =
-      -static_cast<double>(n) * std::log(static_cast<double>(b - a + 1));
-  return {static_cast<double>(a), static_cast<double>(b), logLik};
-}
-
-inline PoisResult pois_mle(const arma::ivec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {NA_REAL, NA_REAL};
-  double lambda = arma::mean(arma::conv_to<arma::vec>::from(x));
-  double logLik = 0.0;
-  for (int i = 0; i < n; ++i) {
-    logLik += ::mlcore::special::dpois(static_cast<double>(x[i]), lambda, 1);
-  }
-  return {lambda, logLik};
-}
 
 // ---------- Fatigue life (Birnbaum-Saunders) ----------
 struct FatigueResult {

@@ -602,23 +602,23 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlexp_
-Rcpp::List mlexp_(const arma::vec& x);
+Rcpp::List mlexp_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mlexp_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mlexp_(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // mlunif_
-Rcpp::List mlunif_(const arma::vec& x);
+Rcpp::List mlunif_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mlunif_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mlunif_(x));
     return rcpp_result_gen;
 END_RCPP
