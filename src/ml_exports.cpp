@@ -1,4 +1,5 @@
 // [[Rcpp::depends(RcppArmadillo)]]
+#include "ml/core/rcpp_glue.hpp"
 #include "ml/ml.hpp"
 #include <RcppArmadillo.h>
 
@@ -74,9 +75,10 @@ Rcpp::List mlgumbel_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 
 // Logistic
 // [[Rcpp::export]]
-Rcpp::List mllogis_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
-  mlcore::LogisticResult res = mlcore::logistic_mle(x, tol, iterlim);
+  mlcore::LogisticResult res =
+      mlcore::logistic_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mu"] = res.mu, Rcpp::_["scale"] = res.scale),
@@ -85,9 +87,10 @@ Rcpp::List mllogis_(const arma::vec &x, double tol = 1.220703e-4,
 
 // Log-logistic
 // [[Rcpp::export]]
-Rcpp::List mlllogis_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                      int iterlim = 100) {
-  mlcore::LogLogisticResult res = mlcore::loglogistic_mle(x, tol, iterlim);
+  mlcore::LogLogisticResult res =
+      mlcore::loglogistic_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
@@ -447,12 +450,12 @@ Rcpp::List mllgser_(const Rcpp::IntegerVector &x) {
                             Rcpp::_["logLik"] = res.logLik);
 }
 // [[Rcpp::export]]
-Rcpp::List mlweibull_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlweibull_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                       int iterlim = 100) {
   if (iterlim <= 1) {
     Rcpp::warning("iteration limit reached");
   }
-  auto res = mlcore::weibull_mle(x, tol, iterlim);
+  auto res = mlcore::weibull_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
@@ -460,12 +463,12 @@ Rcpp::List mlweibull_(const arma::vec &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlinvweibull_(const arma::vec &x, double tol = 1.220703e-4,
-                         int iterlim = 100) {
+Rcpp::List mlinvweibull_(const Rcpp::NumericVector &x,
+                         double tol = 1.220703e-4, int iterlim = 100) {
   if (iterlim <= 1) {
     Rcpp::warning("iteration limit reached");
   }
-  auto res = mlcore::invweibull_mle(x, tol, iterlim);
+  auto res = mlcore::invweibull_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),

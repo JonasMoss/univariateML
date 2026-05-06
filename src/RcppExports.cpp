@@ -524,12 +524,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mllogis_
-Rcpp::List mllogis_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mllogis_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mllogis_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mllogis_(x, tol, iterlim));
@@ -537,12 +537,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlllogis_
-Rcpp::List mlllogis_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlllogis_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlllogis_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlllogis_(x, tol, iterlim));
@@ -838,12 +838,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlweibull_
-Rcpp::List mlweibull_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlweibull_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlweibull_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlweibull_(x, tol, iterlim));
@@ -851,12 +851,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlinvweibull_
-Rcpp::List mlinvweibull_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlinvweibull_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlinvweibull_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlinvweibull_(x, tol, iterlim));
