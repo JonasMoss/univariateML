@@ -2,7 +2,7 @@
 % Please edit documentation in R/ml02_wrappers.R
 \name{mlnbinom}
 \alias{mlnbinom}
-\title{Negative binomial maximum likelihood estimation}
+\title{Negative Binomial distribution maximum likelihood estimation}
 \usage{
 mlnbinom(x, na.rm = FALSE, ...)
 }
@@ -17,14 +17,18 @@ mlnbinom(x, na.rm = FALSE, ...)
 An object of class \code{univariateML} with estimates and attributes.
 }
 \description{
-Maximum likelihood estimation for this distribution.
+Joint maximum likelihood estimation of size and prob via Newton-Raphson on size.
 }
 \details{
-Density: stats::dnbinom; support: [0, Inf).
+The negative binomial MLE only exists when the sample variance exceeds the sample mean (overdispersion). When \code{var(x) <= mean(x)} the likelihood is maximised in the limit \code{size -> Inf}, where the negative binomial reduces to a \code{Poisson(mean)}. \code{mlnbinom()} detects this case and stops with a message pointing to \code{mlpois()}.
 }
 \examples{
-set.seed(1); mlnbinom(simulate_default("mlnbinom", 100))
+set.seed(1); mlnbinom(rnbinom(500, size = 5, prob = 0.4))
+}
+\references{
+Johnson, N. L., Kotz, S. and Kemp, A. W. (1993) Univariate Discrete Distributions, Chapter 5. Wiley.
 }
 \seealso{
-stats::dnbinom
+stats::NegBinomial
+mlpois
 }

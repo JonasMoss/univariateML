@@ -49,20 +49,23 @@ mlbetapr <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlbetapr", params = params)
 }
 
-#' Binomial maximum likelihood estimation
+#' Binomial distribution maximum likelihood estimation
 #'
-#' Maximum likelihood estimation for this distribution.
+#' Joint maximum likelihood estimation of size and prob, optionally with size supplied.
 #'
-#' Density: stats::dbinom; support: [0, Inf).
+#' When `size` is given, `prob = mean(x) / size` in closed form. With size unknown, `mlbinom()` searches over integer sizes from `max(x)` upward and reports the maximiser of the profile likelihood. The estimator does not exist when `var(x) >= mean(x)` (overdispersed data); in that case the likelihood is maximised in the limit `size -> Inf` and `mlbinom()` stops with a message recommending `mlpois()` or that an explicit `size` be supplied.
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   stats::dbinom
+#'   stats::Binomial
+#'   mlpois
+#' @references
+#'   Olkin, I., Petkau, A. J. and Zidek, J. V. (1981) A comparison of n estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642.
 #' @examples
-#' set.seed(1); mlbinom(simulate_default("mlbinom", 100))
+#' set.seed(1); mlbinom(rbinom(500, size = 10, prob = 0.5))
 #' @export
 mlbinom <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlbinom")
@@ -584,9 +587,9 @@ mllogitnorm <- function(x, na.rm = FALSE, ...) {
 
 #' Lomax distribution maximum likelihood estimation
 #'
-#' Estimates Lomax (Pareto Type II) parameters via Newton–Raphson.
+#' Estimates Lomax (Pareto Type II) parameters via Newton–Raphson on lambda, with kappa in closed form given lambda.
 #'
-#' Checks the moment condition mean(x^2) >= 2*mean(x)^2; otherwise suggests exponential fit.
+#' The Lomax MLE only exists when the data show enough dispersion: specifically `mean(x^2) >= 2 * mean(x)^2` (equivalently, sample CV >= 1). Below that threshold the likelihood has no interior maximum: as `kappa -> Inf` with `lambda * kappa` held constant the Lomax density converges to an Exponential, and the likelihood approaches that limit without ever attaining it. `mllomax()` detects this at entry and stops with a message recommending `mlexp()`. Inputs that satisfy the moment condition are fit by Newton-Raphson on lambda; kappa is then `n / sum(log1p(lambda * x))`.
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
@@ -594,8 +597,10 @@ mllogitnorm <- function(x, na.rm = FALSE, ...) {
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
 #'   extraDistr::Lomax
+#'   mlexp
 #' @references
 #'   Kleiber, C. and Kotz, S. (2003) Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
+#'   Giles, D. E., Feng, H. and Godwin, R. T. (2013) On the bias of the maximum likelihood estimator for the two-parameter Lomax distribution. Communications in Statistics - Theory and Methods, 42(11), 1934-1950.
 #' @examples
 #' set.seed(3); mllomax(extraDistr::rlomax(100, 2, 4))
 #' @export
@@ -630,20 +635,23 @@ mlnaka <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlnaka", params = params)
 }
 
-#' Negative binomial maximum likelihood estimation
+#' Negative Binomial distribution maximum likelihood estimation
 #'
-#' Maximum likelihood estimation for this distribution.
+#' Joint maximum likelihood estimation of size and prob via Newton-Raphson on size.
 #'
-#' Density: stats::dnbinom; support: [0, Inf).
+#' The negative binomial MLE only exists when the sample variance exceeds the sample mean (overdispersion). When `var(x) <= mean(x)` the likelihood is maximised in the limit `size -> Inf`, where the negative binomial reduces to a `Poisson(mean)`. `mlnbinom()` detects this case and stops with a message pointing to `mlpois()`.
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   stats::dnbinom
+#'   stats::NegBinomial
+#'   mlpois
+#' @references
+#'   Johnson, N. L., Kotz, S. and Kemp, A. W. (1993) Univariate Discrete Distributions, Chapter 5. Wiley.
 #' @examples
-#' set.seed(1); mlnbinom(simulate_default("mlnbinom", 100))
+#' set.seed(1); mlnbinom(rnbinom(500, size = 5, prob = 0.4))
 #' @export
 mlnbinom <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlnbinom")
