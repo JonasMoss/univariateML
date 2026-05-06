@@ -3,15 +3,7 @@
 
 namespace dist_impl {
 
-static inline double sged_sigma(double nu, double xi, double &mu_out) {
-  const double lambda = ged_lambda(nu);
-  const double m1 =
-      std::pow(2.0, 1.0 / nu) * lambda * std::tgamma(2.0 / nu) /
-      std::tgamma(1.0 / nu);
-  mu_out = m1 * (xi - 1.0 / xi);
-  return std::sqrt((1.0 - m1 * m1) * (xi * xi + 1.0 / (xi * xi)) +
-                   2.0 * m1 * m1 - 1.0);
-}
+using mlcore::dens::sged_sigma;
 
 static inline double dsged_core(double z, double nu, double xi) {
   const double Xi = std::pow(xi, sign1(z));

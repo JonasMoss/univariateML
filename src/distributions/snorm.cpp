@@ -3,12 +3,7 @@
 
 namespace dist_impl {
 
-static inline double snorm_sigma(double xi, double &mu_out) {
-  const double m1 = 2.0 / std::sqrt(2.0 * M_PI);
-  mu_out = m1 * (xi - 1.0 / xi);
-  return std::sqrt((1.0 - m1 * m1) * (xi * xi + 1.0 / (xi * xi)) +
-                   2.0 * m1 * m1 - 1.0);
-}
+using mlcore::dens::snorm_sigma;
 
 static inline double dsnorm_core(double z, double xi) {
   const double Xi = std::pow(xi, sign1(z));

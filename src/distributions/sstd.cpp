@@ -3,13 +3,7 @@
 
 namespace dist_impl {
 
-static inline double sstd_sigma(double nu, double xi, double &mu_out) {
-  const double m1 =
-      std::tgamma(0.5 * (nu - 1.0)) / std::tgamma(0.5 * nu) * std::sqrt(nu / M_PI);
-  mu_out = m1 * (xi - 1.0 / xi);
-  return std::sqrt((1.0 - m1 * m1) * (xi * xi + 1.0 / (xi * xi)) +
-                   2.0 * m1 * m1 - 1.0);
-}
+using mlcore::dens::sstd_sigma;
 
 static inline double dsstd_core(double z, double nu, double xi) {
   const double Xi = std::pow(xi, sign1(z));
