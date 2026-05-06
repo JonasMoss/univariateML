@@ -155,9 +155,9 @@ Rcpp::List mlgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlfatigue_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                       int iterlim = 100) {
-  auto res = mlcore::fatigue_mle(x, tol, iterlim);
+  auto res = mlcore::fatigue_mle(mlcore::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta,
@@ -415,9 +415,9 @@ Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlgompertz_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlgompertz_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                        int iterlim = 100) {
-  auto res = mlcore::gompertz_mle(x, tol, iterlim);
+  auto res = mlcore::gompertz_mle(mlcore::as_span(x), tol, iterlim);
   if (res.status == mlcore::GompertzStatus::Overdispersed) {
     Rcpp::stop("The maximum likelihood estimator of the b parameter Gompertz "
                "distribution does not exist since the data is overdispersed. "
@@ -562,9 +562,9 @@ Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List mllomax_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mllomax_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
-  auto res = mlcore::lomax_mle(x, tol, iterlim);
+  auto res = mlcore::lomax_mle(mlcore::as_span(x), tol, iterlim);
   if (res.status == mlcore::LomaxStatus::MeanVarianceCondition) {
     Rcpp::stop("The Lomax maximum likelihood estimator does not exist for data "
                "with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an "

@@ -1,0 +1,79 @@
+// Birnbaum-Saunders (Fatigue Life) MLE.
+//
+// 1D Newton on beta with absolute-step convergence; alpha is the
+// closed-form maximiser given beta. Log-likelihood evaluated via
+// Rmath dnorm in standard form.
+
+#pragma once
+
+#include "../core/newton.hpp"
+#include "../core/span.hpp"
+#include "../special/special.hpp"
+
+#include <cmath>
+#include <cstddef>
+#include <limits>
+
+namespace mlcore {
+
+struct FatigueResult {
+  double alpha;
+  double beta;
+  double logLik;
+  int iterations;
+};
+
+inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
+  constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
+  const std::size_t n = x.size();
+  if (n == 0) return {0.0, 0.0, kNaN, 0};
+
+  const double dn = static_cast<double>(n);
+  double sum_x = 0.0, sum_inv_x = 0.0, sum_sqrt_x = 0.0, sum_inv_sqrt_x = 0.0;
+  for (auto v : x) {
+    sum_x += v;
+    sum_inv_x += 1.0 / v;
+    const double sx = std::sqrt(v);
+    sum_sqrt_x += sx;
+    sum_inv_sqrt_x += 1.0 / sx;
+  }
+  const double x_bar = sum_x / dn;
+  const double x_inv_bar = dn / sum_inv_x;
+
+  auto f_over_df = [&](double beta) {
+    double sum_xb = 0.0, sum_xb_sq = 0.0;
+    for (auto v : x) {
+      const double xb = 1.0 / (v + beta);
+      sum_xb += xb;
+      sum_xb_sq += xb * xb;
+    }
+    const double xi = dn / sum_xb;
+    const double dxi = sum_xb_sq * xi * xi / dn;
+    const double f =
+        beta * beta - beta * (2.0 * x_inv_bar + xi) + x_inv_bar * (x_bar + xi);
+    const double df =
+        2.0 * beta - (2.0 * x_inv_bar + xi) - beta * dxi + x_inv_bar * dxi;
+    return f / df;
+  };
+
+  // Method-of-moments start.
+  const double beta0 = sum_sqrt_x / sum_inv_sqrt_x;
+  auto nr = mlcore::newton_raphson_1d_abs(beta0, f_over_df, tol, maxit);
+  if (nr.x <= 0.0) return {kNaN, kNaN, kNaN, nr.iterations};
+
+  const double beta = nr.x;
+  const double alpha = std::sqrt(x_bar / beta + beta / x_inv_bar);
+
+  double logLik = 0.0;
+  for (auto v : x) {
+    const double sx = std::sqrt(v / beta);
+    const double sy = std::sqrt(beta / v);
+    const double z = (sx - sy) / alpha;
+    const double log_pref = std::log(sx + sy) - std::log(2.0 * alpha) - std::log(v);
+    const double log_phi = mlcore::special::dnorm(z, 0.0, 1.0, 1);
+    logLik += log_pref + log_phi;
+  }
+  return {alpha, beta, logLik, nr.iterations};
+}
+
+}  // namespace mlcore

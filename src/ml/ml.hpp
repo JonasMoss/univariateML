@@ -11,8 +11,10 @@
 #include "estimators/cauchy.hpp"
 #include "estimators/discrete_uniform.hpp"
 #include "estimators/exponential.hpp"
+#include "estimators/fatigue.hpp"
 #include "estimators/gamma.hpp"
 #include "estimators/geometric.hpp"
+#include "estimators/gompertz.hpp"
 #include "estimators/gumbel.hpp"
 #include "estimators/inverse_burr.hpp"
 #include "estimators/inverse_gamma.hpp"
@@ -23,6 +25,7 @@
 #include "estimators/logistic.hpp"
 #include "estimators/loglogistic.hpp"
 #include "estimators/lognormal.hpp"
+#include "estimators/lomax.hpp"
 #include "estimators/logitnormal.hpp"
 #include "estimators/nakagami.hpp"
 #include "estimators/normal.hpp"
@@ -278,66 +281,6 @@ inline BurrMLE burr_mle_core(const arma::vec &x, double c_start, double tol,
 }
 #endif
 
-// ---------- Fatigue life (Birnbaum-Saunders) ----------
-struct FatigueResult {
-  double alpha;
-  double beta;
-  double logLik;
-  int iterations;
-};
-
-inline FatigueResult fatigue_mle(const arma::vec &x, double tol, int maxit) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-
-  const double nd = static_cast<double>(n);
-  const double x_bar = arma::mean(x);
-  const double x_inv_bar = nd / arma::accu(1.0 / x);
-
-  auto f_over_df = [&](double beta) {
-    arma::vec x_beta = 1.0 / (x + beta);
-    double xi = nd / arma::accu(x_beta);
-    double dxi = arma::accu(arma::square(x_beta)) * xi * xi / nd;
-    double f =
-        beta * beta - beta * (2.0 * x_inv_bar + xi) + x_inv_bar * (x_bar + xi);
-    double df =
-        2.0 * beta - (2.0 * x_inv_bar + xi) - beta * dxi + x_inv_bar * dxi;
-    return f / df;
-  };
-
-  // Method-of-moments start.
-  double beta0 = arma::accu(arma::sqrt(x)) / arma::accu(1.0 / arma::sqrt(x));
-  double beta = beta0;
-  int iter = 0;
-  for (iter = 1; iter <= maxit; ++iter) {
-    double step = f_over_df(beta);
-    beta -= step;
-    if (std::abs(step) < tol)
-      break;
-  }
-
-  if (beta <= 0.0)
-    return {NA_REAL, NA_REAL, NA_REAL, iter};
-  double alpha = std::sqrt(x_bar / beta + beta / x_inv_bar);
-
-  auto log_density = [&](double v) {
-    double sx = std::sqrt(v / beta);
-    double sy = std::sqrt(beta / v);
-    double z = (sx - sy) / alpha;
-    double log_pref = std::log(sx + sy) - std::log(2.0 * alpha) - std::log(v);
-    double log_phi = ::mlcore::special::dnorm(z, 0.0, 1.0, 1);
-    return log_pref + log_phi;
-  };
-
-  double logLik = 0.0;
-  for (int i = 0; i < n; ++i) {
-    logLik += log_density(x[i]);
-  }
-
-  return {alpha, beta, logLik, iter};
-}
-
 // Binomial (Newton on size)
 enum class BinomStatus {
   Ok = 0,
@@ -452,76 +395,6 @@ inline BinomResult binom_mle(const arma::ivec &x,
 
   double prob = x_bar / best_size;
   return {best_size, prob, best_ll, iterations, BinomStatus::Ok};
-}
-
-// ---------- Lomax ----------
-enum class LomaxStatus {
-  Ok = 0,
-  MeanVarianceCondition, // mean(x^2) < 2 * mean(x)^2
-  InvalidStart,
-  IterationFailure
-};
-
-struct LomaxResult {
-  double lambda;
-  double kappa;
-  double logLik;
-  int iterations;
-  LomaxStatus status;
-};
-
-inline LomaxResult lomax_mle(const arma::vec &x, double tol = kTolDefault,
-                             int maxit = kMaxIterDefault) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0, LomaxStatus::InvalidStart};
-
-  const double m = arma::mean(x);
-  const double s = arma::mean(arma::square(x));
-  const double m2 = m * m;
-  if (s < 2.0 * m2) {
-    return {NA_REAL, NA_REAL, NA_REAL, 0, LomaxStatus::MeanVarianceCondition};
-  }
-
-  const double alpha0 = 2.0 * (s - m2) / (s - 2.0 * m2);
-  double lambda = 1.0 / (m * (alpha0 - 1.0));
-  if (lambda <= 0.0 || !std::isfinite(lambda)) {
-    return {NA_REAL, NA_REAL, NA_REAL, 0, LomaxStatus::InvalidStart};
-  }
-
-  int iter = 0;
-  for (iter = 1; iter <= maxit; ++iter) {
-    arma::vec lambda_x1p = 1.0 + lambda * x;
-    arma::vec x_div = x / lambda_x1p;
-
-    const double S = arma::mean(arma::log(lambda_x1p));
-    const double S1 = arma::mean(x_div);
-    const double S2 = arma::mean(arma::square(x_div));
-
-    const double psi = S1 / S;
-    const double f = 1.0 / lambda - psi - S1;
-    const double df = psi * psi + S2 / S + S2 - 1.0 / (lambda * lambda);
-
-    const double step = f / df;
-    const double lambda_new = lambda - step;
-    if (lambda_new <= 0.0 || !std::isfinite(lambda_new)) {
-      return {NA_REAL, NA_REAL, NA_REAL, iter, LomaxStatus::IterationFailure};
-    }
-
-    if (std::abs(step) < (std::abs(lambda) * tol + tol)) {
-      lambda = lambda_new;
-      break;
-    }
-    lambda = lambda_new;
-  }
-
-  const double kappa =
-      static_cast<double>(n) / arma::accu(arma::log1p(lambda * x));
-  const double logLik =
-      static_cast<double>(n) *
-      (std::log(kappa) + std::log(lambda) - 1.0 - 1.0 / kappa);
-
-  return {lambda, kappa, logLik, iter, LomaxStatus::Ok};
 }
 
 // ---------- Zero-inflated Poisson ----------
@@ -763,71 +636,5 @@ inline NbinomResult nbinom_mle(const arma::ivec &x, double tol = kTolDefault,
   const double ll = log_likelihood(size);
   return {size, prob, ll, iter, false};
 }
-
-// ---------- Gompertz ----------
-enum class GompertzStatus { Ok = 0, Overdispersed, IterationFailure };
-
-struct GompertzResult {
-  double a;
-  double b;
-  double logLik;
-  int iterations;
-  GompertzStatus status;
-};
-
-inline GompertzResult gompertz_mle(const arma::vec &x, double tol = kTolDefault,
-                                   int maxit = kMaxIterDefault) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0, GompertzStatus::IterationFailure};
-
-  const double x_sum = arma::accu(x);
-  const double x_var = arma::var(x, 1);
-  if (x_sum / static_cast<double>(n) < std::sqrt(x_var)) {
-    return {NA_REAL, NA_REAL, NA_REAL, 0, GompertzStatus::Overdispersed};
-  }
-
-  auto f_over_df = [&](double b) {
-    arma::vec exp_bx = arma::exp(b * x);
-    const double sum_bx = arma::accu(exp_bx);
-    const double sum_bx_x = arma::dot(x, exp_bx);
-    const double sum_bx_x2 = arma::dot(arma::square(x), exp_bx);
-
-    const double s = sum_bx - static_cast<double>(n);
-    const double r = b * sum_bx_x - s;
-
-    const double a = b * static_cast<double>(n) / s;
-    const double da = -static_cast<double>(n) * r / (s * s);
-    const double d2a =
-        static_cast<double>(n) / (s * s) *
-        (b * (2.0 * sum_bx_x * sum_bx_x / s - sum_bx_x2) - 2.0 * sum_bx_x);
-
-    const double f = static_cast<double>(n) * da / a + x_sum;
-    const double df = static_cast<double>(n) * (a * d2a - da * da) / (a * a);
-    return f / df;
-  };
-
-  double b = 1e-1;
-  int iter = 0;
-  for (iter = 1; iter <= maxit; ++iter) {
-    double step = f_over_df(b);
-    b -= step;
-    if (b <= 0.0 || !std::isfinite(b)) {
-      return {NA_REAL, NA_REAL, NA_REAL, iter,
-              GompertzStatus::IterationFailure};
-    }
-    if (std::abs(step) < (std::abs(b) * tol + tol))
-      break;
-  }
-
-  arma::vec exp_bx = arma::exp(b * x);
-  const double a = b * static_cast<double>(n) /
-                   (arma::accu(exp_bx) - static_cast<double>(n));
-  const double logLik = static_cast<double>(n) * std::log(a) +
-                        b * arma::accu(x) -
-                        (a / b) * (arma::accu(exp_bx) - static_cast<double>(n));
-  return {a, b, logLik, iter, GompertzStatus::Ok};
-}
-
 
 } // namespace mlcore
