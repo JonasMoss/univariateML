@@ -877,12 +877,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlpower_
-Rcpp::List mlpower_(const arma::vec& x, double epsilon);
+Rcpp::List mlpower_(const Rcpp::NumericVector& x, double epsilon);
 RcppExport SEXP _univariateML_mlpower_(SEXP xSEXP, SEXP epsilonSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type epsilon(epsilonSEXP);
     rcpp_result_gen = Rcpp::wrap(mlpower_(x, epsilon));
     return rcpp_result_gen;
@@ -902,12 +902,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlinvgauss_
-Rcpp::List mlinvgauss_(const arma::vec& x);
+Rcpp::List mlinvgauss_(const Rcpp::NumericVector& x);
 RcppExport SEXP _univariateML_mlinvgauss_(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(mlinvgauss_(x));
     return rcpp_result_gen;
 END_RCPP

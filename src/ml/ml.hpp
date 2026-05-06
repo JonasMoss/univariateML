@@ -7,12 +7,14 @@
 #include "estimators/discrete_uniform.hpp"
 #include "estimators/exponential.hpp"
 #include "estimators/geometric.hpp"
+#include "estimators/inverse_gaussian.hpp"
 #include "estimators/laplace.hpp"
 #include "estimators/lognormal.hpp"
 #include "estimators/logitnormal.hpp"
 #include "estimators/normal.hpp"
 #include "estimators/pareto.hpp"
 #include "estimators/poisson.hpp"
+#include "estimators/power.hpp"
 #include "estimators/rayleigh.hpp"
 #include "estimators/uniform.hpp"
 #include "special/special.hpp"
@@ -561,33 +563,6 @@ inline LogLogisticResult loglogistic_mle(const arma::vec &x, double tol,
   return {shape, rate, logLik, base.iterations};
 }
 
-// ---------- Power ----------
-struct PowerResult {
-  double alpha;
-  double beta;
-  double logLik;
-  int iterations;
-};
-
-inline PowerResult power_mle(const arma::vec &x,
-                             double epsilon = std::sqrt(kEps)) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-
-  if (x.min() <= 0.0) {
-    return {NA_REAL, NA_REAL, NA_REAL, 0};
-  }
-
-  double m = arma::mean(arma::log(x));
-  double alpha = x.max() + epsilon;
-  double beta = 1.0 / (std::log(alpha) - m);
-  double logLik = static_cast<double>(n) *
-                  (std::log(beta) - beta * std::log(alpha) + (beta - 1.0) * m);
-
-  return {alpha, beta, logLik, 0};
-}
-
 // ---------- Beta ----------
 struct BetaResult {
   double alpha;
@@ -969,30 +944,6 @@ inline InvGammaResult invgamma_mle(const arma::vec &x, double tol = kTolDefault,
                          (g.shape + 1.0) * L - g.rate * M);
 
   return {g.shape, g.rate, logLik, g.iterations};
-}
-
-// ---------- Inverse Gaussian (closed form) ----------
-struct InvGaussResult {
-  double mu;
-  double lambda;
-  double logLik;
-};
-
-inline InvGaussResult invgauss_mle(const arma::vec &x) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL};
-
-  const double mu = arma::mean(x);
-  const double invx = arma::mean(1.0 / x);
-  const double lambda = 1.0 / (invx - 1.0 / mu);
-  const double L = arma::mean(arma::log(x));
-  const double S = arma::mean(arma::square(x - mu) / x);
-  const double logLik = -0.5 * static_cast<double>(n) *
-                        (3.0 * L - std::log(lambda) + std::log(2.0 * M_PI) +
-                         lambda / (mu * mu) * S);
-
-  return {mu, lambda, logLik};
 }
 
 // ---------- Lomax ----------

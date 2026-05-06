@@ -8,6 +8,11 @@
 #include <Rmath.h>
 #include <cmath>
 
+// Rmath.h aliases dozens of common identifiers (beta, gamma, dnorm, lbeta,
+// digamma, ...) to their Rf_* equivalents via #define, polluting the global
+// namespace. Undef the ones we either call here directly or that collide
+// with field/variable names elsewhere in the project. New estimator
+// headers downstream can then use names like `beta` freely.
 #undef digamma
 #undef trigamma
 #undef tetragamma
@@ -17,6 +22,8 @@
 #undef dnorm
 #undef dpois
 #undef dgeom
+#undef beta
+#undef gamma
 
 namespace mlcore {
 namespace special {

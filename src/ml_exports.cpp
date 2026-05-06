@@ -479,8 +479,10 @@ Rcpp::List mlinvgamma_(const arma::vec &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlpower_(const arma::vec &x, double epsilon = 1.490116e-08) {
-  auto res = mlcore::power_mle(x, epsilon);
+Rcpp::List mlpower_(const Rcpp::NumericVector &x,
+                    double epsilon = 1.490116e-08) {
+  auto res = mlcore::power_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon);
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta)) {
     Rcpp::stop("The power distribution is only defined for positive numbers.");
   }
@@ -509,8 +511,9 @@ Rcpp::List mllgamma_(const arma::vec &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlinvgauss_(const arma::vec &x) {
-  auto res = mlcore::invgauss_mle(x);
+Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
+  auto res = mlcore::invgauss_mle(
+      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mu"] = res.mu, Rcpp::_["lambda"] = res.lambda),
