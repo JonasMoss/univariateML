@@ -912,6 +912,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mlsged_
+Rcpp::List mlsged_(const Rcpp::NumericVector& x, double tol, int iterlim);
+RcppExport SEXP _univariateML_mlsged_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlsged_(x, tol, iterlim));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mlsstd_
 Rcpp::List mlsstd_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlsstd_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
@@ -1167,6 +1180,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_mlpower_", (DL_FUNC) &_univariateML_mlpower_, 2},
     {"_univariateML_mllgamma_", (DL_FUNC) &_univariateML_mllgamma_, 3},
     {"_univariateML_mlinvgauss_", (DL_FUNC) &_univariateML_mlinvgauss_, 1},
+    {"_univariateML_mlsged_", (DL_FUNC) &_univariateML_mlsged_, 3},
     {"_univariateML_mlsstd_", (DL_FUNC) &_univariateML_mlsstd_, 3},
     {"_univariateML_mlsnorm_", (DL_FUNC) &_univariateML_mlsnorm_, 3},
     {"_univariateML_mlged_", (DL_FUNC) &_univariateML_mlged_, 3},

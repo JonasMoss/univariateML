@@ -45,6 +45,7 @@
 #include "estimators/poisson.hpp"
 #include "estimators/power.hpp"
 #include "estimators/rayleigh.hpp"
+#include "estimators/sged.hpp"
 #include "estimators/snorm.hpp"
 #include "estimators/sstd.hpp"
 #include "estimators/student_t.hpp"
