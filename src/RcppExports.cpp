@@ -484,12 +484,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlburr_
-Rcpp::List mlburr_(const arma::vec& x, Rcpp::Nullable<Rcpp::NumericVector> init, double tol, int iterlim);
+Rcpp::List mlburr_(const Rcpp::NumericVector& x, Rcpp::Nullable<Rcpp::NumericVector> init, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlburr_(SEXP xSEXP, SEXP initSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type init(initSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
@@ -814,12 +814,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // mlinvburr_
-Rcpp::List mlinvburr_(const arma::vec& x, double tol, int iterlim);
+Rcpp::List mlinvburr_(const Rcpp::NumericVector& x, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlinvburr_(SEXP xSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type iterlim(iterlimSEXP);
     rcpp_result_gen = Rcpp::wrap(mlinvburr_(x, tol, iterlim));

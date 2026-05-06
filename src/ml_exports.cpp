@@ -4,13 +4,36 @@
 #include <RcppArmadillo.h>
 
 // [[Rcpp::export]]
-Rcpp::List mlburr_(const arma::vec &x,
+Rcpp::List mlburr_(const Rcpp::NumericVector &x,
                    Rcpp::Nullable<Rcpp::NumericVector> init = R_NilValue,
                    double tol = 1.220703e-4, int iterlim = 100) {
-  const double nd = static_cast<double>(x.n_elem);
-  arma::vec log_x = arma::log(x);
-  double m1 = arma::accu(log_x) / nd;
-  double m2 = (arma::dot(log_x, log_x) / nd) - m1 * m1;
+  const std::size_t n = static_cast<std::size_t>(x.size());
+
+  // Explicit AllGeOne short-circuit. burr_mle_core itself returns AllGeOne
+  // status, but only after burr_lmom_core has been called to seed `c`.
+  // For all-ones-or-greater inputs, lmom's variance is exactly 0 and the
+  // initial-c check fires first with an unhelpful message. Detecting it
+  // here gives users the actionable "use mlpareto" hint regardless of
+  // FP rounding in the variance computation.
+  bool all_ge_one = n > 0;
+  for (std::size_t i = 0; i < n; ++i) {
+    if (x[i] < 1.0) { all_ge_one = false; break; }
+  }
+  if (all_ge_one) {
+    Rcpp::stop(
+        "The Burr maximum likelihood estimator does not exist when all "
+        "observations >=1. Use `mlpareto` to fit a Pareto distribution.");
+  }
+
+  const double nd = static_cast<double>(n);
+  double sum_lx = 0.0, sum_lx_sq = 0.0;
+  for (std::size_t i = 0; i < n; ++i) {
+    const double lx = std::log(x[i]);
+    sum_lx += lx;
+    sum_lx_sq += lx * lx;
+  }
+  const double m1 = sum_lx / nd;
+  const double m2 = sum_lx_sq / nd - m1 * m1;
 
   double c0;
   if (init.isNotNull()) {
@@ -26,7 +49,8 @@ Rcpp::List mlburr_(const arma::vec &x,
     }
   }
 
-  mlcore::BurrMLE res = mlcore::burr_mle_core(x, c0, tol, iterlim);
+  mlcore::BurrMLE res =
+      mlcore::burr_mle_core(mlcore::as_span(x), c0, tol, iterlim);
   if (res.status == mlcore::BurrStatus::AllGeOne) {
     Rcpp::stop(
         "The Burr maximum likelihood estimator does not exist when all "
@@ -423,9 +447,9 @@ Rcpp::List mlkumar_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlinvburr_(const arma::vec &x, double tol = 1.220703e-4,
+Rcpp::List mlinvburr_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                       int iterlim = 100) {
-  auto res = mlcore::invburr_mle(x, tol, iterlim);
+  auto res = mlcore::invburr_mle(mlcore::as_span(x), tol, iterlim);
   if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2)) {
     Rcpp::stop("Inverse Burr MLE failed");
   }

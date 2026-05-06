@@ -7,12 +7,14 @@
 #include "core/span.hpp"
 #include "estimators/beta.hpp"
 #include "estimators/beta_prime.hpp"
+#include "estimators/burr.hpp"
 #include "estimators/cauchy.hpp"
 #include "estimators/discrete_uniform.hpp"
 #include "estimators/exponential.hpp"
 #include "estimators/gamma.hpp"
 #include "estimators/geometric.hpp"
 #include "estimators/gumbel.hpp"
+#include "estimators/inverse_burr.hpp"
 #include "estimators/inverse_gamma.hpp"
 #include "estimators/inverse_gaussian.hpp"
 #include "estimators/inverse_weibull.hpp"
@@ -42,40 +44,8 @@ inline constexpr int kMaxIterDefault = 100;
 
 namespace mlcore {
 
-// ---------- Burr ----------
-struct RootResult {
-  double k;
-  int iterations;
-};
-
-struct BurrLmomResult {
-  double k;
-  double c;
-  int iterations;
-};
-
-enum class BurrStatus { Ok = 0, AllGeOne, InvalidInit, IterationFailure };
-
-struct BurrMLE {
-  double shape1;
-  double shape2;
-  double logLik;
-  int iterations;
-  BurrStatus status;
-};
-
-inline double logit(double p) { return std::log(p / (1.0 - p)); }
-
-inline double logistic(double x) {
-  const double e = std::exp(-x);
-  return 1.0 / (1.0 + e);
-}
-
-inline double logistic_pdf(double x) {
-  const double L = logistic(x);
-  return L * (1.0 - L);
-}
-
+// ---------- Burr (legacy helpers, all migrated to estimators/burr.hpp) ----------
+#if 0
 inline RootResult invert_lower_logit(double cv, double tol = kTolDefault,
                                      int maxit = kMaxIterDefault) {
   constexpr double NEULER_CST = -0.5772156649015328606;
@@ -306,6 +276,7 @@ inline BurrMLE burr_mle_core(const arma::vec &x, double c_start, double tol,
 
   return {k, c, logLik, (iter == maxit ? maxit : iter), BurrStatus::Ok};
 }
+#endif
 
 // ---------- Fatigue life (Birnbaum-Saunders) ----------
 struct FatigueResult {
@@ -858,42 +829,5 @@ inline GompertzResult gompertz_mle(const arma::vec &x, double tol = kTolDefault,
   return {a, b, logLik, iter, GompertzStatus::Ok};
 }
 
-
-// ---------- Inverse Burr ----------
-struct InvBurrResult {
-  double shape1;
-  double shape2;
-  double logLik;
-  int iterations;
-};
-
-inline InvBurrResult invburr_mle(const arma::vec &x, double tol = kTolDefault,
-                                 int maxit = kMaxIterDefault) {
-  const int n = static_cast<int>(x.n_elem);
-  if (n == 0)
-    return {0.0, 0.0, NA_REAL, 0};
-
-  arma::vec invx = 1.0 / x;
-  double m1 = arma::mean(arma::log(invx));
-  double m2 = arma::var(arma::log(invx), 1);
-
-  BurrLmomResult init = burr_lmom_core(m1, m2, true);
-  if (!std::isfinite(init.c) || init.c <= 0.0) {
-    return {NA_REAL, NA_REAL, NA_REAL, 0};
-  }
-  BurrMLE res = burr_mle_core(invx, init.c, tol, maxit);
-  if (res.status != BurrStatus::Ok) {
-    return {NA_REAL, NA_REAL, NA_REAL, res.iterations};
-  }
-
-  const double shape1 = res.shape1; // matches Burr shape1 from mlburr_(1 / x)
-  const double shape2 = res.shape2; // matches Burr shape2 from mlburr_(1 / x)
-  const double logLik =
-      static_cast<double>(n) * (std::log(shape1) + std::log(shape2)) -
-      (shape2 + 1.0) * arma::accu(arma::log(x)) -
-      (shape1 + 1.0) * arma::accu(arma::log1p(arma::pow(x, -shape2)));
-
-  return {shape1, shape2, logLik, res.iterations};
-}
 
 } // namespace mlcore
