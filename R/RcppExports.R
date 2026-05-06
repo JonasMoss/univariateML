@@ -269,6 +269,10 @@ mlinvgauss_ <- function(x) {
     .Call(`_univariateML_mlinvgauss_`, x)
 }
 
+mlsstd_ <- function(x, tol = 1.220703e-4, iterlim = 200L) {
+    .Call(`_univariateML_mlsstd_`, x, tol, iterlim)
+}
+
 mlsnorm_ <- function(x, tol = 1.220703e-4, iterlim = 200L) {
     .Call(`_univariateML_mlsnorm_`, x, tol, iterlim)
 }

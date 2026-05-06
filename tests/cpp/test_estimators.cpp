@@ -20,7 +20,7 @@
 // the mapping explicitly.
 //
 // Skipped here (no mlcore implementation yet, R-side only):
-//   sged, sstd       (WS4 in progress)
+//   sged       (WS4 in progress)
 //   lgamma is wrapper-only; covered by re-running gamma_mle on log(x).
 //
 // Each WS4 estimator additionally pairs the golden check with a
@@ -296,6 +296,25 @@ TEST_CASE("fatigue") {
   // Wrapper hardcodes mu=0; golden also stores 0.
   CHECK(g.estimates.at("mu") == 0.0);
   CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("sstd (skew Student-t)") {
+  auto g = load("sstd");
+  auto r = mlcore::sstd_mle(mltest::as_span(g.data), kFitTol, 200);
+  CHECK(r.mu == APPROX(g.estimates.at("mean")));
+  CHECK(r.sigma == APPROX(g.estimates.at("sd")));
+  CHECK(r.nu == APPROX(g.estimates.at("nu")));
+  CHECK(r.xi == APPROX(g.estimates.at("xi")));
+  CHECK(r.logLik == APPROX(g.logLik));
+
+  mlcore::SstdCost cost{mltest::as_span(g.data)};
+  const double phi_hat[4] = {r.mu, std::log(r.sigma), std::log(r.nu - 2.0),
+                             std::log(r.xi)};
+  double grad[4];
+  mlcore::finite_diff_gradient(cost, phi_hat, grad);
+  const double gnorm = std::sqrt(grad[0] * grad[0] + grad[1] * grad[1] +
+                                 grad[2] * grad[2] + grad[3] * grad[3]);
+  CHECK(gnorm < 1e-3);
 }
 
 TEST_CASE("snorm (skew-normal)") {
