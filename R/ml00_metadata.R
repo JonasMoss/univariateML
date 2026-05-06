@@ -241,8 +241,8 @@ univariateML_metadata$mlparalogis <- list(
   model = "Paralogistic",
   density = "actuar::dparalogis",
   support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
-  names = c("shape"),
-  default = c(1)
+  names = c("shape", "scale"),
+  default = c(1, 1)
 )
 
 univariateML_metadata$mlpareto <- list(

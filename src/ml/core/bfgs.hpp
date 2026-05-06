@@ -48,10 +48,17 @@ struct BfgsResult {
 };
 
 struct BfgsControl {
-  double reltol = 1.220703e-4;  // matches kFitTol in ml_exports.cpp
+  // reltol is a "function is genuinely flat" backstop, not a primary
+  // stopping rule: with the standard kFitTol = 1.22e-4 this would fire on
+  // the asymptotically slow approach to an MLE long before the gradient
+  // is actually small (e.g. ||grad|| ~ 0.1 on a 500-obs likelihood).
+  // grad_tol is the meaningful convergence test; estimators that need to
+  // satisfy a score-residual check should map their user-facing `tol`
+  // onto grad_tol, not reltol.
+  double reltol = 1e-12;
   double grad_tol = 1e-6;
   double step_tol = 1e-8;
-  int maxit = 100;
+  int maxit = 200;
   int max_ls = 20;
   double ls_armijo = 1e-4;
   double ls_shrink = 0.5;

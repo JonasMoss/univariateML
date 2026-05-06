@@ -269,6 +269,10 @@ mlinvgauss_ <- function(x) {
     .Call(`_univariateML_mlinvgauss_`, x)
 }
 
+mlparalogis_ <- function(x, tol = 1.220703e-4, iterlim = 100L) {
+    .Call(`_univariateML_mlparalogis_`, x, tol, iterlim)
+}
+
 mllomax_ <- function(x, tol = 1.220703e-4, iterlim = 100L) {
     .Call(`_univariateML_mllomax_`, x, tol, iterlim)
 }

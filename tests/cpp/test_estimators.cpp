@@ -20,8 +20,14 @@
 // the mapping explicitly.
 //
 // Skipped here (no mlcore implementation yet, R-side only):
-//   ged, paralogis, sged, snorm, sstd, std       (WS4)
+//   ged, sged, snorm, sstd, std       (WS4 in progress)
 //   lgamma is wrapper-only; covered by re-running gamma_mle on log(x).
+//
+// Each WS4 estimator additionally pairs the golden check with a
+// score-residual assertion: re-evaluate the FD gradient at the recovered
+// MLE and require ||g||_2 < 1e-3. Independent of optimiser trajectory;
+// catches the fake-paralogis class of bug (component score wrong because
+// a parameter was implicitly fixed during the fit).
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
@@ -290,6 +296,25 @@ TEST_CASE("fatigue") {
   // Wrapper hardcodes mu=0; golden also stores 0.
   CHECK(g.estimates.at("mu") == 0.0);
   CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("paralogis") {
+  auto g = load("paralogis");
+  auto r = mlcore::paralogis_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape == APPROX(g.estimates.at("shape")));
+  CHECK(r.scale == APPROX(g.estimates.at("scale")));
+  CHECK(r.logLik == APPROX(g.logLik));
+
+  // Score-residual guard. The previous 1-param paralogis fit silently fixed
+  // scale at 1; under that fit the scale-direction component of the score
+  // is non-zero, so ||g||_2 > 1e-3. The 2-param fit must drive both
+  // components below tolerance.
+  mlcore::ParalogisCost cost{mltest::as_span(g.data)};
+  const double phi_hat[2] = {std::log(r.shape), std::log(r.scale)};
+  double grad[2];
+  mlcore::finite_diff_gradient(cost, phi_hat, grad);
+  const double gnorm = std::sqrt(grad[0] * grad[0] + grad[1] * grad[1]);
+  CHECK(gnorm < 1e-3);
 }
 
 TEST_CASE("lomax") {

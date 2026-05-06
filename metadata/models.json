@@ -1452,6 +1452,19 @@
               false
             ]
           }
+        },
+        {
+          "name": "scale",
+          "role": null,
+          "default": 1,
+          "support": {
+            "lower": null,
+            "upper": null,
+            "closed": [
+              false,
+              false
+            ]
+          }
         }
       ],
       "sampler": "actuar::rparalogis",

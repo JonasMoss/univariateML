@@ -39,6 +39,7 @@
 #include "estimators/nakagami.hpp"
 #include "estimators/negative_binomial.hpp"
 #include "estimators/normal.hpp"
+#include "estimators/paralogis.hpp"
 #include "estimators/pareto.hpp"
 #include "estimators/poisson.hpp"
 #include "estimators/power.hpp"

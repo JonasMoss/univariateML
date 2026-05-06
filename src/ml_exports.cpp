@@ -561,6 +561,24 @@ Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
 }
 
 // [[Rcpp::export]]
+Rcpp::List mlparalogis_(const Rcpp::NumericVector &x,
+                        double tol = 1.220703e-4, int iterlim = 100) {
+  auto res =
+      mlcore::paralogis_mle(mlcore::as_span(x), tol, iterlim);
+  if (res.status == mlcore::ParalogisStatus::InvalidStart) {
+    Rcpp::stop("Paralogistic MLE requires positive, finite observations.");
+  }
+  if (res.status != mlcore::ParalogisStatus::Ok ||
+      !std::isfinite(res.shape) || !std::isfinite(res.scale)) {
+    Rcpp::stop("Paralogistic MLE failed to converge (check inputs)");
+  }
+  return Rcpp::List::create(
+      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
+          Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
+      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
+}
+
+// [[Rcpp::export]]
 Rcpp::List mllomax_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
   auto res = mlcore::lomax_mle(mlcore::as_span(x), tol, iterlim);
