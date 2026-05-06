@@ -1,9 +1,9 @@
 ---
-title: "Distributions"
+title: "Distributions in univariateML"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Distributions}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -34,7 +34,7 @@ univariateML_metadata[["mllgser"]]
 
 From the metadata you can read that 
 
-* `mllgser` estimates the parameters `N` and `s`.
+* `mllgser` estimates the parameter `theta`.
 * Its a discrete distribution on $1,2,3,...$,
 * Its density function is `extraDistr::dlgser`.
 

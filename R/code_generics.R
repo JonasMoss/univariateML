@@ -186,10 +186,9 @@ confint.univariateML <- function(
     ...) {
   if (is.null(parm)) parm <- names(object)
 
-  assertthat::assert_that(all(parm %in% names(object)),
-    msg =
-      "'parm' must contain valid parameter names or be NULL"
-  )
+  if (!all(parm %in% names(object))) {
+    stop("'parm' must contain valid parameter names or be NULL")
+  }
 
   indices <- which(names(object) %in% parm)
 

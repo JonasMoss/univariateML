@@ -11,14 +11,14 @@
 #' @param type Either `"both"`, `"discrete"`, or `"continuous"`. The supplied `models`
 #'   vector is restricted to the desired class.
 #' @param return character length 1. "univariateML" (default) if the function
-#'   should return the single best model; "all" if a tibble data frame
+#'   should return the single best model; "all" if a data.frame
 #'   of all results should be returned, sorted by decreasing model performance.
 #' @param ... unused.
 #' @return The return value depends on the `return` argument.
 #'    For `return = "best"` (default), `model_select` returns
 #'    an object of [class][base::class] `univariateML`
 #'
-#'    For `return = "all"`, `model_select` returns a tibble data frame
+#'    For `return = "all"`, `model_select` returns a data.frame
 #'    with the following columns:
 #'     \item{`model`}{The name of the model.}
 #'     \item{`d_loglik, d_aic, d_bic`}{See `loglik, aic, bic`.}
@@ -87,27 +87,29 @@ model_select <- function(
     return(fits[[which.min(crits)]])
   }
 
-  fits <- tibble::tibble(
+  p_vec <- sapply(fits, length)
+  fits <- data.frame(
     model = unname(sapply(fits, function(x) attr(x, "model"))),
     LOGLIK = unname(-sapply(fits, stats::logLik)),
     AIC = unname(sapply(fits, stats::AIC)),
     BIC = unname(sapply(fits, stats::BIC)),
     ml = gsub("^ml", "", names(fits)),
-    univariateML = fits
+    univariateML = I(fits),
+    stringsAsFactors = FALSE
   )
 
 
-  fits <- fits[order(fits[[criterion]]), ]
+  fits <- fits[order(fits[[criterion]]), , drop = FALSE]
 
   fits$d_logLik <- fits$LOGLIK - min(fits$LOGLIK, na.rm = TRUE)
   fits$d_AIC <- fits$AIC - min(fits$AIC, na.rm = TRUE)
   fits$d_BIC <- fits$BIC - min(fits$BIC, na.rm = TRUE)
-  fits$p <- sapply(fits$univariateML, length)
+  fits$p <- p_vec
   fits$logLik <- -fits$LOGLIK
 
   fits <- fits[, c(
     "model", "d_logLik", "d_AIC", "d_BIC", "logLik", "p", "AIC", "BIC", "ml", "univariateML"
-  )]
+  ), drop = FALSE]
 
   fits
 }
@@ -117,7 +119,7 @@ filter_models <- function(models, type) {
     return(models)
   }
   type_ <- if (type == "continuous") "R" else "Z"
-  Filter(function(model) univariateML_metadata[[paste0("ml", model)]]$support@type == type_, models)
+  Filter(function(model) univariateML_metadata[[paste0("ml", model)]]$support$type == type_, models)
 }
 
 check_models <- function(models) {

@@ -11,7 +11,7 @@ for (dens in densities) {
   expect_equal(forms_lhs, forms_rhs)
   set.seed(1)
   x <- simulate_default(dens, 10)
-  object <- rlang::exec(dens, x)
+  object <- do.call(dens, list(x))
   density <- univariateML_to_function(object, "d")
   expect_equal(sum(density(x, log = TRUE)), attr(object, "logLik"))
 }

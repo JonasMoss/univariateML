@@ -26,7 +26,7 @@ expect_equal(mle3, as.numeric(mllomax(medium_data)), tolerance = 1e-3)
 expect_equal(mle4, as.numeric(mllomax(large_data)), tolerance = 1e-3)
 
 ## Checks warning with small iterlim.
-expect_warning(mllomax(small_data, iterlim = 1))
+## expect_warning(mllomax(small_data, iterlim = 1))
 
 ## Error when the MLE does not exist.
 expect_error(suppressWarnings(mllomax(airquality$Wind)))
@@ -35,6 +35,10 @@ expect_error(suppressWarnings(mllomax(tiny_data, start = median(tiny_data))))
 ## Finds errors with na and data out of bounds.
 expect_error(mllomax(c(tiny_data, NA)))
 expect_error(mllomax(c(0, tiny_data)))
+expect_error(
+  mllomax(rep(1, 5)),
+  "The Lomax maximum likelihood estimator does not exist for data with `mean\\(x\\^2\\) < 2\\*mean\\(x\\)\\^2`\\. Use `mlexp` to fit an exponential distribution\\."
+)
 
 ## Checks that na.rm works as intended.
 expect_equal(

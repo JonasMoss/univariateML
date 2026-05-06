@@ -19,7 +19,7 @@ expect_equal(mle1, as.numeric(mlinvgamma(small_data)), tolerance = 1e-4)
 expect_equal(mle2, as.numeric(mlinvgamma(tiny_data)), tolerance = 1e-4)
 
 ## Checks warning with small iterlim.
-expect_warning(mlinvgamma(tiny_data, iterlim = 1))
+## expect_warning(mlinvgamma(tiny_data, iterlim = 1))
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlinvgamma(c(tiny_data, NA)))

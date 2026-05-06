@@ -1,3 +1,30 @@
+#' assertthat
+#'
+#' Light replacement for assert_that.
+#'
+#' @param ... conditions to be tested.
+#' @param env optional environment
+#' @param msg custom error message.
+
+assert_that <- function(..., env = parent.frame(), msg = NULL) {
+  conds <- as.list(substitute(list(...)))[-1L]
+  for (cond in conds) {
+    ok <- tryCatch(eval(cond, env), error = function(e) e)
+    if (!isTRUE(ok)) {
+      m <- if (!is.null(msg)) {
+        msg
+      } else if (inherits(ok, "error")) {
+        ok$message
+      } else {
+        paste("Assertion failed:", deparse(cond))
+      }
+      stop(m, call. = FALSE)
+    }
+  }
+  TRUE
+}
+
+
 #' Decorate estimator
 #'
 #' The decorator constructs an `ml***`. It first checks the input arguments,
@@ -12,7 +39,7 @@ decorator <- function(name) {
   fun <- function(x, na.rm = FALSE, ...) {
     x <- ml_check_modify(x, na.rm = na.rm, name = name)
     n <- length(x)
-    out <- rlang::exec(paste0(name, "_"), x = x, ...)
+    out <- do.call(paste0(name, "_"), c(list(x = x), list(...)))
 
     params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)
     univariateML_construct(out$estimates, name = name, params = params)
@@ -42,48 +69,35 @@ univariateML_construct <- function(estimates, name, params) {
     NULL
   }
 
-  if (univariateML_metadata[[name]]$support@type == "R") {
-    attr(object, "continuous") <- TRUE
-  } else {
-    attr(object, "continuous") <- FALSE
-  }
-
-  support_names <- names(univariateML_metadata[[name]]$support)
-  if (is.null(support_names)) {
-    attr(object, "support") <- c(univariateML_metadata[[name]]$support@.Data)
-  } else {
-    support <- attr(object, "support")
-    values <- as.list(stats::setNames(estimates, univariateML_metadata[[name]]$names))
-    supp <- unname(sapply(names(support), function(x) with(values, eval(str2lang(x)))))
-    attr(object, "support") <- supp
-  }
+  attr(object, "continuous") <- (univariateML_metadata[[name]]$support$type == "R")
+  attr(object, "support") <- univariateML_metadata[[name]]$support$bounds
   object
 }
 
 
 ml_check_modify <- function(x, na.rm, name) {
-  assertthat::assert_that(is.numeric(x))
+  assert_that(is.numeric(x))
   msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
-  assertthat::assert_that(NCOL(x) == 1, msg = msg)
+  assert_that(NCOL(x) == 1, msg = msg)
   msg <- "NA in input when na.rm = FALSE"
-  if (na.rm) x <- x[!is.na(x)] else assertthat::assert_that(!anyNA(x), msg = msg)
+  if (na.rm) x <- x[!is.na(x)] else assert_that(!anyNA(x), msg = msg)
 
   support <- univariateML_metadata[[name]]$support
 
   msg <- "x not in the support of the data"
-  if (support@closed[1]) {
-    assertthat::assert_that(min(x) >= support[[1]], msg = msg)
+  if (support$closed[1]) {
+    assert_that(min(x) >= support$bounds[[1]], msg = msg)
   } else {
-    assertthat::assert_that(min(x) > support[[1]], msg = msg)
+    assert_that(min(x) > support$bounds[[1]], msg = msg)
   }
 
-  if (support@closed[2]) {
-    assertthat::assert_that(max(x) <= support[[2]], msg = msg)
+  if (support$closed[2]) {
+    assert_that(max(x) <= support$bounds[[2]], msg = msg)
   } else {
-    assertthat::assert_that(max(x) < support[[2]], msg = msg)
+    assert_that(max(x) < support$bounds[[2]], msg = msg)
   }
 
-  if (support@type == "Z") {
+  if (support$type == "Z") {
     if (sum(abs(x - floor(x)) != 0)) {
       stop("Non-integral inputs for discrete density.")
     }

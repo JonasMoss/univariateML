@@ -5,7 +5,7 @@
 #' See the web page <https://archive.ics.uci.edu/ml/datasets/Abalone> for
 #'    more information about the data set.
 #'
-#' @format A [tibble][tibble::tibble] with 4,177 observations and 9 variables:
+#' @format A data frame with 4,177 observations and 9 variables:
 #'   \describe{
 #'     \item{sex}{Sex of the abalone, `F` is female, `M` male, and
 #'                `I` infant.}

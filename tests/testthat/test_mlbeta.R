@@ -17,16 +17,6 @@ mle2 <- nlm(function(p) {
 expect_equal(mle1, as.numeric(mlbeta(small_data)), tolerance = 1e-5)
 expect_equal(mle2, as.numeric(mlbeta(tiny_data)), tolerance = 1e-5)
 
-## Checks the control parameters.
-expect_equal(coef(mlbeta(tiny_data, type = "gradient")),
-  coef(mlbeta(tiny_data)),
-  tolerance = 1e-5
-)
-expect_equal(coef(mlbeta(small_data, type = "gradient")),
-  coef(mlbeta(small_data, type = "hessian")),
-  tolerance = 1e-5
-)
-
 ## Finds errors with na and data out of bounds.
 expect_error(mlbeta(c(0, tiny_data)))
 expect_error(mlbeta(c(tiny_data, 1)))

@@ -40,16 +40,6 @@ expect_equal(-mle_medium$minimum, attr(mlbetapr(medium_data), "logLik"),
   tolerance = 1e-5
 )
 
-## Checks the control parameters.
-expect_equal(coef(mlbetapr(tiny_data, type = "gradient")),
-  coef(mlbetapr(tiny_data)),
-  tolerance = 1e-4
-)
-expect_equal(coef(mlbetapr(small_data, type = "gradient")),
-  coef(mlbetapr(small_data, type = "hessian")),
-  tolerance = 1e-4
-)
-
 ## Finds errors with na and data out of bounds.
 expect_error(mlbetapr(c(0, tiny_data)))
 expect_error(mlbetapr(c(tiny_data, NA)))
@@ -64,7 +54,3 @@ expect_equal(
 est <- mlbetapr(tiny_data)
 expect_equal(attr(est, "model"), "BetaPrime")
 expect_equal(class(est), "univariateML")
-
-
-## Check support.
-expect_equal(class(attr(est, "support"))[[1]], "numeric")

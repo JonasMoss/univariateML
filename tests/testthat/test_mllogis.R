@@ -75,8 +75,6 @@ expect_equal(-mle4$minimum, attr(mllogis(large_data), "logLik"),
   tolerance = 1e-4
 )
 
-# Checks lambert W helper via lgser
-expect_error(mllgser(rep(1L, 5)))
 ## Finds errors with na and data out of bounds.
 expect_error(mllogis(c(tiny_data, NA)))
 

@@ -1,4 +1,4 @@
 mlsstd_ <- function(x, ...) {
-  fit <- suppressWarnings(fGarch::sstdFit(x))
-  list(estimates = fit[["estimate"]], logLik = -fit$minimum)
+  fit <- suppressWarnings(sstdFit(x, ...))
+  list(estimates = fit[["par"]], logLik = -fit$objective)
 }

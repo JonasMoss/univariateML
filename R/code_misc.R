@@ -39,6 +39,7 @@ listmerge <- function(x, y, type = c("merge", "template")) {
 #' @param dens `ml***` string.
 #' @param n Number of samples to take.
 #' @keywords internal
+#' @export
 simulate_default <- function(dens, n) {
   to_rdist <- function(x) {
     strings <- strsplit(x, "::")[[1]]
@@ -49,7 +50,9 @@ simulate_default <- function(dens, n) {
   names(params) <- univariateML_metadata[[dens]]$names
   params["n"] <- n
   rdist <- to_rdist(univariateML_metadata[[dens]]$density)
-  rlang::exec(parse(text = rdist)[[1]], !!!as.list(params))
+  parts <- strsplit(rdist, "::")[[1]]
+  fun <- getExportedValue(parts[1], parts[2])
+  do.call(fun, as.list(params))
 }
 
 #' One-dimensional Newton--Raphson

@@ -1,5 +1,7 @@
 set shell := ["bash", "-lc"]
 
+default: test
+
 clean-r:
 	find R -maxdepth 1 -type f ! -name 'RcppExports.R' -delete
 
@@ -10,6 +12,8 @@ gen:
 	Rscript scripts/gen_utils_copy.R
 
 regen: clean-r gen
+	Rscript -e "Rcpp::compileAttributes()"
+	Rscript -e "devtools::document()"
 
 test: regen
 	Rscript -e "suppressMessages(devtools::load_all('.')); devtools::test(filter=NULL)"
@@ -19,3 +23,9 @@ check: regen
 
 bench model="burr" sizes="50,200,1000" reps="5":
 	Rscript scripts/bench_cpp.R --model {{model}} --sizes {{sizes}} --reps {{reps}}
+
+# Regenerate tests/golden/*.json from the current R/C++ pipeline. Run this
+# only when you intentionally accept a new baseline (e.g. an algorithm
+# change). After regen, inspect the diff before committing.
+goldens:
+	Rscript scripts/gen_goldens.R

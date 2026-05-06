@@ -9,7 +9,7 @@
 #' @seealso The source of the data is
 #' <https://feb.kuleuven.be/public/u0043181/modelselection/datasets/egyptlives_data.txt>
 #'
-#' @format A [tibble][tibble::tibble] with 141 observations and 2 variables:
+#' @format A data frame with 141 observations and 2 variables:
 #'   \describe{
 #'     \item{age}{Age at death.}
 #'     \item{sex}{Sex of deceased; 82 males and 49 females.}

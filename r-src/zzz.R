@@ -37,9 +37,5 @@ out$names <- NULL
 
 zzz <- function() {
   invisible(extraDistr::dbetapr)
-  invisible(logitnorm::dlogitnorm)
-  invisible(tibble::tibble)
-  invisible(nakagami::dnaka)
-  invisible(intervals::Intervals)
-  invisible(sads::dzipf)
+  invisible(actuar::dparalogis)
 }

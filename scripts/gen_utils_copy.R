@@ -16,8 +16,8 @@ for (f in data_files) {
   file.copy(f, file.path(dst_dir, paste0("data_", basename(f))), overwrite = TRUE)
 }
 
-# pkg files (keep names: zzz.R, univariateML-package.R)
-pkg_files <- list.files("r-src", pattern = "^zzz\\.R$|^univariateML-package\\.R$", full.names = TRUE)
+# pkg files (keep names: zzz.R, univariateML-package.R, univariateML_exports.R, distributions_cpp_exports.R)
+pkg_files <- list.files("r-src", pattern = "^zzz\\.R$|^univariateML-package\\.R$|^univariateML_exports\\.R$|^distributions_cpp_exports\\.R$", full.names = TRUE)
 for (f in pkg_files) {
   file.copy(f, file.path(dst_dir, basename(f)), overwrite = TRUE)
 }

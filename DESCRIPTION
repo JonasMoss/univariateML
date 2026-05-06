@@ -16,27 +16,13 @@ LazyData: true
 Depends: 
     R (>= 3.5)
 Imports: 
-    assertthat,
+    Rcpp,
     extraDistr,
-    tibble,
-    logitnorm,
-    actuar,
-    nakagami,
-    fGarch,
-    rlang,
-    intervals,
-    Rfast,
-    pracma,
-    sads,
-    Rcpp
+    actuar
 Suggests: 
     testthat,
     knitr,
-    rmarkdown,
-    markdown,
-    copula,
-    dplyr,
-    covr
+    rmarkdown
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 URL: https://github.com/JonasMoss/univariateML, https://jonasmoss.github.io/univariateML/
@@ -44,5 +30,4 @@ BugReports: https://github.com/JonasMoss/univariateML/issues
 Roxygen: list(markdown = TRUE)
 LinkingTo: 
     Rcpp,
-    RcppArmadillo,
-    BH
+    RcppArmadillo

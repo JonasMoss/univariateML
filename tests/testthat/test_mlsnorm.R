@@ -2,8 +2,8 @@ context("mlsnorm")
 
 ## Data generation.
 set.seed(313)
-small_data <- fGarch::rsnorm(100)
-tiny_data <- fGarch::rsnorm(100)
+small_data <- univariateML::rsnorm(100)
+tiny_data <- univariateML::rsnorm(100)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlsnorm(c(tiny_data, NA)))
@@ -17,7 +17,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlsnorm(small_data, na.rm = TRUE)
 expect_equal(
-  sum(fGarch::dsnorm(small_data, est[1], est[2], est[3], log = TRUE)),
+  sum(univariateML::dsnorm(small_data, est[1], est[2], est[3], log = TRUE)),
   attr(est, "logLik")
 )
 

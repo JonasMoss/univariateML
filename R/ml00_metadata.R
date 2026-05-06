@@ -8,7 +8,7 @@ univariateML_metadata <- list()
 univariateML_metadata$mlbeta <- list(
   model = "Beta",
   density = "stats::dbeta",
-  support = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, 1), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape1", "shape2"),
   default = c(2, 3)
 )
@@ -16,7 +16,7 @@ univariateML_metadata$mlbeta <- list(
 univariateML_metadata$mlbetapr <- list(
   model = "BetaPrime",
   density = "extraDistr::dbetapr",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape1", "shape2"),
   default = c(2, 3)
 )
@@ -24,7 +24,7 @@ univariateML_metadata$mlbetapr <- list(
 univariateML_metadata$mlbinom <- list(
   model = "Binomial",
   density = "stats::dbinom",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
   names = c("size", "prob"),
   default = c(10, 0.5)
 )
@@ -32,7 +32,7 @@ univariateML_metadata$mlbinom <- list(
 univariateML_metadata$mlburr <- list(
   model = "Burr",
   density = "actuar::dburr",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape1", "shape2"),
   default = c(1, 2)
 )
@@ -40,7 +40,7 @@ univariateML_metadata$mlburr <- list(
 univariateML_metadata$mlcauchy <- list(
   model = "Cauchy",
   density = "stats::dcauchy",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("location", "scale"),
   default = c(0, 1)
 )
@@ -48,7 +48,7 @@ univariateML_metadata$mlcauchy <- list(
 univariateML_metadata$mldunif <- list(
   model = "Discrete uniform",
   density = "extraDistr::ddunif",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "Z"),
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "Z"),
   names = c("min", "max"),
   default = c(2, 10)
 )
@@ -56,7 +56,7 @@ univariateML_metadata$mldunif <- list(
 univariateML_metadata$mlexp <- list(
   model = "Exponential",
   density = "stats::dexp",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("rate"),
   default = c(1)
 )
@@ -64,7 +64,7 @@ univariateML_metadata$mlexp <- list(
 univariateML_metadata$mlfatigue <- list(
   model = "Birnbaum-Saunders",
   density = "extraDistr::dfatigue",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
   names = c("alpha", "beta", "mu"),
   default = c(3, 2, 0)
 )
@@ -72,15 +72,15 @@ univariateML_metadata$mlfatigue <- list(
 univariateML_metadata$mlgamma <- list(
   model = "Gamma",
   density = "stats::dgamma",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape", "rate"),
   default = c(2, 2)
 )
 
 univariateML_metadata$mlged <- list(
   model = "Generalized Error",
-  density = "fGarch::dged",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  density = "univariateML::dged",
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mean", "sd", "nu"),
   default = c(0, 1, 3)
 )
@@ -88,7 +88,7 @@ univariateML_metadata$mlged <- list(
 univariateML_metadata$mlgeom <- list(
   model = "Geometric",
   density = "stats::dgeom",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
   names = c("prob"),
   default = c(0.5)
 )
@@ -96,7 +96,7 @@ univariateML_metadata$mlgeom <- list(
 univariateML_metadata$mlgompertz <- list(
   model = "Gompertz",
   density = "extraDistr::dgompertz",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
   names = c("a", "b"),
   default = c(1, 1)
 )
@@ -104,7 +104,7 @@ univariateML_metadata$mlgompertz <- list(
 univariateML_metadata$mlgumbel <- list(
   model = "Gumbel",
   density = "extraDistr::dgumbel",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mu", "sigma"),
   default = c(3, 3)
 )
@@ -112,7 +112,7 @@ univariateML_metadata$mlgumbel <- list(
 univariateML_metadata$mlinvburr <- list(
   model = "Inverse Burr",
   density = "actuar::dinvburr",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape1", "shape2"),
   default = c(1, 2)
 )
@@ -120,7 +120,7 @@ univariateML_metadata$mlinvburr <- list(
 univariateML_metadata$mlinvgamma <- list(
   model = "InvGamma",
   density = "extraDistr::dinvgamma",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("alpha", "beta"),
   default = c(3, 4)
 )
@@ -128,7 +128,7 @@ univariateML_metadata$mlinvgamma <- list(
 univariateML_metadata$mlinvgauss <- list(
   model = "Inverse Gaussian",
   density = "actuar::dinvgauss",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mean", "shape"),
   default = c(3, 4)
 )
@@ -136,7 +136,7 @@ univariateML_metadata$mlinvgauss <- list(
 univariateML_metadata$mlinvweibull <- list(
   model = "InverseWeibull",
   density = "actuar::dinvweibull",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape", "rate"),
   default = c(2, 3)
 )
@@ -144,7 +144,7 @@ univariateML_metadata$mlinvweibull <- list(
 univariateML_metadata$mlkumar <- list(
   model = "Kumaraswamy",
   density = "extraDistr::dkumar",
-  support = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, 1), closed = c(FALSE, FALSE), type = "R"),
   names = c("a", "b"),
   default = c(2, 3)
 )
@@ -152,7 +152,7 @@ univariateML_metadata$mlkumar <- list(
 univariateML_metadata$mllaplace <- list(
   model = "Laplace",
   density = "extraDistr::dlaplace",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mu", "sigma"),
   default = c(0, 1)
 )
@@ -160,7 +160,7 @@ univariateML_metadata$mllaplace <- list(
 univariateML_metadata$mllgamma <- list(
   model = "Loggamma",
   density = "actuar::dlgamma",
-  support = intervals::Intervals(c(1, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(1, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shapelog", "ratelog"),
   default = c(2, 3)
 )
@@ -168,7 +168,7 @@ univariateML_metadata$mllgamma <- list(
 univariateML_metadata$mllgser <- list(
   model = "Logarithmic series",
   density = "extraDistr::dlgser",
-  support = intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  support = list(bounds = c(1, Inf), closed = c(TRUE, FALSE), type = "Z"),
   names = c("theta"),
   default = c(0.9)
 )
@@ -176,7 +176,7 @@ univariateML_metadata$mllgser <- list(
 univariateML_metadata$mlllogis <- list(
   model = "Loglogistic",
   density = "actuar::dllogis",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
   names = c("shape", "rate"),
   default = c(1, 2)
 )
@@ -184,7 +184,7 @@ univariateML_metadata$mlllogis <- list(
 univariateML_metadata$mllnorm <- list(
   model = "Lognormal",
   density = "stats::dlnorm",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("meanlog", "sdlog"),
   default = c(0, 1)
 )
@@ -192,15 +192,15 @@ univariateML_metadata$mllnorm <- list(
 univariateML_metadata$mllogis <- list(
   model = "Logistic",
   density = "stats::dlogis",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("location", "scale"),
   default = c(0, 1)
 )
 
 univariateML_metadata$mllogitnorm <- list(
   model = "LogitNormal",
-  density = "logitnorm::dlogitnorm",
-  support = intervals::Intervals(c(0, 1), closed = c(FALSE, FALSE), type = "R"),
+  density = "univariateML::dlogitnorm",
+  support = list(bounds = c(0, 1), closed = c(FALSE, FALSE), type = "R"),
   names = c("mu", "sigma"),
   default = c(2, 3)
 )
@@ -208,15 +208,15 @@ univariateML_metadata$mllogitnorm <- list(
 univariateML_metadata$mllomax <- list(
   model = "Lomax",
   density = "extraDistr::dlomax",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("lambda", "kappa"),
   default = c(1, 2)
 )
 
 univariateML_metadata$mlnaka <- list(
   model = "Nakagami",
-  density = "nakagami::dnaka",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  density = "univariateML::dnaka",
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape", "scale"),
   default = c(2, 3)
 )
@@ -224,7 +224,7 @@ univariateML_metadata$mlnaka <- list(
 univariateML_metadata$mlnbinom <- list(
   model = "Negative binomial",
   density = "stats::dnbinom",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
   names = c("size", "prob"),
   default = c(10, 0.3)
 )
@@ -232,7 +232,7 @@ univariateML_metadata$mlnbinom <- list(
 univariateML_metadata$mlnorm <- list(
   model = "Normal",
   density = "stats::dnorm",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mean", "sd"),
   default = c(0, 1)
 )
@@ -240,7 +240,7 @@ univariateML_metadata$mlnorm <- list(
 univariateML_metadata$mlparalogis <- list(
   model = "Paralogistic",
   density = "actuar::dparalogis",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape"),
   default = c(1)
 )
@@ -248,7 +248,7 @@ univariateML_metadata$mlparalogis <- list(
 univariateML_metadata$mlpareto <- list(
   model = "Pareto",
   density = "extraDistr::dpareto",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
   names = c("a", "b"),
   default = c(1, 2)
 )
@@ -256,7 +256,7 @@ univariateML_metadata$mlpareto <- list(
 univariateML_metadata$mlpois <- list(
   model = "Poisson",
   density = "stats::dpois",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
   names = c("lambda"),
   default = c(2)
 )
@@ -264,7 +264,7 @@ univariateML_metadata$mlpois <- list(
 univariateML_metadata$mlpower <- list(
   model = "PowerDist",
   density = "extraDistr::dpower",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
   names = c("alpha", "beta"),
   default = c(1, 2)
 )
@@ -272,39 +272,39 @@ univariateML_metadata$mlpower <- list(
 univariateML_metadata$mlrayleigh <- list(
   model = "Rayleigh",
   density = "extraDistr::drayleigh",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
   names = c("sigma"),
   default = c(2)
 )
 
 univariateML_metadata$mlsged <- list(
   model = "Skew Generalized Error",
-  density = "fGarch::dsged",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  density = "univariateML::dsged",
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mean", "sd", "nu", "xi"),
   default = c(0, 1, 3, 3)
 )
 
 univariateML_metadata$mlsnorm <- list(
   model = "Skew Normal",
-  density = "fGarch::dsnorm",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  density = "univariateML::dsnorm",
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mean", "sd", "xi"),
   default = c(0, 1, 3)
 )
 
 univariateML_metadata$mlsstd <- list(
   model = "Skew Student-t",
-  density = "fGarch::dsstd",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  density = "univariateML::dsstd",
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mean", "sd", "nu", "xi"),
   default = c(0, 1, 3, 2)
 )
 
 univariateML_metadata$mlstd <- list(
   model = "Student-t",
-  density = "fGarch::dstd",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  density = "univariateML::dstd",
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("mean", "sd", "nu"),
   default = c(0, 1, 3)
 )
@@ -312,7 +312,7 @@ univariateML_metadata$mlstd <- list(
 univariateML_metadata$mlunif <- list(
   model = "Uniform",
   density = "stats::dunif",
-  support = intervals::Intervals(c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(-Inf, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("min", "max"),
   default = c(0, 1)
 )
@@ -320,7 +320,7 @@ univariateML_metadata$mlunif <- list(
 univariateML_metadata$mlweibull <- list(
   model = "Weibull",
   density = "stats::dweibull",
-  support = intervals::Intervals(c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
   names = c("shape", "scale"),
   default = c(3, 4)
 )
@@ -328,15 +328,15 @@ univariateML_metadata$mlweibull <- list(
 univariateML_metadata$mlzip <- list(
   model = "Zero-inflated Poisson",
   density = "extraDistr::dzip",
-  support = intervals::Intervals(c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "Z"),
   names = c("lambda", "pi"),
   default = c(1, 0.5)
 )
 
 univariateML_metadata$mlzipf <- list(
   model = "Zipf",
-  density = "sads::dzipf",
-  support = intervals::Intervals(c(1, Inf), closed = c(TRUE, FALSE), type = "Z"),
+  density = "univariateML::dzipf",
+  support = list(bounds = c(1, Inf), closed = c(TRUE, FALSE), type = "Z"),
   names = c("N", "s"),
   default = c(3, 0.5)
 )

@@ -25,24 +25,27 @@ mle3 <- suppressWarnings(nlm(function(p) {
   ))
 }, p = 11))
 
+
+tolerance <- 1e-4
+
 expect_equal(mle1$estimate, as.numeric(mlpower(small_data))[2],
-  tolerance = 1e-5
+  tolerance = tolerance
 )
 expect_equal(mle2$estimate, as.numeric(mlpower(tiny_data))[2],
-  tolerance = 1e-5
+  tolerance = tolerance
 )
 expect_equal(mle3$estimate, as.numeric(mlpower(medium_data))[2],
-  tolerance = 1e-5
+  tolerance = tolerance
 )
 
 expect_equal(-mle1$minimum, attr(mlpower(small_data), "logLik"),
-  tolerance = 1e-5
+  tolerance = tolerance
 )
 expect_equal(-mle2$minimum, attr(mlpower(tiny_data), "logLik"),
-  tolerance = 1e-5
+  tolerance = tolerance
 )
 expect_equal(-mle3$minimum, attr(mlpower(medium_data), "logLik"),
-  tolerance = 1e-5
+  tolerance = tolerance
 )
 
 

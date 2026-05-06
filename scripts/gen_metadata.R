@@ -15,7 +15,7 @@ emit_support <- function(s) {
   closed_vals <- if (is.null(s$closed)) c(FALSE, FALSE) else as.logical(as.integer(unlist(s$closed)))
   closed <- paste0("c(", paste(ifelse(closed_vals, "TRUE", "FALSE"), collapse = ", "), ")")
   type <- if (!is.null(s$type)) s$type else "R"
-  line("intervals::Intervals(c(", lower, ", ", upper, "), closed = ", closed, ", type = \"", type, "\")")
+  line("list(bounds = c(", lower, ", ", upper, "), closed = ", closed, ", type = \"", type, "\")")
 }
 
 emit_params <- function(params) {

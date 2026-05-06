@@ -2,8 +2,8 @@ context("mlged")
 
 ## Data generation.
 set.seed(313)
-small_data <- fGarch::rged(100, 2, 3, 4)
-tiny_data <- fGarch::rged(100, 2, 3, 4)
+small_data <- univariateML::rged(100, 2, 3, 4)
+tiny_data <- univariateML::rged(100, 2, 3, 4)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlged(c(tiny_data, NA)))
@@ -17,7 +17,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlged(small_data, na.rm = TRUE)
 expect_equal(
-  sum(fGarch::dged(small_data, est[1], est[2], est[3], log = TRUE)),
+  sum(univariateML::dged(small_data, est[1], est[2], est[3], log = TRUE)),
   attr(est, "logLik")
 )
 
