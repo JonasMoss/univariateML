@@ -7,8 +7,9 @@ The mlcore estimators need a handful of special functions:
 - `dnorm`, `dpois`, `dgeom` — densities, used in a couple of likelihoods.
 
 Today these all flow through `src/ml/special/special.hpp`, which is the single
-boundary between mlcore and the math backend. The `dnorm`/`dpois`/`dgeom`
-densities are inlined; only `Rf_psigamma` is currently delegated to Rmath.
+boundary between mlcore and the math backend. `dnorm`/`dpois`/`dgeom`/`lgamma`/`lbeta`
+are inlined on `<cmath>`; the polygamma family routes through `src/ml/special/polygamma.cpp`
+(in-tree port of R's `polygamma.c`, see "Decision (current)" below).
 
 Swapping backend means rewriting that one file. Nothing else in mlcore
 should know which backend is in use.
@@ -56,35 +57,45 @@ should know which backend is in use.
   Rmath/Boost. Likely larger ULP drift, especially at boundaries.
 - **Con**: Maintenance falls on us — no upstream to track.
 
-### Hand-rolled
+### Hand-rolled (chosen — see "Decision" below)
 
 - **Pro**: Total control. Inline what we need, leave the rest. Lowest
   build complexity.
 - **Pro**: `dpsifn` is already vendored at `src/ml/special/polygamma.cpp`
-  (port of R's `polygamma.c`). The shell of an in-tree polygamma exists
-  but isn't wired into the build today.
+  (port of R's `polygamma.c`); now wired into the build.
 - **Con**: Owning numerical code is real work — testing, edge cases,
   asymptotic regions. Easy to introduce subtle drift.
 
 ## Decision (current)
 
-Stay on Rmath. Document the boundary at `special.hpp`. Revisit when:
+**Vendored hand-roll via `dpsifn`.** mlcore::special::{digamma, trigamma,
+tetragamma, psigamma} now delegate to `src/ml/special/polygamma.cpp`, a
+literal port of R's `polygamma.c` (Bell Labs / Amos algorithm 610), backed
+by tiny libm-only shims in `src/ml/special/rmath_compat.hpp` for the four
+helpers it consults (`Rf_d1mach`, `Rf_i1mach`, plus `imin2`/`fmax2`/`fmin2`/
+`R_pow_di`).
 
-1. WS3's standalone build needs `cmake --build && ctest` to pass without
-   an R install, AND
-2. The minimal vendoring path (compile `polygamma.cpp` + a shim with
-   `Rf_d1mach`/`Rf_i1mach` inlined) proves more painful than just
-   swapping in Boost.Math or Cephes.
+Concrete consequences:
 
-If swapping does happen, the migration is a single-file change in
-`special.hpp`. Goldens will need one regen + visual diff to confirm
-nothing else moved.
+- The standalone test harness (`tests/cpp/`) no longer links libR, no longer
+  needs `find_program(R)`, and `mlcore_tests` shows zero R-related deps in
+  `ldd` output.
+- The R-package build is unchanged — `LinkingTo: Rcpp,RcppArmadillo` still
+  pulls Rmath transitively, and the dpqr cpps in `src/distributions/` keep
+  using `Rf_dt`/`Rf_pgamma`/etc. directly.
+- Goldens did not move when swapping in `dpsifn`: it's the same algorithm
+  R uses internally for `psigamma`, so digamma/trigamma agree at ULP level.
 
-## Rough effort estimates (for the swap)
+Revisit if: a numerical issue surfaces in the polygamma path that R's
+upstream has fixed since the port (sync against `instructions/nmath/polygamma.c`),
+or if a future user wants to drop the polygamma dependency entirely (Boost.Math
+is still on the table for that).
 
-| Backend     | Files changed | Build deps        | Golden risk     |
-|-------------|---------------|-------------------|-----------------|
-| Rmath (now) | —             | libR (via LinkTo) | none (baseline) |
-| Boost.Math  | special.hpp   | BH                | ULP-level       |
-| Cephes      | special.hpp + ~3k LoC vendored | none | ULP-to-1e-12    |
-| Hand-roll   | special.hpp + polygamma.cpp wired up | none | depends on porting fidelity |
+## Rough effort estimates (for a future swap)
+
+| Backend           | Files changed                                | Build deps        | Golden risk      |
+|-------------------|----------------------------------------------|-------------------|------------------|
+| Rmath (legacy)    | revert special.hpp                           | libR (via LinkTo) | baseline         |
+| Vendored dpsifn   | — (current state)                            | none              | none (baseline)  |
+| Boost.Math        | special.hpp                                  | BH                | ULP-level        |
+| Cephes            | special.hpp + ~3k LoC vendored               | none              | ULP-to-1e-12     |
