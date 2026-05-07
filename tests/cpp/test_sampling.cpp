@@ -16,6 +16,7 @@
 #include "../../src/ml/distributions/logitnorm.hpp"
 #include "../../src/ml/distributions/nakagami.hpp"
 #include "../../src/ml/distributions/rng_std.hpp"
+#include "../../src/ml/distributions/std.hpp"
 #include "../../src/ml/distributions/zipf.hpp"
 
 #include <random>
@@ -147,6 +148,27 @@ TEST_CASE("rged samples are symmetric and match the CDF") {
   // CDF at 0 should be exactly 0.5 (symmetric distribution).
   const double cdf0 =
       mlcore::distributions::pged(0.0, 0.0, 1.0, 1.5, true, false);
+  CHECK(std::abs(cdf0 - 0.5) < 1e-12);
+}
+
+// rstd at (mean=0, sd=1, nu=8) is symmetric with sd 1; CDF at 0 = 0.5.
+TEST_CASE("rstd samples have unit variance and a symmetric CDF") {
+  mlcore::distributions::StdRng<> rng(19);
+  const int n = 20000;
+  double sum = 0.0;
+  double sum_sq = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rstd(rng, 0.0, 1.0, 8.0);
+    sum += x;
+    sum_sq += x * x;
+  }
+  const double mean = sum / n;
+  const double var = sum_sq / n - mean * mean;
+  CHECK(std::abs(mean) < 0.05);
+  CHECK(std::abs(var - 1.0) < 0.1);
+
+  const double cdf0 =
+      mlcore::distributions::pstd(0.0, 0.0, 1.0, 8.0, true, false);
   CHECK(std::abs(cdf0 - 0.5) < 1e-12);
 }
 
