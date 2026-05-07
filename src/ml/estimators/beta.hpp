@@ -23,6 +23,53 @@ struct BetaResult {
   int iterations;
 };
 
+// Negative log-likelihood of Beta(a, b):
+//   nll(a, b) = n*[lgamma(a)+lgamma(b)-lgamma(a+b)] - (a-1)*sum log(x)
+//             - (b-1)*sum log(1-x).
+// Hessian (data-independent closed form):
+//   H_aa = n*(trigamma(a) - trigamma(a+b))
+//   H_bb = n*(trigamma(b) - trigamma(a+b))
+//   H_ab = -n*trigamma(a+b)
+struct BetaCost {
+  span x;
+  int dim() const { return 2; }
+  double operator()(const double *theta) const {
+    const double a = theta[0];
+    const double b = theta[1];
+    if (!(a > 0.0 && b > 0.0)) return std::numeric_limits<double>::infinity();
+    const double n = static_cast<double>(x.size());
+    double S_lx = 0.0, S_l1mx = 0.0;
+    for (auto v : x) {
+      if (!(v > 0.0 && v < 1.0)) return std::numeric_limits<double>::infinity();
+      S_lx += std::log(v);
+      S_l1mx += std::log(1.0 - v);
+    }
+    return n * (mlcore::special::lgamma(a) + mlcore::special::lgamma(b) -
+                mlcore::special::lgamma(a + b)) -
+           (a - 1.0) * S_lx - (b - 1.0) * S_l1mx;
+  }
+  void gradient(const double *theta, double *g) const {
+    const double a = theta[0];
+    const double b = theta[1];
+    const double n = static_cast<double>(x.size());
+    double S_lx = 0.0, S_l1mx = 0.0;
+    for (auto v : x) { S_lx += std::log(v); S_l1mx += std::log(1.0 - v); }
+    const double psi_ab = mlcore::special::digamma(a + b);
+    g[0] = n * (mlcore::special::digamma(a) - psi_ab) - S_lx;
+    g[1] = n * (mlcore::special::digamma(b) - psi_ab) - S_l1mx;
+  }
+  void hessian(const double *theta, double *H) const {
+    const double a = theta[0];
+    const double b = theta[1];
+    const double n = static_cast<double>(x.size());
+    const double psi1_ab = mlcore::special::trigamma(a + b);
+    H[0] = n * (mlcore::special::trigamma(a) - psi1_ab);
+    H[1] = -n * psi1_ab;
+    H[2] = H[1];
+    H[3] = n * (mlcore::special::trigamma(b) - psi1_ab);
+  }
+};
+
 inline BetaResult beta_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();

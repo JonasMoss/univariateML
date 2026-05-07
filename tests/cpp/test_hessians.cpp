@@ -126,6 +126,74 @@ TEST_CASE("lognormal: Hessian at MLE equals diag(n/sd^2, 2n/sd^2)") {
   CHECK(H[3] == doctest::Approx(2.0 * n / s2).epsilon(kFisherTol));
 }
 
+TEST_CASE("gamma: analytical Hessian agrees with FD") {
+  auto g = load("gamma");
+  auto fit = mlcore::gamma_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::GammaCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.shape, fit.rate};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("gamma: Hessian formula matches Fisher info closed form") {
+  // For Gamma(a, r): I = [[trigamma(a), -1/r], [-1/r, a/r^2]] per obs.
+  // Observed info at any (a, r) is exactly n * I (data-independent).
+  auto g = load("gamma");
+  auto fit = mlcore::gamma_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::GammaCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.shape, fit.rate};
+  double H[4];
+  cost.hessian(theta, H);
+  const double n = static_cast<double>(g.data.size());
+  CHECK(H[0] ==
+        doctest::Approx(n * mlcore::special::trigamma(fit.shape)).epsilon(kFisherTol));
+  CHECK(H[1] == doctest::Approx(-n / fit.rate).epsilon(kFisherTol));
+  CHECK(H[3] == doctest::Approx(n * fit.shape / (fit.rate * fit.rate)).epsilon(kFisherTol));
+}
+
+TEST_CASE("beta: analytical Hessian agrees with FD") {
+  auto g = load("beta");
+  auto fit = mlcore::beta_mle(mltest::as_span(g.data), 1.490116e-08, 100);
+  mlcore::BetaCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.alpha, fit.beta};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("beta: Hessian formula matches Fisher info closed form") {
+  // I per obs: [[psi'(a)-psi'(a+b), -psi'(a+b)], [-psi'(a+b), psi'(b)-psi'(a+b)]].
+  auto g = load("beta");
+  auto fit = mlcore::beta_mle(mltest::as_span(g.data), 1.490116e-08, 100);
+  mlcore::BetaCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.alpha, fit.beta};
+  double H[4];
+  cost.hessian(theta, H);
+  const double n = static_cast<double>(g.data.size());
+  const double t1_ab = mlcore::special::trigamma(fit.alpha + fit.beta);
+  CHECK(H[0] == doctest::Approx(
+                    n * (mlcore::special::trigamma(fit.alpha) - t1_ab))
+                    .epsilon(kFisherTol));
+  CHECK(H[1] == doctest::Approx(-n * t1_ab).epsilon(kFisherTol));
+  CHECK(H[3] == doctest::Approx(
+                    n * (mlcore::special::trigamma(fit.beta) - t1_ab))
+                    .epsilon(kFisherTol));
+}
+
+TEST_CASE("weibull: analytical Hessian agrees with FD") {
+  auto g = load("weibull");
+  auto fit = mlcore::weibull_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::WeibullCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.shape, fit.scale};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
 // --- Layer 2: analytical vs closed-form Fisher information at MLE ----------
 //
 // For regular families with a closed-form Fisher information per observation,
