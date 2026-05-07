@@ -12,11 +12,16 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+#include "../../src/ml/distributions/betapr.hpp"
 #include "../../src/ml/distributions/dunif.hpp"
 #include "../../src/ml/distributions/ged.hpp"
 #include "../../src/ml/distributions/gumbel.hpp"
+#include "../../src/ml/distributions/invgamma.hpp"
+#include "../../src/ml/distributions/invgauss.hpp"
+#include "../../src/ml/distributions/invweibull.hpp"
 #include "../../src/ml/distributions/kumar.hpp"
 #include "../../src/ml/distributions/laplace.hpp"
+#include "../../src/ml/distributions/llogis.hpp"
 #include "../../src/ml/distributions/logitnorm.hpp"
 #include "../../src/ml/distributions/lomax.hpp"
 #include "../../src/ml/distributions/nakagami.hpp"
@@ -349,6 +354,49 @@ TEST_CASE("rkumar samples lie in (0, 1); CDF round-trip at p=0.3") {
   const double back =
       mlcore::distributions::pkumar(q, 2.0, 3.0, true, false);
   CHECK(std::abs(back - 0.3) < 1e-10);
+}
+
+// --- Phase C tier 2: Boost-backed transforms ---------------------------
+
+TEST_CASE("rinvgauss samples are positive; sample mean ~ mu") {
+  mlcore::distributions::StdRng<> rng(151);
+  const int n = 20000;
+  const double mu = 2.0, shape = 5.0;
+  double sum = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rinvgauss(rng, mu, shape);
+    CHECK(x > 0.0);
+    sum += x;
+  }
+  // E[X] = mu for invgauss
+  CHECK(std::abs(sum / n - mu) < 0.1);
+}
+
+TEST_CASE("rinvweibull samples are positive; CDF round-trip at p=0.5") {
+  mlcore::distributions::StdRng<> rng(157);
+  const int n = 5000;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rinvweibull(rng, 2.0, 3.0);
+    CHECK(x > 0.0);
+  }
+  const double q =
+      mlcore::distributions::qinvweibull(0.5, 2.0, 3.0, true, false);
+  const double back =
+      mlcore::distributions::pinvweibull(q, 2.0, 3.0, true, false);
+  CHECK(std::abs(back - 0.5) < 1e-10);
+}
+
+TEST_CASE("rllogis samples are positive; CDF round-trip at p=0.7") {
+  mlcore::distributions::StdRng<> rng(163);
+  for (int i = 0; i < 5000; ++i) {
+    const double x = mlcore::distributions::rllogis(rng, 2.0, 3.0);
+    CHECK(x > 0.0);
+  }
+  const double q =
+      mlcore::distributions::qllogis(0.7, 2.0, 3.0, true, false);
+  const double back =
+      mlcore::distributions::pllogis(q, 2.0, 3.0, true, false);
+  CHECK(std::abs(back - 0.7) < 1e-10);
 }
 
 // rsstd at (mean=0, sd=1, nu=8, xi=1.5) is unit-variance by construction.

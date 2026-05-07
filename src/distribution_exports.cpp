@@ -21,6 +21,12 @@
 #include "distributions/lomax.cpp"
 #include "distributions/gumbel.cpp"
 #include "distributions/kumar.cpp"
+// Phase C tier 2: Boost-backed transforms.
+#include "distributions/invgamma.cpp"
+#include "distributions/betapr.cpp"
+#include "distributions/invgauss.cpp"
+#include "distributions/llogis.cpp"
+#include "distributions/invweibull.cpp"
 
 // Exported wrappers forwarding to dist_impl.
 // [[Rcpp::export]]
@@ -348,4 +354,116 @@ arma::vec qkumar(const arma::vec &p, const arma::vec &a, const arma::vec &b,
 // [[Rcpp::export]]
 arma::vec rkumar(int n, double a = 1.0, double b = 1.0) {
   return dist_impl::rkumar(n, a, b);
+}
+
+// --- Phase C tier 2: Boost-backed transforms ---
+
+// [[Rcpp::export]]
+arma::vec dinvgamma(const arma::vec &x, const arma::vec &alpha,
+                    const arma::vec &beta, bool log = false) {
+  return dist_impl::dinvgamma(x, alpha, beta, log);
+}
+// [[Rcpp::export]]
+arma::vec pinvgamma(const arma::vec &q, const arma::vec &alpha,
+                    const arma::vec &beta, bool lower_tail = true,
+                    bool log_p = false) {
+  return dist_impl::pinvgamma(q, alpha, beta, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qinvgamma(const arma::vec &p, const arma::vec &alpha,
+                    const arma::vec &beta, bool lower_tail = true,
+                    bool log_p = false) {
+  return dist_impl::qinvgamma(p, alpha, beta, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rinvgamma(int n, double alpha = 1.0, double beta = 1.0) {
+  return dist_impl::rinvgamma(n, alpha, beta);
+}
+
+// [[Rcpp::export]]
+arma::vec dbetapr(const arma::vec &x, const arma::vec &shape1,
+                  const arma::vec &shape2, bool log = false) {
+  return dist_impl::dbetapr(x, shape1, shape2, log);
+}
+// [[Rcpp::export]]
+arma::vec pbetapr(const arma::vec &q, const arma::vec &shape1,
+                  const arma::vec &shape2, bool lower_tail = true,
+                  bool log_p = false) {
+  return dist_impl::pbetapr(q, shape1, shape2, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qbetapr(const arma::vec &p, const arma::vec &shape1,
+                  const arma::vec &shape2, bool lower_tail = true,
+                  bool log_p = false) {
+  return dist_impl::qbetapr(p, shape1, shape2, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rbetapr(int n, double shape1 = 1.0, double shape2 = 1.0) {
+  return dist_impl::rbetapr(n, shape1, shape2);
+}
+
+// [[Rcpp::export]]
+arma::vec dinvgauss(const arma::vec &x, const arma::vec &mu,
+                    const arma::vec &phi, bool log = false) {
+  return dist_impl::dinvgauss(x, mu, phi, log);
+}
+// [[Rcpp::export]]
+arma::vec pinvgauss(const arma::vec &q, const arma::vec &mu,
+                    const arma::vec &phi, bool lower_tail = true,
+                    bool log_p = false) {
+  return dist_impl::pinvgauss(q, mu, phi, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qinvgauss(const arma::vec &p, const arma::vec &mu,
+                    const arma::vec &phi, bool lower_tail = true,
+                    bool log_p = false) {
+  return dist_impl::qinvgauss(p, mu, phi, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rinvgauss(int n, double mu = 1.0, double phi = 1.0) {
+  return dist_impl::rinvgauss(n, mu, phi);
+}
+
+// [[Rcpp::export]]
+arma::vec dllogis(const arma::vec &x, const arma::vec &shape,
+                  const arma::vec &scale, bool log = false) {
+  return dist_impl::dllogis(x, shape, scale, log);
+}
+// [[Rcpp::export]]
+arma::vec pllogis(const arma::vec &q, const arma::vec &shape,
+                  const arma::vec &scale, bool lower_tail = true,
+                  bool log_p = false) {
+  return dist_impl::pllogis(q, shape, scale, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qllogis(const arma::vec &p, const arma::vec &shape,
+                  const arma::vec &scale, bool lower_tail = true,
+                  bool log_p = false) {
+  return dist_impl::qllogis(p, shape, scale, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rllogis(int n, double shape, double scale) {
+  return dist_impl::rllogis(n, shape, scale);
+}
+
+// [[Rcpp::export]]
+arma::vec dinvweibull(const arma::vec &x, const arma::vec &shape,
+                      const arma::vec &scale, bool log = false) {
+  return dist_impl::dinvweibull(x, shape, scale, log);
+}
+// [[Rcpp::export]]
+arma::vec pinvweibull(const arma::vec &q, const arma::vec &shape,
+                      const arma::vec &scale, bool lower_tail = true,
+                      bool log_p = false) {
+  return dist_impl::pinvweibull(q, shape, scale, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qinvweibull(const arma::vec &p, const arma::vec &shape,
+                      const arma::vec &scale, bool lower_tail = true,
+                      bool log_p = false) {
+  return dist_impl::qinvweibull(p, shape, scale, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rinvweibull(int n, double shape, double scale) {
+  return dist_impl::rinvweibull(n, shape, scale);
 }

@@ -257,6 +257,86 @@ rkumar <- function(n, a = 1.0, b = 1.0) {
     .Call(`_univariateML_rkumar`, n, a, b)
 }
 
+dinvgamma <- function(x, alpha, beta, log = FALSE) {
+    .Call(`_univariateML_dinvgamma`, x, alpha, beta, log)
+}
+
+pinvgamma <- function(q, alpha, beta, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pinvgamma`, q, alpha, beta, lower_tail, log_p)
+}
+
+qinvgamma <- function(p, alpha, beta, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qinvgamma`, p, alpha, beta, lower_tail, log_p)
+}
+
+rinvgamma <- function(n, alpha = 1.0, beta = 1.0) {
+    .Call(`_univariateML_rinvgamma`, n, alpha, beta)
+}
+
+dbetapr <- function(x, shape1, shape2, log = FALSE) {
+    .Call(`_univariateML_dbetapr`, x, shape1, shape2, log)
+}
+
+pbetapr <- function(q, shape1, shape2, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pbetapr`, q, shape1, shape2, lower_tail, log_p)
+}
+
+qbetapr <- function(p, shape1, shape2, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qbetapr`, p, shape1, shape2, lower_tail, log_p)
+}
+
+rbetapr <- function(n, shape1 = 1.0, shape2 = 1.0) {
+    .Call(`_univariateML_rbetapr`, n, shape1, shape2)
+}
+
+dinvgauss <- function(x, mu, phi, log = FALSE) {
+    .Call(`_univariateML_dinvgauss`, x, mu, phi, log)
+}
+
+pinvgauss <- function(q, mu, phi, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pinvgauss`, q, mu, phi, lower_tail, log_p)
+}
+
+qinvgauss <- function(p, mu, phi, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qinvgauss`, p, mu, phi, lower_tail, log_p)
+}
+
+rinvgauss <- function(n, mu = 1.0, phi = 1.0) {
+    .Call(`_univariateML_rinvgauss`, n, mu, phi)
+}
+
+dllogis <- function(x, shape, scale, log = FALSE) {
+    .Call(`_univariateML_dllogis`, x, shape, scale, log)
+}
+
+pllogis <- function(q, shape, scale, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pllogis`, q, shape, scale, lower_tail, log_p)
+}
+
+qllogis <- function(p, shape, scale, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qllogis`, p, shape, scale, lower_tail, log_p)
+}
+
+rllogis <- function(n, shape, scale) {
+    .Call(`_univariateML_rllogis`, n, shape, scale)
+}
+
+dinvweibull <- function(x, shape, scale, log = FALSE) {
+    .Call(`_univariateML_dinvweibull`, x, shape, scale, log)
+}
+
+pinvweibull <- function(q, shape, scale, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pinvweibull`, q, shape, scale, lower_tail, log_p)
+}
+
+qinvweibull <- function(p, shape, scale, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qinvweibull`, p, shape, scale, lower_tail, log_p)
+}
+
+rinvweibull <- function(n, shape, scale) {
+    .Call(`_univariateML_rinvweibull`, n, shape, scale)
+}
+
 mlburr_ <- function(x, init = NULL, tol = 1.220703e-4, iterlim = 100L) {
     .Call(`_univariateML_mlburr_`, x, init, tol, iterlim)
 }
