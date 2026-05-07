@@ -100,6 +100,32 @@ TEST_CASE("rayleigh: analytical Hessian agrees with FD") {
   CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
 }
 
+TEST_CASE("lognormal: analytical Hessian agrees with FD") {
+  auto g = load("lnorm");
+  auto fit = mlcore::lognormal_mle(mltest::as_span(g.data));
+  mlcore::LognormalCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.meanlog, fit.sdlog};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("lognormal: Hessian at MLE equals diag(n/sd^2, 2n/sd^2)") {
+  auto g = load("lnorm");
+  auto fit = mlcore::lognormal_mle(mltest::as_span(g.data));
+  mlcore::LognormalCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.meanlog, fit.sdlog};
+  double H[4];
+  cost.hessian(theta, H);
+  const double n = static_cast<double>(g.data.size());
+  const double s2 = fit.sdlog * fit.sdlog;
+  CHECK(H[0] == doctest::Approx(n / s2).epsilon(kFisherTol));
+  CHECK(std::fabs(H[1]) < kFisherTol * (n / s2));
+  CHECK(std::fabs(H[2]) < kFisherTol * (n / s2));
+  CHECK(H[3] == doctest::Approx(2.0 * n / s2).epsilon(kFisherTol));
+}
+
 // --- Layer 2: analytical vs closed-form Fisher information at MLE ----------
 //
 // For regular families with a closed-form Fisher information per observation,
