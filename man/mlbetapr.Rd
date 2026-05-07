@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::dbetapr; support: [0, Inf).
+Density: dbetapr; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlbetapr(simulate_default("mlbetapr", 100))
 }
 \seealso{
-extraDistr::dbetapr
+dbetapr
 }

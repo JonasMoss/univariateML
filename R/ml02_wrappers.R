@@ -30,14 +30,14 @@ mlbeta <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dbetapr; support: [0, Inf).
+#' Density: dbetapr; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dbetapr
+#'   dbetapr
 #' @examples
 #' set.seed(1); mlbetapr(simulate_default("mlbetapr", 100))
 #' @export
@@ -79,14 +79,14 @@ mlbinom <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: actuar::dburr; support: [0, Inf).
+#' Density: dburr; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   actuar::dburr
+#'   dburr
 #' @examples
 #' set.seed(1); mlburr(simulate_default("mlburr", 100))
 #' @export
@@ -125,14 +125,14 @@ mlcauchy <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::ddunif; support: [-Inf, Inf).
+#' Density: ddunif; support: [-Inf, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::ddunif
+#'   ddunif
 #' @examples
 #' set.seed(1); mldunif(simulate_default("mldunif", 100))
 #' @export
@@ -171,14 +171,14 @@ mlexp <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dfatigue; support: [0, Inf).
+#' Density: dfatigue; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dfatigue
+#'   dfatigue
 #' @examples
 #' set.seed(1); mlfatigue(simulate_default("mlfatigue", 100))
 #' @export
@@ -265,14 +265,14 @@ mlgeom <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dgompertz; support: [0, Inf).
+#' Density: dgompertz; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dgompertz
+#'   dgompertz
 #' @examples
 #' set.seed(1); mlgompertz(simulate_default("mlgompertz", 100))
 #' @export
@@ -313,14 +313,14 @@ mlgumbel <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: actuar::dinvburr; support: [0, Inf).
+#' Density: dinvburr; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   actuar::dinvburr
+#'   dinvburr
 #' @examples
 #' set.seed(1); mlinvburr(simulate_default("mlinvburr", 100))
 #' @export
@@ -336,14 +336,14 @@ mlinvburr <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dinvgamma; support: [0, Inf).
+#' Density: dinvgamma; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dinvgamma
+#'   dinvgamma
 #' @examples
 #' set.seed(1); mlinvgamma(simulate_default("mlinvgamma", 100))
 #' @export
@@ -359,14 +359,14 @@ mlinvgamma <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: actuar::dinvgauss; support: [0, Inf).
+#' Density: dinvgauss; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   actuar::dinvgauss
+#'   dinvgauss
 #' @examples
 #' set.seed(1); mlinvgauss(simulate_default("mlinvgauss", 100))
 #' @export
@@ -382,14 +382,14 @@ mlinvgauss <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: actuar::dinvweibull; support: [0, Inf).
+#' Density: dinvweibull; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   actuar::dinvweibull
+#'   dinvweibull
 #' @examples
 #' set.seed(1); mlinvweibull(simulate_default("mlinvweibull", 100))
 #' @export
@@ -405,14 +405,14 @@ mlinvweibull <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dkumar; support: [0, 1).
+#' Density: dkumar; support: [0, 1).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dkumar
+#'   dkumar
 #' @examples
 #' set.seed(1); mlkumar(simulate_default("mlkumar", 100))
 #' @export
@@ -428,14 +428,14 @@ mlkumar <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dlaplace; support: [-Inf, Inf).
+#' Density: dlaplace; support: [-Inf, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dlaplace
+#'   dlaplace
 #' @examples
 #' set.seed(1); mllaplace(simulate_default("mllaplace", 100))
 #' @export
@@ -451,14 +451,14 @@ mllaplace <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: actuar::dlgamma; support: [1, Inf).
+#' Density: dlgamma; support: [1, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   actuar::dlgamma
+#'   dlgamma
 #' @examples
 #' set.seed(1); mllgamma(simulate_default("mllgamma", 100))
 #' @export
@@ -474,14 +474,14 @@ mllgamma <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dlgser; support: [1, Inf).
+#' Density: dlgser; support: [1, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dlgser
+#'   dlgser
 #' @examples
 #' set.seed(1); mllgser(simulate_default("mllgser", 100))
 #' @export
@@ -497,14 +497,14 @@ mllgser <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: actuar::dllogis; support: [0, Inf).
+#' Density: dllogis; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   actuar::dllogis
+#'   dllogis
 #' @examples
 #' set.seed(1); mlllogis(simulate_default("mlllogis", 100))
 #' @export
@@ -688,14 +688,14 @@ mlnorm <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: actuar::dparalogis; support: [0, Inf).
+#' Density: dparalogis; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   actuar::dparalogis
+#'   dparalogis
 #' @examples
 #' set.seed(1); mlparalogis(simulate_default("mlparalogis", 100))
 #' @export
@@ -711,14 +711,14 @@ mlparalogis <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dpareto; support: [0, Inf).
+#' Density: dpareto; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dpareto
+#'   dpareto
 #' @examples
 #' set.seed(1); mlpareto(simulate_default("mlpareto", 100))
 #' @export
@@ -757,14 +757,14 @@ mlpois <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dpower; support: [0, Inf).
+#' Density: dpower; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dpower
+#'   dpower
 #' @examples
 #' set.seed(1); mlpower(simulate_default("mlpower", 100))
 #' @export
@@ -780,14 +780,14 @@ mlpower <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::drayleigh; support: [0, Inf).
+#' Density: drayleigh; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::drayleigh
+#'   drayleigh
 #' @examples
 #' set.seed(1); mlrayleigh(simulate_default("mlrayleigh", 100))
 #' @export
@@ -943,14 +943,14 @@ mlweibull <- function(x, na.rm = FALSE, ...) {
 #'
 #' Maximum likelihood estimation for this distribution.
 #'
-#' Density: extraDistr::dzip; support: [0, Inf).
+#' Density: dzip; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::dzip
+#'   dzip
 #' @examples
 #' set.seed(1); mlzip(simulate_default("mlzip", 100))
 #' @export

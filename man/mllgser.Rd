@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::dlgser; support: [1, Inf).
+Density: dlgser; support: [1, Inf).
 }
 \examples{
 set.seed(1); mllgser(simulate_default("mllgser", 100))
 }
 \seealso{
-extraDistr::dlgser
+dlgser
 }

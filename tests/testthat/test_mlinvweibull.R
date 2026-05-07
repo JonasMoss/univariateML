@@ -2,8 +2,8 @@ context("mllinvweibull")
 
 ## Data generation.
 set.seed(313)
-small_data <- actuar::rinvweibull(100, 7, 3)
-tiny_data <- actuar::rinvweibull(10, 1, 1)
+small_data <- rinvweibull(100, 7, 3)
+tiny_data <- rinvweibull(10, 1, 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlinvweibull(c(tiny_data, NA)))
@@ -22,7 +22,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlinvweibull(small_data, na.rm = TRUE)
 expect_equal(
-  sum(actuar::dinvweibull(small_data, est[1], est[2], log = TRUE)),
+  sum(dinvweibull(small_data, est[1], est[2], log = TRUE)),
   attr(est, "logLik")
 )
 

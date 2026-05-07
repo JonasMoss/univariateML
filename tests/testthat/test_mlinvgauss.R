@@ -2,27 +2,27 @@ context("mlinvgauss")
 
 ## Data generation.
 set.seed(313)
-tiny_data <- actuar::rinvgauss(10, 1, 7)
-small_data <- actuar::rinvgauss(100, 10, 3)
-medium_data <- actuar::rinvgauss(1000, 1 / 2, 2)
-large_data <- actuar::rinvgauss(10000, 20, 13)
+tiny_data <- rinvgauss(10, 1, 7)
+small_data <- rinvgauss(100, 10, 3)
+medium_data <- rinvgauss(1000, 1 / 2, 2)
+large_data <- rinvgauss(10000, 20, 13)
 
 ## Checks if the ML is correct.
 
 mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(actuar::dinvgauss(tiny_data, p[1], p[2], log = TRUE))
+  -sum(dinvgauss(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(1, 7)))
 
 mle2 <- suppressWarnings(nlm(function(p) {
-  -sum(actuar::dinvgauss(small_data, p[1], p[2], log = TRUE))
+  -sum(dinvgauss(small_data, p[1], p[2], log = TRUE))
 }, p = c(10, 3)))
 
 mle3 <- suppressWarnings(nlm(function(p) {
-  -sum(actuar::dinvgauss(medium_data, p[1], p[2], log = TRUE))
+  -sum(dinvgauss(medium_data, p[1], p[2], log = TRUE))
 }, p = c(1 / 2, 2)))
 
 mle4 <- suppressWarnings(nlm(function(p) {
-  -sum(actuar::dinvgauss(large_data, p[1], p[2], log = TRUE))
+  -sum(dinvgauss(large_data, p[1], p[2], log = TRUE))
 }, p = c(20, 13)))
 
 ## Checks estimates.

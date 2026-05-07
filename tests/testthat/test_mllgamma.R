@@ -2,8 +2,8 @@ context("mllgamma")
 
 ## Data generation.
 set.seed(313)
-small_data <- actuar::rlgamma(100, 2, 3)
-tiny_data <- actuar::rlgamma(10, 2, 1)
+small_data <- rlgamma(100, 2, 3)
+tiny_data <- rlgamma(10, 2, 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mllgamma(c(tiny_data, NA)))
@@ -26,7 +26,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mllgamma(small_data, na.rm = TRUE)
 expect_equal(
-  sum(actuar::dlgamma(small_data, est[1], est[2], log = TRUE)),
+  sum(dlgamma(small_data, est[1], est[2], log = TRUE)),
   attr(est, "logLik")
 )
 

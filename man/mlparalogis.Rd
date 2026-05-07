@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: actuar::dparalogis; support: [0, Inf).
+Density: dparalogis; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlparalogis(simulate_default("mlparalogis", 100))
 }
 \seealso{
-actuar::dparalogis
+dparalogis
 }

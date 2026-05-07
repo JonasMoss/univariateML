@@ -3,7 +3,7 @@
   "name": "Zero-inflated Poisson",
   "n": 500,
   "seed": 12684,
-  "sampler": "extraDistr::rzip",
+  "sampler": "rzip",
   "sampler_args": {
     "lambda": 1,
     "pi": 0.5

@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::dpower; support: [0, Inf).
+Density: dpower; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlpower(simulate_default("mlpower", 100))
 }
 \seealso{
-extraDistr::dpower
+dpower
 }

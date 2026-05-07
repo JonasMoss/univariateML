@@ -3,7 +3,7 @@
   "name": "Gompertz",
   "n": 500,
   "seed": 13233,
-  "sampler": "extraDistr::rgompertz",
+  "sampler": "rgompertz",
   "sampler_args": {
     "a": 1,
     "b": 1

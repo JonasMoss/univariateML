@@ -3,7 +3,7 @@
   "name": "Discrete uniform",
   "n": 500,
   "seed": 12879,
-  "sampler": "extraDistr::rdunif",
+  "sampler": "rdunif",
   "sampler_args": {
     "min": 2,
     "max": 10

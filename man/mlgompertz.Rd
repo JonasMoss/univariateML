@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::dgompertz; support: [0, Inf).
+Density: dgompertz; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlgompertz(simulate_default("mlgompertz", 100))
 }
 \seealso{
-extraDistr::dgompertz
+dgompertz
 }

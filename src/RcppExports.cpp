@@ -1050,173 +1050,173 @@ BEGIN_RCPP
 END_RCPP
 }
 // dinvgauss
-arma::vec dinvgauss(const arma::vec& x, const arma::vec& mu, const arma::vec& phi, bool log);
-RcppExport SEXP _univariateML_dinvgauss(SEXP xSEXP, SEXP muSEXP, SEXP phiSEXP, SEXP logSEXP) {
+arma::vec dinvgauss(const arma::vec& x, const arma::vec& mean, const arma::vec& shape, bool log);
+RcppExport SEXP _univariateML_dinvgauss(SEXP xSEXP, SEXP meanSEXP, SEXP shapeSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
     Rcpp::traits::input_parameter< bool >::type log(logSEXP);
-    rcpp_result_gen = Rcpp::wrap(dinvgauss(x, mu, phi, log));
+    rcpp_result_gen = Rcpp::wrap(dinvgauss(x, mean, shape, log));
     return rcpp_result_gen;
 END_RCPP
 }
 // pinvgauss
-arma::vec pinvgauss(const arma::vec& q, const arma::vec& mu, const arma::vec& phi, bool lower_tail, bool log_p);
-RcppExport SEXP _univariateML_pinvgauss(SEXP qSEXP, SEXP muSEXP, SEXP phiSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+arma::vec pinvgauss(const arma::vec& q, const arma::vec& mean, const arma::vec& shape, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_pinvgauss(SEXP qSEXP, SEXP meanSEXP, SEXP shapeSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
     Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
-    rcpp_result_gen = Rcpp::wrap(pinvgauss(q, mu, phi, lower_tail, log_p));
+    rcpp_result_gen = Rcpp::wrap(pinvgauss(q, mean, shape, lower_tail, log_p));
     return rcpp_result_gen;
 END_RCPP
 }
 // qinvgauss
-arma::vec qinvgauss(const arma::vec& p, const arma::vec& mu, const arma::vec& phi, bool lower_tail, bool log_p);
-RcppExport SEXP _univariateML_qinvgauss(SEXP pSEXP, SEXP muSEXP, SEXP phiSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+arma::vec qinvgauss(const arma::vec& p, const arma::vec& mean, const arma::vec& shape, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qinvgauss(SEXP pSEXP, SEXP meanSEXP, SEXP shapeSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
     Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
-    rcpp_result_gen = Rcpp::wrap(qinvgauss(p, mu, phi, lower_tail, log_p));
+    rcpp_result_gen = Rcpp::wrap(qinvgauss(p, mean, shape, lower_tail, log_p));
     return rcpp_result_gen;
 END_RCPP
 }
 // rinvgauss
-arma::vec rinvgauss(int n, double mu, double phi);
-RcppExport SEXP _univariateML_rinvgauss(SEXP nSEXP, SEXP muSEXP, SEXP phiSEXP) {
+arma::vec rinvgauss(int n, double mean, double shape);
+RcppExport SEXP _univariateML_rinvgauss(SEXP nSEXP, SEXP meanSEXP, SEXP shapeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
-    rcpp_result_gen = Rcpp::wrap(rinvgauss(n, mu, phi));
+    Rcpp::traits::input_parameter< double >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
+    rcpp_result_gen = Rcpp::wrap(rinvgauss(n, mean, shape));
     return rcpp_result_gen;
 END_RCPP
 }
 // dllogis
-arma::vec dllogis(const arma::vec& x, const arma::vec& shape, const arma::vec& scale, bool log);
-RcppExport SEXP _univariateML_dllogis(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP logSEXP) {
+arma::vec dllogis(const arma::vec& x, const arma::vec& shape, const arma::vec& rate, bool log);
+RcppExport SEXP _univariateML_dllogis(SEXP xSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< bool >::type log(logSEXP);
-    rcpp_result_gen = Rcpp::wrap(dllogis(x, shape, scale, log));
+    rcpp_result_gen = Rcpp::wrap(dllogis(x, shape, rate, log));
     return rcpp_result_gen;
 END_RCPP
 }
 // pllogis
-arma::vec pllogis(const arma::vec& q, const arma::vec& shape, const arma::vec& scale, bool lower_tail, bool log_p);
-RcppExport SEXP _univariateML_pllogis(SEXP qSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+arma::vec pllogis(const arma::vec& q, const arma::vec& shape, const arma::vec& rate, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_pllogis(SEXP qSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
-    rcpp_result_gen = Rcpp::wrap(pllogis(q, shape, scale, lower_tail, log_p));
+    rcpp_result_gen = Rcpp::wrap(pllogis(q, shape, rate, lower_tail, log_p));
     return rcpp_result_gen;
 END_RCPP
 }
 // qllogis
-arma::vec qllogis(const arma::vec& p, const arma::vec& shape, const arma::vec& scale, bool lower_tail, bool log_p);
-RcppExport SEXP _univariateML_qllogis(SEXP pSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+arma::vec qllogis(const arma::vec& p, const arma::vec& shape, const arma::vec& rate, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qllogis(SEXP pSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
-    rcpp_result_gen = Rcpp::wrap(qllogis(p, shape, scale, lower_tail, log_p));
+    rcpp_result_gen = Rcpp::wrap(qllogis(p, shape, rate, lower_tail, log_p));
     return rcpp_result_gen;
 END_RCPP
 }
 // rllogis
-arma::vec rllogis(int n, double shape, double scale);
-RcppExport SEXP _univariateML_rllogis(SEXP nSEXP, SEXP shapeSEXP, SEXP scaleSEXP) {
+arma::vec rllogis(int n, double shape, double rate);
+RcppExport SEXP _univariateML_rllogis(SEXP nSEXP, SEXP shapeSEXP, SEXP rateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< double >::type scale(scaleSEXP);
-    rcpp_result_gen = Rcpp::wrap(rllogis(n, shape, scale));
+    Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
+    rcpp_result_gen = Rcpp::wrap(rllogis(n, shape, rate));
     return rcpp_result_gen;
 END_RCPP
 }
 // dinvweibull
-arma::vec dinvweibull(const arma::vec& x, const arma::vec& shape, const arma::vec& scale, bool log);
-RcppExport SEXP _univariateML_dinvweibull(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP logSEXP) {
+arma::vec dinvweibull(const arma::vec& x, const arma::vec& shape, const arma::vec& rate, bool log);
+RcppExport SEXP _univariateML_dinvweibull(SEXP xSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< bool >::type log(logSEXP);
-    rcpp_result_gen = Rcpp::wrap(dinvweibull(x, shape, scale, log));
+    rcpp_result_gen = Rcpp::wrap(dinvweibull(x, shape, rate, log));
     return rcpp_result_gen;
 END_RCPP
 }
 // pinvweibull
-arma::vec pinvweibull(const arma::vec& q, const arma::vec& shape, const arma::vec& scale, bool lower_tail, bool log_p);
-RcppExport SEXP _univariateML_pinvweibull(SEXP qSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+arma::vec pinvweibull(const arma::vec& q, const arma::vec& shape, const arma::vec& rate, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_pinvweibull(SEXP qSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
-    rcpp_result_gen = Rcpp::wrap(pinvweibull(q, shape, scale, lower_tail, log_p));
+    rcpp_result_gen = Rcpp::wrap(pinvweibull(q, shape, rate, lower_tail, log_p));
     return rcpp_result_gen;
 END_RCPP
 }
 // qinvweibull
-arma::vec qinvweibull(const arma::vec& p, const arma::vec& shape, const arma::vec& scale, bool lower_tail, bool log_p);
-RcppExport SEXP _univariateML_qinvweibull(SEXP pSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+arma::vec qinvweibull(const arma::vec& p, const arma::vec& shape, const arma::vec& rate, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qinvweibull(SEXP pSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
-    rcpp_result_gen = Rcpp::wrap(qinvweibull(p, shape, scale, lower_tail, log_p));
+    rcpp_result_gen = Rcpp::wrap(qinvweibull(p, shape, rate, lower_tail, log_p));
     return rcpp_result_gen;
 END_RCPP
 }
 // rinvweibull
-arma::vec rinvweibull(int n, double shape, double scale);
-RcppExport SEXP _univariateML_rinvweibull(SEXP nSEXP, SEXP shapeSEXP, SEXP scaleSEXP) {
+arma::vec rinvweibull(int n, double shape, double rate);
+RcppExport SEXP _univariateML_rinvweibull(SEXP nSEXP, SEXP shapeSEXP, SEXP rateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< double >::type scale(scaleSEXP);
-    rcpp_result_gen = Rcpp::wrap(rinvweibull(n, shape, scale));
+    Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
+    rcpp_result_gen = Rcpp::wrap(rinvweibull(n, shape, rate));
     return rcpp_result_gen;
 END_RCPP
 }

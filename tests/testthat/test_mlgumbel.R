@@ -2,21 +2,21 @@ context("mlgumbel")
 
 ## Data generation.
 set.seed(313)
-small_data <- extraDistr::rgumbel(100, 1, 1)
-tiny_data <- extraDistr::rgumbel(10, 3, 7)
-medium_data <- extraDistr::rgumbel(1000, 9, 11)
+small_data <- rgumbel(100, 1, 1)
+tiny_data <- rgumbel(10, 3, 7)
+medium_data <- rgumbel(1000, 9, 11)
 
 ## Checks if the ML is correct.
 mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dgumbel(small_data, p[1], p[2], log = TRUE))
+  -sum(dgumbel(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1)))
 
 mle2 <- nlm(function(p) {
-  -sum(extraDistr::dgumbel(tiny_data, p[1], p[2], log = TRUE))
+  -sum(dgumbel(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(3, 7))
 
 mle3 <- nlm(function(p) {
-  -sum(extraDistr::dgumbel(medium_data, p[1], p[2], log = TRUE))
+  -sum(dgumbel(medium_data, p[1], p[2], log = TRUE))
 }, p = c(9, 11))
 
 expect_equal(mle1$estimate, as.numeric(mlgumbel(small_data)),

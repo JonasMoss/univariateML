@@ -289,52 +289,52 @@ rbetapr <- function(n, shape1 = 1.0, shape2 = 1.0) {
     .Call(`_univariateML_rbetapr`, n, shape1, shape2)
 }
 
-dinvgauss <- function(x, mu, phi, log = FALSE) {
-    .Call(`_univariateML_dinvgauss`, x, mu, phi, log)
+dinvgauss <- function(x, mean, shape, log = FALSE) {
+    .Call(`_univariateML_dinvgauss`, x, mean, shape, log)
 }
 
-pinvgauss <- function(q, mu, phi, lower_tail = TRUE, log_p = FALSE) {
-    .Call(`_univariateML_pinvgauss`, q, mu, phi, lower_tail, log_p)
+pinvgauss <- function(q, mean, shape, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pinvgauss`, q, mean, shape, lower_tail, log_p)
 }
 
-qinvgauss <- function(p, mu, phi, lower_tail = TRUE, log_p = FALSE) {
-    .Call(`_univariateML_qinvgauss`, p, mu, phi, lower_tail, log_p)
+qinvgauss <- function(p, mean, shape, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qinvgauss`, p, mean, shape, lower_tail, log_p)
 }
 
-rinvgauss <- function(n, mu = 1.0, phi = 1.0) {
-    .Call(`_univariateML_rinvgauss`, n, mu, phi)
+rinvgauss <- function(n, mean = 1.0, shape = 1.0) {
+    .Call(`_univariateML_rinvgauss`, n, mean, shape)
 }
 
-dllogis <- function(x, shape, scale, log = FALSE) {
-    .Call(`_univariateML_dllogis`, x, shape, scale, log)
+dllogis <- function(x, shape, rate, log = FALSE) {
+    .Call(`_univariateML_dllogis`, x, shape, rate, log)
 }
 
-pllogis <- function(q, shape, scale, lower_tail = TRUE, log_p = FALSE) {
-    .Call(`_univariateML_pllogis`, q, shape, scale, lower_tail, log_p)
+pllogis <- function(q, shape, rate, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pllogis`, q, shape, rate, lower_tail, log_p)
 }
 
-qllogis <- function(p, shape, scale, lower_tail = TRUE, log_p = FALSE) {
-    .Call(`_univariateML_qllogis`, p, shape, scale, lower_tail, log_p)
+qllogis <- function(p, shape, rate, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qllogis`, p, shape, rate, lower_tail, log_p)
 }
 
-rllogis <- function(n, shape, scale) {
-    .Call(`_univariateML_rllogis`, n, shape, scale)
+rllogis <- function(n, shape, rate) {
+    .Call(`_univariateML_rllogis`, n, shape, rate)
 }
 
-dinvweibull <- function(x, shape, scale, log = FALSE) {
-    .Call(`_univariateML_dinvweibull`, x, shape, scale, log)
+dinvweibull <- function(x, shape, rate, log = FALSE) {
+    .Call(`_univariateML_dinvweibull`, x, shape, rate, log)
 }
 
-pinvweibull <- function(q, shape, scale, lower_tail = TRUE, log_p = FALSE) {
-    .Call(`_univariateML_pinvweibull`, q, shape, scale, lower_tail, log_p)
+pinvweibull <- function(q, shape, rate, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pinvweibull`, q, shape, rate, lower_tail, log_p)
 }
 
-qinvweibull <- function(p, shape, scale, lower_tail = TRUE, log_p = FALSE) {
-    .Call(`_univariateML_qinvweibull`, p, shape, scale, lower_tail, log_p)
+qinvweibull <- function(p, shape, rate, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qinvweibull`, p, shape, rate, lower_tail, log_p)
 }
 
-rinvweibull <- function(n, shape, scale) {
-    .Call(`_univariateML_rinvweibull`, n, shape, scale)
+rinvweibull <- function(n, shape, rate) {
+    .Call(`_univariateML_rinvweibull`, n, shape, rate)
 }
 
 dfatigue <- function(x, alpha, beta, mu, log = FALSE) {

@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::dkumar; support: [0, 1).
+Density: dkumar; support: [0, 1).
 }
 \examples{
 set.seed(1); mlkumar(simulate_default("mlkumar", 100))
 }
 \seealso{
-extraDistr::dkumar
+dkumar
 }

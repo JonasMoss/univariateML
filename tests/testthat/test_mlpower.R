@@ -2,25 +2,25 @@ context("mlpower")
 
 ## Data generation.
 set.seed(313)
-small_data <- extraDistr::rpower(100, 1, 1)
-tiny_data <- extraDistr::rpower(10, 3, 7)
-medium_data <- extraDistr::rpower(1000, 9, 11)
+small_data <- rpower(100, 1, 1)
+tiny_data <- rpower(10, 3, 7)
+medium_data <- rpower(1000, 9, 11)
 
 epsilon <- .Machine$double.eps^0.5
 
 ## Checks if the ML is correct.
 mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(small_data, max(small_data) + epsilon, p, log = TRUE))
+  -sum(dpower(small_data, max(small_data) + epsilon, p, log = TRUE))
 }, p = 1))
 
 mle2 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(tiny_data, max(tiny_data) + epsilon, p,
+  -sum(dpower(tiny_data, max(tiny_data) + epsilon, p,
     log = TRUE
   ))
 }, p = 7))
 
 mle3 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(medium_data, max(medium_data) + epsilon, p,
+  -sum(dpower(medium_data, max(medium_data) + epsilon, p,
     log = TRUE
   ))
 }, p = 11))

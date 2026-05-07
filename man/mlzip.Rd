@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::dzip; support: [0, Inf).
+Density: dzip; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlzip(simulate_default("mlzip", 100))
 }
 \seealso{
-extraDistr::dzip
+dzip
 }

@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::dlaplace; support: [-Inf, Inf).
+Density: dlaplace; support: [-Inf, Inf).
 }
 \examples{
 set.seed(1); mllaplace(simulate_default("mllaplace", 100))
 }
 \seealso{
-extraDistr::dlaplace
+dlaplace
 }

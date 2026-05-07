@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::drayleigh; support: [0, Inf).
+Density: drayleigh; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlrayleigh(simulate_default("mlrayleigh", 100))
 }
 \seealso{
-extraDistr::drayleigh
+drayleigh
 }

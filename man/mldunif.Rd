@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::ddunif; support: [-Inf, Inf).
+Density: ddunif; support: [-Inf, Inf).
 }
 \examples{
 set.seed(1); mldunif(simulate_default("mldunif", 100))
 }
 \seealso{
-extraDistr::ddunif
+ddunif
 }

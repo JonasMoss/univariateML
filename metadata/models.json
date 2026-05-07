@@ -52,7 +52,7 @@
     {
       "id": "betapr",
       "name": "BetaPrime",
-      "density": "extraDistr::dbetapr",
+      "density": "dbetapr",
       "support": {
         "type": "R",
         "lower": 0,
@@ -90,7 +90,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rbetapr",
+      "sampler": "rbetapr",
       "start_hints": {
         "method": null,
         "notes": null
@@ -150,7 +150,7 @@
     {
       "id": "burr",
       "name": "Burr",
-      "density": "actuar::dburr",
+      "density": "dburr",
       "support": {
         "type": "R",
         "lower": 0,
@@ -206,7 +206,7 @@
           "shape2": 1.5
         }
       ],
-      "sampler": "actuar::rburr",
+      "sampler": "rburr",
       "start_hints": {
         "method": null,
         "notes": null
@@ -266,7 +266,7 @@
     {
       "id": "dunif",
       "name": "Discrete uniform",
-      "density": "extraDistr::ddunif",
+      "density": "ddunif",
       "support": {
         "type": "Z",
         "lower": null,
@@ -304,7 +304,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rdunif",
+      "sampler": "rdunif",
       "start_hints": {
         "method": null,
         "notes": null
@@ -351,7 +351,7 @@
     {
       "id": "fatigue",
       "name": "Birnbaum-Saunders",
-      "density": "extraDistr::dfatigue",
+      "density": "dfatigue",
       "support": {
         "type": "R",
         "lower": 0,
@@ -402,7 +402,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rfatigue",
+      "sampler": "rfatigue",
       "start_hints": {
         "method": null,
         "notes": null
@@ -560,7 +560,7 @@
     {
       "id": "gompertz",
       "name": "Gompertz",
-      "density": "extraDistr::dgompertz",
+      "density": "dgompertz",
       "support": {
         "type": "R",
         "lower": 0,
@@ -598,7 +598,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rgompertz",
+      "sampler": "rgompertz",
       "start_hints": {
         "method": null,
         "notes": null
@@ -609,7 +609,7 @@
     {
       "id": "gumbel",
       "name": "Gumbel",
-      "density": "extraDistr::dgumbel",
+      "density": "dgumbel",
       "support": {
         "type": "R",
         "lower": null,
@@ -647,7 +647,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rgumbel",
+      "sampler": "rgumbel",
       "start_hints": {
         "method": null,
         "notes": null
@@ -658,7 +658,7 @@
     {
       "id": "invburr",
       "name": "Inverse Burr",
-      "density": "actuar::dinvburr",
+      "density": "dinvburr",
       "support": {
         "type": "R",
         "lower": 0,
@@ -696,7 +696,7 @@
           }
         }
       ],
-      "sampler": "actuar::rinvburr",
+      "sampler": "rinvburr",
       "start_hints": {
         "method": null,
         "notes": null
@@ -707,7 +707,7 @@
     {
       "id": "invgamma",
       "name": "InvGamma",
-      "density": "extraDistr::dinvgamma",
+      "density": "dinvgamma",
       "support": {
         "type": "R",
         "lower": 0,
@@ -745,7 +745,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rinvgamma",
+      "sampler": "rinvgamma",
       "start_hints": {
         "method": null,
         "notes": null
@@ -756,7 +756,7 @@
     {
       "id": "invgauss",
       "name": "Inverse Gaussian",
-      "density": "actuar::dinvgauss",
+      "density": "dinvgauss",
       "support": {
         "type": "R",
         "lower": 0,
@@ -794,7 +794,7 @@
           }
         }
       ],
-      "sampler": "actuar::rinvgauss",
+      "sampler": "rinvgauss",
       "start_hints": {
         "method": null,
         "notes": null
@@ -805,7 +805,7 @@
     {
       "id": "invweibull",
       "name": "InverseWeibull",
-      "density": "actuar::dinvweibull",
+      "density": "dinvweibull",
       "support": {
         "type": "R",
         "lower": 0,
@@ -843,7 +843,7 @@
           }
         }
       ],
-      "sampler": "actuar::rinvweibull",
+      "sampler": "rinvweibull",
       "start_hints": {
         "method": null,
         "notes": null
@@ -854,7 +854,7 @@
     {
       "id": "kumar",
       "name": "Kumaraswamy",
-      "density": "extraDistr::dkumar",
+      "density": "dkumar",
       "support": {
         "type": "R",
         "lower": 0,
@@ -892,7 +892,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rkumar",
+      "sampler": "rkumar",
       "start_hints": {
         "method": null,
         "notes": null
@@ -903,7 +903,7 @@
     {
       "id": "laplace",
       "name": "Laplace",
-      "density": "extraDistr::dlaplace",
+      "density": "dlaplace",
       "support": {
         "type": "R",
         "lower": null,
@@ -941,7 +941,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rlaplace",
+      "sampler": "rlaplace",
       "start_hints": {
         "method": null,
         "notes": null
@@ -952,7 +952,7 @@
     {
       "id": "lgamma",
       "name": "Loggamma",
-      "density": "actuar::dlgamma",
+      "density": "dlgamma",
       "support": {
         "type": "R",
         "lower": 1,
@@ -990,7 +990,7 @@
           }
         }
       ],
-      "sampler": "actuar::rlgamma",
+      "sampler": "rlgamma",
       "start_hints": {
         "method": null,
         "notes": null
@@ -1001,7 +1001,7 @@
     {
       "id": "lgser",
       "name": "Logarithmic series",
-      "density": "extraDistr::dlgser",
+      "density": "dlgser",
       "support": {
         "type": "Z",
         "lower": 1,
@@ -1026,7 +1026,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rlgser",
+      "sampler": "rlgser",
       "start_hints": {
         "method": null,
         "notes": null
@@ -1037,7 +1037,7 @@
     {
       "id": "llogis",
       "name": "Loglogistic",
-      "density": "actuar::dllogis",
+      "density": "dllogis",
       "support": {
         "type": "R",
         "lower": 0,
@@ -1075,7 +1075,7 @@
           }
         }
       ],
-      "sampler": "actuar::rllogis",
+      "sampler": "rllogis",
       "start_hints": {
         "method": null,
         "notes": null
@@ -1233,7 +1233,7 @@
     {
       "id": "lomax",
       "name": "Lomax",
-      "density": "extraDistr::dlomax",
+      "density": "dlomax",
       "support": {
         "type": "R",
         "lower": 0,
@@ -1271,7 +1271,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rlomax",
+      "sampler": "rlomax",
       "start_hints": {
         "method": null,
         "notes": null
@@ -1429,7 +1429,7 @@
     {
       "id": "paralogis",
       "name": "Paralogistic",
-      "density": "actuar::dparalogis",
+      "density": "dparalogis",
       "support": {
         "type": "R",
         "lower": 0,
@@ -1467,7 +1467,7 @@
           }
         }
       ],
-      "sampler": "actuar::rparalogis",
+      "sampler": "rparalogis",
       "start_hints": {
         "method": null,
         "notes": null
@@ -1478,7 +1478,7 @@
     {
       "id": "pareto",
       "name": "Pareto",
-      "density": "extraDistr::dpareto",
+      "density": "dpareto",
       "support": {
         "type": "R",
         "lower": 0,
@@ -1516,7 +1516,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rpareto",
+      "sampler": "rpareto",
       "start_hints": {
         "method": null,
         "notes": null
@@ -1563,7 +1563,7 @@
     {
       "id": "power",
       "name": "PowerDist",
-      "density": "extraDistr::dpower",
+      "density": "dpower",
       "support": {
         "type": "R",
         "lower": 0,
@@ -1601,7 +1601,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rpower",
+      "sampler": "rpower",
       "start_hints": {
         "method": null,
         "notes": null
@@ -1612,7 +1612,7 @@
     {
       "id": "rayleigh",
       "name": "Rayleigh",
-      "density": "extraDistr::drayleigh",
+      "density": "drayleigh",
       "support": {
         "type": "R",
         "lower": 0,
@@ -1637,7 +1637,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rrayleigh",
+      "sampler": "rrayleigh",
       "start_hints": {
         "method": null,
         "notes": null
@@ -2020,7 +2020,7 @@
     {
       "id": "zip",
       "name": "Zero-inflated Poisson",
-      "density": "extraDistr::dzip",
+      "density": "dzip",
       "support": {
         "type": "Z",
         "lower": 0,
@@ -2058,7 +2058,7 @@
           }
         }
       ],
-      "sampler": "extraDistr::rzip",
+      "sampler": "rzip",
       "start_hints": {
         "method": null,
         "notes": null

@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: actuar::dinvweibull; support: [0, Inf).
+Density: dinvweibull; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlinvweibull(simulate_default("mlinvweibull", 100))
 }
 \seealso{
-actuar::dinvweibull
+dinvweibull
 }

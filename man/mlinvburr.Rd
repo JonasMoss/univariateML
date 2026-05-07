@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: actuar::dinvburr; support: [0, Inf).
+Density: dinvburr; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlinvburr(simulate_default("mlinvburr", 100))
 }
 \seealso{
-actuar::dinvburr
+dinvburr
 }

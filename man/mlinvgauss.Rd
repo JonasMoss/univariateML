@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: actuar::dinvgauss; support: [0, Inf).
+Density: dinvgauss; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlinvgauss(simulate_default("mlinvgauss", 100))
 }
 \seealso{
-actuar::dinvgauss
+dinvgauss
 }

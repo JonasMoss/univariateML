@@ -116,12 +116,22 @@ ml_check_modify <- function(x, na.rm, name) {
 
 univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
-  if (type %in% c("d", "p", "q", "r")) {
-    strings <- strsplit(attr(obj, "density"), "::")[[1]]
-    substring(strings[2], first = 1, last = 1) <- type
-    paste0(strings[1], "::", strings[2])
+  density <- attr(obj, "density")
+  parts <- strsplit(density, "::", fixed = TRUE)[[1]]
+  # Density may be either "pkg::dfoo" (external function) or just "dfoo"
+  # (lives in our namespace).
+  if (length(parts) == 2L) {
+    fname <- parts[2]
+    pkg <- parts[1]
   } else {
-    paste0(type, substring(strsplit(attr(obj, "density"), "::")[[1]][2], 2))
+    fname <- parts[1]
+    pkg <- NULL
+  }
+  if (type %in% c("d", "p", "q", "r")) {
+    substring(fname, first = 1, last = 1) <- type
+    if (is.null(pkg)) fname else paste0(pkg, "::", fname)
+  } else {
+    paste0(type, substring(fname, 2))
   }
 }
 

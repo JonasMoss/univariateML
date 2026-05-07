@@ -20,11 +20,11 @@ An object of class \code{univariateML} with estimates and attributes.
 Maximum likelihood estimation for this distribution.
 }
 \details{
-Density: extraDistr::dpareto; support: [0, Inf).
+Density: dpareto; support: [0, Inf).
 }
 \examples{
 set.seed(1); mlpareto(simulate_default("mlpareto", 100))
 }
 \seealso{
-extraDistr::dpareto
+dpareto
 }
