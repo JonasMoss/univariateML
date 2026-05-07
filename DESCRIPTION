@@ -28,6 +28,7 @@ VignetteBuilder: knitr
 URL: https://github.com/JonasMoss/univariateML, https://jonasmoss.github.io/univariateML/
 BugReports: https://github.com/JonasMoss/univariateML/issues
 Roxygen: list(markdown = TRUE)
-LinkingTo: 
+LinkingTo:
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+    BH

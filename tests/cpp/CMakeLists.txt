@@ -1,13 +1,13 @@
 # Standalone build of the C++ test harness for the mlcore estimators.
 #
 # Goal: `cmake --build && ctest` runs golden-regression tests against
-# the same JSON files the R-side test_golden_regression.R consumes —
-# without requiring an R install on the box.
+# the same JSON files the R-side test_golden_regression.R consumes.
 #
-# mlcore is header-only except for the polygamma port (digamma /
-# trigamma / tetragamma; see src/ml/special/polygamma.cpp). That .cpp
-# is compiled into mlcore_tests below; bfgs_tests doesn't need it
-# (the BFGS smoke test only includes core/* headers).
+# mlcore is header-only. The math backend (special functions, dpqr) is
+# Boost.Math, which is header-only. We discover Boost via:
+#   1. find_package(Boost) — system Boost (apt: libboost-dev, dnf: boost-devel)
+#   2. fallback: BH package in an R install — `Rscript -e "system.file('include', 'BH')"`
+# If neither is available, the user must install one.
 
 cmake_minimum_required(VERSION 3.16)
 project(mlcore_tests CXX)
@@ -16,15 +16,39 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# --- Boost.Math discovery --------------------------------------------------
+find_package(Boost CONFIG QUIET)
+if(NOT Boost_FOUND)
+  find_program(R_EXECUTABLE R)
+  if(R_EXECUTABLE)
+    execute_process(
+      COMMAND ${R_EXECUTABLE} --no-save --silent --no-echo
+              -e "cat(system.file('include', package = 'BH'))"
+      OUTPUT_VARIABLE BH_INCLUDE_DIR
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      RESULT_VARIABLE BH_RESULT)
+    if(BH_RESULT EQUAL 0 AND BH_INCLUDE_DIR AND IS_DIRECTORY "${BH_INCLUDE_DIR}")
+      set(Boost_INCLUDE_DIRS "${BH_INCLUDE_DIR}")
+      message(STATUS "Boost.Math: using BH headers at ${BH_INCLUDE_DIR}")
+    endif()
+  endif()
+  if(NOT Boost_INCLUDE_DIRS)
+    message(FATAL_ERROR
+      "Boost not found. Install system Boost (libboost-dev / boost-devel) "
+      "or ensure the R 'BH' package is installed and Rscript is on PATH.")
+  endif()
+else()
+  message(STATUS "Boost.Math: using find_package result")
+endif()
+
 # --- the test binary -------------------------------------------------------
-add_executable(mlcore_tests
-  test_estimators.cpp
-  ../../src/ml/special/polygamma.cpp)
+add_executable(mlcore_tests test_estimators.cpp)
 set_target_properties(mlcore_tests PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_include_directories(mlcore_tests PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../src)
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src
+  ${Boost_INCLUDE_DIRS})
 
 target_compile_options(mlcore_tests PRIVATE
   -Wall -Wextra -Wpedantic)

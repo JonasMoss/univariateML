@@ -1,26 +1,33 @@
 // Centralized special functions used by the ML core.
 //
-// The polygamma family (digamma, trigamma, tetragamma, psigamma) routes
-// through src/ml/special/polygamma.cpp — the in-tree dpsifn port — so the
-// standalone test harness can build without linking Rmath. dnorm/dpois/dgeom
-// inline their formulas directly. lgamma/lbeta use std::lgamma.
+// Polygamma family routes through Boost.Math (boost::math::digamma /
+// trigamma / polygamma); shipped via the BH package on CRAN. dnorm /
+// dpois / dgeom inline their formulas; lgamma uses std::lgamma. This is
+// the single seam between mlcore and the math backend — swap this file
+// to retarget another backend.
 
 #pragma once
 
 #include "constants.hpp"
-#include "polygamma.hpp"
+#include <boost/math/special_functions/digamma.hpp>
+#include <boost/math/special_functions/polygamma.hpp>
+#include <boost/math/special_functions/trigamma.hpp>
 #include <cmath>
 
 namespace mlcore {
 namespace special {
 
-inline double digamma(double x) { return psigamma_deriv(x, 0); }
+inline double digamma(double x) { return boost::math::digamma(x); }
 
-inline double trigamma(double x) { return psigamma_deriv(x, 1); }
+inline double trigamma(double x) { return boost::math::trigamma(x); }
 
-inline double tetragamma(double x) { return psigamma_deriv(x, 2); }
+inline double tetragamma(double x) { return boost::math::polygamma(2, x); }
 
-inline double psigamma(double x, int deriv) { return psigamma_deriv(x, deriv); }
+inline double psigamma(double x, int deriv) {
+  if (deriv == 0) return boost::math::digamma(x);
+  if (deriv == 1) return boost::math::trigamma(x);
+  return boost::math::polygamma(deriv, x);
+}
 
 inline double lgamma(double x) { return std::lgamma(x); }
 
