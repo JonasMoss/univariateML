@@ -13,6 +13,7 @@
 #include "doctest.h"
 
 #include "../../src/ml/distributions/logitnorm.hpp"
+#include "../../src/ml/distributions/nakagami.hpp"
 #include "../../src/ml/distributions/rng_std.hpp"
 
 #include <random>
@@ -80,6 +81,25 @@ TEST_CASE("rlogitnorm samples lie in (0, 1) and match the CDF at median") {
       mlcore::distributions::plogitnorm(0.5, 0.0, 1.0, true, false);
   CHECK(std::abs(cdf_half - 0.5) < 1e-12);
   CHECK(std::abs(sum / n - 0.5) < 0.05);
+}
+
+// rnaka(shape=2, scale=1) draws are positive; sample mean roughly matches
+// the analytic mean: E[X] = sqrt(scale/shape) * Gamma(shape+0.5)/Gamma(shape).
+TEST_CASE("rnaka samples are positive and match analytic mean") {
+  mlcore::distributions::StdRng<> rng(11);
+  const int n = 20000;
+  const double shape = 2.0;
+  const double scale = 1.0;
+  double sum = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rnaka(rng, shape, scale);
+    CHECK(x > 0.0);
+    sum += x;
+  }
+  // E[X] = sqrt(scale/shape) * Gamma(shape+0.5)/Gamma(shape)
+  const double expected = std::sqrt(scale / shape) *
+                          std::tgamma(shape + 0.5) / std::tgamma(shape);
+  CHECK(std::abs(sum / n - expected) < 0.05);
 }
 
 } // namespace
