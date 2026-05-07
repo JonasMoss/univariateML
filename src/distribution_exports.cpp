@@ -34,6 +34,9 @@
 #include "distributions/burr.cpp"
 #include "distributions/invburr.cpp"
 #include "distributions/paralogis.cpp"
+// Phase C tier 4: special samplers.
+#include "distributions/lgser.cpp"
+#include "distributions/zip.cpp"
 
 // Exported wrappers forwarding to dist_impl.
 // [[Rcpp::export]]
@@ -613,4 +616,48 @@ arma::vec qparalogis(const arma::vec &p, const arma::vec &shape,
 // [[Rcpp::export]]
 arma::vec rparalogis(int n, double shape = 1.0, double scale = 1.0) {
   return dist_impl::rparalogis(n, shape, scale);
+}
+
+// --- Phase C tier 4: special samplers ---
+
+// [[Rcpp::export]]
+arma::vec dlgser(const arma::vec &x, const arma::vec &theta,
+                 bool log = false) {
+  return dist_impl::dlgser(x, theta, log);
+}
+// [[Rcpp::export]]
+arma::vec plgser(const arma::vec &q, const arma::vec &theta,
+                 bool lower_tail = true, bool log_p = false) {
+  return dist_impl::plgser(q, theta, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qlgser(const arma::vec &p, const arma::vec &theta,
+                 bool lower_tail = true, bool log_p = false) {
+  return dist_impl::qlgser(p, theta, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rlgser(int n, double theta) {
+  return dist_impl::rlgser(n, theta);
+}
+
+// [[Rcpp::export]]
+arma::vec dzip(const arma::vec &x, const arma::vec &lambda,
+               const arma::vec &pi, bool log = false) {
+  return dist_impl::dzip(x, lambda, pi, log);
+}
+// [[Rcpp::export]]
+arma::vec pzip(const arma::vec &q, const arma::vec &lambda,
+               const arma::vec &pi, bool lower_tail = true,
+               bool log_p = false) {
+  return dist_impl::pzip(q, lambda, pi, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qzip(const arma::vec &p, const arma::vec &lambda,
+               const arma::vec &pi, bool lower_tail = true,
+               bool log_p = false) {
+  return dist_impl::qzip(p, lambda, pi, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rzip(int n, double lambda, double pi) {
+  return dist_impl::rzip(n, lambda, pi);
 }

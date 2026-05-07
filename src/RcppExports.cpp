@@ -1574,6 +1574,116 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dlgser
+arma::vec dlgser(const arma::vec& x, const arma::vec& theta, bool log);
+RcppExport SEXP _univariateML_dlgser(SEXP xSEXP, SEXP thetaSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dlgser(x, theta, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// plgser
+arma::vec plgser(const arma::vec& q, const arma::vec& theta, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_plgser(SEXP qSEXP, SEXP thetaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(plgser(q, theta, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qlgser
+arma::vec qlgser(const arma::vec& p, const arma::vec& theta, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qlgser(SEXP pSEXP, SEXP thetaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qlgser(p, theta, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rlgser
+arma::vec rlgser(int n, double theta);
+RcppExport SEXP _univariateML_rlgser(SEXP nSEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rlgser(n, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dzip
+arma::vec dzip(const arma::vec& x, const arma::vec& lambda, const arma::vec& pi, bool log);
+RcppExport SEXP _univariateML_dzip(SEXP xSEXP, SEXP lambdaSEXP, SEXP piSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dzip(x, lambda, pi, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pzip
+arma::vec pzip(const arma::vec& q, const arma::vec& lambda, const arma::vec& pi, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_pzip(SEXP qSEXP, SEXP lambdaSEXP, SEXP piSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(pzip(q, lambda, pi, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qzip
+arma::vec qzip(const arma::vec& p, const arma::vec& lambda, const arma::vec& pi, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qzip(SEXP pSEXP, SEXP lambdaSEXP, SEXP piSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qzip(p, lambda, pi, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rzip
+arma::vec rzip(int n, double lambda, double pi);
+RcppExport SEXP _univariateML_rzip(SEXP nSEXP, SEXP lambdaSEXP, SEXP piSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< double >::type pi(piSEXP);
+    rcpp_result_gen = Rcpp::wrap(rzip(n, lambda, pi));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mlburr_
 Rcpp::List mlburr_(const Rcpp::NumericVector& x, Rcpp::Nullable<Rcpp::NumericVector> init, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlburr_(SEXP xSEXP, SEXP initSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
@@ -2312,6 +2422,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_pparalogis", (DL_FUNC) &_univariateML_pparalogis, 5},
     {"_univariateML_qparalogis", (DL_FUNC) &_univariateML_qparalogis, 5},
     {"_univariateML_rparalogis", (DL_FUNC) &_univariateML_rparalogis, 3},
+    {"_univariateML_dlgser", (DL_FUNC) &_univariateML_dlgser, 3},
+    {"_univariateML_plgser", (DL_FUNC) &_univariateML_plgser, 4},
+    {"_univariateML_qlgser", (DL_FUNC) &_univariateML_qlgser, 4},
+    {"_univariateML_rlgser", (DL_FUNC) &_univariateML_rlgser, 2},
+    {"_univariateML_dzip", (DL_FUNC) &_univariateML_dzip, 4},
+    {"_univariateML_pzip", (DL_FUNC) &_univariateML_pzip, 5},
+    {"_univariateML_qzip", (DL_FUNC) &_univariateML_qzip, 5},
+    {"_univariateML_rzip", (DL_FUNC) &_univariateML_rzip, 3},
     {"_univariateML_mlburr_", (DL_FUNC) &_univariateML_mlburr_, 4},
     {"_univariateML_mlcauchy_", (DL_FUNC) &_univariateML_mlcauchy_, 3},
     {"_univariateML_mlgumbel_", (DL_FUNC) &_univariateML_mlgumbel_, 3},

@@ -20,6 +20,7 @@ struct RRng {
     return R::rgamma(shape, scale);
   }
   inline double rt(double df) { return R::rt(df); }
+  inline double rpois(double lambda) { return R::rpois(lambda); }
 };
 
 } // namespace dist_impl

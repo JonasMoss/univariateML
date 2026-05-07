@@ -36,6 +36,9 @@ struct StdRng {
   inline double rt(double df) {
     return std::student_t_distribution<>(df)(gen);
   }
+  inline double rpois(double lambda) {
+    return static_cast<double>(std::poisson_distribution<int>(lambda)(gen));
+  }
 };
 
 } // namespace distributions

@@ -433,6 +433,38 @@ rparalogis <- function(n, shape = 1.0, scale = 1.0) {
     .Call(`_univariateML_rparalogis`, n, shape, scale)
 }
 
+dlgser <- function(x, theta, log = FALSE) {
+    .Call(`_univariateML_dlgser`, x, theta, log)
+}
+
+plgser <- function(q, theta, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_plgser`, q, theta, lower_tail, log_p)
+}
+
+qlgser <- function(p, theta, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qlgser`, p, theta, lower_tail, log_p)
+}
+
+rlgser <- function(n, theta) {
+    .Call(`_univariateML_rlgser`, n, theta)
+}
+
+dzip <- function(x, lambda, pi, log = FALSE) {
+    .Call(`_univariateML_dzip`, x, lambda, pi, log)
+}
+
+pzip <- function(q, lambda, pi, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pzip`, q, lambda, pi, lower_tail, log_p)
+}
+
+qzip <- function(p, lambda, pi, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qzip`, p, lambda, pi, lower_tail, log_p)
+}
+
+rzip <- function(n, lambda, pi) {
+    .Call(`_univariateML_rzip`, n, lambda, pi)
+}
+
 mlburr_ <- function(x, init = NULL, tol = 1.220703e-4, iterlim = 100L) {
     .Call(`_univariateML_mlburr_`, x, init, tol, iterlim)
 }
