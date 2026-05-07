@@ -18,6 +18,7 @@
 #include "../../src/ml/distributions/rng_std.hpp"
 #include "../../src/ml/distributions/sged.hpp"
 #include "../../src/ml/distributions/snorm.hpp"
+#include "../../src/ml/distributions/sstd.hpp"
 #include "../../src/ml/distributions/std.hpp"
 #include "../../src/ml/distributions/zipf.hpp"
 
@@ -210,6 +211,26 @@ TEST_CASE("rsged samples are unit-variance and recurse cleanly into rged") {
   const double var = sum_sq / n - mean * mean;
   CHECK(std::abs(mean) < 0.05);
   CHECK(std::abs(var - 1.0) < 0.1);
+}
+
+// rsstd at (mean=0, sd=1, nu=8, xi=1.5) is unit-variance by construction.
+// Heavy tails (nu=8) + skew slow the empirical mean's convergence, so the
+// tolerance is wider than the symmetric / lighter-tailed cases above.
+TEST_CASE("rsstd samples are unit-variance and recurse cleanly into rstd") {
+  mlcore::distributions::StdRng<> rng(31);
+  const int n = 20000;
+  double sum = 0.0;
+  double sum_sq = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x =
+        mlcore::distributions::rsstd(rng, 0.0, 1.0, 8.0, 1.5);
+    sum += x;
+    sum_sq += x * x;
+  }
+  const double mean = sum / n;
+  const double var = sum_sq / n - mean * mean;
+  CHECK(std::abs(mean) < 0.15);
+  CHECK(std::abs(var - 1.0) < 0.15);
 }
 
 } // namespace
