@@ -1,30 +1,27 @@
 # instructions/
 
-Working notes and porting references used during the de-R-ification of
-univariateML. Markdown files here are design notes; subdirectories vendor
-upstream source as **temporary porting reference**.
+Working notes for univariateML's de-R-ification. The package's public
+documentation lives in `man/`, `vignettes/`, and the repo-root
+`README.md`; this directory is internal.
 
-## Vendored porting references (delete after port)
+## Files
 
-The following directories hold a snapshot of upstream source we are
-porting algorithms from. Files in them are read-only references —
-**never edit** them in place. Once the corresponding distributions are
-ported into `src/ml/distributions/`, the directory is deleted as part of
-the migration's cleanup commit (see `~/.claude/plans/`).
+- `vision.md` — three-layer vision (C++ core, R shell, Python shell).
+- `math_backend.md` — Boost.Math vs alternatives; current decision
+  and the seam at `src/ml/special/special.hpp`.
+- `cpp_instructions.md` — style guide for mlcore. Layout, estimator
+  template, optimiser API, score-residual gate.
+- `bench_plan.md` — design notes for a future Rcpp-variant
+  benchmark harness. Forward-looking; not yet built.
+- `stuff.md` — table of special functions used by `mlcore::special`
+  and their roles. Reference for backend swaps.
+- `vibe.md` — personal notes on AI-assisted coding workflow.
 
-| Directory             | Upstream                              | License | Phase   |
-|-----------------------|---------------------------------------|---------|---------|
-| `extraDistr/`         | github.com/twolodzko/extraDistr        | GPL-2   | Phase C |
-| `actuar/`             | gitlab.com/vigou3/actuar               | GPL-2+  | Phase C |
+## Vendored porting references
 
-The previous round used `instructions/nmath/` (vendored R Mathlib sources)
-the same way; it was deleted in commit `522f0d5` once the boost::math
-backend pivot landed.
-
-## License note
-
-Vendoring GPL-licensed source as a **porting reference** is fine: we read
-the algorithms (which are not copyrightable) and re-implement them in our
-own style atop `boost::math` and `<cmath>`. The vendored source is removed
-from the tree before the package ships, so univariateML's published
-distribution (MIT-licensed) contains no GPL code.
+Past iterations vendored upstream source (extraDistr, actuar, R
+Mathlib) under this directory as **temporary porting reference**,
+deleted in the cleanup commit once the port landed. The current tree
+has no live vendored references. If a future port needs one, follow
+the same pattern — see commits `db913bb` (vendor) and `cf10046` (drop)
+for the extraDistr/actuar precedent, and `522f0d5` for the nmath one.
