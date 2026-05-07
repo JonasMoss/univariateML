@@ -12,6 +12,15 @@
 #include "distributions/snorm.cpp"
 #include "distributions/std.cpp"
 #include "distributions/sstd.cpp"
+// Phase C tier 1: closed-form ports of extraDistr/actuar distributions.
+#include "distributions/laplace.cpp"
+#include "distributions/rayleigh.cpp"
+#include "distributions/dunif.cpp"
+#include "distributions/power.cpp"
+#include "distributions/pareto.cpp"
+#include "distributions/lomax.cpp"
+#include "distributions/gumbel.cpp"
+#include "distributions/kumar.cpp"
 
 // Exported wrappers forwarding to dist_impl.
 // [[Rcpp::export]]
@@ -165,4 +174,178 @@ arma::vec qsstd(const arma::vec &p, const arma::vec &mean, const arma::vec &sd, 
 // [[Rcpp::export]]
 arma::vec rsstd(int n, double mean = 0.0, double sd = 1.0, double nu = 5.0, double xi = 1.5) {
   return dist_impl::rsstd(n, mean, sd, nu, xi);
+}
+
+// --- Phase C tier 1: extraDistr ports ---
+
+// [[Rcpp::export]]
+arma::vec dlaplace(const arma::vec &x, const arma::vec &mu,
+                   const arma::vec &sigma, bool log = false) {
+  return dist_impl::dlaplace(x, mu, sigma, log);
+}
+// [[Rcpp::export]]
+arma::vec plaplace(const arma::vec &q, const arma::vec &mu,
+                   const arma::vec &sigma, bool lower_tail = true,
+                   bool log_p = false) {
+  return dist_impl::plaplace(q, mu, sigma, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qlaplace(const arma::vec &p, const arma::vec &mu,
+                   const arma::vec &sigma, bool lower_tail = true,
+                   bool log_p = false) {
+  return dist_impl::qlaplace(p, mu, sigma, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rlaplace(int n, double mu = 0.0, double sigma = 1.0) {
+  return dist_impl::rlaplace(n, mu, sigma);
+}
+
+// [[Rcpp::export]]
+arma::vec drayleigh(const arma::vec &x, const arma::vec &sigma,
+                    bool log = false) {
+  return dist_impl::drayleigh(x, sigma, log);
+}
+// [[Rcpp::export]]
+arma::vec prayleigh(const arma::vec &q, const arma::vec &sigma,
+                    bool lower_tail = true, bool log_p = false) {
+  return dist_impl::prayleigh(q, sigma, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qrayleigh(const arma::vec &p, const arma::vec &sigma,
+                    bool lower_tail = true, bool log_p = false) {
+  return dist_impl::qrayleigh(p, sigma, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rrayleigh(int n, double sigma = 1.0) {
+  return dist_impl::rrayleigh(n, sigma);
+}
+
+// [[Rcpp::export]]
+arma::vec ddunif(const arma::vec &x, const arma::vec &min,
+                 const arma::vec &max, bool log = false) {
+  return dist_impl::ddunif(x, min, max, log);
+}
+// [[Rcpp::export]]
+arma::vec pdunif(const arma::vec &q, const arma::vec &min,
+                 const arma::vec &max, bool lower_tail = true,
+                 bool log_p = false) {
+  return dist_impl::pdunif(q, min, max, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qdunif(const arma::vec &p, const arma::vec &min,
+                 const arma::vec &max, bool lower_tail = true,
+                 bool log_p = false) {
+  return dist_impl::qdunif(p, min, max, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rdunif(int n, double min, double max) {
+  return dist_impl::rdunif(n, min, max);
+}
+
+// [[Rcpp::export]]
+arma::vec dpower(const arma::vec &x, const arma::vec &alpha,
+                 const arma::vec &beta, bool log = false) {
+  return dist_impl::dpower(x, alpha, beta, log);
+}
+// [[Rcpp::export]]
+arma::vec ppower(const arma::vec &q, const arma::vec &alpha,
+                 const arma::vec &beta, bool lower_tail = true,
+                 bool log_p = false) {
+  return dist_impl::ppower(q, alpha, beta, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qpower(const arma::vec &p, const arma::vec &alpha,
+                 const arma::vec &beta, bool lower_tail = true,
+                 bool log_p = false) {
+  return dist_impl::qpower(p, alpha, beta, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rpower(int n, double alpha = 1.0, double beta = 1.0) {
+  return dist_impl::rpower(n, alpha, beta);
+}
+
+// [[Rcpp::export]]
+arma::vec dpareto(const arma::vec &x, const arma::vec &a,
+                  const arma::vec &b, bool log = false) {
+  return dist_impl::dpareto(x, a, b, log);
+}
+// [[Rcpp::export]]
+arma::vec ppareto(const arma::vec &q, const arma::vec &a,
+                  const arma::vec &b, bool lower_tail = true,
+                  bool log_p = false) {
+  return dist_impl::ppareto(q, a, b, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qpareto(const arma::vec &p, const arma::vec &a,
+                  const arma::vec &b, bool lower_tail = true,
+                  bool log_p = false) {
+  return dist_impl::qpareto(p, a, b, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rpareto(int n, double a = 1.0, double b = 1.0) {
+  return dist_impl::rpareto(n, a, b);
+}
+
+// [[Rcpp::export]]
+arma::vec dlomax(const arma::vec &x, const arma::vec &lambda,
+                 const arma::vec &kappa, bool log = false) {
+  return dist_impl::dlomax(x, lambda, kappa, log);
+}
+// [[Rcpp::export]]
+arma::vec plomax(const arma::vec &q, const arma::vec &lambda,
+                 const arma::vec &kappa, bool lower_tail = true,
+                 bool log_p = false) {
+  return dist_impl::plomax(q, lambda, kappa, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qlomax(const arma::vec &p, const arma::vec &lambda,
+                 const arma::vec &kappa, bool lower_tail = true,
+                 bool log_p = false) {
+  return dist_impl::qlomax(p, lambda, kappa, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rlomax(int n, double lambda = 1.0, double kappa = 1.0) {
+  return dist_impl::rlomax(n, lambda, kappa);
+}
+
+// [[Rcpp::export]]
+arma::vec dgumbel(const arma::vec &x, const arma::vec &mu,
+                  const arma::vec &sigma, bool log = false) {
+  return dist_impl::dgumbel(x, mu, sigma, log);
+}
+// [[Rcpp::export]]
+arma::vec pgumbel(const arma::vec &q, const arma::vec &mu,
+                  const arma::vec &sigma, bool lower_tail = true,
+                  bool log_p = false) {
+  return dist_impl::pgumbel(q, mu, sigma, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qgumbel(const arma::vec &p, const arma::vec &mu,
+                  const arma::vec &sigma, bool lower_tail = true,
+                  bool log_p = false) {
+  return dist_impl::qgumbel(p, mu, sigma, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rgumbel(int n, double mu = 0.0, double sigma = 1.0) {
+  return dist_impl::rgumbel(n, mu, sigma);
+}
+
+// [[Rcpp::export]]
+arma::vec dkumar(const arma::vec &x, const arma::vec &a, const arma::vec &b,
+                 bool log = false) {
+  return dist_impl::dkumar(x, a, b, log);
+}
+// [[Rcpp::export]]
+arma::vec pkumar(const arma::vec &q, const arma::vec &a, const arma::vec &b,
+                 bool lower_tail = true, bool log_p = false) {
+  return dist_impl::pkumar(q, a, b, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec qkumar(const arma::vec &p, const arma::vec &a, const arma::vec &b,
+                 bool lower_tail = true, bool log_p = false) {
+  return dist_impl::qkumar(p, a, b, lower_tail, log_p);
+}
+// [[Rcpp::export]]
+arma::vec rkumar(int n, double a = 1.0, double b = 1.0) {
+  return dist_impl::rkumar(n, a, b);
 }

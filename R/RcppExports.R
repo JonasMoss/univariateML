@@ -129,6 +129,134 @@ rsstd <- function(n, mean = 0.0, sd = 1.0, nu = 5.0, xi = 1.5) {
     .Call(`_univariateML_rsstd`, n, mean, sd, nu, xi)
 }
 
+dlaplace <- function(x, mu, sigma, log = FALSE) {
+    .Call(`_univariateML_dlaplace`, x, mu, sigma, log)
+}
+
+plaplace <- function(q, mu, sigma, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_plaplace`, q, mu, sigma, lower_tail, log_p)
+}
+
+qlaplace <- function(p, mu, sigma, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qlaplace`, p, mu, sigma, lower_tail, log_p)
+}
+
+rlaplace <- function(n, mu = 0.0, sigma = 1.0) {
+    .Call(`_univariateML_rlaplace`, n, mu, sigma)
+}
+
+drayleigh <- function(x, sigma, log = FALSE) {
+    .Call(`_univariateML_drayleigh`, x, sigma, log)
+}
+
+prayleigh <- function(q, sigma, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_prayleigh`, q, sigma, lower_tail, log_p)
+}
+
+qrayleigh <- function(p, sigma, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qrayleigh`, p, sigma, lower_tail, log_p)
+}
+
+rrayleigh <- function(n, sigma = 1.0) {
+    .Call(`_univariateML_rrayleigh`, n, sigma)
+}
+
+ddunif <- function(x, min, max, log = FALSE) {
+    .Call(`_univariateML_ddunif`, x, min, max, log)
+}
+
+pdunif <- function(q, min, max, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pdunif`, q, min, max, lower_tail, log_p)
+}
+
+qdunif <- function(p, min, max, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qdunif`, p, min, max, lower_tail, log_p)
+}
+
+rdunif <- function(n, min, max) {
+    .Call(`_univariateML_rdunif`, n, min, max)
+}
+
+dpower <- function(x, alpha, beta, log = FALSE) {
+    .Call(`_univariateML_dpower`, x, alpha, beta, log)
+}
+
+ppower <- function(q, alpha, beta, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_ppower`, q, alpha, beta, lower_tail, log_p)
+}
+
+qpower <- function(p, alpha, beta, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qpower`, p, alpha, beta, lower_tail, log_p)
+}
+
+rpower <- function(n, alpha = 1.0, beta = 1.0) {
+    .Call(`_univariateML_rpower`, n, alpha, beta)
+}
+
+dpareto <- function(x, a, b, log = FALSE) {
+    .Call(`_univariateML_dpareto`, x, a, b, log)
+}
+
+ppareto <- function(q, a, b, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_ppareto`, q, a, b, lower_tail, log_p)
+}
+
+qpareto <- function(p, a, b, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qpareto`, p, a, b, lower_tail, log_p)
+}
+
+rpareto <- function(n, a = 1.0, b = 1.0) {
+    .Call(`_univariateML_rpareto`, n, a, b)
+}
+
+dlomax <- function(x, lambda, kappa, log = FALSE) {
+    .Call(`_univariateML_dlomax`, x, lambda, kappa, log)
+}
+
+plomax <- function(q, lambda, kappa, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_plomax`, q, lambda, kappa, lower_tail, log_p)
+}
+
+qlomax <- function(p, lambda, kappa, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qlomax`, p, lambda, kappa, lower_tail, log_p)
+}
+
+rlomax <- function(n, lambda = 1.0, kappa = 1.0) {
+    .Call(`_univariateML_rlomax`, n, lambda, kappa)
+}
+
+dgumbel <- function(x, mu, sigma, log = FALSE) {
+    .Call(`_univariateML_dgumbel`, x, mu, sigma, log)
+}
+
+pgumbel <- function(q, mu, sigma, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pgumbel`, q, mu, sigma, lower_tail, log_p)
+}
+
+qgumbel <- function(p, mu, sigma, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qgumbel`, p, mu, sigma, lower_tail, log_p)
+}
+
+rgumbel <- function(n, mu = 0.0, sigma = 1.0) {
+    .Call(`_univariateML_rgumbel`, n, mu, sigma)
+}
+
+dkumar <- function(x, a, b, log = FALSE) {
+    .Call(`_univariateML_dkumar`, x, a, b, log)
+}
+
+pkumar <- function(q, a, b, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_pkumar`, q, a, b, lower_tail, log_p)
+}
+
+qkumar <- function(p, a, b, lower_tail = TRUE, log_p = FALSE) {
+    .Call(`_univariateML_qkumar`, p, a, b, lower_tail, log_p)
+}
+
+rkumar <- function(n, a = 1.0, b = 1.0) {
+    .Call(`_univariateML_rkumar`, n, a, b)
+}
+
 mlburr_ <- function(x, init = NULL, tol = 1.220703e-4, iterlim = 100L) {
     .Call(`_univariateML_mlburr_`, x, init, tol, iterlim)
 }

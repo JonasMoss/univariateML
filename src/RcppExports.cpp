@@ -483,6 +483,458 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dlaplace
+arma::vec dlaplace(const arma::vec& x, const arma::vec& mu, const arma::vec& sigma, bool log);
+RcppExport SEXP _univariateML_dlaplace(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dlaplace(x, mu, sigma, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// plaplace
+arma::vec plaplace(const arma::vec& q, const arma::vec& mu, const arma::vec& sigma, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_plaplace(SEXP qSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(plaplace(q, mu, sigma, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qlaplace
+arma::vec qlaplace(const arma::vec& p, const arma::vec& mu, const arma::vec& sigma, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qlaplace(SEXP pSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qlaplace(p, mu, sigma, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rlaplace
+arma::vec rlaplace(int n, double mu, double sigma);
+RcppExport SEXP _univariateML_rlaplace(SEXP nSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rlaplace(n, mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// drayleigh
+arma::vec drayleigh(const arma::vec& x, const arma::vec& sigma, bool log);
+RcppExport SEXP _univariateML_drayleigh(SEXP xSEXP, SEXP sigmaSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(drayleigh(x, sigma, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prayleigh
+arma::vec prayleigh(const arma::vec& q, const arma::vec& sigma, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_prayleigh(SEXP qSEXP, SEXP sigmaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(prayleigh(q, sigma, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qrayleigh
+arma::vec qrayleigh(const arma::vec& p, const arma::vec& sigma, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qrayleigh(SEXP pSEXP, SEXP sigmaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qrayleigh(p, sigma, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rrayleigh
+arma::vec rrayleigh(int n, double sigma);
+RcppExport SEXP _univariateML_rrayleigh(SEXP nSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rrayleigh(n, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ddunif
+arma::vec ddunif(const arma::vec& x, const arma::vec& min, const arma::vec& max, bool log);
+RcppExport SEXP _univariateML_ddunif(SEXP xSEXP, SEXP minSEXP, SEXP maxSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type min(minSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type max(maxSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(ddunif(x, min, max, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pdunif
+arma::vec pdunif(const arma::vec& q, const arma::vec& min, const arma::vec& max, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_pdunif(SEXP qSEXP, SEXP minSEXP, SEXP maxSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type min(minSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type max(maxSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(pdunif(q, min, max, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qdunif
+arma::vec qdunif(const arma::vec& p, const arma::vec& min, const arma::vec& max, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qdunif(SEXP pSEXP, SEXP minSEXP, SEXP maxSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type min(minSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type max(maxSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qdunif(p, min, max, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rdunif
+arma::vec rdunif(int n, double min, double max);
+RcppExport SEXP _univariateML_rdunif(SEXP nSEXP, SEXP minSEXP, SEXP maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type min(minSEXP);
+    Rcpp::traits::input_parameter< double >::type max(maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdunif(n, min, max));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dpower
+arma::vec dpower(const arma::vec& x, const arma::vec& alpha, const arma::vec& beta, bool log);
+RcppExport SEXP _univariateML_dpower(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dpower(x, alpha, beta, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ppower
+arma::vec ppower(const arma::vec& q, const arma::vec& alpha, const arma::vec& beta, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_ppower(SEXP qSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(ppower(q, alpha, beta, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qpower
+arma::vec qpower(const arma::vec& p, const arma::vec& alpha, const arma::vec& beta, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qpower(SEXP pSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qpower(p, alpha, beta, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rpower
+arma::vec rpower(int n, double alpha, double beta);
+RcppExport SEXP _univariateML_rpower(SEXP nSEXP, SEXP alphaSEXP, SEXP betaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rpower(n, alpha, beta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dpareto
+arma::vec dpareto(const arma::vec& x, const arma::vec& a, const arma::vec& b, bool log);
+RcppExport SEXP _univariateML_dpareto(SEXP xSEXP, SEXP aSEXP, SEXP bSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dpareto(x, a, b, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ppareto
+arma::vec ppareto(const arma::vec& q, const arma::vec& a, const arma::vec& b, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_ppareto(SEXP qSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(ppareto(q, a, b, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qpareto
+arma::vec qpareto(const arma::vec& p, const arma::vec& a, const arma::vec& b, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qpareto(SEXP pSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qpareto(p, a, b, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rpareto
+arma::vec rpareto(int n, double a, double b);
+RcppExport SEXP _univariateML_rpareto(SEXP nSEXP, SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(rpareto(n, a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dlomax
+arma::vec dlomax(const arma::vec& x, const arma::vec& lambda, const arma::vec& kappa, bool log);
+RcppExport SEXP _univariateML_dlomax(SEXP xSEXP, SEXP lambdaSEXP, SEXP kappaSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dlomax(x, lambda, kappa, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// plomax
+arma::vec plomax(const arma::vec& q, const arma::vec& lambda, const arma::vec& kappa, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_plomax(SEXP qSEXP, SEXP lambdaSEXP, SEXP kappaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(plomax(q, lambda, kappa, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qlomax
+arma::vec qlomax(const arma::vec& p, const arma::vec& lambda, const arma::vec& kappa, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qlomax(SEXP pSEXP, SEXP lambdaSEXP, SEXP kappaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type kappa(kappaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qlomax(p, lambda, kappa, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rlomax
+arma::vec rlomax(int n, double lambda, double kappa);
+RcppExport SEXP _univariateML_rlomax(SEXP nSEXP, SEXP lambdaSEXP, SEXP kappaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< double >::type kappa(kappaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rlomax(n, lambda, kappa));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dgumbel
+arma::vec dgumbel(const arma::vec& x, const arma::vec& mu, const arma::vec& sigma, bool log);
+RcppExport SEXP _univariateML_dgumbel(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dgumbel(x, mu, sigma, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pgumbel
+arma::vec pgumbel(const arma::vec& q, const arma::vec& mu, const arma::vec& sigma, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_pgumbel(SEXP qSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(pgumbel(q, mu, sigma, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qgumbel
+arma::vec qgumbel(const arma::vec& p, const arma::vec& mu, const arma::vec& sigma, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qgumbel(SEXP pSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qgumbel(p, mu, sigma, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rgumbel
+arma::vec rgumbel(int n, double mu, double sigma);
+RcppExport SEXP _univariateML_rgumbel(SEXP nSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(rgumbel(n, mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dkumar
+arma::vec dkumar(const arma::vec& x, const arma::vec& a, const arma::vec& b, bool log);
+RcppExport SEXP _univariateML_dkumar(SEXP xSEXP, SEXP aSEXP, SEXP bSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    rcpp_result_gen = Rcpp::wrap(dkumar(x, a, b, log));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pkumar
+arma::vec pkumar(const arma::vec& q, const arma::vec& a, const arma::vec& b, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_pkumar(SEXP qSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type q(qSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(pkumar(q, a, b, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// qkumar
+arma::vec qkumar(const arma::vec& p, const arma::vec& a, const arma::vec& b, bool lower_tail, bool log_p);
+RcppExport SEXP _univariateML_qkumar(SEXP pSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower_tail(lower_tailSEXP);
+    Rcpp::traits::input_parameter< bool >::type log_p(log_pSEXP);
+    rcpp_result_gen = Rcpp::wrap(qkumar(p, a, b, lower_tail, log_p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rkumar
+arma::vec rkumar(int n, double a, double b);
+RcppExport SEXP _univariateML_rkumar(SEXP nSEXP, SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(rkumar(n, a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mlburr_
 Rcpp::List mlburr_(const Rcpp::NumericVector& x, Rcpp::Nullable<Rcpp::NumericVector> init, double tol, int iterlim);
 RcppExport SEXP _univariateML_mlburr_(SEXP xSEXP, SEXP initSEXP, SEXP tolSEXP, SEXP iterlimSEXP) {
@@ -1145,6 +1597,38 @@ static const R_CallMethodDef CallEntries[] = {
     {"_univariateML_psstd", (DL_FUNC) &_univariateML_psstd, 5},
     {"_univariateML_qsstd", (DL_FUNC) &_univariateML_qsstd, 5},
     {"_univariateML_rsstd", (DL_FUNC) &_univariateML_rsstd, 5},
+    {"_univariateML_dlaplace", (DL_FUNC) &_univariateML_dlaplace, 4},
+    {"_univariateML_plaplace", (DL_FUNC) &_univariateML_plaplace, 5},
+    {"_univariateML_qlaplace", (DL_FUNC) &_univariateML_qlaplace, 5},
+    {"_univariateML_rlaplace", (DL_FUNC) &_univariateML_rlaplace, 3},
+    {"_univariateML_drayleigh", (DL_FUNC) &_univariateML_drayleigh, 3},
+    {"_univariateML_prayleigh", (DL_FUNC) &_univariateML_prayleigh, 4},
+    {"_univariateML_qrayleigh", (DL_FUNC) &_univariateML_qrayleigh, 4},
+    {"_univariateML_rrayleigh", (DL_FUNC) &_univariateML_rrayleigh, 2},
+    {"_univariateML_ddunif", (DL_FUNC) &_univariateML_ddunif, 4},
+    {"_univariateML_pdunif", (DL_FUNC) &_univariateML_pdunif, 5},
+    {"_univariateML_qdunif", (DL_FUNC) &_univariateML_qdunif, 5},
+    {"_univariateML_rdunif", (DL_FUNC) &_univariateML_rdunif, 3},
+    {"_univariateML_dpower", (DL_FUNC) &_univariateML_dpower, 4},
+    {"_univariateML_ppower", (DL_FUNC) &_univariateML_ppower, 5},
+    {"_univariateML_qpower", (DL_FUNC) &_univariateML_qpower, 5},
+    {"_univariateML_rpower", (DL_FUNC) &_univariateML_rpower, 3},
+    {"_univariateML_dpareto", (DL_FUNC) &_univariateML_dpareto, 4},
+    {"_univariateML_ppareto", (DL_FUNC) &_univariateML_ppareto, 5},
+    {"_univariateML_qpareto", (DL_FUNC) &_univariateML_qpareto, 5},
+    {"_univariateML_rpareto", (DL_FUNC) &_univariateML_rpareto, 3},
+    {"_univariateML_dlomax", (DL_FUNC) &_univariateML_dlomax, 4},
+    {"_univariateML_plomax", (DL_FUNC) &_univariateML_plomax, 5},
+    {"_univariateML_qlomax", (DL_FUNC) &_univariateML_qlomax, 5},
+    {"_univariateML_rlomax", (DL_FUNC) &_univariateML_rlomax, 3},
+    {"_univariateML_dgumbel", (DL_FUNC) &_univariateML_dgumbel, 4},
+    {"_univariateML_pgumbel", (DL_FUNC) &_univariateML_pgumbel, 5},
+    {"_univariateML_qgumbel", (DL_FUNC) &_univariateML_qgumbel, 5},
+    {"_univariateML_rgumbel", (DL_FUNC) &_univariateML_rgumbel, 3},
+    {"_univariateML_dkumar", (DL_FUNC) &_univariateML_dkumar, 4},
+    {"_univariateML_pkumar", (DL_FUNC) &_univariateML_pkumar, 5},
+    {"_univariateML_qkumar", (DL_FUNC) &_univariateML_qkumar, 5},
+    {"_univariateML_rkumar", (DL_FUNC) &_univariateML_rkumar, 3},
     {"_univariateML_mlburr_", (DL_FUNC) &_univariateML_mlburr_, 4},
     {"_univariateML_mlcauchy_", (DL_FUNC) &_univariateML_mlcauchy_, 3},
     {"_univariateML_mlgumbel_", (DL_FUNC) &_univariateML_mlgumbel_, 3},

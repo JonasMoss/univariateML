@@ -12,9 +12,17 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+#include "../../src/ml/distributions/dunif.hpp"
 #include "../../src/ml/distributions/ged.hpp"
+#include "../../src/ml/distributions/gumbel.hpp"
+#include "../../src/ml/distributions/kumar.hpp"
+#include "../../src/ml/distributions/laplace.hpp"
 #include "../../src/ml/distributions/logitnorm.hpp"
+#include "../../src/ml/distributions/lomax.hpp"
 #include "../../src/ml/distributions/nakagami.hpp"
+#include "../../src/ml/distributions/pareto.hpp"
+#include "../../src/ml/distributions/power.hpp"
+#include "../../src/ml/distributions/rayleigh.hpp"
 #include "../../src/ml/distributions/rng_std.hpp"
 #include "../../src/ml/distributions/sged.hpp"
 #include "../../src/ml/distributions/snorm.hpp"
@@ -211,6 +219,136 @@ TEST_CASE("rsged samples are unit-variance and recurse cleanly into rged") {
   const double var = sum_sq / n - mean * mean;
   CHECK(std::abs(mean) < 0.05);
   CHECK(std::abs(var - 1.0) < 0.1);
+}
+
+// --- Phase C tier 1: extraDistr ports -----------------------------------
+
+TEST_CASE("rlaplace samples are symmetric around mu, var = 2*sigma^2") {
+  mlcore::distributions::StdRng<> rng(101);
+  const int n = 20000;
+  double sum = 0.0, sum_sq = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rlaplace(rng, 1.0, 2.0);
+    sum += x;
+    sum_sq += x * x;
+  }
+  const double mean = sum / n;
+  const double var = sum_sq / n - mean * mean;
+  CHECK(std::abs(mean - 1.0) < 0.1);
+  CHECK(std::abs(var - 8.0) < 0.5); // 2*sigma^2 = 8
+  // CDF at mu should be exactly 0.5.
+  CHECK(std::abs(
+            mlcore::distributions::plaplace(1.0, 1.0, 2.0, true, false) -
+            0.5) < 1e-12);
+}
+
+TEST_CASE("rrayleigh samples are positive; mean = sigma * sqrt(pi/2)") {
+  mlcore::distributions::StdRng<> rng(103);
+  const int n = 20000;
+  const double sigma = 2.0;
+  double sum = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rrayleigh(rng, sigma);
+    CHECK(x >= 0.0);
+    sum += x;
+  }
+  const double expected = sigma * std::sqrt(M_PI / 2.0);
+  CHECK(std::abs(sum / n - expected) < 0.1);
+}
+
+TEST_CASE("rdunif samples are integers in [min, max]") {
+  mlcore::distributions::StdRng<> rng(107);
+  const int min = 1, max = 6;
+  std::vector<int> counts(max - min + 1, 0);
+  const int n = 30000;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rdunif(rng, min, max);
+    REQUIRE(x >= min);
+    REQUIRE(x <= max);
+    REQUIRE(x == std::floor(x));
+    counts[static_cast<int>(x) - min]++;
+  }
+  for (int k = min; k <= max; ++k) {
+    const double empirical =
+        static_cast<double>(counts[k - min]) / n;
+    CHECK(std::abs(empirical - 1.0 / (max - min + 1)) < 0.02);
+  }
+}
+
+TEST_CASE("rpower samples lie in (0, alpha); mean = alpha*beta/(beta+1)") {
+  mlcore::distributions::StdRng<> rng(109);
+  const int n = 20000;
+  const double alpha = 3.0, beta = 2.0;
+  double sum = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rpower(rng, alpha, beta);
+    CHECK(x > 0.0);
+    CHECK(x < alpha);
+    sum += x;
+  }
+  const double expected = alpha * beta / (beta + 1.0);
+  CHECK(std::abs(sum / n - expected) < 0.05);
+}
+
+TEST_CASE("rpareto samples are >= scale b; mean = a*b/(a-1) for a>1") {
+  mlcore::distributions::StdRng<> rng(113);
+  const int n = 20000;
+  const double a = 3.0, b = 2.0;
+  double sum = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rpareto(rng, a, b);
+    CHECK(x >= b);
+    sum += x;
+  }
+  const double expected = a * b / (a - 1.0); // = 3.0
+  CHECK(std::abs(sum / n - expected) < 0.1);
+}
+
+TEST_CASE("rlomax samples are positive; CDF self-consistency at p=0.5") {
+  mlcore::distributions::StdRng<> rng(127);
+  const int n = 5000;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rlomax(rng, 2.0, 3.0);
+    CHECK(x > 0.0);
+  }
+  // qlomax then plomax should round-trip.
+  const double q = mlcore::distributions::qlomax(0.7, 2.0, 3.0, true, false);
+  const double back =
+      mlcore::distributions::plomax(q, 2.0, 3.0, true, false);
+  CHECK(std::abs(back - 0.7) < 1e-10);
+}
+
+TEST_CASE("rgumbel samples; mean = mu + sigma*gamma_const, var = pi^2*sigma^2/6") {
+  mlcore::distributions::StdRng<> rng(131);
+  const int n = 20000;
+  const double mu = 1.0, sigma = 2.0;
+  double sum = 0.0, sum_sq = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rgumbel(rng, mu, sigma);
+    sum += x;
+    sum_sq += x * x;
+  }
+  const double mean = sum / n;
+  const double var = sum_sq / n - mean * mean;
+  const double euler_mascheroni = 0.5772156649015329;
+  const double expected_mean = mu + sigma * euler_mascheroni;
+  const double expected_var = M_PI * M_PI * sigma * sigma / 6.0;
+  CHECK(std::abs(mean - expected_mean) < 0.1);
+  CHECK(std::abs(var - expected_var) < 0.5);
+}
+
+TEST_CASE("rkumar samples lie in (0, 1); CDF round-trip at p=0.3") {
+  mlcore::distributions::StdRng<> rng(137);
+  const int n = 5000;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rkumar(rng, 2.0, 3.0);
+    CHECK(x >= 0.0);
+    CHECK(x <= 1.0);
+  }
+  const double q = mlcore::distributions::qkumar(0.3, 2.0, 3.0, true, false);
+  const double back =
+      mlcore::distributions::pkumar(q, 2.0, 3.0, true, false);
+  CHECK(std::abs(back - 0.3) < 1e-10);
 }
 
 // rsstd at (mean=0, sd=1, nu=8, xi=1.5) is unit-variance by construction.
