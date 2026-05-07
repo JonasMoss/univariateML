@@ -12,6 +12,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+#include "../../src/ml/distributions/logitnorm.hpp"
 #include "../../src/ml/distributions/rng_std.hpp"
 
 #include <random>
@@ -58,6 +59,27 @@ TEST_CASE("StdRng emits values in the expected support") {
     tsum += rng.rt(10.0);
   }
   CHECK(std::abs(tsum / n) < 0.1);
+}
+
+// rlogitnorm(mu=0, sigma=1) draws should land in (0, 1) and approximate
+// the d/p/q layer self-consistently (CDF at the empirical median ~ 0.5).
+TEST_CASE("rlogitnorm samples lie in (0, 1) and match the CDF at median") {
+  mlcore::distributions::StdRng<> rng(7);
+  const int n = 5000;
+  double sum = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rlogitnorm(rng, 0.0, 1.0);
+    CHECK(x > 0.0);
+    CHECK(x < 1.0);
+    sum += x;
+  }
+  // mu=0 means logit(X) ~ N(0, 1), so median(X) = logistic(0) = 0.5.
+  // Empirical mean is biased toward 0.5 but with high spread; sanity-check
+  // the CDF at 0.5 returns 0.5.
+  const double cdf_half =
+      mlcore::distributions::plogitnorm(0.5, 0.0, 1.0, true, false);
+  CHECK(std::abs(cdf_half - 0.5) < 1e-12);
+  CHECK(std::abs(sum / n - 0.5) < 0.05);
 }
 
 } // namespace
