@@ -16,6 +16,7 @@
 #include "../../src/ml/distributions/logitnorm.hpp"
 #include "../../src/ml/distributions/nakagami.hpp"
 #include "../../src/ml/distributions/rng_std.hpp"
+#include "../../src/ml/distributions/sged.hpp"
 #include "../../src/ml/distributions/snorm.hpp"
 #include "../../src/ml/distributions/std.hpp"
 #include "../../src/ml/distributions/zipf.hpp"
@@ -189,6 +190,24 @@ TEST_CASE("rsnorm samples have unit variance and skew with xi") {
   const double var = sum_sq / n - mean * mean;
   // Standardised parameterisation: empirical mean ~ 0, var ~ 1 by
   // construction (mlcore::dens::snorm_sigma standardises moments).
+  CHECK(std::abs(mean) < 0.05);
+  CHECK(std::abs(var - 1.0) < 0.1);
+}
+
+// rsged at (mean=0, sd=1, nu=1.5, xi=1.5) is unit-variance by construction.
+TEST_CASE("rsged samples are unit-variance and recurse cleanly into rged") {
+  mlcore::distributions::StdRng<> rng(29);
+  const int n = 20000;
+  double sum = 0.0;
+  double sum_sq = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x =
+        mlcore::distributions::rsged(rng, 0.0, 1.0, 1.5, 1.5);
+    sum += x;
+    sum_sq += x * x;
+  }
+  const double mean = sum / n;
+  const double var = sum_sq / n - mean * mean;
   CHECK(std::abs(mean) < 0.05);
   CHECK(std::abs(var - 1.0) < 0.1);
 }
