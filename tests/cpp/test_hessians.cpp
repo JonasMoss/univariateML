@@ -452,6 +452,55 @@ TEST_CASE("invburr: analytical Hessian agrees with FD") {
 // the MLE: diag(n/sigma^2, n/sigma^2). This is the asymptotic-variance
 // matrix that gives correct Wald SEs (median ~ N(mu, sigma^2/n)).
 
+TEST_CASE("binom: analytical Hessian agrees with FD (1-D in prob)") {
+  auto g = load("binom");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::binom_mle(as_ispan(v),
+                               std::numeric_limits<double>::quiet_NaN(),
+                               1.220703e-4, 100);
+  mlcore::BinomCost cost{as_ispan(v), fit.size};
+  const double theta[] = {fit.prob};
+  double H_anal[1], H_fd[1];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
+}
+
+TEST_CASE("nbinom: analytical Hessian agrees with FD") {
+  auto g = load("nbinom");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::nbinom_mle(as_ispan(v), 1.220703e-4, 100);
+  mlcore::NbinomCost cost{as_ispan(v)};
+  const double theta[] = {fit.size, fit.prob};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("zip: analytical Hessian agrees with FD") {
+  auto g = load("zip");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::zip_mle(as_ispan(v));
+  mlcore::ZipCost cost{as_ispan(v)};
+  const double theta[] = {fit.lambda, fit.pi};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("fatigue: analytical Hessian agrees with FD") {
+  auto g = load("fatigue");
+  auto fit = mlcore::fatigue_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::FatigueCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.alpha, fit.beta};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
 TEST_CASE("laplace: Hessian equals Fisher info diag(n/s^2, n/s^2)") {
   auto g = load("laplace");
   auto fit = mlcore::laplace_mle(mltest::as_span(g.data));

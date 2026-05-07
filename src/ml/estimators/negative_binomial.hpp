@@ -24,6 +24,63 @@ struct NbinomResult {
   bool underdispersed;
 };
 
+// Negative log-likelihood of NegativeBinomial(size=r, prob=p):
+//   nll(r, p) = -sum log f, where
+//   log f = lgamma(x+r) - lgamma(r) - lgamma(x+1) + r log(p) + x log(1-p).
+// Per-obs Hessian (sympy):
+//   H_rr/obs = trigamma(r) - trigamma(r+x)
+//   H_pp/obs = r/p^2 + x/(1-p)^2
+//   H_rp/obs = -1/p
+struct NbinomCost {
+  ispan x;
+  int dim() const { return 2; }
+  double operator()(const double *theta) const {
+    const double r = theta[0];
+    const double p = theta[1];
+    if (!(r > 0.0 && p > 0.0 && p < 1.0))
+      return std::numeric_limits<double>::infinity();
+    const double n = static_cast<double>(x.size());
+    double sum = 0.0;
+    for (auto v : x) {
+      const double xd = static_cast<double>(v);
+      sum += -mlcore::special::lgamma(xd + r) +
+             mlcore::special::lgamma(r) +
+             mlcore::special::lgamma(xd + 1.0) - r * std::log(p) -
+             xd * std::log(1.0 - p);
+    }
+    return sum;
+    (void)n;
+  }
+  void gradient(const double *theta, double *g) const {
+    const double r = theta[0];
+    const double p = theta[1];
+    const double n = static_cast<double>(x.size());
+    double S_x = 0.0, S_dig_xr = 0.0;
+    for (auto v : x) {
+      const double xd = static_cast<double>(v);
+      S_x += xd;
+      S_dig_xr += mlcore::special::digamma(xd + r);
+    }
+    g[0] = -S_dig_xr + n * mlcore::special::digamma(r) - n * std::log(p);
+    g[1] = -n * r / p + S_x / (1.0 - p);
+  }
+  void hessian(const double *theta, double *H) const {
+    const double r = theta[0];
+    const double p = theta[1];
+    const double n = static_cast<double>(x.size());
+    double S_x = 0.0, S_trg_xr = 0.0;
+    for (auto v : x) {
+      const double xd = static_cast<double>(v);
+      S_x += xd;
+      S_trg_xr += mlcore::special::trigamma(xd + r);
+    }
+    H[0] = n * mlcore::special::trigamma(r) - S_trg_xr;
+    H[1] = -n / p;
+    H[2] = -n / p;
+    H[3] = n * r / (p * p) + S_x / ((1.0 - p) * (1.0 - p));
+  }
+};
+
 inline NbinomResult nbinom_mle(ispan x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
