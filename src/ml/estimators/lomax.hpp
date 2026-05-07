@@ -38,6 +38,61 @@ struct LomaxResult {
   LomaxStatus status;
 };
 
+// Negative log-likelihood of Lomax(lambda, kappa):
+//   log f = log(lambda) + log(kappa) - (kappa+1)*log(1 + lambda*x)
+// Per-obs Hessian (sympy):
+//   H_ll/obs = ((1+lx)^2 - lambda^2 x^2 (kappa+1)) / (lambda^2 (1+lx)^2)
+//             where lx = lambda*x
+//   H_kk/obs = 1 / kappa^2  (data-independent diagonal)
+//   H_lk/obs = x / (1 + lambda*x)
+struct LomaxCost {
+  span x;
+  int dim() const { return 2; }
+  double operator()(const double *theta) const {
+    const double lam = theta[0];
+    const double kap = theta[1];
+    if (!(lam > 0.0 && kap > 0.0))
+      return std::numeric_limits<double>::infinity();
+    const double n = static_cast<double>(x.size());
+    double sum_log_1px = 0.0;
+    for (auto v : x) {
+      if (v <= 0.0) return std::numeric_limits<double>::infinity();
+      sum_log_1px += std::log1p(lam * v);
+    }
+    return -n * (std::log(lam) + std::log(kap)) + (kap + 1.0) * sum_log_1px;
+  }
+  void gradient(const double *theta, double *g) const {
+    const double lam = theta[0];
+    const double kap = theta[1];
+    const double n = static_cast<double>(x.size());
+    double sum_log_1px = 0.0, sum_x_over_1px = 0.0;
+    for (auto v : x) {
+      sum_log_1px += std::log1p(lam * v);
+      sum_x_over_1px += v / (1.0 + lam * v);
+    }
+    g[0] = -n / lam + (kap + 1.0) * sum_x_over_1px;
+    g[1] = -n / kap + sum_log_1px;
+  }
+  void hessian(const double *theta, double *H) const {
+    const double lam = theta[0];
+    const double kap = theta[1];
+    const double n = static_cast<double>(x.size());
+    double H_ll = 0.0, H_lk = 0.0;
+    for (auto v : x) {
+      const double lx = lam * v;
+      const double one_plus = 1.0 + lx;
+      H_ll +=
+          ((one_plus * one_plus) - lam * lam * v * v * (kap + 1.0)) /
+          (lam * lam * one_plus * one_plus);
+      H_lk += v / one_plus;
+    }
+    H[0] = H_ll;
+    H[1] = H_lk;
+    H[2] = H_lk;
+    H[3] = n / (kap * kap);
+  }
+};
+
 inline LomaxResult lomax_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();

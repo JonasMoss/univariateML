@@ -24,6 +24,65 @@ struct KumarResult {
   int iterations;
 };
 
+// Negative log-likelihood of Kumaraswamy(a, b):
+//   log f = log(a) + log(b) + (a-1)*log(x) + (b-1)*log(1 - x^a)
+// Per-obs Hessian (sympy, with y = x^a):
+//   H_aa/obs = (b-1)*y*log(x)^2 / (1 - y)^2 + 1/a^2
+//   H_bb/obs = 1 / b^2                                 (data-indep diagonal)
+//   H_ab/obs = y*log(x) / (1 - y)
+struct KumarCost {
+  span x;
+  int dim() const { return 2; }
+  double operator()(const double *theta) const {
+    const double a = theta[0];
+    const double b = theta[1];
+    if (!(a > 0.0 && b > 0.0)) return std::numeric_limits<double>::infinity();
+    const double n = static_cast<double>(x.size());
+    double S_lx = 0.0, S_l1my = 0.0;
+    for (auto v : x) {
+      if (!(v > 0.0 && v < 1.0)) return std::numeric_limits<double>::infinity();
+      S_lx += std::log(v);
+      S_l1my += std::log1p(-std::pow(v, a));
+    }
+    return -n * (std::log(a) + std::log(b)) - (a - 1.0) * S_lx -
+           (b - 1.0) * S_l1my;
+  }
+  void gradient(const double *theta, double *g) const {
+    const double a = theta[0];
+    const double b = theta[1];
+    const double n = static_cast<double>(x.size());
+    double S_lx = 0.0, S_l1my = 0.0, S_y_lx_over_1my = 0.0;
+    for (auto v : x) {
+      const double y = std::pow(v, a);
+      const double lx = std::log(v);
+      S_lx += lx;
+      S_l1my += std::log1p(-y);
+      S_y_lx_over_1my += y * lx / (1.0 - y);
+    }
+    // d log f / da = 1/a + log(x) + (b-1) * (-x^a * log(x)) / (1 - x^a)
+    //              = 1/a + log(x) - (b-1) * y*lx / (1-y)
+    g[0] = -n / a - S_lx + (b - 1.0) * S_y_lx_over_1my;
+    g[1] = -n / b - S_l1my;
+  }
+  void hessian(const double *theta, double *H) const {
+    const double a = theta[0];
+    const double b = theta[1];
+    const double n = static_cast<double>(x.size());
+    double H_aa_acc = 0.0, H_ab_acc = 0.0;
+    for (auto v : x) {
+      const double y = std::pow(v, a);
+      const double lx = std::log(v);
+      const double one_my = 1.0 - y;
+      H_aa_acc += (b - 1.0) * y * lx * lx / (one_my * one_my);
+      H_ab_acc += y * lx / one_my;
+    }
+    H[0] = H_aa_acc + n / (a * a);
+    H[1] = H_ab_acc;
+    H[2] = H_ab_acc;
+    H[3] = n / (b * b);
+  }
+};
+
 inline KumarResult kumar_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
