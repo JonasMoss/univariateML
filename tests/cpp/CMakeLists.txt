@@ -75,6 +75,18 @@ target_include_directories(newton_md_tests PRIVATE
 target_compile_options(newton_md_tests PRIVATE
   -Wall -Wextra -Wpedantic)
 
+# --- the per-estimator Hessian tests (analytical vs FD vs Fisher) --------
+add_executable(hessian_tests test_hessians.cpp)
+set_target_properties(hessian_tests PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+target_include_directories(hessian_tests PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src
+  ${Boost_INCLUDE_DIRS})
+
+target_compile_options(hessian_tests PRIVATE
+  -Wall -Wextra -Wpedantic)
+
 # --- the sampling-test binary ---------------------------------------------
 add_executable(sample_tests test_sampling.cpp)
 set_target_properties(sample_tests PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -105,6 +117,13 @@ add_test(
   NAME newton_md_tests
   COMMAND newton_md_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_test(
+  NAME hessian_tests
+  COMMAND hessian_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set_tests_properties(hessian_tests PROPERTIES
+  ENVIRONMENT "UMVL_GOLDEN_DIR=${CMAKE_CURRENT_SOURCE_DIR}/../golden")
 
 add_test(
   NAME sample_tests
