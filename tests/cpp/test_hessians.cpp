@@ -222,6 +222,114 @@ TEST_CASE("logistic: analytical Hessian agrees with FD") {
   CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
 }
 
+// --- discrete + 1D continuous batch ---------------------------------------
+
+namespace {
+mlcore::ispan as_ispan(const std::vector<int> &v) {
+  return {v.data(), v.size()};
+}
+std::vector<int> as_ints(const std::vector<double> &v) {
+  std::vector<int> out;
+  out.reserve(v.size());
+  for (double d : v) out.push_back(static_cast<int>(d));
+  return out;
+}
+}  // namespace
+
+TEST_CASE("poisson: analytical Hessian agrees with FD") {
+  auto g = load("pois");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::pois_mle(as_ispan(v));
+  mlcore::PoisCost cost{as_ispan(v)};
+  const double theta[] = {fit.lambda};
+  double H_anal[1], H_fd[1];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
+}
+
+TEST_CASE("poisson: Hessian at MLE equals n/lambda") {
+  auto g = load("pois");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::pois_mle(as_ispan(v));
+  mlcore::PoisCost cost{as_ispan(v)};
+  const double theta[] = {fit.lambda};
+  double H[1];
+  cost.hessian(theta, H);
+  const double n = static_cast<double>(g.data.size());
+  CHECK(H[0] == doctest::Approx(n / fit.lambda).epsilon(kFisherTol));
+}
+
+TEST_CASE("geom: analytical Hessian agrees with FD") {
+  auto g = load("geom");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::geom_mle(as_ispan(v));
+  mlcore::GeomCost cost{as_ispan(v)};
+  const double theta[] = {fit.prob};
+  double H_anal[1], H_fd[1];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
+}
+
+TEST_CASE("geom: Hessian at MLE equals n / (p^2 * (1-p))") {
+  auto g = load("geom");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::geom_mle(as_ispan(v));
+  mlcore::GeomCost cost{as_ispan(v)};
+  const double theta[] = {fit.prob};
+  double H[1];
+  cost.hessian(theta, H);
+  const double n = static_cast<double>(g.data.size());
+  CHECK(H[0] == doctest::Approx(n / (fit.prob * fit.prob * (1.0 - fit.prob)))
+                    .epsilon(kFisherTol));
+}
+
+TEST_CASE("lgser: analytical Hessian agrees with FD") {
+  auto g = load("lgser");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::lgser_mle(as_ispan(v));
+  mlcore::LgserCost cost{as_ispan(v)};
+  const double theta[] = {fit.theta};
+  double H_anal[1], H_fd[1];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
+}
+
+TEST_CASE("invgauss: analytical Hessian agrees with FD") {
+  auto g = load("invgauss");
+  auto fit = mlcore::invgauss_mle(mltest::as_span(g.data));
+  mlcore::InvGaussCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.mu, fit.lambda};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("gumbel: analytical Hessian agrees with FD") {
+  auto g = load("gumbel");
+  auto fit = mlcore::fit_gumbel_newton(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::GumbelCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.mu, fit.sigma};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("nakagami: analytical Hessian agrees with FD") {
+  auto g = load("naka");
+  auto fit = mlcore::naka_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::NakaCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.shape, fit.scale};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
 // --- Layer 2: analytical vs closed-form Fisher information at MLE ----------
 //
 // For regular families with a closed-form Fisher information per observation,
