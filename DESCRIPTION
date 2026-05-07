@@ -28,5 +28,4 @@ BugReports: https://github.com/JonasMoss/univariateML/issues
 Roxygen: list(markdown = TRUE)
 LinkingTo:
     Rcpp,
-    RcppArmadillo,
     BH

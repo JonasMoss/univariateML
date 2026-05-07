@@ -1,5 +1,4 @@
-// [[Rcpp::depends(RcppArmadillo)]]
-#include <RcppArmadillo.h>
+#include <Rcpp.h>
 #include "ml/special/special.hpp"
 
 using namespace Rcpp;

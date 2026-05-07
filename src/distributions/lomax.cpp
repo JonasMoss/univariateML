@@ -1,56 +1,56 @@
-// Lomax distribution: arma::vec wrappers.
+// Lomax distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/lomax.hpp"
 
 namespace dist_impl {
 
-arma::vec dlomax(const arma::vec &x, const arma::vec &lambda,
-                 const arma::vec &kappa, bool log = false) {
-  const uword n = recycle_length(x.n_elem, lambda.n_elem, kappa.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+Rcpp::NumericVector dlomax(const Rcpp::NumericVector &x, const Rcpp::NumericVector &lambda,
+                 const Rcpp::NumericVector &kappa, bool log = false) {
+  const std::size_t n = recycle_length(x.size(), lambda.size(), kappa.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::dlomax(
-        x[i % x.n_elem], lambda[i % lambda.n_elem], kappa[i % kappa.n_elem],
+        x[i % x.size()], lambda[i % lambda.size()], kappa[i % kappa.size()],
         log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec plomax(const arma::vec &q, const arma::vec &lambda,
-                 const arma::vec &kappa, bool lower_tail = true,
+Rcpp::NumericVector plomax(const Rcpp::NumericVector &q, const Rcpp::NumericVector &lambda,
+                 const Rcpp::NumericVector &kappa, bool lower_tail = true,
                  bool log_p = false) {
-  const uword n = recycle_length(q.n_elem, lambda.n_elem, kappa.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+  const std::size_t n = recycle_length(q.size(), lambda.size(), kappa.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::plomax(
-        q[i % q.n_elem], lambda[i % lambda.n_elem], kappa[i % kappa.n_elem],
+        q[i % q.size()], lambda[i % lambda.size()], kappa[i % kappa.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec qlomax(const arma::vec &p, const arma::vec &lambda,
-                 const arma::vec &kappa, bool lower_tail = true,
+Rcpp::NumericVector qlomax(const Rcpp::NumericVector &p, const Rcpp::NumericVector &lambda,
+                 const Rcpp::NumericVector &kappa, bool lower_tail = true,
                  bool log_p = false) {
-  const uword n = recycle_length(p.n_elem, lambda.n_elem, kappa.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+  const std::size_t n = recycle_length(p.size(), lambda.size(), kappa.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::qlomax(
-        p[i % p.n_elem], lambda[i % lambda.n_elem], kappa[i % kappa.n_elem],
+        p[i % p.size()], lambda[i % lambda.size()], kappa[i % kappa.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec rlomax(int n, double lambda = 1.0, double kappa = 1.0) {
+Rcpp::NumericVector rlomax(int n, double lambda = 1.0, double kappa = 1.0) {
   if (n < 0 || !(lambda > 0.0 && kappa > 0.0)) {
     Rcpp::stop("Invalid parameters for rlomax");
   }
-  arma::vec out(static_cast<uword>(n));
+  Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
     out[i] = mlcore::distributions::rlomax(rng, lambda, kappa);

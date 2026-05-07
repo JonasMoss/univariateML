@@ -1,55 +1,55 @@
-// Zero-inflated Poisson distribution: arma::vec wrappers.
+// Zero-inflated Poisson distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/zip.hpp"
 
 namespace dist_impl {
 
-arma::vec dzip(const arma::vec &x, const arma::vec &lambda,
-               const arma::vec &pi, bool log = false) {
-  const uword n = recycle_length(x.n_elem, lambda.n_elem, pi.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+Rcpp::NumericVector dzip(const Rcpp::NumericVector &x, const Rcpp::NumericVector &lambda,
+               const Rcpp::NumericVector &pi, bool log = false) {
+  const std::size_t n = recycle_length(x.size(), lambda.size(), pi.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::dzip(
-        x[i % x.n_elem], lambda[i % lambda.n_elem], pi[i % pi.n_elem], log);
+        x[i % x.size()], lambda[i % lambda.size()], pi[i % pi.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec pzip(const arma::vec &q, const arma::vec &lambda,
-               const arma::vec &pi, bool lower_tail = true,
+Rcpp::NumericVector pzip(const Rcpp::NumericVector &q, const Rcpp::NumericVector &lambda,
+               const Rcpp::NumericVector &pi, bool lower_tail = true,
                bool log_p = false) {
-  const uword n = recycle_length(q.n_elem, lambda.n_elem, pi.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+  const std::size_t n = recycle_length(q.size(), lambda.size(), pi.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::pzip(
-        q[i % q.n_elem], lambda[i % lambda.n_elem], pi[i % pi.n_elem],
+        q[i % q.size()], lambda[i % lambda.size()], pi[i % pi.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec qzip(const arma::vec &p, const arma::vec &lambda,
-               const arma::vec &pi, bool lower_tail = true,
+Rcpp::NumericVector qzip(const Rcpp::NumericVector &p, const Rcpp::NumericVector &lambda,
+               const Rcpp::NumericVector &pi, bool lower_tail = true,
                bool log_p = false) {
-  const uword n = recycle_length(p.n_elem, lambda.n_elem, pi.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+  const std::size_t n = recycle_length(p.size(), lambda.size(), pi.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::qzip(
-        p[i % p.n_elem], lambda[i % lambda.n_elem], pi[i % pi.n_elem],
+        p[i % p.size()], lambda[i % lambda.size()], pi[i % pi.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec rzip(int n, double lambda, double pi) {
+Rcpp::NumericVector rzip(int n, double lambda, double pi) {
   if (n < 0 || !(lambda > 0.0) || !(pi >= 0.0 && pi <= 1.0)) {
     Rcpp::stop("Invalid parameters for rzip");
   }
-  arma::vec out(static_cast<uword>(n));
+  Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
     out[i] = mlcore::distributions::rzip(rng, lambda, pi);

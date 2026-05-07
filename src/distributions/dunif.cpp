@@ -1,56 +1,56 @@
-// Discrete uniform distribution: arma::vec wrappers.
+// Discrete uniform distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/dunif.hpp"
 
 namespace dist_impl {
 
-arma::vec ddunif(const arma::vec &x, const arma::vec &min,
-                 const arma::vec &max, bool log = false) {
-  const uword n = recycle_length(x.n_elem, min.n_elem, max.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+Rcpp::NumericVector ddunif(const Rcpp::NumericVector &x, const Rcpp::NumericVector &min,
+                 const Rcpp::NumericVector &max, bool log = false) {
+  const std::size_t n = recycle_length(x.size(), min.size(), max.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::ddunif(
-        x[i % x.n_elem], min[i % min.n_elem], max[i % max.n_elem], log);
+        x[i % x.size()], min[i % min.size()], max[i % max.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec pdunif(const arma::vec &q, const arma::vec &min,
-                 const arma::vec &max, bool lower_tail = true,
+Rcpp::NumericVector pdunif(const Rcpp::NumericVector &q, const Rcpp::NumericVector &min,
+                 const Rcpp::NumericVector &max, bool lower_tail = true,
                  bool log_p = false) {
-  const uword n = recycle_length(q.n_elem, min.n_elem, max.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+  const std::size_t n = recycle_length(q.size(), min.size(), max.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::pdunif(
-        q[i % q.n_elem], min[i % min.n_elem], max[i % max.n_elem], lower_tail,
+        q[i % q.size()], min[i % min.size()], max[i % max.size()], lower_tail,
         log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec qdunif(const arma::vec &p, const arma::vec &min,
-                 const arma::vec &max, bool lower_tail = true,
+Rcpp::NumericVector qdunif(const Rcpp::NumericVector &p, const Rcpp::NumericVector &min,
+                 const Rcpp::NumericVector &max, bool lower_tail = true,
                  bool log_p = false) {
-  const uword n = recycle_length(p.n_elem, min.n_elem, max.n_elem);
-  arma::vec out(n);
-  for (uword i = 0; i < n; ++i) {
+  const std::size_t n = recycle_length(p.size(), min.size(), max.size());
+  Rcpp::NumericVector out(n);
+  for (std::size_t i = 0; i < n; ++i) {
     const double y = mlcore::distributions::qdunif(
-        p[i % p.n_elem], min[i % min.n_elem], max[i % max.n_elem], lower_tail,
+        p[i % p.size()], min[i % min.size()], max[i % max.size()], lower_tail,
         log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
 }
 
-arma::vec rdunif(int n, double min, double max) {
+Rcpp::NumericVector rdunif(int n, double min, double max) {
   if (n < 0 || min > max || min != std::floor(min) ||
       max != std::floor(max)) {
     Rcpp::stop("Invalid parameters for rdunif");
   }
-  arma::vec out(static_cast<uword>(n));
+  Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
     out[i] = mlcore::distributions::rdunif(rng, min, max);
