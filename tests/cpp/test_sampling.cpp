@@ -12,6 +12,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+#include "../../src/ml/distributions/ged.hpp"
 #include "../../src/ml/distributions/logitnorm.hpp"
 #include "../../src/ml/distributions/nakagami.hpp"
 #include "../../src/ml/distributions/rng_std.hpp"
@@ -124,6 +125,29 @@ TEST_CASE("rzipf samples lie in {1, ..., N} and match the PMF") {
         mlcore::distributions::dzipf(k, N, s, /*log=*/false);
     CHECK(std::abs(empirical - analytic) < 0.02);
   }
+}
+
+// rged samples are symmetric around the mean; sample mean ~ 0, sd ~ 1 at
+// (mean=0, sd=1), and the distribution lines up with the CDF at 0 (= 0.5).
+TEST_CASE("rged samples are symmetric and match the CDF") {
+  mlcore::distributions::StdRng<> rng(17);
+  const int n = 20000;
+  double sum = 0.0;
+  double sum_sq = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rged(rng, 0.0, 1.0, 1.5);
+    sum += x;
+    sum_sq += x * x;
+  }
+  const double mean = sum / n;
+  const double var = sum_sq / n - mean * mean;
+  CHECK(std::abs(mean) < 0.05);
+  CHECK(std::abs(var - 1.0) < 0.1);
+
+  // CDF at 0 should be exactly 0.5 (symmetric distribution).
+  const double cdf0 =
+      mlcore::distributions::pged(0.0, 0.0, 1.0, 1.5, true, false);
+  CHECK(std::abs(cdf0 - 0.5) < 1e-12);
 }
 
 } // namespace
