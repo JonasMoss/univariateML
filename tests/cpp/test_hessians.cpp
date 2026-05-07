@@ -398,6 +398,51 @@ TEST_CASE("kumaraswamy: analytical Hessian agrees with FD") {
   CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
 }
 
+TEST_CASE("logitnorm: analytical Hessian agrees with FD") {
+  auto g = load("logitnorm");
+  auto fit = mlcore::logitnorm_mle(mltest::as_span(g.data));
+  mlcore::LogitnormCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.mu, fit.sigma};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("loglogistic: analytical Hessian agrees with FD") {
+  auto g = load("llogis");
+  auto fit = mlcore::loglogistic_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::LogLogisticCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.shape, fit.rate};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("burr: analytical Hessian agrees with FD") {
+  auto g = load("burr");
+  // Burr fit uses the wrapper-style burr_mle_core seeded by burr_lmom_core.
+  // For the Hessian test we only need theta_hat from the golden.
+  const double theta[] = {g.estimates.at("shape1"), g.estimates.at("shape2")};
+  mlcore::BurrCost cost{mltest::as_span(g.data)};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("invburr: analytical Hessian agrees with FD") {
+  auto g = load("invburr");
+  auto fit = mlcore::invburr_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::InvBurrCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.shape1, fit.shape2};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
 // --- Layer 2: analytical vs closed-form Fisher information at MLE ----------
 //
 // For regular families with a closed-form Fisher information per observation,

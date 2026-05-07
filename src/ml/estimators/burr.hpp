@@ -46,6 +46,64 @@ struct BurrMLE {
   BurrStatus status;
 };
 
+// Negative log-likelihood of Burr type-XII (shape1=k, shape2=c) with scale=1:
+//   log f = log(k) + log(c) + (c-1)*log(x) - (k+1)*log(1 + x^c)
+// Per-obs Hessian (sympy, with y := x^c, lx := log(x)):
+//   H_kk/obs = 1/k^2                                       (data-indep diag)
+//   H_cc/obs = 1/c^2 + (k+1)*y*lx^2 / (1+y)^2
+//   H_kc/obs = y*lx / (1+y)
+struct BurrCost {
+  span x;
+  int dim() const { return 2; }
+  double operator()(const double *theta) const {
+    const double k = theta[0];
+    const double c = theta[1];
+    if (!(k > 0.0 && c > 0.0)) return std::numeric_limits<double>::infinity();
+    const double n = static_cast<double>(x.size());
+    double S_lx = 0.0, S_l1py = 0.0;
+    for (auto v : x) {
+      if (v <= 0.0) return std::numeric_limits<double>::infinity();
+      const double lx = std::log(v);
+      S_lx += lx;
+      S_l1py += std::log1p(std::exp(c * lx));
+    }
+    return -n * (std::log(k) + std::log(c)) - (c - 1.0) * S_lx +
+           (k + 1.0) * S_l1py;
+  }
+  void gradient(const double *theta, double *g) const {
+    const double k = theta[0];
+    const double c = theta[1];
+    const double n = static_cast<double>(x.size());
+    double S_lx = 0.0, S_l1py = 0.0, S_y_lx_over_1py = 0.0;
+    for (auto v : x) {
+      const double lx = std::log(v);
+      const double y = std::exp(c * lx);
+      S_lx += lx;
+      S_l1py += std::log1p(y);
+      S_y_lx_over_1py += y * lx / (1.0 + y);
+    }
+    g[0] = -n / k + S_l1py;
+    g[1] = -n / c - S_lx + (k + 1.0) * S_y_lx_over_1py;
+  }
+  void hessian(const double *theta, double *H) const {
+    const double k = theta[0];
+    const double c = theta[1];
+    const double n = static_cast<double>(x.size());
+    double H_cc_acc = 0.0, H_kc_acc = 0.0;
+    for (auto v : x) {
+      const double lx = std::log(v);
+      const double y = std::exp(c * lx);
+      const double yp1 = 1.0 + y;
+      H_cc_acc += (k + 1.0) * y * lx * lx / (yp1 * yp1);
+      H_kc_acc += y * lx / yp1;
+    }
+    H[0] = n / (k * k);
+    H[1] = H_kc_acc;
+    H[2] = H_kc_acc;
+    H[3] = n / (c * c) + H_cc_acc;
+  }
+};
+
 namespace detail {
 
 inline double logit(double p) { return std::log(p / (1.0 - p)); }
