@@ -64,6 +64,17 @@ target_include_directories(bfgs_tests PRIVATE
 target_compile_options(bfgs_tests PRIVATE
   -Wall -Wextra -Wpedantic)
 
+# --- the newton_md smoke-test binary --------------------------------------
+add_executable(newton_md_tests test_newton_md.cpp)
+set_target_properties(newton_md_tests PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+target_include_directories(newton_md_tests PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src)
+
+target_compile_options(newton_md_tests PRIVATE
+  -Wall -Wextra -Wpedantic)
+
 # --- the sampling-test binary ---------------------------------------------
 add_executable(sample_tests test_sampling.cpp)
 set_target_properties(sample_tests PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -88,6 +99,11 @@ set_tests_properties(mlcore_tests PROPERTIES
 add_test(
   NAME bfgs_tests
   COMMAND bfgs_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_test(
+  NAME newton_md_tests
+  COMMAND newton_md_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_test(
