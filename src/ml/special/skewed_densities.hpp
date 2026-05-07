@@ -40,8 +40,13 @@ inline double snorm_sigma(double xi, double &mu_out) {
 }
 
 inline double sstd_sigma(double nu, double xi, double &mu_out) {
+  // m1 = E|X| where X is the variance-standardised Student-t with df=nu
+  // (var(X) = 1). The skew construction needs the |.|-mean of the
+  // *standardised* base, not the raw t. Pre-2026-05 this used
+  // sqrt(nu/pi) which is E|T| of raw t — gave wrong dsstd / psstd /
+  // qsstd values (and a self-consistent but biased mlsstd golden).
   const double m1 = std::tgamma(0.5 * (nu - 1.0)) / std::tgamma(0.5 * nu) *
-                    std::sqrt(nu / M_PI);
+                    std::sqrt((nu - 2.0) / M_PI);
   mu_out = m1 * (xi - 1.0 / xi);
   return std::sqrt((1.0 - m1 * m1) * (xi * xi + 1.0 / (xi * xi)) +
                    2.0 * m1 * m1 - 1.0);

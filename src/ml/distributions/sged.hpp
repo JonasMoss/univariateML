@@ -61,7 +61,10 @@ inline double qsged(double p, double mean, double sd, double nu, double xi) {
   const double sig = mlcore::dens::sign1(pxi);
   const double Xi = std::pow(xi, sig);
   const double adj_p = (mlcore::dens::heaviside(pxi) - sig * p) / (g * Xi);
-  const double q = mlcore::distributions::qged(adj_p, 0.0, 1.0, nu,
+  // qged(_, 0, Xi, nu) returns the GED quantile scaled by Xi — mirrors
+  // qsnorm's qnorm(adj_p, 0, Xi). Pre-fix this passed sd=1.0 and the
+  // Xi scaling was dropped, biasing qsged in proportion to (xi-1).
+  const double q = mlcore::distributions::qged(adj_p, 0.0, Xi, nu,
                                                /*lower_tail=*/true,
                                                /*log_p=*/false);
   return (-sig * q - mu) * sd / sigma + mean;
