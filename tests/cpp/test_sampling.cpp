@@ -15,6 +15,7 @@
 #include "../../src/ml/distributions/logitnorm.hpp"
 #include "../../src/ml/distributions/nakagami.hpp"
 #include "../../src/ml/distributions/rng_std.hpp"
+#include "../../src/ml/distributions/zipf.hpp"
 
 #include <random>
 
@@ -100,6 +101,29 @@ TEST_CASE("rnaka samples are positive and match analytic mean") {
   const double expected = std::sqrt(scale / shape) *
                           std::tgamma(shape + 0.5) / std::tgamma(shape);
   CHECK(std::abs(sum / n - expected) < 0.05);
+}
+
+// rzipf samples land in {1, ..., N} and the empirical frequencies match
+// the analytic PMF p(k) = k^{-s} / H_N(s).
+TEST_CASE("rzipf samples lie in {1, ..., N} and match the PMF") {
+  mlcore::distributions::StdRng<> rng(13);
+  const int N = 10;
+  const double s = 1.5;
+  const auto cum = mlcore::distributions::zipf_cdf(N, s);
+  const int n = 30000;
+  std::vector<int> counts(N, 0);
+  for (int i = 0; i < n; ++i) {
+    const int k = mlcore::distributions::rzipf_from_cdf(rng, cum);
+    REQUIRE(k >= 1);
+    REQUIRE(k <= N);
+    counts[k - 1]++;
+  }
+  for (int k = 1; k <= N; ++k) {
+    const double empirical = static_cast<double>(counts[k - 1]) / n;
+    const double analytic =
+        mlcore::distributions::dzipf(k, N, s, /*log=*/false);
+    CHECK(std::abs(empirical - analytic) < 0.02);
+  }
 }
 
 } // namespace
