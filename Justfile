@@ -29,6 +29,12 @@ goldens:
 bench model="burr" sizes="50,200,1000" reps="5":
 	Rscript scripts/bench.R --model {{model}} --sizes {{sizes}} --reps {{reps}}
 
+# Cross-check our dpqr against reference R packages (extraDistr, actuar,
+# fGarch, logitnorm). Reference packages are NOT in DESCRIPTION;
+# missing ones skip cleanly. Manual / development-time check.
+dpqr-check:
+	Rscript scripts/dpqr_check.R
+
 # Build & run the standalone C++ test harness (mlcore_tests + bfgs_tests + sample_tests).
 cpp-test:
 	cmake -S tests/cpp -B tests/cpp/build
