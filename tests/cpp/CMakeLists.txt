@@ -64,6 +64,18 @@ target_include_directories(bfgs_tests PRIVATE
 target_compile_options(bfgs_tests PRIVATE
   -Wall -Wextra -Wpedantic)
 
+# --- the sampling-test binary ---------------------------------------------
+add_executable(sample_tests test_sampling.cpp)
+set_target_properties(sample_tests PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+target_include_directories(sample_tests PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src
+  ${Boost_INCLUDE_DIRS})
+
+target_compile_options(sample_tests PRIVATE
+  -Wall -Wextra -Wpedantic)
+
 # --- ctest registration ----------------------------------------------------
 enable_testing()
 add_test(
@@ -76,4 +88,9 @@ set_tests_properties(mlcore_tests PROPERTIES
 add_test(
   NAME bfgs_tests
   COMMAND bfgs_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_test(
+  NAME sample_tests
+  COMMAND sample_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
