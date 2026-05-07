@@ -49,8 +49,9 @@ arma::vec pged(const arma::vec &q, const arma::vec &mean, const arma::vec &sd, c
         std::pow(2.0, 1.0 / v) * lambda * g * std::tgamma(1.0 / v) / v;
     const double s_term = 0.5 * std::pow(std::fabs(z) / lambda, v);
     double res = 0.5 + sign1(z) * h *
-                           Rf_pgamma(s_term, 1.0 / v, 1.0, /*lower_tail=*/1,
-                                     /*log_p=*/0);
+                           mlcore::special::pgamma(s_term, 1.0 / v, 1.0,
+                                                   /*lower_tail=*/true,
+                                                   /*log_p=*/false);
     if (!lower_tail)
       res = 1.0 - res;
     out[i] = log_p ? std::log(res) : res;
@@ -77,8 +78,8 @@ arma::vec qged(const arma::vec &p, const arma::vec &mean, const arma::vec &sd, c
       pi = 1.0 - pi;
     const double lambda = ged_lambda(v);
     const double qg =
-        Rf_qgamma(std::fabs(2.0 * pi - 1.0), 1.0 / v, 1.0, /*lower_tail=*/1,
-                  /*log_p=*/0);
+        mlcore::special::qgamma(std::fabs(2.0 * pi - 1.0), 1.0 / v, 1.0,
+                                /*lower_tail=*/true, /*log_p=*/false);
     const double q =
         lambda * std::pow(2.0 * qg, 1.0 / v) * sign1(2.0 * pi - 1.0);
     out[i] = q * s + m;

@@ -21,8 +21,8 @@ arma::vec dstd(const arma::vec &x, const arma::vec &mean, const arma::vec &sd, c
     }
     const double scale = std::sqrt(v / (v - 2.0));
     const double z = (xi - m) / s;
-    const double logdens =
-        Rf_dt(z * scale, v, /*give_log=*/true) + std::log(scale / s);
+    const double logdens = mlcore::special::dt(z * scale, v, /*log=*/true) +
+                           std::log(scale / s);
     out[i] = log ? logdens : std::exp(logdens);
   }
   return out;
@@ -46,7 +46,7 @@ arma::vec pstd(const arma::vec &q, const arma::vec &mean, const arma::vec &sd, c
     }
     const double scale = std::sqrt(v / (v - 2.0));
     const double z = (qi - m) / s;
-    out[i] = Rf_pt(z * scale, v, lower_tail, log_p);
+    out[i] = mlcore::special::pt(z * scale, v, lower_tail, log_p);
   }
   return out;
 }
@@ -72,7 +72,8 @@ arma::vec qstd(const arma::vec &p, const arma::vec &mean, const arma::vec &sd, c
     if (!lower_tail)
       pi = 1.0 - pi;
     const double scale = std::sqrt(v / (v - 2.0));
-    const double z = Rf_qt(pi, v, /*lower_tail=*/1, /*log_p=*/0);
+    const double z = mlcore::special::qt(pi, v, /*lower_tail=*/true,
+                                         /*log_p=*/false);
     out[i] = z / scale * s + m;
   }
   return out;

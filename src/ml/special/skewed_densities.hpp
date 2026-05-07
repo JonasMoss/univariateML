@@ -3,15 +3,9 @@
 // (sign1, heaviside, ged_lambda, ged_g, *_sigma) shared by the estimator
 // path and the dpqr Rcpp wrappers in src/distributions/.
 //
-// Two layers:
-//   * `*_sigma` and the pure helpers — pure libm. No Rmath dependency.
-//     The dpqr cpps delegate to these (no behavior change vs the previous
-//     static-inline copies).
-//   * `log_d*_unit` / `log_d*_core` — pure-libm log-densities for the
-//     standalone estimator path. Rederived via lgamma rather than Rf_dt
-//     so the BFGS path doesn't pull in Rmath. NOT bit-equivalent to the
-//     dpqr cpps (which keep using Rf_dt) — those goldens stay reproducible
-//     because the cpp dpqr math is unchanged.
+// `log_d*_unit` / `log_d*_core` are closed-form log-densities used by the
+// BFGS estimator path — independent of the math backend so the standalone
+// fit only depends on <cmath>.
 
 #pragma once
 
@@ -76,7 +70,7 @@ inline double log_dged_unit(double z, double nu) {
 }
 
 inline double log_dstd_unit(double z, double nu) {
-  // Rederived from Rf_dt(z*scale, nu, log=true) + log(scale), scale = sqrt(nu/(nu-2)).
+  // Closed-form log-density of unit-variance student-t; scale = sqrt(nu/(nu-2)).
   const double scale = std::sqrt(nu / (nu - 2.0));
   const double w = z * scale;
   const double log_dt = std::lgamma(0.5 * (nu + 1.0)) -

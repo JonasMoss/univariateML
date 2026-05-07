@@ -1,101 +1,97 @@
-# Math backend: tradeoffs and the Rmath choice
+# Math backend: Boost.Math
 
-The mlcore estimators need a handful of special functions:
+mlcore needs a small set of special functions and dpqr primitives:
 
-- `digamma(x)`, `trigamma(x)`, `tetragamma(x)`, `psigamma(x, n)` — polygamma family.
-- `lgamma(x)`, `lbeta(a, b)` — log-gamma and log-beta. (Currently the `lgamma` we use is `std::lgamma`; only `lbeta` is in `special.hpp`.)
-- `dnorm`, `dpois`, `dgeom` — densities, used in a couple of likelihoods.
+- **Special functions**: `digamma`, `trigamma`, `tetragamma`, `psigamma(n, z)`,
+  `lgamma`, `lbeta`.
+- **Densities** (used inline by some estimator likelihoods):
+  `dnorm`, `dpois`, `dgeom`, `dnbinom`.
+- **dpqr primitives** (used by `src/distributions/*.cpp` to expose
+  `dged`/`pged`/etc. to R users): `pnorm`/`qnorm`, `plogis`/`qlogis`,
+  `dgamma`/`pgamma`/`qgamma`, `dt`/`pt`/`qt`.
 
-Today these all flow through `src/ml/special/special.hpp`, which is the single
-boundary between mlcore and the math backend. `dnorm`/`dpois`/`dgeom`/`lgamma`/`lbeta`
-are inlined on `<cmath>`; the polygamma family routes through `src/ml/special/polygamma.cpp`
-(in-tree port of R's `polygamma.c`, see "Decision (current)" below).
+Everything routes through `src/ml/special/special.hpp` — the single seam
+between mlcore and the math backend. Estimator code never imports the
+backend directly. Swap this one file to retarget another backend.
 
-Swapping backend means rewriting that one file. Nothing else in mlcore
-should know which backend is in use.
+## Decision: Boost.Math (via BH)
 
-## Why Rmath today
+`mlcore::special::*` calls into `boost::math::*`. Boost.Math is shipped on
+CRAN via the [`BH`](https://cran.r-project.org/package=BH) package
+(currently 1.87.0.1), pulled in by `LinkingTo: BH` in DESCRIPTION. The
+standalone C++ test harness (`tests/cpp/`) finds Boost.Math via:
 
-- Already linked into the package via `LinkingTo: Rcpp` (transitively
-  pulls libR which has the symbols).
-- Identical to what the R-side test suite exercises, so goldens stay
-  bit-for-bit reproducible across the boundary.
-- Polygamma in particular is fiddly; relying on R's well-tested
-  implementation removes a class of accuracy disputes from the port.
+1. `find_package(Boost CONFIG)` — system Boost (apt: `libboost-dev`,
+   dnf: `boost-devel`), preferred for CI.
+2. Fallback: `Rscript -e "system.file('include', package='BH')"` — picks
+   up BH headers from a local R install, useful for the dev workflow.
 
-## What Rmath costs
+Either way: header-only, no shared lib to link.
 
-- Couples the C++ tests to a working R install. The standalone-build
-  goal in WS3 has to go through Rmath standalone or replace these calls
-  outright before `cmake --build && ctest` can run on a non-R container.
-- The polygamma symbol resolution is fragile: Rmath.h aliases `digamma`
-  → `Rf_digamma` via `#define`, polluting the global namespace. This
-  bit us during WS1 (struct fields named `beta`/`gamma` got macro-mangled);
-  the workaround is the `#undef` block at the top of `special.hpp`.
+## Why Boost.Math
 
-## Alternatives considered
+- **Portable.** The same C++ core works under R bindings (Rcpp + BH),
+  Python bindings (nanobind + system Boost or vendored subset), and
+  any other host language. No reliance on R's runtime.
+- **Comprehensive.** All special functions and ~half our distribution
+  primitives ship directly. The other ~half are 10–30 LoC closed-form
+  compositions over Boost primitives (skewed-density family, transform
+  family, Burr family, etc.).
+- **Well-tested.** SciPy and Stan both build on Boost.Math; ULP-level
+  agreement with R is plausible across most call sites. Algorithms are
+  well-documented (Boost.Math docs include accuracy tables).
+- **Clean API.** Distribution objects (`normal_distribution<>{mu,
+  sigma}`), generic `pdf` / `cdf` / `quantile` / `complement` —
+  composable, no macro pollution like R's `R_D__0` / `R_DT_val` /
+  `Rf_*`.
+- **License compatible.** [BSL-1.0](https://www.boost.org/users/license.html)
+  is permissive (MIT-style); no attribution-in-binary requirement.
 
-### Boost.Math
+## Trade-offs vs alternatives
 
-- **Pro**: Header-only, MIT-style license, well-tested, comprehensive
-  set of special functions including all the polygammas, Bessels, etc.
-- **Pro**: No global-namespace macros — uses `boost::math::digamma`.
-- **Pro**: Same algorithm family as Rmath for digamma/trigamma; ULP-level
-  agreement is plausible (worth measuring).
-- **Con**: Adds ~30 MB of headers as a build dependency. CRAN-acceptable
-  via `BH` package which exposes Boost headers, but pulls in a lot.
-- **Con**: Goldens would shift if Boost differs from Rmath even by a
-  ULP; refit needed.
+| Backend                  | Code we own | Build deps        | Notes                                              |
+|--------------------------|-------------|-------------------|----------------------------------------------------|
+| **Boost.Math (current)** | ~50 LoC seam | BH (header-only) | Portable to R + Python + standalone.               |
+| Rmath via `Rf_*`         | 0           | libR (via LinkTo) | Couples to R runtime; macro pollution.             |
+| Vendored R nmath         | ~1500 LoC   | none              | Walked back: heavy maintenance, no win for Python. |
+| Cephes vendor            | ~3k LoC     | none              | Older, weaker accuracy; we'd own the math.         |
 
-### Cephes (vendored)
+## What's NOT in Boost.Math
 
-- **Pro**: Public-domain C source, ~3k LoC for the full polygamma family
-  + helpers. Easy to drop into `src/ml/special/cephes/` without
-  upstream coordination.
-- **Pro**: Zero build-system surface area; just compile the .c files.
-- **Con**: Older code; numerical accuracy claims are weaker than
-  Rmath/Boost. Likely larger ULP drift, especially at boundaries.
-- **Con**: Maintenance falls on us — no upstream to track.
+- **Multi-dimensional optimizers** (BFGS, L-BFGS, Nelder-Mead). Boost has
+  evolutionary methods (cma_es, differential_evolution, jso) and 1D
+  minimization (`brent_find_minima`) only. We keep our hand-rolled
+  BFGS + Newton in `src/ml/core/{bfgs,newton}.hpp` (~300 LoC, golden-tested).
+- **RNG sampling that respects R's `set.seed()`.** Delegated to R's
+  `R::r*` wrappers on R-shell calls (`rsnorm`, `rged`, etc.). The future
+  Python shell will use `std::mt19937` with NumPy seed pass-through.
 
-### Hand-rolled (chosen — see "Decision" below)
+## Distributions: who provides what
 
-- **Pro**: Total control. Inline what we need, leave the rest. Lowest
-  build complexity.
-- **Pro**: `dpsifn` is already vendored at `src/ml/special/polygamma.cpp`
-  (port of R's `polygamma.c`); now wired into the build.
-- **Con**: Owning numerical code is real work — testing, edge cases,
-  asymptotic regions. Easy to introduce subtle drift.
+Boost ships directly: normal, logistic, gamma, students_t, uniform,
+exponential, weibull, beta, lognormal, cauchy, pareto, laplace, rayleigh,
+inverse_gamma, inverse_gaussian, skew_normal, extreme_value (=Gumbel),
+poisson, geometric, negative_binomial, binomial, Bernoulli, hypergeometric,
+triangular, F.
 
-## Decision (current)
+We layer atop Boost primitives (in `src/distributions/`): snorm, sged,
+sstd, std, ged, nakagami, logitnorm, zipf, zip — and (planned, replaces
+extraDistr/actuar Imports) betapr, fatigue, gompertz, kumar, lgser,
+log_logistic, frechet/inverse_weibull, burr, inverse_burr, paralogis,
+power, lomax, beta_prime, discrete_uniform.
 
-**Vendored hand-roll via `dpsifn`.** mlcore::special::{digamma, trigamma,
-tetragamma, psigamma} now delegate to `src/ml/special/polygamma.cpp`, a
-literal port of R's `polygamma.c` (Bell Labs / Amos algorithm 610), backed
-by tiny libm-only shims in `src/ml/special/rmath_compat.hpp` for the four
-helpers it consults (`Rf_d1mach`, `Rf_i1mach`, plus `imin2`/`fmax2`/`fmin2`/
-`R_pow_di`).
+## Revisit if
 
-Concrete consequences:
-
-- The standalone test harness (`tests/cpp/`) no longer links libR, no longer
-  needs `find_program(R)`, and `mlcore_tests` shows zero R-related deps in
-  `ldd` output.
-- The R-package build is unchanged — `LinkingTo: Rcpp,RcppArmadillo` still
-  pulls Rmath transitively, and the dpqr cpps in `src/distributions/` keep
-  using `Rf_dt`/`Rf_pgamma`/etc. directly.
-- Goldens did not move when swapping in `dpsifn`: it's the same algorithm
-  R uses internally for `psigamma`, so digamma/trigamma agree at ULP level.
-
-Revisit if: a numerical issue surfaces in the polygamma path that R's
-upstream has fixed since the port (sync against `instructions/nmath/polygamma.c`),
-or if a future user wants to drop the polygamma dependency entirely (Boost.Math
-is still on the table for that).
-
-## Rough effort estimates (for a future swap)
-
-| Backend           | Files changed                                | Build deps        | Golden risk      |
-|-------------------|----------------------------------------------|-------------------|------------------|
-| Rmath (legacy)    | revert special.hpp                           | libR (via LinkTo) | baseline         |
-| Vendored dpsifn   | — (current state)                            | none              | none (baseline)  |
-| Boost.Math        | special.hpp                                  | BH                | ULP-level        |
-| Cephes            | special.hpp + ~3k LoC vendored               | none              | ULP-to-1e-12     |
+- A numerical issue surfaces that Boost upstream has fixed in a later
+  release (track BH version on CRAN; the BH update lands the fix
+  automatically).
+- A user wants to drop the BH `LinkingTo` dependency entirely (e.g.,
+  to ship via a CRAN package size budget). Boost.Math has a standalone
+  mode (`BOOST_MATH_STANDALONE`) that compiles without Boost.Config et
+  al.; vendoring the math headers via `bcp` would shave size at the
+  cost of update tracking.
+- Cross-language reproducibility (R/Python results matching to ULP)
+  becomes a hard requirement. Today, Python users will see scipy.stats
+  results when they call into NumPy, Boost.Math results when they call
+  into mlcore — those don't agree to ULP, but both are correct to
+  within accuracy specs.

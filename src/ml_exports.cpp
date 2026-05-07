@@ -369,8 +369,8 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
     prob_out = size_out / (x_bar + size_out);
     double ll = 0.0;
     for (int v : x) {
-      ll += Rf_dnbinom(static_cast<double>(v), size_out, prob_out,
-                       /*give_log=*/1);
+      ll += mlcore::special::dnbinom(static_cast<double>(v), size_out, prob_out,
+                                     /*log=*/true);
     }
     loglik_out = ll;
   } else {

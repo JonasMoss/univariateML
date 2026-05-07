@@ -2,11 +2,11 @@
 #pragma once
 
 #include <RcppArmadillo.h>
-#include <Rmath.h>
 #include <algorithm>
 #include <limits>
 
 #include "../ml/special/skewed_densities.hpp"
+#include "../ml/special/special.hpp"
 
 using arma::uword;
 

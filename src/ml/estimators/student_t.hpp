@@ -1,8 +1,8 @@
 // Student-t MLE on (mu, sigma, nu).
 //
 // Reparam phi = (mu, log sigma, log(nu - 2)) — keeps sigma > 0 and nu > 2
-// without bounds. Pure-libm log-density via log_dstd_unit (lgamma-based)
-// rather than Rf_dt, so the standalone fit doesn't pull in Rmath.
+// without bounds. Pure-libm log-density via log_dstd_unit (lgamma-based),
+// independent of the math backend.
 //
 // Density at (mu, sigma, nu): f(x) = (1/sigma) * f_unit((x-mu)/sigma; nu),
 // where f_unit is the standardised t (mean 0, sd 1) used by dstd().

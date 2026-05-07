@@ -1,6 +1,5 @@
 // Skew normal dpqr
 #include "common.h"
-#include "../nmath/nmath.hpp"
 
 namespace dist_impl {
 
@@ -9,7 +8,7 @@ using mlcore::dens::snorm_sigma;
 static inline double dsnorm_core(double z, double xi) {
   const double Xi = std::pow(xi, sign1(z));
   const double g = 2.0 / (xi + 1.0 / xi);
-  return g * mlcore::nmath::dnorm4(z / Xi, 0.0, 1.0, 0);
+  return g * mlcore::special::dnorm(z / Xi, 0.0, 1.0, false);
 }
 
 arma::vec dsnorm(const arma::vec &x, const arma::vec &mean, const arma::vec &sd, const arma::vec &xi,
@@ -55,7 +54,7 @@ arma::vec psnorm(const arma::vec &q, const arma::vec &mean, const arma::vec &sd,
     const double Xi = std::pow(xi_val, sig);
     const double g = 2.0 / (xi_val + 1.0 / xi_val);
     const double base =
-        mlcore::nmath::pnorm5(-std::fabs(z) / Xi, 0.0, 1.0, 1, 0);
+        mlcore::special::pnorm(-std::fabs(z) / Xi, 0.0, 1.0, true, false);
     out[i] = (z >= 0.0 ? 1.0 : 0.0) - sig * g * Xi * base;
   }
   return out;
@@ -81,7 +80,7 @@ arma::vec qsnorm(const arma::vec &p, const arma::vec &mean, const arma::vec &sd,
     const double sig = sign1(pxi);
     const double Xi = std::pow(xi_val, sig);
     const double adj_p = (heaviside(pxi) - sig * pv) / (g * Xi);
-    const double q = mlcore::nmath::qnorm5(adj_p, 0.0, Xi, 1, 0);
+    const double q = mlcore::special::qnorm(adj_p, 0.0, Xi, true, false);
     out[i] = (-sig * q - mu) * sd_val / sigma + m;
   }
   return out;

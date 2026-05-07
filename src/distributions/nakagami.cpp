@@ -19,9 +19,10 @@ arma::vec dnaka(const arma::vec &x, const arma::vec &shape, const arma::vec &sca
     const double x2 = xi * xi;
     if (log) {
       out[i] = std::log(xi) + std::log(2.0) +
-               Rf_dgamma(x2, k, gamma_scale, /*give_log=*/true);
+               mlcore::special::dgamma(x2, k, gamma_scale, /*log=*/true);
     } else {
-      out[i] = 2.0 * xi * Rf_dgamma(x2, k, gamma_scale, /*give_log=*/false);
+      out[i] =
+          2.0 * xi * mlcore::special::dgamma(x2, k, gamma_scale, /*log=*/false);
     }
   }
   return out;
@@ -41,7 +42,7 @@ arma::vec pnaka(const arma::vec &q, const arma::vec &shape, const arma::vec &sca
     }
     const double rate = k / s;
     const double gamma_scale = 1.0 / rate;
-    out[i] = Rf_pgamma(qi * qi, k, gamma_scale, lower_tail, log_p);
+    out[i] = mlcore::special::pgamma(qi * qi, k, gamma_scale, lower_tail, log_p);
   }
   return out;
 }
@@ -60,7 +61,8 @@ arma::vec qnaka(const arma::vec &p, const arma::vec &shape, const arma::vec &sca
     }
     const double rate = k / s;
     const double gamma_scale = 1.0 / rate;
-    const double gq = Rf_qgamma(pi, k, gamma_scale, lower_tail, log_p);
+    const double gq =
+        mlcore::special::qgamma(pi, k, gamma_scale, lower_tail, log_p);
     out[i] = std::sqrt(gq);
   }
   return out;
@@ -74,7 +76,7 @@ arma::vec rnaka(int n, double shape, double scale) {
   const double rate = shape / scale;
   const double gamma_scale = 1.0 / rate;
   for (int i = 0; i < n; ++i) {
-    out[i] = std::sqrt(Rf_rgamma(shape, gamma_scale));
+    out[i] = std::sqrt(R::rgamma(shape, gamma_scale));
   }
   return out;
 }
