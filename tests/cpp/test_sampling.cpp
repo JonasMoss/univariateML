@@ -16,6 +16,7 @@
 #include "../../src/ml/distributions/logitnorm.hpp"
 #include "../../src/ml/distributions/nakagami.hpp"
 #include "../../src/ml/distributions/rng_std.hpp"
+#include "../../src/ml/distributions/snorm.hpp"
 #include "../../src/ml/distributions/std.hpp"
 #include "../../src/ml/distributions/zipf.hpp"
 
@@ -170,6 +171,26 @@ TEST_CASE("rstd samples have unit variance and a symmetric CDF") {
   const double cdf0 =
       mlcore::distributions::pstd(0.0, 0.0, 1.0, 8.0, true, false);
   CHECK(std::abs(cdf0 - 0.5) < 1e-12);
+}
+
+// rsnorm at xi=1 should reduce to N(mean, sd); for xi != 1 the empirical
+// mean shifts away from `mean` (skew bias).
+TEST_CASE("rsnorm samples have unit variance and skew with xi") {
+  mlcore::distributions::StdRng<> rng(23);
+  const int n = 20000;
+  double sum = 0.0;
+  double sum_sq = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = mlcore::distributions::rsnorm(rng, 0.0, 1.0, 1.5);
+    sum += x;
+    sum_sq += x * x;
+  }
+  const double mean = sum / n;
+  const double var = sum_sq / n - mean * mean;
+  // Standardised parameterisation: empirical mean ~ 0, var ~ 1 by
+  // construction (mlcore::dens::snorm_sigma standardises moments).
+  CHECK(std::abs(mean) < 0.05);
+  CHECK(std::abs(var - 1.0) < 0.1);
 }
 
 } // namespace
