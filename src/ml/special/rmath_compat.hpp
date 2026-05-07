@@ -10,6 +10,10 @@
 //   Rf_i1mach(16) = DBL_MAX_EXP  (= 1024)
 // Other indices aren't called by polygamma.cpp; this header keeps the API
 // surface small on purpose.
+//
+// The src/nmath_*.cpp dpqr primitives use a *different* set of helpers
+// (ML_NAN macros, R_FINITE, ISNAN, ...) that live in src/nmath/rmath_macros.hpp
+// so we don't leak them into anything that #includes polygamma.cpp.
 
 #pragma once
 
