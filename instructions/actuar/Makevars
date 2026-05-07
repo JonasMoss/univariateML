@@ -1,0 +1,2 @@
+## for C code
+CFLAGS=-Wall -pedantic -fno-common -Wstrict-prototypes

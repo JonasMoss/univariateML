@@ -1,0 +1,371 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: actuar 3.3-4\n"
+"POT-Creation-Date: 2023-11-07 14:41\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "rows extracted in increasing order"
+msgstr ""
+
+msgid "impossible to replace boundaries and frequencies simultaneously"
+msgstr ""
+
+msgid "only logical matrix subscripts are allowed in replacement"
+msgstr ""
+
+msgid "need 0, 1, or 2 subscripts"
+msgstr ""
+
+msgid "one of %s or %s is needed"
+msgstr ""
+
+msgid "mgf.claim"
+msgstr ""
+
+msgid "h"
+msgstr ""
+
+msgid "%s must be a function or an expression containing %s"
+msgstr ""
+
+msgid "x"
+msgstr ""
+
+msgid "mgf.wait"
+msgstr ""
+
+msgid "%s must be a function or an expression containing %s and %s"
+msgstr ""
+
+msgid "y"
+msgstr ""
+
+msgid "%s must be a function when using reinsurance"
+msgstr ""
+
+msgid "premium.rate"
+msgstr ""
+
+msgid "%s must supply the mean and variance of the distribution"
+msgstr ""
+
+msgid "moments"
+msgstr ""
+
+msgid "%s must supply the mean, variance and skewness of the distribution"
+msgstr ""
+
+msgid "%s must supply the number of simulations"
+msgstr ""
+
+msgid "nb.simul"
+msgstr ""
+
+msgid "expressions in %s and %s must be named"
+msgstr ""
+
+msgid "model.freq"
+msgstr ""
+
+msgid "model.sev"
+msgstr ""
+
+msgid "%s must be a vector of probabilities"
+msgstr ""
+
+msgid "frequency distribution must be supplied as a character string"
+msgstr ""
+
+msgid "internal error"
+msgstr ""
+
+msgid "function not defined for approximating distributions"
+msgstr ""
+
+msgid "lower bound of the likelihood missing"
+msgstr ""
+
+msgid "one of the Gamma prior parameter %s, %s or %s missing"
+msgstr ""
+
+msgid "shape"
+msgstr ""
+
+msgid "rate"
+msgstr ""
+
+msgid "scale"
+msgstr ""
+
+msgid "one of the Beta prior parameter %s or %s missing"
+msgstr ""
+
+msgid "shape1"
+msgstr ""
+
+msgid "shape2"
+msgstr ""
+
+msgid "parameter %s of the likelihood missing"
+msgstr ""
+
+msgid "size"
+msgstr ""
+
+msgid "shape.lik"
+msgstr ""
+
+msgid "sd.lik"
+msgstr ""
+
+msgid "unsupported likelihood"
+msgstr ""
+
+msgid "missing ratios not allowed when weights are not supplied"
+msgstr ""
+
+msgid "there must be at least one node with more than one period of experience"
+msgstr ""
+
+msgid "there must be more than one node"
+msgstr ""
+
+msgid "missing values are not in the same positions in %s and in %s"
+msgstr ""
+
+msgid "weights"
+msgstr ""
+
+msgid "ratios"
+msgstr ""
+
+msgid "no available data to fit model"
+msgstr ""
+
+msgid "maximum number of iterations reached before obtaining convergence"
+msgstr ""
+
+msgid "unsupported interactions in %s"
+msgstr ""
+
+msgid "formula"
+msgstr ""
+
+msgid "hierarchical regression models not supported"
+msgstr ""
+
+msgid "ratios have to be supplied if weights are"
+msgstr ""
+
+msgid "empty regression model; fitting with Buhlmann-Straub's model"
+msgstr ""
+
+msgid "invalid level name"
+msgstr ""
+
+msgid "coverage modifications must be positive"
+msgstr ""
+
+msgid "deductible must be smaller than the limit"
+msgstr ""
+
+msgid "coinsurance must be between 0 and 1"
+msgstr ""
+
+msgid "%s must be supplied"
+msgstr ""
+
+msgid "cdf"
+msgstr ""
+
+msgid "%s required with method %s"
+msgstr ""
+
+msgid "lev"
+msgstr ""
+
+msgid "unbiased"
+msgstr ""
+
+msgid "%s must be positive"
+msgstr ""
+
+msgid "order"
+msgstr ""
+
+msgid "%s not used when %s is specified"
+msgstr ""
+
+msgid "nclass"
+msgstr ""
+
+msgid "breaks"
+msgstr ""
+
+msgid "%s ignored when %s is specified"
+msgstr ""
+
+msgid "group"
+msgstr ""
+
+msgid "invalid number of group boundaries and frequencies"
+msgstr ""
+
+msgid "missing frequencies replaced by zeros"
+msgstr ""
+
+msgid "missing values are not in the same positions in 'weights' and in 'ratios'"
+msgstr ""
+
+msgid "there must be at least two nodes at every level"
+msgstr ""
+
+msgid "invalid level number"
+msgstr ""
+
+msgid "infinite group boundaries"
+msgstr ""
+
+msgid "%s is an alias for %s, however they differ."
+msgstr ""
+
+msgid "probability"
+msgstr ""
+
+msgid "!freq"
+msgstr ""
+
+msgid "%s must be a named list"
+msgstr ""
+
+msgid "start"
+msgstr ""
+
+msgid "%s must be supplied as a function"
+msgstr ""
+
+msgid "fun"
+msgstr ""
+
+msgid "%s must be a numeric vector or an object of class %s"
+msgstr ""
+
+msgid "grouped.data"
+msgstr ""
+
+msgid "%s specifies names which are not arguments to %s"
+msgstr ""
+
+msgid "%s measure requires an object of class %s"
+msgstr ""
+
+msgid "chi-square"
+msgstr ""
+
+msgid "frequency must be larger than 0 in all groups"
+msgstr ""
+
+msgid "LAS"
+msgstr ""
+
+msgid "optimization failed"
+msgstr ""
+
+msgid "%s has many elements: only the first used"
+msgstr ""
+
+msgid "p0"
+msgstr ""
+
+msgid "%s must be a valid probability (between 0 and 1)"
+msgstr ""
+
+msgid "value of %s ignored with a zero-truncated distribution"
+msgstr ""
+
+msgid "value of %s missing"
+msgstr ""
+
+msgid "lambda"
+msgstr ""
+
+msgid "value of %s or %s missing"
+msgstr ""
+
+msgid "prob"
+msgstr ""
+
+msgid "frequency distribution not in the (a, b, 0) or (a, b, 1) families"
+msgstr ""
+
+msgid "Pr[S = 0] is numerically equal to 0; impossible to start the recursion"
+msgstr ""
+
+msgid "nodes"
+msgstr ""
+
+msgid "level names different in %s, %s and %s"
+msgstr ""
+
+msgid "one of %s or %s must be non-NULL"
+msgstr ""
+
+msgid "nothing to do"
+msgstr ""
+
+msgid "invalid %s specification"
+msgstr ""
+
+msgid "by"
+msgstr ""
+
+msgid "invalid first argument %s"
+msgstr ""
+
+msgid "n"
+msgstr ""
+
+msgid "invalid values in %s"
+msgstr ""
+
+msgid "no positive probabilities"
+msgstr ""
+
+msgid "invalid third argument %s"
+msgstr ""
+
+msgid "models"
+msgstr ""
+
+msgid "par.claims"
+msgstr ""
+
+msgid "par.wait"
+msgstr ""
+
+msgid "parameters %s missing in %s"
+msgstr ""
+
+msgid ","
+msgstr ""
+
+msgid "parameter %s missing in %s"
+msgstr ""
+
+msgid "parameter %s or %s missing in %s"
+msgstr ""
+
+msgid "rates"
+msgstr ""
+
+msgid "invalid parameters in %s"
+msgstr ""
+
+msgid "%s must be a vector or a matrix"
+msgstr ""

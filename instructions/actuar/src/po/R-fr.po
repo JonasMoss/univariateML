@@ -1,0 +1,390 @@
+# French translations for actuar package
+# Traduction française du package actuar.
+# Copyright (C) 2016 Vincent Goulet
+# This file is distributed under the same license as the actuar package.
+# Vincent Goulet <vincent@vgoulet.act.ulaval.ca>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: actuar 2.0-0\n"
+"Report-Msgid-Bugs-To: bugs@r-project.org\n"
+"POT-Creation-Date: 2023-11-07 14:41\n"
+"PO-Revision-Date: 2023-11-07 14:45-0500\n"
+"Last-Translator: Vincent Goulet <vincent.goulet@act.ulaval.ca>\n"
+"Language-Team: Vincent Goulet <vincent.goulet@act.ulaval.ca>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "rows extracted in increasing order"
+msgstr "lignes extraites en ordre croissant"
+
+msgid "impossible to replace boundaries and frequencies simultaneously"
+msgstr "impossible de remplacer simultanément les bornes et les fréquences"
+
+msgid "only logical matrix subscripts are allowed in replacement"
+msgstr "seuls les indices logiques sont permis pour le remplacement"
+
+msgid "need 0, 1, or 2 subscripts"
+msgstr "il faut 0, 1 ou 2 indices"
+
+msgid "one of %s or %s is needed"
+msgstr "l'une ou l'autre de %s ou %s est requise"
+
+msgid "mgf.claim"
+msgstr "mgf.claim"
+
+msgid "h"
+msgstr "h"
+
+msgid "%s must be a function or an expression containing %s"
+msgstr "%s doit être une fonction ou une expression contenant %s"
+
+msgid "x"
+msgstr "x"
+
+msgid "mgf.wait"
+msgstr "mgf.wait"
+
+msgid "%s must be a function or an expression containing %s and %s"
+msgstr "%s doit être une fonction ou une expression contenant %s et %s"
+
+msgid "y"
+msgstr "y"
+
+msgid "%s must be a function when using reinsurance"
+msgstr "%s doit être une fonction en présence de réassurance"
+
+msgid "premium.rate"
+msgstr "premium.rate"
+
+msgid "%s must supply the mean and variance of the distribution"
+msgstr "%s doit contenir la moyenne et la variance de la distribution"
+
+msgid "moments"
+msgstr "moments"
+
+msgid "%s must supply the mean, variance and skewness of the distribution"
+msgstr ""
+"%s doit contenir la moyenne, la variance et l'asymétrie de la distribution"
+
+msgid "%s must supply the number of simulations"
+msgstr "%s doit spécifier le nombre de simulations"
+
+msgid "nb.simul"
+msgstr "nb.simul"
+
+msgid "expressions in %s and %s must be named"
+msgstr "les expressions dans %s et %s doivent être nommées"
+
+msgid "model.freq"
+msgstr "model.freq"
+
+msgid "model.sev"
+msgstr "model.sev"
+
+msgid "%s must be a vector of probabilities"
+msgstr "%s doit être un vecteur de probabilités"
+
+msgid "frequency distribution must be supplied as a character string"
+msgstr ""
+"la distribution de fréquence doit être spécifiée sous forme de chaîne de "
+"caractères"
+
+msgid "internal error"
+msgstr "erreur interne"
+
+msgid "function not defined for approximating distributions"
+msgstr "fonction non définie pour les méthodes d'approximation"
+
+msgid "lower bound of the likelihood missing"
+msgstr "seuil de la vraisemblance manquant"
+
+msgid "one of the Gamma prior parameter %s, %s or %s missing"
+msgstr "un des paramètres %s, %s ou %s de la loi Gamma manquant"
+
+msgid "shape"
+msgstr "shape"
+
+msgid "rate"
+msgstr "rate"
+
+msgid "scale"
+msgstr "scale"
+
+msgid "one of the Beta prior parameter %s or %s missing"
+msgstr "un des paramètres %s ou %s de la loi Bêta manquant"
+
+msgid "shape1"
+msgstr "shape1"
+
+msgid "shape2"
+msgstr "shape2"
+
+msgid "parameter %s of the likelihood missing"
+msgstr "paramètre %s de la vraisemblance manquant"
+
+msgid "size"
+msgstr "size"
+
+msgid "shape.lik"
+msgstr "shape.lik"
+
+msgid "sd.lik"
+msgstr "sd.lik"
+
+msgid "unsupported likelihood"
+msgstr "vraisemblance non valide"
+
+msgid "missing ratios not allowed when weights are not supplied"
+msgstr "ratios manquants non permis lorsque les poids ne sont pas fournis"
+
+msgid "there must be at least one node with more than one period of experience"
+msgstr ""
+"il y doit y avoir au moins un noeud avec plus d'une période d'expérience"
+
+msgid "there must be more than one node"
+msgstr "il doit y avoir plus d'un noeud"
+
+msgid "missing values are not in the same positions in %s and in %s"
+msgstr ""
+"les données manquantes ne sont pas aux mêmes positions dans %s et dans %s"
+
+msgid "weights"
+msgstr "weights"
+
+msgid "ratios"
+msgstr "ratios"
+
+msgid "no available data to fit model"
+msgstr "aucune donnée disponible pour la modélisation"
+
+msgid "maximum number of iterations reached before obtaining convergence"
+msgstr "nombre d'itérations maximal atteint avant obtention de la convergence"
+
+msgid "unsupported interactions in %s"
+msgstr "interactions non supportées dans %s"
+
+msgid "formula"
+msgstr "formula"
+
+msgid "hierarchical regression models not supported"
+msgstr "modèles de régression hiérarchiques non supportés"
+
+msgid "ratios have to be supplied if weights are"
+msgstr "ratios requis s'il y a des poids"
+
+msgid "empty regression model; fitting with Buhlmann-Straub's model"
+msgstr "modèle de régression vide; utilisation du modèle de Bühlmann-Straub"
+
+msgid "invalid level name"
+msgstr "nom de niveau incorrect"
+
+msgid "coverage modifications must be positive"
+msgstr "les modifications de couverture doivent être positives"
+
+msgid "deductible must be smaller than the limit"
+msgstr "la franchise doit être inférieure à la limite"
+
+msgid "coinsurance must be between 0 and 1"
+msgstr "le facteur de coassurance doit être entre 0 et 1"
+
+msgid "%s must be supplied"
+msgstr "%s doit être fourni"
+
+msgid "cdf"
+msgstr "cdf"
+
+msgid "%s required with method %s"
+msgstr "%s requis pour la méthode %s"
+
+msgid "lev"
+msgstr "lev"
+
+msgid "unbiased"
+msgstr "unbiased"
+
+msgid "%s must be positive"
+msgstr "%s doit être positif"
+
+msgid "order"
+msgstr "order"
+
+msgid "%s not used when %s is specified"
+msgstr "%s non utilisé quand %s est fourni"
+
+msgid "nclass"
+msgstr "nclass"
+
+msgid "breaks"
+msgstr "breaks"
+
+msgid "%s ignored when %s is specified"
+msgstr "%s ignoré quand %s est fourni"
+
+msgid "group"
+msgstr "group"
+
+msgid "invalid number of group boundaries and frequencies"
+msgstr "nombre de bornes de groupe et de fréquences incorrect"
+
+msgid "missing frequencies replaced by zeros"
+msgstr "fréquences manquantes remplacées par des zéros"
+
+msgid ""
+"missing values are not in the same positions in 'weights' and in 'ratios'"
+msgstr ""
+"les données manquantes ne sont pas aux mêmes positions dans les poids et "
+"dans les ratios"
+
+msgid "there must be at least two nodes at every level"
+msgstr "il doit y avoir au moins deux noeuds à chaque niveau"
+
+msgid "invalid level number"
+msgstr "numéro de niveau incorrect"
+
+msgid "infinite group boundaries"
+msgstr "bornes de groupe infinies"
+
+msgid "%s is an alias for %s, however they differ."
+msgstr "%s est un alias pour %s, cependant ils diffèrent."
+
+msgid "probability"
+msgstr "probability"
+
+msgid "!freq"
+msgstr "!freq"
+
+msgid "%s must be a named list"
+msgstr "%s doit être une liste nommée"
+
+msgid "start"
+msgstr "start"
+
+msgid "%s must be supplied as a function"
+msgstr "%s doit être fourni en tant que fonction"
+
+msgid "fun"
+msgstr "fun"
+
+msgid "%s must be a numeric vector or an object of class %s"
+msgstr "%s doit être un vecteur numérique ou un objet de classe %s"
+
+msgid "grouped.data"
+msgstr "grouped.data"
+
+msgid "%s specifies names which are not arguments to %s"
+msgstr "%s contient des noms qui ne sont pas des arguments de %s"
+
+msgid "%s measure requires an object of class %s"
+msgstr "la mesure %s requiert un objet de classe %s"
+
+msgid "chi-square"
+msgstr "chi-square"
+
+msgid "frequency must be larger than 0 in all groups"
+msgstr "la fréquence doit être supérieure à 0 dans tous les groupes"
+
+msgid "LAS"
+msgstr "LAS"
+
+msgid "optimization failed"
+msgstr "l'optimisation a échoué"
+
+msgid "%s has many elements: only the first used"
+msgstr "%s contient plusieurs éléments: seul le premier est utilisé"
+
+msgid "p0"
+msgstr "p0"
+
+msgid "%s must be a valid probability (between 0 and 1)"
+msgstr "%s doit être une probabilité (entre 0 et 1)"
+
+msgid "value of %s ignored with a zero-truncated distribution"
+msgstr "valeur de %s ignorée pour une distribution zéro tronquée"
+
+msgid "value of %s missing"
+msgstr "valeur de %s manquante"
+
+msgid "lambda"
+msgstr "lambda"
+
+msgid "value of %s or %s missing"
+msgstr "valeur de %s ou %s manquante"
+
+msgid "prob"
+msgstr "prob"
+
+msgid "frequency distribution not in the (a, b, 0) or (a, b, 1) families"
+msgstr ""
+"la distribution de fréquence ne fait pas partie des familles (a, b, 0) ou "
+"(a, b, 1)"
+
+msgid "Pr[S = 0] is numerically equal to 0; impossible to start the recursion"
+msgstr ""
+"valeur de Pr[S = 0] numériquement nulle; impossible de démarrer le calcul "
+"récursif"
+
+msgid "nodes"
+msgstr "nodes"
+
+msgid "level names different in %s, %s and %s"
+msgstr "noms de niveaux différents dans %s, %s et %s"
+
+msgid "one of %s or %s must be non-NULL"
+msgstr "un de %s ou %s doit ne pas être NULL"
+
+msgid "nothing to do"
+msgstr "rien à faire"
+
+msgid "invalid %s specification"
+msgstr "valeur de %s incorrecte"
+
+msgid "by"
+msgstr "by"
+
+msgid "invalid first argument %s"
+msgstr "premier argument %s incorrect"
+
+msgid "n"
+msgstr "n"
+
+msgid "invalid values in %s"
+msgstr "valeurs incorrectes dans %s"
+
+msgid "no positive probabilities"
+msgstr "aucune probabilité positive"
+
+msgid "invalid third argument %s"
+msgstr "troisième argument %s incorrect"
+
+msgid "models"
+msgstr "models"
+
+msgid "par.claims"
+msgstr "par.claims"
+
+msgid "par.wait"
+msgstr "par.wait"
+
+msgid "parameters %s missing in %s"
+msgstr "paramètres %s manquants dans %s"
+
+msgid ","
+msgstr ","
+
+msgid "parameter %s missing in %s"
+msgstr "paramètre %s manquant dans %s"
+
+msgid "parameter %s or %s missing in %s"
+msgstr "paramètre %s ou %s manquant dans %s"
+
+msgid "rates"
+msgstr "rates"
+
+msgid "invalid parameters in %s"
+msgstr "paramètres incorrects dans %s"
+
+msgid "%s must be a vector or a matrix"
+msgstr "%s doit être un vecteur ou une matrice"

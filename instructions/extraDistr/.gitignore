@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.RDataTmp
+src/*.o
+src/*.so
+src/*.dll
+inst/doc
+revdep/*
+*.pdf
+CRAN-RELEASE
+CRAN-SUBMISSION
+..Rcheck/
+src/symbols.rds

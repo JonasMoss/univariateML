@@ -1,0 +1,34 @@
+Package: extraDistr
+Type: Package
+Title: Additional Univariate and Multivariate Distributions
+Version: 1.10.1
+Date: 2025-12-26
+Author: Tymoteusz Wolodzko
+Maintainer: Tymoteusz Wolodzko <twolodzko+extraDistr@gmail.com>
+Description: Density, distribution function, quantile function
+    and random generation for a number of univariate
+    and multivariate distributions. This package implements the
+    following distributions: Bernoulli, beta-binomial, beta-negative
+    binomial, beta prime, Bhattacharjee, Birnbaum-Saunders,
+    bivariate normal, bivariate Poisson, categorical, Dirichlet,
+    Dirichlet-multinomial, discrete gamma, discrete Laplace,
+    discrete normal, discrete uniform, discrete Weibull, Frechet,
+    gamma-Poisson, generalized extreme value, Gompertz,
+    generalized Pareto, Gumbel, half-Cauchy, half-normal, half-t,
+    Huber density, inverse chi-squared, inverse-gamma, Kumaraswamy,
+    Laplace, location-scale t, logarithmic, Lomax, multivariate
+    hypergeometric, multinomial, negative hypergeometric,
+    non-standard beta, normal mixture, Poisson mixture, Pareto,
+    power, reparametrized beta, Rayleigh, shifted Gompertz, Skellam,
+    slash, triangular, truncated binomial, truncated normal,
+    truncated Poisson, Tukey lambda, Wald, zero-inflated binomial,
+    zero-inflated negative binomial, zero-inflated Poisson.
+License: GPL-2
+URL: https://github.com/twolodzko/extraDistr
+BugReports: https://github.com/twolodzko/extraDistr/issues
+Encoding: UTF-8
+Depends: R (>= 3.1.0)
+LinkingTo: Rcpp
+Imports: Rcpp
+Suggests: testthat, LaplacesDemon, VGAM, evd, skellam, triangle, actuar
+RoxygenNote: 7.2.3

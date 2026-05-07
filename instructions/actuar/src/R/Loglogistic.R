@@ -1,0 +1,32 @@
+### actuar: Actuarial Functions and Heavy Tailed Distributions
+###
+### Definition of the {d,p,q,r}llogis functions to compute
+### characteristics of the loglogistic distribution. The version used
+### in these functions has cumulative distribution function
+###
+###   Pr[X <= x] = v/(1 + v), v = (x/scale)^shape, x > 0.
+###
+### See Appendix A of Klugman, Panjer & Willmot, Loss Models, Wiley.
+###
+### AUTHORS:  Mathieu Pigeon, Vincent Goulet <vincent.goulet@act.ulaval.ca>
+
+dllogis <- function (x, shape, rate = 1, scale = 1/rate, log = FALSE)
+     .External(C_actuar_do_dpq, "dllogis", x, shape, scale, log)
+
+pllogis <- function(q, shape, rate = 1, scale = 1/rate,
+                    lower.tail = TRUE, log.p = FALSE)
+     .External(C_actuar_do_dpq, "pllogis", q, shape, scale, lower.tail, log.p)
+
+qllogis <- function(p, shape, rate = 1, scale = 1/rate,
+                    lower.tail = TRUE, log.p = FALSE)
+     .External(C_actuar_do_dpq, "qllogis", p, shape, scale, lower.tail, log.p)
+
+rllogis <- function(n, shape, rate = 1, scale = 1/rate)
+     .External(C_actuar_do_random, "rllogis", n, shape, scale)
+
+mllogis <- function(order, shape, rate = 1, scale = 1/rate)
+     .External(C_actuar_do_dpq, "mllogis", order, shape, scale, FALSE)
+
+levllogis <- function(limit, shape, rate = 1, scale = 1/rate,
+                      order = 1)
+     .External(C_actuar_do_dpq, "levllogis", limit, shape, scale, order, FALSE)

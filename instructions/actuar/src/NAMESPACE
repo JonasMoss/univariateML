@@ -1,0 +1,145 @@
+### C code
+useDynLib(actuar, .registration = TRUE, .fixes = "C_")
+
+### Imports
+import(expint)                          # for C code
+import(stats, graphics)
+importFrom(utils, head, tail)
+
+### Exports
+export(
+    ## Credibility theory
+    cm,
+    ## Simulation of insurance data
+    rcompound, rcomppois, rmixture,
+    rcomphierarc, simul, severity, unroll,
+    ## Risk theory
+    aggregateDist, CTE, TVaR, discretize, discretise, VaR, adjCoef, ruin,
+    ## One parameter distributions
+    dinvexp, pinvexp, qinvexp, rinvexp, minvexp, levinvexp,
+    mexp, levexp, mgfexp,
+    dlogarithmic, plogarithmic, qlogarithmic, rlogarithmic,
+    dztpois, pztpois, qztpois, rztpois,
+    dztgeom, pztgeom, qztgeom, rztgeom,
+    ## Two parameter distributions
+    munif, levunif, mgfunif,
+    mnorm, mgfnorm,
+    mbeta, levbeta,
+    mgamma, levgamma, mgfgamma,
+    mchisq, levchisq, mgfchisq,
+    dinvgamma, pinvgamma, qinvgamma, rinvgamma, minvgamma, levinvgamma, mgfinvgamma,
+    dinvparalogis, pinvparalogis, qinvparalogis, rinvparalogis, minvparalogis, levinvparalogis,
+    dinvpareto, pinvpareto, qinvpareto, rinvpareto, minvpareto, levinvpareto,
+    dinvweibull, pinvweibull, qinvweibull, rinvweibull, minvweibull, levinvweibull,
+    dlgompertz, plgompertz, qlgompertz, rlgompertz, mlgompertz, levlgompertz, # aliases
+    dlgamma, plgamma, qlgamma, rlgamma, mlgamma, levlgamma,
+    dllogis, pllogis, qllogis, rllogis, mllogis, levllogis,
+    mlnorm, levlnorm,
+    dparalogis, pparalogis, qparalogis, rparalogis, mparalogis, levparalogis,
+    dpareto, ppareto, qpareto, rpareto, mpareto, levpareto,
+    dpareto1, ppareto1, qpareto1, rpareto1, mpareto1, levpareto1,
+    mweibull, levweibull,
+    ## minvGauss, levinvGauss, mgfinvGauss, [defunct v3.0-0]
+    dgumbel, pgumbel, qgumbel, rgumbel, mgumbel, mgfgumbel,
+    dinvgauss, pinvgauss, qinvgauss, rinvgauss, minvgauss, levinvgauss, mgfinvgauss,
+    dztnbinom, pztnbinom, qztnbinom, rztnbinom,
+    dztbinom, pztbinom, qztbinom, rztbinom,
+    dzmlogarithmic, pzmlogarithmic, qzmlogarithmic, rzmlogarithmic,
+    dzmpois, pzmpois, qzmpois, rzmpois,
+    dzmgeom, pzmgeom, qzmgeom, rzmgeom,
+    dpoisinvgauss, ppoisinvgauss, qpoisinvgauss, rpoisinvgauss,
+    dpig, ppig, qpig, rpig, # aliases
+    ## Three parameter distributions
+    dburr, pburr, qburr, rburr, mburr, levburr,
+    dgenpareto, pgenpareto, qgenpareto, rgenpareto, mgenpareto, levgenpareto,
+    dinvburr, pinvburr, qinvburr, rinvburr, minvburr, levinvburr,
+    dinvtrgamma, pinvtrgamma, qinvtrgamma, rinvtrgamma, minvtrgamma, levinvtrgamma,
+    dtrgamma, ptrgamma, qtrgamma, rtrgamma, mtrgamma, levtrgamma,
+    dpareto2, ppareto2, qpareto2, rpareto2, mpareto2, levpareto2,
+    dpareto3, ppareto3, qpareto3, rpareto3, mpareto3, levpareto3,
+    dzmnbinom, pzmnbinom, qzmnbinom, rzmnbinom,
+    dzmbinom, pzmbinom, qzmbinom, rzmbinom,
+    ## Four parameter distributions
+    dgenbeta, pgenbeta, qgenbeta, rgenbeta, mgenbeta, levgenbeta,
+    dtrbeta, ptrbeta, qtrbeta, rtrbeta, mtrbeta, levtrbeta,
+    dpearson6, ppearson6, qpearson6, rpearson6, mpearson6, levpearson6, #aliases
+    dpareto4, ppareto4, qpareto4, rpareto4, mpareto4, levpareto4,
+    ## Five parameter distributions
+    dfpareto, pfpareto, qfpareto, rfpareto, mfpareto, levfpareto,
+    ## Phase-type distributions
+    dphtype, pphtype, rphtype, mphtype, mgfphtype,
+    ## Loss distributions
+    grouped.data, ogive, emm, mde, elev, coverage, var, sd
+)
+
+### Methods
+S3method("[", grouped.data)
+S3method("[<-", grouped.data)
+
+S3method(aggregate, portfolio)
+
+S3method(CTE, aggregateDist)
+
+S3method(diff, aggregateDist)
+
+S3method(elev, default)
+S3method(elev, grouped.data)
+
+S3method(emm, default)
+S3method(emm, grouped.data)
+
+S3method(frequency, portfolio)
+
+S3method(hist, grouped.data)
+
+S3method(knots, ogive)
+S3method(knots, elev)
+
+S3method(mean, aggregateDist)
+S3method(mean, grouped.data)
+
+S3method(sd, default)
+S3method(sd, grouped.data)
+S3method(var, default)
+S3method(var, grouped.data)
+
+S3method(ogive, default)
+S3method(ogive, grouped.data)
+
+S3method(plot, adjCoef)
+S3method(plot, aggregateDist)
+S3method(plot, elev)
+S3method(plot, ogive)
+S3method(plot, ruin)
+
+S3method(predict, bstraub)
+S3method(predict, cm)
+S3method(predict, hache)
+S3method(predict, hierarc)
+S3method(predict, bayes)
+
+S3method(print, aggregateDist)
+S3method(print, elev)
+S3method(print, cm)
+S3method(print, mde)
+S3method(print, ogive)
+S3method(print, summary.ogive)
+S3method(print, portfolio)
+S3method(print, summary.aggregateDist)
+S3method(print, summary.cm)
+
+S3method(quantile, aggregateDist)
+S3method(quantile, grouped.data)
+
+S3method(severity, default)
+S3method(severity, portfolio)
+
+S3method(summary, aggregateDist)
+S3method(summary, cm)
+S3method(summary, grouped.data)
+S3method(summary, elev)
+S3method(summary, ogive)
+
+S3method(VaR, aggregateDist)
+
+S3method(weights, portfolio)

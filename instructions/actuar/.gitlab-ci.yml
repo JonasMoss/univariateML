@@ -1,0 +1,18 @@
+image: rocker/r-devel
+
+before_script:
+  - apt-get update
+  - apt-get install curl
+
+test:
+  script:
+    - curl "https://gitlab.com/vigou3/expint/-/package_files/57654679/download" -o expint_0.1-8.tar.gz
+    - RD CMD INSTALL expint_0.1-8.tar.gz
+    - RD CMD build src --no-build-vignettes --no-manual
+    - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
+    - R_MAKEVARS_USER="$PWD/Makevars" RD CMD check "${PKG_FILE_NAME}" --ignore-vignettes --no-manual
+  artifacts:
+    paths:
+      - expint.Rcheck/00install.out
+      - expint.Rcheck/00check.log
+    expire_in: 1 week  

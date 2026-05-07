@@ -1,0 +1,380 @@
+/*  actuar: Actuarial Functions and Heavy Tailed Distributions
+ *
+ *  Functions to compute density, cumulative distribution and quantile
+ *  functions, raw and limited moments and to simulate random variates
+ *  for the inverse gaussian distribution. See ../R/InverseGaussian.R
+ *  for details.
+ *
+ *  We work with the density expressed as
+ *
+ *    (2 pi phi x^3)^(-1/2) exp(- u^2/(2 phi x))
+ *
+ *  with u = (x - mu)/mu.
+ *
+ *  The code for functions [dpqr]invgauss() is a C implementation of
+ *  functions of the same functions in package statmod; see:
+ *
+ *     Giner, G. and Smyth, G. K. (2016), "statmod: Probability
+ *     Calculations for the Inverse Gaussian Distribution", R
+ *     Journal, vol. 8, no 1, p. 339-351.
+ *     https://journal.r-project.org/archive/2016-1/giner-smyth.pdf
+ *
+ *  AUTHOR (original R implementation): Gordon Smyth
+ *  AUTHOR (C implementation): Vincent Goulet <vincent.goulet@act.ulaval.ca>
+ */
+
+#include <R.h>
+#include <Rmath.h>
+#include "locale.h"
+#include "dpq.h"
+
+double dinvgauss(double x, double mu, double phi, int give_log)
+{
+#ifdef IEEE_754
+    if (ISNAN(x) || ISNAN(mu) || ISNAN(phi))
+	return x + mu + phi;
+#endif
+    if (mu <= 0.0)
+        return R_NaN;
+    if (phi <= 0)
+    {
+	if (phi < 0) return R_NaN;
+	/* phi == 0 */
+	return (x == 0.0) ? R_PosInf : ACT_D__0;
+    }
+
+    if (!R_FINITE(x) || x < 0.0)
+	return ACT_D__0;
+
+    /* limiting case phi = Inf: spike at zero */
+    if (x == 0)
+	return R_FINITE(phi) ? ACT_D__0 : R_PosInf;
+
+    /* limiting case mu = Inf: inverse chi-square distribution [a.k.a
+     * inverse gamma with shape = 1/2, scale = 1/(2 * phi)] */
+    if (!R_FINITE(mu))
+	return ACT_D_exp(-(log(phi) + 3 * log(x) + 1/phi/x)/2 - M_LN_SQRT_2PI);
+
+    /* standard cases */
+    x = x/mu;
+    phi = phi * mu;
+
+    return ACT_D_exp(-(log(phi) + 3 * log(x) + R_pow_di(x - 1, 2)/phi/x)/2
+		     - M_LN_SQRT_2PI - log(mu));
+}
+
+/* This is used in pinvgauss() for limit cases. */
+#define PSMALLCV2 1e-14
+#define RIGHTLARGEQUANTILE 1e6
+#define RIGHTLARGEQUANTILEMOD 5e5
+
+double pinvgauss(double q, double mu, double phi, int lower_tail, int log_p)
+{
+#ifdef IEEE_754
+    if (ISNAN(q) || ISNAN(mu) || ISNAN(phi))
+	return q + mu + phi;
+#endif
+    if (mu <= 0.0)
+        return R_NaN;
+    if (phi <= 0)
+    {
+	if (phi < 0) return R_NaN;
+	/* phi == 0 : */
+	return (q == 0) ? ACT_DT_0 : ACT_DT_1;
+    }
+
+    if (q < 0)
+        return ACT_DT_0;
+
+    /* limiting case phi = Inf */
+    if (q == 0)
+	return R_FINITE(phi) ? ACT_DT_0 : ACT_DT_1;
+
+    if (!R_FINITE(q))
+	return ACT_DT_1;
+
+    /* limiting case mu = Inf */
+    if (!R_FINITE(mu))
+	return pchisq(1/q/phi, 1, !lower_tail, log_p);
+
+    /* standard cases */
+    double qm = q/mu;
+    double phim = phi * mu;
+
+    /* gamma approximation when the coefficient of variation phi * mu
+       is very small */
+    if (phim < PSMALLCV2)
+	return ACT_D_exp(pgamma(q, 1/phim, phim * mu, /* l._t. */1, /* log_p */1));
+
+    /* approximation for (survival) probabilities in the far right tail */
+    if (!lower_tail && qm > RIGHTLARGEQUANTILE)
+    {
+	double r = qm/2/phim;
+	if (r > RIGHTLARGEQUANTILEMOD)
+	    return ACT_D_exp(1/phim - M_LN_SQRT_PI - log(2*phim) - 1.5 * log1p(r) - r);
+    }
+
+    /* all other probabilities */
+    double r = sqrt(q * phi);
+    double a = pnorm((qm - 1)/r, 0, 1, lower_tail, /* log_p */1);
+    double b = 2/phim + pnorm(-(qm + 1)/r, 0, 1, /* l._t. */1, /* log_p */1);
+
+    return ACT_D_exp(a + (lower_tail ? log1p(exp(b - a)) : log1mexp(a - b)));
+}
+
+/* This is used in nrstep() to return either dx or -dx. */
+#define ACT_S_val(x) (lower_tail ? x : -x)
+
+/* Needed by qinvgauss() for Newton-Raphson iterations. */
+double nrstep(double x, double p, double logp, double phi, int lower_tail)
+{
+    double logF = pinvgauss(x, 1, phi, lower_tail, /*log.p*/1);
+    double dlogp = logp - logF;
+
+    return ACT_S_val(((fabs(dlogp) < 1e-5) ? dlogp * exp(logp + log1p(-dlogp/2)) :
+		      p - exp(logF)) / dinvgauss(x, 1, phi, 0));
+}
+
+/* This is used in qinvgauss() for limit cases. */
+#define QSMALLCV2 1e-8
+#define LARGEKAPPA 1e3
+#define LEFTSMALLPROBLOG -11.51
+#define RIGHTSMALLPROBLOG -1e-5
+
+double qinvgauss(double p, double mu, double phi, int lower_tail, int log_p,
+		 double tol, int maxit, int echo)
+{
+#ifdef IEEE_754
+    if (ISNAN(p) || ISNAN(mu) || ISNAN(phi))
+	return p + mu + phi;
+#endif
+    if (mu <= 0.0 || phi <= 0.0)
+        return R_NaN;
+
+    /* limiting case phi = Inf */
+    if (!R_FINITE(phi))
+	return 1.0;
+
+    /* limiting case mu = Inf */
+    if (!R_FINITE(mu))
+	return 1/phi/qchisq(p, 1, !lower_tail, log_p);
+
+    ACT_Q_P01_boundaries(p, 0, R_PosInf);
+
+    /* must be able to do at least one iteration */
+    if (maxit < 1)
+	error(_("maximum number of iterations must be at least 1"));
+
+    int i = 1;
+    double logp, kappa, mode, x, dx, s;
+
+    /* make sure we have both p and log(p) for the sequel */
+    if (log_p)
+    {
+	logp = p;
+	p = exp(p);
+    }
+    else
+	logp = log(p);
+
+    /* convert to mean = 1 */
+    phi *= mu;
+
+    /* gamma approximation when the coefficient of variation phi * mu
+       is very small; here we have mean = 1 */
+    if (phi < QSMALLCV2)
+	return mu * qgamma(logp, 1/phi, phi, /* l._t. */1, /* log_p */1);
+
+    /* mode */
+    kappa = 1.5 * phi;
+    if (kappa <= LARGEKAPPA)
+	mode = sqrt(1 + kappa * kappa) - kappa;
+    else			/* Taylor series correction */
+    {
+	double k = 1.0/2.0/kappa;
+	mode = k * (1 - k * k);
+    }
+
+    /* starting value: inverse chi squared for small left tail prob;
+     * qgamma for small right tail prob; mode otherwise */
+    if (logp < LEFTSMALLPROBLOG)
+	x = lower_tail ? 1/phi/R_pow_di(qnorm(logp, 0, 1, lower_tail, 1), 2)
+	    : fmax2(mode, qgamma(logp, 1/phi, phi, lower_tail, 1));
+    else if (logp > RIGHTSMALLPROBLOG)
+	x = lower_tail ? qgamma(logp, 1/phi, phi, lower_tail, 1)
+	    : fmax2(mode, 1/phi/R_pow_di(qnorm(logp, 0, 1, lower_tail, 1), 2));
+    else
+	x = mode;
+
+    /* if echoing iterations, start by printing the header and the
+     * first value */
+    if (echo)
+        Rprintf("iter\tadjustment\tquantile\n%d\t   ----   \t%.8g\n",
+                0, x);
+
+    /* first Newton-Raphson outside the loop to retain the sign of
+     * the adjustment */
+    dx = nrstep(x, p, logp, phi, lower_tail);
+    s = sign(dx);
+    x += dx;
+
+    if (echo)
+	Rprintf("%d\t%-14.8g\t%.8g\n", i, dx, x);
+
+    /* now do the iterations */
+    do
+    {
+	i++;
+	if (i > maxit)
+	{
+	    warning(_("maximum number of iterations reached before obtaining convergence"));
+	    break;
+	}
+
+	dx = nrstep(x, p, logp, phi, lower_tail);
+
+	/* change of sign indicates that machine precision has been overstepped */
+	if (dx * s < 0)
+	    dx = 0;
+	else
+	    x += dx;
+
+	if (echo)
+	    Rprintf("%d\t%-14.8g\t%.8g\n", i, dx, x);
+
+    } while (fabs(dx) > tol);
+
+    return x * mu;
+}
+
+/* This is used in rinvgauss() as the threshold for a "large" value of
+ * y * phi. */
+#define YPHILARGE 5e5
+
+double rinvgauss(double mu, double phi)
+{
+    if (mu <= 0.0 || phi <= 0.0)
+        return R_NaN;
+
+    /* limiting case phi = Inf */
+    if (!R_FINITE(phi))
+	return 0.0;
+
+    /* limiting case mu = Inf */
+    if (!R_FINITE(mu))
+	return 1/phi/rchisq(1);
+
+    /* generate y and convert to mean = 1 */
+    double yphi = R_pow_di(rnorm(0, 1), 2) * phi * mu;
+
+    /* Taylor series is more accurate when y * phi is large */
+    double x;
+    if (yphi > YPHILARGE)
+	x = 1/yphi;
+    else
+        x = 1 + yphi/2 * (1 - sqrt(1 + 4/yphi));
+
+    return mu * ((unif_rand() <= 1/(1 + x)) ? x : 1/x);
+}
+
+double minvgauss(double order, double mu, double phi, int give_log)
+{
+#ifdef IEEE_754
+    if (ISNAN(order) || ISNAN(mu) || ISNAN(phi))
+	return order + mu + phi;
+#endif
+    if (mu <= 0.0 || phi <= 0.0 ||
+	order < 0 || ACT_nonint(order))
+        return R_NaN;
+
+    /* trivial case */
+    if (order == 0.0)
+        return 0.0;
+
+    /* limiting case phi = Inf */
+    if (!R_FINITE(phi))
+	return 0.0;
+
+    /* limiting case mu = Inf */
+    /* [no finite strictly positive, integer moments] */
+    if (!R_FINITE(mu))
+	return R_PosInf;
+
+    int i, k = order;
+    double term, s, phir = phi * mu/2;
+
+    s = term = 1.0;		/* first term (i = 0) */
+
+    for (i = 1; i < k; i++)
+    {
+	term *= ((k + i - 1) * (k - i)/i) * phir;
+	s += term;
+    }
+
+    return R_pow_di(mu, k) * s;
+}
+
+/*  The lev function is very similar to the pdf. It can be written as
+ *
+ *    levinvgauss(x; mu, phi) = mu [pnorm((xm - 1)/r)
+ *                                 - exp(2/phim) pnorm(-(xm + 1)/r)]
+ *                             + x (1 - pinvgauss(x; mu, phi)
+ *
+ *  where xm = x/mu, phim = phi * mu, r = sqrt(x * phi).
+ */
+double levinvgauss(double limit, double mu, double phi, double order,
+                   int give_log)
+{
+#ifdef IEEE_754
+    if (ISNAN(limit) || ISNAN(mu) || ISNAN(phi) || ISNAN(order))
+	return limit + mu + phi + order;
+#endif
+    if (mu <= 0.0 || phi < 0.0 || order != 1.0)
+        return R_NaN;
+
+    if (limit <= 0.0 || !R_FINITE(phi))
+        return 0.0;
+
+    if (!R_FINITE(limit) || !R_FINITE(mu))
+	return mu;
+
+    /* calculations very similar to those in pinvgauss(); we do
+     * everything here and avoid calling the latter */
+    double xm = limit/mu, phim = phi * mu, r = sqrt(limit * phi);
+    double x = (xm - 1)/r;
+    double a = pnorm(x, 0, 1, /*l._t.*/1, /* log_p */1);
+    double ap = pnorm(x, 0, 1, /*l._t.*/0, /* log_p */1);
+    double b = 2/phim + pnorm(-(xm + 1)/r, 0, 1, /* l._t. */1, /* log_p */1);
+
+    return mu * exp(a + log1mexp(a - b))
+	+ limit * exp(ap + log1mexp(ap - b));
+}
+
+double mgfinvgauss(double t, double mu, double phi, int give_log)
+{
+#ifdef IEEE_754
+    if (ISNAN(t) || ISNAN(mu) || ISNAN(phi))
+	return t + mu + phi;
+#endif
+    if (mu <= 0.0 || phi < 0.0 ||
+        t > 1/phi/(2.0 * mu * mu))
+        return R_NaN;
+
+    /* trivial case */
+    if (t == 0.0)
+        return ACT_D__1;
+
+    /* limiting case phi = Inf */
+    if (!R_FINITE(phi))
+	return ACT_D__0;
+
+    /* limiting case mu = Inf */
+    if (!R_FINITE(mu))
+	return R_PosInf;
+
+    /* convert to mean = 1 */
+    phi *= mu;
+    t *= mu;
+
+    return ACT_D_exp((1 - sqrt(1 - 2 * phi * t))/phi);
+}

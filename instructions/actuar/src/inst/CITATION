@@ -1,0 +1,26 @@
+p1 <- person("Christophe", "Dutang", email = "dutang@ceremade.dauphine.fr")
+p2 <- person("Vincent", "Goulet", email = "vincent.goulet@act.ulaval.ca")
+p3 <- person("Nicholas", "Langevin")
+p4 <- person("Mathieu", "Pigeon", email = "pigeon.mathieu.2@uqam.ca")
+
+bibentry(bibtype = "Article",
+         title = "actuar: An {R} Package for Actuarial Science",
+         author = c(p1, p2, p4),
+         journal = "Journal of Statistical Software",
+	 year = "2008",
+	 volume = "25",
+	 number = "7",
+	 pages = "1--37",
+	 doi = "10.18637/jss.v025.i07",
+         header = "To cite actuar in publications use:")
+
+bibentry(bibtype = "Article",
+         title = "{F}eller-{P}areto and Related Distributions: Numerical Implementation and Actuarial Applications",
+         author = c(p1, p2, p3),
+         journal = "Journal of Statistical Software",
+         year = "2022",
+         volume = "103",
+         number = "6",
+         pages  = "1--22",
+         doi    = "10.18637/jss.v103.i06",
+         header = "For the implementation of the Feller-Pareto family of distributions, use:")
