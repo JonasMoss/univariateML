@@ -501,6 +501,88 @@ TEST_CASE("fatigue: analytical Hessian agrees with FD") {
   CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
 }
 
+// --- boundary-non-regular estimators --------------------------------------
+//
+// Pareto, Uniform, DUnif, Power, Zipf have at least one parameter on the
+// support boundary. The MLE for the boundary parameter sits AT the
+// boundary and is NOT asymptotically normal. The Hessian formula in the
+// smooth interior is still well-defined and is what we test here; Phase 4
+// will mark the corresponding row/col as NaN via regular_params().
+//
+// Tests evaluate at theta_test slightly inside the smooth region (not at
+// the MLE itself, which is on the boundary and FD across the boundary
+// would return Inf).
+
+TEST_CASE("pareto: analytical Hessian agrees with FD (smooth interior)") {
+  auto g = load("pareto");
+  auto fit = mlcore::pareto_mle(mltest::as_span(g.data));
+  // Test at b = b_hat * 0.99 so b < min(x) strictly.
+  const double theta[] = {fit.shape, fit.min * 0.99};
+  mlcore::ParetoCost cost{mltest::as_span(g.data)};
+  CHECK(cost.regular_params() == std::vector<int>{1, 0});
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("unif: analytical Hessian agrees with FD (smooth interior)") {
+  auto g = load("unif");
+  auto fit = mlcore::unif_mle(mltest::as_span(g.data));
+  // Pad both endpoints so all data sits strictly inside [a, b].
+  const double pad = 0.05 * (fit.max - fit.min);
+  const double theta[] = {fit.min - pad, fit.max + pad};
+  mlcore::UnifCost cost{mltest::as_span(g.data)};
+  CHECK(cost.regular_params() == std::vector<int>{0, 0});
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  // Use absolute tolerance since H is sign-indefinite (negative diagonal):
+  // hessian_close still works because it includes max(|a|,|b|, ref).
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("dunif: analytical Hessian agrees with FD (smooth interior)") {
+  auto g = load("dunif");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::dunif_mle(as_ispan(v));
+  const double theta[] = {fit.min - 1.0, fit.max + 1.0};
+  mlcore::DiscreteUnifCost cost{as_ispan(v)};
+  CHECK(cost.regular_params() == std::vector<int>{0, 0});
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("power: analytical Hessian agrees with FD (smooth interior)") {
+  auto g = load("power");
+  auto fit = mlcore::power_mle(mltest::as_span(g.data), 1.490116e-08);
+  // alpha is the upper bound — push slightly above max(x).
+  double xmax = 0.0;
+  for (double v : g.data) if (v > xmax) xmax = v;
+  const double theta[] = {xmax * 1.01, fit.beta};
+  mlcore::PowerCost cost{mltest::as_span(g.data)};
+  CHECK(cost.regular_params() == std::vector<int>{0, 1});
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("zipf: analytical Hessian agrees with FD (1-D in s, N fixed)") {
+  auto g = load("zipf");
+  auto v = as_ints(g.data);
+  auto fit = mlcore::zipf_mle(as_ispan(v), 1.220703e-4, 100);
+  mlcore::ZipfCost cost{as_ispan(v), fit.N};
+  CHECK(cost.regular_params() == std::vector<int>{1});
+  const double theta[] = {fit.shape};
+  double H_anal[1], H_fd[1];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
+}
+
 TEST_CASE("laplace: Hessian equals Fisher info diag(n/s^2, n/s^2)") {
   auto g = load("laplace");
   auto fit = mlcore::laplace_mle(mltest::as_span(g.data));

@@ -23,6 +23,67 @@ struct ZipfResult {
   ZipfStatus status;
 };
 
+// Negative log-likelihood of Zipf(N, shape=s), with N fixed at max(x):
+//   pmf: f(x; N, s) = x^{-s} / H_N(s),  H_N(s) = sum_{k=1..N} k^{-s}
+//   log f = -s*log(x) - log(H_N(s))
+// Hessian wrt s only (N is the integer support boundary, fitted by N_hat
+// = max(x) — non-regular). Per-obs:
+//   H_ss/obs = H_N''/H_N - (H_N'/H_N)^2 = Var_Zipf(log(K))
+// where K is a Zipf(N, s) random variable. Always positive (it's the
+// per-observation Fisher information for s).
+//
+// Cost is 1-D in s with N as a constructor field, mirroring BinomCost's
+// treatment of `size`. Phase 4 will surface a 2x2 vcov with NaN on the
+// N row/col via regular_params() = {0, 1} on the wrapper side.
+struct ZipfCost {
+  ispan x;
+  double N;  // fixed; passed in by the wrapper
+  int dim() const { return 1; }
+  std::vector<int> regular_params() const { return {1}; }
+  double operator()(const double *theta) const {
+    const double s = theta[0];
+    if (!(s > 0.0)) return std::numeric_limits<double>::infinity();
+    double H = 0.0;
+    const int Nint = static_cast<int>(N);
+    for (int k = 1; k <= Nint; ++k) H += std::pow(static_cast<double>(k), -s);
+    double S_lx = 0.0;
+    for (auto v : x) S_lx += std::log(static_cast<double>(v));
+    const double n = static_cast<double>(x.size());
+    return s * S_lx + n * std::log(H);
+  }
+  void gradient(const double *theta, double *g) const {
+    const double s = theta[0];
+    double H = 0.0, Hp = 0.0;
+    const int Nint = static_cast<int>(N);
+    for (int k = 1; k <= Nint; ++k) {
+      const double kd = static_cast<double>(k);
+      const double kns = std::pow(kd, -s);
+      H += kns;
+      Hp += -kns * std::log(kd);
+    }
+    double S_lx = 0.0;
+    for (auto v : x) S_lx += std::log(static_cast<double>(v));
+    const double n = static_cast<double>(x.size());
+    g[0] = S_lx + n * Hp / H;
+  }
+  void hessian(const double *theta, double *H_out) const {
+    const double s = theta[0];
+    double H = 0.0, Hp = 0.0, Hpp = 0.0;
+    const int Nint = static_cast<int>(N);
+    for (int k = 1; k <= Nint; ++k) {
+      const double kd = static_cast<double>(k);
+      const double kns = std::pow(kd, -s);
+      const double lk = std::log(kd);
+      H += kns;
+      Hp += -kns * lk;
+      Hpp += kns * lk * lk;
+    }
+    const double Hp_over_H = Hp / H;
+    const double n = static_cast<double>(x.size());
+    H_out[0] = n * (Hpp / H - Hp_over_H * Hp_over_H);
+  }
+};
+
 inline ZipfResult zipf_mle(ispan x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
