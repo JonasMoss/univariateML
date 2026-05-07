@@ -443,6 +443,30 @@ TEST_CASE("invburr: analytical Hessian agrees with FD") {
   CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
 }
 
+// --- non-smooth: Laplace returns Fisher info, not observed info ----------
+//
+// We don't compare to FD-Hessian for Laplace: FD on `sum |x - mu|` over a
+// stencil step h sees the kink and returns zero second-derivative noise
+// for the mu direction, which doesn't match the (correct) Fisher info.
+// Instead, assert directly that H equals the closed-form Fisher info at
+// the MLE: diag(n/sigma^2, n/sigma^2). This is the asymptotic-variance
+// matrix that gives correct Wald SEs (median ~ N(mu, sigma^2/n)).
+
+TEST_CASE("laplace: Hessian equals Fisher info diag(n/s^2, n/s^2)") {
+  auto g = load("laplace");
+  auto fit = mlcore::laplace_mle(mltest::as_span(g.data));
+  mlcore::LaplaceCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.mu, fit.sigma};
+  double H[4];
+  cost.hessian(theta, H);
+  const double n = static_cast<double>(g.data.size());
+  const double s2 = fit.sigma * fit.sigma;
+  CHECK(H[0] == doctest::Approx(n / s2).epsilon(kFisherTol));
+  CHECK(H[1] == 0.0);
+  CHECK(H[2] == 0.0);
+  CHECK(H[3] == doctest::Approx(n / s2).epsilon(kFisherTol));
+}
+
 // --- Layer 2: analytical vs closed-form Fisher information at MLE ----------
 //
 // For regular families with a closed-form Fisher information per observation,
