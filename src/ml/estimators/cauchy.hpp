@@ -24,6 +24,66 @@ struct CauchyResult {
   int iterations;
 };
 
+// Negative log-likelihood of Cauchy(mu, scale=s):
+//   log f = -log(pi) - log(s) - log(1 + ((x-mu)/s)^2)
+//   nll = -sum log f.
+// Per-obs Hessian (z = (x-mu)/s):
+//   H_mm = 2(1-z^2) / (s^2 (1+z^2)^2)
+//   H_ms = 4z       / (s^2 (1+z^2)^2)
+//   H_ss = (z^4 + 4z^2 - 1) / (s^2 (1+z^2)^2)
+struct CauchyCost {
+  span x;
+  int dim() const { return 2; }
+  double operator()(const double *theta) const {
+    const double mu = theta[0];
+    const double s = theta[1];
+    if (!(s > 0.0)) return std::numeric_limits<double>::infinity();
+    const double n = static_cast<double>(x.size());
+    double sum = 0.0;
+    for (auto v : x) {
+      const double z = (v - mu) / s;
+      sum += std::log(1.0 + z * z);
+    }
+    return n * (std::log(M_PI) + std::log(s)) + sum;
+  }
+  void gradient(const double *theta, double *g) const {
+    const double mu = theta[0];
+    const double s = theta[1];
+    const double n = static_cast<double>(x.size());
+    double dnll_dmu = 0.0, dnll_ds = 0.0;
+    for (auto v : x) {
+      const double z = (v - mu) / s;
+      const double w = 1.0 / (1.0 + z * z);
+      // d log f / dmu = 2z / (s(1+z^2)) = 2z*w/s
+      // d log f / ds  = -1/s + 2z^2/(s(1+z^2)) = (2z^2*w - 1)/s
+      dnll_dmu += -2.0 * z * w / s;
+      dnll_ds += -(2.0 * z * z * w - 1.0) / s;
+    }
+    g[0] = dnll_dmu;
+    g[1] = dnll_ds;
+    (void)n;
+  }
+  void hessian(const double *theta, double *H) const {
+    const double mu = theta[0];
+    const double s = theta[1];
+    const double s2 = s * s;
+    double H_mm = 0.0, H_ms = 0.0, H_ss = 0.0;
+    for (auto v : x) {
+      const double z = (v - mu) / s;
+      const double zz = z * z;
+      const double w = 1.0 / (1.0 + zz);
+      const double w2 = w * w;
+      H_mm += 2.0 * (1.0 - zz) * w2;
+      H_ms += 4.0 * z * w2;
+      H_ss += (zz * zz + 4.0 * zz - 1.0) * w2;
+    }
+    H[0] = H_mm / s2;
+    H[1] = H_ms / s2;
+    H[2] = H[1];
+    H[3] = H_ss / s2;
+  }
+};
+
 inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kEps = std::numeric_limits<double>::epsilon();

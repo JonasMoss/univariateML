@@ -24,6 +24,72 @@ struct LogisticResult {
   int iterations;
 };
 
+// Negative log-likelihood of Logistic(mu, scale=s):
+//   log f = -z - log(s) - 2 log(1 + e^{-z}),  z = (x-mu)/s.
+// Per-obs Hessian (P = 1/(1+e^{-z}), so 2 P (1-P) = sech^2(z/2)/2):
+//   H_mm = 2 P(1-P) / s^2
+//   H_ms = (2P - 1 + 2 P(1-P) z) / s^2
+//   H_ss = (2(2P-1) z + 2 P(1-P) z^2 - 1) / s^2
+struct LogisticCost {
+  span x;
+  int dim() const { return 2; }
+  double operator()(const double *theta) const {
+    const double mu = theta[0];
+    const double s = theta[1];
+    if (!(s > 0.0)) return std::numeric_limits<double>::infinity();
+    const double n = static_cast<double>(x.size());
+    double acc = 0.0;
+    for (auto v : x) {
+      const double z = (v - mu) / s;
+      // numerically stable: log(1 + e^{-z}) = max(0,-z) + log1p(exp(-|z|))
+      const double az = std::fabs(z);
+      const double log1pe = std::log1p(std::exp(-az)) + (z < 0.0 ? -z : 0.0);
+      acc += -z - 2.0 * log1pe;
+    }
+    return n * std::log(s) - acc;
+  }
+  void gradient(const double *theta, double *g) const {
+    const double mu = theta[0];
+    const double s = theta[1];
+    double dnll_dmu = 0.0, dnll_ds = 0.0;
+    const double n = static_cast<double>(x.size());
+    for (auto v : x) {
+      const double z = (v - mu) / s;
+      // P = 1/(1+e^{-z}); stable for z in either sign.
+      const double P = (z >= 0.0)
+                           ? 1.0 / (1.0 + std::exp(-z))
+                           : std::exp(z) / (1.0 + std::exp(z));
+      // dlogf/dmu = (2P-1)/s; dlogf/ds = -[(1-2P) z + 1]/s.
+      dnll_dmu += -(2.0 * P - 1.0) / s;
+      dnll_ds += ((1.0 - 2.0 * P) * z + 1.0) / s;
+    }
+    g[0] = dnll_dmu;
+    g[1] = dnll_ds;
+    (void)n;
+  }
+  void hessian(const double *theta, double *H) const {
+    const double mu = theta[0];
+    const double s = theta[1];
+    const double s2 = s * s;
+    double H_mm = 0.0, H_ms = 0.0, H_ss = 0.0;
+    for (auto v : x) {
+      const double z = (v - mu) / s;
+      const double P = (z >= 0.0)
+                           ? 1.0 / (1.0 + std::exp(-z))
+                           : std::exp(z) / (1.0 + std::exp(z));
+      const double PQ = P * (1.0 - P);
+      const double two_Pm1 = 2.0 * P - 1.0;
+      H_mm += 2.0 * PQ;
+      H_ms += two_Pm1 + 2.0 * PQ * z;
+      H_ss += 2.0 * two_Pm1 * z + 2.0 * PQ * z * z - 1.0;
+    }
+    H[0] = H_mm / s2;
+    H[1] = H_ms / s2;
+    H[2] = H[1];
+    H[3] = H_ss / s2;
+  }
+};
+
 inline LogisticResult logistic_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
 

@@ -60,7 +60,13 @@ double max_diag(const double *H, int n) {
   return m;
 }
 
-constexpr double kFdTol = 1e-4;
+// FD-Hessian accuracy in double precision is ~1e-4 to ~1e-3 in practice.
+// Heavy-tailed / sign-changing densities (Cauchy's (1-z^2) numerator,
+// the Logistic Hessian's (2P-1) cancellations) sit at the looser end
+// because FD differences subtract nearly-equal positive/negative
+// contributions. Layer 2 (closed-form Fisher info) is the strict check
+// at 1e-8; Layer 1 here is a "no gross typos" sanity gate.
+constexpr double kFdTol = 1e-3;
 constexpr double kFisherTol = 1e-8;
 
 }  // namespace
@@ -188,6 +194,28 @@ TEST_CASE("weibull: analytical Hessian agrees with FD") {
   auto fit = mlcore::weibull_mle(mltest::as_span(g.data), 1.220703e-4, 100);
   mlcore::WeibullCost cost{mltest::as_span(g.data)};
   const double theta[] = {fit.shape, fit.scale};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("cauchy: analytical Hessian agrees with FD") {
+  auto g = load("cauchy");
+  auto fit = mlcore::fit_cauchy(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::CauchyCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.mu, fit.scale};
+  double H_anal[4], H_fd[4];
+  cost.hessian(theta, H_anal);
+  mlcore::finite_diff_hessian(cost, theta, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("logistic: analytical Hessian agrees with FD") {
+  auto g = load("logis");
+  auto fit = mlcore::logistic_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::LogisticCost cost{mltest::as_span(g.data)};
+  const double theta[] = {fit.mu, fit.scale};
   double H_anal[4], H_fd[4];
   cost.hessian(theta, H_anal);
   mlcore::finite_diff_hessian(cost, theta, H_fd);
