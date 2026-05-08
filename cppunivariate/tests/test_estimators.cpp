@@ -31,7 +31,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "../../src/cppunivariate/ml.hpp"
+#include "cppunivariate/cppunivariate.hpp"
 #include "json_loader.hpp"
 
 #include <cstdlib>

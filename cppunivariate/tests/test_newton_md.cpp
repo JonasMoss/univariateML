@@ -5,9 +5,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "../../src/cppunivariate/core/cholesky.hpp"
-#include "../../src/cppunivariate/core/finite_diff.hpp"
-#include "../../src/cppunivariate/core/newton_md.hpp"
+#include "cppunivariate/core/cholesky.hpp"
+#include "cppunivariate/core/finite_diff.hpp"
+#include "cppunivariate/core/newton_md.hpp"
 
 #include <cmath>
 

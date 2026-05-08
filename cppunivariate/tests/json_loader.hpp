@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "../../src/cppunivariate/core/span.hpp"
+#include "cppunivariate/core/span.hpp"
 
 #include <cstddef>
 #include <fstream>

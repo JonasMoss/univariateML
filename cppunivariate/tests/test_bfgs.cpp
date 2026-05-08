@@ -5,9 +5,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "../../src/cppunivariate/core/bfgs.hpp"
-#include "../../src/cppunivariate/core/finite_diff.hpp"
-#include "../../src/cppunivariate/core/reparam.hpp"
+#include "cppunivariate/core/bfgs.hpp"
+#include "cppunivariate/core/finite_diff.hpp"
+#include "cppunivariate/core/reparam.hpp"
 
 #include <cmath>
 

@@ -1,5 +1,5 @@
 #include "cppunivariate/core/rcpp_glue.hpp"
-#include "cppunivariate/ml.hpp"
+#include "cppunivariate/cppunivariate.hpp"
 #include <Rcpp.h>
 
 // [[Rcpp::export]]
