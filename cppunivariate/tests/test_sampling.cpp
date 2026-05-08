@@ -1,4 +1,4 @@
-// Standalone tests for the portable samplers under src/ml/distributions/.
+// Standalone tests for the portable samplers under cppunivariate/include/cppunivariate/distributions/.
 // Drives them with StdRng (std::mt19937_64-backed) so the tests run without
 // any R install; complements the R-side testthat coverage that exercises the
 // same code through the RRng adapter.

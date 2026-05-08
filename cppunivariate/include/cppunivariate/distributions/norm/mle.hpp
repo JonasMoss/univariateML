@@ -1,7 +1,6 @@
 // Normal MLE: closed form.
 //
 // Standalone C++ implementation, free of R / Armadillo dependencies.
-// Migrated from src/ml/ml.hpp during the WS1 de-Armadillo sweep.
 //
 // The negative-log-likelihood Cost (`NormCost`) carries the data and exposes
 // `operator()`, `gradient`, and `hessian` — the latter is the analytical

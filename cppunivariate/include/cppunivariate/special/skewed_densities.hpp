@@ -1,7 +1,7 @@
 // Pure-libm scalar density helpers for the skew-symmetric family
 // (snorm, std, sstd, ged, sged) plus the small bag of utility helpers
 // (sign1, heaviside, ged_lambda, ged_g, *_sigma) shared by the estimator
-// path and the dpqr Rcpp wrappers in src/distributions/.
+// path and the per-distribution dpqr.hpp templates.
 //
 // `log_d*_unit` / `log_d*_core` are closed-form log-densities used by the
 // BFGS estimator path — independent of the math backend so the standalone

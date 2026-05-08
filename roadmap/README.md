@@ -48,3 +48,6 @@ the queue.
 - [2026-05-08 — Variable parameter selection](2026-05-08-variable-parameter-selection.md):
   let users fix some canonical parameters and estimate the rest;
   motivating example is fatigue with/without a location shift.
+- [2026-05-08 — R package scope](2026-05-08-r-package-scope.md):
+  trim the R package to ML only, let extraDistr / actuar provide
+  d/p/q/r through Imports so we don't fight R's flat man-page space.

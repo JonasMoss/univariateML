@@ -6,10 +6,9 @@
 //  3. Asserts each parameter and the logLik to 1e-10 vs the recorded values.
 //
 // The R-side test_golden_regression.R checks the same thing through the
-// Rcpp wrapper layer at 1e-12. This C++ harness verifies the analog from
+// R wrapper layer at 1e-12. This C++ harness verifies the analog from
 // the standalone side: refactors that don't change algorithms must
-// reproduce the goldens, even with no R install on PATH (once WS3 task #4
-// vendors a standalone Rmath build).
+// reproduce the goldens, even with no R install on PATH.
 //
 // Estimate-key mapping
 // --------------------
@@ -42,7 +41,7 @@ namespace {
 
 // Relative tolerance vs the goldens. R-side is 1e-12; we hold ourselves to
 // 1e-10 here to absorb the trivial FP drift that comes from skipping the
-// Rcpp wrapper layer (e.g. one fewer assignment-induced rounding).
+// R wrapper layer (e.g. one fewer assignment-induced rounding).
 constexpr double kTol = 1e-10;
 
 std::string golden_path(const std::string &id) {
@@ -70,7 +69,7 @@ cppunivariate::ispan as_ispan(const std::vector<int> &v) {
 
 #define APPROX(x) doctest::Approx(x).epsilon(kTol)
 
-// Default tol/maxit used by the Rcpp wrappers in src/ml_exports.cpp.
+// Default tol/maxit used by the R wrappers in r/src/ml_exports.cpp.
 // Most estimators use kFitTol; beta/betapr/power use the tighter
 // kFitTolTight = sqrt(.Machine$double.eps).
 constexpr double kFitTol = 1.220703e-4;

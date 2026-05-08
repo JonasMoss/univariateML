@@ -2,10 +2,10 @@
 // (R::runif, R::norm_rand, R::rgamma, R::rt) so set.seed() reproducibility
 // matches the legacy direct-R::* call sites bit-for-bit.
 //
-// The portable samplers under src/ml/distributions/ are
-// `template <typename Rng> double r<dist>(Rng& rng, ...)`. The R-shell
-// wrappers in src/distributions/<dist>.cpp instantiate them with this RRng
-// to drive sampling through R's seeded state.
+// The portable samplers under cppunivariate/include/cppunivariate/distributions/<id>/dpqr.hpp
+// are `template <typename Rng> double r<dist>(Rng& rng, ...)`. The R-shell
+// wrappers in r/src/distributions/<dist>.cpp instantiate them with this
+// RRng to drive sampling through R's seeded state.
 
 #pragma once
 
