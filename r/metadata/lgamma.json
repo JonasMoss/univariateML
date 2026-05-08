@@ -1,0 +1,4 @@
+{
+  "sampler": "rlgamma",
+  "density": "dlgamma"
+}

@@ -1,0 +1,29 @@
+// Weibull — distribution metadata.
+//
+// See metadata/SCHEMA.md "Per-distribution form (C++ constexpr)".
+
+#pragma once
+
+#include "../../core/metadata.hpp"
+
+#include <cstddef>
+#include <iterator>
+#include <limits>
+
+namespace cppunivariate::distributions::weibull {
+
+constexpr double kInf = std::numeric_limits<double>::infinity();
+
+constexpr const char *id   = "weibull";
+constexpr const char *name = "Weibull";
+
+constexpr SupportDescriptor support{SupportType::Real, 0.0, kInf, false, false};
+
+constexpr ParamDescriptor params[] = {
+  {"shape", "shape", 3.0, true, {SupportType::Real, -kInf, kInf, false, false}},
+  {"scale", "scale", 4.0, true, {SupportType::Real, -kInf, kInf, false, false}},
+};
+
+constexpr std::size_t n_params = std::size(params);
+
+}  // namespace cppunivariate::distributions::weibull

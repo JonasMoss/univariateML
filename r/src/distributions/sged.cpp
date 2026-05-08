@@ -1,7 +1,7 @@
 // Skew GED: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/sged.hpp"
+#include "cppunivariate/distributions/sged/dpqr.hpp"
 
 namespace dist_impl {
 

@@ -1,7 +1,7 @@
 // Zero-inflated Poisson distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/zip.hpp"
+#include "cppunivariate/distributions/zip/dpqr.hpp"
 
 namespace dist_impl {
 

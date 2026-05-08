@@ -1,0 +1,4 @@
+{
+  "sampler": "stats::runif",
+  "density": "stats::dunif"
+}

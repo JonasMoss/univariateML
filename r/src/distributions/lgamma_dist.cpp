@@ -2,7 +2,7 @@
 // wrappers. Exposed as dlgamma/plgamma/qlgamma/rlgamma to match actuar.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/lgamma_dist.hpp"
+#include "cppunivariate/distributions/lgamma/dpqr.hpp"
 
 namespace dist_impl {
 

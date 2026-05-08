@@ -2,7 +2,7 @@
 % Please edit documentation in R/ml02_wrappers.R
 \name{mlgamma}
 \alias{mlgamma}
-\title{Gamma distribution maximum likelihood estimation}
+\title{Gamma maximum likelihood estimation}
 \usage{
 mlgamma(x, na.rm = FALSE, ...)
 }
@@ -17,17 +17,14 @@ mlgamma(x, na.rm = FALSE, ...)
 An object of class \code{univariateML} with estimates and attributes.
 }
 \description{
-Joint maximum likelihood estimation of Gamma shape and rate.
+Maximum likelihood estimation for this distribution.
 }
 \details{
-Uses Newton–Raphson on log-parameters with method-of-moments starts.
+Density: stats::dgamma; support: [0, Inf).
 }
 \examples{
-mlgamma(faithful$eruptions)
-}
-\references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1. Wiley, New York.
+set.seed(1); mlgamma(simulate_default("mlgamma", 100))
 }
 \seealso{
-stats::Gamma
+stats::dgamma
 }

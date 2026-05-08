@@ -2,7 +2,7 @@
 % Please edit documentation in R/ml02_wrappers.R
 \name{mlweibull}
 \alias{mlweibull}
-\title{Weibull distribution maximum likelihood estimation}
+\title{Weibull maximum likelihood estimation}
 \usage{
 mlweibull(x, na.rm = FALSE, ...)
 }
@@ -17,17 +17,14 @@ mlweibull(x, na.rm = FALSE, ...)
 An object of class \code{univariateML} with estimates and attributes.
 }
 \description{
-Uses a Gumbel transformation to estimate the Weibull parameters.
+Maximum likelihood estimation for this distribution.
 }
 \details{
-Transforms x via -log(x), calls the Gumbel estimator on the shifted data, and maps back to shape/scale.
+Density: stats::dweibull; support: [0, Inf).
 }
 \examples{
-BIC(mlweibull(precip))
-}
-\references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
+set.seed(1); mlweibull(simulate_default("mlweibull", 100))
 }
 \seealso{
-stats::Weibull
+stats::dweibull
 }

@@ -1,0 +1,4 @@
+{
+  "sampler": "univariateML::rzipf",
+  "density": "univariateML::dzipf"
+}

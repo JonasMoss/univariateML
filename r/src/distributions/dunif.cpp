@@ -1,7 +1,7 @@
 // Discrete uniform distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/dunif.hpp"
+#include "cppunivariate/distributions/dunif/dpqr.hpp"
 
 namespace dist_impl {
 

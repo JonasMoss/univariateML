@@ -2,7 +2,7 @@
 % Please edit documentation in R/ml02_wrappers.R
 \name{mlgumbel}
 \alias{mlgumbel}
-\title{Gumbel distribution maximum likelihood estimation}
+\title{Gumbel maximum likelihood estimation}
 \usage{
 mlgumbel(x, na.rm = FALSE, ...)
 }
@@ -17,17 +17,14 @@ mlgumbel(x, na.rm = FALSE, ...)
 An object of class \code{univariateML} with estimates and attributes.
 }
 \description{
-Uses Newton–Raphson to estimate the parameters of the Gumbel distribution.
+Maximum likelihood estimation for this distribution.
 }
 \details{
-Estimates mu and sigma by centering the data and iterating on sigma; log-likelihood is computed with extraDistr::dgumbel.
+Density: dgumbel; support: [-Inf, Inf).
 }
 \examples{
-mlgumbel(precip)
-}
-\references{
-Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
+set.seed(1); mlgumbel(simulate_default("mlgumbel", 100))
 }
 \seealso{
-extraDistr::Gumbel
+dgumbel
 }

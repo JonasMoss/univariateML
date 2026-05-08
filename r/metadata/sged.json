@@ -1,0 +1,4 @@
+{
+  "sampler": "univariateML::rsged",
+  "density": "univariateML::dsged"
+}

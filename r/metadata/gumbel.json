@@ -1,0 +1,4 @@
+{
+  "sampler": "rgumbel",
+  "density": "dgumbel"
+}

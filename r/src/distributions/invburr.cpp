@@ -2,7 +2,7 @@
 // only (shape1, shape2); scale defaults to 1.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/invburr.hpp"
+#include "cppunivariate/distributions/invburr/dpqr.hpp"
 
 namespace dist_impl {
 

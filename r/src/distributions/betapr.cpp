@@ -1,7 +1,7 @@
 // Beta-prime distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/betapr.hpp"
+#include "cppunivariate/distributions/betapr/dpqr.hpp"
 
 namespace dist_impl {
 

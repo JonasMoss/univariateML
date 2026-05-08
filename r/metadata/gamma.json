@@ -1,0 +1,4 @@
+{
+  "sampler": "stats::rgamma",
+  "density": "stats::dgamma"
+}

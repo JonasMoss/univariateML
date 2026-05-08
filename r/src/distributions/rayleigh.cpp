@@ -1,7 +1,7 @@
 // Rayleigh distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/rayleigh.hpp"
+#include "cppunivariate/distributions/rayleigh/dpqr.hpp"
 
 namespace dist_impl {
 

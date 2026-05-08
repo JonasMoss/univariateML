@@ -1,0 +1,4 @@
+{
+  "sampler": "rdunif",
+  "density": "ddunif"
+}

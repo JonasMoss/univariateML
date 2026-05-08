@@ -1,7 +1,7 @@
 // Log-logistic distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/llogis.hpp"
+#include "cppunivariate/distributions/llogis/dpqr.hpp"
 
 namespace dist_impl {
 

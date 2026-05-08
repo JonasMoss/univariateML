@@ -1,0 +1,4 @@
+{
+  "sampler": "stats::rbinom",
+  "density": "stats::dbinom"
+}

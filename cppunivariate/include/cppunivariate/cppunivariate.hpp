@@ -1,9 +1,15 @@
-// Aggregator header for the ML core. Each estimator lives in its own
-// header under estimators/; including ml.hpp pulls them all in.
+// Aggregator header for the cppunivariate library. Pulls in every
+// per-distribution estimator plus the shared core headers.
 //
-// The migration to standalone, span-based estimators (no Armadillo, no
-// R headers in the core) is complete. This file no longer contains any
-// implementations.
+// Per-distribution dossiers live under distributions/<id>/; this file
+// includes their mle.hpp. Distributions whose MLE is delegated to
+// another estimator at the R-side wrapper level (e.g. lgamma reuses
+// gamma_mle on log-transformed data) have no mle.hpp and are not
+// included here.
+//
+// dpqr.hpp and metadata.hpp are not included by the aggregator; they
+// are pulled in on demand by their R-side wrapper or any C++ consumer
+// that needs them.
 
 #pragma once
 
@@ -12,45 +18,47 @@
 #include "core/newton.hpp"
 #include "core/reductions.hpp"
 #include "core/span.hpp"
-#include "estimators/beta.hpp"
-#include "estimators/beta_prime.hpp"
-#include "estimators/binomial.hpp"
-#include "estimators/burr.hpp"
-#include "estimators/cauchy.hpp"
-#include "estimators/discrete_uniform.hpp"
-#include "distributions/exp/mle.hpp"
-#include "estimators/fatigue.hpp"
-#include "estimators/gamma.hpp"
-#include "estimators/ged.hpp"
-#include "estimators/geometric.hpp"
-#include "estimators/gompertz.hpp"
-#include "estimators/gumbel.hpp"
-#include "estimators/inverse_burr.hpp"
-#include "estimators/inverse_gamma.hpp"
-#include "estimators/inverse_gaussian.hpp"
-#include "estimators/inverse_weibull.hpp"
-#include "estimators/kumaraswamy.hpp"
-#include "estimators/laplace.hpp"
-#include "estimators/log_series.hpp"
-#include "estimators/logistic.hpp"
-#include "estimators/logitnormal.hpp"
-#include "estimators/loglogistic.hpp"
-#include "estimators/lognormal.hpp"
-#include "distributions/lomax/mle.hpp"
-#include "estimators/nakagami.hpp"
-#include "estimators/negative_binomial.hpp"
-#include "estimators/normal.hpp"
-#include "estimators/paralogis.hpp"
-#include "estimators/pareto.hpp"
-#include "estimators/poisson.hpp"
-#include "estimators/power.hpp"
-#include "estimators/rayleigh.hpp"
-#include "estimators/sged.hpp"
-#include "estimators/snorm.hpp"
-#include "estimators/sstd.hpp"
-#include "estimators/student_t.hpp"
-#include "estimators/uniform.hpp"
-#include "estimators/weibull.hpp"
-#include "estimators/zip.hpp"
-#include "estimators/zipf.hpp"
 #include "special/special.hpp"
+
+#include "distributions/beta/mle.hpp"
+#include "distributions/betapr/mle.hpp"
+#include "distributions/binom/mle.hpp"
+#include "distributions/burr/mle.hpp"
+#include "distributions/cauchy/mle.hpp"
+#include "distributions/dunif/mle.hpp"
+#include "distributions/exp/mle.hpp"
+#include "distributions/fatigue/mle.hpp"
+#include "distributions/gamma/mle.hpp"
+#include "distributions/ged/mle.hpp"
+#include "distributions/geom/mle.hpp"
+#include "distributions/gompertz/mle.hpp"
+#include "distributions/gumbel/mle.hpp"
+#include "distributions/invburr/mle.hpp"
+#include "distributions/invgamma/mle.hpp"
+#include "distributions/invgauss/mle.hpp"
+#include "distributions/invweibull/mle.hpp"
+#include "distributions/kumar/mle.hpp"
+#include "distributions/laplace/mle.hpp"
+// lgamma: no mle.hpp; uses gamma_mle via R-side log-transform.
+#include "distributions/lgser/mle.hpp"
+#include "distributions/llogis/mle.hpp"
+#include "distributions/lnorm/mle.hpp"
+#include "distributions/logis/mle.hpp"
+#include "distributions/logitnorm/mle.hpp"
+#include "distributions/lomax/mle.hpp"
+#include "distributions/naka/mle.hpp"
+#include "distributions/nbinom/mle.hpp"
+#include "distributions/norm/mle.hpp"
+#include "distributions/paralogis/mle.hpp"
+#include "distributions/pareto/mle.hpp"
+#include "distributions/pois/mle.hpp"
+#include "distributions/power/mle.hpp"
+#include "distributions/rayleigh/mle.hpp"
+#include "distributions/sged/mle.hpp"
+#include "distributions/snorm/mle.hpp"
+#include "distributions/sstd/mle.hpp"
+#include "distributions/std/mle.hpp"
+#include "distributions/unif/mle.hpp"
+#include "distributions/weibull/mle.hpp"
+#include "distributions/zip/mle.hpp"
+#include "distributions/zipf/mle.hpp"

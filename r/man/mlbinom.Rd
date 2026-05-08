@@ -2,7 +2,7 @@
 % Please edit documentation in R/ml02_wrappers.R
 \name{mlbinom}
 \alias{mlbinom}
-\title{Binomial distribution maximum likelihood estimation}
+\title{Binomial maximum likelihood estimation}
 \usage{
 mlbinom(x, na.rm = FALSE, ...)
 }
@@ -17,18 +17,14 @@ mlbinom(x, na.rm = FALSE, ...)
 An object of class \code{univariateML} with estimates and attributes.
 }
 \description{
-Joint maximum likelihood estimation of size and prob, optionally with size supplied.
+Maximum likelihood estimation for this distribution.
 }
 \details{
-When \code{size} is given, \code{prob = mean(x) / size} in closed form. With size unknown, \code{mlbinom()} searches over integer sizes from \code{max(x)} upward and reports the maximiser of the profile likelihood. The estimator does not exist when \code{var(x) >= mean(x)} (overdispersed data); in that case the likelihood is maximised in the limit \code{size -> Inf} and \code{mlbinom()} stops with a message recommending \code{mlpois()} or that an explicit \code{size} be supplied.
+Density: stats::dbinom; support: [0, Inf).
 }
 \examples{
-set.seed(1); mlbinom(rbinom(500, size = 10, prob = 0.5))
-}
-\references{
-Olkin, I., Petkau, A. J. and Zidek, J. V. (1981) A comparison of n estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642.
+set.seed(1); mlbinom(simulate_default("mlbinom", 100))
 }
 \seealso{
-stats::Binomial
-mlpois
+stats::dbinom
 }

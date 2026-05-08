@@ -1,7 +1,7 @@
 // Nakagami distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/nakagami.hpp"
+#include "cppunivariate/distributions/naka/dpqr.hpp"
 
 namespace dist_impl {
 

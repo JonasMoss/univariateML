@@ -49,23 +49,20 @@ mlbetapr <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlbetapr", params = params)
 }
 
-#' Binomial distribution maximum likelihood estimation
+#' Binomial maximum likelihood estimation
 #'
-#' Joint maximum likelihood estimation of size and prob, optionally with size supplied.
+#' Maximum likelihood estimation for this distribution.
 #'
-#' When `size` is given, `prob = mean(x) / size` in closed form. With size unknown, `mlbinom()` searches over integer sizes from `max(x)` upward and reports the maximiser of the profile likelihood. The estimator does not exist when `var(x) >= mean(x)` (overdispersed data); in that case the likelihood is maximised in the limit `size -> Inf` and `mlbinom()` stops with a message recommending `mlpois()` or that an explicit `size` be supplied.
+#' Density: stats::dbinom; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   stats::Binomial
-#'   mlpois
-#' @references
-#'   Olkin, I., Petkau, A. J. and Zidek, J. V. (1981) A comparison of n estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642.
+#'   stats::dbinom
 #' @examples
-#' set.seed(1); mlbinom(rbinom(500, size = 10, prob = 0.5))
+#' set.seed(1); mlbinom(simulate_default("mlbinom", 100))
 #' @export
 mlbinom <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlbinom")
@@ -190,22 +187,20 @@ mlfatigue <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlfatigue", params = params)
 }
 
-#' Gamma distribution maximum likelihood estimation
+#' Gamma maximum likelihood estimation
 #'
-#' Joint maximum likelihood estimation of Gamma shape and rate.
+#' Maximum likelihood estimation for this distribution.
 #'
-#' Uses Newton–Raphson on log-parameters with method-of-moments starts.
+#' Density: stats::dgamma; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   stats::Gamma
-#' @references
-#'   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1. Wiley, New York.
+#'   stats::dgamma
 #' @examples
-#' mlgamma(faithful$eruptions)
+#' set.seed(1); mlgamma(simulate_default("mlgamma", 100))
 #' @export
 mlgamma <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlgamma")
@@ -284,22 +279,20 @@ mlgompertz <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlgompertz", params = params)
 }
 
-#' Gumbel distribution maximum likelihood estimation
+#' Gumbel maximum likelihood estimation
 #'
-#' Uses Newton–Raphson to estimate the parameters of the Gumbel distribution.
+#' Maximum likelihood estimation for this distribution.
 #'
-#' Estimates mu and sigma by centering the data and iterating on sigma; log-likelihood is computed with extraDistr::dgumbel.
+#' Density: dgumbel; support: [-Inf, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   extraDistr::Gumbel
-#' @references
-#'   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York.
+#'   dgumbel
 #' @examples
-#' mlgumbel(precip)
+#' set.seed(1); mlgumbel(simulate_default("mlgumbel", 100))
 #' @export
 mlgumbel <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlgumbel")
@@ -631,23 +624,20 @@ mlnaka <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlnaka", params = params)
 }
 
-#' Negative Binomial distribution maximum likelihood estimation
+#' Negative binomial maximum likelihood estimation
 #'
-#' Joint maximum likelihood estimation of size and prob via Newton-Raphson on size.
+#' Maximum likelihood estimation for this distribution.
 #'
-#' The negative binomial MLE only exists when the sample variance exceeds the sample mean (overdispersion). When `var(x) <= mean(x)` the likelihood is maximised in the limit `size -> Inf`, where the negative binomial reduces to a `Poisson(mean)`. `mlnbinom()` detects this case and stops with a message pointing to `mlpois()`.
+#' Density: stats::dnbinom; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   stats::NegBinomial
-#'   mlpois
-#' @references
-#'   Johnson, N. L., Kotz, S. and Kemp, A. W. (1993) Univariate Discrete Distributions, Chapter 5. Wiley.
+#'   stats::dnbinom
 #' @examples
-#' set.seed(1); mlnbinom(rnbinom(500, size = 5, prob = 0.4))
+#' set.seed(1); mlnbinom(simulate_default("mlnbinom", 100))
 #' @export
 mlnbinom <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlnbinom")
@@ -910,22 +900,20 @@ mlunif <- function(x, na.rm = FALSE, ...) {
   univariateML_construct(out$estimates, name = "mlunif", params = params)
 }
 
-#' Weibull distribution maximum likelihood estimation
+#' Weibull maximum likelihood estimation
 #'
-#' Uses a Gumbel transformation to estimate the Weibull parameters.
+#' Maximum likelihood estimation for this distribution.
 #'
-#' Transforms x via -log(x), calls the Gumbel estimator on the shifted data, and maps back to shape/scale.
+#' Density: stats::dweibull; support: [0, Inf).
 #'
 #' @param x a (non-empty) numeric vector of data values.
 #' @param na.rm logical. Should missing values be removed?
 #' @param ... Optional control arguments passed to the optimizer/estimator.
 #' @return An object of class `univariateML` with estimates and attributes.
 #' @seealso
-#'   stats::Weibull
-#' @references
-#'   Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York.
+#'   stats::dweibull
 #' @examples
-#' BIC(mlweibull(precip))
+#' set.seed(1); mlweibull(simulate_default("mlweibull", 100))
 #' @export
 mlweibull <- function(x, na.rm = FALSE, ...) {
   x <- ml_check_modify(x, na.rm = na.rm, name = "mlweibull")

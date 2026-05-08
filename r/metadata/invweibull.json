@@ -1,0 +1,4 @@
+{
+  "sampler": "rinvweibull",
+  "density": "dinvweibull"
+}

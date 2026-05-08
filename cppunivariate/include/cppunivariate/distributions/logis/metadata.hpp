@@ -1,0 +1,29 @@
+// Logistic — distribution metadata.
+//
+// See metadata/SCHEMA.md "Per-distribution form (C++ constexpr)".
+
+#pragma once
+
+#include "../../core/metadata.hpp"
+
+#include <cstddef>
+#include <iterator>
+#include <limits>
+
+namespace cppunivariate::distributions::logis {
+
+constexpr double kInf = std::numeric_limits<double>::infinity();
+
+constexpr const char *id   = "logis";
+constexpr const char *name = "Logistic";
+
+constexpr SupportDescriptor support{SupportType::Real, -kInf, kInf, false, false};
+
+constexpr ParamDescriptor params[] = {
+  {"location", "location", 0.0, true, {SupportType::Real, -kInf, kInf, false, false}},
+  {"scale", "scale", 1.0, true, {SupportType::Real, -kInf, kInf, false, false}},
+};
+
+constexpr std::size_t n_params = std::size(params);
+
+}  // namespace cppunivariate::distributions::logis

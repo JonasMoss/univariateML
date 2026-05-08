@@ -1,0 +1,4 @@
+{
+  "sampler": "stats::rlogis",
+  "density": "stats::dlogis"
+}

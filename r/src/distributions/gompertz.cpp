@@ -1,7 +1,7 @@
 // Gompertz distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/gompertz.hpp"
+#include "cppunivariate/distributions/gompertz/dpqr.hpp"
 
 namespace dist_impl {
 

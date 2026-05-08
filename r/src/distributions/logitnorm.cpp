@@ -1,7 +1,7 @@
 // Logit-normal distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/logitnorm.hpp"
+#include "cppunivariate/distributions/logitnorm/dpqr.hpp"
 
 namespace dist_impl {
 

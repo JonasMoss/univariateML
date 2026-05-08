@@ -1,7 +1,7 @@
 // Standardised Student-t: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/std.hpp"
+#include "cppunivariate/distributions/std/dpqr.hpp"
 
 namespace dist_impl {
 

@@ -82,15 +82,16 @@ cppunivariate/                        # the C++ artifact
     core/                             # span, optimisers (newton, bfgs), reductions,
                                       # finite_diff, reparam, metadata.hpp (shared
                                       # SupportDescriptor / ParamDescriptor types)
-    estimators/                       # legacy: one .hpp per distribution; *_mle(span x, ...) -> *Result
-    distributions/                    # mixed:
-                                      #   <id>.hpp                 — legacy d/p/q/r (one per dist)
-                                      #   <id>/mle.hpp             — dossier-migrated estimator
-                                      #   <id>/dpqr.hpp            — dossier-migrated d/p/q/r
-                                      #   <id>/metadata.hpp        — constexpr id, name, support, params[]
-                                      #   <id>/dossier.md          — human-readable docs (stub today; filled later)
+    distributions/<id>/               # one folder per distribution (id matches r/metadata)
+      mle.hpp                         # *_mle(span x, ...) -> *Result + Cost struct
+      dpqr.hpp                        # d/p/q/r templates (when present; some
+                                      # distributions delegate to base R via the
+                                      # R-side wrapper -- see r/metadata/<id>.json)
+      metadata.hpp                    # constexpr id, name, support, params[]
+      dossier.md                      # human-readable docs (stub today; filled later)
+    distributions/rng_std.hpp         # shared sampling infrastructure (not per-dist)
     special/                          # special.hpp (Boost.Math seam), skewed_densities.hpp
-    cppunivariate.hpp                 # aggregator
+    cppunivariate.hpp                 # aggregator (includes every <id>/mle.hpp)
   tests/                              # doctest + ctest, R-free
 ```
 
@@ -186,9 +187,11 @@ the legacy fGarch path expect a usable result back, not an error.
 
 ### Adding a new distribution
 
-New distributions get the dossier-bundle layout. Legacy distributions
-in `estimators/<id>.hpp` + `distributions/<id>.hpp` + `metadata/models.json`
-are migrated separately as dossier-sweep PRs land.
+Every distribution lives in a dossier bundle at
+`cppunivariate/include/cppunivariate/distributions/<id>/`. The legacy
+flat-file layout (separate `estimators/` and `distributions/<id>.hpp`)
+was retired in the dossier sweep; legacy `metadata/models.json` and
+`metadata/docs.json` are intentionally empty.
 
 1. Create the dossier folder `cppunivariate/include/cppunivariate/distributions/<id>/`.
    The folder name **is** the distribution id.
@@ -228,17 +231,16 @@ are migrated separately as dossier-sweep PRs land.
    check too.
 7. `just test` and `just cpp-test` must both pass.
 
-The codegen scripts merge three sources into a single deterministic
-list, sorted alphabetically by id:
+The codegen scripts read two sources and merge them, sorted
+alphabetically by id:
 
-- legacy `metadata/models.json` (39 not-yet-migrated distributions),
 - per-distribution `metadata.hpp` files parsed via
   `r/scripts/parse_cpp_metadata.R` (the C++ canonical form),
 - per-distribution `r/metadata/<id>.json` sidecars (R-side refs only).
 
-A new distribution should land in the per-distribution form; only
-touch `metadata/models.json` for legacy maintenance. A given id must
-appear in exactly one source — duplicates are a hard error.
+`metadata/models.json` and `metadata/docs.json` are kept as empty
+stubs — the scripts still read them, but every entry should be a
+dossier today. A given id must appear in exactly one source.
 
 ---
 
