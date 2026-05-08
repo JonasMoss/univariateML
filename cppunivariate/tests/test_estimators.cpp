@@ -69,7 +69,7 @@ cppunivariate::ispan as_ispan(const std::vector<int> &v) {
 
 #define APPROX(x) doctest::Approx(x).epsilon(kTol)
 
-// Default tol/maxit used by the R wrappers in r/src/ml_exports.cpp.
+// Default tol/maxit used by the R wrappers in univariateML/src/ml_exports.cpp.
 // Most estimators use kFitTol; beta/betapr/power use the tighter
 // kFitTolTight = sqrt(.Machine$double.eps).
 constexpr double kFitTol = 1.220703e-4;

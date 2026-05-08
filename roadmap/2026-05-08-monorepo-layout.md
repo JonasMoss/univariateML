@@ -22,7 +22,7 @@ cppunivariate/
   include/
   tests/
   distributions/
-r/
+univariateML/
   package/
   scripts/
 python/

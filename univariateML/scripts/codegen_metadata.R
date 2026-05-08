@@ -31,7 +31,7 @@ dossier_json_models <- lapply(dossier_json_files, function(f) {
 })
 
 # Per-distribution metadata.hpp files (canonical C++ form). The R-side
-# bits (sampler, density) live alongside in r/metadata/<id>.json.
+# bits (sampler, density) live alongside in univariateML/metadata/<id>.json.
 dossier_hpp_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.hpp"))
 dossier_hpp_models <- lapply(dossier_hpp_files, function(f) {
   cpp <- parse_cpp_metadata(f)

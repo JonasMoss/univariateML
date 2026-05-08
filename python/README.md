@@ -25,7 +25,7 @@ already meets the requirements for a Python shell:
 - C++17, matches our core
 - consumes `cppunivariate/include/` directly — no intermediate copy
   step needed (unlike the R shell, which mirrors headers into
-  `r/inst/include/` to satisfy CRAN policy §1.6)
+  `univariateML/inst/include/` to satisfy CRAN policy §1.6)
 
 pybind11 works too if nanobind is unavailable; the binding code is
 nearly identical for our shape of API.
@@ -63,7 +63,7 @@ core. The shared validation surface is `quality/golden/*.json` (42
 JSON files, each storing the input dataset, RNG seed, fitted
 parameters, and log-likelihood).
 
-A Python equivalent of `r/tests/testthat/test_golden_regression.R`
+A Python equivalent of `univariateML/tests/testthat/test_golden_regression.R`
 should:
 
 1. Read every JSON in `<repo_root>/quality/golden/`.
@@ -79,7 +79,7 @@ Goldens are language-agnostic; the JSON schema is documented at
 
 - **Do not duplicate** the metadata schema (`metadata/models.json`) on
   the Python side. Generate any wrapper boilerplate from the same
-  JSON the R-side codegen reads. See `r/scripts/codegen_*.R` for
+  JSON the R-side codegen reads. See `univariateML/scripts/codegen_*.R` for
   the pattern.
 - **Do not** ship goldens inside the Python package wheel; they're
   dev-tree artefacts at `quality/golden/`. Locate them via env var

@@ -1,5 +1,5 @@
 # cppunivariate — header-only C++17 library for univariate
-# density estimation. The R package in r/ is a downstream consumer
+# density estimation. The R package in univariateML/ is a downstream consumer
 # of these headers; the planned Python package will be another.
 #
 # Builds nothing on its own; consumers link against the INTERFACE

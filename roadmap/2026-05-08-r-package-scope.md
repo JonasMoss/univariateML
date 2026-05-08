@@ -32,13 +32,13 @@ own visible help page), and dilutes the package's identity.
 ## Design when revisited
 
 - Drop `@export` on the per-distribution dpqr Rcpp wrappers
-  (`r/src/distributions/<id>.cpp` → `r/R/distributions_cpp_exports.R`).
+  (`univariateML/src/distributions/<id>.cpp` → `univariateML/R/distributions_cpp_exports.R`).
   The C++ implementations stay (they're consumed by the C++ /
   future Python side); R-side they become an internal implementation
   detail or are removed entirely.
 - Re-add `extraDistr` and `actuar` (and any other relevant package)
-  to `r/DESCRIPTION` `Imports:`.
-- `r/metadata/<id>.json` gains the freedom to point `density` /
+  to `univariateML/DESCRIPTION` `Imports:`.
+- `univariateML/metadata/<id>.json` gains the freedom to point `density` /
   `sampler` at `extraDistr::dlomax` / `actuar::dburr` etc. without
   needing a univariateML-side wrapper.
 - Examples in the auto-generated roxygen reference the upstream

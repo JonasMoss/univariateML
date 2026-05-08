@@ -16,8 +16,8 @@ core.
    `cppunivariate/tests/` (doctest + ctest).
 
 2. **R shell (testing scaffold and current published artifact).**
-   Auto-generated R wrappers under `r/R/` call thin Rcpp adapters in
-   `r/src/ml_exports.cpp` and `r/src/distribution_exports.cpp`. testthat
+   Auto-generated R wrappers under `univariateML/R/` call thin Rcpp adapters in
+   `univariateML/src/ml_exports.cpp` and `univariateML/src/distribution_exports.cpp`. testthat
    acts as the trusted reference: every C++ change is sanity-checked
    against R-side fits and the golden JSONs in `quality/golden/`.
 
@@ -59,8 +59,8 @@ core.
 
 - **No exceptions in cppunivariate.** Surface diagnostics via per-estimator
   `*Status` enums in the result struct. `Rcpp::stop` is fine in the
-  R-shell adapter layer (`r/src/ml_exports.cpp`,
-  `r/src/distribution_exports.cpp`) but never in `cppunivariate/include/cppunivariate/`.
+  R-shell adapter layer (`univariateML/src/ml_exports.cpp`,
+  `univariateML/src/distribution_exports.cpp`) but never in `cppunivariate/include/cppunivariate/`.
 - **No `using` declarations.** Always be explicit
   (`std::vector<double>`, `cppunivariate::span`, etc.).
 - **No raw pointers.** cppunivariate takes `cppunivariate::span`; R-shell adapters
@@ -82,11 +82,11 @@ cppunivariate/                        # the C++ artifact
     core/                             # span, optimisers (newton, bfgs), reductions,
                                       # finite_diff, reparam, metadata.hpp (shared
                                       # SupportDescriptor / ParamDescriptor types)
-    distributions/<id>/               # one folder per distribution (id matches r/metadata)
+    distributions/<id>/               # one folder per distribution (id matches univariateML/metadata)
       mle.hpp                         # *_mle(span x, ...) -> *Result + Cost struct
       dpqr.hpp                        # d/p/q/r templates (when present; some
                                       # distributions delegate to base R via the
-                                      # R-side wrapper -- see r/metadata/<id>.json)
+                                      # R-side wrapper -- see univariateML/metadata/<id>.json)
       metadata.hpp                    # constexpr id, name, support, params[]
       dossier.md                      # human-readable docs (stub today; filled later)
     distributions/rng_std.hpp         # shared sampling infrastructure (not per-dist)
@@ -97,8 +97,8 @@ cppunivariate/                        # the C++ artifact
 
 R-shell adapters live outside `cppunivariate/include/cppunivariate/`:
 
-- `r/src/ml_exports.cpp` — Rcpp wrappers calling cppunivariate estimators.
-- `r/src/distribution_exports.cpp` + `r/src/distributions/<dist>.cpp` —
+- `univariateML/src/ml_exports.cpp` — Rcpp wrappers calling cppunivariate estimators.
+- `univariateML/src/distribution_exports.cpp` + `univariateML/src/distributions/<dist>.cpp` —
   Rcpp wrappers calling cppunivariate distributions.
 
 ### Estimator template
@@ -204,7 +204,7 @@ was retired in the dossier sweep; legacy `metadata/models.json` and
    - `metadata.hpp` — `constexpr` distribution metadata using the
      shared types from `core/metadata.hpp`. Format is constrained
      (one entry per ParamDescriptor row, `kInf` alias for infinity)
-     so the regex parser in `r/scripts/parse_cpp_metadata.R` can
+     so the regex parser in `univariateML/scripts/parse_cpp_metadata.R` can
      read it; see `metadata/SCHEMA.md` for the full schema and
      existing dossiers (`distributions/lomax`, `distributions/exp`)
      for examples.
@@ -216,12 +216,12 @@ was retired in the dossier sweep; legacy `metadata/models.json` and
    `#include "distributions/<id>/mle.hpp"`. The aggregator only pulls
    estimators; `dpqr.hpp` and `metadata.hpp` are included on demand
    by their consumers.
-3. Add `r/metadata/<id>.json` with the R-side refs:
+3. Add `univariateML/metadata/<id>.json` with the R-side refs:
    `{"sampler": "...", "density": "..."}`. Use `pkg::fn` for base R
    or other packages (e.g. `stats::rexp`); use a bare name for an
    Rcpp wrapper exported by univariateML itself (e.g. `rlomax`).
-4. Wire an Rcpp wrapper in `r/src/ml_exports.cpp`. If the C++ dpqr
-   is exposed to R, add `r/src/distributions/<id>.cpp` with
+4. Wire an Rcpp wrapper in `univariateML/src/ml_exports.cpp`. If the C++ dpqr
+   is exposed to R, add `univariateML/src/distributions/<id>.cpp` with
    `#include "cppunivariate/distributions/<id>/dpqr.hpp"`. If R is
    happy with base R's dpqr (as for exp), no wrapper file is
    needed; goldens use the `stats::*` reference from the JSON.
@@ -235,8 +235,8 @@ The codegen scripts read two sources and merge them, sorted
 alphabetically by id:
 
 - per-distribution `metadata.hpp` files parsed via
-  `r/scripts/parse_cpp_metadata.R` (the C++ canonical form),
-- per-distribution `r/metadata/<id>.json` sidecars (R-side refs only).
+  `univariateML/scripts/parse_cpp_metadata.R` (the C++ canonical form),
+- per-distribution `univariateML/metadata/<id>.json` sidecars (R-side refs only).
 
 `metadata/models.json` and `metadata/docs.json` are kept as empty
 stubs — the scripts still read them, but every entry should be a

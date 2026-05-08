@@ -1,7 +1,7 @@
 // Lomax (Pareto Type II) — distribution metadata.
 //
 // Format constraints follow metadata/SCHEMA.md "Per-distribution form
-// (C++ constexpr)" so the regex parser in r/scripts/parse_cpp_metadata.R
+// (C++ constexpr)" so the regex parser in univariateML/scripts/parse_cpp_metadata.R
 // stays simple. Each ParamDescriptor entry is one logical line.
 
 #pragma once

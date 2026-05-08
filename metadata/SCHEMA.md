@@ -74,12 +74,12 @@ A distribution that has been migrated to a dossier lives at
 `cppunivariate/include/cppunivariate/distributions/<id>/`. Its
 canonical metadata is a `metadata.hpp` header of `constexpr`
 constants; R-side refs (sampler, density) live in
-`r/metadata/<id>.json`.
+`univariateML/metadata/<id>.json`.
 
 ### `metadata.hpp` (canonical, C++ side)
 
 Required structure (the regex parser in
-`r/scripts/parse_cpp_metadata.R` keys on this layout — deviations
+`univariateML/scripts/parse_cpp_metadata.R` keys on this layout — deviations
 are parse errors):
 
 ```cpp
@@ -129,7 +129,7 @@ Each `ParamDescriptor` row must fit on a single logical line so
 the regex matches the entire entry — extending the format requires
 extending the parser too.
 
-### `r/metadata/<id>.json` (R-side refs)
+### `univariateML/metadata/<id>.json` (R-side refs)
 
 ```json
 {
@@ -151,9 +151,9 @@ human-docs pass happens.
   `metadata.json`, or a canonical per-distribution `metadata.hpp`.
   Duplicate ids are a hard error.
 - The R-side codegen scripts merge all three sources, sort
-  alphabetically by `id`, and emit `r/R/ml00_metadata.R` and
-  `r/R/ml02_wrappers.R` deterministically.
+  alphabetically by `id`, and emit `univariateML/R/ml00_metadata.R` and
+  `univariateML/R/ml02_wrappers.R` deterministically.
 - Three env vars are honoured: `UMVL_METADATA_DIR` (legacy
   aggregate root), `UMVL_DOSSIER_DIR` (per-distribution glob root
   in the cppunivariate include tree), and `UMVL_R_METADATA_DIR`
-  (per-distribution refs root, default `r/metadata`).
+  (per-distribution refs root, default `univariateML/metadata`).
