@@ -313,42 +313,6 @@
       "legacy_impl": "R/mldunif.R"
     },
     {
-      "id": "exp",
-      "name": "Exponential",
-      "density": "stats::dexp",
-      "support": {
-        "type": "R",
-        "lower": 0,
-        "upper": null,
-        "closed": [
-          false,
-          false
-        ]
-      },
-      "params": [
-        {
-          "name": "rate",
-          "role": null,
-          "default": 1,
-          "support": {
-            "lower": null,
-            "upper": null,
-            "closed": [
-              false,
-              false
-            ]
-          }
-        }
-      ],
-      "sampler": "stats::rexp",
-      "start_hints": {
-        "method": null,
-        "notes": null
-      },
-      "validation_hooks": [],
-      "legacy_impl": "R/mlexp.R"
-    },
-    {
       "id": "fatigue",
       "name": "Birnbaum-Saunders",
       "density": "dfatigue",

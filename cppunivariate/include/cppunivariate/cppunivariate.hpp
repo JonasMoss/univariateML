@@ -18,7 +18,7 @@
 #include "estimators/burr.hpp"
 #include "estimators/cauchy.hpp"
 #include "estimators/discrete_uniform.hpp"
-#include "estimators/exponential.hpp"
+#include "distributions/exp/mle.hpp"
 #include "estimators/fatigue.hpp"
 #include "estimators/gamma.hpp"
 #include "estimators/ged.hpp"

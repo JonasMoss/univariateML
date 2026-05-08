@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../core/span.hpp"
+#include "../../core/span.hpp"
 
 #include <cmath>
 #include <cstddef>
