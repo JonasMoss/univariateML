@@ -6,12 +6,53 @@ if (!requireNamespace("jsonlite", quietly = TRUE)) {
 }
 
 metadata_dir <- Sys.getenv("UMVL_METADATA_DIR", "../metadata")
-models <- jsonlite::fromJSON(file.path(metadata_dir, "models.json"), simplifyDataFrame = FALSE)$models
-docs_raw <- tryCatch(
+dossier_dir <- Sys.getenv(
+  "UMVL_DOSSIER_DIR",
+  "../cppunivariate/include/cppunivariate/distributions"
+)
+
+# Legacy aggregate metadata + docs overlay.
+legacy_models <- jsonlite::fromJSON(
+  file.path(metadata_dir, "models.json"),
+  simplifyDataFrame = FALSE
+)$models
+legacy_docs <- tryCatch(
   jsonlite::fromJSON(file.path(metadata_dir, "docs.json"), simplifyDataFrame = FALSE)$models,
   error = function(...) list()
 )
-docs_by_id <- setNames(docs_raw, vapply(docs_raw, function(d) d$id, character(1)))
+
+# Per-distribution metadata.json files. Each carries an optional "docs"
+# subkey whose contents replace what would have been a docs.json entry.
+dossier_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
+dossier_models <- lapply(dossier_files, function(f) {
+  m <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
+  m$id <- basename(dirname(f))
+  m
+})
+dossier_docs <- Filter(Negate(is.null), lapply(dossier_models, function(m) {
+  if (is.null(m$docs)) return(NULL)
+  d <- m$docs
+  d$id <- m$id
+  d
+}))
+
+all_ids <- c(
+  vapply(legacy_models, function(m) m$id, character(1)),
+  vapply(dossier_models, function(m) m$id, character(1))
+)
+dups <- unique(all_ids[duplicated(all_ids)])
+if (length(dups)) {
+  stop(
+    "Duplicate metadata id(s) in legacy metadata/models.json and a ",
+    "per-distribution metadata.json: ", paste(dups, collapse = ", ")
+  )
+}
+
+models <- c(legacy_models, dossier_models)
+models <- models[order(vapply(models, function(m) m$id, character(1)))]
+
+all_docs <- c(legacy_docs, dossier_docs)
+docs_by_id <- setNames(all_docs, vapply(all_docs, function(d) d$id, character(1)))
 
 nl <- function(...) paste0(..., collapse = "")
 fallback <- function(x, default) if (is.null(x) || length(x) == 0) default else x

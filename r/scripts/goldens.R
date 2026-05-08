@@ -73,11 +73,38 @@ fit_to_record <- function(model, fit, data) {
 
 main <- function() {
   metadata_dir <- Sys.getenv("UMVL_METADATA_DIR", "../metadata")
-  json_path <- file.path(metadata_dir, "models.json")
+  dossier_dir <- Sys.getenv(
+    "UMVL_DOSSIER_DIR",
+    "../cppunivariate/include/cppunivariate/distributions"
+  )
   out_dir <- Sys.getenv("UMVL_GOLDEN_DIR", "../quality/golden")
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-  models <- jsonlite::fromJSON(json_path, simplifyDataFrame = FALSE)$models
+  legacy_models <- jsonlite::fromJSON(
+    file.path(metadata_dir, "models.json"),
+    simplifyDataFrame = FALSE
+  )$models
+  dossier_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
+  dossier_models <- lapply(dossier_files, function(f) {
+    m <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
+    m$id <- basename(dirname(f))
+    m
+  })
+
+  all_ids <- c(
+    vapply(legacy_models, function(m) m$id, character(1)),
+    vapply(dossier_models, function(m) m$id, character(1))
+  )
+  dups <- unique(all_ids[duplicated(all_ids)])
+  if (length(dups)) {
+    stop(
+      "Duplicate metadata id(s) in legacy metadata/models.json and a ",
+      "per-distribution metadata.json: ", paste(dups, collapse = ", ")
+    )
+  }
+
+  models <- c(legacy_models, dossier_models)
+  models <- models[order(vapply(models, function(m) m$id, character(1)))]
 
   results <- list()
   for (model in models) {
