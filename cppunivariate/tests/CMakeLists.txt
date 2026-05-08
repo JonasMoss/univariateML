@@ -19,6 +19,7 @@ cppuniv_test(bfgs_tests      test_bfgs.cpp)
 cppuniv_test(newton_md_tests test_newton_md.cpp)
 cppuniv_test(hessian_tests   test_hessians.cpp)
 cppuniv_test(sample_tests    test_sampling.cpp)
+cppuniv_test(metadata_tests  test_metadata.cpp)
 
 add_test(NAME estimator_tests COMMAND estimator_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
@@ -37,4 +38,7 @@ set_tests_properties(hessian_tests PROPERTIES
   ENVIRONMENT "UMVL_GOLDEN_DIR=${GOLDEN_DIR}")
 
 add_test(NAME sample_tests COMMAND sample_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_test(NAME metadata_tests COMMAND metadata_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

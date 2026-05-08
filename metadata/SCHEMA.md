@@ -68,37 +68,92 @@ auto-generated docs from the model record. Each `<Doc>`:
   - regenerating goldens via `scripts/goldens.R`,
   - updating this file.
 
-## Per-distribution form (dossier-migrated distributions)
+## Per-distribution form (C++ constexpr)
 
 A distribution that has been migrated to a dossier lives at
-`cppunivariate/include/cppunivariate/distributions/<id>/` and stores
-its metadata in a sibling `metadata.json`. The file's structure is
-the same as a single `<Model>` entry in `models.json`, with the
-following differences:
+`cppunivariate/include/cppunivariate/distributions/<id>/`. Its
+canonical metadata is a `metadata.hpp` header of `constexpr`
+constants; R-side refs (sampler, density) live in
+`r/metadata/<id>.json`.
 
-- `id` is **omitted** — the folder name supplies it.
-- per-`<Param>` `role` and `start_hints` are populated (no longer
-  `null` placeholders).
-- per-`<Param>` gets a new optional field `estimable` (boolean,
-  defaults to `true` if absent). The field is read by codegen but
-  not yet consumed; it's the metadata seam for a future
-  variable-parameter-selection feature (see roadmap).
-- Two new top-level keys:
+### `metadata.hpp` (canonical, C++ side)
 
-| field            | type            | required | notes |
-|------------------|-----------------|----------|-------|
-| `docs`           | object          | no       | overlay that replaces what would have been a `<Doc>` entry in `docs.json`. Same shape as `<Doc>` but with `id` omitted. |
-| `implementation` | object          | no       | `{ algorithm, optimizer, tol_default, maxit_default }` — short prose summary of the active algorithm. Light replacement for the formal-provenance roadmap entry. |
-| `quality_status` | string          | no       | placeholder for the future quality ladder (`experimental` / `ported` / `validated` / `audited` / `stable`). Pilot dossiers set `ported`. |
+Required structure (the regex parser in
+`r/scripts/parse_cpp_metadata.R` keys on this layout — deviations
+are parse errors):
 
-Codegen rules:
+```cpp
+#pragma once
 
-- A given `id` must appear in **exactly one** of `metadata/models.json`
-  or a per-distribution `metadata.json`. Duplicate ids are a hard
-  error.
-- The R-side codegen scripts merge both sources, sort alphabetically
-  by `id`, and emit `r/R/ml00_metadata.R` and `r/R/ml02_wrappers.R`
-  deterministically.
-- Both env vars `UMVL_METADATA_DIR` (legacy aggregate) and
-  `UMVL_DOSSIER_DIR` (per-distribution glob root) are honoured by
-  every consumer of the metadata.
+#include "../../core/metadata.hpp"
+
+#include <cstddef>
+#include <iterator>
+#include <limits>
+
+namespace cppunivariate::distributions::<id> {
+
+constexpr double kInf = std::numeric_limits<double>::infinity();
+
+constexpr const char *id   = "<id>";        // matches the folder name
+constexpr const char *name = "<Name>";      // display name
+
+constexpr SupportDescriptor support{<TYPE>, <LOWER>, <UPPER>,
+                                    <LOWER_CLOSED>, <UPPER_CLOSED>};
+
+constexpr ParamDescriptor params[] = {
+  {"<param>", "<role>", <DEFAULT>, <ESTIMABLE>,
+    {<TYPE>, <LOWER>, <UPPER>, <LOWER_CLOSED>, <UPPER_CLOSED>}},
+  // one row per parameter
+};
+
+constexpr std::size_t n_params = std::size(params);
+
+}  // namespace cppunivariate::distributions::<id>
+```
+
+Field rules:
+
+- `<TYPE>` is `SupportType::Real` or `SupportType::Integer`.
+- `<LOWER>` / `<UPPER>` are double literals; use `kInf` /  `-kInf`
+  for infinity (the parser recognises these aliases).
+- `<LOWER_CLOSED>` / `<UPPER_CLOSED>` are `true` / `false`.
+- `<DEFAULT>` is a numeric literal (`1.0`, `kInf`, `-2.5`).
+- `<ESTIMABLE>` is `true` (today the parser reads it but the field
+  isn't yet consumed — it's the metadata seam for the future
+  variable-parameter-selection feature in the roadmap).
+- `<role>` is free-form prose (`"rate"`, `"shape"`, `"location"`,
+  `"scale"`, …).
+
+Each `ParamDescriptor` row must fit on a single logical line so
+the regex matches the entire entry — extending the format requires
+extending the parser too.
+
+### `r/metadata/<id>.json` (R-side refs)
+
+```json
+{
+  "sampler": "<R-callable>",
+  "density": "<R-callable>"
+}
+```
+
+`<R-callable>` is either `pkg::fn` (base R or another package, e.g.
+`stats::rexp`) or a bare name (a function exported by univariateML
+itself via the Rcpp layer, e.g. `rlomax`). The schema can grow with
+additional R-only fields (e.g. doc seealso, examples) when the
+human-docs pass happens.
+
+### Codegen rules
+
+- A given `id` must appear in **exactly one** source: legacy
+  `metadata/models.json`, an intermediate per-distribution
+  `metadata.json`, or a canonical per-distribution `metadata.hpp`.
+  Duplicate ids are a hard error.
+- The R-side codegen scripts merge all three sources, sort
+  alphabetically by `id`, and emit `r/R/ml00_metadata.R` and
+  `r/R/ml02_wrappers.R` deterministically.
+- Three env vars are honoured: `UMVL_METADATA_DIR` (legacy
+  aggregate root), `UMVL_DOSSIER_DIR` (per-distribution glob root
+  in the cppunivariate include tree), and `UMVL_R_METADATA_DIR`
+  (per-distribution refs root, default `r/metadata`).
