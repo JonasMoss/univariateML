@@ -76,7 +76,7 @@ Rcpp::List mlcauchy_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
   }
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["mu"] = res.mu, Rcpp::_["scale"] = res.scale),
+          Rcpp::_["location"] = res.mu, Rcpp::_["scale"] = res.scale),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
@@ -104,7 +104,7 @@ Rcpp::List mllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
       cppunivariate::logistic_mle(dist_impl::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["mu"] = res.mu, Rcpp::_["scale"] = res.scale),
+          Rcpp::_["location"] = res.mu, Rcpp::_["scale"] = res.scale),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
@@ -127,7 +127,7 @@ Rcpp::List mlbeta_(const Rcpp::NumericVector &x, double tol = 1.490116e-08,
   auto res = cppunivariate::beta_mle(dist_impl::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
+          Rcpp::_["shape1"] = res.alpha, Rcpp::_["shape2"] = res.beta),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
@@ -138,7 +138,7 @@ Rcpp::List mlbetapr_(const Rcpp::NumericVector &x, double tol = 1.490116e-08,
       cppunivariate::betapr_mle(dist_impl::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
+          Rcpp::_["shape1"] = res.alpha, Rcpp::_["shape2"] = res.beta),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
@@ -238,8 +238,8 @@ Rcpp::List mlpareto_(const Rcpp::NumericVector &x) {
   auto res = cppunivariate::pareto_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-                                Rcpp::_["shape"] = res.shape,
-                                Rcpp::_["min"] = res.min),
+                                Rcpp::_["a"] = res.shape,
+                                Rcpp::_["b"] = res.min),
                             Rcpp::_["logLik"] = res.logLik);
 }
 
@@ -340,7 +340,7 @@ Rcpp::List mlzipf_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
   }
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["N"] = res.N, Rcpp::_["shape"] = res.shape),
+          Rcpp::_["N"] = res.N, Rcpp::_["s"] = res.shape),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
@@ -556,7 +556,7 @@ Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["mu"] = res.mu, Rcpp::_["lambda"] = res.lambda),
+          Rcpp::_["mean"] = res.mu, Rcpp::_["shape"] = res.lambda),
       Rcpp::_["logLik"] = res.logLik);
 }
 
