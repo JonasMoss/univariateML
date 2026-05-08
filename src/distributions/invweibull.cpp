@@ -1,7 +1,7 @@
 // Inverse-Weibull (Frechet) distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/invweibull.hpp"
+#include "../cppunivariate/distributions/invweibull.hpp"
 
 namespace dist_impl {
 

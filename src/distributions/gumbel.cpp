@@ -1,7 +1,7 @@
 // Gumbel distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/gumbel.hpp"
+#include "../cppunivariate/distributions/gumbel.hpp"
 
 namespace dist_impl {
 

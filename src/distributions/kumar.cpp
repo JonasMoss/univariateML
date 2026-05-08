@@ -1,7 +1,7 @@
 // Kumaraswamy distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/kumar.hpp"
+#include "../cppunivariate/distributions/kumar.hpp"
 
 namespace dist_impl {
 

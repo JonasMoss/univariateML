@@ -1,7 +1,7 @@
 // Inverse-Gamma distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/invgamma.hpp"
+#include "../cppunivariate/distributions/invgamma.hpp"
 
 namespace dist_impl {
 

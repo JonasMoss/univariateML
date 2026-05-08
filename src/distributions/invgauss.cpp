@@ -1,7 +1,7 @@
 // Inverse-Gaussian distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/invgauss.hpp"
+#include "../cppunivariate/distributions/invgauss.hpp"
 
 namespace dist_impl {
 

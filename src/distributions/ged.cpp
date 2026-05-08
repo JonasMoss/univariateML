@@ -1,7 +1,7 @@
 // GED distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/ged.hpp"
+#include "../cppunivariate/distributions/ged.hpp"
 
 namespace dist_impl {
 

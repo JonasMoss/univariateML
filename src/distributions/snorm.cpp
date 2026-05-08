@@ -1,7 +1,7 @@
 // Skew normal: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/snorm.hpp"
+#include "../cppunivariate/distributions/snorm.hpp"
 
 namespace dist_impl {
 

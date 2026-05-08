@@ -1,7 +1,7 @@
 // Logarithmic-series distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/lgser.hpp"
+#include "../cppunivariate/distributions/lgser.hpp"
 
 namespace dist_impl {
 

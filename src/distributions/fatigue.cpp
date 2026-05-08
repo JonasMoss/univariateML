@@ -1,7 +1,7 @@
 // Birnbaum-Saunders (fatigue) distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/fatigue.hpp"
+#include "../cppunivariate/distributions/fatigue.hpp"
 
 namespace dist_impl {
 

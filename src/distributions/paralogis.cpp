@@ -1,7 +1,7 @@
 // Paralogistic distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/paralogis.hpp"
+#include "../cppunivariate/distributions/paralogis.hpp"
 
 namespace dist_impl {
 

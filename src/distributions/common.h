@@ -6,8 +6,8 @@
 #include <cstddef>
 #include <limits>
 
-#include "../ml/special/skewed_densities.hpp"
-#include "../ml/special/special.hpp"
+#include "../cppunivariate/special/skewed_densities.hpp"
+#include "../cppunivariate/special/special.hpp"
 
 // Variadic recycle_length; returns the maximum of provided lengths.
 template <typename... Lens>

@@ -3,7 +3,7 @@
 // rate=1 -> scale=1 default path).
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/burr.hpp"
+#include "../cppunivariate/distributions/burr.hpp"
 
 namespace dist_impl {
 

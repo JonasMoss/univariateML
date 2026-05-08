@@ -1,7 +1,7 @@
 // Power distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "../ml/distributions/power.hpp"
+#include "../cppunivariate/distributions/power.hpp"
 
 namespace dist_impl {
 
