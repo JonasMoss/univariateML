@@ -3,7 +3,7 @@
   "name": "Student-t",
   "n": 500,
   "seed": 12676,
-  "sampler": "univariateML::rstd",
+  "sampler": "fGarch::rstd",
   "sampler_args": {
     "mean": 0,
     "sd": 1,

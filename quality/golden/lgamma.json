@@ -3,7 +3,7 @@
   "name": "Loggamma",
   "n": 500,
   "seed": 12968,
-  "sampler": "rlgamma",
+  "sampler": "actuar::rlgamma",
   "sampler_args": {
     "shapelog": 2,
     "ratelog": 3

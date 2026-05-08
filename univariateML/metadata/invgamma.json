@@ -1,4 +1,4 @@
 {
-  "sampler": "rinvgamma",
-  "density": "dinvgamma"
+  "sampler": "actuar::rinvgamma",
+  "density": "actuar::dinvgamma"
 }

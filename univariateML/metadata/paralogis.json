@@ -1,4 +1,4 @@
 {
-  "sampler": "rparalogis",
-  "density": "dparalogis"
+  "sampler": "actuar::rparalogis",
+  "density": "actuar::dparalogis"
 }

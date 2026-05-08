@@ -1,4 +1,4 @@
 {
-  "sampler": "rgumbel",
-  "density": "dgumbel"
+  "sampler": "extraDistr::rgumbel",
+  "density": "extraDistr::dgumbel"
 }

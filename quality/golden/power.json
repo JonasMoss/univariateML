@@ -3,7 +3,7 @@
   "name": "PowerDist",
   "n": 500,
   "seed": 12902,
-  "sampler": "rpower",
+  "sampler": "extraDistr::rpower",
   "sampler_args": {
     "alpha": 1,
     "beta": 2

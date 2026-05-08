@@ -1,4 +1,4 @@
 {
-  "sampler": "rpareto",
-  "density": "dpareto"
+  "sampler": "extraDistr::rpareto",
+  "density": "extraDistr::dpareto"
 }

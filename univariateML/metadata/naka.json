@@ -1,4 +1,4 @@
 {
-  "sampler": "univariateML::rnaka",
-  "density": "univariateML::dnaka"
+  "sampler": "nakagami::rnaka",
+  "density": "nakagami::dnaka"
 }

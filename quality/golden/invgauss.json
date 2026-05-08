@@ -3,7 +3,7 @@
   "name": "Inverse Gaussian",
   "n": 500,
   "seed": 13225,
-  "sampler": "rinvgauss",
+  "sampler": "actuar::rinvgauss",
   "sampler_args": {
     "mean": 3,
     "shape": 4

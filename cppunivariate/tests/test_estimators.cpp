@@ -221,8 +221,8 @@ TEST_CASE("gamma") {
 TEST_CASE("invgamma") {
   auto g = load("invgamma");
   auto r = cppunivariate::invgamma_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
-  CHECK(r.shape == APPROX(g.estimates.at("alpha")));
-  CHECK(r.rate == APPROX(g.estimates.at("beta")));
+  CHECK(r.shape == APPROX(g.estimates.at("shape")));
+  CHECK(r.scale == APPROX(g.estimates.at("scale")));
   CHECK(r.logLik == APPROX(g.logLik));
 }
 

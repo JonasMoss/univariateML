@@ -1,4 +1,4 @@
 {
-  "sampler": "rlomax",
-  "density": "dlomax"
+  "sampler": "extraDistr::rlomax",
+  "density": "extraDistr::dlomax"
 }

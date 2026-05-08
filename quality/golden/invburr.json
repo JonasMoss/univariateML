@@ -3,7 +3,7 @@
   "name": "Inverse Burr",
   "n": 500,
   "seed": 13121,
-  "sampler": "rinvburr",
+  "sampler": "actuar::rinvburr",
   "sampler_args": {
     "shape1": 1,
     "shape2": 2

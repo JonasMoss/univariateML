@@ -1,4 +1,4 @@
 {
-  "sampler": "rdunif",
-  "density": "ddunif"
+  "sampler": "extraDistr::rdunif",
+  "density": "extraDistr::ddunif"
 }

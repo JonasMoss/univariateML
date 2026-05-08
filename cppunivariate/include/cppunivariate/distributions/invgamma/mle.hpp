@@ -1,6 +1,9 @@
-// Inverse Gamma MLE: y = 1/x, then Gamma MLE on y. Parameters are
-// preserved (shape, rate); log-likelihood is rederived in the inverse
-// gamma parameterisation.
+// Inverse Gamma MLE: y = 1/x, then Gamma MLE on y. Result fields
+// (shape, scale) follow the standard shape-scale parameterisation:
+//   f_X(x; shape, scale) = scale^shape / Gamma(shape) * x^(-shape-1)
+//                        * exp(-scale / x).
+// Implementation reuses GammaResult{shape, rate} on Y = 1/X; scale is
+// numerically equal to GammaResult.rate via the inverse transform.
 
 #pragma once
 
@@ -17,7 +20,7 @@ namespace cppunivariate {
 
 struct InvGammaResult {
   double shape;
-  double rate;
+  double scale;
   double logLik;
   int iterations;
 };

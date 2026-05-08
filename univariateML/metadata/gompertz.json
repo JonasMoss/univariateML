@@ -1,4 +1,4 @@
 {
-  "sampler": "rgompertz",
-  "density": "dgompertz"
+  "sampler": "extraDistr::rgompertz",
+  "density": "extraDistr::dgompertz"
 }

@@ -1,4 +1,4 @@
 {
-  "sampler": "rlaplace",
-  "density": "dlaplace"
+  "sampler": "extraDistr::rlaplace",
+  "density": "extraDistr::dlaplace"
 }

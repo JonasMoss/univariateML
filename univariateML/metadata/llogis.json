@@ -1,4 +1,4 @@
 {
-  "sampler": "rllogis",
-  "density": "dllogis"
+  "sampler": "actuar::rllogis",
+  "density": "actuar::dllogis"
 }

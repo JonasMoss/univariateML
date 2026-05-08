@@ -3,14 +3,14 @@
   "name": "InvGamma",
   "n": 500,
   "seed": 13193,
-  "sampler": "rinvgamma",
+  "sampler": "actuar::rinvgamma",
   "sampler_args": {
-    "alpha": 3,
-    "beta": 4
+    "shape": 3,
+    "scale": 4
   },
   "estimates": {
-    "alpha": 2.9749963617100406,
-    "beta": 4.0451342990785069
+    "shape": 2.9749963617100406,
+    "scale": 4.0451342990785069
   },
   "logLik": -707.04489619097467,
   "n_obs": 500,

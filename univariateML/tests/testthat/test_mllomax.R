@@ -2,22 +2,22 @@ context("mllomax")
 
 ## Data generation.
 set.seed(313)
-tiny_data <- rlomax(10, 1, 7)
-small_data <- rlomax(100, 10, 3)
-medium_data <- rlomax(1000, 1 / 2, 2)
-large_data <- rlomax(10000, 20, 13)
+tiny_data <- extraDistr::rlomax(10, 1, 7)
+small_data <- extraDistr::rlomax(100, 10, 3)
+medium_data <- extraDistr::rlomax(1000, 1 / 2, 2)
+large_data <- extraDistr::rlomax(10000, 20, 13)
 
 ## Checks if the ML is correct.
 mle2 <- suppressWarnings(nlm(function(p) {
-  -sum(dlomax(small_data, p[1], p[2], log = TRUE))
+  -sum(extraDistr::dlomax(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 
 mle3 <- suppressWarnings(nlm(function(p) {
-  -sum(dlomax(medium_data, p[1], p[2], log = TRUE))
+  -sum(extraDistr::dlomax(medium_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 
 mle4 <- suppressWarnings(nlm(function(p) {
-  -sum(dlomax(large_data, p[1], p[2], log = TRUE))
+  -sum(extraDistr::dlomax(large_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 
 
@@ -49,7 +49,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mllomax(small_data, na.rm = TRUE)
 expect_equal(
-  sum(dlomax(small_data, est[1], est[2], log = TRUE)),
+  sum(extraDistr::dlomax(small_data, est[1], est[2], log = TRUE)),
   attr(est, "logLik")
 )
 

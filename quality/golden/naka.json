@@ -3,7 +3,7 @@
   "name": "Nakagami",
   "n": 500,
   "seed": 12756,
-  "sampler": "univariateML::rnaka",
+  "sampler": "nakagami::rnaka",
   "sampler_args": {
     "shape": 2,
     "scale": 3

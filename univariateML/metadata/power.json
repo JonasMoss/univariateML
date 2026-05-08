@@ -1,4 +1,4 @@
 {
-  "sampler": "rpower",
-  "density": "dpower"
+  "sampler": "extraDistr::rpower",
+  "density": "extraDistr::dpower"
 }

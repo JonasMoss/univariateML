@@ -3,7 +3,7 @@
   "name": "Zipf",
   "n": 500,
   "seed": 12786,
-  "sampler": "univariateML::rzipf",
+  "sampler": "sads::rzipf",
   "sampler_args": {
     "N": 3,
     "s": 0.5

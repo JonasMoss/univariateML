@@ -505,7 +505,7 @@ Rcpp::List mlinvgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
   auto res = cppunivariate::invgamma_mle(dist_impl::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
+          Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 

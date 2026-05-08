@@ -347,7 +347,7 @@ TEST_CASE("invgamma: analytical Hessian agrees with FD") {
   auto g = load("invgamma");
   auto fit = cppunivariate::invgamma_mle(mltest::as_span(g.data), 1.220703e-4, 100);
   cppunivariate::InvGammaCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.shape, fit.rate};
+  const double theta[] = {fit.shape, fit.scale};
   double H_anal[4], H_fd[4];
   cost.hessian(theta, H_anal);
   cppunivariate::finite_diff_hessian(cost, theta, H_fd);

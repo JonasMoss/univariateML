@@ -3,7 +3,7 @@
   "name": "LogitNormal",
   "n": 500,
   "seed": 13332,
-  "sampler": "univariateML::rlogitnorm",
+  "sampler": "logitnorm::rlogitnorm",
   "sampler_args": {
     "mu": 2,
     "sigma": 3

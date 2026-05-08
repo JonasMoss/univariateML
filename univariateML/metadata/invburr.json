@@ -1,4 +1,4 @@
 {
-  "sampler": "rinvburr",
-  "density": "dinvburr"
+  "sampler": "actuar::rinvburr",
+  "density": "actuar::dinvburr"
 }

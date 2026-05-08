@@ -1,4 +1,4 @@
 {
-  "sampler": "univariateML::rlogitnorm",
-  "density": "univariateML::dlogitnorm"
+  "sampler": "logitnorm::rlogitnorm",
+  "density": "logitnorm::dlogitnorm"
 }

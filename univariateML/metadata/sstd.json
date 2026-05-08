@@ -1,4 +1,4 @@
 {
-  "sampler": "univariateML::rsstd",
-  "density": "univariateML::dsstd"
+  "sampler": "fGarch::rsstd",
+  "density": "fGarch::dsstd"
 }

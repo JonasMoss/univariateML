@@ -3,7 +3,7 @@
   "name": "Birnbaum-Saunders",
   "n": 500,
   "seed": 13086,
-  "sampler": "rfatigue",
+  "sampler": "extraDistr::rfatigue",
   "sampler_args": {
     "alpha": 3,
     "beta": 2,

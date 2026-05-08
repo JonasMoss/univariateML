@@ -3,7 +3,7 @@
   "name": "Logarithmic series",
   "n": 500,
   "seed": 12886,
-  "sampler": "rlgser",
+  "sampler": "extraDistr::rlgser",
   "sampler_args": {
     "theta": 0.90000000000000002
   },
