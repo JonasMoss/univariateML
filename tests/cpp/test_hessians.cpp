@@ -583,6 +583,51 @@ TEST_CASE("zipf: analytical Hessian agrees with FD (1-D in s, N fixed)") {
   CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
 }
 
+// --- multi-D BFGS estimators (Hessian in phi/transformed space) ------------
+//
+// These six estimators fit in transformed (log-reparameterised) parameter
+// space via BFGS. Their Cost::hessian is therefore in phi-space too, and
+// is compared against finite_diff_hessian at phi_hat (computed from the
+// natural-space MLE via to_log / to_log_shift). Phase 4 will apply the
+// chain-rule Jacobian to surface the Hessian in natural parameters.
+//
+// No Layer-2 (closed-form Fisher info) check here — the analytic Fisher
+// information for these families is itself a paper-length result that
+// would just duplicate the Hessian formula.
+
+TEST_CASE("paralogis: analytical Hessian agrees with FD") {
+  auto g = load("paralogis");
+  auto fit = mlcore::paralogis_mle(mltest::as_span(g.data), 1.220703e-4, 100);
+  mlcore::ParalogisCost cost{mltest::as_span(g.data)};
+  const double phi[] = {std::log(fit.shape), std::log(fit.scale)};
+  double H_anal[4], H_fd[4];
+  cost.hessian(phi, H_anal);
+  mlcore::finite_diff_hessian(cost, phi, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
+}
+
+TEST_CASE("student_t: analytical Hessian agrees with FD") {
+  auto g = load("std");
+  auto fit = mlcore::student_t_mle(mltest::as_span(g.data), 1.220703e-4, 200);
+  mlcore::StudentTCost cost{mltest::as_span(g.data)};
+  const double phi[] = {fit.mu, std::log(fit.sigma), std::log(fit.nu - 2.0)};
+  double H_anal[9], H_fd[9];
+  cost.hessian(phi, H_anal);
+  mlcore::finite_diff_hessian(cost, phi, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 9, kFdTol, max_diag(H_anal, 3)));
+}
+
+TEST_CASE("ged: analytical Hessian agrees with FD") {
+  auto g = load("ged");
+  auto fit = mlcore::ged_mle(mltest::as_span(g.data), 1.220703e-4, 200);
+  mlcore::GedCost cost{mltest::as_span(g.data)};
+  const double phi[] = {fit.mu, std::log(fit.sigma), std::log(fit.nu)};
+  double H_anal[9], H_fd[9];
+  cost.hessian(phi, H_anal);
+  mlcore::finite_diff_hessian(cost, phi, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 9, kFdTol, max_diag(H_anal, 3)));
+}
+
 TEST_CASE("laplace: Hessian equals Fisher info diag(n/s^2, n/s^2)") {
   auto g = load("laplace");
   auto fit = mlcore::laplace_mle(mltest::as_span(g.data));

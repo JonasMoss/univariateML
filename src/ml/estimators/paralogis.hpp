@@ -46,7 +46,17 @@ struct ParalogisResult {
 };
 
 // Negative log-likelihood as a BFGS Cost, parameterised in phi-space:
-//   phi[0] = log(shape), phi[1] = log(scale).
+//   phi[0] = u = log(shape), phi[1] = v = log(scale).
+//
+// Per-observation: with z_i = log(x_i) - v, t_i = alpha * z_i,
+//                  p_i = sigmoid(t_i), q_i = p_i (1 - p_i),
+//                  s_i = log1p(exp(t_i)),
+//   nll = -2n*u + sum_i [ -alpha*z_i + (alpha+1)*s_i ] + const.
+// Hessian (in (u, v) space):
+//   H_uu = -sum t + (3a+1) sum (p t) + (a+1) sum (q t^2) + a * sum s
+//   H_uv = n*a - a*(2a+1) sum p - a*(a+1) sum (q t)
+//   H_vv = a^2 (a+1) sum q
+// Sympy-verified against numerical derivatives at random points.
 struct ParalogisCost {
   span x;
   int dim() const { return 2; }
@@ -73,6 +83,49 @@ struct ParalogisCost {
     const double logLik = dn * 2.0 * std::log(alpha) + alpha * sum_log_xt -
                           sum_log_x - (alpha + 1.0) * sum_log1p_r;
     return -logLik;
+  }
+  void hessian(const double *phi, double *H) const {
+    const double alpha = mlcore::from_log(phi[0]);
+    const double theta = mlcore::from_log(phi[1]);
+    if (!std::isfinite(alpha) || !std::isfinite(theta) || alpha <= 0.0 ||
+        theta <= 0.0) {
+      const double nan = std::numeric_limits<double>::quiet_NaN();
+      H[0] = H[1] = H[2] = H[3] = nan;
+      return;
+    }
+    const double dn = static_cast<double>(x.size());
+    double sum_t = 0.0, sum_p = 0.0, sum_q = 0.0;
+    double sum_pt = 0.0, sum_qt = 0.0, sum_qt2 = 0.0, sum_s = 0.0;
+    for (auto v_x : x) {
+      const double t = alpha * (std::log(v_x) - phi[1]);
+      // Numerically stable sigmoid / softplus / sigmoid-derivative.
+      double p, q, s;
+      if (t >= 0.0) {
+        const double e_neg = std::exp(-t);
+        const double one_plus = 1.0 + e_neg;
+        p = 1.0 / one_plus;
+        q = e_neg / (one_plus * one_plus);
+        s = t + std::log1p(e_neg);
+      } else {
+        const double e_pos = std::exp(t);
+        const double one_plus = 1.0 + e_pos;
+        p = e_pos / one_plus;
+        q = e_pos / (one_plus * one_plus);
+        s = std::log1p(e_pos);
+      }
+      sum_t += t;
+      sum_p += p;
+      sum_q += q;
+      sum_pt += p * t;
+      sum_qt += q * t;
+      sum_qt2 += q * t * t;
+      sum_s += s;
+    }
+    const double a1 = alpha + 1.0;
+    H[0] = -sum_t + (3.0 * alpha + 1.0) * sum_pt + a1 * sum_qt2 + alpha * sum_s;
+    H[1] = dn * alpha - alpha * (2.0 * alpha + 1.0) * sum_p - alpha * a1 * sum_qt;
+    H[2] = H[1];
+    H[3] = alpha * alpha * a1 * sum_q;
   }
 };
 

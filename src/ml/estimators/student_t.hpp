@@ -15,6 +15,7 @@
 #include "../core/reparam.hpp"
 #include "../core/span.hpp"
 #include "../special/skewed_densities.hpp"
+#include "../special/special.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -33,6 +34,21 @@ struct StudentTResult {
   StudentTStatus status;
 };
 
+// Per-obs nll in phi-space (with z = (x - mu)/sigma, m = nu - 2,
+// y = z^2/m, R = 1 + y, sigma = exp(phi[1]), m = exp(phi[2])):
+//   nll_per = phi[1] - lgamma((nu+1)/2) + lgamma(nu/2) + (1/2) log(pi m)
+//             + (nu+1)/2 * log(R).
+// Hessian summed over observations:
+//   H[0][0] = (nu+1)/(sigma^2 m) * sum (1 - y_i) / R_i^2
+//   H[0][1] = (2(nu+1)/(sigma m)) * sum z_i / R_i^2
+//   H[0][2] = (1/(sigma m)) * sum (3 - z_i^2) z_i / R_i^2
+//   H[1][1] = 2(nu+1) * sum y_i / R_i^2
+//   H[1][2] = (1/m) * sum z_i^2 (3 - z_i^2) / R_i^2
+//   H[2][2] = (nu+1)/2 * sum y_i / R_i^2 - sum z_i^2 / R_i
+//             + (m/2) * sum log R_i
+//             - n * m^2/4 * (trigamma((nu+1)/2) - trigamma(nu/2))
+//             - n * m/2 * (digamma((nu+1)/2) - digamma(nu/2)).
+// Sympy-derived; verified vs numerical Hessian to machine precision.
 struct StudentTCost {
   span x;
   int dim() const { return 3; }
@@ -51,6 +67,64 @@ struct StudentTCost {
       neg += log_sigma - mlcore::dens::log_dstd_unit(z, nu);
     }
     return neg;
+  }
+  void hessian(const double *phi, double *H) const {
+    const double mu = phi[0];
+    const double sigma = mlcore::from_log(phi[1]);
+    const double m = mlcore::from_log(phi[2]);  // nu - 2
+    const double nu = m + 2.0;
+    if (!std::isfinite(sigma) || !std::isfinite(m) || sigma <= 0.0 ||
+        m <= 0.0) {
+      const double nan = std::numeric_limits<double>::quiet_NaN();
+      for (int i = 0; i < 9; ++i) H[i] = nan;
+      return;
+    }
+    double S_invR2 = 0.0;       // sum 1/R^2
+    double S_y_invR2 = 0.0;     // sum y / R^2
+    double S_z_invR2 = 0.0;     // sum z / R^2
+    double S_z2_invR = 0.0;     // sum z^2 / R
+    double S_z3_invR2 = 0.0;    // sum z^3 / R^2
+    double S_z2_invR2 = 0.0;    // sum z^2 / R^2
+    double S_z4_invR2 = 0.0;    // sum z^4 / R^2
+    double S_logR = 0.0;        // sum log R
+    for (auto v : x) {
+      const double z = (v - mu) / sigma;
+      const double z2 = z * z;
+      const double y = z2 / m;
+      const double R = 1.0 + y;
+      const double inv_R = 1.0 / R;
+      const double inv_R2 = inv_R * inv_R;
+      S_invR2 += inv_R2;
+      S_y_invR2 += y * inv_R2;
+      S_z_invR2 += z * inv_R2;
+      S_z2_invR += z2 * inv_R;
+      S_z3_invR2 += z * z2 * inv_R2;
+      S_z2_invR2 += z2 * inv_R2;
+      S_z4_invR2 += z2 * z2 * inv_R2;
+      S_logR += std::log(R);
+    }
+    const double dn = static_cast<double>(x.size());
+    const double nu1 = nu + 1.0;
+    const double sigma_m = sigma * m;
+    const double sigma2_m = sigma * sigma_m;
+    // sum (1 - y) / R^2 = sum 1/R^2 - sum y/R^2.
+    H[0] = nu1 / sigma2_m * (S_invR2 - S_y_invR2);
+    // sum z / R^2.
+    H[1] = (2.0 * nu1 / sigma_m) * S_z_invR2;
+    // sum (3 - z^2) z / R^2 = 3 sum z/R^2 - sum z^3/R^2.
+    H[2] = (3.0 * S_z_invR2 - S_z3_invR2) / sigma_m;
+    H[3] = H[1];
+    H[4] = 2.0 * nu1 * S_y_invR2;
+    // sum z^2 (3 - z^2) / R^2 = 3 sum z^2/R^2 - sum z^4/R^2.
+    H[5] = (3.0 * S_z2_invR2 - S_z4_invR2) / m;
+    H[6] = H[2];
+    H[7] = H[5];
+    const double dpsi = mlcore::special::digamma(0.5 * nu1) -
+                        mlcore::special::digamma(0.5 * nu);
+    const double dtri = mlcore::special::trigamma(0.5 * nu1) -
+                        mlcore::special::trigamma(0.5 * nu);
+    H[8] = 0.5 * nu1 * S_y_invR2 - S_z2_invR + 0.5 * m * S_logR -
+           0.25 * m * m * dn * dtri - 0.5 * m * dn * dpsi;
   }
 };
 
