@@ -2,7 +2,7 @@
 % Please edit documentation in R/ml02_wrappers.R
 \name{mllomax}
 \alias{mllomax}
-\title{Lomax distribution maximum likelihood estimation}
+\title{Lomax maximum likelihood estimation}
 \usage{
 mllomax(x, na.rm = FALSE, ...)
 }
@@ -17,19 +17,14 @@ mllomax(x, na.rm = FALSE, ...)
 An object of class \code{univariateML} with estimates and attributes.
 }
 \description{
-Estimates Lomax (Pareto Type II) parameters via Newton–Raphson on lambda, with kappa in closed form given lambda.
+Maximum likelihood estimation for this distribution.
 }
 \details{
-The Lomax MLE only exists when the data show enough dispersion: specifically \code{mean(x^2) >= 2 * mean(x)^2} (equivalently, sample CV >= 1). Below that threshold the likelihood has no interior maximum: as \code{kappa -> Inf} with \code{lambda * kappa} held constant the Lomax density converges to an Exponential, and the likelihood approaches that limit without ever attaining it. \code{mllomax()} detects this at entry and stops with a message recommending \code{mlexp()}. Inputs that satisfy the moment condition are fit by Newton-Raphson on lambda; kappa is then \code{n / sum(log1p(lambda * x))}.
+Density: dlomax; support: [0, Inf).
 }
 \examples{
-set.seed(3); mllomax(extraDistr::rlomax(100, 2, 4))
-}
-\references{
-Kleiber, C. and Kotz, S. (2003) Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
-Giles, D. E., Feng, H. and Godwin, R. T. (2013) On the bias of the maximum likelihood estimator for the two-parameter Lomax distribution. Communications in Statistics - Theory and Methods, 42(11), 1934-1950.
+set.seed(1); mllomax(simulate_default("mllomax", 100))
 }
 \seealso{
-extraDistr::Lomax
-mlexp
+dlomax
 }
