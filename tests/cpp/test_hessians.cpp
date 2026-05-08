@@ -628,6 +628,41 @@ TEST_CASE("ged: analytical Hessian agrees with FD") {
   CHECK(hessian_close(H_anal, H_fd, 9, kFdTol, max_diag(H_anal, 3)));
 }
 
+TEST_CASE("snorm: analytical Hessian agrees with FD") {
+  auto g = load("snorm");
+  auto fit = mlcore::snorm_mle(mltest::as_span(g.data), 1.220703e-4, 200);
+  mlcore::SnormCost cost{mltest::as_span(g.data)};
+  const double phi[] = {fit.mu, std::log(fit.sigma), std::log(fit.xi)};
+  double H_anal[9], H_fd[9];
+  cost.hessian(phi, H_anal);
+  mlcore::finite_diff_hessian(cost, phi, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 9, kFdTol, max_diag(H_anal, 3)));
+}
+
+TEST_CASE("sstd: analytical Hessian agrees with FD") {
+  auto g = load("sstd");
+  auto fit = mlcore::sstd_mle(mltest::as_span(g.data), 1.220703e-4, 200);
+  mlcore::SstdCost cost{mltest::as_span(g.data)};
+  const double phi[] = {fit.mu, std::log(fit.sigma),
+                        std::log(fit.nu - 2.0), std::log(fit.xi)};
+  double H_anal[16], H_fd[16];
+  cost.hessian(phi, H_anal);
+  mlcore::finite_diff_hessian(cost, phi, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 16, kFdTol, max_diag(H_anal, 4)));
+}
+
+TEST_CASE("sged: analytical Hessian agrees with FD") {
+  auto g = load("sged");
+  auto fit = mlcore::sged_mle(mltest::as_span(g.data), 1.220703e-4, 200);
+  mlcore::SgedCost cost{mltest::as_span(g.data)};
+  const double phi[] = {fit.mu, std::log(fit.sigma),
+                        std::log(fit.nu), std::log(fit.xi)};
+  double H_anal[16], H_fd[16];
+  cost.hessian(phi, H_anal);
+  mlcore::finite_diff_hessian(cost, phi, H_fd);
+  CHECK(hessian_close(H_anal, H_fd, 16, kFdTol, max_diag(H_anal, 4)));
+}
+
 TEST_CASE("laplace: Hessian equals Fisher info diag(n/s^2, n/s^2)") {
   auto g = load("laplace");
   auto fit = mlcore::laplace_mle(mltest::as_span(g.data));
