@@ -80,8 +80,13 @@ cppunivariate/                        # the C++ artifact
   CMakeLists.txt                      # produces INTERFACE target `cppunivariate`
   include/cppunivariate/
     core/                             # span, optimisers (newton, bfgs), reductions, finite_diff, reparam
-    estimators/                       # one .hpp per distribution; *_mle(span x, ...) -> *Result
-    distributions/                    # one .hpp per distribution; d/p/q/r as templates
+    estimators/                       # legacy: one .hpp per distribution; *_mle(span x, ...) -> *Result
+    distributions/                    # mixed:
+                                      #   <id>.hpp                 — legacy d/p/q/r (one per dist)
+                                      #   <id>/mle.hpp             — dossier-migrated estimator
+                                      #   <id>/dpqr.hpp            — dossier-migrated d/p/q/r
+                                      #   <id>/dossier.md          — math + algorithm prose
+                                      #   <id>/metadata.json       — structured fields + docs overlay
     special/                          # special.hpp (Boost.Math seam), skewed_densities.hpp
     cppunivariate.hpp                 # aggregator
   tests/                              # doctest + ctest, R-free
@@ -179,18 +184,41 @@ the legacy fGarch path expect a usable result back, not an error.
 
 ### Adding a new distribution
 
-1. Implement `cppunivariate::*_mle` in `cppunivariate/include/cppunivariate/estimators/<name>.hpp`. If
-   the distribution is also new on the dpqr side, add the templates
-   in `cppunivariate/include/cppunivariate/distributions/<name>.hpp`.
-2. Add an include line to `cppunivariate/include/cppunivariate/cppunivariate.hpp`.
-3. Wire an Rcpp wrapper in `r/src/ml_exports.cpp` (and
-   `r/src/distribution_exports.cpp` if dpqr).
-4. Update `metadata/models.json` (canonical param names + sampler).
-5. Regenerate goldens via `Rscript scripts/gen_goldens.R`.
-6. Add a doctest case in `cppunivariate/tests/test_estimators.cpp`. For
-   multi-D estimators add the score-residual `||g||_2 < 1e-3` check
-   too.
-7. `just test` and `just cpp-test` must both pass.
+New distributions get the dossier-bundle layout. Legacy distributions
+in `estimators/<id>.hpp` + `distributions/<id>.hpp` + `metadata/models.json`
+are migrated separately as dossier-sweep PRs land.
+
+1. Create the dossier folder `cppunivariate/include/cppunivariate/distributions/<id>/`.
+   - `mle.hpp` — `cppunivariate::*_mle` and the `Cost` struct.
+     Relative includes are two levels up: `../../core/...`,
+     `../../special/...`.
+   - `dpqr.hpp` — d/p/q/r templates (only if the distribution doesn't
+     reuse base R's via the R-side wrapper).
+   - `dossier.md` — math, MLE existence, score / Hessian, algorithm,
+     status enum, provenance note, tests + goldens, references. See
+     `distributions/lomax/dossier.md` for the full template;
+     `distributions/exp/dossier.md` for the minimal one.
+   - `metadata.json` — structured fields. Schema: see
+     `metadata/SCHEMA.md` "Per-distribution form". Folder name
+     supplies the id; do not include an `id` field.
+2. Add one include line to `cppunivariate/include/cppunivariate/cppunivariate.hpp`:
+   `#include "distributions/<id>/mle.hpp"`. Skip `dpqr.hpp` — the
+   aggregator only pulls estimators; dpqr is included directly by
+   the R-side wrapper.
+3. Wire an Rcpp wrapper in `r/src/ml_exports.cpp` (and a new
+   `r/src/distributions/<id>.cpp` if dpqr — `#include "cppunivariate/distributions/<id>/dpqr.hpp"`).
+4. Regenerate goldens via `just goldens`.
+5. Add a doctest case in `cppunivariate/tests/test_estimators.cpp`.
+   For multi-D estimators add the score-residual `||g||_2 < 1e-3`
+   check too.
+6. `just test` and `just cpp-test` must both pass.
+
+The codegen scripts merge `metadata/models.json` (legacy aggregate)
+and the per-distribution `metadata.json` files at
+`Sys.glob("cppunivariate/include/cppunivariate/distributions/*/metadata.json")`,
+sort by id, and emit deterministic R sources. A new distribution
+should land in the per-distribution form; only touch
+`metadata/models.json` for legacy maintenance.
 
 ---
 
