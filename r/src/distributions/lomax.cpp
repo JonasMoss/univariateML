@@ -1,7 +1,7 @@
 // Lomax distribution: Rcpp::NumericVector wrappers.
 #include "common.h"
 #include "rng_r.h"
-#include "cppunivariate/distributions/lomax.hpp"
+#include "cppunivariate/distributions/lomax/dpqr.hpp"
 
 namespace dist_impl {
 

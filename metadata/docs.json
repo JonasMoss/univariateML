@@ -3,69 +3,79 @@
     {
       "id": "gumbel",
       "title": "Gumbel distribution maximum likelihood estimation",
-      "description": "Uses Newton–Raphson to estimate the parameters of the Gumbel distribution.",
+      "description": "Uses Newton\u2013Raphson to estimate the parameters of the Gumbel distribution.",
       "details": "Estimates mu and sigma by centering the data and iterating on sigma; log-likelihood is computed with extraDistr::dgumbel.",
-      "seealso": ["extraDistr::Gumbel"],
+      "seealso": [
+        "extraDistr::Gumbel"
+      ],
       "references": [
         "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York."
       ],
-      "examples": ["mlgumbel(precip)"]
+      "examples": [
+        "mlgumbel(precip)"
+      ]
     },
     {
       "id": "weibull",
       "title": "Weibull distribution maximum likelihood estimation",
       "description": "Uses a Gumbel transformation to estimate the Weibull parameters.",
       "details": "Transforms x via -log(x), calls the Gumbel estimator on the shifted data, and maps back to shape/scale.",
-      "seealso": ["stats::Weibull"],
+      "seealso": [
+        "stats::Weibull"
+      ],
       "references": [
         "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York."
       ],
-      "examples": ["BIC(mlweibull(precip))"]
+      "examples": [
+        "BIC(mlweibull(precip))"
+      ]
     },
     {
       "id": "gamma",
       "title": "Gamma distribution maximum likelihood estimation",
       "description": "Joint maximum likelihood estimation of Gamma shape and rate.",
-      "details": "Uses Newton–Raphson on log-parameters with method-of-moments starts.",
-      "seealso": ["stats::Gamma"],
+      "details": "Uses Newton\u2013Raphson on log-parameters with method-of-moments starts.",
+      "seealso": [
+        "stats::Gamma"
+      ],
       "references": [
         "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1. Wiley, New York."
       ],
-      "examples": ["mlgamma(faithful$eruptions)"]
-    },
-    {
-      "id": "lomax",
-      "title": "Lomax distribution maximum likelihood estimation",
-      "description": "Estimates Lomax (Pareto Type II) parameters via Newton–Raphson on lambda, with kappa in closed form given lambda.",
-      "details": "The Lomax MLE only exists when the data show enough dispersion: specifically `mean(x^2) >= 2 * mean(x)^2` (equivalently, sample CV >= 1). Below that threshold the likelihood has no interior maximum: as `kappa -> Inf` with `lambda * kappa` held constant the Lomax density converges to an Exponential, and the likelihood approaches that limit without ever attaining it. `mllomax()` detects this at entry and stops with a message recommending `mlexp()`. Inputs that satisfy the moment condition are fit by Newton-Raphson on lambda; kappa is then `n / sum(log1p(lambda * x))`.",
-      "seealso": ["extraDistr::Lomax", "mlexp"],
-      "references": [
-        "Kleiber, C. and Kotz, S. (2003) Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.",
-        "Giles, D. E., Feng, H. and Godwin, R. T. (2013) On the bias of the maximum likelihood estimator for the two-parameter Lomax distribution. Communications in Statistics - Theory and Methods, 42(11), 1934-1950."
-      ],
-      "examples": ["set.seed(3); mllomax(extraDistr::rlomax(100, 2, 4))"]
+      "examples": [
+        "mlgamma(faithful$eruptions)"
+      ]
     },
     {
       "id": "nbinom",
       "title": "Negative Binomial distribution maximum likelihood estimation",
       "description": "Joint maximum likelihood estimation of size and prob via Newton-Raphson on size.",
       "details": "The negative binomial MLE only exists when the sample variance exceeds the sample mean (overdispersion). When `var(x) <= mean(x)` the likelihood is maximised in the limit `size -> Inf`, where the negative binomial reduces to a `Poisson(mean)`. `mlnbinom()` detects this case and stops with a message pointing to `mlpois()`.",
-      "seealso": ["stats::NegBinomial", "mlpois"],
+      "seealso": [
+        "stats::NegBinomial",
+        "mlpois"
+      ],
       "references": [
         "Johnson, N. L., Kotz, S. and Kemp, A. W. (1993) Univariate Discrete Distributions, Chapter 5. Wiley."
       ],
-      "examples": ["set.seed(1); mlnbinom(rnbinom(500, size = 5, prob = 0.4))"]
+      "examples": [
+        "set.seed(1); mlnbinom(rnbinom(500, size = 5, prob = 0.4))"
+      ]
     },
     {
       "id": "binom",
       "title": "Binomial distribution maximum likelihood estimation",
       "description": "Joint maximum likelihood estimation of size and prob, optionally with size supplied.",
       "details": "When `size` is given, `prob = mean(x) / size` in closed form. With size unknown, `mlbinom()` searches over integer sizes from `max(x)` upward and reports the maximiser of the profile likelihood. The estimator does not exist when `var(x) >= mean(x)` (overdispersed data); in that case the likelihood is maximised in the limit `size -> Inf` and `mlbinom()` stops with a message recommending `mlpois()` or that an explicit `size` be supplied.",
-      "seealso": ["stats::Binomial", "mlpois"],
+      "seealso": [
+        "stats::Binomial",
+        "mlpois"
+      ],
       "references": [
         "Olkin, I., Petkau, A. J. and Zidek, J. V. (1981) A comparison of n estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642."
       ],
-      "examples": ["set.seed(1); mlbinom(rbinom(500, size = 10, prob = 0.5))"]
+      "examples": [
+        "set.seed(1); mlbinom(rbinom(500, size = 10, prob = 0.5))"
+      ]
     }
   ]
 }

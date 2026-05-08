@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "../special/constants.hpp"
+#include "../../special/constants.hpp"
 #include <cmath>
 
 namespace cppunivariate {

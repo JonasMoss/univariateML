@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "../core/reductions.hpp"
-#include "../core/span.hpp"
+#include "../../core/reductions.hpp"
+#include "../../core/span.hpp"
 
 #include <cmath>
 #include <cstddef>

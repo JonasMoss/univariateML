@@ -1231,55 +1231,6 @@
       "legacy_impl": "R/mllogitnorm.R"
     },
     {
-      "id": "lomax",
-      "name": "Lomax",
-      "density": "dlomax",
-      "support": {
-        "type": "R",
-        "lower": 0,
-        "upper": null,
-        "closed": [
-          false,
-          false
-        ]
-      },
-      "params": [
-        {
-          "name": "lambda",
-          "role": null,
-          "default": 1,
-          "support": {
-            "lower": null,
-            "upper": null,
-            "closed": [
-              false,
-              false
-            ]
-          }
-        },
-        {
-          "name": "kappa",
-          "role": null,
-          "default": 2,
-          "support": {
-            "lower": null,
-            "upper": null,
-            "closed": [
-              false,
-              false
-            ]
-          }
-        }
-      ],
-      "sampler": "rlomax",
-      "start_hints": {
-        "method": null,
-        "notes": null
-      },
-      "validation_hooks": [],
-      "legacy_impl": "R/mllomax.R"
-    },
-    {
       "id": "naka",
       "name": "Nakagami",
       "density": "univariateML::dnaka",

@@ -36,7 +36,7 @@
 #include "estimators/logitnormal.hpp"
 #include "estimators/loglogistic.hpp"
 #include "estimators/lognormal.hpp"
-#include "estimators/lomax.hpp"
+#include "distributions/lomax/mle.hpp"
 #include "estimators/nakagami.hpp"
 #include "estimators/negative_binomial.hpp"
 #include "estimators/normal.hpp"
