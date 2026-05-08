@@ -16,8 +16,15 @@ LazyData: true
 Depends: 
     R (>= 3.5)
 Imports:
-    Rcpp
-Suggests: 
+    Rcpp,
+    extraDistr,
+    actuar,
+    fGarch,
+    logitnorm,
+    nakagami,
+    sads
+Suggests:
+    jsonlite,
     testthat,
     knitr,
     rmarkdown
