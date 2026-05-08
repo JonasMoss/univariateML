@@ -56,7 +56,7 @@ univariateML_metadata$mldunif <- list(
 univariateML_metadata$mlexp <- list(
   model = "Exponential",
   density = "stats::dexp",
-  support = list(bounds = c(0, Inf), closed = c(FALSE, FALSE), type = "R"),
+  support = list(bounds = c(0, Inf), closed = c(TRUE, FALSE), type = "R"),
   names = c("rate"),
   default = c(1)
 )
