@@ -10,7 +10,7 @@
 
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 
 inline double inverse_digamma_scalar(double x) {
   constexpr double GAMMA_C = 0.57721566490153286060;
@@ -27,16 +27,16 @@ inline double inverse_digamma_scalar(double x) {
   } else {
     y = 1.0 / std::log1p(std::exp(-x));
     for (int i = 0; i < 2; ++i) {
-      r = mlcore::special::digamma(y) - x;
-      y -= r / mlcore::special::trigamma(y);
+      r = cppunivariate::special::digamma(y) - x;
+      y -= r / cppunivariate::special::trigamma(y);
     }
   }
   for (int k = 0; k < 2; ++k) {
-    r = mlcore::special::digamma(y) - x;
+    r = cppunivariate::special::digamma(y) - x;
     if (std::fabs(r) < 1e-14) break;
-    y -= r / mlcore::special::trigamma(y);
+    y -= r / cppunivariate::special::trigamma(y);
   }
   return y;
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

@@ -15,7 +15,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct CauchyResult {
   double mu;
@@ -144,4 +144,4 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   return {mu, scale, logLik, iter};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

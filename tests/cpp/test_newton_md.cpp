@@ -99,8 +99,8 @@ struct IndefStart {
 TEST_CASE("newton_md: quadratic converges in one step") {
   Quadratic c;
   const double theta0[] = {0.0, 0.0};
-  auto r = mlcore::newton_md_minimize(c, theta0);
-  CHECK(r.status == mlcore::NewtonMdStatus::Ok);
+  auto r = cppunivariate::newton_md_minimize(c, theta0);
+  CHECK(r.status == cppunivariate::NewtonMdStatus::Ok);
   // Levenberg ridge (lambda0 = 1e-8) biases the first Newton step by ~5e-9
   // for a problem with H = 2I. After convergence the bias is gone, but
   // step_tol can fire before grad_tol on a second well-conditioned step.
@@ -112,8 +112,8 @@ TEST_CASE("newton_md: quadratic converges in one step") {
 TEST_CASE("newton_md: ill-conditioned ellipse") {
   IllEllipse c;
   const double theta0[] = {1.0, 1.0};
-  auto r = mlcore::newton_md_minimize(c, theta0);
-  CHECK(r.status == mlcore::NewtonMdStatus::Ok);
+  auto r = cppunivariate::newton_md_minimize(c, theta0);
+  CHECK(r.status == cppunivariate::NewtonMdStatus::Ok);
   CHECK(r.theta[0] == doctest::Approx(0.0).epsilon(1e-8));
   CHECK(r.theta[1] == doctest::Approx(0.0).epsilon(1e-8));
 }
@@ -121,24 +121,24 @@ TEST_CASE("newton_md: ill-conditioned ellipse") {
 TEST_CASE("newton_md: Rosenbrock with analytic Hessian") {
   Rosenbrock c;
   const double theta0[] = {-1.2, 1.0};
-  mlcore::NewtonMdControl ctl;
+  cppunivariate::NewtonMdControl ctl;
   ctl.maxit = 200;
   ctl.grad_tol = 1e-8;
-  auto r = mlcore::newton_md_minimize(c, theta0, ctl);
-  CHECK(r.status == mlcore::NewtonMdStatus::Ok);
+  auto r = cppunivariate::newton_md_minimize(c, theta0, ctl);
+  CHECK(r.status == cppunivariate::NewtonMdStatus::Ok);
   CHECK(r.theta[0] == doctest::Approx(1.0).epsilon(1e-5));
   CHECK(r.theta[1] == doctest::Approx(1.0).epsilon(1e-5));
 }
 
 TEST_CASE("newton_md: Rosenbrock with FD Hessian via adapter") {
   Rosenbrock c;
-  mlcore::finite_diff_hessian_cost<Rosenbrock> fd{c};
+  cppunivariate::finite_diff_hessian_cost<Rosenbrock> fd{c};
   const double theta0[] = {-1.2, 1.0};
-  mlcore::NewtonMdControl ctl;
+  cppunivariate::NewtonMdControl ctl;
   ctl.maxit = 200;
   ctl.grad_tol = 1e-5;
-  auto r = mlcore::newton_md_minimize(fd, theta0, ctl);
-  CHECK(r.status == mlcore::NewtonMdStatus::Ok);
+  auto r = cppunivariate::newton_md_minimize(fd, theta0, ctl);
+  CHECK(r.status == cppunivariate::NewtonMdStatus::Ok);
   CHECK(r.theta[0] == doctest::Approx(1.0).epsilon(1e-3));
   CHECK(r.theta[1] == doctest::Approx(1.0).epsilon(1e-3));
 }
@@ -146,8 +146,8 @@ TEST_CASE("newton_md: Rosenbrock with FD Hessian via adapter") {
 TEST_CASE("newton_md: indefinite Hessian at start ramps lambda and recovers") {
   IndefStart c;
   const double theta0[] = {0.5, 0.1};  // H_xx = 12*0.25 - 4 = -1 (indefinite)
-  auto r = mlcore::newton_md_minimize(c, theta0);
-  CHECK(r.status == mlcore::NewtonMdStatus::Ok);
+  auto r = cppunivariate::newton_md_minimize(c, theta0);
+  CHECK(r.status == cppunivariate::NewtonMdStatus::Ok);
   CHECK(r.theta[0] == doctest::Approx(1.0).epsilon(1e-5));
   CHECK(r.theta[1] == doctest::Approx(0.0).epsilon(1e-5));
 }
@@ -156,8 +156,8 @@ TEST_CASE("newton_md: NaN start returns BadInit") {
   Quadratic c;
   const double nan = std::nan("");
   const double theta0[] = {nan, 0.0};
-  auto r = mlcore::newton_md_minimize(c, theta0);
-  CHECK(r.status == mlcore::NewtonMdStatus::BadInit);
+  auto r = cppunivariate::newton_md_minimize(c, theta0);
+  CHECK(r.status == cppunivariate::NewtonMdStatus::BadInit);
 }
 
 TEST_CASE("finite_diff_hessian agrees with analytic on Rosenbrock") {
@@ -166,7 +166,7 @@ TEST_CASE("finite_diff_hessian agrees with analytic on Rosenbrock") {
   double H_ana[4];
   c.hessian(t, H_ana);
   double H_fd[4];
-  mlcore::finite_diff_hessian(c, t, H_fd);
+  cppunivariate::finite_diff_hessian(c, t, H_fd);
   CHECK(H_fd[0] == doctest::Approx(H_ana[0]).epsilon(1e-4));
   CHECK(H_fd[1] == doctest::Approx(H_ana[1]).epsilon(1e-4));
   CHECK(H_fd[2] == doctest::Approx(H_ana[2]).epsilon(1e-4));
@@ -178,17 +178,17 @@ TEST_CASE("finite_diff_hessian agrees with analytic on Rosenbrock") {
 TEST_CASE("cholesky: factor + solve a known SPD system") {
   // A = [[4, 2], [2, 3]] is SPD; A^{-1} = [[3/8, -1/4], [-1/4, 1/2]].
   double A[4] = {4.0, 2.0, 2.0, 3.0};
-  CHECK(mlcore::cholesky_factor(A, 2));
+  CHECK(cppunivariate::cholesky_factor(A, 2));
   // Solve A x = (1, 0) -> x = column 0 of A^{-1} = (3/8, -1/4)
   double x[2] = {1.0, 0.0};
-  mlcore::cholesky_solve(A, x, 2);
+  cppunivariate::cholesky_solve(A, x, 2);
   CHECK(x[0] == doctest::Approx(0.375).epsilon(1e-12));
   CHECK(x[1] == doctest::Approx(-0.25).epsilon(1e-12));
 }
 
 TEST_CASE("cholesky: invert_symmetric_pd matches by-hand inverse") {
   double A[4] = {4.0, 2.0, 2.0, 3.0};
-  CHECK(mlcore::invert_symmetric_pd(A, 2));
+  CHECK(cppunivariate::invert_symmetric_pd(A, 2));
   CHECK(A[0] == doctest::Approx(0.375).epsilon(1e-12));
   CHECK(A[1] == doctest::Approx(-0.25).epsilon(1e-12));
   CHECK(A[2] == doctest::Approx(-0.25).epsilon(1e-12));
@@ -197,5 +197,5 @@ TEST_CASE("cholesky: invert_symmetric_pd matches by-hand inverse") {
 
 TEST_CASE("cholesky: factor returns false on non-PD matrix") {
   double A[4] = {1.0, 2.0, 2.0, 1.0};  // det = -3
-  CHECK_FALSE(mlcore::cholesky_factor(A, 2));
+  CHECK_FALSE(cppunivariate::cholesky_factor(A, 2));
 }

@@ -13,11 +13,11 @@
 #include "../special/special.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dlogitnorm(double x, double mu, double sigma, bool log) {
   if (!(sigma > 0.0) || !std::isfinite(x)) {
@@ -26,13 +26,13 @@ inline double dlogitnorm(double x, double mu, double sigma, bool log) {
   if (x <= 0.0 || x >= 1.0) {
     return log ? kNegInf : 0.0;
   }
-  const double ql = mlcore::special::qlogis(x, 0.0, 1.0, /*lower_tail=*/true,
+  const double ql = cppunivariate::special::qlogis(x, 0.0, 1.0, /*lower_tail=*/true,
                                             /*log_p=*/false);
   if (log) {
-    return mlcore::special::dnorm(ql, mu, sigma, /*log=*/true) - std::log(x) -
+    return cppunivariate::special::dnorm(ql, mu, sigma, /*log=*/true) - std::log(x) -
            std::log1p(-x);
   }
-  return mlcore::special::dnorm(ql, mu, sigma, /*log=*/false) /
+  return cppunivariate::special::dnorm(ql, mu, sigma, /*log=*/false) /
          (x * (1.0 - x));
 }
 
@@ -41,9 +41,9 @@ inline double plogitnorm(double q, double mu, double sigma, bool lower_tail,
   if (!(sigma > 0.0) || !std::isfinite(q)) {
     return kNaN;
   }
-  const double ql = mlcore::special::qlogis(q, 0.0, 1.0, /*lower_tail=*/true,
+  const double ql = cppunivariate::special::qlogis(q, 0.0, 1.0, /*lower_tail=*/true,
                                             /*log_p=*/false);
-  return mlcore::special::pnorm(ql, mu, sigma, lower_tail, log_p);
+  return cppunivariate::special::pnorm(ql, mu, sigma, lower_tail, log_p);
 }
 
 inline double qlogitnorm(double p, double mu, double sigma, bool lower_tail,
@@ -51,17 +51,17 @@ inline double qlogitnorm(double p, double mu, double sigma, bool lower_tail,
   if (!(sigma > 0.0) || !std::isfinite(p)) {
     return kNaN;
   }
-  const double qn = mlcore::special::qnorm(p, mu, sigma, lower_tail, log_p);
-  return mlcore::special::plogis(qn, 0.0, 1.0, /*lower_tail=*/true,
+  const double qn = cppunivariate::special::qnorm(p, mu, sigma, lower_tail, log_p);
+  return cppunivariate::special::plogis(qn, 0.0, 1.0, /*lower_tail=*/true,
                                  /*log_p=*/false);
 }
 
 template <typename Rng>
 inline double rlogitnorm(Rng &rng, double mu, double sigma) {
   const double z = mu + sigma * rng.rnorm();
-  return mlcore::special::plogis(z, 0.0, 1.0, /*lower_tail=*/true,
+  return cppunivariate::special::plogis(z, 0.0, 1.0, /*lower_tail=*/true,
                                  /*log_p=*/false);
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

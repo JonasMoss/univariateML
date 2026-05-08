@@ -33,7 +33,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class ParalogisStatus { Ok = 0, BfgsFailure, InvalidStart };
 
@@ -61,8 +61,8 @@ struct ParalogisCost {
   span x;
   int dim() const { return 2; }
   double operator()(const double *phi) const {
-    const double alpha = mlcore::from_log(phi[0]);
-    const double theta = mlcore::from_log(phi[1]);
+    const double alpha = cppunivariate::from_log(phi[0]);
+    const double theta = cppunivariate::from_log(phi[1]);
     if (!std::isfinite(alpha) || !std::isfinite(theta) || alpha <= 0.0 ||
         theta <= 0.0) {
       return std::numeric_limits<double>::infinity();
@@ -85,8 +85,8 @@ struct ParalogisCost {
     return -logLik;
   }
   void hessian(const double *phi, double *H) const {
-    const double alpha = mlcore::from_log(phi[0]);
-    const double theta = mlcore::from_log(phi[1]);
+    const double alpha = cppunivariate::from_log(phi[0]);
+    const double theta = cppunivariate::from_log(phi[1]);
     if (!std::isfinite(alpha) || !std::isfinite(theta) || alpha <= 0.0 ||
         theta <= 0.0) {
       const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -164,15 +164,15 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit) {
 
   ParalogisCost cost{x};
   finite_diff_cost<ParalogisCost> fd{cost};
-  const double phi0[2] = {mlcore::to_log(alpha0), mlcore::to_log(theta0)};
+  const double phi0[2] = {cppunivariate::to_log(alpha0), cppunivariate::to_log(theta0)};
 
   BfgsControl ctl;
   ctl.grad_tol = tol;
   ctl.maxit = maxit;
   auto r = bfgs_minimize(fd, phi0, ctl);
 
-  const double shape = mlcore::from_log(r.theta[0]);
-  const double scale = mlcore::from_log(r.theta[1]);
+  const double shape = cppunivariate::from_log(r.theta[0]);
+  const double scale = cppunivariate::from_log(r.theta[1]);
   const double logLik = -r.f;
   if (r.status != BfgsStatus::Ok) {
     return {shape, scale, logLik, r.iterations, ParalogisStatus::BfgsFailure};
@@ -180,4 +180,4 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit) {
   return {shape, scale, logLik, r.iterations, ParalogisStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

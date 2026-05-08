@@ -11,7 +11,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct WeibullResult {
   double shape;
@@ -113,4 +113,4 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit) {
   return {shape, scale, logLik, g.iterations};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

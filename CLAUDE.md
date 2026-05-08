@@ -10,7 +10,7 @@ core.
 ### Three layers
 
 1. **C++ core (primary).** `src/ml/` — header-only, no Rcpp, no
-   Armadillo, no R headers. `mlcore::span` as the input boundary;
+   Armadillo, no R headers. `cppunivariate::span` as the input boundary;
    Boost.Math (via the `BH` CRAN package or system Boost) for special
    functions and base distributions. Owns its own tests in
    `tests/cpp/` (doctest + ctest).
@@ -22,7 +22,7 @@ core.
    against R-side fits and the golden JSONs in `tests/golden/`.
 
 3. **Python shell (planned).** Same shape: pybind11 / nanobind
-   adapters around mlcore. The same `tests/golden/` JSONs cross-
+   adapters around cppunivariate. The same `tests/golden/` JSONs cross-
    validate across shells.
 
 ### Status (May 2026)
@@ -50,25 +50,25 @@ core.
 
 ---
 
-## C++ style guide (mlcore)
+## C++ style guide (cppunivariate)
 
 `src/ml/` is the C++ artifact. Header-only, **C++17**, depends only on
 `<cmath>` / `<algorithm>` / `<vector>` / `<cstddef>` and Boost.Math.
 
 ### Hard rules
 
-- **No exceptions in mlcore.** Surface diagnostics via per-estimator
+- **No exceptions in cppunivariate.** Surface diagnostics via per-estimator
   `*Status` enums in the result struct. `Rcpp::stop` is fine in the
   R-shell adapter layer (`src/ml_exports.cpp`,
   `src/distribution_exports.cpp`) but never in `src/ml/`.
 - **No `using` declarations.** Always be explicit
-  (`std::vector<double>`, `mlcore::span`, etc.).
-- **No raw pointers.** mlcore takes `mlcore::span`; R-shell adapters
+  (`std::vector<double>`, `cppunivariate::span`, etc.).
+- **No raw pointers.** cppunivariate takes `cppunivariate::span`; R-shell adapters
   use Rcpp types.
-- **No printing or logging in mlcore.** Status enums only.
+- **No printing or logging in cppunivariate.** Status enums only.
 - **No Armadillo anywhere.** R-shell adapters use
   `Rcpp::NumericVector` / `Rcpp::IntegerVector`.
-- **C++17 features OK; avoid C++20 syntax.** `mlcore::span` is the
+- **C++17 features OK; avoid C++20 syntax.** `cppunivariate::span` is the
   C++17 substitute for `std::span<const double>`.
 - **Uniform parameter names**: `tol` for tolerance, `maxit` for
   iteration limits, across every estimator.
@@ -86,14 +86,14 @@ src/ml/
 
 R-shell adapters live outside `src/ml/`:
 
-- `src/ml_exports.cpp` — Rcpp wrappers calling mlcore estimators.
+- `src/ml_exports.cpp` — Rcpp wrappers calling cppunivariate estimators.
 - `src/distribution_exports.cpp` + `src/distributions/<dist>.cpp` —
-  Rcpp wrappers calling mlcore distributions.
+  Rcpp wrappers calling cppunivariate distributions.
 
 ### Estimator template
 
 ```cpp
-namespace mlcore {
+namespace cppunivariate {
 
 enum class FooStatus { Ok, IterationFailure, BadInit };
 
@@ -105,13 +105,13 @@ struct FooResult {
 };
 
 inline FooResult foo_mle(span x, double tol, int maxit) {
-  // mlcore::sum / mean / sum_log etc. from reductions.hpp;
-  // mlcore::special::digamma / lgamma / etc. from special/special.hpp;
-  // mlcore::newton_raphson_1d for 1D Newton or
-  // mlcore::bfgs_minimize for multi-D.
+  // cppunivariate::sum / mean / sum_log etc. from reductions.hpp;
+  // cppunivariate::special::digamma / lgamma / etc. from special/special.hpp;
+  // cppunivariate::newton_raphson_1d for 1D Newton or
+  // cppunivariate::bfgs_minimize for multi-D.
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate
 ```
 
 Match the existing files in `estimators/` for naming. The 1D Newton
@@ -133,7 +133,7 @@ double operator()(const double *theta) const;
 void   gradient(const double *theta, double *g) const;
 ```
 
-If you only have an objective, wrap in `mlcore::finite_diff_cost<Cost>`
+If you only have an objective, wrap in `cppunivariate::finite_diff_cost<Cost>`
 from `core/finite_diff.hpp`; that adapter supplies a central-difference
 gradient. The six fGarch-family estimators use this path.
 
@@ -176,7 +176,7 @@ the legacy fGarch path expect a usable result back, not an error.
 
 ### Adding a new distribution
 
-1. Implement `mlcore::*_mle` in `src/ml/estimators/<name>.hpp`. If
+1. Implement `cppunivariate::*_mle` in `src/ml/estimators/<name>.hpp`. If
    the distribution is also new on the dpqr side, add the templates
    in `src/ml/distributions/<name>.hpp`.
 2. Add an include line to `src/ml/ml.hpp`.

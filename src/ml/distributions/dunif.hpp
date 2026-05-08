@@ -10,11 +10,11 @@
 #include "../special/constants.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 namespace detail {
 inline bool dunif_valid_params(double min, double max) {
@@ -77,4 +77,4 @@ inline double rdunif(Rng &rng, double min, double max) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

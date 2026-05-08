@@ -1,4 +1,4 @@
-// Common scalar reductions over an mlcore::span. Centralises what every
+// Common scalar reductions over an cppunivariate::span. Centralises what every
 // estimator otherwise hand-rolls. All inline; zero overhead vs writing the
 // loop directly.
 
@@ -10,7 +10,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace mlcore {
+namespace cppunivariate {
 
 inline double sum(span x) {
   double s = 0.0;
@@ -57,4 +57,4 @@ inline double max_value(span x) {
   return m;
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

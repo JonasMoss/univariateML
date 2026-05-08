@@ -14,11 +14,11 @@
 #include <cmath>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 namespace detail {
 inline double zipf_norm(int N, double s) {
@@ -134,4 +134,4 @@ inline double rzipf(Rng &rng, int N, double s) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

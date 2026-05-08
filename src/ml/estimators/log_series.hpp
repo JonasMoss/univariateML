@@ -10,7 +10,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct LgserResult {
   double theta;
@@ -75,4 +75,4 @@ inline LgserResult lgser_mle(ispan x) {
   return {theta, logLik, false};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

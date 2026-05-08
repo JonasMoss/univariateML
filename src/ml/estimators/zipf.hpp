@@ -11,7 +11,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class ZipfStatus { Ok = 0, AllOnes, ShapeNegative, IterationFailure };
 
@@ -140,4 +140,4 @@ inline ZipfResult zipf_mle(ispan x, double tol, int maxit) {
   return {dN, shape, logLik, iter, ZipfStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

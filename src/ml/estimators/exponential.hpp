@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct ExpResult {
   double rate;
@@ -56,4 +56,4 @@ inline ExpResult exp_mle(span x) {
   return {rate, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

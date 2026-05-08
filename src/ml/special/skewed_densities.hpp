@@ -11,7 +11,7 @@
 
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace dens {
 
 // --- shared helpers --------------------------------------------------------
@@ -107,4 +107,4 @@ inline double log_dsged_core(double z, double nu, double xi) {
 }
 
 }  // namespace dens
-}  // namespace mlcore
+}  // namespace cppunivariate

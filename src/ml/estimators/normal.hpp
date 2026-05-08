@@ -16,7 +16,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct NormResult {
   double mean;
@@ -94,4 +94,4 @@ inline NormResult norm_mle(span x) {
   return {mu, sigma, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

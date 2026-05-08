@@ -11,7 +11,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct ZipResult {
   double lambda;
@@ -53,7 +53,7 @@ struct ZipCost {
       } else {
         const double xd = static_cast<double>(v);
         sum += -std::log(1.0 - pp) + lam - xd * std::log(lam) +
-               mlcore::special::lgamma(xd + 1.0);
+               cppunivariate::special::lgamma(xd + 1.0);
       }
     }
     return sum;
@@ -153,4 +153,4 @@ inline ZipResult zip_mle(ispan x) {
   return {lambda, pi, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

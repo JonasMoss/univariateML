@@ -11,7 +11,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct InvBurrResult {
   double shape1;
@@ -121,4 +121,4 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit) {
   return {shape1, shape2, logLik, res.iterations};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

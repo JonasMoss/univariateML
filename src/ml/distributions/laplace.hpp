@@ -11,11 +11,11 @@
 #include "../special/constants.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dlaplace(double x, double mu, double sigma, bool log) {
   if (!(sigma > 0.0) || !std::isfinite(x)) {
@@ -71,4 +71,4 @@ inline double rlaplace(Rng &rng, double mu, double sigma) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

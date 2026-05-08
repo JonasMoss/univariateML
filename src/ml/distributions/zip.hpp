@@ -15,11 +15,11 @@
 #include <boost/math/policies/policy.hpp>
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dzip(double x, double lambda, double pi, bool log) {
   if (!(lambda > 0.0) || !(pi >= 0.0 && pi <= 1.0) || !std::isfinite(x)) {
@@ -33,7 +33,7 @@ inline double dzip(double x, double lambda, double pi, bool log) {
     pmf = pi + std::exp(std::log1p(-pi) - lambda);
   } else {
     pmf = std::exp(std::log1p(-pi) +
-                   mlcore::special::dpois(x, lambda, /*log=*/true));
+                   cppunivariate::special::dpois(x, lambda, /*log=*/true));
   }
   return log ? std::log(pmf) : pmf;
 }
@@ -102,4 +102,4 @@ inline double rzip(Rng &rng, double lambda, double pi) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

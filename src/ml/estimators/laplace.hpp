@@ -10,7 +10,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct LaplaceResult {
   double mu;
@@ -95,4 +95,4 @@ inline LaplaceResult laplace_mle(span x) {
   return {mu, sigma, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

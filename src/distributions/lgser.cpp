@@ -10,7 +10,7 @@ Rcpp::NumericVector dlgser(const Rcpp::NumericVector &x, const Rcpp::NumericVect
   const std::size_t n = recycle_length(x.size(), theta.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dlgser(
+    const double y = cppunivariate::distributions::dlgser(
         x[i % x.size()], theta[i % theta.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -22,7 +22,7 @@ Rcpp::NumericVector plgser(const Rcpp::NumericVector &q, const Rcpp::NumericVect
   const std::size_t n = recycle_length(q.size(), theta.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::plgser(
+    const double y = cppunivariate::distributions::plgser(
         q[i % q.size()], theta[i % theta.size()], lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -34,7 +34,7 @@ Rcpp::NumericVector qlgser(const Rcpp::NumericVector &p, const Rcpp::NumericVect
   const std::size_t n = recycle_length(p.size(), theta.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qlgser(
+    const double y = cppunivariate::distributions::qlgser(
         p[i % p.size()], theta[i % theta.size()], lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -48,7 +48,7 @@ Rcpp::NumericVector rlgser(int n, double theta) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rlgser(rng, theta);
+    out[i] = cppunivariate::distributions::rlgser(rng, theta);
   }
   return out;
 }

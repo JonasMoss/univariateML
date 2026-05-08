@@ -14,7 +14,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct FatigueResult {
   double alpha;
@@ -136,7 +136,7 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
 
   // Method-of-moments start.
   const double beta0 = sum_sqrt_x / sum_inv_sqrt_x;
-  auto nr = mlcore::newton_raphson_1d_abs(beta0, f_over_df, tol, maxit);
+  auto nr = cppunivariate::newton_raphson_1d_abs(beta0, f_over_df, tol, maxit);
   if (nr.x <= 0.0) return {kNaN, kNaN, kNaN, nr.iterations};
 
   const double beta = nr.x;
@@ -148,10 +148,10 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
     const double sy = std::sqrt(beta / v);
     const double z = (sx - sy) / alpha;
     const double log_pref = std::log(sx + sy) - std::log(2.0 * alpha) - std::log(v);
-    const double log_phi = mlcore::special::dnorm(z, 0.0, 1.0, 1);
+    const double log_phi = cppunivariate::special::dnorm(z, 0.0, 1.0, 1);
     logLik += log_pref + log_phi;
   }
   return {alpha, beta, logLik, nr.iterations};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

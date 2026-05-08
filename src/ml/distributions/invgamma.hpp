@@ -10,11 +10,11 @@
 #include "../special/special.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dinvgamma(double x, double alpha, double beta, bool log) {
   if (!(alpha > 0.0 && beta > 0.0) || !std::isfinite(x)) {
@@ -39,7 +39,7 @@ inline double pinvgamma(double q, double alpha, double beta, bool lower_tail,
   } else {
     // F_invgamma(x; alpha, scale=beta) = pgamma(1/x; alpha, scale=1/beta,
     //                                            lower_tail=false)
-    prob = mlcore::special::pgamma(1.0 / q, alpha, 1.0 / beta,
+    prob = cppunivariate::special::pgamma(1.0 / q, alpha, 1.0 / beta,
                                    /*lower_tail=*/false,
                                    /*log_p=*/false);
   }
@@ -62,7 +62,7 @@ inline double qinvgamma(double p, double alpha, double beta, bool lower_tail,
   }
   // Invert: F(x) = 1 - pgamma(1/x; alpha, scale=1/beta) = p
   // -> 1/x = qgamma(1-p; alpha, scale=1/beta)
-  const double y = mlcore::special::qgamma(1.0 - p, alpha, 1.0 / beta,
+  const double y = cppunivariate::special::qgamma(1.0 - p, alpha, 1.0 / beta,
                                            /*lower_tail=*/true,
                                            /*log_p=*/false);
   return 1.0 / y;
@@ -76,4 +76,4 @@ inline double rinvgamma(Rng &rng, double alpha, double beta) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

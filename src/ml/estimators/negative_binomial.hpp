@@ -14,7 +14,7 @@
 #include <map>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct NbinomResult {
   double size;
@@ -43,9 +43,9 @@ struct NbinomCost {
     double sum = 0.0;
     for (auto v : x) {
       const double xd = static_cast<double>(v);
-      sum += -mlcore::special::lgamma(xd + r) +
-             mlcore::special::lgamma(r) +
-             mlcore::special::lgamma(xd + 1.0) - r * std::log(p) -
+      sum += -cppunivariate::special::lgamma(xd + r) +
+             cppunivariate::special::lgamma(r) +
+             cppunivariate::special::lgamma(xd + 1.0) - r * std::log(p) -
              xd * std::log(1.0 - p);
     }
     return sum;
@@ -59,9 +59,9 @@ struct NbinomCost {
     for (auto v : x) {
       const double xd = static_cast<double>(v);
       S_x += xd;
-      S_dig_xr += mlcore::special::digamma(xd + r);
+      S_dig_xr += cppunivariate::special::digamma(xd + r);
     }
-    g[0] = -S_dig_xr + n * mlcore::special::digamma(r) - n * std::log(p);
+    g[0] = -S_dig_xr + n * cppunivariate::special::digamma(r) - n * std::log(p);
     g[1] = -n * r / p + S_x / (1.0 - p);
   }
   void hessian(const double *theta, double *H) const {
@@ -72,9 +72,9 @@ struct NbinomCost {
     for (auto v : x) {
       const double xd = static_cast<double>(v);
       S_x += xd;
-      S_trg_xr += mlcore::special::trigamma(xd + r);
+      S_trg_xr += cppunivariate::special::trigamma(xd + r);
     }
-    H[0] = n * mlcore::special::trigamma(r) - S_trg_xr;
+    H[0] = n * cppunivariate::special::trigamma(r) - S_trg_xr;
     H[1] = -n / p;
     H[2] = -n / p;
     H[3] = n * r / (p * p) + S_x / ((1.0 - p) * (1.0 - p));
@@ -116,10 +116,10 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit) {
     double ll = 0.0;
     for (std::size_t i = 0; i < uniq.size(); ++i) {
       const double xi = static_cast<double>(uniq[i]);
-      ll += counts[i] * (mlcore::special::lgamma(xi + size) -
-                         mlcore::special::lgamma(xi + 1.0));
+      ll += counts[i] * (cppunivariate::special::lgamma(xi + size) -
+                         cppunivariate::special::lgamma(xi + 1.0));
     }
-    ll -= dn * mlcore::special::lgamma(size);
+    ll -= dn * cppunivariate::special::lgamma(size);
     ll += dn * size * std::log(prob);
     ll += dn * std::log(1.0 - prob) * x_bar;
     return ll;
@@ -131,11 +131,11 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit) {
     double f = 0.0, df = 0.0;
     for (std::size_t i = 0; i < uniq.size(); ++i) {
       const double arg = size + static_cast<double>(uniq[i]);
-      f += counts[i] * mlcore::special::digamma(arg);
-      df += counts[i] * mlcore::special::trigamma(arg);
+      f += counts[i] * cppunivariate::special::digamma(arg);
+      df += counts[i] * cppunivariate::special::trigamma(arg);
     }
-    f -= dn * mlcore::special::digamma(size);
-    df -= dn * mlcore::special::trigamma(size);
+    f -= dn * cppunivariate::special::digamma(size);
+    df -= dn * cppunivariate::special::trigamma(size);
     f += dn * std::log(prob);
     df += dn * dprob;
     return f / df;
@@ -155,4 +155,4 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit) {
   return {size, prob, log_likelihood(size), iter, false};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

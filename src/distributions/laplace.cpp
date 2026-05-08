@@ -1,4 +1,4 @@
-// Laplace distribution: Rcpp::NumericVector wrappers around mlcore::distributions.
+// Laplace distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/laplace.hpp"
@@ -10,7 +10,7 @@ Rcpp::NumericVector dlaplace(const Rcpp::NumericVector &x, const Rcpp::NumericVe
   const std::size_t n = recycle_length(x.size(), mu.size(), sigma.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dlaplace(
+    const double y = cppunivariate::distributions::dlaplace(
         x[i % x.size()], mu[i % mu.size()], sigma[i % sigma.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -23,7 +23,7 @@ Rcpp::NumericVector plaplace(const Rcpp::NumericVector &q, const Rcpp::NumericVe
   const std::size_t n = recycle_length(q.size(), mu.size(), sigma.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::plaplace(
+    const double y = cppunivariate::distributions::plaplace(
         q[i % q.size()], mu[i % mu.size()], sigma[i % sigma.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -37,7 +37,7 @@ Rcpp::NumericVector qlaplace(const Rcpp::NumericVector &p, const Rcpp::NumericVe
   const std::size_t n = recycle_length(p.size(), mu.size(), sigma.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qlaplace(
+    const double y = cppunivariate::distributions::qlaplace(
         p[i % p.size()], mu[i % mu.size()], sigma[i % sigma.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -52,7 +52,7 @@ Rcpp::NumericVector rlaplace(int n, double mu = 0.0, double sigma = 1.0) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rlaplace(rng, mu, sigma);
+    out[i] = cppunivariate::distributions::rlaplace(rng, mu, sigma);
   }
   return out;
 }

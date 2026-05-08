@@ -1,4 +1,4 @@
-// Logit-normal distribution: Rcpp::NumericVector wrappers around mlcore::distributions.
+// Logit-normal distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/logitnorm.hpp"
@@ -13,7 +13,7 @@ Rcpp::NumericVector dlogitnorm(const Rcpp::NumericVector &x, const Rcpp::Numeric
     const double xi = x[i % x.size()];
     const double m = mu[i % mu.size()];
     const double s = sigma[i % sigma.size()];
-    const double y = mlcore::distributions::dlogitnorm(xi, m, s, log);
+    const double y = cppunivariate::distributions::dlogitnorm(xi, m, s, log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -29,7 +29,7 @@ Rcpp::NumericVector plogitnorm(const Rcpp::NumericVector &q, const Rcpp::Numeric
     const double m = mu[i % mu.size()];
     const double s = sigma[i % sigma.size()];
     const double y =
-        mlcore::distributions::plogitnorm(qi, m, s, lower_tail, log_p);
+        cppunivariate::distributions::plogitnorm(qi, m, s, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -45,7 +45,7 @@ Rcpp::NumericVector qlogitnorm(const Rcpp::NumericVector &p, const Rcpp::Numeric
     const double m = mu[i % mu.size()];
     const double s = sigma[i % sigma.size()];
     const double y =
-        mlcore::distributions::qlogitnorm(pi, m, s, lower_tail, log_p);
+        cppunivariate::distributions::qlogitnorm(pi, m, s, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -58,7 +58,7 @@ Rcpp::NumericVector rlogitnorm(int n, double mu = 0.0, double sigma = 1.0) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rlogitnorm(rng, mu, sigma);
+    out[i] = cppunivariate::distributions::rlogitnorm(rng, mu, sigma);
   }
   return out;
 }

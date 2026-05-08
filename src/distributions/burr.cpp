@@ -13,7 +13,7 @@ Rcpp::NumericVector dburr(const Rcpp::NumericVector &x, const Rcpp::NumericVecto
   const std::size_t n = recycle_length(x.size(), shape1.size(), shape2.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dburr(
+    const double y = cppunivariate::distributions::dburr(
         x[i % x.size()], shape1[i % shape1.size()],
         shape2[i % shape2.size()], scale, log);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -27,7 +27,7 @@ Rcpp::NumericVector pburr(const Rcpp::NumericVector &q, const Rcpp::NumericVecto
   const std::size_t n = recycle_length(q.size(), shape1.size(), shape2.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::pburr(
+    const double y = cppunivariate::distributions::pburr(
         q[i % q.size()], shape1[i % shape1.size()],
         shape2[i % shape2.size()], scale, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -41,7 +41,7 @@ Rcpp::NumericVector qburr(const Rcpp::NumericVector &p, const Rcpp::NumericVecto
   const std::size_t n = recycle_length(p.size(), shape1.size(), shape2.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qburr(
+    const double y = cppunivariate::distributions::qburr(
         p[i % p.size()], shape1[i % shape1.size()],
         shape2[i % shape2.size()], scale, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -57,7 +57,7 @@ Rcpp::NumericVector rburr(int n, double shape1 = 1.0, double shape2 = 1.0,
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rburr(rng, shape1, shape2, scale);
+    out[i] = cppunivariate::distributions::rburr(rng, shape1, shape2, scale);
   }
   return out;
 }

@@ -10,7 +10,7 @@ Rcpp::NumericVector dzip(const Rcpp::NumericVector &x, const Rcpp::NumericVector
   const std::size_t n = recycle_length(x.size(), lambda.size(), pi.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dzip(
+    const double y = cppunivariate::distributions::dzip(
         x[i % x.size()], lambda[i % lambda.size()], pi[i % pi.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -23,7 +23,7 @@ Rcpp::NumericVector pzip(const Rcpp::NumericVector &q, const Rcpp::NumericVector
   const std::size_t n = recycle_length(q.size(), lambda.size(), pi.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::pzip(
+    const double y = cppunivariate::distributions::pzip(
         q[i % q.size()], lambda[i % lambda.size()], pi[i % pi.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -37,7 +37,7 @@ Rcpp::NumericVector qzip(const Rcpp::NumericVector &p, const Rcpp::NumericVector
   const std::size_t n = recycle_length(p.size(), lambda.size(), pi.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qzip(
+    const double y = cppunivariate::distributions::qzip(
         p[i % p.size()], lambda[i % lambda.size()], pi[i % pi.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -52,7 +52,7 @@ Rcpp::NumericVector rzip(int n, double lambda, double pi) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rzip(rng, lambda, pi);
+    out[i] = cppunivariate::distributions::rzip(rng, lambda, pi);
   }
   return out;
 }

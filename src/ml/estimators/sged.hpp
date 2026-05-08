@@ -22,7 +22,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class SgedStatus { Ok = 0, BfgsFailure, InvalidStart };
 
@@ -50,28 +50,28 @@ struct SgedCost {
   int dim() const { return 4; }
   double operator()(const double *phi) const {
     const double mu = phi[0];
-    const double sigma = mlcore::from_log(phi[1]);
-    const double nu = mlcore::from_log(phi[2]);
-    const double xi = mlcore::from_log(phi[3]);
+    const double sigma = cppunivariate::from_log(phi[1]);
+    const double nu = cppunivariate::from_log(phi[2]);
+    const double xi = cppunivariate::from_log(phi[3]);
     if (!std::isfinite(sigma) || !std::isfinite(nu) || !std::isfinite(xi) ||
         sigma <= 0.0 || nu <= 0.0 || xi <= 0.0) {
       return std::numeric_limits<double>::infinity();
     }
     double mu_u = 0.0;
-    const double sigma_u = mlcore::dens::sged_sigma(nu, xi, mu_u);
+    const double sigma_u = cppunivariate::dens::sged_sigma(nu, xi, mu_u);
     const double log_factor = std::log(sigma_u) - std::log(sigma);
     double neg = 0.0;
     for (auto v : x) {
       const double z = (v - mu) / sigma * sigma_u + mu_u;
-      neg -= log_factor + mlcore::dens::log_dsged_core(z, nu, xi);
+      neg -= log_factor + cppunivariate::dens::log_dsged_core(z, nu, xi);
     }
     return neg;
   }
   void hessian(const double *phi, double *H) const {
     const double mu = phi[0];
-    const double sigma = mlcore::from_log(phi[1]);
-    const double nu = mlcore::from_log(phi[2]);
-    const double xi = mlcore::from_log(phi[3]);
+    const double sigma = cppunivariate::from_log(phi[1]);
+    const double nu = cppunivariate::from_log(phi[2]);
+    const double xi = cppunivariate::from_log(phi[3]);
     if (!std::isfinite(sigma) || !std::isfinite(nu) || !std::isfinite(xi) ||
         sigma <= 0.0 || nu <= 0.0 || xi <= 0.0) {
       const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -79,16 +79,16 @@ struct SgedCost {
       return;
     }
     // lambda(nu) = sqrt(2^(-2/nu) Gamma(1/nu) / Gamma(3/nu)).
-    const double lam = mlcore::dens::ged_lambda(nu);
+    const double lam = cppunivariate::dens::ged_lambda(nu);
     const double log_lam = std::log(lam);
     // m1(nu) = 2^(1/nu) * lambda * Gamma(2/nu) / Gamma(1/nu).
     // log m1 = -0.5 lgamma(1/nu) + lgamma(2/nu) - 0.5 lgamma(3/nu).
-    const double psi_1 = mlcore::special::digamma(1.0 / nu);
-    const double psi_2 = mlcore::special::digamma(2.0 / nu);
-    const double psi_3 = mlcore::special::digamma(3.0 / nu);
-    const double tri_1 = mlcore::special::trigamma(1.0 / nu);
-    const double tri_2 = mlcore::special::trigamma(2.0 / nu);
-    const double tri_3 = mlcore::special::trigamma(3.0 / nu);
+    const double psi_1 = cppunivariate::special::digamma(1.0 / nu);
+    const double psi_2 = cppunivariate::special::digamma(2.0 / nu);
+    const double psi_3 = cppunivariate::special::digamma(3.0 / nu);
+    const double tri_1 = cppunivariate::special::trigamma(1.0 / nu);
+    const double tri_2 = cppunivariate::special::trigamma(2.0 / nu);
+    const double tri_3 = cppunivariate::special::trigamma(3.0 / nu);
     const double log_m1 = -0.5 * std::lgamma(1.0 / nu) +
                           std::lgamma(2.0 / nu) -
                           0.5 * std::lgamma(3.0 / nu);
@@ -274,7 +274,7 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
   if (n < 2)
     return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SgedStatus::InvalidStart};
 
-  const double mean_x = mlcore::mean(x);
+  const double mean_x = cppunivariate::mean(x);
   double var_x = 0.0;
   for (auto v : x) {
     const double d = v - mean_x;
@@ -288,8 +288,8 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
 
   SgedCost cost{x};
   finite_diff_cost<SgedCost> fd{cost};
-  const double phi0[4] = {mean_x, mlcore::to_log(sd_x), mlcore::to_log(2.0),
-                          mlcore::to_log(1.0)};
+  const double phi0[4] = {mean_x, cppunivariate::to_log(sd_x), cppunivariate::to_log(2.0),
+                          cppunivariate::to_log(1.0)};
 
   BfgsControl ctl;
   ctl.grad_tol = tol;
@@ -297,9 +297,9 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
   auto r = bfgs_minimize(fd, phi0, ctl);
 
   const double mu = r.theta[0];
-  const double sigma = mlcore::from_log(r.theta[1]);
-  const double nu = mlcore::from_log(r.theta[2]);
-  const double xi = mlcore::from_log(r.theta[3]);
+  const double sigma = cppunivariate::from_log(r.theta[1]);
+  const double nu = cppunivariate::from_log(r.theta[2]);
+  const double xi = cppunivariate::from_log(r.theta[3]);
   const double logLik = -r.f;
 
   if (r.status != BfgsStatus::Ok) {
@@ -308,4 +308,4 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
   return {mu, sigma, nu, xi, logLik, r.iterations, SgedStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

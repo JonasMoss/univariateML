@@ -16,7 +16,7 @@
 
 #include <random>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
 template <typename Generator = std::mt19937_64>
@@ -42,4 +42,4 @@ struct StdRng {
 };
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

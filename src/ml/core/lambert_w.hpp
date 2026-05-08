@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 
 inline double lambertw0(double z, double tol = 1e-12, int maxit = 30) {
   if (z == 0.0) return 0.0;
@@ -28,4 +28,4 @@ inline double lambertw0(double z, double tol = 1e-12, int maxit = 30) {
   return w;
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

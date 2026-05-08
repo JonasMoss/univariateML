@@ -12,11 +12,11 @@
 #include <boost/math/distributions/inverse_gaussian.hpp>
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 namespace detail {
 constexpr double kInvGaussYphiLarge = 5e5;
@@ -81,4 +81,4 @@ inline double rinvgauss(Rng &rng, double mean, double shape) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

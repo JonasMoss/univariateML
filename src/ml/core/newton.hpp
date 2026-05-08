@@ -15,7 +15,7 @@
 
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct NewtonResult {
   double x;
@@ -56,4 +56,4 @@ inline NewtonResult newton_raphson_1d_abs(double param0, FOverDf f_over_df,
   return {param, i, i <= maxit};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

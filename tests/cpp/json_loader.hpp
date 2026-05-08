@@ -149,7 +149,7 @@ inline Golden load_golden(const std::string &path) {
   return g;
 }
 
-inline mlcore::span as_span(const std::vector<double> &v) {
+inline cppunivariate::span as_span(const std::vector<double> &v) {
   return {v.data(), v.size()};
 }
 

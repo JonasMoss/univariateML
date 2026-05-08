@@ -1,4 +1,4 @@
-// Skew normal: Rcpp::NumericVector wrappers around mlcore::distributions.
+// Skew normal: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/snorm.hpp"
@@ -15,7 +15,7 @@ Rcpp::NumericVector dsnorm(const Rcpp::NumericVector &x, const Rcpp::NumericVect
     const double m = mean[i % mean.size()];
     const double s = sd[i % sd.size()];
     const double xi_val = xi[i % xi.size()];
-    const double y = mlcore::distributions::dsnorm(xv, m, s, xi_val, log);
+    const double y = cppunivariate::distributions::dsnorm(xv, m, s, xi_val, log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -31,7 +31,7 @@ Rcpp::NumericVector psnorm(const Rcpp::NumericVector &q, const Rcpp::NumericVect
     const double m = mean[i % mean.size()];
     const double s = sd[i % sd.size()];
     const double xi_val = xi[i % xi.size()];
-    const double y = mlcore::distributions::psnorm(qv, m, s, xi_val);
+    const double y = cppunivariate::distributions::psnorm(qv, m, s, xi_val);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -47,7 +47,7 @@ Rcpp::NumericVector qsnorm(const Rcpp::NumericVector &p, const Rcpp::NumericVect
     const double m = mean[i % mean.size()];
     const double s = sd[i % sd.size()];
     const double xi_val = xi[i % xi.size()];
-    const double y = mlcore::distributions::qsnorm(pv, m, s, xi_val);
+    const double y = cppunivariate::distributions::qsnorm(pv, m, s, xi_val);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -60,7 +60,7 @@ Rcpp::NumericVector rsnorm(int n, double mean = 0.0, double sd = 1.0, double xi 
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rsnorm(rng, mean, sd, xi);
+    out[i] = cppunivariate::distributions::rsnorm(rng, mean, sd, xi);
   }
   return out;
 }

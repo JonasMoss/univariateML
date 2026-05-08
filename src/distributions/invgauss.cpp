@@ -10,7 +10,7 @@ Rcpp::NumericVector dinvgauss(const Rcpp::NumericVector &x, const Rcpp::NumericV
   const std::size_t n = recycle_length(x.size(), mean.size(), shape.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dinvgauss(
+    const double y = cppunivariate::distributions::dinvgauss(
         x[i % x.size()], mean[i % mean.size()], shape[i % shape.size()],
         log);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -24,7 +24,7 @@ Rcpp::NumericVector pinvgauss(const Rcpp::NumericVector &q, const Rcpp::NumericV
   const std::size_t n = recycle_length(q.size(), mean.size(), shape.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::pinvgauss(
+    const double y = cppunivariate::distributions::pinvgauss(
         q[i % q.size()], mean[i % mean.size()], shape[i % shape.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -38,7 +38,7 @@ Rcpp::NumericVector qinvgauss(const Rcpp::NumericVector &p, const Rcpp::NumericV
   const std::size_t n = recycle_length(p.size(), mean.size(), shape.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qinvgauss(
+    const double y = cppunivariate::distributions::qinvgauss(
         p[i % p.size()], mean[i % mean.size()], shape[i % shape.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -53,7 +53,7 @@ Rcpp::NumericVector rinvgauss(int n, double mean = 1.0, double shape = 1.0) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rinvgauss(rng, mean, shape);
+    out[i] = cppunivariate::distributions::rinvgauss(rng, mean, shape);
   }
   return out;
 }

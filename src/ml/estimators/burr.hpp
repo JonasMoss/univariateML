@@ -23,7 +23,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct RootResult {
   double k;
@@ -143,9 +143,9 @@ inline RootResult invert_lower_logit(double cv, double tol, int maxit) {
   int iter = 0;
   for (; iter < maxit; ++iter) {
     const double k = logistic(x);
-    const double di = mlcore::special::digamma(k);
-    const double tri = mlcore::special::trigamma(k);
-    const double tetra = mlcore::special::tetragamma(k);
+    const double di = cppunivariate::special::digamma(k);
+    const double tri = cppunivariate::special::trigamma(k);
+    const double tetra = cppunivariate::special::tetragamma(k);
     const double pd = di - NEULER_CST;
     const double bpt = BASEL_CST + tri;
     const double f = (pd * pd) / bpt - cv;
@@ -188,9 +188,9 @@ inline RootResult invert_lower_log(double cv, double tol, int maxit) {
   int iter = 0;
   for (; iter < maxit; ++iter) {
     const double k = std::exp(p);
-    const double di = mlcore::special::digamma(k);
-    const double tri = mlcore::special::trigamma(k);
-    const double tetra = mlcore::special::tetragamma(k);
+    const double di = cppunivariate::special::digamma(k);
+    const double tri = cppunivariate::special::trigamma(k);
+    const double tetra = cppunivariate::special::tetragamma(k);
     const double pd = di - NEULER_CST;
     const double bpt = BASEL_CST + tri;
     const double f = (pd * pd) / bpt - cv;
@@ -226,9 +226,9 @@ inline RootResult invert_upper(double cv, double tol, int maxit) {
   int iter = 0;
   for (; iter < maxit; ++iter) {
     const double kk = std::exp(x) + 1.0;
-    const double di = mlcore::special::digamma(kk);
-    const double tri = mlcore::special::trigamma(kk);
-    const double tetra = mlcore::special::tetragamma(kk);
+    const double di = cppunivariate::special::digamma(kk);
+    const double tri = cppunivariate::special::trigamma(kk);
+    const double tetra = cppunivariate::special::tetragamma(kk);
     const double pd = di - NEULER_CST;
     const double bpt = BASEL_CST + tri;
     const double f = (pd * pd) / bpt - cv;
@@ -272,12 +272,12 @@ inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
     k_hat = root.k;
     iter = root.iterations;
 
-    const double t1 = mlcore::special::trigamma(k_hat);
+    const double t1 = cppunivariate::special::trigamma(k_hat);
     const double csq = (BASEL_CST + t1) / sigma2;
     if (csq > 0.0) c_hat = std::sqrt(csq);
   } else if (std::abs(mu) < kEps) {
     k_hat = 1.0;
-    const double t1 = mlcore::special::trigamma(1.0);
+    const double t1 = cppunivariate::special::trigamma(1.0);
     const double csq = (BASEL_CST + t1) / sigma2;
     if (csq > 0.0) c_hat = std::sqrt(csq);
   }
@@ -343,4 +343,4 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
   return {k, c, logLik, iter == maxit ? maxit : iter, BurrStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

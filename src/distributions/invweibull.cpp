@@ -10,7 +10,7 @@ Rcpp::NumericVector dinvweibull(const Rcpp::NumericVector &x, const Rcpp::Numeri
   const std::size_t n = recycle_length(x.size(), shape.size(), rate.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dinvweibull(
+    const double y = cppunivariate::distributions::dinvweibull(
         x[i % x.size()], shape[i % shape.size()], rate[i % rate.size()],
         log);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -24,7 +24,7 @@ Rcpp::NumericVector pinvweibull(const Rcpp::NumericVector &q, const Rcpp::Numeri
   const std::size_t n = recycle_length(q.size(), shape.size(), rate.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::pinvweibull(
+    const double y = cppunivariate::distributions::pinvweibull(
         q[i % q.size()], shape[i % shape.size()], rate[i % rate.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -38,7 +38,7 @@ Rcpp::NumericVector qinvweibull(const Rcpp::NumericVector &p, const Rcpp::Numeri
   const std::size_t n = recycle_length(p.size(), shape.size(), rate.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qinvweibull(
+    const double y = cppunivariate::distributions::qinvweibull(
         p[i % p.size()], shape[i % shape.size()], rate[i % rate.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -53,7 +53,7 @@ Rcpp::NumericVector rinvweibull(int n, double shape, double rate) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rinvweibull(rng, shape, rate);
+    out[i] = cppunivariate::distributions::rinvweibull(rng, shape, rate);
   }
   return out;
 }

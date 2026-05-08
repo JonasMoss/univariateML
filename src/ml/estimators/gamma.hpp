@@ -19,7 +19,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct GammaResult {
   double shape;
@@ -49,7 +49,7 @@ struct GammaCost {
       S_lx += std::log(v);
       S_x += v;
     }
-    return -n * a * std::log(r) + n * mlcore::special::lgamma(a) -
+    return -n * a * std::log(r) + n * cppunivariate::special::lgamma(a) -
            (a - 1.0) * S_lx + r * S_x;
   }
   void gradient(const double *theta, double *g) const {
@@ -58,14 +58,14 @@ struct GammaCost {
     const double n = static_cast<double>(x.size());
     double S_lx = 0.0, S_x = 0.0;
     for (auto v : x) { S_lx += std::log(v); S_x += v; }
-    g[0] = -n * std::log(r) + n * mlcore::special::digamma(a) - S_lx;
+    g[0] = -n * std::log(r) + n * cppunivariate::special::digamma(a) - S_lx;
     g[1] = -n * a / r + S_x;
   }
   void hessian(const double *theta, double *H) const {
     const double a = theta[0];
     const double r = theta[1];
     const double n = static_cast<double>(x.size());
-    H[0] = n * mlcore::special::trigamma(a);
+    H[0] = n * cppunivariate::special::trigamma(a);
     H[1] = -n / r;
     H[2] = H[1];
     H[3] = n * a / (r * r);
@@ -78,19 +78,19 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   if (n == 0) return {0.0, 0.0, kNaN, 0};
 
   const double dn = static_cast<double>(n);
-  const double mean_hat = mlcore::mean(x);
-  const double lx_bar = mlcore::mean_log(x);
+  const double mean_hat = cppunivariate::mean(x);
+  const double lx_bar = cppunivariate::mean_log(x);
   const double s = std::log(mean_hat) - lx_bar;
 
   auto f_over_df = [s](double shape) {
-    return (std::log(shape) - mlcore::special::digamma(shape) - s) /
-           (1.0 / shape - mlcore::special::trigamma(shape));
+    return (std::log(shape) - cppunivariate::special::digamma(shape) - s) /
+           (1.0 / shape - cppunivariate::special::trigamma(shape));
   };
   const double init = 1.0 / (12.0 * s) *
                           (3.0 - s + std::sqrt((s - 3.0) * (s - 3.0) + 24.0 * s)) *
                           0.9989 +
                       0.0102;
-  auto nr = mlcore::newton_raphson_1d_abs(init, f_over_df, tol, maxit);
+  auto nr = cppunivariate::newton_raphson_1d_abs(init, f_over_df, tol, maxit);
 
   const double rate = nr.x / mean_hat;
   const double logLik = dn * (nr.x * std::log(rate) - std::lgamma(nr.x) +
@@ -98,4 +98,4 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   return {nr.x, rate, logLik, nr.iterations};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

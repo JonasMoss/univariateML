@@ -10,11 +10,11 @@
 #include "../special/constants.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dlomax(double x, double lambda, double kappa, bool log) {
   if (!(lambda > 0.0 && kappa > 0.0) || !std::isfinite(x)) {
@@ -66,4 +66,4 @@ inline double rlomax(Rng &rng, double lambda, double kappa) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

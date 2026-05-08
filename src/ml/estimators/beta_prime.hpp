@@ -12,7 +12,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct BetaPrimeResult {
   double alpha;
@@ -44,8 +44,8 @@ struct BetaPrimeCost {
       S_l1px += std::log1p(v);
     }
     return -(a - 1.0) * S_lx + (a + b) * S_l1px +
-           n * (mlcore::special::lgamma(a) + mlcore::special::lgamma(b) -
-                mlcore::special::lgamma(a + b));
+           n * (cppunivariate::special::lgamma(a) + cppunivariate::special::lgamma(b) -
+                cppunivariate::special::lgamma(a + b));
   }
   void gradient(const double *theta, double *g) const {
     const double a = theta[0];
@@ -53,19 +53,19 @@ struct BetaPrimeCost {
     const double n = static_cast<double>(x.size());
     double S_lx = 0.0, S_l1px = 0.0;
     for (auto v : x) { S_lx += std::log(v); S_l1px += std::log1p(v); }
-    const double psi_ab = mlcore::special::digamma(a + b);
-    g[0] = -S_lx + S_l1px + n * (mlcore::special::digamma(a) - psi_ab);
-    g[1] = S_l1px + n * (mlcore::special::digamma(b) - psi_ab);
+    const double psi_ab = cppunivariate::special::digamma(a + b);
+    g[0] = -S_lx + S_l1px + n * (cppunivariate::special::digamma(a) - psi_ab);
+    g[1] = S_l1px + n * (cppunivariate::special::digamma(b) - psi_ab);
   }
   void hessian(const double *theta, double *H) const {
     const double a = theta[0];
     const double b = theta[1];
     const double n = static_cast<double>(x.size());
-    const double psi1_ab = mlcore::special::trigamma(a + b);
-    H[0] = n * (mlcore::special::trigamma(a) - psi1_ab);
+    const double psi1_ab = cppunivariate::special::trigamma(a + b);
+    H[0] = n * (cppunivariate::special::trigamma(a) - psi1_ab);
     H[1] = -n * psi1_ab;
     H[2] = -n * psi1_ab;
-    H[3] = n * (mlcore::special::trigamma(b) - psi1_ab);
+    H[3] = n * (cppunivariate::special::trigamma(b) - psi1_ab);
   }
 };
 
@@ -86,8 +86,8 @@ inline BetaPrimeResult betapr_mle(span x, double tol, int maxit) {
   const double dn = static_cast<double>(n);
   const double logLik =
       (br.alpha - 1.0) * sum_log_x - (br.alpha + br.beta) * sum_log1p_x -
-      dn * mlcore::special::lbeta(br.alpha, br.beta);
+      dn * cppunivariate::special::lbeta(br.alpha, br.beta);
   return {br.alpha, br.beta, logLik, br.iterations};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

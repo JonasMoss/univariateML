@@ -21,7 +21,7 @@
 #include <map>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class BinomStatus {
   Ok = 0,
@@ -82,8 +82,8 @@ struct BinomCost {
 };
 
 inline double binom_lchoose(double n, double k) {
-  return mlcore::special::lgamma(n + 1.0) - mlcore::special::lgamma(k + 1.0) -
-         mlcore::special::lgamma(n - k + 1.0);
+  return cppunivariate::special::lgamma(n + 1.0) - cppunivariate::special::lgamma(k + 1.0) -
+         cppunivariate::special::lgamma(n - k + 1.0);
 }
 
 inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
@@ -130,13 +130,13 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
     const double size_m_x = size - x_bar;
     double f =
         dn * (std::log(size_m_x) - std::log(size)) +
-        dn * mlcore::special::digamma(size + 1.0);
+        dn * cppunivariate::special::digamma(size + 1.0);
     double df =
-        dn * x_bar / (size * size_m_x) + dn * mlcore::special::trigamma(size + 1.0);
+        dn * x_bar / (size * size_m_x) + dn * cppunivariate::special::trigamma(size + 1.0);
     for (std::size_t i = 0; i < uniq.size(); ++i) {
       const double arg = size - static_cast<double>(uniq[i]) + 1.0;
-      f -= counts[i] * mlcore::special::digamma(arg);
-      df -= counts[i] * mlcore::special::trigamma(arg);
+      f -= counts[i] * cppunivariate::special::digamma(arg);
+      df -= counts[i] * cppunivariate::special::trigamma(arg);
     }
     return f / df;
   };
@@ -188,4 +188,4 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   return {best_size, prob, best_ll, iterations, BinomStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

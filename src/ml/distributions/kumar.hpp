@@ -10,11 +10,11 @@
 #include "../special/constants.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dkumar(double x, double a, double b, bool log) {
   if (!(a > 0.0 && b > 0.0) || !std::isfinite(x)) {
@@ -70,4 +70,4 @@ inline double rkumar(Rng &rng, double a, double b) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

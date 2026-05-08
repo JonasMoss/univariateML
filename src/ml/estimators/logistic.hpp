@@ -4,7 +4,7 @@
 // scale ≈ sqrt(var) * sqrt(3) / pi (matches Logistic distribution variance).
 //
 // Convergence is absolute on max(|dmu|, |dtheta|) -- a 2D Newton, so
-// outside the scope of mlcore::newton_raphson_1d. Used as the inner
+// outside the scope of cppunivariate::newton_raphson_1d. Used as the inner
 // engine of Log-Logistic via a log-transform.
 
 #pragma once
@@ -15,7 +15,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct LogisticResult {
   double mu;
@@ -153,4 +153,4 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
   return {mu, scale, logLik, iter == maxit ? maxit : iter + 1};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

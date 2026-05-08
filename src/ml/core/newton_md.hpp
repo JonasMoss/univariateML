@@ -36,7 +36,7 @@
 #include <utility>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class NewtonMdStatus {
   Ok = 0,
@@ -238,4 +238,4 @@ inline NewtonMdResult newton_md_minimize(Cost &cost, const double *theta0,
           NewtonMdStatus::IterationFailure};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

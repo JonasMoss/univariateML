@@ -9,7 +9,7 @@ using namespace Rcpp;
 NumericVector special_digamma_cpp(const NumericVector &x) {
   NumericVector out(x.size());
   for (R_xlen_t i = 0; i < x.size(); ++i) {
-    out[i] = mlcore::special::digamma(x[i]);
+    out[i] = cppunivariate::special::digamma(x[i]);
   }
   return out;
 }
@@ -18,7 +18,7 @@ NumericVector special_digamma_cpp(const NumericVector &x) {
 NumericVector special_trigamma_cpp(const NumericVector &x) {
   NumericVector out(x.size());
   for (R_xlen_t i = 0; i < x.size(); ++i) {
-    out[i] = mlcore::special::trigamma(x[i]);
+    out[i] = cppunivariate::special::trigamma(x[i]);
   }
   return out;
 }
@@ -27,7 +27,7 @@ NumericVector special_trigamma_cpp(const NumericVector &x) {
 NumericVector special_tetragamma_cpp(const NumericVector &x) {
   NumericVector out(x.size());
   for (R_xlen_t i = 0; i < x.size(); ++i) {
-    out[i] = mlcore::special::tetragamma(x[i]);
+    out[i] = cppunivariate::special::tetragamma(x[i]);
   }
   return out;
 }
@@ -36,7 +36,7 @@ NumericVector special_tetragamma_cpp(const NumericVector &x) {
 NumericVector special_lgamma_cpp(const NumericVector &x) {
   NumericVector out(x.size());
   for (R_xlen_t i = 0; i < x.size(); ++i) {
-    out[i] = mlcore::special::lgamma(x[i]);
+    out[i] = cppunivariate::special::lgamma(x[i]);
   }
   return out;
 }
@@ -49,7 +49,7 @@ NumericVector special_lbeta_cpp(const NumericVector &a,
   for (R_xlen_t i = 0; i < n; ++i) {
     const double ai = a[i % a.size()];
     const double bi = b[i % b.size()];
-    out[i] = mlcore::special::lbeta(ai, bi);
+    out[i] = cppunivariate::special::lbeta(ai, bi);
   }
   return out;
 }
@@ -59,7 +59,7 @@ NumericVector special_dnorm_cpp(const NumericVector &x, double mean = 0.0,
                                 double sd = 1.0, bool log = false) {
   NumericVector out(x.size());
   for (R_xlen_t i = 0; i < x.size(); ++i) {
-    out[i] = mlcore::special::dnorm(x[i], mean, sd, log);
+    out[i] = cppunivariate::special::dnorm(x[i], mean, sd, log);
   }
   return out;
 }
@@ -69,7 +69,7 @@ NumericVector special_dpois_cpp(const IntegerVector &x, double lambda,
                                 bool log = false) {
   NumericVector out(x.size());
   for (R_xlen_t i = 0; i < x.size(); ++i) {
-    out[i] = mlcore::special::dpois(static_cast<double>(x[i]), lambda, log);
+    out[i] = cppunivariate::special::dpois(static_cast<double>(x[i]), lambda, log);
   }
   return out;
 }
@@ -79,7 +79,7 @@ NumericVector special_dgeom_cpp(const IntegerVector &x, double prob,
                                 bool log = false) {
   NumericVector out(x.size());
   for (R_xlen_t i = 0; i < x.size(); ++i) {
-    out[i] = mlcore::special::dgeom(static_cast<double>(x[i]), prob, log);
+    out[i] = cppunivariate::special::dgeom(static_cast<double>(x[i]), prob, log);
   }
   return out;
 }
@@ -88,7 +88,7 @@ NumericVector special_dgeom_cpp(const IntegerVector &x, double prob,
 NumericVector special_psigamma_cpp(const NumericVector &x, int deriv) {
   NumericVector out(x.size());
   for (R_xlen_t i = 0; i < x.size(); ++i) {
-    out[i] = mlcore::special::psigamma(x[i], deriv);
+    out[i] = cppunivariate::special::psigamma(x[i], deriv);
   }
   return out;
 }

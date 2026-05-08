@@ -11,7 +11,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct GeomResult {
   double prob;
@@ -62,9 +62,9 @@ inline GeomResult geom_mle(ispan x) {
 
   double logLik = 0.0;
   for (auto v : x) {
-    logLik += ::mlcore::special::dgeom(static_cast<double>(v), prob, 1);
+    logLik += ::cppunivariate::special::dgeom(static_cast<double>(v), prob, 1);
   }
   return {prob, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

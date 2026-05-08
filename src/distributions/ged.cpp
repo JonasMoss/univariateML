@@ -1,4 +1,4 @@
-// GED distribution: Rcpp::NumericVector wrappers around mlcore::distributions.
+// GED distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/ged.hpp"
@@ -15,7 +15,7 @@ Rcpp::NumericVector dged(const Rcpp::NumericVector &x, const Rcpp::NumericVector
     const double m = mean[i % mean.size()];
     const double s = sd[i % sd.size()];
     const double v = nu[i % nu.size()];
-    const double y = mlcore::distributions::dged(xi, m, s, v, log);
+    const double y = cppunivariate::distributions::dged(xi, m, s, v, log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -33,7 +33,7 @@ Rcpp::NumericVector pged(const Rcpp::NumericVector &q, const Rcpp::NumericVector
     const double s = sd[i % sd.size()];
     const double v = nu[i % nu.size()];
     const double y =
-        mlcore::distributions::pged(qi, m, s, v, lower_tail, log_p);
+        cppunivariate::distributions::pged(qi, m, s, v, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -51,7 +51,7 @@ Rcpp::NumericVector qged(const Rcpp::NumericVector &p, const Rcpp::NumericVector
     const double s = sd[i % sd.size()];
     const double v = nu[i % nu.size()];
     const double y =
-        mlcore::distributions::qged(pi, m, s, v, lower_tail, log_p);
+        cppunivariate::distributions::qged(pi, m, s, v, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -64,7 +64,7 @@ Rcpp::NumericVector rged(int n, double mean = 0.0, double sd = 1.0, double nu = 
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rged(rng, mean, sd, nu);
+    out[i] = cppunivariate::distributions::rged(rng, mean, sd, nu);
   }
   return out;
 }

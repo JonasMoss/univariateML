@@ -10,7 +10,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct InvGaussResult {
   double mu;
@@ -118,4 +118,4 @@ inline InvGaussResult invgauss_mle(span x) {
   return {mu, lambda, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

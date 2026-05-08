@@ -1,4 +1,4 @@
-// Zipf distribution: Rcpp::NumericVector wrappers around mlcore::distributions.
+// Zipf distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/zipf.hpp"
@@ -13,7 +13,7 @@ Rcpp::NumericVector dzipf(const Rcpp::NumericVector &x, const Rcpp::NumericVecto
     const double xi = x[i % x.size()];
     const double Ni = N[i % N.size()];
     const double si = s[i % s.size()];
-    const double y = mlcore::distributions::dzipf(xi, Ni, si, log);
+    const double y = cppunivariate::distributions::dzipf(xi, Ni, si, log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -28,7 +28,7 @@ Rcpp::NumericVector pzipf(const Rcpp::NumericVector &q, const Rcpp::NumericVecto
     const double Ni = N[i % N.size()];
     const double si = s[i % s.size()];
     const double y =
-        mlcore::distributions::pzipf(qi, Ni, si, lower_tail, log_p);
+        cppunivariate::distributions::pzipf(qi, Ni, si, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -43,7 +43,7 @@ Rcpp::NumericVector qzipf(const Rcpp::NumericVector &p, const Rcpp::NumericVecto
     const double Ni = N[i % N.size()];
     const double si = s[i % s.size()];
     const double y =
-        mlcore::distributions::qzipf(pi, Ni, si, lower_tail, log_p);
+        cppunivariate::distributions::qzipf(pi, Ni, si, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -54,12 +54,12 @@ Rcpp::NumericVector rzipf(int n, double N, double s) {
     Rcpp::stop("Invalid parameters for rzipf");
   }
   const int Nin = static_cast<int>(N);
-  const auto cum = mlcore::distributions::zipf_cdf(Nin, s);
+  const auto cum = cppunivariate::distributions::zipf_cdf(Nin, s);
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
     out[i] =
-        static_cast<double>(mlcore::distributions::rzipf_from_cdf(rng, cum));
+        static_cast<double>(cppunivariate::distributions::rzipf_from_cdf(rng, cum));
   }
   return out;
 }

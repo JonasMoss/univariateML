@@ -15,7 +15,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct KumarResult {
   double a;
@@ -88,7 +88,7 @@ inline KumarResult kumar_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0};
 
-  const double mu = mlcore::mean_log(x);
+  const double mu = cppunivariate::mean_log(x);
   // sigma2 = mean(log(x)^2) - mu^2
   double sum_log_sq = 0.0;
   for (auto v : x) {
@@ -100,8 +100,8 @@ inline KumarResult kumar_mle(span x, double tol, int maxit) {
   // Stage 1: Newton on `a` from L-moment estimating equation.
   auto f_over_df_lmom = [&](double a0) {
     const double b = inverse_digamma_scalar(-0.5772156649015328606 - a0 * mu);
-    const double tri = mlcore::special::trigamma(b);
-    const double tetra = mlcore::special::tetragamma(b);
+    const double tri = cppunivariate::special::trigamma(b);
+    const double tetra = cppunivariate::special::tetragamma(b);
     const double basel = M_PI * M_PI / 6.0;
     const double f = a0 * tri * (basel - tri - a0 * a0 * sigma2);
     const double df = a0 * tetra * mu - 2.0 * tri * (basel + tri);
@@ -164,4 +164,4 @@ inline KumarResult kumar_mle(span x, double tol, int maxit) {
   return {a, b, logLik, iter};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

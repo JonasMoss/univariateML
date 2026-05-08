@@ -10,7 +10,7 @@ Rcpp::NumericVector dllogis(const Rcpp::NumericVector &x, const Rcpp::NumericVec
   const std::size_t n = recycle_length(x.size(), shape.size(), rate.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dllogis(
+    const double y = cppunivariate::distributions::dllogis(
         x[i % x.size()], shape[i % shape.size()], rate[i % rate.size()],
         log);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -24,7 +24,7 @@ Rcpp::NumericVector pllogis(const Rcpp::NumericVector &q, const Rcpp::NumericVec
   const std::size_t n = recycle_length(q.size(), shape.size(), rate.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::pllogis(
+    const double y = cppunivariate::distributions::pllogis(
         q[i % q.size()], shape[i % shape.size()], rate[i % rate.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -38,7 +38,7 @@ Rcpp::NumericVector qllogis(const Rcpp::NumericVector &p, const Rcpp::NumericVec
   const std::size_t n = recycle_length(p.size(), shape.size(), rate.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qllogis(
+    const double y = cppunivariate::distributions::qllogis(
         p[i % p.size()], shape[i % shape.size()], rate[i % rate.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -53,7 +53,7 @@ Rcpp::NumericVector rllogis(int n, double shape, double rate) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rllogis(rng, shape, rate);
+    out[i] = cppunivariate::distributions::rllogis(rng, shape, rate);
   }
   return out;
 }

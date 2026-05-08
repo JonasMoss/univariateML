@@ -1,9 +1,9 @@
-# Standalone build of the C++ test harness for the mlcore estimators.
+# Standalone build of the C++ test harness for the cppunivariate estimators.
 #
 # Goal: `cmake --build && ctest` runs golden-regression tests against
 # the same JSON files the R-side test_golden_regression.R consumes.
 #
-# mlcore is header-only. The math backend (special functions, dpqr) is
+# cppunivariate is header-only. The math backend (special functions, dpqr) is
 # Boost.Math, which is header-only. We discover Boost via:
 #   1. find_package(Boost) — system Boost (apt: libboost-dev, dnf: boost-devel)
 #   2. fallback: BH package in an R install — `Rscript -e "system.file('include', 'BH')"`

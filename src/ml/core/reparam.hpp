@@ -11,7 +11,7 @@
 
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 
 inline double from_log(double phi) { return std::exp(phi); }
 inline double to_log(double x) { return std::log(x); }
@@ -21,4 +21,4 @@ inline double from_log_shift(double phi, double c) {
 }
 inline double to_log_shift(double x, double c) { return std::log(x - c); }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

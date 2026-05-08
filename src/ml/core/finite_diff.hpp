@@ -13,7 +13,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace mlcore {
+namespace cppunivariate {
 
 inline constexpr int kFiniteDiffMaxDim = 32;
 
@@ -118,4 +118,4 @@ struct finite_diff_hessian_cost {
   }
 };
 
-}  // namespace mlcore
+}  // namespace cppunivariate

@@ -10,7 +10,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct UnifResult {
   double min;
@@ -80,4 +80,4 @@ inline UnifResult unif_mle(span x) {
   return {a, b, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

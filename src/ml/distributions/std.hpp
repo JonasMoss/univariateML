@@ -9,10 +9,10 @@
 #include "../special/special.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
+using cppunivariate::special::kNaN;
 
 inline double dstd(double x, double mean, double sd, double nu, bool log) {
   if (!(sd > 0.0 && nu > 2.0) || !std::isfinite(x)) {
@@ -20,7 +20,7 @@ inline double dstd(double x, double mean, double sd, double nu, bool log) {
   }
   const double scale = std::sqrt(nu / (nu - 2.0));
   const double z = (x - mean) / sd;
-  const double logdens = mlcore::special::dt(z * scale, nu, /*log=*/true) +
+  const double logdens = cppunivariate::special::dt(z * scale, nu, /*log=*/true) +
                          std::log(scale / sd);
   return log ? logdens : std::exp(logdens);
 }
@@ -32,7 +32,7 @@ inline double pstd(double q, double mean, double sd, double nu,
   }
   const double scale = std::sqrt(nu / (nu - 2.0));
   const double z = (q - mean) / sd;
-  return mlcore::special::pt(z * scale, nu, lower_tail, log_p);
+  return cppunivariate::special::pt(z * scale, nu, lower_tail, log_p);
 }
 
 inline double qstd(double p, double mean, double sd, double nu,
@@ -47,7 +47,7 @@ inline double qstd(double p, double mean, double sd, double nu,
     p = 1.0 - p;
   }
   const double scale = std::sqrt(nu / (nu - 2.0));
-  const double z = mlcore::special::qt(p, nu, /*lower_tail=*/true,
+  const double z = cppunivariate::special::qt(p, nu, /*lower_tail=*/true,
                                        /*log_p=*/false);
   return z / scale * sd + mean;
 }
@@ -60,4 +60,4 @@ inline double rstd(Rng &rng, double mean, double sd, double nu) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

@@ -10,7 +10,7 @@
 
 #include <cstddef>
 
-namespace mlcore {
+namespace cppunivariate {
 
 template <typename T>
 struct basic_span {
@@ -28,4 +28,4 @@ struct basic_span {
 using span = basic_span<double>;
 using ispan = basic_span<int>;
 
-}  // namespace mlcore
+}  // namespace cppunivariate

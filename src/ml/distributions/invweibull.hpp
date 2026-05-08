@@ -10,11 +10,11 @@
 #include "../special/constants.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dinvweibull(double x, double shape, double rate, bool log) {
   if (!(shape > 0.0 && rate > 0.0) || !std::isfinite(x) ||
@@ -75,4 +75,4 @@ inline double rinvweibull(Rng &rng, double shape, double rate) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

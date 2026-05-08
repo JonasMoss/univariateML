@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct PoisResult {
   double lambda;
@@ -57,9 +57,9 @@ inline PoisResult pois_mle(ispan x) {
 
   double logLik = 0.0;
   for (auto v : x) {
-    logLik += ::mlcore::special::dpois(static_cast<double>(v), lambda, 1);
+    logLik += ::cppunivariate::special::dpois(static_cast<double>(v), lambda, 1);
   }
   return {lambda, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

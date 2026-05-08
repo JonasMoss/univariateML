@@ -10,7 +10,7 @@ Rcpp::NumericVector ddunif(const Rcpp::NumericVector &x, const Rcpp::NumericVect
   const std::size_t n = recycle_length(x.size(), min.size(), max.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::ddunif(
+    const double y = cppunivariate::distributions::ddunif(
         x[i % x.size()], min[i % min.size()], max[i % max.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -23,7 +23,7 @@ Rcpp::NumericVector pdunif(const Rcpp::NumericVector &q, const Rcpp::NumericVect
   const std::size_t n = recycle_length(q.size(), min.size(), max.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::pdunif(
+    const double y = cppunivariate::distributions::pdunif(
         q[i % q.size()], min[i % min.size()], max[i % max.size()], lower_tail,
         log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -37,7 +37,7 @@ Rcpp::NumericVector qdunif(const Rcpp::NumericVector &p, const Rcpp::NumericVect
   const std::size_t n = recycle_length(p.size(), min.size(), max.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qdunif(
+    const double y = cppunivariate::distributions::qdunif(
         p[i % p.size()], min[i % min.size()], max[i % max.size()], lower_tail,
         log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -53,7 +53,7 @@ Rcpp::NumericVector rdunif(int n, double min, double max) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rdunif(rng, min, max);
+    out[i] = cppunivariate::distributions::rdunif(rng, min, max);
   }
   return out;
 }

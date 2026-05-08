@@ -14,7 +14,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class GompertzStatus { Ok = 0, Overdispersed, IterationFailure };
 
@@ -140,4 +140,4 @@ inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
   return {a, b, logLik, iter, GompertzStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

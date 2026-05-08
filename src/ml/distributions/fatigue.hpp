@@ -13,11 +13,11 @@
 #include "../special/special.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dfatigue(double x, double alpha, double beta, double mu,
                        bool log) {
@@ -52,7 +52,7 @@ inline double pfatigue(double q, double alpha, double beta, double mu,
     const double z = q - mu;
     const double zb = std::sqrt(z / beta);
     const double bz = std::sqrt(beta / z);
-    prob = mlcore::special::pnorm((zb - bz) / alpha, 0.0, 1.0, true, false);
+    prob = cppunivariate::special::pnorm((zb - bz) / alpha, 0.0, 1.0, true, false);
     if (!lower_tail) {
       prob = 1.0 - prob;
     }
@@ -73,7 +73,7 @@ inline double qfatigue(double p, double alpha, double beta, double mu,
   }
   if (p == 0.0) return mu;
   const double Zp =
-      mlcore::special::qnorm(p, 0.0, 1.0, true, false);
+      cppunivariate::special::qnorm(p, 0.0, 1.0, true, false);
   const double aZ2 = alpha * Zp / 2.0;
   return std::pow(aZ2 + std::sqrt(aZ2 * aZ2 + 1.0), 2.0) * beta + mu;
 }
@@ -86,4 +86,4 @@ inline double rfatigue(Rng &rng, double alpha, double beta, double mu) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

@@ -10,7 +10,7 @@ Rcpp::NumericVector dlomax(const Rcpp::NumericVector &x, const Rcpp::NumericVect
   const std::size_t n = recycle_length(x.size(), lambda.size(), kappa.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dlomax(
+    const double y = cppunivariate::distributions::dlomax(
         x[i % x.size()], lambda[i % lambda.size()], kappa[i % kappa.size()],
         log);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -24,7 +24,7 @@ Rcpp::NumericVector plomax(const Rcpp::NumericVector &q, const Rcpp::NumericVect
   const std::size_t n = recycle_length(q.size(), lambda.size(), kappa.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::plomax(
+    const double y = cppunivariate::distributions::plomax(
         q[i % q.size()], lambda[i % lambda.size()], kappa[i % kappa.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -38,7 +38,7 @@ Rcpp::NumericVector qlomax(const Rcpp::NumericVector &p, const Rcpp::NumericVect
   const std::size_t n = recycle_length(p.size(), lambda.size(), kappa.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qlomax(
+    const double y = cppunivariate::distributions::qlomax(
         p[i % p.size()], lambda[i % lambda.size()], kappa[i % kappa.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -53,7 +53,7 @@ Rcpp::NumericVector rlomax(int n, double lambda = 1.0, double kappa = 1.0) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rlomax(rng, lambda, kappa);
+    out[i] = cppunivariate::distributions::rlomax(rng, lambda, kappa);
   }
   return out;
 }

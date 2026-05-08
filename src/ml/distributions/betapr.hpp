@@ -16,11 +16,11 @@
 #include <boost/math/distributions/beta.hpp>
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dbetapr(double x, double shape1, double shape2, bool log) {
   if (!(shape1 > 0.0 && shape2 > 0.0) || !std::isfinite(x)) {
@@ -31,7 +31,7 @@ inline double dbetapr(double x, double shape1, double shape2, bool log) {
   }
   const double log_density = (shape1 - 1.0) * std::log(x) +
                              (-shape1 - shape2) * std::log1p(x) -
-                             mlcore::special::lbeta(shape1, shape2);
+                             cppunivariate::special::lbeta(shape1, shape2);
   return log ? log_density : std::exp(log_density);
 }
 
@@ -88,4 +88,4 @@ inline double rbetapr(Rng &rng, double shape1, double shape2) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

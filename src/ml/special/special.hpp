@@ -1,6 +1,6 @@
-// Centralized special functions and dpqr primitives used by mlcore.
+// Centralized special functions and dpqr primitives used by cppunivariate.
 //
-// Single seam between mlcore and the math backend: today everything
+// Single seam between cppunivariate and the math backend: today everything
 // routes through Boost.Math (shipped via the BH package on CRAN).
 // Swap this file to retarget another backend.
 
@@ -16,7 +16,7 @@
 #include <boost/math/special_functions/trigamma.hpp>
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace special {
 
 // --- log-gamma family ------------------------------------------------------
@@ -200,4 +200,4 @@ inline double qt(double p, double df, bool lower_tail, bool log_p) {
 }
 
 } // namespace special
-} // namespace mlcore
+} // namespace cppunivariate

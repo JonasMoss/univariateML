@@ -21,7 +21,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart };
 
@@ -54,8 +54,8 @@ struct StudentTCost {
   int dim() const { return 3; }
   double operator()(const double *phi) const {
     const double mu = phi[0];
-    const double sigma = mlcore::from_log(phi[1]);
-    const double nu = mlcore::from_log_shift(phi[2], 2.0);
+    const double sigma = cppunivariate::from_log(phi[1]);
+    const double nu = cppunivariate::from_log_shift(phi[2], 2.0);
     if (!std::isfinite(sigma) || !std::isfinite(nu) || sigma <= 0.0 ||
         nu <= 2.0) {
       return std::numeric_limits<double>::infinity();
@@ -64,14 +64,14 @@ struct StudentTCost {
     double neg = 0.0;
     for (auto v : x) {
       const double z = (v - mu) / sigma;
-      neg += log_sigma - mlcore::dens::log_dstd_unit(z, nu);
+      neg += log_sigma - cppunivariate::dens::log_dstd_unit(z, nu);
     }
     return neg;
   }
   void hessian(const double *phi, double *H) const {
     const double mu = phi[0];
-    const double sigma = mlcore::from_log(phi[1]);
-    const double m = mlcore::from_log(phi[2]);  // nu - 2
+    const double sigma = cppunivariate::from_log(phi[1]);
+    const double m = cppunivariate::from_log(phi[2]);  // nu - 2
     const double nu = m + 2.0;
     if (!std::isfinite(sigma) || !std::isfinite(m) || sigma <= 0.0 ||
         m <= 0.0) {
@@ -119,10 +119,10 @@ struct StudentTCost {
     H[5] = (3.0 * S_z2_invR2 - S_z4_invR2) / m;
     H[6] = H[2];
     H[7] = H[5];
-    const double dpsi = mlcore::special::digamma(0.5 * nu1) -
-                        mlcore::special::digamma(0.5 * nu);
-    const double dtri = mlcore::special::trigamma(0.5 * nu1) -
-                        mlcore::special::trigamma(0.5 * nu);
+    const double dpsi = cppunivariate::special::digamma(0.5 * nu1) -
+                        cppunivariate::special::digamma(0.5 * nu);
+    const double dtri = cppunivariate::special::trigamma(0.5 * nu1) -
+                        cppunivariate::special::trigamma(0.5 * nu);
     H[8] = 0.5 * nu1 * S_y_invR2 - S_z2_invR + 0.5 * m * S_logR -
            0.25 * m * m * dn * dtri - 0.5 * m * dn * dpsi;
   }
@@ -133,7 +133,7 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::InvalidStart};
 
-  const double mean_x = mlcore::mean(x);
+  const double mean_x = cppunivariate::mean(x);
   double var_x = 0.0;
   for (auto v : x) {
     const double d = v - mean_x;
@@ -147,8 +147,8 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
 
   StudentTCost cost{x};
   finite_diff_cost<StudentTCost> fd{cost};
-  const double phi0[3] = {mean_x, mlcore::to_log(sd_x),
-                          mlcore::to_log_shift(6.0, 2.0)};
+  const double phi0[3] = {mean_x, cppunivariate::to_log(sd_x),
+                          cppunivariate::to_log_shift(6.0, 2.0)};
 
   BfgsControl ctl;
   ctl.grad_tol = tol;
@@ -156,8 +156,8 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   auto r = bfgs_minimize(fd, phi0, ctl);
 
   const double mu = r.theta[0];
-  const double sigma = mlcore::from_log(r.theta[1]);
-  const double nu = mlcore::from_log_shift(r.theta[2], 2.0);
+  const double sigma = cppunivariate::from_log(r.theta[1]);
+  const double nu = cppunivariate::from_log_shift(r.theta[2], 2.0);
   const double logLik = -r.f;
 
   if (r.status != BfgsStatus::Ok) {
@@ -166,4 +166,4 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   return {mu, sigma, nu, logLik, r.iterations, StudentTStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

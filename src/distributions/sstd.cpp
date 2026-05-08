@@ -1,4 +1,4 @@
-// Skew Student-t: Rcpp::NumericVector wrappers around mlcore::distributions.
+// Skew Student-t: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/sstd.hpp"
@@ -18,7 +18,7 @@ Rcpp::NumericVector dsstd(const Rcpp::NumericVector &x, const Rcpp::NumericVecto
     const double s = sd[i % sd.size()];
     const double v = nu[i % nu.size()];
     const double xi_val = xi[i % xi.size()];
-    const double y = mlcore::distributions::dsstd(xv, m, s, v, xi_val, log);
+    const double y = cppunivariate::distributions::dsstd(xv, m, s, v, xi_val, log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -37,7 +37,7 @@ Rcpp::NumericVector psstd(const Rcpp::NumericVector &q, const Rcpp::NumericVecto
     const double s = sd[i % sd.size()];
     const double v = nu[i % nu.size()];
     const double xi_val = xi[i % xi.size()];
-    const double y = mlcore::distributions::psstd(qv, m, s, v, xi_val);
+    const double y = cppunivariate::distributions::psstd(qv, m, s, v, xi_val);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -56,7 +56,7 @@ Rcpp::NumericVector qsstd(const Rcpp::NumericVector &p, const Rcpp::NumericVecto
     const double s = sd[i % sd.size()];
     const double v = nu[i % nu.size()];
     const double xi_val = xi[i % xi.size()];
-    const double y = mlcore::distributions::qsstd(pv, m, s, v, xi_val);
+    const double y = cppunivariate::distributions::qsstd(pv, m, s, v, xi_val);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -70,7 +70,7 @@ Rcpp::NumericVector rsstd(int n, double mean = 0.0, double sd = 1.0, double nu =
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rsstd(rng, mean, sd, nu, xi);
+    out[i] = cppunivariate::distributions::rsstd(rng, mean, sd, nu, xi);
   }
   return out;
 }

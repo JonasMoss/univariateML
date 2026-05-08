@@ -10,7 +10,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct ParetoResult {
   double shape;
@@ -86,4 +86,4 @@ inline ParetoResult pareto_mle(span x) {
   return {alpha, xmin, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

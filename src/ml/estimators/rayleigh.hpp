@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct RayleighResult {
   double sigma;
@@ -71,4 +71,4 @@ inline RayleighResult rayleigh_mle(span x) {
   return {sigma, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

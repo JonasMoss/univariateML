@@ -18,7 +18,7 @@
 #include <cmath>
 #include <cstddef>
 
-namespace mlcore {
+namespace cppunivariate {
 
 inline bool cholesky_factor(double *A, int n) {
   for (int i = 0; i < n; ++i) {
@@ -95,4 +95,4 @@ inline bool invert_symmetric_pd(double *A, int n) {
   return true;
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

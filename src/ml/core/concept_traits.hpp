@@ -16,7 +16,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace detail {
 
 template <typename, typename = void> struct has_gradient : std::false_type {};
@@ -42,4 +42,4 @@ struct has_log_lik_per_obs<
     : std::true_type {};
 
 }  // namespace detail
-}  // namespace mlcore
+}  // namespace cppunivariate

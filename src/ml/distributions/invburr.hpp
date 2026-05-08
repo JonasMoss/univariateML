@@ -13,11 +13,11 @@
 #include "../special/constants.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dinvburr(double x, double shape1, double shape2, double scale,
                        bool log) {
@@ -87,4 +87,4 @@ inline double rinvburr(Rng &rng, double shape1, double shape2, double scale) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

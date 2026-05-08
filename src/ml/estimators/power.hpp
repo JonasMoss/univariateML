@@ -13,7 +13,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct PowerResult {
   double alpha;
@@ -92,4 +92,4 @@ inline PowerResult power_mle(span x, double epsilon) {
   return {alpha, beta, logLik, 0};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

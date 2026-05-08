@@ -22,7 +22,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class SnormStatus { Ok = 0, BfgsFailure, InvalidStart };
 
@@ -53,26 +53,26 @@ struct SnormCost {
   int dim() const { return 3; }
   double operator()(const double *phi) const {
     const double mu = phi[0];
-    const double sigma = mlcore::from_log(phi[1]);
-    const double xi = mlcore::from_log(phi[2]);
+    const double sigma = cppunivariate::from_log(phi[1]);
+    const double xi = cppunivariate::from_log(phi[2]);
     if (!std::isfinite(sigma) || !std::isfinite(xi) || sigma <= 0.0 ||
         xi <= 0.0) {
       return std::numeric_limits<double>::infinity();
     }
     double mu_u = 0.0;
-    const double sigma_u = mlcore::dens::snorm_sigma(xi, mu_u);
+    const double sigma_u = cppunivariate::dens::snorm_sigma(xi, mu_u);
     const double log_factor = std::log(sigma_u) - std::log(sigma);
     double neg = 0.0;
     for (auto v : x) {
       const double z = (v - mu) / sigma * sigma_u + mu_u;
-      neg -= log_factor + mlcore::dens::log_dsnorm_core(z, xi);
+      neg -= log_factor + cppunivariate::dens::log_dsnorm_core(z, xi);
     }
     return neg;
   }
   void hessian(const double *phi, double *H) const {
     const double mu = phi[0];
-    const double sigma = mlcore::from_log(phi[1]);
-    const double xi = mlcore::from_log(phi[2]);
+    const double sigma = cppunivariate::from_log(phi[1]);
+    const double xi = cppunivariate::from_log(phi[2]);
     if (!std::isfinite(sigma) || !std::isfinite(xi) || sigma <= 0.0 ||
         xi <= 0.0) {
       const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -149,7 +149,7 @@ inline SnormResult snorm_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, kNaN, 0, SnormStatus::InvalidStart};
 
-  const double mean_x = mlcore::mean(x);
+  const double mean_x = cppunivariate::mean(x);
   double var_x = 0.0;
   for (auto v : x) {
     const double d = v - mean_x;
@@ -163,7 +163,7 @@ inline SnormResult snorm_mle(span x, double tol, int maxit) {
 
   SnormCost cost{x};
   finite_diff_cost<SnormCost> fd{cost};
-  const double phi0[3] = {mean_x, mlcore::to_log(sd_x), mlcore::to_log(1.0)};
+  const double phi0[3] = {mean_x, cppunivariate::to_log(sd_x), cppunivariate::to_log(1.0)};
 
   BfgsControl ctl;
   ctl.grad_tol = tol;
@@ -171,8 +171,8 @@ inline SnormResult snorm_mle(span x, double tol, int maxit) {
   auto r = bfgs_minimize(fd, phi0, ctl);
 
   const double mu = r.theta[0];
-  const double sigma = mlcore::from_log(r.theta[1]);
-  const double xi = mlcore::from_log(r.theta[2]);
+  const double sigma = cppunivariate::from_log(r.theta[1]);
+  const double xi = cppunivariate::from_log(r.theta[2]);
   const double logLik = -r.f;
 
   if (r.status != BfgsStatus::Ok) {
@@ -181,4 +181,4 @@ inline SnormResult snorm_mle(span x, double tol, int maxit) {
   return {mu, sigma, xi, logLik, r.iterations, SnormStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

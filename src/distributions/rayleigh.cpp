@@ -1,4 +1,4 @@
-// Rayleigh distribution: Rcpp::NumericVector wrappers around mlcore::distributions.
+// Rayleigh distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/rayleigh.hpp"
@@ -10,7 +10,7 @@ Rcpp::NumericVector drayleigh(const Rcpp::NumericVector &x, const Rcpp::NumericV
   const std::size_t n = recycle_length(x.size(), sigma.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::drayleigh(
+    const double y = cppunivariate::distributions::drayleigh(
         x[i % x.size()], sigma[i % sigma.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -22,7 +22,7 @@ Rcpp::NumericVector prayleigh(const Rcpp::NumericVector &q, const Rcpp::NumericV
   const std::size_t n = recycle_length(q.size(), sigma.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::prayleigh(
+    const double y = cppunivariate::distributions::prayleigh(
         q[i % q.size()], sigma[i % sigma.size()], lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -34,7 +34,7 @@ Rcpp::NumericVector qrayleigh(const Rcpp::NumericVector &p, const Rcpp::NumericV
   const std::size_t n = recycle_length(p.size(), sigma.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qrayleigh(
+    const double y = cppunivariate::distributions::qrayleigh(
         p[i % p.size()], sigma[i % sigma.size()], lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -48,7 +48,7 @@ Rcpp::NumericVector rrayleigh(int n, double sigma = 1.0) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rrayleigh(rng, sigma);
+    out[i] = cppunivariate::distributions::rrayleigh(rng, sigma);
   }
   return out;
 }

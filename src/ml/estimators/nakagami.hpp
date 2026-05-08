@@ -12,7 +12,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct NakaResult {
   double shape;
@@ -44,7 +44,7 @@ struct NakaCost {
       sum_x2 += v * v;
     }
     return -n * std::log(2.0) - n * m * std::log(m) +
-           n * mlcore::special::lgamma(m) + n * m * std::log(W) -
+           n * cppunivariate::special::lgamma(m) + n * m * std::log(W) -
            (2.0 * m - 1.0) * sum_log_x + m * sum_x2 / W;
   }
   void gradient(const double *theta, double *g) const {
@@ -53,7 +53,7 @@ struct NakaCost {
     const double n = static_cast<double>(x.size());
     double sum_log_x = 0.0, sum_x2 = 0.0;
     for (auto v : x) { sum_log_x += std::log(v); sum_x2 += v * v; }
-    g[0] = -n * (std::log(m) + 1.0) + n * mlcore::special::digamma(m) +
+    g[0] = -n * (std::log(m) + 1.0) + n * cppunivariate::special::digamma(m) +
            n * std::log(W) - 2.0 * sum_log_x + sum_x2 / W;
     g[1] = n * m / W - m * sum_x2 / (W * W);
   }
@@ -63,7 +63,7 @@ struct NakaCost {
     const double n = static_cast<double>(x.size());
     double sum_x2 = 0.0;
     for (auto v : x) sum_x2 += v * v;
-    H[0] = n * (mlcore::special::trigamma(m) - 1.0 / m);
+    H[0] = n * (cppunivariate::special::trigamma(m) - 1.0 / m);
     H[3] = m * (2.0 * sum_x2 - n * W) / (W * W * W);
     H[1] = (n * W - sum_x2) / (W * W);
     H[2] = H[1];
@@ -95,4 +95,4 @@ inline NakaResult naka_mle(span x, double tol, int maxit) {
   return {shape, scale, logLik, g.iterations};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

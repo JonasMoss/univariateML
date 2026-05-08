@@ -33,7 +33,7 @@
 #include <utility>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class BfgsStatus { Ok = 0, IterationFailure, LineSearchFailure, BadInit };
 
@@ -244,4 +244,4 @@ inline BfgsResult bfgs_minimize(Cost &cost, const double *theta0,
           BfgsStatus::IterationFailure};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

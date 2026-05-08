@@ -21,7 +21,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class LomaxStatus {
   Ok = 0,
@@ -98,7 +98,7 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, LomaxStatus::InvalidStart};
 
-  const double m = mlcore::mean(x);
+  const double m = cppunivariate::mean(x);
   double sum_xsq = 0.0;
   for (auto v : x) sum_xsq += v * v;
   const double s = sum_xsq / static_cast<double>(n);
@@ -153,4 +153,4 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit) {
   return {lambda, kappa, logLik, iter, LomaxStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

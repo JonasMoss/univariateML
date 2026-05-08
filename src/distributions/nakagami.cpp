@@ -1,4 +1,4 @@
-// Nakagami distribution: Rcpp::NumericVector wrappers around mlcore::distributions.
+// Nakagami distribution: Rcpp::NumericVector wrappers around cppunivariate::distributions.
 #include "common.h"
 #include "rng_r.h"
 #include "../ml/distributions/nakagami.hpp"
@@ -13,7 +13,7 @@ Rcpp::NumericVector dnaka(const Rcpp::NumericVector &x, const Rcpp::NumericVecto
     const double xi = x[i % x.size()];
     const double k = shape[i % shape.size()];
     const double s = scale[i % scale.size()];
-    const double y = mlcore::distributions::dnaka(xi, k, s, log);
+    const double y = cppunivariate::distributions::dnaka(xi, k, s, log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -29,7 +29,7 @@ Rcpp::NumericVector pnaka(const Rcpp::NumericVector &q, const Rcpp::NumericVecto
     const double k = shape[i % shape.size()];
     const double s = scale[i % scale.size()];
     const double y =
-        mlcore::distributions::pnaka(qi, k, s, lower_tail, log_p);
+        cppunivariate::distributions::pnaka(qi, k, s, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -45,7 +45,7 @@ Rcpp::NumericVector qnaka(const Rcpp::NumericVector &p, const Rcpp::NumericVecto
     const double k = shape[i % shape.size()];
     const double s = scale[i % scale.size()];
     const double y =
-        mlcore::distributions::qnaka(pi, k, s, lower_tail, log_p);
+        cppunivariate::distributions::qnaka(pi, k, s, lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
   return out;
@@ -58,7 +58,7 @@ Rcpp::NumericVector rnaka(int n, double shape, double scale) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rnaka(rng, shape, scale);
+    out[i] = cppunivariate::distributions::rnaka(rng, shape, scale);
   }
   return out;
 }

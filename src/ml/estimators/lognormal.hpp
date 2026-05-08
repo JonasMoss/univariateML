@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct LognormalResult {
   double meanlog;
@@ -97,4 +97,4 @@ inline LognormalResult lognormal_mle(span x) {
   return {meanlog, sdlog, logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

@@ -22,7 +22,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 enum class SstdStatus { Ok = 0, BfgsFailure, InvalidStart };
 
@@ -53,28 +53,28 @@ struct SstdCost {
   int dim() const { return 4; }
   double operator()(const double *phi) const {
     const double mu = phi[0];
-    const double sigma = mlcore::from_log(phi[1]);
-    const double nu = mlcore::from_log_shift(phi[2], 2.0);
-    const double xi = mlcore::from_log(phi[3]);
+    const double sigma = cppunivariate::from_log(phi[1]);
+    const double nu = cppunivariate::from_log_shift(phi[2], 2.0);
+    const double xi = cppunivariate::from_log(phi[3]);
     if (!std::isfinite(sigma) || !std::isfinite(nu) || !std::isfinite(xi) ||
         sigma <= 0.0 || nu <= 2.0 || xi <= 0.0) {
       return std::numeric_limits<double>::infinity();
     }
     double mu_u = 0.0;
-    const double sigma_u = mlcore::dens::sstd_sigma(nu, xi, mu_u);
+    const double sigma_u = cppunivariate::dens::sstd_sigma(nu, xi, mu_u);
     const double log_factor = std::log(sigma_u) - std::log(sigma);
     double neg = 0.0;
     for (auto v : x) {
       const double z = (v - mu) / sigma * sigma_u + mu_u;
-      neg -= log_factor + mlcore::dens::log_dsstd_core(z, nu, xi);
+      neg -= log_factor + cppunivariate::dens::log_dsstd_core(z, nu, xi);
     }
     return neg;
   }
   void hessian(const double *phi, double *H) const {
     const double mu = phi[0];
-    const double sigma = mlcore::from_log(phi[1]);
-    const double m = mlcore::from_log(phi[2]);  // m = nu - 2
-    const double xi = mlcore::from_log(phi[3]);
+    const double sigma = cppunivariate::from_log(phi[1]);
+    const double m = cppunivariate::from_log(phi[2]);  // m = nu - 2
+    const double xi = cppunivariate::from_log(phi[3]);
     if (!std::isfinite(sigma) || !std::isfinite(m) || !std::isfinite(xi) ||
         sigma <= 0.0 || m <= 0.0 || xi <= 0.0) {
       const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -87,12 +87,12 @@ struct SstdCost {
         0.5 * std::log(m / M_PI);
     const double m1 = std::exp(log_m1);
     const double dlogm1_dm =
-        0.5 * (mlcore::special::digamma(0.5 * (m + 1.0)) -
-               mlcore::special::digamma(0.5 * (m + 2.0))) +
+        0.5 * (cppunivariate::special::digamma(0.5 * (m + 1.0)) -
+               cppunivariate::special::digamma(0.5 * (m + 2.0))) +
         0.5 / m;
     const double d2logm1_dm2 =
-        0.25 * (mlcore::special::trigamma(0.5 * (m + 1.0)) -
-                mlcore::special::trigamma(0.5 * (m + 2.0))) -
+        0.25 * (cppunivariate::special::trigamma(0.5 * (m + 1.0)) -
+                cppunivariate::special::trigamma(0.5 * (m + 2.0))) -
         0.5 / (m * m);
     const double a1 = m * dlogm1_dm;        // = m1_lm / m1
     const double m1_lm = m1 * a1;
@@ -137,11 +137,11 @@ struct SstdCost {
         -(su_lmlx / sigma_u - (su_lm / sigma_u) * (su_lx / sigma_u));
     // F_t(lm) = -lgamma((m+3)/2) + lgamma((m+2)/2) + 0.5 log(pi m).
     const double F_t_lmlm =
-        m * (-0.5 * mlcore::special::digamma(0.5 * (m + 3.0)) +
-             0.5 * mlcore::special::digamma(0.5 * (m + 2.0))) +
+        m * (-0.5 * cppunivariate::special::digamma(0.5 * (m + 3.0)) +
+             0.5 * cppunivariate::special::digamma(0.5 * (m + 2.0))) +
         m * m *
-            (-0.25 * mlcore::special::trigamma(0.5 * (m + 3.0)) +
-             0.25 * mlcore::special::trigamma(0.5 * (m + 2.0)));
+            (-0.25 * cppunivariate::special::trigamma(0.5 * (m + 3.0)) +
+             0.25 * cppunivariate::special::trigamma(0.5 * (m + 2.0)));
     // Initialise.
     for (int i = 0; i < 16; ++i) H[i] = 0.0;
     for (auto v : x) {
@@ -275,7 +275,7 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
   if (n < 2)
     return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SstdStatus::InvalidStart};
 
-  const double mean_x = mlcore::mean(x);
+  const double mean_x = cppunivariate::mean(x);
   double var_x = 0.0;
   for (auto v : x) {
     const double d = v - mean_x;
@@ -289,8 +289,8 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
 
   SstdCost cost{x};
   finite_diff_cost<SstdCost> fd{cost};
-  const double phi0[4] = {mean_x, mlcore::to_log(sd_x),
-                          mlcore::to_log_shift(6.0, 2.0), mlcore::to_log(1.0)};
+  const double phi0[4] = {mean_x, cppunivariate::to_log(sd_x),
+                          cppunivariate::to_log_shift(6.0, 2.0), cppunivariate::to_log(1.0)};
 
   BfgsControl ctl;
   ctl.grad_tol = tol;
@@ -298,9 +298,9 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
   auto r = bfgs_minimize(fd, phi0, ctl);
 
   const double mu = r.theta[0];
-  const double sigma = mlcore::from_log(r.theta[1]);
-  const double nu = mlcore::from_log_shift(r.theta[2], 2.0);
-  const double xi = mlcore::from_log(r.theta[3]);
+  const double sigma = cppunivariate::from_log(r.theta[1]);
+  const double nu = cppunivariate::from_log_shift(r.theta[2], 2.0);
+  const double xi = cppunivariate::from_log(r.theta[3]);
   const double logLik = -r.f;
 
   if (r.status != BfgsStatus::Ok) {
@@ -309,4 +309,4 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
   return {mu, sigma, nu, xi, logLik, r.iterations, SstdStatus::Ok};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

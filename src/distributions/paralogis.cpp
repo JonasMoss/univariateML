@@ -10,7 +10,7 @@ Rcpp::NumericVector dparalogis(const Rcpp::NumericVector &x, const Rcpp::Numeric
   const std::size_t n = recycle_length(x.size(), shape.size(), scale.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dparalogis(
+    const double y = cppunivariate::distributions::dparalogis(
         x[i % x.size()], shape[i % shape.size()],
         scale[i % scale.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -24,7 +24,7 @@ Rcpp::NumericVector pparalogis(const Rcpp::NumericVector &q, const Rcpp::Numeric
   const std::size_t n = recycle_length(q.size(), shape.size(), scale.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::pparalogis(
+    const double y = cppunivariate::distributions::pparalogis(
         q[i % q.size()], shape[i % shape.size()],
         scale[i % scale.size()], lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -38,7 +38,7 @@ Rcpp::NumericVector qparalogis(const Rcpp::NumericVector &p, const Rcpp::Numeric
   const std::size_t n = recycle_length(p.size(), shape.size(), scale.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qparalogis(
+    const double y = cppunivariate::distributions::qparalogis(
         p[i % p.size()], shape[i % shape.size()],
         scale[i % scale.size()], lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -53,7 +53,7 @@ Rcpp::NumericVector rparalogis(int n, double shape = 1.0, double scale = 1.0) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rparalogis(rng, shape, scale);
+    out[i] = cppunivariate::distributions::rparalogis(rng, shape, scale);
   }
   return out;
 }

@@ -10,11 +10,11 @@
 #include "../special/special.hpp"
 #include <cmath>
 
-namespace mlcore {
+namespace cppunivariate {
 namespace distributions {
 
-using mlcore::special::kNaN;
-using mlcore::special::kNegInf;
+using cppunivariate::special::kNaN;
+using cppunivariate::special::kNegInf;
 
 inline double dnaka(double x, double shape, double scale, bool log) {
   if (!(shape > 0.0 && scale > 0.0) || !std::isfinite(x) || x < 0.0) {
@@ -24,10 +24,10 @@ inline double dnaka(double x, double shape, double scale, bool log) {
   const double x2 = x * x;
   if (log) {
     return std::log(x) + std::log(2.0) +
-           mlcore::special::dgamma(x2, shape, gamma_scale, /*log=*/true);
+           cppunivariate::special::dgamma(x2, shape, gamma_scale, /*log=*/true);
   }
   return 2.0 * x *
-         mlcore::special::dgamma(x2, shape, gamma_scale, /*log=*/false);
+         cppunivariate::special::dgamma(x2, shape, gamma_scale, /*log=*/false);
 }
 
 inline double pnaka(double q, double shape, double scale, bool lower_tail,
@@ -36,7 +36,7 @@ inline double pnaka(double q, double shape, double scale, bool lower_tail,
     return kNaN;
   }
   const double gamma_scale = scale / shape;
-  return mlcore::special::pgamma(q * q, shape, gamma_scale, lower_tail, log_p);
+  return cppunivariate::special::pgamma(q * q, shape, gamma_scale, lower_tail, log_p);
 }
 
 inline double qnaka(double p, double shape, double scale, bool lower_tail,
@@ -46,7 +46,7 @@ inline double qnaka(double p, double shape, double scale, bool lower_tail,
   }
   const double gamma_scale = scale / shape;
   const double gq =
-      mlcore::special::qgamma(p, shape, gamma_scale, lower_tail, log_p);
+      cppunivariate::special::qgamma(p, shape, gamma_scale, lower_tail, log_p);
   return std::sqrt(gq);
 }
 
@@ -57,4 +57,4 @@ inline double rnaka(Rng &rng, double shape, double scale) {
 }
 
 } // namespace distributions
-} // namespace mlcore
+} // namespace cppunivariate

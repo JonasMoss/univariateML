@@ -13,7 +13,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct InvGammaResult {
   double shape;
@@ -42,7 +42,7 @@ struct InvGammaCost {
       S_log_x += std::log(v);
       S_inv_x += 1.0 / v;
     }
-    return -n * a * std::log(b) + n * mlcore::special::lgamma(a) +
+    return -n * a * std::log(b) + n * cppunivariate::special::lgamma(a) +
            (a + 1.0) * S_log_x + b * S_inv_x;
   }
   void gradient(const double *theta, double *g) const {
@@ -51,14 +51,14 @@ struct InvGammaCost {
     const double n = static_cast<double>(x.size());
     double S_log_x = 0.0, S_inv_x = 0.0;
     for (auto v : x) { S_log_x += std::log(v); S_inv_x += 1.0 / v; }
-    g[0] = -n * std::log(b) + n * mlcore::special::digamma(a) + S_log_x;
+    g[0] = -n * std::log(b) + n * cppunivariate::special::digamma(a) + S_log_x;
     g[1] = -n * a / b + S_inv_x;
   }
   void hessian(const double *theta, double *H) const {
     const double a = theta[0];
     const double b = theta[1];
     const double n = static_cast<double>(x.size());
-    H[0] = n * mlcore::special::trigamma(a);
+    H[0] = n * cppunivariate::special::trigamma(a);
     H[1] = -n / b;
     H[2] = -n / b;
     H[3] = n * a / (b * b);
@@ -89,4 +89,4 @@ inline InvGammaResult invgamma_mle(span x, double tol, int maxit) {
   return {g.shape, g.rate, logLik, g.iterations};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

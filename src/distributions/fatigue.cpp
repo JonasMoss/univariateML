@@ -12,7 +12,7 @@ Rcpp::NumericVector dfatigue(const Rcpp::NumericVector &x, const Rcpp::NumericVe
                                  std::max(beta.size(), mu.size()));
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dfatigue(
+    const double y = cppunivariate::distributions::dfatigue(
         x[i % x.size()], alpha[i % alpha.size()], beta[i % beta.size()],
         mu[i % mu.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -27,7 +27,7 @@ Rcpp::NumericVector pfatigue(const Rcpp::NumericVector &q, const Rcpp::NumericVe
                                  std::max(beta.size(), mu.size()));
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::pfatigue(
+    const double y = cppunivariate::distributions::pfatigue(
         q[i % q.size()], alpha[i % alpha.size()], beta[i % beta.size()],
         mu[i % mu.size()], lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -42,7 +42,7 @@ Rcpp::NumericVector qfatigue(const Rcpp::NumericVector &p, const Rcpp::NumericVe
                                  std::max(beta.size(), mu.size()));
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qfatigue(
+    const double y = cppunivariate::distributions::qfatigue(
         p[i % p.size()], alpha[i % alpha.size()], beta[i % beta.size()],
         mu[i % mu.size()], lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -58,7 +58,7 @@ Rcpp::NumericVector rfatigue(int n, double alpha = 1.0, double beta = 1.0,
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rfatigue(rng, alpha, beta, mu);
+    out[i] = cppunivariate::distributions::rfatigue(rng, alpha, beta, mu);
   }
   return out;
 }

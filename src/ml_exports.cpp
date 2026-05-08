@@ -42,20 +42,20 @@ Rcpp::List mlburr_(const Rcpp::NumericVector &x,
     }
     c0 = iv[0];
   } else {
-    c0 = mlcore::burr_lmom_core(m1, m2, true).c;
+    c0 = cppunivariate::burr_lmom_core(m1, m2, true).c;
     if (Rcpp::NumericVector::is_na(c0) || c0 <= 0.0) {
       Rcpp::stop("Failed to get a valid initial c from burr_lmom()");
     }
   }
 
-  mlcore::BurrMLE res =
-      mlcore::burr_mle_core(mlcore::as_span(x), c0, tol, iterlim);
-  if (res.status == mlcore::BurrStatus::AllGeOne) {
+  cppunivariate::BurrMLE res =
+      cppunivariate::burr_mle_core(cppunivariate::as_span(x), c0, tol, iterlim);
+  if (res.status == cppunivariate::BurrStatus::AllGeOne) {
     Rcpp::stop(
         "The Burr maximum likelihood estimator does not exist when all "
         "observations >=1. Use `mlpareto` to fit a Pareto distribution.");
   }
-  if (res.status != mlcore::BurrStatus::Ok) {
+  if (res.status != cppunivariate::BurrStatus::Ok) {
     Rcpp::stop("Burr MLE failed (check inputs)");
   }
   return Rcpp::List::create(
@@ -68,8 +68,8 @@ Rcpp::List mlburr_(const Rcpp::NumericVector &x,
 // [[Rcpp::export]]
 Rcpp::List mlcauchy_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                      int iterlim = 100) {
-  mlcore::CauchyResult res = mlcore::fit_cauchy(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
+  cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
       iterlim);
   if (res.iterations == 0) {
     Rcpp::stop("x must have positive length");
@@ -87,8 +87,8 @@ Rcpp::List mlgumbel_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
   if (iterlim <= 1) {
     Rcpp::warning("iteration limit reached");
   }
-  mlcore::GumbelResult res = mlcore::fit_gumbel_newton(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
+  cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_newton(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
       iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
@@ -100,8 +100,8 @@ Rcpp::List mlgumbel_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
-  mlcore::LogisticResult res =
-      mlcore::logistic_mle(mlcore::as_span(x), tol, iterlim);
+  cppunivariate::LogisticResult res =
+      cppunivariate::logistic_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mu"] = res.mu, Rcpp::_["scale"] = res.scale),
@@ -112,8 +112,8 @@ Rcpp::List mllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                      int iterlim = 100) {
-  mlcore::LogLogisticResult res =
-      mlcore::loglogistic_mle(mlcore::as_span(x), tol, iterlim);
+  cppunivariate::LogLogisticResult res =
+      cppunivariate::loglogistic_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
@@ -124,7 +124,7 @@ Rcpp::List mlllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlbeta_(const Rcpp::NumericVector &x, double tol = 1.490116e-08,
                    int iterlim = 100) {
-  auto res = mlcore::beta_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::beta_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
@@ -134,8 +134,8 @@ Rcpp::List mlbeta_(const Rcpp::NumericVector &x, double tol = 1.490116e-08,
 // [[Rcpp::export]]
 Rcpp::List mlbetapr_(const Rcpp::NumericVector &x, double tol = 1.490116e-08,
                      int iterlim = 100) {
-  mlcore::BetaPrimeResult res =
-      mlcore::betapr_mle(mlcore::as_span(x), tol, iterlim);
+  cppunivariate::BetaPrimeResult res =
+      cppunivariate::betapr_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
@@ -146,7 +146,7 @@ Rcpp::List mlbetapr_(const Rcpp::NumericVector &x, double tol = 1.490116e-08,
 // [[Rcpp::export]]
 Rcpp::List mlgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
-  auto res = mlcore::gamma_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::gamma_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
@@ -156,7 +156,7 @@ Rcpp::List mlgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                       int iterlim = 100) {
-  auto res = mlcore::fatigue_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::fatigue_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta,
@@ -167,8 +167,8 @@ Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // Closed-form easy ones
 // [[Rcpp::export]]
 Rcpp::List mlexp_(const Rcpp::NumericVector &x) {
-  auto res = mlcore::exp_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::exp_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] =
           Rcpp::NumericVector::create(Rcpp::_["rate"] = res.rate),
@@ -177,8 +177,8 @@ Rcpp::List mlexp_(const Rcpp::NumericVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mlunif_(const Rcpp::NumericVector &x) {
-  auto res = mlcore::unif_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::unif_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["min"] = res.min, Rcpp::_["max"] = res.max),
@@ -187,8 +187,8 @@ Rcpp::List mlunif_(const Rcpp::NumericVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mldunif_(const Rcpp::IntegerVector &x) {
-  auto res = mlcore::dunif_mle(
-      mlcore::ispan{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::dunif_mle(
+      cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["min"] = res.min, Rcpp::_["max"] = res.max),
@@ -197,8 +197,8 @@ Rcpp::List mldunif_(const Rcpp::IntegerVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mlpois_(const Rcpp::IntegerVector &x) {
-  auto res = mlcore::pois_mle(
-      mlcore::ispan{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::pois_mle(
+      cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["lambda"] = res.lambda),
                             Rcpp::_["logLik"] = res.logLik);
@@ -207,7 +207,7 @@ Rcpp::List mlpois_(const Rcpp::IntegerVector &x) {
 // [[Rcpp::export]]
 Rcpp::List mlnorm_(const Rcpp::NumericVector &x) {
   auto res =
-      mlcore::norm_mle(mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+      cppunivariate::norm_mle(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mean"] = res.mean, Rcpp::_["sd"] = res.sd),
@@ -216,8 +216,8 @@ Rcpp::List mlnorm_(const Rcpp::NumericVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mllaplace_(const Rcpp::NumericVector &x) {
-  auto res = mlcore::laplace_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::laplace_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["mu"] = res.mu,
                                 Rcpp::_["sigma"] = res.sigma),
@@ -226,8 +226,8 @@ Rcpp::List mllaplace_(const Rcpp::NumericVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mlgeom_(const Rcpp::IntegerVector &x) {
-  auto res = mlcore::geom_mle(
-      mlcore::ispan{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::geom_mle(
+      cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["prob"] = res.prob),
                             Rcpp::_["logLik"] = res.logLik);
@@ -235,8 +235,8 @@ Rcpp::List mlgeom_(const Rcpp::IntegerVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mlpareto_(const Rcpp::NumericVector &x) {
-  auto res = mlcore::pareto_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::pareto_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["shape"] = res.shape,
                                 Rcpp::_["min"] = res.min),
@@ -245,8 +245,8 @@ Rcpp::List mlpareto_(const Rcpp::NumericVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mlrayleigh_(const Rcpp::NumericVector &x) {
-  auto res = mlcore::rayleigh_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::rayleigh_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["sigma"] = res.sigma),
                             Rcpp::_["logLik"] = res.logLik);
@@ -259,16 +259,16 @@ Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
   const double size_or_nan = size.isNotNull()
                                  ? Rcpp::as<double>(size)
                                  : std::numeric_limits<double>::quiet_NaN();
-  auto res = mlcore::binom_mle(mlcore::as_ispan(x), size_or_nan, tol, iterlim);
-  if (res.status == mlcore::BinomStatus::SizeTooSmall) {
+  auto res = cppunivariate::binom_mle(cppunivariate::as_ispan(x), size_or_nan, tol, iterlim);
+  if (res.status == cppunivariate::BinomStatus::SizeTooSmall) {
     Rcpp::stop("`size` is smaller than `max(x)`.");
   }
-  if (res.status == mlcore::BinomStatus::Underdispersed) {
+  if (res.status == cppunivariate::BinomStatus::Underdispersed) {
     Rcpp::stop(
         "The maximum likelihood estimator does not exist. Use `mlpois` to fit "
         "a Poisson or supply a `size` argument.");
   }
-  if (res.status != mlcore::BinomStatus::Ok || !std::isfinite(res.size)) {
+  if (res.status != cppunivariate::BinomStatus::Ok || !std::isfinite(res.size)) {
     Rcpp::stop("Binomial MLE failed (check dispersion/inputs)");
   }
   return Rcpp::List::create(
@@ -279,8 +279,8 @@ Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
 
 // [[Rcpp::export]]
 Rcpp::List mllnorm_(const Rcpp::NumericVector &x) {
-  auto res = mlcore::lognormal_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::lognormal_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["meanlog"] = res.meanlog, Rcpp::_["sdlog"] = res.sdlog),
@@ -289,8 +289,8 @@ Rcpp::List mllnorm_(const Rcpp::NumericVector &x) {
 
 // [[Rcpp::export]]
 Rcpp::List mllogitnorm_(const Rcpp::NumericVector &x) {
-  auto res = mlcore::logitnorm_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::logitnorm_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] =
           Rcpp::NumericVector::create(Rcpp::_["mu"] = res.mu,
@@ -304,7 +304,7 @@ Rcpp::List mlzip_(const Rcpp::IntegerVector &x) {
       std::all_of(x.begin(), x.end(), [](int v) { return v == 0; })) {
     Rcpp::warning("all observations are zero");
   }
-  auto res = mlcore::zip_mle(mlcore::as_ispan(x));
+  auto res = cppunivariate::zip_mle(cppunivariate::as_ispan(x));
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["lambda"] = res.lambda, Rcpp::_["pi"] = res.pi),
@@ -322,17 +322,17 @@ Rcpp::List mlzipf_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
     Rcpp::warning("all observations are zero");
   }
 
-  auto res = mlcore::zipf_mle(mlcore::as_ispan(x), tol, iterlim);
-  if (res.status == mlcore::ZipfStatus::AllOnes) {
+  auto res = cppunivariate::zipf_mle(cppunivariate::as_ispan(x), tol, iterlim);
+  if (res.status == cppunivariate::ZipfStatus::AllOnes) {
     Rcpp::warning("All observations are equal to 1. The maximum likelihood "
                   "estimator is not unique.");
   }
-  if (res.status == mlcore::ZipfStatus::ShapeNegative) {
+  if (res.status == cppunivariate::ZipfStatus::ShapeNegative) {
     Rcpp::stop("Optimal shape parameter is less than 0. The maximum likelihood "
                "estimator does not exist.");
   }
-  if (res.status != mlcore::ZipfStatus::Ok &&
-      res.status != mlcore::ZipfStatus::AllOnes) {
+  if (res.status != cppunivariate::ZipfStatus::Ok &&
+      res.status != cppunivariate::ZipfStatus::AllOnes) {
     Rcpp::stop("Zipf MLE failed to converge (check data)");
   }
   if (!std::isfinite(res.N) || !std::isfinite(res.shape)) {
@@ -369,7 +369,7 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
     prob_out = size_out / (x_bar + size_out);
     double ll = 0.0;
     for (int v : x) {
-      ll += mlcore::special::dnbinom(static_cast<double>(v), size_out, prob_out,
+      ll += cppunivariate::special::dnbinom(static_cast<double>(v), size_out, prob_out,
                                      /*log=*/true);
     }
     loglik_out = ll;
@@ -379,7 +379,7 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
       prob_out = 1.0;
       loglik_out = R_NegInf;
     } else {
-      auto res = mlcore::nbinom_mle(mlcore::as_ispan(x), tol, iterlim);
+      auto res = cppunivariate::nbinom_mle(cppunivariate::as_ispan(x), tol, iterlim);
       if (res.underdispersed) {
         Rcpp::stop("The maximum likelihood estimator does not exist for "
                    "underdispersed data, but converges to a Poisson. Use "
@@ -404,7 +404,7 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                    int iterlim = 100) {
-  auto res = mlcore::naka_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::naka_mle(cppunivariate::as_span(x), tol, iterlim);
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale)) {
     Rcpp::stop("Nakagami MLE failed");
   }
@@ -417,13 +417,13 @@ Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlgompertz_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                        int iterlim = 100) {
-  auto res = mlcore::gompertz_mle(mlcore::as_span(x), tol, iterlim);
-  if (res.status == mlcore::GompertzStatus::Overdispersed) {
+  auto res = cppunivariate::gompertz_mle(cppunivariate::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::GompertzStatus::Overdispersed) {
     Rcpp::stop("The maximum likelihood estimator of the b parameter Gompertz "
                "distribution does not exist since the data is overdispersed. "
                "The exponential distribution will yield a better fit.");
   }
-  if (res.status != mlcore::GompertzStatus::Ok || !std::isfinite(res.a) ||
+  if (res.status != cppunivariate::GompertzStatus::Ok || !std::isfinite(res.a) ||
       !std::isfinite(res.b)) {
     Rcpp::stop("Gompertz MLE failed");
   }
@@ -436,7 +436,7 @@ Rcpp::List mlgompertz_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlkumar_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
-  auto res = mlcore::kumar_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::kumar_mle(cppunivariate::as_span(x), tol, iterlim);
   if (!std::isfinite(res.a) || !std::isfinite(res.b)) {
     Rcpp::stop("Kumaraswamy MLE failed");
   }
@@ -449,7 +449,7 @@ Rcpp::List mlkumar_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlinvburr_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                       int iterlim = 100) {
-  auto res = mlcore::invburr_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::invburr_mle(cppunivariate::as_span(x), tol, iterlim);
   if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2)) {
     Rcpp::stop("Inverse Burr MLE failed");
   }
@@ -461,7 +461,7 @@ Rcpp::List mlinvburr_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 
 // [[Rcpp::export]]
 Rcpp::List mllgser_(const Rcpp::IntegerVector &x) {
-  auto res = mlcore::lgser_mle(mlcore::as_ispan(x));
+  auto res = cppunivariate::lgser_mle(cppunivariate::as_ispan(x));
   if (res.all_ones) {
     Rcpp::stop("All observations equals 1; the maximum likelihood estimator "
                "does not exist.");
@@ -479,7 +479,7 @@ Rcpp::List mlweibull_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
   if (iterlim <= 1) {
     Rcpp::warning("iteration limit reached");
   }
-  auto res = mlcore::weibull_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::weibull_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
@@ -492,7 +492,7 @@ Rcpp::List mlinvweibull_(const Rcpp::NumericVector &x,
   if (iterlim <= 1) {
     Rcpp::warning("iteration limit reached");
   }
-  auto res = mlcore::invweibull_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::invweibull_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
@@ -502,7 +502,7 @@ Rcpp::List mlinvweibull_(const Rcpp::NumericVector &x,
 // [[Rcpp::export]]
 Rcpp::List mlinvgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                        int iterlim = 100) {
-  auto res = mlcore::invgamma_mle(mlcore::as_span(x), tol, iterlim);
+  auto res = cppunivariate::invgamma_mle(cppunivariate::as_span(x), tol, iterlim);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
@@ -512,8 +512,8 @@ Rcpp::List mlinvgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlpower_(const Rcpp::NumericVector &x,
                     double epsilon = 1.490116e-08) {
-  auto res = mlcore::power_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon);
+  auto res = cppunivariate::power_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon);
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta)) {
     Rcpp::stop("The power distribution is only defined for positive numbers.");
   }
@@ -535,7 +535,7 @@ Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
     sum_log_y += std::log(y[i]);
   }
   auto res =
-      mlcore::gamma_mle(mlcore::span{y.data(), n}, tol, iterlim);
+      cppunivariate::gamma_mle(cppunivariate::span{y.data(), n}, tol, iterlim);
   const double shapelog = res.shape;
   const double ratelog = res.rate;
   const double dn = static_cast<double>(n);
@@ -552,8 +552,8 @@ Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 
 // [[Rcpp::export]]
 Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
-  auto res = mlcore::invgauss_mle(
-      mlcore::span{x.begin(), static_cast<std::size_t>(x.size())});
+  auto res = cppunivariate::invgauss_mle(
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mu"] = res.mu, Rcpp::_["lambda"] = res.lambda),
@@ -563,8 +563,8 @@ Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
 // [[Rcpp::export]]
 Rcpp::List mlsged_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                    int iterlim = 200) {
-  auto res = mlcore::sged_mle(mlcore::as_span(x), tol, iterlim);
-  if (res.status == mlcore::SgedStatus::InvalidStart) {
+  auto res = cppunivariate::sged_mle(cppunivariate::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::SgedStatus::InvalidStart) {
     Rcpp::stop("Skew GED MLE requires at least 2 finite observations with "
                "positive variance.");
   }
@@ -582,8 +582,8 @@ Rcpp::List mlsged_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlsstd_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                    int iterlim = 200) {
-  auto res = mlcore::sstd_mle(mlcore::as_span(x), tol, iterlim);
-  if (res.status == mlcore::SstdStatus::InvalidStart) {
+  auto res = cppunivariate::sstd_mle(cppunivariate::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::SstdStatus::InvalidStart) {
     Rcpp::stop("Skew Student-t MLE requires at least 2 finite observations "
                "with positive variance.");
   }
@@ -601,8 +601,8 @@ Rcpp::List mlsstd_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlsnorm_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 200) {
-  auto res = mlcore::snorm_mle(mlcore::as_span(x), tol, iterlim);
-  if (res.status == mlcore::SnormStatus::InvalidStart) {
+  auto res = cppunivariate::snorm_mle(cppunivariate::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::SnormStatus::InvalidStart) {
     Rcpp::stop("Skew-normal MLE requires at least 2 finite observations with "
                "positive variance.");
   }
@@ -620,8 +620,8 @@ Rcpp::List mlsnorm_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlged_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                   int iterlim = 200) {
-  auto res = mlcore::ged_mle(mlcore::as_span(x), tol, iterlim);
-  if (res.status == mlcore::GedStatus::InvalidStart) {
+  auto res = cppunivariate::ged_mle(cppunivariate::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::GedStatus::InvalidStart) {
     Rcpp::stop("GED MLE requires at least 2 finite observations with positive "
                "variance.");
   }
@@ -639,8 +639,8 @@ Rcpp::List mlged_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 // [[Rcpp::export]]
 Rcpp::List mlstd_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                   int iterlim = 200) {
-  auto res = mlcore::student_t_mle(mlcore::as_span(x), tol, iterlim);
-  if (res.status == mlcore::StudentTStatus::InvalidStart) {
+  auto res = cppunivariate::student_t_mle(cppunivariate::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::StudentTStatus::InvalidStart) {
     Rcpp::stop("Student-t MLE requires at least 2 finite observations with "
                "positive variance.");
   }
@@ -659,8 +659,8 @@ Rcpp::List mlstd_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 Rcpp::List mlparalogis_(const Rcpp::NumericVector &x,
                         double tol = 1.220703e-4, int iterlim = 100) {
   auto res =
-      mlcore::paralogis_mle(mlcore::as_span(x), tol, iterlim);
-  if (res.status == mlcore::ParalogisStatus::InvalidStart) {
+      cppunivariate::paralogis_mle(cppunivariate::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::ParalogisStatus::InvalidStart) {
     Rcpp::stop("Paralogistic MLE requires positive, finite observations.");
   }
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale)) {
@@ -675,13 +675,13 @@ Rcpp::List mlparalogis_(const Rcpp::NumericVector &x,
 // [[Rcpp::export]]
 Rcpp::List mllomax_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
-  auto res = mlcore::lomax_mle(mlcore::as_span(x), tol, iterlim);
-  if (res.status == mlcore::LomaxStatus::MeanVarianceCondition) {
+  auto res = cppunivariate::lomax_mle(cppunivariate::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::LomaxStatus::MeanVarianceCondition) {
     Rcpp::stop("The Lomax maximum likelihood estimator does not exist for data "
                "with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an "
                "exponential distribution.");
   }
-  if (res.status != mlcore::LomaxStatus::Ok || !std::isfinite(res.lambda) ||
+  if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.lambda) ||
       !std::isfinite(res.kappa)) {
     Rcpp::stop("Lomax MLE failed to converge (check dispersion/inputs)");
   }

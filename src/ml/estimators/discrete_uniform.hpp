@@ -10,7 +10,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct DiscreteUnifResult {
   double min;
@@ -79,4 +79,4 @@ inline DiscreteUnifResult dunif_mle(ispan x) {
   return {static_cast<double>(a), static_cast<double>(b), logLik};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

@@ -10,7 +10,7 @@ Rcpp::NumericVector dpower(const Rcpp::NumericVector &x, const Rcpp::NumericVect
   const std::size_t n = recycle_length(x.size(), alpha.size(), beta.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::dpower(
+    const double y = cppunivariate::distributions::dpower(
         x[i % x.size()], alpha[i % alpha.size()], beta[i % beta.size()], log);
     out[i] = std::isnan(y) ? NA_REAL : y;
   }
@@ -23,7 +23,7 @@ Rcpp::NumericVector ppower(const Rcpp::NumericVector &q, const Rcpp::NumericVect
   const std::size_t n = recycle_length(q.size(), alpha.size(), beta.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::ppower(
+    const double y = cppunivariate::distributions::ppower(
         q[i % q.size()], alpha[i % alpha.size()], beta[i % beta.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -37,7 +37,7 @@ Rcpp::NumericVector qpower(const Rcpp::NumericVector &p, const Rcpp::NumericVect
   const std::size_t n = recycle_length(p.size(), alpha.size(), beta.size());
   Rcpp::NumericVector out(n);
   for (std::size_t i = 0; i < n; ++i) {
-    const double y = mlcore::distributions::qpower(
+    const double y = cppunivariate::distributions::qpower(
         p[i % p.size()], alpha[i % alpha.size()], beta[i % beta.size()],
         lower_tail, log_p);
     out[i] = std::isnan(y) ? NA_REAL : y;
@@ -52,7 +52,7 @@ Rcpp::NumericVector rpower(int n, double alpha = 1.0, double beta = 1.0) {
   Rcpp::NumericVector out(static_cast<std::size_t>(n));
   RRng rng;
   for (int i = 0; i < n; ++i) {
-    out[i] = mlcore::distributions::rpower(rng, alpha, beta);
+    out[i] = cppunivariate::distributions::rpower(rng, alpha, beta);
   }
   return out;
 }

@@ -1,7 +1,7 @@
 // Gumbel MLE: 1D Newton on log-scale; mu computed analytically given sigma.
 //
 // Used directly by Weibull and Inverse Weibull (via log-of-log transforms),
-// so the helper fit_gumbel_newton is part of the public mlcore API for
+// so the helper fit_gumbel_newton is part of the public cppunivariate API for
 // downstream estimators.
 
 #pragma once
@@ -12,7 +12,7 @@
 #include <cstddef>
 #include <limits>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct GumbelResult {
   double mu;
@@ -136,4 +136,4 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit) {
   return {mu, sigma, logLik, iter};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate

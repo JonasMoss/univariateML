@@ -12,7 +12,7 @@
 #include <limits>
 #include <vector>
 
-namespace mlcore {
+namespace cppunivariate {
 
 struct LogLogisticResult {
   double shape;
@@ -108,4 +108,4 @@ inline LogLogisticResult loglogistic_mle(span x, double tol, int maxit) {
   return {shape, rate, logLik, base.iterations};
 }
 
-}  // namespace mlcore
+}  // namespace cppunivariate
