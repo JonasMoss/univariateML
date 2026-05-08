@@ -2,8 +2,8 @@ context("mlsstd")
 
 ## Data generation.
 set.seed(313)
-small_data <- univariateML::rsstd(100)
-tiny_data <- univariateML::rsstd(100)
+small_data <- fGarch::rsstd(100)
+tiny_data <- fGarch::rsstd(100)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlsstd(c(tiny_data, NA)))
@@ -17,7 +17,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlsstd(small_data, na.rm = TRUE)
 expect_equal(
-  sum(univariateML::dsstd(small_data, est[1], est[2], est[3], est[4], log = TRUE)),
+  sum(fGarch::dsstd(small_data, est[1], est[2], est[3], est[4], log = TRUE)),
   attr(est, "logLik")
 )
 

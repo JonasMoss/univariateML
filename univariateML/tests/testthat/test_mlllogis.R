@@ -2,8 +2,8 @@ context("mlllogis")
 
 ## Data generation.
 set.seed(313)
-small_data <- rllogis(100, 2, 3)
-tiny_data <- rllogis(10, 1, 1)
+small_data <- actuar::rllogis(100, 2, 3)
+tiny_data <- actuar::rllogis(10, 1, 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlllogis(c(tiny_data, NA)))
@@ -32,7 +32,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlllogis(small_data, na.rm = TRUE)
 expect_equal(
-  sum(dllogis(small_data, est[1], est[2], log = TRUE)),
+  sum(actuar::dllogis(small_data, est[1], est[2], log = TRUE)),
   attr(est, "logLik")
 )
 

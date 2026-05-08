@@ -23,6 +23,12 @@
 
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
+#' @importFrom extraDistr dlomax
+#' @importFrom actuar dburr
+#' @importFrom fGarch dged
+#' @importFrom logitnorm dlogitnorm
+#' @importFrom nakagami dnaka
+#' @importFrom sads dzipf
 #' @useDynLib univariateML, .registration = TRUE
 ## usethis namespace: end
 NULL

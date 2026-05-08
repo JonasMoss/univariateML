@@ -2,21 +2,21 @@ context("mlkumar")
 
 ## Data generation.
 set.seed(313)
-small_data <- rkumar(100, 1, 1)
-tiny_data <- rkumar(10, 3, 7)
-medium_data <- rkumar(1000, 9, 11)
+small_data <- extraDistr::rkumar(100, 1, 1)
+tiny_data <- extraDistr::rkumar(10, 3, 7)
+medium_data <- extraDistr::rkumar(1000, 9, 11)
 
 ## Checks if the ML is correct.
 mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(dkumar(small_data, p[1], p[2], log = TRUE))
+  -sum(extraDistr::dkumar(small_data, p[1], p[2], log = TRUE))
 }, p = c(1, 1)))
 
 mle2 <- nlm(function(p) {
-  -sum(dkumar(tiny_data, p[1], p[2], log = TRUE))
+  -sum(extraDistr::dkumar(tiny_data, p[1], p[2], log = TRUE))
 }, p = c(3, 7))
 
 mle3 <- nlm(function(p) {
-  -sum(dkumar(medium_data, p[1], p[2], log = TRUE))
+  -sum(extraDistr::dkumar(medium_data, p[1], p[2], log = TRUE))
 }, p = c(9, 11))
 
 expect_equal(mle1$estimate, as.numeric(mlkumar(small_data)),

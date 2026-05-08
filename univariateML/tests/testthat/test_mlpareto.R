@@ -2,14 +2,14 @@ context("mlpareto")
 
 ## Data generation.
 set.seed(313)
-tiny_data <- rpareto(10, 1, 7)
-small_data <- rpareto(100, 3, 9)
-medium_data <- rpareto(1000, 1 / 2, 2)
-large_data <- rpareto(10000, 13, 20)
+tiny_data <- extraDistr::rpareto(10, 1, 7)
+small_data <- extraDistr::rpareto(100, 3, 9)
+medium_data <- extraDistr::rpareto(1000, 1 / 2, 2)
+large_data <- extraDistr::rpareto(10000, 13, 20)
 
 ## Checks logLiks.
 expect_equal(
-  sum(dpareto(tiny_data,
+  sum(extraDistr::dpareto(tiny_data,
     mlpareto(tiny_data)[1],
     mlpareto(tiny_data)[2],
     log = TRUE
@@ -18,7 +18,7 @@ expect_equal(
   tolerance = 1e-5
 )
 expect_equal(
-  sum(dpareto(small_data,
+  sum(extraDistr::dpareto(small_data,
     mlpareto(small_data)[1],
     mlpareto(small_data)[2],
     log = TRUE
@@ -27,7 +27,7 @@ expect_equal(
   tolerance = 1e-5
 )
 expect_equal(
-  sum(dpareto(medium_data,
+  sum(extraDistr::dpareto(medium_data,
     mlpareto(medium_data)[1],
     mlpareto(medium_data)[2],
     log = TRUE
@@ -36,7 +36,7 @@ expect_equal(
   tolerance = 1e-5
 )
 expect_equal(
-  sum(dpareto(large_data,
+  sum(extraDistr::dpareto(large_data,
     mlpareto(large_data)[1],
     mlpareto(large_data)[2],
     log = TRUE

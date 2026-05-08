@@ -21,7 +21,7 @@ expect_error(mllogitnorm(c(tiny_data, 1)))
 ## Is the log-likelihood correct?
 est <- mllogitnorm(small_data, na.rm = TRUE)
 expect_equal(
-  sum(univariateML::dlogitnorm(small_data, est[1], est[2], log = TRUE)),
+  sum(logitnorm::dlogitnorm(small_data, est[1], est[2], log = TRUE)),
   attr(est, "logLik")
 )
 

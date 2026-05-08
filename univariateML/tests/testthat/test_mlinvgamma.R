@@ -2,17 +2,17 @@ context("mlinvgamma")
 
 ## Data generation.
 set.seed(313)
-small_data <- rinvgamma(100, 1, 1)
-tiny_data <- rinvgamma(10, 3, 7)
+small_data <- actuar::rinvgamma(100, shape = 1, scale = 1)
+tiny_data <- actuar::rinvgamma(10, shape = 3, scale = 7)
 data3 <- c(0, tiny_data)
 
 ## Checks if the ML is correct.
 mle1 <- nlm(function(p) {
-  -mean(dinvgamma(small_data, p[1], p[2], log = TRUE))
+  -mean(actuar::dinvgamma(small_data, shape = p[1], scale = p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 
 mle2 <- nlm(function(p) {
-  -mean(dinvgamma(tiny_data, p[1], p[2], log = TRUE))
+  -mean(actuar::dinvgamma(tiny_data, shape = p[1], scale = p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 
 expect_equal(mle1, as.numeric(mlinvgamma(small_data)), tolerance = 1e-4)
@@ -34,7 +34,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlinvgamma(small_data, na.rm = TRUE)
 expect_equal(
-  sum(dinvgamma(small_data, est[1], est[2], log = TRUE)),
+  sum(actuar::dinvgamma(small_data, shape = est[1], scale = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
