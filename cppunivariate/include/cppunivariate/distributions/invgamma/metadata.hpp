@@ -20,8 +20,8 @@ constexpr const char *name = "InvGamma";
 constexpr SupportDescriptor support{SupportType::Real, 0.0, kInf, false, false};
 
 constexpr ParamDescriptor params[] = {
-  {"shape", "shape", 3.0, true, {SupportType::Real, -kInf, kInf, false, false}},
-  {"scale", "scale", 4.0, true, {SupportType::Real, -kInf, kInf, false, false}},
+  {"alpha", "shape", 3.0, true, {SupportType::Real, -kInf, kInf, false, false}},
+  {"beta",  "scale", 4.0, true, {SupportType::Real, -kInf, kInf, false, false}},
 };
 
 constexpr std::size_t n_params = std::size(params);

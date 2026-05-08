@@ -1,4 +1,4 @@
 {
-  "sampler": "actuar::rinvgamma",
-  "density": "actuar::dinvgamma"
+  "sampler": "extraDistr::rinvgamma",
+  "density": "extraDistr::dinvgamma"
 }
