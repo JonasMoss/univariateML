@@ -63,3 +63,14 @@ fit_analysis_plots*.png
 # R CMD check output
 *.Rcheck/
 ..Rcheck/
+
+# Monorepo layout (post-Phase-4): R-package and C++ build artefacts
+r/src/*.o
+r/src/*.so
+r/src/*.dll
+r/src/*.a
+r/src/*.gcda
+r/src/*.gcno
+r/tests/testthat/Rplots.pdf
+r/inst/include/cppunivariate/
+cppunivariate/build/
