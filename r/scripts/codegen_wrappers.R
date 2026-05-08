@@ -10,6 +10,9 @@ dossier_dir <- Sys.getenv(
   "UMVL_DOSSIER_DIR",
   "../cppunivariate/include/cppunivariate/distributions"
 )
+r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
+
+source(file.path("scripts", "parse_cpp_metadata.R"))
 
 # Legacy aggregate metadata + docs overlay.
 legacy_models <- jsonlite::fromJSON(
@@ -21,34 +24,53 @@ legacy_docs <- tryCatch(
   error = function(...) list()
 )
 
-# Per-distribution metadata.json files. Each carries an optional "docs"
-# subkey whose contents replace what would have been a docs.json entry.
-dossier_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
-dossier_models <- lapply(dossier_files, function(f) {
+# Per-distribution intermediate-form metadata.json files. May carry an
+# optional "docs" subkey.
+dossier_json_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
+dossier_json_models <- lapply(dossier_json_files, function(f) {
   m <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
   m$id <- basename(dirname(f))
   m
 })
-dossier_docs <- Filter(Negate(is.null), lapply(dossier_models, function(m) {
-  if (is.null(m$docs)) return(NULL)
-  d <- m$docs
-  d$id <- m$id
-  d
-}))
+
+# Per-distribution canonical-form metadata.hpp files. Paired with
+# r/metadata/<id>.json for R-side refs (sampler, density, optional docs).
+dossier_hpp_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.hpp"))
+dossier_hpp_models <- lapply(dossier_hpp_files, function(f) {
+  cpp <- parse_cpp_metadata(f)
+  refs_file <- file.path(r_metadata_dir, paste0(cpp$id, ".json"))
+  refs <- if (file.exists(refs_file)) {
+    jsonlite::fromJSON(refs_file, simplifyDataFrame = FALSE)
+  } else {
+    list()
+  }
+  c(cpp, refs)
+})
+
+dossier_docs <- Filter(Negate(is.null),
+  lapply(c(dossier_json_models, dossier_hpp_models), function(m) {
+    if (is.null(m$docs)) return(NULL)
+    d <- m$docs
+    d$id <- m$id
+    d
+  })
+)
 
 all_ids <- c(
   vapply(legacy_models, function(m) m$id, character(1)),
-  vapply(dossier_models, function(m) m$id, character(1))
+  vapply(dossier_json_models, function(m) m$id, character(1)),
+  vapply(dossier_hpp_models, function(m) m$id, character(1))
 )
 dups <- unique(all_ids[duplicated(all_ids)])
 if (length(dups)) {
   stop(
-    "Duplicate metadata id(s) in legacy metadata/models.json and a ",
-    "per-distribution metadata.json: ", paste(dups, collapse = ", ")
+    "Duplicate metadata id(s) across legacy metadata/models.json, ",
+    "per-distribution metadata.json, and per-distribution metadata.hpp: ",
+    paste(dups, collapse = ", ")
   )
 }
 
-models <- c(legacy_models, dossier_models)
+models <- c(legacy_models, dossier_json_models, dossier_hpp_models)
 models <- models[order(vapply(models, function(m) m$id, character(1)))]
 
 all_docs <- c(legacy_docs, dossier_docs)

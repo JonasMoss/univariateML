@@ -77,33 +77,51 @@ main <- function() {
     "UMVL_DOSSIER_DIR",
     "../cppunivariate/include/cppunivariate/distributions"
   )
+  r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
   out_dir <- Sys.getenv("UMVL_GOLDEN_DIR", "../quality/golden")
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+
+  source(file.path("scripts", "parse_cpp_metadata.R"))
 
   legacy_models <- jsonlite::fromJSON(
     file.path(metadata_dir, "models.json"),
     simplifyDataFrame = FALSE
   )$models
-  dossier_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
-  dossier_models <- lapply(dossier_files, function(f) {
+
+  dossier_json_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
+  dossier_json_models <- lapply(dossier_json_files, function(f) {
     m <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
     m$id <- basename(dirname(f))
     m
   })
 
+  dossier_hpp_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.hpp"))
+  dossier_hpp_models <- lapply(dossier_hpp_files, function(f) {
+    cpp <- parse_cpp_metadata(f)
+    refs_file <- file.path(r_metadata_dir, paste0(cpp$id, ".json"))
+    refs <- if (file.exists(refs_file)) {
+      jsonlite::fromJSON(refs_file, simplifyDataFrame = FALSE)
+    } else {
+      list()
+    }
+    c(cpp, refs)
+  })
+
   all_ids <- c(
     vapply(legacy_models, function(m) m$id, character(1)),
-    vapply(dossier_models, function(m) m$id, character(1))
+    vapply(dossier_json_models, function(m) m$id, character(1)),
+    vapply(dossier_hpp_models, function(m) m$id, character(1))
   )
   dups <- unique(all_ids[duplicated(all_ids)])
   if (length(dups)) {
     stop(
-      "Duplicate metadata id(s) in legacy metadata/models.json and a ",
-      "per-distribution metadata.json: ", paste(dups, collapse = ", ")
+      "Duplicate metadata id(s) across legacy metadata/models.json, ",
+      "per-distribution metadata.json, and per-distribution metadata.hpp: ",
+      paste(dups, collapse = ", ")
     )
   }
 
-  models <- c(legacy_models, dossier_models)
+  models <- c(legacy_models, dossier_json_models, dossier_hpp_models)
   models <- models[order(vapply(models, function(m) m$id, character(1)))]
 
   results <- list()

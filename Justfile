@@ -13,17 +13,23 @@ sync-headers:
 	rsync -a --delete cppunivariate/include/cppunivariate r/inst/include/
 
 # Regenerate metadata-driven R sources (R/ml00_metadata.R and
-# R/ml02_wrappers.R) from metadata/{models,docs}.json plus any
-# per-distribution metadata.json files inside the cppunivariate
-# distributions tree. Other R/ files are hand-written.
+# R/ml02_wrappers.R) from three sources:
+#   - metadata/{models,docs}.json    (legacy aggregate)
+#   - cppunivariate/.../<id>/metadata.hpp + r/metadata/<id>.json
+#                                    (canonical per-distribution form)
+#   - cppunivariate/.../<id>/metadata.json
+#                                    (intermediate per-distribution form)
+# Other R/ files are hand-written.
 gen:
 	cd r && \
 	  UMVL_METADATA_DIR={{repo_root}}/metadata \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	  UMVL_R_METADATA_DIR={{repo_root}}/r/metadata \
 	  Rscript scripts/codegen_metadata.R
 	cd r && \
 	  UMVL_METADATA_DIR={{repo_root}}/metadata \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	  UMVL_R_METADATA_DIR={{repo_root}}/r/metadata \
 	  Rscript scripts/codegen_wrappers.R
 
 regen: sync-headers gen
@@ -43,6 +49,7 @@ goldens: regen
 	cd r && \
 	  UMVL_METADATA_DIR={{repo_root}}/metadata \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	  UMVL_R_METADATA_DIR={{repo_root}}/r/metadata \
 	  UMVL_GOLDEN_DIR={{repo_root}}/quality/golden \
 	  Rscript scripts/goldens.R
 
