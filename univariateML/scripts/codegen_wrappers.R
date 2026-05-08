@@ -11,6 +11,7 @@ dossier_dir <- Sys.getenv(
   "../cppunivariate/include/cppunivariate/distributions"
 )
 r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
+pkg_r_dir <- Sys.getenv("UMVL_PKG_R_DIR", "package/R")
 
 source(file.path("scripts", "parse_cpp_metadata.R"))
 
@@ -135,10 +136,11 @@ header <- paste(
 wrappers <- vapply(models, gen_wrapper, character(1))
 generated_names <- vapply(models, function(m) paste0("ml", m$id), character(1))
 
+dir.create(pkg_r_dir, recursive = TRUE, showWarnings = FALSE)
 cat(
   header, "\n\n",
   "generated_models <- c(\"", paste0(generated_names, collapse = "\", \""), "\")\n\n",
   paste0(wrappers, collapse = ""),
-  file = "R/ml02_wrappers.R",
+  file = file.path(pkg_r_dir, "ml02_wrappers.R"),
   sep = ""
 )

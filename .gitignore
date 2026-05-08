@@ -64,7 +64,13 @@ fit_analysis_plots*.png
 *.Rcheck/
 ..Rcheck/
 
-# Monorepo layout (post-Phase-4): R-package and C++ build artefacts
+# Monorepo layout: workspace + generated CRAN-package subdir
+# univariateML/package/ is fully synthesized by `just regen` from
+# workspace sources + cppunivariate headers; never edit it by hand.
+univariateML/package/
+# Build / RNG artefacts that may land in the workspace src/ if someone
+# runs R CMD INSTALL against the workspace by mistake (the supported
+# entry point is `just regen` → R CMD INSTALL univariateML/package).
 univariateML/src/*.o
 univariateML/src/*.so
 univariateML/src/*.dll
@@ -72,5 +78,4 @@ univariateML/src/*.a
 univariateML/src/*.gcda
 univariateML/src/*.gcno
 univariateML/tests/testthat/Rplots.pdf
-univariateML/inst/include/cppunivariate/
 cppunivariate/build/

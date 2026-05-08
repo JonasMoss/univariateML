@@ -11,6 +11,7 @@ dossier_dir <- Sys.getenv(
   "../cppunivariate/include/cppunivariate/distributions"
 )
 r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
+pkg_r_dir <- Sys.getenv("UMVL_PKG_R_DIR", "package/R")
 
 source(file.path("scripts", "parse_cpp_metadata.R"))
 
@@ -111,4 +112,5 @@ for (m in models) {
   )
 }
 
-writeLines(blocks, "R/ml00_metadata.R")
+dir.create(pkg_r_dir, recursive = TRUE, showWarnings = FALSE)
+writeLines(blocks, file.path(pkg_r_dir, "ml00_metadata.R"))

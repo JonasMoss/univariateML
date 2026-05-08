@@ -14,7 +14,7 @@ suppressMessages({
   library(devtools)
 })
 
-devtools::load_all(quiet = TRUE)
+devtools::load_all(Sys.getenv("UMVL_PKG_DIR", "package"), quiet = TRUE)
 
 args <- commandArgs(trailingOnly = TRUE)
 get_arg <- function(flag, default = NULL) {

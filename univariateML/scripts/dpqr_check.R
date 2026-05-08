@@ -17,7 +17,7 @@
 #                  reference impls that use different root-finders)
 
 suppressPackageStartupMessages({
-  devtools::load_all(".", quiet = TRUE)
+  devtools::load_all(Sys.getenv("UMVL_PKG_DIR", "package"), quiet = TRUE)
 })
 
 TOL_DP <- 1e-10
