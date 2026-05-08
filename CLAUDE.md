@@ -9,34 +9,34 @@ core.
 
 ### Three layers
 
-1. **C++ core (primary).** `src/ml/` — header-only, no Rcpp, no
+1. **C++ core (primary).** `cppunivariate/include/cppunivariate/` — header-only, no Rcpp, no
    Armadillo, no R headers. `cppunivariate::span` as the input boundary;
    Boost.Math (via the `BH` CRAN package or system Boost) for special
    functions and base distributions. Owns its own tests in
-   `tests/cpp/` (doctest + ctest).
+   `cppunivariate/tests/` (doctest + ctest).
 
 2. **R shell (testing scaffold and current published artifact).**
-   Auto-generated R wrappers under `R/` call thin Rcpp adapters in
-   `src/ml_exports.cpp` and `src/distribution_exports.cpp`. testthat
+   Auto-generated R wrappers under `r/R/` call thin Rcpp adapters in
+   `r/src/ml_exports.cpp` and `r/src/distribution_exports.cpp`. testthat
    acts as the trusted reference: every C++ change is sanity-checked
-   against R-side fits and the golden JSONs in `tests/golden/`.
+   against R-side fits and the golden JSONs in `quality/golden/`.
 
 3. **Python shell (planned).** Same shape: pybind11 / nanobind
-   adapters around cppunivariate. The same `tests/golden/` JSONs cross-
+   adapters around cppunivariate. The same `quality/golden/` JSONs cross-
    validate across shells.
 
 ### Status (May 2026)
 
-- 41 estimators in `src/ml/estimators/` (header-only, span-based).
-- 30 distributions in `src/ml/distributions/` with `d`/`p`/`q`/`r`
+- 41 estimators in `cppunivariate/include/cppunivariate/estimators/` (header-only, span-based).
+- 30 distributions in `cppunivariate/include/cppunivariate/distributions/` with `d`/`p`/`q`/`r`
   as templates.
 - Hand-rolled BFGS + finite-difference gradient + reparam helpers in
-  `src/ml/core/`; the six fGarch-family estimators (paralogis, std,
+  `cppunivariate/include/cppunivariate/core/`; the six fGarch-family estimators (paralogis, std,
   snorm, sstd, ged, sged) use this path.
 - `LinkingTo: Rcpp, BH` — no `RcppArmadillo`.
 - 730 testthat assertions including 84 golden-regression checks at
-  1e-12; 3 ctest targets (`mlcore_tests`, `bfgs_tests`,
-  `sample_tests`).
+  1e-12; 5 ctest targets (`estimator_tests`, `bfgs_tests`,
+  `newton_md_tests`, `hessian_tests`, `sample_tests`).
 
 ### Out of vision (for now)
 
@@ -52,15 +52,15 @@ core.
 
 ## C++ style guide (cppunivariate)
 
-`src/ml/` is the C++ artifact. Header-only, **C++17**, depends only on
+`cppunivariate/include/cppunivariate/` is the C++ artifact. Header-only, **C++17**, depends only on
 `<cmath>` / `<algorithm>` / `<vector>` / `<cstddef>` and Boost.Math.
 
 ### Hard rules
 
 - **No exceptions in cppunivariate.** Surface diagnostics via per-estimator
   `*Status` enums in the result struct. `Rcpp::stop` is fine in the
-  R-shell adapter layer (`src/ml_exports.cpp`,
-  `src/distribution_exports.cpp`) but never in `src/ml/`.
+  R-shell adapter layer (`r/src/ml_exports.cpp`,
+  `r/src/distribution_exports.cpp`) but never in `cppunivariate/include/cppunivariate/`.
 - **No `using` declarations.** Always be explicit
   (`std::vector<double>`, `cppunivariate::span`, etc.).
 - **No raw pointers.** cppunivariate takes `cppunivariate::span`; R-shell adapters
@@ -76,18 +76,21 @@ core.
 ### Layout
 
 ```
-src/ml/
-  core/           # span, optimisers (newton, bfgs), reductions, finite_diff, reparam
-  estimators/     # one .hpp per distribution; *_mle(span x, ...) -> *Result
-  distributions/  # one .hpp per distribution; d/p/q/r as templates
-  special/        # special.hpp (Boost.Math seam), skewed_densities.hpp
-  ml.hpp          # aggregator
+cppunivariate/                        # the C++ artifact
+  CMakeLists.txt                      # produces INTERFACE target `cppunivariate`
+  include/cppunivariate/
+    core/                             # span, optimisers (newton, bfgs), reductions, finite_diff, reparam
+    estimators/                       # one .hpp per distribution; *_mle(span x, ...) -> *Result
+    distributions/                    # one .hpp per distribution; d/p/q/r as templates
+    special/                          # special.hpp (Boost.Math seam), skewed_densities.hpp
+    cppunivariate.hpp                 # aggregator
+  tests/                              # doctest + ctest, R-free
 ```
 
-R-shell adapters live outside `src/ml/`:
+R-shell adapters live outside `cppunivariate/include/cppunivariate/`:
 
-- `src/ml_exports.cpp` — Rcpp wrappers calling cppunivariate estimators.
-- `src/distribution_exports.cpp` + `src/distributions/<dist>.cpp` —
+- `r/src/ml_exports.cpp` — Rcpp wrappers calling cppunivariate estimators.
+- `r/src/distribution_exports.cpp` + `r/src/distributions/<dist>.cpp` —
   Rcpp wrappers calling cppunivariate distributions.
 
 ### Estimator template
@@ -121,7 +124,7 @@ reproducible.
 
 ### Multi-D optimiser
 
-Hand-rolled BFGS in `src/ml/core/bfgs.hpp`: header-only quasi-Newton
+Hand-rolled BFGS in `cppunivariate/include/cppunivariate/core/bfgs.hpp`: header-only quasi-Newton
 with backtracking Armijo line search and the standard two-rank update
 on the inverse-Hessian approximation.
 
@@ -176,15 +179,15 @@ the legacy fGarch path expect a usable result back, not an error.
 
 ### Adding a new distribution
 
-1. Implement `cppunivariate::*_mle` in `src/ml/estimators/<name>.hpp`. If
+1. Implement `cppunivariate::*_mle` in `cppunivariate/include/cppunivariate/estimators/<name>.hpp`. If
    the distribution is also new on the dpqr side, add the templates
-   in `src/ml/distributions/<name>.hpp`.
-2. Add an include line to `src/ml/ml.hpp`.
-3. Wire an Rcpp wrapper in `src/ml_exports.cpp` (and
-   `src/distribution_exports.cpp` if dpqr).
+   in `cppunivariate/include/cppunivariate/distributions/<name>.hpp`.
+2. Add an include line to `cppunivariate/include/cppunivariate/cppunivariate.hpp`.
+3. Wire an Rcpp wrapper in `r/src/ml_exports.cpp` (and
+   `r/src/distribution_exports.cpp` if dpqr).
 4. Update `metadata/models.json` (canonical param names + sampler).
 5. Regenerate goldens via `Rscript scripts/gen_goldens.R`.
-6. Add a doctest case in `tests/cpp/test_estimators.cpp`. For
+6. Add a doctest case in `cppunivariate/tests/test_estimators.cpp`. For
    multi-D estimators add the score-residual `||g||_2 < 1e-3` check
    too.
 7. `just test` and `just cpp-test` must both pass.
@@ -194,7 +197,7 @@ the legacy fGarch path expect a usable result back, not an error.
 ## Math backend
 
 Boost.Math via the `BH` CRAN package; falls back to system Boost for
-the standalone CMake build. The seam is `src/ml/special/special.hpp`
+the standalone CMake build. The seam is `cppunivariate/include/cppunivariate/special/special.hpp`
 — estimators never include `<boost/...>` directly. Swapping backend
 (Rmath, Cephes, hand-roll) is a single-file change at that seam,
 followed by a goldens regen + visual diff.
@@ -202,7 +205,7 @@ followed by a goldens regen + visual diff.
 What's in Boost.Math: every common univariate distribution
 (normal, gamma, beta, t, Weibull, …) plus the special functions
 (digamma, trigamma, lgamma, lbeta). What we layer on top in
-`src/ml/distributions/` and `src/ml/special/skewed_densities.hpp`:
+`cppunivariate/include/cppunivariate/distributions/` and `cppunivariate/include/cppunivariate/special/skewed_densities.hpp`:
 the Fernandez–Steel skew-normal/t/GED family, fatigue, log-logistic,
 nakagami, logit-normal, zipf, zip, paralogis — closed-form
 compositions over Boost primitives.
