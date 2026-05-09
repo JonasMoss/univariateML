@@ -1,65 +1,34 @@
-# R package scope: ML-only, Imports for distributions (deferred)
+# R package scope: ML-only — Closed (2026-05-09)
 
-**Status:** deferred — direction, not today's code change.
+Landed. The R package now exposes ML wrappers only; d/p/q/r is
+delegated to upstream packages (`extraDistr`, `actuar`, `fGarch`,
+`logitnorm`, `nakagami`, `sads`) via `Imports:`. The C++ artifact
+(`cppunivariate/`) keeps its full dpqr surface for downstream
+consumers.
 
-## The idea
+## Landing commits
 
-Make the R package focused: maximum likelihood estimation only, with
-its `Imports:` carrying `extraDistr` / `actuar` / friends so users get
-those distributions through the canonical packages instead of through
-re-exports.
+- `c8c93ca` — Expand `Imports:` for canonical density packages.
+- `35a61b2` — Route all dpqr through external packages (metadata refs).
+- `a5b13b3` — Drop per-distribution dpqr surface from R package.
+- `2a86575` — Canonical-names reference; align `ml_exports` `List`
+  names with the chosen upstream package conventions.
+- `3863d89` — Revert `invgamma` to historic extraDistr `(alpha, beta)`
+  parameterization.
 
-The C++ artifact (`cppunivariate/`) keeps the full d/p/q/r surface for
-every distribution it has an MLE for — that's what downstream Python /
-C++ consumers need. But on the R side, we don't have to expose it all.
-Re-exporting `dlomax`, `plomax`, `qlomax`, `rlomax` etc. duplicates
-what extraDistr already provides, doubles the documentation surface
-(R's man-page hierarchy is flat and non-modular — every export is its
-own visible help page), and dilutes the package's identity.
+## What changed
 
-## Why it matters
+- `univariateML/metadata/<id>.json` sidecars point `density` /
+  `sampler` at upstream functions (e.g. `extraDistr::dlomax`,
+  `actuar::rburr`) where applicable.
+- `univariateML/DESCRIPTION` `Imports:` lists the upstream dpqr
+  packages.
+- The R package's NAMESPACE no longer re-exports per-distribution
+  `d*` / `p*` / `q*` / `r*` functions.
 
-- **Identity**: `univariateML` is an MLE package. Users coming for ML
-  shouldn't have to scroll past 100+ d/p/q/r entries to find
-  `mlweibull`. Other packages do dpqr; we should let them.
-- **Doc surface**: every `@export`ed function gets a help page. Today
-  that's ~40 ML wrappers + ~80 dpqr functions. Halving it would make
-  the user-facing docs much easier to navigate.
-- **Import cost**: extraDistr + actuar are mature, widely available,
-  and small. Adding them to `Imports:` is cheaper than maintaining
-  exported equivalents.
+## What's still open
 
-## Design when revisited
-
-- Drop `@export` on the per-distribution dpqr Rcpp wrappers
-  (`univariateML/src/distributions/<id>.cpp` → `univariateML/R/distributions_cpp_exports.R`).
-  The C++ implementations stay (they're consumed by the C++ /
-  future Python side); R-side they become an internal implementation
-  detail or are removed entirely.
-- Re-add `extraDistr` and `actuar` (and any other relevant package)
-  to `univariateML/DESCRIPTION` `Imports:`.
-- `univariateML/metadata/<id>.json` gains the freedom to point `density` /
-  `sampler` at `extraDistr::dlomax` / `actuar::dburr` etc. without
-  needing a univariateML-side wrapper.
-- Examples in the auto-generated roxygen reference the upstream
-  package (`extraDistr::rlomax(...)` etc.) instead of our own
-  exports.
-
-We don't HAVE to export everything in cppunivariate. Focus over
-self-containment on the R side.
-
-## Trigger to revisit
-
-- A doc cleanup pass, or
-- A user complaining about the man-page firehose, or
-- Before the next CRAN submission.
-
-## Verification when revisited
-
-- The R-package NAMESPACE shrinks to ML wrappers + selected helpers
-  only (no per-dist dpqr re-exports).
-- DESCRIPTION's Imports lists `extraDistr` and any other dpqr-source
-  packages that examples reference.
-- C++ ctest still runs full d/p/q/r exercise on the `cppunivariate`
-  side.
-- Tarball size goes down (fewer .Rd files, fewer NAMESPACE lines).
+- A user-facing audit of generated examples (do roxygen examples
+  reference the upstream functions cleanly?). If they do, this entry
+  stays closed; if not, that's a small follow-up but not its own
+  roadmap item.

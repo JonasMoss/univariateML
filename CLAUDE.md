@@ -27,16 +27,18 @@ core.
 
 ### Status (May 2026)
 
-- 41 estimators in `cppunivariate/include/cppunivariate/estimators/` (header-only, span-based).
-- 30 distributions in `cppunivariate/include/cppunivariate/distributions/` with `d`/`p`/`q`/`r`
-  as templates.
+- 42 distribution dossiers in `cppunivariate/include/cppunivariate/distributions/<id>/`,
+  each bundling `mle.hpp` (estimator + Cost), `dpqr.hpp` (d/p/q/r templates),
+  `metadata.hpp` (constexpr ParamDescriptor rows), and `dossier.md`. Header-only,
+  span-based. 41 of them carry their own `mle.hpp`; `lgamma` reuses `gamma_mle`
+  on log-transformed data via the R-side wrapper.
 - Hand-rolled BFGS + finite-difference gradient + reparam helpers in
   `cppunivariate/include/cppunivariate/core/`; the six fGarch-family estimators (paralogis, std,
   snorm, sstd, ged, sged) use this path.
 - `LinkingTo: Rcpp, BH` — no `RcppArmadillo`.
-- 730 testthat assertions including 84 golden-regression checks at
-  1e-12; 5 ctest targets (`estimator_tests`, `bfgs_tests`,
-  `newton_md_tests`, `hessian_tests`, `sample_tests`).
+- testthat suite includes ~84 golden-regression checks at 1e-12; 6
+  ctest targets (`estimator_tests`, `bfgs_tests`, `newton_md_tests`,
+  `hessian_tests`, `sample_tests`, `metadata_tests`).
 
 ### Out of vision (for now)
 
@@ -125,10 +127,10 @@ inline FooResult foo_mle(span x, double tol, int maxit) {
 }  // namespace cppunivariate
 ```
 
-Match the existing files in `estimators/` for naming. The 1D Newton
-helpers in `core/newton.hpp` come in `_rel` and `_abs` step variants
-— pick what the original R algorithm used so goldens stay
-reproducible.
+Match the existing dossiers under `distributions/<id>/mle.hpp` for
+naming. The 1D Newton helpers in `core/newton.hpp` come in `_rel` and
+`_abs` step variants — pick what the original R algorithm used so
+goldens stay reproducible.
 
 ### Multi-D optimiser
 

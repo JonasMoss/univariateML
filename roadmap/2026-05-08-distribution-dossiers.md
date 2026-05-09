@@ -1,57 +1,31 @@
-# Distribution dossiers (in progress — pilot landed)
+# Distribution dossiers — Closed (2026-05-09)
 
-**Status (2026-05-08):** Lomax + Exponential pilots landed; the
-remaining 39 distributions are still legacy. Codegen merges
-`metadata/models.json` and any per-distribution `metadata.json`
-inside `cppunivariate/include/cppunivariate/distributions/<id>/`,
-so the two pilots and the 39 legacy distributions co-exist
-transparently. The remaining sweep is the trigger to retire this
-entry.
+Landed. Every distribution now lives in a dossier bundle at
+`cppunivariate/include/cppunivariate/distributions/<id>/` containing
+`mle.hpp`, `dpqr.hpp`, `metadata.hpp`, and `dossier.md`. The legacy
+flat-file layout (`estimators/<id>.hpp` + `distributions/<id>.hpp`)
+is gone.
 
-**Original status:** deferred — foundation idea for future quality work.
+## Landing commits
 
-## The idea
+- `f636f91` — Dossier Phase 2: Lomax pilot.
+- `e5e33a1` — Dossier Phase 3: Exponential pilot (simple distribution).
+- `8d3ecb8` — Phase B: Lomax to `metadata.hpp` + R-side `metadata/<id>.json` sidecar.
+- `a6a4bf7` — Phase C: Exp restructure + add cppunivariate dpqr.
+- `0d9e480` — Sweep: migrate the remaining 38 distributions.
 
-Create one source-of-truth dossier per distribution. A dossier collects the
-math notes, implementation notes, metadata, tests, references, and generated
-documentation inputs needed to maintain that distribution.
+## What this enabled
 
-## Why it matters
+- Codegen reads per-distribution `metadata.hpp` (parsed via
+  `univariateML/scripts/parse_cpp_metadata.R`) merged with R-side
+  refs in `univariateML/metadata/<id>.json`.
+- Each distribution is locally understandable: math, implementation,
+  and prose docs sit in one folder.
+- `dossier.md` files are stubs today — filling them out is part of
+  the [documentation-from-metadata](2026-05-08-documentation-from-metadata.md)
+  follow-on.
 
-The hard part of this project is remembering what is true for many
-distributions: parameterizations, limiting cases, existence conditions,
-regularity, references, and implementation history.
+## What's still open
 
-A dossier makes each distribution locally understandable and easier for humans
-or coding agents to modify safely.
-
-## Design when revisited
-
-Each dossier should eventually cover:
-
-- support and parameterization
-- parameter constraints and aliases
-- density/CDF/quantile/RNG reference behavior
-- likelihood, score, Hessian, and Fisher information where known
-- MLE existence conditions and boundary behavior
-- regular and non-regular parameters
-- implementation algorithm and optimizer settings
-- implementation provenance
-- test scenarios, goldens, and validation status
-- generated documentation text and references
-
-Use Lomax as the first serious pilot. It has the right kind of details:
-dispersion condition, exponential limiting case, Newton iteration behavior, and
-user-facing failure behavior. Add one simple regular distribution, such as
-exponential or normal, so the format does not overfit to unusual cases.
-
-## Trigger to revisit
-
-Take this off the shelf before adding a substantial new distribution, before
-rewriting generated docs, or before building a quality dashboard.
-
-## Verification when revisited
-
-- Lomax and one simple distribution have complete pilot dossiers.
-- Existing R docs can be generated or cross-linked from dossier fields.
-- The pilot distinguishes structured metadata from longer prose notes.
+- The dossier *format* exists; the prose content of `dossier.md`
+  files is largely empty. That's a separate roadmap item, not this one.

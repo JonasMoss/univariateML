@@ -28,9 +28,9 @@ the queue.
 - [2026-05-08 — Cost-method fusion](2026-05-08-cost-method-fusion.md):
   fused `grad_hessian` on the Cost concept; deferred until a
   production callsite exists for `Cost::hessian`.
-- [2026-05-08 — Distribution dossiers](2026-05-08-distribution-dossiers.md):
-  one source-of-truth note per distribution, covering math,
-  implementation, tests, docs, and references.
+- [2026-05-08 — Distribution dossiers](2026-05-08-distribution-dossiers.md)
+  *(closed 2026-05-09)*: one source-of-truth note per distribution,
+  covering math, implementation, tests, docs, and references.
 - [2026-05-08 — Implementation provenance](2026-05-08-implementation-provenance.md):
   explicit dated implementation IDs and validation baselines for
   estimators and distribution functions.
@@ -48,6 +48,7 @@ the queue.
 - [2026-05-08 — Variable parameter selection](2026-05-08-variable-parameter-selection.md):
   let users fix some canonical parameters and estimate the rest;
   motivating example is fatigue with/without a location shift.
-- [2026-05-08 — R package scope](2026-05-08-r-package-scope.md):
-  trim the R package to ML only, let extraDistr / actuar provide
-  d/p/q/r through Imports so we don't fight R's flat man-page space.
+- [2026-05-08 — R package scope](2026-05-08-r-package-scope.md)
+  *(closed 2026-05-09)*: trim the R package to ML only, let
+  extraDistr / actuar provide d/p/q/r through Imports so we don't
+  fight R's flat man-page space.
