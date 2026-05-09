@@ -27,7 +27,10 @@ Suggests:
     jsonlite,
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    markdown,
+    copula,
+    dplyr
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 URL: https://github.com/JonasMoss/univariateML, https://jonasmoss.github.io/univariateML/

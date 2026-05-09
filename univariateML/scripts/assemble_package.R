@@ -22,7 +22,7 @@ for (f in top_files) {
   }
 }
 
-for (d in c("R", "src", "tests", "data", "inst")) {
+for (d in c("R", "src", "tests", "data", "inst", "vignettes")) {
   if (dir.exists(d)) {
     file.copy(d, PKG_DIR, recursive = TRUE)
   }
