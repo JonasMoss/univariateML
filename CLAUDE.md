@@ -254,6 +254,28 @@ was retired in the dossier sweep, along with the old top-level
    check too.
 7. `just test` and `just cpp-test` must both pass.
 
+Steps 1–7 land the implementation; the next three add the math-first
+validation layer (the AI-first harness). Goldens prove the
+implementation didn't drift; the harness proves the implementation
+matches the math from first principles.
+
+8. Author `quality/math/<id>.py` exporting a `SPEC = Spec(...)` —
+   sympy `log_density` in *Cost-space* parameters (whatever
+   `Cost::operator()(theta)` takes; natural for `exp`/`norm`/`lomax`,
+   phi-space for `std`/`snorm`/etc.). For Costs whose gradient is
+   FD-only (BFGS-with-`finite_diff_cost` family), set
+   `cost_has_gradient=False`. If golden estimates are in a different
+   space than Cost, supply `golden_to_cost`. See
+   `quality/math/{exp,norm,std}.py` for templates of each shape.
+9. Register the id in `cppunivariate/tests/test_validation.cpp`'s
+   dispatch — one `TEST_CASE` calling `eval_with<Cost>` (analytical
+   gradient) or `eval_fd_grad<Cost>` (FD).
+10. `just derive <id> && just validate <id>` — emits
+    `quality/derived/<id>/{eval_request,symbolic_grid,cpp_eval,
+    gradient_report,hessian_report,quality_report}.json/md`.
+    `quality_report.md` should claim `validated`. Commit the derived
+    artifacts alongside the code.
+
 The codegen scripts read two sources and merge them, sorted
 alphabetically by id:
 

@@ -75,3 +75,16 @@ cpp-test:
 	cmake -S cppunivariate -B cppunivariate/build
 	cmake --build cppunivariate/build
 	cd cppunivariate/build && ctest --output-on-failure
+
+# AI-first validation harness. Symbolic spec lives at quality/math/<id>.py;
+# `derive` emits eval_request.json + symbolic_grid.json into
+# quality/derived/<id>/. The validation_tests ctest target reads
+# eval_request.json and writes cpp_eval.json on every `cpp-test` run;
+# `validate` then diffs the symbolic and C++ grids and emits per-check
+# reports + quality_report.md. Run `derive` after writing or changing a
+# spec; run `validate` after any C++ change to a Cost struct.
+derive id:
+	PYTHONPATH={{repo_root}} python3 -m quality.harness derive {{id}}
+
+validate id: cpp-test
+	PYTHONPATH={{repo_root}} python3 -m quality.harness validate {{id}}
