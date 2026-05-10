@@ -23,6 +23,10 @@ cppuniv_test(sample_tests     test_sampling.cpp)
 cppuniv_test(metadata_tests   test_metadata.cpp)
 cppuniv_test(validation_tests test_validation.cpp)
 
+# sim_driver is a build target, not a ctest. quality/harness/simulate.py
+# invokes it (input.json -> output.json) during `just simulate <id>`.
+cppuniv_test(sim_driver       sim_driver.cpp)
+
 add_test(NAME estimator_tests COMMAND estimator_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 set_tests_properties(estimator_tests PROPERTIES
