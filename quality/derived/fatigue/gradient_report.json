@@ -1,0 +1,13 @@
+{
+  "id": "fatigue",
+  "spec_hash": "e0b70f2780531733",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 5.684341886080801e-13,
+    "max_rel": 1.8116631013286526e-15,
+    "sweep_max": 313.7637390700275
+  },
+  "passed": true,
+  "skipped_reason": null
+}

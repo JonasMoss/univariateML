@@ -276,6 +276,10 @@ TEST_CASE("validation::sged") {
   run_validation("sged", eval_fd_grad<cppunivariate::SgedCost>);
 }
 
+TEST_CASE("validation::fatigue") {
+  run_validation("fatigue", eval_with<cppunivariate::FatigueCost>);
+}
+
 TEST_CASE("validation::pois") {
   run_validation("pois", eval_int<cppunivariate::PoisCost>);
 }

@@ -1,9 +1,20 @@
-# Fatigue MLE recovers a non-MLE point — α-formula off by 2 (deferred fix)
+# Fatigue MLE recovers a non-MLE point — α-formula off by 2 (closed 2026-05-10)
 
-**Status:** found by the AI-first validation harness on 2026-05-10.
-The bug is real and runs deeper than initially suspected; fix
-deferred pending the user's decision on approach + scope of golden
-regeneration.
+**Status:** fixed in the same day's harness sweep. `fatigue_mle` now
+uses `α² = x̄/β + β/H(x) − 2` (the standard BS α-FOC); `FatigueCost`
+also rewritten to compute the standard BS density. Goldens regenerated;
+the harness validates fatigue at 1e-15 against the corrected formulas.
+
+The decision was option 1 from the original three: fix the bug,
+accept the golden regeneration as the cost. User explicitly OK'd
+this — the canonical `extraDistr::dfatigue` parameterisation is now
+what the C++ matches.
+
+The investigation below is preserved for historical context.
+
+---
+
+## (original investigation follows)
 
 ## What the harness found
 

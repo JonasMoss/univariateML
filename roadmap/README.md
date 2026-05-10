@@ -65,10 +65,10 @@ the queue.
   extend the harness to verify d/p/q/r self-consistency
   (∫f=1, q∘p=id) and reference cross-check, on top of the MLE-math
   layer.
-- [2026-05-10 — FatigueCost vs fatigue_mle nll mismatch](2026-05-10-fatigue-cost-mismatch.md):
-  bug surfaced by the harness: FatigueCost::operator() computes a
-  different nll than fatigue_mle internally maximises. Fix deferred
-  pending user decision on approach.
+- [2026-05-10 — FatigueCost vs fatigue_mle nll mismatch](2026-05-10-fatigue-cost-mismatch.md)
+  *(closed 2026-05-10)*: fatigue_mle's α-formula was missing a −2
+  vs the standard BS α-FOC. Fixed; FatigueCost rewritten to match;
+  goldens regenerated; harness validates at 1e-15.
 - [2026-05-10 — F-S skew family in the harness](2026-05-10-fs-skew-family.md)
   *(closed 2026-05-10)*: snorm/sstd/sged validate at 1e-12 once
   rewritten with explicit Piecewise (branches agree at z=0) and the
