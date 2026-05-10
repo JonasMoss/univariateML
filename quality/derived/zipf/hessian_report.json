@@ -1,0 +1,12 @@
+{
+  "id": "zipf",
+  "spec_hash": "e3752728a0897f6d",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 17,
+    "max_abs": 7.105427357601002e-14,
+    "max_rel": 6.710158415501195e-16,
+    "sweep_max": 105.89060522307032
+  },
+  "passed": true
+}

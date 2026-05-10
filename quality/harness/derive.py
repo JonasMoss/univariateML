@@ -30,13 +30,27 @@ def _symbolic_negloglik_derivs(spec: Spec):
 
     The estimator side optimises the *negative* log-likelihood, so we
     negate up front. All three are functions of (theta..., x).
+
+    When `spec.cost_hessian_is_fisher` is set, the Hessian we hand back
+    is the per-obs Fisher info instead of the second derivative of nll.
+    The C++ Cost::hessian for those distros (laplace, …) returns
+    `n × Fisher` rather than the observed Hessian, so we compare against
+    the same thing — the per-obs entry summed over data is `n × Fisher`.
     """
     syms = spec.param_symbols()
     nll = -spec.log_density
     grad = sp.Matrix([sp.diff(nll, s) for s in syms])
-    hess = sp.Matrix(
-        [[sp.diff(nll, si, sj) for sj in syms] for si in syms]
-    )
+    if spec.cost_hessian_is_fisher:
+        if spec.fisher_info_per_obs is None:
+            raise ValueError(
+                f"Spec[{spec.id}]: cost_hessian_is_fisher=True requires "
+                f"fisher_info_per_obs to be declared."
+            )
+        hess = spec.fisher_info_per_obs
+    else:
+        hess = sp.Matrix(
+            [[sp.diff(nll, si, sj) for sj in syms] for si in syms]
+        )
     return nll, grad, hess
 
 

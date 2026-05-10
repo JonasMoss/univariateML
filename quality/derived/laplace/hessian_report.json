@@ -1,0 +1,12 @@
+{
+  "id": "laplace",
+  "spec_hash": "a7824667a83b9d5a",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 1.1368683772161603e-13,
+    "max_rel": 1.0098950678152917e-16,
+    "sweep_max": 1125.729210338209
+  },
+  "passed": true
+}

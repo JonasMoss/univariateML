@@ -48,12 +48,9 @@ struct CostEval {
 using CostFactory = std::function<CostEval(const std::vector<double> &,
                                            const std::vector<double> &)>;
 
-// Evaluator for Costs with full analytical interface (operator/gradient/hessian).
-// Used by exp/lomax/most-distros — see std variant below for the FD-grad case.
+// Shared cost-evaluation core: operator() / gradient / hessian into a CostEval.
 template <typename Cost>
-CostEval eval_with(const std::vector<double> &data,
-                   const std::vector<double> &theta) {
-  Cost cost{mltest::as_span(data)};
+CostEval evaluate_cost(Cost &cost, const std::vector<double> &theta) {
   CostEval out;
   out.nll = cost(theta.data());
   const std::size_t n = static_cast<std::size_t>(cost.dim());
@@ -66,6 +63,15 @@ CostEval eval_with(const std::vector<double> &data,
     for (std::size_t j = 0; j < n; ++j)
       out.hess[i][j] = H_flat[i * n + j];
   return out;
+}
+
+// Evaluator for Costs with full analytical interface (operator/gradient/hessian).
+// Used by exp/lomax/most-distros — see std variant below for the FD-grad case.
+template <typename Cost>
+CostEval eval_with(const std::vector<double> &data,
+                   const std::vector<double> &theta) {
+  Cost cost{mltest::as_span(data)};
+  return evaluate_cost(cost, theta);
 }
 
 // Evaluator for discrete distros whose Cost takes ispan<int> (pois, geom,
@@ -78,18 +84,7 @@ CostEval eval_int(const std::vector<double> &data,
   int_data.reserve(data.size());
   for (double v : data) int_data.push_back(static_cast<int>(v));
   Cost cost{cppunivariate::ispan{int_data.data(), int_data.size()}};
-  CostEval out;
-  out.nll = cost(theta.data());
-  const std::size_t n = static_cast<std::size_t>(cost.dim());
-  out.grad.assign(n, 0.0);
-  cost.gradient(theta.data(), out.grad.data());
-  std::vector<double> H_flat(n * n, 0.0);
-  cost.hessian(theta.data(), H_flat.data());
-  out.hess.assign(n, std::vector<double>(n, 0.0));
-  for (std::size_t i = 0; i < n; ++i)
-    for (std::size_t j = 0; j < n; ++j)
-      out.hess[i][j] = H_flat[i * n + j];
-  return out;
+  return evaluate_cost(cost, theta);
 }
 
 // Evaluator for Costs whose gradient is computed via finite differences in
@@ -100,9 +95,7 @@ CostEval eval_int(const std::vector<double> &data,
 // the FD grad lives in cpp_eval.json as advisory + gates only the
 // score-residual smoke-check at the MLE.
 template <typename Cost>
-CostEval eval_fd_grad(const std::vector<double> &data,
-                      const std::vector<double> &theta) {
-  Cost cost{mltest::as_span(data)};
+CostEval evaluate_cost_fd_grad(Cost &cost, const std::vector<double> &theta) {
   cppunivariate::finite_diff_cost<Cost> fd{cost};
   CostEval out;
   out.nll = cost(theta.data());
@@ -116,6 +109,13 @@ CostEval eval_fd_grad(const std::vector<double> &data,
     for (std::size_t j = 0; j < n; ++j)
       out.hess[i][j] = H_flat[i * n + j];
   return out;
+}
+
+template <typename Cost>
+CostEval eval_fd_grad(const std::vector<double> &data,
+                      const std::vector<double> &theta) {
+  Cost cost{mltest::as_span(data)};
+  return evaluate_cost_fd_grad(cost, theta);
 }
 
 void run_validation(const std::string &id, CostFactory fn,
@@ -294,4 +294,45 @@ TEST_CASE("validation::pareto") {
 TEST_CASE("validation::power") {
   run_validation("power", eval_with<cppunivariate::PowerCost>,
                  /*skip_score_check=*/true);
+}
+
+// laplace: the mu-direction is non-smooth so the score isn't strictly
+// zero at the median MLE for finite n (sum of sign(x_i - mu_hat) = ±1
+// for odd n). Skip the score-residual gate; the symbolic round-trip
+// (with cost_hessian_is_fisher) is the substantive check.
+TEST_CASE("validation::laplace") {
+  run_validation("laplace", eval_with<cppunivariate::LaplaceCost>,
+                 /*skip_score_check=*/true);
+}
+
+// binom: BinomCost takes (ispan x, double size); size hardcoded from the
+// golden — keep this constant in lockstep with quality/math/binom.py::SIZE.
+TEST_CASE("validation::binom") {
+  run_validation("binom",
+    [](const std::vector<double> &data,
+       const std::vector<double> &theta) -> CostEval {
+      std::vector<int> idata;
+      idata.reserve(data.size());
+      for (double v : data) idata.push_back(static_cast<int>(v));
+      cppunivariate::BinomCost cost{
+        cppunivariate::ispan{idata.data(), idata.size()},
+        /*size=*/9.0};
+      return evaluate_cost(cost, theta);
+    });
+}
+
+// zipf: ZipfCost takes (ispan x, double N); N hardcoded from the golden —
+// keep in lockstep with quality/math/zipf.py::N_FIXED.
+TEST_CASE("validation::zipf") {
+  run_validation("zipf",
+    [](const std::vector<double> &data,
+       const std::vector<double> &theta) -> CostEval {
+      std::vector<int> idata;
+      idata.reserve(data.size());
+      for (double v : data) idata.push_back(static_cast<int>(v));
+      cppunivariate::ZipfCost cost{
+        cppunivariate::ispan{idata.data(), idata.size()},
+        /*N=*/3.0};
+      return evaluate_cost(cost, theta);
+    });
 }

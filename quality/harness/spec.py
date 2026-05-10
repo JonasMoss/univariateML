@@ -60,6 +60,14 @@ class Spec:
     # implicitly verified by checking nll matches symbolic, since the FD
     # stencil reads from the same operator()).
     cost_has_gradient: bool = True
+    # When Cost::hessian returns the *Fisher information* matrix instead
+    # of the observed Hessian (laplace's mu-direction is non-smooth, so the
+    # observed Hessian has Dirac deltas at each x_i and is degenerate; the
+    # Fisher info × n is the right asymptotic-variance quantity). With this
+    # flag set, the harness compares against `n × fisher_info_per_obs`
+    # (Spec.fisher_info_per_obs must be declared) instead of `sp.diff` of
+    # `log_density`.
+    cost_hessian_is_fisher: bool = False
     # Map golden's natural-space `estimates` dict to a Cost-space theta
     # vector matching `params` order. None ⇒ identity (golden names match
     # param names; used by exp/lomax/etc.). Set explicitly for distros
