@@ -1,0 +1,12 @@
+{
+  "id": "logitnorm",
+  "spec_hash": "928cd63d2868b8cd",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 2.4868995751603507e-13,
+    "max_rel": 1.0248763613230069e-13
+  },
+  "passed": true,
+  "skipped_reason": null
+}

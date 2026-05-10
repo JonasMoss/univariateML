@@ -1,0 +1,11 @@
+{
+  "id": "invgamma",
+  "spec_hash": "8718421150e9dd86",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 5.684341886080802e-14,
+    "max_rel": 2.11127460374765e-16
+  },
+  "passed": true
+}

@@ -1,0 +1,11 @@
+{
+  "id": "invburr",
+  "spec_hash": "ca55b6cae5748613",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 1.4210854715202004e-13,
+    "max_rel": 1.1781224114191163e-15
+  },
+  "passed": true
+}

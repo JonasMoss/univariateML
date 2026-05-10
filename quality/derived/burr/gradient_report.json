@@ -1,0 +1,12 @@
+{
+  "id": "burr",
+  "spec_hash": "36bf94645bb7f6b8",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 9.663381206337363e-13,
+    "max_rel": 1.0185821596894332e-13
+  },
+  "passed": true,
+  "skipped_reason": null
+}

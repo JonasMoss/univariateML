@@ -65,3 +65,7 @@ the queue.
   extend the harness to verify d/p/q/r self-consistency
   (∫f=1, q∘p=id) and reference cross-check, on top of the MLE-math
   layer.
+- [2026-05-10 — FatigueCost vs fatigue_mle nll mismatch](2026-05-10-fatigue-cost-mismatch.md):
+  bug surfaced by the harness: FatigueCost::operator() computes a
+  different nll than fatigue_mle internally maximises. Fix deferred
+  pending user decision on approach.

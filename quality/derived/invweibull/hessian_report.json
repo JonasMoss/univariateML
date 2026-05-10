@@ -1,0 +1,11 @@
+{
+  "id": "invweibull",
+  "spec_hash": "5cf876e8b95d83d9",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 1.8189894035458565e-12,
+    "max_rel": 1.4750106715328744e-15
+  },
+  "passed": true
+}

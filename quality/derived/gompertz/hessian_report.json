@@ -1,0 +1,11 @@
+{
+  "id": "gompertz",
+  "spec_hash": "418e6fd332781046",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 5.115907697472721e-13,
+    "max_rel": 1.23844157443401e-15
+  },
+  "passed": true
+}

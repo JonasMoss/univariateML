@@ -1,0 +1,11 @@
+{
+  "id": "beta",
+  "spec_hash": "f7ab99e637671ef4",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 5.684341886080802e-14,
+    "max_rel": 3.4586761360715477e-16
+  },
+  "passed": true
+}

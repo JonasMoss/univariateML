@@ -183,3 +183,39 @@ TEST_CASE("validation::kumar") {
 TEST_CASE("validation::betapr") {
   run_validation("betapr", eval_with<cppunivariate::BetaPrimeCost>);
 }
+
+TEST_CASE("validation::beta") {
+  run_validation("beta", eval_with<cppunivariate::BetaCost>);
+}
+
+TEST_CASE("validation::naka") {
+  run_validation("naka", eval_with<cppunivariate::NakaCost>);
+}
+
+TEST_CASE("validation::invgamma") {
+  run_validation("invgamma", eval_with<cppunivariate::InvGammaCost>);
+}
+
+TEST_CASE("validation::burr") {
+  run_validation("burr", eval_with<cppunivariate::BurrCost>);
+}
+
+TEST_CASE("validation::invburr") {
+  run_validation("invburr", eval_with<cppunivariate::InvBurrCost>);
+}
+
+TEST_CASE("validation::invweibull") {
+  run_validation("invweibull", eval_with<cppunivariate::InvWeibullCost>);
+}
+
+TEST_CASE("validation::gompertz") {
+  run_validation("gompertz", eval_with<cppunivariate::GompertzCost>);
+}
+
+TEST_CASE("validation::invgauss") {
+  run_validation("invgauss", eval_with<cppunivariate::InvGaussCost>);
+}
+
+TEST_CASE("validation::logitnorm") {
+  run_validation("logitnorm", eval_with<cppunivariate::LogitnormCost>);
+}

@@ -1,0 +1,11 @@
+{
+  "id": "invgauss",
+  "spec_hash": "77cbb4e2cbec65a5",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 6.252776074688882e-13,
+    "max_rel": 3.8248718011747305e-15
+  },
+  "passed": true
+}
