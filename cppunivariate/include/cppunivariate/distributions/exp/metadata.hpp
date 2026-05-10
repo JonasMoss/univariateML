@@ -1,8 +1,7 @@
 // Exponential — distribution metadata.
 //
-// Format constraints follow metadata/SCHEMA.md "Per-distribution form
-// (C++ constexpr)". One-parameter exponential family with rate
-// parameter; closed-form MLE.
+// Format constraints follow univariateML/metadata/SCHEMA.md.
+// One-parameter exponential family with rate parameter; closed-form MLE.
 
 #pragma once
 

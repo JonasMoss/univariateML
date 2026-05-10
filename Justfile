@@ -22,20 +22,17 @@ sync-headers: assemble
 # Generate metadata-driven R sources into package/R/, then run
 # Rcpp::compileAttributes() in package/ to produce RcppExports.{R,cpp}.
 # Inputs:
-#   - metadata/{models,docs}.json    (legacy aggregate)
 #   - cppunivariate/.../<id>/metadata.hpp + univariateML/metadata/<id>.json
 #                                    (canonical per-distribution form)
 #   - cppunivariate/.../<id>/metadata.json
 #                                    (intermediate per-distribution form)
 gen: sync-headers
 	cd univariateML && \
-	  UMVL_METADATA_DIR={{repo_root}}/metadata \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
 	  UMVL_R_METADATA_DIR={{repo_root}}/univariateML/metadata \
 	  UMVL_PKG_R_DIR={{repo_root}}/univariateML/package/R \
 	  Rscript scripts/codegen_metadata.R
 	cd univariateML && \
-	  UMVL_METADATA_DIR={{repo_root}}/metadata \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
 	  UMVL_R_METADATA_DIR={{repo_root}}/univariateML/metadata \
 	  UMVL_PKG_R_DIR={{repo_root}}/univariateML/package/R \
@@ -58,18 +55,11 @@ check: regen
 # change). After regen, inspect the diff before committing.
 goldens: regen
 	cd univariateML && \
-	  UMVL_METADATA_DIR={{repo_root}}/metadata \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
 	  UMVL_R_METADATA_DIR={{repo_root}}/univariateML/metadata \
 	  UMVL_GOLDEN_DIR={{repo_root}}/quality/golden \
 	  UMVL_PKG_DIR={{repo_root}}/univariateML/package \
 	  Rscript scripts/goldens.R
-
-# A/B benchmark harness for Rcpp estimator variants.
-bench model="burr" sizes="50,200,1000" reps="5":
-	cd univariateML && \
-	  UMVL_PKG_DIR={{repo_root}}/univariateML/package \
-	  Rscript scripts/bench.R --model {{model}} --sizes {{sizes}} --reps {{reps}}
 
 # Cross-check our dpqr against reference R packages (extraDistr, actuar,
 # fGarch, logitnorm). Reference packages may not all be in DESCRIPTION;

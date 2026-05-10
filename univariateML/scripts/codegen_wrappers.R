@@ -5,7 +5,6 @@ if (!requireNamespace("jsonlite", quietly = TRUE)) {
   stop("jsonlite is required to run this generator.")
 }
 
-metadata_dir <- Sys.getenv("UMVL_METADATA_DIR", "../metadata")
 dossier_dir <- Sys.getenv(
   "UMVL_DOSSIER_DIR",
   "../cppunivariate/include/cppunivariate/distributions"
@@ -14,16 +13,6 @@ r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
 pkg_r_dir <- Sys.getenv("UMVL_PKG_R_DIR", "package/R")
 
 source(file.path("scripts", "parse_cpp_metadata.R"))
-
-# Legacy aggregate metadata + docs overlay.
-legacy_models <- jsonlite::fromJSON(
-  file.path(metadata_dir, "models.json"),
-  simplifyDataFrame = FALSE
-)$models
-legacy_docs <- tryCatch(
-  jsonlite::fromJSON(file.path(metadata_dir, "docs.json"), simplifyDataFrame = FALSE)$models,
-  error = function(...) list()
-)
 
 # Per-distribution intermediate-form metadata.json files. May carry an
 # optional "docs" subkey.
@@ -58,24 +47,22 @@ dossier_docs <- Filter(Negate(is.null),
 )
 
 all_ids <- c(
-  vapply(legacy_models, function(m) m$id, character(1)),
   vapply(dossier_json_models, function(m) m$id, character(1)),
   vapply(dossier_hpp_models, function(m) m$id, character(1))
 )
 dups <- unique(all_ids[duplicated(all_ids)])
 if (length(dups)) {
   stop(
-    "Duplicate metadata id(s) across legacy metadata/models.json, ",
-    "per-distribution metadata.json, and per-distribution metadata.hpp: ",
+    "Duplicate metadata id(s) across per-distribution metadata.json ",
+    "and per-distribution metadata.hpp: ",
     paste(dups, collapse = ", ")
   )
 }
 
-models <- c(legacy_models, dossier_json_models, dossier_hpp_models)
+models <- c(dossier_json_models, dossier_hpp_models)
 models <- models[order(vapply(models, function(m) m$id, character(1)))]
 
-all_docs <- c(legacy_docs, dossier_docs)
-docs_by_id <- setNames(all_docs, vapply(all_docs, function(d) d$id, character(1)))
+docs_by_id <- setNames(dossier_docs, vapply(dossier_docs, function(d) d$id, character(1)))
 
 nl <- function(...) paste0(..., collapse = "")
 fallback <- function(x, default) if (is.null(x) || length(x) == 0) default else x

@@ -1,6 +1,6 @@
 // Pareto — distribution metadata.
 //
-// See metadata/SCHEMA.md "Per-distribution form (C++ constexpr)".
+// See univariateML/metadata/SCHEMA.md.
 
 #pragma once
 

@@ -31,8 +31,6 @@ univariateML/                         ✓ R shell as workspace
 python/                               ⚠ placeholder README only
 quality/                              ⚠ only golden/ exists
   golden/                             (per-dist JSON references at 1e-12)
-metadata/                             (legacy stubs — models.json/docs.json
-                                      empty since the dossier sweep)
 docs/                                 ⚠ empty
 roadmap/                              ✓
 ```
@@ -63,3 +61,12 @@ the layout is fully realised.
 - Tests pass after each move (still true today).
 - New metadata and validation assets survive the layout change without another
   redesign.
+
+## Updates
+
+- 2026-05-10 — top-level `metadata/` folder removed. The empty
+  `models.json` / `docs.json` stubs and `SCHEMA.md` were replaced by
+  the per-distribution form alone (`metadata.hpp` +
+  `univariateML/metadata/<id>.json`). `SCHEMA.md` lives at
+  `univariateML/metadata/SCHEMA.md` now; the `UMVL_METADATA_DIR` env
+  var is gone from the Justfile and the four reader scripts.

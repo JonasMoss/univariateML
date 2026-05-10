@@ -1,10 +1,10 @@
 #!/usr/bin/env Rscript
 # Generate golden values for univariateML estimators.
 #
-# For every model in metadata/models.json this script samples from the
-# configured sampler with default parameters and a deterministic seed,
-# fits the corresponding ml<id>() function, and writes the parameter
-# estimates, log-likelihood, and observation count to tests/golden/<id>.json.
+# For every dossier this script samples from the configured sampler
+# with default parameters and a deterministic seed, fits the
+# corresponding ml<id>() function, and writes the parameter estimates,
+# log-likelihood, and observation count to tests/golden/<id>.json.
 #
 # These goldens are the regression net for Workstreams 1-5 of the C++ port:
 # any change that does NOT also change the algorithm must reproduce them
@@ -72,7 +72,6 @@ fit_to_record <- function(model, fit, data) {
 }
 
 main <- function() {
-  metadata_dir <- Sys.getenv("UMVL_METADATA_DIR", "../metadata")
   dossier_dir <- Sys.getenv(
     "UMVL_DOSSIER_DIR",
     "../cppunivariate/include/cppunivariate/distributions"
@@ -82,11 +81,6 @@ main <- function() {
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
   source(file.path("scripts", "parse_cpp_metadata.R"))
-
-  legacy_models <- jsonlite::fromJSON(
-    file.path(metadata_dir, "models.json"),
-    simplifyDataFrame = FALSE
-  )$models
 
   dossier_json_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
   dossier_json_models <- lapply(dossier_json_files, function(f) {
@@ -108,20 +102,19 @@ main <- function() {
   })
 
   all_ids <- c(
-    vapply(legacy_models, function(m) m$id, character(1)),
     vapply(dossier_json_models, function(m) m$id, character(1)),
     vapply(dossier_hpp_models, function(m) m$id, character(1))
   )
   dups <- unique(all_ids[duplicated(all_ids)])
   if (length(dups)) {
     stop(
-      "Duplicate metadata id(s) across legacy metadata/models.json, ",
-      "per-distribution metadata.json, and per-distribution metadata.hpp: ",
+      "Duplicate metadata id(s) across per-distribution metadata.json ",
+      "and per-distribution metadata.hpp: ",
       paste(dups, collapse = ", ")
     )
   }
 
-  models <- c(legacy_models, dossier_json_models, dossier_hpp_models)
+  models <- c(dossier_json_models, dossier_hpp_models)
   models <- models[order(vapply(models, function(m) m$id, character(1)))]
 
   results <- list()

@@ -12,8 +12,9 @@
 //
 // Estimate-key mapping
 // --------------------
-// Golden "estimates" keys come from metadata/models.json (canonical param
-// names). C++ Result struct fields come from the estimator-author choice.
+// Golden "estimates" keys come from each dossier's metadata.hpp
+// (canonical param names). C++ Result struct fields come from the
+// estimator-author choice.
 // They do not always match (e.g. golden "a"/"b" vs CauchyResult.mu/scale,
 // pareto's "a"/"b" vs ParetoResult.shape/min). Each test below resolves
 // the mapping explicitly.

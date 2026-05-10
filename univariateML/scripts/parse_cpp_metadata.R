@@ -6,9 +6,9 @@
 # (id, name, support, params) without depending on a C++ compiler.
 #
 # The parser keys on a constrained format documented in
-# metadata/SCHEMA.md "Per-distribution form (C++ constexpr)". Files
-# that deviate from that format produce parse errors with the offending
-# section noted; either fix the file or extend the parser.
+# univariateML/metadata/SCHEMA.md. Files that deviate from that
+# format produce parse errors with the offending section noted;
+# either fix the file or extend the parser.
 #
 # kInf is recognised as a per-distribution alias for
 # std::numeric_limits<double>::infinity(); -kInf for -Inf.
@@ -58,8 +58,7 @@
 
 #' Parse a cppunivariate distributions/<id>/metadata.hpp file.
 #'
-#' Returns a list with `id`, `name`, `support`, `params` matching the
-#' shape of a single entry in the legacy `metadata/models.json`.
+#' Returns a list with `id`, `name`, `support`, `params`.
 parse_cpp_metadata <- function(path) {
   text <- paste(readLines(path, warn = FALSE), collapse = "\n")
   text <- .strip_comments(text)

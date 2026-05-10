@@ -5,7 +5,7 @@
 //
 // The R-side codegen also reads metadata.hpp via a regex parser
 // (univariateML/scripts/parse_cpp_metadata.R), which keys on a constrained
-// layout: see metadata/SCHEMA.md "Per-distribution form (C++ constexpr)".
+// layout: see univariateML/metadata/SCHEMA.md.
 
 #pragma once
 

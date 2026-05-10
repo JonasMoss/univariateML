@@ -37,3 +37,12 @@ estimator change is motivated by measured runtime or convergence problems.
 - Existing benchmark scripts are either integrated or replaced intentionally.
 - Benchmark scenarios are associated with distributions or implementation IDs.
 - Results can be compared across implementation versions.
+
+## Updates
+
+- 2026-05-10 — legacy `univariateML/scripts/bench.R` and the
+  `just bench` target removed. The harness was unrunnable
+  (`load_model_meta` read the empty legacy `metadata/models.json`)
+  and there were no `_rcpp` / `_cpp` variants in the namespace to
+  bench. Rebuild fresh from this entry's design notes when the
+  first A/B variant lands.

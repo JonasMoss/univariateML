@@ -1,11 +1,11 @@
-# Generate univariateML_metadata from metadata/models.json
+# Generate univariateML_metadata from per-distribution metadata.hpp +
+# univariateML/metadata/<id>.json sidecars.
 # Run via: Rscript scripts/gen_metadata.R
 
 if (!requireNamespace("jsonlite", quietly = TRUE)) {
   stop("jsonlite is required to run this generator.")
 }
 
-metadata_dir <- Sys.getenv("UMVL_METADATA_DIR", "../metadata")
 dossier_dir <- Sys.getenv(
   "UMVL_DOSSIER_DIR",
   "../cppunivariate/include/cppunivariate/distributions"
@@ -15,15 +15,9 @@ pkg_r_dir <- Sys.getenv("UMVL_PKG_R_DIR", "package/R")
 
 source(file.path("scripts", "parse_cpp_metadata.R"))
 
-# Legacy aggregate metadata (one entry per not-yet-migrated distribution).
-legacy_models <- jsonlite::fromJSON(
-  file.path(metadata_dir, "models.json"),
-  simplifyDataFrame = FALSE
-)$models
-
-# Per-distribution metadata.json files (legacy intermediate form,
-# kept for the brief Phase A→B window where some dossiers may still
-# carry it). Folder name supplies the id.
+# Per-distribution metadata.json files (intermediate form, kept for
+# the brief Phase A→B window where some dossiers may still carry it).
+# Folder name supplies the id.
 dossier_json_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
 dossier_json_models <- lapply(dossier_json_files, function(f) {
   m <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
@@ -47,22 +41,21 @@ dossier_hpp_models <- lapply(dossier_hpp_files, function(f) {
 
 # A distribution must live in exactly one source.
 all_ids <- c(
-  vapply(legacy_models, function(m) m$id, character(1)),
   vapply(dossier_json_models, function(m) m$id, character(1)),
   vapply(dossier_hpp_models, function(m) m$id, character(1))
 )
 dups <- unique(all_ids[duplicated(all_ids)])
 if (length(dups)) {
   stop(
-    "Duplicate metadata id(s) across legacy metadata/models.json, ",
-    "per-distribution metadata.json, and per-distribution metadata.hpp: ",
+    "Duplicate metadata id(s) across per-distribution metadata.json ",
+    "and per-distribution metadata.hpp: ",
     paste(dups, collapse = ", ")
   )
 }
 
 # Sort alphabetically by id so output is deterministic regardless of
 # which source a given distribution lives in.
-models <- c(legacy_models, dossier_json_models, dossier_hpp_models)
+models <- c(dossier_json_models, dossier_hpp_models)
 models <- models[order(vapply(models, function(m) m$id, character(1)))]
 
 line <- function(...) paste0(..., collapse = "")

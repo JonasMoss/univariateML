@@ -213,8 +213,8 @@ the legacy fGarch path expect a usable result back, not an error.
 Every distribution lives in a dossier bundle at
 `cppunivariate/include/cppunivariate/distributions/<id>/`. The legacy
 flat-file layout (separate `estimators/` and `distributions/<id>.hpp`)
-was retired in the dossier sweep; legacy `metadata/models.json` and
-`metadata/docs.json` are intentionally empty.
+was retired in the dossier sweep, along with the old top-level
+`metadata/{models,docs}.json` aggregate.
 
 1. Create the dossier folder `cppunivariate/include/cppunivariate/distributions/<id>/`.
    The folder name **is** the distribution id.
@@ -228,9 +228,9 @@ was retired in the dossier sweep; legacy `metadata/models.json` and
      shared types from `core/metadata.hpp`. Format is constrained
      (one entry per ParamDescriptor row, `kInf` alias for infinity)
      so the regex parser in `univariateML/scripts/parse_cpp_metadata.R` can
-     read it; see `metadata/SCHEMA.md` for the full schema and
-     existing dossiers (`distributions/lomax`, `distributions/exp`)
-     for examples.
+     read it; see `univariateML/metadata/SCHEMA.md` for the full
+     schema and existing dossiers (`distributions/lomax`,
+     `distributions/exp`) for examples.
    - `dossier.md` — human-readable docs. Today a bare stub
      (`# <Name>` + empty section headers); filled later by a
      dedicated docs pass. Don't pre-populate from existing comments
@@ -261,9 +261,7 @@ alphabetically by id:
   `univariateML/scripts/parse_cpp_metadata.R` (the C++ canonical form),
 - per-distribution `univariateML/metadata/<id>.json` sidecars (R-side refs only).
 
-`metadata/models.json` and `metadata/docs.json` are kept as empty
-stubs — the scripts still read them, but every entry should be a
-dossier today. A given id must appear in exactly one source.
+A given id must appear in exactly one source.
 
 ---
 
