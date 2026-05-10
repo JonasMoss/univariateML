@@ -1,0 +1,4 @@
+{
+  "sampler": "actuar::rlgamma",
+  "density": "actuar::dlgamma"
+}

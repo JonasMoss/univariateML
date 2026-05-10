@@ -1,0 +1,4 @@
+{
+  "sampler": "extraDistr::rlomax",
+  "density": "extraDistr::dlomax"
+}

@@ -1,0 +1,42 @@
+Package: univariateML
+Type: Package
+Title: Maximum Likelihood Estimation for Univariate Densities
+Version: 1.5.0
+Authors@R: c(
+    person("Jonas", "Moss", , "jonas.gjertsen@gmail.com", role = c("aut", "cre"), 
+      comment = c(ORCID = "0000-0002-6876-6964")),
+    person("Thomas", "Nagler", , "mail@tnagler.com", role = c("ctb")),
+    person("Chitu", "Okoli", , "chitu.okoli@skema.edu", role = c("ctb"))
+    )
+Description: User-friendly maximum likelihood estimation (Fisher (1921) 
+    <doi:10.1098/rsta.1922.0009>) of univariate densities.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 3.5)
+Imports:
+    Rcpp,
+    extraDistr,
+    actuar,
+    fGarch,
+    logitnorm,
+    nakagami,
+    sads
+Suggests:
+    jsonlite,
+    testthat,
+    knitr,
+    rmarkdown,
+    markdown,
+    copula,
+    dplyr
+RoxygenNote: 7.3.2
+VignetteBuilder: knitr
+SystemRequirements: C++17
+URL: https://github.com/JonasMoss/univariateML, https://jonasmoss.github.io/univariateML/
+BugReports: https://github.com/JonasMoss/univariateML/issues
+Roxygen: list(markdown = TRUE)
+LinkingTo:
+    Rcpp,
+    BH

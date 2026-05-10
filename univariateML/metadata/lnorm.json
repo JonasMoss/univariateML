@@ -1,0 +1,4 @@
+{
+  "sampler": "stats::rlnorm",
+  "density": "stats::dlnorm"
+}

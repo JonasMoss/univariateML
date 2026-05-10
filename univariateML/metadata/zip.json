@@ -1,0 +1,4 @@
+{
+  "sampler": "extraDistr::rzip",
+  "density": "extraDistr::dzip"
+}

@@ -1,0 +1,146 @@
+# Generates explicit ml*** wrappers from metadata + docs.
+# Run via: Rscript scripts/gen_wrappers.R
+
+if (!requireNamespace("jsonlite", quietly = TRUE)) {
+  stop("jsonlite is required to run this generator.")
+}
+
+metadata_dir <- Sys.getenv("UMVL_METADATA_DIR", "../metadata")
+dossier_dir <- Sys.getenv(
+  "UMVL_DOSSIER_DIR",
+  "../cppunivariate/include/cppunivariate/distributions"
+)
+r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
+pkg_r_dir <- Sys.getenv("UMVL_PKG_R_DIR", "package/R")
+
+source(file.path("scripts", "parse_cpp_metadata.R"))
+
+# Legacy aggregate metadata + docs overlay.
+legacy_models <- jsonlite::fromJSON(
+  file.path(metadata_dir, "models.json"),
+  simplifyDataFrame = FALSE
+)$models
+legacy_docs <- tryCatch(
+  jsonlite::fromJSON(file.path(metadata_dir, "docs.json"), simplifyDataFrame = FALSE)$models,
+  error = function(...) list()
+)
+
+# Per-distribution intermediate-form metadata.json files. May carry an
+# optional "docs" subkey.
+dossier_json_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
+dossier_json_models <- lapply(dossier_json_files, function(f) {
+  m <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
+  m$id <- basename(dirname(f))
+  m
+})
+
+# Per-distribution canonical-form metadata.hpp files. Paired with
+# univariateML/metadata/<id>.json for R-side refs (sampler, density, optional docs).
+dossier_hpp_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.hpp"))
+dossier_hpp_models <- lapply(dossier_hpp_files, function(f) {
+  cpp <- parse_cpp_metadata(f)
+  refs_file <- file.path(r_metadata_dir, paste0(cpp$id, ".json"))
+  refs <- if (file.exists(refs_file)) {
+    jsonlite::fromJSON(refs_file, simplifyDataFrame = FALSE)
+  } else {
+    list()
+  }
+  c(cpp, refs)
+})
+
+dossier_docs <- Filter(Negate(is.null),
+  lapply(c(dossier_json_models, dossier_hpp_models), function(m) {
+    if (is.null(m$docs)) return(NULL)
+    d <- m$docs
+    d$id <- m$id
+    d
+  })
+)
+
+all_ids <- c(
+  vapply(legacy_models, function(m) m$id, character(1)),
+  vapply(dossier_json_models, function(m) m$id, character(1)),
+  vapply(dossier_hpp_models, function(m) m$id, character(1))
+)
+dups <- unique(all_ids[duplicated(all_ids)])
+if (length(dups)) {
+  stop(
+    "Duplicate metadata id(s) across legacy metadata/models.json, ",
+    "per-distribution metadata.json, and per-distribution metadata.hpp: ",
+    paste(dups, collapse = ", ")
+  )
+}
+
+models <- c(legacy_models, dossier_json_models, dossier_hpp_models)
+models <- models[order(vapply(models, function(m) m$id, character(1)))]
+
+all_docs <- c(legacy_docs, dossier_docs)
+docs_by_id <- setNames(all_docs, vapply(all_docs, function(d) d$id, character(1)))
+
+nl <- function(...) paste0(..., collapse = "")
+fallback <- function(x, default) if (is.null(x) || length(x) == 0) default else x
+
+gen_doc <- function(model) {
+  d <- docs_by_id[[model$id]]
+  title <- fallback(if (!is.null(d)) d$title else NULL, nl(model$name, " maximum likelihood estimation"))
+  desc <- fallback(if (!is.null(d)) d$description else NULL, "Maximum likelihood estimation for this distribution.")
+  lower <- fallback(model$support$lower, "-Inf")
+  upper <- fallback(model$support$upper, "Inf")
+  details <- fallback(if (!is.null(d)) d$details else NULL,
+    nl("Density: ", model$density, "; support: [", lower, ", ", upper, ").")
+  )
+  seealso <- fallback(if (!is.null(d)) d$seealso else NULL, model$density)
+  refs <- fallback(if (!is.null(d)) d$references else NULL, character(0))
+  examples <- fallback(if (!is.null(d)) d$examples else NULL,
+    nl("set.seed(1); ", paste0("ml", model$id), "(simulate_default(\"", paste0("ml", model$id), "\", 100))")
+  )
+
+  block <- c(
+    nl("#' ", title),
+    "#'",
+    nl("#' ", desc),
+    if (!is.null(details)) c("#'", nl("#' ", details)) else NULL,
+    "#'",
+    "#' @param x a (non-empty) numeric vector of data values.",
+    "#' @param na.rm logical. Should missing values be removed?",
+    "#' @param ... Optional control arguments passed to the optimizer/estimator.",
+    "#' @return An object of class `univariateML` with estimates and attributes.",
+    if (!is.null(seealso)) c("#' @seealso", paste0("#'   ", seealso)) else NULL,
+    if (length(refs)) c("#' @references", paste0("#'   ", refs)) else NULL,
+    if (!is.null(examples)) c("#' @examples", paste0("#' ", examples)) else NULL,
+    "#' @export"
+  )
+  paste0(block, collapse = "\n")
+}
+
+gen_wrapper <- function(model) {
+  fname <- paste0("ml", model$id)
+  paste0(
+    gen_doc(model), "\n",
+    fname, " <- function(x, na.rm = FALSE, ...) {\n",
+    "  x <- ml_check_modify(x, na.rm = na.rm, name = \"", fname, "\")\n",
+    "  n <- length(x)\n",
+    "  out <- ", fname, "_(x = x, ...)\n",
+    "  params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)\n",
+    "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params)\n",
+    "}\n\n"
+  )
+}
+
+header <- paste(
+  "# This file is auto-generated by scripts/gen_wrappers.R",
+  "# Do not edit by hand.",
+  sep = "\n"
+)
+
+wrappers <- vapply(models, gen_wrapper, character(1))
+generated_names <- vapply(models, function(m) paste0("ml", m$id), character(1))
+
+dir.create(pkg_r_dir, recursive = TRUE, showWarnings = FALSE)
+cat(
+  header, "\n\n",
+  "generated_models <- c(\"", paste0(generated_names, collapse = "\", \""), "\")\n\n",
+  paste0(wrappers, collapse = ""),
+  file = file.path(pkg_r_dir, "ml02_wrappers.R"),
+  sep = ""
+)

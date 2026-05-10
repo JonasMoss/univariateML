@@ -1,0 +1,4 @@
+{
+  "sampler": "extraDistr::rinvgamma",
+  "density": "extraDistr::dinvgamma"
+}

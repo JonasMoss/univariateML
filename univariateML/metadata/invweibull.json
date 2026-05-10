@@ -1,0 +1,4 @@
+{
+  "sampler": "actuar::rinvweibull",
+  "density": "actuar::dinvweibull"
+}

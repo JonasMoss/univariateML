@@ -1,0 +1,4 @@
+{
+  "sampler": "extraDistr::rlgser",
+  "density": "extraDistr::dlgser"
+}

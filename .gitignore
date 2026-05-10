@@ -39,7 +39,43 @@ Temporary Items
 .Rhistory
 inst/doc
 vignettes/*.R
+vignettes/figure/
+vignettes/copula_cache/
 docs/
 README_cache/
 CRAN-RELEASE
 docs
+Rplot*.png
+tests/testthat/Rplots.pdf
+src/*.o
+src/*.so
+src/*.dll
+src/*.a
+src/*.gcda
+src/*.gcno
+workspace/
+out
+show.sh
+z.rds
+cdf_fits*.png
+fit_analysis_plots*.png
+
+# R CMD check output
+*.Rcheck/
+..Rcheck/
+
+# Monorepo layout: workspace + generated CRAN-package subdir
+# univariateML/package/ is fully synthesized by `just regen` from
+# workspace sources + cppunivariate headers; never edit it by hand.
+univariateML/package/
+# Build / RNG artefacts that may land in the workspace src/ if someone
+# runs R CMD INSTALL against the workspace by mistake (the supported
+# entry point is `just regen` → R CMD INSTALL univariateML/package).
+univariateML/src/*.o
+univariateML/src/*.so
+univariateML/src/*.dll
+univariateML/src/*.a
+univariateML/src/*.gcda
+univariateML/src/*.gcno
+univariateML/tests/testthat/Rplots.pdf
+cppunivariate/build/

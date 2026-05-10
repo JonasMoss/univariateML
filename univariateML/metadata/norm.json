@@ -1,0 +1,4 @@
+{
+  "sampler": "stats::rnorm",
+  "density": "stats::dnorm"
+}

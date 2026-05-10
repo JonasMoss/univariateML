@@ -1,0 +1,4 @@
+{
+  "sampler": "extraDistr::rfatigue",
+  "density": "extraDistr::dfatigue"
+}

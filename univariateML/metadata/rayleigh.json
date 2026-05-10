@@ -1,0 +1,4 @@
+{
+  "sampler": "extraDistr::rrayleigh",
+  "density": "extraDistr::drayleigh"
+}

@@ -1,0 +1,4 @@
+{
+  "sampler": "extraDistr::rbetapr",
+  "density": "extraDistr::dbetapr"
+}

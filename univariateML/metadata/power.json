@@ -1,0 +1,4 @@
+{
+  "sampler": "extraDistr::rpower",
+  "density": "extraDistr::dpower"
+}

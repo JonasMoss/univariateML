@@ -1,0 +1,4 @@
+{
+  "sampler": "stats::rbeta",
+  "density": "stats::dbeta"
+}
