@@ -1,6 +1,6 @@
-# C++ core as source of truth (deferred)
+# C++ core as source of truth (closed 2026-05-10)
 
-**Status:** deferred — strategic direction, not today's code change.
+**Status:** closed — this is now the architecture; see CLAUDE.md "Vision".
 
 ## The idea
 
@@ -17,25 +17,26 @@ The project has too many distributions for several language-specific
 implementations to stay correct by hand. A single C++ core gives one place for
 estimators, distribution functions, numerical policy, and validation.
 
-## Design when revisited
+## What landed
 
-- Treat `src/ml/` as the seed of the future C++ library.
-- Keep estimator and distribution logic local to each distribution where
-  possible.
-- Keep Rcpp and package-specific behavior outside the C++ core.
-- Generate R and future Python bindings from shared metadata.
-- Prefer explicit functions and structs over class hierarchies or runtime
-  registries.
+- The C++ core lives at `cppunivariate/include/cppunivariate/`,
+  header-only, no R headers, no Armadillo. CLAUDE.md "Vision" enshrines
+  the three-layer (C++ core → R shell → Python shell) architecture and
+  the C++ style guide pins the hard rules (no exceptions in cppunivariate,
+  no `using`, no raw pointers, span-based input boundary).
+- 42 distribution dossiers under
+  `cppunivariate/include/cppunivariate/distributions/<id>/`, each
+  bundling `mle.hpp` / `dpqr.hpp` / `metadata.hpp` / `dossier.md`.
+- C++ tests (`cppunivariate/tests/`, doctest + ctest, 6 targets) run
+  without loading R; R wrappers in `univariateML/R/` are auto-generated
+  from per-distribution metadata and verified against goldens at 1e-12.
+- Rcpp adapters confined to `univariateML/src/ml_exports.cpp` and
+  `univariateML/src/distribution_exports.cpp`; the C++ core has no
+  knowledge of them.
+- "De-R-flavour cppunivariate" sweep (commit `9ce49fb`) finished the
+  cleanup. Python shell is still a placeholder (`python/README.md`)
+  but the C++ core is verified ready for it.
 
-## Trigger to revisit
-
-Take this off the shelf when a new estimator is added, when Python bindings
-start, or when the repo layout begins moving away from an R-package-first
-shape.
-
-## Verification when revisited
-
-- C++ tests exercise the implementation without loading R.
-- R wrappers continue to match C++ goldens.
-- New code can be understood distribution-by-distribution without following a
-  global object system.
+Landmark commits: `0d9e480` (dossier sweep finishing 38 distributions),
+`9ce49fb` (de-R-flavour), `e04e2ca` (workspace + generated package
+split), the Phase 1–4 monorepo move (`c01be1f` → `5c3d187`).

@@ -22,9 +22,8 @@ the queue.
 
 ## Index
 
-- [2026-05-08 — C++ core as source of truth](2026-05-08-cpp-core-source-of-truth.md):
-  make the portable C++ core the canonical implementation, with R and
-  future Python as thin generated shells.
+- [2026-05-08 — C++ core as source of truth](2026-05-08-cpp-core-source-of-truth.md)
+  *(closed 2026-05-10)*: now the architecture; see CLAUDE.md "Vision".
 - [2026-05-08 — Cost-method fusion](2026-05-08-cost-method-fusion.md):
   fused `grad_hessian` on the Cost concept; deferred until a
   production callsite exists for `Cost::hessian`.
@@ -41,8 +40,10 @@ the queue.
 - [2026-05-08 — Documentation from metadata](2026-05-08-documentation-from-metadata.md):
   generate docs from the same metadata and dossiers used by code and
   tests.
-- [2026-05-08 — Monorepo layout](2026-05-08-monorepo-layout.md):
-  future repo shape with C++ primary and language packages downstream.
+- [2026-05-08 — Monorepo layout](2026-05-08-monorepo-layout.md)
+  *(mostly landed)*: C++-primary layout in place; `python/package/`,
+  `quality/{simulations,references}/`, and `docs/` remain placeholders
+  awaiting their respective roadmap entries.
 - [2026-05-08 — Benchmarks](2026-05-08-benchmarks.md):
   benchmark runtime and robustness after correctness mechanisms mature.
 - [2026-05-08 — Variable parameter selection](2026-05-08-variable-parameter-selection.md):

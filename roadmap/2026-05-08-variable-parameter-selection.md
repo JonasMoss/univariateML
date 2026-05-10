@@ -27,13 +27,23 @@ Student-t when prior information is available.
 
 ## Design when revisited
 
-The metadata seam is already in place: each `<Param>` in a
-per-distribution `metadata.json` carries an optional `"estimable"`
-field (boolean, defaults to `true`). Today the field is read by
-codegen but not consumed — every fitter estimates every parameter
-regardless. The pilot dossiers at
-`cppunivariate/include/cppunivariate/distributions/{lomax,exp}/metadata.json`
-populate it.
+The metadata seam is already in place: `ParamDescriptor` in
+`cppunivariate/include/cppunivariate/core/metadata.hpp` has a
+`bool estimable` field (currently always `true` — see comment
+"forward-looking; today always true (see roadmap)"), and every
+per-distribution `metadata.hpp` populates it positionally as the
+4th slot of each row, e.g. for Lomax:
+
+```cpp
+{"lambda", "rate",  1.0, true, {SupportType::Real, 0.0, kInf, false, false}},
+{"kappa",  "shape", 2.0, true, {SupportType::Real, 0.0, kInf, false, false}},
+```
+
+`univariateML/scripts/parse_cpp_metadata.R` parses it and the pilots
+(`distributions/lomax/`, `distributions/exp/`) assert the values via
+`static_assert` in `cppunivariate/tests/test_metadata.cpp`. Today no
+downstream code consumes the field — every fitter estimates every
+parameter regardless.
 
 When this work resumes, the design questions are:
 
