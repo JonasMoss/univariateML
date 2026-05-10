@@ -10,7 +10,7 @@ The focused per-topic deferral entries are linked from each section.
 
 ## TL;DR
 
-35 of 42 distributions are now machine-checked at 1e-12 against an
+37 of 42 distributions are now machine-checked at 1e-12 against an
 independently-derived sympy ground truth. The harness already paid
 for itself by surfacing a real algorithmic bug in `fatigue_mle`
 (α-formula off by 2 from the standard BS MLE). Adding a new
@@ -121,12 +121,12 @@ default pattern:
 
 ---
 
-## What's validated (35 of 42)
+## What's validated (37 of 42)
 
 | Bucket | Count | Distributions |
 |---|---|---|
 | 1-D closed-form, full-analytical Cost | 4 | exp, rayleigh, pois, geom |
-| 2-D closed-form, full-analytical Cost | 11 | norm, weibull, gumbel, logis, lnorm, cauchy, llogis, kumar, gompertz, invgauss, logitnorm |
+| 2-D closed-form, full-analytical Cost | 12 | norm, weibull, gumbel, logis, lnorm, cauchy, llogis, kumar, gompertz, invgauss, logitnorm, lomax |
 | Boost.Math seam (lgamma / digamma / trigamma) | 7 | gamma, beta, betapr, naka, invgamma, burr, invburr |
 | 2-D analytical without Boost | 1 | invweibull |
 | Phi-space + FD-grad (BFGS family) | 3 | std, paralogis, ged |
@@ -134,17 +134,18 @@ default pattern:
 | Boundary-MLE (non-regular) | 4 | unif, dunif, pareto, power |
 | Cost-with-fixed-ctor-arg | 2 | binom (size=9), zipf (N=3) |
 | Fisher-info-as-Hessian | 1 | laplace |
+| Piecewise PMF (mixture) | 1 | zip |
 
 (Distributions appear in multiple rows where they exercise multiple
 patterns — e.g. `pois` is both 1-D-closed-form and discrete; `dunif`
 is both discrete and boundary-MLE.)
 
-All 35 reach `claimed_level: validated` at 1e-12 in their
+All 37 reach `claimed_level: validated` at 1e-12 in their
 `quality/derived/<id>/quality_report.md`.
 
 ---
 
-## What's deferred (4 + 2)
+## What's deferred (3 + 1 + 1)
 
 ### 1. Fernandez-Steel skew family — `snorm`, `sstd`, `sged`
 
@@ -167,16 +168,7 @@ finite-sample effect. **Documented in
 with three fix options (correct fatigue_mle / leave alone /
 ramp-via-flag) and the release-management consequences.
 
-### 3. `zip` — piecewise PMF, not yet attempted
-
-Zero-inflated Poisson has a piecewise density (x = 0 vs x > 0 use
-different formulas). Sympy can express this with `Piecewise`, but
-the second derivatives of `Piecewise` plus the chain rule may
-produce DiracDelta-on-the-boundary-condition expressions similar
-to the F-S family case. **Will be attempted in the next session;
-this document will be updated with the result.**
-
-### 4. `lgamma` — wrapper-only, intentionally out of harness scope
+### 3. `lgamma` — wrapper-only, intentionally out of harness scope
 
 `lgamma_mle` doesn't have its own `Cost` struct; it wraps
 `gamma_mle` on log-transformed data via the R-side wrapper (per
@@ -303,7 +295,23 @@ multiplicative sweep that shoots past 1. lgser's
 prefix match. Fixed in both `_sweep_halfwidth` and the inner sweep
 loop.
 
-### J. Cost-with-extra-ctor-args (binom, zipf)
+### J1. Piecewise PMF (zip) — turned out fine
+
+**Concern.** Zero-inflated Poisson has a piecewise density (x=0 vs
+x>0 use different formulas). Mirrors the F-S structural shape and
+risked the same sympy chain-rule explosion.
+
+**Resolution (worked).** `sp.Piecewise` over the data symbol's value
+(`Eq(x, 0)`) lambdifies through mpmath fine. Crucial difference from
+F-S: the Piecewise condition is on the *data* symbol `x`, not on a
+function of the *parameters*. So differentiating w.r.t. (λ, π)
+operates branch-wise without producing DiracDelta on the condition,
+and the resulting Piecewise expressions stay compact. zip validated
+at 1e-15 / 1e-14. The lesson generalises: data-conditional
+Piecewise is safe; parameter-conditional Piecewise (F-S `sign(z)`
+where z is a function of θ) is the dangerous case.
+
+### J2. Cost-with-extra-ctor-args (binom, zipf)
 
 **Problem.** `BinomCost{ispan x, double size}` and
 `ZipfCost{ispan x, double N}` need an extra constant at construction
@@ -354,12 +362,6 @@ suite alone.
 ---
 
 ## Open questions / extensions
-
-### Short-term (next session)
-
-- **Try `zip`.** Piecewise pmf via `sp.Piecewise`. May explode like
-  the F-S family, may work cleanly. This document will be updated
-  with the result.
 
 ### Medium-term
 
@@ -420,6 +422,8 @@ Templates by shape (in increasing complexity):
 | Boundary-MLE | `quality/math/pareto.py` | ~30 min |
 | Cost ctor with extra args | `quality/math/binom.py` | ~30 min (+ lockstep dispatch) |
 | Fisher-info-as-Hessian | `quality/math/laplace.py` | ~45 min |
+| Piecewise PMF (data-conditional) | `quality/math/zip.py` | ~30 min |
 
-The 2 remaining-doable distros (`zip`) need experimentation; the
-3 deferred (F-S skew) need infrastructure work first.
+The 3 deferred F-S skew distros need a different approach
+(parameter-conditional Piecewise or hand-derived analytical
+Hessian) before they can be added.

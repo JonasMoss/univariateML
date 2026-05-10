@@ -1,0 +1,12 @@
+{
+  "id": "zip",
+  "spec_hash": "d08b14cafc146955",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 1.0459189070388675e-11,
+    "max_rel": 3.750125154719601e-15,
+    "sweep_max": 2789.0240028991016
+  },
+  "passed": true
+}

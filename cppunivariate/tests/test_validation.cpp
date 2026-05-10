@@ -168,6 +168,10 @@ TEST_CASE("validation::exp") {
   run_validation("exp", eval_with<cppunivariate::ExpCost>);
 }
 
+TEST_CASE("validation::lomax") {
+  run_validation("lomax", eval_with<cppunivariate::LomaxCost>);
+}
+
 TEST_CASE("validation::std") {
   run_validation("std", eval_fd_grad<cppunivariate::StudentTCost>);
 }
@@ -319,6 +323,10 @@ TEST_CASE("validation::binom") {
         /*size=*/9.0};
       return evaluate_cost(cost, theta);
     });
+}
+
+TEST_CASE("validation::zip") {
+  run_validation("zip", eval_int<cppunivariate::ZipCost>);
 }
 
 // zipf: ZipfCost takes (ispan x, double N); N hardcoded from the golden —
