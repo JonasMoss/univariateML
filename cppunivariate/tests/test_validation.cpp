@@ -21,6 +21,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+#include "cppunivariate/core/finite_diff.hpp"
 #include "cppunivariate/cppunivariate.hpp"
 #include "eval_io.hpp"
 
@@ -47,6 +48,8 @@ struct CostEval {
 using CostFactory = std::function<CostEval(const std::vector<double> &,
                                            const std::vector<double> &)>;
 
+// Evaluator for Costs with full analytical interface (operator/gradient/hessian).
+// Used by exp/lomax/most-distros — see std variant below for the FD-grad case.
 template <typename Cost>
 CostEval eval_with(const std::vector<double> &data,
                    const std::vector<double> &theta) {
@@ -56,6 +59,32 @@ CostEval eval_with(const std::vector<double> &data,
   const std::size_t n = static_cast<std::size_t>(cost.dim());
   out.grad.assign(n, 0.0);
   cost.gradient(theta.data(), out.grad.data());
+  std::vector<double> H_flat(n * n, 0.0);
+  cost.hessian(theta.data(), H_flat.data());
+  out.hess.assign(n, std::vector<double>(n, 0.0));
+  for (std::size_t i = 0; i < n; ++i)
+    for (std::size_t j = 0; j < n; ++j)
+      out.hess[i][j] = H_flat[i * n + j];
+  return out;
+}
+
+// Evaluator for Costs whose gradient is computed via finite differences in
+// production (std, snorm, sstd, sged, ged, paralogis — the BFGS-with-FD
+// family). We mirror the production path: wrap the inner Cost with
+// finite_diff_cost to get a numerical gradient. The harness skips the
+// gradient-vs-symbolic check at 1e-12 for these (see Spec.cost_has_gradient);
+// the FD grad lives in cpp_eval.json as advisory + gates only the
+// score-residual smoke-check at the MLE.
+template <typename Cost>
+CostEval eval_fd_grad(const std::vector<double> &data,
+                      const std::vector<double> &theta) {
+  Cost cost{mltest::as_span(data)};
+  cppunivariate::finite_diff_cost<Cost> fd{cost};
+  CostEval out;
+  out.nll = cost(theta.data());
+  const std::size_t n = static_cast<std::size_t>(cost.dim());
+  out.grad.assign(n, 0.0);
+  fd.gradient(theta.data(), out.grad.data());
   std::vector<double> H_flat(n * n, 0.0);
   cost.hessian(theta.data(), H_flat.data());
   out.hess.assign(n, std::vector<double>(n, 0.0));
@@ -105,4 +134,8 @@ void run_validation(const std::string &id, CostFactory fn) {
 
 TEST_CASE("validation::exp") {
   run_validation("exp", eval_with<cppunivariate::ExpCost>);
+}
+
+TEST_CASE("validation::std") {
+  run_validation("std", eval_fd_grad<cppunivariate::StudentTCost>);
 }

@@ -85,13 +85,18 @@ def _write_quality_report(
     grad: Dict,
     hess: Dict,
     nll_pass: bool,
-    grad_pass: bool,
+    grad_pass: Optional[bool],
     hess_pass: bool,
 ) -> None:
-    all_pass = nll_pass and grad_pass and hess_pass
-    claimed = "validated" if all_pass else "experimental"
+    gates_pass = nll_pass and hess_pass and (grad_pass is not False)
+    claimed = "validated" if gates_pass else "experimental"
 
-    def fmt(check_name: str, summary: Dict, tol: float, ok: bool) -> str:
+    def fmt(check_name: str, summary: Dict, tol: float, ok: Optional[bool]) -> str:
+        if ok is None:
+            return (
+                f"- · {check_name}: max_rel = {summary['max_rel']:.3e}"
+                f" (SKIP — FD grad, advisory only, n={summary['n']})"
+            )
         flag = "✓" if ok else "✗"
         return (
             f"- {flag} {check_name}: max_rel = {summary['max_rel']:.3e}"
@@ -128,6 +133,9 @@ def _write_quality_report(
 
 
 def main(distribution_id: str, repo_root: Path) -> int:
+    from quality.harness.spec import load_spec
+
+    spec = load_spec(distribution_id)
     derived = repo_root / "quality" / "derived" / distribution_id
     sym_path = derived / "symbolic_grid.json"
     cpp_path = derived / "cpp_eval.json"
@@ -160,16 +168,10 @@ def main(distribution_id: str, repo_root: Path) -> int:
     hess = _summarize_3d(sym["hess_at_theta"], cpp["hess_at_theta"])
 
     nll_pass = nll["max_rel"] < NLL_TOL
-    grad_pass = grad["max_rel"] < GRAD_TOL
+    grad_check_runs = spec.cost_has_gradient
+    grad_pass = (grad["max_rel"] < GRAD_TOL) if grad_check_runs else None
     hess_pass = hess["max_rel"] < HESS_TOL
 
-    grad_payload = {
-        "id": distribution_id,
-        "spec_hash": sym["spec_hash"],
-        "tolerance_rel": GRAD_TOL,
-        "summary": grad,
-        "passed": grad_pass,
-    }
     hess_payload = {
         "id": distribution_id,
         "spec_hash": sym["spec_hash"],
@@ -177,11 +179,25 @@ def main(distribution_id: str, repo_root: Path) -> int:
         "summary": hess,
         "passed": hess_pass,
     }
-    (derived / "gradient_report.json").write_text(
-        json.dumps(grad_payload, indent=2) + "\n"
-    )
     (derived / "hessian_report.json").write_text(
         json.dumps(hess_payload, indent=2) + "\n"
+    )
+
+    grad_payload = {
+        "id": distribution_id,
+        "spec_hash": sym["spec_hash"],
+        "tolerance_rel": GRAD_TOL if grad_check_runs else None,
+        "summary": grad,
+        "passed": grad_pass,
+        "skipped_reason": (
+            None if grad_check_runs
+            else "Cost::gradient is finite-difference; analytical "
+                 "gradient-vs-symbolic check is not meaningful "
+                 "(implicit in nll match)."
+        ),
+    }
+    (derived / "gradient_report.json").write_text(
+        json.dumps(grad_payload, indent=2) + "\n"
     )
 
     _write_quality_report(
@@ -199,9 +215,14 @@ def main(distribution_id: str, repo_root: Path) -> int:
 
     print(f"[{distribution_id}] nll  max_rel = {nll['max_rel']:.3e}  "
           f"({'OK' if nll_pass else 'FAIL'})")
-    print(f"[{distribution_id}] grad max_rel = {grad['max_rel']:.3e}  "
-          f"({'OK' if grad_pass else 'FAIL'})")
+    if grad_check_runs:
+        print(f"[{distribution_id}] grad max_rel = {grad['max_rel']:.3e}  "
+              f"({'OK' if grad_pass else 'FAIL'})")
+    else:
+        print(f"[{distribution_id}] grad max_rel = {grad['max_rel']:.3e}  "
+              f"(SKIP — FD grad, advisory only)")
     print(f"[{distribution_id}] hess max_rel = {hess['max_rel']:.3e}  "
           f"({'OK' if hess_pass else 'FAIL'})")
 
-    return 0 if (nll_pass and grad_pass and hess_pass) else 1
+    gates_pass = nll_pass and hess_pass and (grad_pass is not False)
+    return 0 if gates_pass else 1

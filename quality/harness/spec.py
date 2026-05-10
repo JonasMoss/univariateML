@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 import sympy as sp
 
@@ -45,6 +45,18 @@ class Spec:
     fisher_info_per_obs: Optional[sp.Matrix] = None
     references: Dict[str, str] = field(default_factory=dict)
     notes: str = ""
+    # True when Cost::gradient is implemented analytically (most distros).
+    # Set to False for distros where BFGS calls finite_diff_cost<Cost> —
+    # std, snorm, sstd, sged, ged, paralogis. The harness then skips the
+    # 1e-12 gradient-vs-symbolic check (the FD gradient is already
+    # implicitly verified by checking nll matches symbolic, since the FD
+    # stencil reads from the same operator()).
+    cost_has_gradient: bool = True
+    # Map golden's natural-space `estimates` dict to a Cost-space theta
+    # vector matching `params` order. None ⇒ identity (golden names match
+    # param names; used by exp/lomax/etc.). Set explicitly for distros
+    # whose Cost takes a phi reparam (std, etc.).
+    golden_to_cost: Optional[Callable[[Dict[str, float]], List[float]]] = None
 
     def __post_init__(self) -> None:
         free = {s.name for s in self.log_density.free_symbols}

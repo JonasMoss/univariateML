@@ -1,0 +1,12 @@
+{
+  "id": "std",
+  "spec_hash": "e9e0dca5a4eb0a27",
+  "tolerance_rel": null,
+  "summary": {
+    "n": 51,
+    "max_abs": 5.382041138091154e-05,
+    "max_rel": 1.7028877718307476e-05
+  },
+  "passed": null,
+  "skipped_reason": "Cost::gradient is finite-difference; analytical gradient-vs-symbolic check is not meaningful (implicit in nll match)."
+}

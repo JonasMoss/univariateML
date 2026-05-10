@@ -84,7 +84,10 @@ def build_eval_request(
         golden = json.load(fh)
     data = list(golden["data"])
     estimates = golden["estimates"]
-    mle = [float(estimates[p.name]) for p in spec.params]
+    if spec.golden_to_cost is not None:
+        mle = list(spec.golden_to_cost(estimates))
+    else:
+        mle = [float(estimates[p.name]) for p in spec.params]
     thetas = _theta_sweep(spec, mle, n_thetas=n_thetas, seed=seed)
     return {
         "id": spec.id,
