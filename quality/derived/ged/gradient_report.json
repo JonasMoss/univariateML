@@ -5,7 +5,8 @@
   "summary": {
     "n": 51,
     "max_abs": 5.443567847862596e-05,
-    "max_rel": 2.4853233472232894e-05
+    "max_rel": 1.5908936147504888e-08,
+    "sweep_max": 3421.7045045569243
   },
   "passed": null,
   "skipped_reason": "Cost::gradient is finite-difference; analytical gradient-vs-symbolic check is not meaningful (implicit in nll match)."

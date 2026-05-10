@@ -1,0 +1,12 @@
+{
+  "id": "nbinom",
+  "spec_hash": "80c6bbc82277071d",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 5.820766091346741e-11,
+    "max_rel": 5.56390622481682e-18,
+    "sweep_max": 10461653.838420644
+  },
+  "passed": true
+}

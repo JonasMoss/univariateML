@@ -1,0 +1,12 @@
+{
+  "id": "lgser",
+  "spec_hash": "eeca9e5a8a9c981d",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 17,
+    "max_abs": 9.313225746154785e-10,
+    "max_rel": 1.8954975597557212e-16,
+    "sweep_max": 4913340.93163117
+  },
+  "passed": true
+}

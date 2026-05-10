@@ -32,48 +32,56 @@ GRAD_TOL = 1e-12
 HESS_TOL = 1e-12
 
 
-def _diff_pair(truth: float, observed: float) -> Dict[str, float]:
-    abs_diff = abs(truth - observed)
-    scale = max(abs(truth), abs(observed), 1.0)
-    return {"abs": abs_diff, "rel": abs_diff / scale}
+def _summarize_against_sweep_max(diffs_abs: List[float], all_values: List[float]) -> Dict:
+    """Summarise abs diffs against the sweep-wide max-absolute-value scale.
+
+    Per-entry relative-diff has a degenerate scale at score-zero points
+    (the MLE for grad, regular interior for some Hessian entries) — the
+    1.0 floor in `max(|t|, |o|, 1.0)` makes a 1e-12 abs diff look like
+    1e-12 *relative* even though the surrounding sweep values are O(1e3+).
+    Scaling by the sweep-wide max catches algebra bugs (which would
+    perturb every entry, not just the score-zero one) while not flagging
+    floating-point rounding at points where both sides are zero.
+    """
+    sweep_max = max((abs(v) for v in all_values), default=0.0)
+    sweep_max = max(sweep_max, 1.0)
+    max_abs = max(diffs_abs, default=0.0)
+    return {
+        "n": len(diffs_abs),
+        "max_abs": max_abs,
+        "max_rel": max_abs / sweep_max,
+        "sweep_max": sweep_max,
+    }
 
 
 def _summarize_1d(truth: List[float], observed: List[float]) -> Dict:
-    diffs = [_diff_pair(t, o) for t, o in zip(truth, observed)]
-    return {
-        "n": len(diffs),
-        "max_abs": max((d["abs"] for d in diffs), default=0.0),
-        "max_rel": max((d["rel"] for d in diffs), default=0.0),
-    }
+    diffs_abs = [abs(t - o) for t, o in zip(truth, observed)]
+    return _summarize_against_sweep_max(diffs_abs, list(truth) + list(observed))
 
 
 def _summarize_2d(truth: List[List[float]], observed: List[List[float]]) -> Dict:
-    diffs = [
-        _diff_pair(t, o)
+    diffs_abs = [
+        abs(t - o)
         for t_row, o_row in zip(truth, observed)
         for t, o in zip(t_row, o_row)
     ]
-    return {
-        "n": len(diffs),
-        "max_abs": max((d["abs"] for d in diffs), default=0.0),
-        "max_rel": max((d["rel"] for d in diffs), default=0.0),
-    }
+    flat = [v for row in truth for v in row] + [v for row in observed for v in row]
+    return _summarize_against_sweep_max(diffs_abs, flat)
 
 
 def _summarize_3d(
     truth: List[List[List[float]]], observed: List[List[List[float]]]
 ) -> Dict:
-    diffs = [
-        _diff_pair(t, o)
+    diffs_abs = [
+        abs(t - o)
         for t_th, o_th in zip(truth, observed)
         for t_row, o_row in zip(t_th, o_th)
         for t, o in zip(t_row, o_row)
     ]
-    return {
-        "n": len(diffs),
-        "max_abs": max((d["abs"] for d in diffs), default=0.0),
-        "max_rel": max((d["rel"] for d in diffs), default=0.0),
-    }
+    flat = [v for t_th in truth for row in t_th for v in row] + [
+        v for o_th in observed for row in o_th for v in row
+    ]
+    return _summarize_against_sweep_max(diffs_abs, flat)
 
 
 def _write_quality_report(

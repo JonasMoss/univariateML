@@ -5,7 +5,8 @@
   "summary": {
     "n": 34,
     "max_abs": 1.7053025658242404e-13,
-    "max_rel": 1.6507644981630886e-14
+    "max_rel": 3.066485731235431e-16,
+    "sweep_max": 556.1097344931082
   },
   "passed": true,
   "skipped_reason": null

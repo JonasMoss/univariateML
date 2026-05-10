@@ -68,6 +68,30 @@ CostEval eval_with(const std::vector<double> &data,
   return out;
 }
 
+// Evaluator for discrete distros whose Cost takes ispan<int> (pois, geom,
+// nbinom, lgser, etc.). Round-trips the harness's double `data` array into
+// a transient int vector whose lifetime spans the cost evaluation.
+template <typename Cost>
+CostEval eval_int(const std::vector<double> &data,
+                  const std::vector<double> &theta) {
+  std::vector<int> int_data;
+  int_data.reserve(data.size());
+  for (double v : data) int_data.push_back(static_cast<int>(v));
+  Cost cost{cppunivariate::ispan{int_data.data(), int_data.size()}};
+  CostEval out;
+  out.nll = cost(theta.data());
+  const std::size_t n = static_cast<std::size_t>(cost.dim());
+  out.grad.assign(n, 0.0);
+  cost.gradient(theta.data(), out.grad.data());
+  std::vector<double> H_flat(n * n, 0.0);
+  cost.hessian(theta.data(), H_flat.data());
+  out.hess.assign(n, std::vector<double>(n, 0.0));
+  for (std::size_t i = 0; i < n; ++i)
+    for (std::size_t j = 0; j < n; ++j)
+      out.hess[i][j] = H_flat[i * n + j];
+  return out;
+}
+
 // Evaluator for Costs whose gradient is computed via finite differences in
 // production (std, snorm, sstd, sged, ged, paralogis — the BFGS-with-FD
 // family). We mirror the production path: wrap the inner Cost with
@@ -226,4 +250,20 @@ TEST_CASE("validation::paralogis") {
 
 TEST_CASE("validation::ged") {
   run_validation("ged", eval_fd_grad<cppunivariate::GedCost>);
+}
+
+TEST_CASE("validation::pois") {
+  run_validation("pois", eval_int<cppunivariate::PoisCost>);
+}
+
+TEST_CASE("validation::geom") {
+  run_validation("geom", eval_int<cppunivariate::GeomCost>);
+}
+
+TEST_CASE("validation::nbinom") {
+  run_validation("nbinom", eval_int<cppunivariate::NbinomCost>);
+}
+
+TEST_CASE("validation::lgser") {
+  run_validation("lgser", eval_int<cppunivariate::LgserCost>);
 }

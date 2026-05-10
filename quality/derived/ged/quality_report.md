@@ -9,9 +9,9 @@ claimed_level: validated
 
 ## Symbolic vs C++ round-trip
 
-- ✓ nll_at_theta: max_rel = 1.400e-15 (tol 1e-12, n=17)
-- · grad_at_theta: max_rel = 2.485e-05 (SKIP — FD grad, advisory only, n=51)
-- ✓ hess_at_theta: max_rel = 1.278e-13 (tol 1e-12, n=153)
+- ✓ nll_at_theta: max_rel = 1.057e-15 (tol 1e-12, n=17)
+- · grad_at_theta: max_rel = 1.591e-08 (SKIP — FD grad, advisory only, n=51)
+- ✓ hess_at_theta: max_rel = 1.844e-15 (tol 1e-12, n=153)
 
 ## Provenance
 

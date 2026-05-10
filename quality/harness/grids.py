@@ -30,16 +30,19 @@ DEFAULT_N_THETAS = 16
 def _sweep_halfwidth(param_domain: str, start: float) -> float:
     """Pick a sensible half-width for the per-parameter Sobol sweep.
 
-    The sweep is multiplicative (geometric) for positive-domain params and
-    additive for real-line params; this keeps grid points strictly inside
-    the support without per-distribution tuning. Multiplicative factor 1.5
-    means we sweep [start/1.5, start*1.5]; additive 0.5 means [start-0.5,
-    start+0.5].
+    The sweep is multiplicative (geometric) for half-line positive params
+    (e.g. (0, oo), (2, oo)) and additive for real-line and bounded
+    intervals like (0, 1) — additive with clamping keeps the sweep
+    inside the support without per-distribution tuning. Multiplicative
+    factor 1.5 means we sweep [start/1.5, start*1.5]; additive 0.5
+    means [start−0.5, start+0.5].
     """
+    # Bounded (0, 1) must be checked *before* the half-line (0, …) prefix
+    # match, otherwise theta close to 1 gets swept past the boundary.
+    if "(0, 1)" in param_domain:
+        return 0.3  # additive, clamped inside (0, 1)
     if "(0," in param_domain or "(2," in param_domain or "(0, oo)" in param_domain:
         return 1.5  # multiplicative
-    if "(0, 1)" in param_domain:
-        return 0.3  # additive but bounded
     return 0.5  # additive
 
 
@@ -53,14 +56,17 @@ def _theta_sweep(spec: Spec, mle: List[float], n_thetas: int, seed: int) -> List
         for j, p in enumerate(spec.params):
             hw = _sweep_halfwidth(p.domain, mle[j])
             uij = u[i, j]  # uniform in [0, 1)
-            if "(0," in p.domain:
-                # Multiplicative: x in [mle/hw, mle*hw]
-                log_lo, log_hi = np.log(mle[j] / hw), np.log(mle[j] * hw)
-                theta.append(float(np.exp(log_lo + uij * (log_hi - log_lo))))
-            elif "(0, 1)" in p.domain:
+            # Order matters: (0, 1) is a *prefix* of (0, …), so it has to be
+            # tested first or bounded-interval params get the multiplicative
+            # branch (and theta sweeps past the boundary).
+            if "(0, 1)" in p.domain:
                 lo = max(1e-3, mle[j] - hw)
                 hi = min(1 - 1e-3, mle[j] + hw)
                 theta.append(float(lo + uij * (hi - lo)))
+            elif "(0," in p.domain or "(2," in p.domain:
+                # Multiplicative: x in [mle/hw, mle*hw]
+                log_lo, log_hi = np.log(mle[j] / hw), np.log(mle[j] * hw)
+                theta.append(float(np.exp(log_lo + uij * (log_hi - log_lo))))
             else:
                 lo, hi = mle[j] - hw, mle[j] + hw
                 theta.append(float(lo + uij * (hi - lo)))
