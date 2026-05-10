@@ -1,0 +1,12 @@
+{
+  "id": "unif",
+  "spec_hash": "512a08140e1fa391",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 1.7053025658242404e-13,
+    "max_rel": 3.460069513002796e-16,
+    "sweep_max": 492.85211161677097
+  },
+  "passed": true
+}

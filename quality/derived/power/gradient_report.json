@@ -1,0 +1,13 @@
+{
+  "id": "power",
+  "spec_hash": "e210f74353322528",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 2.2737367544323206e-13,
+    "max_rel": 1.794658487190568e-16,
+    "sweep_max": 1266.9467593200538
+  },
+  "passed": true,
+  "skipped_reason": null
+}

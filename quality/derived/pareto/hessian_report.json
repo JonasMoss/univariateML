@@ -1,0 +1,12 @@
+{
+  "id": "pareto",
+  "spec_hash": "9fc733a72717f8fa",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 2.2737367544323206e-13,
+    "max_rel": 1.7746353898962634e-16,
+    "sweep_max": 1281.241638354362
+  },
+  "passed": true
+}

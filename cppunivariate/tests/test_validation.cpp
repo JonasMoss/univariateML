@@ -118,7 +118,8 @@ CostEval eval_fd_grad(const std::vector<double> &data,
   return out;
 }
 
-void run_validation(const std::string &id, CostFactory fn) {
+void run_validation(const std::string &id, CostFactory fn,
+                    bool skip_score_check = false) {
   const std::string base = validation_dir();
   const std::string req_path = base + "/" + id + "/eval_request.json";
   auto req = mltest::load_eval_request(req_path);
@@ -148,10 +149,17 @@ void run_validation(const std::string &id, CostFactory fn) {
   CHECK(std::isfinite(nlls[0]));
   for (double g : grads[0]) CHECK(std::isfinite(g));
 
-  // Score-residual gate at the MLE (uniform across all registered ids).
-  double gnorm2 = 0.0;
-  for (double g : grads[0]) gnorm2 += g * g;
-  CHECK(std::sqrt(gnorm2) < 1e-3);
+  if (!skip_score_check) {
+    // Score-residual gate at the MLE — the gradient should vanish there
+    // for regular MLEs. Skipped for boundary-MLE distros (unif, pareto,
+    // power, dunif): their MLE sits AT the feasibility limit and the
+    // C++ gradient formula isn't defined there. The harness's
+    // grids._shift_inside nudges thetas[0] 1% into the smooth interior
+    // for those, so the gradient is finite but no longer zero.
+    double gnorm2 = 0.0;
+    for (double g : grads[0]) gnorm2 += g * g;
+    CHECK(std::sqrt(gnorm2) < 1e-3);
+  }
 }
 
 }  // namespace
@@ -266,4 +274,24 @@ TEST_CASE("validation::nbinom") {
 
 TEST_CASE("validation::lgser") {
   run_validation("lgser", eval_int<cppunivariate::LgserCost>);
+}
+
+TEST_CASE("validation::unif") {
+  run_validation("unif", eval_with<cppunivariate::UnifCost>,
+                 /*skip_score_check=*/true);
+}
+
+TEST_CASE("validation::dunif") {
+  run_validation("dunif", eval_int<cppunivariate::DiscreteUnifCost>,
+                 /*skip_score_check=*/true);
+}
+
+TEST_CASE("validation::pareto") {
+  run_validation("pareto", eval_with<cppunivariate::ParetoCost>,
+                 /*skip_score_check=*/true);
+}
+
+TEST_CASE("validation::power") {
+  run_validation("power", eval_with<cppunivariate::PowerCost>,
+                 /*skip_score_check=*/true);
 }

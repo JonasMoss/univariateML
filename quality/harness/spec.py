@@ -31,6 +31,14 @@ class Param:
     name: str
     start: float
     domain: str = "real"
+    # Set when the MLE sits AT a feasibility boundary (pareto's b = min(x),
+    # power's alpha = max(x), unif's a = min(x), unif's b = max(x), …).
+    # "upper" → MLE is the upper feasibility limit, smooth interior is
+    # below MLE. "lower" → MLE is the lower limit, smooth interior is
+    # above. The harness's Sobol sweep strays into the smooth interior
+    # rather than centring on the boundary itself, where the gradient
+    # formula isn't defined.
+    boundary: Optional[str] = None  # one of {"upper", "lower", None}
 
 
 @dataclass(frozen=True)

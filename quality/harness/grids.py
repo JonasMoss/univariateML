@@ -46,20 +46,51 @@ def _sweep_halfwidth(param_domain: str, start: float) -> float:
     return 0.5  # additive
 
 
+def _shift_inside(spec: Spec, mle: List[float]) -> List[float]:
+    """Nudge boundary params 1% into the smooth interior, leave others alone.
+
+    Used as the first theta for distros with boundary MLEs (pareto/unif/etc.)
+    where the *actual* MLE sits AT a feasibility limit — the gradient/
+    Hessian formulas the C++ Cost implements aren't defined there.
+    """
+    out = list(mle)
+    for j, p in enumerate(spec.params):
+        if p.boundary == "upper":
+            out[j] = mle[j] * 0.99
+        elif p.boundary == "lower":
+            out[j] = mle[j] * 1.01
+    return out
+
+
 def _theta_sweep(spec: Spec, mle: List[float], n_thetas: int, seed: int) -> List[List[float]]:
     """Sobol-low-discrepancy sweep in [0, 1)^n, mapped to per-param sweeps."""
     sobol = qmc.Sobol(d=spec.n_params, scramble=True, seed=seed)
     u = sobol.random(n_thetas)
-    thetas: List[List[float]] = [list(mle)]  # always include the MLE itself
+    has_boundary = any(p.boundary for p in spec.params)
+    first = _shift_inside(spec, mle) if has_boundary else list(mle)
+    thetas: List[List[float]] = [first]  # MLE (or boundary-shifted MLE)
     for i in range(n_thetas):
         theta = []
         for j, p in enumerate(spec.params):
             hw = _sweep_halfwidth(p.domain, mle[j])
             uij = u[i, j]  # uniform in [0, 1)
-            # Order matters: (0, 1) is a *prefix* of (0, …), so it has to be
-            # tested first or bounded-interval params get the multiplicative
-            # branch (and theta sweeps past the boundary).
-            if "(0, 1)" in p.domain:
+            # Boundary parameters: MLE sits AT the feasibility limit;
+            # the gradient/Hessian formulas the C++ Cost implements are
+            # only defined in the smooth interior. Sweep stays inside.
+            if p.boundary == "upper":
+                # MLE is upper feasibility limit; smooth interior is below.
+                # Log-uniform on [mle * 0.5, mle * 0.99].
+                log_lo, log_hi = np.log(mle[j] * 0.5), np.log(mle[j] * 0.99)
+                theta.append(float(np.exp(log_lo + uij * (log_hi - log_lo))))
+            elif p.boundary == "lower":
+                # MLE is lower feasibility limit; smooth interior is above.
+                # Log-uniform on [mle * 1.01, mle * 2.0].
+                log_lo, log_hi = np.log(mle[j] * 1.01), np.log(mle[j] * 2.0)
+                theta.append(float(np.exp(log_lo + uij * (log_hi - log_lo))))
+            # Order matters below: (0, 1) is a *prefix* of (0, …), so it has
+            # to be tested first or bounded-interval params get the
+            # multiplicative branch (and theta sweeps past the boundary).
+            elif "(0, 1)" in p.domain:
                 lo = max(1e-3, mle[j] - hw)
                 hi = min(1 - 1e-3, mle[j] + hw)
                 theta.append(float(lo + uij * (hi - lo)))
