@@ -139,3 +139,7 @@ TEST_CASE("validation::exp") {
 TEST_CASE("validation::std") {
   run_validation("std", eval_fd_grad<cppunivariate::StudentTCost>);
 }
+
+TEST_CASE("validation::norm") {
+  run_validation("norm", eval_with<cppunivariate::NormCost>);
+}
