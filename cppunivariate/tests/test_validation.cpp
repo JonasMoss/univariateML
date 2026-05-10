@@ -264,6 +264,18 @@ TEST_CASE("validation::ged") {
   run_validation("ged", eval_fd_grad<cppunivariate::GedCost>);
 }
 
+TEST_CASE("validation::snorm") {
+  run_validation("snorm", eval_fd_grad<cppunivariate::SnormCost>);
+}
+
+TEST_CASE("validation::sstd") {
+  run_validation("sstd", eval_fd_grad<cppunivariate::SstdCost>);
+}
+
+TEST_CASE("validation::sged") {
+  run_validation("sged", eval_fd_grad<cppunivariate::SgedCost>);
+}
+
 TEST_CASE("validation::pois") {
   run_validation("pois", eval_int<cppunivariate::PoisCost>);
 }

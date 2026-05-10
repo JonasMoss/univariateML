@@ -1,8 +1,50 @@
-# Fernandez-Steel skewed family in the harness (deferred)
+# Fernandez-Steel skewed family in the harness (closed 2026-05-10)
 
-**Status:** deferred — sympy-derived derivatives are too unwieldy for
-v1. The harness's pattern fits everything else; the F-S skew family
-needs a different approach.
+**Status:** closed — all three (snorm, sstd, sged) validate at 1e-12.
+
+## Resolution
+
+After landing zip via a data-conditional `sp.Piecewise`, the lesson
+was that parameter-conditional Piecewise is also tractable *if the
+two branches agree at the boundary*. F-S satisfies this: at `z = 0`
+both `xi^sign(z)` branches give 1, so the moving-boundary DiracDelta
+contribution is zero in the limit and the harness's
+`DiracDelta → 0` substitution gives correct second derivatives.
+
+Three changes together (see
+[2026-05-10-validation-harness.md](2026-05-10-validation-harness.md)
+section A for the full story) unlocked the family:
+
+1. Rewrite `xi^sign(z)` as `sp.Piecewise((branch_pos, z > 0),
+   (branch_neg, True))`. F-S branches agree at `z = 0`, so this
+   isn't the dangerous parameter-conditional case the original
+   investigation feared.
+2. Drop `sp.simplify` from `print_derivatives`. simplify hangs
+   indefinitely on the lgamma+polygamma+Piecewise expressions
+   sstd/sged produce; the pretty-print helper isn't load-bearing
+   so just print the raw expression.
+3. `MPMATH_DPS` 50 → 25 (5× faster per op, still 13 digits over
+   the 1e-12 tolerance) + exploit Hessian symmetry (only lambdify +
+   evaluate the upper triangle, mirror at the end).
+
+Pilot results:
+
+  - snorm: nll 4.1e-16, hess 1.4e-15
+  - sstd:  nll 1.3e-15, hess 1.6e-15
+  - sged:  nll 1.1e-15, hess 6.0e-16
+
+`Spec.cost_has_gradient = False` for all three (BFGS uses
+`finite_diff_cost` wrapper, no analytical gradient to validate at
+1e-12; FD gradient is advisory in the report).
+
+The text below is preserved as-is from the original deferral entry
+for the historical context. None of the three "approaches to try"
+were the right move — the actual fix was simpler than they
+suggested.
+
+---
+
+## (original deferral notes follow)
 
 ## Which distros
 

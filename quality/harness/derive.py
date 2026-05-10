@@ -22,7 +22,11 @@ import sympy as sp
 
 from quality.harness.spec import Spec, load_spec
 
-MPMATH_DPS = 50
+# 25 decimal digits is comfortably more than the 1e-12 comparison tolerance
+# (~10 digit margin), and ~5x faster per evaluation than dps=50. Used to be
+# 50 in the v1 prototypes; lowered when the F-S skew family pilots required
+# tractable runtime on 4-parameter Sobol grids.
+MPMATH_DPS = 25
 
 
 def _symbolic_negloglik_derivs(spec: Spec):
@@ -71,7 +75,12 @@ def _lambdify(expr, syms_in_order, x_symbol):
 def _eval_at_theta(
     nll_fn, grad_fns, hess_fns, theta, data
 ):
-    """Sum per-obs values over the dataset; return (nll, grad, hess)."""
+    """Sum per-obs values over the dataset; return (nll, grad, hess).
+
+    Hessian is symmetric (Schwarz), so we only call the upper-triangle
+    `hess_fns[i][j]` for `j >= i` and mirror to the lower triangle. For
+    n=4 this is 10 calls per data point instead of 16 — a ~37 % speedup.
+    """
     n_params = len(theta)
     mp_theta = [mpmath.mpf(v) for v in theta]
     nll_total = mpmath.mpf(0)
@@ -84,8 +93,11 @@ def _eval_at_theta(
         nll_total += nll_fn(*mp_theta, x_mp)
         for i in range(n_params):
             grad_total[i] += grad_fns[i](*mp_theta, x_mp)
-            for j in range(n_params):
-                hess_total[i][j] += hess_fns[i][j](*mp_theta, x_mp)
+            for j in range(i, n_params):
+                v = hess_fns[i][j](*mp_theta, x_mp)
+                hess_total[i][j] += v
+                if j > i:
+                    hess_total[j][i] += v
     return nll_total, grad_total, hess_total
 
 
@@ -113,10 +125,14 @@ def derive_grid(spec: Spec, repo_root: Path) -> Path:
 
     nll_fn = _lambdify(nll_expr, syms, x_sym)
     grad_fns = [_lambdify(grad_expr[i], syms, x_sym) for i in range(spec.n_params)]
-    hess_fns = [
-        [_lambdify(hess_expr[i, j], syms, x_sym) for j in range(spec.n_params)]
-        for i in range(spec.n_params)
-    ]
+    # Only lambdify the upper triangle of the symmetric Hessian; lower
+    # triangle is mirrored at evaluation time. Lambdify is the costly step
+    # for big symbolic expressions (snorm/sstd/sged), so this halves the
+    # one-time setup cost too.
+    hess_fns = [[None] * spec.n_params for _ in range(spec.n_params)]
+    for i in range(spec.n_params):
+        for j in range(i, spec.n_params):
+            hess_fns[i][j] = _lambdify(hess_expr[i, j], syms, x_sym)
 
     mpmath.mp.dps = MPMATH_DPS
 
@@ -155,20 +171,23 @@ def print_derivatives(spec: Spec) -> None:
 
     Called from the CLI as a side-effect of `derive` so the human running
     the harness sees what was differentiated, in human-readable sympy form.
+    Does **not** call `sp.simplify`: simplify on lgamma-laden Piecewise
+    expressions (the F-S skew family) can hang indefinitely. Prints the
+    raw expression instead — readable enough for sanity-checking.
     """
     nll, grad, hess = _symbolic_negloglik_derivs(spec)
     syms = spec.param_symbols()
     print(f"\n[{spec.id}] negative log-likelihood per obs:")
-    print(f"  -log f = {sp.simplify(nll)}")
+    print(f"  -log f = {nll}")
     print(f"\n[{spec.id}] gradient per obs (∂(-log f)/∂param):")
     for s, g in zip(syms, grad):
-        print(f"  ∂/∂{s.name}: {sp.simplify(g)}")
+        print(f"  ∂/∂{s.name}: {g}")
     print(f"\n[{spec.id}] Hessian per obs:")
     for i, si in enumerate(syms):
         for j, sj in enumerate(syms):
             if j < i:
                 continue
-            print(f"  ∂²/∂{si.name}∂{sj.name}: {sp.simplify(hess[i, j])}")
+            print(f"  ∂²/∂{si.name}∂{sj.name}: {hess[i, j]}")
     if spec.fisher_info_per_obs is not None:
         print(f"\n[{spec.id}] Fisher information per obs (declared):")
         print(f"  I(θ) = {spec.fisher_info_per_obs}")

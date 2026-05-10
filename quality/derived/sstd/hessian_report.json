@@ -1,0 +1,12 @@
+{
+  "id": "sstd",
+  "spec_hash": "4a8822eef8260116",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 272,
+    "max_abs": 1.000444171950221e-11,
+    "max_rel": 1.554015426825252e-15,
+    "sweep_max": 6437.800775208909
+  },
+  "passed": true
+}

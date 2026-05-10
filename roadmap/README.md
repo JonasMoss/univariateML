@@ -69,10 +69,10 @@ the queue.
   bug surfaced by the harness: FatigueCost::operator() computes a
   different nll than fatigue_mle internally maximises. Fix deferred
   pending user decision on approach.
-- [2026-05-10 — F-S skew family in the harness](2026-05-10-fs-skew-family.md):
-  snorm, sstd, sged. v1 sympy-derive pattern explodes on the
-  xi^sign(z) chain rule; needs a Piecewise-spec or hand-derived
-  approach.
+- [2026-05-10 — F-S skew family in the harness](2026-05-10-fs-skew-family.md)
+  *(closed 2026-05-10)*: snorm/sstd/sged validate at 1e-12 once
+  rewritten with explicit Piecewise (branches agree at z=0) and the
+  `print_derivatives` simplify-hang is removed.
 - [2026-05-10 — Validation harness state and retrospective](2026-05-10-validation-harness.md):
   index + lessons-learned for the AI-first sympy-derivative harness.
   35 of 42 distributions validated at 1e-12. Catalog of validated

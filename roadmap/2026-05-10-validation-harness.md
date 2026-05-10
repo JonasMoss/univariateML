@@ -10,7 +10,7 @@ The focused per-topic deferral entries are linked from each section.
 
 ## TL;DR
 
-37 of 42 distributions are now machine-checked at 1e-12 against an
+40 of 42 distributions are now machine-checked at 1e-12 against an
 independently-derived sympy ground truth. The harness already paid
 for itself by surfacing a real algorithmic bug in `fatigue_mle`
 (α-formula off by 2 from the standard BS MLE). Adding a new
@@ -121,7 +121,7 @@ default pattern:
 
 ---
 
-## What's validated (37 of 42)
+## What's validated (40 of 42)
 
 | Bucket | Count | Distributions |
 |---|---|---|
@@ -130,33 +130,25 @@ default pattern:
 | Boost.Math seam (lgamma / digamma / trigamma) | 7 | gamma, beta, betapr, naka, invgamma, burr, invburr |
 | 2-D analytical without Boost | 1 | invweibull |
 | Phi-space + FD-grad (BFGS family) | 3 | std, paralogis, ged |
+| F-S skew family (parameter-conditional Piecewise) | 3 | snorm, sstd, sged |
 | Discrete (ispan) | 5 | pois, geom, nbinom, lgser, dunif |
 | Boundary-MLE (non-regular) | 4 | unif, dunif, pareto, power |
 | Cost-with-fixed-ctor-arg | 2 | binom (size=9), zipf (N=3) |
 | Fisher-info-as-Hessian | 1 | laplace |
-| Piecewise PMF (mixture) | 1 | zip |
+| Piecewise PMF (mixture, data-conditional) | 1 | zip |
 
 (Distributions appear in multiple rows where they exercise multiple
 patterns — e.g. `pois` is both 1-D-closed-form and discrete; `dunif`
 is both discrete and boundary-MLE.)
 
-All 37 reach `claimed_level: validated` at 1e-12 in their
+All 40 reach `claimed_level: validated` at 1e-12 in their
 `quality/derived/<id>/quality_report.md`.
 
 ---
 
-## What's deferred (3 + 1 + 1)
+## What's deferred (1 + 1)
 
-### 1. Fernandez-Steel skew family — `snorm`, `sstd`, `sged`
-
-Sympy explodes on the `xi^sign(z)` chain rule when differentiating
-the F-S skew construction twice. After 2 minutes of evaluation the
-mpmath grid evaluation didn't finish. **Documented in
-[2026-05-10-fs-skew-family.md](2026-05-10-fs-skew-family.md)** with
-three approaches to try when revisited (Piecewise spec /
-two-phase-sign-baking / hand-derived Hessian).
-
-### 2. `fatigue` — open algorithmic bug surfaced by the harness
+### 1. `fatigue` — open algorithmic bug surfaced by the harness
 
 The harness flagged that the recovered `(α, β)` from `fatigue_mle`
 is **not** the standard Birnbaum-Saunders MLE. The α-formula uses
@@ -168,7 +160,7 @@ finite-sample effect. **Documented in
 with three fix options (correct fatigue_mle / leave alone /
 ramp-via-flag) and the release-management consequences.
 
-### 3. `lgamma` — wrapper-only, intentionally out of harness scope
+### 2. `lgamma` — wrapper-only, intentionally out of harness scope
 
 `lgamma_mle` doesn't have its own `Cost` struct; it wraps
 `gamma_mle` on log-transformed data via the R-side wrapper (per
@@ -178,17 +170,49 @@ CLAUDE.md). There's nothing C++-side for the harness to validate.
 
 ## Problems encountered, with resolutions
 
-### A. F-S skew chain-rule explosion
+### A. F-S skew family — three layered fixes
 
 **Problem.** Differentiating `xi^sign(z)` (where `z = z(μ, σ, ξ)`)
-twice causes sympy expression-tree blowup. Lambdifying through
-mpmath produces functions whose evaluation per grid point exceeds 2
-minutes.
+twice causes sympy expression-tree blowup. The first attempt timed
+out; the family was deferred.
 
-**Resolution.** Deferred — see roadmap entry. The default v1 pattern
-("symbolic diff → lambdify → mpmath evaluate") doesn't scale to F-S
-skew. Three alternative approaches captured for when this is picked
-up.
+**Resolution (closed 2026-05-10).** Three changes together unlocked
+the family:
+
+1. **Rewrite `xi^sign(z)` as an explicit `sp.Piecewise`** with two
+   branches (`z > 0` and `z ≤ 0`). The branches agree at `z = 0`
+   (since `xi^0 = (1/xi)^0 = 1`), so the parameter-conditional
+   Piecewise's DiracDelta-on-the-boundary contribution is multiplied
+   by zero — the harness's existing `DiracDelta → 0` substitution
+   gives the right answer. This was the load-bearing insight from
+   the [zip experience](#j1-piecewise-pmf-zip-—-turned-out-fine):
+   data-conditional Piecewise is safe; parameter-conditional is hard
+   *unless* the branches agree at the boundary, in which case it's
+   tractable.
+
+2. **Drop `sp.simplify` from `print_derivatives`.** The pretty-print
+   helper called `sp.simplify` on each gradient and Hessian entry —
+   harmless for small expressions, hangs indefinitely on the giant
+   lgamma+polygamma+Piecewise expressions sstd/sged produce. The
+   simplify was only for human readability; the lambdified expression
+   is what the harness actually evaluates.
+
+3. **Lower `MPMATH_DPS` from 50 to 25 + exploit Hessian symmetry.**
+   Both pure-throughput optimisations. dps=50 was overkill for the
+   1e-12 tolerance (12+ digit margin); dps=25 still leaves ~13
+   digits of headroom and is ~5× faster per mpmath operation. The
+   Hessian symmetry exploitation lambdifies and evaluates only the
+   upper triangle (n(n+1)/2 entries instead of n²), which for n=4
+   (sstd/sged) is a 37 % reduction.
+
+Pilot results after the three changes:
+
+  - snorm: nll 4.1e-16, hess 1.4e-15
+  - sstd:  nll 1.3e-15, hess 1.6e-15
+  - sged:  nll 1.1e-15, hess 6.0e-16
+
+The original [2026-05-10-fs-skew-family.md](2026-05-10-fs-skew-family.md)
+roadmap entry has been closed.
 
 ### B. fatigue bug — surfaced, not fixed
 
@@ -365,11 +389,10 @@ suite alone.
 
 ### Medium-term
 
-- **F-S skew family** — try the Piecewise-spec approach
-  ([2026-05-10-fs-skew-family.md](2026-05-10-fs-skew-family.md))
-  to handle `snorm`, `sstd`, `sged`.
 - **`fatigue` fix** — release-management decision required. See
   [2026-05-10-fatigue-cost-mismatch.md](2026-05-10-fatigue-cost-mismatch.md).
+  This is the last remaining "validate-able" distribution that hasn't
+  landed.
 
 ### Long-term roadmap items the harness already substantially addresses
 
@@ -423,7 +446,4 @@ Templates by shape (in increasing complexity):
 | Cost ctor with extra args | `quality/math/binom.py` | ~30 min (+ lockstep dispatch) |
 | Fisher-info-as-Hessian | `quality/math/laplace.py` | ~45 min |
 | Piecewise PMF (data-conditional) | `quality/math/zip.py` | ~30 min |
-
-The 3 deferred F-S skew distros need a different approach
-(parameter-conditional Piecewise or hand-derived analytical
-Hessian) before they can be added.
+| F-S skew (parameter-conditional Piecewise, branches agree at boundary) | `quality/math/snorm.py` | ~1 h (sigma_u / mu_u algebra; 4-D variants run in ~5 min once spec is right) |
