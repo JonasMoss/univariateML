@@ -1,0 +1,23 @@
+[project]
+name = "univariateml-quality"
+version = "0.1.0"
+description = "univariateML validation harness — symbolic spec, derivation, and quality-ladder reporting (dev tooling, not shipped)."
+requires-python = ">=3.11"
+dependencies = [
+  "sympy>=1.14,<2.0",
+  "scipy>=1.13,<2.0",
+  "mpmath>=1.3,<2.0",
+  "numpy>=1.26,<3.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = [".."]
+include = ["quality*"]
+exclude = ["quality.derived*", "quality.golden*"]
+
+[tool.setuptools.package-data]
+"quality.math" = ["*.py"]

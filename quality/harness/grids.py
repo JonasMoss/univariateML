@@ -1,0 +1,110 @@
+"""Generate the (theta, x) evaluation grid for one distribution.
+
+The grid combines:
+- A fixed reference dataset (taken from quality/golden/<id>.json so the
+  same data is used by every layer of the pipeline, and it does not need
+  regeneration when the spec changes).
+- A theta grid: the recovered MLE plus a Sobol-low-discrepancy sweep
+  around it in Cost-space. Sweep half-widths are chosen per parameter
+  domain so that grid points stay strictly inside the parameter support.
+
+Output: quality/derived/<id>/eval_request.json. This file is checked in
+so the C++ side and the Python side agree bit-for-bit on which points to
+evaluate at.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Dict, List
+
+import numpy as np
+from scipy.stats import qmc
+
+from quality.harness.spec import Spec
+
+DEFAULT_N_THETAS = 16
+
+
+def _sweep_halfwidth(param_domain: str, start: float) -> float:
+    """Pick a sensible half-width for the per-parameter Sobol sweep.
+
+    The sweep is multiplicative (geometric) for positive-domain params and
+    additive for real-line params; this keeps grid points strictly inside
+    the support without per-distribution tuning. Multiplicative factor 1.5
+    means we sweep [start/1.5, start*1.5]; additive 0.5 means [start-0.5,
+    start+0.5].
+    """
+    if "(0," in param_domain or "(2," in param_domain or "(0, oo)" in param_domain:
+        return 1.5  # multiplicative
+    if "(0, 1)" in param_domain:
+        return 0.3  # additive but bounded
+    return 0.5  # additive
+
+
+def _theta_sweep(spec: Spec, mle: List[float], n_thetas: int, seed: int) -> List[List[float]]:
+    """Sobol-low-discrepancy sweep in [0, 1)^n, mapped to per-param sweeps."""
+    sobol = qmc.Sobol(d=spec.n_params, scramble=True, seed=seed)
+    u = sobol.random(n_thetas)
+    thetas: List[List[float]] = [list(mle)]  # always include the MLE itself
+    for i in range(n_thetas):
+        theta = []
+        for j, p in enumerate(spec.params):
+            hw = _sweep_halfwidth(p.domain, mle[j])
+            uij = u[i, j]  # uniform in [0, 1)
+            if "(0," in p.domain:
+                # Multiplicative: x in [mle/hw, mle*hw]
+                log_lo, log_hi = np.log(mle[j] / hw), np.log(mle[j] * hw)
+                theta.append(float(np.exp(log_lo + uij * (log_hi - log_lo))))
+            elif "(0, 1)" in p.domain:
+                lo = max(1e-3, mle[j] - hw)
+                hi = min(1 - 1e-3, mle[j] + hw)
+                theta.append(float(lo + uij * (hi - lo)))
+            else:
+                lo, hi = mle[j] - hw, mle[j] + hw
+                theta.append(float(lo + uij * (hi - lo)))
+        thetas.append(theta)
+    return thetas
+
+
+def build_eval_request(
+    spec: Spec,
+    repo_root: Path,
+    n_thetas: int = DEFAULT_N_THETAS,
+    seed: int = 0xC0FFEE,
+) -> Dict:
+    """Build the eval-request payload (data + theta grid + metadata).
+
+    The data is taken from quality/golden/<id>.json. The MLE used as the
+    sweep centre is the `estimates` field of the same file.
+    """
+    golden_path = repo_root / "quality" / "golden" / f"{spec.id}.json"
+    with golden_path.open() as fh:
+        golden = json.load(fh)
+    data = list(golden["data"])
+    estimates = golden["estimates"]
+    mle = [float(estimates[p.name]) for p in spec.params]
+    thetas = _theta_sweep(spec, mle, n_thetas=n_thetas, seed=seed)
+    return {
+        "id": spec.id,
+        "spec_hash": spec.spec_hash(),
+        "n_params": spec.n_params,
+        "param_names": [p.name for p in spec.params],
+        "n_data": len(data),
+        "data": data,
+        "mle": mle,
+        "n_thetas": len(thetas),
+        "thetas": thetas,
+    }
+
+
+def write_eval_request(spec: Spec, repo_root: Path, **kwargs) -> Path:
+    payload = build_eval_request(spec, repo_root, **kwargs)
+    out_dir = repo_root / "quality" / "derived" / spec.id
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / "eval_request.json"
+    with out_path.open("w") as fh:
+        json.dump(payload, fh, indent=2)
+        fh.write("\n")
+    return out_path

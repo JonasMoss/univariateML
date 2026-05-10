@@ -79,3 +79,9 @@ univariateML/src/*.gcda
 univariateML/src/*.gcno
 univariateML/tests/testthat/Rplots.pdf
 cppunivariate/build/
+
+# Python harness build artefacts (quality/harness/ tooling)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
