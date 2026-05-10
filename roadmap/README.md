@@ -30,13 +30,17 @@ the queue.
 - [2026-05-08 — Distribution dossiers](2026-05-08-distribution-dossiers.md)
   *(closed 2026-05-09)*: one source-of-truth note per distribution,
   covering math, implementation, tests, docs, and references.
-- [2026-05-08 — Implementation provenance](2026-05-08-implementation-provenance.md):
-  explicit dated implementation IDs and validation baselines for
-  estimators and distribution functions.
-- [2026-05-08 — Quality ladder](2026-05-08-quality-ladder.md):
-  status levels and checklist evidence for distribution quality.
-- [2026-05-08 — Validation and goldens](2026-05-08-validation-and-goldens.md):
-  keep goldens, but place them inside a broader correctness strategy.
+- [2026-05-08 — Implementation provenance](2026-05-08-implementation-provenance.md)
+  *(substantially addressed 2026-05-10)*: Spec.spec_hash() is the
+  provenance ID; supporting fields map to git + Spec + derived/.
+- [2026-05-08 — Quality ladder](2026-05-08-quality-ladder.md)
+  *(substantially addressed 2026-05-10)*: claimed_level mechanism in
+  quality_report.md; v1 emits validated/experimental, additional levels
+  (audited/stable) layer on as more checks land.
+- [2026-05-08 — Validation and goldens](2026-05-08-validation-and-goldens.md)
+  *(substantially addressed 2026-05-10)*: sympy-derivative round-trip
+  is the new substantive layer; goldens demoted to drift-detection.
+  dpqr + sim recovery split out to their own deferred entries.
 - [2026-05-08 — Documentation from metadata](2026-05-08-documentation-from-metadata.md):
   generate docs from the same metadata and dossiers used by code and
   tests.

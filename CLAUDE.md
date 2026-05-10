@@ -36,9 +36,17 @@ core.
   `cppunivariate/include/cppunivariate/core/`; the six fGarch-family estimators (paralogis, std,
   snorm, sstd, ged, sged) use this path.
 - `LinkingTo: Rcpp, BH` — no `RcppArmadillo`.
-- testthat suite includes ~84 golden-regression checks at 1e-12; 6
+- testthat suite includes ~84 golden-regression checks at 1e-12; 7
   ctest targets (`estimator_tests`, `bfgs_tests`, `newton_md_tests`,
-  `hessian_tests`, `sample_tests`, `metadata_tests`).
+  `hessian_tests`, `sample_tests`, `metadata_tests`, `validation_tests`).
+- AI-first validation harness (`quality/`): per-distribution sympy
+  spec at `quality/math/<id>.py`; harness symbolically derives
+  gradient/Hessian and asserts the C++ `Cost` matches at 1e-12 on a
+  Sobol theta grid. Pilot trio (`exp`, `std`, `norm`) at
+  `quality_report.md::claimed_level: validated`. The 39 remaining
+  distributions are a mechanical sweep — one `quality/math/<id>.py`
+  plus a one-line dispatch entry per id. dpqr round-trip + simulation
+  recovery deferred to dedicated roadmap entries.
 
 ### Out of vision (for now)
 

@@ -1,6 +1,8 @@
-# Quality ladder (deferred)
+# Quality ladder (substantially addressed 2026-05-10)
 
-**Status:** deferred — quality taxonomy for later validation work.
+**Status:** mechanism in place via the v1 harness's
+`quality_report.md`; v1 emits two of the five proposed levels.
+Additional levels layer on as more validation checks land.
 
 ## The idea
 
@@ -14,31 +16,41 @@ distributions. Without a visible quality ladder, it is too easy to forget which
 estimators have only been ported, which have been mathematically checked, and
 which are safe to treat as stable.
 
-## Design when revisited
+## What landed
 
-Proposed statuses:
+`quality/derived/<id>/quality_report.md` carries a YAML front-matter
+`claimed_level`. v1 emits one of two values, computed deterministically
+from the harness output (so the claim cannot drift from the evidence —
+re-running `validate` always overwrites the report).
 
-- `experimental`: implementation exists, but only basic behavior is checked.
-- `ported`: implementation reproduces an earlier accepted behavior or golden
-  baseline.
-- `validated`: stronger numerical checks pass, such as score, Hessian,
-  simulation recovery, and reference comparisons.
-- `audited`: math notes, regularity, boundary behavior, references, and docs
-  have been reviewed.
-- `stable`: API and numerical behavior are intended to remain durable.
+| Level         | Required harness checks                                                       | v1? |
+|---------------|--------------------------------------------------------------------------------|-----|
+| `experimental`| Distribution exists, doctest in `test_estimators.cpp` passes                   | ✓   |
+| `ported`      | + golden regression ≤ 1e-12 (existing)                                         | implicit, not surfaced as a level yet |
+| `validated`   | + symbolic `∇`/`H` match `Cost::gradient`/`hessian` at 1e-12                   | ✓   |
+| `audited`     | + ∫f=1, reference dpqr cross-check, simulation recovery, dossier.md filled    | TODO (depends on dpqr + sim-recovery roadmap entries) |
+| `stable`      | API freeze marker + audited                                                    | TODO |
 
-Each distribution should eventually track support validation, `d/p/q/r` tests,
-golden regression, score checks, Hessian checks, simulation recovery, edge
-cases, reference comparisons, and documentation review.
+Today's pilot trio (`exp`, `std`, `norm`) all claim `validated`.
+Adding the remaining levels is straightforward once their underlying
+checks land — the report writer just needs the predicate functions
+to gate on.
 
-## Trigger to revisit
+## Trigger to revisit (for the audited / stable levels)
 
-Take this off the shelf when distribution dossiers exist for a pilot set, or
-when the number of estimator changes makes it hard to remember which ones are
-trusted.
+Take this off the shelf when:
 
-## Verification when revisited
+- Dpqr round-trip and simulation-recovery harness layers land
+  (their own roadmap entries) — `audited` then has predicates to check.
+- We start sweeping the 39 remaining distributions and want a
+  consolidated dashboard rather than per-distribution reports.
 
-- A generated dashboard lists every distribution and quality status.
-- Current distributions are marked conservatively.
-- Status changes require evidence from tests, docs, or review notes.
+## Verification when fully closed
+
+- A generated dashboard lists every distribution and its
+  `claimed_level`, sourced mechanically from the union of
+  `quality/derived/*/quality_report.md` front-matter.
+- Distributions cannot claim a level whose required checks haven't run
+  (already enforced for `validated`; extend to `audited`/`stable`).
+- Status changes happen only via re-running the harness, never by
+  hand-editing reports.
