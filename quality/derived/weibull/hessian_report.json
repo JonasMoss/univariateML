@@ -1,0 +1,11 @@
+{
+  "id": "weibull",
+  "spec_hash": "2f5304e50e2fd32c",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 68,
+    "max_abs": 9.094947017729282e-12,
+    "max_rel": 7.908679423932617e-15
+  },
+  "passed": true
+}

@@ -1,0 +1,12 @@
+{
+  "id": "llogis",
+  "spec_hash": "552fe4f2b5732132",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 3.979039320256561e-13,
+    "max_rel": 8.218978384123874e-15
+  },
+  "passed": true,
+  "skipped_reason": null
+}

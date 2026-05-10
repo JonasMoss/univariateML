@@ -1,0 +1,12 @@
+{
+  "id": "logis",
+  "spec_hash": "5e12ad442b46ec15",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 1.7053025658242404e-13,
+    "max_rel": 1.6507644981630886e-14
+  },
+  "passed": true,
+  "skipped_reason": null
+}

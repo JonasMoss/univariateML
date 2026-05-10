@@ -1,0 +1,12 @@
+{
+  "id": "lnorm",
+  "spec_hash": "071e86998f8e9026",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 9.379164112033322e-13,
+    "max_rel": 1.4344405150473623e-13
+  },
+  "passed": true,
+  "skipped_reason": null
+}

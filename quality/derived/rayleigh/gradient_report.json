@@ -1,0 +1,12 @@
+{
+  "id": "rayleigh",
+  "spec_hash": "51caca9662e3bdd7",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 17,
+    "max_abs": 3.410605131648481e-13,
+    "max_rel": 5.026698466855156e-14
+  },
+  "passed": true,
+  "skipped_reason": null
+}

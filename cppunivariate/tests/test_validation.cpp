@@ -147,3 +147,39 @@ TEST_CASE("validation::norm") {
 TEST_CASE("validation::gamma") {
   run_validation("gamma", eval_with<cppunivariate::GammaCost>);
 }
+
+TEST_CASE("validation::rayleigh") {
+  run_validation("rayleigh", eval_with<cppunivariate::RayleighCost>);
+}
+
+TEST_CASE("validation::weibull") {
+  run_validation("weibull", eval_with<cppunivariate::WeibullCost>);
+}
+
+TEST_CASE("validation::gumbel") {
+  run_validation("gumbel", eval_with<cppunivariate::GumbelCost>);
+}
+
+TEST_CASE("validation::logis") {
+  run_validation("logis", eval_with<cppunivariate::LogisticCost>);
+}
+
+TEST_CASE("validation::lnorm") {
+  run_validation("lnorm", eval_with<cppunivariate::LognormalCost>);
+}
+
+TEST_CASE("validation::cauchy") {
+  run_validation("cauchy", eval_with<cppunivariate::CauchyCost>);
+}
+
+TEST_CASE("validation::llogis") {
+  run_validation("llogis", eval_with<cppunivariate::LogLogisticCost>);
+}
+
+TEST_CASE("validation::kumar") {
+  run_validation("kumar", eval_with<cppunivariate::KumarCost>);
+}
+
+TEST_CASE("validation::betapr") {
+  run_validation("betapr", eval_with<cppunivariate::BetaPrimeCost>);
+}

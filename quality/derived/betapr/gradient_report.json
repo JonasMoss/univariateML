@@ -1,0 +1,12 @@
+{
+  "id": "betapr",
+  "spec_hash": "01c72e3b4b5c83d5",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 2.1316282072803006e-13,
+    "max_rel": 1.1409381365348655e-13
+  },
+  "passed": true,
+  "skipped_reason": null
+}
