@@ -52,6 +52,27 @@ core.
 
 ---
 
+## Repo policy
+
+**Do not push to any remote — including `origin/master` — unless the
+user explicitly asks.** Local commits, merges, branch creation, and
+`just test` / `just cpp-test` runs are all fine and do not need
+confirmation. Pushing is the gated step.
+
+Rationale: this working tree is philosophically a separate repo from
+the published `univariateML` CRAN package. The two histories share
+ancestry but are diverging — what lives here (C++ core, dossiers,
+monorepo layout, future Python shell) is not yet what CRAN expects.
+Decisions about *when* and *what* to publish upstream are
+human-judgement calls and stay with the user.
+
+This applies to `git push`, `gh pr create`, `gh pr merge`, and any
+other command that publishes local state to a remote. If you think a
+push is warranted, surface the suggestion and wait for an explicit
+go-ahead.
+
+---
+
 ## C++ style guide (cppunivariate)
 
 `cppunivariate/include/cppunivariate/` is the C++ artifact. Header-only, **C++17**, depends only on
