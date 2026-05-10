@@ -1,0 +1,12 @@
+{
+  "id": "paralogis",
+  "spec_hash": "2f1391cf4093d3d8",
+  "tolerance_rel": null,
+  "summary": {
+    "n": 34,
+    "max_abs": 0.00011877281235683768,
+    "max_rel": 2.7037262744551565e-05
+  },
+  "passed": null,
+  "skipped_reason": "Cost::gradient is finite-difference; analytical gradient-vs-symbolic check is not meaningful (implicit in nll match)."
+}

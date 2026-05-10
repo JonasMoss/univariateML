@@ -41,8 +41,16 @@ def _symbolic_negloglik_derivs(spec: Spec):
 
 
 def _lambdify(expr, syms_in_order, x_symbol):
-    """Lambdify an expression to mpmath with positional args (theta..., x)."""
+    """Lambdify an expression to mpmath with positional args (theta..., x).
+
+    Substitutes ``DiracDelta(...) → 0`` before lambdification: it shows
+    up in second derivatives of densities involving |x-mu|^nu (e.g.
+    GED at non-integer nu), where the Dirac sits at x = mu and is
+    multiplied by 0 for nu > 1. Our grids never hit x = mu exactly, so
+    dropping the singular term is the right thing.
+    """
     args = list(syms_in_order) + [x_symbol]
+    expr = expr.replace(sp.DiracDelta, lambda *_: sp.Integer(0))
     return sp.lambdify(args, expr, modules="mpmath")
 
 

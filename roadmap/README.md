@@ -69,3 +69,7 @@ the queue.
   bug surfaced by the harness: FatigueCost::operator() computes a
   different nll than fatigue_mle internally maximises. Fix deferred
   pending user decision on approach.
+- [2026-05-10 — F-S skew family in the harness](2026-05-10-fs-skew-family.md):
+  snorm, sstd, sged. v1 sympy-derive pattern explodes on the
+  xi^sign(z) chain rule; needs a Piecewise-spec or hand-derived
+  approach.

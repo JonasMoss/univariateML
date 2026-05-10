@@ -1,0 +1,11 @@
+{
+  "id": "ged",
+  "spec_hash": "c2e886bd9670183d",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 153,
+    "max_abs": 3.2741809263825417e-11,
+    "max_rel": 1.2778667013435552e-13
+  },
+  "passed": true
+}

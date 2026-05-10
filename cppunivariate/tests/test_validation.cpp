@@ -219,3 +219,11 @@ TEST_CASE("validation::invgauss") {
 TEST_CASE("validation::logitnorm") {
   run_validation("logitnorm", eval_with<cppunivariate::LogitnormCost>);
 }
+
+TEST_CASE("validation::paralogis") {
+  run_validation("paralogis", eval_fd_grad<cppunivariate::ParalogisCost>);
+}
+
+TEST_CASE("validation::ged") {
+  run_validation("ged", eval_fd_grad<cppunivariate::GedCost>);
+}
