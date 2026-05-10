@@ -1,0 +1,12 @@
+{
+  "id": "gamma",
+  "spec_hash": "bf8b699aef7f925d",
+  "tolerance_rel": 1e-12,
+  "summary": {
+    "n": 34,
+    "max_abs": 1.9895196601282805e-13,
+    "max_rel": 6.407083104491117e-14
+  },
+  "passed": true,
+  "skipped_reason": null
+}

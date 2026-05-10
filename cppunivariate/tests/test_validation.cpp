@@ -143,3 +143,7 @@ TEST_CASE("validation::std") {
 TEST_CASE("validation::norm") {
   run_validation("norm", eval_with<cppunivariate::NormCost>);
 }
+
+TEST_CASE("validation::gamma") {
+  run_validation("gamma", eval_with<cppunivariate::GammaCost>);
+}
