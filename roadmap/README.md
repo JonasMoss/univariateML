@@ -53,3 +53,11 @@ the queue.
   *(closed 2026-05-09)*: trim the R package to ML only, let
   extraDistr / actuar provide d/p/q/r through Imports so we don't
   fight R's flat man-page space.
+- [2026-05-10 — Simulation-recovery harness](2026-05-10-sim-recovery.md):
+  bias / Cramér–Rao / KS verification of the *fitting machinery*,
+  separate from the symbolic-derivative MLE-math harness. Code lives
+  at acb5e43; reverted to keep v1 scope focused.
+- [2026-05-10 — dpqr round-trip validation](2026-05-10-dpqr-validation.md):
+  extend the harness to verify d/p/q/r self-consistency
+  (∫f=1, q∘p=id) and reference cross-check, on top of the MLE-math
+  layer.

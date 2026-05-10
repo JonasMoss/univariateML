@@ -2,8 +2,7 @@
 
 Usage:
     python -m quality.harness derive <id>
-    python -m quality.harness validate <id>      # Phase 2
-    python -m quality.harness simulate <id>      # Phase 3
+    python -m quality.harness validate <id>
 
 The repo root is auto-detected as the directory containing the `quality/`
 folder (so the CLI works from anywhere inside the repo).
@@ -40,14 +39,6 @@ def cmd_validate(args) -> int:
     return validate.main(args.id, find_repo_root())
 
 
-def cmd_simulate(args) -> int:
-    from quality.harness import simulate
-
-    return simulate.main(
-        args.id, find_repo_root(), N=args.N, reps=args.reps
-    )
-
-
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="python -m quality.harness")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -59,12 +50,6 @@ def build_parser() -> argparse.ArgumentParser:
     pv = sub.add_parser("validate", help="Diff symbolic vs C++ eval; emit reports")
     pv.add_argument("id")
     pv.set_defaults(func=cmd_validate)
-
-    ps = sub.add_parser("simulate", help="Simulation-recovery sweep")
-    ps.add_argument("id")
-    ps.add_argument("--N", type=int, default=5000)
-    ps.add_argument("--reps", type=int, default=200)
-    ps.set_defaults(func=cmd_simulate)
 
     return p
 
