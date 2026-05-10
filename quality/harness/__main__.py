@@ -62,13 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     ps = sub.add_parser("simulate", help="Simulation-recovery sweep")
     ps.add_argument("id")
-    ps.add_argument(
-        "--N",
-        type=int,
-        nargs="+",
-        default=None,
-        help="Sample sizes to sweep (default: 200 1000 5000).",
-    )
+    ps.add_argument("--N", type=int, default=5000)
     ps.add_argument("--reps", type=int, default=200)
     ps.set_defaults(func=cmd_simulate)
 
