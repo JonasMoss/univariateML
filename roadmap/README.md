@@ -75,7 +75,7 @@ the queue.
   `print_derivatives` simplify-hang is removed.
 - [2026-05-10 — Validation harness state and retrospective](2026-05-10-validation-harness.md):
   index + lessons-learned for the AI-first sympy-derivative harness.
-  35 of 42 distributions validated at 1e-12. Catalog of validated
-  / deferred / skipped distros + the 11 problems hit and how each
-  was resolved or roadmapped. Read this first to orient on the
-  harness.
+  41 of 42 distributions validated at 1e-12 (only lgamma is out of
+  scope, as a wrapper around gamma_mle(log(x))). Catalog of validated
+  shape-buckets + the problems hit and how each was resolved. Read
+  this first to orient on the harness.

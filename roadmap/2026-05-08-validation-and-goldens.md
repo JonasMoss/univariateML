@@ -33,10 +33,12 @@ pilot distribution declares its `log_density` once in sympy at
 - claims `validated` in `quality/derived/<id>/quality_report.md` when
   all gating checks match at 1e-12
 
-Pilot trio: `exp` (1-D, closed-form), `std` (3-D, BFGS, FD-grad,
-phi-space), `norm` (2-D, closed-form). The 39 remaining distributions
-are a mechanical sweep — author one `quality/math/<id>.py` plus a
-one-line dispatch entry per id.
+Coverage: 41 of 42 distributions (all that have their own `mle.hpp`).
+The pattern proved itself across closed-form 1-D / closed-form 2-D /
+3-D BFGS-with-FD-grad / Boost.Math seam / Fernandez-Steel skew family
+/ discrete / boundary-MLE / Fisher-info-as-Hessian — see
+[2026-05-10-validation-harness.md](2026-05-10-validation-harness.md)
+for the full shape catalogue.
 
 ## Layer status
 
@@ -46,7 +48,7 @@ one-line dispatch entry per id.
 | Score residual at MLE | landed (existing) — `‖g‖₂ < 1e-3` gate now uniform via the harness |
 | Analytical-vs-FD Hessian | landed (existing in `test_hessians.cpp`) |
 | Closed-form Fisher info match | landed for normal/exp/gamma/beta/laplace (existing) |
-| **Symbolic ∇/H vs `Cost::gradient`/`hessian`** | **landed v1 harness, pilot trio at 1e-12** |
+| **Symbolic ∇/H vs `Cost::gradient`/`hessian`** | **landed v1 harness, 41 of 42 distros at 1e-12** |
 | Reference `d/p/q/r` cross-check | offline (`dpqr_check.R`) — split out to [dpqr-validation roadmap entry](2026-05-10-dpqr-validation.md) |
 | Simulation recovery | implemented and reverted; preserved at acb5e43 — split out to [sim-recovery roadmap entry](2026-05-10-sim-recovery.md) |
 | Edge-case tests for boundaries / degeneracies | TODO |

@@ -56,9 +56,9 @@ on having all 42 dpqr forms in sympy form.
 
 Take this off the shelf when **any** of:
 
-- The MLE-math harness has covered the pilot trio and we're sweeping
-  the remaining 39 distributions. dpqr cross-check fits naturally as
-  the second sweep.
+- The MLE-math harness has now covered all 41 of 42 distributions
+  with a Cost; dpqr cross-check is the natural second layer to add
+  on top.
 - A user reports a `d`/`p`/`q`/`r` bug for a specific distribution
   (rare but happens — the harness becomes a debugging surface).
 - We add a new distribution where dpqr is novel (not just composition
@@ -67,8 +67,10 @@ Take this off the shelf when **any** of:
 
 ## Verification when revisited
 
-- Each pilot distribution (exp, std, norm at minimum) has a
-  `dpqr_consistency.json` derived artifact:
+- Each distribution that ships with a closed-form `dpqr.hpp` has a
+  `dpqr_consistency.json` derived artifact (a pilot trio of exp /
+  std / norm is enough to prove the layer; the sweep is mechanical
+  once that's in place):
   - `integrate_density` < 1e-9 from 1
   - `quantile_inverse_grid_max_err` < 1e-10
   - `cdf_inverse_grid_max_err` < 1e-10

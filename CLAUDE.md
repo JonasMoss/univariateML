@@ -42,11 +42,12 @@ core.
 - AI-first validation harness (`quality/`): per-distribution sympy
   spec at `quality/math/<id>.py`; harness symbolically derives
   gradient/Hessian and asserts the C++ `Cost` matches at 1e-12 on a
-  Sobol theta grid. Pilot trio (`exp`, `std`, `norm`) at
-  `quality_report.md::claimed_level: validated`. The 39 remaining
-  distributions are a mechanical sweep — one `quality/math/<id>.py`
-  plus a one-line dispatch entry per id. dpqr round-trip + simulation
-  recovery deferred to dedicated roadmap entries.
+  Sobol theta grid. **41 of 42 distributions validated** — every
+  distribution with its own `mle.hpp` claims
+  `quality_report.md::claimed_level: validated` (lgamma is the
+  exception — wrapper-only on `gamma_mle(log(x))`, no Cost of its
+  own). dpqr round-trip + simulation recovery deferred to dedicated
+  roadmap entries.
 
 ### Out of vision (for now)
 
@@ -270,14 +271,43 @@ matches the math from first principles.
 8. Author `quality/math/<id>.py` exporting a `SPEC = Spec(...)` —
    sympy `log_density` in *Cost-space* parameters (whatever
    `Cost::operator()(theta)` takes; natural for `exp`/`norm`/`lomax`,
-   phi-space for `std`/`snorm`/etc.). For Costs whose gradient is
-   FD-only (BFGS-with-`finite_diff_cost` family), set
-   `cost_has_gradient=False`. If golden estimates are in a different
-   space than Cost, supply `golden_to_cost`. See
-   `quality/math/{exp,norm,std}.py` for templates of each shape.
+   phi-space for `std`/`paralogis`/etc.). Spec flags by case:
+   - `cost_has_gradient=False` for BFGS-with-`finite_diff_cost` family
+     (std, paralogis, ged, snorm, sstd, sged).
+   - `golden_to_cost=lambda e: [...]` when golden estimates are in a
+     different space than Cost (any phi-reparam distro).
+   - `Param.boundary="upper"|"lower"` when the MLE sits AT a
+     feasibility limit (unif, dunif, pareto, power).
+   - `cost_hessian_is_fisher=True` when Cost::hessian returns Fisher
+     info × n (laplace, due to non-smooth |x − μ|).
+
+   Templates by shape:
+   - 1-D / 2-D natural-space analytical:
+     `quality/math/{exp,norm,lomax}.py`
+   - Boost.Math seam (`sp.loggamma`/`sp.polygamma`):
+     `quality/math/{gamma,beta,invgamma}.py`
+   - Phi-space + FD-grad: `quality/math/{std,paralogis,ged}.py`
+   - F-S skew (parameter-conditional Piecewise):
+     `quality/math/{snorm,sstd,sged}.py`
+   - Discrete (ispan): `quality/math/{pois,geom,nbinom,lgser}.py`
+   - Boundary-MLE: `quality/math/{unif,pareto,power,dunif}.py`
+   - Cost-with-fixed-ctor-arg: `quality/math/{binom,zipf}.py`
+     (note the lockstep dispatch lambda — see those files).
+   - Fisher-info-as-Hessian: `quality/math/laplace.py`
+   - Piecewise PMF (data-conditional): `quality/math/zip.py`
+
 9. Register the id in `cppunivariate/tests/test_validation.cpp`'s
-   dispatch — one `TEST_CASE` calling `eval_with<Cost>` (analytical
-   gradient) or `eval_fd_grad<Cost>` (FD).
+   dispatch — one `TEST_CASE` calling one of:
+   - `eval_with<Cost>` — analytical full Cost interface, `span` data.
+   - `eval_int<Cost>` — full Cost, `ispan` (integer) data.
+   - `eval_fd_grad<Cost>` — `Cost` has only operator+hessian,
+     gradient comes via `finite_diff_cost` wrapper.
+   - A per-id lambda when Cost takes extra ctor args (binom, zipf).
+
+   For boundary-MLE distros pass `/*skip_score_check=*/true` to
+   `run_validation` (their MLE isn't where the gradient vanishes).
+   Same for laplace (mu-direction is non-smooth).
+
 10. `just derive <id> && just validate <id>` — emits
     `quality/derived/<id>/{eval_request,symbolic_grid,cpp_eval,
     gradient_report,hessian_report,quality_report}.json/md`.

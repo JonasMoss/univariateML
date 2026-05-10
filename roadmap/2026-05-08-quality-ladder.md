@@ -31,10 +31,11 @@ re-running `validate` always overwrites the report).
 | `audited`     | + ∫f=1, reference dpqr cross-check, simulation recovery, dossier.md filled    | TODO (depends on dpqr + sim-recovery roadmap entries) |
 | `stable`      | API freeze marker + audited                                                    | TODO |
 
-Today's pilot trio (`exp`, `std`, `norm`) all claim `validated`.
-Adding the remaining levels is straightforward once their underlying
-checks land — the report writer just needs the predicate functions
-to gate on.
+All 41 of 42 distributions with their own `mle.hpp` now claim
+`validated` (lgamma is the exception — wrapper-only on
+`gamma_mle(log(x))`). Adding the remaining levels (`audited`,
+`stable`) is straightforward once their underlying checks land —
+the report writer just needs the predicate functions to gate on.
 
 ## Trigger to revisit (for the audited / stable levels)
 
@@ -42,8 +43,8 @@ Take this off the shelf when:
 
 - Dpqr round-trip and simulation-recovery harness layers land
   (their own roadmap entries) — `audited` then has predicates to check.
-- We start sweeping the 39 remaining distributions and want a
-  consolidated dashboard rather than per-distribution reports.
+- The package picks up enough distributions that we want a
+  consolidated dashboard rather than 41 per-distribution reports.
 
 ## Verification when fully closed
 

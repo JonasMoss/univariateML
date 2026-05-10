@@ -29,23 +29,33 @@ univariateML/                         ✓ R shell as workspace
   R/  src/  tests/  vignettes/        (workspace sources)
   scripts/  metadata/                 (codegen + per-dist sidecars)
 python/                               ⚠ placeholder README only
-quality/                              ⚠ only golden/ exists
+quality/                              ✓ goldens + AI-first harness
   golden/                             (per-dist JSON references at 1e-12)
+  math/<id>.py                        (sympy spec per distribution)
+  harness/                            (python harness — derive / validate)
+  derived/<id>/                       (eval_request, symbolic_grid, cpp_eval,
+                                       gradient_report, hessian_report,
+                                       quality_report)
+  pyproject.toml                      (sympy / scipy / mpmath deps)
 docs/                                 ⚠ empty
 roadmap/                              ✓
 ```
 
 Landmark commits: `5c3d187` (Phase 4 physical move), `e04e2ca`
 (workspace + generated package split), `e7f883c` (rename `r/` →
-`univariateML/`), `747fdfa` (housekeeping finish).
+`univariateML/`), `747fdfa` (housekeeping finish), `d448e11`…`11c618a`
+(AI-first validation harness — see
+[2026-05-10-validation-harness.md](2026-05-10-validation-harness.md)).
 
 ## Still deferred
 
 - `python/package/` — pending the actual nanobind/pybind11 binding
   work (see `python/README.md` for the design constraints captured for
   whoever picks it up).
-- `quality/simulations/` and `quality/references/` — pending the
-  validation-and-goldens work; goldens live alone today.
+- `quality/simulations/` — pending the
+  [simulation-recovery roadmap entry](2026-05-10-sim-recovery.md).
+- `quality/references/` — pending the
+  [dpqr-validation roadmap entry](2026-05-10-dpqr-validation.md).
 - `docs/generated/` and `docs/notes/` — pending the
   documentation-from-metadata work.
 
