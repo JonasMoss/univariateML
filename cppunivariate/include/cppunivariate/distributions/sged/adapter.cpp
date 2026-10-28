@@ -14,6 +14,15 @@ Rcpp::List mlsged_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
     Rcpp::stop("Skew GED MLE requires at least 2 finite observations with "
                "positive variance.");
   }
+  if (res.status == cppunivariate::SgedStatus::UniformBoundary) {
+    Rcpp::stop("SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.");
+  }
+  if (res.status == cppunivariate::SgedStatus::RightHalfGedBoundary) {
+    Rcpp::stop("The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family.");
+  }
+  if (res.status == cppunivariate::SgedStatus::LeftHalfGedBoundary) {
+    Rcpp::stop("The likelihood is maximised by a translated half-GED with mode at the sample maximum; no MLE in the skewed family.");
+  }
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
       !std::isfinite(res.nu) || !std::isfinite(res.xi)) {
     Rcpp::stop("Skew GED MLE failed to converge (check inputs)");

@@ -51,3 +51,43 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+# Decision D6: attained Laplace, uniform and constrained interior oracle.
+expect_error(mlsged(seq(-1, 1, length.out = 40)), "Use `mlunif`")
+x <- c(seq(-.02, .02, length.out = 18), -10, 10)
+f <- mlsged(x)
+expect_equal(unname(f["nu"]), 1)
+expect_equal(attr(f, "logLik"), sum(fGarch::dsged(x, mean=f[1], sd=f[2], nu=1, xi=f[4], log=TRUE)))
+# Exact fGarch mapping of arbitrary two-piece Laplace parameters.
+a <- .7; b <- 2; c <- -.3; grid <- seq(-4, 4, length.out=101)
+expected <- -log(a+b) - ifelse(grid<c, (c-grid)/a, (grid-c)/b)
+expect_equal(fGarch::dsged(grid, c+b-a, sqrt(a*a+b*b), 1, sqrt(b/a), log=TRUE), expected)
+expect_error(mlsged(-log(((0:99)+.5)/100)), "sample minimum")
+expect_error(mlsged(log(((0:99)+.5)/100)), "sample maximum")
+
+set.seed(812)
+for (shape in c(1.5, 3)) {
+  x <- fGarch::rged(500, nu=shape)
+  f <- mlsged(x, gradtol=1e-6, iterlim=1000)
+  expect_gt(unname(f["nu"]), 1)
+  objective <- function(p) {
+    nu <- 1+exp(p[3])
+    lambda <- exp((-2/nu*log(2)+lgamma(1/nu)-lgamma(3/nu))/2)
+    z <- (x-p[1])/exp(p[2])
+    factor <- -p[2]
+    xi <- exp(p[4])
+    m1 <- exp(lgamma(2/nu)-(lgamma(1/nu)+lgamma(3/nu))/2)
+    su <- sqrt((1-m1*m1)*(xi*xi+1/(xi*xi))+2*m1*m1-1)
+    z <- z*su+m1*(xi-1/xi)
+    z <- z/ifelse(z>0,xi,1/xi)
+    factor <- factor+log(su)+log(2/(xi+1/xi))
+    value <- -sum(factor+log(nu)-log(lambda)-(1+1/nu)*log(2)-
+                    lgamma(1/nu)-.5*(abs(z)/lambda)^nu)
+    if (is.finite(value)) value else 1e100
+  }
+  values <- sapply(c(1.1,1.5,2,4,8), function(nu) {
+    optim(c(mean(x), log(sd(x)), log(nu-1), 0), objective,
+          method="Nelder-Mead", control=list(maxit=10000, reltol=1e-11))$value
+  })
+  expect_gte(attr(f,"logLik") + 1e-4, -min(values))
+}

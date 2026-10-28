@@ -48,8 +48,30 @@ TEST_CASE("ged (Generalized Error Distribution)") {
   cppunivariate::finite_diff_gradient(cost, phi_hat, grad);
   const double gnorm =
       std::sqrt(grad[0] * grad[0] + grad[1] * grad[1] + grad[2] * grad[2]);
-  CHECK(gnorm < 1e-3);
+  if (r.nu > 1.0 && r.status == cppunivariate::GedStatus::Ok) CHECK(gnorm < 1e-3);
 }
 
 #undef C_APPROX
 #undef C_APPROX_FD
+
+TEST_CASE("ged constrained faces and shapes") {
+  std::vector<double> uniform, peaked;
+  for (int i = 0; i < 40; ++i) uniform.push_back(-1.0 + 2.0*i/39.0);
+  for (int i = 0; i < 18; ++i) peaked.push_back(-0.02 + 0.04*i/17.0);
+  peaked.push_back(-10.0); peaked.push_back(10.0);
+  auto u = cppunivariate::ged_mle(mltest::as_span(uniform), 1e-6, 500);
+  CHECK(u.status == cppunivariate::GedStatus::UniformBoundary);
+  auto l = cppunivariate::ged_mle(mltest::as_span(peaked), 1e-6, 500);
+  CHECK(l.status == cppunivariate::GedStatus::Ok);
+  CHECK(l.nu == 1.0);
+  CHECK(l.nu >= 1.0);
+  cppunivariate::distributions::StdRng<> rng(812);
+  for (double shape : {1.5, 3.0}) {
+    std::vector<double> x;
+    for (int i = 0; i < 500; ++i)
+      x.push_back(cppunivariate::distributions::rged(rng, 0.0, 1.0, shape));
+    auto r = cppunivariate::ged_mle(mltest::as_span(x), 1e-6, 500);
+    CHECK(r.status == cppunivariate::GedStatus::Ok);
+    CHECK(r.nu > 1.0);
+  }
+}

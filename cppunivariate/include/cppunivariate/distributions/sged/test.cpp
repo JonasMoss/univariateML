@@ -1,6 +1,7 @@
 #include "test_support.hpp"
 #include "cppunivariate/distributions/sged/mle.hpp"
 #include "cppunivariate/distributions/sged/dpqr.hpp"
+#include "cppunivariate/distributions/ged/dpqr.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
 #include <cmath>
 #include <limits>
@@ -24,7 +25,7 @@ TEST_CASE("sged (skew GED)") {
   cppunivariate::finite_diff_gradient(cost, phi_hat, grad);
   const double gnorm = std::sqrt(grad[0] * grad[0] + grad[1] * grad[1] +
                                  grad[2] * grad[2] + grad[3] * grad[3]);
-  CHECK(gnorm < 1e-3);
+  if (r.nu > 1.0 && r.status == cppunivariate::SgedStatus::Ok) CHECK(gnorm < 1e-3);
 }
 
 TEST_CASE("rsged samples are unit-variance and recurse cleanly into rged") {
@@ -42,4 +43,36 @@ TEST_CASE("rsged samples are unit-variance and recurse cleanly into rged") {
   const double var = sum_sq / n - mean * mean;
   CHECK(std::abs(mean) < 0.05);
   CHECK(std::abs(var - 1.0) < 0.1);
+}
+
+TEST_CASE("sged constrained faces and shapes") {
+  std::vector<double> uniform, peaked;
+  for (int i = 0; i < 40; ++i) uniform.push_back(-1.0 + 2.0*i/39.0);
+  for (int i = 0; i < 18; ++i) peaked.push_back(-0.02 + 0.04*i/17.0);
+  peaked.push_back(-10.0); peaked.push_back(10.0);
+  auto u = cppunivariate::sged_mle(mltest::as_span(uniform), 1e-6, 500);
+  CHECK(u.status == cppunivariate::SgedStatus::UniformBoundary);
+  auto l = cppunivariate::sged_mle(mltest::as_span(peaked), 1e-6, 500);
+  CHECK(l.status == cppunivariate::SgedStatus::Ok);
+  CHECK(l.nu == 1.0);
+  CHECK(l.nu >= 1.0);
+  cppunivariate::distributions::StdRng<> rng(812);
+  for (double shape : {1.5, 3.0}) {
+    std::vector<double> x;
+    for (int i = 0; i < 500; ++i)
+      x.push_back(cppunivariate::distributions::rged(rng, 0.0, 1.0, shape));
+    auto r = cppunivariate::sged_mle(mltest::as_span(x), 1e-6, 500);
+    CHECK(r.status == cppunivariate::SgedStatus::Ok);
+    CHECK(r.nu > 1.0);
+  }
+}
+
+TEST_CASE("sged translated exponential faces") {
+  std::vector<double> x;
+  for (int i = 0; i < 100; ++i) x.push_back(-std::log((i+0.5)/100.0));
+  auto r = cppunivariate::sged_mle(mltest::as_span(x), 1e-6, 500);
+  CHECK(r.status == cppunivariate::SgedStatus::RightHalfGedBoundary);
+  for (double &v : x) v = -v;
+  r = cppunivariate::sged_mle(mltest::as_span(x), 1e-6, 500);
+  CHECK(r.status == cppunivariate::SgedStatus::LeftHalfGedBoundary);
 }

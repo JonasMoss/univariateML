@@ -1,6 +1,6 @@
 // Skew GED MLE on (mu, sigma, nu, xi).
 //
-// Reparam phi = (mu, log sigma, log nu, log xi). Pure-libm log-density via
+// Fitting reparam phi = (mu, log sigma, log(nu - 1), log xi). Pure-libm log-density via
 // sged_sigma + log_dsged_core; the standardised log_dged_unit core is
 // already lgamma-/tgamma-based, so the fit doesn't pull in Rmath.
 //
@@ -18,13 +18,15 @@
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
+#include <algorithm>
+#include <vector>
 #include <cmath>
 #include <cstddef>
 #include <limits>
 
 namespace cppunivariate {
 
-enum class SgedStatus { Ok = 0, BfgsFailure, InvalidStart };
+enum class SgedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary, RightHalfGedBoundary, LeftHalfGedBoundary };
 
 struct SgedResult {
   double mu;
@@ -268,6 +270,19 @@ struct SgedCost {
   }
 };
 
+// Keep the unconstrained Cost/Hessian coordinates for density diagnostics.
+// Fitting uses log(nu - 1), with the attained face compared separately.
+struct SgedFitCost {
+  span x;
+  int dim() const { return 4; }
+  double operator()(const double *phi) const {
+    double q[4];
+    for (int i = 0; i < 4; ++i) q[i] = phi[i];
+    q[2] = std::log1p(std::exp(phi[2]));
+    return SgedCost{x}(q);
+  }
+};
+
 inline SgedResult sged_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -286,26 +301,92 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
     return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SgedStatus::InvalidStart};
   }
 
-  SgedCost cost{x};
-  finite_diff_cost<SgedCost> fd{cost};
-  const double phi0[4] = {mean_x, cppunivariate::to_log(sd_x), cppunivariate::to_log(2.0),
-                          cppunivariate::to_log(1.0)};
-
+  // Standardise before optimisation to make tolerances independent of units.
+  std::vector<double> z;
+  for (double v : x) z.push_back((v - mean_x) / sd_x);
+  std::sort(z.begin(), z.end());
+  const double dn = static_cast<double>(n);
+  const double tie = 1e-8 * dn; // total log-likelihood tie; attained wins.
+  SgedResult best{0.0, 1.0, 1.0, 1.0,
+                  -std::numeric_limits<double>::infinity(), 0, SgedStatus::Ok};
+  // f = exp(-|x-c|/side)/(a+b). Profiling gives
+  // a = sqrt(A)(sqrt(A)+sqrt(B))/n, b analogously.
+  // Between observations A,B are affine; sqrt(A B) is concave,
+  // so (sqrt(A)+sqrt(B))^2 attains a minimum at an observation.
+  double total = 0.0, prefix = 0.0;
+  for (double v : z) total += v;
+  for (std::size_t i = 0; i < n; ++i) {
+    const double c = z[i];
+    const double A = std::max(0.0, c * i - prefix);
+    const double B = std::max(0.0, total - prefix - c * (n - i));
+    const double root = std::sqrt(A) + std::sqrt(B);
+    const double a = std::sqrt(A) * root / dn;
+    const double b = std::sqrt(B) * root / dn;
+    const double ll = -dn * (std::log(root * root / dn) + 1.0);
+    if (a > 0.0 && b > 0.0 && ll > best.logLik) {
+      best = {c + b - a, std::sqrt(a*a + b*b), 1.0,
+              std::sqrt(b/a), ll, 0, SgedStatus::Ok};
+    }
+    prefix += c;
+  }
+  SgedFitCost cost{span{z.data(), z.size()}};
+  finite_diff_cost<SgedFitCost> fd{cost};
   BfgsControl ctl;
   ctl.grad_tol = tol;
   ctl.maxit = maxit;
-  auto r = bfgs_minimize(fd, phi0, ctl);
-
-  const double mu = r.theta[0];
-  const double sigma = cppunivariate::from_log(r.theta[1]);
-  const double nu = cppunivariate::from_log(r.theta[2]);
-  const double xi = cppunivariate::from_log(r.theta[3]);
-  const double logLik = -r.f;
-
-  if (r.status != BfgsStatus::Ok) {
-    return {mu, sigma, nu, xi, logLik, r.iterations, SgedStatus::BfgsFailure};
+  for (double nu0 : {1.5, 2.0, 4.0, 8.0}) {
+  for (double xi0 : {0.5, 1.0, 2.0}) {
+    const double phi0[4] = {0.0, 0.0, std::log(nu0 - 1.0), std::log(xi0)};
+    auto r = bfgs_minimize(fd, phi0, ctl);
+    if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
+      best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
+              std::exp(r.theta[3]),
+              -r.f, r.iterations,
+              r.status == BfgsStatus::Ok ? SgedStatus::Ok : SgedStatus::BfgsFailure};
+    }
   }
-  return {mu, sigma, nu, xi, logLik, r.iterations, SgedStatus::Ok};
+  }
+  // Half-GED profile: log a = (log nu + log mean(y^nu))/nu.
+  // Scale y to [0,1] and use log sums to avoid power overflow.
+  for (int side : {1, -1}) {
+    const double endpoint = side == 1 ? z.front() : z.back();
+    const double range = z.back() - z.front();
+    auto profile = [&](double t) {
+      const double nu = std::exp(t);
+      double moment = 0.0;
+      for (double v : z) moment += std::pow(std::abs(v-endpoint)/range, nu) / dn;
+      const double loga = std::log(range) + (std::log(nu) + std::log(moment))/nu;
+      return dn * (std::log(nu) - std::lgamma(1.0/nu) - loga - 1.0/nu);
+    };
+    double ll = profile(0.0), shape = 1.0;
+    // Scan log nu, refining every bracket (no unimodality assumption).
+    for (int k = 0; k < 100; ++k) {
+      double lo = k * 0.2, hi = (k+1) * 0.2;
+      for (int j = 0; j < 45; ++j) {
+        const double l = lo + (hi-lo)/3, r = hi - (hi-lo)/3;
+        if (profile(l) < profile(r)) lo = l; else hi = r;
+      }
+      const double t = (lo+hi)/2, candidate = profile(t);
+      if (candidate > ll) { ll = candidate; shape = std::exp(t); }
+    }
+    if (ll > best.logLik + tie) {
+      best.logLik = ll; best.nu = shape;
+      best.status = side == 1 ? SgedStatus::RightHalfGedBoundary
+                              : SgedStatus::LeftHalfGedBoundary;
+    }
+  }
+  const double uniform = -dn * std::log(z.back() - z.front());
+  if (uniform > best.logLik + tie ||
+      ((best.status == SgedStatus::RightHalfGedBoundary ||
+        best.status == SgedStatus::LeftHalfGedBoundary) &&
+       uniform >= best.logLik - tie)) {
+    best.logLik = uniform;
+    best.status = SgedStatus::UniformBoundary;
+  }
+  best.mu = mean_x + sd_x * best.mu;
+  best.sigma *= sd_x;
+  best.logLik -= dn * std::log(sd_x);
+  return best;
 }
 
 }  // namespace cppunivariate
