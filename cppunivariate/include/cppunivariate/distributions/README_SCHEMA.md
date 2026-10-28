@@ -21,7 +21,7 @@ goldens) and, later, by the validation harness and the Python shell.
 | `r.density`, `r.sampler` | yes | reference d/r functions, `pkg::fn` |
 | `r.control` | yes (may be `{}`) | one entry per argument of the Rcpp adapter `ml<id>_` other than `x`, mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
-| `limits` | when the family is not Hellinger-closed | list of `{model, when, detect, status}`: the limit model's id, the parameter path (math in `$...$`), the data condition, and the C++ status that reports it; see `notes/ml-behaviour.tex` |
+| `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; see `notes/ml-behaviour.tex` |
 | `references` | no | one bibliographic entry per item |
 | `examples` | no | R example code; default `ml<id>(simulate_default("ml<id>", 100))` |
 

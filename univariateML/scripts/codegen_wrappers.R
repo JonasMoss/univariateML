@@ -48,14 +48,18 @@ and_list <- function(x) {
 }
 
 limit_sentence <- function(lim, model) {
-  target <- paste0("ml", lim$model)
-  target_name <- if (!is.null(models[[lim$model]])) models[[lim$model]]$name else lim$model
+  # lim$model: id of a package model to point users to (D1: "use mlX");
+  # without it, lim$name describes a limit the package does not fit.
+  has_target <- !is.null(lim$model)
+  target_name <- if (has_target && !is.null(models[[lim$model]])) models[[lim$model]]$name
+                 else lim$name %||% lim$model
   nl(
-    "When ", if (!is.null(lim$detect)) nl("`", lim$detect, "`") else "the data point to the limit",
+    "When ", if (!is.null(lim$detect)) nl("`", lim$detect, "`") else "the data point to this limit",
     ", the maximum likelihood estimator does not exist: the likelihood ",
     "increases toward the ", target_name, " distribution",
     if (!is.null(lim$when)) nl(" as ", rd_math(lim$when)) else "",
-    ". `ml", model$id, "()` then stops with an error; use [", target, "()] instead."
+    ". `ml", model$id, "()` then stops with an error",
+    if (has_target) nl("; use [ml", lim$model, "()] instead.") else "."
   )
 }
 
@@ -92,7 +96,7 @@ gen_doc_readme <- function(model) {
   }, character(1))
   seealso <- unique(c(
     nl(rd_link(model$density), " for the density."),
-    vapply(model$limits, function(l) nl("[ml", l$model, "()] for the limit model."), character(1)),
+    unlist(lapply(model$limits, function(l) if (!is.null(l$model)) nl("[ml", l$model, "()] for the limit model."))),
     rd_math(s[["see also"]] %||% character())
   ))
   examples <- if (!is.null(model$examples)) {
