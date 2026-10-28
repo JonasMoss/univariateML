@@ -13,7 +13,8 @@
 ## New models
 
 * `mlhnorm()` (translated half-normal), `mllst()` (location-scale t),
-  `mlzinb()` (zero-inflated negative binomial), `mlinvexp()`,
+  `mlzinb()` (zero-inflated negative binomial), `mlgpd()` (generalized
+  Pareto over a user-set threshold, shape at least -1/2), `mlinvexp()`,
   `mlinvpareto()` and `mlinvparalogis()` (inverse exponential, inverse
   Pareto, inverse paralogistic).
 

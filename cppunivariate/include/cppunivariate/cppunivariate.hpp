@@ -70,3 +70,4 @@
 #include "distributions/lst/mle.hpp"
 
 #include "distributions/zinb/mle.hpp"
+#include "distributions/gpd/mle.hpp"

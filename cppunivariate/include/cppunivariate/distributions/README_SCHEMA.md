@@ -56,8 +56,10 @@ Optional keys in each `params` entry:
   adapter returns `fixed`, the names of the parameters it held, which
   become the object's `fixed` attribute: `logLik()` degrees of freedom,
   AIC/BIC, `model_select` and `bootstrapml` count and hold only those.
-- `fixed: <value>`: the fitter always holds this parameter at `<value>`
-  (fatigue's `mu = 0`: the three-parameter MLE does not exist).
+- `fixed: <value>`: the fitter always holds this parameter fixed. When the
+  adapter has an argument of the same name (listed in `r.control`), the user
+  sets the held value and `<value>` is its default; otherwise it is always
+  held at `<value>` (fatigue's `mu = 0`: the three-parameter MLE does not exist).
 - `bound: lower` / `bound: upper`: the parameter is a support endpoint
   whose MLE is the sample minimum / maximum. The harness holds it at its
   golden value in the oracle and omits its score and Hessian row.
