@@ -32,58 +32,6 @@ struct GompertzResult {
   GompertzStatus status;
 };
 
-struct GompertzCost {
-  span x;
-  int dim() const { return 2; }
-  double operator()(const double *theta) const {
-    const double a = theta[0];
-    const double b = theta[1];
-    if (!(a > 0.0 && b > 0.0)) return std::numeric_limits<double>::infinity();
-    const double n = static_cast<double>(x.size());
-    double S_x = 0.0, S_eb = 0.0;
-    for (auto v : x) {
-      S_x += v;
-      S_eb += std::exp(b * v) - 1.0;
-    }
-    return -n * std::log(a) - b * S_x + (a / b) * S_eb;
-  }
-  void gradient(const double *theta, double *g) const {
-    const double a = theta[0];
-    const double b = theta[1];
-    const double n = static_cast<double>(x.size());
-    double S_x = 0.0, S_eb_m1 = 0.0, S_x_eb = 0.0;
-    for (auto v : x) {
-      const double e = std::exp(b * v);
-      S_x += v;
-      S_eb_m1 += (e - 1.0);
-      S_x_eb += v * e;
-    }
-    // d log f / d a = 1/a - (1/b)*(e^{bx} - 1)
-    // d log f / d b = x - (-(a/b^2))*(e^{bx} - 1) - (a/b)*x*e^{bx}
-    //               = x + (a/b^2)*(e^{bx} - 1) - (a/b)*x*e^{bx}
-    // Sum negated for nll.
-    g[0] = -n / a + S_eb_m1 / b;
-    g[1] = -S_x - (a / (b * b)) * S_eb_m1 + (a / b) * S_x_eb;
-  }
-  void hessian(const double *theta, double *H) const {
-    const double a = theta[0];
-    const double b = theta[1];
-    const double n = static_cast<double>(x.size());
-    double H_bb = 0.0, H_ab = 0.0;
-    const double b2 = b * b;
-    const double b3 = b2 * b;
-    for (auto v : x) {
-      const double e = std::exp(b * v);
-      H_bb += a * (b2 * v * v * e - 2.0 * b * v * e + 2.0 * e - 2.0) / b3;
-      H_ab += (b * v * e - e + 1.0) / b2;
-    }
-    H[0] = n / (a * a);
-    H[1] = H_ab;
-    H[2] = H_ab;
-    H[3] = H_bb;
-  }
-};
-
 inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();

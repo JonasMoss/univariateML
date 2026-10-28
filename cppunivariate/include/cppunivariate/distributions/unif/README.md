@@ -3,8 +3,8 @@ id: unif
 name: Uniform
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: min, role: lower, domain: "(-inf, max)", default: 0.0}
-  - {name: max, role: upper, domain: "(min, inf)", default: 1.0}
+  - {name: min, role: lower, domain: "(-inf, max)", default: 0.0, bound: lower}
+  - {name: max, role: upper, domain: "(min, inf)", default: 1.0, bound: upper}
 r:
   density: stats::dunif
   sampler: stats::runif

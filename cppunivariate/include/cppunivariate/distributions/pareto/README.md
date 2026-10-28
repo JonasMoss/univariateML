@@ -4,7 +4,7 @@ name: Pareto
 support: {type: real, lower: 0.0, upper: inf, closed: [false, false]}
 params:
   - {name: a, role: shape, domain: "(0, inf)", default: 1.0}
-  - {name: b, role: lower, domain: "(0, inf)", default: 2.0}
+  - {name: b, role: lower, domain: "(0, inf)", default: 2.0, bound: lower}
 r:
   density: extraDistr::dpareto
   sampler: extraDistr::rpareto

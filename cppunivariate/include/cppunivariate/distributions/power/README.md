@@ -3,7 +3,7 @@ id: power
 name: PowerDist
 support: {type: real, lower: 0.0, upper: inf, closed: [false, false]}
 params:
-  - {name: alpha, role: upper, domain: "(0, inf)", default: 1.0}
+  - {name: alpha, role: upper, domain: "(0, inf)", default: 1.0, bound: upper}
   - {name: beta, role: shape, domain: "(0, inf)", default: 2.0}
 r:
   density: extraDistr::dpower

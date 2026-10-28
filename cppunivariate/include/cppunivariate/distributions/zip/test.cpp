@@ -39,11 +39,6 @@ TEST_CASE("zip ordinary zero inflation") {
     CHECK(r.lambda == doctest::Approx(lambdas[i]).epsilon(1e-4));
     CHECK(r.pi == doctest::Approx(pis[i]).epsilon(1e-4));
     CHECK(r.logLik >= logliks[i] - 1e-6);
-    const cppunivariate::ZipCost cost{as_ispan(samples[i])};
-    const std::vector<double> theta{r.lambda, r.pi};
-    std::vector<double> gradient(2);
-    cost.gradient(theta.data(), gradient.data());
-    CHECK(std::hypot(gradient[0], gradient[1]) < 1e-6);
   }
 }
 

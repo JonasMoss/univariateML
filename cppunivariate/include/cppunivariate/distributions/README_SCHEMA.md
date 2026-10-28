@@ -8,7 +8,7 @@ is the id. Design: `roadmap/2026-10-28-per-distribution-layout.md`.
 
 `README.md` is YAML front matter plus prose. It is read by
 `univariateML/scripts/load_distributions.R` (R metadata, wrappers and docs,
-goldens) and, later, by the validation harness and the Python shell.
+goldens), by the validation harness, and later by the Python shell.
 
 ## Front matter
 
@@ -44,3 +44,24 @@ Only what cannot be read off the code or the front matter:
 Write math as `$...$` / `$$...$$`; the R codegen turns it into
 `\eqn{}` / `\deqn{}`. Use backticks for code. Do not restate the density,
 parameter tables, moments or the algorithm.
+
+## Harness parameter flags
+
+Optional keys in each `params` entry:
+
+- `bound: lower` / `bound: upper`: the parameter is a support endpoint
+  whose MLE is the sample minimum / maximum. Hold it at its golden value
+  in the oracle and omit its score and Hessian row.
+- `integer: true`: omit derivatives and hold the discrete coefficient fixed.
+- `fixed: true`: the fitter fixes this coefficient; hold its golden value.
+
+All other parameters are regular. At a closed domain endpoint, check the
+one-sided score condition and the observed information on the free tangent
+block. The oracle uses domain transforms and holds only flagged parameters.
+A non-smooth sample location can prevent the ordinary Hessian check; report
+this explicitly rather than substituting Fisher information.
+
+An optional `spec.py` exports `log_density(symbols, x)`, returning a SymPy
+expression using the supplied name-to-symbol dictionary and observation.
+Use this only when `log_density` cannot be expressed as a string. Reports
+include every unchecked id and reason. `limits` entries are listed only.

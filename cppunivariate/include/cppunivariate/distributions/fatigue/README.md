@@ -5,7 +5,7 @@ support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
   - {name: alpha, role: shape, domain: "(0, inf)", default: 3.0}
   - {name: beta, role: scale, domain: "(0, inf)", default: 2.0}
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0.0}
+  - {name: mu, role: location, domain: "(-inf, inf)", default: 0.0, fixed: true}
 r:
   density: extraDistr::dfatigue
   sampler: extraDistr::rfatigue

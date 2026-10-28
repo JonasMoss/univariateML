@@ -28,50 +28,6 @@ struct GammaResult {
   int iterations;
 };
 
-// Negative log-likelihood of Gamma(shape, rate):
-//   nll(a, r) = -n*a*log(r) + n*lgamma(a) - (a-1)*sum log(x) + r*sum(x).
-// Hessian (data-independent — these are exact closed forms; equal Fisher
-// info × n at the MLE):
-//   H_aa = n*trigamma(a)
-//   H_rr = n*a / r^2
-//   H_ar = -n / r
-struct GammaCost {
-  span x;
-  int dim() const { return 2; }
-  double operator()(const double *theta) const {
-    const double a = theta[0];
-    const double r = theta[1];
-    if (!(a > 0.0 && r > 0.0)) return std::numeric_limits<double>::infinity();
-    const double n = static_cast<double>(x.size());
-    double S_lx = 0.0, S_x = 0.0;
-    for (auto v : x) {
-      if (v <= 0.0) return std::numeric_limits<double>::infinity();
-      S_lx += std::log(v);
-      S_x += v;
-    }
-    return -n * a * std::log(r) + n * cppunivariate::special::lgamma(a) -
-           (a - 1.0) * S_lx + r * S_x;
-  }
-  void gradient(const double *theta, double *g) const {
-    const double a = theta[0];
-    const double r = theta[1];
-    const double n = static_cast<double>(x.size());
-    double S_lx = 0.0, S_x = 0.0;
-    for (auto v : x) { S_lx += std::log(v); S_x += v; }
-    g[0] = -n * std::log(r) + n * cppunivariate::special::digamma(a) - S_lx;
-    g[1] = -n * a / r + S_x;
-  }
-  void hessian(const double *theta, double *H) const {
-    const double a = theta[0];
-    const double r = theta[1];
-    const double n = static_cast<double>(x.size());
-    H[0] = n * cppunivariate::special::trigamma(a);
-    H[1] = -n / r;
-    H[2] = H[1];
-    H[3] = n * a / (r * r);
-  }
-};
-
 inline GammaResult gamma_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();

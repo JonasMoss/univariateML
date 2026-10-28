@@ -3,8 +3,8 @@ id: dunif
 name: Discrete uniform
 support: {type: integer, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: min, role: lower, domain: "(-inf, max]", default: 2.0}
-  - {name: max, role: upper, domain: "[min, inf)", default: 10.0}
+  - {name: min, role: lower, domain: "(-inf, max]", default: 2.0, bound: lower, integer: true}
+  - {name: max, role: upper, domain: "[min, inf)", default: 10.0, bound: upper, integer: true}
 r:
   density: extraDistr::ddunif
   sampler: extraDistr::rdunif
