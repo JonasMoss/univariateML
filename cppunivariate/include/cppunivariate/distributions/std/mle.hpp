@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "../lst/mle.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
 #include "../../core/reductions.hpp"
@@ -25,7 +26,7 @@
 
 namespace cppunivariate {
 
-enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart, NormalBoundary, DfTwoBoundary };
+enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart, NormalBoundary, DfTwoBoundary, InvalidNu, Unbounded, ScaleBoundary, IterationFailure };
 
 struct StudentTResult {
   double mu;
@@ -159,6 +160,19 @@ struct StudentTTwoCost {
     }
   }
 };
+
+inline StudentTResult student_t_mle_fixed_nu(span x, double nu, double tol, int maxit) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (!std::isfinite(nu) || nu <= 2.0)
+    return {nan,nan,nu,nan,0,StudentTStatus::InvalidNu};
+  const auto r = lst_mle_fixed_df(x,nu,tol,maxit);
+  StudentTStatus status = StudentTStatus::InvalidStart;
+  if (r.status == LstStatus::Ok) status = StudentTStatus::Ok;
+  if (r.status == LstStatus::Unbounded) status = StudentTStatus::Unbounded;
+  if (r.status == LstStatus::ScaleBoundary) status = StudentTStatus::ScaleBoundary;
+  if (r.status == LstStatus::IterationFailure) status = StudentTStatus::IterationFailure;
+  return {r.mu,r.sigma*std::sqrt(nu/(nu-2.0)),nu,r.logLik,r.iterations,status};
+}
 
 inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();

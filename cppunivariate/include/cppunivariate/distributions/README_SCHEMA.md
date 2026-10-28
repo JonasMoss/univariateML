@@ -81,3 +81,7 @@ An optional `spec.py` exports `log_density(symbols, x)`, returning a SymPy
 expression using the supplied name-to-symbol dictionary and observation.
 Use this only when `log_density` cannot be expressed as a string. Reports
 include every unchecked id and reason. `limits` entries are listed only.
+
+A `limits` entry may carry `fixed: [name]`: it applies only when the listed
+parameters are held fixed. Other limits must be interpreted with their
+parameter path; a path varying a held parameter is unavailable.

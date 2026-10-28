@@ -102,3 +102,19 @@ TEST_CASE("std asymptotic cutoff is accurate") {
   CHECK(cppunivariate::dens::log_dstd_unit(1.25, 129.0) ==
         doctest::Approx(-1.7078891013889226).epsilon(1e-13));
 }
+
+TEST_CASE("std: fixed nu maps ordinary t scale exactly") {
+  const std::vector<double> x = {-5,-2,-1,0,0,1,2,9};
+  auto r = cppunivariate::student_t_mle_fixed_nu(mltest::as_span(x),4,1e-8,5000);
+  auto t = cppunivariate::lst_mle_fixed_df(mltest::as_span(x),4,1e-8,5000);
+  REQUIRE(r.status == cppunivariate::StudentTStatus::Ok);
+  CHECK(r.nu == 4);
+  CHECK(r.mu == t.mu);
+  CHECK(r.sigma == t.sigma*std::sqrt(2.0));
+  CHECK(r.logLik == t.logLik);
+  for (double nu : {-1.0,0.0,2.0,std::numeric_limits<double>::infinity()})
+    CHECK(cppunivariate::student_t_mle_fixed_nu(mltest::as_span(x),nu,1e-8,100).status == cppunivariate::StudentTStatus::InvalidNu);
+  const std::vector<double> tied = {0,0,0,1};
+  CHECK(cppunivariate::student_t_mle_fixed_nu(mltest::as_span(tied),2.5,1e-8,100).status == cppunivariate::StudentTStatus::Unbounded);
+  CHECK(cppunivariate::student_t_mle_fixed_nu(mltest::as_span(tied),3,1e-8,100).status == cppunivariate::StudentTStatus::ScaleBoundary);
+}
