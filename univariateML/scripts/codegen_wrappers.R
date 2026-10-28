@@ -50,8 +50,11 @@ limit_sentence <- function(lim, model) {
   has_target <- !is.null(lim$model)
   target_name <- if (has_target && !is.null(models[[lim$model]])) models[[lim$model]]$name
                  else lim$name %||% lim$model
+  # lim$fixed: the limit applies only when these parameters are held fixed.
+  held <- unlist(lim$fixed)
   nl(
-    "When ", if (!is.null(lim$detect)) nl("`", lim$detect, "`") else "the data point to this limit",
+    if (length(held)) nl("With ", and_list(held), " held fixed: w") else "W",
+    "hen ", if (!is.null(lim$detect)) nl("`", lim$detect, "`") else "the data point to this limit",
     ", the maximum likelihood estimator does not exist: the likelihood ",
     "increases toward the ", target_name, " distribution",
     if (!is.null(lim$when)) nl(" as ", rd_math(lim$when)) else "",
