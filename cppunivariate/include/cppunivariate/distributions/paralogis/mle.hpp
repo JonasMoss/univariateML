@@ -129,6 +129,51 @@ struct ParalogisCost {
   }
 };
 
+// Historical one-dimensional shape score, with z=log(x/scale).
+// Safeguarded Newton keeps the shape positive and brackets its score root.
+inline ParalogisResult paralogis_mle_fixed_scale(
+    span x, double scale, double tol = 1e-10, int maxit = 100,
+    double shape0 = 1.0) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (x.size() == 0 || !(scale > 0) || !std::isfinite(scale))
+    return {nan,scale,nan,0,ParalogisStatus::InvalidStart};
+  for (double v : x)
+    if (!(v > 0) || !std::isfinite(v))
+      return {nan,scale,nan,0,ParalogisStatus::InvalidStart};
+  auto evaluate = [&](double a, double &score, double &hessian) {
+    score = 2.0*x.size()/a;
+    hessian = -2.0*x.size()/(a*a);
+    double ll = 2.0*x.size()*std::log(a);
+    for (double v : x) {
+      const double z = std::log(v)-std::log(scale), t = a*z;
+      const double e = std::exp(-std::abs(t));
+      const double p = t >= 0 ? 1/(1+e) : e/(1+e);
+      const double soft = std::max(t,0.0)+std::log1p(e);
+      score += z-soft-(a+1)*z*p;
+      hessian -= 2*z*p+(a+1)*z*z*e/((1+e)*(1+e));
+      ll += t-std::log(v)-(a+1)*soft;
+    }
+    return ll;
+  };
+  double lo = 0, hi = 1, score, hessian;
+  evaluate(hi,score,hessian);
+  while (score > 0 && hi < 1e150) {
+    hi *= 2;
+    evaluate(hi,score,hessian);
+  }
+  double a = shape0 > lo && shape0 < hi ? shape0 : hi/2;
+  for (int iter=1; iter<=maxit; ++iter) {
+    const double ll = evaluate(a,score,hessian);
+    if (std::abs(score*a) < std::min(tol,1e-10)*x.size())
+      return {a,scale,ll,iter,ParalogisStatus::Ok};
+    if (score > 0) lo=a; else hi=a;
+    const double next = a-score/hessian;
+    a = next > lo && next < hi ? next : (lo+hi)/2;
+  }
+  const double ll = evaluate(a,score,hessian);
+  return {a,scale,ll,maxit,ParalogisStatus::BfgsFailure};
+}
+
 // shape0: optional start for the shape; NaN (the default) or a non-positive
 // value means the automatic start below.
 inline ParalogisResult paralogis_mle(

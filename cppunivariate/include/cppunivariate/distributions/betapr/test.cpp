@@ -45,3 +45,26 @@ TEST_CASE("betapr invalid data and scale density") {
   const double q=cppunivariate::distributions::qbetapr(.3,a,b,true,false,scale);
   CHECK(cppunivariate::distributions::pbetapr(q,a,b,true,false,scale) == doctest::Approx(.3));
 }
+
+TEST_CASE("betapr: historical fixed scale golden and equivariance") {
+  auto g = mltest::load_golden(std::string(CPPUNIV_DISTRIBUTIONS_DIR) + "/betapr/fixed-scale-golden.json");
+  auto r = cppunivariate::betapr_mle_fixed_scale(mltest::as_span(g.data), 1);
+  CHECK(r.alpha == doctest::Approx(g.estimates.at("shape1")).epsilon(1e-10));
+  CHECK(r.beta == doctest::Approx(g.estimates.at("shape2")).epsilon(1e-10));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.scale == 1);
+  for (auto &v : g.data) v *= 7;
+  auto moved = cppunivariate::betapr_mle_fixed_scale(mltest::as_span(g.data), 7);
+  CHECK(moved.alpha == doctest::Approx(r.alpha).epsilon(1e-10));
+  CHECK(moved.beta == doctest::Approx(r.beta).epsilon(1e-10));
+  CHECK(moved.logLik == doctest::Approx(r.logLik-g.data.size()*std::log(7.0)).epsilon(1e-10));
+  for (double bad : {0.0, -1.0, double(INFINITY), double(NAN)})
+    CHECK(cppunivariate::betapr_mle_fixed_scale(mltest::as_span(g.data), bad).status == cppunivariate::BetaPrimeStatus::InvalidStart);
+}
+
+TEST_CASE("betapr: fixed-scale independent scipy oracle") {
+  // scipy minimization of the reference log density, in log parameters.
+  std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  auto r = cppunivariate::betapr_mle_fixed_scale(mltest::as_span(x), 1);
+  CHECK(r.logLik == doctest::Approx(-13.790426340537064).epsilon(1e-10));
+}

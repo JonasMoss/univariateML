@@ -72,3 +72,39 @@ test_that("scale, controls, validation, and external density dispatch work", {
   expect_equal(as.numeric(moved[3]), as.numeric(fit[3])*7, tolerance=1e-4)
   expect_equal(dml(x[1:5], fit), extraDistr::dbetapr(x[1:5], fit[1], fit[2], scale=fit[3]))
 })
+
+
+test_that("fixed scale agrees with reference-density oracle and records df", {
+  for (s in c(.2, 1, 7)) {
+    x <- c(.03, .1, .4, .7, 1, 2, 4, 12) * s
+    fit <- mlbetapr(x, scale=s)
+    objective <- function(p) -sum(extraDistr::dbetapr(x, exp(p[1]), exp(p[2]), scale=s, log=TRUE))
+    oracle <- optim(c(0,0), objective, method="BFGS",
+                    control=list(reltol=1e-13, maxit=3000))
+    expect_equal(attr(fit, "logLik"), -oracle$value, tolerance=1e-9)
+    expect_equal(as.numeric(fit[seq_len(2)]), exp(oracle$par), tolerance=2e-5)
+    expect_identical(attr(fit, "fixed"), "scale")
+    expect_equal(attr(logLik(fit), "df"), 2)
+    expect_identical(as.numeric(fit["scale"]), s)
+    expect_equal(AIC(fit), -2*attr(fit,"logLik")+2*2)
+    for (bad in c(0, -1, Inf, NaN))
+      expect_error(mlbetapr(x, scale=bad), "scale.*positive finite")
+  }
+})
+
+test_that("fixed unit scale reproduces the historical golden", {
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  g <- jsonlite::fromJSON(file.path(root, "betapr", "fixed-scale-golden.json"))
+  fit <- mlbetapr(g$data, scale=1)
+  expect_equal(as.numeric(fit[seq_along(g$estimates)]),
+               as.numeric(unlist(g$estimates)), tolerance=1e-10)
+  expect_equal(attr(fit,"logLik"), g$logLik, tolerance=1e-10)
+})
+
+test_that("fixing beta-prime scale removes the free-scale escapes", {
+  set.seed(1)
+  for (x in list(rgamma(300,2,rate=.5), extraDistr::rinvgamma(300,2,4))) {
+    expect_s3_class(mlbetapr(x, scale=1), "univariateML")
+  }
+  expect_error(mlbetapr(rep(1,20),scale=1), "positive log-variance")
+})

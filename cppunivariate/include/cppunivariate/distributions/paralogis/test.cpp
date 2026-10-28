@@ -34,3 +34,24 @@ TEST_CASE("paralogis: an explicit shape start reaches the same fit") {
   CHECK(b.logLik == doctest::Approx(a.logLik).epsilon(1e-9));
   CHECK(b.shape == doctest::Approx(a.shape).epsilon(1e-4));
 }
+
+TEST_CASE("paralogis: historical fixed scale golden and equivariance") {
+  auto g = mltest::load_golden(std::string(CPPUNIV_DISTRIBUTIONS_DIR) + "/paralogis/fixed-scale-golden.json");
+  auto r = cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(g.data), 1);
+  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(1e-9));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-10));
+  CHECK(r.scale == 1);
+  for (auto &v : g.data) v *= 7;
+  auto moved = cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(g.data), 7);
+  CHECK(moved.shape == doctest::Approx(r.shape).epsilon(1e-10));
+  CHECK(moved.logLik == doctest::Approx(r.logLik-g.data.size()*std::log(7.0)).epsilon(1e-10));
+  for (double bad : {0.0, -1.0, double(INFINITY), double(NAN)})
+    CHECK(cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(g.data), bad).status == cppunivariate::ParalogisStatus::InvalidStart);
+}
+
+TEST_CASE("paralogis: fixed-scale independent scipy oracle") {
+  // scipy minimization of the reference log density, in log parameters.
+  std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
+  auto r = cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(x), 1);
+  CHECK(r.logLik == doctest::Approx(-13.915168948543954).epsilon(1e-10));
+}
