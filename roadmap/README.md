@@ -84,8 +84,11 @@ the queue.
   checks the density/support/domains and the machinery derives or
   stress-tests the rest, including normalization, transform chain rule,
   slow MLE oracle, dpqr self-consistency, and mutation tripwires.
-- [2026-10-28 — One folder per distribution](2026-10-28-per-distribution-layout.md):
-  design proposal (decision D2 on the board): everything for one
+- [2026-10-28 — One folder per distribution](2026-10-28-per-distribution-layout.md)
+  *(landed 2026-10-28; harness rework still open)*: everything for one
   distribution in its folder, one declarative `README.md` (YAML front
   matter + prose) replacing metadata.hpp / JSON sidecar / sympy spec,
   per-distribution tests and adapters, harness checks the real fitter.
+- [2026-10-28 — R argument names vs CRAN](2026-10-28-cran-argument-names.md)
+  *(decided, applied in the migration)*: reltol / abstol / gradtol /
+  iterlim / `<param>0`, with the per-distribution audit table.

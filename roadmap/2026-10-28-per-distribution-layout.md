@@ -1,7 +1,13 @@
 # One folder per distribution
 
-**Status:** design proposal (2026-10-28), waiting for decision D2 on the
-board. Pilot on lomax + paralogis once decided, then a batched sweep.
+**Status:** landed 2026-10-28. Decided option A with `README.md` front
+matter (D2); piloted on lomax + paralogis (dd3ace4), the other 40
+migrated in four Codex batches (merges 7a73cad, 5acd604, a748203,
+ac23f6a), legacy paths removed (da8eff1). Still open: the harness rework
+("Harness, reworked" below) and deleting unused Cost structs. Measured
+compile cost: a distribution adapter compiles in ~1.3 s (the old
+all-in-one `ml_exports.cpp` took ~6 s), so per-distribution translation
+units are cheap.
 
 ## Problem
 
