@@ -37,23 +37,27 @@
 
 Which of the 42 families are not Hellinger-closed, where the maximum
 likelihood estimator (MLE) escapes to a limit model outside the family, and
-what the current fitters do in those cases. This is a first pass (October
-2026): the classification comes from short limit arguments plus probe fits
-(\code{notes/ml-behaviour-probe.R}), not from proofs. Each row says how firm
-it is. The note will be expanded; the per-distribution conclusions are meant
-to end up in each distribution's own file.
+what the current fitters do in those cases. First pass (October 2026),
+updated the same day with a literature and derivation report
+(\code{notes/ml-behaviour-escape-theory.md}) and a sweep of all 42 fitters
+against a slow oracle (\code{notes/ml-behaviour-sweep.\{R,md\}}); the first
+probe is \code{notes/ml-behaviour-probe.R}. Each row says how firm it is. The
+per-distribution conclusions are meant to end up in each distribution's own
+file.
 
 Main findings.
 \begin{enumerate}
-  \item Five families escape with an existing ``use \code{mlX}'' message:
-    lomax, gompertz, nbinom, binom, burr.
-  \item Five families escape \emph{silently} and return a huge parameter:
-    std, ged, snorm, sstd, sged. For sstd the returned point has a lower
-    likelihood than the limit model, so it is not even a near-maximiser.
-  \item invburr escapes to the power distribution and fails with a generic
-    error; it is the mirror image of the burr case.
-  \item Two bugs: burr crashes with a raw Boost pole error on nearly-Pareto
-    data, and Boost.Math exceptions can leak through cppunivariate.
+  \item Six families escape with a ``use \code{mlX}'' message: lomax,
+    gompertz, nbinom, binom, burr, and (since 2026-10-28) invburr.
+  \item Three families escape \emph{silently} and return a huge parameter:
+    std, snorm, sstd. For sstd the returned point can have a lower
+    likelihood than the limit model. For snorm there is an exact
+    one-dimensional rule (Section~\ref{sec:snorm}).
+  \item ged and sged have \emph{no} MLE for any nonconstant sample: the
+    likelihood is unbounded as the shape tends to $0$ \cite{tumlinson2015}.
+    Their large-shape ``uniform'' fits are local maxima only.
+  \item The sweep found invalid fits on ordinary data (zip, cauchy, logis,
+    binom); see Section~\ref{sec:bugs}.
 \end{enumerate}
 
 \section{Definitions}
@@ -114,8 +118,18 @@ burr & $c\to\infty$, $ck=\alpha$ fixed & Pareto on $[1,\infty)$ &
 \paragraph{burr (no scale parameter).} $S(x) = (1+x^c)^{-k}$. With
 $ck = \alpha$ fixed and $c\to\infty$, $S(x) = \exp\{-k\log(1+x^c)\} \to
 x^{-\alpha}$ for $x>1$ and $S(x)\to 1$ for $x<1$: the Pareto law with
-minimum $1$. All $x_i \ge 1$ is sufficient for escape; whether it is
-necessary is open.
+minimum $1$. All $x_i \ge 1$ is sufficient for escape, and it is also
+necessary for this limit. Write $l_i = \log x_i$ and
+$N = -\sum_i \min(l_i, 0)$. Along $k = \alpha/c$,
+\[
+  \log L = n\log\alpha - \textstyle\sum_i l_i - cN - \alpha P - Z\log 2 + o(1),
+\]
+with $P = \sum_i \max(l_i,0)$ and $Z$ the number of $x_i = 1$, so a single
+$x_i < 1$ gives $N > 0$ and $\log L \to -\infty$. Profiling $k$ does not
+change this. Mostly-Pareto samples therefore have a finite MLE, often with
+large $c$ (e.g.\ $\hat c = 97.4$ for 199 points $\ge 1$ and one at $0.99$);
+the fitter now finds it via a profile-likelihood start (commit
+\code{9290aac}).
 
 \subsection{Escape, not detected (silent)}
 
@@ -128,38 +142,88 @@ id & escape & limit model & probe result & firm \\
 std & $\nu\to\infty$ & normal &
   normal data, $n=200$: $\hat\nu = 54874$, $\ell$ $2\times10^{-4}$ below
   \code{mlnorm}; at $n=30$ $\hat\nu = 9$ (finite) & arg, probe \\
-ged & $\nu\to\infty$ & uniform on $[\mu\pm\sqrt3\,\sigma]$ &
-  uniform data: $\hat\nu = 2.6\times10^{8}$, $\ell$ equal to \code{mlunif} & arg, probe \\
-snorm & $\xi\to 0$ or $\infty$ & half-normal (standardised) &
-  exponential data: $\hat\xi = 7.4\times10^{10}$ & probe \\
-sstd & $\nu\to\infty$; $\xi\to0,\infty$ & snorm; half-$t$ &
-  normal data: $\hat\nu = 343$, $\ell$ $0.075$ \emph{below} \code{mlsnorm} & probe \\
-sged & $\nu\to\infty$; $\xi\to0,\infty$ & two-piece uniform; half-GED &
-  uniform data: $\hat\nu = 2\times10^{5}$, $\hat\xi = 0.065$ & probe \\
+std & $\nu\to 2^+$ & location-scale $t_2$ (infinite variance) &
+  not representable in the mean/sd parameterisation & arg \\
+snorm & $\xi\to 0$ or $\infty$ & translated half-normal &
+  exponential data: $\hat\xi = 7.4\times10^{10}$ & arg, probe \\
+sstd & $\nu\to\infty$; $\xi\to0,\infty$; $\nu\to2^+$ & snorm; half-$t$; two-piece $t_2$ &
+  normal data: $\hat\nu = 343$, $\ell$ $0.075$ \emph{below} \code{mlsnorm};
+  on $n=20$ family data the oracle finds $\xi\to\infty$ with higher $\ell$ & probe \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-The ged limit: the unit-variance GED density converges to the uniform
-density with the same variance, and a uniform on $[-a,a]$ has variance
-$a^2/3$, so $a = \sqrt3\,\sigma$. The skew families use the
-Fern\'andez--Steel construction \cite{fs1998}; as $\xi\to\infty$ (or $0$)
-all mass moves to one side of the mode, which gives the half-distributions.
+The skew families use the Fern\'andez--Steel construction \cite{fs1998}; as
+$\xi\to\infty$ (or $0$) all mass moves to one side of the mode, which gives
+half-distributions whose endpoint (the mode) is estimated, not fixed at $0$.
 
-The std escape happens with positive probability, not always (finite
-$\hat\nu$ at $n=30$). Unlike lomax, no moment condition for it is known
-here; detection probably has to compare against the limit fit.
+\paragraph{std.} Let $K = n^{-1}\sum_i z_i^4$ be the sample kurtosis, with
+$z_i$ standardised by the normal MLE. Expanding the unit-variance $t$
+density in $\eta = 1/\nu$ gives the inward score of the profile
+log-likelihood at the normal boundary,
+\[
+  \ell_{\mathrm{profile}}'(0^+) = \frac{n(K-3)}{4}.
+\]
+So $K < 3$ makes the normal a strict \emph{local} maximum and $K \le 3$ is
+necessary for the normal to be the global supremum. It is not sufficient: a
+two-cluster sample with $K = 2.33$ has its supremum at the $\nu\to2^+$ face
+instead. The sd parameterisation (fGarch's \code{dstd}) cannot represent
+that face at all. Detection must compare the boundary faces with the
+interior, not threshold $\hat\nu$.
 
-\subsection{Escape, generic error}
+\paragraph{snorm: an exact rule.}\label{sec:snorm} Write the two-piece normal
+with mode $c$ and left/right scales $a, b$. For fixed $c$ let
+$A(c) = \sum_{x_i<c}(x_i-c)^2$, $B(c) = \sum_{x_i \ge c}(x_i-c)^2$. The
+scales profile out in closed form ($a/b = (A/B)^{1/3}$), giving
+\[
+  \ell_{\mathrm{profile}}(c) = n\log\sqrt{2/\pi} - \frac n2 \log\frac{Q(c)}{n}
+  - \frac n2, \qquad Q(c) = \bigl(A(c)^{1/3} + B(c)^{1/3}\bigr)^3 .
+\]
+Hence the snorm MLE is a one-dimensional minimisation of $Q$ over
+$[x_{(1)}, x_{(n)}]$, and the MLE escapes exactly when $Q$ is minimised only
+at an endpoint ($x_{(1)}$: right half-normal; $x_{(n)}$: left half-normal).
+On each interval between order statistics the stationarity condition is a
+polynomial of degree at most seven, so all candidates can be enumerated.
+Both half-normal faces are always strict local maxima, which explains why a
+local optimiser gets stuck there. (Derivation checked; see the report.)
+
+\paragraph{sstd.} No cheap global rule is known. The inward score at the
+snorm face is again $(\sum_i w_i^4 - 3n)/4$; it is a local filter only. A
+correct fitter compares the interior fit with the snorm face, both half-$t$
+faces, the two-piece $t_2$ face and their corners.
+
+\subsection{No MLE at all: ged and sged}
+
+For the exponential-power (GED) family with free location, scale and shape
+$p$, put the location at an observation and profile the scale. Then
+\[
+  \frac{\ell_p}{n} = -\frac{\log q}{p} + \tfrac12\log p + O(1)
+  \to \infty \quad (p\to 0),
+\]
+where $q = (n-k)/n$ and $k$ is the number of observations at that location.
+The likelihood is unbounded for \emph{every} nonconstant sample
+\cite{tumlinson2015}; sged contains ged ($\xi = 1$), so the same holds.
+Numerical check (normal data, $n = 40$, location at $x_1$): the profile
+log-likelihood is $-48.4$ at $p = 2$, $-65.3$ at $p = 0.03$ and $-19.0$ at
+$p = 0.01$, above the normal MLE's $-46.0$, and rising.
+
+The $\nu\to\infty$ limit (uniform on $[\mu\pm\sqrt3\,\sigma]$; for sged an
+ordinary uniform, the skew becomes unidentified) is a local maximum only,
+with inward score $-\infty$ at the boundary. Current fitters return a local
+maximum near the starting value. A well-posed fit needs a lower bound on the
+shape, which is a model change, not a numerical tolerance (decision D6).
+
+\subsection{Escape, fixed 2026-10-28}
 
 \paragraph{invburr (no scale parameter).} $F(x) =
 \bigl(x^\gamma/(1+x^\gamma)\bigr)^\tau$, and $X \sim
 \text{invburr}(\tau,\gamma)$ iff $1/X \sim \text{burr}(c=\gamma,k=\tau)$.
 With $\gamma\tau = \alpha$ fixed and $\gamma\to\infty$, $F(x)\to x^\alpha$
 on $(0,1]$ and $F(x)\to 1$ for $x>1$: the power distribution on $(0,1]$,
-the image of the burr limit under $x\mapsto 1/x$. Probe: all $x_i \le 1$
-gives ``Inverse Burr MLE failed''. Firm: arg, probe. Expected fix: an
-\code{AllLeOne} status whose message names \code{mlpower}, mirroring burr.
+the image of the burr limit under $x\mapsto 1/x$. All $x_i \le 1$ is
+necessary and sufficient (reciprocal of the burr argument). It used to give
+``Inverse Burr MLE failed''; it now returns status \code{AllLeOne} and the
+message names \code{mlpower} (commit \code{411ea90}).
 
 \subsection{Not closed, but the MLE always exists}\label{sec:exists}
 
@@ -177,8 +241,11 @@ line of documentation.
     than the Poisson predicts. Probe agrees with \code{mlpois}.
   \item zipf: $\hat s < 0$ is rejected with status \code{ShapeNegative};
     the boundary $s = 0$ is the uniform law on $\{1,\dots,N\}$.
-  \item naka: the probe returned $\hat m = 0.275 < 1/2$. The usual
-    Nakagami definition requires $m \ge 1/2$; decide which convention we use.
+  \item naka: the probe returned $\hat m = 0.275 < 1/2$. The density is
+    integrable for every $m > 0$ ($X^2$ is gamma), and the R packages
+    \code{nakagami} and \code{VGAM} and scipy allow $m > 0$; $m \ge 1/2$ is
+    a radio-fading convention. If $m \ge 1/2$ were imposed, $m = 1/2$ (the
+    half-normal) is an attained boundary, not an escape (decision D5).
   \item unif, dunif, pareto, power: the MLE sits at an order statistic.
 \end{itemize}
 
@@ -186,36 +253,57 @@ line of documentation.
 
 norm, lnorm, logitnorm, exp, rayleigh, pois, geom, lgser, gamma, lgamma,
 invgamma, weibull, invweibull, gumbel, logis, llogis, laplace, cauchy, beta,
-betapr, paralogis (arg, not probed). Unclear: kumar failed with ``MLE
-failed'' on data piled up near $0$ and $1$ (may be numerics); fatigue
-lists a location $\mu$ in its metadata, check whether it is estimated.
+betapr, paralogis (arg, not probed). Unclear: kumar fails with ``MLE
+failed'' on Beta$(0.05, 0.05)$ data clipped away from $0$ and $1$ (may be
+numerics). fatigue: the adapter fixes $\mu = 0$ although the metadata lists
+$\mu$ as a parameter; the fitted family is the two-parameter one.
 
-\section{Bugs found}
+\section{Bugs found}\label{sec:bugs}
 
 \begin{enumerate}
-  \item \textbf{burr crash.} 199 observations $\ge 1$ plus one at $0.99$:
-    the fit dies with a raw Boost error (\code{digamma} evaluated at its
-    pole $0$).
-  \item \textbf{Boost exceptions leak.} cppunivariate itself has no
-    \code{throw}, \code{try} or \code{catch}, but Boost.Math's default
-    error policy throws, which is how bug~1 reached R. Seven
-    \code{dpqr.hpp} files also include Boost directly instead of going
-    through \code{special/special.hpp}. Fix: a no-throw policy at that seam.
+  \item \textbf{burr crash} (fixed, \code{411ea90}, \code{9290aac}). The
+    log-moment start solves $\mu^2/\sigma^2 = r(k)$ on $k \in (0,1)$, where
+    $r < 1$; mostly-Pareto data give a ratio $\ge 1$, the old clamp set
+    $k = 10^{-15}$ and Newton drove $k$ to $0$, the pole of digamma.
+  \item \textbf{Boost exceptions leak} (fixed, \code{0f02af1}). One
+    no-throw policy at \code{special/special.hpp}; all Boost use goes
+    through that file; a test checks nothing throws.
+  \item \textbf{zip} returns $\lambda = 0$, $\pi = -\infty$ silently on
+    ordinary zero-inflated samples (oracle $\hat\lambda = 1.42$,
+    $\hat\pi = 0.47$). Fixed (\code{f1f1245}): the closed form
+    $\hat\lambda = m + W_0(-m e^{-m})$ was evaluated on the $W_{-1}$ branch,
+    whose value $-m$ gives the trivial root $\lambda = 0$.
+  \item \textbf{cauchy} returns NaN for $n = 3$; \textbf{logis} returns NaN
+    with one large outlier. Fixed (\code{776fc53}): safeguarded Newton,
+    stable logistic likelihood; cauchy reports no MLE for $n < 3$ or when a
+    value is repeated at least $n/2$ times.
+  \item \textbf{binom} reports $\log L = -\infty$ at $\hat p = 1$ (the
+    $0\log 0$ term); the correct value is $0$. Fixed (\code{f1f1245}),
+    also in nbinom and geom.
+  \item \textbf{std} reports a log-likelihood that disagrees with the
+    reference density at very large $\nu$ (cancellation in the gamma terms).
   \item \textbf{Detection lives in the R adapter.} The nbinom
     underdispersion check exists only in \code{ml\_exports.cpp}, so a
     Python shell would silently lose it.
+  \item Fitters return NaN instead of a clear error when an observation sits
+    on a closed support bound (llogis, pareto, fatigue at $x = 0$);
+    probably wrong support metadata.
 \end{enumerate}
 
-\section{Open questions}
+\section{Open questions and decisions}
 
 \begin{enumerate}
-  \item Escape policy: report the escape (status plus a message naming the
-    limit model, as lomax does) or return the limit fit?
-  \item Exact escape conditions for std, ged and the skew family, and a
-    cheap detection rule (literature search planned).
-  \item Is ``all $x_i\ge 1$'' necessary for the burr escape?
-  \item A systematic sweep of all 42 families against a slow reference
-    optimiser, including data drawn from each limit model.
+  \item D1, escape policy: report the escape (status plus a message naming
+    the limit model, as lomax does) or return the limit fit? For std and
+    sstd some limit faces ($t_2$, translated half-laws) are not fits any
+    current function returns.
+  \item D6, ged and sged: impose a lower bound on the shape (which one?),
+    or keep returning a documented local maximum?
+  \item D5, nakagami: allow $m > 0$ (recommended, matches \code{nakagami})
+    or require $m \ge 1/2$?
+  \item snorm: replace BFGS with the exact $Q$-profile algorithm
+    (Section~\ref{sec:snorm})?
+  \item sstd: how much global comparison is affordable in the fitter?
 \end{enumerate}
 
 \begin{thebibliography}{9}
@@ -226,6 +314,15 @@ Statistical Association}, 93(441), 359--371.
 
 \bibitem{kk2003} Kleiber, C. and Kotz, S. (2003). \emph{Statistical Size
 Distributions in Economics and Actuarial Sciences}. Wiley.
+
+\bibitem{tumlinson2015} Tumlinson, S. E. (2015). On the non-existence of
+maximum likelihood estimates for the extended exponential power distribution
+and its generalizations. \emph{Statistics \& Probability Letters}, 107,
+111--114. \href{https://doi.org/10.1016/j.spl.2015.08.009}{doi:10.1016/j.spl.2015.08.009}.
+
+\bibitem{fs1999} Fern\'andez, C. and Steel, M. F. J. (1999). Multivariate
+Student-$t$ regression models: pitfalls and inference. \emph{Biometrika},
+86(1), 153--167. \href{https://doi.org/10.1093/biomet/86.1.153}{doi:10.1093/biomet/86.1.153}.
 
 \end{thebibliography}
 

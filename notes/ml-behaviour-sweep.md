@@ -10,20 +10,18 @@ NOT_MAX compares oracle logLik with the fitter's stored logLik using 1e-4*(abs(l
 
 ## Summary
 
-330 rows across 42 fitters; elapsed 5.6 seconds on one core. Flags may overlap.
+330 rows across 42 fitters; elapsed 5.5 seconds on one core. Flags may overlap.
 
 - **beta**: betaExtreme [ERROR] — x not in the support of the data;  NO FINITE ORACLE.
-- **binom**: small3 [ERROR] — Nonfinite fitter return (no exception): size=       5, prob=       1 logLik -Inf; integer size held at fitter value; outlier [ERROR] — The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument.; SKIP: integer size unavailable.
-- **burr**: limit200 [ERROR] — The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlpareto` to fit a Pareto distribution.; nearPareto [ERROR,BOOST] — Error in function boost::math::digamma<long double>(long double): Evaluation of function at pole 0.
-- **cauchy**: small3 [ERROR] — Nonfinite fitter return (no exception): location=     NaN, scale=     NaN logLik NaN.
+- **binom**: outlier [ERROR] — The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument.; SKIP: integer size unavailable.
+- **burr**: limit200 [ERROR] — The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlpareto` to fit a Pareto distribution..
 - **fatigue**: family20-s1 [NOT_MAX]; family20-s2 [NOT_MAX]; family200-s1 [NOT_MAX]; family200-s2 [NOT_MAX]; small3 [NOT_MAX]; ties [NOT_MAX]; outlier [NOT_MAX]; bound1 [ERROR] — Nonfinite fitter return (no exception): alpha=     NaN, beta=     NaN, mu=       0 logLik NaN.
 - **ged**: family20-s1 [NOT_MAX]; small3 [ESCAPE]; limit200 [ESCAPE].
 - **gompertz**: outlier [ERROR] — The maximum likelihood estimator of the b parameter Gompertz distribution does not exist since the data is overdispersed. The exponential distribution will yield a better fit..
-- **invburr**: limit200 [ERROR] — Inverse Burr MLE failed.
+- **invburr**: limit200 [ERROR] — The inverse Burr maximum likelihood estimator does not exist when all observations <=1. Use `mlpower` to fit a power distribution..
 - **invgauss**: limit200 [ESCAPE].
 - **kumar**: betaExtreme [ERROR] — x not in the support of the data;  NO FINITE ORACLE; betaClipped [ERROR] — Kumaraswamy MLE failed.
 - **llogis**: bound1 [ERROR] — Nonfinite fitter return (no exception): shape=     NaN, rate=     NaN logLik NaN.
-- **logis**: outlier [ERROR] — Nonfinite fitter return (no exception): location=     NaN, scale=     NaN logLik NaN.
 - **naka**: outlier [ESCAPE].
 - **nbinom**: small3 [ERROR] — The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead.; limit200 [ERROR] — The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead..
 - **pareto**: bound1 [ERROR] — Nonfinite fitter return (no exception): a=     NaN, b=     NaN logLik NaN;  NO FINITE ORACLE.
@@ -33,7 +31,6 @@ NOT_MAX compares oracle logLik with the fitter's stored logLik using 1e-4*(abs(l
 - **snorm**: outlier [ESCAPE,NOT_MAX]; limit200 [ESCAPE,NOT_MAX].
 - **sstd**: family20-s1 [NOT_MAX]; small3 [NOT_MAX].
 - **std**: small3 [ESCAPE].
-- **zip**: family20-s2 [ERROR,ESCAPE] — Nonfinite fitter return (no exception): lambda=       0, pi=    -Inf logLik NaN; small3 [ERROR,ESCAPE] — Nonfinite fitter return (no exception): lambda=       0, pi=    -Inf logLik NaN.
 
 ### Comparison with the note
 
@@ -71,7 +68,7 @@ Finite seeded samples need not escape even when generated from a limit model. ES
 | binom | family20-s2 (20) | OK | size=       8, prob=     0.6 | -46.0725449 | -46.0725449 | size=       8, prob=     0.6 | -46.0725449 | 6 / 0 | integer size held at fitter value |
 | binom | family200-s1 (200) | OK | size=       9, prob=0.5583333 | -376.41813 | -376.41813 | size=       9, prob=0.5583333 | -376.41813 | 6 / 0 | integer size held at fitter value |
 | binom | family200-s2 (200) | OK | size=       8, prob=  0.6075 | -374.264473 | -374.264473 | size=       8, prob=  0.6075 | -374.264473 | 6 / 0 | integer size held at fitter value |
-| binom | small3 (3) | ERROR | size=       5, prob=       1 |       -Inf |          0 | size=       5, prob=       1 |          0 | 6 / 0 | Nonfinite fitter return (no exception): size=       5, prob=       1 logLik -Inf; integer size held at fitter value |
+| binom | small3 (3) | OK | size=       5, prob=       1 |          0 |          0 | size=       5, prob=       1 |          0 | 6 / 0 | integer size held at fitter value |
 | binom | ties (200) | OK | size=       9, prob=    0.56 | -370.135181 | -370.135181 | size=       9, prob=    0.56 | -370.135181 | 6 / 0 | integer size held at fitter value |
 | binom | outlier (200) | ERROR | — |         NA |         NA | — |       -Inf | 0 / NA | The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument.; SKIP: integer size unavailable |
 | binom | bound1 (200) | OK | size=      10, prob=   0.507 | -378.570501 | -378.570501 | size=      10, prob=   0.507 | -378.570501 | 6 / 0 | integer size held at fitter value |
@@ -84,12 +81,12 @@ Finite seeded samples need not escape even when generated from a limit model. ES
 | burr | ties (200) | OK | shape1=0.8306885, shape2=2.283269 | -279.614247 | -279.614247 | shape1=0.8306885, shape2=2.283269 | -279.614247 | 6 / 0 |  |
 | burr | outlier (200) | OK | shape1=0.8359636, shape2=2.172019 | -290.096138 | -290.096138 | shape1=0.8359636, shape2=2.172019 | -290.096138 | 6 / 0 |  |
 | burr | limit200 (200) | ERROR | — |         NA |         NA | shape1=0.009573089, shape2=62.62218 | -635.954028 | 6 / 0 | The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlpareto` to fit a Pareto distribution. |
-| burr | nearPareto (200) | ERROR,BOOST | — |         NA |         NA | shape1=0.01051501, shape2=160.2603 | -217.262783 | 6 / 0 | Error in function boost::math::digamma<long double>(long double): Evaluation of function at pole 0 |
+| burr | nearPareto (200) | OK | shape1=0.01051526, shape2=160.2565 | -217.262783 | -217.262783 | shape1=0.01051526, shape2=160.2565 | -217.262783 | 6 / 0 |  |
 | cauchy | family20-s1 (20) | OK | location=0.4870035, scale=0.5296971 | -35.7486058 | -35.7486058 | location=0.4870035, scale=0.5296971 | -35.7486058 | 6 / 0 |  |
 | cauchy | family20-s2 (20) | OK | location=0.03179257, scale=0.5648902 | -40.6207598 | -40.6207598 | location=0.03179257, scale=0.5648902 | -40.6207598 | 6 / 0 |  |
 | cauchy | family200-s1 (200) | OK | location=-0.1687973, scale= 1.02075 | -496.967514 | -496.967514 | location=-0.1687973, scale= 1.02075 | -496.967514 | 6 / 0 |  |
 | cauchy | family200-s2 (200) | OK | location=0.03984636, scale=0.8200693 | -486.008641 | -486.008641 | location=0.03984636, scale=0.8200693 | -486.008641 | 6 / 0 |  |
-| cauchy | small3 (3) | ERROR | location=     NaN, scale=     NaN |        NaN |       -Inf | location=-2.36947, scale=0.2727405 | -4.99686179 | 6 / 0 | Nonfinite fitter return (no exception): location=     NaN, scale=     NaN logLik NaN |
+| cauchy | small3 (3) | OK | location=-2.36947, scale=0.272742 | -4.99686179 | -4.99686179 | location=-2.36947, scale=0.272742 | -4.99686179 | 6 / 0 |  |
 | cauchy | ties (200) | OK | location=-0.1627303, scale=1.020042 | -518.26648 | -518.26648 | location=-0.1627303, scale=1.020042 | -518.26648 | 6 / 0 |  |
 | cauchy | outlier (200) | OK | location=-0.06839027, scale=1.077238 | -529.044166 | -529.044166 | location=-0.06839027, scale=1.077238 | -529.044166 | 6 / 0 |  |
 | dunif | family20-s1 (20) | OK | min=       2, max=      10 | -43.9444915 | -43.9444915 | min=       2, max=      10 | -43.9444915 | 6 / 0 |  |
@@ -162,7 +159,7 @@ Finite seeded samples need not escape even when generated from a limit model. ES
 | invburr | small3 (3) | OK | shape1=1.204023, shape2=1.398713 | -5.28591569 | -5.28591569 | shape1=1.204023, shape2=1.398713 | -5.28591569 | 6 / 0 |  |
 | invburr | ties (200) | OK | shape1=0.9608794, shape2=1.981109 | -260.312369 | -260.312369 | shape1=0.9608794, shape2=1.981109 | -260.312369 | 6 / 0 |  |
 | invburr | outlier (200) | OK | shape1=0.9991725, shape2=2.023809 | -267.309481 | -267.309481 | shape1=0.9991725, shape2=2.023809 | -267.309481 | 6 / 0 |  |
-| invburr | limit200 (200) | ERROR | — |         NA |         NA | shape1=0.000556112, shape2=3463.604 | 34.9388901 | 6 / 0 | Inverse Burr MLE failed |
+| invburr | limit200 (200) | ERROR | — |         NA |         NA | shape1=0.000556112, shape2=3463.604 | 34.9388901 | 6 / 0 | The inverse Burr maximum likelihood estimator does not exist when all observations <=1. Use `mlpower` to fit a power distribution. |
 | invgamma | family20-s1 (20) | OK | alpha= 3.58102, beta=4.388145 | -23.5351049 | -23.5351049 | alpha= 3.58102, beta=4.388145 | -23.5351049 | 6 / 0 |  |
 | invgamma | family20-s2 (20) | OK | alpha=3.122027, beta=4.268769 | -27.6838399 | -27.6838399 | alpha=3.122027, beta=4.268769 | -27.6838399 | 6 / 0 |  |
 | invgamma | family200-s1 (200) | OK | alpha=3.247875, beta=4.508498 | -274.135873 | -274.135873 | alpha=3.247875, beta=4.508498 | -274.135873 | 6 / 0 |  |
@@ -237,7 +234,7 @@ Finite seeded samples need not escape even when generated from a limit model. ES
 | logis | family200-s2 (200) | OK | location=0.08852113, scale=0.896656 | -381.239487 | -381.239487 | location=0.08852113, scale=0.896656 | -381.239487 | 6 / 0 |  |
 | logis | small3 (3) | OK | location=-0.3843994, scale=0.7015574 | -4.80188287 | -4.80188287 | location=-0.3843994, scale=0.7015574 | -4.80188287 | 6 / 0 |  |
 | logis | ties (200) | OK | location=-0.2532962, scale=1.095632 | -417.871439 | -417.871439 | location=-0.2532962, scale=1.095632 | -417.871439 | 6 / 0 |  |
-| logis | outlier (200) | ERROR | location=     NaN, scale=     NaN |        NaN |       -Inf | location=-0.1092319, scale=5.338641 | -805.074789 | 6 / 0 | Nonfinite fitter return (no exception): location=     NaN, scale=     NaN logLik NaN |
+| logis | outlier (200) | OK | location=-0.1092069, scale=5.338691 | -805.074789 | -805.074789 | location=-0.1092069, scale=5.338691 | -805.074789 | 6 / 0 |  |
 | logitnorm | family20-s1 (20) | OK | mu= 1.99465, sigma=2.741339 |  12.274157 |  12.274157 | mu= 1.99465, sigma=2.741339 |  12.274157 | 6 / 0 |  |
 | logitnorm | family20-s2 (20) | OK | mu=1.642853, sigma=2.697968 | 9.70743655 | 9.70743655 | mu=1.642853, sigma=2.697968 | 9.70743655 | 6 / 0 |  |
 | logitnorm | family200-s1 (200) | OK | mu=1.983818, sigma= 2.80764 | 133.953205 | 133.953205 | mu=1.983818, sigma= 2.80764 | 133.953205 | 6 / 0 |  |
@@ -364,10 +361,10 @@ Finite seeded samples need not escape even when generated from a limit model. ES
 | weibull | ties (200) | OK | shape=2.973538, scale=3.855261 | -327.483504 | -327.483504 | shape=2.973538, scale=3.855261 | -327.483504 | 6 / 0 |  |
 | weibull | outlier (200) | OK | shape=0.5408429, scale= 5.42949 | -615.449194 | -615.449194 | shape=0.5408429, scale= 5.42949 | -615.449194 | 6 / 0 |  |
 | zip | family20-s1 (20) | OK | lambda=0.4642128, pi=0.4614538 | -12.4328848 | -12.4328848 | lambda=0.4642128, pi=0.4614538 | -12.4328848 | 6 / 0 |  |
-| zip | family20-s2 (20) | ERROR,ESCAPE | lambda=       0, pi=    -Inf |        NaN |       -Inf | lambda=1.423265, pi=0.4730435 | -23.0097617 | 6 / 0 | Nonfinite fitter return (no exception): lambda=       0, pi=    -Inf logLik NaN |
+| zip | family20-s2 (20) | OK | lambda=1.423262, pi=0.4730416 | -23.0097617 | -23.0097617 | lambda=1.423262, pi=0.4730416 | -23.0097617 | 6 / 0 |  |
 | zip | family200-s1 (200) | OK | lambda=0.8463127, pi=0.5096375 | -169.484168 | -169.484168 | lambda=0.8463127, pi=0.5096375 | -169.484168 | 6 / 0 |  |
 | zip | family200-s2 (200) | OK | lambda=0.8294785, pi=0.379128 | -195.00088 | -195.00088 | lambda=0.8294785, pi=0.379128 | -195.00088 | 6 / 0 |  |
-| zip | small3 (3) | ERROR,ESCAPE | lambda=       0, pi=    -Inf |        NaN |       -Inf | lambda=3.920695, pi=0.6599249 | -3.52318909 | 6 / 0 | Nonfinite fitter return (no exception): lambda=       0, pi=    -Inf logLik NaN |
+| zip | small3 (3) | OK | lambda= 3.92069, pi=0.6599238 | -3.52318909 | -3.52318909 | lambda= 3.92069, pi=0.6599238 | -3.52318909 | 6 / 0 |  |
 | zip | ties (200) | OK | lambda=0.5435858, pi=0.3561274 | -153.646166 | -153.646166 | lambda=0.5435858, pi=0.3561274 | -153.646166 | 6 / 0 |  |
 | zip | outlier (200) | OK | lambda=57.05556, pi=    0.73 | -11783.4696 |       -Inf | — |       -Inf | 6 / NA |  NO FINITE ORACLE |
 | zip | bound1 (200) | OK | lambda=0.9180645, pi=0.5588545 | -165.650597 | -165.650597 | lambda=0.9180645, pi=0.5588545 | -165.650597 | 6 / 0 |  |
