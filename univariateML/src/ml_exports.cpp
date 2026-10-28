@@ -8,12 +8,7 @@ Rcpp::List mlburr_(const Rcpp::NumericVector &x,
                    double tol = 1.220703e-4, int iterlim = 100) {
   const std::size_t n = static_cast<std::size_t>(x.size());
 
-  // Explicit AllGeOne short-circuit. burr_mle_core itself returns AllGeOne
-  // status, but only after burr_lmom_core has been called to seed `c`.
-  // For all-ones-or-greater inputs, lmom's variance is exactly 0 and the
-  // initial-c check fires first with an unhelpful message. Detecting it
-  // here gives users the actionable "use mlpareto" hint regardless of
-  // FP rounding in the variance computation.
+  // Preserve the actionable Pareto diagnostic before computing a start.
   bool all_ge_one = n > 0;
   for (std::size_t i = 0; i < n; ++i) {
     if (x[i] < 1.0) { all_ge_one = false; break; }
@@ -24,16 +19,6 @@ Rcpp::List mlburr_(const Rcpp::NumericVector &x,
         "observations >=1. Use `mlpareto` to fit a Pareto distribution.");
   }
 
-  const double nd = static_cast<double>(n);
-  double sum_lx = 0.0, sum_lx_sq = 0.0;
-  for (std::size_t i = 0; i < n; ++i) {
-    const double lx = std::log(x[i]);
-    sum_lx += lx;
-    sum_lx_sq += lx * lx;
-  }
-  const double m1 = sum_lx / nd;
-  const double m2 = sum_lx_sq / nd - m1 * m1;
-
   double c0;
   if (init.isNotNull()) {
     Rcpp::NumericVector iv(init);
@@ -42,9 +27,9 @@ Rcpp::List mlburr_(const Rcpp::NumericVector &x,
     }
     c0 = iv[0];
   } else {
-    c0 = cppunivariate::burr_lmom_core(m1, m2, true).c;
+    c0 = cppunivariate::burr_mle_start(dist_impl::as_span(x));
     if (!std::isfinite(c0) || c0 <= 0.0) {
-      Rcpp::stop("Failed to get a valid initial c from burr_lmom()");
+      Rcpp::stop("Failed to get a valid initial c for Burr MLE");
     }
   }
 

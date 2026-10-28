@@ -8,14 +8,10 @@ test_that("inverse Burr power limits name mlpower", {
   }
 })
 
-test_that("inverse Burr with points above one fails cleanly or fits", {
-  set.seed(1)
-  x <- 1 / c(1 + rexp(199), 0.99)
-  result <- tryCatch(mlinvburr(x), error = identity)
-  if (inherits(result, "error")) {
-    expect_match(conditionMessage(result), "Inverse Burr MLE failed")
-  } else {
-    expect_true(all(is.finite(result)))
-    expect_true(is.finite(attr(result, "logLik")))
-  }
+test_that("inverse Burr with points above one recovers a finite MLE", {
+  set.seed(3)
+  x <- c(runif(199)^(1/2), 1.02)
+  fit <- mlinvburr(x)
+  expect_true(all(abs(as.numeric(fit) / c(0.0224871, 91.5277) - 1) < 1e-3))
+  expect_gte(attr(fit, "logLik"), 38.4194 - 1e-6)
 })
