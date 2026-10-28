@@ -12,10 +12,10 @@ r:
   control: {}
 log_density: log(sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)) - log(sd) + log(2/(xi+1/xi)) - log(2*pi)/2 - Piecewise(((sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))**2/xi**2, (sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))>0), ((sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))**2*xi**2, True))/2
 limits:
-  - name: 'translated half-normal'
+  - model: hnorm
     when: '$\xi \to \infty$'
     status: 'RightHalfNormalBoundary'
-  - name: 'translated half-normal'
+  - name: 'reflected translated half-normal'
     when: '$\xi \to 0$'
     status: 'LeftHalfNormalBoundary'
 references:
@@ -29,3 +29,5 @@ The Fernandez--Steel skew-normal distribution introduces skewness by giving the 
 ## Details
 
 This is the two-piece normal family, rather than the Azzalini skew-normal family. The coefficients `mean` and `sd` are its mean and standard deviation; `xi = 1` gives the normal distribution. The translated half-normal boundary has its mode at the sample minimum or maximum.
+
+Use `mlhnorm(x)` for the right boundary and `mlhnorm(-x)` for the left boundary, reflecting the fitted half-normal back at the sample maximum.

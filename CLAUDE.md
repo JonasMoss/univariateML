@@ -238,6 +238,7 @@ the validation harness's dispatch). Follow `lomax/` as the worked example.
 | `README.md` | YAML front matter (id, name, support, params, R refs, control-argument docs, log-density, limits, references, examples) + prose. Schema: `distributions/README_SCHEMA.md`. |
 | `mle.hpp` | `*_mle(span x, tol, maxit, ...)`, `*Result`, `*Status`; a `Cost` struct (validation harness) |
 | `dpqr.hpp` | d/p/q/r templates |
+| `dpqr.R` | Optional exported, roxygen-documented R d/p/q/r, only when no other package provides them; copied to `package/R/dist_<id>.R`. |
 | `adapter.cpp` | the Rcpp adapter `ml<id>_`; copied to the package's `src/dist_<id>.cpp` by `assemble_package.R`. Argument names follow `roadmap/2026-10-28-cran-argument-names.md` (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`) and must match `README.md`'s `r.control` (codegen checks). |
 | `test.cpp` | doctest cases; globbed into the `distribution_tests` target; `#include "test_support.hpp"` for `load_distribution_golden(id)` and tolerances |
 | `test.R` | testthat file; copied to `tests/testthat/test-dist-<id>.R` |

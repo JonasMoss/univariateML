@@ -104,3 +104,9 @@ test_that("two-piece conversion matches fGarch log densities", {
     expect_lt(max(abs(fGarch::dsnorm(x,mu,sd,sqrt(b/a),log=TRUE)-expected)), 1e-14)
   }
 })
+
+test_that("half-normal boundary messages name the available fitter", {
+  x <- c(0, 0, 0, 1, 2, 8)
+  expect_error(mlsnorm(x), "Use `mlhnorm` to fit")
+  expect_error(mlsnorm(-x), "Use `mlhnorm` on `-x` \\(a half-normal reflected at the sample maximum\\)")
+})
