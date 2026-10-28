@@ -75,14 +75,16 @@ inline double log_dged_unit(double z, double nu) {
 }
 
 inline double log_dstd_unit(double z, double nu) {
-  // Closed-form log-density of unit-variance student-t; scale = sqrt(nu/(nu-2)).
-  const double scale = std::sqrt(nu / (nu - 2.0));
-  const double w = z * scale;
-  const double log_dt = std::lgamma(0.5 * (nu + 1.0)) -
-                        std::lgamma(0.5 * nu) -
-                        0.5 * std::log(nu * M_PI) -
-                        0.5 * (nu + 1.0) * std::log1p(w * w / nu);
-  return log_dt + std::log(scale);
+  // log Gamma(z+1/2)/Gamma(z) = log(z)/2 - 1/(8z)
+  // + 1/(192z^3) - 1/(640z^5) + O(z^-7). At nu >= 1e4
+  // the omitted term is below double precision; avoid lgamma cancellation.
+  const double inv = 1.0 / nu;
+  const double ratio = nu >= 1e4
+      ? 0.5 * std::log(0.5 * nu) - 0.25 * inv +
+            inv * inv * inv / 24.0 - std::pow(inv, 5) / 20.0
+      : std::lgamma(0.5 * (nu + 1.0)) - std::lgamma(0.5 * nu);
+  return ratio - 0.5 * std::log((nu - 2.0) * M_PI) -
+         0.5 * (nu + 1.0) * std::log1p(z * z / (nu - 2.0));
 }
 
 // --- pure-libm skew log-density cores ---------------------------------------

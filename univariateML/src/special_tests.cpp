@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "cppunivariate/distributions/std/mle.hpp"
 #include "cppunivariate/special/special.hpp"
 
 using namespace Rcpp;
@@ -91,4 +92,14 @@ NumericVector special_psigamma_cpp(const NumericVector &x, int deriv) {
     out[i] = cppunivariate::special::psigamma(x[i], deriv);
   }
   return out;
+}
+
+// Test seam for the exact objective used to report Student-t logLik.
+// [[Rcpp::export]]
+double student_t_loglik_cpp(const Rcpp::NumericVector &x, double mean,
+                            double sd, double nu) {
+  cppunivariate::StudentTCost cost{
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}};
+  const double phi[3] = {mean, std::log(sd), std::log(nu - 2.0)};
+  return -cost(phi);
 }

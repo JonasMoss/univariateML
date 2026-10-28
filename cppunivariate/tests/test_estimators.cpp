@@ -474,6 +474,25 @@ TEST_CASE("std (Student-t with location/scale)") {
   CHECK(gnorm < 1e-3);
 }
 
+TEST_CASE("std compares normal and df-two faces") {
+  std::vector<double> uniform;
+  for (int i = 0; i < 200; ++i) uniform.push_back((i - 99.5) / 100.0);
+  auto normal = cppunivariate::student_t_mle(mltest::as_span(uniform), kFitTol, 200);
+  CHECK(normal.status == cppunivariate::StudentTStatus::NormalBoundary);
+  std::vector<double> cluster;
+  for (int i = 0; i < 30; ++i) cluster.push_back(-1e-4 + 2e-4 * i / 29.0);
+  for (int i = 0; i < 10; ++i) cluster.push_back(0.9999 + 2e-4 * i / 9.0);
+  auto two = cppunivariate::student_t_mle(mltest::as_span(cluster), kFitTol, 200);
+  CHECK(two.status == cppunivariate::StudentTStatus::DfTwoBoundary);
+  CHECK(two.logLik == doctest::Approx(54.07217335).epsilon(1e-7));
+}
+
+TEST_CASE("std large nu density retains precision") {
+  // Independent high precision log-density values at z=1.25.
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 1e8) ==
+        doctest::Approx(-1.7001885430386572).epsilon(1e-12));
+}
+
 TEST_CASE("gompertz") {
   auto g = load("gompertz");
   auto r = cppunivariate::gompertz_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);

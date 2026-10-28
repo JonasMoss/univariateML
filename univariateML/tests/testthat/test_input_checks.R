@@ -11,6 +11,12 @@ for (dens in densities) {
   expect_equal(forms_lhs, forms_rhs)
   set.seed(1)
   x <- simulate_default(dens, 10)
+  # A ten-point Student-t sample can have its supremum on a face.
+  # Use the interior regression sample for this successful-fit contract.
+  if (identical(dens, "mlstd")) {
+    set.seed(313)
+    x <- fGarch::rstd(500, nu = 4)
+  }
   object <- do.call(dens, list(x))
   density <- univariateML_to_function(object, "d")
   expect_equal(sum(density(x, log = TRUE)), attr(object, "logLik"))
