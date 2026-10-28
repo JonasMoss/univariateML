@@ -8,9 +8,8 @@
 #pragma once
 
 #include "../../special/constants.hpp"
+#include "../../special/special.hpp"
 
-#include <boost/math/distributions/binomial.hpp>
-#include <boost/math/policies/policy.hpp>
 #include <cmath>
 
 namespace cppunivariate {
@@ -18,12 +17,6 @@ namespace distributions {
 
 using cppunivariate::special::kNaN;
 using cppunivariate::special::kNegInf;
-
-namespace binom_detail {
-using RDiscretePolicy = boost::math::policies::policy<
-    boost::math::policies::discrete_quantile<
-        boost::math::policies::integer_round_up>>;
-}
 
 inline double dbinom(double x, double size, double prob, bool log) {
   if (!(size >= 0.0) || !(prob >= 0.0 && prob <= 1.0) || !std::isfinite(x)) {
@@ -54,11 +47,7 @@ inline double pbinom(double q, double size, double prob, bool lower_tail,
   if (q < 0.0) cdf_val = 0.0;
   else if (q >= size) cdf_val = 1.0;
   else {
-    using boost::math::binomial_distribution;
-    const binomial_distribution<double, binom_detail::RDiscretePolicy> d(
-        size, prob);
-    cdf_val = lower_tail ? cdf(d, std::floor(q))
-                         : cdf(complement(d, std::floor(q)));
+    cdf_val = cppunivariate::special::binomial_cdf(std::floor(q), size, prob, lower_tail);
     return log_p ? std::log(cdf_val) : cdf_val;
   }
   double prob_out = lower_tail ? cdf_val : (1.0 - cdf_val);
@@ -72,10 +61,7 @@ inline double qbinom(double p, double size, double prob, bool lower_tail,
   if (!lower_tail) p = 1.0 - p;
   if (p <= 0.0) return 0.0;
   if (p >= 1.0) return size;
-  using boost::math::binomial_distribution;
-  const binomial_distribution<double, binom_detail::RDiscretePolicy> d(size,
-                                                                       prob);
-  return quantile(d, p);
+  return cppunivariate::special::binomial_quantile(p, size, prob, true);
 }
 
 template <typename Rng>
@@ -84,10 +70,7 @@ inline double rbinom(Rng &rng, double size, double prob) {
   // For large `size` the sequential-Bernoulli alternative is faster but
   // not bit-equivalent to qbinom-on-uniform; we keep the simple path.
   const double u = rng.runif(0.0, 1.0);
-  using boost::math::binomial_distribution;
-  const binomial_distribution<double, binom_detail::RDiscretePolicy> d(size,
-                                                                       prob);
-  return quantile(d, u);
+  return cppunivariate::special::binomial_quantile(u, size, prob, true);
 }
 
 }  // namespace distributions

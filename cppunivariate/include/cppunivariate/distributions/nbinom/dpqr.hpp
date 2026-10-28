@@ -13,8 +13,6 @@
 #include "../../special/constants.hpp"
 #include "../../special/special.hpp"
 
-#include <boost/math/distributions/negative_binomial.hpp>
-#include <boost/math/policies/policy.hpp>
 #include <cmath>
 
 namespace cppunivariate {
@@ -22,12 +20,6 @@ namespace distributions {
 
 using cppunivariate::special::kNaN;
 using cppunivariate::special::kNegInf;
-
-namespace nbinom_detail {
-using RDiscretePolicy = boost::math::policies::policy<
-    boost::math::policies::discrete_quantile<
-        boost::math::policies::integer_round_up>>;
-}
 
 inline double dnbinom(double x, double size, double prob, bool log) {
   return cppunivariate::special::dnbinom(x, size, prob, log);
@@ -40,12 +32,7 @@ inline double pnbinom(double q, double size, double prob, bool lower_tail,
   if (q < 0.0) {
     cdf_val = 0.0;
   } else {
-    using boost::math::negative_binomial_distribution;
-    const negative_binomial_distribution<double,
-                                          nbinom_detail::RDiscretePolicy>
-        d(size, prob);
-    cdf_val = lower_tail ? cdf(d, std::floor(q))
-                         : cdf(complement(d, std::floor(q)));
+    cdf_val = cppunivariate::special::negative_binomial_cdf(std::floor(q), size, prob, lower_tail);
     return log_p ? std::log(cdf_val) : cdf_val;
   }
   double prob_out = lower_tail ? cdf_val : (1.0 - cdf_val);
@@ -59,10 +46,7 @@ inline double qnbinom(double p, double size, double prob, bool lower_tail,
   if (!lower_tail) p = 1.0 - p;
   if (p <= 0.0) return 0.0;
   if (p >= 1.0) return std::numeric_limits<double>::infinity();
-  using boost::math::negative_binomial_distribution;
-  const negative_binomial_distribution<double, nbinom_detail::RDiscretePolicy>
-      d(size, prob);
-  return quantile(d, p);
+  return cppunivariate::special::negative_binomial_quantile(p, size, prob, true);
 }
 
 template <typename Rng>

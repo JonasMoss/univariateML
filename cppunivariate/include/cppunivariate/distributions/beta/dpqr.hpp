@@ -8,8 +8,8 @@
 #pragma once
 
 #include "../../special/constants.hpp"
+#include "../../special/special.hpp"
 
-#include <boost/math/distributions/beta.hpp>
 #include <cmath>
 
 namespace cppunivariate {
@@ -25,7 +25,6 @@ inline double dbeta(double x, double shape1, double shape2, bool log) {
   if (x < 0.0 || x > 1.0) {
     return log ? kNegInf : 0.0;
   }
-  const boost::math::beta_distribution<> d(shape1, shape2);
   if (log) {
     // log f = (a-1)*log(x) + (b-1)*log1p(-x) - lbeta(a, b).
     // Use closed form for tail stability.
@@ -42,7 +41,7 @@ inline double dbeta(double x, double shape1, double shape2, bool log) {
            (std::lgamma(shape1) + std::lgamma(shape2) -
             std::lgamma(shape1 + shape2));
   }
-  return boost::math::pdf(d, x);
+  return cppunivariate::special::beta_pdf(x, shape1, shape2);
 }
 
 inline double pbeta(double q, double shape1, double shape2, bool lower_tail,
@@ -50,12 +49,10 @@ inline double pbeta(double q, double shape1, double shape2, bool lower_tail,
   if (!(shape1 > 0.0 && shape2 > 0.0)) {
     return kNaN;
   }
-  using namespace boost::math;
-  const beta_distribution<> d(shape1, shape2);
   double prob;
   if (q <= 0.0) prob = lower_tail ? 0.0 : 1.0;
   else if (q >= 1.0) prob = lower_tail ? 1.0 : 0.0;
-  else prob = lower_tail ? cdf(d, q) : cdf(complement(d, q));
+  else prob = cppunivariate::special::beta_cdf(q, shape1, shape2, lower_tail);
   return log_p ? std::log(prob) : prob;
 }
 
@@ -64,10 +61,8 @@ inline double qbeta(double p, double shape1, double shape2, bool lower_tail,
   if (!(shape1 > 0.0 && shape2 > 0.0)) {
     return kNaN;
   }
-  using namespace boost::math;
-  const beta_distribution<> d(shape1, shape2);
   if (log_p) p = std::exp(p);
-  return lower_tail ? quantile(d, p) : quantile(complement(d, p));
+  return cppunivariate::special::beta_quantile(p, shape1, shape2, lower_tail);
 }
 
 template <typename Rng>

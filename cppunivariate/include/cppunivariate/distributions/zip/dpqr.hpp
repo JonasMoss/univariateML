@@ -11,8 +11,6 @@
 
 #include "../../special/constants.hpp"
 #include "../../special/special.hpp"
-#include <boost/math/distributions/poisson.hpp>
-#include <boost/math/policies/policy.hpp>
 #include <cmath>
 
 namespace cppunivariate {
@@ -47,8 +45,7 @@ inline double pzip(double q, double lambda, double pi, bool lower_tail,
   if (q < 0.0) {
     prob = 0.0;
   } else {
-    const boost::math::poisson_distribution<> d(lambda);
-    const double pp = boost::math::cdf(d, std::floor(q));
+    const double pp = cppunivariate::special::poisson_cdf(std::floor(q), lambda, true);
     prob = pi + std::exp(std::log1p(-pi) + std::log(pp));
   }
   if (!lower_tail) {
@@ -56,17 +53,6 @@ inline double pzip(double q, double lambda, double pi, bool lower_tail,
   }
   return log_p ? std::log(prob) : prob;
 }
-
-namespace detail {
-// Match R's qpois convention: smallest k with P(X <= k) >= p. Boost's default
-// discrete_quantile policy rounds outward, which differs from R; explicit
-// integer_round_up matches.
-using PoissonRoundUp = boost::math::poisson_distribution<
-    double,
-    boost::math::policies::policy<
-        boost::math::policies::discrete_quantile<
-            boost::math::policies::integer_round_up>>>;
-} // namespace detail
 
 inline double qzip(double p, double lambda, double pi, bool lower_tail,
                    bool log_p) {
@@ -86,8 +72,7 @@ inline double qzip(double p, double lambda, double pi, bool lower_tail,
     return std::numeric_limits<double>::infinity();
   }
   const double scaled = (p - pi) / (1.0 - pi);
-  const detail::PoissonRoundUp d(lambda);
-  return boost::math::quantile(d, scaled);
+  return cppunivariate::special::poisson_quantile(scaled, lambda, true);
 }
 
 template <typename Rng>

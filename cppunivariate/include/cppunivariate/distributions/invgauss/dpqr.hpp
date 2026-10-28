@@ -3,13 +3,13 @@
 //
 //   f(x)   = (shape/(2*pi*x^3))^(1/2) * exp(-shape*(x-mean)^2 / (2*x*mean^2))
 //
-// d/p/q delegate to boost::math::inverse_gaussian_distribution(mean, shape).
+// d/p/q delegate to the inverse Gaussian primitives in the special seam.
 // r matches actuar's rinvgauss: one rnorm + one runif call per sample.
 
 #pragma once
 
 #include "../../special/constants.hpp"
-#include <boost/math/distributions/inverse_gaussian.hpp>
+#include "../../special/special.hpp"
 #include <cmath>
 
 namespace cppunivariate {
@@ -29,9 +29,7 @@ inline double dinvgauss(double x, double mean, double shape, bool log) {
   if (x <= 0.0) {
     return log ? kNegInf : 0.0;
   }
-  using namespace boost::math;
-  const inverse_gaussian_distribution<> d(mean, shape);
-  const double pdf_val = pdf(d, x);
+  const double pdf_val = cppunivariate::special::inverse_gaussian_pdf(x, mean, shape);
   return log ? std::log(pdf_val) : pdf_val;
 }
 
@@ -40,28 +38,24 @@ inline double pinvgauss(double q, double mean, double shape, bool lower_tail,
   if (!(mean > 0.0 && shape > 0.0) || !std::isfinite(q)) {
     return kNaN;
   }
-  using namespace boost::math;
-  const inverse_gaussian_distribution<> d(mean, shape);
   double prob;
   if (q <= 0.0) {
     prob = lower_tail ? 0.0 : 1.0;
   } else {
-    prob = lower_tail ? cdf(d, q) : cdf(complement(d, q));
+    prob = cppunivariate::special::inverse_gaussian_cdf(q, mean, shape, lower_tail);
   }
   return log_p ? std::log(prob) : prob;
 }
 
 inline double qinvgauss(double p, double mean, double shape, bool lower_tail,
                         bool log_p) {
-  using namespace boost::math;
   if (!(mean > 0.0 && shape > 0.0) || !std::isfinite(p)) {
     return kNaN;
   }
   if (log_p) {
     p = std::exp(p);
   }
-  const inverse_gaussian_distribution<> d(mean, shape);
-  return lower_tail ? quantile(d, p) : quantile(complement(d, p));
+  return cppunivariate::special::inverse_gaussian_quantile(p, mean, shape, lower_tail);
 }
 
 template <typename Rng>

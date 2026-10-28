@@ -13,7 +13,6 @@
 
 #include "../../special/constants.hpp"
 #include "../../special/special.hpp"
-#include <boost/math/distributions/beta.hpp>
 #include <cmath>
 
 namespace cppunivariate {
@@ -37,7 +36,6 @@ inline double dbetapr(double x, double shape1, double shape2, bool log) {
 
 inline double pbetapr(double q, double shape1, double shape2,
                       bool lower_tail, bool log_p) {
-  using namespace boost::math;
   if (!(shape1 > 0.0 && shape2 > 0.0) || !std::isfinite(q)) {
     return kNaN;
   }
@@ -45,8 +43,7 @@ inline double pbetapr(double q, double shape1, double shape2,
   if (q <= 0.0) {
     prob = lower_tail ? 0.0 : 1.0;
   } else {
-    const beta_distribution<> d(shape1, shape2);
-    prob = cdf(d, q / (1.0 + q));
+    prob = cppunivariate::special::beta_cdf(q / (1.0 + q), shape1, shape2, true);
     if (!lower_tail) {
       prob = 1.0 - prob;
     }
@@ -56,7 +53,6 @@ inline double pbetapr(double q, double shape1, double shape2,
 
 inline double qbetapr(double p, double shape1, double shape2,
                       bool lower_tail, bool log_p) {
-  using namespace boost::math;
   if (!(shape1 > 0.0 && shape2 > 0.0) || !std::isfinite(p)) {
     return kNaN;
   }
@@ -72,8 +68,7 @@ inline double qbetapr(double p, double shape1, double shape2,
   if (p >= 1.0) {
     return std::numeric_limits<double>::infinity();
   }
-  const beta_distribution<> d(shape1, shape2);
-  const double y = quantile(d, p);
+  const double y = cppunivariate::special::beta_quantile(p, shape1, shape2, true);
   return y / (1.0 - y);
 }
 

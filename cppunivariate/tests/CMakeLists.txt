@@ -49,3 +49,7 @@ add_test(NAME validation_tests COMMAND validation_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 set_tests_properties(validation_tests PROPERTIES
   ENVIRONMENT "UMVL_VALIDATION_DIR=${VALIDATION_DIR}")
+
+cppuniv_test(no_throw_tests test_no_throw.cpp)
+add_test(NAME no_throw_tests COMMAND no_throw_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
