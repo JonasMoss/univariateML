@@ -65,3 +65,5 @@
 #include "distributions/zipf/mle.hpp"
 
 #include "distributions/lst/mle.hpp"
+
+#include "distributions/gpd/mle.hpp"
