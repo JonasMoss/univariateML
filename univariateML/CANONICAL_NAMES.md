@@ -40,7 +40,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | beta       | Beta                    | shape1, shape2     | stats::dbeta              | (0, 1) open      |
 | betapr     | BetaPrime               | shape1, shape2, scale | extraDistr::dbetapr       | [0, ∞)           |
 | binom      | Binomial                | size, prob         | stats::dbinom             | [0, ∞) integer   |
-| burr       | Burr                    | shape1, shape2     | actuar::dburr             | (0, ∞) open      |
+| burr       | Burr                    | shape1, shape2, scale | actuar::dburr             | (0, ∞) open      |
 | cauchy     | Cauchy                  | location, scale    | stats::dcauchy            | (-∞, ∞) open     |
 | dunif      | Discrete uniform        | min, max           | extraDistr::ddunif        | (-∞, ∞) integer  |
 | exp        | Exponential             | rate               | stats::dexp               | [0, ∞)           |
@@ -50,7 +50,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | geom       | Geometric               | prob               | stats::dgeom              | [0, ∞) integer   |
 | gompertz   | Gompertz                | a, b               | extraDistr::dgompertz     | [0, ∞)           |
 | gumbel     | Gumbel                  | mu, sigma          | extraDistr::dgumbel       | (-∞, ∞) open     |
-| invburr    | Inverse Burr            | shape1, shape2     | actuar::dinvburr          | (0, ∞) open      |
+| invburr    | Inverse Burr            | shape1, shape2, scale | actuar::dinvburr          | (0, ∞) open      |
 | invgamma   | InvGamma                | alpha, beta        | extraDistr::dinvgamma     | (0, ∞) open      |
 | invgauss   | Inverse Gaussian        | mean, shape        | actuar::dinvgauss         | (0, ∞) open      |
 | invweibull | InverseWeibull          | shape, rate        | actuar::dinvweibull       | (0, ∞) open      |

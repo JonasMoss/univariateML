@@ -43,6 +43,13 @@ for (dens in densities) {
     set.seed(812)
     x <- fGarch::rged(500, nu = 1.5)
   }
+  if (dens %in% c("mlburr", "mlinvburr")) {
+    # The free-scale ten-point fit can select a limit model.
+    # Use interior data for the successful-fit contract.
+    set.seed(1)
+    x <- actuar::rburr(200, shape1 = 1, shape2 = 2, scale = 3)
+    if (dens == "mlinvburr") x <- 1 / x
+  }
   object <- do.call(dens, list(x))
   density <- univariateML_to_function(object, "d")
   expect_equal(sum(density(x, log = TRUE)), attr(object, "logLik"))
