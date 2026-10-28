@@ -332,17 +332,6 @@ TEST_CASE("nakagami: analytical Hessian agrees with FD") {
 
 // --- 2D actuar/extraDistr family ------------------------------------------
 
-TEST_CASE("lomax: analytical Hessian agrees with FD") {
-  auto g = load("lomax");
-  auto fit = cppunivariate::lomax_mle(mltest::as_span(g.data), 1.220703e-4, 100);
-  cppunivariate::LomaxCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.lambda, fit.kappa};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
 TEST_CASE("invgamma: analytical Hessian agrees with FD") {
   auto g = load("invgamma");
   auto fit = cppunivariate::invgamma_mle(mltest::as_span(g.data), 1.220703e-4, 100);
@@ -594,17 +583,6 @@ TEST_CASE("zipf: analytical Hessian agrees with FD (1-D in s, N fixed)") {
 // No Layer-2 (closed-form Fisher info) check here — the analytic Fisher
 // information for these families is itself a paper-length result that
 // would just duplicate the Hessian formula.
-
-TEST_CASE("paralogis: analytical Hessian agrees with FD") {
-  auto g = load("paralogis");
-  auto fit = cppunivariate::paralogis_mle(mltest::as_span(g.data), 1.220703e-4, 100);
-  cppunivariate::ParalogisCost cost{mltest::as_span(g.data)};
-  const double phi[] = {std::log(fit.shape), std::log(fit.scale)};
-  double H_anal[4], H_fd[4];
-  cost.hessian(phi, H_anal);
-  cppunivariate::finite_diff_hessian(cost, phi, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
 
 TEST_CASE("student_t: analytical Hessian agrees with FD") {
   auto g = load("std");

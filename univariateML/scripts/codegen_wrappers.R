@@ -1,109 +1,161 @@
-# Generates explicit ml*** wrappers from metadata + docs.
-# Run via: Rscript scripts/gen_wrappers.R
+# Generate package/R/ml02_wrappers.R: one exported ml<id>() wrapper per
+# distribution, with roxygen docs. Run from univariateML/ via `just gen`,
+# after Rcpp::compileAttributes() (the adapters' formals are read from
+# package/R/RcppExports.R to check the documented control arguments).
+#
+# Migrated distributions (distributions/<id>/README.md) get full docs from
+# the front matter and prose; legacy ones get placeholder docs until they
+# are migrated.
 
-if (!requireNamespace("jsonlite", quietly = TRUE)) {
-  stop("jsonlite is required to run this generator.")
-}
-
-dossier_dir <- Sys.getenv(
+dist_dir <- Sys.getenv(
   "UMVL_DOSSIER_DIR",
   "../cppunivariate/include/cppunivariate/distributions"
 )
 r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
 pkg_r_dir <- Sys.getenv("UMVL_PKG_R_DIR", "package/R")
 
-source(file.path("scripts", "parse_cpp_metadata.R"))
+source(file.path("scripts", "load_distributions.R"))
+models <- load_distributions(dist_dir, r_metadata_dir)
 
-# Per-distribution intermediate-form metadata.json files. May carry an
-# optional "docs" subkey.
-dossier_json_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
-dossier_json_models <- lapply(dossier_json_files, function(f) {
-  m <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
-  m$id <- basename(dirname(f))
-  m
-})
+# Adapter formals, for the control-argument check.
+rcpp_env <- new.env()
+rcpp_exports <- file.path(pkg_r_dir, "RcppExports.R")
+if (!file.exists(rcpp_exports)) {
+  stop("codegen_wrappers: run Rcpp::compileAttributes() first (", rcpp_exports, " missing)")
+}
+sys.source(rcpp_exports, envir = rcpp_env)
 
-# Per-distribution canonical-form metadata.hpp files. Paired with
-# univariateML/metadata/<id>.json for R-side refs (sampler, density, optional docs).
-dossier_hpp_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.hpp"))
-dossier_hpp_models <- lapply(dossier_hpp_files, function(f) {
-  cpp <- parse_cpp_metadata(f)
-  refs_file <- file.path(r_metadata_dir, paste0(cpp$id, ".json"))
-  refs <- if (file.exists(refs_file)) {
-    jsonlite::fromJSON(refs_file, simplifyDataFrame = FALSE)
-  } else {
-    list()
-  }
-  c(cpp, refs)
-})
+nl <- function(...) paste0(..., collapse = "")
 
-dossier_docs <- Filter(Negate(is.null),
-  lapply(c(dossier_json_models, dossier_hpp_models), function(m) {
-    if (is.null(m$docs)) return(NULL)
-    d <- m$docs
-    d$id <- m$id
-    d
-  })
-)
+# Markdown math in prose -> Rd math macros (roxygen markdown leaves Rd
+# macros alone).
+rd_math <- function(x) {
+  x <- gsub("\\$\\$([^$]+)\\$\\$", "\\\\deqn{\\1}", x)
+  gsub("\\$([^$]+)\\$", "\\\\eqn{\\1}", x)
+}
 
-all_ids <- c(
-  vapply(dossier_json_models, function(m) m$id, character(1)),
-  vapply(dossier_hpp_models, function(m) m$id, character(1))
-)
-dups <- unique(all_ids[duplicated(all_ids)])
-if (length(dups)) {
-  stop(
-    "Duplicate metadata id(s) across per-distribution metadata.json ",
-    "and per-distribution metadata.hpp: ",
-    paste(dups, collapse = ", ")
+# "pkg::fn" -> roxygen link "[pkg::fn()]"; bare names -> "[fn()]".
+rd_link <- function(ref) paste0("[", ref, "()]")
+
+roxy <- function(lines) paste0("#' ", lines)
+
+param_names <- function(model) vapply(model$params, function(p) p$name, character(1))
+
+and_list <- function(x) {
+  x <- paste0("`", x, "`")
+  if (length(x) <= 1L) return(x)
+  paste0(paste(x[-length(x)], collapse = ", "), " and ", x[length(x)])
+}
+
+limit_sentence <- function(lim, model) {
+  target <- paste0("ml", lim$model)
+  target_name <- if (!is.null(models[[lim$model]])) models[[lim$model]]$name else lim$model
+  nl(
+    "When ", if (!is.null(lim$detect)) nl("`", lim$detect, "`") else "the data point to the limit",
+    ", the maximum likelihood estimator does not exist: the likelihood ",
+    "increases toward the ", target_name, " distribution",
+    if (!is.null(lim$when)) nl(" as ", rd_math(lim$when)) else "",
+    ". `ml", model$id, "()` then stops with an error; use [", target, "()] instead."
   )
 }
 
-models <- c(dossier_json_models, dossier_hpp_models)
-models <- models[order(vapply(models, function(m) m$id, character(1)))]
+check_control <- function(model) {
+  fn <- rcpp_env[[paste0("ml", model$id, "_")]]
+  if (is.null(fn)) stop("codegen_wrappers: no Rcpp adapter ml", model$id, "_")
+  formal_names <- setdiff(names(formals(fn)), "x")
+  doc_names <- names(model$control)
+  if (!setequal(formal_names, doc_names)) {
+    stop("codegen_wrappers: ", model$id, ": adapter arguments (",
+         paste(formal_names, collapse = ", "), ") do not match README r.control (",
+         paste(doc_names, collapse = ", "), ")")
+  }
+  formals(fn)
+}
 
-docs_by_id <- setNames(dossier_docs, vapply(dossier_docs, function(d) d$id, character(1)))
+gen_doc_readme <- function(model) {
+  fname <- paste0("ml", model$id)
+  defaults <- check_control(model)
+  s <- model$sections
+  desc <- rd_math(s$description)
+  if (!length(desc)) stop("codegen_wrappers: ", model$id, ": README.md has no description")
 
-nl <- function(...) paste0(..., collapse = "")
-fallback <- function(x, default) if (is.null(x) || length(x) == 0) default else x
-
-gen_doc <- function(model) {
-  d <- docs_by_id[[model$id]]
-  title <- fallback(if (!is.null(d)) d$title else NULL, nl(model$name, " maximum likelihood estimation"))
-  desc <- fallback(if (!is.null(d)) d$description else NULL, "Maximum likelihood estimation for this distribution.")
-  lower <- fallback(model$support$lower, "-Inf")
-  upper <- fallback(model$support$upper, "Inf")
-  details <- fallback(if (!is.null(d)) d$details else NULL,
-    nl("Density: ", model$density, "; support: [", lower, ", ", upper, ").")
+  details <- c(
+    nl("For the density function of the ", model$name, " distribution see ",
+       rd_link(model$density), "."),
+    vapply(model$limits, limit_sentence, character(1), model = model),
+    rd_math(s$details %||% character())
   )
-  seealso <- fallback(if (!is.null(d)) d$seealso else NULL, model$density)
-  refs <- fallback(if (!is.null(d)) d$references else NULL, character(0))
-  examples <- fallback(if (!is.null(d)) d$examples else NULL,
-    nl("set.seed(1); ", paste0("ml", model$id), "(simulate_default(\"", paste0("ml", model$id), "\", 100))")
-  )
+  control_items <- vapply(names(model$control), function(arg) {
+    d <- defaults[[arg]]
+    default_txt <- if (is.null(d)) "" else nl(" Defaults to `", format(eval(d)), "`.")
+    nl("  * `", arg, "`: ", rd_math(model$control[[arg]]), default_txt)
+  }, character(1))
+  seealso <- unique(c(
+    nl(rd_link(model$density), " for the density."),
+    vapply(model$limits, function(l) nl("[ml", l$model, "()] for the limit model."), character(1)),
+    rd_math(s[["see also"]] %||% character())
+  ))
+  examples <- if (!is.null(model$examples)) {
+    strsplit(sub("\n$", "", model$examples), "\n", fixed = TRUE)[[1]]
+  } else {
+    nl("set.seed(1); ", fname, "(simulate_default(\"", fname, "\", 100))")
+  }
 
   block <- c(
-    nl("#' ", title),
-    "#'",
-    nl("#' ", desc),
-    if (!is.null(details)) c("#'", nl("#' ", details)) else NULL,
-    "#'",
-    "#' @param x a (non-empty) numeric vector of data values.",
-    "#' @param na.rm logical. Should missing values be removed?",
-    "#' @param ... Optional control arguments passed to the optimizer/estimator.",
-    "#' @return An object of class `univariateML` with estimates and attributes.",
-    if (!is.null(seealso)) c("#' @seealso", paste0("#'   ", seealso)) else NULL,
-    if (length(refs)) c("#' @references", paste0("#'   ", refs)) else NULL,
-    if (!is.null(examples)) c("#' @examples", paste0("#' ", examples)) else NULL,
-    "#' @export"
+    nl(model$name, " distribution maximum likelihood estimation"),
+    "",
+    desc[1],
+    if (length(desc) > 1L) c(rbind("", desc[-1])) else NULL,
+    "",
+    "@details",
+    head(c(rbind(details, "")), -1L),
+    "",
+    "@param x a (non-empty) numeric vector of data values.",
+    "@param na.rm logical. Should missing values be removed?",
+    if (length(control_items)) c("@param ... Optional control arguments:", control_items)
+    else "@param ... Not used.",
+    nl("@return `", fname, "` returns an object of [class][base::class] `univariateML`. ",
+       "This is a named numeric vector with maximum likelihood estimates for ",
+       and_list(param_names(model)), " and the attributes `model`, `density`, ",
+       "`logLik`, `support`, `n` and `call`."),
+    "@seealso",
+    seealso,
+    if (length(model$references)) c("@references", head(c(rbind(model$references, "")), -1L)) else NULL,
+    "@examples",
+    examples,
+    "@export"
   )
-  paste0(block, collapse = "\n")
+  paste0(roxy(block), collapse = "\n")
+}
+
+gen_doc_legacy <- function(model) {
+  lower <- if (is.null(model$support$lower)) "-Inf" else model$support$lower
+  upper <- if (is.null(model$support$upper)) "Inf" else model$support$upper
+  block <- c(
+    nl(model$name, " maximum likelihood estimation"),
+    "",
+    "Maximum likelihood estimation for this distribution.",
+    "",
+    nl("Density: ", model$density, "; support: [", lower, ", ", upper, ")."),
+    "",
+    "@param x a (non-empty) numeric vector of data values.",
+    "@param na.rm logical. Should missing values be removed?",
+    "@param ... Optional control arguments passed to the optimizer/estimator.",
+    "@return An object of class `univariateML` with estimates and attributes.",
+    "@seealso",
+    nl("  ", model$density),
+    "@examples",
+    nl("set.seed(1); ml", model$id, "(simulate_default(\"ml", model$id, "\", 100))"),
+    "@export"
+  )
+  paste0(roxy(block), collapse = "\n")
 }
 
 gen_wrapper <- function(model) {
   fname <- paste0("ml", model$id)
+  doc <- if (identical(model$source, "readme")) gen_doc_readme(model) else gen_doc_legacy(model)
   paste0(
-    gen_doc(model), "\n",
+    doc, "\n",
     fname, " <- function(x, na.rm = FALSE, ...) {\n",
     "  x <- ml_check_modify(x, na.rm = na.rm, name = \"", fname, "\")\n",
     "  n <- length(x)\n",
@@ -115,19 +167,13 @@ gen_wrapper <- function(model) {
 }
 
 header <- paste(
-  "# This file is auto-generated by scripts/gen_wrappers.R",
+  "# This file is auto-generated by scripts/codegen_wrappers.R",
   "# Do not edit by hand.",
   sep = "\n"
 )
 
 wrappers <- vapply(models, gen_wrapper, character(1))
-generated_names <- vapply(models, function(m) paste0("ml", m$id), character(1))
 
 dir.create(pkg_r_dir, recursive = TRUE, showWarnings = FALSE)
-cat(
-  header, "\n\n",
-  "generated_models <- c(\"", paste0(generated_names, collapse = "\", \""), "\")\n\n",
-  paste0(wrappers, collapse = ""),
-  file = file.path(pkg_r_dir, "ml02_wrappers.R"),
-  sep = ""
-)
+cat(header, "\n\n", paste0(wrappers, collapse = ""),
+    file = file.path(pkg_r_dir, "ml02_wrappers.R"), sep = "")

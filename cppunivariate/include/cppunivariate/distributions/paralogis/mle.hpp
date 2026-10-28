@@ -129,7 +129,11 @@ struct ParalogisCost {
   }
 };
 
-inline ParalogisResult paralogis_mle(span x, double tol, int maxit) {
+// shape0: optional start for the shape; NaN (the default) or a non-positive
+// value means the automatic start below.
+inline ParalogisResult paralogis_mle(
+    span x, double tol, int maxit,
+    double shape0 = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, 0, ParalogisStatus::InvalidStart};
@@ -161,6 +165,7 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit) {
   const double sd_lz = std::sqrt(var_lz);
   double alpha0 = (sd_lz > 0.0) ? 2.0 / sd_lz : 1.5;
   if (alpha0 < 1.5) alpha0 = 1.5;
+  if (std::isfinite(shape0) && shape0 > 0.0) alpha0 = shape0;
 
   ParalogisCost cost{x};
   finite_diff_cost<ParalogisCost> fd{cost};

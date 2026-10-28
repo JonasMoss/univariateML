@@ -16,6 +16,8 @@
 # unset and this entire test file becomes a no-op (zero tests emitted),
 # which is the desired CRAN behaviour.
 GOLDEN_DIR <- Sys.getenv("UMVL_GOLDEN_DIR", "")
+# Migrated distributions keep their golden in distributions/<id>/golden.json.
+DISTRIBUTIONS_DIR <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR", "")
 
 resolve_callable <- function(spec) {
   parts <- strsplit(spec, "::", fixed = TRUE)[[1]]
@@ -36,7 +38,10 @@ set_golden_seed <- function(seed) {
 FD_BFGS_IDS <- c("std", "ged", "sstd", "sged", "snorm", "paralogis")
 
 if (dir.exists(GOLDEN_DIR)) {
-  golden_files <- list.files(GOLDEN_DIR, pattern = "\\.json$", full.names = TRUE)
+  golden_files <- c(
+    list.files(GOLDEN_DIR, pattern = "\\.json$", full.names = TRUE),
+    if (nzchar(DISTRIBUTIONS_DIR)) Sys.glob(file.path(DISTRIBUTIONS_DIR, "*", "golden.json"))
+  )
 
   for (f in golden_files) {
     g <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)

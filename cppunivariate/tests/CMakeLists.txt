@@ -51,5 +51,20 @@ set_tests_properties(validation_tests PROPERTIES
   ENVIRONMENT "UMVL_VALIDATION_DIR=${VALIDATION_DIR}")
 
 cppuniv_test(no_throw_tests test_no_throw.cpp)
+
+# Per-distribution tests: every distributions/<id>/test.cpp, one executable.
+set(DISTRIBUTIONS_DIR
+  "${CMAKE_SOURCE_DIR}/include/cppunivariate/distributions")
+file(GLOB DISTRIBUTION_TEST_SOURCES CONFIGURE_DEPENDS
+  "${DISTRIBUTIONS_DIR}/*/test.cpp")
+add_executable(distribution_tests distribution_tests_main.cpp
+  ${DISTRIBUTION_TEST_SOURCES})
+target_link_libraries(distribution_tests PRIVATE cppunivariate)
+target_include_directories(distribution_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_options(distribution_tests PRIVATE ${_CPPUNIV_TEST_FLAGS})
+target_compile_definitions(distribution_tests PRIVATE
+  CPPUNIV_DISTRIBUTIONS_DIR="${DISTRIBUTIONS_DIR}")
+add_test(NAME distribution_tests COMMAND distribution_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME no_throw_tests COMMAND no_throw_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

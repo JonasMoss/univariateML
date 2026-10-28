@@ -652,38 +652,3 @@ Rcpp::List mlstd_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
-// [[Rcpp::export]]
-Rcpp::List mlparalogis_(const Rcpp::NumericVector &x,
-                        double tol = 1.220703e-4, int iterlim = 100) {
-  auto res =
-      cppunivariate::paralogis_mle(dist_impl::as_span(x), tol, iterlim);
-  if (res.status == cppunivariate::ParalogisStatus::InvalidStart) {
-    Rcpp::stop("Paralogistic MLE requires positive, finite observations.");
-  }
-  if (!std::isfinite(res.shape) || !std::isfinite(res.scale)) {
-    Rcpp::stop("Paralogistic MLE failed to converge (check inputs)");
-  }
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
-// [[Rcpp::export]]
-Rcpp::List mllomax_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                    int iterlim = 100) {
-  auto res = cppunivariate::lomax_mle(dist_impl::as_span(x), tol, iterlim);
-  if (res.status == cppunivariate::LomaxStatus::MeanVarianceCondition) {
-    Rcpp::stop("The Lomax maximum likelihood estimator does not exist for data "
-               "with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an "
-               "exponential distribution.");
-  }
-  if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.lambda) ||
-      !std::isfinite(res.kappa)) {
-    Rcpp::stop("Lomax MLE failed to converge (check dispersion/inputs)");
-  }
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["lambda"] = res.lambda, Rcpp::_["kappa"] = res.kappa),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}

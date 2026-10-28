@@ -219,109 +219,37 @@ the legacy fGarch path expect a usable result back, not an error.
 
 ### Adding a new distribution
 
-Every distribution lives in a dossier bundle at
-`cppunivariate/include/cppunivariate/distributions/<id>/`. The legacy
-flat-file layout (separate `estimators/` and `distributions/<id>.hpp`)
-was retired in the dossier sweep, along with the old top-level
-`metadata/{models,docs}.json` aggregate.
+**One folder per distribution** (`roadmap/2026-10-28-per-distribution-layout.md`).
+Everything about distribution `<id>` lives in
+`cppunivariate/include/cppunivariate/distributions/<id>/`; nothing shared
+lists distributions by hand. Migration status: lomax and paralogis use this
+layout; the others still use the legacy files (`metadata.hpp`,
+`univariateML/metadata/<id>.json`, adapters in `univariateML/src/ml_exports.cpp`,
+cases in `cppunivariate/tests/test_estimators.cpp`, `quality/golden/<id>.json`)
+until they are migrated. Follow `lomax/` as the worked example.
 
-1. Create the dossier folder `cppunivariate/include/cppunivariate/distributions/<id>/`.
-   The folder name **is** the distribution id.
-   - `mle.hpp` — `cppunivariate::*_mle` and the `Cost` struct.
-     Relative includes are two levels up: `../../core/...`,
-     `../../special/...`.
-   - `dpqr.hpp` — d/p/q/r templates. Always present, even when the
-     R-side wrapper uses base R's dpqr (see exp); the C++ artifact
-     stays self-contained for downstream consumers.
-   - `metadata.hpp` — `constexpr` distribution metadata using the
-     shared types from `core/metadata.hpp`. Format is constrained
-     (one entry per ParamDescriptor row, `kInf` alias for infinity)
-     so the regex parser in `univariateML/scripts/parse_cpp_metadata.R` can
-     read it; see `univariateML/metadata/SCHEMA.md` for the full
-     schema and existing dossiers (`distributions/lomax`,
-     `distributions/exp`) for examples.
-   - `dossier.md` — human-readable docs. Today a bare stub
-     (`# <Name>` + empty section headers); filled later by a
-     dedicated docs pass. Don't pre-populate from existing comments
-     or anywhere else.
-2. Add one include line to `cppunivariate/include/cppunivariate/cppunivariate.hpp`:
-   `#include "distributions/<id>/mle.hpp"`. The aggregator only pulls
-   estimators; `dpqr.hpp` and `metadata.hpp` are included on demand
-   by their consumers.
-3. Add `univariateML/metadata/<id>.json` with the R-side refs:
-   `{"sampler": "...", "density": "..."}`. Use `pkg::fn` for base R
-   or other packages (e.g. `stats::rexp`); use a bare name for an
-   Rcpp wrapper exported by univariateML itself (e.g. `rlomax`).
-4. Wire an Rcpp wrapper in `univariateML/src/ml_exports.cpp`. If the C++ dpqr
-   is exposed to R, add `univariateML/src/distributions/<id>.cpp` with
-   `#include "cppunivariate/distributions/<id>/dpqr.hpp"`. If R is
-   happy with base R's dpqr (as for exp), no wrapper file is
-   needed; goldens use the `stats::*` reference from the JSON.
-5. Regenerate goldens via `just goldens`.
-6. Add a doctest case in `cppunivariate/tests/test_estimators.cpp`.
-   For multi-D estimators add the score-residual `||g||_2 < 1e-3`
-   check too.
-7. `just test` and `just cpp-test` must both pass.
+| file | what |
+|---|---|
+| `README.md` | YAML front matter (id, name, support, params, R refs, control-argument docs, log-density, limits, references, examples) + prose. Schema: `distributions/README_SCHEMA.md`. Replaces `metadata.hpp`, the JSON sidecar and `dossier.md`. |
+| `mle.hpp` | `*_mle(span x, tol, maxit, ...)`, `*Result`, `*Status`; a `Cost` struct (validation harness) |
+| `dpqr.hpp` | d/p/q/r templates |
+| `adapter.cpp` | the Rcpp adapter `ml<id>_`; copied to the package's `src/dist_<id>.cpp` by `assemble_package.R`. Argument names follow `roadmap/2026-10-28-cran-argument-names.md` (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`) and must match `README.md`'s `r.control` (codegen checks). |
+| `test.cpp` | doctest cases; globbed into the `distribution_tests` target; `#include "test_support.hpp"` for `load_distribution_golden(id)` and tolerances |
+| `test.R` | testthat file; copied to `tests/testthat/test-dist-<id>.R` |
+| `golden.json` | golden data + estimates, written by `just goldens` |
 
-Steps 1–7 land the implementation; the next three add the math-first
-validation layer (the AI-first harness). Goldens prove the
-implementation didn't drift; the harness proves the implementation
-matches the math from first principles.
+Steps for a new distribution:
 
-8. Author `quality/math/<id>.py` exporting a `SPEC = Spec(...)` —
-   sympy `log_density` in *Cost-space* parameters (whatever
-   `Cost::operator()(theta)` takes; natural for `exp`/`norm`/`lomax`,
-   phi-space for `std`/`paralogis`/etc.). Spec flags by case:
-   - `cost_has_gradient=False` for BFGS-with-`finite_diff_cost` family
-     (std, paralogis, ged, snorm, sstd, sged).
-   - `golden_to_cost=lambda e: [...]` when golden estimates are in a
-     different space than Cost (any phi-reparam distro).
-   - `Param.boundary="upper"|"lower"` when the MLE sits AT a
-     feasibility limit (unif, dunif, pareto, power).
-   - `cost_hessian_is_fisher=True` when Cost::hessian returns Fisher
-     info × n (laplace, due to non-smooth |x − μ|).
+1. Create the folder with the files above (copy `lomax/` and adapt).
+2. Add `quality/math/<id>.py` and register the Cost in
+   `cppunivariate/tests/test_validation.cpp` (the harness still uses these;
+   its rework to read `README.md` is pending).
+3. `just goldens`, then `just cpp-test` and `just test` must pass.
 
-   Templates by shape:
-   - 1-D / 2-D natural-space analytical:
-     `quality/math/{exp,norm,lomax}.py`
-   - Boost.Math seam (`sp.loggamma`/`sp.polygamma`):
-     `quality/math/{gamma,beta,invgamma}.py`
-   - Phi-space + FD-grad: `quality/math/{std,paralogis,ged}.py`
-   - F-S skew (parameter-conditional Piecewise):
-     `quality/math/{snorm,sstd,sged}.py`
-   - Discrete (ispan): `quality/math/{pois,geom,nbinom,lgser}.py`
-   - Boundary-MLE: `quality/math/{unif,pareto,power,dunif}.py`
-   - Cost-with-fixed-ctor-arg: `quality/math/{binom,zipf}.py`
-     (note the lockstep dispatch lambda — see those files).
-   - Fisher-info-as-Hessian: `quality/math/laplace.py`
-   - Piecewise PMF (data-conditional): `quality/math/zip.py`
-
-9. Register the id in `cppunivariate/tests/test_validation.cpp`'s
-   dispatch — one `TEST_CASE` calling one of:
-   - `eval_with<Cost>` — analytical full Cost interface, `span` data.
-   - `eval_int<Cost>` — full Cost, `ispan` (integer) data.
-   - `eval_fd_grad<Cost>` — `Cost` has only operator+hessian,
-     gradient comes via `finite_diff_cost` wrapper.
-   - A per-id lambda when Cost takes extra ctor args (binom, zipf).
-
-   For boundary-MLE distros pass `/*skip_score_check=*/true` to
-   `run_validation` (their MLE isn't where the gradient vanishes).
-   Same for laplace (mu-direction is non-smooth).
-
-10. `just derive <id> && just validate <id>` — emits
-    `quality/derived/<id>/{eval_request,symbolic_grid,cpp_eval,
-    gradient_report,hessian_report,quality_report}.json/md`.
-    `quality_report.md` should claim `validated`. Commit the derived
-    artifacts alongside the code.
-
-The codegen scripts read two sources and merge them, sorted
-alphabetically by id:
-
-- per-distribution `metadata.hpp` files parsed via
-  `univariateML/scripts/parse_cpp_metadata.R` (the C++ canonical form),
-- per-distribution `univariateML/metadata/<id>.json` sidecars (R-side refs only).
-
-A given id must appear in exactly one source.
+R-side metadata, wrappers and roxygen docs are generated from `README.md`
+by `univariateML/scripts/load_distributions.R`, `codegen_metadata.R` and
+`codegen_wrappers.R` (`just gen`). Distributions that are not Hellinger-closed
+declare their `limits`; see `notes/ml-behaviour.tex`.
 
 ---
 

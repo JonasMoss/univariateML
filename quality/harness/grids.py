@@ -116,7 +116,10 @@ def build_eval_request(
     The data is taken from quality/golden/<id>.json. The MLE used as the
     sweep centre is the `estimates` field of the same file.
     """
-    golden_path = repo_root / "quality" / "golden" / f"{spec.id}.json"
+    golden_path = (repo_root / "cppunivariate" / "include" / "cppunivariate"
+                   / "distributions" / spec.id / "golden.json")
+    if not golden_path.exists():
+        golden_path = repo_root / "quality" / "golden" / f"{spec.id}.json"
     with golden_path.open() as fh:
         golden = json.load(fh)
     data = list(golden["data"])

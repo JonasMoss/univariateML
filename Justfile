@@ -9,7 +9,9 @@ default: test
 # gitignored; univariateML/ itself holds only sources, scripts, and
 # metadata.
 assemble:
-	cd univariateML && Rscript scripts/assemble_package.R
+	cd univariateML && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	  Rscript scripts/assemble_package.R
 
 # Mirror cppunivariate/include/ into univariateML/package/inst/include/.
 # Runs after assemble (which wipes package/), required before R-side
@@ -17,7 +19,8 @@ assemble:
 # expects the headers there.
 sync-headers: assemble
 	mkdir -p univariateML/package/inst/include
-	rsync -a --delete cppunivariate/include/cppunivariate univariateML/package/inst/include/
+	rsync -a --delete --prune-empty-dirs --include='*/' --include='*.hpp' --exclude='*' \
+	  cppunivariate/include/cppunivariate univariateML/package/inst/include/
 
 # Generate metadata-driven R sources into package/R/, then run
 # Rcpp::compileAttributes() in package/ to produce RcppExports.{R,cpp}.
@@ -27,6 +30,7 @@ sync-headers: assemble
 #   - cppunivariate/.../<id>/metadata.json
 #                                    (intermediate per-distribution form)
 gen: sync-headers
+	cd univariateML/package && Rscript -e "Rcpp::compileAttributes()"
 	cd univariateML && \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
 	  UMVL_R_METADATA_DIR={{repo_root}}/univariateML/metadata \
@@ -37,7 +41,6 @@ gen: sync-headers
 	  UMVL_R_METADATA_DIR={{repo_root}}/univariateML/metadata \
 	  UMVL_PKG_R_DIR={{repo_root}}/univariateML/package/R \
 	  Rscript scripts/codegen_wrappers.R
-	cd univariateML/package && Rscript -e "Rcpp::compileAttributes()"
 
 regen: gen
 	cd univariateML/package && Rscript -e "roxygen2::roxygenise()"
@@ -45,6 +48,7 @@ regen: gen
 test: regen
 	cd univariateML/package && \
 	  UMVL_GOLDEN_DIR={{repo_root}}/quality/golden \
+	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
 	  Rscript -e "testthat::test_local('.', stop_on_failure = TRUE)"
 
 check: regen

@@ -107,7 +107,6 @@ TEST_CASE("norm: seeded sample with outlier") {
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
 
-
 TEST_CASE("exp") {
   auto g = load("exp");
   auto r = cppunivariate::exp_mle(mltest::as_span(g.data));
@@ -132,7 +131,6 @@ TEST_CASE("laplace: seeded sample with outlier") {
   CHECK(r.sigma == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
-
 
 TEST_CASE("rayleigh") {
   auto g = load("rayleigh");
@@ -175,7 +173,6 @@ TEST_CASE("lnorm: seeded sample with outlier") {
   CHECK(r.sdlog == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
-
 
 TEST_CASE("logitnorm") {
   auto g = load("logitnorm");
@@ -234,7 +231,6 @@ TEST_CASE("cauchy: three observations and nonexistent MLE") {
   }
 }
 
-
 TEST_CASE("gumbel") {
   auto g = load("gumbel");
   auto r = cppunivariate::fit_gumbel_newton(mltest::as_span(g.data), kFitTol, kFitMaxit);
@@ -252,7 +248,6 @@ TEST_CASE("gumbel: seeded sample with outlier") {
   CHECK(r.sigma == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
-
 
 TEST_CASE("logis") {
   auto g = load("logis");
@@ -272,7 +267,6 @@ TEST_CASE("logis: seeded sample with outlier") {
   CHECK(r.logLik >= g.logLik - 1e-6);
   CHECK(r.status == cppunivariate::LogisticStatus::Ok);
 }
-
 
 TEST_CASE("logis: invalid inputs never report success") {
   for (const std::vector<double> &x : {std::vector<double>{}, {1}, {1, 1},
@@ -299,7 +293,6 @@ TEST_CASE("llogis: seeded sample with outlier") {
   CHECK(r.rate == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
-
 
 TEST_CASE("weibull") {
   auto g = load("weibull");
@@ -479,33 +472,6 @@ TEST_CASE("std (Student-t with location/scale)") {
   const double gnorm =
       std::sqrt(grad[0] * grad[0] + grad[1] * grad[1] + grad[2] * grad[2]);
   CHECK(gnorm < 1e-3);
-}
-
-TEST_CASE("paralogis") {
-  auto g = load("paralogis");
-  auto r = cppunivariate::paralogis_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
-  CHECK(r.shape == APPROX_FD(g.estimates.at("shape")));
-  CHECK(r.scale == APPROX_FD(g.estimates.at("scale")));
-  CHECK(r.logLik == APPROX_FD(g.logLik));
-
-  // Score-residual guard. The previous 1-param paralogis fit silently fixed
-  // scale at 1; under that fit the scale-direction component of the score
-  // is non-zero, so ||g||_2 > 1e-3. The 2-param fit must drive both
-  // components below tolerance.
-  cppunivariate::ParalogisCost cost{mltest::as_span(g.data)};
-  const double phi_hat[2] = {std::log(r.shape), std::log(r.scale)};
-  double grad[2];
-  cppunivariate::finite_diff_gradient(cost, phi_hat, grad);
-  const double gnorm = std::sqrt(grad[0] * grad[0] + grad[1] * grad[1]);
-  CHECK(gnorm < 1e-3);
-}
-
-TEST_CASE("lomax") {
-  auto g = load("lomax");
-  auto r = cppunivariate::lomax_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
-  CHECK(r.lambda == APPROX(g.estimates.at("lambda")));
-  CHECK(r.kappa == APPROX(g.estimates.at("kappa")));
-  CHECK(r.logLik == APPROX(g.logLik));
 }
 
 TEST_CASE("gompertz") {

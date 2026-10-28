@@ -60,3 +60,10 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+## Control arguments use the CRAN names (lambda0, reltol, iterlim).
+fit_default <- mllomax(medium_data)
+fit_start <- mllomax(medium_data, lambda0 = 3 * coef(fit_default)[["lambda"]], reltol = 1e-12)
+expect_equal(coef(fit_start), coef(fit_default), tolerance = 1e-6)
+expect_error(mllomax(medium_data, lambda0 = -1), "`lambda0` must be a positive finite number")
+expect_error(mllomax(medium_data, tol = 1e-6))

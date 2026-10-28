@@ -1,7 +1,7 @@
-// Lomax MLE. See dossier.md for the parameterisation, the MLE
-// existence condition (mean(x^2) < 2*mean(x)^2 — surfaced as
-// LomaxStatus::MeanVarianceCondition), and the Lomax→Exponential
-// limit. This file documents only the implementation.
+// Lomax MLE. The parameterisation, the existence condition
+// (mean(x^2) < 2*mean(x)^2, surfaced as LomaxStatus::MeanVarianceCondition)
+// and the Lomax -> exponential limit are in README.md; this file documents
+// only the implementation.
 
 #pragma once
 
@@ -84,7 +84,22 @@ struct LomaxCost {
   }
 };
 
-inline LomaxResult lomax_mle(span x, double tol, int maxit) {
+namespace lomax_detail {
+// Profile log-likelihood in lambda (kappa at its closed-form maximiser),
+// up to a constant: n log(lambda) - n log(S) - S, S = sum log1p(lambda x).
+inline double profile_loglik(span x, double lambda) {
+  double S = 0.0;
+  for (auto v : x) S += std::log1p(lambda * v);
+  const double n = static_cast<double>(x.size());
+  return n * std::log(lambda) - n * std::log(S) - S;
+}
+}  // namespace lomax_detail
+
+// lambda0: optional start for lambda; NaN (the default) or a non-positive
+// value means the method-of-moments start.
+inline LomaxResult lomax_mle(
+    span x, double tol, int maxit,
+    double lambda0 = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, LomaxStatus::InvalidStart};
@@ -99,7 +114,9 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit) {
   }
 
   const double alpha0 = 2.0 * (s - m2) / (s - 2.0 * m2);
-  double lambda = 1.0 / (m * (alpha0 - 1.0));
+  double lambda = (std::isfinite(lambda0) && lambda0 > 0.0)
+                      ? lambda0
+                      : 1.0 / (m * (alpha0 - 1.0));
   if (lambda <= 0.0 || !std::isfinite(lambda)) {
     return {kNaN, kNaN, kNaN, 0, LomaxStatus::InvalidStart};
   }
@@ -123,12 +140,29 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit) {
     const double f = 1.0 / lambda - psi - S1;
     const double df = psi * psi + S2 / S + S2 - 1.0 / (lambda * lambda);
 
-    const double step = f / df;
-    const double lambda_new = lambda - step;
-    if (lambda_new <= 0.0 || !std::isfinite(lambda_new)) {
+    // f is the profile score (per observation) and df its derivative.
+    // Newton is an ascent step only where the profile is concave (df < 0);
+    // elsewhere (possible from a user-supplied lambda0 far from the MLE)
+    // move geometrically uphill. Every step is halved until the profile
+    // log-likelihood does not decrease, and convergence is only declared
+    // on a full Newton step, so a shrunken step cannot fake convergence.
+    // From the moment start the plain Newton step is normally accepted.
+    const bool newton = df < 0.0;
+    double step = newton ? f / df : (f > 0.0 ? -lambda : 0.5 * lambda);
+    if (!std::isfinite(step)) {
       return {kNaN, kNaN, kNaN, iter, LomaxStatus::IterationFailure};
     }
-    if (std::abs(step) < (std::abs(lambda) * tol + tol)) {
+    if (lambda - step <= 0.0) step = 0.5 * lambda;
+    const double lp_old = lomax_detail::profile_loglik(x, lambda);
+    int halvings = 0;
+    for (; halvings < 60; ++halvings) {
+      const double lp_new = lomax_detail::profile_loglik(x, lambda - step);
+      if (lp_new >= lp_old - 1e-12 * (std::abs(lp_old) + 1.0)) break;
+      step *= 0.5;
+    }
+    const double lambda_new = lambda - step;
+    if (newton && halvings == 0 &&
+        std::abs(step) < (std::abs(lambda) * tol + tol)) {
       lambda = lambda_new;
       break;
     }

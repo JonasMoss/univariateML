@@ -71,6 +71,16 @@ fit_to_record <- function(model, fit, data) {
   )
 }
 
+# Migrated distributions keep their golden in distributions/<id>/golden.json;
+# legacy ones in quality/golden/<id>.json.
+golden_file <- function(model, dossier_dir, out_dir) {
+  if (identical(model$source, "readme")) {
+    file.path(dossier_dir, model$id, "golden.json")
+  } else {
+    file.path(out_dir, paste0(model$id, ".json"))
+  }
+}
+
 main <- function() {
   dossier_dir <- Sys.getenv(
     "UMVL_DOSSIER_DIR",
@@ -80,42 +90,8 @@ main <- function() {
   out_dir <- Sys.getenv("UMVL_GOLDEN_DIR", "../quality/golden")
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-  source(file.path("scripts", "parse_cpp_metadata.R"))
-
-  dossier_json_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.json"))
-  dossier_json_models <- lapply(dossier_json_files, function(f) {
-    m <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
-    m$id <- basename(dirname(f))
-    m
-  })
-
-  dossier_hpp_files <- Sys.glob(file.path(dossier_dir, "*", "metadata.hpp"))
-  dossier_hpp_models <- lapply(dossier_hpp_files, function(f) {
-    cpp <- parse_cpp_metadata(f)
-    refs_file <- file.path(r_metadata_dir, paste0(cpp$id, ".json"))
-    refs <- if (file.exists(refs_file)) {
-      jsonlite::fromJSON(refs_file, simplifyDataFrame = FALSE)
-    } else {
-      list()
-    }
-    c(cpp, refs)
-  })
-
-  all_ids <- c(
-    vapply(dossier_json_models, function(m) m$id, character(1)),
-    vapply(dossier_hpp_models, function(m) m$id, character(1))
-  )
-  dups <- unique(all_ids[duplicated(all_ids)])
-  if (length(dups)) {
-    stop(
-      "Duplicate metadata id(s) across per-distribution metadata.json ",
-      "and per-distribution metadata.hpp: ",
-      paste(dups, collapse = ", ")
-    )
-  }
-
-  models <- c(dossier_json_models, dossier_hpp_models)
-  models <- models[order(vapply(models, function(m) m$id, character(1)))]
+  source(file.path("scripts", "load_distributions.R"))
+  models <- load_distributions(dossier_dir, r_metadata_dir)
 
   results <- list()
   for (model in models) {
@@ -136,7 +112,7 @@ main <- function() {
     record <- fit_to_record(model, fit, data)
     jsonlite::write_json(
       record,
-      file.path(out_dir, paste0(model$id, ".json")),
+      golden_file(model, dossier_dir, out_dir),
       pretty = TRUE,
       auto_unbox = TRUE,
       digits = 17
@@ -145,7 +121,7 @@ main <- function() {
     message(sprintf("[ok]   %-10s logLik=%g  n=%d", model$id, record$logLik, record$n))
   }
 
-  message(sprintf("\nWrote %d goldens to %s", length(results), out_dir))
+  message(sprintf("\nWrote %d goldens (legacy ones to %s)", length(results), out_dir))
 }
 
 main()

@@ -40,4 +40,22 @@ if (dir.exists(file.path("man", "figures"))) {
   )
 }
 
+# One folder per distribution: copy each distributions/<id>/adapter.cpp to
+# src/dist_<id>.cpp and test.R to tests/testthat/test-dist-<id>.R.
+dist_dir <- Sys.getenv(
+  "UMVL_DOSSIER_DIR",
+  "../cppunivariate/include/cppunivariate/distributions"
+)
+for (folder in list.dirs(dist_dir, full.names = TRUE, recursive = FALSE)) {
+  id <- basename(folder)
+  adapter <- file.path(folder, "adapter.cpp")
+  if (file.exists(adapter)) {
+    file.copy(adapter, file.path(PKG_DIR, "src", paste0("dist_", id, ".cpp")))
+  }
+  test <- file.path(folder, "test.R")
+  if (file.exists(test)) {
+    file.copy(test, file.path(PKG_DIR, "tests", "testthat", paste0("test-dist-", id, ".R")))
+  }
+}
+
 invisible(NULL)

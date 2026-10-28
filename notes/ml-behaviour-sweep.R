@@ -12,7 +12,7 @@ rows <- list(); began <- proc.time()[3]
 for(ii in seq_along(meta)) {
  key <- names(meta)[ii]; id <- sub("^ml", "", key); m <- meta[[ii]]
  def <- setNames(m$default, m$names); dens <- resolve(m$density)
- sampler <- resolve(jsonlite::fromJSON(paste0("univariateML/metadata/",id,".json"))$sampler)
+ sampler <- resolve(univariateML_samplers[[key]])
  draw <- function(n) do.call(sampler, c(list(n=n),as.list(def)))
  ll <- function(p,x) suppressWarnings(tryCatch({v<-do.call(dens,c(list(x=x),as.list(p),list(log=TRUE))); if(length(v)!=length(x) || any(!is.finite(v))) -Inf else sum(v)},error=function(e) -Inf))
  sets <- list()

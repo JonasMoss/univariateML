@@ -23,7 +23,6 @@
 #include "cppunivariate/distributions/laplace/dpqr.hpp"
 #include "cppunivariate/distributions/llogis/dpqr.hpp"
 #include "cppunivariate/distributions/logitnorm/dpqr.hpp"
-#include "cppunivariate/distributions/lomax/dpqr.hpp"
 #include "cppunivariate/distributions/naka/dpqr.hpp"
 #include "cppunivariate/distributions/pareto/dpqr.hpp"
 #include "cppunivariate/distributions/power/dpqr.hpp"
@@ -307,20 +306,6 @@ TEST_CASE("rpareto samples are >= scale b; mean = a*b/(a-1) for a>1") {
   }
   const double expected = a * b / (a - 1.0); // = 3.0
   CHECK(std::abs(sum / n - expected) < 0.1);
-}
-
-TEST_CASE("rlomax samples are positive; CDF self-consistency at p=0.5") {
-  cppunivariate::distributions::StdRng<> rng(127);
-  const int n = 5000;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rlomax(rng, 2.0, 3.0);
-    CHECK(x > 0.0);
-  }
-  // qlomax then plomax should round-trip.
-  const double q = cppunivariate::distributions::qlomax(0.7, 2.0, 3.0, true, false);
-  const double back =
-      cppunivariate::distributions::plomax(q, 2.0, 3.0, true, false);
-  CHECK(std::abs(back - 0.7) < 1e-10);
 }
 
 TEST_CASE("rgumbel samples; mean = mu + sigma*gamma_const, var = pi^2*sigma^2/6") {
