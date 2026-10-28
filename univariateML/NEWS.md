@@ -10,6 +10,13 @@
   now in `Imports:` and resolved at runtime by metadata-driven
   dispatch.
 
+## New models
+
+* `mlhnorm()` (translated half-normal), `mllst()` (location-scale t),
+  `mlzinb()` (zero-inflated negative binomial), `mlinvexp()`,
+  `mlinvpareto()` and `mlinvparalogis()` (inverse exponential, inverse
+  Pareto, inverse paralogistic).
+
 ## User-visible changes
 
 * `mlparalogis()` now fits two parameters (`shape`, `scale`) rather
