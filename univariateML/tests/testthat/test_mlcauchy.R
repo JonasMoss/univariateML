@@ -73,3 +73,32 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+
+test_that("cauchy handles a seeded sample with a large outlier", {
+  set.seed(7)
+  x <- c(stats::rcauchy(199), 1e3)
+  objective <- function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
+  oracle <- optim(c(median(x), log(stats::mad(x))), objective,
+    method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
+  expected <- c(oracle$par[1], exp(oracle$par[2]))
+  fit <- mlcauchy(x)
+  expect_true(all(is.finite(fit)))
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
+})
+
+
+test_that("Cauchy fits three observations and diagnoses nonexistent MLEs", {
+  x <- c(-2.2425190273413, 0.723253413022922, -2.56072856385821)
+  objective <- function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
+  oracle <- optim(c(median(x), log(mad(x))), objective,
+    control = list(reltol = 1e-14, maxit = 10000))
+  expected <- c(oracle$par[1], exp(oracle$par[2]))
+  fit <- mlcauchy(x)
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
+  for (x in list(1, c(1, 2), c(1, 1, 2), c(1, 1, 2, 3))) {
+    expect_error(mlcauchy(x), "MLE does not exist")
+  }
+})
