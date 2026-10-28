@@ -24,3 +24,5 @@ The Birnbaum--Saunders distribution models lifetimes arising from cumulative fat
 ## Details
 
 The location `mu` is fixed at 0 and is returned as a coefficient for compatibility; only `alpha` and `beta` are estimated. `beta` is a scale parameter. Observations must be strictly positive.
+
+Estimating `mu` as well is not possible: the three-parameter likelihood is unbounded for every sample with a unique minimum. Along $\beta = \varepsilon$, $\alpha^2 = s/\varepsilon$ and $\mu = \min(x) - c\varepsilon^2/s$, half of the probability mass collapses onto the smallest observation, whose log-density grows like $-2\log\varepsilon$, while the other observations keep a finite log-density. To fit a shifted model, subtract a known threshold first.

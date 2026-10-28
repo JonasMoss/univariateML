@@ -325,8 +325,29 @@ norm, lnorm, logitnorm, exp, rayleigh, pois, geom, lgser, gamma, lgamma,
 invgamma, weibull, invweibull, gumbel, logis, llogis, laplace, cauchy, beta,
 betapr, paralogis (arg, not probed). Unclear: kumar fails with ``MLE
 failed'' on Beta$(0.05, 0.05)$ data clipped away from $0$ and $1$ (may be
-numerics). fatigue: the adapter fixes $\mu = 0$ although the metadata lists
-$\mu$ as a parameter; the fitted family is the two-parameter one.
+numerics).
+
+\paragraph{fatigue: why the location is fixed.} The fitter estimates
+$(\alpha,\beta)$ with $\mu = 0$ fixed. With $\mu$ free the likelihood is
+unbounded for every sample with a unique minimum, so the three-parameter
+MLE never exists. Write $t = x - \mu$ and
+\[
+  \log f(t) = \log(t+\beta) - \tfrac32\log t - \tfrac12\log\beta - \log(2\alpha)
+  - \tfrac12\log(2\pi) - \frac{t/\beta + \beta/t - 2}{2\alpha^2}.
+\]
+Take $\beta = \varepsilon$, $\alpha^2 = s/\varepsilon$ and
+$\mu = x_{(1)} - c\varepsilon^2/s$ with $s, c > 0$ fixed. For the smallest
+observation, $t_1 = c\varepsilon^2/s$ and the $\log\varepsilon$ terms add to
+$(1 - 3 - \tfrac12 + \tfrac12)\log\varepsilon$, while the exponent tends to
+$-1/(2c)$; hence $\log f(t_1) = -2\log\varepsilon + O(1)$. For the others,
+$t_i \to d_i = x_i - x_{(1)} > 0$ and
+$\log f(t_i) \to \log\tfrac12 - \tfrac12\log(2\pi s d_i) - d_i/(2s)$, the
+log-density of half of a scaled $\chi^2_1$ law: as $\alpha\to\infty$ with
+$\alpha^2\beta$ fixed, half of the Birnbaum--Saunders mass collapses onto
+the endpoint. So $\log L = -2\log\varepsilon + O(1) \to \infty$ (numerical
+check: $+4.6 = 2\ln 10$ per decade of $\varepsilon$; a test in
+\code{fatigue/test.R}). This is the same defect as the three-parameter
+lognormal; the two-parameter fit with a known threshold is the usable model.
 
 \section{Bugs found}\label{sec:bugs}
 
@@ -361,9 +382,10 @@ $\mu$ as a parameter; the fitted family is the two-parameter one.
     constant used $\Gamma(\tfrac{\nu-1}{2})/\Gamma(\tfrac{\nu}{2})$ with
     \code{tgamma}, which overflows for $\nu > 343$; the cost became NaN there
     and BFGS stopped at $\hat\nu = 343$ on normal data. Now \code{lgamma}.
-  \item Fitters return NaN instead of a clear error when an observation sits
-    on a closed support bound (llogis, pareto, fatigue at $x = 0$);
-    probably wrong support metadata.
+  \item Fitters returned NaN instead of a clear error when an observation sits
+    on a closed support bound (llogis, pareto, fatigue at $x = 0$). Fixed in
+    the layout migration: those supports exclude $0$, so $x = 0$ is an input
+    error.
 \end{enumerate}
 
 \section{Open questions and decisions}
@@ -381,7 +403,7 @@ $\mu$ as a parameter; the fitted family is the two-parameter one.
     $n = 500$ (seven interior starts, two half-$t$ searches, sixteen $t_2$
     starts); it is a multistart comparison, not a certificate.
   \item Open: a half-$t$ model (would give sstd's half-$t$ face a pointer);
-    fatigue's fixed $\mu = 0$; kumar on extreme data; std's log-likelihood
+    kumar on extreme data; std's log-likelihood
     at huge $\nu$.
 \end{enumerate}
 

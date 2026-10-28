@@ -10,3 +10,15 @@ test_that("mlfatigue agrees with its reference density", {
   expect_equal(unname(coef(fit)[["mu"]]), 0)
   expect_equal(attr(fit, "logLik"), sum(do.call(density, c(list(x = x, log = TRUE), as.list(coef(fit))))), tolerance = 1e-7)
 })
+
+test_that("the three-parameter likelihood with free mu is unbounded (why mu is fixed)", {
+  # beta = eps, alpha^2 = s / eps, mu just below min(x): logL grows like -2 log(eps).
+  set.seed(1)
+  x <- extraDistr::rfatigue(50, alpha = 0.5, beta = 2, mu = 1)
+  s <- mean(x - min(x))
+  path <- sapply(10^-(4:7), function(eps) {
+    sum(log(extraDistr::dfatigue(x, alpha = sqrt(s / eps), beta = eps, mu = min(x) - 10 * eps^2 / s)))
+  })
+  expect_true(all(diff(path) > 0))
+  expect_equal(diff(path), rep(2 * log(10), 3), tolerance = 0.01)
+})
