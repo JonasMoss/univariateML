@@ -88,3 +88,5 @@ __pycache__/
 
 # Built LaTeX notes (sources are tracked, PDFs are build artifacts)
 notes/*.pdf
+
+build/

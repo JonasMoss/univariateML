@@ -38,14 +38,6 @@ TEST_CASE("snorm (skew-normal)") {
   CHECK(r.sigma == C_APPROX(g.estimates.at("sd")));
   CHECK(r.xi == C_APPROX(g.estimates.at("xi")));
   CHECK(r.logLik == C_APPROX(g.logLik));
-
-  cppunivariate::SnormCost cost{mltest::as_span(g.data)};
-  const double phi_hat[3] = {r.mu, std::log(r.sigma), std::log(r.xi)};
-  double grad[3];
-  cppunivariate::finite_diff_gradient(cost, phi_hat, grad);
-  const double gnorm =
-      std::sqrt(grad[0] * grad[0] + grad[1] * grad[1] + grad[2] * grad[2]);
-  CHECK(gnorm < 1e-3);
 }
 
 TEST_CASE("snorm profile endpoints and direct grid") {

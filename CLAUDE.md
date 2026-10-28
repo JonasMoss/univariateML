@@ -49,16 +49,13 @@ core.
   `core/`; paralogis, std, sstd, ged, sged use this path (snorm is an
   exact one-dimensional profile fit).
 - `LinkingTo: Rcpp, BH` — no `RcppArmadillo`.
-- Tests: C++ ctest targets `distribution_tests` (all per-distribution
-  `test.cpp`), `bfgs_tests`, `newton_md_tests`, `sample_tests`,
-  `validation_tests`, `no_throw_tests`; R testthat incl. golden regression
-  (1e-12; 1e-6 for the finite-difference BFGS fitters).
-- Validation harness (`quality/`, experimental): sympy specs at
-  `quality/math/<id>.py`; checks each C++ `Cost` against symbolic
-  derivatives on a Sobol grid (41 of 42 claim `validated`). Known
-  limitation: for most distributions the `Cost` is not what the fitter
-  optimises; a rework to check the real fitter (score at the estimate,
-  slow oracle, limits) and read `README.md` is pending.
+- Tests: C++ ctest targets `distribution_tests`, `bfgs_tests`,
+  `sample_tests`, `no_throw_tests`; R testthat includes golden regression.
+- Validation harness (`just quality [id ...]`): reads README symbolic
+  densities and real fitter goldens; checks logLik, regular score and
+  observed information, and an eight-start scipy oracle. Outputs are
+  ignored under `build/quality/`. Limits are listed, not executed;
+  per-distribution tests check their statuses.
 
 ### Out of vision (for now)
 
@@ -130,7 +127,7 @@ cppunivariate/                        # the C++ artifact
                                       # finite_diff, reparam
     distributions/<id>/               # everything about one distribution:
       README.md                       #   front matter + prose (schema: ../README_SCHEMA.md)
-      mle.hpp                         #   *_mle(span x, ...) -> *Result + Cost struct
+      mle.hpp                         #   *_mle(span x, ...) -> *Result; Cost only if used by fitter
       dpqr.hpp                        #   d/p/q/r templates
       adapter.cpp                     #   Rcpp adapter ml<id>_ (R shell code)
       test.cpp                        #   doctest cases -> distribution_tests
@@ -235,13 +232,13 @@ the legacy fGarch path expect a usable result back, not an error.
 **One folder per distribution** (`roadmap/2026-10-28-per-distribution-layout.md`).
 Everything about distribution `<id>` lives in
 `cppunivariate/include/cppunivariate/distributions/<id>/`; nothing shared
-lists distributions by hand (except the `cppunivariate.hpp` aggregator and
-the validation harness's dispatch). Follow `lomax/` as the worked example.
+lists distributions by hand except the `cppunivariate.hpp` aggregator.
+Follow `lomax/` as the worked example.
 
 | file | what |
 |---|---|
 | `README.md` | YAML front matter (id, name, support, params, R refs, control-argument docs, log-density, limits, references, examples) + prose. Schema: `distributions/README_SCHEMA.md`. |
-| `mle.hpp` | `*_mle(span x, tol, maxit, ...)`, `*Result`, `*Status`; a `Cost` struct (validation harness) |
+| `mle.hpp` | `*_mle(span x, tol, maxit, ...)`, `*Result`, `*Status`; a `Cost` struct only when the fitter uses it |
 | `dpqr.hpp` | d/p/q/r templates |
 | `adapter.cpp` | the Rcpp adapter `ml<id>_`; copied to the package's `src/dist_<id>.cpp` by `assemble_package.R`. Argument names follow `roadmap/2026-10-28-cran-argument-names.md` (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`) and must match `README.md`'s `r.control` (codegen checks). |
 | `test.cpp` | doctest cases; globbed into the `distribution_tests` target; `#include "test_support.hpp"` for `load_distribution_golden(id)` and tolerances |
@@ -253,9 +250,7 @@ Steps for a new distribution:
 1. Create the folder with the files above (copy `lomax/` and adapt), and
    add one line `#include "distributions/<id>/mle.hpp"` to
    `cppunivariate.hpp`.
-2. Add `quality/math/<id>.py` and register the Cost in
-   `cppunivariate/tests/test_validation.cpp` (the harness still uses these;
-   its rework to read `README.md` is pending).
+2. Run `just quality <id>`.
 3. `just goldens`, then `just cpp-test` and `just test` must pass.
 
 R-side metadata, wrappers and roxygen docs are generated from `README.md`

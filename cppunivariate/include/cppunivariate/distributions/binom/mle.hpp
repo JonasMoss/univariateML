@@ -38,49 +38,6 @@ struct BinomResult {
   BinomStatus status;
 };
 
-// Negative log-likelihood of Binomial(size, prob) treating `size` as fixed:
-//   nll(p) = -sum(x)*log(p) - sum(size - x)*log(1 - p) + const.
-// Hessian (1-D in p):
-//   H_pp = (n*size - sum(x)) / (1-p)^2 + sum(x) / p^2
-// At MLE p_hat = mean(x)/size, sum(x) = n*size*p_hat, so
-//   H_pp = n*size*(1-p_hat)/(1-p_hat)^2 + n*size*p_hat/p_hat^2
-//        = n*size/(1-p_hat) + n*size/p_hat = n*size / (p_hat*(1-p_hat))
-// (the closed-form Fisher info * n).
-//
-// `size` is *not* a regular Wald parameter when it's also estimated via
-// integer search — the asymptotics for binomial-n are non-standard
-// (Olkin/Petkau/Zidek 1981). Phase 4 will flag it via regular_params.
-// This Cost is 1-D in p with size as a constructor field; the size-row/col
-// of the inference vcov gets NaN'd by the Phase 4 regularity machinery.
-struct BinomCost {
-  ispan x;
-  double size;  // known or fitted; treated as a constant by this Cost
-  int dim() const { return 1; }
-  double operator()(const double *theta) const {
-    const double p = theta[0];
-    if (!(p > 0.0 && p < 1.0)) return std::numeric_limits<double>::infinity();
-    double S_x = 0.0;
-    for (auto v : x) S_x += static_cast<double>(v);
-    const double n = static_cast<double>(x.size());
-    return -S_x * std::log(p) - (n * size - S_x) * std::log(1.0 - p);
-  }
-  void gradient(const double *theta, double *g) const {
-    const double p = theta[0];
-    double S_x = 0.0;
-    for (auto v : x) S_x += static_cast<double>(v);
-    const double n = static_cast<double>(x.size());
-    g[0] = -S_x / p + (n * size - S_x) / (1.0 - p);
-  }
-  void hessian(const double *theta, double *H) const {
-    const double p = theta[0];
-    double S_x = 0.0;
-    for (auto v : x) S_x += static_cast<double>(v);
-    const double n = static_cast<double>(x.size());
-    const double q = 1.0 - p;
-    H[0] = S_x / (p * p) + (n * size - S_x) / (q * q);
-  }
-};
-
 inline double binom_lchoose(double n, double k) {
   return cppunivariate::special::lgamma(n + 1.0) - cppunivariate::special::lgamma(k + 1.0) -
          cppunivariate::special::lgamma(n - k + 1.0);

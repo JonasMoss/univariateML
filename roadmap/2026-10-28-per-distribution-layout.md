@@ -3,8 +3,9 @@
 **Status:** landed 2026-10-28. Decided option A with `README.md` front
 matter (D2); piloted on lomax + paralogis (dd3ace4), the other 40
 migrated in four Codex batches (merges 7a73cad, 5acd604, a748203,
-ac23f6a), legacy paths removed (da8eff1). Still open: the harness rework
-("Harness, reworked" below) and deleting unused Cost structs. Measured
+ac23f6a), legacy paths removed (da8eff1). Harness rework landed:
+README/golden checks replace Cost validation; unused
+Costs removed except in the protected kumar/std folders. Measured
 compile cost: a distribution adapter compiles in ~1.3 s (the old
 all-in-one `ml_exports.cpp` took ~6 s), so per-distribution translation
 units are cheap.
@@ -105,28 +106,26 @@ the positive half-line.
 
 Checks the real fitter, not a test-only Cost:
 
-1. At the fitted estimate (from `golden.json` and simulated data): symbolic
+1. At the fitted estimate (from `golden.json`): symbolic
    score near zero (unless the MLE is on a boundary), Hessian negative
    definite, reported logLik equal to the symbolic sum.
 2. Slow oracle: multi-start optimiser on the symbolic density; flag when it
    beats the fitter (this is what catches silent escapes).
-3. Limits: for each `limits` entry, data from the limit model must give the
-   declared status.
+3. Limits: list README entries; folder tests own status checks.
 
 Outputs go to the build directory; nothing generated is committed.
 
 ## Deleted
 
 - `metadata.hpp` x42, `univariateML/metadata/*.json` x42, `SCHEMA.md`,
-  `parse_cpp_metadata.R`, both codegen scripts, `DOSSIER_SCHEMA.md`
+  `parse_cpp_metadata.R`, `DOSSIER_SCHEMA.md`
   (replaced by a short schema for the front matter).
-- `quality/math/*.py` except where a `spec.py` is needed; `quality/derived/`.
-- The 35 Cost structs no fitter uses (about 2,000 lines), with their
-  hand-derived Hessians; `core/newton_md.hpp`, `core/cholesky.hpp`,
-  `core/concept_traits.hpp` if unused afterwards; `test_hessians.cpp`,
-  `test_validation.cpp`, `test_newton_md.cpp`, `eval_io.hpp`.
-- The `cppunivariate.hpp` aggregator (consumers include what they use), or
-  generate it.
+- `quality/math/`, `quality/derived/`, old derive/grid/validate/spec modules.
+- 33 unused Cost structs outside protected `kumar/` and `std/` folders;
+  their dead derivative tests, `test_validation.cpp`, `eval_io.hpp`.
+- Unreferenced `core/newton_md.hpp`, `core/cholesky.hpp`,
+  `core/concept_traits.hpp`, `test_newton_md.cpp`, and associated targets.
+- The aggregator and existing R codegen scripts remain in use.
 
 ## Options and trade-offs
 

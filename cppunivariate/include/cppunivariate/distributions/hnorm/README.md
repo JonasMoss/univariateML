@@ -3,7 +3,7 @@ id: hnorm
 name: Translated Half-Normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0}
+  - {name: mu, role: location, domain: "(-inf, inf)", default: 0, bound: lower}
   - {name: sigma, role: scale, domain: "(0, inf)", default: 1}
 r:
   density: extraDistr::dtnorm

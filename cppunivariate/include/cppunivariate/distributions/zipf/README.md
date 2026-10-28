@@ -3,7 +3,7 @@ id: zipf
 name: Zipf
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:
-  - {name: "N", role: upper, domain: "[1, inf)", default: 3.0}
+  - {name: "N", role: upper, domain: "[1, inf)", default: 3.0, integer: true, bound: upper}
   - {name: s, role: shape, domain: "[0, inf)", default: 0.5}
 r:
   density: sads::dzipf

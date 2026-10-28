@@ -2,7 +2,6 @@
 # target. Per-distribution tests and goldens live in
 # include/cppunivariate/distributions/<id>/ (distribution_tests).
 
-set(VALIDATION_DIR "${CMAKE_SOURCE_DIR}/../quality/derived")
 
 set(_CPPUNIV_TEST_FLAGS -Wall -Wextra -Wpedantic)
 
@@ -15,23 +14,15 @@ function(cppuniv_test target source)
 endfunction()
 
 cppuniv_test(bfgs_tests       test_bfgs.cpp)
-cppuniv_test(newton_md_tests  test_newton_md.cpp)
 cppuniv_test(sample_tests     test_sampling.cpp)
-cppuniv_test(validation_tests test_validation.cpp)
 
 add_test(NAME bfgs_tests COMMAND bfgs_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_test(NAME newton_md_tests COMMAND newton_md_tests
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_test(NAME sample_tests COMMAND sample_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_test(NAME validation_tests COMMAND validation_tests
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-set_tests_properties(validation_tests PROPERTIES
-  ENVIRONMENT "UMVL_VALIDATION_DIR=${VALIDATION_DIR}")
 
 cppuniv_test(no_throw_tests test_no_throw.cpp)
 

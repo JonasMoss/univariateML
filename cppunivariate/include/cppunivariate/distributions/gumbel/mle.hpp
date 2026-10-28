@@ -21,63 +21,6 @@ struct GumbelResult {
   int iterations;
 };
 
-// Negative log-likelihood of Gumbel(mu, sigma):
-//   log f = -log(sigma) - z - exp(-z),    z = (x-mu)/sigma
-// Per-obs Hessian (sympy-simplified, e := exp(-z)):
-//   H_mm/obs = e / sigma^2
-//   H_ms/obs = (1 + e*(z - 1)) / sigma^2
-//   H_ss/obs = (-1 + 2*z*(1 - e) + z^2 * e) / sigma^2
-struct GumbelCost {
-  span x;
-  int dim() const { return 2; }
-  double operator()(const double *theta) const {
-    const double mu = theta[0];
-    const double sigma = theta[1];
-    if (!(sigma > 0.0)) return std::numeric_limits<double>::infinity();
-    const double n = static_cast<double>(x.size());
-    double sum = 0.0;
-    for (auto v : x) {
-      const double z = (v - mu) / sigma;
-      sum += z + std::exp(-z);
-    }
-    return n * std::log(sigma) + sum;
-  }
-  void gradient(const double *theta, double *g) const {
-    const double mu = theta[0];
-    const double sigma = theta[1];
-    const double n = static_cast<double>(x.size());
-    double dnll_dmu = 0.0, dnll_ds = 0.0;
-    for (auto v : x) {
-      const double z = (v - mu) / sigma;
-      const double e = std::exp(-z);
-      // d log f / d mu = (1 - e) / sigma; nll grad = -that
-      // d log f / d sigma = -1/sigma + z(1 - e)/sigma; nll grad = -that
-      dnll_dmu += -(1.0 - e) / sigma;
-      dnll_ds += 1.0 / sigma - z * (1.0 - e) / sigma;
-    }
-    g[0] = dnll_dmu;
-    g[1] = dnll_ds;
-    (void)n;
-  }
-  void hessian(const double *theta, double *H) const {
-    const double mu = theta[0];
-    const double sigma = theta[1];
-    const double s2 = sigma * sigma;
-    double H_mm = 0.0, H_ms = 0.0, H_ss = 0.0;
-    for (auto v : x) {
-      const double z = (v - mu) / sigma;
-      const double e = std::exp(-z);
-      H_mm += e;
-      H_ms += 1.0 + e * (z - 1.0);
-      H_ss += -1.0 + 2.0 * z * (1.0 - e) + z * z * e;
-    }
-    H[0] = H_mm / s2;
-    H[1] = H_ms / s2;
-    H[2] = H[1];
-    H[3] = H_ss / s2;
-  }
-};
-
 inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
                                       double theta0 = std::numeric_limits<double>::quiet_NaN()) {
   const std::size_t n = x.size();
