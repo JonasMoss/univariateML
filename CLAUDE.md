@@ -16,38 +16,44 @@ core.
    `cppunivariate/tests/` (doctest + ctest).
 
 2. **R shell (testing scaffold and current published artifact).**
-   Auto-generated R wrappers under `univariateML/R/` call thin Rcpp adapters in
-   `univariateML/src/ml_exports.cpp` and `univariateML/src/distribution_exports.cpp`. testthat
-   acts as the trusted reference: every C++ change is sanity-checked
-   against R-side fits and the golden JSONs in `quality/golden/`.
+   R wrappers and their docs are generated (`just gen`) from each
+   distribution's `README.md`; they call thin Rcpp adapters
+   (`distributions/<id>/adapter.cpp`, copied into the gitignored
+   `univariateML/package/src/` by `just assemble`). testthat acts as the
+   trusted reference: every C++ change is sanity-checked against R-side
+   fits, slow oracle fits, and the goldens in `distributions/<id>/golden.json`.
 
 3. **Python shell (planned).** Same shape: pybind11 / nanobind
-   adapters around cppunivariate. The same `quality/golden/` JSONs cross-
-   validate across shells.
+   adapters around cppunivariate, reading the same `README.md` front matter;
+   the same goldens cross-validate across shells.
 
-### Status (May 2026)
+### Status (October 2026)
 
-- 42 distribution dossiers in `cppunivariate/include/cppunivariate/distributions/<id>/`,
-  each bundling `mle.hpp` (estimator + Cost), `dpqr.hpp` (d/p/q/r templates),
-  `metadata.hpp` (constexpr ParamDescriptor rows), and `dossier.md`. Header-only,
-  span-based. 41 of them carry their own `mle.hpp`; `lgamma` reuses `gamma_mle`
-  on log-transformed data via the R-side wrapper.
+- 42 distributions, **one folder each** in
+  `cppunivariate/include/cppunivariate/distributions/<id>/`: `README.md`
+  (front matter + prose), `mle.hpp`, `dpqr.hpp`, `adapter.cpp`, `test.cpp`,
+  `test.R`, `golden.json`. See "Adding a new distribution" below. `lgamma`
+  has no `mle.hpp`; its adapter fits gamma on `log(x)`.
+- Fitter behaviour at the edges (escapes to limit models, boundaries,
+  non-existence) is studied in `notes/ml-behaviour.tex`, with
+  `notes/ml-behaviour-sweep.R` (all fitters vs a slow oracle, ~6 s) and two
+  research reports. Escapes that a fitter detects stop with "use `mlX`"
+  (decision D1) and are declared under `limits:` in its `README.md`.
+- Boost.Math only through `special/special.hpp`, with a no-throw policy.
 - Hand-rolled BFGS + finite-difference gradient + reparam helpers in
-  `cppunivariate/include/cppunivariate/core/`; the six fGarch-family estimators (paralogis, std,
-  snorm, sstd, ged, sged) use this path.
+  `core/`; paralogis, std, sstd, ged, sged use this path (snorm is an
+  exact one-dimensional profile fit).
 - `LinkingTo: Rcpp, BH` — no `RcppArmadillo`.
-- testthat suite includes ~84 golden-regression checks at 1e-12; 7
-  ctest targets (`estimator_tests`, `bfgs_tests`, `newton_md_tests`,
-  `hessian_tests`, `sample_tests`, `metadata_tests`, `validation_tests`).
-- AI-first validation harness (`quality/`): per-distribution sympy
-  spec at `quality/math/<id>.py`; harness symbolically derives
-  gradient/Hessian and asserts the C++ `Cost` matches at 1e-12 on a
-  Sobol theta grid. **41 of 42 distributions validated** — every
-  distribution with its own `mle.hpp` claims
-  `quality_report.md::claimed_level: validated` (lgamma is the
-  exception — wrapper-only on `gamma_mle(log(x))`, no Cost of its
-  own). dpqr round-trip + simulation recovery deferred to dedicated
-  roadmap entries.
+- Tests: C++ ctest targets `distribution_tests` (all per-distribution
+  `test.cpp`), `bfgs_tests`, `newton_md_tests`, `sample_tests`,
+  `validation_tests`, `no_throw_tests`; R testthat incl. golden regression
+  (1e-12; 1e-6 for the finite-difference BFGS fitters).
+- Validation harness (`quality/`, experimental): sympy specs at
+  `quality/math/<id>.py`; checks each C++ `Cost` against symbolic
+  derivatives on a Sobol grid (41 of 42 claim `validated`). Known
+  limitation: for most distributions the `Cost` is not what the fitter
+  optimises; a rework to check the real fitter (score at the estimate,
+  slow oracle, limits) and read `README.md` is pending.
 
 ### Out of vision (for now)
 
@@ -70,7 +76,7 @@ confirmation. Pushing is the gated step.
 
 Rationale: this working tree is philosophically a separate repo from
 the published `univariateML` CRAN package. The two histories share
-ancestry but are diverging — what lives here (C++ core, dossiers,
+ancestry but are diverging — what lives here (C++ core, per-distribution folders,
 monorepo layout, future Python shell) is not yet what CRAN expects.
 Decisions about *when* and *what* to publish upstream are
 human-judgement calls and stay with the user.
@@ -90,9 +96,11 @@ go-ahead.
 ### Hard rules
 
 - **No exceptions in cppunivariate.** Surface diagnostics via per-estimator
-  `*Status` enums in the result struct. `Rcpp::stop` is fine in the
-  R-shell adapter layer (`univariateML/src/ml_exports.cpp`,
-  `univariateML/src/distribution_exports.cpp`) but never in `cppunivariate/include/cppunivariate/`.
+  `*Status` enums in the result struct. Boost.Math is called with the
+  no-throw policy in `special/special.hpp`. `Rcpp::stop` is fine in the
+  R-shell adapters (`distributions/<id>/adapter.cpp`: they sit in the
+  folder but are R code, never part of the C++ library; header sync and
+  install copy `*.hpp` only), never in a header.
 - **No `using` declarations.** Always be explicit
   (`std::vector<double>`, `cppunivariate::span`, etc.).
 - **No raw pointers.** cppunivariate takes `cppunivariate::span`; R-shell adapters
@@ -102,8 +110,10 @@ go-ahead.
   `Rcpp::NumericVector` / `Rcpp::IntegerVector`.
 - **C++17 features OK; avoid C++20 syntax.** `cppunivariate::span` is the
   C++17 substitute for `std::span<const double>`.
-- **Uniform parameter names**: `tol` for tolerance, `maxit` for
-  iteration limits, across every estimator.
+- **Uniform parameter names** in C++: `tol` for tolerance, `maxit` for
+  iteration limits, across every estimator. R-facing adapter arguments use
+  the CRAN-compatible names in `roadmap/2026-10-28-cran-argument-names.md`
+  (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`).
 
 ### Layout
 
@@ -112,26 +122,25 @@ cppunivariate/                        # the C++ artifact
   CMakeLists.txt                      # produces INTERFACE target `cppunivariate`
   include/cppunivariate/
     core/                             # span, optimisers (newton, bfgs), reductions,
-                                      # finite_diff, reparam, metadata.hpp (shared
-                                      # SupportDescriptor / ParamDescriptor types)
-    distributions/<id>/               # one folder per distribution (id matches univariateML/metadata)
-      mle.hpp                         # *_mle(span x, ...) -> *Result + Cost struct
-      dpqr.hpp                        # d/p/q/r templates (when present; some
-                                      # distributions delegate to base R via the
-                                      # R-side wrapper -- see univariateML/metadata/<id>.json)
-      metadata.hpp                    # constexpr id, name, support, params[]
-      dossier.md                      # human-readable docs (stub today; filled later)
+                                      # finite_diff, reparam
+    distributions/<id>/               # everything about one distribution:
+      README.md                       #   front matter + prose (schema: ../README_SCHEMA.md)
+      mle.hpp                         #   *_mle(span x, ...) -> *Result + Cost struct
+      dpqr.hpp                        #   d/p/q/r templates
+      adapter.cpp                     #   Rcpp adapter ml<id>_ (R shell code)
+      test.cpp                        #   doctest cases -> distribution_tests
+      test.R                          #   testthat file
+      golden.json                     #   golden data + estimates
     distributions/rng_std.hpp         # shared sampling infrastructure (not per-dist)
     special/                          # special.hpp (Boost.Math seam), skewed_densities.hpp
     cppunivariate.hpp                 # aggregator (includes every <id>/mle.hpp)
-  tests/                              # doctest + ctest, R-free
+  tests/                              # shared doctest targets + helpers, R-free
+univariateML/                         # R package sources (R/, src/as_span.h, tests/,
+                                      # scripts/ for assembly, codegen, goldens);
+                                      # package/ is generated and gitignored
+quality/                              # validation harness (experimental)
+notes/                                # LaTeX research notes (just note-build)
 ```
-
-R-shell adapters live outside `cppunivariate/include/cppunivariate/`:
-
-- `univariateML/src/ml_exports.cpp` — Rcpp wrappers calling cppunivariate estimators.
-- `univariateML/src/distribution_exports.cpp` + `univariateML/src/distributions/<dist>.cpp` —
-  Rcpp wrappers calling cppunivariate distributions.
 
 ### Estimator template
 
@@ -157,8 +166,7 @@ inline FooResult foo_mle(span x, double tol, int maxit) {
 }  // namespace cppunivariate
 ```
 
-Match the existing dossiers under `distributions/<id>/mle.hpp` for
-naming. The 1D Newton helpers in `core/newton.hpp` come in `_rel` and
+Match the existing `distributions/<id>/mle.hpp` files for naming. The 1D Newton helpers in `core/newton.hpp` come in `_rel` and
 `_abs` step variants — pick what the original R algorithm used so
 goldens stay reproducible.
 
@@ -222,15 +230,12 @@ the legacy fGarch path expect a usable result back, not an error.
 **One folder per distribution** (`roadmap/2026-10-28-per-distribution-layout.md`).
 Everything about distribution `<id>` lives in
 `cppunivariate/include/cppunivariate/distributions/<id>/`; nothing shared
-lists distributions by hand. Migration status: lomax and paralogis use this
-layout; the others still use the legacy files (`metadata.hpp`,
-`univariateML/metadata/<id>.json`, adapters in `univariateML/src/ml_exports.cpp`,
-cases in `cppunivariate/tests/test_estimators.cpp`, `quality/golden/<id>.json`)
-until they are migrated. Follow `lomax/` as the worked example.
+lists distributions by hand (except the `cppunivariate.hpp` aggregator and
+the validation harness's dispatch). Follow `lomax/` as the worked example.
 
 | file | what |
 |---|---|
-| `README.md` | YAML front matter (id, name, support, params, R refs, control-argument docs, log-density, limits, references, examples) + prose. Schema: `distributions/README_SCHEMA.md`. Replaces `metadata.hpp`, the JSON sidecar and `dossier.md`. |
+| `README.md` | YAML front matter (id, name, support, params, R refs, control-argument docs, log-density, limits, references, examples) + prose. Schema: `distributions/README_SCHEMA.md`. |
 | `mle.hpp` | `*_mle(span x, tol, maxit, ...)`, `*Result`, `*Status`; a `Cost` struct (validation harness) |
 | `dpqr.hpp` | d/p/q/r templates |
 | `adapter.cpp` | the Rcpp adapter `ml<id>_`; copied to the package's `src/dist_<id>.cpp` by `assemble_package.R`. Argument names follow `roadmap/2026-10-28-cran-argument-names.md` (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`) and must match `README.md`'s `r.control` (codegen checks). |
@@ -240,7 +245,9 @@ until they are migrated. Follow `lomax/` as the worked example.
 
 Steps for a new distribution:
 
-1. Create the folder with the files above (copy `lomax/` and adapt).
+1. Create the folder with the files above (copy `lomax/` and adapt), and
+   add one line `#include "distributions/<id>/mle.hpp"` to
+   `cppunivariate.hpp`.
 2. Add `quality/math/<id>.py` and register the Cost in
    `cppunivariate/tests/test_validation.cpp` (the harness still uses these;
    its rework to read `README.md` is pending).
