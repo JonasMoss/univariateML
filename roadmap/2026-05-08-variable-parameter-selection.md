@@ -6,9 +6,11 @@ estimates. README `params` keys `fixable: true` / `fixed: <value>`
 (schema: `distributions/README_SCHEMA.md`); adapters return `fixed`, the
 object's `fixed` attribute drives `logLik()` df, AIC/BIC, `model_select`'s
 `p` and `bootstrapml`. Done: binom/nbinom `size`, fatigue `mu` (always
-fixed: the three-parameter MLE does not exist). Next: std `nu`, lst `df`,
-paralogis/burr/invburr/betapr `scale` (the 1.x fixed-scale fitters). Each
-fixable subset gets an exact fitter; no generic optimiser fallback. The
+fixed: the three-parameter MLE does not exist), std `nu`, lst `df`,
+burr/invburr/betapr/paralogis `scale` (`scale = 1` reproduces the 1.x
+fits). Limits may carry `fixed: [name]`. Each fixable subset gets an exact
+fitter; no generic optimiser fallback. Candidates later: pareto `b`,
+power `alpha`, zipf `N`, gamma/weibull shape. The
 rest of this file is the original (May 2026) note; its `metadata.hpp` seam
 no longer exists.
 

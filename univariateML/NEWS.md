@@ -23,6 +23,13 @@
   to the limit model (e.g. `mlweibull`, `mlpareto`, `mlgamma`) when the
   three-parameter MLE does not exist.
 
+* Some parameters can be held fixed by passing them by name, e.g.
+  `mlburr(x, scale = 1)` (the 1.x fit), `mlstd(x, nu = 5)`,
+  `mllst(x, df = 3)`; also `scale` in `mlinvburr()`, `mlbetapr()`,
+  `mlparalogis()` and `size` in `mlbinom()`, `mlnbinom()`. Held parameters
+  are listed in the `fixed` attribute and are not counted in `logLik()`
+  degrees of freedom, AIC or BIC.
+
 * `mlinvgamma()`'s coefficient names are unchanged (`alpha`, `beta`)
   and continue to match `extraDistr::dinvgamma`.
 
