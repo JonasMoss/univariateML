@@ -33,7 +33,7 @@ set_golden_seed <- function(seed) {
 
 # Finite-difference BFGS fitters drift by ~1e-6 across machines; see
 # cppunivariate/tests/test_estimators.cpp (kFdTol).
-FD_BFGS_IDS <- c("std", "ged", "sstd", "sged", "snorm", "paralogis")
+FD_BFGS_IDS <- c("std", "ged", "sstd", "sged", "paralogis")
 
 if (dir.exists(GOLDEN_DIR)) {
   golden_files <- list.files(GOLDEN_DIR, pattern = "\\.json$", full.names = TRUE)

@@ -11,6 +11,11 @@ for (dens in densities) {
   expect_equal(forms_lhs, forms_rhs)
   set.seed(1)
   x <- simulate_default(dens, 10)
+  if (dens == "mlsnorm") {
+    # This small default sample has an exclusive half-normal maximum.
+    expect_error(mlsnorm(x), "translated half-normal.*MLE does not exist")
+    x <- simulate_default(dens, 500)
+  }
   object <- do.call(dens, list(x))
   density <- univariateML_to_function(object, "d")
   expect_equal(sum(density(x, log = TRUE)), attr(object, "logLik"))
