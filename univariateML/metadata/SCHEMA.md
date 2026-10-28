@@ -80,6 +80,11 @@ itself via the Rcpp layer, e.g. `rlomax`). The schema can grow with
 additional R-only fields (e.g. doc seealso, examples) when the
 human-docs pass happens.
 
+Human-prose documentation is **not** stored here. It lives in each
+distribution's `dossier.md` next to `metadata.hpp`; see
+`cppunivariate/include/cppunivariate/distributions/DOSSIER_SCHEMA.md`
+for the section schema and math conventions.
+
 ## Cross-shell expectations
 
 - `id` is the cross-shell key. Goldens, wrappers, and (future)

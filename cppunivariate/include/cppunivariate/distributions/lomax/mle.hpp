@@ -1,16 +1,7 @@
-// Lomax MLE.
-//
-// Initialised from a method-of-moments lambda; refined by 1D Newton
-// with hybrid (relative + absolute) convergence kept verbatim from the
-// original implementation. kappa is the closed-form maximiser given
-// lambda.
-//
-// Status enum surfaces three special outcomes:
-//   - MeanVarianceCondition: mean(x^2) < 2 * mean(x)^2 — the Lomax
-//     MLE doesn't exist; data is consistent with an exponential.
-//   - InvalidStart: lambda init was non-positive or non-finite.
-//   - IterationFailure: Newton stepped to non-positive lambda.
-// (Lomax → Exponential degeneracy will get a docs note in WS6.)
+// Lomax MLE. See dossier.md for the parameterisation, the MLE
+// existence condition (mean(x^2) < 2*mean(x)^2 — surfaced as
+// LomaxStatus::MeanVarianceCondition), and the Lomax→Exponential
+// limit. This file documents only the implementation.
 
 #pragma once
 

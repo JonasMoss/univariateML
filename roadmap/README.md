@@ -79,3 +79,8 @@ the queue.
   scope, as a wrapper around gamma_mle(log(x))). Catalog of validated
   shape-buckets + the problems hit and how each was resolved. Read
   this first to orient on the harness.
+- [2026-05-11 — Density-first AI validation](2026-05-11-density-first-ai-validation.md):
+  next-step design target for making the harness more AI-first: human
+  checks the density/support/domains and the machinery derives or
+  stress-tests the rest, including normalization, transform chain rule,
+  slow MLE oracle, dpqr self-consistency, and mutation tripwires.
