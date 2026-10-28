@@ -89,7 +89,9 @@ struct WeibullCost {
   }
 };
 
-inline WeibullResult weibull_mle(span x, double tol, int maxit) {
+// shape0 is an optional positive starting shape; NaN keeps the automatic start.
+inline WeibullResult weibull_mle(span x, double tol, int maxit,
+                                  double shape0 = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0};
@@ -104,7 +106,8 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit) {
   const double s = -sum_log_x / dn;
   for (auto &v : log_x) v += s;
 
-  GumbelResult g = fit_gumbel_newton(span{log_x.data(), n}, tol, maxit);
+  GumbelResult g = fit_gumbel_newton(span{log_x.data(), n}, tol, maxit,
+      std::isnan(shape0) ? shape0 : -std::log(shape0));
   const double shape = 1.0 / g.sigma;
   const double scale = std::exp(-g.mu + s);
   const double logLik =

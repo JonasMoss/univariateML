@@ -1,4 +1,0 @@
-{
-  "sampler": "stats::rweibull",
-  "density": "stats::dweibull"
-}

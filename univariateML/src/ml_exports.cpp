@@ -2,78 +2,10 @@
 #include "cppunivariate/cppunivariate.hpp"
 #include <Rcpp.h>
 
-// Cauchy
-// [[Rcpp::export]]
-Rcpp::List mlcauchy_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                     int iterlim = 100) {
-  cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
-      iterlim);
-  if (res.status == cppunivariate::CauchyStatus::NoMLE)
-    Rcpp::stop("Cauchy MLE does not exist: need n >= 3 and no value repeated n/2 or more times");
-  if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))
-    Rcpp::stop("Cauchy MLE failed: non-finite or invalid parameters");
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["location"] = res.mu, Rcpp::_["scale"] = res.scale),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
-// Gumbel
-// [[Rcpp::export]]
-Rcpp::List mlgumbel_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                     int iterlim = 100) {
-  if (iterlim <= 1) {
-    Rcpp::warning("iteration limit reached");
-  }
-  cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_newton(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
-      iterlim);
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["mu"] = res.mu, Rcpp::_["sigma"] = res.sigma),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
-// Logistic
-// [[Rcpp::export]]
-Rcpp::List mllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                    int iterlim = 100) {
-  cppunivariate::LogisticResult res =
-      cppunivariate::logistic_mle(dist_impl::as_span(x), tol, iterlim);
-  if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))
-    Rcpp::stop("Logistic MLE failed: non-finite or invalid parameters");
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["location"] = res.mu, Rcpp::_["scale"] = res.scale),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
-// Log-logistic
-// [[Rcpp::export]]
-Rcpp::List mlllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                     int iterlim = 100) {
-  cppunivariate::LogLogisticResult res =
-      cppunivariate::loglogistic_mle(dist_impl::as_span(x), tol, iterlim);
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
 // Beta
 
 // Gamma
 // [[Rcpp::export]]
-Rcpp::List mlgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                    int iterlim = 100) {
-  auto res = cppunivariate::gamma_mle(dist_impl::as_span(x), tol, iterlim);
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
 // Closed-form easy ones
 
 
@@ -244,19 +176,6 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
 }
 
 // [[Rcpp::export]]
-Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                   int iterlim = 100) {
-  auto res = cppunivariate::naka_mle(dist_impl::as_span(x), tol, iterlim);
-  if (!std::isfinite(res.shape) || !std::isfinite(res.scale)) {
-    Rcpp::stop("Nakagami MLE failed");
-  }
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
-// [[Rcpp::export]]
 Rcpp::List mllgser_(const Rcpp::IntegerVector &x) {
   auto res = cppunivariate::lgser_mle(dist_impl::as_ispan(x));
   if (res.all_ones) {
@@ -271,69 +190,8 @@ Rcpp::List mllgser_(const Rcpp::IntegerVector &x) {
                             Rcpp::_["logLik"] = res.logLik);
 }
 // [[Rcpp::export]]
-Rcpp::List mlweibull_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                      int iterlim = 100) {
-  if (iterlim <= 1) {
-    Rcpp::warning("iteration limit reached");
-  }
-  auto res = cppunivariate::weibull_mle(dist_impl::as_span(x), tol, iterlim);
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
 
 // [[Rcpp::export]]
-Rcpp::List mlinvweibull_(const Rcpp::NumericVector &x,
-                         double tol = 1.220703e-4, int iterlim = 100) {
-  if (iterlim <= 1) {
-    Rcpp::warning("iteration limit reached");
-  }
-  auto res = cppunivariate::invweibull_mle(dist_impl::as_span(x), tol, iterlim);
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shape"] = res.shape, Rcpp::_["rate"] = res.rate),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
-// [[Rcpp::export]]
-Rcpp::List mlinvgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                       int iterlim = 100) {
-  auto res = cppunivariate::invgamma_mle(dist_impl::as_span(x), tol, iterlim);
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["alpha"] = res.shape, Rcpp::_["beta"] = res.scale),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
-
-// [[Rcpp::export]]
-Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
-                     int iterlim = 100) {
-  const std::size_t n = static_cast<std::size_t>(x.size());
-  std::vector<double> y(n);
-  double sum_y = 0.0, sum_log_y = 0.0;
-  for (std::size_t i = 0; i < n; ++i) {
-    y[i] = std::log(x[i]);
-    sum_y += y[i];
-    sum_log_y += std::log(y[i]);
-  }
-  auto res =
-      cppunivariate::gamma_mle(cppunivariate::span{y.data(), n}, tol, iterlim);
-  const double shapelog = res.shape;
-  const double ratelog = res.rate;
-  const double dn = static_cast<double>(n);
-  const double L = sum_y / dn;
-  const double K = sum_log_y / dn;
-  const double logLik =
-      dn * (shapelog * std::log(ratelog) - std::lgamma(shapelog) +
-            (shapelog - 1.0) * K - (ratelog + 1.0) * L);
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shapelog"] = shapelog, Rcpp::_["ratelog"] = ratelog),
-      Rcpp::_["logLik"] = logLik, Rcpp::_["iterations"] = res.iterations);
-}
-
 
 // [[Rcpp::export]]
 Rcpp::List mlsged_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,

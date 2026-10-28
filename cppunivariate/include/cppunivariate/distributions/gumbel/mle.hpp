@@ -78,7 +78,8 @@ struct GumbelCost {
   }
 };
 
-inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit) {
+inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
+                                      double theta0 = std::numeric_limits<double>::quiet_NaN()) {
   const std::size_t n = x.size();
   const double dn = static_cast<double>(n);
 
@@ -91,7 +92,9 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit) {
   const double xbar = sum_x / dn;
   const double var0 = sum_x2 / dn - xbar * xbar;
 
-  double theta = std::log(std::sqrt(var0) * 2.45 / M_PI);
+  double theta = std::isnan(theta0)
+                     ? std::log(std::sqrt(var0) * 2.45 / M_PI)
+                     : theta0;
   int iter = 1;
   for (; iter <= maxit; ++iter) {
     const double sigma = std::exp(theta);
