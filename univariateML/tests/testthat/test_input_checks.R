@@ -11,6 +11,12 @@ for (dens in densities) {
   expect_equal(forms_lhs, forms_rhs)
   set.seed(1)
   x <- simulate_default(dens, 10)
+  if (identical(dens, "mlbetapr")) {
+    # This default ten-point sample selects the inverse-gamma face.
+    expect_error(mlbetapr(x), "Use `mlinvgamma`")
+    set.seed(313)
+    x <- extraDistr::rbetapr(1000, 1, 2, scale = 3)
+  }
   # A ten-point Student-t sample can have its supremum on a face.
   # Use the interior regression sample for this successful-fit contract.
   if (identical(dens, "mlstd")) {

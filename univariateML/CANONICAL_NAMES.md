@@ -38,7 +38,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | id | model display | coef names | density (external) | support |
 |----|---------------|-----------|---------------------|---------|
 | beta       | Beta                    | shape1, shape2     | stats::dbeta              | (0, 1) open      |
-| betapr     | BetaPrime               | shape1, shape2     | extraDistr::dbetapr       | [0, ∞)           |
+| betapr     | BetaPrime               | shape1, shape2, scale | extraDistr::dbetapr       | [0, ∞)           |
 | binom      | Binomial                | size, prob         | stats::dbinom             | [0, ∞) integer   |
 | burr       | Burr                    | shape1, shape2     | actuar::dburr             | (0, ∞) open      |
 | cauchy     | Cauchy                  | location, scale    | stats::dcauchy            | (-∞, ∞) open     |
@@ -96,7 +96,7 @@ names while the R interface uses historic ones; the bridge lives in
 | id        | C++ struct fields  | R coef names      |
 |-----------|--------------------|-------------------|
 | beta      | alpha, beta        | shape1, shape2    |
-| betapr    | alpha, beta        | shape1, shape2    |
+| betapr    | alpha, beta, scale | shape1, shape2, scale |
 | cauchy    | mu, scale          | location, scale   |
 | invgamma  | shape, scale       | alpha, beta       |
 | invgauss  | mu, lambda         | mean, shape       |
