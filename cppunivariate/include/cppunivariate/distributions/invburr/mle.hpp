@@ -1,34 +1,9 @@
-// Inverse Burr MLE: Burr MLE on 1/x. Log-likelihood rederived in the
-// inverse Burr parameterisation.
-
+// Inverse Burr is the reciprocal of a Burr with reciprocal scale.
 #pragma once
-
-#include "../../core/span.hpp"
 #include "../burr/mle.hpp"
-
-#include <cmath>
-#include <cstddef>
-#include <limits>
-#include <vector>
-
+#include "../invweibull/mle.hpp"
+#include "../power/mle.hpp"
 namespace cppunivariate {
-
-enum class InvBurrStatus { Ok = 0, AllLeOne, InvalidInit, IterationFailure };
-
-struct InvBurrResult {
-  double shape1;
-  double shape2;
-  double logLik;
-  int iterations;
-  InvBurrStatus status;
-};
-
-// Negative log-likelihood of Inverse Burr (shape1=k, shape2=c) with scale=1:
-//   log f = log(k) + log(c) + (k*c - 1)*log(x) - (k+1)*log(1 + x^c)
-// Per-obs Hessian (sympy, with y := x^c, lx := log(x)):
-//   H_kk/obs = 1/k^2                                       (data-indep diag)
-//   H_cc/obs = 1/c^2 + (k+1)*y*lx^2 / (1+y)^2              (same as Burr)
-//   H_kc/obs = -lx / (1+y)
 struct InvBurrCost {
   span x;
   int dim() const { return 2; }
@@ -95,39 +70,59 @@ struct InvBurrCost {
   }
 };
 
-inline InvBurrResult invburr_mle(span x, double tol, int maxit) {
-  constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
-  const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0, InvBurrStatus::InvalidInit};
 
-  bool all_le_one = true;
-  for (auto v : x) {
-    if (!(v > 0.0) || !std::isfinite(v) || !std::isfinite(1.0 / v))
-      return {kNaN, kNaN, kNaN, 0, InvBurrStatus::InvalidInit};
-    if (v > 1.0) all_le_one = false;
+enum class InvBurrStatus { Ok = 0, InvWeibullBoundary, PowerBoundary, InvalidInit, IterationFailure };
+struct InvBurrResult {
+  double shape1, shape2, scale, logLik;
+  int iterations;
+  InvBurrStatus status;
+};
+inline InvBurrResult invburr_mle(span x, double tol, int maxit,
+    double shape10 = std::numeric_limits<double>::quiet_NaN(),
+    double shape20 = std::numeric_limits<double>::quiet_NaN(),
+    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+  std::vector<double> reciprocal;
+  double jacobian = 0.0;
+  for (double v : x) {
+    if (!(v > 0.0) || !std::isfinite(v) || !std::isfinite(1.0/v)) {
+      const double nan = std::numeric_limits<double>::quiet_NaN();
+      return {nan,nan,nan,nan,0,InvBurrStatus::InvalidInit};
+    }
+    reciprocal.push_back(1.0/v); jacobian -= 2.0*std::log(v);
   }
-  if (all_le_one)
-    return {kNaN, kNaN, kNaN, 0, InvBurrStatus::AllLeOne};
-
-  std::vector<double> invx(n);
-  double sum_log_invx = 0.0;
-  for (std::size_t i = 0; i < n; ++i) {
-    invx[i] = 1.0 / x[i];
-    sum_log_invx += std::log(invx[i]);
+  if (x.size() > 1 && std::isnan(shape20)) {
+    // The old inverse two-shape fit is an optional start, never a constraint.
+    double center = 0.0;
+    for (double v : x) center += std::log(v)/static_cast<double>(x.size());
+    std::vector<double> normalized;
+    bool representable = true;
+    for (double v : x) {
+      normalized.push_back(std::exp(std::log(v)-center));
+      if (!(normalized.back() > 0.0) || !std::isfinite(normalized.back())) representable = false;
+    }
+    if (representable) {
+      InvBurrCost fixed{span{normalized.data(),normalized.size()}};
+      BfgsControl ctl; ctl.maxit=maxit; ctl.grad_tol=tol; ctl.reltol=reltol;
+      const double start[2] = {1.0,2.0};
+      auto seed = bfgs_minimize(fixed,start,ctl);
+      if (std::isfinite(seed.f) && seed.theta[1]>0.0) shape20=seed.theta[1];
+    }
   }
-  const double c0 = burr_mle_start(span{invx.data(), n}, true);
-  BurrMLE res = burr_mle_core(span{invx.data(), n}, c0, tol, maxit);
-  if (res.status != BurrStatus::Ok) {
-    return {kNaN, kNaN, kNaN, res.iterations, InvBurrStatus::IterationFailure};
+  auto r = burr_mle(span{reciprocal.data(),reciprocal.size()},tol,maxit,
+    shape10,shape20,std::isnan(scale0) ? scale0 : 1.0/scale0,reltol);
+  InvBurrStatus status = InvBurrStatus::Ok;
+  if (r.status == BurrStatus::WeibullBoundary) status = InvBurrStatus::InvWeibullBoundary;
+  if (r.status == BurrStatus::ParetoBoundary) status = InvBurrStatus::PowerBoundary;
+  if (r.status == BurrStatus::InvalidInit) status = InvBurrStatus::InvalidInit;
+  if (r.status == BurrStatus::IterationFailure) status = InvBurrStatus::IterationFailure;
+  if (status == InvBurrStatus::InvWeibullBoundary) {
+    const auto face = invweibull_mle(x,1e-10,std::max(maxit,100));
+    return {INFINITY,face.shape,1.0/face.rate,face.logLik,r.iterations,status};
   }
-
-  const double shape1 = res.shape1;
-  const double shape2 = res.shape2;
-  // Change-of-variables Jacobian; reuse the checked Burr likelihood.
-  const double logLik = res.logLik + 2.0 * sum_log_invx;
-  if (!std::isfinite(logLik))
-    return {kNaN, kNaN, kNaN, res.iterations, InvBurrStatus::IterationFailure};
-  return {shape1, shape2, logLik, res.iterations, InvBurrStatus::Ok};
+  if (status == InvBurrStatus::PowerBoundary) {
+    const auto face = power_mle(x,0.0);
+    return {0.0,INFINITY,face.alpha,face.logLik,r.iterations,status};
+  }
+  return {r.shape1,r.shape2,1.0/r.scale,r.logLik+jacobian,r.iterations,status};
 }
-
-}  // namespace cppunivariate
+} // namespace cppunivariate
