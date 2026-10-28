@@ -445,12 +445,28 @@ TEST_CASE("pois") {
   CHECK(r.logLik == APPROX(g.logLik));
 }
 
+TEST_CASE("pois all zeros") {
+  const std::vector<int> v{0, 0, 0};
+  const auto r = cppunivariate::pois_mle(as_ispan(v));
+  CHECK(r.lambda == 0.0);
+  CHECK(r.logLik == 0.0);
+}
+
 TEST_CASE("geom") {
   auto g = load("geom");
   auto v = as_ints(g.data);
   auto r = cppunivariate::geom_mle(as_ispan(v));
   CHECK(r.prob == APPROX(g.estimates.at("prob")));
   CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("geom all zeros") {
+  const std::vector<int> v{0, 0, 0};
+  const auto r = cppunivariate::geom_mle(as_ispan(v));
+  CHECK(r.prob == 1.0);
+  CHECK(r.logLik == 0.0);
+  CHECK(cppunivariate::special::dgeom(1.0, 1.0, true) ==
+        -std::numeric_limits<double>::infinity());
 }
 
 TEST_CASE("dunif") {
@@ -474,6 +490,26 @@ TEST_CASE("binom") {
   CHECK(r.logLik == APPROX(g.logLik));
 }
 
+TEST_CASE("binom probability boundaries") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  for (const double size : {nan, 5.0}) {
+    const std::vector<int> v{5, 5, 5};
+    const auto r = cppunivariate::binom_mle(as_ispan(v), size, kFitTol, kFitMaxit);
+    REQUIRE(r.status == cppunivariate::BinomStatus::Ok);
+    CHECK(r.size == 5.0);
+    CHECK(r.prob == 1.0);
+    CHECK(r.logLik == 0.0);
+  }
+  for (const double size : {nan, 0.0, 5.0}) {
+    const std::vector<int> v{0, 0, 0};
+    const auto r = cppunivariate::binom_mle(as_ispan(v), size, kFitTol, kFitMaxit);
+    REQUIRE(r.status == cppunivariate::BinomStatus::Ok);
+    CHECK(r.size == (std::isnan(size) ? 0.0 : size));
+    CHECK(r.prob == 0.0);
+    CHECK(r.logLik == 0.0);
+  }
+}
+
 TEST_CASE("nbinom") {
   auto g = load("nbinom");
   auto v = as_ints(g.data);
@@ -483,6 +519,17 @@ TEST_CASE("nbinom") {
   CHECK(r.logLik == APPROX(g.logLik));
 }
 
+TEST_CASE("nbinom all zeros") {
+  const std::vector<int> v{0, 0, 0};
+  const auto r = cppunivariate::nbinom_mle(as_ispan(v), kFitTol, kFitMaxit);
+  CHECK(r.size == 1.0);
+  CHECK(r.prob == 1.0);
+  CHECK(r.logLik == 0.0);
+  CHECK(cppunivariate::special::dnbinom(0.0, r.size, r.prob, true) == 0.0);
+  CHECK(cppunivariate::special::dnbinom(1.0, r.size, r.prob, true) ==
+        -std::numeric_limits<double>::infinity());
+}
+
 TEST_CASE("zip") {
   auto g = load("zip");
   auto v = as_ints(g.data);
@@ -490,6 +537,49 @@ TEST_CASE("zip") {
   CHECK(r.lambda == APPROX(g.estimates.at("lambda")));
   CHECK(r.pi == APPROX(g.estimates.at("pi")));
   CHECK(r.logLik == APPROX(g.logLik));
+}
+
+TEST_CASE("zip ordinary zero inflation") {
+  const std::vector<std::vector<int>> samples{
+      {0, 1, 2, 1, 1, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3},
+      {0, 0, 4}};
+  const std::vector<double> lambdas{1.423265, 3.920695};
+  const std::vector<double> pis{0.4730435, 0.6599249};
+  const std::vector<double> logliks{-23.0097617, -3.52318909};
+  for (std::size_t i = 0; i < samples.size(); ++i) {
+    const auto r = cppunivariate::zip_mle(as_ispan(samples[i]));
+    REQUIRE(r.status == cppunivariate::ZipStatus::Ok);
+    CHECK(r.lambda == doctest::Approx(lambdas[i]).epsilon(1e-4));
+    CHECK(r.pi == doctest::Approx(pis[i]).epsilon(1e-4));
+    CHECK(r.logLik >= logliks[i] - 1e-6);
+    const cppunivariate::ZipCost cost{as_ispan(samples[i])};
+    const std::vector<double> theta{r.lambda, r.pi};
+    std::vector<double> gradient(2);
+    cost.gradient(theta.data(), gradient.data());
+    CHECK(std::hypot(gradient[0], gradient[1]) < 1e-6);
+  }
+}
+
+TEST_CASE("zip boundaries and invalid input") {
+  const std::vector<int> zeros{0, 0, 0};
+  const auto zero = cppunivariate::zip_mle(as_ispan(zeros));
+  REQUIRE(zero.status == cppunivariate::ZipStatus::Ok);
+  CHECK(zero.lambda == 1.0);
+  CHECK(zero.pi == 1.0);
+  CHECK(zero.logLik == 0.0);
+  for (const std::vector<int> &v : {std::vector<int>{1, 2, 3},
+                                  std::vector<int>{0, 1, 1, 2}}) {
+    const auto r = cppunivariate::zip_mle(as_ispan(v));
+    const auto pois = cppunivariate::pois_mle(as_ispan(v));
+    REQUIRE(r.status == cppunivariate::ZipStatus::Ok);
+    CHECK(r.pi == 0.0);
+    CHECK(r.lambda == pois.lambda);
+    CHECK(r.logLik == doctest::Approx(pois.logLik));
+  }
+  for (const std::vector<int> &v : {std::vector<int>{}, std::vector<int>{-1, 0}}) {
+    CHECK(cppunivariate::zip_mle(as_ispan(v)).status ==
+          cppunivariate::ZipStatus::InvalidInput);
+  }
 }
 
 TEST_CASE("lgser") {

@@ -13,10 +13,13 @@
 
 namespace cppunivariate {
 
+enum class ZipStatus { Ok = 0, InvalidInput, NumericalFailure };
+
 struct ZipResult {
   double lambda;
   double pi;
   double logLik;
+  ZipStatus status;
 };
 
 // Negative log-likelihood of ZeroInflatedPoisson(lambda, pi):
@@ -113,10 +116,11 @@ struct ZipCost {
 inline ZipResult zip_mle(ispan x) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN};
+  if (n == 0) return {kNaN, kNaN, kNaN, ZipStatus::InvalidInput};
 
   double sum_zero = 0.0, sum_x = 0.0;
   for (auto v : x) {
+    if (v < 0) return {kNaN, kNaN, kNaN, ZipStatus::InvalidInput};
     if (v == 0) sum_zero += 1.0;
     sum_x += static_cast<double>(v);
   }
@@ -127,8 +131,8 @@ inline ZipResult zip_mle(ispan x) {
   double lambda = 0.0;
   double pi = 0.0;
   if (r0 == 1.0) {
-    lambda = 1.0;
-    pi = 1.0;
+    // Non-identifiable: choose a finite representative of the point mass.
+    return {1.0, 1.0, 0.0, ZipStatus::Ok};
   } else if (r0 > std::exp(-x_bar)) {
     const double gamma = x_bar / (1.0 - r0);
     const double z = -gamma * std::exp(-gamma);
@@ -140,6 +144,10 @@ inline ZipResult zip_mle(ispan x) {
     lambda = x_bar;
   }
 
+  if (!std::isfinite(lambda) || !std::isfinite(pi) ||
+      lambda <= 0.0 || pi < 0.0 || pi >= 1.0)
+    return {kNaN, kNaN, kNaN, ZipStatus::NumericalFailure};
+
   double logLik = 0.0;
   for (auto v : x) {
     if (v == 0) {
@@ -147,10 +155,12 @@ inline ZipResult zip_mle(ispan x) {
     } else {
       logLik += std::log(1.0 - pi) +
                 static_cast<double>(v) * std::log(lambda) - lambda -
-                std::lgamma(static_cast<double>(v) + 1.0);
+                cppunivariate::special::lgamma(static_cast<double>(v) + 1.0);
     }
   }
-  return {lambda, pi, logLik};
+  if (!std::isfinite(logLik))
+    return {kNaN, kNaN, kNaN, ZipStatus::NumericalFailure};
+  return {lambda, pi, logLik, ZipStatus::Ok};
 }
 
 }  // namespace cppunivariate

@@ -65,7 +65,7 @@ inline LgserResult lgser_mle(ispan x) {
   if (sumx == dn) return {kNaN, kNaN, true};
 
   const double z = -std::exp(-1.0 / x_bar) / x_bar;
-  const double xi = -x_bar * lambertw0(z) - 1.0;
+  const double xi = -x_bar * lambertwm1(z) - 1.0;
   const double theta = xi / (xi + 1.0);
 
   double sum_log_x = 0.0;

@@ -93,7 +93,7 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit) {
   }
   const double dn = static_cast<double>(n);
   const double x_bar = sum_x / dn;
-  if (x_bar == 0.0) return {1.0, 0.5, 0.0, 0, false};
+  if (x_bar == 0.0) return {1.0, 1.0, 0.0, 0, false};
 
   const double var_hat = sum_x_sq / dn - x_bar * x_bar;
   if (var_hat < x_bar) {
