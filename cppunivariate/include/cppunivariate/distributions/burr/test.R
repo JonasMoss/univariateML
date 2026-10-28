@@ -81,3 +81,38 @@ test_that("Burr limits and small-shape corners match the derived bounds", {
   bound <- length(x)*(log(c)+(k+1)*log(k/(k+1)))-sum(log(x))
   expect_lte(sum(actuar::dburr(x,shape1=k,shape2=c,scale=3,log=TRUE)),bound+1e-10)
 })
+
+test_that("burr fixed scale reproduces 6c89a8c and a reference oracle", {
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  skip_if(!nzchar(root), "Historical fixture needs the distribution source tree")
+  golden <- jsonlite::fromJSON(file.path(root,"burr","fixed-scale-golden.json"))
+  x <- golden$data
+  fit <- mlburr(x,scale=1)
+  expect_equal(unname(fit[1:2]),c(1.077036666067376,1.9857562895421235),tolerance=1e-10)
+  expect_equal(attr(fit,"logLik"),-614.507368787803,tolerance=1e-10)
+  for (s in c(.3,3)) {
+    y <- s*x
+    z <- mlburr(y,scale=s)
+    expect_identical(unname(z["scale"]),s)
+    expect_identical(attr(z,"fixed"),"scale")
+    expect_equal(attr(logLik(z),"df"),2)
+    expect_equal(unname(z[1:2]),unname(fit[1:2]),tolerance=1e-10)
+    expect_equal(attr(z,"logLik"),attr(fit,"logLik")-length(x)*log(s),tolerance=1e-10)
+    nll <- function(t) -sum(actuar::dburr(y,shape1=exp(t[1]),shape2=exp(t[2]),scale=s,log=TRUE))
+    oracle <- optim(log(c(.7,1.5)),nll,method="BFGS",control=list(reltol=1e-13,maxit=2000))
+    expect_equal(unname(z[1:2]),exp(oracle$par),tolerance=1e-5)
+    expect_equal(attr(z,"logLik"),-oracle$value,tolerance=1e-9)
+  }
+  expect_identical(attr(mlburr(x),"fixed"),character())
+  for (bad in c(0,-1,Inf,NA_real_,NaN)) expect_error(mlburr(x,scale=bad),"positive finite fixed scale")
+  expect_error(mlburr(c(3,4,5),scale=3),"Use `mlpareto`")
+})
+
+test_that("burr fixed scale uses a profile fallback when moments have no root", {
+  x <- c(.5,2,3,4,5)
+  z <- mlburr(x,scale=1,abstol=1e-10)
+  nll <- function(t) -sum(actuar::dburr(x,shape1=exp(t[1]),shape2=exp(t[2]),scale=1,log=TRUE))
+  oracle <- optim(log(c(.7,1.5)),nll,method="BFGS",control=list(reltol=1e-13,maxit=2000))
+  expect_equal(as.numeric(z[1:2]),exp(oracle$par),tolerance=1e-5)
+  expect_equal(attr(z,"logLik"),-oracle$value,tolerance=1e-9)
+})
