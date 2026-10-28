@@ -45,10 +45,6 @@ Write math as `$...$` / `$$...$$`; the R codegen turns it into
 `\eqn{}` / `\deqn{}`. Use backticks for code. Do not restate the density,
 parameter tables, moments or the algorithm.
 
-A limit may additionally declare `fixed: [name, ...]`: it applies only
-when those parameters are held fixed. Limits without `fixed` describe the
-all-free fit; each fixed subset must document which escapes remain.
-
 ## Optional parameter keys
 
 Optional keys in each `params` entry:
@@ -82,6 +78,3 @@ expression using the supplied name-to-symbol dictionary and observation.
 Use this only when `log_density` cannot be expressed as a string. Reports
 include every unchecked id and reason. `limits` entries are listed only.
 
-A `limits` entry may carry `fixed: [name]`: it applies only when the listed
-parameters are held fixed. Other limits must be interpreted with their
-parameter path; a path varying a held parameter is unavailable.
