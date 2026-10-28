@@ -35,11 +35,15 @@ set_seed_for <- function(id) {
   set.seed(seed_for(id))
 }
 
+# Default parameters as sampler arguments: by coefficient name, or through
+# the README's r.args map (sampler argument = coefficient).
 default_args <- function(model) {
-  setNames(
+  values <- setNames(
     lapply(model$params, function(p) p$default),
     vapply(model$params, function(p) p$name, character(1))
   )
+  if (is.null(model$args)) return(values)
+  setNames(lapply(unname(model$args), function(coef) values[[coef]]), names(model$args))
 }
 
 sample_one <- function(model, n) {
@@ -79,6 +83,9 @@ main <- function() {
 
   source(file.path("scripts", "load_distributions.R"))
   models <- load_distributions(dossier_dir)
+  # UMVL_GOLDEN_IDS="hnorm lst" regenerates only those goldens.
+  only <- strsplit(Sys.getenv("UMVL_GOLDEN_IDS"), "[ ,]+")[[1]]
+  if (length(only)) models <- models[names(models) %in% only]
 
   results <- list()
   for (model in models) {

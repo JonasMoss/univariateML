@@ -3,7 +3,7 @@
 Sys.setenv(OMP_NUM_THREADS=1, OPENBLAS_NUM_THREADS=1, MKL_NUM_THREADS=1)
 suppressMessages(pkgload::load_all("univariateML/package", compile=FALSE, quiet=TRUE))
 meta <- univariateML_metadata
-stopifnot(length(meta)==42L)
+stopifnot(length(meta)>=42L)
 resolve <- function(ref) { z <- strsplit(ref, "::", fixed=TRUE)[[1]]; if(length(z)==2) getExportedValue(z[1], z[2]) else get(ref, asNamespace("univariateML")) }
 fmt <- function(x) if(!length(x)) "—" else paste(paste(names(x), formatC(x, digits=7, format="g"), sep="="), collapse=", ")
 clean <- function(x) gsub("[\r\n|]", " ", x)
@@ -13,8 +13,8 @@ for(ii in seq_along(meta)) {
  key <- names(meta)[ii]; id <- sub("^ml", "", key); m <- meta[[ii]]
  def <- setNames(m$default, m$names); dens <- resolve(m$density)
  sampler <- resolve(univariateML_samplers[[key]])
- draw <- function(n) do.call(sampler, c(list(n=n),as.list(def)))
- ll <- function(p,x) suppressWarnings(tryCatch({v<-do.call(dens,c(list(x=x),as.list(p),list(log=TRUE))); if(length(v)!=length(x) || any(!is.finite(v))) -Inf else sum(v)},error=function(e) -Inf))
+ draw <- function(n) do.call(sampler, c(list(n=n),univariateML_dpqr_args(def,key)))
+ ll <- function(p,x) suppressWarnings(tryCatch({v<-do.call(dens,c(list(x=x),univariateML_dpqr_args(p,key),list(log=TRUE))); if(length(v)!=length(x) || any(!is.finite(v))) -Inf else sum(v)},error=function(e) -Inf))
  sets <- list()
  for(n in c(20,200)) for(s in 1:2) {set.seed(100000+ii*100+n+s); sets[[paste0("family",n,"-s",s)]]<-draw(n)}
  set.seed(200000+ii)

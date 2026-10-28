@@ -73,6 +73,12 @@ check_control <- function(model) {
   formals(fn)
 }
 
+# " with `mean = mu`, `sd = sigma`" for models with an r.args map.
+args_clause <- function(model) {
+  if (is.null(model$args)) return("")
+  nl(" with ", and_list(paste(names(model$args), "=", model$args)))
+}
+
 gen_doc <- function(model) {
   fname <- paste0("ml", model$id)
   defaults <- check_control(model)
@@ -82,7 +88,7 @@ gen_doc <- function(model) {
 
   details <- c(
     nl("For the density function of the ", model$name, " distribution see ",
-       rd_link(model$density), "."),
+       rd_link(model$density), args_clause(model), "."),
     vapply(model$limits, limit_sentence, character(1), model = model),
     rd_math(s$details %||% character())
   )

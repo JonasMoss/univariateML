@@ -53,7 +53,7 @@ simulate_default <- function(dens, n) {
   }
   params <- univariateML_metadata[[dens]]$default
   names(params) <- univariateML_metadata[[dens]]$names
-  params["n"] <- n
+  params <- c(list(n = n), univariateML_dpqr_args(params, dens))
   rdist <- to_rdist(univariateML_metadata[[dens]]$density)
   parts <- strsplit(rdist, "::", fixed = TRUE)[[1]]
   fun <- if (length(parts) == 2L) {
@@ -62,7 +62,7 @@ simulate_default <- function(dens, n) {
     # Function lives in our own namespace.
     getExportedValue("univariateML", parts[1])
   }
-  do.call(fun, as.list(params))
+  do.call(fun, params)
 }
 
 #' One-dimensional Newton--Raphson

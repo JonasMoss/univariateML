@@ -1,7 +1,7 @@
 # Load per-distribution metadata for the R-side codegen and goldens from
 # distributions/<id>/README.md (YAML front matter + prose; schema:
 # distributions/README_SCHEMA.md). Returns a list of models sorted by id,
-# each with: id, name, support, params, density, sampler, control, limits,
+# each with: id, name, support, params, density, sampler, args, control, limits,
 # references, examples, sections.
 
 if (!requireNamespace("yaml", quietly = TRUE)) {
@@ -84,6 +84,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     params = params,
     density = f$r$density,
     sampler = f$r$sampler,
+    args = if (is.null(f$r$args)) NULL else unlist(f$r$args),
     control = f$r$control %||% list(),
     limits = f$limits %||% list(),
     references = unlist(f$references %||% list()),

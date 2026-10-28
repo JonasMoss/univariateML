@@ -52,10 +52,6 @@ for (folder in list.dirs(dist_dir, full.names = TRUE, recursive = FALSE)) {
   if (file.exists(adapter)) {
     file.copy(adapter, file.path(PKG_DIR, "src", paste0("dist_", id, ".cpp")))
   }
-  dpqr <- file.path(folder, "dpqr.R")
-  if (file.exists(dpqr)) {
-    file.copy(dpqr, file.path(PKG_DIR, "R", paste0("dist_", id, ".R")))
-  }
   test <- file.path(folder, "test.R")
   if (file.exists(test)) {
     file.copy(test, file.path(PKG_DIR, "tests", "testthat", paste0("test-dist-", id, ".R")))

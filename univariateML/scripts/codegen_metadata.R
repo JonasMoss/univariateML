@@ -1,5 +1,5 @@
 # Generate package/R/ml00_metadata.R (univariateML_metadata, generated_models,
-# univariateML_samplers) from the per-distribution metadata.
+# univariateML_samplers, univariateML_args) from the per-distribution metadata.
 # Run from univariateML/ via `just gen`.
 
 dist_dir <- Sys.getenv(
@@ -33,6 +33,20 @@ emit_params <- function(params) {
   )
 }
 
+emit_args <- function(models) {
+  with_args <- Filter(function(m) !is.null(m$args), models)
+  if (!length(with_args)) return(character())
+  entries <- vapply(with_args, function(m) {
+    for (coef in m$args) {
+      if (!coef %in% vapply(m$params, function(p) p$name, character(1))) {
+        stop("codegen_metadata: ", m$id, ": r.args maps to unknown coefficient ", coef)
+      }
+    }
+    line("  ml", m$id, " = c(", paste0(names(m$args), " = \"", m$args, "\"", collapse = ", "), ")")
+  }, character(1))
+  paste0(entries, c(rep(",", length(entries) - 1L), ""))
+}
+
 generated_names <- paste0("ml", names(models))
 samplers <- vapply(models, function(m) if (is.null(m$sampler)) NA_character_ else m$sampler,
                    character(1))
@@ -47,6 +61,12 @@ blocks <- c(
   "univariateML_samplers <- c(",
   paste0("  ", generated_names, " = \"", samplers, "\"",
          c(rep(",", length(samplers) - 1L), "")),
+  ")",
+  "",
+  "# Argument maps (reference-function argument = coefficient) from README r.args,",
+  "# for models whose d/p/q/r do not take the coefficient names.",
+  "univariateML_args <- list(",
+  emit_args(models),
   ")",
   "",
   "univariateML_metadata <- list()",

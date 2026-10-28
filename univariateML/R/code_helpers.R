@@ -106,6 +106,39 @@ ml_check_modify <- function(x, na.rm, name) {
   x
 }
 
+#' Name of the `ml***` function that produced a univariateML object.
+#'
+#' @param obj A univariateML object.
+#' @return A string such as `"mlnorm"`, or `NULL` if the model is unknown.
+#' @keywords internal
+
+univariateML_name <- function(obj) {
+  model <- attr(obj, "model")
+  models <- vapply(univariateML_metadata, function(m) m$model, character(1))
+  hit <- names(models)[models == model]
+  if (length(hit) == 1L) hit else NULL
+}
+
+#' Map estimates onto the arguments of the reference d/p/q/r functions.
+#'
+#' Most models pass their coefficients by name. A model whose reference
+#' functions use other argument names declares `r.args` in its `README.md`
+#' (argument name to coefficient name, collected in `univariateML_args`),
+#' e.g. the translated half-normal uses `extraDistr::dtnorm` with
+#' `mean = mu`, `sd = sigma`, `a = mu`.
+#'
+#' @param estimates Named numeric vector of coefficients.
+#' @param name Name of the `ml***` function, or `NULL`.
+#' @return A named list of argument values.
+#' @keywords internal
+
+univariateML_dpqr_args <- function(estimates, name) {
+  map <- if (is.null(name)) NULL else univariateML_args[[name]]
+  values <- stats::setNames(as.list(as.numeric(estimates)), names(estimates))
+  if (is.null(map)) return(values)
+  stats::setNames(lapply(unname(map), function(coef) values[[coef]]), names(map))
+}
+
 #' Transform a univariateML object to a string specifying quantile, CDF,
 #'     density or random variate generation.
 #'
@@ -131,7 +164,8 @@ univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
     substring(fname, first = 1, last = 1) <- type
     if (is.null(pkg)) fname else paste0(pkg, "::", fname)
   } else {
-    paste0(type, substring(fname, 2))
+    name <- univariateML_name(obj)
+    if (is.null(name)) paste0(type, substring(fname, 2)) else name
   }
 }
 
@@ -148,7 +182,8 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   string <- univariateML_to_string(obj, type = type)
   fun <- eval(parse(text = string))
   if (type %in% c("d", "p", "q", "r")) {
-    for (i in seq_along(obj)) formals(fun)[[names(obj)[i]]] <- unname(obj[i])
+    values <- univariateML_dpqr_args(obj, univariateML_name(obj))
+    for (arg in names(values)) formals(fun)[[arg]] <- values[[arg]]
   }
   fun
 }

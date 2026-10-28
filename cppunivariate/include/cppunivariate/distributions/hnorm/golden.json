@@ -3,13 +3,14 @@
   "name": "Translated Half-Normal",
   "n": 500,
   "seed": 12893,
-  "sampler": "rhalfnorm",
+  "sampler": "extraDistr::rtnorm",
   "sampler_args": {
-    "mu": 0,
-    "sigma": 1
+    "mean": 0,
+    "sd": 1,
+    "a": 0
   },
   "estimates": {
-    "mu": 0.0031322267741188494,
+    "mu": 0.003132226774118849,
     "sigma": 0.93986921362166298
   },
   "logLik": -331.88840240075291,
