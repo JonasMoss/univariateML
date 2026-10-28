@@ -1,6 +1,6 @@
 // Generalized Error Distribution (GED, symmetric) MLE on (mu, sigma, nu).
 //
-// Reparam phi = (mu, log sigma, log nu). Pure-libm log-density via
+// Fitting reparam phi = (mu, log sigma, log(nu - 1)). Pure-libm log-density via
 // log_dged_unit, so the standalone fit doesn't need Rmath.
 //
 // Density at (mu, sigma, nu): f(x) = (1/sigma) * f_unit((x-mu)/sigma; nu)
@@ -16,13 +16,15 @@
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
+#include <algorithm>
+#include <vector>
 #include <cmath>
 #include <cstddef>
 #include <limits>
 
 namespace cppunivariate {
 
-enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart };
+enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary };
 
 struct GedResult {
   double mu;
@@ -117,6 +119,19 @@ struct GedCost {
   }
 };
 
+// Keep the unconstrained Cost/Hessian coordinates for density diagnostics.
+// Fitting uses log(nu - 1), with the attained face compared separately.
+struct GedFitCost {
+  span x;
+  int dim() const { return 3; }
+  double operator()(const double *phi) const {
+    double q[3];
+    for (int i = 0; i < 3; ++i) q[i] = phi[i];
+    q[2] = std::log1p(std::exp(phi[2]));
+    return GedCost{x}(q);
+  }
+};
+
 inline GedResult ged_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -134,24 +149,40 @@ inline GedResult ged_mle(span x, double tol, int maxit) {
     return {kNaN, kNaN, kNaN, kNaN, 0, GedStatus::InvalidStart};
   }
 
-  GedCost cost{x};
-  finite_diff_cost<GedCost> fd{cost};
-  const double phi0[3] = {mean_x, cppunivariate::to_log(sd_x), cppunivariate::to_log(2.0)};
-
+  // Standardise before optimisation to make tolerances independent of units.
+  std::vector<double> z;
+  for (double v : x) z.push_back((v - mean_x) / sd_x);
+  std::sort(z.begin(), z.end());
+  const double dn = static_cast<double>(n);
+  const double tie = 1e-8 * dn; // total log-likelihood tie; attained wins.
+  const double c = z[n / 2];
+  double a = 0.0;
+  for (double v : z) a += std::abs(v - c) / dn;
+  GedResult best{c, std::sqrt(2.0) * a, 1.0,
+                 -dn * (std::log(2.0 * a) + 1.0), 0, GedStatus::Ok};
+  GedFitCost cost{span{z.data(), z.size()}};
+  finite_diff_cost<GedFitCost> fd{cost};
   BfgsControl ctl;
   ctl.grad_tol = tol;
   ctl.maxit = maxit;
-  auto r = bfgs_minimize(fd, phi0, ctl);
-
-  const double mu = r.theta[0];
-  const double sigma = cppunivariate::from_log(r.theta[1]);
-  const double nu = cppunivariate::from_log(r.theta[2]);
-  const double logLik = -r.f;
-
-  if (r.status != BfgsStatus::Ok) {
-    return {mu, sigma, nu, logLik, r.iterations, GedStatus::BfgsFailure};
+  for (double nu0 : {1.5, 2.0, 4.0, 8.0}) {
+    const double phi0[3] = {0.0, 0.0, std::log(nu0 - 1.0)};
+    auto r = bfgs_minimize(fd, phi0, ctl);
+    if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
+      best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
+              -r.f, r.iterations,
+              r.status == BfgsStatus::Ok ? GedStatus::Ok : GedStatus::BfgsFailure};
+    }
   }
-  return {mu, sigma, nu, logLik, r.iterations, GedStatus::Ok};
+  const double uniform = -dn * std::log(z.back() - z.front());
+  if (uniform > best.logLik + tie) {
+    best.logLik = uniform;
+    best.status = GedStatus::UniformBoundary;
+  }
+  best.mu = mean_x + sd_x * best.mu;
+  best.sigma *= sd_x;
+  best.logLik -= dn * std::log(sd_x);
+  return best;
 }
 
 }  // namespace cppunivariate

@@ -52,3 +52,33 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+# Decision D6: attained Laplace, uniform and constrained interior oracle.
+expect_error(mlged(seq(-1, 1, length.out = 40)), "Use `mlunif`")
+x <- c(seq(-.02, .02, length.out = 18), -10, 10)
+f <- mlged(x)
+expect_equal(unname(f["nu"]), 1)
+expect_equal(attr(f, "logLik"), sum(fGarch::dged(x, mean=f[1], sd=f[2], nu=1, log=TRUE)))
+a <- mean(abs(x-median(x)))
+expect_equal(attr(f, "logLik"), -length(x)*(log(2*a)+1))
+
+set.seed(812)
+for (shape in c(1.5, 3)) {
+  x <- fGarch::rged(500, nu=shape)
+  f <- mlged(x, gradtol=1e-6, iterlim=1000)
+  expect_gt(unname(f["nu"]), 1)
+  objective <- function(p) {
+    nu <- 1+exp(p[3])
+    lambda <- exp((-2/nu*log(2)+lgamma(1/nu)-lgamma(3/nu))/2)
+    z <- (x-p[1])/exp(p[2])
+    factor <- -p[2]
+    value <- -sum(factor+log(nu)-log(lambda)-(1+1/nu)*log(2)-
+                    lgamma(1/nu)-.5*(abs(z)/lambda)^nu)
+    if (is.finite(value)) value else 1e100
+  }
+  values <- sapply(c(1.1,1.5,2,4,8), function(nu) {
+    optim(c(mean(x), log(sd(x)), log(nu-1)), objective,
+          method="Nelder-Mead", control=list(maxit=10000, reltol=1e-11))$value
+  })
+  expect_gte(attr(f,"logLik") + 1e-4, -min(values))
+}

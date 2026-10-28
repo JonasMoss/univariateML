@@ -13,6 +13,9 @@ Rcpp::List mlged_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
     Rcpp::stop("GED MLE requires at least 2 finite observations with positive "
                "variance.");
   }
+  if (res.status == cppunivariate::GedStatus::UniformBoundary) {
+    Rcpp::stop("GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.");
+  }
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
       !std::isfinite(res.nu)) {
     Rcpp::stop("GED MLE failed to converge (check inputs)");

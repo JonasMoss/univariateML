@@ -22,6 +22,10 @@ for (dens in densities) {
     expect_error(mlsnorm(x), "translated half-normal.*MLE does not exist")
     x <- simulate_default(dens, 500)
   }
+  if (dens %in% c("mlged", "mlsged")) {
+    set.seed(812)
+    x <- fGarch::rged(500, nu = 1.5)
+  }
   object <- do.call(dens, list(x))
   density <- univariateML_to_function(object, "d")
   expect_equal(sum(density(x, log = TRUE)), attr(object, "logLik"))
