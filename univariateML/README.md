@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# univariateML <img src="man/figures/logo.png" align="right" width="100" height="70" />
+# univariateML <img src="man/figures/logo.png" align="right" height="139" alt="univariateML logo" />
 
 [![R-CMD-check](https://github.com/JonasMoss/univariateML/workflows/R-CMD-check/badge.svg)](https://github.com/JonasMoss/univariateML/actions)
 [![Codecov test
