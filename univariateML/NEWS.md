@@ -18,6 +18,11 @@
   that read `coef(mlparalogis(x))["shape"]` continues to work; an
   additional `scale` element now appears.
 
+* `mlburr()`, `mlinvburr()` and `mlbetapr()` now also estimate `scale`
+  (previously fixed at 1), like `mlparalogis()`. They stop with a pointer
+  to the limit model (e.g. `mlweibull`, `mlpareto`, `mlgamma`) when the
+  three-parameter MLE does not exist.
+
 * `mlinvgamma()`'s coefficient names are unchanged (`alpha`, `beta`)
   and continue to match `extraDistr::dinvgamma`.
 
