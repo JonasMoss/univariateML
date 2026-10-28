@@ -78,6 +78,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | unif       | Uniform                 | min, max           | stats::dunif              | (-∞, ∞) open     |
 | weibull    | Weibull                 | shape, scale       | stats::dweibull           | (0, ∞) open      |
 | zip        | Zero-inflated Poisson   | lambda, pi         | extraDistr::dzip          | [0, ∞) integer   |
+| zinb       | Zero-inflated negative binomial | size, prob, pi | extraDistr::dzinb | [0, Inf) integer |
 | zipf       | Zipf                    | N, s               | sads::dzipf               | [1, ∞) integer   |
 
 [†] **Drift**: historic c0b9949 fitted only `shape` with rate fixed at
