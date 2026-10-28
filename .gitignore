@@ -85,3 +85,6 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+
+# Built LaTeX notes (sources are tracked, PDFs are build artifacts)
+notes/*.pdf

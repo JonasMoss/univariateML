@@ -40,15 +40,15 @@ gen: sync-headers
 	cd univariateML/package && Rscript -e "Rcpp::compileAttributes()"
 
 regen: gen
-	cd univariateML/package && Rscript -e "devtools::document()"
+	cd univariateML/package && Rscript -e "roxygen2::roxygenise()"
 
 test: regen
 	cd univariateML/package && \
 	  UMVL_GOLDEN_DIR={{repo_root}}/quality/golden \
-	  Rscript -e "suppressMessages(devtools::load_all('.')); devtools::test(filter=NULL)"
+	  Rscript -e "testthat::test_local('.', stop_on_failure = TRUE)"
 
 check: regen
-	cd univariateML/package && Rscript -e "devtools::check(document = FALSE, run_dont_test = FALSE)"
+	cd univariateML/package && R CMD build --no-build-vignettes . && R CMD check --no-manual --ignore-vignettes univariateML_*.tar.gz
 
 # Regenerate quality/golden/*.json from the current R/C++ pipeline.
 # Run only when intentionally accepting a new baseline (e.g. algorithm
@@ -88,3 +88,49 @@ derive id:
 
 validate id: cpp-test
 	PYTHONPATH={{repo_root}} python3 -m quality.harness validate {{id}}
+
+# --- LaTeX research notes (notes/) ---
+notes_dir := "notes"
+
+# Build one note (named, or the most recently edited) and open the PDF.
+note-build name="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    dir="{{notes_dir}}"
+    if [ -n "{{name}}" ]; then
+        tex="$dir/$(basename "{{name}}" .tex).tex"
+    else
+        tex="$(ls -t "$dir"/*.tex 2>/dev/null | head -1 || true)"
+    fi
+    [ -n "${tex:-}" ] && [ -f "$tex" ] || { echo "no .tex note found in $dir"; exit 1; }
+    base="$(basename "$tex" .tex)"
+    cd "$dir"
+    pdflatex -interaction=nonstopmode -halt-on-error "$base.tex" >/dev/null
+    pdflatex -interaction=nonstopmode -halt-on-error "$base.tex" >/dev/null
+    rm -f "$base".{aux,log,out,toc}
+    if command -v xdg-open >/dev/null 2>&1; then opener=xdg-open; else opener=open; fi
+    if command -v setsid >/dev/null 2>&1; then
+        setsid "$opener" "$base.pdf" >/dev/null 2>&1 < /dev/null &
+    else
+        "$opener" "$base.pdf" >/dev/null 2>&1 &
+    fi
+    echo "built and opened $dir/$base.pdf"
+
+# Rebuild every note (no viewer); report any that fail to compile.
+note-build-all:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    dir="{{notes_dir}}"
+    fail=0
+    shopt -s nullglob
+    for tex in "$dir"/*.tex; do
+        base="$(basename "$tex" .tex)"
+        if ( cd "$dir" && pdflatex -interaction=nonstopmode -halt-on-error "$base.tex" >/dev/null 2>&1 \
+                       && pdflatex -interaction=nonstopmode -halt-on-error "$base.tex" >/dev/null 2>&1 ); then
+            ( cd "$dir" && rm -f "$base".{aux,log,out,toc} )
+            echo "ok   $base"
+        else
+            echo "FAIL $base"; fail=1
+        fi
+    done
+    exit $fail

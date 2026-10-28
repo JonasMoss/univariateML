@@ -1,0 +1,232 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,array}
+\usepackage{hyperref}
+
+\title{ML behaviour of the univariateML estimators:\\ Hellinger closure, escapes, and what the fitters do}
+\author{}
+\date{\today}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\vech}{\operatorname{vech}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\plim}{\operatorname*{plim}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\begin{document}
+\maketitle
+
+\section*{Purpose}
+
+Which of the 42 families are not Hellinger-closed, where the maximum
+likelihood estimator (MLE) escapes to a limit model outside the family, and
+what the current fitters do in those cases. This is a first pass (October
+2026): the classification comes from short limit arguments plus probe fits
+(\code{notes/ml-behaviour-probe.R}), not from proofs. Each row says how firm
+it is. The note will be expanded; the per-distribution conclusions are meant
+to end up in each distribution's own file.
+
+Main findings.
+\begin{enumerate}
+  \item Five families escape with an existing ``use \code{mlX}'' message:
+    lomax, gompertz, nbinom, binom, burr.
+  \item Five families escape \emph{silently} and return a huge parameter:
+    std, ged, snorm, sstd, sged. For sstd the returned point has a lower
+    likelihood than the limit model, so it is not even a near-maximiser.
+  \item invburr escapes to the power distribution and fails with a generic
+    error; it is the mirror image of the burr case.
+  \item Two bugs: burr crashes with a raw Boost pole error on nearly-Pareto
+    data, and Boost.Math exceptions can leak through cppunivariate.
+\end{enumerate}
+
+\section{Definitions}
+
+\begin{definition}
+For densities $f,g$ with respect to a common measure,
+\[
+  H^2(f,g) = \tfrac12 \int \bigl(\sqrt f - \sqrt g\bigr)^2 .
+\]
+A family $\cF$ is \emph{Hellinger-closed} if every Hellinger limit of a
+sequence in $\cF$ is either in $\cF$ or a point mass.
+\end{definition}
+
+\begin{definition}
+For a sample $x_1,\dots,x_n$ the MLE \emph{escapes} if
+$\sup_\theta \ell_n(\theta)$ is not attained and every maximising sequence
+$\theta_k$ has $f_{\theta_k}$ converging to some $g \in \bar\cF \setminus \cF$.
+We call $g$ (with its own parameters fitted) the \emph{limit model}.
+\end{definition}
+
+\begin{remark}
+Point masses are excluded because they are approached only for degenerate
+samples (all observations equal, or all equal to a support endpoint). Escape
+needs a non-closed family, but non-closure does not imply escape: invgauss
+is not closed, yet its MLE always exists (Section~\ref{sec:exists}). In
+every escape observed so far, $\sup_\theta \ell_n(\theta)$ equals the
+maximised log-likelihood of the limit model. The fitter should therefore
+either report the escape and name the limit model, or return the limit fit.
+Which of the two is a policy decision that is still open.
+\end{remark}
+
+\section{Classification}
+
+Abbreviations in the ``firm'' column: \emph{code} = condition implemented
+and tested in the fitter; \emph{arg} = short limit argument in this note;
+\emph{probe} = observed in a probe fit; \emph{conj} = conjecture.
+
+\subsection{Escape, already caught with a pointer to the limit model}
+
+\begin{center}
+\small
+\begin{tabular}{@{}l p{4.0cm} p{2.6cm} p{4.4cm} l@{}}
+\toprule
+id & escape & limit model & detection today & firm \\
+\midrule
+lomax & $\kappa\to\infty$, $\lambda\kappa$ fixed & exponential \cite{kk2003} &
+  $\overline{x^2} < 2\bar x^2$; status \code{MeanVarianceCondition} & code \\
+gompertz & $b \to 0$ & exponential & status \code{Overdispersed} & code, probe \\
+nbinom & size $\to\infty$, mean fixed & Poisson &
+  underdispersion check in the Rcpp adapter only & code \\
+binom & size $\to\infty$, mean fixed & Poisson & status; message names \code{mlpois} & code \\
+burr & $c\to\infty$, $ck=\alpha$ fixed & Pareto on $[1,\infty)$ &
+  all $x_i \ge 1$; check in C++ and duplicated in the adapter & code, arg \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{burr (no scale parameter).} $S(x) = (1+x^c)^{-k}$. With
+$ck = \alpha$ fixed and $c\to\infty$, $S(x) = \exp\{-k\log(1+x^c)\} \to
+x^{-\alpha}$ for $x>1$ and $S(x)\to 1$ for $x<1$: the Pareto law with
+minimum $1$. All $x_i \ge 1$ is sufficient for escape; whether it is
+necessary is open.
+
+\subsection{Escape, not detected (silent)}
+
+\begin{center}
+\small
+\begin{tabular}{@{}l p{3.4cm} p{3.2cm} p{5.4cm} l@{}}
+\toprule
+id & escape & limit model & probe result & firm \\
+\midrule
+std & $\nu\to\infty$ & normal &
+  normal data, $n=200$: $\hat\nu = 54874$, $\ell$ $2\times10^{-4}$ below
+  \code{mlnorm}; at $n=30$ $\hat\nu = 9$ (finite) & arg, probe \\
+ged & $\nu\to\infty$ & uniform on $[\mu\pm\sqrt3\,\sigma]$ &
+  uniform data: $\hat\nu = 2.6\times10^{8}$, $\ell$ equal to \code{mlunif} & arg, probe \\
+snorm & $\xi\to 0$ or $\infty$ & half-normal (standardised) &
+  exponential data: $\hat\xi = 7.4\times10^{10}$ & probe \\
+sstd & $\nu\to\infty$; $\xi\to0,\infty$ & snorm; half-$t$ &
+  normal data: $\hat\nu = 343$, $\ell$ $0.075$ \emph{below} \code{mlsnorm} & probe \\
+sged & $\nu\to\infty$; $\xi\to0,\infty$ & two-piece uniform; half-GED &
+  uniform data: $\hat\nu = 2\times10^{5}$, $\hat\xi = 0.065$ & probe \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The ged limit: the unit-variance GED density converges to the uniform
+density with the same variance, and a uniform on $[-a,a]$ has variance
+$a^2/3$, so $a = \sqrt3\,\sigma$. The skew families use the
+Fern\'andez--Steel construction \cite{fs1998}; as $\xi\to\infty$ (or $0$)
+all mass moves to one side of the mode, which gives the half-distributions.
+
+The std escape happens with positive probability, not always (finite
+$\hat\nu$ at $n=30$). Unlike lomax, no moment condition for it is known
+here; detection probably has to compare against the limit fit.
+
+\subsection{Escape, generic error}
+
+\paragraph{invburr (no scale parameter).} $F(x) =
+\bigl(x^\gamma/(1+x^\gamma)\bigr)^\tau$, and $X \sim
+\text{invburr}(\tau,\gamma)$ iff $1/X \sim \text{burr}(c=\gamma,k=\tau)$.
+With $\gamma\tau = \alpha$ fixed and $\gamma\to\infty$, $F(x)\to x^\alpha$
+on $(0,1]$ and $F(x)\to 1$ for $x>1$: the power distribution on $(0,1]$,
+the image of the burr limit under $x\mapsto 1/x$. Probe: all $x_i \le 1$
+gives ``Inverse Burr MLE failed''. Firm: arg, probe. Expected fix: an
+\code{AllLeOne} status whose message names \code{mlpower}, mirroring burr.
+
+\subsection{Not closed, but the MLE always exists}\label{sec:exists}
+
+\paragraph{invgauss.} As the mean $\mu\to\infty$ with shape fixed, the
+inverse Gaussian converges to the L\'evy distribution. The MLE
+$\hat\mu = \bar x$ is always finite, so there is no escape. Probe on L\'evy
+data: $\hat\mu = 1663$, finite but meaningless.
+
+\subsection{MLE on the boundary of the parameter space}
+
+These are not escapes (the boundary point is in the family) but deserve a
+line of documentation.
+\begin{itemize}
+  \item zip: $\hat\pi = 0$ (the Poisson fit) when the data have fewer zeros
+    than the Poisson predicts. Probe agrees with \code{mlpois}.
+  \item zipf: $\hat s < 0$ is rejected with status \code{ShapeNegative};
+    the boundary $s = 0$ is the uniform law on $\{1,\dots,N\}$.
+  \item naka: the probe returned $\hat m = 0.275 < 1/2$. The usual
+    Nakagami definition requires $m \ge 1/2$; decide which convention we use.
+  \item unif, dunif, pareto, power: the MLE sits at an order statistic.
+\end{itemize}
+
+\subsection{Closed apart from point masses}
+
+norm, lnorm, logitnorm, exp, rayleigh, pois, geom, lgser, gamma, lgamma,
+invgamma, weibull, invweibull, gumbel, logis, llogis, laplace, cauchy, beta,
+betapr, paralogis (arg, not probed). Unclear: kumar failed with ``MLE
+failed'' on data piled up near $0$ and $1$ (may be numerics); fatigue
+lists a location $\mu$ in its metadata, check whether it is estimated.
+
+\section{Bugs found}
+
+\begin{enumerate}
+  \item \textbf{burr crash.} 199 observations $\ge 1$ plus one at $0.99$:
+    the fit dies with a raw Boost error (\code{digamma} evaluated at its
+    pole $0$).
+  \item \textbf{Boost exceptions leak.} cppunivariate itself has no
+    \code{throw}, \code{try} or \code{catch}, but Boost.Math's default
+    error policy throws, which is how bug~1 reached R. Seven
+    \code{dpqr.hpp} files also include Boost directly instead of going
+    through \code{special/special.hpp}. Fix: a no-throw policy at that seam.
+  \item \textbf{Detection lives in the R adapter.} The nbinom
+    underdispersion check exists only in \code{ml\_exports.cpp}, so a
+    Python shell would silently lose it.
+\end{enumerate}
+
+\section{Open questions}
+
+\begin{enumerate}
+  \item Escape policy: report the escape (status plus a message naming the
+    limit model, as lomax does) or return the limit fit?
+  \item Exact escape conditions for std, ged and the skew family, and a
+    cheap detection rule (literature search planned).
+  \item Is ``all $x_i\ge 1$'' necessary for the burr escape?
+  \item A systematic sweep of all 42 families against a slow reference
+    optimiser, including data drawn from each limit model.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+
+\bibitem{fs1998} Fern\'andez, C. and Steel, M. F. J. (1998). On Bayesian
+modeling of fat tails and skewness. \emph{Journal of the American
+Statistical Association}, 93(441), 359--371.
+
+\bibitem{kk2003} Kleiber, C. and Kotz, S. (2003). \emph{Statistical Size
+Distributions in Economics and Actuarial Sciences}. Wiley.
+
+\end{thebibliography}
+
+\end{document}
