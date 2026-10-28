@@ -1,0 +1,38 @@
+test_that("translated half-normal closed form agrees with density oracle", {
+  set.seed(73)
+  x <- rhalfnorm(200, -3, 2)
+  fit <- mlhnorm(x)
+  mu <- min(x)
+  oracle <- optimize(function(s) -sum(dhalfnorm(x, mu, s, log = TRUE)),
+                     c(0.01, 20), tol = 1e-10)
+  expect_equal(unname(coef(fit)), c(mu, sqrt(mean((x-mu)^2))), tolerance = 1e-12)
+  expect_equal(unname(fit[2]), oracle$minimum, tolerance = 1e-7)
+  expect_equal(attr(fit, "logLik"), -oracle$objective, tolerance = 1e-12)
+  expect_lt(sum(dhalfnorm(x, mu - 0.01, fit[2], log = TRUE)), attr(fit, "logLik"))
+  expect_equal(coef(mlhnorm(c(x, NA), na.rm = TRUE)), coef(fit))
+  expect_error(mlhnorm(1), "at least two observations with distinct values")
+  expect_error(mlhnorm(rep(2, 4)), "degenerate data")
+  expect_error(mlhnorm(c(x, NA)))
+  expect_error(mlhnorm(c(x, Inf)))
+  expect_error(mlhnorm(x, iterlim = 10))
+})
+test_that("translated half-normal d/p/q/r and fitted dispatch work", {
+  u <- c(0.001, 0.1, 0.5, 0.9, 0.999)
+  for (lower in c(TRUE, FALSE)) for (logs in c(TRUE, FALSE)) {
+    p <- if (logs) log(u) else u
+    expect_equal(phalfnorm(qhalfnorm(p, -4, 2, lower, logs), -4, 2, lower), u)
+  }
+  expect_equal(integrate(dhalfnorm, -4, Inf, mu = -4, sigma = 2)$value, 1)
+  expect_equal(dhalfnorm(-5, -4, 2), 0)
+  expect_gt(dhalfnorm(-4, -4, 2), 0)
+  expect_true(all(rhalfnorm(500, -4, 2) >= -4))
+  expect_length(rhalfnorm(1:3), 3)
+  fit <- mlhnorm(c(-4, -3, 0, 2))
+  expect_equal(dml(u, fit), dhalfnorm(u, fit[1], fit[2]))
+  expect_equal(pml(u, fit), phalfnorm(u, fit[1], fit[2]))
+  expect_equal(qml(u, fit), qhalfnorm(u, fit[1], fit[2]))
+  set.seed(9); actual <- rml(50, fit)
+  set.seed(9); expect_equal(actual, rhalfnorm(50, fit[1], fit[2]))
+  expect_true(all(actual >= fit[1]))
+  expect_length(simulate_default("mlhnorm", 10), 10)
+})

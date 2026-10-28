@@ -33,6 +33,7 @@
 #include "distributions/geom/mle.hpp"
 #include "distributions/gompertz/mle.hpp"
 #include "distributions/gumbel/mle.hpp"
+#include "distributions/hnorm/mle.hpp"
 #include "distributions/invburr/mle.hpp"
 #include "distributions/invgamma/mle.hpp"
 #include "distributions/invgauss/mle.hpp"
