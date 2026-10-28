@@ -45,6 +45,10 @@ Write math as `$...$` / `$$...$$`; the R codegen turns it into
 `\eqn{}` / `\deqn{}`. Use backticks for code. Do not restate the density,
 parameter tables, moments or the algorithm.
 
+A limit may additionally declare `fixed: [name, ...]`: it applies only
+when those parameters are held fixed. Limits without `fixed` describe the
+all-free fit; each fixed subset must document which escapes remain.
+
 ## Optional parameter keys
 
 Optional keys in each `params` entry:

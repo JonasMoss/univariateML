@@ -4,6 +4,8 @@
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
 #include "../gamma/mle.hpp"
+#include "../beta/mle.hpp"
+#include <vector>
 #include "../invgamma/mle.hpp"
 #include <cmath>
 #include <cstddef>
@@ -89,6 +91,35 @@ struct BetaPrimeLogCost {
     for (double v : x) g[2] += a - (a + b) * (v / (scale + v));
   }
 };
+
+// Fixed scale: the parameter-independent transformation Y=X/(s+X)
+// gives the ordinary beta likelihood. Nonconstant interior observations
+// have a unique finite beta MLE; no gamma or inverse-gamma face remains.
+inline BetaPrimeResult betapr_mle_fixed_scale(
+    span x, double scale, double tol = 1e-6, int maxit = 1000) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (!(scale > 0) || !std::isfinite(scale) || x.size() < 2)
+    return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
+  std::vector<double> y;
+  bool different = false;
+  double lx = 0, l1p = 0;
+  for (double v : x) {
+    if (!(v > 0) || !std::isfinite(v))
+      return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
+    different = different || v != x[0];
+    const double z = v / scale;
+    y.push_back(z / (1 + z));
+    lx += std::log(z);
+    l1p += std::log1p(z);
+  }
+  if (!different)
+    return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
+  const auto r = beta_mle(span{y.data(), y.size()}, tol, maxit);
+  const double ll = (r.alpha-1)*lx - (r.alpha+r.beta)*l1p -
+      x.size()*(special::lbeta(r.alpha,r.beta)+std::log(scale));
+  return {r.alpha,r.beta,scale,ll,r.iterations,
+      std::isfinite(ll) ? BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
+}
 
 inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,
                                   double shape1 = 0.0, double shape2 = 0.0,

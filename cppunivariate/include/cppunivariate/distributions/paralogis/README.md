@@ -4,14 +4,14 @@ name: Paralogistic
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
   - {name: shape, role: shape, domain: "(0, inf)", default: 1}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1}
+  - {name: scale, role: scale, domain: "(0, inf)", default: 1, fixable: true}
 r:
   density: actuar::dparalogis
   sampler: actuar::rparalogis
   control:
     shape0: Optional starting value for `shape`; `NULL` uses `max(1.5, 2 / sd(log(x / median(x))))`.
-    gradtol: Convergence tolerance on the norm of the finite-difference gradient of the negative log-likelihood.
-    iterlim: Maximum number of BFGS iterations.
+    gradtol: Gradient tolerance for the free fit; with fixed scale, tolerance on the mean shape score in log coordinates (at most 1e-10).
+    iterlim: Maximum number of BFGS or fixed-scale Newton iterations.
 log_density: 2*log(shape) + shape*log(x/scale) - log(x) - (shape + 1)*log(1 + (x/scale)^shape)
 references:
   - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
@@ -27,3 +27,8 @@ shape parameters equal. It is used for size and loss data.
 
 Both `shape` and `scale` are estimated. univariateML 1.x estimated only the
 shape, with the scale held at 1.
+
+Supply `scale` to hold it at a positive finite value. With scale fixed,
+there are no nondegenerate limit-model escapes.
+The fixed-scale likelihood tends to minus infinity as shape tends to zero
+or infinity, including for constant data, so a finite maximum exists.

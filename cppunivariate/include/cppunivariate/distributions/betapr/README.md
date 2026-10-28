@@ -5,12 +5,12 @@ support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
   - {name: shape1, role: shape, domain: "(0, inf)", default: 2.0}
   - {name: shape2, role: shape, domain: "(0, inf)", default: 3.0}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1.0}
+  - {name: scale, role: scale, domain: "(0, inf)", default: 1.0, fixable: true}
 r:
   density: extraDistr::dbetapr
   sampler: extraDistr::rbetapr
   control:
-    gradtol: Tolerance on the norm of the total negative log-likelihood gradient in log coordinates.
+    gradtol: Tolerance on the total gradient norm in log coordinates; with fixed scale, relative Newton step tolerance on log(shape2).
     reltol: Relative objective tolerance.
     abstol: Step tolerance in log coordinates.
     shape10: Optional positive starting value for shape1 (zero selects automatic starts).
@@ -33,3 +33,13 @@ The beta prime distribution models positive ratios.
 ## Details
 
 univariateML 1.x estimated only the shapes, with the scale fixed at 1.
+
+Supply `scale` to hold it at a positive finite value. With scale fixed,
+there are no nondegenerate limit-model escapes.
+For positive finite nonconstant data the fixed-scale MLE exists uniquely,
+by the beta transformation $y=x/(s+x)$. Constant data have an unbounded
+likelihood as both shapes grow with their ratio fixed.
+With scale held, sending only shape2 to infinity collapses the distribution
+at zero; sending only shape1 to infinity sends its mass to infinity.
+Sending both shapes to infinity with a finite positive ratio gives a point
+mass, rather than a gamma or inverse-gamma distribution.

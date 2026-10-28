@@ -33,3 +33,36 @@ expect_error(mlparalogis(medium_data, shape0 = 0), "`shape0` must be a positive 
 expect_error(mlparalogis(c(small_data, NA)))
 expect_error(mlparalogis(c(-1, small_data)))
 expect_equal(attr(mlparalogis(small_data), "model"), "Paralogistic")
+
+
+test_that("fixed scale agrees with reference-density oracle and records df", {
+  for (s in c(.2, 1, 7)) {
+    x <- c(.03, .1, .4, .7, 1, 2, 4, 12) * s
+    fit <- mlparalogis(x, scale=s)
+    objective <- function(p) -sum(actuar::dparalogis(x, exp(p[1]), scale=s, log=TRUE))
+    oracle <- optim(0, objective, method="BFGS",
+                    control=list(reltol=1e-13, maxit=3000))
+    expect_equal(attr(fit, "logLik"), -oracle$value, tolerance=1e-9)
+    expect_equal(as.numeric(fit[seq_len(1)]), exp(oracle$par), tolerance=2e-5)
+    expect_identical(attr(fit, "fixed"), "scale")
+    expect_equal(attr(logLik(fit), "df"), 1)
+    expect_identical(as.numeric(fit["scale"]), s)
+    expect_equal(AIC(fit), -2*attr(fit,"logLik")+2*1)
+    for (bad in c(0, -1, Inf, NaN))
+      expect_error(mlparalogis(x, scale=bad), "scale.*positive finite")
+  }
+})
+
+test_that("fixed unit scale reproduces the historical golden", {
+  root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  g <- jsonlite::fromJSON(file.path(root, "paralogis", "fixed-scale-golden.json"))
+  fit <- mlparalogis(g$data, scale=1)
+  expect_equal(as.numeric(fit[seq_along(g$estimates)]),
+               as.numeric(unlist(g$estimates)), tolerance=1e-9)
+  expect_equal(attr(fit,"logLik"), g$logLik, tolerance=1e-10)
+})
+
+test_that("fixed-scale paralogistic fits even constant observations", {
+  fit <- mlparalogis(rep(3,10),scale=3)
+  expect_equal(as.numeric(fit[1]), 2/log(2), tolerance=1e-9)
+})
