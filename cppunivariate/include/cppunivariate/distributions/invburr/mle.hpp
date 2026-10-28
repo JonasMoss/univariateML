@@ -13,11 +13,14 @@
 
 namespace cppunivariate {
 
+enum class InvBurrStatus { Ok = 0, AllLeOne, InvalidInit, IterationFailure };
+
 struct InvBurrResult {
   double shape1;
   double shape2;
   double logLik;
   int iterations;
+  InvBurrStatus status;
 };
 
 // Negative log-likelihood of Inverse Burr (shape1=k, shape2=c) with scale=1:
@@ -81,7 +84,16 @@ struct InvBurrCost {
 inline InvBurrResult invburr_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0};
+  if (n == 0) return {0.0, 0.0, kNaN, 0, InvBurrStatus::InvalidInit};
+
+  bool all_le_one = true;
+  for (auto v : x) {
+    if (!(v > 0.0) || !std::isfinite(v) || !std::isfinite(1.0 / v))
+      return {kNaN, kNaN, kNaN, 0, InvBurrStatus::InvalidInit};
+    if (v > 1.0) all_le_one = false;
+  }
+  if (all_le_one)
+    return {kNaN, kNaN, kNaN, 0, InvBurrStatus::AllLeOne};
 
   std::vector<double> invx(n);
   double sum_log_invx = 0.0;
@@ -100,25 +112,20 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit) {
 
   BurrLmomResult init = burr_lmom_core(m1, m2, true);
   if (!std::isfinite(init.c) || init.c <= 0.0) {
-    return {kNaN, kNaN, kNaN, 0};
+    return {kNaN, kNaN, kNaN, 0, InvBurrStatus::InvalidInit};
   }
   BurrMLE res = burr_mle_core(span{invx.data(), n}, init.c, tol, maxit);
   if (res.status != BurrStatus::Ok) {
-    return {kNaN, kNaN, kNaN, res.iterations};
+    return {kNaN, kNaN, kNaN, res.iterations, InvBurrStatus::IterationFailure};
   }
 
   const double shape1 = res.shape1;
   const double shape2 = res.shape2;
-  double sum_log_x = 0.0;
-  double sum_log1p = 0.0;
-  for (auto v : x) {
-    sum_log_x += std::log(v);
-    sum_log1p += std::log1p(std::pow(v, -shape2));
-  }
-  const double logLik = dn * (std::log(shape1) + std::log(shape2)) -
-                        (shape2 + 1.0) * sum_log_x -
-                        (shape1 + 1.0) * sum_log1p;
-  return {shape1, shape2, logLik, res.iterations};
+  // Change-of-variables Jacobian; reuse the checked Burr likelihood.
+  const double logLik = res.logLik + 2.0 * sum_log_invx;
+  if (!std::isfinite(logLik))
+    return {kNaN, kNaN, kNaN, res.iterations, InvBurrStatus::IterationFailure};
+  return {shape1, shape2, logLik, res.iterations, InvBurrStatus::Ok};
 }
 
 }  // namespace cppunivariate

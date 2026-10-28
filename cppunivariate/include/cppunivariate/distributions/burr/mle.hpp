@@ -143,6 +143,8 @@ inline RootResult invert_lower_logit(double cv, double tol, int maxit) {
   int iter = 0;
   for (; iter < maxit; ++iter) {
     const double k = logistic(x);
+    if (!std::isfinite(k) || k < 1e-100)
+      return {std::numeric_limits<double>::quiet_NaN(), iter + 1};
     const double di = cppunivariate::special::digamma(k);
     const double tri = cppunivariate::special::trigamma(k);
     const double tetra = cppunivariate::special::tetragamma(k);
@@ -188,6 +190,8 @@ inline RootResult invert_lower_log(double cv, double tol, int maxit) {
   int iter = 0;
   for (; iter < maxit; ++iter) {
     const double k = std::exp(p);
+    if (!std::isfinite(k) || k < 1e-100)
+      return {std::numeric_limits<double>::quiet_NaN(), iter + 1};
     const double di = cppunivariate::special::digamma(k);
     const double tri = cppunivariate::special::trigamma(k);
     const double tetra = cppunivariate::special::tetragamma(k);
@@ -226,6 +230,8 @@ inline RootResult invert_upper(double cv, double tol, int maxit) {
   int iter = 0;
   for (; iter < maxit; ++iter) {
     const double kk = std::exp(x) + 1.0;
+    if (!std::isfinite(kk) || kk < 1e-100)
+      return {std::numeric_limits<double>::quiet_NaN(), iter + 1};
     const double di = cppunivariate::special::digamma(kk);
     const double tri = cppunivariate::special::trigamma(kk);
     const double tetra = cppunivariate::special::tetragamma(kk);
@@ -264,6 +270,10 @@ inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
 
   if (sigma2 > 0.0 && std::abs(mu) >= kEps) {
     const double cv = (mu * mu) / sigma2;
+    // For k in (0,1), the moment ratio ranges strictly between 0 and 1.
+    // Outside that range Newton has no root and can underflow k to zero.
+    if (!std::isfinite(cv) || (mu > 0.0 && cv >= 1.0))
+      return {kNaN, kNaN, 0};
     RootResult root = (mu > 0.0)
         ? (use_logit_lower
                ? detail::invert_lower_logit(cv, tol_default, maxit_default)
@@ -272,6 +282,8 @@ inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
     k_hat = root.k;
     iter = root.iterations;
 
+    if (!std::isfinite(k_hat) || k_hat < 1e-100)
+      return {kNaN, kNaN, iter};
     const double t1 = cppunivariate::special::trigamma(k_hat);
     const double csq = (BASEL_CST + t1) / sigma2;
     if (csq > 0.0) c_hat = std::sqrt(csq);
@@ -290,6 +302,10 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
   const double nd = static_cast<double>(n);
   if (n == 0) return {0.0, 0.0, kNaN, 0, BurrStatus::InvalidInit};
 
+  for (auto v : x) {
+    if (!(v > 0.0) || !std::isfinite(v))
+      return {kNaN, kNaN, kNaN, 0, BurrStatus::InvalidInit};
+  }
   bool all_ge_one = true;
   for (auto v : x) {
     if (v < 1.0) { all_ge_one = false; break; }
@@ -303,13 +319,19 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
     sum_l += log_x[i];
   }
 
+  if (!(c_start > 0.0) || !std::isfinite(c_start))
+    return {kNaN, kNaN, kNaN, 0, BurrStatus::InvalidInit};
   double logc = std::log(c_start);
   int iter = 0;
   for (; iter < maxit; ++iter) {
     const double c = std::exp(logc);
+    if (!(c > 0.0) || !std::isfinite(c))
+      return {kNaN, kNaN, kNaN, iter, BurrStatus::IterationFailure};
     double g = 0.0, dg = 0.0, d2g1 = 0.0, d2g2 = 0.0;
     for (std::size_t i = 0; i < n; ++i) {
       const double lx = log_x[i];
+      if (!std::isfinite(c * lx) || c * lx > 700.0)
+        return {kNaN, kNaN, kNaN, iter, BurrStatus::IterationFailure};
       const double xc = std::exp(c * lx);
       const double t = xc / (xc + 1.0);
       g += std::log1p(xc);
@@ -325,6 +347,8 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
     const double f_p = c * f_c;
     const double d2_p = c * (f_c + c * df_c);
     const double step_p = f_p / d2_p;
+    if (!std::isfinite(step_p))
+      return {kNaN, kNaN, kNaN, iter, BurrStatus::IterationFailure};
     logc -= step_p;
     if (std::fabs(step_p) < tol) {
       ++iter;
@@ -332,6 +356,8 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
     }
   }
 
+  if (iter >= maxit)
+    return {kNaN, kNaN, kNaN, iter, BurrStatus::IterationFailure};
   const double c = std::exp(logc);
   double sum_log1p = 0.0;
   for (std::size_t i = 0; i < n; ++i) {
@@ -340,6 +366,9 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
   const double k = nd / sum_log1p;
   const double logLik = nd * (std::log(k) + std::log(c)) +
                         (c - 1.0) * sum_l - (k + 1.0) * sum_log1p;
+  if (!(k > 0.0 && c > 0.0) || !std::isfinite(k) ||
+      !std::isfinite(c) || !std::isfinite(logLik))
+    return {kNaN, kNaN, kNaN, iter, BurrStatus::IterationFailure};
   return {k, c, logLik, iter == maxit ? maxit : iter, BurrStatus::Ok};
 }
 
