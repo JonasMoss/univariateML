@@ -111,13 +111,38 @@ gompertz & $b \to 0$ & exponential & status \code{Overdispersed} & code, probe \
 nbinom & size $\to\infty$, mean fixed & Poisson &
   underdispersion check in the Rcpp adapter only & code \\
 binom & size $\to\infty$, mean fixed & Poisson & status; message names \code{mlpois} & code \\
-burr & $c\to\infty$, $ck=\alpha$ fixed & Pareto on $[1,\infty)$ &
-  all $x_i \ge 1$; check in C++ and duplicated in the adapter & code, arg \\
+burr & shape1 $\to\infty$, scale$\cdot$shape1$^{-1/\text{shape2}}$ fixed & Weibull &
+  face comparison, status \code{WeibullBoundary} & code, probe \\
+burr & shape2 $\to\infty$, shape1$\cdot$shape2 fixed & Pareto, minimum = scale &
+  face comparison; with the scale held at $s$: all $x_i \ge s$ & code, arg \\
+invburr & reciprocal of burr & inverse Weibull; power &
+  face comparison; with the scale held at $s$: all $x_i \le s$ & code, arg \\
+betapr & shape2 $\to\infty$ / shape1 $\to\infty$ & gamma / inverse gamma &
+  face comparison; none with the scale held & code, arg \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\paragraph{burr (no scale parameter).} $S(x) = (1+x^c)^{-k}$. With
+\paragraph{Free scale (\code{df32de2}, \code{11a5129}).} burr, invburr and
+betapr used to hold the scale at $1$; they now estimate it, and a free scale
+opens new faces. Burr XII, $S(x) = \{1 + (x/\sigma)^c\}^{-k}$: as
+$k\to\infty$ with $\sigma k^{-1/c} = \lambda$ fixed,
+$S(x) \to \exp\{-(x/\lambda)^c\}$, the Weibull; as $c\to\infty$ with $ck$
+fixed, the Pareto with minimum $\sigma$ \cite{shao2004}. invburr is the
+reciprocal, so its faces are the inverse Weibull and the power distribution.
+Beta prime is $X = \sigma G_a/G_b$ with independent gamma variables: as
+$b\to\infty$ with $\sigma/b$ fixed it tends to a gamma law, as $a\to\infty$
+with $\sigma a$ fixed to an inverse gamma. Both shapes $\to\infty$ is
+\emph{not} a lognormal limit: $\operatorname{Var}\log X = \psi'(a) + \psi'(b)
+\to 0$. Each fitter compares its multistart interior fit with the package's
+own fits of the limit models (faces win ties at $10^{-8}n$). In small
+samples escapes are common (burr: 3 of 6 samples of size 20; betapr: 5 of
+12). With the scale held (\code{mlburr(x, scale = 1)} is the 1.x fit) the
+analysis below applies with $1$ replaced by the held scale; for betapr the
+gamma and inverse-gamma faces need the scale to move, so the fixed-scale
+MLE exists for every nonconstant sample.
+
+\paragraph{burr with the scale held at 1.} $S(x) = (1+x^c)^{-k}$. With
 $ck = \alpha$ fixed and $c\to\infty$, $S(x) = \exp\{-k\log(1+x^c)\} \to
 x^{-\alpha}$ for $x>1$ and $S(x)\to 1$ for $x<1$: the Pareto law with
 minimum $1$. All $x_i \ge 1$ is sufficient for escape, and it is also
@@ -264,7 +289,7 @@ outlier sample); that is the restriction, not a fitter failure.
 
 \subsection{Escape, fixed 2026-10-28}
 
-\paragraph{invburr (no scale parameter).} $F(x) =
+\paragraph{invburr with the scale held at 1.} $F(x) =
 \bigl(x^\gamma/(1+x^\gamma)\bigr)^\tau$, and $X \sim
 \text{invburr}(\tau,\gamma)$ iff $1/X \sim \text{burr}(c=\gamma,k=\tau)$.
 With $\gamma\tau = \alpha$ fixed and $\gamma\to\infty$, $F(x)\to x^\alpha$
@@ -323,9 +348,20 @@ line of documentation.
 
 norm, lnorm, logitnorm, exp, rayleigh, pois, geom, lgser, gamma, lgamma,
 invgamma, weibull, invweibull, gumbel, logis, llogis, laplace, cauchy, beta,
-betapr, paralogis (arg, not probed). Unclear: kumar fails with ``MLE
-failed'' on Beta$(0.05, 0.05)$ data clipped away from $0$ and $1$ (may be
-numerics).
+paralogis (arg, not probed), and kumar. For kumar, with $t_i = -\log x_i$ and
+$S(a) = \sum_i \log(1 - e^{-a t_i})$, the shape $b = -n/S(a)$ profiles out
+and the profile log-likelihood tends to $-\infty$ both as $a\to0$ (like
+$-n\log\lvert\log a\rvert$) and as $a\to\infty$ (like
+$a(n t_{\min} - \sum_i t_i)$), so the MLE exists for every nonconstant
+sample; the old failure on data piled near $0$ and $1$ was numerical
+(fixed, \code{808ddf5}).
+
+\paragraph{Fixed degrees of freedom.} With $\nu$ held (\code{mlstd(x, nu =
+v)}, \code{mllst(x, df = v)}) the normal and $t_2$ faces disappear. A value
+repeated $k$ times still matters: putting the location there and shrinking
+the scale gives $L \propto \text{scale}^{\,\nu(n-k)-k}$, so the likelihood is
+unbounded when $\nu(n-k) < k$; the fitter reports this, and stops with a
+diagnostic in the equality case.
 
 \paragraph{fatigue: why the location is fixed.} The fitter estimates
 $(\alpha,\beta)$ with $\mu = 0$ fixed. With $\mu$ free the likelihood is
@@ -402,9 +438,12 @@ lognormal; the two-parameter fit with a known threshold is the usable model.
   \item snorm, sstd: done. sstd's comparison costs about 20\,ms at
     $n = 500$ (seven interior starts, two half-$t$ searches, sixteen $t_2$
     starts); it is a multistart comparison, not a certificate.
-  \item Open: a half-$t$ model (would give sstd's half-$t$ face a pointer);
-    kumar on extreme data; std's log-likelihood
-    at huge $\nu$.
+  \item Fixed parameters (\code{roadmap/2026-05-08-variable-parameter-selection.md}):
+    \code{scale} in burr, invburr, betapr, paralogis; \code{nu} in std,
+    \code{df} in lst; \code{size} in binom, nbinom; fatigue's $\mu$ always.
+    Limits that need a held parameter to move carry \code{fixed:} in the
+    README.
+  \item Open: a half-$t$ model (would give sstd's half-$t$ face a pointer).
 \end{enumerate}
 
 \begin{thebibliography}{9}
@@ -420,6 +459,11 @@ Distributions in Economics and Actuarial Sciences}. Wiley.
 maximum likelihood estimates for the extended exponential power distribution
 and its generalizations. \emph{Statistics \& Probability Letters}, 107,
 111--114. \href{https://doi.org/10.1016/j.spl.2015.08.009}{doi:10.1016/j.spl.2015.08.009}.
+
+\bibitem{shao2004} Shao, Q. (2004). Notes on maximum likelihood estimation
+for the three-parameter Burr XII distribution. \emph{Computational Statistics
+\& Data Analysis}, 45(3), 675--687.
+\href{https://doi.org/10.1016/S0167-9473(02)00367-5}{doi:10.1016/S0167-9473(02)00367-5}.
 
 \bibitem{fs1999} Fern\'andez, C. and Steel, M. F. J. (1999). Multivariate
 Student-$t$ regression models: pitfalls and inference. \emph{Biometrika},
