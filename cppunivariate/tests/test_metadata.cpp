@@ -6,7 +6,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "cppunivariate/distributions/exp/metadata.hpp"
 
 // Compile-check the per-distribution dpqr headers that were added in
 // the base-R-backend gap-fill. Successful compilation is the smoke test.
@@ -24,26 +23,6 @@
 #include "cppunivariate/distributions/unif/dpqr.hpp"
 #include "cppunivariate/distributions/weibull/dpqr.hpp"
 
-#include <cstring>
-
-namespace exp_meta   = cppunivariate::distributions::exp;
-
-// Exponential: 1 parameter (rate) on [0, inf).
-static_assert(exp_meta::n_params == 1, "exponential must have one parameter");
-static_assert(exp_meta::params[0].estimable, "rate is estimable today");
-static_assert(
-    exp_meta::support.type == cppunivariate::SupportType::Real,
-    "exp support is real-valued");
-static_assert(exp_meta::support.lower == 0.0, "exp lower bound is 0");
-static_assert(exp_meta::support.lower_closed, "exp lower is closed");
-
-TEST_CASE("metadata: id strings match folder names") {
-  CHECK(std::strcmp(exp_meta::id, "exp") == 0);
-}
-
-TEST_CASE("metadata: param names are accessible") {
-  CHECK(std::strcmp(exp_meta::params[0].name, "rate") == 0);
-}
 
 // Smoke checks for the newly-added per-distribution dpqr headers.
 // These don't claim bit-equivalence to R; they just exercise CDF/quantile

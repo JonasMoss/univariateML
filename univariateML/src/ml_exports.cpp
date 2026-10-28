@@ -153,25 +153,7 @@ Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 }
 
 // Closed-form easy ones
-// [[Rcpp::export]]
-Rcpp::List mlexp_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::exp_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] =
-          Rcpp::NumericVector::create(Rcpp::_["rate"] = res.rate),
-      Rcpp::_["logLik"] = res.logLik);
-}
 
-// [[Rcpp::export]]
-Rcpp::List mlunif_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::unif_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["min"] = res.min, Rcpp::_["max"] = res.max),
-      Rcpp::_["logLik"] = res.logLik);
-}
 
 // [[Rcpp::export]]
 Rcpp::List mldunif_(const Rcpp::IntegerVector &x) {
@@ -192,25 +174,7 @@ Rcpp::List mlpois_(const Rcpp::IntegerVector &x) {
                             Rcpp::_["logLik"] = res.logLik);
 }
 
-// [[Rcpp::export]]
-Rcpp::List mlnorm_(const Rcpp::NumericVector &x) {
-  auto res =
-      cppunivariate::norm_mle(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["mean"] = res.mean, Rcpp::_["sd"] = res.sd),
-      Rcpp::_["logLik"] = res.logLik);
-}
 
-// [[Rcpp::export]]
-Rcpp::List mllaplace_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::laplace_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-                                Rcpp::_["mu"] = res.mu,
-                                Rcpp::_["sigma"] = res.sigma),
-                            Rcpp::_["logLik"] = res.logLik);
-}
 
 // [[Rcpp::export]]
 Rcpp::List mlgeom_(const Rcpp::IntegerVector &x) {
@@ -221,24 +185,7 @@ Rcpp::List mlgeom_(const Rcpp::IntegerVector &x) {
                             Rcpp::_["logLik"] = res.logLik);
 }
 
-// [[Rcpp::export]]
-Rcpp::List mlpareto_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::pareto_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-                                Rcpp::_["a"] = res.shape,
-                                Rcpp::_["b"] = res.min),
-                            Rcpp::_["logLik"] = res.logLik);
-}
 
-// [[Rcpp::export]]
-Rcpp::List mlrayleigh_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::rayleigh_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-                                Rcpp::_["sigma"] = res.sigma),
-                            Rcpp::_["logLik"] = res.logLik);
-}
 
 // [[Rcpp::export]]
 Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
@@ -265,26 +212,7 @@ Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
-// [[Rcpp::export]]
-Rcpp::List mllnorm_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::lognormal_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["meanlog"] = res.meanlog, Rcpp::_["sdlog"] = res.sdlog),
-      Rcpp::_["logLik"] = res.logLik);
-}
 
-// [[Rcpp::export]]
-Rcpp::List mllogitnorm_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::logitnorm_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] =
-          Rcpp::NumericVector::create(Rcpp::_["mu"] = res.mu,
-                                      Rcpp::_["sigma"] = res.sigma),
-      Rcpp::_["logLik"] = res.logLik);
-}
 
 // [[Rcpp::export]]
 Rcpp::List mlzip_(const Rcpp::IntegerVector &x) {
@@ -506,19 +434,6 @@ Rcpp::List mlinvgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
-// [[Rcpp::export]]
-Rcpp::List mlpower_(const Rcpp::NumericVector &x,
-                    double epsilon = 1.490116e-08) {
-  auto res = cppunivariate::power_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon);
-  if (!std::isfinite(res.alpha) || !std::isfinite(res.beta)) {
-    Rcpp::stop("The power distribution is only defined for positive numbers.");
-  }
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
-}
 
 // [[Rcpp::export]]
 Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
@@ -547,15 +462,6 @@ Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
       Rcpp::_["logLik"] = logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
-// [[Rcpp::export]]
-Rcpp::List mlinvgauss_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::invgauss_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["mean"] = res.mu, Rcpp::_["shape"] = res.lambda),
-      Rcpp::_["logLik"] = res.logLik);
-}
 
 // [[Rcpp::export]]
 Rcpp::List mlsged_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,

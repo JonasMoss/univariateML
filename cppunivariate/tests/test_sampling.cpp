@@ -17,16 +17,10 @@
 #include "cppunivariate/distributions/ged/dpqr.hpp"
 #include "cppunivariate/distributions/gumbel/dpqr.hpp"
 #include "cppunivariate/distributions/invgamma/dpqr.hpp"
-#include "cppunivariate/distributions/invgauss/dpqr.hpp"
 #include "cppunivariate/distributions/invweibull/dpqr.hpp"
 #include "cppunivariate/distributions/kumar/dpqr.hpp"
-#include "cppunivariate/distributions/laplace/dpqr.hpp"
 #include "cppunivariate/distributions/llogis/dpqr.hpp"
-#include "cppunivariate/distributions/logitnorm/dpqr.hpp"
 #include "cppunivariate/distributions/naka/dpqr.hpp"
-#include "cppunivariate/distributions/pareto/dpqr.hpp"
-#include "cppunivariate/distributions/power/dpqr.hpp"
-#include "cppunivariate/distributions/rayleigh/dpqr.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
 #include "cppunivariate/distributions/sged/dpqr.hpp"
 #include "cppunivariate/distributions/snorm/dpqr.hpp"
@@ -82,25 +76,6 @@ TEST_CASE("StdRng emits values in the expected support") {
 
 // rlogitnorm(mu=0, sigma=1) draws should land in (0, 1) and approximate
 // the d/p/q layer self-consistently (CDF at the empirical median ~ 0.5).
-TEST_CASE("rlogitnorm samples lie in (0, 1) and match the CDF at median") {
-  cppunivariate::distributions::StdRng<> rng(7);
-  const int n = 5000;
-  double sum = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rlogitnorm(rng, 0.0, 1.0);
-    CHECK(x > 0.0);
-    CHECK(x < 1.0);
-    sum += x;
-  }
-  // mu=0 means logit(X) ~ N(0, 1), so median(X) = logistic(0) = 0.5.
-  // Empirical mean is biased toward 0.5 but with high spread; sanity-check
-  // the CDF at 0.5 returns 0.5.
-  const double cdf_half =
-      cppunivariate::distributions::plogitnorm(0.5, 0.0, 1.0, true, false);
-  CHECK(std::abs(cdf_half - 0.5) < 1e-12);
-  CHECK(std::abs(sum / n - 0.5) < 0.05);
-}
-
 // rnaka(shape=2, scale=1) draws are positive; sample mean roughly matches
 // the analytic mean: E[X] = sqrt(scale/shape) * Gamma(shape+0.5)/Gamma(shape).
 TEST_CASE("rnaka samples are positive and match analytic mean") {
@@ -227,39 +202,6 @@ TEST_CASE("rsged samples are unit-variance and recurse cleanly into rged") {
 
 // --- Phase C tier 1: extraDistr ports -----------------------------------
 
-TEST_CASE("rlaplace samples are symmetric around mu, var = 2*sigma^2") {
-  cppunivariate::distributions::StdRng<> rng(101);
-  const int n = 20000;
-  double sum = 0.0, sum_sq = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rlaplace(rng, 1.0, 2.0);
-    sum += x;
-    sum_sq += x * x;
-  }
-  const double mean = sum / n;
-  const double var = sum_sq / n - mean * mean;
-  CHECK(std::abs(mean - 1.0) < 0.1);
-  CHECK(std::abs(var - 8.0) < 0.5); // 2*sigma^2 = 8
-  // CDF at mu should be exactly 0.5.
-  CHECK(std::abs(
-            cppunivariate::distributions::plaplace(1.0, 1.0, 2.0, true, false) -
-            0.5) < 1e-12);
-}
-
-TEST_CASE("rrayleigh samples are positive; mean = sigma * sqrt(pi/2)") {
-  cppunivariate::distributions::StdRng<> rng(103);
-  const int n = 20000;
-  const double sigma = 2.0;
-  double sum = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rrayleigh(rng, sigma);
-    CHECK(x >= 0.0);
-    sum += x;
-  }
-  const double expected = sigma * std::sqrt(M_PI / 2.0);
-  CHECK(std::abs(sum / n - expected) < 0.1);
-}
-
 TEST_CASE("rdunif samples are integers in [min, max]") {
   cppunivariate::distributions::StdRng<> rng(107);
   const int min = 1, max = 6;
@@ -277,35 +219,6 @@ TEST_CASE("rdunif samples are integers in [min, max]") {
         static_cast<double>(counts[k - min]) / n;
     CHECK(std::abs(empirical - 1.0 / (max - min + 1)) < 0.02);
   }
-}
-
-TEST_CASE("rpower samples lie in (0, alpha); mean = alpha*beta/(beta+1)") {
-  cppunivariate::distributions::StdRng<> rng(109);
-  const int n = 20000;
-  const double alpha = 3.0, beta = 2.0;
-  double sum = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rpower(rng, alpha, beta);
-    CHECK(x > 0.0);
-    CHECK(x < alpha);
-    sum += x;
-  }
-  const double expected = alpha * beta / (beta + 1.0);
-  CHECK(std::abs(sum / n - expected) < 0.05);
-}
-
-TEST_CASE("rpareto samples are >= scale b; mean = a*b/(a-1) for a>1") {
-  cppunivariate::distributions::StdRng<> rng(113);
-  const int n = 20000;
-  const double a = 3.0, b = 2.0;
-  double sum = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rpareto(rng, a, b);
-    CHECK(x >= b);
-    sum += x;
-  }
-  const double expected = a * b / (a - 1.0); // = 3.0
-  CHECK(std::abs(sum / n - expected) < 0.1);
 }
 
 TEST_CASE("rgumbel samples; mean = mu + sigma*gamma_const, var = pi^2*sigma^2/6") {
@@ -342,20 +255,6 @@ TEST_CASE("rkumar samples lie in (0, 1); CDF round-trip at p=0.3") {
 }
 
 // --- Phase C tier 2: Boost-backed transforms ---------------------------
-
-TEST_CASE("rinvgauss samples are positive; sample mean ~ mu") {
-  cppunivariate::distributions::StdRng<> rng(151);
-  const int n = 20000;
-  const double mu = 2.0, shape = 5.0;
-  double sum = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rinvgauss(rng, mu, shape);
-    CHECK(x > 0.0);
-    sum += x;
-  }
-  // E[X] = mu for invgauss
-  CHECK(std::abs(sum / n - mu) < 0.1);
-}
 
 TEST_CASE("rinvweibull samples are positive; CDF round-trip at p=0.5") {
   cppunivariate::distributions::StdRng<> rng(157);
