@@ -84,3 +84,8 @@ the queue.
   checks the density/support/domains and the machinery derives or
   stress-tests the rest, including normalization, transform chain rule,
   slow MLE oracle, dpqr self-consistency, and mutation tripwires.
+- [2026-10-28 — One folder per distribution](2026-10-28-per-distribution-layout.md):
+  design proposal (decision D2 on the board): everything for one
+  distribution in its folder, one declarative `README.md` (YAML front
+  matter + prose) replacing metadata.hpp / JSON sidecar / sympy spec,
+  per-distribution tests and adapters, harness checks the real fitter.
