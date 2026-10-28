@@ -45,7 +45,8 @@ inline double sstd_sigma(double nu, double xi, double &mu_out) {
   // *standardised* base, not the raw t. Pre-2026-05 this used
   // sqrt(nu/pi) which is E|T| of raw t — gave wrong dsstd / psstd /
   // qsstd values (and a self-consistent but biased mlsstd golden).
-  const double m1 = std::tgamma(0.5 * (nu - 1.0)) / std::tgamma(0.5 * nu) *
+  // lgamma, not a tgamma ratio: tgamma overflows for nu > 343.
+  const double m1 = std::exp(std::lgamma(0.5 * (nu - 1.0)) - std::lgamma(0.5 * nu)) *
                     std::sqrt((nu - 2.0) / M_PI);
   mu_out = m1 * (xi - 1.0 / xi);
   return std::sqrt((1.0 - m1 * m1) * (xi * xi + 1.0 / (xi * xi)) +
@@ -74,7 +75,8 @@ inline double log_dged_unit(double z, double nu) {
   return std::log(g) - 0.5 * std::pow(std::fabs(z / lambda), nu);
 }
 
-inline double log_dstd_unit(double z, double nu) {
+// log of the unit-variance t density at 0: the z-free part of log_dstd_unit.
+inline double log_dstd_unit_const(double nu) {
   // log Gamma(z+1/2)/Gamma(z) = log(z)/2 - 1/(8z)
   // + 1/(192z^3) - 1/(640z^5) + O(z^-7). At nu >= 1e4
   // the omitted term is below double precision; avoid lgamma cancellation.
@@ -83,7 +85,11 @@ inline double log_dstd_unit(double z, double nu) {
       ? 0.5 * std::log(0.5 * nu) - 0.25 * inv +
             inv * inv * inv / 24.0 - std::pow(inv, 5) / 20.0
       : std::lgamma(0.5 * (nu + 1.0)) - std::lgamma(0.5 * nu);
-  return ratio - 0.5 * std::log((nu - 2.0) * M_PI) -
+  return ratio - 0.5 * std::log((nu - 2.0) * M_PI);
+}
+
+inline double log_dstd_unit(double z, double nu) {
+  return log_dstd_unit_const(nu) -
          0.5 * (nu + 1.0) * std::log1p(z * z / (nu - 2.0));
 }
 

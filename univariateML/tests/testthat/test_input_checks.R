@@ -27,6 +27,12 @@ for (dens in densities) {
     expect_error(mlsnorm(x), "translated half-normal.*MLE does not exist")
     x <- simulate_default(dens, 500)
   }
+  if (dens == "mlsstd") {
+    # This small default sample has its supremum on the half-t face.
+    expect_error(mlsstd(x), "translated half-t.*the MLE does not exist")
+    set.seed(313)
+    x <- fGarch::rsstd(500)
+  }
   if (dens %in% c("mlged", "mlsged")) {
     set.seed(812)
     x <- fGarch::rged(500, nu = 1.5)
