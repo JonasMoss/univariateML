@@ -116,6 +116,8 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   }
 
   auto log_likelihood = [&](double size) {
+    // Continuous extension x*log(x) = 0 at x = 0.
+    if (x_bar == 0.0 || size == x_bar) return 0.0;
     const double size_m_x = size - x_bar;
     double val = dn * x_bar * std::log(x_bar) +
                  dn * size_m_x * std::log(size_m_x) - dn * size * std::log(size);
@@ -146,10 +148,13 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
     if (size_or_nan < static_cast<double>(max_x)) {
       return {kNaN, kNaN, kNaN, 0, BinomStatus::SizeTooSmall};
     }
-    const double prob = x_bar / size_or_nan;
+    const double prob = size_or_nan == 0.0 ? 0.0 : x_bar / size_or_nan;
     return {size_or_nan, prob, log_likelihood(size_or_nan), 0,
             BinomStatus::Ok};
   }
+
+  // All-zero data: size is not identifiable; choose size=0, prob=0.
+  if (x_bar == 0.0) return {0.0, 0.0, 0.0, 0, BinomStatus::Ok};
 
   if (x_bar / var_pop <= 1.0) {
     return {kNaN, kNaN, kNaN, 0, BinomStatus::Underdispersed};
@@ -177,7 +182,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   double best_ll = -std::numeric_limits<double>::infinity();
   double best_size = size0;
   for (auto cand : size_cands) {
-    if (cand <= 0.0 || (cand - x_bar) <= 0.0) continue;
+    if (cand <= 0.0 || (cand - x_bar) < 0.0) continue;
     const double ll = log_likelihood(cand);
     if (ll > best_ll || !std::isfinite(best_ll)) {
       best_ll = ll;

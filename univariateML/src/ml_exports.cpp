@@ -305,6 +305,10 @@ Rcpp::List mlzip_(const Rcpp::IntegerVector &x) {
     Rcpp::warning("all observations are zero");
   }
   auto res = cppunivariate::zip_mle(dist_impl::as_ispan(x));
+  if (res.status == cppunivariate::ZipStatus::InvalidInput)
+    Rcpp::stop("Zero-inflated Poisson MLE requires nonempty nonnegative count data.");
+  if (res.status != cppunivariate::ZipStatus::Ok)
+    Rcpp::stop("Zero-inflated Poisson MLE failed to produce a finite valid fit.");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["lambda"] = res.lambda, Rcpp::_["pi"] = res.pi),
@@ -377,7 +381,7 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double tol = 1.220703e-4,
     if (x_bar == 0.0) {
       size_out = 1.0;
       prob_out = 1.0;
-      loglik_out = R_NegInf;
+      loglik_out = 0.0;
     } else {
       auto res = cppunivariate::nbinom_mle(dist_impl::as_ispan(x), tol, iterlim);
       if (res.underdispersed) {
