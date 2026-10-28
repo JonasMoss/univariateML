@@ -17,6 +17,11 @@ for (dens in densities) {
     set.seed(313)
     x <- fGarch::rstd(500, nu = 4)
   }
+  if (identical(dens, "mllst")) {
+    # The default ten-point sample escapes to normal; use interior t data.
+    set.seed(313)
+    x <- extraDistr::rlst(500, df = 3)
+  }
   if (dens == "mlsnorm") {
     # This small default sample has an exclusive half-normal maximum.
     expect_error(mlsnorm(x), "translated half-normal.*MLE does not exist")
