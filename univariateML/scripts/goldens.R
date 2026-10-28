@@ -12,7 +12,7 @@
 
 suppressPackageStartupMessages({
   library(jsonlite)
-  devtools::load_all(Sys.getenv("UMVL_PKG_DIR", "package"), quiet = TRUE)
+  pkgload::load_all(Sys.getenv("UMVL_PKG_DIR", "package"), quiet = TRUE)
 })
 
 GOLDEN_N <- 500L

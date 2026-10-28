@@ -31,6 +31,10 @@ set_golden_seed <- function(seed) {
   set.seed(seed)
 }
 
+# Finite-difference BFGS fitters drift by ~1e-6 across machines; see
+# cppunivariate/tests/test_estimators.cpp (kFdTol).
+FD_BFGS_IDS <- c("std", "ged", "sstd", "sged", "snorm", "paralogis")
+
 if (dir.exists(GOLDEN_DIR)) {
   golden_files <- list.files(GOLDEN_DIR, pattern = "\\.json$", full.names = TRUE)
 
@@ -43,11 +47,12 @@ if (dir.exists(GOLDEN_DIR)) {
       fn <- getExportedValue("univariateML", paste0("ml", g$id))
       fit <- fn(data)
 
-      expect_equal(unname(attr(fit, "logLik")), g$logLik, tolerance = 1e-12)
+      tol <- if (g$id %in% FD_BFGS_IDS) 1e-6 else 1e-12
+      expect_equal(unname(attr(fit, "logLik")), g$logLik, tolerance = tol)
 
       got <- as.numeric(fit)
       want <- unlist(g$estimates, use.names = FALSE)
-      expect_equal(got, want, tolerance = 1e-12)
+      expect_equal(got, want, tolerance = tol)
     })
   }
 }
