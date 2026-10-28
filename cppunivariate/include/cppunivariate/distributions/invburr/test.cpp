@@ -10,10 +10,10 @@ TEST_CASE("invburr three parameter golden and reciprocal fit") {
  auto g = mltest::load_distribution_golden("invburr");
  auto r = cppunivariate::invburr_mle(mltest::as_span(g.data),1e-8,1000);
  REQUIRE(r.status == cppunivariate::InvBurrStatus::Ok);
- CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(1e-6));
- CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(1e-6));
- CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(1e-6));
- CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-8));
+ CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(1e-12));
+ CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(1e-12));
+ CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(1e-12));
+ CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-12));
  // Independent full actuar multistart oracle on this ordinary sample.
  CHECK(r.logLik == doctest::Approx(-625.40647696836618).epsilon(1e-8));
  // Independent full likelihood scores, including the freely fitted scale.
@@ -68,4 +68,36 @@ TEST_CASE("invburr n20 actuar multistart oracle fixtures") {
    if (fixture.face=="weibull") CHECK(fit.status==cppunivariate::InvBurrStatus::InvWeibullBoundary);
    if (fixture.face=="pareto") CHECK(fit.status==cppunivariate::InvBurrStatus::PowerBoundary);
  }
+}
+
+TEST_CASE("invburr fixed scale historical regression and equivariance") {
+ const auto golden = mltest::load_golden(std::string(CPPUNIV_DISTRIBUTIONS_DIR) + "/invburr/fixed-scale-golden.json");
+ const auto &x = golden.data;
+ auto r = cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),1.0);
+ REQUIRE(r.status == cppunivariate::InvBurrStatus::Ok);
+ CHECK(std::abs(r.shape1 - 1.028600546046916) < 1e-10);
+ CHECK(std::abs(r.shape2 - 2.1411632236775726) < 1e-10);
+ CHECK(std::abs(r.logLik - -626.1759641045593) < 1e-10);
+ auto y=x; for (double &v : y) v*=3.0;
+ auto s = cppunivariate::invburr_mle_fixed_scale(mltest::as_span(y),3.0);
+ CHECK(s.scale == 3.0);
+ CHECK(s.shape1 == doctest::Approx(r.shape1).epsilon(1e-10));
+ CHECK(s.shape2 == doctest::Approx(r.shape2).epsilon(1e-10));
+ CHECK(s.logLik == doctest::Approx(r.logLik-x.size()*std::log(3.0)).epsilon(1e-10));
+ const std::vector<double> escape = { 1,2,3 };
+ CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(escape),3).status == cppunivariate::InvBurrStatus::AllLeOne);
+ for (double bad : {0.0,-1.0,std::numeric_limits<double>::infinity()})
+   CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),bad).status == cppunivariate::InvBurrStatus::InvalidInit);
+}
+
+TEST_CASE("invburr fixed scale profile fallback start") {
+ std::vector<double> x = {.5,2,3,4,5};
+ for (double &v : x) v = 1.0/v;
+ auto r = cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),1.0,1e-10);
+ REQUIRE(r.status == cppunivariate::InvBurrStatus::Ok);
+ CHECK(std::isfinite(r.logLik));
+ double theta[2] = {r.shape1,r.shape2}, score[2];
+ cppunivariate::InvBurrCost cost{mltest::as_span(x)};
+ cost.gradient(theta,score);
+ CHECK(std::hypot(score[0],score[1]) < 1e-8);
 }

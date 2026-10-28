@@ -1,5 +1,6 @@
 // Three-parameter Burr XII MLE, with shape1 profiled exactly.
 #pragma once
+#include "fixed_scale.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
 #include "../../core/span.hpp"
@@ -82,7 +83,7 @@ struct BurrCost {
 };
 
 
-enum class BurrStatus { Ok = 0, WeibullBoundary, ParetoBoundary, InvalidInit, IterationFailure };
+enum class BurrStatus { Ok = 0, WeibullBoundary, ParetoBoundary, InvalidInit, IterationFailure, AllGeOne };
 struct BurrMLE {
   double shape1, shape2, scale, logLik;
   int iterations;
@@ -184,5 +185,21 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
   return {cost.shape1(best.theta.data()),std::exp(best.theta[0]),
     std::exp(center+best.theta[1]),ll,best.iterations,
     best.status == BfgsStatus::Ok ? BurrStatus::Ok : BurrStatus::IterationFailure};
+}
+
+// Fixed scale reduces exactly to the historical scale-1 two-shape fit.
+inline BurrMLE burr_mle_fixed_scale(span x, double scale,
+    double tol = 1.220703e-4, int maxit = 1000) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (!(scale > 0.0) || !std::isfinite(scale))
+    return {nan,nan,scale,nan,0,BurrStatus::InvalidInit};
+  std::vector<double> normalized;
+  for (double v : x) normalized.push_back(v / scale);
+  const auto r = burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},tol,maxit);
+  BurrStatus status = BurrStatus::Ok;
+  if (r.status == burr_fixed_detail::BurrStatus::AllGeOne) status = BurrStatus::AllGeOne;
+  if (r.status == burr_fixed_detail::BurrStatus::InvalidInit) status = BurrStatus::InvalidInit;
+  if (r.status == burr_fixed_detail::BurrStatus::IterationFailure) status = BurrStatus::IterationFailure;
+  return {r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
 }
 } // namespace cppunivariate

@@ -5,11 +5,12 @@ support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
   - {name: shape1, role: shape, domain: "(0, inf)", default: 1.0}
   - {name: shape2, role: shape, domain: "(0, inf)", default: 2.0}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1.0}
+  - {name: scale, fixable: true, role: scale, domain: "(0, inf)", default: 1.0}
 r:
   density: actuar::dburr
   sampler: actuar::rburr
   control:
+    abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
     gradtol: Gradient tolerance for the mean profiled negative log likelihood.
     iterlim: Maximum BFGS iterations per start.
     shape10: Optional positive starting shape1; `NULL` uses automatic starts.
@@ -24,6 +25,11 @@ limits:
   - model: 'pareto'
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     status: 'ParetoBoundary'
+  - model: 'pareto'
+    fixed: [scale]
+    when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
+    detect: 'all(x >= scale)'
+    status: 'AllGeOne'
 references:
   - "Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational Statistics & Data Analysis 45, 675-687. doi:10.1016/S0167-9473(02)00367-5."
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York."
@@ -37,3 +43,10 @@ The Burr type XII distribution is a heavy-tailed distribution for positive size 
 ## Details
 
 univariateML 1.x estimated only the shapes, with the scale fixed at 1.
+
+Supply `scale = s` to estimate only the shapes. This fits the historical
+scale-1 family to `x / s` and subtracts `length(x) * log(s)` from its
+log likelihood. The fixed-scale path profiles shape1 and refines shape2
+by Newton iteration, with a profile-likelihood fallback start. Starting
+controls `shape10`, `shape20`, `scale0`, and BFGS tolerances apply only
+to the free-scale path. The fixed-scale limit has endpoint `s`.
