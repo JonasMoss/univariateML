@@ -1,6 +1,6 @@
 // Burr type-XII MLE.
 //
-// Two-stage: L-moment-based root-finding seeds shape `c`, then Newton on
+// Two-stage: log-moment root-finding (or profile search) seeds `c`, then Newton on
 // log(c) with the score's analytical derivative refines. After convergence,
 // shape `k` is the closed-form maximiser.
 //
@@ -46,6 +46,12 @@ struct BurrMLE {
   BurrStatus status;
 };
 
+// Preserve ordinary-range arithmetic and avoid overflow in the tails.
+inline double burr_softplus(double z) {
+  return z > 350.0 ? z + std::log1p(std::exp(-z))
+                   : std::log1p(std::exp(z));
+}
+
 // Negative log-likelihood of Burr type-XII (shape1=k, shape2=c) with scale=1:
 //   log f = log(k) + log(c) + (c-1)*log(x) - (k+1)*log(1 + x^c)
 // Per-obs Hessian (sympy, with y := x^c, lx := log(x)):
@@ -65,7 +71,7 @@ struct BurrCost {
       if (v <= 0.0) return std::numeric_limits<double>::infinity();
       const double lx = std::log(v);
       S_lx += lx;
-      S_l1py += std::log1p(std::exp(c * lx));
+      S_l1py += burr_softplus(c * lx);
     }
     return -n * (std::log(k) + std::log(c)) - (c - 1.0) * S_lx +
            (k + 1.0) * S_l1py;
@@ -77,7 +83,14 @@ struct BurrCost {
     double S_lx = 0.0, S_l1py = 0.0, S_y_lx_over_1py = 0.0;
     for (auto v : x) {
       const double lx = std::log(v);
-      const double y = std::exp(c * lx);
+      const double z = c * lx;
+      if (z > 350.0) {
+        S_lx += lx;
+        S_l1py += burr_softplus(z);
+        S_y_lx_over_1py += lx / (1.0 + std::exp(-z));
+        continue;
+      }
+      const double y = std::exp(z);
       S_lx += lx;
       S_l1py += std::log1p(y);
       S_y_lx_over_1py += y * lx / (1.0 + y);
@@ -92,7 +105,14 @@ struct BurrCost {
     double H_cc_acc = 0.0, H_kc_acc = 0.0;
     for (auto v : x) {
       const double lx = std::log(v);
-      const double y = std::exp(c * lx);
+      const double z = c * lx;
+      if (z > 350.0) {
+        const double e = std::exp(-z);
+        H_cc_acc += (k + 1.0) * lx * lx * e / ((1.0 + e) * (1.0 + e));
+        H_kc_acc += lx / (1.0 + e);
+        continue;
+      }
+      const double y = std::exp(z);
       const double yp1 = 1.0 + y;
       H_cc_acc += (k + 1.0) * y * lx * lx / (yp1 * yp1);
       H_kc_acc += y * lx / yp1;
@@ -296,6 +316,84 @@ inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
   return {k_hat, c_hat, iter};
 }
 
+// Shared start: retain the legacy moment seed whenever it is feasible.
+// inverse_variance preserves the inverse wrapper's centered variance sum.
+inline double burr_mle_start(span x, bool inverse_variance = false) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (x.size() == 0) return nan;
+  std::vector<double> logs;
+  double sum = 0.0, squares = 0.0, scale = 0.0;
+  for (auto v : x) {
+    if (!(v > 0.0) || !std::isfinite(v)) return nan;
+    const double l = std::log(v);
+    logs.push_back(l);
+    sum += l;
+    squares += l * l;
+    scale = std::max(scale, std::abs(l));
+  }
+  const double n = static_cast<double>(x.size());
+  const double mu = sum / n;
+  double variance = squares / n - mu * mu;
+  if (inverse_variance) {
+    squares = 0.0;
+    for (auto l : logs) squares += (l - mu) * (l - mu);
+    variance = squares / n;
+  }
+  const double moment = burr_lmom_core(mu, variance, true).c;
+  if (moment > 0.0 && std::isfinite(moment)) return moment;
+  if (!(scale > 0.0)) return nan;
+
+  // Profile out k = n/g(c). This expression avoids subtracting c*sum(l)
+  // and g(c), which can both be large on mostly-Pareto samples.
+  const auto profile = [&](double logc) {
+    const double c = std::exp(logc);
+    if (!(c > 0.0) || !std::isfinite(c))
+      return -std::numeric_limits<double>::infinity();
+    double g = 0.0, remainder = 0.0;
+    for (auto l : logs) {
+      const double z = c * l;
+      if (!std::isfinite(z)) return -std::numeric_limits<double>::infinity();
+      g += burr_softplus(z);
+      remainder -= burr_softplus(-z);
+    }
+    if (!(g > 0.0) || !std::isfinite(g))
+      return -std::numeric_limits<double>::infinity();
+    return n * (std::log(n) - std::log(g) + logc) - n - sum + remainder;
+  };
+  // Unit log-c grid, expanded in the improving direction until bracketed.
+  double center = -std::log(scale);
+  const double middle = profile(center);
+  const double left = profile(center - 1.0);
+  const double right = profile(center + 1.0);
+  if (left > middle || right > middle) {
+    const double direction = left > right ? -1.0 : 1.0;
+    double best = middle;
+    bool bracketed = false;
+    for (int i = 0; i < 1500; ++i) {
+      const double next = center + direction;
+      const double value = profile(next);
+      if (value <= best) { bracketed = true; break; }
+      center = next;
+      best = value;
+    }
+    if (!bracketed) return nan;
+  }
+  double a = center - 1.0, b = center + 1.0;
+  constexpr double ratio = 0.6180339887498948482;
+  double u = b - ratio * (b - a), v = a + ratio * (b - a);
+  double fu = profile(u), fv = profile(v);
+  for (int i = 0; i < 100 && b - a > 1e-9; ++i) {
+    if (fu > fv) {
+      b = v; v = u; fv = fu;
+      u = b - ratio * (b - a); fu = profile(u);
+    } else {
+      a = u; u = v; fu = fv;
+      v = a + ratio * (b - a); fv = profile(v);
+    }
+  }
+  return std::exp((a + b) / 2.0);
+}
+
 inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -330,9 +428,18 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
     double g = 0.0, dg = 0.0, d2g1 = 0.0, d2g2 = 0.0;
     for (std::size_t i = 0; i < n; ++i) {
       const double lx = log_x[i];
-      if (!std::isfinite(c * lx) || c * lx > 700.0)
+      if (!std::isfinite(c * lx))
         return {kNaN, kNaN, kNaN, iter, BurrStatus::IterationFailure};
-      const double xc = std::exp(c * lx);
+      const double z = c * lx;
+      if (z > 350.0) {
+        const double e = std::exp(-z);
+        const double t = 1.0 / (1.0 + e);
+        g += burr_softplus(z);
+        dg += lx * t;
+        d2g1 += lx * lx * e / ((1.0 + e) * (1.0 + e));
+        continue;
+      }
+      const double xc = std::exp(z);
       const double t = xc / (xc + 1.0);
       g += std::log1p(xc);
       dg += lx * t;
@@ -361,7 +468,7 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
   const double c = std::exp(logc);
   double sum_log1p = 0.0;
   for (std::size_t i = 0; i < n; ++i) {
-    sum_log1p += std::log1p(std::exp(c * log_x[i]));
+    sum_log1p += burr_softplus(c * log_x[i]);
   }
   const double k = nd / sum_log1p;
   const double logLik = nd * (std::log(k) + std::log(c)) +
@@ -370,6 +477,10 @@ inline BurrMLE burr_mle_core(span x, double c_start, double tol, int maxit) {
       !std::isfinite(c) || !std::isfinite(logLik))
     return {kNaN, kNaN, kNaN, iter, BurrStatus::IterationFailure};
   return {k, c, logLik, iter == maxit ? maxit : iter, BurrStatus::Ok};
+}
+
+inline BurrMLE burr_mle(span x, double tol, int maxit) {
+  return burr_mle_core(x, burr_mle_start(x), tol, maxit);
 }
 
 }  // namespace cppunivariate

@@ -42,7 +42,7 @@ struct InvBurrCost {
       if (v <= 0.0) return std::numeric_limits<double>::infinity();
       const double lx = std::log(v);
       S_lx += lx;
-      S_l1py += std::log1p(std::exp(c * lx));
+      S_l1py += burr_softplus(c * lx);
     }
     return -n * (std::log(k) + std::log(c)) - (k * c - 1.0) * S_lx +
            (k + 1.0) * S_l1py;
@@ -54,7 +54,14 @@ struct InvBurrCost {
     double S_lx = 0.0, S_l1py = 0.0, S_y_lx_over_1py = 0.0;
     for (auto v : x) {
       const double lx = std::log(v);
-      const double y = std::exp(c * lx);
+      const double z = c * lx;
+      if (z > 350.0) {
+        S_lx += lx;
+        S_l1py += burr_softplus(z);
+        S_y_lx_over_1py += lx / (1.0 + std::exp(-z));
+        continue;
+      }
+      const double y = std::exp(z);
       S_lx += lx;
       S_l1py += std::log1p(y);
       S_y_lx_over_1py += y * lx / (1.0 + y);
@@ -69,7 +76,14 @@ struct InvBurrCost {
     double H_cc_acc = 0.0, H_kc_acc = 0.0;
     for (auto v : x) {
       const double lx = std::log(v);
-      const double y = std::exp(c * lx);
+      const double z = c * lx;
+      if (z > 350.0) {
+        const double e = std::exp(-z);
+        H_cc_acc += (k + 1.0) * lx * lx * e / ((1.0 + e) * (1.0 + e));
+        H_kc_acc += -lx * e / (1.0 + e);
+        continue;
+      }
+      const double y = std::exp(z);
       const double yp1 = 1.0 + y;
       H_cc_acc += (k + 1.0) * y * lx * lx / (yp1 * yp1);
       H_kc_acc += -lx / yp1;
@@ -101,20 +115,8 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit) {
     invx[i] = 1.0 / x[i];
     sum_log_invx += std::log(invx[i]);
   }
-  const double dn = static_cast<double>(n);
-  const double m1 = sum_log_invx / dn;
-  double sq_sum = 0.0;
-  for (std::size_t i = 0; i < n; ++i) {
-    const double d = std::log(invx[i]) - m1;
-    sq_sum += d * d;
-  }
-  const double m2 = sq_sum / dn;  // population variance, matches arma::var(.,1)
-
-  BurrLmomResult init = burr_lmom_core(m1, m2, true);
-  if (!std::isfinite(init.c) || init.c <= 0.0) {
-    return {kNaN, kNaN, kNaN, 0, InvBurrStatus::InvalidInit};
-  }
-  BurrMLE res = burr_mle_core(span{invx.data(), n}, init.c, tol, maxit);
+  const double c0 = burr_mle_start(span{invx.data(), n}, true);
+  BurrMLE res = burr_mle_core(span{invx.data(), n}, c0, tol, maxit);
   if (res.status != BurrStatus::Ok) {
     return {kNaN, kNaN, kNaN, res.iterations, InvBurrStatus::IterationFailure};
   }
