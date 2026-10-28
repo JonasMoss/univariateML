@@ -21,3 +21,9 @@ TEST_CASE("lnorm: seeded sample with outlier") {
   CHECK(r.sdlog == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
+
+TEST_CASE("lnorm dpqr: median = exp(meanlog)") {
+  CHECK(cppunivariate::distributions::qlnorm(0.5, 0.0, 1.0, true, false) == doctest::Approx(1.0));
+  const double q = cppunivariate::distributions::qlnorm(0.4, 1.0, 0.5, true, false);
+  CHECK(cppunivariate::distributions::plnorm(q, 1.0, 0.5, true, false) == doctest::Approx(0.4));
+}

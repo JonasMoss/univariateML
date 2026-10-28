@@ -38,3 +38,9 @@ TEST_CASE("cauchy: three observations and nonexistent MLE") {
   }
 }
 
+TEST_CASE("cauchy dpqr: CDF symmetric at location") {
+  CHECK(cppunivariate::distributions::pcauchy(0.0, 0.0, 1.0, true, false) == doctest::Approx(0.5));
+  CHECK(cppunivariate::distributions::qcauchy(0.5, 0.0, 1.0, true, false) == doctest::Approx(0.0));
+  const double q = cppunivariate::distributions::qcauchy(0.75, 0.0, 1.0, true, false);
+  CHECK(cppunivariate::distributions::pcauchy(q, 0.0, 1.0, true, false) == doctest::Approx(0.75));
+}

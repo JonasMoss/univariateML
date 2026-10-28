@@ -21,3 +21,10 @@ TEST_CASE("norm: seeded sample with outlier") {
   CHECK(r.sd == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
+
+TEST_CASE("norm dpqr: standard-normal CDF / quantile round-trip") {
+  CHECK(cppunivariate::distributions::pnorm(0.0, 0.0, 1.0, true, false) == doctest::Approx(0.5));
+  CHECK(cppunivariate::distributions::qnorm(0.5, 0.0, 1.0, true, false) == doctest::Approx(0.0));
+  const double q = cppunivariate::distributions::qnorm(0.7, 0.0, 1.0, true, false);
+  CHECK(cppunivariate::distributions::pnorm(q, 0.0, 1.0, true, false) == doctest::Approx(0.7));
+}

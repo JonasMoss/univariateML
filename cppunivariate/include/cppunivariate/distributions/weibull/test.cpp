@@ -24,3 +24,11 @@ TEST_CASE("weibull: explicit shape start and automatic default") {
   CHECK(b.shape == doctest::Approx(a.shape).epsilon(1e-9));
   CHECK(b.logLik == doctest::Approx(a.logLik).epsilon(1e-10));
 }
+
+TEST_CASE("weibull dpqr: known CDF value and quantile inverse") {
+  // F(scale; shape, scale) = 1 - exp(-1) for any shape.
+  CHECK(cppunivariate::distributions::pweibull(1.0, 2.0, 1.0, true, false) ==
+        doctest::Approx(1.0 - std::exp(-1.0)));
+  const double q = cppunivariate::distributions::qweibull(0.6, 1.5, 2.0, true, false);
+  CHECK(cppunivariate::distributions::pweibull(q, 1.5, 2.0, true, false) == doctest::Approx(0.6));
+}

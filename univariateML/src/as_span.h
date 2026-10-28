@@ -1,6 +1,6 @@
 // Thin adapters from Rcpp::NumericVector / Rcpp::IntegerVector to
 // cppunivariate::span / cppunivariate::ispan, used by the Rcpp wrappers
-// in univariateML/src/ml_exports.cpp. Templated so this header has no Rcpp include
+// in distributions/<id>/adapter.cpp. Templated so this header has no Rcpp include
 // dependency -- instantiation happens at the call site, which already
 // includes Rcpp.
 

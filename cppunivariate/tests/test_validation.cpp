@@ -12,7 +12,7 @@
 // Smoke-checks built into this target:
 //   - nll/grad finite at the MLE
 //   - score-residual ||g||_2 < 1e-3 at the MLE (mirrors the existing
-//     gate from test_estimators.cpp, applied uniformly via the harness
+//     gate (formerly in test_estimators.cpp), applied uniformly via the harness
 //     rather than per-distribution boilerplate)
 //
 // The substantive numerical match (grad/Hess vs symbolic at 1e-12) is

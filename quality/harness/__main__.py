@@ -18,11 +18,11 @@ from pathlib import Path
 def find_repo_root() -> Path:
     here = Path(__file__).resolve()
     for parent in (here, *here.parents):
-        if (parent / "quality" / "golden").is_dir():
+        if (parent / "quality" / "harness").is_dir() and (parent / "cppunivariate").is_dir():
             return parent
     raise SystemExit(
-        "Could not locate repo root (expected a quality/golden/ directory "
-        "above the harness package)."
+        "Could not locate repo root (expected quality/harness/ and "
+        "cppunivariate/ above the harness package)."
     )
 
 

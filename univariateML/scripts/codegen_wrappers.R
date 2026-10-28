@@ -3,19 +3,16 @@
 # after Rcpp::compileAttributes() (the adapters' formals are read from
 # package/R/RcppExports.R to check the documented control arguments).
 #
-# Migrated distributions (distributions/<id>/README.md) get full docs from
-# the front matter and prose; legacy ones get placeholder docs until they
-# are migrated.
+# Docs come from each distribution's README.md (front matter + prose).
 
 dist_dir <- Sys.getenv(
   "UMVL_DOSSIER_DIR",
   "../cppunivariate/include/cppunivariate/distributions"
 )
-r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
 pkg_r_dir <- Sys.getenv("UMVL_PKG_R_DIR", "package/R")
 
 source(file.path("scripts", "load_distributions.R"))
-models <- load_distributions(dist_dir, r_metadata_dir)
+models <- load_distributions(dist_dir)
 
 # Adapter formals, for the control-argument check.
 rcpp_env <- new.env()
@@ -76,7 +73,7 @@ check_control <- function(model) {
   formals(fn)
 }
 
-gen_doc_readme <- function(model) {
+gen_doc <- function(model) {
   fname <- paste0("ml", model$id)
   defaults <- check_control(model)
   s <- model$sections
@@ -132,32 +129,9 @@ gen_doc_readme <- function(model) {
   paste0(roxy(block), collapse = "\n")
 }
 
-gen_doc_legacy <- function(model) {
-  lower <- if (is.null(model$support$lower)) "-Inf" else model$support$lower
-  upper <- if (is.null(model$support$upper)) "Inf" else model$support$upper
-  block <- c(
-    nl(model$name, " maximum likelihood estimation"),
-    "",
-    "Maximum likelihood estimation for this distribution.",
-    "",
-    nl("Density: ", model$density, "; support: [", lower, ", ", upper, ")."),
-    "",
-    "@param x a (non-empty) numeric vector of data values.",
-    "@param na.rm logical. Should missing values be removed?",
-    "@param ... Optional control arguments passed to the optimizer/estimator.",
-    "@return An object of class `univariateML` with estimates and attributes.",
-    "@seealso",
-    nl("  ", model$density),
-    "@examples",
-    nl("set.seed(1); ml", model$id, "(simulate_default(\"ml", model$id, "\", 100))"),
-    "@export"
-  )
-  paste0(roxy(block), collapse = "\n")
-}
-
 gen_wrapper <- function(model) {
   fname <- paste0("ml", model$id)
-  doc <- if (identical(model$source, "readme")) gen_doc_readme(model) else gen_doc_legacy(model)
+  doc <- gen_doc(model)
   paste0(
     doc, "\n",
     fname, " <- function(x, na.rm = FALSE, ...) {\n",

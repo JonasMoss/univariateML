@@ -16,3 +16,10 @@ TEST_CASE("gamma") {
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
 
+TEST_CASE("gamma dpqr: rate parameterisation round-trip") {
+  // mean = shape / rate.
+  const double q = cppunivariate::distributions::qgamma(0.5, 2.0, 1.0, true, false);
+  CHECK(cppunivariate::distributions::pgamma(q, 2.0, 1.0, true, false) == doctest::Approx(0.5));
+  // density at mean is positive and finite.
+  CHECK(cppunivariate::distributions::dgamma(2.0, 2.0, 1.0, false) > 0.0);
+}

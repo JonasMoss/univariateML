@@ -10,13 +10,12 @@
 # leave these untouched. To intentionally accept a new baseline, re-run
 # scripts/gen_goldens.R and commit the diff.
 
-# Goldens live at <repo_root>/quality/golden/, outside the R-package
-# tarball. The dispatcher Justfile sets UMVL_GOLDEN_DIR; when run from
+# Goldens live in distributions/<id>/golden.json, outside the R-package
+# tarball. The dispatcher Justfile sets UMVL_DISTRIBUTIONS_DIR; when run from
 # inside an installed package or a tarball-based check, the env var is
 # unset and this entire test file becomes a no-op (zero tests emitted),
 # which is the desired CRAN behaviour.
-GOLDEN_DIR <- Sys.getenv("UMVL_GOLDEN_DIR", "")
-# Migrated distributions keep their golden in distributions/<id>/golden.json.
+# Goldens live in distributions/<id>/golden.json, outside the package.
 DISTRIBUTIONS_DIR <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR", "")
 
 resolve_callable <- function(spec) {
@@ -37,11 +36,8 @@ set_golden_seed <- function(seed) {
 # cppunivariate/tests/test_estimators.cpp (kFdTol).
 FD_BFGS_IDS <- c("std", "ged", "sstd", "sged", "paralogis")
 
-if (dir.exists(GOLDEN_DIR)) {
-  golden_files <- c(
-    list.files(GOLDEN_DIR, pattern = "\\.json$", full.names = TRUE),
-    if (nzchar(DISTRIBUTIONS_DIR)) Sys.glob(file.path(DISTRIBUTIONS_DIR, "*", "golden.json"))
-  )
+if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
+  golden_files <- Sys.glob(file.path(DISTRIBUTIONS_DIR, "*", "golden.json"))
 
   for (f in golden_files) {
     g <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)

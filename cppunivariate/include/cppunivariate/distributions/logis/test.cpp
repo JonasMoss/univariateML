@@ -34,3 +34,9 @@ TEST_CASE("logis: invalid inputs never report success") {
   }
 }
 
+TEST_CASE("logis dpqr: density at location = 1/(4*scale)") {
+  CHECK(cppunivariate::distributions::dlogis(0.0, 0.0, 1.0, false) == doctest::Approx(0.25));
+  CHECK(cppunivariate::distributions::plogis(0.0, 0.0, 1.0, true, false) == doctest::Approx(0.5));
+  const double q = cppunivariate::distributions::qlogis(0.7, 0.0, 1.0, true, false);
+  CHECK(cppunivariate::distributions::plogis(q, 0.0, 1.0, true, false) == doctest::Approx(0.7));
+}

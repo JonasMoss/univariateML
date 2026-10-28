@@ -22,23 +22,17 @@ sync-headers: assemble
 	rsync -a --delete --prune-empty-dirs --include='*/' --include='*.hpp' --exclude='*' \
 	  cppunivariate/include/cppunivariate univariateML/package/inst/include/
 
-# Generate metadata-driven R sources into package/R/, then run
-# Rcpp::compileAttributes() in package/ to produce RcppExports.{R,cpp}.
-# Inputs:
-#   - cppunivariate/.../<id>/metadata.hpp + univariateML/metadata/<id>.json
-#                                    (canonical per-distribution form)
-#   - cppunivariate/.../<id>/metadata.json
-#                                    (intermediate per-distribution form)
+# Run Rcpp::compileAttributes() in package/ (RcppExports.{R,cpp} from the
+# per-distribution adapters), then generate package/R/ml00_metadata.R and
+# ml02_wrappers.R (with roxygen docs) from distributions/<id>/README.md.
 gen: sync-headers
 	cd univariateML/package && Rscript -e "Rcpp::compileAttributes()"
 	cd univariateML && \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
-	  UMVL_R_METADATA_DIR={{repo_root}}/univariateML/metadata \
 	  UMVL_PKG_R_DIR={{repo_root}}/univariateML/package/R \
 	  Rscript scripts/codegen_metadata.R
 	cd univariateML && \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
-	  UMVL_R_METADATA_DIR={{repo_root}}/univariateML/metadata \
 	  UMVL_PKG_R_DIR={{repo_root}}/univariateML/package/R \
 	  Rscript scripts/codegen_wrappers.R
 
@@ -47,21 +41,18 @@ regen: gen
 
 test: regen
 	cd univariateML/package && \
-	  UMVL_GOLDEN_DIR={{repo_root}}/quality/golden \
 	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
 	  Rscript -e "testthat::test_local('.', stop_on_failure = TRUE)"
 
 check: regen
 	cd univariateML/package && R CMD build --no-build-vignettes . && R CMD check --no-manual --ignore-vignettes univariateML_*.tar.gz
 
-# Regenerate quality/golden/*.json from the current R/C++ pipeline.
+# Regenerate distributions/<id>/golden.json from the current R/C++ pipeline.
 # Run only when intentionally accepting a new baseline (e.g. algorithm
 # change). After regen, inspect the diff before committing.
 goldens: regen
 	cd univariateML && \
 	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
-	  UMVL_R_METADATA_DIR={{repo_root}}/univariateML/metadata \
-	  UMVL_GOLDEN_DIR={{repo_root}}/quality/golden \
 	  UMVL_PKG_DIR={{repo_root}}/univariateML/package \
 	  Rscript scripts/goldens.R
 

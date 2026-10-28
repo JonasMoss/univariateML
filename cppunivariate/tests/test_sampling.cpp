@@ -3,11 +3,8 @@
 // any R install; complements the R-side testthat coverage that exercises the
 // same code through the RRng adapter.
 //
-// Coverage strategy: per distribution, draw N samples at a fixed seed, fit
-// the matching MLE, and check the recovered parameters are within a few
-// standard errors of the truth. This validates the sampler end-to-end (RNG
-// call sequence, parameter math, output range) without depending on
-// implementation-specific bit-equivalence to R.
+// The per-distribution sampler checks live in distributions/<id>/test.cpp;
+// this file keeps the shared StdRng smoke test.
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
@@ -60,18 +57,4 @@ TEST_CASE("StdRng emits values in the expected support") {
   CHECK(std::abs(tsum / n) < 0.1);
 }
 
-// rlogitnorm(mu=0, sigma=1) draws should land in (0, 1) and approximate
-// the d/p/q layer self-consistently (CDF at the empirical median ~ 0.5).
-// rzipf samples land in {1, ..., N} and the empirical frequencies match
-// the analytic PMF p(k) = k^{-s} / H_N(s).
-// rsged at (mean=0, sd=1, nu=1.5, xi=1.5) is unit-variance by construction.
-// --- Phase C tier 1: extraDistr ports -----------------------------------
-
-}
-
-// --- Phase C tier 2: Boost-backed transforms ---------------------------
-
-// rsstd at (mean=0, sd=1, nu=8, xi=1.5) is unit-variance by construction.
-// Heavy tails (nu=8) + skew slow the empirical mean's convergence, so the
-// tolerance is wider than the symmetric / lighter-tailed cases above.
-} // namespace
+}  // namespace

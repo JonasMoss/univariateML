@@ -1,27 +1,14 @@
-# Load per-distribution metadata for the R-side codegen and goldens.
-#
-# Two sources while the one-folder-per-distribution migration is under way
-# (roadmap/2026-10-28-per-distribution-layout.md):
-#
-#   1. Migrated: distributions/<id>/README.md with YAML front matter
-#      (schema: distributions/README_SCHEMA.md). Everything about the
-#      distribution comes from that file.
-#   2. Legacy: distributions/<id>/metadata.hpp (regex-parsed) plus
-#      univariateML/metadata/<id>.json (sampler, density).
-#
-# A distribution uses README.md if it has one; then metadata.hpp and the
-# JSON sidecar must be gone. Returns a list of models sorted by id, each
-# with: id, name, support, params, density, sampler, docs, source.
+# Load per-distribution metadata for the R-side codegen and goldens from
+# distributions/<id>/README.md (YAML front matter + prose; schema:
+# distributions/README_SCHEMA.md). Returns a list of models sorted by id,
+# each with: id, name, support, params, density, sampler, control, limits,
+# references, examples, sections.
 
-if (!requireNamespace("jsonlite", quietly = TRUE)) {
-  stop("jsonlite is required to load distribution metadata.")
+if (!requireNamespace("yaml", quietly = TRUE)) {
+  stop("the yaml package is required to read distributions/<id>/README.md")
 }
 
-# Callers run from univariateML/ (see the Justfile).
-source(file.path("scripts", "parse_cpp_metadata.R"))
-
 `%||%` <- function(a, b) if (is.null(a)) b else a
-
 .umvl_as_bound <- function(v) {
   if (is.numeric(v)) return(v)
   s <- tolower(trimws(as.character(v)))
@@ -101,35 +88,18 @@ source(file.path("scripts", "parse_cpp_metadata.R"))
     limits = f$limits %||% list(),
     references = unlist(f$references %||% list()),
     examples = f$examples %||% NULL,
-    sections = .umvl_body_sections(fm$body),
-    source = "readme"
+    sections = .umvl_body_sections(fm$body)
   )
 }
 
-load_distributions <- function(dist_dir, r_metadata_dir) {
-  if (!requireNamespace("yaml", quietly = TRUE)) {
-    stop("the yaml package is required to read distributions/<id>/README.md")
-  }
+load_distributions <- function(dist_dir) {
   folders <- sort(list.dirs(dist_dir, full.names = TRUE, recursive = FALSE))
   models <- list()
   for (folder in folders) {
     id <- basename(folder)
     readme <- file.path(folder, "README.md")
-    hpp <- file.path(folder, "metadata.hpp")
-    json <- file.path(r_metadata_dir, paste0(id, ".json"))
-    if (file.exists(readme)) {
-      if (file.exists(hpp) || file.exists(json)) {
-        stop("load_distributions: ", id, " has README.md and also ",
-             "metadata.hpp or univariateML/metadata/", id, ".json; remove the old files")
-      }
-      models[[id]] <- .umvl_from_readme(readme, id)
-    } else if (file.exists(hpp)) {
-      cpp <- parse_cpp_metadata(hpp)
-      refs <- if (file.exists(json)) jsonlite::fromJSON(json, simplifyDataFrame = FALSE) else list()
-      m <- c(cpp, refs)
-      m$source <- "legacy"
-      models[[id]] <- m
-    }
+    if (!file.exists(readme)) stop("load_distributions: ", folder, " has no README.md")
+    models[[id]] <- .umvl_from_readme(readme, id)
   }
   models[order(names(models))]
 }

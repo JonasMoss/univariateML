@@ -13,3 +13,9 @@ TEST_CASE("unif") {
   CHECK(r.max == doctest::Approx(g.estimates.at("max")).epsilon(mltest::kTol));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
+
+TEST_CASE("unif dpqr: density, CDF, quantile") {
+  CHECK(cppunivariate::distributions::dunif(0.5, 0.0, 1.0, false) == doctest::Approx(1.0));
+  CHECK(cppunivariate::distributions::punif(0.3, 0.0, 1.0, true, false) == doctest::Approx(0.3));
+  CHECK(cppunivariate::distributions::qunif(0.8, 0.0, 1.0, true, false) == doctest::Approx(0.8));
+}

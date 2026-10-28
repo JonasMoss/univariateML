@@ -1,7 +1,7 @@
 """Generate the (theta, x) evaluation grid for one distribution.
 
 The grid combines:
-- A fixed reference dataset (taken from quality/golden/<id>.json so the
+- A fixed reference dataset (taken from distributions/<id>/golden.json so the
   same data is used by every layer of the pipeline, and it does not need
   regeneration when the spec changes).
 - A theta grid: the recovered MLE plus a Sobol-low-discrepancy sweep
@@ -113,13 +113,11 @@ def build_eval_request(
 ) -> Dict:
     """Build the eval-request payload (data + theta grid + metadata).
 
-    The data is taken from quality/golden/<id>.json. The MLE used as the
+    The data is taken from distributions/<id>/golden.json. The MLE used as the
     sweep centre is the `estimates` field of the same file.
     """
     golden_path = (repo_root / "cppunivariate" / "include" / "cppunivariate"
                    / "distributions" / spec.id / "golden.json")
-    if not golden_path.exists():
-        golden_path = repo_root / "quality" / "golden" / f"{spec.id}.json"
     with golden_path.open() as fh:
         golden = json.load(fh)
     data = list(golden["data"])

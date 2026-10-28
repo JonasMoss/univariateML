@@ -4,7 +4,7 @@
 # For every dossier this script samples from the configured sampler
 # with default parameters and a deterministic seed, fits the
 # corresponding ml<id>() function, and writes the parameter estimates,
-# log-likelihood, and observation count to tests/golden/<id>.json.
+# log-likelihood, and observation count to distributions/<id>/golden.json.
 #
 # These goldens are the regression net for Workstreams 1-5 of the C++ port:
 # any change that does NOT also change the algorithm must reproduce them
@@ -71,27 +71,14 @@ fit_to_record <- function(model, fit, data) {
   )
 }
 
-# Migrated distributions keep their golden in distributions/<id>/golden.json;
-# legacy ones in quality/golden/<id>.json.
-golden_file <- function(model, dossier_dir, out_dir) {
-  if (identical(model$source, "readme")) {
-    file.path(dossier_dir, model$id, "golden.json")
-  } else {
-    file.path(out_dir, paste0(model$id, ".json"))
-  }
-}
-
 main <- function() {
   dossier_dir <- Sys.getenv(
     "UMVL_DOSSIER_DIR",
     "../cppunivariate/include/cppunivariate/distributions"
   )
-  r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
-  out_dir <- Sys.getenv("UMVL_GOLDEN_DIR", "../quality/golden")
-  dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
   source(file.path("scripts", "load_distributions.R"))
-  models <- load_distributions(dossier_dir, r_metadata_dir)
+  models <- load_distributions(dossier_dir)
 
   results <- list()
   for (model in models) {
@@ -112,7 +99,7 @@ main <- function() {
     record <- fit_to_record(model, fit, data)
     jsonlite::write_json(
       record,
-      golden_file(model, dossier_dir, out_dir),
+      file.path(dossier_dir, model$id, "golden.json"),
       pretty = TRUE,
       auto_unbox = TRUE,
       digits = 17
@@ -121,7 +108,7 @@ main <- function() {
     message(sprintf("[ok]   %-10s logLik=%g  n=%d", model$id, record$logLik, record$n))
   }
 
-  message(sprintf("\nWrote %d goldens (legacy ones to %s)", length(results), out_dir))
+  message(sprintf("\nWrote %d goldens to %s/<id>/golden.json", length(results), dossier_dir))
 }
 
 main()

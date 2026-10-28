@@ -6,11 +6,10 @@ dist_dir <- Sys.getenv(
   "UMVL_DOSSIER_DIR",
   "../cppunivariate/include/cppunivariate/distributions"
 )
-r_metadata_dir <- Sys.getenv("UMVL_R_METADATA_DIR", "metadata")
 pkg_r_dir <- Sys.getenv("UMVL_PKG_R_DIR", "package/R")
 
 source(file.path("scripts", "load_distributions.R"))
-models <- load_distributions(dist_dir, r_metadata_dir)
+models <- load_distributions(dist_dir)
 
 line <- function(...) paste0(..., collapse = "")
 
