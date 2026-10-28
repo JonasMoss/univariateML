@@ -1,4 +1,0 @@
-{
-  "sampler": "fGarch::rsged",
-  "density": "fGarch::dsged"
-}

@@ -1,4 +1,0 @@
-{
-  "sampler": "stats::rgeom",
-  "density": "stats::dgeom"
-}
