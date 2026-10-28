@@ -637,6 +637,14 @@ Rcpp::List mlged_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 Rcpp::List mlstd_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                   int iterlim = 200) {
   auto res = cppunivariate::student_t_mle(dist_impl::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::StudentTStatus::NormalBoundary) {
+    Rcpp::stop("The Student-t likelihood is maximised as nu -> Inf, i.e. by the "
+               "normal distribution. Use `mlnorm` to fit this model.");
+  }
+  if (res.status == cppunivariate::StudentTStatus::DfTwoBoundary) {
+    Rcpp::stop("The Student-t likelihood is maximised as nu -> 2 (infinite "
+               "variance); the MLE does not exist in the mean/sd parameterisation.");
+  }
   if (res.status == cppunivariate::StudentTStatus::InvalidStart) {
     Rcpp::stop("Student-t MLE requires at least 2 finite observations with "
                "positive variance.");

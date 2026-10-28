@@ -17,13 +17,15 @@
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
+#include <algorithm>
+#include <vector>
 #include <cmath>
 #include <cstddef>
 #include <limits>
 
 namespace cppunivariate {
 
-enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart };
+enum class StudentTStatus { Ok = 0, BfgsFailure, InvalidStart, NormalBoundary, DfTwoBoundary };
 
 struct StudentTResult {
   double mu;
@@ -128,6 +130,36 @@ struct StudentTCost {
   }
 };
 
+// Ordinary location-scale t2 in standardized data coordinates. Unlike the
+// unit-variance parameterization this face has a finite scale.
+struct StudentTTwoCost {
+  span x;
+  double center, unit;
+  int dim() const { return 2; }
+  double operator()(const double *theta) const {
+    const double scale = std::exp(theta[1]);
+    if (!(scale > 0.0) || !std::isfinite(scale))
+      return std::numeric_limits<double>::infinity();
+    double neg = 0.0;
+    for (double v : x) {
+      const double w = ((v - center) / unit - theta[0]) / scale;
+      neg += std::log(unit) + theta[1] + 1.5 * std::log(2.0) +
+             1.5 * std::log1p(w * w / 2.0);
+    }
+    return neg;
+  }
+  void gradient(const double *theta, double *g) const {
+    const double scale = std::exp(theta[1]);
+    g[0] = 0.0;
+    g[1] = 0.0;
+    for (double v : x) {
+      const double w = ((v - center) / unit - theta[0]) / scale;
+      g[0] -= 3.0 * w / (scale * (2.0 + w * w));
+      g[1] += 1.0 - 3.0 * w * w / (2.0 + w * w);
+    }
+  }
+};
+
 inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -154,6 +186,67 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   ctl.grad_tol = tol;
   ctl.maxit = maxit;
   auto r = bfgs_minimize(fd, phi0, ctl);
+
+  const double dn = static_cast<double>(n);
+  const double normal_sd = sd_x * std::sqrt((dn - 1.0) / dn);
+  double kurtosis = 0.0;
+  for (double v : x) {
+    const double z = (v - mean_x) / normal_sd;
+    kurtosis += z * z * z * z / dn;
+  }
+  if (kurtosis < 3.0) {
+    const double start[3] = {mean_x, std::log(normal_sd), std::log(1e4 - 2.0)};
+    auto large = bfgs_minimize(fd, start, ctl);
+    if (std::isfinite(large.f) && large.f < r.f) r = large;
+  }
+
+  StudentTTwoCost two{x, mean_x, normal_sd};
+  BfgsResult face;
+  face.f = std::numeric_limits<double>::infinity();
+  // Mean and empirical quartile starts, each refined by t2 EM. EM supplies
+  // a scale adapted to tight clusters before the two-dimensional BFGS fit.
+  std::vector<double> sorted;
+  for (double v : x) sorted.push_back((v - mean_x) / normal_sd);
+  std::sort(sorted.begin(), sorted.end());
+  for (double location : {0.0, sorted[n / 4], sorted[n / 2], sorted[3 * n / 4]}) {
+    double scale = 1.0;
+    for (int j = 0; j < maxit; ++j) {
+      double weights = 0.0, weighted = 0.0;
+      for (double v : sorted) {
+        const double w = (v - location) / scale;
+        const double weight = 3.0 / (2.0 + w * w);
+        weights += weight;
+        weighted += weight * v;
+      }
+      const double next = weighted / weights;
+      double variance = 0.0;
+      for (double v : sorted) {
+        const double w = (v - location) / scale;
+        variance += 3.0 / (2.0 + w * w) * (v - next) * (v - next);
+      }
+      location = next;
+      scale = std::sqrt(variance / dn);
+    }
+    const double start[2] = {location, std::log(scale)};
+    auto candidate = bfgs_minimize(two, start, ctl);
+    if (std::isfinite(candidate.f) && candidate.f < face.f) face = candidate;
+  }
+  const double normal_ll = -dn * (std::log(normal_sd) +
+      0.5 * (std::log(2.0 * M_PI) + 1.0));
+  // Absolute log-likelihood tie tolerance, scaled per observation. Prefer
+  // a face within 1e-8 per observation of the best numerical fit; normal
+  // takes precedence if the two faces tie. This is a multistart numerical
+  // comparison, not an exhaustive global stationary-point certificate.
+  const double tie = 1e-8 * dn;
+  const double interior_ll = std::isfinite(r.f) ? -r.f : -INFINITY;
+  if (normal_ll >= interior_ll - tie && normal_ll >= -face.f - tie) {
+    return {mean_x, normal_sd, INFINITY, normal_ll, r.iterations,
+            StudentTStatus::NormalBoundary};
+  }
+  if (-face.f >= interior_ll - tie) {
+    return {mean_x + normal_sd * face.theta[0], INFINITY, 2.0, -face.f,
+            face.iterations, StudentTStatus::DfTwoBoundary};
+  }
 
   const double mu = r.theta[0];
   const double sigma = cppunivariate::from_log(r.theta[1]);
