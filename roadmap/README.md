@@ -96,3 +96,6 @@ the queue.
   ML-only with external d/p/q/r (author's strong preference; argument maps
   where names differ) vs one package exposing the C++ d/p/q/r later;
   extraDistr's maintainer is unresponsive.
+- [2026-10-28 — New distributions and reference-package imports](2026-10-28-new-distributions.md):
+  evaluation of issues #52/#7 (ZINB and constrained GPD first) and of
+  sads (imports VGAM; buggy `pzipf`/`qzipf`).
