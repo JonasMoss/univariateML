@@ -49,10 +49,12 @@ Main findings.
 \begin{enumerate}
   \item Six families escape with a ``use \code{mlX}'' message: lomax,
     gompertz, nbinom, binom, burr, and (since 2026-10-28) invburr.
-  \item Three families escape \emph{silently} and return a huge parameter:
-    std, snorm, sstd. For sstd the returned point can have a lower
-    likelihood than the limit model. For snorm there is an exact
-    one-dimensional rule (Section~\ref{sec:snorm}).
+  \item std and snorm escaped silently; since 2026-10-28 they report it.
+    std stops with ``use \code{mlnorm}'' (or an infinite-variance message
+    for the $\nu\to2^+$ face); snorm is fitted exactly through a
+    one-dimensional profile (Section~\ref{sec:snorm}) and reports the
+    translated half-normal faces. sstd still escapes silently; its returned
+    point can have a lower likelihood than the limit model.
   \item ged and sged have \emph{no} MLE for any nonconstant sample: the
     likelihood is unbounded as the shape tends to $0$ \cite{tumlinson2015}.
     Their large-shape ``uniform'' fits are local maxima only.
@@ -171,6 +173,12 @@ instead. The sd parameterisation (fGarch's \code{dstd}) cannot represent
 that face at all. Detection must compare the boundary faces with the
 interior, not threshold $\hat\nu$.
 
+Fixed (\code{3e9ffee}): the fitter compares the interior BFGS fit (plus a
+restart near large $\nu$ when $K < 3$) with the closed-form normal fit and
+the best location-scale $t_2$ fit, and reports \code{NormalBoundary}
+(``use \code{mlnorm}'') or \code{DfTwoBoundary}. Two old test samples turned
+out to have their supremum on the $t_2$ face.
+
 \paragraph{snorm: an exact rule.}\label{sec:snorm} Write the two-piece normal
 with mode $c$ and left/right scales $a, b$. For fixed $c$ let
 $A(c) = \sum_{x_i<c}(x_i-c)^2$, $B(c) = \sum_{x_i \ge c}(x_i-c)^2$. The
@@ -186,6 +194,11 @@ On each interval between order statistics the stationarity condition is a
 polynomial of degree at most seven, so all candidates can be enumerated.
 Both half-normal faces are always strict local maxima, which explains why a
 local optimiser gets stuck there. (Derivation checked; see the report.)
+
+Implemented (\code{93c7422}): BFGS is replaced by this exact algorithm
+(all stationary points on every interval via root isolation,
+$O(n\log n)$); the faces are reported as \code{RightHalfNormalBoundary} /
+\code{LeftHalfNormalBoundary}.
 
 \paragraph{sstd.} No cheap global rule is known. The inward score at the
 snorm face is again $(\sum_i w_i^4 - 3n)/4$; it is a local filter only. A
@@ -293,16 +306,22 @@ $\mu$ as a parameter; the fitted family is the two-parameter one.
 \section{Open questions and decisions}
 
 \begin{enumerate}
-  \item D1, escape policy: report the escape (status plus a message naming
-    the limit model, as lomax does) or return the limit fit? For std and
-    sstd some limit faces ($t_2$, translated half-laws) are not fits any
-    current function returns.
-  \item D6, ged and sged: impose a lower bound on the shape (which one?),
-    or keep returning a documented local maximum?
-  \item D5, nakagami: allow $m > 0$ (recommended, matches \code{nakagami})
-    or require $m \ge 1/2$?
-  \item snorm: replace BFGS with the exact $Q$-profile algorithm
-    (Section~\ref{sec:snorm})?
+  \item D1, escape policy: decided, stop with ``use \code{mlX}''. Limits
+    without a package model: the evaluation
+    (\code{notes/ml-behaviour-limit-models.md}) recommends adding a
+    translated half-normal (closed form: endpoint at the sample extreme,
+    $s^2 = \overline{(x-c)^2}$) and a scale-parameterised location-scale $t$
+    with $\mathrm{df}\ge1$ and tie guards (std's $\nu\to2^+$ face); messages
+    only for half-$t$ and two-piece $t_2$.
+  \item D6, ged and sged: impose a lower bound on the shape, or keep
+    returning a documented local maximum? Recommendation: $\nu \ge 1$. Any
+    fixed floor bounds the likelihood; $\nu\ge1$ is exactly the log-concave
+    GED, contains the Laplace, and keeps the exponential and all lighter
+    tails. The supremum can then sit at $\nu = 1$, at a finite $\nu > 1$, or
+    at $\nu\to\infty$ (the uniform; ``use \code{mlunif}''). fGarch's own
+    \code{gedFit} uses the ill-posed lower bound $0$.
+  \item D5, nakagami: decided, allow $m > 0$.
+  \item snorm: done (exact $Q$-profile algorithm).
   \item sstd: how much global comparison is affordable in the fitter?
 \end{enumerate}
 
