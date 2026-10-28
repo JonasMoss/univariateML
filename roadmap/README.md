@@ -92,3 +92,7 @@ the queue.
 - [2026-10-28 — R argument names vs CRAN](2026-10-28-cran-argument-names.md)
   *(decided, applied in the migration)*: reltol / abstol / gradtol /
   iterlim / `<param>0`, with the per-distribution audit table.
+- [2026-10-28 — R package scope revisited](2026-10-28-r-package-scope-revisited.md):
+  ML-only with external d/p/q/r (author's strong preference; argument maps
+  where names differ) vs one package exposing the C++ d/p/q/r later;
+  extraDistr's maintainer is unresponsive.
