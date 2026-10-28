@@ -1,7 +1,8 @@
 # New distributions from issues #52 and #7; reference-package imports
 
-**Status:** evaluated 2026-10-28 (five research reports in
-`notes/evaluations/2026-10-28-*.md`); nothing implemented. VGAM is excluded
+**Status:** evaluated 2026-10-28 (six research reports in
+`notes/evaluations/2026-10-28-*.md`). Implemented: ZINB, GPD (constrained),
+and the actuar reciprocals invexp, invpareto, invparalogis. VGAM is excluded
 as a source (unreliable).
 
 ## Recommendations
@@ -22,6 +23,10 @@ as a source (unreliable).
 | truncated normal (known bounds) | extraDistr `dtnorm` | truncated exponential / uniform boundaries | later; tail accuracy of the reference |
 | generalized gamma | flexsurv, ggamma, gamlss.dist | lognormal / power / Pareto boundaries | later, L |
 | exponentially modified Gaussian | emg, gamlss.dist `dexGAUS` | normal and translated-exponential limits | later; emg's quantiles defective |
+| triangular | extraDistr `dtriang` | always attained for nonconstant data (corner-mode members included); mode at an observation; unique concave endpoint problem per mode candidate; ties possible | **next**, M known endpoints, L full (`2026-10-28-tier2.md`); `ptriang(0, 0, 1, 0)` is `NaN` |
+| Huber density | extraDistr `dhuber` | fixed epsilon: attained, concave in $(1/\sigma, \mu/\sigma)$; free epsilon: normal / Laplace faces, n = 2 never has a finite MLE | fixed epsilon M, free L; `phuber` `NaN` in far tails |
+| discrete Weibull I | extraDistr `ddweibull` | finite MLE iff range >= 2; range 1 escapes to an adjacent two-point law, constant to a point mass; geometric is a member | M; reference log pmf `-Inf` and unfloored CDF |
+| Poisson-inverse Gaussian | actuar `dpoisinvgauss` | exact reduction $\hat\mu = \bar x$, 1-D in shape; Poisson face (`mlpois`); overdispersion guarantees a finite MLE | later, L: actuar pmf returns probability 2 near the Poisson limit |
 
 ## Reference packages (`2026-10-28-deps.md`)
 
