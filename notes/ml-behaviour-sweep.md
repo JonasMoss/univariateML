@@ -10,36 +10,31 @@ NOT_MAX compares oracle logLik with the fitter's stored logLik using 1e-4*(abs(l
 
 ## Summary
 
-326 rows across 42 fitters; elapsed 9.0 seconds on one core. Flags may overlap.
+340 rows across 44 fitters; elapsed 28.1 seconds on one core. Flags may overlap.
 
 - **beta**: betaExtreme [ERROR] — x not in the support of the data;  NO FINITE ORACLE.
 - **binom**: outlier [ERROR] — The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument.; SKIP: integer size unavailable.
 - **burr**: limit200 [ERROR] — The Burr maximum likelihood estimator does not exist when all observations >=1. Use `mlpareto` to fit a Pareto distribution..
 - **fatigue**: family20-s1 [NOT_MAX]; family20-s2 [NOT_MAX]; family200-s1 [NOT_MAX]; family200-s2 [NOT_MAX]; small3 [NOT_MAX]; ties [NOT_MAX]; outlier [NOT_MAX].
-- **ged**: family20-s1 [NOT_MAX]; small3 [ESCAPE]; limit200 [ESCAPE].
+- **ged**: family20-s1 [ERROR] — GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.; small3 [ERROR] — GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.; outlier [NOT_MAX]; limit200 [ERROR] — GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead..
 - **gompertz**: outlier [ERROR] — The maximum likelihood estimator of the b parameter Gompertz distribution does not exist since the data is overdispersed. The exponential distribution will yield a better fit..
 - **invburr**: limit200 [ERROR] — The inverse Burr maximum likelihood estimator does not exist when all observations <=1. Use `mlpower` to fit a power distribution..
-- **invgauss**: limit200 [ESCAPE].
 - **kumar**: betaExtreme [ERROR] — x not in the support of the data;  NO FINITE ORACLE; betaClipped [ERROR] — Kumaraswamy MLE failed.
+- **lgser**: small3 [ERROR] — All observations equals 1; the maximum likelihood estimator does not exist..
+- **lomax**: family20-s1 [ERROR] — The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution.; small3 [ERROR] — The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution.; limit200 [ERROR] — The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution..
+- **lst**: family20-s2 [ERROR] — The location-scale t likelihood is maximised as df -> Inf. Use `mlnorm` to fit the normal distribution.; small3 [ERROR] — The location-scale t likelihood is maximised as df -> Inf. Use `mlnorm` to fit the normal distribution..
 - **naka**: outlier [ESCAPE].
 - **nbinom**: small3 [ERROR] — The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead.; limit200 [ERROR] — The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead..
-- **rayleigh**: bound1 [ERROR] — Nonfinite fitter return (no exception): sigma=1.999314 logLik -Inf;  NO FINITE ORACLE.
-- **sged**: family20-s1 [NOT_MAX]; family20-s2 [NOT_MAX]; small3 [ESCAPE]; outlier [ESCAPE,NOT_MAX]; limit200 [NOT_MAX].
-- **snorm**: family20-s1 [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist.; family20-s2 [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist.; small3 [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist.; ties [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist.; outlier [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist.;  NO FINITE ORACLE; limit200 [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist..
-- **sstd**: family20-s1 [NOT_MAX]; small3 [NOT_MAX].
-- **std**: family20-s1 [ERROR] — The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation.; small3 [ERROR] — The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.; outlier [ERROR] — The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation..
+- **rayleigh**: bound1 [ERROR] — Nonfinite fitter return (no exception): sigma=1.981377 logLik -Inf;  NO FINITE ORACLE.
+- **sged**: family20-s1 [ERROR] — SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.; family20-s2 [ERROR] — SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.; small3 [ERROR] — SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.; ties [ERROR] — The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family.; outlier [ERROR] — The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family.;  NO FINITE ORACLE; limit200 [ERROR] — SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead..
+- **snorm**: family20-s1 [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.; family20-s2 [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.; small3 [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.; ties [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.; outlier [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.;  NO FINITE ORACLE; limit200 [ERROR] — The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal..
+- **sstd**: family20-s1 [ERROR] — The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, i.e. by a translated half-normal with endpoint at the sample minimum. Use `mlhnorm` to fit this model.; family20-s2 [ERROR] — The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, i.e. by a translated half-normal with endpoint at the sample minimum. Use `mlhnorm` to fit this model.; small3 [ERROR] — The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, i.e. by a translated half-normal with endpoint at the sample minimum. Use `mlhnorm` to fit this model.; limit200 [ERROR] — The skew Student-t likelihood is maximised as nu -> Inf, i.e. by the skew-normal distribution. Use `mlsnorm` to fit this model..
+- **std**: family20-s2 [ERROR] — The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.; small3 [ERROR] — The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.; outlier [ERROR] — The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation. Use `mllst` to fit a location-scale t distribution with free degrees of freedom.; limit200 [ERROR] — The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model..
+- **zipf**: family20-s1 [ERROR] — Optimal shape parameter is less than 0. The maximum likelihood estimator does not exist.; SKIP: integer size unavailable; small3 [ERROR] — Optimal shape parameter is less than 0. The maximum likelihood estimator does not exist.; SKIP: integer size unavailable.
 
-### Comparison with the note
+### Reading the flags
 
-Finite seeded samples need not escape even when generated from a limit model. ESCAPE is the requested numerical threshold, not a proof of nonexistence; NOT_MAX is a lower-bound counterexample from a finite search, while OK does not certify optimality. Reference-density and stored likelihood differences are visible in the table. Fatigue's unrestricted location oracle and extreme Beta data require particular care; the interpretation below explains the differences.
-
-- Fatigue resolves the note’s open question: the adapter hard-codes mu=0 (univariateML/src/ml_exports.cpp), although metadata lists it among parameters. Its NOT_MAX flags compare that two-parameter fit against a three-parameter oracle; they do not establish failure to optimise alpha/beta conditional on mu=0. The small-sample location oracle approaches a singular boundary and is not a trustworthy finite MLE.
-- ZIP returns lambda=0, pi=-Inf and NaN likelihood on two nondegenerate samples here, extending the note’s boundary-only description. Fatigue returns NaNs at zero. Binomial small3 returns prob=1 with stored logLik=-Inf while the reference logLik is 0. These silent invalid outputs are flagged ERROR with a synthetic diagnostic.
-- The std small3 stored logLik and reference logLik disagree substantially at enormous nu. Numerical cancellation makes that stored value unreliable; this is additional to the note’s escape observation. Other likelihood discrepancies, including reference underflow, remain visible in the table. Nonfinite parameters also occur for cauchy small3, logis outlier, and llogis/pareto at zero; the note’s closure classification does not guarantee numerical robustness on those samples.
-- The seeded normal limit samples for std/sstd have finite fitted nu; gompertz, lomax and binom likewise return finite fits on their limit samples. This is sample dependence, not a contradiction of possible escape. GED and snorm reproduce large-parameter escapes; sged’s uniform fit falls below the 1e4 flag threshold but is still improved by the oracle. invburr’s generic failure and burr’s raw Boost pole error reproduce the note.
-- Nakagami limit200 returns shape about 0.320, below 1/2, confirming the note’s convention issue. Levy data yield a finite inverse-Gaussian mean about 905340: flagged ESCAPE by magnitude but consistent with the note’s finite-MLE claim.
-- Raw Beta(0.05,0.05) samples hit floating-point support endpoints and beta/kumar reject them. On clipped samples beta fits successfully and kumar still fails, reproducing the note’s numerical concern.
-- The extraDistr ZIP reference log density underflows on the outlier row, leaving no finite oracle candidate; the Gompertz outlier requires a data-scaled start to avoid overflow. Treat those rows as oracle limitations, not evidence for optimality. OK elsewhere means only that no requested flag fired; it is not an optimality certificate.
+Interpretation is in notes/ml-behaviour.tex. ESCAPE is a magnitude threshold, not a proof of nonexistence. NOT_MAX is a counterexample from a finite search by an unrestricted oracle, so it also fires where the fitter deliberately restricts the space (GED and SGED fit nu >= 1, decision D6; fatigue fixes mu = 0). OK does not certify optimality. ERROR rows include the intended limit-model stops (decision D1).
 
 ## All fits
 
@@ -116,14 +111,14 @@ Finite seeded samples need not escape even when generated from a limit model. ES
 | gamma | small3 (3) | OK | shape=6.849756, rate= 5.65974 | -1.79159077 | -1.79159077 | shape=6.849756, rate= 5.65974 | -1.79159077 | 6 / 0 |  |
 | gamma | ties (200) | OK | shape=1.895702, rate=1.843535 | -185.425102 | -185.425102 | shape=1.895702, rate=1.843535 | -185.425102 | 6 / 0 |  |
 | gamma | outlier (200) | OK | shape=0.2187359, rate=0.009901941 | -496.778866 | -496.778866 | shape=0.2187359, rate=0.009901941 | -496.778866 | 6 / 0 |  |
-| ged | family20-s1 (20) | NOT_MAX | mean=-0.1041397, sd=0.807587, nu=1.580238 | -23.9764167 | -23.9764167 | mean=-0.1693578, sd=0.8921449, nu=6.332334e+09 | -22.5665333 | 6 / 0 |  |
-| ged | family20-s2 (20) | OK | mean=0.2311214, sd=0.9809284, nu=2.042006 | -27.9927958 | -27.9927958 | mean=0.2311214, sd=0.9809284, nu=2.042006 | -27.9927958 | 6 / 0 |  |
-| ged | family200-s1 (200) | OK | mean=0.008941057, sd=0.9341586, nu=2.672474 | -268.746929 | -268.746929 | mean=0.008941058, sd=0.9341586, nu=2.672474 | -268.746929 | 6 / 0 |  |
-| ged | family200-s2 (200) | OK | mean=0.1261824, sd=0.9481108, nu=2.370705 | -272.605875 | -272.605875 | mean=0.1261824, sd=0.9481108, nu=2.370705 | -272.605875 | 6 / 0 |  |
-| ged | small3 (3) | ESCAPE | mean=-0.2814174, sd=0.7071521, nu=2.626773e+08 | -2.68783127 | -2.68783127 | mean=-0.2814174, sd=0.707152, nu=7.625419e+09 | -2.68783102 | 6 / 0 |  |
-| ged | ties (200) | OK | mean=0.1573839, sd=  1.0181, nu=3.850441 | -281.580056 | -281.580056 | mean=0.1573839, sd=  1.0181, nu=3.850441 | -281.580056 | 6 / 0 |  |
-| ged | outlier (200) | OK | mean=0.02075233, sd=3.521146, nu=0.367305 | -384.587352 | -384.587352 | mean=0.02075233, sd=3.520977, nu=0.3673021 | -384.587172 | 6 / 0 |  |
-| ged | limit200 (200) | ESCAPE | mean=0.01061672, sd=0.5711923, nu=7.798952e+08 | -136.484786 | -136.484786 | mean=0.01061674, sd=0.5711922, nu=1.136246e+10 | -136.484777 | 6 / 0 |  |
+| ged | family20-s1 (20) | ERROR | — |         NA |         NA | mean=-0.1693578, sd=0.8921449, nu=1.310397e+10 | -22.5665332 | 6 / 0 | GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead. |
+| ged | family20-s2 (20) | OK | mean=0.2311242, sd=0.9809279, nu=2.041987 | -27.9927958 | -27.9927958 | mean=0.231121, sd=0.9809285, nu=2.042006 | -27.9927958 | 6 / 0 |  |
+| ged | family200-s1 (200) | OK | mean=0.008941059, sd=0.9341586, nu=2.672474 | -268.746929 | -268.746929 | mean=0.00894106, sd=0.9341587, nu=2.672474 | -268.746929 | 6 / 0 |  |
+| ged | family200-s2 (200) | OK | mean=0.1261826, sd=0.9481109, nu=2.370705 | -272.605875 | -272.605875 | mean=0.1261826, sd=0.9481109, nu=2.370705 | -272.605875 | 6 / 0 |  |
+| ged | small3 (3) | ERROR | — |         NA |         NA | mean=-0.2814174, sd=0.707152, nu=4.021259e+11 | -2.68783101 | 6 / 0 | GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead. |
+| ged | ties (200) | OK | mean=0.1573841, sd=  1.0181, nu=3.850451 | -281.580056 | -281.580056 | mean=0.1573841, sd=  1.0181, nu=3.850451 | -281.580056 | 6 / 0 |  |
+| ged | outlier (200) | NOT_MAX | mean=0.0320165, sd=8.247442, nu=       1 | -691.295344 | -691.295344 | mean=0.007007992, sd=3.440885, nu=0.3711634 | -384.604927 | 6 / 0 |  |
+| ged | limit200 (200) | ERROR | — |         NA |         NA | mean=0.01061674, sd=0.5711922, nu=3.674771e+10 | -136.484777 | 6 / 0 | GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead. |
 | geom | family20-s1 (20) | OK | prob=0.5555556 | -24.7306168 | -24.7306168 | prob=0.5555556 | -24.7306168 | 6 / 0 |  |
 | geom | family20-s2 (20) | OK | prob=0.5128205 | -27.0199181 | -27.0199181 | prob=0.5128205 | -27.0199181 | 6 / 0 |  |
 | geom | family200-s1 (200) | OK | prob=0.5141388 | -269.478706 | -269.478706 | prob=0.5141388 | -269.478706 | 6 / 0 |  |
@@ -148,226 +143,240 @@ Finite seeded samples need not escape even when generated from a limit model. ES
 | gumbel | small3 (3) | OK | mu= 2.23253, sigma=0.2620181 | -0.649972545 | -0.649972545 | mu= 2.23253, sigma=0.2620181 | -0.649972545 | 6 / 0 |  |
 | gumbel | ties (200) | OK | mu=3.071849, sigma=2.938979 | -531.105034 | -531.105034 | mu=3.071849, sigma=2.938979 | -531.105034 | 6 / 0 |  |
 | gumbel | outlier (200) | OK | mu=3.937706, sigma=6.788036 | -758.35726 | -758.35726 | mu=3.937706, sigma=6.788036 | -758.35726 | 6 / 0 |  |
-| invburr | family20-s1 (20) | OK | shape1=1.000379, shape2=1.971179 | -26.6834696 | -26.6834696 | shape1=1.000379, shape2=1.971179 | -26.6834696 | 6 / 0 |  |
-| invburr | family20-s2 (20) | OK | shape1=0.5984887, shape2=3.212115 | -13.8762277 | -13.8762277 | shape1=0.5984887, shape2=3.212115 | -13.8762277 | 6 / 0 |  |
-| invburr | family200-s1 (200) | OK | shape1=0.9177998, shape2=2.143216 | -239.889992 | -239.889992 | shape1=0.9177998, shape2=2.143216 | -239.889992 | 6 / 0 |  |
-| invburr | family200-s2 (200) | OK | shape1=0.9526164, shape2=2.047063 | -253.717284 | -253.717284 | shape1=0.9526164, shape2=2.047063 | -253.717284 | 6 / 0 |  |
-| invburr | small3 (3) | OK | shape1=1.204023, shape2=1.398713 | -5.28591569 | -5.28591569 | shape1=1.204023, shape2=1.398713 | -5.28591569 | 6 / 0 |  |
-| invburr | ties (200) | OK | shape1=0.9608794, shape2=1.981109 | -260.312369 | -260.312369 | shape1=0.9608794, shape2=1.981109 | -260.312369 | 6 / 0 |  |
-| invburr | outlier (200) | OK | shape1=0.9991725, shape2=2.023809 | -267.309481 | -267.309481 | shape1=0.9991725, shape2=2.023809 | -267.309481 | 6 / 0 |  |
-| invburr | limit200 (200) | ERROR | — |         NA |         NA | shape1=0.000556112, shape2=3463.604 | 34.9388901 | 6 / 0 | The inverse Burr maximum likelihood estimator does not exist when all observations <=1. Use `mlpower` to fit a power distribution. |
-| invgamma | family20-s1 (20) | OK | alpha= 3.58102, beta=4.388145 | -23.5351049 | -23.5351049 | alpha= 3.58102, beta=4.388145 | -23.5351049 | 6 / 0 |  |
-| invgamma | family20-s2 (20) | OK | alpha=3.122027, beta=4.268769 | -27.6838399 | -27.6838399 | alpha=3.122027, beta=4.268769 | -27.6838399 | 6 / 0 |  |
-| invgamma | family200-s1 (200) | OK | alpha=3.247875, beta=4.508498 | -274.135873 | -274.135873 | alpha=3.247875, beta=4.508498 | -274.135873 | 6 / 0 |  |
-| invgamma | family200-s2 (200) | OK | alpha=3.047363, beta=3.996467 | -272.041623 | -272.041623 | alpha=3.047363, beta=3.996467 | -272.041623 | 6 / 0 |  |
-| invgamma | small3 (3) | OK | alpha=5.062852, beta=6.250894 | -2.86080121 | -2.86080121 | alpha=5.062852, beta=6.250894 | -2.86080121 | 6 / 0 |  |
-| invgamma | ties (200) | OK | alpha=3.594485, beta= 5.19858 | -267.972365 | -267.972365 | alpha=3.594485, beta= 5.19858 | -267.972365 | 6 / 0 |  |
-| invgamma | outlier (200) | OK | alpha=2.705112, beta=3.984845 | -313.175641 | -313.175641 | alpha=2.705112, beta=3.984845 | -313.175641 | 6 / 0 |  |
-| invgauss | family20-s1 (20) | OK | mean= 2.56677, shape= 6.64832 | -33.5854599 | -33.5854599 | mean= 2.56677, shape= 6.64832 | -33.5854599 | 6 / 0 |  |
-| invgauss | family20-s2 (20) | OK | mean=3.679482, shape=3.274924 | -43.9678402 | -43.9678402 | mean=3.679482, shape=3.274924 | -43.9678402 | 6 / 0 |  |
-| invgauss | family200-s1 (200) | OK | mean=3.301783, shape=4.408217 | -410.716814 | -410.716814 | mean=3.301783, shape=4.408217 | -410.716814 | 6 / 0 |  |
-| invgauss | family200-s2 (200) | OK | mean=3.185565, shape=3.303161 | -402.482597 | -402.482597 | mean=3.185565, shape=3.303161 | -402.482597 | 6 / 0 |  |
-| invgauss | small3 (3) | OK | mean=1.502409, shape=59.92852 | 0.105107372 | 0.105107372 | mean=1.502409, shape=59.92852 | 0.105107372 | 6 / 0 |  |
-| invgauss | ties (200) | OK | mean=   2.901, shape=4.374141 | -380.893279 | -380.893279 | mean=   2.901, shape=4.374141 | -380.893279 | 6 / 0 |  |
-| invgauss | outlier (200) | OK | mean= 70.9351, shape=1.708891 | -468.635767 | -468.635767 | mean= 70.9351, shape=1.708891 | -468.635767 | 6 / 0 |  |
-| invgauss | limit200 (200) | ESCAPE | mean=  905340, shape=0.8732877 | -724.682304 | -724.682304 | mean=  905340, shape=0.8732877 | -724.682304 | 6 / 0 |  |
-| invweibull | family20-s1 (20) | OK | shape=1.778559, rate=3.156994 | -2.21455153 | -2.21455153 | shape=1.778559, rate=3.156994 | -2.21455153 | 6 / 0 |  |
-| invweibull | family20-s2 (20) | OK | shape= 1.37609, rate=2.792496 | -13.4085195 | -13.4085195 | shape= 1.37609, rate=2.792496 | -13.4085195 | 6 / 0 |  |
-| invweibull | family200-s1 (200) | OK | shape=1.902963, rate= 3.18309 | -13.1701227 | -13.1701227 | shape=1.902963, rate= 3.18309 | -13.1701227 | 6 / 0 |  |
-| invweibull | family200-s2 (200) | OK | shape=2.003388, rate=2.985908 | -20.5422863 | -20.5422863 | shape=2.003388, rate=2.985908 | -20.5422863 | 6 / 0 |  |
-| invweibull | small3 (3) | OK | shape=5.729381, rate=4.018689 | 4.27276671 | 4.27276671 | shape=5.729381, rate=4.018689 | 4.27276671 | 6 / 0 |  |
-| invweibull | ties (200) | OK | shape=1.707544, rate=3.036363 | -51.9809739 | -51.9809739 | shape=1.707544, rate=3.036363 | -51.9809739 | 6 / 0 |  |
-| invweibull | outlier (200) | OK | shape=1.812619, rate=2.871941 | -62.2478135 | -62.2478135 | shape=1.812619, rate=2.871941 | -62.2478135 | 6 / 0 |  |
-| kumar | family20-s1 (20) | OK | a=1.652611, b=2.269101 | 2.52128572 | 2.52128572 | a=1.652611, b=2.269101 | 2.52128572 | 6 / 0 |  |
-| kumar | family20-s2 (20) | OK | a=1.904291, b=2.666263 | 3.53185394 | 3.53185394 | a=1.904291, b=2.666263 | 3.53185394 | 6 / 0 |  |
-| kumar | family200-s1 (200) | OK | a=2.163005, b=3.358813 | 48.7335621 | 48.7335621 | a=2.163005, b=3.358813 | 48.7335621 | 6 / 0 |  |
-| kumar | family200-s2 (200) | OK | a=2.149757, b=3.701036 | 53.8916649 | 53.8916649 | a=2.149757, b=3.701036 | 53.8916649 | 6 / 0 |  |
-| kumar | small3 (3) | OK | a=2.205887, b=4.537373 | 1.02505859 | 1.02505859 | a=2.205887, b=4.537373 | 1.02505859 | 6 / 0 |  |
-| kumar | ties (200) | OK | a=1.922633, b=2.894134 | 39.5051923 | 39.5051923 | a=1.922633, b=2.894134 | 39.5051923 | 6 / 0 |  |
-| kumar | outlier (200) | OK | a=1.822544, b=2.535906 | 33.1235724 | 33.1235724 | a=1.822544, b=2.535906 | 33.1235724 | 6 / 0 |  |
+| hnorm | family20-s1 (20) | OK | mu=0.02398772, sigma= 1.09531 | -16.3365674 | -16.3365674 | mu=0.02398772, sigma= 1.09531 | -16.3365674 | 6 / 0 |  |
+| hnorm | family20-s2 (20) | OK | mu=0.1452993, sigma=0.9532912 | -13.5591309 | -13.5591309 | mu=0.1452993, sigma=0.9532912 | -13.5591309 | 6 / 0 |  |
+| hnorm | family200-s1 (200) | OK | mu=0.00192176, sigma=0.9502445 | -134.951071 | -134.951071 | mu=0.00192176, sigma=0.9502445 | -134.951071 | 6 / 0 |  |
+| hnorm | family200-s2 (200) | OK | mu=0.001881486, sigma=0.9674822 | -138.546625 | -138.546625 | mu=0.001881486, sigma=0.9674822 | -138.546625 | 6 / 0 |  |
+| hnorm | small3 (3) | OK | mu=0.5743726, sigma=0.1871267 | 2.85053474 | 2.85053474 | mu=0.5743726, sigma=0.1871267 | 2.85053474 | 6 / 0 |  |
+| hnorm | ties (200) | OK | mu=-4.940656e-324, sigma=0.897775 | -123.591117 | -123.591117 | mu=-4.940656e-324, sigma=0.897775 | -123.591117 | 6 / 0 |  |
+| hnorm | outlier (200) | OK | mu=0.005892193, sigma=70.95054 | -997.554884 | -997.554884 | mu=0.005892193, sigma=70.95054 | -997.554884 | 6 / 0 |  |
+| invburr | family20-s1 (20) | OK | shape1=0.8463122, shape2=2.439858 | -19.9711605 | -19.9711605 | shape1=0.8463122, shape2=2.439858 | -19.9711605 | 6 / 0 |  |
+| invburr | family20-s2 (20) | OK | shape1=0.683288, shape2= 3.35117 | -16.1383164 | -16.1383164 | shape1=0.683288, shape2= 3.35117 | -16.1383164 | 6 / 0 |  |
+| invburr | family200-s1 (200) | OK | shape1=0.9027267, shape2=2.069899 | -246.60572 | -246.60572 | shape1=0.9027267, shape2=2.069899 | -246.60572 | 6 / 0 |  |
+| invburr | family200-s2 (200) | OK | shape1=1.075405, shape2= 1.94408 | -273.188685 | -273.188685 | shape1=1.075405, shape2= 1.94408 | -273.188685 | 6 / 0 |  |
+| invburr | small3 (3) | OK | shape1=6.206194, shape2=2.885541 | -3.9738944 | -3.9738944 | shape1=6.206194, shape2=2.885541 | -3.9738944 | 6 / 0 |  |
+| invburr | ties (200) | OK | shape1=0.8206162, shape2=2.725563 | -188.977009 | -188.977009 | shape1=0.8206162, shape2=2.725563 | -188.977009 | 6 / 0 |  |
+| invburr | outlier (200) | OK | shape1=0.8866074, shape2=2.309344 | -227.840874 | -227.840874 | shape1=0.8866074, shape2=2.309344 | -227.840874 | 6 / 0 |  |
+| invburr | limit200 (200) | ERROR | — |         NA |         NA | shape1=9.3116e-05, shape2=20679.86 | 34.9125555 | 6 / 0 | The inverse Burr maximum likelihood estimator does not exist when all observations <=1. Use `mlpower` to fit a power distribution. |
+| invgamma | family20-s1 (20) | OK | alpha=3.344981, beta=5.536029 | -30.5085058 | -30.5085058 | alpha=3.344981, beta=5.536029 | -30.5085058 | 6 / 0 |  |
+| invgamma | family20-s2 (20) | OK | alpha=2.749845, beta=3.778753 | -29.6765768 | -29.6765768 | alpha=2.749845, beta=3.778753 | -29.6765768 | 6 / 0 |  |
+| invgamma | family200-s1 (200) | OK | alpha=3.584211, beta=4.283745 | -230.232764 | -230.232764 | alpha=3.584211, beta=4.283745 | -230.232764 | 6 / 0 |  |
+| invgamma | family200-s2 (200) | OK | alpha=2.752637, beta=3.719515 | -293.248003 | -293.248003 | alpha=2.752637, beta=3.719515 | -293.248003 | 6 / 0 |  |
+| invgamma | small3 (3) | OK | alpha=9.665954, beta=12.58835 | -1.85593516 | -1.85593516 | alpha=9.665954, beta=12.58835 | -1.85593516 | 6 / 0 |  |
+| invgamma | ties (200) | OK | alpha=3.612438, beta=4.912663 | -254.967618 | -254.967618 | alpha=3.612438, beta=4.912663 | -254.967618 | 6 / 0 |  |
+| invgamma | outlier (200) | OK | alpha=2.624754, beta=3.630304 | -305.22337 | -305.22337 | alpha=2.624754, beta=3.630304 | -305.22337 | 6 / 0 |  |
+| invgauss | family20-s1 (20) | OK | mean=2.325296, shape=4.103154 | -32.447487 | -32.447487 | mean=2.325296, shape=4.103154 | -32.447487 | 6 / 0 |  |
+| invgauss | family20-s2 (20) | OK | mean= 3.12799, shape=3.923526 | -40.5385673 | -40.5385673 | mean= 3.12799, shape=3.923526 | -40.5385673 | 6 / 0 |  |
+| invgauss | family200-s1 (200) | OK | mean=2.670216, shape=4.149569 | -362.277954 | -362.277954 | mean=2.670216, shape=4.149569 | -362.277954 | 6 / 0 |  |
+| invgauss | family200-s2 (200) | OK | mean=3.059574, shape=4.093179 | -393.435237 | -393.435237 | mean=3.059574, shape=4.093179 | -393.435237 | 6 / 0 |  |
+| invgauss | small3 (3) | OK | mean=3.722709, shape=31.59127 | -4.73901149 | -4.73901149 | mean=3.722709, shape=31.59127 | -4.73901149 | 6 / 0 |  |
+| invgauss | ties (200) | OK | mean=   3.065, shape=3.417347 | -390.226658 | -390.226658 | mean=   3.065, shape=3.417347 | -390.226658 | 6 / 0 |  |
+| invgauss | outlier (200) | OK | mean=127.6294, shape=1.787777 | -483.910089 | -483.910089 | mean=127.6294, shape=1.787777 | -483.910089 | 6 / 0 |  |
+| invgauss | limit200 (200) | OK | mean=765.3349, shape=0.9775628 | -681.557532 | -681.557532 | mean=765.3349, shape=0.9775628 | -681.557532 | 6 / 0 |  |
+| invweibull | family20-s1 (20) | OK | shape= 2.07152, rate=3.244765 | -0.731136584 | -0.731136584 | shape= 2.07152, rate=3.244765 | -0.731136584 | 6 / 0 |  |
+| invweibull | family20-s2 (20) | OK | shape= 1.36938, rate= 2.99459 | -12.3942812 | -12.3942812 | shape= 1.36938, rate= 2.99459 | -12.3942812 | 6 / 0 |  |
+| invweibull | family200-s1 (200) | OK | shape=2.188246, rate=2.964793 | 3.42590995 | 3.42590995 | shape=2.188246, rate=2.964793 | 3.42590995 | 6 / 0 |  |
+| invweibull | family200-s2 (200) | OK | shape=2.109534, rate=2.860511 | -8.34150716 | -8.34150716 | shape=2.109534, rate=2.860511 | -8.34150716 | 6 / 0 |  |
+| invweibull | small3 (3) | OK | shape=3.790931, rate=3.114379 | 2.39979348 | 2.39979348 | shape=3.790931, rate=3.114379 | 2.39979348 | 6 / 0 |  |
+| invweibull | ties (200) | OK | shape=2.026181, rate=3.000987 | -15.6025341 | -15.6025341 | shape=2.026181, rate=3.000987 | -15.6025341 | 6 / 0 |  |
+| invweibull | outlier (200) | OK | shape=1.785987, rate=2.859863 | -60.9829456 | -60.9829456 | shape=1.785987, rate=2.859863 | -60.9829456 | 6 / 0 |  |
+| kumar | family20-s1 (20) | OK | a=1.752849, b=2.821805 | 3.77717605 | 3.77717605 | a=1.752849, b=2.821805 | 3.77717605 | 6 / 0 |  |
+| kumar | family20-s2 (20) | OK | a=1.546461, b=1.445212 | 1.13054846 | 1.13054846 | a=1.546461, b=1.445212 | 1.13054846 | 6 / 0 |  |
+| kumar | family200-s1 (200) | OK | a=2.069979, b=3.153637 | 44.2911925 | 44.2911925 | a=2.069979, b=3.153637 | 44.2911925 | 6 / 0 |  |
+| kumar | family200-s2 (200) | OK | a=1.936542, b=2.884325 | 40.5035129 | 40.5035129 | a=1.936542, b=2.884325 | 40.5035129 | 6 / 0 |  |
+| kumar | small3 (3) | OK | a=1.562351, b=3.512836 | 0.86767967 | 0.86767967 | a=1.562351, b=3.512836 | 0.86767967 | 6 / 0 |  |
+| kumar | ties (200) | OK | a=1.976649, b=2.486462 | 32.4898693 | 32.4898693 | a=1.976649, b=2.486462 | 32.4898693 | 6 / 0 |  |
+| kumar | outlier (200) | OK | a=1.793459, b=2.210674 | 26.4735475 | 26.4735475 | a=1.793459, b=2.210674 | 26.4735475 | 6 / 0 |  |
 | kumar | betaExtreme (200) | ERROR | — |         NA |         NA | — |       -Inf | 6 / NA | x not in the support of the data;  NO FINITE ORACLE |
-| kumar | betaClipped (200) | ERROR | — |         NA |         NA | a=0.02148306, b=0.1013046 | 2112.65487 | 6 / 0 | Kumaraswamy MLE failed |
-| laplace | family20-s1 (20) | OK | mu=0.2918164, sigma=1.085093 | -35.4962629 | -35.4962629 | mu=0.2918164, sigma=1.085093 | -35.4962629 | 6 / 0 |  |
-| laplace | family20-s2 (20) | OK | mu=0.07312485, sigma=1.427451 | -40.9807564 | -40.9807564 | mu=0.07312485, sigma=1.427451 | -40.9807564 | 6 / 0 |  |
-| laplace | family200-s1 (200) | OK | mu=0.05078176, sigma=1.018661 | -342.327172 | -342.327172 | mu=0.05078176, sigma=1.018661 | -342.327172 | 6 / 0 |  |
-| laplace | family200-s2 (200) | OK | mu=0.1139798, sigma=0.9020691 | -318.016598 | -318.016598 | mu=0.1139798, sigma=0.9020691 | -318.016598 | 6 / 0 |  |
-| laplace | small3 (3) | OK | mu=0.3852197, sigma=0.6796709 | -3.92100191 | -3.92100191 | mu=0.3852197, sigma=0.6796709 | -3.92100191 | 6 / 0 |  |
-| laplace | ties (200) | OK | mu=    -0.3, sigma=   0.977 | -333.975711 | -333.975711 | mu=    -0.3, sigma=   0.977 | -333.975711 | 6 / 0 |  |
-| laplace | outlier (200) | OK | mu=-0.1876476, sigma=6.002355 | -697.059821 | -697.059821 | mu=-0.1876476, sigma=6.002355 | -697.059821 | 6 / 0 |  |
-| lgamma | family20-s1 (20) | OK | shapelog=2.935428, ratelog=4.091903 | -22.8438149 | -22.8438149 | shapelog=2.935428, ratelog=4.091903 | -22.8438149 | 6 / 0 |  |
-| lgamma | family20-s2 (20) | OK | shapelog=2.994633, ratelog=4.017161 | -24.0266819 | -24.0266819 | shapelog=2.994633, ratelog=4.017161 | -24.0266819 | 6 / 0 |  |
-| lgamma | family200-s1 (200) | OK | shapelog=2.179006, ratelog=3.155999 | -235.664278 | -235.664278 | shapelog=2.179006, ratelog=3.155999 | -235.664278 | 6 / 0 |  |
-| lgamma | family200-s2 (200) | OK | shapelog=  2.2061, ratelog=3.166542 | -237.949708 | -237.949708 | shapelog=  2.2061, ratelog=3.166542 | -237.949708 | 6 / 0 |  |
-| lgamma | small3 (3) | OK | shapelog=2.766133, ratelog= 2.68381 | -5.51801877 | -5.51801877 | shapelog=2.766133, ratelog= 2.68381 | -5.51801877 | 6 / 0 |  |
-| lgamma | ties (200) | OK | shapelog= 1.86625, ratelog=2.858765 | -225.973003 | -225.973003 | shapelog= 1.86625, ratelog=2.858765 | -225.973003 | 6 / 0 |  |
-| lgamma | outlier (200) | OK | shapelog=1.679635, ratelog=2.482606 | -243.265321 | -243.265321 | shapelog=1.679635, ratelog=2.482606 | -243.265321 | 6 / 0 |  |
-| lgser | family20-s1 (20) | OK | theta=0.8547379 | -36.2400001 | -36.2400001 | theta=0.8547379 | -36.2400001 | 6 / 0 |  |
-| lgser | family20-s2 (20) | OK | theta=0.9235847 |  -45.04441 |  -45.04441 | theta=0.9235847 |  -45.04441 | 6 / 0 |  |
-| lgser | family200-s1 (200) | OK | theta=0.8803286 | -409.939096 | -409.939096 | theta=0.8803286 | -409.939096 | 6 / 0 |  |
-| lgser | family200-s2 (200) | OK | theta=0.8977386 | -421.78548 | -421.78548 | theta=0.8977386 | -421.78548 | 6 / 0 |  |
-| lgser | small3 (3) | OK | theta=0.8731269 | -6.17056393 | -6.17056393 | theta=0.8731269 | -6.17056393 | 6 / 0 |  |
-| lgser | ties (200) | OK | theta=0.8711814 | -386.080029 | -386.080029 | theta=0.8711814 | -386.080029 | 6 / 0 |  |
-| lgser | outlier (200) | OK | theta=0.9991039 | -596.744919 | -596.744919 | theta=0.9991039 | -596.744919 | 6 / 0 |  |
-| lgser | bound1 (200) | OK | theta=0.8989065 | -416.799388 | -416.799388 | theta=0.8989065 | -416.799388 | 6 / 0 |  |
-| llogis | family20-s1 (20) | OK | shape=1.058079, rate=2.245402 | -26.7445551 | -26.7445551 | shape=1.058079, rate=2.245402 | -26.7445551 | 6 / 0 |  |
-| llogis | family20-s2 (20) | OK | shape=1.180868, rate=3.198409 | -12.2751729 | -12.2751729 | shape=1.180868, rate=3.198409 | -12.2751729 | 6 / 0 |  |
-| llogis | family200-s1 (200) | OK | shape=1.031987, rate=1.806489 | -280.395857 | -280.395857 | shape=1.031987, rate=1.806489 | -280.395857 | 6 / 0 |  |
-| llogis | family200-s2 (200) | OK | shape=1.064523, rate=2.187946 | -238.598851 | -238.598851 | shape=1.064523, rate=2.187946 | -238.598851 | 6 / 0 |  |
-| llogis | small3 (3) | OK | shape=1.924107, rate=0.5810142 | -5.78923785 | -5.78923785 | shape=1.924107, rate=0.5810142 | -5.78923785 | 6 / 0 |  |
-| llogis | ties (200) | OK | shape=0.958976, rate=1.370296 | -324.110818 | -324.110818 | shape=0.958976, rate=1.370296 | -324.110818 | 6 / 0 |  |
-| llogis | outlier (200) | OK | shape=0.8661341, rate=1.847891 | -303.986488 | -303.986488 | shape=0.8661341, rate=1.847891 | -303.986488 | 6 / 0 |  |
-| lnorm | family20-s1 (20) | OK | meanlog=-0.3447884, sdlog=0.974101 | -20.9581968 | -20.9581968 | meanlog=-0.3447884, sdlog=0.974101 | -20.9581968 | 6 / 0 |  |
-| lnorm | family20-s2 (20) | OK | meanlog=-0.3183484, sdlog=1.103981 | -23.9902638 | -23.9902638 | meanlog=-0.3183484, sdlog=1.103981 | -23.9902638 | 6 / 0 |  |
-| lnorm | family200-s1 (200) | OK | meanlog=0.0843903, sdlog=0.9915307 | -298.964693 | -298.964693 | meanlog=0.0843903, sdlog=0.9915307 | -298.964693 | 6 / 0 |  |
-| lnorm | family200-s2 (200) | OK | meanlog=0.1496144, sdlog=1.039799 | -321.51599 | -321.51599 | meanlog=0.1496144, sdlog=1.039799 | -321.51599 | 6 / 0 |  |
-| lnorm | small3 (3) | OK | meanlog=0.08188887, sdlog=0.5392705 | -2.64986807 | -2.64986807 | meanlog=0.08188887, sdlog=0.5392705 | -2.64986807 | 6 / 0 |  |
-| lnorm | ties (200) | OK | meanlog=-0.03378702, sdlog=0.8836325 | -252.28749 | -252.28749 | meanlog=-0.03378702, sdlog=0.8836325 | -252.28749 | 6 / 0 |  |
-| lnorm | outlier (200) | OK | meanlog=0.0166084, sdlog=1.161744 | -317.093782 | -317.093782 | meanlog=0.0166084, sdlog=1.161744 | -317.093782 | 6 / 0 |  |
-| logis | family20-s1 (20) | OK | location=0.7617401, scale=1.009982 | -40.2020099 | -40.2020099 | location=0.7617401, scale=1.009982 | -40.2020099 | 6 / 0 |  |
-| logis | family20-s2 (20) | OK | location=0.5934155, scale=1.480403 | -48.3451014 | -48.3451014 | location=0.5934155, scale=1.480403 | -48.3451014 | 6 / 0 |  |
-| logis | family200-s1 (200) | OK | location=-0.113402, scale=0.9969924 | -397.111057 | -397.111057 | location=-0.113402, scale=0.9969924 | -397.111057 | 6 / 0 |  |
-| logis | family200-s2 (200) | OK | location=0.08852113, scale=0.896656 | -381.239487 | -381.239487 | location=0.08852113, scale=0.896656 | -381.239487 | 6 / 0 |  |
-| logis | small3 (3) | OK | location=-0.3843994, scale=0.7015574 | -4.80188287 | -4.80188287 | location=-0.3843994, scale=0.7015574 | -4.80188287 | 6 / 0 |  |
-| logis | ties (200) | OK | location=-0.2532962, scale=1.095632 | -417.871439 | -417.871439 | location=-0.2532962, scale=1.095632 | -417.871439 | 6 / 0 |  |
-| logis | outlier (200) | OK | location=-0.1092069, scale=5.338691 | -805.074789 | -805.074789 | location=-0.1092069, scale=5.338691 | -805.074789 | 6 / 0 |  |
-| logitnorm | family20-s1 (20) | OK | mu= 1.99465, sigma=2.741339 |  12.274157 |  12.274157 | mu= 1.99465, sigma=2.741339 |  12.274157 | 6 / 0 |  |
-| logitnorm | family20-s2 (20) | OK | mu=1.642853, sigma=2.697968 | 9.70743655 | 9.70743655 | mu=1.642853, sigma=2.697968 | 9.70743655 | 6 / 0 |  |
-| logitnorm | family200-s1 (200) | OK | mu=1.983818, sigma= 2.80764 | 133.953205 | 133.953205 | mu=1.983818, sigma= 2.80764 | 133.953205 | 6 / 0 |  |
-| logitnorm | family200-s2 (200) | OK | mu=2.042055, sigma=2.932801 | 150.236779 | 150.236779 | mu=2.042055, sigma=2.932801 | 150.236779 | 6 / 0 |  |
-| logitnorm | small3 (3) | OK | mu=1.955213, sigma= 2.81597 | 1.83224228 | 1.83224228 | mu=1.955213, sigma= 2.81597 | 1.83224228 | 6 / 0 |  |
-| logitnorm | ties (200) | OK | mu=2.493591, sigma=3.025001 | 193.162542 | 193.162542 | mu=2.493591, sigma=3.025001 | 193.162542 | 6 / 0 |  |
-| logitnorm | outlier (200) | OK | mu=2.443724, sigma=3.255337 | 188.316697 | 188.316697 | mu=2.443724, sigma=3.255337 | 188.316697 | 6 / 0 |  |
-| lomax | family20-s1 (20) | OK | lambda=1.078605, kappa=2.114623 | -12.9670405 | -12.9670405 | lambda=1.078605, kappa=2.114623 | -12.9670405 | 6 / 0 |  |
-| lomax | family20-s2 (20) | OK | lambda=1.075043, kappa=2.424715 | -9.08690952 | -9.08690952 | lambda=1.075043, kappa=2.424715 | -9.08690952 | 6 / 0 |  |
-| lomax | family200-s1 (200) | OK | lambda=1.113657, kappa=1.822329 | -168.196761 | -168.196761 | lambda=1.113657, kappa=1.822329 | -168.196761 | 6 / 0 |  |
-| lomax | family200-s2 (200) | OK | lambda=1.510644, kappa=1.396623 | -193.883817 | -193.883817 | lambda=1.510644, kappa=1.396623 | -193.883817 | 6 / 0 |  |
-| lomax | small3 (3) | OK | lambda=1.374353, kappa=3.092074 | 0.370253359 | 0.370253359 | lambda=1.374353, kappa=3.092074 | 0.370253359 | 6 / 0 |  |
-| lomax | ties (200) | OK | lambda=0.8472221, kappa=2.330371 | -149.776262 | -149.776262 | lambda=0.8472221, kappa=2.330371 | -149.776262 | 6 / 0 |  |
-| lomax | outlier (200) | OK | lambda=1.660873, kappa=1.431573 | -166.483043 | -166.483043 | lambda=1.660873, kappa=1.431573 | -166.483043 | 6 / 0 |  |
-| lomax | limit200 (200) | OK | lambda=0.002330331, kappa=400.5425 | -214.284352 | -214.284352 | lambda=0.002330331, kappa=400.5425 | -214.284352 | 6 / 0 |  |
-| naka | family20-s1 (20) | OK | shape=1.822375, scale=2.915857 | -18.0243265 | -18.0243265 | shape=1.822375, scale=2.915857 | -18.0243265 | 6 / 0 |  |
-| naka | family20-s2 (20) | OK | shape=1.331939, scale=2.933763 | -20.6345235 | -20.6345235 | shape=1.331939, scale=2.933763 | -20.6345235 | 6 / 0 |  |
-| naka | family200-s1 (200) | OK | shape=2.244239, scale=3.020501 | -165.630769 | -165.630769 | shape=2.244239, scale=3.020501 | -165.630769 | 6 / 0 |  |
-| naka | family200-s2 (200) | OK | shape=1.991229, scale=3.174861 | -181.128976 | -181.128976 | shape=1.991229, scale=3.174861 | -181.128976 | 6 / 0 |  |
-| naka | small3 (3) | OK | shape=6.755026, scale=2.009046 | -0.318583676 | -0.318583676 | shape=6.755026, scale=2.009046 | -0.318583676 | 6 / 0 |  |
-| naka | ties (200) | OK | shape=1.995125, scale=   3.158 | -180.426618 | -180.426618 | shape=1.995125, scale=   3.158 | -180.426618 | 6 / 0 |  |
-| naka | outlier (200) | ESCAPE | shape=0.08146801, scale=68047.61 | -669.172463 | -669.172463 | shape=0.08146801, scale=68047.61 | -669.172463 | 6 / 0 |  |
-| naka | limit200 (200) | OK | shape=0.3197403, scale=0.2950861 | -5.03003997 | -5.03003997 | shape=0.3197403, scale=0.2950861 | -5.03003997 | 6 / 0 |  |
-| nbinom | family20-s1 (20) | OK | size=10.47331, prob=0.2919528 | -72.5872331 | -72.5872331 | size=10.47331, prob=0.2919528 | -72.5872331 | 6 / 0 |  |
-| nbinom | family20-s2 (20) | OK | size= 10.9921, prob=0.3267365 | -69.850212 | -69.850212 | size= 10.9921, prob=0.3267365 | -69.850212 | 6 / 0 |  |
-| nbinom | family200-s1 (200) | OK | size=10.03883, prob=0.2921337 | -719.281217 | -719.281217 | size=10.03883, prob=0.2921337 | -719.281217 | 6 / 0 |  |
-| nbinom | family200-s2 (200) | OK | size=9.867789, prob=0.3081008 | -704.60554 | -704.60554 | size=9.867789, prob=0.3081008 | -704.60554 | 6 / 0 |  |
-| nbinom | small3 (3) | ERROR | — |         NA |         NA | size=4.233559e+10, prob=       1 | -8.7017617 | 6 / 0 | The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead. |
-| nbinom | ties (200) | OK | size=9.804089, prob=0.2946464 | -714.552001 | -714.552001 | size=9.804089, prob=0.2946464 | -714.552001 | 6 / 0 |  |
-| nbinom | outlier (200) | OK | size=0.281628, prob=0.001090961 | -1118.08931 | -1118.08931 | size=0.281628, prob=0.001090961 | -1118.08931 | 6 / 0 |  |
-| nbinom | bound1 (200) | OK | size=8.397687, prob=0.2686169 | -722.765313 | -722.765313 | size=8.397687, prob=0.2686169 | -722.765313 | 6 / 0 |  |
-| nbinom | limit200 (200) | ERROR | — |         NA |         NA | size=8.301925e+08, prob=       1 | -400.226755 | 6 / 0 | The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead. |
-| norm | family20-s1 (20) | OK | mean=-0.0926504, sd=0.8562613 | -25.2751769 | -25.2751769 | mean=-0.0926504, sd=0.8562613 | -25.2751769 | 6 / 0 |  |
-| norm | family20-s2 (20) | OK | mean=-0.0668406, sd=0.955562 | -27.4696585 | -27.4696585 | mean=-0.0668406, sd=0.955562 | -27.4696585 | 6 / 0 |  |
-| norm | family200-s1 (200) | OK | mean=-0.1394324, sd=1.053294 | -294.172174 | -294.172174 | mean=-0.1394324, sd=1.053294 | -294.172174 | 6 / 0 |  |
-| norm | family200-s2 (200) | OK | mean=0.005933424, sd=0.9975271 | -283.292522 | -283.292522 | mean=0.005933424, sd=0.9975271 | -283.292522 | 6 / 0 |  |
-| norm | small3 (3) | OK | mean=-0.1255367, sd=0.2592355 | -0.206761007 | -0.206761007 | mean=-0.1255367, sd=0.2592355 | -0.206761007 | 6 / 0 |  |
-| norm | ties (200) | OK | mean=   0.018, sd=0.9682334 | -277.331294 | -277.331294 | mean=   0.018, sd=0.9682334 | -277.331294 | 6 / 0 |  |
-| norm | outlier (200) | OK | mean=4.913408, sd=70.72734 | -1135.55415 | -1135.55415 | mean=4.913408, sd=70.72734 | -1135.55415 | 6 / 0 |  |
-| paralogis | family20-s1 (20) | OK | shape=0.9744179, scale=1.181559 | -43.3226978 | -43.3226978 | shape=0.9744179, scale=1.181559 | -43.3226978 | 6 / 0 |  |
-| paralogis | family20-s2 (20) | OK | shape=1.278283, scale=1.325124 | -34.7772848 | -34.7772848 | shape=1.278283, scale=1.325124 | -34.7772848 | 6 / 0 |  |
-| paralogis | family200-s1 (200) | OK | shape=1.025228, scale= 1.04598 | -397.766758 | -397.766758 | shape=1.025228, scale= 1.04598 | -397.766758 | 6 / 0 |  |
-| paralogis | family200-s2 (200) | OK | shape=0.9969582, scale=1.229942 | -447.53149 | -447.53149 | shape=0.9969581, scale=1.229942 | -447.53149 | 6 / 0 |  |
-| paralogis | small3 (3) | OK | shape=2.338637, scale=0.6721075 | 0.0403837779 | 0.0403837779 | shape=2.338607, scale=0.6720969 | 0.0403837791 | 6 / 0 |  |
-| paralogis | ties (200) | OK | shape=1.049318, scale=0.9448726 | -363.448137 | -363.448137 | shape=1.049318, scale=0.9448726 | -363.448137 | 6 / 0 |  |
-| paralogis | outlier (200) | OK | shape= 1.01465, scale=0.8621869 | -371.099949 | -371.099949 | shape= 1.01465, scale=0.8621869 | -371.099949 | 6 / 0 |  |
-| pareto | family20-s1 (20) | OK | a=1.064272, b=2.209774 | -53.4041874 | -53.4041874 | a=1.064272, b=2.209774 | -53.4041874 | 6 / 0 |  |
-| pareto | family20-s2 (20) | OK | a=0.8282182, b=2.091606 | -62.6764368 | -62.6764368 | a=0.8282182, b=2.091606 | -62.6764368 | 6 / 0 |  |
-| pareto | family200-s1 (200) | OK | a= 1.18091, b=2.000928 | -474.82596 | -474.82596 | a= 1.18091, b=2.000928 | -474.82596 | 6 / 0 |  |
-| pareto | family200-s2 (200) | OK | a=1.000863, b=2.004804 | -538.76434 | -538.76434 | a=1.000863, b=2.004804 | -538.76434 | 6 / 0 |  |
-| pareto | small3 (3) | OK | a=3.401905, b=2.869873 | -3.37165572 | -3.37165572 | a=3.402085, b=2.869873 | -3.37165574 | 6 / 0 |  |
-| pareto | ties (200) | OK | a=1.103924, b=       2 | -500.027249 | -500.027249 | a=1.103924, b=       2 | -500.027249 | 6 / 0 |  |
-| pareto | outlier (200) | OK | a=1.016474, b=2.008737 | -532.99168 | -532.99168 | a=1.016474, b=2.008737 | -532.99168 | 6 / 0 |  |
-| pois | family20-s1 (20) | OK | lambda=    1.85 | -34.4458886 | -34.4458886 | lambda=    1.85 | -34.4458886 | 6 / 0 |  |
-| pois | family20-s2 (20) | OK | lambda=    1.95 | -34.4433456 | -34.4433456 | lambda=    1.95 | -34.4433456 | 6 / 0 |  |
-| pois | family200-s1 (200) | OK | lambda=    2.02 | -341.604158 | -341.604158 | lambda=    2.02 | -341.604158 | 6 / 0 |  |
-| pois | family200-s2 (200) | OK | lambda=   1.985 | -345.697832 | -345.697832 | lambda=   1.985 | -345.697832 | 6 / 0 |  |
-| pois | small3 (3) | OK | lambda=1.333333 | -3.54241889 | -3.54241889 | lambda=1.333333 | -3.54241889 | 6 / 0 |  |
-| pois | ties (200) | OK | lambda=    2.17 | -352.339292 | -352.339292 | lambda=    2.17 | -352.339292 | 6 / 0 |  |
-| pois | outlier (200) | OK | lambda=  32.005 | -30638.3125 | -30638.3125 | lambda=  32.005 | -30638.3125 | 6 / 0 |  |
-| pois | bound1 (200) | OK | lambda=   2.005 | -342.177587 | -342.177587 | lambda=   2.005 | -342.177587 | 6 / 0 |  |
-| power | family20-s1 (20) | OK | alpha=0.9663029, beta=2.233992 | 5.71394646 | 5.71394646 | alpha=0.9663028, beta=2.233988 | 5.71394715 | 6 / 0 |  |
-| power | family20-s2 (20) | OK | alpha=0.9956075, beta=2.528961 | 6.55260187 | 6.55260187 | alpha=0.9956075, beta=2.528956 | 6.55260262 | 6 / 0 |  |
-| power | family200-s1 (200) | OK | alpha=0.9946478, beta=2.067761 | 43.0895474 | 43.0895474 | alpha=0.9946478, beta=2.067756 | 43.0895536 | 6 / 0 |  |
-| power | family200-s2 (200) | OK | alpha=0.9987769, beta=1.851568 | 31.4678742 | 31.4678742 | alpha=0.9987769, beta=1.851564 | 31.4678797 | 6 / 0 |  |
-| power | small3 (3) | OK | alpha=0.7341822, beta=1.742084 | 1.31431581 | 1.31431581 | alpha=0.7341822, beta=1.742085 | 1.31431591 | 6 / 0 |  |
-| power | ties (200) | OK | alpha=       1, beta=2.408527 | 58.8413661 | 58.8413661 | alpha=       1, beta=2.408522 | 58.8413732 | 6 / 0 |  |
-| power | outlier (200) | OK | alpha=997.3723, beta=0.1367207 | -516.151941 | -516.151941 | alpha=997.3723, beta=0.1367207 | -516.151941 | 6 / 0 |  |
-| rayleigh | family20-s1 (20) | OK | sigma=1.686187 | -27.8987714 | -27.8987714 | sigma=1.686187 | -27.8987714 | 6 / 0 |  |
-| rayleigh | family20-s2 (20) | OK | sigma=1.776577 | -26.9186392 | -26.9186392 | sigma=1.776577 | -26.9186392 | 6 / 0 |  |
-| rayleigh | family200-s1 (200) | OK | sigma=2.038904 | -341.818798 | -341.818798 | sigma=2.038904 | -341.818798 | 6 / 0 |  |
-| rayleigh | family200-s2 (200) | OK | sigma=1.978182 | -327.462766 | -327.462766 | sigma=1.978182 | -327.462766 | 6 / 0 |  |
-| rayleigh | small3 (3) | OK | sigma=1.999929 | -4.30912773 | -4.30912773 | sigma=1.999929 | -4.30912773 | 6 / 0 |  |
-| rayleigh | ties (200) | OK | sigma=2.045519 | -317.237254 | -317.237254 | sigma=2.045519 | -317.237254 | 6 / 0 |  |
-| rayleigh | outlier (200) | OK | sigma=338.7383 | -2365.04413 | -2365.04413 | sigma=338.7383 | -2365.04413 | 6 / 0 |  |
-| rayleigh | bound1 (200) | ERROR | sigma=1.999314 |       -Inf |       -Inf | — |       -Inf | 6 / NA | Nonfinite fitter return (no exception): sigma=1.999314 logLik -Inf;  NO FINITE ORACLE |
-| sged | family20-s1 (20) | NOT_MAX | mean=-0.2380714, sd=0.8846378, nu=1.539748, xi=2.259652 | -23.2774275 | -23.2774275 | mean=-0.2501732, sd=0.8874484, nu=2.567344, xi=526.1075 | -23.0506946 | 6 / 0 |  |
-| sged | family20-s2 (20) | NOT_MAX | mean=-0.2296502, sd=0.6536058, nu=2.371098, xi=1.106541 | -19.7842785 | -19.7842785 | mean=-0.2939349, sd=0.6957401, nu=5.235076, xi=3223.306 | -19.0208287 | 6 / 0 |  |
-| sged | family200-s1 (200) | OK | mean=0.01853131, sd=0.9881931, nu=4.001124, xi=2.747493 | -265.480524 | -265.480524 | mean=0.01853131, sd=0.9881931, nu=4.001124, xi=2.747493 | -265.480524 | 6 / 0 |  |
-| sged | family200-s2 (200) | OK | mean=-0.05184844, sd=1.084146, nu=2.768689, xi=748.3269 | -272.409096 | -272.409096 | mean=-0.05184779, sd=1.084145, nu=2.768672, xi=15550.12 | -272.408742 | 6 / 0 |  |
-| sged | small3 (3) | ESCAPE | mean=0.3769464, sd=0.9277716, nu=6.55911e+08, xi=266.4386 | -3.50245072 | -3.50245072 | mean=0.3769463, sd=0.9277715, nu=2.540253e+10, xi=2582.179 | -3.50245056 | 6 / 0 |  |
-| sged | ties (200) | OK | mean=0.1451468, sd=1.085008, nu=3.467884, xi=507.8555 | -276.38915 | -276.38915 | mean=0.1449577, sd=1.084445, nu=3.475355, xi=  8234.3 | -276.388324 | 6 / 0 |  |
-| sged | outlier (200) | ESCAPE,NOT_MAX | mean=1.240765, sd=3.508152, nu=0.6570666, xi=59368.99 | -409.580979 | -409.580979 | mean=1.135239, sd=4.499919, nu=0.4382774, xi=5315.949 | -378.038947 | 6 / 0 |  |
-| sged | limit200 (200) | NOT_MAX | mean=0.0007024652, sd=0.5750653, nu=6095.679, xi=191.1838 | -137.90885 | -137.90885 | mean=0.0003203872, sd=0.5748446, nu=1.34967e+10, xi=1.016032 | -137.759554 | 6 / 0 |  |
-| snorm | family20-s1 (20) | ERROR | — |         NA |         NA | mean=-0.1300749, sd= 0.77584, xi=516.2691 |  -19.55062 | 6 / 1 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. |
-| snorm | family20-s2 (20) | ERROR | — |         NA |         NA | mean=-0.05834313, sd=1.118309, xi=432.9008 | -26.8888691 | 6 / 1 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. |
-| snorm | family200-s1 (200) | OK | mean=0.06259153, sd=1.007961, xi=2.689762 | -262.264121 | -262.264121 | mean=0.06259153, sd=1.007961, xi=2.689762 | -262.264121 | 6 / 0 |  |
-| snorm | family200-s2 (200) | OK | mean=0.02163922, sd=0.9785503, xi=2.552745 | -257.595126 | -257.595126 | mean=0.02163922, sd=0.9785503, xi=2.552745 | -257.595126 | 6 / 0 |  |
-| snorm | small3 (3) | ERROR | — |         NA |         NA | mean=-0.5175984, sd=0.2959455, xi=212.3924 | -0.0483779717 | 6 / 0 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. |
-| snorm | ties (200) | ERROR | — |         NA |         NA | mean=0.05398484, sd=1.098502, xi=1025.152 | -265.212157 | 6 / 0 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. |
-| snorm | outlier (200) | ERROR | — |         NA |         NA | — |       -Inf | 6 / NA | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist.;  NO FINITE ORACLE |
-| snorm | limit200 (200) | ERROR | — |         NA |         NA | mean=1.142333, sd=0.8623742, xi=1110.465 | -216.841769 | 6 / 0 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. |
-| sstd | family20-s1 (20) | NOT_MAX | mean=0.091952, sd=0.5383086, nu=343.2487, xi=2.101543 | -14.3177992 | -14.3177992 | mean=0.05847833, sd=0.5856652, nu=1962.478, xi=416.0347 | -13.9647484 | 6 / 0 |  |
-| sstd | family20-s2 (20) | OK | mean=-0.0001319478, sd=0.664843, nu=2.827913, xi=1.572654 | -13.0830189 | -13.0830189 | mean=-0.0001319477, sd=0.664843, nu=2.827913, xi=1.572654 | -13.0830189 | 6 / 0 |  |
-| sstd | family200-s1 (200) | OK | mean=0.06646669, sd=2.518825, nu=2.113868, xi=2.065391 | -209.152278 | -209.152278 | mean=0.06646671, sd=2.518825, nu=2.113868, xi=2.065391 | -209.152278 | 6 / 0 |  |
-| sstd | family200-s2 (200) | OK | mean=-0.08596538, sd=0.8269574, nu=3.523487, xi=1.975314 | -188.448302 | -188.448302 | mean=-0.08596538, sd=0.8269574, nu=3.523487, xi=1.975314 | -188.448302 | 6 / 0 |  |
-| sstd | small3 (3) | NOT_MAX | mean=-0.4326327, sd=0.2913253, nu=4.757333, xi=0.000519231 | 0.418747107 | 0.418747107 | mean=-0.4140815, sd=1.291303, nu=2.052416, xi=0.01078733 | 0.543410094 | 6 / 0 |  |
-| sstd | ties (200) | OK | mean=-0.04477673, sd=0.8584643, nu=3.585692, xi=2.932716 | -177.636831 | -177.636831 | mean=-0.04477673, sd=0.8584643, nu=3.585692, xi=2.932716 | -177.636831 | 6 / 0 |  |
-| sstd | outlier (200) | OK | mean=0.1141498, sd=3.126699, nu= 2.08706, xi=2.208115 | -220.165875 | -220.165875 | mean=0.1141496, sd=  3.1267, nu= 2.08706, xi=2.208115 | -220.165875 | 6 / 0 |  |
-| sstd | limit200 (200) | OK | mean=0.05042222, sd=0.9328395, nu=15.16602, xi=0.9754148 | -269.102329 | -269.102329 | mean=0.05042222, sd=0.9328395, nu=15.16602, xi=0.9754148 | -269.102329 | 6 / 0 |  |
-| std | family20-s1 (20) | ERROR | — |         NA |         NA | mean=-0.1097078, sd=22650.18, nu=       2 | -24.4142074 | 6 / 0 | The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation. |
-| std | family20-s2 (20) | OK | mean=-0.02482683, sd=0.6797828, nu=5.976609 | -20.0545169 | -20.0545169 | mean=-0.02482234, sd=0.6797785, nu=5.977273 | -20.0545169 | 6 / 0 |  |
-| std | family200-s1 (200) | OK | mean=0.06410834, sd= 1.00866, nu=3.442836 | -259.977801 | -259.977801 | mean=0.06410812, sd= 1.00866, nu=3.442836 | -259.977801 | 6 / 0 |  |
-| std | family200-s2 (200) | OK | mean=-0.0287172, sd=0.910063, nu=3.725052 | -244.557675 | -244.557675 | mean=-0.0287172, sd=0.910063, nu=3.725052 | -244.557675 | 6 / 0 |  |
-| std | small3 (3) | ERROR | — |         NA |         NA | mean=-0.2446775, sd=0.2872649, nu=2.248924e+10 | -0.514766133 | 6 / 0 | The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model. |
-| std | ties (200) | OK | mean=-0.06697425, sd=0.9062451, nu=2.997706 | -225.048552 | -225.048552 | mean=-0.06697411, sd=0.9062451, nu=2.997706 | -225.048552 | 6 / 0 |  |
-| std | outlier (200) | ERROR | — |         NA |         NA | mean=-0.08715385, sd=32372.99, nu=       2 | -249.021834 | 6 / 0 | The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation. |
-| std | limit200 (200) | OK | mean=-0.04363872, sd=0.9961013, nu=8.885979 | -280.597889 | -280.597889 | mean=-0.04363903, sd=0.9961011, nu=8.885978 | -280.597889 | 6 / 0 |  |
-| unif | family20-s1 (20) | OK | min=0.02744261, max=0.9678757 | 1.22829653 | 1.22829653 | min=0.02744261, max=0.9678757 | 1.22829653 | 6 / 0 |  |
-| unif | family20-s2 (20) | OK | min=0.04295023, max=0.9055574 | 2.95591707 | 2.95591707 | min=0.04295023, max=0.9055574 | 2.95591707 | 6 / 0 |  |
-| unif | family200-s1 (200) | OK | min=7.970515e-05, max=0.9847086 | 3.09809079 | 3.09809079 | min=7.970515e-05, max=0.9847086 | 3.09809079 | 6 / 0 |  |
-| unif | family200-s2 (200) | OK | min=0.003467075, max=0.9997985 | 0.735056824 | 0.735056824 | min=0.003467075, max=0.9997985 | 0.735056824 | 6 / 0 |  |
-| unif | small3 (3) | OK | min=0.2995538, max=0.586268 | 3.74780898 | 3.74780898 | min=0.2995538, max=0.586268 | 3.74780898 | 6 / 0 |  |
+| kumar | betaClipped (200) | ERROR | — |         NA |         NA | a=0.02226046, b=0.09844177 | 2072.94756 | 6 / 0 | Kumaraswamy MLE failed |
+| laplace | family20-s1 (20) | OK | mu=-0.1431219, sigma=1.671885 | -44.1419745 | -44.1419745 | mu=-0.1431219, sigma=1.671885 | -44.1419745 | 6 / 0 |  |
+| laplace | family20-s2 (20) | OK | mu=0.02068775, sigma=1.078285 | -35.3703833 | -35.3703833 | mu=0.02068775, sigma=1.078285 | -35.3703833 | 6 / 0 |  |
+| laplace | family200-s1 (200) | OK | mu=0.1179301, sigma=0.9523273 | -328.860143 | -328.860143 | mu=0.1179301, sigma=0.9523273 | -328.860143 | 6 / 0 |  |
+| laplace | family200-s2 (200) | OK | mu=-0.06399813, sigma=0.9508091 | -328.541045 | -328.541045 | mu=-0.06399813, sigma=0.9508091 | -328.541045 | 6 / 0 |  |
+| laplace | small3 (3) | OK | mu=0.1133339, sigma=1.155218 | -5.51230917 | -5.51230917 | mu=0.1133339, sigma=1.155218 | -5.51230917 | 6 / 0 |  |
+| laplace | ties (200) | OK | mu=       0, sigma=   1.026 | -343.762985 | -343.762985 | mu=       0, sigma=   1.026 | -343.762985 | 6 / 0 |  |
+| laplace | outlier (200) | OK | mu=-0.06829554, sigma=5.933393 | -694.748666 | -694.748666 | mu=-0.06829554, sigma=5.933393 | -694.748666 | 6 / 0 |  |
+| lgamma | family20-s1 (20) | OK | shapelog=2.070662, ratelog=3.211541 | -21.5945476 | -21.5945476 | shapelog=2.070662, ratelog=3.211541 | -21.5945476 | 6 / 0 |  |
+| lgamma | family20-s2 (20) | OK | shapelog=2.248407, ratelog=2.919068 | -27.1537749 | -27.1537749 | shapelog=2.248407, ratelog=2.919068 | -27.1537749 | 6 / 0 |  |
+| lgamma | family200-s1 (200) | OK | shapelog=1.912286, ratelog=2.755401 | -245.11171 | -245.11171 | shapelog=1.912286, ratelog=2.755401 | -245.11171 | 6 / 0 |  |
+| lgamma | family200-s2 (200) | OK | shapelog=1.684127, ratelog=2.479596 | -244.440251 | -244.440251 | shapelog=1.684127, ratelog=2.479596 | -244.440251 | 6 / 0 |  |
+| lgamma | small3 (3) | OK | shapelog=3.853901, ratelog=13.51028 | 0.950901932 | 0.950901932 | shapelog=3.853901, ratelog=13.51028 | 0.950901932 | 6 / 0 |  |
+| lgamma | ties (200) | OK | shapelog=1.545376, ratelog=2.167607 | -264.787188 | -264.787188 | shapelog=1.545376, ratelog=2.167607 | -264.787188 | 6 / 0 |  |
+| lgamma | outlier (200) | OK | shapelog=1.523981, ratelog=2.035208 | -282.361595 | -282.361595 | shapelog=1.523981, ratelog=2.035208 | -282.361595 | 6 / 0 |  |
+| lgser | family20-s1 (20) | OK | theta=0.8821225 | -42.2716593 | -42.2716593 | theta=0.8821225 | -42.2716593 | 6 / 0 |  |
+| lgser | family20-s2 (20) | OK | theta=0.9130687 | -46.5146738 | -46.5146738 | theta=0.9130687 | -46.5146738 | 6 / 0 |  |
+| lgser | family200-s1 (200) | OK | theta=0.8846042 | -406.498389 | -406.498389 | theta=0.8846042 | -406.498389 | 6 / 0 |  |
+| lgser | family200-s2 (200) | OK | theta=0.8919573 | -430.142958 | -430.142958 | theta=0.8919573 | -430.142958 | 6 / 0 |  |
+| lgser | small3 (3) | ERROR | — |         NA |         NA | theta=6.662463e-18 |          0 | 6 / 0 | All observations equals 1; the maximum likelihood estimator does not exist. |
+| lgser | ties (200) | OK | theta=0.8860492 | -389.195473 | -389.195473 | theta=0.8860492 | -389.195473 | 6 / 0 |  |
+| lgser | outlier (200) | OK | theta=0.9993668 | -614.253641 | -614.253641 | theta=0.9993668 | -614.253641 | 6 / 0 |  |
+| lgser | bound1 (200) | OK | theta=0.9135089 | -434.21881 | -434.21881 | theta=0.9135089 | -434.21881 | 6 / 0 |  |
+| llogis | family20-s1 (20) | OK | shape=0.9392093, rate=1.858651 | -27.1502576 | -27.1502576 | shape=0.9392093, rate=1.858651 | -27.1502576 | 6 / 0 |  |
+| llogis | family20-s2 (20) | OK | shape= 1.12766, rate=1.825458 | -24.0147323 | -24.0147323 | shape= 1.12766, rate=1.825458 | -24.0147323 | 6 / 0 |  |
+| llogis | family200-s1 (200) | OK | shape=1.007686, rate=2.170186 | -240.385007 | -240.385007 | shape=1.007686, rate=2.170186 | -240.385007 | 6 / 0 |  |
+| llogis | family200-s2 (200) | OK | shape= 1.01227, rate=2.207707 | -238.172094 | -238.172094 | shape= 1.01227, rate=2.207707 | -238.172094 | 6 / 0 |  |
+| llogis | small3 (3) | OK | shape=1.327073, rate=0.6504117 | -6.53181749 | -6.53181749 | shape=1.327073, rate=0.6504117 | -6.53181749 | 6 / 0 |  |
+| llogis | ties (200) | OK | shape=1.021041, rate=2.216429 | -235.992431 | -235.992431 | shape=1.021041, rate=2.216429 | -235.992431 | 6 / 0 |  |
+| llogis | outlier (200) | OK | shape=1.031735, rate=1.940466 | -265.849246 | -265.849246 | shape=1.031735, rate=1.940466 | -265.849246 | 6 / 0 |  |
+| lnorm | family20-s1 (20) | OK | meanlog=0.1900505, sdlog=1.116071 | -34.3760667 | -34.3760667 | meanlog=0.1900505, sdlog=1.116071 | -34.3760667 | 6 / 0 |  |
+| lnorm | family20-s2 (20) | OK | meanlog=0.4020252, sdlog=1.014096 | -36.6992315 | -36.6992315 | meanlog=0.4020252, sdlog=1.014096 | -36.6992315 | 6 / 0 |  |
+| lnorm | family200-s1 (200) | OK | meanlog=-0.01220681, sdlog=1.021482 | -285.59717 | -285.59717 | meanlog=-0.01220681, sdlog=1.021482 | -285.59717 | 6 / 0 |  |
+| lnorm | family200-s2 (200) | OK | meanlog=-0.006036334, sdlog=0.9294014 | -267.937521 | -267.937521 | meanlog=-0.006036334, sdlog=0.9294014 | -267.937521 | 6 / 0 |  |
+| lnorm | small3 (3) | OK | meanlog=-0.4123799, sdlog=0.7142422 | -2.01007637 | -2.01007637 | meanlog=-0.4123799, sdlog=0.7142422 | -2.01007637 | 6 / 0 |  |
+| lnorm | ties (200) | OK | meanlog=-0.2025813, sdlog=0.9687726 | -236.926361 | -236.926361 | meanlog=-0.2025813, sdlog=0.9687726 | -236.926361 | 6 / 0 |  |
+| lnorm | outlier (200) | OK | meanlog=-0.06446098, sdlog=1.176469 | -303.399083 | -303.399083 | meanlog=-0.06446098, sdlog=1.176469 | -303.399083 | 6 / 0 |  |
+| logis | family20-s1 (20) | OK | location=0.9674018, scale=0.6642755 | -31.9877789 | -31.9877789 | location=0.9674018, scale=0.6642755 | -31.9877789 | 6 / 0 |  |
+| logis | family20-s2 (20) | OK | location=0.1457225, scale=0.9267163 | -38.134185 | -38.134185 | location=0.1457225, scale=0.9267163 | -38.134185 | 6 / 0 |  |
+| logis | family200-s1 (200) | OK | location=0.03045361, scale=0.9086531 | -380.143548 | -380.143548 | location=0.03045361, scale=0.9086531 | -380.143548 | 6 / 0 |  |
+| logis | family200-s2 (200) | OK | location=0.02488716, scale=0.9606148 | -391.439545 | -391.439545 | location=0.02488716, scale=0.9606148 | -391.439545 | 6 / 0 |  |
+| logis | small3 (3) | OK | location=-0.4980511, scale=0.5547214 | -4.10596487 | -4.10596487 | location=-0.4980511, scale=0.5547214 | -4.10596487 | 6 / 0 |  |
+| logis | ties (200) | OK | location=-0.01461082, scale=0.8578083 | -368.261932 | -368.261932 | location=-0.01461082, scale=0.8578083 | -368.261932 | 6 / 0 |  |
+| logis | outlier (200) | OK | location=0.1649959, scale=5.337012 | -805.207073 | -805.207073 | location=0.1649959, scale=5.337012 | -805.207073 | 6 / 0 |  |
+| logitnorm | family20-s1 (20) | OK | mu=1.903696, sigma=3.370474 | 14.4930217 | 14.4930217 | mu=1.903696, sigma=3.370474 | 14.4930217 | 6 / 0 |  |
+| logitnorm | family20-s2 (20) | OK | mu= 1.73923, sigma=2.870701 | 12.4848306 | 12.4848306 | mu= 1.73923, sigma=2.870701 | 12.4848306 | 6 / 0 |  |
+| logitnorm | family200-s1 (200) | OK | mu=1.783042, sigma=2.882561 | 119.076864 | 119.076864 | mu=1.783042, sigma=2.882561 | 119.076864 | 6 / 0 |  |
+| logitnorm | family200-s2 (200) | OK | mu=1.969252, sigma=2.995718 | 145.479418 | 145.479418 | mu=1.969252, sigma=2.995718 | 145.479418 | 6 / 0 |  |
+| logitnorm | small3 (3) | OK | mu= 1.71947, sigma=1.504515 | 1.39600965 | 1.39600965 | mu= 1.71947, sigma=1.504515 | 1.39600965 | 6 / 0 |  |
+| logitnorm | ties (200) | OK | mu=2.095721, sigma=2.715221 |  148.11558 |  148.11558 | mu=2.095721, sigma=2.715221 |  148.11558 | 6 / 0 |  |
+| logitnorm | outlier (200) | OK | mu=2.213956, sigma=3.285657 | 160.339249 | 160.339249 | mu=2.213956, sigma=3.285657 | 160.339249 | 6 / 0 |  |
+| lomax | family20-s1 (20) | ERROR | — |         NA |         NA | lambda=2.273009e-11, kappa=8.815004e+10 | -6.10058094 | 6 / 0 | The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution. |
+| lomax | family20-s2 (20) | OK | lambda=0.8007976, kappa=2.247065 | -17.1509456 | -17.1509456 | lambda=0.8007976, kappa=2.247065 | -17.1509456 | 6 / 0 |  |
+| lomax | family200-s1 (200) | OK | lambda=0.4456557, kappa=3.633297 | -158.660038 | -158.660038 | lambda=0.4456557, kappa=3.633297 | -158.660038 | 6 / 0 |  |
+| lomax | family200-s2 (200) | OK | lambda=0.5500546, kappa=3.434924 | -130.97405 | -130.97405 | lambda=0.5500546, kappa=3.434924 | -130.97405 | 6 / 0 |  |
+| lomax | small3 (3) | ERROR | — |         NA |         NA | lambda=2.334e-11, kappa=1.518862e+11 | 0.796634223 | 6 / 0 | The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution. |
+| lomax | ties (200) | OK | lambda=1.529001, kappa= 1.34627 | -204.168219 | -204.168219 | lambda=1.529001, kappa= 1.34627 | -204.168219 | 6 / 0 |  |
+| lomax | outlier (200) | OK | lambda=1.968961, kappa=1.130952 | -216.729004 | -216.729004 | lambda=1.968961, kappa=1.130952 | -216.729004 | 6 / 0 |  |
+| lomax | limit200 (200) | ERROR | — |         NA |         NA | lambda=3.014038e-11, kappa=3.098043e+10 | -213.706884 | 6 / 0 | The Lomax maximum likelihood estimator does not exist for data with `mean(x^2) < 2*mean(x)^2`. Use `mlexp` to fit an exponential distribution. |
+| lst | family20-s1 (20) | OK | mu=-0.4961059, sigma=1.242644, df=6.824005 | -35.7505807 | -35.7505807 | mu=-0.4961059, sigma=1.242644, df=6.824005 | -35.7505807 | 6 / 0 |  |
+| lst | family20-s2 (20) | ERROR | — |         NA |         NA | mu=-0.3046267, sigma=1.005864, df=9.468527e+09 | -28.495711 | 6 / 0 | The location-scale t likelihood is maximised as df -> Inf. Use `mlnorm` to fit the normal distribution. |
+| lst | family200-s1 (200) | OK | mu=0.0643059, sigma=0.9923766, df=2.607166 | -364.344895 | -364.344895 | mu=0.0643059, sigma=0.9923766, df=2.607166 | -364.344895 | 6 / 0 |  |
+| lst | family200-s2 (200) | OK | mu=-0.0273355, sigma=0.8285044, df=2.215273 | -343.467187 | -343.467187 | mu=-0.0273355, sigma=0.8285044, df=2.215273 | -343.467187 | 6 / 0 |  |
+| lst | small3 (3) | ERROR | — |         NA |         NA | mu=-0.546311, sigma=2.166979, df=8.905312e+08 | -6.57681468 | 6 / 0 | The location-scale t likelihood is maximised as df -> Inf. Use `mlnorm` to fit the normal distribution. |
+| lst | ties (200) | OK | mu=0.02949201, sigma=1.026721, df=4.808878 | -332.490806 | -332.490806 | mu=0.02949201, sigma=1.026721, df=4.808878 | -332.490806 | 6 / 0 |  |
+| lst | outlier (200) | OK | mu=-0.01277995, sigma=0.8925996, df=1.962528 | -371.491565 | -371.491565 | mu=-0.01277995, sigma=0.8925996, df=1.962528 | -371.491565 | 6 / 0 |  |
+| naka | family20-s1 (20) | OK | shape=  2.1633, scale=2.330904 | -14.2967689 | -14.2967689 | shape=  2.1633, scale=2.330904 | -14.2967689 | 6 / 0 |  |
+| naka | family20-s2 (20) | OK | shape=2.200435, scale=2.171599 | -13.4383406 | -13.4383406 | shape=2.200435, scale=2.171599 | -13.4383406 | 6 / 0 |  |
+| naka | family200-s1 (200) | OK | shape=1.833287, scale= 2.96101 | -181.271109 | -181.271109 | shape=1.833287, scale= 2.96101 | -181.271109 | 6 / 0 |  |
+| naka | family200-s2 (200) | OK | shape=2.096834, scale=2.778112 | -163.266514 | -163.266514 | shape=2.096834, scale=2.778112 | -163.266514 | 6 / 0 |  |
+| naka | small3 (3) | OK | shape=11.95238, scale=1.708847 | 0.762102887 | 0.762102887 | shape=11.95238, scale=1.708847 | 0.762102887 | 6 / 0 |  |
+| naka | ties (200) | OK | shape=2.470157, scale=  2.6906 | -145.476027 | -145.476027 | shape=2.470157, scale=  2.6906 | -145.476027 | 6 / 0 |  |
+| naka | outlier (200) | ESCAPE | shape=0.08009865, scale=71147.32 | -657.284952 | -657.284952 | shape=0.08009865, scale=71147.32 | -657.284952 | 6 / 0 |  |
+| naka | limit200 (200) | OK | shape=0.2845906, scale=0.2707932 | 15.8568709 | 15.8568709 | shape=0.2845906, scale=0.2707932 | 15.8568709 | 6 / 0 |  |
+| nbinom | family20-s1 (20) | OK | size=6.478218, prob=0.2247179 | -73.2631874 | -73.2631874 | size=6.478218, prob=0.2247179 | -73.2631874 | 6 / 0 |  |
+| nbinom | family20-s2 (20) | OK | size=13.58237, prob=0.4194371 | -65.9198207 | -65.9198207 | size=13.58237, prob=0.4194371 | -65.9198207 | 6 / 0 |  |
+| nbinom | family200-s1 (200) | OK | size=12.07158, prob=0.3500878 | -694.690908 | -694.690908 | size=12.07158, prob=0.3500878 | -694.690908 | 6 / 0 |  |
+| nbinom | family200-s2 (200) | OK | size=8.749211, prob=0.2737618 | -719.292113 | -719.292113 | size=8.749211, prob=0.2737618 | -719.292113 | 6 / 0 |  |
+| nbinom | small3 (3) | ERROR | — |         NA |         NA | size=2.44789e+11, prob=       1 | -9.12654008 | 6 / 0 | The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead. |
+| nbinom | ties (200) | OK | size=9.187058, prob=0.2797771 | -720.17027 | -720.17027 | size=9.187058, prob=0.2797771 | -720.17027 | 6 / 0 |  |
+| nbinom | outlier (200) | OK | size=0.2757299, prob=0.0009357698 | -1135.48611 | -1135.48611 | size=0.2757299, prob=0.0009357698 | -1135.48611 | 6 / 0 |  |
+| nbinom | bound1 (200) | OK | size=8.724576, prob=0.2635459 | -731.037422 | -731.037422 | size=8.724576, prob=0.2635459 | -731.037422 | 6 / 0 |  |
+| nbinom | limit200 (200) | ERROR | — |         NA |         NA | size=5.961329e+09, prob=       1 | -406.282968 | 6 / 0 | The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead. |
+| norm | family20-s1 (20) | OK | mean=0.1186686, sd=0.8126776 | -24.2303551 | -24.2303551 | mean=0.1186686, sd=0.8126776 | -24.2303551 | 6 / 0 |  |
+| norm | family20-s2 (20) | OK | mean=-0.02013199, sd=1.091615 | -30.1319393 | -30.1319393 | mean=-0.02013199, sd=1.091615 | -30.1319393 | 6 / 0 |  |
+| norm | family200-s1 (200) | OK | mean=0.01993558, sd=0.9280099 | -268.845138 | -268.845138 | mean=0.01993558, sd=0.9280099 | -268.845138 | 6 / 0 |  |
+| norm | family200-s2 (200) | OK | mean=0.07062602, sd=1.077807 | -298.773453 | -298.773453 | mean=0.07062602, sd=1.077807 | -298.773453 | 6 / 0 |  |
+| norm | small3 (3) | OK | mean=0.2059433, sd=0.3157051 | -0.797975227 | -0.797975227 | mean=0.2059433, sd=0.3157051 | -0.797975227 | 6 / 0 |  |
+| norm | ties (200) | OK | mean=  -0.122, sd=0.9442012 | -272.304517 | -272.304517 | mean=  -0.122, sd=0.9442012 | -272.304517 | 6 / 0 |  |
+| norm | outlier (200) | OK | mean=5.003272, sd=  70.711 | -1135.50793 | -1135.50793 | mean=5.003272, sd=  70.711 | -1135.50793 | 6 / 0 |  |
+| paralogis | family20-s1 (20) | OK | shape=1.046962, scale=1.126747 | -39.6221847 | -39.6221847 | shape=1.046962, scale=1.126747 | -39.6221847 | 6 / 0 |  |
+| paralogis | family20-s2 (20) | OK | shape=0.8386358, scale=0.8532368 | -53.0331572 | -53.0331572 | shape=0.8386362, scale=0.8532365 | -53.0331572 | 6 / 0 |  |
+| paralogis | family200-s1 (200) | OK | shape=1.027148, scale=0.9958013 | -381.230537 | -381.230537 | shape=1.027148, scale=0.9958013 | -381.230537 | 6 / 0 |  |
+| paralogis | family200-s2 (200) | OK | shape=0.9164464, scale=0.9040613 | -439.723633 | -439.723633 | shape=0.9164464, scale=0.9040613 | -439.723633 | 6 / 0 |  |
+| paralogis | small3 (3) | OK | shape=2.796557, scale=2.161589 | -2.99903537 | -2.99903537 | shape=2.796557, scale=2.161589 | -2.99903537 | 6 / 0 |  |
+| paralogis | ties (200) | OK | shape=1.002522, scale=0.8411946 | -355.543642 | -355.543642 | shape=1.002522, scale=0.8411946 | -355.543642 | 6 / 0 |  |
+| paralogis | outlier (200) | OK | shape=0.9731003, scale=0.9513536 | -415.732906 | -415.732906 | shape=0.9731003, scale=0.9513536 | -415.732906 | 6 / 0 |  |
+| pareto | family20-s1 (20) | OK | a=1.116996, b=2.141921 | -50.926367 | -50.926367 | a=1.116996, b=2.141921 | -50.926367 | 6 / 0 |  |
+| pareto | family20-s2 (20) | OK | a=1.264481, b=2.017687 | -45.1625709 | -45.1625709 | a=1.264481, b=2.017687 | -45.1625709 | 6 / 0 |  |
+| pareto | family200-s1 (200) | OK | a= 1.03388, b=2.021582 | -527.558231 | -527.558231 | a= 1.03388, b=2.021582 | -527.558231 | 6 / 0 |  |
+| pareto | family200-s2 (200) | OK | a=0.9257838, b=2.004901 | -570.575053 | -570.575053 | a=0.9257838, b=2.004901 | -570.575053 | 6 / 0 |  |
+| pareto | small3 (3) | OK | a=0.871042, b=3.710413 | -10.7917757 | -10.7917757 | a=0.8710406, b=3.710413 | -10.7917757 | 6 / 0 |  |
+| pareto | ties (200) | OK | a=1.297845, b=     2.1 | -450.347981 | -450.347981 | a=1.297845, b=     2.1 | -450.347981 | 6 / 0 |  |
+| pareto | outlier (200) | OK | a=1.069628, b=2.010552 | -513.200691 | -513.200691 | a=1.069628, b=2.010552 | -513.200691 | 6 / 0 |  |
+| pois | family20-s1 (20) | OK | lambda=     2.2 | -31.672036 | -31.672036 | lambda=     2.2 | -31.672036 | 6 / 0 |  |
+| pois | family20-s2 (20) | OK | lambda=    1.95 | -29.1326057 | -29.1326057 | lambda=    1.95 | -29.1326057 | 6 / 0 |  |
+| pois | family200-s1 (200) | OK | lambda=    2.05 | -353.880546 | -353.880546 | lambda=    2.05 | -353.880546 | 6 / 0 |  |
+| pois | family200-s2 (200) | OK | lambda=    2.06 | -348.196143 | -348.196143 | lambda=    2.06 | -348.196143 | 6 / 0 |  |
+| pois | small3 (3) | OK | lambda=1.666667 | -3.83216624 | -3.83216624 | lambda=1.666667 | -3.83216624 | 6 / 0 |  |
+| pois | ties (200) | OK | lambda=    1.82 | -319.577491 | -319.577491 | lambda=    1.82 | -319.577491 | 6 / 0 |  |
+| pois | outlier (200) | OK | lambda=   31.94 | -30665.5276 | -30665.5276 | lambda=   31.94 | -30665.5276 | 6 / 0 |  |
+| pois | bound1 (200) | OK | lambda=    1.94 | -333.179711 | -333.179711 | lambda=    1.94 | -333.179711 | 6 / 0 |  |
+| power | family20-s1 (20) | OK | alpha=0.9970594, beta=1.766105 | 2.75878477 | 2.75878477 | alpha=0.9970594, beta=1.766101 |  2.7587853 | 6 / 0 |  |
+| power | family20-s2 (20) | OK | alpha=0.9702235, beta=2.053955 | 4.73723307 | 4.73723307 | alpha=0.9702235, beta=2.053953 |  4.7372337 | 6 / 0 |  |
+| power | family200-s1 (200) | OK | alpha=0.993664, beta=2.006936 | 40.2474647 | 40.2474647 | alpha=0.993664, beta=2.006932 | 40.2474707 | 6 / 0 |  |
+| power | family200-s2 (200) | OK | alpha=0.996232, beta=2.126586 | 45.7060683 | 45.7060683 | alpha=0.996232, beta=2.126582 | 45.7060747 | 6 / 0 |  |
+| power | small3 (3) | OK | alpha=0.9694933, beta=8.110844 | 3.74242589 | 3.74242589 | alpha=0.9694933, beta=8.110843 | 3.74242626 | 6 / 0 |  |
+| power | ties (200) | OK | alpha=       1, beta= 2.04309 |  40.783598 |  40.783598 | alpha=       1, beta=2.043085 | 40.7836041 | 6 / 0 |  |
+| power | outlier (200) | OK | alpha=998.2901, beta=0.1352507 | -502.598788 | -502.598788 | alpha=998.2901, beta=0.1352507 | -502.598788 | 6 / 0 |  |
+| rayleigh | family20-s1 (20) | OK | sigma=2.109339 | -34.0456571 | -34.0456571 | sigma=2.109339 | -34.0456571 | 6 / 0 |  |
+| rayleigh | family20-s2 (20) | OK | sigma=2.098131 | -37.1290437 | -37.1290437 | sigma=2.098131 | -37.1290437 | 6 / 0 |  |
+| rayleigh | family200-s1 (200) | OK | sigma= 2.11829 | -336.493572 | -336.493572 | sigma= 2.11829 | -336.493572 | 6 / 0 |  |
+| rayleigh | family200-s2 (200) | OK | sigma=2.042198 | -324.011289 | -324.011289 | sigma=2.042198 | -324.011289 | 6 / 0 |  |
+| rayleigh | small3 (3) | OK | sigma=1.545532 | -3.65489634 | -3.65489634 | sigma=1.545532 | -3.65489634 | 6 / 0 |  |
+| rayleigh | ties (200) | OK | sigma=1.973157 | -326.919288 | -326.919288 | sigma=1.973157 | -326.919288 | 6 / 0 |  |
+| rayleigh | outlier (200) | OK | sigma=310.1344 | -2338.16267 | -2338.16267 | sigma=310.1344 | -2338.16267 | 6 / 0 |  |
+| rayleigh | bound1 (200) | ERROR | sigma=1.981377 |       -Inf |       -Inf | — |       -Inf | 6 / NA | Nonfinite fitter return (no exception): sigma=1.981377 logLik -Inf;  NO FINITE ORACLE |
+| sged | family20-s1 (20) | ERROR | — |         NA |         NA | mean=0.1163337, sd=0.692874, nu=3.003622e+09, xi=6.526577e-13 | -17.510925 | 6 / 0 | SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead. |
+| sged | family20-s2 (20) | ERROR | — |         NA |         NA | mean=0.05305337, sd=0.7220297, nu=61.87684, xi=8165.275 | -18.6804403 | 6 / 1 | SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead. |
+| sged | family200-s1 (200) | OK | mean=0.01824284, sd=0.9802573, nu=3.235319, xi=2.599189 | -264.142894 | -264.142894 | mean=0.01824284, sd=0.9802573, nu=3.235319, xi=2.599189 | -264.142894 | 6 / 0 |  |
+| sged | family200-s2 (200) | OK | mean=-0.005014336, sd=0.9291671, nu=4.748839, xi=2.853381 | -252.497924 | -252.497924 | mean=-0.005014336, sd=0.9291671, nu=4.748839, xi=2.853381 | -252.497924 | 6 / 0 |  |
+| sged | small3 (3) | ERROR | — |         NA |         NA | mean=-0.137124, sd=0.6297553, nu=2.979554e+08, xi=0.009933107 | -2.34008824 | 6 / 1 | SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead. |
+| sged | ties (200) | ERROR | — |         NA |         NA | mean=0.00258299, sd=1.110978, nu=2.736671, xi=5084.615 | -277.087373 | 6 / 1 | The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family. |
+| sged | outlier (200) | ERROR | — |         NA |         NA | — |       -Inf | 6 / NA | The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family.;  NO FINITE ORACLE |
+| sged | limit200 (200) | ERROR | — |         NA |         NA | mean=0.004556882, sd=0.572902, nu=1.861275e+10, xi=0.5947389 | -137.082531 | 6 / 0 | SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead. |
+| snorm | family20-s1 (20) | ERROR | — |         NA |         NA | mean=0.2361407, sd=1.124363, xi=593.9743 | -26.9697928 | 6 / 1 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal. |
+| snorm | family20-s2 (20) | ERROR | — |         NA |         NA | mean=-0.0588013, sd=0.7507732, xi=430.9713 | -18.9223876 | 6 / 0 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal. |
+| snorm | family200-s1 (200) | OK | mean=0.07022684, sd= 1.00098, xi=2.088192 | -267.581734 | -267.581734 | mean=0.07022684, sd= 1.00098, xi=2.088192 | -267.581734 | 6 / 0 |  |
+| snorm | family200-s2 (200) | OK | mean=-0.08682112, sd=1.006543, xi=3.392772 | -257.320488 | -257.320488 | mean=-0.08682112, sd=1.006543, xi=3.392772 | -257.320488 | 6 / 0 |  |
+| snorm | small3 (3) | ERROR | — |         NA |         NA | mean=-0.1736363, sd=0.9669703, xi=340.2497 | -3.59515959 | 6 / 0 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal. |
+| snorm | ties (200) | ERROR | — |         NA |         NA | mean=-0.2064287, sd=0.8476631, xi=3.323707 | -223.31581 | 6 / 0 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal. |
+| snorm | outlier (200) | ERROR | — |         NA |         NA | — |       -Inf | 6 / NA | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.;  NO FINITE ORACLE |
+| snorm | limit200 (200) | ERROR | — |         NA |         NA | mean=1.123968, sd=0.8445203, xi=1096.489 | -212.522292 | 6 / 0 | The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal. |
+| sstd | family20-s1 (20) | ERROR | — |         NA |         NA | mean=-0.02947201, sd=0.657931, nu=267.7273, xi=70.15371 | -16.2552952 | 6 / 0 | The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, i.e. by a translated half-normal with endpoint at the sample minimum. Use `mlhnorm` to fit this model. |
+| sstd | family20-s2 (20) | ERROR | — |         NA |         NA | mean=-0.1499151, sd=0.6533151, nu= 246.038, xi=104.0828 | -16.0425306 | 6 / 0 | The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, i.e. by a translated half-normal with endpoint at the sample minimum. Use `mlhnorm` to fit this model. |
+| sstd | family200-s1 (200) | OK | mean=0.00305645, sd=0.8506224, nu=4.420327, xi=2.091565 | -207.688534 | -207.688534 | mean=0.00305645, sd=0.8506224, nu=4.420327, xi=2.091565 | -207.688534 | 6 / 0 |  |
+| sstd | family200-s2 (200) | OK | mean=0.07526192, sd=0.9798905, nu=3.323173, xi=2.009388 | -214.877303 | -214.877303 | mean=0.07526193, sd=0.9798905, nu=3.323173, xi=2.009388 | -214.877303 | 6 / 0 |  |
+| sstd | small3 (3) | ERROR | — |         NA |         NA | mean=-0.02519537, sd=0.3154867, nu=7.826334, xi=43.11678 | 0.170234659 | 6 / 0 | The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, i.e. by a translated half-normal with endpoint at the sample minimum. Use `mlhnorm` to fit this model. |
+| sstd | ties (200) | OK | mean=-0.05240842, sd=0.9027908, nu=3.178794, xi=1.730272 | -203.230919 | -203.230919 | mean=-0.05240841, sd=0.9027908, nu=3.178794, xi=1.730272 | -203.230919 | 6 / 0 |  |
+| sstd | outlier (200) | OK | mean=0.03814742, sd=3.162935, nu=2.069997, xi=1.946004 | -214.078216 | -214.078216 | mean=0.03814742, sd=3.162935, nu=2.069997, xi=1.946004 | -214.078216 | 6 / 0 |  |
+| sstd | limit200 (200) | ERROR | — |         NA |         NA | mean=-0.08327883, sd=0.8962027, nu=3.115774e+08, xi=1.141808 | -261.085077 | 6 / 0 | The skew Student-t likelihood is maximised as nu -> Inf, i.e. by the skew-normal distribution. Use `mlsnorm` to fit this model. |
+| std | family20-s1 (20) | OK | mean=0.1194614, sd=0.6127605, nu=10.86194 | -18.4290823 | -18.4290823 | mean=0.1194617, sd=0.6127605, nu=10.86194 | -18.4290823 | 6 / 0 |  |
+| std | family20-s2 (20) | ERROR | — |         NA |         NA | mean=0.09293993, sd=0.4476277, nu=2.045466e+09 | -12.302856 | 6 / 0 | The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model. |
+| std | family200-s1 (200) | OK | mean=0.06544953, sd=0.9312939, nu= 3.19288 | -237.545995 | -237.545995 | mean=0.06544939, sd=0.931294, nu= 3.19288 | -237.545995 | 6 / 0 |  |
+| std | family200-s2 (200) | OK | mean=-0.002679864, sd= 1.45468, nu=2.290715 | -246.279104 | -246.279104 | mean=-0.00267981, sd= 1.45468, nu=2.290715 | -246.279104 | 6 / 0 |  |
+| std | small3 (3) | ERROR | — |         NA |         NA | mean=-0.2223542, sd=0.4682303, nu=4.249195e+11 | -1.98043054 | 6 / 0 | The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model. |
+| std | ties (200) | OK | mean=-0.08268111, sd=0.8485258, nu=3.847013 | -232.301048 | -232.301048 | mean=-0.08268111, sd=0.8485258, nu=3.847013 | -232.301048 | 6 / 0 |  |
+| std | outlier (200) | ERROR | — |         NA |         NA | mean=-0.001285905, sd=14634.61, nu=       2 | -261.771627 | 6 / 0 | The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation. Use `mllst` to fit a location-scale t distribution with free degrees of freedom. |
+| std | limit200 (200) | ERROR | — |         NA |         NA | mean=0.0680234, sd=1.049321, nu=1.01958e+09 | -293.415998 | 6 / 0 | The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model. |
+| unif | family20-s1 (20) | OK | min=0.03088595, max=0.9809958 | 1.02355273 | 1.02355273 | min=0.03088595, max=0.9809958 | 1.02355273 | 6 / 0 |  |
+| unif | family20-s2 (20) | OK | min=0.01032741, max=0.9602818 | 1.02682546 | 1.02682546 | min=0.01032741, max=0.9602818 | 1.02682546 | 6 / 0 |  |
+| unif | family200-s1 (200) | OK | min=0.003690645, max=0.9951705 | 1.71132621 | 1.71132621 | min=0.003690645, max=0.9951705 | 1.71132621 | 6 / 0 |  |
+| unif | family200-s2 (200) | OK | min=0.000195185, max=0.9965801 | 0.724335742 | 0.724335742 | min=0.000195185, max=0.9965801 | 0.724335742 | 6 / 0 |  |
+| unif | small3 (3) | OK | min=0.02237538, max=0.775707 | 0.849749269 | 0.849749269 | min=0.02237538, max=0.775707 | 0.849749269 | 6 / 0 |  |
 | unif | ties (200) | OK | min=       0, max=       1 |         -0 |          0 | min=       0, max=       1 |          0 | 6 / 0 |  |
-| unif | outlier (200) | OK | min=0.00871976, max=1000.999 | -1381.74893 | -1381.74893 | min=0.00871976, max=1000.999 | -1381.74893 | 6 / 0 |  |
+| unif | outlier (200) | OK | min=0.002075212, max=1000.992 | -1381.74902 | -1381.74902 | min=0.002075212, max=1000.992 | -1381.74902 | 6 / 0 |  |
 | unif | bounds (200) | OK | min=       0, max=       1 |         -0 |          0 | min=       0, max=       1 |          0 | 6 / 0 |  |
-| weibull | family20-s1 (20) | OK | shape=3.519394, scale=3.562506 | -28.4829397 | -28.4829397 | shape=3.519394, scale=3.562506 | -28.4829397 | 6 / 0 |  |
-| weibull | family20-s2 (20) | OK | shape=4.980825, scale=3.683005 | -23.5539988 | -23.5539988 | shape=4.980825, scale=3.683005 | -23.5539988 | 6 / 0 |  |
-| weibull | family200-s1 (200) | OK | shape=3.142644, scale=3.950406 | -326.009721 | -326.009721 | shape=3.142644, scale=3.950406 | -326.009721 | 6 / 0 |  |
-| weibull | family200-s2 (200) | OK | shape=3.319447, scale=4.077617 | -324.29222 | -324.29222 | shape=3.319447, scale=4.077617 | -324.29222 | 6 / 0 |  |
-| weibull | small3 (3) | OK | shape=11.89005, scale= 4.88244 | -2.09035469 | -2.09035469 | shape=11.89005, scale= 4.88244 | -2.09035469 | 6 / 0 |  |
-| weibull | ties (200) | OK | shape=2.973538, scale=3.855261 | -327.483504 | -327.483504 | shape=2.973538, scale=3.855261 | -327.483504 | 6 / 0 |  |
-| weibull | outlier (200) | OK | shape=0.5408429, scale= 5.42949 | -615.449194 | -615.449194 | shape=0.5408429, scale= 5.42949 | -615.449194 | 6 / 0 |  |
-| zip | family20-s1 (20) | OK | lambda=0.4642128, pi=0.4614538 | -12.4328848 | -12.4328848 | lambda=0.4642128, pi=0.4614538 | -12.4328848 | 6 / 0 |  |
-| zip | family20-s2 (20) | OK | lambda=1.423262, pi=0.4730416 | -23.0097617 | -23.0097617 | lambda=1.423262, pi=0.4730416 | -23.0097617 | 6 / 0 |  |
-| zip | family200-s1 (200) | OK | lambda=0.8463127, pi=0.5096375 | -169.484168 | -169.484168 | lambda=0.8463127, pi=0.5096375 | -169.484168 | 6 / 0 |  |
-| zip | family200-s2 (200) | OK | lambda=0.8294785, pi=0.379128 | -195.00088 | -195.00088 | lambda=0.8294785, pi=0.379128 | -195.00088 | 6 / 0 |  |
-| zip | small3 (3) | OK | lambda= 3.92069, pi=0.6599238 | -3.52318909 | -3.52318909 | lambda= 3.92069, pi=0.6599238 | -3.52318909 | 6 / 0 |  |
-| zip | ties (200) | OK | lambda=0.5435858, pi=0.3561274 | -153.646166 | -153.646166 | lambda=0.5435858, pi=0.3561274 | -153.646166 | 6 / 0 |  |
-| zip | outlier (200) | OK | lambda=57.05556, pi=    0.73 | -11783.4696 |       -Inf | — |       -Inf | 6 / NA |  NO FINITE ORACLE |
-| zip | bound1 (200) | OK | lambda=0.9180645, pi=0.5588545 | -165.650597 | -165.650597 | lambda=0.9180645, pi=0.5588545 | -165.650597 | 6 / 0 |  |
-| zip | limit200 (188) | OK | lambda=3.191489, pi=       0 | -357.64314 | -357.64314 | lambda= 3.19149, pi=1.232604e-17 | -357.64314 | 6 / 0 |  |
-| zipf | family20-s1 (20) | OK | N=       3, s=0.8083349 | -20.6011228 | -20.6011228 | N=       3, s=0.8083349 | -20.6011228 | 6 / 0 | integer size held at fitter value |
-| zipf | family20-s2 (20) | OK | N=       3, s=0.669861 | -21.0262675 | -21.0262675 | N=       3, s=0.669861 | -21.0262675 | 6 / 0 | integer size held at fitter value |
-| zipf | family200-s1 (200) | OK | N=       3, s=0.3158368 | -217.626281 | -217.626281 | N=       3, s=0.3158368 | -217.626281 | 6 / 0 | integer size held at fitter value |
-| zipf | family200-s2 (200) | OK | N=       3, s=0.3065686 | -217.748245 | -217.748245 | N=       3, s=0.3065686 | -217.748245 | 6 / 0 | integer size held at fitter value |
-| zipf | small3 (3) | OK | N=       2, s=       1 | -1.9095425 | -1.9095425 | N=       2, s=       1 | -1.9095425 | 6 / 0 | integer size held at fitter value |
-| zipf | ties (200) | OK | N=       3, s=0.8446088 | -204.779373 | -204.779373 | N=       3, s=0.8446088 | -204.779373 | 6 / 0 | integer size held at fitter value |
-| zipf | outlier (200) | OK | N=    3000, s=2.071018 | -303.418788 | -303.418788 | — |       -Inf | 6 / NA | integer size held at fitter value NO FINITE ORACLE |
-| zipf | bound1 (200) | OK | N=       3, s=0.601602 | -212.084186 | -212.084186 | N=       3, s=0.601602 | -212.084186 | 6 / 0 | integer size held at fitter value |
-| zipf | bounds (200) | OK | N=       3, s=0.5919707 | -212.326161 | -212.326161 | N=       3, s=0.5919707 | -212.326161 | 6 / 0 | integer size held at fitter value |
+| weibull | family20-s1 (20) | OK | shape=3.414027, scale=4.386434 | -33.2944095 | -33.2944095 | shape=3.414027, scale=4.386434 | -33.2944095 | 6 / 0 |  |
+| weibull | family20-s2 (20) | OK | shape=3.763651, scale=4.047209 | -29.6694104 | -29.6694104 | shape=3.763651, scale=4.047209 | -29.6694104 | 6 / 0 |  |
+| weibull | family200-s1 (200) | OK | shape=2.862549, scale=3.901917 | -336.364812 | -336.364812 | shape=2.862549, scale=3.901917 | -336.364812 | 6 / 0 |  |
+| weibull | family200-s2 (200) | OK | shape=3.046075, scale=3.841331 | -323.598145 | -323.598145 | shape=3.046075, scale=3.841331 | -323.598145 | 6 / 0 |  |
+| weibull | small3 (3) | OK | shape=6.059002, scale= 5.77082 | -4.50324813 | -4.50324813 | shape=6.059002, scale= 5.77082 | -4.50324813 | 6 / 0 |  |
+| weibull | ties (200) | OK | shape=2.870904, scale=4.164135 | -352.302812 | -352.302812 | shape=2.870904, scale=4.164135 | -352.302812 | 6 / 0 |  |
+| weibull | outlier (200) | OK | shape=0.5404485, scale=5.730131 | -626.03077 | -626.03077 | shape=0.5404485, scale=5.730131 | -626.03077 | 6 / 0 |  |
+| zip | family20-s1 (20) | OK | lambda=1.195758, pi=0.4982261 | -20.1180968 | -20.1180968 | lambda=1.195758, pi=0.4982261 | -20.1180968 | 6 / 0 |  |
+| zip | family20-s2 (20) | OK | lambda=     0.1, pi=       0 | -6.60517019 | -6.60517019 | lambda=     0.1, pi=   1e-12 | -6.60517019 | 6 / 0 |  |
+| zip | family200-s1 (200) | OK | lambda=0.9241575, pi=0.4860183 | -184.36107 | -184.36107 | lambda=0.9241575, pi=0.4860183 | -184.36107 | 6 / 0 |  |
+| zip | family200-s2 (200) | OK | lambda=0.7838707, pi=0.4386829 | -176.074947 | -176.074947 | lambda=0.7838707, pi=0.4386829 | -176.074947 | 6 / 0 |  |
+| zip | small3 (3) | OK | lambda=       1, pi=       1 |          0 |          0 | lambda=8.661646e-11, pi=       1 |          0 | 6 / 0 | all observations are zero |
+| zip | ties (200) | OK | lambda=0.9781565, pi=0.4070478 | -207.201511 | -207.201511 | lambda=0.9781565, pi=0.4070478 | -207.201511 | 6 / 0 |  |
+| zip | outlier (200) | OK | lambda=53.48052, pi=   0.615 | -17079.1815 |       -Inf | — |       -Inf | 6 / NA |  NO FINITE ORACLE |
+| zip | bound1 (200) | OK | lambda=0.9553976, pi=0.3824561 | -207.357623 | -207.357623 | lambda=0.9553976, pi=0.3824561 | -207.357623 | 6 / 0 |  |
+| zip | limit200 (195) | OK | lambda=3.189744, pi=       0 | -371.161723 | -371.161723 | lambda=3.189743, pi=3.17605e-17 | -371.161723 | 6 / 0 |  |
+| zipf | family20-s1 (20) | ERROR | — |         NA |         NA | — |       -Inf | 0 / NA | Optimal shape parameter is less than 0. The maximum likelihood estimator does not exist.; SKIP: integer size unavailable |
+| zipf | family20-s2 (20) | OK | N=       3, s=0.8785255 | -20.3585009 | -20.3585009 | N=       3, s=0.8785255 | -20.3585009 | 6 / 0 | integer size held at fitter value |
+| zipf | family200-s1 (200) | OK | N=       3, s=0.6482924 | -210.858279 | -210.858279 | N=       3, s=0.6482924 | -210.858279 | 6 / 0 | integer size held at fitter value |
+| zipf | family200-s2 (200) | OK | N=       3, s=0.5854624 | -212.487547 | -212.487547 | N=       3, s=0.5854624 | -212.487547 | 6 / 0 | integer size held at fitter value |
+| zipf | small3 (3) | ERROR | — |         NA |         NA | — |       -Inf | 0 / NA | Optimal shape parameter is less than 0. The maximum likelihood estimator does not exist.; SKIP: integer size unavailable |
+| zipf | ties (200) | OK | N=       3, s=0.9016853 | -202.746301 | -202.746301 | N=       3, s=0.9016853 | -202.746301 | 6 / 0 | integer size held at fitter value |
+| zipf | outlier (200) | OK | N=    3000, s=2.090261 | -297.513576 | -297.513576 | — |       -Inf | 6 / NA | integer size held at fitter value NO FINITE ORACLE |
+| zipf | bound1 (200) | OK | N=       3, s=0.6692136 | -210.280821 | -210.280821 | N=       3, s=0.6692136 | -210.280821 | 6 / 0 | integer size held at fitter value |
+| zipf | bounds (200) | OK | N=       3, s=0.6429997 | -211.001622 | -211.001622 | N=       3, s=0.6429997 | -211.001622 | 6 / 0 | integer size held at fitter value |

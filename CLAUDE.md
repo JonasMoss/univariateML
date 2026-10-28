@@ -29,7 +29,7 @@ core.
 
 ### Status (October 2026)
 
-- 42 distributions, **one folder each** in
+- 44 distributions, **one folder each** in
   `cppunivariate/include/cppunivariate/distributions/<id>/`: `README.md`
   (front matter + prose), `mle.hpp`, `dpqr.hpp`, `adapter.cpp`, `test.cpp`,
   `test.R`, `golden.json`. See "Adding a new distribution" below. `lgamma`
@@ -39,6 +39,11 @@ core.
   `notes/ml-behaviour-sweep.R` (all fitters vs a slow oracle, ~6 s) and two
   research reports. Escapes that a fitter detects stop with "use `mlX`"
   (decision D1) and are declared under `limits:` in its `README.md`.
+- The R package is ML-only: it defines no d/p/q/r of its own. Each model's
+  `dml`/`pml`/`qml`/`rml` call an external package's functions
+  (`r.density` in `README.md`), with an optional `r.args` map when their
+  argument names differ from the coefficients (hnorm uses
+  `extraDistr::dtnorm` with `a = mu`).
 - Boost.Math only through `special/special.hpp`, with a no-throw policy.
 - Hand-rolled BFGS + finite-difference gradient + reparam helpers in
   `core/`; paralogis, std, sstd, ged, sged use this path (snorm is an

@@ -133,13 +133,13 @@ large $c$ (e.g.\ $\hat c = 97.4$ for 199 points $\ge 1$ and one at $0.99$);
 the fitter now finds it via a profile-likelihood start (commit
 \code{9290aac}).
 
-\subsection{Escape, not detected (silent)}
+\subsection{Escape, formerly silent; now detected by comparing faces}
 
 \begin{center}
 \small
 \begin{tabular}{@{}l p{3.4cm} p{3.2cm} p{5.4cm} l@{}}
 \toprule
-id & escape & limit model & probe result & firm \\
+id & escape & limit model & probe result (before the fix) & firm \\
 \midrule
 std & $\nu\to\infty$ & normal &
   normal data, $n=200$: $\hat\nu = 54874$, $\ell$ $2\times10^{-4}$ below
@@ -201,9 +201,37 @@ $O(n\log n)$); the faces are reported as \code{RightHalfNormalBoundary} /
 \code{LeftHalfNormalBoundary}.
 
 \paragraph{sstd.} No cheap global rule is known. The inward score at the
-snorm face is again $(\sum_i w_i^4 - 3n)/4$; it is a local filter only. A
-correct fitter compares the interior fit with the snorm face, both half-$t$
-faces, the two-piece $t_2$ face and their corners.
+snorm face is again $(\sum_i w_i^4 - 3n)/4$; it is a local filter only. In
+mode/scale coordinates $(c, a, b, \nu)$ with $\xi = \sqrt{b/a}$ and the
+ordinary $t_\nu$, the density is $2\,t_\nu((x-c)/s)/(a+b)$, $s = a$ left of
+$c$ and $b$ right of it. The closure has three faces: $\nu\to\infty$ (snorm,
+with its half-normal corners), $\xi\to\infty$ or $0$ (a translated half-$t$
+with endpoint at $x_{(1)}$ or $x_{(n)}$ and $\nu \in [2,\infty]$), and
+$\nu\to2$ (two-piece $t_2$, infinite variance).
+
+Implemented (\code{73f4fd5}): the fitter compares the best of seven interior
+BFGS starts with each face, fitted directly: snorm by the exact $Q$-profile;
+the half-$t$ by profiling the scale (its score
+$\sum_i(\nu+1)w_i^2/(\nu+w_i^2) - n$ decreases in the scale, so the root is
+unique) and a grid-plus-golden-section search in $\eta = 1/\nu \in
+[0,\tfrac12]$; the $t_2$ face by BFGS from quantile starts and from every
+interior candidate. Faces win ties within $10^{-8}n$: an interior iterate
+running off towards a face approaches the face value from below. Statuses
+\code{SnormBoundary} (``use \code{mlsnorm}''),
+\code{Right/LeftHalfNormalBoundary} (``use \code{mlhnorm}'', on $-x$ for the
+left corner), \code{Right/LeftHalfTBoundary} (names the df) and
+\code{DfTwoBoundary}.
+
+Checked against a slow oracle (multistart \code{optim} on
+\code{fGarch::dsstd}, plus each face fitted directly) on 45 samples: every
+interior fit matches the oracle, and every reported face is the best face
+with the oracle's interior supremum not above it. Faces are common in small
+samples: of 30 samples of size 20 from skew-$t$ laws with $\nu = 5$ or $10$,
+23 have no interior maximum (14 snorm or half-normal, 8 half-$t$, 1 $t_2$).
+Normal data go to the snorm face, exponential data to the half-$t$ face
+($\hat\nu\approx3.3$, heavier than the half-normal tail), skewed Cauchy data
+to the $t_2$ face. The old ``stops at $\hat\nu = 343$'' was an overflow, not
+an optimum: see \S\ref{sec:bugs}.
 
 \subsection{No MLE at all: ged and sged}
 
@@ -222,9 +250,17 @@ $p = 0.01$, above the normal MLE's $-46.0$, and rising.
 
 The $\nu\to\infty$ limit (uniform on $[\mu\pm\sqrt3\,\sigma]$; for sged an
 ordinary uniform, the skew becomes unidentified) is a local maximum only,
-with inward score $-\infty$ at the boundary. Current fitters return a local
-maximum near the starting value. A well-posed fit needs a lower bound on the
-shape, which is a model change, not a numerical tolerance (decision D6).
+with inward score $-\infty$ at the boundary. A well-posed fit needs a lower
+bound on the shape, which is a model change, not a numerical tolerance.
+
+Decided and implemented (D6, \code{97bc3a6}): both fit on $\nu \ge 1$, the
+log-concave GED, which contains the Laplace and every lighter tail. The
+supremum is then at $\nu = 1$ (attained, the Laplace), at a finite
+$\nu > 1$, or at $\nu \to \infty$ (the uniform; status
+\code{UniformBoundary}, ``use \code{mlunif}''); sged also compares the
+half-GED faces at $x_{(1)}$ and $x_{(n)}$. The behaviour sweep's unrestricted
+oracle still beats the restricted fit when its optimum has $\nu < 1$ (one
+outlier sample); that is the restriction, not a fitter failure.
 
 \subsection{Escape, fixed 2026-10-28}
 
@@ -237,6 +273,27 @@ the image of the burr limit under $x\mapsto 1/x$. All $x_i \le 1$ is
 necessary and sufficient (reciprocal of the burr argument). It used to give
 ``Inverse Burr MLE failed''; it now returns status \code{AllLeOne} and the
 message names \code{mlpower} (commit \code{411ea90}).
+
+\subsection{Limit models added to the package (D7)}
+
+The escape messages need a model to point to. Two were added
+(\code{notes/ml-behaviour-limit-models.md}):
+\begin{itemize}
+  \item hnorm, the translated half-normal (\code{8807e8b}): the boundary MLE
+    $\hat\mu = x_{(1)}$, $\hat\sigma^2 = \overline{(x-\hat\mu)^2}$. The R
+    package defines no densities of its own, so \code{dml}, \code{pml},
+    \code{qml}, \code{rml} call \code{extraDistr::dtnorm} with
+    $(\text{mean}, \text{sd}, a) = (\mu, \sigma, \mu)$ through an argument
+    map in the README front matter (\code{cb8b9ac}). \code{dtnorm} excludes
+    its lower endpoint, so the R fitter reports $\hat\mu$ as the largest
+    double below $x_{(1)}$; then the log-likelihood equals the sum of
+    \code{dml}.
+  \item lst, the location-scale $t$ with $\mathrm{df} \ge 1$
+    (\code{92eef3f}): the target of std's $\nu\to2^+$ face. Its own
+    $\mathrm{df}\to\infty$ face stops with ``use \code{mlnorm}''.
+\end{itemize}
+The half-$t$ and two-piece $t_2$ faces of sstd and the half-GED faces of
+sged still have no package model; their messages name the limit.
 
 \subsection{Not closed, but the MLE always exists}\label{sec:exists}
 
@@ -295,9 +352,15 @@ $\mu$ as a parameter; the fitted family is the two-parameter one.
     also in nbinom and geom.
   \item \textbf{std} reports a log-likelihood that disagrees with the
     reference density at very large $\nu$ (cancellation in the gamma terms).
+    Open; it now matters less, since the normal face is detected.
   \item \textbf{Detection lives in the R adapter.} The nbinom
-    underdispersion check exists only in \code{ml\_exports.cpp}, so a
-    Python shell would silently lose it.
+    underdispersion check existed only in the adapter, so a Python shell
+    would silently lose it. Fixed: C++ status \code{Underdispersed}
+    (\code{8cd0d92}).
+  \item \textbf{sstd overflow} (fixed, \code{73f4fd5}). The standardising
+    constant used $\Gamma(\tfrac{\nu-1}{2})/\Gamma(\tfrac{\nu}{2})$ with
+    \code{tgamma}, which overflows for $\nu > 343$; the cost became NaN there
+    and BFGS stopped at $\hat\nu = 343$ on normal data. Now \code{lgamma}.
   \item Fitters return NaN instead of a clear error when an observation sits
     on a closed support bound (llogis, pareto, fatigue at $x = 0$);
     probably wrong support metadata.
@@ -306,23 +369,20 @@ $\mu$ as a parameter; the fitted family is the two-parameter one.
 \section{Open questions and decisions}
 
 \begin{enumerate}
-  \item D1, escape policy: decided, stop with ``use \code{mlX}''. Limits
-    without a package model: the evaluation
-    (\code{notes/ml-behaviour-limit-models.md}) recommends adding a
-    translated half-normal (closed form: endpoint at the sample extreme,
-    $s^2 = \overline{(x-c)^2}$) and a scale-parameterised location-scale $t$
-    with $\mathrm{df}\ge1$ and tie guards (std's $\nu\to2^+$ face); messages
-    only for half-$t$ and two-piece $t_2$.
-  \item D6, ged and sged: impose a lower bound on the shape, or keep
-    returning a documented local maximum? Recommendation: $\nu \ge 1$. Any
-    fixed floor bounds the likelihood; $\nu\ge1$ is exactly the log-concave
-    GED, contains the Laplace, and keeps the exponential and all lighter
-    tails. The supremum can then sit at $\nu = 1$, at a finite $\nu > 1$, or
-    at $\nu\to\infty$ (the uniform; ``use \code{mlunif}''). fGarch's own
-    \code{gedFit} uses the ill-posed lower bound $0$.
+  \item D1, escape policy: decided, stop with ``use \code{mlX}''; every
+    detected escape is declared under \code{limits:} in the distribution's
+    README.
   \item D5, nakagami: decided, allow $m > 0$.
-  \item snorm: done (exact $Q$-profile algorithm).
-  \item sstd: how much global comparison is affordable in the fitter?
+  \item D6, ged and sged: decided and implemented, $\nu \ge 1$. (fGarch's
+    own \code{gedFit} uses the ill-posed lower bound $0$.)
+  \item D7, limit models: decided and implemented, hnorm and lst; messages
+    only for half-$t$, two-piece $t_2$ and half-GED.
+  \item snorm, sstd: done. sstd's comparison costs about 20\,ms at
+    $n = 500$ (seven interior starts, two half-$t$ searches, sixteen $t_2$
+    starts); it is a multistart comparison, not a certificate.
+  \item Open: a half-$t$ model (would give sstd's half-$t$ face a pointer);
+    fatigue's fixed $\mu = 0$; kumar on extreme data; std's log-likelihood
+    at huge $\nu$.
 \end{enumerate}
 
 \begin{thebibliography}{9}
