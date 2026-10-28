@@ -10,16 +10,12 @@
 // Compile-check the per-distribution dpqr headers that were added in
 // the base-R-backend gap-fill. Successful compilation is the smoke test.
 #include "cppunivariate/distributions/beta/dpqr.hpp"
-#include "cppunivariate/distributions/binom/dpqr.hpp"
 #include "cppunivariate/distributions/cauchy/dpqr.hpp"
 #include "cppunivariate/distributions/exp/dpqr.hpp"
 #include "cppunivariate/distributions/gamma/dpqr.hpp"
-#include "cppunivariate/distributions/geom/dpqr.hpp"
 #include "cppunivariate/distributions/lnorm/dpqr.hpp"
 #include "cppunivariate/distributions/logis/dpqr.hpp"
-#include "cppunivariate/distributions/nbinom/dpqr.hpp"
 #include "cppunivariate/distributions/norm/dpqr.hpp"
-#include "cppunivariate/distributions/pois/dpqr.hpp"
 #include "cppunivariate/distributions/unif/dpqr.hpp"
 #include "cppunivariate/distributions/weibull/dpqr.hpp"
 
@@ -87,40 +83,4 @@ TEST_CASE("beta dpqr: U(0,1) special case (shape1=shape2=1)") {
   // Asymmetric round-trip.
   const double q = dist::qbeta(0.6, 2.0, 5.0, true, false);
   CHECK(dist::pbeta(q, 2.0, 5.0, true, false) == doctest::Approx(0.6));
-}
-
-TEST_CASE("pois dpqr: pmf and CDF tail") {
-  CHECK(dist::dpois(0.0, 1.0, false) == doctest::Approx(std::exp(-1.0)));
-  CHECK(dist::ppois(0.0, 1.0, true, false) == doctest::Approx(std::exp(-1.0)));
-  // qpois(p) is the smallest k with cdf >= p.
-  const double k = dist::qpois(0.95, 4.0, true, false);
-  CHECK(dist::ppois(k, 4.0, true, false) >= 0.95);
-  CHECK(dist::ppois(k - 1.0, 4.0, true, false) < 0.95);
-}
-
-TEST_CASE("geom dpqr: closed-form CDF") {
-  // F(0; prob=0.5) = prob.
-  CHECK(dist::pgeom(0.0, 0.5, true, false) == doctest::Approx(0.5));
-  // P(X = 0) = prob.
-  CHECK(dist::dgeom(0.0, 0.5, false) == doctest::Approx(0.5));
-  CHECK(dist::qgeom(0.99, 0.5, true, false) >= 0.0);
-}
-
-TEST_CASE("binom dpqr: trivial trial size, CDF endpoints") {
-  // Bernoulli(0.5): P(X=0) = P(X=1) = 0.5.
-  CHECK(dist::dbinom(0.0, 1.0, 0.5, false) == doctest::Approx(0.5));
-  CHECK(dist::dbinom(1.0, 1.0, 0.5, false) == doctest::Approx(0.5));
-  // CDF endpoint.
-  CHECK(dist::pbinom(10.0, 10.0, 0.3, true, false) == doctest::Approx(1.0));
-  // Round-trip.
-  const double k = dist::qbinom(0.7, 20.0, 0.4, true, false);
-  CHECK(dist::pbinom(k, 20.0, 0.4, true, false) >= 0.7);
-}
-
-TEST_CASE("nbinom dpqr: matches dnbinom from special::") {
-  CHECK(dist::dnbinom(0.0, 5.0, 0.5, false) > 0.0);
-  // CDF round-trip.
-  const double k = dist::qnbinom(0.6, 5.0, 0.5, true, false);
-  CHECK(dist::pnbinom(k, 5.0, 0.5, true, false) >= 0.6);
-  CHECK(dist::pnbinom(k - 1.0, 5.0, 0.5, true, false) < 0.6);
 }

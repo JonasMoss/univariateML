@@ -1,4 +1,0 @@
-{
-  "sampler": "stats::rpois",
-  "density": "stats::dpois"
-}

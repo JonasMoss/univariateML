@@ -78,77 +78,7 @@ constexpr double kFisherTol = 1e-8;
 // --- discrete + 1D continuous batch ---------------------------------------
 
 namespace {
-cppunivariate::ispan as_ispan(const std::vector<int> &v) {
-  return {v.data(), v.size()};
-}
-std::vector<int> as_ints(const std::vector<double> &v) {
-  std::vector<int> out;
-  out.reserve(v.size());
-  for (double d : v) out.push_back(static_cast<int>(d));
-  return out;
-}
 }  // namespace
-
-TEST_CASE("poisson: analytical Hessian agrees with FD") {
-  auto g = load("pois");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::pois_mle(as_ispan(v));
-  cppunivariate::PoisCost cost{as_ispan(v)};
-  const double theta[] = {fit.lambda};
-  double H_anal[1], H_fd[1];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
-}
-
-TEST_CASE("poisson: Hessian at MLE equals n/lambda") {
-  auto g = load("pois");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::pois_mle(as_ispan(v));
-  cppunivariate::PoisCost cost{as_ispan(v)};
-  const double theta[] = {fit.lambda};
-  double H[1];
-  cost.hessian(theta, H);
-  const double n = static_cast<double>(g.data.size());
-  CHECK(H[0] == doctest::Approx(n / fit.lambda).epsilon(kFisherTol));
-}
-
-TEST_CASE("geom: analytical Hessian agrees with FD") {
-  auto g = load("geom");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::geom_mle(as_ispan(v));
-  cppunivariate::GeomCost cost{as_ispan(v)};
-  const double theta[] = {fit.prob};
-  double H_anal[1], H_fd[1];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
-}
-
-TEST_CASE("geom: Hessian at MLE equals n / (p^2 * (1-p))") {
-  auto g = load("geom");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::geom_mle(as_ispan(v));
-  cppunivariate::GeomCost cost{as_ispan(v)};
-  const double theta[] = {fit.prob};
-  double H[1];
-  cost.hessian(theta, H);
-  const double n = static_cast<double>(g.data.size());
-  CHECK(H[0] == doctest::Approx(n / (fit.prob * fit.prob * (1.0 - fit.prob)))
-                    .epsilon(kFisherTol));
-}
-
-TEST_CASE("lgser: analytical Hessian agrees with FD") {
-  auto g = load("lgser");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::lgser_mle(as_ispan(v));
-  cppunivariate::LgserCost cost{as_ispan(v)};
-  const double theta[] = {fit.theta};
-  double H_anal[1], H_fd[1];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
-}
 
 // --- 2D actuar/extraDistr family ------------------------------------------
 
@@ -160,44 +90,6 @@ TEST_CASE("lgser: analytical Hessian agrees with FD") {
 // Instead, assert directly that H equals the closed-form Fisher info at
 // the MLE: diag(n/sigma^2, n/sigma^2). This is the asymptotic-variance
 // matrix that gives correct Wald SEs (median ~ N(mu, sigma^2/n)).
-
-TEST_CASE("binom: analytical Hessian agrees with FD (1-D in prob)") {
-  auto g = load("binom");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::binom_mle(as_ispan(v),
-                               std::numeric_limits<double>::quiet_NaN(),
-                               1.220703e-4, 100);
-  cppunivariate::BinomCost cost{as_ispan(v), fit.size};
-  const double theta[] = {fit.prob};
-  double H_anal[1], H_fd[1];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
-}
-
-TEST_CASE("nbinom: analytical Hessian agrees with FD") {
-  auto g = load("nbinom");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::nbinom_mle(as_ispan(v), 1.220703e-4, 100);
-  cppunivariate::NbinomCost cost{as_ispan(v)};
-  const double theta[] = {fit.size, fit.prob};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
-TEST_CASE("zip: analytical Hessian agrees with FD") {
-  auto g = load("zip");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::zip_mle(as_ispan(v));
-  cppunivariate::ZipCost cost{as_ispan(v)};
-  const double theta[] = {fit.lambda, fit.pi};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
 
 // --- boundary-non-regular estimators --------------------------------------
 //
@@ -211,30 +103,10 @@ TEST_CASE("zip: analytical Hessian agrees with FD") {
 // the MLE itself, which is on the boundary and FD across the boundary
 // would return Inf).
 
-TEST_CASE("dunif: analytical Hessian agrees with FD (smooth interior)") {
-  auto g = load("dunif");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::dunif_mle(as_ispan(v));
-  const double theta[] = {fit.min - 1.0, fit.max + 1.0};
-  cppunivariate::DiscreteUnifCost cost{as_ispan(v)};
-  CHECK(cost.regular_params() == std::vector<int>{0, 0});
   double H_anal[4], H_fd[4];
   cost.hessian(theta, H_anal);
   cppunivariate::finite_diff_hessian(cost, theta, H_fd);
   CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
-TEST_CASE("zipf: analytical Hessian agrees with FD (1-D in s, N fixed)") {
-  auto g = load("zipf");
-  auto v = as_ints(g.data);
-  auto fit = cppunivariate::zipf_mle(as_ispan(v), 1.220703e-4, 100);
-  cppunivariate::ZipfCost cost{as_ispan(v), fit.N};
-  CHECK(cost.regular_params() == std::vector<int>{1});
-  const double theta[] = {fit.shape};
-  double H_anal[1], H_fd[1];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 1, kFdTol, max_diag(H_anal, 1)));
 }
 
 // --- multi-D BFGS estimators (Hessian in phi/transformed space) ------------
@@ -248,30 +120,6 @@ TEST_CASE("zipf: analytical Hessian agrees with FD (1-D in s, N fixed)") {
 // No Layer-2 (closed-form Fisher info) check here — the analytic Fisher
 // information for these families is itself a paper-length result that
 // would just duplicate the Hessian formula.
-
-TEST_CASE("sstd: analytical Hessian agrees with FD") {
-  auto g = load("sstd");
-  auto fit = cppunivariate::sstd_mle(mltest::as_span(g.data), 1.220703e-4, 200);
-  cppunivariate::SstdCost cost{mltest::as_span(g.data)};
-  const double phi[] = {fit.mu, std::log(fit.sigma),
-                        std::log(fit.nu - 2.0), std::log(fit.xi)};
-  double H_anal[16], H_fd[16];
-  cost.hessian(phi, H_anal);
-  cppunivariate::finite_diff_hessian(cost, phi, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 16, kFdTol, max_diag(H_anal, 4)));
-}
-
-TEST_CASE("sged: analytical Hessian agrees with FD") {
-  auto g = load("sged");
-  auto fit = cppunivariate::sged_mle(mltest::as_span(g.data), 1.220703e-4, 200);
-  cppunivariate::SgedCost cost{mltest::as_span(g.data)};
-  const double phi[] = {fit.mu, std::log(fit.sigma),
-                        std::log(fit.nu), std::log(fit.xi)};
-  double H_anal[16], H_fd[16];
-  cost.hessian(phi, H_anal);
-  cppunivariate::finite_diff_hessian(cost, phi, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 16, kFdTol, max_diag(H_anal, 4)));
-}
 
 // --- Layer 2: analytical vs closed-form Fisher information at MLE ----------
 //

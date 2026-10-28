@@ -16,12 +16,15 @@
 
 namespace cppunivariate {
 
+enum class NbinomStatus { Ok, Underdispersed };
+
 struct NbinomResult {
   double size;
   double prob;
   double logLik;
   int iterations;
   bool underdispersed;
+  NbinomStatus status = NbinomStatus::Ok;
 };
 
 // Negative log-likelihood of NegativeBinomial(size=r, prob=p):
@@ -97,7 +100,7 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit) {
 
   const double var_hat = sum_x_sq / dn - x_bar * x_bar;
   if (var_hat < x_bar) {
-    return {kNaN, kNaN, kNaN, 0, true};
+    return {kNaN, kNaN, kNaN, 0, true, NbinomStatus::Underdispersed};
   }
 
   std::map<int, int> count_map;

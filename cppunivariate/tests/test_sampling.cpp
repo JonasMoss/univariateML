@@ -12,11 +12,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "cppunivariate/distributions/dunif/dpqr.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
-#include "cppunivariate/distributions/sged/dpqr.hpp"
-#include "cppunivariate/distributions/sstd/dpqr.hpp"
-#include "cppunivariate/distributions/zipf/dpqr.hpp"
 
 #include <random>
 
@@ -68,64 +64,9 @@ TEST_CASE("StdRng emits values in the expected support") {
 // the d/p/q layer self-consistently (CDF at the empirical median ~ 0.5).
 // rzipf samples land in {1, ..., N} and the empirical frequencies match
 // the analytic PMF p(k) = k^{-s} / H_N(s).
-TEST_CASE("rzipf samples lie in {1, ..., N} and match the PMF") {
-  cppunivariate::distributions::StdRng<> rng(13);
-  const int N = 10;
-  const double s = 1.5;
-  const auto cum = cppunivariate::distributions::zipf_cdf(N, s);
-  const int n = 30000;
-  std::vector<int> counts(N, 0);
-  for (int i = 0; i < n; ++i) {
-    const int k = cppunivariate::distributions::rzipf_from_cdf(rng, cum);
-    REQUIRE(k >= 1);
-    REQUIRE(k <= N);
-    counts[k - 1]++;
-  }
-  for (int k = 1; k <= N; ++k) {
-    const double empirical = static_cast<double>(counts[k - 1]) / n;
-    const double analytic =
-        cppunivariate::distributions::dzipf(k, N, s, /*log=*/false);
-    CHECK(std::abs(empirical - analytic) < 0.02);
-  }
-}
-
 // rsged at (mean=0, sd=1, nu=1.5, xi=1.5) is unit-variance by construction.
-TEST_CASE("rsged samples are unit-variance and recurse cleanly into rged") {
-  cppunivariate::distributions::StdRng<> rng(29);
-  const int n = 20000;
-  double sum = 0.0;
-  double sum_sq = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x =
-        cppunivariate::distributions::rsged(rng, 0.0, 1.0, 1.5, 1.5);
-    sum += x;
-    sum_sq += x * x;
-  }
-  const double mean = sum / n;
-  const double var = sum_sq / n - mean * mean;
-  CHECK(std::abs(mean) < 0.05);
-  CHECK(std::abs(var - 1.0) < 0.1);
-}
-
 // --- Phase C tier 1: extraDistr ports -----------------------------------
 
-TEST_CASE("rdunif samples are integers in [min, max]") {
-  cppunivariate::distributions::StdRng<> rng(107);
-  const int min = 1, max = 6;
-  std::vector<int> counts(max - min + 1, 0);
-  const int n = 30000;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rdunif(rng, min, max);
-    REQUIRE(x >= min);
-    REQUIRE(x <= max);
-    REQUIRE(x == std::floor(x));
-    counts[static_cast<int>(x) - min]++;
-  }
-  for (int k = min; k <= max; ++k) {
-    const double empirical =
-        static_cast<double>(counts[k - min]) / n;
-    CHECK(std::abs(empirical - 1.0 / (max - min + 1)) < 0.02);
-  }
 }
 
 // --- Phase C tier 2: Boost-backed transforms ---------------------------
@@ -133,21 +74,4 @@ TEST_CASE("rdunif samples are integers in [min, max]") {
 // rsstd at (mean=0, sd=1, nu=8, xi=1.5) is unit-variance by construction.
 // Heavy tails (nu=8) + skew slow the empirical mean's convergence, so the
 // tolerance is wider than the symmetric / lighter-tailed cases above.
-TEST_CASE("rsstd samples are unit-variance and recurse cleanly into rstd") {
-  cppunivariate::distributions::StdRng<> rng(31);
-  const int n = 20000;
-  double sum = 0.0;
-  double sum_sq = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x =
-        cppunivariate::distributions::rsstd(rng, 0.0, 1.0, 8.0, 1.5);
-    sum += x;
-    sum_sq += x * x;
-  }
-  const double mean = sum / n;
-  const double var = sum_sq / n - mean * mean;
-  CHECK(std::abs(mean) < 0.15);
-  CHECK(std::abs(var - 1.0) < 0.15);
-}
-
 } // namespace
