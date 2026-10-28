@@ -23,4 +23,4 @@ The finite Zipf distribution describes power-law frequencies on consecutive posi
 
 ## Details
 
-The fitted upper endpoint `N` is `max(x)` and is a positive integer. The support is the integers from one to `N`. A negative unconstrained shape estimate is rejected with status `ShapeNegative`; `s = 0` is the uniform boundary. With all observations equal to one the estimate is not unique and the fitter warns. This function fits observations directly; for rank-abundance data see `sads::fitzipf`.
+The fitted upper endpoint `N` is `max(x)` and is a positive integer. The support is the integers from one to `N`. A negative unconstrained shape estimate is rejected with status `ShapeNegative`; `s = 0` is the uniform boundary. With all observations equal to one the estimate is not unique and the fitter warns. This function fits observations directly; for rank-abundance data see `sads::fitzipf`. `sads::qzipf` 0.6.5 is off by one, so `qml` inverts the CDF itself while that defect persists (see `KNOWN_ISSUES.md`); `sads::pzipf` returns 0 at non-integer arguments.

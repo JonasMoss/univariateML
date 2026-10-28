@@ -30,6 +30,10 @@
   are listed in the `fixed` attribute and are not counted in `logLik()`
   degrees of freedom, AIC or BIC.
 
+* `qml()` for `mlzipf()` fits no longer returns one less than the true
+  quantile: `sads::qzipf()` (0.6.5) is off by one, so the package inverts
+  the CDF itself while that defect persists.
+
 * `mlinvgamma()`'s coefficient names are unchanged (`alpha`, `beta`)
   and continue to match `extraDistr::dinvgamma`.
 

@@ -43,7 +43,9 @@ core.
   `dml`/`pml`/`qml`/`rml` call an external package's functions
   (`r.density` in `README.md`), with an optional `r.args` map when their
   argument names differ from the coefficients (hnorm uses
-  `extraDistr::dtnorm` with `a = mu`).
+  `extraDistr::dtnorm` with `a = mu`). Known defects in those packages,
+  and the runtime-checked workarounds (`univariateML_reference_fixes`),
+  are listed in `KNOWN_ISSUES.md`.
 - Boost.Math only through `special/special.hpp`, with a no-throw policy.
 - Hand-rolled BFGS + finite-difference gradient + reparam helpers in
   `core/`; paralogis, std, sstd, ged, sged use this path (snorm is an

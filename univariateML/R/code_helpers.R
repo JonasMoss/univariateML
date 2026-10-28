@@ -160,6 +160,35 @@ univariateML_dpqr_args <- function(estimates, name) {
   stats::setNames(lapply(unname(map), function(coef) values[[coef]]), names(map))
 }
 
+#' Workarounds for defects in reference functions
+#'
+#' Keyed by the reference function (`pkg::fn`). `broken()` tests for the
+#' defect on every call, so a fixed upstream release switches the
+#' workaround off; `replacement` takes the same arguments. Defects are
+#' listed in `KNOWN_ISSUES.md` at the repository root.
+#'
+#' `sads::qzipf` (sads 0.6.5) returns the quantile minus one for
+#' probabilities strictly between two CDF values, e.g.
+#' `sads::qzipf(0.5, N = 10, s = 1)` is 1, not 2. The replacement inverts
+#' the CDF built from `sads::dzipf`.
+#' @keywords internal
+
+univariateML_reference_fixes <- list(
+  "sads::qzipf" = list(
+    broken = function() {
+      tryCatch(sads::qzipf(0.5, N = 10, s = 1) != 2, error = function(e) TRUE)
+    },
+    replacement = function(p, N, s, lower.tail = TRUE, log.p = FALSE) {
+      if (log.p) p <- exp(p)
+      if (!lower.tail) p <- 1 - p
+      cdf <- cumsum(sads::dzipf(seq_len(N), N = N, s = s))
+      q <- pmin(findInterval(p, cdf, left.open = TRUE) + 1, N)
+      q[is.na(p) | p < 0 | p > 1] <- NaN
+      q
+    }
+  )
+)
+
 #' Transform a univariateML object to a string specifying quantile, CDF,
 #'     density or random variate generation.
 #'
@@ -202,6 +231,8 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
   string <- univariateML_to_string(obj, type = type)
   fun <- eval(parse(text = string))
+  fix <- univariateML_reference_fixes[[string]]
+  if (!is.null(fix) && fix$broken()) fun <- fix$replacement
   if (type %in% c("d", "p", "q", "r")) {
     values <- univariateML_dpqr_args(obj, univariateML_name(obj))
     for (arg in names(values)) formals(fun)[[arg]] <- values[[arg]]

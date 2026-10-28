@@ -25,6 +25,11 @@ as a source (unreliable).
 
 ## Reference packages (`2026-10-28-deps.md`)
 
+Decided 2026-10-28: all reference packages stay in Imports (no workflow
+complications); sads stays for zipf, with its `qzipf` defect worked around
+at runtime and every defect listed in `KNOWN_ISSUES.md`. ZINB and the
+constrained GPD are being added.
+
 - sads is used only for zipf's d/p/q/r and imports VGAM (25 recursive
   dependencies); `pzipf`/`qzipf` also have off-by-one errors
   (`pzipf(1.5, 10, 1) = 0`, `qzipf(0.4, 10, 1) = 1`). No clean non-VGAM
