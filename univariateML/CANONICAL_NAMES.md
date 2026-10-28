@@ -53,6 +53,9 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | invburr    | Inverse Burr            | shape1, shape2, scale | actuar::dinvburr          | (0, ∞) open      |
 | invgamma   | InvGamma                | alpha, beta        | extraDistr::dinvgamma     | (0, ∞) open      |
 | invgauss   | Inverse Gaussian        | mean, shape        | actuar::dinvgauss         | (0, ∞) open      |
+| invexp | Inverse exponential | rate | actuar::dinvexp | (0, ∞) open |
+| invpareto | Inverse Pareto | shape, scale | actuar::dinvpareto | (0, ∞) open |
+| invparalogis | Inverse paralogistic | shape, scale | actuar::dinvparalogis | (0, ∞) open |
 | invweibull | InverseWeibull          | shape, rate        | actuar::dinvweibull       | (0, ∞) open      |
 | kumar      | Kumaraswamy             | a, b               | extraDistr::dkumar        | (0, 1) open      |
 | laplace    | Laplace                 | mu, sigma          | extraDistr::dlaplace      | (-∞, ∞) open     |
