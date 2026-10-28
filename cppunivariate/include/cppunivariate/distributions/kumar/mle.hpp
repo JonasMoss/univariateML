@@ -83,7 +83,8 @@ struct KumarCost {
   }
 };
 
-inline KumarResult kumar_mle(span x, double tol, int maxit) {
+inline KumarResult kumar_mle(span x, double tol, int maxit,
+                             double start = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0};
@@ -108,12 +109,19 @@ inline KumarResult kumar_mle(span x, double tol, int maxit) {
     return f / df;
   };
   double a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
-  for (int i = 0; i < maxit; ++i) {
-    const double step = f_over_df_lmom(a0);
-    a0 -= step;
-    if (std::abs(step) < (std::abs(a0) * tol + tol)) break;
+  if (std::isnan(start)) {
+    for (int i = 0; i < maxit; ++i) {
+      const double step = f_over_df_lmom(a0);
+      a0 -= step;
+      if (std::abs(step) < (std::abs(a0) * tol + tol)) break;
+    }
+    if (a0 <= 0.0) a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
+
+  } else {
+    if (!(start > 0.0) || !std::isfinite(start))
+      return {kNaN, kNaN, kNaN, 0};
+    a0 = start;
   }
-  if (a0 <= 0.0) a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
 
   // Stage 2: full ML Newton on `a`.
   auto f_over_df = [&](double a) {

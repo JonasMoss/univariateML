@@ -58,3 +58,9 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+fit_default <- mlkumar(medium_data, reltol = 1e-12)
+fit_start <- mlkumar(medium_data, a0 = 1, reltol = 1e-12)
+expect_equal(coef(fit_start), coef(fit_default), tolerance = 1e-8)
+expect_error(mlkumar(medium_data, a0 = 0), "`a0` must be a positive finite number")
+expect_error(mlkumar(medium_data, a0 = Inf), "`a0` must be a positive finite number")
