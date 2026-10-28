@@ -43,7 +43,7 @@ Rcpp::List mlburr_(const Rcpp::NumericVector &x,
     c0 = iv[0];
   } else {
     c0 = cppunivariate::burr_lmom_core(m1, m2, true).c;
-    if (Rcpp::NumericVector::is_na(c0) || c0 <= 0.0) {
+    if (!std::isfinite(c0) || c0 <= 0.0) {
       Rcpp::stop("Failed to get a valid initial c from burr_lmom()");
     }
   }
@@ -450,7 +450,12 @@ Rcpp::List mlkumar_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 Rcpp::List mlinvburr_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                       int iterlim = 100) {
   auto res = cppunivariate::invburr_mle(dist_impl::as_span(x), tol, iterlim);
-  if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2)) {
+  if (res.status == cppunivariate::InvBurrStatus::AllLeOne) {
+    Rcpp::stop(
+        "The inverse Burr maximum likelihood estimator does not exist when all "
+        "observations <=1. Use `mlpower` to fit a power distribution.");
+  }
+  if (res.status != cppunivariate::InvBurrStatus::Ok) {
     Rcpp::stop("Inverse Burr MLE failed");
   }
   return Rcpp::List::create(
