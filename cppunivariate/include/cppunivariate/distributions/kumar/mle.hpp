@@ -11,6 +11,7 @@
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <limits>
@@ -83,12 +84,57 @@ struct KumarCost {
   }
 };
 
+// Stable profile fallback: b = -n / sum log(1-x^a). Solve the
+// profile score in log(a), preserving the legacy Newton path when it works.
+inline KumarResult kumar_profile_mle(span x, double tol, int maxit) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const double n = static_cast<double>(x.size());
+  const auto evaluate = [&](double p, double &b, double &ll) {
+    const double a = std::exp(p);
+    double S = 0.0, L = 0.0, D = 0.0;
+    for (double v : x) {
+      const double l = std::log(v), t = -a * l;
+      S += std::log(-std::expm1(-t));
+      L += l;
+      D += t > 700.0 ? 0.0 : -t / std::expm1(t);
+    }
+    b = -n / S;
+    ll = n * (p + std::log(b)) + (a - 1.0) * L + (b - 1.0) * S;
+    return 1.0 + a * L / n - (b - 1.0) * D / n;
+  };
+  double b, ll;
+  double lo = 0.0, hi = 0.0;
+  for (int i = 0; i < 700 && evaluate(lo, b, ll) <= 0.0; ++i) lo -= 1.0;
+  for (int i = 0; i < 700 && evaluate(hi, b, ll) >= 0.0; ++i) hi += 1.0;
+  if (!(evaluate(lo, b, ll) > 0.0 && evaluate(hi, b, ll) < 0.0))
+    return {nan, nan, nan, 0};
+  for (int i = 1; i <= maxit; ++i) {
+    const double p = (lo + hi) / 2.0;
+    const double score = evaluate(p, b, ll);
+    // Stop on a zero score or when the bracket is at rounding level; for
+    // large n the summed score carries rounding noise above 1e-12.
+    const bool narrow = hi - lo <= 1e-13 * (1.0 + std::abs(p));
+    if ((std::abs(score) < std::min(tol, 1e-12) || narrow) && std::isfinite(ll))
+      return {std::exp(p), b, ll, i};
+    if (score > 0.0) lo = p; else hi = p;
+  }
+  return {nan, nan, nan, maxit};
+}
+
 inline KumarResult kumar_mle(span x, double tol, int maxit,
                              double start = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0};
 
+  bool extreme = false;
+  for (double v : x) {
+    if (!(v > 0.0 && v < 1.0)) return {kNaN, kNaN, kNaN, 0};
+    extreme = extreme || v < 1e-8 || v > 1.0 - 1e-8;
+  }
+  if (!std::isnan(start) && (!(start > 0.0) || !std::isfinite(start)))
+    return {kNaN, kNaN, kNaN, 0};
+  if (extreme) return kumar_profile_mle(x, tol, maxit);
   const double mu = cppunivariate::mean_log(x);
   // sigma2 = mean(log(x)^2) - mu^2
   double sum_log_sq = 0.0;
@@ -154,10 +200,12 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
     const double step = f_over_df(a);
     a -= step;
     if (a <= 0.0 || !std::isfinite(a)) {
-      return {kNaN, kNaN, kNaN, iter};
+      return kumar_profile_mle(x, tol, maxit);
     }
     if (std::abs(step) < (std::abs(a) * tol + tol)) break;
   }
+
+  if (iter > maxit) return kumar_profile_mle(x, tol, maxit);
 
   double sum_log1p_neg_xa = 0.0, sum_log_x = 0.0;
   for (auto v : x) {

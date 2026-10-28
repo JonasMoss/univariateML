@@ -64,16 +64,35 @@ test_that("Student-t escapes name the limiting model", {
   expect_error(mlstd(x), "nu -> 2 (infinite variance)", fixed = TRUE)
 })
 
-test_that("Student-t interior fit and large-nu log likelihood agree with fGarch", {
+test_that("Student-t interior fit and large-nu log likelihood agree with independent dt", {
   set.seed(313)
   x <- fGarch::rstd(500, nu = 4)
   fit <- mlstd(x)
   expect_equal(attr(fit, "logLik"),
                sum(fGarch::dstd(x, fit[1], fit[2], fit[3], log = TRUE)),
                tolerance = 1e-10)
-  for (nu in c(1e4, 1e5, 1e6, 1e8)) {
+  for (nu in c(10, 100, 343, 344, 1000, 9999, 1e4, 1e5, 1e6, 1e7)) {
     expect_equal(univariateML:::student_t_loglik_cpp(x, 0.3, 1.2, nu),
-                 sum(fGarch::dstd(x, 0.3, 1.2, nu, log = TRUE)),
+                 sum(dt((x - 0.3) / (1.2 * sqrt((nu-2)/nu)), nu, log = TRUE) -
+                       log(1.2 * sqrt((nu-2)/nu))),
                  tolerance = 1e-10)
   }
+})
+
+test_that("large-nu interior fit matches dt and a slow oracle", {
+  x <- qt(((1:4000) - .5)/4000, df = 300)
+  fit <- mlstd(x, gradtol = 1e-7, iterlim = 500)
+  expect_gt(unname(fit[3]), 343)
+  objective <- function(p) {
+    nu <- 2 + exp(p[3]); s <- exp(p[2])*sqrt((nu-2)/nu)
+    -sum(dt((x-p[1])/s, nu, log = TRUE) - log(s))
+  }
+  p <- c(fit[1], log(fit[2]), log(fit[3]-2))
+  expect_equal(attr(fit, "logLik"), -objective(p), tolerance = 1e-11)
+  oracles <- lapply(c(100, 500, 2000), function(nu)
+    optim(c(0, 0, log(nu-2)), objective, method = "Nelder-Mead",
+          control = list(maxit = 3000, reltol = 1e-13)))
+  best <- oracles[[which.min(vapply(oracles, `[[`, 0, "value"))]]
+  expect_lt(abs(attr(fit, "logLik") + best$value), 1e-5)
+  expect_equal(unname(fit[3]), 2 + exp(best$par[3]), tolerance = .02)
 })
