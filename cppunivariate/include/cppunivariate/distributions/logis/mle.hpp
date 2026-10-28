@@ -17,11 +17,14 @@
 
 namespace cppunivariate {
 
+enum class LogisticStatus { Ok, InvalidInput, IterationFailure };
+
 struct LogisticResult {
   double mu;
   double scale;
   double logLik;
   int iterations;
+  LogisticStatus status;
 };
 
 // Negative log-likelihood of Logistic(mu, scale=s):
@@ -93,6 +96,11 @@ struct LogisticCost {
 inline LogisticResult logistic_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
 
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (n < 2) return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
+  for (auto v : x) {
+    if (!std::isfinite(v)) return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
+  }
   // One-pass Welford mean/variance for the seed.
   double mean = 0.0;
   double M2 = 0.0;
@@ -104,7 +112,8 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
 
   double mu = mean;
   double sample_var = (n > 1) ? M2 / static_cast<double>(n - 1) : 0.0;
-  if (sample_var <= 0.0) sample_var = 1.0;
+  if (!(sample_var > 0.0) || !std::isfinite(sample_var))
+    return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
   double theta = std::log(std::sqrt(sample_var) * std::sqrt(3.0) / M_PI);
 
   int iter = 0;
@@ -132,9 +141,30 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
     const double J22 = (U2 + static_cast<double>(n)) + 0.5 * sum_z2c2;
 
     const double det = J11 * J22 - J12 * J12;
-    const double dmu = (J22 * U1 - J12 * U2) / det;
-    const double dtheta = (-J12 * U1 + J11 * U2) / det;
+    double dmu = (J22 * U1 - J12 * U2) / det;
+    double dtheta = (-J12 * U1 + J11 * U2) / det;
 
+    if (!(J11 > 0.0 && det > 0.0) || !std::isfinite(dmu + dtheta)) {
+      dmu = U1 * std::exp(2.0 * theta) / static_cast<double>(n);
+      dtheta = U2 / static_cast<double>(n);
+    }
+    const LogisticCost cost{x};
+    const double current[] = {mu, std::exp(theta)};
+    const double old = cost(current);
+    double step = 1.0;
+    bool accepted = false;
+    for (int ls = 0; ls < 60; ++ls) {
+      const double candidate[] = {mu + step * dmu, std::exp(theta + step * dtheta)};
+      if (std::isfinite(candidate[0]) && std::isfinite(candidate[1]) &&
+          candidate[1] > 0.0 && std::isfinite(cost(candidate)) && cost(candidate) <= old) {
+        accepted = true;
+        break;
+      }
+      step *= 0.5;
+    }
+    if (!accepted) return {mu, std::exp(theta), -old, iter, LogisticStatus::IterationFailure};
+    dmu *= step;
+    dtheta *= step;
     mu += dmu;
     theta += dtheta;
 
@@ -142,15 +172,11 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
   }
 
   const double scale = std::exp(theta);
-  double sum_z = 0.0, sum_log1p_exp_neg_z = 0.0;
-  for (auto xi : x) {
-    const double z = (xi - mu) / scale;
-    sum_z += z;
-    sum_log1p_exp_neg_z += std::log1p(std::exp(-z));
-  }
-  const double logLik = -static_cast<double>(n) * std::log(scale) - sum_z -
-                        2.0 * sum_log1p_exp_neg_z;
-  return {mu, scale, logLik, iter == maxit ? maxit : iter + 1};
+  const double params[] = {mu, scale};
+  const double logLik = -LogisticCost{x}(params);
+  const bool finite = std::isfinite(mu) && std::isfinite(scale) && scale > 0.0 && std::isfinite(logLik);
+  return {mu, scale, logLik, iter == maxit ? maxit : iter + 1,
+          finite && iter < maxit ? LogisticStatus::Ok : LogisticStatus::IterationFailure};
 }
 
 }  // namespace cppunivariate

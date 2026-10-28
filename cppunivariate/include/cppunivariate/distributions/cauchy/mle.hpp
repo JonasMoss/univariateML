@@ -1,9 +1,8 @@
 // Cauchy MLE: bivariate Newton on (mu, log-scale).
 //
-// Initialization: median for mu, log of MAD for log-scale. Then Newton
-// iterations using the closed-form score and Hessian of the Cauchy
-// log-likelihood. Returns iterations == 0 only on empty input (caller
-// turns that into an error).
+// Initialization: median and MAD. Safeguarded Newton steps with a
+// scale-preconditioned score fallback when the observed Hessian is indefinite.
+// Nonexistent MLEs and numerical failures are reported through CauchyStatus.
 
 #pragma once
 
@@ -17,11 +16,14 @@
 
 namespace cppunivariate {
 
+enum class CauchyStatus { Ok, NoMLE, InvalidInput, IterationFailure };
+
 struct CauchyResult {
   double mu;
   double scale;
   double logLik;
   int iterations;
+  CauchyStatus status;
 };
 
 // Negative log-likelihood of Cauchy(mu, scale=s):
@@ -88,10 +90,18 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kEps = std::numeric_limits<double>::epsilon();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0};
+  if (n < 3) return {kNaN, kNaN, kNaN, 0, CauchyStatus::NoMLE};
+  for (auto v : x) {
+    if (!std::isfinite(v)) return {kNaN, kNaN, kNaN, 0, CauchyStatus::InvalidInput};
+  }
 
   std::vector<double> data(x.begin(), x.end());
-  std::nth_element(data.begin(), data.begin() + n / 2, data.end());
+  std::sort(data.begin(), data.end());
+  std::size_t run = 1;
+  for (std::size_t i = 1; i < n; ++i) {
+    run = data[i] == data[i - 1] ? run + 1 : 1;
+    if (2 * run >= n) return {kNaN, kNaN, kNaN, 0, CauchyStatus::NoMLE};
+  }
   double mu = data[n / 2];
 
   for (std::size_t i = 0; i < n; ++i) data[i] = std::fabs(data[i] - mu);
@@ -128,6 +138,29 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
     dmu = (H_thth * U_mu - H_mth * U_th) / det;
     dth = (-H_mth * U_mu + H_mm * U_th) / det;
 
+    // An indefinite observed Hessian can point away from the maximum.
+    // Fall back to a scale-preconditioned score and backtrack in log scale.
+    if (!(H_mm > 0.0 && det > 0.0) || !std::isfinite(dmu + dth)) {
+      dmu = U_mu * std::exp(2.0 * theta) / static_cast<double>(n);
+      dth = U_th / static_cast<double>(n);
+    }
+    const CauchyCost cost{x};
+    const double current[] = {mu, std::exp(theta)};
+    const double old = cost(current);
+    double step = 1.0;
+    bool accepted = false;
+    for (int ls = 0; ls < 60; ++ls) {
+      const double candidate[] = {mu + step * dmu, std::exp(theta + step * dth)};
+      if (std::isfinite(candidate[0]) && std::isfinite(candidate[1]) &&
+          candidate[1] > 0.0 && std::isfinite(cost(candidate)) && cost(candidate) <= old) {
+        accepted = true;
+        break;
+      }
+      step *= 0.5;
+    }
+    if (!accepted) return {mu, std::exp(theta), -old, iter, CauchyStatus::IterationFailure};
+    dmu *= step;
+    dth *= step;
     mu += dmu;
     theta += dth;
     if (std::max(std::fabs(dmu), std::fabs(dth)) < tol) break;
@@ -141,7 +174,8 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   }
   const double logLik =
       -static_cast<double>(n) * std::log(M_PI * scale) - sum_log1p_z2;
-  return {mu, scale, logLik, iter};
+  const bool finite = std::isfinite(mu) && std::isfinite(scale) && scale > 0.0 && std::isfinite(logLik);
+  return {mu, scale, logLik, iter, finite && iter <= maxit ? CauchyStatus::Ok : CauchyStatus::IterationFailure};
 }
 
 }  // namespace cppunivariate

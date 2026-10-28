@@ -71,9 +71,10 @@ Rcpp::List mlcauchy_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
   cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, tol,
       iterlim);
-  if (res.iterations == 0) {
-    Rcpp::stop("x must have positive length");
-  }
+  if (res.status == cppunivariate::CauchyStatus::NoMLE)
+    Rcpp::stop("Cauchy MLE does not exist: need n >= 3 and no value repeated n/2 or more times");
+  if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))
+    Rcpp::stop("Cauchy MLE failed: non-finite or invalid parameters");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["location"] = res.mu, Rcpp::_["scale"] = res.scale),
@@ -102,6 +103,8 @@ Rcpp::List mllogis_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 100) {
   cppunivariate::LogisticResult res =
       cppunivariate::logistic_mle(dist_impl::as_span(x), tol, iterlim);
+  if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))
+    Rcpp::stop("Logistic MLE failed: non-finite or invalid parameters");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["location"] = res.mu, Rcpp::_["scale"] = res.scale),

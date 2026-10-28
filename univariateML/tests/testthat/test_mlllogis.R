@@ -42,3 +42,17 @@ expect_equal(class(est), "univariateML")
 
 # Check names.
 expect_equal(names(est), c("shape", "rate"))
+
+
+test_that("llogis handles a seeded sample with a large outlier", {
+  set.seed(7)
+  x <- c(actuar::rllogis(199, 2, 1), 1e3)
+  objective <- function(p) -sum(actuar::dllogis(x, exp(p[1]), exp(p[2]), log = TRUE))
+  oracle <- optim(log(c(2, 1)), objective,
+    method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
+  expected <- exp(oracle$par)
+  fit <- mlllogis(x)
+  expect_true(all(is.finite(fit)))
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
+})

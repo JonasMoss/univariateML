@@ -89,6 +89,17 @@ TEST_CASE("norm") {
   CHECK(r.logLik == APPROX(g.logLik));
 }
 
+TEST_CASE("norm: seeded sample with outlier") {
+  const std::string source = __FILE__;
+  auto g = mltest::load_golden(source.substr(0, source.find_last_of("/\\")) +
+      "/fixtures/location-scale/norm.json");
+  auto r = cppunivariate::norm_mle(mltest::as_span(g.data));
+  CHECK(r.mean == doctest::Approx(g.estimates.at("first")).epsilon(1e-4));
+  CHECK(r.sd == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
+  CHECK(r.logLik >= g.logLik - 1e-6);
+}
+
+
 TEST_CASE("exp") {
   auto g = load("exp");
   auto r = cppunivariate::exp_mle(mltest::as_span(g.data));
@@ -103,6 +114,17 @@ TEST_CASE("laplace") {
   CHECK(r.sigma == APPROX(g.estimates.at("sigma")));
   CHECK(r.logLik == APPROX(g.logLik));
 }
+
+TEST_CASE("laplace: seeded sample with outlier") {
+  const std::string source = __FILE__;
+  auto g = mltest::load_golden(source.substr(0, source.find_last_of("/\\")) +
+      "/fixtures/location-scale/laplace.json");
+  auto r = cppunivariate::laplace_mle(mltest::as_span(g.data));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("first")).epsilon(1e-4));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
+  CHECK(r.logLik >= g.logLik - 1e-6);
+}
+
 
 TEST_CASE("rayleigh") {
   auto g = load("rayleigh");
@@ -135,6 +157,17 @@ TEST_CASE("lnorm") {
   CHECK(r.sdlog == APPROX(g.estimates.at("sdlog")));
   CHECK(r.logLik == APPROX(g.logLik));
 }
+
+TEST_CASE("lnorm: seeded sample with outlier") {
+  const std::string source = __FILE__;
+  auto g = mltest::load_golden(source.substr(0, source.find_last_of("/\\")) +
+      "/fixtures/location-scale/lnorm.json");
+  auto r = cppunivariate::lognormal_mle(mltest::as_span(g.data));
+  CHECK(r.meanlog == doctest::Approx(g.estimates.at("first")).epsilon(1e-4));
+  CHECK(r.sdlog == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
+  CHECK(r.logLik >= g.logLik - 1e-6);
+}
+
 
 TEST_CASE("logitnorm") {
   auto g = load("logitnorm");
@@ -170,6 +203,30 @@ TEST_CASE("cauchy") {
   CHECK(r.logLik == APPROX(g.logLik));
 }
 
+TEST_CASE("cauchy: seeded sample with outlier") {
+  const std::string source = __FILE__;
+  auto g = mltest::load_golden(source.substr(0, source.find_last_of("/\\")) +
+      "/fixtures/location-scale/cauchy.json");
+  auto r = cppunivariate::fit_cauchy(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.mu == doctest::Approx(g.estimates.at("first")).epsilon(1e-4));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
+  CHECK(r.logLik >= g.logLik - 1e-6);
+  CHECK(r.status == cppunivariate::CauchyStatus::Ok);
+}
+
+TEST_CASE("cauchy: three observations and nonexistent MLE") {
+  const std::vector<double> x{-2.2425190273413, 0.723253413022922, -2.56072856385821};
+  auto r = cppunivariate::fit_cauchy(mltest::as_span(x), kFitTol, kFitMaxit);
+  CHECK(r.status == cppunivariate::CauchyStatus::Ok);
+  CHECK(r.mu == doctest::Approx(-2.369470147).epsilon(1e-4));
+  CHECK(r.scale == doctest::Approx(0.272740500).epsilon(1e-4));
+  CHECK(r.logLik >= -4.99686179 - 1e-6);
+  for (const std::vector<double> &bad : {std::vector<double>{}, {1}, {1, 2}, {1, 1, 2}, {1, 1, 2, 3}}) {
+    CHECK(cppunivariate::fit_cauchy(mltest::as_span(bad), kFitTol, kFitMaxit).status == cppunivariate::CauchyStatus::NoMLE);
+  }
+}
+
+
 TEST_CASE("gumbel") {
   auto g = load("gumbel");
   auto r = cppunivariate::fit_gumbel_newton(mltest::as_span(g.data), kFitTol, kFitMaxit);
@@ -177,6 +234,17 @@ TEST_CASE("gumbel") {
   CHECK(r.sigma == APPROX(g.estimates.at("sigma")));
   CHECK(r.logLik == APPROX(g.logLik));
 }
+
+TEST_CASE("gumbel: seeded sample with outlier") {
+  const std::string source = __FILE__;
+  auto g = mltest::load_golden(source.substr(0, source.find_last_of("/\\")) +
+      "/fixtures/location-scale/gumbel.json");
+  auto r = cppunivariate::fit_gumbel_newton(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.mu == doctest::Approx(g.estimates.at("first")).epsilon(1e-4));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
+  CHECK(r.logLik >= g.logLik - 1e-6);
+}
+
 
 TEST_CASE("logis") {
   auto g = load("logis");
@@ -186,6 +254,26 @@ TEST_CASE("logis") {
   CHECK(r.logLik == APPROX(g.logLik));
 }
 
+TEST_CASE("logis: seeded sample with outlier") {
+  const std::string source = __FILE__;
+  auto g = mltest::load_golden(source.substr(0, source.find_last_of("/\\")) +
+      "/fixtures/location-scale/logis.json");
+  auto r = cppunivariate::logistic_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.mu == doctest::Approx(g.estimates.at("first")).epsilon(1e-4));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
+  CHECK(r.logLik >= g.logLik - 1e-6);
+  CHECK(r.status == cppunivariate::LogisticStatus::Ok);
+}
+
+
+TEST_CASE("logis: invalid inputs never report success") {
+  for (const std::vector<double> &x : {std::vector<double>{}, {1}, {1, 1},
+       {0, std::numeric_limits<double>::infinity()}}) {
+    const auto r = cppunivariate::logistic_mle(mltest::as_span(x), kFitTol, kFitMaxit);
+    CHECK(r.status == cppunivariate::LogisticStatus::InvalidInput);
+  }
+}
+
 TEST_CASE("llogis") {
   auto g = load("llogis");
   auto r = cppunivariate::loglogistic_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
@@ -193,6 +281,17 @@ TEST_CASE("llogis") {
   CHECK(r.rate == APPROX(g.estimates.at("rate")));
   CHECK(r.logLik == APPROX(g.logLik));
 }
+
+TEST_CASE("llogis: seeded sample with outlier") {
+  const std::string source = __FILE__;
+  auto g = mltest::load_golden(source.substr(0, source.find_last_of("/\\")) +
+      "/fixtures/location-scale/llogis.json");
+  auto r = cppunivariate::loglogistic_mle(mltest::as_span(g.data), kFitTol, kFitMaxit);
+  CHECK(r.shape == doctest::Approx(g.estimates.at("first")).epsilon(1e-4));
+  CHECK(r.rate == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
+  CHECK(r.logLik >= g.logLik - 1e-6);
+}
+
 
 TEST_CASE("weibull") {
   auto g = load("weibull");
