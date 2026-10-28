@@ -1,0 +1,142 @@
+// Location-scale Student t, constrained to df >= 1.
+#pragma once
+#include "../../core/bfgs.hpp"
+#include "../../core/span.hpp"
+#include "../../special/special.hpp"
+#include <algorithm>
+#include <cmath>
+#include <limits>
+#include <vector>
+
+namespace cppunivariate {
+enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary };
+struct LstResult {
+  double mu, sigma, df, logLik;
+  int iterations;
+  LstStatus status;
+};
+
+// Coordinates are location, log(scale), log(df-1); fixed_df includes Cauchy.
+struct LstCost {
+  span x;
+  double fixed_df = 0.0;
+  int dim() const { return fixed_df > 0.0 ? 2 : 3; }
+  double operator()(const double *p) const {
+    const double s = std::exp(p[1]);
+    const double df = fixed_df > 0.0 ? fixed_df : 1.0 + std::exp(p[2]);
+    if (!(s > 0.0) || !std::isfinite(s) || !std::isfinite(df) || df > 1e7)
+      return std::numeric_limits<double>::infinity();
+    // Gamma ratio expansion avoids cancellation on the normal approach.
+    const double c = df > 1e4 ? -0.5 * std::log(2.0 * M_PI) - 0.25 / df :
+      cppunivariate::special::lgamma((df + 1.0) / 2.0) -
+      cppunivariate::special::lgamma(df / 2.0) - 0.5 * std::log(df * M_PI);
+    double f = 0.0;
+    for (double v : x) {
+      const double z = (v - p[0]) / s;
+      f += p[1] - c + 0.5 * (df + 1.0) * std::log1p(z * z / df);
+    }
+    return f;
+  }
+  void gradient(const double *p, double *g) const {
+    const double s = std::exp(p[1]);
+    const double df = fixed_df > 0.0 ? fixed_df : 1.0 + std::exp(p[2]);
+    g[0] = g[1] = 0.0;
+    if (dim() == 3) g[2] = 0.0;
+    const double dc = df > 1e4 ? 0.25 / (df * df) :
+      0.5 * (cppunivariate::special::digamma((df + 1.0) / 2.0) -
+             cppunivariate::special::digamma(df / 2.0) - 1.0 / df);
+    for (double v : x) {
+      const double z = (v - p[0]) / s;
+      const double r = z * z / (df + z * z);
+      g[0] -= (df + 1.0) * z / (s * (df + z * z));
+      g[1] += 1.0 - (df + 1.0) * r;
+      if (dim() == 3)
+        g[2] += (df - 1.0) * (-dc + 0.5 * std::log1p(z * z / df) -
+                               0.5 * (df + 1.0) * r / df);
+    }
+  }
+};
+
+inline LstResult lst_mle(span x, double tol, int maxit) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::size_t n = x.size();
+  if (n < 3) return {nan,nan,nan,nan,0,LstStatus::NoMLE};
+  std::vector<double> y;
+  for (double v : x) {
+    if (!std::isfinite(v)) return {nan,nan,nan,nan,0,LstStatus::InvalidStart};
+    y.push_back(v);
+  }
+  std::sort(y.begin(), y.end());
+  std::size_t run = 1;
+  for (std::size_t i = 1; i < n; ++i) {
+    run = y[i] == y[i-1] ? run + 1 : 1;
+    if (2 * run >= n) return {nan,nan,nan,nan,0,LstStatus::NoMLE};
+  }
+  // Robust affine standardisation keeps the optimisation meaningful for
+  // narrow clusters and heavy tails whose sample variance is enormous.
+  const double center = y[n/2];
+  const double unit = y[3*n/4] - y[n/4];
+  if (!(unit > 0.0) || !std::isfinite(unit))
+    return {nan,nan,nan,nan,0,LstStatus::InvalidStart};
+  double mean = 0.0;
+  for (double &v : y) { v = (v-center)/unit; mean += v / n; }
+  double variance = 0.0;
+  for (double v : y) variance += (v-mean)*(v-mean)/n;
+  const double normal = -0.5*n*(std::log(2.0*M_PI*variance)+1.0);
+  BfgsControl ctl;
+  ctl.grad_tol = tol;
+  ctl.maxit = maxit;
+  BfgsResult best;
+  best.f = INFINITY;
+  double best_df = 1.0;
+  BfgsResult cauchy;
+  cauchy.f = INFINITY;
+  // Profile grid, multiple nuisance starts, then joint refinement of each
+  // grid candidate. Neither EM nor this joint search certifies uniqueness.
+  for (double df : {1.0, 1.25, 1.5, 2.0, 3.0, 5.0, 10.0, 30.0, 100.0, 1000.0}) {
+    LstCost fixed{{y.data(),y.size()},df};
+    BfgsResult profile;
+    profile.f = INFINITY;
+    for (double mu : {mean, y[n/4], y[n/2], y[3*n/4]}) {
+      double s = 1.0;
+      for (int j = 0; j < maxit; ++j) {
+        double sw = 0.0, sx = 0.0;
+        for (double v : y) {
+          const double z = (v-mu)/s;
+          const double w = (df+1.0)/(df+z*z);
+          sw += w; sx += w*v;
+        }
+        const double next = sx/sw;
+        double ss = 0.0;
+        for (double v : y) {
+          const double z = (v-mu)/s;
+          ss += (df+1.0)/(df+z*z)*(v-next)*(v-next)/n;
+        }
+        mu = next; s = std::sqrt(ss);
+      }
+      const double p[2] = {mu,std::log(s)};
+      auto r = bfgs_minimize(fixed,p,ctl);
+      if (r.f < profile.f) profile = r;
+    }
+    if (df == 1.0) cauchy = profile;
+    if (profile.theta.empty()) continue;
+    if (df > 1.0) {
+      LstCost joint{{y.data(),y.size()}};
+      const double p[3] = {profile.theta[0],profile.theta[1],std::log(df-1.0)};
+      auto r = bfgs_minimize(joint,p,ctl);
+      if (r.f < best.f) { best = r; best_df = 1.0+std::exp(r.theta[2]); }
+    }
+  }
+  const double tie = 1e-8*n;
+  if (cauchy.f <= best.f + tie) { best = cauchy; best_df = 1.0; }
+  if (best.theta.empty()) return {nan,nan,nan,nan,0,LstStatus::InvalidStart};
+  // Prefer an attained finite member in numerical ties, except on the
+  // asymptotic normal approach (df >= 1e5 has no resolved finite optimum).
+  if (normal > -best.f + tie || (best_df >= 1e5 && normal >= -best.f-tie))
+    return {center+unit*mean,unit*std::sqrt(variance),INFINITY,
+            normal-n*std::log(unit),best.iterations,LstStatus::NormalBoundary};
+  return {center+unit*best.theta[0],unit*std::exp(best.theta[1]),best_df,
+          -best.f-n*std::log(unit),best.iterations,
+          best.status == BfgsStatus::Ok ? LstStatus::Ok : LstStatus::BfgsFailure};
+}
+} // namespace cppunivariate

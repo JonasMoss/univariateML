@@ -15,7 +15,8 @@ Rcpp::List mlstd_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
   }
   if (res.status == cppunivariate::StudentTStatus::DfTwoBoundary) {
     Rcpp::stop("The Student-t likelihood is maximised as nu -> 2 (infinite "
-               "variance); the MLE does not exist in the mean/sd parameterisation.");
+               "variance); the MLE does not exist in the mean/sd parameterisation. "
+               "Use `mllst` to fit a location-scale t distribution with free degrees of freedom.");
   }
   if (res.status == cppunivariate::StudentTStatus::InvalidStart) {
     Rcpp::stop("Student-t MLE requires at least 2 finite observations with "

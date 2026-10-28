@@ -62,3 +62,5 @@
 #include "distributions/weibull/mle.hpp"
 #include "distributions/zip/mle.hpp"
 #include "distributions/zipf/mle.hpp"
+
+#include "distributions/lst/mle.hpp"

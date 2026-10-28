@@ -17,7 +17,7 @@ limits:
   - model: 'norm'
     when: '$\nu \to \infty$'
     status: 'NormalBoundary'
-  - name: 'location-scale t with 2 degrees of freedom'
+  - model: lst
     when: '$\nu \to 2^+$'
     status: 'DfTwoBoundary'
 references:
