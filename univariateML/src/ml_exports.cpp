@@ -599,6 +599,12 @@ Rcpp::List mlsstd_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
 Rcpp::List mlsnorm_(const Rcpp::NumericVector &x, double tol = 1.220703e-4,
                     int iterlim = 200) {
   auto res = cppunivariate::snorm_mle(dist_impl::as_span(x), tol, iterlim);
+  if (res.status == cppunivariate::SnormStatus::RightHalfNormalBoundary) {
+    Rcpp::stop("The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist.");
+  }
+  if (res.status == cppunivariate::SnormStatus::LeftHalfNormalBoundary) {
+    Rcpp::stop("The likelihood is maximised by a translated half-normal (mode at the sample maximum); the skew-normal MLE does not exist.");
+  }
   if (res.status == cppunivariate::SnormStatus::InvalidStart) {
     Rcpp::stop("Skew-normal MLE requires at least 2 finite observations with "
                "positive variance.");
