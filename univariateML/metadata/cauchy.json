@@ -1,4 +1,0 @@
-{
-  "sampler": "stats::rcauchy",
-  "density": "stats::dcauchy"
-}
