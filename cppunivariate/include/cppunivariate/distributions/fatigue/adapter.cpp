@@ -13,5 +13,6 @@ Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta,
           Rcpp::_["mu"] = 0.0),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
+      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
+      Rcpp::_["fixed"] = Rcpp::CharacterVector::create("mu"));
 }

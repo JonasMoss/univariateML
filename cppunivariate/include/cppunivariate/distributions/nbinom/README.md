@@ -3,7 +3,7 @@ id: nbinom
 name: Negative binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: size, role: shape, domain: "(0, inf)", default: 10.0}
+  - {name: size, role: shape, domain: "(0, inf)", default: 10.0, fixable: true}
   - {name: prob, role: probability, domain: "(0, 1]", default: 0.3}
 r:
   density: stats::dnbinom

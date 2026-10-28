@@ -71,7 +71,13 @@ bootstrapml <- function(
     reducer = stats::quantile, ...) {
   r_fun <- univariateML_to_function(object, type = "r")
   ml_fun <- univariateML_to_function(object, type = "ml")
-  bootstraps <- replicate(n = reps, expr = ml_fun(r_fun(attr(object, "n"))))
+  # Refit with the same parameters held fixed as in the original fit.
+  fixed <- univariateML_fixed(object)
+  held <- stats::setNames(as.list(as.numeric(object[fixed])), fixed)
+  bootstraps <- replicate(
+    n = reps,
+    expr = do.call(ml_fun, c(list(r_fun(attr(object, "n"))), held))
+  )
 
   defaults <- list()
 

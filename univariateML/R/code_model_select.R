@@ -87,12 +87,13 @@ model_select <- function(
     return(fits[[which.min(crits)]])
   }
 
-  p_vec <- sapply(fits, length)
+  p_vec <- sapply(fits, univariateML_df)
   fits <- data.frame(
     model = unname(sapply(fits, function(x) attr(x, "model"))),
     LOGLIK = unname(-sapply(fits, stats::logLik)),
     AIC = unname(sapply(fits, stats::AIC)),
     BIC = unname(sapply(fits, stats::BIC)),
+    p = unname(p_vec),
     ml = gsub("^ml", "", names(fits)),
     univariateML = I(fits),
     stringsAsFactors = FALSE
@@ -104,7 +105,6 @@ model_select <- function(
   fits$d_logLik <- fits$LOGLIK - min(fits$LOGLIK, na.rm = TRUE)
   fits$d_AIC <- fits$AIC - min(fits$AIC, na.rm = TRUE)
   fits$d_BIC <- fits$BIC - min(fits$BIC, na.rm = TRUE)
-  fits$p <- p_vec
   fits$logLik <- -fits$LOGLIK
 
   fits <- fits[, c(

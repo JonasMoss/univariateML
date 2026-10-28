@@ -60,5 +60,7 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double reltol = 1.220703e-4,
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["size"] = size_out, Rcpp::_["prob"] = prob_out),
-      Rcpp::_["logLik"] = loglik_out, Rcpp::_["iterations"] = iterations_out);
+      Rcpp::_["logLik"] = loglik_out, Rcpp::_["iterations"] = iterations_out,
+      Rcpp::_["fixed"] = size.isNotNull() ? Rcpp::CharacterVector::create("size")
+                                          : Rcpp::CharacterVector(0));
 }

@@ -60,11 +60,17 @@ limit_sentence <- function(lim, model) {
   )
 }
 
+# Parameters the user may hold fixed: an adapter argument named like the
+# coefficient (README params: fixable: true).
+fixable_names <- function(model) {
+  unlist(lapply(model$params, function(p) if (isTRUE(p$fixable)) p$name))
+}
+
 check_control <- function(model) {
   fn <- rcpp_env[[paste0("ml", model$id, "_")]]
   if (is.null(fn)) stop("codegen_wrappers: no Rcpp adapter ml", model$id, "_")
   formal_names <- setdiff(names(formals(fn)), "x")
-  doc_names <- names(model$control)
+  doc_names <- union(names(model$control), fixable_names(model))
   if (!setequal(formal_names, doc_names)) {
     stop("codegen_wrappers: ", model$id, ": adapter arguments (",
          paste(formal_names, collapse = ", "), ") do not match README r.control (",
@@ -97,6 +103,11 @@ gen_doc <- function(model) {
     default_txt <- if (is.null(d)) "" else nl(" Defaults to `", format(eval(d)), "`.")
     nl("  * `", arg, "`: ", rd_math(model$control[[arg]]), default_txt)
   }, character(1))
+  fixed_items <- vapply(setdiff(fixable_names(model), names(model$control)), function(arg) {
+    nl("  * `", arg, "`: Value at which to hold `", arg, "` fixed; ",
+       "`NULL` (the default) estimates it.")
+  }, character(1))
+  control_items <- c(fixed_items, control_items)
   seealso <- unique(c(
     nl(rd_link(model$density), " for the density."),
     unlist(lapply(model$limits, function(l) if (!is.null(l$model)) nl("[ml", l$model, "()] for the limit model."))),
@@ -124,7 +135,8 @@ gen_doc <- function(model) {
     nl("@return `", fname, "` returns an object of [class][base::class] `univariateML`. ",
        "This is a named numeric vector with maximum likelihood estimates for ",
        and_list(param_names(model)), " and the attributes `model`, `density`, ",
-       "`logLik`, `support`, `n` and `call`."),
+       "`logLik`, `support`, `n`, `call` and `fixed` (the names of the parameters ",
+       "held fixed rather than estimated)."),
     "@seealso",
     seealso,
     if (length(model$references)) c("@references", head(c(rbind(model$references, "")), -1L)) else NULL,
@@ -145,7 +157,7 @@ gen_wrapper <- function(model) {
     "  n <- length(x)\n",
     "  out <- ", fname, "_(x = x, ...)\n",
     "  params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)\n",
-    "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params)\n",
+    "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params, fixed = out$fixed)\n",
     "}\n\n"
   )
 }

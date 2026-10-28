@@ -75,7 +75,8 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   )
   params <- lapply(f$params, function(p) {
     list(name = p$name, role = p$role %||% "", domain = p$domain %||% "",
-         default = as.numeric(p$default))
+         default = as.numeric(p$default),
+         fixable = isTRUE(p$fixable), fixed = p$fixed)
   })
   list(
     id = id,

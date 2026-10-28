@@ -69,6 +69,7 @@ fit_to_record <- function(model, fit, data) {
     sampler = model$sampler,
     sampler_args = default_args(model),
     estimates = as.list(estimates),
+    fixed = I(as.character(attr(fit, "fixed"))),
     logLik = unname(attr(fit, "logLik")),
     n_obs = unname(attr(fit, "n")) %||% length(data),
     data = as.numeric(data)

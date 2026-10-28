@@ -45,15 +45,27 @@ Write math as `$...$` / `$$...$$`; the R codegen turns it into
 `\eqn{}` / `\deqn{}`. Use backticks for code. Do not restate the density,
 parameter tables, moments or the algorithm.
 
-## Harness parameter flags
+## Optional parameter keys
 
 Optional keys in each `params` entry:
 
+- `fixable: true`: the user may hold this parameter fixed. The adapter
+  `ml<id>_` takes an argument named like the coefficient; `NULL` (the
+  default) estimates it, a value holds it at that value. The generated docs
+  list it (a description in `r.control` overrides the generic text). The
+  adapter returns `fixed`, the names of the parameters it held, which
+  become the object's `fixed` attribute: `logLik()` degrees of freedom,
+  AIC/BIC, `model_select` and `bootstrapml` count and hold only those.
+- `fixed: <value>`: the fitter always holds this parameter at `<value>`
+  (fatigue's `mu = 0`: the three-parameter MLE does not exist).
 - `bound: lower` / `bound: upper`: the parameter is a support endpoint
-  whose MLE is the sample minimum / maximum. Hold it at its golden value
-  in the oracle and omit its score and Hessian row.
-- `integer: true`: omit derivatives and hold the discrete coefficient fixed.
-- `fixed: true`: the fitter fixes this coefficient; hold its golden value.
+  whose MLE is the sample minimum / maximum. The harness holds it at its
+  golden value in the oracle and omits its score and Hessian row.
+- `integer: true`: the harness omits derivatives and holds the discrete
+  coefficient fixed.
+
+The harness (`just quality`) also holds every parameter listed in a
+golden's `fixed` field.
 
 All other parameters are regular. At a closed domain endpoint, check the
 one-sided score condition and the observed information on the free tangent

@@ -42,7 +42,7 @@ decorator <- function(name) {
     out <- do.call(paste0(name, "_"), c(list(x = x), list(...)))
 
     params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)
-    univariateML_construct(out$estimates, name = name, params = params)
+    univariateML_construct(out$estimates, name = name, params = params, fixed = out$fixed)
   }
   meta <- univariateML_metadata[[name]]
   meta$parameters <- meta$names
@@ -56,9 +56,10 @@ decorator <- function(name) {
 #' @param estimates The estimated parameters
 #' @param name Name of the `ml***` function.
 #' @param params List of `loglik`, `call`, and `n`.
+#' @param fixed Names of the parameters held fixed rather than estimated.
 #' @return Object of class `univariateML`
 
-univariateML_construct <- function(estimates, name, params) {
+univariateML_construct <- function(estimates, name, params, fixed = NULL) {
   estimates <- unname(estimates)
   class <- "univariateML"
   args <- c(.Data = list(estimates), params, univariateML_metadata[[name]], class = class)
@@ -71,7 +72,27 @@ univariateML_construct <- function(estimates, name, params) {
 
   attr(object, "continuous") <- (univariateML_metadata[[name]]$support$type == "R")
   attr(object, "support") <- univariateML_metadata[[name]]$support$bounds
+  attr(object, "fixed") <- as.character(fixed)
   object
+}
+
+#' Names of the parameters a univariateML object held fixed.
+#'
+#' @param obj A univariateML object.
+#' @return A character vector, empty when every parameter was estimated.
+#' @keywords internal
+univariateML_fixed <- function(obj) {
+  fixed <- attr(obj, "fixed")
+  if (is.null(fixed)) character(0) else fixed
+}
+
+#' Number of estimated (free) parameters of a univariateML object.
+#'
+#' @param obj A univariateML object.
+#' @return An integer.
+#' @keywords internal
+univariateML_df <- function(obj) {
+  length(obj) - length(univariateML_fixed(obj))
 }
 
 

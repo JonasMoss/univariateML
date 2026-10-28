@@ -28,5 +28,7 @@ Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["size"] = res.size, Rcpp::_["prob"] = res.prob),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
+      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
+      Rcpp::_["fixed"] = size.isNotNull() ? Rcpp::CharacterVector::create("size")
+                                          : Rcpp::CharacterVector(0));
 }

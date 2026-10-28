@@ -108,7 +108,7 @@ points.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
 logLik.univariateML <- function(object, ...) {
   val <- attr(object, "logLik")
   attr(val, "nobs") <- attr(object, "n")
-  attr(val, "df") <- length(object)
+  attr(val, "df") <- univariateML_df(object)
   class(val) <- "logLik"
   val
 }
@@ -128,6 +128,8 @@ summary.univariateML <- function(object, ...) {
     "\nCall: ", deparse(attr(object, "call")), "\n\nEstimates: \n"
   )
   print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
+  fixed <- univariateML_fixed(object)
+  if (length(fixed)) cat("\nFixed:           ", paste(fixed, collapse = ", "), "\n", sep = "")
   cat("\nData:            ", data.name, " (", attr(object, "n"), " obs.)\n",
     "Support:         (", support[[1]], ", ", support[[2]], ")\n",
     "Density:         ", attr(object, "density"), "\n",

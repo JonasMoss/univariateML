@@ -46,7 +46,10 @@ def check(id):
     else:
         expr = sp.sympify(source, locals=local)
     theta = [values[p['name']] for p in params]
-    held = {syms[i]: theta[i] for i, p in enumerate(params) if any((p.get(k) for k in ('bound', 'integer', 'fixed')))}
+    # Held: support endpoints, integer parameters, and parameters the golden
+    # fit held fixed (golden.json `fixed`, or README `fixed: <value>`).
+    fixed_names = set(golden.get('fixed', [])) | {p['name'] for p in params if 'fixed' in p}
+    held = {syms[i]: theta[i] for i, p in enumerate(params) if p.get('bound') or p.get('integer') or p['name'] in fixed_names}
     expr = expr.subs(held).doit()
     expr = expr.replace(sp.Abs, lambda a: sp.Piecewise((a, a >= 0), (-a, True)))
     if expr.free_symbols - set(syms) - {x}:
@@ -60,7 +63,7 @@ def check(id):
             # Some fitters nudge an open endpoint by sqrt(machine epsilon).
             if abs(theta[i] - extreme) > np.sqrt(np.finfo(float).eps) * (1 + abs(extreme)):
                 raise ValueError(f"{p['name']}: bound estimate differs from sample extreme")
-    result = {'id': id, 'boundary_offsets': boundary_offsets, 'limits': meta.get('limits', []), 'skipped_parameters': {p['name']: {k: p[k] for k in ('bound', 'integer', 'fixed') if k in p} for i, p in enumerate(params) if syms[i] in held}}
+    result = {'id': id, 'boundary_offsets': boundary_offsets, 'limits': meta.get('limits', []), 'skipped_parameters': {p['name']: {k: p[k] for k in ('bound', 'integer', 'fixed') if k in p} or {'fixed': True} for i, p in enumerate(params) if syms[i] in held}}
     fn = sp.lambdify([*syms, x], expr, 'mpmath', cse=True)
     with mp.workdps(30):
         ll = float(mp.fsum((fn(*map(mp.mpf, theta), mp.mpf(v)) for v in data)))
