@@ -96,3 +96,24 @@ test_that("large-nu interior fit matches dt and a slow oracle", {
   expect_lt(abs(attr(fit, "logLik") + best$value), 1e-5)
   expect_equal(unname(fit[3]), 2 + exp(best$par[3]), tolerance = .02)
 })
+
+test_that("fixed nu agrees with density oracle and records two free parameters", {
+  x <- c(-5,-2,-1,0,0,1,2,9)
+  for (nu in c(2.1,4,30)) {
+    fit <- mlstd(x, nu = nu, gradtol = 1e-8, iterlim = 5000)
+    objective <- function(p) -sum(fGarch::dstd(x, mean = p[1],
+      sd = exp(p[2]), nu = nu, log = TRUE))
+    oracle <- optim(c(0,1), objective, method = "BFGS",
+                    control = list(reltol = 1e-13, maxit = 3000))
+    expect_equal(attr(fit, "logLik"), -oracle$value, tolerance = 1e-9)
+    expect_equal(as.numeric(fit[1:2]), c(oracle$par[1],exp(oracle$par[2])), tolerance = 1e-4)
+    expect_identical(attr(fit, "fixed"), "nu")
+    expect_equal(attr(logLik(fit), "df"), 2)
+    expect_identical(unname(fit[3]), nu)
+  }
+  for (nu in c(-1,0,2,Inf,NaN)) expect_error(mlstd(x, nu = nu), "greater than 2")
+  expect_error(mlstd(c(0,0,0,1), nu = 2.5), "unbounded")
+  expect_error(mlstd(c(0,0,0,1), nu = 3), "equality")
+  expect_error(mlstd(x, nu = 4, iterlim = 0), "score tolerance")
+  expect_s3_class(mlstd(qnorm((1:100-.5)/100), nu = 4), "univariateML")
+})

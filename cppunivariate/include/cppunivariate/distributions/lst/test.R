@@ -50,3 +50,25 @@ test_that("std two-cluster escape has a location-scale fit", {
     method = "BFGS", control = list(maxit = 2000, reltol = 1e-12))
   expect_gt(attr(fit, "logLik"), -t2$value + 70)
 })
+
+test_that("fixed df agrees with oracle and Cauchy, with correct metadata", {
+  x <- c(-5,-2,-1,0,0,1,2,9)
+  for (df in c(1, 2.5, 10)) {
+    fit <- mllst(x, df = df, gradtol = 1e-8, iterlim = 5000)
+    objective <- function(p) -sum(extraDistr::dlst(x, df = df,
+      mu = p[1], sigma = exp(p[2]), log = TRUE))
+    oracle <- optim(c(0,0), objective, method = "BFGS",
+                    control = list(reltol = 1e-13, maxit = 3000))
+    expect_equal(attr(fit, "logLik"), -oracle$value, tolerance = 1e-9)
+    expect_equal(as.numeric(fit[1:2]), c(oracle$par[1],exp(oracle$par[2])), tolerance = 1e-4)
+    expect_identical(attr(fit, "fixed"), "df")
+    expect_equal(attr(logLik(fit), "df"), 2)
+    expect_identical(unname(fit[3]), df)
+    if (df == 1) expect_equal(as.numeric(fit[1:2]), as.numeric(mlcauchy(x)), tolerance = 1e-3)
+  }
+  for (df in c(-1,0,.5,Inf,NaN)) expect_error(mllst(x, df = df), "at least 1")
+  expect_error(mllst(c(0,0,0,1), df = 2), "unbounded")
+  expect_error(mllst(c(0,0,0,1), df = 3), "equality")
+  expect_s3_class(mllst(c(0,0,0,1), df = 4, iterlim = 5000), "univariateML")
+  expect_s3_class(mllst(qnorm((1:100-.5)/100), df = 4), "univariateML")
+})

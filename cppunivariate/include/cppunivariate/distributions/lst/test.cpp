@@ -60,3 +60,24 @@ TEST_CASE("lst: dpqr location-scale convention and tails") {
     CHECK(std::isfinite(cppunivariate::distributions::rlst(rng,2,3,df)));
   }
 }
+
+TEST_CASE("lst: fixed df score, ties and validation") {
+  const std::vector<double> x = {-5,-2,-1,0,0,1,2,9};
+  for (double df : {1.0,2.5,10.0}) {
+    auto r = cppunivariate::lst_mle_fixed_df(mltest::as_span(x),df,1e-8,5000);
+    REQUIRE(r.status == cppunivariate::LstStatus::Ok);
+    CHECK(r.df == df);
+    cppunivariate::LstCost cost{mltest::as_span(x),df};
+    double p[2] = {r.mu,std::log(r.sigma)}, g[2];
+    cost.gradient(p,g);
+    CHECK(std::hypot(r.sigma*g[0],g[1]) < 1e-8);
+    CHECK(r.logLik == doctest::Approx(-cost(p)).epsilon(1e-12));
+  }
+  for (double df : {0.0,0.5,-1.0,std::numeric_limits<double>::infinity()})
+    CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(x),df,1e-8,100).status == cppunivariate::LstStatus::InvalidDf);
+  const std::vector<double> tied = {0,0,0,1};
+  CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(tied),2,1e-8,100).status == cppunivariate::LstStatus::Unbounded);
+  CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(tied),3,1e-8,100).status == cppunivariate::LstStatus::ScaleBoundary);
+  CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(tied),4,1e-8,5000).status == cppunivariate::LstStatus::Ok);
+  CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(x),3,1e-12,0).status == cppunivariate::LstStatus::IterationFailure);
+}

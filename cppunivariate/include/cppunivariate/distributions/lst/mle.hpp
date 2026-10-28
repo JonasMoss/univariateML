@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace cppunivariate {
-enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary };
+enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary, InvalidDf, Unbounded, ScaleBoundary, IterationFailure };
 struct LstResult {
   double mu, sigma, df, logLik;
   int iterations;
@@ -20,14 +20,15 @@ struct LstResult {
 struct LstCost {
   span x;
   double fixed_df = 0.0;
+  bool exact_fixed = false;
   int dim() const { return fixed_df > 0.0 ? 2 : 3; }
   double operator()(const double *p) const {
     const double s = std::exp(p[1]);
     const double df = fixed_df > 0.0 ? fixed_df : 1.0 + std::exp(p[2]);
-    if (!(s > 0.0) || !std::isfinite(s) || !std::isfinite(df) || df > 1e7)
+    if (!(s > 0.0) || !std::isfinite(s) || !std::isfinite(df) || (!exact_fixed && df > 1e7))
       return std::numeric_limits<double>::infinity();
     // Gamma ratio expansion avoids cancellation on the normal approach.
-    const double c = df > 1e4 ? -0.5 * std::log(2.0 * M_PI) - 0.25 / df :
+    const double c = exact_fixed ? cppunivariate::special::dt(0.0,df,true) : df > 1e4 ? -0.5 * std::log(2.0 * M_PI) - 0.25 / df :
       cppunivariate::special::lgamma((df + 1.0) / 2.0) -
       cppunivariate::special::lgamma(df / 2.0) - 0.5 * std::log(df * M_PI);
     double f = 0.0;
@@ -56,6 +57,65 @@ struct LstCost {
     }
   }
 };
+
+// Fixed-df EM: conditional normal weights, followed by their exact weighted
+// location/scale M-step. Each update increases the observed likelihood.
+// Strict mass inequality gives a regular attained fit for df >= 1.
+inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (!std::isfinite(df) || df < 1.0)
+    return {nan,nan,df,nan,0,LstStatus::InvalidDf};
+  const std::size_t n = x.size();
+  if (n < 2) return {nan,nan,df,nan,0,LstStatus::Unbounded};
+  std::vector<double> y;
+  for (double v : x) {
+    if (!std::isfinite(v)) return {nan,nan,df,nan,0,LstStatus::InvalidStart};
+    y.push_back(v);
+  }
+  std::sort(y.begin(), y.end());
+  std::size_t run = 0, largest = 0;
+  for (std::size_t i = 0; i < n; ++i) {
+    run = i && y[i] == y[i-1] ? run + 1 : 1;
+    largest = std::max(largest, run);
+  }
+  const double other = df * static_cast<double>(n-largest);
+  if (largest > other) return {nan,nan,df,INFINITY,0,LstStatus::Unbounded};
+  if (largest == other) return {nan,nan,df,nan,0,LstStatus::ScaleBoundary};
+  const double center = y[n/2];
+  // Range works even when the IQR vanishes in an admissible tied sample.
+  const double unit = y.back()-y.front();
+  if (!(unit > 0.0) || !std::isfinite(unit))
+    return {nan,nan,df,nan,0,LstStatus::InvalidStart};
+  for (double &v : y) v = (v-center)/unit;
+  LstCost cost{{y.data(),y.size()},df,true};
+  double mu = 0.0, scale = 0.5;
+  for (int it = 0; it <= maxit; ++it) {
+    const double p[2] = {mu,std::log(scale)};
+    double g[2];
+    cost.gradient(p,g);
+    // Location score is measured in units of the current scale, making
+    // the stopping rule affine invariant; log-scale score is dimensionless.
+    const double score = std::hypot(scale*g[0],g[1]);
+    if (std::isfinite(score) && score <= tol)
+      return {center+unit*mu,unit*scale,df,-cost(p)-n*std::log(unit),it,LstStatus::Ok};
+    if (it == maxit) break;
+    double sw = 0.0, sx = 0.0;
+    for (double v : y) {
+      const double z = (v-mu)/scale;
+      const double w = (1.0+1.0/df)/(1.0+z*z/df);
+      sw += w; sx += w*v;
+    }
+    const double next = sx/sw;
+    double ss = 0.0;
+    for (double v : y) {
+      const double z = (v-mu)/scale;
+      ss += (1.0+1.0/df)/(1.0+z*z/df)*(v-next)*(v-next)/n;
+    }
+    mu = next; scale = std::sqrt(ss);
+    if (!(scale > 0.0) || !std::isfinite(mu) || !std::isfinite(scale)) break;
+  }
+  return {nan,nan,df,nan,maxit,LstStatus::IterationFailure};
+}
 
 inline LstResult lst_mle(span x, double tol, int maxit) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
