@@ -1,0 +1,23 @@
+#include "test_support.hpp"
+#include "cppunivariate/cppunivariate.hpp"
+#include "cppunivariate/distributions/betapr/dpqr.hpp"
+#include "cppunivariate/distributions/rng_std.hpp"
+#include <algorithm>
+#include <cmath>
+#include <limits>
+#include <random>
+#include <vector>
+
+#define C_APPROX(x) doctest::Approx(x).epsilon(mltest::kTol)
+#define C_APPROX_FD(x) doctest::Approx(x).epsilon(mltest::kFdTol)
+
+TEST_CASE("betapr") {
+  auto g = mltest::load_distribution_golden("betapr");
+  auto r = cppunivariate::betapr_mle(mltest::as_span(g.data), 1.490116e-08, mltest::kFitMaxit);
+  CHECK(r.alpha == C_APPROX(g.estimates.at("shape1")));
+  CHECK(r.beta == C_APPROX(g.estimates.at("shape2")));
+  CHECK(r.logLik == C_APPROX(g.logLik));
+}
+
+#undef C_APPROX
+#undef C_APPROX_FD

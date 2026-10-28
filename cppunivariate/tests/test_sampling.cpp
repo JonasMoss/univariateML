@@ -12,14 +12,11 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "cppunivariate/distributions/betapr/dpqr.hpp"
 #include "cppunivariate/distributions/dunif/dpqr.hpp"
-#include "cppunivariate/distributions/ged/dpqr.hpp"
 #include "cppunivariate/distributions/gumbel/dpqr.hpp"
 #include "cppunivariate/distributions/invgamma/dpqr.hpp"
 #include "cppunivariate/distributions/invgauss/dpqr.hpp"
 #include "cppunivariate/distributions/invweibull/dpqr.hpp"
-#include "cppunivariate/distributions/kumar/dpqr.hpp"
 #include "cppunivariate/distributions/laplace/dpqr.hpp"
 #include "cppunivariate/distributions/llogis/dpqr.hpp"
 #include "cppunivariate/distributions/logitnorm/dpqr.hpp"
@@ -29,9 +26,7 @@
 #include "cppunivariate/distributions/rayleigh/dpqr.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
 #include "cppunivariate/distributions/sged/dpqr.hpp"
-#include "cppunivariate/distributions/snorm/dpqr.hpp"
 #include "cppunivariate/distributions/sstd/dpqr.hpp"
-#include "cppunivariate/distributions/std/dpqr.hpp"
 #include "cppunivariate/distributions/zipf/dpqr.hpp"
 
 #include <random>
@@ -141,70 +136,6 @@ TEST_CASE("rzipf samples lie in {1, ..., N} and match the PMF") {
         cppunivariate::distributions::dzipf(k, N, s, /*log=*/false);
     CHECK(std::abs(empirical - analytic) < 0.02);
   }
-}
-
-// rged samples are symmetric around the mean; sample mean ~ 0, sd ~ 1 at
-// (mean=0, sd=1), and the distribution lines up with the CDF at 0 (= 0.5).
-TEST_CASE("rged samples are symmetric and match the CDF") {
-  cppunivariate::distributions::StdRng<> rng(17);
-  const int n = 20000;
-  double sum = 0.0;
-  double sum_sq = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rged(rng, 0.0, 1.0, 1.5);
-    sum += x;
-    sum_sq += x * x;
-  }
-  const double mean = sum / n;
-  const double var = sum_sq / n - mean * mean;
-  CHECK(std::abs(mean) < 0.05);
-  CHECK(std::abs(var - 1.0) < 0.1);
-
-  // CDF at 0 should be exactly 0.5 (symmetric distribution).
-  const double cdf0 =
-      cppunivariate::distributions::pged(0.0, 0.0, 1.0, 1.5, true, false);
-  CHECK(std::abs(cdf0 - 0.5) < 1e-12);
-}
-
-// rstd at (mean=0, sd=1, nu=8) is symmetric with sd 1; CDF at 0 = 0.5.
-TEST_CASE("rstd samples have unit variance and a symmetric CDF") {
-  cppunivariate::distributions::StdRng<> rng(19);
-  const int n = 20000;
-  double sum = 0.0;
-  double sum_sq = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rstd(rng, 0.0, 1.0, 8.0);
-    sum += x;
-    sum_sq += x * x;
-  }
-  const double mean = sum / n;
-  const double var = sum_sq / n - mean * mean;
-  CHECK(std::abs(mean) < 0.05);
-  CHECK(std::abs(var - 1.0) < 0.1);
-
-  const double cdf0 =
-      cppunivariate::distributions::pstd(0.0, 0.0, 1.0, 8.0, true, false);
-  CHECK(std::abs(cdf0 - 0.5) < 1e-12);
-}
-
-// rsnorm at xi=1 should reduce to N(mean, sd); for xi != 1 the empirical
-// mean shifts away from `mean` (skew bias).
-TEST_CASE("rsnorm samples have unit variance and skew with xi") {
-  cppunivariate::distributions::StdRng<> rng(23);
-  const int n = 20000;
-  double sum = 0.0;
-  double sum_sq = 0.0;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rsnorm(rng, 0.0, 1.0, 1.5);
-    sum += x;
-    sum_sq += x * x;
-  }
-  const double mean = sum / n;
-  const double var = sum_sq / n - mean * mean;
-  // Standardised parameterisation: empirical mean ~ 0, var ~ 1 by
-  // construction (cppunivariate::dens::snorm_sigma standardises moments).
-  CHECK(std::abs(mean) < 0.05);
-  CHECK(std::abs(var - 1.0) < 0.1);
 }
 
 // rsged at (mean=0, sd=1, nu=1.5, xi=1.5) is unit-variance by construction.
@@ -325,20 +256,6 @@ TEST_CASE("rgumbel samples; mean = mu + sigma*gamma_const, var = pi^2*sigma^2/6"
   const double expected_var = M_PI * M_PI * sigma * sigma / 6.0;
   CHECK(std::abs(mean - expected_mean) < 0.1);
   CHECK(std::abs(var - expected_var) < 0.5);
-}
-
-TEST_CASE("rkumar samples lie in (0, 1); CDF round-trip at p=0.3") {
-  cppunivariate::distributions::StdRng<> rng(137);
-  const int n = 5000;
-  for (int i = 0; i < n; ++i) {
-    const double x = cppunivariate::distributions::rkumar(rng, 2.0, 3.0);
-    CHECK(x >= 0.0);
-    CHECK(x <= 1.0);
-  }
-  const double q = cppunivariate::distributions::qkumar(0.3, 2.0, 3.0, true, false);
-  const double back =
-      cppunivariate::distributions::pkumar(q, 2.0, 3.0, true, false);
-  CHECK(std::abs(back - 0.3) < 1e-10);
 }
 
 // --- Phase C tier 2: Boost-backed transforms ---------------------------

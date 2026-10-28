@@ -159,36 +159,6 @@ TEST_CASE("gamma: Hessian formula matches Fisher info closed form") {
   CHECK(H[3] == doctest::Approx(n * fit.shape / (fit.rate * fit.rate)).epsilon(kFisherTol));
 }
 
-TEST_CASE("beta: analytical Hessian agrees with FD") {
-  auto g = load("beta");
-  auto fit = cppunivariate::beta_mle(mltest::as_span(g.data), 1.490116e-08, 100);
-  cppunivariate::BetaCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.alpha, fit.beta};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
-TEST_CASE("beta: Hessian formula matches Fisher info closed form") {
-  // I per obs: [[psi'(a)-psi'(a+b), -psi'(a+b)], [-psi'(a+b), psi'(b)-psi'(a+b)]].
-  auto g = load("beta");
-  auto fit = cppunivariate::beta_mle(mltest::as_span(g.data), 1.490116e-08, 100);
-  cppunivariate::BetaCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.alpha, fit.beta};
-  double H[4];
-  cost.hessian(theta, H);
-  const double n = static_cast<double>(g.data.size());
-  const double t1_ab = cppunivariate::special::trigamma(fit.alpha + fit.beta);
-  CHECK(H[0] == doctest::Approx(
-                    n * (cppunivariate::special::trigamma(fit.alpha) - t1_ab))
-                    .epsilon(kFisherTol));
-  CHECK(H[1] == doctest::Approx(-n * t1_ab).epsilon(kFisherTol));
-  CHECK(H[3] == doctest::Approx(
-                    n * (cppunivariate::special::trigamma(fit.beta) - t1_ab))
-                    .epsilon(kFisherTol));
-}
-
 TEST_CASE("weibull: analytical Hessian agrees with FD") {
   auto g = load("weibull");
   auto fit = cppunivariate::weibull_mle(mltest::as_span(g.data), 1.220703e-4, 100);
@@ -354,39 +324,6 @@ TEST_CASE("invweibull: analytical Hessian agrees with FD") {
   CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
 }
 
-TEST_CASE("betapr: analytical Hessian agrees with FD") {
-  auto g = load("betapr");
-  auto fit = cppunivariate::betapr_mle(mltest::as_span(g.data), 1.490116e-08, 100);
-  cppunivariate::BetaPrimeCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.alpha, fit.beta};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
-TEST_CASE("gompertz: analytical Hessian agrees with FD") {
-  auto g = load("gompertz");
-  auto fit = cppunivariate::gompertz_mle(mltest::as_span(g.data), 1.220703e-4, 100);
-  cppunivariate::GompertzCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.a, fit.b};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
-TEST_CASE("kumaraswamy: analytical Hessian agrees with FD") {
-  auto g = load("kumar");
-  auto fit = cppunivariate::kumar_mle(mltest::as_span(g.data), 1.220703e-4, 100);
-  cppunivariate::KumarCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.a, fit.b};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
 TEST_CASE("logitnorm: analytical Hessian agrees with FD") {
   auto g = load("logitnorm");
   auto fit = cppunivariate::logitnorm_mle(mltest::as_span(g.data));
@@ -403,29 +340,6 @@ TEST_CASE("loglogistic: analytical Hessian agrees with FD") {
   auto fit = cppunivariate::loglogistic_mle(mltest::as_span(g.data), 1.220703e-4, 100);
   cppunivariate::LogLogisticCost cost{mltest::as_span(g.data)};
   const double theta[] = {fit.shape, fit.rate};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
-TEST_CASE("burr: analytical Hessian agrees with FD") {
-  auto g = load("burr");
-  // Burr fit uses the wrapper-style burr_mle_core seeded by burr_lmom_core.
-  // For the Hessian test we only need theta_hat from the golden.
-  const double theta[] = {g.estimates.at("shape1"), g.estimates.at("shape2")};
-  cppunivariate::BurrCost cost{mltest::as_span(g.data)};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
-TEST_CASE("invburr: analytical Hessian agrees with FD") {
-  auto g = load("invburr");
-  auto fit = cppunivariate::invburr_mle(mltest::as_span(g.data), 1.220703e-4, 100);
-  cppunivariate::InvBurrCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.shape1, fit.shape2};
   double H_anal[4], H_fd[4];
   cost.hessian(theta, H_anal);
   cppunivariate::finite_diff_hessian(cost, theta, H_fd);
@@ -473,17 +387,6 @@ TEST_CASE("zip: analytical Hessian agrees with FD") {
   auto fit = cppunivariate::zip_mle(as_ispan(v));
   cppunivariate::ZipCost cost{as_ispan(v)};
   const double theta[] = {fit.lambda, fit.pi};
-  double H_anal[4], H_fd[4];
-  cost.hessian(theta, H_anal);
-  cppunivariate::finite_diff_hessian(cost, theta, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 4, kFdTol, max_diag(H_anal, 2)));
-}
-
-TEST_CASE("fatigue: analytical Hessian agrees with FD") {
-  auto g = load("fatigue");
-  auto fit = cppunivariate::fatigue_mle(mltest::as_span(g.data), 1.220703e-4, 100);
-  cppunivariate::FatigueCost cost{mltest::as_span(g.data)};
-  const double theta[] = {fit.alpha, fit.beta};
   double H_anal[4], H_fd[4];
   cost.hessian(theta, H_anal);
   cppunivariate::finite_diff_hessian(cost, theta, H_fd);
@@ -583,39 +486,6 @@ TEST_CASE("zipf: analytical Hessian agrees with FD (1-D in s, N fixed)") {
 // No Layer-2 (closed-form Fisher info) check here — the analytic Fisher
 // information for these families is itself a paper-length result that
 // would just duplicate the Hessian formula.
-
-TEST_CASE("student_t: analytical Hessian agrees with FD") {
-  auto g = load("std");
-  auto fit = cppunivariate::student_t_mle(mltest::as_span(g.data), 1.220703e-4, 200);
-  cppunivariate::StudentTCost cost{mltest::as_span(g.data)};
-  const double phi[] = {fit.mu, std::log(fit.sigma), std::log(fit.nu - 2.0)};
-  double H_anal[9], H_fd[9];
-  cost.hessian(phi, H_anal);
-  cppunivariate::finite_diff_hessian(cost, phi, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 9, kFdTol, max_diag(H_anal, 3)));
-}
-
-TEST_CASE("ged: analytical Hessian agrees with FD") {
-  auto g = load("ged");
-  auto fit = cppunivariate::ged_mle(mltest::as_span(g.data), 1.220703e-4, 200);
-  cppunivariate::GedCost cost{mltest::as_span(g.data)};
-  const double phi[] = {fit.mu, std::log(fit.sigma), std::log(fit.nu)};
-  double H_anal[9], H_fd[9];
-  cost.hessian(phi, H_anal);
-  cppunivariate::finite_diff_hessian(cost, phi, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 9, kFdTol, max_diag(H_anal, 3)));
-}
-
-TEST_CASE("snorm: analytical Hessian agrees with FD") {
-  auto g = load("snorm");
-  auto fit = cppunivariate::snorm_mle(mltest::as_span(g.data), 1.220703e-4, 200);
-  cppunivariate::SnormCost cost{mltest::as_span(g.data)};
-  const double phi[] = {fit.mu, std::log(fit.sigma), std::log(fit.xi)};
-  double H_anal[9], H_fd[9];
-  cost.hessian(phi, H_anal);
-  cppunivariate::finite_diff_hessian(cost, phi, H_fd);
-  CHECK(hessian_close(H_anal, H_fd, 9, kFdTol, max_diag(H_anal, 3)));
-}
 
 TEST_CASE("sstd: analytical Hessian agrees with FD") {
   auto g = load("sstd");

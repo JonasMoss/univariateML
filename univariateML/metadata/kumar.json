@@ -1,4 +1,0 @@
-{
-  "sampler": "extraDistr::rkumar",
-  "density": "extraDistr::dkumar"
-}

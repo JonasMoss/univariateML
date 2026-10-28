@@ -1,0 +1,118 @@
+#include "test_support.hpp"
+#include "cppunivariate/cppunivariate.hpp"
+#include "cppunivariate/distributions/snorm/dpqr.hpp"
+#include "cppunivariate/distributions/rng_std.hpp"
+#include <algorithm>
+#include <cmath>
+#include <limits>
+#include <random>
+#include <vector>
+
+#define C_APPROX(x) doctest::Approx(x).epsilon(mltest::kTol)
+#define C_APPROX_FD(x) doctest::Approx(x).epsilon(mltest::kFdTol)
+
+// rsnorm at xi=1 should reduce to N(mean, sd); for xi != 1 the empirical
+// mean shifts away from `mean` (skew bias).
+TEST_CASE("rsnorm samples have unit variance and skew with xi") {
+  cppunivariate::distributions::StdRng<> rng(23);
+  const int n = 20000;
+  double sum = 0.0;
+  double sum_sq = 0.0;
+  for (int i = 0; i < n; ++i) {
+    const double x = cppunivariate::distributions::rsnorm(rng, 0.0, 1.0, 1.5);
+    sum += x;
+    sum_sq += x * x;
+  }
+  const double mean = sum / n;
+  const double var = sum_sq / n - mean * mean;
+  // Standardised parameterisation: empirical mean ~ 0, var ~ 1 by
+  // construction (cppunivariate::dens::snorm_sigma standardises moments).
+  CHECK(std::abs(mean) < 0.05);
+  CHECK(std::abs(var - 1.0) < 0.1);
+}
+
+TEST_CASE("snorm (skew-normal)") {
+  auto g = mltest::load_distribution_golden("snorm");
+  auto r = cppunivariate::snorm_mle(mltest::as_span(g.data), mltest::kFitTol, 200);
+  CHECK(r.mu == C_APPROX(g.estimates.at("mean")));
+  CHECK(r.sigma == C_APPROX(g.estimates.at("sd")));
+  CHECK(r.xi == C_APPROX(g.estimates.at("xi")));
+  CHECK(r.logLik == C_APPROX(g.logLik));
+
+  cppunivariate::SnormCost cost{mltest::as_span(g.data)};
+  const double phi_hat[3] = {r.mu, std::log(r.sigma), std::log(r.xi)};
+  double grad[3];
+  cppunivariate::finite_diff_gradient(cost, phi_hat, grad);
+  const double gnorm =
+      std::sqrt(grad[0] * grad[0] + grad[1] * grad[1] + grad[2] * grad[2]);
+  CHECK(gnorm < 1e-3);
+}
+
+TEST_CASE("snorm profile endpoints and direct grid") {
+  for (const std::vector<double>& data : std::vector<std::vector<double>>{
+      {0, 0.1, 0.2, 0.4, 3}, {-3, -0.4, -0.2, -0.1, 0},
+      {-2, -1, 0, 1, 2}, {-2, -2, 0, 1, 1, 2}, {0, 0, 0, 0, 1}}) {
+    auto r = cppunivariate::snorm_mle(mltest::as_span(data), mltest::kFitTol, 200);
+    double best = std::numeric_limits<double>::infinity();
+    int winner = -1;
+    for (int j = 0; j <= 10000; ++j) {
+      const double c = data.front() + (data.back()-data.front())*j/10000.0;
+      double A=0, B=0;
+      for (double x : data) { if (x<c) A+=(x-c)*(x-c); else B+=(x-c)*(x-c); }
+      const double q=std::pow(std::cbrt(A)+std::cbrt(B),3);
+      if (q<best) { best=q; winner=j; }
+    }
+    const double ll=data.size()/2.0*(std::log(2/M_PI)-std::log(best/data.size())-1);
+    CHECK(r.logLik >= ll-1e-9);
+    if (winner==0) CHECK(r.status==cppunivariate::SnormStatus::RightHalfNormalBoundary);
+    else if (winner==10000) CHECK(r.status==cppunivariate::SnormStatus::LeftHalfNormalBoundary);
+    else CHECK(r.status==cppunivariate::SnormStatus::Ok);
+  }
+}
+
+TEST_CASE("snorm random profiles dominate grid plus refinement") {
+  std::mt19937 rng(20261028);
+  std::normal_distribution<double> normal;
+  std::exponential_distribution<double> exponential;
+  std::uniform_real_distribution<double> uniform;
+  const std::vector<int> sizes={5,10,30,100,250,500};
+  for (int sample=0; sample<240; ++sample) {
+    const int n=sizes[(sample/4)%6];
+    std::vector<double> data(n);
+    for (double& x : data) {
+      if (sample%4==0) x=normal(rng);
+      else if (sample%4==1) x=exponential(rng);
+      else if (sample%4==2) x=std::abs(normal(rng))*(uniform(rng)<6.25/7.25 ? 2.5 : -0.4);
+      else x=-exponential(rng);
+    }
+    const auto fit=cppunivariate::snorm_mle(mltest::as_span(data),mltest::kFitTol,200);
+    const auto extremes=std::minmax_element(data.begin(),data.end());
+    const double lo=*extremes.first, hi=*extremes.second;
+    auto objective = [&](double c) {
+      double A=0, B=0;
+      for (double x : data) { if (x<c) A+=(x-c)*(x-c); else B+=(x-c)*(x-c); }
+      return std::pow(std::cbrt(A)+std::cbrt(B),3);
+    };
+    std::vector<double> grid(2001);
+    for (int j=0; j<=2000; ++j) grid[j]=objective(lo+(hi-lo)*j/2000);
+    double best=grid[0];
+    auto status=cppunivariate::SnormStatus::RightHalfNormalBoundary;
+    if (grid[2000]<best) { best=grid[2000]; status=cppunivariate::SnormStatus::LeftHalfNormalBoundary; }
+    for (int j=1; j<2000; ++j) {
+      if (grid[j]>grid[j-1] || grid[j]>grid[j+1]) continue;
+      double l=lo+(hi-lo)*(j-1)/2000, r=lo+(hi-lo)*(j+1)/2000;
+      for (int it=0; it<80; ++it) {
+        const double a=l+(r-l)/3, b=r-(r-l)/3;
+        if (objective(a)<objective(b)) r=b; else l=a;
+      }
+      const double q=objective((l+r)/2);
+      if (q<best) { best=q; status=cppunivariate::SnormStatus::Ok; }
+    }
+    CAPTURE(sample);
+    CHECK(fit.logLik >= n/2.0*(std::log(2/M_PI)-std::log(best/n)-1)-1e-9);
+    CHECK(fit.status==status);
+  }
+}
+
+#undef C_APPROX
+#undef C_APPROX_FD
