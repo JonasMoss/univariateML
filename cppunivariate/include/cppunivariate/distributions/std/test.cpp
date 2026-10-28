@@ -70,3 +70,35 @@ TEST_CASE("std large nu density retains precision") {
 
 #undef C_APPROX
 #undef C_APPROX_FD
+
+TEST_CASE("std density across the gamma-ratio transition") {
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 10.0) ==
+        doctest::Approx(-1.813567692594348).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 100.0) ==
+        doctest::Approx(-1.710151642368861).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 343.0) ==
+        doctest::Approx(-1.7030664401294549).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 344.0) ==
+        doctest::Approx(-1.7030580425140323).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 1000.0) ==
+        doctest::Approx(-1.7011732051102342).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 9999.0) ==
+        doctest::Approx(-1.7002868956031254).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 10000.0) ==
+        doctest::Approx(-1.7002868857656135).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 100000.0) ==
+        doctest::Approx(-1.7001983673162022).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 1000000.0) ==
+        doctest::Approx(-1.7001895166043817).epsilon(2e-11));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 10000000.0) ==
+        doctest::Approx(-1.7001886315445291).epsilon(2e-11));
+}
+
+TEST_CASE("std asymptotic cutoff is accurate") {
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 127.0) ==
+        doctest::Approx(-1.7080116221314585).epsilon(1e-13));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 128.0) ==
+        doctest::Approx(-1.7079498782526117).epsilon(1e-13));
+  CHECK(cppunivariate::dens::log_dstd_unit(1.25, 129.0) ==
+        doctest::Approx(-1.7078891013889226).epsilon(1e-13));
+}

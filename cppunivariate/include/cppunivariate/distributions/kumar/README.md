@@ -21,3 +21,7 @@ examples: |
 ---
 
 The Kumaraswamy distribution is a flexible distribution for continuous data between zero and one. It provides a tractable alternative to the beta distribution.
+
+## Details
+
+The maximum likelihood estimate exists for every nonconstant sample in $(0, 1)$: with `b` profiled out, the log-likelihood tends to $-\infty$ both as $a \to 0$ and as $a \to \infty$, so the family has no escapes.

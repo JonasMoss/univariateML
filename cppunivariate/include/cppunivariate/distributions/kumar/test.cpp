@@ -45,3 +45,25 @@ TEST_CASE("kumar: explicit start agrees with automatic start") {
   CHECK(b.b == doctest::Approx(a.b).epsilon(1e-9));
   CHECK(b.logLik == doctest::Approx(a.logLik).epsilon(1e-12));
 }
+
+TEST_CASE("kumar clipped extremes: stable profile oracle and honest exhaustion") {
+  std::vector<double> x;
+  for (int i = 0; i < 100; ++i) {
+    x.push_back(1e-12);
+    x.push_back(1.0 - 1e-12);
+  }
+  const auto r = cppunivariate::kumar_mle(mltest::as_span(x), 1e-12, 100);
+  CHECK(std::isfinite(r.logLik));
+  // Independent high precision profile solution (mpmath).
+  CHECK(r.a == doctest::Approx(0.007765975729959528).epsilon(1e-8));
+  CHECK(r.logLik == doctest::Approx(4415.965322716401).epsilon(1e-12));
+  CHECK(std::isnan(cppunivariate::kumar_mle(mltest::as_span(x), 1e-12, 1).a));
+}
+
+TEST_CASE("kumar ordinary golden is unchanged to 1e-12") {
+  const auto g = mltest::load_distribution_golden("kumar");
+  const auto r = cppunivariate::kumar_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
+  CHECK(std::abs(r.a - g.estimates.at("a")) < 1e-12);
+  CHECK(std::abs(r.b - g.estimates.at("b")) < 1e-12);
+  CHECK(std::abs(r.logLik - g.logLik) < 1e-12);
+}

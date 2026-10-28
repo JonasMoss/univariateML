@@ -78,10 +78,10 @@ inline double log_dged_unit(double z, double nu) {
 // log of the unit-variance t density at 0: the z-free part of log_dstd_unit.
 inline double log_dstd_unit_const(double nu) {
   // log Gamma(z+1/2)/Gamma(z) = log(z)/2 - 1/(8z)
-  // + 1/(192z^3) - 1/(640z^5) + O(z^-7). At nu >= 1e4
+  // + 1/(192z^3) - 1/(640z^5) + O(z^-7). At nu >= 128
   // the omitted term is below double precision; avoid lgamma cancellation.
   const double inv = 1.0 / nu;
-  const double ratio = nu >= 1e4
+  const double ratio = nu >= 128.0
       ? 0.5 * std::log(0.5 * nu) - 0.25 * inv +
             inv * inv * inv / 24.0 - std::pow(inv, 5) / 20.0
       : std::lgamma(0.5 * (nu + 1.0)) - std::lgamma(0.5 * nu);
