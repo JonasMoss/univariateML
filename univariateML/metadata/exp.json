@@ -1,4 +1,0 @@
-{
-  "sampler": "stats::rexp",
-  "density": "stats::dexp"
-}

@@ -1,4 +1,0 @@
-{
-  "sampler": "logitnorm::rlogitnorm",
-  "density": "logitnorm::dlogitnorm"
-}
