@@ -130,11 +130,36 @@ TEST_CASE("invtrgamma: evaluation close to the Pareto face") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("invtrgamma: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("invtrgamma: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("invtrgamma",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvtrgamma(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvtrgamma(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvtrgamma(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvtrgamma(rng, p[0], p[1], p[2]); });
+}
+
+// mpmath generator: import mpmath as mp; mp.mp.dps=100
+// P=lambda z:mp.gammainc(3,0,z)/mp.gamma(3)
+// Q=lambda z:mp.gammainc(3,z,mp.inf)/mp.gamma(3)
+// lo=mp.exp(mp.findroot(lambda y:mp.log(P(mp.exp(y)))+800,-mp.mpf(800)/3))
+// hi=mp.findroot(lambda z:mp.log(Q(z))+800,800)
+// [mp.mpf(".5")/hi**(mp.mpf(2)/3),mp.mpf(".5")/lo**(mp.mpf(2)/3)]
+TEST_CASE("invtrgamma: logarithmic quantile regression") {
+  CHECK(cppunivariate::distributions::qinvtrgamma(-800.0, 3.0, 1.5, 0.5, true, true) == doctest::Approx(0.005741335328336336).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qinvtrgamma(-800.0, 3.0, 1.5, 0.5, false, true) == doctest::Approx(5.419452300248306e+76).epsilon(1e-11));
+}
+
+TEST_CASE("invtrgamma: support endpoints on log input") {
+  CHECK(cppunivariate::distributions::qinvtrgamma(cppunivariate::special::kNegInf, 3.0, 1.5, 0.5, true, true) == 0.0);
+  CHECK(cppunivariate::distributions::qinvtrgamma(0.0, 3.0, 1.5, 0.5, false, true) == 0.0);
+  CHECK(cppunivariate::distributions::qinvtrgamma(cppunivariate::special::kNegInf, 3.0, 1.5, 0.5, false, true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::qinvtrgamma(0.0, 3.0, 1.5, 0.5, true, true) == cppunivariate::special::kPosInf);
+}
+
+// At x=mp.mpf(float(1e100)), evaluate the same mpmath tails and
+// the README log density; constants are also in the independent truth table.
+TEST_CASE("invtrgamma: extreme observation log tails and density") {
+  CHECK(cppunivariate::distributions::dinvtrgamma(1e100, 3.0, 1.5, 0.5, true) == doctest::Approx(-1269.8286455316966).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::pinvtrgamma(1e100, 3.0, 1.5, 0.5, true, true) == doctest::Approx(0.0).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::pinvtrgamma(1e100, 3.0, 1.5, 0.5, false, true) == doctest::Approx(-1041.0742136290683).epsilon(1e-11));
 }

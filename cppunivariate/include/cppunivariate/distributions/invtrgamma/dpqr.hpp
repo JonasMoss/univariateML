@@ -24,16 +24,9 @@ inline double dinvtrgamma(double x, double shape1, double shape2, double scale, 
 
 inline double pinvtrgamma(double q, double shape1, double shape2, double scale,
                           bool lower_tail, bool log_p) {
-  if (!trgamma_valid(shape1, shape2, scale)) return std::numeric_limits<double>::quiet_NaN();
-  if (q <= 0.0) {
-    const double p = lower_tail ? 0.0 : 1.0;
-    return log_p ? std::log(p) : p;
-  }
-  const double logu = shape2 * (std::log(scale) - std::log(q));
-  if (!(logu < -700.0)) return special::pgamma(std::exp(logu), shape1, 1.0, !lower_tail, log_p);
-  const double lp = trgamma_gamma_logcdf(logu, shape1);
-  if (!lower_tail) return log_p ? lp : std::exp(lp);
-  return log_p ? std::log(-std::expm1(lp)) : -std::expm1(lp);
+  if (!trgamma_valid(shape1,shape2,scale) || std::isnan(q)) return special::kNaN;
+  const double lu=q<=0.0 ? special::kPosInf : shape2*(std::log(scale)-std::log(q));
+  return special::tail_probability(special::gamma_log_tails(lu,shape1),!lower_tail,log_p);
 }
 
 inline double qinvtrgamma(double p, double shape1, double shape2, double scale,

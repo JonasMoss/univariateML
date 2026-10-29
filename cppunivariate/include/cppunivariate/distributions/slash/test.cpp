@@ -41,11 +41,39 @@ TEST_CASE("slash: multiplicity, held scale and invalid inputs") {
 #include "cppunivariate/distributions/slash/dpqr.hpp"
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("slash: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("slash: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("slash",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dslash(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pslash(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qslash(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rslash(rng, p[0], p[1]); });
+}
+
+// mpmath generator: import mpmath as mp; mp.mp.dps=100
+// N=lambda z: mp.erfc(-z/mp.sqrt(2))/2; F=lambda x: N(x)+mp.expm1(-x*x/2)/(mp.sqrt(2*mp.pi)*x); mp.findroot(lambda x: F(x)-mp.exp(mp.mpf(float(-mp.log(2)))), (mp.mpf("1e-17"),mp.mpf("1e-16")))
+TEST_CASE("slash: logarithmic quantile regression") {
+  CHECK(cppunivariate::distributions::qslash(-0.6931471805599453, 0.0, 1.0, true, true) == doctest::Approx(5.812988313780069e-17).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qslash(-0.6931471805599453, 0.0, 1.0, false, true) == doctest::Approx(-5.812988313780069e-17).epsilon(1e-11));
+}
+
+TEST_CASE("slash: support endpoints on log input") {
+  CHECK(cppunivariate::distributions::qslash(cppunivariate::special::kNegInf, 0.0, 1.0, true, true) == cppunivariate::special::kNegInf);
+  CHECK(cppunivariate::distributions::qslash(0.0, 0.0, 1.0, false, true) == cppunivariate::special::kNegInf);
+  CHECK(cppunivariate::distributions::qslash(cppunivariate::special::kNegInf, 0.0, 1.0, false, true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::qslash(0.0, 0.0, 1.0, true, true) == cppunivariate::special::kPosInf);
+}
+
+// At x=mp.mpf(float(1e100)), evaluate the same mpmath tails and
+// the README log density; constants are also in the independent truth table.
+TEST_CASE("slash: extreme observation log tails and density") {
+  CHECK(cppunivariate::distributions::dslash(1e100, 0.0, 1.0, true) == doctest::Approx(-461.4359571320138).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::pslash(1e100, 0.0, 1.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::pslash(1e100, 0.0, 1.0, false, true) == doctest::Approx(-231.17744783260923).epsilon(1e-11));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// F=lambda z:mp.erfc(-z/mp.sqrt(2))/2+mp.expm1(-z*z/2)/(mp.sqrt(2*mp.pi)*z)
+// float(F(2)); mp.mpf(float(-1e308))+2*mp.mpf(float(1e308))
+TEST_CASE("slash: finite affine quantile despite overflowing distance") {
+  CHECK(cppunivariate::distributions::qslash(0.8047742111076985,-1e308,1e308,true,false) == doctest::Approx(1e308).epsilon(1e-10));
 }
