@@ -31,9 +31,13 @@ own rationale live in `roadmap/`; work in flight is on the board
 - GitHub issues #52 and #7: every density listed there is now
   implemented; the boxes can be ticked (not edited from here).
 - Upstream reports for the extraDistr and actuar defects in
-  `KNOWN_ISSUES.md` (about 20 added on 2026-10-29). The extraDistr
-  maintainer has been unresponsive; a draft actuar patch for
-  `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`.
+  `KNOWN_ISSUES.md`. Ready-to-post drafts with verified reproducers:
+  `notes/upstream/extraDistr.md` (12 grouped issues; extraDistr
+  1.10.0.5) and `notes/upstream/actuar.md` (7 issues; actuar 3.3.7),
+  checked by `notes/upstream/verify.R` (output in `verify.out`). The
+  extraDistr maintainer has been unresponsive; a draft actuar patch for
+  `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`. Nothing has
+  been posted.
 - Tier 4 below: start it or not.
 - Parameter rules (R1–R8, amendments A1–A7 adopted):
   `roadmap/2026-10-29-parameter-rules.md`.
@@ -117,11 +121,11 @@ own rationale live in `roadmap/`; work in flight is on the board
 - `univariateML_continuous_quantile` (`code_helpers.R`) checks `sigma`
   and `a` by name (slash, Bhattacharjee); make the parameter checks
   generic before a third family uses it.
-- actuar `dgumbel`: confirm the location/scale mapping to `mlgumbel`
-  (flagged in the coverage inventory).
 - Done: test argument switches replaced by golden `fit_args` (P1); the
-  `mlhnorm` special case removed (P3); held `N` for `bootstrapml` (P4,
-  in progress).
+  `mlhnorm` special case removed (P3); actuar `dgumbel(x, alpha, scale)`
+  equals `extraDistr::dgumbel(x, mu, sigma)` with alpha = mu, scale =
+  sigma (`notes/upstream/dgumbel-mapping.md`). Held `N` for `bootstrapml`
+  waits for P4.
 
 ## Open mathematics (from the job reports)
 
