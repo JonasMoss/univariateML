@@ -91,7 +91,10 @@ for (id in univariateML_models) {
 test_that("Student fits on DAX returns and small skew-t data are stable", {
   x <- diff(log(EuStockMarkets[, "DAX"]))
   f <- mlstd(x)
-  expect_equal(unname(f["nu"]), 4.1944, tolerance = 2e-5)
+  # Optimum nu = 4.19447 (independent optim); the FD-BFGS stopping point
+  # varies by ~1e-4 across machines on this flat profile. The defect
+  # returned the start nu = 6.
+  expect_equal(unname(f["nu"]), 4.19447, tolerance = 1e-4)
   expect_equal(as.numeric(logLik(f)), 5983.32, tolerance = 2e-6)
   for (model in c("mlstd", "mlsstd")) {
     fit <- get(model, mode = "function")
