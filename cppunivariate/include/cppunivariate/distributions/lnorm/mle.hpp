@@ -4,10 +4,12 @@
 #pragma once
 
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
 
 #include <cmath>
 #include <cstddef>
 #include <limits>
+#include <vector>
 
 namespace cppunivariate {
 
@@ -22,20 +24,14 @@ inline LognormalResult lognormal_mle(span x) {
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN, kNaN};
 
+  std::vector<double> y(n);
   double sum_log = 0.0;
-  for (auto v : x) sum_log += std::log(v);
-  const double dn = static_cast<double>(n);
-  const double meanlog = sum_log / dn;
-
-  double sum_sq_dev = 0.0;
-  for (auto v : x) {
-    const double d = std::log(v) - meanlog;
-    sum_sq_dev += d * d;
+  for (std::size_t i = 0; i < n; ++i) {
+    y[i] = std::log(x[i]);
+    sum_log += y[i];
   }
-  const double sdlog = std::sqrt(sum_sq_dev / dn);
-  const double logLik =
-      -0.5 * dn * (std::log(2.0 * M_PI * sdlog * sdlog) + 1.0) - sum_log;
-  return {meanlog, sdlog, logLik};
+  const auto r = norm_mle(span{y.data(), n});
+  return {r.mean, r.sd, r.logLik - sum_log};
 }
 
 }  // namespace cppunivariate

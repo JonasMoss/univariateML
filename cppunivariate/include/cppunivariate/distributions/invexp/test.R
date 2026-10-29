@@ -13,3 +13,7 @@ test_that("invexp rate follows actuar convention", {
  expect_equal(actuar::dinvexp(x,rate=3,log=TRUE),dexp(1/x,rate=1/3,log=TRUE)-2*log(x))
  expect_equal(unname(coef(mlinvexp(x))),mean(1/x))
 })
+
+test_that("inverse exponential rejects unrepresentable reciprocal moments", {
+  expect_error(mlinvexp(c(1,5e-324)),"precision")
+})

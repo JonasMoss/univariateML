@@ -13,3 +13,10 @@ test_that("invpareto mapping and limit", {
  expect_equal(actuar::dinvpareto(x,shape=2.3,scale=3,log=TRUE),extraDistr::dlomax(1/x,lambda=3,kappa=2.3,log=TRUE)-2*log(x))
  expect_error(mlinvpareto(rep(1,10)),"Use `mlinvexp`")
 })
+
+test_that("inverse Pareto inherits the Lomax equality comparison", {
+  y <- c(1,1,40,60); x <- 1/y
+  f <- mlinvpareto(x); g <- mllomax(y)
+  expect_equal(attr(f,"logLik"),attr(g,"logLik")-2*sum(log(x)))
+  expect_error(mlinvpareto(1/c(1,1,4,12)),"Use `mlinvexp`")
+})

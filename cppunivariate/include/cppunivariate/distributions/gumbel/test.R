@@ -73,3 +73,25 @@ test_that("gumbel handles a seeded sample with a large outlier", {
   expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
+
+test_that("constant data have no attained gumbel MLE", {
+  expect_error(mlgumbel(rep(2, 5)), "does not exist")
+  expect_error(mlgumbel(2), "does not exist")
+})
+
+test_that("Gumbel variance survives a large offset", {
+  x <- c(-2, -1, 0, 1, 3)
+  f <- mlgumbel(x); g <- mlgumbel(x + 1e8)
+  expect_equal(g[["sigma"]], f[["sigma"]], tolerance = 1e-6)
+  expect_equal(attr(g, "logLik"), attr(f, "logLik"), tolerance = 1e-6)
+})
+
+test_that("Gumbel fitting respects extreme scale changes", {
+  x <- c(-2, -1, 0, 1, 3)
+  f <- mlgumbel(x)
+  for (s in c(1e-300, 1e300)) {
+    g <- mlgumbel(x*s)
+    expect_equal(as.numeric(g)/s, as.numeric(f), tolerance=1e-4)
+    expect_equal(attr(g,"logLik")+length(x)*log(s), attr(f,"logLik"), tolerance=1e-7)
+  }
+})

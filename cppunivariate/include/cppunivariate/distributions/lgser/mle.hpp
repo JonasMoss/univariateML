@@ -1,9 +1,15 @@
-// Logarithmic-series MLE. Closed-form via Lambert W. The all-ones case
-// is degenerate (theta is unidentified); flagged via the result struct.
+// Logarithmic-series MLE. The likelihood equation
+//   mean(x) = -theta / ((1 - theta) log(1 - theta))
+// becomes, with u = -log(1 - theta) > 0, expm1(u)/u = mean(x), i.e.
+//   q(u) = (expm1(u) - u)/u = delta,   delta = (sum(x) - n)/n > 0.
+// q is increasing from 0, so the root is unique; it is bracketed and bisected
+// on a log scale. This replaces a closed form through the Lambert W branch
+// W_{-1}, which loses all precision as mean(x) -> 1 (the branch point) and
+// returned theta outside (0, 1) there. The all-ones case is degenerate
+// (theta -> 0); flagged via the result struct.
 
 #pragma once
 
-#include "../../core/lambert_w.hpp"
 #include "../../core/span.hpp"
 
 #include <cmath>
@@ -18,6 +24,17 @@ struct LgserResult {
   bool all_ones;
 };
 
+namespace lgser_detail {
+// (expm1(u) - u) / u, accurate for small u.
+inline double q(double u) {
+  if (u < 1e-3) {
+    // u/2 + u^2/6 + u^3/24 + u^4/120 + u^5/720
+    return u * (0.5 + u * (1.0 / 6.0 + u * (1.0 / 24.0 + u * (1.0 / 120.0 + u / 720.0))));
+  }
+  return (std::expm1(u) - u) / u;
+}
+}  // namespace lgser_detail
+
 inline LgserResult lgser_mle(ispan x) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -26,17 +43,25 @@ inline LgserResult lgser_mle(ispan x) {
   double sumx = 0.0;
   for (auto v : x) sumx += static_cast<double>(v);
   const double dn = static_cast<double>(n);
-  const double x_bar = sumx / dn;
   if (sumx == dn) return {kNaN, kNaN, true};
+  // Integer counts: sumx - n is exact, so delta carries one rounding.
+  const double delta = (sumx - dn) / dn;
+  if (!(delta > 0.0) || !std::isfinite(delta)) return {kNaN, kNaN, false};
 
-  const double z = -std::exp(-1.0 / x_bar) / x_bar;
-  const double xi = -x_bar * lambertwm1(z) - 1.0;
-  const double theta = xi / (xi + 1.0);
+  double hi = 1.0;
+  while (lgser_detail::q(hi) < delta) hi *= 2.0;
+  double lo = hi;
+  while (lgser_detail::q(lo) >= delta) lo *= 0.5;
+  for (int i = 0; i < 200 && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++i) {
+    const double mid = std::sqrt(lo) * std::sqrt(hi);
+    if (lgser_detail::q(mid) < delta) lo = mid; else hi = mid;
+  }
+  const double u = std::sqrt(lo) * std::sqrt(hi);  // u = -log(1 - theta)
+  const double theta = -std::expm1(-u);
 
   double sum_log_x = 0.0;
   for (auto v : x) sum_log_x += std::log(static_cast<double>(v));
-  const double logLik = -dn * std::log(-std::log1p(-theta)) +
-                        sumx * std::log(theta) - sum_log_x;
+  const double logLik = -dn * std::log(u) + sumx * std::log(theta) - sum_log_x;
   return {theta, logLik, false};
 }
 

@@ -98,7 +98,26 @@ test_that("Cauchy fits three observations and diagnoses nonexistent MLEs", {
   fit <- mlcauchy(x)
   expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
-  for (x in list(1, c(1, 2), c(1, 1, 2), c(1, 1, 2, 3))) {
+  for (x in list(1, c(1, 1), c(1, 1, 2), c(1, 1, 2, 3))) {
     expect_error(mlcauchy(x), "MLE does not exist")
+  }
+})
+
+test_that("balanced two-point Cauchy data have attained nonunique maxima", {
+  for (x in list(c(1, 2), c(1, 1, 2, 2))) {
+    f <- mlcauchy(x)
+    expect_equal(as.numeric(f), c(1.5, .5))
+    objective <- function(p) -sum(dcauchy(x, p[1], exp(p[2]), log = TRUE))
+    o <- optim(c(1.4, log(.6)), objective, control = list(reltol=1e-12))
+    expect_equal(attr(f, "logLik"), -o$value, tolerance=1e-8)
+  }
+})
+test_that("Cauchy fitting respects extreme scale changes", {
+  x <- c(-3, -.5, 0, 1, 4)
+  f <- mlcauchy(x)
+  for (s in c(1e-300, 1e300)) {
+    g <- mlcauchy(x*s)
+    expect_equal(as.numeric(g)/s, as.numeric(f), tolerance=1e-4)
+    expect_equal(attr(g,"logLik") + length(x)*log(s), attr(f,"logLik"), tolerance=1e-6)
   }
 })

@@ -31,7 +31,7 @@ inline LaplaceResult laplace_mle(span x) {
   for (auto v : x) abs_sum += std::abs(v - mu);
   const double sigma = abs_sum / static_cast<double>(n);
   const double logLik =
-      -static_cast<double>(n) * (1.0 + std::log(2.0 * sigma));
+      -static_cast<double>(n) * (1.0 + (std::log(2.0) + std::log(sigma)));
   return {mu, sigma, logLik};
 }
 

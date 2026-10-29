@@ -44,3 +44,24 @@ test_that("other discrete zero-data fits have the point-mass likelihood", {
   expect_warning(fixed <- mlnbinom(c(0, 0, 0), size = 3), "All observations are 0")
   expect_equal(attr(fixed, "logLik"), 0)
 })
+
+test_that("a held size must be a nonnegative integer", {
+  # NA, NaN and Inf used to be read as "estimate size" while the fit still
+  # reported size as held; fractional sizes gave a non-binomial likelihood.
+  for (size in list(NA_real_, NaN, Inf, -1, 9.5)) {
+    expect_error(mlbinom(c(1, 2, 3), size = size), "nonnegative integer")
+  }
+})
+
+test_that("mean equal to variance escapes to the Poisson", {
+  # c(0, 2): mean 1, population variance 1.
+  expect_error(mlbinom(c(0, 2)), "Use `mlpois`")
+})
+
+test_that("huge held binomial sizes have stable likelihoods", {
+  x <- c(0,1,2,5,9)
+  for (s in c(1e9, 2^31, 1e300)) {
+    f <- mlbinom(x,size=s)
+    expect_equal(attr(f,"logLik"),sum(dbinom(x,size=s,prob=mean(x)/s,log=TRUE)), tolerance=1e-10)
+  }
+})

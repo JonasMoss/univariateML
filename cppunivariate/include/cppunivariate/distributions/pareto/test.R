@@ -63,3 +63,13 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("Pareto handles concentration and a huge support ratio", {
+  expect_error(mlpareto(rep(1,5)),"does not exist")
+  for(x in list(1+(0:4)*.Machine$double.eps,c(1e-300,1,1e300))) {
+    f<-mlpareto(x)
+    expect_true(all(is.finite(f)))
+    expect_true(is.finite(attr(f,"logLik")))
+    expect_gt(f[["a"]],0)
+  }
+})

@@ -2,6 +2,7 @@
 #include "as_span.h"
 #include "cppunivariate/distributions/weibull/mle.hpp"
 #include <Rcpp.h>
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <vector>
@@ -21,6 +22,11 @@ Rcpp::List mlweibull_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> shape
     Rcpp::warning("iteration limit reached");
   }
   auto res = cppunivariate::weibull_mle(dist_impl::as_span(x), reltol, iterlim, start);
+  if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
+    if (std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
+      Rcpp::stop("The Weibull maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
+    Rcpp::stop("Weibull MLE failed");
+  }
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),

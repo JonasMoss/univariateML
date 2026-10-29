@@ -133,3 +133,24 @@ test_that("mlsstd agrees with the slow oracle on interior and boundary samples",
   expect_equal(attr(fit, "logLik"), o$interior, tolerance = 1e-8)
   expect_gt(attr(fit, "logLik"), max(o$faces))
 })
+
+test_that("sstd scale extremes preserve fit or declared escape", {
+  set.seed(10)
+  x <- simulate_default("mlsstd",50)
+  base <- tryCatch(mlsstd(x),error=function(e) conditionMessage(e))
+  for(s in c(1e-300,1e300)) {
+    f <- tryCatch(mlsstd(x*s),error=function(e) conditionMessage(e))
+    if(is.character(base)) expect_identical(f,base) else {
+      expect_false(is.character(f))
+      if(!is.character(f)) expect_equal(attr(f,"logLik")+length(x)*log(s),attr(base,"logLik"),tolerance=1e-4)
+    }
+  }
+})
+
+test_that("sstd large-sample fitting preserves likelihood under replication", {
+  x<-qt(((1:1000)-.5)/1000,df=4)/sqrt(2)
+  base<-mlsstd(x)
+  y<-rep(x,100)
+  f<-mlsstd(y)
+  expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
+})

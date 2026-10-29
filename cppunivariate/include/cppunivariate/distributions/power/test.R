@@ -67,3 +67,9 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("power endpoint offset is positive and survives rounding", {
+  for(e in c(-1,Inf,NaN)) expect_error(mlpower(c(1,2),epsilon=e),"nonnegative and finite")
+  f<-mlpower(c(1e100,2e100))
+  expect_gt(f[["alpha"]],2e100)
+})

@@ -16,7 +16,7 @@ log_density: log(shape) + log(scale) - 2*log(x) - (shape+1)*log(1+scale/x)
 limits:
   - model: invexp
     when: '$\mathrm{shape} \to \infty$ with $\mathrm{shape} \cdot \mathrm{scale}$ fixed'
-    detect: mean(1/x^2) < 2*mean(1/x)^2
+    detect: the numerical profile comparison selects the inverse exponential face when the moment-based start is nonpositive
     status: MeanVarianceCondition
 references:
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."

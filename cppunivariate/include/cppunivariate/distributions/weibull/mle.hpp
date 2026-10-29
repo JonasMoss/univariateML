@@ -41,9 +41,9 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
       std::isnan(shape0) ? shape0 : -std::log(shape0));
   const double shape = 1.0 / g.sigma;
   const double scale = std::exp(-g.mu + s);
-  const double logLik =
-      dn * (std::log(shape / scale) +
-            (shape - 1.0) * (s - std::log(scale)) - 1.0);
+  // Transform the fitted Gumbel likelihood, avoiding shape times
+  // a difference of rounded log scales near a point mass.
+  const double logLik = g.logLik + sum_log_x;
   return {shape, scale, logLik, g.iterations};
 }
 

@@ -66,3 +66,15 @@ test_that("fixed-scale paralogistic fits even constant observations", {
   fit <- mlparalogis(rep(3,10),scale=3)
   expect_equal(as.numeric(fit[1]), 2/log(2), tolerance=1e-9)
 })
+
+test_that("constant free-scale paralogis data have an unbounded likelihood", {
+  expect_error(mlparalogis(rep(2,5)),"does not exist")
+})
+
+test_that("paralogis large-sample fitting preserves likelihood under replication", {
+  p<-((1:1000)-.5)/1000
+  x<-actuar::qparalogis(p,shape=1,scale=1)
+  base<-mlparalogis(x)
+  f<-mlparalogis(rep(x,100))
+  expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
+})

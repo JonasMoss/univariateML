@@ -26,3 +26,18 @@ test_that("the qzipf replacement is the discrete inverse of the zipf CDF", {
   p <- c(0.1, 0.4, 0.5, 0.6, 0.99)
   expect_equal(qfun(p, N = 10, s = 1), vapply(p, function(pp) min(which(cdf >= pp)), 0))
 })
+
+test_that("Zipf returns the attained uniform face at the count ceiling", {
+  x <- c(.Machine$integer.max-1,.Machine$integer.max)
+  f <- mlzipf(x)
+  expect_equal(f[["s"]],0)
+  expect_equal(attr(f,"logLik"),-length(x)*log(max(x)))
+})
+test_that("large-support Zipf likelihood agrees with a slow sum oracle", {
+  x <- c(rep(1,9),100000L)
+  f <- mlzipf(x)
+  objective <- function(t) {s<-exp(t); s*sum(log(x))+length(x)*log(sum((1:max(x))^-s))}
+  o <- optimize(objective,c(-5,3),tol=1e-11)
+  expect_equal(attr(f,"logLik"),-o$objective,tolerance=1e-8)
+  expect_equal(f[["s"]],exp(o$minimum),tolerance=1e-6)
+})

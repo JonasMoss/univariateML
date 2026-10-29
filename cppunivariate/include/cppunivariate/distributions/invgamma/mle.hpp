@@ -23,6 +23,7 @@ struct InvGammaResult {
   double scale;
   double logLik;
   int iterations;
+  GammaStatus status = GammaStatus::Ok;
 };
 
 inline InvGammaResult invgamma_mle(span x, double tol, int maxit) {
@@ -32,21 +33,15 @@ inline InvGammaResult invgamma_mle(span x, double tol, int maxit) {
 
   std::vector<double> invx(n);
   double sum_log = 0.0;
-  double sum_inv = 0.0;
   for (std::size_t i = 0; i < n; ++i) {
     invx[i] = 1.0 / x[i];
     sum_log += std::log(x[i]);
-    sum_inv += invx[i];
   }
-  const double dn = static_cast<double>(n);
   GammaResult g = gamma_mle(span{invx.data(), n}, tol, maxit);
-
-  const double L = sum_log / dn;
-  const double M = sum_inv / dn;
-  const double logLik = dn * (g.shape * std::log(g.rate) -
-                              std::lgamma(g.shape) -
-                              (g.shape + 1.0) * L - g.rate * M);
-  return {g.shape, g.rate, logLik, g.iterations};
+  // log f_invgamma(x) = log f_gamma(1/x) - 2 log x, so the gamma fit's
+  // log-likelihood (stable for huge shapes) carries over.
+  const double logLik = g.logLik - 2.0 * sum_log;
+  return {g.shape, g.rate, logLik, g.iterations, g.status};
 }
 
 }  // namespace cppunivariate

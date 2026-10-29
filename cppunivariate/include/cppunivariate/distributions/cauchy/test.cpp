@@ -33,7 +33,7 @@ TEST_CASE("cauchy: three observations and nonexistent MLE") {
   CHECK(r.mu == doctest::Approx(-2.369470147).epsilon(1e-4));
   CHECK(r.scale == doctest::Approx(0.272740500).epsilon(1e-4));
   CHECK(r.logLik >= -4.99686179 - 1e-6);
-  for (const std::vector<double> &bad : {std::vector<double>{}, {1}, {1, 2}, {1, 1, 2}, {1, 1, 2, 3}}) {
+  for (const std::vector<double> &bad : {std::vector<double>{}, {1}, {1, 1}, {1, 1, 2}, {1, 1, 2, 3}}) {
     CHECK(cppunivariate::fit_cauchy(mltest::as_span(bad), mltest::kFitTol, mltest::kFitMaxit).status == cppunivariate::CauchyStatus::NoMLE);
   }
 }

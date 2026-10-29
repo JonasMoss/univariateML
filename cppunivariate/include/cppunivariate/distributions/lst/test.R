@@ -72,3 +72,18 @@ test_that("fixed df agrees with oracle and Cauchy, with correct metadata", {
   expect_s3_class(mllst(c(0,0,0,1), df = 4, iterlim = 5000), "univariateML")
   expect_s3_class(mllst(qnorm((1:100-.5)/100), df = 4), "univariateML")
 })
+
+test_that("held huge degrees of freedom retain the normal log density", {
+  x <- c(-2, -1, 0, 1, 3)
+  f <- mllst(x, df = 1e300)
+  expect_equal(attr(f, "logLik"), sum(dt((x-f[["mu"]])/f[["sigma"]], df=1e300, log=TRUE)-log(f[["sigma"]])), tolerance=1e-10)
+  expect_equal(attr(f, "logLik"), attr(mlnorm(x), "logLik"), tolerance=1e-8)
+})
+
+test_that("held Cauchy degrees of freedom allow balanced two-point maxima", {
+  f <- mllst(c(1,1,2,2),df=1)
+  g <- mlcauchy(c(1,1,2,2))
+  expect_equal(f[["mu"]],g[["location"]])
+  expect_equal(f[["sigma"]],g[["scale"]])
+  expect_equal(attr(f,"logLik"),attr(g,"logLik"))
+})

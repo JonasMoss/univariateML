@@ -5,6 +5,7 @@
 
 #include "../../core/lambert_w.hpp"
 #include "../../core/span.hpp"
+#include "../pois/mle.hpp"
 #include "../../special/special.hpp"
 
 #include <cmath>
@@ -62,6 +63,8 @@ inline ZipResult zip_mle(ispan x) {
   for (auto v : x) {
     if (v == 0) {
       logLik += std::log(pi + (1.0 - pi) * std::exp(-lambda));
+    } else if (v >= 1000000) {
+      logLik += std::log1p(-pi)+pois_detail::logpmf(static_cast<double>(v),lambda);
     } else {
       logLik += std::log(1.0 - pi) +
                 static_cast<double>(v) * std::log(lambda) - lambda -

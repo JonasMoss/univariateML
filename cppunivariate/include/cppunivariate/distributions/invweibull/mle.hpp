@@ -42,8 +42,9 @@ inline InvWeibullResult invweibull_mle(span x, double tol, int maxit,
   const double rate_log = -g.mu + s;
   const double rate = std::exp(rate_log);
   const double shape = 1.0 / g.sigma;
-  const double logLik =
-      dn * (std::log(shape) + shape * (-rate_log + s) - 1.0 + s);
+  // Transform the fitted Gumbel likelihood, avoiding shape times
+  // a difference of rounded log scales near a point mass.
+  const double logLik = g.logLik + dn * s;
   return {shape, rate, logLik, g.iterations};
 }
 

@@ -39,3 +39,8 @@ expect_equal(names(est), c("shapelog", "ratelog"))
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("constant data have no attained lgamma MLE", {
+  expect_error(mllgamma(rep(2, 5)), "does not exist")
+  expect_error(mllgamma(2), "does not exist")
+})

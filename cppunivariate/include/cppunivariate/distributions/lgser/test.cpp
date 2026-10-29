@@ -23,3 +23,13 @@ namespace {
   CHECK(r.theta == D_APPROX(g.estimates.at("theta")));
   CHECK(r.logLik == D_APPROX(g.logLik));
 }
+
+TEST_CASE("lgser: mean just above one") {
+  const std::vector<int> x{1, 1, 1, 2};
+  const auto r = cppunivariate::lgser_mle(cppunivariate::ispan{x.data(), x.size()});
+  REQUIRE(!r.all_ones);
+  CHECK(r.theta > 0.0);
+  CHECK(r.theta < 1.0);
+  // mean(x) = 5/4 = -theta / ((1 - theta) log(1 - theta)).
+  CHECK(-r.theta / ((1.0 - r.theta) * std::log1p(-r.theta)) == doctest::Approx(1.25).epsilon(1e-12));
+}

@@ -40,3 +40,10 @@ test_that("ZIP boundary fits are finite and represent their distributions", {
   expect_error(mlzip_(integer()), "requires nonempty nonnegative count data")
   expect_error(mlzip_(c(-1L, 0L)), "requires nonempty nonnegative count data")
 })
+
+test_that("ZIP Poisson face has an accurate likelihood at the count ceiling", {
+  x<-c(.Machine$integer.max-1,.Machine$integer.max)
+  f<-mlzip(x)
+  expect_equal(f[["pi"]],0)
+  expect_equal(attr(f,"logLik"),sum(dpois(x,mean(x),log=TRUE)),tolerance=1e-10)
+})

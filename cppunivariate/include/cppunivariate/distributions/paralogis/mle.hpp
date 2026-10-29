@@ -59,6 +59,7 @@ struct ParalogisResult {
 // Sympy-verified against numerical derivatives at random points.
 struct ParalogisCost {
   span x;
+  double divisor = 1.0;
   int dim() const { return 2; }
   double operator()(const double *phi) const {
     const double alpha = cppunivariate::from_log(phi[0]);
@@ -77,12 +78,12 @@ struct ParalogisCost {
       const double log_z = lx - phi[1];  // log(x_i / theta)
       sum_log_xt += log_z;
       const double t = alpha * log_z;
-      sum_log1p_r += std::log1p(std::exp(t));
+      sum_log1p_r += t>500.0 ? t+std::log1p(std::exp(-t)) : std::log1p(std::exp(t));
     }
     const double dn = static_cast<double>(n);
     const double logLik = dn * 2.0 * std::log(alpha) + alpha * sum_log_xt -
                           sum_log_x - (alpha + 1.0) * sum_log1p_r;
-    return -logLik;
+    return -logLik/divisor;
   }
   void hessian(const double *phi, double *H) const {
     const double alpha = cppunivariate::from_log(phi[0]);
@@ -126,6 +127,7 @@ struct ParalogisCost {
     H[1] = dn * alpha - alpha * (2.0 * alpha + 1.0) * sum_p - alpha * a1 * sum_qt;
     H[2] = H[1];
     H[3] = alpha * alpha * a1 * sum_q;
+    for(int i=0;i<4;++i) H[i]/=divisor;
   }
 };
 
@@ -188,6 +190,9 @@ inline ParalogisResult paralogis_mle(
     }
   }
 
+  if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {kNaN,kNaN,kNaN,0,ParalogisStatus::InvalidStart};
+
   // Median start for theta.
   std::vector<double> sorted(x.begin(), x.end());
   std::sort(sorted.begin(), sorted.end());
@@ -199,20 +204,21 @@ inline ParalogisResult paralogis_mle(
   }
 
   double mean_lz = 0.0;
-  for (auto v : x) mean_lz += std::log(v / theta0);
+  for (auto v : x) mean_lz += ((std::isfinite(v/theta0) && v/theta0>0.0) ? std::log(v/theta0) : std::log(v)-std::log(theta0));
   mean_lz /= static_cast<double>(n);
   double var_lz = 0.0;
   for (auto v : x) {
-    const double d = std::log(v / theta0) - mean_lz;
+    const double d = ((std::isfinite(v/theta0) && v/theta0>0.0) ? std::log(v/theta0) : std::log(v)-std::log(theta0)) - mean_lz;
     var_lz += d * d;
   }
   var_lz /= static_cast<double>(n - 1);
   const double sd_lz = std::sqrt(var_lz);
   double alpha0 = (sd_lz > 0.0) ? 2.0 / sd_lz : 1.5;
-  if (alpha0 < 1.5) alpha0 = 1.5;
+  if (alpha0 < 1.5 && sd_lz < 10.0) alpha0 = 1.5;
   if (std::isfinite(shape0) && shape0 > 0.0) alpha0 = shape0;
 
-  ParalogisCost cost{x};
+  const double objective_divisor = n>=100000 ? static_cast<double>(n) : 1.0;
+  ParalogisCost cost{x,objective_divisor};
   finite_diff_cost<ParalogisCost> fd{cost};
   const double phi0[2] = {cppunivariate::to_log(alpha0), cppunivariate::to_log(theta0)};
 
@@ -220,6 +226,7 @@ inline ParalogisResult paralogis_mle(
   ctl.grad_tol = tol;
   ctl.maxit = maxit;
   auto r = bfgs_minimize(fd, phi0, ctl);
+  r.f *= objective_divisor;
 
   const double shape = cppunivariate::from_log(r.theta[0]);
   const double scale = cppunivariate::from_log(r.theta[1]);

@@ -28,7 +28,13 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double reltol = 1.220703e-4,
 
   if (size.isNotNull()) {
     size_out = Rcpp::as<double>(size);
+    if (!(size_out > 0.0) || !std::isfinite(size_out)) {
+      Rcpp::stop("`size` must be a positive finite number.");
+    }
     prob_out = size_out / (x_bar + size_out);
+    if (prob_out == 1.0 && x_bar > 0.0) {
+      Rcpp::stop("Negative binomial MLE probability rounds to one: held size exceeds double precision for these data.");
+    }
     double ll = 0.0;
     for (int v : x) {
       ll += cppunivariate::special::dnbinom(static_cast<double>(v), size_out, prob_out,

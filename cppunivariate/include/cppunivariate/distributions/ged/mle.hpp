@@ -13,6 +13,7 @@
 #include "../../core/reductions.hpp"
 #include "../../core/reparam.hpp"
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
@@ -123,12 +124,13 @@ struct GedCost {
 // Fitting uses log(nu - 1), with the attained face compared separately.
 struct GedFitCost {
   span x;
+  double divisor = 1.0;
   int dim() const { return 3; }
   double operator()(const double *phi) const {
     double q[3];
     for (int i = 0; i < 3; ++i) q[i] = phi[i];
     q[2] = std::log1p(std::exp(phi[2]));
-    return GedCost{x}(q);
+    return GedCost{x}(q)/divisor;
   }
 };
 
@@ -144,7 +146,9 @@ inline GedResult ged_mle(span x, double tol, int maxit) {
     var_x += d * d;
   }
   var_x /= static_cast<double>(n - 1);
-  const double sd_x = std::sqrt(var_x);
+  double sd_x = std::sqrt(var_x);
+  if (!(sd_x > 0.0) || !std::isfinite(sd_x))
+    sd_x = norm_detail::moments(x).sd * std::sqrt(static_cast<double>(n) / (n-1.0));
   if (!std::isfinite(sd_x) || sd_x <= 0.0) {
     return {kNaN, kNaN, kNaN, kNaN, 0, GedStatus::InvalidStart};
   }
@@ -160,7 +164,8 @@ inline GedResult ged_mle(span x, double tol, int maxit) {
   for (double v : z) a += std::abs(v - c) / dn;
   GedResult best{c, std::sqrt(2.0) * a, 1.0,
                  -dn * (std::log(2.0 * a) + 1.0), 0, GedStatus::Ok};
-  GedFitCost cost{span{z.data(), z.size()}};
+  const double objective_divisor = n>=100000 ? dn : 1.0;
+  GedFitCost cost{span{z.data(), z.size()},objective_divisor};
   finite_diff_cost<GedFitCost> fd{cost};
   BfgsControl ctl;
   ctl.grad_tol = tol;
@@ -168,6 +173,7 @@ inline GedResult ged_mle(span x, double tol, int maxit) {
   for (double nu0 : {1.5, 2.0, 4.0, 8.0}) {
     const double phi0[3] = {0.0, 0.0, std::log(nu0 - 1.0)};
     auto r = bfgs_minimize(fd, phi0, ctl);
+    r.f *= objective_divisor;
     if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
       best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
               -r.f, r.iterations,

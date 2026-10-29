@@ -42,3 +42,19 @@ test_that("norm handles a seeded sample with a large outlier", {
   expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
+
+test_that("constant data have no attained norm MLE", {
+  expect_error(mlnorm(rep(2, 5)), "does not exist")
+  expect_error(mlnorm(2), "does not exist")
+})
+
+test_that("normal moments retain tiny and huge scales and near ties", {
+  for (s in c(1e-300, 1e300)) {
+    x <- c(-2, -1, 0, 1, 2) * s
+    f <- mlnorm(x)
+    expect_equal(f[["sd"]] / s, sqrt(2))
+    expect_equal(attr(f, "logLik"), sum(dnorm(x, f[[1]], f[[2]], log = TRUE)))
+  }
+  x <- 1 + (0:4)*.Machine$double.eps
+  expect_equal(mlnorm(x)[["sd"]] / .Machine$double.eps, sqrt(2))
+})

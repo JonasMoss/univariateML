@@ -1,7 +1,6 @@
-// Lomax MLE. The parameterisation, the existence condition
-// (mean(x^2) < 2*mean(x)^2, surfaced as LomaxStatus::MeanVarianceCondition)
-// and the Lomax -> exponential limit are in README.md; this file documents
-// only the implementation.
+// Lomax MLE. The moment criterion diagnoses the score at the exponential
+// boundary, not the global maximum. When the moment start is nonpositive,
+// compare the profile with that boundary; otherwise retain the Newton path.
 
 #pragma once
 
@@ -9,8 +8,10 @@
 #include "../../core/span.hpp"
 
 #include <cmath>
+#include <algorithm>
 #include <cstddef>
 #include <limits>
+#include <vector>
 
 namespace cppunivariate {
 
@@ -49,19 +50,65 @@ inline LomaxResult lomax_mle(
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, LomaxStatus::InvalidStart};
 
+  long double total = 0.0L;
+  for (auto v : x) total += v;
+  const double unit = static_cast<double>(total / static_cast<long double>(n));
+  if (unit > 0.0 && std::isfinite(unit) && (unit < 1e-3 || unit > 1e3)) {
+    std::vector<double> z(n);
+    for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / unit;
+    const double start = std::isfinite(lambda0) && lambda0 > 0.0 ? lambda0 * unit : lambda0;
+    const auto r = lomax_mle(span{z.data(), n}, tol, maxit, start);
+    return {r.lambda/unit, r.kappa, r.logLik-static_cast<double>(n)*std::log(unit), r.iterations, r.status};
+  }
+
   const double m = cppunivariate::mean(x);
   double sum_xsq = 0.0;
   for (auto v : x) sum_xsq += v * v;
   const double s = sum_xsq / static_cast<double>(n);
   const double m2 = m * m;
-  if (s < 2.0 * m2) {
-    return {kNaN, kNaN, kNaN, 0, LomaxStatus::MeanVarianceCondition};
+  if (s <= 2.0 * m2) {
+    // A nonpositive boundary score does not rule out a better interior
+    // maximum. The moment start is invalid in this region.
+    // Search dimensionless log(lambda*m)
+    // and compare its best value with the exponential face (D1).
+    const double dn = static_cast<double>(n);
+    const auto objective = [&](double t) {
+      return lomax_detail::profile_loglik(x, std::exp(t) / m);
+    };
+    double best_t = -30.0, best = objective(best_t);
+    double xmin = x[0];
+    for (auto v : x) xmin = std::min(xmin, v);
+    const double upper = std::max(30.0, std::min(700.0, std::log(m)-std::log(xmin)+10.0));
+    for (int j = -29; j <= static_cast<int>(upper); ++j) {
+      const double value = objective(static_cast<double>(j));
+      if (value > best) { best = value; best_t = static_cast<double>(j); }
+    }
+    double lo = best_t - 1.0, hi = best_t + 1.0;
+    constexpr double ratio = 0.6180339887498948482;
+    double a = hi - ratio*(hi-lo), b = lo + ratio*(hi-lo);
+    double fa = objective(a), fb = objective(b);
+    for (int j = 0; j < 150; ++j) {
+      if (fa > fb) { hi=b; b=a; fb=fa; a=hi-ratio*(hi-lo); fa=objective(a); }
+      else { lo=a; a=b; fa=fb; b=lo+ratio*(hi-lo); fb=objective(b); }
+    }
+    const double lambda = std::exp((lo+hi)/2.0) / m;
+    double S = 0.0;
+    for (auto v : x) S += std::log1p(lambda*v);
+    const double kappa = dn/S;
+    const double ll = dn*(std::log(kappa)+std::log(lambda)-1.0)-S;
+    const double exponential_ll = -dn*(std::log(m)+1.0);
+    if (ll <= exponential_ll + 1e-8*dn)
+      return {kNaN,kNaN,kNaN,150,LomaxStatus::MeanVarianceCondition};
+    return {lambda,kappa,ll,150,LomaxStatus::Ok};
   }
 
   const double alpha0 = 2.0 * (s - m2) / (s - 2.0 * m2);
   double lambda = (std::isfinite(lambda0) && lambda0 > 0.0)
                       ? lambda0
                       : 1.0 / (m * (alpha0 - 1.0));
+  if (std::isfinite(lambda0) && lambda0>0.0 &&
+      (lambda0*m < 1e-8 || lambda0*m > 1e8))
+    return lomax_mle(x,tol,maxit); // A starting hint outside resolvable score arithmetic.
   if (lambda <= 0.0 || !std::isfinite(lambda)) {
     return {kNaN, kNaN, kNaN, 0, LomaxStatus::InvalidStart};
   }
@@ -71,7 +118,7 @@ inline LomaxResult lomax_mle(
     double S = 0.0, S1 = 0.0, S2 = 0.0;
     for (auto v : x) {
       const double xb = 1.0 + lambda * v;
-      S += std::log(xb);
+      S += lambda*v < 1e-8 ? std::log1p(lambda*v) : std::log(xb);
       const double xd = v / xb;
       S1 += xd;
       S2 += xd * xd;

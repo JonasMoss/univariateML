@@ -19,6 +19,7 @@ struct NakaResult {
   double scale;
   double logLik;
   int iterations;
+  GammaStatus status = GammaStatus::Ok;
 };
 
 inline NakaResult naka_mle(span x, double tol, int maxit) {
@@ -28,22 +29,18 @@ inline NakaResult naka_mle(span x, double tol, int maxit) {
 
   std::vector<double> x2(n);
   double sum_log_x = 0.0;
-  double sum_x2 = 0.0;
   for (std::size_t i = 0; i < n; ++i) {
     x2[i] = x[i] * x[i];
     sum_log_x += std::log(x[i]);
-    sum_x2 += x2[i];
   }
   const double dn = static_cast<double>(n);
 
   GammaResult g = gamma_mle(span{x2.data(), n}, tol, maxit);
   const double shape = g.shape;
   const double scale = shape / g.rate;
-  const double logLik =
-      dn * (shape * std::log(shape) + std::log(2.0) - std::lgamma(shape) -
-            shape * std::log(scale)) +
-      (2.0 * shape - 1.0) * sum_log_x - (shape / scale) * sum_x2;
-  return {shape, scale, logLik, g.iterations};
+  // X^2 is gamma: log f_naka(x) = log f_gamma(x^2) + log 2 + log x.
+  const double logLik = g.logLik + dn * std::log(2.0) + sum_log_x;
+  return {shape, scale, logLik, g.iterations, g.status};
 }
 
 }  // namespace cppunivariate

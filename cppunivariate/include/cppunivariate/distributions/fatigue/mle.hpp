@@ -11,6 +11,8 @@
 #include "../../special/special.hpp"
 
 #include <cmath>
+#include <algorithm>
+#include <vector>
 #include <cstddef>
 #include <limits>
 
@@ -28,11 +30,26 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0};
 
+  bool constant = true;
+  double unit = 0.0;
+  for (auto v : x) { constant = constant && v == x[0]; unit = std::max(unit,v); }
+  if (constant) return {kNaN,kNaN,kNaN,0};
+  if (unit > 0.0 && std::isfinite(unit) && (unit < 1e-100 || unit > 1e100)) {
+    std::vector<double> y(n);
+    for (std::size_t i=0;i<n;++i) {
+      y[i]=x[i]/unit;
+      if (!(y[i]>0.0)) return {kNaN,kNaN,kNaN,0};
+    }
+    const auto r=fatigue_mle(span{y.data(),n},tol,maxit);
+    return {r.alpha,r.beta*unit,r.logLik-static_cast<double>(n)*std::log(unit),r.iterations};
+  }
+
   const double dn = static_cast<double>(n);
-  double sum_x = 0.0, sum_inv_x = 0.0, sum_sqrt_x = 0.0, sum_inv_sqrt_x = 0.0;
+  double sum_x = 0.0, sum_sqrt_x = 0.0, sum_inv_sqrt_x = 0.0;
+  long double sum_inv_x = 0.0L;
   for (auto v : x) {
     sum_x += v;
-    sum_inv_x += 1.0 / v;
+    sum_inv_x += 1.0L / v;
     const double sx = std::sqrt(v);
     sum_sqrt_x += sx;
     sum_inv_sqrt_x += 1.0 / sx;
@@ -41,27 +58,40 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
   const double x_inv_bar = dn / sum_inv_x;
 
   auto f_over_df = [&](double beta) {
-    double sum_xb = 0.0, sum_xb_sq = 0.0;
+    long double sum_xb = 0.0L, sum_xb_sq = 0.0L;
     for (auto v : x) {
-      const double xb = 1.0 / (v + beta);
+      const long double xb = 1.0L / (static_cast<long double>(v) + beta);
       sum_xb += xb;
       sum_xb_sq += xb * xb;
     }
-    const double xi = dn / sum_xb;
-    const double dxi = sum_xb_sq * xi * xi / dn;
-    const double f =
-        beta * beta - beta * (2.0 * x_inv_bar + xi) + x_inv_bar * (x_bar + xi);
-    const double df =
+    const long double xi = dn / sum_xb;
+    const long double dxi = sum_xb_sq * xi * xi / dn;
+    const long double f =
+        static_cast<long double>(beta) * beta - beta * (2.0 * x_inv_bar + xi) + x_inv_bar * (x_bar + xi);
+    const long double df =
         2.0 * beta - (2.0 * x_inv_bar + xi) - beta * dxi + x_inv_bar * dxi;
-    return f / df;
+    return static_cast<double>(f / df);
   };
 
   // Method-of-moments start.
   const double beta0 = sum_sqrt_x / sum_inv_sqrt_x;
-  auto nr = cppunivariate::newton_raphson_1d_abs(beta0, f_over_df, tol, maxit);
-  if (nr.x <= 0.0) return {kNaN, kNaN, kNaN, nr.iterations};
-
-  const double beta = nr.x;
+  auto nr = (beta0 < 1e-3 || beta0 > 1e3)
+      ? cppunivariate::newton_raphson_1d(beta0, f_over_df, tol, maxit)
+      : cppunivariate::newton_raphson_1d_abs(beta0, f_over_df, tol, maxit);
+  double beta = nr.x;
+  if (!(beta>0.0) || !std::isfinite(beta) || !nr.converged) {
+    // The profile root lies between harmonic and arithmetic means.
+    double lo=x_inv_bar, hi=x_bar;
+    for (int j=0;j<100;++j) {
+      const double mid=std::sqrt(lo)*std::sqrt(hi);
+      long double inv=0.0L;
+      for (auto v:x) inv+=1.0L/(static_cast<long double>(v)+mid);
+      const long double xi=dn/inv;
+      const long double f=static_cast<long double>(mid)*mid-mid*(2.0*x_inv_bar+xi)+x_inv_bar*(x_bar+xi);
+      if (f>0.0) lo=mid; else hi=mid;
+    }
+    beta=std::sqrt(lo)*std::sqrt(hi);
+  }
   // Standard Birnbaum-Saunders α-MLE FOC: α² = x̄/β + β/H(x) − 2, where
   // H(x) = n/Σ(1/x_i) is the harmonic mean. The −2 was missing in the
   // historical R code this was ported from; the bug shipped silently
@@ -71,13 +101,18 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
   // deriving the score from the standard BS density and finding it
   // ≈ 30 at the recovered α — see roadmap/2026-05-10-fatigue-cost-mismatch.md
   // for the full investigation.
-  const double alpha = std::sqrt(x_bar / beta + beta / x_inv_bar - 2.0);
+  long double alpha_sq=0.0L;
+  for (auto v:x) {
+    const long double d=(static_cast<long double>(v)-beta)/std::sqrt(static_cast<long double>(v))/std::sqrt(static_cast<long double>(beta));
+    alpha_sq+=d*d;
+  }
+  const double alpha=static_cast<double>(std::sqrt(alpha_sq/dn));
 
   double logLik = 0.0;
   for (auto v : x) {
-    const double sx = std::sqrt(v / beta);
-    const double sy = std::sqrt(beta / v);
-    const double z = (sx - sy) / alpha;
+    const double sx = std::sqrt(v) / std::sqrt(beta);
+    const double sy = std::sqrt(beta) / std::sqrt(v);
+    const double z = static_cast<double>((static_cast<long double>(v)-beta)/std::sqrt(static_cast<long double>(v))/std::sqrt(static_cast<long double>(beta))/alpha);
     const double log_pref = std::log(sx + sy) - std::log(2.0 * alpha) - std::log(v);
     const double log_phi = cppunivariate::special::dnorm(z, 0.0, 1.0, 1);
     logLik += log_pref + log_phi;

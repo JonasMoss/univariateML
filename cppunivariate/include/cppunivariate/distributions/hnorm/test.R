@@ -53,3 +53,10 @@ test_that("bootstrap refits with mlhnorm", {
   expect_equal(dim(boot), c(2L, 20L))
   expect_true(all(boot["sigma", ] > 0))
 })
+
+test_that("half-normal re-profiles after rounding its endpoint", {
+  x <- 1e15 + c(0, 1, 2, 3)
+  f <- mlhnorm(x)
+  expect_equal(f[["sigma"]], sqrt(mean((x - f[["mu"]])^2)))
+  expect_equal(attr(f, "logLik"), sum(extraDistr::dtnorm(x, mean = f[["mu"]], sd = f[["sigma"]], a = f[["mu"]], log = TRUE)))
+})

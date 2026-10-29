@@ -16,7 +16,7 @@ log_density: log(lambda) + log(kappa) - (kappa + 1)*log(1 + lambda*x)
 limits:
   - model: exp
     when: '$\kappa \to \infty$ with $\lambda \kappa$ fixed'
-    detect: mean(x^2) < 2*mean(x)^2
+    detect: the numerical profile comparison selects the exponential face when the moment-based start is nonpositive
     status: MeanVarianceCondition
 references:
   - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley, p. 60.

@@ -45,3 +45,7 @@ test_that("laplace handles a seeded sample with a large outlier", {
   expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
+
+test_that("constant Laplace data have no attained MLE", {
+  expect_error(mllaplace(rep(1,5)),"does not exist")
+})

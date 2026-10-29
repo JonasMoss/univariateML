@@ -57,3 +57,16 @@ expect_equal(coef(b_start), coef(a_start), tolerance = 1e-8)
 for (bad_start in c(0, -1, Inf, NA_real_)) {
   expect_error(mlweibull(x_start, shape0 = bad_start), "positive finite")
 }
+
+test_that("constant data have no attained weibull MLE", {
+  expect_error(mlweibull(rep(2, 5)), "does not exist")
+  expect_error(mlweibull(2), "does not exist")
+})
+
+test_that("weibull near ties have finite concentrated fits", {
+  x <- 1+(0:4)*.Machine$double.eps
+  f <- mlweibull(x)
+  expect_gt(f[["shape"]],1e14)
+  expect_true(is.finite(attr(f,"logLik")))
+  expect_gt(attr(f,"logLik"),100)
+})

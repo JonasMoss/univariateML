@@ -102,6 +102,9 @@ ml_check_modify <- function(x, na.rm, name) {
   assert_that(NCOL(x) == 1, msg = msg)
   msg <- "NA in input when na.rm = FALSE"
   if (na.rm) x <- x[!is.na(x)] else assert_that(!anyNA(x), msg = msg)
+  # Without this, min/max of an empty vector pass the support checks and
+  # the fitters return NaN estimates.
+  if (!length(x)) stop("x must have positive length")
 
   support <- univariateML_metadata[[name]]$support
 
@@ -121,6 +124,11 @@ ml_check_modify <- function(x, na.rm, name) {
   if (support$type == "Z") {
     if (sum(abs(x - floor(x)) != 0)) {
       stop("Non-integral inputs for discrete density.")
+    }
+    # The count fitters take integer vectors; larger values would become
+    # NA_integer_ (the most negative int) and give silent nonsense.
+    if (max(abs(x)) > .Machine$integer.max) {
+      stop("Counts must not exceed .Machine$integer.max in absolute value.")
     }
   }
 

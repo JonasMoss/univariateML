@@ -106,3 +106,13 @@ test_that("logis handles a seeded sample with a large outlier", {
   expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
+
+test_that("logis fitting respects extreme scale changes", {
+  set.seed(1)
+  x <- simulate_default("mllogis", 50)
+  f <- mllogis(x)
+  for (s in c(1e-300,1e300)) {
+    g <- mllogis(x*s)
+    expect_equal(attr(g,"logLik")+length(x)*log(s),attr(f,"logLik"),tolerance=1e-6)
+  }
+})

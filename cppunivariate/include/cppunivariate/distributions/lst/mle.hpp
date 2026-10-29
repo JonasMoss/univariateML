@@ -2,6 +2,7 @@
 #pragma once
 #include "../../core/bfgs.hpp"
 #include "../../core/span.hpp"
+#include "../cauchy/mle.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -28,7 +29,7 @@ struct LstCost {
     if (!(s > 0.0) || !std::isfinite(s) || !std::isfinite(df) || (!exact_fixed && df > 1e7))
       return std::numeric_limits<double>::infinity();
     // Gamma ratio expansion avoids cancellation on the normal approach.
-    const double c = exact_fixed ? cppunivariate::special::dt(0.0,df,true) : df > 1e4 ? -0.5 * std::log(2.0 * M_PI) - 0.25 / df :
+    const double c = df > 1e4 ? -0.5 * std::log(2.0 * M_PI) - 0.25 / df :
       cppunivariate::special::lgamma((df + 1.0) / 2.0) -
       cppunivariate::special::lgamma(df / 2.0) - 0.5 * std::log(df * M_PI);
     double f = 0.0;
@@ -80,7 +81,14 @@ inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
   }
   const double other = df * static_cast<double>(n-largest);
   if (largest > other) return {nan,nan,df,INFINITY,0,LstStatus::Unbounded};
-  if (largest == other) return {nan,nan,df,nan,0,LstStatus::ScaleBoundary};
+  if (largest == other) {
+    if (df == 1.0) {
+      const auto r = fit_cauchy(x, tol, maxit);
+      if (r.status == CauchyStatus::Ok)
+        return {r.mu,r.scale,df,r.logLik,r.iterations,LstStatus::Ok};
+    }
+    return {nan,nan,df,nan,0,LstStatus::ScaleBoundary};
+  }
   const double center = y[n/2];
   // Range works even when the IQR vanishes in an admissible tied sample.
   const double unit = y.back()-y.front();

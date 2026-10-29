@@ -7,6 +7,7 @@
 #include <Rcpp.h>
 
 #include <cmath>
+#include <algorithm>
 #include <limits>
 
 // [[Rcpp::export]]
@@ -24,14 +25,16 @@ Rcpp::List mlparalogis_(const Rcpp::NumericVector &x,
   const double held = scale.isNotNull() ? Rcpp::as<double>(scale) : 1.0;
   if (!(held > 0) || !std::isfinite(held))
     Rcpp::stop("`scale` must be a positive finite number.");
+  if (scale.isNull() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    Rcpp::stop("The paralogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
   auto res = scale.isNotNull()
       ? cppunivariate::paralogis_mle_fixed_scale(dist_impl::as_span(x), held, gradtol, iterlim, start)
       : cppunivariate::paralogis_mle(dist_impl::as_span(x), gradtol, iterlim, start);
   if (res.status == cppunivariate::ParalogisStatus::InvalidStart) {
     Rcpp::stop("Paralogistic MLE requires positive, finite observations.");
   }
-  if (!std::isfinite(res.shape) || !std::isfinite(res.scale)) {
-    Rcpp::stop("Paralogistic MLE failed to converge (check inputs)");
+  if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
+    Rcpp::stop("Paralogistic MLE failed: fitted parameters or likelihood exceed double precision");
   }
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(

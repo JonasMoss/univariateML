@@ -29,3 +29,12 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("Rayleigh fits extreme scales and rejects all zero", {
+  for (s in c(1e-300, 1e300)) {
+    f <- mlrayleigh(c(1, 2, 3) * s)
+    expect_equal(f[["sigma"]] / s, sqrt(7/3))
+    expect_true(is.finite(attr(f, "logLik")))
+  }
+  expect_error(mlrayleigh(rep(0, 5)), "identically zero")
+})
