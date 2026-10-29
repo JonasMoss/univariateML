@@ -564,6 +564,439 @@ check: $+4.6 = 2\ln 10$ per decade of $\varepsilon$; a test in
 \code{fatigue/test.R}). This is the same defect as the three-parameter
 lognormal; the two-parameter fit with a known threshold is the usable model.
 
+\subsection{Families added 2026-10-29}\label{sec:new-families}
+
+Thirty-one further families, implemented between the 2026-10-29
+parameter-rules design and its P0--P3 jobs. Existence claims below are as
+classified in the ten P0 group notes and the per-family implementation
+reports; ``proved'' means a direct argument in one of those notes, ``probe''
+means a numerical multistart/grid search (evidence, not a certificate of a
+global maximum), and ``conj'' means an open classification. Every P0 job
+flags the same residual limitation: multistart optimisation cannot certify a
+global maximum, so a probed existence boundary is always provisional.
+
+\subsubsection*{Discrete and count families}
+
+\begin{center}
+\small
+\begin{tabular}{@{}l p{4.2cm} p{8.2cm}@{}}
+\toprule
+id & closure & existence, boundary and multimodality \\
+\midrule
+bnbinom & NB ($\alpha,\beta\to\infty$ fixed ratio, or the mirror swap
+  size$\leftrightarrow\beta$); Poisson ($r,\beta,\alpha\to\infty$,
+  $r\beta/\alpha$ fixed); point mass at 0 (any of $r\to0$, $\beta\to0$,
+  $\alpha\to\infty$, all-zero data) &
+  Proved for samples with a positive count when $\alpha$, or two
+  coefficients, are held (compact parameter space). For the fully free fit,
+  exists iff some finite parameter point beats every reachable NB/Poisson
+  face, an implicit criterion, not a closed-form statistic; whether every
+  sample with $\overline{x^2}-\bar x^2\le\bar x$ selects Poisson is open
+  \cite{irwin1975,xekalaki1984} (probe/conj) \\
+cmp & adjacent two-point law ($\nu\to\infty$); point mass (constant data,
+  all free) &
+  Own d/p/q/r. Interior MLE exists and is unique iff $b(\bar x)<T<g(\bar x)$,
+  $T=n^{-1}\sum_i\log(x_i!)$, $g,b$ the $\nu=0$ and $\nu\to\infty$ limits of
+  $\E\log(X!)$ at fixed mean (proved: the $\eta$-score is strictly monotone
+  in $\nu$ by a variance/covariance argument). $\lambda=0$ and ($\nu=0$,
+  $\lambda<1$) are attained R7 members since 2026-10-29, not escapes
+  (proved, code) \\
+cmb \cite{kadane2016} & interior/adjacent/endpoint two-point laws as
+  $\nu\to\pm\infty$ &
+  $\mathrm{prob}\in\{0,1\}$ and $\mathrm{size}=0$ attained (R7, code). Free
+  size unimplemented: whether the reference's $10^7$ cap is a model bound or
+  an allocation limit is undecided (conj) \\
+zeta, yulesimon & point mass at 1 as shape $\to\infty$ &
+  Existence iff some $x_i>1$ (proved: zeta's shape score is model mean minus
+  empirical mean of $\log X$, strictly decreasing; Yule--Simon's is
+  $n-\sum_i x_i$) (proved) \\
+tpois & point mass at the free support endpoint opposite a held bound, when
+  data sit at that extreme &
+  Closed-form conditional-mean solve on any data-compatible bracket
+  $[a,b]$; R7a (\S\ref{sec:holds-restrictions}): the lower bound is
+  $\max(0,\lfloor a\rfloor+1)$, never an atom at $a$ itself. Singleton
+  support makes every $\lambda>0$ an unidentified maximizer; still rejected
+  by the fitter (B7, open) \\
+tbinom & point mass at a bound as $\mathrm{prob}\to0,1$ or
+  $\mathrm{size}\to\infty$ at fixed interior prob &
+  Closed for held size (all six proper subsets, proved). Free size with
+  free probability needs a compactification proof not yet supplied; four
+  hold subsets stay \code{not-implemented} for that reason (conj) \\
+dlaplace & point mass at location as scale $\to0$ &
+  Median location (possibly nonunique), closed-form scale
+  $d/(\sqrt{1+d^2}+1)$, $d=$ mean absolute deviation (proved). R7: restricted
+  to integer location although the reference accepts real location, because
+  the reference's real-argument values do not sum to one on the integer
+  lattice \\
+nhyper & none: the known-$N$ design makes the likelihood bounded ($\le1$)
+  on a finite integer grid &
+  Log-concave in $m$ (adjacent-ratio argument), so bisection finds the
+  (possibly tied) global maximum; no escape is possible under this design
+  (proved). As $m,n\to\infty$ with $m/(m+n)\to p$, $T-r\to\mathrm{NB}(r,p)$;
+  the correct referral is \code{mlnbinom(x - r, size = r)}, not
+  \code{mlnbinom(x, size = r)} \cite{berrymielke1998} \\
+dnorm, dgamma & point mass (range 0) or shifted \code{mlbinom(size=1)}
+  (range 1) &
+  Existence iff range $\ge2$: compact likelihood level sets from a uniform
+  per-cell probability bound plus grouped-normal concavity, citing
+  Burridge \cite{burridge1981} for dnorm (proved); dgamma: analogous
+  compactness with a different per-cell bound; point mass at zero as
+  $\mathrm{rate}\to\infty$ (shape held) or $\mathrm{shape}\to0$ (rate held) \\
+skellam & none: zero-rate faces are attained R7 members, not escapes &
+  Joint MLE matches the empirical mean and variance exactly (closed score
+  equations, proved). Compactness (each mass is bounded by a Stirling bound
+  on the larger-rate Poisson factor, $\to0$ as either rate diverges) gives
+  an attained finite MLE for \emph{every} integer sample (proved) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection*{Half-threshold and real-line shape families}
+
+\begin{center}
+\small
+\begin{tabular}{@{}l p{4.2cm} p{8.2cm}@{}}
+\toprule
+id & closure & existence, boundary and multimodality \\
+\midrule
+hnorm (held $\mu$) & translated half-normal, $\mu$ kind \code{threshold} &
+  With $\mu$ free, always exists if nonconstant: the profile increases
+  $\mu$ to $\min(x)$, with closed-form $\hat\sigma^2$ (proved). R7a
+  (2026-10-28) makes the endpoint exactly attained, replacing the earlier
+  ``largest double below $x_{(1)}$'' convention \\
+hcauchy & fixed-zero endpoint (translation not yet implemented, P4) &
+  Scale score $n-\sum_i 2\sigma^2/(\sigma^2+x_i^2)$ strictly decreasing from
+  $n-2k$ to $-n$, $k=\#$ zeros: unique MLE iff $2k<n$; unbounded if $2k>n$;
+  finite unattained supremum at $2k=n$ (proved) \\
+ht & half-normal escape, $\nu\to\infty$; restricted $\nu\ge1$ (collapse,
+  $c=\nu$, Prop.~\ref{prop:collapse}) &
+  Scale score decreasing from $\nu(n-k)-k$ to $-n$: unique root iff
+  $\nu(n-k)>k$ (proved). Multiple local maxima occur even in small samples
+  (a five-point \code{README} example has maxima at $\hat\nu=0.415$ and
+  $1.17$, both above the half-normal face) (probe) \\
+foldnorm & none (compact level sets for every nonconstant sample) &
+  $f\le2\times$ the parent normal density gives attained MLE for every
+  nonconstant sample; constant data collapse (proved). Multimodality proved
+  to occur: a systematic 20{,}000-sample scan found one sample with two
+  interior maxima (3 stationary points); a moment-only classifier
+  ($m_4$ vs.\ $3m_2^2$) is only local, with an explicit counterexample
+  (99 ones, one five) \\
+huber (free $\epsilon$) & normal ($\epsilon\to\infty$); Laplace
+  ($\epsilon\to0$, $\sigma$ free, face scale $b=\sigma/\epsilon$, not
+  $\sigma\epsilon$) &
+  For $n=2$ distinct points the fully free MLE never exists: both faces
+  dominate every finite $\epsilon$ (proved exactly). M4 simulation: normal
+  data escape to \code{mlnorm} $60$--$72\%$ of the time
+  ($n=20,100,1000$), Cauchy data up to $62\%$ at $n=1000$; kept kind
+  \code{design}, required (A5, probe) \\
+sn & translated half-normal, either side, $\alpha\to\pm\infty$ (with a
+  $\log2$ penalty per observation tied exactly at a held $\xi$) &
+  Normal ($\alpha=0$) is \emph{always} a critical point of the profile for
+  nonconstant data (singular Fisher information there, proved), so a local
+  search alone cannot certify the global fit. Escape-frequency Monte Carlo
+  at $\alpha=5,10$, $n=50$: $0.34,0.65$ here against published $0.139,0.345$
+  \cite{azzalini1985,sartori2006}; unresolved (open) \\
+emg & normal ($\lambda\to\infty$); translated exponential ($\sigma\to0$,
+  endpoint $=\min(x)$, rate $=n/\sum(x-\min)$) &
+  Interior stationary point satisfies $\hat\mu+1/\hat\lambda=\bar x$
+  (diagnostic only). Local trap proved concretely on $x=-2{:}2$: normal is
+  a strict local maximum ($m_4-3m_2^2<0$) while the exponential face has
+  strictly higher likelihood (proved) \\
+slash & point-mass collapse at a tied observation, $\sigma^{n-2k}$
+  ($c=1$ automatically, Cauchy-order tails) &
+  Attained for $k<n/2$ (proved). At $k=n/2$ exactly, a variational
+  criterion compares the interior profile to the exact half-mass value
+  $B_v$, not reducible to a closed sample statistic. Multimodality proved
+  for an explicit 20-point sample, certified with exact rational-arithmetic
+  inequalities \\
+bhatt & normal ($a\to0$, now R7-attained, not an escape); uniform
+  ($\sigma\to0$, attained only if range $>2a$ with $a$ held) &
+  $f\le1/(2a)$ and $f\le1/(\sqrt{2\pi}\sigma)$ exclude joint divergence
+  except at constant data (proved). Escape-frequency simulation (100
+  samples/cell): at $n=20$, normal-generated data pick the uniform face
+  $73\%$ of the time and the normal face only $21\%$ (probe) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection*{Generalized beta and Pareto-type families}
+
+\begin{center}
+\small
+\begin{tabular}{@{}l p{4.2cm} p{8.2cm}@{}}
+\toprule
+id & closure & existence, boundary and multimodality \\
+\midrule
+gb2 & six faces: generalized gamma, inverse GG, lognormal, Pareto, power,
+  ``double Pareto'' (no package fitter) &
+  Proved for 5 of 16 proper hold subsets (concave profiles). Escape-probe
+  (7 generators, $n=50,500$, 20 reps): at $n=50$ even GB2-generated data
+  escape 12--14/20 times; lognormal data split near 50/50 between the
+  generalized-gamma and inverse-GG corner faces at $n=500$ (Self--Liang
+  boundary-mixture behaviour) (probe) \\
+genbeta & unit gamma ($\mathrm{shape1}\to\infty$, $\mathrm{shape3}\to0$,
+  product finite); power ($\mathrm{shape1}\to0$, $\mathrm{shape3}\to\infty$),
+  both at held scale &
+  \code{scale} (upper endpoint) is \code{threshold}, required: free scale
+  is \code{no-mle} for every shape subset (A4). $\mathrm{shape2}<1$ gives
+  an upper-endpoint singularity of exponent $\mathrm{shape2}-1$,
+  independent of the collapse mechanism, so a bare
+  $\mathrm{shape2}\ge1$ restriction alone would not restore existence
+  (\S\ref{sec:holds-restrictions}) \\
+pareto2 & shifted Lomax; exponential face under the shifted
+  Theorem~\ref{thm:lomax} criterion &
+  With \code{min} held, data-dependent exactly as Lomax (proved). Free
+  threshold is \code{no-mle} (A4). Threshold collapse exponent $c=$
+  shape, with \emph{no} independent endpoint singularity (density finite
+  at \code{min}) \\
+pareto3 & shifted log-logistic at held \code{min} &
+  Free threshold \code{no-mle}; collapse exponent $c=$ shape, \emph{plus}
+  an independent fixed-scale endpoint singularity whenever shape $<1$: the
+  counterexample to ``collapse $c\ge1$ suffices'' (\S\ref{sec:holds-restrictions}) \\
+pareto4 & shifted Burr at held \code{min} (Weibull/Pareto faces) &
+  Free threshold \code{no-mle}; collapse exponent
+  $c=\mathrm{shape1}\cdot\mathrm{shape2}$, independent endpoint singularity
+  when $\mathrm{shape2}<1$ \\
+fpareto & shifted GB2 at held \code{min} (six faces) &
+  Free threshold \code{no-mle}; collapse exponent
+  $c=\mathrm{shape1}\cdot\mathrm{shape2}$, independent singularity when
+  $\mathrm{shape2}\cdot\mathrm{shape3}<1$ \\
+nsbeta & none (bounded support) &
+  Both endpoints \code{threshold}: independent singularities at each end
+  ($\mathrm{shape1}<1$ at \code{min}, $\mathrm{shape2}<1$ at \code{max});
+  free-endpoint subsets all \code{no-mle} (A4) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection*{Extreme-value threshold and branch families}
+
+\begin{center}
+\small
+\begin{tabular}{@{}l p{4.2cm} p{8.2cm}@{}}
+\toprule
+id & closure & existence, boundary and multimodality \\
+\midrule
+sgomp & none: $\eta=0$ (exponential) is an ordinary attained member,
+  domain $\eta\ge0$ &
+  Proved attained for every nonconstant sample (fixed-$b$ shape score
+  strictly monotone with a bounded root; two-sided rate bounds for
+  nonconstant data). Collapse only at constant/all-zero data with the
+  relevant scale free \\
+frechet & inverse Weibull on $x-\mu$ ($\mu$ held, any $\lambda$); Gumbel
+  ($\lambda\to\infty$, free location) &
+  $\lambda\ge1$ (collapse, $c=\lambda$, exempt when $\mu$ held) is exactly
+  Prop.~\ref{prop:collapse} applied to Fr\'echet. A second, distinct spike
+  ($\lambda\to0$ with $\mu\to\min$, present even at held $\sigma$) is not
+  excluded by the $\lambda\ge1$ bound and needs $\lambda$ itself free \\
+tlambda & logistic ($\lambda\to0$); uniform at $\lambda=1$ (attained
+  alias) and $\lambda=2$ (alternate alias, held only) &
+  Unrestricted likelihood is \emph{always} unbounded (location at an
+  observation, $\sigma=\lambda A$, $A\to\infty$: $\ell=k\lambda\log2-n\log
+  \lambda+O(1)\to\infty$ for every $\lambda>0$, proved). Two simultaneous
+  restrictions on one shape, $\lambda\in[-1,1]$: collapse ($c=-1/\lambda$
+  for $\lambda<0$, exempt when $\mu$ held) and branch ($\lambda\le1$, no
+  exemption). Attained for $n\ge3$, every tie $k<n/2$ (explicit coercivity
+  bound, proved); location likelihood proved \emph{not} unimodal (nearby
+  local maxima as $\sigma\to0$ at $\lambda=-1$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Existence under holds and restrictions}\label{sec:holds-restrictions}
+
+The parameter-rules design (\code{roadmap/2026-10-29-parameter-rules.md},
+R1--R8, decided 2026-10-29) gives every coefficient a \emph{kind}:
+\code{design} (fixed by data collection, or a tuning constant such as
+huber's $\epsilon$; required), \code{threshold} (a shift of a family whose
+standard form starts at a fixed point; required), \code{endpoint} (a support
+bound; estimated by default) or \code{regular} (estimated by default). Rule
+R5 restricts a \emph{shape} coefficient only when the family has no MLE for
+almost any sample, through one of four mechanisms.
+
+\begin{itemize}
+  \item \emph{Collapse}: a location coincides with $k$ of $n$ observations
+    and the likelihood behaves as $\sigma^{c(n-k)-k}$ as the scale
+    $\sigma\to0$, for a shape-dependent exponent $c>0$.
+  \item \emph{Spike}: the density concentrates entirely on one observation
+    as the shape tends to an edge of its domain; no weakest bound exists,
+    and the restriction simply ends the family at a named member.
+  \item \emph{Branch}: the family changes character past a point (a
+    discontinuous or non-monotone density on the far side).
+  \item \emph{Endpoint}: an estimated endpoint approaches the sample
+    extreme and the existence bound is attained there.
+\end{itemize}
+
+\subsection*{The collapse exponent: a weakest bound}
+
+\begin{proposition}\label{prop:collapse}
+Fix integers $n\ge3$ and $0\le k<n/2$, and suppose that as a scale
+$\sigma\to0^+$ with a location held at an observation of multiplicity $k$,
+$\ell(\sigma) = \{c(n-k)-k\}\log\sigma + O(1)$ for some $c>0$. Then:
+(a) $\ell(\sigma)\to\infty$ as $\sigma\to0^+$ if and only if $c<k/(n-k)$;
+(b) $\sup\{k/(n-k): n\ge3,\ 0\le k<n/2\} = 1$, not attained;
+(c) $c\ge1$ excludes divergence for every such $(n,k)$, and it is the
+weakest bound that does so for every $n$: for every $c<1$ there exist $n,k$
+with $k<n/2$ for which $\ell(\sigma)\to\infty$.
+\end{proposition}
+
+\begin{proof}
+(a) $\sigma^{c(n-k)-k}\to\infty$ as $\sigma\to0^+$ iff the exponent is
+negative, i.e.\ $c(n-k)<k$, i.e.\ $c<k/(n-k)$ (using $n>k$).
+(b) $x\mapsto x/(n-x)$ is strictly increasing on $[0,n)$, so for integer
+$k<n/2$, $k/(n-k) < (n/2)/(n-n/2) = 1$. Along odd $n=2k+1$,
+$k/(n-k)=k/(k+1)\to1$ as $k\to\infty$. So the supremum over all admissible
+$(n,k)$ is $1$, not attained.
+(c) If $c\ge1$, then $k/(n-k)<1\le c$ for every admissible pair, so by (a)
+the path never diverges. If $c<1$, by (b) choose $k$ large and $n=2k+1$ so
+that $k/(n-k)=k/(k+1)>c$; by (a) the path then diverges.
+\end{proof}
+
+Proposition~\ref{prop:collapse} is exactly the design's stated rule (R5):
+``with tie multiplicity below $n/2$, $c\ge1$ is the weakest restriction
+valid for every $n$.'' It applies directly where $c$ is itself one of the
+free coefficients:
+
+\begin{center}
+\small
+\begin{tabular}{@{}l l l l@{}}
+\toprule
+family & restricted coefficient & $c$ & exempt when held \\
+\midrule
+lst & \code{df} & $\mathrm{df}$ & \code{mu}? (open) \\
+frechet & \code{lambda} & $\lambda$ & \code{mu} (inverse Weibull on $x-\mu$) \\
+ht & \code{nu} & $\nu$ & \code{mu} (today's fixed-zero threshold) \\
+gev ($\xi>0$) & \code{xi} & $1/\xi$ & none (P0: diverges with \code{mu} or
+  \code{sigma} held) \\
+tlambda ($\lambda<0$) & \code{lambda} & $-1/\lambda$ & \code{mu}? (open) \\
+hcauchy, slash & --- & $1$ (fixed) & none needed: $c=1$ already, so
+  $k<n/2$ alone suffices \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Pareto II's free threshold, if it were supported, would need exactly
+$c=\mathrm{shape}\ge1$ by the same proposition; it is the one family among
+the newly added Pareto-type group whose collapse mechanism has no
+independent endpoint singularity (below).
+
+\subsection*{Spike, branch and endpoint}
+
+\emph{Spike.} GED/SGED's density concentrates entirely on an observation as
+shape $\nu\to0$. Profiling location at an observation of multiplicity $k$
+and the scale, $\ell/n = -\log\{(n-k)/n\}/\nu + \tfrac12\log\nu + O(1) \to
+\infty$ as $\nu\to0$ for \emph{every} nonconstant sample \cite{tumlinson2015}.
+Unlike collapse there is no $n$-free weakest bound: the restriction
+terminates the family at a named member ($\nu=1$, the Laplace; D6). P0's
+amendment A3 sharpens the scope: with scale (\code{sd}) \emph{held}, the same
+spike persists once the tied fraction exceeds $1-A/B = 0.1379185$,
+$A=\tfrac32\log3$, $B=3\sqrt3/e$ (a Stirling expansion of the README
+density), so the restriction must apply whenever \code{nu} itself is free,
+regardless of what else is held, not only in the originally proposed
+\code{while\_free: [mean, sd]} scope.
+
+\emph{Branch.} Tukey's $\lambda$ family changes character at $\lambda=1$:
+$Q'(u)=\sigma\{u^{\lambda-1}+(1-u)^{\lambda-1}\}$ gives a central-unimodal,
+bounded-support density for $0<\lambda\le1$ and a discontinuous, U-shaped
+density on $(1,2)$ whose boundary value at $\lambda=1$ is not the limit from
+inside, i.e.\ not upper semicontinuous at that junction. The fitter
+restricts to the principal branch $\lambda\le1$ (no exemption proved for any
+hold) and accepts $\lambda=2$ only as an explicit alternate uniform alias
+(scale differing by a factor of two from the $\lambda=1$ alias).
+
+\emph{Endpoint.} For GEV/GPD with $\xi<-1$ the upper endpoint is finite
+($\mu-\sigma/\xi$ for GEV); letting it approach the sample maximum from
+above gives a $(-1-1/\xi)\log t$ term, $t\to0^+$, with negative coefficient,
+hence $\ell\to\infty$ \cite{grimshaw1993}. At $\xi=-1$ exactly this
+coefficient vanishes and the limit is the uniform (GPD) or
+reversed-exponential (GEV) law; both \code{extraDistr::dgpd} and
+\code{dgev} are \emph{zero} at that endpoint under their own (open-support)
+convention, so the $\xi=-1$ supremum is literally unattained there.
+
+\subsection*{Closure (R7a) and domains (R7)}
+
+Rule R7a resolves the endpoint case: at a parameter-dependent support
+endpoint the support is taken \emph{closed}, with the density there equal to
+its limit from inside (the upper semicontinuous closure), for every family
+whose reference defines an open support there (\code{dtnorm}, \code{dpower},
+GPD/GEV at $\xi=-1$, the \code{tpois} lower bound). Estimated endpoints are
+then genuinely attained and \code{dml} agrees with the fit; the earlier
+hnorm-only special case becomes the general rule (implemented
+\code{p3-closure}, 2026-10-28). With R7a in force, \code{p3-restrict}
+implemented the shape bound at $\xi\ge-1$ for GPD and $\xi\in[-1,1]$ for
+GEV exactly, superseding an intermediate design draft that had proposed
+$\xi\ge-\tfrac12$.
+
+Rule R7 separates two kinds of boundary case that the literal reference
+density conflates: a continuous point mass (\code{sd=0}, beta shapes $0$ or
+$\infty$) or an infinite parameter (\code{dht(nu=Inf)}, PIG \code{mean=Inf})
+is excluded from the family's domain and stays an escape (``use
+\code{mlX}''); a \emph{finite, discrete} point mass or other proper member
+dominated by the family's base measure is included and silently attained
+(NB \code{size=0}, \code{cmp} \code{lambda=0}/\code{nu=0}, \code{cmb}
+\code{prob}$\in\{0,1\}$ and \code{size=0}, \code{bhatt} \code{a=0}, the
+normal). \code{p3-domains} implemented this for NB, ZINB, PIG, CMP and CMB
+(2026-10-29); bhatt's \code{a=0} normal member was already attained from P2.
+\code{tpois}'s singleton-support boundary and a residual \code{zip}
+\code{lambda=0} evaluation gap remain open (B7, \S\ref{sec:bugs}).
+
+\subsection*{P0's counterexamples}
+
+Each of P0's three design amendments (A3--A5) arose from a counterexample
+the first-pass schema missed.
+
+\emph{Independent endpoint singularities (A4).} Pareto III, Pareto IV and
+Feller--Pareto each have a collapse mechanism at the threshold, with
+exponent $c=\mathrm{shape}$ (Pareto III) or
+$c=\mathrm{shape1}\cdot\mathrm{shape2}$ (Pareto IV, Feller--Pareto),
+\emph{and} a second, independent endpoint singularity triggered whenever
+$\mathrm{shape}<1$, $\mathrm{shape2}<1$, or
+$\mathrm{shape2}\cdot\mathrm{shape3}<1$ respectively (Pareto II has no such
+second singularity: its density is finite at the threshold for every
+shape). A per-coefficient $c\ge1$ \code{fit\_domain} entry would stop the
+collapse but not the endpoint singularity, so none of these three families,
+nor \code{nsbeta} or \code{genbeta} (each singular below shape $1$ at an
+end), supports an estimated threshold at all; \code{holds:} marks every
+free-threshold subset \code{no-mle}.
+
+\emph{The free GPD threshold} has no MLE for \emph{any} $\xi\in[-1,1]$:
+with $\sigma$ held the likelihood strictly increases in $\mu$ up to
+$\min(x)$ for $\xi>-1$, and at $\xi=-1$ it is a plateau that still excludes
+the open interval $(\min,\max)$. A4 therefore leaves
+\code{mlgpd(x, mu = NULL)} unsupported rather than proposing a shape bound.
+
+\emph{Scope (A3).} GED's spike persists with \code{sd} held once tied mass
+exceeds $13.79\%$ (above); GEV needs $\xi\le1$ even with \code{sigma} held,
+and above the minimum with \code{mu} held; Fr\'echet needs $\lambda\ge1$
+even with \code{sigma} held. The amendment: a restriction applies whenever
+its own coefficient is free, independent of what else is held, with named
+exemptions (\code{exempt\_when\_held}) only where P0 proves one (Fr\'echet's
+\code{mu} held case is inverse Weibull on $x-\mu$ for every $\lambda>0$).
+
+\emph{A well-posed restriction is not always a good default (A5).} Huber's
+free-$\epsilon$ fit always exists mathematically (the family is
+Hellinger-closed at both faces, normal and Laplace), yet the M4 simulation
+(\S\ref{sec:new-families}) shows it answers ``use \code{mlnorm}'' for
+$60$--$72\%$ of normal samples and up to $62\%$ of Cauchy samples at
+$n=1000$. The fix is not a restriction but a kind change: \code{epsilon}
+becomes \code{design}, required, not free by default.
+
+\subsection*{P0's evidence}
+
+Across the ten P0 jobs, $97$--$641$ finite package fits per group were
+checked against an independent multistart oracle on the external reference
+density (locscale 264/840, skewreal 227, positive 157, halfthreshold 108,
+genbeta 641/1{,}961, extreme 212, bounded 97, counts 197/602, discrete2 337,
+binomial 169 cases/total); every comparison agreed to $10^{-6}n$ except one
+deliberate power-on-constant-data approximation. No group disputed the
+parameter-kind table, and none of the bounded, discrete-count or
+binomial-type groups needed a new R5 restriction, since every discrete
+likelihood is $\le1$ and cannot diverge. Every job flags the same residual
+limitation: multistart optimisation is evidence, not a certificate, of a
+global maximum, and several exact criteria (GB2/genbeta joint faces,
+sstd/sged complete hold tables, beta-binomial free size) remain proved only
+on subsets (\S\ref{sec:open}).
+
 \section{Bugs found}\label{sec:bugs}
 
 \begin{enumerate}
@@ -603,7 +1036,78 @@ lognormal; the two-parameter fit with a known threshold is the usable model.
     error.
 \end{enumerate}
 
-\section{Open questions and decisions}
+\subsection*{P0 bugs (TASK-79/85) and the TASK-77 scale-equivariance bug}
+
+\begin{enumerate}
+  \item[B1] \textbf{Holds silently ignored} (fixed, \code{3ca0b8d}). Partial
+    argument matching let a misspelled or positional hold become a start
+    value instead of a constraint: \code{mlweibull(x, shape = 2)} returned
+    $\mathrm{shape}=2.08$ with nothing held. Also affected invweibull
+    \code{shape}, lomax \code{lambda}, invpareto \code{scale}, kumar
+    \code{a}, and the betapr/paralogis shapes. Fixed by requiring exact
+    coefficient names.
+  \item[B2] \textbf{Binomial \code{size} not the maximum} (fixed,
+    \code{bugs85}). \code{mlbinom(c(2,6,6))} returned $\mathrm{size}=6$,
+    $\ell=-6.827$, although size $10$ gives the unimodal maximum
+    $\ell=-938.33$ on an earlier golden sample, and size $11$ beats $10$ by
+    $0.055$ on an $n=100$ sample. Fixed with a bracketed adjacent-integer
+    search using DeRiggi's unimodality theorem for the binomial profile
+    likelihood \cite{deriggi1983}; the search still stops, rather than
+    silently approximating, beyond size $10^6$ or on iteration exhaustion.
+  \item[B3] \textbf{Boost exception escapes the no-throw policy} (fixed,
+    \code{bugs85}). \code{mlkumar(rep(.4, 5))} crashed: a constant sample
+    drove the L-moment start to a nonfinite tetragamma argument, and
+    \code{boost::math::trunc} throws on NaN even though digamma/trigamma
+    return NaN quietly. Fixed by detecting constant samples before the
+    L-moment step and guarding nonfinite Newton inputs.
+  \item[B4] \textbf{$\ell=-\infty$ returned instead of a diagnostic} (fixed,
+    \code{bugs85}). \code{mlrayleigh(c(0, 0, 1, 2))}: an observation at zero
+    has density zero for every scale, so the correct response is a status,
+    not a numeric fit.
+  \item[B5] \textbf{Attained MLE reported as non-convergence} (fixed,
+    \code{bugs85}). \code{mltriang(rep(.4, 5), c = -1)} (also with
+    \code{b = 2} held): the closed-form optimum $a=c=-1$, $b=1.8$ (or $2$)
+    was correct, but the endpoint solver reported iteration failure at
+    every tested tolerance and iteration limit; fixed by preserving
+    equality between a free endpoint and a held mode when undoing
+    standardization.
+  \item[B6] \textbf{Tie rule stricter than needed} (fixed, \code{bugs85}).
+    GEV and Fr\'echet counted the \emph{largest} tie instead of the tie at
+    the minimum when deciding whether the fixed-shape collapse applies,
+    rejecting some samples whose MLE exists; fixed to count the minimum's
+    own multiplicity and reject exactly when $\xi k \ge n-k$. The equality
+    case $k=n/2$ is still rejected conservatively (open).
+  \item[B7] \textbf{Attained boundary maxima rejected} (partly fixed,
+    \code{p3-domains}). cmp's point-mass ($\lambda=0$) and geometric
+    ($\nu=0$, $\lambda<1$) faces, NB/ZINB \code{size=0}, PIG
+    \code{shape=0} and cmb's endpoint/size-0 members are now returned as
+    attained R7 members rather than escapes (\S\ref{sec:holds-restrictions}).
+    tpois's singleton-support boundary is still rejected.
+  \item[B8] \textbf{README domains narrower than the reference} (fixed,
+    \code{p3-domains}). \code{dcmb} accepts $\mathrm{prob}\in\{0,1\}$ and
+    size up to $10^7$; \code{dbhatt} accepts $a=0$ (the normal, already
+    attained from P2); the domain audit widened NB, ZINB, PIG, CMP and CMB
+    to match.
+  \item[TASK-77] \textbf{\code{std} returned its own start values on
+    daily-return data} (fixed, \code{scaleq}). On DAX log returns (sample
+    sd $\approx0.01$), the raw-unit BFGS gradient had norm $\approx2610$;
+    neither of its two Armijo line searches accepted a step, giving
+    \code{LineSearchFailure} at iteration 1 with $\nu$ and $\ell$
+    \emph{unchanged} from the start values: no convergence rule fired, and
+    the adapter's old policy (return whatever BFGS landed on) silently
+    accepted that failure as a fit. The old normalization guard (skip
+    centering below sample sd $10^{-3}$) missed this data. Fixed by always
+    centering and dividing by the sample sd before every interior/face
+    comparison, restoring the Jacobian afterward; seven other fitters
+    (sstd, gompertz, power, fatigue, paralogis/invparalogis, betapr, lomax)
+    had the same unit dependence and were fixed the same way. This also
+    replaced the nlminb-legacy wrapper rule with R6
+    (\S\ref{sec:holds-restrictions}): a failed iterative optimizer now
+    stops unless its returned point passes a score gate, never silently
+    returning an unchecked last iterate.
+\end{enumerate}
+
+\section{Open questions and decisions}\label{sec:open}
 
 \begin{enumerate}
   \item D1, escape policy: decided, stop with ``use \code{mlX}''; every
@@ -623,7 +1127,58 @@ lognormal; the two-parameter fit with a known threshold is the usable model.
     Limits that need a held parameter to move carry \code{fixed:} in the
     README.
   \item Open: a half-$t$ model (would give sstd's half-$t$ face a pointer).
+  \item R1--R8, parameter rules (\code{roadmap/2026-10-29-parameter-rules.md}):
+    decided 2026-10-29 and implemented through P3; \S\ref{sec:holds-restrictions}
+    gives the mechanisms. D1 and D7 above are now instances of R6 and the
+    \code{limits:} schema generally.
+  \item GEV/GPD shape bound: an intermediate design draft proposed
+    $\xi\ge-\tfrac12$; P3 implements the originally intended $\xi\ge-1$
+    (GPD) and $\xi\in[-1,1]$ (GEV), attained via R7a closure.
 \end{enumerate}
+
+\subsection*{Open mathematics}
+
+\begin{itemize}
+  \item Certified global search: every new multistart/grid fitter
+    (half-$t$ df, discretized-gamma shape, Skellam, slash, Bhattacharjee,
+    Tukey lambda, generalized beta, GB2, \ldots) is evidence, not a
+    certificate, of a global maximum.
+  \item dgamma: is the discretized-gamma shape profile unimodal?
+  \item Skellam: uniqueness of the joint maximum.
+  \item Slash: a closed sample condition for the exactly-half-tied case
+    (the implemented criterion is variational, comparing the interior
+    profile to $B_v$).
+  \item GB2 and generalized beta: is the catalogue of limit models
+    complete, and what is the exact classification of the remaining hold
+    subsets?
+  \item Tukey lambda: the U-shaped branch $1<\lambda<2$ is not fitted; the
+    uniform junction at $\lambda=1$ is not upper semicontinuous.
+  \item Negative hypergeometric: the inverse-sampling design (unknown
+    population size) is unsupported.
+  \item Truncated binomial: estimating \code{size} jointly with
+    \code{prob} is unsupported (the P0 compactification argument is
+    unproved).
+  \item Free-threshold fits with another parameter held (Pareto II--IV,
+    Feller--Pareto, nonstandard beta): each subset is its own open
+    existence question (A4).
+  \item Translated half-$t$ needs a \code{df} lower bound to have an MLE;
+    whether to add one is an open policy question, not a mathematical one.
+  \item Beta-binomial with fixed size: existence proved for size $2$, open
+    for size $\ge3$.
+  \item sstd and sged: complete hold tables, and a proof that the listed
+    translated half-family faces exhaust every joint escape.
+  \item Beta-negative-binomial: an explicit sample statistic for the
+    NB/Poisson face criterion (only the implicit ``some finite point beats
+    every face'' criterion is proved).
+  \item Fatigue: the $3k=n$ endpoint profile comparison.
+  \item Beta prime: free-scale closure completeness.
+  \item GEV and GPD on $[-1,-\tfrac12]$: interior, endpoint and
+    upper-grid profile maxima are all observed numerically; roots are not
+    certified.
+  \item sn: the escape-frequency discrepancy with
+    \cite{azzalini1985,sartori2006} at $\alpha=5,10$, $n=50$
+    (\S\ref{sec:new-families}) is unresolved.
+\end{itemize}
 
 \begin{thebibliography}{99}
 
@@ -666,6 +1221,44 @@ Computational Mathematics}, 5(1), 329--359.
 \bibitem{renext} Deville, Y. (2025). \emph{Renext: Renewal Method
 for Extreme Values Extrapolation}. R package version 3.1-5.
 \href{https://doi.org/10.32614/CRAN.package.Renext}{doi:10.32614/CRAN.package.Renext}.
+
+\bibitem{deriggi1983} DeRiggi, D. F. (1983). Unimodality of likelihood
+functions for the binomial distribution. \emph{Journal of the American
+Statistical Association}, 78(381), 181--183.
+\href{https://doi.org/10.1080/01621459.1983.10477949}{doi:10.1080/01621459.1983.10477949}.
+
+\bibitem{burridge1981} Burridge, J. (1981). A note on maximum likelihood
+estimation for regression models using grouped data. \emph{Journal of the
+Royal Statistical Society, Series B}, 43(1), 41--45.
+\href{https://doi.org/10.1111/j.2517-6161.1981.tb01146.x}{doi:10.1111/j.2517-6161.1981.tb01146.x}.
+
+\bibitem{azzalini1985} Azzalini, A. (1985). A class of distributions which
+includes the normal ones. \emph{Scandinavian Journal of Statistics}, 12,
+171--178.
+
+\bibitem{sartori2006} Sartori, N. (2006). Bias prevention of maximum
+likelihood estimates for scalar skew normal and skew $t$ distributions.
+\emph{Journal of Statistical Planning and Inference}, 136, 4259--4275.
+
+\bibitem{kadane2016} Kadane, J. B. (2016). Sums of possibly associated
+Bernoulli variables: the Conway--Maxwell--binomial distribution.
+\emph{Bayesian Analysis}, 11(2), 403--420.
+\href{https://doi.org/10.1214/15-BA955}{doi:10.1214/15-BA955}.
+
+\bibitem{irwin1975} Irwin, J. O. (1975). The generalized Waring
+distribution, Part I. \emph{Journal of the Royal Statistical Society,
+Series A}, 138(1), 18--31.
+\href{https://doi.org/10.2307/2345247}{doi:10.2307/2345247}.
+
+\bibitem{xekalaki1984} Xekalaki, E. (1984). The bivariate generalized
+Waring distribution and its application to accident theory. \emph{Journal
+of the Royal Statistical Society, Series A}, 147(3), 488--498.
+\href{https://doi.org/10.2307/2981580}{doi:10.2307/2981580}.
+
+\bibitem{berrymielke1998} Berry, K. J. and Mielke, P. W. (1998). The
+negative hypergeometric probability distribution: sampling without
+replacement from a finite population. \emph{Perceptual and Motor Skills},
+86(1), 207--210.
 
 \end{thebibliography}
 
