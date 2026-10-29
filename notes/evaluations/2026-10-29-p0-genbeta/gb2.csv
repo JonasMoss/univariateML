@@ -1,0 +1,301 @@
+"family","sample","n","held","oracle","master","held_ok","difference","message","convergence"
+"gb2","n2",2,"",0.666746096380773,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","n2",2,"shape1",0.665619677313886,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","n2",2,"shape2",-0.0858534056221347,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",1
+"gb2","n2",2,"shape3",0.663256409862608,NA,NA,NA,"GB2 selects a limiting model. Use `mlpareto`.",0
+"gb2","n2",2,"scale",0.626158352951263,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",1
+"gb2","n2",2,"shape1+shape2",-0.162567882312262,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","n2",2,"shape1+shape3",-0.475150193009176,-0.475150193009142,TRUE,3.35287353436797e-14,"",0
+"gb2","n2",2,"shape1+scale",0.157332767687835,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",1
+"gb2","n2",2,"shape2+shape3",-0.0876457099549541,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",1
+"gb2","n2",2,"shape2+scale",-0.198065938388589,-0.198065938388492,TRUE,9.67004254448511e-14,"",0
+"gb2","n2",2,"shape3+scale",-0.179421561036831,-0.179421561036787,TRUE,4.37427871702312e-14,"",0
+"gb2","n2",2,"shape1+shape2+shape3",-0.64603257446903,-0.646032574469032,TRUE,-2.22044604925031e-15,"",0
+"gb2","n2",2,"shape1+shape2+scale",-1.17630317920108,-1.17630317920106,TRUE,1.17683640610267e-14,"",0
+"gb2","n2",2,"shape1+shape3+scale",-1.5878819604288,-1.58788196042879,TRUE,1.3988810110277e-14,"",0
+"gb2","n2",2,"shape2+shape3+scale",-0.205195826242603,-0.2051958262426,TRUE,3.10862446895044e-15,"",0
+"gb2","n3",3,"",-11.6340914364648,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","n3",3,"shape1",-12.3690560708148,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","n3",3,"shape2",-12.29202363269,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","n3",3,"shape3",-11.6365585917929,NA,NA,NA,"GB2 selects a limiting model. Use `mlpareto`.",0
+"gb2","n3",3,"scale",-12.6034982501447,-12.6034982501427,TRUE,1.96465066437668e-12,"",0
+"gb2","n3",3,"shape1+shape2",-12.6051024153462,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","n3",3,"shape1+shape3",-12.8514514470188,-12.8514514470188,TRUE,1.24344978758018e-14,"",0
+"gb2","n3",3,"shape1+scale",-12.6182208445612,-12.6182208445612,TRUE,2.30926389122033e-14,"",0
+"gb2","n3",3,"shape2+shape3",-12.7415438371431,-12.7415438371425,TRUE,6.57252030578093e-13,"",0
+"gb2","n3",3,"shape2+scale",-12.6044076513073,-12.6044076513073,TRUE,2.48689957516035e-14,"",0
+"gb2","n3",3,"shape3+scale",-12.6148027318384,-12.6148027318384,TRUE,3.37507799486048e-14,"",0
+"gb2","n3",3,"shape1+shape2+shape3",-12.9031085037641,-12.9031085037641,TRUE,-3.5527136788005e-15,"",0
+"gb2","n3",3,"shape1+shape2+scale",-12.7991226692499,-12.7991226692499,TRUE,7.105427357601e-15,"",0
+"gb2","n3",3,"shape1+shape3+scale",-13.1202824752853,-13.1202824752852,TRUE,4.2632564145606e-14,"",0
+"gb2","n3",3,"shape2+shape3+scale",-12.7619164794172,-12.7619164794171,TRUE,2.1316282072803e-14,"",0
+"gb2","n5",5,"",-13.3695257729302,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","n5",5,"shape1",-13.3679731445399,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","n5",5,"shape2",-14.8217028448773,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","n5",5,"shape3",-14.8936489434418,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","n5",5,"scale",-15.707150958862,NA,NA,NA,"GB2 selects a limiting model. Use `mllnorm`.",0
+"gb2","n5",5,"shape1+shape2",-16.3211204724919,-16.3211204724919,TRUE,4.61852778244065e-14,"",0
+"gb2","n5",5,"shape1+shape3",-16.312766226681,-16.312766226681,TRUE,7.105427357601e-15,"",0
+"gb2","n5",5,"shape1+scale",-16.5908152852184,-16.5908152852183,TRUE,8.5265128291212e-14,"",0
+"gb2","n5",5,"shape2+shape3",-14.9221175228191,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","n5",5,"shape2+scale",-16.6522031938192,-16.6522031938181,TRUE,1.09778852674935e-12,"",0
+"gb2","n5",5,"shape3+scale",-16.7961797335896,-16.7961797335895,TRUE,1.03028696685215e-13,"",0
+"gb2","n5",5,"shape1+shape2+shape3",-16.3470147142274,-16.3470147142274,TRUE,-7.105427357601e-15,"",0
+"gb2","n5",5,"shape1+shape2+scale",-16.6702678464679,-16.6702678464679,TRUE,1.06581410364015e-14,"",0
+"gb2","n5",5,"shape1+shape3+scale",-17.0692298370628,-17.0692298370627,TRUE,4.9737991503207e-14,"",0
+"gb2","n5",5,"shape2+shape3+scale",-16.9046944702121,-16.9046944702121,TRUE,1.06581410364015e-14,"",0
+"gb2","n20",20,"",-55.8744960618383,NA,NA,NA,"GB2 selects the double Pareto limit; this package has no double Pareto fitter.",0
+"gb2","n20",20,"shape1",-56.8624676712828,-56.8624676712823,TRUE,4.9737991503207e-13,"",0
+"gb2","n20",20,"shape2",-56.797004797424,-56.7970047974234,TRUE,5.47117906535277e-13,"",0
+"gb2","n20",20,"shape3",-56.5270928198179,-56.5270928198174,TRUE,5.32907051820075e-13,"",0
+"gb2","n20",20,"scale",-57.0634379208915,NA,NA,NA,"GB2 selects a limiting model. Use `mllnorm`.",0
+"gb2","n20",20,"shape1+shape2",-57.6399760812442,-57.6399760812436,TRUE,5.54223333892878e-13,"",0
+"gb2","n20",20,"shape1+shape3",-57.6789119501427,-57.6789119501427,TRUE,3.5527136788005e-14,"",0
+"gb2","n20",20,"shape1+scale",-57.6934069003495,-57.6934069003494,TRUE,1.70530256582424e-13,"",0
+"gb2","n20",20,"shape2+shape3",-57.3277053335868,-57.3277053335835,TRUE,3.33244543071487e-12,"",0
+"gb2","n20",20,"shape2+scale",-57.7899642892416,-57.7899642892413,TRUE,2.55795384873636e-13,"",0
+"gb2","n20",20,"shape3+scale",-57.7213536474789,-57.7213536474788,TRUE,1.63424829224823e-13,"",0
+"gb2","n20",20,"shape1+shape2+shape3",-57.8786750046668,-57.8786750046668,TRUE,-2.1316282072803e-14,"",0
+"gb2","n20",20,"shape1+shape2+scale",-57.9453112210395,-57.9453112210393,TRUE,1.20792265079217e-13,"",0
+"gb2","n20",20,"shape1+shape3+scale",-57.7243600439993,-57.7243600439993,TRUE,7.105427357601e-15,"",0
+"gb2","n20",20,"shape2+shape3+scale",-57.8363025589022,-57.8363025589019,TRUE,2.62900812231237e-13,"",0
+"gb2","n100",100,"",-257.751341087652,-257.751341087489,TRUE,1.62970081873937e-10,"",0
+"gb2","n100",100,"shape1",-258.035174341305,-258.035174341305,TRUE,6.82121026329696e-13,"",0
+"gb2","n100",100,"shape2",-257.9629842353,-257.962984235298,TRUE,1.87583282240666e-12,"",0
+"gb2","n100",100,"shape3",-258.046764822299,-258.046764822298,TRUE,9.66338120633736e-13,"",0
+"gb2","n100",100,"scale",-257.783851386036,-257.783851385882,TRUE,1.53534074343042e-10,"",0
+"gb2","n100",100,"shape1+shape2",-258.475695851896,-258.475695851895,TRUE,1.25055521493778e-12,"",0
+"gb2","n100",100,"shape1+shape3",-258.046811885876,-258.046811885875,TRUE,1.4210854715202e-12,"",0
+"gb2","n100",100,"shape1+scale",-258.082438646599,-258.082438646598,TRUE,9.09494701772928e-13,"",0
+"gb2","n100",100,"shape2+shape3",-258.392499876986,-258.392499876986,TRUE,7.38964445190504e-13,"",0
+"gb2","n100",100,"shape2+scale",-258.023711435845,-258.023711435843,TRUE,2.61479726759717e-12,"",0
+"gb2","n100",100,"shape3+scale",-258.145256965403,-258.145256965402,TRUE,9.09494701772928e-13,"",0
+"gb2","n100",100,"shape1+shape2+shape3",-259.162161499528,-259.162161499528,TRUE,-1.13686837721616e-13,"",0
+"gb2","n100",100,"shape1+shape2+scale",-258.549037016621,-258.54903701662,TRUE,7.38964445190504e-13,"",0
+"gb2","n100",100,"shape1+shape3+scale",-258.476621230769,-258.476621230769,TRUE,-1.13686837721616e-13,"",0
+"gb2","n100",100,"shape2+shape3+scale",-259.476454801079,-259.476454801079,TRUE,6.82121026329696e-13,"",0
+"gb2","n1000",1000,"",-2770.79416479361,-2770.79416479353,TRUE,7.73070496506989e-11,"",0
+"gb2","n1000",1000,"shape1",-2770.96872634565,-2770.96872634564,TRUE,5.00222085975111e-12,"",0
+"gb2","n1000",1000,"shape2",-2770.92861249007,-2770.92861249005,TRUE,1.31876731757075e-11,"",0
+"gb2","n1000",1000,"shape3",-2770.86465041226,-2770.86465041225,TRUE,6.82121026329696e-12,"",0
+"gb2","n1000",1000,"scale",-2772.17767658927,-2772.17767658918,TRUE,8.59472493175417e-11,"",0
+"gb2","n1000",1000,"shape1+shape2",-2771.03574353773,-2771.03574353772,TRUE,7.73070496506989e-12,"",0
+"gb2","n1000",1000,"shape1+shape3",-2771.1858755897,-2771.18587558969,TRUE,7.73070496506989e-12,"",0
+"gb2","n1000",1000,"shape1+scale",-2772.65217092528,-2772.65217092528,TRUE,5.91171556152403e-12,"",0
+"gb2","n1000",1000,"shape2+shape3",-2771.15595220104,-2771.15595220102,TRUE,1.81898940354586e-11,"",0
+"gb2","n1000",1000,"shape2+scale",-2772.81236307222,-2772.8123630722,TRUE,2.18278728425503e-11,"",0
+"gb2","n1000",1000,"shape3+scale",-2772.9798097015,-2772.97980970149,TRUE,7.73070496506989e-12,"",0
+"gb2","n1000",1000,"shape1+shape2+shape3",-2771.20475277126,-2771.20475277126,TRUE,-2.27373675443232e-12,"",0
+"gb2","n1000",1000,"shape1+shape2+scale",-2773.38729046323,-2773.38729046322,TRUE,4.09272615797818e-12,"",0
+"gb2","n1000",1000,"shape1+shape3+scale",-2774.66912436234,-2774.66912436234,TRUE,-1.81898940354586e-12,"",0
+"gb2","n1000",1000,"shape2+shape3+scale",-2773.32628338123,-2773.32628338123,TRUE,3.18323145620525e-12,"",0
+"gb2","ties",20,"",-42.4534163657724,NA,NA,NA,"GB2 selects the double Pareto limit; this package has no double Pareto fitter.",0
+"gb2","ties",20,"shape1",-43.8992418666263,-43.8992418666259,TRUE,3.97903932025656e-13,"",0
+"gb2","ties",20,"shape2",-43.743561376254,-43.7435613762537,TRUE,3.5527136788005e-13,"",0
+"gb2","ties",20,"shape3",-43.42362190873,-43.4236219087295,TRUE,4.76063632959267e-13,"",0
+"gb2","ties",20,"scale",-45.1042307069949,NA,NA,NA,"GB2 selects a limiting model. Use `mllnorm`.",0
+"gb2","ties",20,"shape1+shape2",-44.3289248052247,-44.3289248052245,TRUE,1.35003119794419e-13,"",0
+"gb2","ties",20,"shape1+shape3",-44.7067401931345,-44.7067401931344,TRUE,1.13686837721616e-13,"",0
+"gb2","ties",20,"shape1+scale",-46.1793671914552,-46.1793671914551,TRUE,1.35003119794419e-13,"",0
+"gb2","ties",20,"shape2+shape3",-44.168971611067,-44.1689716110667,TRUE,2.77111666946439e-13,"",0
+"gb2","ties",20,"shape2+scale",-46.2328993717615,-46.232899371761,TRUE,5.40012479177676e-13,"",0
+"gb2","ties",20,"shape3+scale",-45.9900543069255,-45.9900543069254,TRUE,1.06581410364015e-13,"",0
+"gb2","ties",20,"shape1+shape2+shape3",-44.7614034787426,-44.7614034787426,TRUE,-2.1316282072803e-14,"",0
+"gb2","ties",20,"shape1+shape2+scale",-46.2507938645983,-46.2507938645982,TRUE,1.27897692436818e-13,"",0
+"gb2","ties",20,"shape1+shape3+scale",-46.5745914206108,-46.5745914206106,TRUE,2.34479102800833e-13,"",0
+"gb2","ties",20,"shape2+shape3+scale",-47.0910913304521,-47.091091330452,TRUE,1.49213974509621e-13,"",0
+"gb2","constant",5,"",52.0529972067442,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape1",39.9447365846033,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape2",41.3731618598104,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape3",43.4560423150298,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"scale",52.5475749373436,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape1+shape2",1.19073009948292,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",1
+"gb2","constant",5,"shape1+shape3",45.9734093509041,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape1+scale",0.190479150506242,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape2+shape3",2.15971758440953,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape2+scale",40.4486096976325,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape3+scale",25.1884457436664,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",1
+"gb2","constant",5,"shape1+shape2+shape3",-0.572528833211476,-0.572528833211483,TRUE,-6.66133814775094e-15,"",0
+"gb2","constant",5,"shape1+shape2+scale",-2.98826060339352,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape1+shape3+scale",-3.62596623570076,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","constant",5,"shape2+shape3+scale",1.98394361862188,NA,NA,NA,"GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.",0
+"gb2","trgamma",100,"",-129.549782877549,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","trgamma",100,"shape1",-131.20631778458,-131.206317784574,TRUE,5.76960701437201e-12,"",0
+"gb2","trgamma",100,"shape2",-129.584011398668,-129.584011397388,TRUE,1.28022747958312e-09,"",0
+"gb2","trgamma",100,"shape3",-130.0232547475,-130.023254747469,TRUE,3.10649284074316e-11,"",0
+"gb2","trgamma",100,"scale",-136.715126582007,NA,NA,NA,"GB2 selects a limiting model. Use `mllnorm`.",0
+"gb2","trgamma",100,"shape1+shape2",-172.23607174905,-172.23607174905,TRUE,8.5265128291212e-13,"",0
+"gb2","trgamma",100,"shape1+shape3",-138.639207357974,-138.639207357974,TRUE,5.40012479177676e-13,"",0
+"gb2","trgamma",100,"shape1+scale",-143.970799335156,-143.970799335155,TRUE,1.02318153949454e-12,"",0
+"gb2","trgamma",100,"shape2+shape3",-145.050480351061,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","trgamma",100,"shape2+scale",-139.310635486363,-139.310635486361,TRUE,1.67688085639384e-12,"",0
+"gb2","trgamma",100,"shape3+scale",-144.839766745746,-144.839766745745,TRUE,5.11590769747272e-13,"",0
+"gb2","trgamma",100,"shape1+shape2+shape3",-185.976203621066,-185.976203621066,TRUE,-1.4210854715202e-13,"",0
+"gb2","trgamma",100,"shape1+shape2+scale",-178.250537962203,-178.250537962202,TRUE,6.53699316899292e-13,"",0
+"gb2","trgamma",100,"shape1+shape3+scale",-145.63950032096,-145.63950032096,TRUE,-2.8421709430404e-14,"",0
+"gb2","trgamma",100,"shape2+shape3+scale",-178.454012189133,-178.454012189132,TRUE,1.98951966012828e-13,"",0
+"gb2","invtrgamma",100,"",-53.2503134734151,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","invtrgamma",100,"shape1",-56.2185122174062,-56.2185122173774,TRUE,2.87982970803569e-11,"",0
+"gb2","invtrgamma",100,"shape2",-53.5202177439417,-53.5202177436775,TRUE,2.64158472873532e-10,"",0
+"gb2","invtrgamma",100,"shape3",-56.835814478883,-56.835814478878,TRUE,5.01643171446631e-12,"",0
+"gb2","invtrgamma",100,"scale",-57.3946393638237,NA,NA,NA,"GB2 selects a limiting model. Use `mllnorm`.",0
+"gb2","invtrgamma",100,"shape1+shape2",-93.0516363886619,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","invtrgamma",100,"shape1+shape3",-56.8843838145554,-56.8843838145535,TRUE,1.88293824976427e-12,"",0
+"gb2","invtrgamma",100,"shape1+scale",-64.421590701102,-64.4215907011014,TRUE,5.82645043323282e-13,"",0
+"gb2","invtrgamma",100,"shape2+shape3",-89.9130769896733,-89.9130769896663,TRUE,7.00595137459459e-12,"",0
+"gb2","invtrgamma",100,"shape2+scale",-58.8097241387231,-58.8097241386988,TRUE,2.43005615629954e-11,"",0
+"gb2","invtrgamma",100,"shape3+scale",-61.9919413618833,-61.991941361882,TRUE,1.35003119794419e-12,"",0
+"gb2","invtrgamma",100,"shape1+shape2+shape3",-122.134106514919,-122.134106514919,TRUE,-1.70530256582424e-13,"",0
+"gb2","invtrgamma",100,"shape1+shape2+scale",-128.444832494965,-128.444832494964,TRUE,3.97903932025656e-13,"",0
+"gb2","invtrgamma",100,"shape1+shape3+scale",-83.5659124161308,-83.5659124161301,TRUE,6.82121026329696e-13,"",0
+"gb2","invtrgamma",100,"shape2+shape3+scale",-97.7581683564885,-97.758168356488,TRUE,5.40012479177676e-13,"",0
+"gb2","lnorm",100,"",-149.877321955128,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","lnorm",100,"shape1",-152.959933825561,-152.95993382556,TRUE,1.36424205265939e-12,"",0
+"gb2","lnorm",100,"shape2",-151.216416139353,-151.216416139348,TRUE,5.00222085975111e-12,"",0
+"gb2","lnorm",100,"shape3",-152.351379990031,-152.351379990029,TRUE,1.93267624126747e-12,"",0
+"gb2","lnorm",100,"scale",-150.128659901473,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","lnorm",100,"shape1+shape2",-162.620208661503,-162.620208661503,TRUE,2.27373675443232e-13,"",0
+"gb2","lnorm",100,"shape1+shape3",-153.193120029089,-153.193120029089,TRUE,1.98951966012828e-13,"",0
+"gb2","lnorm",100,"shape1+scale",-152.976563022399,-152.976563022399,TRUE,4.2632564145606e-13,"",0
+"gb2","lnorm",100,"shape2+shape3",-157.988873471603,-157.988873471603,TRUE,3.41060513164848e-13,"",0
+"gb2","lnorm",100,"shape2+scale",-151.219308264617,-151.219308264611,TRUE,5.45696821063757e-12,"",0
+"gb2","lnorm",100,"shape3+scale",-152.530385127611,-152.530385127609,TRUE,1.98951966012828e-12,"",0
+"gb2","lnorm",100,"shape1+shape2+shape3",-173.972783675481,-173.972783675481,TRUE,-1.70530256582424e-13,"",0
+"gb2","lnorm",100,"shape1+shape2+scale",-173.451671344738,-173.451671344737,TRUE,7.67386154620908e-13,"",0
+"gb2","lnorm",100,"shape1+shape3+scale",-154.130475519795,-154.130475519795,TRUE,-1.4210854715202e-13,"",0
+"gb2","lnorm",100,"shape2+shape3+scale",-164.551716014913,-164.551716014912,TRUE,5.11590769747272e-13,"",0
+"gb2","pareto",100,"",-81.5142311904094,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","pareto",100,"shape1",-92.5131114542875,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","pareto",100,"shape2",-110.075097645089,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","pareto",100,"shape3",-81.4804756435329,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","pareto",100,"scale",-81.3621458626421,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",1
+"gb2","pareto",100,"shape1+shape2",-167.098978440154,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","pareto",100,"shape1+shape3",-112.456087511702,-112.4560875117,TRUE,2.65742983174277e-12,"",0
+"gb2","pareto",100,"shape1+scale",-96.3347127809444,-96.3347127809432,TRUE,1.26476606965298e-12,"",0
+"gb2","pareto",100,"shape2+shape3",-175.014905634185,-175.014905634183,TRUE,1.81898940354586e-12,"",0
+"gb2","pareto",100,"shape2+scale",-119.914880158359,-119.914880158341,TRUE,1.78204118128633e-11,"",0
+"gb2","pareto",100,"shape3+scale",-81.5783049848984,NA,NA,NA,"GB2 selects a limiting model. Use `mlpareto`.",0
+"gb2","pareto",100,"shape1+shape2+shape3",-199.995990222384,-199.995990222384,TRUE,-1.4210854715202e-13,"",0
+"gb2","pareto",100,"shape1+shape2+scale",-183.310627328786,-183.310627328786,TRUE,8.5265128291212e-14,"",0
+"gb2","pareto",100,"shape1+shape3+scale",-137.714255009204,-137.714255009205,TRUE,-1.4210854715202e-13,"",0
+"gb2","pareto",100,"shape2+shape3+scale",-196.803720689435,-196.803720689434,TRUE,7.95807864051312e-13,"",0
+"gb2","power",100,"",23.4197441633667,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","power",100,"shape1",23.1169763481841,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","power",100,"shape2",3.93623567239493,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","power",100,"shape3",17.3959370452611,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","power",100,"scale",23.8687128813933,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",1
+"gb2","power",100,"shape1+shape2",-78.5895061722015,-78.5895061722004,TRUE,1.13686837721616e-12,"",0
+"gb2","power",100,"shape1+shape3",-10.2969347866985,-10.2969347866804,TRUE,1.81454851144736e-11,"",0
+"gb2","power",100,"shape1+scale",21.7812938492862,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","power",100,"shape2+shape3",-49.6981138937865,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","power",100,"shape2+scale",-3.73746142636282,-3.73746142636139,TRUE,1.4237500067793e-12,"",0
+"gb2","power",100,"shape3+scale",14.4910997988201,14.4910997988215,TRUE,1.38022926421399e-12,"",0
+"gb2","power",100,"shape1+shape2+shape3",-100.272921434046,-100.272921434046,TRUE,-1.27897692436818e-13,"",0
+"gb2","power",100,"shape1+shape2+scale",-111.523069157503,-111.523069157503,TRUE,6.25277607468888e-13,"",0
+"gb2","power",100,"shape1+shape3+scale",-63.7666012954678,-63.7666012954674,TRUE,3.5527136788005e-13,"",0
+"gb2","power",100,"shape2+shape3+scale",-65.642479930743,-65.6424799307428,TRUE,2.27373675443232e-13,"",0
+"gb2","doublepareto",100,"",-99.0853692535194,NA,NA,NA,"GB2 selects the double Pareto limit; this package has no double Pareto fitter.",0
+"gb2","doublepareto",100,"shape1",-100.747326830348,-100.747326830347,TRUE,1.49213974509621e-12,"",0
+"gb2","doublepareto",100,"shape2",-104.830246224765,-104.830246224746,TRUE,1.87014848052058e-11,"",0
+"gb2","doublepareto",100,"shape3",-100.942722088882,-100.942722088879,TRUE,2.58637555816676e-12,"",0
+"gb2","doublepareto",100,"scale",-99.972967925609,-99.9729540114516,TRUE,1.39141573498591e-05,"",0
+"gb2","doublepareto",100,"shape1+shape2",-133.384978654704,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","doublepareto",100,"shape1+shape3",-100.963346647246,-100.963346647245,TRUE,9.9475983006414e-14,"",0
+"gb2","doublepareto",100,"shape1+scale",-101.114225830498,-101.114225830498,TRUE,4.9737991503207e-13,"",0
+"gb2","doublepareto",100,"shape2+shape3",-131.937849848802,-131.937849848802,TRUE,4.83169060316868e-13,"",0
+"gb2","doublepareto",100,"shape2+scale",-106.076474184706,-106.076474184698,TRUE,7.98650034994353e-12,"",0
+"gb2","doublepareto",100,"shape3+scale",-101.708723962665,-101.708723962664,TRUE,8.10018718766514e-13,"",0
+"gb2","doublepareto",100,"shape1+shape2+shape3",-155.226996958353,-155.226996958353,TRUE,-1.4210854715202e-13,"",0
+"gb2","doublepareto",100,"shape1+shape2+scale",-153.736728212096,-153.736728212096,TRUE,2.55795384873636e-13,"",0
+"gb2","doublepareto",100,"shape1+shape3+scale",-103.794807790619,-103.794807790618,TRUE,1.10844666778576e-12,"",0
+"gb2","doublepareto",100,"shape2+shape3+scale",-139.583227840389,-139.583227840389,TRUE,2.8421709430404e-13,"",0
+"gb2","ties_half",20,"",-14.4132200287367,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","ties_half",20,"shape1",-21.3620145622598,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","ties_half",20,"shape2",-20.2798558320595,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","ties_half",20,"shape3",-14.4276344628482,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","ties_half",20,"scale",-25.6146761541097,NA,NA,NA,"GB2 selects a limiting model. Use `mllnorm`.",0
+"gb2","ties_half",20,"shape1+shape2",-22.9176018353564,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","ties_half",20,"shape1+shape3",-26.122253700183,-26.1222537001828,TRUE,1.91846538655227e-13,"",0
+"gb2","ties_half",20,"shape1+scale",-28.8135596347566,-28.8135596347565,TRUE,7.46069872548105e-14,"",0
+"gb2","ties_half",20,"shape2+shape3",-24.0524960180701,-24.05249601807,TRUE,7.8159700933611e-14,"",0
+"gb2","ties_half",20,"shape2+scale",-28.9328029469856,-28.9328029469852,TRUE,4.40536496171262e-13,"",0
+"gb2","ties_half",20,"shape3+scale",-27.9370441588141,-27.9370441588139,TRUE,1.98951966012828e-13,"",0
+"gb2","ties_half",20,"shape1+shape2+shape3",-27.4995243849843,-27.4995243849842,TRUE,4.2632564145606e-14,"",0
+"gb2","ties_half",20,"shape1+shape2+scale",-28.9919101996032,-28.9919101996029,TRUE,2.16715534406831e-13,"",0
+"gb2","ties_half",20,"shape1+shape3+scale",-31.2616283677429,-31.2616283677429,TRUE,-3.90798504668055e-14,"",0
+"gb2","ties_half",20,"shape2+shape3+scale",-35.9799485779934,-35.9799485779933,TRUE,1.13686837721616e-13,"",0
+"gb2","ties_major",20,"",-10.2541415083266,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","ties_major",20,"shape1",-17.7370802899174,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","ties_major",20,"shape2",-16.6239769842299,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","ties_major",20,"shape3",-10.2406898437717,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","ties_major",20,"scale",-23.0140436471111,NA,NA,NA,"GB2 selects a limiting model. Use `mllnorm`.",0
+"gb2","ties_major",20,"shape1+shape2",-18.8012866544032,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","ties_major",20,"shape1+shape3",-22.9787701271534,-22.9787701271534,TRUE,-7.105427357601e-15,"",0
+"gb2","ties_major",20,"shape1+scale",-26.698926910416,-26.6989269104159,TRUE,1.03028696685215e-13,"",0
+"gb2","ties_major",20,"shape2+shape3",-20.6266903921371,-20.6266903921369,TRUE,1.35003119794419e-13,"",0
+"gb2","ties_major",20,"shape2+scale",-26.8654436105475,-26.8654436105473,TRUE,1.91846538655227e-13,"",0
+"gb2","ties_major",20,"shape3+scale",-25.613292879616,-25.6132928796157,TRUE,2.91322521661641e-13,"",0
+"gb2","ties_major",20,"shape1+shape2+shape3",-23.9732539973881,-23.9732539973881,TRUE,-2.1316282072803e-14,"",0
+"gb2","ties_major",20,"shape1+shape2+scale",-26.951402798998,-26.9514027989977,TRUE,2.27373675443232e-13,"",0
+"gb2","ties_major",20,"shape1+shape3+scale",-29.3062511876926,-29.3062511876924,TRUE,2.06057393370429e-13,"",0
+"gb2","ties_major",20,"shape2+shape3+scale",-35.2062280767275,-35.2062280767274,TRUE,9.9475983006414e-14,"",0
+"gb2","below",5,"",0.817772653248294,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","below",5,"shape1",0.819733698786807,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","below",5,"shape2",-0.0220548074698783,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",1
+"gb2","below",5,"shape3",0.0300106126042259,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","below",5,"scale",0.782566085090052,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",1
+"gb2","below",5,"shape1+shape2",-2.21054540331519,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","below",5,"shape1+shape3",-0.758645387635393,-0.758645387635293,TRUE,1.00586206031039e-13,"",0
+"gb2","below",5,"shape1+scale",0.123721609318045,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","below",5,"shape2+shape3",-1.37523035153601,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","below",5,"shape2+scale",-0.128237318112079,-0.128237318110791,TRUE,1.28763666396026e-12,"",0
+"gb2","below",5,"shape3+scale",-0.0735423549206474,-0.0735423549206033,TRUE,4.40758540776187e-14,"",0
+"gb2","below",5,"shape1+shape2+shape3",-3.59988139793996,-3.59988139793996,TRUE,-7.105427357601e-15,"",0
+"gb2","below",5,"shape1+shape2+scale",-4.7146341174234,-4.71463411742335,TRUE,5.50670620214078e-14,"",0
+"gb2","below",5,"shape1+shape3+scale",-4.09798768732049,-4.09798768732047,TRUE,1.86517468137026e-14,"",0
+"gb2","below",5,"shape2+shape3+scale",-1.83203494839582,-1.83203494839579,TRUE,3.44169137633799e-14,"",0
+"gb2","above",5,"",-6.85097860062751,NA,NA,NA,"GB2 selects a limiting model. Use `mlpareto`.",0
+"gb2","above",5,"shape1",-7.61967059347865,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","above",5,"shape2",-7.70444298816078,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",1
+"gb2","above",5,"shape3",-6.85235278282337,NA,NA,NA,"GB2 selects a limiting model. Use `mlpareto`.",0
+"gb2","above",5,"scale",-6.90189478260902,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",1
+"gb2","above",5,"shape1+shape2",-9.86675204045473,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","above",5,"shape1+shape3",-8.2093019772804,-8.20930197728033,TRUE,7.46069872548105e-14,"",0
+"gb2","above",5,"shape1+scale",-7.71991564772101,-7.71991564772088,TRUE,1.27009514017118e-13,"",0
+"gb2","above",5,"shape2+shape3",-9.33339174153681,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","above",5,"shape2+scale",-7.81585311665452,-7.81585311665321,TRUE,1.31006316905768e-12,"",0
+"gb2","above",5,"shape3+scale",-7.50402277452189,NA,NA,NA,"GB2 selects a limiting model. Use `mlpareto`.",0
+"gb2","above",5,"shape1+shape2+shape3",-11.3717397261929,-11.3717397261929,TRUE,-8.88178419700125e-15,"",0
+"gb2","above",5,"shape1+shape2+scale",-10.3765235621226,-10.3765235621226,TRUE,1.59872115546023e-14,"",0
+"gb2","above",5,"shape1+shape3+scale",-10.1652397240259,-10.1652397240259,TRUE,-8.88178419700125e-15,"",0
+"gb2","above",5,"shape2+shape3+scale",-11.72479410196,-11.72479410196,TRUE,1.95399252334028e-14,"",0
+"gb2","cross",5,"",-3.33318062392928,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","cross",5,"shape1",-4.30758875607508,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","cross",5,"shape2",-4.08362039412647,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","cross",5,"shape3",-4.01281300285393,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","cross",5,"scale",-4.48236855272575,NA,NA,NA,"GB2 selects a limiting model. Use `mllnorm`.",0
+"gb2","cross",5,"shape1+shape2",-6.27344472599417,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","cross",5,"shape1+shape3",-4.77302832871339,-4.77302832871337,TRUE,1.95399252334028e-14,"",0
+"gb2","cross",5,"shape1+scale",-4.55290416861965,-4.55290416861962,TRUE,3.46389583683049e-14,"",0
+"gb2","cross",5,"shape2+shape3",-5.13171539494627,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","cross",5,"shape2+scale",-4.51844522832944,-4.5184452283291,TRUE,3.35731442646647e-13,"",0
+"gb2","cross",5,"shape3+scale",-4.54983034641693,-4.5498303464169,TRUE,2.75335310107039e-14,"",0
+"gb2","cross",5,"shape1+shape2+shape3",-7.32416211843783,-7.32416211843783,TRUE,-6.21724893790088e-15,"",0
+"gb2","cross",5,"shape1+shape2+scale",-7.28765548582669,-7.28765548582664,TRUE,4.35207425653061e-14,"",0
+"gb2","cross",5,"shape1+shape3+scale",-4.82545606057389,-4.82545606057388,TRUE,1.24344978758018e-14,"",0
+"gb2","cross",5,"shape2+shape3+scale",-6.35735383851514,-6.35735383851512,TRUE,1.86517468137026e-14,"",0
+"gb2","at",5,"",2.65893478154643,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","at",5,"shape1",2.67607735320299,NA,NA,NA,"GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.",0
+"gb2","at",5,"shape2",-0.95294760280791,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",1
+"gb2","at",5,"shape3",0.393853340189699,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",1
+"gb2","at",5,"scale",2.69601376140283,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","at",5,"shape1+shape2",-4.74964771396852,NA,NA,NA,"GB2 selects a limiting model. Use `mlinvtrgamma`.",0
+"gb2","at",5,"shape1+shape3",-1.76886621063546,-1.76886621063476,TRUE,7.0832228971085e-13,"",0
+"gb2","at",5,"shape1+scale",2.07218386486278,NA,NA,NA,"GB2 selects a limiting model. Use `mlpower`.",0
+"gb2","at",5,"shape2+shape3",-3.47875944051666,NA,NA,NA,"GB2 selects a limiting model. Use `mltrgamma`.",0
+"gb2","at",5,"shape2+scale",-1.60256430537384,-1.60256430537234,TRUE,1.50701673362619e-12,"",0
+"gb2","at",5,"shape3+scale",-0.363758500582199,-0.363758500582163,TRUE,3.59712259978551e-14,"",0
+"gb2","at",5,"shape1+shape2+shape3",-6.01351824510897,-6.01351824510897,TRUE,-1.77635683940025e-15,"",0
+"gb2","at",5,"shape1+shape2+scale",-6.23328988428042,-6.2332898842804,TRUE,2.8421709430404e-14,"",0
+"gb2","at",5,"shape1+shape3+scale",-2.42612649568424,-2.42612649568425,TRUE,-9.32587340685131e-15,"",0
+"gb2","at",5,"shape2+shape3+scale",-4.55369374749025,-4.55369374749024,TRUE,9.76996261670138e-15,"",0

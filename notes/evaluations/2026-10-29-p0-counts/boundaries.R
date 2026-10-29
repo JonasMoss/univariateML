@@ -1,0 +1,16 @@
+# Endpoint and escape probes. Output is diagnostic, not an existence proof.
+suppressPackageStartupMessages(library(univariateML,lib.loc='/tmp/umvl-p0lib'))
+f <- function(label,expr) {cat('\n',label,': ',sep=''); print(suppressWarnings(tryCatch(expr,error=function(e) conditionMessage(e))))}
+f('stats NB size 0',stats::dnbinom(0:2,0,.5))
+f('extraDistr ZINB size 0',extraDistr::dzinb(0:2,0,.5,.3))
+f('actuar PIG shape 0',actuar::dpoisinvgauss(0:2,2,0))
+f('actuar PIG mean 0',actuar::dpoisinvgauss(0:2,0,3))
+f('extraDistr ZIP lambda 0',extraDistr::dzip(0:2,0,.3))
+f('extraDistr lgser theta 0',extraDistr::dlgser(1:2,0))
+f('NB package size 0',mlnbinom(c(0,0),size=0))
+f('PIG package shape 0',mlpig(c(0,0),shape=0))
+f('lgser all ones',mllgser(rep(1,5)))
+f('NB held prob 1 reference',stats::dnbinom(0:2,2,1))
+cat('\nNB Poisson path log likelihood, x = (0,1,2,3):\n'); x<-0:3; m<-mean(x); for(r in c(1,10,100,1000,10000)) cat(r,sum(dnbinom(x,r,r/(r+m),log=TRUE)),'\n')
+cat('\nLogarithmic point-mass path log likelihood, x = (1,1,1):\n'); for(t in c(.5,.1,.01,.001,1e-5)) cat(t,sum(extraDistr::dlgser(rep(1,3),t,log=TRUE)),'\n')
+cat('\nPIG shape-zero point-mass path log likelihood, x = (0,0):\n'); for(s in c(1,.1,.01,.001,1e-5,0)) cat(s,sum(actuar::dpoisinvgauss(c(0,0),2,s,log=TRUE)),'\n')

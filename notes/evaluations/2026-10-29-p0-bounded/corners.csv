@@ -1,0 +1,33 @@
+"id","sample","n","held","hold_values","oracle","oracle_status","fit","fixed","error","delta"
+"triang","corner1",3,"a","0",-0.375272770344724,"finite",-0.375272770344722,"a","",2.22044604925031e-15
+"triang","corner2",3,"b","1",-0.928713251872715,"finite",-0.928713251872712,"b","",2.99760216648792e-15
+"triang","corner3",3,"a","0.25",NA,"infeasible",NA,"","Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood).",NA
+"triang","corner4",3,"b","0.25",NA,"infeasible",NA,"","Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood).",NA
+"triang","corner5",3,"c","-1",-3.25647387404869,"finite",-3.25647387404869,"c","",3.5527136788005e-15
+"triang","corner6",3,"c","2",-3.54979693915241,"finite",-3.54979693915241,"c","",2.22044604925031e-15
+"triang","corner7",3,"c","0",-0.375272770344724,"finite",-0.375272770344722,"c","",2.22044604925031e-15
+"triang","corner8",3,"c","1",-0.928713251872715,"finite",-0.928713251872712,"c","",2.99760216648792e-15
+"triang","corner9",3,"a+b","0+2",-0.826678573184468,"finite",-0.826678573184468,"a+b","",-1.11022302462516e-16
+"triang","corner10",3,"a+b","-1+ 1",-1.16315080980568,"finite",-1.16315080980568,"a+b","",-2.22044604925031e-16
+"triang","corner11",3,"a+b","0+1",NA,"infeasible",NA,"","Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood).",NA
+"triang","corner12",3,"a+c","0+0",-0.375272770344724,"finite",-0.375272770344722,"a+c","",2.22044604925031e-15
+"triang","corner13",3,"a+c","0.0+0.4",NA,"infeasible",NA,"","Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood).",NA
+"triang","corner14",3,"b+c","1+1",-0.928713251872715,"finite",-0.928713251872712,"b+c","",2.99760216648792e-15
+"triang","corner15",3,"b+c","1.0+0.4",NA,"infeasible",NA,"","Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood).",NA
+"triang","corner16",3,"a+b+c","-1.0+ 2.0+ 0.4",-2.13619987549844,"finite",-2.13619987549844,"a+b+c","",0
+"triang","corner17",3,"a+b+c","0.0+1.0+0.4",NA,"infeasible",NA,"","Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood).",NA
+"triang","corner18",5,"a","0.4",Inf,"collapse",NA,"","Triangular likelihood is unbounded for constant data with these fixed parameters.",NA
+"triang","corner19",5,"b","0.4",Inf,"collapse",NA,"","Triangular likelihood is unbounded for constant data with these fixed parameters.",NA
+"triang","corner20",5,"c","0.4",Inf,"collapse",NA,"","Triangular likelihood is unbounded for constant data with these fixed parameters.",NA
+"triang","corner21",5,"a+c","0.4+0.4",Inf,"collapse",NA,"","Triangular likelihood is unbounded for constant data with these fixed parameters.",NA
+"triang","corner22",5,"b+c","0.4+0.4",Inf,"collapse",NA,"","Triangular likelihood is unbounded for constant data with these fixed parameters.",NA
+"triang","corner23",5,"a","0",8.0471895621705,"finite",8.0471895621705,"a","",0
+"triang","corner24",5,"b","1",6.01986402162968,"finite",6.01986402162968,"b","",0
+"triang","corner25",5,"c","0",1.11571775657105,"finite",1.11571775657105,"c","",-4.44089209850063e-16
+"triang","corner26",5,"a+b","0+1",3.46573590279973,"finite",3.46573590279973,"a+b","",-4.44089209850063e-16
+"triang","corner27",5,"a+c","0.0+0.4",8.0471895621705,"finite",8.0471895621705,"a+c","",0
+"triang","corner28",5,"b+c","1.0+0.4",6.01986402162968,"finite",6.01986402162968,"b+c","",0
+"triang","corner29",5,"c","-1",-5.14809708590579,"finite",NA,"","Triangular endpoint solve did not converge; increase iterlim.",NA
+"triang","corner30",5,"b+c"," 2+-1",-5.17036883765269,"finite",NA,"","Triangular endpoint solve did not converge; increase iterlim.",NA
+"triang","corner31",5,"c","2",-5.8157540490284,"finite",-5.8157540490284,"c","",-1.77635683940025e-15
+"triang","corner32",5,"a+c","-1+ 2",-5.83802580077531,"finite",-5.83802580077531,"a+c","",1.77635683940025e-15

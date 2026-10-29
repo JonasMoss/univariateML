@@ -1,0 +1,37 @@
+
+ beta 
+0 2 => -Inf 
+2 0 => -Inf 
+0 0 => -Inf 
+Inf 2 => -Inf 
+2 Inf => -Inf 
+Inf Inf => -Inf 
+-1 2 => NaN 
+
+ kumar 
+0 2 => NaN 
+2 0 => NaN 
+Inf 2 => NaN 
+2 Inf => NaN 
+-1 2 => NaN 
+
+ logitnorm 
+0 0 => NaN 
+0 Inf => NaN 
+Inf 1 => NaN 
+-Inf 1 => NaN 
+0 -1 => NaN 
+
+ unif 
+0 0 => NaN 
+-Inf 1 => -Inf 
+0 Inf => -Inf 
+1 0 => NaN 
+
+ triang 
+0 1 0 => 0.1823216 
+0 1 1 => -0.2231436 
+0 0 0 => NaN 
+-Inf 1 0 => -Inf 
+0 Inf 1 => -Inf 
+0 1 -1 => NaN 

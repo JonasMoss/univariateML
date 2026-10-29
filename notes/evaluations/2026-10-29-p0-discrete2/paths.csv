@@ -1,0 +1,106 @@
+"id","case","t","logLik","limit"
+"zipf","N->inf fixed s zeta",2,-4.98632726930784,-5.07661984586835
+"yulesimon","ones rho->inf",2,-2.02732554054082,0
+"zeta","ones s->inf",2,-2.48850151235373,0
+"zipf","held N, ones s->inf",2,-1.54150679827258,0
+"cmp","nu->inf adjacent 1/2",2,-4.92282105000162,-3.36505833504628
+"cmp","held lambda nu->inf on 0/1",2,-4.32232930462058,-4.10676708222066
+"cmp","held nu lambda->0 zeros",2,-0.663828433046115,0
+"tpois","fixed bounds lower positive",2,-0.34215308374788,0
+"tpois","fixed bounds upper",2,-15.7850021057506,0
+"dlaplace","scale->0 at held centre",2,-1.36170734455916,0
+"dnorm","adjacent fitted Bernoulli",2,-3.63543604518012,-3.36505833504628
+"dnorm","held mean at common edge",2,-3.69857546426168,-3.46573590279973
+"dgamma","adjacent via concentrating gamma",2,-3.60999708585621,-3.46573590279973
+"dgamma","held shape all zero",2,-2.60442903832172,0
+"dgamma","held rate all zero",2,-0.855716576205201,0
+"dweibull","adjacent 1/2 free shapes",2,-5.38290338035023,-3.36505833504628
+"dweibull","held shape1 Bernoulli",2,-3.49733794005537,-3.36505833504628
+"dweibull","held shape2 all zero",2,-0.727067289344295,0
+"bnbinom","held size NB face",2,-8.73731456149018,-8.72130316401751
+"bnbinom","all free Poisson face",2,-6.48227544588667,-5.69314718055995
+"bnbinom","held alpha beta size->0 zero",2,-3.35215077137856,0
+"zipf","N->inf fixed s zeta",4,-5.03124913552055,-5.07661984586835
+"yulesimon","ones rho->inf",4,-1.11571775657105,0
+"zeta","ones s->inf",4,-0.395549365336679,0
+"zipf","held N, ones s->inf",4,-0.360885484337929,0
+"cmp","nu->inf adjacent 1/2",4,-3.89206944240639,-3.36505833504628
+"cmp","held lambda nu->inf on 0/1",4,-4.1588998167958,-4.10676708222066
+"cmp","held nu lambda->0 zeros",4,-0.0913340164221015,0
+"tpois","fixed bounds lower positive",4,-0.0458589850597679,0
+"tpois","fixed bounds upper",4,-7.95254951274291,0
+"dlaplace","scale->0 at held centre",4,-0.183176873718481,0
+"dnorm","adjacent fitted Bernoulli",4,-3.36555904335823,-3.36505833504628
+"dnorm","held mean at common edge",4,-3.46605262524916,-3.46573590279973
+"dgamma","adjacent via concentrating gamma",4,-3.43614039402069,-3.46573590279973
+"dgamma","held shape all zero",4,-0.480232323417808,0
+"dgamma","held rate all zero",4,-0.351689227850309,0
+"dweibull","adjacent 1/2 free shapes",4,-3.70606506581342,-3.36505833504628
+"dweibull","held shape1 Bernoulli",4,-3.36506048253108,-3.36505833504628
+"dweibull","held shape2 all zero",4,-0.092427234129433,0
+"bnbinom","held size NB face",4,-8.72198858069735,-8.72130316401751
+"bnbinom","all free Poisson face",4,-6.04043539091583,-5.69314718055995
+"bnbinom","held alpha beta size->0 zero",4,-1.74031261918021,0
+"zipf","N->inf fixed s zeta",8,-5.05387849132183,-5.07661984586835
+"yulesimon","ones rho->inf",8,-0.588915178281919,0
+"zeta","ones s->inf",8,-0.0203453315370649,0
+"zipf","held N, ones s->inf",8,-0.0202522581223941,0
+"cmp","nu->inf adjacent 1/2",8,-3.43431472271737,-3.36505833504628
+"cmp","held lambda nu->inf on 0/1",8,-4.11002147928861,-4.10676708222066
+"cmp","held nu lambda->0 zeros",8,-0.00167723074656428,0
+"tpois","fixed bounds lower positive",8,-0.000838680013606208,0
+"tpois","fixed bounds upper",8,-3.67140813131123,0
+"dlaplace","scale->0 at held centre",8,-0.00335462640486295,0
+"dnorm","adjacent fitted Bernoulli",8,-3.36505833504631,-3.36505833504628
+"dnorm","held mean at common edge",8,-3.46573590279973,-3.46573590279973
+"dgamma","adjacent via concentrating gamma",8,-3.44980232069356,-3.46573590279973
+"dgamma","held shape all zero",8,-0.0151186526004921,0
+"dgamma","held rate all zero",8,-0.156522536391319,0
+"dweibull","adjacent 1/2 free shapes",8,-3.38297605018056,-3.36505833504628
+"dweibull","held shape1 Bernoulli",8,-3.36505833504628,-3.36505833504628
+"dweibull","held shape2 all zero",8,-0.00167759454038412,0
+"bnbinom","held size NB face",8,-8.71951227745486,-8.72130316401751
+"bnbinom","all free Poisson face",8,-5.84741365782665,-5.69314718055995
+"bnbinom","held alpha beta size->0 zero",8,-0.887650873982753,0
+"zipf","N->inf fixed s zeta",16,-5.06523518477607,-5.07661984586835
+"yulesimon","ones rho->inf",16,-0.303123109082175,0
+"zeta","ones s->inf",16,-7.64107131803722e-05,0
+"zipf","held N, ones s->inf",16,-7.64095143332418e-05,0
+"cmp","nu->inf adjacent 1/2",16,-3.36715649840973,-3.36505833504628
+"cmp","held lambda nu->inf on 0/1",16,-4.10677979786219,-4.10676708222066
+"cmp","held nu lambda->0 zeros",16,-5.62675864216138e-07,0
+"tpois","fixed bounds lower positive",16,-2.77248037861e-07,0
+"tpois","fixed bounds upper",16,-1.70767020660862,0
+"dlaplace","scale->0 at held centre",16,-1.1253517471926e-06,0
+"dnorm","adjacent fitted Bernoulli",16,-3.36505833504628,-3.36505833504628
+"dnorm","held mean at common edge",16,-3.46573590279973,-3.46573590279973
+"dgamma","adjacent via concentrating gamma",16,-3.45759707091245,-3.46573590279973
+"dgamma","held shape all zero",16,-9.56549900118661e-06,0
+"dgamma","held rate all zero",16,-0.0734117161905769,0
+"dweibull","adjacent 1/2 free shapes",16,-3.36512824280708,-3.36505833504628
+"dweibull","held shape1 Bernoulli",16,-3.36505833504628,-3.36505833504628
+"dweibull","held shape2 all zero",16,-5.62675905332508e-07,0
+"bnbinom","held size NB face",16,-8.71982999436766,-8.72130316401751
+"bnbinom","all free Poisson face",16,-5.76377244986654,-5.69314718055995
+"bnbinom","held alpha beta size->0 zero",16,-0.448402197197793,0
+"zipf","N->inf fixed s zeta",32,-5.07092402154563,-5.07661984586835
+"yulesimon","ones rho->inf",32,-0.153858293333768,0
+"zeta","ones s->inf",32,-1.16415543857987e-09,0
+"zipf","held N, ones s->inf",32,-1.16415543857987e-09,0
+"cmp","nu->inf adjacent 1/2",32,-3.36506142651976,-3.36505833504628
+"cmp","held lambda nu->inf on 0/1",32,-4.10676708241468,-4.10676708222066
+"cmp","held nu lambda->0 zeros",32,-6.32827124036335e-14,0
+"tpois","fixed bounds lower positive",32,0.00301060641294981,0
+"tpois","fixed bounds upper",32,-0.817930468200796,0
+"dlaplace","scale->0 at held centre",32,-1.26641655490942e-13,0
+"dnorm","adjacent fitted Bernoulli",32,-3.36505833504628,-3.36505833504628
+"dnorm","held mean at common edge",32,-3.46573590279973,-3.46573590279973
+"dgamma","adjacent via concentrating gamma",32,-3.46162339852121,-3.46573590279973
+"dgamma","held shape all zero",32,-2.08943973234498e-12,0
+"dgamma","held rate all zero",32,-0.0354923808325252,0
+"dweibull","adjacent 1/2 free shapes",32,-3.36505833611299,-3.36505833504628
+"dweibull","held shape1 Bernoulli",32,-3.36505833504628,-3.36505833504628
+"dweibull","held shape2 all zero",32,-6.32827124036343e-14,0
+"bnbinom","held size NB face",32,-8.72041613862389,-8.72130316401751
+"bnbinom","all free Poisson face",32,-5.72654567060223,-5.69314718055995
+"bnbinom","held alpha beta size->0 zero",32,-0.225372403206534,0

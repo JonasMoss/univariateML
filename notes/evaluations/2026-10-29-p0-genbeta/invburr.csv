@@ -1,0 +1,113 @@
+"family","sample","n","held","oracle","master","held_ok","difference","message","convergence"
+"invburr","n2",2,"",0.0909243924078837,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","n2",2,"shape1",-0.88449788113978,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","n2",2,"shape2",-1.26202371544322,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","n2",2,"scale",-0.844176254671605,-0.844176254671565,TRUE,3.99680288865056e-14,"",0
+"invburr","n2",2,"shape1+shape2",-1.87363495675602,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","n2",2,"shape1+scale",-1.06904758922019,-0.844176254671565,FALSE,0.224871334548621,"",0
+"invburr","n2",2,"shape2+scale",-1.68555392221002,-0.844176254671565,FALSE,0.841377667538451,"",0
+"invburr","n3",3,"",-2.55669938561153,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",1
+"invburr","n3",3,"shape1",-3.14352724013904,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","n3",3,"shape2",-2.59184987545414,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",1
+"invburr","n3",3,"scale",-3.29615630491221,-3.29615630491207,TRUE,1.34114941374719e-13,"",0
+"invburr","n3",3,"shape1+shape2",-3.14729668000665,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","n3",3,"shape1+scale",-3.36520858809562,-3.29615630491207,FALSE,0.0690522831835469,"",0
+"invburr","n3",3,"shape2+scale",-3.30095132776751,-3.29615630491207,FALSE,0.00479502285543365,"",0
+"invburr","n5",5,"",-7.3212661819528,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","n5",5,"shape1",-8.51260950476114,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","n5",5,"shape2",-8.5729308266079,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","n5",5,"scale",-8.41202130938824,-8.41202130938814,TRUE,9.41469124882133e-14,"",0
+"invburr","n5",5,"shape1+shape2",-8.65652373965004,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","n5",5,"shape1+scale",-8.59984364906231,-8.41202130938814,FALSE,0.187822339674163,"",0
+"invburr","n5",5,"shape2+scale",-8.6408114606729,-8.41202130938814,FALSE,0.228790151284761,"",0
+"invburr","n20",20,"",-24.3289168623749,-24.3289168623742,TRUE,6.46593889541691e-13,"",0
+"invburr","n20",20,"shape1",-24.3516142284012,-24.3289168623742,FALSE,0.0226973660269785,"",0
+"invburr","n20",20,"shape2",-24.5865865504564,-24.3289168623742,FALSE,0.257669688082146,"",0
+"invburr","n20",20,"scale",-24.3444956791703,-24.3444956791698,TRUE,4.47641923528863e-13,"",0
+"invburr","n20",20,"shape1+shape2",-25.5428931197014,-24.3289168623742,FALSE,1.21397625732716,"",0
+"invburr","n20",20,"shape1+scale",-25.5321555046559,-24.3444956791698,FALSE,1.1876598254861,"",0
+"invburr","n20",20,"shape2+scale",-24.8339007090965,-24.3444956791698,FALSE,0.489405029926683,"",0
+"invburr","n100",100,"",-115.924833578164,-115.924833578156,TRUE,7.95807864051312e-12,"",0
+"invburr","n100",100,"shape1",-118.435881857781,-115.924833578156,FALSE,2.51104827962489,"",0
+"invburr","n100",100,"shape2",-117.676644677606,-115.924833578156,FALSE,1.75181109944963,"",0
+"invburr","n100",100,"scale",-117.56274717067,-117.56274717067,TRUE,9.9475983006414e-14,"",0
+"invburr","n100",100,"shape1+shape2",-118.439742642366,-115.924833578156,FALSE,2.51490906421049,"",0
+"invburr","n100",100,"shape1+scale",-118.81899564704,-117.56274717067,FALSE,1.25624847636985,"",0
+"invburr","n100",100,"shape2+scale",-117.814825447055,-117.56274717067,FALSE,0.252078276384907,"",0
+"invburr","n1000",1000,"",-1342.6565530429,-1342.65655304284,TRUE,5.95719029661268e-11,"",0
+"invburr","n1000",1000,"shape1",-1343.03820963926,-1342.65655304284,FALSE,0.381656596414359,"",0
+"invburr","n1000",1000,"shape2",-1342.7713161747,-1342.65655304284,FALSE,0.114763131852214,"",0
+"invburr","n1000",1000,"scale",-1343.31663783929,-1343.31663783929,TRUE,2.27373675443232e-13,"",0
+"invburr","n1000",1000,"shape1+shape2",-1343.1446735379,-1342.65655304284,FALSE,0.488120495059547,"",0
+"invburr","n1000",1000,"shape1+scale",-1343.57576359203,-1343.31663783929,FALSE,0.259125752743103,"",0
+"invburr","n1000",1000,"shape2+scale",-1343.59003570605,-1343.31663783929,FALSE,0.273397866758842,"",0
+"invburr","ties",20,"",-21.7129380402991,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties",20,"shape1",-23.0826120213868,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties",20,"shape2",-21.8685303475729,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",1
+"invburr","ties",20,"scale",-22.4892040608176,-22.4892040608175,TRUE,1.84741111297626e-13,"",0
+"invburr","ties",20,"shape1+shape2",-25.4396616634102,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties",20,"shape1+scale",-25.0717419290791,-22.4892040608175,FALSE,2.58253786826163,"",0
+"invburr","ties",20,"shape2+scale",-23.9020033032794,-22.4892040608175,FALSE,1.41279924246194,"",0
+"invburr","constant",5,"",34.279336636542,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","constant",5,"shape1",105.704868047093,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",1
+"invburr","constant",5,"shape2",-3.32147718013312,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","constant",5,"scale",27.220438077177,NA,NA,NA,"invburr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale",1
+"invburr","constant",5,"shape1+shape2",-5.25294729501563,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","constant",5,"shape1+scale",-4.12671742468799,NA,NA,NA,"invburr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale",0
+"invburr","constant",5,"shape2+scale",-4.28415238209482,NA,NA,NA,"invburr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale",0
+"invburr","invweibull",100,"",-110.304086880985,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","invweibull",100,"shape1",-117.991111618635,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","invweibull",100,"shape2",-110.40389608659,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",1
+"invburr","invweibull",100,"scale",-115.105359831583,-115.105359831582,TRUE,5.96855898038484e-13,"",0
+"invburr","invweibull",100,"shape1+shape2",-126.814527371351,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","invweibull",100,"shape1+scale",-122.638651246157,-115.105359831582,FALSE,7.53329141457469,"",0
+"invburr","invweibull",100,"shape2+scale",-120.680482259138,-115.105359831582,FALSE,5.5751224275554,"",0
+"invburr","power",100,"",20.0992221143513,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","power",100,"shape1",-32.4303190328238,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","power",100,"shape2",-47.4805837206813,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","power",100,"scale",19.6441953283129,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0
+"invburr","power",100,"shape1+shape2",-48.6247174461434,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","power",100,"shape1+scale",-58.813660501093,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0
+"invburr","power",100,"shape2+scale",-56.8694062084695,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0
+"invburr","ties_half",20,"",-12.0502108302548,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties_half",20,"shape1",-15.2552262232025,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties_half",20,"shape2",-12.5218096966896,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",1
+"invburr","ties_half",20,"scale",-17.0044478802036,-17.0044478802035,TRUE,7.105427357601e-15,"",0
+"invburr","ties_half",20,"shape1+shape2",-15.2614125752316,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties_half",20,"shape1+scale",-19.0715509793092,-17.0044478802035,FALSE,2.06710309910567,"",0
+"invburr","ties_half",20,"shape2+scale",-17.0463271085831,-17.0044478802035,FALSE,0.0418792283795781,"",0
+"invburr","ties_major",20,"",-8.03412753753338,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties_major",20,"shape1",-11.765976297388,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties_major",20,"shape2",-8.08012050012976,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",1
+"invburr","ties_major",20,"scale",-14.5629036578651,-14.5629036578651,TRUE,-7.105427357601e-15,"",0
+"invburr","ties_major",20,"shape1+shape2",-11.8363021762532,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","ties_major",20,"shape1+scale",-17.5076677671851,-14.5629036578651,FALSE,2.94476410932,"",0
+"invburr","ties_major",20,"shape2+scale",-14.7261177605164,-14.5629036578651,FALSE,0.163214102651228,"",0
+"invburr","below",5,"",0.823017852326201,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","below",5,"shape1",-0.391080264874728,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","below",5,"shape2",-0.4282218058205,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","below",5,"scale",0.123724240651738,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0
+"invburr","below",5,"shape1+shape2",-0.898753669073372,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","below",5,"shape1+scale",-3.11301700143552,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0
+"invburr","below",5,"shape2+scale",-1.99726540400015,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0
+"invburr","above",5,"",-7.69737198722709,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","above",5,"shape1",-8.07984492065011,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","above",5,"shape2",-7.74902180450155,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","above",5,"scale",-7.80565128086092,-7.80565128086052,TRUE,3.97903932025656e-13,"",0
+"invburr","above",5,"shape1+shape2",-8.65088622198243,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.",0
+"invburr","above",5,"shape1+scale",-10.7580415689936,-7.80565128086052,FALSE,2.95239028813304,"",0
+"invburr","above",5,"shape2+scale",-7.98725049879698,-7.80565128086052,FALSE,0.181599217936466,"",0
+"invburr","cross",5,"",-3.32867735680428,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","cross",5,"shape1",-4.56746657234475,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","cross",5,"shape2",-4.79328250982891,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","cross",5,"scale",-4.53440826084785,-4.53440826084773,TRUE,1.27009514017118e-13,"",0
+"invburr","cross",5,"shape1+shape2",-4.86458844076999,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","cross",5,"shape1+scale",-4.5684444991532,-4.53440826084773,FALSE,0.0340362383054726,"",0
+"invburr","cross",5,"shape2+scale",-4.86328858972203,-4.53440826084773,FALSE,0.328880328874306,"",0
+"invburr","at",5,"",2.66059959427522,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","at",5,"shape1",-1.69715995555743,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","at",5,"shape2",-2.67943874934682,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","at",5,"scale",0.616581489857027,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0
+"invburr","at",5,"shape1+shape2",-3.02318992251148,NA,NA,NA,"The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"invburr","at",5,"shape1+scale",-2.21041442185648,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0
+"invburr","at",5,"shape2+scale",-3.25722228761444,NA,NA,NA,"The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.",0

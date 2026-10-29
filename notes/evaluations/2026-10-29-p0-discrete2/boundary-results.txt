@@ -1,0 +1,64 @@
+
+Attaching package: 'extraDistr'
+
+The following objects are masked from 'package:univariateML':
+
+    dsgomp, dskellam, psgomp, qtlambda, rsgomp, rskellam, rtlambda
+
+
+ CMP point mass is in reference :
+[1] 1 0 0
+
+ CMP geometric is in reference :
+[1] 0.500 0.250 0.125
+
+ CMP fitter rejects held zero rate :
+[1] "fixed lambda must be positive and finite."
+
+ CMP fitter at geometric face :
+[1] "The MLE approaches the geometric face; use mlgeom."
+
+ dlaplace reference real location :
+[1] 0.3568085 0.2059070
+
+ dlaplace fitter real location :
+[1] "Require integer location and scale strictly between zero and one."
+
+ tpois reference singleton :
+[1] 1 1
+
+ tpois fitter singleton :
+[1] "Parameter is unidentified on singleton truncation support."
+
+ tpois reference zero conditioning probability :
+[1] NaN NaN
+
+ zipf fixed N unsupported :
+[1] "unused argument (N = 2)"
+
+ dunif fixed min unsupported :
+[1] "unused argument (min = 1)"
+
+ tpois explicit NULL bounds :
+[1] "`mltpois` requires `a` (known design quantity); it has no default."
+
+ tpois zero rate, zero included :
+[1] 1 0
+
+ dgamma zero reference rate :
+[1] 0 0 0 0
+
+ tpois infinite reference bounds :
+[1] 0.3678794
+
+ zipf all held :
+[1] "unused arguments (N = 2, s = 1)"
+
+ dunif all held :
+[1] "unused arguments (min = 1, max = 2)"
+
+ yulesimon all held :
+[1] "unused argument (rho = 2)"
+
+ zeta all held :
+[1] "unused argument (s = 2)"

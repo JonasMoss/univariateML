@@ -1,0 +1,113 @@
+"family","sample","n","held","oracle","master","held_ok","difference","message","convergence"
+"trgamma","n2",2,"",-2.09515785509022,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"trgamma","n2",2,"shape1",-2.92251268865616,-2.92251268865558,TRUE,5.78204151224782e-13,"",0
+"trgamma","n2",2,"shape2",-2.92375528905276,-2.92375528898873,TRUE,6.40354436143298e-11,"",0
+"trgamma","n2",2,"scale",-2.92344284264217,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n2",2,"shape1+shape2",-3.30143532879328,-3.30143532879328,TRUE,6.21724893790088e-15,"",0
+"trgamma","n2",2,"shape1+scale",-3.35024398273113,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n2",2,"shape2+scale",-3.19523336521662,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n3",3,"",-4.84833390213208,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model.",1
+"trgamma","n3",3,"shape1",-4.8761448914839,-4.87614489148145,TRUE,2.44870790311325e-12,"",0
+"trgamma","n3",3,"shape2",-4.86293856946009,-4.86293856945243,TRUE,7.65965069149388e-12,"",0
+"trgamma","n3",3,"scale",-4.86766153178767,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n3",3,"shape1+shape2",-5.18977255194603,-5.18977255194602,TRUE,3.5527136788005e-15,"",0
+"trgamma","n3",3,"shape1+scale",-5.3225811123501,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n3",3,"shape2+scale",-5.03957368792833,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n5",5,"",-7.18791907655395,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",0
+"trgamma","n5",5,"shape1",-7.64835099773178,-7.64835099772488,TRUE,6.89581725055177e-12,"",0
+"trgamma","n5",5,"shape2",-7.51126703362395,-7.51126703353906,TRUE,8.4892093354938e-11,"",0
+"trgamma","n5",5,"scale",-7.59852901732204,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n5",5,"shape1+shape2",-7.98018302297222,-7.98018302297222,TRUE,8.88178419700125e-16,"",0
+"trgamma","n5",5,"shape1+scale",-7.83962522704239,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n5",5,"shape2+scale",-7.98211508590041,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n20",20,"",-35.0668710063267,-35.0668710053556,TRUE,9.71148494954832e-10,"",0
+"trgamma","n20",20,"shape1",-35.936579291905,-35.9365792918658,TRUE,3.91864318771695e-11,"",0
+"trgamma","n20",20,"shape2",-36.0638959590416,-36.0638959590414,TRUE,2.48689957516035e-13,"",0
+"trgamma","n20",20,"scale",-36.0256519976342,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n20",20,"shape1+shape2",-36.2646724680776,-36.2646724680775,TRUE,8.5265128291212e-14,"",0
+"trgamma","n20",20,"shape1+scale",-36.4968368111227,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n20",20,"shape2+scale",-36.1136611469592,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n100",100,"",-179.506056799589,-179.506056799034,TRUE,5.55445467398386e-10,"",0
+"trgamma","n100",100,"shape1",-179.535105794469,-179.535105794399,TRUE,7.02300440025283e-11,"",0
+"trgamma","n100",100,"shape2",-179.506058452716,-179.506058452179,TRUE,5.36346078661154e-10,"",0
+"trgamma","n100",100,"scale",-179.509686150063,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n100",100,"shape1+shape2",-180.354524619076,-180.354524619076,TRUE,3.41060513164848e-13,"",0
+"trgamma","n100",100,"shape1+scale",-181.013886540074,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n100",100,"shape2+scale",-179.786985994277,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n1000",1000,"",-1850.55427849008,-1850.55427848335,TRUE,6.72434907755814e-09,"",0
+"trgamma","n1000",1000,"shape1",-1851.34100160372,-1851.34100160368,TRUE,4.06998879043385e-11,"",0
+"trgamma","n1000",1000,"shape2",-1851.01086396965,-1851.01086396744,TRUE,2.20916263060644e-09,"",0
+"trgamma","n1000",1000,"scale",-1851.15916754062,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n1000",1000,"shape1+shape2",-1852.80546560718,-1852.80546560718,TRUE,1.13686837721616e-12,"",0
+"trgamma","n1000",1000,"shape1+scale",-1853.15809322944,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","n1000",1000,"shape2+scale",-1851.96653958063,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties",20,"",-35.6564452057392,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"trgamma","ties",20,"shape1",-37.3476742742466,-37.3476742742457,TRUE,8.95283847057726e-13,"",0
+"trgamma","ties",20,"shape2",-37.3671398623781,-37.3671398622813,TRUE,9.67759206105256e-11,"",0
+"trgamma","ties",20,"scale",-37.3712026967395,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties",20,"shape1+shape2",-37.3931626557884,-37.3931626557883,TRUE,1.13686837721616e-13,"",0
+"trgamma","ties",20,"shape1+scale",-37.570545323613,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties",20,"shape2+scale",-37.3735913725878,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","constant",5,"",29.4834941383004,NA,NA,NA,"trgamma requires at least two distinct positive finite observations, positive `reltol` and positive `iterlim`.",0
+"trgamma","constant",5,"shape1",38.0472992354754,NA,NA,NA,"trgamma requires at least two distinct positive finite observations, positive `reltol` and positive `iterlim`.",0
+"trgamma","constant",5,"shape2",30.1360512524843,NA,NA,NA,"trgamma requires at least two distinct positive finite observations, positive `reltol` and positive `iterlim`.",0
+"trgamma","constant",5,"scale",28.9602592648589,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","constant",5,"shape1+shape2",-6.37380921035119,-6.37380921035117,TRUE,2.22044604925031e-14,"",0
+"trgamma","constant",5,"shape1+scale",-4.76903349311307,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","constant",5,"shape2+scale",-6.68482492136709,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","lnorm",100,"",-141.130023103324,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",1
+"trgamma","lnorm",100,"shape1",-145.655401492076,-145.655401491706,TRUE,3.70164343621582e-10,"",0
+"trgamma","lnorm",100,"shape2",-158.759595583021,-158.759595583015,TRUE,5.85487214266323e-12,"",0
+"trgamma","lnorm",100,"scale",-152.657708778119,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","lnorm",100,"shape1+shape2",-338.229784259004,-338.229784259003,TRUE,5.6843418860808e-14,"",0
+"trgamma","lnorm",100,"shape1+scale",-322.290820042601,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","lnorm",100,"shape2+scale",-168.934428966512,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","power",100,"",32.317628174673,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"trgamma","power",100,"shape1",19.3647983454224,19.3647983454432,TRUE,2.07904804483405e-11,"",0
+"trgamma","power",100,"shape2",17.8016634303801,17.8016634313212,TRUE,9.41060562809071e-10,"",0
+"trgamma","power",100,"scale",-61.5133870180065,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","power",100,"shape1+shape2",11.143979949582,11.1439799495821,TRUE,1.31450406115619e-13,"",0
+"trgamma","power",100,"shape1+scale",-317.122966740782,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","power",100,"shape2+scale",-78.8137149482819,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties_half",20,"",-34.8168791378288,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",1
+"trgamma","ties_half",20,"shape1",-35.4854192398459,-35.4854192398234,TRUE,2.2474466732092e-11,"",0
+"trgamma","ties_half",20,"shape2",-35.7954727322145,-35.7954727321926,TRUE,2.19273488255567e-11,"",0
+"trgamma","ties_half",20,"scale",-35.7188920647336,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties_half",20,"shape1+shape2",-38.498607723901,-38.498607723901,TRUE,7.105427357601e-15,"",0
+"trgamma","ties_half",20,"shape1+scale",-43.1392015576066,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties_half",20,"shape2+scale",-35.9661651099112,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties_major",20,"",-32.1781319903271,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",1
+"trgamma","ties_major",20,"shape1",-33.103814705961,-33.1038147058969,TRUE,6.41691144664946e-11,"",0
+"trgamma","ties_major",20,"shape2",-33.4568945997654,-33.4568945997359,TRUE,2.94804181066866e-11,"",0
+"trgamma","ties_major",20,"scale",-33.4534243078278,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties_major",20,"shape1+shape2",-35.4321432249839,-35.4321432249839,TRUE,6.3948846218409e-14,"",0
+"trgamma","ties_major",20,"shape1+scale",-42.9473212579856,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","ties_major",20,"shape2+scale",-33.4588568733373,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","below",5,"",0.822011686566326,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"trgamma","below",5,"shape1",-0.0478073116603789,-0.0478073116587866,TRUE,1.5922818619174e-12,"",0
+"trgamma","below",5,"shape2",-0.0348924380855622,-0.034892438078952,TRUE,6.61015686631572e-12,"",0
+"trgamma","below",5,"scale",-2.68679052511997,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","below",5,"shape1+shape2",-0.451823780447407,-0.451823780447384,TRUE,2.27595720048157e-14,"",0
+"trgamma","below",5,"shape1+scale",-15.4423786340476,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","below",5,"shape2+scale",-3.13133393779656,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","above",5,"",-7.88146627279377,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",1
+"trgamma","above",5,"shape1",-8.04925576089885,-8.04925576089058,TRUE,8.27249380108697e-12,"",0
+"trgamma","above",5,"shape2",-8.14038101400913,-8.14038101400209,TRUE,7.04325486822199e-12,"",0
+"trgamma","above",5,"scale",-8.14409721439699,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","above",5,"shape1+shape2",-8.77816461618169,-8.77816461618148,TRUE,2.06057393370429e-13,"",0
+"trgamma","above",5,"shape1+scale",-11.3799577032,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","above",5,"shape2+scale",-8.14409721496343,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","cross",5,"",-3.3277652615459,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"trgamma","cross",5,"shape1",-4.2084690674942,-4.20846906749273,TRUE,1.46815892776431e-12,"",0
+"trgamma","cross",5,"shape2",-4.13405352348281,-4.13405352347694,TRUE,5.87085935421783e-12,"",0
+"trgamma","cross",5,"scale",-3.99107605854839,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","cross",5,"shape1+shape2",-4.97061045737239,-4.97061045737236,TRUE,3.19744231092045e-14,"",0
+"trgamma","cross",5,"shape1+scale",-15.8862873035718,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","cross",5,"shape2+scale",-5.18285799059155,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","at",5,"",2.67361856739373,NA,NA,NA,"The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model.",0
+"trgamma","at",5,"shape1",-1.11787822785872,-1.11787822785525,TRUE,3.46478401525019e-12,"",0
+"trgamma","at",5,"shape2",-1.14947252765841,-1.14947252765627,TRUE,2.14339657134133e-12,"",0
+"trgamma","at",5,"scale",-3.12357663732277,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","at",5,"shape1+shape2",-1.14954492645787,-1.14954492645777,TRUE,1.01030295240889e-13,"",0
+"trgamma","at",5,"shape1+scale",-15.9136462284911,NA,NA,NA,"unused argument (scale = 2)",0
+"trgamma","at",5,"shape2+scale",-4.30832371964259,NA,NA,NA,"unused argument (scale = 2)",0

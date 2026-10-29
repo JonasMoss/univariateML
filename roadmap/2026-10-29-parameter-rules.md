@@ -7,6 +7,16 @@ release. Evidence: `notes/evaluations/2026-10-29-parameter-conventions.md`
 and `2026-10-29-parameter-table.csv` (98 families, 235 coefficients, 618
 hold subsets in total, at most 5 coefficients per family).
 
+P0 results (2026-10-29): `notes/evaluations/2026-10-29-p0-summary.md`.
+It proposes amendments A1–A7 that await Jonas:
+- A1: close the support at estimated endpoints;
+- A2: domains are finite proper dominated laws;
+- A3: a restriction applies whenever its coefficient is free;
+- A4: `NULL` thresholds only where proved;
+- A5: huber `epsilon` is a design coefficient;
+- A6: failed optimizers stop;
+- A7: `holds:` holds structural exceptions only.
+
 ## Rules
 
 **R1. Coefficients.** A family's coefficients are the reference density's

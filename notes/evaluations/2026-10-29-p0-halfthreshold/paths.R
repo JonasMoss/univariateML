@@ -1,0 +1,11 @@
+# Explicit singular paths; direct reference densities. Run from repo root.
+library(extraDistr)
+x=c(1,2,3,4,5); e=10^-(1:7)
+cat('fatigue all free, beta=e alpha=sqrt(1/e) mu=min-e^2\n')
+print(data.frame(e=e,ll=sapply(e,function(z) sum(dfatigue(x,sqrt(1/z),z,min(x)-z^2,log=TRUE)))))
+cat('fatigue beta held, n=5, k=2: alpha^2=1/e, mu=min-e\n')
+y=c(1,1,2,3,4); print(data.frame(e=e,ll=sapply(e,function(z) sum(dfatigue(y,sqrt(1/z),1,min(y)-z,log=TRUE)))))
+cat('translated half-t: fixed nu=.2 and minimum tie k=1 n=5\n')
+print(data.frame(e=e,ll=sapply(e,function(z) sum(dht(x-min(x),.2,z,log=TRUE)))))
+cat('translated half-Cauchy: n=5 k=3\n')
+y=c(1,1,1,2,3); print(data.frame(e=e,ll=sapply(e,function(z) sum(dhcauchy(y-min(y),z,log=TRUE)))))

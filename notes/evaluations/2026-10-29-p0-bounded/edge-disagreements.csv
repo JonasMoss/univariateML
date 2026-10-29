@@ -1,0 +1,7 @@
+"id","case","n","held","values","coef","loglik","fixed","error"
+"triang","constant-0.4",3,"c","-1","",NA,"","Triangular endpoint solve did not converge; increase iterlim."
+"triang","constant-0.4",3,"c","-1","",NA,"","Triangular endpoint solve did not converge; increase iterlim."
+"triang","constant-0.4",3,"b+c"," 2+-1","",NA,"","Triangular endpoint solve did not converge; increase iterlim."
+"triang","constant-0.4",3,"c","-1","",NA,"","Triangular endpoint solve did not converge; increase iterlim."
+"triang","constant-0.4",3,"c","-1","",NA,"","Triangular endpoint solve did not converge; increase iterlim."
+"triang","constant-0.4",3,"b+c"," 2+-1","",NA,"","Triangular endpoint solve did not converge; increase iterlim."

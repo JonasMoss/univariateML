@@ -1,0 +1,71 @@
+"id","sample","n","held","oracle","master","reference_at_fit","status"
+"dunif",1,20,"",-43.9444915467244,-43.9444915467244,-43.9444915467244,"ok"
+"dunif",1,20,"min",-43.9444915467244,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",1,20,"max",-43.9444915467244,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",2,100,"",-219.722457733622,-219.722457733622,-219.722457733622,"ok"
+"dunif",2,100,"min",-219.722457733622,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",2,100,"max",-219.722457733622,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",3,1000,"",-2197.22457733622,-2197.22457733622,-2197.22457733622,"ok"
+"dunif",3,1000,"min",-2197.22457733622,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",3,1000,"max",-2197.22457733622,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",4,5,"",0,0,0,"ok"
+"dunif",4,5,"min",0,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",4,5,"max",-10.9861228866811,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",5,5,"",0,0,0,"ok"
+"dunif",5,5,"min",0,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",5,5,"max",-10.9861228866811,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",6,2,"",0,0,0,"ok"
+"dunif",6,2,"min",0,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",6,2,"max",-4.39444915467244,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",7,3,"",0,0,0,"ok"
+"dunif",7,3,"min",0,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",7,3,"max",-6.59167373200866,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",8,5,"",-3.46573590279973,-3.46573590279973,-3.46573590279973,"ok"
+"dunif",8,5,"min",-3.46573590279973,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",8,5,"max",-10.9861228866811,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",9,20,"",-21.9722457733622,-21.9722457733622,-21.9722457733622,"ok"
+"dunif",9,20,"min",-21.9722457733622,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",9,20,"max",-43.9444915467244,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",10,20,"",-43.9444915467244,-43.9444915467244,-43.9444915467244,"ok"
+"dunif",10,20,"min",-43.9444915467244,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",10,20,"max",-43.9444915467244,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",11,20,"",-21.9722457733622,-21.9722457733622,-21.9722457733622,"ok"
+"dunif",11,20,"min",-21.9722457733622,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",11,20,"max",-43.9444915467244,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",12,20,"",0,0,0,"ok"
+"dunif",12,20,"min",0,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",12,20,"max",-43.9444915467244,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",13,5,"",0,0,0,"ok"
+"dunif",13,5,"min",0,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",13,5,"max",-10.9861228866811,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
+"dunif",14,20,"",-13.8629436111989,-13.8629436111989,-13.8629436111989,"ok"
+"dunif",14,20,"min",-21.9722457733622,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (min = 2)
+"
+"dunif",14,20,"max",-41.5888308335967,NA,NA,"Error in mldunif_(x = x, ...) : unused argument (max = 10)
+"
