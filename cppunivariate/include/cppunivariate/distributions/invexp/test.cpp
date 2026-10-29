@@ -15,11 +15,18 @@ TEST_CASE("invexp: golden, reciprocal agreement and score") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("invexp: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("invexp: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("invexp",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvexp(x, p[0], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvexp(x, p[0], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvexp(x, p[0], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvexp(rng, p[0]); });
+}
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// F=lambda x:m.exp(-1/x); Q=lambda l:-1/l
+TEST_CASE("invexp: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::pinvexp(1e300,1,false,true) == doctest::Approx(-std::log(1e300)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qinvexp(-10000,1,true,true) == doctest::Approx(0.0001).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::dinvexp(INFINITY,1,true) == -INFINITY);
 }

@@ -42,11 +42,25 @@ TEST_CASE("logis dpqr: density at location = 1/(4*scale)") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("logis: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("logis: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("logis",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlogis(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plogis(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlogis(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlogis(rng, p[0], p[1]); });
+}
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// logS=lambda x:-x-m.log1p(m.exp(-x)); Q=lambda l:l-m.log1p(-m.exp(l))
+TEST_CASE("logis: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::plogis(1000,0,1,false,true) == doctest::Approx(-1000).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qlogis(-10000,0,1,true,true) == doctest::Approx(-10000).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::dlogis(-1e300,0,1,true) == doctest::Approx(-1e300).epsilon(1e-12).scale(1e-300));
+}
+
+// mpmath: m.mp.dps=100; p=m.exp(m.mpf(float(-math.log(2))))
+// Invert the family's CDF at this p, retaining p-m.mpf('.5').
+TEST_CASE("logis: rounded log half retains median offset") {
+  CHECK(cppunivariate::distributions::qlogis(-std::log(2.0),0,1,true,true) == doctest::Approx(4.6380936276925993e-17).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qlogis(-std::log(2.0),0,1,false,true) == doctest::Approx(-4.6380936276925993e-17).epsilon(1e-12));
 }

@@ -11,56 +11,36 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
 inline double dexp(double x, double rate, bool log) {
-  if (!(rate > 0.0) || !std::isfinite(x)) {
-    return kNaN;
-  }
-  if (x < 0.0) {
-    return log ? kNegInf : 0.0;
-  }
-  const double log_density = std::log(rate) - rate * x;
-  return log ? log_density : std::exp(log_density);
+  if (!(rate>0 && std::isfinite(rate))) return special::kNaN;
+  if (std::isnan(x)) return special::kNaN;
+  if (x<0 || x==special::kPosInf) return log ? special::kNegInf : 0;
+  const double ld=std::log(rate)-rate*x;
+  return log ? ld : std::exp(ld);
 }
 
 inline double pexp(double q, double rate, bool lower_tail, bool log_p) {
-  if (!(rate > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q <= 0.0) {
-    prob = 0.0;
-  } else {
-    // log(1 - F) = -rate * q; expressed via expm1 for numerical stability.
-    prob = -std::expm1(-rate * q);
-  }
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+  if (!(rate>0 && std::isfinite(rate))) return special::kNaN;
+  if (std::isnan(q)) return special::kNaN;
+  if (q<=0) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
+  const double lh = std::log(rate)+std::log(q);
+  const auto t = lh < -36 ? special::tails_from_log(lh,true) : special::tails_from_log(-std::exp(lh),false);
+  return special::tail_probability(t,lower_tail,log_p);
 }
 
 inline double qexp(double p, double rate, bool lower_tail, bool log_p) {
-  if (!(rate > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  // log1p(-p) is more accurate than log(1 - p) when p is small.
-  return -std::log1p(-p) / rate;
+  if (!(rate>0 && std::isfinite(rate))) return special::kNaN;
+  const auto t=special::quantile_log_tails(p,lower_tail,log_p);
+  if (!t.valid) return special::kNaN;
+  const double lh=t.lower < -0.6931471805599453 ? special::log_neg_log1mexp(t.lower) : std::log(-t.upper);
+  return std::exp(lh-std::log(rate));
 }
 
 template <typename Rng>

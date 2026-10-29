@@ -70,6 +70,15 @@ inline double scaled_difference(double x, double location, double scale) {
                                  : x / scale - location / scale;
 }
 
+// Probability minus one half, for quantiles near the median. The low part
+// of log(2) retains the offset of a rounded log(0.5) input from the true median.
+// Do not use this centered representation to reconstruct extreme tails.
+inline double probability_minus_half(double p, bool lower_tail, bool log_p) {
+  const double offset = log_p ? 0.5 * std::expm1(
+      (p + 0.69314718055994528623) + 2.3190468138462995584e-17) : p - 0.5;
+  return lower_tail ? offset : -offset;
+}
+
 struct LogTails {
   double lower;
   double upper;

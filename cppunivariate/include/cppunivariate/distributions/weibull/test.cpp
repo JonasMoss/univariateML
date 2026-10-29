@@ -34,11 +34,18 @@ TEST_CASE("weibull dpqr: known CDF value and quantile inverse") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("weibull: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("weibull: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("weibull",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dweibull(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pweibull(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qweibull(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rweibull(rng, p[0], p[1]); });
+}
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// S=lambda x:m.exp(-x*x); Q=lambda l:m.sqrt(-l)
+TEST_CASE("weibull: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::pweibull(100,2,1,false,true) == doctest::Approx(-10000).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qweibull(-10000,2,1,false,true) == doctest::Approx(100).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::pweibull(1e-300,2,1,true,true) == doctest::Approx(2*std::log(1e-300)).epsilon(1e-12).scale(1e-300));
 }

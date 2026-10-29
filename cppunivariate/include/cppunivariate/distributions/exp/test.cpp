@@ -14,11 +14,18 @@ TEST_CASE("exp") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("exp: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("exp: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("exp",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dexp(x, p[0], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pexp(x, p[0], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qexp(x, p[0], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rexp(rng, p[0]); });
+}
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// S=lambda x:m.exp(-x); Q=lambda l:-l
+TEST_CASE("exp: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::pexp(1000,1,false,true) == doctest::Approx(-1000).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qexp(-10000,1,false,true) == doctest::Approx(10000).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::pexp(1e-300,1,true,true) == doctest::Approx(std::log(1e-300)).epsilon(1e-12).scale(1e-300));
 }

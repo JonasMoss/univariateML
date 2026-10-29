@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include "../../special/special.hpp"
 
 #include <cmath>
@@ -15,37 +15,32 @@
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-
 inline double dlogis(double x, double location, double scale, bool log) {
-  if (!(scale > 0.0) || !std::isfinite(x) || !std::isfinite(location)) {
-    return kNaN;
-  }
-  const double z = (x - location) / scale;
-  // log f = -z - log(scale) - 2 * log(1 + exp(-z))
-  //       = -z - log(scale) - 2 * log1pexp(-z)
-  // softplus log1pexp(-z) avoids overflow for large |z|.
-  const double abs_z = std::fabs(z);
-  const double log1pe = abs_z + std::log1p(std::exp(-abs_z));
-  // log1p(exp(-z)) = log1p(exp(|z|)) - |z| when z<0; for z>=0 it's
-  // log1p(exp(-z)). The formula above (|z| + log1p(exp(-|z|))) gives
-  // log(1+exp(|z|)); we need log(1+exp(-z)). Recompute properly:
-  const double log1p_minus_z = (z >= 0.0)
-      ? std::log1p(std::exp(-z))
-      : -z + std::log1p(std::exp(z));
-  (void)log1pe;
-  const double log_density = -z - std::log(scale) - 2.0 * log1p_minus_z;
-  return log ? log_density : std::exp(log_density);
+  if (!(scale>0 && std::isfinite(scale) && std::isfinite(location))) return special::kNaN;
+  if (std::isnan(x)) return special::kNaN;
+  const double a=std::fabs(special::scaled_difference(x,location,scale));
+  const double ld=-a-std::log(scale)-2*std::log1p(std::exp(-a));
+  return log ? ld : std::exp(ld);
 }
 
 inline double plogis(double q, double location, double scale, bool lower_tail,
                      bool log_p) {
-  return cppunivariate::special::plogis(q, location, scale, lower_tail, log_p);
+  if (!(scale>0 && std::isfinite(scale) && std::isfinite(location))) return special::kNaN;
+  const double z=special::scaled_difference(q,location,scale);
+  const double lp=-std::fabs(z)-std::log1p(std::exp(-std::fabs(z)));
+  return special::tail_probability(special::tails_from_log(lp,z<=0),lower_tail,log_p);
 }
 
 inline double qlogis(double p, double location, double scale, bool lower_tail,
                      bool log_p) {
-  return cppunivariate::special::qlogis(p, location, scale, lower_tail, log_p);
+  if (!(scale>0 && std::isfinite(scale) && std::isfinite(location))) return special::kNaN;
+  const auto t=special::quantile_log_tails(p,lower_tail,log_p);
+  if (!t.valid) return special::kNaN;
+  const double offset=special::probability_minus_half(p,lower_tail,log_p);
+  if (std::fabs(offset)<1e-8) return std::fma(scale,std::log1p(2*offset)-std::log1p(-2*offset),location);
+
+  const double z=t.lower-t.upper;
+  return std::fma(scale,z,location);
 }
 
 template <typename Rng>

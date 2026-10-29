@@ -8,57 +8,38 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
 inline double dlaplace(double x, double mu, double sigma, bool log) {
-  if (!(sigma > 0.0) || !std::isfinite(x)) {
-    return kNaN;
-  }
-  const double z = std::fabs(x - mu) / sigma;
-  const double log_density = -z - std::log(2.0) - std::log(sigma);
-  return log ? log_density : std::exp(log_density);
+  if (!(sigma>0 && std::isfinite(sigma) && std::isfinite(mu))) return special::kNaN;
+  if (std::isnan(x)) return special::kNaN;
+  const double a=std::fabs(special::scaled_difference(x,mu,sigma));
+  const double ld=-a-std::log(sigma)-std::log(2.0);
+  return log ? ld : std::exp(ld);
 }
 
 inline double plaplace(double q, double mu, double sigma, bool lower_tail,
                        bool log_p) {
-  if (!(sigma > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  const double z = (q - mu) / sigma;
-  double prob;
-  if (q < mu) {
-    prob = 0.5 * std::exp(z);
-  } else {
-    prob = 1.0 - 0.5 * std::exp(-z);
-  }
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+  if (!(sigma>0 && std::isfinite(sigma) && std::isfinite(mu))) return special::kNaN;
+  const double z=special::scaled_difference(q,mu,sigma);
+  const double lp=-std::fabs(z)-std::log(2.0);
+  return special::tail_probability(special::tails_from_log(lp,z<=0),lower_tail,log_p);
 }
 
 inline double qlaplace(double p, double mu, double sigma, bool lower_tail,
                        bool log_p) {
-  if (!(sigma > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  if (p < 0.5) {
-    return mu + sigma * std::log(2.0 * p);
-  }
-  return mu - sigma * std::log(2.0 * (1.0 - p));
+  if (!(sigma>0 && std::isfinite(sigma) && std::isfinite(mu))) return special::kNaN;
+  const auto t=special::quantile_log_tails(p,lower_tail,log_p);
+  if (!t.valid) return special::kNaN;
+  const double offset=special::probability_minus_half(p,lower_tail,log_p);
+  if (std::fabs(offset)<1e-8) return std::fma(sigma,std::copysign(-std::log1p(-2*std::fabs(offset)),offset),mu);
+
+  const double z=(t.lower<t.upper ? t.lower+std::log(2.0) : -t.upper-std::log(2.0));
+  return std::fma(sigma,z,mu);
 }
 
 template <typename Rng>

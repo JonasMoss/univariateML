@@ -46,3 +46,19 @@ TEST_CASE("frechet: ties above the minimum are admissible") {
   const auto r=cppunivariate::frechet_gev_mle(mltest::as_span(x),1e-10,100,.3);
   CHECK(r.status==cppunivariate::GevStatus::Ok);
 }
+
+TEST_CASE("frechet: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("frechet",
+      [](double x,const std::vector<double>& p,bool log) { return cppunivariate::distributions::dfrechet(x,p[0],p[1],p[2],log); },
+      [](double x,const std::vector<double>& p,bool lower,bool log) { return cppunivariate::distributions::pfrechet(x,p[0],p[1],p[2],lower,log); },
+      [](double x,const std::vector<double>& p,bool lower,bool log) { return cppunivariate::distributions::qfrechet(x,p[0],p[1],p[2],lower,log); },
+      [](cppunivariate::distributions::StdRng<>& rng,const std::vector<double>& p) { return cppunivariate::distributions::rfrechet(rng,p[0],p[1],p[2]); });
+}
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// F=lambda x:m.exp(-1/x**2); Q=lambda l:1/m.sqrt(-l)
+TEST_CASE("frechet: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::pfrechet(1e300,2,0,1,false,true) == doctest::Approx(-2*std::log(1e300)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qfrechet(-10000,2,0,1,true,true) == doctest::Approx(0.01).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qfrechet(-INFINITY,2,3,1,true,true) == doctest::Approx(3).epsilon(1e-12).scale(1e-300));
+}

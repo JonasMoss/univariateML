@@ -249,11 +249,25 @@ TEST_CASE("huber: prefix loss and derivatives are exact reductions") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("huber: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("huber: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("huber",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhuber(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phuber(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhuber(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhuber(rng, p[0], p[1], p[2]); });
+}
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// Z=m.sqrt(2*m.pi)*m.erf(1/m.sqrt(2))+2*m.exp(-m.mpf(1)/2); logS=lambda x:-x+m.mpf(1)/2-m.log(Z)
+TEST_CASE("huber: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::phuber(10000,0,1,1,false,true) == doctest::Approx(-9999.5-std::log(cppunivariate::huber_z(1))).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qhuber(-10000,0,1,1,false,true) == doctest::Approx(10000.5-std::log(cppunivariate::huber_z(1))).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qhuber(-INFINITY,0,1,1,true,true) == -INFINITY);
+}
+
+// mpmath: m.mp.dps=100; p=m.exp(m.mpf(float(-math.log(2))))
+// Invert the family's CDF at this p, retaining p-m.mpf('.5').
+TEST_CASE("huber: rounded log half retains median offset") {
+  CHECK(cppunivariate::distributions::qhuber(-std::log(2.0),0,1,1.345,true,true) == doctest::Approx(3.0851715363450619e-17).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qhuber(-std::log(2.0),0,1,1.345,false,true) == doctest::Approx(-3.0851715363450619e-17).epsilon(1e-12));
 }

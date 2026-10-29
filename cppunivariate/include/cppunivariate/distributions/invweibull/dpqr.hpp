@@ -7,64 +7,39 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
 inline double dinvweibull(double x, double shape, double rate, bool log) {
-  if (!(shape > 0.0 && rate > 0.0) || !std::isfinite(x) ||
-      !std::isfinite(shape) || !std::isfinite(rate)) {
-    return kNaN;
-  }
-  if (x <= 0.0) {
-    return log ? kNegInf : 0.0;
-  }
-  const double scale = 1.0 / rate;
-  const double logu = shape * (std::log(scale) - std::log(x));
-  const double log_density =
-      std::log(shape) + logu - std::exp(logu) - std::log(x);
-  return log ? log_density : std::exp(log_density);
+  if (!(shape>0 && rate>0 && std::isfinite(shape) && std::isfinite(rate))) return special::kNaN;
+  if (std::isnan(x)) return special::kNaN;
+  if (x<=0 || x==special::kPosInf) return log ? special::kNegInf : 0;
+  const double lh=-shape*(std::log(rate)+std::log(x));
+  const double h=std::exp(lh);
+  const double ld=std::isinf(h) ? special::kNegInf : std::log(shape)+lh-h-std::log(x);
+  return log ? ld : std::exp(ld);
 }
 
 inline double pinvweibull(double q, double shape, double rate,
                           bool lower_tail, bool log_p) {
-  if (!(shape > 0.0 && rate > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q <= 0.0) {
-    prob = lower_tail ? 0.0 : 1.0;
-  } else {
-    const double scale = 1.0 / rate;
-    const double u = std::exp(shape * (std::log(scale) - std::log(q)));
-    prob = std::exp(-u);
-    if (!lower_tail) {
-      prob = 1.0 - prob;
-    }
-  }
-  return log_p ? std::log(prob) : prob;
+  if (!(shape>0 && rate>0 && std::isfinite(shape) && std::isfinite(rate))) return special::kNaN;
+  if (std::isnan(q)) return special::kNaN;
+  if (q<=0) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
+  const double lh=-shape*(std::log(rate)+std::log(q));
+  const auto t=lh < -36 ? special::tails_from_log(lh,false) : special::tails_from_log(-std::exp(lh),true);
+  return special::tail_probability(t,lower_tail,log_p);
 }
 
 inline double qinvweibull(double p, double shape, double rate,
                           bool lower_tail, bool log_p) {
-  if (!(shape > 0.0 && rate > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  if (p <= 0.0) return 0.0;
-  if (p >= 1.0) return std::numeric_limits<double>::infinity();
-  const double scale = 1.0 / rate;
-  return scale / std::pow(-std::log(p), 1.0 / shape);
+  if (!(shape>0 && rate>0 && std::isfinite(shape) && std::isfinite(rate))) return special::kNaN;
+  const auto t=special::quantile_log_tails(p,lower_tail,log_p);
+  if (!t.valid) return special::kNaN;
+  const double lh=t.upper < -0.6931471805599453 ? special::log_neg_log1mexp(t.upper) : std::log(-t.lower);
+  return std::exp(-std::log(rate)-lh/shape);
 }
 
 template <typename Rng>

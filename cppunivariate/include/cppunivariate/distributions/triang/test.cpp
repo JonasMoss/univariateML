@@ -88,8 +88,7 @@ TEST_CASE("triang: CDF quantile and corner density") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("triang: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("triang: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("triang",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtriang(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptriang(x, p[0], p[1], p[2], lower, log); },
@@ -106,4 +105,22 @@ TEST_CASE("triang: constant data with held exterior mode") {
     CHECK(r.a==-1); CHECK(r.b==doctest::Approx(std::isnan(b)?1.8:2));
     CHECK(r.c==-1);
   }
+}
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// logF=lambda x:m.log(2)+2*m.log(x); Q=lambda l:m.exp((l-m.log(2))/2)
+TEST_CASE("triang: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::ptriang(1e-300,0,1,0.5,true,true) == doctest::Approx(2*std::log(1e-300)+std::log(2.0)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qtriang(-800,0,1,0.5,true,true) == doctest::Approx(std::exp((-800-std::log(2.0))/2)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qtriang(-INFINITY,0,1,0.5,true,true) == doctest::Approx(0).epsilon(1e-12).scale(1e-300));
+}
+
+// mpmath: m.mp.dps=400; x=m.mpf(float.fromhex('0x0.0000000000001p-1022'))
+// For mode 0, F(x)=x*(2-x); for mode 1, S(1-e)=e*(2-e).
+TEST_CASE("triang: endpoint modes retain the opposite small tail") {
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  CHECK(cppunivariate::distributions::ptriang(tiny,0,1,0,true,true) == doctest::Approx(std::log(tiny)+std::log(2.0)).epsilon(1e-12));
+  const double x=std::nextafter(1.0,0.0), e=1-x;
+  CHECK(cppunivariate::distributions::ptriang(x,0,1,1,false,true) == doctest::Approx(std::log(e)+std::log(2-e)).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::dtriang(tiny,0,1e300,1e300,true) == doctest::Approx(std::log(2.0)+std::log(tiny)-2*std::log(1e300)).epsilon(1e-12));
 }
