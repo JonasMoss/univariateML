@@ -9,7 +9,7 @@ r:
   density: extraDistr::dgompertz
   sampler: extraDistr::rgompertz
   control:
-    reltol: Relative step tolerance, with an absolute floor of the same size.
+    reltol: Relative step tolerance in `b * mean(x)`, with an absolute floor of the same size in these dimensionless units.
     iterlim: Maximum number of iterations.
 log_density: log(a) + b*x - (a/b)*(exp(b*x)-1)
 limits:

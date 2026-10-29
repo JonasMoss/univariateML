@@ -50,7 +50,7 @@ test_that("Tukey lambda existence guards and exact uniform faces", {
   expect_error(mltlambda(x,lambda=NA_real_),"finite")
   expect_error(mltlambda(x,reltol=0),"positive")
   expect_error(mltlambda(x,lambda=0,iterlim=1),"converge")
-  expect_error(mltlambda(x,mu=0),"unused")
+  expect_error(mltlambda(x,mu=0),"cannot hold `mu`")
 })
 # Independent likelihood: invert extraDistr's quantile using uniroot,
 # without using package density or the C++ inversion.

@@ -126,3 +126,12 @@ TEST_CASE("kumar: double-only underflow before shape transforms") {
   CHECK(cppunivariate::distributions::pkumar(std::nextafter(1.0,0.0),1e-320,1,false,true) == doctest::Approx(-773.56404146065100749).epsilon(2e-15));
   CHECK(cppunivariate::distributions::qkumar(-740,1e-320,1,false,true) == doctest::Approx(0.95897730933901233978).epsilon(5e-14));
 }
+
+TEST_CASE("kumar: constant data cannot throw or have a finite MLE") {
+  for(double v:{.01,.4,.99}) {
+    std::vector<double> x(5,v);
+    const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-12,100);
+    CHECK(r.status==cppunivariate::KumarStatus::Unbounded);
+    CHECK(std::isnan(r.a));
+  }
+}

@@ -1,0 +1,31 @@
+"family","sample","n","held","oracle","master","held_ok","difference","message","convergence"
+"invparalogis","n2",2,"",-2.51692213871113,-2.5169221387716,TRUE,-6.04640781887156e-11,"",0
+"invparalogis","n2",2,"shape",-3.57219756754894,-2.51692213940731,FALSE,1.05527542814163,"",0
+"invparalogis","n2",2,"scale",-2.60221589887795,-2.60221589887795,TRUE,0,"",0
+"invparalogis","n3",3,"",-4.4204826104072,-4.42048261041907,TRUE,-1.18660636871937e-11,"",0
+"invparalogis","n3",3,"shape",-4.42438265915453,-4.42048261043913,FALSE,0.00390004871539862,"",0
+"invparalogis","n3",3,"scale",-4.59046192956195,-4.59046192956163,TRUE,3.21520587931445e-13,"",0
+"invparalogis","n5",5,"",-13.3736594387774,-13.3736594387747,TRUE,2.75512945790979e-12,"",0
+"invparalogis","n5",5,"shape",-13.4627111896075,-13.3736594389656,FALSE,0.089051750641973,"",0
+"invparalogis","n5",5,"scale",-13.5296970977315,-13.5296970977311,TRUE,3.46389583683049e-13,"",0
+"invparalogis","n20",20,"",-42.7836730643597,-42.7836730643761,TRUE,-1.64135371960583e-11,"",0
+"invparalogis","n20",20,"shape",-43.997258278722,-42.7836730644009,FALSE,1.21358521432111,"",0
+"invparalogis","n20",20,"scale",-42.9602430170979,-42.9602430170976,TRUE,2.8421709430404e-13,"",0
+"invparalogis","n100",100,"",-173.758321251159,-173.758321251166,TRUE,-6.87805368215777e-12,"",0
+"invparalogis","n100",100,"shape",-173.873465858683,-173.758321251154,FALSE,0.115144607528492,"",0
+"invparalogis","n100",100,"scale",-173.911345151011,-173.911345151011,TRUE,1.70530256582424e-13,"",0
+"invparalogis","n1000",1000,"",-2058.00556062704,-2058.00556062685,TRUE,1.96905602933839e-10,"",0
+"invparalogis","n1000",1000,"shape",-2058.18777969229,-2058.00556062685,FALSE,0.182219065433856,"",0
+"invparalogis","n1000",1000,"scale",-2058.73571148058,-2058.73571148057,TRUE,4.54747350886464e-12,"",0
+"invparalogis","ties",20,"",-42.4807690137069,-42.4807690138184,TRUE,-1.11477049813402e-10,"",0
+"invparalogis","ties",20,"shape",-45.2806497557541,-42.4807690137089,FALSE,2.79988074204517,"",0
+"invparalogis","ties",20,"scale",-42.627975733897,-42.6279757338951,TRUE,1.86872739504906e-12,"",0
+"invparalogis","constant",5,"",26.8805918082958,NA,NA,NA,"The invparalogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.",0
+"invparalogis","constant",5,"shape",-10.5058945900313,NA,NA,NA,"The invparalogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.",0
+"invparalogis","constant",5,"scale",-5.32335985669321,-5.32335985669315,TRUE,6.66133814775094e-14,"",0
+"invparalogis","ties_half",20,"",-18.3824124529819,-18.3824124529802,TRUE,1.62003743753303e-12,"",0
+"invparalogis","ties_half",20,"shape",-18.4117141273576,-18.3824124529812,FALSE,0.029301674376466,"",0
+"invparalogis","ties_half",20,"scale",-21.0495651049629,-21.0495651049619,TRUE,1.04449782156735e-12,"",0
+"invparalogis","ties_major",20,"",-12.6351475698734,-12.6351475698713,TRUE,2.1014301410105e-12,"",0
+"invparalogis","ties_major",20,"shape",-12.968182775789,-12.6351475698712,FALSE,0.333035205917829,"",0
+"invparalogis","ties_major",20,"scale",-17.1135722640775,-17.1135722640773,TRUE,1.13686837721616e-13,"",0

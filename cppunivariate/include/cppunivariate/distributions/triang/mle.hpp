@@ -210,6 +210,9 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
   if(!std::isfinite(best)) {out.status=TriangStatus::Incompatible;return out;}
   out.a=fa?original_a:origin+scale*ba;
   out.b=fb?original_b:origin+scale*bb;
+  // Preserve exact endpoint-mode equality across the affine round trip.
+  if(fc && !fa && ba==bc) out.a=original_c;
+  if(fc && !fb && bb==bc) out.b=original_c;
   out.c=fc?original_c:origin+scale*bc;
   if(!(std::isfinite(out.a)&&std::isfinite(out.b)&&std::isfinite(out.c)&&
        out.a<out.b&&out.a<=out.c&&out.c<=out.b)) {

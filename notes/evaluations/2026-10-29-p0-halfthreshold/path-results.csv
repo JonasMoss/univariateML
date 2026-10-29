@@ -1,0 +1,139 @@
+"path","e","ll"
+"hnorm constant, mu=min",0.1,10.3839687017466
+"hcauchy k=3 n=5",0.1,-1.35407000562487
+"hcauchy k=2 n=4 equality",0.1,-3.20507239332946
+"ht nu=.2 k=1 n=5",0.1,-11.8623936071801
+"ht nu=.25 k=1 n=5 equality",0.1,-11.663822698812
+"foldnorm constant",0.1,6.91823279894686
+"fatigue fixed mu gamma-half face",0.1,-17.2442057001975
+"fatigue fixed mu invgamma-half face",0.1,-14.6763995038677
+"fatigue free",0.1,-9.79442511462398
+"fatigue beta held k=2 n=5",0.1,-7.29755678834602
+"fatigue beta held k=1 n=3 equality",0.1,-3.77835256685965
+"fatigue alpha held constant",0.1,6.91823279894687
+"fatigue mu held constant",0.1,6.91823279894686
+"fatigue beta mu held constant",0.1,6.91823279894686
+"betapr constant fixed scale",0.1,-0.633571920811757
+"fatigue normal limit",0.1,-11.1523830404801
+"fatigue normal reference",0.1,-12.0946926660234
+"half-t normal limit",0.1,-19.3042597966191
+"half-normal reference",0.1,-28.6289567632236
+"betapr gamma limit",0.1,-10.1191575077381
+"gamma reference",0.1,-10.212508257218
+"betapr invgamma limit",0.1,-24.1055544778194
+"invgamma reference",0.1,-24.8990362072612
+"hnorm constant, mu=min",0.01,21.8968941667168
+"hcauchy k=3 n=5",0.01,0.960837303733086
+"hcauchy k=2 n=4 equality",0.01,-3.19275017696555
+"ht nu=.2 k=1 n=5",0.01,-11.400186631329
+"ht nu=.25 k=1 n=5 equality",0.01,-11.6616226537959
+"foldnorm constant",0.01,18.4311582639171
+"fatigue fixed mu gamma-half face",0.01,-17.8815280615626
+"fatigue fixed mu invgamma-half face",0.01,-16.1867602119492
+"fatigue free",0.01,-5.85886197299435
+"fatigue beta held k=2 n=5",0.01,-6.25346365630654
+"fatigue beta held k=1 n=3 equality",0.01,-3.91820532770866
+"fatigue alpha held constant",0.01,18.4311582639171
+"fatigue mu held constant",0.01,18.4311582639171
+"fatigue beta mu held constant",0.01,18.4311582639171
+"betapr constant fixed scale",0.01,5.17911487358788
+"fatigue normal limit",0.01,-11.9735872223565
+"fatigue normal reference",0.01,-12.0946926660234
+"half-t normal limit",0.01,-26.7405275372545
+"half-normal reference",0.01,-28.6289567632236
+"betapr gamma limit",0.01,-10.1896656497399
+"gamma reference",0.01,-10.212508257218
+"betapr invgamma limit",0.01,-24.81127425095
+"invgamma reference",0.01,-24.8990362072612
+"hnorm constant, mu=min",0.001,33.409819631687
+"hcauchy k=3 n=5",0.001,3.2635461414155
+"hcauchy k=2 n=4 equality",0.001,-3.19262643227718
+"ht nu=.2 k=1 n=5",0.001,-10.9396527003596
+"ht nu=.25 k=1 n=5 equality",0.001,-11.6616006325222
+"foldnorm constant",0.001,29.9440837288873
+"fatigue fixed mu gamma-half face",0.001,-17.9468929799581
+"fatigue fixed mu invgamma-half face",0.001,-16.3633677749067
+"fatigue free",0.001,-1.32586738856307
+"fatigue beta held k=2 n=5",0.001,-5.11472164701189
+"fatigue beta held k=1 n=3 equality",0.001,-3.93446904648671
+"fatigue alpha held constant",0.001,29.9440837288873
+"fatigue mu held constant",0.001,29.9440837288873
+"fatigue beta mu held constant",0.001,29.9440837288873
+"betapr constant fixed scale",0.001,10.9412025800577
+"fatigue normal limit",0.001,-12.0822326699257
+"fatigue normal reference",0.001,-12.0946926660234
+"half-t normal limit",0.001,-28.4160777357529
+"half-normal reference",0.001,-28.6289567632236
+"betapr gamma limit",0.001,-10.2100306611964
+"gamma reference",0.001,-10.212508257218
+"betapr invgamma limit",0.001,-24.8901650874471
+"invgamma reference",0.001,-24.8990362072612
+"hnorm constant, mu=min",1e-04,44.9227450966573
+"hcauchy k=3 n=5",1e-04,5.56613247190902
+"hcauchy k=2 n=4 equality",1e-04,-3.19262519477771
+"ht nu=.2 k=1 n=5",1e-04,-10.4791355126359
+"ht nu=.25 k=1 n=5 equality",1e-04,-11.6616004123074
+"foldnorm constant",1e-04,41.4570091938575
+"fatigue fixed mu gamma-half face",1e-04,-17.9534461256151
+"fatigue fixed mu invgamma-half face",1e-04,-16.3813331995879
+"fatigue free",1e-04,3.27203353031229
+"fatigue beta held k=2 n=5",1e-04,-3.96470210976685
+"fatigue beta held k=1 n=3 equality",1e-04,-3.93611670025264
+"fatigue alpha held constant",1e-04,41.4570091938581
+"fatigue mu held constant",1e-04,41.4570091938575
+"fatigue beta mu held constant",1e-04,41.4570091938575
+"betapr constant fixed scale",1e-04,16.6982278125215
+"fatigue normal limit",1e-04,-12.0934430671466
+"fatigue normal reference",1e-04,-12.0946926660234
+"half-t normal limit",1e-04,-28.6073884530396
+"half-normal reference",1e-04,-28.6289567632236
+"betapr gamma limit",1e-04,-10.2122584821216
+"gamma reference",1e-04,-10.212508257218
+"betapr invgamma limit",1e-04,-24.8981481337132
+"invgamma reference",1e-04,-24.8990362072612
+"hnorm constant, mu=min",1e-05,56.4356705616275
+"hcauchy k=3 n=5",1e-05,7.86871757727807
+"hcauchy k=2 n=4 equality",1e-05,-3.19262518240271
+"ht nu=.2 k=1 n=5",1e-05,-10.0186184923458
+"ht nu=.25 k=1 n=5 equality",1e-05,-11.6616004101052
+"foldnorm constant",1e-05,52.9699346588278
+"fatigue fixed mu gamma-half face",1e-05,-17.9541016070681
+"fatigue fixed mu invgamma-half face",1e-05,-16.3831328531628
+"fatigue free",1e-05,7.87647619595767
+"fatigue beta held k=2 n=5",1e-05,-2.81353704335739
+"fatigue beta held k=1 n=3 equality",1e-05,-3.93628167680703
+"fatigue alpha held constant",1e-05,52.9699346588505
+"fatigue mu held constant",1e-05,52.9699346588278
+"fatigue beta mu held constant",1e-05,52.9699346588278
+"betapr constant fixed scale",1e-05,22.4547467951197
+"fatigue normal limit",1e-05,-12.0945676699931
+"fatigue normal reference",1e-05,-12.0946926660234
+"half-t normal limit",1e-05,-28.6267970806109
+"half-normal reference",1e-05,-28.6289567632236
+"betapr gamma limit",1e-05,-10.2124832594678
+"gamma reference",1e-05,-10.212508257218
+"betapr invgamma limit",1e-05,-24.8989473899635
+"invgamma reference",1e-05,-24.8990362072612
+"hnorm constant, mu=min",1e-06,67.9485960265977
+"hcauchy k=3 n=5",1e-06,10.1713026703959
+"hcauchy k=2 n=4 equality",1e-06,-3.19262518227896
+"ht nu=.2 k=1 n=5",1e-06,-9.55810147373008
+"ht nu=.25 k=1 n=5 equality",1e-06,-11.6616004100832
+"foldnorm constant",1e-06,64.482860123798
+"fatigue fixed mu gamma-half face",1e-06,-17.9541671568827
+"fatigue fixed mu invgamma-half face",1e-06,-16.3833128496978
+"fatigue free",1e-06,12.4815958370794
+"fatigue beta held k=2 n=5",1e-06,-1.66225724672794
+"fatigue beta held k=1 n=3 equality",1e-06,-3.93629817657259
+"fatigue alpha held constant",1e-06,64.4828601236542
+"fatigue mu held constant",1e-06,64.482860123798
+"fatigue beta mu held constant",1e-06,64.482860123798
+"betapr constant fixed scale",1e-06,28.2112151524052
+"fatigue normal limit",1e-06,-12.0946801661232
+"fatigue normal reference",1e-06,-12.0946926660234
+"half-t normal limit",1e-06,-28.628740766398
+"half-normal reference",1e-06,-28.6289567632236
+"betapr gamma limit",1e-06,-10.2125057572405
+"gamma reference",1e-06,-10.212508257218
+"betapr invgamma limit",1e-06,-24.8990273286255
+"invgamma reference",1e-06,-24.8990362072612

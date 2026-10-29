@@ -1,0 +1,18 @@
+"id","sample","n","held","oracle","master","reference_at_fit","status"
+"zeta",1,20,"",-20.7500075538505,-20.7500075538505,-20.7500075538505,"ok"
+"zeta",2,100,"",-181.960039165806,-181.960039165806,-181.960039165806,"ok"
+"zeta",3,1000,"",-1679.14311989844,-1679.14311989844,-1679.14311989844,"ok"
+"zeta",4,5,"",0,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are one (point mass at one).
+"
+"zeta",5,5,"",-2.98894674135188,-2.98894674135188,-2.98894674135188,"ok"
+"zeta",6,2,"",-2.31163287409436,-2.31163287409436,-2.31163287409436,"ok"
+"zeta",7,3,"",-2.59856449279446,-2.59856449279446,-2.59856449279446,"ok"
+"zeta",8,5,"",-7.44227484002254,-7.44227484002254,-7.44227484002254,"ok"
+"zeta",9,20,"",-33.1799244926913,-33.1799244926913,-33.1799244926913,"ok"
+"zeta",10,20,"",-57.7691773967097,-57.7691773967097,-57.7691773967097,"ok"
+"zeta",11,20,"",-12.3265748159196,-12.3265748159196,-12.3265748159196,"ok"
+"zeta",12,20,"",0,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are one (point mass at one).
+"
+"zeta",13,5,"",0,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are one (point mass at one).
+"
+"zeta",14,20,"",-56.7344126185975,-56.7344126185975,-56.7344126185975,"ok"

@@ -1,0 +1,208 @@
+"id","sample","n","held","hold_values","oracle","oracle_status","fit","fixed","error","delta"
+"beta","default2",2,"","",1.93515657463576,"finite",1.9351565746438,"","",8.03357380618763e-12
+"beta","default2",2,"shape1","2",1.53716239331842,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","default2",2,"shape2","3",1.11000043802634,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","default3",3,"","",0.157581095400744,"finite",0.157581095400835,"","",9.14823772291129e-14
+"beta","default3",3,"shape1","2",-0.261950263699394,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","default3",3,"shape2","3",-0.354427675358997,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","default5",5,"","",2.79549198723431,"finite",2.79549198723817,"","",3.86357612569554e-12
+"beta","default5",5,"shape1","2",1.78149014008329,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","default5",5,"shape2","3",2.22206128110787,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","default20",20,"","",4.72304122480557,"finite",4.72304122481418,"","",8.61177795741241e-12
+"beta","default20",20,"shape1","2",4.65670454504636,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","default20",20,"shape2","3",4.72290292109594,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","default100",100,"","",34.9276301371091,"finite",34.9276301371177,"","",8.57625082062441e-12
+"beta","default100",100,"shape1","2",30.4852894214823,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","default100",100,"shape2","3",32.8263207940395,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","default1000",1000,"","",227.70699138371,"finite",227.706991384069,"","",3.58738816430559e-10
+"beta","default1000",1000,"shape1","2",227.701956695501,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","default1000",1000,"shape2","3",227.612196328253,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","tied",10,"","",5.59098397447028,"finite",5.59098397447631,"","",6.03250782660325e-12
+"beta","tied",10,"shape1","2",3.56298028016667,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","tied",10,"shape2","3",4.44412256221572,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","constant",5,"","",Inf,"collapse",NA,"","The beta maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as both shapes grow.",NA
+"beta","constant",5,"shape1","2",2.11194320281725,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","constant",5,"shape2","3",3.3253189359351,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","near0",5,"","",Inf,"collapse",NA,"","The beta maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as both shapes grow.",NA
+"beta","near0",5,"shape1","2",42.983423679023,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","near0",5,"shape2","3",30.7899354146984,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","near1",5,"","",Inf,"collapse",NA,"","The beta maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as both shapes grow.",NA
+"beta","near1",5,"shape1","2",30.4903323098239,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","near1",5,"shape2","3",44.0654003003007,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","ushape",6,"","",14.2418782493534,"finite",14.2418782493534,"","",0
+"beta","ushape",6,"shape1","2",-10.3626377984743,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","ushape",6,"shape2","3",-26.3699284907552,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","uniform_limit",100,"","",0.262711513335446,"finite",0.262711513343504,"","",8.057665645822e-12
+"beta","uniform_limit",100,"shape1","2",-13.5157148863999,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","uniform_limit",100,"shape2","3",-52.289365072196,"finite",NA,"","unused argument (shape2 = 3)",NA
+"beta","point_limit",5,"","",Inf,"collapse",NA,"","The beta maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as both shapes grow.",NA
+"beta","point_limit",5,"shape1","2",2.81758653456799,"finite",NA,"","unused argument (shape1 = 2)",NA
+"beta","point_limit",5,"shape2","3",2.92007857217271,"finite",NA,"","unused argument (shape2 = 3)",NA
+"kumar","default2",2,"","",0.179512282750595,"finite",0.179512282750727,"","",1.32671651442706e-13
+"kumar","default2",2,"a","2",0.139418936023135,"finite",0.179512282750727,"","",NA
+"kumar","default2",2,"b","3",0.0670185705998678,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","default3",3,"","",1.10502036132898,"finite",1.10502036132942,"","",4.40980585381112e-13
+"kumar","default3",3,"a","2",0.806680762686024,"finite",1.10502036132942,"","",NA
+"kumar","default3",3,"b","3",1.10162954974246,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","default5",5,"","",1.24992433817464,"finite",1.24992433817501,"","",3.73479025483903e-13
+"kumar","default5",5,"a","2",1.16379025061915,"finite",1.24992433817501,"","",NA
+"kumar","default5",5,"b","3",1.24960631904277,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","default20",20,"","",6.05607975058231,"finite",6.05607975058408,"","",1.76747505520325e-12
+"kumar","default20",20,"a","2",4.92528365562477,"finite",6.05607975058407,"","",NA
+"kumar","default20",20,"b","3",6.03628621954134,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","default100",100,"","",16.7573204552732,"finite",16.7573204552764,"","",3.16546788781125e-12
+"kumar","default100",100,"a","2",16.4633884463763,"finite",16.7573204552764,"","",NA
+"kumar","default100",100,"b","3",16.2164473185602,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","default1000",1000,"","",213.789411437481,"finite",213.789411437571,"","",8.97557583812159e-11
+"kumar","default1000",1000,"a","2",213.526792132504,"finite",213.789411437571,"","",NA
+"kumar","default1000",1000,"b","3",213.7670921773,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","tied",10,"","",2.49984867634911,"finite",2.49984867635001,"","",9.04165631254727e-13
+"kumar","tied",10,"a","2",2.32758050123829,"finite",2.49984867635001,"","",NA
+"kumar","tied",10,"b","3",2.49921263808567,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","constant",5,"","",Inf,"collapse",NA,"","Error in function boost::math::trunc<long double>(long double): Value nan can not be represented in the target integer type.",NA
+"kumar","constant",5,"a","2",3.50074276927473,"finite",17.9020596412007,"","",NA
+"kumar","constant",5,"b","3",2.64975675015032,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","near0",5,"","",Inf,"collapse",NA,"","Error in function boost::math::trunc<long double>(long double): Value -nan can not be represented in the target integer type.",NA
+"kumar","near0",5,"a","2",44.5174377625568,"finite",47.8348296208477,"","",NA
+"kumar","near0",5,"b","3",32.5825267297911,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","near1",5,"","",Inf,"collapse",NA,"","Error in function boost::math::trunc<long double>(long double): Value -nan can not be represented in the target integer type.",NA
+"kumar","near1",5,"a","2",30.340988243403,"finite",58.6799369317696,"","",NA
+"kumar","near1",5,"b","3",43.6844107762153,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","ushape",6,"","",13.5797656647749,"finite",13.5797656647746,"","",-2.20268248085631e-13
+"kumar","ushape",6,"a","2",-9.52431212697799,"finite",13.5797656647746,"","",NA
+"kumar","ushape",6,"b","3",-27.2550028196439,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","uniform_limit",100,"","",0.752186184439258,"finite",0.752186184444485,"","",5.22692999993524e-12
+"kumar","uniform_limit",100,"a","2",-29.7002641948286,"finite",0.752186184444482,"","",NA
+"kumar","uniform_limit",100,"b","3",-43.6660745423896,"finite",NA,"","unused argument (b = 3)",NA
+"kumar","point_limit",5,"","",Inf,"collapse",NA,"","Error in function boost::math::trunc<long double>(long double): Value -nan can not be represented in the target integer type.",NA
+"kumar","point_limit",5,"a","2",3.48940457304146,"finite",17.5566132539326,"","",NA
+"kumar","point_limit",5,"b","3",2.65102042007398,"finite",NA,"","unused argument (b = 3)",NA
+"logitnorm","default2",2,"","",2.84096656876094,"finite",2.84096656876097,"","",2.48689957516035e-14
+"logitnorm","default2",2,"mu","2",2.65934254551249,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","default2",2,"sigma","3",2.83489386226097,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","default3",3,"","",12.7584746265017,"finite",12.7584746265017,"","",1.95399252334028e-14
+"logitnorm","default3",3,"mu","2",9.1396968682468,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","default3",3,"sigma","3",11.2865539256769,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","default5",5,"","",7.30395893435909,"finite",7.30395893435909,"","",1.77635683940025e-15
+"logitnorm","default5",5,"mu","2",7.23310753628762,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","default5",5,"sigma","3",6.77160019165659,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","default20",20,"","",29.9468847586674,"finite",29.9468847586677,"","",3.16191517413245e-13
+"logitnorm","default20",20,"mu","2",29.102729171786,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","default20",20,"sigma","3",28.516601568312,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","default100",100,"","",95.1925423797151,"finite",95.1925423797157,"","",6.25277607468888e-13
+"logitnorm","default100",100,"mu","2",93.5116056426662,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","default100",100,"sigma","3",95.1814010329507,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","default1000",1000,"","",741.034277073605,"finite",741.034277073635,"","",3.04680725093931e-11
+"logitnorm","default1000",1000,"mu","2",740.708244460674,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","default1000",1000,"sigma","3",739.599037651927,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","tied",10,"","",14.6079178687182,"finite",14.6079178687182,"","",2.8421709430404e-14
+"logitnorm","tied",10,"mu","2",14.4662150725742,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","tied",10,"sigma","3",13.5432003833132,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","constant",5,"","",Inf,"collapse",NA,"","The logitnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero.",NA
+"logitnorm","constant",5,"mu","2",26.4599109075368,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","constant",5,"sigma","3",32.9000732064278,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","near0",5,"","",Inf,"collapse",NA,"","The logitnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero.",NA
+"logitnorm","near0",5,"mu","2",26.8733708236267,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","near0",5,"sigma","3",35.9644477755187,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","near1",5,"","",Inf,"collapse",NA,"","The logitnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero.",NA
+"logitnorm","near1",5,"mu","2",29.0799977751568,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","near1",5,"sigma","3",35.9644477755192,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","ushape",6,"","",15.5639977171639,"finite",15.5639977171641,"","",2.00728322852228e-13
+"logitnorm","ushape",6,"mu","2",15.2319525130179,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","ushape",6,"sigma","3",11.1747613282527,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","uniform_limit",100,"","",0.10566487147692,"finite",0.105664871487079,"","",1.0158485164169e-11
+"logitnorm","uniform_limit",100,"mu","2",-52.803917536007,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","uniform_limit",100,"sigma","3",-21.7518266507203,"finite",NA,"","unused argument (sigma = 3)",NA
+"logitnorm","point_limit",5,"","",Inf,"collapse",NA,"","The logitnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero.",NA
+"logitnorm","point_limit",5,"mu","2",-4.347827272846,"finite",NA,"","unused argument (mu = 2)",NA
+"logitnorm","point_limit",5,"sigma","3",-2.95217233116318,"finite",NA,"","unused argument (sigma = 3)",NA
+"unif","default2",2,"","",4.26409758792426,"finite",4.26409758792426,"","",0
+"unif","default2",2,"min","-1",-0.526366247413989,"finite",NA,"","unused argument (min = -1)",NA
+"unif","default2",2,"max","2",-1.19495590129874,"finite",NA,"","unused argument (max = 2)",NA
+"unif","default3",3,"","",2.82446751238765,"finite",2.82446751238765,"","",0
+"unif","default3",3,"min","-1",-1.86593423780237,"finite",NA,"","unused argument (min = -1)",NA
+"unif","default3",3,"max","2",-1.27077501172475,"finite",NA,"","unused argument (max = 2)",NA
+"unif","default5",5,"","",3.04199126462847,"finite",3.04199126462847,"","",0
+"unif","default5",5,"min","-1",-2.19161125349699,"finite",NA,"","unused argument (min = -1)",NA
+"unif","default5",5,"max","2",-3.45100805304392,"finite",NA,"","unused argument (max = 2)",NA
+"unif","default20",20,"","",3.03261510735255,"finite",3.03261510735255,"","",0
+"unif","default20",20,"min","-1",-13.2897324505164,"finite",NA,"","unused argument (min = -1)",NA
+"unif","default20",20,"max","2",-13.0028414729111,"finite",NA,"","unused argument (max = 2)",NA
+"unif","default100",100,"","",2.31053431029283,"finite",2.31053431029283,"","",0
+"unif","default100",100,"min","-1",-68.5791644713101,"finite",NA,"","unused argument (min = -1)",NA
+"unif","default100",100,"max","2",-68.9047107501095,"finite",NA,"","unused argument (max = 2)",NA
+"unif","default1000",1000,"","",1.99688073811232,"finite",1.99688073811232,"","",0
+"unif","default1000",1000,"min","-1",-692.285507175044,"finite",NA,"","unused argument (min = -1)",NA
+"unif","default1000",1000,"max","2",-693.011029393685,"finite",NA,"","unused argument (max = 2)",NA
+"unif","tied",10,"","",6.08398252925694,"finite",6.08398252925694,"","",0
+"unif","tied",10,"min","-1",-4.38322250699397,"finite",NA,"","unused argument (min = -1)",NA
+"unif","tied",10,"max","2",-6.90201610608783,"finite",NA,"","unused argument (max = 2)",NA
+"unif","constant",5,"","",Inf,"collapse",NA,"","The uniform maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as max - min shrinks to zero.",NA
+"unif","constant",5,"min","-1",-0.438873340313099,"finite",NA,"","unused argument (min = -1)",NA
+"unif","constant",5,"max","2",-3.23095368436734,"finite",NA,"","unused argument (max = 2)",NA
+"unif","limit_uniform",100,"","",0.914196845368116,"finite",0.914196845368116,"","",0
+"unif","limit_uniform",100,"min","-1",-69.2603805189781,"finite",NA,"","unused argument (min = -1)",NA
+"unif","limit_uniform",100,"max","2",-68.9132205235887,"finite",NA,"","unused argument (max = 2)",NA
+"triang","default2",2,"","",2.12399175675208,"finite",2.12399175675208,"","",0
+"triang","default2",2,"a","-1",0.162976452695523,"finite",0.162976452695524,"a","",1.11022302462516e-16
+"triang","default2",2,"b","2",0.293969308466483,"finite",0.293969308466483,"b","",1.11022302462516e-16
+"triang","default2",2,"a+b","-1+ 2",-0.982052587885124,"finite",-0.982052587885123,"a+b","",5.55111512312578e-16
+"triang","default2",2,"c","0.4",1.87545111134086,"finite",1.87545111134086,"c","",6.66133814775094e-16
+"triang","default2",2,"a+c","-1.0+ 0.4",-0.673848791390391,"finite",-0.67384879139039,"a+c","",6.66133814775094e-16
+"triang","default2",2,"b+c","2.0+0.4",0.22806544811761,"finite",0.22806544811761,"b+c","",2.77555756156289e-16
+"triang","default3",3,"","",4.96713841616971,"finite",4.96713841616971,"","",1.77635683940025e-15
+"triang","default3",3,"a","-1",0.449379571882228,"finite",0.449379571882228,"a","",2.22044604925031e-16
+"triang","default3",3,"b","2",0.595065315518498,"finite",0.595065315518498,"b","",0
+"triang","default3",3,"a+b","-1+ 2",-1.33060913250182,"finite",-1.33060913250182,"a+b","",4.44089209850063e-16
+"triang","default3",3,"c","0.4",2.81212135676456,"finite",2.81212135676457,"c","",2.22044604925031e-15
+"triang","default3",3,"a+c","-1.0+ 0.4",-1.08640786001313,"finite",-1.08640786001313,"a+c","",2.22044604925031e-16
+"triang","default3",3,"b+c","2.0+0.4",0.29905549248894,"finite",0.299055492488941,"b+c","",4.9960036108132e-16
+"triang","default5",5,"","",4.59510937108806,"finite",4.59510937108806,"","",0
+"triang","default5",5,"a","-1",0.434671033824382,"finite",0.434671033824382,"a","",-1.11022302462516e-16
+"triang","default5",5,"b","2",0.15053793311804,"finite",0.15053793311804,"b","",0
+"triang","default5",5,"a+b","-1+ 2",-2.36757610842503,"finite",-2.36757610842503,"a+b","",4.44089209850063e-16
+"triang","default5",5,"c","0.4",3.50812327045861,"finite",3.50812327045862,"c","",1.28785870856518e-14
+"triang","default5",5,"a+c","-1.0+ 0.4",-0.605590457775314,"finite",-0.605590457775312,"a+c","",1.66533453693773e-15
+"triang","default5",5,"b+c","2.0+0.4",-0.998519200491153,"finite",-0.998519200491149,"b+c","",3.99680288865056e-15
+"triang","default20",20,"","",4.36174654643036,"finite",4.36174654643039,"","",3.37507799486048e-14
+"triang","default20",20,"a","-1",-3.37401234339241,"finite",-3.37401234339241,"a","",0
+"triang","default20",20,"b","2",-4.3168071764176,"finite",-4.3168071764176,"b","",1.77635683940025e-15
+"triang","default20",20,"a+b","-1+ 2",-10.4255436451966,"finite",-10.4255436451966,"a+b","",0
+"triang","default20",20,"c","0.4",3.97869539003779,"finite",3.97869539003784,"c","",5.32907051820075e-14
+"triang","default20",20,"a+c","-1.0+ 0.4",-7.29715884151525,"finite",-7.29715884151525,"a+c","",1.77635683940025e-15
+"triang","default20",20,"b+c","2.0+0.4",-4.51831775152126,"finite",-4.51831775152125,"b+c","",9.76996261670138e-15
+"triang","default100",100,"","",24.2299889607624,"finite",24.2299889607624,"","",2.8421709430404e-14
+"triang","default100",100,"a","-1",-18.9773394513796,"finite",-18.9773394513795,"a","",2.1316282072803e-14
+"triang","default100",100,"b","2",-20.5197477456331,"finite",-20.5197477456331,"b","",1.06581410364015e-14
+"triang","default100",100,"a+b","-1+ 2",-52.3469811630504,"finite",-52.3469811630504,"a+b","",-7.105427357601e-15
+"triang","default100",100,"c","0.4",24.1978136848918,"finite",24.1978136848921,"c","",2.38031816479634e-13
+"triang","default100",100,"a+c","-1.0+ 0.4",-27.4666138780556,"finite",-27.4666138780554,"a+c","",1.74082970261225e-13
+"triang","default100",100,"b+c","2.0+0.4",-29.2640784476825,"finite",-29.2640784476823,"b+c","",1.98951966012828e-13
+"triang","default1000",1000,"","",192.246374470891,"finite",192.246374470891,"","",5.6843418860808e-14
+"triang","default1000",1000,"a","-1",-243.321842350554,"finite",-243.321842350554,"a","",1.70530256582424e-13
+"triang","default1000",1000,"b","2",-215.42589123965,"finite",-215.425891239648,"b","",1.79056769411545e-12
+"triang","default1000",1000,"a+b","-1+ 2",-528.637717979819,"finite",-528.637717979819,"a+b","",-2.27373675443232e-13
+"triang","default1000",1000,"c","0.4",191.821938726976,"finite",191.821938726977,"c","",1.59161572810262e-12
+"triang","default1000",1000,"a+c","-1.0+ 0.4",-333.348523444008,"finite",-333.348523444007,"a+c","",1.4210854715202e-12
+"triang","default1000",1000,"b+c","2.0+0.4",-265.046488847834,"finite",-265.046488847833,"b+c","",5.6843418860808e-13
+"triang","tied",10,"","",9.19021874217611,"finite",9.19021874217612,"","",1.24344978758018e-14
+"triang","tied",10,"a","-1",0.869342067648764,"finite",0.869342067648765,"a","",6.66133814775094e-16
+"triang","tied",10,"b","2",0.30107586623608,"finite",0.301075866236079,"b","",-8.88178419700125e-16
+"triang","tied",10,"a+b","-1+ 2",-4.73515221685007,"finite",-4.73515221685007,"a+b","",8.88178419700125e-16
+"triang","tied",10,"c","0.4",7.01624654091722,"finite",7.01624654091724,"c","",2.04281036531029e-14
+"triang","tied",10,"a+c","-1.0+ 0.4",-1.21118091555063,"finite",-1.21118091555062,"a+c","",4.88498130835069e-15
+"triang","tied",10,"b+c","2.0+0.4",-1.99703840098231,"finite",-1.9970384009823,"b+c","",9.76996261670138e-15
+"triang","constant",5,"","",Inf,"collapse",NA,"","Triangular likelihood is unbounded for constant data with these fixed parameters.",NA
+"triang","constant",5,"a","-1",1.48951171740822,"finite",1.48951171740822,"a","",2.22044604925031e-16
+"triang","constant",5,"b","2",1.38782599748207,"finite",1.38782599748207,"b","",2.22044604925031e-16
+"triang","constant",5,"a+b","-1+ 2",-2.02732554054082,"finite",-2.02732554054082,"a+b","",0
+"triang","constant",5,"c","0.4",8.87464936129873,"finite",8.87464936129873,"c","",-1.77635683940025e-15
+"triang","constant",5,"a+c","-1.0+ 0.4",-0.652822203084178,"finite",-0.65282220308418,"a+c","",-1.22124532708767e-15
+"triang","constant",5,"b+c","2.0+0.4",0.843609515660022,"finite",0.843609515660025,"b+c","",2.44249065417534e-15
+"triang","limit_uniform",100,"","",-7.63997340605351,"finite",-7.63997340605333,"","",1.78523862359725e-13
+"triang","limit_uniform",100,"a","-1",-28.1264897312358,"finite",-28.1264897312358,"a","",-2.1316282072803e-14
+"triang","limit_uniform",100,"b","2",-31.9336517671144,"finite",-31.9336517671143,"b","",2.48689957516035e-14
+"triang","limit_uniform",100,"a+b","-1+ 2",-59.9558093057545,"finite",-59.9558093057545,"a+b","",1.4210854715202e-14
+"triang","limit_uniform",100,"c","0.4",-16.5151888883118,"finite",-16.5151888883114,"c","",3.94351218346856e-13
+"triang","limit_uniform",100,"a+c","-1.0+ 0.4",-51.0117860458394,"finite",-51.0117860458392,"a+c","",1.63424829224823e-13
+"triang","limit_uniform",100,"b+c","2.0+0.4",-40.5391132806113,"finite",-40.5391132806112,"b+c","",9.9475983006414e-14

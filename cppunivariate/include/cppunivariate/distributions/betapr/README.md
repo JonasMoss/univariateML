@@ -10,9 +10,9 @@ r:
   density: extraDistr::dbetapr
   sampler: extraDistr::rbetapr
   control:
-    gradtol: Tolerance on the total gradient norm in log coordinates; with fixed scale, relative Newton step tolerance on log(shape2).
+    gradtol: Tolerance on the total gradient norm in log coordinates after dividing data by their geometric mean; with fixed scale, relative Newton step tolerance on log(shape2).
     reltol: Relative objective tolerance.
-    abstol: Step tolerance in log coordinates.
+    abstol: Step tolerance in log coordinates after dividing data by their geometric mean.
     shape10: Optional positive starting value for shape1 (zero selects automatic starts).
     shape20: Optional positive starting value for shape2 (zero selects automatic starts).
     scale0: Optional positive starting value for scale (zero selects automatic starts).

@@ -34,8 +34,8 @@ test_that("mlgev matches constrained reference density oracles", {
   }
 })
 test_that("mlgev reports invalid inputs and returns attained bounds", {
-  for (x in list(c(1,2), c(0,0,1), c(0,1,1,2), rep(1,5)))
-    expect_error(mlgev(x), "at least three|tie multiplicity")
+  for (x in list(c(1,2), c(0,0,1), rep(1,5)))
+    expect_error(mlgev(x), "at least three|multiplicity")
   for (k in c(-.51,1.01,Inf,NaN)) expect_error(mlgev(1:5, xi = k), "in \\[-0.5, 1\\]")
   expect_error(mlgev(c(1,2,NA)))
   expect_error(mlgev(1:5, iterlim = 1), "converge")
@@ -94,4 +94,17 @@ test_that("runtime GEV repairs use stable Gumbel transforms and preserve RNG che
   t <- ifelse(xi == 0, -z, -log1p(xi*z)/xi)
   expected <- log(-expm1(-exp(t))); expected[1] <- log(-expm1(-exp(t[1])))
   expect_equal(p(z, xi = xi, lower.tail = FALSE, log.p = TRUE), expected, tolerance = 1e-12)
+})
+
+test_that("GEV fixed shape accepts harmless ties", {
+  for (x in list(c(0,1,1,2),c(0,1,2,2,2),c(0,0,0,1))) for(k in c(-.5,0,.3)) {
+    f <- mlgev(x,xi=k)
+    objective <- function(p) {
+      v <- -sum(extraDistr::dgev(x,mu=p[1],sigma=exp(p[2]),xi=k,log=TRUE))
+      if(is.finite(v)) v else 1e100
+    }
+    o <- optim(c(f["mu"],log(f["sigma"])),objective,method="Nelder-Mead",control=list(reltol=1e-12,maxit=2000))
+    expect_equal(as.numeric(logLik(f)), -o$value, tolerance=1e-7)
+  }
+  expect_error(mlgev(c(0,0,0,1),xi=.5), "multiplicity")
 })

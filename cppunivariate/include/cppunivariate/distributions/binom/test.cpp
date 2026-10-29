@@ -58,3 +58,15 @@ TEST_CASE("binom dpqr: trivial trial size, CDF endpoints") {
   const double k = dist::qbinom(0.7, 20.0, 0.4, true, false);
   CHECK(dist::pbinom(k, 20.0, 0.4, true, false) >= 0.7);
 }
+
+TEST_CASE("binom: free size brackets the integer profile maximum") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for (auto x : {std::vector<int>{2,6,6},std::vector<int>{1,2,3,4,5},std::vector<int>{1,3,3,4}}) {
+   const auto f=cppunivariate::binom_mle(as_ispan(x),nan,1e-10,100);
+   REQUIRE(f.status==cppunivariate::BinomStatus::Ok);
+   for(int k=*std::max_element(x.begin(),x.end()); k<=500; ++k)
+     CHECK(f.logLik>=cppunivariate::binom_mle(as_ispan(x),k,1e-10,100).logLik-1e-10);
+ }
+ const std::vector<int> x{2,6,6};
+ CHECK(cppunivariate::binom_mle(as_ispan(x),nan,1e-10,100).size==13);
+}

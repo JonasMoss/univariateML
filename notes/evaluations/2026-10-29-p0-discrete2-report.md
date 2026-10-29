@@ -1,0 +1,11 @@
+# TASK-79: p0-discrete2
+
+The analysis in `notes/evaluations/2026-10-29-p0-discrete2.md` classifies all proper hold subsets, describes proof arguments and limits, audits master and R7 domains, and proposes metadata. Scripts, saved samples and numerical results are in the adjacent `2026-10-29-p0-discrete2/` directory.
+
+Independent fixed-seed reference-likelihood searches covered default n=20, 100 and 1000, small and tied samples, and representative named limit models. All 337 returned master fits agreed both with the independent search and the reference likelihood at the returned estimate within `1e-6*n`; all implemented proper hold combinations were represented. Own-family PMFs additionally matched independently written formulas to at worst 7.2e-15 in log density on the checked grids. Explicit boundary-path results are saved separately.
+
+CMP's own `dcmp` admits `lambda=0` and `nu=0` (with the appropriate normalizability condition), contrary to its README; the fitter rejects some attained point-mass and geometric boundary maxima. The tpois reference admits infinite design bounds and singleton support. Free bounds tighten to the sample extremes, but the strict lower argument lies in `[min(x)-1,min(x))`; singleton support has an attained unidentified rate, which master rejects. `extraDistr::dtpois` loses accuracy near the zero-probability conditioning edge.
+
+`extraDistr::ddlaplace` accepts a real location although its README/fitter require an integer; its off-lattice values do not define a normalized PMF on the integer lattice, requiring an R7 model decision. `extraDistr::ddgamma(rate=0)` accepts the input but gives zero probability at every finite count, also requiring a domain-policy decision. No R5 restriction is warranted for these families.
+
+Remaining limitations: BNB existence with the NB/Poisson faces has an exact but implicit finite-point-versus-face criterion; a simpler necessary-and-sufficient sample statistic and certified global optimization remain open. The numerical searches have finite bounds and are not global proofs, especially for BNB and dgamma; reference tail underflow limits extreme-path checks. The target `holds` schema cannot encode these sample-dependent exceptions, which belong in the detailed behavior documentation. No package code, READMEs, tests or goldens were changed, and no commit was made.

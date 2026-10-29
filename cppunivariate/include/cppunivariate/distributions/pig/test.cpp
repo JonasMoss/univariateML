@@ -63,3 +63,37 @@ TEST_CASE("pig: free fits can reach reference underflow region") {
   REQUIRE(fixed.status==cppunivariate::PigStatus::Ok);
   CHECK(fixed.mean==doctest::Approx(1.5).epsilon(1e-6));
 }
+
+#include "cppunivariate/distributions/pig/dpqr.hpp"
+#include "cppunivariate/distributions/rng_std.hpp"
+TEST_CASE("pig: probability endpoints and sampler CDF") {
+  CHECK(cppunivariate::distributions::qpig(0,2,3,true,false)==0);
+  CHECK(std::isinf(cppunivariate::distributions::qpig(0,2,3,false,false))==true);
+  CHECK(cppunivariate::distributions::ppig(-1,2,3,true,false)==0);
+  CHECK(cppunivariate::distributions::ppig(std::numeric_limits<double>::infinity(),2,3,true,false)==1);
+  CHECK(std::isnan(cppunivariate::distributions::qpig(.1,2,3,true,true)));
+  cppunivariate::distributions::StdRng<> rng(7813);
+  std::vector<double> samples;
+  for(int i=0;i<20000;++i) samples.push_back(cppunivariate::distributions::rpig(rng,2,3));
+  for(double point:{0.,2.,5.}) {
+    int count=0;for(double x:samples) if(x<=point) ++count;
+    const double prob=cppunivariate::distributions::ppig(point,2,3,true,false);
+    CHECK(std::abs(count/20000.-prob)<=5*std::sqrt(prob*(1-prob)/20000.));
+  }
+}
+// from mpmath import mp; mp.dps=100
+// def pmf(k):
+//     k=mp.mpf(k)
+//     return (mp.sqrt(6/mp.pi)*mp.exp(mp.mpf('1.5'))
+//       *(mp.mpf(3)/mp.mpf('2.75'))**((k-mp.mpf('.5'))/2)
+//       *mp.besselk(k-mp.mpf('.5'),mp.sqrt(mp.mpf('8.25')))/mp.factorial(k))
+// mp.log(mp.fsum(pmf(k) for k in range(100,900)))
+TEST_CASE("pig: direct upper log sum and discrete quantile brackets") {
+  CHECK(cppunivariate::distributions::ppig(99,2,3,false,true)==doctest::Approx(-36.218853990576662).epsilon(2e-14));
+  for(double lp:{-27.631021115928547,-69.07755278982137,-230.25850929940458,-690.7755278982137,-800.,-10000.}) for(bool lower:{true,false}) {
+    const double q=cppunivariate::distributions::qpig(lp,2,3,lower,true);
+    REQUIRE(std::isfinite(q));
+    if(lower) {CHECK(cppunivariate::distributions::ppig(q,2,3,true,true)>=lp);CHECK(cppunivariate::distributions::ppig(q-1,2,3,true,true)<lp);}
+    else {CHECK(cppunivariate::distributions::ppig(q,2,3,false,true)<=lp);CHECK(cppunivariate::distributions::ppig(q-1,2,3,false,true)>lp);}
+  }
+}

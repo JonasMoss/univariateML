@@ -1,0 +1,113 @@
+"family","sample","n","held","oracle","master","held_ok","difference","message","convergence"
+"invtrgamma","n2",2,"",3.76589740446267,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"invtrgamma","n2",2,"shape1",2.94775795311514,2.94775795311572,TRUE,5.77760062014931e-13,"",0
+"invtrgamma","n2",2,"shape2",2.9465153527327,2.94651535278257,TRUE,4.98716623553719e-11,"",0
+"invtrgamma","n2",2,"scale",2.94682779912913,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n2",2,"shape1+shape2",2.56883531297769,2.56883531297802,TRUE,3.29958282918597e-13,"",0
+"invtrgamma","n2",2,"shape1+scale",2.52002665904016,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n2",2,"shape2+scale",2.67503727655468,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n3",3,"",4.07073189097935,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.",1
+"invtrgamma","n3",3,"shape1",4.0430761770666,4.04307617706716,TRUE,5.60440582830779e-13,"",0
+"invtrgamma","n3",3,"shape2",4.05628249909445,4.05628249909618,TRUE,1.72661884789704e-12,"",0
+"invtrgamma","n3",3,"scale",4.05155953676094,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n3",3,"shape1+shape2",3.72944851660196,3.72944851660258,TRUE,6.19504447740837e-13,"",0
+"invtrgamma","n3",3,"shape1+scale",3.59663995619851,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n3",3,"shape2+scale",3.87964738062083,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n5",5,"",6.18444594138009,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",1
+"invtrgamma","n5",5,"shape1",5.7239173898845,5.7239173898906,TRUE,6.09734485124136e-12,"",0
+"invtrgamma","n5",5,"shape2",5.86100135401065,5.86100135407642,TRUE,6.57687238003746e-11,"",0
+"invtrgamma","n5",5,"scale",5.77373937029344,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n5",5,"shape1+shape2",5.39208536464311,5.39208536464326,TRUE,1.49213974509621e-13,"",0
+"invtrgamma","n5",5,"shape1+scale",5.53264316057309,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n5",5,"shape2+scale",5.39015330171506,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n20",20,"",20.6338073798465,20.6338073815772,TRUE,1.73065117792248e-09,"",0
+"invtrgamma","n20",20,"shape1",19.7640990950421,19.7640990950669,TRUE,2.48121523327427e-11,"",0
+"invtrgamma","n20",20,"shape2",19.6367824277661,19.6367824278913,TRUE,1.2519763004093e-10,"",0
+"invtrgamma","n20",20,"scale",19.6750263892986,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n20",20,"shape1+shape2",19.4360059188553,19.4360059188553,TRUE,-1.4210854715202e-14,"",0
+"invtrgamma","n20",20,"shape1+scale",19.2038415758101,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n20",20,"shape2+scale",19.5870172399735,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n100",100,"",95.5694207127503,95.5694207133947,TRUE,6.4440541791555e-10,"",0
+"invtrgamma","n100",100,"shape1",95.5403717180275,95.5403717180299,TRUE,2.47268872044515e-12,"",0
+"invtrgamma","n100",100,"shape2",95.5694190596199,95.5694190602491,TRUE,6.29185592515569e-10,"",0
+"invtrgamma","n100",100,"scale",95.5657913623655,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n100",100,"shape1+shape2",94.7209528933515,94.7209528933524,TRUE,9.80548975348938e-13,"",0
+"invtrgamma","n100",100,"shape1+scale",94.0615909723546,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n100",100,"shape2+scale",95.2884915181519,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n1000",1000,"",724.660043181952,724.660043188678,TRUE,6.72639544063713e-09,"",0
+"invtrgamma","n1000",1000,"shape1",723.873320068309,723.873320068352,TRUE,4.24051904701628e-11,"",0
+"invtrgamma","n1000",1000,"shape2",724.203457702646,724.203457704591,TRUE,1.94449967239052e-09,"",0
+"invtrgamma","n1000",1000,"scale",724.055154131415,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n1000",1000,"shape1+shape2",722.408856064852,722.408856064855,TRUE,3.18323145620525e-12,"",0
+"invtrgamma","n1000",1000,"shape1+scale",722.056228442588,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","n1000",1000,"shape2+scale",723.247782091405,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties",20,"",19.8165342008686,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"invtrgamma","ties",20,"shape1",18.148694953706,18.1486949537239,TRUE,1.78452808086149e-11,"",0
+"invtrgamma","ties",20,"shape2",18.1292293655827,18.1292293656883,TRUE,1.05526254401411e-10,"",0
+"invtrgamma","ties",20,"scale",18.12516653123,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties",20,"shape1+shape2",18.1032065721813,18.1032065721813,TRUE,7.105427357601e-15,"",0
+"invtrgamma","ties",20,"shape1+scale",17.9258239043566,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties",20,"shape2+scale",18.1227778553818,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","constant",5,"",42.2833892102381,NA,NA,NA,"invtrgamma requires at least two distinct positive finite observations, positive `reltol` and positive `iterlim`.",0
+"invtrgamma","constant",5,"shape1",44.8435474741213,NA,NA,NA,"invtrgamma requires at least two distinct positive finite observations, positive `reltol` and positive `iterlim`.",0
+"invtrgamma","constant",5,"shape2",38.6940623447299,NA,NA,NA,"invtrgamma requires at least two distinct positive finite observations, positive `reltol` and positive `iterlim`.",0
+"invtrgamma","constant",5,"scale",41.801538238069,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","constant",5,"shape1+shape2",6.45535714587662,6.45535714587665,TRUE,3.90798504668055e-14,"",0
+"invtrgamma","constant",5,"shape1+scale",8.06013286311475,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","constant",5,"shape2+scale",6.14434143486073,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","lnorm",100,"",-139.712724250255,-139.712724230286,TRUE,1.9968638298451e-08,"",0
+"invtrgamma","lnorm",100,"shape1",-139.934926835322,-139.934926835116,TRUE,2.06398453883594e-10,"",0
+"invtrgamma","lnorm",100,"shape2",-143.801008998386,-143.801008998379,TRUE,7.19069248589221e-12,"",0
+"invtrgamma","lnorm",100,"scale",-142.823845661372,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","lnorm",100,"shape1+shape2",-265.397121257618,-265.397121257616,TRUE,1.76214598468505e-12,"",0
+"invtrgamma","lnorm",100,"shape1+scale",-324.866504542106,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","lnorm",100,"shape2+scale",-144.508532417474,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","pareto",100,"",-48.3199022732851,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"invtrgamma","pareto",100,"shape1",-61.3292644664732,-61.3292644664437,TRUE,2.9544366952905e-11,"",0
+"invtrgamma","pareto",100,"shape2",-62.892399381008,-62.8923993805658,TRUE,4.42256009591802e-10,"",0
+"invtrgamma","pareto",100,"scale",-142.207449829893,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","pareto",100,"shape1+shape2",-69.5500828623049,-69.5500828623047,TRUE,1.98951966012828e-13,"",0
+"invtrgamma","pareto",100,"shape1+scale",-397.817029552668,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","pareto",100,"shape2+scale",-159.507777760169,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties_half",20,"",39.5916166880405,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"invtrgamma","ties_half",20,"shape1",27.701672753557,27.7016727535637,TRUE,6.61870558360533e-12,"",0
+"invtrgamma","ties_half",20,"shape2",27.0975267564024,27.0975267565699,TRUE,1.6743229025451e-10,"",0
+"invtrgamma","ties_half",20,"scale",27.0590893102001,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties_half",20,"shape1+shape2",26.3924372665906,26.3924372665926,TRUE,1.96465066437668e-12,"",0
+"invtrgamma","ties_half",20,"shape1+scale",23.5344693616806,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties_half",20,"shape2+scale",27.0540677392208,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties_major",20,"",39.9576829382572,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"invtrgamma","ties_major",20,"shape1",27.6341988184983,27.6341988185057,TRUE,7.38964445190504e-12,"",0
+"invtrgamma","ties_major",20,"shape2",27.0480018022688,27.0480018022914,TRUE,2.2634338847638e-11,"",0
+"invtrgamma","ties_major",20,"scale",26.9960034147085,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties_major",20,"shape1+shape2",26.387939934549,26.3879399345499,TRUE,9.09494701772928e-13,"",0
+"invtrgamma","ties_major",20,"shape1+scale",23.5022434403874,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","ties_major",20,"shape2+scale",26.9812407487481,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","below",5,"",-0.157877240613516,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.",1
+"invtrgamma","below",5,"shape1",-0.283213697294859,-0.283213697293736,TRUE,1.12210241098865e-12,"",0
+"invtrgamma","below",5,"shape2",-0.354597851759535,-0.354597851754803,TRUE,4.73188155325488e-12,"",0
+"invtrgamma","below",5,"scale",-0.353540984463584,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","below",5,"shape1+shape2",-1.00535562386079,-1.00535562386061,TRUE,1.79412040779425e-13,"",0
+"invtrgamma","below",5,"shape1+scale",-3.30379579577612,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","below",5,"shape2+scale",-0.354730316063735,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","above",5,"",-6.85554685425446,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"invtrgamma","above",5,"shape1",-7.73972019654825,-7.73972019654687,TRUE,1.37312383685639e-12,"",0
+"invtrgamma","above",5,"shape2",-7.72256174671597,-7.72256174671573,TRUE,2.43360886997834e-13,"",0
+"invtrgamma","above",5,"scale",-10.395164946656,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","above",5,"shape1+shape2",-8.0702755188452,-8.07027551884491,TRUE,2.8599345114344e-13,"",0
+"invtrgamma","above",5,"shape1+scale",-23.1519560713759,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","above",5,"shape2+scale",-10.8614520915225,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","cross",5,"",-4.53685630542361,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",1
+"invtrgamma","cross",5,"shape1",-4.84866364692532,-4.84866364691227,TRUE,1.30517818774933e-11,"",0
+"invtrgamma","cross",5,"shape2",-5.14139302930509,-5.14139302930179,TRUE,3.29780647234656e-12,"",0
+"invtrgamma","cross",5,"scale",-5.28251968343487,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","cross",5,"shape1+shape2",-7.30669131798562,-7.30669131798548,TRUE,1.35891298214119e-13,"",0
+"invtrgamma","cross",5,"shape1+scale",-14.8870868281979,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","cross",5,"shape2+scale",-5.35292940639766,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","at",5,"",-1.94369158070776,NA,NA,NA,"The invtrgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.",1
+"invtrgamma","at",5,"shape1",-2.49329205883321,-2.49329205881925,TRUE,1.39661615605746e-11,"",0
+"invtrgamma","at",5,"shape2",-2.7087985059364,-2.7087985059285,TRUE,7.89412979429471e-12,"",0
+"invtrgamma","at",5,"scale",-3.02222849871688,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","at",5,"shape1+shape2",-3.21533976615726,-3.21533976615697,TRUE,2.8643754035329e-13,"",0
+"invtrgamma","at",5,"shape1+scale",-11.9159109347792,NA,NA,NA,"unused argument (scale = 0.5)",0
+"invtrgamma","at",5,"shape2+scale",-3.30813363464779,NA,NA,NA,"unused argument (scale = 0.5)",0

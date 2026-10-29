@@ -1,0 +1,76 @@
+"id","sample","n","held","oracle","master","reference_at_fit","status"
+"zipf",1,20,"",-21.6188686528492,-21.6188686528492,-21.6188686528492,"ok"
+"zipf",1,20,"N",-21.6188686528492,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",1,20,"s",-21.6362219637278,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",2,100,"",-109.861228866811,-109.861228866811,-109.861228866811,"ok"
+"zipf",2,100,"N",-109.861228866811,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",2,100,"s",-112.60839249057,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",3,1000,"",-1062.64552937956,-1062.64552937956,-1062.64552937956,"ok"
+"zipf",3,1000,"N",-1062.64552937956,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",3,1000,"s",-1063.3858945161,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",4,5,"",0,0,0,"ok"
+"zipf",4,5,"N",0,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",4,5,"s",0,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",5,5,"",-2.50201211769094,-2.50201211769094,-2.50201211769094,"ok"
+"zipf",5,5,"N",-2.8052399026477,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",5,5,"s",-3.02057357397782,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",6,2,"",-1.38629436111989,-1.38629436111989,-1.38629436111989,"ok"
+"zipf",6,2,"N",-1.89633486109983,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",6,2,"s",-1.41617358375911,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",7,3,"",-1.90954250488444,-1.90954250488444,-1.90954250488444,"ok"
+"zipf",7,3,"N",-2.30911109345524,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",7,3,"s",-1.95097358049868,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",8,5,"",-5.37282521440869,-5.37282521440869,-5.37282521440869,"ok"
+"zipf",8,5,"N",-5.37282521440869,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",8,5,"s",-5.37309523187548,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",9,20,"",-26.7977288105716,-26.7977288105716,-26.7977288105716,"ok"
+"zipf",9,20,"N",-Inf,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",9,20,"s",-26.811107647955,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",10,20,"",-31.5253025563374,-31.5253025563374,-31.5253025563374,"ok"
+"zipf",10,20,"N",-Inf,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",10,20,"s",-35.6552099514625,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",11,20,"",-19.6535194391521,-19.6535194391521,-19.6535194391521,"ok"
+"zipf",11,20,"N",-Inf,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",11,20,"s",-23.6591118181765,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",12,20,"",0,0,0,"ok"
+"zipf",12,20,"N",0,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",12,20,"s",0,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",13,5,"",0,0,0,"ok"
+"zipf",13,5,"N",0,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",13,5,"s",0,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",14,20,"",-27.7258872223978,-27.7258872223978,-27.7258872223978,"ok"
+"zipf",14,20,"N",-Inf,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",14,20,"s",-32.1863860556391,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"
+"zipf",15,20,"",-27.4866098913918,-27.4866098913918,-27.4866098913918,"ok"
+"zipf",15,20,"N",-Inf,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (N = 3)
+"
+"zipf",15,20,"s",-32.7708328388113,NA,NA,"Error in mlzipf_(x = x, ...) : unused argument (s = 0.5)
+"

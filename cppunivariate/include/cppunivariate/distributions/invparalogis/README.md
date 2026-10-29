@@ -10,7 +10,7 @@ r:
   sampler: actuar::rinvparalogis
   control:
     shape0: Optional positive finite starting value; NULL uses the automatic start.
-    gradtol: Tolerance for the underlying fit.
+    gradtol: Gradient tolerance for the underlying paralogistic fit on median-normalized reciprocals; with fixed scale, tolerance on the mean log-shape score (at most 1e-10).
     iterlim: Maximum number of iterations.
 log_density: 2*log(shape) + shape*log(scale/x) - log(x) - (shape+1)*log(1+(scale/x)**shape)
 references:
