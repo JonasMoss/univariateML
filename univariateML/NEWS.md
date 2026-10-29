@@ -85,6 +85,12 @@
   white ball, with known population `N`; estimates the number of white
   balls `m`).
 
+* `mldnorm()` and `mldgamma()` (discretized normal and gamma, `floor` of
+  the continuous variable). Their MLEs exist iff the sample range is at
+  least two; data on two adjacent integers stop with "use
+  `mlbinom(x - k, size = 1)`". Rounded data with a small spread are such
+  samples almost always.
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
