@@ -79,6 +79,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | snorm      | Skew Normal             | mean, sd, xi       | fGarch::dsnorm            | (-∞, ∞) open     |
 | sstd       | Skew Student-t          | mean, sd, nu, xi   | fGarch::dsstd             | (-∞, ∞) open     |
 | std       | Student-t                | mean, sd, nu       | fGarch::dstd              | (-∞, ∞) open     |
+| triang | Triangular | a, b, c | extraDistr::dtriang | [a, b] |
 | unif       | Uniform                 | min, max           | stats::dunif              | (-∞, ∞) open     |
 | weibull    | Weibull                 | shape, scale       | stats::dweibull           | (0, ∞) open      |
 | zip        | Zero-inflated Poisson   | lambda, pi         | extraDistr::dzip          | [0, ∞) integer   |

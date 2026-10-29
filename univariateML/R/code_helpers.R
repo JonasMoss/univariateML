@@ -186,6 +186,26 @@ univariateML_reference_fixes <- list(
       q[is.na(p) | p < 0 | p > 1] <- NaN
       q
     }
+  ),
+  "extraDistr::ptriang" = list(
+    broken = function() {
+      is.nan(suppressWarnings(extraDistr::ptriang(0, 0, 1, 0)))
+    },
+    replacement = function(q, a = -1, b = 1, c = (a + b)/2,
+                           lower.tail = TRUE, log.p = FALSE) {
+      out <- suppressWarnings(extraDistr::ptriang(q, a, b, c,
+                                 lower.tail = lower.tail, log.p = log.p))
+      n <- length(out)
+      if (!n) return(out)
+      aa <- rep_len(a, n); bb <- rep_len(b, n); cc <- rep_len(c, n)
+      qq <- rep_len(q, n)
+      fix <- !is.na(qq) & is.finite(aa) & is.finite(bb) &
+        is.finite(cc) & aa < bb & aa <= cc & cc <= bb & qq <= aa
+      out[which(fix)] <- if (log.p) { if (lower.tail) -Inf else 0 } else {
+        if (lower.tail) 0 else 1
+      }
+      out
+    }
   )
 )
 
