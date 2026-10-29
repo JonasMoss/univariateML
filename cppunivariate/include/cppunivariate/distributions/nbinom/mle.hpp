@@ -32,7 +32,8 @@ struct NbinomResult {
   NbinomStatus status = NbinomStatus::Ok;
 };
 
-inline NbinomResult nbinom_mle(ispan x, double tol, int maxit) {
+inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
+    double size_fixed = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, false};
@@ -44,6 +45,15 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit) {
   }
   const double dn = static_cast<double>(n);
   const double x_bar = sum_x / dn;
+  if (!std::isnan(size_fixed)) {
+    if (!(size_fixed > 0) || !std::isfinite(size_fixed))
+      return {kNaN, kNaN, kNaN, 0, false};
+    const double prob = size_fixed / (size_fixed + x_bar);
+    if (prob == 1 && x_bar > 0) return {kNaN, kNaN, kNaN, 0, false};
+    double ll = 0;
+    for (int v : x) ll += special::dnbinom(v, size_fixed, prob, true);
+    return {size_fixed, prob, ll, 0, false};
+  }
   if (x_bar == 0.0) return {1.0, 1.0, 0.0, 0, false};
 
   const double var_hat = sum_x_sq / dn - x_bar * x_bar;
