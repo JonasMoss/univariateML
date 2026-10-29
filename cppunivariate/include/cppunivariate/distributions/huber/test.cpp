@@ -192,3 +192,58 @@ TEST_CASE("huber: two-point profile lies below normal and compares Laplace") {
     CHECK(r.logLik<normal);
   }
 }
+
+TEST_CASE("huber: exact prefix nominations agree with full scan above threshold") {
+  std::mt19937 rng(71683);
+  std::normal_distribution<double> normal;
+  std::exponential_distribution<double> exponential;
+  for (int family=0;family<5;++family) {
+    std::vector<double> x;
+    for (int i=0;i<4097;++i) {
+      double v=family==0 ? normal(rng) :
+          cppunivariate::distributions::qhuber((i+.5)/4097,0,1,.8,true,false);
+      if (family==2) v=std::round(v*4)/4;
+      if (family==3) v=(i%7==0 ? 5 : .2)*normal(rng);
+      if (family==4) v=exponential(rng)-exponential(rng);
+      x.push_back(v);
+    }
+    for (int subset=0;subset<4;++subset) {
+      const double mu=subset%2 ? .2 : NAN;
+      const double sigma=subset/2 ? 1.3 : NAN;
+      const auto fast=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN,mu,sigma);
+      const auto full=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN,mu,sigma,true);
+      REQUIRE(fast.status==full.status);
+      CHECK(fast.logLik==doctest::Approx(full.logLik).epsilon(1e-10));
+      if (fast.status!=cppunivariate::HuberStatus::Ok) continue;
+      CHECK(fast.mu==doctest::Approx(full.mu).epsilon(1e-8));
+      CHECK(fast.sigma==doctest::Approx(full.sigma).epsilon(1e-8));
+      CHECK(fast.epsilon==doctest::Approx(full.epsilon).epsilon(1e-8));
+    }
+  }
+}
+
+TEST_CASE("huber: prefix loss and derivatives are exact reductions") {
+  std::vector<double> x;
+  for (int i=0;i<4101;++i) x.push_back((i%17-8)*.25);
+  std::sort(x.begin(),x.end());
+  cppunivariate::HuberProfileData data(x,NAN);
+  for (double a:{.1,1.,10.}) for (double b:{-.5,0.,.25})
+    for (double c:{.01,.5,2.}) {
+      long double loss=0;
+      double gp=0,gh=0,aa=0,ab=0,bb=0;
+      data.moments(a,b,c,loss,gp,gh,aa,ab,bb);
+      double rl=0,rp=0,rh=0,ra=0,rb=0,rc=0;
+      for (double v:data.y) {
+        const double z=a*v-b, psi=cppunivariate::huber_psi(z,c);
+        const double d=std::abs(z)<c ? 1 : (std::abs(z)==c ? .5 : 0);
+        rl+=cppunivariate::huber_rho(z,c); rp+=v*psi; rh+=psi;
+        ra+=d*v*v; rb-=d*v; rc+=d;
+      }
+      CHECK(static_cast<double>(loss)==doctest::Approx(rl).epsilon(1e-10));
+      CHECK(gp==doctest::Approx(rp).epsilon(1e-10));
+      CHECK(gh==doctest::Approx(rh).epsilon(1e-10));
+      CHECK(aa==doctest::Approx(ra).epsilon(1e-10));
+      CHECK(ab==doctest::Approx(rb).epsilon(1e-10));
+      CHECK(bb==doctest::Approx(rc).epsilon(1e-10));
+    }
+}
