@@ -107,3 +107,18 @@ TEST_CASE("betapr: held shapes retain their own escaping faces") {
   const auto i=cppunivariate::betapr_mle_holds(mltest::as_span(x),nan,1.2,nan);
   CHECK(i.status==cppunivariate::BetaPrimeStatus::InvGammaBoundary);
 }
+
+TEST_CASE("betapr: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("betapr");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::betapr_mle_fixed_scale(x,1,1e-8,1).status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+}
+
+TEST_CASE("betapr: P3 finite failed BFGS point is not a fit") {
+  const std::vector<double> values{.01,.2,.3,.5,2,10,50};
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(values),1e-10,1);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(std::isfinite(r.alpha));
+  CHECK(std::isfinite(r.beta));
+  CHECK(std::isfinite(r.scale));
+}

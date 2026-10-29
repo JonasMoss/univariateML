@@ -29,6 +29,9 @@ inline LogLogisticResult loglogistic_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0};
 
+  if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0] && v>0 && std::isfinite(v);}))
+    return {kNaN,kNaN,kNaN,0,LogLogisticStatus::Unbounded};
+
   std::vector<double> y(n);
   for (std::size_t i = 0; i < n; ++i) y[i] = std::log(x[i]);
   LogisticResult base = logistic_mle(span{y.data(), n}, tol, maxit);
@@ -39,7 +42,9 @@ inline LogLogisticResult loglogistic_mle(span x, double tol, int maxit) {
   double sum_log_x = 0.0;
   for (auto v : y) sum_log_x += v;
   const double logLik = base.logLik - sum_log_x;
-  return {shape, rate, logLik, base.iterations};
+  return {shape, rate, logLik, base.iterations,
+      base.status == LogisticStatus::Ok ? LogLogisticStatus::Ok :
+      LogLogisticStatus::IterationFailure};
 }
 
 inline LogLogisticResult loglogistic_mle(span x,double tol,int maxit,double shape,double rate) {

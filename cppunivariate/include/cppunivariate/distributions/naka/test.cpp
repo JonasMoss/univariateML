@@ -107,3 +107,9 @@ TEST_CASE("naka P2 held boundaries and solver failure") {
   CHECK(std::isfinite(cppunivariate::naka_mle(mltest::as_span(x),1e-10,100,2,nan).logLik));
   CHECK(cppunivariate::naka_mle(mltest::as_span(x),1e-10,1,nan,3).status==cppunivariate::GammaStatus::IterationFailure);
 }
+
+TEST_CASE("naka: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("naka");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::naka_mle(x,1e-8,1).status==cppunivariate::GammaStatus::IterationFailure);
+}

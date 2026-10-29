@@ -50,3 +50,9 @@ TEST_CASE("fatigue: exact held-beta alpha and held-alpha profile") {
   CHECK(std::isnan(cppunivariate::fatigue_mle(mltest::as_span(c),1e-10,200,nan,1).logLik));
   CHECK(std::isfinite(cppunivariate::fatigue_mle(mltest::as_span(c),1e-10,200,3,1).logLik));
 }
+
+TEST_CASE("fatigue: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("fatigue");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::fatigue_mle(x,1e-8,1).status==cppunivariate::FatigueStatus::SearchFailure);
+}

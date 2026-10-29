@@ -32,14 +32,11 @@ Rcpp::List mlinvweibull_(const Rcpp::NumericVector &x,
       Rcpp::stop("`shape0` must be a positive finite number.");
     }
   }
-  if (iterlim <= 1 && shape.isNull() && rate.isNull()) {
-    Rcpp::warning("iteration limit reached");
-  }
   auto res = cppunivariate::invweibull_mle(dist_impl::as_span(x), reltol, iterlim, start, shape_held, rate_held);
   if (res.status == cppunivariate::InvWeibullStatus::Unbounded)
     Rcpp::stop("The invweibull maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale.");
   if (res.status == cppunivariate::InvWeibullStatus::IterationFailure)
-    Rcpp::stop("The held-parameter invweibull score solver failed to converge; increase iterlim.");
+    Rcpp::stop("Inverse Weibull optimizer IterationFailure: failed to converge; increase iterlim.");
   if (!std::isfinite(res.shape) || !std::isfinite(res.rate) || !std::isfinite(res.logLik)) {
     if (shape.isNull() && rate.isNull() && std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
       Rcpp::stop("The inverse Weibull maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");

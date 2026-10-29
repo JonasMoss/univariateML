@@ -69,3 +69,9 @@ TEST_CASE("invgamma P2 held boundaries and solver failure") {
   CHECK(cppunivariate::invgamma_mle(mltest::as_span(x),1e-10,1,nan,2).status==cppunivariate::GammaStatus::IterationFailure);
   CHECK(std::isfinite(cppunivariate::invgamma_mle(mltest::as_span(x),1e-10,100,2,nan).logLik));
 }
+
+TEST_CASE("invgamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("invgamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::invgamma_mle(x,1e-8,1).status==cppunivariate::GammaStatus::IterationFailure);
+}

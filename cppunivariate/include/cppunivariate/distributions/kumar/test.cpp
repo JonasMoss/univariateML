@@ -177,3 +177,9 @@ TEST_CASE("kumar P2 held large a retains tiny survival logs") {
   CHECK(r.b==doctest::Approx(-1/std::log1p(-std::pow(.4,100))).epsilon(1e-12));
   CHECK(r.logLik==doctest::Approx(5*(std::log(100.0)-std::log(.4)-1)).epsilon(1e-12));
 }
+
+TEST_CASE("kumar: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("kumar");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::kumar_mle(x,1e-8,1).status==cppunivariate::KumarStatus::IterationFailure);
+}

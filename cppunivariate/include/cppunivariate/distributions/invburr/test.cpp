@@ -135,3 +135,9 @@ for(int mask=1;mask<8;++mask){
  CHECK(r.logLik>=g.logLik-1e-5);
  }
 }
+
+TEST_CASE("invburr: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("invburr");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::invburr_mle(x,1e-8,1).status==cppunivariate::InvBurrStatus::IterationFailure);
+}

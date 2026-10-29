@@ -87,3 +87,9 @@ TEST_CASE("gamma held shape profiles rate without intermediate overflow") {
   // a numerical failure is returned rather than a spurious finite fit.
   CHECK(r.status==cppunivariate::GammaStatus::IterationFailure);
 }
+
+TEST_CASE("gamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("gamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::gamma_mle(x,1e-8,1).status==cppunivariate::GammaStatus::IterationFailure);
+}

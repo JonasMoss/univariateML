@@ -187,7 +187,7 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
   if (face.logLik >= -best.f - 1e-8*n) return face;
   if (!std::isfinite(best.f)) return {nan,nan,nan,nan,0,BetaPrimeStatus::BfgsFailure};
   return {std::exp(best.theta[0]),std::exp(best.theta[1]),std::exp(best.theta[2]),
-          -best.f,best.iterations,best.status == BfgsStatus::Ok ?
+          -best.f,best.iterations,(best.status == BfgsStatus::Ok || (std::isfinite(best.grad_norm) && best.grad_norm < 1e-3)) ?
           BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
 }
 inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,

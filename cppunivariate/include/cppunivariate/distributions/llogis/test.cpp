@@ -92,3 +92,14 @@ TEST_CASE("llogis P2 held boundaries and solver failure") {
   CHECK(std::isfinite(cppunivariate::loglogistic_mle(mltest::as_span(x),1e-10,100,2,nan).logLik));
   CHECK_FALSE(std::isfinite(cppunivariate::loglogistic_mle(mltest::as_span(x),1e-10,1,nan,1).logLik));
 }
+
+TEST_CASE("llogis: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("llogis");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::loglogistic_mle(x,1e-8,1).status==cppunivariate::LogLogisticStatus::IterationFailure);
+}
+
+TEST_CASE("llogis: P3 constant data retain the unbounded diagnostic") {
+  const std::vector<double> values{1,1,1};
+  CHECK(cppunivariate::loglogistic_mle(mltest::as_span(values),1e-8,100).status==cppunivariate::LogLogisticStatus::Unbounded);
+}

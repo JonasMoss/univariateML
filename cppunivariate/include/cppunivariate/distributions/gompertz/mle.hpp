@@ -99,7 +99,8 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
   const double a = b * dn / (sum_exp_bx - dn);
   const double logLik =
       dn * std::log(a) + b * sum_x - (a / b) * (sum_exp_bx - dn);
-  return {a, b, logLik, iter, GompertzStatus::Ok};
+  return {a, b, logLik, iter,
+      iter <= maxit ? GompertzStatus::Ok : GompertzStatus::IterationFailure};
 }
 
 inline GompertzResult gompertz_mle(span x, double tol, int maxit) {

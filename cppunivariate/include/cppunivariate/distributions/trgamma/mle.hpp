@@ -576,19 +576,20 @@ inline TrGammaResult trgamma_mle_fixed_scale(span x,double scale,double a=std::n
  for(double v:{a,b,scale})if((!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))||std::isnan(scale)){bad.status=TrGammaStatus::InvalidFixed;return bad;}
  std::vector<double> z;double sum=0,jac=0,mx=-INFINITY;
  for(double v:x){if(!(v>0)||!std::isfinite(v))return bad;double w=std::log(v)-std::log(scale);z.push_back(w);sum+=w;jac-=std::log(v);mx=std::max(mx,w);}
+ const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};
  const double n=static_cast<double>(x.size());
  if(std::isnan(b)&&sum==0&&mx==0){bad.logLik=INFINITY;return bad;}
  auto at=[&](double power){
    double aa=a,ex=0,exz=0;
    for(double v:z){ex+=std::exp(power*v);exz+=power*v*std::exp(power*v);}
-   if(std::isnan(aa))aa=std::exp(burr_hold_detail::root([&](double u){return power*sum/n-special::digamma(std::exp(u));}));
+   if(std::isnan(aa))aa=std::exp(solve_root([&](double u){return power*sum/n-special::digamma(std::exp(u));}));
    const double ll=n*(std::log(power)-special::lgamma(aa))+aa*power*sum-ex+jac;
    const double score=1+aa*power*sum/n-exz/n;
    return std::array<double,3>{{aa,ll,score}};
  };
  if(!std::isnan(b)){auto v=at(b);return {v[0],b,scale,std::log(scale),v[1],0,std::isfinite(v[1])?TrGammaStatus::Ok:TrGammaStatus::IterationFailure};}
  if(!std::isnan(a)){
-   b=std::exp(burr_hold_detail::root([&](double logb){return at(std::exp(logb))[2];}));
+   b=std::exp(solve_root([&](double logb){return at(std::exp(logb))[2];}));
    auto v=at(b);
    return {a,b,scale,std::log(scale),v[1],0,
      std::isfinite(v[1])&&std::abs(v[2])<std::max(tol,1e-8)?TrGammaStatus::Ok:TrGammaStatus::IterationFailure};
@@ -598,7 +599,7 @@ inline TrGammaResult trgamma_mle_fixed_scale(span x,double scale,double a=std::n
  const double lo=-18-std::log(unit),hi=18-std::log(unit);auto prev=at(std::exp(lo));
  for(int i=1;i<=720;++i){double h=lo+(hi-lo)*i/720,l=h-(hi-lo)/720;auto cur=at(std::exp(h));
    if(prev[2]>0&&cur[2]<0){
-     for(int j=0;j<100;++j){double m=(l+h)/2;auto v=at(std::exp(m));if(v[2]>0)l=m;else h=m;}
+     for(int j=0;j<std::min(maxit,100);++j){double m=(l+h)/2;auto v=at(std::exp(m));if(v[2]>0)l=m;else h=m;}
      double power=std::exp((l+h)/2);auto v=at(power);
      if(v[1]>best){best=v[1];ba=v[0];bb=power;residual=std::abs(v[2]);}
    }prev=cur;

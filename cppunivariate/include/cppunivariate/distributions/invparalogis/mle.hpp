@@ -37,9 +37,9 @@ inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
 
 namespace cppunivariate {
 
-inline InvParalogisResult invparalogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN()){
+inline InvParalogisResult invparalogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN(), double tol=1e-9, int maxit=1000){
  std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
- auto r=paralogis_mle_holds(span{y.data(),y.size()},shape,std::isnan(scale)?scale:1/scale);
+ auto r=paralogis_mle_holds(span{y.data(),y.size()},shape,std::isnan(scale)?scale:1/scale,tol,maxit);
  return {shape,std::isnan(scale)?1/r.scale:scale,r.logLik+jac,r.iterations,r.status};
 }
 

@@ -8,6 +8,22 @@ enum class SnStatus { Ok, InvalidInput, IterationFailure, RightHalfNormalBoundar
 struct SnResult { double xi,omega,alpha,logLik; int iterations; SnStatus status; };
 namespace sn_detail {
 struct Inner { double eta,h,ll; bool converged; };
+// Normalized free-coordinate score, evaluated at the point actually returned.
+inline double score_residual(const std::vector<double>& x,double a,double xi,
+                             double omega,double eta,double h) {
+  const bool fx=std::isfinite(xi),fw=std::isfinite(omega);
+  if(fx && fw)return 0;
+  const double n=static_cast<double>(x.size());
+  double ge=n/eta,gh=0,fg=n/eta;
+  for(double v:x) {
+    const double z=eta*v-h,g=-z+a*inverse_mills(a*z);
+    ge+=v*g;gh-=g;
+    if(fx)fg+=(v-xi)*g;
+  }
+  if(fx)return std::abs(fg)*eta/n;
+  if(fw)return std::abs(gh)/n;
+  return std::hypot(ge*eta,gh)/n;
+}
 // Newton maximisation of a strictly concave objective on an affine subspace.
 // Fixed xi imposes h=xi*eta; fixed omega imposes eta=1/omega.
 inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,double tol,int maxit) {
@@ -22,7 +38,6 @@ inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,
     return ll;
   };
   double ll=objective(eta,h);
-  bool rounded=false;
   for(int it=0;it<maxit;++it) {
     double ge=n/eta,gh=0,weight=0,weighted_mean=0,central=0;
     double fixed_gradient=n/eta,fixed_information=n/(eta*eta);
@@ -58,9 +73,6 @@ inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,
       de=(ge+weighted_mean*gh)/schur; dh=gh/weight+weighted_mean*de;
       residual=std::max(std::abs(ge)*eta,std::abs(gh))/n;
     }
-    const double gain=ge*de+gh*dh;
-    const double relative_step=std::max(std::abs(de)/eta,std::abs(dh)/(1+std::abs(h)));
-    rounded=gain>=0 && gain<64*std::numeric_limits<double>::epsilon()*(1+std::abs(ll)) && relative_step<1e-7;
     if(residual<tol) return {eta,h,ll,true};
     // Once the Newton gain is below rounding of the log likelihood, a
     // stricter Armijo comparison cannot reliably distinguish either step.
@@ -75,9 +87,9 @@ inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,
       }
       step*=0.5;
     }
-    if(!accepted) return {eta,h,ll,residual<std::max(tol,1e-7) || rounded};
+    if(!accepted) return {eta,h,ll,score_residual(x,a,xi,omega,eta,h)<std::max(tol,1e-3/n)};
   }
-  return {eta,h,ll,rounded};
+  return {eta,h,ll,score_residual(x,a,xi,omega,eta,h)<std::max(tol,1e-3/n)};
 }
 }
 inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
@@ -125,11 +137,12 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       double l=-1,r=1;
       while(score(l)<0) l*=2;
       while(score(r)>0) r*=2;
-      for(int k=0;k<160;++k) {
+      for(int k=0;k<std::min(maxit,160);++k) {
         const double mid=l+(r-l)/2;
         if(mid==l || mid==r) break;
         if(score(mid)>0) l=mid; else r=mid;
       }
+      if (r-l>1e-10*(1+std::abs(l)+std::abs(r))) {bad.status=SnStatus::IterationFailure;return bad;}
       besta=(l+(r-l)/2)/eta;
       double ll=n*std::log(eta);
       for(double v:x) ll+=sn_detail::log_density(eta*(v-fx),besta);
@@ -151,11 +164,12 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       const double ratio=(std::sqrt(5.0)-1)/2;
       double u=r-ratio*(r-l),v=l+ratio*(r-l);
       auto fu=fit(std::sinh(u)),fv=fit(std::sinh(v));
-      for(int k=0;k<70 && r-l>1e-9;++k) {
+      for(int k=0;k<std::min(maxit,70) && r-l>1e-9;++k) {
         consider(std::sinh(u),fu); consider(std::sinh(v),fv);
         if(fu.ll<fv.ll) { l=u;u=v;fu=fv;v=l+ratio*(r-l);fv=fit(std::sinh(v)); }
         else { r=v;v=u;fv=fu;u=r-ratio*(r-l);fu=fit(std::sinh(u)); }
       }
+      if(r-l>1e-9) {bad.status=SnStatus::IterationFailure;return bad;}
     }
   }
   if(!std::isfinite(alpha) && !(constant && xi==low)) {

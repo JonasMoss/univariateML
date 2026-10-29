@@ -147,3 +147,10 @@ test_that("the CDF workaround is selected by a fresh runtime check", {
   expect_identical(body(second), body(extraDistr::pdweibull))
   expect_identical(checks, 2L)
 })
+
+test_that("dweibull: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "dweibull", "golden.json"))
+  x <- g$data
+  expect_error(mldweibull(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

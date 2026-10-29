@@ -91,3 +91,5 @@ is below the incumbent profile likelihood per observation.
 
 
 Every coefficient can be held together with any others. Held coefficients are preserved in both the finite fit and the eligible normal and Laplace face comparisons.
+
+A location fallback that cannot attain a normalized location score below `max(gradtol, 1e-7)` stops with an iteration failure. The score is divided by the sample size; a fixed scale does not waive this check.

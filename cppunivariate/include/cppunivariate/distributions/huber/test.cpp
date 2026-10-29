@@ -257,3 +257,21 @@ TEST_CASE("huber: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhuber(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhuber(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("huber: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("huber");
+  const auto x=mltest::as_span(g.data);
+  const std::vector<int> values(g.data.begin(),g.data.end());
+  const cppunivariate::ispan ix{values.data(),values.size()};
+  CHECK(cppunivariate::huber_fixed_mle(x,1e-8,1,1.345).status==cppunivariate::HuberStatus::IterationFailure);
+}
+
+TEST_CASE("huber: P3 fixed-scale fallback requires its location score") {
+  const std::vector<double> values{-.1,0,1e-301,1};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto failed=cppunivariate::huber_fixed_mle(mltest::as_span(values),1e-10,1,1.345,nan,1e-300);
+  CHECK(failed.status==cppunivariate::HuberStatus::IterationFailure);
+  const auto fit=cppunivariate::huber_fixed_mle(mltest::as_span(values),1e-10,200,1.345,nan,1e-300);
+  REQUIRE(fit.status==cppunivariate::HuberStatus::Ok);
+  CHECK(std::abs(fit.mu-5e-302)<1e-310);
+}

@@ -200,3 +200,21 @@ TEST_CASE("lomax P2 held boundaries and solver failure") {
   CHECK(std::isfinite(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,nan,2).logLik));
   CHECK(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,1,nan,nan,2).status==cppunivariate::LomaxStatus::IterationFailure);
 }
+
+TEST_CASE("lomax: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("lomax");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::lomax_mle(x,1e-8,1).status==cppunivariate::LomaxStatus::IterationFailure);
+}
+
+TEST_CASE("lomax: P3 Newton candidate and compressed profile reject exhaustion") {
+  const auto g=mltest::load_distribution_golden("lomax");
+  CHECK(cppunivariate::lomax_newton_candidate(mltest::as_span(g.data),1e-10,1).status==cppunivariate::LomaxStatus::IterationFailure);
+  std::vector<double> large;
+  while (large.size()<=4096) large.insert(large.end(),g.data.begin(),g.data.end());
+  CHECK(cppunivariate::lomax_mle(mltest::as_span(large),1e-10,1).status==cppunivariate::LomaxStatus::IterationFailure);
+  const auto fit=cppunivariate::lomax_mle(mltest::as_span(large),1e-10,100);
+  CHECK(fit.status==cppunivariate::LomaxStatus::Ok);
+  CHECK(fit.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-5));
+  CHECK(fit.kappa==doctest::Approx(g.estimates.at("kappa")).epsilon(1e-5));
+}

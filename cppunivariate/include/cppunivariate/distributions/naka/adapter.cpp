@@ -25,6 +25,8 @@ Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
   }
 
   auto res = cppunivariate::naka_mle(dist_impl::as_span(x), abstol, iterlim, shape_held, scale_held);
+  if (res.status == cppunivariate::GammaStatus::IterationFailure)
+    Rcpp::stop("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if (res.status == cppunivariate::GammaStatus::Degenerate) {
     if (!std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
       Rcpp::stop("naka MLE failed: transformed observations exceed double precision.");

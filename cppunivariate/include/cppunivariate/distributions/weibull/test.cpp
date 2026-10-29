@@ -93,3 +93,9 @@ TEST_CASE("weibull held tiny shape preserves the geometric-mean limit") {
   CHECK(r.shape==1e-200);
   CHECK(r.scale==doctest::Approx(4));
 }
+
+TEST_CASE("weibull: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("weibull");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::weibull_mle(x,1e-8,1).status==cppunivariate::WeibullStatus::IterationFailure);
+}

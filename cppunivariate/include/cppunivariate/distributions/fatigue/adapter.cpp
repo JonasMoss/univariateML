@@ -26,6 +26,8 @@ Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu, d
       (beta.isNotNull()&&(!(b>0)||!std::isfinite(b))))
     Rcpp::stop("Held `alpha` and `beta` must be positive finite numbers.");
   auto res = cppunivariate::fatigue_mle(dist_impl::as_span(shifted), abstol, iterlim,a,b);
+  if (res.status == cppunivariate::FatigueStatus::SearchFailure)
+    Rcpp::stop("Fatigue optimizer SearchFailure: profile search did not converge; increase iterlim.");
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     if (res.status==cppunivariate::FatigueStatus::Unbounded)
       Rcpp::stop("The fatigue maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");

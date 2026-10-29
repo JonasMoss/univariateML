@@ -80,3 +80,9 @@ TEST_CASE("ztbinom: held probability with free and held size") {
  }
  CHECK(cppunivariate::ztbinom_mle({x.data(),x.size()},1e-10,200,8,-.1).status==cppunivariate::ZtbinomStatus::InvalidInput);
 }
+
+TEST_CASE("ztbinom: P3 unfinished optimizer is a failure") {
+  const std::vector<int> values{1,2,3,3,5};
+  const cppunivariate::ispan ix{values.data(),values.size()};
+  CHECK(cppunivariate::ztbinom_mle(ix,1e-8,1).status==cppunivariate::ZtbinomStatus::IterationFailure);
+}

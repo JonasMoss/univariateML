@@ -130,3 +130,10 @@ test_that("Skellam nonconstant underdispersed samples attain Poisson faces", {
   expect_equal(as.numeric(mlskellam(-x)),c(0,1.5))
   expect_equal(as.numeric(logLik(mlskellam(x))),sum(dpois(x,1.5,log=TRUE)))
 })
+
+test_that("skellam: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "skellam", "golden.json"))
+  x <- g$data
+  expect_error(mlskellam(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

@@ -295,7 +295,7 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
   const double nu = cppunivariate::from_log_shift(r.theta[2], 2.0);
   const double logLik = -r.f;
 
-  if (r.status != BfgsStatus::Ok) {
+  if (r.status != BfgsStatus::Ok && !(std::isfinite(r.grad_norm) && r.grad_norm < 1e-3)) {
     return {mu, sigma, nu, logLik, r.iterations, StudentTStatus::BfgsFailure};
   }
   return {mu, sigma, nu, logLik, r.iterations, StudentTStatus::Ok};

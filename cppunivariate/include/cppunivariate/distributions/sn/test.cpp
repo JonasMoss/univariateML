@@ -98,3 +98,17 @@ TEST_CASE("sn: d/p/q/r against the truth table" * doctest::skip()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qsn(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rsn(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("sn: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("sn");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::sn_mle(x,1e-8,1).status==cppunivariate::SnStatus::IterationFailure);
+}
+
+TEST_CASE("sn: P3 inner exhaustion checks the returned-point score") {
+  const std::vector<double> values{-2,-.3,.1,.8,4};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto fit=cppunivariate::sn_detail::inner(values,2,nan,nan,1e-10,1);
+  CHECK_FALSE(fit.converged);
+  CHECK(cppunivariate::sn_detail::score_residual(values,2,nan,nan,fit.eta,fit.h)>=1e-7);
+}

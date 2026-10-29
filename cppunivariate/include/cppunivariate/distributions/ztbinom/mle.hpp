@@ -3,6 +3,19 @@
 namespace cppunivariate {
 enum class ZtbinomStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, IterationFailure };
 struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus status; };
+namespace ztbinom_detail {
+template <typename F>
+inline double maximize(F f, double lo, double hi, double tol, int maxit, bool &done) {
+  constexpr double ratio=.6180339887498948482;
+  double c=hi-ratio*(hi-lo), d=lo+ratio*(hi-lo), fc=f(c), fd=f(d);
+  for(int i=0;i<maxit && hi-lo>tol;++i) {
+    if(fc>fd) {hi=d;d=c;fd=fc;c=hi-ratio*(hi-lo);fc=f(c);}
+    else {lo=c;c=d;fc=fd;d=lo+ratio*(hi-lo);fd=f(d);}
+  }
+  done=hi-lo<=tol && std::isfinite(fc) && std::isfinite(fd);
+  return fc>fd ? c : d;
+}
+}
 inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
@@ -57,7 +70,9 @@ inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
     if(candidate.logLik>best.logLik)best=candidate;
     const double ll=profile(r).logLik;
     if(ll<profile(mx+std::exp(t-1)).logLik || ll<profile(mx+std::exp(t+1)).logLik)continue;
-    const double opt=zero_detail::maximize([&](double s){return profile(mx+std::exp(s)).logLik;},t-1,t+1,tol,maxit);
+    bool done=false;
+    const double opt=ztbinom_detail::maximize([&](double s){return profile(mx+std::exp(s)).logLik;},t-1,t+1,tol,maxit,done);
+    if(!done) {best.status=ZtbinomStatus::IterationFailure;return best;}
     const double s=mx+std::exp(opt);
     for(double k:{std::floor(s),std::ceil(s)}) {candidate=profile(k);if(candidate.logLik>best.logLik)best=candidate;}
   }

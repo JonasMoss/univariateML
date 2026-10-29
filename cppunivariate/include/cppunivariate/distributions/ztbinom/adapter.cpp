@@ -11,7 +11,7 @@ Rcpp::List mlztbinom_(const Rcpp::IntegerVector &x, Rcpp::Nullable<double> size,
   if(res.status==cppunivariate::ZtbinomStatus::InvalidInput)Rcpp::stop("requires nonempty positive integer count data and valid controls; held parameters must give positive likelihood");
   if(res.status==cppunivariate::ZtbinomStatus::InvalidSize)Rcpp::stop("`size` must be a positive integer at least max(x).");
   if(res.status==cppunivariate::ZtbinomStatus::PoissonLimit)Rcpp::stop("The maximum likelihood estimator escapes to infinite size. Use `mlztpois`.");
-  if(res.status==cppunivariate::ZtbinomStatus::IterationFailure)Rcpp::stop("Profile search exhausted floating-point resolution; no capped size estimate is returned.");
+  if(res.status==cppunivariate::ZtbinomStatus::IterationFailure)Rcpp::stop("Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.");
   if(!std::isfinite(res.logLik))Rcpp::stop("MLE cannot be resolved at floating-point precision.");
   Rcpp::CharacterVector fixed(0);
   if(size.isNotNull())fixed.push_back("size");

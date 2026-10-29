@@ -26,7 +26,7 @@ Rcpp::List mlstd_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
   if (res.status == cppunivariate::StudentTStatus::ScaleBoundary)
     Rcpp::stop("Tie equality scale-collapse boundary; a regular MLE is not certified.");
   if (res.status == cppunivariate::StudentTStatus::IterationFailure)
-    Rcpp::stop("Fixed `nu` EM did not converge to the score tolerance; increase iterlim.");
+    Rcpp::stop("Student-t optimizer IterationFailure: did not converge to the score tolerance; increase iterlim.");
   if (res.status == cppunivariate::StudentTStatus::NormalBoundary) {
     Rcpp::stop("The Student-t likelihood is maximised as nu -> Inf, i.e. by the "
                "normal distribution. Use `mlnorm` to fit this model.");
@@ -36,6 +36,8 @@ Rcpp::List mlstd_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
                "variance); the MLE does not exist in the mean/sd parameterisation. "
                "Use `mllst` to fit a location-scale t distribution with free degrees of freedom.");
   }
+  if (res.status == cppunivariate::StudentTStatus::BfgsFailure)
+    Rcpp::stop("StudentT optimizer BfgsFailure: score check failed; increase iterlim.");
   if (res.status == cppunivariate::StudentTStatus::InvalidStart) {
     Rcpp::stop("Student-t MLE requires at least 2 finite observations with "
                "positive variance.");

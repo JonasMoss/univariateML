@@ -46,7 +46,7 @@ inline LomaxResult lomax_newton_candidate(
     double lambda0 = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0, LomaxStatus::InvalidStart};
+  if (n == 0 || maxit<1) return {0.0, 0.0, kNaN, 0, LomaxStatus::InvalidStart};
 
   long double total = 0.0L;
   for (auto v : x) total += v;
@@ -115,6 +115,8 @@ inline LomaxResult lomax_newton_candidate(
       if (lp_new >= lp_old - 1e-12 * (std::abs(lp_old) + 1.0)) break;
       step *= 0.5;
     }
+    if (halvings == 60)
+      return {kNaN,kNaN,kNaN,iter,LomaxStatus::IterationFailure};
     const double lambda_new = lambda - step;
     if (newton && halvings == 0 &&
         std::abs(step) < (std::abs(lambda) * tol + tol)) {
@@ -130,6 +132,16 @@ inline LomaxResult lomax_newton_candidate(
   const double kappa = dn / sum_log1p;
   const double logLik =
       dn * (std::log(kappa) + std::log(lambda) - 1.0 - 1.0 / kappa);
+  if (iter>maxit) {
+    double prob_sum=0;
+    for (double v:x) {
+      const double z=std::log(lambda)+std::log(v);
+      prob_sum+=z>=0 ? 1/(1+std::exp(-z)) : std::exp(z)/(1+std::exp(z));
+    }
+    const double score=dn-(kappa+1)*prob_sum;
+    if (!(std::isfinite(score) && std::abs(score)<1e-3))
+      return {lambda,kappa,logLik,iter,LomaxStatus::IterationFailure};
+  }
   return {lambda, kappa, logLik, iter, LomaxStatus::Ok};
 }
 
@@ -181,7 +193,7 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit,
     double lambda0 = std::numeric_limits<double>::quiet_NaN()) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {nan,nan,nan,0,LomaxStatus::InvalidStart};
+  if (n == 0 || maxit<1 || !(tol>0) || !std::isfinite(tol)) return {nan,nan,nan,0,LomaxStatus::InvalidStart};
   long double total = 0.0L;
   for (double v : x) {
     if (!(v > 0.0) || !std::isfinite(v))
@@ -256,10 +268,11 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit,
     double a=hi-ratio*(hi-lo),b=lo+ratio*(hi-lo),A=0.0;
     const auto &refine = n>4096 ? scan : exact;
     double fa=lomax_detail::gap(refine,a,A),fb=lomax_detail::gap(refine,b,A);
-    for (int k=0;k<55 && hi-lo>1e-10;++k) {
+    for (int k=0;k<std::min(maxit,55) && hi-lo>1e-10;++k) {
       if (fa>fb) {hi=b;b=a;fb=fa;a=hi-ratio*(hi-lo);fa=lomax_detail::gap(refine,a,A);}
       else {lo=a;a=b;fa=fb;b=lo+ratio*(hi-lo);fb=lomax_detail::gap(refine,b,A);}
     }
+    if (hi-lo>1e-10) return {nan,nan,nan,iterations,LomaxStatus::IterationFailure};
     double t=fa>fb?a:b;
     if (n>4096) {
       // Refine the compressed nomination by the full-sample profile score
@@ -286,6 +299,18 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit,
         z=next;
       }
       for (int k=0;k<20;++k) t-=(t+std::exp(t)-z)/(1.0+std::exp(t));
+      // A failed full-sample Newton solve (or its coordinate conversion)
+      // may survive only when the total profiled log-lambda score passes.
+      double av=0,bv=0;
+      const double logq=t+std::exp(t);
+      for (const auto &v:exact) {
+        const double w=logq+v.log_y;
+        av+=v.weight*(std::max(w,0.0)+std::log1p(std::exp(-std::abs(w))));
+        bv+=v.weight*(w>=0 ? 1/(1+std::exp(-w)) : std::exp(w)/(1+std::exp(w)));
+      }
+      const double residual=dn*(1-bv/av-bv);
+      if (!(std::isfinite(residual) && std::abs(residual)<1e-3))
+        return {nan,nan,nan,iterations,LomaxStatus::IterationFailure};
     }
     const double g=lomax_detail::gap(exact,t,A);
     if (g>best+1e-13) {best=g;best_t=t;best_A=A;newton_wins=false;}

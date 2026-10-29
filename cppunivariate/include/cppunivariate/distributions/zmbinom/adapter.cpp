@@ -15,7 +15,7 @@ Rcpp::List mlzmbinom_(const Rcpp::IntegerVector &x, Rcpp::Nullable<double> size,
   if(res.status==cppunivariate::ZmbinomStatus::PoissonLimit)Rcpp::stop("The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`.");
   if(res.status==cppunivariate::ZmbinomStatus::AllZero)Rcpp::warning("all observations are zero: base parameters are unidentified; returning p0 = 1.");
   if(res.status==cppunivariate::ZmbinomStatus::TwoPoint)Rcpp::warning("positives are all one: the attained two-point law is also fitted exactly by mlbinom(x, size = 1).");
-  if(res.status==cppunivariate::ZmbinomStatus::IterationFailure)Rcpp::stop("Profile search exhausted floating-point resolution; no capped size estimate is returned.");
+  if(res.status==cppunivariate::ZmbinomStatus::IterationFailure)Rcpp::stop("Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.");
   if(!std::isfinite(res.logLik))Rcpp::stop("MLE cannot be resolved at floating-point precision.");
   Rcpp::CharacterVector fixed(0);
   if(size.isNotNull())fixed.push_back("size");

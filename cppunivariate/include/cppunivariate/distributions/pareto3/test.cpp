@@ -44,3 +44,8 @@ for(int mask=1;mask<4;++mask){double a=mask&1?g.estimates.at("shape"):nan,s=mask
  if(mask&2)CHECK(r.scale==s);
  CHECK(r.logLik>=g.logLik-1e-5);}
 }
+
+TEST_CASE("pareto3: P3 logistic delegate status is preserved") {
+  const std::vector<double> values{.3,.8,1.7,4.2};
+  CHECK(cppunivariate::pareto3_mle(mltest::as_span(values),0,1e-10,1).status==cppunivariate::Pareto3Status::IterationFailure);
+}

@@ -148,3 +148,9 @@ for(int mask=0;mask<4;++mask){double a=mask&1?g.estimates.at("shape1"):nan,b=mas
  if(mask&2)CHECK(r.shape2==b);
  CHECK(r.logLik>=g.logLik-1e-5);}
 }
+
+TEST_CASE("invtrgamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("invtrgamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::invtrgamma_mle(x,1e-8,1).status==cppunivariate::InvTrGammaStatus::IterationFailure);
+}

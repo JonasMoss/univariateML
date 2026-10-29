@@ -137,3 +137,14 @@ test_that("P2 paralogis validates new held values", {
      expect_true(is.finite(attr(f,"logLik")))
    }
  })
+
+test_that("paralogis: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "paralogis", "golden.json"))
+  x <- g$data
+  expect_error(mlparalogis(x, iterlim=1, gradtol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+test_that("paralogis: P3 held profile exhaustion stops", {
+  expect_error(mlparalogis(c(.3,.8,1.7,4.2),shape=2,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
+})

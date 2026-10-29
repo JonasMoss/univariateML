@@ -332,3 +332,9 @@ TEST_CASE("P2 trgamma held-scale power root near its endpoint") {
  const double u=r.shape2*std::log(x[0]);
  CHECK(std::abs(1+2*u-u*std::exp(u))<1e-8);
 }
+
+TEST_CASE("trgamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("trgamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::trgamma_mle(x,1e-8,1).status==cppunivariate::TrGammaStatus::IterationFailure);
+}

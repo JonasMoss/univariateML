@@ -75,3 +75,9 @@ for(int mask=0;mask<2;++mask){auto r=cppunivariate::paralogis_mle_holds(mltest::
  CHECK(r.shape==g.estimates.at("shape"));
  CHECK(r.logLik>=g.logLik-1e-5);}
 }
+
+TEST_CASE("paralogis: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("paralogis");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::paralogis_mle(x,1e-8,1).status==cppunivariate::ParalogisStatus::BfgsFailure);
+}

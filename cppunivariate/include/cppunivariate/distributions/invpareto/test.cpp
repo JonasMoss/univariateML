@@ -84,3 +84,9 @@ TEST_CASE("invpareto P2 held boundaries and solver failure") {
   CHECK(std::isfinite(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100,nan,nan,2).logLik));
   CHECK(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,1,nan,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
 }
+
+TEST_CASE("invpareto: P3 held delegate preserves exhaustion") {
+  const std::vector<double> values{.3,.8,1.7,4.2};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  CHECK(cppunivariate::invpareto_mle(mltest::as_span(values),1e-9,1,nan,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
+}

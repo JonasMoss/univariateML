@@ -201,3 +201,9 @@ TEST_CASE("std: held profiles preserve extreme units") {
   }
   CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(1e-8));
 }
+
+TEST_CASE("std: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("std");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::student_t_mle(x,1e-8,1).status==cppunivariate::StudentTStatus::BfgsFailure);
+}

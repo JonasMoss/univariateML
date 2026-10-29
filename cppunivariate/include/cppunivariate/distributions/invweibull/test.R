@@ -125,3 +125,10 @@ test_that("P2 failed held solver is distinguished from constant-data collapse", 
 test_that("P2 analytic held shape needs no iterative search", {
   expect_silent(mlinvweibull(c(1,2),shape=2,iterlim=1))
 })
+
+test_that("invweibull: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "invweibull", "golden.json"))
+  x <- g$data
+  expect_error(mlinvweibull(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

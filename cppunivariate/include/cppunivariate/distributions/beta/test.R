@@ -76,3 +76,10 @@ test_that("P2 every held subset agrees with independent multistart density fits"
 test_that("P2 held shape solves stop on exhausted brackets", {
   expect_error(mlbeta(c(.2,.8),shape2=2,iterlim=1),"failed")
 })
+
+test_that("beta: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "beta", "golden.json"))
+  x <- g$data
+  expect_error(mlbeta(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

@@ -53,3 +53,9 @@ for(int mask=0;mask<2;++mask){auto r=cppunivariate::invparalogis_mle_holds(mltes
  CHECK(r.shape==g.estimates.at("shape"));
  CHECK(r.logLik>=g.logLik-1e-5);}
 }
+
+TEST_CASE("invparalogis: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("invparalogis");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::invparalogis_mle(x,1e-8,1).status==cppunivariate::ParalogisStatus::BfgsFailure);
+}

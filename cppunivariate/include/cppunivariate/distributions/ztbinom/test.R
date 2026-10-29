@@ -78,3 +78,9 @@ test_that("ztbinom: held endpoints are attained exactly when feasible", {
  }
  expect_error(mlztbinom(1:3,size=8,prob=.4,reltol=0))
 })
+
+test_that("ztbinom: P3 unfinished optimizer stops", {
+  x <- c(1,2,3,3,5)
+  expect_error(mlztbinom(x, iterlim=1, reltol=1e-10, size=NULL),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

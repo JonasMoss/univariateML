@@ -77,3 +77,10 @@ test_that("EMG integrates with plotting, bootstrap and model selection", {
   selected <- model_select(x,models=c("norm","emg"),return="all")
   expect_true("Exponentially Modified Gaussian" %in% selected$model)
 })
+
+test_that("emg: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "emg", "golden.json"))
+  x <- g$data
+  expect_error(mlemg(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

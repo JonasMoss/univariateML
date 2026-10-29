@@ -67,3 +67,9 @@ TEST_CASE("dgamma: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdgamma(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdgamma(rng, p[0], p[1]); });
 }
+
+TEST_CASE("dgamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("dgamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::dgamma_mle(x,1e-8,1).status==cppunivariate::DgammaStatus::IterationFailure);
+}

@@ -74,3 +74,9 @@ TEST_CASE("beta P2 held shape retains tiny log complements") {
   CHECK(r.beta==doctest::Approx(1e100).epsilon(1e-12));
   CHECK(r.logLik==doctest::Approx(5*(100*std::log(10.0)-1)).epsilon(1e-12));
 }
+
+TEST_CASE("beta: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("beta");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::beta_mle(x,1e-8,1).status==cppunivariate::BetaStatus::IterationFailure);
+}

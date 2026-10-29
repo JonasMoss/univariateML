@@ -83,7 +83,7 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
   if (!(beta>0.0) || !std::isfinite(beta) || !nr.converged) {
     // The profile root lies between harmonic and arithmetic means.
     double lo=x_inv_bar, hi=x_bar;
-    for (int j=0;j<100;++j) {
+    for (int j=0;j<std::min(maxit,100);++j) {
       const double mid=std::sqrt(lo)*std::sqrt(hi);
       long double inv=0.0L;
       for (auto v:x) inv+=1.0L/(static_cast<long double>(v)+mid);
@@ -91,6 +91,8 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
       const long double f=static_cast<long double>(mid)*mid-mid*(2.0*x_inv_bar+xi)+x_inv_bar*(x_bar+xi);
       if (f>0.0) lo=mid; else hi=mid;
     }
+    if (hi-lo > 1e-12*hi)
+      return {kNaN,kNaN,kNaN,nr.iterations,FatigueStatus::SearchFailure};
     beta=std::sqrt(lo)*std::sqrt(hi);
   }
   // Standard Birnbaum-Saunders α-MLE FOC: α² = x̄/β + β/H(x) − 2, where

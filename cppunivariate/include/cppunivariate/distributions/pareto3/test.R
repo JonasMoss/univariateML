@@ -93,3 +93,7 @@ test_that("P2 pareto3 validates new held values", {
    f <- mlpareto3(rep(2,5),min=0,shape=2,scale=1)
    expect_identical(unname(f["scale"]),1)
  })
+
+test_that("pareto3: P3 failed logistic delegate stops", {
+  expect_error(mlpareto3(c(.3,.8,1.7,4.2),min=0,iterlim=1), "failed to converge")
+})

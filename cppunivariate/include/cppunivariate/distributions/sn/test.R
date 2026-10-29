@@ -137,3 +137,14 @@ test_that('sn optional reference density agrees with sn package', {
     expect_equal(dsn(x,1,2,a,log=TRUE),sn::dsn(x,xi=1,omega=2,alpha=a,log=TRUE),tolerance=1e-9)
   }
 })
+
+test_that("sn: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "sn", "golden.json"))
+  x <- g$data
+  expect_error(mlsn(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+test_that("sn: P3 unfinished fixed-shape inner fit stops", {
+  expect_error(mlsn(c(-2,-.3,.1,.8,4),alpha=2,iterlim=1), "did not converge")
+})

@@ -204,18 +204,22 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   if(!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
   std::vector<double> logs(x.size());
   for(std::size_t i=0;i<x.size();++i){if(!(x[i]>0)||!std::isfinite(x[i]))return bad;logs[i]=std::log(x[i]);}
+  const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};
   // Constant samples still have a finite constrained maximum when only
   // one beta shape, the power, or location is free.
   bool constant=!logs.empty();for(double v:logs)constant=constant&&v==logs[0];
   if(constant){
     if(!std::isnan(a)&&!std::isnan(b)&&(!std::isnan(p)||!std::isnan(q))){
       const double u=a*(logs[0]-std::log(b));
-      if(std::isnan(p))p=std::exp(burr_hold_detail::root([&](double z){double v=std::exp(z);return special::digamma(v+q)-special::digamma(v)-gb2_detail::softplus(-u);}));
-      if(std::isnan(q))q=std::exp(burr_hold_detail::root([&](double z){double v=std::exp(z);return special::digamma(p+v)-special::digamma(v)-gb2_detail::softplus(u);}));
+      if(std::isnan(p))p=std::exp(solve_root([&](double z){double v=std::exp(z);return special::digamma(v+q)-special::digamma(v)-gb2_detail::softplus(-u);}));
+      if(!std::isfinite(p)){bad.status=Gb2Status::SearchUnresolved;return bad;}
+      if(std::isnan(q))q=std::exp(solve_root([&](double z){double v=std::exp(z);return special::digamma(p+v)-special::digamma(v)-gb2_detail::softplus(u);}));
+      if(!std::isfinite(q)){bad.status=Gb2Status::SearchUnresolved;return bad;}
     } else if(!std::isnan(p)&&!std::isnan(q)&&!std::isnan(b)&&std::isnan(a)){
       if(x[0]==b)return bad;
       const double w=logs[0]-std::log(b);
-      a=std::exp(burr_hold_detail::root([&](double z){double u=std::exp(z)*w;return 1+u*(p-(p+q)*burr_hold_detail::sigmoid(u));}));
+      a=std::exp(solve_root([&](double z){double u=std::exp(z)*w;return 1+u*(p-(p+q)*burr_hold_detail::sigmoid(u));}));
+      if(!std::isfinite(a)){bad.status=Gb2Status::SearchUnresolved;return bad;}
     }
     if(!std::isnan(a)&&!std::isnan(p)&&!std::isnan(q)){
       if(std::isnan(b))b=std::exp(logs[0]-(std::log(p)-std::log(q))/a);

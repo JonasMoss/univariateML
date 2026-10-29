@@ -190,3 +190,7 @@ test_that("slash independent density oracle agrees with a mixture integral at th
     expect_equal(actual,reference,tolerance=1e-12)
   }
 })
+
+test_that("slash: P3 unfinished local profile stops", {
+  expect_error(mlslash(c(-2,-.3,.1,.8,4),iterlim=1), "failed")
+})

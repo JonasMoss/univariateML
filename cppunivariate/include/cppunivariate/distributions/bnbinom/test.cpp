@@ -127,3 +127,9 @@ TEST_CASE("bnbinom: d/p/q/r against the truth table" * doctest::skip()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbnbinom(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbnbinom(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("bnbinom: P3 unfinished optimizer is a failure") {
+  const std::vector<int> values{0,1,2,3,6,12,24};
+  const cppunivariate::ispan ix{values.data(),values.size()};
+  CHECK(cppunivariate::bnbinom_mle(ix,1e-8,1,NAN,2,3).status==cppunivariate::BnbinomStatus::IterationFailure);
+}

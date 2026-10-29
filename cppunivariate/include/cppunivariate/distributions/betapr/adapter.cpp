@@ -29,8 +29,8 @@ Rcpp::List mlbetapr_(const Rcpp::NumericVector &x, double gradtol = 1e-6,
     Rcpp::stop("The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model.");
   if (res.status == cppunivariate::BetaPrimeStatus::InvGammaBoundary)
     Rcpp::stop("The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model.");
-  if ((shape1.isNotNull()||shape2.isNotNull()) && res.status == cppunivariate::BetaPrimeStatus::BfgsFailure)
-    Rcpp::stop("Beta-prime hold profile did not converge or exceeded its numerical search range; increase iterlim.");
+  if (res.status == cppunivariate::BetaPrimeStatus::BfgsFailure)
+    Rcpp::stop("Beta-prime optimizer BfgsFailure: profile did not converge or exceeded its numerical search range; increase iterlim.");
   if (res.status == cppunivariate::BetaPrimeStatus::InvalidStart ||
       !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.scale))
     Rcpp::stop("Beta-prime MLE requires positive finite observations with positive log-variance.");

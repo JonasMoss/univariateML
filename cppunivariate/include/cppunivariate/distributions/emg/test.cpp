@@ -94,3 +94,9 @@ TEST_CASE("emg: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qemg(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::remg(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("emg: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("emg");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::emg_mle(x,1e-8,1).status==cppunivariate::EmgStatus::IterationFailure);
+}

@@ -99,3 +99,9 @@ TEST_CASE("P2 gb2 constant conditional shape fits") {
    if(mask!=2) CHECK(r.shape2==a);
  }
 }
+
+TEST_CASE("gb2: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("gb2");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::gb2_mle(x,1e-8,1).status==cppunivariate::Gb2Status::SearchUnresolved);
+}

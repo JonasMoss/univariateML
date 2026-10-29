@@ -64,3 +64,8 @@ TEST_CASE("slash: every held golden subset preserves coefficients and likelihood
     CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
   }
 }
+
+TEST_CASE("slash: P3 failed refinement cannot inherit a grid point status") {
+  const std::vector<double> values{-2,-.3,.1,.8,4};
+  CHECK(cppunivariate::slash_mle(mltest::as_span(values),1e-9,1).status==cppunivariate::SlashStatus::IterationFailure);
+}

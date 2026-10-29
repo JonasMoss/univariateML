@@ -89,3 +89,9 @@ TEST_CASE("P2 genbeta constant conditional beta fits") {
  REQUIRE(ridge.status==cppunivariate::GenbetaStatus::Ok);
  CHECK(ridge.shape1*ridge.shape3==doctest::Approx(-1/std::log(.4)));
 }
+
+TEST_CASE("genbeta: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("genbeta");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::genbeta_mle(x,1,1e-8,1).status==cppunivariate::GenbetaStatus::SearchUnresolved);
+}

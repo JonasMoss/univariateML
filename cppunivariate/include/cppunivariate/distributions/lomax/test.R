@@ -228,3 +228,19 @@ expect_true(is.finite(logLik(mllomax(rep(2,3),kappa=2))))
 test_that("P2 held solver respects iterlim", {
   expect_error(suppressWarnings(mllomax(c(2,3),kappa=2,iterlim=1)))
 })
+
+test_that("lomax: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "lomax", "golden.json"))
+  x <- g$data
+  expect_error(mllomax(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+test_that("lomax: P3 compressed profile rejects exhaustion", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "lomax", "golden.json"))
+  x <- rep(g$data, ceiling(4097/length(g$data)))
+  expect_error(mllomax(x,iterlim=1,reltol=1e-10), "failed to converge")
+  fit <- mllomax(x,reltol=1e-10)
+  expect_equal(unname(fit["lambda"]),g$estimates$lambda,tolerance=1e-5)
+  expect_equal(unname(fit["kappa"]),g$estimates$kappa,tolerance=1e-5)
+})

@@ -102,3 +102,9 @@ test_that("zmbinom: free-size held-mixture fits and Poisson escapes", {
  expect_identical(unname(f[c("prob","p0")]),c(.4,.6))
  expect_error(mlzmbinom(1:3,size=8,prob=.4,iterlim=0))
 })
+
+test_that("zmbinom: P3 unfinished optimizer stops", {
+  x <- c(1,2,3,3,5)
+  expect_error(mlzmbinom(x, iterlim=1, reltol=1e-10, size=NULL),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

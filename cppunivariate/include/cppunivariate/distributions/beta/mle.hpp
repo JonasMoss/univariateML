@@ -85,7 +85,7 @@ inline BetaResult concave_newton(span x, double s, double r, int maxit) {
   if (!(nu > 0.0) || !std::isfinite(nu)) nu = 1e-2;
   double a = m * nu, b = (1.0 - m) * nu;
   int it = 0;
-  for (; it < std::max(maxit, 200); ++it) {
+  for (; it < maxit; ++it) {
     const double pab = cppunivariate::special::digamma(a + b);
     const double tab = cppunivariate::special::trigamma(a + b);
     const double ga = s - cppunivariate::special::digamma(a) + pab;

@@ -27,9 +27,9 @@ Rcpp::List mlllogis_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
   cppunivariate::LogLogisticResult res =
       cppunivariate::loglogistic_mle(dist_impl::as_span(x), abstol, iterlim, shape_held, rate_held);
   if (res.status == cppunivariate::LogLogisticStatus::Unbounded)
-    Rcpp::stop("The llogis maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale.");
+    Rcpp::stop("The log-logistic maximum likelihood estimator does not exist: the likelihood is unbounded for these constant transformed observations.");
   if (res.status == cppunivariate::LogLogisticStatus::IterationFailure)
-    Rcpp::stop("The held-parameter llogis score solver failed to converge; increase iterlim.");
+    Rcpp::stop("Log-logistic optimizer IterationFailure: failed to converge; increase iterlim.");
   if (!(res.shape>0.0) || !(res.rate>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.rate) || !std::isfinite(res.logLik)) {
     if (shape.isNull() && rate.isNull() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
       Rcpp::stop("The log-logistic maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");

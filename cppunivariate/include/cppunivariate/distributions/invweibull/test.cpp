@@ -91,3 +91,9 @@ TEST_CASE("invweibull P2 held boundaries and solver failure") {
   CHECK_FALSE(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,nan,nan,.5).logLik));
   CHECK(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,nan,2,nan).logLik));
 }
+
+TEST_CASE("invweibull: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("invweibull");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::invweibull_mle(x,1e-8,1).status==cppunivariate::InvWeibullStatus::IterationFailure);
+}
