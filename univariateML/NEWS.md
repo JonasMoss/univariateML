@@ -43,6 +43,9 @@
   fitters as members and stops with the winning limit: generalized gamma,
   its inverse, lognormal, Pareto, power, or double Pareto).
 
+* `mlfoldnorm()` (folded normal, `mu >= 0`) with its own d/p/q/r;
+  previously available only in VGAM.
+
 * `mlzeta()` and `mlyulesimon()` (discrete power laws on 1, 2, ...), with
   their own d/p/q/r; previously available only in VGAM.
 
