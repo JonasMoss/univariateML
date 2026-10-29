@@ -46,3 +46,42 @@ TEST_CASE("frechet: ties above the minimum are admissible") {
   const auto r=cppunivariate::frechet_gev_mle(mltest::as_span(x),1e-10,100,.3);
   CHECK(r.status==cppunivariate::GevStatus::Ok);
 }
+
+TEST_CASE("frechet: all new holds and exceptional constant likelihoods") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const std::vector<double> x{.2,.4,.7,1,2,4,10};const auto data=mltest::as_span(x);
+ for(int mask:{1,4,3,5,6,7}) {
+   const double a=mask&1 ? 2 : nan,m=mask&2 ? 0 : nan,s=mask&4 ? 1 : nan;
+   const auto f=cppunivariate::frechet_mle(data,1e-10,150,m,a,s);
+   CAPTURE(mask);
+   REQUIRE(f.status==cppunivariate::FrechetStatus::Ok);
+   if(mask&1) CHECK(f.lambda==a);
+   if(mask&2) CHECK(f.mu==m);
+   if(mask&4) CHECK(f.sigma==s);
+   for(int j=0;j<3;++j) if(!(mask&(1<<j))) {
+     if(j==0 && f.lambda==1) continue;
+     double p[3]={f.lambda,f.mu,f.sigma};const double h=1e-5;
+     p[j]+=h;const double plus=cppunivariate::frechet_loglik(data,p[0],p[1],p[2]);
+     p[j]-=2*h;const double minus=cppunivariate::frechet_loglik(data,p[0],p[1],p[2]);
+     CHECK(std::abs((plus-minus)/(2*h))<1e-3);
+   }
+ }
+ const std::vector<double> one{2};const auto d=mltest::as_span(one);
+ CHECK(cppunivariate::frechet_mle(d,1e-10,100,0,nan,2).status==cppunivariate::FrechetStatus::InvalidData);
+ CHECK(cppunivariate::frechet_mle(d,1e-10,100,0,nan,1).status==cppunivariate::FrechetStatus::Ok);
+ const auto f=cppunivariate::frechet_mle(d,1e-10,100,0,.5);
+ CHECK(f.status==cppunivariate::FrechetStatus::Ok);CHECK(f.sigma==2);
+ CHECK(cppunivariate::frechet_mle(d,1e-10,100,nan,.5,1).status==cppunivariate::FrechetStatus::Ok);
+ CHECK(cppunivariate::frechet_mle(d,1e-10,100,nan,nan,1).status==cppunivariate::FrechetStatus::InvalidData);
+ CHECK(cppunivariate::frechet_mle(data,1e-10,1,0,nan,1).status==cppunivariate::FrechetStatus::IterationFailure);
+ const std::vector<double> ties{1,1,2,3};
+ CHECK(cppunivariate::frechet_mle(mltest::as_span(ties),1e-10,100,nan,1).status==cppunivariate::FrechetStatus::InvalidData);
+}
+
+TEST_CASE("frechet: tiny held shape retains the exact geometric-mean scale limit") {
+ const std::vector<double> x{1,4};
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,100,0,1e-20);
+ CHECK(f.status==cppunivariate::FrechetStatus::Ok);
+ CHECK(f.lambda==1e-20);
+ CHECK(f.sigma==doctest::Approx(2).epsilon(1e-14));
+}

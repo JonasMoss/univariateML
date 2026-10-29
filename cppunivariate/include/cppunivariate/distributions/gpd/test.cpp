@@ -233,3 +233,19 @@ TEST_CASE("gpd: free shape crosses the exponential member") {
     if(delta>0) CHECK(fit.xi>0);
   }
 }
+
+TEST_CASE("gpd: held scale shape profile and all held") {
+ const std::vector<double> x{.1,.3,.5,1,2,4};const auto data=mltest::as_span(x);
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const auto f=cppunivariate::gpd_mle(data,1e-12,200,0,nan,1);
+ REQUIRE(f.status==cppunivariate::GpdStatus::Ok);
+ CHECK(f.sigma==1);CHECK(f.mu==0);
+ const double h=1e-5;
+ CHECK(std::abs((cppunivariate::gpd_loglik(data,1,f.xi+h)-cppunivariate::gpd_loglik(data,1,f.xi-h))/(2*h))<1e-3);
+ const auto a=cppunivariate::gpd_mle(data,1e-12,200,0,.3,1);
+ CHECK(a.status==cppunivariate::GpdStatus::Ok);CHECK(a.xi==.3);CHECK(a.sigma==1);
+ CHECK(cppunivariate::gpd_mle(data,1e-12,200,0,-.5,1).status==cppunivariate::GpdStatus::InvalidData);
+ CHECK(cppunivariate::gpd_mle(data,1e-12,1,0,nan,1).status==cppunivariate::GpdStatus::IterationFailure);
+ const std::vector<double> one{1};
+ CHECK(cppunivariate::gpd_mle(mltest::as_span(one),1e-12,200,0,nan,2).status==cppunivariate::GpdStatus::Ok);
+}

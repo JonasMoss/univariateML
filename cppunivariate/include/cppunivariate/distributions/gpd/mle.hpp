@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/span.hpp"
+#include "../gev/mle.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -52,7 +53,8 @@ inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) 
           it<maxit ? GpdStatus::Ok : GpdStatus::IterationFailure};
 }
 inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
-                         double mu=0, double xi=std::numeric_limits<double>::quiet_NaN()) {
+                         double mu=0, double xi=std::numeric_limits<double>::quiet_NaN(),
+                         double sigma=std::numeric_limits<double>::quiet_NaN()) {
   GpdResult bad{mu,0,xi,0,0,GpdStatus::InvalidData};
   if (x.size()==0 || !std::isfinite(mu) || !(tol>0) || maxit<1) return bad;
   std::vector<double> y;
@@ -63,6 +65,24 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
     y.push_back(z); M=std::max(M,z); minimum=std::min(minimum,z);
   }
   const span ys{y.data(),y.size()};
+  if(!std::isnan(sigma)) {
+    if(!(sigma>0) || !std::isfinite(sigma)) return bad;
+    if(!std::isnan(xi)) {
+      if(!std::isfinite(xi) || xi<-.5) {bad.status=GpdStatus::InvalidShape;return bad;}
+      const double ll=gpd_loglik(ys,sigma,xi);
+      return {mu,sigma,xi,ll,0,std::isfinite(ll) ? GpdStatus::Ok : GpdStatus::InvalidData};
+    }
+    const double lower=std::max(-.5,-sigma/M);
+    // Positive support gives a finite lower endpoint; the log transform
+    // covers the unbounded upper shape range. Compare the attained floor.
+    auto objective=[&](double u) {return gpd_loglik(ys,sigma,lower+std::exp(u));};
+    auto opt=extreme_detail::maximize(objective,-32,32,tol,maxit,false);
+    double shape=lower+std::exp(opt.x),ll=opt.value;
+    const double floor=gpd_loglik(ys,sigma,lower);
+    if(std::isfinite(floor) && floor>=ll) {shape=lower;ll=floor;opt.ok=true;}
+    return {mu,sigma,shape,ll,opt.iterations,
+            opt.ok && maxit>1 ? GpdStatus::Ok : GpdStatus::IterationFailure};
+  }
   if (!std::isnan(xi)) {
     if (!std::isfinite(xi) || xi<-.5) { bad.status=GpdStatus::InvalidShape; return bad; }
     return gpd_scale(ys,mu,xi,tol,maxit);
