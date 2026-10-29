@@ -94,3 +94,24 @@ TEST_CASE("sged: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qsged(x, p[0], p[1], p[2], p[3], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rsged(rng, p[0], p[1], p[2], p[3]); });
 }
+
+TEST_CASE("sged: classified holds preserve values and handle tied/singleton data") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{-2,-1,-.4,0,.2,.8,1,1.3,2,3};
+  const auto data=mltest::as_span(x);
+  for(bool mean : {false,true}) for(bool sd : {false,true}) {
+    if(!mean && !sd) continue;
+    const auto r=cppunivariate::sged_mle(data,1e-9,300,mean ? .2 : nan,sd ? 1.7 : nan,4.2,1.3);
+    REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+    CHECK(std::isfinite(r.logLik));
+    if(mean) CHECK(r.mu==.2);
+    if(sd) CHECK(r.sigma==1.7);
+    CHECK(r.xi==1.3);
+    CHECK(r.nu==4.2);
+  }
+  const std::vector<double> one{.2};
+  const auto location=cppunivariate::sged_mle(mltest::as_span(one),1e-9,300,nan,1.7,4.2,1.3);
+  CHECK(location.status==cppunivariate::SgedStatus::Ok);
+  const auto collapse=cppunivariate::sged_mle(mltest::as_span(one),1e-9,300,.2,nan,4.2,1.3);
+  CHECK(collapse.status==cppunivariate::SgedStatus::Unbounded);
+}

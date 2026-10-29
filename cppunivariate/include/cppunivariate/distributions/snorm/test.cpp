@@ -126,3 +126,35 @@ TEST_CASE("snorm: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qsnorm(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rsnorm(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("snorm: classified holds preserve values and handle tied/singleton data") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{-2,-1,-.4,0,.2,.8,1,1.3,2,3};
+  const auto data=mltest::as_span(x);
+  for(bool mean : {false,true}) for(bool sd : {false,true}) {
+    if(!mean && !sd) continue;
+    const auto r=cppunivariate::snorm_mle(data,1e-9,300,mean ? .2 : nan,sd ? 1.7 : nan,1.3);
+    REQUIRE(r.status==cppunivariate::SnormStatus::Ok);
+    CHECK(std::isfinite(r.logLik));
+    if(mean) CHECK(r.mu==.2);
+    if(sd) CHECK(r.sigma==1.7);
+    CHECK(r.xi==1.3);
+
+  }
+  const std::vector<double> one{.2};
+  const auto location=cppunivariate::snorm_mle(mltest::as_span(one),1e-9,300,nan,1.7,1.3);
+  CHECK(location.status==cppunivariate::SnormStatus::Ok);
+  const auto collapse=cppunivariate::snorm_mle(mltest::as_span(one),1e-9,300,.2,nan,1.3);
+  CHECK(collapse.status==cppunivariate::SnormStatus::Unbounded);
+}
+
+TEST_CASE("snorm: every nonempty hold subset") {
+  const auto g=mltest::load_distribution_golden("snorm");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1; mask<8; ++mask) {
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(g.data),1e-9,300,
+      mask&1 ? g.estimates.at("mean") : nan,mask&2 ? g.estimates.at("sd") : nan,mask&4 ? g.estimates.at("xi") : nan);
+    REQUIRE(r.status==cppunivariate::SnormStatus::Ok);
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
+}
