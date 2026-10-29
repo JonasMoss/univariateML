@@ -96,3 +96,5 @@
 #include "distributions/cmb/mle.hpp"
 #include "distributions/gb2/mle.hpp"
 #include "distributions/sgomp/mle.hpp"
+
+#include "distributions/cmp/mle.hpp"
