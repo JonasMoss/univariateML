@@ -10,7 +10,7 @@ r:
   density: dtlambda
   sampler: rtlambda
   control:
-    lambda: "Optional fixed shape in [-1, 1], or 2 (the uniform alias); NULL estimates it."
+    lambda: "Optional fixed shape between -1 and 1, or 2 (the uniform alias); NULL estimates it."
     reltol: "Tolerance on the standardized search simplex."
     iterlim: "Maximum simplex iterations per search start."
 log_density: "-log(sigma)-log(u**(lambda-1)+(1-u)**(lambda-1))"

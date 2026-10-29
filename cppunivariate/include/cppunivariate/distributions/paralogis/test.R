@@ -55,6 +55,7 @@ test_that("fixed scale agrees with reference-density oracle and records df", {
 
 test_that("fixed unit scale reproduces the historical golden", {
   root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  skip_if(!nzchar(root), "Historical fixture needs the distribution source tree")
   g <- jsonlite::fromJSON(file.path(root, "paralogis", "fixed-scale-golden.json"))
   fit <- mlparalogis(g$data, scale=1)
   expect_equal(as.numeric(fit[seq_along(g$estimates)]),

@@ -32,9 +32,9 @@
 #' obj <- mlnorm(airquality$Wind)
 #' dml(0.5, obj) == dnorm(0.5, mean = obj[1], sd = obj[2])
 #'
-#' obj <- mlbetapr(airquality$Wind)
+#' obj <- mlweibull(airquality$Wind)
 #'
-#' # Plot the logarithm of the beta prime distribution.
+#' # Plot the logarithm of the Weibull density.
 #' plot(function(x) dml(x, obj, log = TRUE),
 #'   from = 0, to = 20,
 #'   main = "Logarithm of Density", ylab = NA, lwd = 2

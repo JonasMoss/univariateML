@@ -37,7 +37,7 @@ limits:
   when: shape2 tends to infinity and both beta shapes tend to zero
   status: DoubleParetoBoundary
 examples: |
-  set.seed(3)
+  set.seed(1)
   mlfpareto(simulate_default("mlfpareto", 100), min = 0)
 ---
 

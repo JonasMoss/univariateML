@@ -21,7 +21,7 @@ limits:
 references:
   - "Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American Statistical Association, 93(441), 359–371."
 examples: |
-  mlsnorm(c(-2, -1, 0, 1, 2))
+  mlsnorm(100 * diff(log(EuStockMarkets[, "DAX"])))
 ---
 
 The Fernandez--Steel skew-normal distribution introduces skewness by giving the two sides of a normal density different scales.

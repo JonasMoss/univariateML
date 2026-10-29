@@ -22,7 +22,7 @@ limits:
     when: '$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed'
     detect: the binomial likelihood at prob = mean(x)/size is within 1e-8 times the sample size of the best beta-binomial fit, with the entire finite search interval bounded above independently of the dispersion score
     status: BinomialLimit
-  - name: two-point distribution on {0, size}
+  - name: two-point (0 and size)
     when: '$\alpha, \beta \to 0$ with $\alpha/(\alpha + \beta)$ fixed'
     detect: size >= 2 and every observation is 0 or size, both values occurring
     status: TwoPointLimit

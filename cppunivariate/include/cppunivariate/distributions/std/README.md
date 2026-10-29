@@ -31,7 +31,8 @@ limits:
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York."
 examples: |
-  mlstd(precip)
+  # Daily DAX log returns, scaled to percent.
+  mlstd(100 * diff(log(EuStockMarkets[, "DAX"])))
 ---
 
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.
