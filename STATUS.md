@@ -12,9 +12,9 @@ own rationale live in `roadmap/`; work in flight is on the board
   fully covered except `dphtype` (out of scope); extraDistr except the
   vector-parameter tier below and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master d72f6bd (simbox): C++ 632 doctest cases, only the two
-  known TASK-75 fixtures fail; R `[ FAIL 3 | WARN 0 | PASS 22310 ]`, the
-  three known TASK-75 failures; `just quality` passes. Truth-table checks
+- Tests on master after P3 (simbox): C++ 833 doctest cases, only the std
+  golden fails (TASK-75); R `[ FAIL 3 | WARN 0 | PASS 22724 ]`, the three
+  known TASK-75 failures; `just quality` 98/98 (local). Truth-table checks
   (TASK-78) are `may_fail`.
 - simbox runs the full suite in about 15 minutes:
   `scripts/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
@@ -38,20 +38,23 @@ own rationale live in `roadmap/`; work in flight is on the board
 - Parameter rules (R1–R8, amendments A1–A7 adopted):
   `roadmap/2026-10-29-parameter-rules.md`.
   - Done: P0 (existence analysis, `notes/evaluations/2026-10-29-p0-summary.md`),
-    P1 (schema, required defaults, conformance test; TASK-80) and P2 (holds,
-    ten group jobs; TASK-81; reports `notes/evaluations/2026-10-29-p2-*-report.md`).
+    P1 (schema, required defaults, conformance test; TASK-80), P2 (holds,
+    ten group jobs; TASK-81; reports `notes/evaluations/2026-10-29-p2-*-report.md`)
+    and P3 (restrictions, closure, domains, failed-optimizer stops; four
+    jobs; TASK-82; reports `notes/evaluations/2026-10-29-p3-*-report.md`).
   - Left after P2: 53 `not-implemented` holds:
     - sstd and sged, 12 each: existence unresolved;
-    - tnorm, 12: needs R7a;
     - hyper and nhyper, 3 each: C6;
     - bbinom 3, cmb 4, tbinom 4: free size unresolved.
 
     Also 61 `no-mle` entries in 9 families.
-  - Next: P3 restrictions, closure (R7a), domains and failed-optimizer
-    stops (TASK-82); P4 parametrization (TASK-83); P5 docs (TASK-84).
+  - Next: P4 parametrization (TASK-83): scale over rate, half-family
+    translation via `r.shift`, hypergeometric `N`; P5 docs (TASK-84).
   - C5 and C6 were picked in the design and still await a look.
   - Refinement: the missing-coefficient message offers `NULL` even where
     estimating is unsupported (e.g. pareto2); derive that from `holds:`.
+  - For TASK-78 (own d/p/q/r): R7a closure in `dpqr.hpp`; NB/ZINB size 0;
+    legacy `special/cmp.hpp` API (notes on the board).
 
 ## Coverage: tier 4 (vector parameters)
 
