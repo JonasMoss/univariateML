@@ -42,3 +42,7 @@ add_test(NAME distribution_tests COMMAND distribution_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME no_throw_tests COMMAND no_throw_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+cppuniv_test(cmp_tests test_cmp.cpp)
+add_test(NAME cmp_tests COMMAND cmp_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
