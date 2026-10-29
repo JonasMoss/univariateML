@@ -76,3 +76,10 @@ test_that("CMP recycling, RNG and model generics work", {
  grDevices::pdf(tempfile(fileext=".pdf")); on.exit(grDevices::dev.off())
  expect_error(plot(f),NA)
 })
+
+test_that("CMP returns held rates without log-exp rounding", {
+  f <- mlcmp(c(0,1,2),lambda=.13,nu=1.3)
+  expect_identical(f[["lambda"]],.13)
+  expect_identical(f[["nu"]],1.3)
+  expect_setequal(attr(f,"fixed"),c("lambda","nu"))
+})

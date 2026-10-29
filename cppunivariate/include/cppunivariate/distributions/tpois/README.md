@@ -23,8 +23,8 @@ r:
   sampler: extraDistr::rtpois
   control:
     lambda: Optional fixed parameter; NULL estimates it.
-    a: Known strict lower truncation bound.
-    b: Known inclusive upper truncation bound.
+    a: "Strict lower bound; NULL estimates it as min(x) - 1."
+    b: "Inclusive upper bound; NULL estimates it as max(x)."
 
 log_density: "x*log(lambda)-loggamma(x+1)-log(Sum(exp(k*log(lambda)-loggamma(k+1)), (k, Max(0, floor(a)+1), floor(b))))"
 limits:
@@ -32,40 +32,17 @@ limits:
   when: '$\lambda \to 0$'
   detect: all observations at a strictly positive lowest support point
   status: LowerPointMass
+  fixed: [b]
 - name: point mass at highest support point
   when: '$\lambda \to \infty$'
   detect: all observations at finite highest support point
   status: UpperPointMass
+  fixed: [a]
 examples: |
   set.seed(1)
   mltpois(extraDistr::rtpois(100, 3, 0, 10), a = 0, b = 10)
 
-holds:
-- held: []
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
-- held:
-  - lambda
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
-- held:
-  - a
-  status: not-implemented
-  reason: Estimating `b` with NULL is not implemented for this design.
-- held:
-  - lambda
-  - a
-  status: not-implemented
-  reason: Estimating `b` with NULL is not implemented for this design.
-- held:
-  - b
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
-- held:
-  - lambda
-  - b
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
+holds: []
 fit_args:
   a: 0
   b: 10
@@ -91,3 +68,5 @@ For `a = 0, b = Inf`, interior fits agree with `mlztpois`. Its actuar
 reference additionally defines the point mass at one at zero rate; extraDistr
 does not define that zero-probability conditioning event. Consequently
 `mlztpois` retains its attained boundary while `mltpois` reports the point-mass escape.
+
+With a free bound, the conditioning support tightens to the corresponding sample extreme. The strict lower bound is nonunique in `[min(x) - 1, min(x))`; the returned representative is `min(x) - 1`. On singleton support every positive rate maximizes the likelihood; a free rate is represented by one. For nonsingleton support the empirical mean must lie strictly between the effective integer bounds, except that a zero mean attains rate zero when zero is in the support. Otherwise the fitter stops at the lower or upper point-mass limit.
