@@ -103,3 +103,4 @@
 #include "distributions/yulesimon/mle.hpp"
 #include "distributions/foldnorm/mle.hpp"
 #include "distributions/emg/mle.hpp"
+#include "distributions/tlambda/mle.hpp"

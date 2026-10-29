@@ -1,0 +1,188 @@
+test_that("Tukey lambda quantiles agree with extraDistr away from its tail defects", {
+  for (l in c(-1, -.5, 0, .14, .5, 1, 2, 5)) {
+    p <- c(1e-8, .01, .2, .5, .8, .99, 1-1e-8)
+    expect_equal(qtlambda(p, lambda=l), extraDistr::qtlambda(p, l), tolerance=1e-8)
+    expect_equal(ptlambda(qtlambda(p, lambda=l), lambda=l), p, tolerance=2e-8)
+  }
+})
+test_that("Tukey lambda tails, endpoints and analytic limits", {
+  for (l in c(-1, -.5, 0, 1e-14, -1e-14)) {
+    lp <- c(-700, -100, -30, -5, -1)
+    for (lower in c(TRUE, FALSE)) {
+      q <- qtlambda(lp, lambda=l, lower.tail=lower, log.p=TRUE)
+      expect_equal(ptlambda(q, lambda=l, lower.tail=lower, log.p=TRUE), lp, tolerance=1e-10)
+    }
+  }
+  expect_equal(dtlambda(c(-1000, 0, 1000), lambda=0, log=TRUE), dlogis(c(-1000, 0, 1000), log=TRUE))
+  expect_equal(qtlambda(c(-1000,-1), lambda=0, lower.tail=FALSE, log.p=TRUE), qlogis(c(-1000,-1), lower.tail=FALSE, log.p=TRUE))
+  expect_equal(dtlambda(c(-1,0,1), lambda=1), rep(.5,3))
+  expect_equal(dtlambda(c(-.5,0,.5), lambda=2), rep(1,3))
+  expect_equal(dtlambda(c(-2,2), lambda=.5), c(0,0))
+  expect_equal(ptlambda(c(-Inf,Inf)), c(0,1))
+  expect_equal(qtlambda(c(0,1), lambda=.5), c(-2,2))
+  expect_equal(qtlambda(c(.01,.8), lambda=1e-14), qlogis(c(.01,.8)), tolerance=1e-12)
+})
+test_that("Tukey lambda vector and RNG conventions", {
+  expect_equal(length(dtlambda(1:5, mu=0:1)), 5L)
+  expect_length(qtlambda(numeric()), 0)
+  expect_true(is.na(dtlambda(NA_real_)))
+  expect_true(is.nan(dtlambda(NaN)))
+  expect_warning(expect_true(is.nan(dtlambda(1,sigma=-1))), "NaNs")
+  expect_warning(expect_true(is.nan(qtlambda(2))), "NaNs")
+  set.seed(31); a <- rtlambda(20,mu=2,sigma=3,lambda=.14)
+  set.seed(31); expect_equal(a,qtlambda(runif(20),2,3,.14))
+  expect_length(rtlambda(c(3,5)),2)
+  expect_error(rtlambda(-1),"invalid")
+})
+test_that("Tukey lambda existence guards and exact uniform faces", {
+  x <- c(-2,-1,0,1,2)
+  for(l in c(1,2)) {
+    f <- mltlambda(x,lambda=l)
+    expect_equal(as.numeric(f),c(0,2*l,l))
+    expect_equal(as.numeric(logLik(f)),as.numeric(logLik(mlunif(x))))
+    expect_equal(attr(f,"fixed"),"lambda")
+    expect_equal(attr(logLik(f),"df"),2L)
+    expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)))
+  }
+  expect_error(mltlambda(c(0,0,1,2)),"tie multiplicity")
+  expect_error(mltlambda(1:2),"three")
+  expect_error(mltlambda(x,lambda=1.5),"Fixed lambda")
+  expect_error(mltlambda(x,lambda=NA_real_),"finite")
+  expect_error(mltlambda(x,reltol=0),"positive")
+  expect_error(mltlambda(x,lambda=0,iterlim=1),"converge")
+  expect_error(mltlambda(x,mu=0),"unused")
+})
+# Independent likelihood: invert extraDistr's quantile using uniroot,
+# without using package density or the C++ inversion.
+tlambda_oracle_ld <- function(x,mu,sigma,l) {
+  z <- (x-mu)/sigma
+  if(l==1 || l==2) return(ifelse(abs(z)<=1/l,-log(2*sigma/l),-Inf))
+  if(l>0 && any(abs(z)>=1/l)) return(rep(-Inf,length(x)))
+  vapply(z,function(y) {
+    if(l==0) return(dlogis(y,log=TRUE)-log(sigma))
+    t <- if(y==0) log(2) else uniroot(function(t) -extraDistr::qtlambda(exp(-t),l)-abs(y),c(log(2),700),tol=1e-11)$root
+    a <- (l-1)*(-t); b <- (l-1)*log1p(-exp(-t)); m <- max(a,b)
+    -log(sigma)-m-log(exp(a-m)+exp(b-m))
+  },numeric(1))
+}
+test_that("Tukey lambda independent oracle on varied fixed and free samples", {
+  for(x in list(c(-4,-1,-.2,0,.5,1,9),c(-3,-2,-1,0,1,2,3),c(-10,-1,-.1,0,.1,1,10))) {
+    for(l in c(-1,0,.14)) {
+      f <- mltlambda(x,lambda=l)
+      objective <- function(t) {
+        ll <- sum(tlambda_oracle_ld(x,t[1],exp(t[2]),l))
+        if(is.finite(ll)) -ll else 1e100
+      }
+      fits <- lapply(c(-1,0,1),function(m) optim(c(m,log(max(1,1.1*l*max(abs(x-m))))),objective,method="Nelder-Mead",control=list(maxit=1000,reltol=1e-10)))
+      expect_gte(as.numeric(logLik(f)), -min(vapply(fits,`[[`,numeric(1),"value"))-1e-6)
+      expect_equal(sum(tlambda_oracle_ld(x,f[1],f[2],l)),as.numeric(logLik(f)),tolerance=1e-8)
+    }
+    f <- mltlambda(x)
+    free_objective <- function(t) {
+      ll <- tryCatch(sum(tlambda_oracle_ld(x,t[1],exp(t[2]),tanh(t[3]))),error=function(e) -Inf)
+      if(is.finite(ll)) -ll else 1e100
+    }
+    for(start in c(-.7,0,.6)) {
+      o <- optim(c(median(x),log(IQR(x)/2),atanh(start)),free_objective,
+                 method="Nelder-Mead",control=list(maxit=1500,reltol=1e-10))
+      expect_gte(as.numeric(logLik(f)),-o$value-1e-6)
+    }
+    for(l in seq(-1,.9,length.out=11)) {
+      g <- mltlambda(x,lambda=l)
+      expect_gte(as.numeric(logLik(f)),as.numeric(logLik(g))-1e-6)
+    }
+    expect_equal(sum(tlambda_oracle_ld(x,f[1],f[2],f[3])),as.numeric(logLik(f)),tolerance=1e-8)
+  }
+})
+test_that("Tukey lambda dispatch, affine equivariance and attained bounds", {
+  x <- qlogis((1:31-.5)/31)
+  f <- mltlambda(x)
+  g <- mltlambda(5+7*x)
+  expect_equal(g[1],5+7*f[1],ignore_attr=TRUE,tolerance=2e-5)
+  expect_equal(g[2],7*f[2],ignore_attr=TRUE,tolerance=2e-5)
+  expect_equal(g[3],f[3],ignore_attr=TRUE,tolerance=2e-5)
+  expect_equal(as.numeric(logLik(g)),as.numeric(logLik(f))-length(x)*log(7),tolerance=1e-8)
+  p <- c(.1,.5,.9)
+  expect_equal(pml(qml(p,f),f),p,tolerance=1e-8)
+  set.seed(12); a <- rml(10,f)
+  set.seed(12); expect_equal(a,rtlambda(10,f[1],f[2],f[3]))
+  u <- mltlambda(seq(-1,1,length.out=31))
+  expect_equal(unname(u[3]),1,ignore_attr=TRUE)
+  expect_equal(as.numeric(logLik(u)),as.numeric(logLik(mlunif(seq(-1,1,length.out=31)))))
+  h <- mltlambda(c(-1e6,-2,-.1,0,.1,2,1e6))
+  expect_equal(unname(h[3]),-1,ignore_attr=TRUE)
+})
+test_that("Tukey lambda avoids standardized overflow in heavy tails", {
+  expect_true(is.finite(dtlambda(1e300,sigma=1e-300,lambda=-1,log=TRUE)))
+  expect_true(is.finite(ptlambda(1e300,sigma=1e-300,lambda=-1,lower.tail=FALSE,log.p=TRUE)))
+  expect_equal(dtlambda(1e300,sigma=1e-300,lambda=-1,log=TRUE),-900*log(10),tolerance=1e-12)
+  q <- qtlambda(-1000,sigma=1e-300,lambda=-1,lower.tail=FALSE,log.p=TRUE)
+  expect_true(is.finite(q))
+  expect_equal(ptlambda(q,sigma=1e-300,lambda=-1,lower.tail=FALSE,log.p=TRUE),-1000,tolerance=1e-12)
+})
+test_that("Tukey lambda bootstrap, selection and plots use owned evaluation", {
+  x <- qlogis((1:31-.5)/31)
+  f <- mltlambda(x,lambda=0)
+  set.seed(10); b <- bootstrapml(f,reps=3,reducer=identity)
+  expect_equal(dim(b),c(3L,3L))
+  expect_equal(unname(b['lambda',]),rep(0,3))
+  expect_s3_class(model_select(x,models='tlambda',lambda=0),'univariateML')
+  path <- tempfile(fileext='.pdf'); grDevices::pdf(path)
+  for(kind in c('d','p','q')) expect_silent(plot(f,kind=kind))
+  grDevices::dev.off(); expect_gt(file.info(path)$size,0)
+  unlink(path)
+})
+test_that("Tukey lambda quantiles keep log tails and the logistic limit", {
+  expect_equal(qtlambda(c(-1000,-100),lambda=0,lower.tail=FALSE,log.p=TRUE),c(1000,100),tolerance=1e-12)
+  expect_equal(qtlambda(.2,lambda=1e-12),qlogis(.2),tolerance=1e-10)
+})
+test_that("Tukey lambda bounded-tail inversion resolves endpoint deficits", {
+  for(l in c(.14,.5,.9,.99)) {
+    x <- (1-1e-12)/l
+    lp <- ptlambda(x,lambda=l,lower.tail=FALSE,log.p=TRUE)
+    u <- exp(lp)
+    deficit <- -expm1(l*log1p(-u))+exp(l*lp)
+    expect_equal(deficit/(1-l*x),1,tolerance=1e-3)
+  }
+  for(l in c(1,2,5)) expect_equal(dtlambda(qtlambda(1,lambda=l),lambda=l),if(l==1) .5 else 1)
+})
+test_that("Tukey lambda sampler is inversion with R's RNG", {
+  set.seed(1); a <- rtlambda(10,lambda=1e-12)
+  set.seed(1); expect_equal(a,qlogis(runif(10)),tolerance=1e-10)
+})
+test_that("Tukey lambda accepts ties strictly below half the sample", {
+  for(l in c(-1,0,1)) expect_true(is.finite(as.numeric(logLik(mltlambda(c(0,0,1,2,3),lambda=l)))))
+  expect_error(mltlambda(rep(1,5)))
+})
+
+test_that("Tukey lambda handles finite log tails beyond 1e307", {
+  l <- 1e-308
+  expect_equal(ptlambda(5e307,lambda=l,lower.tail=FALSE,log.p=TRUE)/(-log(2)/l),1,tolerance=1e-12)
+  q <- qtlambda(-1e308,lambda=l,lower.tail=FALSE,log.p=TRUE)
+  expect_true(is.finite(q))
+  expect_equal(ptlambda(q,lambda=l,lower.tail=FALSE,log.p=TRUE)/(-1e308),1,tolerance=1e-12)
+})
+
+test_that("Tukey lambda large-tail logarithms retain tiny nonzero values", {
+  expect_equal(ptlambda(100,log.p=TRUE)/plogis(100,log.p=TRUE),1,tolerance=1e-12)
+  for(l in c(-1,0)) {
+    large <- qtlambda(-1e-100,lambda=l,log.p=TRUE)
+    expect_equal(ptlambda(large,lambda=l,log.p=TRUE)/(-1e-100),1,tolerance=1e-10)
+    x <- qtlambda(-100,lambda=l,lower.tail=FALSE,log.p=TRUE)
+    expect_equal(ptlambda(x,lambda=l,log.p=TRUE)/(-exp(-100)),1,tolerance=1e-10)
+    expect_equal(ptlambda(-x,lambda=l,lower.tail=FALSE,log.p=TRUE)/(-exp(-100)),1,tolerance=1e-10)
+  }
+})
+
+test_that("Tukey lambda keeps shifted finite results after intermediate overflow", {
+  expect_equal(ptlambda(1e308,-1e308,1e308,.1),ptlambda(2,lambda=.1),tolerance=1e-12)
+  expect_equal(dtlambda(1e308,-1e308,1e308,.1,log=TRUE),dtlambda(2,lambda=.1,log=TRUE)-log(1e308),tolerance=1e-12)
+  expect_equal(qtlambda(1,-1e308,1e308,.5)/1e308,1,tolerance=1e-12)
+  q <- qtlambda(.999,-1e308,1e308,.5)
+  expect_true(is.finite(q))
+  expect_equal(ptlambda(q,-1e308,1e308,.5),.999,tolerance=1e-12)
+})
+
+test_that("Tukey lambda rejects numerical merging of distinct data", {
+  expect_error(mltlambda(c(0,1e-300,2e-300,1e300)),"standardization")
+})

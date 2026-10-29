@@ -90,6 +90,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | snorm      | Skew Normal             | mean, sd, xi       | fGarch::dsnorm            | (-∞, ∞) open     |
 | sstd       | Skew Student-t          | mean, sd, nu, xi   | fGarch::dsstd             | (-∞, ∞) open     |
 | std       | Student-t                | mean, sd, nu       | fGarch::dstd              | (-∞, ∞) open     |
+| tlambda | Tukey lambda | mu, sigma, lambda | dtlambda (package-defined) | real; bounded when lambda > 0 |
 | triang | Triangular | a, b, c | extraDistr::dtriang | [a, b] |
 | trgamma    | Transformed gamma       | shape1, shape2, scale | actuar::dtrgamma       | (0, ∞) open      |
 | unif       | Uniform                 | min, max           | stats::dunif              | (-∞, ∞) open     |
