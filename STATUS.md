@@ -34,12 +34,11 @@ own rationale live in `roadmap/`; work in flight is on the board
   maintainer has been unresponsive; a draft actuar patch for
   `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`.
 - Tier 4 below: start it or not.
-- Parameter conventions: `notes/evaluations/2026-10-29-parameter-conventions.md`
-  lists the judgement calls where the families disagree, each with a
-  proposal: endpoint and threshold defaults (gpd `mu`, fatigue `mu`,
-  hnorm `mu`, truncation bounds), silent fits on restricted ranges,
-  which parameters can be held, `NULL` semantics, rate or scale,
-  binomial `size`.
+- Parameter rules (R1–R8) are agreed and designed:
+  `roadmap/2026-10-29-parameter-rules.md`. C5 (translate all three half
+  families) and C6 (hypergeometric population size `N` as a coefficient)
+  were picked in the design and await a look. Work is planned as
+  TASK-79..84 (analysis first).
 
 ## Coverage: tier 4 (vector parameters)
 

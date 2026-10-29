@@ -22,6 +22,10 @@ the queue.
 
 ## Index
 
+- [2026-10-29 — Parameter rules](2026-10-29-parameter-rules.md) *(agreed design, work planned)*:
+  R1–R8 for coefficients, holds, defaults, thresholds and restrictions;
+  parameter kinds; schema, API and C++ changes; phases P0–P5.
+
 - [2026-10-29 — Density scope decisions](2026-10-29-density-scope.md) (full coverage plan added):
   deliberate extraDistr and actuar exclusions, remaining study candidates,
   and unrestricted models requiring nonexistence errors.

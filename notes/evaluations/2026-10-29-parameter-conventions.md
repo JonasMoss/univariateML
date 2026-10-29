@@ -1,5 +1,10 @@
 # Parameter conventions across the 98 families (2026-10-29)
 
+The rules that resolve these cases are agreed and designed in
+`roadmap/2026-10-29-parameter-rules.md`; this note is the evidence. Some
+proposals below changed: hnorm keeps an estimable `mu`, but as a
+required threshold (C1), and the GEV/GPD lower bound becomes $-1$.
+
 Every parameter with its README flags, adapter default and the reference
 function's default is in `2026-10-29-parameter-table.csv` (generator:
 `2026-10-29-parameter-table.R`). This note lists where the families do not
