@@ -94,3 +94,6 @@
 
 #include "distributions/bnbinom/mle.hpp"
 #include "distributions/cmb/mle.hpp"
+
+#include "distributions/zeta/mle.hpp"
+#include "distributions/yulesimon/mle.hpp"

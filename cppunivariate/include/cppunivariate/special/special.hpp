@@ -20,6 +20,7 @@
 #include <boost/math/distributions/negative_binomial.hpp>
 #include <boost/math/distributions/poisson.hpp>
 #include <boost/math/policies/policy.hpp>
+#include <boost/math/special_functions/zeta.hpp>
 #include <cmath>
 
 namespace cppunivariate {
@@ -38,6 +39,8 @@ typedef boost::math::policies::policy<
     boost::math::policies::indeterminate_result_error<boost::math::policies::ignore_error>,
     boost::math::policies::discrete_quantile<
         boost::math::policies::integer_round_up>> NoThrowPolicy;
+
+inline double zeta(double s) { return boost::math::zeta(s, NoThrowPolicy{}); }
 
 // --- log-gamma family ------------------------------------------------------
 
