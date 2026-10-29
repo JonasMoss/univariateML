@@ -84,3 +84,4 @@
 #include "distributions/zmlogarithmic/mle.hpp"
 #include "distributions/zib/mle.hpp"
 #include "distributions/hyper/mle.hpp"
+#include "distributions/gev/mle.hpp"
