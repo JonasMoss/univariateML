@@ -40,3 +40,9 @@ TEST_CASE("frechet: probability endpoints and sampler CDF") {
 TEST_CASE("frechet: independent extreme value") {
  CHECK(cppunivariate::distributions::dfrechet(.01,2,0,1,true)==doctest::Approx(-9985.4913422614754).epsilon(2e-13));
 }
+
+TEST_CASE("frechet: ties above the minimum are admissible") {
+  const std::vector<double> x{0,1,2,2,2};
+  const auto r=cppunivariate::frechet_gev_mle(mltest::as_span(x),1e-10,100,.3);
+  CHECK(r.status==cppunivariate::GevStatus::Ok);
+}

@@ -31,4 +31,6 @@ The binomial distribution models the number of successes in a fixed number of in
 
 ## Details
 
+Free trial-size estimation searches the integer profile likelihood; it reports failure if it cannot bracket the maximum within its numerical search range.
+
 The estimate of `size` can be unstable; alternatives are discussed by Carroll and Lombard (1985) and DasGupta and Rubin (2005). Supplying `size` fixes the number of trials and estimates only `prob`; it must be at least `max(x)`. The support is the integers from zero to `size`, and `size` is a nonnegative integer.

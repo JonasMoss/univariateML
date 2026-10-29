@@ -67,3 +67,12 @@ TEST_CASE("kumar ordinary golden is unchanged to 1e-12") {
   CHECK(std::abs(r.b - g.estimates.at("b")) < 1e-12);
   CHECK(std::abs(r.logLik - g.logLik) < 1e-12);
 }
+
+TEST_CASE("kumar: constant data cannot throw or have a finite MLE") {
+  for(double v:{.01,.4,.99}) {
+    std::vector<double> x(5,v);
+    const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-12,100);
+    CHECK(r.status==cppunivariate::KumarStatus::Unbounded);
+    CHECK(std::isnan(r.a));
+  }
+}

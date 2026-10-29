@@ -9,10 +9,11 @@
 Rcpp::List mlrayleigh_(const Rcpp::NumericVector &x) {
   auto res = cppunivariate::rayleigh_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())});
-  if (!std::isfinite(res.sigma)) {
-    Rcpp::stop("The Rayleigh likelihood is identically zero when every observation is zero; "
-               "the scale cannot be identified.");
+  if (res.status == cppunivariate::RayleighStatus::ZeroLikelihood) {
+    Rcpp::stop("The Rayleigh likelihood is identically zero when any observation is zero; "
+               "no scale has positive likelihood.");
   }
+  if (res.status != cppunivariate::RayleighStatus::Ok) Rcpp::stop("Invalid Rayleigh data.");
   return Rcpp::List::create(Rcpp::_["estimates"] = Rcpp::NumericVector::create(
                                 Rcpp::_["sigma"] = res.sigma),
                             Rcpp::_["logLik"] = res.logLik);

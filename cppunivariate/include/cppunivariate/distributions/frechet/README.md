@@ -24,6 +24,8 @@ The Frechet distribution models heavy right tails and extreme maxima.
 
 ## Details
 
+When the location is free, the minimum multiplicity controls the positive-shape collapse; ties above the minimum do not cause it.
+
 A held-location fit requires at least two finite, nonconstant observations strictly above mu. Its identification and existence are exactly those of inverse Weibull after subtracting mu.
 
 The shape domain in the parameter table applies to free location.

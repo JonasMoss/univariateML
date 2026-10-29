@@ -24,4 +24,6 @@ The Kumaraswamy distribution is a flexible distribution for continuous data betw
 
 ## Details
 
+For constant observations the likelihood is unbounded, so no finite maximum likelihood estimate exists.
+
 The maximum likelihood estimate exists for every nonconstant sample in $(0, 1)$: with `b` profiled out, the log-likelihood tends to $-\infty$ both as $a \to 0$ and as $a \to \infty$, so the family has no escapes.
