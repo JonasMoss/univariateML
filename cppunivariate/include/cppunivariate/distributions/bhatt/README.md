@@ -3,9 +3,21 @@ id: bhatt
 name: Bhattacharjee
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1, fixable: true}
-  - {name: a, role: half-width, domain: "(0, inf)", default: 2, fixable: true}
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: regular
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: a
+  role: half-width
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
 r:
   density: extraDistr::dbhatt
   sampler: extraDistr::rbhatt
@@ -27,6 +39,11 @@ limits:
 examples: |
   set.seed(12876)
   mlbhatt(extraDistr::rbhatt(500, 0, 1, 2))
+holds:
+- held:
+  - mu
+  status: not-implemented
+  reason: The adapter does not accept `mu`; this hold is not implemented (P2).
 ---
 
 The Bhattacharjee distribution is the convolution of a normal distribution and a symmetric uniform distribution.

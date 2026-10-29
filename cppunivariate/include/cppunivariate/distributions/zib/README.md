@@ -12,17 +12,19 @@ params:
 - name: size
   role: trials
   domain: '[0, inf)'
-  default: 8.0
-  fixable: true
-  integer: true
+  integer: yes
+  simulate: 8.0
+  kind: design
 - name: prob
   role: probability
   domain: '[0, 1]'
-  default: 0.4
+  simulate: 0.4
+  kind: regular
 - name: pi
   role: probability
   domain: '[0, 1]'
-  default: 0.4
+  simulate: 0.4
+  kind: regular
 r:
   density: extraDistr::dzib
   sampler: extraDistr::rzib
@@ -36,6 +38,17 @@ limits:
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: the maximised face likelihood wins within 1e-8 times the sample size
   status: ZipLimit
+holds:
+- held:
+  - prob
+  status: not-implemented
+  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
+- held:
+  - pi
+  status: not-implemented
+  reason: The adapter does not accept `pi`; this hold is not implemented (P2).
+fit_args:
+  size: ~
 ---
 
 Zero-inflated binomial distributions model counts with a separate zero component.

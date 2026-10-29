@@ -1,0 +1,57 @@
+"path"	"t"	"logLik"
+"binom to Poisson"	10	-7.09270247929458
+"zib to ZIP"	10	-6.86355807517574
+"zmbinom to ZMPoisson"	10	-6.88011711067102
+"ztbinom to ZTPoisson"	10	-7.29446039917681
+"tbinom to truncated Poisson"	10	-7.29444158542623
+"hyper to binomial"	10	-3.61210639530802
+"nhyper to negative binomial"	10	-7.51616123108699
+"binom to Poisson"	100	-6.96304263068642
+"zib to ZIP"	100	-6.86261489291045
+"zmbinom to ZMPoisson"	100	-6.8613623641512
+"ztbinom to ZTPoisson"	100	-7.07935980411791
+"tbinom to truncated Poisson"	100	-7.07848656771044
+"hyper to binomial"	100	-3.84741083423289
+"nhyper to negative binomial"	100	-6.9254708439865
+"binom to Poisson"	1000	-6.95476943167182
+"zib to ZIP"	1000	-6.86509082589328
+"zmbinom to ZMPoisson"	1000	-6.8617397172787
+"ztbinom to ZTPoisson"	1000	-7.0673846274602
+"tbinom to truncated Poisson"	1000	-7.06631006035686
+"hyper to binomial"	1000	-3.87723512436682
+"nhyper to negative binomial"	1000	-6.89223858448595
+"binom to Poisson"	10000	-6.95397803463997
+"zib to ZIP"	10000	-6.86535667305876
+"zmbinom to ZMPoisson"	10000	-6.86179286701016
+"ztbinom to ZTPoisson"	10000	-7.06625085795331
+"tbinom to truncated Poisson"	10000	-7.06515467739333
+"hyper to binomial"	10000	-3.88023358868418
+"nhyper to negative binomial"	10000	-6.88907186852819
+"bbinom to binomial"	2	-6.89852981650425
+"bbinom to endpoint mixture"	2	-3.4723045931929
+"tbinom to lower point mass"	2	-13.8837290188727
+"bbinom to binomial"	5	-5.90953383732193
+"bbinom to endpoint mixture"	5	-2.36789126422745
+"tbinom to lower point mass"	5	-3.60467093431442
+"bbinom to binomial"	10	-5.47707148359779
+"bbinom to endpoint mixture"	10	-1.91077766981147
+"tbinom to lower point mass"	10	-1.55847848944184
+"bbinom to binomial"	100	-5.06884092001778
+"bbinom to endpoint mixture"	100	-1.44241729981534
+"tbinom to lower point mass"	100	-0.136929417248312
+"bbinom to binomial"	1000	-5.03605803088089
+"bbinom to endpoint mixture"	1000	-1.39194768390035
+"tbinom to lower point mass"	1000	-0.0135191418792875
+"bbinom to binomial"	10000	-5.03302657778659
+"bbinom to endpoint mixture"	10000	-1.38686010858324
+"tbinom to lower point mass"	10000	-0.00135019126682856
+"cmb to adjacent mixture"	2	-1.94444880635325
+"cmb to endpoint mixture"	2	-1.45214280590612
+"cmb to adjacent mixture"	5	-1.4835175348156
+"cmb to endpoint mixture"	5	-1.38655449209307
+"cmb to adjacent mixture"	10	-1.39132130209743
+"cmb to endpoint mixture"	10	-1.3862943941998
+"cmb to adjacent mixture"	20	-1.38630788482472
+"cmb to endpoint mixture"	20	-1.38629436111989
+"cmb to adjacent mixture"	40	-1.38629436123305
+"cmb to endpoint mixture"	40	-1.38629436111989

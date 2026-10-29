@@ -178,9 +178,9 @@ inline ParalogisResult paralogis_mle_fixed_scale(
 
 // shape0: optional start for the shape; NaN (the default) or a non-positive
 // value means the automatic start below.
-inline ParalogisResult paralogis_mle(
+inline ParalogisResult paralogis_mle_impl(
     span x, double tol, int maxit,
-    double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+    double shape0, bool standardized) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, 0, ParalogisStatus::InvalidStart};
@@ -201,6 +201,17 @@ inline ParalogisResult paralogis_mle(
                             : sorted[n / 2];
   if (theta0 <= 0.0) {
     return {kNaN, kNaN, kNaN, 0, ParalogisStatus::InvalidStart};
+  }
+
+  // Optimise a dimensionless scale: FD increments and BFGS stopping rules
+  // must not depend on the units of x or an additive likelihood constant.
+  if (!standardized) {
+    std::vector<double> z(n);
+    for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / theta0;
+    auto r = paralogis_mle_impl(span{z.data(), n}, tol, maxit, shape0, true);
+    r.scale *= theta0;
+    r.logLik -= static_cast<double>(n) * std::log(theta0);
+    return r;
   }
 
   double mean_lz = 0.0;
@@ -235,6 +246,11 @@ inline ParalogisResult paralogis_mle(
     return {shape, scale, logLik, r.iterations, ParalogisStatus::BfgsFailure};
   }
   return {shape, scale, logLik, r.iterations, ParalogisStatus::Ok};
+}
+
+inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
+    double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+  return paralogis_mle_impl(x, tol, maxit, shape0, false);
 }
 
 }  // namespace cppunivariate

@@ -4,9 +4,8 @@
 // value: size is fixed and prob is the closed-form mean(x)/size; the
 // caller's responsibility to validate size >= max(x).
 //
-// Otherwise (size_or_nan is NaN) auto-fit: compute the dispersion check
-// (var/mean ratio), Newton-on-size with absolute convergence, and pick
-// the best of {init, floor(opt), ceil(opt)} by log-likelihood. Status
+// Otherwise (size_or_nan is NaN) auto-fit with a bracketed integer profile
+// search. Status
 // enum surfaces SizeTooSmall, Underdispersed, IterationFailure.
 
 #pragma once
@@ -45,6 +44,7 @@ inline double binom_lchoose(double n, double k) {
 
 inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
                              int maxit) {
+  (void)tol;
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, BinomStatus::IterationFailure};
@@ -100,21 +100,6 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
     return val;
   };
 
-  auto f_over_df = [&](double size) {
-    const double size_m_x = size - x_bar;
-    double f =
-        dn * (std::log(size_m_x) - std::log(size)) +
-        dn * cppunivariate::special::digamma(size + 1.0);
-    double df =
-        dn * x_bar / (size * size_m_x) + dn * cppunivariate::special::trigamma(size + 1.0);
-    for (std::size_t i = 0; i < uniq.size(); ++i) {
-      const double arg = size - static_cast<double>(uniq[i]) + 1.0;
-      f -= counts[i] * cppunivariate::special::digamma(arg);
-      df -= counts[i] * cppunivariate::special::trigamma(arg);
-    }
-    return f / df;
-  };
-
   // User-supplied size.
   if (std::isfinite(size_or_nan)) {
     if (size_or_nan < static_cast<double>(max_x)) {
@@ -128,41 +113,41 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   // All-zero data: size is not identifiable; choose size=0, prob=0.
   if (x_bar == 0.0) return {0.0, 0.0, 0.0, 0, BinomStatus::Ok};
 
+  if (uniq.size() == 1) return {static_cast<double>(max_x),1.0,0.0,0,BinomStatus::Ok};
+
   if (x_bar / var_pop <= 1.0) {
     return {kNaN, kNaN, kNaN, 0, BinomStatus::Underdispersed};
   }
 
-  const double size0 = static_cast<double>(max_x);
-  std::vector<double> size_cands{size0};
-  int iterations = 0;
-  if (size0 != 1.0 && f_over_df(size0) > 0.0) {
-    double size = size0;
-    for (int i = 0; i < maxit; ++i) {
-      const double step = f_over_df(size);
-      const double size_next = size - step;
-      iterations = i + 1;
-      if (std::abs(step) < tol || !std::isfinite(size_next)) {
-        size = size_next;
-        break;
-      }
-      size = size_next;
-    }
-    size_cands.push_back(std::floor(size));
-    size_cands.push_back(std::ceil(size));
+  // DeRiggi's unimodality gives a unimodal integer profile. Bracket its
+  // first decreasing step, then bisect those adjacent differences.
+  // Use extended precision: the differences become small in the Poisson tail.
+  auto increment = [&](long long k) {
+    const long double z=k, m=static_cast<long double>(sum_x)/n;
+    long double d=0;
+    for (std::size_t i=0;i<uniq.size();++i)
+      d+=static_cast<long double>(counts[i])*std::log1p(
+        static_cast<long double>(uniq[i])/(z+1-uniq[i]));
+    d+=static_cast<long double>(n)*(-m*std::log1p(1/z)
+       +(z+1-m)*std::log1p(-m/(z+1))-(z-m)*std::log1p(-m/z));
+    return d;
+  };
+  long long lo=max_x, hi=lo;
+  int iterations=0;
+  const long long limit=1000000LL;
+  if (hi>limit) return {kNaN,kNaN,kNaN,0,BinomStatus::IterationFailure};
+  while(increment(hi)>0) {
+    if (++iterations>=maxit || hi>=limit) return {kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
+    lo=hi+1;
+    hi=std::min(limit,hi*2);
   }
-
-  double best_ll = -std::numeric_limits<double>::infinity();
-  double best_size = size0;
-  for (auto cand : size_cands) {
-    if (cand <= 0.0 || (cand - x_bar) < 0.0) continue;
-    const double ll = log_likelihood(cand);
-    if (ll > best_ll || !std::isfinite(best_ll)) {
-      best_ll = ll;
-      best_size = cand;
-    }
+  while(lo<hi) {
+    if (++iterations>=maxit) return {kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
+    const long long mid=lo+(hi-lo)/2;
+    if(increment(mid)>0) lo=mid+1; else hi=mid;
   }
-  const double prob = x_bar / best_size;
-  return {best_size, prob, best_ll, iterations, BinomStatus::Ok};
+  const double best_size=static_cast<double>(lo);
+  return {best_size,x_bar/best_size,log_likelihood(best_size),iterations,BinomStatus::Ok};
 }
 
 }  // namespace cppunivariate

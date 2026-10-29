@@ -36,25 +36,25 @@ for (i in 1:1000) {
   if (abs(next_m-m)<1e-12) break
   m <- next_m
 }
-expect_equal(unname(mlhuber(x, sigma=2)[1]), m, tolerance=1e-9)
-expect_equal(unname(mlhuber(c(-10,10), sigma=1)[1]), 0)
-expect_error(mlhuber(rep(1,5)), "unbounded")
-expect_error(mlhuber(rep(1,5), mu=1), "unbounded")
-expect_true(is.finite(as.numeric(logLik(mlhuber(rep(1,5), mu=0)))))
-expect_true(is.finite(as.numeric(logLik(mlhuber(rep(1,5), sigma=2)))))
+expect_equal(unname(mlhuber(x, sigma=2, epsilon = 1.345)[1]), m, tolerance=1e-9)
+expect_equal(unname(mlhuber(c(-10,10), sigma=1, epsilon = 1.345)[1]), 0)
+expect_error(mlhuber(rep(1,5), epsilon = 1.345), "unbounded")
+expect_error(mlhuber(rep(1,5), mu=1, epsilon = 1.345), "unbounded")
+expect_true(is.finite(as.numeric(logLik(mlhuber(rep(1,5), mu=0, epsilon = 1.345)))))
+expect_true(is.finite(as.numeric(logLik(mlhuber(rep(1,5), sigma=2, epsilon = 1.345)))))
 for (bad in c(0,-1,Inf,NaN)) {
-  expect_error(mlhuber(x, sigma=bad), "sigma")
+  expect_error(mlhuber(x, sigma=bad, epsilon = 1.345), "sigma")
   expect_error(mlhuber(x, epsilon=bad), "epsilon")
 }
-expect_error(mlhuber(x, mu=Inf), "mu")
+expect_error(mlhuber(x, mu=Inf, epsilon = 1.345), "mu")
 expect_equal(as.numeric(mlhuber(x, epsilon=10)[1:2]), as.numeric(mlnorm(x)), tolerance=1e-7)
-expect_error(mlhuber(c(1, Inf)), "support")
-expect_error(mlhuber(x, gradtol=0), "gradtol")
-expect_error(mlhuber(x, iterlim=0), "iterlim")
-expect_error(mlhuber(x, iterlim=1, gradtol=1e-15), "converge")
+expect_error(mlhuber(c(1, Inf), epsilon = 1.345), "support")
+expect_error(mlhuber(x, gradtol=0, epsilon = 1.345), "gradtol")
+expect_error(mlhuber(x, iterlim=0, epsilon = 1.345), "iterlim")
+expect_error(mlhuber(x, iterlim=1, gradtol=1e-15, epsilon = 1.345), "converge")
 # Tied, nonconstant samples remain bounded and fit every free subset.
 for (args in list(list(), list(mu=0), list(sigma=1), list(mu=0, sigma=1))) {
-  fit <- do.call(mlhuber, c(list(x=c(0,0,0,1,1)), args))
+  fit <- do.call(mlhuber, c(list(x=c(0,0,0,1,1), epsilon=1.345), args))
   expect_true(is.finite(as.numeric(logLik(fit))))
 }
 

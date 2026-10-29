@@ -3,9 +3,30 @@ id: gpd
 name: Generalized Pareto
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0, fixed: 0}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1}
-  - {name: xi, role: shape, domain: "[-0.5, inf)", default: 0.3, fixable: true}
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: design
+  advice: Supply a threshold strictly below the data; estimating it has no unrestricted
+    MLE.
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: xi
+  role: shape
+  domain: '[-0.5, inf)'
+  simulate: 0.3
+  fit_domain:
+    lower: -1.0
+    restriction:
+      mechanism: endpoint
+      exempt_when_held: []
+      reason: xi >= -1 prevents an upper-endpoint singularity; the current fitter
+        still uses -1/2 until P3.
+  kind: regular
 r:
   density: extraDistr::dgpd
   sampler: extraDistr::rgpd
@@ -19,10 +40,26 @@ references:
 examples: |
   set.seed(1)
   mlgpd(extraDistr::rgpd(100, mu = 10, sigma = 2, xi = 0.3), mu = 10)
+holds:
+- held:
+  - sigma
+  status: not-implemented
+  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
+- held: []
+  status: no-mle
+  reason: 'Estimating `mu` is not supported: the free-threshold GPD likelihood has
+    no MLE (endpoint and logistic escapes).'
+- held:
+  - xi
+  status: no-mle
+  reason: 'Estimating `mu` is not supported: the free-threshold GPD likelihood has
+    no MLE (endpoint and logistic escapes).'
+fit_args:
+  mu: 0.0
 ---
 
 The generalized Pareto distribution models exceedances above a user-chosen
-threshold `mu` (default 0); positive `xi` gives a heavy right tail and
+threshold `mu` (required); positive `xi` gives a heavy right tail and
 `xi = 0` is the exponential member with scale `sigma`. Observations must
 exceed `mu` and, for negative shape, lie below `mu - sigma/xi`.
 

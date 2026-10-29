@@ -5,9 +5,10 @@
 
 // [[Rcpp::export]]
 Rcpp::List mlhuber_(const Rcpp::NumericVector &x,
+    Rcpp::Nullable<Rcpp::NumericVector> epsilon,
     Rcpp::Nullable<double> mu = R_NilValue,
     Rcpp::Nullable<double> sigma = R_NilValue,
-    Rcpp::Nullable<Rcpp::NumericVector> epsilon = Rcpp::NumericVector::create(1.345), double gradtol = 1e-10, int iterlim = 200) {
+    double gradtol = 1e-10, int iterlim = 200) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double m=mu.isNotNull() ? Rcpp::as<double>(mu) : nan;
   const double s=sigma.isNotNull() ? Rcpp::as<double>(sigma) : nan;

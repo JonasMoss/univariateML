@@ -96,3 +96,14 @@ TEST_CASE("triang: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtriang(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtriang(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("triang: constant data with held exterior mode") {
+  const std::vector<double> x(5,.4);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double b:{nan,2.}) {
+    const auto r=cppunivariate::triang_mle(mltest::as_span(x),1e-12,100,nan,b,-1);
+    REQUIRE(r.status==cppunivariate::TriangStatus::Ok);
+    CHECK(r.a==-1); CHECK(r.b==doctest::Approx(std::isnan(b)?1.8:2));
+    CHECK(r.c==-1);
+  }
+}

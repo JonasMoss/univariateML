@@ -23,11 +23,33 @@ def check(id):
     golden = json.loads((folder / 'golden.json').read_text())
     params, values = (meta['params'], {k: float(v) if isinstance(v, str) else v for k, v in golden['estimates'].items()})
     domains = [interval(p['domain'], values) for p in params]
+    fixed_names = set(golden.get('fixed', [])) | {
+        p['name'] for p in params
+        if golden.get('fit_args', {}).get(p['name']) is not None}
+    # R5 bounds constrain free coefficients, with P0's sufficient held-set
+    # exemptions. The reference-domain checks remain independent below.
+    fit_bounds = {}
+    for i, p in enumerate(params):
+        rules = p.get('fit_domain', [])
+        if isinstance(rules, dict):
+            rules = [rules]
+        if p['name'] in fixed_names:
+            continue
+        lo, hi = domains[i]
+        for rule in rules:
+            exempt = rule['restriction'].get('exempt_when_held', [])
+            # Before C5, ht has an implicit held threshold mu = 0.
+            effective_holds = fixed_names | ({'mu'} if id == 'ht' else set())
+            if any(set(h).issubset(effective_holds) for h in exempt):
+                continue
+            lo = max(lo, float(rule.get('lower', -np.inf)))
+            hi = min(hi, float(rule.get('upper', np.inf)))
+            fit_bounds[i] = (lo, hi)
+        domains[i] = (lo, hi)
     syms, x, expr = density_expression(folder, meta, domains)
     theta = [values[p['name']] for p in params]
     # Held: support endpoints, integer parameters, and parameters the golden
-    # fit held fixed (golden.json `fixed`, or README `fixed: <value>`).
-    fixed_names = set(golden.get('fixed', [])) | {p['name'] for p in params if 'fixed' in p}
+    # fit held fixed (golden.json `fixed`).
     held = {syms[i]: theta[i] for i, p in enumerate(params) if p.get('bound') or p.get('integer') or p['name'] in fixed_names}
     expr = expr.subs(held).doit()
     expr = expr.replace(sp.Abs, lambda a: sp.Piecewise((a, a >= 0), (-a, True)))
@@ -56,9 +78,9 @@ def check(id):
     active = {}
     for i in regular:
         lo, hi = domains[i]
-        if params[i]['domain'][0] == '[' and theta[i] == lo:
+        if (params[i]['domain'][0] == '[' or i in fit_bounds) and theta[i] == lo:
             active[i] = 'lower'
-        elif params[i]['domain'][-1] == ']' and theta[i] == hi:
+        elif (params[i]['domain'][-1] == ']' or i in fit_bounds) and theta[i] == hi:
             active[i] = 'upper'
     smooth = [i for i in regular if i not in active]
 
@@ -147,7 +169,7 @@ def check(id):
             return 1e+100
     rng = np.random.default_rng(20261028)
     z = encode(theta)
-    starts = [z, encode([p['default'] for p in params])] + [z + rng.normal(0, 1, len(z)) for _ in range(6)]
+    starts = [z, encode([p['simulate'] for p in params])] + [z + rng.normal(0, 1, len(z)) for _ in range(6)]
     best = -ll
     best_theta = theta
     feasible = 0

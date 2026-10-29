@@ -3,8 +3,16 @@ id: weibull
 name: Weibull
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape, role: shape, domain: "(0, inf)", default: 3.0}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 4.0}
+- name: shape
+  role: shape
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 4.0
+  kind: regular
 r:
   density: stats::dweibull
   sampler: stats::rweibull
@@ -17,6 +25,15 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York."
 examples: |
   mlweibull(precip)
+holds:
+- held:
+  - shape
+  status: not-implemented
+  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
+- held:
+  - scale
+  status: not-implemented
+  reason: The adapter does not accept `scale`; this hold is not implemented (P2).
 ---
 
 The Weibull distribution is used for lifetimes and reliability data.

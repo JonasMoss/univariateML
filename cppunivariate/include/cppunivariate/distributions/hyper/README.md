@@ -3,9 +3,24 @@ id: hyper
 name: Hypergeometric
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: m, role: successes in the population, domain: "[0, inf)", default: 20, integer: true, fixable: true}
-  - {name: "n", role: failures in the population, domain: "[0, inf)", default: 30, integer: true}
-  - {name: k, role: draws, domain: "[0, inf)", default: 10, integer: true, required: true}
+- name: m
+  role: successes in the population
+  domain: '[0, inf)'
+  simulate: 20
+  integer: yes
+  kind: regular
+- name: 'n'
+  role: failures in the population
+  domain: '[0, inf)'
+  simulate: 30
+  integer: yes
+  kind: regular
+- name: k
+  role: draws
+  domain: '[0, inf)'
+  simulate: 10
+  integer: yes
+  kind: design
 r:
   density: stats::dhyper
   sampler: stats::rhyper
@@ -13,7 +28,6 @@ r:
     k: "Number of draws per observation, a whole number."
     "N": "Population size `N`; `NULL` (the default) estimates it, which requires `m`."
     m: "Number of successes `m` in the population; `NULL` (the default) estimates it, which requires `N`."
-fit_args: {"N": 50, k: 10}
 log_density: "loggamma(m + 1) - loggamma(x + 1) - loggamma(m - x + 1) + loggamma(n + 1) - loggamma(k - x + 1) - loggamma(n - k + x + 1) - loggamma(m + n + 1) + loggamma(k + 1) + loggamma(m + n - k + 1)"
 limits:
   - name: degenerate
@@ -29,6 +43,21 @@ examples: |
   x <- rhyper(30, m = 20, n = 30, k = 10)
   mlhyper(x, N = 50, k = 10)
   mlhyper(x, m = 20, k = 10)
+holds:
+- held:
+  - 'n'
+  status: not-implemented
+  reason: The adapter does not accept `n`; this hold is not implemented (P2).
+- held: []
+  status: not-implemented
+  reason: Estimating `k` with NULL is not implemented for this design.
+- held:
+  - m
+  status: not-implemented
+  reason: Estimating `k` with NULL is not implemented for this design.
+fit_args:
+  'N': 50
+  k: 10
 ---
 
 The hypergeometric distribution counts the successes in `k` draws without
@@ -62,4 +91,4 @@ of exact whole numbers in double precision.
 
 ## See also
 
-[mlbinom()] with `size = k`, the limit as `N` grows with `m / N` fixed.
+[mlbinom(, size = NULL)] with `size = k`, the limit as `N` grows with `m / N` fixed.

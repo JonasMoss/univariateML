@@ -1,0 +1,136 @@
+"id","sample","n","held","oracle","master","reference_at_fit","status"
+"bnbinom",1,20,"",-60.1683999822485,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",1,20,"size",-60.5174763399195,-60.5174763397883,-60.5174763397884,"ok"
+"bnbinom",1,20,"alpha",-61.1399547431458,-61.1399547431447,-61.1399547431447,"ok"
+"bnbinom",1,20,"size,alpha",-61.1435566259165,-61.1435566259165,-61.1435566259165,"ok"
+"bnbinom",1,20,"beta",-61.409124197633,-61.409124197631,-61.4091241976311,"ok"
+"bnbinom",1,20,"size,beta",-61.881128792986,-61.881128792986,-61.881128792986,"ok"
+"bnbinom",1,20,"alpha,beta",-61.4111676064047,-61.4111676064047,-61.4111676064047,"ok"
+"bnbinom",2,100,"",-264.578479333489,-264.578479333485,-264.578479333485,"ok"
+"bnbinom",2,100,"size",-265.096206111174,-265.096206111172,-265.096206111171,"ok"
+"bnbinom",2,100,"alpha",-265.038533976134,-265.038533976126,-265.038533976126,"ok"
+"bnbinom",2,100,"size,alpha",-265.191517793255,-265.191517793255,-265.191517793255,"ok"
+"bnbinom",2,100,"beta",-265.045884613029,-265.045884613025,-265.045884613024,"ok"
+"bnbinom",2,100,"size,beta",-265.098853164198,-265.098853164198,-265.098853164198,"ok"
+"bnbinom",2,100,"alpha,beta",-265.088942218882,-265.088942218882,-265.088942218881,"ok"
+"bnbinom",3,1000,"",-2418.73959823111,-2418.73959823107,-2418.73959823107,"ok"
+"bnbinom",3,1000,"size",-2419.68552653572,-2419.68552653572,-2419.68552653572,"ok"
+"bnbinom",3,1000,"alpha",-2418.95533534671,-2418.95533534666,-2418.95533534666,"ok"
+"bnbinom",3,1000,"size,alpha",-2419.91405300555,-2419.91405300555,-2419.91405300555,"ok"
+"bnbinom",3,1000,"beta",-2419.13853770704,-2419.13853770703,-2419.13853770703,"ok"
+"bnbinom",3,1000,"size,beta",-2420.73809368675,-2420.73809368675,-2420.73809368675,"ok"
+"bnbinom",3,1000,"alpha,beta",-2419.22157741821,-2419.22157741822,-2419.22157741822,"ok"
+"bnbinom",4,5,"",-5.05589185478442,NA,NA,"Error : The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+"
+"bnbinom",4,5,"size",-6.93178036259269,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",4,5,"alpha",-7.82789129431958,-7.82789129431958,-7.82789129431957,"ok"
+"bnbinom",4,5,"size,alpha",-7.99642244500616,-7.99642244500616,-7.99642244500616,"ok"
+"bnbinom",4,5,"beta",-5.4711891071792,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",4,5,"size,beta",-7.39765996205254,-7.39765996205251,-7.39765996205253,"ok"
+"bnbinom",4,5,"alpha,beta",-8.48162382105476,-8.48162382105476,-8.48162382105477,"ok"
+"bnbinom",5,5,"",-5.60084303574081,NA,NA,"Error : The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+"
+"bnbinom",5,5,"size",-6.18304561857258,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",5,5,"alpha",-6.85222566161208,-6.85222566161208,-6.85222566161208,"ok"
+"bnbinom",5,5,"size,alpha",-6.87326272234653,-6.87326272234653,-6.87326272234653,"ok"
+"bnbinom",5,5,"beta",-5.70819183027878,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",5,5,"size,beta",-6.40858249996893,-6.40858249996894,-6.40858249996895,"ok"
+"bnbinom",5,5,"alpha,beta",-7.28375487543862,-7.28375487543863,-7.28375487543863,"ok"
+"bnbinom",6,2,"",-2.49938429239205,NA,NA,"Error : The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+"
+"bnbinom",6,2,"size",-3.36523113600924,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",6,2,"alpha",-3.65779408358031,-3.65779408357984,-3.65779408357984,"ok"
+"bnbinom",6,2,"size,alpha",-3.7713893659015,-3.7713893659015,-3.7713893659015,"ok"
+"bnbinom",6,2,"beta",-2.70570421277728,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",6,2,"size,beta",-3.61314299392456,-3.61314299392456,-3.61314299392456,"ok"
+"bnbinom",6,2,"alpha,beta",-3.8503606868569,-3.85036068685691,-3.8503606868569,"ok"
+"bnbinom",7,3,"",-3.57438840193129,NA,NA,"Error : The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+"
+"bnbinom",7,3,"size",-4.78065874045478,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",7,3,"alpha",-5.24307914079189,-5.24307914079185,-5.24307914079185,"ok"
+"bnbinom",7,3,"size,alpha",-5.38777920128452,-5.38777920128452,-5.38777920128452,"ok"
+"bnbinom",7,3,"beta",-3.85228825442237,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",7,3,"size,beta",-5.11524174363241,-5.11524174363241,-5.11524174363242,"ok"
+"bnbinom",7,3,"alpha,beta",-5.56036508764551,-5.56036508764551,-5.56036508764551,"ok"
+"bnbinom",8,5,"",-7.44327869140909,NA,NA,"Error : The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+"
+"bnbinom",8,5,"size",-8.66199033067642,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",8,5,"alpha",-9.33991344773642,-9.3399134477364,-9.3399134477364,"ok"
+"bnbinom",8,5,"size,alpha",-9.49534278337372,-9.49534278337372,-9.49534278337372,"ok"
+"bnbinom",8,5,"beta",-7.69721877935098,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",8,5,"size,beta",-9.17482887394914,-9.17482887394914,-9.17482887394913,"ok"
+"bnbinom",8,5,"alpha,beta",-9.67578149915501,-9.67578149915502,-9.67578149915502,"ok"
+"bnbinom",9,20,"",-30.7299975879707,NA,NA,"Error : The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+"
+"bnbinom",9,20,"size",-36.9370226898791,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",9,20,"alpha",-39.3182403312773,-39.3182403312773,-39.3182403312773,"ok"
+"bnbinom",9,20,"size,alpha",-40.4152272042225,-40.4152272042225,-40.4152272042225,"ok"
+"bnbinom",9,20,"beta",-31.8920173274378,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",9,20,"size,beta",-39.3471387080628,-39.3471387080628,-39.3471387080628,"ok"
+"bnbinom",9,20,"alpha,beta",-40.7914835615567,-40.7914835615567,-40.7914835615567,"ok"
+"bnbinom",10,20,"",-44.1773750601332,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",10,20,"size",-48.1731142821664,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",10,20,"alpha",-50.0026775063696,-50.0026775063696,-50.0026775063696,"ok"
+"bnbinom",10,20,"size,alpha",-51.4160184488864,-51.4160184488864,-51.4160184488864,"ok"
+"bnbinom",10,20,"beta",-44.2791049356947,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",10,20,"size,beta",-51.9090973399042,-51.9090973399042,-51.9090973399042,"ok"
+"bnbinom",10,20,"alpha,beta",-50.5112048582881,-50.5112048582881,-50.5112048582881,"ok"
+"bnbinom",11,20,"",-23.8840412384288,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",11,20,"size",-23.9022570072057,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",11,20,"alpha",-24.8446110749385,-24.8446110749381,-24.8446110749381,"ok"
+"bnbinom",11,20,"size,alpha",-24.8471508222392,-24.8471508222392,-24.8471508222392,"ok"
+"bnbinom",11,20,"beta",-24.0366171669581,-24.0366171669575,-24.0366171669575,"ok"
+"bnbinom",11,20,"size,beta",-24.0768012234034,-24.0768012234035,-24.0768012234036,"ok"
+"bnbinom",11,20,"alpha,beta",-25.5682214690974,-25.5682214690974,-25.5682214690974,"ok"
+"bnbinom",12,20,"",-13.2614968908689,NA,NA,"Error : The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+"
+"bnbinom",12,20,"size",-14.0458773594419,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",12,20,"alpha",-15.9533062523286,-15.9533062523286,-15.9533062523286,"ok"
+"bnbinom",12,20,"size,alpha",-15.9812368435008,-15.9812368435008,-15.9812368435008,"ok"
+"bnbinom",12,20,"beta",-13.4024372682872,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",12,20,"size,beta",-14.3116028940259,-14.311602894026,-14.311602894026,"ok"
+"bnbinom",12,20,"alpha,beta",-17.4427052306401,-17.4427052306401,-17.4427052306401,"ok"
+"bnbinom",13,5,"",-1.19281917676517e-09,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.
+"
+"bnbinom",13,5,"size",-1.0314361809094e-07,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.
+"
+"bnbinom",13,5,"alpha",-4.3238605584861e-07,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.
+"
+"bnbinom",13,5,"size,alpha",-0.000308515050013725,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.
+"
+"bnbinom",13,5,"beta",-5.68555265090254e-07,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.
+"
+"bnbinom",13,5,"size,beta",-0.00308429442092972,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.
+"
+"bnbinom",13,5,"alpha,beta",-0.000894702539817605,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are zero (point mass). Use `mlpois` instead.
+"
+"bnbinom",14,20,"",-31.7291383466061,NA,NA,"Error : The Poisson face wins (including likelihood ties). Use `mlpois` instead.
+"
+"bnbinom",14,20,"size",-46.6460220833287,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",14,20,"alpha",-48.0698623593038,-48.0698623593038,-48.0698623593038,"ok"
+"bnbinom",14,20,"size,alpha",-50.9117068180754,-50.9117068180754,-50.9117068180754,"ok"
+"bnbinom",14,20,"beta",-36.2958331956433,NA,NA,"Error : The negative binomial face wins (including likelihood ties). Use `mlnbinom`; hold its size at the supplied `size` or `beta`, if either was held.
+"
+"bnbinom",14,20,"size,beta",-51.6068237479831,-51.6068237479832,-51.6068237479832,"ok"
+"bnbinom",14,20,"alpha,beta",-48.8751361032992,-48.8751361032993,-48.8751361032993,"ok"

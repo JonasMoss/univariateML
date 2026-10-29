@@ -3,9 +3,22 @@ id: bbinom
 name: Beta-binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: size, role: trials, domain: "[0, inf)", default: 10, integer: true, required: true}
-  - {name: alpha, role: shape, domain: "(0, inf)", default: 2, fixable: true}
-  - {name: beta, role: shape, domain: "(0, inf)", default: 3, fixable: true}
+- name: size
+  role: trials
+  domain: '[0, inf)'
+  simulate: 10
+  integer: yes
+  kind: design
+- name: alpha
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
+- name: beta
+  role: shape
+  domain: (0, inf)
+  simulate: 3
+  kind: regular
 r:
   density: extraDistr::dbbinom
   sampler: extraDistr::rbbinom
@@ -15,7 +28,6 @@ r:
     beta: "Optional fixed value of `beta`; `NULL` (the default) estimates it."
     reltol: "Relative tolerance on the Newton steps in the logarithm of the free concentration or shape."
     iterlim: "Maximum number of Newton iterations per local maximum."
-fit_args: {size: 10}
 log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + loggamma(x + alpha) + loggamma(size - x + beta) - loggamma(size + alpha + beta) - loggamma(alpha) - loggamma(beta) + loggamma(alpha + beta)"
 limits:
   - model: binom
@@ -38,6 +50,30 @@ examples: |
   x <- extraDistr::rbbinom(200, size = 10, alpha = 2, beta = 3)
   mlbbinom(x, size = 10)
   mlbbinom(x, size = 10, alpha = 2)
+holds:
+- held:
+  - alpha
+  - beta
+  status: not-implemented
+  reason: Hold at most one of `alpha` and `beta` fixed.
+- held: []
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+- held:
+  - alpha
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+- held:
+  - beta
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+- held:
+  - alpha
+  - beta
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+fit_args:
+  size: 10
 ---
 
 The beta-binomial distribution is a binomial with a beta-distributed success probability; it models overdispersed counts out of a known number of trials. `size` must be supplied.

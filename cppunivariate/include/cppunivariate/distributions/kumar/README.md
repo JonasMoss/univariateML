@@ -3,8 +3,16 @@ id: kumar
 name: Kumaraswamy
 support: {type: real, lower: 0, upper: 1, closed: [false, false]}
 params:
-  - {name: a, role: shape, domain: "(0, inf)", default: 2.0}
-  - {name: b, role: shape, domain: "(0, inf)", default: 3.0}
+- name: a
+  role: shape
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
+- name: b
+  role: shape
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
 r:
   density: extraDistr::dkumar
   sampler: extraDistr::rkumar
@@ -18,10 +26,21 @@ references:
   - "Kumaraswamy, P. (1980). A generalized probability density function for double-bounded random processes. Journal of Hydrology, 46(1–2), 79–88."
 examples: |
   AIC(mlkumar(USArrests$Rape / 100))
+holds:
+- held:
+  - a
+  status: not-implemented
+  reason: The adapter does not accept `a`; this hold is not implemented (P2).
+- held:
+  - b
+  status: not-implemented
+  reason: The adapter does not accept `b`; this hold is not implemented (P2).
 ---
 
 The Kumaraswamy distribution is a flexible distribution for continuous data between zero and one. It provides a tractable alternative to the beta distribution.
 
 ## Details
+
+For constant observations the likelihood is unbounded, so no finite maximum likelihood estimate exists.
 
 The maximum likelihood estimate exists for every nonconstant sample in $(0, 1)$: with `b` profiled out, the log-likelihood tends to $-\infty$ both as $a \to 0$ and as $a \to \infty$, so the family has no escapes.

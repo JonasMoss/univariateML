@@ -3,9 +3,21 @@ id: zinb
 name: Zero-inflated negative binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: size, role: shape, domain: "(0, inf)", default: 2.0, fixable: true}
-  - {name: prob, role: probability, domain: "(0, 1]", default: 0.4}
-  - {name: pi, role: probability, domain: "[0, 1]", default: 0.3}
+- name: size
+  role: shape
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
+- name: prob
+  role: probability
+  domain: (0, 1]
+  simulate: 0.4
+  kind: regular
+- name: pi
+  role: probability
+  domain: '[0, 1]'
+  simulate: 0.3
+  kind: regular
 r:
   density: extraDistr::dzinb
   sampler: extraDistr::rzinb
@@ -27,6 +39,15 @@ references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
   mlzinb(simulate_default("mlzinb", 1000))
+holds:
+- held:
+  - prob
+  status: not-implemented
+  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
+- held:
+  - pi
+  status: not-implemented
+  reason: The adapter does not accept `pi`; this hold is not implemented (P2).
 ---
 
 The zero-inflated negative binomial distribution mixes negative binomial counts with an additional point mass at zero.

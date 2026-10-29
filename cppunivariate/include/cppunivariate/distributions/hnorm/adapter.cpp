@@ -6,7 +6,7 @@
 #include <limits>
 
 // [[Rcpp::export]]
-Rcpp::List mlhnorm_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu = R_NilValue) {
+Rcpp::List mlhnorm_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu) {
   const bool fixed = mu.isNotNull();
   const double held = fixed ? Rcpp::as<double>(mu) : std::numeric_limits<double>::quiet_NaN();
   if (fixed && !std::isfinite(held)) Rcpp::stop("`mu` must be finite.");

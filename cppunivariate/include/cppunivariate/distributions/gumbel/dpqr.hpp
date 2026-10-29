@@ -8,49 +8,42 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
 inline double dgumbel(double x, double mu, double sigma, bool log) {
-  if (!(sigma > 0.0) || !std::isfinite(x)) {
-    return kNaN;
-  }
-  const double z = (x - mu) / sigma;
-  const double log_density = -(z + std::exp(-z)) - std::log(sigma);
-  return log ? log_density : std::exp(log_density);
+  if (!(sigma > 0.0) || !std::isfinite(sigma) || !std::isfinite(mu) ||
+      std::isnan(x)) return special::kNaN;
+  if (!std::isfinite(x)) return log ? special::kNegInf : 0.0;
+  const double z = special::scaled_difference(x, mu, sigma);
+  if (!std::isfinite(z)) return log ? special::kNegInf : 0.0;
+  const double ld = -z - std::exp(-z) - std::log(sigma);
+  return log ? ld : std::exp(ld);
 }
 
 inline double pgumbel(double q, double mu, double sigma, bool lower_tail,
                       bool log_p) {
-  if (!(sigma > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  const double z = (q - mu) / sigma;
-  double prob = std::exp(-std::exp(-z));
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+  if (!(sigma > 0.0) || !std::isfinite(sigma) || !std::isfinite(mu) ||
+      std::isnan(q)) return special::kNaN;
+  const double z = special::scaled_difference(q, mu, sigma);
+  // Upper log tail tends to -z: do not underflow exp(-z) first.
+  const auto t = z > 36.0 ? special::tails_from_log(-z, false)
+      : special::tails_from_log(-std::exp(-z), true);
+  return special::tail_probability(t, lower_tail, log_p);
 }
 
 inline double qgumbel(double p, double mu, double sigma, bool lower_tail,
                       bool log_p) {
-  if (!(sigma > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  return mu - sigma * std::log(-std::log(p));
+  if (!(sigma > 0.0) || !std::isfinite(sigma) || !std::isfinite(mu)) return special::kNaN;
+  const auto t = special::quantile_log_tails(p, lower_tail, log_p);
+  if (!t.valid) return special::kNaN;
+  const double log_v = t.upper < -36.0 ? special::log_neg_log1mexp(t.upper)
+                                      : std::log(-t.lower);
+  // FMA keeps a finite affine result even when sigma*log_v overflows.
+  return std::fma(-sigma, log_v, mu);
 }
 
 template <typename Rng>

@@ -10,17 +10,17 @@ epsilon <- .Machine$double.eps^0.5
 
 ## Checks if the ML is correct.
 mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(small_data, max(small_data) + epsilon, p, log = TRUE))
+  -sum(extraDistr::dpower(small_data, max(small_data) * (1 + epsilon), p, log = TRUE))
 }, p = 1))
 
 mle2 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(tiny_data, max(tiny_data) + epsilon, p,
+  -sum(extraDistr::dpower(tiny_data, max(tiny_data) * (1 + epsilon), p,
     log = TRUE
   ))
 }, p = 7))
 
 mle3 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(medium_data, max(medium_data) + epsilon, p,
+  -sum(extraDistr::dpower(medium_data, max(medium_data) * (1 + epsilon), p,
     log = TRUE
   ))
 }, p = 11))

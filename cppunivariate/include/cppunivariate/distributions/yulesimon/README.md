@@ -3,7 +3,11 @@ id: yulesimon
 name: Yule--Simon
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:
-  - {name: rho, role: shape, domain: "(0, inf)", default: 2}
+- name: rho
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
 r:
   density: dyulesimon
   sampler: ryulesimon
@@ -18,6 +22,11 @@ limits:
     status: PointMass
 examples: |
   mlyulesimon(c(1, 1, 2, 3, 8))
+holds:
+- held:
+  - rho
+  status: not-implemented
+  reason: The adapter does not accept `rho`; this hold is not implemented (P2).
 ---
 
 The Yule--Simon distribution describes power-law frequencies on the positive integers.

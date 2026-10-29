@@ -58,7 +58,7 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
 
       # fit_args: required design quantities (README fit_args).
       fn <- getExportedValue("univariateML", paste0("ml", g$id))
-      fit <- do.call(fn, c(list(data), g$fit_args))
+      fit <- do.call(fn, c(list(data), golden_fit_args(g$id)))
 
       tol <- if (g$id %in% FD_BFGS_IDS) 1e-6 else 1e-12
       expect_equal(unname(attr(fit, "logLik")), g$logLik, tolerance = tol)

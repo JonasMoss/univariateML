@@ -462,7 +462,7 @@ inline HalfTFit best_half_t(const std::vector<double> &y) {
 // On a boundary status, mu is the mode or endpoint c, sigma the scale of
 // the face (snorm: its sd; df-2 face: inf), nu the face df and xi
 // sqrt(b / a) (inf or 0 on the half faces).
-inline SstdResult sstd_mle(span x, double tol, int maxit) {
+inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kInf = sstd_detail::kInf;
   const std::size_t n = x.size();
@@ -477,14 +477,22 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
   if (k == 2*(n-k))
     return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SstdStatus::ScaleBoundary};
 
+  // Use the same dimensionless optimisation problem in every system of units.
   const auto moments = norm_detail::moments(x);
   if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
-      (moments.sd < 1e-3 || moments.sd > 1e3 || std::abs(moments.mean) > 1e6 * moments.sd)) {
+      !standardized) {
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i)
       z[i] = static_cast<double>((static_cast<long double>(x[i]) - moments.mean) / moments.sd);
-    auto r = sstd_mle(span{z.data(), n}, tol, maxit);
+    auto r = sstd_mle_impl(span{z.data(), n}, tol, maxit, true);
     r.mu = moments.mean + moments.sd*r.mu;
+    // Preserve the exact support endpoint on one-sided faces.
+    if (r.status == SstdStatus::RightHalfNormalBoundary ||
+        r.status == SstdStatus::RightHalfTBoundary)
+      r.mu = *std::min_element(x.begin(), x.end());
+    if (r.status == SstdStatus::LeftHalfNormalBoundary ||
+        r.status == SstdStatus::LeftHalfTBoundary)
+      r.mu = *std::max_element(x.begin(), x.end());
     r.sigma *= moments.sd;
     r.logLik -= static_cast<double>(n)*std::log(moments.sd);
     return r;
@@ -634,6 +642,10 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
     return {mu, sigma, nu, xi, logLik, r.iterations, SstdStatus::BfgsFailure};
   }
   return {mu, sigma, nu, xi, logLik, r.iterations, SstdStatus::Ok};
+}
+
+inline SstdResult sstd_mle(span x, double tol, int maxit) {
+  return sstd_mle_impl(x, tol, maxit, false);
 }
 
 }  // namespace cppunivariate

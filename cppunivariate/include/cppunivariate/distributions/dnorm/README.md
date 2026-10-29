@@ -3,8 +3,16 @@ id: dnorm
 name: Discretized normal
 support: {type: integer, lower: -inf, upper: inf, closed: [true, false]}
 params:
-  - {name: mean, role: location, domain: "(-inf, inf)", default: 0, fixable: true}
-  - {name: sd, role: scale, domain: "(0, inf)", default: 1, fixable: true}
+- name: mean
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: regular
+- name: sd
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: extraDistr::ddnorm
   sampler: extraDistr::rdnorm
@@ -31,6 +39,7 @@ limits:
     status: ScaleLimit
 examples: |
   mldnorm(simulate_default("mldnorm", 100))
+holds: []
 ---
 
 The discretized normal distribution is the integer part of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer.

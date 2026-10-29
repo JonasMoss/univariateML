@@ -150,3 +150,18 @@ TEST_CASE("std: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qstd(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rstd(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("std fits are equivariant on small-scale samples") {
+  const auto g = mltest::load_distribution_golden("std");
+  const auto base = cppunivariate::student_t_mle(mltest::as_span(g.data), mltest::kFitTol, 200);
+  for (double scale : {1e-6, 1e-2, 1e6}) {
+    std::vector<double> x;
+    for (double v : g.data) x.push_back(scale * (v + 3.0));
+    const auto r = cppunivariate::student_t_mle(mltest::as_span(x), mltest::kFitTol, 200);
+    CHECK(r.status == base.status);
+    CHECK(r.mu / scale - 3.0 == doctest::Approx(base.mu).epsilon(1e-5));
+    CHECK(r.sigma / scale == doctest::Approx(base.sigma).epsilon(1e-5));
+    CHECK(r.nu == doctest::Approx(base.nu).epsilon(1e-5));
+    CHECK(r.logLik + x.size() * std::log(scale) == doctest::Approx(base.logLik).epsilon(1e-9));
+  }
+}

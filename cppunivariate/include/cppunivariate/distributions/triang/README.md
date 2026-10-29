@@ -3,9 +3,22 @@ id: triang
 name: Triangular
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: a, role: location, domain: "(-inf, b)", default: 0, fixable: true}
-  - {name: b, role: location, domain: "(a, inf)", default: 1, fixable: true}
-  - {name: c, role: location, domain: "[a, b]", default: 0.4, fixable: true, kink: true}
+- name: a
+  role: location
+  domain: (-inf, b)
+  simulate: 0
+  kind: endpoint
+- name: b
+  role: location
+  domain: (a, inf)
+  simulate: 1
+  kind: endpoint
+- name: c
+  role: location
+  domain: '[a, b]'
+  simulate: 0.4
+  kink: yes
+  kind: regular
 r:
   density: extraDistr::dtriang
   sampler: extraDistr::rtriang
@@ -17,11 +30,14 @@ examples: |
   set.seed(3)
   mltriang(extraDistr::rtriang(100, 0, 1, 0.4))
   mltriang(extraDistr::rtriang(100, 0, 1, 0.4), a = 0, b = 1)
+holds: []
 ---
 
 The triangular distribution describes bounded measurements with a single mode.
 
 ## Details
+
+Constant samples can have an attained maximum when a held endpoint or mode prevents the interval from collapsing.
 
 `extraDistr::ptriang` is repaired at runtime; the repair switches itself off once the reference is fixed.
 

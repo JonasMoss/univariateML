@@ -47,7 +47,7 @@ TEST_CASE("gev: validation and stable dpqr") {
   std::vector<double>x{0,1,2,3,4};
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,1).status==cppunivariate::GevStatus::IterationFailure);
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,1.1).status==cppunivariate::GevStatus::InvalidShape);
-  for(auto y:{std::vector<double>{1,2},std::vector<double>{1,1,2},std::vector<double>{0,1,1,2},std::vector<double>{0,0,0,1,2},std::vector<double>{1,1,1}})
+  for(auto y:{std::vector<double>{1,2},std::vector<double>{1,1,2},std::vector<double>{0,0,0,1,2},std::vector<double>{1,1,1}})
     CHECK(cppunivariate::gev_mle(mltest::as_span(y)).status==cppunivariate::GevStatus::InvalidData);
   x={0,0,1,2,3};CHECK(cppunivariate::gev_mle(mltest::as_span(x)).status==cppunivariate::GevStatus::Ok);
   CHECK(cppunivariate::distributions::qgev(.5,0,1,1e-16,true,false)==doctest::Approx(.3665129205816643));
@@ -128,4 +128,14 @@ TEST_CASE("gev: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgev(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qgev(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rgev(rng, p[0], p[1], p[2]); });
+}
+
+TEST_CASE("gev: only minimum ties control fixed-shape collapse") {
+  for (auto x : {std::vector<double>{0,1,1,2}, std::vector<double>{0,1,2,2,2}, std::vector<double>{0,0,1,2}}) {
+    for(double xi:{-.5,0.,.3})
+      CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,xi).status==cppunivariate::GevStatus::Ok);
+  }
+  const std::vector<double> x{0,0,0,1};
+  CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,.5).status==cppunivariate::GevStatus::InvalidData);
+  CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,0).status==cppunivariate::GevStatus::Ok);
 }

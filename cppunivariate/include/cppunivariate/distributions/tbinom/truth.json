@@ -38,22 +38,22 @@
     {
       "point": 0,
       "mass": "1.0",
-      "seconds": 0.08917155998642556
+      "seconds": 0.04049364698585123
     },
     {
       "point": 1,
       "mass": "1.0",
-      "seconds": 0.024516186997061595
+      "seconds": 0.015285611996660009
     },
     {
       "point": 2,
       "mass": "1.0",
-      "seconds": 0.024297503987327218
+      "seconds": 0.01337641998543404
     },
     {
       "point": 3,
       "mass": "1.0",
-      "seconds": 0.02601500801392831
+      "seconds": 0.013513761019567028
     }
   ],
   "values": [
@@ -2065,5 +2065,5 @@
     ]
   ],
   "quantile_limits": "nearest binary64; overflow signed infinity; underflow signed zero or finite support edge",
-  "density_sha256": "71a1f7874e918500a534978aae866697e03878aa568bd3db942f27cc18f2d110"
+  "density_sha256": "2d6e03f04c5c1a6abc1ee98dd2382cfaf5f0c79b25f49fb9076d4eb19952d2bb"
 }

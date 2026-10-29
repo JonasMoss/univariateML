@@ -7,6 +7,7 @@
 #pragma once
 
 #include "constants.hpp"
+#include "tails.hpp"
 #include <boost/math/distributions/gamma.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 #include <boost/math/distributions/logistic.hpp>
@@ -43,6 +44,11 @@ typedef boost::math::policies::policy<
     boost::math::policies::indeterminate_result_error<boost::math::policies::ignore_error>,
     boost::math::policies::discrete_quantile<
         boost::math::policies::integer_round_up>> NoThrowPolicy;
+
+inline double ibeta(double a,double b,double x) { return boost::math::ibeta(a,b,x,NoThrowPolicy{}); }
+inline double ibetac(double a,double b,double x) { return boost::math::ibetac(a,b,x,NoThrowPolicy{}); }
+inline double ibeta_inv(double a,double b,double x) { return boost::math::ibeta_inv(a,b,x,NoThrowPolicy{}); }
+inline double ibetac_inv(double a,double b,double x) { return boost::math::ibetac_inv(a,b,x,NoThrowPolicy{}); }
 
 inline double zeta(double s) { return boost::math::zeta(s, NoThrowPolicy{}); }
 
@@ -319,7 +325,7 @@ inline long double gamma_cdf_extended(double x, double a, bool lower) { const bo
 // Log-tail primitives for the package-owned Fernandez--Steel families.
 // Evaluate the smaller tail first, retaining complements with log1p/expm1.
 inline double fs_log1mexp(double x) {
-  return x < -0.6931471805599453 ? std::log1p(-std::exp(x)) : std::log(-std::expm1(x));
+  return log1mexp(x);
 }
 inline double fs_normal_p(double x, bool lower, bool log_p) {
   const double a = std::fabs(x);

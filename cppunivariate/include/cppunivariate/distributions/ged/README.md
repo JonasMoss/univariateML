@@ -3,9 +3,28 @@ id: ged
 name: Generalized Error
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mean, role: location, domain: "(-inf, inf)", default: 0.0}
-  - {name: sd, role: scale, domain: "(0, inf)", default: 1.0}
-  - {name: nu, role: shape, domain: "[1, inf)", default: 3.0}
+- name: mean
+  role: location
+  domain: (-inf, inf)
+  simulate: 0.0
+  kind: regular
+- name: sd
+  role: scale
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
+- name: nu
+  role: shape
+  domain: '[1, inf)'
+  simulate: 3.0
+  fit_domain:
+    lower: 1.0
+    restriction:
+      mechanism: spike
+      exempt_when_held: []
+      reason: nu >= 1 selects the Laplace member; spikes persist with sd held (P0
+        locscale).
+  kind: regular
 r:
   density: dged
   sampler: rged
@@ -23,6 +42,19 @@ references:
   - "Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power distribution and its generalizations. Statistics & Probability Letters, 107, 111–114. doi:10.1016/j.spl.2015.08.009."
 examples: |
   mlged(precip)
+holds:
+- held:
+  - mean
+  status: not-implemented
+  reason: The adapter does not accept `mean`; this hold is not implemented (P2).
+- held:
+  - sd
+  status: not-implemented
+  reason: The adapter does not accept `sd`; this hold is not implemented (P2).
+- held:
+  - nu
+  status: not-implemented
+  reason: The adapter does not accept `nu`; this hold is not implemented (P2).
 ---
 
 The generalized error (exponential power) distribution is a symmetric location-scale family whose shape controls tail thickness.

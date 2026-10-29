@@ -1,0 +1,6 @@
+library(univariateML,lib.loc='/tmp/umvl-p0lib')
+set.seed(20261029)
+cases<-list(two=c(.01,.99),unif=runif(100,0,1),exp=rexp(100),reflected=-rexp(100))
+bounds<-list(c(0,1),c(0,1),c(0,Inf),c(-Inf,0))
+out<-lapply(seq_along(cases),function(i){x<-cases[[i]];a<-bounds[[i]][1];b<-bounds[[i]][2]; m<-mean(x); v<-mean((x-m)^2); ans<-tryCatch(mltnorm(x,a=a,b=b),error=function(e)conditionMessage(e));data.frame(case=names(cases)[i],n=length(x),mean=m,variance=v,status=if(is.character(ans)) ans else 'returned')})
+out<-do.call(rbind,out);write.csv(out,'notes/evaluations/2026-10-29-p0-skewreal/tnorm-faces.csv',row.names=FALSE); print(out)

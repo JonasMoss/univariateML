@@ -13,7 +13,7 @@ Rcpp::List mlgev_(const Rcpp::NumericVector &x,
     Rcpp::stop("`xi` must be finite and in [-0.5, 1].");
   const auto r=cppunivariate::gev_mle(dist_impl::as_span(x),reltol,iterlim,shape);
   if(r.status==cppunivariate::GevStatus::InvalidData)
-    Rcpp::stop("Generalized extreme value requires at least three finite observations, every tie multiplicity strictly less than half the sample size, finite range, positive finite `reltol` and positive `iterlim`.");
+    Rcpp::stop("Generalized extreme value requires at least three finite observations, an admissible multiplicity at the minimum, finite range, positive finite `reltol` and positive `iterlim`.");
   if(r.status!=cppunivariate::GevStatus::Ok || !std::isfinite(r.logLik))
     Rcpp::stop("Generalized extreme value MLE failed to converge.");
   return Rcpp::List::create(

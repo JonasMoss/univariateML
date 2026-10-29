@@ -3,7 +3,11 @@ id: zeta
 name: Zeta
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:
-  - {name: s, role: shape, domain: "(1, inf)", default: 2}
+- name: s
+  role: shape
+  domain: (1, inf)
+  simulate: 2
+  kind: regular
 r:
   density: dzeta
   sampler: rzeta
@@ -18,6 +22,11 @@ limits:
     status: PointMass
 examples: |
   mlzeta(c(1, 1, 2, 3, 8))
+holds:
+- held:
+  - s
+  status: not-implemented
+  reason: The adapter does not accept `s`; this hold is not implemented (P2).
 ---
 
 The zeta distribution describes power-law frequencies on the positive integers.

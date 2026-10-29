@@ -3,8 +3,17 @@ id: binom
 name: Binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: size, role: trials, domain: "[0, inf)", default: 10.0, integer: true, fixable: true}
-  - {name: prob, role: probability, domain: "[0, 1]", default: 0.5}
+- name: size
+  role: trials
+  domain: '[0, inf)'
+  simulate: 10.0
+  integer: yes
+  kind: design
+- name: prob
+  role: probability
+  domain: '[0, 1]'
+  simulate: 0.5
+  kind: regular
 r:
   density: stats::dbinom
   sampler: stats::rbinom
@@ -25,10 +34,19 @@ references:
   - "DasGupta, A. and Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1-2), 391-404."
 examples: |
   mlbinom(ChickWeight$weight, size = 400)
+holds:
+- held:
+  - prob
+  status: not-implemented
+  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
+fit_args:
+  size: ~
 ---
 
 The binomial distribution models the number of successes in a fixed number of independent Bernoulli trials. Both size and success probability are estimated unless size is supplied.
 
 ## Details
+
+Free trial-size estimation searches the integer profile likelihood; it reports failure if it cannot bracket the maximum within its numerical search range.
 
 The estimate of `size` can be unstable; alternatives are discussed by Carroll and Lombard (1985) and DasGupta and Rubin (2005). Supplying `size` fixes the number of trials and estimates only `prob`; it must be at least `max(x)`. The support is the integers from zero to `size`, and `size` is a nonnegative integer.

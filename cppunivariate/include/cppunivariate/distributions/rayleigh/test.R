@@ -38,3 +38,13 @@ test_that("Rayleigh fits extreme scales and rejects all zero", {
   }
   expect_error(mlrayleigh(rep(0, 5)), "identically zero")
 })
+
+test_that("any zero makes the Rayleigh likelihood zero", {
+  for (x in list(c(0,0,1,2), c(0,1), c(0,0)))
+    expect_error(mlrayleigh(x), "identically zero")
+  for (x in list(c(.1, .2, 1), c(1, 2, 5))) {
+    fit <- mlrayleigh(x)
+    oracle <- optimize(function(s) -sum(extraDistr::drayleigh(x,s,log=TRUE)), c(.01,10))
+    expect_equal(as.numeric(logLik(fit)), -oracle$objective, tolerance=1e-8)
+  }
+})

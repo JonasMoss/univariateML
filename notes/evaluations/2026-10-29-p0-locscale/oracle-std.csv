@@ -1,0 +1,99 @@
+"id","sample","n","held","oracle_ll","oracle_parameters","package","package_ll","delta"
+"std","default20",20,"",-26.3894335078167,"0.17144947,0.90531071,1533298600","The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.",NA,NA
+"std","default20",20,"mean",-26.7418545739233,"0,0.92142138,620192430","unsupported",NA,NA
+"std","default20",20,"sd",-26.5748128570679,"0.17147633,1,156400730","unsupported",NA,NA
+"std","default20",20,"mean,sd",-26.8688087273228,"0,1,4.300101e+16","unsupported",NA,NA
+"std","default20",20,"nu",-27.6839761551202,"0.047492241,1.2908958,3","finite",-27.6839761470231,-8.09712119576034e-09
+"std","default20",20,"mean,nu",-27.7087427993861,"0,1.2839363,3","unsupported",NA,NA
+"std","default20",20,"sd,nu",-28.4504441534868,"0.0082029292,1,3","unsupported",NA,NA
+"std","default100",100,"",-110.017124466594,"-0.056842507,0.77214884,4.53178","finite",-110.017124449402,-1.71916667568439e-08
+"std","default100",100,"mean",-110.36682790081,"0,0.76989181,4.7357336","unsupported",NA,NA
+"std","default100",100,"sd",-110.710311290837,"-0.0622218,1,2.8162109","unsupported",NA,NA
+"std","default100",100,"mean,sd",-111.144850465392,"0,1,2.8478611","unsupported",NA,NA
+"std","default100",100,"nu",-110.488434948785,"-0.061957125,0.91781131,3","finite",-110.488434912393,-3.63918104540062e-08
+"std","default100",100,"mean,nu",-110.933788027589,"0,0.92497766,3","unsupported",NA,NA
+"std","default100",100,"sd,nu",-110.860683684887,"-0.060518775,1,3","unsupported",NA,NA
+"std","default1000",1000,"",-1187.25374591596,"-0.013706176,0.87545203,3.768136","finite",-1187.25374576551,-1.50447249325225e-07
+"std","default1000",1000,"mean",-1187.43764459071,"0,0.87517355,3.7751278","unsupported",NA,NA
+"std","default1000",1000,"sd",-1189.11056852986,"-0.014419728,1,3.03259","unsupported",NA,NA
+"std","default1000",1000,"mean,sd",-1189.31605113073,"0,1,3.0349809","unsupported",NA,NA
+"std","default1000",1000,"nu",-1189.06196187343,"-0.014619084,0.98724605,3","finite",-1189.06196149914,-3.74291175830876e-07
+"std","default1000",1000,"mean,nu",-1189.2782481492,"0,0.98757425,3","unsupported",NA,NA
+"std","default1000",1000,"sd,nu",-1189.14597466105,"-0.014564716,1,3","unsupported",NA,NA
+"std","small2",2,"",-1.59711142076436,"-0.25705315,0.53774324,1922718100","The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.",NA,NA
+"std","small2",2,"mean",-1.80291919064004,"0,0.59602882,2415765300","unsupported",NA,NA
+"std","small2",2,"sd",-1.91736998296513,"-0.25705368,1,3.1311571","unsupported",NA,NA
+"std","small2",2,"mean,sd",-2.03249606195891,"0,1,3.1458341","unsupported",NA,NA
+"std","small2",2,"nu",-1.91174034378138,"-0.25703539,0.9313782,3","finite",-1.91174034453065,7.49276862777037e-10
+"std","small2",2,"mean,nu",-2.02895286313985,"0,0.93815523,3","unsupported",NA,NA
+"std","small2",2,"sd,nu",-1.91913727610582,"-0.2570576,1,3","unsupported",NA,NA
+"std","small3",3,"",-2.35315894128551,"-0.026753622,0.53015877,1926956000","The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.",NA,NA
+"std","small3",3,"mean",-2.35697648163423,"0,0.53084738,1988838800","unsupported",NA,NA
+"std","small3",3,"sd",-2.6706724452839,"-0.23550554,1,2.3706705","unsupported",NA,NA
+"std","small3",3,"mean,sd",-2.78564299603655,"0,1,2.865766","unsupported",NA,NA
+"std","small3",3,"nu",-2.64058196410636,"-0.18258487,0.76246376,3","finite",-2.64058196249984,-1.60651891789598e-09
+"std","small3",3,"mean,nu",-2.75160408747247,"0,0.87172546,3","unsupported",NA,NA
+"std","small3",3,"sd,nu",-2.73965911960601,"-0.12389406,1,3","unsupported",NA,NA
+"std","small5",5,"",-2.46900666710305,"-0.27127996,0.39647488,1850386500","The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.",NA,NA
+"std","small5",5,"mean",-3.42904761843357,"0,0.48040354,15977530000","unsupported",NA,NA
+"std","small5",5,"sd",-3.23121678065676,"-0.34932095,1,2.3054129","unsupported",NA,NA
+"std","small5",5,"mean,sd",-4.11118796570118,"0,1,2.5315111","unsupported",NA,NA
+"std","small5",5,"nu",-3.06828187741588,"-0.33158095,0.62837249,3","finite",-3.06828187588666,-1.5292260791e-09
+"std","small5",5,"mean,nu",-3.99827428868149,"0,0.75825347,3","unsupported",NA,NA
+"std","small5",5,"sd,nu",-3.67286158597461,"-0.29467072,1,3","unsupported",NA,NA
+"std","ties",8,"",-12.2440824808066,"2.527611e-05,1.1180085,150849640","The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.",NA,NA
+"std","ties",8,"mean",-12.2440824760494,"0,1.1180114,295926980","unsupported",NA,NA
+"std","ties",8,"sd",-12.3515082669047,"-1.6255246e-05,1,2377109400","unsupported",NA,NA
+"std","ties",8,"mean,sd",-12.3515082656374,"0,1,4.300101e+16","unsupported",NA,NA
+"std","ties",8,"nu",-12.4015599624602,"3.9465953e-05,1.4142623,3","finite",-12.4015599521627,-1.02975352689327e-08
+"std","ties",8,"mean,nu",-12.4015599536249,"0,1.4141803,3","unsupported",NA,NA
+"std","ties",8,"sd,nu",-12.8230020142918,"0,1,3","unsupported",NA,NA
+"std","normal",20,"",-27.085362565997,"0.19012588,0.94226824,12.995881","finite",-27.0853625521468,-1.38501867752439e-08
+"std","normal",20,"mean",-27.4631821284618,"0,0.95527219,207.3714","unsupported",NA,NA
+"std","normal",20,"sd",-27.1296949313869,"0.19534988,1,8.4251717","unsupported",NA,NA
+"std","normal",20,"mean,sd",-27.5021588195083,"0,1,46.102589","unsupported",NA,NA
+"std","normal",20,"nu",-27.5010476520335,"0.21427421,1.2392931,3","finite",-27.5010476492635,-2.77000111736925e-09
+"std","normal",20,"mean,nu",-28.0561248777066,"0,1.2826537,3","unsupported",NA,NA
+"std","normal",20,"sd,nu",-28.0212835365056,"0.2189066,1,3","unsupported",NA,NA
+"std","laplace",20,"",-35.0800454670077,"-0.10042348,5798.241,2","The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation. Use `mllst` to fit a location-scale t distribution with free degrees of freedom.",NA,NA
+"std","laplace",20,"mean",-35.1813367053303,"0,16612.084,2","unsupported",NA,NA
+"std","laplace",20,"sd",-37.0881858307157,"-0.099319548,1,3.8980238","unsupported",NA,NA
+"std","laplace",20,"mean,sd",-37.2122563370626,"0,1,3.9247139","unsupported",NA,NA
+"std","laplace",20,"nu",-35.3051198424952,"-0.10433662,1.6361402,3","finite",-35.3051198281647,-1.43305811661776e-08
+"std","laplace",20,"mean,nu",-35.392584554352,"0,1.6407714,3","unsupported",NA,NA
+"std","laplace",20,"sd,nu",-37.4543288236384,"-0.10405589,1,3","unsupported",NA,NA
+"std","cauchy",20,"",-40.6627702708595,"-0.012637523,17240.931,2","The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation. Use `mllst` to fit a location-scale t distribution with free degrees of freedom.",NA,NA
+"std","cauchy",20,"mean",-40.6639817640742,"0,10324.462,2","unsupported",NA,NA
+"std","cauchy",20,"sd",-45.3985051215922,"-0.018304489,1,3.2053284","unsupported",NA,NA
+"std","cauchy",20,"mean,sd",-45.4029820953965,"0,1,3.2095552","unsupported",NA,NA
+"std","cauchy",20,"nu",-41.7145657209318,"-0.020830922,1.9180491,3","finite",-41.7145656965054,-2.44263915760712e-08
+"std","cauchy",20,"mean,nu",-41.7171272077945,"0,1.9168556,3","unsupported",NA,NA
+"std","cauchy",20,"sd,nu",-45.4602821624866,"-0.023158976,1,3","unsupported",NA,NA
+"std","t2",20,"",-39.4550601809188,"-0.37077826,39854.687,2","The Student-t likelihood is maximised as nu -> 2 (infinite variance); the MLE does not exist in the mean/sd parameterisation. Use `mllst` to fit a location-scale t distribution with free degrees of freedom.",NA,NA
+"std","t2",20,"mean",-40.6207208490771,"0,24161.116,2","unsupported",NA,NA
+"std","t2",20,"sd",-43.4742460114441,"-0.36777285,1,3.1122482","unsupported",NA,NA
+"std","t2",20,"mean,sd",-45.410041110484,"0,1,3.2740331","unsupported",NA,NA
+"std","t2",20,"nu",-40.524953793644,"-0.38075377,1.8421104,3","finite",-40.5249537906735,-2.97049496111867e-09
+"std","t2",20,"mean,nu",-41.4320662111017,"0,2.0159373,3","unsupported",NA,NA
+"std","t2",20,"sd,nu",-43.4936271115301,"-0.3667729,1,3","unsupported",NA,NA
+"std","logistic",20,"",-44.2415207418694,"-0.27442387,2.2104128,74858704","The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.",NA,NA
+"std","logistic",20,"mean",-44.3944444449479,"0,2.227244,1085112200","unsupported",NA,NA
+"std","logistic",20,"sd",-59.6329795615283,"-0.47526366,1,5.9417597","unsupported",NA,NA
+"std","logistic",20,"mean,sd",-60.5951207072876,"0,1,5.9500988","unsupported",NA,NA
+"std","logistic",20,"nu",-45.5564794934971,"-0.39572626,3.1869968,3","finite",-45.5564794735131,-1.99840144432528e-08
+"std","logistic",20,"mean,nu",-45.8302625974383,"0,3.251042,3","unsupported",NA,NA
+"std","logistic",20,"sd,nu",-63.4259315808464,"-0.56805238,1,3","unsupported",NA,NA
+"std","uniform",20,"",-17.9898132387876,"-0.1890341,0.59484607,508641060","The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.",NA,NA
+"std","uniform",20,"mean",-18.9517553418503,"0,0.62414548,611337550","unsupported",NA,NA
+"std","uniform",20,"sd",-19.819467139031,"-0.24309154,1,2.8461947","unsupported",NA,NA
+"std","uniform",20,"mean,sd",-20.9410807717389,"0,1,3.2283325","unsupported",NA,NA
+"std","uniform",20,"nu",-19.659981501636,"-0.24586024,0.88155092,3","finite",-19.6599814860337,-1.56022288422264e-08
+"std","uniform",20,"mean,nu",-20.9472517649671,"0,0.95497971,3","unsupported",NA,NA
+"std","uniform",20,"sd,nu",-19.8432713357812,"-0.23787683,1,3","unsupported",NA,NA
+"std","outside",8,"",-13.5074942901901,"3.9999837,1.3093253,126950970","The Student-t likelihood is maximised as nu -> Inf, i.e. by the normal distribution. Use `mlnorm` to fit this model.",NA,NA
+"std","outside",8,"mean",-22.8489939424844,"0,4.2087797,353287940","unsupported",NA,NA
+"std","outside",8,"sd",-14.2086511240213,"3.999983,1,52383512000","unsupported",NA,NA
+"std","outside",8,"mean,sd",-47.2241364687441,"0,1,3.3858743","unsupported",NA,NA
+"std","outside",8,"nu",-14.3341653919022,"3.9999771,2.0210734,3","finite",-14.3341653865317,-5.37049515969557e-09
+"std","outside",8,"mean,nu",-23.9193219012507,"0,6.9463677,3","unsupported",NA,NA
+"std","outside",8,"sd,nu",-17.0161276186761,"4,1,3","unsupported",NA,NA

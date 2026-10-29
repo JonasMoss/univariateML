@@ -16,6 +16,8 @@ Rcpp::List mlkumar_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> a0 = R_
       Rcpp::stop("`a0` must be a positive finite number.");
   }
   auto res = cppunivariate::kumar_mle(dist_impl::as_span(x), reltol, iterlim, start);
+  if (res.status == cppunivariate::KumarStatus::Unbounded)
+    Rcpp::stop("Kumaraswamy likelihood is unbounded for constant samples.");
   if (!std::isfinite(res.a) || !std::isfinite(res.b)) {
     Rcpp::stop("Kumaraswamy MLE failed");
   }

@@ -3,9 +3,22 @@ id: cmb
 name: Conway--Maxwell--binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: size, role: trials, domain: "[0, inf)", default: 10, integer: true, required: true}
-  - {name: prob, role: probability, domain: "(0, 1)", default: 0.3, fixable: true}
-  - {name: nu, role: dispersion, domain: "(-inf, inf)", default: 1.5, fixable: true}
+- name: size
+  role: trials
+  domain: '[0, inf)'
+  simulate: 10
+  integer: yes
+  kind: design
+- name: prob
+  role: probability
+  domain: (0, 1)
+  simulate: 0.3
+  kind: regular
+- name: nu
+  role: dispersion
+  domain: (-inf, inf)
+  simulate: 1.5
+  kind: regular
 r:
   density: dcmb
   sampler: rcmb
@@ -15,7 +28,6 @@ r:
     nu: "Optional fixed finite real dispersion; NULL estimates it. Both prob and nu may be held fixed."
     reltol: "Relative tolerance on the dispersion moment residual."
     iterlim: "Maximum number of dispersion bisection iterations."
-fit_args: {size: 10}
 log_density: "nu*(loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)) + x*log(prob) + (size-x)*log(1-prob) - log(Sum((factorial(size)/(factorial(k)*factorial(size-k)))**nu * prob**k * (1-prob)**(size-k), (k, 0, size)))"
 limits:
   - name: point mass
@@ -34,6 +46,25 @@ references:
   - "Kadane, J. B. (2016). Sums of Possibly Associated Bernoulli Variables: The Conway-Maxwell-Binomial Distribution. Bayesian Analysis. doi:10.1214/15-BA955."
 examples: |
   mlcmb(c(0, 1, 2, 2, 3, 4, 6), size = 10)
+holds:
+- held: []
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+- held:
+  - prob
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+- held:
+  - nu
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+- held:
+  - prob
+  - nu
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+fit_args:
+  size: 10
 ---
 
 The Conway--Maxwell--binomial distribution extends the binomial by raising its combinatorial factor to a real dispersion power.

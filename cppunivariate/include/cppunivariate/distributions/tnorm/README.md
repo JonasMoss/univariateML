@@ -3,16 +3,36 @@ id: tnorm
 name: Truncated Normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mean, role: location, domain: "(-inf, inf)", default: 0, fixable: true}
-  - {name: sd, role: scale, domain: "(0, inf)", default: 1, fixable: true}
-  - {name: a, role: lower, domain: "[-inf, inf)", default: -inf, fixed: -inf}
-  - {name: b, role: upper, domain: "(-inf, inf]", default: inf, fixed: inf}
+- name: mean
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: regular
+- name: sd
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: a
+  role: lower
+  domain: '[-inf, inf)'
+  simulate: -inf
+  kind: design
+  advice: NULL is not supported until the endpoint closure (R7a); use -Inf for an
+    unbounded side.
+- name: b
+  role: upper
+  domain: (-inf, inf]
+  simulate: inf
+  kind: design
+  advice: NULL is not supported until the endpoint closure (R7a); use Inf for an unbounded
+    side.
 r:
   density: extraDistr::dtnorm
   sampler: extraDistr::rtnorm
   control:
-    a: Known lower truncation bound, held fixed; omitted or `NULL` means `-Inf`. Every observation must exceed it.
-    b: Known upper truncation bound, held fixed; omitted or `NULL` means `Inf`. Every observation must be below it.
+    a: Known lower truncation bound, held fixed; required; use `-Inf` for an unbounded lower side. Every observation must exceed it.
+    b: Known upper truncation bound, held fixed; required; use `Inf` for an unbounded upper side. Every observation must be below it.
     reltol: Relative tolerance on the Newton step in the natural parameters `mean/sd^2` and `-1/(2*sd^2)` of standardized data.
     iterlim: Maximum number of Newton iterations.
 log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2) - log((erf((b-mean)/(sd*sqrt(2))) - erf((a-mean)/(sd*sqrt(2))))/2)
@@ -43,6 +63,78 @@ examples: |
   mltnorm(extraDistr::rtnorm(100, mean = 1, sd = 2, a = 0), a = 0, b = Inf)
   # Hold the parent standard deviation.
   mltnorm(extraDistr::rtnorm(100, mean = 1, sd = 2, a = 0), a = 0, b = Inf, sd = 2)
+holds:
+- held: []
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - mean
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - sd
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - mean
+  - sd
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - a
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - mean
+  - a
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - sd
+  - a
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - mean
+  - sd
+  - a
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - b
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - mean
+  - b
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - sd
+  - b
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+- held:
+  - mean
+  - sd
+  - b
+  status: not-implemented
+  reason: Estimating truncation bounds with NULL is not supported until the endpoint
+    closure (R7a).
+fit_args:
+  a: -.inf
+  b: .inf
 ---
 
 The truncated normal distribution is a normal distribution restricted to a known interval `(a, b)`; it models measurements that are only recorded, or only possible, inside that interval. `mean` and `sd` are the parameters of the parent normal distribution, not the mean and standard deviation of the truncated one.
@@ -51,7 +143,7 @@ The truncated normal distribution is a normal distribution restricted to a known
 
 `extraDistr::dtnorm`, `ptnorm` and `qtnorm` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
 
-The bounds `a` and `b` are known design quantities, held fixed and never estimated; they default to `-Inf` and `Inf`, giving the normal fit of `mlnorm`. `extraDistr::dtnorm` is zero at the bounds, so every observation must lie strictly between them.
+The bounds `a` and `b` are known design quantities, held fixed and never estimated; both must be supplied, using `-Inf` and `Inf` for the normal fit of `mlnorm`. `NULL` stops until the endpoint closure (R7a) is implemented. `extraDistr::dtnorm` is zero at the bounds, so every observation must lie strictly between them.
 
 For fixed bounds the family is an exponential family in $\mathrm{mean}/\mathrm{sd}^2$ and $-1/(2\,\mathrm{sd}^2)$ whose log-likelihood is strictly concave; the maximum depends on the data only through `mean(x)` and the population variance. It exists unless the sample is at least as dispersed as the member with $1/\mathrm{sd}^2 = 0$ and the same mean, an exponential or truncated exponential law that the parametrisation by `sd` cannot reach. This happens with positive probability for samples from a truncated normal, with small samples especially susceptible near an exponential limit; faces win ties within `1e-8` times the sample size. With `sd` held fixed the estimate of `mean` always exists. With `mean` held fixed and both bounds finite the limit is the uniform distribution on `(a, b)`; `mlunif` is a different model, which estimates its endpoints.
 

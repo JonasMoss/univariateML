@@ -70,3 +70,14 @@ corner_upper <- mltriang(1 - c(0, .01, .1, .5), b = 1)
 expect_equal(coef(corner_upper)[["c"]], 1)
 expect_warning(known_tie <- mltriang(c(.2, .8), a = 0, b = 1), "not unique")
 expect_equal(coef(known_tie)[["c"]], .2)
+
+test_that("constant triangular samples with exterior held mode", {
+  for (v in c(.1,.4,1)) for (b in c(NA,3)) {
+    x <- rep(v,5); args <- list(x=x,c=-1)
+    if (!is.na(b)) args$b <- b
+    fit <- do.call(mltriang,args)
+    expect_equal(unname(fit["a"]), -1)
+    expect_equal(unname(fit["b"]), if (is.na(b)) 2*v+1 else b)
+    expect_equal(as.numeric(logLik(fit)), sum(extraDistr::dtriang(x,fit[1],fit[2],fit[3],log=TRUE)))
+  }
+})

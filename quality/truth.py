@@ -78,13 +78,16 @@ def points(meta, g, route):
     ps = meta['params']
     fit = {p['name']: float(g['estimates'][p['name']]) for p in ps}
     held = {p['name'] for p in ps if p.get('integer') or p.get('bound') or
-            'fixed' in p or p.get('required') or any(w in p['role'] for w in ('endpoint', 'design', 'trials')) or
+            'fixed' in p or p.get('required') or p.get('kind') in ('design', 'threshold', 'endpoint') or
+            any(w in p['role'] for w in ('endpoint', 'design', 'trials')) or
             p['role'] in ('lower', 'upper', 'integer centre')}
-    held |= set(g.get('fixed', [])) | set(getattr(route, 'held_parameters', []))
+    held |= set(g.get('fixed', [])) | {k for k, v in g.get('fit_args', {}).items() if v is not None}
+    held |= set(getattr(route, 'held_parameters', []))
     held -= {p['name'] for p in ps if p['name'] in getattr(route, 'regular_parameters', [])
              and not (p.get('integer') or p.get('bound') or p.get('required') or 'fixed' in p
+                      or p.get('kind') in ('design', 'threshold')
                       or p['name'] in g.get('fixed', []))}
-    sample = {p['name']: float(g.get('sampler_args', {}).get(p['name'], p.get('default', fit[p['name']]))) for p in ps}
+    sample = {p['name']: float(g.get('sampler_args', {}).get(p['name'], p.get('simulate', p.get('default', fit[p['name']])))) for p in ps}
     for arg, name in meta.get('r', {}).get('args', {}).items():
         if name in sample and arg in g.get('sampler_args', {}): sample[name] = float(g['sampler_args'][arg])
     for name in held & fit.keys(): sample[name] = fit[name]

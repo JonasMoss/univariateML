@@ -14,7 +14,8 @@
 #'   should return the single best model; "all" if a data.frame
 #'   of all results should be returned, sorted by decreasing model performance.
 #' @param ... Additional arguments passed to each fitter, such as a required size.
-#' @return The return value depends on the `return` argument.
+#' @return A `skipped` attribute lists families skipped for missing required
+#'   coefficients, with their reasons. The return value depends on the `return` argument.
 #'    For `return = "best"` (default), `model_select` returns
 #'    an object of [class][base::class] `univariateML`
 #'
@@ -66,6 +67,23 @@ model_select <- function(
   check_models(models)
   models <- filter_models(models, type)
 
+  supplied <- names(list(...))
+  reasons <- lapply(models, function(id) {
+    meta <- univariateML_metadata[[paste0("ml", id)]]
+    absent <- setdiff(meta$required, supplied)
+    if (!length(absent)) return(NULL)
+    paste(vapply(absent, function(p) {
+      info <- Filter(function(q) identical(q$name, p), meta$params)[[1]]
+      paste0("Missing required `", p, "` (", info$kind,
+             "). Hold a value or use NULL to estimate where supported.",
+             if (!is.null(info$advice)) paste0(" ", info$advice))
+    }, ""), collapse=" ")
+  })
+  names(reasons) <- paste0("ml", models)
+  skipped <- unlist(reasons[!vapply(reasons, is.null, logical(1))])
+  models <- models[vapply(reasons, is.null, logical(1))]
+  if (!length(models)) stop("Couldn't fit any model. Missing required coefficients:\n",
+                            paste(names(skipped), skipped, collapse="\n"))
   mlf <- sapply(paste0("ml", models), function(x) eval(parse(text = x)))
   fits <- lapply(mlf, function(f) try(do.call(f, c(list(x, na.rm = na.rm), list(...))), silent = TRUE))
 
@@ -84,7 +102,9 @@ model_select <- function(
       "AIC"    = sapply(fits, stats::AIC),
       "BIC"    = sapply(fits, stats::BIC)
     )
-    return(fits[[which.min(crits)]])
+    best <- fits[[which.min(crits)]]
+    attr(best, "skipped") <- skipped
+    return(best)
   }
 
   p_vec <- sapply(fits, univariateML_df)
@@ -111,6 +131,7 @@ model_select <- function(
     "model", "d_logLik", "d_AIC", "d_BIC", "logLik", "p", "AIC", "BIC", "ml", "univariateML"
   ), drop = FALSE]
 
+  attr(fits, "skipped") <- skipped
   fits
 }
 

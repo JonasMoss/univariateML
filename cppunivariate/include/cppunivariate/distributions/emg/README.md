@@ -3,9 +3,21 @@ id: emg
 name: Exponentially Modified Gaussian
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0, fixable: true}
-  - {name: sigma, role: normal scale, domain: "(0, inf)", default: 1, fixable: true}
-  - {name: lambda, role: exponential rate, domain: "(0, inf)", default: 1, fixable: true}
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: regular
+- name: sigma
+  role: normal scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: lambda
+  role: exponential rate
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: demg
   sampler: remg
@@ -28,6 +40,7 @@ limits:
 examples: |
   set.seed(7)
   mlemg(remg(200, 0, 1, 1))
+holds: []
 ---
 
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.

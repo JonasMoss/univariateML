@@ -74,6 +74,9 @@ bootstrapml <- function(
   # Refit with the same parameters held fixed as in the original fit.
   fixed <- univariateML_fixed(object)
   held <- stats::setNames(as.list(as.numeric(object[fixed])), fixed)
+  required <- univariateML_metadata[[univariateML_name(object)]]$required
+  free_required <- setdiff(required, fixed)
+  held[free_required] <- rep(list(NULL), length(free_required))
   bootstraps <- replicate(
     n = reps,
     expr = do.call(ml_fun, c(list(r_fun(attr(object, "n"))), held))

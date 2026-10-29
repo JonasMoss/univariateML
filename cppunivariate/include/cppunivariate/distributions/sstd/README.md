@@ -3,15 +3,31 @@ id: sstd
 name: Skew Student-t
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mean, role: location, domain: "(-inf, inf)", default: 0.0}
-  - {name: sd, role: scale, domain: "(0, inf)", default: 1.0}
-  - {name: nu, role: df, domain: "(2, inf)", default: 3.0}
-  - {name: xi, role: skew, domain: "(0, inf)", default: 2.0}
+- name: mean
+  role: location
+  domain: (-inf, inf)
+  simulate: 0.0
+  kind: regular
+- name: sd
+  role: scale
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
+- name: nu
+  role: df
+  domain: (2, inf)
+  simulate: 3.0
+  kind: regular
+- name: xi
+  role: skew
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
 r:
   density: dsstd
   sampler: rsstd
   control:
-    gradtol: "Tolerance on the Euclidean norm of the total negative log-likelihood gradient in transformed coordinates; fixed step and objective-decrease criteria can also stop the fit."
+    gradtol: "Tolerance on the Euclidean norm of the total negative log-likelihood gradient in transformed coordinates after centering and scaling the sample to unit standard deviation; fixed step and objective-decrease criteria can also stop the fit."
     iterlim: "Maximum number of optimisation iterations."
 log_density: "log(sqrt((1 - (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2)*(xi**2 + xi**(-2)) + 2*(gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2 - 1)) - log(sd) + log(2/(xi + 1/xi)) + loggamma((nu + 1)/2) - loggamma(nu/2) - log((nu - 2)*pi)/2 - (nu + 1)*log(1 + (Piecewise(((sqrt((1 - (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2)*(xi**2 + xi**(-2)) + 2*(gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2 - 1)*(x - mean)/sd + (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))*(xi - 1/xi))/xi, (sqrt((1 - (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2)*(xi**2 + xi**(-2)) + 2*(gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2 - 1)*(x - mean)/sd + (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))*(xi - 1/xi)) > 0), ((sqrt((1 - (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2)*(xi**2 + xi**(-2)) + 2*(gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2 - 1)*(x - mean)/sd + (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))*(xi - 1/xi))*xi, True)))**2/(nu - 2))/2"
 limits:
@@ -38,6 +54,23 @@ references:
 examples: |
   # Daily DAX log returns, scaled to percent.
   mlsstd(100 * diff(log(EuStockMarkets[, "DAX"])))
+holds:
+- held:
+  - mean
+  status: not-implemented
+  reason: The adapter does not accept `mean`; this hold is not implemented (P2).
+- held:
+  - sd
+  status: not-implemented
+  reason: The adapter does not accept `sd`; this hold is not implemented (P2).
+- held:
+  - nu
+  status: not-implemented
+  reason: The adapter does not accept `nu`; this hold is not implemented (P2).
+- held:
+  - xi
+  status: not-implemented
+  reason: The adapter does not accept `xi`; this hold is not implemented (P2).
 ---
 
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.

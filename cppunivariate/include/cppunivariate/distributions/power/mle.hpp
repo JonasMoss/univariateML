@@ -38,7 +38,7 @@ inline PowerResult power_mle(span x, double epsilon) {
   double sum_log = 0.0;
   for (auto v : x) sum_log += std::log(v);
   const double m = sum_log / static_cast<double>(n);
-  double alpha = xmax + epsilon;
+  double alpha = xmax * (1.0 + epsilon);
   if (epsilon>0.0 && alpha == xmax) alpha = std::nextafter(xmax,std::numeric_limits<double>::infinity());
   long double gap=0.0L;
   for(auto v:x) gap+=std::log1p((static_cast<long double>(alpha)-v)/v);

@@ -3,14 +3,26 @@ id: std
 name: Student-t
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mean, role: location, domain: "(-inf, inf)", default: 0.0}
-  - {name: sd, role: scale, domain: "(0, inf)", default: 1.0}
-  - {name: nu, role: df, fixable: true, domain: "(2, inf)", default: 3.0}
+- name: mean
+  role: location
+  domain: (-inf, inf)
+  simulate: 0.0
+  kind: regular
+- name: sd
+  role: scale
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
+- name: nu
+  role: df
+  domain: (2, inf)
+  simulate: 3.0
+  kind: regular
 r:
   density: dstd
   sampler: rstd
   control:
-    gradtol: Tolerance on the norm of the finite-difference gradient of the total negative log-likelihood in transformed coordinates.
+    gradtol: Tolerance on the norm of the finite-difference gradient of the total negative log-likelihood in transformed coordinates after centering and scaling the sample to unit standard deviation.
     iterlim: Maximum number of iterations.
 log_density: loggamma((nu+1)/2) - loggamma(nu/2) - log((nu-2)*pi)/2 - (nu+1)*log(1+((x-mean)/sd)**2/(nu-2))/2 - log(sd)
 limits:
@@ -33,6 +45,15 @@ references:
 examples: |
   # Daily DAX log returns, scaled to percent.
   mlstd(100 * diff(log(EuStockMarkets[, "DAX"])))
+holds:
+- held:
+  - mean
+  status: not-implemented
+  reason: The adapter does not accept `mean`; this hold is not implemented (P2).
+- held:
+  - sd
+  status: not-implemented
+  reason: The adapter does not accept `sd`; this hold is not implemented (P2).
 ---
 
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.

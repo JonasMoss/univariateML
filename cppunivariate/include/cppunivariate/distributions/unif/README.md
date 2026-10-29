@@ -3,8 +3,18 @@ id: unif
 name: Uniform
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: min, role: lower, domain: "(-inf, max)", default: 0.0, bound: lower}
-  - {name: max, role: upper, domain: "(min, inf)", default: 1.0, bound: upper}
+- name: min
+  role: lower
+  domain: (-inf, max)
+  simulate: 0.0
+  bound: lower
+  kind: endpoint
+- name: max
+  role: upper
+  domain: (min, inf)
+  simulate: 1.0
+  bound: upper
+  kind: endpoint
 r:
   density: stats::dunif
   sampler: stats::runif
@@ -14,6 +24,15 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York."
 examples: |
   mlunif(precip)
+holds:
+- held:
+  - min
+  status: not-implemented
+  reason: The adapter does not accept `min`; this hold is not implemented (P2).
+- held:
+  - max
+  status: not-implemented
+  reason: The adapter does not accept `max`; this hold is not implemented (P2).
 ---
 
 The uniform distribution assigns constant density to a bounded interval.

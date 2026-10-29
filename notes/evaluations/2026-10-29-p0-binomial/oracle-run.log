@@ -1,0 +1,254 @@
+Running binom default_20 
+Running binom default_100 
+Running binom default_1000 
+Running binom default_2 
+Running binom default_3 
+Running binom default_5 
+Running binom tied 
+Running binom boundary 
+Running binom limit 
+Running bbinom default_20 
+Running bbinom default_100 
+Running bbinom default_1000 
+Running bbinom default_2 
+Running bbinom default_3 
+Running bbinom default_5 
+Running bbinom tied 
+Running bbinom boundary 
+Running bbinom limit 
+Running bbinom limit_negbinom 
+Running bbinom endpoint_mix 
+Running cmb default_20 
+Running cmb default_100 
+Running cmb default_1000 
+Running cmb default_2 
+Running cmb default_3 
+Running cmb default_5 
+Running cmb tied 
+Running cmb boundary 
+Running cmb limit 
+Running cmb endpoint_mix 
+Running tbinom default_20 
+Running tbinom default_100 
+Running tbinom default_1000 
+Running tbinom default_2 
+Running tbinom default_3 
+Running tbinom default_5 
+Running tbinom tied 
+Running tbinom boundary 
+Running tbinom limit 
+Running zib default_20 
+Running zib default_100 
+Running zib default_1000 
+Running zib default_2 
+Running zib default_3 
+Running zib default_5 
+Running zib tied 
+Running zib boundary 
+Running zib limit 
+Running zmbinom default_20 
+Running zmbinom default_100 
+Running zmbinom default_1000 
+Running zmbinom default_2 
+Running zmbinom default_3 
+Running zmbinom default_5 
+Running zmbinom tied 
+Running zmbinom boundary 
+Running zmbinom limit 
+Running ztbinom default_20 
+Running ztbinom default_100 
+Running ztbinom default_1000 
+Running ztbinom default_2 
+Running ztbinom default_3 
+Running ztbinom default_5 
+Running ztbinom tied 
+Running ztbinom boundary 
+Running ztbinom limit 
+Running hyper default_20 
+Running hyper default_100 
+Running hyper default_1000 
+Running hyper default_2 
+Running hyper default_3 
+Running hyper default_5 
+Running hyper tied 
+Running hyper boundary 
+Running hyper limit 
+Running nhyper default_20 
+Running nhyper default_100 
+Running nhyper default_1000 
+Running nhyper default_2 
+Running nhyper default_3 
+Running nhyper default_5 
+Running nhyper tied 
+Running nhyper boundary 
+Running nhyper limit 
+      id         sample    n         oracle       master         delta
+   binom     default_20   20  -3.812731e+01   -38.127309  6.394885e-14
+   binom    default_100  100  -1.972913e+02  -197.291262  4.547474e-13
+   binom   default_1000 1000  -1.888227e+03 -1888.226507  1.818989e-12
+   binom      default_2    2  -3.628177e+00    -3.628177  2.664535e-15
+   binom      default_3    3  -5.031534e+00    -5.031534 -1.065814e-14
+   binom      default_5    5  -7.838678e+00    -7.838678  1.065814e-14
+   binom           tied    6  -7.286483e+00    -7.286483 -2.664535e-15
+   binom       boundary    5   0.000000e+00     0.000000  0.000000e+00
+   binom          limit  100  -2.040301e+02  -204.030094  1.989520e-13
+  bbinom     default_20   20  -4.732327e+01   -47.323268  4.476419e-13
+  bbinom    default_100  100  -2.273451e+02  -227.345135  1.134026e-11
+  bbinom   default_1000 1000  -2.253603e+03 -2253.602882  1.432454e-10
+  bbinom      default_2    2  -1.896545e+00           NA            NA
+  bbinom      default_3    3  -6.817203e+00    -6.817203  7.105427e-15
+  bbinom      default_5    5  -9.958485e+00    -9.958485  1.229239e-12
+  bbinom           tied    6  -7.286526e+00           NA            NA
+  bbinom       boundary    5  -2.554490e-10           NA            NA
+  bbinom          limit  100  -1.846773e+02           NA            NA
+  bbinom limit_negbinom  100 -1.000000e+100           NA            NA
+  bbinom   endpoint_mix  100  -6.931495e+01           NA            NA
+     cmb     default_20   20  -2.582729e+01   -25.827287  2.238210e-13
+     cmb    default_100  100  -1.704733e+02  -170.473288  4.547474e-12
+     cmb   default_1000 1000  -1.635329e+03 -1635.329478  3.342393e-11
+     cmb      default_2    2  -4.095163e+00    -4.095163  1.102229e-12
+     cmb      default_3    3  -3.639392e+00    -3.639392  1.287859e-14
+     cmb      default_5    5  -7.601523e+00    -7.601523  6.572520e-14
+     cmb           tied    6  -7.190778e+00    -7.190778  8.242296e-13
+     cmb       boundary    5   0.000000e+00           NA            NA
+     cmb          limit  100  -6.946546e+01           NA            NA
+     cmb   endpoint_mix  100  -6.931472e+01           NA            NA
+  tbinom     default_20   20  -4.001334e+01   -40.013342 -6.394885e-14
+  tbinom    default_100  100  -1.922079e+02  -192.207890 -5.684342e-14
+  tbinom   default_1000 1000  -1.922924e+03 -1922.923561 -1.728040e-11
+  tbinom      default_2    2  -2.855530e+00    -2.855530  3.108624e-15
+  tbinom      default_3    3  -5.049773e+00    -5.049773 -1.776357e-15
+  tbinom      default_5    5  -8.360422e+00    -8.360422  0.000000e+00
+  tbinom           tied    6  -7.433707e+00    -7.433707  2.664535e-15
+  tbinom       boundary    5  -2.286706e-05           NA            NA
+  tbinom          limit  100  -1.647986e+02  -164.798579  1.421085e-13
+     zib     default_20   20  -2.983885e+01   -29.838855  3.907985e-14
+     zib    default_100  100  -1.667176e+02  -166.717605  3.694822e-13
+     zib   default_1000 1000  -1.670099e+03 -1670.099275  8.412826e-12
+     zib      default_2    2  -2.309595e+00    -2.309595  0.000000e+00
+     zib      default_3    3  -4.393706e+00    -4.393706  9.769963e-15
+     zib      default_5    5  -7.371911e+00    -7.371911  1.776357e-15
+     zib           tied    6  -7.261676e+00    -7.261676  0.000000e+00
+     zib       boundary    5   0.000000e+00     0.000000  0.000000e+00
+     zib          limit  100  -1.763201e+02  -176.320148  2.557954e-13
+ zmbinom     default_20   20  -3.287811e+01   -32.878108  6.394885e-14
+ zmbinom    default_100  100  -1.763917e+02  -176.391745  1.705303e-13
+ zmbinom   default_1000 1000  -1.796171e+03 -1796.171453 -7.048584e-12
+ zmbinom      default_2    2   0.000000e+00     0.000000  0.000000e+00
+ zmbinom      default_3    3   0.000000e+00     0.000000  0.000000e+00
+ zmbinom      default_5    5  -8.157204e+00    -8.157204  2.131628e-14
+ zmbinom           tied    6  -7.258174e+00    -7.258174  2.664535e-15
+ zmbinom       boundary    5   0.000000e+00     0.000000  0.000000e+00
+ zmbinom          limit  100 -1.000000e+100           NA            NA
+ ztbinom     default_20   20  -3.636948e+01   -36.369481 -7.105427e-15
+ ztbinom    default_100  100  -1.740697e+02  -174.069659  1.421085e-13
+ ztbinom   default_1000 1000  -1.727395e+03 -1727.394572 -7.730705e-12
+ ztbinom      default_2    2  -2.585410e+00    -2.585410 -4.440892e-16
+ ztbinom      default_3    3  -6.821450e+00    -6.821450 -8.881784e-16
+ ztbinom      default_5    5  -9.343846e+00    -9.343846  1.776357e-15
+ ztbinom           tied    6  -7.351404e+00    -7.351404  0.000000e+00
+ ztbinom       boundary    5   0.000000e+00     0.000000  0.000000e+00
+ ztbinom          limit  100  -1.925964e+02  -192.596373  8.526513e-14
+   hyper     default_20   20  -3.352991e+01   -33.529909  0.000000e+00
+   hyper    default_100  100  -1.640227e+02  -164.022720  2.842171e-14
+   hyper   default_1000 1000  -1.729321e+03 -1729.320758  2.273737e-13
+   hyper      default_2    2  -3.024254e+00    -3.024254  0.000000e+00
+   hyper      default_3    3  -3.886218e+00    -3.886218  8.881784e-16
+   hyper      default_5    5  -7.525134e+00    -7.525134  0.000000e+00
+   hyper           tied    6  -7.143291e+00    -7.143291  1.776357e-15
+   hyper       boundary    5   0.000000e+00     0.000000  0.000000e+00
+   hyper          limit  100  -1.816394e+02  -181.639352  0.000000e+00
+  nhyper     default_20   20  -5.349276e+01   -53.492756 -7.105427e-15
+  nhyper    default_100  100  -2.375057e+02  -237.505741 -2.842171e-14
+  nhyper   default_1000 1000  -2.431099e+03 -2431.099299 -4.547474e-13
+  nhyper      default_2    2  -4.136230e+00    -4.136230  0.000000e+00
+  nhyper      default_3    3  -6.995525e+00    -6.995525  0.000000e+00
+  nhyper      default_5    5  -1.189496e+01   -11.894964 -1.776357e-15
+  nhyper           tied    6  -7.599075e+00    -7.599075  0.000000e+00
+  nhyper       boundary    5   0.000000e+00     0.000000  0.000000e+00
+  nhyper          limit  100  -2.485469e+02  -248.546872 -5.684342e-14
+                                                                                                                                                                                                                                                                                                                     message
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                            The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows (the data are not overdispersed enough). Use `mlbinom(x, size = 10)` instead.
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                            The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows (the data are not overdispersed enough). Use `mlbinom(x, size = 10)` instead.
+                                                                                                                                       The maximum likelihood estimator does not exist: all observations equal 0 or all equal `size`, and the likelihood increases toward a point mass. Use `mlbinom(x, size = 10)` instead.
+                                                                                                            The maximum likelihood estimator does not exist: the likelihood increases toward the binomial distribution as `alpha + beta` grows (the data are not overdispersed enough). Use `mlbinom(x, size = 10)` instead.
+                                                                                                                                                                                                                                                                                            `size` is smaller than `max(x)`.
+ The maximum likelihood estimator does not exist: every observation is 0 or `size`, and the likelihood increases toward the two-point distribution on {0, size} as `alpha` and `beta` tend to 0 with `alpha / (alpha + beta)` fixed. Its probability of `size` is `mean(x == size)`, the fit of `mlbinom(x / 10, size = 1)`.
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                             The MLE does not exist: the likelihood approaches a point mass.
+                                                                                                                                                                                                               The MLE does not exist: the likelihood approaches an adjacent two-point law as nu tends to positive infinity.
+                                                                                                                                                                                                               The MLE does not exist: the likelihood approaches an endpoint two-point law as nu tends to negative infinity.
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                    MLE escapes to a point mass at the lowest support point.
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                          `size` must be a positive integer at least max(x).
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                            

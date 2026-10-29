@@ -3,8 +3,18 @@ id: zipf
 name: Zipf
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:
-  - {name: "N", role: upper, domain: "[1, inf)", default: 3.0, integer: true, bound: upper}
-  - {name: s, role: shape, domain: "[0, inf)", default: 0.5}
+- name: 'N'
+  role: upper
+  domain: '[1, inf)'
+  simulate: 3.0
+  integer: yes
+  bound: upper
+  kind: endpoint
+- name: s
+  role: shape
+  domain: '[0, inf)'
+  simulate: 0.5
+  kind: regular
 r:
   density: dzipf
   sampler: rzipf
@@ -17,6 +27,15 @@ references:
 examples: |
   AIC(mlzipf(corbet))
   AIC(mllgser(corbet))
+holds:
+- held:
+  - 'N'
+  status: not-implemented
+  reason: The adapter does not accept `N`; this hold is not implemented (P2).
+- held:
+  - s
+  status: not-implemented
+  reason: The adapter does not accept `s`; this hold is not implemented (P2).
 ---
 
 The finite Zipf distribution describes power-law frequencies on consecutive positive integers.

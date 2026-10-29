@@ -6,6 +6,7 @@
 #include "../gamma/mle.hpp"
 #include "../beta/mle.hpp"
 #include <vector>
+#include <algorithm>
 #include "../invgamma/mle.hpp"
 #include <cmath>
 #include <cstddef>
@@ -121,19 +122,31 @@ inline BetaPrimeResult betapr_mle_fixed_scale(
       std::isfinite(ll) ? BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
 }
 
-inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,
+inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 1000,
                                   double shape1 = 0.0, double shape2 = 0.0,
                                   double scale = 0.0, double reltol = 1e-13,
-                                  double abstol = 1e-10) {
+                                  double abstol = 1e-10, bool standardized = false) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (shape1 < 0 || shape2 < 0 || scale < 0 ||
       !std::isfinite(shape1) || !std::isfinite(shape2) || !std::isfinite(scale) ||
       x.size() < 2) return {nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
+  if (std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
+    return {nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
   double lm = 0.0;
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v))
       return {nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
     lm += std::log(v) / static_cast<double>(x.size());
+  }
+  if (!standardized) {
+    const double unit = std::exp(lm);
+    std::vector<double> z(x.size());
+    for (std::size_t i = 0; i < x.size(); ++i) z[i] = x[i] / unit;
+    auto r = betapr_mle_impl(span{z.data(), z.size()}, tol, maxit,
+        shape1, shape2, scale / unit, reltol, abstol, true);
+    r.scale *= unit;
+    r.logLik -= static_cast<double>(x.size()) * std::log(unit);
+    return r;
   }
   double lv = 0;
   for (double v : x) lv += (std::log(v)-lm)*(std::log(v)-lm) / x.size();
@@ -176,5 +189,10 @@ inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,
   return {std::exp(best.theta[0]),std::exp(best.theta[1]),std::exp(best.theta[2]),
           -best.f,best.iterations,best.status == BfgsStatus::Ok ?
           BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
+}
+inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,
+    double shape1 = 0.0, double shape2 = 0.0, double scale = 0.0,
+    double reltol = 1e-13, double abstol = 1e-10) {
+  return betapr_mle_impl(x, tol, maxit, shape1, shape2, scale, reltol, abstol);
 }
 } // namespace cppunivariate

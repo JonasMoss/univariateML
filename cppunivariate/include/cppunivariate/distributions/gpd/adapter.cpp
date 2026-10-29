@@ -5,14 +5,16 @@
 #include <limits>
 
 // [[Rcpp::export]]
-Rcpp::List mlgpd_(const Rcpp::NumericVector &x, double mu = 0.0,
+Rcpp::List mlgpd_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu,
                   Rcpp::Nullable<double> xi = R_NilValue,
                   double reltol = 1e-12, int iterlim = 200) {
+  if (mu.isNull()) Rcpp::stop("Estimating `mu` is not supported: the free-threshold GPD likelihood has no MLE (endpoint and logistic escapes). Supply a held threshold.");
+  const double threshold = Rcpp::as<double>(mu);
   const double shape = xi.isNotNull() ? Rcpp::as<double>(xi) :
       std::numeric_limits<double>::quiet_NaN();
   if (xi.isNotNull() && (!std::isfinite(shape) || shape < -0.5))
     Rcpp::stop("`xi` must be finite and at least -0.5.");
-  auto res = cppunivariate::gpd_mle(dist_impl::as_span(x), reltol, iterlim, mu, shape);
+  auto res = cppunivariate::gpd_mle(dist_impl::as_span(x), reltol, iterlim, threshold, shape);
   if (res.status == cppunivariate::GpdStatus::InvalidData)
     Rcpp::stop("Generalized Pareto requires finite data strictly above `mu`, a finite threshold, positive `reltol` and positive `iterlim`.");
   if (res.status != cppunivariate::GpdStatus::Ok || !std::isfinite(res.logLik))
