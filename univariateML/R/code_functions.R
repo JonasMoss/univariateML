@@ -80,5 +80,6 @@ qml <- function(p = p, obj, lower.tail = TRUE, log.p = FALSE) {
 #' @rdname MaximumLikelihoodDistribution
 #' @export
 rml <- function(n = n, obj) {
-  univariateML_to_function(obj, type = "r")(n = n)
+  # By position: stats::rhyper names the sample size `nn`, and `n` is a parameter.
+  univariateML_to_function(obj, type = "r")(n)
 }

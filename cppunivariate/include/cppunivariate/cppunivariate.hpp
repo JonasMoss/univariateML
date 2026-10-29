@@ -83,3 +83,4 @@
 #include "distributions/zmbinom/mle.hpp"
 #include "distributions/zmlogarithmic/mle.hpp"
 #include "distributions/zib/mle.hpp"
+#include "distributions/hyper/mle.hpp"

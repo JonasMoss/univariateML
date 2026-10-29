@@ -1,8 +1,8 @@
 # Load per-distribution metadata for the R-side codegen and goldens from
 # distributions/<id>/README.md (YAML front matter + prose; schema:
 # distributions/README_SCHEMA.md). Returns a list of models sorted by id,
-# each with: id, name, support, params, density, sampler, args, control, limits,
-# references, examples, sections.
+# each with: id, name, support, params, density, sampler, args, fit_args,
+# control, limits, references, examples, sections.
 
 if (!requireNamespace("yaml", quietly = TRUE)) {
   stop("the yaml package is required to read distributions/<id>/README.md")
@@ -74,10 +74,23 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     closed = as.logical(unlist(s$closed %||% c(FALSE, FALSE)))
   )
   params <- lapply(f$params, function(p) {
+    if (isTRUE(p$required) && (isTRUE(p$fixable) || !is.null(p$fixed))) {
+      stop("load_distributions: ", path, ": required parameter ", p$name,
+           " cannot also be fixable or fixed")
+    }
     list(name = p$name, role = p$role %||% "", domain = p$domain %||% "",
          default = as.numeric(p$default),
-         fixable = isTRUE(p$fixable), fixed = p$fixed)
+         fixable = isTRUE(p$fixable), fixed = p$fixed,
+         required = isTRUE(p$required))
   })
+  # Arguments of the default fit (goldens, generic tests); every required
+  # parameter must have one.
+  required <- unlist(lapply(params, function(p) if (p$required) p$name))
+  missing <- setdiff(required, names(f$fit_args))
+  if (length(missing)) {
+    stop("load_distributions: ", path, ": fit_args lacks required ",
+         paste(missing, collapse = ", "))
+  }
   list(
     id = id,
     name = f$name,
@@ -86,6 +99,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     density = f$r$density,
     sampler = f$r$sampler,
     args = if (is.null(f$r$args)) NULL else unlist(f$r$args),
+    fit_args = f$fit_args,
     control = f$r$control %||% list(),
     limits = f$limits %||% list(),
     references = unlist(f$references %||% list()),
