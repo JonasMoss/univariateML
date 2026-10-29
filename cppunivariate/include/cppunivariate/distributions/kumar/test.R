@@ -146,3 +146,10 @@ test_that("P2 held shape solves stop on exhausted brackets", {
   expect_error(mlkumar(c(.2,.8),b=2,iterlim=1),"failed")
   expect_error(mlkumar(c(.2,.8),b=3,iterlim=1),"failed")
 })
+
+test_that("kumar: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "kumar", "golden.json"))
+  x <- g$data
+  expect_error(mlkumar(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

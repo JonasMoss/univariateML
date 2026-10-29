@@ -33,6 +33,8 @@ Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
   }
   auto res =
       cppunivariate::gamma_mle(cppunivariate::span{y.data(), n}, abstol, iterlim, shapelog_held, ratelog_held);
+  if (res.status == cppunivariate::GammaStatus::IterationFailure)
+    Rcpp::stop("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if (res.status == cppunivariate::GammaStatus::Degenerate) {
     if (!std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
       Rcpp::stop("lgamma MLE failed: transformed observations exceed double precision.");

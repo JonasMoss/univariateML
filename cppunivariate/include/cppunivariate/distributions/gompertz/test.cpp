@@ -86,3 +86,9 @@ TEST_CASE("gompertz P2 held boundaries and solver failure") {
   CHECK(cppunivariate::gompertz_mle(mltest::as_span(zero),1e-10,100,2,nan).b==1);
   CHECK_FALSE(std::isfinite(cppunivariate::gompertz_mle(mltest::as_span(zero),1e-10,100,nan,1).logLik));
 }
+
+TEST_CASE("gompertz: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("gompertz");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::gompertz_mle(x,1e-8,1).status==cppunivariate::GompertzStatus::IterationFailure);
+}

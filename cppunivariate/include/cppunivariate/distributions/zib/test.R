@@ -104,3 +104,10 @@ test_that("zib: free-size held-mixture fits and Poisson escapes", {
  expect_identical(unname(f[c("prob","pi")]),c(.4,.6))
  expect_error(mlzib(1:3,size=8,prob=.4,iterlim=0))
 })
+
+test_that("zib: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "zib", "golden.json"))
+  x <- g$data
+  expect_error(mlzib(x, iterlim=1, reltol=1e-10, size=NULL),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

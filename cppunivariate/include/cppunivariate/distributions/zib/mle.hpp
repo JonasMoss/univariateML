@@ -89,7 +89,9 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     // Preserve the existing integer-profile search and compare the matching ZIP face.
     for(int t=0;t<=24;++t) {
       auto candidate=held_profile(std::floor(mx+std::exp(t)));if(candidate.logLik>best.logLik)best=candidate;
-      const double opt=zero_detail::maximize([&](double u){return held_profile(mx+std::exp(u)).logLik;},t-1,t+1,tol,maxit);
+      bool done=false;
+      const double opt=ztbinom_detail::maximize([&](double u){return held_profile(mx+std::exp(u)).logLik;},t-1,t+1,tol,maxit,done);
+      if(!done) {best.status=ZibStatus::IterationFailure;return best;}
       for(double r:{std::floor(mx+std::exp(opt)),std::ceil(mx+std::exp(opt))}) {
         candidate=held_profile(r);if(candidate.logLik>best.logLik)best=candidate;
       }
@@ -150,7 +152,9 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
     const double r=mx+std::exp(t),ll=profile(r).logLik;
     auto candidate=profile(std::floor(r));if(candidate.logLik>best.logLik)best=candidate;
     if(ll<profile(mx+std::exp(t-1)).logLik||ll<profile(mx+std::exp(t+1)).logLik)continue;
-    const double opt=zero_detail::maximize([&](double s){return profile(mx+std::exp(s)).logLik;},t-1,t+1,tol,maxit);
+    bool done=false;
+    const double opt=ztbinom_detail::maximize([&](double s){return profile(mx+std::exp(s)).logLik;},t-1,t+1,tol,maxit,done);
+    if(!done) {best.status=ZibStatus::IterationFailure;return best;}
     const double s=mx+std::exp(opt);
     for(double k:{std::floor(s),std::ceil(s)}) {candidate=profile(k);if(candidate.logLik>best.logLik)best=candidate;}
   }

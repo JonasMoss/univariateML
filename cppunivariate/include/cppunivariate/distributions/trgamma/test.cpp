@@ -358,3 +358,9 @@ TEST_CASE("trgamma: extreme observation log tails and density") {
   CHECK(cppunivariate::distributions::ptrgamma(1e100, 3.0, 1.5, 2.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
   CHECK(cppunivariate::distributions::ptrgamma(1e100, 3.0, 1.5, 2.0, false, true) == doctest::Approx(-3.535533905932738e+149).epsilon(1e-11));
 }
+
+TEST_CASE("trgamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("trgamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::trgamma_mle(x,1e-8,1).status==cppunivariate::TrGammaStatus::IterationFailure);
+}

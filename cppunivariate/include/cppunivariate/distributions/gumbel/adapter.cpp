@@ -19,10 +19,9 @@ Rcpp::List mlgumbel_(const Rcpp::NumericVector &x, double reltol = 1.220703e-4,
   if(mu.isNotNull())fixed.push_back("mu");
   if(sigma.isNotNull())fixed.push_back("sigma");
 
-  if (iterlim <= 1) {
-    Rcpp::warning("iteration limit reached");
-  }
   cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(dist_impl::as_span(x),reltol,iterlim,held_mu,held_sigma);
+  if (res.status == cppunivariate::GumbelStatus::IterationFailure)
+    Rcpp::stop("Gumbel optimizer IterationFailure; increase iterlim.");
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) || !std::isfinite(res.logLik)) {
     if (std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
       Rcpp::stop("The Gumbel maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");

@@ -224,3 +224,9 @@ TEST_CASE("std: targeted tail scaling without overflowing z") {
   CHECK(cppunivariate::distributions::dstd(1e300,0,1e-300,3,true)
         == doctest::Approx(-4835.8802779927855).epsilon(1e-10));
 }
+
+TEST_CASE("std: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("std");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::student_t_mle(x,1e-8,1).status==cppunivariate::StudentTStatus::BfgsFailure);
+}

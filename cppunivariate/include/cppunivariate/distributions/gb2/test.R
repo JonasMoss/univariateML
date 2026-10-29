@@ -137,3 +137,14 @@ test_that("P2 gb2 constant samples with coercive holds fit", {
   expect_true(is.finite(attr(mlgb2(rep(2,5),shape3=2,shape2=3,scale=1),"logLik")))
   expect_true(is.finite(attr(mlgb2(rep(2,5),shape1=2,shape3=3,scale=1),"logLik")))
 })
+
+test_that("gb2: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "gb2", "golden.json"))
+  x <- g$data
+  expect_error(mlgb2(x, iterlim=1, gradtol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+test_that("gb2: P3 held profile exhaustion stops", {
+  expect_error(mlgb2(rep(2,4),shape1=2,shape2=1,scale=1,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
+})

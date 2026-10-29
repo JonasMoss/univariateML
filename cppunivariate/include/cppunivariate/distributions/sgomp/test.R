@@ -91,3 +91,10 @@ test_that("sgomp held-coordinate fits agree with scalar oracles", {
   expect_equal(as.numeric(f), c(2, 0))
   expect_equal(attr(f, 'logLik'), 2 * log(2))
 })
+
+test_that("sgomp: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "sgomp", "golden.json"))
+  x <- g$data
+  expect_error(mlsgomp(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

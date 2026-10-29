@@ -125,3 +125,10 @@ expect_true(is.finite(logLik(mlgamma(2,rate=2))))
 test_that("P2 held solver respects iterlim", {
   expect_error(suppressWarnings(mlgamma(c(2,3),rate=2,iterlim=1)))
 })
+
+test_that("gamma: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "gamma", "golden.json"))
+  x <- g$data
+  expect_error(mlgamma(x, iterlim=1, abstol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

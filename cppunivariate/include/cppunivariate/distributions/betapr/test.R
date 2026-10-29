@@ -149,3 +149,14 @@ test_that("beta-prime new hold subsets agree with independent reference oracles"
     expect_error(do.call(mlbetapr,c(list(x=1:3),setNames(list(bad),nm))),"positive finite")
   expect_error(mlbetapr(c(.1,1,5),shape1=.7,iterlim=1),"did not converge")
 })
+
+test_that("betapr: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "betapr", "golden.json"))
+  x <- g$data
+  expect_error(mlbetapr(x, iterlim=1, gradtol=1e-10, scale=1),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+test_that("betapr: P3 finite failed default BFGS stops", {
+  expect_error(mlbetapr(c(.01,.2,.3,.5,2,10,50),iterlim=1), "BfgsFailure")
+})

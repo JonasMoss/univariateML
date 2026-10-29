@@ -128,3 +128,9 @@ TEST_CASE("gb2: targeted tail finite and zero endpoint limits") {
         == doctest::Approx(0.5).epsilon(1e-10));
   CHECK(cppunivariate::distributions::dgb2(0,2,2,1,3,true)==-INFINITY);
 }
+
+TEST_CASE("gb2: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("gb2");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::gb2_mle(x,1e-8,1).status==cppunivariate::Gb2Status::SearchUnresolved);
+}

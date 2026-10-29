@@ -112,3 +112,9 @@ TEST_CASE("ztbinom: unit probability is a point mass at size") {
   CHECK(cppunivariate::distributions::pztbinom(4,5,1,false,true)==0);
   CHECK(cppunivariate::distributions::qztbinom(0.3,5,1,true,false)==5);
 }
+
+TEST_CASE("ztbinom: P3 unfinished optimizer is a failure") {
+  const std::vector<int> values{1,2,3,3,5};
+  const cppunivariate::ispan ix{values.data(),values.size()};
+  CHECK(cppunivariate::ztbinom_mle(ix,1e-8,1).status==cppunivariate::ZtbinomStatus::IterationFailure);
+}

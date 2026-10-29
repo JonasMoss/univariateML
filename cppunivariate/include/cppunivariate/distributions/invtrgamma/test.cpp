@@ -174,3 +174,9 @@ TEST_CASE("invtrgamma: extreme observation log tails and density") {
   CHECK(cppunivariate::distributions::pinvtrgamma(1e100, 3.0, 1.5, 0.5, true, true) == doctest::Approx(0.0).epsilon(1e-11));
   CHECK(cppunivariate::distributions::pinvtrgamma(1e100, 3.0, 1.5, 0.5, false, true) == doctest::Approx(-1041.0742136290683).epsilon(1e-11));
 }
+
+TEST_CASE("invtrgamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("invtrgamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::invtrgamma_mle(x,1e-8,1).status==cppunivariate::InvTrGammaStatus::IterationFailure);
+}

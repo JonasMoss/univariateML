@@ -95,3 +95,7 @@ expect_true(is.finite(logLik(mlinvpareto(rep(2,3),shape=2))))
 test_that("P2 held solver respects iterlim", {
   expect_error(suppressWarnings(mlinvpareto(c(2,3),shape=2,iterlim=1)))
 })
+
+test_that("invpareto: P3 held profile exhaustion stops", {
+  expect_error(mlinvpareto(c(.3,.8,1.7,4.2),shape=2,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
+})

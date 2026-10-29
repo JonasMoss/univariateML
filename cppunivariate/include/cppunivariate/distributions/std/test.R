@@ -326,3 +326,10 @@ test_that("std held profiles preserve tiny and large units", {
   }
   expect_equal(unname(base["sd"]),sqrt(mean(x^2)),tolerance=1e-8)
 })
+
+test_that("std: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "std", "golden.json"))
+  x <- g$data
+  expect_error(mlstd(x, iterlim=1, gradtol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

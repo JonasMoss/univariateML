@@ -63,3 +63,9 @@ TEST_CASE("invparalogis: deep tails and log inversion regressions") {
   CHECK(cppunivariate::distributions::dinvparalogis(1e-200,2,1,true) == doctest::Approx(std::log(4.0)-600*std::log(10.0)).scale(0.0));
   CHECK(cppunivariate::distributions::qinvparalogis(-1000,2,1,false,true) == doctest::Approx(std::exp((1000+std::log(2.0))/2)).scale(0.0));
 }
+
+TEST_CASE("invparalogis: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("invparalogis");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::invparalogis_mle(x,1e-8,1).status==cppunivariate::ParalogisStatus::BfgsFailure);
+}

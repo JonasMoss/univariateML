@@ -93,3 +93,8 @@ TEST_CASE("slash: extreme observation log tails and density") {
 TEST_CASE("slash: finite affine quantile despite overflowing distance") {
   CHECK(cppunivariate::distributions::qslash(0.8047742111076985,-1e308,1e308,true,false) == doctest::Approx(1e308).epsilon(1e-10));
 }
+
+TEST_CASE("slash: P3 failed refinement cannot inherit a grid point status") {
+  const std::vector<double> values{-2,-.3,.1,.8,4};
+  CHECK(cppunivariate::slash_mle(mltest::as_span(values),1e-9,1).status==cppunivariate::SlashStatus::IterationFailure);
+}

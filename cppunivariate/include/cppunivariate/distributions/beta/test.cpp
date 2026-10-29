@@ -94,3 +94,9 @@ TEST_CASE("beta: targeted tail unit-shape endpoint limits") {
   CHECK(cppunivariate::distributions::dbeta(0,1,3,true)==doctest::Approx(std::log(3.0)));
   CHECK(cppunivariate::distributions::dbeta(1,2,1,true)==doctest::Approx(std::log(2.0)));
 }
+
+TEST_CASE("beta: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("beta");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::beta_mle(x,1e-8,1).status==cppunivariate::BetaStatus::IterationFailure);
+}

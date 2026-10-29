@@ -212,14 +212,15 @@ namespace cppunivariate {
 
 namespace burr_hold_detail {
 // Monotone decreasing score on log coordinates. Bracket before bisection.
-template<class Score> inline double root(Score score) {
+template<class Score> inline double root(Score score, int maxit=160) {
   double lo=-1,hi=1;
   for(int i=0;i<12 && score(lo)<0;++i)lo*=2;
   for(int i=0;i<12 && score(hi)>0;++i)hi*=2;
   if(!(score(lo)>=0 && score(hi)<=0))return std::numeric_limits<double>::quiet_NaN();
-  for(int i=0;i<160;++i){double m=(lo+hi)/2;if(m==lo||m==hi)break;
+  for(int i=0;i<maxit;++i){double m=(lo+hi)/2;if(m==lo||m==hi)return m;
     const double value=score(m);if(value==0)return m;if(value>0)lo=m;else hi=m;}
-  return (lo+hi)/2;
+  const double mid=(lo+hi)/2;
+  return hi-lo <= 1e-12*(1+std::abs(mid)) ? mid : std::numeric_limits<double>::quiet_NaN();
 }
 inline double sigmoid(double z){return z>=0?1/(1+std::exp(-z)):std::exp(z)/(1+std::exp(z));}
 }
@@ -236,6 +237,7 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
  if(std::isnan(a)&&std::isnan(b))return std::isnan(s)?burr_mle(x,tol,maxit):burr_mle_fixed_scale(x,s,tol,maxit);
  const bool fa=std::isnan(a),fb=std::isnan(b),fs=std::isnan(s);
  if(fb&&((fs&&mn==mx)||(!fs&&mn==mx&&x[0]==s))){bad.status=BurrStatus::Unbounded;return bad;}
+ const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};
  const double n=static_cast<double>(x.size());
  // Fixed power is precisely a Lomax likelihood; its exponential face
  // can be tested without ever forming x^b by scaling at max(log x).
@@ -246,9 +248,9 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
    if(r.status!=LomaxStatus::Ok){bad.status=BurrStatus::IterationFailure;return bad;}
    a=r.kappa;s=std::exp(mx-std::log(r.lambda)/b);
  } else {
-   auto location=[&](double power){return burr_hold_detail::root([&](double c){double z=n;for(double v:l)z-=(a+1)*burr_hold_detail::sigmoid(power*(v-mean)-c);return -z;});};
+   auto location=[&](double power){return solve_root([&](double c){double z=n;for(double v:l)z-=(a+1)*burr_hold_detail::sigmoid(power*(v-mean)-c);return -z;});};
    if(fb){
-     const double root=burr_hold_detail::root([&](double z){double power=std::exp(z),c=fs?location(power):power*(std::log(s)-mean),g=n;for(double v:l){double w=v-mean,u=power*w-c;g+=power*w*(1-(a+1)*burr_hold_detail::sigmoid(u));}if(!fs){g=n;for(double v:l){double u=power*(v-std::log(s));g+=u*(1-(a+1)*burr_hold_detail::sigmoid(u));}}return g;});
+     const double root=solve_root([&](double z){double power=std::exp(z),c=fs?location(power):power*(std::log(s)-mean),g=n;for(double v:l){double w=v-mean,u=power*w-c;g+=power*w*(1-(a+1)*burr_hold_detail::sigmoid(u));}if(!fs){g=n;for(double v:l){double u=power*(v-std::log(s));g+=u*(1-(a+1)*burr_hold_detail::sigmoid(u));}}return g;});
      b=std::exp(root);
    }
    if(fs)s=std::exp(mean+location(b)/b);

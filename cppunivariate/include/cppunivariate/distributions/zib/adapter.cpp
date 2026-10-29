@@ -13,7 +13,7 @@ Rcpp::List mlzib_(const Rcpp::IntegerVector &x, Rcpp::Nullable<double> size, dou
   if(res.status==cppunivariate::ZibStatus::InvalidInput)Rcpp::stop("requires nonempty nonnegative integer count data and valid controls; held parameters must give positive likelihood");
   if(res.status==cppunivariate::ZibStatus::InvalidSize)Rcpp::stop("`size` must be a nonnegative integer at least max(x).");
   if(res.status==cppunivariate::ZibStatus::ZipLimit)Rcpp::stop("The maximum likelihood estimator escapes to infinite size. Use `mlzip`.");
-  if(res.status==cppunivariate::ZibStatus::IterationFailure)Rcpp::stop("Profile search exhausted floating-point resolution; no capped size estimate is returned.");
+  if(res.status==cppunivariate::ZibStatus::IterationFailure)Rcpp::stop("Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.");
   if(!std::isfinite(res.logLik))Rcpp::stop("MLE cannot be resolved at floating-point precision.");
   Rcpp::CharacterVector fixed(0);
   if(size.isNotNull())fixed.push_back("size");

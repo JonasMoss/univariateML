@@ -92,3 +92,10 @@ expect_true(is.finite(logLik(mlgompertz(rep(2,3),b=1))))
 test_that("P2 held solver respects iterlim", {
   expect_error(suppressWarnings(mlgompertz(c(2,3),a=.1,iterlim=1)))
 })
+
+test_that("gompertz: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "gompertz", "golden.json"))
+  x <- g$data
+  expect_error(mlgompertz(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

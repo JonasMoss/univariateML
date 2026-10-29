@@ -135,11 +135,13 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   }
 
   double lo = 0.25 / s, hi = 2.0 / s;
-  for (int i = 0; i < 200 && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++i) {
+  for (int i = 0; i < std::min(maxit, 200) && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++i) {
     const double mid = std::sqrt(lo) * std::sqrt(hi);
     if (gamma_detail::log_minus_digamma(mid) > s) lo = mid; else hi = mid;
     ++iterations;
   }
+  if (hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon())
+    return {kNaN, kNaN, kNaN, iterations, GammaStatus::IterationFailure};
   const double shape = std::sqrt(lo) * std::sqrt(hi);
   const double rate = shape / mean_hat;
   // Per observation: k log k - k - lgamma(k) - k s - mean(log x).

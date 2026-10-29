@@ -199,3 +199,14 @@ test_that("P2 invtrgamma validates new held values", {
    }
    expect_error(mlinvtrgamma(rep(1,5),scale=1,shape1=2),"unbounded")
  })
+
+test_that("invtrgamma: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "invtrgamma", "golden.json"))
+  x <- g$data
+  expect_error(mlinvtrgamma(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+test_that("invtrgamma: P3 held profile exhaustion stops", {
+  expect_error(mlinvtrgamma(c(.3,.8,1.7,4.2),scale=2,shape2=1,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
+})

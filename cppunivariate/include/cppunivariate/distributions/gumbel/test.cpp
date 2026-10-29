@@ -126,3 +126,14 @@ TEST_CASE("gumbel: held scale removes constant-sample collapse") {
   CHECK(cppunivariate::fit_gumbel_held(mltest::as_span(x),1e-8,100,2,nan).status==cppunivariate::GumbelStatus::Unbounded);
   CHECK(cppunivariate::fit_gumbel_held(mltest::as_span(x),1e-8,100,nan,1).status==cppunivariate::GumbelStatus::Ok);
 }
+
+TEST_CASE("gumbel: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("gumbel");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::fit_gumbel_newton(x,1e-8,1).status==cppunivariate::GumbelStatus::IterationFailure);
+}
+
+TEST_CASE("gumbel: P3 affine rescue preserves Newton failure") {
+  const std::vector<double> values{1e200,2e200,4e200,8e200};
+  CHECK(cppunivariate::fit_gumbel_newton(mltest::as_span(values),1e-10,1).status==cppunivariate::GumbelStatus::IterationFailure);
+}

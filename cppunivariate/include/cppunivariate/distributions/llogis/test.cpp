@@ -103,3 +103,14 @@ TEST_CASE("llogis: deep tails and log inversion regressions") {
   CHECK(cppunivariate::distributions::qllogis(-1000,4,1,true,true) == doctest::Approx(std::exp(-250.0)).scale(0.0));
   CHECK(cppunivariate::distributions::qllogis(-INFINITY,4,1,false,true) == INFINITY);
 }
+
+TEST_CASE("llogis: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("llogis");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::loglogistic_mle(x,1e-8,1).status==cppunivariate::LogLogisticStatus::IterationFailure);
+}
+
+TEST_CASE("llogis: P3 constant data retain the unbounded diagnostic") {
+  const std::vector<double> values{1,1,1};
+  CHECK(cppunivariate::loglogistic_mle(mltest::as_span(values),1e-8,100).status==cppunivariate::LogLogisticStatus::Unbounded);
+}

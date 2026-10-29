@@ -75,3 +75,10 @@ test_that("fatigue coefficient holds match independent multistart density oracle
   expect_error(mlfatigue(1:3,mu=NULL,alpha=1,beta=1),"endpoint spikes")
   expect_error(mlfatigue(c(.1,1,5),mu=0,alpha=1,iterlim=1),"did not converge")
 })
+
+test_that("fatigue: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "fatigue", "golden.json"))
+  x <- g$data
+  expect_error(mlfatigue(x, iterlim=1, abstol=1e-10, mu=0),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

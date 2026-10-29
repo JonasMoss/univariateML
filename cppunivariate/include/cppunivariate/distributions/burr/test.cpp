@@ -153,3 +153,9 @@ TEST_CASE("burr: deep tails and log inversion regressions") {
   CHECK(cppunivariate::distributions::pburr(1e100,1e-308,1e308,1,false,true) == doctest::Approx(-100*std::log(10.0)).scale(0.0).epsilon(1e-10));
 
 }
+
+TEST_CASE("burr: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("burr");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::burr_mle(x,1e-8,1).status==cppunivariate::BurrStatus::IterationFailure);
+}

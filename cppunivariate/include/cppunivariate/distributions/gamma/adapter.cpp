@@ -24,6 +24,8 @@ Rcpp::List mlgamma_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
   }
 
   auto res = cppunivariate::gamma_mle(dist_impl::as_span(x), abstol, iterlim, shape_held, rate_held);
+  if (res.status == cppunivariate::GammaStatus::IterationFailure)
+    Rcpp::stop("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if (res.status == cppunivariate::GammaStatus::Degenerate) {
     Rcpp::stop("The gamma maximum likelihood estimator does not exist for constant data: "
                "the likelihood is unbounded as the shape grows.");

@@ -123,3 +123,10 @@ test_that("P2 held solver respects iterlim", {
 test_that("P2 failed held solver is distinguished from constant-data collapse", {
   expect_error(suppressWarnings(mlllogis(rep(2,3),rate=1,iterlim=1)),"failed to converge")
 })
+
+test_that("llogis: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "llogis", "golden.json"))
+  x <- g$data
+  expect_error(mlllogis(x, iterlim=1, abstol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

@@ -239,11 +239,12 @@ inline ParalogisResult paralogis_mle_impl(
   ctl.maxit = maxit;
   auto r = bfgs_minimize(fd, phi0, ctl);
   r.f *= objective_divisor;
+  r.grad_norm *= objective_divisor;
 
   const double shape = cppunivariate::from_log(r.theta[0]);
   const double scale = cppunivariate::from_log(r.theta[1]);
   const double logLik = -r.f;
-  if (r.status != BfgsStatus::Ok) {
+  if (r.status != BfgsStatus::Ok && !(std::isfinite(r.grad_norm) && r.grad_norm < 1e-3)) {
     return {shape, scale, logLik, r.iterations, ParalogisStatus::BfgsFailure};
   }
   return {shape, scale, logLik, r.iterations, ParalogisStatus::Ok};
@@ -258,9 +259,9 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
 
 namespace cppunivariate {
 
-inline ParalogisResult paralogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN()){
- auto r=burr_mle_holds(x,shape,shape,scale);
- return {shape,r.scale,r.logLik,r.iterations,r.status==BurrStatus::Ok?ParalogisStatus::Ok:ParalogisStatus::InvalidStart};
+inline ParalogisResult paralogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN(), double tol=1e-9, int maxit=1000){
+ auto r=burr_mle_holds(x,shape,shape,scale,tol,maxit);
+ return {shape,r.scale,r.logLik,r.iterations,r.status==BurrStatus::Ok?ParalogisStatus::Ok:r.status==BurrStatus::IterationFailure?ParalogisStatus::BfgsFailure:ParalogisStatus::InvalidStart};
 }
 
 }

@@ -98,3 +98,10 @@ test_that("bbinom: both held shapes permit exact size profiling", {
  expect_error(mlbbinom(1:3,size=NULL,alpha=2),"P0")
  expect_error(mlbbinom(1:3,size=NULL,beta=3),"P0")
 })
+
+test_that("bbinom: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "bbinom", "golden.json"))
+  x <- g$data
+  expect_error(mlbbinom(x, iterlim=1, reltol=1e-10, size=10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

@@ -76,3 +76,9 @@ TEST_CASE("skellam: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qskellam(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rskellam(rng, p[0], p[1]); });
 }
+
+TEST_CASE("skellam: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("skellam");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::skellam_mle(x,1e-8,1).status==cppunivariate::SkellamStatus::IterationFailure);
+}

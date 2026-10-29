@@ -60,3 +60,9 @@ TEST_CASE("sgomp: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qsgomp(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rsgomp(rng, p[0], p[1]); });
 }
+
+TEST_CASE("sgomp: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("sgomp");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::sgomp_mle(x,1e-8,1).status==cppunivariate::SgompStatus::IterationFailure);
+}

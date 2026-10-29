@@ -49,7 +49,10 @@ inline InvWeibullResult invweibull_mle(span x, double tol, int maxit,
   // Transform the fitted Gumbel likelihood, avoiding shape times
   // a difference of rounded log scales near a point mass.
   const double logLik = g.logLik + dn * s;
-  return {shape, rate, logLik, g.iterations};
+  return {shape, rate, logLik, g.iterations,
+      g.status == GumbelStatus::Ok ? InvWeibullStatus::Ok :
+      g.status == GumbelStatus::Unbounded ? InvWeibullStatus::Unbounded :
+      InvWeibullStatus::IterationFailure};
 }
 
 inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0,double shape,double rate) {

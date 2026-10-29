@@ -266,3 +266,9 @@ TEST_CASE("dweibull: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdweibull(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdweibull(rng, p[0], p[1]); });
 }
+
+TEST_CASE("dweibull: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("dweibull");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::dweibull_mle(x,1e-8,1).status==cppunivariate::DweibullStatus::IterationFailure);
+}

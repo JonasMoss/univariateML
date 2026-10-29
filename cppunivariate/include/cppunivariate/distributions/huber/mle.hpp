@@ -143,6 +143,12 @@ inline HuberResult huber_fixed_solve(const std::vector<double>& y,
         (y[y.size()/2]-y[y.size()/2-1])/2>=epsilon*s))
       m=huber_location(y,s,epsilon);
   }
+  if (!converged && !fm) {
+    double score=0;
+    for (double v:y) score+=huber_psi((v-m)/s,epsilon);
+    if (!(std::isfinite(score) && std::abs(score)/n<=std::max(tol,1e-7)))
+      r.status=HuberStatus::IterationFailure;
+  }
   r.mu=fm ? mu : center+unit*m;
   r.sigma=fs ? sigma : unit*s;
   r.logLik=-n*(std::log(r.sigma)+std::log(huber_z(epsilon)));
@@ -309,10 +315,12 @@ struct HuberProfileData {
       double gp=0,gh=0,aa=0,ab=0,bb=0;
       moments(a,b,c,loss,gp,gh,aa,ab,bb);
       const double score=(a*gp-b*gh)/n-1;
-      if (fs || std::abs(score)<=tol)
+      if ((fs || std::abs(score)<=tol) &&
+          (fm || (std::isfinite(gh) && std::abs(gh)/n<=std::max(tol,1e-7))))
         return {fm ? mu : center+unit*b/a,fs ? sigma : unit/a,c,
           -n*(std::log(unit/a)+std::log(huber_z(c)))-static_cast<double>(loss),
           j,HuberStatus::Ok};
+      if (fs) break;
       if (!bracketed && score<0) { hi*=2; continue; }
       bracketed=true;
       if (++refinements>maxit) break;

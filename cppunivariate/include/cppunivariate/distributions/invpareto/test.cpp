@@ -94,3 +94,9 @@ TEST_CASE("invpareto: deep tails and log inversion regressions") {
   CHECK(cppunivariate::distributions::dinvpareto(1e-300,2,1e100,true) == doctest::Approx(std::log(2.0)-500*std::log(10.0)).scale(0.0));
   CHECK(cppunivariate::distributions::qinvpareto(-500,2,2,false,true) == doctest::Approx(std::exp(500+std::log(4.0))).scale(0.0));
 }
+
+TEST_CASE("invpareto: P3 held delegate preserves exhaustion") {
+  const std::vector<double> values{.3,.8,1.7,4.2};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  CHECK(cppunivariate::invpareto_mle(mltest::as_span(values),1e-9,1,nan,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
+}

@@ -177,3 +177,14 @@ test_that("P2 invburr validates new held values", {
    expect_error(mlinvburr(rep(1,5),shape1=2,scale=1),"unbounded")
    expect_error(mlinvburr(x,shape1=2),"unbounded")
  })
+
+test_that("invburr: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "invburr", "golden.json"))
+  x <- g$data
+  expect_error(mlinvburr(x, iterlim=1, gradtol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+test_that("invburr: P3 held profile exhaustion stops", {
+  expect_error(mlinvburr(c(.3,.8,1.7,4.2),shape1=2,scale=1,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
+})

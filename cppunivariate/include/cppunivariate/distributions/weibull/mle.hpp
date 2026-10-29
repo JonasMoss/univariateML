@@ -47,7 +47,10 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
   // Transform the fitted Gumbel likelihood, avoiding shape times
   // a difference of rounded log scales near a point mass.
   const double logLik = g.logLik + sum_log_x;
-  return {shape, scale, logLik, g.iterations};
+  return {shape, scale, logLik, g.iterations,
+      g.status == GumbelStatus::Ok ? WeibullStatus::Ok :
+      g.status == GumbelStatus::Unbounded ? WeibullStatus::Unbounded :
+      WeibullStatus::IterationFailure};
 }
 
 // Strictly decreasing fixed-scale shape score. Powers and the profiled

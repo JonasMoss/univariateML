@@ -86,7 +86,7 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=s
     }
   }
   std::sort(grid.begin(),grid.end());grid.erase(std::unique(grid.begin(),grid.end()),grid.end());
-  SlashResult best=p(grid.front());bool refined=grid.size()==1;std::vector<double> ll;
+  SlashResult best=p(grid.front());bool refined=grid.size()==1,failed=false;std::vector<double> ll;
   for(double m:grid){auto f=p(m);ll.push_back(f.logLik);if(f.logLik>best.logLik)best=f;}
   for(std::size_t i=0;i<grid.size();++i)if((i==0||ll[i]>=ll[i-1])&&(i+1==grid.size()||ll[i]>=ll[i+1])) {
     double lo=grid[i==0?0:i-1],hi=grid[i+1==grid.size()?i:i+1];int it=0;
@@ -98,10 +98,10 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=s
       else{lo=a;a=b;fa=fb;b=lo+(hi-lo)*.6180339887498948482;fb=p(b);}
     }
     auto f=fa.logLik>fb.logLik?fa:fb;f.iterations=it;
-    if(it==maxit)f.status=SlashStatus::IterationFailure;else refined=true;
+    if(it==maxit){f.status=SlashStatus::IterationFailure;failed=true;}else refined=true;
     if(f.logLik>best.logLik)best=f;
   }
-  if(!refined)best.status=SlashStatus::IterationFailure;
+  if(failed || !refined)best.status=SlashStatus::IterationFailure;
   if(boundary>=best.logLik-1e-8*n){bad.status=SlashStatus::CollapseLimit;return bad;}
   best.mu=centre+scale*best.mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.logLik-=n*std::log(scale);
   return best;

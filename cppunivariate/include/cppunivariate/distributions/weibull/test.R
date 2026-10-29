@@ -18,7 +18,7 @@ expect_equal(mle1, as.numeric(mlweibull(small_data)), tolerance = 1e-5)
 expect_equal(mle2, as.numeric(mlweibull(tiny_data)), tolerance = 1e-5)
 
 ## Checks warning with small iterlim.
-expect_warning(mlweibull(tiny_data, iterlim = 1))
+expect_error(mlweibull(tiny_data, iterlim = 1), "IterationFailure|failed to converge")
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlweibull(c(tiny_data, NA)))
@@ -141,4 +141,11 @@ test_that("P2 failed held solver is distinguished from constant-data collapse", 
 
 test_that("P2 analytic held shape needs no iterative search", {
   expect_silent(mlweibull(c(1,2),shape=2,iterlim=1))
+})
+
+test_that("weibull: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "weibull", "golden.json"))
+  x <- g$data
+  expect_error(mlweibull(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
 })

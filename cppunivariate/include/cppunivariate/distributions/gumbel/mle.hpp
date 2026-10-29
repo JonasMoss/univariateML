@@ -58,7 +58,7 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
     const double start = std::isnan(theta0) ? theta0 : theta0 - std::log(moments.sd);
     const auto r = fit_gumbel_newton(span{z.data(), n}, tol, maxit, start);
     return {moments.mean + moments.sd * r.mu, moments.sd * r.sigma,
-            r.logLik - dn * std::log(moments.sd), r.iterations};
+            r.logLik - dn * std::log(moments.sd), r.iterations, r.status};
   }
 
   double theta = std::isnan(theta0)
@@ -105,7 +105,8 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
   }
   const double logLik =
       -dn * std::log(sigma) - sum_z - sum_exp_neg_z;
-  return {mu, sigma, logLik, iter};
+  return {mu, sigma, logLik, iter,
+      iter <= maxit ? GumbelStatus::Ok : GumbelStatus::IterationFailure};
 }
 
 

@@ -268,3 +268,10 @@ TEST_CASE("bbinom: fully held and both-shape-held integer profiles") {
   for(int k=*std::max_element(x.begin(),x.end());k<80;++k)CHECK(f.logLik>=bb_loglik(x,k,2,3)-1e-10);
  }
 }
+
+TEST_CASE("bbinom: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("bbinom");
+  const std::vector<int> values(g.data.begin(),g.data.end());
+  const cppunivariate::ispan ix{values.data(),values.size()};
+  CHECK(cppunivariate::bbinom_mle(ix,10,1e-8,1).status==cppunivariate::BbinomStatus::IterationFailure);
+}

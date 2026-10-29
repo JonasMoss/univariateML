@@ -40,7 +40,7 @@ expect_equal(-mle3$minimum, attr(mlgumbel(medium_data), "logLik"),
 )
 
 ## Checks warning with small iterlim.
-expect_warning(mlgumbel(tiny_data, iterlim = 1))
+expect_error(mlgumbel(tiny_data, iterlim = 1), "IterationFailure|failed to converge")
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlgumbel(c(tiny_data, NA)))
@@ -151,4 +151,15 @@ test_that("gumbel conditional collapse, feasibility and invalid holds", {
   expect_error(mlgumbel(rep(2,3),mu=2),"unbounded")
   expect_error(mlgumbel(1:4,mu=Inf),"finite")
   expect_error(mlgumbel(1:4,sigma=0),"positive")
+})
+
+test_that("gumbel: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "gumbel", "golden.json"))
+  x <- g$data
+  expect_error(mlgumbel(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
+
+test_that("gumbel: P3 affine rescue preserves Newton failure", {
+  expect_error(mlgumbel(c(1,2,4,8)*1e200,iterlim=1), "IterationFailure")
 })

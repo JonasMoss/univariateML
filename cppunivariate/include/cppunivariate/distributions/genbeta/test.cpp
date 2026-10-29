@@ -98,3 +98,9 @@ TEST_CASE("genbeta: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qgenbeta(x, p[0], p[1], p[2], p[3], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rgenbeta(rng, p[0], p[1], p[2], p[3]); });
 }
+
+TEST_CASE("genbeta: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("genbeta");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::genbeta_mle(x,1,1e-8,1).status==cppunivariate::GenbetaStatus::SearchUnresolved);
+}

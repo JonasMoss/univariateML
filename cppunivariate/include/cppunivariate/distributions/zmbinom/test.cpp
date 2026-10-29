@@ -85,3 +85,9 @@ TEST_CASE("zmbinom: held probability with free and held size") {
  }
  CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,8,-.1,.3).status==cppunivariate::ZmbinomStatus::InvalidInput);
 }
+
+TEST_CASE("zmbinom: P3 unfinished optimizer is a failure") {
+  const std::vector<int> values{1,2,3,3,5};
+  const cppunivariate::ispan ix{values.data(),values.size()};
+  CHECK(cppunivariate::zmbinom_mle(ix,1e-8,1).status==cppunivariate::ZmbinomStatus::IterationFailure);
+}

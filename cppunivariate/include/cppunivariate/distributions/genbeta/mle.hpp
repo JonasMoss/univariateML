@@ -133,7 +133,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
       if(cur.ok&&cur.ll>best.ll){best=cur;edge=i==count;}
       if(prev.ok&&cur.ok&&prev.score>0&&cur.score<0) {
         double l=z-(hi-lo)/count,h=z;
-        for(int j=0;j<80;++j) {
+        for(int j=0;j<std::min(maxit,80);++j) {
           const double m=(l+h)/2;auto p=at(m);
           if(!p.ok)break;
           if(p.ll>best.ll||(p.ll>=best.ll-1e-12*n&&std::abs(p.score)<std::abs(best.score))){best=p;edge=false;}

@@ -32,9 +32,6 @@ Rcpp::List mlweibull_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> shape
       Rcpp::stop("`shape0` must be a positive finite number.");
     }
   }
-  if (iterlim <= 1 && shape.isNull() && scale.isNull()) {
-    Rcpp::warning("iteration limit reached");
-  }
   auto res = cppunivariate::weibull_mle(dist_impl::as_span(x), reltol, iterlim, start, shape_held, scale_held);
   if (res.status == cppunivariate::WeibullStatus::Unbounded)
     Rcpp::stop("The weibull maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale.");

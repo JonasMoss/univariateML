@@ -126,3 +126,18 @@ TEST_CASE("betapr: deep tails and log inversion regressions") {
   CHECK(cppunivariate::distributions::qbetapr(1e-300,2,30,true,false) == doctest::Approx(std::sqrt(1e-300/465)).scale(0.0).epsilon(1e-10));
 
 }
+
+TEST_CASE("betapr: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("betapr");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::betapr_mle_fixed_scale(x,1,1e-8,1).status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+}
+
+TEST_CASE("betapr: P3 finite failed BFGS point is not a fit") {
+  const std::vector<double> values{.01,.2,.3,.5,2,10,50};
+  const auto r=cppunivariate::betapr_mle(mltest::as_span(values),1e-10,1);
+  CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
+  CHECK(std::isfinite(r.alpha));
+  CHECK(std::isfinite(r.beta));
+  CHECK(std::isfinite(r.scale));
+}

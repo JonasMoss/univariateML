@@ -95,3 +95,10 @@ test_that("gamma held subsets have independent scalar optima", {
   expect_true(is.finite(univariateML_to_function(f,"d")(1,rate=1e-300,log=TRUE)))
   expect_warning(expect_true(is.nan(univariateML_to_function(f,"d")(0,shape=0))),"NaNs")
 })
+
+test_that("dgamma: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "dgamma", "golden.json"))
+  x <- g$data
+  expect_error(mldgamma(x, iterlim=1, reltol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

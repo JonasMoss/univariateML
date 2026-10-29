@@ -101,3 +101,10 @@ TEST_CASE("zib: held probability with free and held size") {
  }
  CHECK(cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,8,-.1,.3).status==cppunivariate::ZibStatus::InvalidInput);
 }
+
+TEST_CASE("zib: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("zib");
+  const std::vector<int> values(g.data.begin(),g.data.end());
+  const cppunivariate::ispan ix{values.data(),values.size()};
+  CHECK(cppunivariate::zib_mle(ix,1e-8,1).status==cppunivariate::ZibStatus::IterationFailure);
+}

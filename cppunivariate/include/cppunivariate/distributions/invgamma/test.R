@@ -106,3 +106,10 @@ expect_true(is.finite(logLik(mlinvgamma(2,beta=2))))
 test_that("P2 held solver respects iterlim", {
   expect_error(suppressWarnings(mlinvgamma(c(2,3),beta=2,iterlim=1)))
 })
+
+test_that("invgamma: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "invgamma", "golden.json"))
+  x <- g$data
+  expect_error(mlinvgamma(x, iterlim=1, abstol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

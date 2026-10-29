@@ -86,3 +86,9 @@ TEST_CASE("dgamma: extreme tails and discrete support") {
   CHECK(cppunivariate::distributions::qdgamma(-10000, 2.0, 1.0, false, true) == 10009.0);
   CHECK(cppunivariate::distributions::ddgamma(0.5, 2.0, 1.0, false) == 0);
 }
+
+TEST_CASE("dgamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("dgamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::dgamma_mle(x,1e-8,1).status==cppunivariate::DgammaStatus::IterationFailure);
+}

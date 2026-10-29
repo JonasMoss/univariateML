@@ -99,6 +99,7 @@ inline double solve_p(const Data &d, double s, double p0) {
   if (s == 0) return d.sum / (d.n * d.size);
   double lo = 0, hi = 1, p = std::min(std::max(p0, 1e-300), 1 - 1e-16);
   if (!(p > 0 && p < 1)) p = 0.5;
+  bool converged = false;
   for (int it = 0; it < 200; ++it) {
     double g = 0, H = 0;
     for (int j = 0; j < d.size; ++j) {
@@ -112,11 +113,12 @@ inline double solve_p(const Data &d, double s, double p0) {
     if (!(next > lo && next < hi)) next = 0.5 * (lo + hi);
     if (std::abs(next - p) <= 1e-15 * std::min(p, 1 - p) || hi - lo <= 1e-300) {
       p = next;
+      converged = true;
       break;
     }
     p = next;
   }
-  return p;
+  return converged ? p : std::numeric_limits<double>::quiet_NaN();
 }
 
 inline Point profile(const Data &d, double s, double p0) {
@@ -174,6 +176,7 @@ inline double maximise_on_grid(const std::vector<double> &grid, double tol, int 
     double a = grid[k], b = grid[k + 1];
     double u = 0.5 * (a + b), gu, Hu;
     double value = deriv(u, gu, Hu);
+    bool converged = false;
     for (int it = 0; it < maxit; ++it) {
       ++iterations;
       if (gu > 0) a = u; else b = u;
@@ -182,8 +185,10 @@ inline double maximise_on_grid(const std::vector<double> &grid, double tol, int 
       const double step = std::abs(next - u);
       u = next;
       value = deriv(u, gu, Hu);
-      if (step < tol * (1 + std::abs(u)) || b - a < tol * (1 + std::abs(u))) break;
+      if (step < tol * (1 + std::abs(u)) || b - a < tol * (1 + std::abs(u))) { converged = true; break; }
     }
+    if (!converged && !(std::isfinite(gu) && std::abs(gu) < 1e-3))
+      return std::numeric_limits<double>::quiet_NaN();
     if (value > best) { best = value; best_u = u; }
   }
   return best;
@@ -410,6 +415,7 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
   double best_u = u[0];
   int iterations = 0;
   const double best = bbinom_detail::maximise_on_grid(u, tol, maxit, deriv, best_u, iterations);
+  if (std::isnan(best)) { out.status=BbinomStatus::IterationFailure; return out; }
   // Include s = 0: no arbitrary lower concentration cutoff in the certificate.
   std::vector<double> intervals{0};
   for (double uu : u) intervals.push_back(std::exp(uu));

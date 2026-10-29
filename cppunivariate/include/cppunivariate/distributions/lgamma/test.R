@@ -103,3 +103,7 @@ expect_true(is.finite(logLik(mllgamma(2,ratelog=2))))
 test_that("P2 held solver respects iterlim", {
   expect_error(suppressWarnings(mllgamma(exp(c(1,2)),ratelog=2,iterlim=1)))
 })
+
+test_that("lgamma: P3 unfinished gamma delegate stops", {
+  expect_error(mllgamma(c(1.1,2,4,10),abstol=1e-12,iterlim=1), "IterationFailure")
+})

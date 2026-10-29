@@ -176,3 +176,10 @@ expect_true(is.finite(logLik(mlnaka(rep(2,3),shape=2))))
 test_that("P2 held solver respects iterlim", {
   expect_error(suppressWarnings(mlnaka(c(2,3),scale=3,iterlim=1)))
 })
+
+test_that("naka: P3 unfinished optimizer stops", {
+  g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "naka", "golden.json"))
+  x <- g$data
+  expect_error(mlnaka(x, iterlim=1, abstol=1e-10),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})

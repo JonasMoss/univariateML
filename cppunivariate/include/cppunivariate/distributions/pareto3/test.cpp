@@ -62,3 +62,8 @@ TEST_CASE("pareto3: shifted deep-tail delegation") {
   CHECK(cppunivariate::distributions::qpareto3(-INFINITY, 4, 3, 4, true, true) == 4);
   CHECK(cppunivariate::distributions::ppareto3(INFINITY, 4, 3, 4, false, true) == -INFINITY);
 }
+
+TEST_CASE("pareto3: P3 logistic delegate status is preserved") {
+  const std::vector<double> values{.3,.8,1.7,4.2};
+  CHECK(cppunivariate::pareto3_mle(mltest::as_span(values),0,1e-10,1).status==cppunivariate::Pareto3Status::IterationFailure);
+}

@@ -30,9 +30,11 @@ Rcpp::List mlparalogis_(const Rcpp::NumericVector &x,
     Rcpp::stop("`scale` must be a positive finite number.");
   if (shape.isNull() && scale.isNull() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
     Rcpp::stop("The paralogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
-  auto res = shape.isNotNull() ? cppunivariate::paralogis_mle_holds(dist_impl::as_span(x),Rcpp::as<double>(shape),scale.isNotNull()?held:NA_REAL) : scale.isNotNull()
+  auto res = shape.isNotNull() ? cppunivariate::paralogis_mle_holds(dist_impl::as_span(x),Rcpp::as<double>(shape),scale.isNotNull()?held:NA_REAL,gradtol,iterlim) : scale.isNotNull()
       ? cppunivariate::paralogis_mle_fixed_scale(dist_impl::as_span(x), held, gradtol, iterlim, start)
       : cppunivariate::paralogis_mle(dist_impl::as_span(x), gradtol, iterlim, start);
+  if (res.status == cppunivariate::ParalogisStatus::BfgsFailure)
+    Rcpp::stop("Paralogis optimizer BfgsFailure: score check failed; increase iterlim.");
   if (res.status == cppunivariate::ParalogisStatus::InvalidStart) {
     Rcpp::stop("Paralogistic MLE requires positive, finite observations.");
   }

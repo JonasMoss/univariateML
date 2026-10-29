@@ -113,3 +113,9 @@ TEST_CASE("gamma: extreme observation log tails and density") {
   CHECK(cppunivariate::distributions::pgamma(1e100, 2.0, 2.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
   CHECK(cppunivariate::distributions::pgamma(1e100, 2.0, 2.0, false, true) == doctest::Approx(-2e+100).epsilon(1e-11));
 }
+
+TEST_CASE("gamma: P3 unfinished optimizer is a failure") {
+  auto g=mltest::load_distribution_golden("gamma");
+  const auto x=mltest::as_span(g.data);
+  CHECK(cppunivariate::gamma_mle(x,1e-8,1).status==cppunivariate::GammaStatus::IterationFailure);
+}

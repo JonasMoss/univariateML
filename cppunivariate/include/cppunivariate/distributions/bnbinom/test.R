@@ -86,3 +86,9 @@ test_that("quantiles invert the reference CDF and have a finite work budget", {
 test_that("model selection tolerates a failed beta negative binomial fit", {
   expect_no_error(model_select(rep(2,30),type="discrete"))
 })
+
+test_that("bnbinom: P3 unfinished optimizer stops", {
+  x <- c(0,1,2,3,6,12,24)
+  expect_error(mlbnbinom(x, iterlim=1, gradtol=1e-10, alpha=2,beta=3),
+               "[Ff]ail|converge|unresolved|exhausted|score check")
+})
