@@ -103,3 +103,7 @@
 #include "distributions/yulesimon/mle.hpp"
 #include "distributions/foldnorm/mle.hpp"
 #include "distributions/emg/mle.hpp"
+
+#include "distributions/tpois/mle.hpp"
+#include "distributions/tbinom/mle.hpp"
+#include "distributions/dlaplace/mle.hpp"

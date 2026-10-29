@@ -1,0 +1,40 @@
+test_that("tpois agrees with independent reference likelihood searches", {
+  set.seed(981)
+  for (j in 1:20) {
+    x <- extraDistr::rtpois(40,lambda=3,a=0,b=10)
+    f <- mltpois(x,a=0,b=10)
+    objective <- function(t) sum(extraDistr::dtpois(x,lambda=exp(t),a=0,b=10,log=TRUE))
+    o <- optimize(objective,c(-8,8),maximum=TRUE,tol=1e-10)
+    expect_equal(attr(f,"logLik"),o$objective,tolerance=1e-8)
+    expect_equal(sum(dml(x,f,log=TRUE)),attr(f,"logLik"),tolerance=1e-10)
+  }
+  expect_error(mltpois(rep(1,3),a=0,b=10),"point mass")
+  expect_error(mltpois(rep(10,3),a=0,b=10),"point mass")
+  expect_error(mltpois(c(0,2),a=0,b=10),"outside")
+  expect_error(mltpois(rep(1,3),a=0,b=1),"unidentified")
+  expect_error(mltpois(1:3),"requires")
+  f <- mltpois(c(1,2,3,4),a=0,b=10)
+  expect_equal(qml(c(.1,.5,.9),f),extraDistr::qtpois(c(.1,.5,.9),lambda=f[[1]],a=0,b=10))
+  set.seed(2); a<-rml(10,f);set.seed(2);expect_identical(a,rml(10,f))
+})
+
+test_that("tpois fixed parameters and repaired extreme tails", {
+ f<-mltpois(rep(1,3),a=0,b=1,lambda=2)
+ expect_equal(attr(f,"logLik"),0,tolerance=1e-12)
+ expect_equal(attr(logLik(f),"df"),0)
+ f<-mltpois(c(101,102,103),a=100,b=110,lambda=2)
+ expect_true(all(is.finite(dml(c(101,102,103),f,log=TRUE))))
+ expect_true(is.finite(pml(109,f,lower.tail=FALSE,log.p=TRUE)))
+ expect_true(qml(-100,f,lower.tail=FALSE,log.p=TRUE)<=110)
+})
+test_that("truncated Poisson overlaps ordinary and zero truncated fits", {
+ x<-c(1,1,2,3,6)
+ expect_equal(mltpois(x,a=0,b=Inf)[[1]],mlztpois(x)[[1]],tolerance=1e-10)
+ expect_equal(mltpois(x,a=-Inf,b=Inf)[[1]],mlpois(x)[[1]],tolerance=1e-10)
+})
+test_that("untruncated zero-rate boundary is attained", {
+ f<-mltpois(rep(0,3),a=-Inf,b=Inf)
+ expect_equal(f[[1]],0)
+ expect_equal(attr(f,"logLik"),0)
+ expect_equal(dml(c(0,1),f),c(1,0))
+})

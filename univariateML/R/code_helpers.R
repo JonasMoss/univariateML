@@ -427,6 +427,8 @@ univariateML_reference_quantiles <- list(
 
 univariateML_discrete_quantile <- function(entry) {
   cdf <- eval(parse(text = entry$p))
+  fix <- univariateML_reference_fixes[[entry$p]]
+  if (!is.null(fix) && fix$broken()) cdf <- fix$replacement
   support <- entry$support
   fun <- function() {
     args <- as.list(environment())
@@ -481,8 +483,20 @@ univariateML_invert_cdf <- function(p, cdf, params, support, lower.tail, log.p, 
   # upper end of a finite support counts as reached).
   a <- rep(lower - 1, length(u))
   b <- rep(upper, length(u))
+  if (is.infinite(lower)) {
+    a[] <- -1; b[] <- 0
+    step <- 1
+    todo <- reached(a, u)
+    while (any(todo)) {
+      b[todo] <- a[todo]
+      step <- step * 2
+      if (step > 2^52) stop("Quantile exceeds exact integer range.")
+      a[todo] <- -step
+      todo[todo] <- reached(a[todo], u[todo])
+    }
+  }
   if (is.infinite(upper)) {
-    b[] <- lower
+    if (is.finite(lower)) b[] <- lower
     step <- 1
     todo <- !reached(b, u)
     while (any(todo)) {
@@ -491,7 +505,7 @@ univariateML_invert_cdf <- function(p, cdf, params, support, lower.tail, log.p, 
         break
       }
       a[todo] <- b[todo]
-      b[todo] <- lower + step
+      b[todo] <- (if (is.finite(lower)) lower else 0) + step
       step <- 2 * step
       todo[todo] <- !reached(b[todo], u[todo])
     }
@@ -811,3 +825,106 @@ for (.key in paste0("extraDistr::", c("dtnorm", "ptnorm", "qtnorm"))) {
   })
 }
 rm(.key)
+
+# Stable conditional probabilities from the reference law's untruncated R
+# counterpart. Log-tail differences avoid rounded CDF subtraction.
+univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
+  difference <- function(x, y) x + log(-expm1(pmin(0, y-x)))
+  entries <- list()
+  for (family in c("tpois", "tbinom")) local({
+    id <- family
+    binomial <- id == "tbinom"
+    mass <- function(a, b, lambda = NULL, size = NULL, prob = NULL) {
+      if (a >= b) return(-Inf)
+      cdf <- function(x, lower) if (binomial) stats::pbinom(x, size, prob, lower.tail=lower, log.p=TRUE) else stats::ppois(x, lambda, lower.tail=lower, log.p=TRUE)
+      centre <- if (binomial) size*prob else lambda
+      if (a >= centre) difference(cdf(a,FALSE),cdf(b,FALSE))
+      else difference(cdf(b,TRUE),cdf(a,TRUE))
+    }
+    density <- function(x, lambda, a=-Inf, b=Inf, log=FALSE) NULL
+    cdf <- function(q, lambda, a=-Inf, b=Inf, lower.tail=TRUE, log.p=FALSE) NULL
+    if (binomial) {
+      formals(density) <- alist(x=, size=, prob=, a=-Inf, b=Inf, log=FALSE)
+      formals(cdf) <- alist(q=, size=, prob=, a=-Inf, b=Inf, lower.tail=TRUE, log.p=FALSE)
+    }
+    body(density) <- quote({
+      if(any(lengths(if(binomial)list(x,size,prob,a,b)else list(x,lambda,a,b))==0))return(numeric())
+      evaluate <- function(x,a,b,...) {
+        args <- list(...)
+        z <- do.call(mass,c(list(a=a,b=b),args))
+        lp <- if(binomial) stats::dbinom(x,args$size,args$prob,log=TRUE) else stats::dpois(x,args$lambda,log=TRUE)
+        ans <- lp-z; ans[x<=a|x>b] <- -Inf
+        if(log) ans else exp(ans)
+      }
+      if(binomial) mapply(evaluate,x,a,b,size=size,prob=prob,USE.NAMES=FALSE)
+      else mapply(evaluate,x,a,b,lambda=lambda,USE.NAMES=FALSE)
+    })
+    body(cdf) <- quote({
+      if(any(lengths(if(binomial)list(q,size,prob,a,b)else list(q,lambda,a,b))==0))return(numeric())
+      evaluate <- function(q,a,b,...) {
+        if(is.na(q))return(q)
+        args<-list(...); total<-do.call(mass,c(list(a=a,b=b),args))
+        lo<-max(a,min(b,floor(q)))
+        below<-do.call(mass,c(list(a=a,b=lo),args))-total
+        above<-do.call(mass,c(list(a=lo,b=b),args))-total
+        if(below>above) below<-log(-expm1(min(0,above))) else above<-log(-expm1(min(0,below)))
+        ans<-if(lower.tail)below else above
+        if(log.p)ans else exp(ans)
+      }
+      if(binomial)mapply(evaluate,q,a,b,size=size,prob=prob,USE.NAMES=FALSE)
+      else mapply(evaluate,q,a,b,lambda=lambda,USE.NAMES=FALSE)
+    })
+    bounds <- if(binomial) function(size,prob,a=-Inf,b=Inf,...) c(max(0,floor(a)+1),min(size,floor(b))) else function(lambda,a=-Inf,b=Inf,...) c(max(0,floor(a)+1),if(lambda==0 && a<0 && b>=0)0 else floor(b))
+    quantile <- function()NULL
+    formals(quantile)<-formals(cdf);names(formals(quantile))[1]<-"p"
+    body(quantile)<-quote({
+      params<-if(binomial)list(size=size,prob=prob,a=a,b=b)else list(lambda=lambda,a=a,b=b)
+      n<-max(c(length(p),lengths(params)))
+      if(!length(p)||any(lengths(params)==0))return(numeric())
+      vapply(seq_len(n),function(i)univariateML_invert_cdf(rep_len(p,n)[i],cdf,lapply(params,function(z)rep_len(z,n)[i]),bounds,lower.tail,log.p),0.)
+    })
+    random <- function()NULL
+    formals(random)<-formals(density);names(formals(random))[1]<-"n";formals(random)$log<-NULL
+    body(random)<-quote({
+      if(length(n)>1)n<-length(n)
+      if(binomial)quantile(stats::runif(n),size,prob,a,b)else quantile(stats::runif(n),lambda,a,b)
+    })
+    for(prefix in c("d","p","q","r")) local({
+      pre <- prefix
+      replacement <- switch(pre,d=density,p=cdf,q=quantile,r=random)
+      broken <- function() {
+        args <- if(binomial)list(size=100,prob=.1,a=90,b=100) else list(lambda=2,a=100,b=110)
+        value <- switch(pre,d=if(binomial)91 else 101,p=if(binomial)99 else 109,q=c(0,.5,1),r=3)
+        flags <- switch(pre,d=list(log=TRUE),p=list(lower.tail=FALSE,log.p=TRUE),list())
+        callargs <- c(list(value),args,flags)
+        reference <- getExportedValue("extraDistr",paste0(pre,id))
+        if(pre=="r") {
+          had_seed<-exists(".Random.seed",envir=.GlobalEnv,inherits=FALSE)
+          if(had_seed)saved_seed<-get(".Random.seed",envir=.GlobalEnv)
+          on.exit(if(had_seed)assign(".Random.seed",saved_seed,envir=.GlobalEnv) else rm(".Random.seed",envir=.GlobalEnv))
+          set.seed(8); actual<-suppressWarnings(do.call(reference,callargs))
+          set.seed(8); expected<-do.call(replacement,callargs)
+        } else {
+          actual<-suppressWarnings(do.call(reference,callargs));expected<-do.call(replacement,callargs)
+        }
+        !isTRUE(all.equal(actual,expected,tolerance=1e-10))
+      }
+      entries[[paste0("extraDistr::",pre,id)]] <<- list(broken=broken,replacement=replacement)
+    })
+  })
+  entries
+}))
+univariateML_reference_fixes[["extraDistr::pdlaplace"]] <- list(
+  broken=function() !is.finite(extraDistr::pdlaplace(1000,0,.5,FALSE,TRUE)) ||
+    abs(extraDistr::pdlaplace(3,5,.5)-1/6)>1e-12,
+  replacement=function(q,location,scale,lower.tail=TRUE,log.p=FALSE) {
+    z<-floor(q-location)
+    left<-(-z)*log(scale)-log1p(scale)
+    right<-(z+1)*log(scale)-log1p(scale)
+    lp<-ifelse(z<0,left,right)
+    complement<-which(!is.na(z) & ((z<0) != lower.tail))
+    lp[complement]<-log(-expm1(lp[complement]))
+    if(log.p)lp else exp(lp)
+  })
+univariateML_reference_quantiles[["extraDistr::qdlaplace"]] <- list(
+  p="extraDistr::pdlaplace",support=function(...)c(-Inf,Inf))
