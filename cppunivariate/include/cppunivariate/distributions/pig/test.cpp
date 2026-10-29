@@ -31,7 +31,7 @@ TEST_CASE("pig: faces and fixed subsets") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   for (const std::vector<int> x: {std::vector<int>{1,1,1}, {0,1,1,2}, {0,2}, {0,0,0}}) {
     const auto r=cppunivariate::pig_mle(pig_span(x));
-    CHECK(r.status==(x.back()==0?cppunivariate::PigStatus::ZeroLimit:cppunivariate::PigStatus::PoissonLimit));
+    CHECK(r.status==(x.back()==0?cppunivariate::PigStatus::Ok:cppunivariate::PigStatus::PoissonLimit));
   }
   const std::vector<int> x{0,0,0,0,10};
   const auto r=cppunivariate::pig_mle(pig_span(x));
@@ -119,4 +119,14 @@ TEST_CASE("pig: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppig(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qpig(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rpig(rng, p[0], p[1]); });
+}
+
+
+TEST_CASE("PIG P3 zero shape preserves held means") {
+ const std::vector<int> z{0,0}, pos{0,1};
+ auto r=cppunivariate::pig_mle({z.data(),z.size()});
+ CHECK(r.status==cppunivariate::PigStatus::Ok); CHECK(r.mean==1); CHECK(r.shape==0); CHECK(r.logLik==0);
+ r=cppunivariate::pig_mle({z.data(),z.size()},1e-9,200,2,0);
+ CHECK(r.status==cppunivariate::PigStatus::Ok); CHECK(r.mean==2);
+ CHECK(cppunivariate::pig_mle({pos.data(),pos.size()},1e-9,200,2,0).status==cppunivariate::PigStatus::InvalidInput);
 }

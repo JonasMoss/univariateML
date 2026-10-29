@@ -2,7 +2,7 @@ test_that("location-scale t agrees with independent extraDistr likelihood optimi
   for (df in c(1.5, 3, 10)) for (n in c(200, 1000)) {
     set.seed(100 + n + df * 10)
     x <- extraDistr::rlst(n, df = df, mu = 2, sigma = 1.3)
-    fit <- mllst(x, gradtol = 1e-7, iterlim = 500)
+    fit <- suppressWarnings(mllst(x, gradtol = 1e-7, iterlim = 500), classes = "univariateML_restricted")
     objective <- function(p) -sum(extraDistr::dlst(
       x, df = 1 + exp(p[3]), mu = p[1], sigma = exp(p[2]), log = TRUE))
     candidates <- lapply(c(1.1, 2, 5, 20, 100), function(d)
@@ -23,25 +23,25 @@ test_that("location-scale t agrees with independent extraDistr likelihood optimi
 test_that("Cauchy is attained and normal escapes name mlnorm", {
   set.seed(1)
   x <- rcauchy(200, location = 2, scale = 1.3)
-  fit <- mllst(x)
+  fit <- suppressWarnings(mllst(x), classes = "univariateML_restricted")
   expect_equal(unname(fit[3]), 1)
   expect_equal(as.numeric(fit[1:2]), as.numeric(mlcauchy(x)), tolerance = 1e-3)
-  expect_error(mllst(qnorm(((1:200) - 0.5) / 200)), "Use `mlnorm`", fixed = TRUE)
+  expect_error(suppressWarnings(mllst(qnorm(((1:200) - 0.5) / 200)), classes = "univariateML_restricted"), "Use `mlnorm`", fixed = TRUE)
   set.seed(1)
-  expect_error(mllst(rnorm(200)), "Use `mlnorm`", fixed = TRUE)
+  expect_error(suppressWarnings(mllst(rnorm(200)), classes = "univariateML_restricted"), "Use `mlnorm`", fixed = TRUE)
 })
 
 test_that("collapse configurations are rejected and allowed ties fit", {
   for (x in list(c(1, 2), rep(1, 5), c(0, 0, 1, 2), c(0, 0, 0, 1, 2)))
-    expect_error(mllst(x), "no value repeated n/2", fixed = TRUE)
-  expect_error(mllst(c(1:5, NA)))
-  expect_s3_class(mllst(c(0, 0, 1, 2, 10)), "univariateML")
+    expect_error(suppressWarnings(mllst(x), classes = "univariateML_restricted"), "no value repeated n/2", fixed = TRUE)
+  expect_error(suppressWarnings(mllst(c(1:5, NA)), classes = "univariateML_restricted"))
+  expect_s3_class(suppressWarnings(mllst(c(0, 0, 1, 2, 10)), classes = "univariateML_restricted"), "univariateML")
 })
 
 test_that("std two-cluster escape has a location-scale fit", {
   x <- c(seq(-1e-4, 1e-4, length = 30), seq(0.9999, 1.0001, length = 10))
   expect_error(mlstd(x), "Use `mllst`", fixed = TRUE)
-  fit <- mllst(x)
+  fit <- suppressWarnings(mllst(x), classes = "univariateML_restricted")
   expect_true(is.finite(attr(fit, "logLik")))
   # Free df prefers Cauchy here: the std face at df=2 is not the lst MLE.
   expect_equal(unname(fit[3]), 1)
@@ -54,7 +54,7 @@ test_that("std two-cluster escape has a location-scale fit", {
 test_that("fixed df agrees with oracle and Cauchy, with correct metadata", {
   x <- c(-5,-2,-1,0,0,1,2,9)
   for (df in c(1, 2.5, 10)) {
-    fit <- mllst(x, df = df, gradtol = 1e-8, iterlim = 5000)
+    fit <- suppressWarnings(mllst(x, df = df, gradtol = 1e-8, iterlim = 5000), classes = "univariateML_restricted")
     objective <- function(p) -sum(extraDistr::dlst(x, df = df,
       mu = p[1], sigma = exp(p[2]), log = TRUE))
     oracle <- optim(c(0,0), objective, method = "BFGS",
@@ -66,22 +66,22 @@ test_that("fixed df agrees with oracle and Cauchy, with correct metadata", {
     expect_identical(unname(fit[3]), df)
     if (df == 1) expect_equal(as.numeric(fit[1:2]), as.numeric(mlcauchy(x)), tolerance = 1e-3)
   }
-  for (df in c(-1,0,.5,Inf,NaN)) expect_error(mllst(x, df = df), "at least 1")
-  expect_error(mllst(c(0,0,0,1), df = 2), "unbounded")
-  expect_error(mllst(c(0,0,0,1), df = 3), "equality")
-  expect_s3_class(mllst(c(0,0,0,1), df = 4, iterlim = 5000), "univariateML")
-  expect_s3_class(mllst(qnorm((1:100-.5)/100), df = 4), "univariateML")
+  for (df in c(-1,0,Inf,NaN)) expect_error(suppressWarnings(mllst(x, df = df), classes = "univariateML_restricted"), "positive")
+  expect_error(suppressWarnings(mllst(c(0,0,0,1), df = 2), classes = "univariateML_restricted"), "unbounded")
+  expect_error(suppressWarnings(mllst(c(0,0,0,1), df = 3), classes = "univariateML_restricted"), "equality")
+  expect_s3_class(suppressWarnings(mllst(c(0,0,0,1), df = 4, iterlim = 5000), classes = "univariateML_restricted"), "univariateML")
+  expect_s3_class(suppressWarnings(mllst(qnorm((1:100-.5)/100), df = 4), classes = "univariateML_restricted"), "univariateML")
 })
 
 test_that("held huge degrees of freedom retain the normal log density", {
   x <- c(-2, -1, 0, 1, 3)
-  f <- mllst(x, df = 1e300)
+  f <- suppressWarnings(mllst(x, df = 1e300), classes = "univariateML_restricted")
   expect_equal(attr(f, "logLik"), sum(dt((x-f[["mu"]])/f[["sigma"]], df=1e300, log=TRUE)-log(f[["sigma"]])), tolerance=1e-10)
   expect_equal(attr(f, "logLik"), attr(mlnorm(x), "logLik"), tolerance=1e-8)
 })
 
 test_that("held Cauchy degrees of freedom allow balanced two-point maxima", {
-  f <- mllst(c(1,1,2,2),df=1)
+  f <- suppressWarnings(mllst(c(1,1,2,2),df=1), classes = "univariateML_restricted")
   g <- mlcauchy(c(1,1,2,2))
   expect_equal(f[["mu"]],g[["location"]])
   expect_equal(f[["sigma"]],g[["scale"]])
@@ -138,20 +138,20 @@ test_that("lst new holds agree with independent multistart likelihoods", {
 
 
 test_that("lst conditional collapse, feasibility and invalid holds", {
-  expect_error(mllst(c(0,0,1),mu=0,df=1),"unbounded")
-  expect_error(mllst(c(0,1),mu=0,df=1),"boundary")
-  expect_error(mllst(c(0,0,1),mu=0),"unbounded")
-  expect_true(is.finite(logLik(mllst(rep(2,4),mu=0,df=3))))
-  expect_equal(unname(mllst(rep(2,4),sigma=1,df=3)["mu"]),2,tolerance=1e-7)
-  expect_error(mllst(qnorm((1:100-.5)/100),mu=0),"mlnorm")
-  expect_error(mllst(1:5,mu=Inf),"mu")
-  expect_error(mllst(1:5,sigma=0),"sigma")
+  expect_error(suppressWarnings(mllst(c(0,0,1),mu=0,df=1), classes = "univariateML_restricted"),"unbounded")
+  expect_error(suppressWarnings(mllst(c(0,1),mu=0,df=1), classes = "univariateML_restricted"),"boundary")
+  expect_error(suppressWarnings(mllst(c(0,0,1),mu=0), classes = "univariateML_restricted"),"unbounded")
+  expect_true(is.finite(logLik(suppressWarnings(mllst(rep(2,4),mu=0,df=3), classes = "univariateML_restricted"))))
+  expect_equal(unname(suppressWarnings(mllst(rep(2,4),sigma=1,df=3), classes = "univariateML_restricted")["mu"]),2,tolerance=1e-7)
+  expect_error(suppressWarnings(mllst(qnorm((1:100-.5)/100),mu=0), classes = "univariateML_restricted"),"mlnorm")
+  expect_error(suppressWarnings(mllst(1:5,mu=Inf), classes = "univariateML_restricted"),"mu")
+  expect_error(suppressWarnings(mllst(1:5,sigma=0), classes = "univariateML_restricted"),"sigma")
 })
 
 
 test_that("location-scale t held-location half ties compare all eligible faces", {
   # The conditional normal face beats the held-location Cauchy collapse.
-  expect_error(mllst(c(0,1),mu=0),"mlnorm")
+  expect_error(suppressWarnings(mllst(c(0,1),mu=0), classes = "univariateML_restricted"),"unbounded")
 })
 
 

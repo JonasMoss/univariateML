@@ -15,7 +15,7 @@ params:
   kind: regular
 - name: df
   role: df
-  domain: '[1, inf)'
+  domain: '(0, inf)'
   simulate: 3.0
   fit_domain:
     lower: 1.0
@@ -63,7 +63,7 @@ The location-scale Student t includes heavy-tailed distributions with infinite v
 
 ## Details
 
-`sigma` is a scale, not a standard deviation. Fitting restricts `df` to be at least 1 and includes the attained Cauchy member at `df = 1`. Unrestricted positive degrees of freedom allow unbounded likelihood through scale collapse. The fitter requires at least three observations and rejects samples in which any value occurs at least half the time, including equality.
+`sigma` is a scale, not a standard deviation. With location free, estimating shape restricts `df` to be at least 1 and includes the attained Cauchy member at `df = 1`. Unrestricted positive degrees of freedom allow unbounded likelihood through scale collapse. The fitter requires at least three observations and rejects samples in which any value occurs at least half the time, including equality.
 
 A multistart profile grid and joint refinement compare finite fits with Cauchy and normal fits. The joint problem need not be unimodal; the search does not certify a global maximum. Log-likelihood differences within `1e-8` per observation are treated as ties, preferring Cauchy and then other attained finite members. On the unresolved normal approach (`df >= 1e5`) a numerical tie selects the normal boundary.
 
@@ -71,7 +71,8 @@ With `df` held fixed, only location and scale are estimated by monotone
 EM, stopping when the norm of the scale-standardized location and log-scale
 scores is below `gradtol`. Failure to reach that tolerance is an error.
 The normal escape does not apply to this subset.
-Fixed `df` must be at least 1; values below 1 remain outside the fitting domain.
+Fixed `df` may be any positive finite value when its collapse condition
+permits a finite MLE.
 For multiplicity `k` in a sample of size `n`, scale collapse has likelihood
 proportional to `scale^(df*(n-k)-k)`. A negative exponent is reported as
 unbounded; equality is reported separately as a scale-collapse boundary,
@@ -80,6 +81,17 @@ can have nonunique attained fits). Strictly positive exponents for every tie
 permit the regular fixed-parameter fit.
 
 
-Conditional fits preserve held mu and sigma. With mu held and sigma free, only ties at that mu contribute to collapse: the exponent is df(n-k)-k. A negative exponent is unbounded; at equality and fixed df the collapse supremum is not attained. Free df retains the existing lower bound 1 and is compared with the conditional normal face. Held sigma removes scale collapse. Shape and held-scale location profiles use numerical multistart searches; they do not certify isolation of every mode.
+Conditional fits preserve held mu and sigma. With mu held and sigma free, only ties at that mu contribute to collapse: the exponent is df(n-k)-k. A negative exponent is unbounded; at equality and fixed df the collapse supremum is not attained. Free df has lower bound 1 with mu free; held mu exempts that bound. The conditional normal face is compared in either case. Held sigma removes scale collapse. Shape and held-scale location profiles use numerical multistart searches; they do not certify isolation of every mode.
 
-With df free and exactly half the observations equal to held mu, the finite profile is compared with the df=1 collapse likelihood as well as the conditional normal face. This boundary comparison is numerical.
+With df free, any observation equal to held mu permits scale collapse
+through sufficiently small positive df when scale is free, and fitting stops.
+
+Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
+and emit a warning of class `univariateML_restricted`. Held coefficients are
+not flagged. README hold exemptions apply to free coefficients. Failed
+optimizers return a failure status unless the score norm in fitting
+coordinates is below `1e-3`; unresolved scalar searches stop.
+
+With `mu` held, the lower shape restriction is exempt. The fitter searches
+the wider shape domain and diagnoses collapse separately when observations
+equal the held location and scale is free.

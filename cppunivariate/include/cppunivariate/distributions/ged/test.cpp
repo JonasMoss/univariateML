@@ -142,3 +142,12 @@ TEST_CASE("ged: targeted tail and endpoint regressions") {
   CHECK(cppunivariate::distributions::qged(-0.6931471805599453, 0.0, 1.0, 3.0, true, true) == doctest::Approx(3.389474609308743e-17).epsilon(1e-10));
   CHECK(cppunivariate::distributions::qged(-800.0, 0.0, 1.0, 3.0, false, true) == doctest::Approx(15.155294491505197).epsilon(1e-10));
 }
+
+
+TEST_CASE("ged: P3 restrictions and closed faces") {
+ const std::vector<double> x{-100,-2,-.01,0,.01,2,100};const auto data=mltest::as_span(x);
+ const auto f=cppunivariate::ged_mle(data,1e-8,1000); REQUIRE(f.status==cppunivariate::GedStatus::Ok);
+ CHECK(f.nu==1);CHECK(f.restricted==16u);
+ const auto h=cppunivariate::ged_mle(data,1e-8,1000,0,1,1);
+ CHECK(h.restricted==0u);
+}

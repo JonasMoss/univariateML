@@ -102,3 +102,10 @@ TEST_CASE("frechet: tiny held shape retains the exact geometric-mean scale limit
  CHECK(f.lambda==1e-20);
  CHECK(f.sigma==doctest::Approx(2).epsilon(1e-14));
 }
+
+TEST_CASE("frechet: P3 restrictions and closed faces") {
+ const std::vector<double> x{.01,.02,.1,1,10,100,1000};
+ const auto f=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,200,NAN,NAN,1);
+ REQUIRE(f.status==cppunivariate::FrechetStatus::Ok);CHECK(f.lambda==1);CHECK(f.restricted==1u);
+ const auto h=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,200,0,1,1);CHECK(h.restricted==0u);
+}

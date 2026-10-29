@@ -115,3 +115,10 @@ TEST_CASE("sged: classified holds preserve values and handle tied/singleton data
   const auto collapse=cppunivariate::sged_mle(mltest::as_span(one),1e-9,300,.2,nan,4.2,1.3);
   CHECK(collapse.status==cppunivariate::SgedStatus::Unbounded);
 }
+
+TEST_CASE("sged: P3 restrictions and closed faces") {
+ const std::vector<double> x{-100,-2,-.01,0,.01,2,100};const auto data=mltest::as_span(x);
+ const auto f=cppunivariate::sged_mle(data,1e-8,1000); REQUIRE(f.status==cppunivariate::SgedStatus::Ok);
+ CHECK(f.nu==1);CHECK(f.restricted==16u);
+ const auto h=cppunivariate::sged_mle(data,1e-8,1000,0,1,1,1);CHECK(h.restricted==0u);
+}

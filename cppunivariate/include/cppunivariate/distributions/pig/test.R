@@ -5,8 +5,8 @@ test_that("Poisson and zero faces are explicit", {
   poisson_sample <- qpois((seq_len(100)-.5)/100,2)
   expect_lte(mean((poisson_sample-mean(poisson_sample))^2),mean(poisson_sample))
   expect_error(mlpig(poisson_sample), "Use `mlpois`")
-  expect_error(mlpig(rep(0,3)), "point-mass")
-  expect_error(mlpig(rep(0,3), mean=2), "point-mass")
+  expect_equal(as.numeric(mlpig(rep(0,3))),c(1,0))
+  expect_equal(as.numeric(mlpig(rep(0,3),mean=2)),c(2,0))
   expect_error(mlpig(rep(0,3), shape=2), "point-mass")
   fit <- mlpig(rep(0,3), mean=2,shape=3)
   expect_equal(attr(fit,"logLik"),3*actuar::dpoisinvgauss(0,2,3,log=TRUE))
@@ -110,4 +110,14 @@ local({
       expect_gte(attr(fit,"logLik"),best-1e-6*length(x),label=label)
     }
   })
+})
+
+test_that("P3 PIG shape zero is attained under compatible holds", {
+ for(m in c(.2,2,20)) {
+   f<-mlpig(rep(0,4),mean=m,shape=0)
+   expect_equal(as.numeric(f),c(m,0));expect_equal(attr(f,"logLik"),0)
+   expect_equal(dml(c(0,1),f),c(1,0))
+   expect_error(mlpig(c(0,1),mean=m,shape=0))
+ }
+ expect_equal(as.numeric(mlpig(rep(0,4),shape=0)),c(1,0))
 })

@@ -17,7 +17,7 @@ params:
   kind: regular
 - name: k
   role: draws
-  domain: '[0, inf)'
+  domain: '[0, m+n]'
   simulate: 10
   integer: yes
   kind: design

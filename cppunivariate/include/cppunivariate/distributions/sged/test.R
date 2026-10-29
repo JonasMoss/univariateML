@@ -6,16 +6,16 @@ small_data <- qsged(((1:200) - .5)/200, 2, 3, 4)
 tiny_data <- qsged(((1:100) - .5)/100, 2, 3, 4)
 
 ## Finds errors with na and data out of bounds.
-expect_error(mlsged(c(tiny_data, NA)))
+expect_error(suppressWarnings(mlsged(c(tiny_data, NA)), classes = "univariateML_restricted"))
 
 ## Checks that na.rm works as intended.
 expect_equal(
-  coef(mlsged(small_data)),
-  coef(mlsged(c(small_data, NA), na.rm = TRUE))
+  coef(suppressWarnings(mlsged(small_data), classes = "univariateML_restricted")),
+  coef(suppressWarnings(mlsged(c(small_data, NA), na.rm = TRUE), classes = "univariateML_restricted"))
 )
 
 ## Is the log-likelihood correct?
-est <- mlsged(small_data, na.rm = TRUE)
+est <- suppressWarnings(mlsged(small_data, na.rm = TRUE), classes = "univariateML_restricted")
 expect_equal(
   sum(dsged(small_data, est[1], est[2], est[3], est[4], log = TRUE)),
   attr(est, "logLik")
@@ -53,22 +53,22 @@ expect_equal(class(est), "univariateML")
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
 # Decision D6: attained Laplace, uniform and constrained interior oracle.
-expect_error(mlsged(seq(-1, 1, length.out = 40)), "Use `mlunif`")
+expect_error(suppressWarnings(mlsged(seq(-1, 1, length.out = 40)), classes = "univariateML_restricted"), "Use `mlunif`")
 x <- c(seq(-.02, .02, length.out = 18), -10, 10)
-f <- mlsged(x)
+f <- suppressWarnings(mlsged(x), classes = "univariateML_restricted")
 expect_equal(unname(f["nu"]), 1)
 expect_equal(attr(f, "logLik"), sum(dsged(x, mean=f[1], sd=f[2], nu=1, xi=f[4], log=TRUE)))
 # Exact fGarch mapping of arbitrary two-piece Laplace parameters.
 a <- .7; b <- 2; c <- -.3; grid <- seq(-4, 4, length.out=101)
 expected <- -log(a+b) - ifelse(grid<c, (c-grid)/a, (grid-c)/b)
 expect_equal(dsged(grid, c+b-a, sqrt(a*a+b*b), 1, sqrt(b/a), log=TRUE), expected)
-expect_error(mlsged(-log(((0:99)+.5)/100)), "sample minimum")
-expect_error(mlsged(log(((0:99)+.5)/100)), "sample maximum")
+expect_error(suppressWarnings(mlsged(-log(((0:99)+.5)/100)), classes = "univariateML_restricted"), "sample minimum")
+expect_error(suppressWarnings(mlsged(log(((0:99)+.5)/100)), classes = "univariateML_restricted"), "sample maximum")
 
 set.seed(812)
 for (shape in c(1.5, 3)) {
   x <- rged(500, nu=shape)
-  f <- mlsged(x, gradtol=1e-6, iterlim=1000)
+  f <- suppressWarnings(mlsged(x, gradtol=1e-6, iterlim=1000), classes = "univariateML_restricted")
   expect_gt(unname(f["nu"]), 1)
   objective <- function(p) {
     nu <- 1+exp(p[3])
@@ -95,9 +95,9 @@ for (shape in c(1.5, 3)) {
 test_that("sged scale extremes preserve fit or declared escape", {
   set.seed(10)
   x <- simulate_default("mlsged",50)
-  base <- tryCatch(mlsged(x),error=function(e) conditionMessage(e))
+  base <- tryCatch(suppressWarnings(mlsged(x), classes = "univariateML_restricted"),error=function(e) conditionMessage(e))
   for(s in c(1e-300,1e300)) {
-    f <- tryCatch(mlsged(x*s),error=function(e) conditionMessage(e))
+    f <- tryCatch(suppressWarnings(mlsged(x*s), classes = "univariateML_restricted"),error=function(e) conditionMessage(e))
     if(is.character(base)) expect_identical(f,base) else {
       expect_false(is.character(f))
       if(!is.character(f)) expect_equal(attr(f,"logLik")+length(x)*log(s),attr(base,"logLik"),tolerance=1e-4)
@@ -108,8 +108,8 @@ test_that("sged scale extremes preserve fit or declared escape", {
 test_that("sged large-sample fitting preserves likelihood under replication", {
   p<-((1:1000)-.5)/1000
   x<-qsged(p,nu=3,xi=2)
-  base<-mlsged(x)
-  f<-mlsged(rep(x,100))
+  base<-suppressWarnings(mlsged(x), classes = "univariateML_restricted")
+  f<-suppressWarnings(mlsged(rep(x,100)), classes = "univariateML_restricted")
   expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
 })
 
@@ -168,7 +168,7 @@ test_that("sged dpqr recycle, propagate missing values and use R RNG", {
     expect_warning(expect_true(is.nan(psged(0, sd = bad))), "NaNs produced")
     expect_warning(expect_true(is.nan(qsged(.5, sd = bad))), "NaNs produced")
   }
-  fit <- mlsged(small_data)
+  fit <- suppressWarnings(mlsged(small_data), classes = "univariateML_restricted")
   expect_equal(as.numeric(logLik(fit)), sum(dml(small_data, fit, log = TRUE)),
                tolerance = 1e-10)
   expect_equal(pml(0, fit), do.call(psged, c(list(0), as.list(coef(fit)))))
@@ -256,9 +256,9 @@ test_that("sged holds validate values, ties, and all-held evaluation", {
   args <- as.list(p)
   fit <- do.call(mlsged,c(list(x=c(0,0,0)),args))
   expect_equal(as.numeric(logLik(fit)),sum(sged_hold_logref(c(0,0,0),p)),tolerance=1e-10)
-  expect_error(mlsged(rep(.2,3),mean=.2,nu=1.7,xi=1.3),'unbounded')
-  expect_error(mlsged(x,xi=1),'unresolved')
-  below <- mlsged(x,sd=1,nu=.7,xi=1.2)
+  expect_error(suppressWarnings(mlsged(rep(.2,3),mean=.2,nu=1.7,xi=1.3), classes = "univariateML_restricted"),'unbounded')
+  expect_error(suppressWarnings(mlsged(x,xi=1), classes = "univariateML_restricted"),'unresolved')
+  below <- suppressWarnings(mlsged(x,sd=1,nu=.7,xi=1.2), classes = "univariateML_restricted")
   expect_identical(unname(below['nu']),.7)
 })
 
@@ -268,5 +268,5 @@ test_that("sged held domains and controls reject invalid requests", {
     args <- list(x=x,mean=.2,sd=1.4,nu=1.7,xi=1.3); args[[v]] <- bad
     expect_error(do.call(mlsged,args),'held')
   }
-  expect_error(mlsged(x,mean=.2,nu=1.7,xi=1,iterlim=0),'requires')
+  expect_error(suppressWarnings(mlsged(x,mean=.2,nu=1.7,xi=1,iterlim=0), classes = "univariateML_restricted"),'requires')
 })

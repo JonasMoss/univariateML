@@ -57,3 +57,10 @@ TEST_CASE("ht: targeted tail and endpoint regressions") {
   CHECK(cppunivariate::distributions::qht(1.0, 3.0, 1.0, false, false) == doctest::Approx(0.0).epsilon(1e-10));
   CHECK(cppunivariate::distributions::qht(0.0, 3.0, 1.0, false, true) == doctest::Approx(0.0).epsilon(1e-10));
 }
+
+
+TEST_CASE("ht: P3 restrictions and closed faces") {
+ const std::vector<double> x{.01,.1,1,10,100};
+ const auto f=cppunivariate::ht_mle(mltest::as_span(x));
+ REQUIRE(f.status==cppunivariate::HtStatus::Ok);CHECK(f.nu<1);CHECK(f.restricted==0u);
+}

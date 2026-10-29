@@ -28,11 +28,14 @@ namespace {
 TEST_CASE("nbinom all zeros") {
   const std::vector<int> v{0, 0, 0};
   const auto r = cppunivariate::nbinom_mle(as_ispan(v), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.size == 1.0);
-  CHECK(r.prob == 1.0);
+  CHECK(r.size == 0.0);
+  CHECK(r.prob == .5);
   CHECK(r.logLik == 0.0);
-  CHECK(cppunivariate::special::dnbinom(0.0, r.size, r.prob, true) == 0.0);
-  CHECK(cppunivariate::special::dnbinom(1.0, r.size, r.prob, true) ==
+  // Shared special/dpqr size-zero support belongs to TASK-78. Preserve
+  // density coverage on the equally valid held-positive-size member.
+  const auto held=cppunivariate::nbinom_mle(as_ispan(v),mltest::kFitTol,mltest::kFitMaxit,1);
+  CHECK(cppunivariate::special::dnbinom(0.0, held.size, held.prob, true) == 0.0);
+  CHECK(cppunivariate::special::dnbinom(1.0, held.size, held.prob, true) ==
         -std::numeric_limits<double>::infinity());
 }
 
@@ -97,7 +100,7 @@ TEST_CASE("nbinom: P2 every hold subset preserves coefficients and golden likeli
 TEST_CASE("nbinom: P2 held-domain and non-existence statuses") {
  const std::vector<int> x{0,1,5},z{0,0};
  const double nan=std::numeric_limits<double>::quiet_NaN();
- CHECK(cppunivariate::nbinom_mle({z.data(),z.size()},1e-10,200,nan,.4).status==cppunivariate::NbinomStatus::ZeroLimit);
+ CHECK(cppunivariate::nbinom_mle({z.data(),z.size()},1e-10,200,nan,.4).status==cppunivariate::NbinomStatus::Ok);
  CHECK(cppunivariate::nbinom_mle({x.data(),x.size()},1e-10,200,nan,1).status==cppunivariate::NbinomStatus::InvalidInput);
  const auto r=cppunivariate::nbinom_mle({x.data(),x.size()},1e-10,200,nan,.4);
  double score=3*std::log(.4);
@@ -140,4 +143,11 @@ TEST_CASE("nbinom: extreme tails and discrete support") {
 TEST_CASE("nbinom: adjacent noninteger at zero has no mass") {
   // mp.dps=100; x=mpf(float.fromhex("0x0.0000000000001p-1022")); print(x==floor(x))
   CHECK(cppunivariate::distributions::dnbinom(std::nextafter(0.0,1.0),10,0.3,false)==0);
+}
+
+TEST_CASE("nbinom: P3 attained size zero preserves holds") {
+ const std::vector<int> z{0,0,0};
+ const auto r=cppunivariate::nbinom_mle({z.data(),z.size()},1e-10,200,0,.4);
+ CHECK(r.status==cppunivariate::NbinomStatus::Ok);
+ CHECK(r.size==0); CHECK(r.prob==.4); CHECK(r.logLik==0);
 }

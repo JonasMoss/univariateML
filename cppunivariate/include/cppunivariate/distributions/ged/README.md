@@ -15,7 +15,7 @@ params:
   kind: regular
 - name: nu
   role: shape
-  domain: '[1, inf)'
+  domain: '(0, inf)'
   simulate: 3.0
   fit_domain:
     lower: 1.0
@@ -78,3 +78,9 @@ the mean absolute deviation from that median.
 For each held or profiled nu, the location minimizes the sum of absolute residuals to that power (a median at nu=1); the free scale has an exact power-mean profile. A held location collapses only when all residuals vanish. Held sd removes scale collapse. Free nu retains the existing restriction nu>=1 and is compared with the conditional uniform face. With both location and sd held, observations at a uniform endpoint contribute their limiting GED penalty. Shape search is numerical.
 
 With sd held and a limiting uniform endpoint forced onto an observation, each such observation has limiting log-density penalty $e^{-\gamma}$, where $\gamma$ is Euler's constant. If mean is free and both endpoints are forced, with endpoint counts k and l the total penalty is $2e^{-\gamma}\sqrt{kl}$ after profiling the location shift of order $1/\nu$.
+
+Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
+and emit a warning of class `univariateML_restricted`. Held coefficients are
+not flagged. README hold exemptions apply to free coefficients. Failed
+optimizers return a failure status unless the score norm in fitting
+coordinates is below `1e-3`; unresolved scalar searches stop.

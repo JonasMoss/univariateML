@@ -2,6 +2,8 @@
 #include "../gev/mle.hpp"
 #include "../invweibull/mle.hpp"
 namespace cppunivariate {
+inline constexpr double kFrechetLambdaLower = 1.0;
+
 inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
                          double xi=std::numeric_limits<double>::quiet_NaN()) {
   GevResult bad{0,0,xi,0,0,GevStatus::InvalidData};
@@ -85,7 +87,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
 }
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure };
-struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; };
+struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; };
 inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
  if(!(lambda>0) || !(sigma>0)) return -std::numeric_limits<double>::infinity();
  double ll=x.size()*(std::log(lambda)-std::log(sigma));
@@ -183,7 +185,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  if(!opt.ok || fit.status!=FrechetStatus::Ok || !std::isfinite(fit.logLik)) fit.status=FrechetStatus::IterationFailure;
  return fit;
 }
-inline FrechetResult frechet_mle(span x, double tol=1e-10, int maxit=100,
+inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
  double mu=std::numeric_limits<double>::quiet_NaN(),
  double lambda=std::numeric_limits<double>::quiet_NaN(),
  double sigma=std::numeric_limits<double>::quiet_NaN()) {
@@ -207,5 +209,11 @@ inline FrechetResult frechet_mle(span x, double tol=1e-10, int maxit=100,
  if(r.status!=GevStatus::Ok) {bad.status=FrechetStatus::IterationFailure;return bad;}
  if(r.xi==0) {bad.status=FrechetStatus::GumbelLimit;return bad;}
  return {1/r.xi,r.mu-r.sigma/r.xi,r.sigma/r.xi,r.logLik,r.iterations,FrechetStatus::Ok};
+}
+
+inline FrechetResult frechet_mle(span x,double tol=1e-10,int maxit=100,double mu=std::numeric_limits<double>::quiet_NaN(),double lambda=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  auto r=frechet_mle_impl(x,tol,maxit,mu,lambda,sigma);
+  if(r.status==FrechetStatus::Ok && (std::isnan(lambda) && std::isnan(mu)) && r.lambda==kFrechetLambdaLower) r.restricted|=1u;
+  return r;
 }
 }

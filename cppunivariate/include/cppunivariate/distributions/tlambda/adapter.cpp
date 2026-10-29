@@ -16,14 +16,21 @@ Rcpp::List mltlambda_(const Rcpp::NumericVector& x,
   if(f.status==cppunivariate::TlambdaStatus::Unbounded)Rcpp::stop("Tukey lambda likelihood is unbounded through scale collapse at the held location.");
   if(f.status==cppunivariate::TlambdaStatus::CollapseLimit)Rcpp::stop("Tukey lambda selects the scale collapse boundary at the held location.");
   if(f.status==cppunivariate::TlambdaStatus::InvalidSupport)Rcpp::stop("Held Tukey lambda support cannot contain the sample with positive likelihood.");
-  if(f.status==cppunivariate::TlambdaStatus::InvalidShape) Rcpp::stop("Fixed lambda must be in [-1, 1], or 2 (uniform alias).");
+  if(f.status==cppunivariate::TlambdaStatus::InvalidShape) Rcpp::stop("Fixed lambda must be finite.");
   if(f.status==cppunivariate::TlambdaStatus::InvalidData) Rcpp::stop("Tukey lambda fitting requires at least three finite observations, every tie multiplicity strictly below half the sample size, positive reltol and positive iterlim. The sample range must be finite and standardization must preserve distinct values.");
   if(f.status!=cppunivariate::TlambdaStatus::Ok) Rcpp::stop("Tukey lambda search did not converge; increase iterlim.");
   Rcpp::CharacterVector fixed;
   if(mu.isNotNull())fixed.push_back("mu");
   if(sigma.isNotNull())fixed.push_back("sigma");
   if(lambda.isNotNull())fixed.push_back("lambda");
-  return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["mu"]=f.mu,Rcpp::_["sigma"]=f.sigma,Rcpp::_["lambda"]=f.lambda),Rcpp::_["logLik"]=f.logLik,Rcpp::_["iterations"]=f.iterations,Rcpp::_["fixed"]=fixed);
+  Rcpp::CharacterVector restricted;
+  if(f.restricted & 1u) restricted.push_back("lower","mu");
+  if(f.restricted & 2u) restricted.push_back("upper","mu");
+  if(f.restricted & 4u) restricted.push_back("lower","sigma");
+  if(f.restricted & 8u) restricted.push_back("upper","sigma");
+  if(f.restricted & 16u) restricted.push_back("lower","lambda");
+  if(f.restricted & 32u) restricted.push_back("upper","lambda");
+  return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["mu"]=f.mu,Rcpp::_["sigma"]=f.sigma,Rcpp::_["lambda"]=f.lambda),Rcpp::_["logLik"]=f.logLik,Rcpp::_["iterations"]=f.iterations,Rcpp::_["restricted"]=restricted, Rcpp::_["fixed"]=fixed);
 }
 namespace {
 Rcpp::NumericVector tlambda_evaluate(const std::vector<Rcpp::NumericVector>& args,char op,bool lower=true,bool log=false) {

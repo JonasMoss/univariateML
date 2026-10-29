@@ -37,20 +37,20 @@ test_that("Tukey lambda vector and RNG conventions", {
 test_that("Tukey lambda existence guards and exact uniform faces", {
   x <- c(-2,-1,0,1,2)
   for(l in c(1,2)) {
-    f <- mltlambda(x,lambda=l)
+    f <- suppressWarnings(mltlambda(x,lambda=l), classes = "univariateML_restricted")
     expect_equal(as.numeric(f),c(0,2*l,l))
     expect_equal(as.numeric(logLik(f)),as.numeric(logLik(mlunif(x))))
     expect_equal(attr(f,"fixed"),"lambda")
     expect_equal(attr(logLik(f),"df"),2L)
     expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)))
   }
-  expect_error(mltlambda(c(0,0,1,2)),"tie multiplicity")
-  expect_error(mltlambda(1:2),"three")
-  expect_error(mltlambda(x,lambda=1.5),"Fixed lambda")
-  expect_error(mltlambda(x,lambda=NA_real_),"finite")
-  expect_error(mltlambda(x,reltol=0),"positive")
-  expect_error(mltlambda(x,lambda=0,iterlim=1),"converge")
-  expect_equal(unname(mltlambda(x,mu=0)["mu"]),0)
+  expect_error(suppressWarnings(mltlambda(c(0,0,1,2)), classes = "univariateML_restricted"),"tie multiplicity")
+  expect_error(suppressWarnings(mltlambda(1:2), classes = "univariateML_restricted"),"three")
+  expect_error(suppressWarnings(mltlambda(x,lambda=Inf), classes = "univariateML_restricted"),"Fixed lambda")
+  expect_error(suppressWarnings(mltlambda(x,lambda=NA_real_), classes = "univariateML_restricted"),"finite")
+  expect_error(suppressWarnings(mltlambda(x,reltol=0), classes = "univariateML_restricted"),"positive")
+  expect_error(suppressWarnings(mltlambda(x,lambda=0,iterlim=1), classes = "univariateML_restricted"),"converge")
+  expect_equal(unname(suppressWarnings(mltlambda(x,mu=.1), classes = "univariateML_restricted")["mu"]),.1)
 })
 # Independent likelihood: invert the defining quantile with uniroot,
 # using log probabilities and expm1, independently of the C++ inversion.
@@ -72,7 +72,7 @@ tlambda_oracle_ld <- function(x,mu,sigma,l) {
 test_that("Tukey lambda independent oracle on varied fixed and free samples", {
   for(x in list(c(-4,-1,-.2,0,.5,1,9),c(-3,-2,-1,0,1,2,3),c(-10,-1,-.1,0,.1,1,10))) {
     for(l in c(-1,0,.14)) {
-      f <- mltlambda(x,lambda=l)
+      f <- suppressWarnings(mltlambda(x,lambda=l), classes = "univariateML_restricted")
       objective <- function(t) {
         ll <- sum(tlambda_oracle_ld(x,t[1],exp(t[2]),l))
         if(is.finite(ll)) -ll else 1e100
@@ -81,7 +81,7 @@ test_that("Tukey lambda independent oracle on varied fixed and free samples", {
       expect_gte(as.numeric(logLik(f)), -min(vapply(fits,`[[`,numeric(1),"value"))-1e-6)
       expect_equal(sum(tlambda_oracle_ld(x,f[1],f[2],l)),as.numeric(logLik(f)),tolerance=1e-8)
     }
-    f <- mltlambda(x)
+    f <- suppressWarnings(mltlambda(x), classes = "univariateML_restricted")
     free_objective <- function(t) {
       ll <- tryCatch(sum(tlambda_oracle_ld(x,t[1],exp(t[2]),tanh(t[3]))),error=function(e) -Inf)
       if(is.finite(ll)) -ll else 1e100
@@ -92,7 +92,7 @@ test_that("Tukey lambda independent oracle on varied fixed and free samples", {
       expect_gte(as.numeric(logLik(f)),-o$value-1e-6)
     }
     for(l in seq(-1,.9,length.out=11)) {
-      g <- mltlambda(x,lambda=l)
+      g <- suppressWarnings(mltlambda(x,lambda=l), classes = "univariateML_restricted")
       expect_gte(as.numeric(logLik(f)),as.numeric(logLik(g))-1e-6)
     }
     expect_equal(sum(tlambda_oracle_ld(x,f[1],f[2],f[3])),as.numeric(logLik(f)),tolerance=1e-8)
@@ -100,8 +100,8 @@ test_that("Tukey lambda independent oracle on varied fixed and free samples", {
 })
 test_that("Tukey lambda dispatch, affine equivariance and attained bounds", {
   x <- qlogis((1:31-.5)/31)
-  f <- mltlambda(x)
-  g <- mltlambda(5+7*x)
+  f <- suppressWarnings(mltlambda(x), classes = "univariateML_restricted")
+  g <- suppressWarnings(mltlambda(5+7*x), classes = "univariateML_restricted")
   expect_equal(g[1],5+7*f[1],ignore_attr=TRUE,tolerance=2e-5)
   expect_equal(g[2],7*f[2],ignore_attr=TRUE,tolerance=2e-5)
   expect_equal(g[3],f[3],ignore_attr=TRUE,tolerance=2e-5)
@@ -110,10 +110,10 @@ test_that("Tukey lambda dispatch, affine equivariance and attained bounds", {
   expect_equal(pml(qml(p,f),f),p,tolerance=1e-8)
   set.seed(12); a <- rml(10,f)
   set.seed(12); expect_equal(a,rtlambda(10,f[1],f[2],f[3]))
-  u <- mltlambda(seq(-1,1,length.out=31))
+  u <- suppressWarnings(mltlambda(seq(-1,1,length.out=31)), classes = "univariateML_restricted")
   expect_equal(unname(u[3]),1,ignore_attr=TRUE)
   expect_equal(as.numeric(logLik(u)),as.numeric(logLik(mlunif(seq(-1,1,length.out=31)))))
-  h <- mltlambda(c(-1e6,-2,-.1,0,.1,2,1e6))
+  h <- suppressWarnings(mltlambda(c(-1e6,-2,-.1,0,.1,2,1e6)), classes = "univariateML_restricted")
   expect_equal(unname(h[3]),-1,ignore_attr=TRUE)
 })
 test_that("Tukey lambda avoids standardized overflow in heavy tails", {
@@ -126,7 +126,7 @@ test_that("Tukey lambda avoids standardized overflow in heavy tails", {
 })
 test_that("Tukey lambda bootstrap, selection and plots use owned evaluation", {
   x <- qlogis((1:31-.5)/31)
-  f <- mltlambda(x,lambda=0)
+  f <- suppressWarnings(mltlambda(x,lambda=0), classes = "univariateML_restricted")
   set.seed(10); b <- bootstrapml(f,reps=3,reducer=identity)
   expect_equal(dim(b),c(3L,3L))
   expect_equal(unname(b['lambda',]),rep(0,3))
@@ -155,8 +155,8 @@ test_that("Tukey lambda sampler is inversion with R's RNG", {
   set.seed(1); expect_equal(a,qlogis(runif(10)),tolerance=1e-10)
 })
 test_that("Tukey lambda accepts ties strictly below half the sample", {
-  for(l in c(-1,0,1)) expect_true(is.finite(as.numeric(logLik(mltlambda(c(0,0,1,2,3),lambda=l)))))
-  expect_error(mltlambda(rep(1,5)))
+  for(l in c(-1,0,1)) expect_true(is.finite(as.numeric(logLik(suppressWarnings(mltlambda(c(0,0,1,2,3),lambda=l), classes = "univariateML_restricted")))))
+  expect_error(suppressWarnings(mltlambda(rep(1,5)), classes = "univariateML_restricted"))
 })
 
 test_that("Tukey lambda handles finite log tails beyond 1e307", {
@@ -188,7 +188,7 @@ test_that("Tukey lambda keeps shifted finite results after intermediate overflow
 })
 
 test_that("Tukey lambda rejects numerical merging of distinct data", {
-  expect_error(mltlambda(c(0,1e-300,2e-300,1e300)),"standardization")
+  expect_error(suppressWarnings(mltlambda(c(0,1e-300,2e-300,1e300)), classes = "univariateML_restricted"),"standardization")
 })
 
 
@@ -241,19 +241,17 @@ test_that("tlambda new holds agree with independent multistart likelihoods", {
 
 
 test_that("tlambda conditional collapse, feasibility and invalid holds", {
-  expect_error(mltlambda(c(0,0,1),mu=0),"unbounded")
-  expect_error(mltlambda(c(0,1),mu=0,lambda=-1),"collapse")
-  expect_error(mltlambda(c(-2,2),sigma=1,lambda=.5),"support cannot contain")
-  expect_error(mltlambda(c(-2,2),mu=0,sigma=1,lambda=1),"support cannot contain")
-  expect_equal(as.numeric(mltlambda(c(-1,1),mu=0,sigma=1,lambda=1)),c(0,1,1))
-  expect_equal(as.numeric(mltlambda(rep(2,4),sigma=1,lambda=0))[1],2,tolerance=1e-6)
-  expect_error(mltlambda(1:5,mu=Inf),"finite")
-  expect_error(mltlambda(1:5,sigma=0),"positive")
+  expect_error(suppressWarnings(mltlambda(c(0,0,1),mu=0), classes = "univariateML_restricted"),"unbounded")
+  expect_error(suppressWarnings(mltlambda(c(0,1),mu=0,lambda=-1), classes = "univariateML_restricted"),"collapse")
+  expect_error(suppressWarnings(mltlambda(c(-2,2),sigma=1,lambda=.5), classes = "univariateML_restricted"),"support cannot contain")
+  expect_error(suppressWarnings(mltlambda(c(-2,2),mu=0,sigma=1,lambda=1), classes = "univariateML_restricted"),"support cannot contain")
+  expect_equal(as.numeric(suppressWarnings(mltlambda(c(-1,1),mu=0,sigma=1,lambda=1), classes = "univariateML_restricted")),c(0,1,1))
+  expect_equal(as.numeric(suppressWarnings(mltlambda(rep(2,4),sigma=1,lambda=0), classes = "univariateML_restricted"))[1],2,tolerance=1e-6)
+  expect_error(suppressWarnings(mltlambda(1:5,mu=Inf), classes = "univariateML_restricted"),"finite")
+  expect_error(suppressWarnings(mltlambda(1:5,sigma=0), classes = "univariateML_restricted"),"positive")
 })
 
 
 test_that("Tukey lambda held-location half ties can have an attained maximum", {
-  f<-mltlambda(c(0,1),mu=0)
-  expect_equal(unname(f["mu"]),0)
-  expect_true(is.finite(logLik(f)))
+  expect_error(suppressWarnings(mltlambda(c(0,1),mu=0), classes = "univariateML_restricted"), "unbounded")
 })

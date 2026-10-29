@@ -41,3 +41,16 @@ TEST_CASE("cmb: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qcmb(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rcmb(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("CMB P3 endpoint and zero-size members are attained") {
+ const std::vector<int> z{0,0}, top{5,5}, bad{0,1};
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(double nu:{-2.0,0.0,2.0,nan}) {
+   auto r=cppunivariate::cmb_mle({z.data(),z.size()},5,1e-10,100,nan,nu);
+   CHECK(r.status==cppunivariate::CmbStatus::Ok); CHECK(r.prob==0); CHECK(r.logLik==0);
+   r=cppunivariate::cmb_mle({top.data(),top.size()},5,1e-10,100,nan,nu);
+   CHECK(r.status==cppunivariate::CmbStatus::Ok); CHECK(r.prob==1);
+ }
+ CHECK(cppunivariate::cmb_mle({z.data(),z.size()},0).status==cppunivariate::CmbStatus::Ok);
+ CHECK(cppunivariate::cmb_mle({bad.data(),bad.size()},5,1e-10,100,0).status==cppunivariate::CmbStatus::InvalidInput);
+}

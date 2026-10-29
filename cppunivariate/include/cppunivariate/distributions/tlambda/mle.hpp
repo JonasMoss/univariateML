@@ -7,8 +7,11 @@
 #include <limits>
 #include <vector>
 namespace cppunivariate {
+inline constexpr double kTlambdaLambdaLower = -1.0;
+inline constexpr double kTlambdaLambdaUpper = 1.0;
+
 enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport };
-struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; };
+struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; };
 namespace tlambda_detail {
 inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda) {
   const double mu=lo+(hi-lo)/2;
@@ -31,7 +34,7 @@ inline Point search(span x,std::array<double,3> start,bool fixed,double tol,int 
   std::vector<int> index; if(!hold_mu)index.push_back(0);if(!hold_sigma)index.push_back(1);if(!fixed)index.push_back(2);
   const int dim=static_cast<int>(index.size());
   auto eval=[&](std::array<double,3> t) -> double {
-    if(t[2]<-1 || (t[2]>1 && !(fixed&&t[2]==2)) || !std::isfinite(t[0]) || !std::isfinite(t[1]) || !(std::exp(t[1])>0) || !std::isfinite(std::exp(t[1]))) return INFINITY;
+    if((!fixed && !hold_mu && t[2]<-1) || (!fixed && t[2]>1) || !std::isfinite(t[0]) || !std::isfinite(t[1]) || !(std::exp(t[1])>0) || !std::isfinite(std::exp(t[1]))) return INFINITY;
     return -likelihood(x,t[0],std::exp(t[1]),t[2]);
   };
   if(dim==0){converged=true;return {start,eval(start)};}
@@ -62,17 +65,17 @@ inline Point search(span x,std::array<double,3> start,bool fixed,double tol,int 
   return v[0];
 }
 }
-inline TlambdaResult tlambda_mle(span x,double tol=1e-7,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
+inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-7,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   TlambdaResult bad{nan,nan,lambda,nan,0,TlambdaStatus::InvalidData};
   const bool fixed=!std::isnan(lambda);
-  if(fixed && (!std::isfinite(lambda) || lambda< -1 || (lambda>1 && lambda!=2))) {bad.status=TlambdaStatus::InvalidShape;return bad;}
+  if(fixed && !std::isfinite(lambda)) {bad.status=TlambdaStatus::InvalidShape;return bad;}
   if(x.size()<3 || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
   std::vector<double> y(x.begin(),x.end());
   for(double v:y) if(!std::isfinite(v)) return bad;
   std::sort(y.begin(),y.end());
   std::size_t run=1;
-  for(std::size_t j=1;j<y.size();++j) {run=y[j]==y[j-1]?run+1:1;if(2*run>=y.size())return bad;}
+  for(std::size_t j=1;j<y.size();++j) {run=y[j]==y[j-1]?run+1:1;if(fixed && lambda<0 ? run*std::abs(lambda)>=y.size()-run : 2*run>=y.size())return bad;}
   const double origin=y.front(),upper=y.back(),range=upper-origin,n=static_cast<double>(y.size());
   if(!(range>0) || !std::isfinite(range)) return bad;
   if(fixed && (lambda==1 || lambda==2)) return tlambda_detail::uniform_fit(y.front(),y.back(),n,lambda);
@@ -115,16 +118,17 @@ inline TlambdaResult tlambda_mle(span x,double tol=1e-7,int maxit=1000,double la
   result.iterations=iterations;
   return result;
 }
-inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,double mu,double sigma) {
-  if(std::isnan(mu)&&std::isnan(sigma))return tlambda_mle(x,tol,maxit,lambda);
+inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,double mu,double sigma) {
+  if(std::isnan(mu)&&std::isnan(sigma))return tlambda_mle_impl(x,tol,maxit,lambda);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   TlambdaResult bad{nan,nan,lambda,nan,0,TlambdaStatus::InvalidData};
   const bool fm=!std::isnan(mu),fs=!std::isnan(sigma),fl=!std::isnan(lambda);
-  if(fl&&(!std::isfinite(lambda)||lambda< -1||(lambda>1&&lambda!=2))){bad.status=TlambdaStatus::InvalidShape;return bad;}
+  if(fl&&!std::isfinite(lambda)){bad.status=TlambdaStatus::InvalidShape;return bad;}
   if(x.empty()||!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
   double collapse=-INFINITY;
   if(!fs) {
+    if(fm && !fl && std::count(y.begin(),y.end(),mu)>0){bad.status=TlambdaStatus::Unbounded;return bad;}
     const double k=static_cast<double>(std::count(y.begin(),y.end(),mu));
     const double exponent=(fl&&lambda<0)?(y.size()-k)/std::abs(lambda)-k:(fl?k==y.size()?-1:1:y.size()-2*k);
     if(exponent<0){bad.status=TlambdaStatus::Unbounded;return bad;}
@@ -156,15 +160,16 @@ inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,doubl
   }
   if(fl&&fs&&lambda>0) {
     const double radius=fm?std::max(std::abs(y.front()-m),std::abs(y.back()-m)):(y.back()-y.front())/2;
-    if(radius>=s/lambda){bad.status=TlambdaStatus::InvalidSupport;return bad;}
+    if(lambda<1 ? radius>=s/lambda : radius>s/lambda){bad.status=TlambdaStatus::InvalidSupport;return bad;}
   }
-  const std::vector<double> shapes=fl?std::vector<double>{lambda}:std::vector<double>{-1,-.75,-.5,-.25,0,.14,.3,.5,.7,.9,.99};
+  const std::vector<double> shapes=fl?std::vector<double>{lambda}:std::vector<double>{-16,-8,-4,-2,-1,-.75,-.5,-.25,0,.14,.3,.5,.7,.9,.99};
   int iterations=0;
   for(double l:shapes)for(double centre:fm?std::vector<double>{m}:std::vector<double>{y[y.size()/4],y[y.size()/2],y[3*y.size()/4]}) {
+    if(!fm && l< -1) continue;
     double scale=fs?s:.5;
     if(!fs&&l>0)scale=std::max(scale,1.05*l*std::max(std::abs(y.front()-centre),std::abs(y.back()-centre)));
     bool done=false;
-    auto p=tlambda_detail::search(z,{centre,std::log(scale),l},fl||l== -1,tol,maxit,iterations,done,fm,fs);
+    auto p=tlambda_detail::search(z,{centre,std::log(scale),l},fl||(!fm && l== -1),tol,maxit,iterations,done,fm,fs);
     if(!done)unresolved=std::max(unresolved,-p.f);
     if(done&&std::isfinite(p.f)&&-p.f>value+(best.lambda==1?1e-8*n:1e-12)){value=-p.f;best={p.t[0],std::exp(p.t[1]),p.t[2],-p.f,iterations,TlambdaStatus::Ok};}
   }
@@ -176,4 +181,17 @@ inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,doubl
   best.iterations=iterations;return best;
 }
 
+
+inline TlambdaResult tlambda_mle(span x,double tol=1e-7,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
+  auto r=tlambda_mle_impl(x,tol,maxit,lambda);
+  if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaLower) r.restricted|=16u;
+  if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;
+  return r;
+}
+inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,double mu,double sigma) {
+  auto r=tlambda_mle_impl(x,tol,maxit,lambda,mu,sigma);
+  if(r.status==TlambdaStatus::Ok && (std::isnan(lambda) && std::isnan(mu)) && r.lambda==kTlambdaLambdaLower) r.restricted|=16u;
+  if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;
+  return r;
+}
 }

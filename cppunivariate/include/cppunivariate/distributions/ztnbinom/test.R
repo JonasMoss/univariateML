@@ -136,3 +136,7 @@ test_that("P2 truncated NB held probability includes logarithmic endpoint", {
 test_that("P2 held-probability search respects iteration failure", {
   expect_error(mlztnbinom(c(1,2,5),prob=.4,iterlim=1),"Profile search")
 })
+
+test_that("P3 insufficient profile refinement stops", {
+ expect_error(mlztnbinom(c(0,0,1,2,8)[c(3,4,5)],iterlim=1),"Profile search exhausted")
+})

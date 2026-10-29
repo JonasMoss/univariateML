@@ -55,6 +55,8 @@ inline ZtnbinomResult ztnbinom_mle(ispan x, double tol=1e-10, int maxit=200,
     return ZtnbinomResult{r,p,ll,0,ZtnbinomStatus::Ok};
   };
   if(fixed) return profile(fixed_size);
+  if(maxit < std::ceil(std::log(std::min(tol,0.5)/2)/std::log(0.6180339887498948482)))
+    return {0,0,0,0,ZtnbinomStatus::IterationFailure};
   auto best=profile(0);
   // Include the attained logarithmic face and every bracketed local maximum.
   for(int t=-24;t<=24;++t) {
