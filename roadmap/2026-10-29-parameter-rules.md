@@ -52,7 +52,13 @@ A restriction may apply only while some coefficients are free (Fréchet
 $\lambda \ge 1$ only with `mu` free).
 
 **R6. Data-dependent non-existence** stops with "use `mlX`" (D1) or the
-reason, never with a non-maximizer. This is unchanged.
+reason, never with a non-maximizer. This is unchanged for escapes, but it
+conflicts with CLAUDE.md's "Wrapper failure handling" (nlminb legacy:
+return whatever BFGS landed on after an iteration-limit or line-search
+failure). TASK-77 showed the cost: `mlstd` returned its start values
+after both line searches failed. Proposal (P1): R6 wins. A failed
+optimizer stops with its status unless the score check (the `||g|| <
+1e-3` gate the doctests use) passes at the returned point.
 
 **R7. Domains** are the values the reference accepts. A fit at a natural
 endpoint (binomial `prob = 0`) is an attained member, returned silently.
