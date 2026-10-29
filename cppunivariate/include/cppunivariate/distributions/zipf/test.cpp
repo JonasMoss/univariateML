@@ -54,8 +54,33 @@ TEST_CASE("zipf: large harmonic sums match direct sums") {
       const double l=std::log(static_cast<double>(k)), w=std::pow(static_cast<double>(k),-s);
       a+=w; b+=w*l; c+=w*l*l;
     }
+    for (int q : {1500,5000,9998}) {
+      double upper=0;
+      for (int k=q+1;k<=10000;++k) upper+=std::pow(static_cast<double>(k),-s);
+      CHECK(dist::pzipf(q+.75,10000,s,false)==doctest::Approx(upper/a).epsilon(1e-10));
+      CHECK(dist::pzipf(q+.75,10000,s,false,true)==doctest::Approx(std::log(upper/a)).epsilon(1e-11));
+    }
     CHECK(h.h == doctest::Approx(a).epsilon(1e-11));
     CHECK(h.l == doctest::Approx(b).epsilon(1e-11));
     CHECK(h.l2 == doctest::Approx(c).epsilon(1e-11));
+  }
+}
+
+TEST_CASE("zipf finite sums, upper log tails and billion-point inversion") {
+  for (int N:{1,3,20}) for (double s:{0.0,.1,1.0,5.0}) {
+    double den=0; for (int k=1;k<=N;++k) den+=std::pow(k,-s);
+    for (int k=0;k<=N;++k) {
+      double below=0,above=0;
+      for (int j=1;j<=N;++j) {if (j<=k) below+=std::pow(j,-s); else above+=std::pow(j,-s);}
+      CHECK(dist::pzipf(k+.5,N,s)==doctest::Approx(below/den).epsilon(1e-12));
+      CHECK(dist::pzipf(k+.5,N,s,false)==doctest::Approx(above/den).epsilon(1e-12));
+    }
+  }
+  CHECK(dist::qzipf(.5,2147483647,0)==1073741824);
+  CHECK(dist::pzipf(1e9-1,1e9,100,false,true)==doctest::Approx(dist::dzipf(1e9,1e9,100,true)).epsilon(1e-13));
+  for (double u:{1e-10,.1,.5,.9,1-1e-10}) {
+    const double q=dist::qzipf(u,1e9,.5);
+    CHECK(dist::pzipf(q,1e9,.5)>=u);
+    CHECK(dist::pzipf(q-1,1e9,.5)<u);
   }
 }

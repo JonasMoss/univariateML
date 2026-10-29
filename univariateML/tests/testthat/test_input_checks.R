@@ -52,7 +52,7 @@ for (dens in densities) {
   }
   # Required design quantities (README fit_args): hypergeometric draws `k`
   # and population size `N`; beta-binomial `size`.
-  args <- switch(dens, mlhyper = list(k = 10, N = 50), mlbbinom = list(size = 10), list())
+  args <- switch(dens, mlhyper = list(k = 10, N = 50), mlbbinom = list(size = 10), mlcmb = list(size = 10), list())
   object <- do.call(dens, c(list(x), args))
   density <- univariateML_to_function(object, "d")
   expect_equal(sum(density(x, log = TRUE)), attr(object, "logLik"))

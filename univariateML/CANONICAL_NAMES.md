@@ -42,6 +42,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | betapr     | BetaPrime               | shape1, shape2, scale | extraDistr::dbetapr       | [0, ∞)           |
 | binom      | Binomial                | size, prob         | stats::dbinom             | [0, ∞) integer   |
 | burr       | Burr                    | shape1, shape2, scale | actuar::dburr             | (0, ∞) open      |
+| cmb | Conway--Maxwell--binomial | size, prob, nu | dcmb (package-defined) | [0, size] integer (size required) |
 | cauchy     | Cauchy                  | location, scale    | stats::dcauchy            | (-∞, ∞) open     |
 | dunif      | Discrete uniform        | min, max           | extraDistr::ddunif        | (-∞, ∞) integer  |
 | dweibull   | Discrete Weibull        | shape1, shape2     | extraDistr::ddweibull     | [0, ∞) integer   |
@@ -93,7 +94,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | weibull    | Weibull                 | shape, scale       | stats::dweibull           | (0, ∞) open      |
 | zip        | Zero-inflated Poisson   | lambda, pi         | extraDistr::dzip          | [0, ∞) integer   |
 | zinb       | Zero-inflated negative binomial | size, prob, pi | extraDistr::dzinb | [0, Inf) integer |
-| zipf       | Zipf                    | N, s               | sads::dzipf               | [1, ∞) integer   |
+| zipf       | Zipf                    | N, s               | dzipf (package-defined)               | [1, ∞) integer   |
 | ztpois | Zero-truncated Poisson | lambda | actuar::dztpois | [1, ∞) integer |
 | ztgeom | Zero-truncated geometric | prob | actuar::dztgeom | [1, ∞) integer |
 | ztnbinom | Zero-truncated negative binomial | size, prob | actuar::dztnbinom | [1, ∞) integer |

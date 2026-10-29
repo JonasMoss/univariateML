@@ -21,9 +21,9 @@ Imports:
     actuar,
     fGarch,
     logitnorm,
-    nakagami,
-    sads
+    nakagami
 Suggests:
+    sads,
     jsonlite,
     testthat,
     knitr,

@@ -91,3 +91,5 @@
 #include "distributions/tnorm/mle.hpp"
 #include "distributions/pig/mle.hpp"
 #include "distributions/dweibull/mle.hpp"
+
+#include "distributions/cmb/mle.hpp"
