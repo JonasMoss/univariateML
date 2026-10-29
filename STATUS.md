@@ -35,10 +35,10 @@ own rationale live in `roadmap/`; work in flight is on the board
   `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`.
 - Tier 4 below: start it or not.
 - Parameter rules (R1–R8) are agreed and designed:
-  `roadmap/2026-10-29-parameter-rules.md`. C5 (translate all three half
-  families) and C6 (hypergeometric population size `N` as a coefficient)
-  were picked in the design and await a look. Work is planned as
-  TASK-79..84 (analysis first).
+  `roadmap/2026-10-29-parameter-rules.md`. P0 (existence under every hold)
+  is done: `notes/evaluations/2026-10-29-p0-summary.md`. It proposes
+  amendments A1–A7 (TASK-86, needs decision), which P1 depends on. C5 and
+  C6 were picked in the design and also await a look.
 
 ## Coverage: tier 4 (vector parameters)
 
@@ -56,11 +56,12 @@ own rationale live in `roadmap/`; work in flight is on the board
 
 ## Robustness
 
-- TASK-77, scale equivariance: `mlstd` and `mlsstd` return their start
-  values on data with sd below about 0.03 (daily returns); `mlsstd`
-  reports a false `nu -> 2` escape at small scale; `mlgompertz` fails at
-  large scale; power and fatigue use absolute tolerances. Probe:
-  `notes/evaluations/2026-10-29-scale-equivariance.R`.
+- TASK-85, fitter bugs found by P0: `mlbinom` free `size` not the maximum;
+  `mlkumar` constant data throws a Boost exception; `mlrayleigh` with zeros
+  returns logLik `-Inf`; `mltriang` constant data with held `c`; gev and
+  frechet tie rule too strict.
+- TASK-77 (scale equivariance) is fixed: f9e1222, with
+  `test_scale_equivariance.R`.
 - TASK-75, cross-machine fragility. On simbox (gcc 15.2 or 13.3, BH 1.90,
   glibc 2.39, i7-12700) six tests fail that pass locally (glibc 2.43,
   i7-1355U); the compiler is not the cause:

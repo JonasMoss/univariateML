@@ -10,7 +10,7 @@ r:
   density: extraDistr::dfatigue
   sampler: extraDistr::rfatigue
   control:
-    abstol: Absolute Newton step tolerance in `beta`.
+    abstol: Relative Newton step tolerance in `beta` (the argument name is retained for compatibility).
     iterlim: Maximum number of iterations.
 log_density: log(x-mu+beta) - 3*log(x-mu)/2 - log(beta)/2 - log(2*alpha) - log(2*pi)/2 - ((x-mu)/beta + beta/(x-mu)-2)/(2*alpha**2)
 references:

@@ -1,0 +1,6 @@
+0,0,3 size=3000 ll=-4.79225969155218 limit=-4.79175946922805 variance=2 mean=1 
+0,1,2,5 size=3000 ll=-7.93646260954246 limit=-7.93546147886243 variance=3.5 mean=2 
+0,0,1,4,4 size=3000 ll=-10.0673286928598 limit=-10.0660276765768 variance=3.36 mean=1.8 
+1,1,2,2,3 size=3 ll=-5.70072585046641 limit=-6.88797384622888 variance=0.56 mean=1.8 
+3,3,3,3,3 size=3 ll=0 limit=-7.47961301611863 variance=0 mean=3 
+No counterexample in this finite search.

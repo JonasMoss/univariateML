@@ -33,7 +33,7 @@ struct GompertzResult {
   GompertzStatus status;
 };
 
-inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
+inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool standardized) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, GompertzStatus::IterationFailure};
@@ -41,10 +41,10 @@ inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
   long double total = 0.0L;
   for (auto v : x) total += v;
   const double unit = static_cast<double>(total / static_cast<long double>(n));
-  if (unit > 0.0 && std::isfinite(unit) && (unit < 1e-3 || unit > 1e3)) {
+  if (unit > 0.0 && std::isfinite(unit) && !standardized) {
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / unit;
-    const auto r = gompertz_mle(span{z.data(), n}, tol, maxit);
+    const auto r = gompertz_mle_impl(span{z.data(), n}, tol, maxit, true);
     return {r.a/unit, r.b/unit, r.logLik-static_cast<double>(n)*std::log(unit), r.iterations, r.status};
   }
 
@@ -99,6 +99,10 @@ inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
   const double logLik =
       dn * std::log(a) + b * sum_x - (a / b) * (sum_exp_bx - dn);
   return {a, b, logLik, iter, GompertzStatus::Ok};
+}
+
+inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
+  return gompertz_mle_impl(x, tol, maxit, false);
 }
 
 }  // namespace cppunivariate

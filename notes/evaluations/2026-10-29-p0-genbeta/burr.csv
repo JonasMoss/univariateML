@@ -1,0 +1,113 @@
+"family","sample","n","held","oracle","master","held_ok","difference","message","convergence"
+"burr","n2",2,"",0.71105972874487,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","n2",2,"shape1",-0.259961381793724,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","n2",2,"shape2",-0.637485694564953,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","n2",2,"scale",-0.219639755325556,-0.219639755325515,TRUE,4.10782519111308e-14,"",0
+"burr","n2",2,"shape1+shape2",-1.24909845740997,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","n2",2,"shape1+scale",-0.444511089874135,-0.219639755325515,FALSE,0.22487133454862,"",0
+"burr","n2",2,"shape2+scale",-1.06101742286397,-0.219639755325515,FALSE,0.841377667538451,"",0
+"burr","n3",3,"",-4.16138945404959,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",1
+"burr","n3",3,"shape1",-4.74823836520293,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","n3",3,"shape2",-4.19656008900064,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",1
+"burr","n3",3,"scale",-4.9008674299761,-4.90086742997597,TRUE,1.34114941374719e-13,"",0
+"burr","n3",3,"shape1+shape2",-4.75200780507054,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","n3",3,"shape1+scale",-4.96991971315952,-4.90086742997597,FALSE,0.0690522831835469,"",0
+"burr","n3",3,"shape2+scale",-4.9056624528314,-4.90086742997597,FALSE,0.00479502285543365,"",0
+"burr","n5",5,"",-4.6453735158791,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","n5",5,"shape1",-5.83170641044554,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","n5",5,"shape2",-5.89202771013129,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","n5",5,"scale",-5.73111821507269,-5.7311182150726,TRUE,9.32587340685131e-14,"",0
+"burr","n5",5,"shape1+shape2",-5.9756206453345,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","n5",5,"shape1+scale",-5.91894055474676,-5.7311182150726,FALSE,0.187822339674156,"",0
+"burr","n5",5,"shape2+scale",-5.95990836635736,-5.7311182150726,FALSE,0.22879015128476,"",0
+"burr","n20",20,"",-15.1460737667315,-15.1460737667308,TRUE,6.50146603220492e-13,"",0
+"burr","n20",20,"shape1",-15.1687711327579,-15.1460737667308,FALSE,0.0226973660270247,"",0
+"burr","n20",20,"shape2",-15.403743454813,-15.1460737667308,FALSE,0.257669688082148,"",0
+"burr","n20",20,"scale",-15.1616525835269,-15.1616525835265,TRUE,4.45865566689463e-13,"",0
+"burr","n20",20,"shape1+shape2",-16.360050024058,-15.1460737667308,FALSE,1.21397625732717,"",0
+"burr","n20",20,"shape1+scale",-16.3493124090126,-15.1616525835265,FALSE,1.1876598254861,"",0
+"burr","n20",20,"shape2+scale",-15.6510576134532,-15.1616525835265,FALSE,0.489405029926681,"",0
+"burr","n100",100,"",-143.686823257519,-143.686823257513,TRUE,6.84963197272737e-12,"",0
+"burr","n100",100,"shape1",-146.197871537138,-143.686823257513,FALSE,2.51104827962553,"",0
+"burr","n100",100,"shape2",-145.438634356962,-143.686823257512,FALSE,1.75181109944981,"",0
+"burr","n100",100,"scale",-145.324736850027,-145.324736850026,TRUE,1.13686837721616e-13,"",0
+"burr","n100",100,"shape1+shape2",-146.201732321723,-143.686823257512,FALSE,2.51490906421057,"",0
+"burr","n100",100,"shape1+scale",-146.580985326396,-145.324736850026,FALSE,1.25624847636985,"",0
+"burr","n100",100,"shape2+scale",-145.576815126411,-145.324736850026,FALSE,0.252078276384907,"",0
+"burr","n1000",1000,"",-1298.86470185401,-1298.86470185397,TRUE,3.84261511499062e-11,"",0
+"burr","n1000",1000,"shape1",-1299.24635845038,-1298.86470185397,FALSE,0.381656596411631,"",0
+"burr","n1000",1000,"shape2",-1298.97946498581,-1298.86470185397,FALSE,0.114763131845621,"",0
+"burr","n1000",1000,"scale",-1299.52478665041,-1299.52478665041,TRUE,4.54747350886464e-13,"",0
+"burr","n1000",1000,"shape1+shape2",-1299.35282234903,-1298.86470185397,FALSE,0.488120495057046,"",0
+"burr","n1000",1000,"shape1+scale",-1299.78391240315,-1299.52478665041,FALSE,0.259125752743103,"",0
+"burr","n1000",1000,"shape2+scale",-1299.79818451717,-1299.52478665041,FALSE,0.273397866759069,"",0
+"burr","ties",20,"",-9.75685695460073,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","ties",20,"shape1",-11.126523059097,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","ties",20,"shape2",-9.91248485967787,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",1
+"burr","ties",20,"scale",-10.5331150985277,-10.5331150985275,TRUE,1.88293824976427e-13,"",0
+"burr","ties",20,"shape1+shape2",-13.4835727011203,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","ties",20,"shape1+scale",-13.1156529667892,-10.5331150985275,FALSE,2.58253786826163,"",0
+"burr","ties",20,"shape2+scale",-11.9459143409895,-10.5331150985275,FALSE,1.41279924246194,"",0
+"burr","constant",5,"",40.8469415420779,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","constant",5,"shape1",100.978625214324,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",1
+"burr","constant",5,"shape2",0.252946877379902,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","constant",5,"scale",29.945723833929,NA,NA,NA,"burr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale",0
+"burr","constant",5,"shape1+shape2",-1.67852451058382,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","constant",5,"shape1+scale",-0.552294640256178,NA,NA,NA,"burr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale",0
+"burr","constant",5,"shape2+scale",-0.709729597663005,NA,NA,NA,"burr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale",0
+"burr","weibull",100,"",-61.3233961733342,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","weibull",100,"shape1",-69.010420909846,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","weibull",100,"shape2",-61.4231462438408,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",1
+"burr","weibull",100,"scale",-66.1246691227944,-66.1246691227938,TRUE,6.25277607468888e-13,"",0
+"burr","weibull",100,"shape1+shape2",-77.8338366625627,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","weibull",100,"shape1+scale",-73.6579605373685,-66.1246691227938,FALSE,7.53329141457471,"",0
+"burr","weibull",100,"shape2+scale",-71.6997915503492,-66.1246691227938,FALSE,5.5751224275554,"",0
+"burr","pareto",100,"",-79.2514767838451,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","pareto",100,"shape1",-131.775668951873,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","pareto",100,"shape2",-146.825933639731,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","pareto",100,"scale",-79.7011545907365,NA,NA,NA,"The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.",0
+"burr","pareto",100,"shape1+shape2",-147.970067365193,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","pareto",100,"shape1+scale",-158.159010420142,NA,NA,NA,"The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.",0
+"burr","pareto",100,"shape2+scale",-156.214756127519,NA,NA,NA,"The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.",0
+"burr","ties_half",20,"",5.46542846456035,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","ties_half",20,"shape1",-8.31275812332928,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","ties_half",20,"shape2",-8.50366886535726,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","ties_half",20,"scale",-10.1595844738441,-10.1595844738433,TRUE,8.04689648248313e-13,"",0
+"burr","ties_half",20,"shape1+shape2",-8.54457440114089,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","ties_half",20,"shape1+scale",-16.0495691987724,-10.1595844738433,FALSE,5.88998472492909,"",0
+"burr","ties_half",20,"shape2+scale",-11.6747843920395,-10.1595844738433,FALSE,1.51519991819613,"",0
+"burr","ties_major",20,"",6.97123060183337,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","ties_major",20,"shape1",-7.99581196375749,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","ties_major",20,"shape2",-8.11691661115825,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","ties_major",20,"scale",-9.96437366428815,-9.96437366428752,TRUE,6.27053964308288e-13,"",0
+"burr","ties_major",20,"shape1+shape2",-8.19427626576082,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","ties_major",20,"shape1+scale",-16.0187733943606,-9.96437366428752,FALSE,6.05439973007304,"",0
+"burr","ties_major",20,"shape2+scale",-11.8114345566861,-9.96437366428752,FALSE,1.84706089239862,"",0
+"burr","below",5,"",-0.0178259500485526,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","below",5,"shape1",-0.391080264874728,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","below",5,"shape2",-0.0496368590393411,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","below",5,"scale",-0.124188264650864,-0.124188264650721,TRUE,1.42441614059408e-13,"",0
+"burr","below",5,"shape1+shape2",-0.898753669073372,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","below",5,"shape1+scale",-3.11301700143552,-0.124188264650721,FALSE,2.9888287367848,"",0
+"burr","below",5,"shape2+scale",-0.262066748882706,-0.124188264650721,FALSE,0.137878484231985,"",0
+"burr","above",5,"",-6.85250996622785,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","above",5,"shape1",-8.07984492065011,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","above",5,"shape2",-8.21378301975377,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","above",5,"scale",-7.50400411338862,NA,NA,NA,"The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.",0
+"burr","above",5,"shape1+shape2",-8.65088622198243,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.",0
+"burr","above",5,"shape1+scale",-10.7580415689936,NA,NA,NA,"The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.",0
+"burr","above",5,"shape2+scale",-9.71528127153255,NA,NA,NA,"The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.",0
+"burr","cross",5,"",-4.08391305688857,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","cross",5,"shape1",-4.56746657234475,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","cross",5,"shape2",-4.08417851710798,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","cross",5,"scale",-4.53054011984157,-4.53054011984155,TRUE,1.68753899743024e-14,"",0
+"burr","cross",5,"shape1+shape2",-4.86458844076999,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","cross",5,"shape1+scale",-4.5684444991532,-4.53054011984155,FALSE,0.0379043793116445,"",0
+"burr","cross",5,"shape2+scale",-4.74534756281746,-4.53054011984155,FALSE,0.214807442975909,"",0
+"burr","at",5,"",-0.446359047817529,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","at",5,"shape1",-1.69715995555742,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","at",5,"shape2",-1.4962340017522,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","at",5,"scale",-1.17112402742238,-1.17112402742233,TRUE,4.44089209850063e-14,"",0
+"burr","at",5,"shape1+shape2",-3.02318992251148,NA,NA,NA,"The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.",0
+"burr","at",5,"shape1+scale",-2.21041442185648,-1.17112402742233,FALSE,1.03929039443415,"",0
+"burr","at",5,"shape2+scale",-2.46672995629402,-1.17112402742233,FALSE,1.29560592887168,"",0

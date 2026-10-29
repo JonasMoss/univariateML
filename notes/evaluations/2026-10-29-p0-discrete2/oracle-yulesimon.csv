@@ -1,0 +1,18 @@
+"id","sample","n","held","oracle","master","reference_at_fit","status"
+"yulesimon",1,20,"",-30.7909709565217,-30.7909709565217,-30.7909709565217,"ok"
+"yulesimon",2,100,"",-119.466184449199,-119.466184449199,-119.466184449199,"ok"
+"yulesimon",3,1000,"",-1208.59611174548,-1208.59611174548,-1208.59611174548,"ok"
+"yulesimon",4,5,"",-0.000617011063823725,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are one (point mass at one).
+"
+"yulesimon",5,5,"",-2.84940522625488,-2.84940522625488,-2.84940522625489,"ok"
+"yulesimon",6,2,"",-2.17682907674352,-2.17682907674352,-2.17682907674352,"ok"
+"yulesimon",7,3,"",-2.45807520239549,-2.45807520239549,-2.45807520239549,"ok"
+"yulesimon",8,5,"",-7.08961061679882,-7.08961061679882,-7.08961061679882,"ok"
+"yulesimon",9,20,"",-29.1997671701993,-29.1997671701993,-29.1997671701993,"ok"
+"yulesimon",10,20,"",-49.595494707266,-49.595494707266,-49.595494707266,"ok"
+"yulesimon",11,20,"",-15.9039467858231,-15.9039467858231,-15.9039467858231,"ok"
+"yulesimon",12,20,"",-0.0024680442552949,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are one (point mass at one).
+"
+"yulesimon",13,5,"",-0.000617011063823725,NA,NA,"Error : The maximum likelihood estimator does not exist: all observations are one (point mass at one).
+"
+"yulesimon",14,20,"",-52.9380813264606,-52.9380813264606,-52.9380813264606,"ok"

@@ -1390,3 +1390,34 @@ univariateML_reference_fixes <- c(univariateML_reference_fixes, list(
       pbhatt_reference_(q, mu, sigma, a, lower.tail, log.p)
   )
 ))
+
+#' Reject argument names that are not exact adapter arguments.
+#'
+#' The generated `ml***` wrappers pass `...` to their adapters, and R
+#' matches argument names partially: `mlweibull(x, shape = 2)` would match
+#' the start value `shape0` and estimate the shape the user meant to hold.
+#' Every named argument must therefore be an exact adapter argument.
+#'
+#' @param adapter The adapter function `ml***_`.
+#' @param dots `list(...)` from the wrapper.
+#' @param name Name of the `ml***` function.
+#' @return Invisible `NULL`; stops on an unknown name.
+#' @keywords internal
+ml_check_args <- function(adapter, dots, name) {
+  given <- names(dots)
+  if (is.null(given)) return(invisible(NULL))
+  given <- given[nzchar(given)]
+  allowed <- setdiff(names(formals(adapter)), "x")
+  bad <- setdiff(given, allowed)
+  if (!length(bad)) return(invisible(NULL))
+  coefs <- univariateML_metadata[[name]]$names
+  held <- intersect(bad, coefs)
+  why <- if (length(held)) {
+    paste0("`", name, "` cannot hold ", paste0("`", held, "`", collapse = ", "),
+           " (not supported yet)")
+  } else {
+    paste0("`", name, "` has no argument ", paste0("`", bad, "`", collapse = ", "))
+  }
+  stop(why, "; its arguments are ", paste0("`", allowed, "`", collapse = ", "),
+       ". Argument names must match exactly.", call. = FALSE)
+}

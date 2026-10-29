@@ -18,6 +18,11 @@
   vignette and the `abalone` data set it used are removed, and with them
   copula and dplyr.
 
+* Arguments to the `ml***` fitters must match exactly. A hold the fitter
+  does not support stops (`mlweibull(x, shape = 2)`: "cannot hold
+  `shape`") instead of being matched partially to a start value (`shape0`)
+  and estimated.
+
 ## New models
 
 * `mlhnorm()` (translated half-normal), `mllst()` (location-scale t),

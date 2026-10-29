@@ -1,6 +1,6 @@
 // Birnbaum-Saunders (Fatigue Life) MLE.
 //
-// 1D Newton on beta with absolute-step convergence; alpha is the
+// 1D Newton on beta with relative-step convergence; alpha is the
 // closed-form maximiser given beta. Log-likelihood evaluated via
 // Rmath dnorm in standard form.
 
@@ -25,7 +25,7 @@ struct FatigueResult {
   int iterations;
 };
 
-inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
+inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standardized) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0};
@@ -34,13 +34,13 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
   double unit = 0.0;
   for (auto v : x) { constant = constant && v == x[0]; unit = std::max(unit,v); }
   if (constant) return {kNaN,kNaN,kNaN,0};
-  if (unit > 0.0 && std::isfinite(unit) && (unit < 1e-100 || unit > 1e100)) {
+  if (unit > 0.0 && std::isfinite(unit) && !standardized) {
     std::vector<double> y(n);
     for (std::size_t i=0;i<n;++i) {
       y[i]=x[i]/unit;
       if (!(y[i]>0.0)) return {kNaN,kNaN,kNaN,0};
     }
-    const auto r=fatigue_mle(span{y.data(),n},tol,maxit);
+    const auto r=fatigue_mle_impl(span{y.data(),n},tol,maxit,true);
     return {r.alpha,r.beta*unit,r.logLik-static_cast<double>(n)*std::log(unit),r.iterations};
   }
 
@@ -75,9 +75,7 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
 
   // Method-of-moments start.
   const double beta0 = sum_sqrt_x / sum_inv_sqrt_x;
-  auto nr = (beta0 < 1e-3 || beta0 > 1e3)
-      ? cppunivariate::newton_raphson_1d(beta0, f_over_df, tol, maxit)
-      : cppunivariate::newton_raphson_1d_abs(beta0, f_over_df, tol, maxit);
+  auto nr = cppunivariate::newton_raphson_1d(beta0, f_over_df, tol, maxit);
   double beta = nr.x;
   if (!(beta>0.0) || !std::isfinite(beta) || !nr.converged) {
     // The profile root lies between harmonic and arithmetic means.
@@ -118,6 +116,10 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
     logLik += log_pref + log_phi;
   }
   return {alpha, beta, logLik, nr.iterations};
+}
+
+inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
+  return fatigue_mle_impl(x, tol, maxit, false);
 }
 
 }  // namespace cppunivariate

@@ -1,0 +1,5 @@
+"case","n","mean","variance","status"
+"two",2,0.5,0.2401,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-1.30562e-15 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit."
+"unif",100,0.474550399587024,0.0827200854576761,"returned"
+"exp",100,1.13397171848294,1.25082646153668,"returned"
+"reflected",100,-1.00178811862154,0.880966843134916,"returned"

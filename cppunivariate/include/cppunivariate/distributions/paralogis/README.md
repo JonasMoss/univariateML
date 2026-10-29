@@ -10,7 +10,7 @@ r:
   sampler: actuar::rparalogis
   control:
     shape0: Optional starting value for `shape`; `NULL` uses `max(1.5, 2 / sd(log(x / median(x))))`.
-    gradtol: Gradient tolerance for the free fit; with fixed scale, tolerance on the mean shape score in log coordinates (at most 1e-10).
+    gradtol: Gradient tolerance for the free fit after dividing data by the sample median; with fixed scale, tolerance on the mean shape score in log coordinates (at most 1e-10).
     iterlim: Maximum number of BFGS or fixed-scale Newton iterations.
 log_density: 2*log(shape) + shape*log(x/scale) - log(x) - (shape + 1)*log(1 + (x/scale)^shape)
 references:

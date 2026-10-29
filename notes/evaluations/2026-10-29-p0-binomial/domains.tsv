@@ -1,0 +1,8 @@
+"case"	"value"
+"cmb prob=0"	"1,0,0"
+"cmb prob=1"	"0,0,1"
+"cmb size>1e7"	"NaN"
+"tbinom infinite bounds"	"0.125"
+"bbinom shape=0"	"NaN,0,0,0"
+"extraDistr::dnhyper(3,0,5,3)"	"subprocess exit 139"
+"extraDistr::dnhyper(0,0,0,0)"	"subprocess exit 139"

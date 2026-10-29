@@ -178,7 +178,7 @@ inline StudentTResult student_t_mle_fixed_nu(span x, double nu, double tol, int 
   return {r.mu,r.sigma*std::sqrt(nu/(nu-2.0)),nu,r.logLik,r.iterations,status};
 }
 
-inline StudentTResult student_t_mle(span x, double tol, int maxit) {
+inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool standardized) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::InvalidStart};
@@ -191,13 +191,14 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   if (k == 2*(n-k))
     return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::ScaleBoundary};
 
+  // Use the same dimensionless optimisation problem in every system of units.
   const auto moments = norm_detail::moments(x);
   if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
-      (moments.sd < 1e-3 || moments.sd > 1e3 || std::abs(moments.mean) > 1e6 * moments.sd)) {
+      !standardized) {
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i)
       z[i] = static_cast<double>((static_cast<long double>(x[i]) - moments.mean) / moments.sd);
-    auto r = student_t_mle(span{z.data(), n}, tol, maxit);
+    auto r = student_t_mle_impl(span{z.data(), n}, tol, maxit, true);
     r.mu = moments.mean + moments.sd*r.mu;
     r.sigma *= moments.sd;
     r.logLik -= static_cast<double>(n)*std::log(moments.sd);
@@ -298,6 +299,10 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
     return {mu, sigma, nu, logLik, r.iterations, StudentTStatus::BfgsFailure};
   }
   return {mu, sigma, nu, logLik, r.iterations, StudentTStatus::Ok};
+}
+
+inline StudentTResult student_t_mle(span x, double tol, int maxit) {
+  return student_t_mle_impl(x, tol, maxit, false);
 }
 
 }  // namespace cppunivariate

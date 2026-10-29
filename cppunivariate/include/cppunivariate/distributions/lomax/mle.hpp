@@ -232,13 +232,11 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit,
   LomaxResult retained{nan,nan,nan,0,LomaxStatus::InvalidStart};
   // Preserve the established Newton solution as an additional candidate.
   if (second > 2.0 && std::isfinite(second)) {
-    // Keep legacy arithmetic and stopping tolerance on ordinary-scale data.
-    // This path is only a candidate; the global comparison is dimensionless.
-    const bool ordinary = m>=1e-3 && m<=1e3;
-    auto r=ordinary ? lomax_newton_candidate(x,tol,maxit,lambda0)
-        : lomax_newton_candidate(span{y.data(),n},tol,maxit,
-            std::isfinite(lambda0) ? lambda0*m : lambda0);
-    if (!ordinary) {r.lambda/=m;r.logLik-=dn*std::log(m);}
+    // The Newton candidate must use the same dimensionless tolerance as
+    // the global comparison, including for ordinary-scale observations.
+    auto r=lomax_newton_candidate(span{y.data(),n},tol,maxit,
+        std::isfinite(lambda0) ? lambda0*m : lambda0);
+    r.lambda/=m; r.logLik-=dn*std::log(m);
     if (r.status==LomaxStatus::Ok && r.lambda>0.0) {
       const double logq=std::log(r.lambda)+std::log(m);
       double u=std::max(1e-16, logq>1.0 ? logq-std::log(logq) : std::exp(logq));

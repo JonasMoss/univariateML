@@ -1,0 +1,23 @@
+constant interior paths, k, beta, kumar, logitnorm, unif, triang
+10 4.59788 11.09464 14.05381 8.04719 11.51293 
+50 8.726769 24.14157 22.101 16.09438 19.56012 
+100 10.47283 27.6073 25.56674 19.56012 23.02585 
+500 14.50698 35.65449 33.61393 27.6073 31.07304 
+Held-parameter collapse paths (log likelihood; n=5)
+10 logitnorm-mu 14.05381 unif-min 11.51293 unif-max 11.51293 triang-a-or-a+c 14.97866 triang-b-or-b+c 14.97866 triang-c 11.51293 
+50 logitnorm-mu 22.101 unif-min 19.56012 unif-max 19.56012 triang-a-or-a+c 23.02585 triang-b-or-b+c 23.02585 triang-c 19.56012 
+100 logitnorm-mu 25.56674 unif-min 23.02585 unif-max 23.02585 triang-a-or-a+c 26.49159 triang-b-or-b+c 26.49159 triang-c 23.02585 
+500 logitnorm-mu 33.61393 unif-min 31.07304 unif-max 31.07304 triang-a-or-a+c 34.53878 triang-b-or-b+c 34.53878 triang-c 31.07304 
+Reference boundary probes
+beta 0 2 0 
+beta 2 0 0 
+beta 0 0 0 
+beta Inf 2 0 
+beta 2 Inf 0 
+beta Inf Inf 0 
+unif collapsed NaN 
+beta constant: The beta maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as both shapes grow. 
+kumar constant: Error in function boost::math::trunc<long double>(long double): Value -nan can not be represented in the target integer type. 
+logitnorm constant: The logitnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero. 
+unif constant: The uniform maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as max - min shrinks to zero. 
+triang constant: Triangular likelihood is unbounded for constant data with these fixed parameters. 

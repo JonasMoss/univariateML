@@ -1,0 +1,99 @@
+"id","sample","n","held","oracle_ll","oracle_parameters","package","package_ll","delta"
+"bhatt","default20",20,"",-36.0693802117016,"0.66082632,1.4661387,0.15681695","Bhattacharjee likelihood selects the uniform face: use `mlunif`.",NA,NA
+"bhatt","default20",20,"mu",-35.2801981936841,"0,5.4680637e-09,2.9178958","unsupported",NA,NA
+"bhatt","default20",20,"sigma",-36.1976967546783,"0.60990518,1,1.8393601","finite",-36.1976967511572,-3.52112294876861e-09
+"bhatt","default20",20,"mu,sigma",-37.7148141455997,"0,1,2.2037578","unsupported",NA,NA
+"bhatt","default20",20,"a",-36.246330853186,"0.59856644,1.0004491,2","finite",-36.2463308376957,-1.54902934923484e-08
+"bhatt","default20",20,"mu,a",-37.7488109249931,"0,1.0955308,2","unsupported",NA,NA
+"bhatt","default20",20,"sigma,a",-36.2463318819017,"0.59850879,1,2","finite",-36.2463318742969,-7.60481100314792e-09
+"bhatt","default100",100,"",-171.965688947737,"0.0051991586,0.50450489,2.2868308","finite",-171.965688886653,-6.10842221249186e-08
+"bhatt","default100",100,"mu",-171.966759415696,"0,0.50412593,2.2872516","unsupported",NA,NA
+"bhatt","default100",100,"sigma",-175.218365386462,"0.0073303129,1,1.7988899","finite",-175.218365380203,-6.25902885076357e-09
+"bhatt","default100",100,"mu,sigma",-175.21972535543,"0,1,1.7989324","unsupported",NA,NA
+"bhatt","default100",100,"a",-173.136976799799,"0.010498807,0.67733164,2","finite",-173.13697668261,-1.17189244974725e-07
+"bhatt","default100",100,"mu,a",-173.141031078331,"0,0.67751842,2","unsupported",NA,NA
+"bhatt","default100",100,"sigma,a",-175.640388947904,"0.0078529477,1,2","finite",-175.64038890784,-4.00640089992521e-08
+"bhatt","default1000",1000,"",-1825.12960544114,"0.060027959,0.99288845,1.9667525","finite",-1825.12960515029,-2.90848674922017e-07
+"bhatt","default1000",1000,"mu",-1825.9553496343,"0,0.98934783,1.9755052","unsupported",NA,NA
+"bhatt","default1000",1000,"sigma",-1825.13320210409,"0.060272977,1,1.9565005","finite",-1825.13320189263,-2.11466385735548e-07
+"bhatt","default1000",1000,"mu,sigma",-1825.96347498962,"0,1,1.9601267","unsupported",NA,NA
+"bhatt","default1000",1000,"a",-1825.15983732307,"0.059496472,0.97567958,2","finite",-1825.15983695103,-3.7204108593869e-07
+"bhatt","default1000",1000,"mu,a",-1825.97207500748,"0,0.97663083,2","unsupported",NA,NA
+"bhatt","default1000",1000,"sigma,a",-1825.32556493453,"0.059901757,1,2","finite",-1825.32556488679,-4.77400590170873e-08
+"bhatt","small2",2,"",-0.152669006242697,"-0.61321302,2.0201248e-09,0.53966177","Bhattacharjee likelihood selects the uniform face: use `mlunif`.",NA,NA
+"bhatt","small2",2,"mu",-1.67081163985037,"0,1.0978584e-09,1.1528748","unsupported",NA,NA
+"bhatt","small2",2,"sigma",-2.12911188621389,"-0.61323883,1,7.4659437e-05","Bhattacharjee likelihood selects the normal face with sigma held. Use `mlnorm` for an unrestricted fit; it does not hold sigma.",NA,NA
+"bhatt","small2",2,"mu,sigma",-2.50514206207597,"0,1,2.5811748e-09","unsupported",NA,NA
+"bhatt","small2",2,"a",-2.77258872223978,"-0.54238241,0.16665779,2","Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.",NA,NA
+"bhatt","small2",2,"mu,a",-2.77258872223978,"0,0.059796228,2","unsupported",NA,NA
+"bhatt","small2",2,"sigma,a",-2.93424228802611,"-0.61321302,1,2","finite",-2.93424228802611,0
+"bhatt","small3",3,"",-3.20491826301019,"0.82562435,3.7137011e-07,1.4552225","Bhattacharjee likelihood selects the uniform face: use `mlunif`.",NA,NA
+"bhatt","small3",3,"mu",-4.55307939864831,"0,2.1739518e-09,2.2808449","unsupported",NA,NA
+"bhatt","small3",3,"sigma",-5.02616419806066,"0.50322761,1,1.6630761","finite",-5.02616419699267,-1.06799369348209e-09
+"bhatt","small3",3,"mu,sigma",-5.2342052096474,"0,1,1.6714086","unsupported",NA,NA
+"bhatt","small3",3,"a",-4.15888308335967,"0.7349304,0.031486904,2","Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.",NA,NA
+"bhatt","small3",3,"mu,a",-5.24318634589102,"0,0.83792816,2","unsupported",NA,NA
+"bhatt","small3",3,"sigma,a",-5.06210756188867,"0.55036547,1,2","finite",-5.06210755860283,-3.28583737996269e-09
+"bhatt","small5",5,"",-5.6134696687445,"-0.86554789,1.2684293e-08,1.5365609","Bhattacharjee likelihood selects the uniform face: use `mlunif`.",NA,NA
+"bhatt","small5",5,"mu",-7.75987556258445,"0,1.1422104,0.025647387","unsupported",NA,NA
+"bhatt","small5",5,"sigma",-7.30602147175362,"-0.4668936,1,0.5271007","finite",-7.30602147133162,-4.21996659838442e-10
+"bhatt","small5",5,"mu,sigma",-7.77823700039002,"0,1,0.85618103","unsupported",NA,NA
+"bhatt","small5",5,"a",-6.93147180559945,"-1.0372202,0.026601991,2","Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.",NA,NA
+"bhatt","small5",5,"mu,a",-8.21970583469124,"0,0.81891132,2","unsupported",NA,NA
+"bhatt","small5",5,"sigma,a",-7.96513041191517,"-0.58934117,1,2","finite",-7.96513041138364,-5.31535704340058e-10
+"bhatt","ties",8,"",-12.2420005816284,"2.0701563e-05,0.99322202,0.88915331","Bhattacharjee likelihood selects the uniform face: use `mlunif`.",NA,NA
+"bhatt","ties",8,"mu",-12.2420005782797,"0,0.99331549,0.88879632","unsupported",NA,NA
+"bhatt","ties",8,"sigma",-12.242018692255,"2.1649444e-05,1,0.86721035","finite",-12.2420186907555,-1.49952050776392e-09
+"bhatt","ties",8,"mu,sigma",-12.2420186926809,"0,1,0.86727642","unsupported",NA,NA
+"bhatt","ties",8,"a",-12.4766492598915,"-1.670783e-05,0.16947889,2","Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.",NA,NA
+"bhatt","ties",8,"mu,a",-12.476649250079,"0,0.12329848,2","unsupported",NA,NA
+"bhatt","ties",8,"sigma,a",-13.0117666291343,"0,1,2","finite",-13.0117666291343,0
+"bhatt","normal",20,"",-25.3580270449536,"-0.12157791,0.60175326,1.0693483","Bhattacharjee likelihood selects the uniform face: use `mlunif`.",NA,NA
+"bhatt","normal",20,"mu",-25.5357294061719,"0,0.54032052,1.1838365","unsupported",NA,NA
+"bhatt","normal",20,"sigma",-25.8084199772894,"-0.14539644,1,6.4429781e-05","Bhattacharjee likelihood selects the normal face with sigma held. Use `mlnorm` for an unrestricted fit; it does not hold sigma.",NA,NA
+"bhatt","normal",20,"mu,sigma",-26.0112690158885,"0,1,6.7834928e-14","unsupported",NA,NA
+"bhatt","normal",20,"a",-27.7258872223978,"-0.3587585,0.025530053,2","Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.",NA,NA
+"bhatt","normal",20,"mu,a",-28.735938550097,"0,0.33017471,2","unsupported",NA,NA
+"bhatt","normal",20,"sigma,a",-30.7239946496873,"-0.13108707,1,2","finite",-30.7239946391054,-1.0581970855128e-08
+"bhatt","laplace",20,"",-32.5901360737491,"-0.038746752,1.2343278,0.018203149","Bhattacharjee likelihood selects the normal face: use `mlnorm`.",NA,NA
+"bhatt","laplace",20,"mu",-32.5999736306307,"0,1.2349676,0.015361941","unsupported",NA,NA
+"bhatt","laplace",20,"sigma",-32.8197060383284,"-0.018673596,1,1.1207304","finite",-32.8197060239841,-1.43443656952513e-08
+"bhatt","laplace",20,"mu,sigma",-32.8221193928514,"0,1,1.1254287","unsupported",NA,NA
+"bhatt","laplace",20,"a",-33.9804008907126,"0.080299161,0.89938538,2","finite",-33.9804008752773,-1.54353116954553e-08
+"bhatt","laplace",20,"mu,a",-34.0049233498075,"0,0.9129769,2","unsupported",NA,NA
+"bhatt","laplace",20,"sigma,a",-34.0503473853223,"0.05260759,1,2","finite",-34.0503473752446,-1.00776631484223e-08
+"bhatt","cauchy",20,"",-61.1113615370274,"-2.0212045,5.1377049,0.098366282","Bhattacharjee likelihood selects the normal face: use `mlnorm`.",NA,NA
+"bhatt","cauchy",20,"mu",-62.5499922478825,"0,5.5207886,0.078313302","unsupported",NA,NA
+"bhatt","cauchy",20,"sigma",-65.7107112097526,"-5.6465629,1,12.459612","finite",-65.7107111914912,-1.8261474110659e-08
+"bhatt","cauchy",20,"mu,sigma",-72.4119509602494,"0,1,17.621868","unsupported",NA,NA
+"bhatt","cauchy",20,"a",-61.1182267079552,"-2.0247294,5.0132282,2","finite",-61.1182266804936,-2.74615103990072e-08
+"bhatt","cauchy",20,"mu,a",-62.5570880588759,"0,5.4066661,2","unsupported",NA,NA
+"bhatt","cauchy",20,"sigma,a",-203.853296333896,"-2.5545148,1,2","finite",-203.853954788095,0.000658454198543268
+"bhatt","t2",20,"",-41.6479247813332,"0.34154961,1.9413764,0.031322241","Bhattacharjee likelihood selects the normal face: use `mlnorm`.",NA,NA
+"bhatt","t2",20,"mu",-41.9526854623193,"0,1.9712187,0.021382844","unsupported",NA,NA
+"bhatt","t2",20,"sigma",-47.1850385260049,"1.9779254,1,3.9459855","finite",-47.1850385210175,-4.9873065677275e-09
+"bhatt","t2",20,"mu,sigma",-51.5818703211032,"0,1,2.3016783","unsupported",NA,NA
+"bhatt","t2",20,"a",-Inf,"NA,NA,NA","finite",-42.428888180025,-Inf
+"bhatt","t2",20,"mu,a",-Inf,"NA,NA,NA","unsupported",NA,NA
+"bhatt","t2",20,"sigma,a",-49.4373251718313,"0.76673317,1,2","finite",-49.4373249246594,-2.4717194690993e-07
+"bhatt","logistic",20,"",-40.9287084599831,"0.15117676,1.8726804,0.05757079","Bhattacharjee likelihood selects the normal face: use `mlnorm`.",NA,NA
+"bhatt","logistic",20,"mu",-40.9936054226653,"0,1.8786905,0.066113215","unsupported",NA,NA
+"bhatt","logistic",20,"sigma",-41.798795420926,"-0.21339567,1,2.7996523","finite",-41.7987954157511,-5.17496090424174e-09
+"bhatt","logistic",20,"mu,sigma",-41.928299577275,"0,1,2.7402868","unsupported",NA,NA
+"bhatt","logistic",20,"a",-41.0703152254776,"0.092102089,1.5329979,2","finite",-41.0703151917574,-3.37202266109671e-08
+"bhatt","logistic",20,"mu,a",-41.0930361708824,"0,1.527244,2","unsupported",NA,NA
+"bhatt","logistic",20,"sigma,a",-42.9827522780556,"-0.043010659,1,2","finite",-42.982752277924,-1.31635147226916e-10
+"bhatt","uniform",20,"",-9.41200612071547,"-0.048532333,2.3557408e-09,0.80047748","Bhattacharjee likelihood selects the uniform face: use `mlunif`.",NA,NA
+"bhatt","uniform",20,"mu",-10.5892527394874,"0,4.3473665e-10,0.84900981","unsupported",NA,NA
+"bhatt","uniform",20,"sigma",-21.6018001276906,"0.057917958,1,4.2506985e-05","Bhattacharjee likelihood selects the normal face with sigma held. Use `mlnorm` for an unrestricted fit; it does not hold sigma.",NA,NA
+"bhatt","uniform",20,"mu,sigma",-21.6353399507707,"0,1,5.6027964e-09","unsupported",NA,NA
+"bhatt","uniform",20,"a",-27.7258872223978,"0.4195406,0.075854013,2","Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.",NA,NA
+"bhatt","uniform",20,"mu,a",-27.7258872223978,"0,0.14171395,2","unsupported",NA,NA
+"bhatt","uniform",20,"sigma,a",-29.4329208729952,"0.043952602,1,2","finite",-29.4329208727043,-2.90960144866403e-10
+"bhatt","outside",8,"",-11.0903549809349,"4,3.3892669e-09,2","Bhattacharjee likelihood selects the uniform face: use `mlunif`.",NA,NA
+"bhatt","outside",8,"mu",-19.8792532488726,"0,5.7717937e-09,6","unsupported",NA,NA
+"bhatt","outside",8,"sigma",-13.373312887332,"3.9999776,1,1.5527859","finite",-13.3733128860651,-1.26689592150342e-09
+"bhatt","outside",8,"mu,sigma",-21.0658337683008,"0,1,6.2244269","unsupported",NA,NA
+"bhatt","outside",8,"a",-12.4766494498045,"3.9999864,0.10970071,2","Bhattacharjee likelihood selects the uniform face with a held. Use `mlunif` for an unrestricted fit; it does not hold a.",NA,NA
+"bhatt","outside",8,"mu,a",-22.8448351256438,"0,4.0383495,2","unsupported",NA,NA
+"bhatt","outside",8,"sigma,a",-13.5326893956547,"4,1,2","finite",-13.5326893956547,-1.77635683940025e-15

@@ -7,6 +7,16 @@ release. Evidence: `notes/evaluations/2026-10-29-parameter-conventions.md`
 and `2026-10-29-parameter-table.csv` (98 families, 235 coefficients, 618
 hold subsets in total, at most 5 coefficients per family).
 
+P0 results (2026-10-29): `notes/evaluations/2026-10-29-p0-summary.md`.
+It proposes amendments A1–A7 that await Jonas:
+- A1: close the support at estimated endpoints;
+- A2: domains are finite proper dominated laws;
+- A3: a restriction applies whenever its coefficient is free;
+- A4: `NULL` thresholds only where proved;
+- A5: huber `epsilon` is a design coefficient;
+- A6: failed optimizers stop;
+- A7: `holds:` holds structural exceptions only.
+
 ## Rules
 
 **R1. Coefficients.** A family's coefficients are the reference density's
@@ -52,7 +62,13 @@ A restriction may apply only while some coefficients are free (Fréchet
 $\lambda \ge 1$ only with `mu` free).
 
 **R6. Data-dependent non-existence** stops with "use `mlX`" (D1) or the
-reason, never with a non-maximizer. This is unchanged.
+reason, never with a non-maximizer. This is unchanged for escapes, but it
+conflicts with CLAUDE.md's "Wrapper failure handling" (nlminb legacy:
+return whatever BFGS landed on after an iteration-limit or line-search
+failure). TASK-77 showed the cost: `mlstd` returned its start values
+after both line searches failed. Proposal (P1): R6 wins. A failed
+optimizer stops with its status unless the score check (the `||g|| <
+1e-3` gate the doctests use) passes at the returned point.
 
 **R7. Domains** are the values the reference accepts. A fit at a natural
 endpoint (binomial `prob = 0`) is an attained member, returned silently.
