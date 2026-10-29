@@ -68,6 +68,65 @@ TEST_CASE("kumar ordinary golden is unchanged to 1e-12") {
   CHECK(std::abs(r.logLik - g.logLik) < 1e-12);
 }
 
+// from mpmath import mp, log, log1p, exp, expm1, sqrt
+// mp.dps=500; v=mp.mpf
+// log(-expm1(3*log1p(-v('1e-400'))));
+// sqrt(-expm1(log1p(-exp(-1000))/3));
+// 3*log1p(-v(float.fromhex('0x1.fffffffffffffp-1'))**2);
+// sqrt(-expm1(v(-100)/3)); log(6)+log(v('1e-200'))+2*log1p(-v('1e-400'));
+// sqrt(-expm1(-1)).
+TEST_CASE("kumar: high precision extreme tails and densities") {
+  CHECK(cppunivariate::distributions::pkumar(1e-200,2,3,true,true) == doctest::Approx(-919.93542490895016392).epsilon(2e-15));
+  CHECK(std::abs(cppunivariate::distributions::qkumar(-1000,2,3,true,true)/4.1133761062941378630e-218-1) < 2e-13);
+  CHECK(cppunivariate::distributions::pkumar(std::nextafter(1.0,0.0),2,3,false,true) == doctest::Approx(-108.13096016735146844).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::qkumar(-100,2,3,false,true) == 0.99999999999999833088);
+  CHECK(cppunivariate::distributions::dkumar(1e-200,2,3,true) == doctest::Approx(-458.72525912958108180).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::qkumar(-1e4,2,3,true,true) == 0);
+  CHECK(cppunivariate::distributions::qkumar(-1e4,2,3,false,true) == 1);
+  CHECK(cppunivariate::distributions::qkumar(-1e4,2,1e4,false,true) == doctest::Approx(0.7950600976206501).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::dkumar(0,1,3,false) == doctest::Approx(3));
+  CHECK(cppunivariate::distributions::dkumar(1,2,1,false) == doctest::Approx(2));
+  CHECK(cppunivariate::distributions::dkumar(0,.5,3,false) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::dkumar(1,2,.5,false) == cppunivariate::special::kPosInf);
+}
+
+TEST_CASE("kumar: tail flags, endpoints, invalid probabilities") {
+  const double lo = 0.0, hi = 1.0;
+  for (bool lower : {false,true}) {
+    CHECK(cppunivariate::distributions::qkumar(0,2,3,lower,false) == (lower ? lo : hi));
+    CHECK(cppunivariate::distributions::qkumar(1,2,3,lower,false) == (lower ? hi : lo));
+    CHECK(cppunivariate::distributions::qkumar(cppunivariate::special::kNegInf,2,3,lower,true) == (lower ? lo : hi));
+    CHECK(cppunivariate::distributions::qkumar(0,2,3,lower,true) == (lower ? hi : lo));
+    CHECK(std::isnan(cppunivariate::distributions::qkumar(-.1,2,3,lower,false)));
+    CHECK(std::isnan(cppunivariate::distributions::qkumar(1.1,2,3,lower,false)));
+    CHECK(std::isnan(cppunivariate::distributions::qkumar(.1,2,3,lower,true)));
+    CHECK(cppunivariate::distributions::pkumar(lo,2,3,lower,false) == (lower ? 0 : 1));
+    CHECK(cppunivariate::distributions::pkumar(hi,2,3,lower,false) == (lower ? 1 : 0));
+    for (bool log_p : {false,true}) {
+      for (double lp : {-1e-20,-.01,-1.0,-20.0,-100.0}) {
+        const double p = log_p ? lp : std::exp(lp);
+        const double q = cppunivariate::distributions::qkumar(p,2,3,lower,log_p);
+        if (q > lo && q < hi) {
+          const double back = cppunivariate::distributions::pkumar(q,2,3,lower,true);
+          // Near finite support edges, test rounding by bracketing neighbours.
+          const double left = cppunivariate::distributions::pkumar(std::nextafter(q,cppunivariate::special::kNegInf),2,3,lower,true);
+          const double right = cppunivariate::distributions::pkumar(std::nextafter(q,cppunivariate::special::kPosInf),2,3,lower,true);
+          const double target = log_p ? p : std::log(p);
+          CHECK((std::abs(back-target) < 1e-12 ||
+                 (target >= std::min(left,right)-1e-12 && target <= std::max(left,right)+1e-12)));
+        }
+      }
+    }
+  }
+}
+
+// mpmath: mp.dps=500; a=mp.mpf(1e-320); x=mp.mpf(float.fromhex('0x1.fffffffffffffp-1'))
+// log(-expm1(a*log(x))); exp(log(-expm1(-mp.mpf(740)))/a).
+TEST_CASE("kumar: double-only underflow before shape transforms") {
+  CHECK(cppunivariate::distributions::pkumar(std::nextafter(1.0,0.0),1e-320,1,false,true) == doctest::Approx(-773.56404146065100749).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::qkumar(-740,1e-320,1,false,true) == doctest::Approx(0.95897730933901233978).epsilon(5e-14));
+}
+
 TEST_CASE("kumar: constant data cannot throw or have a finite MLE") {
   for(double v:{.01,.4,.99}) {
     std::vector<double> x(5,v);

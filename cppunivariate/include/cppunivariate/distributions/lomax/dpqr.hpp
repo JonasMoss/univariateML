@@ -7,56 +7,67 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
 inline double dlomax(double x, double lambda, double kappa, bool log) {
-  if (!(lambda > 0.0 && kappa > 0.0) || !std::isfinite(x)) {
-    return kNaN;
-  }
-  if (x <= 0.0) {
-    return log ? kNegInf : 0.0;
-  }
-  const double log_density = std::log(lambda) + std::log(kappa) -
-                             std::log1p(lambda * x) * (kappa + 1.0);
-  return log ? log_density : std::exp(log_density);
+  if (!(lambda > 0.0 && kappa > 0.0) || !std::isfinite(lambda) ||
+      !std::isfinite(kappa) || std::isnan(x)) return special::kNaN;
+  if (x < 0.0 || x == special::kPosInf) return log ? special::kNegInf : 0.0;
+  const double lp = special::log1p_product(lambda, x);
+  const double log_h = std::log(kappa) + special::log_log1p_product(lambda, x);
+  const double h = lambda * x >= std::numeric_limits<double>::min()
+      ? kappa * lp : std::exp(log_h);
+  const double ld = std::log(lambda) + std::log(kappa) - lp - h;
+  return log ? ld : std::exp(ld);
 }
 
 inline double plomax(double q, double lambda, double kappa, bool lower_tail,
                      bool log_p) {
-  if (!(lambda > 0.0 && kappa > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q <= 0.0) {
-    prob = 0.0;
-  } else {
-    prob = 1.0 - std::exp(std::log1p(lambda * q) * (-kappa));
-  }
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+  if (!(lambda > 0.0 && kappa > 0.0) || !std::isfinite(lambda) ||
+      !std::isfinite(kappa) || std::isnan(q)) return special::kNaN;
+  if (q <= 0.0) return special::tail_probability(
+      special::tails_from_log(special::kNegInf, true), lower_tail, log_p);
+  const double lp = special::log1p_product(lambda, q);
+  const double log_h = std::log(kappa) + special::log_log1p_product(lambda, q);
+  // Preserve a tiny product until multiplication by shape can rescue it.
+  const double h = lambda * q >= std::numeric_limits<double>::min()
+      ? kappa * lp : std::exp(log_h);
+  const auto t = log_h < -36.0 ? special::tails_from_log(log_h, true)
+                              : special::tails_from_log(-h, false);
+  return special::tail_probability(t, lower_tail, log_p);
 }
 
 inline double qlomax(double p, double lambda, double kappa, bool lower_tail,
                      bool log_p) {
-  if (!(lambda > 0.0 && kappa > 0.0) || !std::isfinite(p)) {
-    return kNaN;
+  if (!(lambda > 0.0 && kappa > 0.0) || !std::isfinite(lambda) ||
+      !std::isfinite(kappa)) return special::kNaN;
+  const auto t = special::quantile_log_tails(p, lower_tail, log_p);
+  if (!t.valid) return special::kNaN;
+  if (t.lower == special::kNegInf) return 0.0;
+  if (t.upper == special::kNegInf) return special::kPosInf;
+  // Keep log(-log upper) even when log upper rounds to negative zero.
+  const double lv = (t.lower < -0.6931471805599453 ?
+      special::log_neg_log1mexp(t.lower) : std::log(-t.upper)) - std::log(kappa);
+  if (lv < -36.0) {
+    // Keep ordinary division's precision when both the input tail and ratio
+    // are normal; otherwise retain the ratio until the rate can rescue it.
+    if (-t.upper >= std::numeric_limits<double>::min()) {
+      const double v = -t.upper / kappa;
+      if (v >= std::numeric_limits<double>::min()) return std::expm1(v) / lambda;
+    }
+    return std::exp(lv - std::log(lambda));
   }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  return (std::pow(1.0 - p, -1.0 / kappa) - 1.0) / lambda;
+  // v>1500 implies overflow even after division by the largest finite rate.
+  if (lv > std::log(1500.0)) return special::kPosInf;
+  // A subnormal complement has lost relative precision: use its log instead.
+  const double v = -t.upper >= std::numeric_limits<double>::min()
+      ? -t.upper / kappa : std::exp(lv);
+  if (v > 36.0) return std::exp(v - std::log(lambda));
+  return std::expm1(v) / lambda;
 }
 
 template <typename Rng>

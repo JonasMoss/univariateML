@@ -7,6 +7,7 @@
 #pragma once
 
 #include "constants.hpp"
+#include "tails.hpp"
 #include <boost/math/distributions/gamma.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 #include <boost/math/distributions/logistic.hpp>
@@ -324,7 +325,7 @@ inline long double gamma_cdf_extended(double x, double a, bool lower) { const bo
 // Log-tail primitives for the package-owned Fernandez--Steel families.
 // Evaluate the smaller tail first, retaining complements with log1p/expm1.
 inline double fs_log1mexp(double x) {
-  return x < -0.6931471805599453 ? std::log1p(-std::exp(x)) : std::log(-std::expm1(x));
+  return log1mexp(x);
 }
 inline double fs_normal_p(double x, bool lower, bool log_p) {
   const double a = std::fabs(x);
