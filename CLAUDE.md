@@ -67,6 +67,8 @@ core.
   ignored under `build/quality/`. Limits are listed, not executed;
   per-distribution tests check their statuses.
 
+Open items and current test status: `STATUS.md`.
+
 ### Out of vision (for now)
 
 - Any dependency outside `Rcpp` + `BH` on the R side, `<cmath>` +
