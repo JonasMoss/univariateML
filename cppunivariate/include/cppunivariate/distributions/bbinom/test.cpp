@@ -143,7 +143,7 @@ TEST_CASE("bbinom: input validation") {
   CHECK(fit(x, 3.5).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit(x, -1).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit(x, kNaN).status == cppunivariate::BbinomStatus::InvalidInput);
-  CHECK(fit(x, 5, 1.0, 1.0).status == cppunivariate::BbinomStatus::InvalidInput);
+  CHECK(fit(x, 5, 1.0, 1.0).status == cppunivariate::BbinomStatus::Ok);
   CHECK(fit(x, 5, -1.0).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit({-1, 2}, 5).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit({}, 5).status == cppunivariate::BbinomStatus::InvalidInput);
@@ -257,4 +257,14 @@ TEST_CASE("bbinom: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbbinom(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbbinom(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbbinom(rng, p[0], p[1], p[2]); });
+}
+
+TEST_CASE("bbinom: fully held and both-shape-held integer profiles") {
+ for(auto x:{std::vector<int>{0,1,2,4},std::vector<int>{0,0},std::vector<int>{3,3}}) {
+  const auto f=fit(x,kNaN,2,3);
+  REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
+  CHECK(f.alpha==2);CHECK(f.beta==3);
+  CHECK(f.logLik==doctest::Approx(bb_loglik(x,f.size,2,3)).epsilon(1e-10));
+  for(int k=*std::max_element(x.begin(),x.end());k<80;++k)CHECK(f.logLik>=bb_loglik(x,k,2,3)-1e-10);
+ }
 }

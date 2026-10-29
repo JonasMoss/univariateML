@@ -26,7 +26,8 @@ enum class BinomStatus {
   Ok = 0,
   SizeTooSmall,
   Underdispersed,
-  IterationFailure
+  IterationFailure,
+  InvalidInput
 };
 
 struct BinomResult {
@@ -43,7 +44,7 @@ inline double binom_lchoose(double n, double k) {
 }
 
 inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
-                             int maxit) {
+                             int maxit, double held_prob = std::numeric_limits<double>::quiet_NaN()) {
   (void)tol;
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -59,6 +60,46 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   const double dn = static_cast<double>(n);
   const double x_bar = sum_x / dn;
   const double var_pop = sum_x_sq / dn - x_bar * x_bar;
+
+  if (!std::isnan(held_prob)) {
+    const auto bad = [&]() { return BinomResult{kNaN,kNaN,kNaN,0,BinomStatus::InvalidInput}; };
+    if (!(held_prob>=0 && held_prob<=1) || !std::isfinite(held_prob) || maxit<1 || !(tol>0)) return bad();
+    for (int v:x) if (v<0) return bad();
+    double size=size_or_nan;
+    int iterations=0;
+    if (!std::isnan(size) && (!std::isfinite(size) || size<max_x || size!=std::floor(size))) return bad();
+    if (std::isnan(size)) {
+      if (held_prob==0) { if (max_x>0) return bad(); size=0; }
+      else if (held_prob==1) { if (var_pop!=0) return bad(); size=max_x; }
+      else {
+        // Adjacent log likelihood ratio decreases strictly in integer size.
+        const auto delta=[&](double k) {
+          double d=dn*std::log1p(-held_prob);
+          for (int v:x) d-=std::log1p(-v/(k+1));
+          return d;
+        };
+        double lo=max_x,hi=std::max(1.,lo);
+        while (delta(hi)>0) {
+          if (++iterations>=maxit || hi>=4503599627370496.) return BinomResult{kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
+          hi*=2;
+        }
+        while (lo<hi) {
+          if (++iterations>=maxit) return BinomResult{kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
+          const double mid=std::floor(lo+(hi-lo)/2);
+          if (delta(mid)>0) lo=mid+1; else hi=mid;
+        }
+        size=lo;
+      }
+    }
+    double ll=0;
+    for (int v:x) {
+      if ((held_prob==0 && v!=0) || (held_prob==1 && v!=size)) return bad();
+      ll+=binom_lchoose(size,v);
+      if (v>0) ll+=v*std::log(held_prob);
+      if (size>v) ll+=(size-v)*std::log1p(-held_prob);
+    }
+    return {size,held_prob,ll,iterations,BinomStatus::Ok};
+  }
 
   // Build sorted unique values + counts (replaces arma::unique + match).
   std::map<int, int> count_map;

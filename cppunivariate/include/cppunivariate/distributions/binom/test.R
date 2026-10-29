@@ -76,3 +76,30 @@ test_that("free binomial size agrees with exhaustive integer profiles", {
   }
   expect_equal(unname(mlbinom(c(2,6,6), size = NULL)["size"]),13)
 })
+
+ test_that("binom: new holds match reference-density integer and multistart oracles", {
+  set.seed(810)
+  samples <- c(lapply(c(20,100),function(n) rbinom(n,8,.4)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
+  for(x in samples) {
+    for(fixed_size in c(TRUE,FALSE)) {
+      held <- list(prob=.4)
+
+
+      args <- c(list(x=x,size=if(fixed_size) 8 else NULL),held)
+      fit <- suppressWarnings(do.call(mlbinom,args))
+      sizes <- if(fixed_size) 8 else seq(max(x),200)
+      ll <- function(size, mixture=0) sum(stats::dbinom(x,size=size,prob=.4,log=TRUE))
+      oracle <- max(vapply(sizes,function(size) {
+        return(ll(size))
+
+      },0.))
+      expect_equal(attr(fit,"logLik"),oracle,tolerance=1e-6)
+      for(name in names(held)) expect_identical(unname(fit[name]),held[[name]])
+      expect_setequal(attr(fit,"fixed"),c(if(fixed_size) "size",names(held)))
+
+    }
+  }
+  for(p in c(-.1,1.1,NA_real_,Inf)) expect_error(mlbinom(c(1,2),size=8,prob=p),"prob")
+  expect_error(mlbinom(c(1,2),size=8,prob=1))
+  expect_error(mlbinom(c(1,2),size=NULL,prob=0))
+})

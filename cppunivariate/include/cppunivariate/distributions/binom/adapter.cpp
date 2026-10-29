@@ -9,7 +9,7 @@
 // [[Rcpp::export]]
 Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
                     Rcpp::Nullable<double> size,
-                    double abstol = 1.220703e-4, int iterlim = 100) {
+                    double abstol = 1.220703e-4, int iterlim = 100, Rcpp::Nullable<double> prob = R_NilValue) {
   const double size_or_nan = size.isNotNull()
                                  ? Rcpp::as<double>(size)
                                  : std::numeric_limits<double>::quiet_NaN();
@@ -19,7 +19,10 @@ Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
                            size_or_nan != std::floor(size_or_nan))) {
     Rcpp::stop("`size` must be a nonnegative integer.");
   }
-  auto res = cppunivariate::binom_mle(dist_impl::as_ispan(x), size_or_nan, abstol, iterlim);
+  const double p=prob.isNotNull()?Rcpp::as<double>(prob):std::numeric_limits<double>::quiet_NaN();
+  if(prob.isNotNull() && (!std::isfinite(p)||p<0||p>1))Rcpp::stop("`prob` must be finite and in [0, 1].");
+  auto res = cppunivariate::binom_mle(dist_impl::as_ispan(x), size_or_nan, abstol, iterlim, p);
+  if (res.status == cppunivariate::BinomStatus::InvalidInput) Rcpp::stop("Held parameters are incompatible with the observations.");
   if (res.status == cppunivariate::BinomStatus::SizeTooSmall) {
     Rcpp::stop("`size` is smaller than `max(x)`.");
   }
@@ -31,10 +34,12 @@ Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
   if (res.status != cppunivariate::BinomStatus::Ok || !std::isfinite(res.size)) {
     Rcpp::stop("Binomial MLE failed (check dispersion/inputs)");
   }
+  Rcpp::CharacterVector fixed(0);
+  if(size.isNotNull())fixed.push_back("size");
+  if(prob.isNotNull())fixed.push_back("prob");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["size"] = res.size, Rcpp::_["prob"] = res.prob),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
-      Rcpp::_["fixed"] = size.isNotNull() ? Rcpp::CharacterVector::create("size")
-                                          : Rcpp::CharacterVector(0));
+      Rcpp::_["fixed"] = fixed);
 }

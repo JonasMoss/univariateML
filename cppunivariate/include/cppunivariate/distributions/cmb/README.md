@@ -49,20 +49,20 @@ examples: |
 holds:
 - held: []
   status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
+  reason: Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).
 - held:
   - prob
   status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
+  reason: Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).
 - held:
   - nu
   status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
+  reason: Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).
 - held:
   - prob
   - nu
   status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
+  reason: Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).
 fit_args:
   size: 10
 ---

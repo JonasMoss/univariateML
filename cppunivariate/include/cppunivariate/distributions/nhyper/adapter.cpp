@@ -5,13 +5,15 @@
 #include <cmath>
 
 // [[Rcpp::export]]
-Rcpp::List mlnhyper_(const Rcpp::NumericVector &x, double r,
+Rcpp::List mlnhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> r,
                      Rcpp::Nullable<double> N = R_NilValue,
                      Rcpp::Nullable<double> m = R_NilValue) {
+  if(r.isNull())Rcpp::stop("P4 (C6)");
+  const double design=Rcpp::as<double>(r);
   if (N.isNull()) Rcpp::stop("Supply known population size `N`: joint estimation is not supported; the growing-urn limit uses `mlnbinom(x - r, size = r)`.");
   const double held = m.isNull() ? std::numeric_limits<double>::quiet_NaN() : Rcpp::as<double>(m);
   if (m.isNotNull() && std::isnan(held)) Rcpp::stop("`m` must be a whole number or NULL, not NA.");
-  const auto fit = cppunivariate::nhyper_mle(dist_impl::as_span(x), r, Rcpp::as<double>(N), held);
+  const auto fit = cppunivariate::nhyper_mle(dist_impl::as_span(x), design, Rcpp::as<double>(N), held);
   switch (fit.status) {
     case cppunivariate::NhyperStatus::InvalidInput:
       Rcpp::stop("Counts must be whole numbers from 0 to 2^53 - 1, with r <= m <= N.");

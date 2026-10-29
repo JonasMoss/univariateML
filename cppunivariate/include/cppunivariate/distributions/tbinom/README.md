@@ -28,19 +28,25 @@ r:
   density: extraDistr::dtbinom
   sampler: extraDistr::rtbinom
   control:
-    prob: Optional fixed parameter; NULL estimates it.
-    a: Known strict lower truncation bound.
-    b: Known inclusive upper truncation bound.
-    size: Known nonnegative integer number of trials.
+    prob: "Optional fixed parameter; NULL estimates it."
+    a: "Required lower bound; NULL estimates it as min(x) - 1 (strict truncation)."
+    b: "Required upper bound; NULL estimates it as max(x)."
+    size: "Required number of trials; NULL estimates size when probability is held."
 log_density: "x*log(prob)+(size-x)*log(1-prob)-loggamma(x+1)-loggamma(size-x+1)-log(Sum(exp(k*log(prob)+(size-k)*log(1-prob)-loggamma(k+1)-loggamma(size-k+1)), (k, Max(0, floor(a)+1), Min(size, floor(b)))))"
 limits:
 - name: point mass at lowest support point
-  when: '$prob \to 0$'
+  when: $prob \to 0$
   detect: all observations at a strictly positive lowest support point
   status: LowerPointMass
 - name: point mass at highest support point
-  when: '$prob \to 1$'
+  when: $prob \to 1$
   detect: all observations at finite highest support point below size
+  status: UpperPointMass
+- name: point mass at highest support point
+  when: $size \to \infty$ at a fixed interior probability
+  detect: constant data at a finite upper support edge with nonsingleton support
+  fixed:
+  - prob
   status: UpperPointMass
 examples: |
   set.seed(1)
@@ -49,71 +55,20 @@ examples: |
 holds:
 - held: []
   status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
-- held:
-  - prob
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
+  reason: Free size with free probability awaits the P0 truncated-binomial existence proof.
 - held:
   - a
   status: not-implemented
-  reason: Estimating `b` with NULL is not implemented for this design.
-- held:
-  - prob
-  - a
-  status: not-implemented
-  reason: Estimating `b` with NULL is not implemented for this design.
+  reason: Free size with free probability awaits the P0 truncated-binomial existence proof.
 - held:
   - b
   status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
-- held:
-  - prob
-  - b
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
+  reason: Free size with free probability awaits the P0 truncated-binomial existence proof.
 - held:
   - a
   - b
   status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
-- held:
-  - prob
-  - a
-  - b
-  status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
-- held:
-  - size
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
-- held:
-  - prob
-  - size
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
-- held:
-  - a
-  - size
-  status: not-implemented
-  reason: Estimating `b` with NULL is not implemented for this design.
-- held:
-  - prob
-  - a
-  - size
-  status: not-implemented
-  reason: Estimating `b` with NULL is not implemented for this design.
-- held:
-  - b
-  - size
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
-- held:
-  - prob
-  - b
-  - size
-  status: not-implemented
-  reason: Estimating `a` with NULL is not implemented for this design.
+  reason: Free size with free probability awaits the P0 truncated-binomial existence proof.
 fit_args:
   a: 0
   b: 10
@@ -125,7 +80,7 @@ The binomial law conditioned on known bounds `a < x <= b` models truncated count
 ## Details
 
 Bounds must be supplied explicitly to avoid silently ignoring the sampling design.
-Size is also required; estimating it introduces a separate discrete profile and infinite-size limits.
+Size is also required; `NULL` estimates it when probability is held, using a discrete profile with explicit tail bounds.
 The conditional mean is strictly increasing in the natural parameter, since its
 derivative is the positive conditional variance. Thus every sample mean strictly
 between the support edges has one global maximum. Edge-only data escape to a
@@ -135,3 +90,7 @@ The normalizer uses mode-centred recurrences with a two-million-term budget per 
 When the conditioning event includes zero, the point mass at zero is attained
 at `prob = 0`. When it includes `size`, the point mass there is attained at `prob = 1`.
 Otherwise the corresponding zero-probability conditioning limit is reported as an escape.
+
+At fixed size, free truncation bounds select the smallest conditioning support containing the sample: `a = min(x) - 1`, `b = max(x)`. The likelihood cannot decrease when unobserved support is removed. Singleton support attains likelihood one with any interior probability; an unspecified probability is returned as 0.5. A held boundary probability requires the conditioning event to have positive probability.
+
+With probability held in (0,1), integer-size profiling bounds the entire tail by geometric ratios below a finite upper bound, or binomial stochastic ordering without an upper bound. A constant sample at a nonsingleton finite upper edge escapes as size increases. A million-candidate budget stops instead of returning a capped estimate. Free probability with free size remains pending P0.

@@ -72,3 +72,16 @@ TEST_CASE("zmbinom: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzmbinom(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzmbinom(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("zmbinom: held probability with free and held size") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const std::vector<int> x{1,2,2,3,4};
+ const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,nan,.4,.3);
+ REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);
+ CHECK(f.prob==.4);
+ for(int k=4;k<100;++k) {
+  const auto o=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,k,.4,.3);
+  CHECK(f.logLik>=o.logLik-1e-9);
+ }
+ CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,8,-.1,.3).status==cppunivariate::ZmbinomStatus::InvalidInput);
+}

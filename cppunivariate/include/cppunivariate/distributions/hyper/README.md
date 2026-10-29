@@ -47,14 +47,14 @@ holds:
 - held:
   - 'n'
   status: not-implemented
-  reason: The adapter does not accept `n`; this hold is not implemented (P2).
+  reason: P4 (C6)
 - held: []
   status: not-implemented
-  reason: Estimating `k` with NULL is not implemented for this design.
+  reason: P4 (C6)
 - held:
   - m
   status: not-implemented
-  reason: Estimating `k` with NULL is not implemented for this design.
+  reason: P4 (C6)
 fit_args:
   'N': 50
   k: 10
