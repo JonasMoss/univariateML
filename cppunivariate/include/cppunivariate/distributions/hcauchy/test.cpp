@@ -42,3 +42,10 @@ TEST_CASE("hcauchy: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhcauchy(x, p[0], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhcauchy(rng, p[0]); });
 }
+
+TEST_CASE("hcauchy: held scale evaluates zeros") {
+  const std::vector<double> x{0,0};
+  auto r=cppunivariate::hcauchy_mle(mltest::as_span(x),2);
+  CHECK(r.status==cppunivariate::HcauchyStatus::Ok);CHECK(r.sigma==2);
+  CHECK(r.logLik==doctest::Approx(-2*std::log(std::acos(-1.0))));
+}

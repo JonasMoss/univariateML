@@ -195,4 +195,112 @@ inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 1000,
     double reltol = 1e-13, double abstol = 1e-10) {
   return betapr_mle_impl(x, tol, maxit, shape1, shape2, scale, reltol, abstol);
 }
+// Hold-aware profiles. The legacy all-free and fixed-scale paths above are
+// retained verbatim so their golden fits do not change.
+namespace betapr_detail {
+inline double shape_root(double other, double target) {
+  double lo=-40,hi=std::log(1e8);
+  for(int j=0;j<120;++j) {
+    const double t=(lo+hi)/2,v=std::exp(t);
+    const double score=special::digamma(v+other)-special::digamma(v)-target;
+    if(score>0) lo=t;else hi=t;
+  }
+  return std::exp((lo+hi)/2);
+}
+}
+inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
+    double held_s, double tol=1e-6,int maxit=1000) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const bool fa=!std::isnan(held_a),fb=!std::isnan(held_b),fs=!std::isnan(held_s);
+  BetaPrimeResult invalid{nan,nan,nan,nan,0,BetaPrimeStatus::InvalidStart};
+  if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 ||
+    (fa&&(!(held_a>0)||!std::isfinite(held_a))) ||
+    (fb&&(!(held_b>0)||!std::isfinite(held_b))) ||
+    (fs&&(!(held_s>0)||!std::isfinite(held_s)))) return invalid;
+  double lm=0,mean=0,invmean=0;
+  for(double v:x) {
+    if(!(v>0)||!std::isfinite(v))return invalid;
+    lm+=std::log(v)/x.size();mean+=v/x.size();invmean+=(1/v)/x.size();
+  }
+  if(!fa&&!fb) return fs?betapr_mle_fixed_scale(x,held_s,tol,maxit):betapr_mle(x,tol,maxit);
+  const double n=static_cast<double>(x.size());
+  const auto profile=[&](double ls) {
+    double ta=0,tb=0;
+    for(double v:x) {
+      const double z=std::log(v)-ls;
+      tb+=(std::max(z,0.0)+std::log1p(std::exp(-std::abs(z))))/n;
+      ta+=(std::max(-z,0.0)+std::log1p(std::exp(-std::abs(z))))/n;
+    }
+    const double a=fa?held_a:betapr_detail::shape_root(held_b,ta);
+    const double b=fb?held_b:betapr_detail::shape_root(held_a,tb);
+    // Stable density through log(Y) and log(1-Y); no x/scale overflow.
+    const long double la=a,lb=b;
+    const long double logbeta=std::lgamma(la)+std::lgamma(lb)-std::lgamma(la+lb);
+    const double ll=static_cast<double>(n*(-logbeta-la*ta-lb*tb-lm));
+    const bool bad_a=!fa&&(a>=.999e8 || a<=std::exp(-39.99) ||
+      std::abs(special::digamma(a+b)-special::digamma(a)-ta)>1e-7*std::max(1.0,ta));
+    const bool bad_b=!fb&&(b>=.999e8 || b<=std::exp(-39.99) ||
+      std::abs(special::digamma(a+b)-special::digamma(b)-tb)>1e-7*std::max(1.0,tb));
+    return BetaPrimeResult{a,b,fs?held_s:std::exp(ls),ll,0,
+      (bad_a||bad_b||!std::isfinite(ll))
+      ?BetaPrimeStatus::BfgsFailure:BetaPrimeStatus::Ok};
+  };
+  if(fs) return profile(std::log(held_s));
+  if(fa&&fb) {
+    // Strictly decreasing log-scale score, with signs +nb and -na.
+    double lo=lm-2,hi=lm+2;
+    const auto score=[&](double ls) {
+      double v=-n*held_a;
+      for(double z:x) {
+        const double t=std::log(z)-ls;
+        const double q=t>=0?1/(1+std::exp(-t)):std::exp(t)/(1+std::exp(t));
+        v+=(held_a+held_b)*q;
+      }
+      return v;
+    };
+    for(int j=0;j<1024&&score(lo)<=0;++j)lo-=2;
+    for(int j=0;j<1024&&score(hi)>=0;++j)hi+=2;
+    for(int j=0;j<120;++j) {const double mid=(lo+hi)/2;if(score(mid)>0)lo=mid;else hi=mid;}
+    return profile((lo+hi)/2);
+  }
+  // Only the face opposite the held shape survives. Optimize that face
+  // retaining the held shape; comparing with an unrestricted face is wrong.
+  double face_ll=0;
+  if(fa) {
+    const double rate=held_a/mean;
+    face_ll=n*(held_a*std::log(rate)-special::lgamma(held_a)+(held_a-1)*lm-held_a);
+  } else {
+    const double scale=held_b/invmean;
+    face_ll=n*(held_b*std::log(scale)-special::lgamma(held_b)-(held_b+1)*lm-held_b);
+  }
+  BetaPrimeResult best=invalid;best.logLik=-INFINITY;
+  const double lo=lm-24,hi=lm+24;
+  constexpr int grids=384;
+  std::vector<double> values(grids+1);
+  const auto value=[&](double ls) {
+    const auto r=profile(ls);
+    if(r.status==BetaPrimeStatus::Ok&&std::isfinite(r.logLik)&&r.logLik>best.logLik)best=r;
+    return r.logLik;
+  };
+  for(int j=0;j<=grids;++j)values[j]=value(lo+(hi-lo)*j/grids);
+  int iterations=0;
+  for(int j=1;j<grids;++j)if(values[j]>=values[j-1]&&values[j]>=values[j+1]) {
+    double l=lo+(hi-lo)*(j-1)/grids,r=lo+(hi-lo)*(j+1)/grids;
+    int it=0;
+    for(;it<maxit&&r-l>1e-9;++it) {
+      const double a=r-(r-l)*.6180339887498949,b=l+(r-l)*.6180339887498949;
+      if(value(a)>value(b))r=b;else l=a;
+    }
+    iterations=std::max(iterations,it);
+    if(it==maxit) {best.status=BetaPrimeStatus::BfgsFailure;return best;}
+  }
+  if(!std::isfinite(best.logLik)) {best.status=BetaPrimeStatus::BfgsFailure;return best;}
+  if(face_ll>=best.logLik-1e-8*n) return {held_a,held_b,nan,face_ll,iterations,
+    fa?BetaPrimeStatus::GammaBoundary:BetaPrimeStatus::InvGammaBoundary};
+  if(!std::isfinite(best.logLik) || best.alpha>=.999e8 || best.beta>=.999e8 ||
+      !(best.scale>std::exp(lo)&&best.scale<std::exp(hi))) best.status=BetaPrimeStatus::BfgsFailure;
+  best.iterations=iterations;
+  return best;
+}
+
 } // namespace cppunivariate
