@@ -84,3 +84,31 @@ TEST_CASE("gb2: log beta tails beyond probability underflow") {
     CHECK(cppunivariate::distributions::pgb2(q,20,2,20,1,lower,true)==doctest::Approx(lp).epsilon(2e-11));
   }
 }
+
+TEST_CASE("gb2: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("gb2",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgb2(x, p[0], p[1], p[2], p[3], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgb2(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qgb2(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rgb2(rng, p[0], p[1], p[2], p[3]); });
+}
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp; mp.mp.dps=100
+// a,b,k=mp.mpf(0.4),mp.mpf(0.3),mp.mpf(2)
+// print(mp.inf if k*a<1 else (-mp.inf if k*a>1 else mp.log(k)-mp.log(mp.beta(a,b))))
+// f=lambda t: mp.log(mp.betainc(a,b,0,mp.exp(t)/(1+mp.exp(t)),regularized=True))+800
+// t=mp.findroot(f,-2000); print(mp.exp(t/k))
+TEST_CASE("gb2: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::dgb2(0.0, 0.3, 2.0, 0.4, 1.0, true) == INFINITY);
+  CHECK(cppunivariate::distributions::qgb2(-800.0, 0.3, 2.0, 0.4, 1.0, true, true) == doctest::Approx(0.0).epsilon(1e-10));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// At shape2*shape3=1: log f(0)=log(shape2)-log(scale)-log(beta(shape3,shape1)).
+// print(mp.log(2)-mp.log(3)-mp.log(mp.beta(mp.mpf('.5'),2)))
+TEST_CASE("gb2: targeted tail finite and zero endpoint limits") {
+  CHECK(cppunivariate::distributions::dgb2(0,2,2,0.5,3,false)
+        == doctest::Approx(0.5).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::dgb2(0,2,2,1,3,true)==-INFINITY);
+}

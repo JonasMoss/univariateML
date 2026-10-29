@@ -122,7 +122,7 @@ TEST_CASE("gev: clustered samples and affine equivariance") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("gev: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("gev: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("gev",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgev(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgev(x, p[0], p[1], p[2], lower, log); },
@@ -138,4 +138,25 @@ TEST_CASE("gev: only minimum ties control fixed-shape collapse") {
   const std::vector<double> x{0,0,0,1};
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,.5).status==cppunivariate::GevStatus::InvalidData);
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,0).status==cppunivariate::GevStatus::Ok);
+}
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp; mp.mp.dps=100
+// xi=mp.mpf(0.3)
+// for lp in [-800,-10000]:
+//     y=-mp.log(-mp.log1p(-mp.exp(lp)))
+//     print(mp.expm1(xi*y)/xi)
+TEST_CASE("gev: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::qgev(-800.0, 0.0, 1.0, 0.3, false, true) == doctest::Approx(5.669625878558571e+104).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qgev(-10000.0, 0.0, 1.0, 0.3, false, true) == INFINITY);
+}
+
+// Generating mpmath snippet at the exact binary64 endpoint neighbour:
+// import mpmath as mp; mp.mp.dps=100
+// m,s,a=map(mp.mpf,[0.0, 0.1, 0.3]); x=mp.mpf(-0.3333333333333333)
+// y=mp.log1p(a*(x-m)/s)/a
+// print(-mp.log(s)-(1+a)*y-mp.exp(-y), -mp.exp(-y))
+TEST_CASE("gev: exact binary64 finite-endpoint neighbour") {
+  CHECK(cppunivariate::distributions::dgev(-0.3333333333333333, 0.0, 0.1, 0.3, true) == doctest::Approx(-5.827783979826188e+52).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pgev(-0.3333333333333333, 0.0, 0.1, 0.3, true, true) == doctest::Approx(-5.827783979826188e+52).epsilon(1e-10));
 }

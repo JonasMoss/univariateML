@@ -87,10 +87,23 @@ TEST_CASE("ged package dpqr preserve logarithmic tails") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("ged: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("ged: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("ged",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dged(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pged(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qged(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rged(rng, p[0], p[1], p[2]); });
+}
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp, math; mp.mp.dps=100
+// n=mp.mpf(3); s=mp.sqrt(mp.gamma(1/n)/mp.gamma(3/n))
+// p=mp.mpf(float(-math.log(2))); mass=mp.expm1(p+mp.log(2))
+// f=lambda y: mp.log(mp.gammainc(1/n,0,mp.exp(y))/mp.gamma(1/n))-mp.log(mass)
+// y=mp.findroot(f,-110); print(s*mp.exp(y/n))
+// g=lambda a: mp.log(mp.gammainc(1/n,a,mp.inf)/mp.gamma(1/n))+800-mp.log(2)
+// print(s*mp.findroot(g,800)**(1/n))
+TEST_CASE("ged: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::qged(-0.6931471805599453, 0.0, 1.0, 3.0, true, true) == doctest::Approx(3.389474609308743e-17).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qged(-800.0, 0.0, 1.0, 3.0, false, true) == doctest::Approx(15.155294491505197).epsilon(1e-10));
 }

@@ -70,6 +70,25 @@ inline double scaled_difference(double x, double location, double scale) {
                                  : x / scale - location / scale;
 }
 
+// Logarithm of a distance, even when the subtraction overflows.
+// Student location/scale and standardized-GED tails use this before scaling.
+inline double log_abs_difference(double x, double location) {
+  const double d=x-location;
+  return std::isfinite(d) ? std::log(std::abs(d))
+      : std::log(std::abs(x/2-location/2))+std::log(2.0);
+}
+
+// (scale + shape*(x-location))/scale, retaining the subtraction residual.
+// Used by GEV and GPD at finite support endpoints.
+inline double support_residual(double x, double location, double scale, double shape) {
+  if (shape == 0) return 1;
+  const double d = x-location;
+  if (!std::isfinite(d)) return 1+shape*scaled_difference(x,location,scale);
+  const double v = d-x;
+  const double error = (x-(d-v))-(location+v);
+  return (std::fma(shape,d,scale)+shape*error)/scale;
+}
+
 struct LogTails {
   double lower;
   double upper;

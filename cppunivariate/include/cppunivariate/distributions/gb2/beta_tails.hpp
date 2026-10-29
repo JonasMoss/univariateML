@@ -33,13 +33,6 @@ inline double beta_logit_q(double lp,double a,double b,bool lower) {
  if(std::isnan(lp)) return lp;
  if(lp>-.6931471805599453) return beta_logit_q(cppunivariate::special::fs_log1mexp(lp),a,b,!lower);
  if(lp==-std::numeric_limits<double>::infinity()) return lower ? lp : -lp;
- if(lp>-700) {
-  const double prob=std::exp(lp);
-  const double x=lower ? cppunivariate::special::ibeta_inv(a,b,prob) : cppunivariate::special::ibetac_inv(a,b,prob);
-  if(x>=std::numeric_limits<double>::min() && x<=.5) return std::log(x)-std::log1p(-x);
-  const double y=lower ? cppunivariate::special::ibetac_inv(b,a,prob) : cppunivariate::special::ibeta_inv(b,a,prob);
-  if(y>=std::numeric_limits<double>::min() && y<=.5) return std::log1p(-y)-std::log(y);
- }
  double lo=-1,hi=1;
  auto value=[&](double t) {return beta_log(-softplus(-t),-softplus(t),a,b,lower);};
  for(int i=0;i<1024 && (lower ? value(lo)>lp : value(lo)<lp);++i) lo*=2;

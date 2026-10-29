@@ -42,3 +42,11 @@ TEST_CASE("fpareto: log beta tails beyond probability underflow") {
     CHECK(cppunivariate::distributions::pfpareto(q,20,2,20,1,0,lower,true)==doctest::Approx(lp).epsilon(2e-11));
   }
 }
+
+TEST_CASE("fpareto: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("fpareto",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dfpareto(x, p[0], p[1], p[2], p[3], p[4], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pfpareto(x, p[0], p[1], p[2], p[3], p[4], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qfpareto(x, p[0], p[1], p[2], p[3], p[4], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rfpareto(rng, p[0], p[1], p[2], p[3], p[4]); });
+}
