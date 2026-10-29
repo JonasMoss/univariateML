@@ -24,6 +24,7 @@ params:
   simulate: 2.0
   kind: regular
 r:
+  export: true
   density: dsstd
   sampler: rsstd
   control:

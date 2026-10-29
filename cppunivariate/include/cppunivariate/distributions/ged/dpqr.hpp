@@ -16,10 +16,10 @@ inline double dged(double x, double mean, double sd, double nu, bool log) {
       : fs::ged_logdensity(z, nu) - std::log(sd);
   return log ? ld : std::exp(ld);
 }
-inline double pged(double x, double mean, double sd, double nu, bool lower_tail, bool log_p) {
-  if (!(fs::valid(mean, sd, nu, 1.0)) || std::isnan(x)) return cppunivariate::special::kNaN;
-  const double z = (x-mean)/sd;
-  const double la = nu*(special::log_abs_difference(x,mean)-std::log(sd)-fs::ged_logscale(nu));
+inline double pged(double q, double mean, double sd, double nu, bool lower_tail, bool log_p) {
+  if (!(fs::valid(mean, sd, nu, 1.0)) || std::isnan(q)) return cppunivariate::special::kNaN;
+  const double z = (q-mean)/sd;
+  const double la = nu*(special::log_abs_difference(q,mean)-std::log(sd)-fs::ged_logscale(nu));
   const double small = -std::log(2.0) + ged_detail::gamma_log(la,1.0/nu,false);
   const double result = ((z < 0.0) == lower_tail) ? small : fs::log1mexp(small);
   return log_p ? result : std::exp(result);

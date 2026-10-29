@@ -26,27 +26,27 @@ inline double dlogitnorm(double x,double mu,double sigma,bool log=false) {
   const double v=special::dnorm(l-r,mu,sigma,true)-l-r;
   return log ? v : std::exp(v);
 }
-inline double plogitnorm(double q,double mu,double sigma,bool lower=true,bool log=false) {
+inline double plogitnorm(double q,double mu,double sigma,bool lower_tail=true,bool log_p=false) {
   if (!logitnorm_valid(mu,sigma) || std::isnan(q)) return special::kNaN;
   double v;
-  if (q<=0) v=lower ? special::kNegInf : 0;
-  else if (q>=1) v=lower ? 0 : special::kNegInf;
-  else v=logitnorm_logtail((std::log(q)-std::log1p(-q)-mu)/sigma,lower);
-  return log ? v : std::exp(v);
+  if (q<=0) v=lower_tail ? special::kNegInf : 0;
+  else if (q>=1) v=lower_tail ? 0 : special::kNegInf;
+  else v=logitnorm_logtail((std::log(q)-std::log1p(-q)-mu)/sigma,lower_tail);
+  return log_p ? v : std::exp(v);
 }
-inline double qlogitnorm(double p,double mu,double sigma,bool lower=true,bool log=false) {
-  if (!logitnorm_valid(mu,sigma) || std::isnan(p) || (log ? p>0 : p<0 || p>1)) return special::kNaN;
-  if (p==(log ? special::kNegInf : 0)) return lower ? 0 : 1;
-  if (p==(log ? 0 : 1)) return lower ? 1 : 0;
+inline double qlogitnorm(double p,double mu,double sigma,bool lower_tail=true,bool log_p=false) {
+  if (!logitnorm_valid(mu,sigma) || std::isnan(p) || (log_p ? p>0 : p<0 || p>1)) return special::kNaN;
+  if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 0 : 1;
+  if (p==(log_p ? 0 : 1)) return lower_tail ? 1 : 0;
   // Always invert the smaller tail, without rounding a near-one probability.
-  double lp=log ? p : std::log(p);
-  if (lp>-0.6931471805599453) { lp=std::log(-std::expm1(lp)); lower=!lower; }
+  double lp=log_p ? p : std::log(p);
+  if (lp>-0.6931471805599453) { lp=std::log(-std::expm1(lp)); lower_tail=!lower_tail; }
   double lo=0,hi=std::sqrt(-lp)*2+1;
   for (int i=0;i<100;++i) {
     const double mid=lo+(hi-lo)/2;
     if (logitnorm_logtail(mid,false)>lp) lo=mid; else hi=mid;
   }
-  const double z=mu+sigma*(lower ? -hi : hi);
+  const double z=mu+sigma*(lower_tail ? -hi : hi);
   return z>=0 ? 1/(1+std::exp(-z)) : std::exp(z)/(1+std::exp(z));
 }
 template <typename Rng>

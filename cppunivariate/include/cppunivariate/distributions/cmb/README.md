@@ -20,6 +20,7 @@ params:
   simulate: 1.5
   kind: regular
 r:
+  export: true
   density: dcmb
   sampler: rcmb
   control:

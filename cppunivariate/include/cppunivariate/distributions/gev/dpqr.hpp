@@ -21,11 +21,11 @@ inline double dgev(double x,double mu,double sigma,double xi,bool log) {
   }
   return log ? ll : std::exp(ll);
 }
-inline double pgev(double x,double mu,double sigma,double xi,bool lower_tail,bool log_p) {
-  if(!gev_valid(mu,sigma,xi) || std::isnan(x)) return std::numeric_limits<double>::quiet_NaN();
+inline double pgev(double q,double mu,double sigma,double xi,bool lower_tail,bool log_p) {
+  if(!gev_valid(mu,sigma,xi) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
   double L;
-  if(!std::isfinite(x) || special::support_residual(x,mu,sigma,xi)<=0) L=x<mu ? -std::numeric_limits<double>::infinity() : std::numeric_limits<double>::infinity();
-  else L=gev_dpqr_ratio(x,mu,sigma,xi);
+  if(!std::isfinite(q) || special::support_residual(q,mu,sigma,xi)<=0) L=q<mu ? -std::numeric_limits<double>::infinity() : std::numeric_limits<double>::infinity();
+  else L=gev_dpqr_ratio(q,mu,sigma,xi);
   const double a=std::exp(-L);
   if(lower_tail) return log_p ? -a : std::exp(-a);
   if(log_p && L>36) return -L;

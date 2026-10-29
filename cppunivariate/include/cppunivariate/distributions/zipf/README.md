@@ -16,6 +16,7 @@ params:
   simulate: 0.5
   kind: regular
 r:
+  export: true
   density: dzipf
   sampler: rzipf
   control:

@@ -38,28 +38,28 @@ inline double ddgamma(double x, double shape, double rate, bool log = false) {
   }
   return log ? lp : std::exp(lp);
 }
-inline double pdgamma(double q,double shape,double rate,bool lower=true,bool log=false) {
+inline double pdgamma(double q,double shape,double rate,bool lower_tail=true,bool log_p=false) {
   if (!(shape>0 && rate>0) || !std::isfinite(shape) || !std::isfinite(rate) || std::isnan(q))
     return std::numeric_limits<double>::quiet_NaN();
-  if (q<0) return lower ? (log ? -std::numeric_limits<double>::infinity() : 0) : (log ? 0 : 1);
-  const double lp=dgamma_logtail((std::floor(q)+1)*rate,shape,lower);
-  return log ? lp:std::exp(lp);
+  if (q<0) return lower_tail ? (log_p ? -std::numeric_limits<double>::infinity() : 0) : (log_p ? 0 : 1);
+  const double lp=dgamma_logtail((std::floor(q)+1)*rate,shape,lower_tail);
+  return log_p ? lp:std::exp(lp);
 }
-inline double qdgamma(double p,double shape,double rate,bool lower=true,bool log=false) {
-  const double lp=log ? p : std::log(p);
-  if (lp>0 || (!log && p<0) || !(shape>0 && rate>0) || !std::isfinite(shape) || !std::isfinite(rate))
+inline double qdgamma(double p,double shape,double rate,bool lower_tail=true,bool log_p=false) {
+  const double lp=log_p ? p : std::log(p);
+  if (lp>0 || (!log_p && p<0) || !(shape>0 && rate>0) || !std::isfinite(shape) || !std::isfinite(rate))
     return std::numeric_limits<double>::quiet_NaN();
-  const double z=special::fs_gamma_q(lp,shape,lower)/rate;
+  const double z=special::fs_gamma_q(lp,shape,lower_tail)/rate;
   if (!std::isfinite(z)) return z;
   double q=std::max(0.0,std::ceil(z)-1);
   for (int i=0;i<2;++i) {
-    const double at=pdgamma(q,shape,rate,lower,true);
-    if (lower ? at<lp : at>lp) q+=1;
+    const double at=pdgamma(q,shape,rate,lower_tail,true);
+    if (lower_tail ? at<lp : at>lp) q+=1;
     else break;
   }
   for (int i=0;i<2 && q>0;++i) {
-    const double at=pdgamma(q-1,shape,rate,lower,true);
-    if (lower ? at>=lp : at<=lp) q-=1;
+    const double at=pdgamma(q-1,shape,rate,lower_tail,true);
+    if (lower_tail ? at>=lp : at<=lp) q-=1;
     else break;
   }
   return q;

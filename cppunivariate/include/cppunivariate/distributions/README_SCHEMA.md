@@ -19,6 +19,7 @@ goldens), by the validation harness, and later by the Python shell.
 | `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` or coefficient expressions (see below) |
 | `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `univariateML/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
 | `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` for package-defined functions; `p`/`q` are found by swapping the first letter |
+| `r.export` | no | boolean, default `false`; export the generated package d/p/q/r and attach their preserved distribution help topic. All non-`stats::` families get internal functions; the eighteen established own families set `true`. The generator refuses names present in base or a default package (stats, utils, graphics, grDevices, methods), even for internal functions. |
 | `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma, a: mu}` for the translated half-normal as `extraDistr::dtnorm`; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
 | `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
@@ -153,3 +154,18 @@ and backward-compatible object attributes, and `expressions`, `endpoint_closed`
 and `endpoint_log_density` for evaluation at fitted coefficients. Internal
 `univariateML_support(fit)` resolves the fitted support without changing the
 construction of fit objects.
+
+## Generated d/p/q/r
+
+Assembly runs `univariateML/scripts/codegen_dpqr.R` before Rcpp attribute
+compilation. It writes R wrappers and Rcpp exports into `univariateML/package/`
+for every non-`stats::` reference, using README coefficient names and order.
+It does not change the selected reference. The resolver still applies `r.args`
+and `r.shift` when invoking a selected reference. Random generators use R's
+RNG through `src/rng_r.h`; an EMG R-host specialization in `src/rng_emg.h`
+preserves its established normal/exponential primitive stream. Sample size
+follows base R conventions. For a family
+with a coefficient named `n` (currently nhyper), sample size is named `nn`
+to avoid duplicate R formals. Existing exported defaults and `...` compatibility
+live in `scripts/dpqr_api.R`; documentation text lives in
+`R/dpqr_documentation.R`. New exported families must supply documentation there.

@@ -78,42 +78,42 @@ inline double demg(double x,double mu,double sigma,double lambda,bool log=false)
   const double l=static_cast<double>(std::log(static_cast<long double>(lambda))+emg_detail::logterm(z,a));
   return log ? l : std::exp(l);
 }
-inline double pemg(double x,double mu,double sigma,double lambda,bool lower=true,bool log=false) {
-  if(!emg_detail::valid(mu,sigma,lambda) || std::isnan(x)) return special::kNaN;
-  if(!std::isfinite(x)) { const bool one=lower ? x>0 : x<0; return log ? (one?0:special::kNegInf) : (one?1:0); }
-  const long double z=(static_cast<long double>(x)-mu)/sigma,a=static_cast<long double>(lambda)*sigma;
+inline double pemg(double q,double mu,double sigma,double lambda,bool lower_tail=true,bool log_p=false) {
+  if(!emg_detail::valid(mu,sigma,lambda) || std::isnan(q)) return special::kNaN;
+  if(!std::isfinite(q)) { const bool one=lower_tail ? q>0 : q<0; return log_p ? (one?0:special::kNegInf) : (one?1:0); }
+  const long double z=(static_cast<long double>(q)-mu)/sigma,a=static_cast<long double>(lambda)*sigma;
   const long double l=emg_detail::lowerlog(z,a);
   const long double u=emg_detail::logadd(emg_detail::logPhi(-z),emg_detail::logterm(z,a));
-  const long double own=lower?l:u, other=lower?u:l;
+  const long double own=lower_tail?l:u, other=lower_tail?u:l;
   const double ans=static_cast<double>(std::min(0.0L,own<other?own:emg_detail::log1mexp(other)));
-  return log?ans:std::exp(ans);
+  return log_p?ans:std::exp(ans);
 }
-inline double qemg(double p,double mu,double sigma,double lambda,bool lower=true,bool log=false) {
-  if(!emg_detail::valid(mu,sigma,lambda) || std::isnan(p) || (log?p>0:p<0||p>1)) return special::kNaN;
-  if(p==(log?special::kNegInf:0)) return lower?special::kNegInf:special::kPosInf;
-  if(p==(log?0:1)) return lower?special::kPosInf:special::kNegInf;
-  double target=log?p:std::log(p);
+inline double qemg(double p,double mu,double sigma,double lambda,bool lower_tail=true,bool log_p=false) {
+  if(!emg_detail::valid(mu,sigma,lambda) || std::isnan(p) || (log_p?p>0:p<0||p>1)) return special::kNaN;
+  if(p==(log_p?special::kNegInf:0)) return lower_tail?special::kNegInf:special::kPosInf;
+  if(p==(log_p?0:1)) return lower_tail?special::kPosInf:special::kNegInf;
+  double target=log_p?p:std::log(p);
   // Always invert the smaller tail, including when p was supplied near one.
-  if(target> -0.6931471805599453) {target=std::log(-std::expm1(target));lower=!lower;}
+  if(target> -0.6931471805599453) {target=std::log(-std::expm1(target));lower_tail=!lower_tail;}
   const double largest=std::numeric_limits<double>::max();
   auto endpoint=[&](long double v) {return static_cast<double>(std::max(-static_cast<long double>(largest),std::min(static_cast<long double>(largest),v)));};
   long double step=sigma;
   double lo=endpoint(static_cast<long double>(mu)-step),hi=endpoint(static_cast<long double>(mu)+step);
-  for(int k=0;k<4096 && (lower?pemg(lo,mu,sigma,lambda,true,true)>target:pemg(lo,mu,sigma,lambda,false,true)<target);++k) {
+  for(int k=0;k<4096 && (lower_tail?pemg(lo,mu,sigma,lambda,true,true)>target:pemg(lo,mu,sigma,lambda,false,true)<target);++k) {
     if(lo== -largest) return special::kNegInf;
     step*=2;lo=endpoint(static_cast<long double>(mu)-step);
   }
   step=sigma;
-  for(int k=0;k<4096 && (lower?pemg(hi,mu,sigma,lambda,true,true)<target:pemg(hi,mu,sigma,lambda,false,true)>target);++k) {
+  for(int k=0;k<4096 && (lower_tail?pemg(hi,mu,sigma,lambda,true,true)<target:pemg(hi,mu,sigma,lambda,false,true)>target);++k) {
     if(hi==largest) return special::kPosInf;
     step*=2;hi=endpoint(static_cast<long double>(mu)+step);
   }
   double x=lo/2+hi/2;
   for(int k=0;k<200;++k) {
-    const double v=pemg(x,mu,sigma,lambda,lower,true);
-    if(lower?v<target:v>target) lo=x; else hi=x;
+    const double v=pemg(x,mu,sigma,lambda,lower_tail,true);
+    if(lower_tail?v<target:v>target) lo=x; else hi=x;
     if(static_cast<long double>(hi)-lo<2e-14L*std::max(static_cast<long double>(sigma),std::abs(static_cast<long double>(x)-mu))) break;
-    const double deriv=std::exp(demg(x,mu,sigma,lambda,true)-v)*(lower?1:-1);
+    const double deriv=std::exp(demg(x,mu,sigma,lambda,true)-v)*(lower_tail?1:-1);
     double next=x-(v-target)/deriv;
     if(!std::isfinite(next) || next<=lo || next>=hi) next=lo/2+hi/2;
     x=next;

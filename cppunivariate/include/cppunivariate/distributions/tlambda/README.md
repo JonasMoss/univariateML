@@ -32,6 +32,7 @@ params:
       reason: lambda <= 1 selects the principal branch; no exemption is proved.
   kind: regular
 r:
+  export: true
   density: dtlambda
   sampler: rtlambda
   control:

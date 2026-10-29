@@ -92,6 +92,6 @@ inline int rzipf_from_cdf(Rng &rng,const std::vector<double> &cum) {
   return static_cast<int>(std::lower_bound(cum.begin(),cum.end(),rng.runif(0,1))-cum.begin())+1;
 }
 template <typename Rng>
-inline double rzipf(Rng &rng,int N,double s) { return qzipf(rng.runif(0,1),N,s); }
+inline double rzipf(Rng &rng,double N,double s) { return qzipf(rng.runif(0,1),N,s); }
 }
 }

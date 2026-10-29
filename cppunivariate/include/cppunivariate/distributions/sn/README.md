@@ -19,6 +19,7 @@ params:
   simulate: 3
   kind: regular
 r:
+  export: true
   density: dsn
   sampler: rsn
   control:

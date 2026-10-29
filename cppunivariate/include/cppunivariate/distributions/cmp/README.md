@@ -14,6 +14,7 @@ params:
   simulate: 1.5
   kind: regular
 r:
+  export: true
   density: dcmp
   sampler: rcmp
   control:

@@ -14,11 +14,11 @@ inline double dsstd(double x, double mean, double sd, double nu, double xi, bool
   const double ld = (std::log(2.0/(xi+1.0/xi)) + fs::std_logdensity(z/(z<0.0 ? 1.0/xi : xi), nu)) - std::log(sd) + std::log(sigma);
   return log ? ld : std::exp(ld);
 }
-inline double psstd(double x, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
-  if (!(fs::valid(mean, sd, nu, xi) && nu > 2.0) || std::isnan(x)) return cppunivariate::special::kNaN;
+inline double psstd(double q, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
+  if (!(fs::valid(mean, sd, nu, xi) && nu > 2.0) || std::isnan(q)) return cppunivariate::special::kNaN;
   double mu = 0.0;
   const double sigma = fs::sstd_sigma(nu, xi, mu);
-  const double z = (x - mean)/sd*sigma + mu;
+  const double z = (q - mean)/sd*sigma + mu;
   return fs::skew_p(z, xi, lower_tail, log_p, [&](double v) { return pstd(v, 0.0, 1.0, nu, true, true); });
 }
 inline double qsstd(double p, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {

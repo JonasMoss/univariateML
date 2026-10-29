@@ -15,9 +15,9 @@ inline double dstd(double x, double mean, double sd, double nu, bool log) {
       : fs::std_logdensity(z, nu) - std::log(sd);
   return log ? ld : std::exp(ld);
 }
-inline double pstd(double x, double mean, double sd, double nu, bool lower_tail, bool log_p) {
-  if (!(fs::valid(mean, sd, nu, 1.0) && nu > 2.0) || std::isnan(x)) return cppunivariate::special::kNaN;
-  return student_detail::probability_log(special::log_abs_difference(x,mean)-std::log(sd)+0.5*(std::log(nu)-std::log(nu-2.0)),x<mean,nu,lower_tail,log_p);
+inline double pstd(double q, double mean, double sd, double nu, bool lower_tail, bool log_p) {
+  if (!(fs::valid(mean, sd, nu, 1.0) && nu > 2.0) || std::isnan(q)) return cppunivariate::special::kNaN;
+  return student_detail::probability_log(special::log_abs_difference(q,mean)-std::log(sd)+0.5*(std::log(nu)-std::log(nu-2.0)),q<mean,nu,lower_tail,log_p);
 }
 inline double qstd(double p, double mean, double sd, double nu, bool lower_tail, bool log_p) {
   if (!(fs::valid(mean, sd, nu, 1.0) && nu > 2.0)) return cppunivariate::special::kNaN;

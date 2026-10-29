@@ -14,6 +14,7 @@ params:
   simulate: 3
   kind: regular
 r:
+  export: true
   density: dsgomp
   sampler: rsgomp
   control:

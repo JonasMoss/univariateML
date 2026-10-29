@@ -17,19 +17,19 @@ inline double dtriang(double x,double a,double b,double c,bool log=false) {
   }
   return log?v:std::exp(v);
 }
-inline double ptriang(double x,double a,double b,double c,bool lower_tail=true,bool log_p=false) {
+inline double ptriang(double q,double a,double b,double c,bool lower_tail=true,bool log_p=false) {
   if (!(triang_valid(a,b,c))) return special::kNaN;
-  if (std::isnan(x)) return special::kNaN;
-  if (x<=a) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
-  if (x>=b) return special::tail_probability(special::tails_from_log(special::kNegInf,false),lower_tail,log_p);
+  if (std::isnan(q)) return special::kNaN;
+  if (q<=a) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
+  if (q>=b) return special::tail_probability(special::tails_from_log(special::kNegInf,false),lower_tail,log_p);
   const double lw=std::log(b-a);
   double ll,lu;
-  if (x<=c) {
-    ll=2*std::log(x-a)-lw-std::log(c-a);
-    lu=special::log_sum_exp(std::log(c-x)-lw+std::log1p((x-a)/(c-a)),std::log(b-c)-lw);
+  if (q<=c) {
+    ll=2*std::log(q-a)-lw-std::log(c-a);
+    lu=special::log_sum_exp(std::log(c-q)-lw+std::log1p((q-a)/(c-a)),std::log(b-c)-lw);
   } else {
-    lu=2*std::log(b-x)-lw-std::log(b-c);
-    ll=special::log_sum_exp(std::log(x-c)-lw+std::log1p((b-x)/(b-c)),std::log(c-a)-lw);
+    lu=2*std::log(b-q)-lw-std::log(b-c);
+    ll=special::log_sum_exp(std::log(q-c)-lw+std::log1p((b-q)/(b-c)),std::log(c-a)-lw);
   }
   return special::tail_probability(ll<lu ? special::tails_from_log(ll,true) : special::tails_from_log(lu,false),lower_tail,log_p);
 }

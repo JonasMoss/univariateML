@@ -87,6 +87,8 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   if (length(missing)) {
     stop("load_distributions: ", path, " lacks ", paste(missing, collapse = ", "))
   }
+  if (!is.null(f$r$export) && (!is.logical(f$r$export) || length(f$r$export) != 1L || is.na(f$r$export)))
+    stop("load_distributions: ", id, ": r.export must be true or false")
   s <- f$support
   support <- list(
     type = if (identical(tolower(s$type), "integer")) "Z" else "R",
@@ -152,6 +154,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     name = f$name,
     support = support,
     params = params,
+    export = isTRUE(f$r$export),
     density = f$r$density,
     sampler = f$r$sampler,
     args = if (is.null(f$r$args)) NULL else unlist(f$r$args),

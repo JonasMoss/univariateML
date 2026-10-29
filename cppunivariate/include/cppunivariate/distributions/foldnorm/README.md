@@ -14,6 +14,7 @@ params:
   simulate: 1
   kind: regular
 r:
+  export: true
   density: dfoldnorm
   sampler: rfoldnorm
   control:

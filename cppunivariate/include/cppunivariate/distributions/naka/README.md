@@ -14,6 +14,7 @@ params:
   simulate: 3.0
   kind: regular
 r:
+  export: true
   density: dnaka
   sampler: rnaka
   control:

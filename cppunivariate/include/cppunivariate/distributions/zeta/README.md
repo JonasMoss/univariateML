@@ -9,6 +9,7 @@ params:
   simulate: 2
   kind: regular
 r:
+  export: true
   density: dzeta
   sampler: rzeta
   control:

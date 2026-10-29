@@ -31,6 +31,7 @@ params:
   simulate: 3.0
   kind: regular
 r:
+  export: true
   density: dsged
   sampler: rsged
   control:

@@ -26,6 +26,7 @@ params:
         locscale).
   kind: regular
 r:
+  export: true
   density: dged
   sampler: rged
   control:

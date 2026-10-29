@@ -22,14 +22,14 @@ inline double dgpd(double x, double mu, double sigma, double xi, bool log) {
     ll=-std::log(sigma)-(1+xi)*gpd_dpqr_ratio(x,mu,sigma,xi);
   return log ? ll : std::exp(ll);
 }
-inline double pgpd(double x, double mu, double sigma, double xi, bool lower_tail, bool log_p) {
-  if (!gpd_valid(mu,sigma,xi) || std::isnan(x)) return std::numeric_limits<double>::quiet_NaN();
+inline double pgpd(double q, double mu, double sigma, double xi, bool lower_tail, bool log_p) {
+  if (!gpd_valid(mu,sigma,xi) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
   double ls=0;
-  if (x>mu) ls=(!std::isfinite(x) || special::support_residual(x,mu,sigma,xi)<=0) ?
-      -std::numeric_limits<double>::infinity() : -gpd_dpqr_ratio(x,mu,sigma,xi);
+  if (q>mu) ls=(!std::isfinite(q) || special::support_residual(q,mu,sigma,xi)<=0) ?
+      -std::numeric_limits<double>::infinity() : -gpd_dpqr_ratio(q,mu,sigma,xi);
   if (!lower_tail) return log_p ? ls : std::exp(ls);
-  if (x>mu && -ls<std::numeric_limits<double>::min() && std::isfinite(x)) {
-    const double lp=std::log(x-mu)-std::log(sigma);
+  if (q>mu && -ls<std::numeric_limits<double>::min() && std::isfinite(q)) {
+    const double lp=std::log(q-mu)-std::log(sigma);
     return log_p ? lp : std::exp(lp);
   }
   return log_p ? special::tails_from_log(ls,false).lower : -std::expm1(ls);

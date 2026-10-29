@@ -1,7 +1,7 @@
-// Hypergeometric distribution: scalar d/p/q/r in the coefficients N
-// (population size), m (successes in the population), k (draws), all whole
-// with m <= N and k <= N. Support max(0, k - (N - m)) <= x <= min(k, m).
-// R's stats::dhyper(x, m, n = N - m, k).
+// Hypergeometric distribution: scalar d/p/q/r in m (population successes),
+// n (population failures), k (draws), all whole, with N = m + n and k <= N.
+// Support max(0, k - n) <= x <= min(k, m).
+// Public arguments follow stats::dhyper(x, m, n, k).
 
 #pragma once
 
@@ -38,7 +38,8 @@ inline double tail(double q, double N, double m, double k, bool lower_tail) {
 
 }  // namespace hyper_dpqr_detail
 
-inline double dhyper(double x, double N, double m, double k, bool log) {
+inline double dhyper(double x, double m, double n, double k, bool log) {
+  const double N = m + n;
   if (!hyper_dpqr_detail::valid(N, m, k) || std::isnan(x)) {
     return std::numeric_limits<double>::quiet_NaN();
   }
@@ -46,8 +47,9 @@ inline double dhyper(double x, double N, double m, double k, bool log) {
   return log ? l : std::exp(l);
 }
 
-inline double phyper(double q, double N, double m, double k, bool lower_tail,
+inline double phyper(double q, double m, double n, double k, bool lower_tail,
                      bool log_p) {
+  const double N = m + n;
   if (!hyper_dpqr_detail::valid(N, m, k) || std::isnan(q)) {
     return std::numeric_limits<double>::quiet_NaN();
   }
@@ -56,8 +58,9 @@ inline double phyper(double q, double N, double m, double k, bool lower_tail,
 }
 
 // Smallest x with P(X <= x) >= p (R's discrete-quantile convention).
-inline double qhyper(double p, double N, double m, double k, bool lower_tail,
+inline double qhyper(double p, double m, double n, double k, bool lower_tail,
                      bool log_p) {
+  const double N = m + n;
   if (!hyper_dpqr_detail::valid(N, m, k) || std::isnan(p)) {
     return std::numeric_limits<double>::quiet_NaN();
   }
@@ -77,8 +80,8 @@ inline double qhyper(double p, double N, double m, double k, bool lower_tail,
 }
 
 template <typename Rng>
-inline double rhyper(Rng &rng, double N, double m, double k) {
-  return qhyper(rng.runif(0.0, 1.0), N, m, k, true, false);
+inline double rhyper(Rng &rng, double m, double n, double k) {
+  return qhyper(rng.runif(0.0, 1.0), m, n, k, true, false);
 }
 
 }  // namespace distributions
