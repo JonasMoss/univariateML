@@ -6,7 +6,8 @@
   The 116 per-distribution `d`/`p`/`q`/`r` functions previously
   re-exported from the package have been removed; users should call
   the canonical implementations in `extraDistr`, `actuar`, `fGarch`,
-  `logitnorm` or `nakagami` directly. These packages are
+  `logitnorm` or `nakagami` directly (since replaced by the package's own
+  `dlogitnorm()`/`dnaka()` families; see below). These packages are
   now in `Imports:` and resolved at runtime by metadata-driven
   dispatch.
 
@@ -78,7 +79,9 @@
   broken, heavy or missing: `dzipf()`, `pzipf()`, `qzipf()`, `rzipf()`
   (replacing sads, whose `qzipf` was off by one and which rejected the
   uniform member `s = 0`; sads is no longer imported) and `dcmb()`,
-  `pcmb()`, `qcmb()`, `rcmb()` for `mlcmb()`.
+  `pcmb()`, `qcmb()`, `rcmb()` for `mlcmb()`; `dlogitnorm()` and `dnaka()`
+  families with the former references' names and arguments (logitnorm and
+  nakagami are no longer imported; `pnaka` was positive below zero).
 
 * Known defects in reference packages that fitted models can reach are
   repaired at runtime, each switching itself off once the reference is
