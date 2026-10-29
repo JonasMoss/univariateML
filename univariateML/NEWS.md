@@ -19,7 +19,9 @@
   Pareto, inverse paralogistic).
 
 * `mltriang()` (triangular; `a`, `b`, `c` can each be held fixed) and
-  `mlhuber()` (Huber density with `epsilon` held fixed, default 1.345).
+  `mlhuber()` (Huber density; `epsilon` is held at 1.345 by default and
+  estimated with `mlhuber(x, epsilon = NULL)`, which stops with "use
+  `mlnorm`" or "use `mllaplace`" when a limit wins).
 
 * `mlgev()` (generalized extreme value, shape in [-1/2, 1]),
   `mltrgamma()` and `mlinvtrgamma()` (generalized gamma and its
