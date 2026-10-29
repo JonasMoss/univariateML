@@ -87,3 +87,82 @@ test_that("held Cauchy degrees of freedom allow balanced two-point maxima", {
   expect_equal(f[["sigma"]],g[["scale"]])
   expect_equal(attr(f,"logLik"),attr(g,"logLik"))
 })
+
+
+test_that("lst new holds agree with independent multistart likelihoods", {
+  set.seed(8100+4336)
+  held_values <- c(mu=0.2,sigma=1.3,df=3)
+  samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
+                  qnorm((1:20-.5)/20),seq(-1,1,length.out=20))
+  ld <- function(x,p) extraDistr::dlst(x,mu=p[1],sigma=p[2],df=p[3],log=TRUE)
+  for(x in samples)for(mask in 1:7) {
+    held <- names(held_values)[as.logical(intToBits(mask)[seq_along(held_values)])]
+    args <- as.list(held_values[held])
+    f <- tryCatch(suppressWarnings(do.call(mllst,c(list(x=x),args))),error=identity)
+    if(inherits(f,"error")) {
+      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      next
+    }
+    expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_equal(attr(logLik(f),"df"),length(held_values)-length(held))
+    expect_equal(as.numeric(logLik(f)),sum(ld(x,as.numeric(f))),tolerance=1e-7)
+    free <- setdiff(names(held_values),held)
+    if(!length(free))next
+    encode <- function(p) {z<-c(p[1],log(p[2]));z<-c(z,log(max(p[3]-1,1e-6)));names(z)<-names(held_values);z[free]}
+    decode <- function(z) {
+      p<-held_values
+      for(j in seq_along(z)) {
+        k<-match(free[j],names(p))
+        p[k]<-if(k==1) z[j] else if(k==2) exp(z[j]) else 1+exp(z[j])
+      }
+      p
+    }
+    objective <- function(z) {
+      if(any(!is.finite(z))||any(abs(z)>30))return(1e100)
+      v<-suppressWarnings(sum(ld(x,decode(z))))
+      if(is.finite(v)) -v else 1e100
+    }
+    # Starts depend on the sample and held values, not on the fitted result.
+    values <- c()
+    for(shift in c(-1,0,1)) {
+      start<-held_values;start[1]<-median(x)+shift;start[2]<-max(.2,sd(x))*exp(shift/2)
+      start[held]<-held_values[held]
+      o<-suppressWarnings(optim(encode(start),objective,method="Nelder-Mead",
+           control=list(maxit=1800,reltol=1e-11)))
+      values<-c(values,o$value)
+    }
+    expect_gte(as.numeric(logLik(f)),-min(values)-2e-6*length(x))
+  }
+})
+
+
+test_that("lst conditional collapse, feasibility and invalid holds", {
+  expect_error(mllst(c(0,0,1),mu=0,df=1),"unbounded")
+  expect_error(mllst(c(0,1),mu=0,df=1),"boundary")
+  expect_error(mllst(c(0,0,1),mu=0),"unbounded")
+  expect_true(is.finite(logLik(mllst(rep(2,4),mu=0,df=3))))
+  expect_equal(unname(mllst(rep(2,4),sigma=1,df=3)["mu"]),2,tolerance=1e-7)
+  expect_error(mllst(qnorm((1:100-.5)/100),mu=0),"mlnorm")
+  expect_error(mllst(1:5,mu=Inf),"mu")
+  expect_error(mllst(1:5,sigma=0),"sigma")
+})
+
+
+test_that("location-scale t held-location half ties compare all eligible faces", {
+  # The conditional normal face beats the held-location Cauchy collapse.
+  expect_error(mllst(c(0,1),mu=0),"mlnorm")
+})
+
+
+test_that("lst held profiles preserve tiny and large units", {
+  x<-c(-2,-.5,0,.7,3)
+  args<-list(mu=0,df=1e20)
+  base<-do.call(mllst,c(list(x=x),args))
+  for(unit in c(1e-300,1e300)) {
+    fit<-do.call(mllst,c(list(x=x*unit),args))
+    expect_equal(unname(fit["sigma"])/unit,unname(base["sigma"]),tolerance=1e-8)
+    expect_equal(as.numeric(logLik(fit))+length(x)*log(unit),as.numeric(logLik(base)),tolerance=1e-8)
+  }
+  expect_equal(unname(base["sigma"]),sqrt(mean(x^2)),tolerance=1e-8)
+})

@@ -3,6 +3,7 @@
 #include "../../core/bfgs.hpp"
 #include "../../core/span.hpp"
 #include "../cauchy/mle.hpp"
+#include "../norm/mle.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -206,5 +207,84 @@ inline LstResult lst_mle(span x, double tol, int maxit) {
   return {center+unit*best.theta[0],unit*std::exp(best.theta[1]),best_df,
           -best.f-n*std::log(unit),best.iterations,
           best.status == BfgsStatus::Ok ? LstStatus::Ok : LstStatus::BfgsFailure};
+}
+
+namespace lst_detail {
+// Refine every grid-local maximum, retaining the endpoints as candidates.
+// The grid nominates modes numerically; it is not an interval certificate.
+struct Maximum {double point;bool converged;};
+template <typename F>
+inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit) {
+  double best=grid.front(),value=f(best);bool converged=grid.size()==1;
+  for(std::size_t j=0;j<grid.size();++j) {
+    const double v=f(grid[j]);if(v>value){value=v;best=grid[j];converged=false;}
+    if((j&&v<f(grid[j-1]))||(j+1<grid.size()&&v<f(grid[j+1])))continue;
+    double lo=grid[j?j-1:0],hi=grid[j+1<grid.size()?j+1:j];
+    double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
+    double fa=f(a),fb=f(b);
+    for(int it=0;it<maxit&&hi-lo>tol;++it) {
+      if(fa>fb){hi=b;b=a;fb=fa;a=hi-(hi-lo)*.6180339887498948482;fa=f(a);}
+      else{lo=a;a=b;fa=fb;b=lo+(hi-lo)*.6180339887498948482;fb=f(b);}
+    }
+    if(best==grid[j]&&hi-lo<=tol)converged=true;
+    if(std::max(fa,fb)>value){value=std::max(fa,fb);best=fa>fb?a:b;converged=hi-lo<=tol;}
+  }
+  return {best,converged};
+}
+inline LstResult conditional(span x,double df,double mu,double sigma,double tol,int maxit) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  LstResult bad{nan,nan,df,nan,0,LstStatus::InvalidStart};
+  if(x.empty()||!(tol>0)||maxit<1||!std::isfinite(df)||!(df>0))return bad;
+  std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
+  auto ll=[&](double m,double s){const double p[]={m,std::log(s)};return -LstCost{x,df,true}(p);};
+  double m=mu,s=sigma;
+  if(std::isnan(s)) {
+    std::size_t k=0;double r=0;for(double v:y){k+=v==m;r=std::max(r,std::abs(v-m));}
+    if(k>df*(y.size()-k)){bad.status=LstStatus::Unbounded;return bad;}
+    // At equality every nonzero residual contributes a strict factor below
+    // its collapse limit, so the supremum is never attained at held mu.
+    if(k==df*(y.size()-k)){bad.status=LstStatus::ScaleBoundary;return bad;}
+    double lo=std::max(std::log(r)-350,std::log(std::numeric_limits<double>::denorm_min())),hi=std::log(r)+2;
+    for(int it=0;it<maxit;++it){const double t=lo/2+hi/2;s=std::exp(t);double g=-static_cast<double>(y.size());for(double v:y){const double q=((v-m)/s)/std::sqrt(df),q2=q*q;const double weight=q2<=1?q2/(1+q2):1/(1+1/q2);g+=(df+1)*weight;}if(g>0)lo=t;else hi=t;if(hi-lo<1e-12)break;}
+    if(hi-lo>1e-9){bad.status=LstStatus::IterationFailure;return bad;}
+    s=std::exp(lo/2+hi/2);
+  } else if(std::isnan(m)) {
+    std::vector<double> grid=y;
+    for(std::size_t j=1;j<y.size();++j)for(int k=1;k<8;++k)grid.push_back(y[j-1]+(y[j]-y[j-1])*k/8);
+    for(double v:y)for(double d:{-.5,.5})if(v+d*s>y.front()&&v+d*s<y.back())grid.push_back(v+d*s);
+    std::sort(grid.begin(),grid.end());grid.erase(std::unique(grid.begin(),grid.end()),grid.end());
+    const auto optimum=maximize([&](double a){return ll(a,s);},grid,1e-10*s,maxit);
+    if(!optimum.converged){bad.status=LstStatus::IterationFailure;return bad;}
+    m=optimum.point;
+  }
+  return {m,s,df,ll(m,s),0,LstStatus::Ok};
+}
+}
+inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,double df) {
+  if(std::isnan(mu)&&std::isnan(sigma))return std::isnan(df)?lst_mle(x,tol,maxit):lst_mle_fixed_df(x,df,tol,maxit);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(!std::isnan(df)) {
+    if(!std::isfinite(df)||df<1)return {nan,nan,df,nan,0,LstStatus::InvalidDf};
+    return lst_detail::conditional(x,df,mu,sigma,tol,maxit);
+ }
+  if(x.empty())return {nan,nan,nan,nan,0,LstStatus::InvalidStart};
+  // With free scale and held location the lowest df has the weakest
+  // collapse exponent; the equality supremum is the df=1 collapse face.
+  double collapse=-INFINITY;
+  if(std::isnan(sigma)) {
+    std::size_t k=0;for(double v:x)k+=v==mu;
+    if(2*k>x.size())return {mu,nan,1,INFINITY,0,LstStatus::Unbounded};
+    if(2*k==x.size()){collapse=-static_cast<double>(x.size())*std::log(M_PI);for(double v:x)if(v!=mu)collapse-=2*std::log(std::abs(v-mu));}
+  }
+  auto profile=[&](double t){return lst_detail::conditional(x,1+std::exp(t),mu,sigma,tol,maxit);};
+  std::vector<double> grid;for(double t=-12;t<=16;t+=.5)grid.push_back(t);
+  const auto optimum=lst_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
+  if(!optimum.converged)return {nan,nan,nan,nan,maxit,LstStatus::IterationFailure};
+  auto best=profile(optimum.point);const auto edge=lst_detail::conditional(x,1,mu,sigma,tol,maxit);
+  const double tie=1e-8*x.size();if(edge.status==LstStatus::Ok&&edge.logLik>=best.logLik-tie)best=edge;
+  const auto normal=norm_mle(x,mu,sigma);
+  if(normal.logLik>best.logLik+tie||(best.df>1e5&&normal.logLik>=best.logLik-tie))return {normal.mean,normal.sd,INFINITY,normal.logLik,0,LstStatus::NormalBoundary};
+  if(collapse>=best.logLik-tie)return {mu,0,1,collapse,0,LstStatus::ScaleBoundary};
+  return best;
 }
 } // namespace cppunivariate

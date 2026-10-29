@@ -196,4 +196,38 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   return {mu, scale, logLik, iter, finite && iter <= maxit ? CauchyStatus::Ok : CauchyStatus::IterationFailure};
 }
 
+
+inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,double scale) {
+  if(std::isnan(location)&&std::isnan(scale))return fit_cauchy(x,tol,maxit);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  CauchyResult bad{nan,nan,nan,0,CauchyStatus::InvalidInput};
+  if(x.empty()||!(tol>0)||maxit<1)return bad;
+  std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
+  double m=location,s=scale;int it=0;
+  auto ll=[&](double a,double b){double f=0;for(double v:y)f-=std::log(M_PI)+std::log(b)+2*std::log(std::hypot(1.0,(v-a)/b));return f;};
+  if(std::isnan(s)) {
+    std::size_t k=0;double radius=0;for(double v:y){k+=v==m;radius=std::max(radius,std::abs(v-m));}
+    if(2*k>=y.size()){bad.status=CauchyStatus::NoMLE;return bad;}
+    double lo=std::max(std::log(radius)-350,std::log(std::numeric_limits<double>::denorm_min())),hi=std::log(radius)+2;
+    for(;it<maxit;++it){const double t=lo/2+hi/2;s=std::exp(t);double g=-static_cast<double>(y.size());for(double v:y){const double z=(v-m)/s;g+=2*(1-1/(1+z*z));}if(g>0)lo=t;else hi=t;if(hi-lo<1e-12)break;}
+    s=std::exp(lo/2+hi/2);
+  } else if(std::isnan(m)) {
+    std::vector<double> grid=y;
+    for(std::size_t j=1;j<y.size();++j)for(int k=1;k<16;++k)grid.push_back(y[j-1]+(y[j]-y[j-1])*k/16);
+    for(double v:y)for(double d:{-.5,.5,-1.0,1.0})if(v+d*s>y.front()&&v+d*s<y.back())grid.push_back(v+d*s);
+    std::sort(grid.begin(),grid.end());grid.erase(std::unique(grid.begin(),grid.end()),grid.end());
+    m=grid.front();double best=ll(m,s);
+    for(std::size_t j=0;j<grid.size();++j) {
+      const double f=ll(grid[j],s);if(f>best){best=f;m=grid[j];}
+      if((j&&f<ll(grid[j-1],s))||(j+1<grid.size()&&f<ll(grid[j+1],s)))continue;
+      double lo=grid[j?j-1:0],hi=grid[j+1<grid.size()?j+1:j];
+      double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
+      double fa=ll(a,s),fb=ll(b,s);int k=0;
+      for(;k<maxit&&hi-lo>1e-11*s;++k){if(fa>fb){hi=b;b=a;fb=fa;a=hi-(hi-lo)*.6180339887498948482;fa=ll(a,s);}else{lo=a;a=b;fa=fb;b=lo+(hi-lo)*.6180339887498948482;fb=ll(b,s);}}
+      it=std::max(it,k);if(std::max(fa,fb)>best){best=std::max(fa,fb);m=fa>fb?a:b;}
+    }
+  }
+  return {m,s,ll(m,s),it,it<maxit?CauchyStatus::Ok:CauchyStatus::IterationFailure};
+}
+
 }  // namespace cppunivariate

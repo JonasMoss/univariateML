@@ -25,7 +25,7 @@
 
 namespace cppunivariate {
 
-enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary };
+enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary, InvalidShape };
 
 struct GedResult {
   double mu;
@@ -191,4 +191,80 @@ inline GedResult ged_mle(span x, double tol, int maxit) {
   return best;
 }
 
+namespace ged_detail {
+struct Maximum {double point;bool converged;};
+template <typename F>
+inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit) {
+  double best=grid.front(),value=f(best);bool converged=grid.size()==1;
+  for(std::size_t j=0;j<grid.size();++j) {
+    const double v=f(grid[j]);if(v>value){value=v;best=grid[j];converged=false;}
+    if((j&&v<f(grid[j-1]))||(j+1<grid.size()&&v<f(grid[j+1])))continue;
+    double lo=grid[j?j-1:0],hi=grid[j+1<grid.size()?j+1:j];
+    double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
+    double fa=f(a),fb=f(b);
+    for(int it=0;it<maxit&&hi-lo>tol;++it) {
+      if(fa>fb){hi=b;b=a;fb=fa;a=hi-(hi-lo)*.6180339887498948482;fa=f(a);}
+      else{lo=a;a=b;fa=fb;b=lo+(hi-lo)*.6180339887498948482;fb=f(b);}
+    }
+    if(best==grid[j]&&hi-lo<=tol)converged=true;
+    if(std::max(fa,fb)>value){value=std::max(fa,fb);best=fa>fb?a:b;converged=hi-lo<=tol;}
+  }
+  return {best,converged};
+}
+
+inline GedResult conditional(span x,double nu,double mean,double sd) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.empty())return {nan,nan,nu,nan,0,GedStatus::InvalidStart};
+  std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return {nan,nan,nu,nan,0,GedStatus::InvalidStart};std::sort(y.begin(),y.end());
+  double m=mean;
+  if(std::isnan(m)) {
+    if(nu==1)m=y[y.size()/2];
+    else if(nu==2)m=norm_detail::moments(x).mean;
+    else {
+      double lo=y.front(),hi=y.back();
+
+      for(int it=0;it<100;++it){const double mid=lo/2+hi/2;const double unit=std::max(std::max(std::abs(y.front()-mid),std::abs(y.back()-mid)),std::numeric_limits<double>::denorm_min());long double score=0;for(double v:y){const double d=(v-mid)/unit;score+=(d>0?1:-1)*std::pow(std::abs(d),nu-1);}if(score>0)lo=mid;else hi=mid;}
+      m=lo/2+hi/2;
+    }
+  }
+  double s=sd;
+  if(std::isnan(s)) {
+    double radius=0;for(double v:y)radius=std::max(radius,std::abs(v-m));
+    if(!(radius>0))return {m,0,nu,INFINITY,0,GedStatus::InvalidStart};
+    double sum=0;for(double v:y)sum+=std::pow(std::abs(v-m)/radius,nu);
+    s=radius*std::exp(std::log(nu*sum/(2*y.size()))/nu)/dens::ged_lambda(nu);
+  }
+  double ll=0;for(double v:y)ll-=std::log(s)-dens::log_dged_unit((v-m)/s,nu);
+  return {m,s,nu,ll,0,GedStatus::Ok};
+}
+}
+inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+  if(std::isnan(mean)&&std::isnan(sd)&&std::isnan(nu))return ged_mle(x,tol,maxit);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(!std::isnan(nu)) {
+    if(!std::isfinite(nu)||nu<1)return {nan,nan,nu,nan,0,GedStatus::InvalidShape};
+    return ged_detail::conditional(x,nu,mean,sd);
+  }
+  if(x.empty()||!(tol>0)||maxit<1)return {nan,nan,nan,nan,0,GedStatus::InvalidStart};
+  std::vector<double> grid;for(double t=-12;t<=12;t+=.4)grid.push_back(t);
+  auto profile=[&](double t){return ged_detail::conditional(x,1+std::exp(t),mean,sd);};
+  const auto optimum=ged_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
+  if(!optimum.converged)return {nan,nan,nan,nan,maxit,GedStatus::BfgsFailure};
+  auto best=profile(optimum.point);const auto laplace=ged_detail::conditional(x,1,mean,sd);const double tie=1e-8*x.size();
+  if(laplace.logLik>=best.logLik-tie)best=laplace;
+  const auto mm=std::minmax_element(x.begin(),x.end());
+  const double m=std::isnan(mean)?*mm.first/2+*mm.second/2:mean;
+  const double radius=std::max(std::abs(*mm.first-m),std::abs(*mm.second-m));
+  const double r=std::isnan(sd)?radius:std::sqrt(3.0)*sd;
+  double uniform=-INFINITY;
+  if(r>0 && radius<=r) {
+    uniform=-static_cast<double>(x.size())*std::log(2*r);
+    if(!std::isnan(sd)&&radius==r) {
+      double left=0,right=0;for(double v:x){left+=v==m-r;right+=v==m+r;}
+      uniform-=std::exp(-0.5772156649015328606)*(std::isnan(mean)?2*std::sqrt(left*right):left+right);
+    }
+  }
+  if(uniform>best.logLik+tie){best.logLik=uniform;best.status=GedStatus::UniformBoundary;}
+  return best;
+}
 }  // namespace cppunivariate

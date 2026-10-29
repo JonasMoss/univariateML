@@ -96,3 +96,23 @@ TEST_CASE("gumbel: double-only affine overflow guards") {
   CHECK(cppunivariate::distributions::dgumbel(1e308,-1e308,1e308,false) > 0);
   CHECK(cppunivariate::distributions::qgumbel(-std::exp(2.0),1e308,1e308,true,true) == doctest::Approx(-1e308).epsilon(2e-15));
 }
+
+TEST_CASE("gumbel: every held golden subset preserves coefficients and likelihood") {
+  const auto g=mltest::load_distribution_golden("gumbel");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1;mask<4;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::fit_gumbel_held(mltest::as_span(g.data),1e-8,1000,((mask & 1) ? g.estimates.at("mu") : nan),((mask & 2) ? g.estimates.at("sigma") : nan));
+    if(mask & 1)CHECK(r.mu==g.estimates.at("mu"));
+    if(mask & 2)CHECK(r.sigma==g.estimates.at("sigma"));
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
+}
+
+TEST_CASE("gumbel: held scale removes constant-sample collapse") {
+  const std::vector<double> x={2,2,2};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  CHECK(cppunivariate::fit_gumbel_held(mltest::as_span(x),1e-8,100,2,nan).status==cppunivariate::GumbelStatus::Unbounded);
+  CHECK(cppunivariate::fit_gumbel_held(mltest::as_span(x),1e-8,100,nan,1).status==cppunivariate::GumbelStatus::Ok);
+}

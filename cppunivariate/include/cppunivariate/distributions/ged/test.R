@@ -188,3 +188,90 @@ test_that("ged log tails exceed the backend exponent range", {
                  tolerance = 1e-10)
   }
 })
+
+
+test_that("ged new holds agree with independent multistart likelihoods", {
+  set.seed(8100+6806)
+  held_values <- c(mean=0.2,sd=1.3,nu=1.5)
+  samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
+                  qnorm((1:20-.5)/20),seq(-1,1,length.out=20))
+  ld <- function(x,p) {v<-p[3]; b<-p[2]*exp(.5*(-2*log(2)/v+lgamma(1/v)-lgamma(3/v))); -log(p[2])-abs((x-p[1])/b)^v/2+log(v)-1.5*lgamma(1/v)+.5*lgamma(3/v)-log(2)}
+  for(x in samples)for(mask in 1:7) {
+    held <- names(held_values)[as.logical(intToBits(mask)[seq_along(held_values)])]
+    args <- as.list(held_values[held])
+    f <- tryCatch(suppressWarnings(do.call(mlged,c(list(x=x),args))),error=identity)
+    if(inherits(f,"error")) {
+      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      next
+    }
+    expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_equal(attr(logLik(f),"df"),length(held_values)-length(held))
+    expect_equal(as.numeric(logLik(f)),sum(ld(x,as.numeric(f))),tolerance=1e-7)
+    free <- setdiff(names(held_values),held)
+    if(!length(free))next
+    encode <- function(p) {z<-c(p[1],log(p[2]));z<-c(z,log(max(p[3]-1,1e-6)));names(z)<-names(held_values);z[free]}
+    decode <- function(z) {
+      p<-held_values
+      for(j in seq_along(z)) {
+        k<-match(free[j],names(p))
+        p[k]<-if(k==1) z[j] else if(k==2) exp(z[j]) else 1+exp(z[j])
+      }
+      p
+    }
+    objective <- function(z) {
+      if(any(!is.finite(z))||any(abs(z)>30))return(1e100)
+      v<-suppressWarnings(sum(ld(x,decode(z))))
+      if(is.finite(v)) -v else 1e100
+    }
+    # Starts depend on the sample and held values, not on the fitted result.
+    values <- c()
+    for(shift in c(-1,0,1)) {
+      start<-held_values;start[1]<-median(x)+shift;start[2]<-max(.2,sd(x))*exp(shift/2)
+      start[held]<-held_values[held]
+      o<-suppressWarnings(optim(encode(start),objective,method="Nelder-Mead",
+           control=list(maxit=1800,reltol=1e-11)))
+      values<-c(values,o$value)
+    }
+    expect_gte(as.numeric(logLik(f)),-min(values)-2e-6*length(x))
+  }
+})
+
+
+test_that("ged conditional collapse, feasibility and invalid holds", {
+  expect_error(mlged(rep(2,4),mean=2,nu=2),"unbounded")
+  expect_true(is.finite(logLik(mlged(rep(2,4),mean=0,nu=2))))
+  expect_equal(unname(mlged(rep(2,4),sd=1,nu=2)["mean"]),2)
+  expect_error(mlged(seq(-1,1,length.out=40),mean=0),"mlunif")
+  expect_error(mlged(1:5,mean=Inf),"mean")
+  expect_error(mlged(1:5,sd=0),"sd")
+  expect_error(mlged(1:5,nu=.5),"at least 1")
+})
+
+
+test_that("GED held variance uniform endpoints have the conditional limiting penalty", {
+  x<-rep(c(-sqrt(3),sqrt(3)),10)
+  expect_error(mlged(x,mean=0,sd=1),"mlunif")
+  expect_error(mlged(x,sd=1),"mlunif")
+  # From log Gamma(epsilon)=-log(epsilon)-gamma*epsilon+O(epsilon^2):
+  # lambda=sqrt(3)*exp((gamma-log(2))/nu+O(nu^-2)), hence W -> exp(-gamma).
+  nu<-1e6
+  log_lambda<--log(2)/nu+.5*(lgamma(1/nu)-lgamma(3/nu))
+  reference<-log(nu)-1.5*lgamma(1/nu)+.5*lgamma(3/nu)-log(2)-
+    exp(nu*(log(sqrt(3))-log_lambda)-log(2))
+  limit<--log(2*sqrt(3))-exp(-0.5772156649015328606)
+  expect_equal(reference,limit,tolerance=2e-6)
+  expect_equal(dged(sqrt(3),mean=0,sd=1,nu=nu,log=TRUE),reference,tolerance=1e-8)
+})
+
+
+test_that("ged held profiles preserve tiny and large units", {
+  x<-c(-.02,-.005,0,.007,.03)
+  args<-list(nu=10000)
+  base<-do.call(mlged,c(list(x=x),args))
+  for(unit in c(1e-300,1e300)) {
+    fit<-do.call(mlged,c(list(x=x*unit),args))
+    expect_equal(unname(fit["sd"])/unit,unname(base["sd"]),tolerance=1e-8)
+    expect_equal(as.numeric(logLik(fit))+length(x)*log(unit),as.numeric(logLik(base)),tolerance=1e-8)
+  }
+})

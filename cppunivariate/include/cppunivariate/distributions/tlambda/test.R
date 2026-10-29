@@ -50,17 +50,21 @@ test_that("Tukey lambda existence guards and exact uniform faces", {
   expect_error(mltlambda(x,lambda=NA_real_),"finite")
   expect_error(mltlambda(x,reltol=0),"positive")
   expect_error(mltlambda(x,lambda=0,iterlim=1),"converge")
-  expect_error(mltlambda(x,mu=0),"cannot hold `mu`")
+  expect_equal(unname(mltlambda(x,mu=0)["mu"]),0)
 })
-# Independent likelihood: invert extraDistr's quantile using uniroot,
-# without using package density or the C++ inversion.
+# Independent likelihood: invert the defining quantile with uniroot,
+# using log probabilities and expm1, independently of the C++ inversion.
 tlambda_oracle_ld <- function(x,mu,sigma,l) {
   z <- (x-mu)/sigma
   if(l==1 || l==2) return(ifelse(abs(z)<=1/l,-log(2*sigma/l),-Inf))
   if(l>0 && any(abs(z)>=1/l)) return(rep(-Inf,length(x)))
   vapply(z,function(y) {
     if(l==0) return(dlogis(y,log=TRUE)-log(sigma))
-    t <- if(y==0) log(2) else uniroot(function(t) -extraDistr::qtlambda(exp(-t),l)-abs(y),c(log(2),700),tol=1e-11)$root
+    qabs <- function(t) (-expm1(-l*t)+expm1(l*log1p(-exp(-t))))/l
+    upper <- max(log(2)+1,log1p(abs(y)))
+    while(qabs(upper)<abs(y))upper<-2*upper
+    t <- if(y==0) log(2) else uniroot(function(t) qabs(t)-abs(y),
+                                    c(log(2),upper),tol=1e-11)$root
     a <- (l-1)*(-t); b <- (l-1)*log1p(-exp(-t)); m <- max(a,b)
     -log(sigma)-m-log(exp(a-m)+exp(b-m))
   },numeric(1))
@@ -185,4 +189,71 @@ test_that("Tukey lambda keeps shifted finite results after intermediate overflow
 
 test_that("Tukey lambda rejects numerical merging of distinct data", {
   expect_error(mltlambda(c(0,1e-300,2e-300,1e300)),"standardization")
+})
+
+
+test_that("tlambda new holds agree with independent multistart likelihoods", {
+  set.seed(8100+9190)
+  held_values <- c(mu=0.2,sigma=1.3,lambda=0)
+  samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
+                  qnorm((1:20-.5)/20),seq(-1,1,length.out=20))
+  ld <- function(x,p) tlambda_oracle_ld(x,p[1],p[2],p[3])
+  for(x in samples)for(mask in 1:7) {
+    held <- names(held_values)[as.logical(intToBits(mask)[seq_along(held_values)])]
+    args <- as.list(held_values[held])
+    f <- tryCatch(suppressWarnings(do.call(mltlambda,c(list(x=x),args))),error=identity)
+    if(inherits(f,"error")) {
+      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      next
+    }
+    expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_equal(attr(logLik(f),"df"),length(held_values)-length(held))
+    expect_equal(as.numeric(logLik(f)),sum(ld(x,as.numeric(f))),tolerance=1e-7)
+    free <- setdiff(names(held_values),held)
+    if(!length(free))next
+    encode <- function(p) {z<-c(p[1],log(p[2]));z<-c(z,atanh(p[3]));names(z)<-names(held_values);z[free]}
+    decode <- function(z) {
+      p<-held_values
+      for(j in seq_along(z)) {
+        k<-match(free[j],names(p))
+        p[k]<-if(k==1) z[j] else if(k==2) exp(z[j]) else tanh(z[j])
+      }
+      p
+    }
+    objective <- function(z) {
+      if(any(!is.finite(z))||any(abs(z)>30))return(1e100)
+      v<-suppressWarnings(sum(ld(x,decode(z))))
+      if(is.finite(v)) -v else 1e100
+    }
+    # Starts depend on the sample and held values, not on the fitted result.
+    values <- c()
+    for(shift in c(-1,0,1)) {
+      start<-held_values;start[1]<-median(x)+shift;start[2]<-max(.2,sd(x))*exp(shift/2)
+      start[held]<-held_values[held]
+      o<-suppressWarnings(optim(encode(start),objective,method="Nelder-Mead",
+           control=list(maxit=1800,reltol=1e-11)))
+      values<-c(values,o$value)
+    }
+    expect_gte(as.numeric(logLik(f)),-min(values)-2e-6*length(x))
+  }
+})
+
+
+test_that("tlambda conditional collapse, feasibility and invalid holds", {
+  expect_error(mltlambda(c(0,0,1),mu=0),"unbounded")
+  expect_error(mltlambda(c(0,1),mu=0,lambda=-1),"collapse")
+  expect_error(mltlambda(c(-2,2),sigma=1,lambda=.5),"support cannot contain")
+  expect_error(mltlambda(c(-2,2),mu=0,sigma=1,lambda=1),"support cannot contain")
+  expect_equal(as.numeric(mltlambda(c(-1,1),mu=0,sigma=1,lambda=1)),c(0,1,1))
+  expect_equal(as.numeric(mltlambda(rep(2,4),sigma=1,lambda=0))[1],2,tolerance=1e-6)
+  expect_error(mltlambda(1:5,mu=Inf),"finite")
+  expect_error(mltlambda(1:5,sigma=0),"positive")
+})
+
+
+test_that("Tukey lambda held-location half ties can have an attained maximum", {
+  f<-mltlambda(c(0,1),mu=0)
+  expect_equal(unname(f["mu"]),0)
+  expect_true(is.finite(logLik(f)))
 })

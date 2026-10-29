@@ -26,9 +26,26 @@ struct Profile {
   }
 };
 }
-inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=special::kNaN) {
+inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=special::kNaN,double mu=special::kNaN) {
   SlashResult bad={special::kNaN,special::kNaN,special::kNaN,0,SlashStatus::InvalidInput};
   if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma))))return bad;
+
+  if(!std::isnan(mu)) {
+    if(!std::isfinite(mu))return bad;
+    std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;
+    if(std::isnan(sigma)) {
+      const std::size_t k=static_cast<std::size_t>(std::count(y.begin(),y.end(),mu));
+      if(2*k>y.size()){bad.status=SlashStatus::Unbounded;return bad;}
+      // At half mass the fixed-location scale likelihood lies strictly
+      // below its collapse value for every positive scale.
+      if(2*k==y.size()){bad.status=SlashStatus::CollapseLimit;return bad;}
+    }
+    double unit=std::isnan(sigma)?0:sigma;for(double v:y)unit=std::max(unit,std::abs(v-mu));
+    if(!(unit>0))return bad;
+    for(double& v:y)v=(v-mu)/unit;
+    slash_detail::Profile p{y,std::isnan(sigma)?sigma:sigma/unit};
+    auto r=p(0);r.mu=mu;r.sigma=std::isnan(sigma)?unit*r.sigma:sigma;r.logLik-=y.size()*std::log(unit);return r;
+  }
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;
   std::sort(y.begin(),y.end());const double centre=y[y.size()/2];
   std::vector<double> distances;for(double v:y)distances.push_back(static_cast<double>(std::abs(static_cast<long double>(v)-centre)));

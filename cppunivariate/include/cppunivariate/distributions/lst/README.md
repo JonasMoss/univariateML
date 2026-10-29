@@ -30,10 +30,18 @@ r:
   density: extraDistr::dlst
   sampler: extraDistr::rlst
   control:
+    df: Optional held df; NULL estimates it.
+    sigma: Optional held sigma; NULL estimates it.
+    mu: Optional held mu; NULL estimates it.
     gradtol: Tolerance on the analytic gradient norm of the total negative log-likelihood in standardized location, log scale and log(df - 1) coordinates; fixed step and objective backstops also apply.
     iterlim: Maximum iterations for each EM start and each BFGS refinement.
 log_density: loggamma((df+1)/2) - loggamma(df/2) - log(df*pi)/2 - log(sigma) - (df+1)*log(1+((x-mu)/sigma)**2/df)/2
 limits:
+  - name: scale collapse
+    when: Scale tends to zero at the fitted or held location.
+    detect: Excessive mass at that location or vanishing residual spread.
+    status: Unbounded
+    message: "scale"
   - name: scale collapse
     fixed: [df]
     when: "tie multiplicity k > df*(n-k)"
@@ -48,15 +56,7 @@ limits:
 examples: |
   set.seed(3)
   mllst(extraDistr::rlst(200, df = 3, mu = 2, sigma = 1))
-holds:
-- held:
-  - mu
-  status: not-implemented
-  reason: The adapter does not accept `mu`; this hold is not implemented (P2).
-- held:
-  - sigma
-  status: not-implemented
-  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
+holds: []
 ---
 
 The location-scale Student t includes heavy-tailed distributions with infinite variance.
@@ -78,3 +78,8 @@ unbounded; equality is reported separately as a scale-collapse boundary,
 without claiming unboundedness or certifying a regular MLE (Cauchy equality
 can have nonunique attained fits). Strictly positive exponents for every tie
 permit the regular fixed-parameter fit.
+
+
+Conditional fits preserve held mu and sigma. With mu held and sigma free, only ties at that mu contribute to collapse: the exponent is df(n-k)-k. A negative exponent is unbounded; at equality and fixed df the collapse supremum is not attained. Free df retains the existing lower bound 1 and is compared with the conditional normal face. Held sigma removes scale collapse. Shape and held-scale location profiles use numerical multistart searches; they do not certify isolation of every mode.
+
+With df free and exactly half the observations equal to held mu, the finite profile is compared with the df=1 collapse likelihood as well as the conditional normal face. This boundary comparison is numerical.

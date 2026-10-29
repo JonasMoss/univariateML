@@ -1,3 +1,4 @@
+#include <limits>
 #include "test_support.hpp"
 #include "cppunivariate/distributions/lst/mle.hpp"
 #include "cppunivariate/distributions/lst/dpqr.hpp"
@@ -80,4 +81,38 @@ TEST_CASE("lst: fixed df score, ties and validation") {
   CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(tied),3,1e-8,100).status == cppunivariate::LstStatus::ScaleBoundary);
   CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(tied),4,1e-8,5000).status == cppunivariate::LstStatus::Ok);
   CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(x),3,1e-12,0).status == cppunivariate::LstStatus::IterationFailure);
+}
+
+TEST_CASE("lst: every held golden subset preserves coefficients and likelihood") {
+  const auto g=mltest::load_distribution_golden("lst");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1;mask<8;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,1000,((mask & 1) ? g.estimates.at("mu") : nan),((mask & 2) ? g.estimates.at("sigma") : nan),((mask & 4) ? g.estimates.at("df") : nan));
+    if(mask & 1)CHECK(r.mu==g.estimates.at("mu"));
+    if(mask & 2)CHECK(r.sigma==g.estimates.at("sigma"));
+    if(mask & 4)CHECK(r.df==g.estimates.at("df"));
+    CHECK(r.status==cppunivariate::LstStatus::Ok);
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
+}
+
+TEST_CASE("lst: held-location half ties compare the normal face") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x={0,1};
+  CHECK(cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,nan,nan).status==cppunivariate::LstStatus::NormalBoundary);
+}
+
+TEST_CASE("lst: held profiles preserve extreme units") {
+  const std::vector<double> x={-2,-.5,0,.7,3};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto base=cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,nan,1e20);
+  for(double unit:{1e-300,1e300}) {
+    auto y=x;for(double& v:y)v*=unit;
+    const auto fit=cppunivariate::lst_mle(mltest::as_span(y),1e-8,200,0,nan,1e20);
+    CHECK(fit.sigma/unit==doctest::Approx(base.sigma).epsilon(1e-8));
+    CHECK(fit.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-8));
+  }
+  CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(1e-8));
 }

@@ -24,11 +24,18 @@ r:
   density: extraDistr::dhuber
   sampler: extraDistr::rhuber
   control:
+    sigma: Optional held sigma; NULL estimates it.
+    mu: Optional held mu; NULL estimates it.
     epsilon: Positive finite tuning constant (required, e.g. 1.345), or NULL to estimate it.
     gradtol: Tolerance on the mean standardized location and scale scores.
     iterlim: Maximum Newton iterations (and profile iterations if fallback is needed).
 log_density: -log(sigma)-log(sqrt(2*pi)*erf(epsilon/sqrt(2))+2*exp(-epsilon**2/2)/epsilon)-Piecewise(((x-mu)**2/(2*sigma**2), Abs((x-mu)/sigma)<=epsilon), (epsilon*Abs((x-mu)/sigma)-epsilon**2/2, True))
 limits:
+  - name: scale collapse
+    when: Scale tends to zero at the fitted or held location.
+    detect: Every observation equals the fitted or held location.
+    status: UnboundedLikelihood
+    message: "unbounded"
   - model: norm
     when: '$\epsilon \to \infty$ with epsilon free'
     fixed: []
@@ -81,3 +88,6 @@ monotonically toward the normal face.
 With held `sigma`, the lower endpoint is decreased until the uniform
 log-density bound $\log f \le \log c-\log(2\sigma)+c^2/2$
 is below the incumbent profile likelihood per observation.
+
+
+Every coefficient can be held together with any others. Held coefficients are preserved in both the finite fit and the eligible normal and Laplace face comparisons.

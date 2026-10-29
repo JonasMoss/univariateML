@@ -17,6 +17,7 @@ r:
   density: extraDistr::dslash
   sampler: extraDistr::rslash
   control:
+    mu: Optional held mu; NULL estimates it.
     sigma: Optional positive held sigma; NULL estimates it.
     reltol: Relative search tolerance in standardized coordinates.
     iterlim: Maximum refinement iterations per search start.
@@ -29,11 +30,7 @@ limits:
 examples: |
   set.seed(1)
   mlslash(extraDistr::rslash(100))
-holds:
-- held:
-  - mu
-  status: not-implemented
-  reason: The adapter does not accept `mu`; this hold is not implemented (P2).
+holds: []
 ---
 
 The slash distribution is a normal variate divided by an independent uniform variate, with location and scale.
@@ -49,3 +46,6 @@ Location and scale are identified by symmetry and any fixed positive quantile wi
 Multimodality is already forced with sigma held: for `c(-100, 100)` and sigma 1, the likelihood near each observation exceeds its value at the midpoint. Symmetry then gives two separated location maxima. The global location search is used for held-scale fits as well as the free-scale profile.
 
 Zero reciprocal sum is not sufficient for collapse: `c(rep(0, 10), -1, rep(9, 9))` has $L(4,3)/B>1.456$. Free-scale multimodality is explicit for `c(rep(0, 10), -1, rep(10, 9))`: $L(-1/625,1/5)/B>1.00012$ and $L(9/2,7/2)/B>1.066$. At location zero every finite-scale likelihood is below B; all other escaping paths on either side have likelihood at most B. Each side therefore contains an attained finite maximum. These strict bounds follow from degree-12 Taylor lower bounds on $1-e^{-t}$ and Bernoulli's inequality; they were certified using exact rational arithmetic.
+
+
+With mu held, only its tie multiplicity k matters: 2k<n gives a unique positive scale maximum; 2k>n is unbounded, and equality selects an unattained collapse supremum. Holding sigma removes collapse even for constant samples.

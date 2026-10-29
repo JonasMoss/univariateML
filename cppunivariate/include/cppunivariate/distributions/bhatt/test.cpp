@@ -1,3 +1,4 @@
+#include <limits>
 #include "test_support.hpp"
 #include "cppunivariate/distributions/bhatt/mle.hpp"
 #include <vector>
@@ -41,4 +42,19 @@ TEST_CASE("bhatt: faces, held subsets and invalid inputs") {
   CHECK(cppunivariate::bhatt_mle(mltest::as_span(uniform),1e-8,500,1,2).status==cppunivariate::BhattStatus::Ok);
   CHECK(cppunivariate::bhatt_mle(mltest::as_span(uniform),1e-8,500,cppunivariate::special::kNaN,2).status==cppunivariate::BhattStatus::UniformLimit);
   CHECK(cppunivariate::bhatt_mle({}).status==cppunivariate::BhattStatus::InvalidInput);
+}
+
+TEST_CASE("bhatt: every held golden subset preserves coefficients and likelihood") {
+  const auto g=mltest::load_distribution_golden("bhatt");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1;mask<8;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::bhatt_mle(mltest::as_span(g.data),1e-10,1000,((mask & 2) ? g.estimates.at("sigma") : nan),((mask & 4) ? g.estimates.at("a") : nan),((mask & 1) ? g.estimates.at("mu") : nan));
+    if(mask & 1)CHECK(r.mu==g.estimates.at("mu"));
+    if(mask & 2)CHECK(r.sigma==g.estimates.at("sigma"));
+    if(mask & 4)CHECK(r.a==g.estimates.at("a"));
+    CHECK(r.status==cppunivariate::BhattStatus::Ok);
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
 }

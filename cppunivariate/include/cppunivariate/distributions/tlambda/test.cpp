@@ -1,3 +1,4 @@
+#include <limits>
 #include "test_support.hpp"
 #include "cppunivariate/distributions/tlambda/mle.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
@@ -50,4 +51,25 @@ TEST_CASE("tlambda: heavy-tail standardized overflow and seeded sampling") {
   CHECK(cppunivariate::distributions::qtlambda(1,-1e308,1e308,.5)/1e308==doctest::Approx(1.0).epsilon(1e-12));
   cppunivariate::distributions::StdRng<> rng(123);
   for(int j=0;j<10;++j) CHECK(std::isfinite(cppunivariate::distributions::rtlambda(rng,0,1,.14)));
+}
+
+TEST_CASE("tlambda: every held golden subset preserves coefficients and likelihood") {
+  const auto g=mltest::load_distribution_golden("tlambda");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1;mask<8;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::tlambda_mle(mltest::as_span(g.data),1e-8,2000,((mask & 4) ? g.estimates.at("lambda") : nan),((mask & 1) ? g.estimates.at("mu") : nan),((mask & 2) ? g.estimates.at("sigma") : nan));
+    if(mask & 1)CHECK(r.mu==g.estimates.at("mu"));
+    if(mask & 2)CHECK(r.sigma==g.estimates.at("sigma"));
+    if(mask & 4)CHECK(r.lambda==g.estimates.at("lambda"));
+    CHECK(r.status==cppunivariate::TlambdaStatus::Ok);
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
+}
+
+TEST_CASE("tlambda: held-location half ties can attain their maximum") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x={0,1};
+  CHECK(cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,nan,0,nan).status==cppunivariate::TlambdaStatus::Ok);
 }
