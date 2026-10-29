@@ -6,7 +6,7 @@
   The 116 per-distribution `d`/`p`/`q`/`r` functions previously
   re-exported from the package have been removed; users should call
   the canonical implementations in `extraDistr`, `actuar`, `fGarch`,
-  `logitnorm`, `nakagami`, or `sads` directly. These packages are
+  `logitnorm` or `nakagami` directly. These packages are
   now in `Imports:` and resolved at runtime by metadata-driven
   dispatch.
 
@@ -32,6 +32,9 @@
 * `mldweibull()` (discrete Weibull type I) and `mlbbinom()` (beta-binomial
   with known `size`; its `qml()` inverts the reference CDF because
   extraDistr has no `qbbinom`).
+
+* `mlcmb()` (Conway–Maxwell–binomial with known `size`; `nu` may be any
+  real number, `nu = 1` is the binomial).
 
 * `mlbnbinom()` (beta negative binomial; Irwin's generalized Waring
   distribution, which includes the Waring and a shifted Yule–Simon law).
@@ -62,14 +65,15 @@
   are listed in the `fixed` attribute and are not counted in `logLik()`
   degrees of freedom, AIC or BIC.
 
-* `qml()` for `mlzipf()` fits no longer returns one less than the true
-  quantile: `sads::qzipf()` (0.6.5) is off by one, so the package inverts
-  the CDF itself while that defect persists.
+* The package now defines its own d/p/q/r where external references are
+  broken, heavy or missing: `dzipf()`, `pzipf()`, `qzipf()`, `rzipf()`
+  (replacing sads, whose `qzipf` was off by one and which rejected the
+  uniform member `s = 0`; sads is no longer imported) and `dcmb()`,
+  `pcmb()`, `qcmb()`, `rcmb()` for `mlcmb()`.
 
 * Known defects in reference packages that fitted models can reach are
   repaired at runtime, each switching itself off once the reference is
-  fixed: `sads` zipf (`qzipf` off by one; d/p/q/r at the uniform member
-  `s = 0`), `extraDistr` `ptriang`, `pdweibull`, truncated normal d/p/q
+  fixed: `extraDistr` `ptriang`, `pdweibull`, truncated normal d/p/q
   (also used by `mlhnorm()`), and `qgev`/`rgev`/upper-tail `pgev`, and
   `actuar` generalized gamma d/p/q/r. The list is in the package help page
   (`?univariateML`); fitting and `logLik()` never use these functions.

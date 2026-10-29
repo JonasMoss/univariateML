@@ -10,8 +10,6 @@ reference function is fixed. Fitting and log likelihoods remain C++ operations.
 
 | Reference | Adopted repair |
 |---|---|
-| sads qzipf | Invert the CDF built from sads dzipf (existing) |
-| sads d/p/q/r zipf at `s = 0` | Pass `s = .Machine$double.xmin`; `x^-s` rounds to one |
 | extraDistr ptriang | Correct the lower endpoint (existing) |
 | extraDistr pdweibull | Floor the argument before calling the reference (existing) |
 | actuar d/p/q/r trgamma and invtrgamma | Gamma backend composed with power transforms; log-CDF anchor for underflow |
@@ -26,3 +24,6 @@ Sampler defect checks restore the RNG state, including absence of a seed.
 
 Visibility is recorded in KNOWN_ISSUES.md, each affected model's Details,
 the package help page and NEWS. Regression tests live with each model.
+
+The sads repairs were removed on 2026-10-29 when Zipf moved to the
+package's own d/p/q/r and sads left Imports.

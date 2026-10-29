@@ -29,7 +29,7 @@ core.
 
 ### Status (October 2026)
 
-- 69 distributions, **one folder each** in
+- 71 distributions, **one folder each** in
   `cppunivariate/include/cppunivariate/distributions/<id>/`: `README.md`
   (front matter + prose), `mle.hpp`, `dpqr.hpp`, `adapter.cpp`, `test.cpp`,
   `test.R`, `golden.json`. See "Adding a new distribution" below. `lgamma`
@@ -39,11 +39,17 @@ core.
   `notes/ml-behaviour-sweep.R` (all fitters vs a slow oracle, ~6 s) and two
   research reports. Escapes that a fitter detects stop with "use `mlX`"
   (decision D1) and are declared under `limits:` in its `README.md`.
-- The R package is ML-only: it defines no d/p/q/r of its own. Each model's
+- The R package is ML-first. By default each model's
   `dml`/`pml`/`qml`/`rml` call an external package's functions
   (`r.density` in `README.md`), with an optional `r.args` map when their
   argument names differ from the coefficients (hnorm uses
-  `extraDistr::dtnorm` with `a = mu`). Known defects in those packages,
+  `extraDistr::dtnorm` with `a = mu`). Where references are broken, heavy
+  or missing (decided 2026-10-29: Zipf, the Conway–Maxwell families, and
+  the queued fGarch/logitnorm/nakagami replacements and VGAM-only
+  families), the package defines its own d/p/q/r: `distributions/<id>/dpqr.R`
+  (exported, documented) over Rcpp exports of `dpqr.hpp`, shared helpers in
+  `univariateML/R/dpqr_helpers.R` and `univariateML/src/dpqr.h`, and
+  `r.density` without a package prefix (`README_SCHEMA.md`). Known defects in those packages,
   and the runtime-checked workarounds (`univariateML_reference_fixes`),
   are listed in `KNOWN_ISSUES.md`. A reference without a quantile
   function (extraDistr's beta-binomial) gets one by integer inversion of its
