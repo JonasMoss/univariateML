@@ -75,8 +75,9 @@ Optional keys in each `params` entry:
   combined with `fixable` or `fixed`; `default` is used only for
   simulation, and `fit_args` supplies its value for goldens.
 - `bound: lower` / `bound: upper`: the parameter is a support endpoint
-  whose MLE is the sample minimum / maximum. The harness holds it at its
-  golden value in the oracle and omits its score and Hessian row.
+  whose MLE is the sample minimum / maximum when estimated. May be combined
+  with `fixable: true` (for example hnorm); a held endpoint is used exactly.
+  The harness holds it at its golden value in the oracle and omits its score and Hessian row.
 - `kink: true`: hold this coordinate at its golden value for score and
   Hessian checks only; the oracle still optimizes it. Use for a parameter
   at a sample log-density kink, such as the triangular mode.

@@ -41,3 +41,10 @@ TEST_CASE("hnorm: d/p/q/r") {
   cppunivariate::distributions::StdRng<> rng(37);
   for (int i=0;i<100;++i) CHECK(cppunivariate::distributions::rhalfnorm(rng,-2,3) >= -2);
 }
+TEST_CASE("hnorm: held endpoint") {
+  const std::vector<double> x={0,1,2}, one={3}, bad={-1,2}, zero={0};
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),0).sigma==doctest::Approx(std::sqrt(5.0/3)));
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(one),0).sigma==doctest::Approx(3));
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(bad),0).status==cppunivariate::HnormStatus::InvalidData);
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(zero),0).status==cppunivariate::HnormStatus::DegenerateData);
+}

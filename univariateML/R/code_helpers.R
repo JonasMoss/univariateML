@@ -561,6 +561,23 @@ univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
 
 univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
+  # A held half-normal endpoint is closed, unlike the translated dtnorm
+  # convention. Compose the reference half-normal with the known translation.
+  if (identical(univariateML_name(obj), "mlhnorm") &&
+      "mu" %in% univariateML_fixed(obj) && type %in% c("d", "p", "q", "r")) {
+    key <- paste0("extraDistr::", type, "hnorm")
+    fun <- getExportedValue("extraDistr", paste0(type, "hnorm"))
+    repair <- univariateML_reference_fixes[[key]]
+    if (!is.null(repair) && repair$broken()) fun <- repair$replacement
+    mu <- unname(obj["mu"]); sigma <- unname(obj["sigma"])
+    return(switch(type,
+      d = function(x, log = FALSE) fun(x - mu, sigma = sigma, log = log),
+      p = function(q, lower.tail = TRUE, log.p = FALSE)
+        fun(q - mu, sigma = sigma, lower.tail = lower.tail, log.p = log.p),
+      q = function(p, lower.tail = TRUE, log.p = FALSE)
+        mu + fun(p, sigma = sigma, lower.tail = lower.tail, log.p = log.p),
+      r = function(n) mu + fun(n, sigma = sigma)))
+  }
   string <- univariateML_to_string(obj, type = type)
   if (type == "q" && !univariateML_reference_exists(string)) {
     # A reference without a quantile function; see univariateML_reference_quantiles.
@@ -811,3 +828,92 @@ for (.key in paste0("extraDistr::", c("dtnorm", "ptnorm", "qtnorm"))) {
   })
 }
 rm(.key)
+
+# Folded reference families: evaluate tails before folding, avoiding subtraction
+# of a rounded CDF from one. Keep reference samplers (and their seeded streams).
+univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
+  complement <- function(lp) log(-expm1(pmin(0, lp)))
+  make <- function(id) {
+    is_t <- id == "ht"
+    mode <- function(nu) {
+      if (is_t) extraDistr::dht(0, nu, log = TRUE)
+      else if (id == "hcauchy") extraDistr::dhcauchy(0, log = TRUE)
+      else extraDistr::dhnorm(0, log = TRUE)
+    }
+    density <- function(x, nu = 1, sigma = 1, log = FALSE) {
+      if (any(lengths(list(x, nu, sigma)) == 0)) return(numeric())
+      lz <- base::log(abs(x)) - base::log(sigma)
+      z <- 2*lz - base::log(nu)
+      kernel <- pmax(z, 0) + log1p(exp(-abs(z)))
+      ans <- mode(nu) - base::log(sigma) - (nu+1)/2*kernel
+      ans[x < 0] <- -Inf
+      ans[sigma <= 0 | !is.finite(sigma) | nu <= 0 | !is.finite(nu)] <- NaN
+      if (log) ans else exp(ans)
+    }
+    cdf <- function(q, nu = 1, sigma = 1, lower.tail = TRUE, log.p = FALSE) {
+      if (any(lengths(list(q, nu, sigma)) == 0)) return(numeric())
+      z <- pmax(q, 0)/sigma
+      upper <- log(2) + if (is_t) stats::pt(z, nu, lower.tail = FALSE, log.p = TRUE)
+        else if (id == "hcauchy") stats::pcauchy(z, lower.tail = FALSE, log.p = TRUE)
+        else stats::pnorm(z, lower.tail = FALSE, log.p = TRUE)
+      lp <- if (lower.tail) complement(upper) else upper
+      small <- which(!is.na(z) & z < 1e-8 * pmin(1, sqrt(nu)))
+      if (length(small)) {
+        linear <- mode(nu) + log(pmax(q, 0)) - log(sigma)
+        if (!lower.tail) linear <- complement(linear)
+        lp[small] <- rep_len(linear, length(lp))[small]
+      }
+      lp <- pmin(0, lp)
+      lp[sigma <= 0 | !is.finite(sigma) | nu <= 0 | !is.finite(nu)] <- NaN
+      if (log.p) lp else exp(lp)
+    }
+    quantile <- function(p, nu = 1, sigma = 1, lower.tail = TRUE, log.p = FALSE) {
+      if (any(lengths(list(p, nu, sigma)) == 0)) return(numeric())
+      lp <- if (log.p) p else log(p)
+      upper <- (if (lower.tail) complement(lp) else lp) - log(2)
+      ans <- sigma * if (is_t) stats::qt(upper, nu, lower.tail = FALSE, log.p = TRUE)
+        else if (id == "hcauchy") stats::qcauchy(upper, lower.tail = FALSE, log.p = TRUE)
+        else stats::qnorm(upper, lower.tail = FALSE, log.p = TRUE)
+      if (lower.tail) {
+        small <- which(!is.na(lp) & lp < -18)
+        linear <- exp(lp - mode(nu) + log(sigma))
+        ans[small] <- rep_len(linear, length(ans))[small]
+      }
+      ans[lp > 0 | sigma <= 0 | !is.finite(sigma) | nu <= 0 | !is.finite(nu)] <- NaN
+      ans
+    }
+    # Preserve the public reference formals, omitting nu for the other families.
+    if (!is_t) {
+      d <- density; p <- cdf; q <- quantile
+      density <- function(x, sigma = 1, log = FALSE) d(x, 1, sigma, log)
+      cdf <- function(q, sigma = 1, lower.tail = TRUE, log.p = FALSE) p(q, 1, sigma, lower.tail, log.p)
+      quantile <- function(p, sigma = 1, lower.tail = TRUE, log.p = FALSE) q(p, 1, sigma, lower.tail, log.p)
+    }
+    out <- list()
+    if (id != "hnorm") out[[paste0("extraDistr::d", id)]] <- list(
+      broken = local({ family <- id; function() {
+        f <- getExportedValue("extraDistr", paste0("d", family))
+        args <- if (family == "ht") list(nu = 3) else list()
+        !is.finite(do.call(f, c(list(x = 1e200, sigma = 1e-200, log = TRUE), args)))
+      }}), replacement = density)
+    out[[paste0("extraDistr::p", id)]] <- list(
+      broken = local({ family <- id; function() {
+        f <- getExportedValue("extraDistr", paste0("p", family))
+        args <- if (family == "ht") list(nu = 3) else list()
+        !is.finite(do.call(f, c(list(q = if (family == "hnorm") 40 else 1e20, lower.tail = FALSE, log.p = TRUE), args))) ||
+          do.call(f, c(list(q = 1e-20), args)) == 0
+      }}), replacement = cdf)
+    out[[paste0("extraDistr::q", id)]] <- list(
+      broken = local({ family <- id; function() {
+        f <- getExportedValue("extraDistr", paste0("q", family))
+        args <- if (family == "ht") list(nu = 3) else list()
+        actual <- do.call(f, c(list(p = -100, lower.tail = FALSE, log.p = TRUE), args))
+        expected <- if (family == "ht") stats::qt(-100-log(2), 3, lower.tail = FALSE, log.p = TRUE)
+          else if (family == "hcauchy") stats::qcauchy(-100-log(2), lower.tail = FALSE, log.p = TRUE)
+          else stats::qnorm(-100-log(2), lower.tail = FALSE, log.p = TRUE)
+        !isTRUE(all.equal(actual, expected, tolerance = 1e-12))
+      }}), replacement = quantile)
+    out
+  }
+  c(make("hcauchy"), make("ht"), make("hnorm"))
+}))
