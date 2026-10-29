@@ -43,6 +43,9 @@
   fitters as members and stops with the winning limit: generalized gamma,
   its inverse, lognormal, Pareto, power, or double Pareto).
 
+* `mlzeta()` and `mlyulesimon()` (discrete power laws on 1, 2, ...), with
+  their own d/p/q/r; previously available only in VGAM.
+
 * `mlcmp()` (Conway–Maxwell–Poisson) with its own `dcmp()`, `pcmp()`,
   `qcmp()`, `rcmp()` on a normalizing constant with certified truncation
   bounds; the fitter decides existence exactly and names the geometric or

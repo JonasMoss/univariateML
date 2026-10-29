@@ -29,7 +29,7 @@ core.
 
 ### Status (October 2026)
 
-- 74 distributions, **one folder each** in
+- 76 distributions, **one folder each** in
   `cppunivariate/include/cppunivariate/distributions/<id>/`: `README.md`
   (front matter + prose), `mle.hpp`, `dpqr.hpp`, `adapter.cpp`, `test.cpp`,
   `test.R`, `golden.json`. See "Adding a new distribution" below. `lgamma`
