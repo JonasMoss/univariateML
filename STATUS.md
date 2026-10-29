@@ -42,12 +42,12 @@ own rationale live in `roadmap/`; work in flight is on the board
     ten group jobs; TASK-81; reports `notes/evaluations/2026-10-29-p2-*-report.md`)
     and P3 (restrictions, closure, domains, failed-optimizer stops; four
     jobs; TASK-82; reports `notes/evaluations/2026-10-29-p3-*-report.md`).
-  - Left after P2: 53 `not-implemented` holds:
+  - Left after P3: 41 `not-implemented` holds:
     - sstd and sged, 12 each: existence unresolved;
     - hyper and nhyper, 3 each: C6;
     - bbinom 3, cmb 4, tbinom 4: free size unresolved.
 
-    Also 61 `no-mle` entries in 9 families.
+    Also 60 `no-mle` entries.
   - Next: P4 parametrization (TASK-83): scale over rate, half-family
     translation via `r.shift`, hypergeometric `N`; P5 docs (TASK-84).
   - C5 and C6 were picked in the design and still await a look.
