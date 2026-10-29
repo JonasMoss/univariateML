@@ -49,3 +49,14 @@ TEST_CASE("sgomp standalone sampler uses the same distribution") {
   }
   CHECK(std::abs(mean/5000-.5)<.02);
 }
+
+#include "cppunivariate/distributions/sgomp/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("sgomp: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("sgomp",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dsgomp(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::psgomp(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qsgomp(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rsgomp(rng, p[0], p[1]); });
+}

@@ -55,3 +55,12 @@ TEST_CASE("naka tiny shape upper tail avoids cancellation") {
   CHECK(cppunivariate::distributions::pnaka(1e-200,1e-25,1,false,true)==
     doctest::Approx(std::log(-std::expm1(1e-25*lx))).epsilon(1e-12));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("naka: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("naka",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dnaka(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pnaka(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qnaka(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rnaka(rng, p[0], p[1]); });
+}

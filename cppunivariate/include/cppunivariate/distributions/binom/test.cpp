@@ -59,6 +59,16 @@ TEST_CASE("binom dpqr: trivial trial size, CDF endpoints") {
   CHECK(dist::pbinom(k, 20.0, 0.4, true, false) >= 0.7);
 }
 
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("binom: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("binom",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbinom(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbinom(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbinom(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbinom(rng, p[0], p[1]); });
+}
+
 TEST_CASE("binom: free size brackets the integer profile maximum") {
  const double nan=std::numeric_limits<double>::quiet_NaN();
  for (auto x : {std::vector<int>{2,6,6},std::vector<int>{1,2,3,4,5},std::vector<int>{1,3,3,4}}) {

@@ -27,3 +27,13 @@ TEST_CASE("invgauss") {
   CHECK(r.lambda == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kTol));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("invgauss: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("invgauss",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvgauss(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvgauss(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvgauss(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvgauss(rng, p[0], p[1]); });
+}

@@ -27,3 +27,13 @@ TEST_CASE("lnorm dpqr: median = exp(meanlog)") {
   const double q = cppunivariate::distributions::qlnorm(0.4, 1.0, 0.5, true, false);
   CHECK(cppunivariate::distributions::plnorm(q, 1.0, 0.5, true, false) == doctest::Approx(0.4));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("lnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("lnorm",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlnorm(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plnorm(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlnorm(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlnorm(rng, p[0], p[1]); });
+}

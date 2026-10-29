@@ -120,6 +120,16 @@ TEST_CASE("gev: clustered samples and affine equivariance") {
   }
 }
 
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("gev: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("gev",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgev(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgev(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qgev(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rgev(rng, p[0], p[1], p[2]); });
+}
+
 TEST_CASE("gev: only minimum ties control fixed-shape collapse") {
   for (auto x : {std::vector<double>{0,1,1,2}, std::vector<double>{0,1,2,2,2}, std::vector<double>{0,0,1,2}}) {
     for(double xi:{-.5,0.,.3})

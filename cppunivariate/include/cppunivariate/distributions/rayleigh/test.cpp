@@ -27,6 +27,16 @@ TEST_CASE("rayleigh") {
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
 
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("rayleigh: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("rayleigh",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::drayleigh(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::prayleigh(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qrayleigh(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rrayleigh(rng, p[0]); });
+}
+
 TEST_CASE("rayleigh: any zero makes the likelihood identically zero") {
   for (auto x : {std::vector<double>{0,0,1,2}, std::vector<double>{0,1}, std::vector<double>{0,0}})
     CHECK(cppunivariate::rayleigh_mle(mltest::as_span(x)).status == cppunivariate::RayleighStatus::ZeroLikelihood);

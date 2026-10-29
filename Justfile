@@ -83,6 +83,10 @@ cpp-test:
 quality *ids:
 	PYTHONPATH={{repo_root}} python3 -m quality check {{ids}}
 
+# Independent high-precision d/p/q truth from declarative densities.
+dpqr-truth *ids:
+	PYTHONPATH={{repo_root}} python3 -m quality truth {{ids}}
+
 # --- LaTeX research notes (notes/) ---
 notes_dir := "notes"
 

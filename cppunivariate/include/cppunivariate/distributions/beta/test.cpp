@@ -30,3 +30,13 @@ TEST_CASE("beta dpqr: U(0,1) special case (shape1=shape2=1)") {
   const double q = cppunivariate::distributions::qbeta(0.6, 2.0, 5.0, true, false);
   CHECK(cppunivariate::distributions::pbeta(q, 2.0, 5.0, true, false) == doctest::Approx(0.6));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("beta: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("beta",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbeta(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbeta(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbeta(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbeta(rng, p[0], p[1]); });
+}

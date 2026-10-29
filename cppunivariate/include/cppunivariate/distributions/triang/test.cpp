@@ -87,6 +87,16 @@ TEST_CASE("triang: CDF quantile and corner density") {
   CHECK(cppunivariate::distributions::dtriang(1,0,1,1)==2);
 }
 
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("triang: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("triang",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtriang(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptriang(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtriang(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtriang(rng, p[0], p[1], p[2]); });
+}
+
 TEST_CASE("triang: constant data with held exterior mode") {
   const std::vector<double> x(5,.4);
   const double nan=std::numeric_limits<double>::quiet_NaN();

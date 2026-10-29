@@ -39,3 +39,13 @@ TEST_CASE("pois dpqr: pmf and CDF tail") {
   CHECK(dist::ppois(k, 4.0, true, false) >= 0.95);
   CHECK(dist::ppois(k - 1.0, 4.0, true, false) < 0.95);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("pois: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("pois",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpois(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppois(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qpois(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rpois(rng, p[0]); });
+}

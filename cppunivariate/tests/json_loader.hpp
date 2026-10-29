@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <fstream>
 #include <map>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -157,3 +158,47 @@ inline cppunivariate::span as_span(const std::vector<double> &v) {
 }
 
 }  // namespace mltest
+
+namespace mltest {
+
+// Truth tables deliberately use matrices of numeric cells. Nonfinite cells
+// are JSON strings, matching jsonlite's existing golden convention.
+inline std::vector<std::vector<double>> truth_matrix(const std::string &s,
+                                                     const std::string &key) {
+  std::vector<std::vector<double>> rows;
+  std::size_t p = detail::find_key(s, key);
+  if (p == std::string::npos) return rows;
+  p = s.find('[', p);
+  if (p == std::string::npos) return rows;
+  ++p;
+  while (p < s.size()) {
+    p = s.find_first_not_of(" \t\r\n,", p);
+    if (p == std::string::npos || s[p] == ']') break;
+    if (s[p++] != '[') return {};
+    std::vector<double> row;
+    for (;;) {
+      p = s.find_first_not_of(" \t\r\n,", p);
+      if (p == std::string::npos) return {};
+      if (s[p] == ']') { ++p; break; }
+      const bool quoted = s[p] == '"';
+      if (quoted) ++p;
+      const std::size_t end = s.find_first_of(quoted ? "\"" : ",] \r\n", p);
+      const std::string cell = s.substr(p, end-p);
+      long double value = 0;
+      if (cell == "Inf") value = std::numeric_limits<double>::infinity();
+      else if (cell == "-Inf") value = -std::numeric_limits<double>::infinity();
+      else if (cell == "NaN") value = std::numeric_limits<double>::quiet_NaN();
+      else {
+        std::istringstream input(cell);
+        input >> value;
+        if (input.fail()) return {};
+      }
+      row.push_back(static_cast<double>(value));
+      p = end + (quoted ? 1 : 0);
+    }
+    rows.push_back(row);
+  }
+  return rows;
+}
+
+} // namespace mltest

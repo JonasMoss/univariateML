@@ -51,3 +51,14 @@ TEST_CASE("foldnorm density tails inversion and portable RNG") {
   double sum=0; for (int k=0;k<10000;++k) { const double z=cppunivariate::distributions::rfoldnorm(rng,2,1); CHECK(z>=0);sum+=z*z/10000; }
   CHECK(sum==doctest::Approx(5).epsilon(.04));
 }
+
+#include "cppunivariate/distributions/foldnorm/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("foldnorm: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("foldnorm",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dfoldnorm(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pfoldnorm(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qfoldnorm(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rfoldnorm(rng, p[0], p[1]); });
+}

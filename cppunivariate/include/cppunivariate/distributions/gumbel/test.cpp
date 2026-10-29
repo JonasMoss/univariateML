@@ -45,6 +45,16 @@ TEST_CASE("gumbel: seeded sample with outlier") {
 }
 
 
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("gumbel: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("gumbel",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgumbel(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgumbel(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qgumbel(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rgumbel(rng, p[0], p[1]); });
+}
+
 // from mpmath import mp, exp, log, log1p
 // mp.dps=500
 // -exp(7); 3-3*log(-log1p(-exp(-1000)));

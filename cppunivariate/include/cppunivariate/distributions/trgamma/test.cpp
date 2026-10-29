@@ -301,3 +301,13 @@ TEST_CASE("trgamma: evaluation close to the power face without latent gamma unde
   cppunivariate::distributions::StdRng<> rng(7);
   for (int i=0; i<20; ++i) CHECK(d::rtrgamma(rng, 1e-6, 1e6, 1) > 0);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("trgamma: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("trgamma",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtrgamma(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptrgamma(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtrgamma(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtrgamma(rng, p[0], p[1], p[2]); });
+}

@@ -84,3 +84,13 @@ TEST_CASE("ged package dpqr preserve logarithmic tails") {
     }
   }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("ged: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("ged",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dged(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pged(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qged(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rged(rng, p[0], p[1], p[2]); });
+}

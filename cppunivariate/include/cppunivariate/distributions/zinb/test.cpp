@@ -59,3 +59,13 @@ TEST_CASE("zinb: degenerate representative and stable density") {
   CHECK(cppunivariate::distributions::qzinb(1,fit.size,fit.prob,fit.pi,true,false)==0);
   CHECK(std::isfinite(cppunivariate::distributions::dzinb(10000,2,.5,.1,true)));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("zinb: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("zinb",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzinb(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzinb(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzinb(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzinb(rng, p[0], p[1], p[2]); });
+}

@@ -40,3 +40,13 @@ TEST_CASE("geom dpqr: closed-form CDF") {
   CHECK(dist::dgeom(0.0, 0.5, false) == doctest::Approx(0.5));
   CHECK(dist::qgeom(0.99, 0.5, true, false) >= 0.0);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("geom: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("geom",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgeom(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgeom(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qgeom(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rgeom(rng, p[0]); });
+}

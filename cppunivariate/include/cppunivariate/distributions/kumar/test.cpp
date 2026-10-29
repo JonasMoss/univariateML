@@ -68,6 +68,16 @@ TEST_CASE("kumar ordinary golden is unchanged to 1e-12") {
   CHECK(std::abs(r.logLik - g.logLik) < 1e-12);
 }
 
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("kumar: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("kumar",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dkumar(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pkumar(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qkumar(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rkumar(rng, p[0], p[1]); });
+}
+
 // from mpmath import mp, log, log1p, exp, expm1, sqrt
 // mp.dps=500; v=mp.mpf
 // log(-expm1(3*log1p(-v('1e-400'))));

@@ -42,3 +42,12 @@ TEST_CASE("yulesimon: tiny shape and huge counts preserve gamma increments") {
   CHECK(cppunivariate::distributions::pyulesimon(k,rho)/expected==doctest::Approx(1).epsilon(1e-12));
   CHECK(cppunivariate::distributions::pyulesimon(k,rho,false,true)/(-expected)==doctest::Approx(1).epsilon(1e-12));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("yulesimon: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("yulesimon",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dyulesimon(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pyulesimon(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qyulesimon(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::ryulesimon(rng, p[0]); });
+}

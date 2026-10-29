@@ -72,3 +72,13 @@ TEST_CASE("zmnbinom: quantile inversion and sampling") {
  cppunivariate::distributions::StdRng<> rng(19);
  for(int j=0;j<20;++j) {const double v=cppunivariate::distributions::rzmnbinom(rng,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"));CHECK(v>=0);CHECK(v==std::floor(v));}
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("zmnbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("zmnbinom",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzmnbinom(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzmnbinom(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzmnbinom(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzmnbinom(rng, p[0], p[1], p[2]); });
+}

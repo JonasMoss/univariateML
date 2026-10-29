@@ -36,3 +36,12 @@ TEST_CASE("zeta: direct sums and inverse inequalities") {
   }
 }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("zeta: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("zeta",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzeta(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzeta(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzeta(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzeta(rng, p[0]); });
+}

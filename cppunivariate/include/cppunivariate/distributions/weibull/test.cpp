@@ -32,3 +32,13 @@ TEST_CASE("weibull dpqr: known CDF value and quantile inverse") {
   const double q = cppunivariate::distributions::qweibull(0.6, 1.5, 2.0, true, false);
   CHECK(cppunivariate::distributions::pweibull(q, 1.5, 2.0, true, false) == doctest::Approx(0.6));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("weibull: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("weibull",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dweibull(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pweibull(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qweibull(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rweibull(rng, p[0], p[1]); });
+}

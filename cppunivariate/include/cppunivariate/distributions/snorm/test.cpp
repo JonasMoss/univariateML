@@ -117,3 +117,12 @@ TEST_CASE("snorm package dpqr preserve logarithmic tails") {
     }
   }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("snorm: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("snorm",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dsnorm(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::psnorm(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qsnorm(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rsnorm(rng, p[0], p[1], p[2]); });
+}

@@ -79,3 +79,12 @@ TEST_CASE("zib fixed zero size is an attained member") {
  CHECK(cppunivariate::distributions::dzib(0,0,.5,.3)==1);
  CHECK(cppunivariate::distributions::qzib(1,0,.5,.3)==0);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("zib: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("zib",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzib(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzib(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzib(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzib(rng, p[0], p[1], p[2]); });
+}

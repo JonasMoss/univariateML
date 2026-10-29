@@ -49,3 +49,13 @@ TEST_CASE("zmpois: quantile inversion and sampling") {
  cppunivariate::distributions::StdRng<> rng(19);
  for(int j=0;j<20;++j) {const double v=cppunivariate::distributions::rzmpois(rng,g.estimates.at("lambda"),g.estimates.at("p0"));CHECK(v>=0);CHECK(v==std::floor(v));}
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("zmpois: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("zmpois",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzmpois(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzmpois(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzmpois(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzmpois(rng, p[0], p[1]); });
+}

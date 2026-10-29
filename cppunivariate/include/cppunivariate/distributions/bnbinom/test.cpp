@@ -115,3 +115,15 @@ TEST_CASE("bnbinom: overdispersion can select NB; diagonal finite maxima occur")
   REQUIRE(fit.status==cppunivariate::BnbinomStatus::Ok);
   CHECK(fit.size==doctest::Approx(fit.beta).epsilon(1e-5));
 }
+
+#include "cppunivariate/distributions/bnbinom/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+// Oracle gap: see this family's truth.py for the missing controlled route.
+TEST_CASE("bnbinom: d/p/q/r against the truth table" * doctest::skip()) {
+  mltest::check_dpqr_truth("bnbinom",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbnbinom(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbnbinom(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbnbinom(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbnbinom(rng, p[0], p[1], p[2]); });
+}

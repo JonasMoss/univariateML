@@ -85,3 +85,12 @@ TEST_CASE("sged package dpqr preserve logarithmic tails") {
     }
   }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("sged: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("sged",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dsged(x, p[0], p[1], p[2], p[3], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::psged(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qsged(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rsged(rng, p[0], p[1], p[2], p[3]); });
+}

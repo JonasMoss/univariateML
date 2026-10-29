@@ -78,3 +78,12 @@ TEST_CASE("nhyper: statuses, held composition and boundary identification") {
   CHECK(std::isfinite(large.logLik));
   CHECK(large.iterations<60);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("nhyper: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("nhyper",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dnhyper(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pnhyper(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qnhyper(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rnhyper(rng, p[0], p[1], p[2]); });
+}

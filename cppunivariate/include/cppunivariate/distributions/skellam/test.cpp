@@ -65,3 +65,15 @@ TEST_CASE("skellam: standalone sampling and invalid arguments") {
   const std::vector<double> empty;
   CHECK(cppunivariate::skellam_mle(mltest::as_span(empty)).status==cppunivariate::SkellamStatus::InvalidInput);
 }
+
+#include "cppunivariate/distributions/skellam/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+// Oracle gap: see this family's truth.py for the missing controlled route.
+TEST_CASE("skellam: d/p/q/r against the truth table" * doctest::skip()) {
+  mltest::check_dpqr_truth("skellam",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dskellam(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pskellam(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qskellam(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rskellam(rng, p[0], p[1]); });
+}

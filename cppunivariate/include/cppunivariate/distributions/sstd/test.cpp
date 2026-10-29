@@ -176,6 +176,15 @@ TEST_CASE("sstd package dpqr preserve logarithmic tails") {
   }
 }
 
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("sstd: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("sstd",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dsstd(x, p[0], p[1], p[2], p[3], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::psstd(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qsstd(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rsstd(rng, p[0], p[1], p[2], p[3]); });
+}
+
 TEST_CASE("sstd fits are equivariant on small-scale samples") {
   const auto g = mltest::load_distribution_golden("sstd");
   const auto base = cppunivariate::sstd_mle(mltest::as_span(g.data), mltest::kFitTol, 200);

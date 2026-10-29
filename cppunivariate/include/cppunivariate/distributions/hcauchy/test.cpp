@@ -32,3 +32,13 @@ TEST_CASE("hcauchy: reference identities, tails and sampling") {
   cppunivariate::distributions::StdRng<> rng(23);
   for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rhcauchy(rng,2)>=0);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("hcauchy: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("hcauchy",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhcauchy(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phcauchy(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhcauchy(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhcauchy(rng, p[0]); });
+}

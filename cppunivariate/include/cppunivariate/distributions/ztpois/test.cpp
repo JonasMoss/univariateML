@@ -53,3 +53,13 @@ TEST_CASE("zero families retain finite extreme log tails") {
  CHECK(std::isfinite(cppunivariate::zero_detail::density(3,9999,10000,.4,.3,true)));
  CHECK(cppunivariate::zero_detail::quantile(2,1,0,1,0,true,false)==1);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("ztpois: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("ztpois",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dztpois(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pztpois(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qztpois(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rztpois(rng, p[0]); });
+}

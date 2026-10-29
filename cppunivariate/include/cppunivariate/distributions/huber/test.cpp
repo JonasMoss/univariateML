@@ -247,3 +247,13 @@ TEST_CASE("huber: prefix loss and derivatives are exact reductions") {
       CHECK(bb==doctest::Approx(rc).epsilon(1e-10));
     }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("huber: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("huber",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhuber(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phuber(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhuber(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhuber(rng, p[0], p[1], p[2]); });
+}

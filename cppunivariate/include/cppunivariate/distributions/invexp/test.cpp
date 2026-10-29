@@ -13,3 +13,13 @@ TEST_CASE("invexp: golden, reciprocal agreement and score") {
   CHECK(r.logLik == doctest::Approx(b.logLik+jac).epsilon(1e-12));
   
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("invexp: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("invexp",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvexp(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvexp(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvexp(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvexp(rng, p[0]); });
+}

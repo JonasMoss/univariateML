@@ -37,3 +37,15 @@ TEST_CASE("slash: multiplicity, held scale and invalid inputs") {
   CHECK(cppunivariate::slash_mle({},1e-9,200).status==cppunivariate::SlashStatus::InvalidInput);
   CHECK(cppunivariate::distributions::dslash(0)==doctest::Approx(cppunivariate::distributions::dslash(1e-10)).epsilon(1e-14));
 }
+
+#include "cppunivariate/distributions/slash/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("slash: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("slash",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dslash(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pslash(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qslash(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rslash(rng, p[0], p[1]); });
+}

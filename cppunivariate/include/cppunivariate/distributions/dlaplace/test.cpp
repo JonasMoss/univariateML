@@ -33,3 +33,12 @@ TEST_CASE("dlaplace: golden regression") {
   CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
   CHECK(f.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-10));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("dlaplace: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("dlaplace",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::ddlaplace(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pdlaplace(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdlaplace(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdlaplace(rng, p[0], p[1]); });
+}

@@ -60,3 +60,12 @@ TEST_CASE("logarithmic reuse brackets near the point mass") {
  CHECK(nb.prob==doctest::Approx(1-fit.prob).epsilon(1e-10));
  CHECK(nb.logLik==doctest::Approx(fit.logLik).epsilon(1e-10));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("zmlogarithmic: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("zmlogarithmic",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzmlogarithmic(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzmlogarithmic(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzmlogarithmic(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzmlogarithmic(rng, p[0], p[1]); });
+}
