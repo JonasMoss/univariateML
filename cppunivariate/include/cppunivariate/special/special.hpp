@@ -11,6 +11,7 @@
 #include <boost/math/distributions/logistic.hpp>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/students_t.hpp>
+#include <boost/math/special_functions/owens_t.hpp>
 #include <boost/math/special_functions/digamma.hpp>
 #include <boost/math/special_functions/polygamma.hpp>
 #include <boost/math/special_functions/trigamma.hpp>
@@ -66,6 +67,8 @@ inline double lbeta(double a, double b) {
   }
   return lgamma(a) + lgamma(b) - lgamma(a + b);
 }
+
+inline double owens_t(double h, double a) { return boost::math::owens_t(h, a, NoThrowPolicy{}); }
 
 // --- normal density (kept inline; closed-form is fine) --------------------
 

@@ -86,6 +86,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | power      | PowerDist               | alpha, beta        | extraDistr::dpower        | [0, ∞)           |
 | rayleigh   | Rayleigh                | sigma              | extraDistr::drayleigh     | [0, ∞)           |
 | sged       | Skew Generalized Error  | mean, sd, nu, xi   | fGarch::dsged             | (-∞, ∞) open     |
+| sn | Azzalini skew-normal | xi, omega, alpha | dsn (package-defined) | real |
 | snorm      | Skew Normal             | mean, sd, xi       | fGarch::dsnorm            | (-∞, ∞) open     |
 | sstd       | Skew Student-t          | mean, sd, nu, xi   | fGarch::dsstd             | (-∞, ∞) open     |
 | std       | Student-t                | mean, sd, nu       | fGarch::dstd              | (-∞, ∞) open     |
