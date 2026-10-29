@@ -8,8 +8,8 @@ params:
   - {name: nu, role: df, domain: "(2, inf)", default: 3.0}
   - {name: xi, role: skew, domain: "(0, inf)", default: 2.0}
 r:
-  density: fGarch::dsstd
-  sampler: fGarch::rsstd
+  density: dsstd
+  sampler: rsstd
   control:
     gradtol: "Tolerance on the Euclidean norm of the total negative log-likelihood gradient in transformed coordinates; fixed step and objective-decrease criteria can also stop the fit."
     iterlim: "Maximum number of optimisation iterations."

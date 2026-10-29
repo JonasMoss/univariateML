@@ -7,8 +7,8 @@ params:
   - {name: sd, role: scale, domain: "(0, inf)", default: 1.0}
   - {name: xi, role: skew, domain: "(0, inf)", default: 3.0}
 r:
-  density: fGarch::dsnorm
-  sampler: fGarch::rsnorm
+  density: dsnorm
+  sampler: rsnorm
   control: {}
 log_density: log(sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)) - log(sd) + log(2/(xi+1/xi)) - log(2*pi)/2 - Piecewise(((sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))**2/xi**2, (sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))>0), ((sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))**2*xi**2, True))/2
 limits:

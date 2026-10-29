@@ -75,3 +75,12 @@ TEST_CASE("ged constrained faces and shapes") {
     CHECK(r.nu > 1.0);
   }
 }
+
+TEST_CASE("ged package dpqr preserve logarithmic tails") {
+  for (bool lower : {false, true}) {
+    for (double lp : {-1000.0, -100.0, -2.0, -0.1}) {
+      const double x = cppunivariate::distributions::qged(lp, 0.3, 1.7, 1.4, lower, true);
+      CHECK(cppunivariate::distributions::pged(x, 0.3, 1.7, 1.4, lower, true) == doctest::Approx(lp).epsilon(2e-12));
+    }
+  }
+}

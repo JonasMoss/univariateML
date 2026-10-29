@@ -38,7 +38,6 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom extraDistr dlomax
 #' @importFrom actuar dburr
-#' @importFrom fGarch dged
 #' @importFrom logitnorm dlogitnorm
 #' @importFrom nakagami dnaka
 #' @useDynLib univariateML, .registration = TRUE

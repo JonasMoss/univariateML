@@ -26,3 +26,37 @@ Rcpp::List mlged_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
           Rcpp::_["nu"] = res.nu),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
+
+#include "dpqr.h"
+#include "cppunivariate/distributions/ged/dpqr.hpp"
+// [[Rcpp::export]]
+Rcpp::NumericVector dged_(Rcpp::NumericVector x, Rcpp::NumericVector mean, Rcpp::NumericVector sd, Rcpp::NumericVector nu, bool log=false) {
+  return dist_impl::dpqr_apply({x, mean, sd, nu}, [&](const std::vector<double> &a) {
+    return cppunivariate::distributions::dged(a[0], a[1], a[2], a[3], log);
+  });
+}
+// [[Rcpp::export]]
+Rcpp::NumericVector pged_(Rcpp::NumericVector q, Rcpp::NumericVector mean, Rcpp::NumericVector sd, Rcpp::NumericVector nu, bool lower_tail=true, bool log_p=false) {
+  return dist_impl::dpqr_apply({q, mean, sd, nu}, [&](const std::vector<double> &a) {
+    return cppunivariate::distributions::pged(a[0], a[1], a[2], a[3], lower_tail, log_p);
+  });
+}
+// [[Rcpp::export]]
+Rcpp::NumericVector qged_(Rcpp::NumericVector p, Rcpp::NumericVector mean, Rcpp::NumericVector sd, Rcpp::NumericVector nu, bool lower_tail=true, bool log_p=false) {
+  return dist_impl::dpqr_apply({p, mean, sd, nu}, [&](const std::vector<double> &a) {
+    return cppunivariate::distributions::qged(a[0], a[1], a[2], a[3], lower_tail, log_p);
+  });
+}
+struct GEDRng {
+  double runif(double a, double b) { return R::runif(a,b); }
+  double rnorm() { return R::rnorm(0,1); }
+  double rt(double nu) { return R::rt(nu); }
+  double rgamma(double a, double b) { return R::rgamma(a,b); }
+};
+// [[Rcpp::export]]
+Rcpp::NumericVector rged_(int n, Rcpp::NumericVector mean, Rcpp::NumericVector sd, Rcpp::NumericVector nu) {
+  GEDRng rng;
+  return dist_impl::dpqr_apply({Rcpp::NumericVector(n), mean, sd, nu}, [&](const std::vector<double> &a) {
+    return cppunivariate::distributions::rged(rng, a[1], a[2], a[3]);
+  });
+}

@@ -76,3 +76,12 @@ TEST_CASE("sged translated exponential faces") {
   r = cppunivariate::sged_mle(mltest::as_span(x), 1e-6, 500);
   CHECK(r.status == cppunivariate::SgedStatus::LeftHalfGedBoundary);
 }
+
+TEST_CASE("sged package dpqr preserve logarithmic tails") {
+  for (bool lower : {false, true}) {
+    for (double lp : {-1000.0, -100.0, -2.0, -0.1}) {
+      const double x = cppunivariate::distributions::qsged(lp, 0.3, 1.7, 1.4, 1.8, lower, true);
+      CHECK(cppunivariate::distributions::psged(x, 0.3, 1.7, 1.4, 1.8, lower, true) == doctest::Approx(lp).epsilon(2e-12));
+    }
+  }
+}

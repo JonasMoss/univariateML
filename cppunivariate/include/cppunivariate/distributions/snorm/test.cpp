@@ -108,3 +108,12 @@ TEST_CASE("snorm random profiles dominate grid plus refinement") {
 
 #undef C_APPROX
 #undef C_APPROX_FD
+
+TEST_CASE("snorm package dpqr preserve logarithmic tails") {
+  for (bool lower : {false, true}) {
+    for (double lp : {-1000.0, -100.0, -2.0, -0.1}) {
+      const double x = cppunivariate::distributions::qsnorm(lp, 0.3, 1.7, 1.8, lower, true);
+      CHECK(cppunivariate::distributions::psnorm(x, 0.3, 1.7, 1.8, lower, true) == doctest::Approx(lp).epsilon(2e-12));
+    }
+  }
+}
