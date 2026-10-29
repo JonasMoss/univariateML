@@ -44,9 +44,9 @@ core.
   (`r.density` in `README.md`), with an optional `r.args` map when their
   argument names differ from the coefficients (hnorm uses
   `extraDistr::dtnorm` with `a = mu`). Where references are broken, heavy
-  or missing (decided 2026-10-29: Zipf, the Conway–Maxwell families, and
-  the queued fGarch/logitnorm/nakagami replacements and VGAM-only
-  families), the package defines its own d/p/q/r: `distributions/<id>/dpqr.R`
+  or missing (decided 2026-10-29: Zipf, the Conway–Maxwell families, the
+  former fGarch, logitnorm and nakagami models, and families that only
+  VGAM had), the package defines its own d/p/q/r: `distributions/<id>/dpqr.R`
   (exported, documented) over Rcpp exports of `dpqr.hpp`, shared helpers in
   `univariateML/R/dpqr_helpers.R` and `univariateML/src/dpqr.h`, and
   `r.density` without a package prefix (`README_SCHEMA.md`). Known defects in those packages,

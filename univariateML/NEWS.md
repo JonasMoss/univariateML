@@ -7,7 +7,8 @@
   re-exported from the package have been removed; users should call
   the canonical implementations in `extraDistr`, `actuar`, `fGarch`,
   `logitnorm` or `nakagami` directly (since replaced by the package's own
-  `dlogitnorm()`/`dnaka()` families; see below). These packages are
+  functions with the same names; see below). Imports are now only Rcpp,
+  extraDistr and actuar. These packages are
   now in `Imports:` and resolved at runtime by metadata-driven
   dispatch.
 
@@ -96,6 +97,9 @@
   `pcmb()`, `qcmb()`, `rcmb()` for `mlcmb()`; `dlogitnorm()` and `dnaka()`
   families with the former references' names and arguments (logitnorm and
   nakagami are no longer imported; `pnaka` was positive below zero).
+* Own `dstd()`, `dsstd()`, `dged()`, `dsged()`, `dsnorm()` families (and
+  their p/q/r) with fGarch's names and arguments; fGarch is no longer
+  imported, and far-tail log densities no longer underflow to `-Inf`.
 
 * Known defects in reference packages that fitted models can reach are
   repaired at runtime, each switching itself off once the reference is

@@ -20,7 +20,7 @@ record.
 | sads 0.6.5 | `qzipf` is off by one between CDF jumps | `sads::qzipf(0.5, N = 10, s = 1)` is 1, should be 2 | historical: sads no longer used |
 | sads 0.6.5 | `pzipf` returns 0 for non-integer `q` instead of $F(\lfloor q \rfloor)$ | `sads::pzipf(1.5, 10, 1)` is 0, should be 0.341 | historical: sads no longer used |
 | sads 0.6.5 | `dzipf`/`pzipf`/`qzipf`/`rzipf` give `NaN` at `s = 0` (the uniform member; sads requires `s > 0`) | `sads::dzipf(1, 10, 0)` | historical: sads no longer used |
-| fGarch 4052.93 | `dstd(log = TRUE)` is `-Inf` where the log density is finite | `fGarch::dstd(1e6, nu = 1e6, log = TRUE)` | `dml(x, mlstd(...), log = TRUE)` far in the tails |
+| fGarch 4052.93 | `dstd(log = TRUE)` is `-Inf` where the log density is finite | `fGarch::dstd(1e6, nu = 1e6, log = TRUE)` | historical: fGarch no longer used |
 | extraDistr 1.10.0.5 | `dzinb(log = TRUE)` is `-Inf` far in the tail: it takes the log of an underflowed density | `extraDistr::dzinb(10000, 2, 0.5, 0.1, log = TRUE)`, should be -6923.75 | `dml(x, mlzinb(...), log = TRUE)` at huge counts |
 | extraDistr 1.10.0.5 | `pzinb(lower.tail = FALSE, log.p = TRUE)` is `-Inf`: it complements the lower CDF | `extraDistr::pzinb(100, 2, 0.5, 0.1, lower.tail = FALSE, log.p = TRUE)`, should be about -66.17 | upper-tail `pml` on the log scale |
 | extraDistr 1.10.0.5 | `qzinb(1, ...)` is `NaN` for the point mass at zero (`pi = 1`) | `extraDistr::qzinb(1, 2, 0.5, 1)`, should be 0 | none: fits never return `pi = 1` |
