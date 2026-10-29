@@ -28,6 +28,16 @@
   and both ways out. `model_select()` records the families it skipped in
   a `skipped` attribute.
 
+* Every coefficient can be held (`p = value`) or estimated (`p = NULL`):
+  P2 added about 175 hold combinations across 90 families, e.g.
+  `mlgamma(x, shape = 2)`, `mlnorm(x, mean = 0)`, `mlweibull(x, shape = 2)`.
+  Each family's README lists the remaining exceptions under `holds:`:
+  combinations with no MLE (`no-mle`, 61) and combinations not yet
+  supported (`not-implemented`, 53). The not-yet-supported ones are skew-t
+  and skew-GED subsets whose existence is open, truncated-normal bound
+  estimation, the hypergeometric population size and some free trial
+  sizes. Data-dependent non-existence stops with the reason.
+
 * Arguments to the `ml***` fitters must match exactly. A hold the fitter
   does not support stops (`mlweibull(x, shape = 2)`: "cannot hold
   `shape`") instead of being matched partially to a start value (`shape0`)
