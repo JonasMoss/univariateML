@@ -16,12 +16,23 @@ line <- function(...) paste0(..., collapse = "")
 emit_bound <- function(v) if (is.infinite(v)) (if (v > 0) "Inf" else "-Inf") else format(v, digits = 17)
 
 emit_support <- function(s) {
-  lower <- if (is.null(s$lower)) "-Inf" else emit_bound(s$lower)
-  upper <- if (is.null(s$upper)) "Inf" else emit_bound(s$upper)
-  closed_vals <- if (is.null(s$closed)) c(FALSE, FALSE) else as.logical(unlist(s$closed))
-  closed <- paste0("c(", paste(ifelse(closed_vals, "TRUE", "FALSE"), collapse = ", "), ")")
-  type <- if (!is.null(s$type)) s$type else "R"
-  line("list(bounds = c(", lower, ", ", upper, "), closed = ", closed, ", type = \"", type, "\")")
+  bounds <- list(s$lower, s$upper)
+  dynamic <- vapply(bounds, is.character, logical(1))
+  envelope <- bounds
+  envelope[dynamic] <- list(-Inf, Inf)[dynamic]
+  lower <- emit_bound(envelope[[1]])
+  upper <- emit_bound(envelope[[2]])
+  closed_vals <- as.logical(unlist(s$closed))
+  # A coefficient-dependent endpoint has no pre-fit bound.
+  check_closed <- closed_vals
+  check_closed[dynamic] <- FALSE
+  closed <- paste0("c(", paste(ifelse(check_closed, "TRUE", "FALSE"), collapse = ", "), ")")
+  expr <- paste(deparse(bounds), collapse = " ")
+  limits <- paste(deparse(s$endpoint_log_density), collapse = " ")
+  line("list(bounds = c(", lower, ", ", upper, "), closed = ", closed,
+       ", type = \"", s$type, "\", expressions = ", expr,
+       ", endpoint_closed = ", paste(deparse(closed_vals), collapse = " "),
+       ", endpoint_log_density = ", limits, ")")
 }
 
 emit_params <- function(params) {

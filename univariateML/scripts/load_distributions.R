@@ -19,6 +19,27 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   out
 }
 
+# Support expressions are R expressions in coefficients, with a small pure
+# arithmetic vocabulary. Keep numeric envelopes for pre-fit input checks.
+.umvl_support_expr <- function(v, pn, endpoint = FALSE) {
+  if (is.numeric(v)) return(v)
+  numeric <- suppressWarnings(tryCatch(.umvl_as_bound(v), error = function(e) NA_real_))
+  if (!is.na(numeric)) return(numeric)
+  parsed <- tryCatch(parse(text = v), error = function(e) NULL)
+  allowed <- c("+", "-", "*", "/", "^", "(", "if", "<", ">", "<=", ">=", "==",
+               "!=", "&&", "||", "min", "max", "floor", "ceiling", "log", "sqrt",
+               "lgamma", "lbeta", "dnorm", "dt")
+  calls <- function(x) {
+    if (!is.call(x)) return(character())
+    c(as.character(x[[1]]), unlist(lapply(as.list(x)[-1], calls)))
+  }
+  if (is.null(parsed) || length(parsed) != 1L ||
+      length(setdiff(all.vars(parsed), c(pn, "Inf", "pi", if(endpoint) "x"))) ||
+      length(setdiff(calls(parsed[[1]]), allowed)))
+    stop("load_distributions: invalid support expression '", v, "'")
+  as.character(v)
+}
+
 # Split "---\n<yaml>\n---\n<body>" into list(front = <list>, body = <chr>).
 .umvl_read_front_matter <- function(path) {
   lines <- readLines(path, warn = FALSE, encoding = "UTF-8")
@@ -69,10 +90,12 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   s <- f$support
   support <- list(
     type = if (identical(tolower(s$type), "integer")) "Z" else "R",
-    lower = .umvl_as_bound(s$lower),
-    upper = .umvl_as_bound(s$upper),
+    lower = .umvl_support_expr(s$lower, vapply(f$params, `[[`, "", "name")),
+    upper = .umvl_support_expr(s$upper, vapply(f$params, `[[`, "", "name")),
     closed = as.logical(unlist(s$closed %||% c(FALSE, FALSE)))
   )
+  support$endpoint_log_density <- lapply(s$endpoint_log_density %||% list(),
+    .umvl_support_expr, pn = vapply(f$params, `[[`, "", "name"), endpoint = TRUE)
   params <- lapply(f$params, function(p) {
     obsolete <- intersect(names(p), c("default", "fixable", "fixed", "required", "required_reason"))
     if (length(obsolete)) stop("load_distributions: ", id, ": obsolete parameter keys: ", paste(obsolete, collapse=", "))

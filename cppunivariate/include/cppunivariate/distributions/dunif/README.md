@@ -1,7 +1,7 @@
 ---
 id: dunif
 name: Discrete uniform
-support: {type: integer, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: integer, lower: "min", upper: "max", closed: [true, true]}
 params:
 - name: min
   role: lower

@@ -1,7 +1,7 @@
 ---
 id: nhyper
 name: Negative hypergeometric
-support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
+support: {type: integer, lower: "r", upper: "n+r", closed: [true, true]}
 params:
 - name: 'n'
   role: black balls in the population

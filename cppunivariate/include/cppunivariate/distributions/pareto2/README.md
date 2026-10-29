@@ -1,7 +1,7 @@
 ---
 id: pareto2
 name: Pareto type II
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "log(shape) - log(scale)"}}
 params:
 - name: shape
   role: shape

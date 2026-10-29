@@ -1,7 +1,7 @@
 ---
 id: pareto4
 name: Pareto type IV
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "if (shape2 < 1) Inf else if (shape2 > 1) -Inf else log(shape1) - log(scale)"}}
 params:
 - name: shape1
   role: shape

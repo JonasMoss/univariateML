@@ -1,7 +1,7 @@
 ---
 id: genbeta
 name: Generalized beta of the first kind
-support: {type: real, lower: 0, upper: inf, closed: [false, false]}
+support: {type: real, lower: "0", upper: "scale", closed: [false, true], endpoint_log_density: {upper: "if (shape2 < 1) Inf else if (shape2 > 1) -Inf else log(shape3) - log(scale) - lbeta(shape1, shape2)"}}
 params:
 - name: shape1
   role: shape

@@ -51,7 +51,7 @@ TEST_CASE("power P2 every held subset") {
     CHECK(std::isfinite(r.beta));
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
-    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dpower(v,p[0],p[1],true);return s;};
+    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=std::log(p[1])-p[1]*std::log(p[0])+(p[1]-1)*std::log(v);return s;};
     std::vector<double> p{r.alpha,r.beta};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
@@ -61,7 +61,7 @@ TEST_CASE("power P2 every held subset") {
     CHECK(r.beta==held[1]);
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
-    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dpower(v,p[0],p[1],true);return s;};
+    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=std::log(p[1])-p[1]*std::log(p[0])+(p[1]-1)*std::log(v);return s;};
     std::vector<double> p{r.alpha,r.beta};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
   }
@@ -72,5 +72,20 @@ TEST_CASE("power P2 held boundaries and solver failure") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   CHECK_FALSE(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,2,nan).logLik));
   CHECK(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,3,nan).logLik));
-  CHECK_FALSE(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,nan,2).logLik));
+  CHECK(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,nan,2).logLik));
+}
+
+TEST_CASE("power closed endpoint and constant-sample profiles") {
+  const std::vector<double> x{1, 2, 2};
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const auto r = cppunivariate::power_mle(mltest::as_span(x), 0);
+  CHECK(r.alpha == 2);
+  CHECK(r.beta == doctest::Approx(3 / std::log(2.0)));
+  CHECK(cppunivariate::power_mle(mltest::as_span(x), 1).alpha == 2);
+  const auto held = cppunivariate::power_mle(mltest::as_span(x), 0, nan, 2);
+  CHECK(held.alpha == 2);
+  CHECK(held.beta == 2);
+  const std::vector<double> constant{2, 2};
+  CHECK(cppunivariate::power_mle(mltest::as_span(constant)).status == cppunivariate::PowerStatus::Unbounded);
+  CHECK(cppunivariate::power_mle(mltest::as_span(constant), 0, nan, 2).logLik == 0);
 }

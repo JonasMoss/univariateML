@@ -254,12 +254,12 @@ TEST_CASE("tnorm: input validation") {
     return cppunivariate::tnorm_mle(mltest::as_span(y), a, b, 1e-12, 100, m, s).status;
   };
   CHECK(status(x, 0, 1) == S::Ok);
-  CHECK(status(x, 0.1, 1) == S::OutsideBounds);  // at the bound
-  CHECK(status(x, 0, 0.7) == S::OutsideBounds);
+  CHECK(status(x, 0.1, 1) != S::OutsideBounds);  // closed endpoint
+  CHECK(status(x, 0, 0.7) != S::OutsideBounds);
   CHECK(status(x, 0.2, 1) == S::OutsideBounds);
   CHECK(status(x, 1, 0) == S::InvalidBounds);
   CHECK(status(x, 0, 0) == S::InvalidBounds);
-  CHECK(status(x, kNan, 1) == S::InvalidBounds);
+  CHECK(status(x, kNan, 1) != S::InvalidBounds);  // NaN estimates min(x)
   CHECK(status(x, kInf, kInf) == S::InvalidBounds);
   CHECK(status(x, -kInf, -kInf) == S::InvalidBounds);
   CHECK(status(x, 0, 1, kInf) == S::InvalidFixed);
@@ -371,4 +371,15 @@ TEST_CASE("tnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptnorm(x, p[0], p[1], p[2], p[3], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtnorm(x, p[0], p[1], p[2], p[3], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtnorm(rng, p[0], p[1], p[2], p[3]); });
+}
+
+TEST_CASE("tnorm free bounds are exact sample extremes") {
+  const std::vector<double> x{-2, -.2, 0, .1, 2};
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const auto r = cppunivariate::tnorm_mle(mltest::as_span(x), nan, nan, 1e-12, 100, 0, 1);
+  CHECK(r.status == cppunivariate::TnormStatus::Ok);
+  CHECK(r.a == -2);
+  CHECK(r.b == 2);
+  const auto fixed = cppunivariate::tnorm_mle(mltest::as_span(x), -2, 2, 1e-12, 100, 0, 1);
+  CHECK(r.logLik == fixed.logLik);
 }

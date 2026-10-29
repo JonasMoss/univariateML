@@ -1,13 +1,13 @@
 # The translated half-normal is extraDistr's truncated normal with a = mean.
-dhn <- function(x, mu, sigma, log = FALSE) extraDistr::dtnorm(x, mu, sigma, a = mu, log = log)
+dhn <- function(x, mu, sigma, log = FALSE) ifelse(x >= mu, if (log) log(2) + dnorm(x, mu, sigma, log = TRUE) else 2*dnorm(x, mu, sigma), if (log) -Inf else 0)
 
 test_that("translated half-normal closed form agrees with density oracle", {
   set.seed(73)
   x <- extraDistr::rtnorm(200, -3, 2, a = -3)
   fit <- mlhnorm(x, mu = NULL)
   mu <- unname(fit[1])
-  # Boundary MLE min(x), reported one double below it (dtnorm excludes a).
-  expect_lt(mu, min(x))
+  # Closed boundary MLE min(x), represented exactly.
+  expect_identical(mu, min(x))
   expect_lte(min(x) - mu, 2 * .Machine$double.eps * abs(min(x)))
   expect_equal(unname(coef(fit)), c(min(x), sqrt(mean((x - min(x))^2))), tolerance = 1e-12)
   oracle <- optimize(function(s) -sum(dhn(x, mu, s, log = TRUE)), c(0.01, 20), tol = 1e-10)
@@ -29,8 +29,8 @@ test_that("dml/pml/qml/rml map mu and sigma onto extraDistr's truncated normal",
   fit <- mlhnorm(c(-4, -3, 0, 2), mu = NULL)
   mu <- unname(fit[1]); sigma <- unname(fit[2])
   x <- c(-5, -4, -3.5, 0, 3)
-  # Translated half-normal density 2 * dnorm(x, mu, sigma) on (mu, Inf).
-  expect_equal(dml(x, fit), ifelse(x > mu, 2 * dnorm(x, mu, sigma), 0))
+  # Translated half-normal density 2 * dnorm(x, mu, sigma) on [mu, Inf).
+  expect_equal(dml(x, fit), ifelse(x >= mu, 2 * dnorm(x, mu, sigma), 0))
   expect_equal(dml(x[-1], fit, log = TRUE), log(2) + dnorm(x[-1], mu, sigma, log = TRUE))
   expect_equal(pml(x, fit), pmax(0, 2 * pnorm(x, mu, sigma) - 1))
   u <- c(0.001, 0.1, 0.5, 0.9, 0.999)
@@ -61,8 +61,8 @@ test_that("active truncated-normal repairs retain the half-normal map and endpoi
   fit <- mlhnorm(c(-4,-3,0,2), mu = NULL)
   mu <- unname(fit[1]); sigma <- unname(fit[2])
   x <- mu + sigma*c(-1,0,.01,.5,2)
-  expect_equal(dml(x, fit), ifelse(x > mu, 2*dnorm(x, mu, sigma), 0), tolerance = 1e-12)
-  expect_equal(dml(mu, fit, log = TRUE), -Inf)
+  expect_equal(dml(x, fit), ifelse(x >= mu, 2*dnorm(x, mu, sigma), 0), tolerance = 1e-12)
+  expect_equal(dml(mu, fit, log = TRUE), log(2) + dnorm(mu, mu, sigma, log = TRUE))
   for (lower in c(TRUE,FALSE)) for (logs in c(TRUE,FALSE)) {
     upper <- pmin(1, 2*pnorm(x, mu, sigma, lower.tail = FALSE))
     expected <- if (lower) 1-upper else upper
@@ -77,11 +77,11 @@ test_that("active truncated-normal repairs retain the half-normal map and endpoi
   set.seed(12); expect_identical(actual, extraDistr::rtnorm(30, mu, sigma, a = mu))
 })
 
-test_that("half-normal re-profiles after rounding its endpoint", {
+test_that("half-normal preserves exact endpoints at large translations", {
   x <- 1e15 + c(0, 1, 2, 3)
   f <- mlhnorm(x, mu = NULL)
   expect_equal(f[["sigma"]], sqrt(mean((x - f[["mu"]])^2)))
-  expect_equal(attr(f, "logLik"), sum(extraDistr::dtnorm(x, mean = f[["mu"]], sd = f[["sigma"]], a = f[["mu"]], log = TRUE)))
+  expect_equal(attr(f, "logLik"), sum(dml(x, f, log = TRUE)))
 })
 test_that("held half-normal endpoint is exact, closed and counted as fixed", {
   x <- c(0,1,2,5)
@@ -101,7 +101,7 @@ test_that("held half-normal endpoint is exact, closed and counted as fixed", {
   for(lower in c(TRUE,FALSE)) for(lp in if(lower) -100 else c(-100,-1000))
     expect_equal(pml(qml(lp,f,lower,TRUE),f,lower,TRUE),lp,tolerance=1e-10)
   set.seed(1); a <- rml(20,f)
-  set.seed(1); expect_identical(a,extraDistr::rhnorm(20,f[["sigma"]]))
+  set.seed(1); expect_identical(a,extraDistr::rtnorm(20, mean=f[["mu"]], sd=f[["sigma"]], a=f[["mu"]]))
   set.seed(1); boot <- bootstrapml(f,reps=3,reducer=identity)
   expect_true(all(boot["mu",]==0))
 })
@@ -128,5 +128,5 @@ test_that("held half-normal scale and every combined hold match density oracles"
   expect_s3_class(mlhnorm(c(0,0),mu=0,sigma=1),"univariateML")
   for(bad in c(0,-1,Inf,NaN)) expect_error(mlhnorm(1:3,mu=NULL,sigma=bad),"sigma.*positive finite")
   expect_error(mlhnorm(1:3,mu=2,sigma=1),"at least")
-  expect_error(mlhnorm(1e300,mu=NULL,sigma=1e-300),"exceeds double precision")
+  expect_equal(as.numeric(logLik(mlhnorm(1e300,mu=NULL,sigma=1e-300))), log(2/pi)/2-log(1e-300))
 })

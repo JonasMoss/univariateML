@@ -1,7 +1,7 @@
 ---
 id: tpois
 name: Truncated Poisson
-support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
+support: {type: integer, lower: "max(0, floor(a)+1)", upper: "floor(b)", closed: [true, true]}
 params:
 - name: lambda
   role: rate

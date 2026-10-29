@@ -1,7 +1,7 @@
 ---
 id: hyper
 name: Hypergeometric
-support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
+support: {type: integer, lower: "max(0, k-n)", upper: "min(k, m)", closed: [true, true]}
 params:
 - name: m
   role: successes in the population

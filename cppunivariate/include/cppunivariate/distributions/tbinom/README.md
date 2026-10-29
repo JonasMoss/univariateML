@@ -1,7 +1,7 @@
 ---
 id: tbinom
 name: Truncated binomial
-support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
+support: {type: integer, lower: "max(0, floor(a)+1)", upper: "min(size, floor(b))", closed: [true, true]}
 params:
 - name: prob
   role: probability

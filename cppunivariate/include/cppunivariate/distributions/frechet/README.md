@@ -1,7 +1,7 @@
 ---
 id: frechet
 name: Frechet
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "mu", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "-Inf"}}
 params:
 - name: lambda
   role: shape

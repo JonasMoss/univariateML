@@ -1,7 +1,7 @@
 ---
 id: power
 name: PowerDist
-support: {type: real, lower: 0.0, upper: inf, closed: [false, false]}
+support: {type: real, lower: "0", upper: "alpha", closed: [false, true], endpoint_log_density: {upper: "log(beta) - log(alpha)"}}
 params:
 - name: alpha
   role: upper
@@ -20,20 +20,17 @@ r:
   control:
     alpha: Optional held alpha; NULL estimates it.
     beta: Optional held beta; NULL estimates it.
-    epsilon: Positive relative offset from the sample maximum to place the fitted upper endpoint beyond the data.
+    epsilon: Deprecated compatibility argument, validated but ignored; alpha is exactly max(x).
 log_density: log(beta) - beta*log(alpha) + (beta-1)*log(x)
 references:
   - "Arslan, G. \"A new characterization of the power distribution.\" Journal of Computational and Applied Mathematics 260 (2014): 99-102."
 examples: |
   mlpower(precip)
-holds:
-- held: [beta]
-  status: no-mle
-  reason: "The power MLE with beta held does not exist: the reference excludes the maximizing upper endpoint (P3)."
+holds: []
 limits:
 - name: zero likelihood
   fixed: [alpha]
-  when: Held alpha does not exceed the sample maximum.
+  when: Held alpha is below the sample maximum.
   status: InvalidInput
   message: zero likelihood
 ---
@@ -42,6 +39,11 @@ The power distribution models positive quantities below a finite upper endpoint.
 
 ## Details
 
-The fitted support is $(0, \alpha)$. The reference `extraDistr::dpower` excludes the upper endpoint, so the likelihood supremum occurs as `alpha` decreases to `max(x)` but is not attained under that convention. The fitter returns `max(x) * (1 + epsilon)`; `epsilon` is a relative endpoint offset, not a convergence tolerance.
+The fitted support is $(0, \alpha]$. The upper endpoint is exactly
+`max(x)` when estimated; its density is `beta/alpha`, the interior limit.
+`epsilon` is retained for compatibility and ignored after validation.
 
-A held alpha must strictly exceed max(x) under the present reference convention. It then gives a unique beta fit, including constant data. Estimating the endpoint, including when beta is held, is deferred to P3.
+A held alpha must be at least max(x). A free beta is the reciprocal of
+`mean(log(alpha/x))`. If all observations equal alpha, the likelihood is
+unbounded as beta tends to infinity; the fitter stops. With beta held,
+constant and singleton samples have an attained fit at alpha = max(x).

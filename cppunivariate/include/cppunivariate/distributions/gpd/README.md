@@ -1,7 +1,7 @@
 ---
 id: gpd
 name: Generalized Pareto
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "mu", upper: "if (xi < 0) mu - sigma/xi else Inf", closed: [true, true], endpoint_log_density: {lower: "-log(sigma)", upper: "if (xi == -1) -log(sigma) else if (xi < -1) Inf else -Inf"}}
 params:
 - name: mu
   role: location
