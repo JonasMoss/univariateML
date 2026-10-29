@@ -204,6 +204,27 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   if(!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
   std::vector<double> logs(x.size());
   for(std::size_t i=0;i<x.size();++i){if(!(x[i]>0)||!std::isfinite(x[i]))return bad;logs[i]=std::log(x[i]);}
+  // Constant samples still have a finite constrained maximum when only
+  // one beta shape, the power, or location is free.
+  bool constant=!logs.empty();for(double v:logs)constant=constant&&v==logs[0];
+  if(constant){
+    if(!std::isnan(a)&&!std::isnan(b)&&(!std::isnan(p)||!std::isnan(q))){
+      const double u=a*(logs[0]-std::log(b));
+      if(std::isnan(p))p=std::exp(burr_hold_detail::root([&](double z){double v=std::exp(z);return special::digamma(v+q)-special::digamma(v)-gb2_detail::softplus(-u);}));
+      if(std::isnan(q))q=std::exp(burr_hold_detail::root([&](double z){double v=std::exp(z);return special::digamma(p+v)-special::digamma(v)-gb2_detail::softplus(u);}));
+    } else if(!std::isnan(p)&&!std::isnan(q)&&!std::isnan(b)&&std::isnan(a)){
+      if(x[0]==b)return bad;
+      const double w=logs[0]-std::log(b);
+      a=std::exp(burr_hold_detail::root([&](double z){double u=std::exp(z)*w;return 1+u*(p-(p+q)*burr_hold_detail::sigmoid(u));}));
+    }
+    if(!std::isnan(a)&&!std::isnan(p)&&!std::isnan(q)){
+      if(std::isnan(b))b=std::exp(logs[0]-(std::log(p)-std::log(q))/a);
+      const double u=a*(logs[0]-std::log(b));
+      double ll=logs.size()*(std::log(a)-logs[0]-gb2_detail::logbeta(p,q)-p*gb2_detail::softplus(-u)-q*gb2_detail::softplus(u));
+      return {q,a,p,b,ll,0,std::isfinite(ll)?Gb2Status::Ok:Gb2Status::SearchUnresolved};
+    }
+    return bad;
+  }
   trgamma_detail::LogData d;
   if(!trgamma_detail::standardize(span{logs.data(),logs.size()},d)) {
     if(!logs.empty()&&!std::isnan(q)&&!std::isnan(a)&&!std::isnan(p)) {
@@ -323,6 +344,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   const double score=std::hypot(std::isnan(p)?best.g[0]:0,std::isnan(q)?best.g[1]:0);
   Gb2Status status=best.ok&&!edge&&score<tol&&!face_failure?Gb2Status::Ok:Gb2Status::SearchUnresolved;
   if(status==Gb2Status::Ok&&(!std::isfinite(std::exp(logb))||std::exp(logb)==0))status=Gb2Status::ScaleOutOfRange;
-  return {best.q,best.A/d.sd,best.p,std::exp(logb),best.ll,evals,status};
+  return {std::isnan(q)?best.q:q,std::isnan(a)?best.A/d.sd:a,
+    std::isnan(p)?best.p:p,std::isnan(b)?std::exp(logb):b,best.ll,evals,status};
 }
 } // namespace cppunivariate

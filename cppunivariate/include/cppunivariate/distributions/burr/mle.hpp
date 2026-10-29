@@ -1,5 +1,6 @@
 // Three-parameter Burr XII MLE, with shape1 profiled exactly.
 #pragma once
+#include "../lomax/mle.hpp"
 #include "fixed_scale.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
@@ -206,3 +207,56 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   return {r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
 }
 } // namespace cppunivariate
+
+namespace cppunivariate {
+
+namespace burr_hold_detail {
+// Monotone decreasing score on log coordinates. Bracket before bisection.
+template<class Score> inline double root(Score score) {
+  double lo=-1,hi=1;
+  for(int i=0;i<12 && score(lo)<0;++i)lo*=2;
+  for(int i=0;i<12 && score(hi)>0;++i)hi*=2;
+  if(!(score(lo)>=0 && score(hi)<=0))return std::numeric_limits<double>::quiet_NaN();
+  for(int i=0;i<160;++i){double m=(lo+hi)/2;if(m==lo||m==hi)break;
+    const double value=score(m);if(value==0)return m;if(value>0)lo=m;else hi=m;}
+  return (lo+hi)/2;
+}
+inline double sigmoid(double z){return z>=0?1/(1+std::exp(-z)):std::exp(z)/(1+std::exp(z));}
+}
+// Every shape hold is fitted on logs. With shape1 fixed, profile location
+// exactly, then solve the strictly concave location-scale likelihood in
+// inverse scale and standardized location.
+inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000) {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ BurrMLE bad{a,b,s,nan,0,BurrStatus::InvalidInit};
+ if(x.size()==0||!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
+ for(double v:{a,b,s})if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))return bad;
+ std::vector<double> l;double mean=0,mn=INFINITY,mx=-INFINITY;
+ for(double v:x){if(!(v>0)||!std::isfinite(v))return bad;l.push_back(std::log(v));mean+=l.back()/x.size();mn=std::min(mn,l.back());mx=std::max(mx,l.back());}
+ if(std::isnan(a)&&std::isnan(b))return std::isnan(s)?burr_mle(x,tol,maxit):burr_mle_fixed_scale(x,s,tol,maxit);
+ const bool fa=std::isnan(a),fb=std::isnan(b),fs=std::isnan(s);
+ if(fb&&((fs&&mn==mx)||(!fs&&mn==mx&&x[0]==s))){bad.status=BurrStatus::Unbounded;return bad;}
+ const double n=static_cast<double>(x.size());
+ // Fixed power is precisely a Lomax likelihood; its exponential face
+ // can be tested without ever forming x^b by scaling at max(log x).
+ if(fa&&fs){
+   std::vector<double> y;for(double v:l)y.push_back(std::exp(b*(v-mx)));
+   auto r=lomax_mle(span{y.data(),y.size()},tol,maxit);
+   if(r.status==LomaxStatus::ExponentialLimit){bad.status=BurrStatus::WeibullBoundary;return bad;}
+   if(r.status!=LomaxStatus::Ok){bad.status=BurrStatus::IterationFailure;return bad;}
+   a=r.kappa;s=std::exp(mx-std::log(r.lambda)/b);
+ } else {
+   auto location=[&](double power){return burr_hold_detail::root([&](double c){double z=n;for(double v:l)z-=(a+1)*burr_hold_detail::sigmoid(power*(v-mean)-c);return -z;});};
+   if(fb){
+     const double root=burr_hold_detail::root([&](double z){double power=std::exp(z),c=fs?location(power):power*(std::log(s)-mean),g=n;for(double v:l){double w=v-mean,u=power*w-c;g+=power*w*(1-(a+1)*burr_hold_detail::sigmoid(u));}if(!fs){g=n;for(double v:l){double u=power*(v-std::log(s));g+=u*(1-(a+1)*burr_hold_detail::sigmoid(u));}}return g;});
+     b=std::exp(root);
+   }
+   if(fs)s=std::exp(mean+location(b)/b);
+   if(fa){double total=0;for(double v:l)total+=burr_softplus(b*(v-std::log(s)));a=n/total;}
+ }
+ double ll=n*(std::log(a)+std::log(b));
+ for(double v:l){double u=b*(v-std::log(s));ll+=-v-burr_softplus(-u)-a*burr_softplus(u);}
+ return {a,b,s,ll,0,std::isfinite(ll)&&a>0&&b>0&&s>0&&std::isfinite(s)?BurrStatus::Ok:BurrStatus::IterationFailure};
+}
+
+}

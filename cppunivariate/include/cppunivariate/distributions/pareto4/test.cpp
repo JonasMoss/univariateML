@@ -35,3 +35,13 @@ TEST_CASE("pareto4: probability endpoints and sampler CDF") {
 TEST_CASE("pareto4: independent extreme value") {
  CHECK(cppunivariate::distributions::ppareto4(100.0,2,2,1,0,false,false)==doctest::Approx(9.9980002999600055e-09).epsilon(1e-8));
 }
+
+TEST_CASE("P2 pareto4 golden holds") {
+ auto g=mltest::load_distribution_golden("pareto4");
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+for(int mask=1;mask<8;++mask){double a=mask&1?g.estimates.at("shape1"):nan,b=mask&2?g.estimates.at("shape2"):nan,s=mask&4?g.estimates.at("scale"):nan;auto r=cppunivariate::pareto4_mle(mltest::as_span(g.data),g.estimates.at("min"),1e-9,1000,s,a,b);REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+ if(mask&1)CHECK(r.shape1==a);
+ if(mask&2)CHECK(r.shape2==b);
+ if(mask&4)CHECK(r.scale==s);
+ CHECK(r.logLik>=g.logLik-1e-5);}
+}

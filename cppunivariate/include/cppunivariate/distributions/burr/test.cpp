@@ -109,3 +109,17 @@ TEST_CASE("burr: held-scale endpoint spike and nonconstant escape differ") {
   CHECK(a.logLik==INFINITY);
   CHECK(cppunivariate::burr_mle_fixed_scale(mltest::as_span(mixed),1).status==cppunivariate::BurrStatus::AllGeOne);
 }
+
+TEST_CASE("P2 burr golden holds") {
+ auto g=mltest::load_distribution_golden("burr");
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+for(int mask=1;mask<8;++mask){
+ double a=mask&1?g.estimates.at("shape1"):nan,b=mask&2?g.estimates.at("shape2"):nan,s=mask&4?g.estimates.at("scale"):nan;
+ auto r=cppunivariate::burr_mle_holds(mltest::as_span(g.data),a,b,s);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+ if(mask&1)CHECK(r.shape1==a);
+ if(mask&2)CHECK(r.shape2==b);
+ if(mask&4)CHECK(r.scale==s);
+ CHECK(r.logLik>=g.logLik-1e-5);
+ }
+}

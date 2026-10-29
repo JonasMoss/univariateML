@@ -29,39 +29,37 @@ r:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.
     iterlim: Maximum delegate iterations.
-    shape: Holding this parameter is not supported.
-    scale: Holding this parameter is not supported.
+    shape: Known positive finite coefficient; NULL estimates it.
+    scale: Known positive finite coefficient; NULL estimates it.
+limits:
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: Unbounded
+    message: unbounded
 log_density: log(shape) + log((1/scale)) + (shape - 1)*log((1/scale)*(x-min)) - 2*log(1 + ((1/scale)*(x-min))**shape)
 examples: |
   set.seed(3)
   mlpareto3(simulate_default("mlpareto3", 100), min = 0)
 holds:
-- held:
-  - shape
-  status: not-implemented
-  reason: Holding additional parameters is not supported for this family.
-- held:
-  - scale
-  status: not-implemented
-  reason: Holding additional parameters is not supported for this family.
 - held: []
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape
   - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
@@ -79,3 +77,5 @@ The delegate coefficients map as shape=shape and scale=1/rate.
 Observations must be strictly inside the held support. Free endpoints with other parameters held are not supported; those subsets need separate existence studies. The delegate retains its sample restrictions and limit comparisons.
 
 At distance y above the endpoint the density is asymptotic to C y^(a-1), where a is shape. Choose 0<a<1 and hold other parameters positive. As min approaches the sample minimum from below, k minimum factors diverge as epsilon^(k*(a-1)); all remaining factors approach positive constants. Thus unrestricted likelihood is unbounded, including constant samples.
+
+With min and shape held the log-scale score has one root, including on constant samples. With min and scale held a free shape is unbounded only when all observations equal min + scale.

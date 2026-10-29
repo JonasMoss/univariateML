@@ -55,3 +55,11 @@ TEST_CASE("paralogis: fixed-scale independent scipy oracle") {
   auto r = cppunivariate::paralogis_mle_fixed_scale(mltest::as_span(x), 1);
   CHECK(r.logLik == doctest::Approx(-13.915168948543954).epsilon(1e-10));
 }
+
+TEST_CASE("P2 paralogis golden holds") {
+ auto g=mltest::load_distribution_golden("paralogis");
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+for(int mask=0;mask<2;++mask){auto r=cppunivariate::paralogis_mle_holds(mltest::as_span(g.data),g.estimates.at("shape"),mask?g.estimates.at("scale"):nan);
+ CHECK(r.shape==g.estimates.at("shape"));
+ CHECK(r.logLik>=g.logLik-1e-5);}
+}

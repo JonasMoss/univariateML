@@ -83,7 +83,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   bool constant=true;for(double v:y)constant=constant&&v==y[0];
   // Free concentration can collapse on constant samples. With both beta
   // shapes held, the one-dimensional scale-in-y problem remains meaningful.
-  if(constant&&(std::isnan(a)||std::isnan(b)))return bad;
+  if(constant&&std::isnan(b)&&(std::isnan(a)||std::isnan(t)))return bad;
   double face=-std::numeric_limits<double>::infinity();
   GenbetaStatus fs=GenbetaStatus::SearchUnresolved;
   auto consider=[&](double ll,GenbetaStatus s){if(std::isfinite(ll)&&ll>face){face=ll;fs=s;}};
@@ -117,7 +117,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   auto at=[&](double z){++evals;return genbeta_detail::profile(y,std::exp(z),a,b,maxit);};
   genbeta_detail::Point best;
   bool edge=false;
-  if(!std::isnan(t))best=at(std::log(t));
+  if(!std::isnan(t)){++evals;best=genbeta_detail::profile(y,t,a,b,maxit); }
   else {
     // Logarithmic mesh nominates every visible local maximum. Refine each
     // sign change of the analytic envelope score by bisection.

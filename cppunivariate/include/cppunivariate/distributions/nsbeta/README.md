@@ -39,87 +39,85 @@ r:
     max: Known finite upper endpoint larger than min.
     reltol: Delegate fitting tolerance.
     iterlim: Maximum delegate iterations.
-    shape1: Holding this parameter is not supported.
-    shape2: Holding this parameter is not supported.
+    shape1: Known positive finite coefficient; NULL estimates it.
+    shape2: Known positive finite coefficient; NULL estimates it.
+limits:
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: Degenerate
+    message: unbounded
 log_density: (shape1-1)*log(((x-min)/(max-min))) + (shape2-1)*log(1-((x-min)/(max-min))) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)-log(max-min)
 examples: |
   set.seed(3)
   mlnsbeta(simulate_default("mlnsbeta", 100), min = 0, max = 1)
 holds:
-- held:
-  - shape1
-  status: not-implemented
-  reason: Holding additional parameters is not supported for this family.
-- held:
-  - shape2
-  status: not-implemented
-  reason: Holding additional parameters is not supported for this family.
 - held: []
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape2
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - shape2
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - min
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - min
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape2
   - min
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - shape2
   - min
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - max
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - max
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape2
   - max
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - shape2
   - max
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
@@ -136,3 +134,5 @@ For at least two finite, nonconstant observations strictly between the held boun
 Observations must be strictly inside the held support. Free endpoints with other parameters held are not supported; those subsets need separate existence studies. The delegate retains its sample restrictions and limit comparisons.
 
 With the opposite bound held beyond the sample, a shape a < 1 and its bound approaching the corresponding extreme at distance epsilon gives k factors proportional to epsilon^(a-1); all other factors approach positive constants. Thus the likelihood diverges. The held-bounds fit transforms to beta and subtracts n log(max-min) from log likelihood.
+
+With both bounds held, either held beta shape leaves a strictly decreasing score with one root for the other shape, even on constant samples strictly inside the bounds.

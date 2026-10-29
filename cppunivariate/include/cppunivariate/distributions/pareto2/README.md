@@ -29,8 +29,8 @@ r:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.
     iterlim: Maximum delegate iterations.
-    shape: Holding this parameter is not supported.
-    scale: Holding this parameter is not supported.
+    shape: Known positive finite coefficient; NULL estimates it.
+    scale: Known positive finite coefficient; NULL estimates it.
 log_density: log((1/scale)) + log(shape) - (shape + 1)*log(1 + (1/scale)*(x-min))
 limits:
 - when: $\kappa \to \infty$ with $\lambda \kappa$ fixed
@@ -41,32 +41,24 @@ examples: |
   set.seed(3)
   mlpareto2(simulate_default("mlpareto2", 100), min = 0)
 holds:
-- held:
-  - shape
-  status: not-implemented
-  reason: Holding additional parameters is not supported for this family.
-- held:
-  - scale
-  status: not-implemented
-  reason: Holding additional parameters is not supported for this family.
 - held: []
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape
   - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
@@ -84,3 +76,5 @@ The delegate coefficients map as shape=kappa and scale=1/lambda.
 Observations must be strictly inside the held support. Free endpoints with other parameters held are not supported; those subsets need separate existence studies. The delegate retains its sample restrictions and limit comparisons.
 
 Let the minimum m occur k times. Along min = m-epsilon and scale = epsilon, each minimum density is proportional to epsilon^(-1), and each other density to epsilon^shape. Hence L is proportional to epsilon^(shape*(n-k)-k), which diverges for shape < k/(n-k), or for every shape when k=n.
+
+With min held, holding scale gives the explicit shape estimate n / sum(log1p((x-min)/scale)). Holding shape gives a unique scale-score root.

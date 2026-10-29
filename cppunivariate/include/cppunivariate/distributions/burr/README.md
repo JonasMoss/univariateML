@@ -22,6 +22,8 @@ r:
   density: actuar::dburr
   sampler: actuar::rburr
   control:
+    shape2: Known positive finite coefficient; NULL estimates it.
+    shape1: Known positive finite coefficient; NULL estimates it.
     abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
     gradtol: Gradient tolerance for the mean profiled negative log likelihood.
     iterlim: Maximum BFGS iterations per start.
@@ -31,6 +33,15 @@ r:
     reltol: Relative objective tolerance for BFGS.
 log_density: log(shape1) + log(shape2) - log(x) - shape2*log(scale/x) - (shape1+1)*log(1+(x/scale)**shape2)
 limits:
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: Unbounded
+    message: unbounded
+  - model: weibull
+    fixed: [shape2]
+    when: Fixed-power Lomax profile is maximised on its exponential face
+    status: WeibullBoundary
   - model: 'weibull'
     when: '$\mathrm{shape1} \to \infty$ with $\mathrm{scale}\,\mathrm{shape1}^{-1/\mathrm{shape2}}$ fixed'
     status: 'WeibullBoundary'
@@ -48,15 +59,7 @@ references:
 examples: |
   set.seed(42)
   mlburr(actuar::rburr(1000, shape1 = 1, shape2 = 2, scale = 3))
-holds:
-- held:
-  - shape1
-  status: not-implemented
-  reason: The adapter does not accept `shape1`; this hold is not implemented (P2).
-- held:
-  - shape2
-  status: not-implemented
-  reason: The adapter does not accept `shape2`; this hold is not implemented (P2).
+holds: []
 ---
 
 The Burr type XII distribution is a heavy-tailed distribution for positive size and loss data.
@@ -73,3 +76,5 @@ log likelihood. The fixed-scale path profiles shape1 and refines shape2
 by Newton iteration, with a profile-likelihood fallback start. Starting
 controls `shape10`, `shape20`, `scale0`, and BFGS tolerances apply only
 to the free-scale path. The fixed-scale limit has endpoint `s`.
+
+Holding shape2 gives a Lomax likelihood on x^shape2; its exponential escape is the Weibull with that power held. Holding shape1 gives a coercive log-axis location-scale likelihood for nonconstant samples. With scale also held, a free shape2 is unbounded only when every observation equals scale.

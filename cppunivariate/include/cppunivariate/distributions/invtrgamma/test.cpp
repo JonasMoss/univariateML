@@ -128,3 +128,13 @@ TEST_CASE("invtrgamma: evaluation close to the Pareto face") {
   cppunivariate::distributions::StdRng<> rng(7);
   for (int i=0; i<20; ++i) CHECK(std::isfinite(d::rinvtrgamma(rng, 1e-6, 1e6, 1)));
 }
+
+TEST_CASE("P2 invtrgamma golden holds") {
+ auto g=mltest::load_distribution_golden("invtrgamma");
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+for(int mask=0;mask<4;++mask){double a=mask&1?g.estimates.at("shape1"):nan,b=mask&2?g.estimates.at("shape2"):nan;auto r=cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(g.data),g.estimates.at("scale"),a,b);REQUIRE(r.status==cppunivariate::InvTrGammaStatus::Ok);
+ CHECK(r.scale==g.estimates.at("scale"));
+ if(mask&1)CHECK(r.shape1==a);
+ if(mask&2)CHECK(r.shape2==b);
+ CHECK(r.logLik>=g.logLik-1e-5);}
+}

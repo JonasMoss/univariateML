@@ -195,3 +195,21 @@ inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
   return {r.shape1,r.shape2,scale,r.logLik-static_cast<double>(x.size())*std::log(scale),r.iterations,status};
 }
 } // namespace cppunivariate
+
+namespace cppunivariate {
+
+inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000){
+ std::vector<double> y;double jac=0;
+ for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+ auto r=burr_mle_holds(span{y.data(),y.size()},a,b,std::isnan(s)?s:1/s,tol,maxit);
+ InvBurrStatus st=InvBurrStatus::Ok;
+ if(r.status==BurrStatus::InvalidInit)st=InvBurrStatus::InvalidInit;
+ if(r.status==BurrStatus::IterationFailure)st=InvBurrStatus::IterationFailure;
+ if(r.status==BurrStatus::Unbounded)st=InvBurrStatus::Unbounded;
+ if(r.status==BurrStatus::WeibullBoundary)st=InvBurrStatus::InvWeibullBoundary;
+ if(r.status==BurrStatus::ParetoBoundary)st=InvBurrStatus::PowerBoundary;
+ if(r.status==BurrStatus::AllGeOne)st=InvBurrStatus::AllLeOne;
+ return {r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
+}
+
+}

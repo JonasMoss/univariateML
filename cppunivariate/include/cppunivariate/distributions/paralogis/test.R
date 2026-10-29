@@ -79,3 +79,61 @@ test_that("paralogis large-sample fitting preserves likelihood under replication
   f<-mlparalogis(rep(x,100))
   expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
 })
+
+
+test_that("P2 paralogis holds agree with independent multistart reference likelihoods", {
+  pars <- c(shape=2, scale=1)
+  thresholds <- c()
+  regular <- setdiff(names(pars), thresholds)
+  density <- actuar::dparalogis
+  samples <- lapply(c(3, 20, 100), function(n)
+    do.call(actuar::qparalogis, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+  samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
+  # These samples deliberately include proper limit-model data.
+  samples[[5]] <- qexp(((1:20)-.5)/20)
+  samples[[6]] <- c(.3,.8,1,1,1)*pars["scale"]
+  samples[[7]] <- c(1.1,1.4,2,3,5)*pars["scale"]
+  for (x in samples) for (mask in seq_len(2^length(regular)-1)) {
+    held <- c(thresholds, regular[as.logical(intToBits(mask)[seq_along(regular)])])
+    free <- setdiff(names(pars), held)
+    args <- as.list(pars[held])
+    fit <- tryCatch(do.call(mlparalogis, c(list(x=x),args)), error=identity)
+    always <- TRUE
+    if(always) expect_false(inherits(fit,"error"),info=paste(length(x),paste(held,collapse=",")))
+    if (inherits(fit,"error")) {
+      expect_match(conditionMessage(fit), "[Ll]imit|[Uu]se `ml|[Uu]nbounded|[Nn]o MLE|[Nn]o verified|unresolved|failed|does not exist")
+      next
+    }
+    expect_identical(unname(as.numeric(fit[held])),unname(pars[held]))
+    expect_true(all(held %in% attr(fit,"fixed")))
+    objective <- function(z) {
+      p <- pars; p[free] <- exp(z)
+      value <- suppressWarnings(-sum(do.call(density,c(list(x=x,log=TRUE),as.list(p)))))
+      if(is.finite(value)) value else 1e100
+    }
+    actual <- attr(fit,"logLik")
+    expect_equal(actual, -objective(log(fit[free])), tolerance=1e-7)
+    if(length(free)) {
+      # Starts depend only on reference parameters and observations.
+      starts <- lapply(c(-1,0,1), function(s) log(pars[free])+s)
+      oracle <- vapply(starts,function(z) {
+        o <- suppressWarnings(nlminb(z,objective,control=list(iter.max=1000,eval.max=3000,rel.tol=1e-12)))
+        -o$objective
+      },0.)
+      expect_gte(actual, max(oracle)-1e-6*length(x))
+      expect_lte(actual, max(oracle)+1e-5*length(x))
+    }
+  }
+})
+
+test_that("P2 paralogis validates new held values", {
+  for (v in c(0,-1,Inf,NA_real_)) expect_error(mlparalogis(c(.2,.3,.5), shape=v),"positive|finite")
+})
+
+ test_that("P2 paralogis held shape fits constant observations", {
+   for(args in list(list(shape=2),list(shape=2,scale=3))) {
+     f <- do.call(mlparalogis,c(list(x=rep(2,5)),args))
+     expect_identical(unname(f["shape"]),2)
+     expect_true(is.finite(attr(f,"logLik")))
+   }
+ })

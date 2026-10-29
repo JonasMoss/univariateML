@@ -66,3 +66,13 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+
+inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=std::numeric_limits<double>::quiet_NaN(),double b=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=100){
+ std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+ auto r=trgamma_mle_fixed_scale(span{y.data(),y.size()},1/scale,a,b,tol,maxit);
+ return {r.shape1,r.shape2,scale,std::log(scale),r.logLik+jac,r.iterations,invtrgamma_status(r.status)};
+}
+
+}

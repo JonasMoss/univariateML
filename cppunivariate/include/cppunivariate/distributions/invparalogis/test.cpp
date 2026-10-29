@@ -35,3 +35,11 @@ TEST_CASE("invparalogis: fixed scale reciprocal agreement and invalid values") {
   for(double bad:{0.,-1.,double(INFINITY),double(NAN)})
     CHECK(cppunivariate::invparalogis_mle_fixed_scale(mltest::as_span(x),bad).status==cppunivariate::ParalogisStatus::InvalidStart);
 }
+
+TEST_CASE("P2 invparalogis golden holds") {
+ auto g=mltest::load_distribution_golden("invparalogis");
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+for(int mask=0;mask<2;++mask){auto r=cppunivariate::invparalogis_mle_holds(mltest::as_span(g.data),g.estimates.at("shape"),mask?g.estimates.at("scale"):nan);
+ CHECK(r.shape==g.estimates.at("shape"));
+ CHECK(r.logLik>=g.logLik-1e-5);}
+}

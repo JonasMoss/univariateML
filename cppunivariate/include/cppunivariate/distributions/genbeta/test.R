@@ -129,3 +129,54 @@ test_that("genbeta RNG repair preserves the seed during detection and avoids sat
   set.seed(81);expect_equal(fix$replacement(20,.0001,2,100),z)
   expect_equal(length(fix$replacement(1:7,.4,.3,2)),7L)
 })
+
+
+test_that("P2 genbeta holds agree with independent multistart reference likelihoods", {
+  pars <- c(shape1=0.4, shape2=0.3, shape3=2, scale=1)
+  thresholds <- c("scale")
+  regular <- setdiff(names(pars), thresholds)
+  density <- actuar::dgenbeta
+  samples <- lapply(c(3, 20, 100), function(n)
+    do.call(actuar::qgenbeta, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+  samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
+  # These samples deliberately include proper limit-model data.
+  samples[[5]] <- exp(-qgamma(((1:20)-.5)/20,2,rate=3))
+  for (x in samples) for (mask in seq_len(2^length(regular)-1)) {
+    held <- c(thresholds, regular[as.logical(intToBits(mask)[seq_along(regular)])])
+    free <- setdiff(names(pars), held)
+    args <- as.list(pars[held])
+    fit <- tryCatch(do.call(mlgenbeta, c(list(x=x),args)), error=identity)
+    always <- "shape3" %in% held || all(c("shape1","shape2") %in% held)
+    if(always) expect_false(inherits(fit,"error"),info=paste(length(x),paste(held,collapse=",")))
+    if (inherits(fit,"error")) {
+      expect_match(conditionMessage(fit), "[Ll]imit|[Uu]se `ml|[Uu]nbounded|[Nn]o MLE|[Nn]o verified|unresolved|failed|does not exist")
+      next
+    }
+    expect_identical(unname(as.numeric(fit[held])),unname(pars[held]))
+    expect_true(all(held %in% attr(fit,"fixed")))
+    objective <- function(z) {
+      p <- pars; p[free] <- exp(z)
+      value <- suppressWarnings(-sum(do.call(density,c(list(x=x,log=TRUE),as.list(p)))))
+      if(is.finite(value)) value else 1e100
+    }
+    actual <- attr(fit,"logLik")
+    expect_equal(actual, -objective(log(fit[free])), tolerance=1e-7)
+    if(length(free)) {
+      # Starts depend only on reference parameters and observations.
+      starts <- lapply(c(-1,0,1), function(s) log(pars[free])+s)
+      oracle <- vapply(starts,function(z) {
+        o <- suppressWarnings(nlminb(z,objective,control=list(iter.max=1000,eval.max=3000,rel.tol=1e-12)))
+        -o$objective
+      },0.)
+      expect_gte(actual, max(oracle)-1e-6*length(x))
+      expect_lte(actual, max(oracle)+1e-5*length(x))
+    }
+  }
+})
+
+test_that("P2 genbeta constant samples with coercive holds fit", {
+  expect_true(is.finite(attr(mlgenbeta(rep(.4,5),scale=1,shape1=2,shape3=1),"logLik")))
+  expect_true(is.finite(attr(mlgenbeta(rep(.4,5),scale=1,shape2=3,shape3=1),"logLik")))
+  expect_true(is.finite(attr(mlgenbeta(rep(.4,5),scale=1,shape1=2,shape2=3),"logLik")))
+  expect_true(is.finite(attr(mlgenbeta(rep(.4,5),scale=1,shape2=1),"logLik")))
+})
