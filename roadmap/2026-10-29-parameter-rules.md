@@ -234,6 +234,20 @@ Each group is one Codex job, and the conformance list shrinks to zero.
 - NEWS (all default changes in one list);
 - `notes/ml-behaviour.tex` (R5 mechanisms).
 
+## Interaction with TASK-78 (own d/p/q/r for every family)
+
+TASK-78 (needs a decision, from another session) would replace the
+extraDistr and actuar references with the package's own d/p/q/r.
+- **R1:** if TASK-78 goes ahead, R1 anchors on the former reference's
+  parametrization and names, so the coefficients do not change.
+- **`r.shift` and `r.args` expressions:** they become properties of the
+  generated wrappers and the uniform C++ d/p/q/r signatures (TASK-78
+  step 0), not mappings onto external functions.
+- **Codegen:** P1 and TASK-78 step 0 both rewrite codegen (README keys,
+  generated wrappers, Rcpp exports). Do them as one schema change, or P1
+  first, so the README keys are migrated once.
+- **Tests:** the conformance test does not depend on the references.
+
 ## Consequences for users (for NEWS at release)
 
 - Calls that will stop without the new required coefficient:
