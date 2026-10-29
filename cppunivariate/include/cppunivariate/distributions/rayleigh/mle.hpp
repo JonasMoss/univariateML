@@ -13,19 +13,26 @@
 
 namespace cppunivariate {
 
+enum class RayleighStatus { Ok, InvalidData, ZeroLikelihood };
+
 struct RayleighResult {
   double sigma;
   double logLik;
+  RayleighStatus status = RayleighStatus::Ok;
 };
 
 inline RayleighResult rayleigh_mle(span x) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {kNaN, kNaN};
+  if (n == 0) return {kNaN, kNaN, RayleighStatus::InvalidData};
 
   double big = 0.0;
-  for (auto v : x) big = std::max(big, v);
-  if (!(big > 0.0) || !std::isfinite(big)) return {kNaN, kNaN};
+  for (auto v : x) {
+    if (v == 0.0) return {kNaN, kNaN, RayleighStatus::ZeroLikelihood};
+    if (!(v > 0.0) || !std::isfinite(v)) return {kNaN, kNaN, RayleighStatus::InvalidData};
+    big = std::max(big, v);
+  }
+  if (!(big > 0.0) || !std::isfinite(big)) return {kNaN, kNaN, RayleighStatus::InvalidData};
   double ss = 0.0;
   for (auto v : x) {
     const double z = v / big;

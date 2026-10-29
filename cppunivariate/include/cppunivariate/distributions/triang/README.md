@@ -23,6 +23,8 @@ The triangular distribution describes bounded measurements with a single mode.
 
 ## Details
 
+Constant samples can have an attained maximum when a held endpoint or mode prevents the interval from collapsing.
+
 `extraDistr::ptriang` is repaired at runtime; the repair switches itself off once the reference is fixed.
 
 Endpoint modes are included, with one-sided density `2/(b-a)` at the mode.

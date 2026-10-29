@@ -18,3 +18,9 @@ TEST_CASE("frechet: held location and free location restrictions") {
 TEST_CASE("frechet: scalar density parameter mapping") {
  CHECK(cppunivariate::distributions::dfrechet(1,2,0,1) == doctest::Approx(2/std::exp(1.)));
 }
+
+TEST_CASE("frechet: ties above the minimum are admissible") {
+  const std::vector<double> x{0,1,2,2,2};
+  const auto r=cppunivariate::frechet_gev_mle(mltest::as_span(x),1e-10,100,.3);
+  CHECK(r.status==cppunivariate::GevStatus::Ok);
+}

@@ -99,3 +99,7 @@ test_that("clipped endpoint samples have finite profile maxima", {
     expect_equal(unname(log(fit[1])), prof$minimum, tolerance = 1e-6)
   }
 })
+
+test_that("constant Kumaraswamy samples have unbounded likelihood", {
+  for (v in c(.01, .4, .99)) expect_error(mlkumar(rep(v, 5)), "unbounded")
+})

@@ -90,11 +90,12 @@ inline GevResult gev_mle(span x, double tol=1e-10, int maxit=100,
   std::vector<double> y(x.begin(),x.end());
   for(double v:y) if(!std::isfinite(v)) return bad;
   std::sort(y.begin(),y.end());
-  std::size_t run=1;
-  for(std::size_t i=1;i<y.size();++i) {
-    run=y[i]==y[i-1] ? run+1 : 1;
-    if(2*run>=y.size()) return bad;
-  }
+  std::size_t minimum_count=1;
+  while(minimum_count<y.size() && y[minimum_count]==y[0]) ++minimum_count;
+  // At positive xi the lower-endpoint collapse is controlled only by
+  // the multiplicity of the minimum. Equality is an unattained face.
+  if(std::isnan(xi) ? 2*minimum_count>=y.size() :
+      (xi>0 && xi*static_cast<double>(minimum_count)>=y.size()-minimum_count)) return bad;
   // Standardization prevents scale and translation from setting tolerances.
   const double origin=y[0],range=y.back()-origin;
   if(!(range>0) || !std::isfinite(range)) return bad;

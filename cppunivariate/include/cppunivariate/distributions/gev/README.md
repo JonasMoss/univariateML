@@ -22,6 +22,8 @@ The generalized extreme value distribution models maxima; positive `xi` gives a 
 
 ## Details
 
+For positive held shape, collapse is governed by the multiplicity of the sample minimum; ties at other values do not cause this collapse.
+
 `extraDistr::qgev`, `rgev` and the upper-tail log of `pgev` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
 
 The fitted family restricts `xi` to `[-1/2, 1]` and requires at least three finite observations with every tie multiplicity strictly less than half the sample size; these restrictions ensure an attained maximum, including when `xi` is fixed.

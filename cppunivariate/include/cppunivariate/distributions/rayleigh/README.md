@@ -19,4 +19,6 @@ The Rayleigh distribution describes the magnitude of a pair of independent centr
 
 ## Details
 
+An observation at zero makes the likelihood identically zero for every scale, so the scale is not identifiable.
+
 The scale estimate is the square root of half the empirical second moment.
