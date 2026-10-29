@@ -8,14 +8,9 @@ and `2026-10-29-parameter-table.csv` (98 families, 235 coefficients, 618
 hold subsets in total, at most 5 coefficients per family).
 
 P0 results (2026-10-29): `notes/evaluations/2026-10-29-p0-summary.md`.
-It proposes amendments A1–A7 that await Jonas:
-- A1: close the support at estimated endpoints;
-- A2: domains are finite proper dominated laws;
-- A3: a restriction applies whenever its coefficient is free;
-- A4: `NULL` thresholds only where proved;
-- A5: huber `epsilon` is a design coefficient;
-- A6: failed optimizers stop;
-- A7: `holds:` holds structural exceptions only.
+Its amendments A1–A7 were adopted by Jonas on 2026-10-29 and are folded
+into the rules below. A3 carries one refinement: exemptions where P0
+proved them; see R5.
 
 ## Rules
 
@@ -38,8 +33,9 @@ required: the user passes a value or `NULL`. No coefficient defaults to a
 held value.
 
 **R4. Required coefficients** are those of kind `design` (fixed by how the
-data were collected) and `threshold` (a shift of a family whose standard
-form starts at a fixed point; C1: required, no default). Kind `endpoint`
+data were collected, or an analyst-chosen tuning constant such as
+huber's `epsilon`, A5) and `threshold` (a shift of a family whose
+standard form starts at a fixed point; C1: required, no default). Kind `endpoint`
 (support bounds of a family defined by its support) and `regular` are
 estimated by default.
 
@@ -58,22 +54,40 @@ Mechanisms:
 - *endpoint*: an upper endpoint approaches the sample maximum (GEV, GPD
   $\xi < -1$); the existence bound is attained.
 
-A restriction may apply only while some coefficients are free (Fréchet
-$\lambda \ge 1$ only with `mu` free).
+Scope (A3): a restriction applies whenever its coefficient is free,
+whatever else is held. Exceptions are hold sets for which P0 proved an
+MLE without the restriction, listed as `exempt_when_held`; for example,
+Fréchet with `mu` held is inverse Weibull on $x - \mu$ for every
+$\lambda > 0$. A held value of the restricted coefficient outside the
+restriction is accepted when that hold subset has an MLE, and stops
+otherwise.
 
 **R6. Data-dependent non-existence** stops with "use `mlX`" (D1) or the
-reason, never with a non-maximizer. This is unchanged for escapes, but it
-conflicts with CLAUDE.md's "Wrapper failure handling" (nlminb legacy:
-return whatever BFGS landed on after an iteration-limit or line-search
-failure). TASK-77 showed the cost: `mlstd` returned its start values
-after both line searches failed. Proposal (P1): R6 wins. A failed
-optimizer stops with its status unless the score check (the `||g|| <
-1e-3` gate the doctests use) passes at the returned point.
+reason, never with a non-maximizer. A failed optimizer stops with its
+status unless the score check (the `||g|| < 1e-3` gate the doctests use)
+passes at the returned point (A6). This replaces CLAUDE.md's "Wrapper
+failure handling" (nlminb legacy), which let `mlstd` return its start
+values (TASK-77).
 
-**R7. Domains** are the values the reference accepts. A fit at a natural
-endpoint (binomial `prob = 0`) is an attained member, returned silently.
-A fit on an R5 restriction is flagged (C3): a warning of class
+**R7. Domains** are the finite parameter values the reference accepts
+whose law is a proper distribution dominated by the family's base measure
+(Lebesgue for continuous, counting for discrete; A2).
+- Excluded: continuous point masses (`sd = 0`, beta shapes 0 or
+  $\infty$), infinite parameters (`dht(nu = Inf)`, PIG `mean = Inf`;
+  these limits stay escapes, "use `mlX`") and improper limits.
+- Included: discrete point masses and other finite proper members (NB
+  `size = 0`, cmp `lambda = 0`, bhatt `a = 0`).
+
+A fit at a domain endpoint is an attained member, returned silently. A
+fit on an R5 restriction is flagged (C3): a warning of class
 `univariateML_restricted` and a `restricted` attribute.
+
+**R7a. Closure (A1).** At a parameter-dependent support endpoint, the
+support is closed and the density there is its limit from inside (the
+upper semicontinuous closure), including references that define an open
+support (`dtnorm`, `dpower`, GPD/GEV at $\xi = -1$, the tpois lower
+bound). Estimated endpoints are then attained, and `dml` agrees with the
+fit.
 
 **R8. Equivariance.** Fits commute with the family's location-scale maps
 (TASK-77).
@@ -95,7 +109,7 @@ A fit on an R5 restriction is flagged (C3): a warning of class
 
 | kind | default | coefficients |
 |---|---|---|
-| `design` | required | binom, bbinom, cmb, tbinom, zib, zmbinom, ztbinom `size`; hyper `k`, `N`; nhyper `r`, `N`; tnorm `a`, `b`; tpois, tbinom `a`, `b`; gpd `mu` |
+| `design` | required | binom, bbinom, cmb, tbinom, zib, zmbinom, ztbinom `size`; hyper `k`, `N`; nhyper `r`, `N`; tnorm `a`, `b`; tpois, tbinom `a`, `b`; gpd `mu`; huber `epsilon` (A5) |
 | `threshold` | required | hnorm, hcauchy, ht, frechet, fatigue `mu`; pareto2, pareto3, pareto4, fpareto `min`; nsbeta `min`, `max`; genbeta `scale` (upper endpoint) |
 | `endpoint` | estimated | unif, dunif `min`, `max`; pareto `b`; power `alpha`; zipf `N`; triang `a`, `b` |
 | `regular` | estimated | all others (shape, scale, rate, location, probability) |
@@ -103,24 +117,27 @@ A fit on an R5 restriction is flagged (C3): a warning of class
 `NULL` for a required coefficient estimates it where supported:
 - design: binomial `size` (with the Poisson escape), truncation bounds
   (the sample extremes), hypergeometric `N` (with `m` held);
-- threshold: hnorm (the MLE exists); Fréchet and ht (under $c \ge 1$);
-  hcauchy ($c = 1$, to be confirmed in M2); others after M2.
+- threshold (A4, only where proved): hnorm (the MLE exists, ties
+  included); hcauchy (tie multiplicity below n/2); Fréchet
+  ($\lambda \ge 1$); ht ($\nu \ge 1$, with the half-normal escape). For
+  pareto2–4, fpareto, nsbeta, genbeta, gpd and fatigue, `NULL` stops
+  with the reason;
+- tuning: huber `epsilon` (the free fit, with its escapes).
 
 Unsupported cases stop with the reason.
 
 ## Restrictions after the rules
 
-| family | restriction | mechanism | applies while |
+| family | restriction | mechanism | exempt when held (from the P0 tables; to confirm in P1) |
 |---|---|---|---|
-| lst | `df >= 1` | collapse, $c$ = df | `mu` free |
-| frechet | `lambda >= 1` | collapse, $c = \lambda$ | `mu` free (`mu = NULL`) |
-| ht | `nu >= 1` | collapse, $c = \nu$ | `mu` free (new) |
-| gev | `xi <= 1` | collapse, $c = 1/\xi$ | always (the endpoint moves with `sigma`; M3) |
-| gev, gpd | `xi >= -1` (now $-1/2$) | endpoint | always |
-| tlambda | `lambda >= -1` | collapse, $c = -1/\lambda$ | `mu` free |
-| tlambda | `lambda <= 1` | branch | always |
-| ged, sged | `nu >= 1` | spike, Laplace member | always |
-| pareto2–4, fpareto, gpd, nsbeta, genbeta | shape $\ge 1$ ($c$) | collapse at the endpoint | threshold `NULL` (M2) |
+| lst | `df >= 1` | collapse, $c$ = df | `mu`? |
+| frechet | `lambda >= 1` | collapse, $c = \lambda$ | `mu` (inverse Weibull on $x - \mu$) |
+| ht | `nu >= 1` | collapse, $c = \nu$ | `mu` (the fixed-endpoint half-t) |
+| gev | `xi <= 1` | collapse, $c = 1/\xi$ | none (diverges with `mu` or `sigma` held, P0) |
+| gev, gpd | `xi >= -1` (now $-1/2$) | endpoint (attained by R7a) | none |
+| tlambda | `lambda >= -1` | collapse, $c = -1/\lambda$ | `mu`? |
+| tlambda | `lambda <= 1` | branch | none |
+| ged, sged | `nu >= 1` | spike, Laplace member | not `sd` (spikes when ties at the mean exceed 13.79 % of n, P0) |
 
 ## Schema (`README.md` front matter)
 
@@ -132,10 +149,11 @@ Unsupported cases stop with the reason.
   `advice:`, the family-specific text appended to the missing-coefficient
   message (e.g. "`mu = 0` is `mlinvweibull`").
 - `fit_domain:` per parameter (the R5 restriction) with
-  `restriction: {mechanism, while_free: [...], reason}`.
-- `holds:` exceptions to R2, each with
-  `{held: [...], status: no-mle | not-implemented, reason}`.
-  The target is no `not-implemented` entries.
+  `restriction: {mechanism, exempt_when_held: [[...], ...], reason}`.
+- `holds:` structural exceptions to R2 only (A7), each with
+  `{held: [...], status: no-mle | not-implemented, reason}`. The target
+  is no `not-implemented` entries. Sample-dependent non-existence is R6
+  behaviour, documented under `limits:` and in the prose.
 - `r.shift: <coefficient>`: d/p/q/r evaluated at `x - mu`, quantiles and
   draws shifted back.
 - `r.args` values may be expressions in the coefficients (`n: "N - m"`).
@@ -212,15 +230,41 @@ mechanical and leaves one judgement per coefficient (its kind).
 Output: one table per group in `notes/evaluations/`, which feeds the
 `holds:` entries.
 
-**P1, infrastructure.**
-- Schema keys, codegen derivation and checks, wrapper missing vs `NULL`,
-  the `restricted` attribute and warning, `r.shift`, `r.args`
-  expressions, the conformance test.
-- READMEs are migrated by script: `kind` assigned from the table above,
-  `default` renamed to `simulate`, current gaps listed as `holds:`
-  `not-implemented`.
-- Behaviour unchanged except R3/R4 defaults. Goldens get `fit_args` for
-  the newly required coefficients.
+**P1, infrastructure and defaults.** One job; it touches READMEs,
+codegen, wrappers and adapter signatures, not fitter mathematics.
+- Schema:
+  - `kind`, `simulate` (renamed from `default`), `fit_domain` with
+    `restriction`, `holds:` and `advice` (renamed from `required_reason`);
+  - `r.shift` and `r.args` expressions (codegen and
+    `univariateML_dpqr_args` support only; families switch in P4);
+  - `fixable`, `fixed` and `required` removed.
+- A coefficient is holdable when it is an adapter argument; one that is
+  not gets a `holds:` entry with status `not-implemented`.
+- Codegen derives the required set from `kind` and checks the adapter
+  signatures: no default for required coefficients, `NULL` for the
+  others.
+- Wrappers tell a missing argument from `NULL`, and the
+  missing-coefficient message carries the advice. `model_select` gets a
+  `skipped` attribute. `print`, `summary` and `univariateML_construct`
+  carry `restricted` when an adapter returns it (the fitters return it
+  from P3 on).
+- A migration script converts the READMEs: `kind` from the table above,
+  `holds:` from the adapter signatures and the P0 tables, `fit_domain`
+  for the eight restricted families with `exempt_when_held` from P0.
+- Default changes (R3, R4):
+  - binom, zib, zmbinom, ztbinom `size`; tnorm `a`, `b`; gpd `mu`;
+    huber `epsilon`; hnorm and frechet `mu`: required;
+  - fatigue `mu`: becomes an adapter argument, held as a fit on
+    $x - \mu$; `NULL` stops (A4);
+  - tnorm `a = NULL` / `b = NULL` stop until P3 brings R7a.
+
+  Goldens, examples, tests and the argument switches in
+  `test_input_checks.R` and `test-audit-input.R` follow. The switches are
+  replaced by the golden `fit_args` (STATUS cleanup item).
+- Conformance test over all families: required set and messages; the
+  hold sweep (every subset of the holdable coefficients at golden values
+  on golden data fits, or stops with a declared reason); `holds:` agrees
+  with the adapter signatures.
 
 **P2, holds.** Implement the `not-implemented` subsets group by group from
 M1:
@@ -234,10 +278,15 @@ M1:
 
 Each group is one Codex job, and the conformance list shrinks to zero.
 
-**P3, restrictions.**
-- C2 bounds ($-1$) for gev and gpd;
-- `restricted` flags in the eight restricted fitters;
-- threshold `NULL` fits from M2.
+**P3, restrictions, closure and domains.**
+- C2 bounds ($-1$) for gev and gpd, attained through R7a;
+- `restricted` flags and `exempt_when_held` in the eight restricted
+  fitters;
+- R7a closure in the fitters and in `univariateML_to_function` (tnorm,
+  power, gpd, gev, tpois; it replaces the hnorm special case);
+- R7 domains (A2): README domains and attained boundary members (P0
+  B7, B8: cmp, tpois singleton, pig, cmb, bhatt `a = 0`);
+- R6 (A6): failed optimizers stop unless the score check passes.
 
 **P4, parametrization.**
 - C4: gamma, invexp, invweibull and llogis to scale;
