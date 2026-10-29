@@ -51,6 +51,15 @@ class GoldenChecks(unittest.TestCase):
         self.assertEqual(r['score_hessian']['status'], 'fail')
         self.assertEqual(r['oracle']['status'], 'fail')
 
+    def test_kink_is_held_for_derivatives_but_oracle_still_competes(self):
+        r = self.run_fixture(
+            [dict(name='rate', role='rate', domain='(0, inf)', default=1, kink=True)],
+            'log(rate)-rate*x', dict(rate=1), -4, [1, 3])
+        self.assertEqual(r['score_hessian']['status'], 'skipped')
+        self.assertEqual(r['derivative_held_parameters'], ['rate'])
+        self.assertEqual(r['oracle']['status'], 'fail')
+        self.assertGreater(r['oracle']['gap'], .5)
+
     def test_support_endpoints_are_held_and_reported(self):
         r = self.run_fixture(
             [dict(name='min', role='lower', domain='(-inf, max)', default=0, bound='lower'),

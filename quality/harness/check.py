@@ -71,7 +71,9 @@ def check(id):
     if not np.isfinite(ll):
         raise ValueError('nonfinite symbolic logLik')
     result['logLik'] = {'status': 'pass' if abs(ll - reported) <= 1e-09 * (1 + abs(reported)) else 'fail', 'symbolic': ll, 'golden': reported, 'difference': ll - reported}
-    regular = [i for i in range(len(params)) if syms[i] not in held]
+    oracle_regular = [i for i in range(len(params)) if syms[i] not in held]
+    regular = [i for i in oracle_regular if not params[i].get('kink')]
+    result['derivative_held_parameters'] = [p['name'] for p in params if p.get('kink')]
     active = {}
     for i in regular:
         lo, hi = domains[i]
@@ -101,6 +103,9 @@ def check(id):
         result['score_hessian'] = {'status': 'pass' if ok else 'fail', 'standardised_score': standard, 'score': {params[i]['name']: v for i, v in g.items()}, 'information': H.tolist(), 'one_sided': {params[i]['name']: side for i, side in active.items()}}
     except (ValueError, TypeError, NameError, np.linalg.LinAlgError) as e:
         result['score_hessian'] = {'status': 'skipped' if 'nonsmooth' in str(e) else 'fail', 'reason': str(e)}
+    if not regular:
+        result['score_hessian'] = {'status': 'skipped', 'reason': 'no regular differentiable parameters'}
+    regular = oracle_regular
     if not regular:
         result['score_hessian'] = {'status': 'skipped', 'reason': 'no regular parameters'}
         result['oracle'] = {'status': 'skipped', 'gap': 0.0, 'reason': 'no regular parameters'}
@@ -136,6 +141,11 @@ def check(id):
             else:
                 t[i] = v
         return t
+    # Domains can depend on other fitted coordinates (a <= c <= b).
+    # Keep the transform's numerical bracket, but validate the actual joint
+    # domain at every trial rather than the golden's substituted endpoints.
+    domain_fns = [[sp.lambdify(syms, sp.sympify(v.strip(), locals={**dict(zip([p['name'] for p in params], syms)), 'inf': sp.oo}), 'numpy')
+                   for v in p['domain'][1:-1].split(',')] for p in params]
     support_fns = [sp.lambdify(syms, sp.sympify(str(meta['support'][key]), locals={**dict(zip([p['name'] for p in params], syms)), 'inf': sp.oo}), 'numpy') for key in ('lower', 'upper')]
 
     def objective(z):
@@ -143,6 +153,12 @@ def check(id):
             t = decode(z)
             if any((not domains[i][0] < t[i] < domains[i][1] for i in regular)):
                 return 1e+100
+            for i, (lo_fn, hi_fn) in enumerate(domain_fns):
+                lo, hi = lo_fn(*t), hi_fn(*t)
+                if (t[i] < lo or t[i] > hi or
+                    (t[i] == lo and params[i]['domain'][0] == '(') or
+                    (t[i] == hi and params[i]['domain'][-1] == ')')):
+                    return 1e+100
             for bound_fn, op in zip(support_fns, (np.greater_equal, np.less_equal)):
                 if not np.all(op(data, bound_fn(*t))):
                     return 1e+100
