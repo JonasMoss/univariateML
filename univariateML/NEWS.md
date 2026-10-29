@@ -44,6 +44,11 @@
   fitters as members and stops with the winning limit: generalized gamma,
   its inverse, lognormal, Pareto, power, or double Pareto).
 
+* `mlsn()` (Azzalini skew-normal) with its own `dsn()`, `psn()`, `qsn()`,
+  `rsn()`. The shape estimate is infinite with positive probability (often:
+  about a third of samples of size 50 when the shape is 5); the fitter then
+  stops with "use `mlhnorm`" (on `-x` for left skew).
+
 * `mlemg()` (exponentially modified Gaussian) with its own d/p/q/r; stops
   with "use `mlnorm`" or names the translated exponential limit.
 
