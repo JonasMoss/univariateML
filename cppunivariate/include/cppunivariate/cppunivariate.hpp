@@ -89,3 +89,4 @@
 #include "distributions/invtrgamma/mle.hpp"
 #include "distributions/tnorm/mle.hpp"
 #include "distributions/pig/mle.hpp"
+#include "distributions/dweibull/mle.hpp"
