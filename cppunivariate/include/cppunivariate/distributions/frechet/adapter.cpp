@@ -3,7 +3,7 @@
 #include <Rcpp.h>
 // [[Rcpp::export]]
 Rcpp::List mlfrechet_(const Rcpp::NumericVector &x,
- Rcpp::Nullable<double> mu=R_NilValue, double reltol=1e-10, int iterlim=100) {
+ Rcpp::Nullable<double> mu, double reltol=1e-10, int iterlim=100) {
  if(mu.isNotNull() && !std::isfinite(Rcpp::as<double>(mu))) Rcpp::stop("mu must be finite.");
  const auto r=cppunivariate::frechet_mle(dist_impl::as_span(x),reltol,iterlim,
  mu.isNotNull() ? Rcpp::as<double>(mu) : std::numeric_limits<double>::quiet_NaN());

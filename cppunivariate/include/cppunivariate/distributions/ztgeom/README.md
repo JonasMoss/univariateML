@@ -12,12 +12,18 @@ params:
 - name: prob
   role: probability
   domain: (0, 1]
-  default: 0.4
+  simulate: 0.4
+  kind: regular
 r:
   density: actuar::dztgeom
   sampler: actuar::rztgeom
   control: {}
 log_density: log(prob)+(x-1)*log(1-prob)
+holds:
+- held:
+  - prob
+  status: not-implemented
+  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
 ---
 
 Zero-truncated geometric distributions model positive counts.

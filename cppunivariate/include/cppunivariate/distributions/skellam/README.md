@@ -3,8 +3,16 @@ id: skellam
 name: Skellam
 support: {type: integer, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu1, role: positive-count rate, domain: "[0, inf)", default: 4, fixable: true}
-  - {name: mu2, role: negative-count rate, domain: "[0, inf)", default: 3, fixable: true}
+- name: mu1
+  role: positive-count rate
+  domain: '[0, inf)'
+  simulate: 4
+  kind: regular
+- name: mu2
+  role: negative-count rate
+  domain: '[0, inf)'
+  simulate: 3
+  kind: regular
 r:
   density: dskellam
   sampler: rskellam
@@ -19,6 +27,7 @@ references:
   - "Johnson, N. L. (1959). On an extension of the connexion between Poisson and chi-squared distributions. Biometrika 46, 352–362."
 examples: |
   mlskellam(c(-4, -2, -1, 0, 1, 2, 5, 8))
+holds: []
 ---
 
 The Skellam distribution describes the difference between two independent Poisson counts.

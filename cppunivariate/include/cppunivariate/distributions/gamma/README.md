@@ -3,8 +3,16 @@ id: gamma
 name: Gamma
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape, role: shape, domain: "(0, inf)", default: 2.0}
-  - {name: rate, role: rate, domain: "(0, inf)", default: 2.0}
+- name: shape
+  role: shape
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
+- name: rate
+  role: rate
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
 r:
   density: stats::dgamma
   sampler: stats::rgamma
@@ -17,6 +25,15 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York."
 examples: |
   mlgamma(precip)
+holds:
+- held:
+  - shape
+  status: not-implemented
+  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
+- held:
+  - rate
+  status: not-implemented
+  reason: The adapter does not accept `rate`; this hold is not implemented (P2).
 ---
 
 The gamma distribution models positive measurements and waiting times.

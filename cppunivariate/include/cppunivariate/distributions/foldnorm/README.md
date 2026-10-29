@@ -3,8 +3,16 @@ id: foldnorm
 name: Folded Normal
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: mu, role: parent normal location, domain: "[0, inf)", default: 2, fixable: true}
-  - {name: sigma, role: parent normal scale, domain: "(0, inf)", default: 1, fixable: true}
+- name: mu
+  role: parent normal location
+  domain: '[0, inf)'
+  simulate: 2
+  kind: regular
+- name: sigma
+  role: parent normal scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: dfoldnorm
   sampler: rfoldnorm
@@ -17,6 +25,7 @@ log_density: -log(sigma) - log(2*pi)/2 - (x-mu)**2/(2*sigma**2) + log(1+exp(-2*x
 examples: |
   set.seed(7)
   mlfoldnorm(rfoldnorm(100, mu = 2, sigma = 1))
+holds: []
 ---
 
 The folded normal distribution is the absolute value of a normal random variable.

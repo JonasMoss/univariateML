@@ -3,8 +3,16 @@ id: invpareto
 name: Inverse Pareto
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape, role: shape, domain: "(0, inf)", default: 2}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1}
+- name: shape
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: actuar::dinvpareto
   sampler: actuar::rinvpareto
@@ -23,6 +31,15 @@ references:
   - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
+holds:
+- held:
+  - shape
+  status: not-implemented
+  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
+- held:
+  - scale
+  status: not-implemented
+  reason: The adapter does not accept `scale`; this hold is not implemented (P2).
 ---
 
 The inverse Pareto distribution models positive heavy-tailed data.

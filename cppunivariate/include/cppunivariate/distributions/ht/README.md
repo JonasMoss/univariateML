@@ -3,8 +3,24 @@ id: ht
 name: Half-t
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: nu, role: shape, domain: "(0, inf)", default: 3, fixable: true}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1, fixable: true}
+- name: nu
+  role: shape
+  domain: (0, inf)
+  simulate: 3
+  fit_domain:
+    lower: 1.0
+    restriction:
+      mechanism: collapse
+      exempt_when_held:
+      - - mu
+      reason: nu >= 1 prevents free-threshold collapse below half minimum multiplicity;
+        the current fixed-zero endpoint is exempt.
+  kind: regular
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: extraDistr::dht
   sampler: extraDistr::rht
@@ -24,6 +40,7 @@ limits:
     status: ScaleBoundary
 references:
   - extraDistr package, HalfT documentation (density and parameterization).
+holds: []
 ---
 
 The half-t models nonnegative Student t magnitudes with an endpoint fixed at zero.

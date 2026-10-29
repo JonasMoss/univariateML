@@ -3,8 +3,16 @@ id: nbinom
 name: Negative binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: size, role: shape, domain: "(0, inf)", default: 10.0, fixable: true}
-  - {name: prob, role: probability, domain: "(0, 1]", default: 0.3}
+- name: size
+  role: shape
+  domain: (0, inf)
+  simulate: 10.0
+  kind: regular
+- name: prob
+  role: probability
+  domain: (0, 1]
+  simulate: 0.3
+  kind: regular
 r:
   density: stats::dnbinom
   sampler: stats::rnbinom
@@ -22,6 +30,11 @@ references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
   mlnbinom(corbet)
+holds:
+- held:
+  - prob
+  status: not-implemented
+  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
 ---
 
 The negative binomial distribution models nonnegative counts with overdispersion relative to a Poisson distribution. The size parameter need not be an integer.

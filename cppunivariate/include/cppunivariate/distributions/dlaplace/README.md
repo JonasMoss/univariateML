@@ -3,8 +3,17 @@ id: dlaplace
 name: Discrete Laplace
 support: {type: integer, lower: -inf, upper: inf, closed: [false, false]}
 params:
-- {name: location, role: integer centre, domain: "(-inf, inf)", default: 0, integer: true, fixable: true}
-- {name: scale, role: geometric probability, domain: "(0, 1)", default: 0.4, fixable: true}
+- name: location
+  role: integer centre
+  domain: (-inf, inf)
+  integer: yes
+  simulate: 0
+  kind: regular
+- name: scale
+  role: geometric probability
+  domain: (0, 1)
+  simulate: 0.4
+  kind: regular
 r:
   density: extraDistr::ddlaplace
   sampler: extraDistr::rdlaplace
@@ -17,6 +26,7 @@ limits:
   when: '$scale \to 0$'
   detect: all observations equal the fitted or held location
   status: PointMass
+holds: []
 ---
 
 Discrete Laplace distributions model integer observations with symmetric geometric tails.

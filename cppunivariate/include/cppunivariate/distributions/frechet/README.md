@@ -3,9 +3,31 @@ id: frechet
 name: Frechet
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: lambda, role: shape, domain: "[1, inf)", default: 2}
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0, fixable: true}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1}
+- name: lambda
+  role: shape
+  domain: '[1, inf)'
+  simulate: 2
+  fit_domain:
+    lower: 1.0
+    restriction:
+      mechanism: collapse
+      exempt_when_held:
+      - - mu
+      reason: lambda >= 1 prevents free-threshold collapse; held mu is inverse Weibull
+        on x - mu.
+  kind: regular
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: threshold
+  advice: Holding mu fits inverse Weibull on x - mu; NULL estimates mu with lambda
+    >= 1.
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: extraDistr::dfrechet
   sampler: extraDistr::rfrechet
@@ -18,6 +40,17 @@ limits:
 examples: |
   set.seed(3)
   mlfrechet(extraDistr::rfrechet(100), mu = 0)
+holds:
+- held:
+  - lambda
+  status: not-implemented
+  reason: The adapter does not accept `lambda`; this hold is not implemented (P2).
+- held:
+  - sigma
+  status: not-implemented
+  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
+fit_args:
+  mu: ~
 ---
 
 The Frechet distribution models heavy right tails and extreme maxima.

@@ -3,9 +3,29 @@ id: lst
 name: Location-scale Student-t
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0.0}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1.0}
-  - {name: df, role: df, fixable: true, domain: "[1, inf)", default: 3.0}
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0.0
+  kind: regular
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
+- name: df
+  role: df
+  domain: '[1, inf)'
+  simulate: 3.0
+  fit_domain:
+    lower: 1.0
+    restriction:
+      mechanism: collapse
+      exempt_when_held:
+      - - mu
+      reason: df >= 1 prevents free-location scale collapse; ties at a held location
+        need a separate diagnostic.
+  kind: regular
 r:
   density: extraDistr::dlst
   sampler: extraDistr::rlst
@@ -28,6 +48,15 @@ limits:
 examples: |
   set.seed(3)
   mllst(extraDistr::rlst(200, df = 3, mu = 2, sigma = 1))
+holds:
+- held:
+  - mu
+  status: not-implemented
+  reason: The adapter does not accept `mu`; this hold is not implemented (P2).
+- held:
+  - sigma
+  status: not-implemented
+  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
 ---
 
 The location-scale Student t includes heavy-tailed distributions with infinite variance.

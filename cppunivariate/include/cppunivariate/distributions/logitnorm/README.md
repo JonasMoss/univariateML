@@ -3,8 +3,16 @@ id: logitnorm
 name: LogitNormal
 support: {type: real, lower: 0.0, upper: 1.0, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 2.0}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 3.0}
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 2.0
+  kind: regular
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
 r:
   density: dlogitnorm
   sampler: rlogitnorm
@@ -14,6 +22,15 @@ references:
   - "Aitchison, J., & Shen, S. M. (1980). Logistic-normal distributions: Some properties and uses. Biometrika, 67(2), 261-272."
 examples: |
   AIC(mllogitnorm(USArrests$Rape / 100))
+holds:
+- held:
+  - mu
+  status: not-implemented
+  reason: The adapter does not accept `mu`; this hold is not implemented (P2).
+- held:
+  - sigma
+  status: not-implemented
+  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
 ---
 
 The logit-normal distribution models proportions whose logits follow a normal distribution.

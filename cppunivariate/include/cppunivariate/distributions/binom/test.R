@@ -2,7 +2,7 @@ context("mlbinom")
 
 ## Expect error when fed with overdispersed data
 expect_error(
-  mlbinom(seq(20)),
+  mlbinom(seq(20), size = NULL),
   "The maximum likelihood estimator does not exist. Use `mlpois` to fit a Poisson or supply a `size` argument\\."
 )
 
@@ -19,7 +19,7 @@ expect_error(
 )
 
 test_that("binomial probability boundaries have log likelihood zero", {
-  for (fit in list(mlbinom(c(5L, 5L, 5L)),
+  for (fit in list(mlbinom(c(5L, 5L, 5L), size = NULL),
                    mlbinom(c(5L, 5L, 5L), size = 5))) {
     expect_equal(as.numeric(fit), c(5, 1))
     expect_equal(attr(fit, "logLik"), 0)
@@ -30,7 +30,7 @@ test_that("binomial probability boundaries have log likelihood zero", {
     expect_equal(as.numeric(fit), c(size, 0))
     expect_equal(attr(fit, "logLik"), 0)
   }
-  fit <- mlbinom(c(0L, 0L, 0L))
+  fit <- mlbinom(c(0L, 0L, 0L), size = NULL)
   expect_equal(as.numeric(fit), c(0, 0))
   expect_equal(attr(fit, "logLik"), 0)
 })
@@ -55,7 +55,7 @@ test_that("a held size must be a nonnegative integer", {
 
 test_that("mean equal to variance escapes to the Poisson", {
   # c(0, 2): mean 1, population variance 1.
-  expect_error(mlbinom(c(0, 2)), "Use `mlpois`")
+  expect_error(mlbinom(c(0, 2), size = NULL), "Use `mlpois`")
 })
 
 test_that("huge held binomial sizes have stable likelihoods", {

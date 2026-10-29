@@ -3,8 +3,16 @@ id: dgamma
 name: Discretized gamma
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: shape, role: shape, domain: "(0, inf)", default: 2, fixable: true}
-  - {name: rate, role: rate, domain: "(0, inf)", default: 1, fixable: true}
+- name: shape
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
+- name: rate
+  role: rate
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: extraDistr::ddgamma
   sampler: extraDistr::rdgamma
@@ -30,6 +38,7 @@ limits:
     status: PointMass
 examples: |
   mldgamma(simulate_default("mldgamma", 100))
+holds: []
 ---
 
 The discretized gamma distribution is the integer part of a continuous gamma variable. Each observation records the latent variable in an interval from the observed integer to the next integer.

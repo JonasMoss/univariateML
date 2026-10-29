@@ -3,20 +3,37 @@ id: hnorm
 name: Translated Half-Normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0, bound: lower, fixable: true}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1}
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  bound: lower
+  kind: threshold
+  advice: mu = 0 is the ordinary half-normal; NULL estimates the translated endpoint.
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: extraDistr::dtnorm
   sampler: extraDistr::rtnorm
   args: {mean: mu, sd: sigma, a: mu}
   control:
-    mu: Held endpoint; `NULL` (default) estimates the translation.
+    mu: Required endpoint; a value holds it and explicit `NULL` estimates the translation.
 log_density: log(2/pi)/2 - log(sigma) - (x-mu)**2/(2*sigma**2)
 references:
   - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition. Wiley.
 examples: |
   set.seed(7)
-  mlhnorm(extraDistr::rtnorm(100, mean = -2, sd = 3, a = -2))
+  mlhnorm(extraDistr::rtnorm(100, mean = -2, sd = 3, a = -2), mu = NULL)
+holds:
+- held:
+  - sigma
+  status: not-implemented
+  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
+fit_args:
+  mu: ~
 ---
 
 The translated half-normal distribution models nonnegative normal deviations from an unknown endpoint.
@@ -29,4 +46,4 @@ The support is $(\mu, \infty)$ and `sigma` is a scale, not the standard deviatio
 
 Holding `mu` uses the closed support $[\mu, \infty)$ and requires all observations to be at least `mu`, with at least one strictly larger. The scale estimate is the root mean square distance from that endpoint, including for a single observation. `mlhnorm(x, mu = 0)` fits the ordinary extraDistr half-normal. Its d/p/q/r use shifted extraDistr half-normal functions, including their runtime tail repairs.
 
-Data with a sharp maximum instead of a minimum come from the reflected model; fit `mlhnorm(-x)`.
+Data with a sharp maximum instead of a minimum come from the reflected model; fit `mlhnorm(-x, mu = NULL)`.

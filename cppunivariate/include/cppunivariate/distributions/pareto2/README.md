@@ -3,9 +3,25 @@ id: pareto2
 name: Pareto type II
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: shape, role: shape, domain: "(0, inf)", default: 0.4}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1}
-  - {name: min, role: lower endpoint, domain: "(-inf, inf)", default: 0, required: true, required_reason: "With min estimated the likelihood is unbounded: let min rise to the sample minimum with scale equal to the gap and shape below k/(n - k), k the multiplicity of the minimum. Hold it, e.g. `mlpareto2(x, min = 0)`, which is `mllomax(x)`. Fits with min free and other parameters held are not supported."}
+- name: shape
+  role: shape
+  domain: (0, inf)
+  simulate: 0.4
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: min
+  role: lower endpoint
+  domain: (-inf, inf)
+  simulate: 0
+  advice: 'With min estimated the likelihood is unbounded: let min rise to the sample
+    minimum with scale equal to the gap and shape below k/(n - k), k the multiplicity
+    of the minimum. Hold it, e.g. `mlpareto2(x, min = 0)`, which is `mllomax(x)`.
+    Fits with min free and other parameters held are not supported.'
+  kind: threshold
 r:
   density: actuar::dpareto2
   sampler: actuar::rpareto2
@@ -15,7 +31,6 @@ r:
     iterlim: Maximum delegate iterations.
     shape: Holding this parameter is not supported.
     scale: Holding this parameter is not supported.
-fit_args: {min: 0}
 log_density: log((1/scale)) + log(shape) - (shape + 1)*log(1 + (1/scale)*(x-min))
 limits:
 - when: $\kappa \to \infty$ with $\lambda \kappa$ fixed
@@ -25,6 +40,37 @@ limits:
 examples: |
   set.seed(3)
   mlpareto2(simulate_default("mlpareto2", 100), min = 0)
+holds:
+- held:
+  - shape
+  status: not-implemented
+  reason: Holding additional parameters is not supported for this family.
+- held:
+  - scale
+  status: not-implemented
+  reason: Holding additional parameters is not supported for this family.
+- held: []
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+fit_args:
+  min: 0
 ---
 
 This family has a known support endpoint and delegates fitting to lomax.

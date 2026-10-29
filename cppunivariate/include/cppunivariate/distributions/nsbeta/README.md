@@ -3,10 +3,34 @@ id: nsbeta
 name: Nonstandard beta
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: shape1, role: shape, domain: "(0, inf)", default: 2}
-  - {name: shape2, role: shape, domain: "(0, inf)", default: 3}
-  - {name: min, role: lower endpoint, domain: "(-inf, inf)", default: 0, required: true, required_reason: "With the bounds estimated the likelihood is unbounded: a shape below 1 makes the density singular at its bound, so let that bound approach the sample extreme. Hold both, e.g. `mlnsbeta(x, min = 0, max = 1)`, which is `mlbeta(x)`. Fits with bounds free and other parameters held are not supported."}
-  - {name: max, role: upper endpoint, domain: "(-inf, inf)", default: 1, required: true, required_reason: "With the bounds estimated the likelihood is unbounded: a shape below 1 makes the density singular at its bound, so let that bound approach the sample extreme. Hold both, e.g. `mlnsbeta(x, min = 0, max = 1)`, which is `mlbeta(x)`. Fits with bounds free and other parameters held are not supported."}
+- name: shape1
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
+- name: shape2
+  role: shape
+  domain: (0, inf)
+  simulate: 3
+  kind: regular
+- name: min
+  role: lower endpoint
+  domain: (-inf, inf)
+  simulate: 0
+  advice: 'With the bounds estimated the likelihood is unbounded: a shape below 1
+    makes the density singular at its bound, so let that bound approach the sample
+    extreme. Hold both, e.g. `mlnsbeta(x, min = 0, max = 1)`, which is `mlbeta(x)`.
+    Fits with bounds free and other parameters held are not supported.'
+  kind: threshold
+- name: max
+  role: upper endpoint
+  domain: (-inf, inf)
+  simulate: 1
+  advice: 'With the bounds estimated the likelihood is unbounded: a shape below 1
+    makes the density singular at its bound, so let that bound approach the sample
+    extreme. Hold both, e.g. `mlnsbeta(x, min = 0, max = 1)`, which is `mlbeta(x)`.
+    Fits with bounds free and other parameters held are not supported.'
+  kind: threshold
 r:
   density: extraDistr::dnsbeta
   sampler: extraDistr::rnsbeta
@@ -17,11 +41,90 @@ r:
     iterlim: Maximum delegate iterations.
     shape1: Holding this parameter is not supported.
     shape2: Holding this parameter is not supported.
-fit_args: {min: 0, max: 1}
 log_density: (shape1-1)*log(((x-min)/(max-min))) + (shape2-1)*log(1-((x-min)/(max-min))) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)-log(max-min)
 examples: |
   set.seed(3)
   mlnsbeta(simulate_default("mlnsbeta", 100), min = 0, max = 1)
+holds:
+- held:
+  - shape1
+  status: not-implemented
+  reason: Holding additional parameters is not supported for this family.
+- held:
+  - shape2
+  status: not-implemented
+  reason: Holding additional parameters is not supported for this family.
+- held: []
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - min
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - min
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - min
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - min
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - max
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - max
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - max
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - max
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+fit_args:
+  min: 0
+  max: 1
 ---
 
 This family has a known support endpoint and delegates fitting to beta.

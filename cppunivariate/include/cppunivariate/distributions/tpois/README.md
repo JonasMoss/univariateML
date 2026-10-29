@@ -3,9 +3,21 @@ id: tpois
 name: Truncated Poisson
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-- {name: lambda, role: rate, domain: "[0, inf)", default: 3, fixable: true}
-- {name: a, role: known design quantity, domain: "(-inf, inf)", default: 0, required: true}
-- {name: b, role: known design quantity, domain: "(-inf, inf)", default: 10, required: true}
+- name: lambda
+  role: rate
+  domain: '[0, inf)'
+  simulate: 3
+  kind: regular
+- name: a
+  role: known design quantity
+  domain: (-inf, inf)
+  simulate: 0
+  kind: design
+- name: b
+  role: known design quantity
+  domain: (-inf, inf)
+  simulate: 10
+  kind: design
 r:
   density: extraDistr::dtpois
   sampler: extraDistr::rtpois
@@ -14,7 +26,6 @@ r:
     a: Known strict lower truncation bound.
     b: Known inclusive upper truncation bound.
 
-fit_args: {a: 0, b: 10}
 log_density: "x*log(lambda)-loggamma(x+1)-log(Sum(exp(k*log(lambda)-loggamma(k+1)), (k, Max(0, floor(a)+1), floor(b))))"
 limits:
 - name: point mass at lowest support point
@@ -29,6 +40,35 @@ examples: |
   set.seed(1)
   mltpois(extraDistr::rtpois(100, 3, 0, 10), a = 0, b = 10)
 
+holds:
+- held: []
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - lambda
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - a
+  status: not-implemented
+  reason: Estimating `b` with NULL is not implemented for this design.
+- held:
+  - lambda
+  - a
+  status: not-implemented
+  reason: Estimating `b` with NULL is not implemented for this design.
+- held:
+  - b
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - lambda
+  - b
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+fit_args:
+  a: 0
+  b: 10
 ---
 
 The Poisson law conditioned on known bounds `a < x <= b` models truncated counts.

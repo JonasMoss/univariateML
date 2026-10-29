@@ -3,9 +3,21 @@ id: burr
 name: Burr
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape1, role: shape, domain: "(0, inf)", default: 1.0}
-  - {name: shape2, role: shape, domain: "(0, inf)", default: 2.0}
-  - {name: scale, fixable: true, role: scale, domain: "(0, inf)", default: 1.0}
+- name: shape1
+  role: shape
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
+- name: shape2
+  role: shape
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
 r:
   density: actuar::dburr
   sampler: actuar::rburr
@@ -36,6 +48,15 @@ references:
 examples: |
   set.seed(42)
   mlburr(actuar::rburr(1000, shape1 = 1, shape2 = 2, scale = 3))
+holds:
+- held:
+  - shape1
+  status: not-implemented
+  reason: The adapter does not accept `shape1`; this hold is not implemented (P2).
+- held:
+  - shape2
+  status: not-implemented
+  reason: The adapter does not accept `shape2`; this hold is not implemented (P2).
 ---
 
 The Burr type XII distribution is a heavy-tailed distribution for positive size and loss data.

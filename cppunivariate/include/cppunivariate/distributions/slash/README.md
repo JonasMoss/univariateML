@@ -3,8 +3,16 @@ id: slash
 name: Slash
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1, fixable: true}
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: regular
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: extraDistr::dslash
   sampler: extraDistr::rslash
@@ -21,6 +29,11 @@ limits:
 examples: |
   set.seed(1)
   mlslash(extraDistr::rslash(100))
+holds:
+- held:
+  - mu
+  status: not-implemented
+  reason: The adapter does not accept `mu`; this hold is not implemented (P2).
 ---
 
 The slash distribution is a normal variate divided by an independent uniform variate, with location and scale.

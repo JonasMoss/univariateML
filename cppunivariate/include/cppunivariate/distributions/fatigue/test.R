@@ -1,7 +1,7 @@
 test_that("mlfatigue agrees with its reference density", {
   set.seed(313)
   x <- simulate_default("mlfatigue", 200)
-  fit <- mlfatigue(x)
+  fit <- mlfatigue(x, mu = 0)
   density <- getFromNamespace("dfatigue", "extraDistr")
   oracle <- optim(log(c(2, 1)), function(p) {
     -sum(extraDistr::dfatigue(x, alpha = exp(p[1]), beta = exp(p[2]), mu = 0, log = TRUE))
@@ -24,13 +24,28 @@ test_that("the three-parameter likelihood with free mu is unbounded (why mu is f
 })
 
 test_that("fatigue handles ties and extreme scales without invalid estimates", {
-  expect_error(mlfatigue(rep(1,5)),"does not exist")
-  f <- mlfatigue(1+(0:4)*.Machine$double.eps)
+  expect_error(mlfatigue(rep(1,5), mu = 0),"does not exist")
+  f <- mlfatigue(1+(0:4)*.Machine$double.eps, mu = 0)
   expect_gt(f[["alpha"]],0)
   expect_true(is.finite(attr(f,"logLik")))
-  x <- c(.4,.8,1,2,4); base <- mlfatigue(x)
+  x <- c(.4,.8,1,2,4); base <- mlfatigue(x, mu = 0)
   for(s in c(1e-300,1e300)) {
-    g <- mlfatigue(x*s)
+    g <- mlfatigue(x*s, mu = 0)
     expect_equal(attr(g,"logLik")+length(x)*log(s),attr(base,"logLik"),tolerance=1e-6)
   }
+})
+
+
+test_that("fatigue holds a translated threshold and checks shifted support", {
+  x <- c(.4,.8,1,2,4)
+  base <- mlfatigue(x, mu=0)
+  translated <- mlfatigue(x-5, mu=-5)
+  expect_identical(unname(translated["mu"]), -5)
+  expect_equal(as.numeric(translated[1:2]), as.numeric(base[1:2]))
+  expect_equal(attr(translated,"logLik"),attr(base,"logLik"))
+  expect_identical(attr(translated,"fixed"),"mu")
+  expect_equal(sum(dml(x-5,translated,log=TRUE)),attr(base,"logLik"))
+  expect_error(mlfatigue(x, mu=NULL),"endpoint spikes.*normal escape")
+  expect_error(mlfatigue(x, mu=min(x)),"strictly above")
+  expect_error(mlfatigue(x, mu=Inf),"finite")
 })

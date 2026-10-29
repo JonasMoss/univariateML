@@ -3,8 +3,16 @@ id: cmp
 name: Conway--Maxwell--Poisson
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: lambda, role: rate, domain: "(0, inf)", default: 4, fixable: true}
-  - {name: nu, role: dispersion, domain: "(0, inf)", default: 1.5, fixable: true}
+- name: lambda
+  role: rate
+  domain: (0, inf)
+  simulate: 4
+  kind: regular
+- name: nu
+  role: dispersion
+  domain: (0, inf)
+  simulate: 1.5
+  kind: regular
 r:
   density: dcmp
   sampler: rcmp
@@ -29,6 +37,7 @@ limits:
     status: PointMassLimit
 examples: |
   mlcmp(c(0,1,1,2,2,2,3,3,4,5))
+holds: []
 ---
 
 The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersion coordinate.

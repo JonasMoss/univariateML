@@ -3,9 +3,21 @@ id: bnbinom
 name: Beta negative binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: size, role: shape, domain: "(0, inf)", default: 1, fixable: true}
-  - {name: alpha, role: shape, domain: "(0, inf)", default: 2, fixable: true}
-  - {name: beta, role: shape, domain: "(0, inf)", default: 5, fixable: true}
+- name: size
+  role: shape
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: alpha
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
+- name: beta
+  role: shape
+  domain: (0, inf)
+  simulate: 5
+  kind: regular
 r:
   density: extraDistr::dbnbinom
   sampler: extraDistr::rbnbinom
@@ -32,6 +44,7 @@ references:
 examples: |
   set.seed(4)
   mlbnbinom(extraDistr::rbnbinom(1000, 1, 2, 5))
+holds: []
 ---
 
 The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power law tails.

@@ -3,8 +3,16 @@ id: dweibull
 name: Discrete Weibull
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: shape1, role: probability, domain: "(0, 1)", default: 0.8, fixable: true}
-  - {name: shape2, role: shape, domain: "(0, inf)", default: 1.5, fixable: true}
+- name: shape1
+  role: probability
+  domain: (0, 1)
+  simulate: 0.8
+  kind: regular
+- name: shape2
+  role: shape
+  domain: (0, inf)
+  simulate: 1.5
+  kind: regular
 r:
   density: extraDistr::ddweibull
   sampler: extraDistr::rdweibull
@@ -42,6 +50,7 @@ references:
 examples: |
   AIC(mldweibull(corbet), mlgeom(corbet))
   mldweibull(corbet, shape2 = 1)
+holds: []
 ---
 
 The type I discrete Weibull distribution of Nakagawa and Osaki (1975) models nonnegative counts such as the number of cycles survived before failure. A count is the integer part of a continuous Weibull variable with shape `shape2`; `shape1` is the probability that the count is positive.

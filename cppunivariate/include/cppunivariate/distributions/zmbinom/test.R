@@ -1,7 +1,7 @@
 test_that("zmbinom agrees with a multi-start reference-density oracle", {
   set.seed(13109)
   x <- do.call(actuar::rzmbinom, list(250, size = 8, prob = 0.4, p0 = 0.3))
-  fit <- mlzmbinom(x)
+  fit <- mlzmbinom(x, size = NULL)
   density <- actuar::dzmbinom
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
@@ -23,18 +23,18 @@ test_that("zmbinom agrees with a multi-start reference-density oracle", {
   expect_equal(attr(logLik(fixed),"df"), 2L)
   expect_gte(attr(fixed,"logLik"), -oracle(c(size=15))-1e-6)
   for(bad in c(-1,Inf,NaN,0,.5)) expect_error(mlzmbinom(x,size=bad),"size")
-  expect_error(mlzmbinom_(integer()),"nonempty")
-  expect_error(mlzmbinom_(c(-1L,1L)),"count")
-  expect_warning(zero <- mlzmbinom(c(0,0,0)),"unidentified")
+  expect_error(mlzmbinom_(integer(), size=NULL),"nonempty")
+  expect_error(mlzmbinom_(c(-1L,1L), size=NULL),"count")
+  expect_warning(zero <- mlzmbinom(c(0,0,0), size = NULL),"unidentified")
   expect_equal(unname(zero["p0"]),1)
-  expect_warning(two <- mlzmbinom(c(0,0,1,1)),"mlbinom")
+  expect_warning(two <- mlzmbinom(c(0,0,1,1), size = NULL),"mlbinom")
   expect_equal(attr(two,"logLik"),attr(mlbinom(c(0,0,1,1),size=1),"logLik"))
-  expect_equal(unname(mlzmbinom(x[x>0])["p0"]),0)
+  expect_equal(unname(mlzmbinom(x[x>0], size = NULL)["p0"]),0)
 })
 
 test_that("zmbinom declares its infinite-size escape", {
  x <- c(0,0,1,1,1,2,3,7,12)
- expect_error(mlzmbinom(x), "Use `mlzmpois`")
+ expect_error(mlzmbinom(x, size = NULL), "Use `mlzmpois`")
  expect_s3_class(mlzmbinom(x,size=20), "univariateML")
 })
 

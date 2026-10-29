@@ -12,12 +12,18 @@ params:
 - name: lambda
   role: rate
   domain: '[0, inf)'
-  default: 2.0
+  simulate: 2.0
+  kind: regular
 r:
   density: actuar::dztpois
   sampler: actuar::rztpois
   control: {}
 log_density: -lambda+x*log(lambda)-loggamma(x+1)-log(1-exp(-lambda))
+holds:
+- held:
+  - lambda
+  status: not-implemented
+  reason: The adapter does not accept `lambda`; this hold is not implemented (P2).
 ---
 
 Zero-truncated Poisson distributions model positive counts.

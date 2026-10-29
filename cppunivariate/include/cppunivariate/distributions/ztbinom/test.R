@@ -1,7 +1,7 @@
 test_that("ztbinom agrees with a multi-start reference-density oracle", {
   set.seed(13116)
   x <- do.call(actuar::rztbinom, list(250, size = 8, prob = 0.4))
-  fit <- mlztbinom(x)
+  fit <- mlztbinom(x, size = NULL)
   density <- actuar::dztbinom
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
@@ -23,15 +23,15 @@ test_that("ztbinom agrees with a multi-start reference-density oracle", {
   expect_equal(attr(logLik(fixed),"df"), 1L)
   expect_gte(attr(fixed,"logLik"), -oracle(c(size=15))-1e-6)
   for(bad in c(-1,Inf,NaN,0,.5)) expect_error(mlztbinom(x,size=bad),"size")
-  expect_error(mlztbinom_(integer()),"nonempty")
-  expect_error(mlztbinom_(c(-1L,1L)),"count")
-  expect_error(mlztbinom(c(0,1,2)))
-  expect_equal(attr(mlztbinom(rep(1,4)),"logLik"),0)
+  expect_error(mlztbinom_(integer(), size=NULL),"nonempty")
+  expect_error(mlztbinom_(c(-1L,1L), size=NULL),"count")
+  expect_error(mlztbinom(c(0,1,2), size = NULL))
+  expect_equal(attr(mlztbinom(rep(1,4), size = NULL),"logLik"),0)
 })
 
 test_that("ztbinom declares its infinite-size escape", {
  x <- c(1,1,1,2,3,7,12)
- expect_error(mlztbinom(x), "Use `mlztpois`")
+ expect_error(mlztbinom(x, size = NULL), "Use `mlztpois`")
  expect_s3_class(mlztbinom(x,size=20), "univariateML")
 })
 

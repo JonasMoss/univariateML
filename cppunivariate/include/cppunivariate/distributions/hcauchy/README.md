@@ -3,7 +3,11 @@ id: hcauchy
 name: Half-Cauchy
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1}
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: extraDistr::dhcauchy
   sampler: extraDistr::rhcauchy
@@ -18,6 +22,11 @@ limits:
     status: ScaleBoundary
 references:
   - extraDistr package, HalfCauchy documentation (density and parameterization).
+holds:
+- held:
+  - sigma
+  status: not-implemented
+  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
 ---
 
 The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint fixed at zero.

@@ -74,21 +74,48 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     closed = as.logical(unlist(s$closed %||% c(FALSE, FALSE)))
   )
   params <- lapply(f$params, function(p) {
-    if (isTRUE(p$required) && (isTRUE(p$fixable) || !is.null(p$fixed))) {
-      stop("load_distributions: ", path, ": required parameter ", p$name,
-           " cannot also be fixable or fixed")
+    obsolete <- intersect(names(p), c("default", "fixable", "fixed", "required", "required_reason"))
+    if (length(obsolete)) stop("load_distributions: ", id, ": obsolete parameter keys: ", paste(obsolete, collapse=", "))
+    p$kind <- p$kind %||% "regular"
+    if (!p$kind %in% c("design", "threshold", "endpoint", "regular"))
+      stop("load_distributions: ", id, ": invalid kind for ", p$name)
+    if (is.null(p$simulate) || length(p$simulate) != 1L)
+      stop("load_distributions: ", id, ": simulate must be scalar for ", p$name)
+    p$simulate <- .umvl_as_bound(p$simulate)
+    if (is.na(p$simulate)) stop("load_distributions: ", id, ": simulate must be numeric for ", p$name)
+    if (!is.null(p$advice) && (!is.character(p$advice) || length(p$advice)!=1L ||
+                             is.na(p$advice) || !nzchar(p$advice)))
+      stop("load_distributions: ", id, ": advice must be nonempty text for ", p$name)
+    p$required <- p$kind %in% c("design", "threshold")
+    domains <- p$fit_domain
+    if (!is.null(domains)) {
+      if (!is.null(domains$restriction)) domains <- list(domains)
+      for (d in domains) {
+        r <- d$restriction
+        if (is.null(r) || !r$mechanism %in% c("collapse", "spike", "branch", "endpoint") ||
+            is.null(r$exempt_when_held) || is.null(r$reason) || !nzchar(r$reason) ||
+            (is.null(d$lower) && is.null(d$upper)))
+          stop("load_distributions: ", id, ": invalid fit_domain restriction for ", p$name)
+        if (p$kind != "regular") stop("load_distributions: ", id,
+          ": R5 fit_domain must restrict a regular coefficient, not ", p$kind)
+        lower <- if (is.null(d$lower)) -Inf else .umvl_as_bound(d$lower)
+        upper <- if (is.null(d$upper)) Inf else .umvl_as_bound(d$upper)
+        if (is.na(lower) || is.na(upper) || lower >= upper)
+          stop("load_distributions: ", id, ": invalid fit_domain bounds for ", p$name)
+        exemptions <- unlist(r$exempt_when_held)
+        # ht's translated mu belongs to the declared P4 extension.
+        if (length(setdiff(exemptions, c(vapply(f$params, `[[`, "", "name"), if(id=="ht") "mu"))))
+          stop("load_distributions: ", id, ": unknown restriction exemption")
+      }
     }
-    if (!is.null(p$required_reason) &&
-        (!isTRUE(p$required) || !is.character(p$required_reason) ||
-         length(p$required_reason) != 1L || is.na(p$required_reason) ||
-         !nzchar(p$required_reason))) {
-      stop("load_distributions: ", path, ": required_reason needs a required parameter and nonempty text")
-    }
-    list(name = p$name, role = p$role %||% "", domain = p$domain %||% "",
-         default = as.numeric(p$default),
-         fixable = isTRUE(p$fixable), fixed = p$fixed,
-         required = isTRUE(p$required), required_reason = p$required_reason)
+    p
   })
+  pn <- vapply(params, `[[`, "", "name")
+  for (h in f$holds %||% list()) {
+    if (!h$status %in% c("no-mle", "not-implemented") ||
+        is.null(h$reason) || !nzchar(h$reason) || length(setdiff(unlist(h$held), pn)))
+      stop("load_distributions: ", id, ": invalid holds entry")
+  }
   # Arguments of the default fit (goldens, generic tests); every required
   # parameter must have one.
   required <- unlist(lapply(params, function(p) if (p$required) p$name))
@@ -105,8 +132,10 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     density = f$r$density,
     sampler = f$r$sampler,
     args = if (is.null(f$r$args)) NULL else unlist(f$r$args),
+    shift = f$r$shift %||% NULL,
     fit_args = f$fit_args,
     control = f$r$control %||% list(),
+    holds = f$holds %||% list(),
     limits = f$limits %||% list(),
     references = unlist(f$references %||% list()),
     examples = f$examples %||% NULL,

@@ -12,16 +12,18 @@ params:
 - name: size
   role: trials
   domain: '[0, inf)'
-  default: 2.0
-  fixable: true
+  simulate: 2.0
+  kind: regular
 - name: prob
   role: probability
   domain: (0, 1]
-  default: 0.4
+  simulate: 0.4
+  kind: regular
 - name: p0
   role: probability
   domain: '[0, 1]'
-  default: 0.3
+  simulate: 0.3
+  kind: regular
 r:
   density: actuar::dzmnbinom
   sampler: actuar::rzmnbinom
@@ -35,6 +37,15 @@ limits:
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: the maximised face likelihood wins within 1e-8 times the sample size
   status: PoissonLimit
+holds:
+- held:
+  - prob
+  status: not-implemented
+  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
+- held:
+  - p0
+  status: not-implemented
+  reason: The adapter does not accept `p0`; this hold is not implemented (P2).
 ---
 
 Zero-modified negative binomial distributions model counts with a separate zero component.

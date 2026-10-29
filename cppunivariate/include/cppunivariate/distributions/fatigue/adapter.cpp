@@ -7,9 +7,18 @@
 #include <limits>
 
 // [[Rcpp::export]]
-Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
+Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu, double abstol = 1.220703e-4,
                       int iterlim = 100) {
-  auto res = cppunivariate::fatigue_mle(dist_impl::as_span(x), abstol, iterlim);
+  if (mu.isNull()) Rcpp::stop("Estimating `mu` is not supported: the three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.");
+  const double threshold = Rcpp::as<double>(mu);
+  if (!std::isfinite(threshold)) Rcpp::stop("`mu` must be finite.");
+  Rcpp::NumericVector shifted(x.size());
+  for (R_xlen_t i = 0; i < x.size(); ++i) {
+    shifted[i] = x[i] - threshold;
+    if (!(shifted[i] > 0.0) || !std::isfinite(shifted[i]))
+      Rcpp::stop("Fatigue observations must be finite and strictly above `mu`.");
+  }
+  auto res = cppunivariate::fatigue_mle(dist_impl::as_span(shifted), abstol, iterlim);
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
       Rcpp::stop("The fatigue maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
@@ -18,7 +27,7 @@ Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta,
-          Rcpp::_["mu"] = 0.0),
+          Rcpp::_["mu"] = threshold),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
       Rcpp::_["fixed"] = Rcpp::CharacterVector::create("mu"));
 }

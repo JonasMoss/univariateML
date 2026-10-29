@@ -16,11 +16,13 @@ std::string tnorm_format(double v) {
 
 // [[Rcpp::export]]
 Rcpp::List mltnorm_(const Rcpp::NumericVector &x,
-                    Rcpp::Nullable<double> a = R_NilValue,
-                    Rcpp::Nullable<double> b = R_NilValue,
+                    Rcpp::Nullable<double> a,
+                    Rcpp::Nullable<double> b,
                     Rcpp::Nullable<double> mean = R_NilValue,
                     Rcpp::Nullable<double> sd = R_NilValue,
                     double reltol = 1e-12, int iterlim = 100) {
+  if (a.isNull() || b.isNull())
+    Rcpp::stop("Estimating truncation bounds with NULL is not supported until the endpoint closure (R7a). Supply both `a` and `b`, using -Inf or Inf for an unbounded side.");
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double lower = a.isNotNull() ? Rcpp::as<double>(a) : -std::numeric_limits<double>::infinity();
   const double upper = b.isNotNull() ? Rcpp::as<double>(b) : std::numeric_limits<double>::infinity();

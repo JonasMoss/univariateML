@@ -3,9 +3,21 @@ id: betapr
 name: BetaPrime
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape1, role: shape, domain: "(0, inf)", default: 2.0}
-  - {name: shape2, role: shape, domain: "(0, inf)", default: 3.0}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1.0, fixable: true}
+- name: shape1
+  role: shape
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
+- name: shape2
+  role: shape
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
 r:
   density: extraDistr::dbetapr
   sampler: extraDistr::rbetapr
@@ -26,6 +38,15 @@ references:
 examples: |
   set.seed(313)
   mlbetapr(extraDistr::rbetapr(1000, 1, 2, scale = 3))
+holds:
+- held:
+  - shape1
+  status: not-implemented
+  reason: The adapter does not accept `shape1`; this hold is not implemented (P2).
+- held:
+  - shape2
+  status: not-implemented
+  reason: The adapter does not accept `shape2`; this hold is not implemented (P2).
 ---
 
 The beta prime distribution models positive ratios.
