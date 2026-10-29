@@ -37,6 +37,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 
 | id | model display | coef names | density (external) | support |
 |----|---------------|-----------|---------------------|---------|
+| bbinom     | Beta-binomial           | size, alpha, beta  | extraDistr::dbbinom       | [0, size] integer (size required) |
 | beta       | Beta                    | shape1, shape2     | stats::dbeta              | (0, 1) open      |
 | betapr     | BetaPrime               | shape1, shape2, scale | extraDistr::dbetapr       | [0, ∞)           |
 | binom      | Binomial                | size, prob         | stats::dbinom             | [0, ∞) integer   |
