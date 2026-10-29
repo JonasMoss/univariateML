@@ -25,6 +25,20 @@ struct Profile { double a, b, value, upper; int iterations; bool converged; };
 inline Profile profile(const std::vector<double>& x, double l, double u,
                        double a, double b, double tol, int maxit, double tilt=0) {
   const bool fa = !std::isnan(a), fb = !std::isnan(b);
+  if (tilt == 0 && l == u && x.front() == x.back() && x.front() != l) {
+    const double z = x.front(), n = static_cast<double>(x.size());
+    if (z > l) {
+      if (!fa) a = l;
+      if (!fb) b = z + std::sqrt((z-a)*(z-l));
+      const double ll = n*(std::log(2.0) + std::log(b-z) - std::log(b-a) - std::log(b-l));
+      return {a,b,ll,ll,0,true};
+    }
+    if (!fb) b = l;
+    if (!fa) a = z - std::sqrt((b-z)*(l-z));
+    const double ll = n*(std::log(2.0) + std::log(z-a) - std::log(b-a) - std::log(l-a));
+    return {a,b,ll,ll,0,true};
+  }
+
   const double L = fa ? l-a : std::max(0.0,l-x.front());
   const double R = fb ? b-u : std::max(0.0,x.back()-u);
   if (L<0 || R<0) return {0,0,-INFINITY,-INFINITY,0,true};

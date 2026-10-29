@@ -81,3 +81,46 @@ test_that("constant triangular samples with exterior held mode", {
     expect_equal(as.numeric(logLik(fit)), sum(extraDistr::dtriang(x,fit[1],fit[2],fit[3],log=TRUE)))
   }
 })
+
+test_that("P2 reflected constant exterior-mode maxima", {
+  for (held in list(list(c=2),list(a=-1,c=2),list(a=-1,b=3,c=2))) {
+    fit <- do.call(mltriang,c(list(x=rep(.4,5)),held))
+    expect_equal(as.numeric(logLik(fit)),ll(fit,rep(.4,5)),tolerance=1e-12)
+    if (is.null(held$b)) expect_equal(unname(fit["b"]),2)
+    if (is.null(held$a)) expect_equal(unname(fit["a"]),-1.2)
+  }
+})
+
+test_that("P2 triangular subsets dominate independent multistart endpoint searches", {
+  set.seed(8131)
+  samples <- list(extraDistr::rtriang(20,0,1,.4),extraDistr::rtriang(100,0,1,.4),
+                  runif(20),c(.2,.2,.6,.8),c(.2,.8),rep(.4,5))
+  values <- c(a=0,b=1,c=.4)
+  for (x in samples) for (mask in 0:7) {
+    held <- names(values)[as.logical(intToBits(mask)[1:3])]
+    if (length(unique(x))==1 && all(values[held]==x[1])) next
+    fit <- suppressWarnings(do.call(mltriang,c(list(x=x),as.list(values[held]))))
+    # Conditional mode maxima occur at observations or a held mode.
+    modes <- if ("c" %in% held) values["c"] else unique(x)
+    best <- -Inf
+    for (mode in modes) {
+      free <- setdiff(c("a","b"),held)
+      objective <- function(z) {
+        p <- c(a=-.1,b=1.1,c=mode); p[held] <- values[held]
+        for (i in seq_along(free)) p[free[i]] <- if (free[i]=="a")
+          min(x,mode)-exp(z[i]) else max(x,mode)+exp(z[i])
+        if (p[1]>=p[2] || p[3]<p[1] || p[3]>p[2]) return(1e100)
+        v <- -sum(extraDistr::dtriang(x,p[1],p[2],p[3],log=TRUE))
+        if (is.finite(v)) v else 1e100
+      }
+      if (!length(free)) best <- max(best,-objective(numeric())) else
+        for (start in c(-3,0,2)) best <- max(best,-nlminb(rep(start,length(free)),
+          objective,lower=rep(-25,length(free)),upper=rep(10,length(free)),
+          control=list(iter.max=500,rel.tol=1e-11))$objective)
+    }
+    expect_lte(best,as.numeric(logLik(fit))+1e-6*length(x))
+    # Interior slack searches only approach endpoint modes; compare against
+    # the fit from below, with a small numerical allowance.
+    expect_lt(as.numeric(logLik(fit))-best,1e-5*length(x))
+  }
+})

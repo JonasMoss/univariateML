@@ -17,6 +17,8 @@ r:
   density: stats::dbeta
   sampler: stats::rbeta
   control:
+    shape1: Optional held shape1; `NULL` estimates it.
+    shape2: Optional held shape2; `NULL` estimates it.
     reltol: Relative step tolerance in `log(shape2)`.
     iterlim: Maximum number of iterations.
 log_density: (shape1-1)*log(x) + (shape2-1)*log(1-x) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
@@ -24,15 +26,17 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York."
 examples: |
   AIC(mlbeta(USArrests$Rape / 100))
-holds:
-- held:
-  - shape1
-  status: not-implemented
-  reason: The adapter does not accept `shape1`; this hold is not implemented (P2).
-- held:
-  - shape2
-  status: not-implemented
-  reason: The adapter does not accept `shape2`; this hold is not implemented (P2).
+holds: []
+limits:
+- name: point-mass collapse
+  when: Both free shapes grow without bound on constant data.
+  detect: All observations are equal and neither shape is held.
+  status: Degenerate
+  message: does not exist
 ---
 
 The beta distribution models proportions and other continuous quantities between zero and one.
+
+## Details
+
+With either positive finite shape held, the remaining shape has a unique finite maximum even for constant data. Its strictly decreasing digamma score is solved by bracketing. With both shapes free, constant data have unbounded likelihood; with both held the likelihood is evaluated.
