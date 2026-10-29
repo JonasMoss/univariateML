@@ -588,23 +588,6 @@ univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
 
 univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
-  # A held half-normal endpoint is closed, unlike the translated dtnorm
-  # convention. Compose the reference half-normal with the known translation.
-  if (identical(univariateML_name(obj), "mlhnorm") &&
-      "mu" %in% univariateML_fixed(obj) && type %in% c("d", "p", "q", "r")) {
-    key <- paste0("extraDistr::", type, "hnorm")
-    fun <- getExportedValue("extraDistr", paste0(type, "hnorm"))
-    repair <- univariateML_reference_fixes[[key]]
-    if (!is.null(repair) && repair$broken()) fun <- repair$replacement
-    mu <- unname(obj["mu"]); sigma <- unname(obj["sigma"])
-    return(switch(type,
-      d = function(x, log = FALSE) fun(x - mu, sigma = sigma, log = log),
-      p = function(q, lower.tail = TRUE, log.p = FALSE)
-        fun(q - mu, sigma = sigma, lower.tail = lower.tail, log.p = log.p),
-      q = function(p, lower.tail = TRUE, log.p = FALSE)
-        mu + fun(p, sigma = sigma, lower.tail = lower.tail, log.p = log.p),
-      r = function(n) mu + fun(n, sigma = sigma)))
-  }
   string <- univariateML_to_string(obj, type = type)
   if (type == "q" && !univariateML_reference_exists(string)) {
     # A reference without a quantile function; see univariateML_reference_quantiles.
@@ -634,6 +617,8 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
         r = function(n, ...) base_fun(n, ...) + shift)
     }
   }
+  if (type %in% c("d", "p", "q"))
+    fun <- univariateML_close_function(fun, obj, type)
   fun
 }
 
@@ -707,11 +692,23 @@ univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
     total <- mass(c$lo, c$hi, c$t1, c$t2)
     u <- (x-c$centre)/c$scale
     ans <- lognormal(sqrt(-2*c$t2)*u) - lognormal(0) + c$t1*u - base::log(c$scale) - total
-    ans[x <= a | x >= b] <- -Inf
+    ans[x < a | x > b] <- -Inf
     if (log) ans else exp(ans)
   }
   cdf <- function(q, mean = 0, sd = 1, a = -Inf, b = Inf,
                   lower.tail = TRUE, log.p = FALSE) {
+    if (length(mean) == 1L && length(a) == 1L && length(b) == 1L &&
+        isTRUE(a == mean) && isTRUE(b == Inf))
+    {
+      z <- pmax(0, (q-mean)/sd)
+      upper <- pmin(0, log(2) + stats::pnorm(z, lower.tail=FALSE, log.p=TRUE))
+      lower <- log(-expm1(upper))
+      small <- which(!is.na(z) & z < 1e-4)
+      lower[small] <- log(z[small]) + log(2/pi)/2 +
+        log1p(-z[small]^2/6 + z[small]^4/40)
+      if (lower.tail) ans <- lower else ans <- upper
+      return(if (log.p) ans else exp(ans))
+    }
     c <- coordinates(mean, sd, a, b)
     al <- c$lo; be <- c$hi
     total <- mass(al, be, c$t1, c$t2)
@@ -731,6 +728,20 @@ univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
   }
   quantile <- function(p, mean = 0, sd = 1, a = -Inf, b = Inf,
                        lower.tail = TRUE, log.p = FALSE) {
+    if (length(mean) == 1L && length(a) == 1L && length(b) == 1L &&
+        isTRUE(a == mean) && isTRUE(b == Inf))
+    {
+      lp <- if (log.p) p else log(p)
+      below <- if (lower.tail) lp else log(-expm1(lp))
+      above <- if (lower.tail) log(-expm1(lp)) else lp
+      z <- stats::qnorm(above-log(2), lower.tail=FALSE, log.p=TRUE)
+      small <- which(!is.na(below) & below < log(1e-6))
+      # Inverse of the normal reference's integral at the origin. The next
+      # relative term is O(p^4), below double precision in this branch.
+      z[small] <- exp(below[small]+log(pi/2)/2) *
+        (1 + pi/12*exp(2*below[small]))
+      return(mean + sd*z)
+    }
     vapply(p, function(v) {
       lp <- if (log.p) v else log(v)
       if (is.na(lp) || lp > 0) return(NaN)
@@ -1438,4 +1449,116 @@ ml_check_args <- function(adapter, dots, name) {
   }
   stop(why, "; its arguments are ", paste0("`", allowed, "`", collapse = ", "),
        ". Argument names must match exactly.", call. = FALSE)
+}
+
+# Resolve support in original data coordinates, independently of r.args/r.shift.
+# The numeric metadata bounds remain the envelope used before fitting.
+univariateML_support <- function(obj) {
+  name <- univariateML_name(obj)
+  s <- if (is.null(name)) NULL else univariateML_metadata[[name]]$support
+  if (is.null(s)) return(NULL)
+  values <- stats::setNames(as.list(as.numeric(obj)), names(obj))
+  expressions <- s$expressions
+  if (is.null(expressions)) return(s)
+  s$bounds <- vapply(expressions, function(e)
+    if (is.character(e)) eval(parse(text = e), values) else e, numeric(1))
+  s$closed <- s$endpoint_closed
+  s
+}
+
+# Close only coefficient-dependent continuous endpoints. Discrete support
+# expressions already describe actual included lattice points (tpois: a+1).
+univariateML_close_function <- function(fun, obj, type) {
+  force(fun)
+  s <- univariateML_support(obj)
+  if (is.null(s) || !any(vapply(s$expressions, is.character, logical(1)))) return(fun)
+  wrapper <- function() univariateML_closed_call(fun, obj, type, as.list(environment()))
+  formals(wrapper) <- formals(fun)
+  wrapper
+}
+
+univariateML_closed_call <- function(fun, obj, type, args) {
+  # Preserve the reference function's argument order and explicit overrides.
+  # Vector coefficients retain the reference's recycling semantics.
+  name <- univariateML_name(obj)
+  map <- univariateML_args[[name]]
+  coefficients <- intersect(names(obj), names(args))
+  for (coefficient in coefficients) {
+    if (length(args[[coefficient]]) != 1L) return(do.call(fun, args))
+    obj[[coefficient]] <- args[[coefficient]]
+  }
+  if (!is.null(map)) for (arg in intersect(names(map), names(args))) {
+    coefficient <- map[[arg]]
+    if (coefficient %in% names(obj)) {
+      if (length(args[[arg]]) != 1L) return(do.call(fun, args))
+      obj[[coefficient]] <- args[[arg]]
+    }
+  }
+  s <- univariateML_support(obj)
+  dynamic <- vapply(s$expressions, is.character, logical(1))
+  at <- function(x) {
+    call_args <- args
+    call_args[[1L]] <- x
+    call_args$log <- TRUE
+    do.call(fun, call_args)
+  }
+  bounds <- s$bounds
+  values <- stats::setNames(as.list(as.numeric(obj)), names(obj))
+  if (type == "d") {
+    x <- args[[1L]]; log <- isTRUE(args$log)
+    ans <- do.call(fun, args)
+    outside <- which(!is.na(x) & (x < bounds[1] | x > bounds[2]))
+    ans[outside] <- if (log) -Inf else 0
+    if (s$type != "R") return(ans)
+    for (i in which(dynamic & s$closed & is.finite(bounds))) {
+      hit <- which(!is.na(x) & x == bounds[i])
+      if (!length(hit)) next
+      expr <- s$endpoint_log_density[[c("lower", "upper")[i]]]
+      if (!is.null(expr)) {
+        env <- c(values, list(x = bounds[i]))
+        ld <- if (is.character(expr)) eval(parse(text = expr), env) else expr
+      } else {
+        ld <- at(bounds[i])
+        if (is.finite(ld)) {
+          ans[hit] <- if (log) ld else exp(ld)
+          next
+        }
+        # Smooth undeclared limits: extrapolate two nearby reference log
+        # densities to remove the first-order displacement error.
+        scale <- min(abs(bounds[2]-bounds[1]),
+                     max(1, abs(unlist(values[names(values) %in% c("sd", "sigma", "scale")]))))
+        step <- max(scale * 1e-7, abs(bounds[i]) * .Machine$double.eps * 2,
+                    .Machine$double.xmin)
+        direction <- if (i == 1L) 1 else -1
+        z <- bounds[i] + direction * step
+        zz <- bounds[i] + direction * step * 2
+        if (!(z > bounds[1] && z < bounds[2] && zz > bounds[1] && zz < bounds[2]))
+          stop("Cannot resolve the endpoint density within double precision.")
+        l1 <- at(z); l2 <- at(zz)
+        ld <- if (is.finite(l1) && is.finite(l2)) 2*l1-l2 else l1
+      }
+      ans[hit] <- if (log) ld else exp(ld)
+    }
+    return(ans)
+  }
+  if (type == "p") {
+    q <- args[[1L]]; lower.tail <- args$lower.tail; log.p <- args$log.p
+    ans <- do.call(fun, args)
+    # Equality at the upper endpoint always includes all mass; equality at
+    # a continuous lower endpoint has zero mass.
+    low <- which(!is.na(q) & (q < bounds[1] | (s$type == "R" & q == bounds[1])))
+    high <- which(!is.na(q) & q >= bounds[2])
+    ans[low] <- if (log.p) { if (lower.tail) -Inf else 0 } else as.numeric(!lower.tail)
+    ans[high] <- if (log.p) { if (lower.tail) 0 else -Inf } else as.numeric(lower.tail)
+    return(ans)
+  }
+  {
+    p <- args[[1L]]; lower.tail <- args$lower.tail; log.p <- args$log.p
+    ans <- do.call(fun, args)
+    low <- which(!is.na(p) & p == if (log.p) -Inf else 0)
+    high <- which(!is.na(p) & p == if (log.p) 0 else 1)
+    ans[low] <- bounds[if (lower.tail) 1L else 2L]
+    ans[high] <- bounds[if (lower.tail) 2L else 1L]
+    ans
+  }
 }

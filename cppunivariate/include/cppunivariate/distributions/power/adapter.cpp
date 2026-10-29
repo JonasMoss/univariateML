@@ -22,13 +22,14 @@ Rcpp::List mlpower_(const Rcpp::NumericVector &x, double epsilon = 1.490116e-08,
     if (!(std::isfinite(beta_held) && beta_held > 0.0)) Rcpp::stop("Held `beta` must be positive and finite.");
     fixed.push_back("beta");
   }
-  if (alpha.isNull() && beta.isNotNull()) Rcpp::stop("The power MLE with beta held does not exist: the reference excludes the maximizing upper endpoint (P3). ");
-  if (alpha.isNotNull() && std::any_of(x.begin(),x.end(),[&](double v){return v>=alpha_held;})) Rcpp::stop("Held alpha must exceed the sample maximum: zero likelihood.");
+  if (alpha.isNotNull() && std::any_of(x.begin(),x.end(),[&](double v){return v>alpha_held;})) Rcpp::stop("Held alpha must be at least the sample maximum: zero likelihood.");
 
   if (!(epsilon>=0.0) || !std::isfinite(epsilon))
     Rcpp::stop("`epsilon` must be nonnegative and finite.");
   auto res = cppunivariate::power_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon, alpha_held, beta_held);
+  if (res.status == cppunivariate::PowerStatus::Unbounded)
+    Rcpp::stop("Power likelihood is unbounded as beta -> Inf when every observation equals alpha; hold beta to fit constant samples.");
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     Rcpp::stop("The power distribution is only defined for positive numbers.");
   }

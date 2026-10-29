@@ -1,7 +1,7 @@
 ---
 id: tnorm
 name: Truncated Normal
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "a", upper: "b", closed: [true, true]}
 params:
 - name: mean
   role: location
@@ -18,21 +18,19 @@ params:
   domain: '[-inf, inf)'
   simulate: -inf
   kind: design
-  advice: NULL is not supported until the endpoint closure (R7a); use -Inf for an
-    unbounded side.
+  advice: NULL estimates this bound at the sample extreme; use infinity for an unbounded side.
 - name: b
   role: upper
   domain: (-inf, inf]
   simulate: inf
   kind: design
-  advice: NULL is not supported until the endpoint closure (R7a); use Inf for an unbounded
-    side.
+  advice: NULL estimates this bound at the sample extreme; use infinity for an unbounded side.
 r:
   density: extraDistr::dtnorm
   sampler: extraDistr::rtnorm
   control:
-    a: Known lower truncation bound, held fixed; required; use `-Inf` for an unbounded lower side. Every observation must exceed it.
-    b: Known upper truncation bound, held fixed; required; use `Inf` for an unbounded upper side. Every observation must be below it.
+    a: Required lower bound; NULL estimates min(x); -Inf leaves the lower side unbounded.
+    b: Required upper bound; NULL estimates max(x); Inf leaves the upper side unbounded.
     mean: "Optional held parent-normal mean; NULL estimates it."
     sd: "Optional held parent-normal standard deviation; NULL estimates it."
     reltol: Relative tolerance on the Newton step in the natural parameters `mean/sd^2` and `-1/(2*sd^2)` of standardized data.
@@ -65,75 +63,25 @@ examples: |
   mltnorm(extraDistr::rtnorm(100, mean = 1, sd = 2, a = 0), a = 0, b = Inf)
   # Hold the parent standard deviation.
   mltnorm(extraDistr::rtnorm(100, mean = 1, sd = 2, a = 0), a = 0, b = Inf, sd = 2)
-holds:
-- held: []
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - mean
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - sd
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - mean
-  - sd
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - a
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - mean
-  - a
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - sd
-  - a
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - mean
-  - sd
-  - a
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - b
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - mean
-  - b
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - sd
-  - b
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
-- held:
-  - mean
-  - sd
-  - b
-  status: not-implemented
-  reason: "Estimating truncation bounds needs R7a (P3)"
+holds: []
 fit_args:
   a: -.inf
   b: .inf
 ---
 
-The truncated normal distribution is a normal distribution restricted to a known interval `(a, b)`; it models measurements that are only recorded, or only possible, inside that interval. `mean` and `sd` are the parameters of the parent normal distribution, not the mean and standard deviation of the truncated one.
+The truncated normal distribution is a normal distribution restricted to an interval `[a, b]` with finite bounds closed; it models measurements that are only recorded, or only possible, inside that interval. `mean` and `sd` are the parameters of the parent normal distribution, not the mean and standard deviation of the truncated one.
 
 ## Details
 
 `extraDistr::dtnorm`, `ptnorm` and `qtnorm` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
 
-The bounds `a` and `b` are known design quantities, held fixed and never estimated; both must be supplied, using `-Inf` and `Inf` for the normal fit of `mlnorm`. `NULL` stops until the endpoint closure (R7a) is implemented. `extraDistr::dtnorm` is zero at the bounds, so every observation must lie strictly between them.
+Both bounds must be supplied. A value holds the bound, `NULL` estimates
+it as the corresponding sample extreme, and `-Inf` or `Inf` leaves that side
+unbounded. The support is closed at finite bounds, with the interior density
+limit there. Tightening a free bound increases the likelihood at every parent
+mean and scale, so the endpoint profile is exact. Coincident bounds do not
+define a Lebesgue density and are rejected. Exponential, truncated exponential
+and uniform boundary escapes are still reported through `limits:`.
 
 For fixed bounds the family is an exponential family in $\mathrm{mean}/\mathrm{sd}^2$ and $-1/(2\,\mathrm{sd}^2)$ whose log-likelihood is strictly concave; the maximum depends on the data only through `mean(x)` and the population variance. It exists unless the sample is at least as dispersed as the member with $1/\mathrm{sd}^2 = 0$ and the same mean, an exponential or truncated exponential law that the parametrisation by `sd` cannot reach. This happens with positive probability for samples from a truncated normal, with small samples especially susceptible near an exponential limit; faces win ties within `1e-8` times the sample size. With `sd` held fixed the estimate of `mean` always exists. With `mean` held fixed and both bounds finite the limit is the uniform distribution on `(a, b)`; `mlunif` is a different model, which estimates its endpoints.
 
@@ -173,5 +121,5 @@ coefficient. Numerical face ties use the tolerance stated above.
 `mlhnorm` for the half-normal with an estimated endpoint and `mlnorm` for the untruncated fit.
 
 
-Estimating either truncation bound needs R7a (P3). With both bounds held,
-any subset of `mean` and `sd` can be held.
+Any subset of the four coefficients can be held, subject to the same
+collapse and exponential boundary conditions after profiling the bounds.

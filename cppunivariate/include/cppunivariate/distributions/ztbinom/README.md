@@ -1,13 +1,7 @@
 ---
 id: ztbinom
 name: Zero-truncated binomial
-support:
-  type: integer
-  lower: 1
-  upper: inf
-  closed:
-  - true
-  - false
+support: {type: integer, lower: "1", upper: "size", closed: [true, true]}
 params:
 - name: size
   role: trials

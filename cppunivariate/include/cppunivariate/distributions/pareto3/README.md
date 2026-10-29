@@ -1,7 +1,7 @@
 ---
 id: pareto3
 name: Pareto type III
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "if (shape < 1) Inf else if (shape > 1) -Inf else -log(scale)"}}
 params:
 - name: shape
   role: shape

@@ -1,7 +1,7 @@
 ---
 id: cmb
 name: Conway--Maxwell--binomial
-support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
+support: {type: integer, lower: "0", upper: "size", closed: [true, true]}
 params:
 - name: size
   role: trials

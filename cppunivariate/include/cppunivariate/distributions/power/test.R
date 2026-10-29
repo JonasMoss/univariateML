@@ -65,10 +65,10 @@ expect_equal(class(est), "univariateML")
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
-test_that("power endpoint offset is positive and survives rounding", {
+test_that("power compatibility epsilon is validated and leaves the exact endpoint", {
   for(e in c(-1,Inf,NaN)) expect_error(mlpower(c(1,2),epsilon=e),"nonnegative and finite")
   f<-mlpower(c(1e100,2e100))
-  expect_gt(f[["alpha"]],2e100)
+  expect_identical(f[["alpha"]],2e100)
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
@@ -94,8 +94,10 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
     hv <- held_default
     if (id=="power") hv["alpha"] <- max(x)*1.2
     args <- c(list(x=x),as.list(hv[held]))
-    if (id=="power" && !"alpha" %in% held) {
-      expect_error(do.call(mlpower,args),"excludes the maximizing upper endpoint")
+    if (!"alpha" %in% held) {
+      f <- do.call(mlpower,args)
+      expect_identical(f[["alpha"]],max(x))
+      expect_equal(as.numeric(logLik(f)),sum(log(hv["beta"])-hv["beta"]*log(max(x))+(hv["beta"]-1)*log(x)))
       next
     }
     f <- do.call(get(paste0("ml",id)),args)
@@ -128,8 +130,8 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
 })
 
 test_that("P2 held existence boundaries", {
-expect_error(mlpower(c(1,2),alpha=2),"zero likelihood")
+expect_equal(mlpower(c(1,2),alpha=2)[["alpha"]],2)
 expect_error(mlpower(c(1,2),alpha=1),"zero likelihood")
-expect_error(mlpower(c(1,2),beta=2),"excludes")
+expect_equal(mlpower(c(1,2),beta=2)[["alpha"]],2)
 expect_true(is.finite(logLik(mlpower(rep(2,3),alpha=3))))
 })

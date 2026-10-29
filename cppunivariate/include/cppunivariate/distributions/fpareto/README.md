@@ -1,7 +1,7 @@
 ---
 id: fpareto
 name: Feller-Pareto
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "if (shape2*shape3 < 1) Inf else if (shape2*shape3 > 1) -Inf else log(shape2) - log(scale) - lbeta(shape1, shape3)"}}
 params:
 - name: shape1
   role: shape

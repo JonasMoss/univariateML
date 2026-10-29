@@ -1,7 +1,7 @@
 ---
 id: unif
 name: Uniform
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "min", upper: "max", closed: [true, true], endpoint_log_density: {lower: "-log(max-min)", upper: "-log(max-min)"}}
 params:
 - name: min
   role: lower

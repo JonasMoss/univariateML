@@ -21,11 +21,11 @@ Rcpp::List mltnorm_(const Rcpp::NumericVector &x,
                     Rcpp::Nullable<double> mean = R_NilValue,
                     Rcpp::Nullable<double> sd = R_NilValue,
                     double reltol = 1e-12, int iterlim = 100) {
-  if (a.isNull() || b.isNull())
-    Rcpp::stop("Estimating truncation bounds needs R7a (P3). Supply both `a` and `b`, using -Inf or Inf for an unbounded side.");
   const double nan = std::numeric_limits<double>::quiet_NaN();
-  const double lower = a.isNotNull() ? Rcpp::as<double>(a) : -std::numeric_limits<double>::infinity();
-  const double upper = b.isNotNull() ? Rcpp::as<double>(b) : std::numeric_limits<double>::infinity();
+  const double lower = a.isNotNull() ? Rcpp::as<double>(a) : nan;
+  const double upper = b.isNotNull() ? Rcpp::as<double>(b) : nan;
+  if ((a.isNotNull() && std::isnan(lower)) || (b.isNotNull() && std::isnan(upper)))
+    Rcpp::stop("Truncated normal bounds must not be missing.");
   const double held_mean = mean.isNotNull() ? Rcpp::as<double>(mean) : nan;
   const double held_sd = sd.isNotNull() ? Rcpp::as<double>(sd) : nan;
   if (mean.isNotNull() && !std::isfinite(held_mean))
@@ -41,7 +41,7 @@ Rcpp::List mltnorm_(const Rcpp::NumericVector &x,
     case cppunivariate::TnormStatus::InvalidBounds:
       Rcpp::stop("Truncated normal bounds must satisfy a < b, with a < Inf and b > -Inf.");
     case cppunivariate::TnormStatus::OutsideBounds:
-      Rcpp::stop("Truncated normal observations must lie strictly between `a` and `b`; extraDistr::dtnorm is zero at the bounds.");
+      Rcpp::stop("Truncated normal observations must lie within the closed bounds [a, b].");
     case cppunivariate::TnormStatus::DegenerateData:
       Rcpp::stop("Truncated normal MLE with free `sd` requires observations that are not all equal (to `mean`, when it is held); the likelihood is unbounded as sd -> 0.");
     case cppunivariate::TnormStatus::ExponentialBoundary:
@@ -63,8 +63,8 @@ Rcpp::List mltnorm_(const Rcpp::NumericVector &x,
   Rcpp::CharacterVector fixed;
   if (mean.isNotNull()) fixed.push_back("mean");
   if (sd.isNotNull()) fixed.push_back("sd");
-  fixed.push_back("a");
-  fixed.push_back("b");
+  if (a.isNotNull()) fixed.push_back("a");
+  if (b.isNotNull()) fixed.push_back("b");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mean"] = res.mean, Rcpp::_["sd"] = res.sd,

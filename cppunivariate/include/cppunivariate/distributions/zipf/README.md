@@ -1,7 +1,7 @@
 ---
 id: zipf
 name: Zipf
-support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
+support: {type: integer, lower: "1", upper: "N", closed: [true, true]}
 params:
 - name: 'N'
   role: upper

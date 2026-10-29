@@ -1,7 +1,7 @@
 ---
 id: triang
 name: Triangular
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "a", upper: "b", closed: [true, true], endpoint_log_density: {lower: "if (c == a) log(2) - log(b-a) else -Inf", upper: "if (c == b) log(2) - log(b-a) else -Inf"}}
 params:
 - name: a
   role: location

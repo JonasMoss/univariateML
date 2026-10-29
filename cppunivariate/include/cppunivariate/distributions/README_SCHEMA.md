@@ -16,7 +16,7 @@ goldens), by the validation harness, and later by the Python shell.
 |---|:-:|---|
 | `id` | yes | must equal the folder name |
 | `name` | yes | display name, e.g. `Lomax`; the R title is "<name> distribution maximum likelihood estimation" |
-| `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` |
+| `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` or coefficient expressions (see below) |
 | `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `univariateML/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
 | `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` for package-defined functions; `p`/`q` are found by swapping the first letter |
 | `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma, a: mu}` for the translated half-normal as `extraDistr::dtnorm`; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
@@ -123,3 +123,33 @@ The idempotent `univariateML/scripts/migrate_parameter_rules.R` migrates the
 98 front matters from the P0 design table and exact adapter signatures.
 C5 translated hcauchy/ht thresholds and C6 hypergeometric `N` coefficients
 are introduced in P4; P1 retains their current coefficient lists.
+
+## Support expressions and endpoint closure (R7a)
+
+`support.lower` and `support.upper` accept numbers, `inf`/`-inf`, or quoted
+R expressions in coefficient names. Supported operations are arithmetic,
+comparisons, `if`, `min`, `max`, `floor`, `ceiling`, `log`, `sqrt`, `lgamma`,
+`lbeta`, `dnorm` and `dt`; no assignment or arbitrary calls are accepted.
+Examples: `lower: mu`, `upper: "if (xi < 0) mu - sigma/xi else Inf"`.
+Expressions use original data coordinates, before `r.shift` is applied.
+
+Coefficient-dependent continuous endpoints are closed (`closed: [true, true]`
+when both depend on coefficients). Infinite bounds are never observations.
+The density at a finite closed endpoint is the limit from inside. Optional
+`endpoint_log_density: {lower: "expression", upper: "expression"}` declares
+that log limit, allowing coefficient names and `x` (the endpoint), `pi`, and
+`Inf`. Declare singular limits explicitly: a nearby density cannot distinguish
+zero, a finite limit, and infinity reliably. Smooth undeclared limits use
+linear extrapolation of two reference log densities just inside the endpoint.
+CDFs and quantiles use the same resolved endpoints in both tails and log modes.
+
+For discrete laws, declare the actual included lattice bounds. Truncated
+Poisson retains the strict conditioning rule `a < x <= b`: its effective
+closed lower endpoint is `max(0, floor(a)+1)` and upper is `floor(b)`. Closing
+this lattice support does not add the excluded atom at `a`.
+
+Generated metadata retains numeric envelope `bounds` for pre-fit validation
+and backward-compatible object attributes, and `expressions`, `endpoint_closed`
+and `endpoint_log_density` for evaluation at fitted coefficients. Internal
+`univariateML_support(fit)` resolves the fitted support without changing the
+construction of fit objects.

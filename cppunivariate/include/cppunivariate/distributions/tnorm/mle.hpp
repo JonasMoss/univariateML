@@ -28,7 +28,7 @@ enum class TnormStatus {
   Ok,
   InvalidInput,      // empty or non-finite data, or bad tol / maxit
   InvalidBounds,     // NaN bound, a >= b, a = inf or b = -inf
-  OutsideBounds,     // an observation is not strictly between a and b
+  OutsideBounds,     // an observation is outside [a, b]
   InvalidFixed,      // held mean not finite, or held sd not finite and positive
   DegenerateData,    // free sd with constant data: unbounded likelihood
   ExponentialBoundary,           // b = inf: a + exponential face
@@ -335,7 +335,8 @@ inline bool tilt_with_zero_mean(double lo, double hi, double &t, Mass &m) {
 }  // namespace tnorm_detail
 
 // Truncated normal MLE with known bounds a < b (either may be infinite).
-// Observations must lie strictly inside (a, b). Pass a finite fixed_mean or
+// Observations may equal either finite endpoint. NaN bounds estimate the
+// corresponding sample extreme. Pass a finite fixed_mean or
 // fixed_sd to hold that parameter; NaN estimates it. tol is the relative
 // Newton step tolerance in natural parameters.
 inline TnormResult tnorm_mle(span x,
@@ -350,7 +351,17 @@ inline TnormResult tnorm_mle(span x,
   const double log_root_2pi = 0.91893853320467274178;
   TnormResult res{nan, nan, a, b, nan, nan, nan, 0, TnormStatus::InvalidInput};
   if (x.size() == 0 || !(tol > 0) || !std::isfinite(tol) || maxit < 1) return res;
-  if (std::isnan(a) || std::isnan(b) || !(a < b) || a == inf || b == -inf) {
+  if (std::isnan(a)) {
+    a = x[0];
+    for (double v : x) a = std::min(a, v);
+  }
+  if (std::isnan(b)) {
+    b = x[0];
+    for (double v : x) b = std::max(b, v);
+  }
+  res.a = a;
+  res.b = b;
+  if (!(a < b) || a == inf || b == -inf) {
     res.status = TnormStatus::InvalidBounds;
     return res;
   }
@@ -364,7 +375,7 @@ inline TnormResult tnorm_mle(span x,
   double sum = 0;
   for (double v : x) {
     if (!std::isfinite(v)) return res;
-    if (!(v > a && v < b)) {
+    if (!(v >= a && v <= b)) {
       res.status = TnormStatus::OutsideBounds;
       return res;
     }

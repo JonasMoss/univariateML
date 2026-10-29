@@ -1,7 +1,7 @@
 ---
 id: hnorm
 name: Translated Half-Normal
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "mu", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "log(2/pi)/2 - log(sigma)"}}
 params:
 - name: mu
   role: location
@@ -40,13 +40,17 @@ The translated half-normal distribution models nonnegative normal deviations fro
 
 `extraDistr::dtnorm`, `ptnorm` and `qtnorm` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
 
-The support is $(\mu, \infty)$ and `sigma` is a scale, not the standard deviation. The likelihood is maximised at the boundary `mu = min(x)` with `sigma = sqrt(mean((x - mu)^2))`. `extraDistr::dtnorm` excludes its lower endpoint, so the fitter reports `mu` as the largest double below `min(x)`; then `dml` is positive at every observation and `sum(dml(x, fit, log = TRUE))` equals `logLik`. At least two distinct observations are required: for constant data the likelihood is unbounded as `sigma` tends to zero.
+The support is $[\mu, \infty)$ and `sigma` is a scale, not the standard deviation.
+The likelihood is maximised at `mu = min(x)` exactly, with
+`sigma = sqrt(mean((x - mu)^2))`. At the endpoint `dml` returns the
+interior limit `sqrt(2/pi)/sigma`. At least two distinct observations are
+required when both coefficients are estimated; constant data have unbounded
+likelihood as sigma tends to zero.
 
 Holding `mu` uses the closed support $[\mu, \infty)$ and requires all observations to be at least `mu`, with at least one strictly larger. The scale estimate is the root mean square distance from that endpoint, including for a single observation. `mlhnorm(x, mu = 0)` fits the ordinary extraDistr half-normal. Its d/p/q/r use shifted extraDistr half-normal functions, including their runtime tail repairs.
 
 Data with a sharp maximum instead of a minimum come from the reflected model; fit `mlhnorm(-x, mu = NULL)`.
 
 Holding positive finite `sigma` removes scale collapse, including for singleton
-and constant samples. The free endpoint is still the sample minimum (reported
-as its predecessor until the common closed-endpoint migration); a held endpoint
+and constant samples. The free endpoint is sample minimum exactly; a held endpoint
 may equal the observations. Both held coefficients are returned unchanged.

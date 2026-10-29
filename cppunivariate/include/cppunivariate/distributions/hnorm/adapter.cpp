@@ -18,7 +18,7 @@ Rcpp::List mlhnorm_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu,
     Rcpp::CharacterVector fixed_names(0);
     if (fixed) fixed_names.push_back("mu");
     fixed_names.push_back("sigma");
-    const double endpoint = fixed ? res.mu : std::nextafter(res.mu, -std::numeric_limits<double>::infinity());
+    const double endpoint = res.mu;
     double ll=x.size()*(0.5*std::log(2.0/std::acos(-1.0))-std::log(sc));
     for (double v:x) {const double z=(v-endpoint)/sc;ll-=0.5*z*z;}
     if (!std::isfinite(ll)) Rcpp::stop("Half-normal held-scale likelihood exceeds double precision at the representable endpoint.");
@@ -36,26 +36,8 @@ Rcpp::List mlhnorm_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu,
   if (fixed) return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["mu"] = res.mu, Rcpp::_["sigma"] = res.sigma),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["fixed"] = Rcpp::CharacterVector::create("mu"));
-  // The R reference density, extraDistr::dtnorm(x, mean = mu, sd = sigma,
-  // a = mu), excludes its lower endpoint, so the boundary MLE mu = min(x)
-  // would give the smallest observation density 0. Report the largest
-  // double below min(x). sigma and logLik are re-profiled at that mu: one
-  // ulp of a large min(x) (0.125 at 1e15) is not negligible against sigma,
-  // and the reported logLik must be the reference log-likelihood of the
-  // reported parameters.
-  const double endpoint = std::nextafter(res.mu, -std::numeric_limits<double>::infinity());
-  double largest = 0.0;
-  for (double v : x) largest = std::max(largest, v - endpoint);
-  double ss = 0.0;
-  for (double v : x) {
-    const double z = (v - endpoint) / largest;
-    ss += z * z;
-  }
-  const double dn = static_cast<double>(x.size());
-  const double fitted_sigma = largest * std::sqrt(ss / dn);
-  const double logLik = dn * (0.5 * std::log(2.0 / std::acos(-1.0)) - std::log(fitted_sigma) - 0.5);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["mu"] = endpoint, Rcpp::_["sigma"] = fitted_sigma),
-      Rcpp::_["logLik"] = logLik);
+          Rcpp::_["mu"] = res.mu, Rcpp::_["sigma"] = res.sigma),
+      Rcpp::_["logLik"] = res.logLik);
 }
