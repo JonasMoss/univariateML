@@ -50,6 +50,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | geom       | Geometric               | prob               | stats::dgeom              | [0, ∞) integer   |
 | gompertz   | Gompertz                | a, b               | extraDistr::dgompertz     | [0, ∞)           |
 | gpd        | Generalized Pareto      | mu, sigma, xi     | extraDistr::dgpd          | (mu, mu-sigma/xi) if xi < 0; (mu, ∞) otherwise |
+| gev | Generalized extreme value | mu, sigma, xi | extraDistr::dgev | parameter dependent |
 | gumbel     | Gumbel                  | mu, sigma          | extraDistr::dgumbel       | (-∞, ∞) open     |
 | invburr    | Inverse Burr            | shape1, shape2, scale | actuar::dinvburr          | (0, ∞) open      |
 | invgamma   | InvGamma                | alpha, beta        | extraDistr::dinvgamma     | (0, ∞) open      |
