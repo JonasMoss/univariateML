@@ -87,3 +87,4 @@
 #include "distributions/gev/mle.hpp"
 #include "distributions/trgamma/mle.hpp"
 #include "distributions/invtrgamma/mle.hpp"
+#include "distributions/tnorm/mle.hpp"

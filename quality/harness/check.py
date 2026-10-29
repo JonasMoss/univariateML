@@ -22,7 +22,7 @@ def check(id):
     folder = DISTS / id
     meta = yaml.safe_load((folder / 'README.md').read_text().split('---', 2)[1])
     golden = json.loads((folder / 'golden.json').read_text())
-    params, values = (meta['params'], golden['estimates'])
+    params, values = (meta['params'], {k: float(v) if isinstance(v, str) else v for k, v in golden['estimates'].items()})
     domains = [interval(p['domain'], values) for p in params]
     syms = []
     source = meta['log_density']
@@ -184,7 +184,7 @@ def check(id):
                     best = float(fit.fun)
                     best_theta = decode(fit.x)
     gap = -best - reported
-    result['oracle'] = {'status': 'pass' if feasible and gap <= 1e-06 * (1 + abs(reported)) else 'fail', 'gap': gap, 'logLik': -best, 'estimates': {p['name']: v for p, v in zip(params, best_theta)}, 'starts': len(starts), 'feasible_results': feasible}
+    result['oracle'] = {'status': 'pass' if feasible and gap <= 1e-06 * (1 + abs(reported)) else 'fail', 'gap': gap, 'logLik': -best, 'estimates': {p['name']: v if np.isfinite(v) else str(v) for p, v in zip(params, best_theta)}, 'starts': len(starts), 'feasible_results': feasible}
     return result
 
 def main():

@@ -134,6 +134,9 @@ inline Golden load_golden(const std::string &path) {
                (inner[v] == ' ' || inner[v] == '\t' || inner[v] == '\n' ||
                 inner[v] == '\r'))
           ++v;
+        // jsonlite writes infinite held bounds as quoted "Inf" / "-Inf".
+        const bool quoted = v < inner.size() && inner[v] == '"';
+        if (quoted) ++v;
         std::size_t consumed = 0;
         try {
           g.estimates[name] = std::stod(inner.substr(v), &consumed);
@@ -141,7 +144,7 @@ inline Golden load_golden(const std::string &path) {
           // skip non-numeric
           consumed = 1;
         }
-        cursor = v + consumed;
+        cursor = v + consumed + (quoted ? 1 : 0);
       }
     }
   }
