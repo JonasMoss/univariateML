@@ -56,3 +56,21 @@ TEST_CASE("logitnorm: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlogitnorm(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlogitnorm(rng, p[0], p[1]); });
 }
+
+TEST_CASE("logitnorm P2 exact held normal fits") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{.2,.5,.8};
+  for(int mask=1;mask<4;++mask) {
+    const auto r=cppunivariate::logitnorm_mle(mltest::as_span(x),mask&1?.3:nan,mask&2?1.2:nan);
+    if(mask&1) CHECK(r.mu==.3);
+    else CHECK(std::abs(r.mu)<1e-15);
+    if(mask&2) CHECK(r.sigma==1.2);
+    double ll=0;
+    for(double v:x) ll+=cppunivariate::distributions::dlogitnorm(v,r.mu,r.sigma,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-12));
+  }
+  const std::vector<double> z(5,.5);
+  CHECK(std::isnan(cppunivariate::logitnorm_mle(mltest::as_span(z),0).sigma));
+  CHECK(cppunivariate::logitnorm_mle(mltest::as_span(z),1).sigma==1);
+  CHECK(cppunivariate::logitnorm_mle(mltest::as_span(z),nan,2).mu==0);
+}

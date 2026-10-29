@@ -37,6 +37,36 @@ struct BetaResult {
 
 namespace beta_detail {
 
+// Avoid subtracting nearly equal digammas in concentrated held-shape fits.
+inline double digamma_increment(double z, double h) {
+  if (z >= 1e5) {
+    const long double a = z, b = h, c = a+b;
+    return std::log1p(b/a) + .5L*(b/a)/c + b*(2*a+b)/(12*a*a*c*c);
+  }
+  if (h < 1e-6*z)
+    return h * cppunivariate::special::trigamma(z + .5*h);
+  return cppunivariate::special::digamma(z+h) - cppunivariate::special::digamma(z);
+}
+
+// Local log-beta evaluation for held fits. The shared lgamma difference
+// loses the entire normalizer when one shape dwarfs the other.
+inline double held_logbeta(double a, double b) {
+  const long double z = std::max(a,b), h = std::min(a,b);
+  if (z < 1e6) return cppunivariate::special::lbeta(a,b);
+  const long double r = h/z, lp = std::log1p(r);
+  if (h >= 1e6) {
+    const long double total = z+h;
+    const auto correction = [](long double v) {return (1-1/(30*v*v))/(12*v);};
+    return .5L*std::log(2*M_PI) - .5L*std::log(total) -
+      (z-.5L)*lp + (h-.5L)*(std::log(r)-lp) +
+      correction(z)+correction(h)-correction(total);
+  }
+  const long double lm = r < 1e-4 ?
+    r*r*(-.5L+r*(1.0L/3+r*(-.25L+r*(.2L-r/6)))) : lp-r;
+  const long double increment = h*std::log(z)+(h-.5L)*lp+z*lm-h/(12*z*(z+h));
+  return cppunivariate::special::lgamma(static_cast<double>(h))-increment;
+}
+
 inline double loglik_per_obs(double a, double b, double s, double r) {
   return (a - 1.0) * s + (b - 1.0) * r - cppunivariate::special::lbeta(a, b);
 }
@@ -94,7 +124,9 @@ inline BetaResult concave_newton(span x, double s, double r, int maxit) {
 
 }  // namespace beta_detail
 
-inline BetaResult beta_mle(span x, double tol, int maxit) {
+inline BetaResult beta_mle(span x, double tol, int maxit,
+    double shape1 = std::numeric_limits<double>::quiet_NaN(),
+    double shape2 = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0)
@@ -107,6 +139,44 @@ inline BetaResult beta_mle(span x, double tol, int maxit) {
     sum_log_1mx += std::log(1.0 - v);
     sum_x += v;
     sum_xsq += v * v;
+  }
+  if (!std::isnan(shape1) || !std::isnan(shape2)) {
+    const bool fa = !std::isnan(shape1), fb = !std::isnan(shape2);
+    if ((fa && (!(shape1 > 0) || !std::isfinite(shape1))) ||
+        (fb && (!(shape2 > 0) || !std::isfinite(shape2))))
+      return {kNaN, kNaN, kNaN, 0, BetaStatus::IterationFailure};
+    sum_log_1mx = 0;
+    for (double v : x) {
+      if (!(v > 0 && v < 1))
+        return {kNaN, kNaN, kNaN, 0, BetaStatus::IterationFailure};
+      sum_log_1mx += std::log1p(-v);
+    }
+    double a = shape1, b = shape2;
+    int it = 0;
+    if (!(fa && fb)) {
+      if (maxit < 1) return {kNaN,kNaN,kNaN,0,BetaStatus::IterationFailure};
+      const double held = fa ? a : b;
+      const double target = (fa ? sum_log_1mx : sum_log_x) / dn;
+      // Strictly decreasing score, positive at zero and negative at infinity.
+      const auto score = [&](double z) {
+        return target + beta_detail::digamma_increment(z, held);
+      };
+      double lo = 0, hi = 1;
+      while (score(hi) > 0 && hi < std::numeric_limits<double>::max()/2) hi *= 2;
+      if (!(score(hi) <= 0))
+        return {kNaN,kNaN,kNaN,0,BetaStatus::IterationFailure};
+      double z = hi;
+      for (; it < maxit; ++it) {
+        z = lo + (hi - lo) / 2;
+        const double g = score(z);
+        if (g > 0) lo = z; else hi = z;
+        if (hi - lo <= 1e-13 * z) break;
+      }
+      if (it == maxit) return {kNaN,kNaN,kNaN,it,BetaStatus::IterationFailure};
+      if (fa) b = z; else a = z;
+    }
+    return {a,b,(a-1)*sum_log_x+(b-1)*sum_log_1mx -
+      dn*beta_detail::held_logbeta(a,b),it};
   }
   bool all_equal = true;
   for (auto v : x) all_equal = all_equal && v == x[0];

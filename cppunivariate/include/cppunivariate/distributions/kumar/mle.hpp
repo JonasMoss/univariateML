@@ -66,7 +66,9 @@ inline KumarResult kumar_profile_mle(span x, double tol, int maxit) {
 }
 
 inline KumarResult kumar_mle(span x, double tol, int maxit,
-                             double start = std::numeric_limits<double>::quiet_NaN()) {
+                             double start = std::numeric_limits<double>::quiet_NaN(),
+                             double fixed_a = std::numeric_limits<double>::quiet_NaN(),
+                             double fixed_b = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN, kNaN, 0, KumarStatus::InvalidData};
@@ -77,6 +79,52 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
   for (double v : x) {
     if (!(v > 0.0 && v < 1.0)) return {kNaN, kNaN, kNaN, 0, KumarStatus::InvalidData};
     extreme = extreme || v < 1e-8 || v > 1.0 - 1e-8;
+  }
+  if (!std::isnan(fixed_a) || !std::isnan(fixed_b)) {
+    const bool fa = !std::isnan(fixed_a), fb = !std::isnan(fixed_b);
+    if ((fa && (!(fixed_a > 0) || !std::isfinite(fixed_a))) ||
+        (fb && (!(fixed_b > 0) || !std::isfinite(fixed_b))))
+      return {kNaN,kNaN,kNaN,0,KumarStatus::InvalidData};
+    const double dn = static_cast<double>(n);
+    double L = 0;
+    for (double v : x) L += std::log(v);
+    double a = fixed_a, b = fixed_b;
+    int it = 0;
+    if (!fa) {
+      if (maxit < 1) return {kNaN,kNaN,kNaN,0,KumarStatus::IterationFailure};
+      // Score multiplied by a. Each t/expm1(t) decreases from 1 to 0;
+      // the original score has negative derivative also when b < 1,
+      // since t^2 exp(t)/expm1(t)^2 <= 1.
+      const auto score = [&](double z) {
+        double d = 0;
+        for (double v : x) {
+          const double t = -z * std::log(v);
+          d += t > 700 ? 0 : t / std::expm1(t);
+        }
+        return dn + z * L + (b - 1) * d;
+      };
+      double lo = 0, hi = 1;
+      while (score(hi) > 0 && hi < 1e300) hi *= 2;
+      if (!(score(hi) <= 0))
+        return {kNaN,kNaN,kNaN,0,KumarStatus::IterationFailure};
+      for (; it < maxit; ++it) {
+        a = lo + (hi - lo) / 2;
+        if (score(a) > 0) lo = a; else hi = a;
+        if (hi - lo <= 1e-13 * a) break;
+      }
+      if (it == maxit) return {kNaN,kNaN,kNaN,it,KumarStatus::IterationFailure};
+    }
+    double S = 0;
+    for (double v : x) {
+      const double q = a * std::log(v);
+      S += q < -0.6931471805599453 ? std::log1p(-std::exp(q)) :
+                                    std::log(-std::expm1(q));
+    }
+    if (!fb) b = -dn / S;
+    const double ll = dn * (std::log(a) + std::log(b)) + (a-1)*L + (b-1)*S;
+    if (!std::isfinite(ll) || !(b > 0) || !std::isfinite(b))
+      return {kNaN,kNaN,kNaN,it,KumarStatus::IterationFailure};
+    return {a,b,ll,it};
   }
   if (constant) return {kNaN, kNaN, kNaN, 0, KumarStatus::Unbounded};
   if (!std::isnan(start) && (!(start > 0.0) || !std::isfinite(start)))

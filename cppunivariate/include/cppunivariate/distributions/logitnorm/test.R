@@ -90,3 +90,48 @@ test_that("logitnorm integrates with plot, bootstrap and model selection", {
   on.exit({ grDevices::dev.off(); unlink(file) })
   for (kind in c("d","p","q")) expect_invisible(plot(fit,kind=kind))
 })
+
+test_that("P2 every held subset agrees with independent multistart density fits", {
+  set.seed(8129)
+  samples <- list(plogis(rnorm(20,.3,1.2)), plogis(rnorm(100,.3,1.2)),
+                  runif(20,.01,.99), runif(100,.01,.99),
+                  c(.2,.2,.6,.8), c(.2,.8), rep(.4,5), .4,
+                  c(1e-5, .01, .5, .99, 1-1e-5))
+  values <- c(mu=0.3, sigma=1.2)
+  for (values in list(c(mu=.3,sigma=1.2),c(mu=-2,sigma=.3))) {
+  for (x in samples) for (mask in 1:3) {
+    held <- names(values)[as.logical(intToBits(mask)[1:2])]
+    free <- setdiff(names(values),held)
+    fit <- do.call(mllogitnorm,c(list(x=x),as.list(values[held])))
+    expect_identical(attr(fit,"fixed"),held)
+    expect_identical(unname(coef(fit)[held]),unname(values[held]))
+    expect_equal(attr(logLik(fit),"df"),2L-length(held))
+    ll <- function(p) suppressWarnings(sum(dlogitnorm(x,p[1],p[2],log=TRUE)))
+    expect_equal(as.numeric(logLik(fit)),ll(coef(fit)),tolerance=1e-9)
+    if (length(free)) {
+      objective <- function(z) {
+        p <- values
+        p[free] <- if (free == "mu") z else exp(z)
+        v <- -ll(p)
+        if (is.finite(v)) v else 1e100
+      }
+      refs <- vapply(c(-3,0,3), function(start)
+        nlminb(start,objective,control=list(iter.max=1000,rel.tol=1e-13))$objective,0.0)
+      expect_lt(abs(as.numeric(logLik(fit))+min(refs)),1e-6*length(x))
+    }
+  }
+  }
+  for (p in names(values)) for (bad in c(NA_real_,Inf,-Inf,NaN))
+    expect_error(do.call(mllogitnorm,c(list(x=c(.2,.8)),setNames(list(bad),p))))
+  for (edge in c(0,1)) for (mask in 1:3) {
+    held <- names(values)[as.logical(intToBits(mask)[1:2])]
+    expect_error(do.call(mllogitnorm,c(list(x=c(edge,.4)),as.list(values[held]))))
+  }
+})
+
+test_that("P2 held logit location collapse and held scale constant fits", {
+  expect_error(mllogitnorm(rep(.5,5),mu=0),"does not exist")
+  expect_true(is.finite(as.numeric(logLik(mllogitnorm(rep(.5,5),mu=1)))))
+  expect_equal(unname(mllogitnorm(rep(.5,5),sigma=2)[1]),0)
+  for (bad in c(0,-1)) expect_error(mllogitnorm(c(.2,.8),sigma=bad),"positive")
+})

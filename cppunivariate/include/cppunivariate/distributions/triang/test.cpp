@@ -107,3 +107,18 @@ TEST_CASE("triang: constant data with held exterior mode") {
     CHECK(r.c==-1);
   }
 }
+
+TEST_CASE("triang P2 exact constant exterior mode profile") {
+  const std::vector<double> x(5,.4);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double b:{nan,2.0}) {
+    const auto r=cppunivariate::triang_mle(mltest::as_span(x),1e-12,100,nan,b,-1);
+    REQUIRE(r.status==cppunivariate::TriangStatus::Ok);
+    CHECK(r.a==-1);
+    CHECK(r.b==doctest::Approx(std::isnan(b)?1.8:b));
+  }
+  const auto r=cppunivariate::triang_mle(mltest::as_span(x),1e-12,100,nan,nan,2);
+  REQUIRE(r.status==cppunivariate::TriangStatus::Ok);
+  CHECK(r.b==2);
+  CHECK(r.a==doctest::Approx(-1.2));
+}

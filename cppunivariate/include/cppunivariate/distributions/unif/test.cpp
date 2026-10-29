@@ -29,3 +29,21 @@ TEST_CASE("unif: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qunif(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::runif_(rng, p[0], p[1]); });
 }
+
+TEST_CASE("unif P2 exact held endpoints and feasibility") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{.2,.2,.8};
+  for(int mask=1;mask<4;++mask) {
+    const auto r=cppunivariate::unif_mle(mltest::as_span(x),mask&1?-1:nan,mask&2?2:nan);
+    CHECK(r.status==cppunivariate::UnifStatus::Ok);
+    CHECK(r.min==(mask&1?-1:.2));
+    CHECK(r.max==(mask&2?2:.8));
+    CHECK(r.logLik==doctest::Approx(-3*std::log(r.max-r.min)));
+  }
+  CHECK(cppunivariate::unif_mle(mltest::as_span(x),.3).status==cppunivariate::UnifStatus::Incompatible);
+  CHECK(cppunivariate::unif_mle(mltest::as_span(x),nan,.7).status==cppunivariate::UnifStatus::Incompatible);
+  CHECK(cppunivariate::unif_mle(mltest::as_span(x),2,1).status==cppunivariate::UnifStatus::InvalidInput);
+  const std::vector<double> z(5,.4);
+  CHECK(cppunivariate::unif_mle(mltest::as_span(z),.4).status==cppunivariate::UnifStatus::Unbounded);
+  CHECK(cppunivariate::unif_mle(mltest::as_span(z),0).status==cppunivariate::UnifStatus::Ok);
+}

@@ -145,3 +145,35 @@ TEST_CASE("kumar: constant data cannot throw or have a finite MLE") {
     CHECK(std::isnan(r.a));
   }
 }
+
+TEST_CASE("kumar P2 every held subset including constant samples") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(const std::vector<double>& x:{std::vector<double>{.2,.2,.6,.8},std::vector<double>(5,.4)}) {
+    for(int mask=1;mask<4;++mask) {
+      const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-12,100,nan,mask&1?2:nan,mask&2?3:nan);
+      REQUIRE(r.status==cppunivariate::KumarStatus::Ok);
+      if(mask&1) CHECK(r.a==2);
+      if(mask&2) CHECK(r.b==3);
+      double ll=0,score=static_cast<double>(x.size())/r.a,S=0;
+      for(double v:x) {
+        ll+=cppunivariate::distributions::dkumar(v,r.a,r.b,true);
+        score+=std::log(v)-(r.b-1)*std::log(v)/std::expm1(-r.a*std::log(v));
+        S+=std::log(-std::expm1(r.a*std::log(v)));
+      }
+      CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-12));
+      if(!(mask&1)) CHECK(std::abs(score)<1e-10);
+      if(!(mask&2)) CHECK(r.b==doctest::Approx(-static_cast<double>(x.size())/S));
+    }
+  }
+  const std::vector<double> x{.2,.8};
+  CHECK(cppunivariate::kumar_mle(mltest::as_span(x),1e-12,1,nan,nan,3).status==cppunivariate::KumarStatus::IterationFailure);
+}
+
+TEST_CASE("kumar P2 held large a retains tiny survival logs") {
+  const std::vector<double> x(5,.4);
+  const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-12,100,
+    std::numeric_limits<double>::quiet_NaN(),100);
+  REQUIRE(r.status==cppunivariate::KumarStatus::Ok);
+  CHECK(r.b==doctest::Approx(-1/std::log1p(-std::pow(.4,100))).epsilon(1e-12));
+  CHECK(r.logLik==doctest::Approx(5*(std::log(100.0)-std::log(.4)-1)).epsilon(1e-12));
+}
