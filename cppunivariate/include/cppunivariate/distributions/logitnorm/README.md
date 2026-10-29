@@ -6,8 +6,8 @@ params:
   - {name: mu, role: location, domain: "(-inf, inf)", default: 2.0}
   - {name: sigma, role: scale, domain: "(0, inf)", default: 3.0}
 r:
-  density: logitnorm::dlogitnorm
-  sampler: logitnorm::rlogitnorm
+  density: dlogitnorm
+  sampler: rlogitnorm
   control: {}
 log_density: -log(sigma) - log(2*pi)/2 - log(x) - log(1-x) - (log(x/(1-x))-mu)**2/(2*sigma**2)
 references:

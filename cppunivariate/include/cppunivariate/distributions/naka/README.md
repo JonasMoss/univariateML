@@ -6,8 +6,8 @@ params:
   - {name: shape, role: shape, domain: "(0, inf)", default: 2.0}
   - {name: scale, role: scale, domain: "(0, inf)", default: 3.0}
 r:
-  density: nakagami::dnaka
-  sampler: nakagami::rnaka
+  density: dnaka
+  sampler: rnaka
   control:
     abstol: Absolute step tolerance in shape (the gamma shape for x^2).
     iterlim: Maximum number of iterations.

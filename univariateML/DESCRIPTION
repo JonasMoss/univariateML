@@ -19,10 +19,10 @@ Imports:
     Rcpp,
     extraDistr,
     actuar,
-    fGarch,
-    logitnorm,
-    nakagami
+    fGarch
 Suggests:
+    logitnorm,
+    nakagami,
     sads,
     jsonlite,
     testthat,

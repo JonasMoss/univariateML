@@ -32,3 +32,18 @@ TEST_CASE("logitnorm") {
   CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kTol));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
+
+TEST_CASE("logitnorm dpqr support and extreme log probabilities") {
+  CHECK(cppunivariate::distributions::plogitnorm(-1,0,1)==0);
+  CHECK(cppunivariate::distributions::plogitnorm(2,0,1)==1);
+  CHECK(cppunivariate::distributions::dlogitnorm(-1,0,1)==0);
+  CHECK(cppunivariate::distributions::qlogitnorm(0,0,1)==0);
+  CHECK(cppunivariate::distributions::qlogitnorm(1,0,1)==1);
+  CHECK(std::isnan(cppunivariate::distributions::dlogitnorm(.5,0,-1)));
+  for (bool lower : {true,false}) {
+    for (double lp : {-1000.0,-10000.0,-1e-20}) {
+      const double x=cppunivariate::distributions::qlogitnorm(lp,0,.01,lower,true);
+      CHECK(cppunivariate::distributions::plogitnorm(x,0,.01,lower,true)==doctest::Approx(lp).epsilon(1e-10));
+    }
+  }
+}

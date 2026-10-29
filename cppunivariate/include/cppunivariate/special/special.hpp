@@ -298,5 +298,9 @@ inline double poisson_quantile(double x, double a, bool lower_tail) {
                     : boost::math::quantile(boost::math::complement(d, x));
 }
 
+// Extended precision tail primitives for the package-owned transformed laws.
+inline long double normal_cdf_extended(double x, bool lower) { const boost::math::normal_distribution<long double, NoThrowPolicy> d; return lower ? boost::math::cdf(d, static_cast<long double>(x)) : boost::math::cdf(boost::math::complement(d, static_cast<long double>(x))); }
+inline long double gamma_cdf_extended(double x, double a, bool lower) { const boost::math::gamma_distribution<long double, NoThrowPolicy> d(a); return lower ? boost::math::cdf(d, static_cast<long double>(x)) : boost::math::cdf(boost::math::complement(d, static_cast<long double>(x))); }
+
 } // namespace special
 } // namespace cppunivariate
