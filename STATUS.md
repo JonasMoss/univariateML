@@ -114,21 +114,14 @@ own rationale live in `roadmap/`; work in flight is on the board
 
 ## Code cleanup
 
-- Test argument switches in `univariateML/tests/testthat/test_input_checks.R`
-  and `test-audit-input.R` list every `required` design argument by hand,
-  and every new family edits the same line (merge conflicts). Read
-  required arguments from each golden's `fit_args`; keep the switch only
-  for test-specific holds (`mlht nu = 3`, `mlsn alpha = 0`, ...).
-- `univariateML_to_function` special-cases `mlhnorm` with held `mu`
-  (closed endpoint, unlike the translated `dtnorm` convention). Replace by
-  a README-level mechanism.
 - `univariateML_continuous_quantile` (`code_helpers.R`) checks `sigma`
   and `a` by name (slash, Bhattacharjee); make the parameter checks
   generic before a third family uses it.
-- `bootstrapml` cannot rebuild the held population size `N` of `mlhyper`
-  and `mlnhyper` (it is not a coefficient).
 - actuar `dgumbel`: confirm the location/scale mapping to `mlgumbel`
   (flagged in the coverage inventory).
+- Done: test argument switches replaced by golden `fit_args` (P1); the
+  `mlhnorm` special case removed (P3); held `N` for `bootstrapml` (P4,
+  in progress).
 
 ## Open mathematics (from the job reports)
 
