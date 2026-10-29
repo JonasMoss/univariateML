@@ -20,6 +20,7 @@
 #include "core/span.hpp"
 #include "special/special.hpp"
 
+#include "distributions/bbinom/mle.hpp"
 #include "distributions/beta/mle.hpp"
 #include "distributions/betapr/mle.hpp"
 #include "distributions/binom/mle.hpp"
