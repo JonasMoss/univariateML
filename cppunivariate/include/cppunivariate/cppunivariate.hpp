@@ -94,3 +94,4 @@
 
 #include "distributions/bnbinom/mle.hpp"
 #include "distributions/cmb/mle.hpp"
+#include "distributions/sgomp/mle.hpp"
