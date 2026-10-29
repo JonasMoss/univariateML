@@ -102,40 +102,14 @@ inline bool huber_newton(const std::vector<double>& y, double epsilon,
   }
   return false;
 }
-inline HuberResult huber_fixed_mle(span x, double tol=1e-10, int maxit=200,
-    double epsilon=1.345,
-    double mu=std::numeric_limits<double>::quiet_NaN(),
-    double sigma=std::numeric_limits<double>::quiet_NaN(), bool sorted=false) {
-  const double nan=std::numeric_limits<double>::quiet_NaN();
-  HuberResult r{mu,sigma,epsilon,nan,0,HuberStatus::InvalidData};
-  const bool fm=!std::isnan(mu), fs=!std::isnan(sigma);
-  if (x.size()==0 || !(epsilon>0) || !std::isfinite(epsilon) ||
-      !(tol>0) || !std::isfinite(tol) || maxit<1 ||
-      (fm && !std::isfinite(mu)) ||
-      (fs && (!(sigma>0) || !std::isfinite(sigma)))) return r;
-  std::vector<double> y;
-  y.reserve(x.size());
-  for (double v:x) { if (!std::isfinite(v)) return r; y.push_back(v); }
-  if (!sorted) std::sort(y.begin(),y.end());
-  const double center=y[y.size()/2];
-  double unit=std::max(std::abs(y.front()-center),std::abs(y.back()-center));
-  if (fm) unit=std::max(unit,std::abs(mu-center));
-  if (unit==0 && !fs) { r.status=HuberStatus::UnboundedLikelihood; return r; }
-  if (unit==0) unit=sigma;
-  if (!std::isfinite(unit)) return r;
-  for (double& v:y) v=(v-center)/unit;
-  double m=fm ? (mu-center)/unit : 0;
-  double s=fs ? sigma/unit : 1;
+// Inner solve on data normalized once by the caller. The original reductions
+// and initial values are retained for the final reproducibility polish.
+inline HuberResult huber_fixed_solve(const std::vector<double>& y,
+    double center, double unit, double m, double s, bool fm, bool fs,
+    double mu, double sigma, double epsilon, double tol, int maxit) {
+  HuberResult r{mu,sigma,epsilon,std::numeric_limits<double>::quiet_NaN(),
+      0,HuberStatus::InvalidData};
   const double n=static_cast<double>(y.size());
-  if (!fs) {
-    // Median/MAD start; a zero MAD (ties) falls back to the sample range.
-    std::vector<double> deviations;
-    deviations.reserve(y.size());
-    for (double v:y) deviations.push_back(std::abs(v));
-    std::nth_element(deviations.begin(),deviations.begin()+y.size()/2,deviations.end());
-    s=deviations[y.size()/2]*1.4826;
-    if (!(s>0)) s=1;
-  }
   const double initial_m=m, initial_s=s;
   bool converged=(fm && fs) || huber_newton(y,epsilon,fm,fs,tol,maxit,m,s,r.iterations);
   if (!converged) {
@@ -176,11 +150,184 @@ inline HuberResult huber_fixed_mle(span x, double tol=1e-10, int maxit=200,
   return r;
 }
 
+inline HuberResult huber_fixed_mle(span x, double tol=1e-10, int maxit=200,
+    double epsilon=1.345,
+    double mu=std::numeric_limits<double>::quiet_NaN(),
+    double sigma=std::numeric_limits<double>::quiet_NaN(), bool sorted=false) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  HuberResult r{mu,sigma,epsilon,nan,0,HuberStatus::InvalidData};
+  const bool fm=!std::isnan(mu), fs=!std::isnan(sigma);
+  if (x.size()==0 || !(epsilon>0) || !std::isfinite(epsilon) ||
+      !(tol>0) || !std::isfinite(tol) || maxit<1 ||
+      (fm && !std::isfinite(mu)) ||
+      (fs && (!(sigma>0) || !std::isfinite(sigma)))) return r;
+  std::vector<double> y;
+  y.reserve(x.size());
+  for (double v:x) { if (!std::isfinite(v)) return r; y.push_back(v); }
+  if (!sorted) std::sort(y.begin(),y.end());
+  const double center=y[y.size()/2];
+  double unit=std::max(std::abs(y.front()-center),std::abs(y.back()-center));
+  if (fm) unit=std::max(unit,std::abs(mu-center));
+  if (unit==0 && !fs) { r.status=HuberStatus::UnboundedLikelihood; return r; }
+  if (unit==0) unit=sigma;
+  if (!std::isfinite(unit)) return r;
+  for (double& v:y) v=(v-center)/unit;
+  double m=fm ? (mu-center)/unit : 0;
+  double s=fs ? sigma/unit : 1;
+  if (!fs) {
+    // Median/MAD start; a zero MAD (ties) falls back to the sample range.
+    std::vector<double> deviations;
+    deviations.reserve(y.size());
+    for (double v:y) deviations.push_back(std::abs(v));
+    std::nth_element(deviations.begin(),deviations.begin()+y.size()/2,deviations.end());
+    s=deviations[y.size()/2]*1.4826;
+    if (!(s>0)) s=1;
+  }
+  return huber_fixed_solve(y,center,unit,m,s,fm,fs,mu,sigma,epsilon,tol,maxit);
+}
+
+// Exact sufficient statistics for a sorted sample. Long-double prefixes limit
+// cancellation when subtracting nearby cumulative sums. No bin approximation.
+struct HuberProfileData {
+  std::vector<double> y;
+  std::vector<long double> sum, square;
+  double center, unit;
+  explicit HuberProfileData(const std::vector<double>& x, double mu)
+      : y(x), center(x[x.size()/2]), unit(std::max(
+          std::abs(x.front()-center),std::abs(x.back()-center))) {
+    if (std::isfinite(mu)) unit=std::max(unit,std::abs(mu-center));
+    if (!(unit>0)) unit=1;
+    sum.push_back(0); square.push_back(0);
+    for (double& v:y) {
+      v=(v-center)/unit;
+      sum.push_back(sum.back()+v);
+      square.push_back(square.back()+static_cast<long double>(v)*v);
+    }
+  }
+  // z=a*y-b: central quadratic moments plus signed linear tail moments.
+  void moments(double a, double b, double c, long double& loss,
+      double& gp, double& gh, double& aa, double& ab, double& bb) const {
+    const double left=(b-c)/a, right=(b+c)/a;
+    const std::size_t l=std::lower_bound(y.begin(),y.end(),left)-y.begin();
+    const std::size_t r=std::upper_bound(y.begin(),y.end(),right)-y.begin();
+    const long double k=r-l, sy=sum[r]-sum[l], sq=square[r]-square[l];
+    // Explicit signed counts avoid unsigned subtraction.
+    const long double signed_count=static_cast<long double>(y.size()-r)-l;
+    const long double signed_sum=sum.back()-sum[r]-sum[l];
+    const long double zsum=a*sy-b*k;
+    loss=(a*a*sq-2*a*b*sy+b*b*k)/2+
+        c*(a*signed_sum-b*signed_count)-c*c*(y.size()-(r-l))/2;
+    gp=static_cast<double>(a*sq-b*sy+c*signed_sum);
+    gh=static_cast<double>(zsum+c*signed_count);
+    aa=static_cast<double>(sq); ab=-static_cast<double>(sy); bb=static_cast<double>(k);
+    // At kinks the original solver assigns half curvature.
+    for (double edge:{left,right}) {
+      const auto first=std::lower_bound(y.begin(),y.end(),edge);
+      const auto last=std::upper_bound(first,y.end(),edge);
+      if (first!=last && std::abs(a*edge-b)==c) {
+        const double half=.5*(last-first);
+        aa-=half*edge*edge; ab+=half*edge; bb-=half;
+      }
+    }
+  }
+  HuberResult fit(double c, double mu, double sigma, double tol, int maxit,
+                  const HuberResult& start) const {
+    const bool fm=std::isfinite(mu), fs=std::isfinite(sigma);
+    const double n=static_cast<double>(y.size());
+    double a=unit/(fs ? sigma : start.sigma);
+    double b=((fm ? mu : start.mu)-center)*a/unit;
+    for (int j=0;j<maxit;++j) {
+      long double loss=0;
+      double gp=0,gh=0,aa=0,ab=0,bb=0;
+      moments(a,b,c,loss,gp,gh,aa,ab,bb);
+      const double m=fm ? (mu-center)/unit : 0;
+      if (fm) { gp-=m*gh; aa+=2*m*ab+m*m*bb; }
+      const double g1=1/a-gp/n, g2=gh/n;
+      if ((fs || std::abs(a*g1-(fm ? 0 : b*g2))<=tol) &&
+          (fm || std::abs(g2)<=tol))
+      {
+        if (!fm && y.size()%2==0 &&
+            (y[y.size()/2]-y[y.size()/2-1])/2>=c/a) {
+          b=(y[y.size()/2-1]/2+y[y.size()/2]/2)*a;
+          moments(a,b,c,loss,gp,gh,aa,ab,bb);
+        }
+        return {fm ? mu : center+unit*b/a, fs ? sigma : unit/a,c,
+          -n*(std::log(unit/a)+std::log(huber_z(c)))-static_cast<double>(loss),
+          j,HuberStatus::Ok};
+      }
+      aa=1/(a*a)+aa/n; ab/=n; bb/=n;
+      double da=0,db=0;
+      if (fm && fs) break;
+      if (fm) da=g1/aa;
+      else if (fs) { if (!(bb>0)) break; db=g2/bb; }
+      else {
+        const double det=aa*bb-ab*ab;
+        if (!(det>0)) break;
+        da=(bb*g1-ab*g2)/det; db=(aa*g2-ab*g1)/det;
+      }
+      const double slope=g1*da+(fm ? 0 : g2*db);
+      const long double old=std::log(a)-loss/n;
+      bool accepted=false;
+      double step=1;
+      for (int k=0;k<60;++k,step*=.5) {
+        const double na=a+step*da, nb=fm ? m*na : b+step*db;
+        if (!(na>0) || !std::isfinite(na) || !std::isfinite(nb)) continue;
+        long double nl=0;
+        moments(na,nb,c,nl,gp,gh,aa,ab,bb);
+        if (std::log(na)-nl/n>=old+1e-4*step*slope-
+            8*std::numeric_limits<double>::epsilon()*(1+std::abs(old))) {
+          a=na; b=nb; accepted=true; break;
+        }
+      }
+      if (!accepted) break;
+    }
+    // The original safeguarded profile fallback, with the same sufficient
+    // statistics replacing full-data reductions and location score sums.
+    auto location = [&](double eta) {
+      if (fm) return (mu-center)/unit;
+      if (y.size()%2==0 && (y[y.size()/2]-y[y.size()/2-1])/2>=c/eta)
+        return y[y.size()/2-1]/2+y[y.size()/2]/2;
+      double lo=y.front(), hi=y.back();
+      for (int j=0;j<100;++j) {
+        const double m=lo/2+hi/2;
+        if (m==lo || m==hi) break;
+        long double loss=0;
+        double gp=0,gh=0,aa=0,ab=0,bb=0;
+        moments(eta,m*eta,c,loss,gp,gh,aa,ab,bb);
+        if (gh==0) return m;
+        if (gh>0) lo=m; else hi=m;
+      }
+      return lo/2+hi/2;
+    };
+    double lo=0, hi=unit/(fs ? sigma : start.sigma);
+    bool bracketed=false;
+    int refinements=0;
+    for (int j=0;j<maxit+1024;++j) {
+      a=fs || !bracketed ? hi : lo/2+hi/2;
+      b=a*location(a);
+      long double loss=0;
+      double gp=0,gh=0,aa=0,ab=0,bb=0;
+      moments(a,b,c,loss,gp,gh,aa,ab,bb);
+      const double score=(a*gp-b*gh)/n-1;
+      if (fs || std::abs(score)<=tol)
+        return {fm ? mu : center+unit*b/a,fs ? sigma : unit/a,c,
+          -n*(std::log(unit/a)+std::log(huber_z(c)))-static_cast<double>(loss),
+          j,HuberStatus::Ok};
+      if (!bracketed && score<0) { hi*=2; continue; }
+      bracketed=true;
+      if (++refinements>maxit) break;
+      if (score>0) hi=a; else lo=a;
+    }
+    return {mu,sigma,c,0,0,HuberStatus::IterationFailure};
+  }
+};
+
 // NaN epsilon requests estimation; the public default remains held at 1.345.
 inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
     double epsilon=1.345,
     double mu=std::numeric_limits<double>::quiet_NaN(),
-    double sigma=std::numeric_limits<double>::quiet_NaN()) {
+    double sigma=std::numeric_limits<double>::quiet_NaN(),
+    bool exact_scan=false) {
   if (!std::isnan(epsilon)) return huber_fixed_mle(x,tol,maxit,epsilon,mu,sigma);
   // Validate through the fixed solver before computing either face.
   HuberResult best=huber_fixed_mle(x,tol,maxit,1.345,mu,sigma);
@@ -208,11 +355,54 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
     const double b=static_cast<double>(ad/n);
     laplace=-n*(1+std::log(2.0)+std::log(b));
   }
+  const bool accelerated=y.size()>4096 && !exact_scan;
+  const HuberProfileData prepared(accelerated ? y : std::vector<double>{0},mu);
+  double initial_s=fs ? sigma/prepared.unit : 1;
+  if (accelerated && !fs) {
+    std::vector<double> deviations;
+    deviations.reserve(y.size());
+    for (double v:prepared.y) deviations.push_back(std::abs(v));
+    std::nth_element(deviations.begin(),deviations.begin()+y.size()/2,deviations.end());
+    initial_s=deviations[y.size()/2]*1.4826;
+    if (!(initial_s>0)) initial_s=1;
+  }
+  auto original_fit = [&](double c) {
+    if (!accelerated) return huber_fixed_mle(data,tol,maxit,c,mu,sigma,true);
+    double m=fm ? (mu-prepared.center)/prepared.unit : 0, s=initial_s;
+    int iterations=0;
+    // Spend at most roughly 16 million observations on a cold Newton
+    // trajectory before switching to the sufficient-statistic recovery.
+    const int cold_limit=std::min(maxit,static_cast<int>(std::max(
+        12.0,16000000.0/n)));
+    if (cold_limit==maxit)
+      return huber_fixed_solve(prepared.y,prepared.center,prepared.unit,m,s,
+          fm,fs,mu,sigma,c,tol,maxit);
+    if (!(fm && fs) && !huber_newton(prepared.y,c,fm,fs,tol,
+        cold_limit,m,s,iterations)) {
+      // Full reductions can stall on rounding near convergence at large n.
+      // Recover with exact prefixes instead of hundreds of full-data passes.
+      const HuberResult seed=prepared.fit(c,mu,sigma,tol,maxit,best);
+      if (seed.status==HuberStatus::Ok) {
+        m=(seed.mu-prepared.center)/prepared.unit;
+        s=seed.sigma/prepared.unit;
+      }
+    }
+    return huber_fixed_solve(prepared.y,prepared.center,prepared.unit,m,s,
+        fm,fs,mu,sigma,c,tol,maxit);
+  };
+  HuberResult warm=best;
   bool failed=false;
-  auto evaluate = [&](double t) {
-    HuberResult r=huber_fixed_mle(data,tol,maxit,std::exp(t),mu,sigma,true);
+  auto evaluate = [&](double t, bool nominate=false) {
+    HuberResult r=nominate ? prepared.fit(std::exp(t),mu,sigma,tol,maxit,warm) :
+        original_fit(std::exp(t));
+    // Retain the robust original fallback, including its midpoint convention.
+    if (nominate && r.status!=HuberStatus::Ok)
+      r=original_fit(std::exp(t));
+    if (r.status==HuberStatus::Ok) {
+      warm=r;
+    }
     if (r.status!=HuberStatus::Ok) failed=true;
-    else if (best.status!=HuberStatus::Ok || r.logLik>best.logLik) best=r;
+    else if (!nominate && (best.status!=HuberStatus::Ok || r.logLik>best.logLik)) best=r;
     return r.status==HuberStatus::Ok ? r.logLik :
         -std::numeric_limits<double>::infinity();
   };
@@ -235,13 +425,39 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
   std::vector<double> ts, values;
   for (int i=0;i<=count;++i) {
     const double t=lower+(upper-lower)*i/count;
-    ts.push_back(t); values.push_back(evaluate(t));
+    ts.push_back(t); values.push_back(evaluate(t,accelerated));
+  }
+  double winning_lo=0, winning_hi=0;
+  double winning_value=-std::numeric_limits<double>::infinity();
+  if (accelerated) {
+    // Endpoints are retained even when the profile is monotone.
+    evaluate(ts.front()); evaluate(ts.back());
   }
   for (int i=1;i<count;++i) {
     // Ignore flat numerical plateaus: faces are compared exactly below.
     if (!(values[i]>=values[i-1] && values[i]>=values[i+1] &&
           (values[i]>values[i-1] || values[i]>values[i+1]))) continue;
     double lo=ts[i-1], hi=ts[i+1];
+    const double ratio=(std::sqrt(5.0)-1)/2;
+    double a=hi-ratio*(hi-lo), b=lo+ratio*(hi-lo);
+    double fa=evaluate(a,accelerated), fb=evaluate(b,accelerated);
+    double peak=std::max(values[i],std::max(fa,fb));
+    for (int j=0;j<80 && hi-lo>1e-8;++j) {
+      if (fa<fb) { lo=a; a=b; fa=fb; b=lo+ratio*(hi-lo); fb=evaluate(b,accelerated); }
+      else { hi=b; b=a; fb=fa; a=hi-ratio*(hi-lo); fa=evaluate(a,accelerated); }
+      peak=std::max(peak,std::max(fa,fb));
+    }
+    if (accelerated && peak>winning_value) {
+      winning_value=peak;
+      winning_lo=ts[i-1]; winning_hi=ts[i+1];
+    }
+  }
+  if (accelerated && winning_hi>winning_lo) {
+    // Preserve the legacy full-reduction rounding convention at the winner.
+    // All nominated peaks above were refined on the full sample, via exact
+    // sufficient statistics; this last polish is solely for reproducibility.
+    double lo=winning_lo, hi=winning_hi;
+    evaluate((lo+hi)/2);
     const double ratio=(std::sqrt(5.0)-1)/2;
     double a=hi-ratio*(hi-lo), b=lo+ratio*(hi-lo);
     double fa=evaluate(a), fb=evaluate(b);
