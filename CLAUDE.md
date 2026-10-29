@@ -233,11 +233,20 @@ optimiser trajectory; survives golden regeneration.
 
 #### Wrapper failure handling
 
-Match `nlminb`'s legacy behaviour: only `Rcpp::stop` on truly invalid
-output (NaN in any returned parameter) or `InvalidStart` (data isn't
-fittable). On plain BFGS iteration-limit hits, return whatever
-`theta_hat` the optimiser landed on — downstream consumers running on
-the legacy fGarch path expect a usable result back, not an error.
+Iterative failure is an error (rule R6,
+`roadmap/2026-10-29-parameter-rules.md`).
+- Preserve failure statuses through transformations and delegates, and
+  stop in the adapter with the status and a clear diagnostic.
+- Keep a failed solve only when its finite free-coordinate score has
+  Euclidean norm below 1e-3 in fitter coordinates, or passes the
+  family's documented score gate. Use the total likelihood score, with
+  any objective normalization undone.
+- Invalid starts and nonfinite results stop.
+- A rescue solve must meet its own convergence or score criterion; never
+  return an unchecked last iterate.
+
+This replaces the nlminb-style rule that returned whatever BFGS landed
+on, which let `mlstd` return its start values (TASK-77).
 
 ### Adding a new distribution
 
