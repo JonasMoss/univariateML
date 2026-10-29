@@ -33,6 +33,11 @@
   with known `size`; its `qml()` inverts the reference CDF because
   extraDistr has no `qbbinom`).
 
+* `mlgb2()` (generalized beta of the second kind, actuar's transformed beta;
+  contains the Burr, inverse Burr, beta prime, paralogistic and Lomax
+  fitters as members and stops with the winning limit: generalized gamma,
+  its inverse, lognormal, Pareto, power, or double Pareto).
+
 * `mlcmb()` (Conway–Maxwell–binomial with known `size`; `nu` may be any
   real number, `nu = 1` is the binomial).
 
