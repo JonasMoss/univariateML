@@ -405,6 +405,8 @@ univariateML_reference_fixes <- list(
 #' @keywords internal
 
 univariateML_reference_quantiles <- list(
+  "extraDistr::qdnorm" = list(p = "extraDistr::pdnorm", support = function(...) c(-Inf, Inf)),
+  "extraDistr::qdgamma" = list(p = "extraDistr::pdgamma", support = function(...) c(0, Inf)),
   "extraDistr::qbbinom" = list(
     p = "extraDistr::pbbinom",
     support = function(size, ...) c(0, size)
@@ -479,10 +481,23 @@ univariateML_invert_cdf <- function(p, cdf, params, support, lower.tail, log.p, 
   # Invariant: the quantile lies in (a, b]. The CDF has not reached u at a
   # (a point below the support counts as not reached) and has at b (the
   # upper end of a finite support counts as reached).
-  a <- rep(lower - 1, length(u))
+  # A location family can also have an unbounded lower support. Bracket
+  # that end independently before using the existing integer bisection.
+  anchor <- if (is.finite(lower)) lower else 0
+  a <- rep(if (is.finite(lower)) lower - 1 else -1, length(u))
+  if (!is.finite(lower)) {
+    step <- 1
+    todo <- reached(a, u)
+    while (any(todo)) {
+      step <- step * 2
+      if (step > 2^52) stop("Discrete quantile exceeds exact integer range.", call. = FALSE)
+      a[todo] <- -step
+      todo[todo] <- reached(a[todo], u[todo])
+    }
+  }
   b <- rep(upper, length(u))
   if (is.infinite(upper)) {
-    b[] <- lower
+    b[] <- anchor
     step <- 1
     todo <- !reached(b, u)
     while (any(todo)) {
@@ -491,7 +506,7 @@ univariateML_invert_cdf <- function(p, cdf, params, support, lower.tail, log.p, 
         break
       }
       a[todo] <- b[todo]
-      b[todo] <- lower + step
+      b[todo] <- anchor + step
       step <- 2 * step
       todo[todo] <- !reached(b[todo], u[todo])
     }
@@ -811,3 +826,64 @@ for (.key in paste0("extraDistr::", c("dtnorm", "ptnorm", "qtnorm"))) {
   })
 }
 rm(.key)
+
+# extraDistr floor-normal and floor-gamma densities subtract ordinary CDFs,
+# then take logarithms. Preserve their definitions with stable small-tail
+# subtraction on the logarithmic scale, including vector recycling.
+univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
+  difference <- function(hi, lo) {
+    ans <- hi + log(-expm1(pmin(0, lo-hi)))
+    ans[which(hi == -Inf & lo == -Inf)] <- -Inf
+    ans
+  }
+  normal <- function(x, mean = 0, sd = 1, log = FALSE) {
+    if (any(lengths(list(x, mean, sd)) == 0)) return(numeric())
+    n <- max(length(x), length(mean), length(sd))
+    x <- rep_len(x,n); mean <- rep_len(mean,n); sd <- rep_len(sd,n)
+    lower <- x + .5 < mean
+    hi <- stats::pnorm(ifelse(lower,x+1,x),mean,sd,lower.tail=TRUE,log.p=TRUE)
+    lo <- stats::pnorm(ifelse(lower,x,x+1),mean,sd,lower.tail=TRUE,log.p=TRUE)
+    j <- which(!is.na(lower) & !lower)
+    hi[j] <- stats::pnorm(x[j],mean[j],sd[j],lower.tail=FALSE,log.p=TRUE)
+    lo[j] <- stats::pnorm(x[j]+1,mean[j],sd[j],lower.tail=FALSE,log.p=TRUE)
+    ans <- difference(hi,lo)
+    mid <- (x + .5 - mean)/sd
+    narrow <- which(is.finite(mid) & is.finite(sd) & sd > 0 & (1+abs(mid))/sd < 1e-5)
+    ans[narrow] <- stats::dnorm(mid[narrow],log=TRUE)-base::log(sd[narrow]) +
+      log1p(((mid[narrow]/sd[narrow])^2-(1/sd[narrow])^2)/24)
+    ans[which(!is.na(x) & !is.na(mean) & !is.na(sd) & (x != floor(x) | is.infinite(x)))] <- -Inf
+    ans[which(is.infinite(mean) & !is.na(x) & !is.na(sd) & sd>0)] <- -Inf
+    bad <- !is.na(sd) & sd <= 0
+    if (any(bad)) { ans[bad] <- NaN; warning("NaNs produced", call. = FALSE) }
+    if (log) ans else exp(ans)
+  }
+  gamma <- function(x, shape, rate = 1, scale = 1/rate, log = FALSE) {
+    if (!missing(rate) && !missing(scale)) {
+      if (all(abs(rate*scale-1)<1e-15)) warning("specify 'rate' or 'scale' but not both")
+      else stop("specify 'rate' or 'scale' but not both")
+    }
+    if (any(lengths(list(x,shape,scale)) == 0)) return(numeric())
+    n <- max(length(x),length(shape),length(scale))
+    x <- rep_len(x,n); shape <- rep_len(shape,n); scale <- rep_len(scale,n)
+    lower <- stats::pgamma(x,shape,scale=scale) < .5
+    hi <- stats::pgamma(ifelse(lower,x+1,x),shape,scale=scale,log.p=TRUE)
+    lo <- stats::pgamma(ifelse(lower,x,x+1),shape,scale=scale,log.p=TRUE)
+    j <- which(!is.na(lower) & !lower)
+    hi[j] <- stats::pgamma(x[j],shape[j],scale=scale[j],lower.tail=FALSE,log.p=TRUE)
+    lo[j] <- stats::pgamma(x[j]+1,shape[j],scale=scale[j],lower.tail=FALSE,log.p=TRUE)
+    ans <- difference(hi,lo)
+    narrow <- which(x>0 & is.finite(x) & shape>0 & scale>0 &
+                      (1+abs((shape-1)*scale/x-1))/scale < 1e-6)
+    ans[narrow] <- stats::dgamma(x[narrow]+.5,shape[narrow],scale=scale[narrow],log=TRUE)
+    ans[which(!is.na(x) & !is.na(shape) & !is.na(scale) & (x<0 | x != floor(x) | is.infinite(x)))] <- -Inf
+    ans[which(is.infinite(scale) & !is.na(shape) & shape>0 & !is.na(x))] <- -Inf
+    ans[which(is.infinite(shape) & shape>0 & !is.na(scale) & scale>0 & !is.na(x))] <- -Inf
+    bad <- (!is.na(shape) & shape <= 0) | (!is.na(scale) & scale <= 0)
+    if (any(bad)) { ans[bad] <- NaN; warning("NaNs produced", call. = FALSE) }
+    if (log) ans else exp(ans)
+  }
+  list("extraDistr::ddnorm" = list(
+    broken = function() any(!is.finite(extraDistr::ddnorm(c(-40,10),log=TRUE))), replacement=normal),
+       "extraDistr::ddgamma" = list(
+    broken = function() any(!is.finite(extraDistr::ddgamma(c(0,1000),c(1000,2),rate=c(1e-8,1),log=TRUE))), replacement=gamma))
+}))
