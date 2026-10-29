@@ -48,6 +48,9 @@ record.
 | extraDistr 1.10.0.5 | `dhcauchy(log = TRUE)` and `dht(log = TRUE)` overflow the squared observation/scale ratio | `extraDistr::dhcauchy(1e200, log = TRUE)` is `-Inf`, should be about -921.486 | repaired at runtime in `univariateML_reference_fixes` |
 | extraDistr 1.10.0.5 | `phcauchy`, `pht`, `phnorm` upper-tail log CDFs are `-Inf` (complement of the lower CDF) | `extraDistr::phcauchy(1e20, lower.tail = FALSE, log.p = TRUE)`, should be about -46.503 | repaired at runtime |
 | extraDistr 1.10.0.5 | `qhcauchy`, `qht`, `qhnorm` round extreme upper probabilities away | `extraDistr::qht(-100, 3, lower.tail = FALSE, log.p = TRUE)` is `Inf`, should be about 3.90e14 | repaired at runtime |
+| extraDistr 1.10.0.5 | truncated Poisson and binomial d/p/q/r subtract rounded parent CDFs: infinite densities, NaN CDFs, quantiles at the wrong bound under severe truncation; `q(0)` returns the excluded lower bound | `extraDistr::dtpois(101, 2, 100, 110, log = TRUE)` is `Inf`, should be about -0.0198; `extraDistr::qtbinom(.5, 100, .1, 90, 100)` is 100, should be 91 | repaired at runtime in `univariateML_reference_fixes` |
+| extraDistr 1.10.0.5 | `pdlaplace` picks its branch from `q` instead of `q - location` (negative probabilities) and loses the upper log tail; no `qdlaplace` | `extraDistr::pdlaplace(3, 5, .5)` is -1/3, should be 1/6 | repaired at runtime; `qml` by two-sided integer inversion (`univariateML_reference_quantiles`) |
+| extraDistr 1.10.0.5 | `ddlaplace` with noninteger location checks the observation's integrality, while `rdlaplace` samples on `location + Z` | `extraDistr::ddlaplace(0, .5, .4)` is positive | none: `mldlaplace` uses integer locations |
 | nakagami 1.1.0 | `pnaka` is positive below the support | `nakagami::pnaka(-1, 2, 3)` is 0.144, should be 0 | historical: nakagami no longer used |
 
 Upstream trackers:

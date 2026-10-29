@@ -77,6 +77,10 @@
   normal limit; with free df any zero in the data makes its likelihood
   unbounded, and its df profile can have two maxima.
 
+* `mltpois()` and `mltbinom()` (Poisson and binomial truncated to known
+  bounds `a < x <= b`; `mltbinom` with known `size`) and `mldlaplace()`
+  (discrete Laplace: integer median location, closed-form scale).
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
