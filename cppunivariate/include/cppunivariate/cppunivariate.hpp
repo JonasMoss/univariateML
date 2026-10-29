@@ -60,6 +60,7 @@
 #include "distributions/power/mle.hpp"
 #include "distributions/rayleigh/mle.hpp"
 #include "distributions/sged/mle.hpp"
+#include "distributions/sn/mle.hpp"
 #include "distributions/snorm/mle.hpp"
 #include "distributions/sstd/mle.hpp"
 #include "distributions/std/mle.hpp"
