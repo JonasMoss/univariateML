@@ -155,4 +155,35 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   return {shape, rate, logLik, iterations};
 }
 
+// A fixed rate gives a strictly decreasing digamma score; a fixed shape
+// gives the rate analytically. NaN denotes a free coefficient.
+inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double rate) {
+  if (std::isnan(shape) && std::isnan(rate)) return gamma_mle(x,tol,maxit);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if (x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
+      (!std::isnan(rate) && !(rate>0 && std::isfinite(rate))))
+    return {nan,nan,nan,0,GammaStatus::IterationFailure};
+  long double total=0,logs=0;
+  for(double v:x) {
+    if (!(v>0 && std::isfinite(v))) return {nan,nan,nan,0,GammaStatus::IterationFailure};
+    total+=v; logs+=std::log(v);
+  }
+  const double n=static_cast<double>(x.size());
+  int iterations=0;
+  if (std::isnan(rate)) rate=static_cast<double>(static_cast<long double>(shape)*n/total);
+  if (std::isnan(shape)) {
+    const double target=std::log(rate)+static_cast<double>(logs/n);
+    double lo=-745,hi=710;
+    for (int j=0;j<maxit && hi-lo>1e-12;++j) {
+      const double mid=(lo+hi)/2;
+      if (cppunivariate::special::digamma(std::exp(mid))<target) lo=mid; else hi=mid;
+      ++iterations;
+    }
+    if(hi-lo>1e-12)return {nan,rate,nan,iterations,GammaStatus::IterationFailure};
+    shape=std::exp((lo+hi)/2);
+  }
+  const double ll=static_cast<double>(n*(shape*std::log(rate)-std::lgamma(shape))+(shape-1)*logs-rate*total);
+  return {shape,rate,ll,iterations,std::isfinite(ll)?GammaStatus::Ok:GammaStatus::IterationFailure};
+}
+
 }  // namespace cppunivariate

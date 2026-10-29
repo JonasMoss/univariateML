@@ -17,6 +17,8 @@ r:
   density: stats::dgamma
   sampler: stats::rgamma
   control:
+    shape: Optional held shape; NULL estimates it.
+    rate: Optional held rate; NULL estimates it.
     abstol: Absolute step tolerance in shape.
     iterlim: Maximum number of iterations.
 log_density: shape*log(rate) - loggamma(shape) + (shape - 1)*log(x) - rate*x
@@ -25,15 +27,6 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York."
 examples: |
   mlgamma(precip)
-holds:
-- held:
-  - shape
-  status: not-implemented
-  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
-- held:
-  - rate
-  status: not-implemented
-  reason: The adapter does not accept `rate`; this hold is not implemented (P2).
 ---
 
 The gamma distribution models positive measurements and waiting times.
@@ -41,3 +34,5 @@ The gamma distribution models positive measurements and waiting times.
 ## Details
 
 The parameterisation uses `rate`, the reciprocal of the gamma scale.
+
+Holding either shape or rate gives a unique finite fit for any positive sample, including constant data. With both free, constant data have unbounded likelihood.

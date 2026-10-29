@@ -5,6 +5,7 @@
 
 #include "../../core/span.hpp"
 #include "../gumbel/mle.hpp"
+#include "../weibull/mle.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -13,11 +14,14 @@
 
 namespace cppunivariate {
 
+enum class InvWeibullStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct InvWeibullResult {
   double shape;
   double rate;
   double logLik;
   int iterations;
+  InvWeibullStatus status = InvWeibullStatus::Ok;
 };
 
 // shape0 is an optional positive starting shape; NaN keeps the automatic start.
@@ -46,6 +50,17 @@ inline InvWeibullResult invweibull_mle(span x, double tol, int maxit,
   // a difference of rounded log scales near a point mass.
   const double logLik = g.logLik + dn * s;
   return {shape, rate, logLik, g.iterations};
+}
+
+inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0,double shape,double rate) {
+  if(std::isnan(shape) && std::isnan(rate))return invweibull_mle(x,tol,maxit,shape0);
+  std::vector<double> y;double jac=0;
+  for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+  const auto r=weibull_mle(span{y.data(),y.size()},tol,maxit,shape0,shape,rate);
+  return {r.shape,r.scale,r.logLik+jac,r.iterations,
+    r.status==WeibullStatus::Ok ? InvWeibullStatus::Ok :
+    r.status==WeibullStatus::Unbounded ? InvWeibullStatus::Unbounded :
+    r.status==WeibullStatus::IterationFailure ? InvWeibullStatus::IterationFailure : InvWeibullStatus::InvalidInput};
 }
 
 }  // namespace cppunivariate

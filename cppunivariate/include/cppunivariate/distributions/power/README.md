@@ -18,6 +18,8 @@ r:
   density: extraDistr::dpower
   sampler: extraDistr::rpower
   control:
+    alpha: Optional held alpha; NULL estimates it.
+    beta: Optional held beta; NULL estimates it.
     epsilon: Positive relative offset from the sample maximum to place the fitted upper endpoint beyond the data.
 log_density: log(beta) - beta*log(alpha) + (beta-1)*log(x)
 references:
@@ -25,14 +27,15 @@ references:
 examples: |
   mlpower(precip)
 holds:
-- held:
-  - alpha
-  status: not-implemented
-  reason: The adapter does not accept `alpha`; this hold is not implemented (P2).
-- held:
-  - beta
-  status: not-implemented
-  reason: The adapter does not accept `beta`; this hold is not implemented (P2).
+- held: [beta]
+  status: no-mle
+  reason: "The power MLE with beta held does not exist: the reference excludes the maximizing upper endpoint (P3)."
+limits:
+- name: zero likelihood
+  fixed: [alpha]
+  when: Held alpha does not exceed the sample maximum.
+  status: InvalidInput
+  message: zero likelihood
 ---
 
 The power distribution models positive quantities below a finite upper endpoint.
@@ -40,3 +43,5 @@ The power distribution models positive quantities below a finite upper endpoint.
 ## Details
 
 The fitted support is $(0, \alpha)$. The reference `extraDistr::dpower` excludes the upper endpoint, so the likelihood supremum occurs as `alpha` decreases to `max(x)` but is not attained under that convention. The fitter returns `max(x) * (1 + epsilon)`; `epsilon` is a relative endpoint offset, not a convergence tolerance.
+
+A held alpha must strictly exceed max(x) under the present reference convention. It then gives a unique beta fit, including constant data. Estimating the endpoint, including when beta is held, is deferred to P3.

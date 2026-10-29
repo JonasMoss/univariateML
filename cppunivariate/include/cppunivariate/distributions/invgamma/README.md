@@ -17,6 +17,8 @@ r:
   density: extraDistr::dinvgamma
   sampler: extraDistr::rinvgamma
   control:
+    alpha: Optional held alpha; NULL estimates it.
+    beta: Optional held beta; NULL estimates it.
     abstol: Absolute step tolerance in alpha.
     iterlim: Maximum number of iterations.
 log_density: alpha*log(beta) - loggamma(alpha) - (alpha + 1)*log(x) - beta/x
@@ -26,15 +28,6 @@ references:
   - "Witkovsky, V. (2001). \"Computing the Distribution of a Linear Combination of Inverted Gamma Variables\". Kybernetika. 37 (1): 79–90"
 examples: |
   mlinvgamma(precip)
-holds:
-- held:
-  - alpha
-  status: not-implemented
-  reason: The adapter does not accept `alpha`; this hold is not implemented (P2).
-- held:
-  - beta
-  status: not-implemented
-  reason: The adapter does not accept `beta`; this hold is not implemented (P2).
 ---
 
 The inverse gamma distribution is the distribution of the reciprocal of a gamma variable.
@@ -42,3 +35,5 @@ The inverse gamma distribution is the distribution of the reciprocal of a gamma 
 ## Details
 
 The parameter `beta` is the rate of the gamma variable `1/x`, and is the scale parameter in the inverse gamma density.
+
+Holding either alpha or beta permits constant data; the unconstrained fit has unbounded likelihood there.

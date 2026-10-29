@@ -17,6 +17,8 @@ r:
   density: extraDistr::dlomax
   sampler: extraDistr::rlomax
   control:
+    lambda: Optional held lambda; NULL estimates it.
+    kappa: Optional held kappa; NULL estimates it.
     lambda0: Optional starting value for `lambda`; `NULL` uses a method-of-moments start.
     reltol: Relative tolerance on the Newton step for `lambda * mean(x)`, with an absolute floor of the same size in these dimensionless units.
     iterlim: Maximum number of Newton iterations.
@@ -39,15 +41,6 @@ examples: |
   set.seed(5)
   mllomax(rexp(10))
   }
-holds:
-- held:
-  - lambda
-  status: not-implemented
-  reason: The adapter does not accept `lambda`; this hold is not implemented (P2).
-- held:
-  - kappa
-  status: not-implemented
-  reason: The adapter does not accept `kappa`; this hold is not implemented (P2).
 ---
 
 The Lomax (Pareto type II) distribution is a heavy-tailed distribution on
@@ -56,3 +49,5 @@ the positive half-line, used for incomes, losses and waiting times.
 ## Details
 
 The exact existence criterion is $\psi(u)\leq0$ for some $0<u<\bar u$, where $y_i=x_i/\bar x$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ and $\bar u=\bar x/(\prod_i x_i)^{1/n}$; the implementation prefers the exponential face within $10^{-8}n$ log-likelihood units. The moment condition decides only local behaviour at that face: samples with `mean(x^2) < 2*mean(x)^2` can have an MLE, for example `c(1, 100)`. A pair has an MLE iff larger/smaller exceeds approximately 28.81.
+
+Holding either lambda or kappa gives a unique finite fit for positive samples, including constant data. The exponential escape concerns the fit with both free.

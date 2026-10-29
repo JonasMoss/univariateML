@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <limits>
 #include "test_support.hpp"
 #include "cppunivariate/distributions/power/mle.hpp"
 #include "cppunivariate/distributions/power/dpqr.hpp"
@@ -27,4 +29,38 @@ TEST_CASE("power") {
   CHECK(r.alpha == doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kTol));
   CHECK(r.beta == doctest::Approx(g.estimates.at("beta")).epsilon(mltest::kTol));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+}
+
+TEST_CASE("power P2 every held subset") {
+  const auto g=mltest::load_distribution_golden("power");
+  std::vector<double> x=g.data;
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> held{g.estimates.at("alpha"),g.estimates.at("beta")};
+  { const auto r=cppunivariate::power_mle(mltest::as_span(x),1.490116e-08,held[0],nan);
+    CHECK(r.alpha==held[0]);
+    CHECK(std::isfinite(r.beta));
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*x.size());
+    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dpower(v,p[0],p[1],true);return s;};
+    std::vector<double> p{r.alpha,r.beta};
+    CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
+    {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
+  }
+  { const auto r=cppunivariate::power_mle(mltest::as_span(x),1.490116e-08,held[0],held[1]);
+    CHECK(r.alpha==held[0]);
+    CHECK(r.beta==held[1]);
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*x.size());
+    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dpower(v,p[0],p[1],true);return s;};
+    std::vector<double> p{r.alpha,r.beta};
+    CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
+  }
+}
+
+TEST_CASE("power P2 held boundaries and solver failure") {
+  const std::vector<double> x{2,2,2};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  CHECK_FALSE(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,2,nan).logLik));
+  CHECK(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,3,nan).logLik));
+  CHECK_FALSE(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,nan,2).logLik));
 }

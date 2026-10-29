@@ -44,4 +44,12 @@ inline InvGammaResult invgamma_mle(span x, double tol, int maxit) {
   return {g.shape, g.rate, logLik, g.iterations, g.status};
 }
 
+inline InvGammaResult invgamma_mle(span x,double tol,int maxit,double alpha,double beta) {
+  if(std::isnan(alpha) && std::isnan(beta))return invgamma_mle(x,tol,maxit);
+  std::vector<double> y;double jac=0;
+  for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+  const auto g=gamma_mle(span{y.data(),y.size()},tol,maxit,alpha,beta);
+  return {g.shape,g.rate,g.logLik+jac,g.iterations,g.status};
+}
+
 }  // namespace cppunivariate

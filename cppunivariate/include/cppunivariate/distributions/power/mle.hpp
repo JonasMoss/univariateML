@@ -15,11 +15,14 @@
 
 namespace cppunivariate {
 
+enum class PowerStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct PowerResult {
   double alpha;
   double beta;
   double logLik;
   int iterations;
+  PowerStatus status = PowerStatus::Ok;
 };
 
 inline PowerResult power_mle(span x, double epsilon) {
@@ -46,6 +49,18 @@ inline PowerResult power_mle(span x, double epsilon) {
   const double logLik = static_cast<double>(n) *
       (std::log(beta) - m - 1.0);
   return {alpha, beta, logLik, 0};
+}
+
+// Free endpoint closure belongs to P3. A held endpoint must strictly
+// exceed the data under the present reference convention.
+inline PowerResult power_mle(span x,double epsilon,double alpha,double beta) {
+  if(std::isnan(alpha) && std::isnan(beta))return power_mle(x,epsilon);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.size()==0 || !(alpha>0 && std::isfinite(alpha)) ||
+     (!std::isnan(beta) && !(beta>0 && std::isfinite(beta))))return {nan,nan,nan,0,PowerStatus::InvalidInput};
+  long double gap=0,logs=0;for(double v:x){if(!(v>0 && v<alpha && std::isfinite(v)))return {nan,nan,nan,0,PowerStatus::InvalidInput};gap+=std::log1p((static_cast<long double>(alpha)-v)/v);logs+=std::log(v);}
+  const double n=static_cast<double>(x.size());if(std::isnan(beta))beta=static_cast<double>(n/gap);
+  return {alpha,beta,static_cast<double>(n*std::log(beta)-beta*gap-logs),0};
 }
 
 }  // namespace cppunivariate

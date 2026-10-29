@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <limits>
 // lomax: golden regression, start value, existence condition, d/p/q/r.
 
 #include "test_support.hpp"
@@ -143,4 +145,48 @@ TEST_CASE("lomax: tail flags, endpoints, invalid probabilities") {
 TEST_CASE("lomax: double-only rescued product") {
   CHECK(cppunivariate::distributions::plomax(1e-200,1e-200,1e200,true,true) == doctest::Approx(-460.51701859880913687).epsilon(2e-15));
   CHECK(cppunivariate::distributions::plomax(1e300,1e20,.1,false,true) == doctest::Approx(-73.68272297580947).epsilon(2e-15));
+}
+
+TEST_CASE("lomax P2 every held subset") {
+  const auto g=mltest::load_distribution_golden("lomax");
+  std::vector<double> x=g.data;
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> held{g.estimates.at("lambda"),g.estimates.at("kappa")};
+  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,nan,held[0],nan);
+    CHECK(r.lambda==held[0]);
+    CHECK(std::isfinite(r.kappa));
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*x.size());
+    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dlomax(v,p[0],p[1],true);return s;};
+    std::vector<double> p{r.lambda,r.kappa};
+    CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
+    {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
+  }
+  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,nan,nan,held[1]);
+    CHECK(std::isfinite(r.lambda));
+    CHECK(r.kappa==held[1]);
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*x.size());
+    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dlomax(v,p[0],p[1],true);return s;};
+    std::vector<double> p{r.lambda,r.kappa};
+    CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
+    {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[0]));a[0]+=h;b[0]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
+  }
+  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,nan,held[0],held[1]);
+    CHECK(r.lambda==held[0]);
+    CHECK(r.kappa==held[1]);
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*x.size());
+    auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dlomax(v,p[0],p[1],true);return s;};
+    std::vector<double> p{r.lambda,r.kappa};
+    CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
+  }
+}
+
+TEST_CASE("lomax P2 held boundaries and solver failure") {
+  const std::vector<double> x{2,2,2};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  CHECK(std::isfinite(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,2,nan).logLik));
+  CHECK(std::isfinite(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,nan,2).logLik));
+  CHECK(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,1,nan,nan,2).status==cppunivariate::LomaxStatus::IterationFailure);
 }

@@ -17,6 +17,8 @@ r:
   density: actuar::dlgamma
   sampler: actuar::rlgamma
   control:
+    shapelog: Optional held shapelog; NULL estimates it.
+    ratelog: Optional held ratelog; NULL estimates it.
     abstol: Absolute step tolerance in shapelog.
     iterlim: Maximum number of iterations.
 log_density: shapelog*log(ratelog) - loggamma(shapelog) + (shapelog - 1)*log(log(x)) - (ratelog + 1)*log(x)
@@ -25,15 +27,6 @@ references:
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
 examples: |
   mllgamma(precip)
-holds:
-- held:
-  - shapelog
-  status: not-implemented
-  reason: The adapter does not accept `shapelog`; this hold is not implemented (P2).
-- held:
-  - ratelog
-  status: not-implemented
-  reason: The adapter does not accept `ratelog`; this hold is not implemented (P2).
 ---
 
 The log-gamma distribution describes positive data whose logarithm follows a gamma distribution.
@@ -41,3 +34,5 @@ The log-gamma distribution describes positive data whose logarithm follows a gam
 ## Details
 
 The support is above 1: `log(x)` has gamma shape `shapelog` and rate `ratelog`. This is the actuar log-gamma convention, rather than the distribution of the logarithm of a gamma variable.
+
+Holding either shapelog or ratelog gives a unique finite fit even for constant data above one. With both free the likelihood is unbounded for constant data.
