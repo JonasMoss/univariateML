@@ -11,6 +11,7 @@ for (dens in densities) {
   expect_equal(forms_lhs, forms_rhs)
   set.seed(1)
   x <- simulate_default(dens, 10)
+  if (identical(dens, "mlemg")) x <- qemg((seq_len(40) - 0.5) / 40, 0, 1, 1)
   if (identical(dens, "mlbetapr")) {
     # This default ten-point sample selects the inverse-gamma face.
     expect_error(mlbetapr(x), "Use `mlinvgamma`")
