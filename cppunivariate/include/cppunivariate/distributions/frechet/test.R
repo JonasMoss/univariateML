@@ -80,7 +80,7 @@ test_that("threshold tail repairs retain finite answers under extreme rescaling"
 
 test_that("Frechet free location accepts ties above the minimum", {
   x <- c(0,1,2,2,2)
-  f <- tryCatch(mlfrechet(x), error=identity)
+  f <- tryCatch(mlfrechet(x, mu = NULL), error=identity)
   if (inherits(f,"error")) expect_match(conditionMessage(f), "mlgumbel")
   else expect_equal(as.numeric(logLik(f)), sum(extraDistr::dfrechet(x,f[1],f[2],f[3],log=TRUE)), tolerance=1e-8)
 })

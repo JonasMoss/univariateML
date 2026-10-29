@@ -18,6 +18,16 @@
   vignette and the `abalone` data set it used are removed, and with them
   copula and dplyr.
 
+* Parameter rules (`roadmap/2026-10-29-parameter-rules.md`): design
+  quantities and thresholds have no default. `mlbinom`, `mlzib`,
+  `mlzmbinom` and `mlztbinom` require `size`; `mltnorm` requires `a` and
+  `b`; `mlgpd`, `mlhnorm` and `mlfrechet` require `mu`; `mlhuber`
+  requires `epsilon` (1.345 is the conventional choice). Pass a value to
+  hold it or `NULL` to estimate it where that is supported. `mlfatigue`
+  accepts a held threshold `mu`. A missing value stops with the reason
+  and both ways out. `model_select()` records the families it skipped in
+  a `skipped` attribute.
+
 * Arguments to the `ml***` fitters must match exactly. A hold the fitter
   does not support stops (`mlweibull(x, shape = 2)`: "cannot hold
   `shape`") instead of being matched partially to a start value (`shape0`)

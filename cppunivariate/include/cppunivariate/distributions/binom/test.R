@@ -68,11 +68,11 @@ test_that("huge held binomial sizes have stable likelihoods", {
 
 test_that("free binomial size agrees with exhaustive integer profiles", {
   for (x in list(c(2,6,6),c(1,2,3,4,5),c(1,3,3,4))) {
-    f <- mlbinom(x)
+    f <- mlbinom(x, size = NULL)
     sizes <- max(x):500
     ll <- vapply(sizes,function(k) sum(dbinom(x,k,mean(x)/k,log=TRUE)),0.0)
     expect_equal(unname(f["size"]),sizes[which.max(ll)])
     expect_equal(as.numeric(logLik(f)),max(ll),tolerance=1e-10)
   }
-  expect_equal(unname(mlbinom(c(2,6,6))["size"]),13)
+  expect_equal(unname(mlbinom(c(2,6,6), size = NULL)["size"]),13)
 })
