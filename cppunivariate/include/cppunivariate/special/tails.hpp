@@ -160,6 +160,29 @@ inline LogTails quantile_log_tails(double p, bool lower_tail, bool log_p) {
 }
 
 
+// log Gamma(x+u)/Gamma(x+v), with positive shifted arguments.
+// Stirling through z^-11 at z>=16; omitted term < 3e-17 per gamma.
+// Small relative shifts use a series for z*log1p(h/z)-h, avoiding
+// subtraction and retaining the limiting power law at DBL_MAX.
+inline double log_gamma_ratio(double x, double u, double v) {
+  double z=x+v, h=u-v, correction=0;
+  while(z<16.0 || z+h<16.0) {
+    correction+=std::log(z)-std::log(z+h); z+=1.0;
+  }
+  const auto remainder=[](double y) {
+    const double t=1.0/y, t2=t*t;
+    return t*(1.0/12-t2*(1.0/360-t2*(1.0/1260-t2*(1.0/1680-t2*(1.0/1188-t2*691.0/360360)))));
+  };
+  const double t=h/z, l=std::log1p(t);
+  double residual;
+  if(std::abs(t)<0.01) {
+    double power=t, total=0;
+    for(int j=2;j<=12;++j) {total+=(j%2 ? 1.0 : -1.0)*power/j;power*=t;}
+    residual=h*total;
+  } else residual=z*l-h;
+  return correction+h*std::log(z)+residual+(h-.5)*l+remainder(z+h)-remainder(z);
+}
+
 // Positive discrete series, scaled by its first term. ratio_bound(k) bounds
 // every subsequent ratio; stop only when the geometric remainder is <= 2e-16
 // of the accumulated sum. Used by Poisson, NB, binomial and truncated laws.

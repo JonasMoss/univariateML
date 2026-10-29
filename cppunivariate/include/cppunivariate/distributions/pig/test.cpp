@@ -113,10 +113,38 @@ TEST_CASE("pig: P2 every hold subset preserves coefficients and golden likelihoo
 
 
 // Independent high-precision oracle; see quality/truth.py.
-TEST_CASE("pig: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("pig: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("pig",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpig(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppig(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qpig(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rpig(rng, p[0], p[1]); });
+}
+
+// mpmath, mp.dps=100: A=mp.mpf(8)/11; mp.log(A)
+// At x=1e100 the Bessel Taylor and gamma-ratio corrections are O(1e-100).
+// Transition oracle (mp.dps=100), with m=mp.mpf(20), s=mp.mpf(3):
+// A=2*m*m/(s+2*m*m); c=s*(2+s/m**2)/4; n=mp.mpf(100002)
+// cs=[mp.mpf(1)]
+// for j in range(1,30): cs.append(-cs[-1]*c/(j*(n-mp.mpf('.5')-j)))
+// def f(v):
+//   h=(1-A)/(1-A*mp.exp(-v/n))
+//   return mp.exp(-v)*h**mp.mpf('1.5')*mp.polyval(cs[::-1],h)
+// const=mp.log(mp.sqrt(s/(2*mp.pi)))+s/m-mp.log(A)/2
+// lu=(const+n*mp.log(A)+mp.loggamma(n-mp.mpf('.5'))-mp.loggamma(n+1)
+//   -mp.log(1-A)+mp.log(mp.quad(f,[0,1,4,16,64,256])))
+// Next Taylor term <1e-160; the v>256 integral contributes <1e-111.
+TEST_CASE("pig: large order masses and upper log quantiles") {
+  CHECK(cppunivariate::distributions::dpig(100001,20,3,true)==doctest::Approx(-391.7895462691783452).epsilon(2e-14));
+  CHECK(cppunivariate::distributions::ppig(100001,20,3,false,true)==doctest::Approx(-386.2075431663518493).epsilon(2e-14));
+  CHECK(cppunivariate::distributions::dpig(1e100,2,3,true)/1e100==doctest::Approx(-.31845373111853461581).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::ppig(1e100,2,3,false,true)/1e100==doctest::Approx(-.31845373111853461581).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::ppig(1e100,2,3,true,true)==0);
+  for(double lp:{-10000.,-1e6}) {
+    const double q=cppunivariate::distributions::qpig(lp,20,3,false,true);
+    REQUIRE(std::isfinite(q));
+    CHECK(cppunivariate::distributions::ppig(q,20,3,false,true)<=lp);
+    CHECK(cppunivariate::distributions::ppig(q-1,20,3,false,true)>lp);
+  }
+  CHECK(std::isfinite(cppunivariate::distributions::dpig(std::numeric_limits<double>::max(),2,3,true)));
 }

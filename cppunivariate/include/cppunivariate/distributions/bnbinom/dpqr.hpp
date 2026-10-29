@@ -1,4 +1,4 @@
-// Beta negative binomial: stable exact masses and budgeted integer inversion.
+// Beta negative binomial: gamma-ratio masses and controlled beta-mixture tails.
 #pragma once
 #include "../../special/special.hpp"
 #include <algorithm>
@@ -37,50 +37,64 @@ inline bool valid(double r, double a, double b) {
   return r>0 && a>0 && b>0 && std::isfinite(r) && std::isfinite(a) && std::isfinite(b);
 }
 }
+namespace bnbinom_detail {
+inline double log_mass(double x,double r,double a,double b) {
+  if(x<100) return logpmf(static_cast<int>(x),r,a,b);
+  return special::lgamma(a+r)+special::lgamma(a+b)-special::lgamma(r)-special::lgamma(a)-special::lgamma(b)
+    +special::log_gamma_ratio(x,r,1)+special::log_gamma_ratio(x,b,a+r+b);
+}
+inline special::LogTails tails(double x,double r,double a,double b) {
+  if(x<0) return special::tails_from_log(special::kNegInf,true);
+  if(x==special::kPosInf) return special::tails_from_log(special::kNegInf,false);
+  x=std::floor(x);
+  if(x<300) {
+    double lm=log_mass(0,r,a,b), sum=lm;
+    for(int j=0;j<x;++j) {
+      lm+=std::log((r+j)/(j+1.0))+std::log((b+j)/(a+r+b+j));
+      sum=special::log_sum_exp(sum,lm);
+    }
+    if(sum<-.6931471805599453) return special::tails_from_log(sum,true);
+    // Move the expansion away from n=1, where its majorant decays
+    // slowly, then add the intervening positive masses without subtraction.
+    double upper=tails(300,r,a,b).upper;
+    for(int j=static_cast<int>(x);j<300;++j) {
+      lm+=std::log((r+j)/(j+1.0))+std::log((b+j)/(a+r+b+j));
+      upper=special::log_sum_exp(upper,lm);
+    }
+    return special::tails_from_log(upper,false);
+  }
+  // Swapped beta integrals give a 3F2 at one. After j>=b-1,
+  // the remaining absolute sum is bounded by |next|*(j+n+r+a)/(n-1).
+  // Use symmetry to minimize alternating cancellation (b is the smaller).
+  if(b>r) std::swap(b,r);
+  const double n=x+1;
+  double term=1,total=1;
+  for(int j=0;j<100000;++j) {
+    const double next=term*((a+j)/(a+1+j))*((1-b+j)/(j+1.0))*((r+a+j)/(n+r+a+j));
+    if(next==0 || (j>=b-1 && std::abs(next)*((j+n+r+a)/(n-1))<std::abs(total)*2e-16)) {
+      const double pref=special::log_gamma_ratio(n,r,r+a)+special::lgamma(r+a)-special::lgamma(r)-std::log(a)-special::lbeta(a,b);
+      return special::tails_from_log(pref+std::log(total),false);
+    }
+    total+=next;term=next;
+  }
+  return {special::kNaN,special::kNaN,false};
+}
+}
 namespace distributions {
-inline double dbnbinom(double x, double size, double alpha, double beta, bool log) {
-  if (!bnbinom_detail::valid(size,alpha,beta) || std::isnan(x))
-    return std::numeric_limits<double>::quiet_NaN();
-  if (x<0 || !std::isfinite(x) || x!=std::floor(x))
-    return log ? -std::numeric_limits<double>::infinity() : 0;
-  if (x>std::numeric_limits<int>::max()) return std::numeric_limits<double>::quiet_NaN();
-  const double l = bnbinom_detail::logpmf(static_cast<int>(x),size,alpha,beta);
+inline double dbnbinom(double x,double size,double alpha,double beta,bool log) {
+  if(!bnbinom_detail::valid(size,alpha,beta) || std::isnan(x)) return special::kNaN;
+  if(x<0 || !std::isfinite(x) || x!=std::floor(x)) return log ? special::kNegInf : 0;
+  const double l=bnbinom_detail::log_mass(x,size,alpha,beta);
   return log ? l : std::exp(l);
 }
-// O(q); a finite work budget is part of this interface (NaN on exhaustion).
-inline double pbnbinom(double q, double size, double alpha, double beta,
-                       bool lower_tail, bool log_p) {
-  if (!bnbinom_detail::valid(size,alpha,beta) || std::isnan(q))
-    return std::numeric_limits<double>::quiet_NaN();
-  if (q==std::numeric_limits<double>::infinity())
-    return lower_tail ? (log_p ? 0 : 1) : (log_p ? -q : 0);
-  if (q>1000000) return std::numeric_limits<double>::quiet_NaN();
-  long double mass=std::exp(bnbinom_detail::zero(size,alpha,beta)), sum=0;
-  for (int j=0; j<=q; ++j) {
-    sum+=mass;
-    mass*=((static_cast<long double>(size)+j)/(j+1.L))*
-      ((static_cast<long double>(beta)+j)/(static_cast<long double>(alpha)+size+beta+j));
-  }
-  sum=std::min(1.L,sum);
-  return static_cast<double>(lower_tail ? (log_p ? std::log(sum) : sum) :
-    (log_p ? std::log1p(-sum) : 1-sum));
+inline double pbnbinom(double q,double size,double alpha,double beta,bool lower_tail,bool log_p) {
+  if(!bnbinom_detail::valid(size,alpha,beta) || std::isnan(q)) return special::kNaN;
+  return special::tail_probability(bnbinom_detail::tails(q,size,alpha,beta),lower_tail,log_p);
 }
-inline double qbnbinom(double p, double size, double alpha, double beta,
-                       bool lower_tail, bool log_p) {
-  if (!bnbinom_detail::valid(size,alpha,beta) || std::isnan(p) ||
-      (log_p ? p>0 : p<0 || p>1)) return std::numeric_limits<double>::quiet_NaN();
-  const long double u=log_p ? (lower_tail ? std::exp(p) : -std::expm1(p)) :
-    (lower_tail ? p : 1.L-p);
-  if (u==0) return 0;
-  if (u==1) return std::numeric_limits<double>::infinity();
-  long double mass=std::exp(bnbinom_detail::zero(size,alpha,beta)), sum=0;
-  for (int j=0; j<=1000000; ++j) {
-    sum+=mass;
-    if (sum>=u) return j;
-    mass*=((static_cast<long double>(size)+j)/(j+1.L))*
-      ((static_cast<long double>(beta)+j)/(static_cast<long double>(alpha)+size+beta+j));
-  }
-  return std::numeric_limits<double>::quiet_NaN();
+inline double qbnbinom(double p,double size,double alpha,double beta,bool lower_tail,bool log_p) {
+  if(!bnbinom_detail::valid(size,alpha,beta)) return special::kNaN;
+  return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,special::kPosInf,
+    [&](double x) {return bnbinom_detail::tails(x,size,alpha,beta);});
 }
 template <typename Rng>
 inline double rbnbinom(Rng &rng, double size, double alpha, double beta) {
