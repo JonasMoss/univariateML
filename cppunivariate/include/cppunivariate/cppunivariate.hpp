@@ -71,3 +71,5 @@
 
 #include "distributions/zinb/mle.hpp"
 #include "distributions/gpd/mle.hpp"
+#include "distributions/trgamma/mle.hpp"
+#include "distributions/invtrgamma/mle.hpp"

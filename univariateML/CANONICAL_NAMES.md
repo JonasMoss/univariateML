@@ -58,6 +58,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | invpareto | Inverse Pareto | shape, scale | actuar::dinvpareto | (0, ∞) open |
 | invparalogis | Inverse paralogistic | shape, scale | actuar::dinvparalogis | (0, ∞) open |
 | invweibull | InverseWeibull          | shape, rate        | actuar::dinvweibull       | (0, ∞) open      |
+| invtrgamma | Inverse transformed gamma | shape1, shape2, scale | actuar::dinvtrgamma | (0, ∞) open |
 | kumar      | Kumaraswamy             | a, b               | extraDistr::dkumar        | (0, 1) open      |
 | laplace    | Laplace                 | mu, sigma          | extraDistr::dlaplace      | (-∞, ∞) open     |
 | lgamma     | Loggamma                | shapelog, ratelog  | actuar::dlgamma           | (1, ∞) open      |
@@ -79,6 +80,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | snorm      | Skew Normal             | mean, sd, xi       | fGarch::dsnorm            | (-∞, ∞) open     |
 | sstd       | Skew Student-t          | mean, sd, nu, xi   | fGarch::dsstd             | (-∞, ∞) open     |
 | std       | Student-t                | mean, sd, nu       | fGarch::dstd              | (-∞, ∞) open     |
+| trgamma    | Transformed gamma       | shape1, shape2, scale | actuar::dtrgamma       | (0, ∞) open      |
 | unif       | Uniform                 | min, max           | stats::dunif              | (-∞, ∞) open     |
 | weibull    | Weibull                 | shape, scale       | stats::dweibull           | (0, ∞) open      |
 | zip        | Zero-inflated Poisson   | lambda, pi         | extraDistr::dzip          | [0, ∞) integer   |
