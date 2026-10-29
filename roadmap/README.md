@@ -99,3 +99,6 @@ the queue.
 - [2026-10-28 — New distributions and reference-package imports](2026-10-28-new-distributions.md):
   evaluation of issues #52/#7 (ZINB and constrained GPD first) and of
   sads (imports VGAM; buggy `pzipf`/`qzipf`).
+- [2026-10-29 — Larger reference repairs](2026-10-29-reference-repairs.md):
+  held-back runtime repairs for actuar trgamma/invtrgamma and extraDistr
+  tnorm/gev d/p/q (patches in `patches/`); needs a policy decision.
