@@ -7,9 +7,24 @@
 #include <limits>
 
 // [[Rcpp::export]]
-Rcpp::List mlsged_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
-                   int iterlim = 200) {
-  auto res = cppunivariate::sged_mle(dist_impl::as_span(x), gradtol, iterlim);
+Rcpp::List mlsged_(const Rcpp::NumericVector &x,
+    Rcpp::Nullable<double> mean = R_NilValue,
+    Rcpp::Nullable<double> sd = R_NilValue,
+    Rcpp::Nullable<double> nu = R_NilValue,
+    Rcpp::Nullable<double> xi = R_NilValue, double gradtol = 1.220703e-4, int iterlim = 200) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double held_mean=mean.isNotNull() ? Rcpp::as<double>(mean) : nan;
+  if(mean.isNotNull() && (!std::isfinite(held_mean))) Rcpp::stop("Invalid held `mean`: requires a finite value.");
+  const double held_sd=sd.isNotNull() ? Rcpp::as<double>(sd) : nan;
+  if(sd.isNotNull() && (!(std::isfinite(held_sd) && held_sd>0))) Rcpp::stop("Invalid held `sd`: requires a finite value in its parameter domain.");
+  const double held_nu=nu.isNotNull() ? Rcpp::as<double>(nu) : nan;
+  if(nu.isNotNull() && (!(std::isfinite(held_nu) && held_nu>0))) Rcpp::stop("Invalid held `nu`: requires a finite value in its parameter domain.");
+  const double held_xi=xi.isNotNull() ? Rcpp::as<double>(xi) : nan;
+  if(xi.isNotNull() && (!(std::isfinite(held_xi) && held_xi>0))) Rcpp::stop("Invalid held `xi`: requires a finite value in its parameter domain.");
+  auto res=cppunivariate::sged_mle(dist_impl::as_span(x),gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
+  if(res.status==cppunivariate::SgedStatus::UnsupportedHold) Rcpp::stop("Hold subset existence remains unresolved (P0); currently hold `nu`, `xi` and at least one of `mean`, `sd`.");
+  if(res.status==cppunivariate::SgedStatus::Unbounded) Rcpp::stop("Scale collapse: likelihood is unbounded at the held mean; no MLE.");
+  if(res.status==cppunivariate::SgedStatus::ScaleBoundary) Rcpp::stop("Scale-collapse boundary could not be certified; no finite MLE returned.");
   if (res.status == cppunivariate::SgedStatus::InvalidStart) {
     Rcpp::stop("Skew GED MLE requires at least 2 finite observations with "
                "positive variance.");
@@ -27,11 +42,26 @@ Rcpp::List mlsged_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
       !std::isfinite(res.nu) || !std::isfinite(res.xi)) {
     Rcpp::stop("Skew GED MLE failed to converge (check inputs)");
   }
+  if(res.status==cppunivariate::SgedStatus::BfgsFailure) {
+    cppunivariate::SgedCost cost{dist_impl::as_span(x)};
+    const double phi[4]={res.mu,std::log(res.sigma),std::log(res.nu),std::log(res.xi)};
+    double score[4];
+    cppunivariate::finite_diff_gradient(cost,phi,score);
+    double norm=0;
+    for(double v:score) norm+=v*v;
+    if(!(std::sqrt(norm)<1e-3)) Rcpp::stop("Skew fit optimizer failed its score check; increase `iterlim`.");
+  }
+  Rcpp::CharacterVector fixed;
+  if(mean.isNotNull()) fixed.push_back("mean");
+  if(sd.isNotNull()) fixed.push_back("sd");
+  if(nu.isNotNull()) fixed.push_back("nu");
+  if(xi.isNotNull()) fixed.push_back("xi");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mean"] = res.mu, Rcpp::_["sd"] = res.sigma,
           Rcpp::_["nu"] = res.nu, Rcpp::_["xi"] = res.xi),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
+      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
+      Rcpp::_["fixed"] = fixed);
 }
 
 #include "dpqr.h"

@@ -33,6 +33,8 @@ r:
   control:
     a: Known lower truncation bound, held fixed; required; use `-Inf` for an unbounded lower side. Every observation must exceed it.
     b: Known upper truncation bound, held fixed; required; use `Inf` for an unbounded upper side. Every observation must be below it.
+    mean: "Optional held parent-normal mean; NULL estimates it."
+    sd: "Optional held parent-normal standard deviation; NULL estimates it."
     reltol: Relative tolerance on the Newton step in the natural parameters `mean/sd^2` and `-1/(2*sd^2)` of standardized data.
     iterlim: Maximum number of Newton iterations.
 log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2) - log((erf((b-mean)/(sd*sqrt(2))) - erf((a-mean)/(sd*sqrt(2))))/2)
@@ -66,72 +68,60 @@ examples: |
 holds:
 - held: []
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - mean
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - sd
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - mean
   - sd
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - a
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - mean
   - a
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - sd
   - a
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - mean
   - sd
   - a
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - b
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - mean
   - b
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - sd
   - b
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 - held:
   - mean
   - sd
   - b
   status: not-implemented
-  reason: Estimating truncation bounds with NULL is not supported until the endpoint
-    closure (R7a).
+  reason: "Estimating truncation bounds needs R7a (P3)"
 fit_args:
   a: -.inf
   b: .inf
@@ -181,3 +171,7 @@ coefficient. Numerical face ties use the tolerance stated above.
 ## See also
 
 `mlhnorm` for the half-normal with an estimated endpoint and `mlnorm` for the untruncated fit.
+
+
+Estimating either truncation bound needs R7a (P3). With both bounds held,
+any subset of `mean` and `sd` can be held.

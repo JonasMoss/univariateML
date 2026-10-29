@@ -15,7 +15,7 @@
 
 namespace cppunivariate {
 
-enum class SnormStatus { Ok = 0, BfgsFailure, InvalidStart,
+enum class SnormStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded,
                          RightHalfNormalBoundary, LeftHalfNormalBoundary };
 
 struct SnormResult {
@@ -28,6 +28,128 @@ struct SnormResult {
 };
 
 namespace snorm_detail {
+// Golden-section minimization on a finite bracket; caller establishes tail bounds.
+template <typename Objective>
+inline double minimize(Objective objective, double lo, double hi) {
+  constexpr double ratio = 0.6180339887498948482;
+  double l = hi-ratio*(hi-lo), r = lo+ratio*(hi-lo);
+  double fl = objective(l), fr = objective(r);
+  for (int it=0; it<120; ++it) {
+    if (hi-lo <= 1e-11*(1+std::abs(l)+std::abs(r))) break;
+    if (fl < fr) { hi=r; r=l; fr=fl; l=hi-ratio*(hi-lo); fl=objective(l); }
+    else { lo=l; l=r; fl=fr; r=lo+ratio*(hi-lo); fr=objective(r); }
+  }
+  return fl < fr ? l : r;
+}
+// Scan before refinement: unlike a single golden search, retains competing modes.
+template <typename Objective>
+inline double scan(Objective objective, double lo, double hi, int cells=160) {
+  std::vector<double> values;
+  for (int i=0; i<=cells; ++i) values.push_back(objective(lo+(hi-lo)*i/cells));
+  int best=0;
+  for (int i=1; i<=cells; ++i) if(values[i]<values[best]) best=i;
+  double arg=lo+(hi-lo)*best/cells, value=values[best];
+  for (int i=1; i<cells; ++i) if(values[i]<=values[i-1] && values[i]<=values[i+1]) {
+    const double t=minimize(objective,lo+(hi-lo)*(i-1)/cells,lo+(hi-lo)*(i+1)/cells);
+    const double f=objective(t);
+    if(f<value) { value=f; arg=t; }
+  }
+  return arg;
+}
+
+inline SnormResult held_fit(span x, double mu, double sd, double xi) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double inf=std::numeric_limits<double>::infinity();
+  SnormResult out{nan,nan,nan,nan,0,SnormStatus::InvalidStart};
+  const bool hm=!std::isnan(mu), hs=!std::isnan(sd), hx=!std::isnan(xi);
+  if(x.size()==0 || (hm && !std::isfinite(mu)) ||
+     (hs && !(sd>0 && std::isfinite(sd))) || (hx && !(xi>0 && std::isfinite(xi)))) return out;
+  double lo=inf, hi=-inf;
+  for(double v:x) { if(!std::isfinite(v)) return out; lo=std::min(lo,v); hi=std::max(hi,v); }
+  if(!hs && lo==hi && (!hm || mu==lo)) { out.status=SnormStatus::Unbounded; return out; }
+  if(hx && xi==1) {
+    double mean=mu, sigma=sd, sum=0;
+    if(!hm) { for(double v:x) sum+=v-lo; mean=lo+sum/x.size(); }
+    double ss=0;
+    for(double v:x) ss+=(v-mean)*(v-mean);
+    if(!hs) sigma=std::sqrt(ss/x.size());
+    if(!(sigma>0)) return out;
+    return {mean,sigma,xi,-static_cast<double>(x.size())*(std::log(sigma)+0.5*std::log(2*M_PI))-ss/(2*sigma*sigma),0,SnormStatus::Ok};
+  }
+  const double origin=hm ? mu : lo+(hi-lo)/2;
+  double unit=hs ? sd : std::max(hi-lo,std::max(std::abs(lo-origin),std::abs(hi-origin)));
+  if(!(unit>0) || !std::isfinite(unit)) return out;
+  std::vector<double> y;
+  for(double v:x) y.push_back((v-origin)/unit);
+  const double n=static_cast<double>(x.size()), yl=(lo-origin)/unit, yh=(hi-origin)/unit;
+  const double m1=std::sqrt(2/M_PI), h=std::sqrt(1-m1*m1);
+  double best_mu=0, best_sd=1;
+  auto profile=[&](double lx) {
+    const double skew=hx ? xi : std::exp(lx);
+    const double q=skew-1/skew, shift=m1*q;
+    const double scale=std::hypot(1.0,h*q);
+    auto cost=[&](double mean, double sigma) {
+      double neg=n*(std::log(sigma)-std::log(scale));
+      for(double v:y) {
+        const double d=(v-mean)/sigma;
+        double z=d*scale+shift;
+        // Rationalize cancellation at a held-moment half-normal endpoint.
+        if(d*shift<0 && std::abs(z)<0.01*std::abs(shift))
+          z=(d*d+q*q*(h*d-m1)*(h*d+m1))/(d*scale-shift);
+        neg-=dens::log_dsnorm_core(z,skew);
+      }
+      return neg;
+    };
+    auto at_scale=[&](double ls) {
+      const double sigma=hs ? sd/unit : std::exp(ls);
+      auto location=[&](double mean) { return cost(mean,sigma); };
+      // Mode of a location-only log-concave likelihood lies between data extremes.
+      const double mean=hm ? 0 : minimize(location,yl+sigma*shift/scale,yh+sigma*shift/scale);
+      best_mu=mean; best_sd=sigma;
+      return cost(mean,sigma);
+    };
+    if(hs) return at_scale(0);
+    const double ls=minimize(at_scale,-32,32);
+    return at_scale(ls);
+  };
+  const double lx=hx ? std::log(xi) : scan(profile,-18,18,180);
+  const double neg=profile(lx);
+  out={hm ? mu : origin+unit*best_mu,hs ? sd : unit*best_sd,
+       hx ? xi : std::exp(lx),-neg-n*std::log(unit),0,SnormStatus::Ok};
+  if(!std::isfinite(out.logLik)) { out.status=SnormStatus::BfgsFailure; return out; }
+  if(!hx) for(int side : {-1,1}) {
+    // Half-normal with mean=c+side*m1*b, sd=h*b. Retain held moments.
+    double b=hs ? sd/unit/h : 0;
+    double sum=0, ss=0;
+    const double centre=hm ? 0 : (side==1 ? yl : yh);
+    for(double v:y) { sum+=v-centre; ss+=(v-centre)*(v-centre); }
+    if(!hs) {
+      const double linear=hm ? side*m1*sum : 0;
+      b=(linear+std::sqrt(linear*linear+4*n*ss))/(2*n);
+      if(hm) b=std::max(b,side==1 ? -yl/m1 : yh/m1);
+    }
+    if(!(b>0)) continue;
+    const double c=hm ? -side*m1*b : centre;
+    if((side==1 && c>yl+1e-12) || (side==-1 && c<yh-1e-12)) continue;
+    double ll=n*(0.5*std::log(2/M_PI)-std::log(b)-std::log(unit));
+    for(double v:y) {
+      ll-=0.5*((v-c)/b)*((v-c)/b);
+      // If both moments are held, the mode approaches this endpoint from
+      // inside the sample: the shrinking side retains a finite residual.
+      if(hm && hs && std::abs(v-c)<=1e-14*(1+std::abs(c)))
+        ll-=m1*m1/(8*h*h*h*h);
+    }
+    if(ll>=out.logLik-1e-8*n) {
+      out.logLik=ll;
+      out.status=side==1 ? SnormStatus::RightHalfNormalBoundary : SnormStatus::LeftHalfNormalBoundary;
+    }
+  }
+  if(out.status==SnormStatus::Ok &&
+     ((!hs && std::abs(std::log(best_sd))>31.9) || (!hx && std::abs(lx)>17.99)))
+    out.status=SnormStatus::BfgsFailure;
+  return out;
+}
+
 // Recursive derivative isolation: between successive derivative roots a
 // polynomial is monotone. Bisection therefore finds every sign-changing root;
 // derivative roots themselves are retained to include all multiple roots.
@@ -71,7 +193,12 @@ inline std::vector<long double> multiply(const std::vector<long double>& a,
 }
 } // namespace snorm_detail
 
-inline SnormResult snorm_mle(span x, double /*tol*/, int /*maxit*/) {
+inline SnormResult snorm_mle(span x, double /*tol*/, int /*maxit*/,
+    double fixed_mean=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
+  if(!std::isnan(fixed_mean) || !std::isnan(fixed_sd) || !std::isnan(fixed_xi))
+    return snorm_detail::held_fit(x,fixed_mean,fixed_sd,fixed_xi);
   constexpr double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {nan,nan,nan,nan,0,SnormStatus::InvalidStart};

@@ -195,3 +195,96 @@ test_that("snorm log tails exceed the backend exponent range", {
                  tolerance = 1e-10)
   }
 })
+
+# Independent README density (R normal/t primitives and gamma functions).
+snorm_hold_logref <- function(x,p) {
+  xi <- p['xi']; nu <- p['nu']
+  m <- sqrt(2/pi)
+  v <- (1-m*m)*(xi^2+xi^(-2))+2*m*m-1
+  z <- sqrt(v)*(x-p['mean'])/p['sd']+m*(xi-1/xi)
+  z <- ifelse(z>0,z/xi,z*xi)
+  core <- dnorm(z,log=TRUE)
+  .5*log(v)-log(p['sd'])+log(2/(xi+1/xi))+core
+}
+
+test_that("snorm classified holds agree with independent multistart oracles", {
+  set.seed(81029)
+  p <- c(mean=.2,sd=1.4,xi=1.3)
+  subsets <- lapply(1:7,function(mask) names(p)[as.logical(intToBits(mask)[1:3])])
+  samples <- list(rnorm(20),rnorm(100),round(rnorm(20),1),c(-1,0,1),
+                  rexp(20),-rexp(100),abs(rnorm(20)),runif(100,-2,2))
+  for(x in samples) for(held in subsets) {
+    free <- setdiff(names(p),held)
+    fit <- tryCatch(do.call(mlsnorm,c(list(x=x),as.list(p[held]))),error=identity)
+    if(inherits(fit,'error')) {
+      expect_match(conditionMessage(fit),'half-normal|unbounded|collapse|converge')
+      next
+    }
+    expect_identical(unname(as.numeric(fit[held])),unname(p[held]))
+    expect_setequal(attr(fit,'fixed'),held)
+    expect_equal(as.numeric(logLik(fit)),sum(snorm_hold_logref(x,coef(fit))),tolerance=1e-9)
+    if(!length(free)) next
+    pack <- function(q) { q <- q[free]; q[names(q)!='mean'] <- log(q[names(q)!='mean']); unname(q) }
+    objective <- function(t) {
+      q <- p; q[free] <- t
+      positive <- intersect(free,c('sd','xi'))
+      q[positive] <- exp(q[positive])
+      val <- -sum(snorm_hold_logref(x,q))
+      if(is.finite(val)) val else 1e100
+    }
+    refs <- lapply(c(-.8,0,.8),function(delta)
+      optim(pack(p)+delta,objective,method=if(length(free)==1) 'BFGS' else 'Nelder-Mead',
+            control=list(maxit=3000,reltol=1e-12))$value)
+    expect_gte(as.numeric(logLik(fit)),-min(unlist(refs))-1e-6*length(x))
+  }
+})
+
+test_that("snorm holds validate values, ties, and all-held evaluation", {
+  x <- c(-1,0,1)
+  p <- c(mean=.2,sd=1.4,xi=1.3)
+  for(v in names(p)) for(bad in c(NA_real_,Inf,-Inf)) {
+    args <- as.list(p); args[[v]] <- bad
+    expect_error(do.call(mlsnorm,c(list(x=x),args)), 'held')
+  }
+  args <- as.list(p)
+  fit <- do.call(mlsnorm,c(list(x=c(0,0,0)),args))
+  expect_equal(as.numeric(logLik(fit)),sum(snorm_hold_logref(c(0,0,0),p)),tolerance=1e-10)
+  expect_error(mlsnorm(rep(.2,3),mean=.2,xi=1.3),'unbounded')
+})
+
+test_that("snorm normal member uses exact held normal solutions", {
+  x <- c(-2,-.5,0,.1,1,3)
+  for(m in list(NULL,.4)) for(s in list(NULL,1.7)) {
+    fit <- mlsnorm(x,mean=m,sd=s,xi=1)
+    mu <- if(is.null(m)) mean(x) else m
+    sigma <- if(is.null(s)) sqrt(mean((x-mu)^2)) else s
+    expect_equal(unname(fit['mean']),mu,tolerance=1e-14)
+    expect_equal(unname(fit['sd']),sigma,tolerance=1e-14)
+    expect_equal(as.numeric(logLik(fit)),sum(dnorm(x,mu,sigma,log=TRUE)),tolerance=1e-12)
+  }
+  for(v in c('sd','xi')) for(bad in c(0,-1)) {
+    args <- list(x=x,mean=.2,sd=1.4,xi=1.3); args[[v]] <- bad
+    expect_error(do.call(mlsnorm,args),'held')
+  }
+})
+
+test_that("snorm held-moment endpoint faces retain shrinking-side penalties", {
+  m <- sqrt(2/pi); h <- sqrt(1-m*m)
+  for(side in c(-1,1)) {
+    x <- side*c(0,.3,1,2)
+    p <- c(mean=side*m,sd=h,xi=if(side==1) 1e4 else 1e-4)
+    face <- sum(log(2)+dnorm(x,log=TRUE))-m*m/(8*h^4)
+    expect_equal(sum(snorm_hold_logref(x,p)),face,tolerance=1e-6)
+    objective <- function(lx) {
+      p['xi'] <- exp(lx)
+      -sum(snorm_hold_logref(x,p))
+    }
+    candidates <- vapply(c(-4,0,4),function(start)
+      optim(start,objective,method='L-BFGS-B',lower=-10,upper=10)$value,0.)
+    fit <- tryCatch(mlsnorm(x,mean=side*m,sd=h),error=identity)
+    if(inherits(fit,'error')) {
+      expect_match(conditionMessage(fit),'half-normal')
+      expect_gte(face,-min(candidates)-1e-6)
+    } else expect_gte(as.numeric(logLik(fit)),-min(candidates)-1e-6)
+  }
+})
