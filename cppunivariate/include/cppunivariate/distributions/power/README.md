@@ -9,7 +9,7 @@ r:
   density: extraDistr::dpower
   sampler: extraDistr::rpower
   control:
-    epsilon: Positive offset added to the sample maximum to place the fitted upper endpoint beyond the data.
+    epsilon: Positive relative offset from the sample maximum to place the fitted upper endpoint beyond the data.
 log_density: log(beta) - beta*log(alpha) + (beta-1)*log(x)
 references:
   - "Arslan, G. \"A new characterization of the power distribution.\" Journal of Computational and Applied Mathematics 260 (2014): 99-102."
@@ -21,4 +21,4 @@ The power distribution models positive quantities below a finite upper endpoint.
 
 ## Details
 
-The fitted support is $(0, \alpha)$. The reference `extraDistr::dpower` excludes the upper endpoint, so the likelihood supremum occurs as `alpha` decreases to `max(x)` but is not attained under that convention. The fitter returns `max(x) + epsilon`; `epsilon` is an endpoint offset, not a convergence tolerance.
+The fitted support is $(0, \alpha)$. The reference `extraDistr::dpower` excludes the upper endpoint, so the likelihood supremum occurs as `alpha` decreases to `max(x)` but is not attained under that convention. The fitter returns `max(x) * (1 + epsilon)`; `epsilon` is a relative endpoint offset, not a convergence tolerance.
