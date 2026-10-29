@@ -61,10 +61,10 @@ Main findings.
     Their large-shape ``uniform'' fits are local maxima only.
   \item The sweep found invalid fits on ordinary data (zip, cauchy, logis,
     binom); see Section~\ref{sec:bugs}.
-  \item lomax's escape test $\overline{x^2} < 2\bar x^2$ (and invpareto's,
-    on $1/x$) is only local; it rejects samples such as $(1, 100)$ that have
-    an MLE. The exact criterion is Theorem~\ref{thm:lomax}
-    (Section~\ref{sec:lomax}).
+  \item lomax's old escape test $\overline{x^2} < 2\bar x^2$ (and
+    invpareto's, on $1/x$) was only local; it rejected samples such as
+    $(1, 100)$ that have an MLE. Since 2026-10-29 the fitters use the exact
+    criterion, Theorem~\ref{thm:lomax} (Section~\ref{sec:lomax}).
 \end{enumerate}
 
 \section{Definitions}
@@ -111,8 +111,8 @@ and tested in the fitter; \emph{arg} = short limit argument in this note;
 id & escape & limit model & detection today & firm \\
 \midrule
 lomax & $\kappa\to\infty$, $\lambda\kappa$ fixed & exponential \cite{kk2003} &
-  $\overline{x^2} < 2\bar x^2$, status \code{MeanVarianceCondition}; this
-  test is only local, the exact criterion is Theorem~\ref{thm:lomax} & code, \textbf{wrong} \\
+  global profile search on $0<u<\bar u$ (Theorem~\ref{thm:lomax}), status
+  \code{ExponentialLimit}; the old moment test was only local & code, arg \\
 gompertz & $b \to 0$ & exponential & status \code{Overdispersed} & code, probe \\
 nbinom & size $\to\infty$, mean fixed & Poisson &
   underdispersion check in the Rcpp adapter only & code \\
@@ -318,7 +318,9 @@ exponential pairs and up to 31\% of Lomax pairs ($\kappa = 0.5$), for at most
 1.1\% of samples of size 3 and 5, and for none of size 20 or 50, although
 63\% of exponential samples of size 50 have $c<1$.
 
-\paragraph{Consequences for the fitter.} (i) Existence is decided by the sign
+\paragraph{Consequences for the fitter} (implemented 2026-10-29 in
+\code{lomax/mle.hpp}: grid in $\log u$ plus refinement of every local
+maximum, compressed scan for $n>4096$). (i) Existence is decided by the sign
 of $\min\psi$ on the bounded interval $(0,\bar u]$; the minimisation is a
 smooth one-dimensional global search, done numerically. (ii) If the minimum
 is nonpositive, every maximiser has $u = W(\hat\lambda\bar x)$ in

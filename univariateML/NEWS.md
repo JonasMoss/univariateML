@@ -67,6 +67,18 @@
   `actuar` generalized gamma d/p/q/r. The list is in the package help page
   (`?univariateML`); fitting and `logLik()` never use these functions.
 
+* `mllomax()` and `mlinvpareto()` decide existence exactly: the moment
+  condition `mean(x^2) < 2*mean(x)^2` they used to stop on is only a local
+  test, and samples such as `c(1, 100)` have a finite MLE. The fitters now
+  search the profile likelihood over a bounded interval that provably
+  contains every maximiser, and stop with "use `mlexp`" (`mlinvexp`) only
+  when the exponential limit wins.
+
+* `mlstd()` and `mlsstd()` stop when a repeated value makes the likelihood
+  unbounded (multiplicity `k > 2 * (n - k)`), instead of returning a finite
+  fit; `mlburr()`/`mlinvburr()` with the scale held stop when every
+  observation equals that scale.
+
 * An edge-case audit of the fitters: constant data, near ties, extreme
   scales (1e-300 to 1e300), counts near `.Machine$integer.max`, empty
   input and n = 1e6 now give either a correct fit or an honest error
