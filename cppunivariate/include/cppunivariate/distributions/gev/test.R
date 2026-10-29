@@ -45,3 +45,53 @@ test_that("mlgev reports invalid inputs and returns attained bounds", {
     expect_equal(unname(fit[["xi"]]), if (k < 0) -.5 else 1)
   }
 })
+
+test_that("runtime GEV repairs use stable Gumbel transforms and preserve RNG checks", {
+  fixes <- univariateML:::univariateML_reference_fixes
+  for (type in c("q", "p", "r")) {
+    fix <- fixes[[paste0("extraDistr::", type, "gev")]]
+    expect_true(fix$broken())
+    ref <- getExportedValue("extraDistr", paste0(type, "gev"))
+    if (type == "r") {
+      set.seed(3); actual <- fix$replacement(20, mu = 2, sigma = 3, xi = .3)
+      set.seed(3); expected <- ref(20, mu = 2, sigma = 3, xi = .3)
+      expect_equal(actual, expected, tolerance = 1e-12)
+      set.seed(3); seed <- .Random.seed
+      expect_true(fix$broken())
+      expect_identical(.Random.seed, seed)
+      rm(".Random.seed", envir = .GlobalEnv)
+      expect_true(fix$broken())
+      expect_false(exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+      set.seed(3); actual <- fix$replacement(20, mu = c(0,1), sigma = c(1,2), xi = c(-.2,.3))
+      set.seed(3); expected <- ref(20, mu = c(0,1), sigma = c(1,2), xi = c(-.2,.3))
+      expect_equal(actual, expected, tolerance = 1e-12)
+      set.seed(3); e <- rexp(20)
+      expected <- expm1(-1e-16*log(e))/1e-16
+      set.seed(3); expect_equal(fix$replacement(20, xi = 1e-16), expected, tolerance = 1e-12)
+    } else for (lower in c(FALSE, TRUE)) for (logs in c(FALSE, TRUE)) {
+      x <- if (type == "q") c(.1,.5,.9) else c(-.5,.2,1)
+      if (type == "q" && logs) x <- log(x)
+      expect_equal(fix$replacement(x, mu = c(0,.1,.2), sigma = 2, xi = .3,
+                                   lower.tail = lower, log.p = logs),
+                   ref(x, mu = c(0,.1,.2), sigma = 2, xi = .3,
+                       lower.tail = lower, log.p = logs), tolerance = 1e-12)
+      if (type == "q") {
+        u <- c(.1,.5,.9)
+        z <- -log(if (lower) -log(u) else -log1p(-u))
+        expected <- expm1(1e-16*z)/1e-16
+        expect_equal(fix$replacement(if (logs) log(u) else u, xi = 1e-16,
+                                     lower.tail = lower, log.p = logs),
+                     expected, tolerance = 1e-12)
+        expect_equal(fix$replacement(if (logs) c(-Inf,0) else c(0,1),
+                                     xi = -.5, lower.tail = lower, log.p = logs),
+                     if (lower) c(-Inf,2) else c(2,-Inf))
+      }
+    }
+  }
+  p <- fixes[["extraDistr::pgev"]]$replacement
+  expect_equal(p(c(1000,2000), lower.tail = FALSE, log.p = TRUE), c(-1000,-2000))
+  z <- c(.1,1,10); xi <- c(-.5,0,.5)
+  t <- ifelse(xi == 0, -z, -log1p(xi*z)/xi)
+  expected <- log(-expm1(-exp(t))); expected[1] <- log(-expm1(-exp(t[1])))
+  expect_equal(p(z, xi = xi, lower.tail = FALSE, log.p = TRUE), expected, tolerance = 1e-12)
+})

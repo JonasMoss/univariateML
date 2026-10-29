@@ -71,3 +71,44 @@ test_that("mltnorm validates known bounds and classifies escapes", {
   expect_error(mltnorm(x, a = 0, b = 1, iterlim = 1), "converge")
   expect_equal(as.numeric(mltnorm(c(x, NA), na.rm = TRUE)), as.numeric(mltnorm(x)))
 })
+
+test_that("runtime truncated-normal repairs agree with stable normal differences", {
+  fixes <- univariateML:::univariateML_reference_fixes
+  for (type in c("d", "p", "q")) {
+    fix <- fixes[[paste0("extraDistr::", type, "tnorm")]]
+    expect_true(fix$broken())
+    ref <- getExportedValue("extraDistr", paste0(type, "tnorm"))
+    for (logs in c(FALSE, TRUE)) {
+      if (type == "d") {
+        expect_equal(fix$replacement(c(-.5,.2,1), c(0,.1,.2), 1, -1, 2, log = logs),
+                     ref(c(-.5,.2,1), c(0,.1,.2), 1, -1, 2, log = logs), tolerance = 1e-12)
+        x <- c(10.01,10.05,10.1)
+        expected <- dnorm(x, log = TRUE) - pnorm(10, lower.tail = FALSE, log.p = TRUE)
+        if (!logs) expected <- exp(expected)
+        expect_equal(fix$replacement(x, a = 10, log = logs), expected, tolerance = 1e-12)
+      } else for (lower in c(FALSE, TRUE)) {
+        x <- if (type == "p") c(-.5,.2,1) else c(.1,.5,.9)
+        if (type == "q" && logs) x <- log(x)
+        expect_equal(fix$replacement(x, c(0,.1,.2), 1, -1, 2, lower.tail = lower, log.p = logs),
+                     ref(x, c(0,.1,.2), 1, -1, 2, lower.tail = lower, log.p = logs),
+                     tolerance = 1e-12)
+        if (type == "q") {
+          u <- c(.1,.5,.9)
+          tail <- if (lower) 1-u else u
+          expected <- qnorm(pnorm(40, lower.tail = FALSE, log.p = TRUE) + log(tail),
+                            lower.tail = FALSE, log.p = TRUE)
+          actual <- fix$replacement(if (logs) log(u) else u, a = 40, b = 41,
+                                    lower.tail = lower, log.p = logs)
+        } else {
+          x <- c(40.001,40.01,40.05)
+          lp <- pnorm(x, lower.tail = FALSE, log.p = TRUE) -
+            pnorm(40, lower.tail = FALSE, log.p = TRUE)
+          expected <- if (lower) -expm1(lp) else exp(lp)
+          if (logs) expected <- log(expected)
+          actual <- fix$replacement(x, a = 40, b = 41, lower.tail = lower, log.p = logs)
+        }
+        expect_equal(actual, expected, tolerance = 1e-12)
+      }
+    }
+  }
+})

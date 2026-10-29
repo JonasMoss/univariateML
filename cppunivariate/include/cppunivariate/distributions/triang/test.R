@@ -39,7 +39,7 @@ expect_equal(pml(0, tie), 0)
 expect_equal(pml(0, tie, lower.tail = FALSE), 1)
 expect_equal(pml(0, tie, log.p = TRUE), -Inf)
 fix <- univariateML:::univariateML_reference_fixes[["extraDistr::ptriang"]]
-expect_type(fix$broken(), "logical")
+expect_true(fix$broken())
 expect_identical(formals(fix$replacement), formals(extraDistr::ptriang))
 for (lower in c(TRUE, FALSE)) for (logged in c(TRUE, FALSE)) {
   q <- c(-1, 0, .1, .4, .9, 1, 2, NA_real_)

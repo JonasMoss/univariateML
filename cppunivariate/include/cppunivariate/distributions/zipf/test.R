@@ -21,7 +21,9 @@ test_that("qml for zipf is the discrete inverse of pml", {
 })
 
 test_that("the qzipf replacement is the discrete inverse of the zipf CDF", {
-  qfun <- univariateML:::univariateML_reference_fixes[["sads::qzipf"]]$replacement
+  fix <- univariateML:::univariateML_reference_fixes[["sads::qzipf"]]
+  expect_true(fix$broken())
+  qfun <- fix$replacement
   cdf <- cumsum((1:10)^-1) / sum((1:10)^-1)
   p <- c(0.1, 0.4, 0.5, 0.6, 0.99)
   expect_equal(qfun(p, N = 10, s = 1), vapply(p, function(pp) min(which(cdf >= pp)), 0))

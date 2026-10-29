@@ -49,6 +49,8 @@ The truncated normal distribution is a normal distribution restricted to a known
 
 ## Details
 
+`extraDistr::dtnorm`, `ptnorm` and `qtnorm` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
+
 The bounds `a` and `b` are known design quantities, held fixed and never estimated; they default to `-Inf` and `Inf`, giving the normal fit of `mlnorm`. `extraDistr::dtnorm` is zero at the bounds, so every observation must lie strictly between them.
 
 For fixed bounds the family is an exponential family in $\mathrm{mean}/\mathrm{sd}^2$ and $-1/(2\,\mathrm{sd}^2)$ whose log-likelihood is strictly concave; the maximum depends on the data only through `mean(x)` and the population variance. It exists unless the sample is at least as dispersed as the member with $1/\mathrm{sd}^2 = 0$ and the same mean, an exponential or truncated exponential law that the parametrisation by `sd` cannot reach. This happens with positive probability for samples from a truncated normal, with small samples especially susceptible near an exponential limit; faces win ties within `1e-8` times the sample size. With `sd` held fixed the estimate of `mean` always exists. With `mean` held fixed and both bounds finite the limit is the uniform distribution on `(a, b)`; `mlunif` is a different model, which estimates its endpoints.

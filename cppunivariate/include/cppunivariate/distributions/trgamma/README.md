@@ -35,6 +35,8 @@ with shape `shape1`; it models positive sizes, losses and lifetimes.
 
 ## Details
 
+`actuar::dtrgamma`, `ptrgamma`, `qtrgamma` and `rtrgamma` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
+
 The gamma (`shape2 = 1`, scale the reciprocal gamma rate) and Weibull
 (`shape1 = 1`) distributions are members, not limits. Holding `shape2`
 fixed gives the gamma fit of `x^shape2`; holding `shape1` fixed gives a

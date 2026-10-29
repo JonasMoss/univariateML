@@ -123,3 +123,75 @@ test_that("mltrgamma and mlinvtrgamma are reciprocal fits", {
   expect_equal(actuar::dinvtrgamma(1 / x[1:5], 2, 1.5, scale = 1 / 3, log = TRUE),
                actuar::dtrgamma(x[1:5], 2, 1.5, scale = 3, log = TRUE) + 2 * log(x[1:5]))
 })
+
+test_that("runtime gamma-transform repairs detect defects and retain ordinary values", {
+  fixes <- univariateML:::univariateML_reference_fixes
+  family <- "trgamma"
+  for (type in c("d", "p", "q", "r")) {
+    fix <- fixes[[paste0("actuar::", type, family)]]
+    expect_true(fix$broken())
+    ref <- getExportedValue("actuar", paste0(type, family))
+    if (type == "r") {
+      set.seed(21); actual <- fix$replacement(20, 2, 1.5, scale = 3)
+      set.seed(21); expected <- ref(20, 2, 1.5, scale = 3)
+      expect_equal(actual, expected, tolerance = 1e-12)
+      set.seed(21); seed <- .Random.seed
+      expect_true(fix$broken())
+      expect_identical(.Random.seed, seed)
+      set.seed(21); actual <- fix$replacement(20, c(2,3), c(1.5,2), scale = c(3,4))
+      set.seed(21); expected <- ref(20, c(2,3), c(1.5,2), scale = c(3,4))
+      expect_equal(actual, expected, tolerance = 1e-12)
+      # Independent small-shape gamma asymptote: log(G) = (log(U)+lgamma(1+a))/a.
+      set.seed(21); u <- runif(20)
+      expected <- exp(1 * (log(u) + lgamma(1+1e-6))/(1e-6*1e6))
+      set.seed(21); actual <- fix$replacement(20, 1e-6, 1e6)
+      expect_equal(actual, expected, tolerance = 1e-12)
+    } else if (type == "d") {
+      for (logs in c(FALSE, TRUE))
+        expect_equal(fix$replacement(c(.5, 1, 3), c(2,3,4), 1.5, scale = 3, log = logs),
+                     ref(c(.5,1,3), c(2,3,4), 1.5, scale = 3, log = logs), tolerance = 1e-12)
+      expect_equal(fix$replacement(1, 1e12, 1, scale = 1e-12, log = TRUE),
+                   dgamma(1, 1e12, scale = 1e-12, log = TRUE), tolerance = 1e-12)
+    } else {
+      for (lower in c(FALSE, TRUE)) for (logs in c(FALSE, TRUE)) {
+        x <- if (type == "q") c(.1,.4,.9) else c(.5,1,3)
+        if (type == "q" && logs) x <- log(x)
+        expect_equal(fix$replacement(x, c(2,3,4), 1.5, scale = 3,
+                                     lower.tail = lower, log.p = logs),
+                     ref(x, c(2,3,4), 1.5, scale = 3, lower.tail = lower, log.p = logs),
+                     tolerance = 1e-12)
+        # Independent gamma small-argument asymptote, not the repair's anchor.
+        if (type == "q") {
+          u <- c(.2,.5,.8)
+          gprob <- if (FALSE != lower) u else 1-u
+          expected <- exp(1 * (log(gprob)+lgamma(1+1e-6))/(1e-6*1e6))
+          actual <- fix$replacement(if (logs) log(u) else u, 1e-6, 1e6,
+                                    lower.tail = lower, log.p = logs)
+        } else {
+          x <- exp(1 * log(c(.2,.5,.8)))
+          lp <- 1 * log(x) - lgamma(1+1e-6)
+          expected <- if (FALSE != lower) exp(lp) else -expm1(lp)
+          if (logs) expected <- log(expected)
+          actual <- fix$replacement(x, 1e-6, 1e6, lower.tail = lower, log.p = logs)
+        }
+        expect_equal(actual, expected, tolerance = 1e-12)
+      }
+    }
+  }
+})
+
+test_that("trgamma log quantiles and large power transforms remain representable", {
+  f <- univariateML:::univariateML_reference_fixes[["actuar::qtrgamma"]]$replacement
+  # At shape2=1, compare directly to R's stable gamma quantile.
+  expect_equal(f(-1000, 2, 1, log.p = TRUE),
+               qgamma(-1000, 2, log.p = TRUE), tolerance = 1e-12)
+  a <- 100; tau <- .0067; scale <- exp(-1 * log(a)/tau)
+  u <- c(.01,.5,.99)
+  expected <- exp(log(scale) + log(qgamma(u, a, lower.tail = TRUE))/tau)
+  expect_equal(f(u, a, tau, scale = scale), expected, tolerance = 1e-12)
+  rfix <- univariateML:::univariateML_reference_fixes[["actuar::rtrgamma"]]
+  if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+    rm(".Random.seed", envir = .GlobalEnv)
+  expect_true(rfix$broken())
+  expect_false(exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+})

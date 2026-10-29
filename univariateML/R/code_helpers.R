@@ -224,6 +224,170 @@ univariateML_reference_fixes <- list(
         lower.tail = lower.tail, log.p = log.p
       )
     }
+  ),
+  "actuar::dtrgamma" = list(
+    broken = function() {
+      abs(actuar::dtrgamma(1, 1e10, 1, scale = 1e-10, log = TRUE) -
+          stats::dgamma(1, 1e10, scale = 1e-10, log = TRUE)) > 1e-7
+    },
+    replacement = function(x, shape1, shape2, rate = 1, scale = 1/rate, log = FALSE) {
+      # actuar uses R's gamma backend too. Compose that backend's stable
+      # log density with the power Jacobian; keep actuar's endpoint rules.
+      ans <- actuar::dtrgamma(x, shape1, shape2, scale = scale, log = TRUE)
+      logu <- shape2 * (log(x) - log(scale))
+      u <- exp(logu)
+      stable <- stats::dgamma(u, shape1, scale = 1, log = TRUE) +
+        log(shape2) + logu - log(x)
+      good <- is.finite(stable)
+      ans[good] <- stable[good]
+      if (log) ans else exp(ans)
+    }
+  ),
+  "actuar::qtrgamma" = list(
+    broken = function() {
+      !isTRUE(all.equal(actuar::qtrgamma(.99, 100, .0067, scale = exp(-log(100)/.0067)),
+                       exp(log(exp(-log(100)/.0067)) + log(stats::qgamma(.99, 100, lower.tail = TRUE))/.0067),
+                       tolerance = 1e-12)) ||
+        actuar::qtrgamma(-1000, 2, 1, log.p = TRUE) == 0 ||
+        !is.finite(actuar::qtrgamma(.5, 1e-6, 1e6)) ||
+        actuar::qtrgamma(.5, 1e-6, 1e6) == 0
+    },
+    replacement = function(p, shape1, shape2, rate = 1, scale = 1/rate,
+                           lower.tail = TRUE, log.p = FALSE) {
+      g <- stats::qgamma(p, shape1, scale = 1, lower.tail = lower.tail, log.p = log.p)
+      logg <- log(g)
+      lost <- !is.na(g) & g < exp(-700)
+      if (any(lost)) {
+        lp <- if (log.p) { if (lower.tail) p else log(-expm1(p)) } else {
+          if (lower.tail) log(p) else log1p(-p)
+        }
+        anchor <- actuar::ptrgamma(exp(-700), shape1, 1, scale = 1, log.p = TRUE)
+        recovered <- -700 + (lp - anchor)/shape1
+        logg[lost] <- recovered[lost]
+      }
+      exp(log(scale) + logg/shape2)
+    }
+  ),
+  "actuar::rtrgamma" = list(
+    broken = function() {
+      had_seed <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+      if (had_seed) saved_seed <- get(".Random.seed", envir = .GlobalEnv)
+      on.exit(if (had_seed) assign(".Random.seed", saved_seed, envir = .GlobalEnv)
+              else rm(".Random.seed", envir = .GlobalEnv))
+      set.seed(1)
+      z <- actuar::rtrgamma(1000, 100, .0067, scale = exp(-log(100)/.0067))
+      near_power <- actuar::rtrgamma(10, 1e-6, 1e6)
+      any(!is.finite(z) | z == 0) || any(!is.finite(near_power) | near_power == 0)
+    },
+    replacement = function(n, shape1, shape2, rate = 1, scale = 1/rate) {
+      if (any(is.finite(shape1) & shape1 > 0 & shape1 < .01))
+        return(univariateML_reference_fixes[["actuar::qtrgamma"]]$replacement(
+          stats::runif(n), shape1, shape2, scale = scale))
+      exp(log(scale) + log(stats::rgamma(n, shape1, scale = 1))/shape2)
+    }
+  ),
+  "actuar::dinvtrgamma" = list(
+    broken = function() {
+      abs(actuar::dinvtrgamma(1, 1e10, 1, scale = 1e10, log = TRUE) -
+          stats::dgamma(1, 1e10, scale = 1e-10, log = TRUE)) > 1e-7
+    },
+    replacement = function(x, shape1, shape2, rate = 1, scale = 1/rate, log = FALSE) {
+      # actuar uses R's gamma backend too. Compose that backend's stable
+      # log density with the power Jacobian; keep actuar's endpoint rules.
+      ans <- actuar::dinvtrgamma(x, shape1, shape2, scale = scale, log = TRUE)
+      logu <- shape2 * (log(scale) - log(x))
+      u <- exp(logu)
+      stable <- stats::dgamma(u, shape1, scale = 1, log = TRUE) +
+        log(shape2) + logu - log(x)
+      good <- is.finite(stable)
+      ans[good] <- stable[good]
+      if (log) ans else exp(ans)
+    }
+  ),
+  "actuar::qinvtrgamma" = list(
+    broken = function() {
+      !isTRUE(all.equal(actuar::qinvtrgamma(1e-8, 100, .0065, scale = exp(log(100)/.0065)),
+                       exp(log(exp(log(100)/.0065)) - log(stats::qgamma(1e-8, 100, lower.tail = FALSE))/.0065),
+                       tolerance = 1e-12)) ||
+        actuar::qinvtrgamma(-1000, 2, 1, log.p = TRUE) == 0 ||
+        !is.finite(actuar::qinvtrgamma(.5, 1e-6, 1e6)) ||
+        actuar::qinvtrgamma(.5, 1e-6, 1e6) == 0
+    },
+    replacement = function(p, shape1, shape2, rate = 1, scale = 1/rate,
+                           lower.tail = TRUE, log.p = FALSE) {
+      g <- stats::qgamma(p, shape1, scale = 1, lower.tail = !lower.tail, log.p = log.p)
+      logg <- log(g)
+      lost <- !is.na(g) & g < exp(-700)
+      if (any(lost)) {
+        lp <- if (log.p) { if (!lower.tail) p else log(-expm1(p)) } else {
+          if (!lower.tail) log(p) else log1p(-p)
+        }
+        anchor <- actuar::ptrgamma(exp(-700), shape1, 1, scale = 1, log.p = TRUE)
+        recovered <- -700 + (lp - anchor)/shape1
+        logg[lost] <- recovered[lost]
+      }
+      exp(log(scale) - logg/shape2)
+    }
+  ),
+  "actuar::rinvtrgamma" = list(
+    broken = function() {
+      had_seed <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+      if (had_seed) saved_seed <- get(".Random.seed", envir = .GlobalEnv)
+      on.exit(if (had_seed) assign(".Random.seed", saved_seed, envir = .GlobalEnv)
+              else rm(".Random.seed", envir = .GlobalEnv))
+      set.seed(1)
+      z <- actuar::rinvtrgamma(1000, 100, .0065, scale = exp(log(100)/.0065))
+      near_power <- actuar::rinvtrgamma(10, 1e-6, 1e6)
+      any(!is.finite(z) | z == 0) || any(!is.finite(near_power) | near_power == 0)
+    },
+    replacement = function(n, shape1, shape2, rate = 1, scale = 1/rate) {
+      if (any(is.finite(shape1) & shape1 > 0 & shape1 < .01))
+        return(univariateML_reference_fixes[["actuar::qinvtrgamma"]]$replacement(
+          stats::runif(n), shape1, shape2, scale = scale))
+      exp(log(scale) + log(actuar::rinvgamma(n, shape1, scale = 1))/shape2)
+    }
+  ),
+  "actuar::ptrgamma" = list(
+    broken = function() {
+      actuar::ptrgamma(.9, 1e-6, 1e6) == 0
+    },
+    replacement = function(q, shape1, shape2, rate = 1, scale = 1/rate,
+                           lower.tail = TRUE, log.p = FALSE) {
+      ans <- actuar::ptrgamma(q, shape1, shape2, scale = scale,
+                                lower.tail = lower.tail, log.p = log.p)
+      logu <- shape2 * (log(q) - log(scale))
+      lost <- !is.na(logu) & logu < -700 & q > 0
+      if (any(lost)) {
+        anchor <- actuar::ptrgamma(exp(-700), shape1, 1, scale = 1, log.p = TRUE)
+        lp <- anchor + shape1 * (logu + 700)
+        value <- if (lower.tail) { if (log.p) lp else exp(lp) } else {
+          if (log.p) log(-expm1(lp)) else -expm1(lp)
+        }
+        ans[lost] <- value[lost]
+      }
+      ans
+    }
+  ),
+  "actuar::pinvtrgamma" = list(
+    broken = function() {
+      actuar::pinvtrgamma(1/.9, 1e-6, 1e6) == 1
+    },
+    replacement = function(q, shape1, shape2, rate = 1, scale = 1/rate,
+                           lower.tail = TRUE, log.p = FALSE) {
+      ans <- actuar::pinvtrgamma(q, shape1, shape2, scale = scale,
+                                lower.tail = lower.tail, log.p = log.p)
+      logu <- shape2 * (log(scale) - log(q))
+      lost <- !is.na(logu) & logu < -700 & q > 0
+      if (any(lost)) {
+        anchor <- actuar::ptrgamma(exp(-700), shape1, 1, scale = 1, log.p = TRUE)
+        lp <- anchor + shape1 * (logu + 700)
+        value <- if (!lower.tail) { if (log.p) lp else exp(lp) } else {
+          if (log.p) log(-expm1(lp)) else -expm1(lp)
+        }
+        ans[lost] <- value[lost]
+      }
+      ans
+    }
   )
 )
 
@@ -441,3 +605,208 @@ to_univariateML <- function(y, obj) {
 
   obj
 }
+
+
+# extraDistr 1.10.0.5 subtracts rounded/underflowed normal probabilities.
+# Reconstruct conditional probabilities by integrating its untruncated normal
+# density relative to the interval mode. No independent R density is supplied.
+# The normal scaling identity keeps reference log densities away from underflow.
+univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
+  lognormal <- function(z) {
+    k <- pmax(1, abs(z) / 8)
+    c0 <- extraDistr::dtnorm(0, log = TRUE)
+    c0 + k^2 * (extraDistr::dtnorm(z / k, log = TRUE) - c0)
+  }
+  coordinates <- function(mean, sd, a, b) {
+    centre <- min(max(mean, a), b); scale <- min(sd, b-a)
+    list(centre = centre, scale = scale, t1 = ((mean-centre)/sd)*(scale/sd),
+         t2 = -.5*(scale/sd)^2, lo = (a-centre)/scale, hi = (b-centre)/scale)
+  }
+  mass <- function(a, b, t1, t2) {
+    if (a >= b) return(-Inf)
+    mode <- min(max(-t1/(2*t2), a), b)
+    g <- t1 + 2*t2*mode
+    root <- sqrt(g*g - 320*t2)
+    if (g >= 0) {
+      right <- (-g-root)/(2*t2); left <- 80/(t2*right)
+    } else {
+      left <- (-g+root)/(2*t2); right <- 80/(t2*left)
+    }
+    lo <- max(a-mode, left); hi <- min(b-mode, right); w <- hi-lo
+    kernel <- function(u) {
+      d <- lo + w*u
+      exp(lognormal(sqrt(-2*t2)*d) - lognormal(0) + g*d)
+    }
+    mode*(t1+t2*mode) + log(w) + log(stats::integrate(kernel, 0, 1,
+      rel.tol = 2e-12, subdivisions = 200L)$value)
+  }
+  broken <- function() {
+    z <- suppressWarnings(extraDistr::dtnorm(10.05, a = 10, log = TRUE))
+    !is.finite(z) || abs(z - 1.81109661730779) > 1e-9 ||
+      !is.finite(suppressWarnings(extraDistr::dtnorm(40.01, a = 40, b = 41, log = TRUE))) ||
+      !is.finite(suppressWarnings(extraDistr::dtnorm(-39.9, a = -40, log = TRUE)))
+  }
+  density <- function(x, mean = 0, sd = 1, a = -Inf, b = Inf, log = FALSE) {
+    c <- coordinates(mean, sd, a, b)
+    total <- mass(c$lo, c$hi, c$t1, c$t2)
+    u <- (x-c$centre)/c$scale
+    ans <- lognormal(sqrt(-2*c$t2)*u) - lognormal(0) + c$t1*u - base::log(c$scale) - total
+    ans[x <= a | x >= b] <- -Inf
+    if (log) ans else exp(ans)
+  }
+  cdf <- function(q, mean = 0, sd = 1, a = -Inf, b = Inf,
+                  lower.tail = TRUE, log.p = FALSE) {
+    c <- coordinates(mean, sd, a, b)
+    al <- c$lo; be <- c$hi
+    total <- mass(al, be, c$t1, c$t2)
+    vapply(q, function(x) {
+      z <- (x - c$centre)/c$scale
+      if (is.na(z)) return(z)
+      if (z <= al) lp <- if (lower.tail) -Inf else 0
+      else if (z >= be) lp <- if (lower.tail) 0 else -Inf
+      else {
+        below <- mass(al, z, c$t1, c$t2) - total; above <- mass(z, be, c$t1, c$t2) - total
+        complement <- function(v) log(-expm1(min(0, v)))
+        if (below > above) below <- complement(above) else above <- complement(below)
+        lp <- if (lower.tail) below else above
+      }
+      if (log.p) lp else exp(lp)
+    }, numeric(1))
+  }
+  quantile <- function(p, mean = 0, sd = 1, a = -Inf, b = Inf,
+                       lower.tail = TRUE, log.p = FALSE) {
+    vapply(p, function(v) {
+      lp <- if (log.p) v else log(v)
+      if (is.na(lp) || lp > 0) return(NaN)
+      if (lp == -Inf) return(if (lower.tail) a else b)
+      if (lp == 0) return(if (lower.tail) b else a)
+      # Solve for the smaller tail in standardized coordinates.
+      lower <- lower.tail
+      if (lp > -log(2)) { lp <- log(-expm1(lp)); lower <- !lower }
+      c <- coordinates(mean, sd, a, b)
+      al <- c$lo; be <- c$hi
+      centre <- 0
+      f <- function(z) cdf(c$centre + c$scale*z, mean = mean, sd = sd,
+                            a = a, b = b, lower.tail = lower, log.p = TRUE) - lp
+      lo <- if (is.finite(al)) al else centre - 1
+      hi <- if (is.finite(be)) be else centre + 1
+      step <- 1
+      while (!is.finite(al) && (if (lower) f(lo) > 0 else f(lo) < 0)) {
+        step <- step * 2; lo <- centre - step
+      }
+      step <- 1
+      while (!is.finite(be) && (if (lower) f(hi) < 0 else f(hi) > 0)) {
+        step <- step * 2; hi <- centre + step
+      }
+      z <- stats::uniroot(f, c(lo, hi), tol = 1e-12)$root
+      min(max(c$centre + c$scale*z, a), b)
+    }, numeric(1))
+  }
+  list("extraDistr::dtnorm" = list(broken = broken, replacement = density),
+       "extraDistr::ptnorm" = list(broken = function() {
+         !isTRUE(all.equal(suppressWarnings(extraDistr::ptnorm(10.05, a = 10)),
+                          0.3971837723052376, tolerance = 1e-12)) ||
+           !is.finite(suppressWarnings(extraDistr::ptnorm(40.01, a = 40, b = 41)))
+       }, replacement = cdf),
+       "extraDistr::qtnorm" = list(broken = function() {
+         !is.finite(suppressWarnings(extraDistr::qtnorm(.5, a = 40, b = 41)))
+       }, replacement = quantile))
+}))
+
+# extraDistr GEV: stable transforms of its own Gumbel functions.
+univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
+  quantile <- function(p, mu = 0, sigma = 1, xi = 0,
+                       lower.tail = TRUE, log.p = FALSE) {
+    z <- extraDistr::qgumbel(p, lower.tail = lower.tail, log.p = log.p)
+    n <- max(length(z), length(mu), length(sigma), length(xi))
+    if (!length(z) || !length(mu) || !length(sigma) || !length(xi)) return(numeric())
+    z <- rep_len(z, n); xi <- rep_len(xi, n)
+    y <- z
+    nonzero <- which(!is.na(xi) & xi != 0)
+    y[nonzero] <- expm1(xi[nonzero] * z[nonzero])/xi[nonzero]
+    out <- rep_len(mu, n) + rep_len(sigma, n) * y
+    out[is.na(xi) | rep_len(sigma, n) <= 0] <- NaN
+    out
+  }
+  cdf <- function(q, mu = 0, sigma = 1, xi = 0,
+                  lower.tail = TRUE, log.p = FALSE) {
+    # Retain the reference for all but the unstable upper-tail logarithm.
+    if (lower.tail || !log.p)
+      return(extraDistr::pgev(q, mu, sigma, xi, lower.tail, log.p))
+    n <- max(length(q), length(mu), length(sigma), length(xi))
+    if (!length(q) || !length(mu) || !length(sigma) || !length(xi)) return(numeric())
+    z <- (rep_len(q, n) - rep_len(mu, n))/rep_len(sigma, n)
+    xi <- rep_len(xi, n)
+    t <- -z
+    j <- which(!is.na(xi) & xi != 0 & !is.na(z) & 1 + xi*z > 0)
+    t[j] <- -log1p(xi[j]*z[j])/xi[j]
+    # log(1-exp(-exp(t))) tends to t below the exponential underflow range.
+    ans <- t
+    j <- which(!is.na(t) & t > -36)
+    ans[j] <- log(-expm1(-exp(t[j])))
+    ans[which(!is.na(z) & !is.na(xi) & xi*z <= -1 & xi > 0)] <- 0
+    ans[which(!is.na(z) & !is.na(xi) & xi*z <= -1 & xi < 0)] <- -Inf
+    ans[is.na(xi) | rep_len(sigma, n) <= 0] <- NaN
+    ans
+  }
+  list(
+    "extraDistr::qgev" = list(
+      broken = function() {
+        !isTRUE(all.equal(extraDistr::qgev(.5, xi = 1e-16),
+                         -log(log(2)), tolerance = 1e-12)) ||
+          extraDistr::qgev(1, xi = -.5) != 2
+      }, replacement = quantile),
+    "extraDistr::pgev" = list(
+      broken = function() {
+        !isTRUE(all.equal(extraDistr::pgev(1000, lower.tail = FALSE, log.p = TRUE),
+                         -1000, tolerance = 1e-12))
+      }, replacement = cdf),
+    "extraDistr::rgev" = list(
+      broken = function() {
+        had_seed <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+        if (had_seed) saved_seed <- get(".Random.seed", envir = .GlobalEnv)
+        on.exit(if (had_seed) assign(".Random.seed", saved_seed, envir = .GlobalEnv)
+                else rm(".Random.seed", envir = .GlobalEnv))
+        set.seed(1)
+        actual <- extraDistr::rgev(10, xi = 1e-16)
+        set.seed(1)
+        expected <- expm1(1e-16 * extraDistr::rgumbel(10))/1e-16
+        !isTRUE(all.equal(sort(actual), sort(expected), tolerance = 1e-12))
+      },
+      replacement = function(n, mu = 0, sigma = 1, xi = 0) {
+        z <- extraDistr::rgumbel(n)
+        nout <- length(z)
+        xi <- rep_len(xi, nout)
+        y <- z
+        j <- which(!is.na(xi) & xi != 0)
+        y[j] <- expm1(xi[j]*z[j])/xi[j]
+        ans <- rep_len(mu, nout) + rep_len(sigma, nout)*y
+        ans[is.na(xi) | rep_len(sigma, nout) <= 0] <- NaN
+        ans
+      })
+  )
+}))
+
+# Recycle parameter vectors while retaining scalar integration coordinates.
+for (.key in paste0("extraDistr::", c("dtnorm", "ptnorm", "qtnorm"))) {
+  univariateML_reference_fixes[[.key]]$replacement <- local({
+    scalar <- univariateML_reference_fixes[[.key]]$replacement
+    wrapper <- function() NULL
+    # Preserve the reference formal names (including x/q/p and flags).
+    formals(wrapper) <- formals(scalar)
+    body(wrapper) <- substitute({
+      x <- ARG
+      if (any(lengths(list(x, mean, sd, a, b)) == 0)) return(numeric())
+      mapply(function(x, mean, sd, a, b) {
+        if (anyNA(c(mean, sd, a, b)) || !is.finite(mean) ||
+            !is.finite(sd) || sd <= 0 || a >= b) return(NaN)
+        CALL
+      }, x, mean, sd, a, b, USE.NAMES = FALSE)
+    }, list(ARG = as.name(names(formals(scalar))[1]),
+            CALL = if ("log" %in% names(formals(scalar)))
+              quote(scalar(x, mean, sd, a, b, log = log)) else
+              quote(scalar(x, mean, sd, a, b, lower.tail = lower.tail, log.p = log.p))))
+    wrapper
+  })
+}
+rm(.key)

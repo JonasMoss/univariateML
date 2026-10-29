@@ -22,6 +22,8 @@ The translated half-normal distribution models nonnegative normal deviations fro
 
 ## Details
 
+`extraDistr::dtnorm`, `ptnorm` and `qtnorm` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
+
 The support is $(\mu, \infty)$ and `sigma` is a scale, not the standard deviation. The likelihood is maximised at the boundary `mu = min(x)` with `sigma = sqrt(mean((x - mu)^2))`. `extraDistr::dtnorm` excludes its lower endpoint, so the fitter reports `mu` as the largest double below `min(x)`; then `dml` is positive at every observation and `sum(dml(x, fit, log = TRUE))` equals `logLik`. At least two distinct observations are required: for constant data the likelihood is unbounded as `sigma` tends to zero.
 
 Data with a sharp maximum instead of a minimum come from the reflected model; fit `mlhnorm(-x)`.
