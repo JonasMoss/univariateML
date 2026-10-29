@@ -166,3 +166,12 @@ TEST_CASE("sstd: half t scale root strict inequality and finite equality supremu
   CHECK(std::isfinite(cppunivariate::sstd_detail::half_t_profile(regular,.5,logscale)));
   CHECK(std::isfinite(logscale));
 }
+
+TEST_CASE("sstd package dpqr preserve logarithmic tails") {
+  for (bool lower : {false, true}) {
+    for (double lp : {-1000.0, -100.0, -2.0, -0.1}) {
+      const double x = cppunivariate::distributions::qsstd(lp, 0.3, 1.7, 5.0, 1.8, lower, true);
+      CHECK(cppunivariate::distributions::psstd(x, 0.3, 1.7, 5.0, 1.8, lower, true) == doctest::Approx(lp).epsilon(2e-12));
+    }
+  }
+}

@@ -22,7 +22,7 @@ for (dens in densities) {
   # Use the interior regression sample for this successful-fit contract.
   if (identical(dens, "mlstd")) {
     set.seed(313)
-    x <- fGarch::rstd(500, nu = 4)
+    x <- rstd(500, nu = 4)
   }
   if (identical(dens, "mllst")) {
     # The default ten-point sample escapes to normal; use interior t data.
@@ -35,14 +35,14 @@ for (dens in densities) {
     x <- simulate_default(dens, 500)
   }
   if (dens == "mlsstd") {
-    # This small default sample has its supremum on the half-t face.
-    expect_error(mlsstd(x), "translated half-t.*the MLE does not exist")
+    # This owned-RNG default sample selects the half-normal corner.
+    expect_error(mlsstd(x), "translated half-normal.*Use .mlhnorm.")
     set.seed(313)
-    x <- fGarch::rsstd(500)
+    x <- rsstd(500)
   }
   if (dens %in% c("mlged", "mlsged")) {
     set.seed(812)
-    x <- fGarch::rged(500, nu = 1.5)
+    x <- rged(500, nu = 1.5)
   }
   if (dens %in% c("mlburr", "mlinvburr")) {
     # The free-scale ten-point fit can select a limit model.

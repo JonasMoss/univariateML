@@ -18,9 +18,9 @@ Depends:
 Imports:
     Rcpp,
     extraDistr,
-    actuar,
-    fGarch
+    actuar
 Suggests:
+    fGarch,
     logitnorm,
     nakagami,
     sads,

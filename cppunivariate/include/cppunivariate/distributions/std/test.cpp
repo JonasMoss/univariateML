@@ -131,3 +131,12 @@ TEST_CASE("std: free df tie collapse and equality") {
     }
   }
 }
+
+TEST_CASE("std package dpqr preserve logarithmic tails") {
+  for (bool lower : {false, true}) {
+    for (double lp : {-1000.0, -100.0, -2.0, -0.1}) {
+      const double x = cppunivariate::distributions::qstd(lp, 0.3, 1.7, 5.0, lower, true);
+      CHECK(cppunivariate::distributions::pstd(x, 0.3, 1.7, 5.0, lower, true) == doctest::Approx(lp).epsilon(2e-12));
+    }
+  }
+}

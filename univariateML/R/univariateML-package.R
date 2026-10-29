@@ -38,7 +38,6 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom extraDistr dlomax
 #' @importFrom actuar dburr
-#' @importFrom fGarch dged
 #' @useDynLib univariateML, .registration = TRUE
 ## usethis namespace: end
 NULL

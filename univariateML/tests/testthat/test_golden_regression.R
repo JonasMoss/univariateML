@@ -45,7 +45,8 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
       set_golden_seed(g$seed)
       # Sample size by position: stats::rhyper calls it `nn`.
       # jsonlite reads infinite sampler arguments as strings.
-      data <- do.call(resolve_callable(g$sampler), c(list(g$n), lapply(g$sampler_args, as.numeric)))
+      data <- if (startsWith(g$sampler, "fGarch::")) as.numeric(unlist(g$data)) else
+        do.call(resolve_callable(g$sampler), c(list(g$n), lapply(g$sampler_args, as.numeric)))
 
       # fit_args: required design quantities (README fit_args).
       fn <- getExportedValue("univariateML", paste0("ml", g$id))

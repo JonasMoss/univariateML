@@ -22,6 +22,8 @@
 #include <boost/math/policies/policy.hpp>
 #include <boost/math/special_functions/zeta.hpp>
 #include <cmath>
+#include <limits>
+#include <boost/math/special_functions/gamma.hpp>
 
 namespace cppunivariate {
 namespace special {
@@ -304,6 +306,133 @@ inline double poisson_quantile(double x, double a, bool lower_tail) {
 // Extended precision tail primitives for the package-owned transformed laws.
 inline long double normal_cdf_extended(double x, bool lower) { const boost::math::normal_distribution<long double, NoThrowPolicy> d; return lower ? boost::math::cdf(d, static_cast<long double>(x)) : boost::math::cdf(boost::math::complement(d, static_cast<long double>(x))); }
 inline long double gamma_cdf_extended(double x, double a, bool lower) { const boost::math::gamma_distribution<long double, NoThrowPolicy> d(a); return lower ? boost::math::cdf(d, static_cast<long double>(x)) : boost::math::cdf(boost::math::complement(d, static_cast<long double>(x))); }
+
+// Log-tail primitives for the package-owned Fernandez--Steel families.
+// Evaluate the smaller tail first, retaining complements with log1p/expm1.
+inline double fs_log1mexp(double x) {
+  return x < -0.6931471805599453 ? std::log1p(-std::exp(x)) : std::log(-std::expm1(x));
+}
+inline double fs_normal_p(double x, bool lower, bool log_p) {
+  const double a = std::fabs(x);
+  const boost::math::normal_distribution<long double, NoThrowPolicy> d;
+  const long double tail = boost::math::cdf(boost::math::complement(d, (long double)a));
+  double lp = (double)std::log(tail);
+  if (tail == 0.0L && std::isfinite(a)) {
+    // Mills expansion: terms decrease rapidly in the underflow region.
+    const double inv = 1.0/a/a;
+    double sum = 1.0, term = 1.0;
+    for (int k=1; k<=12; ++k) { term *= -(2*k-1)*inv; sum += term; }
+    lp = -0.5*a*a - std::log(a) - 0.5*std::log(2.0*M_PI) + std::log(sum);
+  }
+  if ((x < 0.0) != lower) lp = fs_log1mexp(lp);
+  return log_p ? lp : std::exp(lp);
+}
+
+// Positive-root inversion for log probabilities beyond the backend exponent
+// range. This fallback also avoids exp(log_p) underflow on platforms where
+// long double has the same range as double.
+template <typename LogTail>
+inline double fs_log_quantile(double lp, LogTail tail) {
+  double hi = 1.0;
+  while (tail(hi) > lp) {
+    if (hi >= std::numeric_limits<double>::max()/2.0) return kPosInf;
+    hi *= 2.0;
+  }
+  double lo = 0.0;
+  for (int i=0; i<1100; ++i) {
+    const double mid = lo + (hi-lo)*0.5;
+    if (mid == lo || mid == hi) break;
+    if (tail(mid) > lp) lo = mid; else hi = mid;
+  }
+  return lo + (hi-lo)*0.5;
+}
+inline double fs_normal_q(double lp, bool lower) {
+  if (lp > -std::log(2.0)) return fs_normal_q(fs_log1mexp(lp), !lower);
+  if (lp == kNegInf) return lower ? kNegInf : kPosInf;
+  const boost::math::normal_distribution<long double, NoThrowPolicy> d;
+  const double q = lp < std::log(std::numeric_limits<long double>::min()) + 2.0L ? fs_log_quantile(lp, [](double x) { return fs_normal_p(x,false,true); })
+      : (double)boost::math::quantile(boost::math::complement(d, std::exp((long double)lp)));
+  return lower ? -q : q;
+}
+
+// Continued fraction for the incomplete beta used only when the direct
+// Student tail underflows. The logarithmic prefactor is never exponentiated.
+inline double fs_beta_fraction(double a, double b, double x) {
+  const double tiny = 1e-300;
+  double c=1.0, d=1.0-(a+b)*x/(a+1.0);
+  if (std::fabs(d)<tiny) d=tiny;
+  d=1.0/d;
+  double h=d;
+  for (int m=1;m<=10000;++m) {
+    const double m2=2.0*m;
+    double aa=m*(b-m)*x/((a+m2-1.0)*(a+m2));
+    d=1.0+aa*d; if(std::fabs(d)<tiny) d=tiny;
+    c=1.0+aa/c; if(std::fabs(c)<tiny) c=tiny;
+    d=1.0/d; h*=d*c;
+    aa=-(a+m)*(a+b+m)*x/((a+m2)*(a+m2+1.0));
+    d=1.0+aa*d; if(std::fabs(d)<tiny) d=tiny;
+    c=1.0+aa/c; if(std::fabs(c)<tiny) c=tiny;
+    d=1.0/d;
+    const double change=d*c; h*=change;
+    if(std::fabs(change-1.0)<4e-16) break;
+  }
+  return h;
+}
+inline double fs_t_p(double x, double nu, bool lower, bool log_p) {
+  const double a = std::fabs(x);
+  const boost::math::students_t_distribution<long double, NoThrowPolicy> d(nu);
+  const long double tail = boost::math::cdf(boost::math::complement(d, (long double)a));
+  double lp = (double)std::log(tail);
+  if (tail == 0.0L && std::isfinite(a)) {
+    const double logz = -std::log1p(a/std::sqrt(nu)*(a/std::sqrt(nu)));
+    const double stable_logz = std::isfinite(logz) ? logz : std::log(nu)-2.0*std::log(a);
+    const double z = std::exp(stable_logz);
+    const double aa=nu/2.0;
+    // Gamma ratio from Boost avoids cancellation at large degrees of freedom.
+    const double logbeta = std::log(boost::math::tgamma_delta_ratio(aa,0.5,NoThrowPolicy{})) + 0.5*std::log(M_PI);
+    lp = -std::log(2.0) + aa*stable_logz + 0.5*std::log1p(-z)
+        - logbeta + std::log(fs_beta_fraction(aa,0.5,z)/aa);
+  }
+  if ((x < 0.0) != lower) lp=fs_log1mexp(lp);
+  return log_p ? lp : std::exp(lp);
+}
+inline double fs_t_q(double lp, double nu, bool lower) {
+  if (lp > -std::log(2.0)) return fs_t_q(fs_log1mexp(lp), nu, !lower);
+  if (lp == kNegInf) return lower ? kNegInf : kPosInf;
+  const boost::math::students_t_distribution<long double, NoThrowPolicy> d(nu);
+  const double q = lp < std::log(std::numeric_limits<long double>::min()) + 2.0L ? fs_log_quantile(lp, [&](double x) { return fs_t_p(x,nu,false,true); })
+      : (double)boost::math::quantile(boost::math::complement(d,std::exp((long double)lp)));
+  return lower ? -q : q;
+}
+inline double fs_gamma_p(double x, double shape, bool lower, bool log_p) {
+  if (x == kPosInf) return lower ? (log_p ? 0.0 : 1.0) : (log_p ? kNegInf : 0.0);
+  const boost::math::gamma_distribution<long double, NoThrowPolicy> d(shape);
+  const long double p=boost::math::cdf(d,(long double)x);
+  const long double q=boost::math::cdf(boost::math::complement(d,(long double)x));
+  double lp=(double)std::log(p), lq=(double)std::log(q);
+  if(q==0.0L && std::isfinite(x)) {
+    double sum=1.0, term=1.0;
+    for(int k=1;k<=100;++k) {
+      term *= (shape-k)/x; sum += term;
+      if(std::fabs(term)<std::fabs(sum)*2e-16) break;
+    }
+    lq=(shape-1.0)*std::log(x)-x-std::lgamma(shape)+std::log(sum);
+  }
+  if(p>0.5L) lp=fs_log1mexp(lq);
+  else lq=fs_log1mexp(lp);
+  const double result=lower ? lp : lq;
+  return log_p ? result : std::exp(result);
+}
+inline double fs_gamma_q(double lp, double shape, bool lower) {
+  if(lp > -std::log(2.0)) return fs_gamma_q(fs_log1mexp(lp),shape,!lower);
+  if(lp==kNegInf) return lower ? 0.0 : kPosInf;
+  const boost::math::gamma_distribution<long double, NoThrowPolicy> d(shape);
+  if(!lower && lp < std::log(std::numeric_limits<long double>::min()) + 2.0L)
+    return fs_log_quantile(lp,[&](double x) { return fs_gamma_p(x,shape,false,true); });
+  const long double p=std::exp((long double)lp);
+  return (double)(lower ? boost::math::quantile(d,p)
+      : boost::math::quantile(boost::math::complement(d,p)));
+}
 
 } // namespace special
 } // namespace cppunivariate

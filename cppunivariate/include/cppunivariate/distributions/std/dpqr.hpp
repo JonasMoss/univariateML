@@ -1,59 +1,29 @@
-// Standardised Student-t (mean = mean, sd = sd, df = nu > 2).
-//
-// X ~ std(mean, sd, nu) iff (X - mean)/sd has variance 1 and is t-distributed
-// with df = nu rescaled by sqrt(nu/(nu-2)). Requires nu > 2.
-
+// Package-defined, mean/standard-deviation parameterisation.
 #pragma once
-
-#include "../../special/constants.hpp"
+#include "../snorm/fs.hpp"
+#include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
-#include <cmath>
-
 namespace cppunivariate {
 namespace distributions {
-
-using cppunivariate::special::kNaN;
-
 inline double dstd(double x, double mean, double sd, double nu, bool log) {
-  if (!(sd > 0.0 && nu > 2.0) || !std::isfinite(x)) {
-    return kNaN;
-  }
-  const double scale = std::sqrt(nu / (nu - 2.0));
-  const double z = (x - mean) / sd;
-  const double logdens = cppunivariate::special::dt(z * scale, nu, /*log=*/true) +
-                         std::log(scale / sd);
-  return log ? logdens : std::exp(logdens);
+  if (!(fs::valid(mean, sd, nu, 1.0) && nu > 2.0) || std::isnan(x)) return cppunivariate::special::kNaN;
+  const double z = (x - mean)/sd;
+  const double ld = fs::std_logdensity(z, nu) - std::log(sd);
+  return log ? ld : std::exp(ld);
 }
-
-inline double pstd(double q, double mean, double sd, double nu,
-                   bool lower_tail, bool log_p) {
-  if (!(sd > 0.0 && nu > 2.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  const double scale = std::sqrt(nu / (nu - 2.0));
-  const double z = (q - mean) / sd;
-  return cppunivariate::special::pt(z * scale, nu, lower_tail, log_p);
+inline double pstd(double x, double mean, double sd, double nu, bool lower_tail, bool log_p) {
+  if (!(fs::valid(mean, sd, nu, 1.0) && nu > 2.0) || std::isnan(x)) return cppunivariate::special::kNaN;
+  return cppunivariate::special::fs_t_p((x-mean)/sd*std::sqrt(nu/(nu-2.0)), nu, lower_tail, log_p);
 }
-
-inline double qstd(double p, double mean, double sd, double nu,
-                   bool lower_tail, bool log_p) {
-  if (!(sd > 0.0 && nu > 2.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  const double scale = std::sqrt(nu / (nu - 2.0));
-  const double z = cppunivariate::special::qt(p, nu, /*lower_tail=*/true,
-                                       /*log_p=*/false);
-  return z / scale * sd + mean;
+inline double qstd(double p, double mean, double sd, double nu, bool lower_tail, bool log_p) {
+  if (!(fs::valid(mean, sd, nu, 1.0) && nu > 2.0)) return cppunivariate::special::kNaN;
+  const double lp = fs::logprob(p, log_p);
+  if (std::isnan(lp)) return lp;
+  return mean + sd/std::sqrt(nu/(nu-2.0))*cppunivariate::special::fs_t_q(lp, nu, lower_tail);
 }
-
 template <typename Rng>
 inline double rstd(Rng &rng, double mean, double sd, double nu) {
+  if (!(fs::valid(mean, sd, nu, 1.0) && nu > 2.0)) return cppunivariate::special::kNaN;
   const double z = rng.rt(nu);
   const double scale = std::sqrt(nu / (nu - 2.0));
   return z / scale * sd + mean;

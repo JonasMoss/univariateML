@@ -7,8 +7,8 @@ params:
   - {name: sd, role: scale, domain: "(0, inf)", default: 1.0}
   - {name: nu, role: df, fixable: true, domain: "(2, inf)", default: 3.0}
 r:
-  density: fGarch::dstd
-  sampler: fGarch::rstd
+  density: dstd
+  sampler: rstd
   control:
     gradtol: Tolerance on the norm of the finite-difference gradient of the total negative log-likelihood in transformed coordinates.
     iterlim: Maximum number of iterations.

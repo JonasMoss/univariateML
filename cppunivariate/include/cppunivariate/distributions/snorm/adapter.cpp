@@ -28,3 +28,37 @@ Rcpp::List mlsnorm_(const Rcpp::NumericVector &x) {
           Rcpp::_["xi"] = res.xi),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
+
+#include "dpqr.h"
+#include "cppunivariate/distributions/snorm/dpqr.hpp"
+// [[Rcpp::export]]
+Rcpp::NumericVector dsnorm_(Rcpp::NumericVector x, Rcpp::NumericVector mean, Rcpp::NumericVector sd, Rcpp::NumericVector xi, bool log=false) {
+  return dist_impl::dpqr_apply({x, mean, sd, xi}, [&](const std::vector<double> &a) {
+    return cppunivariate::distributions::dsnorm(a[0], a[1], a[2], a[3], log);
+  });
+}
+// [[Rcpp::export]]
+Rcpp::NumericVector psnorm_(Rcpp::NumericVector q, Rcpp::NumericVector mean, Rcpp::NumericVector sd, Rcpp::NumericVector xi, bool lower_tail=true, bool log_p=false) {
+  return dist_impl::dpqr_apply({q, mean, sd, xi}, [&](const std::vector<double> &a) {
+    return cppunivariate::distributions::psnorm(a[0], a[1], a[2], a[3], lower_tail, log_p);
+  });
+}
+// [[Rcpp::export]]
+Rcpp::NumericVector qsnorm_(Rcpp::NumericVector p, Rcpp::NumericVector mean, Rcpp::NumericVector sd, Rcpp::NumericVector xi, bool lower_tail=true, bool log_p=false) {
+  return dist_impl::dpqr_apply({p, mean, sd, xi}, [&](const std::vector<double> &a) {
+    return cppunivariate::distributions::qsnorm(a[0], a[1], a[2], a[3], lower_tail, log_p);
+  });
+}
+struct SNORMRng {
+  double runif(double a, double b) { return R::runif(a,b); }
+  double rnorm() { return R::rnorm(0,1); }
+  double rt(double nu) { return R::rt(nu); }
+  double rgamma(double a, double b) { return R::rgamma(a,b); }
+};
+// [[Rcpp::export]]
+Rcpp::NumericVector rsnorm_(int n, Rcpp::NumericVector mean, Rcpp::NumericVector sd, Rcpp::NumericVector xi) {
+  SNORMRng rng;
+  return dist_impl::dpqr_apply({Rcpp::NumericVector(n), mean, sd, xi}, [&](const std::vector<double> &a) {
+    return cppunivariate::distributions::rsnorm(rng, a[1], a[2], a[3]);
+  });
+}
