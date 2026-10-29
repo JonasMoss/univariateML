@@ -31,6 +31,11 @@
   with known `size`; its `qml()` inverts the reference CDF because
   extraDistr has no `qbbinom`).
 
+* `mlbnbinom()` (beta negative binomial; Irwin's generalized Waring
+  distribution, which includes the Waring and a shifted Yule–Simon law).
+  `size` and `beta` are interchangeable, so with both free the fit reports
+  the representative with `size <= beta`.
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
