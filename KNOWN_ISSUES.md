@@ -45,6 +45,9 @@ record.
 | extraDistr 1.10.0.5 | `pdweibull` does not floor its argument | `extraDistr::pdweibull(0.5, 0.7, 1)` is 0.414, should be `pdweibull(0, 0.7, 1)` = 0.3 | repaired at runtime in `univariateML_reference_fixes` |
 | extraDistr 1.10.0.5 | `ddweibull(log = TRUE)` is `-Inf` far in the tail (log of a difference of underflowed powers) | `extraDistr::ddweibull(1000, 0.999, 2, log = TRUE)`, should be -1000.645 | `dml(..., log = TRUE)` far in the tail |
 | extraDistr 1.10.0.5 | no `qbbinom`; `dbbinom`/`pbbinom` lose accuracy at huge shapes (large `lbeta` differences) | `extraDistr::dbbinom(5, 10, 1e12, 1e12, log = TRUE)` is -1.40186, should be -1.40204 | `qml` built from `pbbinom` by integer inversion (`univariateML_reference_quantiles`); fits near the binomial face |
+| extraDistr 1.10.0.5 | `dhcauchy(log = TRUE)` and `dht(log = TRUE)` overflow the squared observation/scale ratio | `extraDistr::dhcauchy(1e200, log = TRUE)` is `-Inf`, should be about -921.486 | repaired at runtime in `univariateML_reference_fixes` |
+| extraDistr 1.10.0.5 | `phcauchy`, `pht`, `phnorm` upper-tail log CDFs are `-Inf` (complement of the lower CDF) | `extraDistr::phcauchy(1e20, lower.tail = FALSE, log.p = TRUE)`, should be about -46.503 | repaired at runtime |
+| extraDistr 1.10.0.5 | `qhcauchy`, `qht`, `qhnorm` round extreme upper probabilities away | `extraDistr::qht(-100, 3, lower.tail = FALSE, log.p = TRUE)` is `Inf`, should be about 3.90e14 | repaired at runtime |
 | nakagami 1.1.0 | `pnaka` is positive below the support | `nakagami::pnaka(-1, 2, 3)` is 0.144, should be 0 | historical: nakagami no longer used |
 
 Upstream trackers:

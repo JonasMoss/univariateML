@@ -71,6 +71,12 @@
   `size` and `beta` are interchangeable, so with both free the fit reports
   the representative with `size <= beta`.
 
+* `mlhcauchy()` and `mlht()` (half-Cauchy and half-t with endpoint 0),
+  and `mlhnorm(x, mu = 0)`: `mu` can now be held, giving extraDistr's
+  half-normal. The half-t stops with "use `mlhnorm(x, mu = 0)`" at its
+  normal limit; with free df any zero in the data makes its likelihood
+  unbounded, and its df profile can have two maxima.
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
