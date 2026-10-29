@@ -236,7 +236,7 @@ TEST_CASE("gpd: free shape crosses the exponential member") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("gpd: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("gpd: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("gpd",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgpd(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgpd(x, p[0], p[1], p[2], lower, log); },
@@ -258,4 +258,33 @@ TEST_CASE("gpd: held scale shape profile and all held") {
  CHECK(cppunivariate::gpd_mle(data,1e-12,1,0,nan,1).status==cppunivariate::GpdStatus::IterationFailure);
  const std::vector<double> one{1};
  CHECK(cppunivariate::gpd_mle(mltest::as_span(one),1e-12,200,0,nan,2).status==cppunivariate::GpdStatus::Ok);
+}
+
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp; mp.mp.dps=100
+// xi=mp.mpf(0.3); lp=mp.mpf(-690.7755278982137)
+// print(mp.expm1(-xi*mp.log1p(-mp.exp(lp)))/xi)
+// print(-mp.log(1))  # log right-hand density at mu, sigma=1
+TEST_CASE("gpd: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::dgpd(0.0, 0.0, 1.0, 0.3, true) == doctest::Approx(0.0).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qgpd(-690.7755278982137, 0.0, 1.0, 0.3, true, true) == doctest::Approx(1.0000000000000237e-300).epsilon(1e-10));
+}
+
+// Generating mpmath snippet at the exact binary64 endpoint neighbour:
+// import mpmath as mp; mp.mp.dps=100
+// m,s,a=map(mp.mpf,[0.0, 1.0, -0.42]); x=mp.mpf(2.380952380952381)
+// y=mp.log1p(a*(x-m)/s)/a
+// print(-mp.log(s)-(1+a)*y, mp.log(-mp.expm1(-y)))
+TEST_CASE("gpd: exact binary64 finite-endpoint neighbour") {
+  CHECK(cppunivariate::distributions::dgpd(2.380952380952381, 0.0, 1.0, -0.42, true) == doctest::Approx(-51.95184489919618).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pgpd(2.380952380952381, 0.0, 1.0, -0.42, true, true) == doctest::Approx(-1.2569300112272115e-39).epsilon(1e-10));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// x=mp.mpf(float.fromhex('0x0.0000000000001p-1022')); sigma=mp.mpf(0.8359420998453796)
+// print(mp.log(x)-mp.log(sigma))  # relative correction is below 1e-320
+TEST_CASE("gpd: targeted tail subnormal standardization") {
+  CHECK(cppunivariate::distributions::pgpd(std::numeric_limits<double>::denorm_min(),0,0.8359420998453796,0.33160253924642696,true,true)
+        == doctest::Approx(-744.2608759945272).epsilon(1e-10));
 }

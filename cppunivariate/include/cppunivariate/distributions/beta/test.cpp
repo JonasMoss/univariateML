@@ -33,7 +33,7 @@ TEST_CASE("beta dpqr: U(0,1) special case (shape1=shape2=1)") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("beta: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("beta: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("beta",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbeta(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbeta(x, p[0], p[1], lower, log); },
@@ -73,4 +73,24 @@ TEST_CASE("beta P2 held shape retains tiny log complements") {
   REQUIRE(r.status==cppunivariate::BetaStatus::Ok);
   CHECK(r.beta==doctest::Approx(1e100).epsilon(1e-12));
   CHECK(r.logLik==doctest::Approx(5*(100*std::log(10.0)-1)).epsilon(1e-12));
+}
+
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp; mp.mp.dps=100
+// a,b=mp.mpf(2),mp.mpf(3)
+// lp=lambda y: mp.log(mp.betainc(a,b,0,mp.exp(y),regularized=True))
+// print(lp(mp.log(mp.mpf(float.fromhex('0x0.0000000000001p-1022')))))
+// print(mp.exp(mp.findroot(lambda y: lp(y)+800,-400)))
+TEST_CASE("beta: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::pbeta(5e-324, 2.0, 3.0, true, true) == doctest::Approx(-1487.0883843735344).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qbeta(-800.0, 2.0, 3.0, true, true) == doctest::Approx(7.818647138068588e-175).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::dbeta(0.0, 2.0, 3.0, true) == -INFINITY);
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// Beta(1,b) has f(0)=b, and Beta(a,1) has f(1)=a.
+TEST_CASE("beta: targeted tail unit-shape endpoint limits") {
+  CHECK(cppunivariate::distributions::dbeta(0,1,3,true)==doctest::Approx(std::log(3.0)));
+  CHECK(cppunivariate::distributions::dbeta(1,2,1,true)==doctest::Approx(std::log(2.0)));
 }

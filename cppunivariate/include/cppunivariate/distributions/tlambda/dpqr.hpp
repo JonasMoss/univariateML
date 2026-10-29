@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include "../../special/tails.hpp"
 #include <cmath>
 #include <limits>
 namespace cppunivariate {
@@ -8,7 +9,7 @@ inline bool valid(double mu,double sigma,double lambda) {
   return std::isfinite(mu) && std::isfinite(sigma) && sigma>0 && std::isfinite(lambda);
 }
 inline double log1mexp(double l) {
-  return l< -std::log(2.0)?std::log1p(-std::exp(l)):std::log(-std::expm1(l));
+  return special::tails_from_log(l,true).upper;
 }
 inline double logadd(double a,double b) {
   const double m=std::max(a,b);
@@ -88,9 +89,7 @@ inline double logsmall_log(double target,double lambda,double logslack=std::nume
 }
 inline double logsmall(double z,double lambda) {return logsmall_log(std::log(std::abs(z)),lambda);}
 inline double slack(double x,double mu,double sigma,double lambda) {
-  const double d=std::abs(x-mu);
-  if(std::isfinite(d) && d>0 && d==sigma/lambda) return 0;
-  return std::isfinite(d)?std::fma(-lambda,d,sigma):2*std::fma(-lambda,std::abs(x/2-mu/2),sigma/2);
+  return sigma*special::support_residual(x,mu,sigma,x>mu?-lambda:lambda);
 }
 inline double logstandard(double x,double mu,double sigma) {
   const double delta=x-mu;
@@ -102,6 +101,13 @@ inline double qtlambda(double p,double mu=0,double sigma=1,double lambda=0,bool 
   if(!tlambda_detail::valid(mu,sigma,lambda) || std::isnan(p) || (logp ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();
   double lp=logp?p:std::log(p),lq=logp?tlambda_detail::log1mexp(p):std::log1p(-p);
   if(!lower) std::swap(lp,lq);
+  if(!logp && p==0.5) return mu;
+  const double h=logp ? (p+std::log(2.0))+2.3190468138462995584e-17 : 0;
+  if((logp && std::abs(h)<1e-8) || (!logp && std::abs(p-0.5)<1e-8)) {
+    const double mass=logp ? std::expm1(h) : 2*(p-0.5);
+    const double offset=std::exp(std::log(sigma)+(1-lambda)*std::log(2.0)+std::log(std::abs(mass)));
+    return mu+((mass>0)==lower?offset:-offset);
+  }
   if(lp==lq) return mu;
   const bool left=lp<lq;
   const double lu=std::min(lp,lq);
@@ -128,6 +134,16 @@ inline double ptlambda(double x,double mu=0,double sigma=1,double lambda=0,bool 
 }
 inline double dtlambda(double x,double mu=0,double sigma=1,double lambda=0,bool log=false) {
   if(!tlambda_detail::valid(mu,sigma,lambda) || std::isnan(x)) return std::numeric_limits<double>::quiet_NaN();
+  // Keep the established one-sided density at the rounded q(0/1) endpoints
+  // of finite-density members. Do not apply this alias to lambda<1: its
+  // near-endpoint log density must retain the exact affine residual.
+  if(lambda>=1 && std::isfinite(x)) {
+    const double width=sigma/lambda;
+    if(width>0 && (x==mu-width || x==mu+width)) {
+      const double ld=-std::log(sigma)-(lambda==1?std::log(2.0):0);
+      return log?ld:std::exp(ld);
+    }
+  }
   const double gap=lambda>0?tlambda_detail::slack(x,mu,sigma,lambda):1;
   const double lz=tlambda_detail::logstandard(x,mu,sigma);
   if(!std::isfinite(x) || (lambda>0 && gap<0)) return log?-INFINITY:0;
