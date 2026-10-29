@@ -43,6 +43,9 @@
   fitters as members and stops with the winning limit: generalized gamma,
   its inverse, lognormal, Pareto, power, or double Pareto).
 
+* `mlemg()` (exponentially modified Gaussian) with its own d/p/q/r; stops
+  with "use `mlnorm`" or names the translated exponential limit.
+
 * `mlfoldnorm()` (folded normal, `mu >= 0`) with its own d/p/q/r;
   previously available only in VGAM.
 
