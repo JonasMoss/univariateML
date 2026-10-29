@@ -100,3 +100,4 @@
 #include "distributions/cmp/mle.hpp"
 #include "distributions/zeta/mle.hpp"
 #include "distributions/yulesimon/mle.hpp"
+#include "distributions/foldnorm/mle.hpp"
