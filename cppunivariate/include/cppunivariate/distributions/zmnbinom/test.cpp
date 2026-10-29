@@ -1,0 +1,74 @@
+#include "test_support.hpp"
+#include "cppunivariate/distributions/zmnbinom/mle.hpp"
+#include "cppunivariate/distributions/zmnbinom/dpqr.hpp"
+#include "cppunivariate/distributions/rng_std.hpp"
+#include <vector>
+#include <cmath>
+TEST_CASE("zmnbinom: golden, score and distribution") {
+ const auto g=mltest::load_distribution_golden("zmnbinom");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const auto fit=cppunivariate::zmnbinom_mle({x.data(),x.size()});
+ REQUIRE(fit.status==cppunivariate::ZmnbinomStatus::Ok);
+ CHECK(fit.size==doctest::Approx(g.estimates.at("size")).epsilon(1e-10));
+ CHECK(fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(1e-10));
+ CHECK(fit.p0==doctest::Approx(g.estimates.at("p0")).epsilon(1e-10));
+ CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+ std::vector<double> p{fit.size,fit.prob,fit.p0};
+ auto ll=[&](const std::vector<double> &par){double l=0;for(int v:x)l+=cppunivariate::distributions::dzmnbinom(v,par[0],par[1],par[2],true);return l;};
+ CHECK(ll(p)==doctest::Approx(fit.logLik).epsilon(1e-10));
+ double norm2=0;
+ {auto a=p,b=p;const double h=1e-5;a[0]+=h;b[0]-=h;const double score=(ll(a)-ll(b))/(2*h);norm2+=score*score;}
+ {auto a=p,b=p;const double h=1e-5;a[1]+=h;b[1]-=h;const double score=(ll(a)-ll(b))/(2*h);norm2+=score*score;}
+ {auto a=p,b=p;const double h=1e-5;a[2]+=h;b[2]-=h;const double score=(ll(a)-ll(b))/(2*h);norm2+=score*score;}
+ CHECK(std::sqrt(norm2)<1e-3);
+ const auto fixed=cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,2.5);
+ CHECK(fixed.status==cppunivariate::ZmnbinomStatus::Ok);
+ CHECK(fixed.size==2.5);
+ CHECK(cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,-1).status==cppunivariate::ZmnbinomStatus::InvalidSize);
+ CHECK(cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,std::numeric_limits<double>::infinity()).status==cppunivariate::ZmnbinomStatus::InvalidSize);
+}
+TEST_CASE("zmnbinom: attained boundaries and invalid input") {
+ std::vector<int> ones{1,1,1},zeros{0,0,0},negative{-1,1};
+ CHECK(cppunivariate::zmnbinom_mle({}).status==cppunivariate::ZmnbinomStatus::InvalidInput);
+ CHECK(cppunivariate::zmnbinom_mle({negative.data(),negative.size()}).status==cppunivariate::ZmnbinomStatus::InvalidInput);
+ const auto one=cppunivariate::zmnbinom_mle({ones.data(),ones.size()});
+ CHECK(one.logLik==0);
+ CHECK(one.status==cppunivariate::ZmnbinomStatus::TwoPoint);
+ const auto zero=cppunivariate::zmnbinom_mle({zeros.data(),zeros.size()});
+ CHECK(zero.logLik==0);
+ CHECK(zero.status==cppunivariate::ZmnbinomStatus::AllZero);
+ std::vector<int> two{0,0,1,1};
+ CHECK(cppunivariate::zmnbinom_mle({two.data(),two.size()}).status==cppunivariate::ZmnbinomStatus::TwoPoint);
+}
+TEST_CASE("zmnbinom: scalar tails and quantile endpoints") {
+ const auto g=mltest::load_distribution_golden("zmnbinom");
+ CHECK(std::isfinite(cppunivariate::distributions::dzmnbinom(10000,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"),true)));
+ CHECK(cppunivariate::distributions::qzmnbinom(0,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"))==0);
+ CHECK(cppunivariate::distributions::qzmnbinom(1,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"))==std::numeric_limits<double>::infinity());
+}
+
+TEST_CASE("zmnbinom: infinite-size escape and fixed-size removal") {
+ std::vector<int> x{0,0,1,2,2,3,3,3};
+ CHECK(cppunivariate::zmnbinom_mle({x.data(),x.size()}).status==cppunivariate::ZmnbinomStatus::PoissonLimit);
+ CHECK(cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,20).status==cppunivariate::ZmnbinomStatus::Ok);
+}
+
+TEST_CASE("zmnbinom: attained logarithmic face") {
+ std::vector<int> x{0,0,1,1,1,1,1,2,3,10,30};
+ const auto fit=cppunivariate::zmnbinom_mle({x.data(),x.size()});
+ CHECK(fit.status==cppunivariate::ZmnbinomStatus::Ok);
+ CHECK(fit.size==0);
+ const auto fixed=cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,0);
+ CHECK(fixed.size==0);
+ CHECK(fixed.logLik==doctest::Approx(fit.logLik));
+}
+
+TEST_CASE("zmnbinom: quantile inversion and sampling") {
+ const auto g=mltest::load_distribution_golden("zmnbinom");
+ const double q=cppunivariate::distributions::qzmnbinom(.37,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"));
+ CHECK(cppunivariate::distributions::pzmnbinom(q,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"))>=.37);
+ CHECK(cppunivariate::distributions::pzmnbinom(q-1,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"))<.37);
+ CHECK(cppunivariate::distributions::pzmnbinom(q,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"),true,false)+cppunivariate::distributions::pzmnbinom(q,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"),false,false)==doctest::Approx(1));
+ cppunivariate::distributions::StdRng<> rng(19);
+ for(int j=0;j<20;++j) {const double v=cppunivariate::distributions::rzmnbinom(rng,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"));CHECK(v>=0);CHECK(v==std::floor(v));}
+}

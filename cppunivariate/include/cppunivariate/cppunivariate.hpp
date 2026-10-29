@@ -70,3 +70,14 @@
 #include "distributions/lst/mle.hpp"
 
 #include "distributions/zinb/mle.hpp"
+
+#include "distributions/ztpois/mle.hpp"
+#include "distributions/ztgeom/mle.hpp"
+#include "distributions/ztnbinom/mle.hpp"
+#include "distributions/ztbinom/mle.hpp"
+#include "distributions/zmpois/mle.hpp"
+#include "distributions/zmgeom/mle.hpp"
+#include "distributions/zmnbinom/mle.hpp"
+#include "distributions/zmbinom/mle.hpp"
+#include "distributions/zmlogarithmic/mle.hpp"
+#include "distributions/zib/mle.hpp"

@@ -2,6 +2,7 @@
 #pragma once
 #include "../nbinom/mle.hpp"
 #include "../zip/mle.hpp"
+#include "../ztpois/profile.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -72,13 +73,7 @@ inline ZinbResult zinb_mle(ispan x, double tol = 1e-10, int maxit = 200,
   // conditional mean equals the empirical positive mean. It decreases
   // continuously from infinity to one as p increases from zero to one.
   auto profile = [&](double r) {
-    double lo = 0, hi = 1;
-    for (int i = 0; i < 100; ++i) {
-      const double p = (lo + hi) / 2;
-      const double m = r * (1 - p) / (p * (-std::expm1(r * std::log(p))));
-      if (m > positive_mean) lo = p; else hi = p;
-    }
-    const double p = (lo + hi) / 2;
+    const double p = zero_detail::nb_prob(r, positive_mean);
     // The join belongs to the NB branch. Its optimum has p=r/(r+mean).
     if (r * std::log(p) <= std::log(z)) return evaluate(r, p);
     return evaluate(r, r / (r + sum / n));
