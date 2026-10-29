@@ -46,13 +46,15 @@ default_args <- function(model) {
   setNames(lapply(unname(model$args), function(coef) values[[coef]]), names(model$args))
 }
 
+# Sample size by position: stats::rhyper calls it `nn`.
 sample_one <- function(model, n) {
-  do.call(resolve_callable(model$sampler), c(list(n = n), default_args(model)))
+  do.call(resolve_callable(model$sampler), c(list(n), default_args(model)))
 }
 
+# README fit_args (required design quantities) are passed to the fit.
 fit_one <- function(model, data) {
   fn <- getExportedValue("univariateML", paste0("ml", model$id))
-  fn(data)
+  do.call(fn, c(list(data), model$fit_args))
 }
 
 fit_to_record <- function(model, fit, data) {
@@ -61,7 +63,7 @@ fit_to_record <- function(model, fit, data) {
   if (length(estimates) == length(param_names)) {
     names(estimates) <- param_names
   }
-  list(
+  record <- list(
     id = model$id,
     name = model$name,
     n = length(data),
@@ -74,6 +76,8 @@ fit_to_record <- function(model, fit, data) {
     n_obs = unname(attr(fit, "n")) %||% length(data),
     data = as.numeric(data)
   )
+  if (length(model$fit_args)) record$fit_args <- model$fit_args
+  record
 }
 
 main <- function() {

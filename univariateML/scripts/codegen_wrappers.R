@@ -69,6 +69,12 @@ fixable_names <- function(model) {
   unlist(lapply(model$params, function(p) if (isTRUE(p$fixable)) p$name))
 }
 
+# Design quantities the user must supply (README params: required: true):
+# adapter arguments without a default, always held fixed.
+required_names <- function(model) {
+  unlist(lapply(model$params, function(p) if (isTRUE(p$required)) p$name))
+}
+
 check_control <- function(model) {
   fn <- rcpp_env[[paste0("ml", model$id, "_")]]
   if (is.null(fn)) stop("codegen_wrappers: no Rcpp adapter ml", model$id, "_")
@@ -79,7 +85,29 @@ check_control <- function(model) {
          paste(formal_names, collapse = ", "), ") do not match README r.control (",
          paste(doc_names, collapse = ", "), ")")
   }
+  no_default <- formal_names[vapply(formal_names, function(a)
+    identical(formals(fn)[[a]], quote(expr = )), logical(1))]
+  if (!setequal(no_default, required_names(model))) {
+    stop("codegen_wrappers: ", model$id, ": adapter arguments without a default (",
+         paste(no_default, collapse = ", "), ") must be the README required parameters (",
+         paste(required_names(model), collapse = ", "), ")")
+  }
   formals(fn)
+}
+
+# Stop with a clear message when a required argument is missing.
+required_checks <- function(model) {
+  fname <- paste0("ml", model$id)
+  req <- Filter(function(p) isTRUE(p$required), model$params)
+  if (!length(req)) return(character())
+  c(nl("  supplied <- match.call(", fname, "_, call = as.call(c(\n",
+       "    list(quote(", fname, "_), x = quote(x)), list(...))))\n"),
+    vapply(req, function(p) nl(
+    "  if (is.null(supplied[[\"", p$name, "\"]])) {\n",
+    "    stop(\"`", fname, "` requires `", p$name, "` (", p$role,
+    "); it has no default.\", call. = FALSE)\n",
+    "  }\n"
+  ), character(1)))
 }
 
 # " with `mean = mu`, `sd = sigma`" for models with an r.args map.
@@ -102,8 +130,12 @@ gen_doc <- function(model) {
     rd_math(s$details %||% character())
   )
   control_items <- vapply(names(model$control), function(arg) {
-    d <- defaults[[arg]]
-    default_txt <- if (is.null(d)) "" else nl(" Defaults to `", format(eval(d)), "`.")
+    default_txt <- if (arg %in% required_names(model)) {
+      " Required; there is no default."
+    } else {
+      d <- defaults[[arg]]
+      if (is.null(d)) "" else nl(" Defaults to `", format(eval(d)), "`.")
+    }
     nl("  * `", arg, "`: ", rd_math(model$control[[arg]]), default_txt)
   }, character(1))
   fixed_items <- vapply(setdiff(fixable_names(model), names(model$control)), function(arg) {
@@ -156,6 +188,7 @@ gen_wrapper <- function(model) {
   paste0(
     doc, "\n",
     fname, " <- function(x, na.rm = FALSE, ...) {\n",
+    nl(required_checks(model)),
     "  x <- ml_check_modify(x, na.rm = na.rm, name = \"", fname, "\")\n",
     "  n <- length(x)\n",
     "  out <- ", fname, "_(x = x, ...)\n",

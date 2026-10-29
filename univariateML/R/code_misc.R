@@ -53,7 +53,8 @@ simulate_default <- function(dens, n) {
   }
   params <- univariateML_metadata[[dens]]$default
   names(params) <- univariateML_metadata[[dens]]$names
-  params <- c(list(n = n), univariateML_dpqr_args(params, dens))
+  # Sample size by position: stats::rhyper calls it `nn`.
+  params <- c(list(n), univariateML_dpqr_args(params, dens))
   rdist <- to_rdist(univariateML_metadata[[dens]]$density)
   parts <- strsplit(rdist, "::", fixed = TRUE)[[1]]
   fun <- if (length(parts) == 2L) {

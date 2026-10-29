@@ -50,7 +50,9 @@ for (dens in densities) {
     x <- actuar::rburr(200, shape1 = 1, shape2 = 2, scale = 3)
     if (dens == "mlinvburr") x <- 1 / x
   }
-  object <- do.call(dens, list(x))
+  # The hypergeometric needs its draws `k` and population size `N` (README fit_args).
+  args <- if (dens == "mlhyper") list(k = 10, N = 50) else list()
+  object <- do.call(dens, c(list(x), args))
   density <- univariateML_to_function(object, "d")
   expect_equal(sum(density(x, log = TRUE)), attr(object, "logLik"))
 }

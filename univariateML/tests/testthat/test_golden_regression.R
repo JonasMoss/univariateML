@@ -43,10 +43,12 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
     g <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
     test_that(paste0("golden: ", g$id), {
       set_golden_seed(g$seed)
-      data <- do.call(resolve_callable(g$sampler), c(list(n = g$n), g$sampler_args))
+      # Sample size by position: stats::rhyper calls it `nn`.
+      data <- do.call(resolve_callable(g$sampler), c(list(g$n), g$sampler_args))
 
+      # fit_args: required design quantities (README fit_args).
       fn <- getExportedValue("univariateML", paste0("ml", g$id))
-      fit <- fn(data)
+      fit <- do.call(fn, c(list(data), g$fit_args))
 
       tol <- if (g$id %in% FD_BFGS_IDS) 1e-6 else 1e-12
       expect_equal(unname(attr(fit, "logLik")), g$logLik, tolerance = tol)

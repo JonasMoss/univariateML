@@ -21,6 +21,7 @@ goldens), by the validation harness, and later by the Python shell.
 | `r.density`, `r.sampler` | yes | reference d/r functions, `pkg::fn` from an external package (the R package defines no d/p/q/r of its own); `p`/`q` are found by swapping the first letter |
 | `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to coefficient name, e.g. `{mean: mu, sd: sigma, a: mu}` for the translated half-normal as `extraDistr::dtnorm`; a coefficient may feed several arguments. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
 | `r.control` | yes (may be `{}`) | one entry per argument of the Rcpp adapter `ml<id>_` other than `x`, mapping name to a one-line description; codegen fails if the names differ from the adapter's |
+| `fit_args` | when a parameter is `required` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every `required` parameter, and may add arguments the fitter needs, such as hyper's `N` |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
 | `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `reflected translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; optional `fixed: [name]` restricts a limit to fits holding those parameters fixed; see `notes/ml-behaviour.tex` |
 | `references` | no | one bibliographic entry per item |
@@ -41,6 +42,9 @@ Only what cannot be read off the code or the front matter:
 - optional `## See also`: extra pointers beyond the density and the limit
   models, which are linked automatically.
 
+YAML 1.1 reads bare `n`, `N`, `y`, `Y` (and `yes`, `no`, `on`, `off`) as
+booleans, keys included: quote them (`name: "N"`, `"n": "N - m"`).
+
 Write math as `$...$` / `$$...$$`; the R codegen turns it into
 `\eqn{}` / `\deqn{}`. Use backticks for code. Do not restate the density,
 parameter tables, moments or the algorithm.
@@ -60,6 +64,13 @@ Optional keys in each `params` entry:
   adapter has an argument of the same name (listed in `r.control`), the user
   sets the held value and `<value>` is its default; otherwise it is always
   held at `<value>` (fatigue's `mu = 0`: the three-parameter MLE does not exist).
+- `required: true`: a design quantity with no default (hyper's draws `k`).
+  The adapter argument of the same name has no default (codegen checks
+  this), it is listed in `r.control`, and the generated wrapper stops with
+  "`ml<id>` requires `<name>` (<role>); it has no default." when it is
+  missing. It is always held, so the adapter lists it in `fixed`. Cannot be
+  combined with `fixable` or `fixed`; `default` is used only for
+  simulation, and `fit_args` supplies its value for goldens.
 - `bound: lower` / `bound: upper`: the parameter is a support endpoint
   whose MLE is the sample minimum / maximum. The harness holds it at its
   golden value in the oracle and omits its score and Hessian row.
