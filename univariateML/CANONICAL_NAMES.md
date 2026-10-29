@@ -43,6 +43,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | burr       | Burr                    | shape1, shape2, scale | actuar::dburr             | (0, ∞) open      |
 | cauchy     | Cauchy                  | location, scale    | stats::dcauchy            | (-∞, ∞) open     |
 | dunif      | Discrete uniform        | min, max           | extraDistr::ddunif        | (-∞, ∞) integer  |
+| dweibull   | Discrete Weibull        | shape1, shape2     | extraDistr::ddweibull     | [0, ∞) integer   |
 | exp        | Exponential             | rate               | stats::dexp               | [0, ∞)           |
 | fatigue    | Birnbaum-Saunders       | alpha, beta, mu    | extraDistr::dfatigue      | [0, ∞)           |
 | gamma      | Gamma                   | shape, rate        | stats::dgamma             | (0, ∞) open      |

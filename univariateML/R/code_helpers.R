@@ -171,6 +171,11 @@ univariateML_dpqr_args <- function(estimates, name) {
 #' probabilities strictly between two CDF values, e.g.
 #' `sads::qzipf(0.5, N = 10, s = 1)` is 1, not 2. The replacement inverts
 #' the CDF built from `sads::dzipf`.
+#'
+#' `extraDistr::pdweibull` (extraDistr 1.10.0.5) does not floor its
+#' argument, e.g. `extraDistr::pdweibull(0.5, 0.7, 1)` is 0.414, not
+#' `pdweibull(0, 0.7, 1)` = 0.3. The replacement floors `q` and calls
+#' `extraDistr::pdweibull`.
 #' @keywords internal
 
 univariateML_reference_fixes <- list(
@@ -185,6 +190,19 @@ univariateML_reference_fixes <- list(
       q <- pmin(findInterval(p, cdf, left.open = TRUE) + 1, N)
       q[is.na(p) | p < 0 | p > 1] <- NaN
       q
+    }
+  ),
+  "extraDistr::pdweibull" = list(
+    broken = function() {
+      tryCatch(
+        extraDistr::pdweibull(0.5, 0.7, 1) != extraDistr::pdweibull(0, 0.7, 1),
+        error = function(e) TRUE
+      )
+    },
+    replacement = function(q, shape1, shape2, lower.tail = TRUE, log.p = FALSE) {
+      extraDistr::pdweibull(floor(q), shape1, shape2,
+        lower.tail = lower.tail, log.p = log.p
+      )
     }
   )
 )
