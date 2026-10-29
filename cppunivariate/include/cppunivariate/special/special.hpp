@@ -50,6 +50,9 @@ inline double ibetac(double a,double b,double x) { return boost::math::ibetac(a,
 inline double ibeta_inv(double a,double b,double x) { return boost::math::ibeta_inv(a,b,x,NoThrowPolicy{}); }
 inline double ibetac_inv(double a,double b,double x) { return boost::math::ibetac_inv(a,b,x,NoThrowPolicy{}); }
 
+inline double gamma_p(double a, double x) { return boost::math::gamma_p(a,x,NoThrowPolicy{}); }
+inline double gamma_q(double a, double x) { return boost::math::gamma_q(a,x,NoThrowPolicy{}); }
+
 inline double zeta(double s) { return boost::math::zeta(s, NoThrowPolicy{}); }
 
 inline double pnchisq(double x, double df, double ncp, bool lower) {

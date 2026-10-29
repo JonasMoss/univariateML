@@ -10,6 +10,11 @@ def build(t):
     def primitive(z):
         return z*mp.erfc(-z/mp.sqrt(2))/2+mp.exp(-z*z/2)/mp.sqrt(2*mp.pi)
     def tails(x):
+        # A normal plus a symmetric uniform is symmetric about m. In
+        # particular H(b)-H(-b)=b, so both center tails equal exactly 1/2.
+        # Preserve this identity rather than passing integration roundoff
+        # into the generic relative root stop near a zero median.
+        if x==m:return (-mp.log(2),-mp.log(2))
         d=abs(x-m)
         z=(d-a)/s
         if z>mp.mpf('1e30'):

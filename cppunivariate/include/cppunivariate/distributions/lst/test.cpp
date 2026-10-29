@@ -85,7 +85,7 @@ TEST_CASE("lst: fixed df score, ties and validation") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("lst: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("lst: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("lst",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlst(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plst(x, p[0], p[1], p[2], lower, log); },
@@ -126,6 +126,33 @@ TEST_CASE("lst: held profiles preserve extreme units") {
   }
   CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(1e-8));
 }
+
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp; mp.mp.dps=100
+// n=mp.mpf(3); x=mp.mpf(1e300)
+// print(-mp.log(mp.beta(n/2,mp.mpf('.5')))-mp.log(n)/2-(n+1)/2*mp.log1p(x*x/n))
+// ls=lambda y: mp.log(mp.betainc(n/2,mp.mpf('.5'),0,n/(n+mp.exp(2*y)),regularized=True)/2)
+// print(mp.exp(mp.findroot(lambda y: ls(y)+800,800/n)))
+TEST_CASE("lst: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::dlst(1e+300, 0.0, 1.0, 3.0, true) == doctest::Approx(-2761.905775865142).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qlst(-800.0, 0.0, 1.0, 3.0, false, true) == doctest::Approx(6.698981179231598e+115).epsilon(1e-10));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// n=mp.mpf(3); s=mp.mpf(1e-300); x=mp.mpf(1e300)
+// c=(n/2-1)*mp.log(n)-mp.log(mp.beta(n/2,mp.mpf('.5')))
+// print(mp.exp(mp.log(s)+(c+2200)/n),c-n*mp.log(x/s))
+// The omitted Student tail correction is O((x/s)**-2), below 1e-1200.
+TEST_CASE("lst: targeted tail scaling before exponentiation") {
+  CHECK(cppunivariate::distributions::qlst(-2200,0,1e-300,3,false,true)
+        == doctest::Approx(3.13882410493767e18).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::plst(1e300,0,1e-300,3,false,true)
+        == doctest::Approx(-4144.5554439502375).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::dlst(1e300,0,1e-300,3,true)
+        == doctest::Approx(-4834.232359559784).epsilon(1e-10));
+}
+
 
 TEST_CASE("lst: P3 restrictions and closed faces") {
  const std::vector<double> x{-100,-2,-.01,0,.01,2,100};const auto data=mltest::as_span(x);

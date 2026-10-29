@@ -1,6 +1,7 @@
 {
   "id": "bnbinom",
-  "status": "gap",
-  "reason": "ValueError: gap: 3F2(1) tail needs a uniform remainder bound across alpha=0.2 and enormous integer targets; generic finite summation is not certified.",
-  "seconds": 0.006306602997938171
+  "status": "generated",
+  "points": 8,
+  "values": 1688,
+  "quantiles": 352
 }

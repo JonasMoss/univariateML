@@ -364,8 +364,7 @@ TEST_CASE("tnorm: d/p/q/r") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("tnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("tnorm: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("tnorm",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtnorm(x, p[0], p[1], p[2], p[3], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptnorm(x, p[0], p[1], p[2], p[3], lower, log); },
@@ -382,4 +381,54 @@ TEST_CASE("tnorm free bounds are exact sample extremes") {
   CHECK(r.b == 2);
   const auto fixed = cppunivariate::tnorm_mle(mltest::as_span(x), -2, 2, 1e-12, 100, 0, 1);
   CHECK(r.logLik == fixed.logLik);
+}
+
+
+// mpmath generator: import mpmath as mp; mp.mp.dps=100
+// Q=lambda z:mp.erfc(z/mp.sqrt(2))/2
+// z=mp.findroot(lambda z:mp.log(Q(z))+800,40); [-z,z]
+TEST_CASE("tnorm: logarithmic quantile regression") {
+  CHECK(cppunivariate::distributions::qtnorm(-800.0, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, true, true) == doctest::Approx(-39.88469483825668).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qtnorm(-800.0, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, false, true) == doctest::Approx(39.88469483825668).epsilon(1e-11));
+}
+
+TEST_CASE("tnorm: support endpoints on log input") {
+  CHECK(cppunivariate::distributions::qtnorm(cppunivariate::special::kNegInf, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, true, true) == cppunivariate::special::kNegInf);
+  CHECK(cppunivariate::distributions::qtnorm(0.0, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, false, true) == cppunivariate::special::kNegInf);
+  CHECK(cppunivariate::distributions::qtnorm(cppunivariate::special::kNegInf, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, false, true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::qtnorm(0.0, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, true, true) == cppunivariate::special::kPosInf);
+}
+
+// At x=mp.mpf(float(1e100)), evaluate the same mpmath tails and
+// the README log density; constants are also in the independent truth table.
+TEST_CASE("tnorm: extreme observation log tails and density") {
+  CHECK(cppunivariate::distributions::dtnorm(1e100, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, true) == doctest::Approx(-5e+199).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::ptnorm(1e100, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, true, true) == doctest::Approx(0.0).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::ptnorm(1e100, 0.0, 1.0, cppunivariate::special::kNegInf, cppunivariate::special::kPosInf, false, true) == doctest::Approx(-5e+199).epsilon(1e-11));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// Q=lambda z:mp.erfc(z/mp.sqrt(2))/2; M=Q(40)-Q(41)
+// mp.log((Q(mp.mpf('40.5'))-Q(41))/M)
+// mp.findroot(lambda z:mp.log((Q(z)-Q(41))/M)+20,(40.4,40.6))
+TEST_CASE("tnorm: ratios beyond normal probability underflow") {
+  CHECK(cppunivariate::distributions::ptnorm(40.5,0,1,40,41,false,true) == doctest::Approx(-20.137407231683584).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qtnorm(-20,0,1,40,41,false,true) == doctest::Approx(40.496609151751426).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::dtnorm(40.5,0,1,40,41,true) == doctest::Approx(-16.435496519450885).epsilon(1e-11));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// Z=mp.erf(1/mp.sqrt(2))/2; mp.exp(-700)*Z*mp.sqrt(2*mp.pi)
+// This leading endpoint term has relative correction O(exp(-1400)).
+// q=mp.mpf(float(1e-300)); s=mp.mpf(float(1e300))
+// mp.log(mp.erf(q/(s*mp.sqrt(2))))
+// mp.log(mp.erf(q/mp.sqrt(2))/2/Z)
+TEST_CASE("tnorm: log probabilities at zero endpoints preserve distances") {
+  CHECK(cppunivariate::distributions::qtnorm(-700,0,1,0,1,true,true) == doctest::Approx(8.436179747007737e-305).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qtnorm(-700,0,1,-1,0,false,true) == doctest::Approx(-8.436179747007737e-305).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qtnorm(-10000,0,1,0,1,true,true) == 0.0);
+  CHECK(cppunivariate::distributions::qtnorm(-10000,0,1,-1,0,false,true) == 0.0);
+  CHECK(cppunivariate::distributions::qtnorm(1e-12,0,1,0,cppunivariate::special::kPosInf,true,false) == doctest::Approx(1.2533141373155002e-12).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::ptnorm(1e-300,0,1e300,0,cppunivariate::special::kPosInf,true,true) == doctest::Approx(-1381.7768471490721).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::ptnorm(1e-300,0,1,0,1,true,true) == doctest::Approx(-690.6196041045563).epsilon(1e-11));
 }

@@ -303,8 +303,7 @@ TEST_CASE("trgamma: evaluation close to the power face without latent gamma unde
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("trgamma: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("trgamma: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("trgamma",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtrgamma(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptrgamma(x, p[0], p[1], p[2], lower, log); },
@@ -331,4 +330,31 @@ TEST_CASE("P2 trgamma held-scale power root near its endpoint") {
  CHECK(r.shape2>1e8);
  const double u=r.shape2*std::log(x[0]);
  CHECK(std::abs(1+2*u-u*std::exp(u))<1e-8);
+}
+
+
+// mpmath generator: import mpmath as mp; mp.mp.dps=100
+// P=lambda z:mp.gammainc(3,0,z)/mp.gamma(3)
+// Q=lambda z:mp.gammainc(3,z,mp.inf)/mp.gamma(3)
+// lo=mp.exp(mp.findroot(lambda y:mp.log(P(mp.exp(y)))+800,-mp.mpf(800)/3))
+// hi=mp.findroot(lambda z:mp.log(Q(z))+800,800)
+// [2*lo**(mp.mpf(2)/3),2*hi**(mp.mpf(2)/3)]
+TEST_CASE("trgamma: logarithmic quantile regression") {
+  CHECK(cppunivariate::distributions::qtrgamma(-800.0, 3.0, 1.5, 2.0, true, true) == doctest::Approx(1.8452049111202298e-77).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qtrgamma(-800.0, 3.0, 1.5, 2.0, false, true) == doctest::Approx(174.17550845088326).epsilon(1e-11));
+}
+
+TEST_CASE("trgamma: support endpoints on log input") {
+  CHECK(cppunivariate::distributions::qtrgamma(cppunivariate::special::kNegInf, 3.0, 1.5, 2.0, true, true) == 0.0);
+  CHECK(cppunivariate::distributions::qtrgamma(0.0, 3.0, 1.5, 2.0, false, true) == 0.0);
+  CHECK(cppunivariate::distributions::qtrgamma(cppunivariate::special::kNegInf, 3.0, 1.5, 2.0, false, true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::qtrgamma(0.0, 3.0, 1.5, 2.0, true, true) == cppunivariate::special::kPosInf);
+}
+
+// At x=mp.mpf(float(1e100)), evaluate the same mpmath tails and
+// the README log density; constants are also in the independent truth table.
+TEST_CASE("trgamma: extreme observation log tails and density") {
+  CHECK(cppunivariate::distributions::dtrgamma(1e100, 3.0, 1.5, 2.0, true) == doctest::Approx(-3.535533905932738e+149).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::ptrgamma(1e100, 3.0, 1.5, 2.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::ptrgamma(1e100, 3.0, 1.5, 2.0, false, true) == doctest::Approx(-3.535533905932738e+149).epsilon(1e-11));
 }

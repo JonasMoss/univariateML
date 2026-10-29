@@ -42,13 +42,22 @@ TEST_CASE("ht: d/p/q/r and extreme tails") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("ht: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("ht: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("ht",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dht(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pht(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qht(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rht(rng, p[0], p[1]); });
 }
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp; mp.mp.dps=100
+// print(mp.mpf(0))  # inverse upper tail 1, equivalently log upper tail 0
+TEST_CASE("ht: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::qht(1.0, 3.0, 1.0, false, false) == doctest::Approx(0.0).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qht(0.0, 3.0, 1.0, false, true) == doctest::Approx(0.0).epsilon(1e-10));
+}
+
 
 TEST_CASE("ht: P3 restrictions and closed faces") {
  const std::vector<double> x{.01,.1,1,10,100};

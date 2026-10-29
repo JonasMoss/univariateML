@@ -89,3 +89,12 @@ TEST_CASE("P2 genbeta constant conditional beta fits") {
  REQUIRE(ridge.status==cppunivariate::GenbetaStatus::Ok);
  CHECK(ridge.shape1*ridge.shape3==doctest::Approx(-1/std::log(.4)));
 }
+
+
+TEST_CASE("genbeta: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("genbeta",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgenbeta(x, p[0], p[1], p[2], p[3], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgenbeta(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qgenbeta(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rgenbeta(rng, p[0], p[1], p[2], p[3]); });
+}

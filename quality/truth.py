@@ -47,7 +47,7 @@ def as_double(v):
 
 def encode(v):
     v = as_double(v)
-    if math.isnan(v): return 'NaN'
+    if math.isnan(v): raise ArithmeticError('oracle produced a NaN truth cell')
     if math.isinf(v): return 'Inf' if v > 0 else '-Inf'
     return v  # Python's shortest round-trip JSON representation is <=17 digits.
 
@@ -269,16 +269,19 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=['truth'])
     parser.add_argument('ids', nargs='*')
+    parser.add_argument('--timeout', type=int, default=900,
+                        help='wall-clock seconds per family (default: 900)')
     args = parser.parse_args()
+    if args.timeout <= 0: parser.error('--timeout must be positive')
     REPORT.mkdir(parents=True, exist_ok=True)
     failures = 0
     for id in args.ids or sorted(p.parent.name for p in DISTS.glob('*/README.md')):
         if Path(id).name != id or not (DISTS/id/'README.md').exists(): parser.error('unknown family '+id)
         started = time.monotonic()
         def timeout(signum, frame):
-            raise TimeoutError('family exceeded 180 seconds; needs a faster independently controlled route')
+            raise TimeoutError(f'family exceeded {args.timeout} seconds; increase --timeout or inspect the route')
         signal.signal(signal.SIGALRM,timeout)
-        signal.alarm(180)
+        signal.alarm(args.timeout)
         with mp.workdps(DIGITS):
             try:
                 result = make(DISTS/id)
