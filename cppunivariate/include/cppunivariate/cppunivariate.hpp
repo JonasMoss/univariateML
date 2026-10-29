@@ -119,3 +119,4 @@
 #include "distributions/fpareto/mle.hpp"
 #include "distributions/nsbeta/mle.hpp"
 #include "distributions/frechet/mle.hpp"
+#include "distributions/tlambda/mle.hpp"
