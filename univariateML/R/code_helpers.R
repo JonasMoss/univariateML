@@ -474,6 +474,11 @@ univariateML_reference_quantiles <- list(
   "extraDistr::qbbinom" = list(
     p = "extraDistr::pbbinom",
     support = function(size, ...) c(0, size)
+  ),
+  "extraDistr::qbnbinom" = list(
+    p = "extraDistr::pbnbinom",
+    support = function(...) c(0, Inf),
+    work_budget = 1e6
   )
 )
 
@@ -492,7 +497,7 @@ univariateML_discrete_quantile <- function(entry) {
   fun <- function() {
     args <- as.list(environment())
     params <- args[setdiff(names(args), c("p", "lower.tail", "log.p"))]
-    univariateML_invert_cdf(args$p, cdf, params, support, args$lower.tail, args$log.p)
+    univariateML_invert_cdf(args$p, cdf, params, support, args$lower.tail, args$log.p, entry$work_budget)
   }
   arguments <- formals(cdf)
   names(arguments)[1L] <- "p"
@@ -510,12 +515,18 @@ univariateML_discrete_quantile <- function(entry) {
 #' @return Quantiles; `NaN` (with a warning) for probabilities out of range.
 #' @keywords internal
 
-univariateML_invert_cdf <- function(p, cdf, params, support, lower.tail, log.p) {
+univariateML_invert_cdf <- function(p, cdf, params, support, lower.tail, log.p, work_budget = NULL) {
   if (any(lengths(params) != 1L)) stop("coefficients must be single numbers", call. = FALSE)
   bounds <- do.call(support, params)
   lower <- bounds[[1L]]
   upper <- bounds[[2L]]
+  work <- 0
   at <- function(q) {
+    if (!is.null(work_budget)) {
+      work <<- work + sum(pmax(0, q + 1))
+      if (!is.finite(work) || work > work_budget)
+        stop("Discrete quantile CDF work budget exceeded; the requested tail is too large.", call. = FALSE)
+    }
     do.call(cdf, c(list(q), params, list(lower.tail = lower.tail, log.p = log.p)))
   }
   reached <- function(q, u) if (lower.tail) at(q) >= u else at(q) <= u
