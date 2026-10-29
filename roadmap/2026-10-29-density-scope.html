@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Scope decisions for extraDistr and actuar densities</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Scope decisions for extraDistr and actuar
+densities</h1>
+</header>
+<h1 id="scope-decisions-for-extradistr-and-actuar-densities">Scope
+decisions for extraDistr and actuar densities</h1>
+<p><strong>Status:</strong> exclusions decided 2026-10-29; remaining
+families accepted for study, with implementation deferred. Error-only
+coverage is a policy to implement, not an API already available.</p>
+<p>The package fits univariate distributions with a fixed, finite number
+of parameters for each specified model. Covering another package does
+not require adopting every density it exports. Keep explicit records of
+deliberate exclusions, study the useful missing families, and report
+nonexistence rather than returning a numerical local optimum as an
+unrestricted MLE.</p>
+<p>The <a
+href="../notes/evaluations/2026-10-29-density-coverage.html">coverage
+inventory</a> lists every density name in installed extraDistr 1.10.0.5
+and actuar 3.3.7, including aliases and restrictions of existing
+fitters. This document governs inclusion decisions; the inventory
+records implementation coverage.</p>
+<h2 id="deliberate-exclusions">Deliberate exclusions</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Package</th>
+<th>Density</th>
+<th>Decision and reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>extraDistr</td>
+<td><code>dbhatt</code>, Bhattacharjee or normal–uniform
+convolution</td>
+<td>Skip. Too specialized to justify a dedicated fitter and its
+maintenance.</td>
+</tr>
+<tr>
+<td>extraDistr</td>
+<td><code>dcat</code>, categorical</td>
+<td>Skip. The unrestricted probability vector has a dimension determined
+by the category set; it does not give the fixed-dimensional parametric
+family intended here. A fixed category count would define a
+finite-dimensional model, but adding categorical fitting is still
+outside the chosen scope.</td>
+</tr>
+<tr>
+<td>extraDistr</td>
+<td><code>dbvnorm</code>, bivariate normal</td>
+<td>Skip. Multivariate observations.</td>
+</tr>
+<tr>
+<td>extraDistr</td>
+<td><code>dbvpois</code>, bivariate Poisson</td>
+<td>Skip. Multivariate observations.</td>
+</tr>
+<tr>
+<td>extraDistr</td>
+<td><code>ddirichlet</code>, Dirichlet</td>
+<td>Skip. Multivariate observations.</td>
+</tr>
+<tr>
+<td>extraDistr</td>
+<td><code>ddirmnom</code>, Dirichlet–multinomial</td>
+<td>Skip. Multivariate count vectors.</td>
+</tr>
+<tr>
+<td>extraDistr</td>
+<td><code>dmnom</code>, multinomial</td>
+<td>Skip. Multivariate count vectors.</td>
+</tr>
+<tr>
+<td>extraDistr</td>
+<td><code>dmvhyper</code>, multivariate hypergeometric</td>
+<td>Skip. Multivariate count vectors.</td>
+</tr>
+<tr>
+<td>actuar</td>
+<td><code>discretise</code>, <code>discretize</code></td>
+<td>Exclude from density coverage. These are discretization
+utilities.</td>
+</tr>
+</tbody>
+</table>
+<p>These are scope exclusions, not claims that their MLEs do not exist.
+No error-only fitting functions are needed for out-of-scope
+distributions.</p>
+<h2 id="missing-extradistr-families-to-study">Missing extraDistr
+families to study</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Density</th>
+<th>Study scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dskellam</code></td>
+<td>Two Poisson rates, with zero-rate boundary models.</td>
+</tr>
+<tr>
+<td><code>ddlaplace</code></td>
+<td>Discrete Laplace; establish location and boundary conventions.</td>
+</tr>
+<tr>
+<td><code>ddnorm</code></td>
+<td>Discretized normal; use interval probabilities, with stable log
+differences and analysis of scale limits.</td>
+</tr>
+<tr>
+<td><code>ddgamma</code></td>
+<td>Discretized gamma; continuous gamma fitting is not its MLE.</td>
+</tr>
+<tr>
+<td><code>dhcauchy</code></td>
+<td>Half-Cauchy with endpoint fixed at zero; estimate scale.</td>
+</tr>
+<tr>
+<td><code>dht</code></td>
+<td>Half-t with endpoint fixed at zero; estimate scale and degrees of
+freedom, examining the half-normal limit.</td>
+</tr>
+<tr>
+<td><code>dnhyper</code></td>
+<td>Negative hypergeometric; specify known design parameters and integer
+parameters to estimate.</td>
+</tr>
+<tr>
+<td><code>dslash</code></td>
+<td>Location-scale slash; study likelihood, identification and boundary
+behavior.</td>
+</tr>
+<tr>
+<td><code>dmixpois</code></td>
+<td>Fixed component count, parameter identification, component weights
+and boundary reductions.</td>
+</tr>
+<tr>
+<td><code>dmixnorm</code></td>
+<td>Study as a likelihood-failure case. Unrestricted fitting with at
+least two components is unbounded through component scale collapse;
+useful constrained variants require an explicit model definition.</td>
+</tr>
+</tbody>
+</table>
+<p>Acceptance for study does not promise a fitter. Each study should
+establish the model, its likelihood failures and limits, a fitting
+strategy, and the cost of implementation before recommending
+inclusion.</p>
+<h2 id="partial-extradistr-coverage-to-study">Partial extraDistr
+coverage to study</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Density</th>
+<th>Existing coverage and remaining question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dhnorm</code></td>
+<td><code>mlhnorm</code> estimates a translation. Add a
+fixed-zero-endpoint option or separate scale-only fitter; its scale MLE
+is the root mean square of the observations.</td>
+</tr>
+<tr>
+<td><code>dtpois</code>, <code>dtbinom</code></td>
+<td>Zero truncation exists. Study arbitrary known truncation bounds.
+Binomial size needs an explicit fixed or estimated policy.</td>
+</tr>
+<tr>
+<td><code>dnsbeta</code></td>
+<td>Known bounds reduce to <code>mlbeta</code> by affine transformation,
+including the likelihood Jacobian. Free bounds belong in the rejection
+policy below.</td>
+</tr>
+<tr>
+<td><code>dfrechet</code></td>
+<td>Known location reduces to <code>mlinvweibull</code>; the current GEV
+domain covers only part of the free-location family. Study wider
+coverage and its limits separately.</td>
+</tr>
+<tr>
+<td><code>dfatigue</code></td>
+<td>The current fitter fixes location at zero. Retain the known-location
+model; reject unrestricted location estimation using the collapse
+argument in its distribution README.</td>
+</tr>
+<tr>
+<td><code>dgev</code>, <code>dgpd</code>, <code>dlst</code></td>
+<td>Retain and document the current shape, threshold and
+degrees-of-freedom restrictions. Any extension needs its own existence
+and boundary analysis.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="remaining-actuar-cases">Remaining actuar cases</h2>
+<p>Most actuar density names already have fitters or equivalent models.
+The remaining cases are model variants and one larger fitting
+project.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Density</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dgenbeta</code>, generalized beta on a bounded interval</td>
+<td>Study with its scale, the upper endpoint, held fixed. This is a
+genuine missing three-shape family. With scale free, unrestricted
+likelihood is unbounded when <code>shape2 &lt; 1</code>.</td>
+</tr>
+<tr>
+<td><code>dphtype</code>, phase-type</td>
+<td>Accepted for study as a larger project. Observations are scalar, so
+it is univariate despite its vector and matrix parameters. Specify a
+fixed phase count and representation; investigate identification,
+nonunique representations and boundary reductions.</td>
+</tr>
+<tr>
+<td><code>dpareto2</code>, Pareto II</td>
+<td>A known minimum reduces to <code>mllomax</code>. Reject unrestricted
+joint estimation of minimum, shape and scale: a joint endpoint and scale
+collapse makes likelihood unbounded. Constrained versions would be
+separate studies.</td>
+</tr>
+<tr>
+<td><code>dpareto3</code>, Pareto III</td>
+<td>A known minimum reduces to <code>mlllogis</code>. Reject
+unrestricted free minimum because shapes below one produce an endpoint
+singularity.</td>
+</tr>
+<tr>
+<td><code>dpareto4</code>, Pareto IV</td>
+<td>A known minimum reduces to <code>mlburr</code>. Reject unrestricted
+free minimum because <code>shape2 &lt; 1</code> produces an endpoint
+singularity.</td>
+</tr>
+<tr>
+<td><code>dfpareto</code>, Feller–Pareto</td>
+<td>A known minimum reduces to <code>mlgb2</code>. Reject unrestricted
+free minimum because <code>shape2 * shape3 &lt; 1</code> produces an
+endpoint singularity.</td>
+</tr>
+</tbody>
+</table>
+<p>There is no additional missing ordinary actuar density family after
+these cases. In particular, <code>dlgompertz</code> is an
+inverse-Weibull alias, <code>dpearson6</code> is a transformed-beta
+alias in actuar, and <code>dpoisinvgauss</code> duplicates
+<code>dpig</code>. actuar’s <code>dgenpareto</code> is beta-prime,
+covered by <code>mlbetapr</code>; it is not extraDistr’s threshold
+generalized Pareto.</p>
+<h2 id="unbounded-likelihood-and-explicit-rejection">Unbounded
+likelihood and explicit rejection</h2>
+<p>Distinguish three outcomes: an out-of-scope distribution, a supported
+constrained model, and an unrestricted model with unbounded likelihood.
+An explicit fitting error is appropriate for the third. It should
+identify the failing free parameter and point to an available
+fixed-endpoint model.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Unrestricted model</th>
+<th>Failure or useful alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shifted Weibull</td>
+<td>Choose shape between zero and one and move the lower endpoint toward
+the sample minimum. Use ordinary Weibull after subtracting a known
+threshold. Neither audited package exports a shifted-Weibull density
+directly.</td>
+</tr>
+<tr>
+<td>Nonstandard beta with free bounds</td>
+<td>A shape below one makes density diverge as its corresponding
+endpoint approaches the sample extreme. Known bounds permit ordinary
+beta fitting after transformation.</td>
+</tr>
+<tr>
+<td>Generalized beta with free scale</td>
+<td><code>shape2 &lt; 1</code> gives a singularity at the upper
+endpoint. Study fixed scale.</td>
+</tr>
+<tr>
+<td>Pareto II with free minimum, shape and scale</td>
+<td>Joint collapse, derived below. Known minimum permits Lomax
+fitting.</td>
+</tr>
+<tr>
+<td>Pareto III, Pareto IV and Feller–Pareto with free minimum</td>
+<td>Their lower-endpoint powers can be negative. Known minimum permits
+existing fitters.</td>
+</tr>
+<tr>
+<td>Fatigue with free location</td>
+<td>The existing fatigue README gives a joint location, shape and scale
+collapse path.</td>
+</tr>
+<tr>
+<td>Normal mixture with free component scales</td>
+<td>A component can collapse onto an observation while another retains
+positive density at the other observations.</td>
+</tr>
+</tbody>
+</table>
+<p>For Pareto II, let the sample minimum be m with multiplicity k in n
+observations. Set minimum to m−ε, scale to ε and keep shape α positive.
+At each minimum the density is α / (ε 2^(α+1)). At every larger
+observation it is asymptotic to a positive constant times ε^α.
+Consequently the likelihood is proportional to ε^(α(n−k)−k). If n &gt;
+k, choose 0 &lt; α &lt; k/(n−k); the likelihood diverges as ε decreases
+to zero. If all observations equal m, it diverges for any positive α.
+This corrects the original inventory’s classification of free-minimum
+Pareto II as merely missing.</p>
+<p>The sample (1, 2, 4, 7), shape 0.1, minimum 1−ε and scale ε gives log
+likelihoods approximately −9.961, −6.705, −0.258 and 6.190 at ε = 10^−2,
+10^−4, 10^−8 and 10^−12 using installed actuar. The power argument
+establishes nonexistence; these values illustrate it.</p>
+<p>Error-only coverage should remain distinct from a successful
+estimator in metadata, model selection and coverage totals. A family
+with an MLE for some samples but not others still requires a real fitter
+and sample-specific boundary handling.</p>
+<h2 id="trigger-to-revisit">Trigger to revisit</h2>
+<p>Choose one accepted study candidate and investigate its likelihood
+and closure before implementation. Skellam, discrete Laplace and
+fixed-endpoint half distributions are natural small projects.
+Generalized beta with a known upper endpoint is the main remaining
+actuar family study; phase-type and finite mixtures are larger
+projects.</p>
+<h2 id="verification">Verification</h2>
+<p>For each candidate, check density parameterization, support,
+identification, attained boundaries, escaping limits, and likelihood
+nonexistence. Verify any implementation against independent density
+calculations and an independent likelihood search. Keep deliberate
+exclusions in this document and fitting restrictions in each
+distribution’s README.</p>
+<p>Rebuild the complete inventory with
+<code>python3 notes/evaluations/2026-10-29-density-coverage.py</code>.
+The inventory fails if an installed d-prefixed export is unclassified.
+Primary density definitions are in the installed package help and the <a
+href="https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf">extraDistr
+manual</a> and <a
+href="https://cran.r-project.org/web/packages/actuar/actuar.pdf">actuar
+manual</a>.</p>
+</body>
+</html>

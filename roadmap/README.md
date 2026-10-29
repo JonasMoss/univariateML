@@ -22,6 +22,10 @@ the queue.
 
 ## Index
 
+- [2026-10-29 — Density scope decisions](2026-10-29-density-scope.md):
+  deliberate extraDistr and actuar exclusions, remaining study candidates,
+  and unrestricted models requiring nonexistence errors.
+
 - [2026-05-08 — C++ core as source of truth](2026-05-08-cpp-core-source-of-truth.md)
   *(closed 2026-05-10)*: now the architecture; see CLAUDE.md "Vision".
 - [2026-05-08 — Cost-method fusion](2026-05-08-cost-method-fusion.md):

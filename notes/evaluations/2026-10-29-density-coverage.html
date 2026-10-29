@@ -11,22 +11,26 @@ not a new numerical validation of the fitters or reference d/p/q/r functions.</p
 boundary policies. <b>Equivalent</b> means a reparameterization or alias, not an exported
 wrapper for that name. <b>Partial / restricted</b> is deliberately not counted as full
 coverage. Rejecting a model is a proposed policy here: no error-only fitters were added.</p>
+<p>Inclusion decisions and accepted study candidates are recorded in the
+<a href="../../roadmap/2026-10-29-density-scope.md">density scope decisions</a>.
+Bhattacharjee and categorical are deliberately excluded, along with multivariate laws.</p>
 <table><tr><th>Classification</th><th>extraDistr</th><th>actuar</th></tr>
 <tr><td>Covered</td><td>22</td><td>28</td></tr>
 <tr><td>Equivalent</td><td>5</td><td>4</td></tr>
 <tr><td>Missing</td><td>10</td><td>0</td></tr>
 <tr><td>Excluded multivariate</td><td>6</td><td>0</td></tr>
-<tr><td>Partial / restricted</td><td>9</td><td>1</td></tr>
+<tr><td>Partial / restricted</td><td>9</td><td>0</td></tr>
 <tr><td>Mixture project</td><td>2</td><td>1</td></tr>
-<tr><td>Reject unrestricted MLE</td><td>0</td><td>4</td></tr>
+<tr><td>Reject unrestricted MLE</td><td>0</td><td>5</td></tr>
 <tr><td>Excluded utility</td><td>0</td><td>2</td></tr>
 </table><h2>What is worth adding?</h2>
 <p>The most natural next projects are Skellam, discrete Laplace, discrete normal,
 discrete gamma, zero-endpoint half-normal and the half-Cauchy/half-t pair. These are
 missing fitter candidates, not claims that every sample has an attained MLE.
 Arbitrary fixed truncation of Poisson/binomial is also a useful extension.
-Categorical is cheap but has little numerical content. Negative hypergeometric
-needs design decisions. Slash and Bhattacharjee need their own boundary analysis.
+Categorical is excluded because its unrestricted probability vector has a dimension
+determined by the category set; Bhattacharjee is excluded as too specialized.
+Negative hypergeometric needs design decisions. Slash needs its own boundary analysis.
 Poisson mixtures and phase-type fitting are larger projects.</p>
 <h2>Where an explicit error makes sense</h2>
 <p>For a freely translated Weibull, fix any shape k between 0 and 1 and any positive
@@ -42,6 +46,10 @@ Keep all other parameters fixed along each path. These conclusions follow direct
 from their documented density powers. They do not rule out fixed-endpoint or
 shape-constrained models. The existing fatigue README gives its separate
 free-location collapse argument. Normal mixtures have a component-collapse path.</p>
+<p>Free-location Pareto II also has unbounded likelihood: with k minima among n
+observations, set min=m-epsilon and scale=epsilon. The likelihood is proportional
+to epsilon<sup>alpha(n-k)-k</sup>, which diverges for sufficiently small positive
+alpha. This corrects the earlier classification as partial coverage.</p>
 <p>Suggested diagnostic: “Unrestricted maximum likelihood is unbounded when the
 endpoint is estimated. Supply a fixed endpoint or use a documented constrained model.”
 Only use this after identifying the actual free-parameter model. Do not give this
@@ -134,7 +142,7 @@ an additional translation. Full free-location Fréchet exceeds the present GEV d
 <tr><td>dparalogis</td><td>Covered</td><td>mlparalogis</td></tr>
 <tr><td>dpareto</td><td>Covered</td><td>mllomax; actuar pareto is type II with zero endpoint.</td></tr>
 <tr><td>dpareto1</td><td>Covered</td><td>mlpareto; type I, estimates its lower endpoint.</td></tr>
-<tr><td>dpareto2</td><td>Partial / restricted</td><td>Known min: subtract it and use mllomax. Free min is not implemented; unlike III/IV, no fixed-shape endpoint singularity.</td></tr>
+<tr><td>dpareto2</td><td>Reject unrestricted MLE</td><td>Known min reduces to mllomax. Free min, shape and scale: likelihood diverges along min=m-epsilon, scale=epsilon, shape&lt;k/(n-k), where k minima occur among n observations.</td></tr>
 <tr><td>dpareto3</td><td>Reject unrestricted MLE</td><td>Known min reduces to mlllogis. Free min is unbounded by choosing shape&lt;1.</td></tr>
 <tr><td>dpareto4</td><td>Reject unrestricted MLE</td><td>Known min reduces to mlburr. Free min is unbounded by choosing shape2&lt;1.</td></tr>
 <tr><td>dpearson6</td><td>Equivalent</td><td>Alias of dtrbeta in this package (all three shapes); mlgb2.</td></tr>

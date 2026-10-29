@@ -94,10 +94,8 @@ add('actuar', 'Equivalent', {
     'dpoisinvgauss': 'Alias of dpig; mlpig.',
     'dgenpareto': 'mlbetapr: actuar shape1 is beta-prime shape2, actuar shape2 is beta-prime shape1. NOT extraDistr dgpd.',
 })
-add('actuar', 'Partial / restricted', {
-    'dpareto2': 'Known min: subtract it and use mllomax. Free min is not implemented; unlike III/IV, no fixed-shape endpoint singularity.',
-})
 add('actuar', 'Reject unrestricted MLE', {
+    'dpareto2': 'Known min reduces to mllomax. Free min, shape and scale: likelihood diverges along min=m-epsilon, scale=epsilon, shape<k/(n-k), where k minima occur among n observations.',
     'dfpareto': 'Known min reduces to mlgb2; free min is unbounded by choosing shape2*shape3<1 and approaching the sample minimum.',
     'dgenbeta': 'Free scale (upper endpoint) is unbounded when shape2<1. Fixed scale is a useful separate model, currently missing.',
     'dpareto3': 'Known min reduces to mlllogis. Free min is unbounded by choosing shape<1.',
@@ -141,7 +139,10 @@ not a new numerical validation of the fitters or reference d/p/q/r functions.</p
 <p><b>Covered</b> means a fitter exists within its documented sample, fixed-design and
 boundary policies. <b>Equivalent</b> means a reparameterization or alias, not an exported
 wrapper for that name. <b>Partial / restricted</b> is deliberately not counted as full
-coverage. Rejecting a model is a proposed policy here: no error-only fitters were added.</p>''']
+coverage. Rejecting a model is a proposed policy here: no error-only fitters were added.</p>
+<p>Inclusion decisions and accepted study candidates are recorded in the
+<a href="../../roadmap/2026-10-29-density-scope.md">density scope decisions</a>.
+Bhattacharjee and categorical are deliberately excluded, along with multivariate laws.</p>''']
 parts.append('<table><tr><th>Classification</th><th>extraDistr</th><th>actuar</th></tr>')
 statuses = list(dict.fromkeys(row['status'] for row in rows))
 for status in statuses:
@@ -153,8 +154,9 @@ parts.append('''</table><h2>What is worth adding?</h2>
 discrete gamma, zero-endpoint half-normal and the half-Cauchy/half-t pair. These are
 missing fitter candidates, not claims that every sample has an attained MLE.
 Arbitrary fixed truncation of Poisson/binomial is also a useful extension.
-Categorical is cheap but has little numerical content. Negative hypergeometric
-needs design decisions. Slash and Bhattacharjee need their own boundary analysis.
+Categorical is excluded because its unrestricted probability vector has a dimension
+determined by the category set; Bhattacharjee is excluded as too specialized.
+Negative hypergeometric needs design decisions. Slash needs its own boundary analysis.
 Poisson mixtures and phase-type fitting are larger projects.</p>
 <h2>Where an explicit error makes sense</h2>
 <p>For a freely translated Weibull, fix any shape k between 0 and 1 and any positive
@@ -170,6 +172,10 @@ Keep all other parameters fixed along each path. These conclusions follow direct
 from their documented density powers. They do not rule out fixed-endpoint or
 shape-constrained models. The existing fatigue README gives its separate
 free-location collapse argument. Normal mixtures have a component-collapse path.</p>
+<p>Free-location Pareto II also has unbounded likelihood: with k minima among n
+observations, set min=m-epsilon and scale=epsilon. The likelihood is proportional
+to epsilon<sup>alpha(n-k)-k</sup>, which diverges for sufficiently small positive
+alpha. This corrects the earlier classification as partial coverage.</p>
 <p>Suggested diagnostic: “Unrestricted maximum likelihood is unbounded when the
 endpoint is estimated. Supply a fixed endpoint or use a documented constrained model.”
 Only use this after identifying the actual free-parameter model. Do not give this
