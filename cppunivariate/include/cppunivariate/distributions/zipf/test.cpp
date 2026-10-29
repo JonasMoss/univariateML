@@ -84,3 +84,19 @@ TEST_CASE("zipf finite sums, upper log tails and billion-point inversion") {
     CHECK(dist::pzipf(q-1,1e9,.5)<u);
   }
 }
+
+TEST_CASE("zipf: endpoint, shape and joint holds") {
+  const std::vector<int> x={1,1,2,4},ones={1,1};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double N:{nan,8.})for(double s:{nan,.7}) {
+    const auto f=cppunivariate::zipf_mle({x.data(),x.size()},1e-10,100,N,s);
+    CHECK(f.status==cppunivariate::ZipfStatus::Ok);
+    CHECK(f.N==(std::isnan(N)?4:N));
+    if(!std::isnan(s))CHECK(f.shape==s);
+    double ll=0;for(int v:x)ll+=dist::dzipf(v,f.N,f.shape,true);
+    CHECK(f.logLik==doctest::Approx(ll).epsilon(1e-12));
+  }
+  CHECK(cppunivariate::zipf_mle({ones.data(),ones.size()},1e-10,100,8).status==cppunivariate::ZipfStatus::PointMass);
+  CHECK(cppunivariate::zipf_mle({x.data(),x.size()},1e-10,100,3).status==cppunivariate::ZipfStatus::InvalidInput);
+  CHECK(cppunivariate::zipf_mle({x.data(),x.size()},1e-10,100,nan,-1).status==cppunivariate::ZipfStatus::InvalidInput);
+}

@@ -24,7 +24,7 @@ Rcpp::List mlcmp_(const Rcpp::NumericVector &x,
  Rcpp::CharacterVector fixed;
  if(lambda.isNotNull()) fixed.push_back("lambda");
  if(nu.isNotNull()) fixed.push_back("nu");
- return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["lambda"]=std::exp(res.eta),Rcpp::_["nu"]=res.nu),Rcpp::_["logLik"]=res.logLik,Rcpp::_["iterations"]=res.iterations,Rcpp::_["fixed"]=fixed);
+ return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["lambda"]=lambda.isNotNull()?ctl.fixed_lambda:std::exp(res.eta),Rcpp::_["nu"]=res.nu),Rcpp::_["logLik"]=res.logLik,Rcpp::_["iterations"]=res.iterations,Rcpp::_["fixed"]=fixed);
 }
 namespace {
 Rcpp::NumericVector cmp_evaluate(const std::vector<Rcpp::NumericVector> &args,

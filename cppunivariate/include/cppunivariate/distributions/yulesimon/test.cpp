@@ -42,3 +42,13 @@ TEST_CASE("yulesimon: tiny shape and huge counts preserve gamma increments") {
   CHECK(cppunivariate::distributions::pyulesimon(k,rho)/expected==doctest::Approx(1).epsilon(1e-12));
   CHECK(cppunivariate::distributions::pyulesimon(k,rho,false,true)/(-expected)==doctest::Approx(1).epsilon(1e-12));
 }
+
+TEST_CASE("yulesimon: held coefficient bypasses the all-ones escape") {
+  const std::vector<int> x={1,1,1};
+  const auto f=cppunivariate::yulesimon_mle({x.data(),x.size()},1e-10,200,2.3);
+  CHECK(f.status==cppunivariate::YulesimonStatus::Ok);
+  CHECK(f.rho==2.3);
+  CHECK(std::isfinite(f.logLik));
+  CHECK(f.iterations==0);
+  CHECK(cppunivariate::yulesimon_mle({x.data(),x.size()},1e-10,200,0).status==cppunivariate::YulesimonStatus::InvalidInput);
+}

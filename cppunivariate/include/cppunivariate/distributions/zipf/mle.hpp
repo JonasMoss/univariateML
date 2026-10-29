@@ -14,7 +14,7 @@
 
 namespace cppunivariate {
 
-enum class ZipfStatus { Ok = 0, AllOnes, ShapeNegative, IterationFailure };
+enum class ZipfStatus { Ok = 0, AllOnes, PointMass, InvalidInput, ShapeNegative, IterationFailure };
 
 struct ZipfResult {
   double N;
@@ -71,17 +71,34 @@ inline HarmonicMoments moments(int N, double s) {
 }
 } // namespace zipf_detail
 
-inline ZipfResult zipf_mle(ispan x, double tol, int maxit) {
+inline ZipfResult zipf_mle(ispan x, double tol, int maxit,
+    double held_N=std::numeric_limits<double>::quiet_NaN(),
+    double held_s=std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, ZipfStatus::IterationFailure};
 
+  if (!(tol>0) || !std::isfinite(tol) || maxit<1)
+    return {kNaN,kNaN,kNaN,0,ZipfStatus::InvalidInput};
+  for (int v:x) if (v<1) return {kNaN,kNaN,kNaN,0,ZipfStatus::InvalidInput};
   int N = x[0];
   for (auto v : x) if (v > N) N = v;
+  if (!std::isnan(held_N)) {
+    if (!std::isfinite(held_N) || held_N<N || held_N!=std::floor(held_N) ||
+        held_N>std::numeric_limits<int>::max())
+      return {kNaN,kNaN,kNaN,0,ZipfStatus::InvalidInput};
+    N=static_cast<int>(held_N);
+  }
   const double dN = static_cast<double>(N);
 
   double sum_lx = 0.0;
   for (auto v : x) sum_lx += std::log(static_cast<double>(v));
+  if (!std::isnan(held_s)) {
+    if (!std::isfinite(held_s) || held_s<0)
+      return {kNaN,kNaN,kNaN,0,ZipfStatus::InvalidInput};
+    return {dN,held_s,-held_s*sum_lx-n*std::log(zipf_detail::moments(N,held_s).h),0,ZipfStatus::Ok};
+  }
+  if (sum_lx==0 && N>1) return {dN,kNaN,0,0,ZipfStatus::PointMass};
   if (sum_lx == 0.0) {
     return {dN, 1.0, 0.0, 0, ZipfStatus::AllOnes};
   }

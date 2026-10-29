@@ -81,3 +81,17 @@ test_that("zeta preserves extreme log probabilities and invalid domains", {
   expect_identical(qzeta(.5,NA_real_),NA_real_)
   expect_error(rzeta(-1,2),"invalid")
 })
+
+test_that("zeta held coefficient evaluates the independent likelihood", {
+  set.seed(810)
+  samples <- list(sample(1:8,20,TRUE),sample(1:15,100,TRUE),c(1,2),rep(3,4),rep(1,5))
+  held <- 2.3
+  for(x in samples) {
+    f <- mlzeta(x,s=held)
+    expect_identical(f[["s"]],held)
+    expect_identical(attr(f,"fixed"),"s")
+    expect_equal(as.numeric(logLik(f)),-held*sum(log(x))-length(x)*log(sum((1:10000)^-held)+10000^(1-held)/(held-1)-.5*10000^-held+held/12*10000^(-held-1)),tolerance=1e-10)
+    expect_equal(attr(logLik(f),"df"),0L)
+  }
+  for(v in c(NA_real_,NaN,Inf,0,-1)) expect_error(mlzeta(c(1,2),s=v))
+})
