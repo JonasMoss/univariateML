@@ -811,3 +811,71 @@ for (.key in paste0("extraDistr::", c("dtnorm", "ptnorm", "qtnorm"))) {
   })
 }
 rm(.key)
+
+# Negative hypergeometric: total draws T, with P(T <= t) = P(H_t >= r).
+# The reference allocates a table over its support even for scalar density
+# calls; it also converts counts to int. Use stable base hypergeometric laws.
+univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
+  valid <- function(n, m, r) all(is.finite(c(n,m,r))) &&
+    all(c(n,m,r) >= 0) && all(c(n,m,r) == floor(c(n,m,r))) &&
+    r <= m && n + m <= 2^53 - 1
+  density <- function(x, n, m, r, log = FALSE) {
+    if (any(lengths(list(x,n,m,r)) == 0)) return(numeric())
+    mapply(function(x,n,m,r) {
+      if (anyNA(c(x,n,m,r))) return(NA_real_)
+      if (!valid(n,m,r)) return(NaN)
+      if (r == 0) lp <- if (x == 0) 0 else -Inf
+      else if (!is.finite(x) || x != floor(x) || x < r || x > n+r) lp <- -Inf
+      else lp <- stats::dhyper(r,m,n,x,log=TRUE) + base::log(r/x)
+      if (log) lp else exp(lp)
+    }, x,n,m,r, USE.NAMES=FALSE)
+  }
+  cdf <- function(q, n, m, r, lower.tail = TRUE, log.p = FALSE) {
+    if (any(lengths(list(q,n,m,r)) == 0)) return(numeric())
+    mapply(function(q,n,m,r) {
+      if (anyNA(c(q,n,m,r))) return(NA_real_)
+      if (!valid(n,m,r)) return(NaN)
+      q <- floor(q)
+      if (q < r || q >= if (r == 0) 0 else n+r) {
+        below <- q >= r
+        lp <- if (below == lower.tail) 0 else -Inf
+      } else lp <- stats::phyper(r-1,m,n,q,lower.tail=!lower.tail,log.p=TRUE)
+      if (log.p) lp else exp(lp)
+    }, q,n,m,r, USE.NAMES=FALSE)
+  }
+  quantile <- function(p, n, m, r, lower.tail = TRUE, log.p = FALSE) {
+    if (any(lengths(list(p,n,m,r)) == 0)) return(numeric())
+    mapply(function(p,n,m,r) {
+      if (anyNA(c(p,n,m,r))) return(NA_real_)
+      if (!valid(n,m,r) || (if (log.p) p > 0 else p < 0 || p > 1)) return(NaN)
+      lp <- if (log.p) p else log(p)
+      lo <- r; hi <- if (r == 0) 0 else n+r
+      if (lp == -Inf) return(if (lower.tail) lo else hi)
+      if (lp == 0) return(if (lower.tail) hi else lo)
+      lower <- lower.tail
+      if (lp > -log(2)) { lp <- log(-expm1(lp)); lower <- !lower }
+      while (lo < hi) {
+        mid <- lo + floor((hi-lo)/2)
+        v <- cdf(mid,n,m,r,lower,TRUE)
+        if (if (lower) v >= lp-1e-14 else v <= lp+1e-14) hi <- mid else lo <- mid+1
+      }
+      lo
+    }, p,n,m,r, USE.NAMES=FALSE)
+  }
+  random <- function(nn, n, m, r) {
+    if (length(nn) > 1) nn <- length(nn)
+    quantile(stats::runif(nn),n,m,r)
+  }
+  # A safe finite-tail probe: never call the crashing n=0 case, or ask
+  # the table-based backend to allocate a huge population.
+  broken <- function() !is.finite(suppressWarnings(
+    extraDistr::dnhyper(1003,1000,1000,3,log=TRUE)))
+  list("extraDistr::dnhyper"=list(broken=broken,replacement=density),
+       "extraDistr::pnhyper"=list(broken=function() !is.finite(suppressWarnings(
+         extraDistr::pnhyper(500,1000,1000,3,lower.tail=FALSE,log.p=TRUE))), replacement=cdf),
+       "extraDistr::qnhyper"=list(broken=function() {
+         z <- suppressWarnings(extraDistr::qnhyper(-1000,1000,1000,3,lower.tail=FALSE,log.p=TRUE))
+         !is.finite(z) || stats::phyper(2,1000,1000,z,log.p=TRUE) > -999
+       }, replacement=quantile),
+       "extraDistr::rnhyper"=list(broken=broken,replacement=random))
+}))

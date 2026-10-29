@@ -58,6 +58,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | gumbel     | Gumbel                  | mu, sigma          | extraDistr::dgumbel       | (-∞, ∞) open     |
 | huber      | Huber                   | mu, sigma, epsilon | extraDistr::dhuber       | (-∞, ∞) open     |
 | hyper | Hypergeometric | m, n, k | stats::dhyper | [0, ∞) integer |
+| nhyper | Negative hypergeometric | n, m, r | extraDistr::dnhyper | [0, ∞) integer |
 | invburr    | Inverse Burr            | shape1, shape2, scale | actuar::dinvburr          | (0, ∞) open      |
 | invgamma   | InvGamma                | alpha, beta        | extraDistr::dinvgamma     | (0, ∞) open      |
 | invgauss   | Inverse Gaussian        | mean, shape        | actuar::dinvgauss         | (0, ∞) open      |
