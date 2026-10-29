@@ -16,21 +16,21 @@ params:
 r:
   density: stats::dnorm
   sampler: stats::rnorm
-  control: {}
+  control:
+    sd: Optional held sd; NULL estimates it.
+    mean: Optional held mean; NULL estimates it.
 log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York."
 examples: |
   mlnorm(precip)
-holds:
-- held:
-  - mean
-  status: not-implemented
-  reason: The adapter does not accept `mean`; this hold is not implemented (P2).
-- held:
-  - sd
-  status: not-implemented
-  reason: The adapter does not accept `sd`; this hold is not implemented (P2).
+holds: []
+limits:
+  - name: scale collapse
+    when: Scale tends to zero at the fitted or held location.
+    detect: Every observation equals the fitted or held location.
+    status: Unbounded
+    message: "unbounded"
 ---
 
 The normal (Gaussian) distribution is a symmetric distribution on the real line, used to model continuous measurements and errors.
@@ -38,3 +38,6 @@ The normal (Gaussian) distribution is a symmetric distribution on the real line,
 ## Details
 
 The estimated `sd` uses the variance with divisor $n$, rather than the unbiased divisor $n-1$.
+
+
+With mean held, scale is the root mean square residual about that value. Scale collapses only when every observation equals the held mean. Holding sd removes collapse, including for constant samples.

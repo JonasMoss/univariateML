@@ -165,3 +165,39 @@ TEST_CASE("std fits are equivariant on small-scale samples") {
     CHECK(r.logLik + x.size() * std::log(scale) == doctest::Approx(base.logLik).epsilon(1e-9));
   }
 }
+
+TEST_CASE("std: every held golden subset preserves coefficients and likelihood") {
+  const auto g=mltest::load_distribution_golden("std");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1;mask<8;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,1000,((mask & 1) ? g.estimates.at("mean") : nan),((mask & 2) ? g.estimates.at("sd") : nan),((mask & 4) ? g.estimates.at("nu") : nan));
+    if(mask & 1)CHECK(r.mu==g.estimates.at("mean"));
+    if(mask & 2)CHECK(r.sigma==g.estimates.at("sd"));
+    if(mask & 4)CHECK(r.nu==g.estimates.at("nu"));
+    CHECK(r.status==cppunivariate::StudentTStatus::Ok);
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
+}
+
+TEST_CASE("std: conditional lower shape faces") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x={-20,20};for(int i=0;i<10;++i){x.push_back(-.1);x.push_back(.1);}
+  CHECK(cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,nan,nan).status==cppunivariate::StudentTStatus::DfTwoBoundary);
+  const std::vector<double> tied={0,0,1};
+  CHECK(cppunivariate::student_t_mle(mltest::as_span(tied),1e-8,200,0,1,nan).status==cppunivariate::StudentTStatus::ScaleBoundary);
+}
+
+TEST_CASE("std: held profiles preserve extreme units") {
+  const std::vector<double> x={-2,-.5,0,.7,3};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto base=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,nan,1e20);
+  for(double unit:{1e-300,1e300}) {
+    auto y=x;for(double& v:y)v*=unit;
+    const auto fit=cppunivariate::student_t_mle(mltest::as_span(y),1e-8,200,0,nan,1e20);
+    CHECK(fit.sigma/unit==doctest::Approx(base.sigma).epsilon(1e-8));
+    CHECK(fit.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-8));
+  }
+  CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(1e-8));
+}

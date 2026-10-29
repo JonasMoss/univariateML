@@ -305,4 +305,44 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   return student_t_mle_impl(x, tol, maxit, false);
 }
 
+
+inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+  if(std::isnan(mean)&&std::isnan(sd))return std::isnan(nu)?student_t_mle(x,tol,maxit):student_t_mle_fixed_nu(x,nu,tol,maxit);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  auto profile=[&](double d){
+    const double s=std::isnan(sd)?sd:sd*std::sqrt((d-2)/d);
+    const auto r=lst_detail::conditional(x,d,mean,s,tol,maxit);
+    StudentTStatus status=StudentTStatus::InvalidStart;
+    if(r.status==LstStatus::Ok)status=StudentTStatus::Ok;
+    if(r.status==LstStatus::Unbounded)status=StudentTStatus::Unbounded;
+    if(r.status==LstStatus::ScaleBoundary)status=StudentTStatus::ScaleBoundary;
+    if(r.status==LstStatus::IterationFailure)status=StudentTStatus::IterationFailure;
+    return StudentTResult{r.mu,std::isnan(sd)?r.sigma*std::sqrt(d/(d-2)):sd,d,r.logLik,r.iterations,status};
+  };
+  if(!std::isnan(nu)) {
+    if(!(nu>2)||!std::isfinite(nu))return {nan,nan,nu,nan,0,StudentTStatus::InvalidNu};
+    return profile(nu);
+  }
+  if(x.empty())return {nan,nan,nan,nan,0,StudentTStatus::InvalidStart};
+  const std::size_t k=std::isnan(mean)?collapse_multiplicity(x):static_cast<std::size_t>(std::count(x.begin(),x.end(),mean));
+  if(k>2*(x.size()-k))return {nan,nan,nan,INFINITY,0,StudentTStatus::Unbounded};
+  std::vector<double> grid;for(double t=-18;t<=16;t+=.5)grid.push_back(t);
+  const auto optimum=lst_detail::maximize([&](double a){return profile(2+std::exp(a)).logLik;},grid,1e-8,maxit);
+  if(!optimum.converged)return {nan,nan,nan,nan,maxit,StudentTStatus::IterationFailure};
+  auto best=profile(2+std::exp(optimum.point));const double tie=1e-8*x.size();
+  const auto normal=norm_mle(x,mean,sd);
+  double face=-INFINITY;
+  if(std::isnan(sd))face=lst_detail::conditional(x,2,mean,nan,tol,maxit).logLik;
+  if(k==2*(x.size()-k)) {
+    double atom=mean;
+    if(std::isnan(atom)) {
+      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());atom=y[y.size()/2];
+    }
+    face=-static_cast<double>(x.size())*std::log(2.0);
+    for(double v:x)if(v!=atom)face-=3*std::log(std::abs(v-atom));
+  }
+  if(normal.logLik>=best.logLik-tie&&normal.logLik>=face-tie)return {normal.mean,normal.sd,INFINITY,normal.logLik,0,StudentTStatus::NormalBoundary};
+  if(face>=best.logLik-tie)return {mean,INFINITY,2,face,0,k==2*(x.size()-k)?StudentTStatus::ScaleBoundary:StudentTStatus::DfTwoBoundary};
+  return best;
+}
 }  // namespace cppunivariate

@@ -18,10 +18,13 @@
 
 namespace cppunivariate {
 
+enum class NormStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct NormResult {
   double mean;
   double sd;
   double logLik;
+  NormStatus status = NormStatus::Ok;
 };
 
 namespace norm_detail {
@@ -64,12 +67,25 @@ inline NormResult norm_mle(span x) {
   const std::size_t n = x.size();
   if (n == 0) {
     constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
-    return {kNaN, kNaN, kNaN};
+    return {kNaN, kNaN, kNaN, NormStatus::InvalidInput};
   }
   const auto m = norm_detail::moments(x);
   const double dn = static_cast<double>(n);
   const double logLik = -0.5 * dn * (std::log(2.0 * M_PI) + 1.0) - dn * std::log(m.sd);
-  return {m.mean, m.sd, logLik};
+  return {m.mean, m.sd, logLik, m.sd==0 ? NormStatus::Unbounded : NormStatus::Ok};
+}
+
+
+// Conditional normal likelihood: exact mean and residual RMS profiles.
+inline NormResult norm_mle(span x, double mean, double sd) {
+  if (std::isnan(mean) && std::isnan(sd)) return norm_mle(x);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.empty()) return {nan,nan,nan,NormStatus::InvalidInput};
+  const double m=std::isnan(mean)?norm_detail::moments(x).mean:mean;
+  long double ss=0; for(double v:x) {const long double d=static_cast<long double>(v)-m;ss+=d*d;}
+  const double s=std::isnan(sd)?static_cast<double>(std::sqrt(ss/x.size())):sd;
+  const double ll=-static_cast<double>(x.size())*(std::log(s)+.5*std::log(2*M_PI))-static_cast<double>(ss/(2*static_cast<long double>(s)*s));
+  return {m,s,ll,s==0 ? NormStatus::Unbounded : NormStatus::Ok};
 }
 
 }  // namespace cppunivariate

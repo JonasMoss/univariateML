@@ -2,12 +2,21 @@
 #include "cppunivariate/distributions/lst/mle.hpp"
 #include <Rcpp.h>
 #include <cmath>
+#include <limits>
 // [[Rcpp::export]]
 Rcpp::List mllst_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
-                  int iterlim = 200, Rcpp::Nullable<double> df = R_NilValue) {
-  auto r = df.isNotNull()
-    ? cppunivariate::lst_mle_fixed_df(dist_impl::as_span(x), Rcpp::as<double>(df), gradtol, iterlim)
-    : cppunivariate::lst_mle(dist_impl::as_span(x), gradtol, iterlim);
+                  int iterlim = 200, Rcpp::Nullable<double> df = R_NilValue, Rcpp::Nullable<double> mu = R_NilValue, Rcpp::Nullable<double> sigma = R_NilValue) {
+  if(df.isNotNull()&&!std::isfinite(Rcpp::as<double>(df)))Rcpp::stop("`df` must be finite and at least 1.");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double held_mu=mu.isNotNull()?Rcpp::as<double>(mu):nan;
+  if(mu.isNotNull() && (!std::isfinite(held_mu)))Rcpp::stop("Invalid held `mu`.");
+  const double held_sigma=sigma.isNotNull()?Rcpp::as<double>(sigma):nan;
+  if(sigma.isNotNull() && (!std::isfinite(held_sigma) || !(held_sigma>0)))Rcpp::stop("Invalid held `sigma`.");
+  Rcpp::CharacterVector fixed;
+  if(mu.isNotNull())fixed.push_back("mu");
+  if(sigma.isNotNull())fixed.push_back("sigma");
+  if(df.isNotNull())fixed.push_back("df");
+  auto r=cppunivariate::lst_mle(dist_impl::as_span(x),gradtol,iterlim,held_mu,held_sigma,df.isNotNull()?Rcpp::as<double>(df):nan);
   if (r.status == cppunivariate::LstStatus::InvalidDf)
     Rcpp::stop("`df` must be finite and at least 1.");
   if (r.status == cppunivariate::LstStatus::Unbounded)
@@ -26,5 +35,5 @@ Rcpp::List mllst_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
     Rcpp::_["estimates"] = Rcpp::NumericVector::create(
       Rcpp::_["mu"] = r.mu, Rcpp::_["sigma"] = r.sigma, Rcpp::_["df"] = r.df),
     Rcpp::_["logLik"] = r.logLik, Rcpp::_["iterations"] = r.iterations,
-      Rcpp::_["fixed"] = df.isNotNull() ? Rcpp::CharacterVector::create("df") : Rcpp::CharacterVector(0));
+      Rcpp::_["fixed"] = fixed);
 }

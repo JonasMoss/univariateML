@@ -5,11 +5,13 @@
 Rcpp::List mlbhatt_(const Rcpp::NumericVector& x,
     Rcpp::Nullable<double> sigma=R_NilValue,
     Rcpp::Nullable<double> a=R_NilValue,
-    double reltol=1e-8,int iterlim=500) {
+    double reltol=1e-8,int iterlim=500, Rcpp::Nullable<double> mu=R_NilValue) {
   const double f_sigma=sigma.isNotNull()?Rcpp::as<double>(sigma):cppunivariate::special::kNaN;
   const double f_a=a.isNotNull()?Rcpp::as<double>(a):cppunivariate::special::kNaN;
-  if((sigma.isNotNull() && !(std::isfinite(f_sigma) && f_sigma>0)) || (a.isNotNull() && !(std::isfinite(f_a) && f_a>0)))Rcpp::stop("Fixed scales must be positive finite numbers.");
-  const auto f=cppunivariate::bhatt_mle(dist_impl::as_span(x),reltol,iterlim,f_sigma,f_a);
+  if((sigma.isNotNull() && !(std::isfinite(f_sigma) && f_sigma>0)) || (a.isNotNull() && !(std::isfinite(f_a) && f_a>=0)))Rcpp::stop("Fixed sigma must be positive and a nonnegative; both must be finite.");
+  const double f_mu=mu.isNotNull()?Rcpp::as<double>(mu):cppunivariate::special::kNaN;
+  if(mu.isNotNull()&&!std::isfinite(f_mu))Rcpp::stop("Held mu must be finite.");
+  const auto f=cppunivariate::bhatt_mle(dist_impl::as_span(x),reltol,iterlim,f_sigma,f_a,f_mu);
   if(f.status==cppunivariate::BhattStatus::Unbounded)Rcpp::stop("Bhattacharjee likelihood is unbounded for a constant sample.");
   if(f.status==cppunivariate::BhattStatus::NormalLimit) {
     if(sigma.isNotNull())Rcpp::stop("Bhattacharjee likelihood selects the normal face with sigma held. Use `mlnorm` for an unrestricted fit; it does not hold sigma.");
@@ -21,6 +23,7 @@ Rcpp::List mlbhatt_(const Rcpp::NumericVector& x,
   }
   if(f.status!=cppunivariate::BhattStatus::Ok)Rcpp::stop("Bhatt fit failed: check inputs, reltol and iterlim.");
   Rcpp::CharacterVector fixed;
+  if(mu.isNotNull())fixed.push_back("mu");
   if(sigma.isNotNull())fixed.push_back("sigma");
   if(a.isNotNull())fixed.push_back("a");
   return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["mu"]=f.mu,Rcpp::_["sigma"]=f.sigma,Rcpp::_["a"]=f.a),Rcpp::_["logLik"]=f.logLik,Rcpp::_["iterations"]=f.iterations,Rcpp::_["fixed"]=fixed);

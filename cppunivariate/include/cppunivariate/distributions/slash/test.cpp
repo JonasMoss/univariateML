@@ -1,3 +1,4 @@
+#include <limits>
 #include "test_support.hpp"
 #include "cppunivariate/distributions/slash/mle.hpp"
 #include <vector>
@@ -48,4 +49,18 @@ TEST_CASE("slash: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pslash(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qslash(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rslash(rng, p[0], p[1]); });
+}
+
+TEST_CASE("slash: every held golden subset preserves coefficients and likelihood") {
+  const auto g=mltest::load_distribution_golden("slash");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=1;mask<4;++mask) {
+    CAPTURE(mask);
+    const auto r=cppunivariate::slash_mle(mltest::as_span(g.data),1e-10,1000,((mask & 2) ? g.estimates.at("sigma") : nan),((mask & 1) ? g.estimates.at("mu") : nan));
+    if(mask & 1)CHECK(r.mu==g.estimates.at("mu"));
+    if(mask & 2)CHECK(r.sigma==g.estimates.at("sigma"));
+    CHECK(r.status==cppunivariate::SlashStatus::Ok);
+    CHECK(std::isfinite(r.logLik));
+    CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
+  }
 }

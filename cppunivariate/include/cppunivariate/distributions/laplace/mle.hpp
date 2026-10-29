@@ -12,17 +12,20 @@
 
 namespace cppunivariate {
 
+enum class LaplaceStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct LaplaceResult {
   double mu;
   double sigma;
   double logLik;
+  LaplaceStatus status = LaplaceStatus::Ok;
 };
 
 inline LaplaceResult laplace_mle(span x) {
   const std::size_t n = x.size();
   if (n == 0) {
     constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
-    return {kNaN, kNaN, kNaN};
+    return {kNaN, kNaN, kNaN, LaplaceStatus::InvalidInput};
   }
   std::vector<double> sorted(x.begin(), x.end());
   std::sort(sorted.begin(), sorted.end());
@@ -32,7 +35,19 @@ inline LaplaceResult laplace_mle(span x) {
   const double sigma = abs_sum / static_cast<double>(n);
   const double logLik =
       -static_cast<double>(n) * (1.0 + (std::log(2.0) + std::log(sigma)));
-  return {mu, sigma, logLik};
+  return {mu, sigma, logLik, sigma==0 ? LaplaceStatus::Unbounded : LaplaceStatus::Ok};
+}
+
+
+inline LaplaceResult laplace_mle(span x,double mu,double sigma) {
+  if(std::isnan(mu)&&std::isnan(sigma))return laplace_mle(x);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.empty())return {nan,nan,nan,LaplaceStatus::InvalidInput};
+  std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
+  const double m=std::isnan(mu)?y[y.size()/2]:mu;
+  long double a=0;for(double v:x)a+=std::abs(static_cast<long double>(v)-m);
+  const double s=std::isnan(sigma)?static_cast<double>(a/x.size()):sigma;
+  return {m,s,-static_cast<double>(x.size())*(std::log(2.0)+std::log(s))-static_cast<double>(a/s),s==0 ? LaplaceStatus::Unbounded : LaplaceStatus::Ok};
 }
 
 }  // namespace cppunivariate
