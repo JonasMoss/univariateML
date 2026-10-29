@@ -4,7 +4,7 @@
 chose full coverage of both packages ("cover all of extraDistr and
 actuar"), including families whose unrestricted MLE does not exist; see
 [Full coverage plan](#full-coverage-plan-2026-10-29), which overrides the
-`dbhatt`, `dcat` and `dphtype` rows below. Tiers 1 and 2, and tier 3 except `genbeta`, are in progress.
+`dbhatt`, `dcat` and `dphtype` rows below. Tiers 1–3 are done (merged 2026-10-29); tier 4 (vector parameters) is not started.
 
 The package fits univariate distributions with a fixed, finite number of
 parameters for each specified model. Covering another package does not
