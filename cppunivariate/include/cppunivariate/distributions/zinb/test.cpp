@@ -61,8 +61,8 @@ TEST_CASE("zinb: degenerate representative and stable density") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("zinb: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("zinb: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("zinb",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzinb(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzinb(x, p[0], p[1], p[2], lower, log); },
@@ -91,4 +91,24 @@ TEST_CASE("zinb: P2 held-domain and non-existence statuses") {
  CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,nan,1,nan).status==cppunivariate::ZinbStatus::InvalidInput);
  CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,nan,nan,1).status==cppunivariate::ZinbStatus::InvalidInput);
  CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,1,nan,.4,nan).status==cppunivariate::ZinbStatus::IterationFailure);
+}
+
+
+TEST_CASE("zinb: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // s=mpf(2.0); p=mpf(0.4); pi=mpf(0.3)
+  // d=lambda k:(1-pi)*gamma(k+s)/(gamma(s)*gamma(k+1))*p**s*(1-p)**k; S=lambda k:(1-pi)*betainc(k+1,s,0,1-p,regularized=True)
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(134.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dzinb(1e+100, 2.0, 0.4, 0.3, true) == doctest::Approx(-5.108256237659907e+99).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pzinb(134.0, 2.0, 0.4, 0.3, false, true) == doctest::Approx(-65.31080096711501).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qzinb(-10000, 2.0, 0.4, 0.3, false, true) == 19593.0);
+  CHECK(cppunivariate::distributions::dzinb(0.5, 2.0, 0.4, 0.3, false) == 0);
 }

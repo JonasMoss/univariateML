@@ -21,14 +21,30 @@ TEST_CASE("unif dpqr: density, CDF, quantile") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("unif: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("unif: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("unif",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dunif(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::punif(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qunif(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::runif_(rng, p[0], p[1]); });
 }
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// logF=lambda x:m.log(x); Q=lambda l,w:w*m.exp(l)
+TEST_CASE("unif: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::punif(1e-300,0,1,true,true) == doctest::Approx(std::log(1e-300)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qunif(-800,0,1e300,true,true) == doctest::Approx(std::exp(-800+std::log(1e300))).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qunif(-INFINITY,0,1,true,true) == doctest::Approx(0).epsilon(1e-12).scale(1e-300));
+}
+
+// mpmath: m.mp.dps=100; a=-m.mpf('1e308'); b=-a
+// log(1/(b-a))=-log(2)-log(1e308); F(0)=1/2; Q(1/2)=0.
+TEST_CASE("unif: finite endpoints with overflowing width") {
+  CHECK(cppunivariate::distributions::dunif(0,-1e308,1e308,true) == doctest::Approx(-std::log(2.0)-std::log(1e308)).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::punif(0,-1e308,1e308,true,false) == doctest::Approx(.5));
+  CHECK(cppunivariate::distributions::qunif(.5,-1e308,1e308,true,false) == 0);
+}
+
 
 TEST_CASE("unif P2 exact held endpoints and feasibility") {
   const double nan=std::numeric_limits<double>::quiet_NaN();

@@ -7,54 +7,35 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
 inline double drayleigh(double x, double sigma, bool log) {
-  if (!(sigma > 0.0) || !std::isfinite(x)) {
-    return kNaN;
-  }
-  if (x <= 0.0) {
-    return log ? kNegInf : 0.0;
-  }
-  const double s2 = sigma * sigma;
-  const double log_density = std::log(x) - std::log(s2) - 0.5 * x * x / s2;
-  return log ? log_density : std::exp(log_density);
+  if (!(sigma>0 && std::isfinite(sigma))) return special::kNaN;
+  if (std::isnan(x)) return special::kNaN;
+  if (x<0 || x==special::kPosInf) return log ? special::kNegInf : 0;
+  const double ld=std::log(x)-2*std::log(sigma)-std::exp(2*(std::log(x)-std::log(sigma))-std::log(2.0));
+  return log ? ld : std::exp(ld);
 }
 
 inline double prayleigh(double q, double sigma, bool lower_tail, bool log_p) {
-  if (!(sigma > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q < 0.0) {
-    prob = 0.0;
-  } else {
-    prob = 1.0 - std::exp(-(q * q) / (2.0 * sigma * sigma));
-  }
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+  if (!(sigma>0 && std::isfinite(sigma))) return special::kNaN;
+  if (std::isnan(q)) return special::kNaN;
+  if (q<=0) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
+  const double lh = 2*(std::log(q)-std::log(sigma))-std::log(2.0);
+  const auto t = lh < -36 ? special::tails_from_log(lh,true) : special::tails_from_log(-std::exp(lh),false);
+  return special::tail_probability(t,lower_tail,log_p);
 }
 
 inline double qrayleigh(double p, double sigma, bool lower_tail, bool log_p) {
-  if (!(sigma > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  return sigma * std::sqrt(-2.0 * std::log(1.0 - p));
+  if (!(sigma>0 && std::isfinite(sigma))) return special::kNaN;
+  const auto t=special::quantile_log_tails(p,lower_tail,log_p);
+  if (!t.valid) return special::kNaN;
+  const double lh=t.lower < -0.6931471805599453 ? special::log_neg_log1mexp(t.lower) : std::log(-t.upper);
+  return std::exp(std::log(sigma)+(lh+std::log(2.0))/2);
 }
 
 template <typename Rng>

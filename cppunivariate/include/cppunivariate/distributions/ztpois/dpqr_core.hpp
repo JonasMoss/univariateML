@@ -1,5 +1,9 @@
 #pragma once
+#include "../../special/tails.hpp"
 #include "profile.hpp"
+#include "../pois/dpqr.hpp"
+#include "../nbinom/dpqr.hpp"
+#include "../binom/dpqr.hpp"
 namespace cppunivariate {
 namespace zero_detail {
 // kind: truncated Poisson, geometric, NB, binomial, logarithmic.
@@ -23,60 +27,64 @@ inline double logd(int kind,double x,double a,double b) {
   if(kind==0)return -a+x*std::log(a)-special::lgamma(x+1)-std::log(-std::expm1(-a));
   if(kind==1)return std::log(a)+(x-1)*std::log1p(-a);
   if(kind==2 && a==0)return x*std::log1p(-b)-std::log(x)-std::log(-std::log(b));
-  if(kind==2) return nb_logpmf(static_cast<int>(x),a,b)-std::log(-std::expm1(a*std::log(b)));
-  if(kind==3)return bin_logpmf(static_cast<int>(x),a,b)-std::log(-std::expm1(a*std::log1p(-b)));
+  if(kind==2) return distributions::dnbinom(x,a,b,true)-std::log(-std::expm1(a*std::log(b)));
+  if(kind==3)return distributions::dbinom(x,a,b,true)-std::log(-std::expm1(a*std::log1p(-b)));
   return x*std::log(a)-std::log(x)-std::log(-std::log1p(-a));
 }
-inline double logsurvival(int kind,double q,double a,double b) {
-  if(q<1)return 0;
-  if(point(kind,a,b)||std::isinf(q)||(kind==3 && q>=a))return -std::numeric_limits<double>::infinity();
+inline special::LogTails positive_tails(int kind,double q,double a,double b) {
+  if(q<1) return special::tails_from_log(special::kNegInf,true);
+  if(point(kind,a,b)||q==special::kPosInf||(kind==3 && q>=a)) return special::tails_from_log(special::kNegInf,false);
+  if(kind==3 && b==1) return special::tails_from_log(special::kNegInf,true);
   q=std::floor(q);
-  if(kind==1)return q*std::log1p(-a);
-  double s=0;
-  if(kind==0)s=special::poisson_cdf(q,a,false)/(-std::expm1(-a));
-  if(kind==2 && a>0)s=special::negative_binomial_cdf(q,a,b,false)/(-std::expm1(a*std::log(b)));
-  if(kind==3)s=special::binomial_cdf(q,a,b,false)/(-std::expm1(a*std::log1p(-b)));
-  if(s>0)return std::log(std::min(1.0,s));
-  // Log-tail summation also covers logarithmic series, without 1-CDF cancellation.
-  double k=q+1, term=1, total=1;
-  const double first=logd(kind,k,a,b);
-  for(int i=0;i<1000000;++i) {
-    double ratio=0;
-    if(kind==0)ratio=a/(k+1);
-    if(kind==2)ratio=(a+k)*(1-b)/(k+1);
-    if(kind==3)ratio=(a-k)*b/((k+1)*(1-b));
-    if(kind==4)ratio=a*k/(k+1);
-    term*=ratio;total+=term;++k;
-    if(term<=total*1e-16)break;
+  if(kind==1) return special::tails_from_log(q*std::log1p(-a),false);
+  double upper;
+  if(kind==0) upper=distributions::ppois(q,a,false,true)-std::log(-std::expm1(-a));
+  else if(kind==2 && a>0) upper=distributions::pnbinom(q,a,b,false,true)-std::log(-std::expm1(a*std::log(b)));
+  else if(kind==3) upper=distributions::pbinom(q,a,b,false,true)-std::log(-std::expm1(a*std::log1p(-b)));
+  else {
+    const double theta=kind==4?a:1-b, k=q+1;
+    upper=special::log_series(logd(kind,k,a,b),k,
+        [=](double j){return theta*j/(j+1);},[=](double){return theta;});
   }
-  return std::min(0.0,first+std::log(total));
+  if(upper < -0.6931471805599453) return special::tails_from_log(upper,false);
+  // The conditional lower tail may be tiny even when the base CDF is large.
+  // Sum it directly rather than subtracting the zero mass or near-one survival.
+  double lower=logd(kind,1,a,b), term=lower;
+  for(double k=1;k<q;++k) {
+    double ratio;
+    if(kind==0) ratio=a/(k+1);
+    else if(kind==2 && a>0) ratio=(a+k)*(1-b)/(k+1);
+    else if(kind==3) ratio=(a-k)*b/((k+1)*(1-b));
+    else ratio=(kind==4?a:1-b)*k/(k+1);
+    term+=std::log(ratio);lower=special::log_sum_exp(lower,term);
+  }
+  return special::tails_from_log(std::min(0.0,lower),true);
+}
+inline double logsurvival(int kind,double q,double a,double b) {
+  return positive_tails(kind,q,a,b).upper;
 }
 inline double density(int kind,double x,double a,double b,double p0,bool log) {
   if(!valid(kind,a,b)||!(p0>=0 && p0<=1)||std::isnan(x))return std::numeric_limits<double>::quiet_NaN();
   const double l=x==0 ? std::log(p0) : std::log1p(-p0)+logd(kind,x,a,b);
   return log?l:std::exp(l);
 }
+inline special::LogTails zero_tails(int kind,double q,double a,double b,double p0) {
+  if(!valid(kind,a,b)||!(p0>=0 && p0<=1)||std::isnan(q))return {special::kNaN,special::kNaN,false};
+  if(q<0)return special::tails_from_log(special::kNegInf,true);
+  const auto t=positive_tails(kind,q,a,b);
+  const double lo=special::log_sum_exp(std::log(p0),std::log1p(-p0)+t.lower);
+  const double up=std::log1p(-p0)+t.upper;
+  return lo<up?special::tails_from_log(lo,true):special::tails_from_log(up,false);
+}
 inline double cdf(int kind,double q,double a,double b,double p0,bool lower,bool log) {
-  if(!valid(kind,a,b)||!(p0>=0 && p0<=1)||std::isnan(q))return std::numeric_limits<double>::quiet_NaN();
-  const double s=q<0 ? 0 : std::log1p(-p0)+logsurvival(kind,q,a,b);
-  if(!lower)return log?s:std::exp(s);
-  return log?std::log(-std::expm1(s)):-std::expm1(s);
+  return special::tail_probability(zero_tails(kind,q,a,b,p0),lower,log);
 }
 inline double quantile(int kind,double p,double a,double b,double p0,bool lower,bool log) {
-  if(!valid(kind,a,b)||!(p0>=0 && p0<=1)||std::isnan(p)|| (log ? p>0 : (p<0||p>1)))return std::numeric_limits<double>::quiet_NaN();
-  double ls;
-  if(lower)ls=log ? std::log(-std::expm1(p)) : std::log1p(-p);
-  else ls=log?p:std::log(p);
+  if(!valid(kind,a,b)||!(p0>=0 && p0<=1))return special::kNaN;
   const double start=p0==0?1:0;
-  if(ls==0)return start;
-  if(p0==1)return 0;
-  if(point(kind,a,b))return ls>=std::log1p(-p0)?start:1;
-  if(kind==3 && b==1)return ls>=std::log1p(-p0)?start:a;
-  if(std::isinf(ls))return kind==3?a:std::numeric_limits<double>::infinity();
-  double lo=-1,hi=1;
-  while(cdf(kind,hi,a,b,p0,false,true)>ls)hi*=2;
-  while(hi-lo>1) {const double mid=std::floor((hi+lo)/2);if(cdf(kind,mid,a,b,p0,false,true)<=ls)hi=mid;else lo=mid;}
-  return hi;
+  const double end=p0==1?0:(point(kind,a,b)?1:(kind==3?a:special::kPosInf));
+  return special::discrete_quantile(special::discrete_log_tails(p,lower,log),start,end,
+      [=](double x){return zero_tails(kind,x,a,b,p0);});
 }
 }
 }

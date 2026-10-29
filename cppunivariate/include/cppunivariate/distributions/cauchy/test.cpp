@@ -46,14 +46,42 @@ TEST_CASE("cauchy dpqr: CDF symmetric at location") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("cauchy: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("cauchy: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("cauchy",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dcauchy(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pcauchy(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qcauchy(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rcauchy(rng, p[0], p[1]); });
 }
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// logS=lambda x:m.log(m.atan(1/x)/m.pi); Q=lambda l:1/m.tan(m.pi*m.exp(l))
+TEST_CASE("cauchy: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::pcauchy(1e300,0,1,false,true) == doctest::Approx(-std::log(1e300)-std::log(M_PI)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qcauchy(-800,0,1e-100,false,true) == doctest::Approx(std::exp(800-100*std::log(10.0)-std::log(M_PI))).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::dcauchy(1e300,0,1,true) == doctest::Approx(-std::log(M_PI)-2*std::log(1e300)).epsilon(1e-12).scale(1e-300));
+}
+
+// mpmath: m.mp.dps=100; p=m.exp(m.mpf(float(-math.log(2))))
+// Invert the family's CDF at this p, retaining p-m.mpf('.5').
+TEST_CASE("cauchy: rounded log half retains median offset") {
+  CHECK(cppunivariate::distributions::qcauchy(-std::log(2.0),0,1,true,true) == doctest::Approx(3.642750216855176e-17).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qcauchy(-std::log(2.0),0,1,false,true) == doctest::Approx(-3.642750216855176e-17).epsilon(1e-12));
+}
+
+// mpmath: m.mp.dps=100; p=m.exp(m.mpf(float(-math.log(4))))
+// -1+1/m.tan(m.pi*p) = -7.2855004337103516e-17.
+TEST_CASE("cauchy: quarter quantile and cancelling location") {
+  CHECK(cppunivariate::distributions::qcauchy(.25,-1,1,false,false) == 0);
+  CHECK(cppunivariate::distributions::qcauchy(-std::log(4.0),-1,1,false,true) == doctest::Approx(-7.2855004337103516e-17).epsilon(1e-12));
+}
+
+// mpmath: m.mp.dps=100; x=m.mpf('1e308'); s=m.mpf('1e-308')
+// log(1/(m.pi*s*(1+(x/s)**2))) = -log(pi)-3*log(1e308).
+TEST_CASE("cauchy: log density survives standardized overflow") {
+  CHECK(cppunivariate::distributions::dcauchy(1e308,0,1e-308,true) == doctest::Approx(-std::log(M_PI)-3*std::log(1e308)).epsilon(1e-12));
+}
+
 
 TEST_CASE("cauchy: every held golden subset preserves coefficients and likelihood") {
   const auto g=mltest::load_distribution_golden("cauchy");

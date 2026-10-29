@@ -6,51 +6,43 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
+inline double unif_log_distance(double hi,double lo) {
+  const double d=hi-lo;
+  return std::isfinite(d) ? std::log(d) : std::log(hi/2-lo/2)+std::log(2.0);
+}
 inline double dunif(double x, double min_, double max_, bool log) {
-  if (!std::isfinite(min_) || !std::isfinite(max_) || !(max_ > min_) ||
-      !std::isfinite(x)) {
-    return kNaN;
-  }
-  if (x < min_ || x > max_) {
-    return log ? kNegInf : 0.0;
-  }
-  const double density = 1.0 / (max_ - min_);
-  return log ? std::log(density) : density;
+  if (!(std::isfinite(min_) && std::isfinite(max_) && max_>min_)) return special::kNaN;
+  if (std::isnan(x)) return special::kNaN;
+  const double ld=(x<min_ || x>max_) ? special::kNegInf : -unif_log_distance(max_,min_);
+  return log ? ld : std::exp(ld);
 }
 
 inline double punif(double q, double min_, double max_, bool lower_tail,
                     bool log_p) {
-  if (!std::isfinite(min_) || !std::isfinite(max_) || !(max_ > min_) ||
-      !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q <= min_) prob = 0.0;
-  else if (q >= max_) prob = 1.0;
-  else prob = (q - min_) / (max_ - min_);
-  if (!lower_tail) prob = 1.0 - prob;
-  return log_p ? std::log(prob) : prob;
+  if (!(std::isfinite(min_) && std::isfinite(max_) && max_>min_)) return special::kNaN;
+  if (std::isnan(q)) return special::kNaN;
+  if (q<=min_) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
+  if (q>=max_) return special::tail_probability(special::tails_from_log(special::kNegInf,false),lower_tail,log_p);
+  const double ld=unif_log_distance(max_,min_);
+  return special::tail_probability({unif_log_distance(q,min_)-ld,unif_log_distance(max_,q)-ld,true},lower_tail,log_p);
 }
 
 inline double qunif(double p, double min_, double max_, bool lower_tail,
                     bool log_p) {
-  if (!std::isfinite(min_) || !std::isfinite(max_) || !(max_ > min_) ||
-      !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) p = std::exp(p);
-  if (!lower_tail) p = 1.0 - p;
-  return min_ + p * (max_ - min_);
+  if (!(std::isfinite(min_) && std::isfinite(max_) && max_>min_)) return special::kNaN;
+  const auto t=special::quantile_log_tails(p,lower_tail,log_p);
+  if (!t.valid) return special::kNaN;
+  if (!std::isfinite(max_-min_))
+    return min_*std::exp(t.upper)+max_*std::exp(t.lower);
+  const double lw=unif_log_distance(max_,min_);
+  return t.lower<t.upper ? min_+std::exp(t.lower+lw) : max_-std::exp(t.upper+lw);
 }
 
 template <typename Rng>

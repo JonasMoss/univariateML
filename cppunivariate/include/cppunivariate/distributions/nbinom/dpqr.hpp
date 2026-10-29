@@ -4,11 +4,12 @@
 // {0, 1, 2, ...}. `size` may be non-integer (NB extends naturally).
 //
 // d closed-form (already in cppunivariate::special::dnbinom).
-// p/q via Boost.Math negative_binomial_distribution with R-style discrete
-// quantile policy. Sampling via the Gamma-Poisson compound: draw lambda
+// p uses the direct smaller Boost tail with a bounded log-series fallback.
+// q uses integer inversion of log tails. Sampling draws lambda
 // ~ Gamma(size, (1-prob)/prob), then K ~ Poisson(lambda).
 
 #pragma once
+#include "../../special/tails.hpp"
 
 #include "../../special/constants.hpp"
 #include "../../special/special.hpp"
@@ -22,31 +23,48 @@ using cppunivariate::special::kNaN;
 using cppunivariate::special::kNegInf;
 
 inline double dnbinom(double x, double size, double prob, bool log) {
-  return cppunivariate::special::dnbinom(x, size, prob, log);
+  if (!(size>0) || !std::isfinite(size) || !(prob>0 && prob<=1) || std::isnan(x)) return special::kNaN;
+  if (!std::isfinite(x) || x<0 || x!=std::floor(x)) return log?special::kNegInf:0;
+  if(prob==1) return x==0?(log?0:1):(log?special::kNegInf:0);
+  double lp;
+  if (x>1e8*std::max(1.0,size*size)) {
+    // log Gamma(x+size)/Gamma(x+1), with O(size^3/x^2) omitted.
+    lp=(size-1)*std::log(x)+size*(size-1)/(2*x)-special::lgamma(size)
+        +size*std::log(prob)+x*std::log1p(-prob);
+  } else lp=special::dnbinom(x,size,prob,true);
+  return log?lp:std::exp(lp);
 }
 
-inline double pnbinom(double q, double size, double prob, bool lower_tail,
-                      bool log_p) {
-  if (!(size > 0.0) || !(prob > 0.0 && prob <= 1.0)) return kNaN;
-  double cdf_val;
-  if (q < 0.0) {
-    cdf_val = 0.0;
+inline special::LogTails nbinom_tails(double q,double size,double prob) {
+  if (!(size>0) || !std::isfinite(size) || !(prob>0 && prob<=1) || std::isnan(q)) return {special::kNaN,special::kNaN,false};
+  if(q<0) return special::tails_from_log(special::kNegInf,true);
+  if(q==special::kPosInf || prob==1) return special::tails_from_log(special::kNegInf,false);
+  q=std::floor(q);
+  const double lower=special::negative_binomial_cdf(q,size,prob,true);
+  const bool small_lower=lower<=0.5;
+  const double small=small_lower?lower:special::negative_binomial_cdf(q,size,prob,false);
+  double lp;
+  if(small>1e-280) lp=std::log(small);
+  else if(small_lower) {
+    double k=q,term=1,total=1;
+    while(k>0) {term*=k/((size+k-1)*(1-prob));total+=term;--k;const double r=k/((size+k-1)*(1-prob));if(size>=1 && r<1 && term*r<=total*2e-16*(1-r))break;}
+    lp=dnbinom(q,size,prob,true)+std::log(total);
   } else {
-    cdf_val = cppunivariate::special::negative_binomial_cdf(std::floor(q), size, prob, lower_tail);
-    return log_p ? std::log(cdf_val) : cdf_val;
+    const double k=q+1;
+    lp=special::log_series(dnbinom(k,size,prob,true),k,
+        [=](double j){return (1+(size-1)/(j+1))*(1-prob);},
+        [=](double j){return (size>1?1+(size-1)/(j+1):1)*(1-prob);});
   }
-  double prob_out = lower_tail ? cdf_val : (1.0 - cdf_val);
-  return log_p ? std::log(prob_out) : prob_out;
+  return special::tails_from_log(lp,small_lower);
+}
+inline double pnbinom(double q, double size, double prob, bool lower_tail, bool log_p) {
+  return special::tail_probability(nbinom_tails(q,size,prob),lower_tail,log_p);
 }
 
-inline double qnbinom(double p, double size, double prob, bool lower_tail,
-                      bool log_p) {
-  if (!(size > 0.0) || !(prob > 0.0 && prob <= 1.0)) return kNaN;
-  if (log_p) p = std::exp(p);
-  if (!lower_tail) p = 1.0 - p;
-  if (p <= 0.0) return 0.0;
-  if (p >= 1.0) return std::numeric_limits<double>::infinity();
-  return cppunivariate::special::negative_binomial_quantile(p, size, prob, true);
+inline double qnbinom(double p, double size, double prob, bool lower_tail, bool log_p) {
+  if (!(size>0) || !std::isfinite(size) || !(prob>0 && prob<=1)) return special::kNaN;
+  return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
+      prob==1?0.0:special::kPosInf,[=](double x){return nbinom_tails(x,size,prob);});
 }
 
 template <typename Rng>

@@ -40,14 +40,22 @@ TEST_CASE("invweibull: explicit shape start and automatic default") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("invweibull: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("invweibull: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("invweibull",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvweibull(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvweibull(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvweibull(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvweibull(rng, p[0], p[1]); });
 }
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// F=lambda x:m.exp(-1/x**2); Q=lambda l:1/m.sqrt(-l)
+TEST_CASE("invweibull: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::pinvweibull(1e300,2,1,false,true) == doctest::Approx(-2*std::log(1e300)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qinvweibull(-10000,2,1,true,true) == doctest::Approx(0.01).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::dinvweibull(INFINITY,2,1,true) == -INFINITY);
+}
+
 
 TEST_CASE("invweibull P2 every held subset") {
   const auto g=mltest::load_distribution_golden("invweibull");

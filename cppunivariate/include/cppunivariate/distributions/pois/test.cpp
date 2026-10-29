@@ -41,8 +41,8 @@ TEST_CASE("pois dpqr: pmf and CDF tail") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("pois: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("pois: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("pois",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpois(x, p[0], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppois(x, p[0], lower, log); },
@@ -71,4 +71,29 @@ TEST_CASE("pois: P2 held boundary likelihood and domain") {
  CHECK(std::isfinite(valid.logLik));
  const auto invalid=cppunivariate::pois_mle({x.data(),x.size()},-1);
  CHECK_FALSE(std::isfinite(invalid.logLik));
+}
+
+
+TEST_CASE("pois: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // l=mpf(2.0)
+  // d=lambda k:exp(-l)*l**k/factorial(k); S=lambda k:gammainc(k+1,0,l)/gamma(k+1)
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(110.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dpois(1e+100, 2.0, true) == doctest::Approx(-2.2856536211884465e+102).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::ppois(110.0, 2.0, false, true) == doctest::Approx(-340.07495410418113).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qpois(-10000, 2.0, false, true) == 1733.0);
+  CHECK(cppunivariate::distributions::dpois(0.5, 2.0, false) == 0);
+}
+
+TEST_CASE("pois: adjacent noninteger at zero has no mass") {
+  // mp.dps=100; x=mpf(float.fromhex("0x0.0000000000001p-1022")); print(x==floor(x))
+  CHECK(cppunivariate::distributions::dpois(std::nextafter(0.0,1.0),2,false)==0);
 }

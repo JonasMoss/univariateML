@@ -32,8 +32,7 @@ TEST_CASE("power") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("power: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("power: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("power",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpower(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppower(x, p[0], p[1], lower, log); },
@@ -73,4 +72,23 @@ TEST_CASE("power P2 held boundaries and solver failure") {
   CHECK_FALSE(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,2,nan).logLik));
   CHECK(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,3,nan).logLik));
   CHECK_FALSE(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,nan,2).logLik));
+}
+
+
+// mpmath reproduction: import mpmath as mp; mp.mp.dps=1200
+// F=lambda x: x**4; Q=lambda l: mp.exp(l/4)
+// Evaluate log tails at the stated decimal x; log densities follow mp.log(mp.diff(F,x))
+// (use -mp.diff(S,x) for survival definitions); Q uses the indicated log tail.
+TEST_CASE("power: deep tails and log inversion regressions") {
+  CHECK(cppunivariate::distributions::ppower(1e-200,1,4,true,true) == doctest::Approx(-800*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qpower(-1000,1,4,true,true) == doctest::Approx(std::exp(-250.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qpower(-INFINITY,3,4,false,true) == 3);
+  CHECK(std::isnan(cppunivariate::distributions::qpower(1.1,1,4,true,false)));
+  CHECK(cppunivariate::distributions::dpower(0,3,.5,true) == INFINITY);
+  CHECK(cppunivariate::distributions::dpower(3,3,2,false) == doctest::Approx(2.0/3).scale(0.0));
+  // mp.mp.dps=400; a=mp.mpf(float(1e-320)); h=-mp.log1p(-mp.exp(-750))/a
+  // Quantile mp.exp(-h); log upper tail at x=1/e tends to mp.log(a).
+  CHECK(cppunivariate::distributions::qpower(-750,1,1e-320,false,true) == doctest::Approx(std::exp(-std::exp(-750-std::log(1e-320)))).scale(0.0));
+  CHECK(cppunivariate::distributions::ppower(std::exp(-1.0),1,1e-320,false,true) == doctest::Approx(std::log(1e-320)).scale(0.0));
+
 }

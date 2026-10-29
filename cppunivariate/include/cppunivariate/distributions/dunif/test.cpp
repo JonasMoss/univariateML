@@ -45,8 +45,8 @@ TEST_CASE("rdunif samples are integers in [min, max]") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("dunif: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("dunif: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("dunif",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::ddunif(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pdunif(x, p[0], p[1], lower, log); },
@@ -66,4 +66,28 @@ TEST_CASE("dunif: held endpoints tighten only free coordinates") {
   CHECK(std::isnan(cppunivariate::dunif_mle({x.data(),x.size()},1).logLik));
   CHECK(std::isnan(cppunivariate::dunif_mle({x.data(),x.size()},nan,2).logLik));
   CHECK(std::isnan(cppunivariate::dunif_mle({x.data(),x.size()},-.5).logLik));
+}
+
+
+TEST_CASE("dunif: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // a=mpf(2.0); b=mpf(10.0)
+  // d=lambda k:1/mp.mpf(b-a+1) if a<=k<=b else mpf(0); S=lambda k:mp.mpf(b-k)/(b-a+1)
+  // print(log(d(mpf(6.0)))); print(log(S(mpf(6.0))))
+  // lo,hi=0,10
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::ddunif(6.0, 2.0, 10.0, true) == doctest::Approx(-2.1972245773362196).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pdunif(6.0, 2.0, 10.0, false, true) == doctest::Approx(-0.8109302162163288).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qdunif(-10000, 2.0, 10.0, false, true) == 10.0);
+  CHECK(cppunivariate::distributions::ddunif(0.5, 2.0, 10.0, false) == 0);
+}
+
+TEST_CASE("dunif: tiny lower quantile stays in support") {
+  // from mpmath import *; mp.dps=500; print(ceil(mpf(1e-300)*9)+2-1)
+  CHECK(cppunivariate::distributions::qdunif(1e-300,2,10,true,false)==2);
 }

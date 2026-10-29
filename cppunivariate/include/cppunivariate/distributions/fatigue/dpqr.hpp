@@ -9,73 +9,59 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include "../../special/special.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
+inline double fatigue_normal_log_tail(double a) {
+  if (a<30) return special::pnorm(a,0,1,false,true);
+  if (!std::isfinite(a)) return special::kNegInf;
+  const double inv=1/a/a;
+  double term=1, sum=1;
+  for (int k=1;k<=16;++k) { term*=-(2*k-1)*inv; sum+=term; }
+  return -(0.5*a)*a-std::log(a)-0.5*std::log(2*M_PI)+std::log(sum);
+}
+inline double fatigue_w(double x,double alpha,double beta,double mu) {
+  const double lz=std::log(x-mu)-std::log(beta);
+  const double a=std::fabs(lz)/2;
+  const double lw=a+special::log1mexp(-2*a)-std::log(alpha);
+  return std::copysign(std::exp(lw),lz);
+}
 inline double dfatigue(double x, double alpha, double beta, double mu,
                        bool log) {
-  if (!(alpha > 0.0 && beta > 0.0) || !std::isfinite(x) ||
-      !std::isfinite(alpha) || !std::isfinite(beta) || !std::isfinite(mu)) {
-    return kNaN;
-  }
-  if (x <= mu) {
-    return log ? kNegInf : 0.0;
-  }
-  const double z = x - mu;
-  const double zb = std::sqrt(z / beta);
-  const double bz = std::sqrt(beta / z);
-  const double w = (zb - bz) / alpha;
-  // log phi(w) = -0.5 * log(2*pi) - 0.5 * w^2
-  const double log_phi = -0.5 * std::log(2.0 * M_PI) - 0.5 * w * w;
-  const double log_density =
-      std::log(zb + bz) - std::log(2.0) - std::log(alpha) - std::log(z) +
-      log_phi;
-  return log ? log_density : std::exp(log_density);
+  if (!(alpha>0 && beta>0 && std::isfinite(alpha) && std::isfinite(beta) && std::isfinite(mu))) return special::kNaN;
+  if (std::isnan(x)) return special::kNaN;
+  if (x<=mu || x==special::kPosInf) return log ? special::kNegInf : 0;
+  const double lz=std::log(x-mu), a=0.5*(lz-std::log(beta));
+  const double w=fatigue_w(x,alpha,beta,mu);
+  const double ld=special::log_sum_exp(a,-a)-std::log(2.0)-std::log(alpha)-lz-0.5*std::log(2*M_PI)-(0.5*w)*w;
+  return log ? ld : std::exp(ld);
 }
 
 inline double pfatigue(double q, double alpha, double beta, double mu,
                        bool lower_tail, bool log_p) {
-  if (!(alpha > 0.0 && beta > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q <= mu) {
-    prob = lower_tail ? 0.0 : 1.0;
-  } else {
-    const double z = q - mu;
-    const double zb = std::sqrt(z / beta);
-    const double bz = std::sqrt(beta / z);
-    prob = cppunivariate::special::pnorm((zb - bz) / alpha, 0.0, 1.0, true, false);
-    if (!lower_tail) {
-      prob = 1.0 - prob;
-    }
-  }
-  return log_p ? std::log(prob) : prob;
+  if (!(alpha>0 && beta>0 && std::isfinite(alpha) && std::isfinite(beta) && std::isfinite(mu))) return special::kNaN;
+  if (std::isnan(q)) return special::kNaN;
+  if (q<=mu) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
+  const double w=fatigue_w(q,alpha,beta,mu);
+  return special::tail_probability(special::tails_from_log(fatigue_normal_log_tail(std::fabs(w)),w<=0),lower_tail,log_p);
 }
 
 inline double qfatigue(double p, double alpha, double beta, double mu,
                        bool lower_tail, bool log_p) {
-  if (!(alpha > 0.0 && beta > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  if (p == 0.0) return mu;
-  const double Zp =
-      cppunivariate::special::qnorm(p, 0.0, 1.0, true, false);
-  const double aZ2 = alpha * Zp / 2.0;
-  return std::pow(aZ2 + std::sqrt(aZ2 * aZ2 + 1.0), 2.0) * beta + mu;
+  if (!(alpha>0 && beta>0 && std::isfinite(alpha) && std::isfinite(beta) && std::isfinite(mu))) return special::kNaN;
+  const auto t=special::quantile_log_tails(p,lower_tail,log_p);
+  if (!t.valid) return special::kNaN;
+  if (t.lower==special::kNegInf) return mu;
+  if (t.upper==special::kNegInf) return special::kPosInf;
+  const double lp=std::min(t.lower,t.upper);
+  const double a=special::fs_log_quantile(lp,[](double z) { return fatigue_normal_log_tail(z); });
+  const double la=std::log(alpha)+std::log(a)-std::log(2.0);
+  const double asinh_a=la>350 ? la+std::log(2.0) : std::asinh(std::exp(la));
+  return mu+std::exp(std::log(beta)+(t.lower<t.upper ? -2 : 2)*asinh_a);
 }
 
 template <typename Rng>

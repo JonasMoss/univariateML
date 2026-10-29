@@ -3,10 +3,11 @@
 //   p(k)    = lambda^k * exp(-lambda) / k!
 //
 // dpois closed-form (already in cppunivariate::special::dpois).
-// p/q via Boost.Math poisson_distribution with a discrete-quantile policy
-// matching R's "smallest k with P(X<=k) >= p" convention.
+// p uses the direct smaller Boost tail with a bounded log-series fallback.
+// q inverts that log tail to the smallest qualifying integer.
 
 #pragma once
+#include "../../special/tails.hpp"
 
 #include "../../special/constants.hpp"
 #include "../../special/special.hpp"
@@ -20,27 +21,41 @@ using cppunivariate::special::kNaN;
 using cppunivariate::special::kNegInf;
 
 inline double dpois(double x, double lambda, bool log) {
-  return cppunivariate::special::dpois(x, lambda, log);
+  if (!(lambda>=0) || !std::isfinite(lambda) || std::isnan(x)) return special::kNaN;
+  if (!std::isfinite(x) || x<0 || x!=std::floor(x)) return log?special::kNegInf:0.0;
+  return special::dpois(x,lambda,log);
 }
 
-inline double ppois(double q, double lambda, bool lower_tail, bool log_p) {
-  if (!(lambda > 0.0)) return kNaN;
-  if (!std::isfinite(q)) return kNaN;
-  double prob;
-  if (q < 0.0) {
-    prob = 0.0;
+inline special::LogTails pois_tails(double q,double lambda) {
+  if (!(lambda>=0) || !std::isfinite(lambda) || std::isnan(q)) return {special::kNaN,special::kNaN,false};
+  if (q<0) return special::tails_from_log(special::kNegInf,true);
+  if (q==special::kPosInf || lambda==0) return special::tails_from_log(special::kNegInf,false);
+  q=std::floor(q);
+  const double lower=special::poisson_cdf(q,lambda,true);
+  const bool small_lower=lower<=0.5;
+  const double small=small_lower ? lower : special::poisson_cdf(q,lambda,false);
+  double lp;
+  if (small>1e-280) lp=std::log(small);
+  else if (small_lower) {
+    // Descend to zero: successive ratios decrease.
+    double term=1,total=1,k=q;
+    while(k>0) {term*=k/lambda;total+=term;--k;if(k<lambda && term*(k/lambda)<=total*2e-16*(1-k/lambda))break;}
+    lp=dpois(q,lambda,true)+std::log(total);
   } else {
-    prob = cppunivariate::special::poisson_cdf(std::floor(q), lambda, lower_tail);
+    const double k=q+1;
+    lp=special::log_series(dpois(k,lambda,true),k,
+        [=](double j){return lambda/(j+1);},[=](double j){return lambda/(j+1);});
   }
-  if (q < 0.0 && !lower_tail) prob = 1.0;
-  return log_p ? std::log(prob) : prob;
+  return special::tails_from_log(lp,small_lower);
+}
+inline double ppois(double q, double lambda, bool lower_tail, bool log_p) {
+  return special::tail_probability(pois_tails(q,lambda),lower_tail,log_p);
 }
 
 inline double qpois(double p, double lambda, bool lower_tail, bool log_p) {
-  if (!(lambda > 0.0)) return kNaN;
-  if (log_p) p = std::exp(p);
-  if (!lower_tail) p = 1.0 - p;
-  return cppunivariate::special::poisson_quantile(p, lambda, true);
+  if (!(lambda>=0) || !std::isfinite(lambda)) return special::kNaN;
+  return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
+      lambda==0?0.0:special::kPosInf,[=](double x){return pois_tails(x,lambda);});
 }
 
 template <typename Rng>

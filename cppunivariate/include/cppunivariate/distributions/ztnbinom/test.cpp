@@ -68,8 +68,8 @@ TEST_CASE("ztnbinom: quantile inversion and sampling") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("ztnbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("ztnbinom: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("ztnbinom",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dztnbinom(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pztnbinom(x, p[0], p[1], lower, log); },
@@ -97,4 +97,29 @@ TEST_CASE("ztnbinom: P2 held-domain and non-existence statuses") {
  const auto r=cppunivariate::ztnbinom_mle({one.data(),one.size()},1e-10,200,nan,1);
  CHECK(r.prob==1);CHECK(r.logLik==0);
  CHECK(cppunivariate::ztnbinom_mle({x.data(),x.size()},1e-10,1,nan,.4).status==cppunivariate::ZtnbinomStatus::IterationFailure);
+}
+
+
+TEST_CASE("ztnbinom: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // s=mpf(2.0); p=mpf(0.4)
+  // d=lambda k:gamma(k+s)/(gamma(s)*gamma(k+1))*p**s*(1-p)**k/(1-p**s); S=lambda k:betainc(k+1,s,0,1-p,regularized=True)/(1-p**s)
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(135.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dztnbinom(1e+100, 2.0, 0.4, true) == doctest::Approx(-5.108256237659907e+99).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pztnbinom(135.0, 2.0, 0.4, false, true) == doctest::Approx(-65.28335185127672).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qztnbinom(-10000, 2.0, 0.4, false, true) == 19594.0);
+  CHECK(cppunivariate::distributions::dztnbinom(0.5, 2.0, 0.4, false) == 0);
+}
+
+TEST_CASE("ztnbinom: tiny conditional lower tail") {
+  // from mpmath import *; mp.dps=100; print(log(20)+20*log(mpf(0.4))+log(1-mpf(0.4))-log(1-mpf(0.4)**20))
+  CHECK(cppunivariate::distributions::pztnbinom(1,20.0,0.4,true,true)==doctest::Approx(-15.840907976699983).epsilon(1e-10));
 }

@@ -45,3 +45,21 @@ for(int mask=1;mask<8;++mask){double a=mask&1?g.estimates.at("shape1"):nan,b=mas
  if(mask&4)CHECK(r.scale==s);
  CHECK(r.logLik>=g.logLik-1e-5);}
 }
+
+
+TEST_CASE("pareto4: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("pareto4",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpareto4(x, p[0], p[1], p[2], p[3], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppareto4(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qpareto4(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rpareto4(rng, p[0], p[1], p[2], p[3]); });
+}
+
+// mpmath reproduction: mp.mp.dps=300; s=mp.mpf(3); m=mp.mpf(4)
+// pareto2: m+s*mp.expm1(500/2); pareto3: m+s*mp.exp(500/4)
+// pareto4: m+s*mp.expm1(500/2)**mp.mpf('.25') (upper log input -500).
+TEST_CASE("pareto4: shifted deep-tail delegation") {
+  CHECK(cppunivariate::distributions::qpareto4(-500, 2, 4, 3, 4, false, true) == doctest::Approx(4+3*std::pow(std::expm1(250.0),.25)).scale(0.0));
+  CHECK(cppunivariate::distributions::qpareto4(-INFINITY, 2, 4, 3, 4, true, true) == 4);
+  CHECK(cppunivariate::distributions::ppareto4(INFINITY, 2, 4, 3, 4, false, true) == -INFINITY);
+}

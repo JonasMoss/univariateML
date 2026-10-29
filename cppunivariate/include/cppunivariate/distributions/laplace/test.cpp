@@ -43,14 +43,29 @@ TEST_CASE("laplace: seeded sample with outlier") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("laplace: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("laplace: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("laplace",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlaplace(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plaplace(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlaplace(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlaplace(rng, p[0], p[1]); });
 }
+
+// mpmath reproduction: import mpmath as m; m.mp.dps=100
+// logS=lambda x:-x-m.log(2); Q=lambda l:l+m.log(2)
+TEST_CASE("laplace: extreme tail regressions") {
+  CHECK(cppunivariate::distributions::plaplace(1000,0,1,false,true) == doctest::Approx(-1000-std::log(2.0)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qlaplace(-10000,0,1,true,true) == doctest::Approx(-10000+std::log(2.0)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qlaplace(-10000,0,1,false,true) == doctest::Approx(10000-std::log(2.0)).epsilon(1e-12).scale(1e-300));
+}
+
+// mpmath: m.mp.dps=100; p=m.exp(m.mpf(float(-math.log(2))))
+// Invert the family's CDF at this p, retaining p-m.mpf('.5').
+TEST_CASE("laplace: rounded log half retains median offset") {
+  CHECK(cppunivariate::distributions::qlaplace(-std::log(2.0),0,1,true,true) == doctest::Approx(2.3190468138462997e-17).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qlaplace(-std::log(2.0),0,1,false,true) == doctest::Approx(-2.3190468138462997e-17).epsilon(1e-12));
+}
+
 
 TEST_CASE("laplace: every held golden subset preserves coefficients and likelihood") {
   const auto g=mltest::load_distribution_golden("laplace");
