@@ -18,6 +18,13 @@
   `mlinvpareto()` and `mlinvparalogis()` (inverse exponential, inverse
   Pareto, inverse paralogistic).
 
+* `mltriang()` (triangular; `a`, `b`, `c` can each be held fixed) and
+  `mlhuber()` (Huber density with `epsilon` held fixed, default 1.345).
+
+* Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
+  zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
+  `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
+
 ## User-visible changes
 
 * `mlparalogis()` now fits two parameters (`shape`, `scale`) rather

@@ -24,6 +24,13 @@ dependency of sads.
 | extraDistr 1.10.0.5 | `qgpd` loses all accuracy for shapes near zero (subtractive `pow(...) - 1`) | `extraDistr::qgpd(0.5, xi = 1e-16)` is 0, should be $\log 2$ | `qml` for `mlgpd` fits with $\lvert\xi\rvert \lesssim 10^{-12}$ |
 | extraDistr 1.10.0.5 | `pgpd` underflows for tiny excesses | `extraDistr::pgpd(1e-20)` is 0, should be about `1e-20` | negligible |
 | extraDistr 1.10.0.5 | `pgpd(lower.tail = FALSE, log.p = TRUE)` is `-Inf`: it complements the lower CDF | `extraDistr::pgpd(1000, xi = 0, lower.tail = FALSE, log.p = TRUE)`, should be -1000 | upper-tail `pml` on the log scale |
+| extraDistr 1.10.0.5 | `ptriang` is `NaN` at the lower endpoint when the mode is there | `extraDistr::ptriang(0, 0, 1, 0)`, should be 0 | worked around in `pml` |
+| extraDistr 1.10.0.5 | `phuber` is `NaN` far in the tails for `epsilon` above about 38 (`exp(epsilon^2/2)` overflows) | `extraDistr::phuber(-60, 0, 1, 40)` | `pml` for `mlhuber(x, epsilon = 40)` far out |
+| actuar 3.3-7 | `log = TRUE` densities of the zero-truncated and zero-modified geometric, NB and binomial underflow to `-Inf` (log of an underflowed probability) | `actuar::dztnbinom(10000, 2, 0.4, log = TRUE)` | `dml(..., log = TRUE)` at huge counts |
+| actuar 3.3-7 | upper-tail log CDFs of the zero-truncated Poisson, geometric, NB and binomial are `-Inf` (complement of the lower CDF) | `actuar::pztpois(10000, 2, lower.tail = FALSE, log.p = TRUE)` | upper-tail `pml` on the log scale |
+| actuar 3.3-7 | `pzmlogarithmic` upper-tail log CDF is wrong by cancellation | `actuar::pzmlogarithmic(10000, 0.4, 0.3, lower.tail = FALSE, log.p = TRUE)` is about -36.4, should be below -9000 | upper-tail `pml` on the log scale |
+| actuar 3.3-7 | `qztbinom(1, ...)` and `qzmbinom(1, ...)` are `Inf`, not the upper endpoint `size` | `actuar::qztbinom(1, 10, 0.4)`, should be 10 | `qml(1, ...)`; plots use the finite support |
+| extraDistr 1.10.0.5 | `dzib(log = TRUE)` underflows, `pzib` upper-tail log CDF is `-Inf`, `qzib(1, ...)` is `NaN` at `pi = 1` | `extraDistr::dzib(9999, 10000, 0.4, 0.3, log = TRUE)`; `extraDistr::qzib(1, 10, 0.4, 1)` | as for zinb |
 | nakagami 1.1.0 | `pnaka` is positive below the support | `nakagami::pnaka(-1, 2, 3)` is 0.144, should be 0 | `pml` at negative arguments |
 
 Upstream trackers: sads <https://github.com/piLaboratory/sads/issues>;
