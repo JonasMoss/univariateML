@@ -1,6 +1,8 @@
 {
   "id": "skellam",
-  "status": "gap",
-  "reason": "ValueError: gap: two-sided Bessel-I series needs certified tail bounds at extreme quantiles; the golden-only spec cannot certify this grid.",
-  "seconds": 0.010912571015069261
+  "status": "generated",
+  "points": 6,
+  "values": 1248,
+  "quantiles": 264,
+  "seconds": 6.769208174999221
 }

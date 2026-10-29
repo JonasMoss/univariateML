@@ -90,8 +90,7 @@ TEST_CASE("sn rounding-level Newton steps retain accurate regular fits") {
 #include "cppunivariate/distributions/sn/dpqr.hpp"
 
 // Independent high-precision oracle; see quality/truth.py.
-// Oracle gap: see this family's truth.py for the missing controlled route.
-TEST_CASE("sn: d/p/q/r against the truth table" * doctest::skip()) {
+TEST_CASE("sn: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("sn",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dsn(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::psn(x, p[0], p[1], p[2], lower, log); },
