@@ -190,6 +190,7 @@ gen_wrapper <- function(model) {
   paste0(
     doc, "\n",
     fname, " <- function(x, na.rm = FALSE, ...) {\n",
+    "  ml_check_args(", fname, "_, list(...), \"", fname, "\")\n",
     nl(required_checks(model)),
     "  x <- ml_check_modify(x, na.rm = na.rm, name = \"", fname, "\")\n",
     "  n <- length(x)\n",
