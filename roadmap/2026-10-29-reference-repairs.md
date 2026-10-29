@@ -1,36 +1,26 @@
-# Larger reference repairs (held back, needs a decision)
+# Reference repairs adopted
 
-**Status:** proposed 2026-10-29; not merged. The patches are in
-`roadmap/patches/`.
+**Status:** adopted by user decision, 2026-10-29. Upstream PRs may follow
+later; extraDistr's maintainer is unresponsive, actuar's response is unknown.
 
-The ML-only policy allows small runtime-checked workarounds in
-`univariateML_reference_fixes` (`univariateML/R/code_helpers.R`), built from
-the reference package's own functions: `sads::qzipf` (inverts
-`cumsum(sads::dzipf)`) and `extraDistr::ptriang` (sets the endpoint value).
-Three overnight jobs wrote much larger repairs. They were left out because
-they reimplement d/p/q/r numerically rather than patch a single value:
+The package keeps runtime-checked repairs in
+`univariateML_reference_fixes` (`univariateML/R/code_helpers.R`).
+Every entry checks its defect on every call and switches off once the
+reference function is fixed. Fitting and log likelihoods remain C++ operations.
 
-| Patch | Functions | Size | Approach | Defects (see `KNOWN_ISSUES.md`) |
-|---|---|---|---|---|
-| `patches/2026-10-29-trgamma-reference-repairs.patch` | actuar `d/p/q/r` `trgamma` and `invtrgamma` (8 entries) | 164 lines | compose `stats::dgamma/pgamma/qgamma/rgamma` with the power transform; log-CDF anchor below `exp(-700)` | density cancellation at huge `shape1`, `Inf`/0 quantiles, CDF 0/1 at tiny `shape1`, non-finite draws |
-| `patches/2026-10-29-tnorm-reference-repairs.patch` | extraDistr `d/p/q` `tnorm` (3 entries) | 103 lines | adaptive integration of the untruncated normal relative to the interval mode | `Inf`/`NaN` density and `Inf` quantile when the interval lies far in a tail |
-| (dropped, not saved) | extraDistr `q/p/r` `gev` | 83 lines | Gumbel transform with `expm1`; analytic CDF | `qgev(0.5, xi = 1e-16) = 0`, `qgev(1, xi = -0.5) = Inf`, upper-tail log CDF `-Inf` |
+| Reference | Adopted repair |
+|---|---|
+| sads qzipf | Invert the CDF built from sads dzipf (existing) |
+| extraDistr ptriang | Correct the lower endpoint (existing) |
+| actuar d/p/q/r trgamma and invtrgamma | Gamma backend composed with power transforms; log-CDF anchor for underflow |
+| extraDistr d/p/q tnorm | Integrate the parent normal relative to the interval mode, with recycled vector arguments |
+| extraDistr qgev and rgev | Stable Gumbel transform using expm1, including finite endpoints |
+| extraDistr pgev | Stable upper-tail log probability |
 
-The tnorm repair keys on `extraDistr::dtnorm`, which `mlhnorm` also uses, so it
-would change `mlhnorm`'s `dml`/`pml`/`qml` too.
+The two held-back patch files have been incorporated and removed.
+The truncated-normal repair also serves mlhnorm, preserving its
+`mean = mu, sd = sigma, a = mu` map, open density endpoint and sampler.
+Sampler defect checks restore the RNG state, including absence of a seed.
 
-## Options
-
-1. Keep them out (current state): `dml`/`pml`/`qml` can return `Inf`/`NaN`/0
-   for fits whose parameters reach the defect regions; `logLik` and fitting
-   are unaffected. Report upstream.
-2. Merge them as runtime-checked repairs (they switch off when upstream
-   fixes the defect). Effectively package-defined evaluation for these
-   models, which the ML-only policy was meant to avoid.
-3. Merge only the cases fits reach in ordinary use (tnorm deep-tail
-   truncation is reachable near the exponential escape; the trgamma cases
-   need extreme shapes, near the lognormal and power faces).
-
-## Trigger to revisit
-
-The user's decision on the policy; an upstream fix in actuar or extraDistr.
+Visibility is recorded in KNOWN_ISSUES.md, each affected model's Details,
+the package help page and NEWS. Regression tests live with each model.

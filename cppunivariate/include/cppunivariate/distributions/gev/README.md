@@ -22,6 +22,8 @@ The generalized extreme value distribution models maxima; positive `xi` gives a 
 
 ## Details
 
+Reference functions extraDistr::qgev, rgev and the upper-tail log of pgev are repaired at runtime; each repair turns off when the reference is fixed.
+
 The fitted family restricts `xi` to `[-1/2, 1]` and requires at least three finite observations with every tie multiplicity strictly less than half the sample size; these restrictions ensure an attained maximum, including when `xi` is fixed.
 The unrestricted likelihood diverges for shapes below `-1` as the upper endpoint approaches the maximum, and for sufficiently large positive shapes as scale collapses at the minimum, so guarding ties alone does not suffice.
 Fits at either shape bound are returned as attained members; the lower bound does not carry the usual regular likelihood asymptotics, and only `xi` may be held fixed.

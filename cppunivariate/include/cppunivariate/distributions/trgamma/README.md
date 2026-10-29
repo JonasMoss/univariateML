@@ -35,6 +35,8 @@ with shape `shape1`; it models positive sizes, losses and lifetimes.
 
 ## Details
 
+Reference functions actuar::dtrgamma, ptrgamma, qtrgamma and rtrgamma are repaired at runtime; each repair turns off when the reference is fixed.
+
 The gamma (`shape2 = 1`, scale the reciprocal gamma rate) and Weibull
 (`shape1 = 1`) distributions are members, not limits. Holding `shape2`
 fixed gives the gamma fit of `x^shape2`; holding `shape1` fixed gives a

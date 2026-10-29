@@ -16,6 +16,17 @@
 #'         aid your data analysis.
 #' }
 #'
+#' @section Runtime reference repairs:
+#' Evaluation uses runtime-checked repairs in
+#' `univariateML_reference_fixes` for `sads::qzipf`;
+#' `extraDistr::ptriang`, `dtnorm`, `ptnorm`, `qtnorm`,
+#' `qgev`, `rgev`, and the upper-tail log of `pgev`;
+#' and `actuar::dtrgamma`, `ptrgamma`, `qtrgamma`, `rtrgamma`,
+#' `dinvtrgamma`, `pinvtrgamma`, `qinvtrgamma`, and `rinvtrgamma`.
+#' The truncated-normal repairs also apply to `mlhnorm`.
+#' Every repair checks its defect on each call and turns off when the
+#' reference is fixed. Fitting and log likelihoods use the C++ implementation.
+#'
 #' Read the vignettes to learn more about univariateML:
 #' `browseVignettes(package = "univariateML")`
 #'

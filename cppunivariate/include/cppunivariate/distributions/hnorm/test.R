@@ -53,3 +53,26 @@ test_that("bootstrap refits with mlhnorm", {
   expect_equal(dim(boot), c(2L, 20L))
   expect_true(all(boot["sigma", ] > 0))
 })
+
+test_that("active truncated-normal repairs retain the half-normal map and endpoints", {
+  expect_identical(univariateML:::univariateML_args$mlhnorm,
+                   c(mean = "mu", sd = "sigma", a = "mu"))
+  expect_true(univariateML:::univariateML_reference_fixes[["extraDistr::dtnorm"]]$broken())
+  fit <- mlhnorm(c(-4,-3,0,2))
+  mu <- unname(fit[1]); sigma <- unname(fit[2])
+  x <- mu + sigma*c(-1,0,.01,.5,2)
+  expect_equal(dml(x, fit), ifelse(x > mu, 2*dnorm(x, mu, sigma), 0), tolerance = 1e-12)
+  expect_equal(dml(mu, fit, log = TRUE), -Inf)
+  for (lower in c(TRUE,FALSE)) for (logs in c(TRUE,FALSE)) {
+    upper <- pmin(1, 2*pnorm(x, mu, sigma, lower.tail = FALSE))
+    expected <- if (lower) 1-upper else upper
+    if (logs) expected <- log(expected)
+    expect_equal(pml(x, fit, lower.tail = lower, log.p = logs), expected, tolerance = 1e-12)
+    u <- c(0,.1,.5,.9,1)
+    expected <- mu + sigma*qnorm(if (lower) (1-u)/2 else u/2, lower.tail = FALSE)
+    expect_equal(qml(if (logs) log(u) else u, fit, lower.tail = lower, log.p = logs),
+                 expected, tolerance = 1e-12)
+  }
+  set.seed(12); actual <- rml(30, fit)
+  set.seed(12); expect_identical(actual, extraDistr::rtnorm(30, mu, sigma, a = mu))
+})

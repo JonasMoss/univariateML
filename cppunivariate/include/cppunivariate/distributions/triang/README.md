@@ -23,6 +23,8 @@ The triangular distribution describes bounded measurements with a single mode.
 
 ## Details
 
+Reference functions extraDistr::ptriang are repaired at runtime; each repair turns off when the reference is fixed.
+
 Endpoint modes are included, with one-sided density `2/(b-a)` at the mode.
 Every nonconstant compatible sample has an attained maximum; constant data
 have unbounded likelihood only when the held parameters allow the width to

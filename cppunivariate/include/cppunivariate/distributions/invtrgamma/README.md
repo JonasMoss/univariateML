@@ -34,6 +34,8 @@ positive losses.
 
 ## Details
 
+Reference functions actuar::dinvtrgamma, pinvtrgamma, qinvtrgamma and rinvtrgamma are repaired at runtime; each repair turns off when the reference is fixed.
+
 The fit is the transformed gamma fit of `1/x` with scale `1/scale`; the
 log likelihoods differ by `-2 * sum(log(x))`. The inverse gamma
 (`shape2 = 1`) and inverse Weibull (`shape1 = 1`) distributions are

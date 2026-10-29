@@ -1,5 +1,7 @@
 # univariateML 1.5.0
 
+* Adopt runtime-checked reference repairs for actuar trgamma/invtrgamma and extraDistr truncated normal (including half-normal) and GEV evaluation; document all active repairs.
+
 ## Architecture
 
 * The package is now scoped to maximum-likelihood estimation only.
