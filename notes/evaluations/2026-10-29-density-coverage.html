@@ -1,0 +1,166 @@
+<!doctype html><html lang="en"><meta charset="utf-8">
+<title>extraDistr and actuar: MLE coverage</title>
+<style>body{font:16px/1.5 system-ui;max-width:1250px;margin:40px auto;padding:0 24px;color:#202a35}
+table{border-collapse:collapse;width:100%;margin:20px 0}td,th{padding:9px 12px;border-bottom:1px solid #dce1e6;text-align:left;vertical-align:top}th{background:#eef3f7}code{white-space:nowrap}h2{margin-top:38px}a{color:#1466a2}</style>
+<h1>extraDistr and actuar: MLE coverage</h1>
+<p>Audit date: 29 October 2026. Inventory comes from installed namespace exports;
+coverage comes from distribution folders in this checkout, including recently added
+families whose board tasks still say queued. This is an API and model-domain audit,
+not a new numerical validation of the fitters or reference d/p/q/r functions.</p>
+<p><b>Covered</b> means a fitter exists within its documented sample, fixed-design and
+boundary policies. <b>Equivalent</b> means a reparameterization or alias, not an exported
+wrapper for that name. <b>Partial / restricted</b> is deliberately not counted as full
+coverage. Rejecting a model is a proposed policy here: no error-only fitters were added.</p>
+<table><tr><th>Classification</th><th>extraDistr</th><th>actuar</th></tr>
+<tr><td>Covered</td><td>22</td><td>28</td></tr>
+<tr><td>Equivalent</td><td>5</td><td>4</td></tr>
+<tr><td>Missing</td><td>10</td><td>0</td></tr>
+<tr><td>Excluded multivariate</td><td>6</td><td>0</td></tr>
+<tr><td>Partial / restricted</td><td>9</td><td>1</td></tr>
+<tr><td>Mixture project</td><td>2</td><td>1</td></tr>
+<tr><td>Reject unrestricted MLE</td><td>0</td><td>4</td></tr>
+<tr><td>Excluded utility</td><td>0</td><td>2</td></tr>
+</table><h2>What is worth adding?</h2>
+<p>The most natural next projects are Skellam, discrete Laplace, discrete normal,
+discrete gamma, zero-endpoint half-normal and the half-Cauchy/half-t pair. These are
+missing fitter candidates, not claims that every sample has an attained MLE.
+Arbitrary fixed truncation of Poisson/binomial is also a useful extension.
+Categorical is cheap but has little numerical content. Negative hypergeometric
+needs design decisions. Slash and Bhattacharjee need their own boundary analysis.
+Poisson mixtures and phase-type fitting are larger projects.</p>
+<h2>Where an explicit error makes sense</h2>
+<p>For a freely translated Weibull, fix any shape k between 0 and 1 and any positive
+scale. Let mu approach the sample minimum from below. The density at each minimum
+is proportional to (min(x)-mu)<sup>k-1</sup> and diverges, while other densities
+approach finite positive values. Thus the likelihood is unbounded. A known threshold
+still gives the ordinary two-parameter Weibull after subtraction. Shifted Weibull
+is not itself a density export in either audited package.</p>
+<p>The same endpoint argument rejects freely bounded nonstandard beta (shape1&lt;1
+at a lower endpoint or shape2&lt;1 at an upper endpoint), generalized beta with
+free scale and shape2&lt;1, and freely translated Pareto III/IV and Feller–Pareto.
+Keep all other parameters fixed along each path. These conclusions follow directly
+from their documented density powers. They do not rule out fixed-endpoint or
+shape-constrained models. The existing fatigue README gives its separate
+free-location collapse argument. Normal mixtures have a component-collapse path.</p>
+<p>Suggested diagnostic: “Unrestricted maximum likelihood is unbounded when the
+endpoint is estimated. Supply a fixed endpoint or use a documented constrained model.”
+Only use this after identifying the actual free-parameter model. Do not give this
+error merely because an otherwise valid family's MLE fails for a particular sample.</p>
+<h2>Counting traps</h2>
+<p>actuar's log-Gompertz is inverse Weibull; Pearson6 is its transformed-beta alias;
+Poisson-inverse-Gaussian has two names. Its generalized Pareto is beta-prime, whereas
+extraDistr's generalized Pareto is the threshold/EVT family. extraDistr's gamma-Poisson
+is negative binomial. A phase-type observation is scalar, so matrix-valued parameters
+do not make that law multivariate. Fixed half-normal is not covered exactly by fitting
+an additional translation. Full free-location Fréchet exceeds the present GEV domain.</p>
+<h2>extraDistr 1.10.0.5</h2><p>54 d-prefixed exports; 48 univariate density names; 27 covered or equivalent. Aliases remain separate rows.</p>
+<table><tr><th>Density</th><th>Status</th><th>Coverage / action</th></tr>
+<tr><td>dbbinom</td><td>Covered</td><td>mlbbinom; size is known, not estimated.</td></tr>
+<tr><td>dbern</td><td>Equivalent</td><td>mlbinom(x, size=1); Bernoulli is binomial.</td></tr>
+<tr><td>dbetapr</td><td>Covered</td><td>mlbetapr; scale estimated or fixed.</td></tr>
+<tr><td>dbhatt</td><td>Missing</td><td>Normal-uniform convolution; compare normal and uniform limits before adding.</td></tr>
+<tr><td>dbnbinom</td><td>Covered</td><td>mlbnbinom; see its identification and boundary policy.</td></tr>
+<tr><td>dbvnorm</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>dbvpois</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>dcat</td><td>Missing</td><td>Categorical probabilities have empirical-frequency MLEs; no dedicated fitter.</td></tr>
+<tr><td>ddgamma</td><td>Missing</td><td>Discretized gamma; continuous mlgamma is not a substitute.</td></tr>
+<tr><td>ddirichlet</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>ddirmnom</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>ddlaplace</td><td>Missing</td><td>Discrete Laplace on integers; continuous mllaplace is not a substitute.</td></tr>
+<tr><td>ddnorm</td><td>Missing</td><td>Discretized normal; continuous mlnorm is not a substitute.</td></tr>
+<tr><td>ddunif</td><td>Covered</td><td>mldunif</td></tr>
+<tr><td>ddweibull</td><td>Covered</td><td>mldweibull</td></tr>
+<tr><td>dfatigue</td><td>Partial / restricted</td><td>mlfatigue fixes mu=0; free location gives an unbounded likelihood (derivation in its README).</td></tr>
+<tr><td>dfrechet</td><td>Partial / restricted</td><td>mlinvweibull for known mu after subtracting mu. mlgev covers xi=1/lambda only up to 1; not the unrestricted free-location family.</td></tr>
+<tr><td>dgev</td><td>Partial / restricted</td><td>mlgev restricts xi to [-0.5,1]; unrestricted xi&lt;-1 admits endpoint blow-up.</td></tr>
+<tr><td>dgompertz</td><td>Covered</td><td>mlgompertz</td></tr>
+<tr><td>dgpd</td><td>Partial / restricted</td><td>mlgpd uses a fixed threshold and xi&gt;=-0.5.</td></tr>
+<tr><td>dgpois</td><td>Equivalent</td><td>mlnbinom; gamma mixing of a Poisson is negative binomial, not generalized Poisson.</td></tr>
+<tr><td>dgumbel</td><td>Covered</td><td>mlgumbel</td></tr>
+<tr><td>dhcauchy</td><td>Missing</td><td>Half-Cauchy with zero endpoint; scale-only fit is missing.</td></tr>
+<tr><td>dhnorm</td><td>Partial / restricted</td><td>mlhnorm estimates a translation; extraDistr fixes the endpoint at zero. Fixing it changes the scale estimate.</td></tr>
+<tr><td>dht</td><td>Missing</td><td>Half-t with zero endpoint; scale/df fit is missing.</td></tr>
+<tr><td>dhuber</td><td>Covered</td><td>mlhuber, including estimated epsilon.</td></tr>
+<tr><td>dinvchisq</td><td>Equivalent</td><td>mlinvgamma; alpha=nu/2, beta=nu*tau/2.</td></tr>
+<tr><td>dinvgamma</td><td>Covered</td><td>mlinvgamma</td></tr>
+<tr><td>dkumar</td><td>Covered</td><td>mlkumar</td></tr>
+<tr><td>dlaplace</td><td>Covered</td><td>mllaplace</td></tr>
+<tr><td>dlgser</td><td>Covered</td><td>mllgser</td></tr>
+<tr><td>dlomax</td><td>Covered</td><td>mllomax</td></tr>
+<tr><td>dlst</td><td>Partial / restricted</td><td>mllst restricts df&gt;=1; unrestricted df&gt;0 has scale-collapse paths.</td></tr>
+<tr><td>dmixnorm</td><td>Mixture project</td><td>Unrestricted normal mixtures with at least two components have unbounded likelihood via component scale collapse. Fixed scales are a different model.</td></tr>
+<tr><td>dmixpois</td><td>Mixture project</td><td>Poisson mixtures do not share the normal scale-collapse argument. Need component-count, identification and boundary policy.</td></tr>
+<tr><td>dmnom</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>dmvhyper</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>dnhyper</td><td>Missing</td><td>Negative hypergeometric; needs a known-design policy.</td></tr>
+<tr><td>dnsbeta</td><td>Partial / restricted</td><td>Known min/max: transform data and use mlbeta, with Jacobian. Free bounds: unbounded likelihood when a shape is below 1.</td></tr>
+<tr><td>dpareto</td><td>Covered</td><td>mlpareto (type I)</td></tr>
+<tr><td>dpower</td><td>Covered</td><td>mlpower</td></tr>
+<tr><td>dprop</td><td>Equivalent</td><td>mlbeta for default prior=0: size=alpha+beta, mean=alpha/size. Fixed positive prior constrains shapes; free prior is not identifiable.</td></tr>
+<tr><td>drayleigh</td><td>Covered</td><td>mlrayleigh</td></tr>
+<tr><td>dsgomp</td><td>Covered</td><td>mlsgomp; folder exists despite queued board wording.</td></tr>
+<tr><td>dskellam</td><td>Missing</td><td>Difference of two Poisson variables; useful new integer family.</td></tr>
+<tr><td>dslash</td><td>Missing</td><td>Location-scale slash; missing, needs likelihood and closure analysis.</td></tr>
+<tr><td>dtbinom</td><td>Partial / restricted</td><td>Only zero truncation via mlztbinom; arbitrary known a/b not implemented.</td></tr>
+<tr><td>dtnorm</td><td>Covered</td><td>mltnorm with known truncation bounds.</td></tr>
+<tr><td>dtpois</td><td>Partial / restricted</td><td>Only zero truncation via mlztpois; arbitrary known a/b not implemented.</td></tr>
+<tr><td>dtriang</td><td>Covered</td><td>mltriang; endpoints and mode can be fixed.</td></tr>
+<tr><td>dwald</td><td>Equivalent</td><td>mlinvgauss; same inverse Gaussian family.</td></tr>
+<tr><td>dzib</td><td>Covered</td><td>mlzib with known size.</td></tr>
+<tr><td>dzinb</td><td>Covered</td><td>mlzinb</td></tr>
+<tr><td>dzip</td><td>Covered</td><td>mlzip</td></tr>
+</table>
+<h2>actuar 3.3.7</h2><p>40 d-prefixed exports; 38 univariate density names; 32 covered or equivalent. Aliases remain separate rows.</p>
+<table><tr><th>Density</th><th>Status</th><th>Coverage / action</th></tr>
+<tr><td>dburr</td><td>Covered</td><td>mlburr</td></tr>
+<tr><td>dfpareto</td><td>Reject unrestricted MLE</td><td>Known min reduces to mlgb2; free min is unbounded by choosing shape2*shape3&lt;1 and approaching the sample minimum.</td></tr>
+<tr><td>dgenbeta</td><td>Reject unrestricted MLE</td><td>Free scale (upper endpoint) is unbounded when shape2&lt;1. Fixed scale is a useful separate model, currently missing.</td></tr>
+<tr><td>dgenpareto</td><td>Equivalent</td><td>mlbetapr: actuar shape1 is beta-prime shape2, actuar shape2 is beta-prime shape1. NOT extraDistr dgpd.</td></tr>
+<tr><td>dgumbel</td><td>Covered</td><td>mlgumbel; check location/scale parameter mapping.</td></tr>
+<tr><td>dinvburr</td><td>Covered</td><td>mlinvburr</td></tr>
+<tr><td>dinvexp</td><td>Covered</td><td>mlinvexp</td></tr>
+<tr><td>dinvgamma</td><td>Covered</td><td>mlinvgamma</td></tr>
+<tr><td>dinvgauss</td><td>Covered</td><td>mlinvgauss</td></tr>
+<tr><td>dinvparalogis</td><td>Covered</td><td>mlinvparalogis</td></tr>
+<tr><td>dinvpareto</td><td>Covered</td><td>mlinvpareto</td></tr>
+<tr><td>dinvtrgamma</td><td>Covered</td><td>mlinvtrgamma</td></tr>
+<tr><td>dinvweibull</td><td>Covered</td><td>mlinvweibull</td></tr>
+<tr><td>discretise</td><td>Excluded utility</td><td>Discretization utility, not a density.</td></tr>
+<tr><td>discretize</td><td>Excluded utility</td><td>Discretization utility, not a density.</td></tr>
+<tr><td>dlgamma</td><td>Covered</td><td>mllgamma</td></tr>
+<tr><td>dlgompertz</td><td>Equivalent</td><td>Alias of dinvweibull; NOT the ordinary Gompertz family.</td></tr>
+<tr><td>dllogis</td><td>Covered</td><td>mlllogis</td></tr>
+<tr><td>dlogarithmic</td><td>Covered</td><td>mllgser</td></tr>
+<tr><td>dparalogis</td><td>Covered</td><td>mlparalogis</td></tr>
+<tr><td>dpareto</td><td>Covered</td><td>mllomax; actuar pareto is type II with zero endpoint.</td></tr>
+<tr><td>dpareto1</td><td>Covered</td><td>mlpareto; type I, estimates its lower endpoint.</td></tr>
+<tr><td>dpareto2</td><td>Partial / restricted</td><td>Known min: subtract it and use mllomax. Free min is not implemented; unlike III/IV, no fixed-shape endpoint singularity.</td></tr>
+<tr><td>dpareto3</td><td>Reject unrestricted MLE</td><td>Known min reduces to mlllogis. Free min is unbounded by choosing shape&lt;1.</td></tr>
+<tr><td>dpareto4</td><td>Reject unrestricted MLE</td><td>Known min reduces to mlburr. Free min is unbounded by choosing shape2&lt;1.</td></tr>
+<tr><td>dpearson6</td><td>Equivalent</td><td>Alias of dtrbeta in this package (all three shapes); mlgb2.</td></tr>
+<tr><td>dphtype</td><td>Mixture project</td><td>Univariate phase-type law despite vector/matrix parameters. Dimension and representation must be specified; currently missing.</td></tr>
+<tr><td>dpig</td><td>Covered</td><td>mlpig</td></tr>
+<tr><td>dpoisinvgauss</td><td>Equivalent</td><td>Alias of dpig; mlpig.</td></tr>
+<tr><td>dtrbeta</td><td>Covered</td><td>mlgb2</td></tr>
+<tr><td>dtrgamma</td><td>Covered</td><td>mltrgamma</td></tr>
+<tr><td>dzmbinom</td><td>Covered</td><td>mlzmbinom with known size.</td></tr>
+<tr><td>dzmgeom</td><td>Covered</td><td>mlzmgeom</td></tr>
+<tr><td>dzmlogarithmic</td><td>Covered</td><td>mlzmlogarithmic</td></tr>
+<tr><td>dzmnbinom</td><td>Covered</td><td>mlzmnbinom</td></tr>
+<tr><td>dzmpois</td><td>Covered</td><td>mlzmpois</td></tr>
+<tr><td>dztbinom</td><td>Covered</td><td>mlztbinom with known size.</td></tr>
+<tr><td>dztgeom</td><td>Covered</td><td>mlztgeom</td></tr>
+<tr><td>dztnbinom</td><td>Covered</td><td>mlztnbinom</td></tr>
+<tr><td>dztpois</td><td>Covered</td><td>mlztpois</td></tr>
+</table>
+<h2>Evidence and reproduction</h2>
+<p>Primary evidence: installed extraDistr and actuar help pages and function signatures;
+this checkout's per-distribution README metadata and implementation files. Public
+references: <a href="https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf">extraDistr manual</a>,
+<a href="https://cran.r-project.org/web/packages/actuar/actuar.pdf">actuar manual</a>,
+<a href="https://stat.ethz.ch/CRAN/web/packages/actuar/vignettes/distributions.pdf">actuar family inventory</a>.
+The nonexistence arguments above are deductions from these densities.</p>
+<p>Run <code>python3 notes/evaluations/2026-10-29-density-coverage.py</code> from the
+repository. It regenerates this HTML and the adjacent CSV, and fails if a d-prefixed
+export is unclassified or disappears. Model classifications require human review
+when the implementation changes.</p></html>
