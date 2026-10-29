@@ -21,6 +21,12 @@
 * `mltriang()` (triangular; `a`, `b`, `c` can each be held fixed) and
   `mlhuber()` (Huber density with `epsilon` held fixed, default 1.345).
 
+* `mlgev()` (generalized extreme value, shape in [-1/2, 1]),
+  `mltrgamma()` and `mlinvtrgamma()` (generalized gamma and its
+  reciprocal), `mltnorm()` (truncated normal with known bounds),
+  `mlhyper()` (hypergeometric with known draws, `k` required) and
+  `mlpig()` (Poisson-inverse Gaussian).
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
