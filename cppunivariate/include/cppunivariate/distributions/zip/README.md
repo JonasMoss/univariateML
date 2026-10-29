@@ -5,7 +5,7 @@ support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: lambda
   role: rate
-  domain: '[0, inf)'
+  domain: (0, inf)
   simulate: 1.0
   kind: regular
 - name: pi

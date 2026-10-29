@@ -35,8 +35,7 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=100,
   const bool fp=!std::isnan(prob),fn=!std::isnan(nu);
   const auto fail=[&](CmbStatus status) { return CmbResult{nan,nan,nan,0,status}; };
   if (x.size()==0 || N<0 || N>10000000 || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
-      (fp && !(prob>0 && prob<1)) || (fn && !std::isfinite(nu))) return fail(CmbStatus::InvalidInput);
-  if (N==0) return fail(CmbStatus::Unidentified);
+      (fp && !(prob>=0 && prob<=1)) || (fn && !std::isfinite(nu))) return fail(CmbStatus::InvalidInput);
   int xmin=N,xmax=0; double sx=0,sh=0;
   bool endpoints=true,centres=true;
   for (int v:x) {
@@ -46,7 +45,10 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=100,
     centres=centres && (v==N/2 || v==(N+1)/2);
   }
   const double n=static_cast<double>(x.size()),m=sx/n,t=sh/n;
-  if (!fp && (m==0 || m==N)) return fail(CmbStatus::PointMass);
+  if (N==0) return {fp?prob:.5,fn?nu:1,0,0,CmbStatus::Ok};
+  if (fp && (prob==0 || prob==1))
+    return (prob==0?xmax==0:xmin==N) ? CmbResult{prob,fn?nu:1,0,0,CmbStatus::Ok} : fail(CmbStatus::InvalidInput);
+  if (!fp && (m==0 || m==N)) return {m==0?0.0:1.0,fn?nu:1,0,0,CmbStatus::Ok};
   if (!fp && !fn && N>1) {
     if (xmin==xmax) return fail(CmbStatus::PointMass);
     if (xmax-xmin==1) return fail(CmbStatus::AdjacentLimit);

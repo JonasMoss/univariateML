@@ -33,17 +33,17 @@ test_that("ZINB faces and fixed-size subset have the declared behavior", {
   expect_error(mlzinb(c(rep(0,50),rep(4,50))), "Use `mlzip`")
   expect_error(mlzinb(rep(2,100)), "Use `mlpois`")
   expect_s3_class(mlzinb(rep(2,100),size=1.5),"univariateML")
-  for (bad in c(0,-1,Inf,-Inf,NaN))
+  for (bad in c(-1,Inf,-Inf,NaN))
     expect_error(mlzinb(0:4,size=bad), "size must")
 })
 
 test_that("all-zero representative supports external probability evaluation", {
-  expect_warning(fit <- mlzinb(rep(0,10)), "not unique")
-  expect_equal(as.numeric(fit), c(1,1,0))
+  expect_silent(fit <- mlzinb(rep(0,10)))
+  expect_equal(as.numeric(fit), c(0,.5,0))
   expect_equal(dml(c(0,1),fit),c(1,0))
   expect_equal(pml(c(-1,0,1),fit),c(0,1,1))
   expect_equal(qml(c(0,.5,1),fit),c(0,0,0))
-  expect_warning(fixed <- mlzinb(rep(0,10),size=.5), "not unique")
+  expect_silent(fixed <- mlzinb(rep(0,10),size=.5))
   expect_equal(as.numeric(fixed),c(.5,1,0))
 })
 
@@ -114,7 +114,7 @@ test_that("P2 ZINB held boundaries, incompatible data and constrained faces", {
   for(v in c(-1,1.1,Inf,NA_real_))expect_error(mlzinb(c(0,1,5),pi=v))
   expect_error(mlzinb(c(0,1,5),prob=1),"compatible")
   expect_error(mlzinb(c(0,1,5),pi=1),"compatible")
-  expect_error(mlzinb(rep(0,3),prob=.4,pi=.3),"mlpois")
+  expect_equal(mlzinb(rep(0,3),prob=.4,pi=.3)[["size"]],0)
   expect_equal(attr(suppressWarnings(mlzinb(rep(0,3),prob=.4)),"logLik"),0)
   expect_equal(attr(suppressWarnings(mlzinb(rep(0,3),pi=.3)),"logLik"),0)
   expect_error(mlzinb(c(rep(0,50),rep(4,50)),pi=.5),"mlzip")
@@ -140,4 +140,22 @@ test_that("P2 fixed size and inflation compare separated probability peaks", {
       optim(t,objective,method="BFGS",control=list(maxit=500,reltol=1e-12))$value,0)
     expect_gte(attr(fit,"logLik"),-min(values)-1e-7)
   }
+})
+
+test_that("P3 size-zero boundary holds and free representatives are attained", {
+  for (p in c(.2,.9,1)) {
+    fit <- mlzinb(rep(0,5),size=0,prob=p)
+    expect_identical(fit[["size"]],0)
+    expect_identical(fit[["prob"]],p)
+    expect_equal(attr(fit,"logLik"),0)
+    expect_equal(dml(c(0,1),fit),c(1,0))
+    expect_error(mlzinb(c(0,1),size=0,prob=p))
+  }
+  expect_silent(fit <- mlzinb(rep(0,5)))
+  expect_equal(fit[["size"]],0)
+  expect_equal(attr(fit,"logLik"),0)
+})
+
+test_that("P3 insufficient profile refinement stops", {
+ expect_error(mlzinb(c(0,0,1,2,8)[c(1,2,3,4,5)],iterlim=1),"failed|converge")
 })

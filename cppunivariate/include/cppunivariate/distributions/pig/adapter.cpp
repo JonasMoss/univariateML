@@ -5,8 +5,8 @@
 Rcpp::List mlpig_(const Rcpp::IntegerVector &x, double reltol=1e-9, int iterlim=200,
  Rcpp::Nullable<double> mean=R_NilValue, Rcpp::Nullable<double> shape=R_NilValue) {
  if ((mean.isNotNull() && (!std::isfinite(Rcpp::as<double>(mean)) || !(Rcpp::as<double>(mean)>0))) ||
-     (shape.isNotNull() && (!std::isfinite(Rcpp::as<double>(shape)) || !(Rcpp::as<double>(shape)>0))))
-   Rcpp::stop("Fixed mean and shape must be positive and finite.");
+     (shape.isNotNull() && (!std::isfinite(Rcpp::as<double>(shape)) || !(Rcpp::as<double>(shape)>=0))))
+   Rcpp::stop("Fixed mean must be positive, shape nonnegative, and both finite.");
  const double nan=std::numeric_limits<double>::quiet_NaN();
  auto r=cppunivariate::pig_mle(dist_impl::as_ispan(x),reltol,iterlim,
    mean.isNotNull()?Rcpp::as<double>(mean):nan,

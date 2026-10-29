@@ -24,7 +24,7 @@ inline ZinbResult zinb_mle(ispan x, double tol = 1e-10, int maxit = 200,
   ZinbResult best{nan, nan, nan, -std::numeric_limits<double>::infinity(), 0,
                   ZinbStatus::IterationFailure};
   const bool fixed = !std::isnan(fixed_size);
-  if (fixed && (!(fixed_size > 0) || !std::isfinite(fixed_size))) {
+  if (fixed && (!(fixed_size >= 0) || !std::isfinite(fixed_size))) {
     best.status = ZinbStatus::InvalidSize; return best;
   }
   if (x.size() == 0 || !(tol > 0) || !std::isfinite(tol) || maxit < 1) {
@@ -42,19 +42,16 @@ inline ZinbResult zinb_mle(ispan x, double tol = 1e-10, int maxit = 200,
     ++counts[v]; sum += v; if (v == 0) ++zeros;
   }
   const double n = static_cast<double>(x.size()), z = zeros / n;
-  if(sum>0 && ((fp && fixed_prob==1)||(fi && fixed_pi==1))) {
+  if(sum>0 && (fixed_size==0 || (fp && fixed_prob==1)||(fi && fixed_pi==1))) {
     best.status=ZinbStatus::InvalidInput;return best;
   }
   if(sum==0) {
-    if(fp && fixed_prob<1 && fi && fixed_pi<1 && !fixed) {
-      best.status=ZinbStatus::ZeroLimit;return best;
-    }
-    const double r=fixed?fixed_size:1, p=fp?fixed_prob:1;
-    const double pi=fi?fixed_pi:(p==1?0:1);
+    const double r=fixed?fixed_size:0, p=fp?fixed_prob:(fixed_size>0?1:.5);
+    const double pi=fi?fixed_pi:(r==0 || p==1?0:1);
     return {r,p,pi,n*std::log(pi+(1-pi)*std::pow(p,r)),0,ZinbStatus::Ok};
   }
   const double positive_mean = sum / (n - zeros);
-  if((fp || fi) && !fixed && maxit < std::ceil(std::log(std::min(tol,0.5)/2)/std::log(0.6180339887498948482))) {
+  if(!fixed && maxit < std::ceil(std::log(std::min(tol,0.5)/2)/std::log(0.6180339887498948482))) {
     best.status=ZinbStatus::IterationFailure;return best;
   }
   if(fi && !fp && fixed_pi>0 && maxit < std::ceil(std::log(std::min(tol,0.5)/2)/std::log(0.6180339887498948482))) {
@@ -171,6 +168,7 @@ inline ZinbResult zinb_mle(ispan x, double tol = 1e-10, int maxit = 200,
     }
     auto candidate = fc.logLik > fd.logLik ? fc : fd;
     candidate.iterations = i;
+    if (b-a>tol) candidate.status=ZinbStatus::IterationFailure;
     if (candidate.logLik > best.logLik) best = candidate;
   }
   if (zip.status == ZipStatus::Ok && zip.logLik >= best.logLik - 1e-8*n) {

@@ -15,7 +15,7 @@ params:
   kind: regular
 - name: min
   role: lower endpoint
-  domain: (-inf, inf)
+  domain: "(-inf, max)"
   simulate: 0
   advice: 'With the bounds estimated the likelihood is unbounded: a shape below 1
     makes the density singular at its bound, so let that bound approach the sample
@@ -24,7 +24,7 @@ params:
   kind: threshold
 - name: max
   role: upper endpoint
-  domain: (-inf, inf)
+  domain: "(min, inf)"
   simulate: 1
   advice: 'With the bounds estimated the likelihood is unbounded: a shape below 1
     makes the density singular at its bound, so let that bound approach the sample

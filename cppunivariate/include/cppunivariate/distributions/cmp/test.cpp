@@ -38,3 +38,18 @@ TEST_CASE("cmp: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qcmp(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rcmp(rng, p[0], p[1]); }, 1e-10, 1e-9, 1000);
 }
+
+TEST_CASE("CMP P3 family entry includes zero and geometric members") {
+ const std::vector<double> z{0,0}, g{0,0,0,10}, positive{0,2};
+ cppunivariate::CmpFitControl ctl;
+ auto r=cppunivariate::cmp_domain_mle({z.data(),z.size()},ctl);
+ CHECK(r.status==cppunivariate::CmpStatus::Ok);
+ CHECK(std::exp(r.eta)==0); CHECK(r.nu==1); CHECK(r.logLik==0);
+ ctl.fixed_lambda=0; ctl.fixed_nu=0;
+ CHECK(cppunivariate::cmp_domain_mle({z.data(),z.size()},ctl).status==cppunivariate::CmpStatus::Ok);
+ CHECK(cppunivariate::cmp_domain_mle({positive.data(),positive.size()},ctl).status==cppunivariate::CmpStatus::InvalidInput);
+ r=cppunivariate::cmp_domain_mle({g.data(),g.size()});
+ CHECK(r.status==cppunivariate::CmpStatus::Ok); CHECK(r.nu==0);
+ CHECK(std::exp(r.eta)==doctest::Approx(2.5/3.5));
+ CHECK(r.logLik==doctest::Approx(10*std::log(2.5/3.5)+4*std::log(1/3.5)));
+}

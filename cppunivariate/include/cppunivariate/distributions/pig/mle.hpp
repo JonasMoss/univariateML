@@ -67,6 +67,7 @@ inline PigResult search(F f, double center, double tol, int maxit, double other_
     const bool left=ys.front()>ys.back();
     best=left?ys.front():ys.back(); bt=left?ts.front():ts.back(); failed=true;
   }
+  if (!std::isfinite(best)) failed=true;
   return {bt, 0, best, iterations, failed?PigStatus::SearchFailure:PigStatus::Ok};
 }
 }
@@ -80,9 +81,11 @@ inline PigResult pig_mle(ispan x, double tol=1e-9, int maxit=200,
   const auto invalid=PigResult{nan,nan,nan,0,PigStatus::InvalidInput};
   if (x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
       (fm && (!(mean>0)||!std::isfinite(mean))) ||
-      (fs && (!(shape>0)||!std::isfinite(shape)))) return invalid;
+      (fs && (!(shape>=0)||!std::isfinite(shape)))) return invalid;
   for (int k:x) if (k<0) return invalid;
   const pig_detail::Counts data(x);
+  if (shape==0) return data.average==0 ? PigResult{fm?mean:1,0,0,0,PigStatus::Ok} : invalid;
+  if (data.average==0 && !fs) return {fm?mean:1,0,0,0,PigStatus::Ok};
   if (fm && fs) return {mean,shape,data.likelihood(mean,shape),0,PigStatus::Ok};
   if (data.average==0) return {fm?mean:0,fs?shape:0,0,0,PigStatus::ZeroLimit};
   if (!fm && !fs) mean=data.average;
