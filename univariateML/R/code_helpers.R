@@ -1163,3 +1163,53 @@ univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
        "extraDistr::ddgamma" = list(
     broken = function() any(!is.finite(extraDistr::ddgamma(c(0,1000),c(1000,2),rate=c(1e-8,1),log=TRUE))), replacement=gamma))
 }))
+
+# Held-threshold families: preserve reference definitions with stable log tails.
+univariateML_reference_fixes <- c(univariateML_reference_fixes, list(
+  "extraDistr::qfrechet" = list(
+    broken = function() !is.finite(extraDistr::qfrechet(-40, 2, lower.tail = FALSE, log.p = TRUE)),
+    replacement = function(p, lambda = 1, mu = 0, sigma = 1,
+                           lower.tail = TRUE, log.p = FALSE) {
+      lp <- if (log.p) p else log(p)
+      if (!lower.tail) lp <- ifelse(lp < -36, -exp(lp), log(-expm1(lp)))
+      # Upper log tails can be below exp's underflow range.
+      lt <- log(-lp)
+      if (!lower.tail && log.p) lt <- ifelse(p < -36, p, lt)
+      out <- mu + exp(log(sigma) - lt/lambda)
+      out[lambda <= 0 | sigma <= 0] <- NaN
+      bad <- is.nan(p) | if (log.p) p > 0 else (p < 0 | p > 1)
+      out[which(bad)] <- NaN
+      out
+    }),
+  "extraDistr::pfrechet" = list(
+    broken = function() !is.finite(extraDistr::pfrechet(1e200, 2, lower.tail = FALSE, log.p = TRUE)),
+    replacement = function(q, lambda = 1, mu = 0, sigma = 1,
+                           lower.tail = TRUE, log.p = FALSE) {
+      t <- -lambda * (log(pmax(q-mu, 0)) - log(sigma))
+      out <- if (lower.tail) -exp(t) else ifelse(t < -36, t, log(-expm1(-exp(t))))
+      out[lambda <= 0 | sigma <= 0] <- NaN
+      out[which(is.nan(q))] <- NaN
+      if (log.p) out else exp(out)
+    }),
+  "actuar::qfpareto" = list(
+    broken = function() !is.finite(actuar::qfpareto(-40, 0, .3, .7, .4,
+                                                   lower.tail = FALSE, log.p = TRUE)),
+    replacement = function(p, min, shape1, shape2, shape3, rate = 1,
+                           scale = 1/rate, lower.tail = TRUE, log.p = FALSE) {
+      # Invert the smaller beta tail, avoiding subtraction from one.
+      lp <- if (log.p) p else log(p)
+      upper <- if (lower.tail) lp > log(.5) else lp <= log(.5)
+      small <- ifelse(lp <= log(.5), lp, log(-expm1(lp)))
+      a <- ifelse(upper, shape1, shape3)
+      b <- ifelse(upper, shape3, shape1)
+      u <- stats::qbeta(small, a, b, log.p = TRUE)
+      lu <- log(u)
+      lu <- ifelse(u == 0 & is.finite(small), (small + log(a) + lbeta(a,b))/a, lu)
+      ratio <- (lu - log1p(-u))/shape2
+      out <- min + exp(log(scale) + ifelse(upper, -ratio, ratio))
+      out[shape1 <= 0 | shape2 <= 0 | shape3 <= 0 | scale <= 0] <- NaN
+      bad <- is.nan(p) | if (log.p) p > 0 else (p < 0 | p > 1)
+      out[which(bad)] <- NaN
+      out
+    })
+))

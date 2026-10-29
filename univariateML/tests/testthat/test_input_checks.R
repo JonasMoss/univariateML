@@ -44,7 +44,7 @@ for (dens in densities) {
     set.seed(812)
     x <- rged(500, nu = 1.5)
   }
-  if (dens %in% c("mlburr", "mlinvburr")) {
+  if (dens %in% c("mlburr", "mlinvburr", "mlpareto4")) {
     # The free-scale ten-point fit can select a limit model.
     # Use interior data for the successful-fit contract.
     set.seed(1)
@@ -53,7 +53,7 @@ for (dens in densities) {
   }
   # Required design quantities (README fit_args): hypergeometric draws `k`
   # and population size `N`; beta-binomial `size`.
-  args <- switch(dens, mlht = list(nu = 3), mldlaplace = list(location = 0), mlsn = list(alpha = 0), mlgb2 = list(shape1 = .3, shape3 = .4), mltpois = list(a = 0, b = 10), mltbinom = list(a = 0, b = 10, size = 12), mlhyper = list(k = 10, N = 50), mlbbinom = list(size = 10), mlcmb = list(size = 10), mlnhyper = list(r = 3, N = 50), list())
+  args <- switch(dens, mlht = list(nu = 3), mldlaplace = list(location = 0), mlsn = list(alpha = 0), mlgb2 = list(shape1 = .3, shape3 = .4), mltpois = list(a = 0, b = 10), mltbinom = list(a = 0, b = 10, size = 12), mlhyper = list(k = 10, N = 50), mlbbinom = list(size = 10), mlcmb = list(size = 10), mlnhyper = list(r = 3, N = 50), mlpareto2 = list(min = 0), mlpareto3 = list(min = 0), mlpareto4 = list(min = 0), mlfpareto = list(min = 0, shape1 = .3, shape3 = .4), mlnsbeta = list(min = 0, max = 1), mlfrechet = list(mu = 0), list())
   object <- do.call(dens, c(list(x), args))
   density <- univariateML_to_function(object, "d")
   expect_equal(sum(density(x, log = TRUE)), attr(object, "logLik"))

@@ -74,6 +74,9 @@ Optional keys in each `params` entry:
   missing. It is always held, so the adapter lists it in `fixed`. Cannot be
   combined with `fixable` or `fixed`; `default` is used only for
   simulation, and `fit_args` supplies its value for goldens.
+- `required_reason: <text>`: optional explanation appended to the missing required
+  parameter message. Use plain text; explain
+  why the parameter must be held and how to supply it. Only for `required: true`.
 - `bound: lower` / `bound: upper`: the parameter is a support endpoint
   whose MLE is the sample minimum / maximum when estimated. May be combined
   with `fixable: true` (for example hnorm); a held endpoint is used exactly.
