@@ -86,6 +86,16 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | zip        | Zero-inflated Poisson   | lambda, pi         | extraDistr::dzip          | [0, ∞) integer   |
 | zinb       | Zero-inflated negative binomial | size, prob, pi | extraDistr::dzinb | [0, Inf) integer |
 | zipf       | Zipf                    | N, s               | sads::dzipf               | [1, ∞) integer   |
+| ztpois | Zero-truncated Poisson | lambda | actuar::dztpois | [1, ∞) integer |
+| ztgeom | Zero-truncated geometric | prob | actuar::dztgeom | [1, ∞) integer |
+| ztnbinom | Zero-truncated negative binomial | size, prob | actuar::dztnbinom | [1, ∞) integer |
+| ztbinom | Zero-truncated binomial | size, prob | actuar::dztbinom | [1, ∞) integer |
+| zmpois | Zero-modified Poisson | lambda, p0 | actuar::dzmpois | [0, ∞) integer |
+| zmgeom | Zero-modified geometric | prob, p0 | actuar::dzmgeom | [0, ∞) integer |
+| zmnbinom | Zero-modified negative binomial | size, prob, p0 | actuar::dzmnbinom | [0, ∞) integer |
+| zmbinom | Zero-modified binomial | size, prob, p0 | actuar::dzmbinom | [0, ∞) integer |
+| zmlogarithmic | Zero-modified logarithmic | prob, p0 | actuar::dzmlogarithmic | [0, ∞) integer |
+| zib | Zero-inflated binomial | size, prob, pi | extraDistr::dzib | [0, ∞) integer |
 
 [†] **Drift**: historic c0b9949 fitted only `shape` with rate fixed at
 1; the current cppunivariate-backed `mlparalogis` fits both `shape`

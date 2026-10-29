@@ -1,0 +1,65 @@
+#include "test_support.hpp"
+#include "cppunivariate/distributions/zmbinom/mle.hpp"
+#include "cppunivariate/distributions/zmbinom/dpqr.hpp"
+#include "cppunivariate/distributions/rng_std.hpp"
+#include <vector>
+#include <cmath>
+TEST_CASE("zmbinom: golden, score and distribution") {
+ const auto g=mltest::load_distribution_golden("zmbinom");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const auto fit=cppunivariate::zmbinom_mle({x.data(),x.size()});
+ REQUIRE(fit.status==cppunivariate::ZmbinomStatus::Ok);
+ CHECK(fit.size==doctest::Approx(g.estimates.at("size")).epsilon(1e-10));
+ CHECK(fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(1e-10));
+ CHECK(fit.p0==doctest::Approx(g.estimates.at("p0")).epsilon(1e-10));
+ CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+ std::vector<double> p{fit.size,fit.prob,fit.p0};
+ auto ll=[&](const std::vector<double> &par){double l=0;for(int v:x)l+=cppunivariate::distributions::dzmbinom(v,par[0],par[1],par[2],true);return l;};
+ CHECK(ll(p)==doctest::Approx(fit.logLik).epsilon(1e-10));
+ double norm2=0;
+ {auto a=p,b=p;const double h=1e-5;a[1]+=h;b[1]-=h;const double score=(ll(a)-ll(b))/(2*h);norm2+=score*score;}
+ {auto a=p,b=p;const double h=1e-5;a[2]+=h;b[2]-=h;const double score=(ll(a)-ll(b))/(2*h);norm2+=score*score;}
+ CHECK(std::sqrt(norm2)<1e-3);
+ const auto fixed=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,15);
+ CHECK(fixed.status==cppunivariate::ZmbinomStatus::Ok);
+ CHECK(fixed.size==15);
+ CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,-1).status==cppunivariate::ZmbinomStatus::InvalidSize);
+ CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,std::numeric_limits<double>::infinity()).status==cppunivariate::ZmbinomStatus::InvalidSize);
+ CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,0.5).status==cppunivariate::ZmbinomStatus::InvalidSize);
+ CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,0).status==cppunivariate::ZmbinomStatus::InvalidSize);
+}
+TEST_CASE("zmbinom: attained boundaries and invalid input") {
+ std::vector<int> ones{1,1,1},zeros{0,0,0},negative{-1,1};
+ CHECK(cppunivariate::zmbinom_mle({}).status==cppunivariate::ZmbinomStatus::InvalidInput);
+ CHECK(cppunivariate::zmbinom_mle({negative.data(),negative.size()}).status==cppunivariate::ZmbinomStatus::InvalidInput);
+ const auto one=cppunivariate::zmbinom_mle({ones.data(),ones.size()});
+ CHECK(one.logLik==0);
+ CHECK(one.status==cppunivariate::ZmbinomStatus::TwoPoint);
+ const auto zero=cppunivariate::zmbinom_mle({zeros.data(),zeros.size()});
+ CHECK(zero.logLik==0);
+ CHECK(zero.status==cppunivariate::ZmbinomStatus::AllZero);
+ std::vector<int> two{0,0,1,1};
+ CHECK(cppunivariate::zmbinom_mle({two.data(),two.size()}).status==cppunivariate::ZmbinomStatus::TwoPoint);
+}
+TEST_CASE("zmbinom: scalar tails and quantile endpoints") {
+ const auto g=mltest::load_distribution_golden("zmbinom");
+ CHECK(std::isfinite(cppunivariate::distributions::dzmbinom(4,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"),true)));
+ CHECK(cppunivariate::distributions::qzmbinom(0,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"))==0);
+ CHECK(cppunivariate::distributions::qzmbinom(1,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"))==g.estimates.at("size"));
+}
+
+TEST_CASE("zmbinom: infinite-size escape and fixed-size removal") {
+ std::vector<int> x{0,0,1,1,1,2,3,7,12};
+ CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()}).status==cppunivariate::ZmbinomStatus::PoissonLimit);
+ CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,20).status==cppunivariate::ZmbinomStatus::Ok);
+}
+
+TEST_CASE("zmbinom: quantile inversion and sampling") {
+ const auto g=mltest::load_distribution_golden("zmbinom");
+ const double q=cppunivariate::distributions::qzmbinom(.37,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"));
+ CHECK(cppunivariate::distributions::pzmbinom(q,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"))>=.37);
+ CHECK(cppunivariate::distributions::pzmbinom(q-1,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"))<.37);
+ CHECK(cppunivariate::distributions::pzmbinom(q,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"),true,false)+cppunivariate::distributions::pzmbinom(q,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"),false,false)==doctest::Approx(1));
+ cppunivariate::distributions::StdRng<> rng(19);
+ for(int j=0;j<20;++j) {const double v=cppunivariate::distributions::rzmbinom(rng,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"));CHECK(v>=0);CHECK(v==std::floor(v));}
+}
