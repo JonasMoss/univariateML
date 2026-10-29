@@ -98,3 +98,5 @@
 #include "distributions/sgomp/mle.hpp"
 
 #include "distributions/cmp/mle.hpp"
+#include "distributions/zeta/mle.hpp"
+#include "distributions/yulesimon/mle.hpp"
