@@ -91,6 +91,11 @@
   `mlbinom(x - k, size = 1)`". Rounded data with a small spread are such
   samples almost always.
 
+* `mlskellam()` (Skellam, the difference of two Poisson counts) with its
+  own `dskellam()`, `pskellam()`, `qskellam()`, `rskellam()`; extraDistr has
+  no Skellam CDF or quantile, and its density overflows. The MLE always
+  exists; a rate of zero (a Poisson member) is returned as attained.
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
