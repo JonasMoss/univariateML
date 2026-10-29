@@ -68,12 +68,8 @@ test_that("constant data have no attained logitnorm MLE", {
   set.seed(4); sim <- rml(5,fit)
   set.seed(4); expect_equal(sim,rlogitnorm(5,fit[1],fit[2]))
  })
- test_that("logitnorm agrees with optional reference", {
-  skip_if_not_installed("logitnorm")
-  x <- seq(.01,.99,length.out=25)
-  expect_equal(dlogitnorm(x,1,2), logitnorm::dlogitnorm(x,1,2), tolerance=1e-12)
-  expect_equal(plogitnorm(x,1,2), logitnorm::plogitnorm(x,1,2), tolerance=1e-12)
-  expect_equal(qlogitnorm(seq(.01,.99,.07),1,2), logitnorm::qlogitnorm(seq(.01,.99,.07),1,2), tolerance=1e-10)
+ test_that("logitnorm matches frozen logitnorm values (reference.json)", {
+   expect_reference_values("logitnorm")
  })
 
 test_that("logitnorm extreme normal log tails survive inversion", {

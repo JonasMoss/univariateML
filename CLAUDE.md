@@ -264,6 +264,7 @@ Steps for a new distribution:
    `cppunivariate.hpp`.
 2. Run `just quality <id>`.
 3. `just goldens`, then `just cpp-test` and `just test` must pass.
+4. `just readme-table` updates the distribution tables in the package README.
 
 R-side metadata, wrappers and roxygen docs are generated from `README.md`
 by `univariateML/scripts/load_distributions.R`, `codegen_metadata.R` and

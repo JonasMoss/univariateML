@@ -175,20 +175,8 @@ test_that("snorm dpqr recycle, propagate missing values and use R RNG", {
   set.seed(93); expect_identical(rml(10, fit), expected)
 })
 
-test_that("snorm dpqr agree with accurate fGarch ordinary values", {
-  skip_if_not_installed("fGarch")
-  pars <- list(mean = .3, sd = 1.7, xi = 1.8)
-  for (op in c("d", "p", "q")) {
-    x <- if (op == "q") c(.001, .1, .5, .8, .999) else c(-3, -1, 0, 1, 4)
-    args <- c(list(x), pars)
-    actual <- do.call(get(paste0(op, "snorm")), args)
-    expected <- do.call(getExportedValue("fGarch", paste0(op, "snorm")), args)
-    expect_lt(max(abs(actual/expected - 1)), 1e-12)
-    if (op == "d") {
-      args$log <- TRUE
-      expect_equal(do.call(dsnorm, args), do.call(fGarch::dsnorm, args), tolerance = 1e-12)
-    }
-  }
+test_that("snorm matches frozen fGarch values (reference.json)", {
+  expect_reference_values("snorm")
 })
 
 test_that("snorm skew parameter domain is enforced", {
@@ -205,22 +193,5 @@ test_that("snorm log tails exceed the backend exponent range", {
     x <- qsnorm(-1e-30, lower.tail = lower, log.p = TRUE)
     expect_equal(psnorm(x, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
                  tolerance = 1e-10)
-  }
-})
-
-test_that("snorm agrees with fGarch across ordinary shape/skew parameters", {
-  skip_if_not_installed("fGarch")
-  for (shape in 1) for (skew in c(.25, 1, 4)) {
-    pars <- list(mean = .3, sd = 1.7)
-    pars$xi <- skew
-    # Central probability positions keep comparisons in the reference's
-    # accurate range even when the skew compresses one side of the density.
-    observations <- do.call(qsnorm, c(list(c(.1, .3, .5, .7, .9)), pars))
-    for (op in c("d", "p", "q")) {
-      args <- c(list(if (op == "q") c(.01, .1, .5, .9, .99) else observations), pars)
-      actual <- do.call(get(paste0(op, "snorm")), args)
-      expected <- do.call(getExportedValue("fGarch", paste0(op, "snorm")), args)
-      expect_lt(max(abs(actual/expected - 1)), 1e-12)
-    }
   }
 })

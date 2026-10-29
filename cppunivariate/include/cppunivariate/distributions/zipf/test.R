@@ -6,8 +6,8 @@ expect_warning(
   "All observations are equal to 1\\. The maximum likelihood estimator is not unique\\."
 )
 
-## qml inverts pml: F(q - 1) < p <= F(q). sads::qzipf 0.6.5 is off by one;
-## see univariateML_reference_fixes and KNOWN_ISSUES.md.
+## qml inverts pml: F(q - 1) < p <= F(q). sads::qzipf 0.6.5, the former
+## reference, is off by one (KNOWN_ISSUES.md).
 test_that("qml for zipf is the discrete inverse of pml", {
   fit <- mlzipf(corbet)
   p <- c(0, 0.1, 0.4, 0.5, 0.9, 0.995, 1)
@@ -108,8 +108,6 @@ test_that("own Zipf functions work through every fitted-model route", {
   grDevices::pdf(tempfile(fileext=".pdf")); on.exit(grDevices::dev.off())
   expect_error(plot(f),NA)
 })
-test_that("Zipf agrees with sads where its implementation is correct", {
-  skip_if_not_installed("sads")
-  expect_equal(dzipf(1:10,10,1),sads::dzipf(1:10,10,1))
-  expect_equal(pzipf(1:10,10,1),sads::pzipf(1:10,10,1))
+test_that("zipf matches frozen sads values (reference.json)", {
+  expect_reference_values("zipf")
 })

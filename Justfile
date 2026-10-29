@@ -56,13 +56,21 @@ goldens: regen
 	  UMVL_PKG_DIR={{repo_root}}/univariateML/package \
 	  Rscript scripts/goldens.R
 
-# Cross-check our dpqr against reference R packages (extraDistr, actuar,
-# fGarch, logitnorm). Reference packages may not all be in DESCRIPTION;
-# missing ones skip cleanly. Manual / development-time check.
-dpqr-check: regen
+# Rewrite distributions/<id>/reference.json: frozen values from the former
+# reference packages (fGarch, logitnorm, nakagami, sads) of the families
+# with their own d/p/q/r. Needs those packages; the tests do not.
+reference-values: regen
 	cd univariateML && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
 	  UMVL_PKG_DIR={{repo_root}}/univariateML/package \
-	  Rscript scripts/dpqr_check.R
+	  Rscript scripts/reference_values.R
+
+# Rewrite the distribution tables in univariateML/README.Rmd and README.md
+# from distributions/<id>/README.md.
+readme-table:
+	cd univariateML && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	  Rscript scripts/readme_table.R
 
 # Build & run the standalone C++ test harness from cppunivariate/.
 # This path does not require R.

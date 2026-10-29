@@ -27,6 +27,11 @@ resolve_callable <- function(spec) {
   }
 }
 
+sampler_is_dependency <- function(spec) {
+  pkg <- strsplit(spec, "::", fixed = TRUE)[[1]]
+  length(pkg) == 1L || pkg[1] %in% c("stats", "extraDistr", "actuar")
+}
+
 set_golden_seed <- function(seed) {
   RNGkind("Mersenne-Twister", "Inversion", "Rejection")
   set.seed(seed)
@@ -43,10 +48,13 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
     g <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
     test_that(paste0("golden: ", g$id), {
       set_golden_seed(g$seed)
-      # Sample size by position: stats::rhyper calls it `nn`.
+      # Samplers from packages that are not dependencies (fGarch, logitnorm,
+      # nakagami, sads: the former references) are not rerun; the stored
+      # data are used. Sample size by position: stats::rhyper calls it `nn`.
       # jsonlite reads infinite sampler arguments as strings.
-      data <- if (startsWith(g$sampler, "fGarch::")) as.numeric(unlist(g$data)) else
-        do.call(resolve_callable(g$sampler), c(list(g$n), lapply(g$sampler_args, as.numeric)))
+      data <- if (sampler_is_dependency(g$sampler))
+        do.call(resolve_callable(g$sampler), c(list(g$n), lapply(g$sampler_args, as.numeric))) else
+        as.numeric(unlist(g$data))
 
       # fit_args: required design quantities (README fit_args).
       fn <- getExportedValue("univariateML", paste0("ml", g$id))

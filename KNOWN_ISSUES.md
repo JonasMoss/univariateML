@@ -11,8 +11,10 @@ one-line reproducer. Workarounds live in `univariateML_reference_fixes`
 call, so an upstream fix switches it off without a release here.
 
 VGAM is not used as a reference package: it is unmaintained and its
-densities were unreliable (issue #52). sads was dropped on 2026-10-29
-(own `dzipf`/`pzipf`/`qzipf`/`rzipf`); its defects are kept below for the
+densities were unreliable (issue #52). sads, fGarch, logitnorm and
+nakagami were dropped on 2026-10-29 in favour of the package's own d/p/q/r;
+the tests compare those with values frozen from the former references
+(`distributions/<id>/reference.json`). Their defects are kept below for the
 record.
 
 | Package | Defect | Reproducer | Effect here |

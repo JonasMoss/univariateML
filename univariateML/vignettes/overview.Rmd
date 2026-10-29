@@ -3,7 +3,7 @@ title: "Overview of univariateML"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Overview of univariateML}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -53,7 +53,6 @@ half-line.
 
 ```{r, AIC}
 AIC(
-  mlbetapr(egypt$age),
   mlexp(egypt$age),
   mlinvgamma(egypt$age),
   mlgamma(egypt$age),
@@ -125,7 +124,7 @@ functional of the parameters and manipulate them afterwards, `confint` is restri
 to the main parameters of the model.
 
 ```{r bootstrap_example, echo = TRUE}
-# Calculate two-sided 95% confidence intervals for the two Gumbel parameters.
+# Calculate two-sided 95% confidence intervals for the two Weibull parameters.
 bootstrapml(mlweibull(egypt$age)) # same as confint(mlweibull(egypt$age))
 bootstrapml(mlgamma(egypt$age))
 ```
@@ -159,7 +158,7 @@ We are be interested in the quantiles of the underlying distribution,
 for instance the median:
 
 ```{r bootstrap_example_median, echo = TRUE}
-# Calculate two-sided 90% confidence intervals for the two Gumbel parameters.
+# Calculate two-sided 90% confidence intervals for the medians.
 bootstrapml(mlweibull(egypt$age),
   map = function(x) qweibull(0.5, x[1], x[2]),
   probs = c(0.05, 0.95)

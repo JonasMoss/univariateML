@@ -20,17 +20,10 @@ Imports:
     extraDistr,
     actuar
 Suggests:
-    fGarch,
-    logitnorm,
-    nakagami,
-    sads,
     jsonlite,
     testthat,
     knitr,
-    rmarkdown,
-    markdown,
-    copula,
-    dplyr
+    rmarkdown
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 SystemRequirements: C++17

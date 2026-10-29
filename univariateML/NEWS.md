@@ -12,6 +12,12 @@
   now in `Imports:` and resolved at runtime by metadata-driven
   dispatch.
 
+* Suggests is down to jsonlite, testthat, knitr and rmarkdown. fGarch,
+  logitnorm, nakagami and sads are no longer used: the tests compare the
+  package's own functions with values frozen from them. The copula
+  vignette and the `abalone` data set it used are removed, and with them
+  copula and dplyr.
+
 ## New models
 
 * `mlhnorm()` (translated half-normal), `mllst()` (location-scale t),

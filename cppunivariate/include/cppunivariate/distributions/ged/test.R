@@ -168,20 +168,8 @@ test_that("ged dpqr recycle, propagate missing values and use R RNG", {
   set.seed(93); expect_identical(rml(10, fit), expected)
 })
 
-test_that("ged dpqr agree with accurate fGarch ordinary values", {
-  skip_if_not_installed("fGarch")
-  pars <- list(mean = .3, sd = 1.7, nu = 1.4)
-  for (op in c("d", "p", "q")) {
-    x <- if (op == "q") c(.001, .1, .5, .8, .999) else c(-3, -1, 0, 1, 4)
-    args <- c(list(x), pars)
-    actual <- do.call(get(paste0(op, "ged")), args)
-    expected <- do.call(getExportedValue("fGarch", paste0(op, "ged")), args)
-    expect_lt(max(abs(actual/expected - 1)), 1e-12)
-    if (op == "d") {
-      args$log <- TRUE
-      expect_equal(do.call(dged, args), do.call(fGarch::dged, args), tolerance = 1e-12)
-    }
-  }
+test_that("ged matches frozen fGarch values (reference.json)", {
+  expect_reference_values("ged")
 })
 
 test_that("ged parameter domain is enforced", {
@@ -198,22 +186,5 @@ test_that("ged log tails exceed the backend exponent range", {
     x <- qged(-1e-30, lower.tail = lower, log.p = TRUE)
     expect_equal(pged(x, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
                  tolerance = 1e-10)
-  }
-})
-
-test_that("ged agrees with fGarch across ordinary shape/skew parameters", {
-  skip_if_not_installed("fGarch")
-  for (shape in c(.5, 1, 2, 5)) for (skew in 1) {
-    pars <- list(mean = .3, sd = 1.7)
-    pars$nu <- shape
-    # Central probability positions keep comparisons in the reference's
-    # accurate range even when the skew compresses one side of the density.
-    observations <- do.call(qged, c(list(c(.1, .3, .5, .7, .9)), pars))
-    for (op in c("d", "p", "q")) {
-      args <- c(list(if (op == "q") c(.01, .1, .5, .9, .99) else observations), pars)
-      actual <- do.call(get(paste0(op, "ged")), args)
-      expected <- do.call(getExportedValue("fGarch", paste0(op, "ged")), args)
-      expect_lt(max(abs(actual/expected - 1)), 1e-12)
-    }
   }
 })

@@ -3,7 +3,7 @@ title: "Distributions"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Distributions}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -19,7 +19,8 @@ univariateML_models
 ```
 
 This package follows a naming convention for the `ml***` functions. To access the
-documentation of the distribution associated with an `ml***` function, write `package::d***`. 
+documentation of the distribution associated with an `ml***` function, write `package::d***`,
+or `?d***` for the distributions whose d/p/q/r univariateML defines itself (such as `?dsstd`).
 For instance, to find the documentation for the log-gamma distribution write
 
 ```{r docs, eval = FALSE}
@@ -46,7 +47,7 @@ but also because the maximum likelihood estimator fails to exist. Here is a poss
 * **Binomial**. The maximum likelihood estimator does not exist for underdispersed data (when $size$ is estimated). There is an increasing sequence of estimates $size$, $p$ so that the binomial likelihood converges to a Poisson, however.
 * **Negative binomial.** The same sort of problem occurs with the negative binomial, which converges to a Poisson for some data sets.
 * **Lomax.** Here we have convergence to an exponential for certain data sets.
-* **Zipf.** The optimal shape parameter may be negative, which still defines a density, but is not supported by `extraDistr`.
+* **Zipf.** The optimal shape parameter may be negative, which still defines a density.
 * **Logarithic series distribution.** When all observations are $1$ the estimator does not exist, as the "actual" maximum likelihood estimator is the point mass on $0$.
 
 ### Continuous distributions

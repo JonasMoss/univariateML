@@ -85,12 +85,8 @@ test_that("squared-data underflow is a precision error, not constant data", {
   set.seed(4); sim <- rml(5,fit)
   set.seed(4); expect_equal(sim,rnaka(5,fit[1],fit[2]))
  })
- test_that("naka agrees with optional reference", {
-  skip_if_not_installed("nakagami")
-  x <- seq(.01,5,length.out=25)
-  expect_equal(dnaka(x,1,2), nakagami::dnaka(x,1,2), tolerance=1e-12)
-  expect_equal(pnaka(x,1,2), nakagami::pnaka(x,1,2), tolerance=1e-12)
-  expect_equal(qnaka(seq(.01,.99,.07),1,2), nakagami::qnaka(seq(.01,.99,.07),1,2), tolerance=1e-10)
+ test_that("naka matches frozen nakagami values (reference.json)", {
+   expect_reference_values("naka")
  })
 
 test_that("Nakagami boundary densities and extreme gamma tails are correct", {

@@ -17,7 +17,7 @@ references:
   - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
   - Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012). Loss Models, From Data to Decisions, Fourth Edition. Wiley.
 examples: |
-  mlparalogis(abalone$length)
+  mlparalogis(precip)
 ---
 
 The paralogistic distribution is the Burr type XII distribution with its two
