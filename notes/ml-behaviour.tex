@@ -25,6 +25,7 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 \theoremstyle{remark}
@@ -60,6 +61,10 @@ Main findings.
     Their large-shape ``uniform'' fits are local maxima only.
   \item The sweep found invalid fits on ordinary data (zip, cauchy, logis,
     binom); see Section~\ref{sec:bugs}.
+  \item lomax's escape test $\overline{x^2} < 2\bar x^2$ (and invpareto's,
+    on $1/x$) is only local; it rejects samples such as $(1, 100)$ that have
+    an MLE. The exact criterion is Theorem~\ref{thm:lomax}
+    (Section~\ref{sec:lomax}).
 \end{enumerate}
 
 \section{Definitions}
@@ -106,7 +111,8 @@ and tested in the fitter; \emph{arg} = short limit argument in this note;
 id & escape & limit model & detection today & firm \\
 \midrule
 lomax & $\kappa\to\infty$, $\lambda\kappa$ fixed & exponential \cite{kk2003} &
-  $\overline{x^2} < 2\bar x^2$; status \code{MeanVarianceCondition} & code \\
+  $\overline{x^2} < 2\bar x^2$, status \code{MeanVarianceCondition}; this
+  test is only local, the exact criterion is Theorem~\ref{thm:lomax} & code, \textbf{wrong} \\
 gompertz & $b \to 0$ & exponential & status \code{Overdispersed} & code, probe \\
 nbinom & size $\to\infty$, mean fixed & Poisson &
   underdispersion check in the Rcpp adapter only & code \\
@@ -157,6 +163,177 @@ change this. Mostly-Pareto samples therefore have a finite MLE, often with
 large $c$ (e.g.\ $\hat c = 97.4$ for 199 points $\ge 1$ and one at $0.99$);
 the fitter now finds it via a profile-likelihood start (commit
 \code{9290aac}).
+
+\subsection{Lomax and inverse Pareto: when the MLE exists}\label{sec:lomax}
+
+% Adapted from an unpublished draft by J. Moss, "When does the Lomax maximum
+% likelihood estimator exist?" (October 2026); not cited, not to be published.
+
+The Lomax fitter stops with ``use \code{mlexp}'' when
+$\overline{x^2} < 2\bar x^2$, that is, when the sample coefficient of
+variation is below one. That test is only local: it makes the exponential a
+strict local maximum of the profile, and a higher interior maximum can
+exist. Del Castillo and Daoudi \cite{delcastillo2009} proved that the MLE exists when the
+coefficient of variation exceeds one and conjectured (p.~687) that this is
+also necessary; Renext's \code{flomax} \cite{renext} refuses to fit
+otherwise. The conjecture is false. Grimshaw \cite{grimshaw1993} observed that the
+generalized Pareto profile score can have two zeros on the heavy-tailed side,
+and his algorithm compares each with the boundary. Below is an exact
+criterion on a bounded interval.
+
+\paragraph{Profile.} The density is $f(x) = \lambda\kappa(1+\lambda
+x)^{-(\kappa+1)}$, $x > 0$. As $\lambda\to0$ with $\lambda\kappa\to\theta$ it
+tends to the exponential with rate $\theta$, pointwise and hence in Hellinger
+distance (Scheff\'e). Let $x\in(0,\infty)^n$, put $y_i = x_i/\bar x$,
+$c^2 = n^{-1}\sum_i (y_i-1)^2$ and $\gamma = n^{-1}\sum_i (y_i-1)^3$ (divisor
+$n$; $c<1$ is the same as $\overline{x^2}<2\bar x^2$). For fixed $\lambda$
+the log-likelihood is strictly concave in $\kappa$ with maximiser
+$\hat\kappa(\lambda) = n/\sum_i\log(1+\lambda x_i)$. With $q = \lambda\bar x$
+and $A(q) = n^{-1}\sum_i\log(1+q y_i)$, $\hat\kappa = 1/A(q)$ and the profile
+satisfies
+\begin{equation}
+  \ell_p(\lambda) - \ell_E = n\{\log q - \log A(q) - A(q)\},
+  \qquad \ell_E = -n\log\bar x - n ,
+  \label{eq:lomax-profile}
+\end{equation}
+where $\ell_E$ is the maximised exponential log-likelihood. The exponential
+face is $q\to0$.
+
+\begin{lemma}[\cite{delcastillo2009}, Proposition~2, proof of Corollary~1, Theorem~1]\label{lem:lomax-profile}
+$\ell_p$ is continuous on $(0,\infty)$; (a) $\ell_p(\lambda)\to\ell_E$ as
+$\lambda\to0$; (b) $\ell_p(\lambda)\to-\infty$ as $\lambda\to\infty$; (c)
+$\ell_p(\lambda) - \ell_E = n(c^2-1)q/2 + O(q^2)$ as $q\to0$.
+\end{lemma}
+
+\begin{proof}
+Since $n^{-1}\sum_i y_i = 1$ and $n^{-1}\sum_i y_i^2 = 1+c^2$,
+$A(q) = q - (1+c^2)q^2/2 + O(q^3)$, so $A(q)/q$ is analytic near $0$ with
+value $1$ there and $\ell_p - \ell_E = -n\{\log(A(q)/q) + A(q)\}$ has the
+stated expansion. This gives (a) and (c). For (b), $q\to\infty$ and
+$A(q) = \log q + n^{-1}\sum_i\log y_i + o(1)$, so $\log q - A(q)$ stays
+bounded while $\log A(q)\to\infty$.
+\end{proof}
+
+By (a) and (b) the MLE exists if and only if $\ell_p(\lambda)\ge\ell_E$ for
+some $\lambda$. By (c), $c>1$ suffices, and $c<1$ makes the exponential a
+strict \emph{local} maximum. Define, for $u\ge0$,
+\[
+  \psi(u) = \frac1n\sum_{i=1}^n\log\bigl(e^{-u} + u y_i\bigr),
+  \qquad
+  \bar u = \frac{\bar x}{(\prod_i x_i)^{1/n}} \ge 1 ,
+\]
+and let $W$ be the principal branch of the Lambert $W$ function
+\cite{corless1996}, the inverse of $u\mapsto ue^u$ on $[0,\infty)$.
+
+\begin{theorem}\label{thm:lomax}
+Let $x\in(0,\infty)^n$.
+(a) For every $\lambda>0$, $\ell_p(\lambda)-\ell_E$ has the sign of
+$-\psi(W(\lambda\bar x))$.
+(b) The MLE exists if and only if $\psi(u)\le0$ for some $u>0$.
+(c) $\psi(u)>0$ for all $u\ge\bar u$, so every maximiser satisfies
+$\hat\lambda\bar x < \bar u e^{\bar u}$.
+\end{theorem}
+
+\begin{proof}
+(a) Put $q = \lambda\bar x$ and $u = W(q)$, so $q = ue^u$. By
+\eqref{eq:lomax-profile}, $\ell_p\ge\ell_E$ if and only if
+$q\ge A(q)e^{A(q)}$, and since $z\mapsto ze^z$ is strictly increasing on
+$[0,\infty)$, if and only if $u\ge A(q)$; the same holds with strict
+inequalities. Finally
+$u - A(q) = u - n^{-1}\sum_i\log(1+ue^uy_i) = -\psi(u)$.
+(b) By the lemma and (a), since $\lambda\mapsto W(\lambda\bar x)$ maps
+$(0,\infty)$ onto $(0,\infty)$.
+(c) $\psi(u) > n^{-1}\sum_i\log(uy_i) = \log u - \log\bar u\ge0$ for
+$u\ge\bar u$. A maximiser has $\ell_p(\hat\lambda)\ge\ell_E$, so
+$\psi(W(\hat\lambda\bar x))\le0$ and $W(\hat\lambda\bar x)<\bar u$.
+\end{proof}
+
+The function $\psi$ depends on the sample only through the empirical distribution of the
+$y_i$, so the answer is invariant under rescaling and replication. Since
+$y\mapsto\log(e^{-u}+uy)$ is concave, a mean-preserving spread of the $y_i$
+lowers $\psi$.
+
+\begin{proposition}\label{prop:lomax-expansion}
+As $u\to0$, $\psi(u) = \tfrac12(1-c^2)u^2 + \tfrac16(2\gamma-1)u^3 + O(u^4)$.
+Hence the MLE exists if $c>1$, or if $c=1$ and $\gamma<1/2$; in the second
+case also on an open neighbourhood of $x$, which contains samples with $c<1$.
+\end{proposition}
+
+\begin{proof}
+With $\delta_i = y_i - 1$, $e^{-u}+uy_i = 1+z_i$,
+$z_i = u\delta_i + u^2/2 - u^3/6 + O(u^4)$, and
+$\log(1+z_i) = u\delta_i + \tfrac12(1-\delta_i^2)u^2
++ (\tfrac13\delta_i^3 - \tfrac12\delta_i - \tfrac16)u^3 + O(u^4)$. Average
+over $i$, using $\sum_i\delta_i = 0$. The neighbourhood statement follows
+from continuity of $\psi(u_0)$ in $x$ at a $u_0$ with $\psi(u_0)<0$, and
+because $c$ is continuous and not locally constant.
+\end{proof}
+
+\begin{proposition}\label{prop:lomax-counter}
+Let $n\ge2$, $k = \lfloor n/2\rfloor$, and let $x_\varepsilon$ have $k$
+copies of $\varepsilon\in(0,1)$ and $n-k$ copies of $1$. Then $c<1$ for all
+$\varepsilon$, and the MLE exists for all sufficiently small $\varepsilon$.
+The samples with $c<1$ and an MLE contain a nonempty open set, which has
+positive probability under every exponential and Lomax law.
+\end{proposition}
+
+\begin{proof}
+With $w = k/n\le\frac12$,
+$c^2 = w(1-w)(1-\varepsilon)^2/(1-w+w\varepsilon)^2 < 1$, since
+$w(1-w)\le(1-w)^2$ and $(1-w)(1-\varepsilon) < 1-w+w\varepsilon$. As
+$\varepsilon\to0$, $\psi(u)\to -wu + (1-w)\log\{e^{-u} + u/(1-w)\}$, which
+tends to $-\infty$ as $u\to\infty$; take $u_0$ where the limit is negative
+and apply Theorem~\ref{thm:lomax}(b). Openness follows from continuity of $c$
+and $\psi(u_0)$ in $x$.
+\end{proof}
+
+\paragraph{Examples} (checked numerically against
+\code{extraDistr::dlomax}; gap $=\ell_p(\hat\lambda)-\ell_E$).
+
+\begin{center}
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+sample & $c$ & $\min\psi$ & gap & $\hat\lambda$ & $\hat\kappa$ \\
+\midrule
+$(1, 100)$ & 0.9802 & $-0.214$ & 0.5901 & 0.7722 & 0.4055 \\
+$(0.001, 4, 6)$ & 0.7481 & $-0.386$ & 1.3383 & 1394.1 & 0.1619 \\
+$(0.001, 1, 2)$ & 0.8158 & $-0.183$ & 0.6524 & 1039.3 & 0.1961 \\
+$(1, 29)$ & 0.9333 & $-5.1\times10^{-4}$ & 0.0019 & 0.2370 & 0.8787 \\
+$(1, 1, 1, 12, 12)$ & 0.9979 & $-5.5\times10^{-6}$ & $1.9\times10^{-4}$ & 0.0360 & 6.0716 \\
+$(1, 10)$ & 0.8182 & $0$ ($u\to0$) & no MLE & & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+$(1,1,1,12,12)$ lies near the case $c = 1$, $\gamma < 1/2$ of
+Proposition~\ref{prop:lomax-expansion} ($\gamma = 0.41$). For a pair, $\psi$ increases
+with the ratio $r$ of the smaller to the larger observation (a smaller ratio
+is a mean-preserving spread), so a pair has an MLE exactly when
+$r<\varepsilon^\ast = 0.034711$ (larger/smaller $> 28.8$); for two
+independent exponential observations this has probability
+$2\varepsilon^\ast/(1+\varepsilon^\ast) = 6.7\%$. In simulations with
+$10^4$ samples per setting the moment rule was wrong for 7.0\% of
+exponential pairs and up to 31\% of Lomax pairs ($\kappa = 0.5$), for at most
+1.1\% of samples of size 3 and 5, and for none of size 20 or 50, although
+63\% of exponential samples of size 50 have $c<1$.
+
+\paragraph{Consequences for the fitter.} (i) Existence is decided by the sign
+of $\min\psi$ on the bounded interval $(0,\bar u]$; the minimisation is a
+smooth one-dimensional global search, done numerically. (ii) If the minimum
+is nonpositive, every maximiser has $u = W(\hat\lambda\bar x)$ in
+$\{u\in(0,\bar u):\psi(u)\le0\}$, so the profile only needs to be maximised
+over $\lambda\in(0,\bar u e^{\bar u}/\bar x)$; it can have more than one
+interior maximum, so this search is global too. (iii) The package's tie
+convention (faces win ties at $10^{-8}n$) sends attained ties ($\min\psi = 0$)
+and gaps below $10^{-8}n$ to the exponential escape. (iv) $c>1$ needs no search for existence.
+
+\paragraph{Inverse Pareto.} If $X$ has the inverse Pareto law with shape
+$\tau$ and scale $\theta$ (\code{actuar::dinvpareto}), then $1/X$ is Lomax
+with $\kappa=\tau$, $\lambda=\theta$. The log-likelihoods of $x$ and $1/x$
+differ by $-2\sum_i\log x_i$, free of parameters, and the same holds for the
+inverse exponential against the exponential. So everything above applies to
+$1/x_i$, with limit model \code{mlinvexp}.
 
 \subsection{Escape, formerly silent; now detected by comparing faces}
 
@@ -446,7 +623,7 @@ lognormal; the two-parameter fit with a known threshold is the usable model.
   \item Open: a half-$t$ model (would give sstd's half-$t$ face a pointer).
 \end{enumerate}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 
 \bibitem{fs1998} Fern\'andez, C. and Steel, M. F. J. (1998). On Bayesian
 modeling of fat tails and skewness. \emph{Journal of the American
@@ -468,6 +645,25 @@ for the three-parameter Burr XII distribution. \emph{Computational Statistics
 \bibitem{fs1999} Fern\'andez, C. and Steel, M. F. J. (1999). Multivariate
 Student-$t$ regression models: pitfalls and inference. \emph{Biometrika},
 86(1), 153--167. \href{https://doi.org/10.1093/biomet/86.1.153}{doi:10.1093/biomet/86.1.153}.
+
+\bibitem{delcastillo2009} del Castillo, J. and Daoudi, J. (2009). Estimation
+of the generalized Pareto distribution. \emph{Statistics \& Probability
+Letters}, 79(5), 684--688.
+\href{https://doi.org/10.1016/j.spl.2008.10.021}{doi:10.1016/j.spl.2008.10.021}.
+
+\bibitem{grimshaw1993} Grimshaw, S. D. (1993). Computing maximum likelihood
+estimates for the generalized Pareto distribution. \emph{Technometrics},
+35(2), 185--191.
+\href{https://doi.org/10.1080/00401706.1993.10485040}{doi:10.1080/00401706.1993.10485040}.
+
+\bibitem{corless1996} Corless, R. M., Gonnet, G. H., Hare, D. E. G., Jeffrey,
+D. J. and Knuth, D. E. (1996). On the Lambert $W$ function. \emph{Advances in
+Computational Mathematics}, 5(1), 329--359.
+\href{https://doi.org/10.1007/BF02124750}{doi:10.1007/BF02124750}.
+
+\bibitem{renext} Deville, Y. (2025). \emph{Renext: Renewal Method
+for Extreme Values Extrapolation}. R package version 3.1-5.
+\href{https://doi.org/10.32614/CRAN.package.Renext}{doi:10.32614/CRAN.package.Renext}.
 
 \end{thebibliography}
 
