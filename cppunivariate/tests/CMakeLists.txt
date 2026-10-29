@@ -46,3 +46,7 @@ add_test(NAME no_throw_tests COMMAND no_throw_tests
 cppuniv_test(cmp_tests test_cmp.cpp)
 add_test(NAME cmp_tests COMMAND cmp_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+cppuniv_test(tails_tests test_tails.cpp)
+add_test(NAME tails_tests COMMAND tails_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

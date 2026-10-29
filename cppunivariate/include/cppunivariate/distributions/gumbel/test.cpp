@@ -44,3 +44,55 @@ TEST_CASE("gumbel: seeded sample with outlier") {
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
 
+
+// from mpmath import mp, exp, log, log1p
+// mp.dps=500
+// -exp(7); 3-3*log(-log1p(-exp(-1000)));
+// 3-3*log(10000); -1000-exp(-1000).
+TEST_CASE("gumbel: high precision extreme tails") {
+  CHECK(cppunivariate::distributions::pgumbel(-7,0,1,true,true) == doctest::Approx(-1096.6331584284585993).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::pgumbel(1e4,0,1,false,true) == -1e4);
+  CHECK(cppunivariate::distributions::qgumbel(-1000,3,3,false,true) == 3003);
+  CHECK(cppunivariate::distributions::qgumbel(-1e4,3,3,true,true) == doctest::Approx(-24.631021115928548208).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::dgumbel(1000,0,1,true) == -1000);
+  CHECK(cppunivariate::distributions::pgumbel(745,0,1,false,false) == std::exp(-745.0));
+  CHECK(cppunivariate::distributions::qgumbel(-1e4,3,3,false,true) == 30003);
+}
+
+TEST_CASE("gumbel: tail flags, endpoints, invalid probabilities") {
+  const double lo = cppunivariate::special::kNegInf, hi = cppunivariate::special::kPosInf;
+  for (bool lower : {false,true}) {
+    CHECK(cppunivariate::distributions::qgumbel(0,0,1,lower,false) == (lower ? lo : hi));
+    CHECK(cppunivariate::distributions::qgumbel(1,0,1,lower,false) == (lower ? hi : lo));
+    CHECK(cppunivariate::distributions::qgumbel(cppunivariate::special::kNegInf,0,1,lower,true) == (lower ? lo : hi));
+    CHECK(cppunivariate::distributions::qgumbel(0,0,1,lower,true) == (lower ? hi : lo));
+    CHECK(std::isnan(cppunivariate::distributions::qgumbel(-.1,0,1,lower,false)));
+    CHECK(std::isnan(cppunivariate::distributions::qgumbel(1.1,0,1,lower,false)));
+    CHECK(std::isnan(cppunivariate::distributions::qgumbel(.1,0,1,lower,true)));
+    CHECK(cppunivariate::distributions::pgumbel(lo,0,1,lower,false) == (lower ? 0 : 1));
+    CHECK(cppunivariate::distributions::pgumbel(hi,0,1,lower,false) == (lower ? 1 : 0));
+    for (bool log_p : {false,true}) {
+      for (double lp : {-1e-20,-.01,-1.0,-20.0,-100.0}) {
+        const double p = log_p ? lp : std::exp(lp);
+        const double q = cppunivariate::distributions::qgumbel(p,0,1,lower,log_p);
+        if (q > lo && q < hi) {
+          const double back = cppunivariate::distributions::pgumbel(q,0,1,lower,true);
+          // Near finite support edges, test rounding by bracketing neighbours.
+          const double left = cppunivariate::distributions::pgumbel(std::nextafter(q,cppunivariate::special::kNegInf),0,1,lower,true);
+          const double right = cppunivariate::distributions::pgumbel(std::nextafter(q,cppunivariate::special::kPosInf),0,1,lower,true);
+          const double target = log_p ? p : std::log(p);
+          CHECK((std::abs(back-target) < 1e-12 ||
+                 (target >= std::min(left,right)-1e-12 && target <= std::max(left,right)+1e-12)));
+        }
+      }
+    }
+  }
+}
+
+// mpmath: mp.dps=500; -exp(-2); -2-exp(-2)-log(mp.mpf(1e308)).
+TEST_CASE("gumbel: double-only affine overflow guards") {
+  CHECK(cppunivariate::distributions::pgumbel(1e308,-1e308,1e308,true,true) == doctest::Approx(-0.13533528323661269189).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::dgumbel(1e308,-1e308,1e308,true) == doctest::Approx(-711.33154392540268338).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::dgumbel(1e308,-1e308,1e308,false) > 0);
+  CHECK(cppunivariate::distributions::qgumbel(-std::exp(2.0),1e308,1e308,true,true) == doctest::Approx(-1e308).epsilon(2e-15));
+}

@@ -88,3 +88,59 @@ TEST_CASE("lomax: compressed nominations refine against the complete sample") {
     CHECK(g.logLik/3000==doctest::Approx(f.logLik).epsilon(1e-10));
   }
 }
+
+// from mpmath import mp, log, log1p, exp, expm1
+// mp.dps=500; v=mp.mpf
+// -2*log1p(v('1e200')); expm1(500);
+// expm1(-log1p(-v('1e-300'))/2);
+// expm1(-log1p(-exp(-1000))/v('1e-200'))/v('1e-200');
+// -2*log1p(v('1e400')); expm1(v(745)/v('1e200'))/v('1e-200').
+TEST_CASE("lomax: high precision extreme tails") {
+  CHECK(cppunivariate::distributions::plomax(1e200,1,2,false,true) == doctest::Approx(-921.0340371976182736072).epsilon(2e-15));
+  CHECK(std::abs(cppunivariate::distributions::qlomax(-1000,1,2,false,true)/1.4035922178528374107e217-1) < 2e-13);
+  CHECK(std::abs(cppunivariate::distributions::qlomax(1e-300,1,2,true,false)/5e-301-1) < 2e-13);
+  CHECK(std::abs(cppunivariate::distributions::qlomax(-1000,1e-200,1e-200,true,true)/5.0759588975494567653e-35-1) < 3e-13);
+  CHECK(cppunivariate::distributions::plomax(1e200,1e200,2,false,true) == doctest::Approx(-1842.0680743952365472).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::plomax(1e-300,1,2,true,true) == doctest::Approx(std::log(2.0)-300*std::log(10.0)).epsilon(2e-15));
+  CHECK(std::isfinite(cppunivariate::distributions::qlomax(-1600,1e100,2,false,true)));
+  CHECK(cppunivariate::distributions::qlomax(-1e4,1,2,false,true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::dlomax(0,2,3,false) == doctest::Approx(6));
+  CHECK(cppunivariate::distributions::qlomax(-745,1e-200,1e200,false,true) == doctest::Approx(745).epsilon(2e-15));
+}
+
+TEST_CASE("lomax: tail flags, endpoints, invalid probabilities") {
+  const double lo = 0.0, hi = cppunivariate::special::kPosInf;
+  for (bool lower : {false,true}) {
+    CHECK(cppunivariate::distributions::qlomax(0,1,2,lower,false) == (lower ? lo : hi));
+    CHECK(cppunivariate::distributions::qlomax(1,1,2,lower,false) == (lower ? hi : lo));
+    CHECK(cppunivariate::distributions::qlomax(cppunivariate::special::kNegInf,1,2,lower,true) == (lower ? lo : hi));
+    CHECK(cppunivariate::distributions::qlomax(0,1,2,lower,true) == (lower ? hi : lo));
+    CHECK(std::isnan(cppunivariate::distributions::qlomax(-.1,1,2,lower,false)));
+    CHECK(std::isnan(cppunivariate::distributions::qlomax(1.1,1,2,lower,false)));
+    CHECK(std::isnan(cppunivariate::distributions::qlomax(.1,1,2,lower,true)));
+    CHECK(cppunivariate::distributions::plomax(lo,1,2,lower,false) == (lower ? 0 : 1));
+    CHECK(cppunivariate::distributions::plomax(hi,1,2,lower,false) == (lower ? 1 : 0));
+    for (bool log_p : {false,true}) {
+      for (double lp : {-1e-20,-.01,-1.0,-20.0,-100.0}) {
+        const double p = log_p ? lp : std::exp(lp);
+        const double q = cppunivariate::distributions::qlomax(p,1,2,lower,log_p);
+        if (q > lo && q < hi) {
+          const double back = cppunivariate::distributions::plomax(q,1,2,lower,true);
+          // Near finite support edges, test rounding by bracketing neighbours.
+          const double left = cppunivariate::distributions::plomax(std::nextafter(q,cppunivariate::special::kNegInf),1,2,lower,true);
+          const double right = cppunivariate::distributions::plomax(std::nextafter(q,cppunivariate::special::kPosInf),1,2,lower,true);
+          const double target = log_p ? p : std::log(p);
+          CHECK((std::abs(back-target) < 1e-12 ||
+                 (target >= std::min(left,right)-1e-12 && target <= std::max(left,right)+1e-12)));
+        }
+      }
+    }
+  }
+}
+
+// mpmath: mp.dps=500; v=mp.mpf
+// h=v(1e200)*log1p(v(1e-200)*v(1e-200)); log(-expm1(-h)).
+TEST_CASE("lomax: double-only rescued product") {
+  CHECK(cppunivariate::distributions::plomax(1e-200,1e-200,1e200,true,true) == doctest::Approx(-460.51701859880913687).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::plomax(1e300,1e20,.1,false,true) == doctest::Approx(-73.68272297580947).epsilon(2e-15));
+}
