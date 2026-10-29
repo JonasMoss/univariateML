@@ -26,9 +26,9 @@ TEST_CASE("gev: attained bounds, fixed shape and Gumbel continuity") {
     for(int i=0;i<400;++i)x.push_back(cppunivariate::distributions::qgev((i+.5)/400,0,2,k,true,false));
     const auto r=cppunivariate::gev_mle(mltest::as_span(x));
     REQUIRE(r.status==cppunivariate::GevStatus::Ok);
-    if(k==-.9) CHECK(r.xi==-.5);
+    if(k==-.9) CHECK(r.xi<-.5);
     if(k==2) CHECK(r.xi==1);
-    const double h=1e-5;
+    const double h=r.xi<-.5 ? 1e-7 : 1e-5;
     auto ll=[&](double m,double s,double a){return cppunivariate::gev_loglik(mltest::as_span(x),m,s,a);};
     CHECK(std::abs((ll(r.mu+h,r.sigma,r.xi)-ll(r.mu-h,r.sigma,r.xi))/(2*h))<1e-3);
     CHECK(std::abs((ll(r.mu,r.sigma+h,r.xi)-ll(r.mu,r.sigma-h,r.xi))/(2*h))<1e-3);
@@ -46,7 +46,7 @@ TEST_CASE("gev: attained bounds, fixed shape and Gumbel continuity") {
 TEST_CASE("gev: validation and stable dpqr") {
   std::vector<double>x{0,1,2,3,4};
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,1).status==cppunivariate::GevStatus::IterationFailure);
-  CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,1.1).status==cppunivariate::GevStatus::InvalidShape);
+  CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,1.1).status==cppunivariate::GevStatus::Ok);
   for(auto y:{std::vector<double>{1,2},std::vector<double>{1,1,2},std::vector<double>{0,0,0,1,2},std::vector<double>{1,1,1}})
     CHECK(cppunivariate::gev_mle(mltest::as_span(y)).status==cppunivariate::GevStatus::InvalidData);
   x={0,0,1,2,3};CHECK(cppunivariate::gev_mle(mltest::as_span(x)).status==cppunivariate::GevStatus::Ok);
@@ -77,13 +77,13 @@ TEST_CASE("gev: seeded dense-profile oracle") {
         const int cells=256;
         double best=-std::numeric_limits<double>::infinity();
         auto evaluate=[&](double k){return cppunivariate::gev_profile(data,k,1e-12,150).fit.logLik;};
-        double before=evaluate(-.5),prev=evaluate(-.5+1.5/cells);
+        double before=evaluate(-1),prev=evaluate(-1+2.0/cells);
         best=std::max(before,prev);
         for(int j=2;j<=cells;++j) {
-          const double k=-.5+1.5*j/cells,next=evaluate(k);
+          const double k=-1+2.0*j/cells,next=evaluate(k);
           best=std::max(best,next);
           if(prev>before && prev>next) {
-            double lo=k-3./cells,hi=k;
+            double lo=k-4./cells,hi=k;
             for(int step=0;step<50;++step) {
               const double a=lo+(hi-lo)*.3819660112501051,b=hi-(hi-lo)*.3819660112501051;
               if(evaluate(a)>evaluate(b)) hi=b; else lo=a;
@@ -167,4 +167,24 @@ TEST_CASE("gev: all new hold subsets preserve held coefficients and scores") {
  CHECK(f.mu==1);
  CHECK(cppunivariate::gev_mle(data,1e-10,1,nan,0,1).status==cppunivariate::GevStatus::IterationFailure);
  CHECK(cppunivariate::gev_mle(data,1e-10,100,.3,0,-1).status==cppunivariate::GevStatus::InvalidData);
+}
+
+TEST_CASE("gev: P3 restrictions and closed faces") {
+ const std::vector<double> x{0,1,2,3,4};const auto data=mltest::as_span(x);
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const auto h=cppunivariate::gev_mle(data,1e-10,100,-1);
+ REQUIRE(h.status==cppunivariate::GevStatus::Ok); CHECK(h.mu==2);CHECK(h.sigma==2);
+ CHECK(h.logLik==doctest::Approx(-5*(std::log(2.0)+1)));CHECK(h.restricted==0u);
+ const auto s=cppunivariate::gev_mle(data,1e-10,100,-1,nan,3);
+ CHECK(s.mu==doctest::Approx(1));CHECK(std::isfinite(s.logLik));
+ const auto m=cppunivariate::gev_mle(data,1e-10,100,-1,0,nan);
+ CHECK(m.sigma==4);CHECK(std::isfinite(m.logLik));
+ const auto f=cppunivariate::gev_mle(data);REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+ CHECK(f.xi==-1);CHECK(f.restricted==16u);
+}
+TEST_CASE("gev: held shapes outside free restrictions retain proper finite laws") {
+ const std::vector<double> x{0,1,2,3,4};
+ const auto r=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,-2,10,5);
+ CHECK(r.status==cppunivariate::GevStatus::Ok);CHECK(r.xi==-2);
+ CHECK(std::isfinite(r.logLik));CHECK(r.restricted==0u);
 }

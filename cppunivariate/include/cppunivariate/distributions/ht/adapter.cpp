@@ -27,7 +27,12 @@ Rcpp::List mlht_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> nu = R_Nil
   Rcpp::CharacterVector fixed;
   if(nu.isNotNull()) fixed.push_back("nu");
   if(sigma.isNotNull()) fixed.push_back("sigma");
+  Rcpp::CharacterVector restricted;
+  if(r.restricted & 1u) restricted.push_back("lower","nu");
+  if(r.restricted & 2u) restricted.push_back("upper","nu");
+  if(r.restricted & 4u) restricted.push_back("lower","sigma");
+  if(r.restricted & 8u) restricted.push_back("upper","sigma");
   return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(
     Rcpp::_["nu"]=r.nu,Rcpp::_["sigma"]=r.sigma),Rcpp::_["logLik"]=r.logLik,
-    Rcpp::_["fixed"]=fixed,Rcpp::_["iterations"]=r.iterations);
+    Rcpp::_["restricted"]=restricted, Rcpp::_["fixed"]=fixed,Rcpp::_["iterations"]=r.iterations);
 }

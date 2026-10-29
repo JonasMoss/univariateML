@@ -76,7 +76,30 @@ univariateML_construct <- function(estimates, name, params, fixed = NULL, restri
   attr(object, "support") <- univariateML_metadata[[name]]$support$bounds
   attr(object, "fixed") <- as.character(fixed)
   if (!is.null(restricted)) attr(object, "restricted") <- restricted
+  if (length(restricted)) univariateML_warn_restricted(name, restricted)
   object
+}
+
+# Emit one structured warning per fit, using the README-derived metadata.
+univariateML_warn_restricted <- function(name, restricted) {
+  params <- univariateML_metadata[[name]]$params
+  declared <- vapply(params, function(p) !is.null(p$fit_domain), logical(1))
+  coefs <- intersect(names(restricted), vapply(params[declared], `[[`, "", "name"))
+  if (!length(coefs)) return(invisible(NULL))
+  messages <- vapply(coefs, function(coef) {
+    p <- Filter(function(p) identical(p$name, coef), params)[[1L]]
+    domains <- p$fit_domain
+    if (!is.null(domains$restriction)) domains <- list(domains)
+    side <- restricted[[coef]]
+    matches <- Filter(function(d) !is.null(d[[side]]), domains)
+    d <- matches[[1L]]
+    sprintf("`%s` = %s (%s bound): %s", coef, format(d[[side]]), side,
+            d$restriction$reason)
+  }, character(1))
+  warning(structure(list(message = paste0(name, " reached a fitting restriction: ",
+                                         paste(messages, collapse = "; ")),
+                         call = NULL, restricted = restricted),
+                    class = c("univariateML_restricted", "warning", "condition")))
 }
 
 #' Names of the parameters a univariateML object held fixed.

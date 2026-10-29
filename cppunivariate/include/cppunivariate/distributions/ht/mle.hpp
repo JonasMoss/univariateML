@@ -6,8 +6,10 @@
 #include <vector>
 
 namespace cppunivariate {
+inline constexpr double kHtNuLower = 1.0;
+
 enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundary, NormalLimit, SearchFailure };
-struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; };
+struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; unsigned restricted = 0; };
 namespace ht_detail {
 constexpr double inf = std::numeric_limits<double>::infinity();
 inline double log_mode(double nu) {
@@ -54,7 +56,7 @@ inline double normal(span x, double &ls, bool fixed_scale) {
 }
 } // namespace ht_detail
 
-inline HtResult ht_mle(span x, double held_nu = std::numeric_limits<double>::quiet_NaN(),
+inline HtResult ht_mle_impl(span x, double held_nu = std::numeric_limits<double>::quiet_NaN(),
                        double held_sigma = std::numeric_limits<double>::quiet_NaN()) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const bool fn=!std::isnan(held_nu), fs=!std::isnan(held_sigma);
@@ -118,5 +120,11 @@ inline HtResult ht_mle(span x, double held_nu = std::numeric_limits<double>::qui
       !(std::exp(best_ls)>0) || !std::isfinite(std::exp(best_ls)))
     return {std::exp(best_t),std::exp(best_ls),best,count,HtStatus::SearchFailure};
   return {std::exp(best_t),fs?held_sigma:std::exp(best_ls),best,count,HtStatus::Ok};
+}
+
+inline HtResult ht_mle(span x,double nu=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  auto r=ht_mle_impl(x,nu,sigma);
+  // The current fixed-zero threshold is exempt; P4 adds translation.
+  return r;
 }
 } // namespace cppunivariate

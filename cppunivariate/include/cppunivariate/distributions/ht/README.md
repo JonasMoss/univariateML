@@ -56,3 +56,9 @@ The df profile need not be unimodal: `c(.12773, 12.5979, 3.91782, 2.58658, .1382
 A free translated endpoint is deliberately excluded: moving it to the sample minimum and choosing sufficiently small positive df makes the likelihood unbounded through scale collapse. The translated half-t faces of the skew-t fitter therefore are not this fixed-zero-endpoint model.
 
 The d/p/q/r functions use extraDistr, with runtime-checked tail repairs.
+
+Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
+and emit a warning of class `univariateML_restricted`. Held coefficients are
+not flagged. README hold exemptions apply to free coefficients. Failed
+optimizers return a failure status unless the score norm in fitting
+coordinates is below `1e-3`; unresolved scalar searches stop.

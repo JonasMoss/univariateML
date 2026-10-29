@@ -11,11 +11,13 @@
 #include <vector>
 
 namespace cppunivariate {
+inline constexpr double kLstDfLower = 1.0;
+
 enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary, InvalidDf, Unbounded, ScaleBoundary, IterationFailure };
 struct LstResult {
   double mu, sigma, df, logLik;
   int iterations;
-  LstStatus status;
+  LstStatus status; unsigned restricted = 0;
 };
 
 // Coordinates are location, log(scale), log(df-1); fixed_df includes Cauchy.
@@ -65,7 +67,7 @@ struct LstCost {
 // Strict mass inequality gives a regular attained fit for df >= 1.
 inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
-  if (!std::isfinite(df) || df < 1.0)
+  if (!std::isfinite(df) || df <= 0.0)
     return {nan,nan,df,nan,0,LstStatus::InvalidDf};
   const std::size_t n = x.size();
   if (n < 2) return {nan,nan,df,nan,0,LstStatus::Unbounded};
@@ -126,7 +128,7 @@ inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
   return {nan,nan,df,nan,maxit,LstStatus::IterationFailure};
 }
 
-inline LstResult lst_mle(span x, double tol, int maxit) {
+inline LstResult lst_mle_impl(span x, double tol, int maxit) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 3) return {nan,nan,nan,nan,0,LstStatus::NoMLE};
@@ -204,6 +206,12 @@ inline LstResult lst_mle(span x, double tol, int maxit) {
   if (normal > -best.f + tie || (best_df >= 1e5 && normal >= -best.f-tie))
     return {center+unit*mean,unit*std::sqrt(variance),INFINITY,
             normal-n*std::log(unit),best.iterations,LstStatus::NormalBoundary};
+  if(best.status!=BfgsStatus::Ok) {
+    LstCost cost{{y.data(),y.size()},best_df==1 ? 1.0 : 0.0};
+    double g[3]; cost.gradient(best.theta.data(),g);
+    double norm=0; for(int j=0;j<cost.dim();++j) norm+=g[j]*g[j];
+    if(std::sqrt(norm)<1e-3) best.status=BfgsStatus::Ok;
+  }
   return {center+unit*best.theta[0],unit*std::exp(best.theta[1]),best_df,
           -best.f-n*std::log(unit),best.iterations,
           best.status == BfgsStatus::Ok ? LstStatus::Ok : LstStatus::BfgsFailure};
@@ -260,31 +268,43 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
   return {m,s,df,ll(m,s),0,LstStatus::Ok};
 }
 }
-inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,double df) {
-  if(std::isnan(mu)&&std::isnan(sigma))return std::isnan(df)?lst_mle(x,tol,maxit):lst_mle_fixed_df(x,df,tol,maxit);
+inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma,double df) {
+  if(std::isnan(mu)&&std::isnan(sigma))return std::isnan(df)?lst_mle_impl(x,tol,maxit):lst_mle_fixed_df(x,df,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isnan(df)) {
-    if(!std::isfinite(df)||df<1)return {nan,nan,df,nan,0,LstStatus::InvalidDf};
+    if(!std::isfinite(df)||df<=0)return {nan,nan,df,nan,0,LstStatus::InvalidDf};
     return lst_detail::conditional(x,df,mu,sigma,tol,maxit);
  }
   if(x.empty())return {nan,nan,nan,nan,0,LstStatus::InvalidStart};
   // With free scale and held location the lowest df has the weakest
   // collapse exponent; the equality supremum is the df=1 collapse face.
+  const double floor=std::isnan(mu) ? 1.0 : 0.0;
   double collapse=-INFINITY;
   if(std::isnan(sigma)) {
     std::size_t k=0;for(double v:x)k+=v==mu;
-    if(2*k>x.size())return {mu,nan,1,INFINITY,0,LstStatus::Unbounded};
+    if((floor==0 && k>0) || 2*k>x.size())return {mu,nan,1,INFINITY,0,LstStatus::Unbounded};
     if(2*k==x.size()){collapse=-static_cast<double>(x.size())*std::log(M_PI);for(double v:x)if(v!=mu)collapse-=2*std::log(std::abs(v-mu));}
   }
-  auto profile=[&](double t){return lst_detail::conditional(x,1+std::exp(t),mu,sigma,tol,maxit);};
+  auto profile=[&](double t){return lst_detail::conditional(x,floor+std::exp(t),mu,sigma,tol,maxit);};
   std::vector<double> grid;for(double t=-12;t<=16;t+=.5)grid.push_back(t);
   const auto optimum=lst_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
   if(!optimum.converged)return {nan,nan,nan,nan,maxit,LstStatus::IterationFailure};
   auto best=profile(optimum.point);const auto edge=lst_detail::conditional(x,1,mu,sigma,tol,maxit);
-  const double tie=1e-8*x.size();if(edge.status==LstStatus::Ok&&edge.logLik>=best.logLik-tie)best=edge;
+  const double tie=1e-8*x.size();if(floor==1 && edge.status==LstStatus::Ok&&edge.logLik>=best.logLik-tie)best=edge;
   const auto normal=norm_mle(x,mu,sigma);
   if(normal.logLik>best.logLik+tie||(best.df>1e5&&normal.logLik>=best.logLik-tie))return {normal.mean,normal.sd,INFINITY,normal.logLik,0,LstStatus::NormalBoundary};
   if(collapse>=best.logLik-tie)return {mu,0,1,collapse,0,LstStatus::ScaleBoundary};
   return best;
+}
+
+inline LstResult lst_mle(span x,double tol,int maxit) {
+  auto r=lst_mle_impl(x,tol,maxit);
+  if(r.status==LstStatus::Ok && r.df==kLstDfLower) r.restricted|=16u;
+  return r;
+}
+inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,double df) {
+  auto r=lst_mle_impl(x,tol,maxit,mu,sigma,df);
+  if(r.status==LstStatus::Ok && (std::isnan(df) && std::isnan(mu)) && r.df==kLstDfLower) r.restricted|=16u;
+  return r;
 }
 } // namespace cppunivariate

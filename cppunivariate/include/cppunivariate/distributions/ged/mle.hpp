@@ -24,6 +24,8 @@
 #include <limits>
 
 namespace cppunivariate {
+inline constexpr double kGedNuLower = 1.0;
+
 
 enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary, InvalidShape };
 
@@ -33,7 +35,7 @@ struct GedResult {
   double nu;
   double logLik;
   int iterations;
-  GedStatus status;
+  GedStatus status; unsigned restricted = 0;
 };
 
 // Per-obs nll in phi-space (with a = x - mu, w = |a|/(sigma * lambda),
@@ -134,7 +136,7 @@ struct GedFitCost {
   }
 };
 
-inline GedResult ged_mle(span x, double tol, int maxit) {
+inline GedResult ged_mle_impl(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, kNaN, 0, GedStatus::InvalidStart};
@@ -173,6 +175,12 @@ inline GedResult ged_mle(span x, double tol, int maxit) {
   for (double nu0 : {1.5, 2.0, 4.0, 8.0}) {
     const double phi0[3] = {0.0, 0.0, std::log(nu0 - 1.0)};
     auto r = bfgs_minimize(fd, phi0, ctl);
+    if (r.status != BfgsStatus::Ok && r.theta.size()==3) {
+      // A failed optimizer is usable only at a stationary returned point.
+      double g[3]; fd.gradient(r.theta.data(),g);
+      double norm=0; for(double v:g) norm+=v*v*objective_divisor*objective_divisor;
+      if(std::sqrt(norm)<1e-3) r.status=BfgsStatus::Ok;
+    }
     r.f *= objective_divisor;
     if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
       best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
@@ -218,7 +226,16 @@ inline GedResult conditional(span x,double nu,double mean,double sd) {
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return {nan,nan,nu,nan,0,GedStatus::InvalidStart};std::sort(y.begin(),y.end());
   double m=mean;
   if(std::isnan(m)) {
-    if(nu==1)m=y[y.size()/2];
+    if(nu<1) {
+      double best=INFINITY;
+      const double radius=y.back()-y.front();
+      for(double c:y) {
+        double value=0;
+        for(double v:y) value+=std::pow(radius>0 ? std::abs(v-c)/radius : 0,nu);
+        if(value<best){best=value;m=c;}
+      }
+    }
+    else if(nu==1)m=y[y.size()/2];
     else if(nu==2)m=norm_detail::moments(x).mean;
     else {
       double lo=y.front(),hi=y.back();
@@ -238,11 +255,11 @@ inline GedResult conditional(span x,double nu,double mean,double sd) {
   return {m,s,nu,ll,0,GedStatus::Ok};
 }
 }
-inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
-  if(std::isnan(mean)&&std::isnan(sd)&&std::isnan(nu))return ged_mle(x,tol,maxit);
+inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,double nu) {
+  if(std::isnan(mean)&&std::isnan(sd)&&std::isnan(nu))return ged_mle_impl(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isnan(nu)) {
-    if(!std::isfinite(nu)||nu<1)return {nan,nan,nu,nan,0,GedStatus::InvalidShape};
+    if(!std::isfinite(nu)||nu<=0)return {nan,nan,nu,nan,0,GedStatus::InvalidShape};
     return ged_detail::conditional(x,nu,mean,sd);
   }
   if(x.empty()||!(tol>0)||maxit<1)return {nan,nan,nan,nan,0,GedStatus::InvalidStart};
@@ -266,5 +283,16 @@ inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,doubl
   }
   if(uniform>best.logLik+tie){best.logLik=uniform;best.status=GedStatus::UniformBoundary;}
   return best;
+}
+
+inline GedResult ged_mle(span x,double tol,int maxit) {
+  auto r=ged_mle_impl(x,tol,maxit);
+  if(r.status==GedStatus::Ok && (true) && r.nu==kGedNuLower) r.restricted|=16u;
+  return r;
+}
+inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+  auto r=ged_mle_impl(x,tol,maxit,mean,sd,nu);
+  if(r.status==GedStatus::Ok && (std::isnan(nu)) && r.nu==kGedNuLower) r.restricted|=16u;
+  return r;
 }
 }  // namespace cppunivariate

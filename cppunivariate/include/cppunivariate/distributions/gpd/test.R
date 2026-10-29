@@ -1,9 +1,22 @@
+# Independent R7a likelihood: former references assign zero at xi=-1 endpoints.
+extreme_closed_density <- function(id, x, ..., log = FALSE) {
+  a <- list(...)
+  if (id %in% c("gev", "gpd") && !is.null(a$xi) && a$xi == -1) {
+    mu <- a$mu; sigma <- a$sigma
+    slack <- 8*.Machine$double.eps*pmax(1, abs(x), abs(mu), sigma)
+    ll <- if (id == "gev") -base::log(sigma)+(x-mu)/sigma-1 else rep(-base::log(sigma),length(x))
+    ll[x > mu+sigma+slack | (id == "gpd" & x < mu)] <- -Inf
+    return(if(log) ll else exp(ll))
+  }
+  do.call(getExportedValue("extraDistr", paste0("d",id)), c(list(x=x,log=log),a))
+}
+
 test_that("mlgpd agrees with multistart constrained density oracles", {
   for (shape in c(.3, 0, -.3, -.8)) {
     x <- extraDistr::qgpd(((1:200)-.5)/200, sigma = 2, xi = shape)
-    fit <- mlgpd(x, mu = 0)
+    fit <- suppressWarnings(mlgpd(x, mu = 0), classes = "univariateML_restricted")
     objective <- function(p) {
-      if (p[2] < -.5) return(1e100)
+      if (p[2] < -1) return(1e100)
       ans <- -sum(extraDistr::dgpd(x, sigma = exp(p[1]), xi = p[2], log = TRUE))
       if (is.finite(ans)) ans else 1e100
     }
@@ -14,12 +27,12 @@ test_that("mlgpd agrees with multistart constrained density oracles", {
     expect_equal(-as.numeric(logLik(fit)), best, tolerance = 1e-7)
     expect_equal(attr(fit, "fixed"), "mu")
     expect_equal(attr(logLik(fit), "df"), 2L)
-    if (shape == -.8) expect_equal(unname(fit[["xi"]]), -.5)
-    shifted <- mlgpd(x + 10, mu = 10)
+    if (shape == -.8) expect_lt(unname(fit[["xi"]]), -.5)
+    shifted <- suppressWarnings(mlgpd(x + 10, mu = 10), classes = "univariateML_restricted")
     expect_equal(unname(shifted[["mu"]]), 10)
     expect_equal(unname(shifted[c("sigma", "xi")]), unname(fit[c("sigma", "xi")]), tolerance = 1e-8)
     for (k in c(-.5, -.3, 0, .3, 2)) {
-      held <- mlgpd(x + 10, mu = 10, xi = k)
+      held <- suppressWarnings(mlgpd(x + 10, mu = 10, xi = k), classes = "univariateML_restricted")
       lower <- if (k < 0) log(-k*max(x)) else -30
       oracle <- optimize(function(s) -sum(extraDistr::dgpd(x, sigma = exp(s), xi = k, log = TRUE)), c(lower + 1e-10, 20), tol = 1e-11)
       expect_equal(unname(held[["xi"]]), k)
@@ -31,12 +44,12 @@ test_that("mlgpd agrees with multistart constrained density oracles", {
   }
 })
 test_that("mlgpd rejects invalid thresholds, shapes and observations", {
-  expect_error(mlgpd(c(1, 2, 3), mu = 1), "strictly above")
-  expect_error(mlgpd(c(-1, 2, 3), mu = 0), "strictly above")
-  expect_error(mlgpd(c(1, 2, 3), mu = Inf), "finite")
-  for (k in c(-.51, Inf, NaN)) expect_error(mlgpd(c(1,2,3), xi = k, mu = 0), "at least -0.5")
-  expect_error(mlgpd(c(1, 2, 3), iterlim = 1, mu = 0), "converge")
-  expect_error(mlgpd(c(1, 2, NA), mu = 0))
+  expect_error(suppressWarnings(mlgpd(c(1, 2, 3), mu = 1), classes = "univariateML_restricted"), "at or above|scale collapse")
+  expect_error(suppressWarnings(mlgpd(c(-1, 2, 3), mu = 0), classes = "univariateML_restricted"), "at or above|scale collapse")
+  expect_error(suppressWarnings(mlgpd(c(1, 2, 3), mu = Inf), classes = "univariateML_restricted"), "finite")
+  for (k in c(-1.01, Inf, NaN)) expect_error(suppressWarnings(mlgpd(c(1,2,3), xi = k, mu = 0), classes = "univariateML_restricted"), "at least -1")
+  expect_error(suppressWarnings(mlgpd(c(.2,.7,1,2,4), iterlim = 1, mu = 0), classes = "univariateML_restricted"), "converge")
+  expect_error(suppressWarnings(mlgpd(c(1, 2, NA), mu = 0), classes = "univariateML_restricted"))
 })
 
 test_that("gpd: new holds agree with independent multistart reference fits", {
@@ -50,7 +63,7 @@ test_that("gpd: new holds agree with independent multistart reference fits", {
     c(.2,.5,.5,1,2,3,4), c(.2,.8),
     if(id=="frechet") extraDistr::qgumbel((1:20-.5)/20) else rexp(20),
     if(id=="gev") extraDistr::qgev((1:20-.5)/20,xi=-.9) else runif(20,.1,2))
-  density <- getExportedValue("extraDistr",paste0("d",id))
+  density <- function(x,...,log=FALSE) extreme_closed_density(id,x,...,log=log)
   for(x in samples) for(mask in masks) {
     held <- pars[as.logical(intToBits(mask)[1:3])]
     unit <- max(sd(x),diff(range(x)),.1)
@@ -59,7 +72,7 @@ test_that("gpd: new holds agree with independent multistart reference fits", {
     values <- base[held]
     args <- c(list(x=x),values)
     if(id=="frechet" && !"mu" %in% held) args["mu"] <- list(NULL)
-    f <- do.call(get(paste0("ml",id)),args)
+    f <- suppressWarnings(do.call(get(paste0("ml",id)),args), classes="univariateML_restricted")
     expect_identical(unname(as.numeric(f[held])),unname(unlist(values)))
     expect_setequal(attr(f,"fixed"),held)
     expect_equal(as.numeric(logLik(f)),sum(do.call(density,c(list(x=x,log=TRUE),as.list(f)))),tolerance=1e-8)
@@ -73,8 +86,8 @@ test_that("gpd: new holds agree with independent multistart reference fits", {
       a <- base
       for(j in seq_along(free)) a[[free[j]]] <- decode(free[j],z[j])
       if(any(!is.finite(unlist(a))) ||
-         (id=="gev" && (a$xi < -.5 || a$xi>1)) ||
-         (id=="gpd" && a$xi < -.5) ||
+         (id=="gev" && (a$xi < -1 || a$xi>1)) ||
+         (id=="gpd" && a$xi < -1) ||
          (id=="frechet" && !"lambda" %in% held && !"mu" %in% held && a$lambda<1)) return(1e100)
       ll <- suppressWarnings(sum(do.call(density,c(list(x=x,log=TRUE),a))))
       if(is.finite(ll)) -ll else 1e100
@@ -95,10 +108,10 @@ test_that("gpd: new holds agree with independent multistart reference fits", {
 })
 
 test_that("GPD scale holds validate support and retain free-threshold rejection", {
-  for(v in c(0,-1,Inf,NaN)) expect_error(mlgpd(1:5,mu=0,sigma=v),"positive.*finite")
-  expect_error(mlgpd(1:5,mu=0,sigma=1,xi=-.5),"support|holds")
-  expect_error(mlgpd(1:5,mu=0,sigma=1,iterlim=1),"converge")
+  for(v in c(0,-1,Inf,NaN)) expect_error(suppressWarnings(mlgpd(1:5,mu=0,sigma=v), classes = "univariateML_restricted"),"positive.*finite")
+  expect_error(suppressWarnings(mlgpd(1:5,mu=0,sigma=1,xi=-.5), classes = "univariateML_restricted"),"support|holds")
+  expect_error(suppressWarnings(mlgpd(1:5,mu=0,sigma=1,iterlim=1), classes = "univariateML_restricted"),"converge")
   for(h in list(list(sigma=1),list(sigma=1,xi=0)))
     expect_error(do.call(mlgpd,c(list(x=1:5,mu=NULL),h)),"Estimating `mu` is not supported")
-  expect_true(is.finite(logLik(mlgpd(1,mu=0,sigma=2))))
+  expect_true(is.finite(logLik(suppressWarnings(mlgpd(1,mu=0,sigma=2), classes = "univariateML_restricted"))))
 })

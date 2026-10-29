@@ -128,3 +128,11 @@ TEST_CASE("ged: held profiles preserve extreme units") {
     CHECK(fit.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-8));
   }
 }
+
+TEST_CASE("ged: P3 restrictions and closed faces") {
+ const std::vector<double> x{-100,-2,-.01,0,.01,2,100};const auto data=mltest::as_span(x);
+ const auto f=cppunivariate::ged_mle(data,1e-8,1000); REQUIRE(f.status==cppunivariate::GedStatus::Ok);
+ CHECK(f.nu==1);CHECK(f.restricted==16u);
+ const auto h=cppunivariate::ged_mle(data,1e-8,1000,0,1,1);
+ CHECK(h.restricted==0u);
+}

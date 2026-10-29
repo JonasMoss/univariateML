@@ -21,8 +21,15 @@ Rcpp::List mlfrechet_(const Rcpp::NumericVector &x,
  if(r.status==cppunivariate::FrechetStatus::GumbelLimit) Rcpp::stop("Frechet selects the Gumbel limit. Use `mlgumbel`.");
  if(r.status==cppunivariate::FrechetStatus::InvalidData) Rcpp::stop("Frechet requires finite observations strictly above held mu and compatible holds. Free shape and scale require nonconstant data; the default free-mu fit requires at least three observations and admissible minimum tie multiplicity. Constant data can have an unbounded shape likelihood and fixed shape can have an unattained collapse face. Tolerance and iteration limit must be positive.");
  if(r.status!=cppunivariate::FrechetStatus::Ok) Rcpp::stop("Frechet profile search failed to converge.");
+  Rcpp::CharacterVector restricted;
+  if(r.restricted & 1u) restricted.push_back("lower","lambda");
+  if(r.restricted & 2u) restricted.push_back("upper","lambda");
+  if(r.restricted & 4u) restricted.push_back("lower","mu");
+  if(r.restricted & 8u) restricted.push_back("upper","mu");
+  if(r.restricted & 16u) restricted.push_back("lower","sigma");
+  if(r.restricted & 32u) restricted.push_back("upper","sigma");
  return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(
  Rcpp::_["lambda"]=r.lambda,Rcpp::_["mu"]=r.mu,Rcpp::_["sigma"]=r.sigma),
  Rcpp::_["logLik"]=r.logLik,Rcpp::_["iterations"]=r.iterations,
- Rcpp::_["fixed"]=fixed);
+ Rcpp::_["restricted"]=restricted, Rcpp::_["fixed"]=fixed);
 }
