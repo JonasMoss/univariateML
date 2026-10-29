@@ -57,6 +57,7 @@ record.
 | extraDistr 1.10.0.5 | `qfrechet`/`pfrechet` upper log tails round through `1 - p` (`Inf` quantiles, `-Inf` log survival) | `extraDistr::qfrechet(-40, 2, lower.tail = FALSE, log.p = TRUE)` is `Inf`, should be about 4.85e8 | repaired at runtime in `univariateML_reference_fixes` |
 | actuar 3.3-7 | `qfpareto` upper log tails lose the complementary beta probability | `actuar::qfpareto(-40, 0, .3, .7, .4, lower.tail = FALSE, log.p = TRUE)` is `Inf`, should be about 6.89e81 | repaired at runtime |
 | extraDistr 1.10.0.5 | `qtlambda`/`rtlambda` lose digits at tiny nonzero shape (subtracting nearly equal powers) and round upper log tails to `Inf` | `extraDistr::qtlambda(-100, 0, lower.tail = FALSE, log.p = TRUE)` is `Inf`, should be 100 | none: the package has its own Tukey lambda functions |
+| actuar 3.3-7 | `dgenbeta(log = TRUE)` loses precision near the unit-gamma limit; `pgenbeta(log.p = TRUE)` underflows; `qgenbeta`/`rgenbeta` saturate an intermediate beta quantile | `actuar::qgenbeta(.5, .0001, 2, 100)` is about 8.27e-4, should be 7.81e-31 | repaired at runtime in `univariateML_reference_fixes` |
 | nakagami 1.1.0 | `pnaka` is positive below the support | `nakagami::pnaka(-1, 2, 3)` is 0.144, should be 0 | historical: nakagami no longer used |
 
 Upstream trackers:

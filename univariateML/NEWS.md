@@ -115,6 +115,12 @@
   as $\lambda \to \infty$, so the fit restricts $\lambda$ to $[-1, 1]$,
   from Cauchy-like tails to the uniform.
 
+* `mlgenbeta()` (generalized beta of the first kind on `(0, scale)`, with
+  `scale` held: free, the likelihood is unbounded for every sample). It
+  contains the beta, Kumaraswamy and power families, and stops with "use
+  `mllgamma`" (on `scale / x`, the unit-gamma limit) or "use `mlpower`" (a
+  power law ending below `scale`).
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
