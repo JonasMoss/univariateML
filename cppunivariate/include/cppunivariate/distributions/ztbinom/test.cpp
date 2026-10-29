@@ -59,11 +59,42 @@ TEST_CASE("ztbinom: quantile inversion and sampling") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("ztbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("ztbinom: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("ztbinom",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dztbinom(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pztbinom(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qztbinom(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rztbinom(rng, p[0], p[1]); });
+}
+
+TEST_CASE("ztbinom: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // n=mpf(8.0); p=mpf(0.4)
+  // d=lambda k:binomial(n,k)*p**k*(1-p)**(n-k)/(1-(1-p)**n); S=lambda k:fsum(d(j) for j in range(int(k)+1,int(n)+1))
+  // print(log(d(mpf(4.0)))); print(log(S(mpf(4.0))))
+  // lo,hi=0,8
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dztbinom(4.0, 8.0, 0.4, true) == doctest::Approx(-1.4430313653876057).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pztbinom(4.0, 8.0, 0.4, false, true) == doctest::Approx(-1.7336572138833999).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qztbinom(-10000, 8.0, 0.4, false, true) == 8.0);
+  CHECK(cppunivariate::distributions::dztbinom(0.5, 8.0, 0.4, false) == 0);
+}
+
+TEST_CASE("ztbinom: tiny conditional lower tail") {
+  // from mpmath import *; mp.dps=100; print(log(8)+log(mpf(0.94))+7*log(1-mpf(0.94))-log(1-(1-mpf(0.94))**8))
+  CHECK(cppunivariate::distributions::pztbinom(1,8.0,0.94,true,true)==doctest::Approx(-17.67630887919054).epsilon(1e-10));
+}
+
+TEST_CASE("ztbinom: unit probability is a point mass at size") {
+  // from mpmath import *; mp.dps=100
+  // n=5; p=mpf(1); print(fsum(binomial(n,k)*p**k*(1-p)**(n-k) for k in range(1,5)))
+  CHECK(cppunivariate::distributions::pztbinom(4,5,1,true,false)==0);
+  CHECK(cppunivariate::distributions::pztbinom(4,5,1,false,true)==0);
+  CHECK(cppunivariate::distributions::qztbinom(0.3,5,1,true,false)==5);
 }

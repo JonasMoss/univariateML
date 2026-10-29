@@ -1,5 +1,6 @@
 #pragma once
 #include "../../special/special.hpp"
+#include "../../special/tails.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -22,7 +23,9 @@ inline double ddgamma(double x, double shape, double rate, bool log = false) {
   double lp = -std::numeric_limits<double>::infinity();
   if (std::isfinite(x) && x >= 0 && x == std::floor(x)) {
     const double a=x*rate, b=(x+1)*rate;
-    if (x == 0) lp=dgamma_logtail(b,shape,true);
+    if (x>1e16*std::max(1.0,shape))
+      lp=(shape-1)*(std::log(x)+std::log(rate))-x*rate-special::lgamma(shape)+special::log1mexp(-rate);
+    else if (x == 0) lp=dgamma_logtail(b,shape,true);
     else {
       const bool lower = special::fs_gamma_p(a,shape,true,false) < 0.5;
       const double hi=dgamma_logtail(lower ? b : a,shape,lower);

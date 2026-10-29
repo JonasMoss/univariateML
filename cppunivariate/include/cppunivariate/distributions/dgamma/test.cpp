@@ -59,11 +59,30 @@ TEST_CASE("dgamma: held boundaries, profile score and quantiles") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("dgamma: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("dgamma: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("dgamma",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::ddgamma(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pdgamma(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdgamma(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdgamma(rng, p[0], p[1]); });
+}
+
+TEST_CASE("dgamma: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // a=mpf(2.0); r=mpf(1.0)
+  // d=lambda k:gammainc(a,r*k,r*(k+1))/gamma(a); S=lambda k:gammainc(a,r*(k+1),inf)/gamma(a)
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(118.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::ddgamma(1e+100, 2.0, 1.0, true) == doctest::Approx(-1e+100).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pdgamma(118.0, 2.0, 1.0, false, true) == doctest::Approx(-114.21250825721795).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qdgamma(-10000, 2.0, 1.0, false, true) == 10009.0);
+  CHECK(cppunivariate::distributions::ddgamma(0.5, 2.0, 1.0, false) == 0);
 }

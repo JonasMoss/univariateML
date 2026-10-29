@@ -35,11 +35,30 @@ TEST_CASE("lgser: mean just above one") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("lgser: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("lgser: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("lgser",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlgser(x, p[0], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plgser(x, p[0], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlgser(x, p[0], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlgser(rng, p[0]); });
+}
+
+TEST_CASE("lgser: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // t=mpf(0.9)
+  // d=lambda k:-t**k/(k*log(1-t)); S=lambda k:nsum(lambda j:d(j),[k+1,inf])
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(6486.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dlgser(1e+100, 0.9, true) == doctest::Approx(-1.0536051565782628e+99).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::plgser(6486.0, 0.9, false, true) == doctest::Approx(-690.7840521798125).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qlgser(-10000, 0.9, false, true) == 94817.0);
+  CHECK(cppunivariate::distributions::dlgser(0.5, 0.9, false) == 0);
 }

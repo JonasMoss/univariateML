@@ -72,11 +72,35 @@ TEST_CASE("nbinom: bracketed fallback when Newton leaves the domain") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("nbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("nbinom: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("nbinom",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dnbinom(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pnbinom(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qnbinom(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rnbinom(rng, p[0], p[1]); });
+}
+
+TEST_CASE("nbinom: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // s=mpf(10.0); p=mpf(0.3)
+  // d=lambda k:gamma(k+s)/(gamma(s)*gamma(k+1))*p**s*(1-p)**k; S=lambda k:betainc(k+1,s,0,1-p,regularized=True)
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(174.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dnbinom(1e+100, 10.0, 0.3, true) == doctest::Approx(-3.5667494393873236e+99).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pnbinom(174.0, 10.0, 0.3, false, true) == doctest::Approx(-39.195008524923715).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qnbinom(-10000, 10.0, 0.3, false, true) == 28229.0);
+  CHECK(cppunivariate::distributions::dnbinom(0.5, 10.0, 0.3, false) == 0);
+}
+
+TEST_CASE("nbinom: adjacent noninteger at zero has no mass") {
+  // mp.dps=100; x=mpf(float.fromhex("0x0.0000000000001p-1022")); print(x==floor(x))
+  CHECK(cppunivariate::distributions::dnbinom(std::nextafter(0.0,1.0),10,0.3,false)==0);
 }

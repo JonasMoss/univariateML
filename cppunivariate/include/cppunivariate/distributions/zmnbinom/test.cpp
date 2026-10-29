@@ -74,11 +74,30 @@ TEST_CASE("zmnbinom: quantile inversion and sampling") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("zmnbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("zmnbinom: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("zmnbinom",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzmnbinom(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzmnbinom(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzmnbinom(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzmnbinom(rng, p[0], p[1], p[2]); });
+}
+
+TEST_CASE("zmnbinom: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // s=mpf(2.0); p=mpf(0.4); p0=mpf(0.3)
+  // d=lambda k:(1-p0)*gamma(k+s)/(gamma(s)*gamma(k+1))*p**s*(1-p)**k/(1-p**s); S=lambda k:(1-p0)*betainc(k+1,s,0,1-p,regularized=True)/(1-p**s)
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(134.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dzmnbinom(1e+100, 2.0, 0.4, 0.3, true) == doctest::Approx(-5.108256237659907e+99).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pzmnbinom(134.0, 2.0, 0.4, 0.3, false, true) == doctest::Approx(-65.13644757997024).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qzmnbinom(-10000, 2.0, 0.4, 0.3, false, true) == 19593.0);
+  CHECK(cppunivariate::distributions::dzmnbinom(0.5, 2.0, 0.4, 0.3, false) == 0);
 }

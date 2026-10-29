@@ -65,11 +65,30 @@ TEST_CASE("zip boundaries and invalid input") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("zip: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("zip: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("zip",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzip(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzip(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzip(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzip(rng, p[0], p[1]); });
+}
+
+TEST_CASE("zip: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // l=mpf(1.0); pi=mpf(0.5)
+  // d=lambda k:(1-pi)*exp(-l)*l**k/factorial(k); S=lambda k:(1-pi)*gammainc(k+1,0,l)/gamma(k+1)
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(108.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dzip(1e+100, 1.0, 0.5, true) == doctest::Approx(-2.2925850929940456e+102).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pzip(108.0, 1.0, 0.5, false, true) == doctest::Approx(-407.3063116161621).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qzip(-10000, 1.0, 0.5, false, true) == 1571.0);
+  CHECK(cppunivariate::distributions::dzip(0.5, 1.0, 0.5, false) == 0);
 }
