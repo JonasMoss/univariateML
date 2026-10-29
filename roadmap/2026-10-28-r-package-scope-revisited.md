@@ -1,6 +1,7 @@
 # R package scope revisited: ML-only, or one package with d/p/q/r
 
-**Status:** deferred (2026-10-28). The R package stays ML-only, as decided
+**Status:** partly decided 2026-10-29, see "Decision 2026-10-29" at the
+end; the rest below is the 2026-10-28 state. Deferred (2026-10-28). The R package stays ML-only, as decided
 in `2026-05-08-r-package-scope.md`: it exports fitters, `dml`/`pml`/`qml`/
 `rml`, model selection, bootstrap and plots, and every model's d/p/q/r
 comes from an external package (stats, extraDistr, actuar, fGarch,
@@ -36,3 +37,19 @@ an argument map too.
 The chosen option is written into CLAUDE.md ("Vision", R shell) and the
 README schema; no package-defined d/p/q/r exist unless option B or C is
 chosen.
+
+## Decision 2026-10-29
+
+- Every family whose reference is extraDistr or actuar gets the package's
+  own d/p/q/r from the C++ core (`dpqr.hpp`), checked against independent
+  high-precision truth tables; extraDistr and actuar leave Imports
+  (board TASK-78 and subtasks).
+- The new R d/p/q/r are **internal**: `dml`/`pml`/`qml`/`rml` reach them,
+  the namespace does not grow. This is not option B or C above; the
+  "extraDistr++" question (export them, or a companion package) is still
+  open and can be taken up once the functions exist and are checked.
+- The 14 families on `stats` stay on `stats` for now. **Not banked**: this
+  can change with the project's direction (an exported density layer, the
+  Python shell, or one parametrization source for every family).
+- Test oracle: truth tables computed with mpmath from each README's
+  `log_density`, not the former reference packages.
