@@ -7,15 +7,14 @@
 #include <string>
 
 // [[Rcpp::export]]
-Rcpp::List mlbbinom_(const Rcpp::IntegerVector &x, double size,
+Rcpp::List mlbbinom_(const Rcpp::IntegerVector &x, Rcpp::Nullable<double> size,
                      Rcpp::Nullable<double> alpha = R_NilValue,
                      Rcpp::Nullable<double> beta = R_NilValue, double reltol = 1e-10,
                      int iterlim = 100) {
-  const double N = size;
-  if (!std::isfinite(N) || N < 0 || N != std::floor(N) || N > 1e7)
+  const double N = size.isNotNull()?Rcpp::as<double>(size):std::numeric_limits<double>::quiet_NaN();
+  if (size.isNotNull() && (!std::isfinite(N) || N < 0 || N != std::floor(N) || N > 1e7))
     Rcpp::stop("`size` must be a nonnegative integer (at most 1e7).");
-  if (alpha.isNotNull() && beta.isNotNull())
-    Rcpp::stop("Hold at most one of `alpha` and `beta` fixed.");
+  if(size.isNull() && (alpha.isNull() || beta.isNull()))Rcpp::stop("Free size with a free shape awaits the P0 existence proof.");
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = alpha.isNotNull() ? Rcpp::as<double>(alpha) : nan;
   const double b = beta.isNotNull() ? Rcpp::as<double>(beta) : nan;
@@ -24,7 +23,7 @@ Rcpp::List mlbbinom_(const Rcpp::IntegerVector &x, double size,
   if (beta.isNotNull() && !(std::isfinite(b) && b > 0))
     Rcpp::stop("`beta` must be a finite positive number.");
   const auto res = cppunivariate::bbinom_mle(dist_impl::as_ispan(x), N, reltol, iterlim, a, b);
-  const std::string n_txt = std::to_string(static_cast<long long>(N));
+  const std::string n_txt = std::to_string(static_cast<long long>(std::isfinite(N)?N:0));
   switch (res.status) {
     case cppunivariate::BbinomStatus::Ok:
       break;
@@ -57,12 +56,13 @@ Rcpp::List mlbbinom_(const Rcpp::IntegerVector &x, double size,
   }
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik))
     Rcpp::stop("Beta-binomial MLE failed.");
-  Rcpp::CharacterVector fixed = Rcpp::CharacterVector::create("size");
+  Rcpp::CharacterVector fixed = Rcpp::CharacterVector(0);
+  if (size.isNotNull()) fixed.push_back("size");
   if (alpha.isNotNull()) fixed.push_back("alpha");
   if (beta.isNotNull()) fixed.push_back("beta");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["size"] = N, Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
+          Rcpp::_["size"] = res.size, Rcpp::_["alpha"] = res.alpha, Rcpp::_["beta"] = res.beta),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
       Rcpp::_["fixed"] = fixed);
 }

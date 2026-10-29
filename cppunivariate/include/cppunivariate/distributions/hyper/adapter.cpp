@@ -26,11 +26,13 @@ std::string whole(double v) {
 }  // namespace
 
 // [[Rcpp::export]]
-Rcpp::List mlhyper_(const Rcpp::NumericVector &x, double k,
+Rcpp::List mlhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> k,
                     Rcpp::Nullable<double> N = R_NilValue,
                     Rcpp::Nullable<double> m = R_NilValue) {
+  if(k.isNull())Rcpp::stop("P4 (C6)");
+  const double design=Rcpp::as<double>(k);
   const double N_held = held_value(N, "N"), m_held = held_value(m, "m");
-  const auto res = cppunivariate::hyper_mle(dist_impl::as_span(x), k, N_held, m_held);
+  const auto res = cppunivariate::hyper_mle(dist_impl::as_span(x), design, N_held, m_held);
   const char *estimated = N.isNull() ? "N" : "m";
   switch (res.status) {
     case cppunivariate::HyperStatus::BothFree:

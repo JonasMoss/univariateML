@@ -70,3 +70,18 @@ TEST_CASE("binom: free size brackets the integer profile maximum") {
  const std::vector<int> x{2,6,6};
  CHECK(cppunivariate::binom_mle(as_ispan(x),nan,1e-10,100).size==13);
 }
+
+TEST_CASE("binom: held probability profiles every integer and endpoint") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(auto x:{std::vector<int>{1,2,2,4},std::vector<int>{0,0},std::vector<int>{3,3}}) {
+  const auto f=cppunivariate::binom_mle({x.data(),x.size()},nan,1e-10,100,.4);
+  REQUIRE(f.status==cppunivariate::BinomStatus::Ok);CHECK(f.prob==.4);
+  for(int k=*std::max_element(x.begin(),x.end());k<100;++k) {
+   const auto o=cppunivariate::binom_mle({x.data(),x.size()},k,1e-10,100,.4);
+   CHECK(f.logLik>=o.logLik-1e-10);
+  }
+ }
+ const std::vector<int> x{2,2};
+ CHECK(cppunivariate::binom_mle({x.data(),x.size()},nan,1e-10,100,1).size==2);
+ CHECK(cppunivariate::binom_mle({x.data(),x.size()},nan,1e-10,100,0).status==cppunivariate::BinomStatus::InvalidInput);
+}

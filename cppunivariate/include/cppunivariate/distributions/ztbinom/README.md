@@ -24,20 +24,16 @@ r:
   density: actuar::dztbinom
   sampler: actuar::rztbinom
   control:
-    size: Optional fixed size; NULL estimates size.
-    reltol: Tolerance for scalar profile search.
-    iterlim: Maximum scalar search iterations.
+    size: "Optional fixed size; NULL estimates size."
+    reltol: "Tolerance for scalar profile search."
+    iterlim: "Maximum scalar search iterations."
+    prob: "Optional fixed probability in [0, 1]; NULL estimates it."
 log_density: loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size-x)*log(1-prob)-log(1-(1-prob)**size)
 limits:
 - model: ztpois
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: the maximised face likelihood wins within 1e-8 times the sample size
   status: PoissonLimit
-holds:
-- held:
-  - prob
-  status: not-implemented
-  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
 fit_args:
   size: ~
 ---
@@ -48,3 +44,5 @@ Zero-truncated binomial distributions model positive counts.
 
 Actuar defines the point mass at one at `prob = 0`. This boundary is returned as an attained member.
 Holding size fixed removes the infinite-size escape. The point mass at one remains attained for every fixed size.
+
+A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.

@@ -23,8 +23,8 @@ r:
   density: extraDistr::dbbinom
   sampler: extraDistr::rbbinom
   control:
-    size: "Required known number of trials, a nonnegative integer at least `max(x)` (at most 1e7); held fixed, never estimated."
-    alpha: "Optional fixed value of `alpha`; `NULL` (the default) estimates it. At most one of `alpha` and `beta` may be fixed."
+    size: "Required number of trials; NULL estimates size when both shapes are held."
+    alpha: "Optional fixed positive alpha; NULL estimates it."
     beta: "Optional fixed value of `beta`; `NULL` (the default) estimates it."
     reltol: "Relative tolerance on the Newton steps in the logarithm of the free concentration or shape."
     iterlim: "Maximum number of Newton iterations per local maximum."
@@ -51,27 +51,17 @@ examples: |
   mlbbinom(x, size = 10)
   mlbbinom(x, size = 10, alpha = 2)
 holds:
-- held:
-  - alpha
-  - beta
-  status: not-implemented
-  reason: Hold at most one of `alpha` and `beta` fixed.
 - held: []
   status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
+  reason: Free size with a free shape awaits the P0 existence proof.
 - held:
   - alpha
   status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
+  reason: Free size with a free shape awaits the P0 existence proof.
 - held:
   - beta
   status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
-- held:
-  - alpha
-  - beta
-  status: not-implemented
-  reason: Estimating `size` with NULL is not implemented for this design.
+  reason: Free size with a free shape awaits the P0 existence proof.
 fit_args:
   size: 10
 ---
@@ -80,6 +70,8 @@ The beta-binomial distribution is a binomial with a beta-distributed success pro
 
 ## Details
 
-`size` is a design quantity, not a parameter: it is required, held fixed and not counted in `logLik()` degrees of freedom, AIC or BIC. Holding `alpha` or `beta` fixed removes the binomial and two-point escapes; only all-0 or all-`size` samples then have no maximum likelihood estimate. With `size = 1` both shapes free are not identified (the model is Bernoulli). `model_select()` skips the beta-binomial because it cannot supply `size`.
+`size` is a required design coefficient. A supplied value is held fixed and is not counted in `logLik()` degrees of freedom, AIC or BIC. Passing `NULL` estimates it when both shapes are held. Holding just `alpha` or just `beta` at fixed size removes the binomial and two-point escapes; only all-0 or all-`size` samples then have no maximum likelihood estimate. With `size = 1` both shapes free are not identified (the model is Bernoulli). `model_select()` skips the beta-binomial because it cannot supply `size`.
 
 `extraDistr` has no `qbbinom`; `qml()` and `plot()` use the generalised inverse of `extraDistr::pbbinom` (see `univariateML_reference_quantiles`). `extraDistr::dbbinom` and `pbbinom` lose accuracy when both shapes are very large, around `1e10` and beyond (see `KNOWN_ISSUES.md`); the fitter compares the actual binomial face rather than substituting huge shapes for that face. The generic quantile inherits any inaccuracy in the reference CDF.
+
+Holding both positive shapes gives an attained integer-size maximum. Each observed mass decreases once `size + 1 >= x * (alpha + beta - 1) / alpha`; the fitter enumerates through that bound. More than one million candidates stops with a work-budget failure. With size also held this evaluates the likelihood, including size zero. Free size with either shape free remains pending the incomplete P0 proof.

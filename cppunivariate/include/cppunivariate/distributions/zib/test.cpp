@@ -79,3 +79,16 @@ TEST_CASE("zib fixed zero size is an attained member") {
  CHECK(cppunivariate::distributions::dzib(0,0,.5,.3)==1);
  CHECK(cppunivariate::distributions::qzib(1,0,.5,.3)==0);
 }
+
+TEST_CASE("zib: held probability with free and held size") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const std::vector<int> x{1,2,2,3,4};
+ const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,nan,.4,.3);
+ REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+ CHECK(f.prob==.4);
+ for(int k=4;k<100;++k) {
+  const auto o=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,k,.4,.3);
+  CHECK(f.logLik>=o.logLik-1e-9);
+ }
+ CHECK(cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,8,-.1,.3).status==cppunivariate::ZibStatus::InvalidInput);
+}

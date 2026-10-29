@@ -143,7 +143,7 @@ TEST_CASE("bbinom: input validation") {
   CHECK(fit(x, 3.5).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit(x, -1).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit(x, kNaN).status == cppunivariate::BbinomStatus::InvalidInput);
-  CHECK(fit(x, 5, 1.0, 1.0).status == cppunivariate::BbinomStatus::InvalidInput);
+  CHECK(fit(x, 5, 1.0, 1.0).status == cppunivariate::BbinomStatus::Ok);
   CHECK(fit(x, 5, -1.0).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit({-1, 2}, 5).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit({}, 5).status == cppunivariate::BbinomStatus::InvalidInput);
@@ -248,4 +248,14 @@ TEST_CASE("bbinom: inward binomial score uses variance with divisor n") {
   double g, H;
   cppunivariate::bbinom_detail::profile_derivs(d,s,cppunivariate::bbinom_detail::solve_p(d,s,p),g,H);
   CHECK(g/s == doctest::Approx(expected).epsilon(1e-6));
+}
+
+TEST_CASE("bbinom: fully held and both-shape-held integer profiles") {
+ for(auto x:{std::vector<int>{0,1,2,4},std::vector<int>{0,0},std::vector<int>{3,3}}) {
+  const auto f=fit(x,kNaN,2,3);
+  REQUIRE(f.status==cppunivariate::BbinomStatus::Ok);
+  CHECK(f.alpha==2);CHECK(f.beta==3);
+  CHECK(f.logLik==doctest::Approx(bb_loglik(x,f.size,2,3)).epsilon(1e-10));
+  for(int k=*std::max_element(x.begin(),x.end());k<80;++k)CHECK(f.logLik>=bb_loglik(x,k,2,3)-1e-10);
+ }
 }

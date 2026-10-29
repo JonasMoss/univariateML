@@ -63,3 +63,16 @@ TEST_CASE("zmbinom: quantile inversion and sampling") {
  cppunivariate::distributions::StdRng<> rng(19);
  for(int j=0;j<20;++j) {const double v=cppunivariate::distributions::rzmbinom(rng,g.estimates.at("size"),g.estimates.at("prob"),g.estimates.at("p0"));CHECK(v>=0);CHECK(v==std::floor(v));}
 }
+
+TEST_CASE("zmbinom: held probability with free and held size") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const std::vector<int> x{1,2,2,3,4};
+ const auto f=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,nan,.4,.3);
+ REQUIRE(f.status==cppunivariate::ZmbinomStatus::Ok);
+ CHECK(f.prob==.4);
+ for(int k=4;k<100;++k) {
+  const auto o=cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,k,.4,.3);
+  CHECK(f.logLik>=o.logLik-1e-9);
+ }
+ CHECK(cppunivariate::zmbinom_mle({x.data(),x.size()},1e-10,200,8,-.1,.3).status==cppunivariate::ZmbinomStatus::InvalidInput);
+}
