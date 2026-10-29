@@ -29,8 +29,9 @@
   a `skipped` attribute.
 
 * Every coefficient can be held (`p = value`) or estimated (`p = NULL`):
-  P2 added about 175 hold combinations across 90 families, e.g.
-  `mlgamma(x, shape = 2)`, `mlnorm(x, mean = 0)`, `mlweibull(x, shape = 2)`.
+  e.g. `mlgamma(x, shape = 2)`, `mlnorm(x, mean = 0)`,
+  `mlweibull(x, shape = 2)`. Of the 228 hold entries marked not
+  implemented after P1, P2 implemented or settled 175.
   Each family's README lists the remaining exceptions under `holds:`:
   combinations with no MLE (`no-mle`, 61) and combinations not yet
   supported (`not-implemented`, 53). The not-yet-supported ones are skew-t
