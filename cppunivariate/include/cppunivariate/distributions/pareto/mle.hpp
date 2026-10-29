@@ -30,13 +30,12 @@ inline ParetoResult pareto_mle(span x) {
   double sum_log_ratio = 0.0;
   double sum_log_x = 0.0;
   for (auto v : x) {
-    sum_log_ratio += std::log(v / xmin);
+    sum_log_ratio += static_cast<double>(std::log1p((static_cast<long double>(v)-xmin)/xmin));
     sum_log_x += std::log(v);
   }
   const double dn = static_cast<double>(n);
   const double alpha = dn / sum_log_ratio;
-  const double logLik = dn * std::log(alpha) + dn * alpha * std::log(xmin) -
-                        (alpha + 1.0) * sum_log_x;
+  const double logLik = dn * (std::log(alpha)-1.0) - sum_log_x;
   return {alpha, xmin, logLik};
 }
 

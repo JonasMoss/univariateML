@@ -50,3 +50,23 @@ TEST_CASE("nbinom: underdispersion status") {
   CHECK(r.status == cppunivariate::NbinomStatus::Underdispersed);
   CHECK(r.underdispersed);
 }
+
+TEST_CASE("nbinom: variance equal to the mean is the Poisson face") {
+  // Population variance 2 equals the mean 2: no finite MLE.
+  const std::vector<int> x{0, 1, 2, 3, 4};
+  const auto r = cppunivariate::nbinom_mle(as_ispan(x), mltest::kFitTol, mltest::kFitMaxit);
+  CHECK(r.status == cppunivariate::NbinomStatus::Underdispersed);
+}
+
+TEST_CASE("nbinom: bracketed fallback when Newton leaves the domain") {
+  std::vector<int> x(9, 0);
+  x.push_back(1000);
+  const auto r = cppunivariate::nbinom_mle(as_ispan(x), mltest::kFitTol, mltest::kFitMaxit);
+  REQUIRE(r.status == cppunivariate::NbinomStatus::Ok);
+  REQUIRE(std::isfinite(r.size));
+  // Profile score at the returned size is zero to rounding.
+  double score = -10.0 * cppunivariate::special::digamma(r.size) -
+                 10.0 * std::log1p(100.0 / r.size);
+  for (int v : x) score += cppunivariate::special::digamma(r.size + v);
+  CHECK(std::abs(score) < 1e-8);
+}

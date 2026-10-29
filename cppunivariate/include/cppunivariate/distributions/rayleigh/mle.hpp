@@ -1,9 +1,12 @@
-// Rayleigh MLE: closed form. sigma = sqrt(mean(x^2) / 2).
+// Rayleigh MLE: closed form. sigma = sqrt(mean(x^2) / 2), with the sum of
+// squares scaled by max(x) so that data near 1e300 or 1e-300 neither
+// overflow nor underflow.
 
 #pragma once
 
 #include "../../core/span.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <limits>
@@ -20,17 +23,20 @@ inline RayleighResult rayleigh_mle(span x) {
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN};
 
-  double sum_sq = 0.0;
-  for (auto v : x) sum_sq += v * v;
+  double big = 0.0;
+  for (auto v : x) big = std::max(big, v);
+  if (!(big > 0.0) || !std::isfinite(big)) return {kNaN, kNaN};
+  double ss = 0.0;
+  for (auto v : x) {
+    const double z = v / big;
+    ss += z * z;
+  }
   const double dn = static_cast<double>(n);
-  const double sigma2 = sum_sq / (2.0 * dn);
-  if (sigma2 <= 0.0) return {kNaN, kNaN};
-
-  const double sigma = std::sqrt(sigma2);
+  const double sigma = big * std::sqrt(ss / (2.0 * dn));
   double sum_log = 0.0;
   for (auto v : x) sum_log += std::log(v);
-  const double logLik =
-      sum_log - 2.0 * dn * std::log(sigma) - sum_sq / (2.0 * sigma2);
+  // sum(x^2) / (2 sigma^2) = n at the MLE.
+  const double logLik = sum_log - 2.0 * dn * std::log(sigma) - dn;
   return {sigma, logLik};
 }
 

@@ -3,16 +3,18 @@
 #include "cppunivariate/distributions/gompertz/mle.hpp"
 #include <Rcpp.h>
 #include <cmath>
+#include <algorithm>
 #include <limits>
 
 // [[Rcpp::export]]
 Rcpp::List mlgompertz_(const Rcpp::NumericVector &x, double reltol = 1.220703e-4,
                        int iterlim = 100) {
+  if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    Rcpp::stop("The Gompertz maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
   auto res = cppunivariate::gompertz_mle(dist_impl::as_span(x), reltol, iterlim);
   if (res.status == cppunivariate::GompertzStatus::Overdispersed) {
-    Rcpp::stop("The maximum likelihood estimator of the b parameter Gompertz "
-               "distribution does not exist since the data is overdispersed. "
-               "The exponential distribution will yield a better fit.");
+    Rcpp::stop("The Gompertz maximum likelihood estimator escapes to an exponential "
+               "when mean(x^2) >= 2*mean(x)^2. Use `mlexp` instead.");
   }
   if (res.status != cppunivariate::GompertzStatus::Ok || !std::isfinite(res.a) ||
       !std::isfinite(res.b)) {

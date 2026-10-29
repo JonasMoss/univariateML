@@ -13,7 +13,7 @@ Rcpp::List mlcauchy_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, abstol,
       iterlim);
   if (res.status == cppunivariate::CauchyStatus::NoMLE)
-    Rcpp::stop("Cauchy MLE does not exist: need n >= 3 and no value repeated n/2 or more times");
+    Rcpp::stop("Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples");
   if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))
     Rcpp::stop("Cauchy MLE failed: non-finite or invalid parameters");
   return Rcpp::List::create(

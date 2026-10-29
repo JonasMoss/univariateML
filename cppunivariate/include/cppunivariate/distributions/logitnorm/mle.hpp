@@ -4,10 +4,12 @@
 #pragma once
 
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
 
 #include <cmath>
 #include <cstddef>
 #include <limits>
+#include <vector>
 
 namespace cppunivariate {
 
@@ -22,24 +24,15 @@ inline LogitnormResult logitnorm_mle(span x) {
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN, kNaN};
 
-  double sum_logit = 0.0;
+  std::vector<double> y(n);
   double sum_log_jac = 0.0;
-  for (auto v : x) {
-    sum_logit += std::log(v / (1.0 - v));
+  for (std::size_t i = 0; i < n; ++i) {
+    const double v = x[i];
+    y[i] = std::log(v / (1.0 - v));
     sum_log_jac += std::log(v * (1.0 - v));
   }
-  const double dn = static_cast<double>(n);
-  const double mu = sum_logit / dn;
-
-  double sum_sq_dev = 0.0;
-  for (auto v : x) {
-    const double d = std::log(v / (1.0 - v)) - mu;
-    sum_sq_dev += d * d;
-  }
-  const double sigma = std::sqrt(sum_sq_dev / dn);
-  const double logLik =
-      -0.5 * dn * (std::log(2.0 * M_PI * sigma * sigma) + 1.0) - sum_log_jac;
-  return {mu, sigma, logLik};
+  const auto r = norm_mle(span{y.data(), n});
+  return {r.mean, r.sd, r.logLik - sum_log_jac};
 }
 
 }  // namespace cppunivariate

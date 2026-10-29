@@ -32,3 +32,8 @@ expect_equal(class(est), c("univariateML"))
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("constant data have no attained logitnorm MLE", {
+  expect_error(mllogitnorm(rep(.4, 5)), "does not exist")
+  expect_error(mllogitnorm(.4), "does not exist")
+})

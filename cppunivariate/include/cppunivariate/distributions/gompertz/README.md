@@ -15,7 +15,7 @@ log_density: log(a) + b*x - (a/b)*(exp(b*x)-1)
 limits:
   - model: 'exp'
     when: '$b \to 0$ with $a$ fixed'
-    detect: 'mean(x) < sqrt(mean(x^2) - mean(x)^2)'
+    detect: 'mean(x^2) >= 2*mean(x)^2'
     status: 'Overdispersed'
 references:
   - "Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision. MPIDR Working Paper WP 2012-008."

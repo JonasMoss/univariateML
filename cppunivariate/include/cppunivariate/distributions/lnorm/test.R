@@ -44,3 +44,8 @@ test_that("lnorm handles a seeded sample with a large outlier", {
   expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
+
+test_that("constant data have no attained lnorm MLE", {
+  expect_error(mllnorm(rep(2, 5)), "does not exist")
+  expect_error(mllnorm(2), "does not exist")
+})

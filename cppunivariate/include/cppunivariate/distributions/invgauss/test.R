@@ -67,3 +67,16 @@ expect_equal(
 est <- mlinvgauss(small_data, na.rm = TRUE)
 expect_equal(attr(est, "model"), "Inverse Gaussian")
 expect_equal(class(est), "univariateML")
+
+test_that("inverse Gaussian resolves scale extremes and near ties", {
+  x <- c(.5, 1, 2, 4)
+  f <- mlinvgauss(x)
+  for (s in c(1e-300, 1e300)) {
+    g <- mlinvgauss(x*s)
+    expect_equal(as.numeric(g)/s, as.numeric(f), tolerance=1e-8)
+    expect_equal(attr(g,"logLik")+length(x)*log(s), attr(f,"logLik"), tolerance=1e-8)
+  }
+  g <- mlinvgauss(1+(0:4)*.Machine$double.eps)
+  expect_true(all(is.finite(g)))
+  expect_error(mlinvgauss(rep(1,5)), "constant data")
+})

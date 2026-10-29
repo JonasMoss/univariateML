@@ -22,4 +22,4 @@ The Cauchy distribution is a symmetric location-scale distribution with heavy ta
 
 ## Details
 
-No maximum likelihood estimator exists for $n < 3$ or when a value is repeated at least $n/2$ times. The fitter reports `NoMLE` and stops with an error in these cases.
+No maximum likelihood estimator exists when a value has at least half the sample mass, except for two distinct values with equal multiplicities. In that exception the maximum is attained and nonunique; the fitter returns the midpoint and half the distance as location and scale. Other such samples report `NoMLE`.

@@ -23,8 +23,13 @@ inline ExpResult exp_mle(span x) {
   double sum = 0.0;
   for (auto v : x) sum += v;
   const double dn = static_cast<double>(n);
-  const double rate = dn / sum;
-  const double logLik = dn * std::log(rate) - rate * sum;
+  double rate = dn / sum;
+  if (!std::isfinite(sum)) {
+    long double total = 0.0L;
+    for (auto v : x) total += v;
+    rate = static_cast<double>(static_cast<long double>(n) / total);
+  }
+  const double logLik = dn * (std::log(rate) - 1.0);
   return {rate, logLik};
 }
 

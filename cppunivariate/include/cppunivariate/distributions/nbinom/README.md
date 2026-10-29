@@ -16,7 +16,7 @@ log_density: "loggamma(x + size) - loggamma(size) - loggamma(x + 1) + size*log(p
 limits:
   - model: pois
     when: '$\mathrm{size} \to \infty$ with mean fixed'
-    detect: size is not supplied and the population-form sample variance is less than the sample mean
+    detect: size is not supplied and the population-form sample variance is no larger than the sample mean
     status: Underdispersed
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."

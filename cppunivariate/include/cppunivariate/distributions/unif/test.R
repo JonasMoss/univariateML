@@ -57,3 +57,8 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("constant data have no attained unif MLE", {
+  expect_error(mlunif(rep(2, 5)), "does not exist")
+  expect_error(mlunif(2), "does not exist")
+})

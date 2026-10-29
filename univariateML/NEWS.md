@@ -1,7 +1,5 @@
 # univariateML 1.5.0
 
-* Adopt runtime-checked reference repairs for actuar trgamma/invtrgamma and extraDistr truncated normal (including half-normal) and GEV evaluation; document all active repairs.
-
 ## Architecture
 
 * The package is now scoped to maximum-likelihood estimation only.
@@ -60,6 +58,24 @@
 * `qml()` for `mlzipf()` fits no longer returns one less than the true
   quantile: `sads::qzipf()` (0.6.5) is off by one, so the package inverts
   the CDF itself while that defect persists.
+
+* Known defects in reference packages that fitted models can reach are
+  repaired at runtime, each switching itself off once the reference is
+  fixed: `sads` zipf (`qzipf` off by one; d/p/q/r at the uniform member
+  `s = 0`), `extraDistr` `ptriang`, `pdweibull`, truncated normal d/p/q
+  (also used by `mlhnorm()`), and `qgev`/`rgev`/upper-tail `pgev`, and
+  `actuar` generalized gamma d/p/q/r. The list is in the package help page
+  (`?univariateML`); fitting and `logLik()` never use these functions.
+
+* An edge-case audit of the fitters: constant data, near ties, extreme
+  scales (1e-300 to 1e300), counts near `.Machine$integer.max`, empty
+  input and n = 1e6 now give either a correct fit or an honest error
+  instead of `NaN` estimates or silently wrong fits. Visible changes:
+  `mlzipf()` returns the attained uniform member `s = 0` instead of an
+  error; `mlcauchy()` returns an attained (non-unique) maximum for a
+  balanced pair of values; `mlgompertz()` and `mlnbinom()` name the limit
+  model at the equality case too; large-sample `mlstd()`, `mlsstd()`,
+  `mlged()`, `mlsged()` and `mlparalogis()` fits are more accurate.
 
 * `mlinvgamma()`'s coefficient names are unchanged (`alpha`, `beta`)
   and continue to match `extraDistr::dinvgamma`.

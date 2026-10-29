@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cstddef>
 #include <limits>
+#include <vector>
 
 namespace cppunivariate {
 
@@ -37,6 +38,16 @@ inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, GompertzStatus::IterationFailure};
 
+  long double total = 0.0L;
+  for (auto v : x) total += v;
+  const double unit = static_cast<double>(total / static_cast<long double>(n));
+  if (unit > 0.0 && std::isfinite(unit) && (unit < 1e-3 || unit > 1e3)) {
+    std::vector<double> z(n);
+    for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / unit;
+    const auto r = gompertz_mle(span{z.data(), n}, tol, maxit);
+    return {r.a/unit, r.b/unit, r.logLik-static_cast<double>(n)*std::log(unit), r.iterations, r.status};
+  }
+
   const double dn = static_cast<double>(n);
   double sum_x = 0.0, sum_xsq = 0.0;
   for (auto v : x) {
@@ -44,8 +55,10 @@ inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
     sum_xsq += v * v;
   }
   const double mean_x = sum_x / dn;
-  const double var_x = sum_xsq / dn - mean_x * mean_x;
-  if (mean_x < std::sqrt(var_x)) {
+  // Profile likelihood is linear minus log of a moment generating
+  // function: strictly concave. Its right derivative at zero is
+  // n*(mean - mean(x^2)/(2*mean)), so equality also selects exponential.
+  if (sum_xsq / dn >= 2.0 * mean_x * mean_x) {
     return {kNaN, kNaN, kNaN, 0, GompertzStatus::Overdispersed};
   }
 

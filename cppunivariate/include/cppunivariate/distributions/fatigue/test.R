@@ -22,3 +22,15 @@ test_that("the three-parameter likelihood with free mu is unbounded (why mu is f
   expect_true(all(diff(path) > 0))
   expect_equal(diff(path), rep(2 * log(10), 3), tolerance = 0.01)
 })
+
+test_that("fatigue handles ties and extreme scales without invalid estimates", {
+  expect_error(mlfatigue(rep(1,5)),"does not exist")
+  f <- mlfatigue(1+(0:4)*.Machine$double.eps)
+  expect_gt(f[["alpha"]],0)
+  expect_true(is.finite(attr(f,"logLik")))
+  x <- c(.4,.8,1,2,4); base <- mlfatigue(x)
+  for(s in c(1e-300,1e300)) {
+    g <- mlfatigue(x*s)
+    expect_equal(attr(g,"logLik")+length(x)*log(s),attr(base,"logLik"),tolerance=1e-6)
+  }
+})

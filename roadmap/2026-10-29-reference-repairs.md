@@ -11,6 +11,7 @@ reference function is fixed. Fitting and log likelihoods remain C++ operations.
 | Reference | Adopted repair |
 |---|---|
 | sads qzipf | Invert the CDF built from sads dzipf (existing) |
+| sads d/p/q/r zipf at `s = 0` | Pass `s = .Machine$double.xmin`; `x^-s` rounds to one |
 | extraDistr ptriang | Correct the lower endpoint (existing) |
 | extraDistr pdweibull | Floor the argument before calling the reference (existing) |
 | actuar d/p/q/r trgamma and invtrgamma | Gamma backend composed with power transforms; log-CDF anchor for underflow |

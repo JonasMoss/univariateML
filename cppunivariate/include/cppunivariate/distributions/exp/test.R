@@ -29,3 +29,10 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("exponential rejects all zero and avoids sum overflow", {
+  expect_error(mlexp(rep(0, 5)), "does not exist")
+  f <- mlexp(c(1e308, 1e308))
+  expect_equal(f[["rate"]] / 1e-308, 1)
+  expect_true(is.finite(attr(f, "logLik")))
+})

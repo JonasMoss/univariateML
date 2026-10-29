@@ -13,6 +13,12 @@ Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
   const double size_or_nan = size.isNotNull()
                                  ? Rcpp::as<double>(size)
                                  : std::numeric_limits<double>::quiet_NaN();
+  // The fitter reads a non-finite size as "estimate it"; a held size that
+  // is NA, NaN, infinite or fractional must not slip through that way.
+  if (size.isNotNull() && (!std::isfinite(size_or_nan) || size_or_nan < 0.0 ||
+                           size_or_nan != std::floor(size_or_nan))) {
+    Rcpp::stop("`size` must be a nonnegative integer.");
+  }
   auto res = cppunivariate::binom_mle(dist_impl::as_ispan(x), size_or_nan, abstol, iterlim);
   if (res.status == cppunivariate::BinomStatus::SizeTooSmall) {
     Rcpp::stop("`size` is smaller than `max(x)`.");

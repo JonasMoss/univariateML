@@ -28,3 +28,38 @@ test_that("the qzipf replacement is the discrete inverse of the zipf CDF", {
   p <- c(0.1, 0.4, 0.5, 0.6, 0.99)
   expect_equal(qfun(p, N = 10, s = 1), vapply(p, function(pp) min(which(cdf >= pp)), 0))
 })
+
+test_that("Zipf returns the attained uniform face at the count ceiling", {
+  x <- c(.Machine$integer.max-1,.Machine$integer.max)
+  f <- mlzipf(x)
+  expect_equal(f[["s"]],0)
+  expect_equal(attr(f,"logLik"),-length(x)*log(max(x)))
+})
+test_that("large-support Zipf likelihood agrees with a slow sum oracle", {
+  x <- c(rep(1,9),100000L)
+  f <- mlzipf(x)
+  objective <- function(t) {s<-exp(t); s*sum(log(x))+length(x)*log(sum((1:max(x))^-s))}
+  o <- optimize(objective,c(-5,3),tol=1e-11)
+  expect_equal(attr(f,"logLik"),-o$objective,tolerance=1e-8)
+  expect_equal(f[["s"]],exp(o$minimum),tolerance=1e-6)
+})
+
+test_that("the attained uniform member s = 0 evaluates through repaired sads functions", {
+  fixes <- univariateML:::univariateML_reference_fixes
+  for (fn in c("dzipf", "pzipf", "rzipf")) {
+    expect_true(fixes[[paste0("sads::", fn)]]$broken(), info = fn)
+  }
+  set.seed(3)
+  had <- .Random.seed
+  invisible(fixes[["sads::rzipf"]]$broken())
+  expect_identical(.Random.seed, had)
+  x <- rep(1:5, 4)
+  fit <- mlzipf(x)
+  expect_equal(unname(fit["s"]), 0)
+  expect_equal(dml(1:5, fit), rep(0.2, 5))
+  expect_equal(pml(1:5, fit), (1:5) / 5)
+  expect_equal(qml(c(0.1, 0.3, 0.5, 0.9, 1), fit), c(1, 2, 3, 5, 5))
+  draws <- rml(200, fit)
+  expect_true(all(draws %in% 1:5))
+  expect_equal(sum(dml(x, fit, log = TRUE)), as.numeric(logLik(fit)))
+})

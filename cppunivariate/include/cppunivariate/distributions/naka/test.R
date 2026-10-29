@@ -45,3 +45,12 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("constant data have no attained naka MLE", {
+  expect_error(mlnaka(rep(2, 5)), "does not exist")
+  expect_error(mlnaka(2), "does not exist")
+})
+
+test_that("squared-data underflow is a precision error, not constant data", {
+  expect_error(mlnaka(c(1,2,3)*1e-300), "precision")
+})

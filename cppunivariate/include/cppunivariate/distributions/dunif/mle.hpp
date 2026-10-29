@@ -30,8 +30,10 @@ inline DiscreteUnifResult dunif_mle(ispan x) {
     b = std::max(b, x[i]);
   }
   if (b < a) return {kNaN, kNaN, kNaN};
+  // b - a + 1 in int overflows for ranges wider than INT_MAX.
   const double logLik =
-      -static_cast<double>(n) * std::log(static_cast<double>(b - a + 1));
+      -static_cast<double>(n) *
+      std::log(static_cast<double>(b) - static_cast<double>(a) + 1.0);
   return {static_cast<double>(a), static_cast<double>(b), logLik};
 }
 

@@ -29,7 +29,7 @@ TEST_CASE("lomax: an explicit start converges to the same fit") {
   CHECK(b.kappa == doctest::Approx(a.kappa).epsilon(1e-8));
 }
 
-TEST_CASE("lomax: mean(x^2) < 2 mean(x)^2 reports the exponential limit") {
+TEST_CASE("lomax: concentrated sample selects the exponential limit") {
   const std::vector<double> x = {1.0, 1.1, 0.9, 1.05, 0.95};
   auto r = cppunivariate::lomax_mle({x.data(), x.size()}, mltest::kFitTol,
                                     mltest::kFitMaxit);

@@ -8,6 +8,8 @@
 // [[Rcpp::export]]
 Rcpp::List mlpower_(const Rcpp::NumericVector &x,
                     double epsilon = 1.490116e-08) {
+  if (!(epsilon>=0.0) || !std::isfinite(epsilon))
+    Rcpp::stop("`epsilon` must be nonnegative and finite.");
   auto res = cppunivariate::power_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon);
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta)) {

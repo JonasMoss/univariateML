@@ -91,3 +91,24 @@ for (shape in c(1.5, 3)) {
   })
   expect_gte(attr(f,"logLik") + 1e-4, -min(values))
 }
+
+test_that("sged scale extremes preserve fit or declared escape", {
+  set.seed(10)
+  x <- simulate_default("mlsged",50)
+  base <- tryCatch(mlsged(x),error=function(e) conditionMessage(e))
+  for(s in c(1e-300,1e300)) {
+    f <- tryCatch(mlsged(x*s),error=function(e) conditionMessage(e))
+    if(is.character(base)) expect_identical(f,base) else {
+      expect_false(is.character(f))
+      if(!is.character(f)) expect_equal(attr(f,"logLik")+length(x)*log(s),attr(base,"logLik"),tolerance=1e-4)
+    }
+  }
+})
+
+test_that("sged large-sample fitting preserves likelihood under replication", {
+  p<-((1:1000)-.5)/1000
+  x<-fGarch::qsged(p,nu=3,xi=2)
+  base<-mlsged(x)
+  f<-mlsged(rep(x,100))
+  expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
+})

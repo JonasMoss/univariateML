@@ -26,3 +26,21 @@ test_that("invparalogis fixed scale matches actuar oracle", {
  for(bad in c(0,-1,Inf,NaN)) expect_error(mlinvparalogis(x,scale=bad),"positive finite")
  expect_true(is.finite(attr(mlinvparalogis(rep(1,10),scale=held),"logLik")))
 })
+
+test_that("inverse paralogistic diagnoses an unrepresentable extreme-range fit", {
+  x<-c(1e-300,1,1e300); lx<-log(x)
+  # Optimize in (log(shape), shape*log(reciprocal scale)), where the
+  # mathematical optimum stays finite although the reported scale cannot.
+  objective<-function(p) {
+    a<-exp(p[1]); t<--a*lx-p[2]
+    soft<-pmax(t,0)+log1p(exp(-abs(t)))
+    -(2*length(x)*p[1]-a*sum(lx)-length(x)*p[2]-sum(lx)-(a+1)*sum(soft))
+  }
+  o<-optim(c(-6,-6),objective,method="BFGS",control=list(reltol=1e-12,maxit=1000))
+  expect_gt(abs(o$par[2]/exp(o$par[1])),log(.Machine$double.xmax))
+  expect_error(mlinvparalogis(x),"double precision")
+})
+
+test_that("constant free-scale invparalogis data have an unbounded likelihood", {
+  expect_error(mlinvparalogis(rep(2,5)),"does not exist")
+})

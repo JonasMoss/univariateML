@@ -10,6 +10,8 @@
 #pragma once
 
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
+#include <vector>
 
 #include <cmath>
 #include <cstddef>
@@ -100,6 +102,16 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
   if (n < 2) return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
   for (auto v : x) {
     if (!std::isfinite(v)) return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
+  }
+  const auto moments = norm_detail::moments(x);
+  if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
+      (moments.sd < 1e-100 || moments.sd > 1e100 || std::abs(moments.mean) > 1e6 * moments.sd)) {
+    std::vector<double> z(n);
+    for (std::size_t i = 0; i < n; ++i)
+      z[i] = static_cast<double>((static_cast<long double>(x[i]) - moments.mean) / moments.sd);
+    const auto r = logistic_mle(span{z.data(), n}, tol, maxit);
+    return {moments.mean + moments.sd*r.mu, moments.sd*r.scale,
+            r.logLik - static_cast<double>(n)*std::log(moments.sd), r.iterations, r.status};
   }
   // One-pass Welford mean/variance for the seed.
   double mean = 0.0;

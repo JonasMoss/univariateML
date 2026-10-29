@@ -90,17 +90,35 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kEps = std::numeric_limits<double>::epsilon();
   const std::size_t n = x.size();
-  if (n < 3) return {kNaN, kNaN, kNaN, 0, CauchyStatus::NoMLE};
+  if (n < 2) return {kNaN, kNaN, kNaN, 0, CauchyStatus::NoMLE};
   for (auto v : x) {
     if (!std::isfinite(v)) return {kNaN, kNaN, kNaN, 0, CauchyStatus::InvalidInput};
   }
 
   std::vector<double> data(x.begin(), x.end());
   std::sort(data.begin(), data.end());
+  // Two equally weighted support points have a continuum of attained
+  // maxima (including location midpoint, scale half their separation).
+  if (n % 2 == 0 && data.front() != data.back() &&
+      data[n / 2 - 1] == data.front() && data[n / 2] == data.back()) {
+    const double mu = data.front() / 2.0 + data.back() / 2.0;
+    const double scale = data.back() / 2.0 - data.front() / 2.0;
+    return {mu, scale, -static_cast<double>(n) *
+            (std::log(2.0 * M_PI) + std::log(scale)), 0, CauchyStatus::Ok};
+  }
   std::size_t run = 1;
   for (std::size_t i = 1; i < n; ++i) {
     run = data[i] == data[i - 1] ? run + 1 : 1;
     if (2 * run >= n) return {kNaN, kNaN, kNaN, 0, CauchyStatus::NoMLE};
+  }
+  const double span_scale = data.back() / 2.0 - data.front() / 2.0;
+  const double centre = data.front() / 2.0 + data.back() / 2.0;
+  if (span_scale > 0.0 && std::isfinite(span_scale) &&
+      (span_scale < 1e-100 || span_scale > 1e100 || std::abs(centre) > 1e6 * span_scale)) {
+    for (std::size_t i = 0; i < n; ++i) data[i] = static_cast<double>((static_cast<long double>(x[i]) - centre) / span_scale);
+    const auto r = fit_cauchy(span{data.data(), n}, tol, maxit);
+    return {centre + span_scale * r.mu, span_scale * r.scale,
+            r.logLik - static_cast<double>(n) * std::log(span_scale), r.iterations, r.status};
   }
   double mu = data[n / 2];
 

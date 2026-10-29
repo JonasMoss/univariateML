@@ -117,3 +117,24 @@ test_that("fixed nu agrees with density oracle and records two free parameters",
   expect_error(mlstd(x, nu = 4, iterlim = 0), "score tolerance")
   expect_s3_class(mlstd(qnorm((1:100-.5)/100), nu = 4), "univariateML")
 })
+
+test_that("std scale extremes preserve fit or declared escape", {
+  set.seed(10)
+  x <- simulate_default("mlstd",50)
+  base <- tryCatch(mlstd(x),error=function(e) conditionMessage(e))
+  for(s in c(1e-300,1e300)) {
+    f <- tryCatch(mlstd(x*s),error=function(e) conditionMessage(e))
+    if(is.character(base)) expect_identical(f,base) else {
+      expect_false(is.character(f))
+      if(!is.character(f)) expect_equal(attr(f,"logLik")+length(x)*log(s),attr(base,"logLik"),tolerance=1e-4)
+    }
+  }
+})
+
+test_that("std large-sample fitting preserves likelihood under replication", {
+  x<-qt(((1:1000)-.5)/1000,df=4)/sqrt(2)
+  base<-mlstd(x)
+  y<-rep(x,100)
+  f<-mlstd(y)
+  expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
+})

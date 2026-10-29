@@ -75,6 +75,21 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   auto log_likelihood = [&](double size) {
     // Continuous extension x*log(x) = 0 at x = 0.
     if (x_bar == 0.0 || size == x_bar) return 0.0;
+    if (static_cast<double>(max_x) / size < 1e-5) {
+      // Poisson-scale form of the exact binomial likelihood. Expand only
+      // sum_{j=0}^{x-1} log(1-j/size), with error O(x (x/size)^4).
+      double ll = 0.0;
+      for (std::size_t i = 0; i < uniq.size(); ++i) {
+        const double k = static_cast<double>(uniq[i]);
+        const double q = (k - 1.0) / size;
+        const double correction = -0.5 * k * q -
+            k * q * ((2.0 * k - 1.0) / size) / 12.0 -
+            k * k / size * q * q / 12.0;
+        ll += counts[i] * (k * std::log(x_bar) - std::lgamma(k + 1.0) +
+                          (size - k) * std::log1p(-x_bar / size) + correction);
+      }
+      return ll;
+    }
     const double size_m_x = size - x_bar;
     double val = dn * x_bar * std::log(x_bar) +
                  dn * size_m_x * std::log(size_m_x) - dn * size * std::log(size);

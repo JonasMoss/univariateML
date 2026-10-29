@@ -15,6 +15,7 @@
 #include "../../core/reductions.hpp"
 #include "../../core/reparam.hpp"
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
@@ -54,6 +55,7 @@ struct StudentTResult {
 // Sympy-derived; verified vs numerical Hessian to machine precision.
 struct StudentTCost {
   span x;
+  double divisor = 1.0;
   int dim() const { return 3; }
   double operator()(const double *phi) const {
     const double mu = phi[0];
@@ -69,7 +71,7 @@ struct StudentTCost {
       const double z = (v - mu) / sigma;
       neg += log_sigma - cppunivariate::dens::log_dstd_unit(z, nu);
     }
-    return neg;
+    return neg/divisor;
   }
   void hessian(const double *phi, double *H) const {
     const double mu = phi[0];
@@ -128,6 +130,7 @@ struct StudentTCost {
                         cppunivariate::special::trigamma(0.5 * nu);
     H[8] = 0.5 * nu1 * S_y_invR2 - S_z2_invR + 0.5 * m * S_logR -
            0.25 * m * m * dn * dtri - 0.5 * m * dn * dpsi;
+    for (int i=0;i<9;++i) H[i] /= divisor;
   }
 };
 
@@ -179,6 +182,19 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::InvalidStart};
 
+  const auto moments = norm_detail::moments(x);
+  if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
+      (moments.sd < 1e-3 || moments.sd > 1e3 || std::abs(moments.mean) > 1e6 * moments.sd)) {
+    std::vector<double> z(n);
+    for (std::size_t i = 0; i < n; ++i)
+      z[i] = static_cast<double>((static_cast<long double>(x[i]) - moments.mean) / moments.sd);
+    auto r = student_t_mle(span{z.data(), n}, tol, maxit);
+    r.mu = moments.mean + moments.sd*r.mu;
+    r.sigma *= moments.sd;
+    r.logLik -= static_cast<double>(n)*std::log(moments.sd);
+    return r;
+  }
+
   const double mean_x = cppunivariate::mean(x);
   double var_x = 0.0;
   for (auto v : x) {
@@ -191,7 +207,9 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
     return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::InvalidStart};
   }
 
-  StudentTCost cost{x};
+  const double dn = static_cast<double>(n);
+  const double objective_divisor = n>=100000 ? dn : 1.0;
+  StudentTCost cost{x,objective_divisor};
   finite_diff_cost<StudentTCost> fd{cost};
   const double phi0[3] = {mean_x, cppunivariate::to_log(sd_x),
                           cppunivariate::to_log_shift(6.0, 2.0)};
@@ -200,8 +218,7 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   ctl.grad_tol = tol;
   ctl.maxit = maxit;
   auto r = bfgs_minimize(fd, phi0, ctl);
-
-  const double dn = static_cast<double>(n);
+  r.f *= objective_divisor;
   const double normal_sd = sd_x * std::sqrt((dn - 1.0) / dn);
   double kurtosis = 0.0;
   for (double v : x) {
@@ -211,6 +228,7 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   if (kurtosis < 3.0) {
     const double start[3] = {mean_x, std::log(normal_sd), std::log(1e4 - 2.0)};
     auto large = bfgs_minimize(fd, start, ctl);
+    large.f *= objective_divisor;
     if (std::isfinite(large.f) && large.f < r.f) r = large;
   }
 

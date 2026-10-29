@@ -16,6 +16,7 @@
 #include "../../core/reductions.hpp"
 #include "../../core/reparam.hpp"
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
@@ -59,6 +60,7 @@ struct SstdResult {
 // fully-substituted symbolic Hessian to machine precision.
 struct SstdCost {
   span x;
+  double divisor = 1.0;
   int dim() const { return 4; }
   double operator()(const double *phi) const {
     const double mu = phi[0];
@@ -82,7 +84,7 @@ struct SstdCost {
       const double w = z > 0.0 ? z / xi : z * xi;
       neg -= log_const - half_power * std::log1p(w * w / (nu - 2.0));
     }
-    return neg;
+    return neg/divisor;
   }
   void hessian(const double *phi, double *H) const {
     const double mu = phi[0];
@@ -280,6 +282,7 @@ struct SstdCost {
     H[11] += f_lmlx_off;
     H[14] += f_lmlx_off;
     H[15] += dn * F_s_lxlx;
+    for (int i=0;i<16;++i) H[i] /= divisor;
   }
 };
 
@@ -457,6 +460,19 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
   if (n < 2)
     return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SstdStatus::InvalidStart};
 
+  const auto moments = norm_detail::moments(x);
+  if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
+      (moments.sd < 1e-3 || moments.sd > 1e3 || std::abs(moments.mean) > 1e6 * moments.sd)) {
+    std::vector<double> z(n);
+    for (std::size_t i = 0; i < n; ++i)
+      z[i] = static_cast<double>((static_cast<long double>(x[i]) - moments.mean) / moments.sd);
+    auto r = sstd_mle(span{z.data(), n}, tol, maxit);
+    r.mu = moments.mean + moments.sd*r.mu;
+    r.sigma *= moments.sd;
+    r.logLik -= static_cast<double>(n)*std::log(moments.sd);
+    return r;
+  }
+
   const double mean_x = cppunivariate::mean(x);
   double var_x = 0.0;
   for (auto v : x) {
@@ -477,7 +493,8 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
 
   // Interior: the historical start first (it fixes the golden), then
   // restarts; a restart replaces it only when better by more than `tie`.
-  SstdCost cost{x};
+  const double objective_divisor = n>=100000 ? dn : 1.0;
+  SstdCost cost{x,objective_divisor};
   finite_diff_cost<SstdCost> fd{cost};
   const auto sn = snorm_mle(x, tol, maxit);
   std::vector<std::vector<double>> starts;
@@ -499,6 +516,7 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
   std::vector<BfgsResult> interior;
   for (const auto &start : starts) {
     auto candidate = bfgs_minimize(fd, start.data(), ctl);
+    candidate.f *= objective_divisor;
     if (!std::isfinite(candidate.f)) continue;
     if (!std::isfinite(r.f) || candidate.f < r.f - tie) r = candidate;
     interior.push_back(candidate);

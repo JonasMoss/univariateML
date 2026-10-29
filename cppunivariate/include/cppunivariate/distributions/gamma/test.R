@@ -45,3 +45,24 @@ expect_equal(class(est), "univariateML")
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
+
+test_that("constant data have no attained gamma MLE", {
+  expect_error(mlgamma(rep(2, 5)), "does not exist")
+  expect_error(mlgamma(2), "does not exist")
+})
+
+test_that("gamma resolves near ties and extreme scales", {
+  x <- 1 + (0:4) * .Machine$double.eps
+  f <- mlgamma(x)
+  expect_gt(f[["shape"]], 1e29)
+  expect_true(is.finite(attr(f, "logLik")))
+  expect_equal(f[["shape"]] / f[["rate"]], mean(x))
+  y <- c(.2, .8, 1, 2, 4)
+  base <- mlgamma(y)
+  for (s in c(1e-300, 1e300)) {
+    f <- mlgamma(y * s)
+    expect_equal(f[["shape"]], base[["shape"]], tolerance = 1e-8)
+    expect_equal(f[["rate"]] * s, base[["rate"]], tolerance = 1e-8)
+    expect_equal(attr(f, "logLik") + length(y)*log(s), attr(base, "logLik"), tolerance = 1e-8)
+  }
+})

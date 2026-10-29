@@ -45,3 +45,17 @@ TEST_CASE("rzipf samples lie in {1, ..., N} and match the PMF") {
     CHECK(std::abs(empirical - analytic) < 0.02);
   }
 }
+
+TEST_CASE("zipf: large harmonic sums match direct sums") {
+  for (double s : {0.1,1.0,2.5,8.0}) {
+    const auto h = cppunivariate::zipf_detail::moments(10000,s);
+    double a=0,b=0,c=0;
+    for (int k=1;k<=10000;++k) {
+      const double l=std::log(static_cast<double>(k)), w=std::pow(static_cast<double>(k),-s);
+      a+=w; b+=w*l; c+=w*l*l;
+    }
+    CHECK(h.h == doctest::Approx(a).epsilon(1e-11));
+    CHECK(h.l == doctest::Approx(b).epsilon(1e-11));
+    CHECK(h.l2 == doctest::Approx(c).epsilon(1e-11));
+  }
+}

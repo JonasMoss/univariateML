@@ -15,6 +15,7 @@
 #include "../../core/reductions.hpp"
 #include "../../core/reparam.hpp"
 #include "../../core/span.hpp"
+#include "../norm/mle.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
@@ -274,12 +275,13 @@ struct SgedCost {
 // Fitting uses log(nu - 1), with the attained face compared separately.
 struct SgedFitCost {
   span x;
+  double divisor = 1.0;
   int dim() const { return 4; }
   double operator()(const double *phi) const {
     double q[4];
     for (int i = 0; i < 4; ++i) q[i] = phi[i];
     q[2] = std::log1p(std::exp(phi[2]));
-    return SgedCost{x}(q);
+    return SgedCost{x}(q)/divisor;
   }
 };
 
@@ -296,7 +298,9 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
     var_x += d * d;
   }
   var_x /= static_cast<double>(n - 1);
-  const double sd_x = std::sqrt(var_x);
+  double sd_x = std::sqrt(var_x);
+  if (!(sd_x > 0.0) || !std::isfinite(sd_x))
+    sd_x = norm_detail::moments(x).sd * std::sqrt(static_cast<double>(n) / (n-1.0));
   if (!std::isfinite(sd_x) || sd_x <= 0.0) {
     return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SgedStatus::InvalidStart};
   }
@@ -329,7 +333,8 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
     }
     prefix += c;
   }
-  SgedFitCost cost{span{z.data(), z.size()}};
+  const double objective_divisor = n>=100000 ? dn : 1.0;
+  SgedFitCost cost{span{z.data(), z.size()},objective_divisor};
   finite_diff_cost<SgedFitCost> fd{cost};
   BfgsControl ctl;
   ctl.grad_tol = tol;
@@ -338,6 +343,7 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
   for (double xi0 : {0.5, 1.0, 2.0}) {
     const double phi0[4] = {0.0, 0.0, std::log(nu0 - 1.0), std::log(xi0)};
     auto r = bfgs_minimize(fd, phi0, ctl);
+    r.f *= objective_divisor;
     if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
       best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
               std::exp(r.theta[3]),

@@ -41,3 +41,8 @@ expect_equal(
 ## Check class.
 expect_equal(attr(est, "model"), "InvGamma")
 expect_equal(class(est), "univariateML")
+
+test_that("constant data have no attained invgamma MLE", {
+  expect_error(mlinvgamma(rep(2, 5)), "does not exist")
+  expect_error(mlinvgamma(2), "does not exist")
+})

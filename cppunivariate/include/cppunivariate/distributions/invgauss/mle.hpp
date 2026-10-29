@@ -24,29 +24,25 @@ inline InvGaussResult invgauss_mle(span x) {
   if (n == 0) return {0.0, 0.0, kNaN};
 
   const double dn = static_cast<double>(n);
-  double sum = 0.0;
-  double sum_inv = 0.0;
   double sum_log = 0.0;
   for (auto v : x) {
-    sum += v;
-    sum_inv += 1.0 / v;
     sum_log += std::log(v);
   }
-  const double mu = sum / dn;
-  const double inv_x_bar = sum_inv / dn;
-  const double lambda = 1.0 / (inv_x_bar - 1.0 / mu);
+  long double total = 0.0L;
+  for (auto v : x) total += v;
+  const double mu = static_cast<double>(total / dn);
+  double lambda;
+  long double relative_ss = 0.0L;
+  for (auto v : x) {
+    const long double y = static_cast<long double>(v) / mu;
+    relative_ss += (y - 1.0L) * (y - 1.0L) / y;
+  }
+  lambda = static_cast<double>(static_cast<long double>(mu) * dn / relative_ss);
   const double L = sum_log / dn;
 
-  double sum_S = 0.0;
-  for (auto v : x) {
-    const double d = v - mu;
-    sum_S += d * d / v;
-  }
-  const double S = sum_S / dn;
-  const double logLik =
-      -0.5 * dn *
-      (3.0 * L - std::log(lambda) + std::log(2.0 * M_PI) +
-       lambda / (mu * mu) * S);
+  // At the profiled lambda, the quadratic term equals n exactly.
+  const double logLik = -0.5 * dn *
+      (3.0 * L - std::log(lambda) + std::log(2.0 * M_PI) + 1.0);
   return {mu, lambda, logLik};
 }
 

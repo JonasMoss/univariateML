@@ -38,10 +38,13 @@ inline PowerResult power_mle(span x, double epsilon) {
   double sum_log = 0.0;
   for (auto v : x) sum_log += std::log(v);
   const double m = sum_log / static_cast<double>(n);
-  const double alpha = xmax + epsilon;
-  const double beta = 1.0 / (std::log(alpha) - m);
+  double alpha = xmax + epsilon;
+  if (epsilon>0.0 && alpha == xmax) alpha = std::nextafter(xmax,std::numeric_limits<double>::infinity());
+  long double gap=0.0L;
+  for(auto v:x) gap+=std::log1p((static_cast<long double>(alpha)-v)/v);
+  const double beta=static_cast<double>(static_cast<long double>(n)/gap);
   const double logLik = static_cast<double>(n) *
-      (std::log(beta) - beta * std::log(alpha) + (beta - 1.0) * m);
+      (std::log(beta) - m - 1.0);
   return {alpha, beta, logLik, 0};
 }
 

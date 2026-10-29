@@ -23,6 +23,6 @@ The finite Zipf distribution describes power-law frequencies on consecutive posi
 
 ## Details
 
-`sads::qzipf` is repaired at runtime; the repair switches itself off once the reference is fixed.
+`sads::dzipf`, `pzipf`, `qzipf` and `rzipf` are repaired at runtime: `qzipf` is off by one, and all four return `NaN` at the attained uniform member `s = 0`, which they now evaluate as the smallest positive double. Each repair switches itself off once the reference is fixed.
 
-The fitted upper endpoint `N` is `max(x)` and is a positive integer. The support is the integers from one to `N`. A negative unconstrained shape estimate is rejected with status `ShapeNegative`; `s = 0` is the uniform boundary. With all observations equal to one the estimate is not unique and the fitter warns. This function fits observations directly; for rank-abundance data see `sads::fitzipf`. `sads::qzipf` 0.6.5 is off by one, so `qml` inverts the CDF itself while that defect persists (see `KNOWN_ISSUES.md`); `sads::pzipf` returns 0 at non-integer arguments.
+The fitted upper endpoint `N` is `max(x)` and is a positive integer. The support is the integers from one to `N`. A nonpositive score at zero selects the attained uniform boundary `s = 0`. Large supports use bounded-memory Euler–Maclaurin harmonic sums. With all observations equal to one the estimate is not unique and the fitter warns. This function fits observations directly; for rank-abundance data see `sads::fitzipf`. `sads::pzipf` returns 0 at non-integer arguments.

@@ -76,3 +76,10 @@ test_that("active truncated-normal repairs retain the half-normal map and endpoi
   set.seed(12); actual <- rml(30, fit)
   set.seed(12); expect_identical(actual, extraDistr::rtnorm(30, mu, sigma, a = mu))
 })
+
+test_that("half-normal re-profiles after rounding its endpoint", {
+  x <- 1e15 + c(0, 1, 2, 3)
+  f <- mlhnorm(x)
+  expect_equal(f[["sigma"]], sqrt(mean((x - f[["mu"]])^2)))
+  expect_equal(attr(f, "logLik"), sum(extraDistr::dtnorm(x, mean = f[["mu"]], sd = f[["sigma"]], a = f[["mu"]], log = TRUE)))
+})

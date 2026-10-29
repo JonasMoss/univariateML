@@ -102,6 +102,9 @@ ml_check_modify <- function(x, na.rm, name) {
   assert_that(NCOL(x) == 1, msg = msg)
   msg <- "NA in input when na.rm = FALSE"
   if (na.rm) x <- x[!is.na(x)] else assert_that(!anyNA(x), msg = msg)
+  # Without this, min/max of an empty vector pass the support checks and
+  # the fitters return NaN estimates.
+  if (!length(x)) stop("x must have positive length")
 
   support <- univariateML_metadata[[name]]$support
 
@@ -121,6 +124,11 @@ ml_check_modify <- function(x, na.rm, name) {
   if (support$type == "Z") {
     if (sum(abs(x - floor(x)) != 0)) {
       stop("Non-integral inputs for discrete density.")
+    }
+    # The count fitters take integer vectors; larger values would become
+    # NA_integer_ (the most negative int) and give silent nonsense.
+    if (max(abs(x)) > .Machine$integer.max) {
+      stop("Counts must not exceed .Machine$integer.max in absolute value.")
     }
   }
 
@@ -160,6 +168,12 @@ univariateML_dpqr_args <- function(estimates, name) {
   stats::setNames(lapply(unname(map), function(coef) values[[coef]]), names(map))
 }
 
+# Zipf shape s = 0 mapped to the smallest positive double (see the sads
+# entries in univariateML_reference_fixes).
+univariateML_zipf_s0 <- function(s) {
+  ifelse(!is.na(s) & s == 0, .Machine$double.xmin, s)
+}
+
 #' Workarounds for defects in reference functions
 #'
 #' Keyed by the reference function (`pkg::fn`). `broken()` tests for the
@@ -172,6 +186,11 @@ univariateML_dpqr_args <- function(estimates, name) {
 #' `sads::qzipf(0.5, N = 10, s = 1)` is 1, not 2. The replacement inverts
 #' the CDF built from `sads::dzipf`.
 #'
+#' sads requires `s > 0` in `dzipf`/`pzipf`/`qzipf`/`rzipf` (they return
+#' `NaN`), but `s = 0`, the uniform law, is an attained boundary of `mlzipf`.
+#' The replacements pass `s = .Machine$double.xmin` instead, where
+#' `x^-s` rounds to one, so sads itself computes the uniform law.
+#'
 #' `extraDistr::pdweibull` (extraDistr 1.10.0.5) does not floor its
 #' argument, e.g. `extraDistr::pdweibull(0.5, 0.7, 1)` is 0.414, not
 #' `pdweibull(0, 0.7, 1)` = 0.3. The replacement floors `q` and calls
@@ -181,15 +200,52 @@ univariateML_dpqr_args <- function(estimates, name) {
 univariateML_reference_fixes <- list(
   "sads::qzipf" = list(
     broken = function() {
-      tryCatch(sads::qzipf(0.5, N = 10, s = 1) != 2, error = function(e) TRUE)
+      tryCatch(sads::qzipf(0.5, N = 10, s = 1) != 2 ||
+                 is.nan(suppressWarnings(sads::qzipf(0.5, N = 2, s = 0))),
+               error = function(e) TRUE)
     },
     replacement = function(p, N, s, lower.tail = TRUE, log.p = FALSE) {
       if (log.p) p <- exp(p)
       if (!lower.tail) p <- 1 - p
-      cdf <- cumsum(sads::dzipf(seq_len(N), N = N, s = s))
+      cdf <- cumsum(sads::dzipf(seq_len(N), N = N, s = univariateML_zipf_s0(s)))
       q <- pmin(findInterval(p, cdf, left.open = TRUE) + 1, N)
       q[is.na(p) | p < 0 | p > 1] <- NaN
       q
+    }
+  ),
+  # sads requires s > 0, but s = 0 (the uniform law) is an attained boundary
+  # of mlzipf. Evaluate it as s = .Machine$double.xmin, where x^-s rounds to 1
+  # exactly, so the reference itself computes the uniform law.
+  "sads::dzipf" = list(
+    broken = function() {
+      tryCatch(is.nan(suppressWarnings(sads::dzipf(1, N = 2, s = 0))),
+               error = function(e) TRUE)
+    },
+    replacement = function(x, N, s, log = FALSE) {
+      sads::dzipf(x, N = N, s = univariateML_zipf_s0(s), log = log)
+    }
+  ),
+  "sads::pzipf" = list(
+    broken = function() {
+      tryCatch(is.nan(suppressWarnings(sads::pzipf(1, N = 2, s = 0))),
+               error = function(e) TRUE)
+    },
+    replacement = function(q, N, s, lower.tail = TRUE, log.p = FALSE) {
+      sads::pzipf(q, N = N, s = univariateML_zipf_s0(s),
+                  lower.tail = lower.tail, log.p = log.p)
+    }
+  ),
+  "sads::rzipf" = list(
+    broken = function() {
+      had_seed <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+      if (had_seed) saved_seed <- get(".Random.seed", envir = .GlobalEnv)
+      on.exit(if (had_seed) assign(".Random.seed", saved_seed, envir = .GlobalEnv)
+              else rm(".Random.seed", envir = .GlobalEnv))
+      tryCatch(is.nan(suppressWarnings(sads::rzipf(1, N = 2, s = 0))),
+               error = function(e) TRUE)
+    },
+    replacement = function(n, N, s) {
+      sads::rzipf(n, N = N, s = univariateML_zipf_s0(s))
     }
   ),
   "extraDistr::ptriang" = list(
