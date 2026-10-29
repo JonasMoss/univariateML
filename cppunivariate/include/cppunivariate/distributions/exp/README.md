@@ -11,17 +11,13 @@ params:
 r:
   density: stats::dexp
   sampler: stats::rexp
-  control: {}
+  control:
+    rate: Optional held rate; NULL estimates it.
 log_density: log(rate) - rate*x
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York."
 examples: |
   mlexp(precip)
-holds:
-- held:
-  - rate
-  status: not-implemented
-  reason: The adapter does not accept `rate`; this hold is not implemented (P2).
 ---
 
 The exponential distribution models nonnegative waiting times with a constant hazard rate.
@@ -29,3 +25,5 @@ The exponential distribution models nonnegative waiting times with a constant ha
 ## Details
 
 The rate estimate is the inverse sample mean.
+
+A held positive rate gives a finite likelihood even for all-zero data. A free rate has unbounded likelihood for all-zero data.

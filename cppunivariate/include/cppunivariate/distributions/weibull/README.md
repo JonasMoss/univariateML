@@ -17,6 +17,8 @@ r:
   density: stats::dweibull
   sampler: stats::rweibull
   control:
+    shape: Optional held shape; NULL estimates it.
+    scale: Optional held scale; NULL estimates it.
     shape0: Optional positive finite starting shape; `NULL` uses the automatic start.
     reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
     iterlim: Maximum number of iterations.
@@ -25,15 +27,12 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York."
 examples: |
   mlweibull(precip)
-holds:
-- held:
-  - shape
-  status: not-implemented
-  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
-- held:
-  - scale
-  status: not-implemented
-  reason: The adapter does not accept `scale`; this hold is not implemented (P2).
+limits:
+- name: unbounded likelihood
+  fixed: [scale]
+  when: Every observation equals held scale.
+  status: Unbounded
+  message: unbounded
 ---
 
 The Weibull distribution is used for lifetimes and reliability data.
@@ -41,3 +40,5 @@ The Weibull distribution is used for lifetimes and reliability data.
 ## Details
 
 The optional `shape0` start is functional here; it was documented but ignored in univariateML 1.x.
+
+With scale held, the likelihood is unbounded exactly when every observation equals that scale. Holding shape permits constant data.

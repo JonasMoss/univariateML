@@ -19,4 +19,13 @@ inline InvParetoResult invpareto_mle(span x, double tol, int maxit, double scale
   auto r = lomax_mle(span{y.data(), y.size()}, tol, maxit, scale0);
   return {r.kappa, r.lambda, r.logLik+jacobian, r.iterations, r.status};
 }
+
+inline InvParetoResult invpareto_mle(span x,double tol,int maxit,double scale0,double shape,double scale) {
+  if(std::isnan(shape) && std::isnan(scale))return invpareto_mle(x,tol,maxit,scale0);
+  std::vector<double> y;double jac=0;
+  for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+  const auto r=lomax_mle(span{y.data(),y.size()},tol,maxit,scale0,scale,shape);
+  return {r.kappa,r.lambda,r.logLik+jac,r.iterations,r.status};
+}
+
 } // namespace cppunivariate

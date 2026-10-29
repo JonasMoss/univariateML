@@ -13,11 +13,14 @@
 
 namespace cppunivariate {
 
+enum class WeibullStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct WeibullResult {
   double shape;
   double scale;
   double logLik;
   int iterations;
+  WeibullStatus status = WeibullStatus::Ok;
 };
 
 // shape0 is an optional positive starting shape; NaN keeps the automatic start.
@@ -45,6 +48,38 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
   // a difference of rounded log scales near a point mass.
   const double logLik = g.logLik + sum_log_x;
   return {shape, scale, logLik, g.iterations};
+}
+
+// Strictly decreasing fixed-scale shape score. Powers and the profiled
+// scale use log coordinates to avoid overflow on ordinary wide samples.
+inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,double shape,double scale) {
+  if (std::isnan(shape) && std::isnan(scale)) return weibull_mle(x,tol,maxit,shape0);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
+     (!std::isnan(scale) && !(scale>0 && std::isfinite(scale)))) return {nan,nan,nan,0,WeibullStatus::InvalidInput};
+  std::vector<double> logs;
+  for(double v:x) {if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,0,WeibullStatus::InvalidInput};logs.push_back(std::log(v));}
+  const double n=static_cast<double>(x.size());
+  int iterations=0;
+  if(std::isnan(scale)) {
+    double top=logs[0]; for(double v:logs) top=std::max(top,v);
+    long double shifted=0;
+    for(double v:logs)shifted+=std::expm1(static_cast<long double>(shape)*(v-top));
+    scale=std::exp(top+static_cast<double>(std::log1p(shifted/n)/shape));
+  }
+  const double ls=std::log(scale);
+  if(std::isnan(shape)) {
+    bool equal=true;for(double v:x)equal=equal && v==scale;
+    if(equal)return {nan,scale,nan,0,WeibullStatus::Unbounded};
+    auto score=[&](double k) {long double s=n/k;for(double v:logs){const double z=v-ls;s+=z-z*std::exp(k*z);}return s;};
+    double lo=-745,hi=710;
+    for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=(lo+hi)/2;if(score(std::exp(mid))>0)lo=mid;else hi=mid;++iterations;}
+    if(hi-lo>1e-12)return {nan,scale,nan,iterations,WeibullStatus::IterationFailure};
+    shape=std::exp((lo+hi)/2);
+  }
+  long double ll=0;
+  for(double v:logs){const double z=v-ls;ll+=std::log(shape)-v+shape*z-std::exp(shape*z);}
+  return {shape,scale,static_cast<double>(ll),iterations};
 }
 
 }  // namespace cppunivariate

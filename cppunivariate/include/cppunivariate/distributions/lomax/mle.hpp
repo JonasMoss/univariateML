@@ -296,4 +296,24 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit,
   return {std::exp(logq-std::log(m)),1.0/best_A,
       dn*(best-std::log(m)-1.0),iterations,LomaxStatus::Ok};
 }
+
+inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double lambda,double kappa) {
+  if(std::isnan(lambda) && std::isnan(kappa))return lomax_mle(x,tol,maxit,lambda0);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(lambda) && !(lambda>0 && std::isfinite(lambda))) ||
+     (!std::isnan(kappa) && !(kappa>0 && std::isfinite(kappa))))return {nan,nan,nan,0,LomaxStatus::InvalidStart};
+  for(double v:x)if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,0,LomaxStatus::InvalidStart};
+  const double n=static_cast<double>(x.size());int iterations=0;
+  if(std::isnan(lambda)) {
+    double lo=-745,hi=710;
+    for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=(lo+hi)/2;long double score=n;for(double v:x){const double z=mid+std::log(v);score-=(kappa+1)/(1+std::exp(-z));}if(score>0)lo=mid;else hi=mid;++iterations;}
+    if(hi-lo>1e-12)return {nan,kappa,nan,iterations,LomaxStatus::IterationFailure};
+    lambda=std::exp((lo+hi)/2);
+  }
+  double s=0;for(double v:x){const double z=std::log(lambda)+std::log(v);s+=std::max(z,0.0)+std::log1p(std::exp(-std::abs(z)));}
+  if(std::isnan(kappa))kappa=n/s;
+  const double ll=n*(std::log(lambda)+std::log(kappa))-(kappa+1)*s;
+  return {lambda,kappa,ll,iterations,LomaxStatus::Ok};
+}
+
 }  // namespace cppunivariate

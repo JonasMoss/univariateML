@@ -47,4 +47,12 @@ inline RayleighResult rayleigh_mle(span x) {
   return {sigma, logLik};
 }
 
+inline RayleighResult rayleigh_mle(span x,double sigma) {
+  if(std::isnan(sigma))return rayleigh_mle(x);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(!(sigma>0 && std::isfinite(sigma)) || x.size()==0)return {nan,nan,RayleighStatus::InvalidData};
+  long double ll=0;for(double v:x){if(v==0)return {nan,nan,RayleighStatus::ZeroLikelihood};if(!(v>0 && std::isfinite(v)))return {nan,nan,RayleighStatus::InvalidData};const long double z=static_cast<long double>(v)/sigma;ll+=std::log(v)-2*std::log(sigma)-z*z/2;}
+  return {sigma,static_cast<double>(ll),RayleighStatus::Ok};
+}
+
 }  // namespace cppunivariate

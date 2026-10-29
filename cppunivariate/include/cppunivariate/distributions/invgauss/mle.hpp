@@ -12,10 +12,13 @@
 
 namespace cppunivariate {
 
+enum class InvGaussStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct InvGaussResult {
   double mu;
   double lambda;
   double logLik;
+  InvGaussStatus status = InvGaussStatus::Ok;
 };
 
 inline InvGaussResult invgauss_mle(span x) {
@@ -44,6 +47,22 @@ inline InvGaussResult invgauss_mle(span x) {
   const double logLik = -0.5 * dn *
       (3.0 * L - std::log(lambda) + std::log(2.0 * M_PI) + 1.0);
   return {mu, lambda, logLik};
+}
+
+inline InvGaussResult invgauss_mle(span x,double mu,double shape) {
+  if(std::isnan(mu) && std::isnan(shape))return invgauss_mle(x);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.size()==0 || (!std::isnan(mu) && !(mu>0 && std::isfinite(mu))) ||
+     (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))))return {nan,nan,nan,InvGaussStatus::InvalidInput};
+  long double total=0,logs=0;
+  for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,InvGaussStatus::InvalidInput};total+=v;logs+=std::log(v);}
+  const double n=static_cast<double>(x.size());
+  if(std::isnan(mu))mu=static_cast<double>(total/n);
+  long double q=0;for(double v:x){const long double d=(static_cast<long double>(v)-mu)/mu;q+=d*d/v;}
+  if(std::isnan(shape) && q==0)return {mu,nan,nan,InvGaussStatus::Unbounded};
+  if(std::isnan(shape))shape=static_cast<double>(n/q);
+  const double ll=static_cast<double>(0.5*n*(std::log(shape)-std::log(2*M_PI))-1.5*logs-0.5*shape*q);
+  return {mu,shape,ll};
 }
 
 }  // namespace cppunivariate
