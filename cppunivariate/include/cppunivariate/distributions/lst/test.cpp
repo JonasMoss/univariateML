@@ -74,7 +74,7 @@ TEST_CASE("lst: fixed df score, ties and validation") {
     CHECK(std::hypot(r.sigma*g[0],g[1]) < 1e-8);
     CHECK(r.logLik == doctest::Approx(-cost(p)).epsilon(1e-12));
   }
-  for (double df : {0.0,0.5,-1.0,std::numeric_limits<double>::infinity()})
+  for (double df : {0.0,-1.0,std::numeric_limits<double>::infinity()})
     CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(x),df,1e-8,100).status == cppunivariate::LstStatus::InvalidDf);
   const std::vector<double> tied = {0,0,0,1};
   CHECK(cppunivariate::lst_mle_fixed_df(mltest::as_span(tied),2,1e-8,100).status == cppunivariate::LstStatus::Unbounded);
@@ -111,7 +111,7 @@ TEST_CASE("lst: every held golden subset preserves coefficients and likelihood")
 TEST_CASE("lst: held-location half ties compare the normal face") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> x={0,1};
-  CHECK(cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,nan,nan).status==cppunivariate::LstStatus::NormalBoundary);
+  CHECK(cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,nan,nan).status==cppunivariate::LstStatus::Unbounded);
 }
 
 TEST_CASE("lst: held profiles preserve extreme units") {
@@ -151,4 +151,13 @@ TEST_CASE("lst: targeted tail scaling before exponentiation") {
         == doctest::Approx(-4144.5554439502375).epsilon(1e-10));
   CHECK(cppunivariate::distributions::dlst(1e300,0,1e-300,3,true)
         == doctest::Approx(-4834.232359559784).epsilon(1e-10));
+}
+
+
+TEST_CASE("lst: P3 restrictions and closed faces") {
+ const std::vector<double> x{-100,-2,-.01,0,.01,2,100};const auto data=mltest::as_span(x);
+ const auto f=cppunivariate::lst_mle(data,1e-8,1000); REQUIRE(f.status==cppunivariate::LstStatus::Ok);
+ CHECK(f.df==1);CHECK(f.restricted==16u);
+ const auto h=cppunivariate::lst_mle(data,1e-8,1000,0,1,.5);
+ CHECK(h.status==cppunivariate::LstStatus::Ok);CHECK(h.restricted==0u);
 }

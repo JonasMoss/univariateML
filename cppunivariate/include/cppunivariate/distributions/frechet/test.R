@@ -1,24 +1,37 @@
+# Independent R7a likelihood: former references assign zero at xi=-1 endpoints.
+extreme_closed_density <- function(id, x, ..., log = FALSE) {
+  a <- list(...)
+  if (id %in% c("gev", "gpd") && !is.null(a$xi) && a$xi == -1) {
+    mu <- a$mu; sigma <- a$sigma
+    slack <- 8*.Machine$double.eps*pmax(1, abs(x), abs(mu), sigma)
+    ll <- if (id == "gev") -base::log(sigma)+(x-mu)/sigma-1 else rep(-base::log(sigma),length(x))
+    ll[x > mu+sigma+slack | (id == "gpd" & x < mu)] <- -Inf
+    return(if(log) ll else exp(ll))
+  }
+  do.call(getExportedValue("extraDistr", paste0("d",id)), c(list(x=x,log=log),a))
+}
+
 test_that("frechet: held location, attained shape boundary and escape", {
  x <- extraDistr::qfrechet((1:100-.5)/100,lambda=.7,mu=2,sigma=3)
- f <- mlfrechet(x,mu=2)
+ f <- suppressWarnings(mlfrechet(x,mu=2), classes = "univariateML_restricted")
  b <- mlinvweibull(x-2,reltol=1e-10)
  expect_equal(unname(f["lambda"]),unname(b["shape"]),tolerance=1e-10)
  expect_equal(unname(f["sigma"]),1/unname(b["rate"]),tolerance=1e-10)
  expect_equal(attr(f,"logLik"),attr(b,"logLik"),tolerance=1e-10)
- free <- mlfrechet(x, mu = NULL)
+ free <- suppressWarnings(mlfrechet(x, mu = NULL), classes = "univariateML_restricted")
  expect_equal(unname(free["lambda"]),1)
- expect_error(mlfrechet(c(1,1,2), mu = NULL),"tie")
- expect_error(mlfrechet(1:5,mu=1),"strictly")
- expect_error(mlfrechet(1:5,mu=Inf),"finite")
- expect_error(mlfrechet(rep(1,5),mu=0),"nonconstant")
- expect_error(mlfrechet(x,iterlim=1, mu = NULL),"converge")
- expect_error(mlfrechet(x,mu=2,iterlim=1),"converge")
- expect_error(mlfrechet(extraDistr::qgumbel((1:100-.5)/100), mu = NULL),"mlgumbel")
+ expect_error(suppressWarnings(mlfrechet(c(1,1,2), mu = NULL), classes = "univariateML_restricted"),"tie")
+ expect_error(suppressWarnings(mlfrechet(1:5,mu=1), classes = "univariateML_restricted"),"strictly")
+ expect_error(suppressWarnings(mlfrechet(1:5,mu=Inf), classes = "univariateML_restricted"),"finite")
+ expect_error(suppressWarnings(mlfrechet(rep(1,5),mu=0), classes = "univariateML_restricted"),"nonconstant")
+ expect_error(suppressWarnings(mlfrechet(x,iterlim=1, mu = NULL), classes = "univariateML_restricted"),"converge")
+ expect_error(suppressWarnings(mlfrechet(x,mu=2,iterlim=1), classes = "univariateML_restricted"),"converge")
+ expect_error(suppressWarnings(mlfrechet(extraDistr::qgumbel((1:100-.5)/100), mu = NULL), classes = "univariateML_restricted"),"mlgumbel")
  expect_equal(sum(dml(x,f,log=TRUE)),attr(f,"logLik"),tolerance=1e-10)
  set.seed(12); a<-rml(20,f);set.seed(12);expect_identical(rml(20,f),a)
  for(shape in c(.5,1,3)) {
    y <- extraDistr::qfrechet((1:80-.5)/80,lambda=shape)
-   fit <- mlfrechet(y, mu = NULL)
+   fit <- suppressWarnings(mlfrechet(y, mu = NULL), classes = "univariateML_restricted")
    objective <- function(z) -sum(extraDistr::dfrechet(y,lambda=1+exp(z[1]),mu=min(y)-exp(z[2]),sigma=exp(z[3]),log=TRUE))
    for(delta in c(-.3,0,.3)) {
      start <- c(log(max(fit["lambda"]-1,1e-6)),log(min(y)-fit["mu"]),log(fit["sigma"]))
@@ -62,7 +75,7 @@ test_that("frechet: an independent Gumbel-face oracle finds no better member", {
    o <- optim(start,nll,method="Nelder-Mead",control=list(maxit=2000,reltol=1e-12))
    expect_lte(-o$value,attr(g,"logLik")+1e-6*length(y))
  }
- expect_error(mlfrechet(y, mu = NULL),"mlgumbel")
+ expect_error(suppressWarnings(mlfrechet(y, mu = NULL), classes = "univariateML_restricted"),"mlgumbel")
 })
 
 test_that("threshold tail repairs retain finite answers under extreme rescaling", {
@@ -80,7 +93,7 @@ test_that("threshold tail repairs retain finite answers under extreme rescaling"
 
 test_that("Frechet free location accepts ties above the minimum", {
   x <- c(0,1,2,2,2)
-  f <- tryCatch(mlfrechet(x, mu = NULL), error=identity)
+  f <- tryCatch(suppressWarnings(mlfrechet(x, mu = NULL), classes = "univariateML_restricted"), error=identity)
   if (inherits(f,"error")) expect_match(conditionMessage(f), "mlgumbel")
   else expect_equal(as.numeric(logLik(f)), sum(extraDistr::dfrechet(x,f[1],f[2],f[3],log=TRUE)), tolerance=1e-8)
 })
@@ -96,7 +109,7 @@ test_that("frechet: new holds agree with independent multistart reference fits",
     c(.2,.5,.5,1,2,3,4), c(.2,.8),
     if(id=="frechet") extraDistr::qgumbel((1:20-.5)/20) else rexp(20),
     if(id=="gev") extraDistr::qgev((1:20-.5)/20,xi=-.9) else runif(20,.1,2))
-  density <- getExportedValue("extraDistr",paste0("d",id))
+  density <- function(x,...,log=FALSE) extreme_closed_density(id,x,...,log=log)
   for(x in samples) for(mask in masks) {
     held <- pars[as.logical(intToBits(mask)[1:3])]
     unit <- max(sd(x),diff(range(x)),.1)
@@ -105,7 +118,7 @@ test_that("frechet: new holds agree with independent multistart reference fits",
     values <- base[held]
     args <- c(list(x=x),values)
     if(id=="frechet" && !"mu" %in% held) args["mu"] <- list(NULL)
-    f <- do.call(get(paste0("ml",id)),args)
+    f <- suppressWarnings(do.call(get(paste0("ml",id)),args), classes="univariateML_restricted")
     expect_identical(unname(as.numeric(f[held])),unname(unlist(values)))
     expect_setequal(attr(f,"fixed"),held)
     expect_equal(as.numeric(logLik(f)),sum(do.call(density,c(list(x=x,log=TRUE),as.list(f)))),tolerance=1e-8)
@@ -119,8 +132,8 @@ test_that("frechet: new holds agree with independent multistart reference fits",
       a <- base
       for(j in seq_along(free)) a[[free[j]]] <- decode(free[j],z[j])
       if(any(!is.finite(unlist(a))) ||
-         (id=="gev" && (a$xi < -.5 || a$xi>1)) ||
-         (id=="gpd" && a$xi < -.5) ||
+         (id=="gev" && (a$xi < -1 || a$xi>1)) ||
+         (id=="gpd" && a$xi < -1) ||
          (id=="frechet" && !"lambda" %in% held && !"mu" %in% held && a$lambda<1)) return(1e100)
       ll <- suppressWarnings(sum(do.call(density,c(list(x=x,log=TRUE),a))))
       if(is.finite(ll)) -ll else 1e100
@@ -142,28 +155,28 @@ test_that("frechet: new holds agree with independent multistart reference fits",
 
 test_that("Frechet holds diagnose collapse, constant shape divergence and domains", {
   for(v in c(0,-1,Inf,NaN)) {
-    expect_error(mlfrechet(1:5,mu=0,lambda=v),"positive.*finite")
-    expect_error(mlfrechet(1:5,mu=0,sigma=v),"positive.*finite")
+    expect_error(suppressWarnings(mlfrechet(1:5,mu=0,lambda=v), classes = "univariateML_restricted"),"positive.*finite")
+    expect_error(suppressWarnings(mlfrechet(1:5,mu=0,sigma=v), classes = "univariateML_restricted"),"positive.*finite")
   }
-  expect_error(mlfrechet(1:5,mu=1,lambda=2),"strictly")
-  expect_error(mlfrechet(c(1,1,2,3),mu=NULL,lambda=1),"collapse")
-  expect_error(mlfrechet(rep(2,4),mu=NULL,sigma=1),"unbounded")
-  expect_error(mlfrechet(rep(2,4),mu=0,sigma=2),"unbounded")
-  expect_error(mlfrechet(1:5,mu=0,sigma=1,iterlim=1),"converge")
+  expect_error(suppressWarnings(mlfrechet(1:5,mu=1,lambda=2), classes = "univariateML_restricted"),"strictly")
+  expect_error(suppressWarnings(mlfrechet(c(1,1,2,3),mu=NULL,lambda=1), classes = "univariateML_restricted"),"collapse")
+  expect_error(suppressWarnings(mlfrechet(rep(2,4),mu=NULL,sigma=1), classes = "univariateML_restricted"),"unbounded")
+  expect_error(suppressWarnings(mlfrechet(rep(2,4),mu=0,sigma=2), classes = "univariateML_restricted"),"unbounded")
+  expect_error(suppressWarnings(mlfrechet(1:5,mu=0,sigma=1,iterlim=1), classes = "univariateML_restricted"),"converge")
   for(h in list(list(mu=0,lambda=.5),list(mu=NULL,lambda=.5,sigma=1),list(mu=0,sigma=1))) {
     f <- do.call(mlfrechet,c(list(x=2),h))
     expect_true(is.finite(logLik(f)))
   }
   # All held is an evaluation, including a single point at the scale.
-  expect_equal(as.numeric(logLik(mlfrechet(2,mu=0,lambda=.5,sigma=2))),log(.5/2)-1)
+  expect_equal(as.numeric(logLik(suppressWarnings(mlfrechet(2,mu=0,lambda=.5,sigma=2), classes = "univariateML_restricted"))),log(.5/2)-1)
 })
 
 test_that("Frechet fixed shape rejects a constant sample with both scales free", {
-  expect_error(mlfrechet(rep(2,4),mu=NULL,lambda=2),"collapse")
+  expect_error(suppressWarnings(mlfrechet(rep(2,4),mu=NULL,lambda=2), classes = "univariateML_restricted"),"collapse")
 })
 
 test_that("Frechet tiny held shape retains its exact scale limit", {
-  f <- mlfrechet(c(1,4),mu=0,lambda=1e-20)
+  f <- suppressWarnings(mlfrechet(c(1,4),mu=0,lambda=1e-20), classes = "univariateML_restricted")
   expect_equal(unname(f["sigma"]),2,tolerance=1e-14)
   expect_identical(unname(f["lambda"]),1e-20)
 })

@@ -37,7 +37,7 @@ TEST_CASE("tlambda: golden and fixed shape") {
     auto u=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,l);
     CHECK(u.mu==0);CHECK(u.sigma==2*l);CHECK(u.logLik==doctest::Approx(-5*std::log(4.0)));
   }
-  CHECK(cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,3).status==cppunivariate::TlambdaStatus::InvalidShape);
+  CHECK(cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,INFINITY).status==cppunivariate::TlambdaStatus::InvalidShape);
   const std::vector<double> collapsed={0,1e-300,2e-300,1e300};
   CHECK(cppunivariate::tlambda_mle(mltest::as_span(collapsed)).status==cppunivariate::TlambdaStatus::InvalidData);
   const std::vector<double> tied={0,0,0,1,2};
@@ -83,7 +83,22 @@ TEST_CASE("tlambda: every held golden subset preserves coefficients and likeliho
 TEST_CASE("tlambda: held-location half ties can attain their maximum") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> x={0,1};
-  CHECK(cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,nan,0,nan).status==cppunivariate::TlambdaStatus::Ok);
+  CHECK(cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,nan,0,nan).status==cppunivariate::TlambdaStatus::Unbounded);
+}
+
+TEST_CASE("tlambda: P3 restrictions and closed faces") {
+ const std::vector<double> x{-2,-1,0,1,2};const auto data=mltest::as_span(x);
+ const auto f=cppunivariate::tlambda_mle(data);REQUIRE(f.status==cppunivariate::TlambdaStatus::Ok);
+ CHECK(f.lambda==1);CHECK(f.restricted==32u);
+ const auto h=cppunivariate::tlambda_mle(data,1e-7,1000,1);CHECK(h.restricted==0u);
+}
+TEST_CASE("tlambda: held shapes outside both free restrictions are evaluation") {
+ const std::vector<double> x{-2,-1,0,1,2};
+ for(double l:{-2.0,3.0}) {
+   const auto r=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,l,0,10);
+   CHECK(r.status==cppunivariate::TlambdaStatus::Ok);CHECK(r.lambda==l);
+   CHECK(std::isfinite(r.logLik));CHECK(r.restricted==0u);
+ }
 }
 
 

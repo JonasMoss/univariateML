@@ -38,10 +38,12 @@ test_that("binomial probability boundaries have log likelihood zero", {
 test_that("other discrete zero-data fits have the point-mass likelihood", {
   expect_equal(attr(mlpois(c(0, 0, 0)), "logLik"), 0)
   expect_equal(attr(mlgeom(c(0, 0, 0)), "logLik"), 0)
-  expect_warning(fit <- mlnbinom(c(0, 0, 0)), "All observations are 0")
-  expect_equal(as.numeric(fit), c(1, 1))
+  # R7 (A2): size 0 is the attained point mass at 0; prob is unidentified
+  # and reported as 0.5 (P3 domains).
+  expect_silent(fit <- mlnbinom(c(0, 0, 0)))
+  expect_equal(as.numeric(fit), c(0, 0.5))
   expect_equal(attr(fit, "logLik"), 0)
-  expect_warning(fixed <- mlnbinom(c(0, 0, 0), size = 3), "All observations are 0")
+  expect_silent(fixed <- mlnbinom(c(0, 0, 0), size = 3))
   expect_equal(attr(fixed, "logLik"), 0)
 })
 

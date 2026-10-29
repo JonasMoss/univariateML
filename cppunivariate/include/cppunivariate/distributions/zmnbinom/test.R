@@ -152,3 +152,7 @@ test_that("P2 held p0 retains the conditional Poisson escape", {
 test_that("P2 held-probability search respects iteration failure", {
   expect_error(mlzmnbinom(c(0,1,2,5),prob=.4,iterlim=1),"Profile search")
 })
+
+test_that("P3 insufficient profile refinement stops", {
+ expect_error(mlzmnbinom(c(0,0,1,2,8)[c(1,2,3,4,5)],iterlim=1),"Profile search exhausted")
+})

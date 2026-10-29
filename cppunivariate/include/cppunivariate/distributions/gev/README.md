@@ -15,15 +15,14 @@ params:
   kind: regular
 - name: xi
   role: shape
-  domain: '[-0.5, 1]'
+  domain: '(-inf, inf)'
   simulate: 0.3
   fit_domain:
   - lower: -1.0
     restriction:
       mechanism: endpoint
       exempt_when_held: []
-      reason: xi >= -1 prevents an upper-endpoint singularity; the current fitter
-        still uses -1/2 until P3.
+      reason: xi >= -1 prevents an upper-endpoint singularity.
   - upper: 1.0
     restriction:
       mechanism: collapse
@@ -36,7 +35,7 @@ r:
   control:
     mu: Location to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
-    xi: Shape to hold fixed, or NULL to estimate within [-1/2, 1]. Held shapes above one are accepted with location or scale held when the collapse criterion permits.
+    xi: Shape to hold fixed, or NULL to estimate within [-1, 1]. Held shapes above one are accepted when the collapse criterion permits.
     reltol: Tolerance for dimensionless profile scores and root brackets.
     iterlim: Maximum iterations per scalar solve.
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
@@ -55,8 +54,8 @@ For positive held shape, collapse is governed by the multiplicity of the sample 
 
 `extraDistr::qgev`, `rgev` and the upper-tail log of `pgev` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
 
-Free-shape fitting currently restricts xi to [-1/2, 1]; changing the lower
-bound and endpoint closure is reserved for P3. The default fit requires
+Free-shape fitting restricts xi to [-1, 1], with the attained closed
+reversed-exponential member at xi=-1. The default fit requires
 three finite nonconstant observations. Only ties at the minimum enter the
 collapse test. With held positive xi and free location and scale, a minimum
 repeated k times requires xi*k < n-k. With mu held at the minimum and
@@ -72,5 +71,16 @@ interior maxima and both attained shape bounds. The implementation scans
 and refines scalar brackets after standardization; global discovery is
 checked against independent multistart density fits rather than proved.
 
-With location or scale held, a held xi above one is accepted whenever
-the stated collapse test permits it; the current lower bound remains -1/2.
+A held xi above one is accepted whenever the stated collapse test permits
+it. Held xi below -1 is accepted for fully held evaluation, or with mu held
+at or above the sample maximum; other subsets have endpoint divergence.
+
+The fitting restriction is for existence. Fits with `xi` in `[-1, -1/2)`
+are non-regular. At `xi = -1` the likelihood uses the closed upper endpoint
+(R7a): the uniform GPD or reversed-exponential GEV is attained.
+
+Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
+and emit a warning of class `univariateML_restricted`. Held coefficients are
+not flagged. README hold exemptions apply to free coefficients. Failed
+optimizers return a failure status unless the score norm in fitting
+coordinates is below `1e-3`; unresolved scalar searches stop.

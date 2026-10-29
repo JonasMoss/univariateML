@@ -42,26 +42,27 @@ Rcpp::List mlsged_(const Rcpp::NumericVector &x,
       !std::isfinite(res.nu) || !std::isfinite(res.xi)) {
     Rcpp::stop("Skew GED MLE failed to converge (check inputs)");
   }
-  if(res.status==cppunivariate::SgedStatus::BfgsFailure) {
-    cppunivariate::SgedCost cost{dist_impl::as_span(x)};
-    const double phi[4]={res.mu,std::log(res.sigma),std::log(res.nu),std::log(res.xi)};
-    double score[4];
-    cppunivariate::finite_diff_gradient(cost,phi,score);
-    double norm=0;
-    for(double v:score) norm+=v*v;
-    if(!(std::sqrt(norm)<1e-3)) Rcpp::stop("Skew fit optimizer failed its score check; increase `iterlim`.");
-  }
+  if(res.status==cppunivariate::SgedStatus::BfgsFailure) Rcpp::stop("Skew fit optimizer failed its score check; increase `iterlim`.");
   Rcpp::CharacterVector fixed;
   if(mean.isNotNull()) fixed.push_back("mean");
   if(sd.isNotNull()) fixed.push_back("sd");
   if(nu.isNotNull()) fixed.push_back("nu");
   if(xi.isNotNull()) fixed.push_back("xi");
+  Rcpp::CharacterVector restricted;
+  if(res.restricted & 1u) restricted.push_back("lower","mean");
+  if(res.restricted & 2u) restricted.push_back("upper","mean");
+  if(res.restricted & 4u) restricted.push_back("lower","sd");
+  if(res.restricted & 8u) restricted.push_back("upper","sd");
+  if(res.restricted & 16u) restricted.push_back("lower","nu");
+  if(res.restricted & 32u) restricted.push_back("upper","nu");
+  if(res.restricted & 64u) restricted.push_back("lower","xi");
+  if(res.restricted & 128u) restricted.push_back("upper","xi");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mean"] = res.mu, Rcpp::_["sd"] = res.sigma,
           Rcpp::_["nu"] = res.nu, Rcpp::_["xi"] = res.xi),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
-      Rcpp::_["fixed"] = fixed);
+      Rcpp::_["restricted"]=restricted, Rcpp::_["fixed"] = fixed);
 }
 
 #include "dpqr.h"

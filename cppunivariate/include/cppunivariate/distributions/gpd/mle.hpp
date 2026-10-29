@@ -7,11 +7,13 @@
 #include <vector>
 
 namespace cppunivariate {
+inline constexpr double kGpdXiLower = -1.0;
+
 enum class GpdStatus { Ok, InvalidData, InvalidShape, IterationFailure };
 struct GpdResult {
   double mu, sigma, xi, logLik;
   int iterations;
-  GpdStatus status;
+  GpdStatus status; unsigned restricted = 0;
 };
 // log1p(xi*z)/xi, including the interior exponential member.
 inline double gpd_log_ratio(double z, double xi) {
@@ -21,6 +23,11 @@ inline double gpd_log_ratio(double z, double xi) {
   return std::log1p(v)/xi;
 }
 inline double gpd_loglik(span y, double sigma, double xi) {
+  if (!(sigma>0)) return -std::numeric_limits<double>::infinity();
+  if (xi == -1) {
+    for (double v:y) if (v>sigma) return -std::numeric_limits<double>::infinity();
+    return -static_cast<double>(y.size())*std::log(sigma);
+  }
   double ll = -static_cast<double>(y.size())*std::log(sigma);
   for (double v : y) {
     if (!(sigma > 0) || !(1+xi*(v/sigma) > 0))
@@ -34,6 +41,7 @@ inline double gpd_loglik(span y, double sigma, double xi) {
 inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) {
   double m = 0, M = 0;
   for (double v : y) { m += v/static_cast<double>(y.size()); M=std::max(M,v); }
+  if (xi == -1) return {mu,M,xi,gpd_loglik(y,M,xi),0,GpdStatus::Ok};
   if (xi == 0) return {mu,m,xi,gpd_loglik(y,m,xi),0,GpdStatus::Ok};
   double lo = std::max(0.0,-xi*M), hi = std::max(M,lo*2);
   auto score = [&](double s) {
@@ -52,7 +60,7 @@ inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) 
   return {mu,s,xi,gpd_loglik(y,s,xi),it+1,
           it<maxit ? GpdStatus::Ok : GpdStatus::IterationFailure};
 }
-inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
+inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
                          double mu=0, double xi=std::numeric_limits<double>::quiet_NaN(),
                          double sigma=std::numeric_limits<double>::quiet_NaN()) {
   GpdResult bad{mu,0,xi,0,0,GpdStatus::InvalidData};
@@ -61,18 +69,24 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
   double M=0, minimum=std::numeric_limits<double>::infinity();
   for (double v : x) {
     const double z=v-mu;
-    if (!(z>0) || !std::isfinite(z)) return bad;
+    if (!(z>=0) || !std::isfinite(z)) return bad;
     y.push_back(z); M=std::max(M,z); minimum=std::min(minimum,z);
+  }
+  // At the closed threshold, positive-shape scale collapse has exponent
+  // (n-k)/xi-k. With free shape any threshold tie permits this path.
+  if(std::isnan(sigma)) {
+    const double k=static_cast<double>(std::count(y.begin(),y.end(),0.0));
+    if(M==0 || (k>0 && (std::isnan(xi) || (xi>0 && xi*k>=y.size()-k)))) return bad;
   }
   const span ys{y.data(),y.size()};
   if(!std::isnan(sigma)) {
     if(!(sigma>0) || !std::isfinite(sigma)) return bad;
     if(!std::isnan(xi)) {
-      if(!std::isfinite(xi) || xi<-.5) {bad.status=GpdStatus::InvalidShape;return bad;}
+      if(!std::isfinite(xi)) {bad.status=GpdStatus::InvalidShape;return bad;}
       const double ll=gpd_loglik(ys,sigma,xi);
       return {mu,sigma,xi,ll,0,std::isfinite(ll) ? GpdStatus::Ok : GpdStatus::InvalidData};
     }
-    const double lower=std::max(-.5,-sigma/M);
+    const double lower=std::max(-1.0,-sigma/M);
     // Positive support gives a finite lower endpoint; the log transform
     // covers the unbounded upper shape range. Compare the attained floor.
     auto objective=[&](double u) {return gpd_loglik(ys,sigma,lower+std::exp(u));};
@@ -84,11 +98,11 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
             opt.ok && maxit>1 ? GpdStatus::Ok : GpdStatus::IterationFailure};
   }
   if (!std::isnan(xi)) {
-    if (!std::isfinite(xi) || xi<-.5) { bad.status=GpdStatus::InvalidShape; return bad; }
+    if (!std::isfinite(xi) || xi < -1) { bad.status=GpdStatus::InvalidShape; return bad; }
     return gpd_scale(ys,mu,xi,tol,maxit);
   }
   auto best=gpd_scale(ys,mu,0,tol,maxit);
-  auto floor=gpd_scale(ys,mu,-.5,tol,maxit);
+  auto floor=gpd_scale(ys,mu,-1,tol,maxit);
   if (floor.status!=GpdStatus::Ok) return floor;
   if (floor.logLik>best.logLik) best=floor;
   // Grimshaw profile: differentiating in xi at fixed a=xi/sigma gives
@@ -118,9 +132,9 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
     L/=y.size(); Q/=y.size();
     return shape ? L : ((1+L)*Q-1)/(b*b);
   };
-  // L is monotone; below L=-1/2 no stationary candidate is admissible.
-  double left=-.5*y.size(), right=0;
-  for(int j=0;j<50;++j) { auto mid=(left+right)/2; if(profile(mid,true)<-.5) left=mid; else right=mid; }
+  // L is monotone; below L=-1 no stationary candidate is admissible.
+  double left=-static_cast<double>(y.size()), right=0;
+  for(int j=0;j<50;++j) { auto mid=(left+right)/2; if(profile(mid,true)<-1) left=mid; else right=mid; }
   const double lower=right;
   double upper=1;
   // Beyond this bound (1+L)Q < 1 follows from min(y), max(y).
@@ -138,7 +152,7 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
     const double t=(l+h)/2, shape=profile(t,true);
     const double scale=shape*M/std::expm1(t);
     const double ll=gpd_loglik(ys,scale,shape);
-    if(shape>=-.5 && ll>best.logLik) best={mu,scale,shape,ll,it+1,GpdStatus::Ok};
+    if(shape>=-1 && ll>best.logLik) best={mu,scale,shape,ll,it+1,GpdStatus::Ok};
   };
   auto scan=[&](double low,double high) {
     const int cells=32;
@@ -167,5 +181,11 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
   scan(lower,-1e-12); scan(1e-12,upper);
   if (root_failure) best.status=GpdStatus::IterationFailure;
   return best;
+}
+
+inline GpdResult gpd_mle(span x,double tol=1e-12,int maxit=200,double mu=0,double xi=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  auto r=gpd_mle_impl(x,tol,maxit,mu,xi,sigma);
+  if(r.status==GpdStatus::Ok && (std::isnan(xi)) && r.xi==kGpdXiLower) r.restricted|=16u;
+  return r;
 }
 } // namespace cppunivariate

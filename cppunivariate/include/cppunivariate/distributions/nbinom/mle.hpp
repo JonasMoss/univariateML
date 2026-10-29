@@ -37,7 +37,7 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
     double prob_fixed = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0, false};
+  if (n == 0) return {0.0, 0.0, kNaN, 0, false, NbinomStatus::InvalidInput};
 
   double sum_x = 0.0, sum_x_sq = 0.0;
   for (auto v : x) {
@@ -46,16 +46,18 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
   }
   const double dn = static_cast<double>(n);
   const double x_bar = sum_x / dn;
+  const auto invalid = NbinomResult{kNaN,kNaN,kNaN,0,false,NbinomStatus::InvalidInput};
+  if (!(tol>0) || !std::isfinite(tol) || maxit<1 ||
+      (!std::isnan(size_fixed) && (!(size_fixed>=0)||!std::isfinite(size_fixed))) ||
+      (!std::isnan(prob_fixed) && (!(prob_fixed>0 && prob_fixed<=1)||!std::isfinite(prob_fixed)))) return invalid;
+  for (int v:x) if(v<0) return invalid;
+  if (size_fixed==0) return x_bar==0 ? NbinomResult{0,std::isnan(prob_fixed)?.5:prob_fixed,0,0,false} : invalid;
+  if (x_bar==0 && std::isnan(size_fixed))
+    return {0,std::isnan(prob_fixed)?.5:prob_fixed,0,0,false};
   if (!std::isnan(prob_fixed)) {
-    const auto invalid = NbinomResult{kNaN,kNaN,kNaN,0,false,NbinomStatus::InvalidInput};
-    if (!(prob_fixed>0 && prob_fixed<=1) || !std::isfinite(prob_fixed)) return invalid;
-    for (int v:x) if(v<0) return invalid;
-    if (!std::isnan(size_fixed) && (!(size_fixed>0)||!std::isfinite(size_fixed))) return invalid;
     if (prob_fixed==1 && x_bar>0) return invalid;
     double r=size_fixed;
     if (std::isnan(r)) {
-      if (x_bar==0 && prob_fixed<1)
-        return {kNaN,prob_fixed,kNaN,0,false,NbinomStatus::ZeroLimit};
       if (prob_fixed==1) r=1;
       else {
         // Strictly decreasing score: unique root, no size-infinity face.
@@ -107,7 +109,6 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
     for (int v : x) ll += special::dnbinom(v, size_fixed, prob, true);
     return {size_fixed, prob, ll, 0, false};
   }
-  if (x_bar == 0.0) return {1.0, 1.0, 0.0, 0, false};
 
   const double var_hat = sum_x_sq / dn - x_bar * x_bar;
   // At var_hat == x_bar the profile score is negative for all finite sizes

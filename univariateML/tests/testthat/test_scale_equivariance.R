@@ -1,3 +1,8 @@
+# Fits on a fitting restriction warn (class univariateML_restricted, P3);
+# equivariance is about the estimates, so those warnings are muffled here.
+quiet_restricted <- function(expr) withCallingHandlers(expr,
+  univariateML_restricted = function(w) invokeRestart("muffleWarning"))
+
 # Coefficients are pulled back to the original units before comparison.
 # The exclusions describe models, not outcomes of particular random draws.
 scale_exclusions <- c(
@@ -70,7 +75,7 @@ for (id in univariateML_models) {
       transformed <- args
       for (p in intersect(names(args), c("mu","a","b")))
         if (!is.null(args[[p]])) transformed[[p]] <- a + b*args[[p]]
-      tryCatch(do.call(model, c(list(x), transformed)),
+      tryCatch(quiet_restricted(do.call(model, c(list(x), transformed))),
                error = function(e) conditionMessage(e))
     }
     base <- fit(x)
@@ -126,7 +131,7 @@ test_that("required endpoints transform with the observations", {
     x <- simulate_default(model, 40)
     args <- switch(model, mlgenbeta = list(scale = 1),
                    mlnsbeta = list(min = 0, max = 1), list(min = 0))
-    fit <- function(b) tryCatch(do.call(model, c(list(b*x), lapply(args, function(v) b*v))),
+    fit <- function(b) tryCatch(quiet_restricted(do.call(model, c(list(b*x), lapply(args, function(v) b*v)))),
                                 error = function(e) conditionMessage(e))
     base <- fit(1)
     for (b in c(1e-4, 1e4)) {
