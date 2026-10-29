@@ -22,7 +22,7 @@ the queue.
 
 ## Index
 
-- [2026-10-29 — Density scope decisions](2026-10-29-density-scope.md):
+- [2026-10-29 — Density scope decisions](2026-10-29-density-scope.md) (full coverage plan added):
   deliberate extraDistr and actuar exclusions, remaining study candidates,
   and unrestricted models requiring nonexistence errors.
 
