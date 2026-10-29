@@ -121,6 +121,13 @@
   `mllgamma`" (on `scale / x`, the unit-gamma limit) or "use `mlpower`" (a
   power law ending below `scale`).
 
+* `mlslash()` (slash distribution) and `mlbhatt()` (Bhattacharjee:
+  normal plus uniform). The slash MLE exists when no value holds half the
+  sample; `mlbhatt` stops with "use `mlnorm`" or "use `mlunif`" at its two
+  limits, which normal and uniform samples reach often (the normal limit in
+  about half of normal samples, at any sample size). Their quantiles invert
+  the reference CDFs, which extraDistr provides without a quantile function.
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
