@@ -121,3 +121,5 @@
 #include "distributions/frechet/mle.hpp"
 #include "distributions/tlambda/mle.hpp"
 #include "distributions/genbeta/mle.hpp"
+#include "distributions/slash/mle.hpp"
+#include "distributions/bhatt/mle.hpp"
