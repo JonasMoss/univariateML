@@ -154,3 +154,17 @@ test_that("sstd large-sample fitting preserves likelihood under replication", {
   f<-mlsstd(y)
   expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
 })
+
+test_that("skew t detects tie collapse before free df and face fits", {
+  expect_error(mlsstd(c(rep(0,8),-1,1,2)),"unbounded.*multiplicity")
+  for(k in c(5L,6L,7L)) {
+    x <- c(rep(0,k),1,2,3)
+    if(k==7L) expect_error(mlsstd(x),"unbounded")
+    if(k==6L) expect_error(mlsstd(x),"equality.*not certified")
+    if(k==5L) {
+      f <- tryCatch(mlsstd(x),error=identity)
+      if(inherits(f,"error")) expect_false(grepl("unbounded|equality",conditionMessage(f)))
+      else expect_true(all(is.finite(f)))
+    }
+  }
+})

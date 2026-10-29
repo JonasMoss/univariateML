@@ -42,6 +42,8 @@ The inverse Burr distribution is the distribution of the reciprocal of a Burr ty
 
 ## Details
 
+With scale held at $s$ and nonconstant observations all at most $s$, the inverse Burr supremum is the endpoint-$s$ power log-likelihood minus $Z\log 2$, where $Z$ counts observations equal to $s$; if every observation equals $s$, the likelihood is unbounded.
+
 univariateML 1.x estimated only the shapes, with the scale fixed at 1.
 
 Supply `scale = s` to estimate only the shapes. This fits the historical

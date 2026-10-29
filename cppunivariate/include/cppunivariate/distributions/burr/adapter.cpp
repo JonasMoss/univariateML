@@ -15,6 +15,7 @@ Rcpp::List mlburr_(const Rcpp::NumericVector &x, double gradtol = 1e-8,
  cppunivariate::burr_mle_fixed_scale(dist_impl::as_span(x),start(scale),abstol,iterlim) :
  cppunivariate::burr_mle(dist_impl::as_span(x),gradtol,iterlim,
  start(shape10),start(shape20),start(scale0),reltol);
+ if (res.status == cppunivariate::BurrStatus::Unbounded) Rcpp::stop("Likelihood is unbounded: all observations equal the held scale; no MLE.");
  if (res.status == cppunivariate::BurrStatus::AllGeOne) Rcpp::stop("The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale.");
  if (res.status == cppunivariate::BurrStatus::WeibullBoundary) Rcpp::stop("The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model.");
  if (res.status == cppunivariate::BurrStatus::ParetoBoundary) Rcpp::stop("The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model.");

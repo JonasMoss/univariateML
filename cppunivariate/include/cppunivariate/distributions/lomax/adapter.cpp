@@ -21,7 +21,7 @@ Rcpp::List mllomax_(const Rcpp::NumericVector &x,
     }
   }
   auto res = cppunivariate::lomax_mle(dist_impl::as_span(x), reltol, iterlim, start);
-  if (res.status == cppunivariate::LomaxStatus::MeanVarianceCondition) {
+  if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
     Rcpp::stop("The Lomax maximum likelihood estimator does not exist for data "
                "whose likelihood is maximized on the exponential face. Use `mlexp` to fit an "
                "exponential distribution.");

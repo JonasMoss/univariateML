@@ -15,6 +15,7 @@ Rcpp::List mlinvburr_(const Rcpp::NumericVector &x, double gradtol = 1e-8,
  cppunivariate::invburr_mle_fixed_scale(dist_impl::as_span(x),start(scale),abstol,iterlim) :
  cppunivariate::invburr_mle(dist_impl::as_span(x),gradtol,iterlim,
  start(shape10),start(shape20),start(scale0),reltol);
+ if (res.status == cppunivariate::InvBurrStatus::Unbounded) Rcpp::stop("Likelihood is unbounded: all observations equal the held scale; no MLE.");
  if (res.status == cppunivariate::InvBurrStatus::AllLeOne) Rcpp::stop("The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale.");
  if (res.status == cppunivariate::InvBurrStatus::InvWeibullBoundary) Rcpp::stop("The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model.");
  if (res.status == cppunivariate::InvBurrStatus::PowerBoundary) Rcpp::stop("The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model.");

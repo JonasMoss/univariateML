@@ -16,9 +16,11 @@ log_density: log(lambda) + log(kappa) - (kappa + 1)*log(1 + lambda*x)
 limits:
   - model: exp
     when: '$\kappa \to \infty$ with $\lambda \kappa$ fixed'
-    detect: the numerical profile comparison selects the exponential face when the moment-based start is nonpositive
-    status: MeanVarianceCondition
+    detect: max over 0 < u < ubar of the profile log-likelihood gap is at most 1e-8*n
+    status: ExponentialLimit
 references:
+  - "del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021."
+  - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
   - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley, p. 60.
 examples: |
   set.seed(3)
@@ -33,3 +35,7 @@ examples: |
 
 The Lomax (Pareto type II) distribution is a heavy-tailed distribution on
 the positive half-line, used for incomes, losses and waiting times.
+
+## Details
+
+The exact existence criterion is $\psi(u)\leq0$ for some $0<u<\bar u$, where $y_i=x_i/\bar x$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ and $\bar u=\bar x/(\prod_i x_i)^{1/n}$; the implementation prefers the exponential face within $10^{-8}n$ log-likelihood units. The moment condition decides only local behaviour at that face: samples with `mean(x^2) < 2*mean(x)^2` can have an MLE, for example `c(1, 100)`. A pair has an MLE iff larger/smaller exceeds approximately 28.81.

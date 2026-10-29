@@ -14,9 +14,9 @@ Rcpp::List mlstd_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
   if (res.status == cppunivariate::StudentTStatus::InvalidNu)
     Rcpp::stop("`nu` must be finite and greater than 2.");
   if (res.status == cppunivariate::StudentTStatus::Unbounded)
-    Rcpp::stop("Fixed `nu` likelihood is unbounded through scale collapse: excessive ties.");
+    Rcpp::stop("Likelihood is unbounded at a tie of excessive multiplicity k > nu*(n-k) (free df: k > 2*(n-k)); no MLE.");
   if (res.status == cppunivariate::StudentTStatus::ScaleBoundary)
-    Rcpp::stop("Fixed `nu` is at the tie equality scale-collapse boundary; a regular MLE is not certified.");
+    Rcpp::stop("Tie equality scale-collapse boundary; a regular MLE is not certified.");
   if (res.status == cppunivariate::StudentTStatus::IterationFailure)
     Rcpp::stop("Fixed `nu` EM did not converge to the score tolerance; increase iterlim.");
   if (res.status == cppunivariate::StudentTStatus::NormalBoundary) {

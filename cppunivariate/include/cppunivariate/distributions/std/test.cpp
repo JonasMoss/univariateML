@@ -118,3 +118,16 @@ TEST_CASE("std: fixed nu maps ordinary t scale exactly") {
   CHECK(cppunivariate::student_t_mle_fixed_nu(mltest::as_span(tied),2.5,1e-8,100).status == cppunivariate::StudentTStatus::Unbounded);
   CHECK(cppunivariate::student_t_mle_fixed_nu(mltest::as_span(tied),3,1e-8,100).status == cppunivariate::StudentTStatus::ScaleBoundary);
 }
+
+TEST_CASE("std: free df tie collapse and equality") {
+  for (int k : {5,6,7,8}) {
+    std::vector<double> x(k,0.0); x.insert(x.end(),{1,2,3});
+    const auto f=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200);
+    if(k>6) CHECK(f.status==cppunivariate::StudentTStatus::Unbounded);
+    if(k==6) CHECK(f.status==cppunivariate::StudentTStatus::ScaleBoundary);
+    if(k==5) {
+      CHECK(f.status!=cppunivariate::StudentTStatus::Unbounded);
+      CHECK(f.status!=cppunivariate::StudentTStatus::ScaleBoundary);
+    }
+  }
+}

@@ -10,6 +10,10 @@
 Rcpp::List mlsstd_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
                    int iterlim = 200) {
   auto res = cppunivariate::sstd_mle(dist_impl::as_span(x), gradtol, iterlim);
+  if (res.status == cppunivariate::SstdStatus::Unbounded)
+    Rcpp::stop("Likelihood is unbounded at a tie of multiplicity k > 2*(n-k); no MLE.");
+  if (res.status == cppunivariate::SstdStatus::ScaleBoundary)
+    Rcpp::stop("Tie equality scale-collapse boundary; a regular MLE is not certified.");
   if (res.status == cppunivariate::SstdStatus::InvalidStart) {
     Rcpp::stop("Skew Student-t MLE requires at least 2 finite observations "
                "with positive variance.");

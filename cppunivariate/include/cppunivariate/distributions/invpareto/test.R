@@ -20,3 +20,18 @@ test_that("inverse Pareto inherits the Lomax equality comparison", {
   expect_equal(attr(f,"logLik"),attr(g,"logLik")-2*sum(log(x)))
   expect_error(mlinvpareto(1/c(1,1,4,12)),"Use `mlinvexp`")
 })
+
+test_that("inverse Pareto inherits the global Lomax criterion", {
+  for (z in list(c(1,100),c(.001,4,6),c(.001,1,2),c(1,29),c(1,1,1,12,12))) {
+    x <- 1/z; f <- mlinvpareto(x,reltol=1e-12); l <- mllomax(z,reltol=1e-12)
+    expect_equal(as.numeric(f),rev(as.numeric(l)),tolerance=1e-7)
+    expect_equal(attr(f,"logLik"),attr(l,"logLik")-2*sum(log(x)),tolerance=1e-10)
+    for(s in c(1e-200,1e200)) {
+      g <- mlinvpareto(x*s,reltol=1e-12)
+      expect_equal(as.numeric(g)/c(1,s),as.numeric(f),tolerance=1e-6)
+    }
+    g <- mlinvpareto(rep(x,50),reltol=1e-12)
+    expect_equal(as.numeric(g),as.numeric(f),tolerance=1e-6)
+  }
+  for(z in list(c(1,10),c(1,28),rep(1,5))) expect_error(mlinvpareto(1/z),"mlinvexp")
+})

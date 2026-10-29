@@ -120,7 +120,7 @@ struct InvBurrCost {
 };
 
 
-enum class InvBurrStatus { Ok = 0, InvWeibullBoundary, PowerBoundary, InvalidInit, IterationFailure, AllLeOne };
+enum class InvBurrStatus { Ok = 0, InvWeibullBoundary, PowerBoundary, InvalidInit, IterationFailure, AllLeOne, Unbounded };
 struct InvBurrResult {
   double shape1, shape2, scale, logLik;
   int iterations;
@@ -161,6 +161,7 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
     shape10,shape20,std::isnan(scale0) ? scale0 : 1.0/scale0,reltol);
   InvBurrStatus status = InvBurrStatus::Ok;
   if (r.status == BurrStatus::WeibullBoundary) status = InvBurrStatus::InvWeibullBoundary;
+  if (r.status == BurrStatus::Unbounded) status = InvBurrStatus::Unbounded;
   if (r.status == BurrStatus::ParetoBoundary) status = InvBurrStatus::PowerBoundary;
   if (r.status == BurrStatus::InvalidInit) status = InvBurrStatus::InvalidInit;
   if (r.status == BurrStatus::IterationFailure) status = InvBurrStatus::IterationFailure;
@@ -181,6 +182,9 @@ inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!(scale > 0.0) || !std::isfinite(scale))
     return {nan,nan,scale,nan,0,InvBurrStatus::InvalidInit};
+  bool endpoint_spike = x.size() > 0;
+  for (double v : x) if (v != scale) endpoint_spike = false;
+  if (endpoint_spike) return {nan,nan,scale,INFINITY,0,InvBurrStatus::Unbounded};
   std::vector<double> normalized;
   for (double v : x) normalized.push_back(v / scale);
   const auto r = burr_fixed_detail::invburr_mle(span{normalized.data(),normalized.size()},tol,maxit);

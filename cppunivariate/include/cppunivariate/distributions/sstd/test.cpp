@@ -138,3 +138,31 @@ TEST_CASE("sstd: large-df interior fits do not overflow") {
   const double m1 = std::sqrt(2.0 / 3.14159265358979323846);  // normal limit
   CHECK(mu_u == doctest::Approx(m1 * (1.5 - 1.0 / 1.5)).epsilon(1e-3));
 }
+
+TEST_CASE("sstd: free df tie collapse and equality") {
+  for (int k : {5,6,7,8}) {
+    std::vector<double> x(k,0.0); x.insert(x.end(),{-1,1,2});
+    const auto f=cppunivariate::sstd_mle(mltest::as_span(x),1e-8,200);
+    if(k>6) CHECK(f.status==cppunivariate::SstdStatus::Unbounded);
+    if(k==6) CHECK(f.status==cppunivariate::SstdStatus::ScaleBoundary);
+    if(k==5) {
+      CHECK(f.status!=cppunivariate::SstdStatus::Unbounded);
+      CHECK(f.status!=cppunivariate::SstdStatus::ScaleBoundary);
+    }
+  }
+}
+
+TEST_CASE("sstd: half t scale root strict inequality and finite equality supremum") {
+  double logscale=0;
+  const std::vector<double> strict={0,0,0,0,0,0,0,1,2,3};
+  CHECK(cppunivariate::sstd_detail::half_t_profile(strict,.5,logscale)==INFINITY);
+  const std::vector<double> equality={0,0,0,0,0,0,1,2,3};
+  const double ll=cppunivariate::sstd_detail::half_t_profile(equality,.5,logscale);
+  CHECK(std::isfinite(ll));
+  CHECK(logscale==-INFINITY);
+  // At nu=2 the scale powers cancel, leaving the analytic limit.
+  CHECK(ll==doctest::Approx(-3*std::log(6.0)).epsilon(1e-12));
+  const std::vector<double> regular={0,0,0,0,0,1,2,3};
+  CHECK(std::isfinite(cppunivariate::sstd_detail::half_t_profile(regular,.5,logscale)));
+  CHECK(std::isfinite(logscale));
+}

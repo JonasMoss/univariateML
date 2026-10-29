@@ -101,3 +101,11 @@ TEST_CASE("burr fixed scale profile fallback start") {
  cost.gradient(theta,score);
  CHECK(std::hypot(score[0],score[1]) < 1e-8);
 }
+
+TEST_CASE("burr: held-scale endpoint spike and nonconstant escape differ") {
+  const std::vector<double> spike={1,1,1,1}, mixed={1,1.5,2,3};
+  const auto a=cppunivariate::burr_mle_fixed_scale(mltest::as_span(spike),1);
+  CHECK(a.status==cppunivariate::BurrStatus::Unbounded);
+  CHECK(a.logLik==INFINITY);
+  CHECK(cppunivariate::burr_mle_fixed_scale(mltest::as_span(mixed),1).status==cppunivariate::BurrStatus::AllGeOne);
+}

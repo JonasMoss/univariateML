@@ -42,6 +42,8 @@ The Burr type XII distribution is a heavy-tailed distribution for positive size 
 
 ## Details
 
+With scale held at $s$ and nonconstant observations all at least $s$, the Burr supremum is the endpoint-$s$ Pareto log-likelihood minus $Z\log 2$, where $Z$ counts observations equal to $s$; if every observation equals $s$, the likelihood is unbounded.
+
 univariateML 1.x estimated only the shapes, with the scale fixed at 1.
 
 Supply `scale = s` to estimate only the shapes. This fits the historical

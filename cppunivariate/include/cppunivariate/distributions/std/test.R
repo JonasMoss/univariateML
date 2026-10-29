@@ -138,3 +138,19 @@ test_that("std large-sample fitting preserves likelihood under replication", {
   f<-mlstd(y)
   expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
 })
+
+test_that("free Student t detects strict tie collapse and separates equality", {
+  expect_error(mlstd(c(rep(0,8),1,2,3)),"unbounded.*multiplicity")
+  for (k in c(5L,6L,7L)) {
+    x <- c(rep(0,k),1,2,3)
+    if(k==7L) expect_error(mlstd(x),"unbounded")
+    if(k==6L) expect_error(mlstd(x),"equality.*not certified")
+    if(k==5L) {
+      f <- tryCatch(mlstd(x),error=identity)
+      if(inherits(f,"error")) expect_false(grepl("unbounded|equality",conditionMessage(f)))
+      else expect_true(all(is.finite(f)))
+    }
+  }
+  expect_error(mlstd(c(rep(0,8),1,2,3),nu=2.5),"unbounded")
+  expect_error(mlstd(c(rep(0,8),1,2,3),nu=8/3),"equality")
+})
