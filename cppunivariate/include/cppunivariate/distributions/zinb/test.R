@@ -46,3 +46,98 @@ test_that("all-zero representative supports external probability evaluation", {
   expect_warning(fixed <- mlzinb(rep(0,10),size=.5), "not unique")
   expect_equal(as.numeric(fixed),c(.5,1,0))
 })
+
+# P2: independent multistart reference-density oracle for every nonempty hold.
+local({
+  id <- "zinb"
+  base <- c(size=2,prob=0.4,pi=0.3)
+  density <- extraDistr::dzinb
+  test_that("P2 holds agree with independent multistart reference likelihoods", {
+    set.seed(81029)
+    samples <- list(simulate_default(paste0("ml",id),20),
+                    simulate_default(paste0("ml",id),100),
+                    c(0,0,0,1,1,4), c(0,2), rpois(20,2))
+    nm <- names(base)
+    for (x in samples) for (mask in seq_len(2^length(nm)-1)) {
+      held <- nm[as.logical(intToBits(mask)[seq_along(nm)])]
+      fixed <- as.list(base[held])
+      label <- paste(id,length(x),paste(held,collapse=","))
+      fit <- tryCatch(suppressWarnings(do.call(get(paste0("ml",id)),c(list(x=x),fixed))),error=identity)
+      if (inherits(fit,"error")) {
+        # Only declared non-existence faces are allowed in these valid holds.
+        expect_match(conditionMessage(fit),"mlpois|mlzip|mlztpois|mlzmpois",info=label)
+        next
+      }
+      expect_identical(as.numeric(fit[held]),as.numeric(base[held]),info=label)
+      expect_setequal(attr(fit,"fixed"),held)
+      expect_equal(attr(logLik(fit),"df"),length(nm)-length(held),info=label)
+      ll <- function(q) {
+        values <- suppressWarnings(do.call(density,c(list(x=x,log=TRUE),as.list(q))))
+        if(any(!is.finite(values))) -Inf else sum(values)
+      }
+      expect_equal(attr(fit,"logLik"),ll(setNames(as.numeric(fit),names(fit))),tolerance=1e-7,info=label)
+      free <- setdiff(nm,held)
+      if(!length(free)) next
+      # Independently enumerate attainable free endpoints as well as interiors.
+      endpoints <- lapply(free,function(p) {
+        if(p %in% c("pi","p0")) return(c(NA,0,1))
+        if(p=="prob") return(c(NA,if(id=="zmlogarithmic") 0 else 1))
+        if(p=="size" && id %in% c("ztnbinom","zmnbinom")) return(c(NA,0))
+        if(p=="lambda" && id %in% c("pois","ztpois","zmpois"))return(c(NA,0))
+        NA_real_
+      })
+      grid <- expand.grid(endpoints)
+      best <- -Inf
+      for (i in seq_len(nrow(grid))) {
+        q <- base
+        ep <- as.numeric(grid[i,])
+        q[free[!is.na(ep)]] <- ep[!is.na(ep)]
+        live <- free[is.na(ep)]
+        if(!length(live)) {best <- max(best,ll(q));next}
+        pr <- live %in% c("prob","pi","p0","theta")
+        decode <- function(t) {out<-q;out[live]<-ifelse(pr,plogis(t),exp(t));out}
+        objective <- function(t) {v<-ll(decode(t));if(is.finite(v)) -v else 1e100}
+        z <- vapply(seq_along(live), function(j) if (pr[j]) qlogis(base[[live[j]]]) else log(base[[live[j]]]), 0.0)
+        for (shift in c(-1.5,0,1.5)) {
+          o <- optim(z+shift,objective,method="L-BFGS-B",lower=-16,upper=16,
+                     control=list(maxit=500,factr=1e5))
+          best <- max(best,ll(decode(o$par)))
+        }
+      }
+      expect_gte(attr(fit,"logLik"),best-1e-6*length(x),label=label)
+    }
+  })
+})
+
+test_that("P2 ZINB held boundaries, incompatible data and constrained faces", {
+  for(v in c(0,-1,1.1,Inf,NA_real_))expect_error(mlzinb(c(0,1,5),prob=v))
+  for(v in c(-1,1.1,Inf,NA_real_))expect_error(mlzinb(c(0,1,5),pi=v))
+  expect_error(mlzinb(c(0,1,5),prob=1),"compatible")
+  expect_error(mlzinb(c(0,1,5),pi=1),"compatible")
+  expect_error(mlzinb(rep(0,3),prob=.4,pi=.3),"mlpois")
+  expect_equal(attr(suppressWarnings(mlzinb(rep(0,3),prob=.4)),"logLik"),0)
+  expect_equal(attr(suppressWarnings(mlzinb(rep(0,3),pi=.3)),"logLik"),0)
+  expect_error(mlzinb(c(rep(0,50),rep(4,50)),pi=.5),"mlzip")
+  expect_error(mlzinb(rep(2,100),pi=0),"mlpois")
+  a<-mlzinb(c(0,1,5),size=2,prob=.4)
+  z<-mean(c(0,1,5)==0); f0<-.4^2
+  expect_equal(unname(as.numeric(a['pi'])),max(0,(z-f0)/(1-f0)))
+  b<-suppressWarnings(mlzinb(rep(0,3),size=2,prob=.4,pi=.3))
+  expect_equal(attr(b,'logLik'),3*log(.3+.7*.4^2))
+})
+
+test_that("P2 constrained ZINB reports insufficient iterations", {
+  expect_error(mlzinb(c(0,1,2,5),prob=.4,iterlim=1),"MLE failed")
+  expect_error(mlzinb(c(0,1,2,5),size=2,pi=.3,iterlim=1),"MLE failed")
+})
+
+test_that("P2 fixed size and inflation compare separated probability peaks", {
+  x<-c(rep(0,99),10)
+  for(pi in c(.001,.1,.9)) {
+    fit<-mlzinb(x,size=2,pi=pi)
+    objective<-function(t) -sum(extraDistr::dzinb(x,2,plogis(t),pi,log=TRUE))
+    values<-vapply(seq(-5,5,length.out=9),function(t)
+      optim(t,objective,method="BFGS",control=list(maxit=500,reltol=1e-12))$value,0)
+    expect_gte(attr(fit,"logLik"),-min(values)-1e-7)
+  }
+})

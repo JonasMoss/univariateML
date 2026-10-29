@@ -73,3 +73,27 @@ TEST_CASE("zip: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzip(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzip(rng, p[0], p[1]); });
 }
+
+TEST_CASE("zip: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("zip");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<4;++mask) {
+   const auto r=cppunivariate::zip_mle({x.data(),x.size()},(mask & 1)?g.estimates.at("lambda"):nan,(mask & 2)?g.estimates.at("pi"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.lambda==g.estimates.at("lambda"));
+   if(mask & 2)CHECK(r.pi==g.estimates.at("pi"));
+ }
+}
+
+TEST_CASE("zip: P2 held-domain and non-existence statuses") {
+ const std::vector<int> x{0,1,5},z{0,0};
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ CHECK(cppunivariate::zip_mle({z.data(),z.size()},nan,.4).status==cppunivariate::ZipStatus::ZeroLimit);
+ CHECK(cppunivariate::zip_mle({x.data(),x.size()},0,nan).status==cppunivariate::ZipStatus::InvalidInput);
+ CHECK(cppunivariate::zip_mle({x.data(),x.size()},nan,1).status==cppunivariate::ZipStatus::InvalidInput);
+ const auto r=cppunivariate::zip_mle({x.data(),x.size()},nan,.4);
+ const double w=.6*std::exp(-r.lambda)/(.4+.6*std::exp(-r.lambda));
+ CHECK(std::abs(6/r.lambda-2-w)<1e-6);
+}

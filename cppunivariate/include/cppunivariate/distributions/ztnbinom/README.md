@@ -26,17 +26,13 @@ r:
     size: Optional fixed size; NULL estimates size.
     reltol: Tolerance for scalar profile search.
     iterlim: Maximum scalar search iterations.
+    prob: "Optional held prob; NULL estimates it."
 log_density: loggamma(size+x)-loggamma(size)-loggamma(x+1)+size*log(prob)+x*log(1-prob)-log(1-prob**size)
 limits:
 - model: ztpois
   when: $size \to \infty$ with the positive conditional mean fixed
-  detect: the maximised face likelihood wins within 1e-8 times the sample size
+  detect: size and prob are free and the maximised face likelihood wins within 1e-8 times the sample size
   status: PoissonLimit
-holds:
-- held:
-  - prob
-  status: not-implemented
-  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
 ---
 
 Zero-truncated negative binomial distributions model positive counts.
@@ -46,3 +42,5 @@ Zero-truncated negative binomial distributions model positive counts.
 Actuar defines the point mass at one at `prob = 1`. This boundary is returned as an attained member.
 Actuar defines `size = 0` as the logarithmic series with `theta = 1 - prob`; this attained member is returned. Fixed size may be zero.
 Holding size fixed removes the infinite-size escape. The point mass at one remains attained for every fixed size.
+
+Holding `prob < 1` removes the infinite-size escape. Size zero remains the attained logarithmic member and is compared with all bracketed profile peaks. Held `prob = 1` is compatible only with ones. The scalar grid search is numerical, not a certificate that every profile peak has been found.

@@ -80,3 +80,39 @@ TEST_CASE("nbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qnbinom(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rnbinom(rng, p[0], p[1]); });
 }
+
+TEST_CASE("nbinom: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("nbinom");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<4;++mask) {
+   const auto r=cppunivariate::nbinom_mle({x.data(),x.size()},1e-10,200,(mask & 1)?g.estimates.at("size"):nan,(mask & 2)?g.estimates.at("prob"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.size==g.estimates.at("size"));
+   if(mask & 2)CHECK(r.prob==g.estimates.at("prob"));
+ }
+}
+
+TEST_CASE("nbinom: P2 held-domain and non-existence statuses") {
+ const std::vector<int> x{0,1,5},z{0,0};
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ CHECK(cppunivariate::nbinom_mle({z.data(),z.size()},1e-10,200,nan,.4).status==cppunivariate::NbinomStatus::ZeroLimit);
+ CHECK(cppunivariate::nbinom_mle({x.data(),x.size()},1e-10,200,nan,1).status==cppunivariate::NbinomStatus::InvalidInput);
+ const auto r=cppunivariate::nbinom_mle({x.data(),x.size()},1e-10,200,nan,.4);
+ double score=3*std::log(.4);
+ for(int v:x)for(int j=0;j<v;++j)score+=1/(r.size+j);
+ CHECK(std::abs(score)<1e-10);
+}
+
+TEST_CASE("nbinom: P2 held probability near one has a stable likelihood") {
+ const std::vector<int> x{0,1,5};
+ const double p=1-1e-12,nan=std::numeric_limits<double>::quiet_NaN();
+ const auto r=cppunivariate::nbinom_mle({x.data(),x.size()},1e-10,200,nan,p);
+ CHECK(r.prob==p);
+ double ll=3*r.size*std::log(p)-cppunivariate::special::lgamma(6.0);
+ ll+=6*std::log(r.size*(1-p));
+ for(int j=0;j<5;++j)ll+=std::log1p(j/r.size);
+ CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-13));
+ CHECK(r.logLik==doctest::Approx(-6+6*std::log(2.0)-cppunivariate::special::lgamma(6.0)).epsilon(1e-10));
+}
