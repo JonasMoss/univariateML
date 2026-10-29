@@ -1,0 +1,23 @@
+#pragma once
+#include "../llogis/mle.hpp"
+#include <vector>
+#include <cmath>
+namespace cppunivariate {
+enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure };
+struct Pareto3Result { double shape,scale,min,logLik; int iterations; Pareto3Status status; };
+
+inline Pareto3Result pareto3_mle(span x, double min, double tol, int maxit) {
+  std::vector<double> y(x.size());
+  for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min);
+  bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
+  for(double v:x) valid=valid && std::isfinite(v) && v>min;
+  if(!valid) y.clear();
+  auto r=loglogistic_mle(span{y.data(),y.size()},tol,maxit);
+  bool constant=x.size()>0;
+  for(double v:x) constant=constant && v==x[0];
+  const auto status=!valid || x.size()==0 ? Pareto3Status::InvalidData :
+    (constant ? Pareto3Status::Unbounded :
+      (r.iterations<maxit && std::isfinite(r.logLik) && r.shape>0 && r.rate>0 ? Pareto3Status::Ok : Pareto3Status::IterationFailure));
+  return {r.shape,1/r.rate,min,r.logLik,r.iterations,status};
+}
+}

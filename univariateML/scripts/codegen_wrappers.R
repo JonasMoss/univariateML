@@ -104,8 +104,10 @@ required_checks <- function(model) {
        "    list(quote(", fname, "_), x = quote(x)), list(...))))\n"),
     vapply(req, function(p) nl(
     "  if (is.null(supplied[[\"", p$name, "\"]])) {\n",
-    "    stop(\"`", fname, "` requires `", p$name, "` (", p$role,
-    "); it has no default.\", call. = FALSE)\n",
+    "    stop(", encodeString(paste0("`", fname, "` requires `", p$name,
+      "` (", p$role, "); it has no default.",
+      if (!is.null(p$required_reason)) paste0(" ", p$required_reason) else ""),
+      quote = '"'), ", call. = FALSE)\n",
     "  }\n"
   ), character(1)))
 }

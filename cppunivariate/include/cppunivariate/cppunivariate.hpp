@@ -103,3 +103,10 @@
 #include "distributions/yulesimon/mle.hpp"
 #include "distributions/foldnorm/mle.hpp"
 #include "distributions/emg/mle.hpp"
+
+#include "distributions/pareto2/mle.hpp"
+#include "distributions/pareto3/mle.hpp"
+#include "distributions/pareto4/mle.hpp"
+#include "distributions/fpareto/mle.hpp"
+#include "distributions/nsbeta/mle.hpp"
+#include "distributions/frechet/mle.hpp"

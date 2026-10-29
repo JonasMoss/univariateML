@@ -78,10 +78,16 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
       stop("load_distributions: ", path, ": required parameter ", p$name,
            " cannot also be fixable or fixed")
     }
+    if (!is.null(p$required_reason) &&
+        (!isTRUE(p$required) || !is.character(p$required_reason) ||
+         length(p$required_reason) != 1L || is.na(p$required_reason) ||
+         !nzchar(p$required_reason))) {
+      stop("load_distributions: ", path, ": required_reason needs a required parameter and nonempty text")
+    }
     list(name = p$name, role = p$role %||% "", domain = p$domain %||% "",
          default = as.numeric(p$default),
          fixable = isTRUE(p$fixable), fixed = p$fixed,
-         required = isTRUE(p$required))
+         required = isTRUE(p$required), required_reason = p$required_reason)
   })
   # Arguments of the default fit (goldens, generic tests); every required
   # parameter must have one.
