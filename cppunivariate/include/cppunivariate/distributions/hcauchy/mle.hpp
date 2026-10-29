@@ -3,8 +3,8 @@
 namespace cppunivariate {
 enum class HcauchyStatus { Ok, InvalidData, Unbounded, ScaleBoundary, SearchFailure };
 struct HcauchyResult { double sigma, logLik; int iterations; HcauchyStatus status; };
-inline HcauchyResult hcauchy_mle(span x) {
-  const auto r=ht_mle(x,1.0);
+inline HcauchyResult hcauchy_mle(span x, double held_sigma = std::numeric_limits<double>::quiet_NaN()) {
+  const auto r=ht_mle(x,1.0,held_sigma);
   HcauchyStatus s=HcauchyStatus::SearchFailure;
   if(r.status==HtStatus::Ok) s=HcauchyStatus::Ok;
   if(r.status==HtStatus::InvalidData) s=HcauchyStatus::InvalidData;

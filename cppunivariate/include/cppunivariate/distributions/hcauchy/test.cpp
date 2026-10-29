@@ -32,3 +32,9 @@ TEST_CASE("hcauchy: reference identities, tails and sampling") {
   cppunivariate::distributions::StdRng<> rng(23);
   for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rhcauchy(rng,2)>=0);
 }
+TEST_CASE("hcauchy: held scale evaluates zeros") {
+  const std::vector<double> x{0,0};
+  auto r=cppunivariate::hcauchy_mle(mltest::as_span(x),2);
+  CHECK(r.status==cppunivariate::HcauchyStatus::Ok);CHECK(r.sigma==2);
+  CHECK(r.logLik==doctest::Approx(-2*std::log(std::acos(-1.0))));
+}

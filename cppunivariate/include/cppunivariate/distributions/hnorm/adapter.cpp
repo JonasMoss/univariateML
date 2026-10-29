@@ -6,11 +6,25 @@
 #include <limits>
 
 // [[Rcpp::export]]
-Rcpp::List mlhnorm_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu) {
+Rcpp::List mlhnorm_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu,
+    Rcpp::Nullable<double> sigma = R_NilValue) {
   const bool fixed = mu.isNotNull();
   const double held = fixed ? Rcpp::as<double>(mu) : std::numeric_limits<double>::quiet_NaN();
   if (fixed && !std::isfinite(held)) Rcpp::stop("`mu` must be finite.");
-  const auto res = cppunivariate::hnorm_mle(dist_impl::as_span(x), held);
+  const double sc = sigma.isNotNull() ? Rcpp::as<double>(sigma) : std::numeric_limits<double>::quiet_NaN();
+  if (sigma.isNotNull() && (!(sc>0) || !std::isfinite(sc))) Rcpp::stop("`sigma` must be positive finite.");
+  const auto res = cppunivariate::hnorm_mle(dist_impl::as_span(x), held, sc);
+  if (sigma.isNotNull() && res.status == cppunivariate::HnormStatus::Ok) {
+    Rcpp::CharacterVector fixed_names(0);
+    if (fixed) fixed_names.push_back("mu");
+    fixed_names.push_back("sigma");
+    const double endpoint = fixed ? res.mu : std::nextafter(res.mu, -std::numeric_limits<double>::infinity());
+    double ll=x.size()*(0.5*std::log(2.0/std::acos(-1.0))-std::log(sc));
+    for (double v:x) {const double z=(v-endpoint)/sc;ll-=0.5*z*z;}
+    if (!std::isfinite(ll)) Rcpp::stop("Half-normal held-scale likelihood exceeds double precision at the representable endpoint.");
+    return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(
+      Rcpp::_["mu"]=endpoint,Rcpp::_["sigma"]=sc),Rcpp::_["logLik"]=ll,Rcpp::_["fixed"]=fixed_names);
+  }
   if (fixed && res.status == cppunivariate::HnormStatus::DegenerateData)
     Rcpp::stop("Half-normal likelihood is unbounded as sigma -> 0 when all observations equal held mu.");
   if (fixed && res.status != cppunivariate::HnormStatus::Ok)
@@ -38,10 +52,10 @@ Rcpp::List mlhnorm_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu) {
     ss += z * z;
   }
   const double dn = static_cast<double>(x.size());
-  const double sigma = largest * std::sqrt(ss / dn);
-  const double logLik = dn * (0.5 * std::log(2.0 / std::acos(-1.0)) - std::log(sigma) - 0.5);
+  const double fitted_sigma = largest * std::sqrt(ss / dn);
+  const double logLik = dn * (0.5 * std::log(2.0 / std::acos(-1.0)) - std::log(fitted_sigma) - 0.5);
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["mu"] = endpoint, Rcpp::_["sigma"] = sigma),
+          Rcpp::_["mu"] = endpoint, Rcpp::_["sigma"] = fitted_sigma),
       Rcpp::_["logLik"] = logLik);
 }

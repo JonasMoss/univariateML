@@ -49,3 +49,29 @@ test_that("fatigue holds a translated threshold and checks shifted support", {
   expect_error(mlfatigue(x, mu=min(x)),"strictly above")
   expect_error(mlfatigue(x, mu=Inf),"finite")
 })
+
+test_that("fatigue coefficient holds match independent multistart density oracles", {
+  set.seed(8103)
+  samples <- list(extraDistr::rfatigue(20,.7,2),extraDistr::rfatigue(100,3,2),
+    c(.2,.2,1,3),.4,rep(2,4),exp(rnorm(20)),rgamma(100,.5))
+  for(x in samples) for(args in list(list(alpha=.7),list(alpha=3),list(beta=1.3),list(alpha=.7,beta=1.3))) {
+    f <- do.call(mlfatigue,c(list(x=x-5,mu=-5),args))
+    expect_setequal(attr(f,"fixed"),c(names(args),"mu"))
+    for(nm in names(args))expect_identical(unname(f[nm]),args[[nm]])
+    free <- setdiff(c("alpha","beta"),names(args))
+    objective <- function(p) {
+      pars <- c(args,as.list(setNames(exp(p),free)))
+      -sum(do.call(extraDistr::dfatigue,c(list(x=x,mu=0,log=TRUE),pars)))
+    }
+    best <- if(!length(free)) objective(numeric()) else min(vapply(c(.03,.3,1,3,30),function(s)
+      nlminb(log(s),objective,lower=-20,upper=20,control=list(iter.max=1000,rel.tol=1e-12))$objective,numeric(1)))
+    expect_equal(attr(f,"logLik"),-best,tolerance=1e-8)
+    expect_equal(sum(dml(x-5,f,log=TRUE)),attr(f,"logLik"),tolerance=1e-10)
+  }
+  expect_error(mlfatigue(rep(2,4),mu=0,beta=2),"does not exist")
+  expect_s3_class(mlfatigue(rep(2,4),mu=0,alpha=3,beta=2),"univariateML")
+  for(nm in c("alpha","beta"))for(bad in c(0,-1,Inf,NaN))
+    expect_error(do.call(mlfatigue,c(list(x=1:3,mu=0),setNames(list(bad),nm))),"positive finite")
+  expect_error(mlfatigue(1:3,mu=NULL,alpha=1,beta=1),"endpoint spikes")
+  expect_error(mlfatigue(c(.1,1,5),mu=0,alpha=1,iterlim=1),"did not converge")
+})

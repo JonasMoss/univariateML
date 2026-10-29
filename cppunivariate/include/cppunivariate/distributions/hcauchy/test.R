@@ -30,3 +30,15 @@ test_that("half-Cauchy reference repairs preserve ordinary values and tails", {
   set.seed(7); a <- rml(30,f)
   set.seed(7); expect_identical(a, extraDistr::rhcauchy(30,s))
 })
+
+test_that("held half-Cauchy scale evaluates every sample without scale collapse", {
+  set.seed(8102)
+  for(x in list(extraDistr::rhcauchy(20,2),extraDistr::rhcauchy(100,2),abs(rnorm(20)),c(0,0,1),c(0,1),0,rep(0,4))) {
+    f <- mlhcauchy(x,sigma=1.7)
+    expect_identical(unname(f["sigma"]),1.7)
+    expect_identical(attr(f,"fixed"),"sigma")
+    expect_equal(attr(f,"logLik"),sum(extraDistr::dhcauchy(x,1.7,log=TRUE)),tolerance=1e-12)
+    expect_equal(attr(logLik(f),"df"),0L)
+  }
+  for(bad in c(0,-1,Inf,NaN))expect_error(mlhcauchy(1:3,sigma=bad),"sigma.*positive finite")
+})

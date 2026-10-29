@@ -48,3 +48,13 @@ TEST_CASE("hnorm: held endpoint") {
   CHECK(cppunivariate::hnorm_mle(mltest::as_span(bad),0).status==cppunivariate::HnormStatus::InvalidData);
   CHECK(cppunivariate::hnorm_mle(mltest::as_span(zero),0).status==cppunivariate::HnormStatus::DegenerateData);
 }
+TEST_CASE("hnorm: held scale removes collapse") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{2,2};
+  auto r=cppunivariate::hnorm_mle(mltest::as_span(x),nan,1.7);
+  CHECK(r.status==cppunivariate::HnormStatus::Ok);
+  CHECK(r.mu==2);CHECK(r.sigma==1.7);
+  CHECK(r.logLik==doctest::Approx(2*(.5*std::log(2/std::acos(-1.0))-std::log(1.7))));
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),2,1).status==cppunivariate::HnormStatus::Ok);
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),nan,-1).status==cppunivariate::HnormStatus::InvalidData);
+}

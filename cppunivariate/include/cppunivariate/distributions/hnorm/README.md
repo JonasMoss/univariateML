@@ -20,18 +20,16 @@ r:
   sampler: extraDistr::rtnorm
   args: {mean: mu, sd: sigma, a: mu}
   control:
+    sigma: Held positive finite coefficient; NULL estimates it.
     mu: Required endpoint; a value holds it and explicit `NULL` estimates the translation.
 log_density: log(2/pi)/2 - log(sigma) - (x-mu)**2/(2*sigma**2)
+limits:
+  - {name: scale collapse, when: every observation equals the free or held endpoint and sigma tends to zero, status: DegenerateData}
 references:
   - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition. Wiley.
 examples: |
   set.seed(7)
   mlhnorm(extraDistr::rtnorm(100, mean = -2, sd = 3, a = -2), mu = NULL)
-holds:
-- held:
-  - sigma
-  status: not-implemented
-  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
 fit_args:
   mu: ~
 ---
@@ -47,3 +45,8 @@ The support is $(\mu, \infty)$ and `sigma` is a scale, not the standard deviatio
 Holding `mu` uses the closed support $[\mu, \infty)$ and requires all observations to be at least `mu`, with at least one strictly larger. The scale estimate is the root mean square distance from that endpoint, including for a single observation. `mlhnorm(x, mu = 0)` fits the ordinary extraDistr half-normal. Its d/p/q/r use shifted extraDistr half-normal functions, including their runtime tail repairs.
 
 Data with a sharp maximum instead of a minimum come from the reflected model; fit `mlhnorm(-x, mu = NULL)`.
+
+Holding positive finite `sigma` removes scale collapse, including for singleton
+and constant samples. The free endpoint is still the sample minimum (reported
+as its predecessor until the common closed-endpoint migration); a held endpoint
+may equal the observations. Both held coefficients are returned unchanged.
