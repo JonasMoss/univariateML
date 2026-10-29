@@ -6,8 +6,9 @@
 // rng_lgser exactly so set.seed bit-equivalence holds.
 
 #pragma once
+#include "../../special/tails.hpp"
 
-#include "../../special/constants.hpp"
+#include "../ztpois/dpqr_core.hpp"
 #include <cmath>
 
 namespace cppunivariate {
@@ -16,62 +17,19 @@ namespace distributions {
 using cppunivariate::special::kNaN;
 using cppunivariate::special::kNegInf;
 
-inline double dlgser(double x, double theta, bool log) {
-  if (!(theta > 0.0 && theta < 1.0) || !std::isfinite(x)) {
-    return kNaN;
-  }
-  if (x < 1.0 || x != std::floor(x)) {
-    return log ? kNegInf : 0.0;
-  }
-  const double a = -1.0 / std::log1p(-theta);
-  const double log_density = std::log(a) + std::log(theta) * x - std::log(x);
-  return log ? log_density : std::exp(log_density);
+inline double dlgser(double x,double theta,bool log) {
+  if (!(theta>0 && theta<1) || std::isnan(x)) return special::kNaN;
+  return zero_detail::density(4,x,theta,0,0,log);
 }
 
-inline double plgser(double q, double theta, bool lower_tail, bool log_p) {
-  if (!(theta > 0.0 && theta < 1.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q < 1.0) {
-    prob = 0.0;
-  } else {
-    const double a = -1.0 / std::log1p(-theta);
-    double sum = 0.0;
-    const long long n = static_cast<long long>(std::floor(q));
-    for (long long k = 1; k <= n; ++k) {
-      const double dk = static_cast<double>(k);
-      sum += std::pow(theta, dk) / dk;
-    }
-    prob = a * sum;
-  }
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+inline double plgser(double q,double theta,bool lower_tail,bool log_p) {
+  if (!(theta>0 && theta<1)) return special::kNaN;
+  return zero_detail::cdf(4,q,theta,0,0,lower_tail,log_p);
 }
 
-inline double qlgser(double p, double theta, bool lower_tail, bool log_p) {
-  if (!(theta > 0.0 && theta < 1.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  if (p == 0.0) return 1.0;
-  if (p >= 1.0) return std::numeric_limits<double>::infinity();
-  // Iterative inverse CDF (Kemp). Matches extraDistr's invcdf_lgser.
-  double pk = -theta / std::log(1.0 - theta);
-  double k = 1.0;
-  while (p > pk) {
-    p -= pk;
-    pk *= theta * k / (k + 1.0);
-    k += 1.0;
-  }
-  return k;
+inline double qlgser(double p,double theta,bool lower_tail,bool log_p) {
+  if (!(theta>0 && theta<1)) return special::kNaN;
+  return zero_detail::quantile(4,p,theta,0,0,lower_tail,log_p);
 }
 
 template <typename Rng>

@@ -69,11 +69,36 @@ TEST_CASE("dnorm: broad cells use known interval width") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("dnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("dnorm: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("dnorm",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::ddnorm(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pdnorm(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdnorm(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdnorm(rng, p[0], p[1]); });
+}
+
+TEST_CASE("dnorm: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // m=mpf(0.0); s=mpf(1.0)
+  // d=lambda k:(erfc((k-m)/(s*sqrt(2)))-erfc((k+1-m)/(s*sqrt(2))))/2; S=lambda k:erfc((k+1-m)/(s*sqrt(2)))/2
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(54.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::ddnorm(1e+100, 0.0, 1.0, true) == doctest::Approx(-5e+199).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pdnorm(54.0, 0.0, 1.0, false, true) == doctest::Approx(-1517.4266020241887).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qdnorm(-10000, 0.0, 1.0, false, true) == 141.0);
+  CHECK(cppunivariate::distributions::ddnorm(0.5, 0.0, 1.0, false) == 0);
+}
+
+TEST_CASE("dnorm: exact and rounded half probabilities") {
+  // mp.dps=100; print(erfc(0)/2); print(exp(mpf(-0.6931471805599453))-mpf('.5'))
+  CHECK(cppunivariate::distributions::qdnorm(0.5,0,1,true,false)==-1);
+  CHECK(cppunivariate::distributions::qdnorm(-0.6931471805599453,0,1,true,true)==0);
 }

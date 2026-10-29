@@ -11,6 +11,7 @@
 #pragma once
 #include "constants.hpp"
 #include <cmath>
+#include <algorithm>
 
 namespace cppunivariate {
 namespace special {
@@ -137,6 +138,70 @@ inline LogTails quantile_log_tails(double p, bool lower_tail, bool log_p) {
   const double lp = std::log(p);
   const double lq = std::log1p(-p);
   return lower_tail ? LogTails{lp, lq, true} : LogTails{lq, lp, true};
+}
+
+
+// Positive discrete series, scaled by its first term. ratio_bound(k) bounds
+// every subsequent ratio; stop only when the geometric remainder is <= 2e-16
+// of the accumulated sum. Used by Poisson, NB, binomial and truncated laws.
+template <typename Ratio, typename Bound>
+inline double log_series(double first, double k, Ratio ratio, Bound ratio_bound) {
+  if (first == kNegInf) return first;
+  double term=1.0, total=1.0;
+  for (int i=0; i<1000000; ++i) {
+    const double r=ratio(k), bound=ratio_bound(k);
+    if (bound < 1.0 && term*bound <= 2e-16*total*(1.0-bound))
+      return first+std::log(total);
+    term*=r; total+=term;
+    const double next=k+1.0;
+    if (next==k) {
+      // At enormous counts the ratios are constant to binary64 precision.
+      return bound<1.0 ? first+std::log(total+term*r/(1.0-r)) : kNaN;
+    }
+    k=next;
+  }
+  return kNaN;
+}
+// The binary64 value of -log(2) lies strictly above the exact logarithm.
+// Preserve that side of an exact half-probability jump after log rounding.
+inline LogTails discrete_log_tails(double p,bool lower,bool log) {
+  LogTails t=quantile_log_tails(p,lower,log);
+  if(log && p==-0.69314718055994530942) {
+    if(lower) t.upper=std::nextafter(t.upper,kNegInf);
+    else t.lower=std::nextafter(t.lower,kNegInf);
+  }
+  return t;
+}
+// Integer inversion uses the accurate smaller log tail throughout. Stops at
+// adjacent representable values once integers cease to be representable.
+template <typename Tails>
+inline double discrete_quantile(const LogTails &target, double minimum,
+                                double maximum, Tails tails) {
+  if (!target.valid) return kNaN;
+  if (target.lower==kNegInf) return minimum;
+  if (target.upper==kNegInf) return maximum;
+  const bool lower=target.lower < target.upper;
+  const auto below=[&](double x) {
+    const LogTails t=tails(x);
+    return lower ? t.lower<target.lower : t.upper>target.upper;
+  };
+  if (!below(minimum)) return minimum;
+  double lo=minimum, hi=std::isfinite(maximum) ? maximum : std::max(1.0,minimum+1.0);
+  while (below(hi)) {
+    lo=hi;
+    if (hi>=std::numeric_limits<double>::max()/2.0) {
+      hi=std::numeric_limits<double>::max();
+      if (below(hi)) return kPosInf;
+      break;
+    }
+    hi*=2.0;
+  }
+  while (hi-lo>1.0) {
+    const double mid=std::floor(std::isfinite(hi-lo)?lo+(hi-lo)*0.5:lo*0.5+hi*0.5);
+    if (mid==lo || mid==hi) break;
+    if (below(mid)) lo=mid; else hi=mid;
+  }
+  return hi;
 }
 
 } // namespace special

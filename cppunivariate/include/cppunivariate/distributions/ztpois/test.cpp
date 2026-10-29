@@ -55,8 +55,8 @@ TEST_CASE("zero families retain finite extreme log tails") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("ztpois: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("ztpois: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("ztpois",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dztpois(x, p[0], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pztpois(x, p[0], lower, log); },
@@ -85,4 +85,29 @@ TEST_CASE("ztpois: P2 held boundary likelihood and domain") {
  CHECK(std::isfinite(valid.logLik));
  const auto invalid=cppunivariate::ztpois_mle({x.data(),x.size()},-1);
  CHECK(invalid.status==cppunivariate::ZtpoisStatus::InvalidInput);
+}
+
+
+TEST_CASE("ztpois: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // l=mpf(2.0)
+  // d=lambda k:exp(-l)*l**k/factorial(k)/(1-exp(-l)); S=lambda k:gammainc(k+1,0,l)/(gamma(k+1)*(1-exp(-l)))
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(111.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dztpois(1e+100, 2.0, true) == doctest::Approx(-2.2856536211884465e+102).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pztpois(111.0, 2.0, false, true) == doctest::Approx(-343.9550531475571).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qztpois(-10000, 2.0, false, true) == 1733.0);
+  CHECK(cppunivariate::distributions::dztpois(0.5, 2.0, false) == 0);
+}
+
+TEST_CASE("ztpois: tiny conditional lower tail") {
+  // from mpmath import *; mp.dps=100; print(log(20)-20-log(-expm1(-20)))
+  CHECK(cppunivariate::distributions::pztpois(1,20.0,true,true)==doctest::Approx(-17.004267724384857).epsilon(1e-10));
 }

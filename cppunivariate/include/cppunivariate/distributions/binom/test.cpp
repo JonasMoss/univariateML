@@ -60,8 +60,8 @@ TEST_CASE("binom dpqr: trivial trial size, CDF endpoints") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("binom: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("binom: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("binom",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbinom(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbinom(x, p[0], p[1], lower, log); },
@@ -94,4 +94,30 @@ TEST_CASE("binom: held probability profiles every integer and endpoint") {
  const std::vector<int> x{2,2};
  CHECK(cppunivariate::binom_mle({x.data(),x.size()},nan,1e-10,100,1).size==2);
  CHECK(cppunivariate::binom_mle({x.data(),x.size()},nan,1e-10,100,0).status==cppunivariate::BinomStatus::InvalidInput);
+}
+
+
+TEST_CASE("binom: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // n=mpf(9.0); p=mpf(0.5)
+  // d=lambda k:binomial(n,k)*p**k*(1-p)**(n-k); S=lambda k:fsum(d(j) for j in range(int(k)+1,int(n)+1))
+  // print(log(d(mpf(4.0)))); print(log(S(mpf(4.0))))
+  // lo,hi=0,9
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dbinom(4.0, 9.0, 0.5, true) == doctest::Approx(-1.4020427180880297).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pbinom(4.0, 9.0, 0.5, false, true) == doctest::Approx(-0.6931471805599453).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qbinom(-10000, 9.0, 0.5, false, true) == 9.0);
+  CHECK(cppunivariate::distributions::dbinom(0.5, 9.0, 0.5, false) == 0);
+}
+
+TEST_CASE("binom: exact and rounded half probabilities") {
+  // mp.dps=100; print(fsum(binomial(9,k) for k in range(5,10))/2**9)
+  // Exactly 0.5, including the upper-tail equality at x=4.
+  CHECK(cppunivariate::distributions::qbinom(0.5,9,0.5,false,false)==4);
+  CHECK(cppunivariate::distributions::qbinom(-0.6931471805599453,9,0.5,true,true)==5);
 }

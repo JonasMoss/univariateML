@@ -51,8 +51,8 @@ TEST_CASE("zmpois: quantile inversion and sampling") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("zmpois: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("zmpois: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("zmpois",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzmpois(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzmpois(x, p[0], p[1], lower, log); },
@@ -80,4 +80,30 @@ TEST_CASE("zmpois: P2 held zero share and incompatible positive component") {
  const auto r=cppunivariate::zmpois_mle({z.data(),z.size()},1e-10,200,2,.7);
  CHECK(r.lambda==2);CHECK(r.p0==.7);
  CHECK(r.logLik==doctest::Approx(2*std::log(.7)));
+}
+
+
+TEST_CASE("zmpois: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // l=mpf(2.0); p0=mpf(0.3)
+  // d=lambda k:(1-p0)*exp(-l)*l**k/factorial(k)/(1-exp(-l)); S=lambda k:(1-p0)*gammainc(k+1,0,l)/(gamma(k+1)*(1-exp(-l)))
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(110.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dzmpois(1e+100, 2.0, 0.3, true) == doctest::Approx(-2.2856536211884465e+102).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pzmpois(110.0, 2.0, 0.3, false, true) == doctest::Approx(-340.286215590251).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qzmpois(-10000, 2.0, 0.3, false, true) == 1733.0);
+  CHECK(cppunivariate::distributions::dzmpois(0.5, 2.0, 0.3, false) == 0);
+}
+
+TEST_CASE("zmpois: logarithm before subnormal rounding") {
+  // from mpmath import *; mp.dps=100; l=mpf(0.2); p0=mpf(0.3)
+  // print(log((1-p0)*gammainc(134,0,l)/(gamma(134)*(-expm1(-l)))))
+  CHECK(cppunivariate::distributions::pzmpois(133,0.2,0.3,false,true)==doctest::Approx(-740.1911143613579).epsilon(1e-10));
 }

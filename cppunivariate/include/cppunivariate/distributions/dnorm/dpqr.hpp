@@ -1,5 +1,6 @@
 #pragma once
 #include "../../special/special.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 #include <limits>
 namespace cppunivariate { namespace distributions {
@@ -23,7 +24,10 @@ inline double ddnorm(double x, double mean, double sd, bool log = false) {
     const double mid=(x+0.5-mean)/sd, w=1/sd;
     if (w*(1+std::abs(mid))<1e-5)
       lp=-0.5*mid*mid-0.91893853320467274178-std::log(sd)+std::log1p(((mid*w)*(mid*w)-w*w)/24);
-    else lp=dnorm_interval((x-mean)/sd,(x+1-mean)/sd);
+    else if (std::abs(mid)>1e16) {
+      const double near=std::abs(mid)-0.5*w;
+      lp=special::fs_normal_p(near,false,true)+special::log1mexp(-near*w-0.5*w*w);
+    } else lp=dnorm_interval((x-mean)/sd,(x+1-mean)/sd);
   }
   return log ? lp : std::exp(lp);
 }
@@ -33,7 +37,7 @@ inline double pdnorm(double q, double mean, double sd, bool lower = true, bool l
   return special::fs_normal_p((std::floor(q)+1-mean)/sd,lower,log);
 }
 inline double qdnorm(double p, double mean, double sd, bool lower = true, bool log = false) {
-  const double lp = log ? p : std::log(p);
+  const double lp = log && lower && p==-0.69314718055994530942 ? std::nextafter(p,0.0) : (log ? p : std::log(p));
   if (lp > 0 || (!log && p < 0) || !std::isfinite(mean) || !(sd > 0) || !std::isfinite(sd))
     return std::numeric_limits<double>::quiet_NaN();
   const double z = mean + sd*special::fs_normal_q(lp,lower);

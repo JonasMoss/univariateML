@@ -42,8 +42,8 @@ TEST_CASE("geom dpqr: closed-form CDF") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("geom: d/p/q/r against the truth table" * doctest::may_fail()) {
+// Extreme-tail and quantile references are independent of the C++ backend.
+TEST_CASE("geom: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("geom",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgeom(x, p[0], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgeom(x, p[0], lower, log); },
@@ -72,4 +72,36 @@ TEST_CASE("geom: P2 held boundary likelihood and domain") {
  CHECK(std::isfinite(valid.logLik));
  const auto invalid=cppunivariate::geom_mle({x.data(),x.size()},-1);
  CHECK_FALSE(std::isfinite(invalid.logLik));
+}
+
+
+TEST_CASE("geom: extreme tails and discrete support") {
+  // mpmath snippet (parameters converted from the binary64 inputs):
+  // from mpmath import *; mp.dps=500
+  // p=mpf(0.5)
+  // d=lambda k:p*(1-p)**k; S=lambda k:(1-p)**(k+1)
+  // print(log(d(mpf(1e+100)))); print(log(S(mpf(123.0))))
+  // lo,hi=0,1
+  // while log(S(hi))>-10000: hi*=2
+  // while hi-lo>1:
+  //     k=(lo+hi)//2
+  //     if log(S(k))>-10000: lo=k
+  //     else: hi=k
+  // print(hi)
+  CHECK(cppunivariate::distributions::dgeom(1e+100, 0.5, true) == doctest::Approx(-6.931471805599453e+99).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pgeom(123.0, 0.5, false, true) == doctest::Approx(-85.95025038943322).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qgeom(-10000, 0.5, false, true) == 14426.0);
+  CHECK(cppunivariate::distributions::dgeom(0.5, 0.5, false) == 0);
+}
+
+TEST_CASE("geom: exact and rounded half probabilities") {
+  // mp.dps=100; print(mpf(-0.6931471805599453)-log(mpf('.5')))
+  // Positive: the binary64 log input is strictly above log(1/2).
+  CHECK(cppunivariate::distributions::qgeom(-0.6931471805599453,0.5,true,true)==1);
+  CHECK(cppunivariate::distributions::qgeom(0.5,0.5,true,false)==0);
+}
+
+TEST_CASE("geom: adjacent noninteger at zero has no mass") {
+  // mp.dps=100; x=mpf(float.fromhex("0x0.0000000000001p-1022")); print(x==floor(x))
+  CHECK(cppunivariate::distributions::dgeom(std::nextafter(0.0,1.0),0.5,false)==0);
 }
