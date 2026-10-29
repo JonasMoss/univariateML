@@ -44,6 +44,11 @@ typedef boost::math::policies::policy<
     boost::math::policies::discrete_quantile<
         boost::math::policies::integer_round_up>> NoThrowPolicy;
 
+inline double ibeta(double a,double b,double x) { return boost::math::ibeta(a,b,x,NoThrowPolicy{}); }
+inline double ibetac(double a,double b,double x) { return boost::math::ibetac(a,b,x,NoThrowPolicy{}); }
+inline double ibeta_inv(double a,double b,double x) { return boost::math::ibeta_inv(a,b,x,NoThrowPolicy{}); }
+inline double ibetac_inv(double a,double b,double x) { return boost::math::ibetac_inv(a,b,x,NoThrowPolicy{}); }
+
 inline double zeta(double s) { return boost::math::zeta(s, NoThrowPolicy{}); }
 
 inline double pnchisq(double x, double df, double ncp, bool lower) {
