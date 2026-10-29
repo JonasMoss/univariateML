@@ -1,6 +1,6 @@
 # Status and open items
 
-Updated 2026-10-29, master `50dbd90`. Deferred design ideas with their
+Updated 2026-10-29, master `27a65fa`. Deferred design ideas with their
 own rationale live in `roadmap/`; work in flight is on the board
 (`~/.local/bin/board`). This file is the short list of what is open.
 
@@ -19,7 +19,9 @@ own rationale live in `roadmap/`; work in flight is on the board
   `scripts/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
   `quality`; setup notes in the script). Six known failures there, see
   "Robustness".
-- Nothing is pushed: master is 382 commits ahead of `origin/master`.
+- `R CMD check` with vignettes and examples: Status OK. Suggests is
+  jsonlite, testthat, knitr, rmarkdown (TASK-76).
+- Nothing is pushed: master is 385 commits ahead of `origin/master`.
 
 ## Decisions for Jonas
 
@@ -32,6 +34,12 @@ own rationale live in `roadmap/`; work in flight is on the board
   maintainer has been unresponsive; a draft actuar patch for
   `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`.
 - Tier 4 below: start it or not.
+- Parameter conventions: `notes/evaluations/2026-10-29-parameter-conventions.md`
+  lists the judgement calls where the families disagree, each with a
+  proposal: endpoint and threshold defaults (gpd `mu`, fatigue `mu`,
+  hnorm `mu`, truncation bounds), silent fits on restricted ranges,
+  which parameters can be held, `NULL` semantics, rate or scale,
+  binomial `size`.
 
 ## Coverage: tier 4 (vector parameters)
 
@@ -49,6 +57,11 @@ own rationale live in `roadmap/`; work in flight is on the board
 
 ## Robustness
 
+- TASK-77, scale equivariance: `mlstd` and `mlsstd` return their start
+  values on data with sd below about 0.03 (daily returns); `mlsstd`
+  reports a false `nu -> 2` escape at small scale; `mlgompertz` fails at
+  large scale; power and fatigue use absolute tolerances. Probe:
+  `notes/evaluations/2026-10-29-scale-equivariance.R`.
 - TASK-75, cross-machine fragility. On simbox (gcc 15.2 or 13.3, BH 1.90,
   glibc 2.39, i7-12700) six tests fail that pass locally (glibc 2.43,
   i7-1355U); the compiler is not the cause:
@@ -57,8 +70,10 @@ own rationale live in `roadmap/`; work in flight is on the board
   - C++ `std/test.cpp:40`: golden `nu` 3.97765 vs 3.97766 at `kFdTol`;
   - R golden regression: `betapr` (relative 7e-8), `bnbinom` (1e-10),
     `std` (`nu` 8e-6);
-  - R `test-dist-sstd.R:287`: density vs fGarch relative error 1e-12,
-    exactly at the threshold.
+  - R `test-dist-sstd.R`: `qsstd` at `nu = 100, xi = 4` differs from the
+    frozen fGarch value by a relative 1e-12, exactly the tolerance; the
+    frozen value is the same file on both machines, so our `qsstd`
+    moves.
   Golden tolerances should match each fitter's convergence tolerance;
   status fixtures need margin. Likely to matter on CRAN machines.
 - Performance: GB2 at n = 1e6 takes about 309 s; Bhattacharjee at
