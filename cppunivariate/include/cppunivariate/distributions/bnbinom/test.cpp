@@ -118,12 +118,26 @@ TEST_CASE("bnbinom: overdispersion can select NB; diagonal finite maxima occur")
 
 #include "cppunivariate/distributions/bnbinom/dpqr.hpp"
 
+// StdRng uses poisson_distribution<int>, which rejects every out-of-range
+// candidate at huge means. Record the unsupported draw as NaN instead of
+// hanging this test; r_valid reports it, and production code stays untouched.
+namespace {
+struct BnbinomTruthRng {
+  cppunivariate::distributions::StdRng<> &base;
+  double rgamma(double shape, double scale) { return base.rgamma(shape, scale); }
+  double rpois(double mean) {
+    if (!std::isfinite(mean) || mean > static_cast<double>(std::numeric_limits<int>::max()))
+      return std::numeric_limits<double>::quiet_NaN();
+    return base.rpois(mean);
+  }
+};
+}
+
 // Independent high-precision oracle; see quality/truth.py.
-// Oracle gap: see this family's truth.py for the missing controlled route.
-TEST_CASE("bnbinom: d/p/q/r against the truth table" * doctest::skip()) {
+TEST_CASE("bnbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
   mltest::check_dpqr_truth("bnbinom",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbnbinom(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbnbinom(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbnbinom(x, p[0], p[1], p[2], lower, log); },
-      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbnbinom(rng, p[0], p[1], p[2]); });
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { BnbinomTruthRng bounded{rng}; return cppunivariate::distributions::rbnbinom(bounded, p[0], p[1], p[2]); });
 }

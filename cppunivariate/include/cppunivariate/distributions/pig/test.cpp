@@ -110,3 +110,13 @@ TEST_CASE("pig: P2 every hold subset preserves coefficients and golden likelihoo
    if(mask & 2)CHECK(r.shape==g.estimates.at("shape"));
  }
 }
+
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("pig: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("pig",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpig(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppig(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qpig(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rpig(rng, p[0], p[1]); });
+}

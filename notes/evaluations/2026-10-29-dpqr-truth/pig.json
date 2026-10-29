@@ -1,6 +1,7 @@
 {
   "id": "pig",
-  "status": "gap",
-  "reason": "ValueError: gap: Bessel-K count tail needs a uniform series remainder beyond the golden-only polynomial spec.",
-  "seconds": 0.01319908699952066
+  "status": "generated",
+  "points": 6,
+  "values": 1253,
+  "quantiles": 264
 }
