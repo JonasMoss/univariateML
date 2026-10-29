@@ -130,6 +130,8 @@ summary.univariateML <- function(object, ...) {
   print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
   fixed <- univariateML_fixed(object)
   if (length(fixed)) cat("\nFixed:           ", paste(fixed, collapse = ", "), "\n", sep = "")
+  restricted <- attr(object, "restricted")
+  if (length(restricted)) cat("Restricted:      ", paste(paste(names(restricted), restricted, sep = " = "), collapse = ", "), "\n", sep = "")
   cat("\nData:            ", data.name, " (", attr(object, "n"), " obs.)\n",
     "Support:         (", support[[1]], ", ", support[[2]], ")\n",
     "Density:         ", attr(object, "density"), "\n",
@@ -145,6 +147,10 @@ print.univariateML <- function(x, ...) {
   if (is.null(digits)) digits <- 4
   cat("Maximum likelihood estimates for the", attr(x, "model"), "model \n")
   print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
+  fixed <- univariateML_fixed(x)
+  if (length(fixed)) cat("Fixed: ", paste(fixed, collapse = ", "), "\n", sep = "")
+  restricted <- attr(x, "restricted")
+  if (length(restricted)) cat("Restricted: ", paste(paste(names(restricted), restricted, sep = " = "), collapse = ", "), "\n", sep = "")
   invisible(x)
 }
 

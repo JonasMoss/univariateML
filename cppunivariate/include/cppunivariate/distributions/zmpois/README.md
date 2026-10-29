@@ -12,16 +12,27 @@ params:
 - name: lambda
   role: rate
   domain: '[0, inf)'
-  default: 2.0
+  simulate: 2.0
+  kind: regular
 - name: p0
   role: probability
   domain: '[0, 1]'
-  default: 0.3
+  simulate: 0.3
+  kind: regular
 r:
   density: actuar::dzmpois
   sampler: actuar::rzmpois
   control: {}
 log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(-lambda+x*log(lambda)-loggamma(x+1)-log(1-exp(-lambda))), True))
+holds:
+- held:
+  - lambda
+  status: not-implemented
+  reason: The adapter does not accept `lambda`; this hold is not implemented (P2).
+- held:
+  - p0
+  status: not-implemented
+  reason: The adapter does not accept `p0`; this hold is not implemented (P2).
 ---
 
 Zero-modified Poisson distributions model counts with a separate zero component.

@@ -39,16 +39,24 @@ set_seed_for <- function(id) {
 # the README's r.args map (sampler argument = coefficient).
 default_args <- function(model) {
   values <- setNames(
-    lapply(model$params, function(p) p$default),
+    lapply(model$params, function(p) p$simulate),
     vapply(model$params, function(p) p$name, character(1))
   )
-  if (is.null(model$args)) return(values)
-  setNames(lapply(unname(model$args), function(coef) values[[coef]]), names(model$args))
+  if (is.null(model$args)) {
+    if (!is.null(model$shift)) values[[model$shift]] <- NULL
+    return(values)
+  }
+  setNames(lapply(unname(model$args), function(expr) eval(parse(text = expr), values)), names(model$args))
 }
 
 # Sample size by position: stats::rhyper calls it `nn`.
 sample_one <- function(model, n) {
-  do.call(resolve_callable(model$sampler), c(list(n), default_args(model)))
+  draws <- do.call(resolve_callable(model$sampler), c(list(n), default_args(model)))
+  if (!is.null(model$shift)) {
+    shift <- Filter(function(p) identical(p$name, model$shift), model$params)[[1]]$simulate
+    draws <- draws + shift
+  }
+  draws
 }
 
 # README fit_args (required design quantities) are passed to the fit.

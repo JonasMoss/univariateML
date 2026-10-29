@@ -64,12 +64,12 @@ limit_sentence <- function(lim, model) {
 }
 
 # Parameters the user may hold fixed: an adapter argument named like the
-# coefficient (README params: fixable: true).
-fixable_names <- function(model) {
-  unlist(lapply(model$params, function(p) if (isTRUE(p$fixable)) p$name))
+# coefficient; these names are derived from the exact adapter formals.
+holdable_names <- function(model) {
+  intersect(param_names(model), names(formals(rcpp_env[[paste0("ml", model$id, "_")]])))
 }
 
-# Design quantities the user must supply (README params: required: true):
+# Design quantities and thresholds the user must supply (derived from kind):
 # adapter arguments without a default, always held fixed.
 required_names <- function(model) {
   unlist(lapply(model$params, function(p) if (isTRUE(p$required)) p$name))
@@ -79,18 +79,25 @@ check_control <- function(model) {
   fn <- rcpp_env[[paste0("ml", model$id, "_")]]
   if (is.null(fn)) stop("codegen_wrappers: no Rcpp adapter ml", model$id, "_")
   formal_names <- setdiff(names(formals(fn)), "x")
-  doc_names <- union(names(model$control), fixable_names(model))
+  doc_names <- union(names(model$control), holdable_names(model))
   if (!setequal(formal_names, doc_names)) {
     stop("codegen_wrappers: ", model$id, ": adapter arguments (",
          paste(formal_names, collapse = ", "), ") do not match README r.control (",
          paste(doc_names, collapse = ", "), ")")
   }
-  no_default <- formal_names[vapply(formal_names, function(a)
-    identical(formals(fn)[[a]], quote(expr = )), logical(1))]
-  if (!setequal(no_default, required_names(model))) {
-    stop("codegen_wrappers: ", model$id, ": adapter arguments without a default (",
-         paste(no_default, collapse = ", "), ") must be the README required parameters (",
-         paste(required_names(model), collapse = ", "), ")")
+  for (p in setdiff(param_names(model), formal_names)) {
+    declared <- any(vapply(model$holds, function(h)
+      identical(h$status, "not-implemented") && p %in% unlist(h$held), logical(1)))
+    if (!declared) stop("codegen_wrappers: ", model$id, ": coefficient `", p,
+                       "` is not an adapter argument; add a holds: not-implemented entry")
+  }
+  for (p in intersect(param_names(model), formal_names)) {
+    missing_default <- identical(formals(fn)[[p]], quote(expr=))
+    if (p %in% required_names(model)) {
+      if (!missing_default) stop("codegen_wrappers: ", model$id, ": required coefficient `", p, "` must have no adapter default")
+    } else if (missing_default || !is.null(formals(fn)[[p]])) {
+      stop("codegen_wrappers: ", model$id, ": non-required coefficient `", p, "` must default to NULL")
+    }
   }
   formals(fn)
 }
@@ -100,16 +107,29 @@ required_checks <- function(model) {
   fname <- paste0("ml", model$id)
   req <- Filter(function(p) isTRUE(p$required), model$params)
   if (!length(req)) return(character())
-  c(nl("  supplied <- match.call(", fname, "_, call = as.call(c(\n",
+  checks <- c(nl("  supplied <- match.call(", fname, "_, call = as.call(c(\n",
        "    list(quote(", fname, "_), x = quote(x)), list(...))))\n"),
     vapply(req, function(p) nl(
-    "  if (is.null(supplied[[\"", p$name, "\"]])) {\n",
+    "  if (!\"", p$name, "\" %in% names(supplied)) {\n",
     "    stop(", encodeString(paste0("`", fname, "` requires `", p$name,
-      "` (", p$role, "); it has no default.",
-      if (!is.null(p$required_reason)) paste0(" ", p$required_reason) else ""),
+      "` (", p$kind, "). Hold a value, e.g. `", p$name, " = ", p$simulate, "`, or use `", p$name, " = NULL` to estimate it where supported.",
+      if (!is.null(p$advice)) paste0(" ", p$advice) else ""),
       quote = '"'), ", call. = FALSE)\n",
     "  }\n"
   ), character(1)))
+  # Use the matched names so supported positional adapter calls keep working.
+  checks <- c(checks, "  dots <- as.list(supplied)[-1L]\n")
+  # An exact held-set structural exception can be diagnosed before conversion.
+  exceptions <- Filter(function(h) !length(setdiff(unlist(h$held), holdable_names(model))), model$holds)
+  for (h in exceptions) {
+    held <- unlist(h$held)
+    conditions <- vapply(holdable_names(model), function(p) {
+      if (p %in% held) nl("!is.null(dots[[\"",p,"\"]])") else nl("is.null(dots[[\"",p,"\"]])")
+    }, "")
+    checks <- c(checks, nl("  if (", paste(conditions,collapse=" && "), ") stop(",
+      encodeString(h$reason, quote='"'), ", call. = FALSE)\n"))
+  }
+  checks
 }
 
 # " with `mean = mu`, `sd = sigma`" for models with an r.args map.
@@ -140,7 +160,7 @@ gen_doc <- function(model) {
     }
     nl("  * `", arg, "`: ", rd_math(model$control[[arg]]), default_txt)
   }, character(1))
-  fixed_items <- vapply(setdiff(fixable_names(model), names(model$control)), function(arg) {
+  fixed_items <- vapply(setdiff(holdable_names(model), names(model$control)), function(arg) {
     nl("  * `", arg, "`: Value at which to hold `", arg, "` fixed; ",
        "`NULL` (the default) estimates it.")
   }, character(1))
@@ -153,7 +173,10 @@ gen_doc <- function(model) {
   examples <- if (!is.null(model$examples)) {
     strsplit(sub("\n$", "", model$examples), "\n", fixed = TRUE)[[1]]
   } else {
-    nl("set.seed(1); ", fname, "(simulate_default(\"", fname, "\", 100))")
+    nl("set.seed(1); ", fname, "(simulate_default(\"", fname, "\", 100)",
+       if (length(model$fit_args)) paste0(", ", paste(vapply(names(model$fit_args), function(p)
+         paste0(p, " = ", paste(deparse(model$fit_args[[p]]), collapse=" ")), ""), collapse=", ")),
+       ")")
   }
 
   block <- c(
@@ -173,7 +196,7 @@ gen_doc <- function(model) {
        "This is a named numeric vector with maximum likelihood estimates for ",
        and_list(param_names(model)), " and the attributes `model`, `density`, ",
        "`logLik`, `support`, `n`, `call` and `fixed` (the names of the parameters ",
-       "held fixed rather than estimated)."),
+       "held fixed rather than estimated), plus `restricted` when supplied by an adapter."),
     "@seealso",
     seealso,
     if (length(model$references)) c("@references", head(c(rbind(model$references, "")), -1L)) else NULL,
@@ -196,7 +219,7 @@ gen_wrapper <- function(model) {
     "  n <- length(x)\n",
     "  out <- ", fname, "_(x = x, ...)\n",
     "  params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)\n",
-    "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params, fixed = out$fixed)\n",
+    "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params, fixed = out$fixed, restricted = out$restricted)\n",
     "}\n\n"
   )
 }

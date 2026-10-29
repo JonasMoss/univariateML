@@ -42,7 +42,8 @@ decorator <- function(name) {
     out <- do.call(paste0(name, "_"), c(list(x = x), list(...)))
 
     params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)
-    univariateML_construct(out$estimates, name = name, params = params, fixed = out$fixed)
+    univariateML_construct(out$estimates, name = name, params = params, fixed = out$fixed,
+                           restricted = out$restricted)
   }
   meta <- univariateML_metadata[[name]]
   meta$parameters <- meta$names
@@ -57,9 +58,10 @@ decorator <- function(name) {
 #' @param name Name of the `ml***` function.
 #' @param params List of `loglik`, `call`, and `n`.
 #' @param fixed Names of the parameters held fixed rather than estimated.
+#' @param restricted Named character vector of coefficients at lower/upper fitting restrictions.
 #' @return Object of class `univariateML`
 
-univariateML_construct <- function(estimates, name, params, fixed = NULL) {
+univariateML_construct <- function(estimates, name, params, fixed = NULL, restricted = NULL) {
   estimates <- unname(estimates)
   class <- "univariateML"
   args <- c(.Data = list(estimates), params, univariateML_metadata[[name]], class = class)
@@ -73,6 +75,7 @@ univariateML_construct <- function(estimates, name, params, fixed = NULL) {
   attr(object, "continuous") <- (univariateML_metadata[[name]]$support$type == "R")
   attr(object, "support") <- univariateML_metadata[[name]]$support$bounds
   attr(object, "fixed") <- as.character(fixed)
+  if (!is.null(restricted)) attr(object, "restricted") <- restricted
   object
 }
 
@@ -164,8 +167,12 @@ univariateML_name <- function(obj) {
 univariateML_dpqr_args <- function(estimates, name) {
   map <- if (is.null(name)) NULL else univariateML_args[[name]]
   values <- stats::setNames(as.list(as.numeric(estimates)), names(estimates))
-  if (is.null(map)) return(values)
-  stats::setNames(lapply(unname(map), function(coef) values[[coef]]), names(map))
+  if (is.null(map)) {
+    shift <- if (is.null(name)) NULL else univariateML_shifts[[name]]
+    if (!is.null(shift)) values[[shift]] <- NULL
+    return(values)
+  }
+  stats::setNames(lapply(unname(map), function(expr) eval(parse(text = expr), values)), names(map))
 }
 
 #' Workarounds for defects in reference functions
@@ -615,6 +622,17 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   if (type %in% c("d", "p", "q", "r")) {
     values <- univariateML_dpqr_args(obj, univariateML_name(obj))
     for (arg in names(values)) formals(fun)[[arg]] <- values[[arg]]
+    model_name <- univariateML_name(obj)
+    shift_name <- if (is.null(model_name)) NULL else univariateML_shifts[[model_name]]
+    if (!is.null(shift_name)) {
+      shift <- unname(obj[[shift_name]])
+      base_fun <- fun
+      fun <- switch(type,
+        d = function(x, ...) base_fun(x - shift, ...),
+        p = function(q, ...) base_fun(q - shift, ...),
+        q = function(p, ...) base_fun(p, ...) + shift,
+        r = function(n, ...) base_fun(n, ...) + shift)
+    }
   }
   fun
 }

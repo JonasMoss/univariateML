@@ -3,10 +3,27 @@ id: tbinom
 name: Truncated binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-- {name: prob, role: probability, domain: "[0, 1]", default: 0.4, fixable: true}
-- {name: a, role: known design quantity, domain: "(-inf, inf)", default: 0, required: true}
-- {name: b, role: known design quantity, domain: "(-inf, inf)", default: 10, required: true}
-- {name: size, role: known design quantity, domain: "[0, inf)", default: 12, required: true, integer: true}
+- name: prob
+  role: probability
+  domain: '[0, 1]'
+  simulate: 0.4
+  kind: regular
+- name: a
+  role: known design quantity
+  domain: (-inf, inf)
+  simulate: 0
+  kind: design
+- name: b
+  role: known design quantity
+  domain: (-inf, inf)
+  simulate: 10
+  kind: design
+- name: size
+  role: known design quantity
+  domain: '[0, inf)'
+  integer: yes
+  simulate: 12
+  kind: design
 r:
   density: extraDistr::dtbinom
   sampler: extraDistr::rtbinom
@@ -15,7 +32,6 @@ r:
     a: Known strict lower truncation bound.
     b: Known inclusive upper truncation bound.
     size: Known nonnegative integer number of trials.
-fit_args: {a: 0, b: 10, size: 12}
 log_density: "x*log(prob)+(size-x)*log(1-prob)-loggamma(x+1)-loggamma(size-x+1)-log(Sum(exp(k*log(prob)+(size-k)*log(1-prob)-loggamma(k+1)-loggamma(size-k+1)), (k, Max(0, floor(a)+1), Min(size, floor(b)))))"
 limits:
 - name: point mass at lowest support point
@@ -30,6 +46,78 @@ examples: |
   set.seed(1)
   mltbinom(extraDistr::rtbinom(100, 12, .4, 0, 10), a = 0, b = 10, size = 12)
 
+holds:
+- held: []
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - prob
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - a
+  status: not-implemented
+  reason: Estimating `b` with NULL is not implemented for this design.
+- held:
+  - prob
+  - a
+  status: not-implemented
+  reason: Estimating `b` with NULL is not implemented for this design.
+- held:
+  - b
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - prob
+  - b
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - a
+  - b
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+- held:
+  - prob
+  - a
+  - b
+  status: not-implemented
+  reason: Estimating `size` with NULL is not implemented for this design.
+- held:
+  - size
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - prob
+  - size
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - a
+  - size
+  status: not-implemented
+  reason: Estimating `b` with NULL is not implemented for this design.
+- held:
+  - prob
+  - a
+  - size
+  status: not-implemented
+  reason: Estimating `b` with NULL is not implemented for this design.
+- held:
+  - b
+  - size
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+- held:
+  - prob
+  - b
+  - size
+  status: not-implemented
+  reason: Estimating `a` with NULL is not implemented for this design.
+fit_args:
+  a: 0
+  b: 10
+  size: 12
 ---
 
 The binomial law conditioned on known bounds `a < x <= b` models truncated counts.

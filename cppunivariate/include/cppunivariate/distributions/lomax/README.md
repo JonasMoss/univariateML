@@ -3,8 +3,16 @@ id: lomax
 name: Lomax
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: lambda, role: rate, domain: "(0, inf)", default: 1}
-  - {name: kappa, role: shape, domain: "(0, inf)", default: 2}
+- name: lambda
+  role: rate
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: kappa
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
 r:
   density: extraDistr::dlomax
   sampler: extraDistr::rlomax
@@ -31,6 +39,15 @@ examples: |
   set.seed(5)
   mllomax(rexp(10))
   }
+holds:
+- held:
+  - lambda
+  status: not-implemented
+  reason: The adapter does not accept `lambda`; this hold is not implemented (P2).
+- held:
+  - kappa
+  status: not-implemented
+  reason: The adapter does not accept `kappa`; this hold is not implemented (P2).
 ---
 
 The Lomax (Pareto type II) distribution is a heavy-tailed distribution on

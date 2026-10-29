@@ -4,7 +4,7 @@ dhn <- function(x, mu, sigma, log = FALSE) extraDistr::dtnorm(x, mu, sigma, a = 
 test_that("translated half-normal closed form agrees with density oracle", {
   set.seed(73)
   x <- extraDistr::rtnorm(200, -3, 2, a = -3)
-  fit <- mlhnorm(x)
+  fit <- mlhnorm(x, mu = NULL)
   mu <- unname(fit[1])
   # Boundary MLE min(x), reported one double below it (dtnorm excludes a).
   expect_lt(mu, min(x))
@@ -15,18 +15,18 @@ test_that("translated half-normal closed form agrees with density oracle", {
   expect_equal(attr(fit, "logLik"), -oracle$objective, tolerance = 1e-12)
   expect_equal(attr(fit, "logLik"), sum(dml(x, fit, log = TRUE)), tolerance = 1e-12)
   expect_lt(sum(dhn(x, mu - 0.01, fit[2], log = TRUE)), attr(fit, "logLik"))
-  expect_equal(coef(mlhnorm(c(x, NA), na.rm = TRUE)), coef(fit))
+  expect_equal(coef(mlhnorm(c(x, NA), na.rm = TRUE, mu = NULL)), coef(fit))
   # Location-scale equivariance.
-  expect_equal(unname(coef(mlhnorm(5 + 3 * x))), c(5 + 3 * mu, 3 * unname(fit[2])), tolerance = 1e-12)
-  expect_error(mlhnorm(1), "at least two observations with distinct values")
-  expect_error(mlhnorm(rep(2, 4)), "degenerate data")
-  expect_error(mlhnorm(c(x, NA)))
-  expect_error(mlhnorm(c(x, Inf)))
-  expect_error(mlhnorm(x, iterlim = 10))
+  expect_equal(unname(coef(mlhnorm(5 + 3 * x, mu = NULL))), c(5 + 3 * mu, 3 * unname(fit[2])), tolerance = 1e-12)
+  expect_error(mlhnorm(1, mu = NULL), "at least two observations with distinct values")
+  expect_error(mlhnorm(rep(2, 4), mu = NULL), "degenerate data")
+  expect_error(mlhnorm(c(x, NA), mu = NULL))
+  expect_error(mlhnorm(c(x, Inf), mu = NULL))
+  expect_error(mlhnorm(x, iterlim = 10, mu = NULL))
 })
 
 test_that("dml/pml/qml/rml map mu and sigma onto extraDistr's truncated normal", {
-  fit <- mlhnorm(c(-4, -3, 0, 2))
+  fit <- mlhnorm(c(-4, -3, 0, 2), mu = NULL)
   mu <- unname(fit[1]); sigma <- unname(fit[2])
   x <- c(-5, -4, -3.5, 0, 3)
   # Translated half-normal density 2 * dnorm(x, mu, sigma) on (mu, Inf).
@@ -48,7 +48,7 @@ test_that("dml/pml/qml/rml map mu and sigma onto extraDistr's truncated normal",
 
 test_that("bootstrap refits with mlhnorm", {
   set.seed(5)
-  fit <- mlhnorm(extraDistr::rtnorm(30, 1, 2, a = 1))
+  fit <- mlhnorm(extraDistr::rtnorm(30, 1, 2, a = 1), mu = NULL)
   boot <- bootstrapml(fit, reps = 20, reducer = identity)
   expect_equal(dim(boot), c(2L, 20L))
   expect_true(all(boot["sigma", ] > 0))
@@ -58,7 +58,7 @@ test_that("active truncated-normal repairs retain the half-normal map and endpoi
   expect_identical(univariateML:::univariateML_args$mlhnorm,
                    c(mean = "mu", sd = "sigma", a = "mu"))
   expect_true(univariateML:::univariateML_reference_fixes[["extraDistr::dtnorm"]]$broken())
-  fit <- mlhnorm(c(-4,-3,0,2))
+  fit <- mlhnorm(c(-4,-3,0,2), mu = NULL)
   mu <- unname(fit[1]); sigma <- unname(fit[2])
   x <- mu + sigma*c(-1,0,.01,.5,2)
   expect_equal(dml(x, fit), ifelse(x > mu, 2*dnorm(x, mu, sigma), 0), tolerance = 1e-12)
@@ -79,7 +79,7 @@ test_that("active truncated-normal repairs retain the half-normal map and endpoi
 
 test_that("half-normal re-profiles after rounding its endpoint", {
   x <- 1e15 + c(0, 1, 2, 3)
-  f <- mlhnorm(x)
+  f <- mlhnorm(x, mu = NULL)
   expect_equal(f[["sigma"]], sqrt(mean((x - f[["mu"]])^2)))
   expect_equal(attr(f, "logLik"), sum(extraDistr::dtnorm(x, mean = f[["mu"]], sd = f[["sigma"]], a = f[["mu"]], log = TRUE)))
 })

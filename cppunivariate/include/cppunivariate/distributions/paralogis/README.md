@@ -3,8 +3,16 @@ id: paralogis
 name: Paralogistic
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape, role: shape, domain: "(0, inf)", default: 1}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1, fixable: true}
+- name: shape
+  role: shape
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
 r:
   density: actuar::dparalogis
   sampler: actuar::rparalogis
@@ -18,6 +26,11 @@ references:
   - Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012). Loss Models, From Data to Decisions, Fourth Edition. Wiley.
 examples: |
   mlparalogis(precip)
+holds:
+- held:
+  - shape
+  status: not-implemented
+  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
 ---
 
 The paralogistic distribution is the Burr type XII distribution with its two

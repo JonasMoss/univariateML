@@ -3,10 +3,29 @@ id: genbeta
 name: Generalized beta of the first kind
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape1, role: shape, domain: "(0, inf)", default: 0.4, fixable: true}
-  - {name: shape2, role: shape, domain: "(0, inf)", default: 0.3, fixable: true}
-  - {name: shape3, role: shape, domain: "(0, inf)", default: 2, fixable: true}
-  - {name: scale, role: upper endpoint, domain: "(0, inf)", default: 1, required: true, required_reason: "With scale estimated the likelihood is unbounded: shape2 < 1 makes the density singular as scale falls to the sample maximum. Hold scale, e.g. `mlgenbeta(x, scale = 1)`. Free-scale fits with other shapes held are not supported."}
+- name: shape1
+  role: shape
+  domain: (0, inf)
+  simulate: 0.4
+  kind: regular
+- name: shape2
+  role: shape
+  domain: (0, inf)
+  simulate: 0.3
+  kind: regular
+- name: shape3
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
+- name: scale
+  role: upper endpoint
+  domain: (0, inf)
+  simulate: 1
+  advice: 'With scale estimated the likelihood is unbounded: shape2 < 1 makes the
+    density singular as scale falls to the sample maximum. Hold scale, e.g. `mlgenbeta(x,
+    scale = 1)`. Free-scale fits with other shapes held are not supported.'
+  kind: threshold
 r:
   density: actuar::dgenbeta
   sampler: actuar::rgenbeta
@@ -14,7 +33,6 @@ r:
     scale: Known positive finite upper endpoint, strictly above every observation.
     gradtol: Tolerance on the per-observation log-shape3 profile score.
     iterlim: Maximum Newton iterations per beta-shape profile evaluation.
-fit_args: {scale: 1}
 log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
 limits:
   - {model: lgamma, name: unit gamma on x/scale, when: 'shape1 tends to infinity, shape3 tends to zero, shape1*shape3 stays finite; fit mllgamma(scale / x)', status: UnitGammaBoundary}
@@ -22,6 +40,53 @@ limits:
 examples: |
   set.seed(3)
   mlgenbeta(simulate_default("mlgenbeta", 500), scale = 1)
+holds:
+- held: []
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape3
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape3
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - shape3
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - shape3
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+fit_args:
+  scale: 1
 ---
 
 The generalized beta of the first kind models positive observations below a known upper endpoint.

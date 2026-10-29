@@ -26,7 +26,7 @@ emit_support <- function(s) {
 
 emit_params <- function(params) {
   names <- vapply(params, function(p) p$name, character(1))
-  defaults <- vapply(params, function(p) p$default, numeric(1))
+  defaults <- vapply(params, function(p) p$simulate, numeric(1))
   list(
     names_vec = paste0("c(\"", paste(names, collapse = "\", \""), "\")"),
     defaults_vec = paste0("c(", paste(defaults, collapse = ", "), ")")
@@ -37,14 +37,26 @@ emit_args <- function(models) {
   with_args <- Filter(function(m) !is.null(m$args), models)
   if (!length(with_args)) return(character())
   entries <- vapply(with_args, function(m) {
-    for (coef in m$args) {
-      if (!coef %in% vapply(m$params, function(p) p$name, character(1))) {
-        stop("codegen_metadata: ", m$id, ": r.args maps to unknown coefficient ", coef)
+    for (expr in m$args) {
+      parsed <- tryCatch(parse(text = expr), error = function(e) NULL)
+      if (is.null(parsed) || length(parsed) != 1L ||
+          length(setdiff(all.vars(parsed), vapply(m$params, function(p) p$name, character(1))))) {
+        stop("codegen_metadata: ", m$id, ": invalid r.args expression ", expr)
       }
     }
-    line("  ml", m$id, " = c(", paste0(names(m$args), " = \"", m$args, "\"", collapse = ", "), ")")
+    line("  ml", m$id, " = c(", paste0(encodeString(names(m$args), quote='"'), " = ", encodeString(m$args, quote='"'), collapse = ", "), ")")
   }, character(1))
   paste0(entries, c(rep(",", length(entries) - 1L), ""))
+}
+
+emit_shifts <- function(models) {
+  shifted <- Filter(function(m) !is.null(m$shift), models)
+  entries <- vapply(shifted, function(m) {
+    if (length(m$shift) != 1L || !m$shift %in% vapply(m$params, function(p) p$name, character(1)))
+      stop("codegen_metadata: ", m$id, ": r.shift must name a coefficient")
+    line("  ml", m$id, " = ", encodeString(m$shift, quote = '"'))
+  }, character(1))
+  if (length(entries)) paste0(entries, c(rep(",", length(entries) - 1L), "")) else character()
 }
 
 generated_names <- paste0("ml", names(models))
@@ -69,6 +81,10 @@ blocks <- c(
   emit_args(models),
   ")",
   "",
+  "univariateML_shifts <- list(",
+  emit_shifts(models),
+  ")",
+  "",
   "univariateML_metadata <- list()",
   ""
 )
@@ -82,7 +98,12 @@ for (m in models) {
     line("  density = \"", m$density, "\","),
     line("  support = ", emit_support(m$support), ","),
     line("  names = ", param_info$names_vec, ","),
-    line("  default = ", param_info$defaults_vec),
+    line("  simulate = ", param_info$defaults_vec, ","),
+    line("  params = ", paste(deparse(m$params, width.cutoff=500L), collapse=" "), ","),
+    line("  required = ", paste(deparse(vapply(Filter(function(p) p$required, m$params), `[[`, "", "name")), collapse=" "), ","),
+    line("  holds = ", paste(deparse(m$holds, width.cutoff=500L), collapse=" "), ","),
+    line("  limits = ", paste(deparse(m$limits, width.cutoff=500L), collapse=" "), ","),
+    line("  fit_args = ", paste(deparse(m$fit_args, width.cutoff=500L), collapse=" ")),
     ")",
     ""
   )

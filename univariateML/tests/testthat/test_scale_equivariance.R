@@ -14,7 +14,7 @@ scale_exclusions <- c(
 )
 
 # Full affine families. Folded normal and the zero-threshold positive
-# families permit scaling only. tnorm has infinite bounds by default.
+# families permit scaling only. The golden tnorm fit uses infinite bounds.
 affine_models <- c("mlbhatt", "mlcauchy", "mlemg", "mlfrechet", "mlged",
                    "mlgev", "mlgumbel", "mlhnorm", "mlhuber", "mllaplace",
                    "mllogis", "mllst", "mlnorm", "mlsged", "mlslash",
@@ -65,13 +65,19 @@ for (id in univariateML_models) {
     # exercise every parameter and all transformation decisions.
     n <- if (model %in% c("mlemg", "mlbhatt", "mltlambda")) 24 else 80
     x <- simulate_default(model, n)
-    fit <- function(x) tryCatch(get(model, mode = "function")(x),
-                                error = function(e) conditionMessage(e))
+    args <- golden_fit_args(model)
+    fit <- function(x, a=0, b=1) {
+      transformed <- args
+      for (p in intersect(names(args), c("mu","a","b")))
+        if (!is.null(args[[p]])) transformed[[p]] <- a + b*args[[p]]
+      tryCatch(do.call(model, c(list(x), transformed)),
+               error = function(e) conditionMessage(e))
+    }
     base <- fit(x)
     for (b in c(1e-4, 1e4)) {
       # Shift in sample units avoids loss of precision in tiny observations.
       a <- if (model %in% affine_models) 3 * b else 0
-      got <- fit(a + b * x)
+      got <- fit(a + b * x, a, b)
       if (is.character(base)) {
         expect_identical(got, base) # includes escape/error decisions
       } else {

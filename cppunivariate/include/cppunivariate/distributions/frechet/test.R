@@ -5,20 +5,20 @@ test_that("frechet: held location, attained shape boundary and escape", {
  expect_equal(unname(f["lambda"]),unname(b["shape"]),tolerance=1e-10)
  expect_equal(unname(f["sigma"]),1/unname(b["rate"]),tolerance=1e-10)
  expect_equal(attr(f,"logLik"),attr(b,"logLik"),tolerance=1e-10)
- free <- mlfrechet(x)
+ free <- mlfrechet(x, mu = NULL)
  expect_equal(unname(free["lambda"]),1)
- expect_error(mlfrechet(c(1,1,2)),"tie")
+ expect_error(mlfrechet(c(1,1,2), mu = NULL),"tie")
  expect_error(mlfrechet(1:5,mu=1),"strictly")
  expect_error(mlfrechet(1:5,mu=Inf),"finite")
  expect_error(mlfrechet(rep(1,5),mu=0),"nonconstant")
- expect_error(mlfrechet(x,iterlim=1),"converge")
+ expect_error(mlfrechet(x,iterlim=1, mu = NULL),"converge")
  expect_error(mlfrechet(x,mu=2,iterlim=1),"converge")
- expect_error(mlfrechet(extraDistr::qgumbel((1:100-.5)/100)),"mlgumbel")
+ expect_error(mlfrechet(extraDistr::qgumbel((1:100-.5)/100), mu = NULL),"mlgumbel")
  expect_equal(sum(dml(x,f,log=TRUE)),attr(f,"logLik"),tolerance=1e-10)
  set.seed(12); a<-rml(20,f);set.seed(12);expect_identical(rml(20,f),a)
  for(shape in c(.5,1,3)) {
    y <- extraDistr::qfrechet((1:80-.5)/80,lambda=shape)
-   fit <- mlfrechet(y)
+   fit <- mlfrechet(y, mu = NULL)
    objective <- function(z) -sum(extraDistr::dfrechet(y,lambda=1+exp(z[1]),mu=min(y)-exp(z[2]),sigma=exp(z[3]),log=TRUE))
    for(delta in c(-.3,0,.3)) {
      start <- c(log(max(fit["lambda"]-1,1e-6)),log(min(y)-fit["mu"]),log(fit["sigma"]))
@@ -62,7 +62,7 @@ test_that("frechet: an independent Gumbel-face oracle finds no better member", {
    o <- optim(start,nll,method="Nelder-Mead",control=list(maxit=2000,reltol=1e-12))
    expect_lte(-o$value,attr(g,"logLik")+1e-6*length(y))
  }
- expect_error(mlfrechet(y),"mlgumbel")
+ expect_error(mlfrechet(y, mu = NULL),"mlgumbel")
 })
 
 test_that("threshold tail repairs retain finite answers under extreme rescaling", {

@@ -1,7 +1,7 @@
 test_that("mlgpd agrees with multistart constrained density oracles", {
   for (shape in c(.3, 0, -.3, -.8)) {
     x <- extraDistr::qgpd(((1:200)-.5)/200, sigma = 2, xi = shape)
-    fit <- mlgpd(x)
+    fit <- mlgpd(x, mu = 0)
     objective <- function(p) {
       if (p[2] < -.5) return(1e100)
       ans <- -sum(extraDistr::dgpd(x, sigma = exp(p[1]), xi = p[2], log = TRUE))
@@ -32,9 +32,9 @@ test_that("mlgpd agrees with multistart constrained density oracles", {
 })
 test_that("mlgpd rejects invalid thresholds, shapes and observations", {
   expect_error(mlgpd(c(1, 2, 3), mu = 1), "strictly above")
-  expect_error(mlgpd(c(-1, 2, 3)), "strictly above")
+  expect_error(mlgpd(c(-1, 2, 3), mu = 0), "strictly above")
   expect_error(mlgpd(c(1, 2, 3), mu = Inf), "finite")
-  for (k in c(-.51, Inf, NaN)) expect_error(mlgpd(c(1,2,3), xi = k), "at least -0.5")
-  expect_error(mlgpd(c(1, 2, 3), iterlim = 1), "converge")
-  expect_error(mlgpd(c(1, 2, NA)))
+  for (k in c(-.51, Inf, NaN)) expect_error(mlgpd(c(1,2,3), xi = k, mu = 0), "at least -0.5")
+  expect_error(mlgpd(c(1, 2, 3), iterlim = 1, mu = 0), "converge")
+  expect_error(mlgpd(c(1, 2, NA), mu = 0))
 })

@@ -3,8 +3,16 @@ id: pig
 name: Poisson-inverse Gaussian
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: mean, role: mean, domain: "(0, inf)", default: 2.0, fixable: true}
-  - {name: shape, role: shape, domain: "(0, inf)", default: 3.0, fixable: true}
+- name: mean
+  role: mean
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
+- name: shape
+  role: shape
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
 r:
   density: actuar::dpoisinvgauss
   sampler: actuar::rpoisinvgauss
@@ -25,6 +33,7 @@ references:
   - "Willmot, G. E. (1987). The Poisson-inverse Gaussian distribution as an alternative to the negative binomial. Scandinavian Actuarial Journal, 1987(3-4), 113-127. DOI: 10.1080/03461238.1987.10413823."
 examples: |
   mlpig(c(0, 0, 0, 0, 10))
+holds: []
 ---
 
 The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse Gaussian mean. It models overdispersed nonnegative counts.

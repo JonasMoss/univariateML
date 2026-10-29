@@ -8,7 +8,7 @@
 
 // [[Rcpp::export]]
 Rcpp::List mlbinom_(const Rcpp::IntegerVector &x,
-                    Rcpp::Nullable<double> size = R_NilValue,
+                    Rcpp::Nullable<double> size,
                     double abstol = 1.220703e-4, int iterlim = 100) {
   const double size_or_nan = size.isNotNull()
                                  ? Rcpp::as<double>(size)

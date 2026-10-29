@@ -3,10 +3,33 @@ id: sged
 name: Skew Generalized Error
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mean, role: location, domain: "(-inf, inf)", default: 0.0}
-  - {name: sd, role: scale, domain: "(0, inf)", default: 1.0}
-  - {name: nu, role: shape, domain: "[1, inf)", default: 3.0}
-  - {name: xi, role: skew, domain: "(0, inf)", default: 3.0}
+- name: mean
+  role: location
+  domain: (-inf, inf)
+  simulate: 0.0
+  kind: regular
+- name: sd
+  role: scale
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
+- name: nu
+  role: shape
+  domain: '[1, inf)'
+  simulate: 3.0
+  fit_domain:
+    lower: 1.0
+    restriction:
+      mechanism: spike
+      exempt_when_held: []
+      reason: nu >= 1 selects the Laplace member; holding sd does not remove spikes
+        (P0 locscale/skewreal).
+  kind: regular
+- name: xi
+  role: skew
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
 r:
   density: dsged
   sampler: rsged
@@ -31,6 +54,23 @@ references:
   - "Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power distribution and its generalizations. Statistics & Probability Letters, 107, 111-114. doi:10.1016/j.spl.2015.08.009."
 examples: |
   mlsged(precip)
+holds:
+- held:
+  - mean
+  status: not-implemented
+  reason: The adapter does not accept `mean`; this hold is not implemented (P2).
+- held:
+  - sd
+  status: not-implemented
+  reason: The adapter does not accept `sd`; this hold is not implemented (P2).
+- held:
+  - nu
+  status: not-implemented
+  reason: The adapter does not accept `nu`; this hold is not implemented (P2).
+- held:
+  - xi
+  status: not-implemented
+  reason: The adapter does not accept `xi`; this hold is not implemented (P2).
 ---
 
 The skew generalized error distribution extends the exponential-power family with Fernandez-Steel asymmetry. Its location and scale parameters are the mean and standard deviation.

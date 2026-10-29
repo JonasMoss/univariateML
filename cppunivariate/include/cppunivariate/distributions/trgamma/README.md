@@ -3,9 +3,21 @@ id: trgamma
 name: Transformed gamma
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape1, role: shape, domain: "(0, inf)", default: 3.0, fixable: true}
-  - {name: shape2, role: shape, domain: "(0, inf)", default: 1.5, fixable: true}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 2.0}
+- name: shape1
+  role: shape
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
+- name: shape2
+  role: shape
+  domain: (0, inf)
+  simulate: 1.5
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
 r:
   density: actuar::dtrgamma
   sampler: actuar::rtrgamma
@@ -27,6 +39,11 @@ references:
 examples: |
   set.seed(1)
   mltrgamma(actuar::rtrgamma(500, shape1 = 2, shape2 = 1.5, scale = 2))
+holds:
+- held:
+  - scale
+  status: not-implemented
+  reason: The adapter does not accept `scale`; this hold is not implemented (P2).
 ---
 
 The transformed gamma (Stacy's generalized gamma) distribution is the

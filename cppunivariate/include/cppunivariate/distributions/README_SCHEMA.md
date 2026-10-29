@@ -17,11 +17,11 @@ goldens), by the validation harness, and later by the Python shell.
 | `id` | yes | must equal the folder name |
 | `name` | yes | display name, e.g. `Lomax`; the R title is "<name> distribution maximum likelihood estimation" |
 | `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` |
-| `params` | yes | list of `{name, role, domain, default}`; names are the R coefficient names (see `univariateML/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
+| `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `univariateML/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
 | `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` for package-defined functions; `p`/`q` are found by swapping the first letter |
-| `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to coefficient name, e.g. `{mean: mu, sd: sigma, a: mu}` for the translated half-normal as `extraDistr::dtnorm`; a coefficient may feed several arguments. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
-| `r.control` | yes (may be `{}`) | one entry per argument of the Rcpp adapter `ml<id>_` other than `x`, mapping name to a one-line description; codegen fails if the names differ from the adapter's |
-| `fit_args` | when a parameter is `required` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every `required` parameter, and may add arguments the fitter needs, such as hyper's `N` |
+| `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma, a: mu}` for the translated half-normal as `extraDistr::dtnorm`; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
+| `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
+| `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
 | `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `reflected translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; optional `fixed: [name]` restricts a limit to fits holding those parameters fixed; see `notes/ml-behaviour.tex` |
 | `references` | no | one bibliographic entry per item |
@@ -49,67 +49,77 @@ Write math as `$...$` / `$$...$$`; the R codegen turns it into
 `\eqn{}` / `\deqn{}`. Use backticks for code. Do not restate the density,
 parameter tables, moments or the algorithm.
 
-## Optional parameter keys
+## Parameter rules (P1)
 
-Optional keys in each `params` entry:
+Each parameter has `kind: design | threshold | endpoint | regular`, defaulting
+to `regular`. Design quantities and thresholds are required: the adapter has
+no default for them. All other coefficient arguments default to `NULL`.
+A supplied value holds a coefficient; explicit `NULL` requests estimation
+where supported. Missing required coefficients stop with the kind, both ways
+out, and the optional parameter `advice` text. `simulate` is the simulation
+value only; it never selects a held fitting default.
 
-- `fixable: true`: the user may hold this parameter fixed. The adapter
-  `ml<id>_` takes an argument named like the coefficient; `NULL` (the
-  default) estimates it, a value holds it at that value. The generated docs
-  list it (a description in `r.control` overrides the generic text). The
-  adapter returns `fixed`, the names of the parameters it held, which
-  become the object's `fixed` attribute: `logLik()` degrees of freedom,
-  AIC/BIC, `model_select` and `bootstrapml` count and hold only those.
-  A held adapter default is also allowed for backward compatibility; then
-  `NULL` explicitly frees it. Document this default in `r.control`; `default`
-  remains the simulation value, and do not also set `fixed`.
-- `fixed: <value>`: the fitter always holds this parameter fixed. When the
-  adapter has an argument of the same name (listed in `r.control`), the user
-  sets the held value and `<value>` is its default; otherwise it is always
-  held at `<value>` (fatigue's `mu = 0`: the three-parameter MLE does not exist).
-- `required: true`: a design quantity with no default (hyper's draws `k`).
-  The adapter argument of the same name has no default (codegen checks
-  this), it is listed in `r.control`, and the generated wrapper stops with
-  "`ml<id>` requires `<name>` (<role>); it has no default." when it is
-  missing. It is always held, so the adapter lists it in `fixed`. Cannot be
-  combined with `fixable` or `fixed`; `default` is used only for
-  simulation, and `fit_args` supplies its value for goldens.
-- `required_reason: <text>`: optional explanation appended to the missing required
-  parameter message. Use plain text; explain
-  why the parameter must be held and how to supply it. Only for `required: true`.
-- `bound: lower` / `bound: upper`: the parameter is a support endpoint
-  whose MLE is the sample minimum / maximum when estimated. May be combined
-  with `fixable: true` (for example hnorm); a held endpoint is used exactly.
-  The harness holds it at its golden value in the oracle and omits its score and Hessian row.
-- `kink: true`: hold this coordinate at its golden value for score and
-  Hessian checks only; the oracle still optimizes it. Use for a parameter
-  at a sample log-density kink, such as the triangular mode.
-- `integer: true`: the harness omits derivatives and holds the discrete
-  coefficient fixed.
+The old parameter keys `default`, `fixable`, `fixed`, `required`, and
+`required_reason` are rejected. `advice` replaces `required_reason`.
+Every coefficient must be an exact adapter argument or be covered by a
+`holds` entry with status `not-implemented`. Exact names are required;
+a coefficient name cannot partially match a start-value argument.
 
-The harness (`just quality`) also holds every parameter listed in a
-golden's `fixed` field.
+`fit_domain` belongs to a parameter. It describes an R5 fitting restriction,
+separate from the reference `domain`, e.g.:
 
-All other parameters are regular. At a closed domain endpoint, check the
-one-sided score condition and the observed information on the free tangent
-block. The oracle uses domain transforms and holds only flagged parameters.
-A non-smooth sample location can prevent the ordinary Hessian check; report
-this explicitly rather than substituting Fisher information.
+```yaml
+fit_domain:
+  lower: 1
+  restriction:
+    mechanism: collapse
+    exempt_when_held: [[mu]]
+    reason: Free location allows scale collapse; held mu removes this path.
+```
 
-An optional `spec.py` exports `log_density(symbols, x)`, returning a SymPy
-expression using the supplied name-to-symbol dictionary and observation.
-Use this only when `log_density` cannot be expressed as a string. Reports
-include every unchecked id and reason. `limits` entries are listed only.
+Use `upper` for an upper bound. Multiple restrictions on the same coefficient
+are a list of these records (GEV and Tukey lambda). Mechanisms are `collapse`,
+`spike`, `branch`, and `endpoint`. `exempt_when_held` lists sufficient held sets;
+`[]` means no exemption. Exemptions use P0's almost-every-sample existence
+results; exceptional ties still require diagnostics. The metadata records the
+agreed existence bounds; P3 implements restrictions and endpoint closure
+(the current GEV/GPD numerical lower bound remains -1/2 until then).
 
+Top-level `holds` lists structural exceptions only (A7):
 
-## Package-defined d/p/q/r
+```yaml
+holds:
+  - {held: [shape], status: not-implemented, reason: The adapter does not accept this hold.}
+  - {held: [], status: no-mle, reason: The all-free likelihood is unbounded.}
+```
 
-An optional `dpqr.R` in any distribution folder contains exported R wrappers
-and roxygen documentation (one family help page). Assembly copies it to
-`R/dpqr-<id>.R`. Scalar C++ evaluation lives in `dpqr.hpp`; Rcpp exports
-(`d<id>_`, etc.) live in `adapter.cpp`. Bare `r.density: dzipf` and
-`r.sampler: rzipf` resolve in the package namespace. Wrappers recycle all
-parameter and observation vectors, propagate missing values, and warn for
-invalid parameters and noninteger density arguments. CDFs floor observations;
-quantiles use the smallest support point reaching the requested probability.
-RNG adapters use R's RNG so `set.seed()` controls sampling.
+An unsupported held coefficient covers supersets containing it. An exception
+for estimating a required coefficient enumerates its exact held set. Adapter
+arguments that reject a combination also need a structural entry. Sample-
+dependent non-existence belongs in `limits` and prose, never `holds`.
+`limits` may additionally give `message`, a diagnostic substring for generic
+conformance checks. `fixed` inside a limit still means that the limit applies
+with those coefficients held; the removed key is the parameter-level `fixed`.
+
+`r.shift` names a translation coefficient: evaluate densities and CDFs at
+`x - shift`, and add the shift to quantiles and draws. Without `r.args`, the
+shift coefficient is removed from the reference arguments. With `r.args`,
+expressions explicitly determine the arguments. P1 tests this infrastructure
+on a synthetic model; family parametrization switches wait for P4.
+
+README `fit_args` and golden JSON `fit_args` replay the same fit, preserving
+explicit nulls. JSON represents infinite bounds as strings `"Inf"` and
+`"-Inf"`; readers convert them to numeric bounds. No migration regenerates
+the golden data, estimates, or log likelihoods.
+
+Fitted objects retain `fixed` (held coefficients, used by degrees of freedom
+and bootstrap replay), and carry `restricted` if returned by an adapter:
+a named character vector from coefficient to `"lower"` or `"upper"`.
+Print and summary display both. P1 adds transport only; P3 adds fitter flags.
+`model_select` attaches `skipped`, a named character vector of families and
+reasons for skipping missing required coefficients, to both return forms.
+
+The idempotent `univariateML/scripts/migrate_parameter_rules.R` migrates the
+98 front matters from the P0 design table and exact adapter signatures.
+C5 translated hcauchy/ht thresholds and C6 hypergeometric `N` coefficients
+are introduced in P4; P1 retains their current coefficient lists.

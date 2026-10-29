@@ -51,8 +51,10 @@ simulate_default <- function(dens, n) {
       parts[1]
     }
   }
-  params <- univariateML_metadata[[dens]]$default
+  params <- univariateML_metadata[[dens]]$simulate
   names(params) <- univariateML_metadata[[dens]]$names
+  shift_name <- univariateML_shifts[[dens]]
+  shift <- if (is.null(shift_name)) NULL else unname(params[[shift_name]])
   # Sample size by position: stats::rhyper calls it `nn`.
   params <- c(list(n), univariateML_dpqr_args(params, dens))
   rdist <- to_rdist(univariateML_metadata[[dens]]$density)
@@ -63,7 +65,8 @@ simulate_default <- function(dens, n) {
     # Function lives in our own namespace.
     getExportedValue("univariateML", parts[1])
   }
-  do.call(fun, params)
+  draws <- do.call(fun, params)
+  if (is.null(shift)) draws else draws + shift
 }
 
 #' One-dimensional Newton--Raphson

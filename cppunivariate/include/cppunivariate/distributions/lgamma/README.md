@@ -3,8 +3,16 @@ id: lgamma
 name: Loggamma
 support: {type: real, lower: 1, upper: inf, closed: [false, false]}
 params:
-  - {name: shapelog, role: shape, domain: "(0, inf)", default: 2.0}
-  - {name: ratelog, role: rate, domain: "(0, inf)", default: 3.0}
+- name: shapelog
+  role: shape
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
+- name: ratelog
+  role: rate
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
 r:
   density: actuar::dlgamma
   sampler: actuar::rlgamma
@@ -17,6 +25,15 @@ references:
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
 examples: |
   mllgamma(precip)
+holds:
+- held:
+  - shapelog
+  status: not-implemented
+  reason: The adapter does not accept `shapelog`; this hold is not implemented (P2).
+- held:
+  - ratelog
+  status: not-implemented
+  reason: The adapter does not accept `ratelog`; this hold is not implemented (P2).
 ---
 
 The log-gamma distribution describes positive data whose logarithm follows a gamma distribution.

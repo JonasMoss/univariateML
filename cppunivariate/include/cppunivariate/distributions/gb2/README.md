@@ -3,10 +3,26 @@ id: gb2
 name: Transformed beta (GB2)
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: shape1, role: shape, domain: "(0, inf)", default: 0.3, fixable: true}
-  - {name: shape2, role: shape, domain: "(0, inf)", default: 2.0, fixable: true}
-  - {name: shape3, role: shape, domain: "(0, inf)", default: 0.4, fixable: true}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1.0, fixable: true}
+- name: shape1
+  role: shape
+  domain: (0, inf)
+  simulate: 0.3
+  kind: regular
+- name: shape2
+  role: shape
+  domain: (0, inf)
+  simulate: 2.0
+  kind: regular
+- name: shape3
+  role: shape
+  domain: (0, inf)
+  simulate: 0.4
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
 r:
   density: actuar::dtrbeta
   sampler: actuar::rtrbeta
@@ -21,6 +37,7 @@ limits:
   - {model: pareto, when: 'shape2 tends to infinity and shape1 tends to zero', status: ParetoBoundary}
   - {model: power, when: 'shape2 tends to infinity and shape3 tends to zero', status: PowerBoundary}
   - {name: double Pareto, when: 'shape2 tends to infinity and both beta shapes tend to zero', status: DoubleParetoBoundary}
+holds: []
 ---
 
 The transformed beta distribution models positive observations with two power tails.

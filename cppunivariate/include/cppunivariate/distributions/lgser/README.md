@@ -3,7 +3,11 @@ id: lgser
 name: Logarithmic series
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:
-  - {name: theta, role: rate, domain: "(0, 1)", default: 0.9}
+- name: theta
+  role: rate
+  domain: (0, 1)
+  simulate: 0.9
+  kind: regular
 r:
   density: extraDistr::dlgser
   sampler: extraDistr::rlgser
@@ -14,6 +18,11 @@ references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
   mllgser(corbet)
+holds:
+- held:
+  - theta
+  status: not-implemented
+  reason: The adapter does not accept `theta`; this hold is not implemented (P2).
 ---
 
 The logarithmic series distribution models positive counts and has a history of use in species-abundance data.

@@ -3,8 +3,16 @@ id: invgamma
 name: InvGamma
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
-  - {name: alpha, role: shape, domain: "(0, inf)", default: 3.0}
-  - {name: beta, role: scale, domain: "(0, inf)", default: 4.0}
+- name: alpha
+  role: shape
+  domain: (0, inf)
+  simulate: 3.0
+  kind: regular
+- name: beta
+  role: scale
+  domain: (0, inf)
+  simulate: 4.0
+  kind: regular
 r:
   density: extraDistr::dinvgamma
   sampler: extraDistr::rinvgamma
@@ -18,6 +26,15 @@ references:
   - "Witkovsky, V. (2001). \"Computing the Distribution of a Linear Combination of Inverted Gamma Variables\". Kybernetika. 37 (1): 79–90"
 examples: |
   mlinvgamma(precip)
+holds:
+- held:
+  - alpha
+  status: not-implemented
+  reason: The adapter does not accept `alpha`; this hold is not implemented (P2).
+- held:
+  - beta
+  status: not-implemented
+  reason: The adapter does not accept `beta`; this hold is not implemented (P2).
 ---
 
 The inverse gamma distribution is the distribution of the reciprocal of a gamma variable.

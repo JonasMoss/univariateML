@@ -1,7 +1,7 @@
 test_that("zib agrees with a multi-start reference-density oracle", {
   set.seed(12670)
   x <- do.call(extraDistr::rzib, list(250, size = 8, prob = 0.4, pi = 0.4))
-  fit <- mlzib(x)
+  fit <- mlzib(x, size = NULL)
   density <- extraDistr::dzib
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
@@ -23,13 +23,13 @@ test_that("zib agrees with a multi-start reference-density oracle", {
   expect_equal(attr(logLik(fixed),"df"), 2L)
   expect_gte(attr(fixed,"logLik"), -oracle(c(size=15))-1e-6)
   for(bad in c(-1,Inf,NaN,0,.5)) expect_error(mlzib(x,size=bad),"size")
-  expect_error(mlzib_(integer()),"nonempty")
-  expect_error(mlzib_(c(-1L,1L)),"count")
+  expect_error(mlzib_(integer(), size=NULL),"nonempty")
+  expect_error(mlzib_(c(-1L,1L), size=NULL),"count")
 })
 
 test_that("zib declares its infinite-size escape", {
  x <- c(0,0,0,0,0,0,0,0,1,1,1,2,3,7,12)
- expect_error(mlzib(x), "Use `mlzip`")
+ expect_error(mlzib(x, size = NULL), "Use `mlzip`")
  expect_s3_class(mlzib(x,size=20), "univariateML")
 })
 

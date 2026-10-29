@@ -3,9 +3,21 @@ id: sn
 name: Azzalini skew-normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: xi, role: location, domain: "(-inf, inf)", default: 0, fixable: true}
-  - {name: omega, role: scale, domain: "(0, inf)", default: 1, fixable: true}
-  - {name: alpha, role: shape, domain: "(-inf, inf)", default: 3, fixable: true}
+- name: xi
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: regular
+- name: omega
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: alpha
+  role: shape
+  domain: (-inf, inf)
+  simulate: 3
+  kind: regular
 r:
   density: dsn
   sampler: rsn
@@ -30,6 +42,7 @@ references:
   - "Sartori, N. (2006). Bias prevention of maximum likelihood estimates for scalar skew normal and skew t distributions. Journal of Statistical Planning and Inference 136, 4259-4275."
 examples: |
   mlsn(c(-2, -1.5, -1, -0.8, -0.3, 0, 0.2, 0.6, 1, 2), alpha = 0)
+holds: []
 ---
 
 The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. Its direct location and scale differ from its mean and standard deviation.

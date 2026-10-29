@@ -3,11 +3,35 @@ id: fpareto
 name: Feller-Pareto
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: shape1, role: shape, domain: "(0, inf)", default: 0.3, fixable: true}
-  - {name: shape2, role: shape, domain: "(0, inf)", default: 2, fixable: true}
-  - {name: shape3, role: shape, domain: "(0, inf)", default: 0.4, fixable: true}
-  - {name: scale, role: scale, domain: "(0, inf)", default: 1, fixable: true}
-  - {name: min, role: lower endpoint, domain: "(-inf, inf)", default: 0, required: true, required_reason: "With min estimated the likelihood is unbounded: the density is singular at min when shape2 * shape3 < 1, so let min rise to the sample minimum. Hold it, e.g. `mlfpareto(x, min = 0)`, which is `mlgb2(x)`. Fits with min free and other parameters held are not supported."}
+- name: shape1
+  role: shape
+  domain: (0, inf)
+  simulate: 0.3
+  kind: regular
+- name: shape2
+  role: shape
+  domain: (0, inf)
+  simulate: 2
+  kind: regular
+- name: shape3
+  role: shape
+  domain: (0, inf)
+  simulate: 0.4
+  kind: regular
+- name: scale
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: min
+  role: lower endpoint
+  domain: (-inf, inf)
+  simulate: 0
+  advice: 'With min estimated the likelihood is unbounded: the density is singular
+    at min when shape2 * shape3 < 1, so let min rise to the sample minimum. Hold it,
+    e.g. `mlfpareto(x, min = 0)`, which is `mlgb2(x)`. Fits with min free and other
+    parameters held are not supported.'
+  kind: threshold
 r:
   density: actuar::dfpareto
   sampler: actuar::rfpareto
@@ -15,7 +39,6 @@ r:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.
     iterlim: Maximum delegate iterations.
-fit_args: {min: 0, shape1: 0.3, shape3: 0.4}
 log_density: log(shape2)-log((x-min))-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log((x-min)/scale)-(shape3+shape1)*log(1+((x-min)/scale)**shape2)
 limits:
 - when: shape1 tends to infinity with rescaled scale
@@ -36,9 +59,111 @@ limits:
 - name: shifted double Pareto; subtract min before fitting
   when: shape2 tends to infinity and both beta shapes tend to zero
   status: DoubleParetoBoundary
+  message: GB2 selects the double Pareto limit
 examples: |
   set.seed(1)
   mlfpareto(simulate_default("mlfpareto", 100), min = 0)
+holds:
+- held: []
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape3
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape3
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - shape3
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - shape3
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape3
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape3
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - shape3
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - shape3
+  - scale
+  status: not-implemented
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+fit_args:
+  min: 0
+  shape1: 0.3
+  shape3: 0.4
 ---
 
 This family has a known support endpoint and delegates fitting to gb2.

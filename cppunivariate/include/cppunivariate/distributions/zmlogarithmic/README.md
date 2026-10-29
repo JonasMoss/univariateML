@@ -12,16 +12,27 @@ params:
 - name: prob
   role: probability
   domain: '[0, 1)'
-  default: 0.4
+  simulate: 0.4
+  kind: regular
 - name: p0
   role: probability
   domain: '[0, 1]'
-  default: 0.3
+  simulate: 0.3
+  kind: regular
 r:
   density: actuar::dzmlogarithmic
   sampler: actuar::rzmlogarithmic
   control: {}
 log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+x*log(prob)-log(x)-log(-log(1-prob)), True))
+holds:
+- held:
+  - prob
+  status: not-implemented
+  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
+- held:
+  - p0
+  status: not-implemented
+  reason: The adapter does not accept `p0`; this hold is not implemented (P2).
 ---
 
 Zero-modified logarithmic distributions model counts with a separate zero component.

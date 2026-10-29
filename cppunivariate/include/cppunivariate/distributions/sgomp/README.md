@@ -3,8 +3,16 @@ id: sgomp
 name: Shifted Gompertz
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: b, role: rate, domain: "(0, inf)", default: 1, fixable: true}
-  - {name: eta, role: shape, domain: "[0, inf)", default: 3, fixable: true}
+- name: b
+  role: rate
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: eta
+  role: shape
+  domain: '[0, inf)'
+  simulate: 3
+  kind: regular
 r:
   density: dsgomp
   sampler: rsgomp
@@ -17,6 +25,7 @@ log_density: log(b) - b*x - eta*exp(-b*x) + log(1 + eta*(1-exp(-b*x)))
 examples: |
   set.seed(3)
   mlsgomp(rsgomp(100, 1, 3))
+holds: []
 ---
 
 The shifted Gompertz distribution models nonnegative waiting times. The

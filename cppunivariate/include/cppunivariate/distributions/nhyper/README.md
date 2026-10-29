@@ -3,9 +3,24 @@ id: nhyper
 name: Negative hypergeometric
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
-  - {name: "n", role: black balls in the population, domain: "[0, inf)", default: 30, integer: true}
-  - {name: m, role: white balls in the population, domain: "[0, inf)", default: 20, integer: true, fixable: true}
-  - {name: r, role: white balls required to stop sampling, domain: "[0, inf)", default: 3, integer: true, required: true}
+- name: 'n'
+  role: black balls in the population
+  domain: '[0, inf)'
+  simulate: 30
+  integer: yes
+  kind: regular
+- name: m
+  role: white balls in the population
+  domain: '[0, inf)'
+  simulate: 20
+  integer: yes
+  kind: regular
+- name: r
+  role: white balls required to stop sampling
+  domain: '[0, inf)'
+  simulate: 3
+  integer: yes
+  kind: design
 r:
   density: extraDistr::dnhyper
   sampler: extraDistr::rnhyper
@@ -13,7 +28,6 @@ r:
     r: "Known stopping count of white balls, a whole number."
     "N": "Known population size; must be supplied. Joint estimation of population and composition is not supported."
     m: "White-ball count; `NULL` estimates it with `N` known, otherwise holds it fixed."
-fit_args: {"N": 50, r: 3}
 log_density: "loggamma(x) - loggamma(r) - loggamma(x-r+1) + loggamma(m+n-x+1) - loggamma(m-r+1) - loggamma(n-x+r+1) - loggamma(m+n+1) + loggamma(n+1) + loggamma(m+1)"
 references:
   - "Berry, K. J. and Mielke, P. W. (1998). The negative hypergeometric probability distribution: Sampling without replacement from a finite population. Perceptual and Motor Skills, 86(1), 207-210."
@@ -21,6 +35,21 @@ examples: |
   set.seed(1)
   x <- extraDistr::rnhyper(30, n = 30, m = 20, r = 3)
   mlnhyper(x, r = 3, N = 50)
+holds:
+- held:
+  - 'n'
+  status: not-implemented
+  reason: The adapter does not accept `n`; this hold is not implemented (P2).
+- held: []
+  status: not-implemented
+  reason: Estimating `r` with NULL is not implemented for this design.
+- held:
+  - m
+  status: not-implemented
+  reason: Estimating `r` with NULL is not implemented for this design.
+fit_args:
+  'N': 50
+  r: 3
 ---
 
 The negative hypergeometric distribution counts total draws without

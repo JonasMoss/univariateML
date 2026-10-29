@@ -5,7 +5,7 @@ x <- rnorm(10, 2, 3)
 obj <- mlnorm(x)
 
 decorated <- decorator("mlunif")
-names <- c("model", "density", "support", "default", "parameters")
+names <- c("model", "density", "support", "simulate", "params")
 expect_equal(names(attributes(decorated))[1:5], names)
 
 

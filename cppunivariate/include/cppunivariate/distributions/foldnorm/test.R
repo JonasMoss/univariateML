@@ -66,7 +66,7 @@ test_that("folded normal fits match a slow independent multistart oracle", {
   f <- mlfoldnorm(c(0,0,0,0,1))
   expect_identical(unname(f[["mu"]]),0)
   expect_equal(unname(f[["sigma"]]),sqrt(.2))
-  h <- mlhnorm(c(0,0,0,0,1))
+  h <- mlhnorm(c(0,0,0,0,1), mu = NULL)
   expect_equal(unname(f[["sigma"]]),unname(h[["sigma"]]))
   expect_equal(as.numeric(logLik(f)),as.numeric(logLik(h)))
   x <- c(.1,.3,.7,1,2,3); original <- mlfoldnorm(x)

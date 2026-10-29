@@ -3,8 +3,17 @@ id: pareto
 name: Pareto
 support: {type: real, lower: 0.0, upper: inf, closed: [false, false]}
 params:
-  - {name: a, role: shape, domain: "(0, inf)", default: 1.0}
-  - {name: b, role: lower, domain: "(0, inf)", default: 2.0, bound: lower}
+- name: a
+  role: shape
+  domain: (0, inf)
+  simulate: 1.0
+  kind: regular
+- name: b
+  role: lower
+  domain: (0, inf)
+  simulate: 2.0
+  bound: lower
+  kind: endpoint
 r:
   density: extraDistr::dpareto
   sampler: extraDistr::rpareto
@@ -14,6 +23,15 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York."
 examples: |
   mlpareto(precip)
+holds:
+- held:
+  - a
+  status: not-implemented
+  reason: The adapter does not accept `a`; this hold is not implemented (P2).
+- held:
+  - b
+  status: not-implemented
+  reason: The adapter does not accept `b`; this hold is not implemented (P2).
 ---
 
 The Pareto distribution is a heavy-tailed model for positive quantities above a lower threshold.

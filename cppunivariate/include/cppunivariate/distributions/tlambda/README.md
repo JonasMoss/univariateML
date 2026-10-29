@@ -3,9 +3,34 @@ id: tlambda
 name: Tukey lambda
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
-  - {name: mu, role: location, domain: "(-inf, inf)", default: 0}
-  - {name: sigma, role: scale, domain: "(0, inf)", default: 1}
-  - {name: lambda, role: shape, domain: "[-1, 1]", default: 0.14, fixable: true}
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: regular
+- name: sigma
+  role: scale
+  domain: (0, inf)
+  simulate: 1
+  kind: regular
+- name: lambda
+  role: shape
+  domain: '[-1, 1]'
+  simulate: 0.14
+  fit_domain:
+  - lower: -1.0
+    restriction:
+      mechanism: collapse
+      exempt_when_held:
+      - - mu
+      reason: lambda >= -1 prevents free-location scale collapse; ties at held mu
+        need a separate diagnostic.
+  - upper: 1.0
+    restriction:
+      mechanism: branch
+      exempt_when_held: []
+      reason: lambda <= 1 selects the principal branch; no exemption is proved.
+  kind: regular
 r:
   density: dtlambda
   sampler: rtlambda
@@ -19,6 +44,15 @@ references:
 examples: |
   set.seed(1)
   mltlambda(rtlambda(50, lambda = 0.14))
+holds:
+- held:
+  - mu
+  status: not-implemented
+  reason: The adapter does not accept `mu`; this hold is not implemented (P2).
+- held:
+  - sigma
+  status: not-implemented
+  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
 ---
 
 The Tukey lambda family is defined by its quantile function and spans symmetric heavy-tailed, logistic, approximately normal and uniform shapes.
