@@ -33,3 +33,25 @@ TEST_CASE("naka") {
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
 
+
+TEST_CASE("naka dpqr support and extreme log probabilities") {
+  CHECK(cppunivariate::distributions::pnaka(-1,2,3)==0);
+  CHECK(cppunivariate::distributions::pnaka(-1,2,3,false)==1);
+  CHECK(cppunivariate::distributions::dnaka(-1,2,3)==0);
+  CHECK(std::isinf(cppunivariate::distributions::dnaka(0,.25,2)));
+  CHECK(cppunivariate::distributions::dnaka(0,.5,2)==doctest::Approx(1/std::sqrt(M_PI)));
+  CHECK(cppunivariate::distributions::dnaka(0,2,2)==0);
+  CHECK(std::isnan(cppunivariate::distributions::dnaka(1,-1,2)));
+  for (bool lower : {true,false}) {
+    for (double lp : {-1000.0,-10000.0,-1e-20}) {
+      const double x=cppunivariate::distributions::qnaka(lp,10,2,lower,true);
+      CHECK(cppunivariate::distributions::pnaka(x,10,2,lower,true)==doctest::Approx(lp).epsilon(1e-10));
+    }
+  }
+}
+
+TEST_CASE("naka tiny shape upper tail avoids cancellation") {
+  const double lx=2*std::log(1e-200)+std::log(1e-25);
+  CHECK(cppunivariate::distributions::pnaka(1e-200,1e-25,1,false,true)==
+    doctest::Approx(std::log(-std::expm1(1e-25*lx))).epsilon(1e-12));
+}

@@ -25,3 +25,33 @@ Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
           Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
+
+#include "dpqr.h"
+#include "cppunivariate/distributions/naka/dpqr.hpp"
+// [[Rcpp::export]]
+Rcpp::NumericVector dnaka_(Rcpp::NumericVector x, Rcpp::NumericVector shape, Rcpp::NumericVector scale, bool log=false) {
+  return dist_impl::dpqr_apply({x,shape,scale},[&](const std::vector<double> &v) {
+    return cppunivariate::distributions::dnaka(v[0],v[1],v[2],log);
+  });
+}
+// [[Rcpp::export]]
+Rcpp::NumericVector pnaka_(Rcpp::NumericVector q, Rcpp::NumericVector shape, Rcpp::NumericVector scale, bool lower_tail=true, bool log_p=false) {
+  return dist_impl::dpqr_apply({q,shape,scale},[&](const std::vector<double> &v) {
+    return cppunivariate::distributions::pnaka(v[0],v[1],v[2],lower_tail,log_p);
+  });
+}
+// [[Rcpp::export]]
+Rcpp::NumericVector qnaka_(Rcpp::NumericVector p, Rcpp::NumericVector shape, Rcpp::NumericVector scale, bool lower_tail=true, bool log_p=false) {
+  return dist_impl::dpqr_apply({p,shape,scale},[&](const std::vector<double> &v) {
+    return cppunivariate::distributions::qnaka(v[0],v[1],v[2],lower_tail,log_p);
+  });
+}
+// [[Rcpp::export]]
+Rcpp::NumericVector rnaka_(int n, Rcpp::NumericVector shape, Rcpp::NumericVector scale) {
+  return dist_impl::dpqr_apply({Rcpp::NumericVector(n),shape,scale},[&](const std::vector<double> &v) {
+    if (!cppunivariate::distributions::naka_valid(v[1],v[2])) return R_NaN;
+    const double gs=v[2]/v[1];
+    if (gs>0 && std::isfinite(gs)) return std::sqrt(R::rgamma(v[1],gs));
+    return std::sqrt(R::rgamma(v[1],1))*std::exp(0.5*(std::log(v[2])-std::log(v[1])));
+  });
+}
