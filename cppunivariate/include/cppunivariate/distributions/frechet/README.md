@@ -5,7 +5,7 @@ support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: lambda
   role: shape
-  domain: '[1, inf)'
+  domain: '(0, inf)'
   simulate: 2
   fit_domain:
     lower: 1.0
@@ -87,3 +87,9 @@ face. With only sigma held, free lambda is restricted to lambda>=1 and
 constant samples have an unbounded shape likelihood. The location search
 profiles the exact scale or concave shape solve and refines sampled local
 maxima. Global search coverage is numerical; the P0 proof gaps remain.
+
+Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
+and emit a warning of class `univariateML_restricted`. Held coefficients are
+not flagged. README hold exemptions apply to free coefficients. Failed
+optimizers return a failure status unless the score norm in fitting
+coordinates is below `1e-3`; unresolved scalar searches stop.

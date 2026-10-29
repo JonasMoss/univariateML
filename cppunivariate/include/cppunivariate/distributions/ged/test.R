@@ -6,16 +6,16 @@ small_data <- rged(100, 2, 3, 4)
 tiny_data <- rged(100, 2, 3, 4)
 
 ## Finds errors with na and data out of bounds.
-expect_error(mlged(c(tiny_data, NA)))
+expect_error(suppressWarnings(mlged(c(tiny_data, NA)), classes = "univariateML_restricted"))
 
 ## Checks that na.rm works as intended.
 expect_equal(
-  coef(mlged(small_data)),
-  coef(mlged(c(small_data, NA), na.rm = TRUE))
+  coef(suppressWarnings(mlged(small_data), classes = "univariateML_restricted")),
+  coef(suppressWarnings(mlged(c(small_data, NA), na.rm = TRUE), classes = "univariateML_restricted"))
 )
 
 ## Is the log-likelihood correct?
-est <- mlged(small_data, na.rm = TRUE)
+est <- suppressWarnings(mlged(small_data, na.rm = TRUE), classes = "univariateML_restricted")
 expect_equal(
   sum(dged(small_data, est[1], est[2], est[3], log = TRUE)),
   attr(est, "logLik")
@@ -54,9 +54,9 @@ expect_equal(class(est), "univariateML")
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
 # Decision D6: attained Laplace, uniform and constrained interior oracle.
-expect_error(mlged(seq(-1, 1, length.out = 40)), "Use `mlunif`")
+expect_error(suppressWarnings(mlged(seq(-1, 1, length.out = 40)), classes = "univariateML_restricted"), "Use `mlunif`")
 x <- c(seq(-.02, .02, length.out = 18), -10, 10)
-f <- mlged(x)
+f <- suppressWarnings(mlged(x), classes = "univariateML_restricted")
 expect_equal(unname(f["nu"]), 1)
 expect_equal(attr(f, "logLik"), sum(dged(x, mean=f[1], sd=f[2], nu=1, log=TRUE)))
 a <- mean(abs(x-median(x)))
@@ -65,7 +65,7 @@ expect_equal(attr(f, "logLik"), -length(x)*(log(2*a)+1))
 set.seed(812)
 for (shape in c(1.5, 3)) {
   x <- rged(500, nu=shape)
-  f <- mlged(x, gradtol=1e-6, iterlim=1000)
+  f <- suppressWarnings(mlged(x, gradtol=1e-6, iterlim=1000), classes = "univariateML_restricted")
   expect_gt(unname(f["nu"]), 1)
   objective <- function(p) {
     nu <- 1+exp(p[3])
@@ -86,9 +86,9 @@ for (shape in c(1.5, 3)) {
 test_that("ged scale extremes preserve fit or declared escape", {
   set.seed(10)
   x <- simulate_default("mlged",50)
-  base <- tryCatch(mlged(x),error=function(e) conditionMessage(e))
+  base <- tryCatch(suppressWarnings(mlged(x), classes = "univariateML_restricted"),error=function(e) conditionMessage(e))
   for(s in c(1e-300,1e300)) {
-    f <- tryCatch(mlged(x*s),error=function(e) conditionMessage(e))
+    f <- tryCatch(suppressWarnings(mlged(x*s), classes = "univariateML_restricted"),error=function(e) conditionMessage(e))
     if(is.character(base)) expect_identical(f,base) else {
       expect_false(is.character(f))
       if(!is.character(f)) expect_equal(attr(f,"logLik")+length(x)*log(s),attr(base,"logLik"),tolerance=1e-4)
@@ -99,8 +99,8 @@ test_that("ged scale extremes preserve fit or declared escape", {
 test_that("ged large-sample fitting preserves likelihood under replication", {
   p<-((1:1000)-.5)/1000
   x<-qged(p,nu=3)
-  base<-mlged(x)
-  f<-mlged(rep(x,100))
+  base<-suppressWarnings(mlged(x), classes = "univariateML_restricted")
+  f<-suppressWarnings(mlged(rep(x,100)), classes = "univariateML_restricted")
   expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
 })
 
@@ -159,7 +159,7 @@ test_that("ged dpqr recycle, propagate missing values and use R RNG", {
     expect_warning(expect_true(is.nan(pged(0, sd = bad))), "NaNs produced")
     expect_warning(expect_true(is.nan(qged(.5, sd = bad))), "NaNs produced")
   }
-  fit <- mlged(small_data)
+  fit <- suppressWarnings(mlged(small_data), classes = "univariateML_restricted")
   expect_equal(as.numeric(logLik(fit)), sum(dml(small_data, fit, log = TRUE)),
                tolerance = 1e-10)
   expect_equal(pml(0, fit), do.call(pged, c(list(0), as.list(coef(fit)))))
@@ -239,20 +239,20 @@ test_that("ged new holds agree with independent multistart likelihoods", {
 
 
 test_that("ged conditional collapse, feasibility and invalid holds", {
-  expect_error(mlged(rep(2,4),mean=2,nu=2),"unbounded")
-  expect_true(is.finite(logLik(mlged(rep(2,4),mean=0,nu=2))))
-  expect_equal(unname(mlged(rep(2,4),sd=1,nu=2)["mean"]),2)
-  expect_error(mlged(seq(-1,1,length.out=40),mean=0),"mlunif")
-  expect_error(mlged(1:5,mean=Inf),"mean")
-  expect_error(mlged(1:5,sd=0),"sd")
-  expect_error(mlged(1:5,nu=.5),"at least 1")
+  expect_error(suppressWarnings(mlged(rep(2,4),mean=2,nu=2), classes = "univariateML_restricted"),"unbounded")
+  expect_true(is.finite(logLik(suppressWarnings(mlged(rep(2,4),mean=0,nu=2), classes = "univariateML_restricted"))))
+  expect_equal(unname(suppressWarnings(mlged(rep(2,4),sd=1,nu=2), classes = "univariateML_restricted")["mean"]),2)
+  expect_error(suppressWarnings(mlged(seq(-1,1,length.out=40),mean=0), classes = "univariateML_restricted"),"mlunif")
+  expect_error(suppressWarnings(mlged(1:5,mean=Inf), classes = "univariateML_restricted"),"mean")
+  expect_error(suppressWarnings(mlged(1:5,sd=0), classes = "univariateML_restricted"),"sd")
+  expect_s3_class(suppressWarnings(mlged(1:5,nu=.5), classes = "univariateML_restricted"),"univariateML")
 })
 
 
 test_that("GED held variance uniform endpoints have the conditional limiting penalty", {
   x<-rep(c(-sqrt(3),sqrt(3)),10)
-  expect_error(mlged(x,mean=0,sd=1),"mlunif")
-  expect_error(mlged(x,sd=1),"mlunif")
+  expect_error(suppressWarnings(mlged(x,mean=0,sd=1), classes = "univariateML_restricted"),"mlunif")
+  expect_error(suppressWarnings(mlged(x,sd=1), classes = "univariateML_restricted"),"mlunif")
   # From log Gamma(epsilon)=-log(epsilon)-gamma*epsilon+O(epsilon^2):
   # lambda=sqrt(3)*exp((gamma-log(2))/nu+O(nu^-2)), hence W -> exp(-gamma).
   nu<-1e6

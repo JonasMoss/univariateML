@@ -31,16 +31,23 @@ Rcpp::List mlged_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
   if (res.status == cppunivariate::GedStatus::UniformBoundary) {
     Rcpp::stop("GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.");
   }
-  if(res.status==cppunivariate::GedStatus::BfgsFailure && (mean.isNotNull()||sd.isNotNull()||nu.isNotNull()))Rcpp::stop("Conditional GED search did not converge; increase iterlim.");
+  if(res.status==cppunivariate::GedStatus::BfgsFailure)Rcpp::stop("Conditional GED search did not converge; increase iterlim.");
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
       !std::isfinite(res.nu)) {
     Rcpp::stop("GED MLE failed to converge (check inputs)");
   }
+  Rcpp::CharacterVector restricted;
+  if(res.restricted & 1u) restricted.push_back("lower","mean");
+  if(res.restricted & 2u) restricted.push_back("upper","mean");
+  if(res.restricted & 4u) restricted.push_back("lower","sd");
+  if(res.restricted & 8u) restricted.push_back("upper","sd");
+  if(res.restricted & 16u) restricted.push_back("lower","nu");
+  if(res.restricted & 32u) restricted.push_back("upper","nu");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mean"] = res.mu, Rcpp::_["sd"] = res.sigma,
           Rcpp::_["nu"] = res.nu),
-      Rcpp::_["fixed"] = fixed, Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
+      Rcpp::_["restricted"]=restricted, Rcpp::_["fixed"] = fixed, Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
 }
 
 #include "dpqr.h"

@@ -49,3 +49,9 @@ TEST_CASE("ht: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qht(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rht(rng, p[0], p[1]); });
 }
+
+TEST_CASE("ht: P3 restrictions and closed faces") {
+ const std::vector<double> x{.01,.1,1,10,100};
+ const auto f=cppunivariate::ht_mle(mltest::as_span(x));
+ REQUIRE(f.status==cppunivariate::HtStatus::Ok);CHECK(f.nu<1);CHECK(f.restricted==0u);
+}

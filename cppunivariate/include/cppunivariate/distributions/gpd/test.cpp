@@ -20,19 +20,19 @@ TEST_CASE("gpd: shape regimes, scores, fixed shape and threshold") {
       y.push_back(cppunivariate::distributions::qgpd((i+.5)/400,0,2,xi,true,false));
     auto r=cppunivariate::gpd_mle(mltest::as_span(y));
     REQUIRE(r.status==cppunivariate::GpdStatus::Ok);
-    const double h=1e-5;
+    const double h=r.xi<-.5 ? 1e-7 : 1e-5;
     auto ll=[&](double s,double k) {return cppunivariate::gpd_loglik(mltest::as_span(y),s,k);};
     CHECK(std::abs((ll(r.sigma+h,r.xi)-ll(r.sigma-h,r.xi))/(2*h))<1e-4);
     if(xi==-.8) {
-      CHECK(r.xi==-.5);
-      CHECK((ll(r.sigma,r.xi+h)-ll(r.sigma,r.xi))/h<0);
+      CHECK(r.xi<-.5);
+      CHECK(std::abs((ll(r.sigma,r.xi+h)-ll(r.sigma,r.xi-h))/(2*h))<1e-3);
     } else {
       CHECK(r.xi>-.5);
       CHECK(std::abs((ll(r.sigma,r.xi+h)-ll(r.sigma,r.xi-h))/(2*h))<1e-3);
     }
-    auto fixed=cppunivariate::gpd_mle(mltest::as_span(y),1e-12,200,0,xi<-.5 ? -.5 : xi);
+    auto fixed=cppunivariate::gpd_mle(mltest::as_span(y),1e-12,200,0,xi);
     CHECK(fixed.status==cppunivariate::GpdStatus::Ok);
-    CHECK(fixed.xi==(xi<-.5 ? -.5 : xi));
+    CHECK(fixed.xi==(xi));
     for(double &v:y) v+=10;
     auto shifted=cppunivariate::gpd_mle(mltest::as_span(y),1e-12,200,10);
     CHECK(shifted.sigma==doctest::Approx(r.sigma).epsilon(1e-9));
@@ -50,7 +50,7 @@ TEST_CASE("gpd: exponential stability and invalid inputs") {
     CHECK(cppunivariate::distributions::qgpd(.5,0,1,xi,true,false)==doctest::Approx(std::log(2.)).epsilon(1e-8));
   }
   CHECK(cppunivariate::gpd_mle(mltest::as_span(y),1e-12,200,1).status==cppunivariate::GpdStatus::InvalidData);
-  CHECK(cppunivariate::gpd_mle(mltest::as_span(y),1e-12,200,0,-.8).status==cppunivariate::GpdStatus::InvalidShape);
+  CHECK(cppunivariate::gpd_mle(mltest::as_span(y),1e-12,200,0,-1.1).status==cppunivariate::GpdStatus::InvalidShape);
   CHECK(cppunivariate::gpd_mle(mltest::as_span(y),1e-12,1).status==cppunivariate::GpdStatus::IterationFailure);
   CHECK(cppunivariate::distributions::pgpd(1e-20,0,1,0,true,false)==doctest::Approx(1e-20));
   CHECK(cppunivariate::distributions::pgpd(1000,0,1,0,false,true)==-1000);
@@ -72,6 +72,7 @@ inline double reference_gpd_log_ratio(double z, double xi) {
   return std::log1p(v)/xi;
 }
 inline double reference_gpd_loglik(span y, double sigma, double xi) {
+  if(xi==-1) { for(double v:y) if(v>sigma) return -INFINITY; return -static_cast<double>(y.size())*std::log(sigma); }
   double ll = -static_cast<double>(y.size())*std::log(sigma);
   for (double v : y) {
     if (!(sigma > 0) || !(1+xi*(v/sigma) > 0))
@@ -85,6 +86,7 @@ inline double reference_gpd_loglik(span y, double sigma, double xi) {
 inline GpdResult reference_gpd_scale(span y, double mu, double xi, double tol, int maxit) {
   double m = 0, M = 0;
   for (double v : y) { m += v/static_cast<double>(y.size()); M=std::max(M,v); }
+  if (xi == -1) return {mu,M,xi,reference_gpd_loglik(y,M,xi),0,GpdStatus::Ok};
   if (xi == 0) return {mu,m,xi,reference_gpd_loglik(y,m,xi),0,GpdStatus::Ok};
   double lo = std::max(0.0,-xi*M), hi = std::max(M,lo*2);
   auto score = [&](double s) {
@@ -116,11 +118,11 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
   }
   const span ys{y.data(),y.size()};
   if (!std::isnan(xi)) {
-    if (!std::isfinite(xi) || xi<-.5) { bad.status=GpdStatus::InvalidShape; return bad; }
+    if (!std::isfinite(xi) || xi < -1) { bad.status=GpdStatus::InvalidShape; return bad; }
     return reference_gpd_scale(ys,mu,xi,tol,maxit);
   }
   auto best=reference_gpd_scale(ys,mu,0,tol,maxit);
-  auto floor=reference_gpd_scale(ys,mu,-.5,tol,maxit);
+  auto floor=reference_gpd_scale(ys,mu,-1,tol,maxit);
   if (floor.status!=GpdStatus::Ok) return floor;
   if (floor.logLik>best.logLik) best=floor;
   // Grimshaw profile: differentiating in xi at fixed a=xi/sigma gives
@@ -149,9 +151,9 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
     for(double z:y) { const long double v=b*(static_cast<long double>(z)/M); L+=std::log1p(v)/y.size(); Q+=1/(1+v)/y.size(); }
     return shape ? L : ((1+L)*Q-1)/(b*b);
   };
-  // L is monotone; below L=-1/2 no stationary candidate is admissible.
-  long double left=-.5L*y.size(), right=0;
-  for(int j=0;j<100;++j) { auto mid=(left+right)/2; if(profile(mid,true)<-.5L) left=mid; else right=mid; }
+  // L is monotone; below L=-1 no stationary candidate is admissible.
+  long double left=-1.L*y.size(), right=0;
+  for(int j=0;j<100;++j) { auto mid=(left+right)/2; if(profile(mid,true)<-1L) left=mid; else right=mid; }
   const long double lower=right;
   long double upper=1;
   // Beyond this bound (1+L)Q < 1 follows from min(y), max(y).
@@ -175,7 +177,7 @@ inline GpdResult gpd_mle(span x, double tol=1e-12, int maxit=200,
         const double shape=static_cast<double>(profile(t,true));
         const double scale=static_cast<double>(static_cast<long double>(shape)*M/std::expm1(t));
         const double ll=reference_gpd_loglik(ys,scale,shape);
-        if(shape>=-.5 && ll>best.logLik) best={mu,scale,shape,ll,it+1,GpdStatus::Ok};
+        if(shape>=-1 && ll>best.logLik) best={mu,scale,shape,ll,it+1,GpdStatus::Ok};
       }
       prev=next; fprev=fnext;
     }
@@ -258,4 +260,30 @@ TEST_CASE("gpd: held scale shape profile and all held") {
  CHECK(cppunivariate::gpd_mle(data,1e-12,1,0,nan,1).status==cppunivariate::GpdStatus::IterationFailure);
  const std::vector<double> one{1};
  CHECK(cppunivariate::gpd_mle(mltest::as_span(one),1e-12,200,0,nan,2).status==cppunivariate::GpdStatus::Ok);
+}
+
+TEST_CASE("gpd: P3 restrictions and closed faces") {
+ const std::vector<double> x{1,2,3,4}; const auto data=mltest::as_span(x);
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const auto f=cppunivariate::gpd_mle(data);
+ REQUIRE(f.status==cppunivariate::GpdStatus::Ok); CHECK(f.xi==-1); CHECK(f.sigma==4);
+ CHECK(f.logLik==doctest::Approx(-4*std::log(4.0))); CHECK(f.restricted==16u);
+ const auto h=cppunivariate::gpd_mle(data,1e-12,200,0,-1);
+ CHECK(h.sigma==4);CHECK(h.restricted==0u);
+ const auto s=cppunivariate::gpd_mle(data,1e-12,200,0,nan,4);CHECK(s.restricted==16u);
+}
+TEST_CASE("gpd: fully held shapes outside the free restriction are evaluation") {
+ const std::vector<double> x{1,2,3,4};
+ const auto r=cppunivariate::gpd_mle(mltest::as_span(x),1e-12,200,0,-2,10);
+ CHECK(r.status==cppunivariate::GpdStatus::Ok);CHECK(r.xi==-2);
+ CHECK(std::isfinite(r.logLik));CHECK(r.restricted==0u);
+}
+
+TEST_CASE("gpd: closed threshold and threshold collapse diagnostics") {
+ const std::vector<double> x{0,1,2,4};const auto data=mltest::as_span(x);
+ const auto f=cppunivariate::gpd_mle(data,1e-12,200,0,-1);
+ CHECK(f.status==cppunivariate::GpdStatus::Ok);CHECK(f.sigma==4);
+ CHECK(f.logLik==doctest::Approx(-4*std::log(4.0)));
+ const auto all=cppunivariate::gpd_mle(data);
+ CHECK(all.status==cppunivariate::GpdStatus::InvalidData);
 }

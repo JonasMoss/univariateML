@@ -122,3 +122,9 @@ the held mean, when scale collapse makes the likelihood unbounded. Held
 positive shapes below one are accepted for these conditional fits; the
 $\nu\ge1$ restriction applies to estimated shape. With scale held,
 location maxima exist even with ties.
+
+Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
+and emit a warning of class `univariateML_restricted`. Held coefficients are
+not flagged. README hold exemptions apply to free coefficients. Failed
+optimizers return a failure status unless the score norm in fitting
+coordinates is below `1e-3`; unresolved scalar searches stop.

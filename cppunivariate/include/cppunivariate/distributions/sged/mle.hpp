@@ -27,6 +27,8 @@
 #include <limits>
 
 namespace cppunivariate {
+inline constexpr double kSgedNuLower = 1.0;
+
 
 enum class SgedStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded, ScaleBoundary, UnsupportedHold, UniformBoundary, RightHalfGedBoundary, LeftHalfGedBoundary };
 
@@ -37,7 +39,7 @@ struct SgedResult {
   double xi;
   double logLik;
   int iterations;
-  SgedStatus status;
+  SgedStatus status; unsigned restricted = 0;
 };
 
 // Per-obs nll = ls + F_s(ln, lx) + F_g(ln) + 0.5 |w/lambda(nu)|^nu, with:
@@ -344,6 +346,12 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
   for (double xi0 : {0.5, 1.0, 2.0}) {
     const double phi0[4] = {0.0, 0.0, std::log(nu0 - 1.0), std::log(xi0)};
     auto r = bfgs_minimize(fd, phi0, ctl);
+    if (r.status != BfgsStatus::Ok && r.theta.size()==4) {
+      // A failed optimizer is usable only at a stationary returned point.
+      double g[4]; fd.gradient(r.theta.data(),g);
+      double norm=0; for(double v:g) norm+=v*v*objective_divisor*objective_divisor;
+      if(std::sqrt(norm)<1e-3) r.status=BfgsStatus::Ok;
+    }
     r.f *= objective_divisor;
     if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
       best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
@@ -397,7 +405,7 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
 }
 
 // Classified holds: fixed shape/skew and either location or scale (or both).
-inline SgedResult sged_mle(span x, double tol, int maxit,
+inline SgedResult sged_mle_impl(span x, double tol, int maxit,
     double fixed_mean=std::numeric_limits<double>::quiet_NaN(),
     double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
     double fixed_nu=std::numeric_limits<double>::quiet_NaN(),
@@ -454,4 +462,10 @@ inline SgedResult sged_mle(span x, double tol, int maxit,
   return out;
 }
 
+
+inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric_limits<double>::quiet_NaN(),double sd= std::numeric_limits<double>::quiet_NaN(),double nu= std::numeric_limits<double>::quiet_NaN(),double xi= std::numeric_limits<double>::quiet_NaN()) {
+  auto r=sged_mle_impl(x,tol,maxit,mean,sd,nu,xi);
+  if(r.status==SgedStatus::Ok && (std::isnan(nu)) && r.nu==kSgedNuLower) r.restricted|=16u;
+  return r;
+}
 }  // namespace cppunivariate
