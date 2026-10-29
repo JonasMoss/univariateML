@@ -1,90 +1,49 @@
-// Inverse Burr / Dagum distribution (actuar parameterisation: shape1, shape2,
-// scale). mlinvburr uses (shape1, shape2) with scale=1.
-//   v       = (x/scale)^shape2
-//   u       = v/(1+v) = 1/(1 + 1/v)
-//   F(x)    = u^shape1
-//   f(x)    = shape1*shape2 * u^shape1 * (1-u) / x
-//   F^-1(p) = scale * (p^(-1/shape1) - 1)^(-1/shape2)
-//          = scale * (p^(1/shape1) / (1 - p^(1/shape1)))^(1/shape2)
-// Sample: inverse CDF on U ~ Uniform(0, 1).
-
 #pragma once
-
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
-
-namespace cppunivariate {
-namespace distributions {
-
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
-inline double dinvburr(double x, double shape1, double shape2, double scale,
-                       bool log) {
-  if (!(shape1 > 0.0 && shape2 > 0.0 && scale > 0.0) || !std::isfinite(x) ||
-      !std::isfinite(shape1) || !std::isfinite(shape2)) {
-    return kNaN;
-  }
-  if (x < 0.0) {
-    return log ? kNegInf : 0.0;
-  }
+namespace cppunivariate { namespace distributions {
+inline double dinvburr(double x, double shape1, double shape2, double scale, bool log) {
+  if (!(shape1 > 0.0 && std::isfinite(shape1) && shape2 > 0.0 && std::isfinite(shape2) && scale > 0.0 && std::isfinite(scale)) || std::isnan(x)) return special::kNaN;
+  if (x < 0.0 || x == special::kPosInf) return log ? special::kNegInf : 0.0;
   if (x == 0.0) {
-    if (shape1 * shape2 < 1.0) return std::numeric_limits<double>::infinity();
-    if (shape1 * shape2 > 1.0) return log ? kNegInf : 0.0;
-    return log ? -std::log(scale) : 1.0 / scale;
+    const double power = shape1 * shape2;
+    if (power < 1.0) return special::kPosInf;
+    if (power > 1.0) return log ? special::kNegInf : 0.0;
+    const double ld = std::log(shape1) + std::log(shape2) - std::log(scale);
+    return log ? ld : std::exp(ld);
   }
-  const double logv = shape2 * (std::log(x) - std::log(scale));
-  // logu = log(v/(1+v)) = -log1pexp(-logv)
-  const double logu = -std::log1p(std::exp(-logv));
-  // log(1-u) = -log1pexp(logv)
-  const double log1mu = -std::log1p(std::exp(logv));
-  const double log_density = std::log(shape1) + std::log(shape2) +
-                             shape1 * logu + log1mu - std::log(x);
-  return log ? log_density : std::exp(log_density);
+  const double ratio = special::log_positive_ratio(scale, x);
+  const double z = shape2 * ratio;
+  // Retain log(shape1 * log1p(exp(z))) even if exp(z) underflows.
+  const double h = std::exp(std::log(shape1) + special::log_softplus_product(shape2, ratio));
+  const double ld = std::log(shape1) + std::log(shape2) - h
+      - special::softplus(-z) - std::log(x);
+  return log ? ld : std::exp(ld);
 }
-
-inline double pinvburr(double q, double shape1, double shape2, double scale,
-                       bool lower_tail, bool log_p) {
-  if (!(shape1 > 0.0 && shape2 > 0.0 && scale > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q <= 0.0) {
-    prob = lower_tail ? 0.0 : 1.0;
-  } else {
-    const double zlog = shape2 * (std::log(scale) - std::log(q));
-    const double u = std::exp(-std::log1p(std::exp(zlog)));
-    if (lower_tail) {
-      prob = std::pow(u, shape1);
-    } else {
-      prob = 1.0 - std::pow(u, shape1);
-    }
-  }
-  return log_p ? std::log(prob) : prob;
+inline double pinvburr(double q, double shape1, double shape2, double scale, bool lower_tail, bool log_p) {
+  if (!(shape1 > 0.0 && std::isfinite(shape1) && shape2 > 0.0 && std::isfinite(shape2) && scale > 0.0 && std::isfinite(scale)) || std::isnan(q)) return special::kNaN;
+  if (q <= 0.0) return special::tail_probability(special::tails_from_log(special::kNegInf, true), lower_tail, log_p);
+  const double ratio = special::log_positive_ratio(scale, q);
+  const double lh = std::log(shape1) + special::log_softplus_product(shape2, ratio);
+  const auto t = special::tails_from_log_hazard(lh, true);
+  return special::tail_probability(t, lower_tail, log_p);
 }
-
-inline double qinvburr(double p, double shape1, double shape2, double scale,
-                       bool lower_tail, bool log_p) {
-  if (!(shape1 > 0.0 && shape2 > 0.0 && scale > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  if (p <= 0.0) return 0.0;
-  if (p >= 1.0) return std::numeric_limits<double>::infinity();
-  // F^-1(p) = scale * (p^(-1/shape1) - 1)^(-1/shape2)
-  return scale * std::pow(std::pow(p, -1.0 / shape1) - 1.0, -1.0 / shape2);
+inline double qinvburr(double p, double shape1, double shape2, double scale, bool lower_tail, bool log_p) {
+  if (!(shape1 > 0.0 && std::isfinite(shape1) && shape2 > 0.0 && std::isfinite(shape2) && scale > 0.0 && std::isfinite(scale))) return special::kNaN;
+  const auto t = special::quantile_log_tails(p, lower_tail, log_p);
+  if (!t.valid) return special::kNaN;
+  if (t.lower == special::kNegInf) return 0.0;
+  if (t.upper == special::kNegInf) return special::kPosInf;
+  const double lv = (t.upper < -0.6931471805599453 ? special::log_neg_log1mexp(t.upper) : std::log(-t.lower)) - std::log(shape1);
+  // Above v=36, log(expm1(v)) rounds to v; divide before v can overflow.
+  const double displacement = lv > std::log(36.0)
+      ? std::exp(lv - std::log(shape2)) : special::log_expm1_from_log(lv) / shape2;
+  return std::exp(std::log(scale) - displacement);
 }
-
 template <typename Rng>
 inline double rinvburr(Rng &rng, double shape1, double shape2, double scale) {
   const double u = rng.runif(0.0, 1.0);
   return scale * std::pow(std::pow(u, -1.0 / shape1) - 1.0, -1.0 / shape2);
 }
 
-} // namespace distributions
-} // namespace cppunivariate
+} }

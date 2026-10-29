@@ -1,80 +1,41 @@
-// Log-logistic distribution (actuar R-level: shape + rate; scale = 1/rate).
-//   v = (x*rate)^shape = (x/scale)^shape
-//   f(x)   = shape * v / (x * (1+v)^2)
-//   F(x)   = v / (1+v) = 1 / (1 + (rate*x)^(-shape))
-//   F^-1(p)= scale * (p/(1-p))^(1/shape)
-
 #pragma once
-
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
+namespace cppunivariate { namespace distributions {
+namespace llogis_detail {
+// Use the product when representable to avoid cancellation of large logs.
+inline double log_positive_product(double a, double b) {
+  const double product = a*b;
+  return product >= std::numeric_limits<double>::min() && std::isfinite(product)
+      ? std::log(product) : std::log(a)+std::log(b);
+}
 
-namespace cppunivariate {
-namespace distributions {
-
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
+}
 
 inline double dllogis(double x, double shape, double rate, bool log) {
-  if (!(shape > 0.0 && rate > 0.0) || !std::isfinite(x) ||
-      !std::isfinite(shape)) {
-    return kNaN;
-  }
-  if (x < 0.0) {
-    return log ? kNegInf : 0.0;
-  }
-  const double scale = 1.0 / rate;
+  if (!(shape > 0.0 && std::isfinite(shape) && rate > 0.0 && std::isfinite(rate)) || std::isnan(x)) return special::kNaN;
+  if (x < 0.0 || x == special::kPosInf) return log ? special::kNegInf : 0.0;
   if (x == 0.0) {
-    if (shape > 1.0) return log ? kNegInf : 0.0;
-    if (shape < 1.0) return std::numeric_limits<double>::infinity();
-    return log ? -std::log(scale) : 1.0 / scale;
+    if (shape < 1.0) return special::kPosInf;
+    if (shape > 1.0) return log ? special::kNegInf : 0.0;
+    return log ? std::log(rate) : rate;
   }
-  // log(f) = log(shape) - log(x) - log1pexp(-logv) - log1pexp(logv)
-  // where logv = shape*(log(x) - log(scale)) = shape*(log(x*rate)).
-  const double logv = shape * (std::log(x) - std::log(scale));
-  const double log1pexp_pos = std::log1p(std::exp(logv));
-  const double log1pexp_neg = std::log1p(std::exp(-logv));
-  const double log_density =
-      std::log(shape) - log1pexp_neg - log1pexp_pos - std::log(x);
-  return log ? log_density : std::exp(log_density);
+  const double z = shape * (llogis_detail::log_positive_product(x, rate));
+  const double ld = std::log(shape) - std::log(x) - special::softplus(z) - special::softplus(-z);
+  return log ? ld : std::exp(ld);
 }
-
-inline double pllogis(double q, double shape, double rate, bool lower_tail,
-                      bool log_p) {
-  if (!(shape > 0.0 && rate > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q <= 0.0) {
-    prob = lower_tail ? 0.0 : 1.0;
-  } else {
-    const double scale = 1.0 / rate;
-    const double zlog = shape * (std::log(scale) - std::log(q));
-    prob = std::exp(-std::log1p(std::exp(zlog)));
-    if (!lower_tail) {
-      prob = 1.0 - prob;
-    }
-  }
-  return log_p ? std::log(prob) : prob;
+inline double pllogis(double q, double shape, double rate, bool lower_tail, bool log_p) {
+  if (!(shape > 0.0 && std::isfinite(shape) && rate > 0.0 && std::isfinite(rate)) || std::isnan(q)) return special::kNaN;
+  if (q <= 0.0) return special::tail_probability(special::tails_from_log(special::kNegInf, true), lower_tail, log_p);
+  const double z = shape * (llogis_detail::log_positive_product(q, rate));
+  return special::tail_probability({-special::softplus(-z), -special::softplus(z), true}, lower_tail, log_p);
 }
-
-inline double qllogis(double p, double shape, double rate, bool lower_tail,
-                      bool log_p) {
-  if (!(shape > 0.0 && rate > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  if (p <= 0.0) return 0.0;
-  if (p >= 1.0) return std::numeric_limits<double>::infinity();
-  const double scale = 1.0 / rate;
-  return scale * std::pow(p / (1.0 - p), 1.0 / shape);
+inline double qllogis(double p, double shape, double rate, bool lower_tail, bool log_p) {
+  if (!(shape > 0.0 && std::isfinite(shape) && rate > 0.0 && std::isfinite(rate))) return special::kNaN;
+  const auto t = special::quantile_log_tails(p, lower_tail, log_p);
+  if (!t.valid) return special::kNaN;
+  return std::exp((t.lower - t.upper) / shape - std::log(rate));
 }
-
 template <typename Rng>
 inline double rllogis(Rng &rng, double shape, double rate) {
   const double u = rng.runif(0.0, 1.0);
@@ -82,5 +43,5 @@ inline double rllogis(Rng &rng, double shape, double rate) {
   return scale * std::pow(u / (1.0 - u), 1.0 / shape);
 }
 
-} // namespace distributions
-} // namespace cppunivariate
+
+} }

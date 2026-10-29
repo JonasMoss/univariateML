@@ -7,56 +7,41 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
 
 inline double dpareto(double x, double a, double b, bool log) {
-  if (!(a > 0.0 && b > 0.0) || !std::isfinite(x)) {
-    return kNaN;
+  if (!(a > 0.0 && std::isfinite(a) && b > 0.0 && std::isfinite(b)) || std::isnan(x)) {
+    return special::kNaN;
   }
-  if (x < b) {
-    return log ? kNegInf : 0.0;
+  if (x < b || x == special::kPosInf) {
+    return log ? special::kNegInf : 0.0;
   }
   const double log_density =
-      std::log(a) + std::log(b) * a - std::log(x) * (a + 1.0);
+      std::log(a) - std::log(x) - a * special::log_positive_ratio(x, b);
   return log ? log_density : std::exp(log_density);
 }
 
-inline double ppareto(double q, double a, double b, bool lower_tail,
-                      bool log_p) {
-  if (!(a > 0.0 && b > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q < b) {
-    prob = 0.0;
-  } else {
-    prob = 1.0 - std::pow(b / q, a);
-  }
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+inline double ppareto(double q, double a, double b, bool lower_tail, bool log_p) {
+  if (!(a > 0.0 && std::isfinite(a) && b > 0.0 && std::isfinite(b)) || std::isnan(q)) return special::kNaN;
+  const double lh = q <= b ? special::kNegInf :
+      std::log(a) + std::log(special::log_positive_ratio(q, b));
+  return special::tail_probability(special::tails_from_log_hazard(lh, false), lower_tail, log_p);
 }
 
-inline double qpareto(double p, double a, double b, bool lower_tail,
-                      bool log_p) {
-  if (!(a > 0.0 && b > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  return b / std::pow(1.0 - p, 1.0 / a);
+inline double qpareto(double p, double a, double b, bool lower_tail, bool log_p) {
+  if (!(a > 0.0 && std::isfinite(a) && b > 0.0 && std::isfinite(b))) return special::kNaN;
+  const auto t = special::quantile_log_tails(p, lower_tail, log_p);
+  if (!t.valid) return special::kNaN;
+  if (t.lower == special::kNegInf) return b;
+  if (t.upper == special::kNegInf) return special::kPosInf;
+  const double lh = (t.lower < -0.6931471805599453
+      ? special::log_neg_log1mexp(t.lower) : std::log(-t.upper)) - std::log(a);
+  return std::exp(std::log(b) + std::exp(lh));
 }
 
 template <typename Rng>

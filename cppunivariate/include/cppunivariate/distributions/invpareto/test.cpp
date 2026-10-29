@@ -32,8 +32,7 @@ TEST_CASE("invpareto: inverse exponential limit") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("invpareto: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("invpareto: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("invpareto",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvpareto(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvpareto(x, p[0], p[1], lower, log); },
@@ -83,4 +82,15 @@ TEST_CASE("invpareto P2 held boundaries and solver failure") {
   CHECK(std::isfinite(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100,nan,2,nan).logLik));
   CHECK(std::isfinite(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100,nan,nan,2).logLik));
   CHECK(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,1,nan,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
+}
+
+
+// mpmath reproduction: import mpmath as mp; mp.mp.dps=1200
+// F=lambda x,s=1: (1+s/x)**-2; Q=lambda l: 2/mp.expm1(-mp.log1p(-mp.exp(l))/2)
+// Evaluate log tails at the stated decimal x; log densities follow mp.log(mp.diff(F,x))
+// (use -mp.diff(S,x) for survival definitions); Q uses the indicated log tail.
+TEST_CASE("invpareto: deep tails and log inversion regressions") {
+  CHECK(cppunivariate::distributions::pinvpareto(1e200,2,1,false,true) == doctest::Approx(std::log(2.0)-200*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::dinvpareto(1e-300,2,1e100,true) == doctest::Approx(std::log(2.0)-500*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qinvpareto(-500,2,2,false,true) == doctest::Approx(std::exp(500+std::log(4.0))).scale(0.0));
 }

@@ -7,58 +7,46 @@
 
 #pragma once
 
-#include "../../special/constants.hpp"
+#include "../../special/tails.hpp"
 #include <cmath>
 
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
 
 inline double dpower(double x, double alpha, double beta, bool log) {
-  if (!(alpha > 0.0 && beta > 0.0) || !std::isfinite(x)) {
-    return kNaN;
+  if (!(alpha > 0.0 && std::isfinite(alpha) && beta > 0.0 && std::isfinite(beta)) || std::isnan(x)) {
+    return special::kNaN;
   }
-  if (x <= 0.0 || x >= alpha) {
-    return log ? kNegInf : 0.0;
+  if (x < 0.0 || x > alpha) {
+    return log ? special::kNegInf : 0.0;
+  }
+  if (x == 0.0) {
+    if (beta < 1.0) return special::kPosInf;
+    if (beta > 1.0) return log ? special::kNegInf : 0.0;
+    return log ? -std::log(alpha) : 1.0/alpha;
   }
   const double log_density =
-      std::log(beta) + std::log(x) * (beta - 1.0) - std::log(alpha) * beta;
+      std::log(beta) - std::log(x) + beta * special::log_positive_ratio(x, alpha);
   return log ? log_density : std::exp(log_density);
 }
 
-inline double ppower(double q, double alpha, double beta, bool lower_tail,
-                     bool log_p) {
-  if (!(alpha > 0.0 && beta > 0.0) || !std::isfinite(q)) {
-    return kNaN;
-  }
-  double prob;
-  if (q <= 0.0) {
-    prob = 0.0;
-  } else if (q >= alpha) {
-    prob = 1.0;
-  } else {
-    prob = std::exp(std::log(q) * beta - std::log(alpha) * beta);
-  }
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+inline double ppower(double q, double alpha, double beta, bool lower_tail, bool log_p) {
+  if (!(alpha > 0.0 && std::isfinite(alpha) && beta > 0.0 && std::isfinite(beta)) || std::isnan(q)) return special::kNaN;
+  const double lh = q <= 0.0 ? special::kPosInf : (q >= alpha ? special::kNegInf :
+      std::log(beta) + std::log(-special::log_positive_ratio(q, alpha)));
+  return special::tail_probability(special::tails_from_log_hazard(lh, true), lower_tail, log_p);
 }
 
-inline double qpower(double p, double alpha, double beta, bool lower_tail,
-                     bool log_p) {
-  if (!(alpha > 0.0 && beta > 0.0) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  return alpha * std::pow(p, 1.0 / beta);
+inline double qpower(double p, double alpha, double beta, bool lower_tail, bool log_p) {
+  if (!(alpha > 0.0 && std::isfinite(alpha) && beta > 0.0 && std::isfinite(beta))) return special::kNaN;
+  const auto t = special::quantile_log_tails(p, lower_tail, log_p);
+  if (!t.valid) return special::kNaN;
+  if (t.lower == special::kNegInf) return 0.0;
+  if (t.upper == special::kNegInf) return alpha;
+  const double lh = (t.upper < -0.6931471805599453
+      ? special::log_neg_log1mexp(t.upper) : std::log(-t.lower)) - std::log(beta);
+  return std::exp(std::log(alpha) - std::exp(lh));
 }
 
 template <typename Rng>
