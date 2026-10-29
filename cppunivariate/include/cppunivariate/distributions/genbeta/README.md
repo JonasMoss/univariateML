@@ -1,0 +1,87 @@
+---
+id: genbeta
+name: Generalized beta of the first kind
+support: {type: real, lower: 0, upper: inf, closed: [false, false]}
+params:
+  - {name: shape1, role: shape, domain: "(0, inf)", default: 0.4, fixable: true}
+  - {name: shape2, role: shape, domain: "(0, inf)", default: 0.3, fixable: true}
+  - {name: shape3, role: shape, domain: "(0, inf)", default: 2, fixable: true}
+  - {name: scale, role: upper endpoint, domain: "(0, inf)", default: 1, required: true, required_reason: "With scale estimated the likelihood is unbounded: shape2 < 1 makes the density singular as scale falls to the sample maximum. Hold scale, e.g. `mlgenbeta(x, scale = 1)`. Free-scale fits with other shapes held are not supported."}
+r:
+  density: actuar::dgenbeta
+  sampler: actuar::rgenbeta
+  control:
+    scale: Known positive finite upper endpoint, strictly above every observation.
+    gradtol: Tolerance on the per-observation log-shape3 profile score.
+    iterlim: Maximum Newton iterations per beta-shape profile evaluation.
+fit_args: {scale: 1}
+log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
+limits:
+  - {model: lgamma, name: unit gamma on x/scale, when: 'shape1 tends to infinity, shape3 tends to zero, shape1*shape3 stays finite; fit mllgamma(scale / x)', status: UnitGammaBoundary}
+  - {model: power, when: 'shape1 tends to zero and shape3 tends to infinity; shape2 may grow exponentially to lower the effective upper endpoint', status: PowerBoundary}
+examples: |
+  set.seed(3)
+  mlgenbeta(simulate_default("mlgenbeta", 500), scale = 1)
+---
+
+The generalized beta of the first kind models positive observations below a known upper endpoint.
+
+## Details
+
+The actuar coefficients are shape1 = alpha, shape2 = beta, shape3 = tau,
+and scale = theta. Then (X/theta)^tau is beta(alpha,beta).
+Every shape may be held. Scale is always held. Constant samples with any
+free beta shape are rejected; these constrained constant-sample cases
+have not all been analysed.
+
+For beta = 1 only alpha*tau is identified. If both are free the fitter
+returns tau = 1 and records shape3 as fixed, so likelihood degrees of
+freedom count the single identifiable product. Away from this ridge the exponential tail of
+Y = -log(X/theta) identifies alpha*tau, and its first nonzero exponential
+correction identifies tau and beta. Beta (tau = 1), Kumaraswamy
+(alpha = 1), and power (beta = 1) are attained subfamilies.
+
+At fixed tau the likelihood is strictly concave in the two beta shapes.
+A logarithmic mesh and analytic envelope-score root search compare its
+local maxima with gamma and power limits, using a 1e-8*n log-likelihood
+tie tolerance. This numerical global search is not a certificate that
+an arbitrarily narrow basin cannot be missed. An unresolved search stops.
+
+If alpha increases and tau decreases with alpha*tau = lambda, Y converges
+to gamma(beta, rate=lambda). The corresponding actuar log-gamma has
+shapelog = beta and ratelog = lambda on theta/X. Its likelihood must be
+converted back to X with Jacobian theta/x^2.
+
+If tau increases, alpha*tau stays finite, and log(beta)/tau tends to c>=0,
+Y tends to c plus an exponential law. This is a power law with upper
+endpoint theta*exp(-c), whose endpoint MLE is the sample maximum.
+With beta held the endpoint stays theta. When beta = 1 this law is
+attained and is returned, rather than reported as an escape.
+
+For free theta, fix 0<beta<1 and positive alpha,tau. At k tied sample
+maxima, letting theta=max(x)+epsilon gives a likelihood proportional to
+epsilon^(k*(beta-1)); the other factors approach positive constants.
+Thus the unrestricted likelihood diverges for every positive sample.
+
+The gamma-face rate is beta/mean(Y). After profiling this rate the first
+nonzero local correction to the gamma-face log likelihood is
+n*tau^2*(beta-1)*(mean(Y^2)-mean(Y)^2*(beta+1)/beta)/24.
+A positive coefficient rules out a local maximum on that face. A negative
+coefficient is only a local condition: the full profile still needs search.
+The power-face endpoint is the largest observation; its shape is
+1/(log(max(x))-mean(log(x))). No simple necessary and sufficient
+sample inequality for the full three-shape interior maximum is claimed.
+
+There are also mixed limits: if alpha,beta tend to zero, tau tends to
+infinity, alpha*tau tends to lambda>0, and alpha/beta tends to r>0,
+Y has mass r/(1+r) at zero and an exponential continuous part with weight
+1/(1+r). Since observations at theta are disallowed, that mass only
+reduces their likelihood; its best weight is zero, already included in
+the power comparison. The catalogue is a closure analysis, not a proof
+that every joint parameter path has been exhausted.
+
+For held beta the gamma face retains shapelog = beta. The package's
+mllgamma currently estimates shapelog, so that constrained face has no
+matching log-gamma fitter; its stop message states the restriction.
+A power face with endpoint theta held can be fitted by
+mlgenbeta(x, scale = theta, shape2 = 1); mlpower estimates its endpoint.

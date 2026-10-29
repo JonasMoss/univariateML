@@ -117,6 +117,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | zmpois | Zero-modified Poisson | lambda, p0 | actuar::dzmpois | [0, ∞) integer |
 | zmgeom | Zero-modified geometric | prob, p0 | actuar::dzmgeom | [0, ∞) integer |
 | zmnbinom | Zero-modified negative binomial | size, prob, p0 | actuar::dzmnbinom | [0, ∞) integer |
+| genbeta | Generalized beta of the first kind | shape1, shape2, shape3, scale | actuar::dgenbeta | (0, scale), scale required |
 | gb2 | Transformed beta (GB2) | shape1, shape2, shape3, scale | actuar::dtrbeta | (0, ∞) |
 | zmbinom | Zero-modified binomial | size, prob, p0 | actuar::dzmbinom | [0, ∞) integer |
 | zmlogarithmic | Zero-modified logarithmic | prob, p0 | actuar::dzmlogarithmic | [0, ∞) integer |

@@ -1213,3 +1213,79 @@ univariateML_reference_fixes <- c(univariateML_reference_fixes, list(
       out
     })
 ))
+
+# actuar transforms beta probabilities on the ordinary scale, losing finite
+# log tails and quantiles when the beta variate rounds to zero or one.
+univariateML_reference_fixes <- c(univariateML_reference_fixes, local({
+  recycle <- function(v) {
+    if(any(lengths(v)==0)) return(lapply(v,function(x) numeric()))
+    lapply(v,rep_len,length.out=max(lengths(v)))
+  }
+  density <- function(x,shape1,shape2,shape3,rate=1,scale=1/rate,log=FALSE) {
+    v<-recycle(list(x,shape1,shape2,shape3,scale));x<-v[[1]];a<-v[[2]];b<-v[[3]];t<-v[[4]];s<-v[[5]]
+    xx<-pmax(0,pmin(x,s))
+    z<-t*ifelse(xx>s/2,log1p((xx-s)/s),base::log(xx)-base::log(s))
+    r<-ifelse(z> -base::log(2),base::log(-expm1(z)),log1p(-exp(z)))
+    ans<-base::log(t)-base::log(pmax(x,0))+a*z+(b-1)*r-lbeta(a,b)
+    ans[which(x<0|x>s)]<- -Inf
+    j<-which(x==0);ans[j]<-ifelse(a[j]*t[j]<1,Inf,ifelse(a[j]*t[j]>1,-Inf,base::log(t[j]/s[j])-lbeta(a[j],b[j])))
+    j<-which(x==s);ans[j]<-ifelse(b[j]<1,Inf,ifelse(b[j]>1,-Inf,base::log(a[j]*t[j]/s[j])))
+    bad<-which(a<=0|b<=0|t<=0|s<=0|!is.finite(a)|!is.finite(b)|!is.finite(t)|!is.finite(s))
+    if(length(bad)){ans[bad]<-NaN;warning("NaNs produced",call.=FALSE)}
+    if(log)ans else exp(ans)
+  }
+  cdf <- function(q,shape1,shape2,shape3,rate=1,scale=1/rate,lower.tail=TRUE,log.p=FALSE) {
+    v<-recycle(list(q,shape1,shape2,shape3,scale)); q<-v[[1]];a<-v[[2]];b<-v[[3]];t<-v[[4]];s<-v[[5]]
+    qq<-pmax(0,pmin(q,s))
+    z<-t*ifelse(qq>s/2,log1p((qq-s)/s),log(qq)-log(s))
+    near<-z> -log(2)
+    ans<-stats::pbeta(exp(z),a,b,lower.tail=lower.tail,log.p=TRUE)
+    j<-which(near);ans[j]<-stats::pbeta(-expm1(z[j]),b[j],a[j],lower.tail=!lower.tail,log.p=TRUE)
+    j<-which(z< -36 & log(a+b)+z< -30)
+    small<-a[j]*z[j]-log(a[j])-lbeta(a[j],b[j])
+    ans[j]<-if(lower.tail) small else log(-expm1(small))
+    ans[which(q<=0)]<-if(lower.tail)-Inf else 0
+    ans[which(q>=s)]<-if(lower.tail)0 else -Inf
+    bad<-which(a<=0|b<=0|t<=0|s<=0|!is.finite(a+b+t+s));if(length(bad)){ans[bad]<-NaN;warning("NaNs produced",call.=FALSE)}
+    if(log.p)ans else exp(ans)
+  }
+  quantile <- function(p,shape1,shape2,shape3,rate=1,scale=1/rate,lower.tail=TRUE,log.p=FALSE) {
+    v<-recycle(list(p,shape1,shape2,shape3,scale)); p<-v[[1]];a<-v[[2]];b<-v[[3]];t<-v[[4]];s<-v[[5]]
+    lp<-if(log.p)p else log(p)
+    other<-log(-expm1(lp))
+    lpl<-if(lower.tail)lp else other
+    lpu<-if(lower.tail)other else lp
+    la<-(lpl+log(a)+lbeta(a,b))/a
+    lb<-(lpu+log(b)+lbeta(a,b))/b
+    tiny_a<-!is.na(la) & la< -36 & log(a+b)+la< -30
+    tiny_b<-!is.na(lb) & lb< -36 & log(a+b)+lb< -30
+    exponent<-rep(NA_real_,length(p))
+    j<-which(tiny_a);exponent[j]<-la[j]/t[j]
+    j<-which(tiny_b);exponent[j]<- -exp(lb[j]-log(t[j]))
+    j<-which(!tiny_a & !tiny_b)
+    flip<-if(lower.tail)lp[j]> -log(2) else lp[j]<= -log(2)
+    small<-pmin(lp[j],other[j])
+    u<-stats::qbeta(small,ifelse(flip,b[j],a[j]),ifelse(flip,a[j],b[j]),log.p=TRUE)
+    exponent[j]<-ifelse(flip,log1p(-u),log(u))/t[j]
+    ans<-exp(log(s)+exponent)
+    bad<-which(a<=0|b<=0|t<=0|s<=0|!is.finite(a+b+t+s)|lp>0);if(length(bad)){ans[bad]<-NaN;warning("NaNs produced",call.=FALSE)}
+    ans
+  }
+  random <- function(n,shape1,shape2,shape3,rate=1,scale=1/rate) {
+    if(length(n)>1)n<-length(n)
+    quantile(stats::runif(n),shape1,shape2,shape3,scale=scale)
+  }
+  broken_random <- function() {
+    had<-exists(".Random.seed",envir=.GlobalEnv,inherits=FALSE)
+    old<-if(had)get(".Random.seed",envir=.GlobalEnv) else NULL
+    on.exit(if(had)assign(".Random.seed",old,envir=.GlobalEnv) else
+      if(exists(".Random.seed",envir=.GlobalEnv,inherits=FALSE))rm(".Random.seed",envir=.GlobalEnv))
+    set.seed(81)
+    z<-actuar::rgenbeta(10,.0001,2,100)
+    anyDuplicated(z[z>0&z<1])>0L
+  }
+  list("actuar::dgenbeta"=list(broken=function() abs(actuar::dgenbeta(.5,1e12,2,1e-12,log=TRUE)-log(-log(.5)))>1e-8,replacement=density),
+       "actuar::pgenbeta"=list(broken=function() !is.finite(actuar::pgenbeta(1e-300,.01,2,100,log.p=TRUE)),replacement=cdf),
+       "actuar::qgenbeta"=list(broken=function() abs(log(actuar::qgenbeta(.5,.0001,2,100))-(-log(2)+log(.0001)+lbeta(.0001,2))/.01)>1e-6,replacement=quantile),
+       "actuar::rgenbeta"=list(broken=broken_random,replacement=random))
+}))
