@@ -10,7 +10,7 @@ r:
   sampler: extraDistr::rlomax
   control:
     lambda0: Optional starting value for `lambda`; `NULL` uses a method-of-moments start.
-    reltol: Relative tolerance on the Newton step for `lambda`, with an absolute floor of the same size.
+    reltol: Relative tolerance on the Newton step for `lambda * mean(x)`, with an absolute floor of the same size in these dimensionless units.
     iterlim: Maximum number of Newton iterations.
 log_density: log(lambda) + log(kappa) - (kappa + 1)*log(1 + lambda*x)
 limits:

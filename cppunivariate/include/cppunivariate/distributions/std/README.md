@@ -10,7 +10,7 @@ r:
   density: dstd
   sampler: rstd
   control:
-    gradtol: Tolerance on the norm of the finite-difference gradient of the total negative log-likelihood in transformed coordinates.
+    gradtol: Tolerance on the norm of the finite-difference gradient of the total negative log-likelihood in transformed coordinates after centering and scaling the sample to unit standard deviation.
     iterlim: Maximum number of iterations.
 log_density: loggamma((nu+1)/2) - loggamma(nu/2) - log((nu-2)*pi)/2 - (nu+1)*log(1+((x-mean)/sd)**2/(nu-2))/2 - log(sd)
 limits:
