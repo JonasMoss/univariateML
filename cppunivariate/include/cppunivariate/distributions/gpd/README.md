@@ -32,6 +32,8 @@ r:
   sampler: extraDistr::rgpd
   control:
     mu: Threshold, held fixed; every observation must exceed it.
+    sigma: Positive scale to hold fixed, or NULL to estimate.
+    xi: Shape to hold fixed, or NULL to estimate (current lower bound -1/2).
     reltol: Relative tolerance for scale bisection and transformed profile root brackets, with a unit absolute floor for the latter.
     iterlim: Maximum number of bisection iterations per root.
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma, Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma), True))
@@ -41,10 +43,6 @@ examples: |
   set.seed(1)
   mlgpd(extraDistr::rgpd(100, mu = 10, sigma = 2, xi = 0.3), mu = 10)
 holds:
-- held:
-  - sigma
-  status: not-implemented
-  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
 - held: []
   status: no-mle
   reason: 'Estimating `mu` is not supported: the free-threshold GPD likelihood has
@@ -54,6 +52,12 @@ holds:
   status: no-mle
   reason: 'Estimating `mu` is not supported: the free-threshold GPD likelihood has
     no MLE (endpoint and logistic escapes).'
+- held: [sigma]
+  status: no-mle
+  reason: 'Estimating `mu` is not supported: the free-threshold GPD likelihood has no MLE (endpoint and logistic escapes).'
+- held: [sigma, xi]
+  status: no-mle
+  reason: 'Estimating `mu` is not supported: the free-threshold GPD likelihood has no MLE (endpoint and logistic escapes).'
 fit_args:
   mu: 0.0
 ---
@@ -67,3 +71,13 @@ exceed `mu` and, for negative shape, lie below `mu - sigma/xi`.
 
 The shape is restricted to `xi >= -1/2` because the unrestricted likelihood is unbounded as an upper endpoint approaches the sample maximum at `xi < -1`.
 Data from a model with `xi < -1/2` give constrained fits, often at the floor `xi = -1/2`, where the usual likelihood asymptotics do not apply. `extraDistr::qgpd` and `pgpd` lose accuracy for shapes within about `1e-12` of zero (see `KNOWN_ISSUES.md`); the fit is unaffected.
+
+With held threshold and shape greater than -1, scale has a unique positive
+score root, including for constant samples and one observation. Holding
+scale instead leaves a scalar shape likelihood on the support-feasible
+interval above -1/2; the attained floor is compared with interior maxima.
+All three coefficients can be held; incompatible support is rejected.
+Estimating the threshold remains unsupported under A4, including with
+held scale (the uniform plateau cases would require the P3 endpoint work).
+The scalar search enumerates sampled maxima and refines their brackets;
+its global coverage is checked numerically, not certified.

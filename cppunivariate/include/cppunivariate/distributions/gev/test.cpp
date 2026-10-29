@@ -139,3 +139,32 @@ TEST_CASE("gev: only minimum ties control fixed-shape collapse") {
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,.5).status==cppunivariate::GevStatus::InvalidData);
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,0).status==cppunivariate::GevStatus::Ok);
 }
+
+TEST_CASE("gev: all new hold subsets preserve held coefficients and scores") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const std::vector<double> x{-.7,-.2,0,.4,.8,1.5,3};
+ const auto data=mltest::as_span(x);
+ for(int mask:{1,2,3,5,6,7}) {
+   const double mu=mask&1 ? .1 : nan,sigma=mask&2 ? 1.3 : nan,xi=mask&4 ? .2 : nan;
+   const auto f=cppunivariate::gev_mle(data,1e-10,150,xi,mu,sigma);
+   CAPTURE(mask);
+   REQUIRE(f.status==cppunivariate::GevStatus::Ok);
+   if(mask&1) CHECK(f.mu==mu);
+   if(mask&2) CHECK(f.sigma==sigma);
+   if(mask&4) CHECK(f.xi==xi);
+   CHECK(f.logLik==doctest::Approx(cppunivariate::gev_loglik(data,f.mu,f.sigma,f.xi)));
+   for(int j=0;j<3;++j) if(!(mask&(1<<j))) {
+     if(j==2 && (f.xi==-.5 || f.xi==1)) continue;
+     double p[3]={f.mu,f.sigma,f.xi};const double h=1e-5;
+     p[j]+=h;const double plus=cppunivariate::gev_loglik(data,p[0],p[1],p[2]);
+     p[j]-=2*h;const double minus=cppunivariate::gev_loglik(data,p[0],p[1],p[2]);
+     CHECK(std::abs((plus-minus)/(2*h))<1e-3);
+   }
+ }
+ const std::vector<double> one{1};
+ const auto f=cppunivariate::gev_mle(mltest::as_span(one),1e-10,100,0,nan,2);
+ CHECK(f.status==cppunivariate::GevStatus::Ok);
+ CHECK(f.mu==1);
+ CHECK(cppunivariate::gev_mle(data,1e-10,1,nan,0,1).status==cppunivariate::GevStatus::IterationFailure);
+ CHECK(cppunivariate::gev_mle(data,1e-10,100,.3,0,-1).status==cppunivariate::GevStatus::InvalidData);
+}
