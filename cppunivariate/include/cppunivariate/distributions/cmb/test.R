@@ -62,14 +62,14 @@ test_that("CMB detects precisely the reachable faces", {
   expect_error(mlcmb(c(2,2),size=5),"point mass")
   expect_error(mlcmb(c(2,3),size=5),"adjacent two-point")
   expect_error(mlcmb(c(0,5),size=5),"endpoint two-point")
-  expect_error(mlcmb(c(0,0),size=5,nu=1),"point mass")
+  expect_equal(mlcmb(c(0,0),size=5,nu=1)[["prob"]],0)
   expect_error(mlcmb(c(0,5),size=5,prob=.4),"endpoint two-point")
   expect_error(mlcmb(c(2,3),size=5,prob=.4),"adjacent two-point")
   expect_error(mlcmb(c(3,3),size=6,prob=.4),"point mass")
   expect_error(mlcmb(c(1,1),size=5,prob=.4),NA)
   expect_error(mlcmb(c(2,3),size=5,nu=1),NA)
   expect_error(mlcmb(c(0,0),size=5,prob=.4,nu=1),NA)
-  expect_error(mlcmb(0,size=0),"unidentified")
+  expect_equal(as.numeric(mlcmb(0,size=0)),c(0,.5,1))
   expect_warning(f <- mlcmb(c(0,1,1),size=1),"not identified")
   expect_equal(f[["nu"]],1)
   expect_equal(f[["prob"]],2/3)
@@ -98,4 +98,22 @@ test_that("CMB recycling, warnings, RNG and fitted-model generics work", {
   expect_s3_class(model_select(x,models="cmb",size=10),"univariateML")
   grDevices::pdf(tempfile(fileext=".pdf")); on.exit(grDevices::dev.off())
   expect_error(plot(f),NA)
+})
+
+test_that("P3 CMB finite endpoints preserve held dispersion", {
+ for(p in c(0,1)) for(nu in c(-2,0,2)) {
+   x<-rep(5*p,4);f<-mlcmb(x,size=5,nu=nu)
+   expect_equal(as.numeric(f),c(5,p,nu));expect_equal(attr(f,"logLik"),0)
+   f<-mlcmb(x,size=5,prob=p,nu=nu)
+   expect_equal(dml(c(0,5),f),if(p==0)c(1,0) else c(0,1))
+   expect_error(mlcmb(c(0,1),size=5,prob=p,nu=nu))
+ }
+ expect_equal(as.numeric(mlcmb(c(0,0),size=0,prob=.2,nu=-3)),c(0,.2,-3))
+})
+
+test_that("P3 Bernoulli endpoint fits are silent", {
+ expect_silent(f<-mlcmb(c(0,0),size=1))
+ expect_equal(as.numeric(f),c(1,0,1))
+ expect_silent(f<-mlcmb(c(1,1),size=1))
+ expect_equal(as.numeric(f),c(1,1,1))
 })

@@ -17,7 +17,7 @@ params:
   kind: regular
 - name: r
   role: white balls required to stop sampling
-  domain: '[0, inf)'
+  domain: '[0, m]'
   simulate: 3
   integer: yes
   kind: design

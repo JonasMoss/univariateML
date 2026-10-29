@@ -47,12 +47,12 @@ test_that("CMP fitting agrees with a slow independent series oracle", {
    expect_equal(as.numeric(logLik(g)),sum(dml(x,g,log=TRUE)),tolerance=1e-10)
  }
  expect_equal(mlcmp(x,nu=1)[["lambda"]],mean(x),tolerance=1e-9)
- expect_error(mlcmp(c(0,0)),"point mass")
+ expect_equal(as.numeric(mlcmp(c(0,0))),c(0,1))
  expect_error(mlcmp(c(2,3)),"adjacent two-point")
- expect_error(mlcmp(c(0,0,0,10)),"geometric")
+ expect_equal(mlcmp(c(0,0,0,10))[["nu"]],0)
  expect_error(mlcmp(c(0,1),lambda=2),"adjacent two-point")
  expect_error(mlcmp(x,nu=-1),"nonnegative")
- expect_error(mlcmp(x,lambda=NA_real_),"positive")
+ expect_error(mlcmp(x,lambda=NA_real_),"nonnegative")
 })
 test_that("CMP recycling, RNG and model generics work", {
  expect_warning(expect_equal(dcmp(.5,2,1),0),"non-integer")
@@ -82,4 +82,19 @@ test_that("CMP returns held rates without log-exp rounding", {
   expect_identical(f[["lambda"]],.13)
   expect_identical(f[["nu"]],1.3)
   expect_setequal(attr(f,"fixed"),c("lambda","nu"))
+})
+
+test_that("P3 CMP boundaries respect all holds and geometric normalizability", {
+  for(nu in c(0,1,2)) {
+    f<-mlcmp(c(0,0),lambda=0,nu=nu)
+    expect_equal(as.numeric(f),c(0,nu)); expect_equal(attr(f,"logLik"),0)
+    expect_error(mlcmp(c(0,1),lambda=0,nu=nu))
+  }
+  expect_error(mlcmp(c(0,1),lambda=1,nu=0))
+  x<-c(0,0,0,10); f<-mlcmp(x)
+  expect_equal(as.numeric(f),c(2.5/3.5,0))
+  expect_equal(attr(f,"logLik"),sum(dgeom(x,1/3.5,log=TRUE)))
+  f<-mlcmp(x,lambda=.5)
+  expect_equal(as.numeric(f),c(.5,0))
+  expect_equal(attr(f,"logLik"),sum(dgeom(x,.5,log=TRUE)))
 })

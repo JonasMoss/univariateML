@@ -212,3 +212,13 @@ test_that("bhatt independent density oracle retains tiny uniform widths", {
     expect_equal(bhatt_oracle_density(x,.2,1.3,a),log(reference),tolerance=1e-10)
   }
 })
+
+test_that("P3 bhatt returns the normal maximum as an attained member", {
+ x<-c(-10,rep(0,20),10)
+ expect_silent(f<-mlbhatt(x))
+ expect_equal(f[["a"]],0)
+ expect_equal(attr(f,"logLik"),attr(mlnorm(x),"logLik"))
+ f<-mlbhatt(x,mu=1,sigma=4,a=0)
+ expect_equal(as.numeric(f),c(1,4,0))
+ expect_equal(attr(f,"logLik"),sum(dnorm(x,1,4,log=TRUE)))
+})

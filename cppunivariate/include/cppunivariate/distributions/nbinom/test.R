@@ -7,7 +7,7 @@ expect_error(
 )
 
 ## Non-unique maximum likelihood.
-expect_warning(mlnbinom(c(0, 0, 0)))
+expect_silent(mlnbinom(c(0, 0, 0)))
 
 
 ## Size argument works
@@ -44,9 +44,9 @@ test_that("overdispersed data where Newton leaves the domain still fit", {
   expect_equal(attr(fit, "logLik"), sum(dnbinom(y, fit[["size"]], fit[["prob"]], log = TRUE)))
 })
 
-test_that("a held size must be positive and finite", {
+test_that("a held size must be nonnegative, finite and compatible", {
   for (size in list(0, -1, Inf, NaN, NA_real_)) {
-    expect_error(mlnbinom(c(1, 2, 5), size = size), "positive finite")
+    expect_error(mlnbinom(c(1, 2, 5), size = size), "finite|invalid")
   }
 })
 
@@ -119,9 +119,9 @@ local({
 test_that("P2 NB held prob has a unique finite size or declared zero escape", {
   for(v in c(0,-1,1.1,Inf,NA_real_))expect_error(mlnbinom(c(0,1,5),prob=v))
   expect_error(mlnbinom(c(0,1,5),prob=1),"incompatible")
-  expect_error(mlnbinom(rep(0,3),prob=.4),"mlpois")
+  expect_equal(mlnbinom(rep(0,3),prob=.4)[["size"]],0)
   a<-mlnbinom(rep(0,3),prob=1)
-  expect_identical(unname(as.numeric(a)),c(1,1))
+  expect_identical(unname(as.numeric(a)),c(0,1))
   b<-mlnbinom(rep(0,3),size=2,prob=.4)
   expect_equal(attr(b,'logLik'),6*log(.4))
   for(v in c(-1,NA_real_,Inf))expect_error(mlnbinom(c(0,1,2),size=v,prob=.4))
@@ -135,4 +135,18 @@ test_that("P2 held NB probability close to one retains a finite size root", {
   expect_lt(abs(score),1e-22)
   expect_identical(fit[['prob']],p)
   expect_equal(attr(fit,'logLik'),sum(dnbinom(x,r,p,log=TRUE)),tolerance=1e-9)
+})
+
+test_that("P3 size-zero boundary holds and free representatives are attained", {
+  for (p in c(.2,.9,1)) {
+    fit <- mlnbinom(rep(0,5),size=0,prob=p)
+    expect_identical(fit[["size"]],0)
+    expect_identical(fit[["prob"]],p)
+    expect_equal(attr(fit,"logLik"),0)
+    expect_equal(dml(c(0,1),fit),c(1,0))
+    expect_error(mlnbinom(c(0,1),size=0,prob=p))
+  }
+  expect_silent(fit <- mlnbinom(rep(0,5)))
+  expect_equal(fit[["size"]],0)
+  expect_equal(attr(fit,"logLik"),0)
 })

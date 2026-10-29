@@ -50,9 +50,11 @@ TEST_CASE("zinb: generated face and attained NB fits") {
   CHECK(cppunivariate::zinb_mle({pois.data(),pois.size()},1e-10,200,2).status == cppunivariate::ZinbStatus::Ok);
 }
 
-TEST_CASE("zinb: degenerate representative and stable density") {
+TEST_CASE("zinb: held positive-size degenerate representative and stable density") {
   const std::vector<int> x{0,0,0};
-  const auto fit=cppunivariate::zinb_mle({x.data(),x.size()});
+  // The size-zero d/p/q/r seam belongs to TASK-78. Retain coverage of
+  // the held positive-size representative here; P3 checks size zero below.
+  const auto fit=cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,1);
   CHECK(fit.logLik == 0);
   CHECK(cppunivariate::distributions::dzinb(0,fit.size,fit.prob,fit.pi,true)==0);
   CHECK(cppunivariate::distributions::pzinb(0,fit.size,fit.prob,fit.pi,true,false)==1);
@@ -87,7 +89,7 @@ TEST_CASE("zinb: P2 every hold subset preserves coefficients and golden likeliho
 TEST_CASE("zinb: P2 held-domain and non-existence statuses") {
  const std::vector<int> x{0,1,5},z{0,0};
  const double nan=std::numeric_limits<double>::quiet_NaN();
- CHECK(cppunivariate::zinb_mle({z.data(),z.size()},1e-10,200,nan,.4,.3).status==cppunivariate::ZinbStatus::ZeroLimit);
+ CHECK(cppunivariate::zinb_mle({z.data(),z.size()},1e-10,200,nan,.4,.3).status==cppunivariate::ZinbStatus::Ok);
  CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,nan,1,nan).status==cppunivariate::ZinbStatus::InvalidInput);
  CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,nan,nan,1).status==cppunivariate::ZinbStatus::InvalidInput);
  CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,1,nan,.4,nan).status==cppunivariate::ZinbStatus::IterationFailure);
@@ -111,4 +113,11 @@ TEST_CASE("zinb: extreme tails and discrete support") {
   CHECK(cppunivariate::distributions::pzinb(134.0, 2.0, 0.4, 0.3, false, true) == doctest::Approx(-65.31080096711501).epsilon(1e-10));
   CHECK(cppunivariate::distributions::qzinb(-10000, 2.0, 0.4, 0.3, false, true) == 19593.0);
   CHECK(cppunivariate::distributions::dzinb(0.5, 2.0, 0.4, 0.3, false) == 0);
+}
+
+TEST_CASE("zinb: P3 attained size zero preserves holds") {
+ const std::vector<int> z{0,0,0};
+ const auto r=cppunivariate::zinb_mle({z.data(),z.size()},1e-10,200,0,.4,.2);
+ CHECK(r.status==cppunivariate::ZinbStatus::Ok);
+ CHECK(r.size==0); CHECK(r.prob==.4); CHECK(r.logLik==0);
 }

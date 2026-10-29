@@ -70,3 +70,13 @@ TEST_CASE("bhatt: every held golden subset preserves coefficients and likelihood
     CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
   }
 }
+
+TEST_CASE("bhatt P3 normal boundary is attained with conditional coefficients") {
+ std::vector<double> x(20,0); x.push_back(-10); x.push_back(10);
+ const auto f=cppunivariate::bhatt_mle({x.data(),x.size()});
+ REQUIRE(f.status==cppunivariate::BhattStatus::Ok); CHECK(f.a==0);
+ const auto n=cppunivariate::norm_mle({x.data(),x.size()});
+ CHECK(f.logLik==doctest::Approx(n.logLik));
+ const auto held=cppunivariate::bhatt_mle({x.data(),x.size()},1e-8,500,4,0,1);
+ CHECK(held.status==cppunivariate::BhattStatus::Ok); CHECK(held.mu==1); CHECK(held.sigma==4); CHECK(held.a==0);
+}
