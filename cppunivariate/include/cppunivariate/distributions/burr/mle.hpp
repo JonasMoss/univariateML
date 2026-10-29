@@ -83,7 +83,7 @@ struct BurrCost {
 };
 
 
-enum class BurrStatus { Ok = 0, WeibullBoundary, ParetoBoundary, InvalidInit, IterationFailure, AllGeOne };
+enum class BurrStatus { Ok = 0, WeibullBoundary, ParetoBoundary, InvalidInit, IterationFailure, AllGeOne, Unbounded };
 struct BurrMLE {
   double shape1, shape2, scale, logLik;
   int iterations;
@@ -193,6 +193,9 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!(scale > 0.0) || !std::isfinite(scale))
     return {nan,nan,scale,nan,0,BurrStatus::InvalidInit};
+  bool endpoint_spike = x.size() > 0;
+  for (double v : x) if (v != scale) endpoint_spike = false;
+  if (endpoint_spike) return {nan,nan,scale,INFINITY,0,BurrStatus::Unbounded};
   std::vector<double> normalized;
   for (double v : x) normalized.push_back(v / scale);
   const auto r = burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},tol,maxit);

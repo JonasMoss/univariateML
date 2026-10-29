@@ -116,3 +116,16 @@ test_that("burr fixed scale uses a profile fallback when moments have no root", 
   expect_equal(as.numeric(z[1:2]),exp(oracle$par),tolerance=1e-5)
   expect_equal(attr(z,"logLik"),-oracle$value,tolerance=1e-9)
 })
+
+test_that("held-scale Burr endpoint penalty is not a Pareto likelihood equality", {
+  x <- c(1,1.5,2,3)
+  expect_error(mlburr(x,scale=1),"mlpareto")
+  alpha <- length(x)/sum(log(x))
+  pareto <- length(x)*log(alpha)-(alpha+1)*sum(log(x))
+  # Profile shape1 exactly and approach shape2=infinity stably in log space.
+  c <- 1e8; a <- log1p(exp(-c*log(x)))+c*log(x); k <- length(x)/sum(a)
+  burr <- length(x)*(log(k)+log(c))-sum(log(x))-k*sum(a)-sum(a-c*log(x))
+  expect_equal(burr,pareto-log(2),tolerance=1e-7)
+  expect_equal(pareto,-3.800827,tolerance=1e-6)
+  expect_error(mlburr(rep(1,4),scale=1),"unbounded")
+})

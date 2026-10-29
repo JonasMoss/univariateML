@@ -25,5 +25,5 @@ TEST_CASE("invpareto: golden, reciprocal agreement and score") {
 }
 TEST_CASE("invpareto: inverse exponential limit") {
   std::vector<double> x{1,1,1,1};
-  CHECK(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100).status == cppunivariate::LomaxStatus::MeanVarianceCondition);
+  CHECK(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100).status == cppunivariate::LomaxStatus::ExponentialLimit);
 }

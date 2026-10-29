@@ -21,7 +21,7 @@ Rcpp::List mlinvpareto_(const Rcpp::NumericVector &x,
     }
   }
   auto res = cppunivariate::invpareto_mle(dist_impl::as_span(x), reltol, iterlim, start);
-  if (res.status == cppunivariate::LomaxStatus::MeanVarianceCondition) {
+  if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
     Rcpp::stop("The inverse Pareto maximum likelihood estimator does not exist for data "
                "whose likelihood is maximized on the inverse exponential face. Use `mlinvexp` to fit an "
                "inverse exponential distribution.");

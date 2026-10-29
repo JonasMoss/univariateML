@@ -107,3 +107,66 @@ test_that("unresolvable Lomax starting hints fall back to the moment start", {
     expect_equal(as.numeric(f),as.numeric(base),tolerance=1e-10)
   }
 })
+
+test_that("Lomax exact criterion resolves nonlocal maxima", {
+  samples <- list(c(1,100),c(.001,4,6),c(.001,1,2),c(1,29),c(1,1,1,12,12))
+  gaps <- c(.590084,1.338305,.652423,.001924,1.90927e-4)
+  rates <- c(.772199,1394.08,1039.29,.236987,.0359623)
+  shapes <- c(.405536,.161888,.196081,.878708,6.07162)
+  for (j in seq_along(samples)) {
+    x <- samples[[j]]; f <- mllomax(x,reltol=1e-12)
+    expect_equal(as.numeric(f),c(rates[j],shapes[j]),tolerance=5e-6)
+    expect_equal(attr(f,"logLik")+length(x)*(log(mean(x))+1),gaps[j],tolerance=5e-7)
+    for (s in c(1e-200,1e200)) {
+      g <- mllomax(x*s,reltol=1e-12)
+      expect_equal(as.numeric(g)*c(s,1),as.numeric(f),tolerance=1e-6)
+    }
+    g <- mllomax(rep(x,50),reltol=1e-12)
+    expect_equal(as.numeric(g),as.numeric(f),tolerance=1e-6)
+    expect_equal(attr(g,"logLik")/50,attr(f,"logLik"),tolerance=1e-10)
+  }
+  for(x in list(c(1,10),c(1,28),rep(1,5))) expect_error(mllomax(x),"mlexp")
+  set.seed(5)
+  expect_error(mllomax(rexp(10)),"mlexp")
+})
+
+test_that("Lomax agrees with a slow independent psi and density oracle", {
+  set.seed(4801)
+  for (j in seq_len(220)) {
+    n <- c(2L,3L,5L,10L,50L)[1L+(j-1L)%%5L]
+    x <- if(j%%2L) rexp(n) else extraDistr::rlomax(n,1,runif(1,.3,5))
+    y <- x/mean(x); logubar <- -mean(log(y)); ubar <- exp(logubar)
+    # Independent existence criterion, including every grid-local minimum.
+    psi <- function(u) mean(log(exp(-u)+u*y))
+    ug <- sort(unique(c(exp(seq(-25,logubar,length.out=1201)),seq(0,ubar,length.out=1201)[-1])))
+    pv <- vapply(ug,psi,0.)
+    ids <- which(pv[-c(1,length(pv))] <= pv[-c(length(pv)-1,length(pv))] &
+                 pv[-c(1,length(pv))] <= pv[-c(1,2)])+1L
+    minpsi <- min(pv)
+    for (i in ids) minpsi <- min(minpsi,optimize(psi,ug[c(i-1,i+1)],tol=1e-12)$objective)
+    # Direct extraDistr density, independently profiled in log(lambda).
+    profile <- function(t) {
+      q <- exp(t); kappa <- 1/mean(log1p(q*y))
+      sum(extraDistr::dlomax(y,q,kappa,log=TRUE))-n*log(mean(x))
+    }
+    # The theoretical endpoint can exceed the double exponent range.
+    # Beyond log q=600 the profile is already far below the face here.
+    upper <- min(logubar+ubar,600)
+    tg <- seq(-25,upper,length.out=2401)
+    lv <- vapply(tg,profile,0.)
+    ids <- which(lv[-c(1,length(lv))] >= lv[-c(length(lv)-1,length(lv))] &
+                 lv[-c(1,length(lv))] >= lv[-c(1,2)])+1L
+    oracle <- max(lv)
+    for(i in ids) oracle <- max(oracle,optimize(profile,tg[c(i-1,i+1)],maximum=TRUE,tol=1e-11)$objective)
+    boundary <- -n*(log(mean(x))+1); gap <- oracle-boundary
+    f <- tryCatch(mllomax(x,reltol=1e-12),error=identity)
+    if(gap > 1.1e-8*n) {
+      expect_lt(minpsi,0)
+      expect_false(inherits(f,"error"))
+      if(!inherits(f,"error")) expect_gte(attr(f,"logLik"),oracle-1e-8*n)
+    } else if(gap < .9e-8*n) {
+      expect_true(inherits(f,"error"))
+      if(inherits(f,"error")) expect_match(conditionMessage(f),"mlexp")
+    }
+  }
+})

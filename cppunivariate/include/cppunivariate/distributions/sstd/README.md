@@ -43,6 +43,8 @@ The skew Student-t distribution combines heavy tails with asymmetry using the Fe
 
 ## Details
 
+A tie of multiplicity $k>2(n-k)$ makes the free-df likelihood unbounded even at fixed skewness (the two side scales change the coefficient, not the collapse exponent); equality is reported as an uncertified scale-collapse boundary, and a half-t face has a positive scale root only when $\nu(n-k)>k$.
+
 This is the fGarch parameterisation: `mean` and `sd` are the mean and standard deviation, `nu` is greater than 2, and `xi = 1` gives the Student-t distribution.
 
 The maximum likelihood estimate often does not exist, especially in small samples: the likelihood is then maximised on the boundary of the parameter space, and `mlsstd` stops with a message naming the limit. The fitter compares the best of several interior fits with the skew-normal limit ($\nu \to \infty$, fitted exactly), the translated half-t limits ($\xi \to \infty$ or $0$, with the endpoint at the sample minimum or maximum and the degrees of freedom searched over $[2, \infty]$), and the two-piece t with 2 degrees of freedom ($\nu \to 2$), which has infinite variance and no finite `sd`. A limit is reported when it is at least as good as the best interior fit, up to $10^{-8}$ per observation. This is a multistart comparison, not a certificate of the global maximum. In simulations about three in four samples of size 20 from a skew-t with 5 or 10 degrees of freedom have no interior maximum.

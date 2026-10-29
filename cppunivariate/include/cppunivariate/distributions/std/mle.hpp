@@ -15,6 +15,7 @@
 #include "../../core/reductions.hpp"
 #include "../../core/reparam.hpp"
 #include "../../core/span.hpp"
+#include "../../core/tie_collapse.hpp"
 #include "../norm/mle.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
@@ -181,6 +182,14 @@ inline StudentTResult student_t_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2) return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::InvalidStart};
+
+  // For fixed skewness the two side scales are s*xi and s/xi;
+  // constants change, but the collapse exponent remains nu*(n-k)-k.
+  const std::size_t k = collapse_multiplicity(x);
+  if (k > 2*(n-k))
+    return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::Unbounded};
+  if (k == 2*(n-k))
+    return {kNaN, kNaN, kNaN, kNaN, 0, StudentTStatus::ScaleBoundary};
 
   const auto moments = norm_detail::moments(x);
   if (moments.sd > 0.0 && std::isfinite(moments.sd) &&

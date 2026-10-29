@@ -104,3 +104,14 @@ test_that("invburr fixed scale uses a profile fallback when moments have no root
   expect_equal(as.numeric(z[1:2]),exp(oracle$par),tolerance=1e-5)
   expect_equal(attr(z,"logLik"),-oracle$value,tolerance=1e-9)
 })
+
+test_that("held-scale inverse Burr endpoint penalty is not a power likelihood equality", {
+  x <- 1/c(1,1.5,2,3)
+  expect_error(mlinvburr(x,scale=1),"mlpower")
+  alpha <- -length(x)/sum(log(x))
+  power <- length(x)*log(alpha)+(alpha-1)*sum(log(x))
+  c <- 1e8; a <- log1p(exp(c*log(x)))-c*log(x); k <- length(x)/sum(a)
+  invburr <- length(x)*(log(k)+log(c))-sum(log(x))-k*sum(a)-sum(a+c*log(x))
+  expect_equal(invburr,power-log(2),tolerance=1e-7)
+  expect_error(mlinvburr(rep(1,4),scale=1),"unbounded")
+})

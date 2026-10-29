@@ -16,6 +16,7 @@
 #include "../../core/reductions.hpp"
 #include "../../core/reparam.hpp"
 #include "../../core/span.hpp"
+#include "../../core/tie_collapse.hpp"
 #include "../norm/mle.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
@@ -29,7 +30,7 @@
 namespace cppunivariate {
 
 enum class SstdStatus {
-  Ok = 0, BfgsFailure, InvalidStart,
+  Ok = 0, BfgsFailure, InvalidStart, Unbounded, ScaleBoundary,
   SnormBoundary,                                    // nu -> inf: use mlsnorm
   RightHalfNormalBoundary, LeftHalfNormalBoundary,  // and xi -> inf / 0
   RightHalfTBoundary, LeftHalfTBoundary,            // xi -> inf / 0
@@ -338,7 +339,8 @@ struct TwoPieceTCost {
 // h(u) = sum (nu + 1) w^2 / (nu + w^2) - n, w = y exp(-u), decreases in u,
 // so its root is unique when it exists. It does not exist when at most
 // n / (nu + 1) observations sit off the endpoint (heavy ties): the face
-// likelihood is then unbounded, and the face is skipped (-inf).
+// likelihood is unbounded in the strict case; equality has a finite
+// unattained scale-zero supremum. Neither case has a positive scale root.
 inline double half_t_profile(const std::vector<double> &y, double eta,
                              double &log_scale) {
   const double dn = static_cast<double>(y.size());
@@ -349,11 +351,18 @@ inline double half_t_profile(const std::vector<double> &y, double eta,
     if (v > 0.0) positive += 1.0;
   }
   second /= dn;
-  if (!(second > 0.0)) return -kInf;
+  if (!(second > 0.0)) return kInf;
   const double nu = eta > 0.0 ? 1.0 / eta : kInf;
   double u = 0.5 * std::log(second);
   if (eta > 0.0) {
-    if ((nu + 1.0) * positive <= dn) return -kInf;
+    if (nu * positive < dn-positive) return kInf;
+    if (nu * positive == dn-positive) {
+      log_scale = -kInf;
+      double ll = dn*(std::log(2.0)+log_t_mode(nu))
+          + 0.5*(nu+1.0)*positive*std::log(nu);
+      for (double v : y) if (v>0.0) ll -= (nu+1.0)*std::log(v);
+      return ll;
+    }
     auto score = [&](double t, double &slope) {
       const double inv_scale = std::exp(-t);
       double h = -dn;
@@ -459,6 +468,14 @@ inline SstdResult sstd_mle(span x, double tol, int maxit) {
   const std::size_t n = x.size();
   if (n < 2)
     return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SstdStatus::InvalidStart};
+
+  // For fixed skewness the two side scales are s*xi and s/xi;
+  // constants change, but the collapse exponent remains nu*(n-k)-k.
+  const std::size_t k = collapse_multiplicity(x);
+  if (k > 2*(n-k))
+    return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SstdStatus::Unbounded};
+  if (k == 2*(n-k))
+    return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SstdStatus::ScaleBoundary};
 
   const auto moments = norm_detail::moments(x);
   if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
