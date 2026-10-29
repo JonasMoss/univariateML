@@ -96,14 +96,14 @@ TEST_CASE("bnbinom: explicit faces and input validation") {
   CHECK(cppunivariate::bnbinom_mle({}).status==cppunivariate::BnbinomStatus::InvalidInput);
   CHECK(cppunivariate::bnbinom_mle({constant.data(),constant.size()},1e-8,0).status==cppunivariate::BnbinomStatus::InvalidInput);
 }
-TEST_CASE("bnbinom: budgeted CDF and quantile") {
+TEST_CASE("bnbinom: CDF and quantile beyond the former count budget") {
   for (double u:{.1,.5,.9,.99}) {
     const double q=cppunivariate::distributions::qbnbinom(u,1,2,5,true,false);
     CHECK(cppunivariate::distributions::pbnbinom(q-1,1,2,5,true,false)<u);
     CHECK(cppunivariate::distributions::pbnbinom(q,1,2,5,true,false)>=u);
   }
-  CHECK(std::isnan(cppunivariate::distributions::qbnbinom(.99,1,.01,1,true,false)));
-  CHECK(std::isnan(cppunivariate::distributions::pbnbinom(1e12,1,2,5,true,false)));
+  CHECK(std::isfinite(cppunivariate::distributions::qbnbinom(.99,1,.01,1,true,false)));
+  CHECK(std::isfinite(cppunivariate::distributions::pbnbinom(1e12,1,2,5,true,true)));
 }
 
 TEST_CASE("bnbinom: overdispersion can select NB; diagonal finite maxima occur") {
@@ -118,28 +118,46 @@ TEST_CASE("bnbinom: overdispersion can select NB; diagonal finite maxima occur")
 
 #include "cppunivariate/distributions/bnbinom/dpqr.hpp"
 
-// StdRng uses poisson_distribution<int>, which rejects every out-of-range
-// candidate at huge means. Record the unsupported draw as NaN instead of
-// hanging this test; r_valid reports it, and production code stays untouched.
-namespace {
-struct BnbinomTruthRng {
-  cppunivariate::distributions::StdRng<> &base;
-  double rgamma(double shape, double scale) { return base.rgamma(shape, scale); }
-  double rpois(double mean) {
-    if (!std::isfinite(mean) || mean > static_cast<double>(std::numeric_limits<int>::max()))
-      return std::numeric_limits<double>::quiet_NaN();
-    return base.rpois(mean);
-  }
-};
-}
-
 // Independent high-precision oracle; see quality/truth.py.
-TEST_CASE("bnbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("bnbinom: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("bnbinom",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbnbinom(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbnbinom(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbnbinom(x, p[0], p[1], p[2], lower, log); },
-      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { BnbinomTruthRng bounded{rng}; return cppunivariate::distributions::rbnbinom(bounded, p[0], p[1], p[2]); });
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbnbinom(rng, p[0], p[1], p[2]); });
+}
+
+// mpmath (100 digits): S(x)=30/((x+6)*(x+7)) and
+// p(x)=60/((x+5)*(x+6)*(x+7)) for size=1, alpha=2, beta=5.
+// mp.log(60/((x+5)*(x+6)*(x+7))); mp.log(30/((x+6)*(x+7)))
+TEST_CASE("bnbinom: power law across double counts and log quantiles") {
+  CHECK(cppunivariate::distributions::dbnbinom(1e100,1,2,5,true)==doctest::Approx(-686.6811833359916045).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::pbnbinom(1e100,1,2,5,false,true)==doctest::Approx(-457.1158212171469814).epsilon(2e-15));
+  CHECK(cppunivariate::distributions::qbnbinom(1e-300,1,2,5,false,false)==doctest::Approx(5.477225575051661e150).epsilon(2e-13));
+  for(double lp:{-800.,-10000.}) {
+    const double q=cppunivariate::distributions::qbnbinom(lp,1,20,5,false,true);
+    REQUIRE(std::isfinite(q));
+    CHECK(cppunivariate::distributions::pbnbinom(q,1,20,5,false,true)==doctest::Approx(lp).epsilon(2e-14));
+  }
+  CHECK(std::isfinite(cppunivariate::distributions::dbnbinom(std::numeric_limits<double>::max(),1,2,5,true)));
+  CHECK(std::isfinite(cppunivariate::distributions::pbnbinom(std::numeric_limits<double>::max(),1,2,5,false,true)));
+}
+
+TEST_CASE("bnbinom: StdRng Poisson beyond integer range") {
+  for(double mean:{3e9,1e12,1e18,1e30}) {
+    cppunivariate::distributions::StdRng<> rng(7813);
+    double sum=0,squares=0;
+    const int n=20000;
+    for(int j=0;j<n;++j) {
+      const double x=rng.rpois(mean);
+      REQUIRE(std::isfinite(x));
+      REQUIRE(x>=0);
+      const double z=(x-mean)/std::sqrt(mean);
+      sum+=z;squares+=z*z;
+    }
+    CHECK(std::abs(sum/n)<.04);
+    CHECK(std::abs(squares/n-1)<.06);
+  }
 }
 
 TEST_CASE("bnbinom: P3 unfinished optimizer is a failure") {
