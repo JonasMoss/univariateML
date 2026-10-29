@@ -397,7 +397,9 @@ univariateML_reference_fixes <- list(
 #' Each entry has `p`, the reference CDF (`pkg::pfn`, taking `lower.tail`
 #' and `log.p`), and `support`, a function of the coefficients (with `...`)
 #' returning the integer support bounds `c(lower, upper)`; `upper` may be
-#' `Inf`.
+#' `Inf`. An entry with `continuous = TRUE` instead uses bracket expansion
+#' and safeguarded continuous inversion on the real line, with recycled
+#' coefficients and direct log probabilities in the smaller tail.
 #'
 #' `extraDistr::qbbinom` does not exist (extraDistr 1.10.0.5); the
 #' beta-binomial (`mlbbinom`) quantile inverts `extraDistr::pbbinom` on
@@ -405,6 +407,8 @@ univariateML_reference_fixes <- list(
 #' @keywords internal
 
 univariateML_reference_quantiles <- list(
+  "extraDistr::qslash" = list(p = "extraDistr::pslash", continuous = TRUE),
+  "extraDistr::qbhatt" = list(p = "extraDistr::pbhatt", continuous = TRUE),
   "extraDistr::qbbinom" = list(
     p = "extraDistr::pbbinom",
     support = function(size, ...) c(0, size)
@@ -569,7 +573,7 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
       stop("qml() is not available for the ", attr(obj, "model"), " model: the reference ",
            "package has no quantile function `", string, "`.", call. = FALSE)
     }
-    fun <- univariateML_discrete_quantile(entry)
+    fun <- if (isTRUE(entry$continuous)) univariateML_continuous_quantile(entry) else univariateML_discrete_quantile(entry)
   } else {
     fun <- eval(parse(text = string))
   }
@@ -811,3 +815,100 @@ for (.key in paste0("extraDistr::", c("dtnorm", "ptnorm", "qtnorm"))) {
   })
 }
 rm(.key)
+
+# Continuous reference inversion. Compare log probabilities in the smaller
+# tail, including when the input is an upper-tail log probability.
+univariateML_continuous_quantile <- function(entry) {
+  cdf <- eval(parse(text = entry$p))
+  fix <- univariateML_reference_fixes[[entry$p]]
+  if (!is.null(fix) && fix$broken()) cdf <- fix$replacement
+  fun <- function() {
+    args <- as.list(environment())
+    params <- args[setdiff(names(args), c("p", "lower.tail", "log.p"))]
+    vectors <- c(list(args$p), params)
+    if (any(lengths(vectors) == 0L)) return(numeric())
+    n <- max(lengths(vectors))
+    vectors <- lapply(vectors, rep_len, length.out = n)
+    bad <- FALSE
+    out <- vapply(seq_len(n), function(i) {
+      u <- vectors[[1L]][i]
+      par <- lapply(vectors[-1L], `[`, i)
+      if (is.na(u)) return(u)
+      if (anyNA(unlist(par))) return(NA_real_)
+      if (any(!is.finite(unlist(par))) || par$sigma <= 0 ||
+          (!is.null(par$a) && par$a < 0) ||
+          (if (args$log.p) u > 0 else u < 0 || u > 1)) {
+        bad <<- TRUE; return(NaN)
+      }
+      lp <- if (args$log.p) u else log(u)
+      lower <- args$lower.tail
+      if (lp == -Inf) return(if (lower) -Inf else Inf)
+      if (lp == 0) return(if (lower) Inf else -Inf)
+      if (lp > -log(2)) {lp <- log(-expm1(lp)); lower <- !lower}
+      edge <- if (lower) -.Machine$double.xmax else .Machine$double.xmax
+      edge_lp <- do.call(cdf, c(list(edge), par, list(lower.tail = lower, log.p = TRUE)))
+      if (edge_lp > lp) return(if (lower) -Inf else Inf)
+      centre <- par$mu
+      scale <- max(par$sigma, if (is.null(par$a)) 0 else par$a)
+      coordinate <- function(z) {
+        distance <- if (abs(z) < .1) scale*expm1(abs(z)) else
+          exp(log(scale)+abs(z))*(-expm1(-abs(z)))
+        centre + sign(z)*distance
+      }
+      at <- function(z) do.call(cdf, c(list(coordinate(z)), par,
+                                       list(lower.tail = lower, log.p = TRUE))) - lp
+      lo <- -1; hi <- 1
+      for (k in seq_len(2048L)) {
+        if (if (lower) at(lo) <= 0 else at(lo) >= 0) break
+        lo <- lo*2
+        if (!is.finite(lo)) return(-Inf)
+      }
+      for (k in seq_len(2048L)) {
+        if (if (lower) at(hi) >= 0 else at(hi) <= 0) break
+        hi <- hi*2
+        if (!is.finite(hi)) return(Inf)
+      }
+      # Bisection is safeguarded throughout and stops in relative coordinate
+      # precision. Signed log-distance coordinates avoid overflowing the
+      # standardized quantile when the supplied scale is extremely small.
+      for (k in seq_len(1100L)) {
+        mid <- lo/2 + hi/2
+        if (if (lower) at(mid) < 0 else at(mid) > 0) lo <- mid else hi <- mid
+        if (hi-lo <= 4e-14*max(1, abs(mid))) break
+      }
+      coordinate(lo/2+hi/2)
+    }, numeric(1))
+    if (bad) warning("NaNs produced", call. = FALSE)
+    out
+  }
+  arguments <- formals(cdf)
+  names(arguments)[1L] <- "p"
+  formals(fun) <- arguments
+  fun
+}
+
+# extraDistr 1.10.0.5: cancellation near the slash centre and in normal
+# convolution differences. Each repair is gated by a reference regression.
+univariateML_reference_fixes <- c(univariateML_reference_fixes, list(
+  "extraDistr::dslash" = list(
+    broken = function() !is.finite(extraDistr::dslash(1e-10, log = TRUE)) ||
+      !is.finite(extraDistr::dslash(1e200, log = TRUE)),
+    replacement = function(x, mu = 0, sigma = 1, log = FALSE)
+      dslash_reference_(x, mu, sigma, log)
+  ),
+  "extraDistr::pslash" = list(
+    broken = function() !is.finite(extraDistr::pslash(1e20, lower.tail = FALSE, log.p = TRUE)),
+    replacement = function(q, mu = 0, sigma = 1, lower.tail = TRUE, log.p = FALSE)
+      pslash_reference_(q, mu, sigma, lower.tail, log.p)
+  ),
+  "extraDistr::dbhatt" = list(
+    broken = function() !is.finite(extraDistr::dbhatt(10, log = TRUE)),
+    replacement = function(x, mu = 0, sigma = 1, a = sigma, log = FALSE)
+      dbhatt_reference_(x, mu, sigma, a, log)
+  ),
+  "extraDistr::pbhatt" = list(
+    broken = function() !is.finite(extraDistr::pbhatt(10, lower.tail = FALSE, log.p = TRUE)),
+    replacement = function(q, mu = 0, sigma = 1, a = sigma, lower.tail = TRUE, log.p = FALSE)
+      pbhatt_reference_(q, mu, sigma, a, lower.tail, log.p)
+  )
+))

@@ -1,0 +1,146 @@
+#pragma once
+#include "dpqr.hpp"
+#include "../../core/span.hpp"
+#include <vector>
+namespace cppunivariate {
+enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,IterationFailure};
+struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status;};
+namespace bhatt_detail {
+struct Profile {
+  const std::vector<double>& x;double sigma,a,face;
+  double location(double s,double b) const {
+    if(b/s<1e-7) {double mean=0;for(double z:x)mean+=z/x.size();return mean;}
+    double lo=x.front(),hi=x.back(),m=0;
+    for(double z:x)m+=z/x.size();
+    for(int k=0;k<60;++k) {
+      long double score=0,deriv=0;
+      for(double z:x) {
+        const long double u=(static_cast<long double>(z)-m-b)/s,v=(static_cast<long double>(z)-m+b)/s;
+        const long double lu=logphi(u),lv=logphi(v);
+        const long double ld=distributions::dbhatt(z,m,s,b,true)+std::log(2*static_cast<long double>(b));
+        const long double A=std::exp(lu-ld),B=std::exp(lv-ld);
+        long double g=0;
+        if(lu!=lv) {
+          const long double ln=std::max(lu,lv)+std::log(-std::expm1(-std::abs(lu-lv)));
+          g=(lu>lv?1:-1)*std::exp(ln-ld-std::log(static_cast<long double>(s)));
+        }
+        score+=g;deriv+=(u*A-v*B)/(static_cast<long double>(s)*s)-g*g;
+      }
+      if(score==0)return m;
+      if(score>0)lo=m;else hi=m;
+      double next=m-static_cast<double>(score/deriv);
+      if(!(deriv<0)||!std::isfinite(next)||next<=lo||next>=hi)next=lo/2+hi/2;
+      if(std::abs(next-m)<1e-11*std::min(s,1.0))return next;
+      m=next;
+    }
+    return lo/2+hi/2;
+  }
+
+  BhattResult evaluate(const std::vector<double>& t) const {
+    int k=0;const double s=std::isnan(sigma)?std::exp(t[k++]):sigma,b=std::isnan(a)?std::exp(t[k++]):a;
+    if(!(s>0&&b>0&&std::isfinite(s)&&std::isfinite(b)))return {0,s,b,special::kNegInf,0,BhattStatus::IterationFailure};
+    // Exact upper bounds screen only candidates unable to beat an attained
+    // supremum face. A screened value is never returned as an interior fit:
+    // the final exact face comparison always replaces it.
+    if(std::isfinite(face)) {
+      const double n=x.size(),peak_u=-std::log(2*b),peak_n=-std::log(s)-.91893853320467274178;
+      double bound=n*std::min(peak_u,peak_n);
+      if(bound<=face)return {0,s,b,bound,0,BhattStatus::Ok};
+      if(x.front()!=x.back()) {
+        const long double radius=(static_cast<long double>(x.back())-x.front())/2;
+        const double pair=static_cast<double>(2*logQ((radius-b)/s));
+        bound=std::min(bound,2*peak_u+(n-2)*std::min(peak_u,peak_n)+pair);
+        if(bound<=face)return {0,s,b,bound,0,BhattStatus::Ok};
+      }
+    }
+    const double m=location(s,b);double ll=0;for(double z:x)ll+=distributions::dbhatt(z,m,s,b,true);
+    return {m,s,b,ll,0,BhattStatus::Ok};
+  }
+};
+inline BhattResult search(const Profile& p,std::vector<double> start,double tol,int maxit) {
+  const int d=static_cast<int>(start.size());
+  if(!d) return p.evaluate(start);
+  std::vector<std::vector<double>> v(d+1,start);
+  for(int i=0;i<d;++i) v[i+1][i]+=.4;
+  std::vector<BhattResult> f;for(const auto& t:v)f.push_back(p.evaluate(t));
+  for(int it=0;it<maxit;++it) {
+    for(int i=0;i<=d;++i)for(int j=i+1;j<=d;++j)if(f[j].logLik>f[i].logLik){std::swap(f[i],f[j]);std::swap(v[i],v[j]);}
+    double diameter=0;for(int i=1;i<=d;++i)for(int j=0;j<d;++j)diameter=std::max(diameter,std::abs(v[i][j]-v[0][j]));
+    if(diameter<tol) {f[0].iterations=it;return f[0];}
+    std::vector<double> c(d,0),r(d),e(d);
+    for(int j=0;j<d;++j){for(int i=0;i<d;++i)c[j]+=v[i][j]/d;r[j]=2*c[j]-v[d][j];}
+    auto fr=p.evaluate(r);
+    if(fr.logLik>f[0].logLik){for(int j=0;j<d;++j)e[j]=c[j]+2*(r[j]-c[j]);auto fe=p.evaluate(e);if(fe.logLik>fr.logLik){v[d]=e;f[d]=fe;}else{v[d]=r;f[d]=fr;}}
+    else if(fr.logLik>f[d-1].logLik){v[d]=r;f[d]=fr;}
+    else {
+      const bool outside=fr.logLik>f[d].logLik;
+      for(int j=0;j<d;++j)e[j]=c[j]+.5*((outside?r[j]:v[d][j])-c[j]);
+      auto fe=p.evaluate(e);
+      if(fe.logLik>(outside?fr.logLik:f[d].logLik)){v[d]=e;f[d]=fe;}
+      else for(int i=1;i<=d;++i){for(int j=0;j<d;++j)v[i][j]=(v[i][j]+v[0][j])/2;f[i]=p.evaluate(v[i]);}
+    }
+  }
+  auto best=*std::max_element(f.begin(),f.end(),[](const BhattResult& a,const BhattResult& b){return a.logLik<b.logLik;});
+  best.iterations=maxit;best.status=BhattStatus::IterationFailure;return best;
+}
+}
+inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN) {
+  BhattResult bad={special::kNaN,special::kNaN,special::kNaN,special::kNaN,0,BhattStatus::InvalidInput};
+  if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>0&&std::isfinite(a))))return bad;
+  std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
+  const double centre=y.front()/2+y.back()/2;double scale=y.back()/2-y.front()/2;
+  if(!(scale>0)){if(std::isnan(sigma)&&std::isnan(a)){bad.status=BhattStatus::Unbounded;return bad;}scale=std::isnan(sigma)?a:sigma;}
+  if(!std::isnan(sigma))scale=std::max(scale,sigma);
+  if(!std::isnan(a))scale=std::max(scale,a);
+  for(double& v:y)v=static_cast<double>((static_cast<long double>(v)-centre)/scale);
+  const double n=y.size();
+  const double held_s=std::isnan(sigma)?sigma:sigma/scale,held_a=std::isnan(a)?a:a/scale;
+  // With width held and covering the sample, pointwise and complementary
+  // endpoint bounds prove that the uniform face dominates every interior fit.
+  if(std::isnan(sigma)&&!std::isnan(a)&&y.back()-y.front()<=2*held_a) {
+    double ll=-n*std::log(2*held_a);
+    if(y.back()-y.front()==2*held_a) {
+      double left=0,right=0;for(double z:y){if(z==y.front())++left;if(z==y.back())++right;}
+      ll+=left*std::log(left/(left+right))+right*std::log(right/(left+right));
+    }
+    return {centre,0,a,ll-n*std::log(scale),0,BhattStatus::UniformLimit};
+  }
+  double face=special::kNegInf;
+  if(std::isnan(a)) {
+    double mean=0;for(double z:y)mean+=z/n;
+    double var=0;for(double z:y)var+=(z-mean)*(z-mean)/n;
+    const double sd=std::isnan(sigma)?std::sqrt(var):held_s;
+    face=-n*(std::log(sd)+.91893853320467274178)-n*var/(2*sd*sd);
+  }
+  if(std::isnan(sigma)&&std::isnan(a))face=std::max(face,-n*std::log(y.back()-y.front()));
+  bhatt_detail::Profile p{y,held_s,held_a,face};
+  BhattResult best={0,0,0,special::kNegInf,0,BhattStatus::IterationFailure};
+  const std::vector<double> starts={-4,-1,0,1};
+  const std::vector<double> widths={-4,-1,-.3,-.05};
+  for(double s:starts)for(double b:widths){
+    if(!std::isnan(sigma)&&s!=starts.front())continue;
+    if(!std::isnan(a)&&b!=widths.front())continue;
+    std::vector<double> t;if(std::isnan(sigma))t.push_back(s);if(std::isnan(a))t.push_back(b);
+    const auto f=bhatt_detail::search(p,t,tol,maxit);if(f.logLik>best.logLik)best=f;
+  }
+  const double tie=1e-8*n;
+  if(std::isnan(a)) {
+    double m=0;for(double z:y)m+=z/n;double var=0;for(double z:y)var+=(z-m)*(z-m)/n;
+    const double s=std::isnan(sigma)?std::sqrt(var):p.sigma;
+    double ll=-n*(std::log(s)+.91893853320467274178)-n*var/(2*s*s);
+    if(ll>=best.logLik-tie)best={m,s,0,ll,0,BhattStatus::NormalLimit};
+  }
+  if(std::isnan(sigma)) {
+    const double b=std::isnan(a)?(y.back()-y.front())/2:p.a;
+    if(2*b>=y.back()-y.front()) {
+      double ll=-n*std::log(2*b);
+      if(!std::isnan(a)&&2*b==y.back()-y.front()) {
+        double left=0,right=0;for(double z:y){if(z==y.front())++left;if(z==y.back())++right;}
+        ll+=left*std::log(left/(left+right))+right*std::log(right/(left+right));
+      }
+      if(ll>=best.logLik-(best.status==BhattStatus::NormalLimit?0:tie))best={0,0,b,ll,0,BhattStatus::UniformLimit};
+    }
+  }
+  best.mu=centre+scale*best.mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.a=std::isnan(a)?scale*best.a:a;best.logLik-=n*std::log(scale);return best;
+}
+}
