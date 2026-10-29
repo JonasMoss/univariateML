@@ -96,6 +96,19 @@
   no Skellam CDF or quantile, and its density overflows. The MLE always
   exists; a rate of zero (a Poisson member) is returned as attained.
 
+* `mlpareto2()`, `mlpareto3()`, `mlpareto4()`, `mlfpareto()` (Pareto types
+  II–IV and Feller–Pareto) and `mlnsbeta()` (beta on known bounds). With a
+  free lower endpoint (or free bounds) their likelihood is unbounded for
+  every sample, so `min` (and `max`) must be supplied; the error says why
+  and names the equivalent call, e.g. `mlpareto4(x, min = 0)` is `mlburr(x)`.
+  With the endpoint held the fit is the corresponding existing fitter on the
+  shifted data, escapes included.
+
+* `mlfrechet()` (Fréchet). With `mu` estimated this is the GEV with
+  $\xi = 1/\lambda \in (0, 1]$ and stops with "use `mlgumbel`" when the
+  GEV shape estimate is not positive; with `mu` held it is the inverse
+  Weibull on `x - mu`.
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
