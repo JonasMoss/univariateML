@@ -51,6 +51,7 @@ record.
 | extraDistr 1.10.0.5 | truncated Poisson and binomial d/p/q/r subtract rounded parent CDFs: infinite densities, NaN CDFs, quantiles at the wrong bound under severe truncation; `q(0)` returns the excluded lower bound | `extraDistr::dtpois(101, 2, 100, 110, log = TRUE)` is `Inf`, should be about -0.0198; `extraDistr::qtbinom(.5, 100, .1, 90, 100)` is 100, should be 91 | repaired at runtime in `univariateML_reference_fixes` |
 | extraDistr 1.10.0.5 | `pdlaplace` picks its branch from `q` instead of `q - location` (negative probabilities) and loses the upper log tail; no `qdlaplace` | `extraDistr::pdlaplace(3, 5, .5)` is -1/3, should be 1/6 | repaired at runtime; `qml` by two-sided integer inversion (`univariateML_reference_quantiles`) |
 | extraDistr 1.10.0.5 | `ddlaplace` with noninteger location checks the observation's integrality, while `rdlaplace` samples on `location + Z` | `extraDistr::ddlaplace(0, .5, .4)` is positive | none: `mldlaplace` uses integer locations |
+| extraDistr 1.10.0.5 | `dnhyper`/`pnhyper`/`qnhyper`/`rnhyper` convert counts to 32-bit integers, take logs of underflowed masses, complement the lower CDF for upper tails, and crash for an urn with no black balls | `extraDistr::dnhyper(1003, 1000, 1000, 3, log = TRUE)` is `-Inf`, should be about -1369.14; `extraDistr::dnhyper(0, 0, 0, 0)` segfaults | repaired at runtime through base hypergeometric identities |
 | nakagami 1.1.0 | `pnaka` is positive below the support | `nakagami::pnaka(-1, 2, 3)` is 0.144, should be 0 | historical: nakagami no longer used |
 
 Upstream trackers:

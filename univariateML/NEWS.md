@@ -81,6 +81,10 @@
   bounds `a < x <= b`; `mltbinom` with known `size`) and `mldlaplace()`
   (discrete Laplace: integer median location, closed-form scale).
 
+* `mlnhyper()` (negative hypergeometric: total draws until the `r`-th
+  white ball, with known population `N`; estimates the number of white
+  balls `m`).
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.
