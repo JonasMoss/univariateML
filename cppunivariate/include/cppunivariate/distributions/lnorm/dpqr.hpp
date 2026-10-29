@@ -8,7 +8,7 @@
 #pragma once
 
 #include "../../special/constants.hpp"
-#include "../../special/special.hpp"
+#include "../norm/dpqr.hpp"
 
 #include <cmath>
 
@@ -19,15 +19,15 @@ using cppunivariate::special::kNaN;
 using cppunivariate::special::kNegInf;
 
 inline double dlnorm(double x, double meanlog, double sdlog, bool log) {
-  if (!(sdlog > 0.0) || !std::isfinite(x) || !std::isfinite(meanlog)) {
+  if (!(sdlog > 0.0) || std::isnan(x) || !std::isfinite(meanlog)) {
     return kNaN;
   }
-  if (x <= 0.0) {
+  if (x <= 0.0 || x == special::kPosInf) {
     return log ? kNegInf : 0.0;
   }
   // log f = log dnorm(log(x); meanlog, sdlog) - log(x)
   const double log_density =
-      cppunivariate::special::dnorm(std::log(x), meanlog, sdlog, /*log=*/true) -
+      cppunivariate::distributions::dnorm(std::log(x), meanlog, sdlog, /*log=*/true) -
       std::log(x);
   return log ? log_density : std::exp(log_density);
 }
@@ -40,7 +40,7 @@ inline double plnorm(double q, double meanlog, double sdlog, bool lower_tail,
   if (q <= 0.0) {
     return log_p ? (lower_tail ? kNegInf : 0.0) : (lower_tail ? 0.0 : 1.0);
   }
-  return cppunivariate::special::pnorm(std::log(q), meanlog, sdlog, lower_tail,
+  return cppunivariate::distributions::pnorm(std::log(q), meanlog, sdlog, lower_tail,
                                        log_p);
 }
 
@@ -49,7 +49,7 @@ inline double qlnorm(double p, double meanlog, double sdlog, bool lower_tail,
   if (!(sdlog > 0.0) || !std::isfinite(meanlog)) {
     return kNaN;
   }
-  return std::exp(cppunivariate::special::qnorm(p, meanlog, sdlog, lower_tail,
+  return std::exp(cppunivariate::distributions::qnorm(p, meanlog, sdlog, lower_tail,
                                                 log_p));
 }
 

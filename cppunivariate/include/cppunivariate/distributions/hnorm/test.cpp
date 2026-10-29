@@ -50,8 +50,7 @@ TEST_CASE("hnorm: held endpoint") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("hnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("hnorm: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("hnorm",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhalfnorm(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phalfnorm(x, p[0], p[1], lower, log); },
@@ -68,4 +67,38 @@ TEST_CASE("hnorm: held scale removes collapse") {
   CHECK(r.logLik==doctest::Approx(2*(.5*std::log(2/std::acos(-1.0))-std::log(1.7))));
   CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),2,1).status==cppunivariate::HnormStatus::Ok);
   CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),nan,-1).status==cppunivariate::HnormStatus::InvalidData);
+}
+
+
+// mpmath generator: import mpmath as mp; mp.mp.dps=100
+// Q=lambda z: mp.erfc(z/mp.sqrt(2)); mp.mpf(float(0.003132226774118849))+mp.findroot(lambda z: mp.log(Q(z))+800,40)
+TEST_CASE("hnorm: logarithmic quantile regression") {
+  CHECK(cppunivariate::distributions::qhalfnorm(-800.0, 0.003132226774118849, 1.0, true, true) == doctest::Approx(0.003132226774118849).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qhalfnorm(-800.0, 0.003132226774118849, 1.0, false, true) == doctest::Approx(39.90519116196223).epsilon(1e-11));
+}
+
+TEST_CASE("hnorm: support endpoints on log input") {
+  CHECK(cppunivariate::distributions::qhalfnorm(cppunivariate::special::kNegInf, 0.003132226774118849, 1.0, true, true) == 0.003132226774118849);
+  CHECK(cppunivariate::distributions::qhalfnorm(0.0, 0.003132226774118849, 1.0, false, true) == 0.003132226774118849);
+  CHECK(cppunivariate::distributions::qhalfnorm(cppunivariate::special::kNegInf, 0.003132226774118849, 1.0, false, true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::qhalfnorm(0.0, 0.003132226774118849, 1.0, true, true) == cppunivariate::special::kPosInf);
+}
+
+// At x=mp.mpf(float(1e100)), evaluate the same mpmath tails and
+// the README log density; constants are also in the independent truth table.
+TEST_CASE("hnorm: extreme observation log tails and density") {
+  CHECK(cppunivariate::distributions::dhalfnorm(1e100, 0.003132226774118849, 1.0, true) == doctest::Approx(-5e+199).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::phalfnorm(1e100, 0.003132226774118849, 1.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::phalfnorm(1e100, 0.003132226774118849, 1.0, false, true) == doctest::Approx(-5e+199).epsilon(1e-11));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// x=mp.mpf(float(1e-300)); s=mp.mpf(float(1e300))
+// mp.log(mp.erf(x/(s*mp.sqrt(2))))
+// mp.exp(-800)*mp.sqrt(mp.pi/2)*s  # omitted relative correction < exp(-1600)
+// mp.sqrt(2)*mp.erfinv(mp.mpf(float(1e-12)))
+TEST_CASE("hnorm: small standardized distances retain their logarithms") {
+  CHECK(cppunivariate::distributions::qhalfnorm(1e-12,0,1,true,false) == doctest::Approx(1.2533141373155002e-12).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::phalfnorm(1e-300,0,1e300,true,true) == doctest::Approx(-1381.7768471490721).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qhalfnorm(-800,0,1e300,true,true) == doctest::Approx(4.5969990702501075e-48).epsilon(1e-12));
 }

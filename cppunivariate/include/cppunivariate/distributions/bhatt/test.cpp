@@ -47,8 +47,7 @@ TEST_CASE("bhatt: faces, held subsets and invalid inputs") {
 #include "cppunivariate/distributions/bhatt/dpqr.hpp"
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("bhatt: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("bhatt: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("bhatt",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbhatt(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbhatt(x, p[0], p[1], p[2], lower, log); },
@@ -69,4 +68,47 @@ TEST_CASE("bhatt: every held golden subset preserves coefficients and likelihood
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
   }
+}
+
+
+// mpmath generator: import mpmath as mp; mp.mp.dps=100
+// N=lambda z: mp.erfc(-z/mp.sqrt(2))/2; H=lambda z: z*N(z)+mp.exp(-z*z/2)/mp.sqrt(2*mp.pi); F=lambda x: (H(x+2)-H(x-2))/4; mp.findroot(lambda x: F(x)-mp.exp(mp.mpf(float(-mp.log(2)))),0)
+TEST_CASE("bhatt: logarithmic quantile regression") {
+  CHECK(cppunivariate::distributions::qbhatt(-0.6931471805599453, 0.0, 1.0, 2.0, true, true) == doctest::Approx(4.859187962299222e-17).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qbhatt(-0.6931471805599453, 0.0, 1.0, 2.0, false, true) == doctest::Approx(-4.859187962299222e-17).epsilon(1e-11));
+}
+
+TEST_CASE("bhatt: support endpoints on log input") {
+  CHECK(cppunivariate::distributions::qbhatt(cppunivariate::special::kNegInf, 0.0, 1.0, 2.0, true, true) == cppunivariate::special::kNegInf);
+  CHECK(cppunivariate::distributions::qbhatt(0.0, 0.0, 1.0, 2.0, false, true) == cppunivariate::special::kNegInf);
+  CHECK(cppunivariate::distributions::qbhatt(cppunivariate::special::kNegInf, 0.0, 1.0, 2.0, false, true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::qbhatt(0.0, 0.0, 1.0, 2.0, true, true) == cppunivariate::special::kPosInf);
+}
+
+// At x=mp.mpf(float(1e100)), evaluate the same mpmath tails and
+// the README log density; constants are also in the independent truth table.
+TEST_CASE("bhatt: extreme observation log tails and density") {
+  CHECK(cppunivariate::distributions::dbhatt(1e100, 0.0, 1.0, 2.0, true) == doctest::Approx(-5e+199).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::pbhatt(1e100, 0.0, 1.0, 2.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::pbhatt(1e100, 0.0, 1.0, 2.0, false, true) == doctest::Approx(-5e+199).epsilon(1e-11));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// a=mp.mpf(float(1e308)); s=mp.mpf(float(1e-308))
+// -mp.log(2*a); mp.log(s/(2*a)/mp.sqrt(2*mp.pi))
+// The omitted opposite normal endpoint has log mass < -1e1230.
+TEST_CASE("bhatt: convolution width stays on the log scale") {
+  CHECK(cppunivariate::distributions::dbhatt(0,0,1e-308,1e308,true) == doctest::Approx(-709.889355822726).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::pbhatt(1e308,0,1e-308,1e308,false,true) == doctest::Approx(-1420.0045029980968).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qbhatt(0.75,0,1e-308,1e308,true,false) == doctest::Approx(5e307).epsilon(1e-10));
+}
+
+// The fitter consumes dbhatt and the original precision of its score helpers.
+// Tail repairs must preserve the existing golden fit, without changing mle.hpp.
+TEST_CASE("bhatt: central density preserves the golden fit") {
+  const auto g=mltest::load_distribution_golden("bhatt");
+  const auto r=cppunivariate::bhatt_mle(mltest::as_span(g.data));
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(1e-12));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(1e-12));
+  CHECK(r.a == doctest::Approx(g.estimates.at("a")).epsilon(1e-12));
 }

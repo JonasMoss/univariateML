@@ -204,5 +204,129 @@ inline double discrete_quantile(const LogTails &target, double minimum,
   return hi;
 }
 
+// Standard normal smaller log tail. Mills' continued fraction remains in
+// range after erfc underflows; 80 levels converge to double precision at 8.
+inline double normal_log_upper(double z) {
+  if (std::isnan(z)) return kNaN;
+  if (z < 0.0) return log1mexp(normal_log_upper(-z));
+  if (z < 8.0) return std::log(std::erfc(z / std::sqrt(2.0)) / 2.0);
+  if (z == kPosInf) return kNegInf;
+  double r = 0.0;
+  for (int k = 80; k >= 1; --k) r = k / (z + r);
+  return -(0.5*z)*z - 0.91893853320467274178 - std::log(z+r);
+}
+// exp(log(p)) - 1/2 near the median, with the residual of binary64 log(2).
+// This preserves the nonzero quantile at log(p) = double(-log(2)).
+inline double probability_offset(double p, bool log_p) {
+  return log_p ? 0.5 * std::expm1((p + 0.69314718055994530942) +
+                                 2.3190468138462996155e-17) : p - 0.5;
+}
+inline double normal_quantile(double p, bool lower, bool log_p) {
+  const auto t = quantile_log_tails(p, lower, log_p);
+  if (!t.valid) return kNaN;
+  if (t.lower == kNegInf) return kNegInf;
+  if (t.upper == kNegInf) return kPosInf;
+  const double offset = probability_offset(p, log_p) * (lower ? 1.0 : -1.0);
+  if (std::abs(offset) < 1e-3) {
+    const double y=offset*2.5066282746310005024, y2=y*y;
+    return y*(1.0+y2*(1.0/6.0+y2*(7.0/120.0)));
+  }
+  const bool left = t.lower < t.upper;
+  const double target = left ? t.lower : t.upper;
+  double lo = 0.0, hi = std::sqrt(-target)*std::sqrt(2.0) + 1.0;
+  for (int i = 0; i < 100; ++i) {
+    const double mid = lo + (hi-lo)/2;
+    if (mid == lo || mid == hi) break;
+    if (normal_log_upper(mid) > target) lo = mid; else hi = mid;
+  }
+  const double z = lo + (hi-lo)/2;
+  return left ? -z : z;
+}
+// Q(z)/phi(z) and 1-z*Q(z)/phi(z). The second quantity is also
+// -M'(z), needed by normal convolutions and inverse-Gaussian tails.
+inline double normal_log_mills(double z) {
+  if (z < 8.0) return normal_log_upper(z)+(0.5*z)*z+0.91893853320467274178;
+  double r=0.0;
+  for (int k=80;k>=1;--k) r=k/(z+r);
+  return -std::log(z+r);
+}
+inline double normal_log_mills_slope(double z) {
+  if (z < 8.0) return std::log1p(-z*std::exp(normal_log_mills(z)));
+  double r=0.0;
+  for (int k=80;k>=2;--k) r=k/(z+r);
+  const double h=1.0/(z+r);
+  return std::log(h)-std::log(z+h);
+}
+// location + sign(z)*scale*expm1(abs(z)), retaining a finite affine
+// result even when the distance overflows. Used by slash and Bhattacharjee.
+inline double expm1_affine(double z, double location, double scale) {
+  const double t=std::abs(z), sign=z<0 ? -1.0 : 1.0;
+  if (t<700.0) return std::fma(sign*scale,std::expm1(t),location);
+  const double ld=std::log(scale)+t+log1mexp(-t);
+  const double half=std::exp(ld-std::log(2.0));
+  return std::fma(sign*2.0,half,location);
+}
+
+// Gamma helpers require special.hpp for these no-throw backend wrappers.
+inline double gamma_p(double a, double x);
+inline double gamma_q(double a, double x);
+// Unit-scale gamma evaluated in log coordinates, shared by the gamma,
+// inverse gamma, loggamma and transformed gamma families.
+inline LogTails gamma_log_tails(double lx, double a) {
+  if (!(a > 0.0 && std::isfinite(a)) || std::isnan(lx))
+    return {kNaN, kNaN, false};
+  if (lx == kNegInf) return tails_from_log(kNegInf, true);
+  if (lx > std::log(std::numeric_limits<double>::max()))
+    return tails_from_log(kNegInf, false);
+  const double x = std::exp(lx);
+  if (lx < -36.0)
+    return tails_from_log(a*lx - std::lgamma(a+1.0), true);
+  const double p = gamma_p(a,x), q = gamma_q(a,x);
+  if (p > 1e-280 && p <= 0.5) return tails_from_log(std::log(p), true);
+  if (q > 1e-280 && q < 0.5) return tails_from_log(std::log(q), false);
+  if (x < a+1.0) {
+    double sum = 1.0, term = 1.0;
+    for (int k=1; k<100000; ++k) {
+      term *= x/(a+k); sum += term;
+      if (term <= sum*2e-16) break;
+    }
+    return tails_from_log(a*lx-x-std::lgamma(a+1.0)+std::log(sum), true);
+  }
+  // Lentz fraction for Q(a,x); only used outside the backend's safe range.
+  const double tiny = 1e-300;
+  double b=x+1.0-a, c=1.0/tiny, d=1.0/b, h=d;
+  for (int k=1; k<100000; ++k) {
+    const double an=-static_cast<double>(k)*(k-a);
+    b += 2.0; d=an*d+b; if (std::abs(d)<tiny) d=tiny;
+    c=b+an/c; if (std::abs(c)<tiny) c=tiny;
+    d=1.0/d; const double delta=d*c; h*=delta;
+    if (std::abs(delta-1.0)<4e-16) break;
+  }
+  return tails_from_log(a*lx-x-std::lgamma(a)+std::log(h), false);
+}
+inline double gamma_log_quantile(double p, double a, bool lower, bool log_p) {
+  const auto t = quantile_log_tails(p,lower,log_p);
+  if (!t.valid || !(a>0.0 && std::isfinite(a))) return kNaN;
+  if (t.lower == kNegInf) return kNegInf;
+  if (t.upper == kNegInf) return kPosInf;
+  const bool left=t.lower<t.upper;
+  const double target=left?t.lower:t.upper;
+  const double leading=(t.lower+std::lgamma(a+1.0))/a;
+  if (leading < -36.0) return leading;
+  double lo=std::min(-1.0,leading-2.0), hi=std::max(1.0,std::log(a)+1.0);
+  auto before=[&](double z) {
+    const auto v=gamma_log_tails(z,a);
+    return left ? v.lower<target : v.upper>target;
+  };
+  while (before(hi)) hi=hi*2.0+1.0;
+  while (!before(lo)) lo=lo*2.0-1.0;
+  for (int i=0; i<150; ++i) {
+    const double mid=lo+(hi-lo)/2;
+    if (mid==lo || mid==hi) break;
+    if (before(mid)) lo=mid; else hi=mid;
+  }
+  return lo+(hi-lo)/2;
+}
+
 } // namespace special
 } // namespace cppunivariate
