@@ -1,5 +1,13 @@
 # Independent R normal interval calculation, with log-tail subtraction.
 bhatt_oracle_density <- function(x,m,s,a) {
+  if(a==0) return(dnorm(x,m,s,log=TRUE))
+  # Normal-mixture Taylor integral prevents cancellation when the two
+  # normal log probabilities differ by less than floating-point precision.
+  z <- (x-m)/s; h <- a/s
+  if(h<1e-5 && all(abs(z)*h<1e-3)) {
+    correction <- h^2*(z^2-1)/6 + h^4*(z^4-6*z^2+3)/120
+    return(dnorm(x,m,s,log=TRUE)+log1p(correction))
+  }
   lo <- (x-m-a)/s; hi <- (x-m+a)/s
   l <- ifelse(lo>=0,pnorm(lo,lower.tail=FALSE,log.p=TRUE),pnorm(hi,log.p=TRUE))
   r <- ifelse(lo>=0,pnorm(hi,lower.tail=FALSE,log.p=TRUE),pnorm(lo,log.p=TRUE))
@@ -39,11 +47,11 @@ test_that("bhatt held scales have conditional faces and valid interior fits", {
   expect_error(mlbhatt(x,a=4),"mlunif")
   expect_error(mlbhatt(rep(2,5)),"unbounded")
   expect_error(mlbhatt(x,sigma=-1),"positive")
-  expect_error(mlbhatt(x,a=0),"positive")
+  expect_equal(unname(mlbhatt(x,a=0)["a"]),0)
   expect_error(mlbhatt(x,iterlim=0),"failed")
   expect_error(mlbhatt(c(x,NA)))
   expect_error(mlbhatt(c(x,Inf)))
-  expect_error(mlbhatt(c(-10,rep(0,20),10)),"mlnorm")
+  expect_equal(unname(mlbhatt(c(-10,rep(0,20),10))["a"]),0)
   expect_error(mlbhatt(seq(-1,1,length.out=40)),"mlunif")
 })
 test_that("bhatt reference repairs and continuous inversion retain tails", {
@@ -94,7 +102,7 @@ test_that("bhatt CDF matches an independent normal mixture integral", {
   }
 })
 test_that("bhatt constant samples respect each held subset", {
-  expect_error(mlbhatt(rep(2,5),sigma=1),"mlnorm")
+  expect_equal(as.numeric(mlbhatt(rep(2,5),sigma=1)),c(2,1,0))
   expect_error(mlbhatt(rep(2,5),a=1),"mlunif")
   f <- mlbhatt(rep(2,5),sigma=1,a=1)
   expect_equal(f[["mu"]],2)
@@ -136,5 +144,71 @@ test_that("bhatt log probabilities close to one retain relative accuracy", {
   for(a in c(0,2))for(lower in c(TRUE,FALSE)) {
     x <- q(lp,a=a,lower.tail=lower,log.p=TRUE)
     expect_equal(p(x,a=a,lower.tail=lower,log.p=TRUE)/lp,c(1,1),tolerance=1e-9)
+  }
+})
+
+
+test_that("bhatt new holds agree with independent multistart likelihoods", {
+  set.seed(8100+6378)
+  held_values <- c(mu=0.2,sigma=1.3,a=0.5)
+  samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
+                  qnorm((1:20-.5)/20),seq(-1,1,length.out=20))
+  ld <- function(x,p) bhatt_oracle_density(x,p[1],p[2],p[3])
+  for(x in samples)for(mask in 1:7) {
+    held <- names(held_values)[as.logical(intToBits(mask)[seq_along(held_values)])]
+    args <- as.list(held_values[held])
+    f <- tryCatch(suppressWarnings(do.call(mlbhatt,c(list(x=x),args))),error=identity)
+    if(inherits(f,"error")) {
+      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      next
+    }
+    expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_equal(attr(logLik(f),"df"),length(held_values)-length(held))
+    expect_equal(as.numeric(logLik(f)),sum(ld(x,as.numeric(f))),tolerance=1e-7)
+    free <- setdiff(names(held_values),held)
+    if(!length(free))next
+    encode <- function(p) {z<-c(p[1],log(p[2]));z<-c(z,log(p[3]));names(z)<-names(held_values);z[free]}
+    decode <- function(z) {
+      p<-held_values
+      for(j in seq_along(z)) {
+        k<-match(free[j],names(p))
+        p[k]<-if(k==1) z[j] else if(k==2) exp(z[j]) else exp(z[j])
+      }
+      p
+    }
+    objective <- function(z) {
+      if(any(!is.finite(z))||any(abs(z)>30))return(1e100)
+      v<-suppressWarnings(sum(ld(x,decode(z))))
+      if(is.finite(v)) -v else 1e100
+    }
+    # Starts depend on the sample and held values, not on the fitted result.
+    values <- c()
+    for(shift in c(-1,0,1)) {
+      start<-held_values;start[1]<-median(x)+shift;start[2]<-max(.2,sd(x))*exp(shift/2)
+      start[held]<-held_values[held]
+      o<-suppressWarnings(optim(encode(start),objective,method="Nelder-Mead",
+           control=list(maxit=1800,reltol=1e-11)))
+      values<-c(values,o$value)
+    }
+    expect_gte(as.numeric(logLik(f)),-min(values)-2e-6*length(x))
+  }
+})
+
+
+test_that("bhatt conditional collapse, feasibility and invalid holds", {
+  expect_error(mlbhatt(c(-1,0,1),mu=0,a=1),"mlunif")
+  expect_error(mlbhatt(rep(2,4),mu=2),"unbounded")
+  expect_true(is.finite(logLik(mlbhatt(rep(2,4),mu=0,sigma=1))))
+  expect_equal(as.numeric(mlbhatt(c(-1,1),mu=0,sigma=1,a=0)),c(0,1,0))
+  expect_error(mlbhatt(1:5,mu=Inf),"finite")
+})
+
+
+test_that("bhatt independent density oracle retains tiny uniform widths", {
+  for(a in c(1e-2,1e-6,1e-12))for(x in c(-2,0,2)) {
+    reference <- integrate(function(u) dnorm(x-u,.2,1.3),-a,a,
+                           rel.tol=1e-12)$value/(2*a)
+    expect_equal(bhatt_oracle_density(x,.2,1.3,a),log(reference),tolerance=1e-10)
   }
 })

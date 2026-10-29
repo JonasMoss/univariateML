@@ -191,4 +191,26 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
           finite && iter < maxit ? LogisticStatus::Ok : LogisticStatus::IterationFailure};
 }
 
+
+// Both conditional scores are monotone: bisect the unique root.
+inline LogisticResult logistic_mle(span x,double tol,int maxit,double location,double scale) {
+  if(std::isnan(location)&&std::isnan(scale))return logistic_mle(x,tol,maxit);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  LogisticResult bad{nan,nan,nan,0,LogisticStatus::InvalidInput};
+  if(x.empty()||!(tol>0)||maxit<1)return bad;
+  double lo=x[0],hi=x[0],radius=0;
+  for(double v:x){if(!std::isfinite(v))return bad;lo=std::min(lo,v);hi=std::max(hi,v);if(!std::isnan(location))radius=std::max(radius,std::abs(v-location));}
+  double m=location,s=scale;int it=0;
+  if(std::isnan(m)) {
+    for(;it<maxit;++it){m=lo/2+hi/2;double score=0;for(double v:x)score+=std::tanh((v-m)/(2*s));if(score>0)lo=m;else hi=m;if(hi-lo<=1e-12*s)break;}
+    m=lo/2+hi/2;
+  } else if(std::isnan(s)) {
+    if(!(radius>0))return bad;
+    lo=std::max(std::log(radius)-350,std::log(std::numeric_limits<double>::denorm_min()));hi=std::log(radius)+2;
+    for(;it<maxit;++it){const double t=lo/2+hi/2;s=std::exp(t);double score=-static_cast<double>(x.size());for(double v:x){const double z=(v-m)/s;score+=z*std::tanh(z/2);}if(score>0)lo=t;else hi=t;if(hi-lo<1e-12)break;}
+    s=std::exp(lo/2+hi/2);
+  }
+  const double p[]={m,s};return {m,s,-LogisticCost{x}(p),it,it<maxit?LogisticStatus::Ok:LogisticStatus::IterationFailure};
+}
+
 }  // namespace cppunivariate

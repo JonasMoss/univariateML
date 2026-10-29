@@ -58,3 +58,60 @@ test_that("normal moments retain tiny and huge scales and near ties", {
   x <- 1 + (0:4)*.Machine$double.eps
   expect_equal(mlnorm(x)[["sd"]] / .Machine$double.eps, sqrt(2))
 })
+
+
+test_that("norm new holds agree with independent multistart likelihoods", {
+  set.seed(8100+1790)
+  held_values <- c(mean=0.2,sd=1.3)
+  samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
+                  qnorm((1:20-.5)/20),seq(-1,1,length.out=20))
+  ld <- function(x,p) dnorm(x,p[1],p[2],log=TRUE)
+  for(x in samples)for(mask in 1:3) {
+    held <- names(held_values)[as.logical(intToBits(mask)[seq_along(held_values)])]
+    args <- as.list(held_values[held])
+    f <- tryCatch(suppressWarnings(do.call(mlnorm,c(list(x=x),args))),error=identity)
+    if(inherits(f,"error")) {
+      expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+      next
+    }
+    expect_identical(unname(as.numeric(f[held])),unname(held_values[held]))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_equal(attr(logLik(f),"df"),length(held_values)-length(held))
+    expect_equal(as.numeric(logLik(f)),sum(ld(x,as.numeric(f))),tolerance=1e-7)
+    free <- setdiff(names(held_values),held)
+    if(!length(free))next
+    encode <- function(p) {z<-c(p[1],log(p[2]));names(z)<-names(held_values);z[free]}
+    decode <- function(z) {
+      p<-held_values
+      for(j in seq_along(z)) {
+        k<-match(free[j],names(p))
+        p[k]<-if(k==1) z[j] else if(k==2) exp(z[j]) else exp(z[j])
+      }
+      p
+    }
+    objective <- function(z) {
+      if(any(!is.finite(z))||any(abs(z)>30))return(1e100)
+      v<-suppressWarnings(sum(ld(x,decode(z))))
+      if(is.finite(v)) -v else 1e100
+    }
+    # Starts depend on the sample and held values, not on the fitted result.
+    values <- c()
+    for(shift in c(-1,0,1)) {
+      start<-held_values;start[1]<-median(x)+shift;start[2]<-max(.2,sd(x))*exp(shift/2)
+      start[held]<-held_values[held]
+      o<-suppressWarnings(optim(encode(start),objective,method="Nelder-Mead",
+           control=list(maxit=1800,reltol=1e-11)))
+      values<-c(values,o$value)
+    }
+    expect_gte(as.numeric(logLik(f)),-min(values)-2e-6*length(x))
+  }
+})
+
+
+test_that("norm conditional collapse, feasibility and invalid holds", {
+  expect_equal(as.numeric(mlnorm(rep(2,3),sd=1)),c(2,1))
+  expect_equal(unname(mlnorm(rep(2,3),mean=0)["sd"]),2)
+  expect_error(mlnorm(rep(2,3),mean=2),"unbounded")
+  expect_error(mlnorm(1:4,mean=Inf),"finite")
+  expect_error(mlnorm(1:4,sd=0),"positive")
+})

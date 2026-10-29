@@ -12,9 +12,10 @@ own rationale live in `roadmap/`; work in flight is on the board
   fully covered except `dphtype` (out of scope); extraDistr except the
   vector-parameter tier below and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master (local, gcc 15.2): C++ 5/5 ctest targets; R
-  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 8402 ]` (skip: optional `sn`
-  comparison); `just quality` 98/98.
+- Tests on master d72f6bd (simbox): C++ 632 doctest cases, only the two
+  known TASK-75 fixtures fail; R `[ FAIL 3 | WARN 0 | PASS 22310 ]`, the
+  three known TASK-75 failures; `just quality` passes. Truth-table checks
+  (TASK-78) are `may_fail`.
 - simbox runs the full suite in about 15 minutes:
   `scripts/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
   `quality`; setup notes in the script). Six known failures there, see
@@ -36,11 +37,18 @@ own rationale live in `roadmap/`; work in flight is on the board
 - Tier 4 below: start it or not.
 - Parameter rules (R1–R8, amendments A1–A7 adopted):
   `roadmap/2026-10-29-parameter-rules.md`.
-  - Done: P0 (existence analysis, `notes/evaluations/2026-10-29-p0-summary.md`)
-    and P1 (schema, required defaults, conformance test; TASK-80).
-  - Next: P2 holds (TASK-81); P3 restrictions, closure (R7a), domains
-    and failed-optimizer stops (TASK-82); P4 parametrization (TASK-83);
-    P5 docs (TASK-84).
+  - Done: P0 (existence analysis, `notes/evaluations/2026-10-29-p0-summary.md`),
+    P1 (schema, required defaults, conformance test; TASK-80) and P2 (holds,
+    ten group jobs; TASK-81; reports `notes/evaluations/2026-10-29-p2-*-report.md`).
+  - Left after P2: 53 `not-implemented` holds:
+    - sstd and sged, 12 each: existence unresolved;
+    - tnorm, 12: needs R7a;
+    - hyper and nhyper, 3 each: C6;
+    - bbinom 3, cmb 4, tbinom 4: free size unresolved.
+
+    Also 61 `no-mle` entries in 9 families.
+  - Next: P3 restrictions, closure (R7a), domains and failed-optimizer
+    stops (TASK-82); P4 parametrization (TASK-83); P5 docs (TASK-84).
   - C5 and C6 were picked in the design and still await a look.
   - Refinement: the missing-coefficient message offers `NULL` even where
     estimating is unsupported (e.g. pareto2); derive that from `holds:`.

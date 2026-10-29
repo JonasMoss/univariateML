@@ -29,10 +29,18 @@ r:
   density: dged
   sampler: rged
   control:
+    nu: Optional held nu; NULL estimates it.
+    sd: Optional held sd; NULL estimates it.
+    mean: Optional held mean; NULL estimates it.
     gradtol: Tolerance on the norm of the finite-difference gradient of the total negative log-likelihood in transformed coordinates.
     iterlim: Maximum number of iterations.
 log_density: -log(sd) - Abs(x-mean)**nu/(2*(sd*sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu)))**nu) + log(nu) - 3*loggamma(1/nu)/2 + loggamma(3/nu)/2 - log(2)
 limits:
+  - name: scale collapse
+    when: Scale tends to zero at the fitted or held location.
+    detect: Every observation equals the fitted or held location.
+    status: InvalidStart
+    message: "unbounded"
   - model: unif
     when: '$\nu \to \infty$'
     detect: Uniform log-likelihood exceeds all finite candidates.
@@ -42,19 +50,7 @@ references:
   - "Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power distribution and its generalizations. Statistics & Probability Letters, 107, 111–114. doi:10.1016/j.spl.2015.08.009."
 examples: |
   mlged(precip)
-holds:
-- held:
-  - mean
-  status: not-implemented
-  reason: The adapter does not accept `mean`; this hold is not implemented (P2).
-- held:
-  - sd
-  status: not-implemented
-  reason: The adapter does not accept `sd`; this hold is not implemented (P2).
-- held:
-  - nu
-  status: not-implemented
-  reason: The adapter does not accept `nu`; this hold is not implemented (P2).
+holds: []
 ---
 
 The generalized error (exponential power) distribution is a symmetric location-scale family whose shape controls tail thickness.
@@ -75,5 +71,10 @@ and the uniform limit. Total log-likelihood differences of at most
 $10^{-8}n$ are ties, with an attained member preferred to a limit.
 A winning uniform limit is reported with a recommendation to use `mlunif`.
 
-At the Laplace face, mean is a sample median and sd is $\sqrt{2}$ times
+With location and scale free, at the Laplace face mean is a sample median and sd is $\sqrt{2}$ times
 the mean absolute deviation from that median.
+
+
+For each held or profiled nu, the location minimizes the sum of absolute residuals to that power (a median at nu=1); the free scale has an exact power-mean profile. A held location collapses only when all residuals vanish. Held sd removes scale collapse. Free nu retains the existing restriction nu>=1 and is compared with the conditional uniform face. With both location and sd held, observations at a uniform endpoint contribute their limiting GED penalty. Shape search is numerical.
+
+With sd held and a limiting uniform endpoint forced onto an observation, each such observation has limiting log-density penalty $e^{-\gamma}$, where $\gamma$ is Euler's constant. If mean is free and both endpoints are forced, with endpoint counts k and l the total penalty is $2e^{-\gamma}\sqrt{kl}$ after profiling the location shift of order $1/\nu$.

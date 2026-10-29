@@ -1,5 +1,6 @@
 #pragma once
 #include "dpqr.hpp"
+#include "../norm/mle.hpp"
 #include "../../core/span.hpp"
 #include <vector>
 namespace cppunivariate {
@@ -7,8 +8,9 @@ enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,Itera
 struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status;};
 namespace bhatt_detail {
 struct Profile {
-  const std::vector<double>& x;double sigma,a,face;
+  const std::vector<double>& x;double sigma,a,face;double held_mu=special::kNaN;
   double location(double s,double b) const {
+    if(!std::isnan(held_mu))return held_mu;
     if(b/s<1e-7) {double mean=0;for(double z:x)mean+=z/x.size();return mean;}
     double lo=x.front(),hi=x.back(),m=0;
     for(double z:x)m+=z/x.size();
@@ -84,36 +86,44 @@ inline BhattResult search(const Profile& p,std::vector<double> start,double tol,
   best.iterations=maxit;best.status=BhattStatus::IterationFailure;return best;
 }
 }
-inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN) {
+inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
   BhattResult bad={special::kNaN,special::kNaN,special::kNaN,special::kNaN,0,BhattStatus::InvalidInput};
-  if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>0&&std::isfinite(a))))return bad;
+  if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>=0&&std::isfinite(a))))return bad;
+  if(!std::isnan(mu)&&!std::isfinite(mu))return bad;
+  if(a==0) {
+    const auto r=norm_mle(x,mu,sigma);
+    if(!(r.sd>0)){bad.status=BhattStatus::Unbounded;return bad;}
+    return {r.mean,r.sd,0,r.logLik,0,BhattStatus::Ok};
+  }
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
   const double centre=y.front()/2+y.back()/2;double scale=y.back()/2-y.front()/2;
+  if(!std::isnan(mu))scale=std::max(scale,std::abs(mu-centre));
   if(!(scale>0)){if(std::isnan(sigma)&&std::isnan(a)){bad.status=BhattStatus::Unbounded;return bad;}scale=std::isnan(sigma)?a:sigma;}
   if(!std::isnan(sigma))scale=std::max(scale,sigma);
   if(!std::isnan(a))scale=std::max(scale,a);
   for(double& v:y)v=static_cast<double>((static_cast<long double>(v)-centre)/scale);
-  const double n=y.size();
+  const double n=y.size(),held_mu=std::isnan(mu)?mu:(mu-centre)/scale;
   const double held_s=std::isnan(sigma)?sigma:sigma/scale,held_a=std::isnan(a)?a:a/scale;
   // With width held and covering the sample, pointwise and complementary
   // endpoint bounds prove that the uniform face dominates every interior fit.
-  if(std::isnan(sigma)&&!std::isnan(a)&&y.back()-y.front()<=2*held_a) {
+  if(std::isnan(sigma)&&!std::isnan(a)&&(std::isnan(mu)?y.back()-y.front()<=2*held_a:std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))<=held_a)) {
     double ll=-n*std::log(2*held_a);
-    if(y.back()-y.front()==2*held_a) {
+    if(!std::isnan(mu)){for(double z:y)if(std::abs(z-held_mu)==held_a)ll-=std::log(2.0);}
+    else if(y.back()-y.front()==2*held_a) {
       double left=0,right=0;for(double z:y){if(z==y.front())++left;if(z==y.back())++right;}
       ll+=left*std::log(left/(left+right))+right*std::log(right/(left+right));
     }
-    return {centre,0,a,ll-n*std::log(scale),0,BhattStatus::UniformLimit};
+    return {std::isnan(mu)?centre:mu,0,a,ll-n*std::log(scale),0,BhattStatus::UniformLimit};
   }
   double face=special::kNegInf;
   if(std::isnan(a)) {
-    double mean=0;for(double z:y)mean+=z/n;
+    double mean=0;for(double z:y)mean+=z/n;if(!std::isnan(mu))mean=held_mu;
     double var=0;for(double z:y)var+=(z-mean)*(z-mean)/n;
     const double sd=std::isnan(sigma)?std::sqrt(var):held_s;
     face=-n*(std::log(sd)+.91893853320467274178)-n*var/(2*sd*sd);
   }
-  if(std::isnan(sigma)&&std::isnan(a))face=std::max(face,-n*std::log(y.back()-y.front()));
-  bhatt_detail::Profile p{y,held_s,held_a,face};
+  if(std::isnan(sigma)&&std::isnan(a))face=std::max(face,-n*std::log(std::isnan(mu)?y.back()-y.front():2*std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))));
+  bhatt_detail::Profile p{y,held_s,held_a,face,held_mu};
   BhattResult best={0,0,0,special::kNegInf,0,BhattStatus::IterationFailure};
   const std::vector<double> starts={-4,-1,0,1};
   const std::vector<double> widths={-4,-1,-.3,-.05};
@@ -125,22 +135,23 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   }
   const double tie=1e-8*n;
   if(std::isnan(a)) {
-    double m=0;for(double z:y)m+=z/n;double var=0;for(double z:y)var+=(z-m)*(z-m)/n;
+    double m=0;for(double z:y)m+=z/n;if(!std::isnan(mu))m=held_mu;double var=0;for(double z:y)var+=(z-m)*(z-m)/n;
     const double s=std::isnan(sigma)?std::sqrt(var):p.sigma;
     double ll=-n*(std::log(s)+.91893853320467274178)-n*var/(2*s*s);
-    if(ll>=best.logLik-tie)best={m,s,0,ll,0,BhattStatus::NormalLimit};
+    if(ll>=best.logLik-tie)best={m,s,0,ll,0,BhattStatus::Ok};
   }
   if(std::isnan(sigma)) {
-    const double b=std::isnan(a)?(y.back()-y.front())/2:p.a;
-    if(2*b>=y.back()-y.front()) {
+    const double b=std::isnan(a)?(std::isnan(mu)?(y.back()-y.front())/2:std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))):p.a;
+    if(std::isnan(mu)?2*b>=y.back()-y.front():std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))<=b) {
       double ll=-n*std::log(2*b);
-      if(!std::isnan(a)&&2*b==y.back()-y.front()) {
+      if(!std::isnan(a)&&!std::isnan(mu)){for(double z:y)if(std::abs(z-held_mu)==b)ll-=std::log(2.0);}
+      else if(!std::isnan(a)&&2*b==y.back()-y.front()) {
         double left=0,right=0;for(double z:y){if(z==y.front())++left;if(z==y.back())++right;}
         ll+=left*std::log(left/(left+right))+right*std::log(right/(left+right));
       }
-      if(ll>=best.logLik-(best.status==BhattStatus::NormalLimit?0:tie))best={0,0,b,ll,0,BhattStatus::UniformLimit};
+      if(ll>=best.logLik-(best.a==0?0:tie))best={0,0,b,ll,0,BhattStatus::UniformLimit};
     }
   }
-  best.mu=centre+scale*best.mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.a=std::isnan(a)?scale*best.a:a;best.logLik-=n*std::log(scale);return best;
+  best.mu=std::isnan(mu)?centre+scale*best.mu:mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.a=std::isnan(a)?scale*best.a:a;best.logLik-=n*std::log(scale);return best;
 }
 }

@@ -17,6 +17,8 @@ r:
   density: extraDistr::dgumbel
   sampler: extraDistr::rgumbel
   control:
+    sigma: Optional held sigma; NULL estimates it.
+    mu: Optional held mu; NULL estimates it.
     reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
     iterlim: Maximum number of iterations.
 log_density: -log(sigma) - (x-mu)/sigma - exp(-(x-mu)/sigma)
@@ -24,15 +26,13 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York."
 examples: |
   mlgumbel(precip)
-holds:
-- held:
-  - mu
-  status: not-implemented
-  reason: The adapter does not accept `mu`; this hold is not implemented (P2).
-- held:
-  - sigma
-  status: not-implemented
-  reason: The adapter does not accept `sigma`; this hold is not implemented (P2).
+holds: []
+limits:
+  - name: scale collapse
+    when: Scale tends to zero at the fitted or held location.
+    detect: Every observation equals the fitted or held location.
+    status: Unbounded
+    message: "unbounded"
 ---
 
 The Gumbel distribution models maxima and extreme measurements.
@@ -40,3 +40,6 @@ The Gumbel distribution models maxima and extreme measurements.
 ## Details
 
 This is the Gumbel distribution for maxima; `sigma` is positive.
+
+
+Holding mu gives a unique inverse-scale maximum unless every observation equals that mu. Holding sigma gives an exact location profile and permits constant samples.

@@ -16,11 +16,14 @@
 
 namespace cppunivariate {
 
+enum class GumbelStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct GumbelResult {
   double mu;
   double sigma;
   double logLik;
   int iterations;
+  GumbelStatus status = GumbelStatus::Ok;
 };
 
 inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
@@ -41,7 +44,7 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
   if (all_equal) {
     // Constant data: no MLE (the likelihood is unbounded as sigma -> 0).
     const double nan = std::numeric_limits<double>::quiet_NaN();
-    return {nan, nan, nan, 0};
+    return {nan, nan, nan, 0, GumbelStatus::Unbounded};
   }
 
   // Solve in dimensionless coordinates when moments or Newton products
@@ -103,6 +106,32 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
   const double logLik =
       -dn * std::log(sigma) - sum_z - sum_exp_neg_z;
   return {mu, sigma, logLik, iter};
+}
+
+
+inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double sigma) {
+  if(std::isnan(mu)&&std::isnan(sigma))return fit_gumbel_newton(x,tol,maxit);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.empty()||!(tol>0)||maxit<1)return {nan,nan,nan,0,GumbelStatus::InvalidInput};
+  double m=mu,s=sigma;int it=0;
+  if(std::isnan(m)) {
+    double low=x[0];for(double v:x)low=std::min(low,v);
+    double sum=0;for(double v:x)sum+=std::exp(-(v-low)/s);
+    m=low-s*std::log(sum/x.size());
+  } else if(std::isnan(s)) {
+    double radius=0;for(double v:x)radius=std::max(radius,std::abs(v-m));
+    if(!(radius>0))return {nan,nan,nan,0,GumbelStatus::Unbounded};
+    // The likelihood is strictly concave in inverse scale: its derivative
+    // n/t - sum d*(1-exp(-t*d)) is strictly decreasing.
+    double lo=0,hi=1/radius;
+    auto score=[&](double t){long double g=x.size()/t;for(double v:x){const long double d=static_cast<long double>(v)-m;g-=d*(-std::expm1(-t*d));}return g;};
+    while(score(hi)>0 && std::isfinite(hi*2))hi*=2;
+    for(;it<maxit;++it){const double t=lo/2+hi/2;if(score(t)>0)lo=t;else hi=t;if(hi-lo<1e-12*hi)break;}
+    s=1/(lo/2+hi/2);
+  }
+  double ll=0;for(double v:x){const double z=(v-m)/s;ll-=std::log(s)+z+std::exp(-z);}
+  if(it==maxit)return {nan,nan,nan,it,GumbelStatus::IterationFailure};
+  return {m,s,ll,it};
 }
 
 }  // namespace cppunivariate

@@ -7,10 +7,18 @@
 
 // [[Rcpp::export]]
 Rcpp::List mlstd_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
-                  int iterlim = 200, Rcpp::Nullable<double> nu = R_NilValue) {
-  auto res = nu.isNotNull()
-    ? cppunivariate::student_t_mle_fixed_nu(dist_impl::as_span(x), Rcpp::as<double>(nu), gradtol, iterlim)
-    : cppunivariate::student_t_mle(dist_impl::as_span(x), gradtol, iterlim);
+                  int iterlim = 200, Rcpp::Nullable<double> nu = R_NilValue, Rcpp::Nullable<double> mean = R_NilValue, Rcpp::Nullable<double> sd = R_NilValue) {
+  if(nu.isNotNull()&&!std::isfinite(Rcpp::as<double>(nu)))Rcpp::stop("`nu` must be finite and greater than 2.");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double held_mean=mean.isNotNull()?Rcpp::as<double>(mean):nan;
+  if(mean.isNotNull() && (!std::isfinite(held_mean)))Rcpp::stop("Invalid held `mean`.");
+  const double held_sd=sd.isNotNull()?Rcpp::as<double>(sd):nan;
+  if(sd.isNotNull() && (!std::isfinite(held_sd) || !(held_sd>0)))Rcpp::stop("Invalid held `sd`.");
+  Rcpp::CharacterVector fixed;
+  if(mean.isNotNull())fixed.push_back("mean");
+  if(sd.isNotNull())fixed.push_back("sd");
+  if(nu.isNotNull())fixed.push_back("nu");
+  auto res=cppunivariate::student_t_mle(dist_impl::as_span(x),gradtol,iterlim,held_mean,held_sd,nu.isNotNull()?Rcpp::as<double>(nu):nan);
   if (res.status == cppunivariate::StudentTStatus::InvalidNu)
     Rcpp::stop("`nu` must be finite and greater than 2.");
   if (res.status == cppunivariate::StudentTStatus::Unbounded)
@@ -41,7 +49,7 @@ Rcpp::List mlstd_(const Rcpp::NumericVector &x, double gradtol = 1.220703e-4,
           Rcpp::_["mean"] = res.mu, Rcpp::_["sd"] = res.sigma,
           Rcpp::_["nu"] = res.nu),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
-      Rcpp::_["fixed"] = nu.isNotNull() ? Rcpp::CharacterVector::create("nu") : Rcpp::CharacterVector(0));
+      Rcpp::_["fixed"] = fixed);
 }
 
 #include "dpqr.h"
