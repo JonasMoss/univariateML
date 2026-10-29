@@ -102,3 +102,5 @@ the queue.
 - [2026-10-29 — Larger reference repairs](2026-10-29-reference-repairs.md):
   held-back runtime repairs for actuar trgamma/invtrgamma and extraDistr
   tnorm/gev d/p/q (patches in `patches/`); needs a policy decision.
+- [2026-10-29 — Classical ML-failure families and a failure gallery](2026-10-29-classical-failure-families.md):
+  skew-normal (in progress), threshold families, skew-t; taxonomy of failures.
