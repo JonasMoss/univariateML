@@ -43,7 +43,7 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
     g <- jsonlite::fromJSON(f, simplifyDataFrame = FALSE)
     test_that(paste0("golden: ", g$id), {
       set_golden_seed(g$seed)
-      data <- do.call(resolve_callable(g$sampler), c(list(n = g$n), g$sampler_args))
+      data <- do.call(resolve_callable(g$sampler), c(list(n = g$n), lapply(g$sampler_args, as.numeric)))
 
       fn <- getExportedValue("univariateML", paste0("ml", g$id))
       fit <- fn(data)
@@ -52,7 +52,8 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
       expect_equal(unname(attr(fit, "logLik")), g$logLik, tolerance = tol)
 
       got <- as.numeric(fit)
-      want <- unlist(g$estimates, use.names = FALSE)
+      # jsonlite encodes infinite held bounds as "Inf" / "-Inf".
+      want <- as.numeric(unlist(g$estimates, use.names = FALSE))
       expect_equal(got, want, tolerance = tol)
     })
   }

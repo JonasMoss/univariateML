@@ -69,6 +69,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | lomax      | Lomax                   | lambda, kappa      | extraDistr::dlomax        | (0, ∞) open      |
 | naka       | Nakagami                | shape, scale       | nakagami::dnaka           | (0, ∞) open      |
 | nbinom     | Negative binomial       | size, prob         | stats::dnbinom            | [0, ∞) integer   |
+| tnorm      | Truncated Normal        | mean, sd, a, b    | extraDistr::dtnorm         | (a, b) open, known bounds |
 | norm       | Normal                  | mean, sd           | stats::dnorm              | (-∞, ∞) open     |
 | paralogis  | Paralogistic            | shape, scale [†]   | actuar::dparalogis        | (0, ∞) open      |
 | pareto     | Pareto                  | a, b               | extraDistr::dpareto       | [0, ∞)           |
