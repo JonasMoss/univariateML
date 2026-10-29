@@ -109,6 +109,12 @@
   GEV shape estimate is not positive; with `mu` held it is the inverse
   Weibull on `x - mu`.
 
+* `mltlambda()` (Tukey lambda with location and scale) with its own
+  `dtlambda()`, `ptlambda()`, `qtlambda()`, `rtlambda()` (extraDistr has only
+  a standard quantile and sampler). The unrestricted likelihood is unbounded
+  as $\lambda \to \infty$, so the fit restricts $\lambda$ to $[-1, 1]$,
+  from Cauchy-like tails to the uniform.
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.

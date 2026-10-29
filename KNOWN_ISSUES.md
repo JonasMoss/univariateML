@@ -56,6 +56,7 @@ record.
 | extraDistr 1.10.0.5 | `dskellam(log = TRUE)` overflows its unscaled Bessel function and is `NaN` at zero rates; there is no `pskellam`/`qskellam` | `extraDistr::dskellam(0, 1000, 1000, log = TRUE)` is `NaN`, should be -4.71933 | none: the package has its own Skellam functions |
 | extraDistr 1.10.0.5 | `qfrechet`/`pfrechet` upper log tails round through `1 - p` (`Inf` quantiles, `-Inf` log survival) | `extraDistr::qfrechet(-40, 2, lower.tail = FALSE, log.p = TRUE)` is `Inf`, should be about 4.85e8 | repaired at runtime in `univariateML_reference_fixes` |
 | actuar 3.3-7 | `qfpareto` upper log tails lose the complementary beta probability | `actuar::qfpareto(-40, 0, .3, .7, .4, lower.tail = FALSE, log.p = TRUE)` is `Inf`, should be about 6.89e81 | repaired at runtime |
+| extraDistr 1.10.0.5 | `qtlambda`/`rtlambda` lose digits at tiny nonzero shape (subtracting nearly equal powers) and round upper log tails to `Inf` | `extraDistr::qtlambda(-100, 0, lower.tail = FALSE, log.p = TRUE)` is `Inf`, should be 100 | none: the package has its own Tukey lambda functions |
 | nakagami 1.1.0 | `pnaka` is positive below the support | `nakagami::pnaka(-1, 2, 3)` is 0.144, should be 0 | historical: nakagami no longer used |
 
 Upstream trackers:
