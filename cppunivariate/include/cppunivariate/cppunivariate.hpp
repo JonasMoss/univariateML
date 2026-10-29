@@ -85,3 +85,5 @@
 #include "distributions/zib/mle.hpp"
 #include "distributions/hyper/mle.hpp"
 #include "distributions/gev/mle.hpp"
+#include "distributions/trgamma/mle.hpp"
+#include "distributions/invtrgamma/mle.hpp"
