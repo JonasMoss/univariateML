@@ -106,3 +106,6 @@
 
 #include "distributions/hcauchy/mle.hpp"
 #include "distributions/ht/mle.hpp"
+#include "distributions/tpois/mle.hpp"
+#include "distributions/tbinom/mle.hpp"
+#include "distributions/dlaplace/mle.hpp"

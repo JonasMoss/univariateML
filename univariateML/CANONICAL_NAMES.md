@@ -110,6 +110,9 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | zmbinom | Zero-modified binomial | size, prob, p0 | actuar::dzmbinom | [0, ∞) integer |
 | zmlogarithmic | Zero-modified logarithmic | prob, p0 | actuar::dzmlogarithmic | [0, ∞) integer |
 | zib | Zero-inflated binomial | size, prob, pi | extraDistr::dzib | [0, ∞) integer |
+| tpois | Truncated Poisson | lambda, a, b | extraDistr::dtpois | [0, ∞) integer |
+| tbinom | Truncated binomial | prob, a, b, size | extraDistr::dtbinom | [0, ∞) integer |
+| dlaplace | Discrete Laplace | location, scale | extraDistr::ddlaplace | (-∞, ∞) integer |
 
 [†] **Drift**: historic c0b9949 fitted only `shape` with rate fixed at
 1; the current cppunivariate-backed `mlparalogis` fits both `shape`
