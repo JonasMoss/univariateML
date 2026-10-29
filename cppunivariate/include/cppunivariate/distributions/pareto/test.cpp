@@ -30,11 +30,26 @@ TEST_CASE("pareto") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("pareto: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("pareto: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("pareto",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpareto(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppareto(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qpareto(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rpareto(rng, p[0], p[1]); });
+}
+
+// mpmath reproduction: import mpmath as mp; mp.mp.dps=1200
+// S=lambda x: x**-4; Q=lambda l: mp.exp(-l/4)
+// Evaluate log tails at the stated decimal x; log densities follow mp.log(mp.diff(F,x))
+// (use -mp.diff(S,x) for survival definitions); Q uses the indicated log tail.
+TEST_CASE("pareto: deep tails and log inversion regressions") {
+  CHECK(cppunivariate::distributions::ppareto(1e200,4,1,false,true) == doctest::Approx(-800*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::dpareto(1e200,4,1,true) == doctest::Approx(std::log(4.0)-1000*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qpareto(-1000,4,1,false,true) == doctest::Approx(std::exp(250.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qpareto(-INFINITY,4,3,true,true) == 3);
+  // mp.mp.dps=400; a=mp.mpf(float(1e-320)); h=-mp.log1p(-mp.exp(-750))/a
+  // Quantile mp.exp(h); log lower tail at x=e tends to mp.log(a).
+  CHECK(cppunivariate::distributions::qpareto(-750,1e-320,1,true,true) == doctest::Approx(std::exp(std::exp(-750-std::log(1e-320)))).scale(0.0));
+  CHECK(cppunivariate::distributions::ppareto(std::exp(1.0),1e-320,1,true,true) == doctest::Approx(std::log(1e-320)).scale(0.0));
+
 }

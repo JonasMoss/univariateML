@@ -29,11 +29,20 @@ TEST_CASE("invpareto: inverse exponential limit") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("invpareto: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("invpareto: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("invpareto",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvpareto(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvpareto(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvpareto(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvpareto(rng, p[0], p[1]); });
+}
+
+// mpmath reproduction: import mpmath as mp; mp.mp.dps=1200
+// F=lambda x,s=1: (1+s/x)**-2; Q=lambda l: 2/mp.expm1(-mp.log1p(-mp.exp(l))/2)
+// Evaluate log tails at the stated decimal x; log densities follow mp.log(mp.diff(F,x))
+// (use -mp.diff(S,x) for survival definitions); Q uses the indicated log tail.
+TEST_CASE("invpareto: deep tails and log inversion regressions") {
+  CHECK(cppunivariate::distributions::pinvpareto(1e200,2,1,false,true) == doctest::Approx(std::log(2.0)-200*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::dinvpareto(1e-300,2,1e100,true) == doctest::Approx(std::log(2.0)-500*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qinvpareto(-500,2,2,false,true) == doctest::Approx(std::exp(500+std::log(4.0))).scale(0.0));
 }

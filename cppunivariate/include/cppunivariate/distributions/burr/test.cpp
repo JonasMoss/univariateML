@@ -113,11 +113,28 @@ TEST_CASE("burr: held-scale endpoint spike and nonconstant escape differ") {
 #include "cppunivariate/distributions/burr/dpqr.hpp"
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("burr: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("burr: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("burr",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dburr(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pburr(x, p[0], p[1], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qburr(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rburr(rng, p[0], p[1], p[2]); });
+}
+
+// mpmath reproduction: import mpmath as mp; mp.mp.dps=1200
+// F=lambda x: -mp.expm1(-2*mp.log1p(x**4)); Q=lambda l: mp.expm1(-mp.log1p(-mp.exp(l))/2)**mp.mpf(".25")
+// Evaluate log tails at the stated decimal x; log densities follow mp.log(mp.diff(F,x))
+// (use -mp.diff(S,x) for survival definitions); Q uses the indicated log tail.
+TEST_CASE("burr: deep tails and log inversion regressions") {
+  CHECK(cppunivariate::distributions::pburr(1e-100,2,4,1,true,true) == doctest::Approx(std::log(2.0)-400*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::dburr(1e100,2,4,1,true) == doctest::Approx(std::log(8.0)-900*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qburr(-1000,2,4,1,true,true) == doctest::Approx(std::exp((-1000-std::log(2.0))/4)).scale(0.0));
+  CHECK(cppunivariate::distributions::qburr(-INFINITY,2,4,1,true,true) == 0);
+  CHECK(std::isnan(cppunivariate::distributions::qburr(.2,2,4,INFINITY,true,false)));
+  // mp.exp((-mp.log(mp.exp(-1))/mp.mpf('1e-310'))/mp.mpf('1e308'))
+  CHECK(cppunivariate::distributions::qburr(-1,1e-310,1e308,1,false,true) == doctest::Approx(std::exp(100.0)).scale(0.0).epsilon(1e-10));
+
+  // mp.log((1+mp.mpf('1e100')**mp.mpf('1e308'))**(-mp.mpf('1e-308')))
+  CHECK(cppunivariate::distributions::pburr(1e100,1e-308,1e308,1,false,true) == doctest::Approx(-100*std::log(10.0)).scale(0.0).epsilon(1e-10));
+
 }

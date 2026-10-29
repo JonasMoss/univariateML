@@ -37,11 +37,20 @@ TEST_CASE("invparalogis: fixed scale reciprocal agreement and invalid values") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("invparalogis: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("invparalogis: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("invparalogis",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvparalogis(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvparalogis(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvparalogis(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvparalogis(rng, p[0], p[1]); });
+}
+
+// mpmath reproduction: import mpmath as mp; mp.mp.dps=1200
+// F=lambda x: (1+x**-2)**-2; Q=lambda l: 1/mp.sqrt(mp.expm1(-mp.log1p(-mp.exp(l))/2))
+// Evaluate log tails at the stated decimal x; log densities follow mp.log(mp.diff(F,x))
+// (use -mp.diff(S,x) for survival definitions); Q uses the indicated log tail.
+TEST_CASE("invparalogis: deep tails and log inversion regressions") {
+  CHECK(cppunivariate::distributions::pinvparalogis(1e200,2,1,false,true) == doctest::Approx(std::log(2.0)-400*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::dinvparalogis(1e-200,2,1,true) == doctest::Approx(std::log(4.0)-600*std::log(10.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qinvparalogis(-1000,2,1,false,true) == doctest::Approx(std::exp((1000+std::log(2.0))/2)).scale(0.0));
 }

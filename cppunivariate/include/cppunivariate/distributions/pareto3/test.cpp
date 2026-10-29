@@ -35,3 +35,20 @@ TEST_CASE("pareto3: probability endpoints and sampler CDF") {
 TEST_CASE("pareto3: independent extreme value") {
  CHECK(cppunivariate::distributions::ppareto3(100.0,2,1,0,false,false)==doctest::Approx(9.9990000999900015e-05).epsilon(1e-8));
 }
+
+TEST_CASE("pareto3: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("pareto3",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpareto3(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppareto3(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qpareto3(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rpareto3(rng, p[0], p[1], p[2]); });
+}
+
+// mpmath reproduction: mp.mp.dps=300; s=mp.mpf(3); m=mp.mpf(4)
+// pareto2: m+s*mp.expm1(500/2); pareto3: m+s*mp.exp(500/4)
+// pareto4: m+s*mp.expm1(500/2)**mp.mpf('.25') (upper log input -500).
+TEST_CASE("pareto3: shifted deep-tail delegation") {
+  CHECK(cppunivariate::distributions::qpareto3(-500, 4, 3, 4, false, true) == doctest::Approx(4+3*std::exp(125.0)).scale(0.0));
+  CHECK(cppunivariate::distributions::qpareto3(-INFINITY, 4, 3, 4, true, true) == 4);
+  CHECK(cppunivariate::distributions::ppareto3(INFINITY, 4, 3, 4, false, true) == -INFINITY);
+}
