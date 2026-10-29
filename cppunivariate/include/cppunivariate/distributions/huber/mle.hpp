@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace cppunivariate {
-enum class HuberStatus { Ok, InvalidData, UnboundedLikelihood, IterationFailure };
+enum class HuberStatus { Ok, InvalidData, UnboundedLikelihood, IterationFailure, NormalLimit, LaplaceLimit };
 struct HuberResult {
   double mu, sigma, epsilon, logLik;
   int iterations;
@@ -102,10 +102,10 @@ inline bool huber_newton(const std::vector<double>& y, double epsilon,
   }
   return false;
 }
-inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
+inline HuberResult huber_fixed_mle(span x, double tol=1e-10, int maxit=200,
     double epsilon=1.345,
     double mu=std::numeric_limits<double>::quiet_NaN(),
-    double sigma=std::numeric_limits<double>::quiet_NaN()) {
+    double sigma=std::numeric_limits<double>::quiet_NaN(), bool sorted=false) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   HuberResult r{mu,sigma,epsilon,nan,0,HuberStatus::InvalidData};
   const bool fm=!std::isnan(mu), fs=!std::isnan(sigma);
@@ -116,7 +116,7 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
   std::vector<double> y;
   y.reserve(x.size());
   for (double v:x) { if (!std::isfinite(v)) return r; y.push_back(v); }
-  std::sort(y.begin(),y.end());
+  if (!sorted) std::sort(y.begin(),y.end());
   const double center=y[y.size()/2];
   double unit=std::max(std::abs(y.front()-center),std::abs(y.back()-center));
   if (fm) unit=std::max(unit,std::abs(mu-center));
@@ -174,5 +174,88 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
   r.logLik=-n*(std::log(r.sigma)+std::log(huber_z(epsilon)));
   for (double v:y) r.logLik-=huber_rho((v-m)/s,epsilon);
   return r;
+}
+
+// NaN epsilon requests estimation; the public default remains held at 1.345.
+inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
+    double epsilon=1.345,
+    double mu=std::numeric_limits<double>::quiet_NaN(),
+    double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  if (!std::isnan(epsilon)) return huber_fixed_mle(x,tol,maxit,epsilon,mu,sigma);
+  // Validate through the fixed solver before computing either face.
+  HuberResult best=huber_fixed_mle(x,tol,maxit,1.345,mu,sigma);
+  if (best.status==HuberStatus::InvalidData ||
+      best.status==HuberStatus::UnboundedLikelihood) return best;
+  std::vector<double> y(x.begin(),x.end());
+  std::sort(y.begin(),y.end());
+  const span data{y.data(),y.size()};
+  const bool fm=!std::isnan(mu), fs=!std::isnan(sigma);
+  const double n=static_cast<double>(y.size());
+  // Analytic Gaussian face under the same held-coordinate constraints.
+  long double total=0;
+  for (double v:y) total+=static_cast<long double>(v)-y[0];
+  const double nm=fm ? mu : static_cast<double>(y[0]+total/n);
+  long double ss=0;
+  for (double v:y) { const long double d=static_cast<long double>(v)-nm; ss+=d*d; }
+  const double ns=fs ? sigma : static_cast<double>(std::sqrt(ss/n));
+  const double normal=-n*(std::log(ns)+.5*std::log(2*std::acos(-1.0)))-
+      static_cast<double>(ss/(2*static_cast<long double>(ns)*ns));
+  double laplace=-std::numeric_limits<double>::infinity();
+  if (!fs) {
+    const double lm=fm ? mu : y[y.size()/2];
+    long double ad=0;
+    for (double v:y) ad+=std::abs(static_cast<long double>(v)-lm);
+    const double b=static_cast<double>(ad/n);
+    laplace=-n*(1+std::log(2.0)+std::log(b));
+  }
+  bool failed=false;
+  auto evaluate = [&](double t) {
+    HuberResult r=huber_fixed_mle(data,tol,maxit,std::exp(t),mu,sigma,true);
+    if (r.status!=HuberStatus::Ok) failed=true;
+    else if (best.status!=HuberStatus::Ok || r.logLik>best.logLik) best=r;
+    return r.status==HuberStatus::Ok ? r.logLik :
+        -std::numeric_limits<double>::infinity();
+  };
+  // c >= max |x-m_normal|/s_normal is exactly the normal quadratic loss;
+  // the remaining normalizer decreases monotonically to its Gaussian limit.
+  double largest=0;
+  for (double v:y) largest=std::max(largest,std::abs((v-nm)/ns));
+  const double upper=std::log(std::max(8.0,largest*2));
+  // With scale held, f(x) <= c exp(c*c/2)/(2*sigma), uniformly
+  // in location. This bounds the excluded small-c tail below the incumbent.
+  double lower=fs ? std::min(-9.0,std::log(2.0)+std::log(sigma)+
+      best.logLik/n-2) : -9.0;
+  // The same Laplace bound also discards any small-c interval that
+  // cannot improve the already available finite incumbent. This matters
+  // for large samples: tiny cores otherwise cost many inner iterations.
+  if (!fs && best.logLik>laplace)
+    lower=std::max(lower,.5*std::log(2*(best.logLik-laplace)/n));
+  const double spacing=.125;
+  const int count=static_cast<int>(std::ceil((upper-lower)/spacing));
+  std::vector<double> ts, values;
+  for (int i=0;i<=count;++i) {
+    const double t=lower+(upper-lower)*i/count;
+    ts.push_back(t); values.push_back(evaluate(t));
+  }
+  for (int i=1;i<count;++i) {
+    // Ignore flat numerical plateaus: faces are compared exactly below.
+    if (!(values[i]>=values[i-1] && values[i]>=values[i+1] &&
+          (values[i]>values[i-1] || values[i]>values[i+1]))) continue;
+    double lo=ts[i-1], hi=ts[i+1];
+    const double ratio=(std::sqrt(5.0)-1)/2;
+    double a=hi-ratio*(hi-lo), b=lo+ratio*(hi-lo);
+    double fa=evaluate(a), fb=evaluate(b);
+    for (int j=0;j<80 && hi-lo>1e-8;++j) {
+      if (fa<fb) { lo=a; a=b; fa=fb; b=lo+ratio*(hi-lo); fb=evaluate(b); }
+      else { hi=b; b=a; fb=fa; a=hi-ratio*(hi-lo); fa=evaluate(a); }
+    }
+  }
+  const double slack=1e-8*n;
+  if (normal>=best.logLik-slack && normal>=laplace)
+    best.status=HuberStatus::NormalLimit;
+  else if (laplace>=best.logLik-slack)
+    best.status=HuberStatus::LaplaceLimit;
+  else if (failed) best.status=HuberStatus::IterationFailure;
+  return best;
 }
 } // namespace cppunivariate

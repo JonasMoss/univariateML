@@ -57,3 +57,29 @@ for (args in list(list(), list(mu=0), list(sigma=1), list(mu=0, sigma=1))) {
   fit <- do.call(mlhuber, c(list(x=c(0,0,0,1,1)), args))
   expect_true(is.finite(as.numeric(logLik(fit))))
 }
+
+# Free-shape fit versus an independent direct three-coordinate oracle.
+z <- extraDistr::qhuber(((1:160)-.5)/160, mu=2, sigma=3, epsilon=.8)
+for (fm in c(FALSE, TRUE)) for (fs in c(FALSE, TRUE)) {
+  args <- list(x=z, epsilon=NULL)
+  if (fm) args$mu <- 2
+  if (fs) args$sigma <- 3
+  fit <- do.call(mlhuber, args)
+  expect_setequal(attr(fit,"fixed"), c(character(), if(fm) "mu", if(fs) "sigma"))
+  expect_equal(attr(logLik(fit),"df"), 3L-fm-fs)
+  objective <- function(p) {
+    j <- 1L
+    m <- if(fm) 2 else {j <- j+1L; p[1]}
+    s <- if(fs) 3 else {j <- j+1L; exp(p[j-1L])}
+    -sum(extraDistr::dhuber(z,m,s,exp(p[j]),log=TRUE))
+  }
+  starts <- expand.grid(m=c(0,2,4), s=c(1,3), e=c(.2,.8,2))
+  vals <- apply(starts,1,function(a) optim(c(if(!fm) a[1], if(!fs) log(a[2]),log(a[3])),
+    objective,method=if(fm && fs) "BFGS" else "Nelder-Mead",control=list(maxit=3000,reltol=1e-12))$value)
+  expect_equal(-as.numeric(logLik(fit)),min(vals),tolerance=1e-7)
+}
+expect_error(mlhuber(c(-1,1),epsilon=NULL),"use `mlnorm`")
+expect_error(mlhuber(c(-10,-.1,0,.1,10),epsilon=NULL),"use `mllaplace`")
+# A held scale excludes the rescaled Laplace face.
+expect_error(mlhuber(c(-1,1),sigma=1,epsilon=NULL),"use `mlnorm`")
+expect_equal(unname(mlhuber(z,epsilon=NULL)["epsilon"]),.8,tolerance=.08)

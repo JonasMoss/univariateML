@@ -60,6 +60,9 @@ Optional keys in each `params` entry:
   adapter returns `fixed`, the names of the parameters it held, which
   become the object's `fixed` attribute: `logLik()` degrees of freedom,
   AIC/BIC, `model_select` and `bootstrapml` count and hold only those.
+  A held adapter default is also allowed for backward compatibility; then
+  `NULL` explicitly frees it. Document this default in `r.control`; `default`
+  remains the simulation value, and do not also set `fixed`.
 - `fixed: <value>`: the fitter always holds this parameter fixed. When the
   adapter has an argument of the same name (listed in `r.control`), the user
   sets the held value and `<value>` is its default; otherwise it is always

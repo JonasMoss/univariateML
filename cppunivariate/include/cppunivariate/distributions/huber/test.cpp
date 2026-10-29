@@ -158,3 +158,37 @@ TEST_CASE("huber: Newton agrees with frozen profile on 240 seeded samples") {
       }
     }
 }
+
+TEST_CASE("huber: free shape faces, scaling and interior recovery") {
+  for (const std::vector<double>& x : {std::vector<double>{-1,1},
+       std::vector<double>{10,13},std::vector<double>{-3,0,3}}) {
+    auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
+    CHECK(r.status==cppunivariate::HuberStatus::NormalLimit);
+  }
+  const std::vector<double> tail{-10,-.1,0,.1,10};
+  CHECK(cppunivariate::huber_mle(mltest::as_span(tail),1e-10,200,NAN).status==
+      cppunivariate::HuberStatus::LaplaceLimit);
+  for (double e:{.01,.001,.0001}) for (double v:{-4.,0.,.3,8.}) {
+    const double h=cppunivariate::distributions::dhuber(v,0,2*e,e,true);
+    CHECK(std::abs(h-(-std::log(4.)-std::abs(v)/2))<e*e);
+  }
+  std::vector<double> x;
+  for (int i=0;i<2000;++i) x.push_back(
+      cppunivariate::distributions::qhuber((i+.5)/2000,2,3,.8,true,false));
+  auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
+  REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
+  CHECK(r.epsilon==doctest::Approx(.8).epsilon(.02));
+  CHECK(r.sigma==doctest::Approx(3).epsilon(.02));
+}
+
+TEST_CASE("huber: two-point profile lies below normal and compares Laplace") {
+  const std::vector<double> x{-1,1};
+  const double normal=-std::log(2*std::acos(-1.0))-1;
+  const double laplace=-2*(1+std::log(2.0));
+  CHECK(normal>laplace);
+  for (double e:{.001,.01,.1,.5,1.,1.5,2.,3.}) {
+    const auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-12,200,e);
+    REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
+    CHECK(r.logLik<normal);
+  }
+}
