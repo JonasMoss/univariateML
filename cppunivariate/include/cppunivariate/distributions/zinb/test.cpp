@@ -59,3 +59,26 @@ TEST_CASE("zinb: degenerate representative and stable density") {
   CHECK(cppunivariate::distributions::qzinb(1,fit.size,fit.prob,fit.pi,true,false)==0);
   CHECK(std::isfinite(cppunivariate::distributions::dzinb(10000,2,.5,.1,true)));
 }
+
+TEST_CASE("zinb: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("zinb");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<8;++mask) {
+   const auto r=cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,(mask & 1)?g.estimates.at("size"):nan,(mask & 2)?g.estimates.at("prob"):nan,(mask & 4)?g.estimates.at("pi"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.size==g.estimates.at("size"));
+   if(mask & 2)CHECK(r.prob==g.estimates.at("prob"));
+   if(mask & 4)CHECK(r.pi==g.estimates.at("pi"));
+ }
+}
+
+TEST_CASE("zinb: P2 held-domain and non-existence statuses") {
+ const std::vector<int> x{0,1,5},z{0,0};
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ CHECK(cppunivariate::zinb_mle({z.data(),z.size()},1e-10,200,nan,.4,.3).status==cppunivariate::ZinbStatus::ZeroLimit);
+ CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,nan,1,nan).status==cppunivariate::ZinbStatus::InvalidInput);
+ CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,nan,nan,1).status==cppunivariate::ZinbStatus::InvalidInput);
+ CHECK(cppunivariate::zinb_mle({x.data(),x.size()},1e-10,1,nan,.4,nan).status==cppunivariate::ZinbStatus::IterationFailure);
+}

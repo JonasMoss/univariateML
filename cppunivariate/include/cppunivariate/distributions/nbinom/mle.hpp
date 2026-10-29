@@ -21,7 +21,7 @@
 
 namespace cppunivariate {
 
-enum class NbinomStatus { Ok, Underdispersed };
+enum class NbinomStatus { Ok, Underdispersed, ZeroLimit, InvalidInput };
 
 struct NbinomResult {
   double size;
@@ -33,7 +33,8 @@ struct NbinomResult {
 };
 
 inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
-    double size_fixed = std::numeric_limits<double>::quiet_NaN()) {
+    double size_fixed = std::numeric_limits<double>::quiet_NaN(),
+    double prob_fixed = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, false};
@@ -45,6 +46,58 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
   }
   const double dn = static_cast<double>(n);
   const double x_bar = sum_x / dn;
+  if (!std::isnan(prob_fixed)) {
+    const auto invalid = NbinomResult{kNaN,kNaN,kNaN,0,false,NbinomStatus::InvalidInput};
+    if (!(prob_fixed>0 && prob_fixed<=1) || !std::isfinite(prob_fixed)) return invalid;
+    for (int v:x) if(v<0) return invalid;
+    if (!std::isnan(size_fixed) && (!(size_fixed>0)||!std::isfinite(size_fixed))) return invalid;
+    if (prob_fixed==1 && x_bar>0) return invalid;
+    double r=size_fixed;
+    if (std::isnan(r)) {
+      if (x_bar==0 && prob_fixed<1)
+        return {kNaN,prob_fixed,kNaN,0,false,NbinomStatus::ZeroLimit};
+      if (prob_fixed==1) r=1;
+      else {
+        // Strictly decreasing score: unique root, no size-infinity face.
+        auto score=[&](double a) {
+          double out=dn*std::log(prob_fixed);
+          for(int v:x) {
+            if(v<64) {for(int j=0;j<v;++j)out+=1/(a+j);}
+            else if(a>1e5) {
+              const double inv=1/a, end=1/(a+v);
+              out+=std::log1p(v/a)+.5*(inv-end)+(inv*inv-end*end)/12;
+            } else out+=special::digamma(a+v)-special::digamma(a);
+          }
+          return out;
+        };
+        double lo=0,hi=std::max(1.0,x_bar*prob_fixed/(1-prob_fixed));
+        while(score(hi)>0 && std::isfinite(hi)) hi*=2;
+        if(!std::isfinite(hi)) return invalid;
+        for(int i=0;i<200;++i) {
+          const double mid=lo+(hi-lo)/2;
+          if(score(mid)>0)lo=mid;else hi=mid;
+        }
+        r=lo+(hi-lo)/2;
+      }
+    }
+    double ll=0;
+    for(int v:x) {
+      // The generic log-gamma subtraction loses digits at large held-prob
+      // size roots. Sum the rising factorial, or its power expansion.
+      if(v<10000) {
+        double l=r*std::log(prob_fixed)-special::lgamma(v+1.0);
+        for(int j=0;j<v;++j)l+=std::log((r+j)*(1-prob_fixed));
+        ll+=l;
+      } else if(r>1e4 && v/r<1e-3) {
+        const double k=v-1.0, vv=v, s1=k*vv/2;
+        const double s2=k*vv*(2*vv-1)/6, s3=s1*s1;
+        const double s4=k*vv*(2*vv-1)*(3*k*k+3*k-1)/30;
+        ll+=r*std::log(prob_fixed)-special::lgamma(vv+1)+vv*std::log(r*(1-prob_fixed))
+            +s1/r-s2/(2*r*r)+s3/(3*r*r*r)-s4/(4*r*r*r*r);
+      } else ll+=special::dnbinom(v,r,prob_fixed,true);
+    }
+    return {r,prob_fixed,ll,0,false};
+  }
   if (!std::isnan(size_fixed)) {
     if (!(size_fixed > 0) || !std::isfinite(size_fixed))
       return {kNaN, kNaN, kNaN, 0, false};

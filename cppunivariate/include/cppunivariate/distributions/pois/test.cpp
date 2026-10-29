@@ -39,3 +39,26 @@ TEST_CASE("pois dpqr: pmf and CDF tail") {
   CHECK(dist::ppois(k, 4.0, true, false) >= 0.95);
   CHECK(dist::ppois(k - 1.0, 4.0, true, false) < 0.95);
 }
+
+TEST_CASE("pois: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("pois");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<2;++mask) {
+   const auto r=cppunivariate::pois_mle({x.data(),x.size()},(mask & 1)?g.estimates.at("lambda"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.lambda==g.estimates.at("lambda"));
+ }
+}
+
+TEST_CASE("pois: P2 held boundary likelihood and domain") {
+ const std::vector<int> x{0,2},same{0,0};
+ const auto incompatible=cppunivariate::pois_mle({x.data(),x.size()},0);
+ CHECK_FALSE(std::isfinite(incompatible.logLik));
+ const auto valid=cppunivariate::pois_mle({same.data(),same.size()},0);
+ CHECK(valid.lambda==0);
+ CHECK(std::isfinite(valid.logLik));
+ const auto invalid=cppunivariate::pois_mle({x.data(),x.size()},-1);
+ CHECK_FALSE(std::isfinite(invalid.logLik));
+}

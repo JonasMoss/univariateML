@@ -17,13 +17,9 @@ params:
 r:
   density: actuar::dztgeom
   sampler: actuar::rztgeom
-  control: {}
+  control:
+    prob: "Optional held prob; NULL estimates it."
 log_density: log(prob)+(x-1)*log(1-prob)
-holds:
-- held:
-  - prob
-  status: not-implemented
-  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
 ---
 
 Zero-truncated geometric distributions model positive counts.
@@ -31,3 +27,5 @@ Zero-truncated geometric distributions model positive counts.
 ## Details
 
 Actuar defines the point mass at one at `prob = 1`. This boundary is returned as an attained member.
+
+Supplying `prob` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.

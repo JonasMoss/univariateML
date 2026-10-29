@@ -40,3 +40,26 @@ TEST_CASE("geom dpqr: closed-form CDF") {
   CHECK(dist::dgeom(0.0, 0.5, false) == doctest::Approx(0.5));
   CHECK(dist::qgeom(0.99, 0.5, true, false) >= 0.0);
 }
+
+TEST_CASE("geom: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("geom");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<2;++mask) {
+   const auto r=cppunivariate::geom_mle({x.data(),x.size()},(mask & 1)?g.estimates.at("prob"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.prob==g.estimates.at("prob"));
+ }
+}
+
+TEST_CASE("geom: P2 held boundary likelihood and domain") {
+ const std::vector<int> x{0,2},same{0,0};
+ const auto incompatible=cppunivariate::geom_mle({x.data(),x.size()},1);
+ CHECK_FALSE(std::isfinite(incompatible.logLik));
+ const auto valid=cppunivariate::geom_mle({same.data(),same.size()},1);
+ CHECK(valid.prob==1);
+ CHECK(std::isfinite(valid.logLik));
+ const auto invalid=cppunivariate::geom_mle({x.data(),x.size()},-1);
+ CHECK_FALSE(std::isfinite(invalid.logLik));
+}

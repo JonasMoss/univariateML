@@ -11,17 +11,13 @@ params:
 r:
   density: stats::dpois
   sampler: stats::rpois
-  control: {}
+  control:
+    lambda: "Optional held lambda; NULL estimates it."
 log_density: "x*log(lambda) - lambda - loggamma(x + 1)"
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
   mlpois(corbet)
-holds:
-- held:
-  - lambda
-  status: not-implemented
-  reason: The adapter does not accept `lambda`; this hold is not implemented (P2).
 ---
 
 The Poisson distribution models nonnegative counts with a single rate parameter.
@@ -29,3 +25,5 @@ The Poisson distribution models nonnegative counts with a single rate parameter.
 ## Details
 
 All-zero data give the boundary estimate `lambda = 0`, a point mass at zero.
+
+Supplying `lambda` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.

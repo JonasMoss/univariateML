@@ -49,3 +49,25 @@ TEST_CASE("zmpois: quantile inversion and sampling") {
  cppunivariate::distributions::StdRng<> rng(19);
  for(int j=0;j<20;++j) {const double v=cppunivariate::distributions::rzmpois(rng,g.estimates.at("lambda"),g.estimates.at("p0"));CHECK(v>=0);CHECK(v==std::floor(v));}
 }
+
+TEST_CASE("zmpois: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("zmpois");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<4;++mask) {
+   const auto r=cppunivariate::zmpois_mle({x.data(),x.size()},1e-10,200,(mask & 1)?g.estimates.at("lambda"):nan,(mask & 2)?g.estimates.at("p0"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.lambda==g.estimates.at("lambda"));
+   if(mask & 2)CHECK(r.p0==g.estimates.at("p0"));
+ }
+}
+
+TEST_CASE("zmpois: P2 held zero share and incompatible positive component") {
+ const std::vector<int> x{0,1,2},z{0,0};
+ CHECK(cppunivariate::zmpois_mle({x.data(),x.size()},1e-10,200,2,0).status==cppunivariate::ZmpoisStatus::InvalidInput);
+ CHECK(cppunivariate::zmpois_mle({x.data(),x.size()},1e-10,200,0,.3).status==cppunivariate::ZmpoisStatus::InvalidInput);
+ const auto r=cppunivariate::zmpois_mle({z.data(),z.size()},1e-10,200,2,.7);
+ CHECK(r.lambda==2);CHECK(r.p0==.7);
+ CHECK(r.logLik==doctest::Approx(2*std::log(.7)));
+}

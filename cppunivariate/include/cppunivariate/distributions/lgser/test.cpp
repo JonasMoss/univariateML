@@ -33,3 +33,26 @@ TEST_CASE("lgser: mean just above one") {
   // mean(x) = 5/4 = -theta / ((1 - theta) log(1 - theta)).
   CHECK(-r.theta / ((1.0 - r.theta) * std::log1p(-r.theta)) == doctest::Approx(1.25).epsilon(1e-12));
 }
+
+TEST_CASE("lgser: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("lgser");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<2;++mask) {
+   const auto r=cppunivariate::lgser_mle({x.data(),x.size()},(mask & 1)?g.estimates.at("theta"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.theta==g.estimates.at("theta"));
+ }
+}
+
+TEST_CASE("lgser: P2 held boundary likelihood and domain") {
+ const std::vector<int> x{1,2},same{1,1};
+ const auto incompatible=cppunivariate::lgser_mle({x.data(),x.size()},0);
+ CHECK_FALSE(std::isfinite(incompatible.logLik));
+ const auto valid=cppunivariate::lgser_mle({same.data(),same.size()},0.4);
+ CHECK(valid.theta==0.4);
+ CHECK(std::isfinite(valid.logLik));
+ const auto invalid=cppunivariate::lgser_mle({x.data(),x.size()},-1);
+ CHECK_FALSE(std::isfinite(invalid.logLik));
+}

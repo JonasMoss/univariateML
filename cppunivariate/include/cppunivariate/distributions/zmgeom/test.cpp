@@ -49,3 +49,25 @@ TEST_CASE("zmgeom: quantile inversion and sampling") {
  cppunivariate::distributions::StdRng<> rng(19);
  for(int j=0;j<20;++j) {const double v=cppunivariate::distributions::rzmgeom(rng,g.estimates.at("prob"),g.estimates.at("p0"));CHECK(v>=0);CHECK(v==std::floor(v));}
 }
+
+TEST_CASE("zmgeom: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("zmgeom");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<4;++mask) {
+   const auto r=cppunivariate::zmgeom_mle({x.data(),x.size()},1e-10,200,(mask & 1)?g.estimates.at("prob"):nan,(mask & 2)?g.estimates.at("p0"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.prob==g.estimates.at("prob"));
+   if(mask & 2)CHECK(r.p0==g.estimates.at("p0"));
+ }
+}
+
+TEST_CASE("zmgeom: P2 held zero share and incompatible positive component") {
+ const std::vector<int> x{0,1,2},z{0,0};
+ CHECK(cppunivariate::zmgeom_mle({x.data(),x.size()},1e-10,200,0.4,0).status==cppunivariate::ZmgeomStatus::InvalidInput);
+ CHECK(cppunivariate::zmgeom_mle({x.data(),x.size()},1e-10,200,1,.3).status==cppunivariate::ZmgeomStatus::InvalidInput);
+ const auto r=cppunivariate::zmgeom_mle({z.data(),z.size()},1e-10,200,0.4,.7);
+ CHECK(r.prob==0.4);CHECK(r.p0==.7);
+ CHECK(r.logLik==doctest::Approx(2*std::log(.7)));
+}

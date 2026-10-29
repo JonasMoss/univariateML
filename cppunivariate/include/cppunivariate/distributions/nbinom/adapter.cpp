@@ -8,7 +8,18 @@
 
 // [[Rcpp::export]]
 Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double reltol = 1.220703e-4,
-                     int iterlim = 100, Rcpp::Nullable<double> size = R_NilValue) {
+                     int iterlim = 100, Rcpp::Nullable<double> size = R_NilValue, Rcpp::Nullable<double> prob = R_NilValue) {
+  if(prob.isNotNull() && !std::isfinite(Rcpp::as<double>(prob)))Rcpp::stop("`prob` must be finite and in its parameter domain.");
+
+  if(prob.isNotNull()) {
+    if(size.isNotNull() && !std::isfinite(Rcpp::as<double>(size)))Rcpp::stop("`size` must be a positive finite number.");
+    const auto r=cppunivariate::nbinom_mle(dist_impl::as_ispan(x),reltol,iterlim,size.isNotNull()?Rcpp::as<double>(size):std::numeric_limits<double>::quiet_NaN(),prob.isNotNull()?Rcpp::as<double>(prob):std::numeric_limits<double>::quiet_NaN());
+    if(r.status==cppunivariate::NbinomStatus::ZeroLimit)Rcpp::stop("With prob held below one and all-zero data, size tends to zero; no MLE on the current positive-size domain. Use `mlpois`.");
+    if(r.status!=cppunivariate::NbinomStatus::Ok || !std::isfinite(r.logLik))Rcpp::stop("Held prob or size is outside its domain or incompatible with the observations.");
+    Rcpp::CharacterVector fixed=Rcpp::CharacterVector::create("prob");
+    if(size.isNotNull())fixed.push_back("size");
+    return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["size"]=r.size,Rcpp::_["prob"]=r.prob),Rcpp::_["logLik"]=r.logLik,Rcpp::_["iterations"]=r.iterations,Rcpp::_["fixed"]=fixed);
+  }
   const int n = x.size();
   if (n == 0) {
     Rcpp::stop("x must have positive length");

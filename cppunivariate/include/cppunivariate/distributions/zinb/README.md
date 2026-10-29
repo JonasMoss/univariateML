@@ -25,29 +25,28 @@ r:
     reltol: "Tolerance on the scalar log-size search interval."
     iterlim: "Maximum number of scalar search iterations."
     size: "Optional fixed finite positive size, including fractional values; NULL estimates size."
+    prob: "Optional held prob; NULL estimates it."
+    pi: "Optional held pi; NULL estimates it."
 log_density: "Piecewise((log(pi + (1 - pi)*prob**size), Eq(x, 0)), (log(1 - pi) + loggamma(x + size) - loggamma(size) - loggamma(x + 1) + size*log(prob) + x*log(1 - prob), True))"
 limits:
+  - model: pois
+    name: zero point mass
+    when: '$size \to 0$ on the current positive-size domain'
+    detect: size is free, prob and pi are held below one, and all observations are zero
+    fixed: [prob, pi]
+    status: ZeroLimit
   - model: zip
     when: '$\mathrm{size}\to\infty$ with NB mean fixed and positive inflation'
-    detect: size is free and the maximized ZIP likelihood wins within 1e-8 times sample size
+    detect: size and prob are free and the maximized ZIP likelihood wins within 1e-8 times sample size
     status: ZipLimit
   - model: pois
     when: '$\mathrm{size}\to\infty$ with NB mean fixed and inflation tending to zero'
-    detect: size is free and the winning ZIP face has zero inflation
+    detect: size and prob are free and the winning ZIP face has zero inflation
     status: PoissonLimit
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
   mlzinb(simulate_default("mlzinb", 1000))
-holds:
-- held:
-  - prob
-  status: not-implemented
-  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
-- held:
-  - pi
-  status: not-implemented
-  reason: The adapter does not accept `pi`; this hold is not implemented (P2).
 ---
 
 The zero-inflated negative binomial distribution mixes negative binomial counts with an additional point mass at zero.
@@ -60,3 +59,5 @@ unattained limit remains for that subset. Fractional sizes are allowed.
 All-zero data have unidentified parameters: the fitter warns and returns
 `size = 1` (or the supplied size), `prob = 1`, `pi = 0`.
 `extraDistr::dzinb(log = TRUE)` and the upper-tail log CDF underflow to `-Inf` far in the tail (see `KNOWN_ISSUES.md`); `logLik` is unaffected.
+
+Held probability removes the infinite-size ZIP escape. Held inflation compares against the ZIP face with the same inflation. With both probability and inflation held below one, all-zero data approach size zero, outside the current positive-size domain; the fitter stops. Endpoint holds incompatible with positive observations stop. Scalar profile peaks are searched numerically; this is not a certified global optimization.
