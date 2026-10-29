@@ -46,6 +46,8 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | cmb | Conway--Maxwell--binomial | size, prob, nu | dcmb (package-defined) | [0, size] integer (size required) |
 | cauchy     | Cauchy                  | location, scale    | stats::dcauchy            | (-∞, ∞) open     |
 | dunif      | Discrete uniform        | min, max           | extraDistr::ddunif        | (-∞, ∞) integer  |
+| dnorm | Discretized normal | mean, sd | extraDistr::ddnorm | integer |
+| dgamma | Discretized gamma | shape, rate | extraDistr::ddgamma | nonnegative integer |
 | dweibull   | Discrete Weibull        | shape1, shape2     | extraDistr::ddweibull     | [0, ∞) integer   |
 | exp        | Exponential             | rate               | stats::dexp               | [0, ∞)           |
 | fatigue    | Birnbaum-Saunders       | alpha, beta, mu    | extraDistr::dfatigue      | [0, ∞)           |

@@ -1,0 +1,58 @@
+#pragma once
+#include "../../special/special.hpp"
+#include <cmath>
+#include <limits>
+namespace cppunivariate { namespace distributions {
+// Log probability of a standard normal interval. Subtract on the small-tail side.
+inline double dnorm_interval(double a, double b) {
+  if (!(a < b)) return -std::numeric_limits<double>::infinity();
+  const double mid = a + (b-a)/2, w = b-a;
+  if (w*(1+std::abs(mid)) < 1e-5)
+    return -0.5*mid*mid - 0.91893853320467274178 + std::log(w)
+           + std::log1p(((mid*w)*(mid*w)-w*w)/24);
+  const bool lower = a+b < 0;
+  const double hi = special::fs_normal_p(lower ? b : a, lower, true);
+  const double lo = special::fs_normal_p(lower ? a : b, lower, true);
+  return hi + special::fs_log1mexp(lo-hi);
+}
+inline double ddnorm(double x, double mean, double sd, bool log = false) {
+  if (!std::isfinite(mean) || !std::isfinite(sd) || sd <= 0 || std::isnan(x))
+    return std::numeric_limits<double>::quiet_NaN();
+  double lp = -std::numeric_limits<double>::infinity();
+  if (std::isfinite(x) && x == std::floor(x)) {
+    const double mid=(x+0.5-mean)/sd, w=1/sd;
+    if (w*(1+std::abs(mid))<1e-5)
+      lp=-0.5*mid*mid-0.91893853320467274178-std::log(sd)+std::log1p(((mid*w)*(mid*w)-w*w)/24);
+    else lp=dnorm_interval((x-mean)/sd,(x+1-mean)/sd);
+  }
+  return log ? lp : std::exp(lp);
+}
+inline double pdnorm(double q, double mean, double sd, bool lower = true, bool log = false) {
+  if (!std::isfinite(mean) || !std::isfinite(sd) || sd <= 0 || std::isnan(q))
+    return std::numeric_limits<double>::quiet_NaN();
+  return special::fs_normal_p((std::floor(q)+1-mean)/sd,lower,log);
+}
+inline double qdnorm(double p, double mean, double sd, bool lower = true, bool log = false) {
+  const double lp = log ? p : std::log(p);
+  if (lp > 0 || (!log && p < 0) || !std::isfinite(mean) || !(sd > 0) || !std::isfinite(sd))
+    return std::numeric_limits<double>::quiet_NaN();
+  const double z = mean + sd*special::fs_normal_q(lp,lower);
+  if (!std::isfinite(z)) return z;
+  double q=std::ceil(z)-1;
+  for (int i=0;i<2;++i) {
+    const double at=pdnorm(q,mean,sd,lower,true);
+    if (lower ? at<lp : at>lp) q+=1;
+    else break;
+  }
+  for (int i=0;i<2;++i) {
+    const double at=pdnorm(q-1,mean,sd,lower,true);
+    if (lower ? at>=lp : at<=lp) q-=1;
+    else break;
+  }
+  return q;
+}
+template <typename Rng> inline double rdnorm(Rng &rng, double mean, double sd) {
+  if (!std::isfinite(mean) || !std::isfinite(sd) || !(sd>0)) return std::numeric_limits<double>::quiet_NaN();
+  return std::floor(mean+sd*rng.rnorm());
+}
+}}
