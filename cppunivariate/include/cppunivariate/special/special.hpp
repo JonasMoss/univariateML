@@ -8,6 +8,7 @@
 
 #include "constants.hpp"
 #include <boost/math/distributions/gamma.hpp>
+#include <boost/math/distributions/non_central_chi_squared.hpp>
 #include <boost/math/distributions/logistic.hpp>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/students_t.hpp>
@@ -44,6 +45,11 @@ typedef boost::math::policies::policy<
         boost::math::policies::integer_round_up>> NoThrowPolicy;
 
 inline double zeta(double s) { return boost::math::zeta(s, NoThrowPolicy{}); }
+
+inline double pnchisq(double x, double df, double ncp, bool lower) {
+  const boost::math::non_central_chi_squared_distribution<double, NoThrowPolicy> dist(df,ncp);
+  return lower ? boost::math::cdf(dist,x) : boost::math::cdf(boost::math::complement(dist,x));
+}
 
 // --- log-gamma family ------------------------------------------------------
 

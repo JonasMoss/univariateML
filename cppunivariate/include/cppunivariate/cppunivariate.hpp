@@ -112,3 +112,4 @@
 #include "distributions/dlaplace/mle.hpp"
 #include "distributions/dnorm/mle.hpp"
 #include "distributions/dgamma/mle.hpp"
+#include "distributions/skellam/mle.hpp"
