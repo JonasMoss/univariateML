@@ -257,3 +257,12 @@ TEST_CASE("dweibull dpqr: stable log pmf, floored CDF, generalized inverse") {
   for (double v : small) minimum = std::min(minimum, v);
   CHECK(minimum == 0);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("dweibull: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("dweibull",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::ddweibull(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pdweibull(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdweibull(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdweibull(rng, p[0], p[1]); });
+}

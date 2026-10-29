@@ -84,3 +84,12 @@ TEST_CASE("zipf finite sums, upper log tails and billion-point inversion") {
     CHECK(dist::pzipf(q-1,1e9,.5)<u);
   }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("zipf: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("zipf",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzipf(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzipf(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzipf(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzipf(rng, p[0], p[1]); });
+}

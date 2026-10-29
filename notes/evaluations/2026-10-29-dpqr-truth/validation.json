@@ -1,0 +1,58 @@
+{
+  "recorded_at": "2026-10-29T17:43:57.251375+01:00",
+  "base_commit": "fab96c1",
+  "baseline": {
+    "ctest_targets_passed": 5,
+    "ctest_targets_total": 5,
+    "ctest_seconds": 172.16,
+    "R": {
+      "FAIL": 0,
+      "WARN": 0,
+      "SKIP": 1,
+      "PASS": 8402
+    }
+  },
+  "final": {
+    "ctest_targets_passed": 5,
+    "ctest_targets_total": 5,
+    "ctest_seconds": 68.54,
+    "distribution_cases_passed": 468,
+    "distribution_cases_skipped": 3,
+    "distribution_assertions": 953643,
+    "distribution_assertions_failed_expected": 9791,
+    "may_fail_cases": 61,
+    "R": {
+      "FAIL": 0,
+      "WARN": 0,
+      "SKIP": 1,
+      "PASS": 8402
+    },
+    "python_tests_passed": 19,
+    "quality_baseline_comparisons_identical": [
+      "norm",
+      "zip"
+    ]
+  },
+  "independent_cpp_audit": {
+    "families": 94,
+    "cases_including_loader": 95,
+    "assertions": 445914,
+    "numeric_mismatches": 9795,
+    "unexpected_exception_assertions": 2,
+    "failing_families": 62,
+    "passing_families": 32
+  },
+  "sampler": {
+    "parameter_points": 490,
+    "draws": 9686000,
+    "failures": 0,
+    "seconds": 13.453275939,
+    "slow_family_draws_per_point": 1000,
+    "slow_family_seconds": 7.36826
+  },
+  "normalization": {
+    "parameter_points": 544,
+    "worst_absolute_residual": "2e-32",
+    "NaN_cells": 0
+  }
+}

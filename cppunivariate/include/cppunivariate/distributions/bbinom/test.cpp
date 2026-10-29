@@ -249,3 +249,12 @@ TEST_CASE("bbinom: inward binomial score uses variance with divisor n") {
   cppunivariate::bbinom_detail::profile_derivs(d,s,cppunivariate::bbinom_detail::solve_p(d,s,p),g,H);
   CHECK(g/s == doctest::Approx(expected).epsilon(1e-6));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("bbinom: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("bbinom",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbbinom(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbbinom(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbbinom(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbbinom(rng, p[0], p[1], p[2]); });
+}

@@ -25,3 +25,16 @@ TEST_CASE("CMP tiny log complements and invalid domains") {
  CHECK(cppunivariate::distributions::dcmp(-1,2,2)==0);
  CHECK(cppunivariate::distributions::qcmp(1,0,2)==0);
 }
+
+#include "cppunivariate/distributions/cmp/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+// CMP rebuilds its series for every inverse-CDF draw. The 20000-draw audit
+// exceeded five minutes; use 1000 draws/point (timing in the truth report).
+TEST_CASE("cmp: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("cmp",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dcmp(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pcmp(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qcmp(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rcmp(rng, p[0], p[1]); }, 1e-10, 1e-9, 1000);
+}

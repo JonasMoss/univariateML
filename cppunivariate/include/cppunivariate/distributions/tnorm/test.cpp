@@ -362,3 +362,13 @@ TEST_CASE("tnorm: d/p/q/r") {
   // E X = phi(1)/(1 - Phi(1)) = 1.5251.
   CHECK(sum / 2000 == doctest::Approx(1.5251352761609812).epsilon(0.02));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("tnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("tnorm",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtnorm(x, p[0], p[1], p[2], p[3], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptnorm(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtnorm(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtnorm(rng, p[0], p[1], p[2], p[3]); });
+}

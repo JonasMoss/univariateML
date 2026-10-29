@@ -49,3 +49,12 @@ TEST_CASE("zmgeom: quantile inversion and sampling") {
  cppunivariate::distributions::StdRng<> rng(19);
  for(int j=0;j<20;++j) {const double v=cppunivariate::distributions::rzmgeom(rng,g.estimates.at("prob"),g.estimates.at("p0"));CHECK(v>=0);CHECK(v==std::floor(v));}
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("zmgeom: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("zmgeom",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dzmgeom(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pzmgeom(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzmgeom(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzmgeom(rng, p[0], p[1]); });
+}

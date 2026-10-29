@@ -68,3 +68,13 @@ TEST_CASE("betapr: fixed-scale independent scipy oracle") {
   auto r = cppunivariate::betapr_mle_fixed_scale(mltest::as_span(x), 1);
   CHECK(r.logLik == doctest::Approx(-13.790426340537064).epsilon(1e-10));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("betapr: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("betapr",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dbetapr(x, p[0], p[1], log, p[2]); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pbetapr(x, p[0], p[1], lower, log, p[2]); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbetapr(x, p[0], p[1], lower, log, p[2]); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbetapr(rng, p[0], p[1], p[2]); });
+}

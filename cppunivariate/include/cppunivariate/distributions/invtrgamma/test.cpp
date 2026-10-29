@@ -128,3 +128,13 @@ TEST_CASE("invtrgamma: evaluation close to the Pareto face") {
   cppunivariate::distributions::StdRng<> rng(7);
   for (int i=0; i<20; ++i) CHECK(std::isfinite(d::rinvtrgamma(rng, 1e-6, 1e6, 1)));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("invtrgamma: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("invtrgamma",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvtrgamma(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvtrgamma(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvtrgamma(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvtrgamma(rng, p[0], p[1], p[2]); });
+}

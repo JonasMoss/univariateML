@@ -83,3 +83,14 @@ TEST_CASE("emg portable sampling and argument boundaries") {
   CHECK(std::isfinite(q));
   CHECK(cppunivariate::distributions::pemg(q,0,1,1e-320,true,true)==doctest::Approx(std::log(1e-300)).epsilon(1e-12));
 }
+
+#include "cppunivariate/distributions/emg/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("emg: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("emg",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::demg(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pemg(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qemg(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::remg(rng, p[0], p[1], p[2]); });
+}

@@ -32,3 +32,12 @@ TEST_CASE("tbinom: golden regression") {
   CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
   CHECK(f.parameter==doctest::Approx(g.estimates.at("prob")).epsilon(1e-10));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("tbinom: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("tbinom",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtbinom(x, p[3], p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptbinom(x, p[3], p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtbinom(x, p[3], p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtbinom(rng, p[3], p[0], p[1], p[2]); });
+}

@@ -1,0 +1,12 @@
+"""Independent antiderivative of the README density; checked by quality.truth.
+
+The route contains only mathematical definitions, no C++/R/reference calls.
+"""
+import mpmath as mp
+from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+
+def build(t):
+    mu = t['mu']
+    sigma = t['sigma']
+    return Reference(lambda x: pair(-mp.exp(-(x-mu)/sigma)), -mp.inf, mp.inf)
+

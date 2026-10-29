@@ -51,3 +51,15 @@ TEST_CASE("tlambda: heavy-tail standardized overflow and seeded sampling") {
   cppunivariate::distributions::StdRng<> rng(123);
   for(int j=0;j<10;++j) CHECK(std::isfinite(cppunivariate::distributions::rtlambda(rng,0,1,.14)));
 }
+
+#include "cppunivariate/distributions/tlambda/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("tlambda: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("tlambda",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtlambda(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptlambda(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtlambda(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtlambda(rng, p[0], p[1], p[2]); });
+}

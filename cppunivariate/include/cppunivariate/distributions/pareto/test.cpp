@@ -28,3 +28,13 @@ TEST_CASE("pareto") {
   CHECK(r.min == doctest::Approx(g.estimates.at("b")).epsilon(mltest::kTol));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("pareto: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("pareto",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dpareto(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ppareto(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qpareto(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rpareto(rng, p[0], p[1]); });
+}

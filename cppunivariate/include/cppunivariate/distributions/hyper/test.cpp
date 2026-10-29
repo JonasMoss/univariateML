@@ -347,3 +347,12 @@ TEST_CASE("hyper dpqr: CDF tails, quantile inversion, sampler support") {
   }
   CHECK(total / 4000 == doctest::Approx(k * m / N).epsilon(0.03));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("hyper: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("hyper",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhyper(x, (p[0]+p[1]), p[0], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phyper(x, (p[0]+p[1]), p[0], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhyper(x, (p[0]+p[1]), p[0], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhyper(rng, (p[0]+p[1]), p[0], p[2]); });
+}

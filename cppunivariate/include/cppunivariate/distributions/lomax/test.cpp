@@ -88,3 +88,13 @@ TEST_CASE("lomax: compressed nominations refine against the complete sample") {
     CHECK(g.logLik/3000==doctest::Approx(f.logLik).epsilon(1e-10));
   }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("lomax: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("lomax",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlomax(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plomax(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlomax(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlomax(rng, p[0], p[1]); });
+}

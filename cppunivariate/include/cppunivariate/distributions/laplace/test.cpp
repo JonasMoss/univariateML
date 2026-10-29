@@ -40,3 +40,13 @@ TEST_CASE("laplace: seeded sample with outlier") {
   CHECK(r.sigma == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("laplace: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("laplace",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlaplace(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plaplace(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlaplace(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlaplace(rng, p[0], p[1]); });
+}

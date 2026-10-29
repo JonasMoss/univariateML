@@ -43,3 +43,13 @@ TEST_CASE("rdunif samples are integers in [min, max]") {
     CHECK(std::abs(empirical - 1.0 / (max - min + 1)) < 0.02);
   }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("dunif: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("dunif",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::ddunif(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pdunif(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdunif(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdunif(rng, p[0], p[1]); });
+}

@@ -109,3 +109,15 @@ TEST_CASE("burr: held-scale endpoint spike and nonconstant escape differ") {
   CHECK(a.logLik==INFINITY);
   CHECK(cppunivariate::burr_mle_fixed_scale(mltest::as_span(mixed),1).status==cppunivariate::BurrStatus::AllGeOne);
 }
+
+#include "cppunivariate/distributions/burr/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("burr: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("burr",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dburr(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pburr(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qburr(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rburr(rng, p[0], p[1], p[2]); });
+}

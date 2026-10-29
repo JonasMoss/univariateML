@@ -33,3 +33,13 @@ TEST_CASE("lgser: mean just above one") {
   // mean(x) = 5/4 = -theta / ((1 - theta) log(1 - theta)).
   CHECK(-r.theta / ((1.0 - r.theta) * std::log1p(-r.theta)) == doctest::Approx(1.25).epsilon(1e-12));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("lgser: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("lgser",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlgser(x, p[0], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plgser(x, p[0], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlgser(x, p[0], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlgser(rng, p[0]); });
+}

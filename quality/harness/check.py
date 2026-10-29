@@ -1,8 +1,6 @@
 """Check real fitter goldens against symbolic README densities."""
 import argparse
-import importlib.util
 import json
-import re
 import warnings
 import time
 from pathlib import Path
@@ -10,6 +8,7 @@ import mpmath as mp
 import numpy as np
 import sympy as sp
 import yaml
+from quality.density import density_expression
 from scipy.optimize import minimize
 from scipy.special import expit, polygamma
 ROOT = Path(__file__).resolve().parents[2]
@@ -24,27 +23,7 @@ def check(id):
     golden = json.loads((folder / 'golden.json').read_text())
     params, values = (meta['params'], {k: float(v) if isinstance(v, str) else v for k, v in golden['estimates'].items()})
     domains = [interval(p['domain'], values) for p in params]
-    syms = []
-    source = meta['log_density']
-    for p, (lo, hi) in zip(params, domains):
-        assumptions = {'real': True}
-        if lo >= 0:
-            assumptions['positive' if lo > 0 or p['domain'][0] == '(' else 'nonnegative'] = True
-        if p.get('integer'):
-            assumptions['integer'] = True
-        syms.append(sp.Symbol('p_' + p['name'], **assumptions))
-    for p in sorted(params, key=lambda p: len(p['name']), reverse=True):
-        source = re.sub('\\b' + p['name'] + '\\b', 'p_' + p['name'], source)
-    x = sp.Symbol('x', real=True)
-    local = {s.name: s for s in syms}
-    local.update(x=x, k=sp.Symbol('k', integer=True, positive=True))
-    if (folder / 'spec.py').exists():
-        spec = importlib.util.spec_from_file_location('quality_spec_' + id, folder / 'spec.py')
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        expr = module.log_density(dict(zip([p['name'] for p in params], syms)), x)
-    else:
-        expr = sp.sympify(source, locals=local)
+    syms, x, expr = density_expression(folder, meta, domains)
     theta = [values[p['name']] for p in params]
     # Held: support endpoints, integer parameters, and parameters the golden
     # fit held fixed (golden.json `fixed`, or README `fixed: <value>`).

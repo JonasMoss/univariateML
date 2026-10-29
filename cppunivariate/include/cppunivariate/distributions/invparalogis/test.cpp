@@ -35,3 +35,13 @@ TEST_CASE("invparalogis: fixed scale reciprocal agreement and invalid values") {
   for(double bad:{0.,-1.,double(INFINITY),double(NAN)})
     CHECK(cppunivariate::invparalogis_mle_fixed_scale(mltest::as_span(x),bad).status==cppunivariate::ParalogisStatus::InvalidStart);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("invparalogis: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("invparalogis",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvparalogis(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvparalogis(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvparalogis(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvparalogis(rng, p[0], p[1]); });
+}

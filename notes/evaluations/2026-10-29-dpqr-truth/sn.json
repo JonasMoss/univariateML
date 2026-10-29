@@ -1,0 +1,6 @@
+{
+  "id": "sn",
+  "status": "gap",
+  "reason": "ValueError: gap: skew-normal smaller tail needs cancellation-free two-dimensional Gaussian integration with a validated error estimate.",
+  "seconds": 0.011650005995761603
+}

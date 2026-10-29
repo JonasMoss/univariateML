@@ -39,3 +39,13 @@ TEST_CASE("ht: d/p/q/r and extreme tails") {
   cppunivariate::distributions::StdRng<> rng(9);
   for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rht(rng,3,1)>=0);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("ht: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("ht",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dht(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pht(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qht(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rht(rng, p[0], p[1]); });
+}

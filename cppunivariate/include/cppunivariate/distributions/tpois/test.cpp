@@ -34,3 +34,12 @@ TEST_CASE("tpois: golden regression") {
   CHECK(f.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
   CHECK(f.parameter==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-10));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("tpois: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("tpois",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtpois(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptpois(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtpois(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtpois(rng, p[0], p[1], p[2]); });
+}

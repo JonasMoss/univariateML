@@ -119,3 +119,13 @@ TEST_CASE("gev: clustered samples and affine equivariance") {
     CHECK(other.logLik+x.size()*std::log(scale)==doctest::Approx(fit.logLik).epsilon(1e-7));
   }
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("gev: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("gev",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dgev(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pgev(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qgev(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rgev(rng, p[0], p[1], p[2]); });
+}

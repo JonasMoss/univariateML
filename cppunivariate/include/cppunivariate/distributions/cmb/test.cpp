@@ -30,3 +30,14 @@ TEST_CASE("cmb binomial and all finite-family faces") {
   CHECK(cppunivariate::cmb_mle({c.data(),c.size()},5).status==cppunivariate::CmbStatus::EndpointLimit);
   CHECK(cppunivariate::cmb_mle({d.data(),d.size()},5).status==cppunivariate::CmbStatus::Ok);
 }
+
+#include "cppunivariate/distributions/cmb/dpqr.hpp"
+
+// Independent high-precision oracle; see quality/truth.py.
+TEST_CASE("cmb: d/p/q/r against the truth table") {
+  mltest::check_dpqr_truth("cmb",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dcmb(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pcmb(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qcmb(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rcmb(rng, p[0], p[1], p[2]); });
+}

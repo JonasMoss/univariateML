@@ -67,3 +67,13 @@ TEST_CASE("dnorm: broad cells use known interval width") {
   CHECK(held.status==cppunivariate::DnormStatus::Ok);
   CHECK(std::isfinite(held.logLik));
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("dnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("dnorm",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::ddnorm(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pdnorm(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdnorm(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdnorm(rng, p[0], p[1]); });
+}

@@ -1,0 +1,299 @@
+[
+  {
+    "family": "bbinom",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      10.0
+    ]
+  },
+  {
+    "family": "binom",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      9.0
+    ]
+  },
+  {
+    "family": "cmb",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      10.0
+    ]
+  },
+  {
+    "family": "dunif",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      2.0,
+      10.0
+    ]
+  },
+  {
+    "family": "fpareto",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      "Inf"
+    ]
+  },
+  {
+    "family": "frechet",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.06127683692504238,
+      "Inf"
+    ]
+  },
+  {
+    "family": "genbeta",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "family": "gev",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      -3.3333333333333335,
+      "Inf"
+    ]
+  },
+  {
+    "family": "gpd",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      "Inf"
+    ]
+  },
+  {
+    "family": "hnorm",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.003132226774118849,
+      "Inf"
+    ]
+  },
+  {
+    "family": "hyper",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      10.0
+    ]
+  },
+  {
+    "family": "nhyper",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      3.0,
+      33.0
+    ]
+  },
+  {
+    "family": "nsbeta",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "family": "pareto",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      2.0054134964356316,
+      "Inf"
+    ]
+  },
+  {
+    "family": "pareto2",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      "Inf"
+    ]
+  },
+  {
+    "family": "pareto3",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      "Inf"
+    ]
+  },
+  {
+    "family": "pareto4",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      "Inf"
+    ]
+  },
+  {
+    "family": "power",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      0.9998067208250105
+    ]
+  },
+  {
+    "family": "tbinom",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      1.0,
+      10.0
+    ]
+  },
+  {
+    "family": "tlambda",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      -7.142857142857142,
+      7.142857142857142
+    ]
+  },
+  {
+    "family": "tpois",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      1.0,
+      10.0
+    ]
+  },
+  {
+    "family": "triang",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.036270735335580465,
+      1.0045256123727768
+    ]
+  },
+  {
+    "family": "unif",
+    "declared": [
+      "-Inf",
+      "Inf"
+    ],
+    "actual": [
+      0.000490961130708456,
+      0.9977341613266617
+    ]
+  },
+  {
+    "family": "zib",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      8.0
+    ]
+  },
+  {
+    "family": "zipf",
+    "declared": [
+      1.0,
+      "Inf"
+    ],
+    "actual": [
+      1.0,
+      3.0
+    ]
+  },
+  {
+    "family": "zmbinom",
+    "declared": [
+      0.0,
+      "Inf"
+    ],
+    "actual": [
+      0.0,
+      8.0
+    ]
+  },
+  {
+    "family": "ztbinom",
+    "declared": [
+      1.0,
+      "Inf"
+    ],
+    "actual": [
+      1.0,
+      8.0
+    ]
+  }
+]

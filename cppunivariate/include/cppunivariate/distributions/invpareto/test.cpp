@@ -27,3 +27,13 @@ TEST_CASE("invpareto: inverse exponential limit") {
   std::vector<double> x{1,1,1,1};
   CHECK(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100).status == cppunivariate::LomaxStatus::ExponentialLimit);
 }
+
+// Independent high-precision oracle; see quality/truth.py.
+// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
+TEST_CASE("invpareto: d/p/q/r against the truth table" * doctest::may_fail()) {
+  mltest::check_dpqr_truth("invpareto",
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvpareto(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvpareto(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvpareto(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvpareto(rng, p[0], p[1]); });
+}
