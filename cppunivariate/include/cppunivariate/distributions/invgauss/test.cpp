@@ -31,8 +31,7 @@ TEST_CASE("invgauss") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("invgauss: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("invgauss: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("invgauss",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dinvgauss(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pinvgauss(x, p[0], p[1], lower, log); },
@@ -81,4 +80,35 @@ TEST_CASE("invgauss P2 held boundaries and solver failure") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   CHECK_FALSE(std::isfinite(cppunivariate::invgauss_mle(mltest::as_span(x),2,nan).logLik));
   CHECK(std::isfinite(cppunivariate::invgauss_mle(mltest::as_span(x),nan,2).logLik));
+}
+
+
+// mpmath generator: import mpmath as mp; mp.mp.dps=100
+// N=lambda z: mp.erfc(-z/mp.sqrt(2))/2; S=lambda x: N(-mp.sqrt(4/x)*(x/3-1))-mp.exp(mp.mpf(8)/3)*N(-mp.sqrt(4/x)*(x/3+1)); mp.findroot(lambda x: mp.log(S(x))+800,3500)
+TEST_CASE("invgauss: logarithmic quantile regression") {
+  CHECK(cppunivariate::distributions::qinvgauss(-800.0, 3.0, 4.0, true, true) == doctest::Approx(0.00250809143057573).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qinvgauss(-800.0, 3.0, 4.0, false, true) == doctest::Approx(3556.5495517393183).epsilon(1e-11));
+}
+
+TEST_CASE("invgauss: support endpoints on log input") {
+  CHECK(cppunivariate::distributions::qinvgauss(cppunivariate::special::kNegInf, 3.0, 4.0, true, true) == 0.0);
+  CHECK(cppunivariate::distributions::qinvgauss(0.0, 3.0, 4.0, false, true) == 0.0);
+  CHECK(cppunivariate::distributions::qinvgauss(cppunivariate::special::kNegInf, 3.0, 4.0, false, true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::qinvgauss(0.0, 3.0, 4.0, true, true) == cppunivariate::special::kPosInf);
+}
+
+// At x=mp.mpf(float(1e100)), evaluate the same mpmath tails and
+// the README log density; constants are also in the independent truth table.
+TEST_CASE("invgauss: extreme observation log tails and density") {
+  CHECK(cppunivariate::distributions::dinvgauss(1e100, 3.0, 4.0, true) == doctest::Approx(-2.2222222222222225e+99).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::pinvgauss(1e100, 3.0, 4.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::pinvgauss(1e100, 3.0, 4.0, false, true) == doctest::Approx(-2.2222222222222225e+99).epsilon(1e-11));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// N=lambda z:mp.erfc(-z/mp.sqrt(2))/2
+// S=lambda x:N(-mp.sqrt(4/x)*(x/3-1))-mp.exp(mp.mpf(8)/3)*N(-mp.sqrt(4/x)*(x/3+1))
+// mp.findroot(lambda x:mp.log(S(x))-mp.log(mp.mpf(float(1e-100))),1000)
+TEST_CASE("invgauss: upper quantile stays inside its bracket") {
+  CHECK(cppunivariate::distributions::qinvgauss(1e-100,3,4,false,false) == doctest::Approx(1001.2408093734702).epsilon(1e-11));
 }

@@ -57,7 +57,7 @@ TEST_CASE("tlambda: heavy-tail standardized overflow and seeded sampling") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("tlambda: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("tlambda: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("tlambda",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtlambda(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptlambda(x, p[0], p[1], p[2], lower, log); },
@@ -84,4 +84,37 @@ TEST_CASE("tlambda: held-location half ties can attain their maximum") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> x={0,1};
   CHECK(cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,nan,0,nan).status==cppunivariate::TlambdaStatus::Ok);
+}
+
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp, math; mp.mp.dps=100
+// l=mp.mpf(0.14)
+// for p in [mp.mpf(float(-math.log(2))),mp.mpf(-10000)]:
+//     c=mp.log1p(-mp.exp(p))
+//     print((mp.expm1(l*p)-mp.expm1(l*c))/l)  # negate for upper tail
+TEST_CASE("tlambda: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::qtlambda(-0.6931471805599453, 0.0, 1.0, 0.14, true, true) == doctest::Approx(4.209158811285494e-17).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qtlambda(-10000.0, 0.0, 1.0, 0.14, false, true) == doctest::Approx(7.142857142857142).epsilon(1e-10));
+}
+
+// Generating mpmath snippet at the exact binary64 endpoint neighbour:
+// import mpmath as mp; mp.mp.dps=100
+// m,s,a=map(mp.mpf,[0.0, 1.0, 5e-10]); x=mp.mpf(-1999999999.9999998)
+// f=lambda u: (mp.expm1(a*u)-mp.expm1(a*mp.log1p(-mp.exp(u))))/a-(x-m)/s
+// u=mp.findroot(f,mp.log(1+a*(x-m)/s)/a)
+// v=mp.log1p(-mp.exp(u)); print(-mp.log(s)-mp.log(mp.exp((a-1)*u)+mp.exp((a-1)*v)),u)
+TEST_CASE("tlambda: exact binary64 finite-endpoint neighbour") {
+  CHECK(cppunivariate::distributions::dtlambda(-1999999999.9999998, 0.0, 1.0, 5e-10, true) == doctest::Approx(-74809499294.06802).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::ptlambda(-1999999999.9999998, 0.0, 1.0, 5e-10, true, true) == doctest::Approx(-74809499331.47278).epsilon(1e-10));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// f(Q(u))=1/(u**(l-1)+(1-u)**(l-1)); u->1 gives .5 for l=1, else 1.
+// API convention: apply this limit at the rounded q(0/1) endpoint as well.
+TEST_CASE("tlambda: targeted tail rounded finite-density endpoint convention") {
+  for(double l:std::vector<double>{1,2,5}) {
+    const double x=cppunivariate::distributions::qtlambda(1,0,1,l);
+    CHECK(cppunivariate::distributions::dtlambda(x,0,1,l)==(l==1?0.5:1));
+  }
 }

@@ -143,7 +143,7 @@ TEST_CASE("std package dpqr preserve logarithmic tails") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("std: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("std: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("std",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dstd(x, p[0], p[1], p[2], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pstd(x, p[0], p[1], p[2], lower, log); },
@@ -200,4 +200,27 @@ TEST_CASE("std: held profiles preserve extreme units") {
     CHECK(fit.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-8));
   }
   CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(1e-8));
+}
+
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp, math; mp.mp.dps=100
+// p=mp.mpf(float(-math.log(2))); n=mp.mpf(3)
+// f0=mp.gamma((n+1)/2)/(mp.sqrt((n-2)*mp.pi)*mp.gamma(n/2))
+// print(mp.expm1(p+mp.log(2))/(2*f0))  # omitted cubic term <1e-49
+TEST_CASE("std: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::qstd(0.5, 0.0, 1.0, 3.0, true, false) == doctest::Approx(0.0).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qstd(-0.6931471805599453, 0.0, 1.0, 3.0, true, true) == doctest::Approx(1.8213751084275876e-17).epsilon(1e-10));
+}
+
+// import mpmath as mp; mp.mp.dps=100
+// n=mp.mpf(3); s=mp.mpf(1e-300); x=mp.mpf(1e300)
+// c=(n/2-1)*mp.log(n)-mp.log(mp.beta(n/2,mp.mpf('.5')))
+// print(c-n*(mp.log(x/s)+mp.log(3)/2))
+// print(-mp.log(mp.beta(n/2,mp.mpf('.5')))-(n+1)/2*mp.log1p((x/s)**2)-mp.log(s))
+TEST_CASE("std: targeted tail scaling without overflowing z") {
+  CHECK(cppunivariate::distributions::pstd(1e300,0,1e-300,3,false,true)
+        == doctest::Approx(-4146.203362383239).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::dstd(1e300,0,1e-300,3,true)
+        == doctest::Approx(-4835.8802779927855).epsilon(1e-10));
 }

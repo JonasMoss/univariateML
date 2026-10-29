@@ -35,7 +35,7 @@ TEST_CASE("hcauchy: reference identities, tails and sampling") {
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("hcauchy: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("hcauchy: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("hcauchy",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhcauchy(x, p[0], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phcauchy(x, p[0], lower, log); },
@@ -48,4 +48,15 @@ TEST_CASE("hcauchy: held scale evaluates zeros") {
   auto r=cppunivariate::hcauchy_mle(mltest::as_span(x),2);
   CHECK(r.status==cppunivariate::HcauchyStatus::Ok);CHECK(r.sigma==2);
   CHECK(r.logLik==doctest::Approx(-2*std::log(std::acos(-1.0))));
+}
+
+
+// Generating mpmath snippet (binary64 inputs retained exactly):
+// import mpmath as mp; mp.mp.dps=100
+// x=mp.mpf(1e100)
+// print(mp.log(2*mp.atan(1/x)/mp.pi))
+// print(mp.mpf(0))  # inverse upper tail 1
+TEST_CASE("hcauchy: targeted tail and endpoint regressions") {
+  CHECK(cppunivariate::distributions::qhcauchy(1.0, 1.0, false, false) == doctest::Approx(0.0).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::phcauchy(1e+100, 1.0, false, true) == doctest::Approx(-230.71009200469402).epsilon(1e-10));
 }

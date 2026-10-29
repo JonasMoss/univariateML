@@ -31,8 +31,7 @@ TEST_CASE("lnorm dpqr: median = exp(meanlog)") {
 }
 
 // Independent high-precision oracle; see quality/truth.py.
-// Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
-TEST_CASE("lnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
+TEST_CASE("lnorm: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("lnorm",
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dlnorm(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plnorm(x, p[0], p[1], lower, log); },
@@ -90,4 +89,28 @@ TEST_CASE("lnorm held distant mean uses a scaled-width result") {
   CHECK(r.meanlog==1e300);
   CHECK(r.sdlog==doctest::Approx(1e300));
   CHECK(std::isfinite(r.logLik));
+}
+
+
+// mpmath generator: import mpmath as mp; mp.mp.dps=100
+// Q=lambda z:mp.erfc(z/mp.sqrt(2))/2
+// z=mp.findroot(lambda z:mp.log(Q(z))+800,40); [mp.exp(-z),mp.exp(z)]
+TEST_CASE("lnorm: logarithmic quantile regression") {
+  CHECK(cppunivariate::distributions::qlnorm(-800.0, 0.0, 1.0, true, true) == doctest::Approx(4.767570450553154e-18).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::qlnorm(-800.0, 0.0, 1.0, false, true) == doctest::Approx(2.0975044005568406e+17).epsilon(1e-11));
+}
+
+TEST_CASE("lnorm: support endpoints on log input") {
+  CHECK(cppunivariate::distributions::qlnorm(cppunivariate::special::kNegInf, 0.0, 1.0, true, true) == 0.0);
+  CHECK(cppunivariate::distributions::qlnorm(0.0, 0.0, 1.0, false, true) == 0.0);
+  CHECK(cppunivariate::distributions::qlnorm(cppunivariate::special::kNegInf, 0.0, 1.0, false, true) == cppunivariate::special::kPosInf);
+  CHECK(cppunivariate::distributions::qlnorm(0.0, 0.0, 1.0, true, true) == cppunivariate::special::kPosInf);
+}
+
+// At x=mp.mpf(float(1e100)), evaluate the same mpmath tails and
+// the README log density; constants are also in the independent truth table.
+TEST_CASE("lnorm: extreme observation log tails and density") {
+  CHECK(cppunivariate::distributions::dlnorm(1e100, 0.0, 1.0, true) == doctest::Approx(-26740.6680002246).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::plnorm(1e100, 0.0, 1.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
+  CHECK(cppunivariate::distributions::plnorm(1e100, 0.0, 1.0, false, true) == doctest::Approx(-26515.84871241671).epsilon(1e-11));
 }

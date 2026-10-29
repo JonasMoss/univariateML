@@ -17,19 +17,13 @@ inline bool trgamma_valid(double shape1, double shape2, double scale) {
          std::isfinite(shape2) && std::isfinite(scale);
 }
 
-// Below this anchor, omitted gamma-CDF correction terms are < 1e-304.
+// Shared unit-gamma helpers retain logarithmic arguments below underflow.
 inline double trgamma_gamma_logcdf(double logu, double a) {
-  if (logu < -700.0)
-    return special::pgamma(std::exp(-700.0), a, 1.0, true, true) + a * (logu + 700.0);
-  return special::pgamma(std::exp(logu), a, 1.0, true, true);
+  return special::gamma_log_tails(logu,a).lower;
 }
 
 inline double trgamma_gamma_logquantile(double p, double a, bool lower_tail, bool log_p) {
-  const double g = special::qgamma(p, a, 1.0, lower_tail, log_p);
-  if (!(g < std::exp(-700.0))) return std::log(g);
-  const double lp = log_p ? (lower_tail ? p : std::log(-std::expm1(p)))
-                         : (lower_tail ? std::log(p) : std::log1p(-p));
-  return -700.0 + (lp - trgamma_gamma_logcdf(-700.0, a)) / a;
+  return special::gamma_log_quantile(p,a,lower_tail,log_p);
 }
 
 inline double dtrgamma(double x, double shape1, double shape2, double scale, bool log) {
@@ -53,16 +47,9 @@ inline double dtrgamma(double x, double shape1, double shape2, double scale, boo
 
 inline double ptrgamma(double q, double shape1, double shape2, double scale, bool lower_tail,
                        bool log_p) {
-  if (!trgamma_valid(shape1, shape2, scale)) return std::numeric_limits<double>::quiet_NaN();
-  if (q <= 0.0) {
-    const double p = lower_tail ? 0.0 : 1.0;
-    return log_p ? std::log(p) : p;
-  }
-  const double logu = shape2 * (std::log(q) - std::log(scale));
-  if (!(logu < -700.0)) return special::pgamma(std::exp(logu), shape1, 1.0, lower_tail, log_p);
-  const double lp = trgamma_gamma_logcdf(logu, shape1);
-  if (lower_tail) return log_p ? lp : std::exp(lp);
-  return log_p ? std::log(-std::expm1(lp)) : -std::expm1(lp);
+  if (!trgamma_valid(shape1,shape2,scale) || std::isnan(q)) return special::kNaN;
+  const double lu=q<=0.0 ? special::kNegInf : shape2*(std::log(q)-std::log(scale));
+  return special::tail_probability(special::gamma_log_tails(lu,shape1),lower_tail,log_p);
 }
 
 inline double qtrgamma(double p, double shape1, double shape2, double scale, bool lower_tail,
