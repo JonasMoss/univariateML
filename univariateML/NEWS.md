@@ -27,6 +27,10 @@
   `mlhyper()` (hypergeometric with known draws, `k` required) and
   `mlpig()` (Poisson-inverse Gaussian).
 
+* `mldweibull()` (discrete Weibull type I) and `mlbbinom()` (beta-binomial
+  with known `size`; its `qml()` inverts the reference CDF because
+  extraDistr has no `qbbinom`).
+
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
   `mlzmlogarithmic()`; zero-inflated binomial `mlzib()`.

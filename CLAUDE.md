@@ -29,7 +29,7 @@ core.
 
 ### Status (October 2026)
 
-- 67 distributions, **one folder each** in
+- 69 distributions, **one folder each** in
   `cppunivariate/include/cppunivariate/distributions/<id>/`: `README.md`
   (front matter + prose), `mle.hpp`, `dpqr.hpp`, `adapter.cpp`, `test.cpp`,
   `test.R`, `golden.json`. See "Adding a new distribution" below. `lgamma`
@@ -45,7 +45,9 @@ core.
   argument names differ from the coefficients (hnorm uses
   `extraDistr::dtnorm` with `a = mu`). Known defects in those packages,
   and the runtime-checked workarounds (`univariateML_reference_fixes`),
-  are listed in `KNOWN_ISSUES.md`.
+  are listed in `KNOWN_ISSUES.md`. A reference without a quantile
+  function (extraDistr's beta-binomial) gets one by integer inversion of its
+  own CDF (`univariateML_reference_quantiles`).
 - Boost.Math only through `special/special.hpp`, with a no-throw policy.
 - Hand-rolled BFGS + finite-difference gradient + reparam helpers in
   `core/`; paralogis, std, sstd, ged, sged use this path (snorm is an
