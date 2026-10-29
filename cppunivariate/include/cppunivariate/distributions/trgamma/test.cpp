@@ -311,3 +311,24 @@ TEST_CASE("trgamma: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtrgamma(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtrgamma(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("P2 trgamma golden holds") {
+ auto g=mltest::load_distribution_golden("trgamma");
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+for(int mask=0;mask<4;++mask){double a=mask&1?g.estimates.at("shape1"):nan,b=mask&2?g.estimates.at("shape2"):nan;auto r=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(g.data),g.estimates.at("scale"),a,b);REQUIRE(r.status==cppunivariate::TrGammaStatus::Ok);
+ CHECK(r.scale==g.estimates.at("scale"));
+ if(mask&1)CHECK(r.shape1==a);
+ if(mask&2)CHECK(r.shape2==b);
+ CHECK(r.logLik>=g.logLik-1e-5);}
+}
+
+TEST_CASE("P2 trgamma held-scale power root near its endpoint") {
+ std::vector<double> x(5,1+1e-12);
+ auto r=cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(x),1,2);
+ REQUIRE(r.status==cppunivariate::TrGammaStatus::Ok);
+ CHECK(r.shape1==2);
+ CHECK(r.scale==1);
+ CHECK(r.shape2>1e8);
+ const double u=r.shape2*std::log(x[0]);
+ CHECK(std::abs(1+2*u-u*std::exp(u))<1e-8);
+}

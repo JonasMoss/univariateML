@@ -195,3 +195,62 @@ test_that("trgamma log quantiles and large power transforms remain representable
   expect_true(rfix$broken())
   expect_false(exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
 })
+
+
+test_that("P2 trgamma holds agree with independent multistart reference likelihoods", {
+  pars <- c(shape1=3, shape2=1.5, scale=2)
+  thresholds <- c()
+  regular <- setdiff(names(pars), thresholds)
+  density <- actuar::dtrgamma
+  samples <- lapply(c(3, 20, 100), function(n)
+    do.call(actuar::qtrgamma, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+  samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
+  # These samples deliberately include proper limit-model data.
+  samples[[5]] <- qexp(((1:20)-.5)/20)
+  samples[[6]] <- c(.3,.8,1,1,1)*pars["scale"]
+  samples[[7]] <- c(1.1,1.4,2,3,5)*pars["scale"]
+  for (x in samples) for (mask in seq_len(2^length(regular)-1)) {
+    held <- c(thresholds, regular[as.logical(intToBits(mask)[seq_along(regular)])])
+    free <- setdiff(names(pars), held)
+    args <- as.list(pars[held])
+    fit <- tryCatch(do.call(mltrgamma, c(list(x=x),args)), error=identity)
+    always <- any(c("shape1","shape2") %in% held)
+    if(always) expect_false(inherits(fit,"error"),info=paste(length(x),paste(held,collapse=",")))
+    if (inherits(fit,"error")) {
+      expect_match(conditionMessage(fit), "[Ll]imit|[Uu]se `ml|[Uu]nbounded|[Nn]o MLE|[Nn]o verified|unresolved|failed|does not exist")
+      next
+    }
+    expect_identical(unname(as.numeric(fit[held])),unname(pars[held]))
+    expect_true(all(held %in% attr(fit,"fixed")))
+    objective <- function(z) {
+      p <- pars; p[free] <- exp(z)
+      value <- suppressWarnings(-sum(do.call(density,c(list(x=x,log=TRUE),as.list(p)))))
+      if(is.finite(value)) value else 1e100
+    }
+    actual <- attr(fit,"logLik")
+    expect_equal(actual, -objective(log(fit[free])), tolerance=1e-7)
+    if(length(free)) {
+      # Starts depend only on reference parameters and observations.
+      starts <- lapply(c(-1,0,1), function(s) log(pars[free])+s)
+      oracle <- vapply(starts,function(z) {
+        o <- suppressWarnings(nlminb(z,objective,control=list(iter.max=1000,eval.max=3000,rel.tol=1e-12)))
+        -o$objective
+      },0.)
+      expect_gte(actual, max(oracle)-1e-6*length(x))
+      expect_lte(actual, max(oracle)+1e-5*length(x))
+    }
+  }
+})
+
+test_that("P2 trgamma validates new held values", {
+  for (v in c(0,-1,Inf,NA_real_)) expect_error(mltrgamma(c(.2,.3,.5), scale=v),"positive|finite")
+})
+
+ test_that("P2 trgamma held scale conditional shapes on constant data", {
+   for(args in list(list(scale=1,shape1=2),list(scale=1,shape2=3),list(scale=1,shape1=2,shape2=3))) {
+     f <- do.call(mltrgamma,c(list(x=rep(2,5)),args))
+     expect_identical(unname(as.numeric(f[names(args)])),unname(unlist(args)))
+     expect_true(is.finite(attr(f,"logLik")))
+   }
+   expect_error(mltrgamma(rep(1,5),scale=1,shape1=2),"unbounded")
+ })

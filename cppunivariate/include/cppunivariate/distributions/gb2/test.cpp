@@ -84,3 +84,18 @@ TEST_CASE("gb2: log beta tails beyond probability underflow") {
     CHECK(cppunivariate::distributions::pgb2(q,20,2,20,1,lower,true)==doctest::Approx(lp).epsilon(2e-11));
   }
 }
+
+TEST_CASE("P2 gb2 constant conditional shape fits") {
+ std::vector<double> x(5,2.0);
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(int mask=0;mask<3;++mask) {
+   double q=mask==0?nan:2,a=mask==2?nan:3,p=mask==1?nan:2;
+   auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,q,a,p,1);
+   REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+   CHECK(std::isfinite(r.logLik));
+   CHECK(r.scale==1);
+   if(mask!=0) CHECK(r.shape1==q);
+   if(mask!=1) CHECK(r.shape3==p);
+   if(mask!=2) CHECK(r.shape2==a);
+ }
+}

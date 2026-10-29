@@ -23,6 +23,8 @@
 // reciprocal fit passes -log(x) without forming 1/x.
 
 #pragma once
+#include "../burr/mle.hpp"
+#include <array>
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -527,8 +529,10 @@ inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
     const trgamma_detail::Cgf c = trgamma_detail::cgf(d, t);
     int iterations = 0;
     const double a = std::isnan(shape1) ? trgamma_detail::gamma_shape(c.K, iterations) : shape1;
-    return trgamma_detail::make_result(d, a, t, c.K, trgamma_detail::delta_at(t, a, c.K),
+    auto result = trgamma_detail::make_result(d, a, t, c.K, trgamma_detail::delta_at(t, a, c.K),
                                        iterations, TrGammaStatus::Ok);
+    result.shape2 = shape2;
+    return result;
   }
   if (!std::isnan(shape1)) return trgamma_detail::fit_fixed_shape1(d, shape1, tol, maxit);
   return trgamma_detail::fit_free(d, tol, maxit);
@@ -560,3 +564,48 @@ inline TrGammaResult trgamma_mle(span x, double tol = 1e-10, int maxit = 100,
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+
+// Fixed scale profile. The gamma-shape score is strictly decreasing;
+// at fixed gamma shape the power score is strictly decreasing as well.
+inline TrGammaResult trgamma_mle_fixed_scale(span x,double scale,double a=std::numeric_limits<double>::quiet_NaN(),double b=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=100){
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ TrGammaResult bad{a,b,scale,std::log(scale),nan,0,TrGammaStatus::InvalidData};
+ if(x.size()==0||!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
+ for(double v:{a,b,scale})if((!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))||std::isnan(scale)){bad.status=TrGammaStatus::InvalidFixed;return bad;}
+ std::vector<double> z;double sum=0,jac=0,mx=-INFINITY;
+ for(double v:x){if(!(v>0)||!std::isfinite(v))return bad;double w=std::log(v)-std::log(scale);z.push_back(w);sum+=w;jac-=std::log(v);mx=std::max(mx,w);}
+ const double n=static_cast<double>(x.size());
+ if(std::isnan(b)&&sum==0&&mx==0){bad.logLik=INFINITY;return bad;}
+ auto at=[&](double power){
+   double aa=a,ex=0,exz=0;
+   for(double v:z){ex+=std::exp(power*v);exz+=power*v*std::exp(power*v);}
+   if(std::isnan(aa))aa=std::exp(burr_hold_detail::root([&](double u){return power*sum/n-special::digamma(std::exp(u));}));
+   const double ll=n*(std::log(power)-special::lgamma(aa))+aa*power*sum-ex+jac;
+   const double score=1+aa*power*sum/n-exz/n;
+   return std::array<double,3>{{aa,ll,score}};
+ };
+ if(!std::isnan(b)){auto v=at(b);return {v[0],b,scale,std::log(scale),v[1],0,std::isfinite(v[1])?TrGammaStatus::Ok:TrGammaStatus::IterationFailure};}
+ if(!std::isnan(a)){
+   b=std::exp(burr_hold_detail::root([&](double logb){return at(std::exp(logb))[2];}));
+   auto v=at(b);
+   return {a,b,scale,std::log(scale),v[1],0,
+     std::isfinite(v[1])&&std::abs(v[2])<std::max(tol,1e-8)?TrGammaStatus::Ok:TrGammaStatus::IterationFailure};
+ }
+ double best=-INFINITY,ba=nan,bb=nan,residual=INFINITY;
+ double unit=0;for(double v:z)unit=std::max(unit,std::abs(v));
+ const double lo=-18-std::log(unit),hi=18-std::log(unit);auto prev=at(std::exp(lo));
+ for(int i=1;i<=720;++i){double h=lo+(hi-lo)*i/720,l=h-(hi-lo)/720;auto cur=at(std::exp(h));
+   if(prev[2]>0&&cur[2]<0){
+     for(int j=0;j<100;++j){double m=(l+h)/2;auto v=at(std::exp(m));if(v[2]>0)l=m;else h=m;}
+     double power=std::exp((l+h)/2);auto v=at(power);
+     if(v[1]>best){best=v[1];ba=v[0];bb=power;residual=std::abs(v[2]);}
+   }prev=cur;
+ }
+ if(std::isnan(a)&&mx<=0&&sum<0){double face=n*(std::log(-n/sum)-1)+jac-std::count(z.begin(),z.end(),0.0);
+   if(face>=best-1e-8*n)return {nan,nan,scale,std::log(scale),face,720,TrGammaStatus::PowerBoundary};}
+ return {ba,bb,scale,std::log(scale),best,720,std::isfinite(best)&&residual<std::max(tol,1e-8)?TrGammaStatus::Ok:TrGammaStatus::IterationFailure};
+}
+
+}
