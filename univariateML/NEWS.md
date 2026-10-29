@@ -43,6 +43,11 @@
   fitters as members and stops with the winning limit: generalized gamma,
   its inverse, lognormal, Pareto, power, or double Pareto).
 
+* `mlcmp()` (Conway–Maxwell–Poisson) with its own `dcmp()`, `pcmp()`,
+  `qcmp()`, `rcmp()` on a normalizing constant with certified truncation
+  bounds; the fitter decides existence exactly and names the geometric or
+  adjacent two-point limit otherwise.
+
 * `mlcmb()` (Conway–Maxwell–binomial with known `size`; `nu` may be any
   real number, `nu = 1` is the binomial).
 
