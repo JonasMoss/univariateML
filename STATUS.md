@@ -34,11 +34,16 @@ own rationale live in `roadmap/`; work in flight is on the board
   maintainer has been unresponsive; a draft actuar patch for
   `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`.
 - Tier 4 below: start it or not.
-- Parameter rules (R1–R8) are agreed and designed:
-  `roadmap/2026-10-29-parameter-rules.md`. P0 (existence under every hold)
-  is done: `notes/evaluations/2026-10-29-p0-summary.md`. It proposes
-  amendments A1–A7 (TASK-86, needs decision), which P1 depends on. C5 and
-  C6 were picked in the design and also await a look.
+- Parameter rules (R1–R8, amendments A1–A7 adopted):
+  `roadmap/2026-10-29-parameter-rules.md`.
+  - Done: P0 (existence analysis, `notes/evaluations/2026-10-29-p0-summary.md`)
+    and P1 (schema, required defaults, conformance test; TASK-80).
+  - Next: P2 holds (TASK-81); P3 restrictions, closure (R7a), domains
+    and failed-optimizer stops (TASK-82); P4 parametrization (TASK-83);
+    P5 docs (TASK-84).
+  - C5 and C6 were picked in the design and still await a look.
+  - Refinement: the missing-coefficient message offers `NULL` even where
+    estimating is unsupported (e.g. pareto2); derive that from `holds:`.
 
 ## Coverage: tier 4 (vector parameters)
 
@@ -56,10 +61,9 @@ own rationale live in `roadmap/`; work in flight is on the board
 
 ## Robustness
 
-- TASK-85, fitter bugs found by P0: `mlbinom` free `size` not the maximum;
-  `mlkumar` constant data throws a Boost exception; `mlrayleigh` with zeros
-  returns logLik `-Inf`; `mltriang` constant data with held `c`; gev and
-  frechet tie rule too strict.
+- TASK-85 (P0 fitter bugs) is fixed. Open from it: binomial size search
+  capped at 1e6; zib/ztbinom size grids uncertified; free gev/frechet
+  reject the tie case k = n/2 conservatively.
 - TASK-77 (scale equivariance) is fixed: f9e1222, with
   `test_scale_equivariance.R`.
 - TASK-75, cross-machine fragility. On simbox (gcc 15.2 or 13.3, BH 1.90,
