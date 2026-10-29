@@ -33,6 +33,10 @@
   with known `size`; its `qml()` inverts the reference CDF because
   extraDistr has no `qbbinom`).
 
+* `mlsgomp()` (shifted Gompertz; the exponential is the attained member
+  `eta = 0`) with its own `dsgomp()`, `psgomp()`, `qsgomp()`, `rsgomp()`
+  (extraDistr has no quantile function and underflows in the tails).
+
 * `mlgb2()` (generalized beta of the second kind, actuar's transformed beta;
   contains the Burr, inverse Burr, beta prime, paralogistic and Lomax
   fitters as members and stops with the winning limit: generalized gamma,
