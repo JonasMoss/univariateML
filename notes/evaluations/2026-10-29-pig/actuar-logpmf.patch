@@ -1,0 +1,94 @@
+--- a/src/poisinvgauss.c
++++ b/src/poisinvgauss.c
+@@ -28,61 +28,43 @@
+ #include "dpq.h"
+ #include "actuar.h"
+ 
++/* Draft: retain the public validation and dispersion parameterization.
++ * Accumulate log ratios, never unscaled masses. */
++static double pig_logadd(double a, double b)
++{
++    double m = fmax(a, b);
++    if (!R_FINITE(m)) return m;
++    return m + log1p(exp(fmin(a, b) - m));
++}
++
+ double dpoisinvgauss_raw(double x, double mu, double phi, int give_log)
+ {
+-/* Here assume that x is integer, 0 < x < Inf, mu > 0, 0 < phi < Inf */
+-
+-    int i;
+-    double p, pi1m, pi2m;
+-    double twophi = phi + phi;
+-
+-    /* limiting case mu = Inf with simpler recursive formulas */
++    double lp, lr, la, lb, i;
+     if (!R_FINITE(mu))
+     {
+-	p = -sqrt(2/phi);	      /* log p[0] */
+-	if (x == 0.0)
+-	    return ACT_D_exp(p);
+-
+-	pi2m = exp(p);		      /* p[i - 2] = p[0]*/
+-	p = p - (M_LN2 + log(phi))/2; /* log p[1] */
+-	if (x == 1.0)
+-	    return ACT_D_exp(p);
+-
+-	pi1m = exp(p);		/* p[i - 1] = p[1] */
+-	for (i = 2; i <= x; i++)
+-	{
+-	    p = (1 - 1.5/i) * pi1m + pi2m/twophi/(i * (i - 1));
+-	    pi2m = pi1m;
+-	    pi1m = p;
+-	}
+-	return ACT_D_val(p);
++        lb = -M_LN2 - log(phi);
++        lp = -exp((M_LN2 - log(phi))/2.0);
++        la = 0.0;
++        lr = lb/2.0;
+     }
+-
+-    /* else: "standard" case with mu < Inf */
+-    double A, B;
+-    double mu2 = mu * mu;
+-    double twophimu2 = twophi * mu2;
+-
+-    p = (1.0 - sqrt(1.0 + twophimu2))/phi/mu; /* log p[0] */
+-    if (x == 0.0)
+-	return ACT_D_exp(p);
+-
+-    pi2m = exp(p);			      /* p[i - 2] = p[0]*/
+-    p = log(mu) + p - log1p(twophimu2)/2.0;   /* log p[1] */
+-    if (x == 1.0)
+-	return ACT_D_exp(p);
+-
+-    pi1m = exp(p);		              /* p[i - 1] = p[1] */
+-    A = 1.0/(1.0 + 1.0/twophimu2);	      /* constant in first term */
+-    B = mu2/(1.0 + twophimu2);		      /* constant in second term */
+-    for (i = 2; i <= x; i++)
++    else
+     {
+-	p = A * (1 - 1.5/i) * pi1m + (B * pi2m)/(i * (i - 1));
+-	pi2m = pi1m;
+-	pi1m = p;
++        double lm = log(mu);
++        double lu = M_LN2 + log(phi) + 2.0*lm;
++        double lv = pig_logadd(0.0, lu);
++        lp = -exp(M_LN2 + lm - pig_logadd(0.0, lv/2.0));
++        lr = lm - lv/2.0;
++        la = lu - lv;
++        lb = 2.0*lm - lv;
+     }
+-
+-    return ACT_D_val(p);
++    if (x >= 1.0) lp += lr;
++    for (i = 2.0; i <= x; i += 1.0)
++    {
++        lr = pig_logadd(la + log1p(-1.5/i),
++                        lb - log(i) - log(i - 1.0) - lr);
++        lp += lr;
++    }
++    return give_log ? lp : exp(lp);
+ }
+ 
+ double dpoisinvgauss(double x, double mu, double phi, int give_log)

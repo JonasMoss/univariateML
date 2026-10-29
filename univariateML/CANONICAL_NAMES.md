@@ -72,6 +72,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | norm       | Normal                  | mean, sd           | stats::dnorm              | (-∞, ∞) open     |
 | paralogis  | Paralogistic            | shape, scale [†]   | actuar::dparalogis        | (0, ∞) open      |
 | pareto     | Pareto                  | a, b               | extraDistr::dpareto       | [0, ∞)           |
+| pig        | Poisson-inverse Gaussian | mean, shape       | actuar::dpoisinvgauss      | [0, ∞) integer   |
 | pois       | Poisson                 | lambda             | stats::dpois              | [0, ∞) integer   |
 | power      | PowerDist               | alpha, beta        | extraDistr::dpower        | [0, ∞)           |
 | rayleigh   | Rayleigh                | sigma              | extraDistr::drayleigh     | [0, ∞)           |
