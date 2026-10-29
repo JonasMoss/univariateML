@@ -49,3 +49,58 @@ test_that("zib accepts fixed zero size for all-zero data", {
  expect_equal(attr(logLik(fit),"df"),2L)
  expect_equal(attr(fit,"logLik"),0)
 })
+
+ test_that("zib: new holds match reference-density integer and multistart oracles", {
+  set.seed(810)
+  samples <- c(lapply(c(20,100),function(n) extraDistr::rzib(n,8,.4,.3)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
+  for(x in samples) {
+    for(fixed_size in c(TRUE,FALSE)) {
+      held <- list(prob=.4)
+      for (mixture in c(FALSE,TRUE)) {
+      held <- list(prob=.4); if(mixture) held$pi <- .3
+      args <- c(list(x=x,size=if(fixed_size) 8 else NULL),held)
+      fit <- suppressWarnings(do.call(mlzib,args))
+      sizes <- if(fixed_size) 8 else seq(max(x),200)
+      ll <- function(size, mixture=.3) sum(extraDistr::dzib(x,size=size,prob=.4, pi=mixture,log=TRUE))
+      oracle <- max(vapply(sizes,function(size) {
+        if(mixture) return(ll(size))
+        max(c(ll(size,0),ll(size,1),vapply(c(.05,.4,.9),function(start) -optim(start,function(p) -ll(size,p),method="L-BFGS-B",lower=1e-9,upper=1-1e-9)$value,0.)))
+      },0.))
+      expect_equal(attr(fit,"logLik"),oracle,tolerance=1e-6)
+      for(name in names(held)) expect_identical(unname(fit[name]),held[[name]])
+      expect_setequal(attr(fit,"fixed"),c(if(fixed_size) "size",names(held)))
+      }
+    }
+  }
+  for(p in c(-.1,1.1,NA_real_,Inf)) expect_error(mlzib(c(1,2),size=8,prob=p),"prob")
+  expect_error(mlzib(c(1,2),size=8,prob=1))
+  expect_error(mlzib(c(1,2),size=NULL,prob=0))
+})
+
+test_that("zib: held pi profiles the remaining probability", {
+ set.seed(22)
+ for(n in c(20,100)) for(x in list(rbinom(n,8,.4),c(rep(0,n/2),rbinom(n/2,8,.4)),c(0,1,2,2,3),rep(0,n))) {
+   for(mix in c(0,.2,.8)) {
+     f<-suppressWarnings(mlzib(x,size=8,pi=mix))
+     ll<-function(p)sum(extraDistr::dzib(x,size=8,prob=p,pi=mix,log=TRUE))
+     oracle<-max(c(ll(0),ll(1),vapply(c(.02,.2,.5,.9,.99),function(start) -optim(start,function(p)-ll(p),method="L-BFGS-B",lower=1e-9,upper=1-1e-9)$value,0.)))
+     expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
+     expect_identical(unname(f["pi"]),mix)
+   }
+ }
+ for(v in c(-1,Inf,NA_real_)) expect_error(mlzib(1:3,size=8,pi=v),"pi")
+ expect_error(mlzib(1:3,size=8,pi=1))
+})
+
+test_that("zib: free-size held-mixture fits and Poisson escapes", {
+ for(x in list(c(0,1,2,2,3),c(1,2,3,3,4))) {
+  f<-mlzib(x,size=NULL,pi=.2)
+  ll<-function(k,p)sum(extraDistr::dzib(x,size=k,prob=p,pi=.2,log=TRUE))
+  oracle<-max(vapply(seq(max(x),50),function(k)max(c(ll(k,0),ll(k,1),vapply(c(.1,.5,.9),function(start)-optim(start,function(p)-ll(k,p),method="L-BFGS-B",lower=1e-8,upper=1-1e-8)$value,0.))),0.))
+  expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
+ }
+ expect_error(mlzib(c(1,1,1,2,3,7,12),size=NULL,pi=0),"mlzip")
+ f<-mlzib(rep(0,3),size=8,prob=.4,pi=.6)
+ expect_identical(unname(f[c("prob","pi")]),c(.4,.6))
+ expect_error(mlzib(1:3,size=8,prob=.4,iterlim=0))
+})

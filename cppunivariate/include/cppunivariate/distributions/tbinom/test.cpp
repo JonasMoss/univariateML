@@ -41,3 +41,17 @@ TEST_CASE("tbinom: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtbinom(x, p[3], p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtbinom(rng, p[3], p[0], p[1], p[2]); });
 }
+
+TEST_CASE("tbinom: free bounds and fixed-probability integer tail") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ const std::vector<int> x{1,2,2,3,4},constant{3,3};
+ const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},nan,nan,8);
+ CHECK(f.a==0);CHECK(f.b==4);CHECK(f.size==8);
+ CHECK(f.status==cppunivariate::truncated_detail::Status::Ok);
+ const auto h=cppunivariate::tbinom_design_mle({x.data(),x.size()},nan,nan,nan,.4);
+ REQUIRE(h.status==cppunivariate::truncated_detail::Status::Ok);
+ for(int k=4;k<100;++k)CHECK(h.logLik>=cppunivariate::tbinom_mle({x.data(),x.size()},0,4,k,.4).logLik-1e-9);
+ const auto c=cppunivariate::tbinom_design_mle({constant.data(),constant.size()},nan,nan,8);
+ CHECK(c.prob==.5);CHECK(c.logLik==0);
+ CHECK(cppunivariate::tbinom_design_mle({constant.data(),constant.size()},-1,3,nan,.4).status==cppunivariate::truncated_detail::Status::UpperPointMass);
+}

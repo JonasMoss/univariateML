@@ -22,6 +22,8 @@ r:
   density: actuar::dinvburr
   sampler: actuar::rinvburr
   control:
+    shape2: Known positive finite coefficient; NULL estimates it.
+    shape1: Known positive finite coefficient; NULL estimates it.
     abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
     gradtol: Gradient tolerance for the mean profiled negative log likelihood.
     iterlim: Maximum BFGS iterations per start.
@@ -31,6 +33,15 @@ r:
     reltol: Relative objective tolerance for BFGS.
 log_density: log(shape1) + log(shape2) - log(x) + shape2*log(scale/x) - (shape1+1)*log(1+(scale/x)**shape2)
 limits:
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: Unbounded
+    message: unbounded
+  - model: invweibull
+    fixed: [shape2]
+    when: Fixed-power Lomax profile is maximised on its exponential face
+    status: InvWeibullBoundary
   - model: 'invweibull'
     when: '$\mathrm{shape1} \to \infty$ with $\mathrm{scale}\,\mathrm{shape1}^{1/\mathrm{shape2}}$ fixed'
     status: 'InvWeibullBoundary'
@@ -48,15 +59,7 @@ references:
 examples: |
   set.seed(42)
   mlinvburr(actuar::rinvburr(1000, shape1 = 1, shape2 = 2, scale = 3))
-holds:
-- held:
-  - shape1
-  status: not-implemented
-  reason: The adapter does not accept `shape1`; this hold is not implemented (P2).
-- held:
-  - shape2
-  status: not-implemented
-  reason: The adapter does not accept `shape2`; this hold is not implemented (P2).
+holds: []
 ---
 
 The inverse Burr distribution is the distribution of the reciprocal of a Burr type XII variable.
@@ -73,3 +76,5 @@ log likelihood. The fixed-scale path profiles shape1 and refines shape2
 by Newton iteration, with a profile-likelihood fallback start. Starting
 controls `shape10`, `shape20`, `scale0`, and BFGS tolerances apply only
 to the free-scale path. The fixed-scale limit has endpoint `s`.
+
+Held-shape existence conditions are transported from Burr by reciprocation. The exponential face on x^(-shape2) is the inverse Weibull with shape2 held. A free shape2 is unbounded when every observation equals the held scale.

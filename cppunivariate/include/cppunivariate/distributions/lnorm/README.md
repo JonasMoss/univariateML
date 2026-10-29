@@ -16,21 +16,20 @@ params:
 r:
   density: stats::dlnorm
   sampler: stats::rlnorm
-  control: {}
+  control:
+    meanlog: Optional held meanlog; NULL estimates it.
+    sdlog: Optional held sdlog; NULL estimates it.
 log_density: -log(x) - log(sdlog) - log(2*pi)/2 - (log(x)-meanlog)**2/(2*sdlog**2)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York."
 examples: |
   mllnorm(precip)
-holds:
-- held:
-  - meanlog
-  status: not-implemented
-  reason: The adapter does not accept `meanlog`; this hold is not implemented (P2).
-- held:
-  - sdlog
-  status: not-implemented
-  reason: The adapter does not accept `sdlog`; this hold is not implemented (P2).
+limits:
+- name: unbounded likelihood
+  fixed: [meanlog]
+  when: Every log observation equals held meanlog.
+  status: Unbounded
+  message: unbounded
 ---
 
 The lognormal distribution models positive quantities whose logarithms follow a normal distribution.
@@ -38,3 +37,5 @@ The lognormal distribution models positive quantities whose logarithms follow a 
 ## Details
 
 The parameters describe the normal distribution of the logarithms: `meanlog` is their sample mean and `sdlog` uses divisor $n$.
+
+With meanlog held and sdlog free, the likelihood is unbounded if every log observation equals meanlog. A positive held sdlog permits constant data.

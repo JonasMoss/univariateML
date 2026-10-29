@@ -78,3 +78,32 @@ TEST_CASE("betapr: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qbetapr(x, p[0], p[1], lower, log, p[2]); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rbetapr(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("betapr: every new hold and exact scale score") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{.05,.05,.3,2,15};
+  for(double a:{nan,.7})for(double b:{nan,1.2})for(double s:{nan,1.3}) {
+    if(std::isnan(a)&&std::isnan(b))continue;
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),a,b,s);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+    if(!std::isnan(a))CHECK(r.alpha==a);
+    if(!std::isnan(b))CHECK(r.beta==b);
+    if(!std::isnan(s))CHECK(r.scale==s);
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dbetapr(v,r.alpha,r.beta,true,r.scale);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-9));
+    if(std::isnan(s)) {
+      double score=0;for(double v:x)score+=-r.alpha+(r.alpha+r.beta)*v/(v+r.scale);
+      CHECK(std::abs(score)<1e-5);
+    }
+  }
+  CHECK(cppunivariate::betapr_mle_holds(mltest::as_span(x),0,nan,nan).status==cppunivariate::BetaPrimeStatus::InvalidStart);
+}
+TEST_CASE("betapr: held shapes retain their own escaping faces") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{2,2};
+  const auto g=cppunivariate::betapr_mle_holds(mltest::as_span(x),.7,nan,nan);
+  CHECK(g.status==cppunivariate::BetaPrimeStatus::GammaBoundary);
+  CHECK(g.logLik==doctest::Approx(2*(.7*std::log(.7/2)-std::lgamma(.7)-.3*std::log(2.)-.7)));
+  const auto i=cppunivariate::betapr_mle_holds(mltest::as_span(x),nan,1.2,nan);
+  CHECK(i.status==cppunivariate::BetaPrimeStatus::InvGammaBoundary);
+}

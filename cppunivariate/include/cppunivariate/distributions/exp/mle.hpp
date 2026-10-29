@@ -10,9 +10,12 @@
 
 namespace cppunivariate {
 
+enum class ExpStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct ExpResult {
   double rate;
   double logLik;
+  ExpStatus status = ExpStatus::Ok;
 };
 
 inline ExpResult exp_mle(span x) {
@@ -31,6 +34,14 @@ inline ExpResult exp_mle(span x) {
   }
   const double logLik = dn * (std::log(rate) - 1.0);
   return {rate, logLik};
+}
+
+inline ExpResult exp_mle(span x,double rate) {
+  if(std::isnan(rate))return exp_mle(x);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(!(rate>0 && std::isfinite(rate)) || x.size()==0)return {nan,nan,ExpStatus::InvalidInput};
+  long double total=0;for(double v:x){if(!(v>=0 && std::isfinite(v)))return {nan,nan,ExpStatus::InvalidInput};total+=v;}
+  return {rate,static_cast<double>(x.size()*std::log(rate)-rate*total)};
 }
 
 }  // namespace cppunivariate

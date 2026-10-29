@@ -40,11 +40,16 @@ inline double logpmf(double k, double lambda) {
 }
 } // namespace pois_detail
 
-inline PoisResult pois_mle(ispan x) {
+inline PoisResult pois_mle(ispan x, double fixed=std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN};
 
+  if(!std::isnan(fixed)) {
+    if(!(fixed>=0 && std::isfinite(fixed)))return {kNaN,kNaN};
+    double ll=0;for(int v:x) {if(v<0)return {kNaN,kNaN};ll+=pois_detail::logpmf(v,fixed);}
+    return {fixed,ll};
+  }
   double sum = 0.0;
   for (auto v : x) sum += static_cast<double>(v);
   const double lambda = sum / static_cast<double>(n);

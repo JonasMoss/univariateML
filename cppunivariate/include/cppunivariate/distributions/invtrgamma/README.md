@@ -22,10 +22,23 @@ r:
   density: actuar::dinvtrgamma
   sampler: actuar::rinvtrgamma
   control:
+    scale: Known positive finite coefficient; NULL estimates it.
+    shape2: Known positive finite coefficient; NULL estimates it.
+    shape1: Known positive finite coefficient; NULL estimates it.
     reltol: Tolerance in `log(shape2)` for the one-dimensional profile search (free `shape2`).
     iterlim: Maximum number of iterations per root of the profile score.
 log_density: log(shape2) + shape1*shape2*log(scale/x) - (scale/x)**shape2 - log(x) - loggamma(shape1)
 limits:
+  - name: fixed-endpoint Pareto face
+    fixed: [scale]
+    when: shape1 tends to zero and shape2 tends to infinity at fixed product
+    status: ParetoBoundary
+    message: fixed-endpoint Pareto face
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: InvalidData
+    message: unbounded
   - model: lnorm
     when: '$\mathrm{shape1} \to \infty$ with $\mathrm{shape2}\sqrt{\mathrm{shape1}}$ and $\log \mathrm{scale} - \log(\mathrm{shape1})/\mathrm{shape2}$ fixed'
     status: LognormalBoundary
@@ -38,11 +51,7 @@ references:
 examples: |
   set.seed(1)
   mlinvtrgamma(actuar::rinvtrgamma(500, shape1 = 2, shape2 = 1.5, scale = 0.5))
-holds:
-- held:
-  - scale
-  status: not-implemented
-  reason: The adapter does not accept `scale`; this hold is not implemented (P2).
+holds: []
 ---
 
 The inverse transformed gamma distribution is the distribution of the
@@ -69,3 +78,5 @@ parameters. The derivation and numerical search qualifications are in
 `notes/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
 
 actuar's `invtrgamma` functions lose accuracy at extreme shapes (density cancellation, infinite or zero quantiles, underflowing CDFs); see `KNOWN_ISSUES.md`. `logLik` is computed independently in C++.
+
+Held-scale fits use the reciprocal transformed gamma profile. With shape2 also held shape1 has one score root; with shape1 held the power likelihood is strictly concave unless every observation equals scale. The held-scale Pareto face is compared numerically.

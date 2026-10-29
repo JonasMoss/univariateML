@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace cppunivariate {
-enum class GevStatus { Ok, InvalidData, InvalidShape, IterationFailure };
+enum class GevStatus { Ok, InvalidData, InvalidShape, IterationFailure, NoMLE };
 struct GevResult {
   double mu, sigma, xi, logLik;
   int iterations;
@@ -27,6 +27,121 @@ inline double gev_loglik(span x, double mu, double sigma, double xi) {
     ll-=(1+xi)*L+std::exp(-L);
   }
   return ll;
+}
+// Hold-specific scalar search. Enumerate sampled local maxima and refine
+// each bracket; this is numerical root discovery, not a global certificate.
+namespace extreme_detail {
+struct Maximum { double x, value; int iterations; bool ok; };
+template<class F>
+inline Maximum maximize(F f, double lo, double hi, double tol, int maxit,
+                        bool closed=true) {
+  const int cells=128;
+  Maximum best{lo,f(lo),0,false};
+  auto keep=[&](double x, double value, int it, bool ok) {
+    if(std::isfinite(value) && (!std::isfinite(best.value) || value>best.value))
+      best={x,value,it,ok};
+  };
+  if(closed && std::isfinite(best.value)) best.ok=true;
+  double a=lo, fa=best.value, b=lo+(hi-lo)/cells, fb=f(b);
+  for(int j=2;j<=cells;++j) {
+    const double c=lo+(hi-lo)*j/cells, fc=f(c);
+    if(std::isfinite(fb) && fb>=fa && fb>=fc) {
+      double l=a,h=c;
+      double u=h-(h-l)*.6180339887498949,v=l+(h-l)*.6180339887498949;
+      double fu=f(u),fv=f(v);
+      int it=0;
+      for(;it<maxit && h-l>tol*(1+std::abs((h+l)/2));++it) {
+        if(fu>fv) {h=v;v=u;fv=fu;u=h-(h-l)*.6180339887498949;fu=f(u);}
+        else {l=u;u=v;fu=fv;v=l+(h-l)*.6180339887498949;fv=f(v);}
+      }
+      const double x=(l+h)/2;
+      keep(x,f(x),it,it<maxit);
+    }
+    a=b;fa=fb;b=c;fb=fc;
+  }
+  if(closed) keep(hi,fb,0,true);
+  // An unresolved noncompact edge is a failure, never a returned fit.
+  if(!closed && (f(lo)>best.value || f(hi)>best.value)) best.ok=false;
+  if(maxit<2) best.ok=false;
+  return best;
+}
+} // namespace extreme_detail
+
+// Fixed location and/or scale, standardized by the caller.
+inline GevResult gev_held_profile(span x,double mu,double sigma,double xi,
+                                  double tol,int maxit) {
+  const bool hm=!std::isnan(mu), hs=!std::isnan(sigma);
+  if(hm && hs) return {mu,sigma,xi,gev_loglik(x,mu,sigma,xi),0,GevStatus::Ok};
+  double low=0;
+  if(hm) for(double v:x) low=std::max(low,-xi*(v-mu));
+  auto location=[&](double u) {
+    const double pivot=xi>=0 ? x[0] : x[x.size()-1];
+    return pivot-sigma*(xi==0 ? u : std::expm1(xi*u)/xi);
+  };
+  if(hs && xi==0) {
+    double se=0;
+    for(double v:x) se+=std::exp(-(v-x[0])/sigma);
+    mu=x[0]-sigma*std::log(se/x.size());
+    return {mu,sigma,xi,gev_loglik(x,mu,sigma,xi),0,GevStatus::Ok};
+  }
+  auto objective=[&](double u) {
+    return gev_loglik(x,hm ? mu : location(u),hs ? sigma : low+std::exp(u),xi);
+  };
+  const auto opt=extreme_detail::maximize(objective,-32,32,tol,maxit,false);
+  return {hm ? mu : location(opt.x),hs ? sigma : low+std::exp(opt.x),xi,
+          opt.value,opt.iterations,opt.ok ? GevStatus::Ok : GevStatus::IterationFailure};
+}
+inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,double sigma) {
+  GevResult bad{mu,sigma,xi,0,0,GevStatus::InvalidData};
+  const bool hm=!std::isnan(mu), hs=!std::isnan(sigma);
+  if(x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
+     (hm && !std::isfinite(mu)) || (hs && (!(sigma>0) || !std::isfinite(sigma)))) return bad;
+  if(!std::isnan(xi) && (!std::isfinite(xi) || xi<-.5)) {
+    bad.status=GevStatus::InvalidShape;return bad;
+  }
+  std::vector<double> y(x.begin(),x.end());
+  for(double v:y) if(!std::isfinite(v)) return bad;
+  std::sort(y.begin(),y.end());
+  bool collapse_face=false;
+  if(!hs && hm && mu==y[0]) {
+    std::size_t k=0;for(double v:y) if(v==y[0]) ++k;
+    if(k==y.size() || (std::isnan(xi) ? 2*k>y.size() : (xi>0 && xi*k>=y.size()-k))) {
+      bad.status=GevStatus::NoMLE;return bad;
+    }
+    collapse_face=std::isnan(xi) && 2*k==y.size();
+  }
+  const double origin=y[0];
+  const double scale=hs ? sigma : std::max(y.back()-origin,std::abs(origin-mu));
+  if(!(scale>0) || !std::isfinite(scale)) return bad;
+  for(double &v:y) v=(v-origin)/scale;
+  const double m=hm ? (mu-origin)/scale : mu,s=hs ? sigma/scale : sigma;
+  const span data{y.data(),y.size()};
+  GevResult fit=bad;
+  if(!std::isnan(xi)) fit=gev_held_profile(data,m,s,xi,tol,maxit);
+  else {
+    // Intersect the shape interval with support when both are held.
+    double lo=-.5,hi=1;
+    if(hm && hs) for(double v:y) {
+      const double z=(v-m)/s;
+      if(z>0) lo=std::max(lo,-1/z);
+      if(z<0) hi=std::min(hi,-1/z);
+    }
+    if(!(hi>lo)) return bad;
+    auto objective=[&](double k) {return gev_held_profile(data,m,s,k,tol,maxit).logLik;};
+    const auto opt=extreme_detail::maximize(objective,lo,hi,tol,maxit);
+    fit=gev_held_profile(data,m,s,opt.x,tol,maxit);
+    if(!opt.ok) fit.status=GevStatus::IterationFailure;
+  }
+  fit.mu=hm ? mu : origin+scale*fit.mu;
+  fit.sigma=hs ? sigma : scale*fit.sigma;
+  fit.logLik=gev_loglik(x,fit.mu,fit.sigma,fit.xi);
+  if(collapse_face) {
+    double face=0;
+    for(double v:x) face+=v==mu ? -1 : -2*std::log(v-mu);
+    if(fit.logLik<=face+tol*x.size()) fit.status=GevStatus::NoMLE;
+  }
+  if(!std::isfinite(fit.logLik)) fit.status=GevStatus::InvalidData;
+  return fit;
 }
 struct GevProfile { GevResult fit; double score, curvature; };
 // At pivot x0 (minimum for xi>=0, maximum otherwise), write
@@ -81,7 +196,10 @@ inline GevProfile gev_profile(span x, double xi, double tol, int maxit) {
     done && std::isfinite(e.ll) ? GevStatus::Ok : GevStatus::IterationFailure},e.shape,e.curvature};
 }
 inline GevResult gev_mle(span x, double tol=1e-10, int maxit=100,
-                         double xi=std::numeric_limits<double>::quiet_NaN()) {
+                         double xi=std::numeric_limits<double>::quiet_NaN(),
+                         double mu=std::numeric_limits<double>::quiet_NaN(),
+                         double sigma=std::numeric_limits<double>::quiet_NaN()) {
+  if(!std::isnan(mu) || !std::isnan(sigma)) return gev_held_mle(x,tol,maxit,xi,mu,sigma);
   GevResult bad{0,0,xi,0,0,GevStatus::InvalidData};
   if(x.size()<3 || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
   if(!std::isnan(xi) && (!std::isfinite(xi) || xi<-.5 || xi>1)) {

@@ -97,3 +97,16 @@ TEST_CASE("pig: direct upper log sum and discrete quantile brackets") {
     else {CHECK(cppunivariate::distributions::ppig(q,2,3,false,true)<=lp);CHECK(cppunivariate::distributions::ppig(q-1,2,3,false,true)>lp);}
   }
 }
+
+TEST_CASE("pig: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("pig");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<4;++mask) {
+   const auto r=cppunivariate::pig_mle({x.data(),x.size()},1e-10,200,(mask & 1)?g.estimates.at("mean"):nan,(mask & 2)?g.estimates.at("shape"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.mean==g.estimates.at("mean"));
+   if(mask & 2)CHECK(r.shape==g.estimates.at("shape"));
+ }
+}

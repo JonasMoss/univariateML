@@ -31,6 +31,11 @@ r:
     iterlim: Maximum iterations per outer search start.
 log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log(x/scale)-(shape3+shape1)*log(1+(x/scale)**shape2)
 limits:
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: InvalidData
+    message: unbounded
   - {model: trgamma, when: 'shape1 tends to infinity with rescaled scale', status: TrGammaBoundary}
   - {model: invtrgamma, when: 'shape3 tends to infinity with rescaled scale', status: InvTrGammaBoundary}
   - {model: lnorm, when: 'both beta shapes tend to infinity and shape2 tends to zero', status: LognormalBoundary}

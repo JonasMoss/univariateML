@@ -35,11 +35,16 @@ inline double q(double u) {
 }
 }  // namespace lgser_detail
 
-inline LgserResult lgser_mle(ispan x) {
+inline LgserResult lgser_mle(ispan x, double fixed=std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, kNaN, false};
 
+  if(!std::isnan(fixed)) {
+    if(!(fixed>0 && fixed<1 && std::isfinite(fixed)))return {kNaN,kNaN,false};
+    double ll=0;for(int v:x) {if(v<1)return {kNaN,kNaN,false};ll+=v*std::log(fixed)-std::log(v)-std::log(-std::log1p(-fixed));}
+    return {fixed,ll,false};
+  }
   double sumx = 0.0;
   for (auto v : x) sumx += static_cast<double>(v);
   const double dn = static_cast<double>(n);

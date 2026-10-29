@@ -45,3 +45,11 @@ TEST_CASE("invparalogis: d/p/q/r against the truth table" * doctest::may_fail())
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qinvparalogis(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rinvparalogis(rng, p[0], p[1]); });
 }
+
+TEST_CASE("P2 invparalogis golden holds") {
+ auto g=mltest::load_distribution_golden("invparalogis");
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+for(int mask=0;mask<2;++mask){auto r=cppunivariate::invparalogis_mle_holds(mltest::as_span(g.data),g.estimates.at("shape"),mask?g.estimates.at("scale"):nan);
+ CHECK(r.shape==g.estimates.at("shape"));
+ CHECK(r.logLik>=g.logLik-1e-5);}
+}

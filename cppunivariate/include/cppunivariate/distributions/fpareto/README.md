@@ -41,6 +41,11 @@ r:
     iterlim: Maximum delegate iterations.
 log_density: log(shape2)-log((x-min))-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log((x-min)/scale)-(shape3+shape1)*log(1+((x-min)/scale)**shape2)
 limits:
+- name: unbounded likelihood
+  when: A free concentration can collapse on constant observations
+  detect: Constant samples; the held coefficients determine whether concentration remains free
+  status: InvalidData
+  message: unbounded
 - when: shape1 tends to infinity with rescaled scale
   status: TrGammaBoundary
   name: shifted trgamma; subtract min before fitting
@@ -65,99 +70,99 @@ examples: |
   mlfpareto(simulate_default("mlfpareto", 100), min = 0)
 holds:
 - held: []
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape2
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape2
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape3
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape3
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape2
-  - shape3
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - shape2
-  - shape3
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - scale
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - scale
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape2
-  - scale
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape2
-  - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape3
-  - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - shape3
-  - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape2
   - shape3
-  - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - shape2
   - shape3
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
   - scale
-  status: not-implemented
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - scale
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - scale
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - scale
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape3
+  - scale
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape3
+  - scale
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - shape3
+  - scale
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - shape3
+  - scale
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:

@@ -11,7 +11,7 @@ test_that("tbinom agrees with independent reference likelihood searches", {
   expect_error(mltbinom(rep(1,3),a=0,b=10,size=12),"point mass")
   expect_error(mltbinom(rep(10,3),a=0,b=10,size=12),"point mass")
   expect_error(mltbinom(c(0,2),a=0,b=10,size=12),"outside")
-  expect_error(mltbinom(rep(1,3),a=0,b=1,size=12),"unidentified")
+  expect_equal(attr(mltbinom(rep(1,3),a=0,b=1,size=12),"logLik"),0)
   expect_error(mltbinom(1:3),"requires")
   f <- mltbinom(c(1,2,3,4),a=0,b=10,size=12)
   expect_equal(qml(c(.1,.5,.9),f),extraDistr::qtbinom(c(.1,.5,.9),size=12,prob=f[[1]],a=0,b=10))
@@ -34,4 +34,51 @@ test_that("binomial endpoints with positive conditioning mass are attained", {
   expect_equal(attr(f,"logLik"),0)
   expect_equal(dml(v,f),1)
  }
+})
+
+test_that("tbinom: all estimated-bound subsets match independent conditional fits", {
+ set.seed(66)
+ samples<-c(lapply(c(20,100),function(n)extraDistr::rtbinom(n,12,.4,0,10)),list(c(1,2,2),rep(3,4),c(0,0,1)))
+ for(x in samples)for(fa in c(TRUE,FALSE))for(fb in c(TRUE,FALSE))for(fp in c(TRUE,FALSE)) {
+  a<-if(fa) -1 else NULL; b<-if(fb) 12 else NULL
+  aa<-if(fa) -1 else min(x)-1; bb<-if(fb)12 else max(x)
+  # Edge-only data with an unattained probability boundary are covered separately.
+  if(!fp && length(unique(x))==1 && aa<min(x)-1 && bb==max(x) && max(x)<12)next
+  if(!fp && length(unique(x))==1 && aa==min(x)-1 && min(x)>0 && bb>max(x))next
+  f<-mltbinom(x,a=a,b=b,size=12,prob=if(fp).4 else NULL)
+  ll<-function(p) {
+   # Enumerate the reference binomial masses: CDF subtraction in dtbinom
+   # loses singleton probabilities near the probability endpoints.
+   k<-0:12;lp<-dbinom(k,12,p,log=TRUE);w<-lp[k>aa & k<=bb]
+   logz<-max(w)+log(sum(exp(w-max(w))))
+   sum(dbinom(x,12,p,log=TRUE))-length(x)*logz
+  }
+  oracle<-if(fp)ll(.4)else max(vapply(c(.05,.4,.9),function(start)-optim(start,function(p)-ll(p),method="L-BFGS-B",lower=1e-8,upper=1-1e-8)$value,0.))
+  expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
+  expect_identical(unname(f["a"]),as.numeric(aa));expect_identical(unname(f["b"]),as.numeric(bb))
+  expect_setequal(attr(f,"fixed"),c("size",if(fa)"a",if(fb)"b",if(fp)"prob"))
+ }
+ expect_error(mltbinom(1:3,a=NULL,b=NULL,size=NULL),"P0")
+ expect_error(mltbinom(rep(3,4),a=NULL,b=NULL,size=12,prob=0),"Invalid")
+})
+
+test_that("tbinom: fixed-probability free-size profiles exhaust bounds subsets", {
+ set.seed(93)
+ for(x in c(lapply(c(20,100),function(n)extraDistr::rtbinom(n,12,.4,0,10)),list(c(1,2,2),c(1,3,3)))) {
+  for(fa in c(TRUE,FALSE))for(fb in c(TRUE,FALSE)) {
+   a<-if(fa)0 else NULL;b<-if(fb)10 else NULL
+   aa<-if(fa)0 else min(x)-1;bb<-if(fb)10 else max(x)
+   f<-mltbinom(x,a=a,b=b,size=NULL,prob=.4)
+   oracle<-max(vapply(seq(max(x),200),function(k)sum(extraDistr::dtbinom(x,k,.4,aa,bb,log=TRUE)),0.))
+   expect_equal(attr(f,"logLik"),oracle,tolerance=1e-7)
+   expect_identical(unname(f["prob"]),.4)
+   expect_setequal(attr(f,"fixed"),c(if(fa)"a",if(fb)"b","prob"))
+  }
+ }
+ f<-mltbinom(1:4,a=NULL,b=Inf,size=NULL,prob=.4)
+ oracle<-max(vapply(4:200,function(k)sum(extraDistr::dtbinom(1:4,k,.4,0,Inf,log=TRUE)),0.))
+ expect_equal(attr(f,"logLik"),oracle,tolerance=1e-7)
+ expect_error(mltbinom(rep(3,4),a=-1,b=NULL,size=NULL,prob=.4),"point mass")
+ expect_equal(attr(mltbinom(rep(3,4),a=NULL,b=NULL,size=NULL,prob=.4),"logLik"),0)
+ expect_error(mltbinom(1:3,a=NULL,b=NULL,size=NA_real_,prob=.4),"size")
 })

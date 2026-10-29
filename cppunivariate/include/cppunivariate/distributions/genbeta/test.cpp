@@ -73,3 +73,19 @@ TEST_CASE("genbeta: log beta tails beyond probability underflow") {
     CHECK(cppunivariate::distributions::pgenbeta(q,20,1000,2,1,lower,true)==doctest::Approx(lp).epsilon(2e-11));
   }
 }
+
+TEST_CASE("P2 genbeta constant conditional beta fits") {
+ std::vector<double> x(5,.4);
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ auto a=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,nan,3,1);
+ REQUIRE(a.status==cppunivariate::GenbetaStatus::Ok);
+ CHECK(a.shape2==3);
+ CHECK(a.shape3==1);
+ auto b=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,2,nan,1);
+ REQUIRE(b.status==cppunivariate::GenbetaStatus::Ok);
+ CHECK(b.shape1==2);
+ CHECK(b.shape3==1);
+ auto ridge=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,nan,1,nan);
+ REQUIRE(ridge.status==cppunivariate::GenbetaStatus::Ok);
+ CHECK(ridge.shape1*ridge.shape3==doctest::Approx(-1/std::log(.4)));
+}

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "test_support.hpp"
 #include "cppunivariate/distributions/gamma/mle.hpp"
 #include "cppunivariate/distributions/lgamma/dpqr.hpp"
@@ -6,7 +7,6 @@
 #include <limits>
 #include <string>
 #include <vector>
-
 
 TEST_CASE("lgamma (wrapper-only: gamma on log(x))") {
   auto g = mltest::load_distribution_golden("lgamma");
@@ -43,4 +43,33 @@ TEST_CASE("lgamma: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::plgamma(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qlgamma(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rlgamma(rng, p[0], p[1]); });
+}
+
+TEST_CASE("lgamma P2 every held subset") {
+  const auto g=mltest::load_distribution_golden("lgamma");
+  std::vector<double> x=g.data;
+  for(auto &v:x)v=std::log(v);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> held{g.estimates.at("shapelog"),g.estimates.at("ratelog")};
+  { const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,200,held[0],nan);
+    CHECK(r.shape==held[0]);
+    CHECK(std::isfinite(r.rate));
+    CHECK(std::isfinite(r.logLik));
+    double jac=0;for(double v:x)jac+=v;
+    CHECK(r.logLik-jac>=g.logLik-1e-6*x.size());
+  }
+  { const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,200,nan,held[1]);
+    CHECK(std::isfinite(r.shape));
+    CHECK(r.rate==held[1]);
+    CHECK(std::isfinite(r.logLik));
+    double jac=0;for(double v:x)jac+=v;
+    CHECK(r.logLik-jac>=g.logLik-1e-6*x.size());
+  }
+  { const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,200,held[0],held[1]);
+    CHECK(r.shape==held[0]);
+    CHECK(r.rate==held[1]);
+    CHECK(std::isfinite(r.logLik));
+    double jac=0;for(double v:x)jac+=v;
+    CHECK(r.logLik-jac>=g.logLik-1e-6*x.size());
+  }
 }

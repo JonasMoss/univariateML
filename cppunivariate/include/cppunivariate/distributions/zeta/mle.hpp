@@ -27,12 +27,16 @@ inline double logz(double s) {
   return std::log1p(h);
 }
 }
-inline ZetaResult zeta_mle(ispan x,double tol=1e-10,int maxit=200) {
+inline ZetaResult zeta_mle(ispan x,double tol=1e-10,int maxit=200, double held=std::numeric_limits<double>::quiet_NaN()) {
   const double nan=special::kNaN;
   if (!x.size() || !(tol>0) || !std::isfinite(tol) || maxit<1)
     return {nan,nan,0,ZetaStatus::InvalidInput};
   double sum=0;
   for (int k:x) { if (k<1) return {nan,nan,0,ZetaStatus::InvalidInput}; sum+=std::log(static_cast<double>(k)); }
+  if (!std::isnan(held)) {
+    if (!(held>1) || !std::isfinite(held)) return {nan,nan,0,ZetaStatus::InvalidInput};
+    return {held,-held*sum-x.size()*zeta_detail::logz(held),0,ZetaStatus::Ok};
+  }
   if (sum==0) return {special::kPosInf,0,0,ZetaStatus::PointMass};
   const double target=sum/x.size();
   double lo=1,hi=2;

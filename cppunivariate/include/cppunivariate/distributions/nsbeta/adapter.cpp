@@ -6,11 +6,15 @@
 // [[Rcpp::export]]
 Rcpp::List mlnsbeta_(const Rcpp::NumericVector &x, double min, double max,
  double reltol = 1e-10, int iterlim = 1000, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue) {
+ if(shape1.isNotNull() && (!(Rcpp::as<double>(shape1)>0)||!std::isfinite(Rcpp::as<double>(shape1)))) Rcpp::stop("`shape1` must be positive and finite.");
+ if(shape2.isNotNull() && (!(Rcpp::as<double>(shape2)>0)||!std::isfinite(Rcpp::as<double>(shape2)))) Rcpp::stop("`shape2` must be positive and finite.");
+
  if (!std::isfinite(min) || !std::isfinite(max) || !(max>min) || !std::isfinite(max-min)) Rcpp::stop("Held bounds must be finite and ordered.");
  for(double v:x) if (!(v>min) || !(v<max)) Rcpp::stop("Observations must lie strictly inside the held support.");
  Rcpp::CharacterVector fixed=Rcpp::CharacterVector::create("min", "max");
- if(shape1.isNotNull() || shape2.isNotNull()) Rcpp::stop("Holding additional parameters is not supported for this family.");
- auto res=cppunivariate::nsbeta_mle(dist_impl::as_span(x),min,max,reltol,iterlim);
+ if(shape1.isNotNull()) fixed.push_back("shape1");
+ if(shape2.isNotNull()) fixed.push_back("shape2");
+ auto res=cppunivariate::nsbeta_mle(dist_impl::as_span(x),min,max,reltol,iterlim,shape1.isNotNull()?Rcpp::as<double>(shape1):NA_REAL,shape2.isNotNull()?Rcpp::as<double>(shape2):NA_REAL);
   if (res.status == cppunivariate::BetaStatus::Degenerate) {
     Rcpp::stop("The beta maximum likelihood estimator does not exist for constant data: "
                "the likelihood is unbounded as both shapes grow.");

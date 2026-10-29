@@ -21,6 +21,7 @@
 //               alpha0 = max(1.5, 2 / sd(log(x / theta0))).
 
 #pragma once
+#include "../burr/mle.hpp"
 
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
@@ -254,3 +255,12 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+
+inline ParalogisResult paralogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN()){
+ auto r=burr_mle_holds(x,shape,shape,scale);
+ return {shape,r.scale,r.logLik,r.iterations,r.status==BurrStatus::Ok?ParalogisStatus::Ok:ParalogisStatus::InvalidStart};
+}
+
+}

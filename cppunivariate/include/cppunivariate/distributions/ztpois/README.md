@@ -17,13 +17,9 @@ params:
 r:
   density: actuar::dztpois
   sampler: actuar::rztpois
-  control: {}
+  control:
+    lambda: "Optional held lambda; NULL estimates it."
 log_density: -lambda+x*log(lambda)-loggamma(x+1)-log(1-exp(-lambda))
-holds:
-- held:
-  - lambda
-  status: not-implemented
-  reason: The adapter does not accept `lambda`; this hold is not implemented (P2).
 ---
 
 Zero-truncated Poisson distributions model positive counts.
@@ -31,3 +27,5 @@ Zero-truncated Poisson distributions model positive counts.
 ## Details
 
 Actuar defines the point mass at one at `lambda = 0`. This boundary is returned as an attained member.
+
+Supplying `lambda` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.

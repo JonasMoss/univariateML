@@ -6,8 +6,20 @@
 #include <limits>
 
 // [[Rcpp::export]]
-Rcpp::List mlsnorm_(const Rcpp::NumericVector &x) {
-  auto res = cppunivariate::snorm_mle(dist_impl::as_span(x), 1.220703e-4, 200);
+Rcpp::List mlsnorm_(const Rcpp::NumericVector &x,
+    Rcpp::Nullable<double> mean = R_NilValue,
+    Rcpp::Nullable<double> sd = R_NilValue,
+    Rcpp::Nullable<double> xi = R_NilValue) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double held_mean=mean.isNotNull() ? Rcpp::as<double>(mean) : nan;
+  if(mean.isNotNull() && (!std::isfinite(held_mean))) Rcpp::stop("Invalid held `mean`: requires a finite value.");
+  const double held_sd=sd.isNotNull() ? Rcpp::as<double>(sd) : nan;
+  if(sd.isNotNull() && (!(std::isfinite(held_sd) && held_sd>0))) Rcpp::stop("Invalid held `sd`: requires a finite value in its parameter domain.");
+  const double held_xi=xi.isNotNull() ? Rcpp::as<double>(xi) : nan;
+  if(xi.isNotNull() && (!(std::isfinite(held_xi) && held_xi>0))) Rcpp::stop("Invalid held `xi`: requires a finite value in its parameter domain.");
+  auto res=cppunivariate::snorm_mle(dist_impl::as_span(x),1.220703e-4,200,held_mean,held_sd,held_xi);
+  if(res.status==cppunivariate::SnormStatus::Unbounded) Rcpp::stop("Scale collapse: the conditional skew-normal likelihood is unbounded; no MLE.");
+  if(res.status==cppunivariate::SnormStatus::BfgsFailure) Rcpp::stop("Conditional skew-normal fit did not converge.");
   if (res.status == cppunivariate::SnormStatus::RightHalfNormalBoundary) {
     Rcpp::stop("The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.");
   }
@@ -22,11 +34,16 @@ Rcpp::List mlsnorm_(const Rcpp::NumericVector &x) {
       !std::isfinite(res.xi)) {
     Rcpp::stop("Skew-normal MLE failed to converge (check inputs)");
   }
+  Rcpp::CharacterVector fixed;
+  if(mean.isNotNull()) fixed.push_back("mean");
+  if(sd.isNotNull()) fixed.push_back("sd");
+  if(xi.isNotNull()) fixed.push_back("xi");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["mean"] = res.mu, Rcpp::_["sd"] = res.sigma,
           Rcpp::_["xi"] = res.xi),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations);
+      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
+      Rcpp::_["fixed"] = fixed);
 }
 
 #include "dpqr.h"

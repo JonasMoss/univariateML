@@ -82,3 +82,27 @@ TEST_CASE("zmnbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzmnbinom(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzmnbinom(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("zmnbinom: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("zmnbinom");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<8;++mask) {
+   const auto r=cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,(mask & 1)?g.estimates.at("size"):nan,(mask & 2)?g.estimates.at("prob"):nan,(mask & 4)?g.estimates.at("p0"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.size==g.estimates.at("size"));
+   if(mask & 2)CHECK(r.prob==g.estimates.at("prob"));
+   if(mask & 4)CHECK(r.p0==g.estimates.at("p0"));
+ }
+}
+
+TEST_CASE("zmnbinom: P2 held zero share and incompatible positive component") {
+ const std::vector<int> x{0,1,2},z{0,0};
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ CHECK(cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,nan,0.4,0).status==cppunivariate::ZmnbinomStatus::InvalidInput);
+ CHECK(cppunivariate::zmnbinom_mle({x.data(),x.size()},1e-10,200,nan,1,.3).status==cppunivariate::ZmnbinomStatus::InvalidInput);
+ const auto r=cppunivariate::zmnbinom_mle({z.data(),z.size()},1e-10,200,nan,0.4,.7);
+ CHECK(r.prob==0.4);CHECK(r.p0==.7);
+ CHECK(r.logLik==doctest::Approx(2*std::log(.7)));
+}

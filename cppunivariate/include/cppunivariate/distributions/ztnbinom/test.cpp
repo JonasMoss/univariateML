@@ -76,3 +76,25 @@ TEST_CASE("ztnbinom: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qztnbinom(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rztnbinom(rng, p[0], p[1]); });
 }
+
+TEST_CASE("ztnbinom: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("ztnbinom");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<4;++mask) {
+   const auto r=cppunivariate::ztnbinom_mle({x.data(),x.size()},1e-10,200,(mask & 1)?g.estimates.at("size"):nan,(mask & 2)?g.estimates.at("prob"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.size==g.estimates.at("size"));
+   if(mask & 2)CHECK(r.prob==g.estimates.at("prob"));
+ }
+}
+
+TEST_CASE("ztnbinom: P2 held-domain and non-existence statuses") {
+ const std::vector<int> x{1,2,5},one{1,1};
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ CHECK(cppunivariate::ztnbinom_mle({x.data(),x.size()},1e-10,200,nan,1).status==cppunivariate::ZtnbinomStatus::InvalidInput);
+ const auto r=cppunivariate::ztnbinom_mle({one.data(),one.size()},1e-10,200,nan,1);
+ CHECK(r.prob==1);CHECK(r.logLik==0);
+ CHECK(cppunivariate::ztnbinom_mle({x.data(),x.size()},1e-10,1,nan,.4).status==cppunivariate::ZtnbinomStatus::IterationFailure);
+}

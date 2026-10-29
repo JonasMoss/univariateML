@@ -45,3 +45,13 @@ TEST_CASE("zeta: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qzeta(x, p[0], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rzeta(rng, p[0]); });
 }
+
+TEST_CASE("zeta: held coefficient bypasses the all-ones escape") {
+  const std::vector<int> x={1,1,1};
+  const auto f=cppunivariate::zeta_mle({x.data(),x.size()},1e-10,200,2.3);
+  CHECK(f.status==cppunivariate::ZetaStatus::Ok);
+  CHECK(f.s==2.3);
+  CHECK(std::isfinite(f.logLik));
+  CHECK(f.iterations==0);
+  CHECK(cppunivariate::zeta_mle({x.data(),x.size()},1e-10,200,0).status==cppunivariate::ZetaStatus::InvalidInput);
+}

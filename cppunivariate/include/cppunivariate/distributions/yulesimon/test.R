@@ -88,3 +88,17 @@ test_that("Yule--Simon preserves extreme log probabilities and invalid domains",
   expect_identical(qyulesimon(.5,NA_real_),NA_real_)
   expect_error(ryulesimon(-1,2),"invalid")
 })
+
+test_that("yulesimon held coefficient evaluates the independent likelihood", {
+  set.seed(810)
+  samples <- list(sample(1:8,20,TRUE),sample(1:15,100,TRUE),c(1,2),rep(3,4),rep(1,5))
+  held <- 2.3
+  for(x in samples) {
+    f <- mlyulesimon(x,rho=held)
+    expect_identical(f[["rho"]],held)
+    expect_identical(attr(f,"fixed"),"rho")
+    expect_equal(as.numeric(logLik(f)),sum(log(held)+lbeta(x,held+1)),tolerance=1e-10)
+    expect_equal(attr(logLik(f),"df"),0L)
+  }
+  for(v in c(NA_real_,NaN,Inf,0,-1)) expect_error(mlyulesimon(c(1,2),rho=v))
+})

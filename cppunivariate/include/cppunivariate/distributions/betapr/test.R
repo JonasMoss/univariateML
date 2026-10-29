@@ -109,3 +109,43 @@ test_that("fixing beta-prime scale removes the free-scale escapes", {
   }
   expect_error(mlbetapr(rep(1,20),scale=1), "positive log-variance")
 })
+
+test_that("beta-prime new hold subsets agree with independent reference oracles", {
+  set.seed(8104)
+  samples <- list(extraDistr::rbetapr(20,.7,1.2),extraDistr::rbetapr(100,.7,1.2),
+    c(.05,.05,.3,2,15),c(.2,4),1,rep(2,4),rgamma(20,2),extraDistr::rinvgamma(100,3))
+  subsets <- list(list(shape1=.7),list(shape2=1.2),list(shape1=.7,shape2=1.2),
+    list(shape1=.7,scale=1.3),list(shape2=1.2,scale=1.3),list(shape1=.7,shape2=1.2,scale=1.3))
+  for(x in samples)for(args in subsets) {
+    free <- setdiff(c("shape1","shape2","scale"),names(args))
+    objective <- function(p) {
+      pars <- c(args,as.list(setNames(exp(p),free)))
+      ll <- sum(do.call(extraDistr::dbetapr,c(list(x=x,log=TRUE),pars)))
+      if(is.finite(ll)) -ll else 1e100
+    }
+    starts <- expand.grid(rep(list(log(c(.2,2,20))),length(free)))
+    best <- if(!length(free)) objective(numeric()) else min(vapply(seq_len(nrow(starts)),function(i)
+      nlminb(as.numeric(starts[i,]),objective,lower=rep(-16,length(free)),upper=rep(log(1e5),length(free)),
+        control=list(iter.max=2000,eval.max=4000,rel.tol=1e-12))$objective,numeric(1)))
+    face <- -Inf; model <- ""
+    if(length(args)==1 && !is.null(args$shape1)) {
+      face <- sum(dgamma(x,args$shape1,rate=args$shape1/mean(x),log=TRUE)); model <- "mlgamma"
+    }
+    if(length(args)==1 && !is.null(args$shape2)) {
+      b <- args$shape2; rate <- b/mean(1/x)
+      face <- sum(dgamma(1/x,b,rate=rate,log=TRUE)-2*log(x)); model <- "mlinvgamma"
+    }
+    if(face >= -best-1e-7*length(x)) {
+      expect_error(do.call(mlbetapr,c(list(x),args)),model)
+    } else {
+      f <- do.call(mlbetapr,c(list(x),args))
+      expect_setequal(attr(f,"fixed"),names(args))
+      for(nm in names(args)) expect_identical(unname(f[nm]),args[[nm]])
+      expect_equal(attr(f,"logLik"),-best,tolerance=2e-7)
+      expect_equal(sum(dml(x,f,log=TRUE)),attr(f,"logLik"),tolerance=1e-10)
+    }
+  }
+  for(nm in c("shape1","shape2"))for(bad in c(0,-1,Inf,NaN))
+    expect_error(do.call(mlbetapr,c(list(x=1:3),setNames(list(bad),nm))),"positive finite")
+  expect_error(mlbetapr(c(.1,1,5),shape1=.7,iterlim=1),"did not converge")
+})

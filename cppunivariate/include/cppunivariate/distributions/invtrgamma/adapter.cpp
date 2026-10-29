@@ -14,7 +14,9 @@
 Rcpp::List mlinvtrgamma_(const Rcpp::NumericVector &x,
                          Rcpp::Nullable<double> shape1 = R_NilValue,
                          Rcpp::Nullable<double> shape2 = R_NilValue,
-                         double reltol = 1e-10, int iterlim = 100) {
+                         double reltol = 1e-10, int iterlim = 100, Rcpp::Nullable<double> scale = R_NilValue) {
+ if(scale.isNotNull() && (!(Rcpp::as<double>(scale)>0)||!std::isfinite(Rcpp::as<double>(scale)))) Rcpp::stop("`scale` must be positive and finite.");
+
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = shape1.isNotNull() ? Rcpp::as<double>(shape1) : nan;
   const double b = shape2.isNotNull() ? Rcpp::as<double>(shape2) : nan;
@@ -22,12 +24,14 @@ Rcpp::List mlinvtrgamma_(const Rcpp::NumericVector &x,
       (shape2.isNotNull() && (!(b > 0.0) || !std::isfinite(b))))
     Rcpp::stop("`shape1` and `shape2` must be positive finite numbers when supplied.");
   const cppunivariate::span xs = dist_impl::as_span(x);
-  auto res = cppunivariate::invtrgamma_mle(xs, reltol, iterlim, a, b);
+  auto res = scale.isNotNull() ? cppunivariate::invtrgamma_mle_fixed_scale(xs,Rcpp::as<double>(scale),a,b,reltol,iterlim) : cppunivariate::invtrgamma_mle(xs, reltol, iterlim, a, b);
   if (res.status == cppunivariate::InvTrGammaStatus::InvalidData)
     Rcpp::stop("invtrgamma requires at least two distinct positive finite observations, "
-               "positive `reltol` and positive `iterlim`.");
+               "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood.");
   if (res.status == cppunivariate::InvTrGammaStatus::LognormalBoundary)
     Rcpp::stop("The invtrgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model.");
+  if (res.status == cppunivariate::InvTrGammaStatus::ParetoBoundary && scale.isNotNull())
+    Rcpp::stop("The held-scale likelihood selects the limiting fixed-endpoint Pareto face at scale; no matching held-endpoint fitter is available.");
   if (res.status == cppunivariate::InvTrGammaStatus::ParetoBoundary)
     Rcpp::stop("The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model.");
   if (res.status == cppunivariate::InvTrGammaStatus::ScaleOutOfRange) {
@@ -37,10 +41,12 @@ Rcpp::List mlinvtrgamma_(const Rcpp::NumericVector &x,
                "Use `mllnorm`: its log-likelihood is lower by only %g.",
                res.log_scale, gap);
   }
+  if (res.status == cppunivariate::InvTrGammaStatus::IterationFailure) Rcpp::stop("Constrained likelihood search failed to converge.");
   if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale) ||
       !std::isfinite(res.logLik))
     Rcpp::stop("invtrgamma MLE failed to converge.");
   Rcpp::CharacterVector fixed;
+  if (scale.isNotNull()) fixed.push_back("scale");
   if (shape1.isNotNull()) fixed.push_back("shape1");
   if (shape2.isNotNull()) fixed.push_back("shape2");
   return Rcpp::List::create(

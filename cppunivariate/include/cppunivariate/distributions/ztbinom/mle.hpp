@@ -4,7 +4,8 @@ namespace cppunivariate {
 enum class ZtbinomStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, IterationFailure };
 struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus status; };
 inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
-    double fixed_size=std::numeric_limits<double>::quiet_NaN()) {
+    double fixed_size=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
   const bool fixed=!std::isnan(fixed_size);
   if(fixed && (!(fixed_size>=1)||!std::isfinite(fixed_size)||fixed_size!=std::floor(fixed_size)))
     return {0,0,0,0,ZtbinomStatus::InvalidSize};
@@ -13,6 +14,34 @@ inline ZtbinomResult ztbinom_mle(ispan x, double tol=1e-10, int maxit=200,
   int mx=1;for(int v:x) mx=std::max(mx,v);
   if(fixed && fixed_size<mx) return {0,0,0,0,ZtbinomStatus::InvalidSize};
   const double m=zero_detail::mean(x), n=x.size();
+  if (!std::isnan(fixed_prob)) {
+    const double p=fixed_prob;
+    if (!(p>=0 && p<=1) || !std::isfinite(p)) return {0,0,0,0,ZtbinomStatus::InvalidInput};
+    const auto profile_held=[&](double size) {
+      double ll=0;
+      for(int v:x) {
+        if(p==0) {if(v!=1)ll=-INFINITY;}
+        else if(p==1) {if(v!=size)ll=-INFINITY;}
+        else ll+=zero_detail::bin_logpmf(v,size,p)-std::log(-std::expm1(size*std::log1p(-p)));
+      }
+      return ZtbinomResult{size,p,ll,0,std::isfinite(ll)?ZtbinomStatus::Ok:ZtbinomStatus::InvalidInput};
+    };
+    if(fixed)return profile_held(fixed_size);
+    if(p==0 || p==1)return profile_held(mx);
+    auto best=profile_held(mx);
+    for(int j=0;j<1000000;++j) {
+      const double size=double(mx)+j;
+      auto candidate=profile_held(size);
+      if(candidate.logLik>best.logLik)best=candidate;
+      // For size >= mx/p every mass on the observed support decreases.
+      // The truncation probability increases, so this bounds all future sizes.
+      if(size>=mx/p) {
+        const double upper=n*(zero_detail::bin_logpmf(mx,size,p)-std::log(-std::expm1(size*std::log1p(-p))));
+        if(upper<best.logLik) return best;
+      }
+    }
+    best.status=ZtbinomStatus::IterationFailure;return best;
+  }
   if(m==1) return {fixed?fixed_size:1,0,0,0,ZtbinomStatus::Ok};
   auto profile=[&](double r) {
     const double p=zero_detail::bin_prob(r,m);

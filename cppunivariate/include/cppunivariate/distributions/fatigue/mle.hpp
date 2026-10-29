@@ -18,22 +18,25 @@
 
 namespace cppunivariate {
 
+enum class FatigueStatus { Ok, InvalidInput, Unbounded, SearchFailure };
+
 struct FatigueResult {
   double alpha;
   double beta;
   double logLik;
   int iterations;
+  FatigueStatus status = FatigueStatus::Ok;
 };
 
 inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standardized) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0};
+  if (n == 0) return {0.0, 0.0, kNaN, 0, FatigueStatus::InvalidInput};
 
   bool constant = true;
   double unit = 0.0;
   for (auto v : x) { constant = constant && v == x[0]; unit = std::max(unit,v); }
-  if (constant) return {kNaN,kNaN,kNaN,0};
+  if (constant) return {kNaN,kNaN,kNaN,0,FatigueStatus::Unbounded};
   if (unit > 0.0 && std::isfinite(unit) && !standardized) {
     std::vector<double> y(n);
     for (std::size_t i=0;i<n;++i) {
@@ -41,7 +44,7 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
       if (!(y[i]>0.0)) return {kNaN,kNaN,kNaN,0};
     }
     const auto r=fatigue_mle_impl(span{y.data(),n},tol,maxit,true);
-    return {r.alpha,r.beta*unit,r.logLik-static_cast<double>(n)*std::log(unit),r.iterations};
+    return {r.alpha,r.beta*unit,r.logLik-static_cast<double>(n)*std::log(unit),r.iterations,r.status};
   }
 
   const double dn = static_cast<double>(n);
@@ -118,8 +121,75 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
   return {alpha, beta, logLik, nr.iterations};
 }
 
-inline FatigueResult fatigue_mle(span x, double tol, int maxit) {
-  return fatigue_mle_impl(x, tol, maxit, false);
+// With beta held, alpha has its exact RMS solution. With alpha held,
+// search every sampled beta-profile maximum (the profile can be multimodal).
+inline FatigueResult fatigue_mle(span x, double tol, int maxit,
+    double held_alpha = std::numeric_limits<double>::quiet_NaN(),
+    double held_beta = std::numeric_limits<double>::quiet_NaN()) {
+  const bool fa=!std::isnan(held_alpha), fb=!std::isnan(held_beta);
+  if (!fa && !fb) return fatigue_mle_impl(x, tol, maxit, false);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if (x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 ||
+      (fa && (!(held_alpha>0)||!std::isfinite(held_alpha))) ||
+      (fb && (!(held_beta>0)||!std::isfinite(held_beta)))) return {nan,nan,nan,0,FatigueStatus::InvalidInput};
+  double lm=0;
+  for (double v:x) {
+    if (!(v>0)||!std::isfinite(v)) return {nan,nan,nan,0,FatigueStatus::InvalidInput};
+    lm+=std::log(v)/x.size();
+  }
+  const auto alpha_at=[&](double lb) {
+    if (fa) return held_alpha;
+    long double ss=0;
+    for (double v:x) {
+      const long double d=2*std::sinh((static_cast<long double>(std::log(v))-lb)/2);
+      ss+=d*d;
+    }
+    return static_cast<double>(std::sqrt(ss/x.size()));
+  };
+  const auto ll=[&](double lb) -> double {
+    const double a=alpha_at(lb);
+    if (!(a>0)||!std::isfinite(a)) return -INFINITY;
+    double value=0;
+    for (double v:x) {
+      const double d=(std::log(v)-lb)/2;
+      const double z=2*std::sinh(d)/a;
+      const double logcosh=std::abs(d)+std::log1p(std::exp(-2*std::abs(d)))-std::log(2.0);
+      value+=logcosh-std::log(a)-std::log(v)-0.5*std::log(2*std::acos(-1.0))-0.5*z*z;
+    }
+    return value;
+  };
+  double best=fb?std::log(held_beta):lm, value=ll(best);
+  int iterations=0;
+  if (!fb) {
+    double lo=INFINITY,hi=-INFINITY;
+    for (double v:x) {lo=std::min(lo,std::log(v));hi=std::max(hi,std::log(v));}
+    // Outside these bounds every individual density increases toward the
+    // interval. Its stationary roots satisfy y=1 or (y+1)^2=alpha^2*y.
+    const double width=2*std::log(std::max(held_alpha,2.0))+2;
+    lo-=width;hi+=width;
+    constexpr int grids=512;
+    std::vector<double> grid(grids+1);
+    for(int j=0;j<=grids;++j) {
+      const double t=lo+(hi-lo)*j/grids;grid[j]=ll(t);
+      if(grid[j]>value) {best=t;value=grid[j];}
+    }
+    for(int j=1;j<grids;++j) if(grid[j]>=grid[j-1]&&grid[j]>=grid[j+1]) {
+      double l=lo+(hi-lo)*(j-1)/grids,r=lo+(hi-lo)*(j+1)/grids;
+      int it=0;
+      for(;it<maxit && r-l>std::min(tol,1e-10);++it) {
+        const double a=r-(r-l)*.6180339887498949,b=l+(r-l)*.6180339887498949;
+        if(ll(a)>ll(b)) r=b; else l=a;
+      }
+      iterations=std::max(iterations,it);
+      const double t=(l+r)/2,v=ll(t);
+      if(v>value) {best=t;value=v;}
+      if(it==maxit) return {nan,nan,nan,it,FatigueStatus::SearchFailure};
+    }
+  }
+  const double a=alpha_at(best),b=fb?held_beta:std::exp(best);
+  if (!fa && a==0) return {nan,b,nan,iterations,FatigueStatus::Unbounded};
+  if (!(a>0)||!std::isfinite(a)||!std::isfinite(value)||!std::isfinite(b)) return {nan,nan,nan,iterations,FatigueStatus::SearchFailure};
+  return {fa?held_alpha:a,b,value,iterations};
 }
 
 }  // namespace cppunivariate

@@ -52,3 +52,26 @@ TEST_CASE("ztgeom: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qztgeom(x, p[0], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rztgeom(rng, p[0]); });
 }
+
+TEST_CASE("ztgeom: P2 every hold subset preserves coefficients and golden likelihood") {
+ const auto g=mltest::load_distribution_golden("ztgeom");
+ std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ for(unsigned mask=1;mask<2;++mask) {
+   const auto r=cppunivariate::ztgeom_mle({x.data(),x.size()},(mask & 1)?g.estimates.at("prob"):nan);
+   REQUIRE(std::isfinite(r.logLik));
+   CHECK(r.logLik>=g.logLik-1e-6*x.size());
+   if(mask & 1)CHECK(r.prob==g.estimates.at("prob"));
+ }
+}
+
+TEST_CASE("ztgeom: P2 held boundary likelihood and domain") {
+ const std::vector<int> x{1,2},same{1,1};
+ const auto incompatible=cppunivariate::ztgeom_mle({x.data(),x.size()},1);
+ CHECK(incompatible.status==cppunivariate::ZtgeomStatus::InvalidInput);
+ const auto valid=cppunivariate::ztgeom_mle({same.data(),same.size()},1);
+ CHECK(valid.prob==1);
+ CHECK(std::isfinite(valid.logLik));
+ const auto invalid=cppunivariate::ztgeom_mle({x.data(),x.size()},-1);
+ CHECK(invalid.status==cppunivariate::ZtgeomStatus::InvalidInput);
+}

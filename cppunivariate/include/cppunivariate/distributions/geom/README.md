@@ -11,17 +11,13 @@ params:
 r:
   density: stats::dgeom
   sampler: stats::rgeom
-  control: {}
+  control:
+    prob: "Optional held prob; NULL estimates it."
 log_density: "log(prob) + x*log(1 - prob)"
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
   mlgeom(corbet)
-holds:
-- held:
-  - prob
-  status: not-implemented
-  reason: The adapter does not accept `prob`; this hold is not implemented (P2).
 ---
 
 The geometric distribution models the number of failures before the first success in independent Bernoulli trials.
@@ -29,3 +25,5 @@ The geometric distribution models the number of failures before the first succes
 ## Details
 
 The count starts at zero, following the R convention. All-zero data give the boundary estimate `prob = 1`.
+
+Supplying `prob` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.

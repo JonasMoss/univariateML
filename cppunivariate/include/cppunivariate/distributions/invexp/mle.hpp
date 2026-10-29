@@ -5,7 +5,10 @@
 #include <limits>
 #include <vector>
 namespace cppunivariate {
-struct InvExpResult { double rate; double logLik; int iterations;  };
+enum class InvExpStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
+struct InvExpResult { double rate; double logLik; int iterations;    InvExpStatus status = InvExpStatus::Ok;
+};
 inline InvExpResult invexp_mle(span x) {
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v) || !std::isfinite(1/v)) {
@@ -19,4 +22,12 @@ inline InvExpResult invexp_mle(span x) {
   auto r = exp_mle(span{y.data(), y.size()});
   return {1.0/r.rate, r.logLik+jacobian, 0};
 }
+
+inline InvExpResult invexp_mle(span x,double rate) {
+  if(std::isnan(rate))return invexp_mle(x);
+  std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+  const auto r=exp_mle(span{y.data(),y.size()},1/rate);
+  return {rate,r.logLik+jac,0,r.status==ExpStatus::Ok ? InvExpStatus::Ok : InvExpStatus::InvalidInput};
+}
+
 } // namespace cppunivariate

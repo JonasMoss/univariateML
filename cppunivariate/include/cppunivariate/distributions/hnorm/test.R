@@ -105,3 +105,28 @@ test_that("held half-normal endpoint is exact, closed and counted as fixed", {
   set.seed(1); boot <- bootstrapml(f,reps=3,reducer=identity)
   expect_true(all(boot["mu",]==0))
 })
+
+test_that("held half-normal scale and every combined hold match density oracles", {
+  set.seed(8101)
+  samples <- list(abs(rnorm(20)),abs(rnorm(100)),c(0,0,1,2),1,rep(2,4))
+  for(x in samples) for(mu in list(NULL,min(x)-.5)) {
+    f <- mlhnorm(x,mu=mu,sigma=1.7)
+    expect_identical(unname(f["sigma"]),1.7)
+    expect_setequal(attr(f,"fixed"),c(if(!is.null(mu))"mu","sigma"))
+    ll <- function(m) sum(log(2)+dnorm(x,m,1.7,log=TRUE))
+    if(is.null(mu)) {
+      # Independent constrained scalar optimization, plus its exact endpoint.
+      best <- min(vapply(c(.1,1,10),function(gap)
+        nlminb(min(x)-gap,function(m)-ll(m),upper=min(x),
+          control=list(rel.tol=1e-12))$objective,numeric(1)))
+      expect_equal(attr(f,"logLik"),-best,tolerance=1e-10)
+      expect_equal(f[["mu"]],min(x),tolerance=1e-12)
+    } else expect_identical(unname(f["mu"]),mu)
+    expect_equal(attr(f,"logLik"),ll(f[["mu"]]),tolerance=1e-12)
+    expect_equal(sum(dml(x,f,log=TRUE)),attr(f,"logLik"),tolerance=1e-12)
+  }
+  expect_s3_class(mlhnorm(c(0,0),mu=0,sigma=1),"univariateML")
+  for(bad in c(0,-1,Inf,NaN)) expect_error(mlhnorm(1:3,mu=NULL,sigma=bad),"sigma.*positive finite")
+  expect_error(mlhnorm(1:3,mu=2,sigma=1),"at least")
+  expect_error(mlhnorm(1e300,mu=NULL,sigma=1e-300),"exceeds double precision")
+})

@@ -48,3 +48,21 @@ TEST_CASE("fatigue: normal transform in extreme log tails") {
   CHECK(cppunivariate::distributions::qfatigue(-10000,3,2,0,false,true) == doctest::Approx(359792.6641948019).epsilon(1e-12));
   CHECK(cppunivariate::distributions::pfatigue(359792.6641948019,3,2,0,false,true) == doctest::Approx(-10000).epsilon(1e-12));
 }
+
+
+TEST_CASE("fatigue: exact held-beta alpha and held-alpha profile") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{.2,.2,1,3};
+  auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,200,nan,1);
+  double ss=0;for(double v:x)ss+=v+1/v-2;
+  CHECK(r.beta==1);CHECK(r.alpha==doctest::Approx(std::sqrt(ss/4)));
+  for(double a:{.7,3.}) {
+    r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,200,a);
+    CHECK(r.alpha==a);CHECK(std::isfinite(r.logLik));
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dfatigue(v,a,r.beta,0,true);
+    CHECK(r.logLik==doctest::Approx(ll));
+  }
+  const std::vector<double> c{1,1};
+  CHECK(std::isnan(cppunivariate::fatigue_mle(mltest::as_span(c),1e-10,200,nan,1).logLik));
+  CHECK(std::isfinite(cppunivariate::fatigue_mle(mltest::as_span(c),1e-10,200,3,1).logLik));
+}

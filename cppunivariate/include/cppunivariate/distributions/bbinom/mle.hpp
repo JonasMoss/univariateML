@@ -258,7 +258,7 @@ inline std::vector<double> log_grid(double lo, double hi, double step) {
 }  // namespace bbinom_detail
 
 // size: known number of trials (required). alpha_fixed / beta_fixed: NaN to
-// estimate; at most one may be finite. tol: relative tolerance on log shape
+// estimate; both may be held. With size NaN, both shapes must be held. tol: relative tolerance on log shape
 // steps in the Newton refinement; maxit: iterations per refinement.
 inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int maxit = 100,
                                double alpha_fixed = std::numeric_limits<double>::quiet_NaN(),
@@ -267,11 +267,36 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
   BbinomResult out{size, nan, nan, nan, 0, BbinomStatus::InvalidInput};
   const bool fix_a = !std::isnan(alpha_fixed), fix_b = !std::isnan(beta_fixed);
   if (x.size() == 0 || !(tol > 0) || !std::isfinite(tol) || maxit < 1) return out;
+  if (std::isnan(size) && fix_a && fix_b) {
+    if (!(alpha_fixed>0 && beta_fixed>0) || !std::isfinite(alpha_fixed+beta_fixed)) return out;
+    int mx=0; for(int v:x) {if(v<0)return out;mx=std::max(mx,v);}
+    // Each pmf is decreasing once size+1 >= x*(alpha+beta-1)/alpha.
+    const double end=std::max(double(mx),std::ceil(mx*std::max(0.,alpha_fixed+beta_fixed-1)/alpha_fixed));
+    if (end>1000000) {out.status=BbinomStatus::IterationFailure;return out;}
+    out.logLik=-std::numeric_limits<double>::infinity();
+    for (int k=mx;k<=end;++k) {
+      auto candidate=bbinom_mle(x,k,tol,maxit,alpha_fixed,beta_fixed);
+      if(candidate.status!=BbinomStatus::Ok)return candidate;
+      if(candidate.logLik>out.logLik)out=candidate;
+    }
+    return out;
+  }
   if (!std::isfinite(size) || size < 0 || size != std::floor(size) || size > 1e7) return out;
-  if (fix_a && fix_b) return out;
+
   if (fix_a && !(alpha_fixed > 0 && std::isfinite(alpha_fixed))) return out;
   if (fix_b && !(beta_fixed > 0 && std::isfinite(beta_fixed))) return out;
 
+  if (fix_a && fix_b) {
+    double ll=0;
+    for(int v:x) {
+      if(v<0)return out;
+      if(v>size){out.status=BbinomStatus::SizeTooSmall;return out;}
+      // Rising-factorial differences avoid cancellation of large shapes.
+      for(int j=0;j<v;++j) ll+=std::log((size-j)/(j+1.)) + std::log(alpha_fixed+j)-std::log(alpha_fixed+beta_fixed+j);
+      for(int j=0;j<size-v;++j) ll+=std::log(beta_fixed+j)-std::log(alpha_fixed+beta_fixed+v+j);
+    }
+    return {size,alpha_fixed,beta_fixed,ll,0,BbinomStatus::Ok};
+  }
   bbinom_detail::Data d;
   d.size = static_cast<int>(size);
   const int N = d.size;

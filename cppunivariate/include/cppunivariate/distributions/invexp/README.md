@@ -11,16 +11,12 @@ params:
 r:
   density: actuar::dinvexp
   sampler: actuar::rinvexp
-  control: {}
+  control:
+    rate: Optional held rate; NULL estimates it.
 log_density: -log(rate) - 2*log(x) - 1/(rate*x)
 references:
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
-holds:
-- held:
-  - rate
-  status: not-implemented
-  reason: The adapter does not accept `rate`; this hold is not implemented (P2).
 ---
 
 The inverse exponential distribution models positive heavy-tailed data.
@@ -28,3 +24,5 @@ The inverse exponential distribution models positive heavy-tailed data.
 ## Details
 
 The fit is the reciprocal of the exponential fit on `1/x`.
+
+A held positive rate evaluates the likelihood without estimation.

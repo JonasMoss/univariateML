@@ -111,3 +111,34 @@ test_that("own Zipf functions work through every fitted-model route", {
 test_that("zipf matches frozen sads values (reference.json)", {
   expect_reference_values("zipf")
 })
+
+test_that("Zipf all hold subsets match enumerated multistart reference fits", {
+  set.seed(811)
+  samples <- list(sample(1:8,20,TRUE),sample(1:8,100,TRUE),c(1,2),c(1,1,2,4),rep(4,5),pmin(rzeta(20,2),10))
+  for(x in samples) for(mask in 0:3) {
+    hn <- bitwAnd(mask,1)>0; hs <- bitwAnd(mask,2)>0
+    args <- list(x=x)
+    if(hn) args$N <- 10
+    if(hs) args$s <- .7
+    fit <- do.call(mlzipf,args)
+    ll <- function(N,s) -s*sum(log(x))-length(x)*log(sum(seq_len(N)^-s))
+    Ns <- if(hn) 10 else max(x):(max(x)+4)
+    oracle <- max(vapply(Ns,function(N) {
+      if(hs) return(ll(N,.7))
+      max(ll(N,0),vapply(c(-3,0,2),function(start) {
+        o <- optim(start,function(t) -ll(N,exp(t)),method="BFGS",control=list(reltol=1e-12))
+        -o$value
+      },0.))
+    },0.))
+    expect_equal(as.numeric(logLik(fit)),oracle,tolerance=1e-8)
+    expect_setequal(attr(fit,"fixed"),names(args)[-1])
+    if(hn) expect_identical(fit[["N"]],10)
+    if(hs) expect_identical(fit[["s"]],.7)
+  }
+  expect_error(mlzipf(rep(1,3),N=5),"point mass")
+  expect_equal(mlzipf(rep(1,3),s=.7)[["N"]],1)
+  expect_warning(expect_equal(mlzipf(rep(1,3),N=1)[["s"]],1),"not unique")
+  expect_equal(mlzipf(rep(1,3),N=1,s=0)[["s"]],0)
+  for(args in list(list(N=2),list(N=4.5),list(N=Inf),list(N=NA_real_),list(s=-1),list(s=Inf),list(s=NA_real_)))
+    expect_error(do.call(mlzipf,c(list(x=1:4),args)))
+})

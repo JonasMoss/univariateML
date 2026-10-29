@@ -12,10 +12,13 @@
 
 namespace cppunivariate {
 
+enum class ParetoStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+
 struct ParetoResult {
   double shape;
   double min;
   double logLik;
+  ParetoStatus status = ParetoStatus::Ok;
 };
 
 inline ParetoResult pareto_mle(span x) {
@@ -37,6 +40,21 @@ inline ParetoResult pareto_mle(span x) {
   const double alpha = dn / sum_log_ratio;
   const double logLik = dn * (std::log(alpha)-1.0) - sum_log_x;
   return {alpha, xmin, logLik};
+}
+
+inline ParetoResult pareto_mle(span x,double a,double b) {
+  if(std::isnan(a) && std::isnan(b))return pareto_mle(x);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(x.size()==0 || (!std::isnan(a) && !(a>0 && std::isfinite(a))) ||
+     (!std::isnan(b) && !(b>0 && std::isfinite(b))))return {nan,nan,nan,ParetoStatus::InvalidInput};
+  double low=x[0];for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,ParetoStatus::InvalidInput};low=std::min(low,v);}
+  if(std::isnan(b))b=low;
+  if(b>low)return {nan,b,nan,ParetoStatus::InvalidInput};
+  long double gap=0,logs=0;for(double v:x){gap+=std::log1p((static_cast<long double>(v)-b)/b);logs+=std::log(v);}
+  const double n=static_cast<double>(x.size());
+  if(std::isnan(a) && gap==0)return {nan,b,nan,ParetoStatus::Unbounded};
+  if(std::isnan(a))a=static_cast<double>(n/gap);
+  return {a,b,static_cast<double>(n*std::log(a)-a*gap-logs)};
 }
 
 }  // namespace cppunivariate

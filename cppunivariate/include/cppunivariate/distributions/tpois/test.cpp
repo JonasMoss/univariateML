@@ -43,3 +43,23 @@ TEST_CASE("tpois: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtpois(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtpois(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("tpois: all hold subsets, singleton representatives and escapes") {
+  const std::vector<int> x={1,1,2,4},constant={3,3},zeros={0,0};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double a:{nan,-1.})for(double b:{nan,10.})for(double l:{nan,2.3}) {
+    const auto f=cppunivariate::tpois_mle({x.data(),x.size()},a,b,l);
+    CHECK(f.status==cppunivariate::truncated_detail::Status::Ok);
+    if(!std::isnan(l))CHECK(f.parameter==l);
+    double ll=0;for(int v:x)ll+=cppunivariate::distributions::dtpois(v,f.parameter,std::isnan(a)?0:a,std::isnan(b)?4:b,true);
+    CHECK(f.logLik==doctest::Approx(ll).epsilon(1e-10));
+  }
+  const auto single=cppunivariate::tpois_mle({constant.data(),constant.size()},nan,nan);
+  CHECK(single.status==cppunivariate::truncated_detail::Status::Ok);
+  CHECK(single.parameter==1);
+  CHECK(single.logLik==0);
+  CHECK(cppunivariate::tpois_mle({constant.data(),constant.size()},nan,10).status==cppunivariate::truncated_detail::Status::LowerPointMass);
+  CHECK(cppunivariate::tpois_mle({constant.data(),constant.size()},-1,nan).status==cppunivariate::truncated_detail::Status::UpperPointMass);
+  CHECK(cppunivariate::tpois_mle({constant.data(),constant.size()},nan,nan,0).status==cppunivariate::truncated_detail::Status::InvalidInput);
+  CHECK(cppunivariate::tpois_mle({zeros.data(),zeros.size()},nan,nan,0).status==cppunivariate::truncated_detail::Status::Ok);
+}

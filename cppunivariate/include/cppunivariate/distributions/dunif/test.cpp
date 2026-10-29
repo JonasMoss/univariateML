@@ -53,3 +53,17 @@ TEST_CASE("dunif: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qdunif(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rdunif(rng, p[0], p[1]); });
 }
+
+TEST_CASE("dunif: held endpoints tighten only free coordinates") {
+  const std::vector<int> x={0,1,3};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double a:{nan,-2.})for(double b:{nan,5.}) {
+    const auto f=cppunivariate::dunif_mle({x.data(),x.size()},a,b);
+    CHECK(f.min==(std::isnan(a)?0:a));
+    CHECK(f.max==(std::isnan(b)?3:b));
+    CHECK(f.logLik==doctest::Approx(-3*std::log(f.max-f.min+1)).epsilon(1e-12));
+  }
+  CHECK(std::isnan(cppunivariate::dunif_mle({x.data(),x.size()},1).logLik));
+  CHECK(std::isnan(cppunivariate::dunif_mle({x.data(),x.size()},nan,2).logLik));
+  CHECK(std::isnan(cppunivariate::dunif_mle({x.data(),x.size()},-.5).logLik));
+}

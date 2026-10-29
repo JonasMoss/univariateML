@@ -84,3 +84,86 @@ test_that("Frechet free location accepts ties above the minimum", {
   if (inherits(f,"error")) expect_match(conditionMessage(f), "mlgumbel")
   else expect_equal(as.numeric(logLik(f)), sum(extraDistr::dfrechet(x,f[1],f[2],f[3],log=TRUE)), tolerance=1e-8)
 })
+
+test_that("frechet: new holds agree with independent multistart reference fits", {
+  set.seed(81029)
+  id <- "frechet"
+  pars <- c("lambda","mu","sigma")
+  masks <- c(1,4,3,5,6,7)
+  samples <- list(
+    extraDistr::rfrechet(20, lambda=2),
+    extraDistr::rfrechet(100, lambda=2),
+    c(.2,.5,.5,1,2,3,4), c(.2,.8),
+    if(id=="frechet") extraDistr::qgumbel((1:20-.5)/20) else rexp(20),
+    if(id=="gev") extraDistr::qgev((1:20-.5)/20,xi=-.9) else runif(20,.1,2))
+  density <- getExportedValue("extraDistr",paste0("d",id))
+  for(x in samples) for(mask in masks) {
+    held <- pars[as.logical(intToBits(mask)[1:3])]
+    unit <- max(sd(x),diff(range(x)),.1)
+    base <- if(id=="frechet") list(lambda=2,mu=min(x)-unit,sigma=unit) else
+      list(mu=if(id=="gpd") min(x)-unit else median(x),sigma=unit,xi=.3)
+    values <- base[held]
+    args <- c(list(x=x),values)
+    if(id=="frechet" && !"mu" %in% held) args["mu"] <- list(NULL)
+    f <- do.call(get(paste0("ml",id)),args)
+    expect_identical(unname(as.numeric(f[held])),unname(unlist(values)))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_equal(as.numeric(logLik(f)),sum(do.call(density,c(list(x=x,log=TRUE),as.list(f)))),tolerance=1e-8)
+    free <- setdiff(pars,held)
+    if(!length(free)) next
+    encode <- function(p,a) switch(p,lambda=log(a),sigma=log(a/unit),
+      mu=if(id=="gev") (a-min(x))/unit else log((min(x)-a)/unit),xi=a)
+    decode <- function(p,a) switch(p,lambda=exp(a),sigma=unit*exp(a),
+      mu=if(id=="gev") min(x)+unit*a else min(x)-unit*exp(a),xi=a)
+    objective <- function(z) {
+      a <- base
+      for(j in seq_along(free)) a[[free[j]]] <- decode(free[j],z[j])
+      if(any(!is.finite(unlist(a))) ||
+         (id=="gev" && (a$xi < -.5 || a$xi>1)) ||
+         (id=="gpd" && a$xi < -.5) ||
+         (id=="frechet" && !"lambda" %in% held && !"mu" %in% held && a$lambda<1)) return(1e100)
+      ll <- suppressWarnings(sum(do.call(density,c(list(x=x,log=TRUE),a))))
+      if(is.finite(ll)) -ll else 1e100
+    }
+    z0 <- vapply(free,function(p) encode(p,base[[p]]),0.)
+    vals <- vapply(c(-1,-.3,0,.5,1),function(delta) {
+      z <- z0+delta
+      suppressWarnings(optim(z,objective,method="Nelder-Mead",
+        control=list(maxit=4000,reltol=1e-12))$value)
+    },0.)
+    # Start an additional reference solve at the result to check its score;
+    # the other five starts are independent of the fitter.
+    zf <- vapply(free,function(p) encode(p,f[[p]]),0.)
+    vals <- c(vals,suppressWarnings(optim(zf,objective,method="Nelder-Mead",
+      control=list(maxit=4000,reltol=1e-12))$value))
+    expect_equal(-as.numeric(logLik(f)),min(vals),tolerance=2e-6)
+  }
+})
+
+test_that("Frechet holds diagnose collapse, constant shape divergence and domains", {
+  for(v in c(0,-1,Inf,NaN)) {
+    expect_error(mlfrechet(1:5,mu=0,lambda=v),"positive.*finite")
+    expect_error(mlfrechet(1:5,mu=0,sigma=v),"positive.*finite")
+  }
+  expect_error(mlfrechet(1:5,mu=1,lambda=2),"strictly")
+  expect_error(mlfrechet(c(1,1,2,3),mu=NULL,lambda=1),"collapse")
+  expect_error(mlfrechet(rep(2,4),mu=NULL,sigma=1),"unbounded")
+  expect_error(mlfrechet(rep(2,4),mu=0,sigma=2),"unbounded")
+  expect_error(mlfrechet(1:5,mu=0,sigma=1,iterlim=1),"converge")
+  for(h in list(list(mu=0,lambda=.5),list(mu=NULL,lambda=.5,sigma=1),list(mu=0,sigma=1))) {
+    f <- do.call(mlfrechet,c(list(x=2),h))
+    expect_true(is.finite(logLik(f)))
+  }
+  # All held is an evaluation, including a single point at the scale.
+  expect_equal(as.numeric(logLik(mlfrechet(2,mu=0,lambda=.5,sigma=2))),log(.5/2)-1)
+})
+
+test_that("Frechet fixed shape rejects a constant sample with both scales free", {
+  expect_error(mlfrechet(rep(2,4),mu=NULL,lambda=2),"collapse")
+})
+
+test_that("Frechet tiny held shape retains its exact scale limit", {
+  f <- mlfrechet(c(1,4),mu=0,lambda=1e-20)
+  expect_equal(unname(f["sigma"]),2,tolerance=1e-14)
+  expect_identical(unname(f["lambda"]),1e-20)
+})

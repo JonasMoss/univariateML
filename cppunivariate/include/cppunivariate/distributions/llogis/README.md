@@ -17,6 +17,8 @@ r:
   density: actuar::dllogis
   sampler: actuar::rllogis
   control:
+    shape: Optional held shape; NULL estimates it.
+    rate: Optional held rate; NULL estimates it.
     abstol: Absolute step tolerance in (location, log(scale)) of the underlying logistic fit.
     iterlim: Maximum number of iterations.
 log_density: log(shape) + log(rate) + (shape - 1)*log(rate*x) - 2*log(1 + (rate*x)**shape)
@@ -26,15 +28,12 @@ references:
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
 examples: |
   mlllogis(precip)
-holds:
-- held:
-  - shape
-  status: not-implemented
-  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
-- held:
-  - rate
-  status: not-implemented
-  reason: The adapter does not accept `rate`; this hold is not implemented (P2).
+limits:
+- name: unbounded likelihood
+  fixed: [rate]
+  when: Every observation equals the reciprocal held rate.
+  status: Unbounded
+  message: unbounded
 ---
 
 The log-logistic distribution describes positive data whose logarithm has a logistic distribution. It is used for size, lifetime and loss data.
@@ -42,3 +41,5 @@ The log-logistic distribution describes positive data whose logarithm has a logi
 ## Details
 
 The parameter `rate` is the reciprocal of scale, following actuar. Fitting requires strictly positive observations.
+
+With rate held, the likelihood is unbounded if every observation equals 1/rate. Holding shape permits constant data.

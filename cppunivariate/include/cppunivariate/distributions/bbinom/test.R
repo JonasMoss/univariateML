@@ -18,7 +18,7 @@ test_that("known size and fixed shapes have correct attributes", {
   }
   expect_error(mlbbinom(x), "requires `size`")
   expect_error(mlbbinom(x,size=9), "smaller")
-  expect_error(mlbbinom(x,size=10,alpha=2,beta=3), "at most one")
+  expect_equal(attr(mlbbinom(x,size=10,alpha=2,beta=3), "fixed"), c("size","alpha","beta"))
   for (size in c(-1, 1.5, Inf)) expect_error(mlbbinom(x,size=size), "nonnegative integer")
 })
 
@@ -80,4 +80,21 @@ test_that("generic inverse supports unbounded integer references and veto", {
   # Remove only the registry entry, exercising the single policy switch.
   testthat::local_mocked_bindings(univariateML_reference_quantiles=list(),.package="univariateML")
   expect_error(qml(.5,fit),"no quantile function")
+})
+
+test_that("bbinom: both held shapes permit exact size profiling", {
+ set.seed(88)
+ for(x in c(lapply(c(20,100),function(n) extraDistr::rbbinom(n,8,2,3)),list(c(0,0),c(0,1),c(2,2,3),rep(3,4)))) {
+  for(size in list(8,NULL)) {
+   f<-mlbbinom(x,size=size,alpha=2,beta=3)
+   grid<-if(is.null(size)) seq(max(x),100) else size
+   oracle<-max(vapply(grid,function(k)sum(extraDistr::dbbinom(x,k,2,3,log=TRUE)),0.))
+   expect_equal(attr(f,"logLik"),oracle,tolerance=1e-9)
+   expect_identical(unname(f[c("alpha","beta")]),c(2,3))
+   expect_setequal(attr(f,"fixed"),c(if(!is.null(size)) "size","alpha","beta"))
+  }
+ }
+ expect_error(mlbbinom(1:3,size=NULL),"P0")
+ expect_error(mlbbinom(1:3,size=NULL,alpha=2),"P0")
+ expect_error(mlbbinom(1:3,size=NULL,beta=3),"P0")
 })

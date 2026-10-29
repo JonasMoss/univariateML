@@ -34,10 +34,15 @@ r:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.
     iterlim: Maximum delegate iterations.
-    shape1: Holding this shape is not supported.
-    shape2: Holding this shape is not supported.
+    shape1: Known positive finite coefficient; NULL estimates it.
+    shape2: Known positive finite coefficient; NULL estimates it.
 log_density: log(shape1) + log(shape2) - log((x-min)) - shape2*log(scale/(x-min)) - (shape1+1)*log(1+((x-min)/scale)**shape2)
 limits:
+- name: unbounded likelihood
+  when: A free concentration can collapse on constant observations
+  detect: Constant samples; the held coefficients determine whether concentration remains free
+  status: Unbounded
+  message: unbounded
 - when: $\mathrm{shape1} \to \infty$ with $\mathrm{scale}\,\mathrm{shape1}^{-1/\mathrm{shape2}}$
     fixed
   status: WeibullBoundary
@@ -56,56 +61,48 @@ examples: |
   set.seed(3)
   mlpareto4(simulate_default("mlpareto4", 100), min = 0)
 holds:
-- held:
-  - shape1
-  status: not-implemented
-  reason: Holding shapes is not supported for Pareto IV.
-- held:
-  - shape2
-  status: not-implemented
-  reason: Holding shapes is not supported for Pareto IV.
 - held: []
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape2
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape2
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - scale
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - scale
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape2
-  - scale
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - shape2
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
   - scale
-  status: not-implemented
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - scale
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - scale
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - scale
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
@@ -126,3 +123,5 @@ At distance y above the endpoint the density is asymptotic to C y^(a-1), where a
 
 With scale held, endpoint limit models retain the endpoint min + scale;
 a free-endpoint Pareto or power fit would be a different constrained model.
+
+With min held, every shape hold reduces to the corresponding Burr fit on x - min, including its held-power Weibull escape.

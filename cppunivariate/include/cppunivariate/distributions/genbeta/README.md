@@ -35,6 +35,11 @@ r:
     iterlim: Maximum Newton iterations per beta-shape profile evaluation.
 log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
 limits:
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: InvalidData
+    message: unbounded
   - {model: lgamma, name: unit gamma on x/scale, when: 'shape1 tends to infinity, shape3 tends to zero, shape1*shape3 stays finite; fit mllgamma(scale / x)', status: UnitGammaBoundary}
   - {model: power, when: 'shape1 tends to zero and shape3 tends to infinity; shape2 may grow exponentially to lower the effective upper endpoint', status: PowerBoundary}
 examples: |
@@ -42,47 +47,47 @@ examples: |
   mlgenbeta(simulate_default("mlgenbeta", 500), scale = 1)
 holds:
 - held: []
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape2
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape2
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape3
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape3
-  status: not-implemented
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape2
-  - shape3
-  status: not-implemented
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 - held:
   - shape1
   - shape2
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
   - shape3
-  status: not-implemented
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape3
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape2
+  - shape3
+  status: no-mle
+  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
+    limit models prevent an unrestricted MLE (P0, A4).'
+- held:
+  - shape1
+  - shape2
+  - shape3
+  status: no-mle
   reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
@@ -95,9 +100,7 @@ The generalized beta of the first kind models positive observations below a know
 
 The actuar coefficients are shape1 = alpha, shape2 = beta, shape3 = tau,
 and scale = theta. Then (X/theta)^tau is beta(alpha,beta).
-Every shape may be held. Scale is always held. Constant samples with any
-free beta shape are rejected; these constrained constant-sample cases
-have not all been analysed.
+Every shape may be held. Scale is always held. At fixed shape3, constant samples are unbounded when both beta shapes are free; holding either beta shape gives a finite fit. With shape3 free and shape2 free the likelihood can still concentrate on constant samples, even with shape1 held.
 
 For beta = 1 only alpha*tau is identified. If both are free the fitter
 returns tau = 1 and records shape3 as fixed, so likelihood degrees of

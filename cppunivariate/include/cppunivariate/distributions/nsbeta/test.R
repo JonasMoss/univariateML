@@ -37,7 +37,7 @@ test_that("held bounds survive selection and bootstrap", {
  selected <- model_select(x,models="nsbeta",min=2,max=5)
  expect_equal(attr(selected,"fixed"),c("min","max"))
  expect_error(model_select(x,models="nsbeta"),"unbounded")
- expect_error(mlnsbeta(x,min=2,max=5,shape1=2),"not supported")
+ expect_identical(unname(mlnsbeta(x,min=2,max=5,shape1=2)["shape1"]),2)
  expect_error(mlnsbeta(x,shape1=2),"not supported")
  expect_error(mlnsbeta(x,min=5,max=2),"ordered")
  expect_error(mlnsbeta(x,min=2,max=Inf),"finite")
@@ -49,4 +49,59 @@ test_that("nsbeta: reference mapping and unbounded unrestricted path", {
  y <- c(1,2,4,7)
  ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(extraDistr::dnsbeta(y,.5,2,1-e,8,log=TRUE)))
  expect_true(all(diff(ll)>0))
+})
+
+
+test_that("P2 nsbeta holds agree with independent multistart reference likelihoods", {
+  pars <- c(shape1=2, shape2=3, min=0, max=1)
+  thresholds <- c("min", "max")
+  regular <- setdiff(names(pars), thresholds)
+  density <- extraDistr::dnsbeta
+  samples <- lapply(c(3, 20, 100), function(n)
+    do.call(extraDistr::qnsbeta, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+  samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
+  # These samples deliberately include proper limit-model data.
+  samples[[5]] <- qbeta(((1:20)-.5)/20,2,3)
+  for (x in samples) for (mask in seq_len(2^length(regular)-1)) {
+    held <- c(thresholds, regular[as.logical(intToBits(mask)[seq_along(regular)])])
+    free <- setdiff(names(pars), held)
+    args <- as.list(pars[held])
+    fit <- tryCatch(do.call(mlnsbeta, c(list(x=x),args)), error=identity)
+    always <- TRUE
+    if(always) expect_false(inherits(fit,"error"),info=paste(length(x),paste(held,collapse=",")))
+    if (inherits(fit,"error")) {
+      expect_match(conditionMessage(fit), "[Ll]imit|[Uu]se `ml|[Uu]nbounded|[Nn]o MLE|[Nn]o verified|unresolved|failed|does not exist")
+      next
+    }
+    expect_identical(unname(as.numeric(fit[held])),unname(pars[held]))
+    expect_true(all(held %in% attr(fit,"fixed")))
+    objective <- function(z) {
+      p <- pars; p[free] <- exp(z)
+      value <- suppressWarnings(-sum(do.call(density,c(list(x=x,log=TRUE),as.list(p)))))
+      if(is.finite(value)) value else 1e100
+    }
+    actual <- attr(fit,"logLik")
+    expect_equal(actual, -objective(log(fit[free])), tolerance=1e-7)
+    if(length(free)) {
+      # Starts depend only on reference parameters and observations.
+      starts <- lapply(c(-1,0,1), function(s) log(pars[free])+s)
+      oracle <- vapply(starts,function(z) {
+        o <- suppressWarnings(nlminb(z,objective,control=list(iter.max=1000,eval.max=3000,rel.tol=1e-12)))
+        -o$objective
+      },0.)
+      expect_gte(actual, max(oracle)-1e-6*length(x))
+      expect_lte(actual, max(oracle)+1e-5*length(x))
+    }
+  }
+})
+
+test_that("P2 nsbeta validates new held values", {
+  for (v in c(0,-1,Inf,NA_real_)) expect_error(mlnsbeta(c(.2,.3,.5), min=0, max=1, shape1=v),"positive|finite")
+  for (v in c(0,-1,Inf,NA_real_)) expect_error(mlnsbeta(c(.2,.3,.5), min=0, max=1, shape2=v),"positive|finite")
+})
+
+test_that("P2 nsbeta constant samples with coercive holds fit", {
+  expect_true(is.finite(attr(mlnsbeta(rep(.4,5),min=0,max=1,shape1=2),"logLik")))
+  expect_true(is.finite(attr(mlnsbeta(rep(.4,5),min=0,max=1,shape2=3),"logLik")))
+  expect_true(is.finite(attr(mlnsbeta(rep(.4,5),min=0,max=1,shape1=2,shape2=3),"logLik")))
 })

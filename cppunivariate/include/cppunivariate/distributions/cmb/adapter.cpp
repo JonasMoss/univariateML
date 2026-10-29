@@ -5,11 +5,13 @@
 #include <tuple>
 #include <limits>
 // [[Rcpp::export]]
-Rcpp::List mlcmb_(const Rcpp::IntegerVector &x,double size,
+Rcpp::List mlcmb_(const Rcpp::IntegerVector &x,Rcpp::Nullable<double> size,
                   Rcpp::Nullable<double> prob=R_NilValue,
                   Rcpp::Nullable<double> nu=R_NilValue,
                   double reltol=1e-10,int iterlim=100) {
-  if (!std::isfinite(size) || size<0 || size>1e7 || size!=std::floor(size))
+  if(size.isNull())Rcpp::stop("Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).");
+  const double trials=Rcpp::as<double>(size);
+  if (!std::isfinite(trials) || trials<0 || trials>1e7 || trials!=std::floor(trials))
     Rcpp::stop("`size` must be a nonnegative integer at most 1e7.");
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double p=prob.isNotNull() ? Rcpp::as<double>(prob) : nan;
@@ -17,7 +19,7 @@ Rcpp::List mlcmb_(const Rcpp::IntegerVector &x,double size,
   if (prob.isNotNull() && !(std::isfinite(p) && p>0 && p<1))
     Rcpp::stop("fixed `prob` must be strictly between zero and one.");
   if (nu.isNotNull() && !std::isfinite(v)) Rcpp::stop("fixed `nu` must be finite.");
-  const auto res=cppunivariate::cmb_mle(dist_impl::as_ispan(x),static_cast<int>(size),reltol,iterlim,p,v);
+  const auto res=cppunivariate::cmb_mle(dist_impl::as_ispan(x),static_cast<int>(trials),reltol,iterlim,p,v);
   switch (res.status) {
     case cppunivariate::CmbStatus::Ok: break;
     case cppunivariate::CmbStatus::PointMass:
@@ -34,10 +36,10 @@ Rcpp::List mlcmb_(const Rcpp::IntegerVector &x,double size,
   }
   Rcpp::CharacterVector fixed=Rcpp::CharacterVector::create("size");
   if (prob.isNotNull()) fixed.push_back("prob");
-  if (nu.isNotNull() || size==1) fixed.push_back("nu");
-  if (size==1 && nu.isNull()) Rcpp::warning("nu is not identified with size = 1; returning nu = 1.");
+  if (nu.isNotNull() || trials==1) fixed.push_back("nu");
+  if (trials==1 && nu.isNull()) Rcpp::warning("nu is not identified with size = 1; returning nu = 1.");
   return Rcpp::List::create(
-    Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["size"]=size,Rcpp::_["prob"]=res.prob,Rcpp::_["nu"]=res.nu),
+    Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["size"]=trials,Rcpp::_["prob"]=res.prob,Rcpp::_["nu"]=res.nu),
     Rcpp::_["logLik"]=res.logLik,Rcpp::_["iterations"]=res.iterations,Rcpp::_["fixed"]=fixed);
 }
 

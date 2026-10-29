@@ -17,6 +17,8 @@ r:
   density: actuar::dinvweibull
   sampler: actuar::rinvweibull
   control:
+    shape: Optional held shape; NULL estimates it.
+    rate: Optional held rate; NULL estimates it.
     shape0: Optional positive finite starting shape; `NULL` uses the automatic start.
     reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
     iterlim: Maximum number of iterations.
@@ -27,15 +29,12 @@ references:
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
 examples: |
   mlinvweibull(precip)
-holds:
-- held:
-  - shape
-  status: not-implemented
-  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
-- held:
-  - rate
-  status: not-implemented
-  reason: The adapter does not accept `rate`; this hold is not implemented (P2).
+limits:
+- name: unbounded likelihood
+  fixed: [rate]
+  when: Every reciprocal observation equals held rate.
+  status: Unbounded
+  message: unbounded
 ---
 
 The inverse Weibull distribution is the distribution of the reciprocal of a Weibull variable, used for heavy-tailed positive data.
@@ -43,3 +42,5 @@ The inverse Weibull distribution is the distribution of the reciprocal of a Weib
 ## Details
 
 The parameter `rate` is the reciprocal of the inverse Weibull scale, following actuar. The optional `shape0` start was documented but ignored in univariateML 1.x.
+
+With rate held, the likelihood is unbounded if every reciprocal observation equals that rate. Holding shape permits constant data.

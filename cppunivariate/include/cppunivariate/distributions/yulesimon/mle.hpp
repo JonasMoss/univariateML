@@ -16,13 +16,19 @@ inline double score_term(int k,double rho) {
   return rho*(special::digamma(rho+k+1)-special::digamma(rho+1));
 }
 }
-inline YulesimonResult yulesimon_mle(ispan x,double tol=1e-10,int maxit=200) {
+inline YulesimonResult yulesimon_mle(ispan x,double tol=1e-10,int maxit=200, double held=std::numeric_limits<double>::quiet_NaN()) {
   const double nan=special::kNaN;
   if (!x.size() || !(tol>0) || !std::isfinite(tol) || maxit<1)
     return {nan,nan,0,YulesimonStatus::InvalidInput};
   std::vector<int> values;
   for (int k:x) { if (k<1) return {nan,nan,0,YulesimonStatus::InvalidInput}; values.push_back(k); }
   std::sort(values.begin(),values.end());
+  if (!std::isnan(held)) {
+    if (!(held>0) || !std::isfinite(held)) return {nan,nan,0,YulesimonStatus::InvalidInput};
+    double ll=0;
+    for (int k:x) ll+=distributions::dyulesimon(k,held,true);
+    return {held,ll,0,YulesimonStatus::Ok};
+  }
   if (values.back()==1) return {special::kPosInf,0,0,YulesimonStatus::PointMass};
   std::vector<int> keys,counts;
   for (int k:values) {

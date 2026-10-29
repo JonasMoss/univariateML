@@ -22,10 +22,23 @@ r:
   density: actuar::dtrgamma
   sampler: actuar::rtrgamma
   control:
+    scale: Known positive finite coefficient; NULL estimates it.
+    shape2: Known positive finite coefficient; NULL estimates it.
+    shape1: Known positive finite coefficient; NULL estimates it.
     reltol: Tolerance in `log(shape2)` for the one-dimensional profile search (free `shape2`).
     iterlim: Maximum number of iterations per root of the profile score.
 log_density: log(shape2) + shape1*shape2*log(x/scale) - (x/scale)**shape2 - log(x) - loggamma(shape1)
 limits:
+  - name: fixed-endpoint power face
+    fixed: [scale]
+    when: shape1 tends to zero and shape2 tends to infinity at fixed product
+    status: PowerBoundary
+    message: fixed-endpoint power face
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: InvalidData
+    message: unbounded
   - model: lnorm
     when: '$\mathrm{shape1} \to \infty$ with $\mathrm{shape2}\sqrt{\mathrm{shape1}}$ and $\log \mathrm{scale} + \log(\mathrm{shape1})/\mathrm{shape2}$ fixed'
     status: LognormalBoundary
@@ -39,11 +52,7 @@ references:
 examples: |
   set.seed(1)
   mltrgamma(actuar::rtrgamma(500, shape1 = 2, shape2 = 1.5, scale = 2))
-holds:
-- held:
-  - scale
-  status: not-implemented
-  reason: The adapter does not accept `scale`; this hold is not implemented (P2).
+holds: []
 ---
 
 The transformed gamma (Stacy's generalized gamma) distribution is the
@@ -72,3 +81,5 @@ parameters. The derivation and numerical search qualifications are in
 `notes/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
 
 actuar's `trgamma` functions lose accuracy at extreme shapes (density cancellation, infinite or zero quantiles, underflowing CDFs); see `KNOWN_ISSUES.md`. `logLik` is computed independently in C++.
+
+With scale and shape2 held the shape1 score has one root. With scale and shape1 held the shape2 likelihood is strictly concave and coercive unless every observation equals scale. With only scale held the fixed-endpoint power face is compared with the interior profile; the search is numerical.

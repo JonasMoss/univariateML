@@ -46,3 +46,59 @@ test_that("zmbinom preserves fixed size at attained boundaries", {
  expect_warning(one <- mlzmbinom(c(0,1,1),size=5),"mlbinom")
  expect_equal(unname(one["size"]),5)
 })
+
+ test_that("zmbinom: new holds match reference-density integer and multistart oracles", {
+  set.seed(810)
+  samples <- c(lapply(c(20,100),function(n) actuar::rzmbinom(n,8,.4,.3)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
+  for(x in samples) {
+    for(fixed_size in c(TRUE,FALSE)) {
+      held <- list(prob=.4)
+      for (mixture in c(FALSE,TRUE)) {
+      held <- list(prob=.4); if(mixture) held$p0 <- .3
+      args <- c(list(x=x,size=if(fixed_size) 8 else NULL),held)
+      fit <- suppressWarnings(do.call(mlzmbinom,args))
+      sizes <- if(fixed_size) 8 else seq(max(x),200)
+      ll <- function(size, mixture=.3) sum(actuar::dzmbinom(x,size=size,prob=.4, p0=mixture,log=TRUE))
+      oracle <- max(vapply(sizes,function(size) {
+        if(mixture) return(ll(size))
+        max(c(ll(size,0),ll(size,1),vapply(c(.05,.4,.9),function(start) -optim(start,function(p) -ll(size,p),method="L-BFGS-B",lower=1e-9,upper=1-1e-9)$value,0.)))
+      },0.))
+      expect_equal(attr(fit,"logLik"),oracle,tolerance=1e-6)
+      for(name in names(held)) expect_identical(unname(fit[name]),held[[name]])
+      expect_setequal(attr(fit,"fixed"),c(if(fixed_size) "size",names(held)))
+      }
+    }
+  }
+  for(p in c(-.1,1.1,NA_real_,Inf)) expect_error(mlzmbinom(c(1,2),size=8,prob=p),"prob")
+  expect_error(mlzmbinom(c(1,2),size=8,prob=1))
+  expect_error(mlzmbinom(c(1,2),size=NULL,prob=0))
+})
+
+test_that("zmbinom: held p0 profiles the remaining probability", {
+ set.seed(22)
+ for(n in c(20,100)) for(x in list(rbinom(n,8,.4),c(rep(0,n/2),rbinom(n/2,8,.4)),c(0,1,2,2,3),rep(0,n))) {
+   for(mix in c(0,.2,.8)) {
+     if(mix==0 && any(x==0)) {expect_error(mlzmbinom(x,size=8,p0=mix));next}
+     f<-suppressWarnings(mlzmbinom(x,size=8,p0=mix))
+     ll<-function(p)sum(actuar::dzmbinom(x,size=8,prob=p,p0=mix,log=TRUE))
+     oracle<-max(c(ll(0),ll(1),vapply(c(.02,.2,.5,.9,.99),function(start) -optim(start,function(p)-ll(p),method="L-BFGS-B",lower=1e-9,upper=1-1e-9)$value,0.)))
+     expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
+     expect_identical(unname(f["p0"]),mix)
+   }
+ }
+ for(v in c(-1,Inf,NA_real_)) expect_error(mlzmbinom(1:3,size=8,p0=v),"p0")
+ expect_error(mlzmbinom(1:3,size=8,p0=1))
+})
+
+test_that("zmbinom: free-size held-mixture fits and Poisson escapes", {
+ for(x in list(c(0,1,2,2,3),c(1,2,3,3,4))) {
+  f<-mlzmbinom(x,size=NULL,p0=.2)
+  ll<-function(k,p)sum(actuar::dzmbinom(x,size=k,prob=p,p0=.2,log=TRUE))
+  oracle<-max(vapply(seq(max(x),50),function(k)max(c(ll(k,0),ll(k,1),vapply(c(.1,.5,.9),function(start)-optim(start,function(p)-ll(k,p),method="L-BFGS-B",lower=1e-8,upper=1-1e-8)$value,0.))),0.))
+  expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
+ }
+ expect_error(mlzmbinom(c(1,1,1,2,3,7,12),size=NULL,p0=.2),"mlzmpois")
+ f<-mlzmbinom(rep(0,3),size=8,prob=.4,p0=.6)
+ expect_identical(unname(f[c("prob","p0")]),c(.4,.6))
+ expect_error(mlzmbinom(1:3,size=8,prob=.4,iterlim=0))
+})

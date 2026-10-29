@@ -16,6 +16,7 @@
 #include "../../core/reparam.hpp"
 #include "../../core/span.hpp"
 #include "../norm/mle.hpp"
+#include "../snorm/mle.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
@@ -27,7 +28,7 @@
 
 namespace cppunivariate {
 
-enum class SgedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary, RightHalfGedBoundary, LeftHalfGedBoundary };
+enum class SgedStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded, ScaleBoundary, UnsupportedHold, UniformBoundary, RightHalfGedBoundary, LeftHalfGedBoundary };
 
 struct SgedResult {
   double mu;
@@ -285,7 +286,7 @@ struct SgedFitCost {
   }
 };
 
-inline SgedResult sged_mle(span x, double tol, int maxit) {
+inline SgedResult sged_mle_free(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n < 2)
@@ -393,6 +394,64 @@ inline SgedResult sged_mle(span x, double tol, int maxit) {
   best.sigma *= sd_x;
   best.logLik -= dn * std::log(sd_x);
   return best;
+}
+
+// Classified holds: fixed shape/skew and either location or scale (or both).
+inline SgedResult sged_mle(span x, double tol, int maxit,
+    double fixed_mean=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_nu=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double inf=std::numeric_limits<double>::infinity();
+  const bool hm=!std::isnan(fixed_mean), hs=!std::isnan(fixed_sd);
+  const bool hn=!std::isnan(fixed_nu), hx=!std::isnan(fixed_xi);
+  if(!hm && !hs && !hn && !hx) return sged_mle_free(x,tol,maxit);
+  SgedResult out{nan,nan,nan,nan,nan,0,SgedStatus::InvalidStart};
+  if((hm && !std::isfinite(fixed_mean)) || (hs && !(fixed_sd>0 && std::isfinite(fixed_sd))) ||
+     (hn && !(fixed_nu>0 && std::isfinite(fixed_nu))) ||
+     (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || maxit<1) return out;
+  for(double v:x) if(!std::isfinite(v)) return out;
+  if(!(hn && hx && (hm || hs))) { out.status=SgedStatus::UnsupportedHold; return out; }
+  double lo=inf, hi=-inf;
+  for(double v:x) { lo=std::min(lo,v); hi=std::max(hi,v); }
+  if(!hs && lo==hi && lo==fixed_mean) { out.status=SgedStatus::Unbounded; return out; }
+
+  const double origin=hm ? fixed_mean : lo+(hi-lo)/2;
+  const double unit=hs ? fixed_sd : std::max(hi-lo,std::max(std::abs(lo-origin),std::abs(hi-origin)));
+  if(!(unit>0) || !std::isfinite(unit)) return out;
+  std::vector<double> y;
+  for(double v:x) y.push_back((v-origin)/unit);
+  double shift=0;
+  const double scale=dens::sged_sigma(fixed_nu,fixed_xi,shift);
+  auto cost=[&](double mean, double sd) {
+    double neg=x.size()*(std::log(sd)-std::log(scale));
+    for(double v:y) neg-=dens::log_dsged_core((v-mean)*scale/sd+shift,fixed_nu,fixed_xi);
+    return neg;
+  };
+  double mean=0, sd=hs ? fixed_sd/unit : 1;
+  if(!hm) {
+    // Every location mode lies between the smallest/largest translated observations.
+    const double left=(lo-origin)/unit+sd*shift/scale, right=(hi-origin)/unit+sd*shift/scale;
+    auto objective=[&](double m) { return cost(m,sd); };
+    mean=snorm_detail::scan(objective,left,right,256);
+    // Include each density kink / possible narrow t mode explicitly.
+    for(double v:y) {
+      const double c=v+sd*shift/scale;
+      const double t=snorm_detail::minimize(objective,std::max(left,c-sd/scale),std::min(right,c+sd/scale));
+      if(objective(t)<objective(mean)) mean=t;
+      if(objective(c)<objective(mean)) mean=c;
+    }
+  } else if(!hs) {
+    auto objective=[&](double ls) { return cost(0,std::exp(ls)); };
+    const double ls=snorm_detail::scan(objective,-32,32,512);
+    if(std::abs(ls)>31.9) { out.status=SgedStatus::ScaleBoundary; return out; }
+    sd=std::exp(ls);
+  }
+  out={hm ? fixed_mean : origin+unit*mean,hs ? fixed_sd : unit*sd,
+       fixed_nu,fixed_xi,-cost(mean,sd)-x.size()*std::log(unit),0,SgedStatus::Ok};
+  if(!std::isfinite(out.logLik)) out.status=SgedStatus::BfgsFailure;
+  return out;
 }
 
 }  // namespace cppunivariate

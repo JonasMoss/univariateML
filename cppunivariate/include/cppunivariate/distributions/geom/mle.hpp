@@ -8,6 +8,7 @@
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
 
+#include <cmath>
 #include <cstddef>
 #include <limits>
 
@@ -18,11 +19,16 @@ struct GeomResult {
   double logLik;
 };
 
-inline GeomResult geom_mle(ispan x) {
+inline GeomResult geom_mle(ispan x, double fixed=std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN};
 
+  if(!std::isnan(fixed)) {
+    if(!(fixed>0 && fixed<=1 && std::isfinite(fixed)))return {kNaN,kNaN};
+    double ll=0;for(int v:x) {if(v<0)return {kNaN,kNaN};ll+=special::dgeom(v,fixed,true);}
+    return {fixed,ll};
+  }
   double sum = 0.0;
   for (auto v : x) sum += static_cast<double>(v);
   const double mean = sum / static_cast<double>(n);

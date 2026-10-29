@@ -17,6 +17,8 @@ r:
   density: actuar::dinvpareto
   sampler: actuar::rinvpareto
   control:
+    shape: Optional held shape; NULL estimates it.
+    scale: Optional held scale; NULL estimates it.
     scale0: Optional positive finite starting value; NULL uses the automatic start.
     reltol: Tolerance for the underlying fit.
     iterlim: Maximum number of iterations.
@@ -31,15 +33,6 @@ references:
   - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
-holds:
-- held:
-  - shape
-  status: not-implemented
-  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
-- held:
-  - scale
-  status: not-implemented
-  reason: The adapter does not accept `scale`; this hold is not implemented (P2).
 ---
 
 The inverse Pareto distribution models positive heavy-tailed data.
@@ -49,3 +42,5 @@ The inverse Pareto distribution models positive heavy-tailed data.
 The fit is the reciprocal of the Lomax fit on `1/x`.
 
 The MLE exists exactly when the Lomax MLE of `1/x` exists (see `mllomax`): with $y_i = (1/x_i)/\overline{1/x}$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ must be nonpositive for some $0<u<\bar u$, $\bar u = \overline{1/x}\,(\prod_i x_i)^{1/n}$; the implementation prefers the inverse exponential face within $10^{-8}n$ log-likelihood units. The moment condition `mean(1/x^2) < 2*mean(1/x)^2` decides only local behaviour at that face: `mlinvpareto(c(1, 0.01))` has an MLE. A pair has an MLE iff larger/smaller exceeds approximately 28.81.
+
+Holding either shape or scale gives a unique finite fit for positive samples, including constant data. The inverse exponential escape concerns the fit with both free.

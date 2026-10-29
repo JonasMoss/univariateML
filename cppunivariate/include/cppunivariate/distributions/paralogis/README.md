@@ -17,20 +17,23 @@ r:
   density: actuar::dparalogis
   sampler: actuar::rparalogis
   control:
+    shape: Known positive finite coefficient; NULL estimates it.
     shape0: Optional starting value for `shape`; `NULL` uses `max(1.5, 2 / sd(log(x / median(x))))`.
     gradtol: Gradient tolerance for the free fit after dividing data by the sample median; with fixed scale, tolerance on the mean shape score in log coordinates (at most 1e-10).
     iterlim: Maximum number of BFGS or fixed-scale Newton iterations.
+limits:
+  - name: unbounded likelihood
+    when: A free concentration can collapse on constant observations
+    detect: Constant samples; the held coefficients determine whether concentration remains free
+    status: InvalidStart
+    message: unbounded
 log_density: 2*log(shape) + shape*log(x/scale) - log(x) - (shape + 1)*log(1 + (x/scale)^shape)
 references:
   - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
   - Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012). Loss Models, From Data to Decisions, Fourth Edition. Wiley.
 examples: |
   mlparalogis(precip)
-holds:
-- held:
-  - shape
-  status: not-implemented
-  reason: The adapter does not accept `shape`; this hold is not implemented (P2).
+holds: []
 ---
 
 The paralogistic distribution is the Burr type XII distribution with its two

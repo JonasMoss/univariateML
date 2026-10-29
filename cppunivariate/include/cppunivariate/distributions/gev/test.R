@@ -108,3 +108,99 @@ test_that("GEV fixed shape accepts harmless ties", {
   }
   expect_error(mlgev(c(0,0,0,1),xi=.5), "multiplicity")
 })
+
+test_that("gev: new holds agree with independent multistart reference fits", {
+  set.seed(81029)
+  id <- "gev"
+  pars <- c("mu","sigma","xi")
+  masks <- c(1,2,3,5,6,7)
+  samples <- list(
+    extraDistr::rgev(20, xi=.3),
+    extraDistr::rgev(100, xi=.3),
+    c(.2,.5,.5,1,2,3,4), c(.2,.8),
+    if(id=="frechet") extraDistr::qgumbel((1:20-.5)/20) else rexp(20),
+    if(id=="gev") extraDistr::qgev((1:20-.5)/20,xi=-.9) else runif(20,.1,2))
+  density <- getExportedValue("extraDistr",paste0("d",id))
+  for(x in samples) for(mask in masks) {
+    held <- pars[as.logical(intToBits(mask)[1:3])]
+    unit <- max(sd(x),diff(range(x)),.1)
+    base <- if(id=="frechet") list(lambda=2,mu=min(x)-unit,sigma=unit) else
+      list(mu=if(id=="gpd") min(x)-unit else median(x),sigma=unit,xi=.3)
+    values <- base[held]
+    args <- c(list(x=x),values)
+    if(id=="frechet" && !"mu" %in% held) args["mu"] <- list(NULL)
+    f <- do.call(get(paste0("ml",id)),args)
+    expect_identical(unname(as.numeric(f[held])),unname(unlist(values)))
+    expect_setequal(attr(f,"fixed"),held)
+    expect_equal(as.numeric(logLik(f)),sum(do.call(density,c(list(x=x,log=TRUE),as.list(f)))),tolerance=1e-8)
+    free <- setdiff(pars,held)
+    if(!length(free)) next
+    encode <- function(p,a) switch(p,lambda=log(a),sigma=log(a/unit),
+      mu=if(id=="gev") (a-min(x))/unit else log((min(x)-a)/unit),xi=a)
+    decode <- function(p,a) switch(p,lambda=exp(a),sigma=unit*exp(a),
+      mu=if(id=="gev") min(x)+unit*a else min(x)-unit*exp(a),xi=a)
+    objective <- function(z) {
+      a <- base
+      for(j in seq_along(free)) a[[free[j]]] <- decode(free[j],z[j])
+      if(any(!is.finite(unlist(a))) ||
+         (id=="gev" && (a$xi < -.5 || a$xi>1)) ||
+         (id=="gpd" && a$xi < -.5) ||
+         (id=="frechet" && !"lambda" %in% held && !"mu" %in% held && a$lambda<1)) return(1e100)
+      ll <- suppressWarnings(sum(do.call(density,c(list(x=x,log=TRUE),a))))
+      if(is.finite(ll)) -ll else 1e100
+    }
+    z0 <- vapply(free,function(p) encode(p,base[[p]]),0.)
+    vals <- vapply(c(-1,-.3,0,.5,1),function(delta) {
+      z <- z0+delta
+      suppressWarnings(optim(z,objective,method="Nelder-Mead",
+        control=list(maxit=4000,reltol=1e-12))$value)
+    },0.)
+    # Start an additional reference solve at the result to check its score;
+    # the other five starts are independent of the fitter.
+    zf <- vapply(free,function(p) encode(p,f[[p]]),0.)
+    vals <- c(vals,suppressWarnings(optim(zf,objective,method="Nelder-Mead",
+      control=list(maxit=4000,reltol=1e-12))$value))
+    expect_equal(-as.numeric(logLik(f)),min(vals),tolerance=2e-6)
+  }
+})
+
+test_that("GEV holds validate support, controls and finite coefficients", {
+  for(v in c(0,-1,Inf,NaN)) expect_error(mlgev(1:5,sigma=v),"positive.*finite")
+  expect_error(mlgev(1:5,mu=Inf),"finite")
+  expect_error(mlgev(1:5,mu=0,sigma=1,xi=-.5),"support|holds")
+  expect_error(mlgev(1:5,mu=0,sigma=1,iterlim=1),"converge")
+  expect_error(mlgev(c(0,0,1,2),mu=0,xi=1),"multiplicity")
+  f <- mlgev(2,sigma=3,xi=0)
+  expect_equal(unname(f["mu"]),2)
+})
+
+test_that("GEV held location compares half-minimum ties with the collapse face", {
+  for(x in list(c(0,0,1,2),c(0,0,.01,100),c(0,0,0,1))) {
+    f <- tryCatch(mlgev(x,mu=0),error=identity)
+    if(inherits(f,"error")) expect_match(conditionMessage(f),"scale collapse")
+    else {
+      face <- -sum(x==0)-2*sum(log(x[x>0]))
+      expect_gt(as.numeric(logLik(f)),face)
+    }
+  }
+  expect_error(mlgev(rep(0,4),mu=0,xi=0),"scale collapse")
+})
+
+test_that("GEV new holds permit held positive shape above the free-shape bound", {
+  x <- c(0,1,2,4,10)
+  for(h in list(list(mu=-1),list(sigma=2),list(mu=0,sigma=2))) {
+    f <- do.call(mlgev,c(list(x=x,xi=2),h))
+    expect_identical(unname(f["xi"]),2)
+    expect_equal(as.numeric(logLik(f)),sum(extraDistr::dgev(x,f[1],f[2],f[3],log=TRUE)),tolerance=1e-8)
+  }
+  expect_error(mlgev(c(0,0,1,2),mu=0,xi=2),"scale collapse")
+})
+
+test_that("GEV new holds allow constant samples when scale cannot collapse", {
+  for(h in list(list(mu=0),list(sigma=2),list(mu=0,sigma=2),
+                list(mu=0,xi=.3),list(sigma=2,xi=.3),list(mu=0,sigma=2,xi=.3))) {
+    f <- do.call(mlgev,c(list(x=2),h))
+    expect_equal(as.numeric(logLik(f)),sum(extraDistr::dgev(2,f[1],f[2],f[3],log=TRUE)),tolerance=1e-8)
+    expect_identical(unname(as.numeric(f[names(h)])),unname(unlist(h)))
+  }
+})

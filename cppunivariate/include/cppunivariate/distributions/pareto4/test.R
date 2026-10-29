@@ -49,3 +49,65 @@ test_that("pareto4: reference mapping and unbounded unrestricted path", {
  ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(actuar::dpareto4(y,1-e,2,.5,scale=1,log=TRUE)))
  expect_true(all(diff(ll)>0))
 })
+
+
+test_that("P2 pareto4 holds agree with independent multistart reference likelihoods", {
+  pars <- c(shape1=0.3, shape2=0.7, scale=1, min=0)
+  thresholds <- c("min")
+  regular <- setdiff(names(pars), thresholds)
+  density <- actuar::dpareto4
+  samples <- lapply(c(3, 20, 100), function(n)
+    do.call(actuar::qpareto4, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+  samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
+  # These samples deliberately include proper limit-model data.
+  samples[[5]] <- qexp(((1:20)-.5)/20)
+  samples[[6]] <- c(.3,.8,1,1,1)*pars["scale"]
+  samples[[7]] <- c(1.1,1.4,2,3,5)*pars["scale"]
+  for (x in samples) for (mask in seq_len(2^length(regular)-1)) {
+    held <- c(thresholds, regular[as.logical(intToBits(mask)[seq_along(regular)])])
+    free <- setdiff(names(pars), held)
+    args <- as.list(pars[held])
+    fit <- tryCatch(do.call(mlpareto4, c(list(x=x),args)), error=identity)
+    always <- "shape1" %in% held || all(c("shape2","scale") %in% held)
+    if(always) expect_false(inherits(fit,"error"),info=paste(length(x),paste(held,collapse=",")))
+    if (inherits(fit,"error")) {
+      expect_match(conditionMessage(fit), "[Ll]imit|[Uu]se `ml|[Uu]nbounded|[Nn]o MLE|[Nn]o verified|unresolved|failed|does not exist")
+      next
+    }
+    expect_identical(unname(as.numeric(fit[held])),unname(pars[held]))
+    expect_true(all(held %in% attr(fit,"fixed")))
+    objective <- function(z) {
+      p <- pars; p[free] <- exp(z)
+      value <- suppressWarnings(-sum(do.call(density,c(list(x=x,log=TRUE),as.list(p)))))
+      if(is.finite(value)) value else 1e100
+    }
+    actual <- attr(fit,"logLik")
+    expect_equal(actual, -objective(log(fit[free])), tolerance=1e-7)
+    if(length(free)) {
+      # Starts depend only on reference parameters and observations.
+      starts <- lapply(c(-1,0,1), function(s) log(pars[free])+s)
+      oracle <- vapply(starts,function(z) {
+        o <- suppressWarnings(nlminb(z,objective,control=list(iter.max=1000,eval.max=3000,rel.tol=1e-12)))
+        -o$objective
+      },0.)
+      expect_gte(actual, max(oracle)-1e-6*length(x))
+      expect_lte(actual, max(oracle)+1e-5*length(x))
+    }
+  }
+})
+
+test_that("P2 pareto4 validates new held values", {
+  for (v in c(0,-1,Inf,NA_real_)) expect_error(mlpareto4(c(.2,.3,.5), min=0, shape1=v),"positive|finite")
+  for (v in c(0,-1,Inf,NA_real_)) expect_error(mlpareto4(c(.2,.3,.5), min=0, shape2=v),"positive|finite")
+})
+
+ test_that("P2 pareto4 constant samples respect the held tangent", {
+   x <- rep(2,5)
+   for(args in list(list(shape1=2,shape2=3),list(shape2=3,scale=1),list(shape1=2,scale=1),list(shape1=2,shape2=3,scale=1))) {
+     f <- do.call(mlpareto4,c(list(x=x, min=0),args))
+     expect_true(is.finite(attr(f,"logLik")))
+     expect_identical(unname(as.numeric(f[names(args)])),unname(unlist(args)))
+   }
+   expect_error(mlpareto4(rep(1,5), min=0,shape1=2,scale=1),"unbounded")
+   expect_error(mlpareto4(x, min=0,shape1=2),"unbounded")
+ })

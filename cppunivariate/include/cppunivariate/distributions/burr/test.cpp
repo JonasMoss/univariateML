@@ -121,3 +121,17 @@ TEST_CASE("burr: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qburr(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rburr(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("P2 burr golden holds") {
+ auto g=mltest::load_distribution_golden("burr");
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+for(int mask=1;mask<8;++mask){
+ double a=mask&1?g.estimates.at("shape1"):nan,b=mask&2?g.estimates.at("shape2"):nan,s=mask&4?g.estimates.at("scale"):nan;
+ auto r=cppunivariate::burr_mle_holds(mltest::as_span(g.data),a,b,s);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+ if(mask&1)CHECK(r.shape1==a);
+ if(mask&2)CHECK(r.shape2==b);
+ if(mask&4)CHECK(r.scale==s);
+ CHECK(r.logLik>=g.logLik-1e-5);
+ }
+}

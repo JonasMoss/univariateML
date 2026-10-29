@@ -16,21 +16,25 @@ params:
 r:
   density: extraDistr::dzip
   sampler: extraDistr::rzip
-  control: {}
+  control:
+    lambda: "Optional held lambda; NULL estimates it."
+    pi: "Optional held pi; NULL estimates it."
 log_density: "Piecewise((log(pi + (1 - pi)*exp(-lambda)), Eq(x, 0)), (log(1 - pi) - lambda + x*log(lambda) - loggamma(x + 1), True))"
+limits:
+  - model: pois
+    when: '$lambda \to 0$ with inflation held below one'
+    detect: all observations are zero
+    fixed: [pi]
+    status: ZeroLimit
+  - name: undefined zero-rate reference
+    when: held lambda is zero
+    fixed: [lambda]
+    status: InvalidInput
+    message: lambda positive
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
   mlzip(corbet)
-holds:
-- held:
-  - lambda
-  status: not-implemented
-  reason: The adapter does not accept `lambda`; this hold is not implemented (P2).
-- held:
-  - pi
-  status: not-implemented
-  reason: The adapter does not accept `pi`; this hold is not implemented (P2).
 ---
 
 The zero-inflated Poisson distribution mixes a Poisson count with an additional point mass at zero.
@@ -38,3 +42,5 @@ The zero-inflated Poisson distribution mixes a Poisson count with an additional 
 ## Details
 
 For zero-deflated data the estimate is `pi = 0`, the Poisson fit. All-zero data give a nonunique point-mass fit: the fitter warns and returns `lambda = 1`, `pi = 1`. These are boundary fits within the family.
+
+Holding `lambda` profiles inflation by clipping the empirical zero fraction adjustment to [0, 1]. Holding `pi < 1` gives a finite rate when a count is positive. All-zero data then approach lambda zero, which is undefined by the reference; the fitter stops. A held zero rate is rejected for that reason. Held `pi = 1` is compatible only with zeros.

@@ -58,3 +58,14 @@ TEST_CASE("hnorm: d/p/q/r against the truth table" * doctest::may_fail()) {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhalfnorm(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhalfnorm(rng, p[0], p[1]); });
 }
+
+TEST_CASE("hnorm: held scale removes collapse") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{2,2};
+  auto r=cppunivariate::hnorm_mle(mltest::as_span(x),nan,1.7);
+  CHECK(r.status==cppunivariate::HnormStatus::Ok);
+  CHECK(r.mu==2);CHECK(r.sigma==1.7);
+  CHECK(r.logLik==doctest::Approx(2*(.5*std::log(2/std::acos(-1.0))-std::log(1.7))));
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),2,1).status==cppunivariate::HnormStatus::Ok);
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),nan,-1).status==cppunivariate::HnormStatus::InvalidData);
+}
