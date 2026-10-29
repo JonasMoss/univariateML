@@ -18,7 +18,7 @@ goldens), by the validation harness, and later by the Python shell.
 | `name` | yes | display name, e.g. `Lomax`; the R title is "<name> distribution maximum likelihood estimation" |
 | `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` |
 | `params` | yes | list of `{name, role, domain, default}`; names are the R coefficient names (see `univariateML/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
-| `r.density`, `r.sampler` | yes | reference d/r functions, `pkg::fn` from an external package (the R package defines no d/p/q/r of its own); `p`/`q` are found by swapping the first letter |
+| `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` for package-defined functions; `p`/`q` are found by swapping the first letter |
 | `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to coefficient name, e.g. `{mean: mu, sd: sigma, a: mu}` for the translated half-normal as `extraDistr::dtnorm`; a coefficient may feed several arguments. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
 | `r.control` | yes (may be `{}`) | one entry per argument of the Rcpp adapter `ml<id>_` other than `x`, mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `fit_args` | when a parameter is `required` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every `required` parameter, and may add arguments the fitter needs, such as hyper's `N` |
@@ -97,3 +97,15 @@ expression using the supplied name-to-symbol dictionary and observation.
 Use this only when `log_density` cannot be expressed as a string. Reports
 include every unchecked id and reason. `limits` entries are listed only.
 
+
+## Package-defined d/p/q/r
+
+An optional `dpqr.R` in any distribution folder contains exported R wrappers
+and roxygen documentation (one family help page). Assembly copies it to
+`R/dpqr-<id>.R`. Scalar C++ evaluation lives in `dpqr.hpp`; Rcpp exports
+(`d<id>_`, etc.) live in `adapter.cpp`. Bare `r.density: dzipf` and
+`r.sampler: rzipf` resolve in the package namespace. Wrappers recycle all
+parameter and observation vectors, propagate missing values, and warn for
+invalid parameters and noninteger density arguments. CDFs floor observations;
+quantiles use the smallest support point reaching the requested probability.
+RNG adapters use R's RNG so `set.seed()` controls sampling.

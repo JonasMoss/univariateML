@@ -168,28 +168,12 @@ univariateML_dpqr_args <- function(estimates, name) {
   stats::setNames(lapply(unname(map), function(coef) values[[coef]]), names(map))
 }
 
-# Zipf shape s = 0 mapped to the smallest positive double (see the sads
-# entries in univariateML_reference_fixes).
-univariateML_zipf_s0 <- function(s) {
-  ifelse(!is.na(s) & s == 0, .Machine$double.xmin, s)
-}
-
 #' Workarounds for defects in reference functions
 #'
 #' Keyed by the reference function (`pkg::fn`). `broken()` tests for the
 #' defect on every call, so a fixed upstream release switches the
 #' workaround off; `replacement` takes the same arguments. Defects are
 #' listed in `KNOWN_ISSUES.md` at the repository root.
-#'
-#' `sads::qzipf` (sads 0.6.5) returns the quantile minus one for
-#' probabilities strictly between two CDF values, e.g.
-#' `sads::qzipf(0.5, N = 10, s = 1)` is 1, not 2. The replacement inverts
-#' the CDF built from `sads::dzipf`.
-#'
-#' sads requires `s > 0` in `dzipf`/`pzipf`/`qzipf`/`rzipf` (they return
-#' `NaN`), but `s = 0`, the uniform law, is an attained boundary of `mlzipf`.
-#' The replacements pass `s = .Machine$double.xmin` instead, where
-#' `x^-s` rounds to one, so sads itself computes the uniform law.
 #'
 #' `extraDistr::pdweibull` (extraDistr 1.10.0.5) does not floor its
 #' argument, e.g. `extraDistr::pdweibull(0.5, 0.7, 1)` is 0.414, not
@@ -198,56 +182,6 @@ univariateML_zipf_s0 <- function(s) {
 #' @keywords internal
 
 univariateML_reference_fixes <- list(
-  "sads::qzipf" = list(
-    broken = function() {
-      tryCatch(sads::qzipf(0.5, N = 10, s = 1) != 2 ||
-                 is.nan(suppressWarnings(sads::qzipf(0.5, N = 2, s = 0))),
-               error = function(e) TRUE)
-    },
-    replacement = function(p, N, s, lower.tail = TRUE, log.p = FALSE) {
-      if (log.p) p <- exp(p)
-      if (!lower.tail) p <- 1 - p
-      cdf <- cumsum(sads::dzipf(seq_len(N), N = N, s = univariateML_zipf_s0(s)))
-      q <- pmin(findInterval(p, cdf, left.open = TRUE) + 1, N)
-      q[is.na(p) | p < 0 | p > 1] <- NaN
-      q
-    }
-  ),
-  # sads requires s > 0, but s = 0 (the uniform law) is an attained boundary
-  # of mlzipf. Evaluate it as s = .Machine$double.xmin, where x^-s rounds to 1
-  # exactly, so the reference itself computes the uniform law.
-  "sads::dzipf" = list(
-    broken = function() {
-      tryCatch(is.nan(suppressWarnings(sads::dzipf(1, N = 2, s = 0))),
-               error = function(e) TRUE)
-    },
-    replacement = function(x, N, s, log = FALSE) {
-      sads::dzipf(x, N = N, s = univariateML_zipf_s0(s), log = log)
-    }
-  ),
-  "sads::pzipf" = list(
-    broken = function() {
-      tryCatch(is.nan(suppressWarnings(sads::pzipf(1, N = 2, s = 0))),
-               error = function(e) TRUE)
-    },
-    replacement = function(q, N, s, lower.tail = TRUE, log.p = FALSE) {
-      sads::pzipf(q, N = N, s = univariateML_zipf_s0(s),
-                  lower.tail = lower.tail, log.p = log.p)
-    }
-  ),
-  "sads::rzipf" = list(
-    broken = function() {
-      had_seed <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
-      if (had_seed) saved_seed <- get(".Random.seed", envir = .GlobalEnv)
-      on.exit(if (had_seed) assign(".Random.seed", saved_seed, envir = .GlobalEnv)
-              else rm(".Random.seed", envir = .GlobalEnv))
-      tryCatch(is.nan(suppressWarnings(sads::rzipf(1, N = 2, s = 0))),
-               error = function(e) TRUE)
-    },
-    replacement = function(n, N, s) {
-      sads::rzipf(n, N = N, s = univariateML_zipf_s0(s))
-    }
-  ),
   "extraDistr::ptriang" = list(
     broken = function() {
       is.nan(suppressWarnings(extraDistr::ptriang(0, 0, 1, 0)))

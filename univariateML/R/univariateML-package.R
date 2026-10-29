@@ -18,8 +18,7 @@
 #'
 #' @section Runtime reference repairs:
 #' Evaluation uses runtime-checked repairs in
-#' `univariateML_reference_fixes` for `sads::qzipf` and, at `s = 0`,
-#' `dzipf`, `pzipf`, `rzipf`;
+#' `univariateML_reference_fixes` for
 #' `extraDistr::ptriang`, `pdweibull`, `dtnorm`, `ptnorm`, `qtnorm`,
 #' `qgev`, `rgev`, and the upper-tail log of `pgev`;
 #' and `actuar::dtrgamma`, `ptrgamma`, `qtrgamma`, `rtrgamma`,
@@ -42,7 +41,6 @@
 #' @importFrom fGarch dged
 #' @importFrom logitnorm dlogitnorm
 #' @importFrom nakagami dnaka
-#' @importFrom sads dzipf
 #' @useDynLib univariateML, .registration = TRUE
 ## usethis namespace: end
 NULL

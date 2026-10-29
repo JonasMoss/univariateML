@@ -93,3 +93,4 @@
 #include "distributions/dweibull/mle.hpp"
 
 #include "distributions/bnbinom/mle.hpp"
+#include "distributions/cmb/mle.hpp"

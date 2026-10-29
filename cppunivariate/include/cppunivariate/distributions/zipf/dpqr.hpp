@@ -1,137 +1,97 @@
-// Zipf distribution on {1, ..., N} with shape parameter s > 0.
-//
-// PMF:    p(k) = k^{-s} / H_N(s),    where H_N(s) = sum_{j=1}^N j^{-s}
-//
-// Scalar dzipf/pzipf each cost O(N) (they normalise via H_N). For bulk
-// sampling, prefer zipf_cdf + rzipf_from_cdf (build the cumulative table
-// once, then sample many times in O(log N) each); rzipf is a convenience
-// one-shot (O(N) per call).
-
+// Finite Zipf probabilities; bounded-memory harmonic sums and integer inversion.
 #pragma once
-
+#include "mle.hpp"
 #include "../../special/constants.hpp"
 #include <algorithm>
 #include <cmath>
 #include <vector>
-
 namespace cppunivariate {
 namespace distributions {
-
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
-
-namespace detail {
-inline double zipf_norm(int N, double s) {
-  double total = 0.0;
-  for (int k = 1; k <= N; ++k) {
-    total += std::pow(static_cast<double>(k), -s);
-  }
-  return total;
+namespace zipf_dpqr_detail {
+inline bool valid(double N, double s) {
+  return std::isfinite(N) && N >= 1 && N <= 2147483647.0 &&
+    N == std::floor(N) && std::isfinite(s) && s >= 0;
 }
-} // namespace detail
-
-inline double dzipf(double x, double N, double s, bool log) {
-  if (!(N > 0.0 && s > 0.0) || !std::isfinite(x) || N != std::floor(N)) {
-    return kNaN;
+// Log sum on [a,b], scaled by a^-s. The first 1024 terms are exact;
+// the remainder uses the same Euler--Maclaurin corrections as moments().
+inline double log_range(double a, double b, double s) {
+  if (a > b) return special::kNegInf;
+  if (s == 0) return std::log(b-a+1);
+  if (a == 1) {
+    if (s<=32) return std::log(zipf_detail::moments(static_cast<int>(b),s).h);
+    double z=0;
+    for (double k=2;k<=std::min(b,1024.0);++k) z+=std::exp(-s*std::log(k));
+    return std::log1p(z);
   }
-  if (x < 1.0 || x > N || x != std::floor(x)) {
-    return log ? kNegInf : 0.0;
-  }
-  const int Nin = static_cast<int>(N);
-  const double log_norm = std::log(detail::zipf_norm(Nin, s));
-  const double y = -s * std::log(x) - log_norm;
-  return log ? y : std::exp(y);
-}
-
-inline double pzipf(double q, double N, double s, bool lower_tail,
-                    bool log_p) {
-  if (!(N > 0.0 && s > 0.0) || !std::isfinite(q) || N != std::floor(N)) {
-    return kNaN;
-  }
-  double prob;
-  if (q < 1.0) {
-    prob = lower_tail ? 0.0 : 1.0;
-    return log_p ? std::log(prob) : prob;
-  }
-  if (q >= N) {
-    prob = lower_tail ? 1.0 : 0.0;
-    return log_p ? std::log(prob) : prob;
-  }
-  const int Nin = static_cast<int>(N);
-  const int qin = static_cast<int>(std::floor(q));
-  double num = 0.0, den = 0.0;
-  for (int k = 1; k <= Nin; ++k) {
-    const double w = std::pow(static_cast<double>(k), -s);
-    den += w;
-    if (k <= qin) {
-      num += w;
+  const double end = std::min(b,a+1023);
+  double total = 0;
+  for (double k=a; k<=end; ++k) total += std::exp(-s*std::log1p((k-a)/a));
+  if (end < b) {
+    const double w = std::exp(-s*std::log1p((end-a)/a));
+    // If the omitted part is below double relative precision, avoid large
+    // derivative products in the endpoint correction.
+    if (w*b > total*1e-17) {
+      const double t=std::log1p((b-end)/end), v=1-s;
+      total += w*end*(v == 0 ? t : std::expm1(v*t)/v);
+      const auto endpoint = [&](double x) {
+        const double z=std::exp(-s*std::log1p((x-a)/a));
+        return z*(0.5-s/(12*x)+(s/x)*((s+1)/x)*((s+2)/x)/720);
+      };
+      total += endpoint(b)-endpoint(end);
     }
   }
-  prob = num / den;
-  if (!lower_tail) {
-    prob = 1.0 - prob;
-  }
-  return log_p ? std::log(prob) : prob;
+  return -s*std::log(a)+std::log(total);
 }
-
-inline double qzipf(double p, double N, double s, bool lower_tail,
-                    bool log_p) {
-  if (!(N > 0.0 && s > 0.0) || N != std::floor(N) || !std::isfinite(p)) {
-    return kNaN;
-  }
-  if (log_p) {
-    p = std::exp(p);
-  }
-  if (!lower_tail) {
-    p = 1.0 - p;
-  }
-  if (p <= 0.0) {
-    return 1.0;
-  }
-  if (p >= 1.0) {
-    return N;
-  }
-  const int Nin = static_cast<int>(N);
-  const double den = detail::zipf_norm(Nin, s);
-  double cum = 0.0;
-  for (int k = 1; k <= Nin; ++k) {
-    cum += std::pow(static_cast<double>(k), -s) / den;
-    if (cum >= p) {
-      return static_cast<double>(k);
-    }
-  }
-  return static_cast<double>(Nin);
 }
-
-// Build the cumulative distribution table for Zipf(N, s); used by the
-// efficient bulk-sampling path.
-inline std::vector<double> zipf_cdf(int N, double s) {
-  std::vector<double> cum(static_cast<std::size_t>(N));
-  const double total = detail::zipf_norm(N, s);
-  double running = 0.0;
-  for (int k = 1; k <= N; ++k) {
-    running += std::pow(static_cast<double>(k), -s) / total;
-    cum[static_cast<std::size_t>(k - 1)] = running;
-  }
-  return cum;
+inline double dzipf(double x,double N,double s,bool log=false) {
+  if (!zipf_dpqr_detail::valid(N,s) || std::isnan(x)) return special::kNaN;
+  if (x<1 || x>N || x!=std::floor(x)) return log ? special::kNegInf : 0;
+  if (s==0) return log ? -std::log(N) : 1/N;
+  const double lp=-s*std::log(x)-zipf_dpqr_detail::log_range(1,N,s);
+  return log ? lp : std::exp(lp);
 }
-
-// Sample using a precomputed CDF (from zipf_cdf). O(log N) per call.
+inline double pzipf(double q,double N,double s,bool lower_tail=true,bool log_p=false) {
+  if (!zipf_dpqr_detail::valid(N,s) || std::isnan(q)) return special::kNaN;
+  const double k=std::floor(q);
+  double lp;
+  if (k<1) lp=lower_tail ? special::kNegInf : 0;
+  else if (k>=N) lp=lower_tail ? 0 : special::kNegInf;
+  else if (s==0) {
+    const double prob=lower_tail ? k/N : (N-k)/N;
+    return log_p ? std::log(prob) : prob;
+  } else {
+    const double den=zipf_dpqr_detail::log_range(1,N,s);
+    // Compute the smaller side directly, then use expm1 for its complement.
+    const double below=zipf_dpqr_detail::log_range(1,k,s)-den;
+    const double above=zipf_dpqr_detail::log_range(k+1,N,s)-den;
+    if (lower_tail) lp=below<above ? below : std::log(-std::expm1(std::min(0.0,above)));
+    else lp=above<below ? above : std::log(-std::expm1(std::min(0.0,below)));
+  }
+  return log_p ? lp : std::exp(lp);
+}
+inline double qzipf(double p,double N,double s,bool lower_tail=true,bool log_p=false) {
+  if (!zipf_dpqr_detail::valid(N,s) || std::isnan(p) ||
+      (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
+  if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 1 : N;
+  if (p==(log_p ? 0 : 1)) return lower_tail ? N : 1;
+  double lo=0,hi=N;
+  while (hi-lo>1) {
+    const double mid=std::floor(lo+(hi-lo)/2);
+    const double f=pzipf(mid,N,s,lower_tail,log_p);
+    if (lower_tail ? f>=p : f<=p) hi=mid; else lo=mid;
+  }
+  return hi;
+}
+inline std::vector<double> zipf_cdf(int N,double s) {
+  std::vector<double> out(static_cast<std::size_t>(N));
+  for (int k=1;k<=N;++k) out[static_cast<std::size_t>(k-1)]=pzipf(k,N,s);
+  return out;
+}
 template <typename Rng>
-inline int rzipf_from_cdf(Rng &rng, const std::vector<double> &cum) {
-  const double u = rng.runif(0.0, 1.0);
-  return static_cast<int>(std::lower_bound(cum.begin(), cum.end(), u) -
-                          cum.begin()) +
-         1;
+inline int rzipf_from_cdf(Rng &rng,const std::vector<double> &cum) {
+  return static_cast<int>(std::lower_bound(cum.begin(),cum.end(),rng.runif(0,1))-cum.begin())+1;
 }
-
-// One-shot sampler: builds the CDF and returns one sample. O(N) per call;
-// for many samples prefer zipf_cdf + rzipf_from_cdf.
 template <typename Rng>
-inline double rzipf(Rng &rng, int N, double s) {
-  const auto cum = zipf_cdf(N, s);
-  return static_cast<double>(rzipf_from_cdf(rng, cum));
+inline double rzipf(Rng &rng,int N,double s) { return qzipf(rng.runif(0,1),N,s); }
 }
-
-} // namespace distributions
-} // namespace cppunivariate
+}

@@ -13,7 +13,7 @@
 #' @param return character length 1. "univariateML" (default) if the function
 #'   should return the single best model; "all" if a data.frame
 #'   of all results should be returned, sorted by decreasing model performance.
-#' @param ... unused.
+#' @param ... Additional arguments passed to each fitter, such as a required size.
 #' @return The return value depends on the `return` argument.
 #'    For `return = "best"` (default), `model_select` returns
 #'    an object of [class][base::class] `univariateML`
@@ -67,7 +67,7 @@ model_select <- function(
   models <- filter_models(models, type)
 
   mlf <- sapply(paste0("ml", models), function(x) eval(parse(text = x)))
-  fits <- lapply(mlf, function(f) try(f(x, na.rm = na.rm), silent = TRUE))
+  fits <- lapply(mlf, function(f) try(do.call(f, c(list(x, na.rm = na.rm), list(...))), silent = TRUE))
 
   error_inds <- sapply(fits, function(fit) inherits(fit, "try-error"))
   if (all(error_inds)) {

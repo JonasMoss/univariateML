@@ -6,8 +6,8 @@ params:
   - {name: "N", role: upper, domain: "[1, inf)", default: 3.0, integer: true, bound: upper}
   - {name: s, role: shape, domain: "[0, inf)", default: 0.5}
 r:
-  density: sads::dzipf
-  sampler: sads::rzipf
+  density: dzipf
+  sampler: rzipf
   control:
     reltol: "Relative tolerance on the Newton step, with an absolute floor of the same size."
     iterlim: "Maximum number of Newton iterations."
@@ -23,6 +23,4 @@ The finite Zipf distribution describes power-law frequencies on consecutive posi
 
 ## Details
 
-`sads::dzipf`, `pzipf`, `qzipf` and `rzipf` are repaired at runtime: `qzipf` is off by one, and all four return `NaN` at the attained uniform member `s = 0`, which they now evaluate as the smallest positive double. Each repair switches itself off once the reference is fixed.
-
-The fitted upper endpoint `N` is `max(x)` and is a positive integer. The support is the integers from one to `N`. A nonpositive score at zero selects the attained uniform boundary `s = 0`. Large supports use bounded-memory Euler–Maclaurin harmonic sums. With all observations equal to one the estimate is not unique and the fitter warns. This function fits observations directly; for rank-abundance data see `sads::fitzipf`. `sads::pzipf` returns 0 at non-integer arguments.
+The fitted upper endpoint `N` is `max(x)` and is a positive integer. The support is the integers from one to `N`. A nonpositive score at zero selects the attained uniform boundary `s = 0`. Large supports use bounded-memory Euler–Maclaurin harmonic sums. With all observations equal to one the estimate is not unique and the fitter warns. This function fits observations directly; for rank-abundance data see `sads::fitzipf`.
