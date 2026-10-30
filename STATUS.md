@@ -80,9 +80,13 @@ own rationale live in `roadmap/`; work in flight is on the board
 
 ## Robustness
 
-- TASK-85 (P0 fitter bugs) is fixed. Open from it: binomial size search
-  capped at 1e6; zib/ztbinom size grids uncertified; free gev/frechet
-  reject the tie case k = n/2 conservatively.
+- TASK-85 and its leftovers (TASK-87) are done:
+  - the binomial size search has no cap (a large-size cancellation bug
+    was fixed);
+  - GEV/Fréchet compare the k = n/2 tie case with the collapse face.
+
+  Open: the zib/ztbinom size searches remain numerical (unimodality
+  unproved).
 - TASK-77 (scale equivariance) is fixed: f9e1222, with
   `test_scale_equivariance.R`.
 - TASK-75, cross-machine fragility. On simbox (gcc 15.2 or 13.3, BH 1.90,

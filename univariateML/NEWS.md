@@ -28,6 +28,12 @@
   and both ways out. `model_select()` records the families it skipped in
   a `skipped` attribute.
 
+* `mlbinom(x, size = NULL)` searches the size without a cap, and a
+  cancellation that misplaced very large sizes is fixed. With a tie of
+  exactly half the sample at the minimum, `mlgev()` and `mlfrechet()` now
+  compare the interior fit with the collapse face instead of refusing
+  outright.
+
 * Restrictions, closure and domains (parameter rules P3):
   - Fits on a fitting restriction warn (class `univariateML_restricted`)
     and record it in a `restricted` attribute: lst `df = 1`, frechet
