@@ -242,6 +242,9 @@ needed for the migration, not replacing algorithms wholesale.
 
 ## Related plans
 
+- [Python package for teaching and simulation](2026-10-30-python-teaching-and-simulation.md):
+  a later consumer of the independent core and shared dossiers, with Python API,
+  RNG, simulation and packaging choices to refine after the foundational work.
 - [Inference regularity and derivative support](2026-10-30-inference-and-dqm.md):
   conditional DQM, information rank, derivative history, robust covariance
   requirements and procedures for parameter and hypothesis subsets.

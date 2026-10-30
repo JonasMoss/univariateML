@@ -25,6 +25,11 @@ the queue.
 - [Decision log](decisions.md): dated project decisions with evidence; read
   this first for what was chosen and why.
 
+- [2026-10-30 — Python package for teaching and simulation](2026-10-30-python-teaching-and-simulation.md)
+  *(banked; after cleanup and the standalone C++ foundation)*: distribution and
+  fit objects, NumPy arrays and RNGs, simulation outcomes, student installation,
+  staged family coverage and API decisions to refine.
+
 - [2026-10-30 — Inference regularity and derivative support](2026-10-30-inference-and-dqm.md)
   *(initial audit; implementation deferred)*: 98-family derivative inventory,
   conditional DQM and information classification, recovered Hessian history,

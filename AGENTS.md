@@ -14,6 +14,10 @@ user request.
 - [Inference regularity and derivative support](roadmap/2026-10-30-inference-and-dqm.md):
   conditional DQM and information classification, historical derivatives,
   robust covariance requirements and procedures for subsets of hypotheses.
+- [Python package for teaching and simulation](roadmap/2026-10-30-python-teaching-and-simulation.md):
+  deferred Python bindings, distribution and fit objects, NumPy RNG integration,
+  simulation outcomes and installation for teaching; refine after the foundational
+  work lands and coordinate implementation with the user's orchestrators.
 
 These are the canonical plans. Link to them rather than copying their full
 contents into agent or orchestrator instructions. The cleanup follows the
