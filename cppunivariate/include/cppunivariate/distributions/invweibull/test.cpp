@@ -27,7 +27,7 @@ TEST_CASE("invweibull") {
   auto r =
       cppunivariate::invweibull_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
   CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kTol));
-  CHECK(r.rate == doctest::Approx(g.estimates.at("rate")).epsilon(mltest::kTol));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kTol));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
 
@@ -61,34 +61,36 @@ TEST_CASE("invweibull P2 every held subset") {
   const auto g=mltest::load_distribution_golden("invweibull");
   std::vector<double> x=g.data;
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  const std::vector<double> held{g.estimates.at("shape"),g.estimates.at("rate")};
+  // held[1] is the scale; dpqr.hpp's dinvweibull keeps the old rate
+  // parameterisation (1/scale).
+  const std::vector<double> held{g.estimates.at("shape"),g.estimates.at("scale")};
   { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,nan,held[0],nan);
     CHECK(r.shape==held[0]);
-    CHECK(std::isfinite(r.rate));
+    CHECK(std::isfinite(r.scale));
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dinvweibull(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,r.rate};
+    std::vector<double> p{r.shape,1.0/r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
   { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,nan,nan,held[1]);
     CHECK(std::isfinite(r.shape));
-    CHECK(r.rate==held[1]);
+    CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dinvweibull(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,r.rate};
+    std::vector<double> p{r.shape,1.0/r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[0]));a[0]+=h;b[0]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
   { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,nan,held[0],held[1]);
     CHECK(r.shape==held[0]);
-    CHECK(r.rate==held[1]);
+    CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dinvweibull(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,r.rate};
+    std::vector<double> p{r.shape,1.0/r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
   }
 }
@@ -96,7 +98,9 @@ TEST_CASE("invweibull P2 every held subset") {
 TEST_CASE("invweibull P2 held boundaries and solver failure") {
   const std::vector<double> x{2,2,2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  CHECK_FALSE(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,nan,nan,.5).logLik));
+  // Held scale 2 is held rate 0.5, which equals every reciprocal
+  // observation 1/2: the unbounded face.
+  CHECK_FALSE(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,nan,nan,2.0).logLik));
   CHECK(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,nan,2,nan).logLik));
 }
 

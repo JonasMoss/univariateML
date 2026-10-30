@@ -1,39 +1,23 @@
 # Canonical R-package names
 
-This file is the **authoritative reference** for the user-facing R
-interface of every estimator in `univariateML`. It captures the
-historic param names, model display names, and external-package
-density references that downstream code may rely on.
+This table records user-facing coefficient names, model display names and
+reference densities. The executable source of truth is each distribution's
+`README.md` and `adapter.cpp` under
+`cppunivariate/include/cppunivariate/distributions/`.
 
-## Source of truth
+The historical baseline was commit **c0b9949** (2025-03-03). The parameter
+rules adopted on 2026-10-29 extend that baseline: gamma, inverse exponential,
+inverse Weibull and log-logistic use scale; the half families add a translated
+threshold `mu`; the hypergeometric families replace black-ball count `n` with
+population size `N`.
 
-Commit **c0b9949** (`Replace \() with function.`, 2025-03-03) — the
-last state of the R package before the cppunivariate codegen pivot.
-Each `R/ml<id>.R` there carries a
-`univariateML_metadata$ml<id> <- list(model=..., density=..., names=c(...))`
-block. The `names = c(...)` vector is the canonical R-coef name; users
-have downstream code referencing those names via `coef(mlfoo(x))`.
+Coefficient names and order must agree between README `params`, adapter
+`estimates`, generated metadata and R wrappers. Reference argument names agree
+except for declared `r.args` expressions and `r.shift`: hypergeometric references
+receive `n = N - m`, and half-family references operate at `x - mu`. C++ result
+field names remain internal.
 
-## Cross-check rule
-
-For each distribution, three things must agree with the `coef names`
-column below:
-
-1. The corresponding `cppunivariate/include/cppunivariate/distributions/<id>/metadata.hpp`
-   `params[]` first-string entries.
-2. The `Rcpp::_["..."] = res....` keys emitted by `mlfoo_` in
-   `univariateML/src/ml_exports.cpp`.
-3. The formal arguments of the external `pkg::dfoo` referenced in
-   `density` (so the resolver in `R/code_helpers.R` can pre-fill
-   formals via `formals(fun)[[name]] <- value`).
-
-C++ result-struct field names (e.g. `CauchyResult.mu`) are an
-**internal** concern and are explicitly allowed to diverge from the
-R-canonical names. The R-side bridge happens at ml_exports.cpp,
-where each estimator's emit list aliases struct fields to canonical
-R names — e.g. `Rcpp::_["location"] = res.mu`.
-
-## Distributions (42)
+## Distributions
 
 | id | model display | coef names | density (external) | support |
 |----|---------------|-----------|---------------------|---------|
@@ -46,7 +30,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | bbinom     | Beta-binomial           | size, alpha, beta  | extraDistr::dbbinom       | [0, size] integer (size required) |
 | bnbinom    | Beta negative binomial | size, alpha, beta | extraDistr::dbnbinom | [0, ∞) integer |
 | beta       | Beta                    | shape1, shape2     | stats::dbeta              | (0, 1) open      |
-| betapr     | BetaPrime               | shape1, shape2, scale | extraDistr::dbetapr       | [0, ∞)           |
+| betapr     | Beta prime              | shape1, shape2, scale | extraDistr::dbetapr       | [0, ∞)           |
 | binom      | Binomial                | size, prob         | stats::dbinom             | [0, ∞) integer   |
 | burr       | Burr                    | shape1, shape2, scale | actuar::dburr             | (0, ∞) open      |
 | cmb | Conway--Maxwell--binomial | size, prob, nu | dcmb (package-defined) | [0, size] integer (size required) |
@@ -57,7 +41,7 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | dweibull   | Discrete Weibull        | shape1, shape2     | extraDistr::ddweibull     | [0, ∞) integer   |
 | exp        | Exponential             | rate               | stats::dexp               | [0, ∞)           |
 | fatigue    | Birnbaum-Saunders       | alpha, beta, mu    | extraDistr::dfatigue      | [0, ∞)           |
-| gamma      | Gamma                   | shape, rate        | stats::dgamma             | (0, ∞) open      |
+| gamma      | Gamma                   | shape, scale        | stats::dgamma             | (0, ∞) open      |
 | ged        | Generalized Error       | mean, sd, nu       | fGarch::dged              | (-∞, ∞) open     |
 | geom       | Geometric               | prob               | stats::dgeom              | [0, ∞) integer   |
 | gompertz   | Gompertz                | a, b               | extraDistr::dgompertz     | [0, ∞)           |
@@ -65,36 +49,37 @@ R names — e.g. `Rcpp::_["location"] = res.mu`.
 | gev | Generalized extreme value | mu, sigma, xi | extraDistr::dgev | parameter dependent |
 | gumbel     | Gumbel                  | mu, sigma          | extraDistr::dgumbel       | (-∞, ∞) open     |
 | huber      | Huber                   | mu, sigma, epsilon | extraDistr::dhuber       | (-∞, ∞) open     |
-| hyper | Hypergeometric | m, n, k | stats::dhyper | [0, ∞) integer |
-| nhyper | Negative hypergeometric | n, m, r | extraDistr::dnhyper | [0, ∞) integer |
+| hyper | Hypergeometric | m, N, k | stats::dhyper | [0, ∞) integer |
+| nhyper | Negative hypergeometric | m, N, r | extraDistr::dnhyper | [0, ∞) integer |
 | invburr    | Inverse Burr            | shape1, shape2, scale | actuar::dinvburr          | (0, ∞) open      |
 | invgamma   | InvGamma                | alpha, beta        | extraDistr::dinvgamma     | (0, ∞) open      |
 | invgauss   | Inverse Gaussian        | mean, shape        | actuar::dinvgauss         | (0, ∞) open      |
-| invexp | Inverse exponential | rate | actuar::dinvexp | (0, ∞) open |
+| invexp | Inverse exponential | scale | actuar::dinvexp | (0, ∞) open |
 | invpareto | Inverse Pareto | shape, scale | actuar::dinvpareto | (0, ∞) open |
 | invparalogis | Inverse paralogistic | shape, scale | actuar::dinvparalogis | (0, ∞) open |
-| invweibull | InverseWeibull          | shape, rate        | actuar::dinvweibull       | (0, ∞) open      |
+| invweibull | Inverse Weibull         | shape, scale        | actuar::dinvweibull       | (0, ∞) open      |
 | invtrgamma | Inverse transformed gamma | shape1, shape2, scale | actuar::dinvtrgamma | (0, ∞) open |
 | kumar      | Kumaraswamy             | a, b               | extraDistr::dkumar        | (0, 1) open      |
 | laplace    | Laplace                 | mu, sigma          | extraDistr::dlaplace      | (-∞, ∞) open     |
-| lgamma     | Loggamma                | shapelog, ratelog  | actuar::dlgamma           | (1, ∞) open      |
+| lgamma     | Log-gamma               | shapelog, ratelog  | actuar::dlgamma           | (1, ∞) open      |
 | lgser      | Logarithmic series      | theta              | extraDistr::dlgser        | [1, ∞) integer   |
-| llogis     | Loglogistic             | shape, rate        | actuar::dllogis           | [0, ∞)           |
+| llogis     | Log-logistic            | shape, scale        | actuar::dllogis           | [0, ∞)           |
 | lnorm      | Lognormal               | meanlog, sdlog     | stats::dlnorm             | (0, ∞) open      |
 | logis      | Logistic                | location, scale    | stats::dlogis             | (-∞, ∞) open     |
-| logitnorm  | LogitNormal             | mu, sigma          | logitnorm::dlogitnorm     | (0, 1) open      |
+| logitnorm  | Logit-normal            | mu, sigma          | logitnorm::dlogitnorm     | (0, 1) open      |
 | lomax      | Lomax                   | lambda, kappa      | extraDistr::dlomax        | (0, ∞) open      |
 | naka       | Nakagami                | shape, scale       | nakagami::dnaka           | (0, ∞) open      |
 | nbinom     | Negative binomial       | size, prob         | stats::dnbinom            | [0, ∞) integer   |
-| hcauchy    | Half-Cauchy             | sigma            | extraDistr::dhcauchy       | [0, ∞) |
-| ht         | Half-t                  | nu, sigma        | extraDistr::dht            | [0, ∞) |
+| hnorm      | Translated Half-Normal | mu, sigma | extraDistr::dhnorm | [mu, ∞), mu required |
+| hcauchy    | Half-Cauchy             | mu, sigma        | extraDistr::dhcauchy       | [mu, ∞), mu required |
+| ht         | Half-t                  | mu, nu, sigma    | extraDistr::dht            | [mu, ∞), mu required |
 | tnorm      | Truncated Normal        | mean, sd, a, b    | extraDistr::dtnorm         | (a, b) open, known bounds |
 | norm       | Normal                  | mean, sd           | stats::dnorm              | (-∞, ∞) open     |
 | paralogis  | Paralogistic            | shape, scale [†]   | actuar::dparalogis        | (0, ∞) open      |
 | pareto     | Pareto                  | a, b               | extraDistr::dpareto       | [0, ∞)           |
 | pig        | Poisson-inverse Gaussian | mean, shape       | actuar::dpoisinvgauss      | [0, ∞) integer   |
 | pois       | Poisson                 | lambda             | stats::dpois              | [0, ∞) integer   |
-| power      | PowerDist               | alpha, beta        | extraDistr::dpower        | [0, ∞)           |
+| power      | Power                   | alpha, beta        | extraDistr::dpower        | [0, ∞)           |
 | rayleigh   | Rayleigh                | sigma              | extraDistr::drayleigh     | [0, ∞)           |
 | sged       | Skew Generalized Error  | mean, sd, nu, xi   | fGarch::dsged             | (-∞, ∞) open     |
 | skellam | Skellam | mu1, mu2 | dskellam (package-defined) | (-∞, ∞) integer |

@@ -87,3 +87,14 @@ TEST_CASE("nhyper: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qnhyper(x, p[0], p[1], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rnhyper(rng, p[0], p[1], p[2]); });
 }
+
+TEST_CASE("nhyper: population size is returned unchanged as a coefficient") {
+  const std::vector<double> x{3,4,5};
+  const auto a = cppunivariate::nhyper_mle(mltest::as_span(x),2,20,
+      std::numeric_limits<double>::quiet_NaN());
+  CHECK(a.N == 20);
+  CHECK(a.m >= 2);
+  const auto b = cppunivariate::nhyper_mle(mltest::as_span(x),2,20,8);
+  CHECK(b.m == 8);
+  CHECK(b.N == 20);
+}

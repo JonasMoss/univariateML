@@ -9,7 +9,10 @@ namespace cppunivariate {
 inline constexpr double kHtNuLower = 1.0;
 
 enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundary, NormalLimit, SearchFailure };
-struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; unsigned restricted = 0; };
+// `mu` defaults to NaN: `ht_mle_zero` and the search helpers below never set
+// it (they operate on already-translated data); the public `ht_mle` entry
+// point at the bottom of this file always fills it in before returning.
+struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; unsigned restricted = 0; double mu = std::numeric_limits<double>::quiet_NaN(); };
 namespace ht_detail {
 constexpr double inf = std::numeric_limits<double>::infinity();
 inline double log_mode(double nu) {
@@ -56,7 +59,10 @@ inline double normal(span x, double &ls, bool fixed_scale) {
 }
 } // namespace ht_detail
 
-inline HtResult ht_mle_impl(span x, double held_nu = std::numeric_limits<double>::quiet_NaN(),
+// Fixed-endpoint engine, also used when nu itself is held. A held mu
+// exempts the free shape from the translated-model restriction. Exact
+// ties still need the sample-dependent collapse diagnostics below.
+inline HtResult ht_mle_zero(span x, double held_nu = std::numeric_limits<double>::quiet_NaN(),
                        double held_sigma = std::numeric_limits<double>::quiet_NaN()) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const bool fn=!std::isnan(held_nu), fs=!std::isnan(held_sigma);
@@ -122,9 +128,91 @@ inline HtResult ht_mle_impl(span x, double held_nu = std::numeric_limits<double>
   return {std::exp(best_t),fs?held_sigma:std::exp(best_ls),best,count,HtStatus::Ok};
 }
 
-inline HtResult ht_mle(span x,double nu=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
-  auto r=ht_mle_impl(x,nu,sigma);
-  // The current fixed-zero threshold is exempt; P4 adds translation.
+namespace ht_detail {
+// Free endpoint: search the free shape on [1, infinity), comparing the
+// exact half-normal face and (for a free scale at 2k=n) the scale-zero face.
+inline HtResult free_threshold_search(span y, double held_sigma) {
+  const bool fs = !std::isnan(held_sigma);
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const double n = static_cast<double>(y.size());
+  double k = 0.0;
+  for (double v : y) if (v == 0.0) ++k;
+  if (!fs && 2.0*k > n) return {nan, nan, nan, 0, HtStatus::Unbounded};
+  const bool tie = !fs && (2.0*k == n);
+  double normal_ls = fs ? std::log(held_sigma) : 0.0;
+  const double normal_ll = normal(y, normal_ls, fs);
+  double boundary_ll = -inf;
+  if (tie) {
+    double sum_log_pos = 0.0;
+    for (double v : y) if (v > 0.0) sum_log_pos += std::log(v);
+    // nu = 1 (half-Cauchy), sigma -> 0 limit at the exact break-even tie.
+    boundary_ll = n*std::log(2.0/std::acos(-1.0)) - 2.0*sum_log_pos;
+  }
+  double best=-inf, best_t=0.0, best_ls=0.0;
+  auto value = [&](double t) {
+    double u = fs ? std::log(held_sigma) : 0.0;
+    const double ll = profile(y, std::exp(t), u, fs);
+    if (ll > best) { best = ll; best_t = t; best_ls = u; }
+    return ll;
+  };
+  // Away from the exact tie, nu = 1 itself is an ordinary, safely evaluable
+  // search point (existence holds strictly above the break-even nu*). At
+  // the tie, nudge above 1 and rely on the explicit boundary value instead.
+  const double lower = tie ? std::log1p(1e-9) : 0.0;
+  const double upper=std::log(1e8), step=0.125;
+  const int count=static_cast<int>(std::ceil((upper-lower)/step));
+  const double delta=(upper-lower)/count;
+  std::vector<double> grid(count+1);
+  for(int j=0;j<=count;++j) grid[j]=value(lower+j*delta);
+  const double ratio=(std::sqrt(5.0)-1)/2;
+  for(int j=1;j<count;++j) if(grid[j]>=grid[j-1] && grid[j]>=grid[j+1]) {
+    double a=lower+(j-1)*delta,b=lower+(j+1)*delta;
+    double l=b-ratio*(b-a),r=a+ratio*(b-a),fl=value(l),fr=value(r);
+    for(int it=0;it<70;++it) {
+      if(fl>fr) {b=r;r=l;fr=fl;l=b-ratio*(b-a);fl=value(l);}
+      else {a=l;l=r;fl=fr;r=a+ratio*(b-a);fr=value(r);}
+    }
+  }
+  const double tol=1e-8*n;
+  const double challenger=std::max(best,boundary_ll);
+  if(normal_ll>=challenger-tol) return {inf,std::exp(normal_ls),normal_ll,count,HtStatus::NormalLimit};
+  if(tie && boundary_ll>=best-tol) return {1.0,0.0,nan,count,HtStatus::ScaleBoundary};
+  if(best_t>=upper-delta || !std::isfinite(best) || !(std::exp(best_ls)>0) || !std::isfinite(std::exp(best_ls)))
+    return {std::exp(best_t),std::exp(best_ls),best,count,HtStatus::SearchFailure};
+  HtResult r{std::exp(best_t),fs ? held_sigma : std::exp(best_ls),best,count,HtStatus::Ok};
+  // Landing exactly on the restriction's lower edge (only possible when not
+  // at the tie, whose interior search starts strictly above 1) means the
+  // restriction, not an interior score, picked this nu.
+  if(!tie && best_t==lower) r.restricted|=4u;
   return r;
 }
+} // namespace ht_detail
+
+// NaN requests estimation. The free endpoint is exactly min(x); its
+// free shape is restricted to nu>=1. Held nu values are preserved, while
+// holding mu exempts free nu from the restriction.
+inline HtResult ht_mle(span x, double mu, double nu, double sigma) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (x.size() == 0) return {nan,nan,nan,0,HtStatus::InvalidData,0,nan};
+  for (double v : x) if (!std::isfinite(v)) return {nan,nan,nan,0,HtStatus::InvalidData,0,nan};
+  if (!std::isnan(sigma) && (!(sigma > 0) || !std::isfinite(sigma)))
+    return {nan,nan,nan,0,HtStatus::InvalidParameter};
+  const bool mu_free = std::isnan(mu);
+  double mu_hat;
+  if (mu_free) {
+    mu_hat = *std::min_element(x.begin(), x.end());
+  } else {
+    if (!std::isfinite(mu)) return {nan,nan,nan,0,HtStatus::InvalidParameter,0,mu};
+    mu_hat = mu;
+    for (double v : x) if (v < mu_hat) return {nan,nan,nan,0,HtStatus::InvalidData,0,mu_hat};
+  }
+  std::vector<double> y(x.size());
+  for (std::size_t i = 0; i < x.size(); ++i) y[i] = x[i] - mu_hat;
+  HtResult r = (!mu_free || !std::isnan(nu))
+      ? ht_mle_zero(span{y.data(), y.size()}, nu, sigma)
+      : ht_detail::free_threshold_search(span{y.data(), y.size()}, sigma);
+  r.mu = mu_hat;
+  return r;
+}
+
 } // namespace cppunivariate

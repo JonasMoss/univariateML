@@ -7,13 +7,14 @@ tiny_data <- stats::rgamma(10, 3, 7)
 data3 <- c(0, tiny_data)
 
 ## Checks if the ML is correct.
-mle1 <- nlm(function(p) {
-  -mean(stats::dgamma(small_data, p[1], p[2], log = TRUE))
-}, p = c(1, 1))$estimate
-
-mle2 <- nlm(function(p) {
-  -mean(stats::dgamma(tiny_data, p[1], p[2], log = TRUE))
-}, p = c(1, 1))$estimate
+gamma_density_oracle <- function(x) {
+  fit <- optim(log(c(1,1)), function(p)
+    -mean(stats::dgamma(x, exp(p[1]), scale=exp(p[2]), log=TRUE)),
+    method="BFGS", control=list(reltol=1e-14,maxit=1000,ndeps=c(1e-5,1e-5)))
+  exp(fit$par)
+}
+mle1 <- gamma_density_oracle(small_data)
+mle2 <- gamma_density_oracle(tiny_data)
 
 expect_equal(mle1, as.numeric(mlgamma(small_data)), tolerance = 1e-5)
 expect_equal(mle2, as.numeric(mlgamma(tiny_data)), tolerance = 1e-5)
@@ -34,7 +35,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlgamma(small_data, na.rm = TRUE)
 expect_equal(
-  sum(stats::dgamma(small_data, est[1], est[2], log = TRUE)),
+  sum(stats::dgamma(small_data, est[1], scale = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -55,13 +56,13 @@ test_that("gamma resolves near ties and extreme scales", {
   f <- mlgamma(x)
   expect_gt(f[["shape"]], 1e29)
   expect_true(is.finite(attr(f, "logLik")))
-  expect_equal(f[["shape"]] / f[["rate"]], mean(x))
+  expect_equal(f[["shape"]] * f[["scale"]], mean(x))
   y <- c(.2, .8, 1, 2, 4)
   base <- mlgamma(y)
   for (s in c(1e-300, 1e300)) {
     f <- mlgamma(y * s)
     expect_equal(f[["shape"]], base[["shape"]], tolerance = 1e-8)
-    expect_equal(f[["rate"]] * s, base[["rate"]], tolerance = 1e-8)
+    expect_equal(f[["scale"]], base[["scale"]] * s, tolerance = 1e-8)
     expect_equal(attr(f, "logLik") + length(y)*log(s), attr(base, "logLik"), tolerance = 1e-8)
   }
 })
@@ -69,7 +70,7 @@ test_that("gamma resolves near ties and extreme scales", {
 test_that("P2 held subsets agree with multistart reference likelihoods", {
   set.seed(81029)
   id <- "gamma"
-  pn <- c("shape","rate")
+  pn <- c("shape","scale")
   held_default <- c(2.0,2.0)
   names(held_default) <- pn
   density <- stats::dgamma
@@ -119,11 +120,11 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
 
 test_that("P2 held existence boundaries", {
 expect_true(is.finite(logLik(mlgamma(2,shape=2))))
-expect_true(is.finite(logLik(mlgamma(2,rate=2))))
+expect_true(is.finite(logLik(mlgamma(2,scale=2))))
 })
 
 test_that("P2 held solver respects iterlim", {
-  expect_error(suppressWarnings(mlgamma(c(2,3),rate=2,iterlim=1)))
+  expect_error(suppressWarnings(mlgamma(c(2,3),scale=2,iterlim=1)))
 })
 
 test_that("gamma: P3 unfinished optimizer stops", {

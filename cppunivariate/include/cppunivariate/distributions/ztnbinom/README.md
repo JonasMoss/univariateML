@@ -10,7 +10,7 @@ support:
   - false
 params:
 - name: size
-  role: trials
+  role: shape
   domain: '[0, inf)'
   simulate: 2.0
   kind: regular

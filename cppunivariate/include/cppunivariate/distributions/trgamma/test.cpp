@@ -156,7 +156,7 @@ TEST_CASE("trgamma: fixed shapes reduce to gamma and Weibull fits") {
   REQUIRE(fg.status == cppunivariate::TrGammaStatus::Ok);
   CHECK(fg.shape2 == 1.0);
   CHECK(fg.shape1 == doctest::Approx(gm.shape).epsilon(1e-10));
-  CHECK(fg.scale == doctest::Approx(1 / gm.rate).epsilon(1e-10));
+  CHECK(fg.scale == doctest::Approx(gm.scale).epsilon(1e-10));
   CHECK(fg.logLik == doctest::Approx(gm.logLik).epsilon(1e-12));
   auto fw = cppunivariate::trgamma_mle(x, 1e-12, 100, 1.0);
   auto wb = cppunivariate::weibull_mle(x, 1e-12, 100);
@@ -173,7 +173,7 @@ TEST_CASE("trgamma: fixed shapes reduce to gamma and Weibull fits") {
   auto gz = cppunivariate::gamma_mle(mltest::as_span(z), 1e-14, 100);
   auto ft = cppunivariate::trgamma_mle(x, 1e-10, 100, std::nan(""), tau);
   CHECK(ft.shape1 == doctest::Approx(gz.shape).epsilon(1e-10));
-  CHECK(ft.scale == doctest::Approx(std::pow(1 / gz.rate, 1 / tau)).epsilon(1e-10));
+  CHECK(ft.scale == doctest::Approx(std::pow(gz.scale, 1 / tau)).epsilon(1e-10));
   CHECK(ft.logLik == doctest::Approx(gz.logLik + jac).epsilon(1e-12));
   // Fixed shape1: score in shape2 and scale vanishes; both fixed: scale score.
   for (double a : {0.05, 0.6, 3.0, 40.0}) {

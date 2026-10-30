@@ -1,5 +1,6 @@
 // Nakagami MLE: y = x^2, then Gamma MLE on y. Shape parameter is
-// preserved; scale is rederived from the gamma rate as scale = shape/rate.
+// preserved; scale is rederived from the gamma fit as scale = shape * gamma_scale
+// (gamma_scale = 1/rate).
 
 #pragma once
 
@@ -37,7 +38,7 @@ inline NakaResult naka_mle(span x, double tol, int maxit) {
 
   GammaResult g = gamma_mle(span{x2.data(), n}, tol, maxit);
   const double shape = g.shape;
-  const double scale = shape / g.rate;
+  const double scale = shape * g.scale;
   // X^2 is gamma: log f_naka(x) = log f_gamma(x^2) + log 2 + log x.
   const double logLik = g.logLik + dn * std::log(2.0) + sum_log_x;
   return {shape, scale, logLik, g.iterations, g.status};

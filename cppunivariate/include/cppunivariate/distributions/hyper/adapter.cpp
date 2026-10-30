@@ -27,9 +27,10 @@ std::string whole(double v) {
 
 // [[Rcpp::export]]
 Rcpp::List mlhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> k,
-                    Rcpp::Nullable<double> N = R_NilValue,
+                    Rcpp::Nullable<double> N,
                     Rcpp::Nullable<double> m = R_NilValue) {
-  if(k.isNull())Rcpp::stop("P4 (C6)");
+  if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).");
+  if (k.isNull()) Rcpp::stop("Estimating k is not supported by this fitter.");
   const double design=Rcpp::as<double>(k);
   const double N_held = held_value(N, "N"), m_held = held_value(m, "m");
   const auto res = cppunivariate::hyper_mle(dist_impl::as_span(x), design, N_held, m_held);
@@ -76,18 +77,12 @@ Rcpp::List mlhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> k,
       break;
   }
   Rcpp::CharacterVector fixed;
-  if (N.isNotNull() && m.isNotNull()) {
-    fixed.push_back("m");
-    fixed.push_back("n");
-  } else if (N.isNotNull()) {
-    fixed.push_back("N");  // fixed sum m + n: one independent constraint
-  } else {
-    fixed.push_back("m");
-  }
+  if (m.isNotNull()) fixed.push_back("m");
+  if (N.isNotNull()) fixed.push_back("N");
   fixed.push_back("k");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["m"] = res.m, Rcpp::_["n"] = res.N - res.m, Rcpp::_["k"] = res.k),
+          Rcpp::_["m"] = res.m, Rcpp::_["N"] = res.N, Rcpp::_["k"] = res.k),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
       Rcpp::_["fixed"] = fixed);
 }

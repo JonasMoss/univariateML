@@ -30,7 +30,7 @@ expect_equal(
 )
 
 ## Check class.
-expect_equal(attr(est, "model"), "Loggamma")
+expect_equal(attr(est, "model"), "Log-gamma")
 expect_equal(class(est), "univariateML")
 
 # Check names.

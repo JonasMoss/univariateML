@@ -53,8 +53,8 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
     adapter <- getFromNamespace(paste0(id,'_'),'univariateML')
     holdable <- intersect(meta$names,names(formals(adapter)))
     for (held in subsets(holdable)) {
-      # Non-coefficient controls (notably the pre-P4 hypergeometric N)
-      # remain as in the golden. Required coefficients are explicit NULL
+      # Non-coefficient controls remain as in the golden.
+      # Required coefficients are explicit NULL
       # unless held in this subset; regular coefficients use their default.
       args <- golden_fit_args(id)
       args[intersect(names(args),meta$names)] <- NULL

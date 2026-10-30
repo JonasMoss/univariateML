@@ -1,6 +1,6 @@
 test_that("nhyper design, fixed subsets and errors are explicit", {
   expect_error(mlnhyper(3, N=20), "requires `r`")
-  expect_error(mlnhyper(3, r=2), "known population")
+  expect_error(mlnhyper(3, r=2), "requires `N`")
   expect_error(mlnhyper(3, r=2, N=20, m=NA_real_), "not NA")
   for (args in list(list(r=-1,N=20), list(r=21,N=20), list(r=2,N=2^53),
                     list(r=2,N=20,m=1), list(r=2,N=20,m=21)))
@@ -11,15 +11,15 @@ test_that("nhyper design, fixed subsets and errors are explicit", {
   expect_error(mlnhyper(1,r=0,N=20), "positive probability")
   expect_error(mlnhyper(3.5,r=2,N=20), "Non-integral")
   a <- mlnhyper(c(3,4,5),r=2,N=20)
-  expect_identical(names(a),c("n","m","r"))
+  expect_identical(names(a),c("m","N","r"))
   expect_equal(attr(a,"fixed"),c("N","r"))
   expect_equal(attr(logLik(a),"df"),1)
   b <- mlnhyper(c(3,4,5),r=2,N=20,m=8)
   expect_equal(attr(logLik(b),"df"),0)
-  expect_equal(attr(b,"fixed"),c("n","m","r"))
+  expect_equal(attr(b,"fixed"),c("m","N","r"))
   expect_equal(attr(b,"logLik"),sum(extraDistr::dnhyper(c(3,4,5),12,8,2,log=TRUE)))
   expect_warning(z <- mlnhyper(c(0,0),r=0,N=20),"unidentified")
-  expect_equal(as.numeric(z),c(20,0,0))
+  expect_equal(as.numeric(z),c(0,20,0))
   expect_equal(attr(z,"logLik"),0)
   expect_equal(attr(mlnhyper(0,r=0,N=0),"logLik"),0)
   expect_equal(unname(mlnhyper(c(2,2),r=2,N=20)["m"]),20)
@@ -85,4 +85,19 @@ test_that("nhyper growing-urn limit counts black draws after subtracting r", {
   nb <- mlnbinom(x-3,size=3)
   expect_equal(unname(nb["prob"]),3/mean(x))
   expect_equal(attr(logLik(nb),"df"),1)
+})
+
+test_that("nhyper explicit NULL gives a reason and bootstrap replays held N", {
+  x <- c(3,4,5)
+  expect_error(mlnhyper(x,N=NULL,r=2), "growing-urn limit")
+  expect_error(mlnhyper(x,N=NULL,r=2,m=8), "Estimating N with m held")
+  expect_error(mlnhyper(x,N=20,r=NULL), "Estimating r")
+  for (args in list(list(),list(m=8))) {
+    f <- do.call(mlnhyper,c(list(x=x,N=20,r=2),args))
+    set.seed(132)
+    b <- suppressWarnings(bootstrapml(f,reps=4,reducer=identity))
+    expect_equal(unname(b["N",]),rep(20,4))
+    expect_equal(unname(b["r",]),rep(2,4))
+    if(length(args)) expect_equal(unname(b["m",]),rep(8,4))
+  }
 })

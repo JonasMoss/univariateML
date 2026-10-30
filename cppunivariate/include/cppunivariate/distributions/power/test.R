@@ -59,7 +59,7 @@ expect_equal(
 est <- mlpower(tiny_data)
 
 ## Check class.
-expect_equal(attr(est, "model"), "PowerDist")
+expect_equal(attr(est, "model"), "Power")
 expect_equal(class(est), "univariateML")
 
 ## Check support.

@@ -23,7 +23,6 @@
 #' `qgev`, `rgev`, and the upper-tail log of `pgev`;
 #' and `actuar::dtrgamma`, `ptrgamma`, `qtrgamma`, `rtrgamma`,
 #' `dinvtrgamma`, `pinvtrgamma`, `qinvtrgamma`, and `rinvtrgamma`.
-#' The truncated-normal repairs also apply to `mlhnorm`.
 #' Every repair checks its defect on each call and turns off when the
 #' reference is fixed. Fitting and log likelihoods use the C++ implementation.
 #' `extraDistr` has no beta-binomial quantile function; `qml` for `mlbbinom`

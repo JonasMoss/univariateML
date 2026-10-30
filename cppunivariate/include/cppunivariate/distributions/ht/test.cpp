@@ -3,29 +3,32 @@
 #include "cppunivariate/distributions/ht/dpqr.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
 #include <vector>
-TEST_CASE("ht: golden and scores") {
+TEST_CASE("ht: golden and scores (mu held at 0)") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
   const auto g=mltest::load_distribution_golden("ht");
-  const auto r=cppunivariate::ht_mle(mltest::as_span(g.data));
+  const auto r=cppunivariate::ht_mle(mltest::as_span(g.data),0.0,nan,nan);
   CHECK(r.status==cppunivariate::HtStatus::Ok);
+  CHECK(r.mu==0.0);
   CHECK(r.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-7));
   CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-8));
   CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
   double ls=std::log(r.sigma), l1=ls,l2=ls;
   CHECK(std::abs((cppunivariate::ht_detail::profile(mltest::as_span(g.data),r.nu*std::exp(1e-5),l1,true)-cppunivariate::ht_detail::profile(mltest::as_span(g.data),r.nu*std::exp(-1e-5),l2,true))/2e-5)<1e-3);
 }
-TEST_CASE("ht: fixed subsets, collapse and normal limit") {
+TEST_CASE("ht: fixed subsets, collapse and normal limit (mu held at 0)") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> x={0,1,2}, eq={0,1}, z={0,0}, positive={1,1,1};
-  CHECK(cppunivariate::ht_mle(mltest::as_span(x)).status==cppunivariate::HtStatus::Unbounded);
-  CHECK(cppunivariate::ht_mle(mltest::as_span(x),1).status==cppunivariate::HtStatus::Ok);
-  CHECK(cppunivariate::ht_mle(mltest::as_span(eq),1).status==cppunivariate::HtStatus::ScaleBoundary);
-  CHECK(cppunivariate::ht_mle(mltest::as_span(eq),.5).status==cppunivariate::HtStatus::Unbounded);
-  CHECK(cppunivariate::ht_mle(mltest::as_span(z),1,2).status==cppunivariate::HtStatus::Ok);
-  CHECK(cppunivariate::ht_mle(mltest::as_span(z),std::numeric_limits<double>::quiet_NaN(),2).status==cppunivariate::HtStatus::NormalLimit);
-  CHECK(cppunivariate::ht_mle(mltest::as_span(positive)).status==cppunivariate::HtStatus::NormalLimit);
-  CHECK(cppunivariate::ht_mle(mltest::as_span(x),-1).status==cppunivariate::HtStatus::InvalidParameter);
-  CHECK(cppunivariate::ht_mle(mltest::as_span(positive),1e-300).status==cppunivariate::HtStatus::SearchFailure);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(x),0.0,nan,nan).status==cppunivariate::HtStatus::Unbounded);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(x),0.0,1.0,nan).status==cppunivariate::HtStatus::Ok);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(eq),0.0,1.0,nan).status==cppunivariate::HtStatus::ScaleBoundary);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(eq),0.0,.5,nan).status==cppunivariate::HtStatus::Unbounded);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(z),0.0,1.0,2.0).status==cppunivariate::HtStatus::Ok);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(z),0.0,nan,2.0).status==cppunivariate::HtStatus::NormalLimit);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(positive),0.0,nan,nan).status==cppunivariate::HtStatus::NormalLimit);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(x),0.0,-1.0,nan).status==cppunivariate::HtStatus::InvalidParameter);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(positive),0.0,1e-300,nan).status==cppunivariate::HtStatus::SearchFailure);
   const std::vector<double> bad={-1,2};
-  CHECK(cppunivariate::ht_mle(mltest::as_span(bad)).status==cppunivariate::HtStatus::InvalidData);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(bad),0.0,nan,nan).status==cppunivariate::HtStatus::InvalidData);
 }
 TEST_CASE("ht: d/p/q/r and extreme tails") {
   CHECK(cppunivariate::distributions::dht(-1,3,1,false)==0);
@@ -59,8 +62,96 @@ TEST_CASE("ht: targeted tail and endpoint regressions") {
 }
 
 
-TEST_CASE("ht: P3 restrictions and closed faces") {
+TEST_CASE("ht: P3 restrictions and closed faces (mu held at 0)") {
+ const double nan=std::numeric_limits<double>::quiet_NaN();
  const std::vector<double> x{.01,.1,1,10,100};
- const auto f=cppunivariate::ht_mle(mltest::as_span(x));
+ const auto f=cppunivariate::ht_mle(mltest::as_span(x),0.0,nan,nan);
  REQUIRE(f.status==cppunivariate::HtStatus::Ok);CHECK(f.nu<1);CHECK(f.restricted==0u);
+}
+
+// P4 (C5): free translated threshold. Values independently checked against
+// extraDistr::dht multistart profiles; see notes/evaluations/2026-10-29-p4-report.md.
+TEST_CASE("ht: free threshold is the sample minimum") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x={5,7,9,20,2};
+  const auto r=cppunivariate::ht_mle(mltest::as_span(x),nan,nan,nan);
+  CHECK(r.mu==2.0);
+  CHECK(r.status==cppunivariate::HtStatus::Ok);
+  auto ll=[&](double nu,double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dht(v-r.mu,nu,s,true);return a;};
+  CHECK(ll(r.nu,r.sigma)==doctest::Approx(r.logLik).epsilon(1e-6));
+  // Held mu above an observation is invalid; at or below the minimum is fine.
+  CHECK(cppunivariate::ht_mle(mltest::as_span(x),2.5,nan,nan).status==cppunivariate::HtStatus::InvalidData);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(x),2.0,nan,nan).status!=cppunivariate::HtStatus::InvalidData);
+  CHECK(cppunivariate::ht_mle(mltest::as_span(x),0.0,nan,nan).status!=cppunivariate::HtStatus::InvalidData);
+}
+
+TEST_CASE("ht: free threshold, nu held, reduces to the shifted zero-threshold model") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x={2,2,3,5,12}; // k=2 ties at the minimum, n=5.
+  const auto r=cppunivariate::ht_mle(mltest::as_span(x),nan,3.0,nan);
+  std::vector<double> y{x}; for(double &v:y) v-=2.0;
+  const auto z=cppunivariate::ht_mle_zero(mltest::as_span(y),3.0,nan);
+  CHECK(r.mu==2.0);
+  CHECK(r.nu==3.0);
+  CHECK(r.sigma==doctest::Approx(z.sigma));
+  CHECK(r.logLik==doctest::Approx(z.logLik));
+  CHECK(r.status==cppunivariate::HtStatus::Ok);
+}
+
+TEST_CASE("ht: free threshold restricts free nu with held sigma") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x={4,4,4,4,9}; // k=4 of 5 at the minimum: no sigma collapse risk when sigma is held.
+  const auto r=cppunivariate::ht_mle(mltest::as_span(x),nan,nan,2.0);
+  CHECK(r.status==cppunivariate::HtStatus::Ok);
+  CHECK(r.mu==4.0);
+  CHECK(r.sigma==2.0);
+  CHECK(std::isfinite(r.nu));
+  CHECK(r.nu>=1.0);
+}
+
+TEST_CASE("ht: free threshold, nu and sigma both free: collapse tie at 2k vs n") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  { // 2k < n: nu* = k/(n-k) < 1, so the nu >= 1 restriction suffices for existence.
+    const std::vector<double> x={5,5,7,9,20};
+    const auto r=cppunivariate::ht_mle(mltest::as_span(x),nan,nan,nan);
+    CHECK(r.status==cppunivariate::HtStatus::Ok);
+    CHECK(r.mu==5.0);
+    CHECK(r.nu>=1.0);
+    auto ll=[&](double nu,double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dht(v-r.mu,nu,s,true);return a;};
+    CHECK(ll(r.nu,r.sigma)==doctest::Approx(r.logLik).epsilon(1e-6));
+    // Scale score vanishes; at nu=1 the shape score satisfies the one-sided KKT condition.
+    {const double h=1e-5*r.sigma;CHECK(std::abs((ll(r.nu,r.sigma+h)-ll(r.nu,r.sigma-h))/(2*h))<1e-3);}
+    {const double h=1e-5*std::max(1.0,r.nu);CHECK((ll(r.nu+h,r.sigma)-ll(r.nu,r.sigma))/h<1e-3);}
+  }
+  { // 2k == n exactly: the finite nu=1, sigma->0 limit is the (unattained) global supremum here.
+    const std::vector<double> x={3,3,8,20};
+    CHECK(cppunivariate::ht_mle(mltest::as_span(x),nan,nan,nan).status==cppunivariate::HtStatus::ScaleBoundary);
+  }
+  { // 2k > n: unbounded even under the restriction (its own break-even nu* exceeds 1).
+    const std::vector<double> x={3,3,3,8};
+    CHECK(cppunivariate::ht_mle(mltest::as_span(x),nan,nan,nan).status==cppunivariate::HtStatus::Unbounded);
+  }
+}
+
+TEST_CASE("ht: free threshold escapes when the half-normal face wins") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  // A deterministic light-tailed sample avoids RNG-dependent kurtosis.
+  std::vector<double> x;
+  for (int i=0;i<300;++i) x.push_back(2.0+(i+0.5)/300.0);
+  const auto r=cppunivariate::ht_mle(mltest::as_span(x),nan,nan,nan);
+  CHECK(r.status==cppunivariate::HtStatus::NormalLimit);
+  CHECK(std::isinf(r.nu));
+}
+
+TEST_CASE("ht: translated restriction bit follows mu, nu, sigma coefficient order") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{5,5,7,9,20};
+  const auto f = cppunivariate::ht_mle(mltest::as_span(x),nan,nan,nan);
+  REQUIRE(f.status == cppunivariate::HtStatus::Ok);
+  CHECK(f.nu == 1);
+  CHECK(f.restricted == 4u);
+  const auto held = cppunivariate::ht_mle(mltest::as_span(x),nan,0.9,nan);
+  CHECK(held.status == cppunivariate::HtStatus::Ok);
+  CHECK(held.nu == .9);
+  CHECK(held.restricted == 0u);
 }

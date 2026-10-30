@@ -8,7 +8,7 @@ namespace cppunivariate {
 
 enum class NhyperStatus { Ok, Tie, Unidentified, InvalidInput, Infeasible };
 struct NhyperResult {
-  double n, m, r, logLik, tie;
+  double m, N, r, logLik, tie;
   int iterations;
   NhyperStatus status;
 };
@@ -29,7 +29,7 @@ inline double nhyper_log_pmf(double x, double n, double m, double r) {
 // likelihood is log concave on [r, N-max(x)+r], including its endpoints.
 inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
-  NhyperResult out{nan, m, r, nan, nan, 0, NhyperStatus::InvalidInput};
+  NhyperResult out{m, N, r, nan, nan, 0, NhyperStatus::InvalidInput};
   const bool free = std::isnan(m);
   if (x.size() == 0 || !hyper_detail::is_count(N) ||
       !hyper_detail::is_count(r) || r > N ||
@@ -62,10 +62,9 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
       out.status = std::isnan(peak.tie) ? NhyperStatus::Ok : NhyperStatus::Tie;
     } else out.status = NhyperStatus::Ok;
   }
-  out.n = N - out.m;
   long double ll = 0;
   for (std::size_t j = 0; j < c.value.size(); ++j)
-    ll += c.count[j] * nhyper_log_pmf(c.value[j], out.n, out.m, r);
+    ll += c.count[j] * nhyper_log_pmf(c.value[j], out.N - out.m, out.m, r);
   out.logLik = static_cast<double>(ll);
   return out;
 }

@@ -6,7 +6,7 @@ TEST_CASE("frechet: held location and free location restrictions") {
  auto r=cppunivariate::frechet_mle(cppunivariate::span{x.data(),x.size()},1e-10,100,0);
  auto b=cppunivariate::invweibull_mle(cppunivariate::span{x.data(),x.size()},1e-10,100);
  CHECK(r.lambda == doctest::Approx(b.shape));
- CHECK(r.sigma == doctest::Approx(1/b.rate));
+ CHECK(r.sigma == doctest::Approx(b.scale));
  CHECK(r.logLik == doctest::Approx(b.logLik));
  auto f=cppunivariate::frechet_mle(cppunivariate::span{x.data(),x.size()});
  CHECK(f.status == cppunivariate::FrechetStatus::Ok);
