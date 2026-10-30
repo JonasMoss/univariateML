@@ -82,7 +82,7 @@ TEST_CASE("tbinom: free probability and free size attains on regular samples, al
   cppunivariate::distributions::StdRng<> rng(44);
   std::vector<int> x;
   for (int i=0;i<60;++i)
-    x.push_back(static_cast<int>(cppunivariate::distributions::rtbinom(rng,12,.4,0,10)));
+    x.push_back(static_cast<int>(cppunivariate::distributions::rtbinom(rng,.4,0,10,12)));
   const int xmin=*std::min_element(x.begin(),x.end()), xmax=*std::max_element(x.begin(),x.end());
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double held_a[]={nan,0,nan,0}, held_b[]={nan,nan,10,10};
