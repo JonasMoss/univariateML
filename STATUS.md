@@ -1,6 +1,6 @@
 # Status and open items
 
-Updated 2026-10-30, master `387dd05`. Deferred design ideas with their
+Updated 2026-10-30, master `32b8dfe`. Deferred design ideas with their
 own rationale live in `roadmap/`; work in flight is on the board
 (`~/.local/bin/board`). This file is the short list of what is open.
 
@@ -12,8 +12,8 @@ own rationale live in `roadmap/`; work in flight is on the board
   fully covered except `dphtype` (out of scope); extraDistr except the
   vector-parameter tier below and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master 387dd05 (simbox, 2026-10-30): C++ 6/6 ctest targets
-  pass; R `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 30743 ]`; `just quality`
+- Tests on master 32b8dfe (simbox, 2026-10-30): C++ 6/6 ctest targets
+  pass; R `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 30814 ]`; `just quality`
   98/98. Truth-table checks (TASK-78) are `may_fail`.
 - simbox runs the full suite in about 15 minutes:
   `scripts/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
@@ -24,7 +24,7 @@ own rationale live in `roadmap/`; work in flight is on the board
   `UMVL_DISTRIBUTIONS_DIR` (`just test` does), so 32 fixture tests fail
   under plain `just check`. Suggests is jsonlite, testthat, knitr,
   rmarkdown (TASK-76).
-- Nothing is pushed: master is 506 commits ahead of `origin/master`.
+- Nothing is pushed: master is 516 commits ahead of `origin/master`.
 
 ## Decisions for Jonas
 
@@ -54,17 +54,25 @@ own rationale live in `roadmap/`; work in flight is on the board
     `notes/evaluations/2026-10-29-p2b-{skew,binom}-report.md`: all 24
     sstd/sged subsets, tbinom free size, cmb {prob, nu}). TASK-94 aligned
     the eight C++ d/p/q/r signatures with the P4 parameters.
-  - Left: 13 `not-implemented` holds, and 64 `no-mle` entries:
-    - bbinom {}, {alpha}, {beta} and cmb {}, {prob}, {nu} with free size:
-      P0b's limit faces are incomplete (Conway-Maxwell-Poisson and
-      geometric faces for cmb; for bbinom, reflection depends on the
-      candidate size);
-    - hyper (3) and nhyper (4): estimating the design `k` or `r`, and
-      nhyper `N` with `m` held, are unsupported by the fitters.
-  - P2b corrected P0b twice: a held sd does not block the sstd collapse
-    (nu -> 2 shrinks the effective scale), and cmb with nu = 0 held is
-    geometric in the limit. Fold this into a P0b revision.
-  - Next: P5 docs (TASK-84).
+  - TASK-97 (terra high, 2026-10-30) analysed the rest: reports
+    `notes/evaluations/2026-10-30-holds-{bbinom,cmb,hyper}-report.md`.
+  - Left: 15 `not-implemented` holds, and 60 `no-mle` entries:
+    - bbinom {}, {alpha}, {beta} and cmb {}, {prob}, {nu} with free size.
+      Held-beta bbinom has a proved finite maximizer, but its tail bound
+      decays like 1/log N, too loose to search. The others lack a full
+      list of limit faces and a tail bound: fixed-size two-point and
+      point-mass faces, NB, Poisson, CMP and geometric limits, and
+      mass escaping to infinity.
+    - hyper {}, {k}, {m}, {N} and nhyper {}, {r}, {m}, {m, r}, {N}.
+      hyper {m, N} (estimate k) and nhyper {m, N} (estimate r) are now
+      implemented. The four former `no-mle` labels were wrong: constant
+      samples attain likelihood one. Most of these subsets are finite
+      grids whose maximum is attained, so a budgeted enumeration is a
+      possible next step.
+  - P0b corrections are recorded in `notes/evaluations/2026-10-29-p0b.md`
+    (P5) and in the TASK-97 reports.
+  - P5 docs (TASK-84) are done: README_SCHEMA, CLAUDE.md,
+    NEWS, `notes/ml-behaviour.tex`.
   - Refinement: the missing-coefficient message offers `NULL` even where
     estimating is unsupported (e.g. pareto2); derive that from `holds:`.
   - For TASK-78 (own d/p/q/r): R7a closure in `dpqr.hpp`; NB/ZINB size 0;
