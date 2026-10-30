@@ -6,17 +6,17 @@ params:
 - name: shape1
   role: shape
   domain: (0, inf)
-  simulate: 3.0
+  simulate: 1
   kind: regular
 - name: shape2
   role: shape
   domain: (0, inf)
-  simulate: 1.5
+  simulate: 1
   kind: regular
 - name: scale
   role: scale
   domain: (0, inf)
-  simulate: 2.0
+  simulate: 1
   kind: regular
 r:
   density: dtrgamma

@@ -1,7 +1,8 @@
 # Independent truth checks of the generated R shell, never the selected
 # selected reference. Per parameter point: five evenly spaced value rows;
 # three evenly spaced quantile rows in EACH tail/scale group; 32 RNG draws.
-# Tolerances/brackets follow cppunivariate/tests/test_support.hpp defaults.
+# Tolerances, zero floors and ambiguous lattice endpoints follow the C++
+# consumer in cppunivariate/tests/test_support.hpp.
 test_that("generated d/p/q/r agree with independent truth tables", {
   skip_if_not_installed("jsonlite")
   directory <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
@@ -62,7 +63,9 @@ test_that("generated d/p/q/r agree with independent truth tables", {
                        info = paste(info, "quantile dispatch", lower, log_input))
           expected <- q[, 5]
           good <- got == expected | (is.finite(got) & is.finite(expected) &
-            abs(got - expected) <= 1e-9 * abs(expected)) | (got >= q[, 6] & got <= q[, 7])
+            abs(got - expected) <= pmax(1e-9 * abs(expected), q[, 9])) |
+            ifelse(q[, 8] != 0, got == q[, 6] | got == q[, 7],
+                   got >= q[, 6] & got <= q[, 7])
           expect_true(all(good), info = paste(info, "quantile", lower, log_input))
         }
       }

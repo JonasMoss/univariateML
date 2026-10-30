@@ -7,12 +7,12 @@ params:
   role: trials
   domain: '[1, inf)'
   integer: yes
-  simulate: 8.0
+  simulate: 10
   kind: design
 - name: prob
   role: probability
   domain: '[0, 1]'
-  simulate: 0.4
+  simulate: 0.5
   kind: regular
 r:
   density: dztbinom
@@ -33,7 +33,7 @@ fit_args:
 examples: |
   set.seed(1)
   x <- rml(200, mlztbinom())
-  mlztbinom(x, size = 8)
+  mlztbinom(x, size = 10)
 ---
 
 Zero-truncated binomial distributions model positive counts.

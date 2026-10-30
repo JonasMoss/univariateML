@@ -6,7 +6,7 @@ params:
 - name: lambda
   role: shape
   domain: '(0, inf)'
-  simulate: 2
+  simulate: 1
   fit_domain:
     lower: 1.0
     restriction:

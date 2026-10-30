@@ -6,13 +6,13 @@ params:
 - name: m
   role: white balls in the population
   domain: '[0, N]'
-  simulate: 20
+  simulate: 5
   integer: yes
   kind: regular
 - name: "N"
   role: population size
   domain: '[0, inf)'
-  simulate: 50
+  simulate: 10
   integer: yes
   kind: design
   advice: Supply the population size, or hold `m` to estimate it.
@@ -45,7 +45,7 @@ fit_args:
 examples: |
   set.seed(1)
   x <- rml(200, mlnhyper())
-  mlnhyper(x, N = 50L, r = 3L)
+  mlnhyper(x, N = 10L, r = 3L)
 ---
 
 The negative hypergeometric distribution counts total draws without

@@ -6,12 +6,12 @@ params:
 - name: mu1
   role: positive-count rate
   domain: '[0, inf)'
-  simulate: 4
+  simulate: 1
   kind: regular
 - name: mu2
   role: negative-count rate
   domain: '[0, inf)'
-  simulate: 3
+  simulate: 1
   kind: regular
 r:
   density: dskellam

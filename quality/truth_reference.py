@@ -133,6 +133,11 @@ class Reference:
             hi = int(self.upper) if mp.isfinite(self.upper) else max(1, lo+1)
             def below(x):
                 v = self.tails(x)[0 if lower else 1]
+                # Exact lattice jumps can differ by a final mp rounding bit
+                # after log/exp or finite summation. This guard is far below
+                # binary64 input resolution, and relative even for tiny log p.
+                if abs(v-lp) <= abs(lp)*mp.eps**mp.mpf('.75'):
+                    return False
                 return v < lp if lower else v > lp
             if not mp.isfinite(self.lower):
                 while not below(lo):

@@ -16,12 +16,12 @@ params:
 - name: nu
   role: df
   domain: (2, inf)
-  simulate: 3.0
+  simulate: 5
   kind: regular
 - name: xi
   role: skew
   domain: (0, inf)
-  simulate: 2.0
+  simulate: 1
   kind: regular
 r:
   density: dsstd

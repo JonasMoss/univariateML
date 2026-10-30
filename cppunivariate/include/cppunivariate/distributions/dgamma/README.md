@@ -6,7 +6,7 @@ params:
 - name: shape
   role: shape
   domain: (0, inf)
-  simulate: 2
+  simulate: 1
   kind: regular
 - name: rate
   role: rate

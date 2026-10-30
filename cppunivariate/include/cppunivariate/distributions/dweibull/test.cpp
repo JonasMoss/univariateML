@@ -272,3 +272,15 @@ TEST_CASE("dweibull: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::dweibull_mle(x,1e-8,1).status==cppunivariate::DweibullStatus::IterationFailure);
 }
+
+// shape2=1 has geometric survival shape1^(k+1).
+TEST_CASE("dweibull: geometric member allows adjacent answers at jumps") {
+  const auto adjacent=[](double x,double lo) {return x==lo || x==lo+1;};
+  CHECK(cppunivariate::distributions::qdweibull(.83,.5,1,true,false)==2);
+  CHECK(cppunivariate::distributions::qdweibull(.17,.5,1,false,false)==2);
+
+  CHECK(adjacent(cppunivariate::distributions::qdweibull(-0.6931471805599453,.5,1,true,true),0));
+  CHECK(adjacent(cppunivariate::distributions::qdweibull(.5,.5,1,true,false),0));
+  CHECK(adjacent(cppunivariate::distributions::qdweibull(.25,.5,1,false,false),1));
+  CHECK(adjacent(cppunivariate::distributions::qdweibull(-1.3862943611198906,.5,1,false,true),1));
+}

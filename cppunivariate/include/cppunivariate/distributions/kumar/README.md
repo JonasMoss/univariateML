@@ -6,12 +6,12 @@ params:
 - name: a
   role: shape
   domain: (0, inf)
-  simulate: 2.0
+  simulate: 1
   kind: regular
 - name: b
   role: shape
   domain: (0, inf)
-  simulate: 3.0
+  simulate: 1
   kind: regular
 r:
   density: dkumar

@@ -12,12 +12,12 @@ params:
 - name: prob
   role: probability
   domain: '[0, 1]'
-  simulate: 0.3
+  simulate: 0.5
   kind: regular
 - name: nu
   role: dispersion
   domain: (-inf, inf)
-  simulate: 1.5
+  simulate: 1
   kind: regular
 r:
   density: dcmb

@@ -111,3 +111,15 @@ TEST_CASE("sn: P3 inner exhaustion checks the returned-point score") {
   CHECK_FALSE(fit.converged);
   CHECK(cppunivariate::sn_detail::score_residual(values,2,nan,nan,fit.eta,fit.h)>=1e-7);
 }
+
+// At symmetry F(0)=1/2; the local inverse is delta_p/f(0).
+TEST_CASE("sn: symmetric member has exact median and signed log-half offset") {
+  const double offset=2.3190468138462995584e-17*(std::sqrt(M_PI/2));
+  for(bool lower:{true,false}) for(bool log:{true,false}) {
+    const double p=log?-0.6931471805599453:.5;
+    const double expected=log?(lower?offset:-offset):0;
+    const double got=cppunivariate::distributions::qsn(p,0,1,0,lower,log);
+    if (log) CHECK(got==doctest::Approx(expected).scale(0).epsilon(1e-12));
+    else CHECK(got==0);
+  }
+}

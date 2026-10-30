@@ -11,7 +11,7 @@ params:
 - name: scale
   role: scale
   domain: (0, inf)
-  simulate: 0.5
+  simulate: 1
   kind: regular
 r:
   density: dllogis

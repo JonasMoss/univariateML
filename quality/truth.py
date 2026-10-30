@@ -5,7 +5,8 @@ by README parameter order. Positive distances to a single bound are multiplied
 by .1 and 10; finite intervals move 90% towards each edge; unbounded nonzero
 coordinates are multiplied by .1 and 10 (zero moves to -1 and +1). Integer,
 design, fixed and endpoint coordinates remain at the fitted golden value.
-Family-local special_points take priority over stresses. At most eight points.
+Family-local special_points take priority over stresses. At most eight historical
+points, plus the README default if absent. Sampling selects the default and fit.
 
 No shared distribution registry: optional truth.py beside README supplies a
 high-precision antiderivative/support correction or a documented gap. Routes
@@ -110,6 +111,11 @@ def points(meta, g, route):
             valid &= lo <= v <= hi and not (v == lo and p['domain'][0] == '(') and not (v == hi and p['domain'][-1] == ')')
         if valid and pt not in result: result.append(pt)
         if len(result) == 8: break
+    # Preserve the historical d/p/q stress grid; add the public default
+    # independently of golden sampler arguments and held-fit coordinates.
+    default = {p['name']: float(p['simulate']) for p in ps}
+    if default not in result:
+        result.append(default)
     return result
 
 
@@ -183,14 +189,51 @@ def verify(ref, logd):
         raise ArithmeticError('normalization quadrature error estimate '+str(error))
     for u in ('.1', '.3', '.7', '.9'):
         x = ref.quantile(mp.log(mp.mpf(u)), True)
-        h = mp.mpf('1e-15')*min([abs(x)+1]+([x-ref.lower] if mp.isfinite(ref.lower) else [])+([ref.upper-x] if mp.isfinite(ref.upper) else []))
-        derivative = ((mp.exp(ref.tails(x+h)[0])-mp.exp(ref.tails(x-h)[0]))/(2*h)
-                      if getattr(ref, 'numerical_tails', False)
-                      else mp.diff(lambda v:mp.exp(ref.tails(v)[0]),x))
+        scale = min([abs(x)+1]+([x-ref.lower] if mp.isfinite(ref.lower) else [])+([ref.upper-x] if mp.isfinite(ref.upper) else []))
+        h = mp.mpf('1e-15')*scale
+        if getattr(ref, 'numerical_tails', False):
+            derivative = (mp.exp(ref.tails(x+h)[0])-mp.exp(ref.tails(x-h)[0]))/(2*h)
+        else:
+            # An absolute step can disappear at huge x or cross a tiny support gap.
+            derivative = mp.diff(lambda v:mp.exp(ref.tails(v)[0]),x,h=mp.sqrt(mp.eps)*scale)
         expected = mp.exp(logd(x))
         if abs(derivative-expected) > mp.mpf('1e-25')*expected:
             raise ArithmeticError('density/antiderivative derivative mismatch')
     return mass
+
+
+def quantile_acceptance(ref, logd, q, inp, lower, logp):
+    """Adjacent lattice answers near a jump; scale-aware floor at interior zero.
+
+    Compare the independent tail on the input's own scale, relative to the
+    binary64 probe. This is an acceptance rule, not a change to the true root.
+    """
+    rounded = as_double(q)
+    a = math.nextafter(rounded, -math.inf)
+    b = math.nextafter(rounded, math.inf)
+    ambiguous, floor = 0, 0.
+    if ref.discrete:
+        a = b = rounded
+        if mp.isfinite(q) and abs(q) < 2**53 and math.isfinite(inp) and (inp < 0 if logp else 0 < inp < 1):
+            probe = number(inp)
+            for j in (q-1, q):
+                if not ref.lower <= j < ref.upper:
+                    continue
+                tail = ref.tails(j)[0 if lower else 1]
+                value = tail if logp else mp.exp(tail)
+                if abs(value-probe) <= abs(probe)*mp.mpf('1e-12'):
+                    a, b, ambiguous = as_double(j), as_double(j+1), 1
+                    break
+    elif math.isfinite(rounded):
+        a = rounded if number(rounded) <= q else a
+        b = rounded if number(rounded) >= q else b
+        if q == 0 and ref.lower < 0 < ref.upper:
+            density = mp.exp(logd(mp.mpf(0)))
+            if mp.isfinite(density) and density > 0:
+                floor = as_double(mp.mpf('1e-12')/density)
+    else:
+        a = b = rounded
+    return a, b, ambiguous, floor
 
 
 def make(folder):
@@ -200,11 +243,15 @@ def make(folder):
     route = module_at(folder/'truth.py')
     if hasattr(route, 'gap'): raise ValueError('gap: '+route.gap)
     pts = points(meta, g, route)
-    result = dict(schema=1, id=folder.name, digits=DIGITS,
+    result = dict(schema=3, id=folder.name, digits=DIGITS,
                   parameter_names=[p['name'] for p in meta['params']],
                   parameters=[], normalization=[], values=[], quantiles=[],
-                  quantile_limits='nearest binary64; overflow signed infinity; underflow signed zero or finite support edge',
+                  quantile_limits='nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale',
                   density_sha256=hashlib.sha256((folder/'README.md').read_bytes()).hexdigest())
+    default = {p['name']: float(p['simulate']) for p in meta['params']}
+    fit = {p['name']: float(g['estimates'][p['name']]) for p in meta['params']}
+    # Explicit indices keep special defaults and general fitted branches covered.
+    result['sampler_points'] = [[pts.index(default)], [pts.index(fit)]]
     for index, theta in enumerate(pts):
         started = time.monotonic()
         small = min([float(theta[p['name']]) for p in meta['params'] if p['role']=='shape' and float(theta[p['name']])>1e-6] or [1.])
@@ -253,14 +300,8 @@ def make(folder):
                 lp = number(inp) if logp else mp.log(number(inp))
                 q = ref.quantile(lp, lower)
                 rounded = as_double(q)
-                a = math.nextafter(rounded,-math.inf); b = math.nextafter(rounded,math.inf)
-                # Tighten outward bracket using the oracle, never C++ p(q).
-                if math.isfinite(rounded) and not ref.discrete:
-                    a = rounded if number(rounded) <= q else a
-                    b = rounded if number(rounded) >= q else b
-                elif ref.discrete or not math.isfinite(rounded):
-                    a = b = rounded
-                result['quantiles'].append([index,int(lower),int(logp),encode(inp),encode(q),encode(a),encode(b)])
+                a, b, ambiguous, floor = quantile_acceptance(ref, logd, q, inp, lower, logp)
+                result['quantiles'].append([index,int(lower),int(logp),encode(inp),encode(q),encode(a),encode(b),ambiguous,encode(floor)])
         print(folder.name, index, 'verified', round(time.monotonic()-started,2), flush=True)
     return result
 
@@ -271,9 +312,11 @@ def main():
     parser.add_argument('ids', nargs='*')
     parser.add_argument('--timeout', type=int, default=900,
                         help='wall-clock seconds per family (default: 900)')
+    parser.add_argument('--report-dir', type=Path, default=REPORT,
+                        help='directory for per-family generation status')
     args = parser.parse_args()
     if args.timeout <= 0: parser.error('--timeout must be positive')
-    REPORT.mkdir(parents=True, exist_ok=True)
+    args.report_dir.mkdir(parents=True, exist_ok=True)
     failures = 0
     for id in args.ids or sorted(p.parent.name for p in DISTS.glob('*/README.md')):
         if Path(id).name != id or not (DISTS/id/'README.md').exists(): parser.error('unknown family '+id)
@@ -288,12 +331,12 @@ def main():
                 path = DISTS/id/'truth.json'
                 tmp = path.with_suffix('.json.tmp')
                 tmp.write_text(json.dumps(result,indent=2,allow_nan=False)+'\n'); tmp.replace(path)
-                status = dict(id=id,status='generated',points=len(result['parameters']),values=len(result['values']),quantiles=len(result['quantiles']))
+                status = dict(id=id,status='generated',points=len(result['parameters']),sampler_points=len(result['sampler_points']),values=len(result['values']),quantiles=len(result['quantiles']))
             except Exception as e:
                 status = dict(id=id,status='gap',reason=f'{type(e).__name__}: {e}')
                 failures += 1
         signal.alarm(0)
         status['seconds'] = time.monotonic()-started
-        (REPORT/(id+'.json')).write_text(json.dumps(status,indent=2)+'\n')
+        (args.report_dir/(id+'.json')).write_text(json.dumps(status,indent=2)+'\n')
         print(id,status,flush=True)
     return int(failures > 0)

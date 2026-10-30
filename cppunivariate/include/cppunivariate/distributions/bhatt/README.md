@@ -16,7 +16,7 @@ params:
 - name: a
   role: half-width
   domain: '[0, inf)'
-  simulate: 2
+  simulate: 1
   kind: regular
 r:
   density: dbhatt

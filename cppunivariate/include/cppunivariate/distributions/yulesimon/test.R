@@ -30,7 +30,12 @@ test_that("yulesimon density sums, direct tails and inverse inequalities agree",
       use <- q<2^53
       f <- pyulesimon(q = q[use], rho = shape, lower.tail = tail, log.p = lg); prev <- pyulesimon(q = q[use] - 1, rho = shape, lower.tail = tail, log.p = lg)
       u <- if (lg) log(u) else u
-      expect_true(all(if (tail) f>=u[use] & prev<u[use] else f<=u[use] & prev>u[use]))
+      # Rounded CDFs can equal the supplied log input at an exact jump even
+      # when its original binary64 value lies strictly on one side. Exact
+      # unit-member integer answers are checked separately below and in truth.
+      slack <- 8*.Machine$double.eps*pmax(1,abs(u[use]))
+      expect_true(all(if (tail) f>=u[use]-slack & prev<=u[use]+slack
+                      else f<=u[use]+slack & prev>=u[use]-slack))
     }
     expect_true(is.finite(pyulesimon(q = 1e+200, rho = shape, lower.tail = FALSE, log.p = TRUE)))
   }
@@ -101,4 +106,14 @@ test_that("yulesimon held coefficient evaluates the independent likelihood", {
     expect_equal(attr(logLik(f),"df"),0L)
   }
   for(v in c(NA_real_,NaN,Inf,0,-1)) expect_error(mlyulesimon(c(1,2),rho=v))
+})
+
+
+test_that("unit Yule-Simon quantiles allow neighbouring integers at jumps", {
+  f <- mlyulesimon()
+  expect_equal(qml(.83, f), 5)
+  expect_equal(qml(.17, f, lower.tail=FALSE), 5)
+  expect_true(qml(-0.6931471805599453, f, log.p=TRUE) %in% c(1, 2))
+  expect_true(qml(-4.605170185988092, f, lower.tail=FALSE, log.p=TRUE) %in% c(99, 100))
+  expect_true(qml(1e-6, f, lower.tail=FALSE) %in% c(999999, 1000000))
 })

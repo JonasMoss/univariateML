@@ -61,3 +61,19 @@ TEST_CASE("yulesimon: held coefficient bypasses the all-ones escape") {
   CHECK(f.iterations==0);
   CHECK(cppunivariate::yulesimon_mle({x.data(),x.size()},1e-10,200,0).status==cppunivariate::YulesimonStatus::InvalidInput);
 }
+
+// rho=1: P(X=k)=1/(k(k+1)), P(X>k)=1/(k+1).
+TEST_CASE("yulesimon: unit shape quantiles allow adjacent answers at jumps") {
+  const auto adjacent=[](double x,double lo) {return x==lo || x==lo+1;};
+  CHECK(cppunivariate::distributions::qyulesimon(.83,1,true,false)==5);
+  CHECK(cppunivariate::distributions::qyulesimon(.17,1,false,false)==5);
+
+  CHECK(adjacent(cppunivariate::distributions::qyulesimon(-0.6931471805599453,1,true,true),1));
+  CHECK(adjacent(cppunivariate::distributions::qyulesimon(-4.605170185988092,1,false,true),99));
+  CHECK(adjacent(cppunivariate::distributions::qyulesimon(1e-6,1,false,false),999999));
+  CHECK(adjacent(cppunivariate::distributions::qyulesimon(.5,1,true,false),1));
+  for(double k:{1.,2.,99.,999999.,1e100}) {
+    CHECK(cppunivariate::distributions::pyulesimon(k,1,false,true)==doctest::Approx(-std::log(k+1)).epsilon(1e-13));
+    CHECK(cppunivariate::distributions::dyulesimon(k,1,true)==doctest::Approx(-std::log(k)-std::log(k+1)).epsilon(1e-13));
+  }
+}

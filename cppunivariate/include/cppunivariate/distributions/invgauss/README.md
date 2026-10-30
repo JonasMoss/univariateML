@@ -6,12 +6,12 @@ params:
 - name: mean
   role: location
   domain: (0, inf)
-  simulate: 3.0
+  simulate: 1
   kind: regular
 - name: shape
   role: shape
   domain: (0, inf)
-  simulate: 4.0
+  simulate: 1
   kind: regular
 r:
   density: dinvgauss

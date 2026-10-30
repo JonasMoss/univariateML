@@ -23,6 +23,8 @@ inline double psged(double q, double mean, double sd, double nu, double xi, bool
 }
 inline double qsged(double p, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
   if (!(fs::valid(mean, sd, nu, xi))) return cppunivariate::special::kNaN;
+  // Exact symmetric member avoids rounded log-tail splitting at the median.
+  if (xi==1) return qged(p,mean,sd,nu,lower_tail,log_p);
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = fs::skew_q(p, xi, lower_tail, log_p, [&](double v) { return qged(v, 0.0, 1.0, nu, true, true); });

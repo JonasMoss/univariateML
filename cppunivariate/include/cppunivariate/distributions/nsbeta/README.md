@@ -6,12 +6,12 @@ params:
 - name: shape1
   role: shape
   domain: (0, inf)
-  simulate: 2
+  simulate: 1
   kind: regular
 - name: shape2
   role: shape
   domain: (0, inf)
-  simulate: 3
+  simulate: 1
   kind: regular
 - name: min
   role: lower endpoint

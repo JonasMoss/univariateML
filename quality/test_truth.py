@@ -2,7 +2,9 @@
 import unittest
 import mpmath as mp
 from quality.truth_reference import normal, pair, gamma, Reference, beta_normalization, complement, negative_binomial
-from quality.truth import DISTS, module_at
+from quality.truth import DISTS, module_at, points, read, declarative, verify, number, quantile_acceptance
+import json
+from types import SimpleNamespace
 
 
 class ClosedForms(unittest.TestCase):
@@ -104,8 +106,8 @@ class FarCountDensities(unittest.TestCase):
 class TailCompositionRegressions(unittest.TestCase):
     def test_half_t_one_matches_half_cauchy(self):
         with mp.workdps(80):
-            hc=module_at(DISTS/'hcauchy/truth.py').build({'sigma':mp.mpf(2)})
-            ht=module_at(DISTS/'ht/truth.py').build({'sigma':mp.mpf(2),'nu':mp.mpf(1)})
+            hc=module_at(DISTS/'hcauchy/truth.py').build({'mu':mp.mpf(0),'sigma':mp.mpf(2)})
+            ht=module_at(DISTS/'ht/truth.py').build({'mu':mp.mpf(0),'sigma':mp.mpf(2),'nu':mp.mpf(1)})
             for text in ('1e-300','1e-100','.01','2','1e100'):
                 x=mp.mpf(text)
                 for tail in (0,1):
@@ -136,6 +138,123 @@ class TailCompositionRegressions(unittest.TestCase):
                 expected=(complement(-2*x),-2*x)
                 for a,e in zip(actual,expected):
                     self.assertLessEqual(abs(a-e),mp.mpf('1e-15')*max(1,abs(e)))
+
+
+class SamplerPoints(unittest.TestCase):
+    def test_default_is_independent_of_golden_sampler_and_held_coordinates(self):
+        meta = {'params': [
+            {'name': 'mu', 'role': 'location', 'domain': '(-inf, inf)',
+             'kind': 'threshold', 'simulate': 0},
+            {'name': 'scale', 'role': 'scale', 'domain': '(0, inf)', 'simulate': 1}]}
+        golden = {'estimates': {'mu': 3, 'scale': 2},
+                  'sampler_args': {'mu': 4, 'scale': 5}}
+        pts = points(meta, golden, SimpleNamespace())
+        self.assertEqual(pts[0], {'mu': 3., 'scale': 5.})
+        self.assertIn({'mu': 3., 'scale': 2.}, pts)
+        self.assertIn({'mu': 0., 'scale': 1.}, pts)
+
+    def test_default_is_retained_when_stress_grid_reaches_cap(self):
+        meta = {'params': [
+            {'name': name, 'role': 'shape', 'domain': '(0, inf)', 'simulate': 1}
+            for name in ('a', 'b', 'c', 'd')]}
+        golden = {'estimates': dict.fromkeys(('a', 'b', 'c', 'd'), 2),
+                  'sampler_args': dict.fromkeys(('a', 'b', 'c', 'd'), 3)}
+        pts = points(meta, golden, SimpleNamespace())
+        self.assertEqual(len(pts), 9)
+        self.assertEqual(pts[-1], dict.fromkeys(('a', 'b', 'c', 'd'), 1.))
+
+    def test_all_tables_select_public_default_and_frozen_golden_fit(self):
+        folders = sorted(DISTS.glob('*/README.md'))
+        self.assertEqual(len(folders), 98)
+        for filename in folders:
+            with self.subTest(family=filename.parent.name):
+                meta, golden = read(filename.parent)
+                table = json.loads(filename.with_name('truth.json').read_text())
+                self.assertEqual(table['schema'], 3)
+                selected = table['sampler_points']
+                self.assertEqual(len(selected), 2)
+                expected = [
+                    [float(p['simulate']) for p in meta['params']],
+                    [float(golden['estimates'][p['name']]) for p in meta['params']]]
+                for row, theta in zip(selected, expected):
+                    self.assertEqual(len(row), 1)
+                    actual = [float(v) for v in table['parameters'][row[0]]]
+                    self.assertEqual(actual, theta)
+
+
+class OracleValidation(unittest.TestCase):
+    def test_small_shape_paralogistic_derivatives_at_extreme_body_quantiles(self):
+        with mp.workdps(80):
+            for id in ('paralogis', 'invparalogis'):
+                with self.subTest(family=id):
+                    folder = DISTS/id
+                    meta, _ = read(folder)
+                    theta = {'shape': .1, 'scale': 1.}
+                    route = module_at(folder/'truth.py')
+                    logd = declarative(folder, meta, theta, route)
+                    ref = route.build({k: number(v) for k,v in theta.items()})
+                    self.assertLess(abs(verify(ref, logd)-1), mp.mpf('1e-25'))
+
+    def test_kumar_singular_endpoint_normalization(self):
+        with mp.workdps(80):
+            folder = DISTS/'kumar'
+            meta, _ = read(folder)
+            theta = {'a': 2., 'b': .3}
+            route = module_at(folder/'truth.py')
+            logd = declarative(folder, meta, theta, route)
+            ref = route.build({k: number(v) for k,v in theta.items()})
+            self.assertLess(abs(verify(ref, logd)-1), mp.mpf('1e-25'))
+
+
+class ExactJumps(unittest.TestCase):
+    def test_discrete_oracle_preserves_exact_and_binary64_log_half(self):
+        from quality.truth_reference import finite_pmf
+        with mp.workdps(80):
+            ref = finite_pmf(lambda k: -mp.log(2), 0, 1)
+            self.assertEqual(ref.quantile(mp.log(mp.mpf('.5')), True), 0)
+            self.assertEqual(ref.quantile(mp.log(mp.mpf('.5')), False), 0)
+            self.assertEqual(ref.quantile(mp.mpf(-0.6931471805599453), True), 1)
+            self.assertEqual(ref.quantile(mp.mpf(-0.6931471805599453), False), 0)
+
+    def test_normal_skew_normal_oracle_has_exact_median(self):
+        with mp.workdps(80):
+            folder = DISTS/'sn'
+            meta, _ = read(folder)
+            theta = {'xi': 0., 'omega': 1., 'alpha': 0.}
+            route = module_at(folder/'truth.py')
+            ref = route.build({k:number(v) for k,v in theta.items()}, declarative(folder,meta,theta,route))
+            for lower in (True, False):
+                self.assertEqual(ref.quantile(mp.log(mp.mpf('.5')),lower),0)
+
+
+class QuantileAcceptance(unittest.TestCase):
+    def test_jump_ambiguity_uses_the_supplied_probability_scale(self):
+        from quality.truth_reference import finite_pmf
+        with mp.workdps(80):
+            ref = finite_pmf(lambda k: -mp.log(2), 0, 1)
+            for lower in (True, False):
+                for logp, inp in ((False,.5),(True,-0.6931471805599453)):
+                    lp = number(inp) if logp else mp.log(number(inp))
+                    q = ref.quantile(lp,lower)
+                    a,b,flag,floor = quantile_acceptance(ref,None,q,inp,lower,logp)
+                    self.assertEqual((a,b,flag,floor),(0.,1.,1,0.))
+            # Away from the jump no neighbouring integer is admitted.
+            self.assertEqual(quantile_acceptance(ref,None,mp.mpf(0),.4,True,False)[2],0)
+            # Natural distance is tiny, but relative log distance is not: never
+            # use the natural scale when the supplied input is a log probability.
+            tiny = Reference(lambda x: (-mp.mpf('2e-15'),mp.log(mp.mpf('2e-15'))),0,1,True)
+            self.assertEqual(quantile_acceptance(tiny,None,mp.mpf(0),-1e-15,True,True)[2],0)
+            self.assertEqual(quantile_acceptance(tiny,None,mp.mpf(0),float(mp.exp(-mp.mpf('1e-15'))),True,False)[2],1)
+
+    def test_zero_floor_scales_with_the_model(self):
+        with mp.workdps(80):
+            for scale in (mp.mpf('.01'),mp.mpf(10)):
+                ref=Reference(lambda x:normal(x/scale))
+                logd=lambda x:-mp.log(scale)-mp.log(2*mp.pi)/2-x*x/(2*scale*scale)
+                a,b,flag,floor=quantile_acceptance(ref,logd,mp.mpf(0),.5,True,False)
+                self.assertEqual((a,b,flag),(0.,0.,0))
+                self.assertAlmostEqual(floor/float(scale),float(mp.mpf('1e-12')*mp.sqrt(2*mp.pi)),places=24)
+                self.assertEqual(quantile_acceptance(ref,logd,mp.mpf(1),.8,True,False)[3],0.)
 
 
 if __name__=='__main__':

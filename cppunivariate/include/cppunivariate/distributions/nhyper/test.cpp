@@ -157,3 +157,16 @@ TEST_CASE("nhyper: all three new finite grids versus inline enumeration") {
   const auto z=cppunivariate::nhyper_mle(mltest::as_span(zero),nan,nan,7);
   CHECK(z.N==7); CHECK(z.r==0); CHECK(z.logLik==0);
 }
+
+// The third of five successes in ten draws is a symmetric order statistic.
+// Reversing the urn sends T to 11-T, so F(5)=1/2 exactly.
+TEST_CASE("nhyper: symmetric lattice median allows adjacent log-half answers") {
+  const auto adjacent=[](double x,double lo) {return x==lo || x==lo+1;};
+  CHECK(cppunivariate::distributions::qnhyper(.31,5,10,3,true,false)==5);
+  CHECK(cppunivariate::distributions::qnhyper(.31,5,10,3,false,false)==6);
+
+  CHECK(adjacent(cppunivariate::distributions::qnhyper(.5,5,10,3,true,false),5));
+  CHECK(adjacent(cppunivariate::distributions::qnhyper(.5,5,10,3,false,false),5));
+  CHECK(adjacent(cppunivariate::distributions::qnhyper(-0.6931471805599453,5,10,3,true,true),5));
+  CHECK(adjacent(cppunivariate::distributions::qnhyper(-0.6931471805599453,5,10,3,false,true),5));
+}

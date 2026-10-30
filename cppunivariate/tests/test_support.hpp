@@ -140,20 +140,26 @@ inline void check_dpqr_truth(const std::string &id, D density, P probability,
     }
   }
   for (const auto &row:qs) {
-    REQUIRE(row.size()==7);
+    REQUIRE(row.size()==9);
     const std::size_t point=static_cast<std::size_t>(row[0]);
     REQUIRE(point<params.size());
     const double got=evaluate([&] {return quantile(row[3],params[point],row[1]!=0,row[2]!=0);});
     const double expected=row[4];
     const bool relative = got==expected || (std::isfinite(got) && std::isfinite(expected) &&
-        std::abs(got-expected)<=q_tolerance*std::abs(expected));
-    // Brackets were computed with the independent oracle before rounding.
-    const bool bracket = got>=row[5] && got<=row[6];
+        std::abs(got-expected)<=std::max(q_tolerance*std::abs(expected),row[8]));
+    // The oracle supplies double brackets or two acceptable lattice points.
+    const bool bracket = row[7]!=0 ? (got==row[5] || got==row[6]) :
+        (got>=row[5] && got<=row[6]);
     check(std::string(row[1]!=0?"q_lower":"q_upper")+(row[2]!=0?"_log":""),
           point,row[3],got,expected,relative||bracket);
   }
   const auto start=std::chrono::steady_clock::now();
-  for (std::size_t point=0;point<params.size();++point) {
+  const auto sampler_points = truth_matrix(source,"sampler_points");
+  REQUIRE(sampler_points.size()==2);
+  for (const auto &sampler_point : sampler_points) {
+    REQUIRE(sampler_point.size()==1);
+    const std::size_t point=static_cast<std::size_t>(sampler_point[0]);
+    REQUIRE(point<params.size());
     cppunivariate::distributions::StdRng<> rng(20261029+point);
     std::vector<double> samples;
     samples.reserve(draws);

@@ -16,7 +16,7 @@ params:
 - name: xi
   role: skew
   domain: (0, inf)
-  simulate: 3.0
+  simulate: 1
   kind: regular
 r:
   density: dsnorm

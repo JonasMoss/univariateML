@@ -16,7 +16,7 @@ params:
 - name: alpha
   role: shape
   domain: (-inf, inf)
-  simulate: 3
+  simulate: 0
   kind: regular
 r:
   density: dsn

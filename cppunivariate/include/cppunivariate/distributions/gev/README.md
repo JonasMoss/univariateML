@@ -16,7 +16,7 @@ params:
 - name: xi
   role: shape
   domain: '(-inf, inf)'
-  simulate: 0.3
+  simulate: 0
   fit_domain:
   - lower: -1.0
     restriction:

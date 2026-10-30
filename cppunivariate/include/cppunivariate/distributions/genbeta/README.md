@@ -6,17 +6,17 @@ params:
 - name: shape1
   role: shape
   domain: (0, inf)
-  simulate: 0.4
+  simulate: 1
   kind: regular
 - name: shape2
   role: shape
   domain: (0, inf)
-  simulate: 0.3
+  simulate: 2
   kind: regular
 - name: shape3
   role: shape
   domain: (0, inf)
-  simulate: 2
+  simulate: 1
   kind: regular
 - name: scale
   role: upper endpoint

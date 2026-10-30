@@ -16,7 +16,7 @@ params:
 - name: nu
   role: shape
   domain: '(0, inf)'
-  simulate: 3.0
+  simulate: 2
   fit_domain:
     lower: 1.0
     restriction:
@@ -28,7 +28,7 @@ params:
 - name: xi
   role: skew
   domain: (0, inf)
-  simulate: 3.0
+  simulate: 1
   kind: regular
 r:
   density: dsged

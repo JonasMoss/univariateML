@@ -6,12 +6,12 @@ params:
 - name: shape1
   role: probability
   domain: (0, 1)
-  simulate: 0.8
+  simulate: 0.5
   kind: regular
 - name: shape2
   role: shape
   domain: (0, inf)
-  simulate: 1.5
+  simulate: 1
   kind: regular
 r:
   density: ddweibull

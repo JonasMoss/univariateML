@@ -11,7 +11,7 @@ params:
 - name: eta
   role: shape
   domain: '[0, inf)'
-  simulate: 3
+  simulate: 1
   kind: regular
 r:
   density: dsgomp

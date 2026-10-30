@@ -6,7 +6,7 @@ params:
 - name: min
   role: lower
   domain: (-inf, max]
-  simulate: 2.0
+  simulate: 0
   bound: lower
   integer: yes
   kind: endpoint

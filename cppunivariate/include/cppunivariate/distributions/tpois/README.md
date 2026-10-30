@@ -6,7 +6,7 @@ params:
 - name: lambda
   role: rate
   domain: '[0, inf)'
-  simulate: 3
+  simulate: 1
   kind: regular
 - name: a
   role: known design quantity

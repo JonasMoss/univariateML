@@ -6,7 +6,7 @@ params:
 - name: theta
   role: rate
   domain: (0, 1)
-  simulate: 0.9
+  simulate: 0.5
   kind: regular
 r:
   density: dlgser

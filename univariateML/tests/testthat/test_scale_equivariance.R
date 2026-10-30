@@ -56,8 +56,10 @@ pull_back_scale_fit <- function(fit, model, a, b) {
 # searches allow 2e-5 in coefficients (default scores 1.22e-4, profile ties
 # 1e-8 per datum); smooth scalar fits allow 2e-7. Likelihood is checked in
 # absolute units per observation, independently of its additive constant.
+# mllst also profiles df with nested location/scale solves. Its df=5 default
+# exposes coefficient variation around 1e-6; retain the separate likelihood check.
 scale_search_models <- c("mlbetapr", "mlburr", "mlemg", "mlgb2", "mlged",
-                         "mlht", "mlhuber", "mlinvburr", "mlinvparalogis", "mlparalogis",
+                         "mlht", "mlhuber", "mllst", "mlinvburr", "mlinvparalogis", "mlparalogis",
                          "mlsged", "mlsn", "mlsstd", "mlstd", "mlbhatt")
 
 for (id in univariateML_models) {
