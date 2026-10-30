@@ -160,3 +160,11 @@ test_that("tbinom: fractional held bounds are exact and work failures stop", {
   expect_setequal(attr(f,"fixed"),c("a","b"))
   expect_error(mltbinom(c(2000001,2000002),a=2000000,b=2000005,size=NULL),"work budget")
 })
+
+test_that("tbinom attained point member evaluates and samples exactly", {
+  fit <- mltbinom(rep(5,4),size=5,prob=1,a=-1,b=6)
+  expect_equal(dml(c(4,5),fit),c(0,1))
+  expect_equal(pml(c(4,5),fit),c(0,1))
+  expect_equal(qml(.5,fit),5)
+  expect_equal(rml(10,fit),rep(5,10))
+})

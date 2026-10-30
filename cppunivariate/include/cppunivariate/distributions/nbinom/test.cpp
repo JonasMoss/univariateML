@@ -151,3 +151,21 @@ TEST_CASE("nbinom: P3 attained size zero preserves holds") {
  CHECK(r.status==cppunivariate::NbinomStatus::Ok);
  CHECK(r.size==0); CHECK(r.prob==.4); CHECK(r.logLik==0);
 }
+
+TEST_CASE("nbinom size zero is delta zero") {
+  // (prob/(1-(1-prob)*z))^size -> 1: point mass at zero.
+  cppunivariate::distributions::StdRng<> rng(42);
+  for (bool log : {false,true}) {
+    CHECK(cppunivariate::special::dnbinom(0,0,.4,log)==(log?0:1));
+    for (double x : {-1.,0.,1.,cppunivariate::special::kPosInf}) {
+      CHECK(dist::dnbinom(x,0,.4,log)==(log?(x==0?0:-INFINITY):(x==0?1:0)));
+      for (bool lower : {false,true}) {
+        const bool one=lower ? x>=0 : x<0;
+        CHECK(dist::pnbinom(x,0,.4,lower,log)==(log?(one?0:-INFINITY):(one?1:0)));
+      }
+    }
+    for (bool lower : {false,true}) for (double p : {0.,.5,1.})
+      CHECK(dist::qnbinom(log?std::log(p):p,0,.4,lower,log)==0);
+  }
+  for (int i=0;i<10;++i) CHECK(dist::rnbinom(rng,0,.4)==0);
+}

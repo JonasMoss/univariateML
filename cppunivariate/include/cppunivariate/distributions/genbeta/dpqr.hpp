@@ -11,7 +11,7 @@ inline double dgenbeta(double x,double shape1,double shape2,double shape3,double
     else if(shape1*shape3==1)ll=std::log(shape3)-std::log(scale)-gb2_detail::logbeta(shape1,shape2);
   } else if(x==scale) {
     if(shape2<1)ll=inf;
-    else if(shape2==1)ll=std::log(shape1*shape3)-std::log(scale);
+    else if(shape2==1)ll=std::log(shape1)+std::log(shape3)-std::log(scale);
   } else if(x>0&&x<scale) {
     const double z=shape3*(x>scale*.5?std::log1p((x-scale)/scale):std::log(x)-std::log(scale));
     const double r=z>-.6931471805599453?std::log(-std::expm1(z)):std::log1p(-std::exp(z));

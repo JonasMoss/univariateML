@@ -109,6 +109,11 @@ inline double qcmb(double p,double size,double prob,double nu,bool lower_tail=tr
   return cmb_detail::table(static_cast<int>(size),prob,nu).quantile(p,lower_tail,log_p);
 }
 template <typename Rng>
-inline double rcmb(Rng &rng,double size,double prob,double nu) { return qcmb(rng.runif(0,1),size,prob,nu); }
+inline double rcmb(Rng &rng,double size,double prob,double nu) {
+  if (!cmb_detail::valid(size,prob,nu)) return special::kNaN;
+  if (size==0 || prob==0) return 0;
+  if (prob==1) return size;
+  return qcmb(rng.runif(0,1),size,prob,nu);
+}
 }
 }

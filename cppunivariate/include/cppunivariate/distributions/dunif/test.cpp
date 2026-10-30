@@ -91,3 +91,17 @@ TEST_CASE("dunif: tiny lower quantile stays in support") {
   // from mpmath import *; mp.dps=500; print(ceil(mpf(1e-300)*9)+2-1)
   CHECK(cppunivariate::distributions::qdunif(1e-300,2,10,true,false)==2);
 }
+
+TEST_CASE("dunif singleton is a point law including RNG endpoints") {
+  // min=max=m: P(X=m)=1, F(x)=1{x>=m}, Q(p)=m.
+  struct ZeroRng { double runif(double,double) { return 0; } } rng;
+  CHECK(cppunivariate::distributions::rdunif(rng,3,3)==3);
+  for (bool log : {false,true}) {
+    CHECK(cppunivariate::distributions::ddunif(3,3,3,log)==(log?0:1));
+    for (bool lower : {false,true}) {
+      CHECK(cppunivariate::distributions::pdunif(3,3,3,lower,log)==(log?(lower?0:-INFINITY):(lower?1:0)));
+      for (double p : {0.,.5,1.})
+        CHECK(cppunivariate::distributions::qdunif(log?std::log(p):p,3,3,lower,log)==3);
+    }
+  }
+}

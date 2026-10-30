@@ -149,3 +149,11 @@ test_that("zmbinom: free size and probability agree with a reference-density ora
                  tolerance = 1e-8)
   }
 })
+
+test_that("zmbinom attained point member evaluates and samples exactly", {
+  fit <- mlzmbinom(rep(5,4),size=5,prob=1,p0=0)
+  expect_equal(dml(c(4,5),fit),c(0,1))
+  expect_equal(pml(c(4,5),fit),c(0,1))
+  expect_equal(qml(.5,fit),5)
+  expect_equal(rml(10,fit),rep(5,10))
+})

@@ -153,3 +153,9 @@ TEST_CASE("zib: tiny zero mass remains finite without inflation") {
   CHECK(cppunivariate::distributions::pzib(0,8,0,.3)==1);
   CHECK(cppunivariate::distributions::pzib(0,8,1,.3)==doctest::Approx(.3));
 }
+
+TEST_CASE("zib attained point sampler ignores zero uniform") {
+  // At success probability one the (possibly truncated) law is delta_size.
+  struct ZeroRng { double runif(double,double) { return 0; } } rng;
+  CHECK(cppunivariate::distributions::rzib(rng,5,1,0)==5);
+}

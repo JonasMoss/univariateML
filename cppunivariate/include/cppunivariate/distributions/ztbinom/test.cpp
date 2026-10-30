@@ -153,3 +153,9 @@ TEST_CASE("ztbinom: free size oracle at n=20, n=100, ties, and near-Poisson") {
     }
   }
 }
+
+TEST_CASE("ztbinom attained point sampler ignores zero uniform") {
+  // At success probability one the (possibly truncated) law is delta_size.
+  struct ZeroRng { double runif(double,double) { return 0; } } rng;
+  CHECK(cppunivariate::distributions::rztbinom(rng,5,1)==5);
+}

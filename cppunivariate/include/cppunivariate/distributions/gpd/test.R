@@ -115,3 +115,13 @@ test_that("GPD scale holds validate support and retain free-threshold rejection"
     expect_error(do.call(mlgpd,c(list(x=1:5,mu=NULL),h)),"Estimating `mu` is not supported")
   expect_true(is.finite(logLik(suppressWarnings(mlgpd(1,mu=0,sigma=2), classes = "univariateML_restricted"))))
 })
+
+test_that("gpd evaluates its attained xi=-1 endpoint", {
+  fit <- suppressWarnings(mlgpd(c(2,3,4), mu=2, sigma=3, xi=-1))
+  expect_equal(dml(5, fit), 1/3)
+  expect_equal(dml(5, fit, log=TRUE), -log(3))
+  expect_equal(pml(5, fit), 1)
+  expect_equal(pml(5, fit, lower.tail=FALSE, log.p=TRUE), -Inf)
+  expect_equal(qml(1, fit), 5)
+  expect_equal(qml(-Inf, fit, lower.tail=FALSE, log.p=TRUE), 5)
+})

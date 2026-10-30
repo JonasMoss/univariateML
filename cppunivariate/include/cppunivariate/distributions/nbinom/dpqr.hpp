@@ -19,13 +19,11 @@
 namespace cppunivariate {
 namespace distributions {
 
-using cppunivariate::special::kNaN;
-using cppunivariate::special::kNegInf;
 
 inline double dnbinom(double x, double size, double prob, bool log) {
-  if (!(size>0) || !std::isfinite(size) || !(prob>0 && prob<=1) || std::isnan(x)) return special::kNaN;
+  if (!(size>=0) || !std::isfinite(size) || !(prob>0 && prob<=1) || std::isnan(x)) return special::kNaN;
   if (!std::isfinite(x) || x<0 || x!=std::floor(x)) return log?special::kNegInf:0;
-  if(prob==1) return x==0?(log?0:1):(log?special::kNegInf:0);
+  if(size==0 || prob==1) return x==0?(log?0:1):(log?special::kNegInf:0);
   double lp;
   if (x>1e8*std::max(1.0,size*size)) {
     // log Gamma(x+size)/Gamma(x+1), with O(size^3/x^2) omitted.
@@ -36,9 +34,9 @@ inline double dnbinom(double x, double size, double prob, bool log) {
 }
 
 inline special::LogTails nbinom_tails(double q,double size,double prob) {
-  if (!(size>0) || !std::isfinite(size) || !(prob>0 && prob<=1) || std::isnan(q)) return {special::kNaN,special::kNaN,false};
+  if (!(size>=0) || !std::isfinite(size) || !(prob>0 && prob<=1) || std::isnan(q)) return {special::kNaN,special::kNaN,false};
   if(q<0) return special::tails_from_log(special::kNegInf,true);
-  if(q==special::kPosInf || prob==1) return special::tails_from_log(special::kNegInf,false);
+  if(q==special::kPosInf || size==0 || prob==1) return special::tails_from_log(special::kNegInf,false);
   q=std::floor(q);
   const double lower=special::negative_binomial_cdf(q,size,prob,true);
   const bool small_lower=lower<=0.5;
@@ -62,15 +60,17 @@ inline double pnbinom(double q, double size, double prob, bool lower_tail, bool 
 }
 
 inline double qnbinom(double p, double size, double prob, bool lower_tail, bool log_p) {
-  if (!(size>0) || !std::isfinite(size) || !(prob>0 && prob<=1)) return special::kNaN;
+  if (!(size>=0) || !std::isfinite(size) || !(prob>0 && prob<=1)) return special::kNaN;
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
-      prob==1?0.0:special::kPosInf,[=](double x){return nbinom_tails(x,size,prob);});
+      (size==0 || prob==1)?0.0:special::kPosInf,[=](double x){return nbinom_tails(x,size,prob);});
 }
 
 template <typename Rng>
 inline double rnbinom(Rng &rng, double size, double prob) {
   // Gamma-Poisson compound: lambda ~ Gamma(size, scale=(1-prob)/prob),
   // K ~ Poisson(lambda).
+  if (!(size>=0) || !std::isfinite(size) || !(prob>0 && prob<=1)) return special::kNaN;
+  if (size==0 || prob==1) return 0;
   const double lambda = rng.rgamma(size, (1.0 - prob) / prob);
   return rng.rpois(lambda);
 }

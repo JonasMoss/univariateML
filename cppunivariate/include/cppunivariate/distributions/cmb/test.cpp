@@ -84,3 +84,9 @@ TEST_CASE("cmb: free-size endpoints, invalid controls and work exhaustion") {
   CHECK(cppunivariate::cmb_size_mle({x.data(),x.size()},.3,1,1e-10,0).fit.status==cppunivariate::CmbStatus::InvalidInput);
   CHECK(cppunivariate::cmb_size_mle({expensive.data(),expensive.size()},1e-8,1).fit.status==cppunivariate::CmbStatus::IterationFailure);
 }
+
+TEST_CASE("cmb attained point sampler ignores zero uniform") {
+  // At success probability one the (possibly truncated) law is delta_size.
+  struct ZeroRng { double runif(double,double) { return 0; } } rng;
+  CHECK(cppunivariate::distributions::rcmb(rng,5,1,2)==5);
+}

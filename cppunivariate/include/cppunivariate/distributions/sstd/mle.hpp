@@ -13,6 +13,7 @@
 
 #include "../snorm/mle.hpp"
 #include "../../core/bfgs.hpp"
+#include "../../core/multistart.hpp"
 #include "../../core/finite_diff.hpp"
 #include "../../core/reductions.hpp"
 #include "../../core/reparam.hpp"
@@ -540,12 +541,21 @@ inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized
   BfgsResult r;
   r.f = kInf;
   std::vector<BfgsResult> interior;
+  double attempted_ll=-kInf;
   for (const auto &start : starts) {
     auto candidate = bfgs_minimize(fd, start.data(), ctl);
+    bool finite=std::isfinite(candidate.f) && candidate.theta.size()==4;
+    for (double t:candidate.theta) finite=finite && std::isfinite(t);
+    if (finite) {
+      attempted_ll=std::max(attempted_ll,-candidate.f*objective_divisor);
+      // A rejected point may seed an independently gated face refinement.
+      interior.push_back(candidate);
+    }
+    if (!bfgs_candidate_acceptable(candidate,objective_divisor)) continue;
+    candidate.status=BfgsStatus::Ok;
     candidate.f *= objective_divisor;
     if (!std::isfinite(candidate.f)) continue;
     if (!std::isfinite(r.f) || candidate.f < r.f - tie) r = candidate;
-    interior.push_back(candidate);
   }
   const double interior_ll = std::isfinite(r.f) ? -r.f : -kInf;
 
@@ -618,7 +628,7 @@ inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized
   for (const auto &start : two_starts) {
     const auto t2 = bfgs_minimize(two_fd, start.data(), ctl);
     const double ll = -t2.f - dn * log_sd;
-    if (std::isfinite(t2.f) && ll > face.logLik + tie) {
+    if (bfgs_candidate_acceptable(t2) && ll > face.logLik + tie) {
       face = {mean_x + sd_x * t2.theta[0], kInf, 2.0,
               std::exp(0.5 * (t2.theta[2] - t2.theta[1])), ll, 0,
               SstdStatus::DfTwoBoundary};
@@ -628,11 +638,13 @@ inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized
   if (!std::isfinite(face.logLik) && !std::isfinite(interior_ll)) {
     return {kNaN, kNaN, kNaN, kNaN, kNaN, 0, SstdStatus::BfgsFailure};
   }
-  if (face.logLik >= interior_ll - tie) {
+  if (face.logLik >= std::max(interior_ll,attempted_ll) - tie) {
     face.iterations = r.iterations;
     return face;
   }
 
+  if (!std::isfinite(interior_ll))
+    return {kNaN,kNaN,kNaN,kNaN,kNaN,0,SstdStatus::BfgsFailure};
   const double mu = r.theta[0];
   const double sigma = cppunivariate::from_log(r.theta[1]);
   const double nu = cppunivariate::from_log_shift(r.theta[2], 2.0);

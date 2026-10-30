@@ -195,3 +195,13 @@ TEST_CASE("sged: P0b uniform endpoints retain pinned-moment penalties") {
   const auto width=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,nan,1,nan,1);
   CHECK(width.status==cppunivariate::SgedStatus::ScaleBoundary);
 }
+
+TEST_CASE("sged exhausted interior cannot return analytic Laplace as a fit") {
+  // Normal quantile grid: a one-step interior attempt already beats the
+  // analytic nu=1 skew-Laplace face, but has not met R6's score gate.
+  std::vector<double> x;
+  for (int i=0;i<100;++i)
+    x.push_back(cppunivariate::special::normal_quantile((i+.5)/100,true,false));
+  const auto fit=cppunivariate::sged_mle(mltest::as_span(x),1e-6,1);
+  CHECK(fit.status==cppunivariate::SgedStatus::BfgsFailure);
+}

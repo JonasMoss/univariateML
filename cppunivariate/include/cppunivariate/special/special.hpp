@@ -131,7 +131,7 @@ inline double dgeom(double x, double prob, bool log) {
 }
 
 inline double dnbinom(double x, double size, double prob, bool log) {
-  if (!(size > 0.0) || !(prob > 0.0) || prob > 1.0) {
+  if (!(size >= 0.0) || !std::isfinite(size) || !(prob > 0.0) || prob > 1.0) {
     return kNaN;
   }
   if (!std::isfinite(x) || x < 0.0) {
@@ -141,7 +141,7 @@ inline double dnbinom(double x, double size, double prob, bool log) {
   if (std::fabs(k - x) > 1e-7) {
     return log ? kNegInf : 0.0;
   }
-  if (prob == 1.0) return k == 0.0 ? (log ? 0.0 : 1.0) : (log ? kNegInf : 0.0);
+  if (size == 0.0 || prob == 1.0) return k == 0.0 ? (log ? 0.0 : 1.0) : (log ? kNegInf : 0.0);
   const double log_density = std::lgamma(k + size) - std::lgamma(size) -
                              std::lgamma(k + 1.0) + size * std::log(prob) +
                              k * std::log1p(-prob);

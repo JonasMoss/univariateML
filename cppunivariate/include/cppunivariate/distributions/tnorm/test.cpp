@@ -343,9 +343,9 @@ TEST_CASE("tnorm: d/p/q/r") {
   // Deep upper tail: approximately a + exponential with rate a.
   CHECK(d::dtnorm(40.01, 0, 1, 40, 41, true) == doctest::Approx(3.2894534805491).epsilon(1e-12));
   CHECK(d::dtnorm(10.05, 0, 1, 10, kInf, true) == doctest::Approx(1.81109661730779).epsilon(1e-12));
-  // Zero at and outside the bounds, like extraDistr.
-  CHECK(d::dtnorm(0, 0, 1, 0, 1, false) == 0);
-  CHECK(d::dtnorm(1, 0, 1, 0, 1, false) == 0);
+  // R7a: finite bounds use phi(x)/(Phi(1)-Phi(0)); outside is zero.
+  CHECK(d::dtnorm(0, 0, 1, 0, 1, false) == doctest::Approx(2/std::sqrt(2*std::acos(-1.0))/std::erf(1/std::sqrt(2.0))));
+  CHECK(d::dtnorm(1, 0, 1, 0, 1, false) == doctest::Approx(2*std::exp(-.5)/std::sqrt(2*std::acos(-1.0))/std::erf(1/std::sqrt(2.0))));
   CHECK(d::dtnorm(-1, 0, 1, 0, 1, false) == 0);
   CHECK(std::isnan(d::dtnorm(0.5, 0, -1, 0, 1, false)));
   CHECK(std::isnan(d::dtnorm(0.5, 0, 1, 1, 0, false)));
@@ -431,4 +431,18 @@ TEST_CASE("tnorm: log probabilities at zero endpoints preserve distances") {
   CHECK(cppunivariate::distributions::qtnorm(1e-12,0,1,0,cppunivariate::special::kPosInf,true,false) == doctest::Approx(1.2533141373155002e-12).epsilon(1e-11));
   CHECK(cppunivariate::distributions::ptnorm(1e-300,0,1e300,0,cppunivariate::special::kPosInf,true,true) == doctest::Approx(-1381.7768471490721).epsilon(1e-11));
   CHECK(cppunivariate::distributions::ptnorm(1e-300,0,1,0,1,true,true) == doctest::Approx(-690.6196041045563).epsilon(1e-11));
+}
+
+TEST_CASE("tnorm R7a endpoint closed form") {
+  // Truncated standard normal on [-1,1]: phi(x)/(Phi(1)-Phi(-1)).
+  const double f=std::exp(-.5)/std::sqrt(2*std::acos(-1.0))/std::erf(1/std::sqrt(2.0));
+  for (double x : {-1.,1.}) for (bool log : {false,true}) {
+    CHECK(cppunivariate::distributions::dtnorm(x,0,1,-1,1,log)==doctest::Approx(log?std::log(f):f));
+    for (bool lower : {false,true}) {
+      const bool one=lower ? x==1 : x==-1;
+      CHECK(cppunivariate::distributions::ptnorm(x,0,1,-1,1,lower,log)==(log?(one?0:-INFINITY):(one?1:0)));
+      const double p=lower ? (x+1)/2 : (1-x)/2;
+      CHECK(cppunivariate::distributions::qtnorm(log?std::log(p):p,0,1,-1,1,lower,log)==x);
+    }
+  }
 }

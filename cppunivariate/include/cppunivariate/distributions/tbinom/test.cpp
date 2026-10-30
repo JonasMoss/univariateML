@@ -151,3 +151,9 @@ TEST_CASE("tbinom: two-point saturated profile is attained, not a Poisson escape
   const std::vector<int> huge{2000001,2000002};
   CHECK(cppunivariate::tbinom_design_mle({huge.data(),huge.size()},2000000,2000005,nan).status==cppunivariate::TbinomStatus::NumericalFailure);
 }
+
+TEST_CASE("tbinom attained point sampler ignores zero uniform") {
+  // At success probability one the (possibly truncated) law is delta_size.
+  struct ZeroRng { double runif(double,double) { return 0; } } rng;
+  CHECK(cppunivariate::distributions::rtbinom(rng,1,-1,6,5)==5);
+}
