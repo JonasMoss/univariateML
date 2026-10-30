@@ -14,6 +14,13 @@ params:
   simulate: 3
   kind: regular
 r:
+  export:
+    params:
+      mu1: Nonnegative finite Poisson rate.
+      mu2: Nonnegative finite Poisson rate.
+    details: The distribution is the difference of independent Poisson counts with nonnegative
+      finite rates. Zero rates give the corresponding signed Poisson member. Random generation
+      subtracts independent Poisson draws.
   density: dskellam
   sampler: rskellam
   control:

@@ -62,49 +62,49 @@ inline double dskellam(double x,double mu1,double mu2,bool log=false) {
   const double lp=skellam_detail::logmass(x,mu1,mu2);
   return log ? lp : std::exp(lp);
 }
-inline double pskellam(double x,double a,double b,bool lower=true,bool log=false) {
-  if(!skellam_detail::valid(a,b) || std::isnan(x)) return special::kNaN;
-  if(!std::isfinite(x)) {const bool one=(x>0)==lower;return log ? (one?0:-INFINITY) : (one?1:0);}
-  const double k=std::floor(x);
-  if(!lower) return pskellam(-k-1,b,a,true,log);
-  if(a==0 && b==0) return log ? (k>=0?0:-INFINITY) : (k>=0?1:0);
-  if(b==0 && k<0) return log ? -INFINITY : 0;
-  if(a==0 && k>=0) return log ? 0 : 1;
-  const double prob=b==0 ? special::poisson_cdf(k,a,true) :
-      a==0 ? special::poisson_cdf(-k-1,b,false) : k>=0 ? special::pnchisq(2*a,2*(k+1),2*b,false)
-                        : special::pnchisq(2*b,-2*k,2*a,true);
-  if(!log) return prob;
+inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool log_p=false) {
+  if(!skellam_detail::valid(mu1,mu2) || std::isnan(q)) return special::kNaN;
+  if(!std::isfinite(q)) {const bool one=(q>0)==lower_tail;return log_p ? (one?0:-INFINITY) : (one?1:0);}
+  const double k=std::floor(q);
+  if(!lower_tail) return pskellam(-k-1,mu2,mu1,true,log_p);
+  if(mu1==0 && mu2==0) return log_p ? (k>=0?0:-INFINITY) : (k>=0?1:0);
+  if(mu2==0 && k<0) return log_p ? -INFINITY : 0;
+  if(mu1==0 && k>=0) return log_p ? 0 : 1;
+  const double prob=mu2==0 ? special::poisson_cdf(k,mu1,true) :
+      mu1==0 ? special::poisson_cdf(-k-1,mu2,false) : k>=0 ? special::pnchisq(2*mu1,2*(k+1),2*mu2,false)
+                        : special::pnchisq(2*mu2,-2*k,2*mu1,true);
+  if(!log_p) return prob;
   if(prob>0 && prob<1) return std::log(prob);
-  if(prob==1) return std::log1p(-pskellam(k,a,b,false,false));
+  if(prob==1) return std::log1p(-pskellam(k,mu1,mu2,false,false));
   double total=-INFINITY;
   for(double v=k;;--v) {
-    const double term=skellam_detail::logmass(v,a,b);
+    const double term=skellam_detail::logmass(v,mu1,mu2);
     total=skellam_detail::logadd(total,term);
     if(term<total-40 || v-1==v) break;
   }
   return total;
 }
-inline double qskellam(double p,double a,double b,bool lower=true,bool log=false) {
-  if(!skellam_detail::valid(a,b) || std::isnan(p) || (log ? p>0 : (p<0 || p>1))) return special::kNaN;
-  double target=log ? p : std::log(p);
-  if(!lower) target=log ? std::log(-std::expm1(p)) : std::log1p(-p);
-  if((log && p==-INFINITY) || (!log && p==0)) return lower ? (b==0?0:-INFINITY) : (a==0?0:INFINITY);
-  if((log && p==0) || (!log && p==1)) return lower ? (a==0?0:INFINITY) : (b==0?0:-INFINITY);
+inline double qskellam(double p,double mu1,double mu2,bool lower_tail=true,bool log_p=false) {
+  if(!skellam_detail::valid(mu1,mu2) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
+  double target=log_p ? p : std::log(p);
+  if(!lower_tail) target=log_p ? std::log(-std::expm1(p)) : std::log1p(-p);
+  if((log_p && p==-INFINITY) || (!log_p && p==0)) return lower_tail ? (mu2==0?0:-INFINITY) : (mu1==0?0:INFINITY);
+  if((log_p && p==0) || (!log_p && p==1)) return lower_tail ? (mu1==0?0:INFINITY) : (mu2==0?0:-INFINITY);
   const bool use_lower=target < -0.6931471805599453;
-  const double goal=use_lower ? target : (lower ? (log?std::log(-std::expm1(p)):std::log1p(-p)) : (log?p:std::log(p)));
-  const auto reached=[&](double k) {const double f=pskellam(k,a,b,use_lower,true);return use_lower ? f>=goal : f<=goal;};
-  double step=std::max(1.0,std::sqrt(a+b)),lo=std::floor(a-b),hi=lo;
+  const double goal=use_lower ? target : (lower_tail ? (log_p?std::log(-std::expm1(p)):std::log1p(-p)) : (log_p?p:std::log(p)));
+  const auto reached=[&](double k) {const double f=pskellam(k,mu1,mu2,use_lower,true);return use_lower ? f>=goal : f<=goal;};
+  double step=std::max(1.0,std::sqrt(mu1+mu2)),lo=std::floor(mu1-mu2),hi=lo;
   while(reached(lo)) {hi=lo;lo-=step;step*=2;if(!std::isfinite(lo)) return -INFINITY;}
-  step=std::max(1.0,std::sqrt(a+b));
+  step=std::max(1.0,std::sqrt(mu1+mu2));
   while(!reached(hi)) {lo=hi;hi+=step;step*=2;if(!std::isfinite(hi)) return INFINITY;}
   lo=std::floor(lo);hi=std::ceil(hi);
   while(hi-lo>1) {const double mid=std::floor(lo+(hi-lo)/2);if(mid==lo || mid==hi) break;if(reached(mid)) hi=mid;else lo=mid;}
   return hi;
 }
-template<class RNG> inline double rskellam(RNG& rng,double a,double b) {
-  if(!skellam_detail::valid(a,b)) return special::kNaN;
-  const double positive=a==0 ? 0 : rng.rpois(a);
-  const double negative=b==0 ? 0 : rng.rpois(b);
+template<class RNG> inline double rskellam(RNG& rng,double mu1,double mu2) {
+  if(!skellam_detail::valid(mu1,mu2)) return special::kNaN;
+  const double positive=mu1==0 ? 0 : rng.rpois(mu1);
+  const double negative=mu2==0 ? 0 : rng.rpois(mu2);
   return positive-negative;
 }
 }

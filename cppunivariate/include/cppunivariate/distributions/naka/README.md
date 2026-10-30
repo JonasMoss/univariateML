@@ -14,6 +14,12 @@ params:
   simulate: 3.0
   kind: regular
 r:
+  export:
+    title: naka distribution
+    params:
+      shape: Positive shape.
+      scale: Positive scale, equal to the mean squared amplitude.
+    details: Parameters must be finite. Random generation transforms draws.
   density: dnaka
   sampler: rnaka
   control:

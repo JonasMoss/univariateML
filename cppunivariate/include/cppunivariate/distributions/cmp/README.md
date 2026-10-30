@@ -14,6 +14,11 @@ params:
   simulate: 1.5
   kind: regular
 r:
+  export:
+    params:
+      lambda: Nonnegative rate coordinate; must be below one when nu is zero.
+      nu: Nonnegative dispersion coordinate.
+    details: Evaluation uses the CMP normalizer. Tails are summed directly. Random draws use inversion.
   density: dcmp
   sampler: rcmp
   control:

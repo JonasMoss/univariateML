@@ -58,7 +58,7 @@ std::vector<double> maximisers(const Grid &g, long double tol) {
 
 std::vector<double> draw(dist::StdRng<> &rng, int h, double N, double m, double k) {
   std::vector<double> x;
-  for (int i = 0; i < h; ++i) x.push_back(dist::rhyper(rng, N, m, k));
+  for (int i = 0; i < h; ++i) x.push_back(dist::rhyper(rng, m, (N) - (m), k));
   return x;
 }
 
@@ -80,7 +80,7 @@ TEST_CASE("hyper: log pmf against independent formulas") {
       for (double k = 0; k <= N; ++k) {
         long double total = 0;
         for (double x = 0; x <= k; ++x) {
-          const double l = dist::dhyper(x, N, m, k, true);
+          const double l = dist::dhyper(x, m, (N) - (m), k, true);
           const long double b = brute_ll({x}, N, m, k);
           if (std::isinf(b)) {
             CHECK(std::isinf(l));
@@ -213,7 +213,7 @@ TEST_CASE("hyper: Lincoln-Petersen ties, support limits, fixed design") {
   CHECK(m_fit.status == cppunivariate::HyperStatus::Tie);
   CHECK(m_fit.m == 9);
   CHECK(m_fit.tie == 10);
-  CHECK(m_fit.logLik == doctest::Approx(dist::dhyper(5, 19, 10, 10, true)).epsilon(1e-14));
+  CHECK(m_fit.logLik == doctest::Approx(dist::dhyper(5, 10, (19) - (10), 10, true)).epsilon(1e-14));
   // max(x) = N - k + min(x): a single feasible m.
   const std::vector<double> three{3, 3};
   auto edge = cppunivariate::hyper_mle(as_span(three), 10, 10, kNaN);
@@ -236,8 +236,8 @@ TEST_CASE("hyper: Lincoln-Petersen ties, support limits, fixed design") {
   const std::vector<double> y{2, 3, 2};
   auto held = cppunivariate::hyper_mle(as_span(y), 6, 20, 8);
   CHECK(held.status == cppunivariate::HyperStatus::Ok);
-  CHECK(held.logLik == doctest::Approx(2 * dist::dhyper(2, 20, 8, 6, true) +
-                                       dist::dhyper(3, 20, 8, 6, true)).epsilon(1e-14));
+  CHECK(held.logLik == doctest::Approx(2 * dist::dhyper(2, 8, (20) - (8), 6, true) +
+                                       dist::dhyper(3, 8, (20) - (8), 6, true)).epsilon(1e-14));
 }
 
 TEST_CASE("hyper: escapes, nonidentification and invalid designs") {
@@ -320,27 +320,27 @@ TEST_CASE("hyper: large populations stay exact or report TooLarge") {
 TEST_CASE("hyper dpqr: CDF tails, quantile inversion, sampler support") {
   const double N = 40, m = 15, k = 12;
   for (double q = -1; q <= 13; ++q) {
-    const double lower = dist::phyper(q, N, m, k, true, false);
-    const double upper = dist::phyper(q, N, m, k, false, false);
+    const double lower = dist::phyper(q, m, (N) - (m), k, true, false);
+    const double upper = dist::phyper(q, m, (N) - (m), k, false, false);
     CHECK(lower + upper == doctest::Approx(1.0).epsilon(1e-14));
     if (q >= 0 && q <= 12 && lower > 0) {
-      CHECK(dist::qhyper(lower, N, m, k, true, false) == q);
-      CHECK(dist::qhyper(std::log(lower), N, m, k, true, true) == q);
+      CHECK(dist::qhyper(lower, m, (N) - (m), k, true, false) == q);
+      CHECK(dist::qhyper(std::log(lower), m, (N) - (m), k, true, true) == q);
     }
   }
-  CHECK(dist::qhyper(0, N, m, k, true, false) == 0);
-  CHECK(dist::qhyper(1, N, m, k, true, false) == 12);
-  CHECK(dist::qhyper(0, 40, 35, 12, true, false) == 7);
-  CHECK(dist::qhyper(1, 1e15, 1, 1, true, false) == 1);
-  CHECK(dist::qhyper(0, 1e15, 1, 1, false, false) == 1);
-  CHECK(std::isnan(dist::dhyper(1, 10, 11, 3, false)));
-  CHECK(std::isnan(dist::phyper(1, 10, 5, 11, true, false)));
-  CHECK(std::isnan(dist::qhyper(1.5, 10, 5, 3, true, false)));
-  CHECK(dist::dhyper(2.5, 10, 5, 3, false) == 0);
+  CHECK(dist::qhyper(0, m, (N) - (m), k, true, false) == 0);
+  CHECK(dist::qhyper(1, m, (N) - (m), k, true, false) == 12);
+  CHECK(dist::qhyper(0, 35, (40) - (35), 12, true, false) == 7);
+  CHECK(dist::qhyper(1, 1, (1e15) - (1), 1, true, false) == 1);
+  CHECK(dist::qhyper(0, 1, (1e15) - (1), 1, false, false) == 1);
+  CHECK(std::isnan(dist::dhyper(1, 11, (10) - (11), 3, false)));
+  CHECK(std::isnan(dist::phyper(1, 5, (10) - (5), 11, true, false)));
+  CHECK(std::isnan(dist::qhyper(1.5, 5, (10) - (5), 3, true, false)));
+  CHECK(dist::dhyper(2.5, 5, (10) - (5), 3, false) == 0);
   dist::StdRng<> rng(7);
   double total = 0;
   for (int i = 0; i < 4000; ++i) {
-    const double v = dist::rhyper(rng, N, m, k);
+    const double v = dist::rhyper(rng, m, (N) - (m), k);
     CHECK(v >= 0);
     CHECK(v <= 12);
     total += v;
@@ -351,8 +351,8 @@ TEST_CASE("hyper dpqr: CDF tails, quantile inversion, sampler support") {
 // Independent high-precision oracle; see quality/truth.py.
 TEST_CASE("hyper: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("hyper",
-      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhyper(x, (p[0]+p[1]), p[0], p[2], log); },
-      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phyper(x, (p[0]+p[1]), p[0], p[2], lower, log); },
-      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhyper(x, (p[0]+p[1]), p[0], p[2], lower, log); },
-      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhyper(rng, (p[0]+p[1]), p[0], p[2]); });
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhyper(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phyper(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhyper(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhyper(rng, p[0], p[1], p[2]); });
 }

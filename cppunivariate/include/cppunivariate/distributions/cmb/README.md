@@ -20,6 +20,15 @@ params:
   simulate: 1.5
   kind: regular
 r:
+  export:
+    params:
+      size: Known number of trials.
+      prob: Canonical probability coordinate; generally not the mean divided by size.
+      nu: Real dispersion coordinate.
+    details: Support is 0 to size. size is a nonnegative integer at most 1e7; prob lies between
+      zero and one (inclusive), and nu is any finite real number. The member nu = 1 is binomial.
+      Normalization enumerates the finite support in log scale. Tables are shared by repeated
+      parameter tuples within each call. Tails are summed directly. Random draws use inversion.
   density: dcmb
   sampler: rcmb
   control:

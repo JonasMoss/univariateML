@@ -16,12 +16,12 @@ TEST_CASE("tbinom: unique mean solve and support errors") {
 #include "cppunivariate/distributions/tbinom/dpqr.hpp"
 TEST_CASE("tbinom: density normalization and log-tail quantiles") {
   double total=0;
-  for(int x=0;x<=200;++x)total+=cppunivariate::distributions::dtbinom(x,12,.4,0,10);
+  for(int x=0;x<=200;++x)total+=cppunivariate::distributions::dtbinom(x, .4, 0, 10, 12);
   CHECK(total==doctest::Approx(1).epsilon(1e-12));
   for(double lp : {-1.,-10.,-100.}) {
-    const double q=cppunivariate::distributions::qtbinom(lp,12,.4,0,10,false,true);
-    CHECK(cppunivariate::distributions::ptbinom(q,12,.4,0,10,false,true)<=lp);
-    CHECK(cppunivariate::distributions::ptbinom(q-1,12,.4,0,10,false,true)>lp);
+    const double q=cppunivariate::distributions::qtbinom(lp, .4, 0, 10, 12, false, true);
+    CHECK(cppunivariate::distributions::ptbinom(q, .4, 0, 10, 12, false, true)<=lp);
+    CHECK(cppunivariate::distributions::ptbinom(q-1, .4, 0, 10, 12, false, true)>lp);
   }
 }
 
@@ -36,10 +36,10 @@ TEST_CASE("tbinom: golden regression") {
 // Independent high-precision oracle; see quality/truth.py.
 TEST_CASE("tbinom: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("tbinom",
-      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtbinom(x, p[3], p[0], p[1], p[2], log); },
-      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptbinom(x, p[3], p[0], p[1], p[2], lower, log); },
-      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtbinom(x, p[3], p[0], p[1], p[2], lower, log); },
-      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtbinom(rng, p[3], p[0], p[1], p[2]); });
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dtbinom(x, p[0], p[1], p[2], p[3], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::ptbinom(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qtbinom(x, p[0], p[1], p[2], p[3], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rtbinom(rng, p[0], p[1], p[2], p[3]); });
 }
 
 TEST_CASE("tbinom: free bounds and fixed-probability integer tail") {

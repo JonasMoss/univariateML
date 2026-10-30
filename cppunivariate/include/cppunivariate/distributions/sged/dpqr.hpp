@@ -14,11 +14,11 @@ inline double dsged(double x, double mean, double sd, double nu, double xi, bool
   const double ld = (std::log(2.0/(xi+1.0/xi)) + fs::ged_logdensity(z/(z<0.0 ? 1.0/xi : xi), nu)) - std::log(sd) + std::log(sigma);
   return log ? ld : std::exp(ld);
 }
-inline double psged(double x, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
-  if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(x)) return cppunivariate::special::kNaN;
+inline double psged(double q, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
+  if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(q)) return cppunivariate::special::kNaN;
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
-  const double z = (x - mean)/sd*sigma + mu;
+  const double z = (q - mean)/sd*sigma + mu;
   return fs::skew_p(z, xi, lower_tail, log_p, [&](double v) { return pged(v, 0.0, 1.0, nu, true, true); });
 }
 inline double qsged(double p, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {

@@ -48,43 +48,43 @@ inline double dnaka(double x,double shape,double scale,bool log=false) {
   }
   return log ? v : std::exp(v);
 }
-inline double pnaka(double q,double shape,double scale,bool lower=true,bool log=false) {
+inline double pnaka(double q,double shape,double scale,bool lower_tail=true,bool log_p=false) {
   if (!naka_valid(shape,scale) || std::isnan(q)) return special::kNaN;
   double v;
-  if (q<=0) v=lower ? special::kNegInf : 0;
-  else if (std::isinf(q)) v=lower ? 0 : special::kNegInf;
+  if (q<=0) v=lower_tail ? special::kNegInf : 0;
+  else if (std::isinf(q)) v=lower_tail ? 0 : special::kNegInf;
   else {
     const double lx=2*std::log(q)+std::log(shape)-std::log(scale);
     if (lx < -700) {
       const double below=shape*lx-special::lgamma(shape+1);
-      v=lower ? below : std::log(-std::expm1(below));
+      v=lower_tail ? below : std::log(-std::expm1(below));
     }
-    else v=naka_logtail(std::exp(lx),shape,lower);
+    else v=naka_logtail(std::exp(lx),shape,lower_tail);
   }
-  return log ? v : std::exp(v);
+  return log_p ? v : std::exp(v);
 }
-inline double qnaka(double p,double shape,double scale,bool lower=true,bool log=false) {
-  if (!naka_valid(shape,scale) || std::isnan(p) || (log ? p>0 : p<0 || p>1)) return special::kNaN;
-  if (p==(log ? special::kNegInf : 0)) return lower ? 0 : special::kPosInf;
-  if (p==(log ? 0 : 1)) return lower ? special::kPosInf : 0;
-  double lp=log ? p : std::log(p);
-  if (lp>-0.6931471805599453) { lp=std::log(-std::expm1(lp)); lower=!lower; }
+inline double qnaka(double p,double shape,double scale,bool lower_tail=true,bool log_p=false) {
+  if (!naka_valid(shape,scale) || std::isnan(p) || (log_p ? p>0 : p<0 || p>1)) return special::kNaN;
+  if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 0 : special::kPosInf;
+  if (p==(log_p ? 0 : 1)) return lower_tail ? special::kPosInf : 0;
+  double lp=log_p ? p : std::log(p);
+  if (lp>-0.6931471805599453) { lp=std::log(-std::expm1(lp)); lower_tail=!lower_tail; }
   // At tiny unit-gamma quantiles, its power-law leading term is accurate
   // to better than double precision and avoids squared-value underflow.
   const double lg=(lp+special::lgamma(shape+1))/shape;
-  if (lower && lg < -36)
+  if (lower_tail && lg < -36)
     return std::exp(0.5*(lg+std::log(scale)-std::log(shape)));
   if (lp > -700) {
-    const double g=special::qgamma(lp,shape,1,lower,true);
+    const double g=special::qgamma(lp,shape,1,lower_tail,true);
     if (g>0 && std::isfinite(g))
       return std::exp(0.5*(std::log(g)+std::log(scale)-std::log(shape)));
   }
-  // Invert in log amplitude: squared observations may underflow/overflow.
+  // Invert in log_p amplitude: squared observations may underflow/overflow.
   double lo=-745, hi=710;
   for (int i=0;i<100;++i) {
     const double mid=lo+(hi-lo)/2;
-    const double f=pnaka(std::exp(mid),shape,scale,lower,true);
-    if (lower ? f<lp : f>lp) lo=mid; else hi=mid;
+    const double f=pnaka(std::exp(mid),shape,scale,lower_tail,true);
+    if (lower_tail ? f<lp : f>lp) lo=mid; else hi=mid;
   }
   return std::exp(lo+(hi-lo)/2);
 }

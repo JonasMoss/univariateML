@@ -51,30 +51,3 @@ Rcpp::List mlzipf_(const Rcpp::IntegerVector &x,
           Rcpp::_["N"] = res.N, Rcpp::_["s"] = res.shape),
       Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,Rcpp::_["fixed"]=fixed);
 }
-
-#include "dpqr.h"
-#include "cppunivariate/distributions/zipf/dpqr.hpp"
-// [[Rcpp::export]]
-Rcpp::NumericVector dzipf_(Rcpp::NumericVector x,Rcpp::NumericVector N,Rcpp::NumericVector s,bool log=false) {
-  return dist_impl::dpqr_apply({x,N,s},[&](const std::vector<double> &a) {
-    return cppunivariate::distributions::dzipf(a[0],a[1],a[2],log);
-  },true);
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector pzipf_(Rcpp::NumericVector q,Rcpp::NumericVector N,Rcpp::NumericVector s,bool lower_tail=true,bool log_p=false) {
-  return dist_impl::dpqr_apply({q,N,s},[&](const std::vector<double> &a) {
-    return cppunivariate::distributions::pzipf(a[0],a[1],a[2],lower_tail,log_p);
-  });
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector qzipf_(Rcpp::NumericVector p,Rcpp::NumericVector N,Rcpp::NumericVector s,bool lower_tail=true,bool log_p=false) {
-  return dist_impl::dpqr_apply({p,N,s},[&](const std::vector<double> &a) {
-    return cppunivariate::distributions::qzipf(a[0],a[1],a[2],lower_tail,log_p);
-  });
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector rzipf_(int n,Rcpp::NumericVector N,Rcpp::NumericVector s) {
-  return dist_impl::dpqr_apply({Rcpp::NumericVector(n),N,s},[&](const std::vector<double> &a) {
-    return cppunivariate::distributions::qzipf(R::unif_rand(),a[1],a[2]);
-  });
-}

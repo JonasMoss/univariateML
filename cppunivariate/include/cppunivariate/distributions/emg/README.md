@@ -19,6 +19,14 @@ params:
   simulate: 1
   kind: regular
 r:
+  export:
+    title: Exponentially modified Gaussian distribution
+    params:
+      mu: Normal component mean.
+      sigma: Positive normal component standard deviation.
+      lambda: Positive exponential rate.
+    details: The distribution is a normal plus an independent exponential. Quantiles use safeguarded
+      Newton and bisection. Random draws add independent normal and exponential draws.
   density: demg
   sampler: remg
   control:

@@ -14,6 +14,17 @@ params:
   simulate: 1
   kind: regular
 r:
+  export:
+    title: Folded normal distribution
+    defaults:
+      mu: 0
+      sigma: 1
+    params:
+      mu: Nonnegative finite parent normal location.
+      sigma: Positive finite parent normal scale.
+    details: The distribution is the absolute value of a normal variable with nonnegative location
+      mu and positive scale sigma. The sign of the parent location is unidentifiable. mu = 0 is
+      half-normal. Quantiles use safeguarded bisection. Random draws are abs(rnorm(n, mu, sigma)).
   density: dfoldnorm
   sampler: rfoldnorm
   control:

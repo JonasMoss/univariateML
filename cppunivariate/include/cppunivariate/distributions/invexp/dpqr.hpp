@@ -7,8 +7,8 @@ namespace cppunivariate { namespace distributions {
 inline double dinvexp(double x, double rate, bool log) {
   return dinvweibull(x,1.0,rate,log);
 }
-inline double pinvexp(double x, double rate, bool lower_tail, bool log_p) {
-  return pinvweibull(x,1.0,rate,lower_tail,log_p);
+inline double pinvexp(double q, double rate, bool lower_tail, bool log_p) {
+  return pinvweibull(q,1.0,rate,lower_tail,log_p);
 }
 inline double qinvexp(double p, double rate, bool lower_tail, bool log_p) {
   return qinvweibull(p,1.0,rate,lower_tail,log_p);

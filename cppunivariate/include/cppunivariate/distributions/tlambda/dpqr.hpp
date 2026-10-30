@@ -97,16 +97,16 @@ inline double logstandard(double x,double mu,double sigma) {
 }
 }
 namespace distributions {
-inline double qtlambda(double p,double mu=0,double sigma=1,double lambda=0,bool lower=true,bool logp=false) {
-  if(!tlambda_detail::valid(mu,sigma,lambda) || std::isnan(p) || (logp ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();
-  double lp=logp?p:std::log(p),lq=logp?tlambda_detail::log1mexp(p):std::log1p(-p);
-  if(!lower) std::swap(lp,lq);
-  if(!logp && p==0.5) return mu;
-  const double h=logp ? (p+std::log(2.0))+2.3190468138462995584e-17 : 0;
-  if((logp && std::abs(h)<1e-8) || (!logp && std::abs(p-0.5)<1e-8)) {
-    const double mass=logp ? std::expm1(h) : 2*(p-0.5);
+inline double qtlambda(double p,double mu=0,double sigma=1,double lambda=0,bool lower_tail=true,bool log_p=false) {
+  if(!tlambda_detail::valid(mu,sigma,lambda) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();
+  double lp=log_p?p:std::log(p),lq=log_p?tlambda_detail::log1mexp(p):std::log1p(-p);
+  if(!lower_tail) std::swap(lp,lq);
+  if(!log_p && p==0.5) return mu;
+  const double h=log_p ? (p+std::log(2.0))+2.3190468138462995584e-17 : 0;
+  if((log_p && std::abs(h)<1e-8) || (!log_p && std::abs(p-0.5)<1e-8)) {
+    const double mass=log_p ? std::expm1(h) : 2*(p-0.5);
     const double offset=std::exp(std::log(sigma)+(1-lambda)*std::log(2.0)+std::log(std::abs(mass)));
-    return mu+((mass>0)==lower?offset:-offset);
+    return mu+((mass>0)==lower_tail?offset:-offset);
   }
   if(lp==lq) return mu;
   const bool left=lp<lq;
@@ -123,13 +123,13 @@ inline double qtlambda(double p,double mu=0,double sigma=1,double lambda=0,bool 
   if(std::isfinite(offset)) return mu+(left?-offset:offset);
   return std::fma(left?-2.0:2.0,std::exp(size-std::log(2.0)),mu);
 }
-inline double ptlambda(double x,double mu=0,double sigma=1,double lambda=0,bool lower=true,bool logp=false) {
-  if(!tlambda_detail::valid(mu,sigma,lambda) || std::isnan(x)) return std::numeric_limits<double>::quiet_NaN();
-  const double z=(x-mu)/sigma;
-  const double gap=lambda>0?tlambda_detail::slack(x,mu,sigma,lambda):1;
-  const double lu=std::isinf(x) || gap<=0 ? -INFINITY : tlambda_detail::logsmall_log(tlambda_detail::logstandard(x,mu,sigma),lambda,lambda>0?std::log(gap)-std::log(sigma):std::numeric_limits<double>::quiet_NaN());
-  const bool small=(z<=0)==lower;
-  if(logp) return small ? lu : std::log1p(-std::exp(lu));
+inline double ptlambda(double q,double mu=0,double sigma=1,double lambda=0,bool lower_tail=true,bool log_p=false) {
+  if(!tlambda_detail::valid(mu,sigma,lambda) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
+  const double z=(q-mu)/sigma;
+  const double gap=lambda>0?tlambda_detail::slack(q,mu,sigma,lambda):1;
+  const double lu=std::isinf(q) || gap<=0 ? -INFINITY : tlambda_detail::logsmall_log(tlambda_detail::logstandard(q,mu,sigma),lambda,lambda>0?std::log(gap)-std::log(sigma):std::numeric_limits<double>::quiet_NaN());
+  const bool small=(z<=0)==lower_tail;
+  if(log_p) return small ? lu : std::log1p(-std::exp(lu));
   return small ? std::exp(lu) : -std::expm1(lu);
 }
 inline double dtlambda(double x,double mu=0,double sigma=1,double lambda=0,bool log=false) {

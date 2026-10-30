@@ -19,6 +19,7 @@ goldens), by the validation harness, and later by the Python shell.
 | `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` or coefficient expressions (see below) |
 | `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `univariateML/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
 | `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` for package-defined functions; `p`/`q` are found by swapping the first letter |
+| `r.export` | no | absent or `false` for internal functions; a mapping (including `{}`) exports generated d/p/q/r and documents `<id>-distribution`. Keys: `title`, `defaults`, `params`, `details`; see below. Boolean `true` is rejected. |
 | `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma, a: mu}` for the translated half-normal as `extraDistr::dtnorm`; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
 | `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
@@ -153,3 +154,50 @@ and backward-compatible object attributes, and `expressions`, `endpoint_closed`
 and `endpoint_log_density` for evaluation at fitted coefficients. Internal
 `univariateML_support(fit)` resolves the fitted support without changing the
 construction of fit objects.
+
+## Generated d/p/q/r
+
+Assembly runs `univariateML/scripts/codegen_dpqr.R` before Rcpp attribute
+compilation. It writes R wrappers and Rcpp exports into `univariateML/package/`
+for every non-`stats::` reference, using README coefficient names and order.
+It does not change the selected reference. The resolver still applies `r.args`
+and `r.shift` when invoking a selected reference. Random generators use R's
+RNG through `src/rng_r.h`; an EMG R-host specialization in `src/rng_emg.h`
+preserves its established normal/exponential primitive stream. Sample size
+follows base R conventions. For a family
+with a coefficient named `n` (currently nhyper), sample size is named `nn`
+to avoid duplicate R formals.
+
+### Export metadata
+
+Family-specific export metadata lives in that family's README, for example:
+
+```yaml
+r:
+  export:
+    title: Generalized error distribution
+    defaults: {mean: 0, sd: 1, nu: 2}
+    params: {nu: "Finite positive shape; nu = 2 is the normal."}
+    details: Uses the fGarch mean and standard deviation parameterisation.
+```
+
+All four keys are optional. `title` is nonempty scalar text on one line,
+with default `<name> distribution`. `defaults` maps coefficient names to
+nonmissing real numeric scalar R-facing defaults (not simulation or fitting
+defaults). Infinite defaults are allowed (e.g. truncation bounds); NA/NaN,
+booleans, expressions and character values are rejected.
+Coefficients omitted from it are required by d/p/q/r. `params` maps coefficient
+names to nonempty scalar roxygen parameter descriptions; omitted descriptions
+are derived from the coefficient's role and domain. `details` is nonempty
+scalar family-specific roxygen text; paragraphs and line breaks are allowed.
+Unknown keys, malformed mappings, non-coefficient names in `defaults`/`params`,
+and invalid value types stop the shared P1 loader with the family id and key.
+Use `{}` to export with all defaults derived; use absence or `false` to keep
+functions internal. Explicit null and boolean `true` are invalid.
+
+Codegen supplies shared description, argument/return text, recycling,
+zero-length handling, NA/NaN propagation, warnings, logarithmic evaluation,
+R's RNG and reproducibility text once. It chooses continuous or discrete
+p/q conventions from `support.type`. Keep only family-specific constraints,
+parameter meanings, special members and algorithm notes in `r.export`.
+Generated wrappers do not accept `...`; misspelt arguments are errors.

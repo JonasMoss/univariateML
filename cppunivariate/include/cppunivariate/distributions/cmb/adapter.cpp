@@ -1,8 +1,6 @@
+#include <Rcpp.h>
 #include "as_span.h"
-#include "dpqr.h"
 #include "cppunivariate/distributions/cmb/mle.hpp"
-#include <map>
-#include <tuple>
 #include <limits>
 // [[Rcpp::export]]
 Rcpp::List mlcmb_(const Rcpp::IntegerVector &x,Rcpp::Nullable<double> size,
@@ -41,37 +39,4 @@ Rcpp::List mlcmb_(const Rcpp::IntegerVector &x,Rcpp::Nullable<double> size,
   return Rcpp::List::create(
     Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["size"]=trials,Rcpp::_["prob"]=res.prob,Rcpp::_["nu"]=res.nu),
     Rcpp::_["logLik"]=res.logLik,Rcpp::_["iterations"]=res.iterations,Rcpp::_["fixed"]=fixed);
-}
-
-namespace {
-Rcpp::NumericVector cmb_evaluate(const std::vector<Rcpp::NumericVector> &args,
-                               char op,bool lower=true,bool log=false) {
-  std::map<std::tuple<double,double,double>,cppunivariate::cmb_detail::Table> cache;
-  return dist_impl::dpqr_apply(args,[&](const std::vector<double> &a) {
-    if (!cppunivariate::cmb_detail::valid(a[1],a[2],a[3])) return R_NaN;
-    const auto key=std::make_tuple(a[1],a[2],a[3]);
-    auto found=cache.find(key);
-    if (found==cache.end()) found=cache.emplace(key,cppunivariate::cmb_detail::table(static_cast<int>(a[1]),a[2],a[3])).first;
-    const auto &tab=found->second;
-    if (op=='d') return tab.density(a[0],log);
-    if (op=='p') return tab.cdf(a[0],lower,log);
-    return tab.quantile(op=='r' ? R::unif_rand() : a[0],lower,log);
-  },op=='d');
-}
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector dcmb_(Rcpp::NumericVector x,Rcpp::NumericVector size,Rcpp::NumericVector prob,Rcpp::NumericVector nu,bool log=false) {
-  return cmb_evaluate({x,size,prob,nu},'d',true,log);
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector pcmb_(Rcpp::NumericVector q,Rcpp::NumericVector size,Rcpp::NumericVector prob,Rcpp::NumericVector nu,bool lower_tail=true,bool log_p=false) {
-  return cmb_evaluate({q,size,prob,nu},'p',lower_tail,log_p);
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector qcmb_(Rcpp::NumericVector p,Rcpp::NumericVector size,Rcpp::NumericVector prob,Rcpp::NumericVector nu,bool lower_tail=true,bool log_p=false) {
-  return cmb_evaluate({p,size,prob,nu},'q',lower_tail,log_p);
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector rcmb_(int n,Rcpp::NumericVector size,Rcpp::NumericVector prob,Rcpp::NumericVector nu) {
-  return cmb_evaluate({Rcpp::NumericVector(n),size,prob,nu},'r');
 }

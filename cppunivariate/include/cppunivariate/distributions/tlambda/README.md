@@ -32,6 +32,18 @@ params:
       reason: lambda <= 1 selects the principal branch; no exemption is proved.
   kind: regular
 r:
+  export:
+    defaults:
+      mu: 0
+      sigma: 1
+      lambda: 0
+    params:
+      mu: Finite location.
+      sigma: Positive finite scale.
+      lambda: Finite shape (evaluation allows all real shapes).
+    details: The quantile function is Q(u) = mu + sigma * (u^lambda - (1-u)^lambda) / lambda,
+      with the analytic logistic limit at lambda = 0. Inversion solves for the smaller tail in
+      log probability using safeguarded Newton iterations. Random generation uses uniform draws.
   density: dtlambda
   sampler: rtlambda
   control:

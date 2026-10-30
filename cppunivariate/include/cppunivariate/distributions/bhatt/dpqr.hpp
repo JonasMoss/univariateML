@@ -101,10 +101,10 @@ inline double dbhatt(double x,double mu=0,double sigma=1,double a=1,bool log=fal
   }
   return log?static_cast<double>(l):static_cast<double>(std::exp(l));
 }
-inline double pbhatt(double x,double mu=0,double sigma=1,double a=1,bool lower=true,bool log=false) {
-  if(!bhatt_detail::valid(mu,sigma,a)||std::isnan(x))return special::kNaN;
-  if(!std::isfinite(x)){const bool one=lower?x>0:x<0;return log?(one?0:special::kNegInf):(one?1:0);}
-  const double d=std::abs(x-mu),z=std::abs(special::scaled_difference(x,mu,sigma)),b=a/sigma;
+inline double pbhatt(double q,double mu=0,double sigma=1,double a=1,bool lower_tail=true,bool log_p=false) {
+  if(!bhatt_detail::valid(mu,sigma,a)||std::isnan(q))return special::kNaN;
+  if(!std::isfinite(q)){const bool one=lower_tail?q>0:q<0;return log_p?(one?0:special::kNegInf):(one?1:0);}
+  const double d=std::abs(q-mu),z=std::abs(special::scaled_difference(q,mu,sigma)),b=a/sigma;
   double lp;
   if (d<a && std::log(a-d)-std::log(sigma)>std::log(40.0)) lp=std::log(a-d)-std::log(2.0)-std::log(a);
   else if(b*(1+z)<1e-8)lp=bhatt_detail::logQ(z);
@@ -113,13 +113,13 @@ inline double pbhatt(double x,double mu=0,double sigma=1,double a=1,bool lower=t
     const double lo=std::isfinite(z) && std::isfinite(b) ? z-b : (d-a)/sigma,hi=z+b;
     lp=lo==hi?bhatt_detail::logQ(z):bhatt_detail::logdiff(bhatt_detail::logH(lo),bhatt_detail::logH(hi))-(std::log(2.0)+std::log(a)-std::log(sigma));
   }
-  const bool small=lower?x<=mu:x>=mu;
+  const bool small=lower_tail?q<=mu:q>=mu;
   const double ans=static_cast<double>(small?lp:special::log1mexp(lp));
-  return log?ans:std::exp(ans);
+  return log_p?ans:std::exp(ans);
 }
-inline double qbhatt(double p,double mu=0,double sigma=1,double a=1,bool lower=true,bool log=false) {
-  if(!bhatt_detail::valid(mu,sigma,a)||std::isnan(p)||(log?p>0:p<0||p>1))return special::kNaN;
-  const double offset=special::probability_offset(p,log)*(lower?1.0:-1.0);
+inline double qbhatt(double p,double mu=0,double sigma=1,double a=1,bool lower_tail=true,bool log_p=false) {
+  if(!bhatt_detail::valid(mu,sigma,a)||std::isnan(p)||(log_p?p>0:p<0||p>1))return special::kNaN;
+  const double offset=special::probability_offset(p,log_p)*(lower_tail?1.0:-1.0);
   if (std::abs(offset)<1e-4) {
     const double b=a/sigma;
     if (b>40) return std::fma(2*offset,a,mu);
@@ -127,18 +127,18 @@ inline double qbhatt(double p,double mu=0,double sigma=1,double a=1,bool lower=t
     const double curvature=-std::exp(-0.5*b*b-0.91893853320467274178)/f;
     return std::fma(sigma,y*(1-curvature*y*y/6),mu);
   }
-  double lp=log?p:std::log(p);
-  if(lp==special::kNegInf)return lower?special::kNegInf:special::kPosInf;
-  if(lp==0)return lower?special::kPosInf:special::kNegInf;
-  if(lp>-.6931471805599453){lp=std::log(-std::expm1(lp));lower=!lower;}
-  const double edge=lower?-std::numeric_limits<double>::max():std::numeric_limits<double>::max();
-  if(pbhatt(edge,mu,sigma,a,lower,true)>lp)return lower?special::kNegInf:special::kPosInf;
+  double lp=log_p?p:std::log(p);
+  if(lp==special::kNegInf)return lower_tail?special::kNegInf:special::kPosInf;
+  if(lp==0)return lower_tail?special::kPosInf:special::kNegInf;
+  if(lp>-.6931471805599453){lp=std::log(-std::expm1(lp));lower_tail=!lower_tail;}
+  const double edge=lower_tail?-std::numeric_limits<double>::max():std::numeric_limits<double>::max();
+  if(pbhatt(edge,mu,sigma,a,lower_tail,true)>lp)return lower_tail?special::kNegInf:special::kPosInf;
   double lo=-1,hi=1;const double scale=std::max(sigma,a);
   auto coordinate=[&](double z){return special::expm1_affine(z,mu,scale);};
-  auto at=[&](double z){return pbhatt(coordinate(z),mu,sigma,a,lower,true);};
-  for(int k=0;k<1100&&(lower?at(lo)>lp:at(lo)<lp);++k){lo*=2;if(!std::isfinite(lo))return special::kNegInf;}
-  for(int k=0;k<1100&&(lower?at(hi)<lp:at(hi)>lp);++k){hi*=2;if(!std::isfinite(hi))return special::kPosInf;}
-  for(int k=0;k<1100;++k){const double m=lo/2+hi/2;if(lower?at(m)<lp:at(m)>lp)lo=m;else hi=m;if(hi-lo<4e-14*std::max(1.0,std::abs(m)))break;}
+  auto at=[&](double z){return pbhatt(coordinate(z),mu,sigma,a,lower_tail,true);};
+  for(int k=0;k<1100&&(lower_tail?at(lo)>lp:at(lo)<lp);++k){lo*=2;if(!std::isfinite(lo))return special::kNegInf;}
+  for(int k=0;k<1100&&(lower_tail?at(hi)<lp:at(hi)>lp);++k){hi*=2;if(!std::isfinite(hi))return special::kPosInf;}
+  for(int k=0;k<1100;++k){const double m=lo/2+hi/2;if(lower_tail?at(m)<lp:at(m)>lp)lo=m;else hi=m;if(hi-lo<4e-14*std::max(1.0,std::abs(m)))break;}
   return coordinate(lo/2+hi/2);
 }
 template <typename Rng> inline double rbhatt(Rng& rng,double mu=0,double sigma=1,double a=1){if(!bhatt_detail::valid(mu,sigma,a))return special::kNaN;return mu+sigma*rng.rnorm()+rng.runif(-a,a);}

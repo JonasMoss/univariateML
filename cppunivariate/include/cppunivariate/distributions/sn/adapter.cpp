@@ -1,5 +1,5 @@
+#include <Rcpp.h>
 #include "as_span.h"
-#include "dpqr.h"
 #include "cppunivariate/distributions/sn/mle.hpp"
 // [[Rcpp::export]]
 Rcpp::List mlsn_(const Rcpp::NumericVector& x,
@@ -28,33 +28,4 @@ Rcpp::List mlsn_(const Rcpp::NumericVector& x,
   return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(
     Rcpp::_["xi"]=fit.xi,Rcpp::_["omega"]=fit.omega,Rcpp::_["alpha"]=fit.alpha),
     Rcpp::_["logLik"]=fit.logLik,Rcpp::_["iterations"]=fit.iterations,Rcpp::_["fixed"]=fixed);
-}
-namespace {
-Rcpp::NumericVector sn_evaluate(const std::vector<Rcpp::NumericVector>& args,char op,bool lower=true,bool log=false) {
-  return dist_impl::dpqr_apply(args,[&](const std::vector<double>& a) {
-    if(op=='d') return cppunivariate::distributions::dsn(a[0],a[1],a[2],a[3],log);
-    if(op=='p') return cppunivariate::distributions::psn(a[0],a[1],a[2],a[3],lower,log);
-    if(op=='q') return cppunivariate::distributions::qsn(a[0],a[1],a[2],a[3],lower,log);
-    if(!cppunivariate::sn_detail::valid(a[1],a[2],a[3])) return R_NaN;
-    const double den=std::hypot(1.0,a[3]);
-    const double u=R::norm_rand(),v=R::norm_rand();
-    return a[1]+a[2]*((a[3]/den)*std::abs(u)+v/den);
-  });
-}
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector dsn_(Rcpp::NumericVector x,Rcpp::NumericVector xi,Rcpp::NumericVector omega,Rcpp::NumericVector alpha,bool log=false) {
-  return sn_evaluate({x,xi,omega,alpha},'d',true,log);
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector psn_(Rcpp::NumericVector q,Rcpp::NumericVector xi,Rcpp::NumericVector omega,Rcpp::NumericVector alpha,bool lower_tail=true,bool log_p=false) {
-  return sn_evaluate({q,xi,omega,alpha},'p',lower_tail,log_p);
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector qsn_(Rcpp::NumericVector p,Rcpp::NumericVector xi,Rcpp::NumericVector omega,Rcpp::NumericVector alpha,bool lower_tail=true,bool log_p=false) {
-  return sn_evaluate({p,xi,omega,alpha},'q',lower_tail,log_p);
-}
-// [[Rcpp::export]]
-Rcpp::NumericVector rsn_(int n,Rcpp::NumericVector xi,Rcpp::NumericVector omega,Rcpp::NumericVector alpha) {
-  return sn_evaluate({Rcpp::NumericVector(n),xi,omega,alpha},'r');
 }

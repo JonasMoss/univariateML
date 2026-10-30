@@ -100,15 +100,15 @@ inline double dcmb(double x,double size,double prob,double nu,bool log=false) {
   if (!cmb_detail::valid(size,prob,nu) || std::isnan(x)) return special::kNaN;
   return cmb_detail::table(static_cast<int>(size),prob,nu).density(x,log);
 }
-inline double pcmb(double q,double size,double prob,double nu,bool lower=true,bool log=false) {
+inline double pcmb(double q,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
   if (!cmb_detail::valid(size,prob,nu) || std::isnan(q)) return special::kNaN;
-  return cmb_detail::table(static_cast<int>(size),prob,nu).cdf(q,lower,log);
+  return cmb_detail::table(static_cast<int>(size),prob,nu).cdf(q,lower_tail,log_p);
 }
-inline double qcmb(double p,double size,double prob,double nu,bool lower=true,bool log=false) {
+inline double qcmb(double p,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
   if (!cmb_detail::valid(size,prob,nu)) return special::kNaN;
-  return cmb_detail::table(static_cast<int>(size),prob,nu).quantile(p,lower,log);
+  return cmb_detail::table(static_cast<int>(size),prob,nu).quantile(p,lower_tail,log_p);
 }
 template <typename Rng>
-inline double rcmb(Rng &rng,int size,double prob,double nu) { return qcmb(rng.runif(0,1),size,prob,nu); }
+inline double rcmb(Rng &rng,double size,double prob,double nu) { return qcmb(rng.runif(0,1),size,prob,nu); }
 }
 }

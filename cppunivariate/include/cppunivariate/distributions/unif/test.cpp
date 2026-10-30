@@ -26,7 +26,7 @@ TEST_CASE("unif: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dunif(x, p[0], p[1], log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::punif(x, p[0], p[1], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qunif(x, p[0], p[1], lower, log); },
-      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::runif_(rng, p[0], p[1]); });
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::runif(rng, p[0], p[1]); });
 }
 
 // mpmath reproduction: import mpmath as m; m.mp.dps=100

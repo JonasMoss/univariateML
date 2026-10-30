@@ -26,6 +26,17 @@ params:
         locscale).
   kind: regular
 r:
+  export:
+    title: GED distribution
+    defaults:
+      mean: 0
+      sd: 1
+      nu: 2
+    params:
+      mean: Finite mean.
+      sd: Finite positive standard deviation.
+      nu: Finite shape, positive (including shapes below one).
+    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dged
   sampler: rged
   control:
