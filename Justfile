@@ -85,11 +85,19 @@ readme-table:
 	  Rscript scripts/readme_table.R
 
 # Build & run the standalone C++ test harness from univariateML-cpp/.
-# This path does not require R.
+# R/BH is only a monorepo convenience when system Boost is unavailable.
 cpp-test:
-	cmake -S univariateML-cpp -B univariateML-cpp/build $(command -v ccache >/dev/null && echo -DCMAKE_CXX_COMPILER_LAUNCHER=ccache)
-	cmake --build univariateML-cpp/build
-	cd univariateML-cpp/build && ctest --output-on-failure
+    #!/usr/bin/env bash
+    set -euo pipefail
+    launcher=()
+    if command -v ccache >/dev/null; then launcher=(-DCMAKE_CXX_COMPILER_LAUNCHER=ccache); fi
+    if ! cmake -S univariateML-cpp -B univariateML-cpp/build "${launcher[@]}"; then
+        boost=$(Rscript -e 'cat(system.file("include", package="BH"))')
+        test -f "$boost/boost/version.hpp"
+        cmake -S univariateML-cpp -B univariateML-cpp/build "${launcher[@]}" -DBoost_INCLUDE_DIR="$boost"
+    fi
+    cmake --build univariateML-cpp/build -j "${CMAKE_BUILD_PARALLEL_LEVEL:-1}"
+    ctest --test-dir univariateML-cpp/build --output-on-failure
 
 # Check real fitter goldens against symbolic README densities.
 quality *ids:

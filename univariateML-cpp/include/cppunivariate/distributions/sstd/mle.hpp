@@ -669,7 +669,19 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
   const double inf=std::numeric_limits<double>::infinity();
   const bool hm=!std::isnan(fixed_mean), hs=!std::isnan(fixed_sd);
   const bool hn=!std::isnan(fixed_nu), hx=!std::isnan(fixed_xi);
-  if(!hm && !hs && !hn && !hx) return sstd_mle_impl(x,tol,maxit,false);
+  if(!hm && !hs && !hn && !hx) {
+    auto r=sstd_mle_impl(x,tol,maxit,false);
+    if(r.status==SstdStatus::BfgsFailure) {
+      SstdCost cost{x};
+      const double phi[4]={r.mu,std::log(r.sigma),std::log(r.nu-2),std::log(r.xi)};
+      double score[4];
+      finite_diff_gradient(cost,phi,score);
+      double norm=0;
+      for(double v:score) norm+=v*v;
+      if(std::sqrt(norm)<1e-3) r.status=SstdStatus::Ok;
+    }
+    return r;
+  }
   SstdResult out{nan,nan,nan,nan,nan,0,SstdStatus::InvalidStart};
   if((hm && !std::isfinite(fixed_mean)) || (hs && !(fixed_sd>0 && std::isfinite(fixed_sd))) ||
      (hn && !(fixed_nu>2 && std::isfinite(fixed_nu))) ||

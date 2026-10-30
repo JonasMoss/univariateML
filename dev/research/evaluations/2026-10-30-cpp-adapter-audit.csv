@@ -1,0 +1,99 @@
+family,statistical behaviour found,moved or planned
+bbinom,unsupported free-size subsets rejected,Plan: certify integer-tail and face comparisons before exposing these fits (TASK-113)
+beta,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+betapr,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+bhatt,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+binom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+bnbinom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+burr,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+cauchy,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+cmb,unsupported free-size subsets; size=1 unidentified nu label,Plan: certify limit-face stopping first (TASK-114); supported size searches already core
+cmp,eta to lambda result coordinate conversion,Result marshalling only; core estimates eta
+dgamma,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+dlaplace,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+dnorm,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+dunif,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+dweibull,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+emg,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+exp,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+fatigue,held threshold shift and shifted support check,Moved to fatigue_mle_shifted
+foldnorm,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+fpareto,held support validation,Argument validation; transform and fit already core
+frechet,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+gamma,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+gb2,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+ged,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+genbeta,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+geom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+gev,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+gompertz,fully free constant-data rejection; all-zero diagnostic,Moved constant rejection; conditional core already rejects all-zero free a
+gpd,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+gumbel,constant-data versus precision-failure diagnostic,Error wording only; no fit accepted or changed
+hcauchy,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+hnorm,duplicate held-scale likelihood,Removed duplicate; existing core calculation returned
+ht,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+huber,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+hyper,unsupported multiple-free design checks,Plan: certify joint design and limit comparisons; supported finite-grid fits already core
+invburr,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+invexp,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+invgamma,constant-data versus precision-failure diagnostic,Error wording only; no fit accepted or changed
+invgauss,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+invparalogis,fully free constant-data unboundedness rejection,Inherited core delegate Unbounded
+invpareto,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+invtrgamma,lognormal likelihood gap only in error message,Diagnostic only; escape selection already core
+invweibull,constant-data versus precision-failure diagnostic,Error wording only; no fit accepted or changed
+kumar,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+laplace,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+lgamma,log transform; gamma delegation; reciprocal held rate; Jacobian; failure classification,Moved to lgamma_mle
+lgser,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+llogis,constant-data versus precision-failure diagnostic,Error wording only; no fit accepted or changed
+lnorm,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+logis,held-location constant-data rejection,Core already rejects zero radius; R retains specific diagnostic
+logitnorm,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+lomax,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+lst,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+naka,constant-data versus precision-failure diagnostic,Error wording only; no fit accepted or changed
+nbinom,held size probability rounding rejection,Moved to core PrecisionFailure
+nhyper,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+norm,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+nsbeta,held support validation,Argument validation; transform and fit already core
+paralogis,fully free constant-data unboundedness rejection,Moved to core Unbounded
+pareto,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+pareto2,held support validation,Argument validation; transform and fit already core
+pareto3,constant-data versus precision-failure diagnostic,Error wording only; no fit accepted or changed
+pareto4,held support validation,Argument validation; transform and fit already core
+pig,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+pois,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+power,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+rayleigh,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+sged,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+sgomp,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+skellam,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+slash,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+sn,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+snorm,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+sstd,unconditional optimizer failure score rescue,Moved unchanged gate to sstd_mle
+std,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+tbinom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+tlambda,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+tnorm,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+tpois,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+trgamma,lognormal likelihood gap only in error message,Diagnostic only; escape selection already core
+triang,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+unif,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+weibull,constant-data versus precision-failure diagnostic,Error wording only; no fit accepted or changed
+yulesimon,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+zeta,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+zib,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+zinb,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+zip,all-zero warning,Diagnostic only; fitting decisions already core
+zipf,all-zero warning,Diagnostic only; fitting decisions already core
+zmbinom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+zmgeom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+zmlogarithmic,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+zmnbinom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+zmpois,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+ztbinom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+ztgeom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+ztnbinom,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained
+ztpois,No additional statistical computation; holds and statuses marshalled,Fitting already core; R types and diagnostics retained

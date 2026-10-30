@@ -52,3 +52,7 @@ Data with a sharp maximum instead of a minimum come from the reflected model; fi
 Holding positive finite `sigma` removes scale collapse, including for singleton
 and constant samples. The free endpoint is sample minimum exactly; a held endpoint
 may equal the observations. Both held coefficients are returned unchanged.
+
+### Adapter independence (2026-10-30)
+
+The adapter now returns the core held-scale log likelihood directly. The removed duplicate used the identical sum order and formula; support and finite-likelihood checks already live in `hnorm_mle`.

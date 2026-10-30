@@ -67,17 +67,8 @@ Rcpp::List mlsstd_(const Rcpp::NumericVector &x,
       !std::isfinite(res.nu) || !std::isfinite(res.xi)) {
     Rcpp::stop("Skew Student-t MLE failed to converge (check inputs)");
   }
-  if(res.status==cppunivariate::SstdStatus::BfgsFailure) {
-    if(mean.isNotNull() || sd.isNotNull() || nu.isNotNull() || xi.isNotNull())
-      Rcpp::stop("Conditional skew Student-t optimizer failed its free-coordinate score check; increase `iterlim`.");
-    cppunivariate::SstdCost cost{dist_impl::as_span(x)};
-    const double phi[4]={res.mu,std::log(res.sigma),std::log(res.nu-2),std::log(res.xi)};
-    double score[4];
-    cppunivariate::finite_diff_gradient(cost,phi,score);
-    double norm=0;
-    for(double v:score) norm+=v*v;
-    if(!(std::sqrt(norm)<1e-3)) Rcpp::stop("Skew fit optimizer failed its score check; increase `iterlim`.");
-  }
+  if(res.status==cppunivariate::SstdStatus::BfgsFailure)
+    Rcpp::stop("Skew fit optimizer failed its free-coordinate score check; increase `iterlim`.");
   Rcpp::CharacterVector fixed;
   if(mean.isNotNull()) fixed.push_back("mean");
   if(sd.isNotNull()) fixed.push_back("sd");

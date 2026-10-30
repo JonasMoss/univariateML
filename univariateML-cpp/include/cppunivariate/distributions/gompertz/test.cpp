@@ -92,3 +92,8 @@ TEST_CASE("gompertz: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::gompertz_mle(x,1e-8,1).status==cppunivariate::GompertzStatus::IterationFailure);
 }
+
+TEST_CASE("gompertz core preserves adapter constant-data rejection") {
+  const std::vector<double> x{2,2,2};
+  CHECK(cppunivariate::gompertz_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::GompertzStatus::Unbounded);
+}

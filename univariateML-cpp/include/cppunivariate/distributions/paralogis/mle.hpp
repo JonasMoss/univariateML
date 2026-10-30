@@ -36,7 +36,7 @@
 
 namespace cppunivariate {
 
-enum class ParalogisStatus { Ok = 0, BfgsFailure, InvalidStart };
+enum class ParalogisStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded };
 
 struct ParalogisResult {
   double shape;
@@ -252,6 +252,10 @@ inline ParalogisResult paralogis_mle_impl(
 
 inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
     double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+  if(!x.empty() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
+    const double nan=std::numeric_limits<double>::quiet_NaN();
+    return {nan,nan,nan,0,ParalogisStatus::Unbounded};
+  }
   return paralogis_mle_impl(x, tol, maxit, shape0, false);
 }
 

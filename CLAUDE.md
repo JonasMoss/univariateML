@@ -32,7 +32,7 @@ core.
 - 98 distributions, **one folder each** in
   `univariateML-cpp/include/cppunivariate/distributions/<id>/`: `README.md`
   (front matter + prose), `mle.hpp`, `dpqr.hpp`, `test.cpp`, `golden.json`, `truth.py`, `truth.json`. See "Adding a new distribution" below. `lgamma`
-  has no `mle.hpp`; its adapter fits gamma on `log(x)`.
+  fits gamma on `log(x)` in its core `mle.hpp`, including the Jacobian.
 - Fitter behaviour at the edges (escapes to limit models, boundaries,
   non-existence) is studied in `dev/research/ml-behaviour.tex`, with
   `dev/research/ml-behaviour-sweep.R` (all fitters vs a slow oracle, ~6 s) and two
@@ -301,8 +301,10 @@ it is not a proof for arbitrary samples.
 
 ## Math backend
 
-Boost.Math via the `BH` CRAN package; falls back to system Boost for
-the standalone CMake build. The seam is `univariateML-cpp/include/cppunivariate/special/special.hpp`
+Boost.Math uses plain Boost headers in standalone CMake: explicit
+`Boost_INCLUDE_DIR`, or CONFIG then MODULE discovery (`BOOST_ROOT` supported).
+CMake never invokes R. The monorepo `just cpp-test` recipe alone can resolve
+BH with Rscript as a convenience fallback and passes its plain include path. The seam is `univariateML-cpp/include/cppunivariate/special/special.hpp`
 — estimators never include `<boost/...>` directly. Swapping backend
 (Rmath, Cephes, hand-roll) is a single-file change at that seam,
 followed by a goldens regen + visual diff.

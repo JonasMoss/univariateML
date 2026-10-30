@@ -195,3 +195,20 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit,
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+// Held threshold translation has unit Jacobian. Preserve delegate statuses.
+inline FatigueResult fatigue_mle_shifted(span x, double mu, double tol, int maxit,
+    double alpha=std::numeric_limits<double>::quiet_NaN(),
+    double beta=std::numeric_limits<double>::quiet_NaN()) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  if(!std::isfinite(mu)) return {nan,nan,nan,0,FatigueStatus::InvalidInput};
+  std::vector<double> shifted(x.size());
+  for(std::size_t i=0;i<x.size();++i) {
+    shifted[i]=x[i]-mu;
+    if(!(shifted[i]>0) || !std::isfinite(shifted[i]))
+      return {nan,nan,nan,0,FatigueStatus::InvalidInput};
+  }
+  return fatigue_mle(span{shifted.data(),shifted.size()},tol,maxit,alpha,beta);
+}
+} // namespace cppunivariate

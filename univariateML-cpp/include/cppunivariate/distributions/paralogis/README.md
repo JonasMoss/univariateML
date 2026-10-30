@@ -50,3 +50,7 @@ Supply `scale` to hold it at a positive finite value. With scale fixed,
 there are no nondegenerate limit-model escapes.
 The fixed-scale likelihood tends to minus infinity as shape tends to zero
 or infinity, including for constant data, so a finite maximum exists.
+
+### Adapter independence (2026-10-30)
+
+The fully free constant-sample rejection now lives in `paralogis_mle` as `Unbounded`; the reciprocal delegate preserves this status. This moves the former adapter decision without changing nonconstant fits.

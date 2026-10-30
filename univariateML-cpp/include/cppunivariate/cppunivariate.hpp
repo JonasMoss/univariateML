@@ -123,3 +123,5 @@
 #include "distributions/genbeta/mle.hpp"
 #include "distributions/slash/mle.hpp"
 #include "distributions/bhatt/mle.hpp"
+
+#include "distributions/lgamma/mle.hpp"

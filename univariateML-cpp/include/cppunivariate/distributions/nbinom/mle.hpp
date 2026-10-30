@@ -21,7 +21,7 @@
 
 namespace cppunivariate {
 
-enum class NbinomStatus { Ok, Underdispersed, ZeroLimit, InvalidInput };
+enum class NbinomStatus { Ok, Underdispersed, ZeroLimit, InvalidInput, PrecisionFailure };
 
 struct NbinomResult {
   double size;
@@ -46,6 +46,9 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
   }
   const double dn = static_cast<double>(n);
   const double x_bar = sum_x / dn;
+  if(std::isfinite(size_fixed) && size_fixed>0 && std::isnan(prob_fixed) &&
+      sum_x>0 && size_fixed/(size_fixed+x_bar)==1)
+    return {kNaN,kNaN,kNaN,0,false,NbinomStatus::PrecisionFailure};
   const auto invalid = NbinomResult{kNaN,kNaN,kNaN,0,false,NbinomStatus::InvalidInput};
   if (!(tol>0) || !std::isfinite(tol) || maxit<1 ||
       (!std::isnan(size_fixed) && (!(size_fixed>=0)||!std::isfinite(size_fixed))) ||

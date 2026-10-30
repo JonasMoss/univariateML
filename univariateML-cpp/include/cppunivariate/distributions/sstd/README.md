@@ -146,3 +146,7 @@ tie otherwise. Holding both sd and nu prevents that collapse.
 ## d/p/q/r
 
 Uses the fGarch mean and standard deviation parameterisation.
+
+### Adapter independence (2026-10-30)
+
+The unconditional BFGS failure rescue now lives in `sstd_mle`: accept only when the Euclidean norm of the finite-difference total score in (mu, log(sigma), log(nu-2), log(xi)) coordinates is below 1e-3. Conditional failures remain failures. This preserves the former adapter gate; it is a numerical stationarity check, not a global maximum proof.

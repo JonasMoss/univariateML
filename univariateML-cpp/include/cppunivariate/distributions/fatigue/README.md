@@ -58,3 +58,7 @@ Estimating `mu` as well is not possible: the three-parameter likelihood is unbou
 With beta held, alpha is the root mean square of $\sqrt{t/\beta}-\sqrt{\beta/t}$, where $t=x-\mu$. It collapses to zero only when every shifted observation equals held beta; that likelihood is unbounded. Holding alpha positive removes constant-sample collapse. With alpha held the beta likelihood can have several maxima; the fitter compares all sampled profile peaks. Both held coefficients are evaluated directly.
 
 The A4 threshold policy also rejects `mu = NULL` when alpha or beta is held. This is a structural policy exception, rather than a claim that every such restricted likelihood lacks a maximum: P0 proves existence for held alpha and some held-beta subsets.
+
+### Adapter independence (2026-10-30)
+
+`fatigue_mle_shifted` now owns held-threshold translation (unit Jacobian), validates shifted support, and preserves the delegate status. Its four held-subset regressions reproduce the former adapter arithmetic.

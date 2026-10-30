@@ -1,6 +1,6 @@
 // Rcpp adapter; copied into the assembled R package.
 #include "as_span.h"
-#include "cppunivariate/distributions/gamma/mle.hpp"
+#include "cppunivariate/distributions/lgamma/mle.hpp"
 #include <Rcpp.h>
 #include <limits>
 #include <cmath>
@@ -24,37 +24,17 @@ Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
     fixed.push_back("ratelog");
   }
 
-  const std::size_t n = static_cast<std::size_t>(x.size());
-  std::vector<double> y(n);
-  double sum_y = 0.0;
-  for (std::size_t i = 0; i < n; ++i) {
-    y[i] = std::log(x[i]);
-    sum_y += y[i];
-  }
-  // lgamma keeps its own ratelog coefficient (its reference, actuar::dlgamma,
-  // offers only rate); gamma_mle's 5th argument is now a scale (1/rate).
-  const bool ratelog_held_flag = std::isfinite(ratelog_held);
-  auto res =
-      cppunivariate::gamma_mle(cppunivariate::span{y.data(), n}, abstol, iterlim, shapelog_held,
-          ratelog_held_flag ? 1.0 / ratelog_held : ratelog_held);
-  if (res.status == cppunivariate::GammaStatus::IterationFailure)
+  const auto res=cppunivariate::lgamma_mle(dist_impl::as_span(x),abstol,iterlim,shapelog_held,ratelog_held);
+  if(res.status==cppunivariate::LgammaStatus::IterationFailure)
     Rcpp::stop("Gamma delegate optimizer IterationFailure; increase iterlim.");
-  if (res.status == cppunivariate::GammaStatus::Degenerate) {
-    if (!std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
-      Rcpp::stop("lgamma MLE failed: transformed observations exceed double precision.");
-    Rcpp::stop("The loggamma maximum likelihood estimator does not exist for constant data: "
-               "the likelihood is unbounded as the shape grows.");
-  }
-  const double ratelog_out = ratelog_held_flag ? ratelog_held :
-      (std::isfinite(res.scale) ? 1.0 / res.scale : res.scale);
-  if (!std::isfinite(res.shape) || !std::isfinite(ratelog_out) || !std::isfinite(res.logLik)) {
+  if(res.status==cppunivariate::LgammaStatus::TransformFailure)
+    Rcpp::stop("lgamma MLE failed: transformed observations exceed double precision.");
+  if(res.status==cppunivariate::LgammaStatus::Degenerate)
+    Rcpp::stop("The loggamma maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as the shape grows.");
+  if(!std::isfinite(res.shapelog) || !std::isfinite(res.ratelog) || !std::isfinite(res.logLik))
     Rcpp::stop("Loggamma MLE failed");
-  }
-
-  // log(X) is gamma: log f(x) = log f_gamma(log x) - log x.
-  const double logLik = res.logLik - sum_y;
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shapelog"] = res.shape, Rcpp::_["ratelog"] = ratelog_out),
-      Rcpp::_["logLik"] = logLik, Rcpp::_["iterations"] = res.iterations, Rcpp::_["fixed"] = fixed);
+          Rcpp::_["shapelog"] = res.shapelog, Rcpp::_["ratelog"] = res.ratelog),
+      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations, Rcpp::_["fixed"] = fixed);
 }
