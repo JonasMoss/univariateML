@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../gb2/mle.hpp"
 #include "../gamma/mle.hpp"
 #include <array>
@@ -17,7 +18,7 @@ struct Point { double a=1,b=1,t=1,ll=-std::numeric_limits<double>::infinity(),sc
 // rounding exp(-t*y) to a support endpoint. Held shapes restrict its tangent.
 inline Point profile(const std::vector<double>& y,double t,double aa,double bb,int maxit) {
   const double n=static_cast<double>(y.size());
-  long double ss=0,rr=0,dd=0;
+  CPPUNIV_EXTENDED_REAL ss=0,rr=0,dd=0;
   for(double v:y) {
     const double z=t*v;
     ss+=z;
@@ -73,7 +74,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
   if(!(scale>0)||!std::isfinite(scale)){bad.status=GenbetaStatus::InvalidFixed;return bad;}
   for(double v:{a,b,t})if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v))){bad.status=GenbetaStatus::InvalidFixed;return bad;}
   if(x.size()==0||!(tol>0)||!std::isfinite(tol)||maxit<1)return bad;
-  std::vector<double> y;long double jac=0,sy=0;double ymin=std::numeric_limits<double>::infinity();
+  std::vector<double> y;CPPUNIV_EXTENDED_REAL jac=0,sy=0;double ymin=std::numeric_limits<double>::infinity();
   for(double v:x) {
     if(!(v>0&&v<scale)||!std::isfinite(v))return bad;
     const double z=v>scale*.5?-std::log1p((v-scale)/scale):std::log(scale)-std::log(v);
@@ -92,11 +93,11 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
       const auto g=gamma_mle({y.data(),y.size()},1e-10,300);
       if(g.status!=GammaStatus::Ok){bad.status=GenbetaStatus::SearchUnresolved;return bad;}
       consider(g.logLik,GenbetaStatus::UnitGammaBoundary);
-      long double total_gap=0;for(double v:y)total_gap+=v-ymin;
+      CPPUNIV_EXTENDED_REAL total_gap=0;for(double v:y)total_gap+=v-ymin;
       const double gap=static_cast<double>(total_gap/n);
       if(gap>0)consider(n*(-std::log(gap)-1),GenbetaStatus::PowerBoundary);
     } else {
-      long double sl=0;for(double v:y)sl+=std::log(v);
+      CPPUNIV_EXTENDED_REAL sl=0;for(double v:y)sl+=std::log(v);
       const double logmean=static_cast<double>(sl/n);
       const double contrast=gamma_detail::robust_s({y.data(),y.size()},mean);
       const double base=b>=100?.5*std::log(b)-.5*std::log(6.2831853071795864769)-gamma_detail::stirlerr(b):b*std::log(b)-b-special::lgamma(b);

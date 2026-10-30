@@ -5,6 +5,7 @@
 // downstream estimators.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../norm/mle.hpp"
@@ -125,7 +126,7 @@ inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double
     // The likelihood is strictly concave in inverse scale: its derivative
     // n/t - sum d*(1-exp(-t*d)) is strictly decreasing.
     double lo=0,hi=1/radius;
-    auto score=[&](double t){long double g=x.size()/t;for(double v:x){const long double d=static_cast<long double>(v)-m;g-=d*(-std::expm1(-t*d));}return g;};
+    auto score=[&](double t){CPPUNIV_EXTENDED_REAL g=x.size()/t;for(double v:x){const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-m;g-=d*(-std::expm1(-t*d));}return g;};
     while(score(hi)>0 && std::isfinite(hi*2))hi*=2;
     for(;it<maxit;++it){const double t=lo/2+hi/2;if(score(t)>0)lo=t;else hi=t;if(hi-lo<1e-12*hi)break;}
     s=1/(lo/2+hi/2);

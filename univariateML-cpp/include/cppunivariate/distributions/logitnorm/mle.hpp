@@ -2,6 +2,7 @@
 // likelihood includes the change-of-variable Jacobian -sum(log(x*(1-x))).
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../norm/mle.hpp"
@@ -38,16 +39,16 @@ inline LogitnormResult logitnorm_mle(span x,
   if (std::isnan(mu) && std::isnan(sigma))
     return {r.mean, r.sd, r.logLik - sum_log_jac};
   if (std::isnan(mu)) mu = r.mean;
-  long double ss = 0;
+  CPPUNIV_EXTENDED_REAL ss = 0;
   for (double z : y) {
-    const long double d = static_cast<long double>(z) - mu;
+    const CPPUNIV_EXTENDED_REAL d = static_cast<CPPUNIV_EXTENDED_REAL>(z) - mu;
     ss += d*d;
   }
   if (std::isnan(sigma)) sigma = std::sqrt(ss / n);
   if (!std::isfinite(mu) || !(sigma > 0) || !std::isfinite(sigma))
     return {kNaN,kNaN,kNaN};
   const double ll = -static_cast<double>(n) * (std::log(sigma) + .5*std::log(2*M_PI)) -
-                    .5L*ss/(static_cast<long double>(sigma)*sigma) - sum_log_jac;
+                    CPPUNIV_EXTENDED_LITERAL(.5,.5L)*ss/(static_cast<CPPUNIV_EXTENDED_REAL>(sigma)*sigma) - sum_log_jac;
   return {mu,sigma,ll};
 }
 

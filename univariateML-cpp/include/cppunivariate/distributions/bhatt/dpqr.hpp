@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -19,19 +20,19 @@ inline double logH(double z) {
 }
 // Preserve the existing fitter helper signatures and rounding. The d/p/q
 // tail algorithms above use the double overloads and do not borrow range.
-inline long double logphi(long double z){return -.91893853320467274178L-z*z/2;}
-inline long double mills(long double t) {
-  if(t<12)return std::sqrt(std::acos(-1.0L)/2)*std::exp(t*t/2)*std::erfc(t/std::sqrt(2.0L));
-  long double r=0;for(int k=40;k>=1;--k)r=k/(t+r);return 1/(t+r);
+inline CPPUNIV_EXTENDED_REAL logphi_extended(CPPUNIV_EXTENDED_REAL z){return -CPPUNIV_EXTENDED_LITERAL(.91893853320467274178,.91893853320467274178L)-z*z/2;}
+inline CPPUNIV_EXTENDED_REAL mills_extended(CPPUNIV_EXTENDED_REAL t) {
+  if(t<12)return std::sqrt(std::acos(-CPPUNIV_EXTENDED_LITERAL(1.0,1.0L))/2)*std::exp(t*t/2)*std::erfc(t/std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)));
+  CPPUNIV_EXTENDED_REAL r=0;for(int k=40;k>=1;--k)r=k/(t+r);return 1/(t+r);
 }
-inline long double logQ(long double z) {
-  return z>=0?logphi(z)+std::log(mills(z)):std::log1p(-std::erfc(-z/std::sqrt(2.0L))/2);
+inline CPPUNIV_EXTENDED_REAL logQ_extended(CPPUNIV_EXTENDED_REAL z) {
+  return z>=0?logphi_extended(z)+std::log(mills_extended(z)):std::log1p(-std::erfc(-z/std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)))/2);
 }
-inline long double logdiff(long double a,long double b){return a+std::log(-std::expm1(std::min(0.0L,b-a)));}
-inline long double logH(long double z) {
-  if(z>=12){long double r=0;for(int k=40;k>=2;--k)r=k/(z+r);const long double h=1/(z+r);return logphi(z)+std::log(h/(z+h));}
-  if(z>=0)return logphi(z)+std::log1p(-z*mills(z));
-  return std::log(std::exp(logphi(z))-z*std::exp(logQ(z)));
+inline CPPUNIV_EXTENDED_REAL logdiff_extended(CPPUNIV_EXTENDED_REAL a,CPPUNIV_EXTENDED_REAL b){return a+std::log(-std::expm1(std::min(CPPUNIV_EXTENDED_LITERAL(0.0,0.0L),b-a)));}
+inline CPPUNIV_EXTENDED_REAL logH_extended(CPPUNIV_EXTENDED_REAL z) {
+  if(z>=12){CPPUNIV_EXTENDED_REAL r=0;for(int k=40;k>=2;--k)r=k/(z+r);const CPPUNIV_EXTENDED_REAL h=1/(z+r);return logphi_extended(z)+std::log(h/(z+h));}
+  if(z>=0)return logphi_extended(z)+std::log1p(-z*mills_extended(z));
+  return std::log(std::exp(logphi_extended(z))-z*std::exp(logQ_extended(z)));
 }
 inline bool valid(double m,double s,double a){return std::isfinite(m)&&std::isfinite(s)&&s>0&&std::isfinite(a)&&a>=0;}
 // Eight-point Gauss-Legendre rule for a narrow normal convolution interval.
@@ -42,11 +43,11 @@ inline double narrow(double z,double a,bool cdf) {
   for(int i=0;i<4;++i)for(int sign:{-1,1}) {const double t=z+sign*a*nodes[i];sum+=weights[i]*std::exp((cdf?logQ(t):logphi(t))-anchor)/2;}
   return anchor+std::log(sum);
 }
-inline long double narrow(long double z,long double a,bool cdf) {
-  constexpr long double nodes[4]={.18343464249564980494L,.52553240991632898582L,.79666647741362673959L,.96028985649753623168L};
-  constexpr long double weights[4]={.36268378337836198297L,.31370664587788728734L,.22238103445337447054L,.10122853629037625915L};
-  const long double anchor=cdf?logQ(z):logphi(z);long double sum=0;
-  for(int i=0;i<4;++i)for(int sign:{-1,1}) {const long double t=z+sign*a*nodes[i];sum+=weights[i]*std::exp((cdf?logQ(t):logphi(t))-anchor)/2;}
+inline CPPUNIV_EXTENDED_REAL narrow_extended(CPPUNIV_EXTENDED_REAL z,CPPUNIV_EXTENDED_REAL a,bool cdf) {
+  constexpr CPPUNIV_EXTENDED_REAL nodes[4]={CPPUNIV_EXTENDED_LITERAL(.18343464249564980494,.18343464249564980494L),CPPUNIV_EXTENDED_LITERAL(.52553240991632898582,.52553240991632898582L),CPPUNIV_EXTENDED_LITERAL(.79666647741362673959,.79666647741362673959L),CPPUNIV_EXTENDED_LITERAL(.96028985649753623168,.96028985649753623168L)};
+  constexpr CPPUNIV_EXTENDED_REAL weights[4]={CPPUNIV_EXTENDED_LITERAL(.36268378337836198297,.36268378337836198297L),CPPUNIV_EXTENDED_LITERAL(.31370664587788728734,.31370664587788728734L),CPPUNIV_EXTENDED_LITERAL(.22238103445337447054,.22238103445337447054L),CPPUNIV_EXTENDED_LITERAL(.10122853629037625915,.10122853629037625915L)};
+  const CPPUNIV_EXTENDED_REAL anchor=cdf?logQ_extended(z):logphi_extended(z);CPPUNIV_EXTENDED_REAL sum=0;
+  for(int i=0;i<4;++i)for(int sign:{-1,1}) {const CPPUNIV_EXTENDED_REAL t=z+sign*a*nodes[i];sum+=weights[i]*std::exp((cdf?logQ_extended(t):logphi_extended(t))-anchor)/2;}
   return anchor+std::log(sum);
 }
 // Original central calculation: extended precision preserves fitter rounding
@@ -54,20 +55,20 @@ inline long double narrow(long double z,long double a,bool cdf) {
 inline double central_density(double x,double mu=0,double sigma=1,double a=1,bool log=false) {
   if(!bhatt_detail::valid(mu,sigma,a)||std::isnan(x))return special::kNaN;
   if(!std::isfinite(x))return log?special::kNegInf:0;
-  const long double z=(static_cast<long double>(x)-mu)/sigma,b=static_cast<long double>(a)/sigma;
-  long double l;
-  if(b*(1+std::abs(z))<1e-8L)l=bhatt_detail::logphi(z)-std::log(static_cast<long double>(sigma));
-  else if(b*(1+std::abs(z))<.01L)l=bhatt_detail::narrow(z,b,false)-std::log(static_cast<long double>(sigma));
+  const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(x)-mu)/sigma,b=static_cast<CPPUNIV_EXTENDED_REAL>(a)/sigma;
+  CPPUNIV_EXTENDED_REAL l;
+  if(b*(1+std::abs(z))<CPPUNIV_EXTENDED_LITERAL(1e-8,1e-8L))l=bhatt_detail::logphi_extended(z)-std::log(static_cast<CPPUNIV_EXTENDED_REAL>(sigma));
+  else if(b*(1+std::abs(z))<CPPUNIV_EXTENDED_LITERAL(.01,.01L))l=bhatt_detail::narrow_extended(z,b,false)-std::log(static_cast<CPPUNIV_EXTENDED_REAL>(sigma));
   else {
-    const long double lo=(static_cast<long double>(x)-mu-a)/sigma,hi=(static_cast<long double>(x)-mu+a)/sigma;
+    const CPPUNIV_EXTENDED_REAL lo=(static_cast<CPPUNIV_EXTENDED_REAL>(x)-mu-a)/sigma,hi=(static_cast<CPPUNIV_EXTENDED_REAL>(x)-mu+a)/sigma;
     if(lo==hi) {
       // The interval is below long-double coordinate resolution. Its
       // convolution correction is below double log-density precision.
-      l=bhatt_detail::logphi(z)-std::log(static_cast<long double>(sigma));
+      l=bhatt_detail::logphi_extended(z)-std::log(static_cast<CPPUNIV_EXTENDED_REAL>(sigma));
       return log?static_cast<double>(l):static_cast<double>(std::exp(l));
     }
-    l=(lo< -12 && hi>12)?0:(lo>=0?bhatt_detail::logdiff(bhatt_detail::logQ(lo),bhatt_detail::logQ(hi)):bhatt_detail::logdiff(bhatt_detail::logQ(-hi),bhatt_detail::logQ(-lo)));
-    l-=std::log(2*static_cast<long double>(a));
+    l=(lo< -12 && hi>12)?0:(lo>=0?bhatt_detail::logdiff_extended(bhatt_detail::logQ_extended(lo),bhatt_detail::logQ_extended(hi)):bhatt_detail::logdiff_extended(bhatt_detail::logQ_extended(-hi),bhatt_detail::logQ_extended(-lo)));
+    l-=std::log(2*static_cast<CPPUNIV_EXTENDED_REAL>(a));
   }
   return log?static_cast<double>(l):static_cast<double>(std::exp(l));
 }

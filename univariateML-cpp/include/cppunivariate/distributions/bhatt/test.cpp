@@ -108,9 +108,15 @@ TEST_CASE("bhatt: convolution width stays on the log scale") {
 TEST_CASE("bhatt: central density preserves the golden fit") {
   const auto g=mltest::load_distribution_golden("bhatt");
   const auto r=cppunivariate::bhatt_mle(mltest::as_span(g.data));
-  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(1e-12));
-  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(1e-12));
-  CHECK(r.a == doctest::Approx(g.estimates.at("a")).epsilon(1e-12));
+#ifdef BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
+  CHECK(std::abs((r.mu-g.estimates.at("mu"))/g.estimates.at("mu")) < mltest::kBhattGoldenTol);
+  CHECK(std::abs((r.sigma-g.estimates.at("sigma"))/g.estimates.at("sigma")) < mltest::kBhattGoldenTol);
+  CHECK(std::abs((r.a-g.estimates.at("a"))/g.estimates.at("a")) < mltest::kBhattGoldenTol);
+#else
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kBhattGoldenTol));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kBhattGoldenTol));
+  CHECK(r.a == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kBhattGoldenTol));
+#endif
 }
 
 

@@ -7,6 +7,7 @@
 // where f_unit is the standardised GED used by dged().
 
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 
 #include "../../core/bfgs.hpp"
@@ -242,7 +243,7 @@ inline GedResult conditional(span x,double nu,double mean,double sd) {
     else {
       double lo=y.front(),hi=y.back();
 
-      for(int it=0;it<100;++it){const double mid=lo/2+hi/2;const double unit=std::max(std::max(std::abs(y.front()-mid),std::abs(y.back()-mid)),std::numeric_limits<double>::denorm_min());long double score=0;for(double v:y){const double d=(v-mid)/unit;score+=(d>0?1:-1)*std::pow(std::abs(d),nu-1);}if(score>0)lo=mid;else hi=mid;}
+      for(int it=0;it<100;++it){const double mid=lo/2+hi/2;const double unit=std::max(std::max(std::abs(y.front()-mid),std::abs(y.back()-mid)),std::numeric_limits<double>::denorm_min());CPPUNIV_EXTENDED_REAL score=0;for(double v:y){const double d=(v-mid)/unit;score+=(d>0?1:-1)*std::pow(std::abs(d),nu-1);}if(score>0)lo=mid;else hi=mid;}
       m=lo/2+hi/2;
     }
   }

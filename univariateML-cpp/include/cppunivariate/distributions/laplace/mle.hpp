@@ -1,6 +1,7 @@
 // Laplace MLE: median for location, mean absolute deviation for scale.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 
@@ -45,7 +46,7 @@ inline LaplaceResult laplace_mle(span x,double mu,double sigma) {
   if(x.empty())return {nan,nan,nan,LaplaceStatus::InvalidInput};
   std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
   const double m=std::isnan(mu)?y[y.size()/2]:mu;
-  long double a=0;for(double v:x)a+=std::abs(static_cast<long double>(v)-m);
+  CPPUNIV_EXTENDED_REAL a=0;for(double v:x)a+=std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-m);
   const double s=std::isnan(sigma)?static_cast<double>(a/x.size()):sigma;
   return {m,s,-static_cast<double>(x.size())*(std::log(2.0)+std::log(s))-static_cast<double>(a/s),s==0 ? LaplaceStatus::Unbounded : LaplaceStatus::Ok};
 }

@@ -8,6 +8,7 @@
 // engine of Log-Logistic via a log-transform.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../norm/mle.hpp"
@@ -108,7 +109,7 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
       (moments.sd < 1e-100 || moments.sd > 1e100 || std::abs(moments.mean) > 1e6 * moments.sd)) {
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i)
-      z[i] = static_cast<double>((static_cast<long double>(x[i]) - moments.mean) / moments.sd);
+      z[i] = static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x[i]) - moments.mean) / moments.sd);
     const auto r = logistic_mle(span{z.data(), n}, tol, maxit);
     return {moments.mean + moments.sd*r.mu, moments.sd*r.scale,
             r.logLik - static_cast<double>(n)*std::log(moments.sd), r.iterations, r.status};

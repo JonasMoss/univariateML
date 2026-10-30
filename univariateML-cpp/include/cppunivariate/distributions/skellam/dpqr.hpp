@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -11,16 +12,16 @@ inline bool valid(double a,double b) {
 inline double poisson_log(double k,double rate) {
   if(rate==0) return k==0 ? 0 : -INFINITY;
   if(k==0) return -rate;
-  if(k<100) return static_cast<double>(-static_cast<long double>(rate)+k*std::log(static_cast<long double>(rate))-std::lgamma(static_cast<long double>(k)+1));
-  const long double n=k,a=rate,v=(a-n)/n,inv=1/n;
-  long double dev;
-  if(std::abs(v)<0.001L) {
-    long double term=-v*v/2;dev=term;
+  if(k<100) return static_cast<double>(-static_cast<CPPUNIV_EXTENDED_REAL>(rate)+k*std::log(static_cast<CPPUNIV_EXTENDED_REAL>(rate))-std::lgamma(static_cast<CPPUNIV_EXTENDED_REAL>(k)+1));
+  const CPPUNIV_EXTENDED_REAL n=k,a=rate,v=(a-n)/n,inv=1/n;
+  CPPUNIV_EXTENDED_REAL dev;
+  if(std::abs(v)<CPPUNIV_EXTENDED_LITERAL(0.001,0.001L)) {
+    CPPUNIV_EXTENDED_REAL term=-v*v/2;dev=term;
     for(int j=3;j<16;++j) {term*=-v*(j-1)/j;dev+=term;}
     dev*=n;
   } else dev=n*std::log(a/n)+n-a;
-  const long double correction=inv/12-inv*inv*inv/360+std::pow(inv,5)/1260-std::pow(inv,7)/1680;
-  return static_cast<double>(dev-0.5L*std::log(6.283185307179586476925286766559L*n)-correction);
+  const CPPUNIV_EXTENDED_REAL correction=inv/12-inv*inv*inv/360+std::pow(inv,5)/1260-std::pow(inv,7)/1680;
+  return static_cast<double>(dev-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(CPPUNIV_EXTENDED_LITERAL(6.283185307179586476925286766559,6.283185307179586476925286766559L)*n)-correction);
 }
 // Positive Bessel series centered at its largest term; uniform Debye
 // expansion for large hypot(order,argument), regular also at order zero.
@@ -28,25 +29,25 @@ inline double logmass(double k,double a,double b) {
   if (k<0) {k=-k;std::swap(a,b);}
   if (b==0) return poisson_log(k,a);
   if (a==0) return k==0 ? -b : -INFINITY;
-  const long double n=k,aa=a,bb=b,z=2*std::sqrt(aa)*std::sqrt(bb);
-  const long double r=std::hypot(n,z);
+  const CPPUNIV_EXTENDED_REAL n=k,aa=a,bb=b,z=2*std::sqrt(aa)*std::sqrt(bb);
+  const CPPUNIV_EXTENDED_REAL r=std::hypot(n,z);
   if (r>10000) {
-    const long double t2=(n/r)*(n/r);
-    const long double u1=(3-5*t2)/(24*r);
-    const long double u2=(81-462*t2+385*t2*t2)/(1152*r*r);
-    const long double u3=(30375-369603*t2+765765*t2*t2-425425*t2*t2*t2)/(414720*r*r*r);
-    const long double exponent=((n-(aa-bb))*(n+(aa-bb)))/(r+aa+bb)
-        +n*(std::asinh((aa-bb)/z)-std::asinh(n/z));
-    return static_cast<double>(exponent-0.5L*std::log(6.283185307179586476925286766559L*r)+std::log1p(u1+u2+u3));
+    const CPPUNIV_EXTENDED_REAL t2=(n/r)*(n/r);
+    const CPPUNIV_EXTENDED_REAL u1=(3-5*t2)/(24*r);
+    const CPPUNIV_EXTENDED_REAL u2=(81-462*t2+385*t2*t2)/(1152*r*r);
+    const CPPUNIV_EXTENDED_REAL u3=(30375-369603*t2+765765*t2*t2-425425*t2*t2*t2)/(414720*r*r*r);
+    const CPPUNIV_EXTENDED_REAL exponent=((n-(aa-bb))/r)*(n+(aa-bb))/(1+(aa+bb)/r)
+        +n*(std::asinh((aa-bb)/z)-(std::isfinite(n/z) ? std::asinh(n/z) : std::log(n)-std::log(z)+std::log(static_cast<CPPUNIV_EXTENDED_REAL>(2))));
+    return static_cast<double>(exponent-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*(std::log(CPPUNIV_EXTENDED_LITERAL(6.283185307179586476925286766559,6.283185307179586476925286766559L))+std::log(r))+std::log1p(u1+u2+u3));
   }
-  const long double product=aa*bb;
-  const long double j=std::floor((z*z)/(2*(r+n)));
-  const long double lp=-aa-bb+(j+n)*std::log(aa)+j*std::log(bb)
+  const CPPUNIV_EXTENDED_REAL product=aa*bb;
+  const CPPUNIV_EXTENDED_REAL j=std::floor((z*z)/(2*(r+n)));
+  const CPPUNIV_EXTENDED_REAL lp=-aa-bb+(j+n)*std::log(aa)+j*std::log(bb)
       -std::lgamma(j+n+1)-std::lgamma(j+1);
-  long double total=1,term=1;
-  for(long double h=j;h>0;--h) {term*=h*(h+n)/product;total+=term;if(term<total*1e-20L) break;}
+  CPPUNIV_EXTENDED_REAL total=1,term=1;
+  for(CPPUNIV_EXTENDED_REAL h=j;h>0;--h) {term*=h*(h+n)/product;total+=term;if(term<total*CPPUNIV_EXTENDED_LITERAL(1e-20,1e-20L)) break;}
   term=1;
-  for(long double h=j+1;;++h) {term*=product/(h*(h+n));total+=term;if(term<total*1e-20L) break;}
+  for(CPPUNIV_EXTENDED_REAL h=j+1;;++h) {term*=product/(h*(h+n));total+=term;if(term<total*CPPUNIV_EXTENDED_LITERAL(1e-20,1e-20L)) break;}
   return static_cast<double>(lp+std::log(total));
 }
 inline double logadd(double a,double b) {

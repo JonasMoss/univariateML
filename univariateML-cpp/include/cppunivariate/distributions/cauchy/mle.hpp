@@ -5,6 +5,7 @@
 // Nonexistent MLEs and numerical failures are reported through CauchyStatus.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 
@@ -115,7 +116,7 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   const double centre = data.front() / 2.0 + data.back() / 2.0;
   if (span_scale > 0.0 && std::isfinite(span_scale) &&
       (span_scale < 1e-100 || span_scale > 1e100 || std::abs(centre) > 1e6 * span_scale)) {
-    for (std::size_t i = 0; i < n; ++i) data[i] = static_cast<double>((static_cast<long double>(x[i]) - centre) / span_scale);
+    for (std::size_t i = 0; i < n; ++i) data[i] = static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x[i]) - centre) / span_scale);
     const auto r = fit_cauchy(span{data.data(), n}, tol, maxit);
     return {centre + span_scale * r.mu, span_scale * r.scale,
             r.logLik - static_cast<double>(n) * std::log(span_scale), r.iterations, r.status};

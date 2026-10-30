@@ -3,6 +3,7 @@
 // The log-likelihood is rederived in the log-logistic parameterisation.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../logis/mle.hpp"
@@ -73,7 +74,7 @@ inline LogLogisticResult loglogistic_mle(span x,double tol,int maxit,double shap
     bool equal=true;for(double v:x)equal=equal && v==1/rate;
     if(equal)return {nan,scale,nan,0,LogLogisticStatus::Unbounded};
     double lo=-745,hi=710;
-    for(int j=0;j<maxit && hi-lo>1e-12;++j){double mid=(lo+hi)/2,k=std::exp(mid);long double s=n/k;for(double v:y){double d=v-loc;s-=d*std::tanh(k*d/2);}if(s>0)lo=mid;else hi=mid;++iterations;}
+    for(int j=0;j<maxit && hi-lo>1e-12;++j){double mid=(lo+hi)/2,k=std::exp(mid);CPPUNIV_EXTENDED_REAL s=n/k;for(double v:y){double d=v-loc;s-=d*std::tanh(k*d/2);}if(s>0)lo=mid;else hi=mid;++iterations;}
     if(hi-lo>1e-12)return {nan,scale,nan,iterations,LogLogisticStatus::IterationFailure};
     shape=std::exp((lo+hi)/2);
   }

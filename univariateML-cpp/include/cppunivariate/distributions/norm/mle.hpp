@@ -8,6 +8,7 @@
 // Standalone C++ implementation, free of R / Armadillo dependencies.
 //
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 
@@ -37,8 +38,8 @@ inline Moments moments(span x) {
   const std::size_t n = x.size();
   const double dn = static_cast<double>(n);
   double c = x[0];
-  long double sum_d = 0.0L;
-  for (auto v : x) sum_d += static_cast<long double>(v) - c;
+  CPPUNIV_EXTENDED_REAL sum_d = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
+  for (auto v : x) sum_d += static_cast<CPPUNIV_EXTENDED_REAL>(v) - c;
   if (!std::isfinite(sum_d)) {
     // Deviations overflow (data of both signs near the double range).
     c = 0.0;
@@ -49,13 +50,13 @@ inline Moments moments(span x) {
   const double mean_hat = static_cast<double>(c + sum_d / dn);
   // Profile scale at the representable mean actually returned. For a
   // cloud narrower than one ulp this matters to the reported likelihood.
-  const long double mean_d = static_cast<long double>(mean_hat) - c;
+  const CPPUNIV_EXTENDED_REAL mean_d = static_cast<CPPUNIV_EXTENDED_REAL>(mean_hat) - c;
   double big = 0.0;
-  for (auto v : x) big = std::max(big, static_cast<double>(std::abs((static_cast<long double>(v) - c) - mean_d)));
+  for (auto v : x) big = std::max(big, static_cast<double>(std::abs((static_cast<CPPUNIV_EXTENDED_REAL>(v) - c) - mean_d)));
   double ss = 0.0;
   if (big > 0.0 && std::isfinite(big)) {
     for (auto v : x) {
-      const double z = ((static_cast<long double>(v) - c) - mean_d) / big;
+      const double z = ((static_cast<CPPUNIV_EXTENDED_REAL>(v) - c) - mean_d) / big;
       ss += z * z;
     }
   }
@@ -82,9 +83,9 @@ inline NormResult norm_mle(span x, double mean, double sd) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.empty()) return {nan,nan,nan,NormStatus::InvalidInput};
   const double m=std::isnan(mean)?norm_detail::moments(x).mean:mean;
-  long double ss=0; for(double v:x) {const long double d=static_cast<long double>(v)-m;ss+=d*d;}
+  CPPUNIV_EXTENDED_REAL ss=0; for(double v:x) {const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-m;ss+=d*d;}
   const double s=std::isnan(sd)?static_cast<double>(std::sqrt(ss/x.size())):sd;
-  const double ll=-static_cast<double>(x.size())*(std::log(s)+.5*std::log(2*M_PI))-static_cast<double>(ss/(2*static_cast<long double>(s)*s));
+  const double ll=-static_cast<double>(x.size())*(std::log(s)+.5*std::log(2*M_PI))-static_cast<double>(ss/(2*static_cast<CPPUNIV_EXTENDED_REAL>(s)*s));
   return {m,s,ll,s==0 ? NormStatus::Unbounded : NormStatus::Ok};
 }
 

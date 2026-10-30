@@ -3,12 +3,13 @@
 // the accurate log tail, including log inputs -1e4 and below; do not first
 // exponentiate them. Handle p=0/1 (log p=-Inf/0) at support endpoints.
 // Preserve logarithms of underflowed intermediates analytically when needed.
-// Double only: guard range with log-space algebra; long double equals
+// Double only: guard range with log-space algebra; CPPUNIV_EXTENDED_REAL equals
 // double on some CRAN platforms. Extended precision may improve rounding,
 // but must never be required to keep an intermediate in range.
 // Example: Lomax log_upper=-kappa*log1p_product(lambda,x);
 // q=expm1(-log_upper/kappa)/lambda (guard intermediate overflow).
 #pragma once
+#include "../core/precision.hpp"
 #include "constants.hpp"
 #include <cmath>
 #include <algorithm>

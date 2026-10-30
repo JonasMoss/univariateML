@@ -32,6 +32,7 @@
 // at most 2^53 - 1.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 
@@ -166,21 +167,21 @@ inline Counts tabulate(span x) {
 
 // Neumaier-compensated sum that also accumulates the term magnitudes.
 struct Sum {
-  long double s = 0.0L, c = 0.0L, scale = 0.0L;
-  void add(long double t) {
-    const long double u = s + t;
+  CPPUNIV_EXTENDED_REAL s = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L), c = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L), scale = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
+  void add(CPPUNIV_EXTENDED_REAL t) {
+    const CPPUNIV_EXTENDED_REAL u = s + t;
     c += std::fabs(s) >= std::fabs(t) ? (s - u) + t : (t - u) + s;
     s = u;
     scale += std::fabs(t);
   }
-  long double value() const { return s + c; }
+  CPPUNIV_EXTENDED_REAL value() const { return s + c; }
 };
 
 // Compensated difference a*b-c*d. The fused residual preserves small
 // integer differences even when the individual products exceed 2^64.
-inline long double product_difference(long double a, long double b,
-                                      long double c, long double d) {
-  const long double ab = a * b;
+inline CPPUNIV_EXTENDED_REAL product_difference(CPPUNIV_EXTENDED_REAL a, CPPUNIV_EXTENDED_REAL b,
+                                      CPPUNIV_EXTENDED_REAL c, CPPUNIV_EXTENDED_REAL d) {
+  const CPPUNIV_EXTENDED_REAL ab = a * b;
   return std::fma(-c, d, ab) + std::fma(a, b, -ab);
 }
 
@@ -189,11 +190,11 @@ inline long double product_difference(long double a, long double b,
 inline Sum increment_m(const Counts &c, double N, double k, double m) {
   Sum d;
   for (std::size_t j = 0; j < c.value.size(); ++j) {
-    const long double v = c.value[j], w = c.count[j];
-    const long double failures = static_cast<long double>(N) - m + 1;
-    const long double z = product_difference(v, N + 1.0L, m, k) /
+    const CPPUNIV_EXTENDED_REAL v = c.value[j], w = c.count[j];
+    const CPPUNIV_EXTENDED_REAL failures = static_cast<CPPUNIV_EXTENDED_REAL>(N) - m + 1;
+    const CPPUNIV_EXTENDED_REAL z = product_difference(v, N + CPPUNIV_EXTENDED_LITERAL(1.0,1.0L), m, k) /
                           ((m - v) * failures);
-    if (std::fabs(z) < 0.5L) {
+    if (std::fabs(z) < CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)) {
       d.add(w * std::log1p(z));
     } else {
       if (v > 0) d.add(w * std::log1p(v / (m - v)));
@@ -206,15 +207,15 @@ inline Sum increment_m(const Counts &c, double N, double k, double m) {
 inline Sum increment_N(const Counts &c, double m, double k, double N) {
   Sum d;
   for (std::size_t j = 0; j < c.value.size(); ++j) {
-    const long double v = c.value[j], w = c.count[j], y = k - v;
-    const long double remaining = static_cast<long double>(N) - m - y;
-    const long double z = product_difference(m, k, N, v) /
-                          (static_cast<long double>(N) * remaining);
-    if (std::fabs(z) < 0.5L) {
+    const CPPUNIV_EXTENDED_REAL v = c.value[j], w = c.count[j], y = k - v;
+    const CPPUNIV_EXTENDED_REAL remaining = static_cast<CPPUNIV_EXTENDED_REAL>(N) - m - y;
+    const CPPUNIV_EXTENDED_REAL z = product_difference(m, k, N, v) /
+                          (static_cast<CPPUNIV_EXTENDED_REAL>(N) * remaining);
+    if (std::fabs(z) < CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)) {
       d.add(w * std::log1p(z));
     } else {
       if (y > 0) d.add(w * std::log1p(y / remaining));
-      d.add(w * std::log1p(-static_cast<long double>(k) / N));
+      d.add(w * std::log1p(-static_cast<CPPUNIV_EXTENDED_REAL>(k) / N));
     }
   }
   return d;
@@ -222,7 +223,7 @@ inline Sum increment_N(const Counts &c, double m, double k, double N) {
 
 // Rounding bound for D, relative to its summed term magnitudes: each term
 // is log1p of a once-rounded ratio of exact integers.
-constexpr long double kTieUlps = 64 * std::numeric_limits<long double>::epsilon();
+constexpr CPPUNIV_EXTENDED_REAL kTieUlps = 64 * std::numeric_limits<CPPUNIV_EXTENDED_REAL>::epsilon();
 
 struct Peak {
   double at;
@@ -277,11 +278,11 @@ inline Peak unimodal_peak(double lo, double hi, bool open, Increment D) {
 
 // Finite-grid policy: two complete passes, at most 10^7 likelihood
 // evaluations in total. Compare to the final maximum, avoiding chained ties.
-constexpr long double kGridBudget = 10000000;
-inline long double grid_choose(long double n, long double k) {
+constexpr CPPUNIV_EXTENDED_REAL kGridBudget = 10000000;
+inline CPPUNIV_EXTENDED_REAL grid_choose(CPPUNIV_EXTENDED_REAL n, CPPUNIV_EXTENDED_REAL k) {
   return std::lgamma(n + 1) - std::lgamma(k + 1) - std::lgamma(n - k + 1);
 }
-inline bool grid_tied(long double a, long double b) {
+inline bool grid_tied(CPPUNIV_EXTENDED_REAL a, CPPUNIV_EXTENDED_REAL b) {
   return std::fabs(a - b) <= 64 * std::numeric_limits<double>::epsilon() *
       std::max(std::fabs(a), std::fabs(b));
 }
@@ -313,19 +314,19 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     for (double v : x) if (!hyper_detail::is_count(v)) return r;
     const auto c = hyper_detail::tabulate(x);
     r.status = HyperStatus::Infeasible;
-    const long double width = static_cast<long double>(N) - 2 * c.max + c.min + 1;
+    const CPPUNIV_EXTENDED_REAL width = static_cast<CPPUNIV_EXTENDED_REAL>(N) - 2 * c.max + c.min + 1;
     if (width <= 0) return r;
     r.status = HyperStatus::NumericalFailure;
     if (width * (width + 1) > hyper_detail::kGridBudget) return r;
-    long double best = -kInf;
+    CPPUNIV_EXTENDED_REAL best = -kInf;
     for (int pass = 0; pass < 2; ++pass) {
       for (double mm = c.max; mm <= N - c.max + c.min; ++mm) {
         for (double kk = c.max; kk <= N - mm + c.min; ++kk) {
           hyper_detail::Sum ll;
           for (std::size_t j = 0; j < c.value.size(); ++j) {
-            const long double v = c.value[j];
+            const CPPUNIV_EXTENDED_REAL v = c.value[j];
             ll.add(c.count[j] * (hyper_detail::grid_choose(mm, v) +
-                hyper_detail::grid_choose(static_cast<long double>(N) - mm, kk - v) -
+                hyper_detail::grid_choose(static_cast<CPPUNIV_EXTENDED_REAL>(N) - mm, kk - v) -
                 hyper_detail::grid_choose(N, kk)));
           }
           ++r.iterations;
@@ -388,7 +389,7 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       r.status = std::isnan(p.tie) ? HyperStatus::Ok : HyperStatus::Tie;
     }
   } else {
-    const long double lo_exact = static_cast<long double>(m) + k - c.min;
+    const CPPUNIV_EXTENDED_REAL lo_exact = static_cast<CPPUNIV_EXTENDED_REAL>(m) + k - c.min;
     if (lo_exact > hyper_detail::kMaxCount) {
       r.status = HyperStatus::TooLarge;
       return r;
@@ -417,7 +418,7 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       r.status = std::isnan(p.tie) ? HyperStatus::Ok : HyperStatus::Tie;
     }
   }
-  long double ll = 0.0L;
+  CPPUNIV_EXTENDED_REAL ll = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (std::size_t j = 0; j < c.value.size(); ++j) {
     ll += c.count[j] * hyper_log_pmf(c.value[j], r.N, r.m, k);
   }

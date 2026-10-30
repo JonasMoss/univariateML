@@ -1,5 +1,6 @@
 // Nakagami(shape, scale): X^2 ~ Gamma(shape, scale/shape).
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../special/special.hpp"
 #include <cmath>
 namespace cppunivariate {
@@ -7,9 +8,9 @@ namespace distributions {
 inline double naka_logtail(double x, double a, bool lower) {
   if (x == 0) return lower ? special::kNegInf : 0;
   if (std::isinf(x)) return lower ? 0 : special::kNegInf;
-  const long double other=special::gamma_cdf_extended(x,a,!lower);
-  if (other < 0.5L) return static_cast<double>(std::log1p(-other));
-  const long double v=special::gamma_cdf_extended(x,a,lower);
+  const CPPUNIV_EXTENDED_REAL other=special::gamma_cdf_extended(x,a,!lower);
+  if (other < CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)) return static_cast<double>(std::log1p(-other));
+  const CPPUNIV_EXTENDED_REAL v=special::gamma_cdf_extended(x,a,lower);
   if (v > 0) return static_cast<double>(std::log(v));
   // Underflowed upper tail: Lentz continued fraction for Gamma(a,x).
   if (!lower && x > a) {

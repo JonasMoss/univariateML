@@ -49,6 +49,8 @@ The discretized gamma distribution is the integer part of a continuous gamma var
 
 ## Details
 
+2026-10-30 (TASK-125): the shared gamma upper-tail helper switches to its asymptotic expansion before the backend tail becomes subnormal. The existing high-precision truth rows test the affected rate/shape cases; the expansion is not a uniform error guarantee.
+
 With both parameters free, constant samples and samples on two adjacent integers have no finite maximum likelihood estimate. For adjacent values `k` and `k + 1`, use `mlbinom(x - k, size = 1)`.
 Both held parameters evaluate the likelihood without fitting. With one parameter held the fitter handles its distinct boundary conditions explicitly.
 

@@ -44,6 +44,8 @@ The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersi
 
 ## Details
 
+2026-10-30 (TASK-125): moment sums use compensated accumulation, the saddle-point quotient retains its division residual, and geometric tail bounds can be evaluated in log coordinates. For mode zero or one, the second-count weight uses `exp((2-mode)*eta)*exp2(-nu)`, avoiding amplification of rounding in `log(2)`. The 73-row independent reference grid measures errors; the truncation certificate excludes floating-point roundoff.
+
 The rate is generally not the mean. Dispersion one is Poisson; dispersion zero is geometric when the rate is below one. Either or both coordinates may be fixed. Rate zero is the attained zero point mass; its unidentified free dispersion is represented by one. Dispersion zero is attained when lambda is below one; the joint domain requires lambda < 1 whenever nu = 0. Adjacent two-point and positive point-mass escapes still stop with a named limit.
 
 Probability evaluation uses the certified CMP normalizer, stable centered log weights and direct tail summation. A calculation exceeding the normalizer or tail work budget returns NaN with a warning. Quantile search is limited to counts below 9e15. Random generation uses inversion with R's RNG.

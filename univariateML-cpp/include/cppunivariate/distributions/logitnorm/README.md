@@ -49,6 +49,8 @@ The logit-normal distribution models proportions whose logits follow a normal di
 
 ## Details
 
+2026-10-30 (TASK-125): normal log tails use the shared normal-tail helper, including its Mills expansion before subnormal loss; quantile inversion uses the same log-tail calculation. The quantile checks its monotone bracket and requires adjacent floating-point endpoints, otherwise returning NaN. Truth rows and extreme round trips validate selected tails.
+
 The parameters `mu` and `sigma` describe the normal distribution of the logits, not the mean and standard deviation of the proportions. The scale estimate uses divisor $n$ on the logit scale.
 
 Held coefficients apply on the logit scale. With `mu` held, the scale is the root mean squared distance of the logits from `mu`. With `sigma` held, the location is their mean, including for constant data. A free scale has no MLE exactly when every logit equals the estimated or held location. Both-held fits evaluate the likelihood.

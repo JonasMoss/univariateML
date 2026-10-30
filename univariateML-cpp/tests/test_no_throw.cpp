@@ -55,3 +55,12 @@ TEST_CASE("overflow and endpoint errors return infinity") {
 }
 #undef CHECK_NAN
 #undef CHECK_NONFINITE
+
+#include <type_traits>
+#ifdef BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
+static_assert(std::is_same<CPPUNIV_EXTENDED_REAL,double>::value, "double-width seam");
+static_assert(std::is_same<cppunivariate::ExtendedReal,double>::value, "Boost seam agrees");
+#else
+static_assert(std::is_same<CPPUNIV_EXTENDED_REAL,long double>::value, "native seam");
+static_assert(std::is_same<cppunivariate::ExtendedReal,long double>::value, "Boost seam agrees");
+#endif

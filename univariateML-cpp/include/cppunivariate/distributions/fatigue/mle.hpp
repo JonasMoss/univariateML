@@ -5,6 +5,7 @@
 // Rmath dnorm in standard form.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/newton.hpp"
 #include "../../core/span.hpp"
@@ -49,10 +50,10 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
 
   const double dn = static_cast<double>(n);
   double sum_x = 0.0, sum_sqrt_x = 0.0, sum_inv_sqrt_x = 0.0;
-  long double sum_inv_x = 0.0L;
+  CPPUNIV_EXTENDED_REAL sum_inv_x = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) {
     sum_x += v;
-    sum_inv_x += 1.0L / v;
+    sum_inv_x += CPPUNIV_EXTENDED_LITERAL(1.0,1.0L) / v;
     const double sx = std::sqrt(v);
     sum_sqrt_x += sx;
     sum_inv_sqrt_x += 1.0 / sx;
@@ -61,17 +62,17 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
   const double x_inv_bar = dn / sum_inv_x;
 
   auto f_over_df = [&](double beta) {
-    long double sum_xb = 0.0L, sum_xb_sq = 0.0L;
+    CPPUNIV_EXTENDED_REAL sum_xb = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L), sum_xb_sq = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
     for (auto v : x) {
-      const long double xb = 1.0L / (static_cast<long double>(v) + beta);
+      const CPPUNIV_EXTENDED_REAL xb = CPPUNIV_EXTENDED_LITERAL(1.0,1.0L) / (static_cast<CPPUNIV_EXTENDED_REAL>(v) + beta);
       sum_xb += xb;
       sum_xb_sq += xb * xb;
     }
-    const long double xi = dn / sum_xb;
-    const long double dxi = sum_xb_sq * xi * xi / dn;
-    const long double f =
-        static_cast<long double>(beta) * beta - beta * (2.0 * x_inv_bar + xi) + x_inv_bar * (x_bar + xi);
-    const long double df =
+    const CPPUNIV_EXTENDED_REAL xi = dn / sum_xb;
+    const CPPUNIV_EXTENDED_REAL dxi = sum_xb_sq * xi * xi / dn;
+    const CPPUNIV_EXTENDED_REAL f =
+        static_cast<CPPUNIV_EXTENDED_REAL>(beta) * beta - beta * (2.0 * x_inv_bar + xi) + x_inv_bar * (x_bar + xi);
+    const CPPUNIV_EXTENDED_REAL df =
         2.0 * beta - (2.0 * x_inv_bar + xi) - beta * dxi + x_inv_bar * dxi;
     return static_cast<double>(f / df);
   };
@@ -85,10 +86,10 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
     double lo=x_inv_bar, hi=x_bar;
     for (int j=0;j<std::min(maxit,100);++j) {
       const double mid=std::sqrt(lo)*std::sqrt(hi);
-      long double inv=0.0L;
-      for (auto v:x) inv+=1.0L/(static_cast<long double>(v)+mid);
-      const long double xi=dn/inv;
-      const long double f=static_cast<long double>(mid)*mid-mid*(2.0*x_inv_bar+xi)+x_inv_bar*(x_bar+xi);
+      CPPUNIV_EXTENDED_REAL inv=CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
+      for (auto v:x) inv+=CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)/(static_cast<CPPUNIV_EXTENDED_REAL>(v)+mid);
+      const CPPUNIV_EXTENDED_REAL xi=dn/inv;
+      const CPPUNIV_EXTENDED_REAL f=static_cast<CPPUNIV_EXTENDED_REAL>(mid)*mid-mid*(2.0*x_inv_bar+xi)+x_inv_bar*(x_bar+xi);
       if (f>0.0) lo=mid; else hi=mid;
     }
     if (hi-lo > 1e-12*hi)
@@ -104,9 +105,9 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
   // deriving the score from the standard BS density and finding it
   // ≈ 30 at the recovered α — see roadmap/2026-05-10-fatigue-cost-mismatch.md
   // for the full investigation.
-  long double alpha_sq=0.0L;
+  CPPUNIV_EXTENDED_REAL alpha_sq=CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v:x) {
-    const long double d=(static_cast<long double>(v)-beta)/std::sqrt(static_cast<long double>(v))/std::sqrt(static_cast<long double>(beta));
+    const CPPUNIV_EXTENDED_REAL d=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-beta)/std::sqrt(static_cast<CPPUNIV_EXTENDED_REAL>(v))/std::sqrt(static_cast<CPPUNIV_EXTENDED_REAL>(beta));
     alpha_sq+=d*d;
   }
   const double alpha=static_cast<double>(std::sqrt(alpha_sq/dn));
@@ -115,7 +116,7 @@ inline FatigueResult fatigue_mle_impl(span x, double tol, int maxit, bool standa
   for (auto v : x) {
     const double sx = std::sqrt(v) / std::sqrt(beta);
     const double sy = std::sqrt(beta) / std::sqrt(v);
-    const double z = static_cast<double>((static_cast<long double>(v)-beta)/std::sqrt(static_cast<long double>(v))/std::sqrt(static_cast<long double>(beta))/alpha);
+    const double z = static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-beta)/std::sqrt(static_cast<CPPUNIV_EXTENDED_REAL>(v))/std::sqrt(static_cast<CPPUNIV_EXTENDED_REAL>(beta))/alpha);
     const double log_pref = std::log(sx + sy) - std::log(2.0 * alpha) - std::log(v);
     const double log_phi = cppunivariate::special::dnorm(z, 0.0, 1.0, 1);
     logLik += log_pref + log_phi;
@@ -141,9 +142,9 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit,
   }
   const auto alpha_at=[&](double lb) {
     if (fa) return held_alpha;
-    long double ss=0;
+    CPPUNIV_EXTENDED_REAL ss=0;
     for (double v:x) {
-      const long double d=2*std::sinh((static_cast<long double>(std::log(v))-lb)/2);
+      const CPPUNIV_EXTENDED_REAL d=2*std::sinh((static_cast<CPPUNIV_EXTENDED_REAL>(std::log(v))-lb)/2);
       ss+=d*d;
     }
     return static_cast<double>(std::sqrt(ss/x.size()));

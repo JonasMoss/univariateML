@@ -1,19 +1,12 @@
 // Logit-normal law: logit(X) is normal.
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../special/special.hpp"
 #include <cmath>
 namespace cppunivariate {
 namespace distributions {
 inline double logitnorm_logtail(double z, bool lower) {
-  const double t = lower ? -z : z;
-  if (t < 0) return std::log1p(-std::exp(logitnorm_logtail(-z,lower)));
-  if (t > 100) {
-    const double u = 1 / (t*t);
-    return -0.5*t*t - std::log(t) - 0.5*std::log(2*M_PI) +
-      std::log1p(-u + 3*u*u - 15*u*u*u + 105*u*u*u*u);
-  }
-  const long double v = special::normal_cdf_extended(z,lower);
-  return static_cast<double>(std::log(v));
+  return special::fs_normal_p(z,lower,true);
 }
 
 inline bool logitnorm_valid(double mu,double sigma) {
@@ -41,11 +34,21 @@ inline double qlogitnorm(double p,double mu,double sigma,bool lower_tail=true,bo
   // Always invert the smaller tail, without rounding a near-one probability.
   double lp=log_p ? p : std::log(p);
   if (lp>-0.6931471805599453) { lp=std::log(-std::expm1(lp)); lower_tail=!lower_tail; }
+  const double median_lp=logitnorm_logtail(0,false);
+  if (lp==median_lp)
+    return mu>=0 ? 1/(1+std::exp(-mu)) : std::exp(mu)/(1+std::exp(mu));
   double lo=0,hi=std::sqrt(-lp)*2+1;
-  for (int i=0;i<100;++i) {
+  if (!(median_lp>=lp && logitnorm_logtail(hi,false)<=lp))
+    return special::kNaN;
+  bool adjacent=false;
+  for (int i=0;i<1100;++i) {
     const double mid=lo+(hi-lo)/2;
-    if (logitnorm_logtail(mid,false)>lp) lo=mid; else hi=mid;
+    if (mid==lo || mid==hi) {adjacent=true; break;}
+    const double v=logitnorm_logtail(mid,false);
+    if (std::isnan(v)) return special::kNaN;
+    if (v>lp) lo=mid; else hi=mid;
   }
+  if (!adjacent) return special::kNaN;
   const double z=mu+sigma*(lower_tail ? -hi : hi);
   return z>=0 ? 1/(1+std::exp(-z)) : std::exp(z)/(1+std::exp(z));
 }

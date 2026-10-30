@@ -134,3 +134,7 @@ TEST_CASE("gb2: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::gb2_mle(x,1e-8,1).status==cppunivariate::Gb2Status::SearchUnresolved);
 }
+
+TEST_CASE("gb2: beta logit inversion fails when a finite bracket cannot be represented") {
+  CHECK(std::isnan(cppunivariate::missing_detail::beta_logit_q(-1e308,1e-308,2,true)));
+}

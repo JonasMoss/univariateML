@@ -19,6 +19,7 @@
 // Stirling form. Constant data have s = 0: no MLE (point-mass limit).
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/newton.hpp"
 #include "../../core/reductions.hpp"
@@ -98,7 +99,7 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   const double dn = static_cast<double>(n);
   double mean_hat = cppunivariate::mean(x);
   if (!std::isfinite(mean_hat)) {
-    long double total = 0.0L;
+    CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
     for (auto v : x) total += v;
     mean_hat = static_cast<double>(total / dn);
   }
@@ -167,7 +168,7 @@ inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double
   if (x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
       (!std::isnan(scale) && !(scale>0 && std::isfinite(scale))))
     return {nan,nan,nan,0,GammaStatus::IterationFailure};
-  long double total=0,logs=0;
+  CPPUNIV_EXTENDED_REAL total=0,logs=0;
   for(double v:x) {
     if (!(v>0 && std::isfinite(v))) return {nan,nan,nan,0,GammaStatus::IterationFailure};
     total+=v; logs+=std::log(v);
@@ -175,8 +176,15 @@ inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double
   const double n=static_cast<double>(x.size());
   int iterations=0;
   double rate;
+  if (std::isnan(scale) && !std::isfinite(total)) {
+    double mean=0; for(double v:x) mean+=v/n;
+    scale=mean/shape; rate=1/scale;
+    double penalty=0; for(double v:x) penalty+=v/scale;
+    const double ll=n*(shape*std::log(rate)-std::lgamma(shape))+(shape-1)*static_cast<double>(logs)-penalty;
+    return {shape,scale,ll,0,std::isfinite(ll)?GammaStatus::Ok:GammaStatus::IterationFailure};
+  }
   if (std::isnan(scale)) {
-    rate=static_cast<double>(static_cast<long double>(shape)*n/total);
+    rate=static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(shape)*n/total);
     scale=1.0/rate;
   } else {
     rate=1.0/scale;

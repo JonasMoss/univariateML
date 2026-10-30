@@ -13,6 +13,7 @@
 // MLE (point-mass limit) and are flagged.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/reductions.hpp"
 #include "../../core/span.hpp"
@@ -40,8 +41,8 @@ namespace beta_detail {
 // Avoid subtracting nearly equal digammas in concentrated held-shape fits.
 inline double digamma_increment(double z, double h) {
   if (z >= 1e5) {
-    const long double a = z, b = h, c = a+b;
-    return std::log1p(b/a) + .5L*(b/a)/c + b*(2*a+b)/(12*a*a*c*c);
+    const CPPUNIV_EXTENDED_REAL a = z, b = h, c = a+b;
+    return std::log1p(b/a) + CPPUNIV_EXTENDED_LITERAL(.5,.5L)*(b/a)/c + b*(2*a+b)/(12*a*a*c*c);
   }
   if (h < 1e-6*z)
     return h * cppunivariate::special::trigamma(z + .5*h);
@@ -51,19 +52,19 @@ inline double digamma_increment(double z, double h) {
 // Local log-beta evaluation for held fits. The shared lgamma difference
 // loses the entire normalizer when one shape dwarfs the other.
 inline double held_logbeta(double a, double b) {
-  const long double z = std::max(a,b), h = std::min(a,b);
+  const CPPUNIV_EXTENDED_REAL z = std::max(a,b), h = std::min(a,b);
   if (z < 1e6) return cppunivariate::special::lbeta(a,b);
-  const long double r = h/z, lp = std::log1p(r);
+  const CPPUNIV_EXTENDED_REAL r = h/z, lp = std::log1p(r);
   if (h >= 1e6) {
-    const long double total = z+h;
-    const auto correction = [](long double v) {return (1-1/(30*v*v))/(12*v);};
-    return .5L*std::log(2*M_PI) - .5L*std::log(total) -
-      (z-.5L)*lp + (h-.5L)*(std::log(r)-lp) +
+    const CPPUNIV_EXTENDED_REAL total = z+h;
+    const auto correction = [](CPPUNIV_EXTENDED_REAL v) {return (1-1/(30*v*v))/(12*v);};
+    return CPPUNIV_EXTENDED_LITERAL(.5,.5L)*std::log(2*M_PI) - CPPUNIV_EXTENDED_LITERAL(.5,.5L)*std::log(total) -
+      (z-CPPUNIV_EXTENDED_LITERAL(.5,.5L))*lp + (h-CPPUNIV_EXTENDED_LITERAL(.5,.5L))*(std::log(r)-lp) +
       correction(z)+correction(h)-correction(total);
   }
-  const long double lm = r < 1e-4 ?
-    r*r*(-.5L+r*(1.0L/3+r*(-.25L+r*(.2L-r/6)))) : lp-r;
-  const long double increment = h*std::log(z)+(h-.5L)*lp+z*lm-h/(12*z*(z+h));
+  const CPPUNIV_EXTENDED_REAL lm = r < 1e-4 ?
+    r*r*(-CPPUNIV_EXTENDED_LITERAL(.5,.5L)+r*(CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)/3+r*(-CPPUNIV_EXTENDED_LITERAL(.25,.25L)+r*(CPPUNIV_EXTENDED_LITERAL(.2,.2L)-r/6)))) : lp-r;
+  const CPPUNIV_EXTENDED_REAL increment = h*std::log(z)+(h-CPPUNIV_EXTENDED_LITERAL(.5,.5L))*lp+z*lm-h/(12*z*(z+h));
   return cppunivariate::special::lgamma(static_cast<double>(h))-increment;
 }
 

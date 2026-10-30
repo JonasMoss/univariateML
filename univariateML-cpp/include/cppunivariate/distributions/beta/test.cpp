@@ -100,3 +100,7 @@ TEST_CASE("beta: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::beta_mle(x,1e-8,1).status==cppunivariate::BetaStatus::IterationFailure);
 }
+
+TEST_CASE("beta: symmetric median is an exact logit root") {
+  CHECK(cppunivariate::distributions::qbeta(0.5,2,2,true,false)==doctest::Approx(0.5));
+}

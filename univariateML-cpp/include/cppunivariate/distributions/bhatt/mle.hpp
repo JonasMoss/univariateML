@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 #include "dpqr.hpp"
 #include "../norm/mle.hpp"
@@ -18,19 +19,19 @@ struct Profile {
     // s and b are this call's fixed parameters (only m moves across Newton
     // steps), so their logs/square are loop-invariant: hoisted out of both
     // loops instead of being recomputed at every point on every iteration.
-    const long double log2b=std::log(2*static_cast<long double>(b));
-    const long double logs=std::log(static_cast<long double>(s));
-    const long double s2=static_cast<long double>(s)*s;
+    const CPPUNIV_EXTENDED_REAL log2b=std::log(2*static_cast<CPPUNIV_EXTENDED_REAL>(b));
+    const CPPUNIV_EXTENDED_REAL logs=std::log(static_cast<CPPUNIV_EXTENDED_REAL>(s));
+    const CPPUNIV_EXTENDED_REAL s2=static_cast<CPPUNIV_EXTENDED_REAL>(s)*s;
     for(int k=0;k<60;++k) {
-      long double score=0,deriv=0;
+      CPPUNIV_EXTENDED_REAL score=0,deriv=0;
       for(double z:x) {
-        const long double u=(static_cast<long double>(z)-m-b)/s,v=(static_cast<long double>(z)-m+b)/s;
-        const long double lu=logphi(u),lv=logphi(v);
-        const long double ld=distributions::dbhatt(z,m,s,b,true)+log2b;
-        const long double A=std::exp(lu-ld),B=std::exp(lv-ld);
-        long double g=0;
+        const CPPUNIV_EXTENDED_REAL u=(static_cast<CPPUNIV_EXTENDED_REAL>(z)-m-b)/s,v=(static_cast<CPPUNIV_EXTENDED_REAL>(z)-m+b)/s;
+        const CPPUNIV_EXTENDED_REAL lu=logphi_extended(u),lv=logphi_extended(v);
+        const CPPUNIV_EXTENDED_REAL ld=distributions::dbhatt(z,m,s,b,true)+log2b;
+        const CPPUNIV_EXTENDED_REAL A=std::exp(lu-ld),B=std::exp(lv-ld);
+        CPPUNIV_EXTENDED_REAL g=0;
         if(lu!=lv) {
-          const long double ln=std::max(lu,lv)+std::log(-std::expm1(-std::abs(lu-lv)));
+          const CPPUNIV_EXTENDED_REAL ln=std::max(lu,lv)+std::log(-std::expm1(-std::abs(lu-lv)));
           g=(lu>lv?1:-1)*std::exp(ln-ld-logs);
         }
         score+=g;deriv+=(u*A-v*B)/s2-g*g;
@@ -56,8 +57,8 @@ struct Profile {
       double bound=n*std::min(peak_u,peak_n);
       if(bound<=face)return {0,s,b,bound,0,BhattStatus::Ok};
       if(x.front()!=x.back()) {
-        const long double radius=(static_cast<long double>(x.back())-x.front())/2;
-        const double pair=static_cast<double>(2*logQ((radius-b)/s));
+        const CPPUNIV_EXTENDED_REAL radius=(static_cast<CPPUNIV_EXTENDED_REAL>(x.back())-x.front())/2;
+        const double pair=static_cast<double>(2*logQ_extended((radius-b)/s));
         bound=std::min(bound,2*peak_u+(n-2)*std::min(peak_u,peak_n)+pair);
         if(bound<=face)return {0,s,b,bound,0,BhattStatus::Ok};
       }
@@ -124,7 +125,7 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   if(!(scale>0)){if(std::isnan(sigma)&&std::isnan(a)){bad.status=BhattStatus::Unbounded;return bad;}scale=std::isnan(sigma)?a:sigma;}
   if(!std::isnan(sigma))scale=std::max(scale,sigma);
   if(!std::isnan(a))scale=std::max(scale,a);
-  for(double& v:y)v=static_cast<double>((static_cast<long double>(v)-centre)/scale);
+  for(double& v:y)v=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-centre)/scale);
   const double n=y.size(),held_mu=std::isnan(mu)?mu:(mu-centre)/scale;
   const double held_s=std::isnan(sigma)?sigma:sigma/scale,held_a=std::isnan(a)?a:a/scale;
   // With width held and covering the sample, pointwise and complementary

@@ -3,6 +3,7 @@
 // (gamma_scale = 1/rate).
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -49,8 +50,8 @@ inline NakaResult naka_mle(span x,double tol,int maxit,double shape,double scale
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
      (!std::isnan(scale) && !(scale>0 && std::isfinite(scale))))return {nan,nan,nan,0,GammaStatus::IterationFailure};
-  long double sum=0,logs=0;
-  for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,0,GammaStatus::IterationFailure};sum+=static_cast<long double>(v)*v;logs+=std::log(v);}
+  CPPUNIV_EXTENDED_REAL sum=0,logs=0;
+  for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,0,GammaStatus::IterationFailure};sum+=static_cast<CPPUNIV_EXTENDED_REAL>(v)*v;logs+=std::log(v);}
   const double n=static_cast<double>(x.size());
   if(std::isnan(scale))scale=static_cast<double>(sum/n);
   int iterations=0;

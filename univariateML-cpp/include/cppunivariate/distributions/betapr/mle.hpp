@@ -1,5 +1,6 @@
 // Three-parameter beta-prime MLE, with explicit likelihood comparisons to faces.
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/span.hpp"
@@ -240,8 +241,8 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
     const double a=fa?held_a:betapr_detail::shape_root(held_b,ta);
     const double b=fb?held_b:betapr_detail::shape_root(held_a,tb);
     // Stable density through log(Y) and log(1-Y); no x/scale overflow.
-    const long double la=a,lb=b;
-    const long double logbeta=std::lgamma(la)+std::lgamma(lb)-std::lgamma(la+lb);
+    const CPPUNIV_EXTENDED_REAL la=a,lb=b;
+    const CPPUNIV_EXTENDED_REAL logbeta=std::lgamma(la)+std::lgamma(lb)-std::lgamma(la+lb);
     const double ll=static_cast<double>(n*(-logbeta-la*ta-lb*tb-lm));
     const bool bad_a=!fa&&(a>=.999e8 || a<=std::exp(-39.99) ||
       std::abs(special::digamma(a+b)-special::digamma(a)-ta)>1e-7*std::max(1.0,ta));
@@ -279,6 +280,12 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
     const double scale=held_b/invmean;
     face_ll=n*(held_b*std::log(scale)-special::lgamma(held_b)-(held_b+1)*lm-held_b);
   }
+  // With identical observations, profiling scale gives a monotone density
+  // in the free shape: psi(a+b)-psi(b) > log((a+b)/b).
+  // Thus its supremum is precisely the appropriate gamma face.
+  if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {held_a,held_b,nan,face_ll,0,
+      fa?BetaPrimeStatus::GammaBoundary:BetaPrimeStatus::InvGammaBoundary};
   BetaPrimeResult best=invalid;best.logLik=-INFINITY;
   const double lo=lm-24,hi=lm+24;
   constexpr int grids=384;
