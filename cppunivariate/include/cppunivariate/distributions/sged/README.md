@@ -42,6 +42,35 @@ r:
     iterlim: "Maximum number of optimisation iterations."
 log_density: "log(sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)) - log(sd) + log(2/(xi + 1/xi)) + log(nu/(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu))*2**(1 + 1/nu)*gamma(1/nu))) - Abs(Piecewise(((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))/xi, (sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi)) > 0), ((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))*xi, True)))**nu/(2*(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu)))**nu)"
 limits:
+  - {name: unresolved constrained uniform endpoint rates, fixed: [sd], when: "fixed uniform width equals the sample range and its endpoint face would win", status: ScaleBoundary}
+  - {name: unresolved constrained uniform endpoint rates, fixed: [sd, xi], when: "fixed uniform width equals the sample range and its endpoint face would win", status: ScaleBoundary}
+  - {model: unif, fixed: [mean], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {name: right translated half-family, fixed: [mean], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {name: left translated half-family, fixed: [mean], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {name: constant sample scale collapse, fixed: [mean], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
+  - {model: unif, fixed: [sd], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {name: right translated half-family, fixed: [sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {name: left translated half-family, fixed: [sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {name: right translated half-family, fixed: [nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {name: left translated half-family, fixed: [nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {name: constant sample scale collapse, fixed: [nu], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
+  - {model: unif, fixed: [xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {name: constant sample scale collapse, fixed: [xi], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
+  - {model: unif, fixed: [mean, sd], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {name: right translated half-family, fixed: [mean, sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {name: left translated half-family, fixed: [mean, sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {name: right translated half-family, fixed: [mean, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {name: left translated half-family, fixed: [mean, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {name: constant sample scale collapse, fixed: [mean, nu], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
+  - {model: unif, fixed: [mean, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {name: constant sample scale collapse, fixed: [mean, xi], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
+  - {name: right translated half-family, fixed: [sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {name: left translated half-family, fixed: [sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {model: unif, fixed: [sd, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {name: constant sample scale collapse, fixed: [nu, xi], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
+  - {name: right translated half-family, fixed: [mean, sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {name: left translated half-family, fixed: [mean, sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {model: unif, fixed: [mean, sd, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
   - {name: scale collapse, fixed: [mean, nu, xi], when: "all observations equal held mean and sd tends to zero", status: Unbounded, message: "Scale collapse"}
   - {name: uncertified scale boundary, fixed: [mean, nu, xi], when: "conditional scale search reaches its numerical tail guard", status: ScaleBoundary, message: "Scale-collapse boundary"}
   - model: unif
@@ -60,19 +89,6 @@ references:
   - "Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power distribution and its generalizations. Statistics & Probability Letters, 107, 111-114. doi:10.1016/j.spl.2015.08.009."
 examples: |
   mlsged(precip)
-holds:
-- {held: [mean], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [sd], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [nu], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [xi], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [mean, sd], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [mean, nu], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [mean, xi], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [sd, nu], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [sd, xi], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [nu, xi], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [mean, sd, nu], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
-- {held: [mean, sd, xi], status: not-implemented, reason: "Hold subset existence remains unresolved (P0)"}
 ---
 
 The skew generalized error distribution extends the exponential-power family with Fernandez-Steel asymmetry. Its location and scale parameters are the mean and standard deviation.
@@ -82,7 +98,7 @@ The skew generalized error distribution extends the exponential-power family wit
 Fitting restricts the shape to $\nu \ge 1$, the log-concave GED range,
 including the attained Laplace member at $\nu=1$. Without this restriction
 the likelihood is unbounded as $\nu \to 0$ for nonconstant samples
-(Tumlinson, 2015). Very sharp-peaked shapes below one are not fitted.
+(Tumlinson, 2015). Estimated shapes below one are not fitted.
 fGarch's own `gedFit` allows positive shapes below one and returns local
 solutions. Density, probability, quantile and random generation functions
 retain the full $\nu>0$ domain. Coefficients follow fGarch's mean and
@@ -109,18 +125,19 @@ endpoint is the uniform. A winning half face has no MLE in the skewed
 family and is reported explicitly.
 
 
-Holding `nu` and `xi` together with `sd` supports location estimation;
-holding them together with `mean` supports scale estimation. All coefficients
-may also be held for likelihood evaluation. The remaining partial holds
-retain explicit implementation exceptions because their existence criteria
-were unresolved in P0. Conditional searches scan and refine a one-dimensional
-likelihood, including density kinks in location; numerical comparisons do
-not certify global optimality.
+Every coefficient may be held, singly or jointly; held values are returned
+exactly. Conditional fits compare multistart interior searches with every
+reachable half-family and shape boundary, retaining the held mean and sd
+constraints on those faces. The fixed-shape, fixed-skew location-scale fit
+profiles scale and scans location, including observation kinks. Scalar
+searches scan before refining competing brackets. Numerical multistart and
+finite scans provide evidence rather than a global optimality certificate.
+A search reaching its numerical guard stops instead of returning a fit.
 
 With mean and shapes held, scale maxima exist unless all observations equal
 the held mean, when scale collapse makes the likelihood unbounded. Held
 positive shapes below one are accepted for these conditional fits; the
-$\nu\ge1$ restriction applies to estimated shape. With scale held,
+$\nu\ge1$ restriction applies to estimated shape. With scale and both shapes held,
 location maxima exist even with ties.
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
@@ -128,6 +145,12 @@ and emit a warning of class `univariateML_restricted`. Held coefficients are
 not flagged. README hold exemptions apply to free coefficients. Failed
 optimizers return a failure status unless the score norm in fitting
 coordinates is below `1e-3`; unresolved scalar searches stop.
+
+When both mean and sd are held, data exactly at a limiting uniform
+endpoint retain the GED endpoint density penalty. If only sd is held
+and its limiting uniform width equals the sample range exactly, a winning
+endpoint face is reported as uncertified rather than returning a uniform
+proxy for its constrained likelihood.
 
 ## d/p/q/r
 

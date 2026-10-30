@@ -58,7 +58,7 @@ test_that("scale, controls and validation work", {
   x <- rbetapr(n = 1000, shape1 = 1, shape2 = 2, scale = 3)
   fit <- mlbetapr(x)
   expect_s3_class(fit, "univariateML")
-  expect_identical(attr(fit, "model"), "BetaPrime")
+  expect_identical(attr(fit, "model"), "Beta prime")
   expect_equal(coef(mlbetapr(c(x, NA), na.rm=TRUE)), coef(fit))
   expect_error(mlbetapr(c(x, NA)))
   expect_error(mlbetapr(c(x, 0)))

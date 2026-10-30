@@ -169,9 +169,17 @@ def check(id):
     # Domains can depend on other fitted coordinates (a <= c <= b).
     # Keep the transform's numerical bracket, but validate the actual joint
     # domain at every trial rather than the golden's substituted endpoints.
-    domain_fns = [[sp.lambdify(syms, sp.sympify(v.strip(), locals={**dict(zip([p['name'] for p in params], syms)), 'inf': sp.oo}), 'numpy')
+    # Coefficient names can be Python keywords (Tukey `lambda`): parse them
+    # as `p_<name>`, as quality/density.py does for the log density.
+    names = sorted((p['name'] for p in params), key=len, reverse=True)
+    safe = {'p_' + p['name']: s for p, s in zip(params, syms)}
+    def parse(v):
+        for n in names:
+            v = re.sub(r'\b' + n + r'\b', 'p_' + n, v)
+        return sp.sympify(v, locals={**safe, 'inf': sp.oo})
+    domain_fns = [[sp.lambdify(syms, parse(v.strip()), 'numpy')
                    for v in p['domain'][1:-1].split(',')] for p in params]
-    support_fns = [sp.lambdify(syms, sp.sympify(r_bound_to_sympy(str(meta['support'][key])), locals={**dict(zip([p['name'] for p in params], syms)), 'inf': sp.oo}), 'numpy') for key in ('lower', 'upper')]
+    support_fns = [sp.lambdify(syms, parse(r_bound_to_sympy(str(meta['support'][key]))), 'numpy') for key in ('lower', 'upper')]
 
     def objective(z):
         try:

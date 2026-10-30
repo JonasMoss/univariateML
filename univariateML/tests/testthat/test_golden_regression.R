@@ -18,30 +18,23 @@
 # Goldens live in distributions/<id>/golden.json, outside the package.
 DISTRIBUTIONS_DIR <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR", "")
 
-# Golden comparisons cannot be tighter than the fitter's own declared
-# convergence tolerance (the `gradtol`/`reltol`/`abstol` default in its
-# README `r.control`, i.e. the `tol` it was actually given below). Once a
-# multi-D optimiser is stopped by a gradient- or step-norm criterion, its
-# estimate is only guaranteed to that criterion's resolution; a different
-# platform (compiler, libm, Boost.Math minor version) can take a different
-# BFGS/Newton trajectory -- different floating-point summation order in a
-# finite-difference gradient, a different number of line-search or
-# bisection steps -- and land anywhere within that resolution, concentrated
-# in whichever coordinate is least curved (e.g. a Student-t `nu` with a
-# near-flat profile likelihood, see cppunivariate's std/test.cpp). Comparing
-# any tighter chases that platform noise, not a real regression. Exact
-# closed-form fits and well-conditioned 1-D Newton solves on an explicit
-# score equation are not in this table and keep the 1e-12 floor below --
-# see cppunivariate/tests/test_support.hpp's kTol/kFdTol comment for the
-# same rule applied to the C++ golden checks.
+# Golden comparisons cannot be tighter than the fitters' declared convergence
+# tolerance (the `gradtol`/`reltol`/`abstol` default in each distribution's
+# README `r.control`, i.e. the `tol` it was actually given below). But
+# cross-machine drift (simbox vs local, 2026-10-29) was much smaller than
+# the BFGS tolerance defaults: std's estimates differed by a mean relative of
+# 9.4e-6, with nu's change at 2.5e-6 relative. kFdTol = 3e-5 (~3x the largest
+# observed drift) keeps golden tests as regression canaries, not noise followers.
+# The fitters' declared gradtol is the upper bound; see cppunivariate/tests/
+# test_support.hpp's kFdTol comment for the same rule applied to C++ checks.
 GOLDEN_TOLERANCE <- c(
   # Finite-difference BFGS on (mu, log sigma, log(nu - 2)[, log xi]);
-  # shared default gradtol (cppunivariate/tests/test_support.hpp kFitTol).
+  # default gradtol 3e-5 (cppunivariate/tests/test_support.hpp kFdTol).
   # invparalogis is paralogis_mle run on 1/x, so it shares the same fitter
   # and default.
-  std = 1.220703e-4, ged = 1.220703e-4, sstd = 1.220703e-4,
-  sged = 1.220703e-4, paralogis = 1.220703e-4, lst = 1.220703e-4,
-  invparalogis = 1.220703e-4,
+  std = 3e-5, ged = 3e-5, sstd = 3e-5,
+  sged = 3e-5, paralogis = 3e-5, lst = 3e-5,
+  invparalogis = 3e-5,
   # Finite-difference BFGS on (shape1, shape2, scale); own default gradtol
   # (distributions/<id>/adapter.cpp).
   burr = 1e-8, invburr = 1e-8,

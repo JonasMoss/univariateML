@@ -40,7 +40,7 @@ test_that("dml/pml/qml/rml map mu and sigma onto the internal half-normal", {
     expect_equal(pml(qml(p, fit, lower, logs), fit, lower), u, tolerance = 1e-10)
   }
   set.seed(9); actual <- rml(50, fit)
-  set.seed(9); expect_equal(actual, rhnorm(50, mu, sigma))
+  set.seed(9); expect_equal(actual, mu + rhnorm(n = 50, mu = 0, sigma = sigma))
   expect_true(all(actual >= mu))
   expect_length(simulate_default("mlhnorm", 10), 10)
   expect_true(all(simulate_default("mlhnorm", 100) >= 0))
@@ -54,6 +54,27 @@ test_that("bootstrap refits with mlhnorm", {
   expect_true(all(boot["sigma", ] > 0))
 })
 
+test_that("internal dhnorm retains the translated half-normal endpoints", {
+  expect_null(univariateML:::univariateML_args$mlhnorm)
+  expect_null(univariateML:::univariateML_shifts$mlhnorm)
+  fit <- mlhnorm(c(-4,-3,0,2), mu = NULL)
+  mu <- unname(fit[1]); sigma <- unname(fit[2])
+  x <- mu + sigma*c(-1,0,.01,.5,2)
+  expect_equal(dml(x, fit), ifelse(x >= mu, 2*dnorm(x, mu, sigma), 0), tolerance = 1e-12)
+  expect_equal(dml(mu, fit, log = TRUE), log(2) + dnorm(mu, mu, sigma, log = TRUE))
+  for (lower in c(TRUE,FALSE)) for (logs in c(TRUE,FALSE)) {
+    upper <- pmin(1, 2*pnorm(x, mu, sigma, lower.tail = FALSE))
+    expected <- if (lower) 1-upper else upper
+    if (logs) expected <- log(expected)
+    expect_equal(pml(x, fit, lower.tail = lower, log.p = logs), expected, tolerance = 1e-12)
+    u <- c(0,.1,.5,.9,1)
+    expected <- mu + sigma*qnorm(if (lower) (1-u)/2 else u/2, lower.tail = FALSE)
+    expect_equal(qml(if (logs) log(u) else u, fit, lower.tail = lower, log.p = logs),
+                 expected, tolerance = 1e-12)
+  }
+  set.seed(12); actual <- rml(30, fit)
+  set.seed(12); expect_identical(actual, mu + rhnorm(n = 30, mu = 0, sigma = sigma))
+})
 
 test_that("half-normal preserves exact endpoints at large translations", {
   x <- 1e15 + c(0, 1, 2, 3)
@@ -79,7 +100,7 @@ test_that("held half-normal endpoint is exact, closed and counted as fixed", {
   for(lower in c(TRUE,FALSE)) for(lp in if(lower) -100 else c(-100,-1000))
     expect_equal(pml(qml(lp,f,lower,TRUE),f,lower,TRUE),lp,tolerance=1e-10)
   set.seed(1); a <- rml(20,f)
-  set.seed(1); expect_identical(a,rhnorm(20, f[["mu"]], f[["sigma"]]))
+  set.seed(1); expect_identical(a, f[["mu"]] + rhnorm(n = 20, mu = 0, sigma = f[["sigma"]]))
   set.seed(1); boot <- bootstrapml(f,reps=3,reducer=identity)
   expect_true(all(boot["mu",]==0))
 })

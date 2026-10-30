@@ -1,6 +1,6 @@
 ---
 id: invweibull
-name: InverseWeibull
+name: Inverse Weibull
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape
@@ -8,21 +8,21 @@ params:
   domain: (0, inf)
   simulate: 2.0
   kind: regular
-- name: rate
-  role: rate
+- name: scale
+  role: scale
   domain: (0, inf)
-  simulate: 3.0
+  simulate: 0.3333333333333333
   kind: regular
 r:
   density: dinvweibull
   sampler: rinvweibull
   control:
     shape: Optional held shape; NULL estimates it.
-    rate: Optional held rate; NULL estimates it.
+    scale: Optional held scale; NULL estimates it.
     shape0: Optional positive finite starting shape; `NULL` uses the automatic start.
     reltol: Relative step tolerance in log(sigma) of the underlying Gumbel fit.
     iterlim: Maximum number of iterations.
-log_density: log(shape) - shape*log(rate) - (shape + 1)*log(x) - (rate*x)**(-shape)
+log_density: log(shape) + shape*log(scale) - (shape + 1)*log(x) - (x/scale)**(-shape)
 references:
   - "Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley."
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
@@ -31,8 +31,8 @@ examples: |
   mlinvweibull(precip)
 limits:
 - name: unbounded likelihood
-  fixed: [rate]
-  when: Every reciprocal observation equals held rate.
+  fixed: [scale]
+  when: Every observation equals the held scale.
   status: Unbounded
   message: unbounded
 ---
@@ -41,6 +41,6 @@ The inverse Weibull distribution is the distribution of the reciprocal of a Weib
 
 ## Details
 
-The parameter `rate` is the reciprocal of the inverse Weibull scale, following actuar. The optional `shape0` start was documented but ignored in univariateML 1.x.
+The optional `shape0` start was documented but ignored in univariateML 1.x.
 
-With rate held, the likelihood is unbounded if every reciprocal observation equals that rate. Holding shape permits constant data.
+With scale held, the likelihood is unbounded if every reciprocal observation equals `1/scale`. Holding shape permits constant data.

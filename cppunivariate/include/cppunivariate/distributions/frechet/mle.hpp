@@ -225,8 +225,8 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
      if(!(y[i]>0) || !std::isfinite(y[i])) return bad;
    }
    const auto r=invweibull_mle(span{y.data(),y.size()},tol,maxit);
-   if(!(r.shape>0) || !(r.rate>0) || !std::isfinite(r.shape) || !std::isfinite(1/r.rate) || !std::isfinite(r.logLik)) return bad;
-   return {r.shape,mu,1/r.rate,r.logLik,r.iterations,r.iterations>maxit ? FrechetStatus::IterationFailure : FrechetStatus::Ok};
+   if(!(r.shape>0) || !(r.scale>0) || !std::isfinite(r.shape) || !std::isfinite(r.scale) || !std::isfinite(r.logLik)) return bad;
+   return {r.shape,mu,r.scale,r.logLik,r.iterations,r.status==InvWeibullStatus::Ok ? FrechetStatus::Ok : FrechetStatus::IterationFailure};
  }
  const auto r=frechet_gev_mle(x,tol,maxit);
  if(r.status==GevStatus::InvalidData) return bad;

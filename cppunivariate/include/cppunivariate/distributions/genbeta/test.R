@@ -72,7 +72,8 @@ test_that("face fits include unit gamma and the moving effective endpoint", {
   x<-.7*u^2
   expect_error(mlgenbeta(x,scale=1),"mlpower")
   g<-mllgamma(1/exp(-qgamma(u,2,rate=3)))
-  expect_equal(as.numeric(g),as.numeric(mlgamma(qgamma(u,2,rate=3))),tolerance=1e-8)
+  base <- mlgamma(qgamma(u,2,rate=3))
+  expect_equal(as.numeric(g),c(base[["shape"]],1/base[["scale"]]),tolerance=1e-8)
 })
 
 test_that("genbeta is scale equivariant and seeded random evaluation uses the internal sampler", {

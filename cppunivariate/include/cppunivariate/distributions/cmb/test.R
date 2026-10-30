@@ -117,3 +117,59 @@ test_that("P3 Bernoulli endpoint fits are silent", {
  expect_silent(f<-mlcmb(c(1,1),size=1))
  expect_equal(as.numeric(f),c(1,1,1))
 })
+
+test_that("CMB: held canonical coordinates give a certified integer profile", {
+  set.seed(9302)
+  samples <- c(lapply(c(20,100),function(n) rcmb(n,10,.3,1.5)),
+               list(c(0,0,1,1,2,4,8,10),rep(c(2,3),10),rep(0,20)),
+               lapply(c(20,100),function(n) rpois(n,4)))
+  for(x in samples) for(p in c(.2,.6)) for(nu in c(-2,0,.5,1.5)) {
+    f <- mlcmb(x,size=NULL,prob=p,nu=nu)
+    profile <- vapply(seq(max(x),120),function(N)sum(dcmb(x,N,p,nu,log=TRUE)),0.)
+    expect_equal(attr(f,"logLik"),max(profile),tolerance=1e-9)
+    expect_equal(f[["size"]],max(x)+which.max(profile)-1)
+    expect_identical(unname(f[c("prob","nu")]),c(p,nu))
+    expect_setequal(attr(f,"fixed"),c("prob","nu"))
+    expect_equal(attr(logLik(f),"df"),1L)
+    expect_equal(attr(f,"logLik"),sum(dcmb(x,f[["size"]],p,nu,log=TRUE)))
+  }
+  # The nu=1 submodel also agrees with an external reference.
+  x <- c(0,1,2,2,3,5)
+  f <- mlcmb(x,size=NULL,prob=.3,nu=1)
+  oracle <- vapply(5:100,function(N)sum(dbinom(x,N,.3,log=TRUE)),0.)
+  expect_equal(attr(f,"logLik"),max(oracle),tolerance=1e-10)
+})
+
+test_that("CMB: free size validates holds, endpoints and resource failures", {
+  for(nu in c(-2,0,2)) for(p in c(0,1)) {
+    f <- mlcmb(rep(3*p,20),size=NULL,prob=p,nu=nu)
+    expect_equal(as.numeric(f),c(3*p,p,nu))
+    expect_equal(attr(f,"logLik"),0)
+    expect_setequal(attr(f,"fixed"),c("prob","nu"))
+    expect_error(mlcmb(c(0,1),size=NULL,prob=p,nu=nu),"between zero and size")
+  }
+  expect_error(mlcmb(1:4,size=NULL,prob=.3),"Conway-Maxwell-Poisson")
+  expect_error(mlcmb(1:4,size=NULL,nu=1),"Conway-Maxwell-Poisson")
+  expect_error(mlcmb(1:4,size=NULL),"Conway-Maxwell-Poisson")
+  expect_error(mlcmb(1:4,size=NULL,prob=NaN,nu=1),"prob")
+  expect_error(mlcmb(1:4,size=NULL,prob=.3,nu=Inf),"finite")
+  expect_error(mlcmb(1:4,size=NULL,prob=.3,nu=1,iterlim=0),"positive")
+  expect_error(mlcmb(c(0,100),size=NULL,prob=1e-8,nu=1),"work budget")
+})
+
+test_that("CMB: the P0 two-point limit omits a genuine CMP face", {
+  # For fixed positive nu, odds = lambda / N^nu gives CMP weights
+  # lambda^x / (x!)^nu, with positive mass on three or more integers.
+  k <- 0:40; lambda <- 2; nu <- 1.5
+  z <- k*log(lambda)-nu*lgamma(k+1)
+  face <- exp(z-max(z)); face <- face/sum(face)
+  for(N in c(1000,10000)) {
+    p <- plogis(log(lambda)-nu*log(N))
+    error <- max(abs(dcmb(k,N,p,nu)-face))
+    expect_lt(error,2/N)
+  }
+  expect_gt(sum(face[1:5]),.9)
+  expect_gt(min(face[1:4]),.01)
+  # At nu=0 and fixed p<1/2 the size limit is geometric, not coercive.
+  expect_equal(dcmb(0:8,100,.3,0),dgeom(0:8,1-.3/.7),tolerance=1e-12)
+})

@@ -1,0 +1,45 @@
+{
+  "purpose": "independent illustrative calculations; no production inference tested",
+  "environment": {
+    "python": "3.14.5",
+    "numpy": "2.4.6",
+    "scipy": "1.18.0"
+  },
+  "laplace": {
+    "scale": 1.7,
+    "mean_score": [
+      0.0,
+      3.5290727774843966e-17
+    ],
+    "score_information": [
+      [
+        0.3460207612456748,
+        0.0
+      ],
+      [
+        0.0,
+        0.3460207612456748
+      ]
+    ],
+    "pointwise_location_second_derivative": 0
+  },
+  "triangular": {
+    "a": -1.0,
+    "b": 2.0,
+    "c": 0.25,
+    "mean_score": -5.551115123125783e-17,
+    "opg": 0.4571428571428572,
+    "negative_expected_pointwise_hessian": -0.4571428571428571,
+    "sensitivity_with_kink": 0.45714285714285713
+  },
+  "pareto_shape_pivot_simulation": {
+    "seed": 20261030,
+    "replicates": 20000,
+    "sample_size": 12,
+    "shape": 2.3,
+    "chi_square_df": 22,
+    "coverage": 0.95015,
+    "coverage_mc_standard_error": 0.0015411035007422442,
+    "kolmogorov_smirnov_distance": 0.005384852194391387
+  }
+}

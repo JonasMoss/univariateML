@@ -7,6 +7,6 @@ from quality.truth_reference import Reference, pair, complement, normal, gamma, 
 
 def build(t):
     shape = t['shape']
-    rate = t['rate']
-    return Reference(lambda x: gamma(shape, rate*x), 0, mp.inf)
+    scale = t['scale']
+    return Reference(lambda x: gamma(shape, x/scale), 0, mp.inf)
 

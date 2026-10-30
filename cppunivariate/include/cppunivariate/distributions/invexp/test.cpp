@@ -7,12 +7,12 @@
 TEST_CASE("invexp: golden, reciprocal agreement and score") {
   auto g=mltest::load_distribution_golden("invexp");
   auto r=cppunivariate::invexp_mle(mltest::as_span(g.data));
-  CHECK(r.rate == doctest::Approx(g.estimates.at("rate")).epsilon(1e-12));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(1e-12));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-12));
   std::vector<double> y; double jac=0;
   for (double x:g.data) { y.push_back(1/x); jac-=2*std::log(x); }
   auto b=cppunivariate::exp_mle(mltest::as_span(y));
-  CHECK(r.rate == doctest::Approx(1/b.rate));
+  CHECK(r.scale == doctest::Approx(b.rate));
   CHECK(r.logLik == doctest::Approx(b.logLik+jac).epsilon(1e-12));
 
 }
@@ -20,13 +20,13 @@ TEST_CASE("invexp: golden, reciprocal agreement and score") {
 TEST_CASE("invexp P2 every held subset") {
   const auto g=mltest::load_distribution_golden("invexp");
   std::vector<double> x=g.data;
-  const std::vector<double> held{g.estimates.at("rate")};
+  const std::vector<double> held{g.estimates.at("scale")};
   { const auto r=cppunivariate::invexp_mle(mltest::as_span(x),held[0]);
-    CHECK(r.rate==held[0]);
+    CHECK(r.scale==held[0]);
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dinvexp(v,p[0],true);return s;};
-    std::vector<double> p{r.rate};
+    std::vector<double> p{r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
   }
 }
@@ -46,4 +46,21 @@ TEST_CASE("invexp: extreme tail regressions") {
   CHECK(cppunivariate::distributions::pinvexp(1e300,1,false,true) == doctest::Approx(-std::log(1e300)).epsilon(1e-12).scale(1e-300));
   CHECK(cppunivariate::distributions::qinvexp(-10000,1,true,true) == doctest::Approx(0.0001).epsilon(1e-12).scale(1e-300));
   CHECK(cppunivariate::distributions::dinvexp(INFINITY,1,true) == -INFINITY);
+}
+
+TEST_CASE("invexp: README scale validation") {
+  cppunivariate::distributions::StdRng<> rng(94);
+  for (double scale : {0.0, -1.0, double(INFINITY), double(NAN)}) {
+    CHECK(std::isnan(cppunivariate::distributions::dinvexp(0.5, scale, false)));
+    CHECK(std::isnan(cppunivariate::distributions::pinvexp(0.5, scale, false, true)));
+    CHECK(std::isnan(cppunivariate::distributions::qinvexp(0.5, scale, false, true)));
+    CHECK(std::isnan(cppunivariate::distributions::rinvexp(rng, scale)));
+  }
+}
+
+TEST_CASE("invexp: finite scale with overflowing reciprocal") {
+  const double scale = 1e-320;
+  CHECK(std::isfinite(cppunivariate::distributions::dinvexp(scale, scale, true)));
+  CHECK(std::isfinite(cppunivariate::distributions::pinvexp(scale, scale, false, true)));
+  CHECK(cppunivariate::distributions::qinvexp(0.5, scale, true, false) > 0.0);
 }

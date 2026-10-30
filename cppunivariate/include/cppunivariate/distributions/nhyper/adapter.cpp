@@ -6,11 +6,12 @@
 
 // [[Rcpp::export]]
 Rcpp::List mlnhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> r,
-                     Rcpp::Nullable<double> N = R_NilValue,
+                     Rcpp::Nullable<double> N,
                      Rcpp::Nullable<double> m = R_NilValue) {
-  if(r.isNull())Rcpp::stop("P4 (C6)");
+  if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of population and composition can escape to the growing-urn limit; use mlnbinom(x - r, size = r).");
+  if (N.isNull()) Rcpp::stop("Estimating N with m held is not supported by this fitter.");
+  if (r.isNull()) Rcpp::stop("Estimating r is not supported by this fitter.");
   const double design=Rcpp::as<double>(r);
-  if (N.isNull()) Rcpp::stop("Supply known population size `N`: joint estimation is not supported; the growing-urn limit uses `mlnbinom(x - r, size = r)`.");
   const double held = m.isNull() ? std::numeric_limits<double>::quiet_NaN() : Rcpp::as<double>(m);
   if (m.isNotNull() && std::isnan(held)) Rcpp::stop("`m` must be a whole number or NULL, not NA.");
   const auto fit = cppunivariate::nhyper_mle(dist_impl::as_span(x), design, Rcpp::as<double>(N), held);
@@ -26,7 +27,7 @@ Rcpp::List mlnhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> r,
     case cppunivariate::NhyperStatus::Ok: break;
   }
   return Rcpp::List::create(
-    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["n"] = fit.n, Rcpp::_["m"] = fit.m, Rcpp::_["r"] = fit.r),
+    Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["m"] = fit.m, Rcpp::_["N"] = fit.N, Rcpp::_["r"] = fit.r),
     Rcpp::_["logLik"] = fit.logLik, Rcpp::_["iterations"] = fit.iterations,
-    Rcpp::_["fixed"] = m.isNull() ? Rcpp::CharacterVector::create("N", "r") : Rcpp::CharacterVector::create("n", "m", "r"));
+    Rcpp::_["fixed"] = m.isNull() ? Rcpp::CharacterVector::create("N", "r") : Rcpp::CharacterVector::create("m", "N", "r"));
 }

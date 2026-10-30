@@ -50,13 +50,13 @@
 #'
 #' #            2.5%      97.5%
 #' # shape 68.624945 160.841557
-#' # rate   3.896915   9.089194
+#' # scale  0.110021   0.256613
 #'
-#' ## The mean of a gamma distribution is shape/rate. Now we calculate a
+#' ## The mean of a gamma distribution is shape * scale. Now we calculate a
 #' ## parametric bootstrap confidence interval for the mean with confidence
 #' ## limits c(0.05, 0.95)
 #'
-#' bootstrapml(object, map = function(x) x[1] / x[2], probs = c(0.05, 0.95))
+#' bootstrapml(object, map = function(x) x[1] * x[2], probs = c(0.05, 0.95))
 #'
 #' #       5%      95%
 #' # 17.33962 18.31253

@@ -66,7 +66,7 @@ test_that("generated d/p/q/r agree with independent truth tables", {
           expect_true(all(good), info = paste(info, "quantile", lower, log_input))
         }
       }
-      # Positional sample size also covers nhyper's nn/n name collision.
+      # Sample size is positional; coefficients follow the truth table names.
       set.seed(20261029 + point)
       draws <- do.call(fun[[4]], c(list(32L), theta))
       set.seed(20261029 + point)

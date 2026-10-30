@@ -178,8 +178,9 @@ univariateML_name <- function(obj) {
 #'
 #' Most models pass their coefficients by name. A model whose reference
 #' functions use other argument names declares `r.args` in its `README.md`
-#' (argument name to coefficient name, collected in `univariateML_args`),
-#' for references in stats whose argument names differ.
+#' (argument name to coefficient expression, collected in `univariateML_args`),
+#' e.g. the stats hypergeometric reference maps `n` to `N - m`.
+#' The resolver also supports `r.shift` for references without a location coefficient.
 #'
 #' @param estimates Named numeric vector of coefficients.
 #' @param name Name of the `ml***` function, or `NULL`.
@@ -247,11 +248,15 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
     if (!is.null(shift_name)) {
       shift <- unname(obj[[shift_name]])
       base_fun <- fun
-      fun <- switch(type,
-        d = function(x, ...) base_fun(x - shift, ...),
-        p = function(q, ...) base_fun(q - shift, ...),
-        q = function(p, ...) base_fun(p, ...) + shift,
-        r = function(n, ...) base_fun(n, ...) + shift)
+      # Retain reference formals so dml/pml/qml recognize log/tail options,
+      # and endpoint closure receives their defaults and explicit overrides.
+      fun <- function() {
+        call_args <- as.list(environment())
+        if (type %in% c("d", "p")) call_args[[1L]] <- call_args[[1L]] - shift
+        value <- do.call(base_fun, call_args)
+        if (type %in% c("q", "r")) value + shift else value
+      }
+      formals(fun) <- formals(base_fun)
     }
   }
   if (type %in% c("d", "p", "q"))
@@ -358,6 +363,13 @@ univariateML_closed_call <- function(fun, obj, type, args) {
       if (length(args[[arg]]) != 1L) return(do.call(fun, args))
       obj[[coefficient]] <- args[[arg]]
     }
+  }
+  # Reference overrides are still in (m,n), while support is expressed in
+  # (m,N). Reconstruct the C6 population size after either count changes.
+  if (!is.null(map) && identical(unname(map["n"]), "N - m") &&
+      all(c("m", "N") %in% names(obj)) && !is.null(args$n)) {
+    if (length(args$n) != 1L) return(do.call(fun, args))
+    obj[["N"]] <- obj[["m"]] + args$n
   }
   s <- univariateML_support(obj)
   dynamic <- vapply(s$expressions, is.character, logical(1))

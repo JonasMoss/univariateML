@@ -2,8 +2,8 @@ context("mlllogis")
 
 ## Data generation.
 set.seed(313)
-small_data <- rllogis(n = 100, shape = 2, rate = 3)
-tiny_data <- rllogis(n = 10, shape = 1, rate = 1)
+small_data <- rllogis(n = 100, shape = 2, scale = 1/3)
+tiny_data <- rllogis(n = 10, shape = 1, scale = 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlllogis(c(tiny_data, NA)))
@@ -15,7 +15,7 @@ obj_2 <- mlllogis(tiny_data)
 
 expect_equal(
   unname(obj_1[1]),
-  unname(-log(obj_2)[2])
+  unname(log(obj_2)[2])
 )
 
 expect_equal(
@@ -32,21 +32,21 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlllogis(small_data, na.rm = TRUE)
 expect_equal(
-  sum(dllogis(x = small_data, shape = est[1], rate = est[2], log = TRUE)),
+  sum(dllogis(small_data, est[1], scale=est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
 ## Check class.
-expect_equal(attr(est, "model"), "Loglogistic")
+expect_equal(attr(est, "model"), "Log-logistic")
 expect_equal(class(est), "univariateML")
 
 # Check names.
-expect_equal(names(est), c("shape", "rate"))
+expect_equal(names(est), c("shape", "scale"))
 
 test_that("llogis handles a seeded sample with a large outlier", {
   set.seed(7)
-  x <- c(rllogis(n = 199, shape = 2, rate = 1), 1e3)
-  objective <- function(p) -sum(dllogis(x = x, shape = exp(p[1]), rate = exp(p[2]), log = TRUE))
+  x <- c(rllogis(199, 2, 1), 1e3)
+  objective <- function(p) -sum(dllogis(x, exp(p[1]), scale=exp(p[2]), log = TRUE))
   oracle <- optim(log(c(2, 1)), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
   expected <- exp(oracle$par)
@@ -63,7 +63,7 @@ test_that("constant log-logistic data have no attained MLE", {
 test_that("P2 held subsets agree with multistart reference likelihoods", {
   set.seed(81029)
   id <- "llogis"
-  pn <- c("shape","rate")
+  pn <- c("shape","scale")
   held_default <- c(1.0,2.0)
   names(held_default) <- pn
   density <- dllogis
@@ -112,16 +112,16 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
 })
 
 test_that("P2 held existence boundaries", {
-expect_error(mlllogis(rep(.5,3),rate=2),"unbounded")
+expect_error(mlllogis(rep(.5,3),scale=.5),"unbounded")
 expect_true(is.finite(logLik(mlllogis(rep(.5,3),shape=2))))
 })
 
 test_that("P2 held solver respects iterlim", {
-  expect_error(suppressWarnings(mlllogis(c(2,3),rate=1,iterlim=1)))
+  expect_error(suppressWarnings(mlllogis(c(2,3),scale=1,iterlim=1)))
 })
 
 test_that("P2 failed held solver is distinguished from constant-data collapse", {
-  expect_error(suppressWarnings(mlllogis(rep(2,3),rate=1,iterlim=1)),"failed to converge")
+  expect_error(suppressWarnings(mlllogis(rep(2,3),scale=1,iterlim=1)),"failed to converge")
 })
 
 test_that("llogis: P3 unfinished optimizer stops", {

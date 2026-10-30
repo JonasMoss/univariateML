@@ -29,7 +29,7 @@ test_that("pareto3: required endpoint, reference likelihood and reproducibility"
 
 test_that("pareto3: reference mapping and unbounded unrestricted path", {
  x <- c(1e-12,.01,.1,1,20,1e10)
- expect_lt(max(abs((dpareto3(x = x, shape = 0.7, scale = 2, min = 0, log = TRUE))-(dllogis(x = x, shape = 0.7, rate = 1/2, log = TRUE)))),1e-12)
+ expect_lt(max(abs((dpareto3(x = x, shape = 0.7, scale = 2, min = 0, log = TRUE))-(dllogis(x = x, shape = 0.7, scale = 2, log = TRUE)))),1e-12)
  y <- c(1,2,4,7)
  ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(dpareto3(x = y, shape = 0.5, scale = 1, min = 1 - e, log = TRUE)))
  expect_true(all(diff(ll)>0))

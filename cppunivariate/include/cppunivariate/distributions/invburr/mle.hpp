@@ -167,7 +167,7 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
   if (r.status == BurrStatus::IterationFailure) status = InvBurrStatus::IterationFailure;
   if (status == InvBurrStatus::InvWeibullBoundary) {
     const auto face = invweibull_mle(x,1e-10,std::max(maxit,100));
-    return {INFINITY,face.shape,1.0/face.rate,face.logLik,r.iterations,status};
+    return {INFINITY,face.shape,face.scale,face.logLik,r.iterations,status};
   }
   if (status == InvBurrStatus::PowerBoundary) {
     const auto face = power_mle(x,0.0);

@@ -16,7 +16,7 @@ test_that("frechet: held location, attained shape boundary and escape", {
  f <- suppressWarnings(mlfrechet(x,mu=2), classes = "univariateML_restricted")
  b <- mlinvweibull(x-2,reltol=1e-10)
  expect_equal(unname(f["lambda"]),unname(b["shape"]),tolerance=1e-10)
- expect_equal(unname(f["sigma"]),1/unname(b["rate"]),tolerance=1e-10)
+ expect_equal(unname(f["sigma"]),unname(b["scale"]),tolerance=1e-10)
  expect_equal(attr(f,"logLik"),attr(b,"logLik"),tolerance=1e-10)
  free <- suppressWarnings(mlfrechet(x, mu = NULL), classes = "univariateML_restricted")
  expect_equal(unname(free["lambda"]),1)
@@ -53,7 +53,7 @@ test_that("frechet and fpareto log-tail repairs remain finite", {
 
 test_that("frechet: reference mapping and unbounded unrestricted path", {
  x <- c(.1,.5,1,2,10,100)
- expect_lt(max(abs((dfrechet(x = x, lambda = 2, mu = 0, sigma = 2, log = TRUE))-(dinvweibull(x = x, shape = 2, rate = 1/2, log = TRUE)))),1e-12)
+ expect_lt(max(abs((dfrechet(x = x, lambda = 2, mu = 0, sigma = 2, log = TRUE))-(dinvweibull(x = x, shape = 2, scale = 2, log = TRUE)))),1e-12)
  y <- c(1,2,4,7)
  ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(dfrechet(x = y, lambda = 0.1, mu = 1 - e, sigma = e, log = TRUE)))
  expect_true(all(diff(ll)>0))

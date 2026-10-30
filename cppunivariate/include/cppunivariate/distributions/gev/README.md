@@ -35,7 +35,7 @@ r:
   control:
     mu: Location to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
-    xi: Shape to hold fixed, or NULL to estimate within [-1, 1]. Held shapes above one are accepted when the collapse criterion permits.
+    xi: Shape to hold fixed, or NULL to estimate within `[-1, 1]`. Held shapes above one are accepted when the collapse criterion permits.
     reltol: Tolerance for dimensionless profile scores and root brackets.
     iterlim: Maximum iterations per scalar solve.
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
@@ -53,7 +53,7 @@ The generalized extreme value distribution models maxima; positive `xi` gives a 
 
 For positive held shape, collapse is governed by the multiplicity of the sample minimum; ties at other values do not cause this collapse.
 
-Free-shape fitting restricts xi to [-1, 1], with the attained closed
+Free-shape fitting restricts xi to `[-1, 1]`, with the attained closed
 reversed-exponential member at xi=-1. The default fit requires
 three finite nonconstant observations. Only ties at the minimum enter the
 collapse test. With held positive xi and free location and scale, a minimum

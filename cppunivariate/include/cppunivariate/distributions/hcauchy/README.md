@@ -1,8 +1,14 @@
 ---
 id: hcauchy
 name: Half-Cauchy
-support: {type: real, lower: 0, upper: inf, closed: [true, false]}
+support: {type: real, lower: "mu", upper: inf, closed: [true, false], endpoint_log_density: {lower: "log(2/(pi*sigma))"}}
 params:
+- name: mu
+  role: location
+  domain: (-inf, inf)
+  simulate: 0
+  kind: threshold
+  advice: mu = 0 is the ordinary half-Cauchy; NULL estimates the translated endpoint.
 - name: sigma
   role: scale
   domain: (0, inf)
@@ -12,27 +18,31 @@ r:
   density: dhcauchy
   sampler: rhcauchy
   control:
+    mu: Required endpoint; a value holds it and explicit `NULL` estimates the translation.
     sigma: Held positive finite scale; NULL estimates it.
-log_density: log(2/pi) - log(sigma) - log(1+x**2/sigma**2)
+log_density: log(2/pi) - log(sigma) - log(1+(x-mu)**2/sigma**2)
 limits:
   - name: unbounded scale collapse
-    when: '$\sigma \to 0$ with more than half the observations zero'
+    when: '$\sigma \to 0$ with more than half the observations at the free or held endpoint'
     status: Unbounded
   - name: finite unattained scale-zero supremum
-    when: '$\sigma \to 0$ with exactly half the observations zero'
+    when: '$\sigma \to 0$ with exactly half the observations at the free or held endpoint'
     status: ScaleBoundary
 references:
   - extraDistr package, HalfCauchy documentation (density and parameterization).
-
+examples: |
+  set.seed(11)
+  mlhcauchy(univariateML:::rhcauchy(n = 100, mu = 0, sigma = 2) + 3, mu = NULL)
+fit_args:
+  mu: 0
 ---
 
-The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint fixed at zero.
+The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint, translated from zero.
 
 ## Details
 
-If $k$ of $n$ observations are zero, a positive-scale MLE exists uniquely iff $2k<n$. Indeed, the log-scale score is $n-\sum_i 2\sigma^2/(\sigma^2+x_i^2)$, strictly decreasing from $n-2k$ to $-n$ whenever some observation is positive. For $2k=n$ it is strictly negative at every positive scale: the finite scale-zero supremum is unattained. For $2k>n$, including all-zero data, the likelihood is unbounded as scale tends to zero. Negative and nonfinite observations are rejected. Even one strictly positive observation identifies a unique scale estimate.
+Let $k$ count the observations at the free or held endpoint ($k$ ties at `min(x)` when `mu` is estimated; at the held `mu` otherwise). The likelihood increases in `mu` up to the sample minimum, so a free endpoint is exactly `mu = min(x)`, including tied minima; a held `mu` above any observation is invalid. Given that endpoint, a positive-scale MLE exists uniquely iff $2k<n$: the log-scale score is $n-\sum_i 2\sigma^2/(\sigma^2+(x_i-\mu)^2)$, strictly decreasing from $n-2k$ to $-n$ whenever some observation exceeds the endpoint. For $2k=n$ it is strictly negative at every positive scale: the finite scale-zero supremum is unattained. For $2k>n$, including constant data, the likelihood is unbounded as scale tends to zero. Even one observation strictly above the endpoint identifies a unique scale estimate.
 
 Evaluation uses the internal d/p/q/r functions. The endpoint density is positive.
 
-A positive finite held `sigma` is evaluated directly, including for all-zero
-data; the scale-collapse conditions apply only when scale is estimated.
+A positive finite held `sigma` is evaluated directly at any `mu` (free or held), including for data entirely at the endpoint; the scale-collapse conditions apply only when scale is estimated.

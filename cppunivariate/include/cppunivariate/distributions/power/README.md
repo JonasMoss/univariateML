@@ -1,6 +1,6 @@
 ---
 id: power
-name: PowerDist
+name: Power
 support: {type: real, lower: "0", upper: "alpha", closed: [false, true], endpoint_log_density: {upper: "log(beta) - log(alpha)"}}
 params:
 - name: alpha

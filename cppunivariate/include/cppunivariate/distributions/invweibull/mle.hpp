@@ -1,5 +1,5 @@
 // Inverse Weibull MLE via Gumbel transform on log(x). Parameters recovered
-// as shape = 1/sigma, rate = exp(-mu + s) where s = -mean(log x).
+// as shape = 1/sigma, scale = 1/exp(-mu + s) where s = -mean(log x).
 
 #pragma once
 
@@ -18,7 +18,7 @@ enum class InvWeibullStatus { Ok, InvalidInput, Unbounded, IterationFailure };
 
 struct InvWeibullResult {
   double shape;
-  double rate;
+  double scale;
   double logLik;
   int iterations;
   InvWeibullStatus status = InvWeibullStatus::Ok;
@@ -49,18 +49,25 @@ inline InvWeibullResult invweibull_mle(span x, double tol, int maxit,
   // Transform the fitted Gumbel likelihood, avoiding shape times
   // a difference of rounded log scales near a point mass.
   const double logLik = g.logLik + dn * s;
-  return {shape, rate, logLik, g.iterations,
+  return {shape, 1.0 / rate, logLik, g.iterations,
       g.status == GumbelStatus::Ok ? InvWeibullStatus::Ok :
       g.status == GumbelStatus::Unbounded ? InvWeibullStatus::Unbounded :
       InvWeibullStatus::IterationFailure};
 }
 
-inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0,double shape,double rate) {
-  if(std::isnan(shape) && std::isnan(rate))return invweibull_mle(x,tol,maxit,shape0);
+// `scale` is actuar's inverse-Weibull scale (1/rate); the weibull delegate
+// on 1/x uses its own `scale` field directly equal to the old actuar rate,
+// so a held scale is converted once and a held weibull scale is converted
+// back once, never round-tripped.
+inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0,double shape,double scale) {
+  if(std::isnan(shape) && std::isnan(scale))return invweibull_mle(x,tol,maxit,shape0);
   std::vector<double> y;double jac=0;
   for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
+  const bool scale_held = !std::isnan(scale);
+  const double rate = scale_held ? 1.0/scale : scale;
   const auto r=weibull_mle(span{y.data(),y.size()},tol,maxit,shape0,shape,rate);
-  return {r.shape,r.scale,r.logLik+jac,r.iterations,
+  const double scale_out = scale_held ? scale : (std::isnan(r.scale) ? r.scale : 1.0/r.scale);
+  return {r.shape,scale_out,r.logLik+jac,r.iterations,
     r.status==WeibullStatus::Ok ? InvWeibullStatus::Ok :
     r.status==WeibullStatus::Unbounded ? InvWeibullStatus::Unbounded :
     r.status==WeibullStatus::IterationFailure ? InvWeibullStatus::IterationFailure : InvWeibullStatus::InvalidInput};

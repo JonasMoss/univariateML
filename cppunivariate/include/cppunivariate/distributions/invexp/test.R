@@ -1,21 +1,21 @@
 test_that("invexp matches a multistart density oracle", {
   set.seed(871)
-  x <- rinvexp(n = 300, rate = 2.7)
+  x <- rinvexp(n = 300, scale = 1/2.7)
   fit <- mlinvexp(x)
   objective <- function(p) {
-    rate <- exp(p[1])
-    if (!is.finite(rate) || rate <= 0) return(1e100)
-    -sum(dinvexp(x = x, rate = rate, log = TRUE))
+    scale <- exp(p[1])
+    if (!is.finite(scale) || scale <= 0) return(1e100)
+    -sum(dinvexp(x, scale=scale, log=TRUE))
   }
   oracles <- lapply(c(.4,1,3), function(s) optim(rep(log(s), 1), objective, method="BFGS", control=list(reltol=1e-12,maxit=2000)))
   oracle <- oracles[[which.min(vapply(oracles, function(o) o$value, 0.0))]]
   expect_equal(as.numeric(fit),exp(oracle$par),tolerance=1e-4)
   expect_equal(attr(fit,"logLik"),-oracle$value,tolerance=1e-8)
 })
-test_that("invexp reciprocal-exponential rate convention", {
+test_that("invexp scale is the reciprocal-exponential rate", {
  x<-c(.13,.7,2,11)
- expect_equal(dinvexp(x = x, rate = 3, log = TRUE),dexp(1/x,rate=1/3,log=TRUE)-2*log(x))
- expect_equal(unname(coef(mlinvexp(x))),mean(1/x))
+ expect_equal(dinvexp(x,scale=1/3,log=TRUE),dexp(1/x,rate=1/3,log=TRUE)-2*log(x))
+ expect_equal(unname(coef(mlinvexp(x))),1/mean(1/x))
 })
 
 test_that("inverse exponential rejects unrepresentable reciprocal moments", {
@@ -25,7 +25,7 @@ test_that("inverse exponential rejects unrepresentable reciprocal moments", {
 test_that("P2 held subsets agree with multistart reference likelihoods", {
   set.seed(81029)
   id <- "invexp"
-  pn <- c("rate")
+  pn <- c("scale")
   held_default <- c(1)
   names(held_default) <- pn
   density <- dinvexp
@@ -74,5 +74,5 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
 })
 
 test_that("P2 held existence boundaries", {
-expect_true(is.finite(logLik(mlinvexp(2,rate=2))))
+expect_true(is.finite(logLik(mlinvexp(2,scale=2))))
 })

@@ -26,7 +26,7 @@ expect_equal(
 )
 
 ## Check class.
-expect_equal(attr(est, "model"), "LogitNormal")
+expect_equal(attr(est, "model"), "Logit-normal")
 expect_equal(class(est), c("univariateML"))
 
 

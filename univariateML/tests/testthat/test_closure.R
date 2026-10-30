@@ -96,11 +96,11 @@ test_that("declared endpoint limits cover zero, finite and infinite densities", 
 })
 
 test_that("closed reference functions retain positional coefficient overrides", {
-  f <- univariateML:::univariateML_construct(c(12,8,2),"mlnhyper",list())
+  f <- univariateML:::univariateML_construct(c(8,20,2),"mlnhyper",list())
   d <- univariateML_to_function(f,"d")
   p <- univariateML_to_function(f,"p")
   q <- univariateML_to_function(f,"q")
-  expect_equal(d(1003,1000,1000,3,log=TRUE),dhyper(3,1000,1000,1003,log=TRUE)+log(3/1003))
-  expect_equal(p(500,1000,1000,3,lower.tail=FALSE,log.p=TRUE),phyper(2,1000,1000,500,log.p=TRUE))
-  expect_equal(q(c(0,1),0,20,2),c(2,2))
+  expect_equal(d(1003,1000,2000,3,log=TRUE),dhyper(3,1000,1000,1003,log=TRUE)+log(3/1003))
+  expect_equal(p(500,1000,2000,3,lower.tail=FALSE,log.p=TRUE),phyper(2,1000,1000,500,log.p=TRUE))
+  expect_equal(q(c(0,1),20,20,2),c(2,2))
 })

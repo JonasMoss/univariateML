@@ -315,7 +315,6 @@ test_that("sstd holds validate values, ties, and all-held evaluation", {
   expect_error(mlsstd(rep(.2,3),mean=.2,nu=4.2,xi=1.3),'unbounded')
   expect_error(mlsstd(c(0,0,0,1),mean=0,nu=3,xi=1),'equality')
   expect_error(mlsstd(c(0,0,0,1),mean=0,nu=2.5,xi=1),'unbounded')
-  expect_error(mlsstd(x,xi=1),'unresolved')
 })
 
 test_that("sstd held domains and controls reject invalid requests", {
@@ -326,4 +325,147 @@ test_that("sstd held domains and controls reject invalid requests", {
   }
   expect_error(mlsstd(x,mean=.2,nu=2,xi=1),'held')
   expect_error(mlsstd(x,mean=.2,nu=4.2,xi=1,iterlim=0),'requires')
+})
+
+
+test_that("sstd P0b subsets agree with independent README oracles", {
+  set.seed(931029)
+  p <- c(mean=.2, sd=1.4, nu=4.2, xi=1.3)
+  subsets <- list('mean','sd','nu','xi',c('mean','sd'),c('mean','nu'),
+    c('mean','xi'),c('sd','nu'),c('sd','xi'),c('nu','xi'),
+    c('mean','sd','nu'),c('mean','sd','xi'))
+  samples <- list(rnorm(20), rnorm(100), round(rnorm(20),1), c(-1,0,1),
+    rexp(20), -rexp(20), abs(rt(20,3)), runif(100,-2,2))
+  # Independent two-piece draws from the fitted family, in addition to
+  # the tied, small and limit-law samples above.
+  nu <- p['nu']; xi <- p['xi']
+  m <- exp(lgamma((nu-1)/2)-lgamma(nu/2)+.5*log((nu-2)/pi))
+  for(n in c(20,100)) {
+    z <- abs(rt(n,nu))*sqrt((nu-2)/nu)
+    u <- ifelse(runif(n)<1/(1+xi^2),-z/xi,z*xi)
+    scale <- sqrt(1+(1-m*m)*(xi-1/xi)^2)
+    samples[[length(samples)+1]] <- p['mean']+p['sd']*(u-m*(xi-1/xi))/scale
+  }
+  returned <- integer(length(subsets))
+  for(x in samples) for(j in seq_along(subsets)) {
+    held <- subsets[[j]]; free <- setdiff(names(p),held)
+    objective <- function(theta) {
+      q <- p
+      for(i in seq_along(free)) {
+        nm <- free[i]
+        q[nm] <- if(nm=='mean') theta[i] else if(nm=='nu') 2+exp(theta[i]) else exp(theta[i])
+      }
+      if(any(!is.finite(q)) || q['nu']>1e5) return(1e100)
+      val <- -sum(sstd_hold_logref(x,q))
+      if(is.finite(val)) val else 1e100
+    }
+    pack <- function(q) vapply(free,function(nm)
+      if(nm=='mean') q[nm] else if(nm=='nu') log(max(q[nm]-2,1e-8)) else log(q[nm]), 0.0)
+    refs <- vapply(c(-.6,0,.6),function(delta) {
+      initial <- pack(p)+delta
+      a <- optim(initial, objective, method='BFGS',control=list(maxit=1500,reltol=1e-12))
+      b <- if(length(free)==1) optim(initial, objective, method='Brent', lower=-18, upper=11) else
+        optim(initial, objective, method='Nelder-Mead',control=list(maxit=2500,reltol=1e-12))
+      min(a$value,b$value)
+    },0.0)
+    fit <- tryCatch(suppressWarnings(do.call(mlsstd,
+      c(list(x=x,gradtol=1e-6,iterlim=1000),as.list(p[held]))),
+      classes='univariateML_restricted'),error=identity)
+    if(inherits(fit,'error')) {
+      expect_match(conditionMessage(fit),'half|uniform|skew-normal|nu -> 2|unbounded|collapse|score check')
+      message <- conditionMessage(fit)
+      expect_false(grepl('score check',message),
+        info=paste('held',paste(held,collapse=','),'n',length(x),'first',x[1],message))
+      if(grepl('uniform',message)) {
+        width <- if('sd' %in% held) sqrt(12)*p['sd'] else if('mean' %in% held)
+          2*max(abs(x-p['mean'])) else diff(range(x))
+        expect_gte(-length(x)*log(width),-min(refs)-1e-5*length(x))
+      } else if(grepl('half|skew-normal|nu -> 2',message)) {
+        # Independent approach to the reported face. Refit all other free
+        # coordinates with R's optimizers, pinning only the escaping one.
+        theta <- pack(p); pinned <- integer()
+        if(grepl('half',message)) {
+          pinned <- match('xi',free)
+          if(!is.na(pinned)) theta[pinned] <- if(grepl('xi -> 0|reflected|sample maximum',message)) -12 else 12
+        }
+        if(grepl('skew-normal|half-normal|nu -> 2',message)) {
+          pos <- match('nu',free)
+          if(!is.na(pos)) {
+            pinned <- c(pinned,pos)
+            theta[pos] <- if(grepl('nu -> 2',message)) log(1e-7) else log(60000-2)
+            if(grepl('nu -> 2',message) && 'sd' %in% free)
+              theta[match('sd',free)] <- theta[match('sd',free)]+.5*log(1e7)
+          }
+        }
+        pinned <- unique(pinned[!is.na(pinned)])
+        remaining <- setdiff(seq_along(free),pinned)
+        approach <- function(v) { t <- theta; t[remaining] <- v; objective(t) }
+        values <- objective(theta)
+        if(length(remaining)) for(delta in c(-.5,0,.5)) {
+          initial <- theta[remaining]+delta
+          values <- c(values,optim(initial,approach,method='BFGS',
+            control=list(maxit=2000,reltol=1e-12))$value)
+          if(length(remaining)>1) values <- c(values,optim(initial,approach,method='Nelder-Mead',
+            control=list(maxit=3000,reltol=1e-12))$value)
+        }
+        if(length(remaining)==1) {
+          upper <- if(free[remaining]=='nu') 11 else 18
+          values <- c(values,optim(theta[remaining],approach,method='Brent',lower=-18,upper=upper)$value)
+        }
+        if(grepl('half',message) && !('mean' %in% held)) {
+          # Free endpoint has an exact profile: avoid a finite-xi optimizer
+          # trying to approach a support discontinuity in mean.
+          left <- grepl('xi -> 0|reflected|sample maximum',message)
+          y <- if(left) max(x)-x else x-min(x)
+          face_at_shape <- function(nu) {
+          m <- exp(.5*log(nu/pi)+lgamma((nu-1)/2)-lgamma(nu/2))
+          v <- nu/(nu-2)
+          scale <- if('sd' %in% held) p['sd']/sqrt(v-m*m) else {
+            score <- function(ls) sum((nu+1)*y*y/(nu*exp(2*ls)+y*y))-length(y)
+            exp(uniroot(score,c(-30,30),tol=1e-11)$root)
+          }
+          -sum(log(2)+dt(y/scale,nu,log=TRUE)-log(scale))
+          }
+          if('nu' %in% held) values <- c(values,face_at_shape(p['nu'])) else {
+            profile <- function(t) face_at_shape(2+exp(t))
+            grid <- seq(-15,11,length.out=101)
+            raw <- vapply(grid,profile,0.0)
+            values <- c(values,raw)
+            for(k in 2:100) if(is.finite(raw[k]) && raw[k]<=raw[k-1] && raw[k]<=raw[k+1])
+              values <- c(values,optimize(profile,grid[c(k-1,k+1)],tol=1e-10)$objective)
+          }
+        }
+        face_tol <- if(grepl('half',message) && !('mean' %in% held)) 1e-5 else 2e-3
+        expect_true(-min(values)>=-min(refs)-face_tol*length(x),
+          info=paste('held',paste(held,collapse=','),'n',length(x),message,
+            'face',min(values),'reference',min(refs)))
+      }
+    } else {
+      returned[j] <- returned[j]+1L
+      expect_identical(unname(as.numeric(fit[held])),unname(p[held]))
+      expect_setequal(attr(fit,'fixed'),held)
+      expect_equal(as.numeric(logLik(fit)),sum(sstd_hold_logref(x,coef(fit))),tolerance=2e-8)
+      expect_true(as.numeric(logLik(fit))>=-min(refs)-2e-5*length(x),
+        info=paste('held',paste(held,collapse=','),'n',length(x),'first',x[1],
+          'fit',paste(signif(coef(fit),6),collapse=','),'ll',as.numeric(logLik(fit)),'oracle',-min(refs)))
+    }
+  }
+  # Each newly implemented interface must return an independently checked fit.
+  expect_true(all(returned>0))
+})
+
+test_that("sstd P0b collapse, equality and moment constraints are enforced", {
+  heavy <- c(rep(0,7),1,2)
+  for(held in list(list(mean=0),list(sd=1),list(nu=3),list(xi=1),
+    list(mean=0,sd=1),list(mean=0,nu=3),list(mean=0,xi=1),
+    list(sd=1,xi=1),list(nu=3,xi=1),list(mean=0,sd=1,xi=1)))
+    expect_error(do.call(mlsstd,c(list(x=heavy),held)),'unbounded')
+  expect_error(mlsstd(c(rep(0,4),1,2),sd=1),'equality')
+  for(side in c(-1,1))
+    expect_error(mlsstd(side*c(.5,1,1.5,2,2.5,3,10),mean=0,sd=1,nu=5),'half-t')
+})
+
+test_that("sstd conditional optimizer failure stops the wrapper", {
+  x <- c(-2,-1,-.4,0,.2,.3,.5,1,2,5)
+  expect_error(mlsstd(x,sd=1,nu=4,iterlim=1),'failed.*score check')
 })

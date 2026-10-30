@@ -11,7 +11,7 @@ set.seed(313)
 expect_equal(
   c(bootstrapml(obj,
     reps = 2,
-    map = function(x) x[1] / x[2],
+    map = function(x) x[1] * x[2],
     reducer = mean
   )),
   0.4352018,
@@ -22,7 +22,7 @@ expect_equal(
 set.seed(313)
 expect_equal(
   object = unname(c(bootstrapml(obj, reps = 2, reducer = mean))),
-  expected = c(4.333538, 10.581035),
+  expected = c(4.333538, 0.136592020561675),
   tolerance = 1e-5
 )
 
@@ -30,7 +30,7 @@ expect_equal(
 set.seed(313)
 expect_equal(
   object = unname(c(bootstrapml(obj, reps = 2))),
-  expected = c(2.369753, 5.001551, 6.297323, 16.160518),
+  expected = c(2.369753, 0.06456570735396, 6.297323, 0.20861833376939),
   tolerance = 1e-5
 )
 
@@ -38,7 +38,7 @@ expect_equal(
 set.seed(313)
 expect_equal(
   object = colnames(bootstrapml(obj, reps = 2, reducer = mean)),
-  expected = c("shape", "rate")
+  expected = c("shape", "scale")
 )
 
 # Common reducer, one-dim

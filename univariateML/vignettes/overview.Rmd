@@ -130,13 +130,13 @@ bootstrapml(mlgamma(egypt$age))
 ```
 
 These confidence intervals are not directly comparable. That is, the `scale` parameter in
-the Weibull model is not directly comparable to the `rate` parameter in the gamma model. 
-So let us take a look at a a parameter with a familiar interpretation, namely the mean. 
+the Weibull model is not directly comparable to the `scale` parameter in the gamma model.
+So let us take a look at a a parameter with a familiar interpretation, namely the mean.
 
-The mean of the Weibull distribution with parameters `shape` and `scale` is 
-`scale*gamma(1 + 1/shape)`. On the other hand, the mean of the 
-Gamma distribution with parameters `shape` and `rate` is
-`shape/rate`. 
+The mean of the Weibull distribution with parameters `shape` and `scale` is
+`scale*gamma(1 + 1/shape)`. On the other hand, the mean of the
+Gamma distribution with parameters `shape` and `scale` is
+`shape*scale`.
 
 The `probs` argument can be used to modify the limits of confidence interval. Now
 we will calculate two 90% confidence intervals for the mean. 
@@ -149,7 +149,7 @@ bootstrapml(mlweibull(egypt$age),
 )
 # Calculate two-sided 90% confidence intervals for the mean of a Gamma.
 bootstrapml(mlgamma(egypt$age),
-  map = function(x) x[1] / x[2],
+  map = function(x) x[1] * x[2],
   probs = c(0.05, 0.95)
 )
 ```
@@ -164,7 +164,7 @@ bootstrapml(mlweibull(egypt$age),
   probs = c(0.05, 0.95)
 )
 bootstrapml(mlgamma(egypt$age),
-  map = function(x) qgamma(0.5, x[1], x[2]),
+  map = function(x) qgamma(0.5, x[1], scale = x[2]),
   probs = c(0.05, 0.95)
 )
 ```

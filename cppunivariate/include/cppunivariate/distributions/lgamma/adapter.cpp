@@ -31,8 +31,12 @@ Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
     y[i] = std::log(x[i]);
     sum_y += y[i];
   }
+  // lgamma keeps its own ratelog coefficient (its reference, actuar::dlgamma,
+  // offers only rate); gamma_mle's 5th argument is now a scale (1/rate).
+  const bool ratelog_held_flag = std::isfinite(ratelog_held);
   auto res =
-      cppunivariate::gamma_mle(cppunivariate::span{y.data(), n}, abstol, iterlim, shapelog_held, ratelog_held);
+      cppunivariate::gamma_mle(cppunivariate::span{y.data(), n}, abstol, iterlim, shapelog_held,
+          ratelog_held_flag ? 1.0 / ratelog_held : ratelog_held);
   if (res.status == cppunivariate::GammaStatus::IterationFailure)
     Rcpp::stop("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if (res.status == cppunivariate::GammaStatus::Degenerate) {
@@ -41,7 +45,9 @@ Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
     Rcpp::stop("The loggamma maximum likelihood estimator does not exist for constant data: "
                "the likelihood is unbounded as the shape grows.");
   }
-  if (!std::isfinite(res.shape) || !std::isfinite(res.rate) || !std::isfinite(res.logLik)) {
+  const double ratelog_out = ratelog_held_flag ? ratelog_held :
+      (std::isfinite(res.scale) ? 1.0 / res.scale : res.scale);
+  if (!std::isfinite(res.shape) || !std::isfinite(ratelog_out) || !std::isfinite(res.logLik)) {
     Rcpp::stop("Loggamma MLE failed");
   }
 
@@ -49,6 +55,6 @@ Rcpp::List mllgamma_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
   const double logLik = res.logLik - sum_y;
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shapelog"] = res.shape, Rcpp::_["ratelog"] = res.rate),
+          Rcpp::_["shapelog"] = res.shape, Rcpp::_["ratelog"] = ratelog_out),
       Rcpp::_["logLik"] = logLik, Rcpp::_["iterations"] = res.iterations, Rcpp::_["fixed"] = fixed);
 }
