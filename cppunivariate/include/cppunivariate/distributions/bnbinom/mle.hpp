@@ -149,6 +149,7 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
       face_status=BnbinomStatus::NegativeBinomialLimit;
     }
   }
+  double attempted=-std::numeric_limits<double>::infinity();
   double best=-std::numeric_limits<double>::infinity();
   std::vector<double> best_u;
   // Include the diagonal and asymmetric starts; mirror-equivalent starts
@@ -163,24 +164,24 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-8, int maxit=600,
       for (int j:cost.free) u.push_back(std::log(p[j]));
       u=bnbinom_detail::optimise(cost,u,tol,maxit,out.iterations);
       const double value=-d.n*cost.value(u);
-      if (value>best) { best=value; best_u=u; }
+      attempted=std::max(attempted,value);
+      const auto g=cost.gradient(u);
+      double norm=0; for(double v:g) norm=std::hypot(norm,v);
+      bool in_range=true; for(double v:u) in_range=in_range && std::isfinite(v) && std::abs(v)<=27;
+      if (in_range && std::isfinite(norm) && norm<=std::max(1e-6,10*tol) && value>best) {
+        best=value; best_u=u;
+      }
     }
   }
-  out.logLik=best;
-  if (face>=best-1e-8*d.n) {
+  out.logLik=std::isfinite(best)?best:attempted;
+  if (std::isfinite(face) && face>=attempted-1e-8*d.n) {
     out.logLik=face; out.status=face_status;
-    if (poisson_face>=best-1e-8*d.n && poisson_face>=face-1e-8*d.n) {
+    if (poisson_face>=attempted-1e-8*d.n && poisson_face>=face-1e-8*d.n) {
       out.logLik=poisson_face; out.status=BnbinomStatus::PoissonLimit;
     }
     return out;
   }
   if (best_u.empty()) { out.status=BnbinomStatus::IterationFailure; return out; }
-  const auto g=cost.gradient(best_u);
-  double norm=0; for (double v:g) norm+=v*v;
-  for (double v:best_u) if (std::abs(v)>27) { out.status=BnbinomStatus::IterationFailure; return out; }
-  if (!std::isfinite(norm) || norm>std::max(1e-12,100*tol*tol)) {
-    out.status=BnbinomStatus::IterationFailure; return out;
-  }
   auto p=cost.decode(best_u);
   if (fr && fb && p[0]>p[2]) std::swap(p[0],p[2]);
   out.size=p[0]; out.alpha=p[1]; out.beta=p[2]; out.status=BnbinomStatus::Ok;

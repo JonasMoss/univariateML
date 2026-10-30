@@ -1,5 +1,6 @@
 // Location-scale Student t, constrained to df >= 1.
 #pragma once
+#include "../../core/multistart.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/span.hpp"
 #include "../cauchy/mle.hpp"
@@ -187,7 +188,7 @@ inline LstResult lst_mle_impl(span x, double tol, int maxit) {
       }
       const double p[2] = {mu,std::log(s)};
       auto r = bfgs_minimize(fixed,p,ctl);
-      if (r.f < profile.f) profile = r;
+      consider_bfgs_candidate(profile,r);
     }
     if (df == 1.0) cauchy = profile;
     if (profile.theta.empty()) continue;
@@ -195,23 +196,17 @@ inline LstResult lst_mle_impl(span x, double tol, int maxit) {
       LstCost joint{{y.data(),y.size()}};
       const double p[3] = {profile.theta[0],profile.theta[1],std::log(df-1.0)};
       auto r = bfgs_minimize(joint,p,ctl);
-      if (r.f < best.f) { best = r; best_df = 1.0+std::exp(r.theta[2]); }
+      if (consider_bfgs_candidate(best,r)) best_df = 1.0+std::exp(r.theta[2]);
     }
   }
   const double tie = 1e-8*n;
-  if (cauchy.f <= best.f + tie) { best = cauchy; best_df = 1.0; }
-  if (best.theta.empty()) return {nan,nan,nan,nan,0,LstStatus::InvalidStart};
+  if (std::isfinite(cauchy.f) && cauchy.f <= best.f + tie) { best = cauchy; best_df = 1.0; }
+  if (best.theta.empty()) return {nan,nan,nan,nan,0,LstStatus::BfgsFailure};
   // Prefer an attained finite member in numerical ties, except on the
   // asymptotic normal approach (df >= 1e5 has no resolved finite optimum).
   if (normal > -best.f + tie || (best_df >= 1e5 && normal >= -best.f-tie))
     return {center+unit*mean,unit*std::sqrt(variance),INFINITY,
             normal-n*std::log(unit),best.iterations,LstStatus::NormalBoundary};
-  if(best.status!=BfgsStatus::Ok) {
-    LstCost cost{{y.data(),y.size()},best_df==1 ? 1.0 : 0.0};
-    double g[3]; cost.gradient(best.theta.data(),g);
-    double norm=0; for(int j=0;j<cost.dim();++j) norm+=g[j]*g[j];
-    if(std::sqrt(norm)<1e-3) best.status=BfgsStatus::Ok;
-  }
   return {center+unit*best.theta[0],unit*std::exp(best.theta[1]),best_df,
           -best.f-n*std::log(unit),best.iterations,
           best.status == BfgsStatus::Ok ? LstStatus::Ok : LstStatus::BfgsFailure};

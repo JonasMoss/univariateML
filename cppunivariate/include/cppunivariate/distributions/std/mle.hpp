@@ -8,6 +8,7 @@
 // where f_unit is the standardised t (mean 0, sd 1) used by dstd().
 
 #pragma once
+#include "../../core/multistart.hpp"
 
 #include "../lst/mle.hpp"
 #include "../../core/bfgs.hpp"
@@ -227,8 +228,10 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
   BfgsControl ctl;
   ctl.grad_tol = tol;
   ctl.maxit = maxit;
-  auto r = bfgs_minimize(fd, phi0, ctl);
-  r.f *= objective_divisor;
+  BfgsResult r{}; r.f=INFINITY;
+  auto initial = bfgs_minimize(fd, phi0, ctl);
+  initial.f *= objective_divisor;
+  consider_bfgs_candidate(r,initial,objective_divisor);
   const double normal_sd = sd_x * std::sqrt((dn - 1.0) / dn);
   double kurtosis = 0.0;
   for (double v : x) {
@@ -239,7 +242,7 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
     const double start[3] = {mean_x, std::log(normal_sd), std::log(1e4 - 2.0)};
     auto large = bfgs_minimize(fd, start, ctl);
     large.f *= objective_divisor;
-    if (std::isfinite(large.f) && large.f < r.f) r = large;
+    consider_bfgs_candidate(r,large,objective_divisor);
   }
 
   StudentTTwoCost two{x, mean_x, normal_sd};
@@ -271,8 +274,10 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
     }
     const double start[2] = {location, std::log(scale)};
     auto candidate = bfgs_minimize(two, start, ctl);
-    if (std::isfinite(candidate.f) && candidate.f < face.f) face = candidate;
+    consider_bfgs_candidate(face,candidate);
   }
+  if (!std::isfinite(r.f) && !std::isfinite(face.f))
+    return {kNaN,kNaN,kNaN,kNaN,0,StudentTStatus::BfgsFailure};
   const double normal_ll = -dn * (std::log(normal_sd) +
       0.5 * (std::log(2.0 * M_PI) + 1.0));
   // Absolute log-likelihood tie tolerance, scaled per observation. Prefer

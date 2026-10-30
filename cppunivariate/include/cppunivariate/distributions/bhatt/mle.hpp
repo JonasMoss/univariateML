@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/multistart.hpp"
 #include "dpqr.hpp"
 #include "../norm/mle.hpp"
 #include "../../core/span.hpp"
@@ -89,7 +90,23 @@ inline BhattResult search(const Profile& p,std::vector<double> start,double tol,
     }
   }
   auto best=*std::max_element(f.begin(),f.end(),[](const BhattResult& a,const BhattResult& b){return a.logLik<b.logLik;});
-  best.iterations=maxit;best.status=BhattStatus::IterationFailure;return best;
+  best.iterations=maxit;best.status=BhattStatus::IterationFailure;
+  std::vector<double> theta;
+  if(std::isnan(p.held_mu))theta.push_back(best.mu);
+  if(std::isnan(p.sigma))theta.push_back(std::log(best.sigma));
+  if(std::isnan(p.a))theta.push_back(std::log(best.a));
+  const auto likelihood=[&](const std::vector<double>& t) {
+    int k=0;
+    const double m=std::isnan(p.held_mu)?t[k++]:p.held_mu;
+    const double s=std::isnan(p.sigma)?std::exp(t[k++]):p.sigma;
+    const double b=std::isnan(p.a)?std::exp(t[k++]):p.a;
+    double ll=0;for(double x:p.x)ll+=distributions::dbhatt(x,m,s,b,true);
+    return ll;
+  };
+  if(multistart_score_acceptable(theta,likelihood)) {
+    best.logLik=likelihood(theta);best.status=BhattStatus::Ok;
+  }
+  return best;
 }
 }
 inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
@@ -131,20 +148,24 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   if(std::isnan(sigma)&&std::isnan(a))face=std::max(face,-n*std::log(std::isnan(mu)?y.back()-y.front():2*std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))));
   bhatt_detail::Profile p{y,held_s,held_a,face,held_mu};
   BhattResult best={0,0,0,special::kNegInf,0,BhattStatus::IterationFailure};
+  auto attempted=best;
   const std::vector<double> starts={-4,-1,0,1};
   const std::vector<double> widths={-4,-1,-.3,-.05};
   for(double s:starts)for(double b:widths){
     if(!std::isnan(sigma)&&s!=starts.front())continue;
     if(!std::isnan(a)&&b!=widths.front())continue;
     std::vector<double> t;if(std::isnan(sigma))t.push_back(s);if(std::isnan(a))t.push_back(b);
-    const auto f=bhatt_detail::search(p,t,tol,maxit);if(f.logLik>best.logLik)best=f;
+    const auto f=bhatt_detail::search(p,t,tol,maxit);if(std::isfinite(f.logLik) && f.logLik>attempted.logLik)attempted=f;
+    if(f.status==BhattStatus::Ok && std::isfinite(f.logLik) && f.logLik>best.logLik)best=f;
   }
+  if(!std::isfinite(best.logLik))best=attempted;
+  double comparison=attempted.logLik;
   const double tie=1e-8*n;
   if(std::isnan(a)) {
     double m=0;for(double z:y)m+=z/n;if(!std::isnan(mu))m=held_mu;double var=0;for(double z:y)var+=(z-m)*(z-m)/n;
     const double s=std::isnan(sigma)?std::sqrt(var):p.sigma;
     double ll=-n*(std::log(s)+.91893853320467274178)-n*var/(2*s*s);
-    if(ll>=best.logLik-tie)best={m,s,0,ll,0,BhattStatus::Ok};
+    if(ll>=comparison-tie){best={m,s,0,ll,0,BhattStatus::Ok};comparison=ll;}
   }
   if(std::isnan(sigma)) {
     const double b=std::isnan(a)?(std::isnan(mu)?(y.back()-y.front())/2:std::max(std::abs(y.front()-held_mu),std::abs(y.back()-held_mu))):p.a;
@@ -155,7 +176,7 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
         double left=0,right=0;for(double z:y){if(z==y.front())++left;if(z==y.back())++right;}
         ll+=left*std::log(left/(left+right))+right*std::log(right/(left+right));
       }
-      if(ll>=best.logLik-(best.a==0?0:tie))best={0,0,b,ll,0,BhattStatus::UniformLimit};
+      if(ll>=comparison-(best.a==0?0:tie))best={0,0,b,ll,0,BhattStatus::UniformLimit};
     }
   }
   best.mu=std::isnan(mu)?centre+scale*best.mu:mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.a=std::isnan(a)?scale*best.a:a;best.logLik-=n*std::log(scale);return best;

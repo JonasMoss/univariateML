@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/multistart.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
@@ -74,7 +75,23 @@ inline EmgResult search(const Profile& p,std::vector<double> start,double tol,in
     }
   }
   auto best=*std::max_element(f.begin(),f.end(),[](const EmgResult& a,const EmgResult& b){return a.logLik<b.logLik;});
-  best.iterations=maxit;best.status=EmgStatus::IterationFailure;return best;
+  best.iterations=maxit;best.status=EmgStatus::IterationFailure;
+  std::vector<double> theta;
+  if(std::isnan(p.mu))theta.push_back(best.mu);
+  if(std::isnan(p.sigma))theta.push_back(std::log(best.sigma));
+  if(std::isnan(p.lambda))theta.push_back(-std::log(best.lambda));
+  const auto likelihood=[&](const std::vector<double>& t) {
+    int k=0;
+    const double m=std::isnan(p.mu)?t[k++]:p.mu;
+    const double s=std::isnan(p.sigma)?std::exp(t[k++]):p.sigma;
+    const double b=std::isnan(p.lambda)?std::exp(-t[k++]):p.lambda;
+    double ll=0;for(double x:p.x)ll+=distributions::demg(x,m,s,b,true);
+    return ll;
+  };
+  if(multistart_score_acceptable(theta,likelihood)) {
+    best.logLik=likelihood(theta);best.status=EmgStatus::Ok;
+  }
+  return best;
 }
 }
 inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
@@ -90,6 +107,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
   std::vector<double> y;for(double v:x)y.push_back((v-mean)/scale);std::sort(y.begin(),y.end());
   emg_detail::Profile p{y,std::isnan(mu)?mu:(mu-mean)/scale,std::isnan(sigma)?sigma:sigma/scale,std::isnan(lambda)?lambda:lambda*scale};
   EmgResult best={0,0,0,special::kNegInf,0,EmgStatus::IterationFailure};
+  auto attempted=best;
   // A grid of starts covers both faces and the interior. It is a numerical
   // global search, not a certificate that every stationary mode is isolated.
   const std::vector<double> starts={-6,-3,-1,0,1};
@@ -98,8 +116,11 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     if(!std::isnan(lambda)&&b!=starts.front())continue;
     std::vector<double> t;if(std::isnan(sigma))t.push_back(a);if(std::isnan(lambda))t.push_back(b);
     const auto fit=emg_detail::search(p,t,tol,maxit);
-    if(fit.logLik>best.logLik)best=fit;
+    if(std::isfinite(fit.logLik) && fit.logLik>attempted.logLik)attempted=fit;
+    if(fit.status==EmgStatus::Ok && std::isfinite(fit.logLik) && fit.logLik>best.logLik)best=fit;
   }
+  if(!std::isfinite(best.logLik))best=attempted;
+  double comparison=attempted.logLik;
   const double n=static_cast<double>(x.size()),tie=1e-8*n;
   // Conditional normal face: respect every held parameter.
   if(std::isnan(lambda)) {
@@ -107,7 +128,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     double v=0;for(double z:y)v+=(z-m)*(z-m)/n;
     const double s=std::isnan(p.sigma)?std::sqrt(v):p.sigma;
     double ll=0;for(double z:y)ll+=-std::log(s)-.91893853320467274178-(z-m)*(z-m)/(2*s*s);
-    if(ll>=best.logLik-tie)best={m,s,special::kPosInf,ll,0,EmgStatus::NormalLimit};
+    if(ll>=comparison-tie){best={m,s,special::kPosInf,ll,0,EmgStatus::NormalLimit};comparison=ll;}
   }
   if(std::isnan(sigma) && (std::isnan(mu)||mu<=minimum)) {
     const double m=std::isnan(p.mu)?y.front():p.mu;
@@ -116,7 +137,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     double ll=n*std::log(l)-l*gap;
     // A held endpoint cannot move below the minimum to recover full density.
     if(!std::isnan(mu))ll-=ties*std::log(2.0);
-    if(ll>=best.logLik-((best.status==EmgStatus::NormalLimit)?0:tie))best={m,0,l,ll,0,EmgStatus::TranslatedExponentialLimit};
+    if(ll>=comparison-((best.status==EmgStatus::NormalLimit)?0:tie))best={m,0,l,ll,0,EmgStatus::TranslatedExponentialLimit};
   }
   best.mu=std::isnan(mu)?mean+scale*best.mu:mu;
   best.sigma=std::isnan(sigma)?best.sigma*scale:sigma;
