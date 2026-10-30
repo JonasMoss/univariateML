@@ -121,3 +121,77 @@ TEST_CASE("binom: exact and rounded half probabilities") {
   CHECK(cppunivariate::distributions::qbinom(0.5,9,0.5,false,false)==4);
   CHECK(cppunivariate::distributions::qbinom(-0.6931471805599453,9,0.5,true,true)==5);
 }
+
+// TASK-85/87: the free-size search used to hard-fail once its bracket
+// reached 1,000,000, regardless of how much of the iteration budget
+// (`maxit`) was left. These samples (one 0, v copies of v) push x_bar
+// just barely below the population variance -- DeRiggi (1983) still
+// guarantees a unique finite maximizer there -- and have a true optimal
+// size far past that old cap. See test.R for an independent R-side
+// lgamma profile cross-check; here we check self-consistency (status,
+// no cap, and the found size beating coarse alternatives) and that the
+// iteration budget, not a magnitude, is the only limit.
+TEST_CASE("binom: free size has no magnitude cap at very large optimal sizes") {
+  for (long long v : {1000LL, 5000LL}) {
+    std::vector<int> x;
+    x.reserve(static_cast<std::size_t>(v) + 1);
+    x.push_back(0);
+    for (long long i = 0; i < v; ++i) x.push_back(static_cast<int>(v));
+    const auto f = cppunivariate::binom_mle(as_ispan(x), std::numeric_limits<double>::quiet_NaN(), 1e-10, 1000);
+    REQUIRE(f.status == cppunivariate::BinomStatus::Ok);
+    CHECK(f.size > 1e5);
+    // Coarse, far-off alternatives are unambiguously worse (the profile
+    // is far too flat near the true optimum itself for an adjacent- or
+    // even nearby-integer comparison to be numerically meaningful at
+    // this scale; see the report).
+    for (double factor : {0.01, 0.1, 0.5, 2.0, 10.0, 100.0}) {
+      const double alt_size = std::max<double>(v, std::floor(f.size * factor));
+      const auto alt = cppunivariate::binom_mle(as_ispan(x), alt_size, 1e-10, 1000);
+      REQUIRE(alt.status == cppunivariate::BinomStatus::Ok);
+      CHECK(f.logLik + 1e-6 >= alt.logLik);
+    }
+    // The pre-TASK-85/87 cap: still dramatically worse once v is large
+    // enough that it actually bites.
+    if (f.size > 1e6) {
+      const auto at_cap = cppunivariate::binom_mle(as_ispan(x), 1e6, 1e-10, 1000);
+      REQUIRE(at_cap.status == cppunivariate::BinomStatus::Ok);
+      CHECK(f.logLik > at_cap.logLik + 1e-3);
+    }
+  }
+}
+
+TEST_CASE("binom: free size search does not hang at an astronomically large optimum") {
+  // v = 1e6 pushes the true optimal size to roughly 3e11: the search
+  // must terminate (within a generous but fixed iteration budget -- the
+  // bracket doubles, so this is O(log2(size)), never a function of a
+  // hardcoded magnitude) and land far above any size the old 1e6 cap
+  // could reach.
+  const long long v = 1000000LL;
+  std::vector<int> x;
+  x.reserve(static_cast<std::size_t>(v) + 1);
+  x.push_back(0);
+  for (long long i = 0; i < v; ++i) x.push_back(static_cast<int>(v));
+  const auto f = cppunivariate::binom_mle(as_ispan(x), std::numeric_limits<double>::quiet_NaN(), 1e-10, 1000);
+  REQUIRE(f.status == cppunivariate::BinomStatus::Ok);
+  CHECK(f.size > 1e8);
+  const auto at_cap = cppunivariate::binom_mle(as_ispan(x), 1e6, 1e-10, 1000);
+  REQUIRE(at_cap.status == cppunivariate::BinomStatus::Ok);
+  CHECK(f.logLik > at_cap.logLik + 1e6);
+}
+
+TEST_CASE("binom: free size search budget is iterations, not a magnitude cap") {
+  // A tiny iteration budget fails cleanly (IterationFailure, not a
+  // wrong answer) rather than silently returning a capped/truncated
+  // size; the same sample succeeds once the budget is large enough for
+  // its O(log2(size)) requirement, with no change needed to any fixed
+  // magnitude.
+  const long long v = 5000LL;
+  std::vector<int> x;
+  x.reserve(static_cast<std::size_t>(v) + 1);
+  x.push_back(0);
+  for (long long i = 0; i < v; ++i) x.push_back(static_cast<int>(v));
+  const auto starved = cppunivariate::binom_mle(as_ispan(x), std::numeric_limits<double>::quiet_NaN(), 1e-10, 2);
+  CHECK(starved.status == cppunivariate::BinomStatus::IterationFailure);
+  const auto ok = cppunivariate::binom_mle(as_ispan(x), std::numeric_limits<double>::quiet_NaN(), 1e-10, 1000);
+  CHECK(ok.status == cppunivariate::BinomStatus::Ok);
+}

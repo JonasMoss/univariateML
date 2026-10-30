@@ -234,8 +234,19 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   std::size_t minimum_count=1;
   while(minimum_count<y.size() && y[minimum_count]==y[0]) ++minimum_count;
   // At positive xi the lower-endpoint collapse is controlled only by
-  // the multiplicity of the minimum. Equality is an unattained face.
-  if(std::isnan(xi) ? 2*minimum_count>=y.size() :
+  // the multiplicity of the minimum. A strict majority (k>n/2) diverges
+  // to infinity regardless of xi -- genuinely no MLE. Exact equality
+  // (k==n/2, only possible for even n) is different when xi is also
+  // free: the xi->1 collapse face then has a finite but unattained
+  // supremum (A_free below, notes/evaluations/2026-10-29-p0-extreme.md),
+  // and the ordinary profile search over xi in (-1,1) can still find a
+  // genuinely attained interior maximum elsewhere that beats it -- TASK-85/87
+  // used to reject this case outright (conservatively, as InvalidData)
+  // without ever comparing against that face. Held xi has no such
+  // escape hatch (there is no "elsewhere" to search), so xi*q==1 (q=1 at
+  // k=n/2) stays "never" there, unchanged.
+  const bool tie_half = std::isnan(xi) && 2*minimum_count==y.size();
+  if(std::isnan(xi) ? 2*minimum_count>y.size() :
       (xi>0 && xi*static_cast<double>(minimum_count)>=y.size()-minimum_count)) return bad;
   // Standardization prevents scale and translation from setting tolerances.
   const double origin=y[0],range=y.back()-origin;
@@ -276,9 +287,20 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   // Enumerate profile-score sign changes, retaining both attained bounds.
   // Curvature turns also expose pairs of roots within a single mesh cell.
   // This is root discovery, not an assumption of global concavity.
+  //
+  // At the k==n/2 tie, xi=1 itself is the unattained collapse face: the
+  // mu/sigma profile search run there (gev_profile's own Newton solve
+  // for a stationary score) has no root to find, since the supremum is
+  // only approached, never attained, even at this one fixed xi (the
+  // held-xi row's "xi*q==1: never, finite unattained collapse face",
+  // q=k/(n-k)=1 here). So the scan's upper end is nudged strictly below
+  // 1 -- mirroring the existing "-1+1e-6" nudge off the opposite boundary
+  // a few lines up -- and the known closed-form supremum A_free is
+  // compared against the best genuinely attained interior point instead.
+  const double xi_hi = tie_half ? kGevXiUpper-1e-6 : kGevXiUpper;
   const int cells=8;
   for(int j=1;j<=cells;++j) {
-    const auto next=gev_profile(data,-1+2.0*j/cells,tol,maxit);
+    const auto next=gev_profile(data,-1+(xi_hi+1.0)*j/cells,tol,maxit);
     retain(next);
     if(prev.score>0 && next.score<0) root(prev,next);
     else if((prev.score>0)==(next.score>0) &&
@@ -299,7 +321,25 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
     prev=next;
   }
   if(failed) best.status=GevStatus::IterationFailure;
-  return restore(best);
+  GevResult result=restore(best);
+  if(result.status==GevStatus::Ok && tie_half) {
+    // A_free = n*log(2) - n - 2*sum_{x_i>m} log(x_i-m), m=min(x): the
+    // xi->1 collapse face's limiting log-likelihood with mu and sigma
+    // both free (notes/evaluations/2026-10-29-p0-extreme.md; verified
+    // numerically here against a direct 2D Nelder-Mead optimization of
+    // gev_loglik at xi=.9,.99,...,.999999, converging to this value
+    // from below as xi->1 -- see the derivation in
+    // notes/evaluations/2026-10-29-tail85-report.md). Computed on the
+    // original data (matching gev_held_mle's analogous `face` for held
+    // mu), directly comparable to `result.logLik`, which restore()
+    // above already carries back to the original scale.
+    double sum_log_d=0;
+    for(double v:x) if(v>origin) sum_log_d+=std::log(v-origin);
+    const double n=static_cast<double>(y.size());
+    const double a_free=n*std::log(2.0)-n-2.0*sum_log_d;
+    if(!(result.logLik>a_free+tol*n)) result.status=GevStatus::NoMLE;
+  }
+  return result;
 }
 
 inline GevResult gev_mle(span x,double tol=1e-10,int maxit=100,double xi=std::numeric_limits<double>::quiet_NaN(),double mu=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {

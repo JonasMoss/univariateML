@@ -11,10 +11,13 @@ TEST_CASE("lst: golden and analytic score") {
   auto g = mltest::load_distribution_golden("lst");
   auto r = cppunivariate::lst_mle(mltest::as_span(g.data),mltest::kFitTol,mltest::kFitMaxit);
   CHECK(r.status == cppunivariate::LstStatus::Ok);
-  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(1e-6));
-  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(1e-6));
-  CHECK(r.df == doctest::Approx(g.estimates.at("df")).epsilon(1e-6));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-10));
+  // Same finite-difference BFGS path (and the same default gradtol,
+  // kFitTol) as std/ged/sstd/sged/paralogis; see test_support.hpp's kFdTol
+  // comment for why the golden comparison reuses that tolerance.
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kFdTol));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kFdTol));
+  CHECK(r.df == doctest::Approx(g.estimates.at("df")).epsilon(mltest::kFdTol));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kFdTol));
   cppunivariate::LstCost cost{mltest::as_span(g.data)};
   double p[3] = {r.mu,std::log(r.sigma),std::log(r.df-1.0)};
   double grad[3], numeric[3];

@@ -12,9 +12,11 @@ own rationale live in `roadmap/`; work in flight is on the board
   fully covered except `dphtype` (out of scope); extraDistr except the
   vector-parameter tier below and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master d72f6bd (simbox): C++ 632 doctest cases, only the two
-  known TASK-75 fixtures fail; R `[ FAIL 3 | WARN 0 | PASS 22310 ]`, the
-  three known TASK-75 failures; `just quality` passes. Truth-table checks
+- Tests on master 89bbdf4 (local, 2026-10-30; simbox was off): C++ 6/6
+  ctest targets pass (truth-table cases are `may_fail`); R
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 22782 ]`; `just quality` 98/98. The
+  TASK-75 tolerance changes still need a simbox run to confirm that the
+  simbox-only failures are gone. Truth-table checks
   (TASK-78) are `may_fail`.
 - simbox runs the full suite in about 15 minutes:
   `scripts/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
@@ -31,27 +33,38 @@ own rationale live in `roadmap/`; work in flight is on the board
 - GitHub issues #52 and #7: every density listed there is now
   implemented; the boxes can be ticked (not edited from here).
 - Upstream reports for the extraDistr and actuar defects in
-  `KNOWN_ISSUES.md` (about 20 added on 2026-10-29). The extraDistr
-  maintainer has been unresponsive; a draft actuar patch for
-  `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`.
+  `KNOWN_ISSUES.md`. Ready-to-post drafts with verified reproducers:
+  `notes/upstream/extraDistr.md` (12 grouped issues; extraDistr
+  1.10.0.5) and `notes/upstream/actuar.md` (7 issues; actuar 3.3.7),
+  checked by `notes/upstream/verify.R` (output in `verify.out`). The
+  extraDistr maintainer has been unresponsive; a draft actuar patch for
+  `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`. Nothing has
+  been posted.
 - Tier 4 below: start it or not.
 - Parameter rules (R1–R8, amendments A1–A7 adopted):
   `roadmap/2026-10-29-parameter-rules.md`.
   - Done: P0 (existence analysis, `notes/evaluations/2026-10-29-p0-summary.md`),
-    P1 (schema, required defaults, conformance test; TASK-80) and P2 (holds,
-    ten group jobs; TASK-81; reports `notes/evaluations/2026-10-29-p2-*-report.md`).
-  - Left after P2: 53 `not-implemented` holds:
-    - sstd and sged, 12 each: existence unresolved;
-    - tnorm, 12: needs R7a;
+    P1 (schema, required defaults, conformance test; TASK-80), P2 (holds,
+    ten group jobs; TASK-81; reports `notes/evaluations/2026-10-29-p2-*-report.md`)
+    and P3 (restrictions, closure, domains, failed-optimizer stops; four
+    jobs; TASK-82; reports `notes/evaluations/2026-10-29-p3-*-report.md`).
+  - Left after P3: 41 `not-implemented` holds:
+    - sstd and sged, 12 each: classified by P0b (TASK-88,
+      `notes/evaluations/2026-10-29-p0b.md`) as data-dependent, with
+      algorithms outlined; implementation pending;
     - hyper and nhyper, 3 each: C6;
-    - bbinom 3, cmb 4, tbinom 4: free size unresolved.
+    - bbinom 3, cmb 4, tbinom 4 (free size): classified by P0b as
+      data-dependent, except cmb {prob, nu} held, which always has an MLE;
+      implementation pending.
 
-    Also 61 `no-mle` entries in 9 families.
-  - Next: P3 restrictions, closure (R7a), domains and failed-optimizer
-    stops (TASK-82); P4 parametrization (TASK-83); P5 docs (TASK-84).
+    Also 60 `no-mle` entries.
+  - Next: P4 parametrization (TASK-83): scale over rate, half-family
+    translation via `r.shift`, hypergeometric `N`; P5 docs (TASK-84).
   - C5 and C6 were picked in the design and still await a look.
   - Refinement: the missing-coefficient message offers `NULL` even where
     estimating is unsupported (e.g. pareto2); derive that from `holds:`.
+  - For TASK-78 (own d/p/q/r): R7a closure in `dpqr.hpp`; NB/ZINB size 0;
+    legacy `special/cmp.hpp` API (notes on the board).
 
 ## Coverage: tier 4 (vector parameters)
 
@@ -69,9 +82,13 @@ own rationale live in `roadmap/`; work in flight is on the board
 
 ## Robustness
 
-- TASK-85 (P0 fitter bugs) is fixed. Open from it: binomial size search
-  capped at 1e6; zib/ztbinom size grids uncertified; free gev/frechet
-  reject the tie case k = n/2 conservatively.
+- TASK-85 and its leftovers (TASK-87) are done:
+  - the binomial size search has no cap (a large-size cancellation bug
+    was fixed);
+  - GEV/Fréchet compare the k = n/2 tie case with the collapse face.
+
+  Open: the zib/ztbinom size searches remain numerical (unimodality
+  unproved).
 - TASK-77 (scale equivariance) is fixed: f9e1222, with
   `test_scale_equivariance.R`.
 - TASK-75, cross-machine fragility. On simbox (gcc 15.2 or 13.3, BH 1.90,
@@ -88,44 +105,35 @@ own rationale live in `roadmap/`; work in flight is on the board
     moves.
   Golden tolerances should match each fitter's convergence tolerance;
   status fixtures need margin. Likely to matter on CRAN machines.
-- Performance: GB2 at n = 1e6 takes about 309 s; Bhattacharjee at
-  n = 1000 takes tens of seconds.
+- Performance (TASK-89, `notes/evaluations/2026-10-29-perf-report.md`):
+  GB2 at n = 1e6 is now about 169 s (was 329 s); the remaining time is in
+  the burr, invburr, betapr and trgamma seed fitters it calls.
+  Bhattacharjee at n = 1000 is about 7 s, bounded by a long-double
+  `erfc` in `bhatt/dpqr.hpp` (TASK-78's file).
 
 ## Write-up
 
-- `notes/ml-behaviour.tex` does not yet cover any family added on
-  2026-10-29: bnbinom, cmp, cmb, zeta, yulesimon, gb2, sgomp, foldnorm,
-  emg, sn, huber with free epsilon, hcauchy, ht, hnorm with held `mu`,
-  tpois, tbinom, dlaplace, nhyper, dnorm, dgamma, skellam, pareto2,
-  pareto3, pareto4, fpareto, nsbeta, frechet, tlambda, genbeta, slash,
-  bhatt. Their analyses are in each `README.md` and in
-  `notes/evaluations/2026-10-29-*` (reports, oracles, escape-frequency
-  tables).
-- Failure gallery: one entry per phenomenon with a reproducer and a
-  profile plot (`roadmap/2026-10-29-classical-failure-families.md`).
-  Candidates from 2026-10-29: two-adjacent-integer escape of the
-  discretized families; Bhattacharjee's normal face at about 46% for
-  every n; generalized beta's power samples escaping to a shorter power
-  law; Tukey lambda unbounded as lambda grows; the slash half-mass case;
-  bimodal half-t df profile; skew-normal bimodal profile.
+- `notes/ml-behaviour.tex` (19 pages, TASK-90) now covers:
+  - the 31 families added on 2026-10-29;
+  - existence under holds and restrictions: the R5 mechanisms, a
+    proposition that $c \ge 1$ is the weakest restriction excluding
+    collapse for every $n$, R7a, R7, and the P0 counterexamples;
+  - bugs B1–B8 and TASK-77;
+  - the open mathematics.
+- Failure gallery (TASK-91): `notes/failure-gallery.tex` (11 pages), ten
+  phenomena, each with condition, reproducer, frequency and a profile
+  figure (`notes/failure-gallery/fig*.R`).
 
 ## Code cleanup
 
-- Test argument switches in `univariateML/tests/testthat/test_input_checks.R`
-  and `test-audit-input.R` list every `required` design argument by hand,
-  and every new family edits the same line (merge conflicts). Read
-  required arguments from each golden's `fit_args`; keep the switch only
-  for test-specific holds (`mlht nu = 3`, `mlsn alpha = 0`, ...).
-- `univariateML_to_function` special-cases `mlhnorm` with held `mu`
-  (closed endpoint, unlike the translated `dtnorm` convention). Replace by
-  a README-level mechanism.
 - `univariateML_continuous_quantile` (`code_helpers.R`) checks `sigma`
   and `a` by name (slash, Bhattacharjee); make the parameter checks
   generic before a third family uses it.
-- `bootstrapml` cannot rebuild the held population size `N` of `mlhyper`
-  and `mlnhyper` (it is not a coefficient).
-- actuar `dgumbel`: confirm the location/scale mapping to `mlgumbel`
-  (flagged in the coverage inventory).
+- Done: test argument switches replaced by golden `fit_args` (P1); the
+  `mlhnorm` special case removed (P3); actuar `dgumbel(x, alpha, scale)`
+  equals `extraDistr::dgumbel(x, mu, sigma)` with alpha = mu, scale =
+  sigma (`notes/upstream/dgumbel-mapping.md`). Held `N` for `bootstrapml`
+  waits for P4.
 
 ## Open mathematics (from the job reports)
 

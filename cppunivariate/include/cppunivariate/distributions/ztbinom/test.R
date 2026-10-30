@@ -84,3 +84,40 @@ test_that("ztbinom: P3 unfinished optimizer stops", {
   expect_error(mlztbinom(x, iterlim=1, reltol=1e-10, size=NULL),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("ztbinom: free size and probability agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)", {
+  # TASK-85/87: the free size+prob search is an exponential grid, not a
+  # certified unimodality result (see mle.hpp); this independently
+  # cross-checks it over the specific cases the task calls out, rather
+  # than relying only on the n=250 case already covered above.
+  set.seed(85087)
+  oracle_ll <- function(x, size) {
+    objective <- function(p) -sum(actuar::dztbinom(x, size = size, prob = p, log = TRUE))
+    -optimize(objective, c(1e-9, 1 - 1e-9))$objective
+  }
+  oracle <- function(x, sizes) max(vapply(sizes, function(s) oracle_ll(x, s), 0))
+
+  samples <- list(
+    n20 = actuar::rztbinom(20, size = 8, prob = 0.4),
+    n100 = actuar::rztbinom(100, size = 8, prob = 0.4),
+    ties = c(2, 2, 2, 2, 3, 4, 5, 5),
+    near_poisson = actuar::rztbinom(100, size = 500, prob = 0.02)
+  )
+  for (x in samples) {
+    # The near-Poisson sample can legitimately hit the infinite-size
+    # escape instead of a finite fit (R6: a data-dependent "use
+    # mlztpois", not a failure); accept either outcome.
+    fit <- tryCatch(mlztbinom(x, size = NULL), error = identity)
+    if (inherits(fit, "error")) {
+      expect_match(conditionMessage(fit), "mlztpois")
+      next
+    }
+    expect_true(is.finite(attr(fit, "logLik")))
+    best <- oracle(x, unique(pmax(max(x), round(unname(fit["size"]) * c(.25,.5,.9,1,1.1,2,4)))))
+    expect_gte(attr(fit, "logLik") + 1e-6, best)
+    # Reference-density agreement at the fitted point itself.
+    expect_equal(attr(fit, "logLik"),
+                 sum(actuar::dztbinom(x, size = unname(fit["size"]), prob = unname(fit["prob"]), log = TRUE)),
+                 tolerance = 1e-8)
+  }
+})

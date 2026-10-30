@@ -42,6 +42,7 @@ limits:
   - {name: fixed-shape collapse, fixed: [lambda], status: InvalidData, message: "unattained collapse face", when: "With free mu and sigma, lambda*(n-k) <= k at minimum multiplicity k."}
   - {name: shape divergence, fixed: [sigma], status: InvalidData, message: "unbounded shape likelihood", when: "Constant data with free mu, or all x-mu equal held sigma."}
   - {model: gumbel, when: 'lambda tends to infinity with free location', status: GumbelLimit}
+  - {name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, lambda) point beats the lambda -> 1 collapse face's limiting likelihood."}
 examples: |
   set.seed(3)
   mlfrechet(extraDistr::rfrechet(100), mu = 0)
@@ -62,8 +63,14 @@ and location is free.
 With location held, inverse Weibull fitting on x-mu permits every positive
 lambda. With location and shape free, lambda is restricted to [1, infinity), and
 the attained lambda=1 member is returned. The free fit requires at least
-three finite observations and minimum tie multiplicity strictly below half
-the sample size, as for GEV. The Gumbel face wins ties within 1e-8*n.
+three finite observations. Minimum tie multiplicity strictly above half
+the sample size always diverges, as for GEV; at exactly half (even n
+only), the lambda -> 1 collapse face has a finite but unattained
+supremum, and the fit compares the best interior candidate against it,
+returning the interior fit when strictly higher or stopping with the
+same collapse reason otherwise. As for GEV, no interior candidate ever
+beat the limit in extensive testing at an exact half tie; no proof that
+this holds for every sample is claimed. The Gumbel face wins ties within 1e-8*n.
 
 For a minimum m repeated k times, set mu=m-epsilon and sigma=c*epsilon.
 The minimum densities are proportional to epsilon^(-1), and all other

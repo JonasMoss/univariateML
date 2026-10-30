@@ -49,7 +49,13 @@ inline Inner evaluate(const trgamma_detail::LogData &d, double A, double c,
     const double e=std::exp(-std::abs(t));
     const double u=t>=0 ? 1/(1+e) : e/(1+e);
     const double w=e/((1+e)*(1+e));
-    const double lpu=-softplus(-t), lqu=-softplus(t);
+    // softplus(-t) and softplus(t) both reduce to max(.,0)+log1p(exp(-|t|));
+    // the exp(-|t|) and log1p(.) terms are shared with `e` above instead of
+    // being recomputed inside two separate softplus() calls (same bits:
+    // std::abs(-t)==std::abs(t), so softplus(-t)'s internal exp(-|-t|) is
+    // exactly `e`).
+    const double log1pe = std::log1p(e);
+    const double lpu=-(std::max(-t,0.0)+log1pe), lqu=-(std::max(t,0.0)+log1pe);
     const double vbar=t>=0 ? e/(1+e) : 1/(1+e);
     const double r=p*vbar-q*u;
     ll+=p*lpu+q*lqu; lp+=lpu; lq+=lqu;

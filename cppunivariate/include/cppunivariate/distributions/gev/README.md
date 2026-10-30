@@ -41,6 +41,7 @@ r:
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
 - {name: held-location collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "Held mu equals the minimum and the scale-collapse face wins or diverges."}
+- {name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, xi) point beats the xi -> 1 collapse face's limiting likelihood."}
 examples: |
   set.seed(1)
   mlgev(extraDistr::rgev(100, mu = 0, sigma = 2, xi = 0.3))
@@ -63,6 +64,18 @@ scale free the same condition applies (with free xi, majority minimum ties diver
 comparison with the finite collapse face). Other held-location or held-scale fits
 permit small and constant samples when their likelihood has a finite
 maximum; incompatible support is rejected. Held coefficients are exact.
+
+With location, scale and shape all free, a minimum repeated more than
+n/2 times always diverges. At exactly n/2 (even n only), the xi -> 1
+collapse face has a finite but unattained supremum (free mu and sigma
+both move toward the degenerate limit); the fit compares the best
+interior candidate found by the ordinary shape-profile search against
+that closed-form limit and returns the interior fit when it is
+strictly higher, or stops with the same "scale collapse" reason
+otherwise. Fewer ties than n/2 are unaffected. In extensive testing, no
+interior candidate ever beat the limit at an exact n/2 tie, so this
+remains a "stops with the reason" case in every sample tried; no proof
+that this holds for every sample is claimed.
 
 With fixed shape, held scale leaves a scalar location fit (the Gumbel
 location has an exact solution). Held location leaves a scalar scale fit

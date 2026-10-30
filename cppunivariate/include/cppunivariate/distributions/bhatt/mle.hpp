@@ -14,19 +14,25 @@ struct Profile {
     if(b/s<1e-7) {double mean=0;for(double z:x)mean+=z/x.size();return mean;}
     double lo=x.front(),hi=x.back(),m=0;
     for(double z:x)m+=z/x.size();
+    // s and b are this call's fixed parameters (only m moves across Newton
+    // steps), so their logs/square are loop-invariant: hoisted out of both
+    // loops instead of being recomputed at every point on every iteration.
+    const long double log2b=std::log(2*static_cast<long double>(b));
+    const long double logs=std::log(static_cast<long double>(s));
+    const long double s2=static_cast<long double>(s)*s;
     for(int k=0;k<60;++k) {
       long double score=0,deriv=0;
       for(double z:x) {
         const long double u=(static_cast<long double>(z)-m-b)/s,v=(static_cast<long double>(z)-m+b)/s;
         const long double lu=logphi(u),lv=logphi(v);
-        const long double ld=distributions::dbhatt(z,m,s,b,true)+std::log(2*static_cast<long double>(b));
+        const long double ld=distributions::dbhatt(z,m,s,b,true)+log2b;
         const long double A=std::exp(lu-ld),B=std::exp(lv-ld);
         long double g=0;
         if(lu!=lv) {
           const long double ln=std::max(lu,lv)+std::log(-std::expm1(-std::abs(lu-lv)));
-          g=(lu>lv?1:-1)*std::exp(ln-ld-std::log(static_cast<long double>(s)));
+          g=(lu>lv?1:-1)*std::exp(ln-ld-logs);
         }
-        score+=g;deriv+=(u*A-v*B)/(static_cast<long double>(s)*s)-g*g;
+        score+=g;deriv+=(u*A-v*B)/s2-g*g;
       }
       if(score==0)return m;
       if(score>0)lo=m;else hi=m;

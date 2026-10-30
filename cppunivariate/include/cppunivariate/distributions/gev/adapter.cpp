@@ -23,7 +23,7 @@ Rcpp::List mlgev_(const Rcpp::NumericVector &x,
   if(xi.isNotNull()) fixed.push_back("xi");
   const auto r=cppunivariate::gev_mle(dist_impl::as_span(x),reltol,iterlim,shape,location,scale);
   if(r.status==cppunivariate::GevStatus::NoMLE)
-    Rcpp::stop("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse at held mu.");
+    Rcpp::stop("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse.");
   if(r.status==cppunivariate::GevStatus::InvalidData)
     Rcpp::stop("Generalized extreme value requires at least three finite observations, an admissible multiplicity at the minimum, finite range, compatible support and holds, positive finite `reltol` and positive `iterlim`.");
   if(r.status!=cppunivariate::GevStatus::Ok || !std::isfinite(r.logLik))

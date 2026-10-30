@@ -28,6 +28,34 @@
   and both ways out. `model_select()` records the families it skipped in
   a `skipped` attribute.
 
+* `mlbinom(x, size = NULL)` searches the size without a cap, and a
+  cancellation that misplaced very large sizes is fixed. With a tie of
+  exactly half the sample at the minimum, `mlgev()` and `mlfrechet()` now
+  compare the interior fit with the collapse face instead of refusing
+  outright.
+
+* Restrictions, closure and domains (parameter rules P3):
+  - Fits on a fitting restriction warn (class `univariateML_restricted`)
+    and record it in a `restricted` attribute: lst `df = 1`, frechet
+    `lambda = 1`, gev and gpd shape bounds, Tukey lambda bounds, ged and
+    sged `nu = 1`. Holding `mu` lifts the restriction for lst, frechet,
+    ht and Tukey lambda, where the held problem has an MLE without it.
+  - `mlgev()` and `mlgpd()` accept shapes down to -1 (was -1/2). At -1 the
+    fit is attained (the GPD is uniform); fits in [-1, -1/2) are not
+    regular.
+  - Support endpoints that depend on a coefficient are closed, and the
+    density there is its limit from inside:
+    - `mltnorm(x, a = NULL, b = NULL)` estimates the bounds as the sample
+      extremes;
+    - `mlpower()` puts `alpha` at `max(x)` exactly (`epsilon` is ignored);
+    - `dml()` at an estimated endpoint agrees with the fitted likelihood.
+  - All-zero samples return the attained point mass instead of an escape:
+    nbinom and zinb (`size = 0`), pig (`shape = 0`), cmp (`lambda = 0`),
+    cmb (`prob` 0 or 1).
+  - A failed optimizer stops with its status unless the score check
+    passes at the returned point. The iteration-limit warnings of
+    `mlgumbel()`, `mlweibull()` and `mlinvweibull()` are now errors.
+
 * Every coefficient can be held (`p = value`) or estimated (`p = NULL`):
   e.g. `mlgamma(x, shape = 2)`, `mlnorm(x, mean = 0)`,
   `mlweibull(x, shape = 2)`. Of the 228 hold entries marked not

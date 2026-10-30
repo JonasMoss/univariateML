@@ -1,3 +1,4 @@
+import re
 """Check real fitter goldens against symbolic README densities."""
 import argparse
 import json
@@ -13,6 +14,29 @@ from scipy.optimize import minimize
 from scipy.special import expit, polygamma
 ROOT = Path(__file__).resolve().parents[2]
 DISTS = ROOT / 'cppunivariate/include/cppunivariate/distributions'
+
+
+def r_bound_to_sympy(expr):
+    """Translate an R support bound (README `support:`) to sympy syntax.
+
+    Bounds may be R conditionals, `if (xi > 0) mu - sigma/xi else -Inf`,
+    possibly chained with `else if`; they become `Piecewise`. `Inf` becomes
+    `oo` and `a == b` becomes `Eq(a, b)`.
+    """
+    s = expr.strip()
+    if s.startswith("if"):
+        i = s.index("(")
+        depth = 0
+        for j in range(i, len(s)):
+            depth += {"(": 1, ")": -1}.get(s[j], 0)
+            if depth == 0:
+                break
+        cond, rest = s[i + 1:j], s[j + 1:]
+        k = rest.index(" else ")
+        then, other = rest[:k], rest[k + len(" else "):]
+        cond = re.sub(r"(.+?)\s*==\s*(.+)", r"Eq(\1, \2)", cond)
+        return f"Piecewise(({r_bound_to_sympy(then)}, {cond}), ({r_bound_to_sympy(other)}, True))"
+    return re.sub(r"\bInf\b", "oo", s)
 
 def interval(domain, values):
     return tuple((float(sp.sympify(v.strip(), locals={**values, 'inf': sp.oo})) for v in domain[1:-1].split(',')))
@@ -147,7 +171,7 @@ def check(id):
     # domain at every trial rather than the golden's substituted endpoints.
     domain_fns = [[sp.lambdify(syms, sp.sympify(v.strip(), locals={**dict(zip([p['name'] for p in params], syms)), 'inf': sp.oo}), 'numpy')
                    for v in p['domain'][1:-1].split(',')] for p in params]
-    support_fns = [sp.lambdify(syms, sp.sympify(str(meta['support'][key]), locals={**dict(zip([p['name'] for p in params], syms)), 'inf': sp.oo}), 'numpy') for key in ('lower', 'upper')]
+    support_fns = [sp.lambdify(syms, sp.sympify(r_bound_to_sympy(str(meta['support'][key])), locals={**dict(zip([p['name'] for p in params], syms)), 'inf': sp.oo}), 'numpy') for key in ('lower', 'upper')]
 
     def objective(z):
         try:

@@ -108,3 +108,37 @@ TEST_CASE("zib: P3 unfinished optimizer is a failure") {
   const cppunivariate::ispan ix{values.data(),values.size()};
   CHECK(cppunivariate::zib_mle(ix,1e-8,1).status==cppunivariate::ZibStatus::IterationFailure);
 }
+
+// TASK-85/87: same widened-grid change as ztbinom's free-size search
+// (see mle.hpp); covers the n=20/100, ties and near-Poisson/ZIP cases
+// the task calls out, cross-checked against dzib (a separate code path
+// from the fitter) and a coarse brute-force grid. test.R adds the
+// fully independent reference-density multistart oracle.
+TEST_CASE("zib: free size oracle at n=20, n=100, ties, and near-Poisson") {
+  cppunivariate::distributions::StdRng<> rng(85087);
+  auto sample=[&](int n,double size,double prob,double pi) {
+    std::vector<int> x;
+    for(int i=0;i<n;++i) x.push_back(static_cast<int>(cppunivariate::distributions::rzib(rng,size,prob,pi)));
+    return x;
+  };
+  std::vector<std::vector<int>> samples{
+    sample(20,8,.4,.3), sample(100,8,.4,.3),
+    {0,0,2,2,2,2,3,4,5,5},
+    sample(100,500,.02,.2),  // near-Poisson/ZIP: large size, small prob
+  };
+  for (auto &x : samples) {
+    const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,1000);
+    REQUIRE((f.status==cppunivariate::ZibStatus::Ok || f.status==cppunivariate::ZibStatus::ZipLimit));
+    double ref=0; for(int v:x) ref+=cppunivariate::distributions::dzib(v,f.size,f.prob,f.pi,true);
+    CHECK(f.logLik==doctest::Approx(ref).epsilon(1e-8));
+    if (f.status==cppunivariate::ZibStatus::Ok) {
+      const int mx=*std::max_element(x.begin(),x.end());
+      for (double factor : {0.25,0.5,2.0,4.0}) {
+        const double alt_size=std::max<double>(mx,std::floor(f.size*factor));
+        const auto alt=cppunivariate::zib_mle({x.data(),x.size()},1e-10,1000,alt_size);
+        REQUIRE(alt.status==cppunivariate::ZibStatus::Ok);
+        CHECK(f.logLik+1e-6>=alt.logLik);
+      }
+    }
+  }
+}
