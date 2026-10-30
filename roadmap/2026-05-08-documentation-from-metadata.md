@@ -1,6 +1,6 @@
 # Documentation from metadata (deferred)
 
-**Status:** deferred — documentation architecture for future generated docs.
+**Status:** folded into `2026-10-30-package-and-documentation.md` (catalog, generated docs). Earlier: deferred — documentation architecture for future generated docs.
 
 ## The idea
 

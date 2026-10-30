@@ -1,6 +1,6 @@
 # Classical ML-failure families, and a failure gallery
 
-**Status:** recorded 2026-10-29. Skew-normal in progress (Codex job `sn`);
+**Status:** skew-normal landed as `mlsn` (TASK-63); the threshold families and skew-t remain deferred. Earlier: recorded 2026-10-29. Skew-normal in progress (Codex job `sn`);
 the rest deferred.
 
 The univariate families most famous for failing maximum likelihood, which

@@ -1,6 +1,6 @@
 # dpqr round-trip validation in the harness (deferred)
 
-**Status:** deferred — symbolic-derivative harness handles MLE math
+**Status:** substantially addressed 2026-10-30: every family's d/p/q/r is checked against an independent mpmath truth table (TASK-78.2, `distributions/<id>/truth.json`) and boundary closure was audited (TASK-78.14). Earlier: deferred — symbolic-derivative harness handles MLE math
 first; dpqr is the natural next layer.
 
 ## The idea

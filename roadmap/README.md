@@ -22,6 +22,9 @@ the queue.
 
 ## Index
 
+- [Decision log](decisions.md): dated project decisions with evidence; read
+  this first for what was chosen and why.
+
 - [2026-10-30 — Inference regularity and derivative support](2026-10-30-inference-and-dqm.md)
   *(initial audit; implementation deferred)*: 98-family derivative inventory,
   conditional DQM and information classification, recovered Hessian history,
@@ -59,7 +62,7 @@ the queue.
   *(substantially addressed 2026-05-10)*: sympy-derivative round-trip
   is the new substantive layer; goldens demoted to drift-detection.
   dpqr + sim recovery split out to their own deferred entries.
-- [2026-05-08 — Documentation from metadata](2026-05-08-documentation-from-metadata.md):
+- [2026-05-08 — Documentation from metadata](2026-05-08-documentation-from-metadata.md) *(folded into the 2026-10-30 package plan)*:
   generate docs from the same metadata and dossiers used by code and
   tests.
 - [2026-05-08 — Monorepo layout](2026-05-08-monorepo-layout.md)
@@ -68,7 +71,7 @@ the queue.
   awaiting their respective roadmap entries.
 - [2026-05-08 — Benchmarks](2026-05-08-benchmarks.md):
   benchmark runtime and robustness after correctness mechanisms mature.
-- [2026-05-08 — Variable parameter selection](2026-05-08-variable-parameter-selection.md):
+- [2026-05-08 — Variable parameter selection](2026-05-08-variable-parameter-selection.md) *(landed via parameter-rule holds)*:
   let users fix some canonical parameters and estimate the rest;
   motivating example is fatigue with/without a location shift.
 - [2026-05-08 — R package scope](2026-05-08-r-package-scope.md)
@@ -79,7 +82,7 @@ the queue.
   bias / Cramér–Rao / KS verification of the *fitting machinery*,
   separate from the symbolic-derivative MLE-math harness. Code lives
   at acb5e43; reverted to keep v1 scope focused.
-- [2026-05-10 — dpqr round-trip validation](2026-05-10-dpqr-validation.md):
+- [2026-05-10 — dpqr round-trip validation](2026-05-10-dpqr-validation.md) *(substantially addressed 2026-10-30 by truth tables)*:
   extend the harness to verify d/p/q/r self-consistency
   (∫f=1, q∘p=id) and reference cross-check, on top of the MLE-math
   layer.
@@ -117,11 +120,11 @@ the queue.
 - [2026-10-28 — New distributions and reference-package imports](2026-10-28-new-distributions.md):
   evaluation of issues #52/#7 (ZINB and constrained GPD first) and of
   sads (imports VGAM; buggy `pzipf`/`qzipf`).
-- [2026-10-29 — Larger reference repairs](2026-10-29-reference-repairs.md):
+- [2026-10-29 — Larger reference repairs](2026-10-29-reference-repairs.md) *(superseded 2026-10-30: repairs deleted with extraDistr/actuar)*:
   held-back runtime repairs for actuar trgamma/invtrgamma and extraDistr
   tnorm/gev d/p/q (patches in `patches/`); needs a policy decision.
 - [2026-10-29 — Classical ML-failure families and a failure gallery](2026-10-29-classical-failure-families.md):
-  skew-normal (in progress), threshold families, skew-t; taxonomy of failures.
+  skew-normal landed (mlsn); threshold families and skew-t deferred; taxonomy of failures.
 - [2026-10-30 — Frozen distributions through the fitters](2026-10-30-frozen-distributions.md)
   *(agreed direction, not started)*: `mlX()` and `mlX(coef = ...)` without
   data build a fixed model at README defaults; replaces `simulate_default`
