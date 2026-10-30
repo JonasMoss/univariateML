@@ -1,0 +1,12 @@
+---
+import {markdown} from '../lib/markdown';
+const {f,source}=Astro.props;
+const symbol=f.support.type==='integer' ? 'p' : 'f';
+const tex=f.density_latex ? `${symbol}(x) = ${f.density_latex}` : `\\log ${symbol}(x) = ${f.log_latex}`;
+const render=(text:string)=>markdown(text,source);
+---
+<h2 id="definition">Definition</h2>
+<div class="formula" set:html={await render(`$$\n${tex}\n$$`)}/>
+<p>{f.density_latex ? (f.support.type==='integer' ? 'Probability mass function' : 'Density') : 'Log-density (the direct density does not simplify readably)'} on the support below; zero probability outside it. Endpoint values use the interior limit where the endpoint is included.</p>
+<p><strong>Support:</strong> {f.support.type==='integer' ? 'integers' : 'real numbers'} in {f.support.closed[0] ? '[' : '('}<code>{String(f.support.lower)}</code>, <code>{String(f.support.upper)}</code>{f.support.closed[1] ? ']' : ')'}. Bounds are in the original observation coordinates; expressions use the coefficients below.</p>
+<table><thead><tr><th>Coefficient</th><th>Role</th><th>Domain</th><th>Kind</th></tr></thead><tbody>{f.params.map(p=><tr><td><code>{p.name}</code></td><td>{p.role}</td><td><code>{p.domain}</code>{p.integer ? ' · integer' : ''}</td><td>{p.kind || 'regular'}{p.advice && <p>{p.advice}</p>}</td></tr>)}</tbody></table>

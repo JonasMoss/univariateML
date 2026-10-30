@@ -1,0 +1,7 @@
+---
+const {f}=Astro.props;
+---
+<section aria-labelledby="usage"><h2 id="usage">Usage</h2><div class="tabs" aria-label="Choose usage language">{[['r','R'],['cpp','C++'],['python','Python'],['js','JS']].map(([id,name])=><button type="button" aria-pressed="false" data-select-language={id}>{name}</button>)}</div>
+<div class="usage-panel" data-language="r"><h3>R</h3><pre><code>{f.examples}</code></pre></div>
+<div class="usage-panel" data-language="cpp"><h3>C++</h3><pre><code>{f.cpp}</code></pre><p>Include the library’s <code>include/</code> directory and Boost headers; compile as C++17. A returned status must be checked before using a fit.</p></div>
+<div class="usage-panel" data-language="python"><h3>Python</h3><p>Planned.</p></div><div class="usage-panel" data-language="js"><h3>JS</h3><p>Planned.</p></div></section>

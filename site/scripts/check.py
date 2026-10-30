@@ -1,0 +1,113 @@
+"""Blocking static acceptance checks; no R runtime or numerical suite needed."""
+from pathlib import Path
+from html.parser import HTMLParser
+from urllib.parse import urlsplit, unquote
+import json, subprocess, re, os, shutil, sys
+import sympy
+ROOT=Path(__file__).resolve().parents[2]
+DIST=ROOT/'site/dist'
+DATA=json.loads((ROOT/'site/src/data/families.json').read_text())
+class Document(HTMLParser):
+    def __init__(self, text):
+        super().__init__(); self.links=[]; self.assets=[]; self.ids=set(); self.math=0; self.display_math=0; self.scripts=[]; self.in_script=False; self.inline_js=0
+        self.feed(text)
+    def handle_starttag(self, tag, attrs):
+        a=dict(attrs)
+        if 'id' in a: self.ids.add(a['id'])
+        if tag=='math':
+            self.math+=1
+            if a.get('display')=='block': self.display_math+=1
+        if tag=='script':
+            self.scripts.append(a.get('src','')); self.in_script=not a.get('src')
+        for key in ('src','href','component-url','renderer-url'):
+            if a.get(key): self.links.append((tag,key,a[key]))
+        if tag in ('script','link'):
+            for key in ('src','href'):
+                if a.get(key): self.assets.append(a[key])
+
+    def handle_data(self,data):
+        if self.in_script: self.inline_js+=len(data.encode())
+    def handle_endtag(self,tag):
+        if tag=='script': self.in_script=False
+
+def target(file,url):
+    url=unquote(urlsplit(url).path)
+    p=DIST/url.lstrip('/') if url.startswith('/') else file.parent/url
+    if p.is_dir(): p=p/'index.html'
+    return p
+pages={p:Document(p.read_text()) for p in DIST.rglob('*.html')}
+errors=[]
+family_pages=list((DIST/'distributions').glob('*/index.html'))
+assert len(family_pages)==98, len(family_pages)
+for f in DATA:
+    p=DIST/f"distributions/{f['id']}/index.html"
+    if p not in pages: errors.append(f'missing {p}')
+    elif pages[p].math==0 or pages[p].display_math==0: errors.append(f'no display MathML: {p}')
+for p,d in pages.items():
+    for src in d.scripts:
+        if re.search(r'mathjax|katex',src,re.I): errors.append(f'math runtime {p}: {src}')
+    text=p.read_text()
+    if re.search(r'<script\b[^>]*>[^<]*(mathjax|katex)',text,re.I): errors.append(f'inline math runtime {p}')
+    if 'katex-error' in text: errors.append(f'unrendered math {p}')
+    for a in d.assets:
+        if urlsplit(a).scheme or a.startswith('//'): errors.append(f'external runtime {p}: {a}')
+    for tag,key,url in d.links:
+        if urlsplit(url).scheme or url.startswith('//'): continue
+        dest=target(p,url)
+        if not dest.exists(): errors.append(f'broken {p.relative_to(DIST)}: {url}')
+        fragment=unquote(urlsplit(url).fragment)
+        if fragment and dest in pages and fragment not in pages[dest].ids: errors.append(f'broken fragment {p.relative_to(DIST)}: {url}')
+for p,d in pages.items():
+    if re.search(r'class="[^"]*(?:math-inline|math-display)',p.read_text()) and not d.math:
+        errors.append(f'math without MathML {p}')
+# Stylesheets must also be self-contained (including @import and font URLs).
+for p in DIST.rglob('*.css'):
+    if re.search(r'(?:url\(\s*[\'\"]?|@import\s*[\'\"])(?:https?:|//)',p.read_text(),re.I): errors.append(f'external CSS URL {p}')
+if errors: raise SystemExit('\n'.join(errors))
+print(f'PASS: {len(family_pages)} family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.')
+scratch=ROOT/'build/scratch/site-snippets';scratch.mkdir(parents=True,exist_ok=True)
+# Use a standalone Boost include path; an already installed BH is only a
+# workstation fallback and is read as headers, without invoking R.
+boost=[]
+if os.environ.get('BOOST_INCLUDE_DIR'): boost=[Path(os.environ['BOOST_INCLUDE_DIR'])]
+elif not Path('/usr/include/boost/version.hpp').exists():
+    candidates=[Path('/usr/local/include'),Path('/usr/local/lib/R/site-library/BH/include'),Path('/usr/lib/R/site-library/BH/include'),*Path.home().glob('R/*/*/BH/include')]
+    boost=next(([p] for p in candidates if (p/'boost/version.hpp').exists()),[])
+compiler=([shutil.which('ccache')] if shutil.which('ccache') else [])+['g++']
+print(f'Environment: Python {sys.version.split()[0]}, SymPy {sympy.__version__}; '+subprocess.check_output(['g++','--version'],text=True).splitlines()[0])
+print('Boost headers: '+(', '.join(str(p) for p in boost) or 'compiler default search path'))
+# Compile every generated example, beyond the three mandatory pilots.
+for f in DATA:
+    file=scratch/(f['id']+'.cpp');file.write_text(f['cpp'])
+    subprocess.run(compiler+['-std=c++17','-c','-I'+str(ROOT/'univariateML-cpp/include')]+['-I'+str(p) for p in boost]+[str(file),'-o',str(file.with_suffix('.o'))],check=True)
+    subprocess.run(['g++',str(file.with_suffix('.o')),'-o',str(file.with_suffix('.exe'))],check=True)
+print('PASS: 98 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).')
+# Representative HTML inspection assertions: pilots plus ten contrasting laws.
+spots=['exp','gamma','gb2','binom','beta','hyper','sstd','gev','gpd','tnorm','pois','unif','pareto']
+for id in spots:
+    p=DIST/f'distributions/{id}/index.html';text=p.read_text();d=pages[p]
+    assert d.math>0 and 'Definition' in text and 'Usage' in text and 'Implementation' in text,id
+    assert all(f'data-language="{lang}"' in text for lang in ['r','cpp','python','js']),id
+print('PASS: pilot and ten additional HTML spot checks: '+', '.join(spots))
+print('Log-density fallback: '+', '.join(f['id'] for f in DATA if not f['density_latex']))
+# Include inline JS (already part of HTML) and the local module dependency closure.
+def page_weight(p,d):
+    css={target(p,a) for a in d.assets if urlsplit(a).path.endswith('.css')}
+    js={target(p,a) for a in d.assets if urlsplit(a).path.endswith('.js')}
+    js.update(target(p,url) for tag,key,url in d.links if key in ('component-url','renderer-url'))
+    queue=list(js)
+    while queue:
+        module=queue.pop()
+        for match in re.finditer(r"(?:from\s*|import\s*\(\s*|import\s*)[\"']([^\"']+)[\"']",module.read_text()):
+            url=match[1]
+            if not url.startswith(('.', '/')) or not url.endswith('.js'): continue
+            dependency=target(module,url)
+            if dependency.exists() and dependency not in js:
+                js.add(dependency);queue.append(dependency)
+    return {'html':p.stat().st_size,'css':sum(x.stat().st_size for x in css),'js':sum(x.stat().st_size for x in js)+d.inline_js}
+weights={str(p.relative_to(DIST)):page_weight(p,d) for p,d in pages.items()}
+for id in ['exp','gamma','gb2','binom','hyper','sstd']:
+    w=weights[f'distributions/{id}/index.html']
+    print(f"WEIGHT {id}: HTML {w['html']} B; CSS {w['css']} B; JS {w['js']} B (inline included in HTML)")
+(ROOT/'build/scratch/site-weights.json').write_text(json.dumps(weights,indent=2)+'\n')
+print(f'Total dist: {sum(p.stat().st_size for p in DIST.rglob("*") if p.is_file())} B')

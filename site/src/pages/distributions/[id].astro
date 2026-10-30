@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import Page from '../../layouts/Page.astro';
+import Definition from '../../components/Definition.astro';
+import Usage from '../../components/Usage.astro';
+import families from '../../data/families.json';
+import { markdown } from '../../lib/markdown';
+import { notices } from '../../lib/notices';
+export async function getStaticPaths() {
+ const entries=await getCollection('families');
+ return entries.map(entry=>({params:{id:entry.id},props:{entry,f:families.find(f=>f.id===entry.id)}}));
+}
+const {entry,f}=Astro.props;
+const source=`univariateML-cpp/include/cppunivariate/distributions/${f.id}/README.md`;
+const body=entry.body || '';
+const chunks=body.split(/^## /m);
+const introRemainder=entry.data.summary ? chunks[0].trim() : chunks[0].trim().split(/\n\s*\n/).slice(1).join('\n\n');
+const sections=chunks.slice(1).map(s=>{const i=s.indexOf('\n');return {title:s.slice(0,i).trim(),body:s.slice(i+1)};});
+const prose=sections.filter(s=>!['details','decision history'].includes(s.title.toLowerCase()));
+const implementation=sections.find(s=>s.title.toLowerCase()==='details');
+const history=sections.find(s=>s.title.toLowerCase()==='decision history');
+const render=(s:string)=>markdown(s,source);
+const refs=f.key_references || f.references || [];
+const renderedProse=await Promise.all(prose.map(async s=>({...s,html:await render(s.body)})));
+---
+<Page title={f.name} description={f.summary}>
+<article data-family={f.id}>
+<p class="eyebrow">Distribution / {f.id}{f.classification ? ` / ${f.classification}` : ''}</p><h1>{f.name}</h1>
+<div class="summary" set:html={await render(f.summary)}/>
+{f.aliases?.length && <p>Also known as {f.aliases.join(', ')}.</p>}
+{refs.length>0 && <div class="references"><h2>References</h2><ol>{refs.map((r:string)=><li>{r}</li>)}</ol></div>}
+{notices(f).length>0 && <aside class="notices" aria-label="Fitting notices" set:html={await render(notices(f).join('\n\n'))}/>}
+<Definition f={f} source={source}/>
+<!-- Stage 3: mount a lazy explorer island here; prose and metadata stay independent. -->
+{introRemainder && <div set:html={await render(introRemainder)}/>}
+{renderedProse.map(s=><section><h2>{s.title}</h2><div set:html={s.html}/></section>)}
+<Usage f={f}/>
+{implementation && <details class="implementation"><summary id="details">Implementation</summary><div set:html={await render(implementation.body)}/></details>}
+{history && <details><summary id="decision-history">Decision history</summary><div set:html={await render(history.body)}/></details>}
+{f.key_references && f.references?.length>0 && <section class="references"><h2>Full references</h2><ol>{f.references.map((r:string)=><li>{r}</li>)}</ol></section>}
+</article></Page>
