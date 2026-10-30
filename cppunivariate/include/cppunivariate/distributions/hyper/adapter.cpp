@@ -29,7 +29,9 @@ std::string whole(double v) {
 Rcpp::List mlhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> k,
                     Rcpp::Nullable<double> N,
                     Rcpp::Nullable<double> m = R_NilValue) {
-  if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).");
+  if (N.isNull() && m.isNull() && k.isNull())
+    Rcpp::stop("Joint estimation of m, N and k is not implemented: the interior and binomial and Poisson limit faces require a certified global comparison.");
+  if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of N and m is not implemented; it can escape to the binomial limit, for which use mlbinom(x, size = k).");
   if (k.isNull() && (N.isNull() || m.isNull())) Rcpp::stop("Joint estimation with k free is not supported by this fitter.");
   const double design=held_value(k, "k");
   const double N_held = held_value(N, "N"), m_held = held_value(m, "m");

@@ -117,3 +117,8 @@ test_that("free stopping count matches the reference finite grid", {
   expect_equal(unname(mlnhyper(0, m = 7, N = 20, r = NULL)["r"]), 0)
   expect_error(mlnhyper(c(0, 1), m = 7, N = 20, r = NULL), "positive probability")
 })
+
+test_that("fully free nhyper reports the unsupported global comparison", {
+  expect_error(mlnhyper(c(1, 2), N = NULL, r = NULL, m = NULL),
+               "not implemented.*negative-binomial")
+})

@@ -49,10 +49,10 @@ examples: |
 holds:
 - held: []
   status: not-implemented
-  reason: Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).
+  reason: Joint estimation is not implemented; it requires a certified search over binomial and Poisson boundary faces and the finite interior.
 - held: [k]
   status: not-implemented
-  reason: Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).
+  reason: A certified comparison against the binomial limit and global tail bound are not available.
 - held: [m]
   status: not-implemented
   reason: Joint estimation of N and k requires a certified unbounded profile search.
