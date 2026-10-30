@@ -96,3 +96,8 @@ test_that("free draws match the reference finite grid", {
   expect_equal(unname(z["k"]), 0)
   expect_error(mlhyper(4, m = 3, N = 10, k = NULL), "positive probability")
 })
+
+test_that("fully free hyper reports the unsupported global comparison", {
+  expect_error(mlhyper(c(1, 2), N = NULL, k = NULL, m = NULL),
+               "not implemented.*Poisson")
+})

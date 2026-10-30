@@ -8,7 +8,9 @@
 Rcpp::List mlnhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> r,
                      Rcpp::Nullable<double> N,
                      Rcpp::Nullable<double> m = R_NilValue) {
-  if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of population and composition can escape to the growing-urn limit; use mlnbinom(x - r, size = r).");
+  if (N.isNull() && m.isNull() && r.isNull())
+    Rcpp::stop("Joint estimation of m, N and r is not implemented: the interior and negative-binomial limit faces require a certified global comparison.");
+  if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of population and composition is not implemented; it can escape to the growing-urn limit, for which use mlnbinom(x - r, size = r).");
   if (N.isNull()) Rcpp::stop("Estimating N with m held is not supported by this fitter.");
   if (r.isNull() && m.isNull()) Rcpp::stop("Estimating r jointly with m is not supported by this fitter.");
   const double design=r.isNull() ? std::numeric_limits<double>::quiet_NaN() : Rcpp::as<double>(r);

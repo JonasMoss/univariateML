@@ -39,10 +39,10 @@ examples: |
 holds:
 - held: []
   status: not-implemented
-  reason: Joint estimation of population and composition can escape to the growing-urn limit; use mlnbinom(x - r, size = r).
+  reason: Joint estimation is not implemented; a certified comparison across stopping counts, their negative-binomial limits and the finite interior is not available.
 - held: [r]
   status: not-implemented
-  reason: Joint estimation of population and composition can escape to the growing-urn limit; use mlnbinom(x - r, size = r).
+  reason: A certified comparison against the negative-binomial growing-urn limit and global tail bound are not available.
 - held: [m]
   status: not-implemented
   reason: Joint estimation of N and r requires a certified integer profile search.
