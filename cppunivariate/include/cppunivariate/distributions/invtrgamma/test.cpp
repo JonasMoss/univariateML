@@ -89,7 +89,7 @@ TEST_CASE("invtrgamma: fixed shapes reduce to inverse gamma and inverse Weibull"
   auto iw = cppunivariate::invweibull_mle(x, 1e-12, 100);
   REQUIRE(fw.status == cppunivariate::InvTrGammaStatus::Ok);
   CHECK(fw.shape2 == doctest::Approx(iw.shape).epsilon(1e-9));
-  CHECK(fw.scale == doctest::Approx(1 / iw.rate).epsilon(1e-9));
+  CHECK(fw.scale == doctest::Approx(iw.scale).epsilon(1e-9));
   CHECK(fw.logLik == doctest::Approx(iw.logLik).epsilon(1e-12));
   auto both = cppunivariate::invtrgamma_mle(x, 1e-12, 100, 2.5, 0.8);
   CHECK(both.logLik == doctest::Approx(invtrgamma_loglik(g.data, 2.5, 0.8, both.scale)).epsilon(1e-12));

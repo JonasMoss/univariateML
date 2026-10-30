@@ -62,7 +62,7 @@ test_that("adapters flag estimated bounds and suppress held and exempt bounds", 
   expect_no_warning(mlged(x, mean = 0, sd = 1, nu = 1))
   expect_no_warning(mlsged(x, mean = 0, sd = 1, nu = 1, xi = 1))
   expect_no_warning(mllst(x, mu = 0, sigma = 1, df = .5))
-  expect_no_warning(mlht(c(.01,.1,1,10,100)))
+  expect_no_warning(mlht(c(.01,.1,1,10,100),mu=0))
 })
 
 test_that("failed BFGS paths do not return starts as fits", {

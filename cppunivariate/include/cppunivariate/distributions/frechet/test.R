@@ -16,7 +16,7 @@ test_that("frechet: held location, attained shape boundary and escape", {
  f <- suppressWarnings(mlfrechet(x,mu=2), classes = "univariateML_restricted")
  b <- mlinvweibull(x-2,reltol=1e-10)
  expect_equal(unname(f["lambda"]),unname(b["shape"]),tolerance=1e-10)
- expect_equal(unname(f["sigma"]),1/unname(b["rate"]),tolerance=1e-10)
+ expect_equal(unname(f["sigma"]),unname(b["scale"]),tolerance=1e-10)
  expect_equal(attr(f,"logLik"),attr(b,"logLik"),tolerance=1e-10)
  free <- suppressWarnings(mlfrechet(x, mu = NULL), classes = "univariateML_restricted")
  expect_equal(unname(free["lambda"]),1)

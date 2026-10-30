@@ -1,6 +1,6 @@
 ---
 id: lgamma
-name: Loggamma
+name: Log-gamma
 support: {type: real, lower: 1, upper: inf, closed: [false, false]}
 params:
 - name: shapelog

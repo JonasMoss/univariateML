@@ -3,23 +3,25 @@
 #include "cppunivariate/distributions/hcauchy/dpqr.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
 #include <vector>
-TEST_CASE("hcauchy: golden and exact pair") {
+TEST_CASE("hcauchy: golden and exact pair (mu held at 0)") {
   const auto g=mltest::load_distribution_golden("hcauchy");
-  const auto r=cppunivariate::hcauchy_mle(mltest::as_span(g.data));
+  const auto r=cppunivariate::hcauchy_mle(mltest::as_span(g.data),0.0);
   CHECK(r.status==cppunivariate::HcauchyStatus::Ok);
+  CHECK(r.mu==0.0);
   CHECK(r.sigma==doctest::Approx(g.estimates.at("sigma")).epsilon(1e-10));
   CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
   for(double factor:{1e-200,1.0,1e200}) {
     const std::vector<double> x={factor,4*factor};
-    CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x)).sigma/factor==doctest::Approx(2).epsilon(1e-11));
+    CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x),0.0).sigma/factor==doctest::Approx(2).epsilon(1e-11));
   }
 }
-TEST_CASE("hcauchy: zero multiplicities and invalid data") {
+TEST_CASE("hcauchy: zero multiplicities and invalid data (mu held at 0)") {
   const std::vector<double> a={0,1,2}, b={0,1}, c={0,0,1}, d={0}, e={-1,1}, f={};
-  CHECK(cppunivariate::hcauchy_mle(mltest::as_span(a)).status==cppunivariate::HcauchyStatus::Ok);
-  CHECK(cppunivariate::hcauchy_mle(mltest::as_span(b)).status==cppunivariate::HcauchyStatus::ScaleBoundary);
-  for(const auto &x:{c,d}) CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x)).status==cppunivariate::HcauchyStatus::Unbounded);
-  for(const auto &x:{e,f}) CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x)).status==cppunivariate::HcauchyStatus::InvalidData);
+  CHECK(cppunivariate::hcauchy_mle(mltest::as_span(a),0.0).status==cppunivariate::HcauchyStatus::Ok);
+  CHECK(cppunivariate::hcauchy_mle(mltest::as_span(b),0.0).status==cppunivariate::HcauchyStatus::ScaleBoundary);
+  for(const auto &x:{c,d}) CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x),0.0).status==cppunivariate::HcauchyStatus::Unbounded);
+  CHECK(cppunivariate::hcauchy_mle(mltest::as_span(e),0.0).status==cppunivariate::HcauchyStatus::InvalidData);
+  CHECK(cppunivariate::hcauchy_mle(mltest::as_span(f),0.0).status==cppunivariate::HcauchyStatus::InvalidData);
 }
 TEST_CASE("hcauchy: reference identities, tails and sampling") {
   CHECK(cppunivariate::distributions::dhcauchy(0,2,false)==doctest::Approx(1/std::acos(-1.0)));
@@ -43,9 +45,9 @@ TEST_CASE("hcauchy: d/p/q/r against the truth table") {
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhcauchy(rng, p[0]); });
 }
 
-TEST_CASE("hcauchy: held scale evaluates zeros") {
+TEST_CASE("hcauchy: held scale evaluates zeros (mu held at 0)") {
   const std::vector<double> x{0,0};
-  auto r=cppunivariate::hcauchy_mle(mltest::as_span(x),2);
+  auto r=cppunivariate::hcauchy_mle(mltest::as_span(x),0.0,2.0);
   CHECK(r.status==cppunivariate::HcauchyStatus::Ok);CHECK(r.sigma==2);
   CHECK(r.logLik==doctest::Approx(-2*std::log(std::acos(-1.0))));
 }
@@ -59,4 +61,40 @@ TEST_CASE("hcauchy: held scale evaluates zeros") {
 TEST_CASE("hcauchy: targeted tail and endpoint regressions") {
   CHECK(cppunivariate::distributions::qhcauchy(1.0, 1.0, false, false) == doctest::Approx(0.0).epsilon(1e-10));
   CHECK(cppunivariate::distributions::phcauchy(1e+100, 1.0, false, true) == doctest::Approx(-230.71009200469402).epsilon(1e-10));
+}
+
+// P4 (C5): free threshold, held threshold and their held-scale variants.
+TEST_CASE("hcauchy: free threshold is the sample minimum, tie multiplicity vs n") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  { // 2k < n: an ordinary attained fit at mu = min(x).
+    const std::vector<double> x={5,5,7,9,20};
+    const auto r=cppunivariate::hcauchy_mle(mltest::as_span(x));
+    CHECK(r.status==cppunivariate::HcauchyStatus::Ok);
+    CHECK(r.mu==5.0);
+    CHECK(std::isfinite(r.sigma));
+    auto ll=[&](double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dhcauchy(v-r.mu,s,true);return a;};
+    CHECK(ll(r.sigma)==doctest::Approx(r.logLik).epsilon(1e-8));
+    {const double h=1e-5*r.sigma;CHECK(std::abs((ll(r.sigma+h)-ll(r.sigma-h))/(2*h))<1e-3);}
+  }
+  { // 2k == n: a finite unattained scale-zero supremum.
+    const std::vector<double> x={3,3,8,20};
+    CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x)).status==cppunivariate::HcauchyStatus::ScaleBoundary);
+  }
+  { // 2k > n: unbounded.
+    const std::vector<double> x={3,3,3,8};
+    CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x)).status==cppunivariate::HcauchyStatus::Unbounded);
+  }
+  { // Held sigma removes the collapse at any tie multiplicity.
+    const std::vector<double> x={3,3,3,8};
+    const auto r=cppunivariate::hcauchy_mle(mltest::as_span(x),nan,2.0);
+    CHECK(r.status==cppunivariate::HcauchyStatus::Ok);
+    CHECK(r.mu==3.0);
+    CHECK(r.sigma==2.0);
+  }
+  { // Held mu above an observation is invalid; below or at the minimum is fine.
+    const std::vector<double> x={1,2,3};
+    CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x),1.5).status==cppunivariate::HcauchyStatus::InvalidData);
+    CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x),0.0).status==cppunivariate::HcauchyStatus::Ok);
+    CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x),1.0).status==cppunivariate::HcauchyStatus::Ok);
+  }
 }

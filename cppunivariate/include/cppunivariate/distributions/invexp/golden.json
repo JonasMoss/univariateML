@@ -5,10 +5,10 @@
   "seed": 13011,
   "sampler": "actuar::rinvexp",
   "sampler_args": {
-    "rate": 1
+    "scale": 1
   },
   "estimates": {
-    "rate": 0.9857437557888572
+    "scale": 1.0144624240604334
   },
   "fixed": [],
   "logLik": -1056.9477652066621,

@@ -58,7 +58,7 @@ test_that("scale, controls, validation, and external density dispatch work", {
   x <- extraDistr::rbetapr(1000, 1, 2, scale=3)
   fit <- mlbetapr(x)
   expect_s3_class(fit, "univariateML")
-  expect_identical(attr(fit, "model"), "BetaPrime")
+  expect_identical(attr(fit, "model"), "Beta prime")
   expect_equal(coef(mlbetapr(c(x, NA), na.rm=TRUE)), coef(fit))
   expect_error(mlbetapr(c(x, NA)))
   expect_error(mlbetapr(c(x, 0)))

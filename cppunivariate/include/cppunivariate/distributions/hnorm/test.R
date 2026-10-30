@@ -40,7 +40,7 @@ test_that("dml/pml/qml/rml map mu and sigma onto extraDistr's truncated normal",
     expect_equal(pml(qml(p, fit, lower, logs), fit, lower), u, tolerance = 1e-10)
   }
   set.seed(9); actual <- rml(50, fit)
-  set.seed(9); expect_equal(actual, extraDistr::rtnorm(50, mu, sigma, a = mu))
+  set.seed(9); expect_equal(actual, mu + extraDistr::rhnorm(50, sigma))
   expect_true(all(actual >= mu))
   expect_length(simulate_default("mlhnorm", 10), 10)
   expect_true(all(simulate_default("mlhnorm", 100) >= 0))
@@ -54,10 +54,9 @@ test_that("bootstrap refits with mlhnorm", {
   expect_true(all(boot["sigma", ] > 0))
 })
 
-test_that("active truncated-normal repairs retain the half-normal map and endpoints", {
-  expect_identical(univariateML:::univariateML_args$mlhnorm,
-                   c(mean = "mu", sd = "sigma", a = "mu"))
-  expect_true(univariateML:::univariateML_reference_fixes[["extraDistr::dtnorm"]]$broken())
+test_that("dhnorm shift map retains the half-normal map and endpoints", {
+  expect_null(univariateML:::univariateML_args$mlhnorm)
+  expect_identical(univariateML:::univariateML_shifts$mlhnorm, "mu")
   fit <- mlhnorm(c(-4,-3,0,2), mu = NULL)
   mu <- unname(fit[1]); sigma <- unname(fit[2])
   x <- mu + sigma*c(-1,0,.01,.5,2)
@@ -74,7 +73,7 @@ test_that("active truncated-normal repairs retain the half-normal map and endpoi
                  expected, tolerance = 1e-12)
   }
   set.seed(12); actual <- rml(30, fit)
-  set.seed(12); expect_identical(actual, extraDistr::rtnorm(30, mu, sigma, a = mu))
+  set.seed(12); expect_identical(actual, mu + extraDistr::rhnorm(30, sigma))
 })
 
 test_that("half-normal preserves exact endpoints at large translations", {
@@ -101,7 +100,7 @@ test_that("held half-normal endpoint is exact, closed and counted as fixed", {
   for(lower in c(TRUE,FALSE)) for(lp in if(lower) -100 else c(-100,-1000))
     expect_equal(pml(qml(lp,f,lower,TRUE),f,lower,TRUE),lp,tolerance=1e-10)
   set.seed(1); a <- rml(20,f)
-  set.seed(1); expect_identical(a,extraDistr::rtnorm(20, mean=f[["mu"]], sd=f[["sigma"]], a=f[["mu"]]))
+  set.seed(1); expect_identical(a, f[["mu"]] + extraDistr::rhnorm(20, f[["sigma"]]))
   set.seed(1); boot <- bootstrapml(f,reps=3,reducer=identity)
   expect_true(all(boot["mu",]==0))
 })

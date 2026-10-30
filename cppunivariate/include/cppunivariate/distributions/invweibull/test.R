@@ -22,16 +22,16 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlinvweibull(small_data, na.rm = TRUE)
 expect_equal(
-  sum(actuar::dinvweibull(small_data, est[1], est[2], log = TRUE)),
+  sum(actuar::dinvweibull(small_data, est[1], scale = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
 ## Check class.
-expect_equal(attr(est, "model"), "InverseWeibull")
+expect_equal(attr(est, "model"), "Inverse Weibull")
 expect_equal(class(est), "univariateML")
 
 # Check names.
-expect_equal(names(est), c("shape", "rate"))
+expect_equal(names(est), c("shape", "scale"))
 
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
@@ -61,7 +61,7 @@ test_that("invweibull near ties have finite concentrated fits", {
 test_that("P2 held subsets agree with multistart reference likelihoods", {
   set.seed(81029)
   id <- "invweibull"
-  pn <- c("shape","rate")
+  pn <- c("shape","scale")
   held_default <- c(2.0,3.0)
   names(held_default) <- pn
   density <- actuar::dinvweibull
@@ -110,16 +110,16 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
 })
 
 test_that("P2 held existence boundaries", {
-expect_error(mlinvweibull(rep(.5,3),rate=2),"unbounded")
+expect_error(mlinvweibull(rep(.5,3),scale=0.5),"unbounded")
 expect_true(is.finite(logLik(mlinvweibull(rep(.5,3),shape=2))))
 })
 
 test_that("P2 held solver respects iterlim", {
-  expect_error(suppressWarnings(mlinvweibull(c(2,3),rate=3,iterlim=1)))
+  expect_error(suppressWarnings(mlinvweibull(c(2,3),scale=1/3,iterlim=1)))
 })
 
 test_that("P2 failed held solver is distinguished from constant-data collapse", {
-  expect_error(suppressWarnings(mlinvweibull(rep(2,3),rate=3,iterlim=1)),"failed to converge")
+  expect_error(suppressWarnings(mlinvweibull(rep(2,3),scale=1/3,iterlim=1)),"failed to converge")
 })
 
 test_that("P2 analytic held shape needs no iterative search", {

@@ -59,7 +59,7 @@ test_that("mlinvtrgamma fixed shapes reduce to inverse gamma and inverse Weibull
   expect_identical(attr(g, "fixed"), "shape2")
   w <- mlinvtrgamma(x, shape1 = 1)
   ref <- mlinvweibull(x, reltol = 1e-12)
-  expect_equal(unname(w[2:3]), unname(c(ref[1], 1 / ref[2])), tolerance = 1e-8)
+  expect_equal(unname(w[2:3]), unname(ref[1:2]), tolerance = 1e-8)
   expect_equal(attr(w, "logLik"), attr(ref, "logLik"), tolerance = 1e-10)
   both <- mlinvtrgamma(x, shape1 = 2, shape2 = 1.5)
   o <- optimize(function(s) -sum(actuar::dinvtrgamma(x, 2, 1.5, scale = exp(s), log = TRUE)),

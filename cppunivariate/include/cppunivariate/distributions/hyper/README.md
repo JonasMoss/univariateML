@@ -1,34 +1,37 @@
 ---
 id: hyper
 name: Hypergeometric
-support: {type: integer, lower: "max(0, k-n)", upper: "min(k, m)", closed: [true, true]}
+support: {type: integer, lower: "max(0, k - (N - m))", upper: "min(k, m)", closed: [true, true]}
 params:
 - name: m
   role: successes in the population
-  domain: '[0, inf)'
+  domain: '[0, N]'
   simulate: 20
   integer: yes
   kind: regular
-- name: 'n'
-  role: failures in the population
+- name: "N"
+  role: population size
   domain: '[0, inf)'
-  simulate: 30
+  simulate: 50
   integer: yes
-  kind: regular
+  kind: design
+  advice: Supply the population size, or `m`, or both; estimating both together
+    has no MLE.
 - name: k
   role: draws
-  domain: '[0, m+n]'
+  domain: '[0, N]'
   simulate: 10
   integer: yes
   kind: design
 r:
   density: stats::dhyper
+  args: {m: m, "n": "N - m", k: k}
   sampler: stats::rhyper
   control:
     k: "Number of draws per observation, a whole number."
-    "N": "Population size `N`; `NULL` (the default) estimates it, which requires `m`."
+    "N": "Population size; explicit `NULL` estimates it, which requires `m`."
     m: "Number of successes `m` in the population; `NULL` (the default) estimates it, which requires `N`."
-log_density: "loggamma(m + 1) - loggamma(x + 1) - loggamma(m - x + 1) + loggamma(n + 1) - loggamma(k - x + 1) - loggamma(n - k + x + 1) - loggamma(m + n + 1) + loggamma(k + 1) + loggamma(m + n - k + 1)"
+log_density: "loggamma(m + 1) - loggamma(x + 1) - loggamma(m - x + 1) + loggamma(N - m + 1) - loggamma(k - x + 1) - loggamma(N - m - k + x + 1) - loggamma(N + 1) + loggamma(k + 1) + loggamma(N - k + 1)"
 limits:
   - name: degenerate
     when: '$N \to \infty$, a point mass at zero'
@@ -42,19 +45,23 @@ examples: |
   set.seed(1)
   x <- rhyper(30, m = 20, n = 30, k = 10)
   mlhyper(x, N = 50, k = 10)
-  mlhyper(x, m = 20, k = 10)
+  mlhyper(x, m = 20, N = NULL, k = 10)
 holds:
-- held:
-  - 'n'
-  status: not-implemented
-  reason: P4 (C6)
 - held: []
+  status: no-mle
+  reason: Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).
+- held: [k]
+  status: no-mle
+  reason: Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).
+- held: [m]
   status: not-implemented
-  reason: P4 (C6)
-- held:
-  - m
+  reason: Estimating k is not supported by this fitter.
+- held: ["N"]
   status: not-implemented
-  reason: P4 (C6)
+  reason: Estimating k is not supported by this fitter.
+- held: [m, "N"]
+  status: not-implemented
+  reason: Estimating k is not supported by this fitter.
 fit_args:
   'N': 50
   k: 10
@@ -70,10 +77,11 @@ is restored between repetitions.
 The number of draws `k` is a design quantity and must always be supplied.
 Supply also the population size `N` to estimate the number of successes
 `m`, or `m` to estimate `N` (capture-recapture with `m` marked items);
-supplying all three only evaluates the likelihood. The returned coefficients are `m`, `n = N - m`, and `k`, as in R.
-`N` is an input constraint on their sum, not a returned coefficient.
+supplying all three only evaluates the likelihood. The returned coefficients are
+`m`, `N`, and `k`; `n = N - m` is passed to `stats::dhyper` but is not itself
+a coefficient.
 The `fixed` attribute records `N` and `k` for a known-population fit,
-`m` and `k` for a known-success fit, and `m`, `n`, `k` when all are supplied;
+`m` and `k` for a known-success fit, and `m`, `N`, `k` when all are supplied;
 the degrees of freedom are respectively one, one, and zero.
 With `k = 1` the model is Bernoulli on the grid `m / N`.
 Both one-parameter

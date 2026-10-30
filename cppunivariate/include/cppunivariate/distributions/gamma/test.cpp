@@ -12,7 +12,7 @@ TEST_CASE("gamma") {
   auto g = mltest::load_distribution_golden("gamma");
   auto r = cppunivariate::gamma_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
   CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kTol));
-  CHECK(r.rate == doctest::Approx(g.estimates.at("rate")).epsilon(mltest::kTol));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kTol));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
 
@@ -37,34 +37,36 @@ TEST_CASE("gamma P2 every held subset") {
   const auto g=mltest::load_distribution_golden("gamma");
   std::vector<double> x=g.data;
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  const std::vector<double> held{g.estimates.at("shape"),g.estimates.at("rate")};
+  // held[1] is the scale (dgamma's own d/p/q/r templates stay rate-parameterised;
+  // 1.0/scale recovers the rate for those calls).
+  const std::vector<double> held{g.estimates.at("shape"),g.estimates.at("scale")};
   { const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,200,held[0],nan);
     CHECK(r.shape==held[0]);
-    CHECK(std::isfinite(r.rate));
+    CHECK(std::isfinite(r.scale));
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dgamma(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,r.rate};
+    std::vector<double> p{r.shape,1.0/r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
   { const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,200,nan,held[1]);
     CHECK(std::isfinite(r.shape));
-    CHECK(r.rate==held[1]);
+    CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dgamma(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,r.rate};
+    std::vector<double> p{r.shape,1.0/r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[0]));a[0]+=h;b[0]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
   { const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,200,held[0],held[1]);
     CHECK(r.shape==held[0]);
-    CHECK(r.rate==held[1]);
+    CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dgamma(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,r.rate};
+    std::vector<double> p{r.shape,1.0/r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
   }
 }
@@ -72,16 +74,16 @@ TEST_CASE("gamma P2 every held subset") {
 TEST_CASE("gamma P2 held boundaries and solver failure") {
   const std::vector<double> x{2,2,2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),1e-10,1,nan,2).status==cppunivariate::GammaStatus::IterationFailure);
-  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100,2,nan).rate==doctest::Approx(1));
+  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),1e-10,1,nan,0.5).status==cppunivariate::GammaStatus::IterationFailure);
+  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100,2,nan).scale==doctest::Approx(1));
 }
 
-TEST_CASE("gamma held shape profiles rate without intermediate overflow") {
+TEST_CASE("gamma held shape profiles scale without intermediate overflow") {
   const std::vector<double> x{1e308,1e308};
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100,1e308,nan);
   CHECK(r.shape==1e308);
-  CHECK(r.rate==doctest::Approx(1));
+  CHECK(r.scale==doctest::Approx(1));
   // The likelihood itself is outside the direct lgamma formula's range;
   // a numerical failure is returned rather than a spurious finite fit.
   CHECK(r.status==cppunivariate::GammaStatus::IterationFailure);

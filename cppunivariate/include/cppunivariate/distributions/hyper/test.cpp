@@ -68,7 +68,7 @@ TEST_CASE("hyper: golden") {
   const auto g = mltest::load_distribution_golden("hyper");
   const auto r = cppunivariate::hyper_mle(mltest::as_span(g.data), 10, 50, kNaN);
   CHECK(r.status == cppunivariate::HyperStatus::Ok);
-  CHECK(r.N == g.estimates.at("m") + g.estimates.at("n"));
+  CHECK(r.N == g.estimates.at("N"));
   CHECK(r.m == g.estimates.at("m"));
   CHECK(r.k == g.estimates.at("k"));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
@@ -355,4 +355,16 @@ TEST_CASE("hyper: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phyper(x, (p[0]+p[1]), p[0], p[2], lower, log); },
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhyper(x, (p[0]+p[1]), p[0], p[2], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhyper(rng, (p[0]+p[1]), p[0], p[2]); });
+}
+
+TEST_CASE("hyper: population size holds and free-N fits return the design coefficient") {
+  const std::vector<double> x{1,2,3,2};
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const auto held = cppunivariate::hyper_mle(mltest::as_span(x),5,20,nan);
+  CHECK(held.N == 20);
+  const auto free = cppunivariate::hyper_mle(mltest::as_span(x),5,nan,8);
+  CHECK(free.m == 8);
+  CHECK(std::isfinite(free.N));
+  CHECK(free.logLik == doctest::Approx(cppunivariate::hyper_mle(
+      mltest::as_span(x),5,free.N,8).logLik));
 }

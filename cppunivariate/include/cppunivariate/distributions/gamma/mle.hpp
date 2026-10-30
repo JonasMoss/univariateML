@@ -35,7 +35,7 @@ enum class GammaStatus { Ok = 0, Degenerate, IterationFailure };
 
 struct GammaResult {
   double shape;
-  double rate;
+  double scale;
   double logLik;
   int iterations;
   GammaStatus status = GammaStatus::Ok;
@@ -124,7 +124,7 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
       const double rate = nr.x / mean_hat;
       const double logLik = dn * (nr.x * std::log(rate) - std::lgamma(nr.x) +
                                   (nr.x - 1.0) * lx_bar - rate * mean_hat);
-      return {nr.x, rate, logLik, nr.iterations};
+      return {nr.x, 1.0 / rate, logLik, nr.iterations};
     }
     iterations = nr.iterations;
   } else {
@@ -154,16 +154,18 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   if (!std::isfinite(shape) || !std::isfinite(rate) || !std::isfinite(logLik)) {
     return {kNaN, kNaN, kNaN, iterations, GammaStatus::IterationFailure};
   }
-  return {shape, rate, logLik, iterations};
+  return {shape, 1.0 / rate, logLik, iterations};
 }
 
-// A fixed rate gives a strictly decreasing digamma score; a fixed shape
-// gives the rate analytically. NaN denotes a free coefficient.
-inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double rate) {
-  if (std::isnan(shape) && std::isnan(rate)) return gamma_mle(x,tol,maxit);
+// A fixed rate (1/scale) gives a strictly decreasing digamma score; a fixed
+// shape gives the rate analytically. NaN denotes a free coefficient. `rate`
+// is computed internally (1/scale) for the digamma equation and the
+// log-likelihood; a held scale is returned verbatim, never round-tripped.
+inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double scale) {
+  if (std::isnan(shape) && std::isnan(scale)) return gamma_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if (x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
-      (!std::isnan(rate) && !(rate>0 && std::isfinite(rate))))
+      (!std::isnan(scale) && !(scale>0 && std::isfinite(scale))))
     return {nan,nan,nan,0,GammaStatus::IterationFailure};
   long double total=0,logs=0;
   for(double v:x) {
@@ -172,7 +174,13 @@ inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double
   }
   const double n=static_cast<double>(x.size());
   int iterations=0;
-  if (std::isnan(rate)) rate=static_cast<double>(static_cast<long double>(shape)*n/total);
+  double rate;
+  if (std::isnan(scale)) {
+    rate=static_cast<double>(static_cast<long double>(shape)*n/total);
+    scale=1.0/rate;
+  } else {
+    rate=1.0/scale;
+  }
   if (std::isnan(shape)) {
     const double target=std::log(rate)+static_cast<double>(logs/n);
     double lo=-745,hi=710;
@@ -181,11 +189,11 @@ inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double
       if (cppunivariate::special::digamma(std::exp(mid))<target) lo=mid; else hi=mid;
       ++iterations;
     }
-    if(hi-lo>1e-12)return {nan,rate,nan,iterations,GammaStatus::IterationFailure};
+    if(hi-lo>1e-12)return {nan,scale,nan,iterations,GammaStatus::IterationFailure};
     shape=std::exp((lo+hi)/2);
   }
   const double ll=static_cast<double>(n*(shape*std::log(rate)-std::lgamma(shape))+(shape-1)*logs-rate*total);
-  return {shape,rate,ll,iterations,std::isfinite(ll)?GammaStatus::Ok:GammaStatus::IterationFailure};
+  return {shape,scale,ll,iterations,std::isfinite(ll)?GammaStatus::Ok:GammaStatus::IterationFailure};
 }
 
 }  // namespace cppunivariate

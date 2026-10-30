@@ -1,6 +1,6 @@
 ---
 id: logitnorm
-name: LogitNormal
+name: Logit-normal
 support: {type: real, lower: 0.0, upper: 1.0, closed: [false, false]}
 params:
 - name: mu

@@ -1,6 +1,6 @@
 ---
 id: betapr
-name: BetaPrime
+name: Beta prime
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape1
