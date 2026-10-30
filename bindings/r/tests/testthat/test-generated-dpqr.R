@@ -1,5 +1,5 @@
 # Independent truth checks of the generated R shell, never the selected
-# selected reference. Per parameter point: five evenly spaced value rows;
+# reference. Per parameter point: five evenly spaced value rows;
 # three evenly spaced quantile rows in EACH tail/scale group; 32 RNG draws.
 # Tolerances, zero floors and ambiguous lattice endpoints follow the C++
 # consumer in univariateML-cpp/tests/test_support.hpp.

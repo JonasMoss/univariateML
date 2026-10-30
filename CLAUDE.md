@@ -35,7 +35,7 @@ core.
   fits gamma on `log(x)` in its core `mle.hpp`, including the Jacobian.
 - Fitter behaviour at the edges (escapes to limit models, boundaries,
   non-existence) is studied in `dev/research/ml-behaviour.tex`, with
-  `dev/research/ml-behaviour-sweep.R` (all fitters vs a slow oracle, ~6 s) and two
+  `dev/research/ml-behaviour-sweep.R` (fitters vs a slow oracle) and
   research reports. Escapes that a fitter detects stop with "use `mlX`"
   (decision D1) and are declared under `limits:` in its `README.md`.
 - The R package is ML-first: it exports fitters, `dml`/`pml`/`qml`/`rml`,
@@ -62,7 +62,7 @@ core.
   exact one-dimensional profile fit).
 - `LinkingTo: Rcpp, BH` — no `RcppArmadillo`.
 - Tests: C++ ctest targets `distribution_tests`, `bfgs_tests`,
-  `sample_tests`, `no_throw_tests`; R testthat includes golden regression.
+  `sample_tests`, `no_throw_tests`, `cmp_tests`, `tails_tests`; R testthat includes golden regression.
 - Validation harness (`just quality [id ...]`): reads README symbolic
   densities and real fitter goldens; checks logLik, regular score and
   observed information, and an eight-start scipy oracle. Outputs are
@@ -70,6 +70,7 @@ core.
   per-distribution tests check their statuses.
 
 Open items and current test status: `dev/STATUS.md`.
+Validation commands, evidence and gaps: `dev/validation/README.md`.
 
 ### Out of vision (for now)
 
@@ -226,17 +227,16 @@ gate map their user-facing `tol` onto `grad_tol`, not `reltol`.
 
 #### Score-residual gate
 
-Each multi-D estimator's doctest pairs the golden check with a
-`finite_diff_gradient` evaluation at the recovered MLE:
+Some multi-D estimators' doctests pair the golden check with a
+`finite_diff_gradient` evaluation at the recovered fit:
 
 ```cpp
 CHECK( ||g||_2 < 1e-3 )
 ```
 
-This catches the "fake-fit" class of bug — a parameter implicitly
-fixed during fitting will leave a non-zero score component there,
-regardless of what optimiser produced the result. Independent of
-optimiser trajectory; survives golden regeneration.
+This can catch a "fake-fit" where a parameter implicitly fixed during
+fitting leaves a non-zero score component. It checks local stationarity,
+not existence or global optimality, and survives golden regeneration.
 
 #### Wrapper failure handling
 

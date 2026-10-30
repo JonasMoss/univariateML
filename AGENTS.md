@@ -22,7 +22,8 @@ repository directories. Keep R RNG state handling in the bindings.
 ## Algorithm and numerical documentation
 
 For substantive algorithmic or numerical changes, update the canonical
-distribution dossier or shared algorithm note and leave a reproducible check.
+distribution dossier or shared algorithm note and leave a reproducible check,
+or name the concrete validation gap. See the [validation guide](dev/validation/README.md).
 Keep documentation proportional to complexity: a formula, conditions and
 reference may suffice for a closed form. An involved fitter needs its objective,
 profile or search structure, initialization, convergence and failure behavior,

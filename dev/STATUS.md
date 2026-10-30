@@ -5,6 +5,7 @@ Updated 2026-10-30, master `32b8dfe`. Decisions and their evidence:
 flight and planned work are on the board (`~/.local/bin/board`): the package
 migration is TASK-101, inference TASK-102, the optional holds and existence
 work TASK-113 to TASK-120. This file is the short list of what is open.
+Validation methods and coverage limits: [validation guide](validation/README.md).
 
 ## Status
 
@@ -23,11 +24,9 @@ work TASK-113 to TASK-120. This file is the short list of what is open.
   `dev/tools/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
   `quality`; setup notes in the script). No known failures there since
   TASK-75.
-- `R CMD check` (simbox, TASK-94 on 6f9fb39): 0 errors, 1 warning
-  (missing Rd cross-references). `just check` does not set
-  `UMVL_DISTRIBUTIONS_DIR` (`just test` does), so 32 fixture tests fail
-  under plain `just check`. Suggests is jsonlite, testthat, knitr,
-  rmarkdown (TASK-76).
+- The earlier TASK-94 check on simbox had a missing-cross-reference warning.
+  The later [standalone R check](research/evaluations/2026-10-30-r-standalone-report.md)
+  passed with packaged fixtures and no ERROR, WARNING or NOTE.
 - Nothing is pushed: master is 516 commits ahead of `origin/master`.
 
 ## Decisions for Jonas
