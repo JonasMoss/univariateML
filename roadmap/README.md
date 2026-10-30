@@ -22,6 +22,11 @@ the queue.
 
 ## Index
 
+- [2026-10-30 — Package structure and mathematical documentation](2026-10-30-package-and-documentation.md)
+  *(banked; after current density and MLE work)*: light landing page,
+  R-independent C++ library, generated R package, custom distribution website,
+  and preservation of algorithm choices, numerical rationale and validation history.
+
 - [2026-10-29 — Parameter rules](2026-10-29-parameter-rules.md) *(agreed design, work planned)*:
   R1–R8 for coefficients, holds, defaults, thresholds and restrictions;
   parameter kinds; schema, API and C++ changes; phases P0–P5.
