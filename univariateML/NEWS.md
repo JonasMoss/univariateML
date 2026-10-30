@@ -2,6 +2,10 @@
 
 * Fitters now build fixed distributions when data are omitted, using README defaults. Fully held models with data evaluate the likelihood with zero estimated parameters. Use `rml(n, mlX())` for simulation.
 
+## Bug fixes
+
+* `confint.univariateML()` now honours `Nreps` for bootstrap draws; the named `reps` alias takes precedence if both are supplied.
+
 # univariateML 1.5.0
 
 ## Architecture
