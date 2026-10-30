@@ -12,17 +12,17 @@ params:
 - name: size
   role: shape
   domain: '[0, inf)'
-  simulate: 2.0
+  simulate: 1
   kind: regular
 - name: prob
   role: probability
   domain: (0, 1]
-  simulate: 0.4
+  simulate: 0.5
   kind: regular
 - name: p0
   role: probability
   domain: '[0, 1]'
-  simulate: 0.3
+  simulate: 0.5
   kind: regular
 r:
   density: dzmnbinom

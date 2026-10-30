@@ -22,6 +22,8 @@ inline double psnorm(double q, double mean, double sd, double xi, bool lower_tai
 }
 inline double qsnorm(double p, double mean, double sd, double xi, bool lower_tail=true, bool log_p=false) {
   if (!(fs::valid(mean, sd, 1.0, xi))) return cppunivariate::special::kNaN;
+  // Exact symmetric member avoids rounded log-tail splitting at the median.
+  if (xi==1) return mean+sd*special::normal_quantile(p,lower_tail,log_p);
   double mu = 0.0;
   const double sigma = cppunivariate::dens::snorm_sigma(xi, mu);
   const double z = fs::skew_q(p, xi, lower_tail, log_p, [&](double v) { return cppunivariate::special::fs_normal_q(v, true); });

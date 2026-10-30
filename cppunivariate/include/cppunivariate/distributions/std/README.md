@@ -16,7 +16,7 @@ params:
 - name: nu
   role: df
   domain: (2, inf)
-  simulate: 3.0
+  simulate: 5
   kind: regular
 r:
   density: dstd

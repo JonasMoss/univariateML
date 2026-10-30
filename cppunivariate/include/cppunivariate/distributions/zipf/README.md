@@ -6,14 +6,14 @@ params:
 - name: 'N'
   role: upper
   domain: '[1, inf)'
-  simulate: 3.0
+  simulate: 10
   integer: yes
   bound: upper
   kind: endpoint
 - name: s
   role: shape
   domain: '[0, inf)'
-  simulate: 0.5
+  simulate: 1
   kind: regular
 r:
   density: dzipf

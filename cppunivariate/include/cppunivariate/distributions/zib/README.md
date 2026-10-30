@@ -7,17 +7,17 @@ params:
   role: trials
   domain: '[0, inf)'
   integer: yes
-  simulate: 8.0
+  simulate: 10
   kind: design
 - name: prob
   role: probability
   domain: '[0, 1]'
-  simulate: 0.4
+  simulate: 0.5
   kind: regular
 - name: pi
   role: probability
   domain: '[0, 1]'
-  simulate: 0.4
+  simulate: 0.5
   kind: regular
 r:
   density: dzib
@@ -45,7 +45,7 @@ fit_args:
 examples: |
   set.seed(1)
   x <- rml(200, mlzib())
-  mlzib(x, size = 8)
+  mlzib(x, size = 10)
 ---
 
 Zero-inflated binomial distributions model counts with a separate zero component.

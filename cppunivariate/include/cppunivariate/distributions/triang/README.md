@@ -16,7 +16,7 @@ params:
 - name: c
   role: location
   domain: '[a, b]'
-  simulate: 0.4
+  simulate: 0.5
   kink: yes
   kind: regular
 r:

@@ -11,7 +11,7 @@ params:
 - name: b
   role: lower
   domain: (0, inf)
-  simulate: 2.0
+  simulate: 1
   bound: lower
   kind: endpoint
 r:

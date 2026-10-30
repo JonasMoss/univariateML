@@ -93,6 +93,8 @@ inline double psn(double q,double xi=0,double omega=1,double alpha=0,bool lower_
 }
 inline double qsn(double p,double xi=0,double omega=1,double alpha=0,bool lower_tail=true,bool log_p=false) {
   if (!sn_detail::valid(xi,omega,alpha) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
+  // Exact symmetric member avoids rounded log-tail splitting at the median.
+  if (alpha==0) return xi+omega*special::normal_quantile(p,lower_tail,log_p);
   double lp=log_p ? p : std::log(p);
   if (lp==special::kNegInf) return lower_tail ? special::kNegInf : -special::kNegInf;
   if (lp==0) return lower_tail ? -special::kNegInf : special::kNegInf;

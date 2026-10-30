@@ -6,7 +6,7 @@ params:
 - name: prob
   role: probability
   domain: '[0, 1]'
-  simulate: 0.4
+  simulate: 0.5
   kind: regular
 - name: a
   role: known design quantity
@@ -22,7 +22,7 @@ params:
   role: known design quantity
   domain: '[0, inf)'
   integer: yes
-  simulate: 12
+  simulate: 10
   kind: design
 r:
   density: dtbinom
@@ -75,7 +75,7 @@ fit_args:
 examples: |
   set.seed(1)
   x <- rml(200, mltbinom())
-  mltbinom(x, a = 0L, b = 10L, size = 12L)
+  mltbinom(x, a = 0L, b = 10L, size = 10L)
 ---
 
 The binomial law conditioned on known bounds `a < x <= b` models truncated counts.

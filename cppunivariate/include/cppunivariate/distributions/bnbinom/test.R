@@ -90,3 +90,13 @@ test_that("bnbinom: P3 unfinished optimizer stops", {
   expect_error(mlbnbinom(x, iterlim=1, gradtol=1e-10, alpha=2,beta=3),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+
+test_that("unit beta-negative-binomial quantiles allow neighbouring integers at jumps", {
+  f <- mlbnbinom()
+  expect_equal(qml(.83, f), 4)
+  expect_equal(qml(.17, f, lower.tail=FALSE), 4)
+  expect_true(qml(-0.6931471805599453, f, log.p=TRUE) %in% c(0, 1))
+  expect_true(qml(-4.605170185988092, f, lower.tail=FALSE, log.p=TRUE) %in% c(98, 99))
+  expect_true(qml(1e-6, f, lower.tail=FALSE) %in% c(999998, 999999))
+})

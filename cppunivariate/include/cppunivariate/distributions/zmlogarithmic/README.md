@@ -12,12 +12,12 @@ params:
 - name: prob
   role: probability
   domain: '[0, 1)'
-  simulate: 0.4
+  simulate: 0.5
   kind: regular
 - name: p0
   role: probability
   domain: '[0, 1]'
-  simulate: 0.3
+  simulate: 0.5
   kind: regular
 r:
   density: dzmlogarithmic

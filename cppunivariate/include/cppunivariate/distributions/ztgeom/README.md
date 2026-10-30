@@ -12,7 +12,7 @@ params:
 - name: prob
   role: probability
   domain: (0, 1]
-  simulate: 0.4
+  simulate: 0.5
   kind: regular
 r:
   density: dztgeom

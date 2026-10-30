@@ -165,3 +165,23 @@ TEST_CASE("bnbinom: P3 unfinished optimizer is a failure") {
   const cppunivariate::ispan ix{values.data(),values.size()};
   CHECK(cppunivariate::bnbinom_mle(ix,1e-8,1,NAN,2,3).status==cppunivariate::BnbinomStatus::IterationFailure);
 }
+
+// Uniform beta mixing with size one telescopes: mass=1/((k+1)(k+2)),
+// S(k)=1/(k+2). Inputs below are binary64, not exact decimal probabilities.
+TEST_CASE("bnbinom: unit member quantiles allow adjacent answers at jumps") {
+  const auto adjacent=[](double x,double lo) {return x==lo || x==lo+1;};
+  CHECK(cppunivariate::distributions::qbnbinom(.83,1,1,1,true,false)==4);
+  CHECK(cppunivariate::distributions::qbnbinom(.17,1,1,1,false,false)==4);
+
+  CHECK(adjacent(cppunivariate::distributions::qbnbinom(-0.6931471805599453,1,1,1,true,true),0));
+  CHECK(adjacent(cppunivariate::distributions::qbnbinom(-4.605170185988092,1,1,1,false,true),98));
+  CHECK(adjacent(cppunivariate::distributions::qbnbinom(1e-6,1,1,1,false,false),999998));
+  CHECK(adjacent(cppunivariate::distributions::qbnbinom(.5,1,1,1,true,false),0));
+  CHECK(adjacent(cppunivariate::distributions::qbnbinom(.25,1,1,1,false,false),2));
+  CHECK(cppunivariate::distributions::qbnbinom(-800,1,1,1,false,true)==INFINITY);
+  CHECK(cppunivariate::distributions::qbnbinom(1e-300,1,1,1,false,false)==doctest::Approx(1e300).epsilon(1e-12));
+  for(double k:{0.,1.,98.,999998.,1e100}) {
+    CHECK(cppunivariate::distributions::pbnbinom(k,1,1,1,false,true)==doctest::Approx(-std::log(k+2)).epsilon(1e-13));
+    CHECK(cppunivariate::distributions::dbnbinom(k,1,1,1,true)==doctest::Approx(-std::log(k+1)-std::log(k+2)).epsilon(1e-13));
+  }
+}

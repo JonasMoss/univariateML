@@ -6,12 +6,12 @@ params:
 - name: lambda
   role: rate
   domain: '[0, inf)'
-  simulate: 4
+  simulate: 1
   kind: regular
 - name: nu
   role: dispersion
   domain: '[0, inf)'
-  simulate: 1.5
+  simulate: 1
   kind: regular
 r:
   density: dcmp

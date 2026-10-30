@@ -6,7 +6,7 @@ params:
 - name: sigma
   role: scale
   domain: (0, inf)
-  simulate: 2.0
+  simulate: 1
   kind: regular
 r:
   density: drayleigh

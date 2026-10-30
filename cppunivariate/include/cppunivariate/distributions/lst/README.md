@@ -16,7 +16,7 @@ params:
 - name: df
   role: df
   domain: '(0, inf)'
-  simulate: 3.0
+  simulate: 5
   fit_domain:
     lower: 1.0
     restriction:

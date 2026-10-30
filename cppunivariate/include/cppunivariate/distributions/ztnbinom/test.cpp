@@ -123,3 +123,14 @@ TEST_CASE("ztnbinom: tiny conditional lower tail") {
   // from mpmath import *; mp.dps=100; print(log(20)+20*log(mpf(0.4))+log(1-mpf(0.4))-log(1-mpf(0.4)**20))
   CHECK(cppunivariate::distributions::pztnbinom(1,20.0,0.4,true,true)==doctest::Approx(-15.840907976699983).epsilon(1e-10));
 }
+
+// Size-one NB conditioned positive is geometric: S(k)=(1-prob)^k.
+TEST_CASE("ztnbinom: geometric member allows adjacent answers at jumps") {
+  const auto adjacent=[](double x,double lo) {return x==lo || x==lo+1;};
+  CHECK(cppunivariate::distributions::qztnbinom(.83,1,.5,true,false)==3);
+  CHECK(cppunivariate::distributions::qztnbinom(.17,1,.5,false,false)==3);
+  CHECK(adjacent(cppunivariate::distributions::qztnbinom(-1.3862943611198906,1,.5,false,true),2));
+  CHECK(adjacent(cppunivariate::distributions::qztnbinom(.25,1,.5,false,false),2));
+  CHECK(adjacent(cppunivariate::distributions::qztnbinom(.5,1,.5,true,false),1));
+  CHECK(cppunivariate::distributions::pztnbinom(2,1,.5,false,false)==doctest::Approx(.25).epsilon(1e-14));
+}

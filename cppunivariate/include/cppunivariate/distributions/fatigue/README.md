@@ -6,12 +6,12 @@ params:
 - name: alpha
   role: shape
   domain: (0, inf)
-  simulate: 3.0
+  simulate: 1
   kind: regular
 - name: beta
   role: scale
   domain: (0, inf)
-  simulate: 2.0
+  simulate: 1
   kind: regular
 - name: mu
   role: location

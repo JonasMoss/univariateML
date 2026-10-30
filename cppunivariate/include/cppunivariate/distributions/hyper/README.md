@@ -6,13 +6,13 @@ params:
 - name: m
   role: successes in the population
   domain: '[0, N]'
-  simulate: 20
+  simulate: 5
   integer: yes
   kind: regular
 - name: "N"
   role: population size
   domain: '[0, inf)'
-  simulate: 50
+  simulate: 10
   integer: yes
   kind: design
   advice: Supply the population size, or `m`, or both; estimating both together
@@ -20,7 +20,7 @@ params:
 - name: k
   role: draws
   domain: '[0, N]'
-  simulate: 10
+  simulate: 5
   integer: yes
   kind: design
 r:
@@ -57,7 +57,7 @@ fit_args:
 examples: |
   set.seed(1)
   x <- rml(200, mlhyper())
-  mlhyper(x, N = 50L, k = 10L)
+  mlhyper(x, N = 10L, k = 5L)
 ---
 
 The hypergeometric distribution counts the successes in `k` draws without

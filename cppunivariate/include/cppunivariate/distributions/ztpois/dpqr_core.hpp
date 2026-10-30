@@ -36,6 +36,8 @@ inline special::LogTails positive_tails(int kind,double q,double a,double b) {
   if(point(kind,a,b)||q==special::kPosInf||(kind==3 && q>=a)) return special::tails_from_log(special::kNegInf,false);
   if(kind==3 && b==1) return special::tails_from_log(special::kNegInf,true);
   q=std::floor(q);
+  // Size-one NB conditioned positive is exactly geometric on 1,2,...
+  if(kind==2 && a==1) return positive_tails(1,q,b,0);
   if(kind==1) return special::tails_from_log(q*std::log1p(-a),false);
   double upper;
   if(kind==0) upper=distributions::ppois(q,a,false,true)-std::log(-std::expm1(-a));

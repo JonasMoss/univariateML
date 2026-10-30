@@ -88,6 +88,9 @@ def build(p, logd):
     roots=[]
     @lru_cache(maxsize=1000)
     def quantile(lp,lower):
+        if a==0:
+            # Exact normal member: avoid Newton residuals around its zero median.
+            return xi+w*Reference(normal).quantile(lp,lower)
         if lp in (-mp.inf,0):
             return (-mp.inf if lower else mp.inf) if lp==-mp.inf else (mp.inf if lower else -mp.inf)
         index=0 if lower else 1

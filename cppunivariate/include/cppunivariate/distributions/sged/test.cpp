@@ -205,3 +205,15 @@ TEST_CASE("sged exhausted interior cannot return analytic Laplace as a fit") {
   const auto fit=cppunivariate::sged_mle(mltest::as_span(x),1e-6,1);
   CHECK(fit.status==cppunivariate::SgedStatus::BfgsFailure);
 }
+
+// At symmetry F(0)=1/2; the local inverse is delta_p/f(0).
+TEST_CASE("sged: symmetric member has exact median and signed log-half offset") {
+  const double offset=2.3190468138462995584e-17*(std::sqrt(M_PI/2));
+  for(bool lower:{true,false}) for(bool log:{true,false}) {
+    const double p=log?-0.6931471805599453:.5;
+    const double expected=log?(lower?offset:-offset):0;
+    const double got=cppunivariate::distributions::qsged(p,0,1,2,1,lower,log);
+    if (log) CHECK(got==doctest::Approx(expected).scale(0).epsilon(1e-12));
+    else CHECK(got==0);
+  }
+}

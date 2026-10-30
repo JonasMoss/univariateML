@@ -12,7 +12,7 @@ params:
 - name: nu
   role: shape
   domain: (0, inf)
-  simulate: 3
+  simulate: 5
   fit_domain:
     lower: 1.0
     restriction:

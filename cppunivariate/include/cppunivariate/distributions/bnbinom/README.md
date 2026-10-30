@@ -11,12 +11,12 @@ params:
 - name: alpha
   role: shape
   domain: (0, inf)
-  simulate: 2
+  simulate: 1
   kind: regular
 - name: beta
   role: shape
   domain: (0, inf)
-  simulate: 5
+  simulate: 1
   kind: regular
 r:
   density: dbnbinom

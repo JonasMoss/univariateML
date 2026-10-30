@@ -412,3 +412,15 @@ TEST_CASE("hyper: held population joint finite grid") {
   const std::vector<double> x{0,1};
   CHECK(cppunivariate::hyper_mle(mltest::as_span(x),kNaN,10000,kNaN).status == cppunivariate::HyperStatus::NumericalFailure);
 }
+
+// Hyper(N=10,m=5,k=5) is symmetric: F(2)=1/2 exactly.
+TEST_CASE("hyper: symmetric lattice median allows adjacent log-half answers") {
+  const auto adjacent=[](double x,double lo) {return x==lo || x==lo+1;};
+  CHECK(cppunivariate::distributions::qhyper(.31,5,10,5,true,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(.31,5,10,5,false,false)==3);
+
+  CHECK(adjacent(cppunivariate::distributions::qhyper(.5,5,10,5,true,false),2));
+  CHECK(adjacent(cppunivariate::distributions::qhyper(.5,5,10,5,false,false),2));
+  CHECK(adjacent(cppunivariate::distributions::qhyper(-0.6931471805599453,5,10,5,true,true),2));
+  CHECK(adjacent(cppunivariate::distributions::qhyper(-0.6931471805599453,5,10,5,false,true),2));
+}

@@ -6,12 +6,12 @@ params:
 - name: mu
   role: location
   domain: (-inf, inf)
-  simulate: 3.0
+  simulate: 0
   kind: regular
 - name: sigma
   role: scale
   domain: (0, inf)
-  simulate: 3.0
+  simulate: 1
   kind: regular
 r:
   density: dgumbel
