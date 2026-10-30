@@ -31,7 +31,19 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export: true
+  export:
+    title: SGED distribution
+    defaults:
+      mean: 0
+      sd: 1
+      nu: 2
+      xi: 1.5
+    params:
+      mean: Finite mean.
+      sd: Finite positive standard deviation.
+      nu: Finite shape, positive (including shapes below one).
+      xi: Finite positive Fernandez--Steel skewness.
+    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dsged
   sampler: rsged
   control:

@@ -19,7 +19,17 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export: true
+  export:
+    title: SNORM distribution
+    defaults:
+      mean: 0
+      sd: 1
+      xi: 1.5
+    params:
+      mean: Finite mean.
+      sd: Finite positive standard deviation.
+      xi: Finite positive Fernandez--Steel skewness.
+    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dsnorm
   sampler: rsnorm
   control:

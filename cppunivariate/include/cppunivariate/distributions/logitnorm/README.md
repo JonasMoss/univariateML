@@ -14,7 +14,15 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export: true
+  export:
+    title: logitnorm distribution
+    defaults:
+      mu: 0
+      sigma: 1
+    params:
+      mu: Normal location on the logit scale.
+      sigma: Positive normal scale on the logit scale.
+    details: Parameters must be finite. Random generation transforms draws.
   density: dlogitnorm
   sampler: rlogitnorm
   control:

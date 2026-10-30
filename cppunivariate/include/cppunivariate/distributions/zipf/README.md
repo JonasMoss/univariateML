@@ -16,7 +16,14 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  export: true
+  export:
+    title: Finite Zipf distribution
+    params:
+      "N": Upper support endpoint.
+      s: Nonnegative shape.
+    details: Support is 1 to N; N is a positive integer at most .Machine$integer.max, and s is
+      finite and nonnegative. The member s = 0 is uniform. Tails are summed directly. Random draws
+      use inversion.
   density: dzipf
   sampler: rzipf
   control:

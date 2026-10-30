@@ -9,7 +9,12 @@ params:
   simulate: 2
   kind: regular
 r:
-  export: true
+  export:
+    params:
+      rho: Finite shape in (0, inf).
+    details: Support starts at one and has no finite upper endpoint. Quantiles beyond 2^53 use
+      the representable double grid; a result beyond the largest finite double is Inf. At that
+      scale, adjacent integers cannot be distinguished. Random draws use inversion.
   density: dyulesimon
   sampler: ryulesimon
   control:

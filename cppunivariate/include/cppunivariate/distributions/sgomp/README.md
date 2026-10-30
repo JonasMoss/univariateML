@@ -14,7 +14,14 @@ params:
   simulate: 3
   kind: regular
 r:
-  export: true
+  export:
+    params:
+      b: Positive finite rate.
+      eta: Nonnegative finite shape.
+    details: The shifted Gompertz family includes the exponential member eta = 0. There is no
+      location parameter; b is a rate. Quantiles use safeguarded bisection. Random generation
+      takes the maximum of an exponential and a Gumbel variate; eta = 0 uses only the exponential
+      variate.
   density: dsgomp
   sampler: rsgomp
   control:

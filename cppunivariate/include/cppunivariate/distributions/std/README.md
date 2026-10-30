@@ -19,7 +19,17 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export: true
+  export:
+    title: STD distribution
+    defaults:
+      mean: 0
+      sd: 1
+      nu: 5
+    params:
+      mean: Finite mean.
+      sd: Finite positive standard deviation.
+      nu: Finite shape, greater than two.
+    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dstd
   sampler: rstd
   control:

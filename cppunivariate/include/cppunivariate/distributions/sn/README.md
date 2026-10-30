@@ -19,7 +19,18 @@ params:
   simulate: 3
   kind: regular
 r:
-  export: true
+  export:
+    defaults:
+      xi: 0
+      omega: 1
+      alpha: 0
+    params:
+      xi: Finite location.
+      omega: Positive finite scale.
+      alpha: Finite real shape.
+    details: Uses the Azzalini skew-normal direct parameters. This differs from the Fernandez--Steel
+      two-piece normal (mlsnorm). Tail probabilities use Owen's T or direct scaled density quadrature
+      to avoid cancellation. Quantiles use bracketed bisection. Random draws use two normal variates.
   density: dsn
   sampler: rsn
   control:
