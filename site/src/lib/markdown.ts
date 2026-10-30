@@ -4,7 +4,7 @@ import remarkMath from 'remark-math';
 import remarkRehype from 'remark-rehype';
 import rehypeKatex from 'rehype-katex';
 import rehypeStringify from 'rehype-stringify';
-import { existsSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from './paths';
 function headingIds() {
@@ -35,9 +35,10 @@ export function sourceLinks(source: string) {
           const relative = path.relative(root, absolute);
           if (relative.startsWith('univariateML-cpp/include/cppunivariate/distributions/') && /\/README.md$/.test(relative)) {
             node.url = '/distributions/' + relative.split('/').at(-2) + '/' + (fragment ? '#'+fragment : '');
-          } else if (!relative.startsWith('..') && existsSync(absolute)) {
+          } else if (!relative.startsWith('..') && existsSync(absolute) && statSync(absolute).isFile()) {
             node.url = '/sources/' + relative; // Copy performed by prepare.mjs.
           } else {
+            // Directories and unresolved pointers stay text: only files are served.
             // Preserve an unresolved authored pointer as text; do not invent a target.
             node.type='text'; node.value=(node.children || []).map((x:any)=>x.value || '').join('')+' ('+url+')'; delete node.children;
           }

@@ -99,6 +99,7 @@ for folder in sorted(FAMILIES.iterdir()):
              cpp=snippet(folder,m))
     out.append(clean(m))
 path=ROOT/'site/src/data/families.json'
+path.parent.mkdir(parents=True,exist_ok=True)
 path.write_text(json.dumps(out,indent=2,allow_nan=False)+'\n')
 print(f'Data generation: {time.monotonic()-started:.2f} s')
 print(f'Derived {len(out)} families; log-density fallback: '+', '.join(m['id'] for m in out if not m['density_latex']))
