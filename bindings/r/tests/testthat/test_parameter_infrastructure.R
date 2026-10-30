@@ -29,10 +29,12 @@ test_that("restriction attributes survive construction and are displayed", {
 })
 
 test_that('synthetic codegen accepts expressions and rejects invalid signatures', {
-  root <- Sys.getenv('UMVL_DISTRIBUTIONS_DIR')
-  skip_if(!nzchar(root),'no repository codegen')
-  repo <- normalizePath(file.path(root,'../../../..'))
-  # distributions is univariateML-cpp/include/cppunivariate/distributions.
+  # Tests the repository generators, so it runs only from a checkout: the
+  # dossier directory is univariateML-cpp/include/cppunivariate/distributions.
+  repo <- file.path(Sys.getenv('UMVL_DISTRIBUTIONS_DIR'), '..', '..', '..', '..')
+  codegen <- file.path(repo, 'bindings', 'r')
+  skip_if(!file.exists(file.path(codegen, 'scripts', 'codegen_metadata.R')),
+          'no repository codegen')
   work <- tempfile('parameter-codegen-'); dir.create(work)
   on.exit(unlink(work,recursive=TRUE),add=TRUE)
   dossier <- file.path(work,'distributions'); dir.create(dossier)
@@ -48,7 +50,7 @@ test_that('synthetic codegen accepts expressions and rejects invalid signatures'
   writeLines(readme,file.path(synthetic,'README.md'))
   out <- file.path(work,'R'); dir.create(out)
   writeLines('mlsynthetic_ <- function(x, mu, sigma=NULL) NULL',file.path(out,'RcppExports.R'))
-  withr::local_dir(file.path(repo,'bindings/r'))
+  withr::local_dir(codegen)
   withr::local_envvar(c(UMVL_DOSSIER_DIR=dossier,UMVL_PKG_R_DIR=out))
   expect_error(sys.source('scripts/codegen_metadata.R',new.env()),NA)
   metadata <- new.env(); sys.source(file.path(out,'ml00_metadata.R'),metadata)
