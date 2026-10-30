@@ -99,8 +99,11 @@ own rationale live in `roadmap/`; work in flight is on the board
     moves.
   Golden tolerances should match each fitter's convergence tolerance;
   status fixtures need margin. Likely to matter on CRAN machines.
-- Performance: GB2 at n = 1e6 takes about 309 s; Bhattacharjee at
-  n = 1000 takes tens of seconds.
+- Performance (TASK-89, `notes/evaluations/2026-10-29-perf-report.md`):
+  GB2 at n = 1e6 is now about 169 s (was 329 s); the remaining time is in
+  the burr, invburr, betapr and trgamma seed fitters it calls.
+  Bhattacharjee at n = 1000 is about 7 s, bounded by a long-double
+  `erfc` in `bhatt/dpqr.hpp` (TASK-78's file).
 
 ## Write-up
 
