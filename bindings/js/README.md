@@ -44,3 +44,8 @@ emsdk and setting `EM_CACHE=$PWD/build/em-cache`; `measure.sh` for optimization
 sizes, load timings and native/wasm fit timings. Measurements and exhaustive
 truth failure records are written under `build/scratch/`. The report is
 [the pilot evaluation](../../dev/research/evaluations/2026-10-30-js-pilot-report.md).
+
+`families.mjs` exports the coverage registry used by both the facade and the
+website. Adding a binding family means adding its low-level d/p/q/r/fit exports,
+registry entry, facade types and binding tests. The site's explorer reads that
+registry and the canonical dossier without a corresponding site change.

@@ -37,6 +37,16 @@ def target(file,url):
     return p
 pages={p:Document(p.read_text()) for p in DIST.rglob('*.html')}
 errors=[]
+coverage=json.loads((ROOT/'site/src/data/binding.json').read_text())
+for f in DATA:
+    html=(DIST/f"distributions/{f['id']}/index.html").read_text()
+    assert ('aria-label="Distribution explorer"' in html)==(f['id'] in coverage),f['id']
+if coverage:
+    assert (DIST/'binding/univariateML.wasm').exists()
+    assert (DIST/'binding/index.mjs').exists()
+else:
+    assert not (DIST/'binding/univariateML.wasm').exists()
+print('PASS: explorer coverage matches binding registry; optional build assets agree.')
 family_pages=list((DIST/'distributions').glob('*/index.html'))
 assert len(family_pages)==98, len(family_pages)
 for f in DATA:

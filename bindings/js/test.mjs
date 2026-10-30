@@ -8,7 +8,9 @@ for(const f of ['exp','gamma','gb2']) {const raw=m[`fit${f}`];m[`fit${f}`]=(...a
 export const dossier=new URL('../../univariateML-cpp/include/cppunivariate/distributions/',import.meta.url);
 export const read=(f,n)=>JSON.parse(readFileSync(new URL(`${f}/${n}.json`,dossier),'utf8'),(_,v)=>['Infinity','Inf'].includes(v)?Infinity:['-Infinity','-Inf'].includes(v)?-Infinity:v==='NaN'?NaN:v);
 test('public facade',async()=>{
- const api=await (await import('./index.mjs')).default();
+ const facade=await import('./index.mjs');
+ const api=await facade.default();
+ assert.deepEqual(Object.keys(api),facade.families);
  for(const f of ['exp','gamma','gb2']) {
   const g=read(f,'golden'),p=Object.values(g.estimates),x=new Float64Array([.2,.5]);
   assert.deepEqual(api[f].d(x,p,{log:true}),m['d'+f](x,p,true,true));

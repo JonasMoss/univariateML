@@ -99,3 +99,5 @@ site/.astro/
 site/src/data/families.json
 site/public/sources/
 site/public/logo.svg
+site/public/binding/
+site/src/data/binding.json

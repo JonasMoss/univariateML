@@ -1,9 +1,11 @@
+import {families} from './families.mjs';
+export {families} from './families.mjs';
 import createModule from '../../build/js/univariateML.mjs';
 
 /** Load the private pilot. Copy boundaries return owned Float64Arrays. */
 export default async function create(options = {}) {
   const module = await createModule(options);
-  return Object.fromEntries(['exp', 'gamma', 'gb2'].map(id => [id, {
+  return Object.fromEntries(families.map(id => [id, {
     d: (x, params, {log = false} = {}) => module[`d${id}`](x, params, true, log),
     p: (x, params, {lower = true, log = false} = {}) => module[`p${id}`](x, params, lower, log),
     q: (x, params, {lower = true, log = false} = {}) => module[`q${id}`](x, params, lower, log),
