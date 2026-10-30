@@ -1,0 +1,18 @@
+Observed through SSH before the filesystem interruption; summarized from the
+environment collector output displayed in this session. The full remote log
+could not be recovered (read returned Input/output error).
+Start: 2026-10-30T14:16:38+00:00
+Host: MeanMachine (simbox), x86_64
+CPU: 12th Gen Intel(R) Core(TM) i7-12700; 20 logical CPUs; 10 cores shown to WSL
+OS: Ubuntu 24.04.5 LTS (Noble Numbat)
+Kernel: 6.18.54.1-microsoft-standard-WSL2
+CMake: GNU C++ 13.3.0, /usr/bin/c++, C++17; no ccache launcher in cache
+R: 4.6.1 (2026-06-24); x86_64-pc-linux-gnu
+R CXX and CXX17: ccache g++-15 (exact GCC 15 patch version not recovered)
+Rcpp 1.1.2; BH 1.90.0.1; testthat 3.3.2
+Python 3.12.3 (GCC 13.3.0); sympy 1.12; mpmath 1.2.1; scipy 1.11.4
+ccache: /usr/bin/ccache, disable=false; R ~/.R/Makevars uses ccache gcc-15/g++-15
+BLAS: OpenBLAS pthread 0.3.26; LAPACK 3.12.0
+R locale C; timezone Europe/Oslo
+Threads: OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+CMAKE_BUILD_PARALLEL_LEVEL=1 MAKEFLAGS=-j1 NOT_CRAN=true

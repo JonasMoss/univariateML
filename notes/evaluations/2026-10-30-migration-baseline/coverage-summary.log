@@ -1,0 +1,16 @@
+{
+  "families": 98,
+  "truth_files": 98,
+  "truth_values": 35122,
+  "truth_quantiles": 25168,
+  "goldens": 98,
+  "holds_not-implemented": 11,
+  "limits": 262,
+  "holds_no-mle": 60,
+  "attained_parameter_families": 22,
+  "R7a_density_families": 8,
+  "R7a_quantile_only_families": 10,
+  "boundary_evaluation_union": 37,
+  "fitter_only_families": 11,
+  "boundary_union": 48
+}

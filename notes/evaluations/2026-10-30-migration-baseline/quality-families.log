@@ -1,0 +1,101 @@
+| id | logLik | score/Hessian | oracle | gap | skipped parameters / reason |
+|---|---|---|---|---:|---|
+| bbinom | pass | pass | pass | 4.09e-12 | {'size': {'integer': True}}  |
+| beta | pass | pass | pass | 1.71e-13 | {}  |
+| betapr | pass | pass | pass | -1.36e-12 | {}  |
+| bhatt | pass | pass | pass | -2.27e-13 | {}  |
+| binom | pass | pass | pass | 2.05e-12 | {'size': {'integer': True}}  |
+| bnbinom | pass | pass | pass | 2.27e-12 | {}  |
+| burr | pass | pass | pass | 3.41e-13 | {}  |
+| cauchy | pass | pass | pass | -6.82e-13 | {}  |
+| cmb | pass | pass | pass | -2.84e-12 | {'size': {'integer': True}}  |
+| cmp | pass | pass | pass | 2.27e-13 | {}  |
+| dgamma | pass | pass | pass | 1.02e-12 | {}  |
+| dlaplace | pass | pass | pass | 2.27e-13 | {'location': {'integer': True}}  |
+| dnorm | pass | pass | pass | 1.14e-13 | {}  |
+| dunif | pass | skipped | skipped | 0 | {'min': {'bound': 'lower', 'integer': True}, 'max': {'bound': 'upper', 'integer': True}} no regular parameters |
+| dweibull | pass | pass | pass | 0 | {}  |
+| emg | pass | pass | pass | -7.96e-13 | {}  |
+| exp | pass | pass | pass | 2.27e-13 | {}  |
+| fatigue | pass | pass | pass | -4.55e-13 | {'mu': {'fixed': True}}  |
+| foldnorm | pass | pass | pass | -1.14e-13 | {}  |
+| fpareto | pass | pass | pass | 2.05e-12 | {'shape1': {'fixed': True}, 'shape3': {'fixed': True}, 'min': {'fixed': True}}  |
+| frechet | pass | pass | pass | -2.27e-13 | {}  |
+| gamma | pass | pass | pass | 2.84e-13 | {}  |
+| gb2 | pass | pass | pass | -1.59e-12 | {}  |
+| ged | pass | pass | pass | 6.03e-12 | {}  |
+| genbeta | pass | pass | pass | 8.9e-09 | {'scale': {'fixed': True}}  |
+| geom | pass | pass | pass | 2.84e-12 | {}  |
+| gev | pass | pass | pass | 0 | {}  |
+| gompertz | pass | pass | pass | 1.19e-12 | {}  |
+| gpd | pass | pass | pass | 0 | {'mu': {'fixed': True}}  |
+| gumbel | pass | pass | pass | 2.27e-13 | {}  |
+| hcauchy | pass | pass | pass | 1.14e-13 | {'mu': {'fixed': True}}  |
+| hnorm | pass | pass | pass | 1.71e-13 | {'mu': {'bound': 'lower'}}  |
+| ht | pass | pass | pass | -4.55e-13 | {'mu': {'fixed': True}}  |
+| huber | pass | pass | pass | 1.14e-13 | {'epsilon': {'fixed': True}}  |
+| hyper | pass | skipped | skipped | 0 | {'m': {'integer': True}, 'N': {'integer': True}, 'k': {'integer': True}} no regular parameters |
+| invburr | pass | pass | pass | 6.82e-13 | {}  |
+| invexp | pass | pass | pass | 4.55e-13 | {}  |
+| invgamma | pass | pass | pass | 5.68e-13 | {}  |
+| invgauss | pass | pass | pass | 4.55e-13 | {}  |
+| invparalogis | pass | pass | pass | 1.78e-11 | {}  |
+| invpareto | pass | pass | pass | 0 | {}  |
+| invtrgamma | pass | pass | pass | 1.82e-12 | {}  |
+| invweibull | pass | pass | pass | -4.83e-13 | {}  |
+| kumar | pass | pass | pass | -5.68e-14 | {}  |
+| laplace | pass | skipped | pass | 5.68e-13 | {} nonsmooth location at an observation; observed Hessian undefined |
+| lgamma | pass | pass | pass | -2.27e-13 | {}  |
+| lgser | pass | pass | pass | -2.27e-13 | {}  |
+| llogis | pass | pass | pass | 0 | {}  |
+| lnorm | pass | pass | pass | 1.14e-13 | {}  |
+| logis | pass | pass | pass | -5.68e-13 | {}  |
+| logitnorm | pass | pass | pass | -3.41e-13 | {}  |
+| lomax | pass | pass | pass | 7.96e-13 | {}  |
+| lst | pass | pass | pass | -3.41e-13 | {}  |
+| naka | pass | pass | pass | -3.98e-13 | {}  |
+| nbinom | pass | pass | pass | 3.18e-12 | {}  |
+| nhyper | pass | skipped | skipped | 0 | {'m': {'integer': True}, 'N': {'integer': True}, 'r': {'integer': True}} no regular parameters |
+| norm | pass | pass | pass | 2.27e-13 | {}  |
+| nsbeta | pass | pass | pass | 7.67e-13 | {'min': {'fixed': True}, 'max': {'fixed': True}}  |
+| paralogis | pass | pass | pass | 5.23e-12 | {}  |
+| pareto | pass | pass | pass | 1.14e-12 | {'b': {'bound': 'lower'}}  |
+| pareto2 | pass | pass | pass | -9.09e-13 | {'min': {'fixed': True}}  |
+| pareto3 | pass | pass | pass | -1.36e-12 | {'min': {'fixed': True}}  |
+| pareto4 | pass | pass | pass | 1.82e-12 | {'min': {'fixed': True}}  |
+| pig | pass | pass | pass | 2.27e-13 | {}  |
+| pois | pass | pass | pass | -1.82e-12 | {}  |
+| power | pass | pass | pass | 2.84e-14 | {'alpha': {'bound': 'upper'}}  |
+| rayleigh | pass | pass | pass | 1.14e-13 | {}  |
+| sged | pass | pass | pass | 3.52e-12 | {}  |
+| sgomp | pass | pass | pass | -1.59e-12 | {}  |
+| skellam | pass | pass | pass | -3.64e-12 | {}  |
+| slash | pass | pass | pass | 6.14e-12 | {}  |
+| sn | pass | pass | pass | -7.96e-13 | {}  |
+| snorm | pass | pass | pass | 2.27e-13 | {}  |
+| sstd | pass | pass | pass | 8.64e-12 | {}  |
+| std | pass | pass | pass | 1.42e-10 | {}  |
+| tbinom | pass | pass | pass | 3.87e-12 | {'a': {'fixed': True}, 'b': {'fixed': True}, 'size': {'integer': True}}  |
+| tlambda | pass | pass | pass | 6.25e-12 | {}  |
+| tnorm | pass | pass | pass | 2.27e-13 | {'a': {'fixed': True}, 'b': {'fixed': True}}  |
+| tpois | pass | pass | pass | -2.05e-12 | {'a': {'fixed': True}, 'b': {'fixed': True}}  |
+| trgamma | pass | pass | pass | -2.27e-13 | {}  |
+| triang | pass | pass | pass | 1.99e-13 | {}  |
+| unif | pass | skipped | skipped | 0 | {'min': {'bound': 'lower'}, 'max': {'bound': 'upper'}} no regular parameters |
+| weibull | pass | pass | pass | -3.41e-13 | {}  |
+| yulesimon | pass | pass | pass | 0 | {}  |
+| zeta | pass | pass | pass | 5.68e-13 | {}  |
+| zib | pass | pass | pass | 3.75e-12 | {'size': {'integer': True}}  |
+| zinb | pass | pass | pass | 0 | {}  |
+| zip | pass | pass | pass | -1.53e-12 | {}  |
+| zipf | pass | pass | pass | 2.27e-13 | {'N': {'bound': 'upper', 'integer': True}}  |
+| zmbinom | pass | pass | pass | 4.55e-13 | {'size': {'integer': True}}  |
+| zmgeom | pass | pass | pass | 1.82e-12 | {}  |
+| zmlogarithmic | pass | pass | pass | -1.71e-12 | {}  |
+| zmnbinom | pass | pass | pass | 4.55e-13 | {}  |
+| zmpois | pass | pass | pass | -2.39e-12 | {}  |
+| ztbinom | pass | pass | pass | 6.82e-13 | {'size': {'integer': True}}  |
+| ztgeom | pass | pass | pass | 1.14e-13 | {}  |
+| ztnbinom | pass | pass | pass | -3.41e-12 | {}  |
+| ztpois | pass | pass | pass | 0 | {}  |
+

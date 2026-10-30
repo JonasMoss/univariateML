@@ -1,0 +1,262 @@
+bbinom {"detect": "the binomial likelihood at prob = mean(x)/size is within 1e-8 times the sample size of the best beta-binomial fit, with the entire finite search interval bounded above independently of the dispersion score", "model": "binom", "status": "BinomialLimit", "when": "$\\alpha + \\beta \\to \\infty$ with $\\alpha/(\\alpha + \\beta)$ fixed"}
+bbinom {"detect": "size >= 2 and every observation is 0 or size, both values occurring", "name": "two-point (0 and size)", "status": "TwoPointLimit", "when": "$\\alpha, \\beta \\to 0$ with $\\alpha/(\\alpha + \\beta)$ fixed"}
+bbinom {"detect": "all observations are 0 or all equal size", "model": "binom", "status": "PointMass", "when": "$\\alpha/(\\alpha + \\beta) \\to 0$ or $1$"}
+beta {"detect": "All observations are equal and neither shape is held.", "message": "does not exist", "name": "point-mass collapse", "status": "Degenerate", "when": "Both free shapes grow without bound on constant data."}
+betapr {"name": "positive log-variance", "status": "InvalidStart", "when": "constant observations with both shapes free cause unbounded likelihood"}
+betapr {"fixed": ["shape1"], "model": "gamma", "status": "GammaBoundary", "when": "shape2 and scale tend to infinity with scale/shape2 fixed and shape1 held"}
+betapr {"fixed": ["shape2"], "model": "invgamma", "status": "InvGammaBoundary", "when": "shape1 tends to infinity and scale tends to zero with scale*shape1 fixed and shape2 held"}
+betapr {"model": "gamma", "status": "GammaBoundary", "when": "shape2 tends to infinity with scale/shape2 fixed"}
+betapr {"model": "invgamma", "status": "InvGammaBoundary", "when": "shape1 tends to infinity with scale*shape1 fixed"}
+bhatt {"detect": "conditional uniform face within 1e-8*n of the best interior likelihood", "model": "unif", "status": "UniformLimit", "when": "$\\sigma \\to 0$"}
+binom {"detect": "size is not supplied and the positive sample mean is no larger than the population-form sample variance", "model": "pois", "status": "Underdispersed", "when": "$\\mathrm{size} \\to \\infty$ with mean fixed"}
+bnbinom {"detect": "alpha and at least one interchangeable shape are free, and the reachable negative binomial face wins within 1e-8 times sample size", "model": "nbinom", "status": "NegativeBinomialLimit", "when": "$\\alpha,\\beta\\to\\infty$ with their ratio fixed, or the mirror path exchanging size and beta"}
+bnbinom {"detect": "all parameters free and the Poisson face wins within 1e-8 times sample size", "model": "pois", "status": "PoissonLimit", "when": "$r,\\beta,\\alpha\\to\\infty$ with $r\\beta/\\alpha$ fixed"}
+bnbinom {"detect": "all observations zero and at least one parameter free", "model": "pois", "status": "PointMass", "when": "$r\\to0$, $\\beta\\to0$, or $\\alpha\\to\\infty$"}
+burr {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "A free concentration can collapse on constant observations"}
+burr {"fixed": ["shape2"], "model": "weibull", "status": "WeibullBoundary", "when": "Fixed-power Lomax profile is maximised on its exponential face"}
+burr {"model": "weibull", "status": "WeibullBoundary", "when": "$\\mathrm{shape1} \\to \\infty$ with $\\mathrm{scale}\\,\\mathrm{shape1}^{-1/\\mathrm{shape2}}$ fixed"}
+burr {"model": "pareto", "status": "ParetoBoundary", "when": "$\\mathrm{shape2} \\to \\infty$ with $\\mathrm{shape1}\\,\\mathrm{shape2}$ and scale fixed"}
+burr {"detect": "all(x >= scale)", "fixed": ["scale"], "model": "pareto", "status": "AllGeOne", "when": "$\\mathrm{shape2} \\to \\infty$ with $\\mathrm{shape1}\\,\\mathrm{shape2}$ and scale fixed"}
+cauchy {"detect": "Excessive mass at that location or vanishing residual spread.", "message": "does not exist", "name": "scale collapse", "status": "NoMLE", "when": "Scale tends to zero at the fitted or held location."}
+cmb {"detect": "constant interior data in a joint fit; central constant data with interior prob fixed", "name": "point mass", "status": "PointMass", "when": "$\\nu$ diverges along an exposing direction toward an interior point mass"}
+cmb {"detect": "size at least two, with both adjacent integers observed in a joint fit; only the two central integers with interior prob fixed", "name": "adjacent two-point law", "status": "AdjacentLimit", "when": "$\\nu \\to +\\infty$ with the canonical probability adjusted"}
+cmb {"detect": "all data in {0, size} with both present in a joint fit; any endpoint-only data with interior prob fixed", "name": "endpoint two-point law", "status": "EndpointLimit", "when": "$\\nu \\to -\\infty$"}
+cmp {"detect": "adjacent observations in a joint fit; observations in {0,1} with fixed lambda", "name": "adjacent two-point law", "status": "TwoPointLimit", "when": "$\\nu \\to \\infty$ with the rate adjusted"}
+cmp {"detect": "constant positive observations in a joint fit", "name": "point mass", "status": "PointMassLimit", "when": "parameters diverge along an exposing direction"}
+dgamma {"detect": "both parameters free and all observations equal", "name": "point mass", "status": "PointMass", "when": "$\\mathrm{shape}\\to\\infty$ with the latent distribution concentrating inside one cell"}
+dgamma {"detect": "both parameters free and max(x) - min(x) = 1", "model": "binom", "name": "shifted Bernoulli", "status": "TwoPointLimit", "when": "the latent distribution concentrates around the shared boundary of two adjacent cells"}
+dgamma {"detect": "all observations zero and one parameter free", "name": "point mass at zero", "status": "PointMass", "when": "$\\mathrm{rate}\\to\\infty$ with shape held, or $\\mathrm{shape}\\to0$ with rate held"}
+dlaplace {"detect": "all observations equal the fitted or held location", "name": "point mass at location", "status": "PointMass", "when": "$scale \\to 0$"}
+dnorm {"detect": "both parameters free and all observations equal", "name": "point mass", "status": "PointMass", "when": "$sd\\to0$ with the latent distribution concentrating inside one cell"}
+dnorm {"detect": "both parameters free and max(x) - min(x) = 1", "model": "binom", "name": "shifted Bernoulli", "status": "TwoPointLimit", "when": "the latent distribution concentrates around the shared boundary of two adjacent cells"}
+dnorm {"detect": "mean held and every observed cell closure contains mean", "fixed": ["mean"], "name": "zero-scale limit", "status": "ScaleLimit", "when": "$\\mathrm{sd}\\to0$"}
+dweibull {"detect": "shape1 and shape2 are free and all observations are equal", "name": "degenerate", "status": "PointMass", "when": "$\\mathrm{shape2}\\to\\infty$ with $(-\\log \\mathrm{shape1})^{-1/\\mathrm{shape2}}$ fixed between the observed value and the next integer (at 0: $\\mathrm{shape1} \\to 0$)"}
+dweibull {"detect": "shape2 is held and all observations are 0", "fixed": ["shape2"], "name": "degenerate", "status": "PointMass", "when": "$\\mathrm{shape1}\\to 0$"}
+dweibull {"detect": "shape1 and shape2 are free and the observations are 0 and 1, both present", "model": "binom", "status": "BernoulliLimit", "when": "$\\mathrm{shape2}\\to\\infty$ with $\\mathrm{shape1}$ at the fraction of ones (a binomial with size 1)"}
+dweibull {"detect": "shape1 and shape2 are free and the observations take two adjacent values k and k + 1, k at least 1, both present", "name": "adjacent two-point", "status": "TwoPointLimit", "when": "$\\mathrm{shape2}\\to\\infty$ with $\\mathrm{shape1}^{(k+1)^{\\mathrm{shape2}}}$ at the fraction of observations equal to $k+1$"}
+dweibull {"detect": "shape1 is held and the observations are 0 and 1, with at least one 1", "fixed": ["shape1"], "name": "Bernoulli(shape1)", "status": "HeldBernoulliLimit", "when": "$\\mathrm{shape2}\\to\\infty$"}
+emg {"detect": "Conditional normal likelihood wins within 1e-8*n.", "model": "norm", "status": "NormalLimit", "when": "$\\lambda\\to\\infty$"}
+emg {"detect": "Conditional translated-exponential likelihood wins within 1e-8*n.", "name": "translated exponential", "status": "TranslatedExponentialLimit", "when": "$\\sigma\\to0$"}
+fatigue {"fixed": ["mu"], "name": "unbounded", "status": "Unbounded", "when": "constant shifted observations with alpha and beta free"}
+fatigue {"fixed": ["beta", "mu"], "name": "unbounded", "status": "Unbounded", "when": "all shifted observations equal beta and alpha tends to zero"}
+fpareto {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "InvalidData", "when": "A free concentration can collapse on constant observations"}
+fpareto {"name": "shifted trgamma; subtract min before fitting", "status": "TrGammaBoundary", "when": "shape1 tends to infinity with rescaled scale"}
+fpareto {"name": "shifted invtrgamma; subtract min before fitting", "status": "InvTrGammaBoundary", "when": "shape3 tends to infinity with rescaled scale"}
+fpareto {"name": "shifted lnorm; subtract min before fitting", "status": "LognormalBoundary", "when": "both beta shapes tend to infinity and shape2 tends to zero"}
+fpareto {"name": "shifted pareto; subtract min before fitting", "status": "ParetoBoundary", "when": "shape2 tends to infinity and shape1 tends to zero"}
+fpareto {"name": "shifted power; subtract min before fitting", "status": "PowerBoundary", "when": "shape2 tends to infinity and shape3 tends to zero"}
+fpareto {"message": "GB2 selects the double Pareto limit", "name": "shifted double Pareto; subtract min before fitting", "status": "DoubleParetoBoundary", "when": "shape2 tends to infinity and both beta shapes tend to zero"}
+frechet {"fixed": ["lambda"], "message": "unattained collapse face", "name": "fixed-shape collapse", "status": "InvalidData", "when": "With free mu and sigma, lambda*(n-k) <= k at minimum multiplicity k."}
+frechet {"fixed": ["sigma"], "message": "unbounded shape likelihood", "name": "shape divergence", "status": "InvalidData", "when": "Constant data with free mu, or all x-mu equal held sigma."}
+frechet {"model": "gumbel", "status": "GumbelLimit", "when": "lambda tends to infinity with free location"}
+frechet {"message": "minimum multiplicity permits scale collapse", "name": "free collapse", "status": "NoMLE", "when": "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, lambda) point beats the lambda -> 1 collapse face's limiting likelihood."}
+gb2 {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "InvalidData", "when": "A free concentration can collapse on constant observations"}
+gb2 {"model": "trgamma", "status": "TrGammaBoundary", "when": "shape1 tends to infinity with rescaled scale"}
+gb2 {"model": "invtrgamma", "status": "InvTrGammaBoundary", "when": "shape3 tends to infinity with rescaled scale"}
+gb2 {"model": "lnorm", "status": "LognormalBoundary", "when": "both beta shapes tend to infinity and shape2 tends to zero"}
+gb2 {"model": "pareto", "status": "ParetoBoundary", "when": "shape2 tends to infinity and shape1 tends to zero"}
+gb2 {"model": "power", "status": "PowerBoundary", "when": "shape2 tends to infinity and shape3 tends to zero"}
+gb2 {"name": "double Pareto", "status": "DoubleParetoBoundary", "when": "shape2 tends to infinity and both beta shapes tend to zero"}
+ged {"detect": "Every observation equals the fitted or held location.", "message": "unbounded", "name": "scale collapse", "status": "InvalidStart", "when": "Scale tends to zero at the fitted or held location."}
+ged {"detect": "Uniform log-likelihood exceeds all finite candidates.", "model": "unif", "status": "UniformBoundary", "when": "$\\nu \\to \\infty$"}
+genbeta {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "InvalidData", "when": "A free concentration can collapse on constant observations"}
+genbeta {"model": "lgamma", "name": "unit gamma on x/scale", "status": "UnitGammaBoundary", "when": "shape1 tends to infinity, shape3 tends to zero, shape1*shape3 stays finite; fit mllgamma(scale / x)"}
+genbeta {"model": "power", "status": "PowerBoundary", "when": "shape1 tends to zero and shape3 tends to infinity; shape2 may grow exponentially to lower the effective upper endpoint"}
+gev {"fixed": ["mu"], "message": "minimum multiplicity permits scale collapse", "name": "held-location collapse", "status": "NoMLE", "when": "Held mu equals the minimum and the scale-collapse face wins or diverges."}
+gev {"message": "minimum multiplicity permits scale collapse", "name": "free collapse", "status": "NoMLE", "when": "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, xi) point beats the xi -> 1 collapse face's limiting likelihood."}
+gompertz {"fixed": ["b"], "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "All observations are zero and a is free."}
+gompertz {"fixed": ["a"], "message": "mlexp", "model": "exp", "name": "exponential face", "status": "Overdispersed", "when": "sum(x) <= a*sum(x^2)/2 and sum(x)>0."}
+gompertz {"detect": "mean(x^2) >= 2*mean(x)^2", "model": "exp", "status": "Overdispersed", "when": "$b \\to 0$ with $a$ fixed"}
+gpd {"fixed": ["mu"], "message": "scale collapse at the threshold", "name": "threshold scale collapse", "status": "InvalidData", "when": "With free scale, all data equal mu, or threshold ties permit xi*k >= n-k (free xi always permits this path)."}
+gumbel {"detect": "Every observation equals the fitted or held location.", "message": "unbounded", "name": "scale collapse", "status": "Unbounded", "when": "Scale tends to zero at the fitted or held location."}
+hcauchy {"name": "unbounded scale collapse", "status": "Unbounded", "when": "$\\sigma \\to 0$ with more than half the observations at the free or held endpoint"}
+hcauchy {"name": "finite unattained scale-zero supremum", "status": "ScaleBoundary", "when": "$\\sigma \\to 0$ with exactly half the observations at the free or held endpoint"}
+hnorm {"name": "scale collapse", "status": "DegenerateData", "when": "every observation equals the free or held endpoint and sigma tends to zero"}
+ht {"model": "hnorm", "name": "half-normal with the same endpoint; use mlhnorm(x, mu = 0) after a held translation, or mlhnorm(x, mu = NULL) with a free one", "status": "NormalLimit", "when": "$\\nu \\to \\infty$"}
+ht {"name": "unbounded scale collapse", "status": "Unbounded", "when": "$\\sigma \\to 0$, $\\nu(n-k)<k$, where $k$ counts observations at the free or held endpoint"}
+ht {"fixed": ["nu"], "name": "finite unattained scale-zero supremum", "status": "ScaleBoundary", "when": "$\\sigma \\to 0$, $\\nu(n-k)=k$"}
+huber {"detect": "Every observation equals the fitted or held location.", "message": "unbounded", "name": "scale collapse", "status": "UnboundedLikelihood", "when": "Scale tends to zero at the fitted or held location."}
+huber {"fixed": [], "model": "norm", "status": "NormalLimit", "when": "$\\epsilon \\to \\infty$ with epsilon free"}
+huber {"fixed": [], "model": "laplace", "status": "LaplaceLimit", "when": "$\\epsilon \\to 0$ with epsilon and sigma free, $b=\\sigma/\\epsilon$ fixed"}
+hyper {"detect": "all observations are 0 while m and k are positive", "fixed": ["m"], "name": "degenerate", "status": "AllZero", "when": "$N \\to \\infty$, a point mass at zero"}
+invburr {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "A free concentration can collapse on constant observations"}
+invburr {"fixed": ["shape2"], "model": "invweibull", "status": "InvWeibullBoundary", "when": "Fixed-power Lomax profile is maximised on its exponential face"}
+invburr {"model": "invweibull", "status": "InvWeibullBoundary", "when": "$\\mathrm{shape1} \\to \\infty$ with $\\mathrm{scale}\\,\\mathrm{shape1}^{1/\\mathrm{shape2}}$ fixed"}
+invburr {"model": "power", "status": "PowerBoundary", "when": "$\\mathrm{shape2} \\to \\infty$ with $\\mathrm{shape1}\\,\\mathrm{shape2}$ and scale fixed"}
+invburr {"detect": "all(x <= scale)", "fixed": ["scale"], "model": "power", "status": "AllLeOne", "when": "$\\mathrm{shape2} \\to \\infty$ with $\\mathrm{shape1}\\,\\mathrm{shape2}$ and scale fixed"}
+invgauss {"fixed": ["mean"], "message": "constant data", "name": "unbounded likelihood", "status": "Unbounded", "when": "Every observation equals held mean."}
+invparalogis {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "InvalidStart", "when": "A free concentration can collapse on constant observations"}
+invpareto {"detect": "the reciprocal Lomax profile gap maximised over 0 < u < ubar is at most 1e-8*n", "model": "invexp", "status": "ExponentialLimit", "when": "$\\mathrm{shape} \\to \\infty$ with $\\mathrm{shape} \\cdot \\mathrm{scale}$ fixed"}
+invtrgamma {"fixed": ["scale"], "message": "fixed-endpoint Pareto face", "name": "fixed-endpoint Pareto face", "status": "ParetoBoundary", "when": "shape1 tends to zero and shape2 tends to infinity at fixed product"}
+invtrgamma {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "InvalidData", "when": "A free concentration can collapse on constant observations"}
+invtrgamma {"model": "lnorm", "status": "LognormalBoundary", "when": "$\\mathrm{shape1} \\to \\infty$ with $\\mathrm{shape2}\\sqrt{\\mathrm{shape1}}$ and $\\log \\mathrm{scale} - \\log(\\mathrm{shape1})/\\mathrm{shape2}$ fixed"}
+invtrgamma {"model": "pareto", "status": "ParetoBoundary", "when": "$\\mathrm{shape2} \\to \\infty$ with $\\mathrm{shape1}\\,\\mathrm{shape2}$ and scale fixed"}
+invweibull {"fixed": ["scale"], "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "Every observation equals the held scale."}
+kumar {"detect": "All observations are equal and neither shape is held.", "message": "unbounded", "name": "point-mass collapse", "status": "Unbounded", "when": "Both free shapes diverge on constant data."}
+laplace {"detect": "Every observation equals the fitted or held location.", "message": "does not exist", "name": "scale collapse", "status": "Unbounded", "when": "Scale tends to zero at the fitted or held location."}
+llogis {"fixed": ["scale"], "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "Every observation equals the held scale."}
+lnorm {"fixed": ["meanlog"], "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "Every log observation equals held meanlog."}
+logis {"detect": "Every observation equals the fitted or held location.", "message": "unbounded", "name": "scale collapse", "status": "InvalidInput", "when": "Scale tends to zero at the fitted or held location."}
+logitnorm {"detect": "All logits equal mu (estimated or held) and sigma is free.", "message": "does not exist", "name": "zero-scale collapse", "status": "zero scale", "when": "Free sigma tends to zero."}
+lomax {"detect": "max over 0 < u < ubar of the profile log-likelihood gap is at most 1e-8*n", "model": "exp", "status": "ExponentialLimit", "when": "$\\kappa \\to \\infty$ with $\\lambda \\kappa$ fixed"}
+lst {"detect": "Excessive mass at that location or vanishing residual spread.", "message": "scale", "name": "scale collapse", "status": "Unbounded", "when": "Scale tends to zero at the fitted or held location."}
+lst {"fixed": ["df"], "name": "scale collapse", "status": "Unbounded", "when": "tie multiplicity k > df*(n-k)"}
+lst {"fixed": ["df"], "name": "tie equality boundary", "status": "ScaleBoundary", "when": "tie multiplicity k = df*(n-k)"}
+lst {"model": "norm", "status": "NormalBoundary", "when": "$df \\to \\infty$"}
+naka {"fixed": ["scale"], "message": "unbounded", "name": "unbounded likelihood", "status": "Degenerate", "when": "Every squared observation equals held scale."}
+nbinom {"detect": "size and prob are both free and the population-form sample variance is no larger than the sample mean", "model": "pois", "status": "Underdispersed", "when": "$\\mathrm{size} \\to \\infty$ with mean fixed"}
+norm {"detect": "Every observation equals the fitted or held location.", "message": "unbounded", "name": "scale collapse", "status": "Unbounded", "when": "Scale tends to zero at the fitted or held location."}
+nsbeta {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "Degenerate", "when": "A free concentration can collapse on constant observations"}
+paralogis {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "InvalidStart", "when": "A free concentration can collapse on constant observations"}
+pareto {"fixed": ["b"], "message": "zero likelihood", "name": "zero likelihood", "status": "InvalidInput", "when": "Held b exceeds the sample minimum."}
+pareto {"fixed": ["b"], "message": "constant data", "name": "unbounded likelihood", "status": "Unbounded", "when": "Every observation equals held b."}
+pareto2 {"detect": "max over 0 < u < ubar of the profile log-likelihood gap is at most 1e-8*n", "name": "shifted exp; subtract min before fitting", "status": "ExponentialLimit", "when": "$\\kappa \\to \\infty$ with $\\lambda \\kappa$ fixed"}
+pareto3 {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "A free concentration can collapse on constant observations"}
+pareto4 {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "A free concentration can collapse on constant observations"}
+pareto4 {"name": "shifted weibull; subtract min before fitting", "status": "WeibullBoundary", "when": "$\\mathrm{shape1} \\to \\infty$ with $\\mathrm{scale}\\,\\mathrm{shape1}^{-1/\\mathrm{shape2}}$ fixed"}
+pareto4 {"name": "shifted pareto; subtract min before fitting", "status": "ParetoBoundary", "when": "$\\mathrm{shape2} \\to \\infty$ with $\\mathrm{shape1}\\,\\mathrm{shape2}$ and scale fixed"}
+pareto4 {"detect": "all(x >= scale)", "fixed": ["scale"], "name": "shifted Pareto with its endpoint held at min + scale", "status": "AllGeOne", "when": "$\\mathrm{shape2} \\to \\infty$ with $\\mathrm{shape1}\\,\\mathrm{shape2}$ and scale fixed"}
+pig {"detect": "Poisson maximised likelihood wins, including ties within 1e-8 times sample size", "model": "pois", "status": "PoissonLimit", "when": "$\\mathrm{shape} \\to \\infty$ at finite mean"}
+pig {"detect": "all observations are zero, mean is free, and positive shape is held", "fixed": ["shape"], "model": "pois", "status": "ZeroLimit", "when": "mean tends to zero with positive shape held"}
+power {"fixed": ["alpha"], "message": "zero likelihood", "name": "zero likelihood", "status": "InvalidInput", "when": "Held alpha is below the sample maximum."}
+sged {"fixed": ["sd"], "name": "unresolved constrained uniform endpoint rates", "status": "ScaleBoundary", "when": "fixed uniform width equals the sample range and its endpoint face would win"}
+sged {"fixed": ["sd", "xi"], "name": "unresolved constrained uniform endpoint rates", "status": "ScaleBoundary", "when": "fixed uniform width equals the sample range and its endpoint face would win"}
+sged {"fixed": ["mean"], "model": "unif", "status": "UniformBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sged {"fixed": ["mean"], "name": "right translated half-family", "status": "RightHalfGedBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["mean"], "name": "left translated half-family", "status": "LeftHalfGedBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["mean"], "name": "constant sample scale collapse", "status": "Unbounded", "when": "All observations equal the free or held mean and sd tends to zero"}
+sged {"fixed": ["sd"], "model": "unif", "status": "UniformBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sged {"fixed": ["sd"], "name": "right translated half-family", "status": "RightHalfGedBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["sd"], "name": "left translated half-family", "status": "LeftHalfGedBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["nu"], "name": "right translated half-family", "status": "RightHalfGedBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["nu"], "name": "left translated half-family", "status": "LeftHalfGedBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["nu"], "name": "constant sample scale collapse", "status": "Unbounded", "when": "All observations equal the free or held mean and sd tends to zero"}
+sged {"fixed": ["xi"], "model": "unif", "status": "UniformBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sged {"fixed": ["xi"], "name": "constant sample scale collapse", "status": "Unbounded", "when": "All observations equal the free or held mean and sd tends to zero"}
+sged {"fixed": ["mean", "sd"], "model": "unif", "status": "UniformBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sged {"fixed": ["mean", "sd"], "name": "right translated half-family", "status": "RightHalfGedBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["mean", "sd"], "name": "left translated half-family", "status": "LeftHalfGedBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["mean", "nu"], "name": "right translated half-family", "status": "RightHalfGedBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["mean", "nu"], "name": "left translated half-family", "status": "LeftHalfGedBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["mean", "nu"], "name": "constant sample scale collapse", "status": "Unbounded", "when": "All observations equal the free or held mean and sd tends to zero"}
+sged {"fixed": ["mean", "xi"], "model": "unif", "status": "UniformBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sged {"fixed": ["mean", "xi"], "name": "constant sample scale collapse", "status": "Unbounded", "when": "All observations equal the free or held mean and sd tends to zero"}
+sged {"fixed": ["sd", "nu"], "name": "right translated half-family", "status": "RightHalfGedBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["sd", "nu"], "name": "left translated half-family", "status": "LeftHalfGedBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["sd", "xi"], "model": "unif", "status": "UniformBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sged {"fixed": ["nu", "xi"], "name": "constant sample scale collapse", "status": "Unbounded", "when": "All observations equal the free or held mean and sd tends to zero"}
+sged {"fixed": ["mean", "sd", "nu"], "name": "right translated half-family", "status": "RightHalfGedBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["mean", "sd", "nu"], "name": "left translated half-family", "status": "LeftHalfGedBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sged {"fixed": ["mean", "sd", "xi"], "model": "unif", "status": "UniformBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sged {"fixed": ["mean", "nu", "xi"], "message": "Scale collapse", "name": "scale collapse", "status": "Unbounded", "when": "all observations equal held mean and sd tends to zero"}
+sged {"fixed": ["mean", "nu", "xi"], "message": "Scale-collapse boundary", "name": "uncertified scale boundary", "status": "ScaleBoundary", "when": "conditional scale search reaches its numerical tail guard"}
+sged {"detect": "Uniform log-likelihood exceeds all finite candidates.", "model": "unif", "status": "UniformBoundary", "when": "$\\nu \\to \\infty$"}
+sged {"detect": "Right translated half-GED profile wins.", "status": "RightHalfGedBoundary", "when": "$\\xi \\to \\infty$"}
+sged {"detect": "Left translated half-GED profile wins.", "status": "LeftHalfGedBoundary", "when": "$\\xi \\to 0$"}
+slash {"detect": "finite collapse likelihood within 1e-8*n of the best profile value", "name": "point mass collapse", "status": "CollapseLimit", "when": "$\\sigma \\to 0$ at a half-mass observation"}
+sn {"detect": "right translated half-normal supremum wins the profile comparison", "model": "hnorm", "status": "RightHalfNormalBoundary", "when": "$\\alpha \\to +\\infty$"}
+sn {"detect": "left translated half-normal supremum wins the profile comparison; use mlhnorm on -x", "name": "reflected translated half-normal", "status": "LeftHalfNormalBoundary", "when": "$\\alpha \\to -\\infty$"}
+snorm {"message": "Scale collapse", "name": "scale collapse", "status": "Unbounded", "when": "free scale with constant data at the free or held mean"}
+snorm {"model": "hnorm", "status": "RightHalfNormalBoundary", "when": "$\\xi \\to \\infty$"}
+snorm {"name": "reflected translated half-normal", "status": "LeftHalfNormalBoundary", "when": "$\\xi \\to 0$"}
+sstd {"fixed": ["mean"], "model": "hnorm", "name": "right translated half-normal", "status": "RightHalfNormalBoundary", "when": "nu and xi tend to their half-normal corner with held moments retained"}
+sstd {"fixed": ["mean"], "model": "hnorm", "name": "left translated half-normal", "status": "LeftHalfNormalBoundary", "when": "nu and xi tend to their half-normal corner with held moments retained"}
+sstd {"fixed": ["sd"], "model": "hnorm", "name": "right translated half-normal", "status": "RightHalfNormalBoundary", "when": "nu and xi tend to their half-normal corner with held moments retained"}
+sstd {"fixed": ["sd"], "model": "hnorm", "name": "left translated half-normal", "status": "LeftHalfNormalBoundary", "when": "nu and xi tend to their half-normal corner with held moments retained"}
+sstd {"fixed": ["mean", "sd"], "model": "hnorm", "name": "right translated half-normal", "status": "RightHalfNormalBoundary", "when": "nu and xi tend to their half-normal corner with held moments retained"}
+sstd {"fixed": ["mean", "sd"], "model": "hnorm", "name": "left translated half-normal", "status": "LeftHalfNormalBoundary", "when": "nu and xi tend to their half-normal corner with held moments retained"}
+sstd {"fixed": ["mean"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean"], "model": "snorm", "status": "SnormBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sstd {"fixed": ["mean"], "name": "two-piece t with 2 degrees of freedom", "status": "DfTwoBoundary", "when": "nu tends to 2 with ordinary t scale finite and held mean retained"}
+sstd {"fixed": ["mean"], "model": "ht", "name": "right translated half-family", "status": "RightHalfTBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["mean"], "model": "ht", "name": "left translated half-family", "status": "LeftHalfTBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["sd"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["sd"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["sd"], "model": "snorm", "status": "SnormBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sstd {"fixed": ["sd"], "model": "ht", "name": "right translated half-family", "status": "RightHalfTBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["sd"], "model": "ht", "name": "left translated half-family", "status": "LeftHalfTBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["nu"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["nu"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["nu"], "model": "ht", "name": "right translated half-family", "status": "RightHalfTBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["nu"], "model": "ht", "name": "left translated half-family", "status": "LeftHalfTBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["xi"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["xi"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["xi"], "model": "snorm", "status": "SnormBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sstd {"fixed": ["xi"], "name": "two-piece t with 2 degrees of freedom", "status": "DfTwoBoundary", "when": "nu tends to 2 with ordinary t scale finite and held mean retained"}
+sstd {"fixed": ["mean", "sd"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "sd"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "sd"], "model": "snorm", "status": "SnormBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sstd {"fixed": ["mean", "sd"], "model": "ht", "name": "right translated half-family", "status": "RightHalfTBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["mean", "sd"], "model": "ht", "name": "left translated half-family", "status": "LeftHalfTBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["mean", "nu"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "nu"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "nu"], "model": "ht", "name": "right translated half-family", "status": "RightHalfTBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["mean", "nu"], "model": "ht", "name": "left translated half-family", "status": "LeftHalfTBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["mean", "xi"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "xi"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "xi"], "model": "snorm", "status": "SnormBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sstd {"fixed": ["mean", "xi"], "name": "two-piece t with 2 degrees of freedom", "status": "DfTwoBoundary", "when": "nu tends to 2 with ordinary t scale finite and held mean retained"}
+sstd {"fixed": ["sd", "nu"], "model": "ht", "name": "right translated half-family", "status": "RightHalfTBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["sd", "nu"], "model": "ht", "name": "left translated half-family", "status": "LeftHalfTBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["sd", "xi"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["sd", "xi"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["sd", "xi"], "model": "snorm", "status": "SnormBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sstd {"fixed": ["nu", "xi"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["nu", "xi"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "sd", "nu"], "model": "ht", "name": "right translated half-family", "status": "RightHalfTBoundary", "when": "xi tends to infinity with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["mean", "sd", "nu"], "model": "ht", "name": "left translated half-family", "status": "LeftHalfTBoundary", "when": "xi tends to zero with endpoint and scale constrained by held mean and sd"}
+sstd {"fixed": ["mean", "sd", "xi"], "name": "tie collapse", "status": "Unbounded", "when": "An achievable tie has k > nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "sd", "xi"], "name": "uncertified tie equality", "status": "ScaleBoundary", "when": "An achievable tie has k = nu*(n-k), using nu=2 when shape is free"}
+sstd {"fixed": ["mean", "sd", "xi"], "model": "snorm", "status": "SnormBoundary", "when": "nu tends to infinity with the held moment constraints"}
+sstd {"fixed": ["mean", "nu", "xi"], "message": "Likelihood is unbounded at a tie", "name": "scale collapse", "status": "Unbounded", "when": "sd tends to zero"}
+sstd {"fixed": ["mean", "nu", "xi"], "message": "Tie equality scale-collapse boundary", "name": "scale-collapse equality", "status": "ScaleBoundary", "when": "k = nu*(n-k)"}
+sstd {"model": "snorm", "status": "SnormBoundary", "when": "$\\nu \\to \\infty$"}
+sstd {"model": "hnorm", "status": "RightHalfNormalBoundary", "when": "$\\nu \\to \\infty$ and $\\xi \\to \\infty$"}
+sstd {"name": "reflected translated half-normal", "status": "LeftHalfNormalBoundary", "when": "$\\nu \\to \\infty$ and $\\xi \\to 0$"}
+sstd {"name": "translated half-t", "status": "RightHalfTBoundary", "when": "$\\xi \\to \\infty$, endpoint at the sample minimum"}
+sstd {"name": "reflected translated half-t", "status": "LeftHalfTBoundary", "when": "$\\xi \\to 0$, endpoint at the sample maximum"}
+sstd {"name": "two-piece t with 2 degrees of freedom", "status": "DfTwoBoundary", "when": "$\\nu \\to 2^+$"}
+std {"detect": "Excessive mass at that location or vanishing residual spread.", "message": "collapse", "name": "scale collapse", "status": "Unbounded", "when": "Scale tends to zero at the fitted or held location."}
+std {"fixed": ["nu"], "name": "scale collapse", "status": "Unbounded", "when": "tie multiplicity k > nu*(n-k)"}
+std {"fixed": ["nu"], "name": "tie equality boundary", "status": "ScaleBoundary", "when": "tie multiplicity k = nu*(n-k)"}
+std {"model": "norm", "status": "NormalBoundary", "when": "$\\nu \\to \\infty$"}
+std {"model": "lst", "status": "DfTwoBoundary", "when": "$\\nu \\to 2^+$"}
+tbinom {"detect": "all observations at a strictly positive lowest support point", "name": "point mass at lowest support point", "status": "LowerPointMass", "when": "$prob \\to 0$"}
+tbinom {"detect": "all observations at finite highest support point below size", "name": "point mass at highest support point", "status": "UpperPointMass", "when": "$prob \\to 1$"}
+tbinom {"detect": "constant data at a finite upper support edge with nonsingleton support", "fixed": ["prob"], "name": "point mass at highest support point", "status": "UpperPointMass", "when": "$size \\to \\infty$ at a fixed interior probability"}
+tbinom {"detect": "free size and probability; numerical profile approaches the truncated-Poisson face without exceeding it by 1e-9 times the sample size", "fixed": [], "model": "tpois", "status": "TpoisLimit", "when": "$size \\to \\infty$, $prob \\to 0$ with $size \\cdot prob$ finite"}
+tbinom {"detect": "same numerical comparison, with the lower bound held", "fixed": ["a"], "model": "tpois", "status": "TpoisLimit", "when": "$size \\to \\infty$, $prob \\to 0$ with $size \\cdot prob$ finite"}
+tbinom {"detect": "same numerical comparison, with the upper bound held", "fixed": ["b"], "model": "tpois", "status": "TpoisLimit", "when": "$size \\to \\infty$, $prob \\to 0$ with $size \\cdot prob$ finite"}
+tbinom {"detect": "same numerical comparison, with both bounds held", "fixed": ["a", "b"], "model": "tpois", "status": "TpoisLimit", "when": "$size \\to \\infty$, $prob \\to 0$ with $size \\cdot prob$ finite"}
+tlambda {"detect": "Excessive mass at that location or vanishing residual spread.", "message": "collapse", "name": "scale collapse", "status": "CollapseLimit", "when": "Scale tends to zero at the fitted or held location."}
+tlambda {"fixed": ["sigma", "lambda"], "message": "support cannot contain", "name": "infeasible held support", "status": "InvalidSupport", "when": "Held scale and positive shape cannot contain the sample."}
+tnorm {"detect": "is.infinite(b) && mean((x - mean(x))^2) >= (mean(x) - a)^2", "model": "exp", "status": "ExponentialBoundary", "when": "$\\mathrm{sd} \\to \\infty$ and $\\mathrm{mean}/\\mathrm{sd}^2 \\to -1/(\\bar x - a)$, with $a$ finite and $b = \\infty$: the law of $a + Y$, $Y$ exponential"}
+tnorm {"detect": "is.infinite(a) && mean((x - mean(x))^2) >= (b - mean(x))^2", "model": "exp", "status": "ReflectedExponentialBoundary", "when": "$\\mathrm{sd} \\to \\infty$ and $\\mathrm{mean}/\\mathrm{sd}^2 \\to 1/(b - \\bar x)$, with $a = -\\infty$ and $b$ finite: the law of $b - Y$, $Y$ exponential"}
+tnorm {"name": "truncated exponential", "status": "TruncatedExponentialBoundary", "when": "$\\mathrm{sd} \\to \\infty$ and $\\mathrm{mean}/\\mathrm{sd}^2 \\to r$, with $a$ and $b$ finite: the law on $(a, b)$ with density proportional to $e^{r x}$, uniform when $r = 0$"}
+tnorm {"detect": "mean((x - mean)^2) >= ((b - mean)^3 - (a - mean)^3) / (3 * (b - a))", "fixed": ["mean"], "name": "uniform", "status": "UniformBoundary", "when": "$\\mathrm{sd} \\to \\infty$, with $a$ and $b$ finite: the uniform law on $(a, b)$"}
+tpois {"detect": "all observations at a strictly positive lowest support point", "fixed": ["b"], "name": "point mass at lowest support point", "status": "LowerPointMass", "when": "$\\lambda \\to 0$"}
+tpois {"detect": "all observations at finite highest support point", "fixed": ["a"], "name": "point mass at highest support point", "status": "UpperPointMass", "when": "$\\lambda \\to \\infty$"}
+trgamma {"fixed": ["scale"], "message": "fixed-endpoint power face", "name": "fixed-endpoint power face", "status": "PowerBoundary", "when": "shape1 tends to zero and shape2 tends to infinity at fixed product"}
+trgamma {"detect": "Constant samples; the held coefficients determine whether concentration remains free", "message": "unbounded", "name": "unbounded likelihood", "status": "InvalidData", "when": "A free concentration can collapse on constant observations"}
+trgamma {"model": "lnorm", "status": "LognormalBoundary", "when": "$\\mathrm{shape1} \\to \\infty$ with $\\mathrm{shape2}\\sqrt{\\mathrm{shape1}}$ and $\\log \\mathrm{scale} + \\log(\\mathrm{shape1})/\\mathrm{shape2}$ fixed"}
+trgamma {"model": "power", "status": "PowerBoundary", "when": "$\\mathrm{shape2} \\to \\infty$ with $\\mathrm{shape1}\\,\\mathrm{shape2}$ and scale fixed"}
+triang {"detect": "Constant data and every held coefficient equals the observation.", "message": "unbounded", "name": "zero-width collapse", "status": "Unbounded", "when": "Free interval width tends to zero."}
+triang {"detect": "Data outside held endpoints, non-mode observed endpoints, or inconsistent parameter ordering.", "message": "incompatible", "name": "incompatible held parameters", "status": "Incompatible", "when": "Held parameters prevent positive likelihood."}
+unif {"detect": "Constant data and no held endpoint strictly outside the data.", "message": "does not exist", "name": "zero-width collapse", "status": "Unbounded", "when": "Free interval width tends to zero."}
+unif {"detect": "Held min exceeds the sample minimum or held max is below the sample maximum, or min >= max.", "message": "held uniform", "name": "incompatible held endpoints", "status": "Incompatible", "when": "A held endpoint excludes observations or min is not below max."}
+weibull {"fixed": ["scale"], "message": "unbounded", "name": "unbounded likelihood", "status": "Unbounded", "when": "Every observation equals held scale."}
+yulesimon {"detect": "all observations equal one", "name": "point mass at one", "status": "PointMass", "when": "$rho \\to +\\infty$"}
+zeta {"detect": "all observations equal one", "name": "point mass at one", "status": "PointMass", "when": "$s \\to +\\infty$"}
+zib {"detect": "the maximised face likelihood wins within 1e-8 times the sample size", "model": "zip", "status": "ZipLimit", "when": "$size \\to \\infty$ with the positive conditional mean fixed"}
+zib {"detect": "the matching held-mixture Poisson face wins the integer profile", "fixed": ["pi"], "model": "zip", "status": "ZipLimit", "when": "$size \\to \\infty$ with the positive conditional mean fixed"}
+zinb {"detect": "size and prob are free and the maximized ZIP likelihood wins within 1e-8 times sample size", "model": "zip", "status": "ZipLimit", "when": "$\\mathrm{size}\\to\\infty$ with NB mean fixed and positive inflation"}
+zinb {"detect": "size and prob are free and the winning ZIP face has zero inflation", "model": "pois", "status": "PoissonLimit", "when": "$\\mathrm{size}\\to\\infty$ with NB mean fixed and inflation tending to zero"}
+zip {"detect": "all observations are zero", "fixed": ["pi"], "model": "pois", "status": "ZeroLimit", "when": "$lambda \\to 0$ with inflation held below one"}
+zip {"fixed": ["lambda"], "message": "lambda positive", "name": "undefined zero-rate reference", "status": "InvalidInput", "when": "held lambda is zero"}
+zipf {"detect": "all observations are one and held N exceeds one", "fixed": ["N"], "name": "point mass at one", "status": "PointMass", "when": "$s \\to \\infty$"}
+zmbinom {"detect": "the maximised face likelihood wins within 1e-8 times the sample size", "model": "zmpois", "status": "PoissonLimit", "when": "$size \\to \\infty$ with the positive conditional mean fixed"}
+zmbinom {"detect": "the matching held-mixture Poisson face wins the integer profile", "fixed": ["p0"], "model": "zmpois", "status": "PoissonLimit", "when": "$size \\to \\infty$ with the positive conditional mean fixed"}
+zmnbinom {"detect": "size and prob are free and the maximised face likelihood wins within 1e-8 times the sample size", "model": "zmpois", "status": "PoissonLimit", "when": "$size \\to \\infty$ with the positive conditional mean fixed"}
+ztbinom {"detect": "the maximised face likelihood wins within 1e-8 times the sample size", "model": "ztpois", "status": "PoissonLimit", "when": "$size \\to \\infty$ with the positive conditional mean fixed"}
+ztnbinom {"detect": "size and prob are free and the maximised face likelihood wins within 1e-8 times the sample size", "model": "ztpois", "status": "PoissonLimit", "when": "$size \\to \\infty$ with the positive conditional mean fixed"}

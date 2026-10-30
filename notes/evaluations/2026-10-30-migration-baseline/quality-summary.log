@@ -1,0 +1,9 @@
+{
+  "families": 98,
+  "passed": 98,
+  "logLik_pass": 98,
+  "score_hessian_pass": 93,
+  "oracle_pass": 94,
+  "score_hessian_skipped": 5,
+  "oracle_skipped": 4
+}
