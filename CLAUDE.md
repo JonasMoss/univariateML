@@ -32,28 +32,31 @@ core.
 - 98 distributions, **one folder each** in
   `cppunivariate/include/cppunivariate/distributions/<id>/`: `README.md`
   (front matter + prose), `mle.hpp`, `dpqr.hpp`, `adapter.cpp`, `test.cpp`,
-  `test.R`, `golden.json`. See "Adding a new distribution" below. `lgamma`
+  `test.R`, `golden.json`, `truth.py`, `truth.json`. See "Adding a new distribution" below. `lgamma`
   has no `mle.hpp`; its adapter fits gamma on `log(x)`.
 - Fitter behaviour at the edges (escapes to limit models, boundaries,
   non-existence) is studied in `notes/ml-behaviour.tex`, with
   `notes/ml-behaviour-sweep.R` (all fitters vs a slow oracle, ~6 s) and two
   research reports. Escapes that a fitter detects stop with "use `mlX`"
   (decision D1) and are declared under `limits:` in its `README.md`.
-- The R package is ML-first. By default each model's
-  `dml`/`pml`/`qml`/`rml` call an external package's functions
-  (`r.density` in `README.md`), with an optional `r.args` map when their
-  argument names differ from the coefficients (hnorm uses
-  `extraDistr::dhnorm` with `r.shift: mu`). Where references are broken, heavy
-  or missing (decided 2026-10-29: Zipf, the Conway–Maxwell families, the
-  former fGarch, logitnorm and nakagami models, and families that only
-  VGAM had), the package defines its own d/p/q/r: `distributions/<id>/dpqr.R`
-  (exported, documented) over Rcpp exports of `dpqr.hpp`, shared helpers in
-  `univariateML/R/dpqr_helpers.R` and `univariateML/src/dpqr.h`, and
-  `r.density` without a package prefix (`README_SCHEMA.md`). Known defects in those packages,
-  and the runtime-checked workarounds (`univariateML_reference_fixes`),
-  are listed in `KNOWN_ISSUES.md`. A reference without a quantile
-  function (extraDistr's beta-binomial) gets one by integer inversion of its
-  own CDF (`univariateML_reference_quantiles`).
+- The R package is ML-first: it exports fitters, `dml`/`pml`/`qml`/`rml`,
+  model selection, bootstrap and plots, and **no d/p/q/r** (decided
+  2026-10-30). `dml` and friends call the function named by `r.density` in
+  `README.md`. The 14 stats families use `stats` (kept for now, not banked:
+  `roadmap/2026-10-28-r-package-scope-revisited.md`); every other family
+  uses the package's own internal d/p/q/r, generated at assembly by
+  `univariateML/scripts/codegen_dpqr.R` from `dpqr.hpp` (README
+  coefficients in order, no defaults; entrypoints appended to the family's
+  `src/dist_<id>.cpp`, library headers first because `Rmath.h` #defines
+  names such as `pnorm`). `r.shift` and `r.args` remain resolver features.
+  extraDistr and actuar are no longer dependencies (TASK-78); defects found
+  in them are recorded in `KNOWN_ISSUES.md` and `notes/upstream/`.
+- Every `dpqr.hpp` is tail-accurate (`special/tails.hpp` states the rules)
+  and checked against an mpmath truth table, `distributions/<id>/truth.json`
+  (`just dpqr-truth <id>`; route in the family's `truth.py`), from C++
+  (`mltest::check_dpqr_truth`) and R (`test-generated-dpqr.R`). Truth tables
+  cover interior parameters; boundary values a fitter can return need
+  closed-form cases in `test.cpp`.
 - Boost.Math only through `special/special.hpp`, with a no-throw policy.
 - Hand-rolled BFGS + finite-difference gradient + reparam helpers in
   `core/`; paralogis, std, sstd, ged, sged use this path (snorm is an
@@ -145,6 +148,7 @@ cppunivariate/                        # the C++ artifact
       test.cpp                        #   doctest cases -> distribution_tests
       test.R                          #   testthat file
       golden.json                     #   golden data + estimates
+      truth.py, truth.json            #   d/p/q truth route + mpmath table
     distributions/rng_std.hpp         # shared sampling infrastructure (not per-dist)
     special/                          # special.hpp (Boost.Math seam), skewed_densities.hpp
     cppunivariate.hpp                 # aggregator (includes every <id>/mle.hpp)
@@ -265,13 +269,14 @@ Follow `lomax/` as the worked example.
 | `test.cpp` | doctest cases; globbed into the `distribution_tests` target; `#include "test_support.hpp"` for `load_distribution_golden(id)` and tolerances |
 | `test.R` | testthat file; copied to `tests/testthat/test-dist-<id>.R` |
 | `golden.json` | golden data + estimates, written by `just goldens` |
+| `truth.py`, `truth.json` | high-precision d/p/q route and its table, written by `just dpqr-truth <id>`; checked by the truth `TEST_CASE` in `test.cpp` |
 
 Steps for a new distribution:
 
 1. Create the folder with the files above (copy `lomax/` and adapt), and
    add one line `#include "distributions/<id>/mle.hpp"` to
    `cppunivariate.hpp`.
-2. Run `just quality <id>`.
+2. Run `just quality <id>` and `just dpqr-truth <id>`.
 3. `just goldens`, then `just cpp-test` and `just test` must pass.
 4. `just readme-table` updates the distribution tables in the package README.
 
