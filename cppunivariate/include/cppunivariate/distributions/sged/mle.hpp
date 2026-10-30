@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../sstd/hold_search.hpp"
 
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
@@ -420,7 +421,12 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
      (hn && !(fixed_nu>0 && std::isfinite(fixed_nu))) ||
      (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || maxit<1) return out;
   for(double v:x) if(!std::isfinite(v)) return out;
-  if(!(hn && hx && (hm || hs))) { out.status=SgedStatus::UnsupportedHold; return out; }
+  if(!(hn && hx && (hm || hs))) {
+    const auto r=skew_hold_detail::fit(x,false,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);
+    const std::vector<SgedStatus> statuses{SgedStatus::Ok,SgedStatus::BfgsFailure,SgedStatus::InvalidStart,SgedStatus::Unbounded,SgedStatus::ScaleBoundary,SgedStatus::UniformBoundary,SgedStatus::UniformBoundary,SgedStatus::RightHalfGedBoundary,SgedStatus::LeftHalfGedBoundary,SgedStatus::UniformBoundary};
+    auto status=statuses[r.status];
+    return {r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
+  }
   double lo=inf, hi=-inf;
   for(double v:x) { lo=std::min(lo,v); hi=std::max(hi,v); }
   if(!hs && lo==hi && lo==fixed_mean) { out.status=SgedStatus::Unbounded; return out; }

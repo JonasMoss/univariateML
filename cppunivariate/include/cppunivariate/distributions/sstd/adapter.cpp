@@ -22,7 +22,7 @@ Rcpp::List mlsstd_(const Rcpp::NumericVector &x,
   const double held_xi=xi.isNotNull() ? Rcpp::as<double>(xi) : nan;
   if(xi.isNotNull() && (!(std::isfinite(held_xi) && held_xi>0))) Rcpp::stop("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sstd_mle(dist_impl::as_span(x),gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
-  if(res.status==cppunivariate::SstdStatus::UnsupportedHold) Rcpp::stop("Hold subset existence remains unresolved (P0); currently hold `nu`, `xi` and at least one of `mean`, `sd`.");
+  if(res.status==cppunivariate::SstdStatus::UnsupportedHold) Rcpp::stop("Unsupported conditional fit.");
   if (res.status == cppunivariate::SstdStatus::Unbounded)
     Rcpp::stop("Likelihood is unbounded at a tie of multiplicity k > nu*(n-k) with nu held, or k > 2*(n-k) with nu free; no MLE.");
   if (res.status == cppunivariate::SstdStatus::ScaleBoundary)
@@ -48,9 +48,14 @@ Rcpp::List mlsstd_(const Rcpp::NumericVector &x,
   if (res.status == cppunivariate::SstdStatus::RightHalfTBoundary ||
       res.status == cppunivariate::SstdStatus::LeftHalfTBoundary) {
     const bool right = res.status == cppunivariate::SstdStatus::RightHalfTBoundary;
+    if(mean.isNotNull() || sd.isNotNull())
+      Rcpp::stop("The skew Student-t likelihood is maximised as xi -> %s by a translated half-t "
+                 "with %.4g degrees of freedom and endpoint constrained by held moments; "
+                 "the MLE does not exist. Use `mlht` on signed distances from this endpoint.",
+                 right ? "Inf" : "0",res.nu);
     Rcpp::stop("The skew Student-t likelihood is maximised as xi -> %s, i.e. by a "
                "translated half-t with %.4g degrees of freedom and endpoint at the "
-               "sample %s; the MLE does not exist.",
+               "sample %s; the MLE does not exist. Use `mlht` on signed distances from this endpoint.",
                right ? "Inf" : "0", res.nu, right ? "minimum" : "maximum");
   }
   if (res.status == cppunivariate::SstdStatus::DfTwoBoundary) {
@@ -63,6 +68,8 @@ Rcpp::List mlsstd_(const Rcpp::NumericVector &x,
     Rcpp::stop("Skew Student-t MLE failed to converge (check inputs)");
   }
   if(res.status==cppunivariate::SstdStatus::BfgsFailure) {
+    if(mean.isNotNull() || sd.isNotNull() || nu.isNotNull() || xi.isNotNull())
+      Rcpp::stop("Conditional skew Student-t optimizer failed its free-coordinate score check; increase `iterlim`.");
     cppunivariate::SstdCost cost{dist_impl::as_span(x)};
     const double phi[4]={res.mu,std::log(res.sigma),std::log(res.nu-2),std::log(res.xi)};
     double score[4];
