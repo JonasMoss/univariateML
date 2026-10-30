@@ -19,11 +19,8 @@ Rcpp::List mlhnorm_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu,
     if (fixed) fixed_names.push_back("mu");
     fixed_names.push_back("sigma");
     const double endpoint = res.mu;
-    double ll=x.size()*(0.5*std::log(2.0/std::acos(-1.0))-std::log(sc));
-    for (double v:x) {const double z=(v-endpoint)/sc;ll-=0.5*z*z;}
-    if (!std::isfinite(ll)) Rcpp::stop("Half-normal held-scale likelihood exceeds double precision at the representable endpoint.");
     return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(
-      Rcpp::_["mu"]=endpoint,Rcpp::_["sigma"]=sc),Rcpp::_["logLik"]=ll,Rcpp::_["fixed"]=fixed_names);
+      Rcpp::_["mu"]=endpoint,Rcpp::_["sigma"]=sc),Rcpp::_["logLik"]=res.logLik,Rcpp::_["fixed"]=fixed_names);
   }
   if (fixed && res.status == cppunivariate::HnormStatus::DegenerateData)
     Rcpp::stop("Half-normal likelihood is unbounded as sigma -> 0 when all observations equal held mu.");

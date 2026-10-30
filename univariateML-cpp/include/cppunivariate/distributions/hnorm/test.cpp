@@ -102,3 +102,13 @@ TEST_CASE("hnorm: small standardized distances retain their logarithms") {
   CHECK(cppunivariate::distributions::phnorm(1e-300,0,1e300,true,true) == doctest::Approx(-1381.7768471490721).epsilon(1e-12));
   CHECK(cppunivariate::distributions::qhnorm(-800,0,1e300,true,true) == doctest::Approx(4.5969990702501075e-48).epsilon(1e-12));
 }
+
+TEST_CASE("hnorm held-scale likelihood matches previous adapter arithmetic") {
+  const std::vector<double> x{1,2,4};
+  for(double mu:{0.0,std::numeric_limits<double>::quiet_NaN()}) {
+    const auto r=cppunivariate::hnorm_mle(mltest::as_span(x),mu,2);
+    double ll=x.size()*(0.5*std::log(2.0/std::acos(-1.0))-std::log(2.0));
+    for(double v:x) {const double z=(v-r.mu)/2;ll-=0.5*z*z;}
+    CHECK(r.logLik==ll);
+  }
+}

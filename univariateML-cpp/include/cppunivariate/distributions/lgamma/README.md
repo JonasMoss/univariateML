@@ -38,3 +38,14 @@ The log-gamma distribution describes positive data whose logarithm follows a gam
 The support is above 1: `log(x)` has gamma shape `shapelog` and rate `ratelog`. This is the actuar log-gamma convention, rather than the distribution of the logarithm of a gamma variable.
 
 Holding either shapelog or ratelog gives a unique finite fit even for constant data above one. With both free the likelihood is unbounded for constant data.
+
+### C++ independence (2026-10-30)
+
+`lgamma_mle` owns the previous R adapter's exact transform and sum order:
+fit gamma to `log(x)` and subtract `sum(log(x))` from its log likelihood.
+The change-of-variables identity is exact mathematically. NaN marks free
+coefficients; held ratelog is passed as reciprocal scale and returned verbatim.
+Gamma iteration failure is preserved; constant and precision-collapsed
+transforms are distinguished. No new search or convergence guarantee is added.
+The appended C++ regression compares all four held subsets with the previous
+adapter computation; golden agreement is numerical evidence.

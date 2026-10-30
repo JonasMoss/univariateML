@@ -13,19 +13,15 @@ Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu, d
   if (mu.isNull()) Rcpp::stop("Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.");
   const double threshold = Rcpp::as<double>(mu);
   if (!std::isfinite(threshold)) Rcpp::stop("`mu` must be finite.");
-  Rcpp::NumericVector shifted(x.size());
-  for (R_xlen_t i = 0; i < x.size(); ++i) {
-    shifted[i] = x[i] - threshold;
-    if (!(shifted[i] > 0.0) || !std::isfinite(shifted[i]))
-      Rcpp::stop("Fatigue observations must be finite and strictly above `mu`.");
-  }
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double a=alpha.isNotNull()?Rcpp::as<double>(alpha):nan;
   const double b=beta.isNotNull()?Rcpp::as<double>(beta):nan;
   if ((alpha.isNotNull()&&(!(a>0)||!std::isfinite(a))) ||
       (beta.isNotNull()&&(!(b>0)||!std::isfinite(b))))
     Rcpp::stop("Held `alpha` and `beta` must be positive finite numbers.");
-  auto res = cppunivariate::fatigue_mle(dist_impl::as_span(shifted), abstol, iterlim,a,b);
+  auto res = cppunivariate::fatigue_mle_shifted(dist_impl::as_span(x), threshold, abstol, iterlim,a,b);
+  if (res.status == cppunivariate::FatigueStatus::InvalidInput)
+    Rcpp::stop("Fatigue observations must be finite and strictly above `mu`.");
   if (res.status == cppunivariate::FatigueStatus::SearchFailure)
     Rcpp::stop("Fatigue optimizer SearchFailure: profile search did not converge; increase iterlim.");
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {

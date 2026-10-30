@@ -101,3 +101,27 @@ TEST_CASE("lgamma: extreme observation log tails and density") {
   CHECK(cppunivariate::distributions::plgamma(1e100, 2.0, 3.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
   CHECK(cppunivariate::distributions::plgamma(1e100, 2.0, 3.0, false, true) == doctest::Approx(-684.2362663768691).epsilon(1e-11));
 }
+
+#include "cppunivariate/distributions/lgamma/mle.hpp"
+TEST_CASE("lgamma core matches previous adapter for every held subset") {
+  const auto g=mltest::load_distribution_golden("lgamma");
+  std::vector<double> y;
+  double jac=0;
+  for(double v:g.data) {y.push_back(std::log(v));jac+=y.back();}
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=0;mask<4;++mask) {
+    const double shape=(mask&1) ? g.estimates.at("shapelog") : nan;
+    const double rate=(mask&2) ? g.estimates.at("ratelog") : nan;
+    const auto old=cppunivariate::gamma_mle(mltest::as_span(y),mltest::kFitTol,100,shape,(mask&2)?1/rate:nan);
+    const auto r=cppunivariate::lgamma_mle(mltest::as_span(g.data),mltest::kFitTol,100,shape,rate);
+    CHECK(r.status==cppunivariate::LgammaStatus::Ok);
+    CHECK(r.shapelog==old.shape);
+    CHECK(r.ratelog==((mask&2)?rate:1/old.scale));
+    CHECK(r.logLik==old.logLik-jac);
+    CHECK(r.iterations==old.iterations);
+  }
+  const auto failed=cppunivariate::lgamma_mle(mltest::as_span(g.data),1e-15,1,nan,2);
+  CHECK(failed.status==cppunivariate::LgammaStatus::IterationFailure);
+  const std::vector<double> ties{2,2};
+  CHECK(cppunivariate::lgamma_mle(mltest::as_span(ties),1e-8,100).status==cppunivariate::LgammaStatus::Degenerate);
+}

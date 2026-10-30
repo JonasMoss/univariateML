@@ -308,3 +308,20 @@ TEST_CASE("sstd: symmetric member has exact median and signed log-half offset") 
     else CHECK(got==0);
   }
 }
+
+TEST_CASE("sstd core preserves previous adapter unconditional failure score gate") {
+  const auto g=mltest::load_distribution_golden("sstd");
+  const auto x=mltest::as_span(g.data);
+  const auto old=cppunivariate::sstd_mle_impl(x,mltest::kFitTol,1,false);
+  auto status=old.status;
+  if(status==cppunivariate::SstdStatus::BfgsFailure) {
+    cppunivariate::SstdCost cost{x};
+    const double phi[4]={old.mu,std::log(old.sigma),std::log(old.nu-2),std::log(old.xi)};
+    double score[4];cppunivariate::finite_diff_gradient(cost,phi,score);
+    double norm=0;for(double v:score)norm+=v*v;
+    if(std::sqrt(norm)<1e-3)status=cppunivariate::SstdStatus::Ok;
+  }
+  const auto r=cppunivariate::sstd_mle(x,mltest::kFitTol,1);
+  CHECK(r.status==status);
+  CHECK((r.logLik==old.logLik || (std::isnan(r.logLik) && std::isnan(old.logLik))));
+}

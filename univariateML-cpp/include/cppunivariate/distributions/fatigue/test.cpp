@@ -72,3 +72,19 @@ TEST_CASE("fatigue: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::fatigue_mle(x,1e-8,1).status==cppunivariate::FatigueStatus::SearchFailure);
 }
+
+TEST_CASE("fatigue core threshold transform matches former adapter") {
+  const auto g=mltest::load_distribution_golden("fatigue");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=0;mask<4;++mask) {
+    std::vector<double> shifted=g.data;
+    for(auto &v:shifted)v-=-0.25;
+    const double a=(mask&1)?0.8:nan,b=(mask&2)?1.5:nan;
+    const auto old=cppunivariate::fatigue_mle(mltest::as_span(shifted),mltest::kFitTol,100,a,b);
+    const auto r=cppunivariate::fatigue_mle_shifted(mltest::as_span(g.data),-0.25,mltest::kFitTol,100,a,b);
+    CHECK(r.status==old.status);
+    CHECK(r.alpha==old.alpha);
+    CHECK(r.beta==old.beta);
+    CHECK(r.logLik==old.logLik);
+  }
+}

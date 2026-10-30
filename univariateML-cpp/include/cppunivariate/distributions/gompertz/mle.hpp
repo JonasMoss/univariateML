@@ -104,6 +104,10 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
 }
 
 inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
+  if(!x.empty() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
+    const double nan=std::numeric_limits<double>::quiet_NaN();
+    return {nan,nan,nan,0,GompertzStatus::Unbounded};
+  }
   return gompertz_mle_impl(x, tol, maxit, false);
 }
 

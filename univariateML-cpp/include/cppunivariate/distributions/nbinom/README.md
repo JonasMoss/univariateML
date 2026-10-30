@@ -42,3 +42,7 @@ The negative binomial distribution models nonnegative counts with overdispersion
 Supplying `size` holds any finite nonnegative size; size zero is the point mass at zero and is incompatible with positive observations. All-zero data with free size return the attained member `size = 0`, preserving held probability or choosing `prob = 0.5` when unidentified. With positive size held, all-zero data estimate `prob = 1`. These boundary fits are silent.
 
 With `prob` held strictly below one, the size score is strictly decreasing and has a unique root whenever a count is positive. Held `prob = 1` is compatible only with zeros.
+
+### Adapter independence (2026-10-30)
+
+The held-size/free-probability precision guard now lives in the core: positive count total with size/(size+mean(x)) rounding to one returns `PrecisionFailure`, preserving the former adapter rejection.

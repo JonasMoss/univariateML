@@ -169,3 +169,9 @@ TEST_CASE("nbinom size zero is delta zero") {
   }
   for (int i=0;i<10;++i) CHECK(dist::rnbinom(rng,0,.4)==0);
 }
+
+TEST_CASE("nbinom core preserves adapter held-size precision rejection") {
+  const std::vector<int> x{1,2,3};
+  const auto r=cppunivariate::nbinom_mle(cppunivariate::ispan{x.data(),x.size()},1e-8,100,1e30);
+  CHECK(r.status==cppunivariate::NbinomStatus::PrecisionFailure);
+}

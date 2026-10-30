@@ -53,3 +53,7 @@ The Gompertz distribution has an exponentially increasing hazard and is used to 
 The hazard is $a\exp(bx)$, with both parameters positive.
 
 With a held and b free, a positive finite maximizer exists exactly when sum(x) > a*sum(x^2)/2; otherwise the supremum is the exponential face (use mlexp). All-zero data with a held give a flat likelihood in b, and b=1 is returned. With b held, a is finite when sum(x)>0; all-zero data have unbounded likelihood in a.
+
+### Adapter independence (2026-10-30)
+
+The fully free constant-sample rejection now lives in `gompertz_mle` as `Unbounded`, preserving the former adapter decision. Conditional all-zero handling remains in the core.

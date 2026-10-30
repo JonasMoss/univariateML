@@ -13,14 +13,10 @@ Rcpp::List mlnbinom_(const Rcpp::IntegerVector &x, double reltol = 1.220703e-4,
   if ((size.isNotNull() && !std::isfinite(Rcpp::as<double>(size))) ||
       (prob.isNotNull() && !std::isfinite(Rcpp::as<double>(prob))))
     Rcpp::stop("Held size and prob must be finite.");
-  if(size.isNotNull() && prob.isNull()) {
-    const double held=Rcpp::as<double>(size);
-    double total=0;for(int v:x)total+=v;
-    if(held>0 && total>0 && held/(held+total/x.size())==1)
-      Rcpp::stop("Negative binomial MLE probability rounds to one: held size exceeds double precision for these data.");
-  }
   const auto r=cppunivariate::nbinom_mle(dist_impl::as_ispan(x),reltol,iterlim,
       size.isNotNull()?Rcpp::as<double>(size):nan,prob.isNotNull()?Rcpp::as<double>(prob):nan);
+  if(r.status==cppunivariate::NbinomStatus::PrecisionFailure)
+    Rcpp::stop("Negative binomial MLE probability rounds to one: held size exceeds double precision for these data.");
   if(r.status==cppunivariate::NbinomStatus::Underdispersed)
     Rcpp::stop("The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead.");
   if(r.status!=cppunivariate::NbinomStatus::Ok || !std::isfinite(r.logLik))
