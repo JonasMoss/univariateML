@@ -90,12 +90,14 @@ Active work lives on the board (`~/boards/univariateML`), not here.
   Merged and stale remote branches (actions, cran-release, devel,
   more-dist, probability-plots) were deleted; local copies are under
   `refs/archive/*`.
-- **Codex model for agent jobs**: gpt-6.1-terra at high effort for work
-  that is mathematics plus implementation (existence proofs, limit faces,
-  stopping rules, documentation needing judgement); gpt-6.1-sol at medium
-  for plumbing. Evidence: four TASK-84/97 terra jobs finished without
-  resumes and kept uncertified cases open; sol (P2b, P4, TASK-94) was
-  reliable and more ready to accept documented numerical searches.
+- **Codex model for agent jobs** (Jonas, 2026-10-30): gpt-6.1-sol at low
+  effort, or gpt-6.1-terra at low effort, for everything not expected to be
+  genuinely hard; gpt-6.1-terra at high effort only for work that is
+  genuinely hard and needs substantial judgement (existence proofs, limit
+  faces, stopping rules, documentation that needs judgement). Evidence for
+  terra high on such work: four TASK-84/97 jobs finished without resumes
+  and kept uncertified cases open; sol (P2b, P4, TASK-94, TASK-78) was
+  reliable on implementation and plumbing.
 - **Package structure and documentation plan banked** as a direction, with
   implementation after the density and parameter work:
   `roadmap/2026-10-30-package-and-documentation.md`; inference regularity
