@@ -148,9 +148,9 @@ test_that("CMB: free size validates holds, endpoints and resource failures", {
     expect_setequal(attr(f,"fixed"),c("prob","nu"))
     expect_error(mlcmb(c(0,1),size=NULL,prob=p,nu=nu),"between zero and size")
   }
-  expect_error(mlcmb(1:4,size=NULL,prob=.3),"Conway-Maxwell-Poisson")
-  expect_error(mlcmb(1:4,size=NULL,nu=1),"Conway-Maxwell-Poisson")
-  expect_error(mlcmb(1:4,size=NULL),"Conway-Maxwell-Poisson")
+  expect_error(mlcmb(1:4,size=NULL,prob=.3),"global profile bound")
+  expect_error(mlcmb(1:4,size=NULL,nu=1),"global profile bound")
+  expect_error(mlcmb(1:4,size=NULL),"global profile bound")
   expect_error(mlcmb(1:4,size=NULL,prob=NaN,nu=1),"prob")
   expect_error(mlcmb(1:4,size=NULL,prob=.3,nu=Inf),"finite")
   expect_error(mlcmb(1:4,size=NULL,prob=.3,nu=1,iterlim=0),"positive")
@@ -172,4 +172,15 @@ test_that("CMB: the P0 two-point limit omits a genuine CMP face", {
   expect_gt(min(face[1:4]),.01)
   # At nu=0 and fixed p<1/2 the size limit is geometric, not coercive.
   expect_equal(dcmb(0:8,100,.3,0),dgeom(0:8,1-.3/.7),tolerance=1e-12)
+})
+
+test_that("CMB: varying dispersion with held probability reaches a geometric law", {
+  p <- .3; r <- .6; k <- 0:8
+  # nu tends to zero, while exp(logit(p)) * N^nu stays equal to r.
+  errors <- vapply(c(1000,10000,100000), function(N) {
+    nu <- log(r/(p/(1-p)))/log(N)
+    max(abs(dcmb(k,N,p,nu)-dgeom(k,1-r)))
+  }, 0.)
+  expect_true(all(diff(errors)<0))
+  expect_lt(tail(errors,1),.015)
 })

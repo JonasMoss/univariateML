@@ -101,3 +101,19 @@ test_that("nhyper explicit NULL gives a reason and bootstrap replays held N", {
     if(length(args)) expect_equal(unname(b["m",]),rep(8,4))
   }
 })
+
+test_that("free stopping count matches the reference finite grid", {
+  for (N in c(12, 25, 50)) for (m in c(3, 6, 9)) {
+    x <- c(3, 4, 5, 4)
+    grid <- max(1, max(x) - (N - m)):min(m, min(x))
+    ll <- vapply(grid, function(r) sum(extraDistr::dnhyper(x, N - m, m, r, log = TRUE)), 0.0)
+    fit <- suppressWarnings(mlnhyper(x, m = m, N = N, r = NULL))
+    expect_equal(as.numeric(logLik(fit)), max(ll), tolerance = 1e-10)
+    expect_true(unname(fit["r"]) %in% grid[abs(ll - max(ll)) < 1e-10])
+    expect_setequal(attr(fit, "fixed"), c("m", "N"))
+  }
+  expect_warning(a <- mlnhyper(3, m = 7, N = 20, r = NULL), "tied")
+  expect_equal(unname(a["r"]), 1)
+  expect_equal(unname(mlnhyper(0, m = 7, N = 20, r = NULL)["r"]), 0)
+  expect_error(mlnhyper(c(0, 1), m = 7, N = 20, r = NULL), "positive probability")
+})

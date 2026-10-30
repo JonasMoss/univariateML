@@ -53,15 +53,15 @@ examples: |
 holds:
 - held: []
   status: not-implemented
-  reason: "P0 leaves the free-size boundary comparison unresolved: fixed-size binomial and two-point escapes must be profiled over size, the negative-binomial face must respect held shapes, and no reliable integer-tail stopping rule is available."
+  reason: "Free size requires comparing every finite-size binomial and two-point face with the negative-binomial and Poisson limits; no reliable global integer-tail bound is available."
 - held:
   - alpha
   status: not-implemented
-  reason: "P0 leaves the free-size boundary comparison unresolved: fixed-size binomial and two-point escapes must be profiled over size, the negative-binomial face must respect held shapes, and no reliable integer-tail stopping rule is available."
+  reason: "With alpha held, the negative-binomial limit has that same shape; no reliable integer-tail bound excludes a later size beating both the finite profile and this limit."
 - held:
   - beta
   status: not-implemented
-  reason: "P0 leaves the free-size boundary comparison unresolved: fixed-size binomial and two-point escapes must be profiled over size, the negative-binomial face must respect held shapes, and no reliable integer-tail stopping rule is available."
+  reason: "With beta held, positive-count probabilities vanish uniformly as size grows, but the proved tail bound is too weak for practical enumeration and fixed-size point-mass limits still require comparison."
 fit_args:
   size: 10
 ---
@@ -72,4 +72,4 @@ The beta-binomial distribution is a binomial with a beta-distributed success pro
 
 `size` is a required design coefficient. A supplied value is held fixed and is not counted in `logLik()` degrees of freedom, AIC or BIC. Passing `NULL` estimates it when both shapes are held. Holding just `alpha` or just `beta` at fixed size removes the binomial and two-point escapes; only all-0 or all-`size` samples then have no maximum likelihood estimate. With `size = 1` both shapes free are not identified (the model is Bernoulli). `model_select()` skips the beta-binomial because it cannot supply `size`.
 
-Holding both positive shapes gives an attained integer-size maximum. Each observed mass decreases once `size + 1 >= x * (alpha + beta - 1) / alpha`; the fitter enumerates through that bound. More than one million candidates stops with a work-budget failure. With size also held this evaluates the likelihood, including size zero. Free size with either shape free remains unavailable: the fixed-size kernel can itself escape to binomial or two-point laws, which must be compared across all sizes rather than terminating at the first such candidate. P0b also has no justified stopping rule for the integer tail. Holding beta is not equivalent to holding alpha under reflection when size is free, because reflecting the sample would depend on the candidate size.
+Holding both positive shapes gives an attained integer-size maximum. Each observed mass decreases once `size + 1 >= x * (alpha + beta - 1) / alpha`; the fitter enumerates through that bound. More than one million candidates stops with a work-budget failure. With size also held this evaluates the likelihood, including size zero. Free size with either shape free remains unavailable: the fixed-size kernel can itself escape to binomial or two-point laws, which must be compared across all sizes rather than terminating at the first such candidate. For held beta, a uniform tail bound proves coercivity for samples containing a positive count, but is too weak for a practical search. For the other subsets a useful tail bound remains open. Holding beta is not equivalent to holding alpha under reflection when size is free, because reflecting the sample would depend on the candidate size.

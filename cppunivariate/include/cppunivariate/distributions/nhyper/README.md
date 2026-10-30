@@ -26,7 +26,7 @@ r:
   density: dnhyper
   sampler: rnhyper
   control:
-    r: "Known stopping count of white balls, a whole number."
+    r: "Stopping count of white balls; explicit `NULL` estimates it when `m` and `N` are supplied."
     "N": "Known population size; must be supplied. Joint estimation of population and composition is not supported."
     m: "White-ball count; `NULL` estimates it with `N` known, otherwise holds it fixed."
 log_density: "loggamma(x) - loggamma(r) - loggamma(x-r+1) + loggamma(N-x+1) - loggamma(m-r+1) - loggamma(N-m-x+r+1) - loggamma(N+1) + loggamma(N-m+1) + loggamma(m+1)"
@@ -38,23 +38,20 @@ examples: |
   mlnhyper(x, r = 3, N = 50)
 holds:
 - held: []
-  status: no-mle
+  status: not-implemented
   reason: Joint estimation of population and composition can escape to the growing-urn limit; use mlnbinom(x - r, size = r).
 - held: [r]
-  status: no-mle
+  status: not-implemented
   reason: Joint estimation of population and composition can escape to the growing-urn limit; use mlnbinom(x - r, size = r).
 - held: [m]
   status: not-implemented
-  reason: Estimating N with m held is not supported by this fitter.
+  reason: Joint estimation of N and r requires a certified integer profile search.
 - held: [m, r]
   status: not-implemented
   reason: Estimating N with m held is not supported by this fitter.
 - held: ["N"]
   status: not-implemented
-  reason: Estimating r is not supported by this fitter.
-- held: [m, "N"]
-  status: not-implemented
-  reason: Estimating r is not supported by this fitter.
+  reason: Estimating r jointly with m requires a certified finite-grid search.
 fit_args:
   'N': 50
   r: 3
@@ -82,8 +79,9 @@ $2^{53}$.
 
 The known-population design ensures a finite maximum for every feasible
 sample. Jointly estimating population and composition is not supported. Estimating
-`N` with `m` held and estimating the stopping count `r` are also not
-implemented; explicit `NULL` for either design quantity stops with that reason.
+`N` with `m` held is not implemented. With both `m` and `N` held, explicit
+`r = NULL` estimates the stopping count on its finite feasible integer grid;
+the consecutive likelihood ratio decreases, permitting bisection.
 For positive `r`, if both counts grow with a fixed white proportion, `x - r` tends to a
 negative binomial with size `r`; its fitted probability is
 $r/\bar x$. Use `mlnbinom(x - r, size = r)` for that limit model.

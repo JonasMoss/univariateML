@@ -296,6 +296,15 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kInf = std::numeric_limits<double>::infinity();
   HyperResult r{N, m, k, kNaN, kNaN, 0, HyperStatus::InvalidInput};
+  // The hypergeometric mass is symmetric in m and k. Reuse the exact
+  // bounded composition search when both population parameters are held.
+  if (std::isnan(k) && !std::isnan(N) && !std::isnan(m)) {
+    HyperResult swapped = hyper_mle(x, m, N, kNaN);
+    r = swapped;
+    r.m = m;
+    r.k = swapped.m;
+    return r;
+  }
   const bool estimate_N = std::isnan(N), estimate_m = std::isnan(m);
   if (x.size() == 0 || !hyper_detail::is_count(k) ||
       (!estimate_N && !hyper_detail::is_count(N)) ||

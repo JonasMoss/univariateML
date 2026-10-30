@@ -8,7 +8,7 @@ Rcpp::List mlcmb_(const Rcpp::IntegerVector &x,Rcpp::Nullable<double> size,
                   Rcpp::Nullable<double> nu=R_NilValue,
                   double reltol=1e-10,int iterlim=100) {
   if(size.isNull() && (prob.isNull() || nu.isNull()))
-    Rcpp::stop("Free size with a free CMB coordinate is not implemented: P0 omits Conway-Maxwell-Poisson and geometric size-limit faces; their constrained comparison remains unresolved.");
+    Rcpp::stop("Free size with a free CMB coordinate is not implemented: no reliable global profile stopping rule is established for the Conway-Maxwell-Poisson, geometric and escaping-mass limit faces.");
   double trials=size.isNotNull() ? Rcpp::as<double>(size) : 0;
   if (size.isNotNull() && (!std::isfinite(trials) || trials<0 || trials>1e7 || trials!=std::floor(trials)))
     Rcpp::stop("`size` must be a nonnegative integer at most 1e7.");

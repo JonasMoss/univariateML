@@ -79,3 +79,20 @@ test_that("hyper explicit NULL and bootstrap retain the population design", {
   expect_equal(unname(b["m",]),rep(8,4))
   expect_equal(unname(b["k",]),rep(5,4))
 })
+
+test_that("free draws match the reference finite grid", {
+  for (N in c(12, 20, 50)) for (m in c(2, 5, 7)) {
+    x <- c(1, 2, 1, 0)
+    grid <- max(x):(N - m + min(x))
+    ll <- vapply(grid, function(k) sum(stats::dhyper(x, m, N - m, k, log = TRUE)), 0.0)
+    fit <- suppressWarnings(mlhyper(x, m = m, N = N, k = NULL))
+    expect_equal(as.numeric(logLik(fit)), max(ll), tolerance = 1e-10)
+    expect_true(unname(fit["k"]) %in% grid[abs(ll - max(ll)) < 1e-10])
+    expect_setequal(attr(fit, "fixed"), c("m", "N"))
+  }
+  expect_warning(a <- mlhyper(5, m = 10, N = 19, k = NULL), "tied")
+  expect_equal(unname(a["k"]), 9)
+  expect_warning(z <- mlhyper(0, m = 0, N = 7, k = NULL), "Every `k`")
+  expect_equal(unname(z["k"]), 0)
+  expect_error(mlhyper(4, m = 3, N = 10, k = NULL), "positive probability")
+})

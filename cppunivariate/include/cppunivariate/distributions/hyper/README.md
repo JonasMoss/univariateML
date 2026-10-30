@@ -16,7 +16,7 @@ params:
   integer: yes
   kind: design
   advice: Supply the population size, or `m`, or both; estimating both together
-    has no MLE.
+    is not implemented and can escape to the binomial limit.
 - name: k
   role: draws
   domain: '[0, N]'
@@ -28,7 +28,7 @@ r:
   args: {m: m, "n": "N - m", k: k}
   sampler: stats::rhyper
   control:
-    k: "Number of draws per observation, a whole number."
+    k: "Number of draws per observation; explicit `NULL` estimates it when `m` and `N` are supplied."
     "N": "Population size; explicit `NULL` estimates it, which requires `m`."
     m: "Number of successes `m` in the population; `NULL` (the default) estimates it, which requires `N`."
 log_density: "loggamma(m + 1) - loggamma(x + 1) - loggamma(m - x + 1) + loggamma(N - m + 1) - loggamma(k - x + 1) - loggamma(N - m - k + x + 1) - loggamma(N + 1) + loggamma(k + 1) + loggamma(N - k + 1)"
@@ -48,20 +48,17 @@ examples: |
   mlhyper(x, m = 20, N = NULL, k = 10)
 holds:
 - held: []
-  status: no-mle
+  status: not-implemented
   reason: Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).
 - held: [k]
-  status: no-mle
+  status: not-implemented
   reason: Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).
 - held: [m]
   status: not-implemented
-  reason: Estimating k is not supported by this fitter.
+  reason: Joint estimation of N and k requires a certified unbounded profile search.
 - held: ["N"]
   status: not-implemented
-  reason: Estimating k is not supported by this fitter.
-- held: [m, "N"]
-  status: not-implemented
-  reason: Estimating k is not supported by this fitter.
+  reason: Estimating k jointly with m requires a certified finite-grid search.
 fit_args:
   'N': 50
   k: 10
@@ -74,7 +71,9 @@ is restored between repetitions.
 
 ## Details
 
-The number of draws `k` is a design quantity and must always be supplied.
+The number of draws `k` is a design quantity; explicit `NULL` estimates it
+when both `m` and `N` are supplied, using the symmetry of the likelihood in
+`m` and `k`.
 Supply also the population size `N` to estimate the number of successes
 `m`, or `m` to estimate `N` (capture-recapture with `m` marked items);
 supplying all three only evaluates the likelihood. The returned coefficients are

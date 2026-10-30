@@ -82,9 +82,9 @@ test_that("bbinom: both held shapes permit exact size profiling", {
    expect_setequal(attr(f,"fixed"),c(if(!is.null(size)) "size","alpha","beta"))
   }
  }
- expect_error(mlbbinom(1:3,size=NULL),"P0")
- expect_error(mlbbinom(1:3,size=NULL,alpha=2),"P0")
- expect_error(mlbbinom(1:3,size=NULL,beta=3),"P0")
+ expect_error(mlbbinom(1:3,size=NULL),"integer-tail")
+ expect_error(mlbbinom(1:3,size=NULL,alpha=2),"integer-tail")
+ expect_error(mlbbinom(1:3,size=NULL,beta=3),"tail bound")
 })
 
 test_that("bbinom: P3 unfinished optimizer stops", {
@@ -95,10 +95,9 @@ test_that("bbinom: P3 unfinished optimizer stops", {
 })
 
 test_that("bbinom: retained free-size guards identify the unresolved profile", {
-  for(args in list(list(),list(alpha=2),list(beta=3))) {
-    expect_error(do.call(mlbbinom,c(list(x=c(0,1,2,4,8),size=NULL),args)),
-                 "fixed-size binomial and two-point escapes.*integer-tail")
-  }
+  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL), "binomial and two-point face.*integer-tail")
+  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,alpha=2), "negative-binomial limit.*integer-tail")
+  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,beta=3), "tail bound.*too weak")
   # Fixed alpha with beta proportional to size approaches NB with that
   # alpha held. Reflecting x to N-x would change the observed sample.
   x <- 0:10; alpha <- 2; mu <- 3
