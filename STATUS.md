@@ -12,9 +12,11 @@ own rationale live in `roadmap/`; work in flight is on the board
   fully covered except `dphtype` (out of scope); extraDistr except the
   vector-parameter tier below and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master after P3 (simbox): C++ 833 doctest cases, only the std
-  golden fails (TASK-75); R `[ FAIL 3 | WARN 0 | PASS 22724 ]`, the three
-  known TASK-75 failures; `just quality` 98/98 (local). Truth-table checks
+- Tests on master 89bbdf4 (local, 2026-10-30; simbox was off): C++ 6/6
+  ctest targets pass (truth-table cases are `may_fail`); R
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 22782 ]`; `just quality` 98/98. The
+  TASK-75 tolerance changes still need a simbox run to confirm that the
+  simbox-only failures are gone. Truth-table checks
   (TASK-78) are `may_fail`.
 - simbox runs the full suite in about 15 minutes:
   `scripts/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
