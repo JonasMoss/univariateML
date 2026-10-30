@@ -2,6 +2,7 @@
 // bit-identical reproduction of pre-port behaviour.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -32,7 +33,7 @@ inline double logpmf(double k, double lambda) {
       }
       dev=lambda*series;
     } else {
-      dev=static_cast<double>(static_cast<long double>(k)*std::log(static_cast<long double>(k)/lambda)+lambda-k);
+      dev=static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(k)*std::log(static_cast<CPPUNIV_EXTENDED_REAL>(k)/lambda)+lambda-k);
     }
     const double r=1.0/k;
     const double stirling=r*(1.0/12.0-r*r/360.0);

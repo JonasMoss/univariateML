@@ -4,6 +4,7 @@
 // Returns NaN params if min(x) <= 0; the caller turns that into an error.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 
@@ -38,9 +39,9 @@ inline PowerResult power_mle(span x, double epsilon, double alpha, double beta) 
   if (std::isnan(alpha)) alpha = xmax;
   if (!(alpha >= xmax) || !std::isfinite(alpha) ||
       (!std::isnan(beta) && (!(beta > 0) || !std::isfinite(beta)))) return invalid;
-  long double gap = 0, logs = 0;
+  CPPUNIV_EXTENDED_REAL gap = 0, logs = 0;
   for (double v : x) {
-    gap += std::log1p((static_cast<long double>(alpha) - v) / v);
+    gap += std::log1p((static_cast<CPPUNIV_EXTENDED_REAL>(alpha) - v) / v);
     logs += std::log(v);
   }
   const double n = static_cast<double>(x.size());

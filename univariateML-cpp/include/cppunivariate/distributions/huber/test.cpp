@@ -229,7 +229,7 @@ TEST_CASE("huber: prefix loss and derivatives are exact reductions") {
   cppunivariate::HuberProfileData data(x,NAN);
   for (double a:{.1,1.,10.}) for (double b:{-.5,0.,.25})
     for (double c:{.01,.5,2.}) {
-      long double loss=0;
+      CPPUNIV_EXTENDED_REAL loss=0;
       double gp=0,gh=0,aa=0,ab=0,bb=0;
       data.moments(a,b,c,loss,gp,gh,aa,ab,bb);
       double rl=0,rp=0,rh=0,ra=0,rb=0,rc=0;

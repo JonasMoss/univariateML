@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
 #include <cmath>
@@ -196,7 +197,7 @@ inline HuberResult huber_fixed_mle(span x, double tol=1e-10, int maxit=200,
 // cancellation when subtracting nearby cumulative sums. No bin approximation.
 struct HuberProfileData {
   std::vector<double> y;
-  std::vector<long double> sum, square;
+  std::vector<CPPUNIV_EXTENDED_REAL> sum, square;
   double center, unit;
   explicit HuberProfileData(const std::vector<double>& x, double mu)
       : y(x), center(x[x.size()/2]), unit(std::max(
@@ -207,20 +208,20 @@ struct HuberProfileData {
     for (double& v:y) {
       v=(v-center)/unit;
       sum.push_back(sum.back()+v);
-      square.push_back(square.back()+static_cast<long double>(v)*v);
+      square.push_back(square.back()+static_cast<CPPUNIV_EXTENDED_REAL>(v)*v);
     }
   }
   // z=a*y-b: central quadratic moments plus signed linear tail moments.
-  void moments(double a, double b, double c, long double& loss,
+  void moments(double a, double b, double c, CPPUNIV_EXTENDED_REAL& loss,
       double& gp, double& gh, double& aa, double& ab, double& bb) const {
     const double left=(b-c)/a, right=(b+c)/a;
     const std::size_t l=std::lower_bound(y.begin(),y.end(),left)-y.begin();
     const std::size_t r=std::upper_bound(y.begin(),y.end(),right)-y.begin();
-    const long double k=r-l, sy=sum[r]-sum[l], sq=square[r]-square[l];
+    const CPPUNIV_EXTENDED_REAL k=r-l, sy=sum[r]-sum[l], sq=square[r]-square[l];
     // Explicit signed counts avoid unsigned subtraction.
-    const long double signed_count=static_cast<long double>(y.size()-r)-l;
-    const long double signed_sum=sum.back()-sum[r]-sum[l];
-    const long double zsum=a*sy-b*k;
+    const CPPUNIV_EXTENDED_REAL signed_count=static_cast<CPPUNIV_EXTENDED_REAL>(y.size()-r)-l;
+    const CPPUNIV_EXTENDED_REAL signed_sum=sum.back()-sum[r]-sum[l];
+    const CPPUNIV_EXTENDED_REAL zsum=a*sy-b*k;
     loss=(a*a*sq-2*a*b*sy+b*b*k)/2+
         c*(a*signed_sum-b*signed_count)-c*c*(y.size()-(r-l))/2;
     gp=static_cast<double>(a*sq-b*sy+c*signed_sum);
@@ -243,7 +244,7 @@ struct HuberProfileData {
     double a=unit/(fs ? sigma : start.sigma);
     double b=((fm ? mu : start.mu)-center)*a/unit;
     for (int j=0;j<maxit;++j) {
-      long double loss=0;
+      CPPUNIV_EXTENDED_REAL loss=0;
       double gp=0,gh=0,aa=0,ab=0,bb=0;
       moments(a,b,c,loss,gp,gh,aa,ab,bb);
       const double m=fm ? (mu-center)/unit : 0;
@@ -272,13 +273,13 @@ struct HuberProfileData {
         da=(bb*g1-ab*g2)/det; db=(aa*g2-ab*g1)/det;
       }
       const double slope=g1*da+(fm ? 0 : g2*db);
-      const long double old=std::log(a)-loss/n;
+      const CPPUNIV_EXTENDED_REAL old=std::log(a)-loss/n;
       bool accepted=false;
       double step=1;
       for (int k=0;k<60;++k,step*=.5) {
         const double na=a+step*da, nb=fm ? m*na : b+step*db;
         if (!(na>0) || !std::isfinite(na) || !std::isfinite(nb)) continue;
-        long double nl=0;
+        CPPUNIV_EXTENDED_REAL nl=0;
         moments(na,nb,c,nl,gp,gh,aa,ab,bb);
         if (std::log(na)-nl/n>=old+1e-4*step*slope-
             8*std::numeric_limits<double>::epsilon()*(1+std::abs(old))) {
@@ -297,7 +298,7 @@ struct HuberProfileData {
       for (int j=0;j<100;++j) {
         const double m=lo/2+hi/2;
         if (m==lo || m==hi) break;
-        long double loss=0;
+        CPPUNIV_EXTENDED_REAL loss=0;
         double gp=0,gh=0,aa=0,ab=0,bb=0;
         moments(eta,m*eta,c,loss,gp,gh,aa,ab,bb);
         if (gh==0) return m;
@@ -311,7 +312,7 @@ struct HuberProfileData {
     for (int j=0;j<maxit+1024;++j) {
       a=fs || !bracketed ? hi : lo/2+hi/2;
       b=a*location(a);
-      long double loss=0;
+      CPPUNIV_EXTENDED_REAL loss=0;
       double gp=0,gh=0,aa=0,ab=0,bb=0;
       moments(a,b,c,loss,gp,gh,aa,ab,bb);
       const double score=(a*gp-b*gh)/n-1;
@@ -347,19 +348,19 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
   const bool fm=!std::isnan(mu), fs=!std::isnan(sigma);
   const double n=static_cast<double>(y.size());
   // Analytic Gaussian face under the same held-coordinate constraints.
-  long double total=0;
-  for (double v:y) total+=static_cast<long double>(v)-y[0];
+  CPPUNIV_EXTENDED_REAL total=0;
+  for (double v:y) total+=static_cast<CPPUNIV_EXTENDED_REAL>(v)-y[0];
   const double nm=fm ? mu : static_cast<double>(y[0]+total/n);
-  long double ss=0;
-  for (double v:y) { const long double d=static_cast<long double>(v)-nm; ss+=d*d; }
+  CPPUNIV_EXTENDED_REAL ss=0;
+  for (double v:y) { const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-nm; ss+=d*d; }
   const double ns=fs ? sigma : static_cast<double>(std::sqrt(ss/n));
   const double normal=-n*(std::log(ns)+.5*std::log(2*std::acos(-1.0)))-
-      static_cast<double>(ss/(2*static_cast<long double>(ns)*ns));
+      static_cast<double>(ss/(2*static_cast<CPPUNIV_EXTENDED_REAL>(ns)*ns));
   double laplace=-std::numeric_limits<double>::infinity();
   if (!fs) {
     const double lm=fm ? mu : y[y.size()/2];
-    long double ad=0;
-    for (double v:y) ad+=std::abs(static_cast<long double>(v)-lm);
+    CPPUNIV_EXTENDED_REAL ad=0;
+    for (double v:y) ad+=std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-lm);
     const double b=static_cast<double>(ad/n);
     laplace=-n*(1+std::log(2.0)+std::log(b));
   }

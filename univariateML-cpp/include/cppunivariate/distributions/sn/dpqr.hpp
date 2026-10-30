@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -35,8 +36,8 @@ inline double log_integral(double z,double a,bool left) {
   const double az=a*z;
   const double mills=az < -10 ? -az+1/(-az) :
     std::exp(-0.5*az*az-0.5*std::log(2*M_PI)-log_phi_cdf(az));
-  const long double slope=-static_cast<long double>(z)+static_cast<long double>(a)*mills;
-  const double scale=static_cast<double>(1/std::max(1.0L,std::abs(slope)));
+  const CPPUNIV_EXTENDED_REAL slope=-static_cast<CPPUNIV_EXTENDED_REAL>(z)+static_cast<CPPUNIV_EXTENDED_REAL>(a)*mills;
+  const double scale=static_cast<double>(1/std::max(CPPUNIV_EXTENDED_LITERAL(1.0,1.0L),std::abs(slope)));
   const double base=log_density(z,a);
   if (!std::isfinite(base)) return base;
   const double nodes[4]={0.1834346424956498,0.5255324099163290,0.7966664774136267,0.9602898564975363};
@@ -54,14 +55,14 @@ namespace distributions {
 inline double dsn(double x,double xi=0,double omega=1,double alpha=0,bool log=false) {
   if (!sn_detail::valid(xi,omega,alpha) || std::isnan(x)) return special::kNaN;
   if (!std::isfinite(x)) return log ? special::kNegInf : 0;
-  const double z=static_cast<double>((static_cast<long double>(x)-xi)/omega);
+  const double z=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x)-xi)/omega);
   if(!std::isfinite(z)) return log ? special::kNegInf : 0;
   const double lp=sn_detail::log_density(z,alpha)-std::log(omega);
   return log ? lp : std::exp(lp);
 }
 inline double psn(double q,double xi=0,double omega=1,double alpha=0,bool lower_tail=true,bool log_p=false) {
   if (!sn_detail::valid(xi,omega,alpha) || std::isnan(q)) return special::kNaN;
-  double z=static_cast<double>((static_cast<long double>(q)-xi)/omega),a=alpha;
+  double z=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(q)-xi)/omega),a=alpha;
   if (a<0) { a=-a; z=-z; lower_tail=!lower_tail; }
   double lp;
   if (!std::isfinite(z)) lp=((z>0)==lower_tail) ? 0 : special::kNegInf;
@@ -108,7 +109,7 @@ inline double qsn(double p,double xi=0,double omega=1,double alpha=0,bool lower_
     const double f=psn(mid,0,1,alpha,lower_tail,true);
     if(lower_tail ? f<lp : f>lp) lo=mid; else hi=mid;
   }
-  return static_cast<double>(static_cast<long double>(xi)+static_cast<long double>(omega)*(lo+(hi-lo)/2));
+  return static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(xi)+static_cast<CPPUNIV_EXTENDED_REAL>(omega)*(lo+(hi-lo)/2));
 }
 template<typename Rng>
 inline double rsn(Rng& rng,double xi=0,double omega=1,double alpha=0) {

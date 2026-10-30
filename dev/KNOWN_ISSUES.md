@@ -61,3 +61,26 @@ dropped on 2026-10-29.
 
 Upstream trackers:
 nakagami is maintained by the univariateML author.
+
+## Platform precision (TASK-125)
+
+The Bhattacharjee golden fit moves with the intermediate precision: in the
+x86-64 double-width proxy its three coefficients differed from the native
+80-bit golden by at most 1.61e-8 relatively. The score norm was 5.73e-6
+against the family's 1e-3 gate. The C++ golden check permits 5e-8 relative
+under `BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS` or where `long double` has
+no more precision than `double`; x86-64 keeps 1e-12. The R golden test uses
+5e-8 for bhatt on every platform. This is one tested dataset, not a bound on other
+fits or platforms. Not yet run on such hardware. See `dev/research/evaluations/2026-10-30-long-double-report.md`.
+
+For an underflowed gamma upper tail, the asymptotic helper returns NaN if its
+remainder criterion cannot be met within one million terms. Platforms with a
+wider exponent range may instead evaluate such a tail directly. The double-width
+regression at shape `1e14`, argument `1e14 + 4e8` pins the NaN failure. There
+is no uniform accuracy or availability guarantee outside the tested parameter grid.
+
+Beta-coordinate quantile inversion reports NaN when it cannot represent a
+finite logit bracket or reduce it to adjacent floating-point values within its
+iteration budget. For example, log probability -1e308 and beta shape 1e-308
+have a logit outside the finite double range. It does not return a capped
+interior estimate in this case.

@@ -1,5 +1,6 @@
 // Exact finite enumeration for the Conway--Maxwell--binomial family.
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../special/constants.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
@@ -20,15 +21,15 @@ struct Table {
   std::vector<double> h,lp,lc,uc;
   double logZ=0, mean=0, mh=0, vx=0, vh=0, cov=0;
   Table(int N,double eta,double nu) : h(static_cast<std::size_t>(N)+1),lp(h.size()) {
-    long double peak=-std::numeric_limits<long double>::infinity();
+    CPPUNIV_EXTENDED_REAL peak=-std::numeric_limits<CPPUNIV_EXTENDED_REAL>::infinity();
     for (int k=0;k<=N;++k) {
       h[k]=logchoose(N,k);
-      const long double value=static_cast<long double>(eta)*k+static_cast<long double>(nu)*h[k];
+      const CPPUNIV_EXTENDED_REAL value=static_cast<CPPUNIV_EXTENDED_REAL>(eta)*k+static_cast<CPPUNIV_EXTENDED_REAL>(nu)*h[k];
       peak=std::max(peak,value);
     }
     double rest=0; bool skipped=false;
     for (int k=0;k<=N;++k) {
-      const long double value=static_cast<long double>(eta)*k+static_cast<long double>(nu)*h[k];
+      const CPPUNIV_EXTENDED_REAL value=static_cast<CPPUNIV_EXTENDED_REAL>(eta)*k+static_cast<CPPUNIV_EXTENDED_REAL>(nu)*h[k];
       lp[k]=static_cast<double>(value-peak);
       if (!skipped && lp[k]==0) { skipped=true; continue; }
       rest+=std::exp(lp[k]);

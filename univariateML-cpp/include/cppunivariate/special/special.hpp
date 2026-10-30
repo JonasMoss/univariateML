@@ -5,6 +5,7 @@
 // Swap this file to retarget another backend.
 
 #pragma once
+#include "../core/precision.hpp"
 
 #include "constants.hpp"
 #include "tails.hpp"
@@ -321,13 +322,6 @@ inline double poisson_quantile(double x, double a, bool lower_tail) {
                     : boost::math::quantile(boost::math::complement(d, x));
 }
 
-// Boost disables long-double special functions on some targets (including
-// Emscripten). Preserve extended arithmetic elsewhere and the native backend.
-#ifdef BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
-typedef double ExtendedReal;
-#else
-typedef long double ExtendedReal;
-#endif
 
 // Extended precision tail primitives for the package-owned transformed laws.
 inline ExtendedReal normal_cdf_extended(double x, bool lower) { const boost::math::normal_distribution<ExtendedReal, NoThrowPolicy> d; return lower ? boost::math::cdf(d, static_cast<ExtendedReal>(x)) : boost::math::cdf(boost::math::complement(d, static_cast<ExtendedReal>(x))); }
@@ -343,7 +337,7 @@ inline double fs_normal_p(double x, bool lower, bool log_p) {
   const boost::math::normal_distribution<ExtendedReal, NoThrowPolicy> d;
   const ExtendedReal tail = boost::math::cdf(boost::math::complement(d, (ExtendedReal)a));
   double lp = (double)std::log(tail);
-  if (tail == 0.0L && std::isfinite(a)) {
+  if (tail < std::numeric_limits<ExtendedReal>::min() && std::isfinite(a)) {
     // Mills expansion: terms decrease rapidly in the underflow region.
     const double inv = 1.0/a/a;
     double sum = 1.0, term = 1.0;
@@ -367,16 +361,18 @@ inline double fs_log_quantile(double lp, LogTail tail) {
   double lo = 0.0;
   for (int i=0; i<1100; ++i) {
     const double mid = lo + (hi-lo)*0.5;
-    if (mid == lo || mid == hi) break;
-    if (tail(mid) > lp) lo = mid; else hi = mid;
+    if (mid == lo || mid == hi) return mid;
+    const double value=tail(mid);
+    if (std::isnan(value)) return kNaN;
+    if (value > lp) lo = mid; else hi = mid;
   }
-  return lo + (hi-lo)*0.5;
+  return kNaN;
 }
 inline double fs_normal_q(double lp, bool lower) {
   if (lp > -std::log(2.0)) return fs_normal_q(fs_log1mexp(lp), !lower);
   if (lp == kNegInf) return lower ? kNegInf : kPosInf;
   const boost::math::normal_distribution<ExtendedReal, NoThrowPolicy> d;
-  const double q = lp < std::log(std::numeric_limits<ExtendedReal>::min()) + 2.0L ? fs_log_quantile(lp, [](double x) { return fs_normal_p(x,false,true); })
+  const double q = lp < std::log(std::numeric_limits<ExtendedReal>::min()) + CPPUNIV_EXTENDED_LITERAL(2.0,2.0L) ? fs_log_quantile(lp, [](double x) { return fs_normal_p(x,false,true); })
       : (double)boost::math::quantile(boost::math::complement(d, std::exp((ExtendedReal)lp)));
   return lower ? -q : q;
 }
@@ -400,16 +396,16 @@ inline double fs_beta_fraction(double a, double b, double x) {
     c=1.0+aa/c; if(std::fabs(c)<tiny) c=tiny;
     d=1.0/d;
     const double change=d*c; h*=change;
-    if(std::fabs(change-1.0)<4e-16) break;
+    if(std::fabs(change-1.0)<4e-16) return h;
   }
-  return h;
+  return kNaN;
 }
 inline double fs_t_p(double x, double nu, bool lower, bool log_p) {
   const double a = std::fabs(x);
   const boost::math::students_t_distribution<ExtendedReal, NoThrowPolicy> d(nu);
   const ExtendedReal tail = boost::math::cdf(boost::math::complement(d, (ExtendedReal)a));
   double lp = (double)std::log(tail);
-  if (tail == 0.0L && std::isfinite(a)) {
+  if (tail == CPPUNIV_EXTENDED_LITERAL(0.0,0.0L) && std::isfinite(a)) {
     const double logz = -std::log1p(a/std::sqrt(nu)*(a/std::sqrt(nu)));
     const double stable_logz = std::isfinite(logz) ? logz : std::log(nu)-2.0*std::log(a);
     const double z = std::exp(stable_logz);
@@ -426,7 +422,7 @@ inline double fs_t_q(double lp, double nu, bool lower) {
   if (lp > -std::log(2.0)) return fs_t_q(fs_log1mexp(lp), nu, !lower);
   if (lp == kNegInf) return lower ? kNegInf : kPosInf;
   const boost::math::students_t_distribution<ExtendedReal, NoThrowPolicy> d(nu);
-  const double q = lp < std::log(std::numeric_limits<ExtendedReal>::min()) + 2.0L ? fs_log_quantile(lp, [&](double x) { return fs_t_p(x,nu,false,true); })
+  const double q = lp < std::log(std::numeric_limits<ExtendedReal>::min()) + CPPUNIV_EXTENDED_LITERAL(2.0,2.0L) ? fs_log_quantile(lp, [&](double x) { return fs_t_p(x,nu,false,true); })
       : (double)boost::math::quantile(boost::math::complement(d,std::exp((ExtendedReal)lp)));
   return lower ? -q : q;
 }
@@ -436,15 +432,24 @@ inline double fs_gamma_p(double x, double shape, bool lower, bool log_p) {
   const ExtendedReal p=boost::math::cdf(d,(ExtendedReal)x);
   const ExtendedReal q=boost::math::cdf(boost::math::complement(d,(ExtendedReal)x));
   double lp=(double)std::log(p), lq=(double)std::log(q);
-  if(q==0.0L && std::isfinite(x)) {
+  if(q<std::numeric_limits<ExtendedReal>::min() && std::isfinite(x)) {
     double sum=1.0, term=1.0;
-    for(int k=1;k<=100;++k) {
+    bool converged=false;
+    for(int k=1;k<=1000000;++k) {
       term *= (shape-k)/x; sum += term;
-      if(std::fabs(term)<std::fabs(sum)*2e-16) break;
+      const double ratio=std::fabs(shape-k-1)/x;
+      // Before the sign change a geometric majorant bounds the remainder;
+      // afterwards the decreasing alternating expansion is bounded by its
+      // first omitted term. Failure to certify is reported as NaN.
+      if (ratio < 1 && std::fabs(term)*ratio *
+          (k>=shape ? 1.0 : 1.0/(1.0-ratio)) < std::fabs(sum)*2e-16) {
+        converged=true; break;
+      }
     }
+    if (!converged || !(sum>0)) return kNaN;
     lq=(shape-1.0)*std::log(x)-x-std::lgamma(shape)+std::log(sum);
   }
-  if(p>0.5L) lp=fs_log1mexp(lq);
+  if(p>CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)) lp=fs_log1mexp(lq);
   else lq=fs_log1mexp(lp);
   const double result=lower ? lp : lq;
   return log_p ? result : std::exp(result);
@@ -453,7 +458,7 @@ inline double fs_gamma_q(double lp, double shape, bool lower) {
   if(lp > -std::log(2.0)) return fs_gamma_q(fs_log1mexp(lp),shape,!lower);
   if(lp==kNegInf) return lower ? 0.0 : kPosInf;
   const boost::math::gamma_distribution<ExtendedReal, NoThrowPolicy> d(shape);
-  if(!lower && lp < std::log(std::numeric_limits<ExtendedReal>::min()) + 2.0L)
+  if(!lower && lp < std::log(std::numeric_limits<ExtendedReal>::min()) + CPPUNIV_EXTENDED_LITERAL(2.0,2.0L))
     return fs_log_quantile(lp,[&](double x) { return fs_gamma_p(x,shape,false,true); });
   const ExtendedReal p=std::exp((ExtendedReal)lp);
   return (double)(lower ? boost::math::quantile(d,p)

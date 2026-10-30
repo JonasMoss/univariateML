@@ -13,7 +13,7 @@ inline double logprob(double p,bool log_p) {
 // remains in log coordinates even when exp(lx) underflows to zero.
 inline double beta_small(double lx,double ly,double a,double b,double p) {
  const double x=std::exp(lx);
- if(p>=std::numeric_limits<double>::min()) return std::log(p);
+ if(p>=1e-290 && lx>std::log(std::numeric_limits<double>::min())) return std::log(p);
  return a*lx+b*ly-cppunivariate::special::lbeta(a,b)
    +std::log(cppunivariate::special::fs_beta_fraction(a,b,x)/a);
 }
@@ -37,11 +37,19 @@ inline double beta_logit_q(double lp,double a,double b,bool lower) {
  auto value=[&](double t) {return beta_log(-softplus(-t),-softplus(t),a,b,lower);};
  for(int i=0;i<1024 && (lower ? value(lo)>lp : value(lo)<lp);++i) lo*=2;
  for(int i=0;i<1024 && (lower ? value(hi)<lp : value(hi)>lp);++i) hi*=2;
+ const double vl=value(lo), vh=value(hi);
+ if (!std::isfinite(lo) || !std::isfinite(hi) || std::isnan(vl) || std::isnan(vh) ||
+     (lower ? (vl>lp || vh<lp) : (vl<lp || vh>lp)))
+   return std::numeric_limits<double>::quiet_NaN();
  for(int i=0;i<120;++i) {
   const double mid=lo*.5+hi*.5;
-  if(mid==lo || mid==hi) break;
-  if(lower ? value(mid)<lp : value(mid)>lp) lo=mid; else hi=mid;
+  if(mid==lo || mid==hi) return mid;
+  const double v=value(mid);
+  if (std::isnan(v)) return v;
+  if (mid==0 && v==lp) return mid;
+  if(lower ? v<lp : v>lp) lo=mid; else hi=mid;
  }
- return lo*.5+hi*.5;
+ // Never return an unverified capped bisection.
+ return std::numeric_limits<double>::quiet_NaN();
 }
 } }

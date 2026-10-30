@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
@@ -14,16 +15,16 @@ struct Profile {
   double location(double s,double l) const {
     if(!std::isnan(mu)) return mu;
     auto score=[&](double m) {
-      long double sum=0,deriv=0,a=static_cast<long double>(s)*l;
+      CPPUNIV_EXTENDED_REAL sum=0,deriv=0,a=static_cast<CPPUNIV_EXTENDED_REAL>(s)*l;
       for(double v:x) {
-        const long double z=(static_cast<long double>(v)-m)/s,t=a-z;
+        const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-m)/s,t=a-z;
         if(t>=12) {
-          long double r=0; for(int k=40;k>=2;--k) r=k/(t+r);
-          const long double h=1/(t+r);
+          CPPUNIV_EXTENDED_REAL r=0; for(int k=40;k>=2;--k) r=k/(t+r);
+          const CPPUNIV_EXTENDED_REAL h=1/(t+r);
           sum+=z-h;deriv-=(t+h)*h/s;
-        } else {const long double r=std::exp(-logmills(t));sum+=a-r;deriv-=r*(r-t)/s;}
+        } else {const CPPUNIV_EXTENDED_REAL r=std::exp(-logmills(t));sum+=a-r;deriv-=r*(r-t)/s;}
       }
-      return std::vector<long double>{sum,deriv};
+      return std::vector<CPPUNIV_EXTENDED_REAL>{sum,deriv};
     };
     double step=std::max(s,1/l),lo=x.front()-step,hi=x.back()+step;
     for(int k=0;k<100 && score(lo)[0]<0;++k) {step*=2;lo-=step;}

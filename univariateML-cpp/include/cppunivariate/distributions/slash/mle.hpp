@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
@@ -12,8 +13,8 @@ struct Profile {
   SlashResult operator()(double m) const {
     double s=held;
     if(std::isnan(s)) {
-      long double radius=0;for(double v:x)radius=std::max(radius,std::abs(static_cast<long double>(v)-m));
-      double lo=-350,hi=static_cast<double>(std::log(std::max(radius,1e-150L)))+1;
+      CPPUNIV_EXTENDED_REAL radius=0;for(double v:x)radius=std::max(radius,std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-m));
+      double lo=-350,hi=static_cast<double>(std::log(std::max(radius,CPPUNIV_EXTENDED_LITERAL(1e-150,1e-150L))))+1;
       for(int k=0;k<65;++k) {
         const double mid=(lo+hi)/2,ss=std::exp(mid);double score=0;
         for(double v:x) {const double z=(v-m)/ss,t=z*z/2;score+=t<1e-7 ? -1+t-t*t/6 : (t>700?1:1-2*t/std::expm1(t));}
@@ -48,12 +49,12 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=s
   }
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;
   std::sort(y.begin(),y.end());const double centre=y[y.size()/2];
-  std::vector<double> distances;for(double v:y)distances.push_back(static_cast<double>(std::abs(static_cast<long double>(v)-centre)));
+  std::vector<double> distances;for(double v:y)distances.push_back(static_cast<double>(std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-centre)));
   std::sort(distances.begin(),distances.end());double scale=distances[distances.size()/2];
   if(!(scale>0)||!std::isfinite(scale))scale=y.back()/2-y.front()/2;
   if(!(scale>0)) {if(std::isnan(sigma)){bad.status=SlashStatus::Unbounded;return bad;}scale=sigma;}
   if(!std::isnan(sigma))scale=std::max(scale,sigma);
-  for(double& v:y)v=static_cast<double>((static_cast<long double>(v)-centre)/scale);
+  for(double& v:y)v=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-centre)/scale);
   const double n=y.size();double boundary=special::kNegInf;
   if(std::isnan(sigma)) {
     for(std::size_t i=0;i<y.size();) {
@@ -69,7 +70,7 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=s
   }
   slash_detail::Profile p{y,std::isnan(sigma)?sigma:sigma/scale};
   std::vector<double> grid;
-  for(int i=0;i<=128;++i)grid.push_back(static_cast<double>((1-i/128.0L)*y.front()+(i/128.0L)*y.back()));
+  for(int i=0;i<=128;++i)grid.push_back(static_cast<double>((1-i/CPPUNIV_EXTENDED_LITERAL(128.0,128.0L))*y.front()+(i/CPPUNIV_EXTENDED_LITERAL(128.0,128.0L))*y.back()));
   for(std::size_t i=0;i<y.size();++i) {
     grid.push_back(y[i]);
     if(i&&y[i]>y[i-1])for(int k=1;k<8;++k)grid.push_back(y[i-1]+(y[i]-y[i-1])*k/8);

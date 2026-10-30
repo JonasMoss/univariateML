@@ -108,6 +108,20 @@ cpp-test:
     cmake --build univariateML-cpp/build -j "${CMAKE_BUILD_PARALLEL_LEVEL:-1}"
     ctest --test-dir univariateML-cpp/build --output-on-failure
 
+# Exercise the entire core with double-width extended intermediates.
+cpp-test-no-long-double:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    launcher=()
+    if command -v ccache >/dev/null; then launcher=(-DCMAKE_CXX_COMPILER_LAUNCHER=ccache); fi
+    if ! cmake -S univariateML-cpp -B build/cpp-no-long-double "${launcher[@]}" -DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS; then
+        boost=$(Rscript -e 'cat(system.file("include", package="BH"))')
+        test -f "$boost/boost/version.hpp"
+        cmake -S univariateML-cpp -B build/cpp-no-long-double "${launcher[@]}" -DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS -DBoost_INCLUDE_DIR="$boost"
+    fi
+    cmake --build build/cpp-no-long-double -j "${CMAKE_BUILD_PARALLEL_LEVEL:-1}"
+    ctest --test-dir build/cpp-no-long-double --output-on-failure
+
 # Check real fitter goldens against symbolic README densities.
 quality *ids:
 	PYTHONPATH={{repo_root}}/dev/validation python3 -m quality check {{ids}}

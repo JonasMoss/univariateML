@@ -1,5 +1,6 @@
 // GB2 in actuar order (q,a,p,b). All optimisation uses standardized logs.
 #pragma once
+#include "../../core/precision.hpp"
 #include "../trgamma/mle.hpp"
 #include "../burr/mle.hpp"
 #include "../invburr/mle.hpp"
@@ -42,7 +43,7 @@ struct Inner {
 };
 inline Inner evaluate(const trgamma_detail::LogData &d, double A, double c,
                        double p, double q, bool heldb, double offset) {
-  long double ll=0, ga=0, gc=0, haa=0, hac=0, hcc=0, lp=0, lq=0, su=0, svu=0;
+  CPPUNIV_EXTENDED_REAL ll=0, ga=0, gc=0, haa=0, hac=0, hcc=0, lp=0, lq=0, su=0, svu=0;
   for (double z : d.u) {
     const double v=heldb ? z+offset : z;
     const double t=A*v-c;
@@ -127,15 +128,15 @@ inline double double_pareto(const trgamma_detail::LogData &d,double b) {
   std::vector<double> y=d.u;
   std::sort(y.begin(),y.end());
   const double n=static_cast<double>(d.n);
-  long double total=0; for(double z:y) total+=z;
+  CPPUNIV_EXTENDED_REAL total=0; for(double z:y) total+=z;
   double best=-std::numeric_limits<double>::infinity();
-  auto at=[&](double m,long double left,std::size_t k) {
+  auto at=[&](double m,CPPUNIV_EXTENDED_REAL left,std::size_t k) {
     const double L=std::max(0.0,static_cast<double>(k*m-left));
     const double R=std::max(0.0,static_cast<double>(total-left-(d.n-k)*m));
     const double s=std::sqrt(L)+std::sqrt(R);
     if(s>0) best=std::max(best,n*std::log(n)-2*n*std::log(s)-n-n*std::log(d.sd)-d.sum);
   };
-  long double prefix=0;
+  CPPUNIV_EXTENDED_REAL prefix=0;
   if(std::isnan(b)) {
     for(std::size_t k=0;k<y.size();++k) {at(y[k],prefix,k);prefix+=y[k];}
   } else {
@@ -240,7 +241,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
     if(!logs.empty()&&!std::isnan(q)&&!std::isnan(a)&&!std::isnan(p)) {
       if(std::isnan(b)) b=std::exp(logs[0]-(std::log(p)-std::log(q))/a);
       if(!(b>0)||!std::isfinite(b)){bad.status=Gb2Status::ScaleOutOfRange;return bad;}
-      long double ll=0;
+      CPPUNIV_EXTENDED_REAL ll=0;
       for(double y:logs) {
         const double t=a*(y-std::log(b));
         ll+=std::log(a)-y-gb2_detail::logbeta(p,q)-p*gb2_detail::softplus(-t)-q*gb2_detail::softplus(t);

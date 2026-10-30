@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../hyper/mle.hpp"
 #include <cmath>
@@ -26,8 +27,8 @@ inline double nhyper_log_pmf(double x, double n, double m, double r) {
 namespace nhyper_detail {
 // Correct a rounded quotient using compensated integer product differences.
 // Within the representable count range this prevents an off-by-one tail bound.
-inline long double population_bound(double m, double b, double r) {
-  long double q = std::floor(static_cast<long double>(m) * b / r);
+inline CPPUNIV_EXTENDED_REAL population_bound(double m, double b, double r) {
+  CPPUNIV_EXTENDED_REAL q = std::floor(static_cast<CPPUNIV_EXTENDED_REAL>(m) * b / r);
   if (q > hyper_detail::kMaxCount) return q;
   while (hyper_detail::product_difference(m, b, q, r) < 0) --q;
   while (hyper_detail::product_difference(m, b, q + 1, r) >= 0) ++q;
@@ -69,30 +70,30 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     const double rhi = std::isnan(r) ? std::min(c.min, fixed_N ? N : m) : r;
     if (rlo > rhi || rhi > c.min) return out;
     // Preflight exact line lengths, stopping as soon as the budget is exceeded.
-    long double size = 0;
+    CPPUNIV_EXTENDED_REAL size = 0;
     out.status = NhyperStatus::NumericalFailure;
     for (double rr = rlo; rr <= rhi; ++rr) {
-      const long double lo = fixed_N ? rr : static_cast<long double>(m) + c.max - rr;
-      const long double hi = fixed_N ? static_cast<long double>(N) - c.max + rr :
+      const CPPUNIV_EXTENDED_REAL lo = fixed_N ? rr : static_cast<CPPUNIV_EXTENDED_REAL>(m) + c.max - rr;
+      const CPPUNIV_EXTENDED_REAL hi = fixed_N ? static_cast<CPPUNIV_EXTENDED_REAL>(N) - c.max + rr :
           std::max(lo, nhyper_detail::population_bound(m, c.max, rr));
       if (hi > hyper_detail::kMaxCount) return out;
       size += hi - lo + 1;
       if (2 * size > hyper_detail::kGridBudget) return out;
     }
-    long double best = -std::numeric_limits<long double>::infinity();
+    CPPUNIV_EXTENDED_REAL best = -std::numeric_limits<CPPUNIV_EXTENDED_REAL>::infinity();
     bool selected = false;
     for (int pass = 0; pass < 2; ++pass) {
       for (double rr = rlo; rr <= rhi; ++rr) {
-        const double lo = fixed_N ? rr : static_cast<double>(static_cast<long double>(m) + c.max - rr);
+        const double lo = fixed_N ? rr : static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(m) + c.max - rr);
         const double hi = fixed_N ? N - c.max + rr : static_cast<double>(std::max(
-            static_cast<long double>(lo), nhyper_detail::population_bound(m, c.max, rr)));
+            static_cast<CPPUNIV_EXTENDED_REAL>(lo), nhyper_detail::population_bound(m, c.max, rr)));
         for (double t = lo; t <= hi; ++t) {
           const double mm = fixed_N ? t : m, nn = fixed_N ? N : t;
           hyper_detail::Sum ll;
           for (std::size_t j = 0; j < c.value.size(); ++j) {
-            const long double v = c.value[j];
+            const CPPUNIV_EXTENDED_REAL v = c.value[j];
             ll.add(c.count[j] * (hyper_detail::grid_choose(v - 1, rr - 1) +
-                hyper_detail::grid_choose(static_cast<long double>(nn) - v, mm - rr) -
+                hyper_detail::grid_choose(static_cast<CPPUNIV_EXTENDED_REAL>(nn) - v, mm - rr) -
                 hyper_detail::grid_choose(nn, mm)));
           }
           ++out.iterations;
@@ -124,11 +125,11 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     const auto peak = hyper_detail::unimodal_peak(lo, hi, false, [&](double t) {
       hyper_detail::Sum d;
       for (std::size_t j = 0; j < c.value.size(); ++j) {
-        const long double v = c.value[j];
-        const long double a = v - t + 1, b = static_cast<long double>(m) - t + 1;
-        const long double den1 = t - 1, den2 = static_cast<long double>(N) - m - v + t;
-        const long double z = hyper_detail::product_difference(a, b, den1, den2) / (den1 * den2);
-        if (std::fabs(z) < 0.5L) {
+        const CPPUNIV_EXTENDED_REAL v = c.value[j];
+        const CPPUNIV_EXTENDED_REAL a = v - t + 1, b = static_cast<CPPUNIV_EXTENDED_REAL>(m) - t + 1;
+        const CPPUNIV_EXTENDED_REAL den1 = t - 1, den2 = static_cast<CPPUNIV_EXTENDED_REAL>(N) - m - v + t;
+        const CPPUNIV_EXTENDED_REAL z = hyper_detail::product_difference(a, b, den1, den2) / (den1 * den2);
+        if (std::fabs(z) < CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)) {
           d.add(c.count[j] * std::log1p(z));
         } else {
           d.add(c.count[j] * (std::log(a / den1) + std::log(b / den2)));
@@ -138,7 +139,7 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     });
     out.r = peak.at; out.tie = peak.tie; out.iterations = peak.evaluations;
     out.status = std::isnan(peak.tie) ? NhyperStatus::Ok : NhyperStatus::Tie;
-    long double ll = 0;
+    CPPUNIV_EXTENDED_REAL ll = 0;
     for (std::size_t j = 0; j < c.value.size(); ++j)
       ll += c.count[j] * nhyper_log_pmf(c.value[j], N - m, m, out.r);
     out.logLik = static_cast<double>(ll);
@@ -163,10 +164,10 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
       const auto peak = hyper_detail::unimodal_peak(r, hi, false, [&](double t) {
         hyper_detail::Sum d;
         for (std::size_t j = 0; j < c.value.size(); ++j) {
-          const long double failures = static_cast<long double>(N) - t + 1;
-          const long double y = c.value[j] - r;
+          const CPPUNIV_EXTENDED_REAL failures = static_cast<CPPUNIV_EXTENDED_REAL>(N) - t + 1;
+          const CPPUNIV_EXTENDED_REAL y = c.value[j] - r;
           // Combine before taking logs to retain adjacent-integer signs.
-          const long double z = hyper_detail::product_difference(
+          const CPPUNIV_EXTENDED_REAL z = hyper_detail::product_difference(
               r, failures, t, y) / ((t - r) * failures);
           d.add(c.count[j] * std::log1p(z));
         }
@@ -176,7 +177,7 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
       out.status = std::isnan(peak.tie) ? NhyperStatus::Ok : NhyperStatus::Tie;
     } else out.status = NhyperStatus::Ok;
   }
-  long double ll = 0;
+  CPPUNIV_EXTENDED_REAL ll = 0;
   for (std::size_t j = 0; j < c.value.size(); ++j)
     ll += c.count[j] * nhyper_log_pmf(c.value[j], out.N - out.m, out.m, r);
   out.logLik = static_cast<double>(ll);

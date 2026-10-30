@@ -53,6 +53,8 @@ The transformed beta distribution models positive observations with two power ta
 
 ## Details
 
+2026-10-30 (TASK-125): the shared beta log-coordinate bridge uses the continued fraction when the backend input is subnormal or its result is below 1e-290, avoiding relative precision loss before taking logs. The existing independent truth rows measure the selected cases; this is not a uniform error bound. Logit quantile bisection returns NaN if it cannot bracket or reach adjacent floating-point endpoints.
+
 In the GB2 convention $(a,b,p,q)$, the coefficients are
 `shape2` = $a$, `scale` = $b$, `shape3` = $p$, and `shape1` = $q$.
 Each coefficient may be held at a positive finite value. The numerical search

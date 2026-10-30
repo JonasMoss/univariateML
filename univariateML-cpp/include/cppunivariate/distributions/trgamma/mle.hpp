@@ -23,6 +23,7 @@
 // reciprocal fit passes -log(x) without forming 1/x.
 
 #pragma once
+#include "../../core/precision.hpp"
 #include "../burr/mle.hpp"
 #include <array>
 
@@ -147,35 +148,35 @@ struct LogData {
 inline bool standardize(span y, LogData &d) {
   d.n = y.size();
   if (d.n < 2) return false;
-  long double total = 0.0L;
+  CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (double v : y) {
     if (!std::isfinite(v)) return false;
     total += v;
   }
   const double dn = static_cast<double>(d.n);
   d.sum = static_cast<double>(total);
-  d.mean = static_cast<double>(total / static_cast<long double>(d.n));
+  d.mean = static_cast<double>(total / static_cast<CPPUNIV_EXTENDED_REAL>(d.n));
   d.u.resize(d.n);
-  long double shift = 0.0L;
+  CPPUNIV_EXTENDED_REAL shift = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (std::size_t i = 0; i < d.n; ++i) {
     d.u[i] = y[i] - d.mean;
     shift += d.u[i];
   }
-  const double correction = static_cast<double>(shift / static_cast<long double>(d.n));
-  long double squares = 0.0L;
+  const double correction = static_cast<double>(shift / static_cast<CPPUNIV_EXTENDED_REAL>(d.n));
+  CPPUNIV_EXTENDED_REAL squares = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (double &v : d.u) {
     v -= correction;
-    squares += static_cast<long double>(v) * v;
+    squares += static_cast<CPPUNIV_EXTENDED_REAL>(v) * v;
   }
   d.mean += correction;
-  d.sd = std::sqrt(static_cast<double>(squares / static_cast<long double>(d.n)));
+  d.sd = std::sqrt(static_cast<double>(squares / static_cast<CPPUNIV_EXTENDED_REAL>(d.n)));
   if (!(d.sd > 0.0) || !std::isfinite(d.sd)) return false;
-  long double cubes = 0.0L;
+  CPPUNIV_EXTENDED_REAL cubes = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   d.umax = -std::numeric_limits<double>::infinity();
   d.umin = std::numeric_limits<double>::infinity();
   for (double &v : d.u) {
     v /= d.sd;
-    cubes += static_cast<long double>(v) * v * v;
+    cubes += static_cast<CPPUNIV_EXTENDED_REAL>(v) * v * v;
     d.umax = std::max(d.umax, v);
     d.umin = std::min(d.umin, v);
   }
@@ -506,13 +507,13 @@ inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
   if (!standardized && !std::isnan(shape1) && !std::isnan(shape2)) {
     if (y.size() == 0) return bad;
     double ymax = -std::numeric_limits<double>::infinity();
-    long double sum_y = 0.0L;
+    CPPUNIV_EXTENDED_REAL sum_y = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
     for (double v : y) {
       if (!std::isfinite(v)) return bad;
       ymax = std::max(ymax, v);
       sum_y += v;
     }
-    long double total = 0.0L;
+    CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
     for (double v : y) total += std::exp(shape2 * (v - ymax));
     const double log_scale = ymax +
         (std::log(static_cast<double>(total / y.size())) - std::log(shape1)) / shape2;

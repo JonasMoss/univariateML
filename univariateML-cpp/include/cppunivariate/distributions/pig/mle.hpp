@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
 #include "dpqr.hpp"
@@ -24,14 +25,14 @@ struct Counts {
   }
   double likelihood(double mean, double shape) const {
     const auto lp = log_masses(frequencies.rbegin()->first, mean, shape);
-    long double ll=0;
-    for (const auto &kv : frequencies) ll += static_cast<long double>(kv.second)*lp[kv.first];
+    CPPUNIV_EXTENDED_REAL ll=0;
+    for (const auto &kv : frequencies) ll += static_cast<CPPUNIV_EXTENDED_REAL>(kv.second)*lp[kv.first];
     return static_cast<double>(ll);
   }
   double poisson(double mean) const {
-    long double ll=0;
+    CPPUNIV_EXTENDED_REAL ll=0;
     for (const auto &kv : frequencies)
-      ll += static_cast<long double>(kv.second)*(kv.first*std::log(mean)-mean-special::lgamma(kv.first+1.0));
+      ll += static_cast<CPPUNIV_EXTENDED_REAL>(kv.second)*(kv.first*std::log(mean)-mean-special::lgamma(kv.first+1.0));
     return static_cast<double>(ll);
   }
 };

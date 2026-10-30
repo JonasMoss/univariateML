@@ -74,3 +74,7 @@ TEST_CASE("logitnorm P2 exact held normal fits") {
   CHECK(cppunivariate::logitnorm_mle(mltest::as_span(z),1).sigma==1);
   CHECK(cppunivariate::logitnorm_mle(mltest::as_span(z),nan,2).mu==0);
 }
+
+TEST_CASE("logitnorm: symmetric median survives certified tail inversion") {
+  CHECK(cppunivariate::distributions::qlogitnorm(std::log(.5),0,1,true,true)==doctest::Approx(.5));
+}

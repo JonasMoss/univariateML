@@ -50,6 +50,8 @@ The beta prime distribution models positive ratios.
 
 ## Details
 
+2026-10-30 (TASK-125): with identical observations and exactly one held shape, profiling the scale makes the likelihood monotone in the free shape. The gamma or inverse-gamma face is the supremum: the sign follows from `psi(a+b)-psi(b) > log((a+b)/b)`. This avoids cancellation in the finite grid comparison.
+
 univariateML 1.x estimated only the shapes, with the scale fixed at 1.
 
 Supply `scale` to hold it at a positive finite value. With scale fixed,

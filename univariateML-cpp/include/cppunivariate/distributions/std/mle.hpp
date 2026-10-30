@@ -8,6 +8,7 @@
 // where f_unit is the standardised t (mean 0, sd 1) used by dstd().
 
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 
 #include "../lst/mle.hpp"
@@ -198,7 +199,7 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
       !standardized) {
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i)
-      z[i] = static_cast<double>((static_cast<long double>(x[i]) - moments.mean) / moments.sd);
+      z[i] = static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x[i]) - moments.mean) / moments.sd);
     auto r = student_t_mle_impl(span{z.data(), n}, tol, maxit, true);
     r.mu = moments.mean + moments.sd*r.mu;
     r.sigma *= moments.sd;

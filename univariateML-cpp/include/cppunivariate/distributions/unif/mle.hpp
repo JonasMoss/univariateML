@@ -1,6 +1,7 @@
 // Uniform MLE: a = min(x), b = max(x).
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 
@@ -46,7 +47,7 @@ inline UnifResult unif_mle(span x,
   if (!std::isnan(max)) b = max;
   if (b <= a) return {kNaN, kNaN, kNaN,UnifStatus::Unbounded};
   const double log_width = std::isnan(min) && std::isnan(max) ? std::log(b-a) :
-    static_cast<double>(std::log(static_cast<long double>(b)-a));
+    static_cast<double>(std::log(static_cast<CPPUNIV_EXTENDED_REAL>(b)-a));
   const double logLik = -static_cast<double>(n) * log_width;
   return {a, b, logLik};
 }

@@ -1,5 +1,6 @@
 // Yule--Simon beta tail, with stable log gamma increments from beta-NB.
 #pragma once
+#include "../../core/precision.hpp"
 #include "../bnbinom/dpqr.hpp"
 namespace cppunivariate {
 namespace yulesimon_detail {
@@ -10,20 +11,20 @@ inline bool valid(double rho) { return rho>0 && std::isfinite(rho); }
 // log P(X>k) = log Gamma(k+1) Gamma(rho+1)/Gamma(k+rho+1).
 inline double logtail(double k,double rho) {
   if (k<=32) {
-    long double out=0;
-    for (int j=1;j<=k;++j) out-=std::log1p(static_cast<long double>(rho)/j);
+    CPPUNIV_EXTENDED_REAL out=0;
+    for (int j=1;j<=k;++j) out-=std::log1p(static_cast<CPPUNIV_EXTENDED_REAL>(rho)/j);
     return static_cast<double>(out);
   }
-  const long double a=std::min(static_cast<long double>(k),static_cast<long double>(rho));
-  const long double b=std::max(static_cast<long double>(k),static_cast<long double>(rho));
+  const CPPUNIV_EXTENDED_REAL a=std::min(static_cast<CPPUNIV_EXTENDED_REAL>(k),static_cast<CPPUNIV_EXTENDED_REAL>(rho));
+  const CPPUNIV_EXTENDED_REAL b=std::max(static_cast<CPPUNIV_EXTENDED_REAL>(k),static_cast<CPPUNIV_EXTENDED_REAL>(rho));
   // The shared increment can lose a tiny result when equal Stirling
   // corrections are subtracted. For a/b tiny, integrate digamma locally;
   // the omitted cubic term is O(a^3/b^2).
-  const long double increment=a/b<1e-8L ?
+  const CPPUNIV_EXTENDED_REAL increment=a/b<CPPUNIV_EXTENDED_LITERAL(1e-8,1e-8L) ?
     a*special::digamma(static_cast<double>(b+1))+
-      .5L*a*a*special::trigamma(static_cast<double>(b+1)) :
+      CPPUNIV_EXTENDED_LITERAL(.5,.5L)*a*a*special::trigamma(static_cast<double>(b+1)) :
     bnbinom_detail::increment(1+b,a);
-  return static_cast<double>((a<1e-8L ? -0.5772156649015328606L*a+0.8224670334241132182L*a*a : std::lgamma(1+a))-increment);
+  return static_cast<double>((a<CPPUNIV_EXTENDED_LITERAL(1e-8,1e-8L) ? -CPPUNIV_EXTENDED_LITERAL(0.5772156649015328606,0.5772156649015328606L)*a+CPPUNIV_EXTENDED_LITERAL(0.8224670334241132182,0.8224670334241132182L)*a*a : std::lgamma(1+a))-increment);
 }
 }
 namespace distributions {

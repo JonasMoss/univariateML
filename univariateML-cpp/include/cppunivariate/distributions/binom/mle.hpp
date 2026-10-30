@@ -9,6 +9,7 @@
 // enum surfaces SizeTooSmall, Underdispersed, IterationFailure.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -143,7 +144,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
       return ll;
     }
     // Long double throughout: this branch runs whenever max_x/size >=
-    // 1e-5, i.e. size/max_x <= 1e5, and long double's ~19-digit lgamma
+    // 1e-5, i.e. size/max_x <= 1e5, and CPPUNIV_EXTENDED_REAL's ~19-digit lgamma
     // difference loses only about log10(size/max_x) <~ 5 digits there --
     // negligible. (Verified against an mpmath oracle: matches to >=10
     // significant digits at size/max_x up to 1e5; the double-precision
@@ -155,17 +156,17 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
     //   file's `increment` comment above explains for the search itself
     //   applies verbatim to the old `size_m_x * log(size_m_x) -
     //   size * log(size)` form;
-    // - lchoose uses std::lgammal (long double), matching the precedent
+    // - lchoose uses std::lgammal (CPPUNIV_EXTENDED_REAL), matching the precedent
     //   of calling std:: math functions directly already used in the
     //   Poisson-scale branch above, not cppunivariate::special::lgamma
     //   (double-only, and out of scope to change here).
-    const long double sizeL = size, x_barL = x_bar, pL = x_barL / sizeL;
-    long double val = static_cast<long double>(dn) * x_barL * std::log(pL) +
-                       static_cast<long double>(dn) * (sizeL - x_barL) * std::log1p(-pL);
+    const CPPUNIV_EXTENDED_REAL sizeL = size, x_barL = x_bar, pL = x_barL / sizeL;
+    CPPUNIV_EXTENDED_REAL val = static_cast<CPPUNIV_EXTENDED_REAL>(dn) * x_barL * std::log(pL) +
+                       static_cast<CPPUNIV_EXTENDED_REAL>(dn) * (sizeL - x_barL) * std::log1p(-pL);
     for (std::size_t i = 0; i < uniq.size(); ++i) {
-      const long double k = static_cast<long double>(uniq[i]);
-      val += static_cast<long double>(counts[i]) *
-             (std::lgamma(sizeL + 1.0L) - std::lgamma(k + 1.0L) - std::lgamma(sizeL - k + 1.0L));
+      const CPPUNIV_EXTENDED_REAL k = static_cast<CPPUNIV_EXTENDED_REAL>(uniq[i]);
+      val += static_cast<CPPUNIV_EXTENDED_REAL>(counts[i]) *
+             (std::lgamma(sizeL + CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)) - std::lgamma(k + CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)) - std::lgamma(sizeL - k + CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)));
     }
     return static_cast<double>(val);
   };
@@ -204,11 +205,11 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   // at a fixed magnitude; the only legitimate stopping conditions are (a)
   // finding the crossing, or (b) exhausting the iteration budget `maxit`
   // (which the caller can raise without bound; doubling needs only
-  // O(log2(size)) iterations, so any size reachable in double/long double
+  // O(log2(size)) iterations, so any size reachable in double/CPPUNIV_EXTENDED_REAL
   // arithmetic is reachable in a modest iteration count). The bracket is
-  // kept in `long double` rather than an integer type: doubling a signed
+  // kept in `CPPUNIV_EXTENDED_REAL` rather than an integer type: doubling a signed
   // 64-bit integer without a cap can overflow (undefined behaviour) long
-  // before any real sample needs a size that large, whereas `long double`
+  // before any real sample needs a size that large, whereas `CPPUNIV_EXTENDED_REAL`
   // (64-bit mantissa on the x86-64 extended format this project targets)
   // represents every integer up to 2^64 exactly and degrades gracefully,
   // not silently, beyond that.
@@ -217,7 +218,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   // (literally -m*log1p(1/z)+(z+1-m)*log1p(-m/(z+1))-(z-m)*log1p(-m/z))
   // cancels catastrophically once z grows past roughly max_x/eps: each of
   // its three terms is O(z) while the sum is the O(1/z^2) increment
-  // itself, so long double's ~19 digits run out by z ~ 1e7-1e8 for
+  // itself, so CPPUNIV_EXTENDED_REAL's ~19 digits run out by z ~ 1e7-1e8 for
   // typical data (verified against an independent mpmath oracle at
   // dps=60: for a sample engineered to have its true maximizer near
   // 3.3e7, the naive form's sign flips 5e6 early, at 2.8e7). The fix uses
@@ -228,28 +229,28 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   // of near-equal O(1) numbers -- to remove the second level. Both
   // halves are then differences of independently-accurate small
   // quantities, not of large near-equal ones, and the formula tracks the
-  // mpmath oracle to its last representable long double digit at every
+  // mpmath oracle to its last representable CPPUNIV_EXTENDED_REAL digit at every
   // scale tested, including sizes beyond 1e12 (see test.cpp/test.R).
-  auto phi = [](long double w) {
-    if (w < 1000.0L) return w*std::log1p(1.0L/w) - 1.0L;
-    long double term = -1.0L/(2.0L*w), sum = term;
+  auto phi = [](CPPUNIV_EXTENDED_REAL w) {
+    if (w < CPPUNIV_EXTENDED_LITERAL(1000.0,1000.0L)) return w*std::log1p(CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)/w) - CPPUNIV_EXTENDED_LITERAL(1.0,1.0L);
+    CPPUNIV_EXTENDED_REAL term = -CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)/(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)*w), sum = term;
     for (int j = 1; j <= 40; ++j) {
-      term *= -(static_cast<long double>(j+1)/(j+2))/w;
+      term *= -(static_cast<CPPUNIV_EXTENDED_REAL>(j+1)/(j+2))/w;
       sum += term;
-      if (std::fabs(term) < std::fabs(sum)*1e-25L) break;
+      if (std::fabs(term) < std::fabs(sum)*CPPUNIV_EXTENDED_LITERAL(1e-25,1e-25L)) break;
     }
     return sum;
   };
-  auto increment = [&](long double k) {
-    const long double z=k, m=static_cast<long double>(sum_x)/n;
-    long double d=0;
+  auto increment = [&](CPPUNIV_EXTENDED_REAL k) {
+    const CPPUNIV_EXTENDED_REAL z=k, m=static_cast<CPPUNIV_EXTENDED_REAL>(sum_x)/n;
+    CPPUNIV_EXTENDED_REAL d=0;
     for (std::size_t i=0;i<uniq.size();++i)
-      d+=static_cast<long double>(counts[i])*std::log1p(
-        static_cast<long double>(uniq[i])/(z+1-uniq[i]));
-    d+=static_cast<long double>(n)*(std::log1p(-m/(z+1)) + phi(z-m) - phi(z));
+      d+=static_cast<CPPUNIV_EXTENDED_REAL>(counts[i])*std::log1p(
+        static_cast<CPPUNIV_EXTENDED_REAL>(uniq[i])/(z+1-uniq[i]));
+    d+=static_cast<CPPUNIV_EXTENDED_REAL>(n)*(std::log1p(-m/(z+1)) + phi(z-m) - phi(z));
     return d;
   };
-  long double lo=max_x, hi=lo;
+  CPPUNIV_EXTENDED_REAL lo=max_x, hi=lo;
   int iterations=0;
   while(increment(hi)>0) {
     if (++iterations>=maxit || !std::isfinite(hi)) return {kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
@@ -258,7 +259,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   }
   while(hi>lo) {
     if (++iterations>=maxit) return {kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
-    long double mid=lo+std::floor((hi-lo)/2.0L);
+    CPPUNIV_EXTENDED_REAL mid=lo+std::floor((hi-lo)/CPPUNIV_EXTENDED_LITERAL(2.0,2.0L));
     if (mid<lo) mid=lo;           // resolution guard at extreme magnitudes
     if (mid>=hi) mid=hi-1;        // guarantees progress every iteration
     if(increment(mid)>0) lo=mid+1; else hi=mid;

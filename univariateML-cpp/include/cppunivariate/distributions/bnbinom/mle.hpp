@@ -1,6 +1,7 @@
 // Deterministic multistart likelihood search; no unimodality assumption.
 // NB and Poisson faces are fitted separately, never by huge BNB shapes.
 #pragma once
+#include "../../core/precision.hpp"
 #include "dpqr.hpp"
 #include "../nbinom/mle.hpp"
 #include "../pois/mle.hpp"
@@ -23,8 +24,8 @@ struct Data {
   double n=0;
 };
 inline double likelihood(const Data &d, const std::vector<double> &p) {
-  long double ll=d.n*zero(p[0],p[1],p[2]);
-  const long double t=static_cast<long double>(p[0])+p[1]+p[2];
+  CPPUNIV_EXTENDED_REAL ll=d.n*zero(p[0],p[1],p[2]);
+  const CPPUNIV_EXTENDED_REAL t=static_cast<CPPUNIV_EXTENDED_REAL>(p[0])+p[1]+p[2];
   for (std::size_t i=0;i<d.x.size();++i) {
     const int x=d.x[i];
     ll+=d.count[i]*(increment(p[0],x)+increment(p[2],x)-increment(t,x)-special::lgamma(x+1.0));

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../core/span.hpp"
 #include "../gev/mle.hpp"
 #include <algorithm>
@@ -45,8 +46,8 @@ inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) 
   if (xi == 0) return {mu,m,xi,gpd_loglik(y,m,xi),0,GpdStatus::Ok};
   double lo = std::max(0.0,-xi*M), hi = std::max(M,lo*2);
   auto score = [&](double s) {
-    long double v=0;
-    for (double z : y) v += (1+static_cast<long double>(xi))*z/(s+static_cast<long double>(xi)*z);
+    CPPUNIV_EXTENDED_REAL v=0;
+    for (double z : y) v += (1+static_cast<CPPUNIV_EXTENDED_REAL>(xi))*z/(s+static_cast<CPPUNIV_EXTENDED_REAL>(xi)*z);
     return v/y.size()-1;
   };
   while (score(hi)>0 && std::isfinite(hi)) hi*=2;

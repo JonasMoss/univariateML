@@ -37,7 +37,10 @@ GOLDEN_TOLERANCE <- c(
   # Hand-rolled finite-difference-gradient BFGS on log(size, alpha, beta)
   # over the per-observation-averaged likelihood; own default gradtol
   # (distributions/bnbinom/adapter.cpp).
-  bnbinom = 1e-8
+  bnbinom = 1e-8,
+  # Bhattacharjee simplex: its stopping point moves by up to 1.6e-8 relative
+  # where long double is double (macOS arm64); TASK-125 report.
+  bhatt = 5e-8
 )
 
 if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {

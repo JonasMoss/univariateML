@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "mle.hpp"
 #include <cfloat>
 
@@ -8,7 +9,7 @@ namespace nhyper_detail {
 inline bool valid(double n, double m, double r) {
   return hyper_detail::is_count(n) && hyper_detail::is_count(m) &&
     hyper_detail::is_count(r) && r <= m &&
-    static_cast<long double>(n) + m <= hyper_detail::kMaxCount;
+    static_cast<CPPUNIV_EXTENDED_REAL>(n) + m <= hyper_detail::kMaxCount;
 }
 inline double logadd(double a, double b) {
   if (a < b) std::swap(a, b);

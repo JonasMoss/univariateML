@@ -6,6 +6,7 @@
 // maximiser given b.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/reductions.hpp"
 #include "../../core/span.hpp"
@@ -39,9 +40,9 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, GompertzStatus::IterationFailure};
 
-  long double total = 0.0L;
+  CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) total += v;
-  const double unit = static_cast<double>(total / static_cast<long double>(n));
+  const double unit = static_cast<double>(total / static_cast<CPPUNIV_EXTENDED_REAL>(n));
   if (unit > 0.0 && std::isfinite(unit) && !standardized) {
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / unit;
@@ -116,18 +117,18 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(a) && !(a>0 && std::isfinite(a))) ||
      (!std::isnan(b) && !(b>0 && std::isfinite(b))))return {nan,nan,nan,0,GompertzStatus::IterationFailure};
-  long double sx=0,sxx=0;double big=0;
-  for(double v:x){if(!(v>=0 && std::isfinite(v)))return {nan,nan,nan,0,GompertzStatus::IterationFailure};sx+=v;sxx+=static_cast<long double>(v)*v;big=std::max(big,v);}
+  CPPUNIV_EXTENDED_REAL sx=0,sxx=0;double big=0;
+  for(double v:x){if(!(v>=0 && std::isfinite(v)))return {nan,nan,nan,0,GompertzStatus::IterationFailure};sx+=v;sxx+=static_cast<CPPUNIV_EXTENDED_REAL>(v)*v;big=std::max(big,v);}
   const double n=static_cast<double>(x.size());int iterations=0;
   if(std::isnan(b)) {
     if(sx==0) return {a,1.0,n*std::log(a),0,GompertzStatus::Ok}; // flat likelihood
     if(!(sx>a*sxx/2))return {a,nan,nan,0,GompertzStatus::Overdispersed};
     auto score=[&](double q) {
-      long double s=sx;
-      for(double v:x){const long double z=q*v;long double h;
-        if(std::abs(z)<1e-3)h=0.5L+z/3+z*z/8+z*z*z/30+z*z*z*z/144;
+      CPPUNIV_EXTENDED_REAL s=sx;
+      for(double v:x){const CPPUNIV_EXTENDED_REAL z=q*v;CPPUNIV_EXTENDED_REAL h;
+        if(std::abs(z)<1e-3)h=CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)+z/3+z*z/8+z*z*z/30+z*z*z*z/144;
         else h=(z*std::exp(z)-std::expm1(z))/(z*z);
-        if(v>0)s-=a*static_cast<long double>(v)*v*h;
+        if(v>0)s-=a*static_cast<CPPUNIV_EXTENDED_REAL>(v)*v*h;
       }return s;
     };
     double lo=-745,hi=std::log(710/big);
@@ -135,7 +136,7 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
     if(hi-lo>1e-12)return {a,nan,nan,iterations,GompertzStatus::IterationFailure};
     b=std::exp((lo+hi)/2);
   }
-  long double integral=0;for(double v:x)integral+=std::expm1(static_cast<long double>(b)*v)/b;
+  CPPUNIV_EXTENDED_REAL integral=0;for(double v:x)integral+=std::expm1(static_cast<CPPUNIV_EXTENDED_REAL>(b)*v)/b;
   if(std::isnan(a) && integral==0)return {nan,b,nan,iterations,GompertzStatus::Unbounded};
   if(std::isnan(a))a=static_cast<double>(n/integral);
   const double ll=static_cast<double>(n*std::log(a)+b*sx-a*integral);

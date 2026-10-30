@@ -2,6 +2,7 @@
 // shape = 1/sigma, scale = exp(-mu + s) where s = -mean(log_x).
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 #include "../gumbel/mle.hpp"
@@ -66,21 +67,21 @@ inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,doubl
   int iterations=0;
   if(std::isnan(scale)) {
     double top=logs[0]; for(double v:logs) top=std::max(top,v);
-    long double shifted=0;
-    for(double v:logs)shifted+=std::expm1(static_cast<long double>(shape)*(v-top));
+    CPPUNIV_EXTENDED_REAL shifted=0;
+    for(double v:logs)shifted+=std::expm1(static_cast<CPPUNIV_EXTENDED_REAL>(shape)*(v-top));
     scale=std::exp(top+static_cast<double>(std::log1p(shifted/n)/shape));
   }
   const double ls=std::log(scale);
   if(std::isnan(shape)) {
     bool equal=true;for(double v:x)equal=equal && v==scale;
     if(equal)return {nan,scale,nan,0,WeibullStatus::Unbounded};
-    auto score=[&](double k) {long double s=n/k;for(double v:logs){const double z=v-ls;s+=z-z*std::exp(k*z);}return s;};
+    auto score=[&](double k) {CPPUNIV_EXTENDED_REAL s=n/k;for(double v:logs){const double z=v-ls;s+=z-z*std::exp(k*z);}return s;};
     double lo=-745,hi=710;
     for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=(lo+hi)/2;if(score(std::exp(mid))>0)lo=mid;else hi=mid;++iterations;}
     if(hi-lo>1e-12)return {nan,scale,nan,iterations,WeibullStatus::IterationFailure};
     shape=std::exp((lo+hi)/2);
   }
-  long double ll=0;
+  CPPUNIV_EXTENDED_REAL ll=0;
   for(double v:logs){const double z=v-ls;ll+=std::log(shape)-v+shape*z-std::exp(shape*z);}
   return {shape,scale,static_cast<double>(ll),iterations};
 }

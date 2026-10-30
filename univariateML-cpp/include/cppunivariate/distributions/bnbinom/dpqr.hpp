@@ -1,5 +1,6 @@
 // Beta negative binomial: gamma-ratio masses and controlled beta-mixture tails.
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -7,31 +8,31 @@
 
 namespace cppunivariate {
 namespace bnbinom_detail {
-inline long double stirling(long double z) {
-  const long double t = 1/z, t2 = t*t;
-  return t*(1.L/12-t2*(1.L/360-t2*(1.L/1260-t2*(1.L/1680-t2/1188))));
+inline CPPUNIV_EXTENDED_REAL stirling(CPPUNIV_EXTENDED_REAL z) {
+  const CPPUNIV_EXTENDED_REAL t = 1/z, t2 = t*t;
+  return t*(CPPUNIV_EXTENDED_LITERAL(1.,1.L)/12-t2*(CPPUNIV_EXTENDED_LITERAL(1.,1.L)/360-t2*(CPPUNIV_EXTENDED_LITERAL(1.,1.L)/1260-t2*(CPPUNIV_EXTENDED_LITERAL(1.,1.L)/1680-t2/1188))));
 }
 // log Gamma(z+h)/Gamma(z), avoiding subtraction of large log gammas.
-inline long double increment(long double z, long double h) {
-  long double correction = 0;
+inline CPPUNIV_EXTENDED_REAL increment(CPPUNIV_EXTENDED_REAL z, CPPUNIV_EXTENDED_REAL h) {
+  CPPUNIV_EXTENDED_REAL correction = 0;
   while (z < 16) { correction -= std::log1p(h/z); z += 1; }
-  return correction + h*std::log(z) + (z+h-.5L)*std::log1p(h/z)-h +
+  return correction + h*std::log(z) + (z+h-CPPUNIV_EXTENDED_LITERAL(.5,.5L))*std::log1p(h/z)-h +
     stirling(z+h)-stirling(z);
 }
-inline long double zero(long double r, long double a, long double b) {
+inline CPPUNIV_EXTENDED_REAL zero(CPPUNIV_EXTENDED_REAL r, CPPUNIV_EXTENDED_REAL a, CPPUNIV_EXTENDED_REAL b) {
   if (r > b) std::swap(r,b);
-  long double correction = 0;
+  CPPUNIV_EXTENDED_REAL correction = 0;
   while (a < 16) {
     correction += std::log(a/(a+r)) + std::log1p(r/(a+b));
     a += 1;
   }
   return correction - r*std::log1p(b/a) +
-    (a+r-.5L)*std::log1p(r/a)-(a+b+r-.5L)*std::log1p(r/(a+b)) +
+    (a+r-CPPUNIV_EXTENDED_LITERAL(.5,.5L))*std::log1p(r/a)-(a+b+r-CPPUNIV_EXTENDED_LITERAL(.5,.5L))*std::log1p(r/(a+b)) +
     stirling(a+r)-stirling(a)-stirling(a+b+r)+stirling(a+b);
 }
 inline double logpmf(int x, double r, double a, double b) {
   return static_cast<double>(zero(r,a,b)+increment(r,x)+increment(b,x)-
-    increment(static_cast<long double>(a)+r+b,x)-special::lgamma(x+1.0));
+    increment(static_cast<CPPUNIV_EXTENDED_REAL>(a)+r+b,x)-special::lgamma(x+1.0));
 }
 inline bool valid(double r, double a, double b) {
   return r>0 && a>0 && b>0 && std::isfinite(r) && std::isfinite(a) && std::isfinite(b);

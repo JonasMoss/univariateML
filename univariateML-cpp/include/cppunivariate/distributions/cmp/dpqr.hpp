@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "../../special/cmp.hpp"
 namespace cppunivariate {
 namespace cmp_dpqr_detail {
@@ -16,12 +17,12 @@ struct Law {
  }
  double density(double x,bool log) const {
   if (x<0 || !std::isfinite(x) || x!=std::floor(x)) return log ? special::kNegInf : 0;
-  long double lp;
+  CPPUNIV_EXTENDED_REAL lp;
   if (lambda==0) lp=x==0 ? 0 : special::kNegInf;
-  else if (nu==0) lp=x*static_cast<long double>(eta)+std::log1p(-lambda);
+  else if (nu==0) lp=x*static_cast<CPPUNIV_EXTENDED_REAL>(eta)+std::log1p(-lambda);
   else {
    if (moments.status!=CmpStatus::Ok) return special::kNaN;
-   lp=(x-moments.center)*(static_cast<long double>(eta)-nu*moments.slope)-
+   lp=(x-moments.center)*(static_cast<CPPUNIV_EXTENDED_REAL>(eta)-nu*moments.slope)-
       nu*cmp_detail::residual(x,moments.center,moments.slope)-moments.log_scaled_z;
   }
   return log ? static_cast<double>(lp) : static_cast<double>(std::exp(lp));
@@ -33,20 +34,20 @@ struct Law {
    return log ? (one ? 0 : special::kNegInf) : (one ? 1 : 0);
   }
   if (nu==0) {
-   const double upper=static_cast<double>((static_cast<long double>(q)+1)*eta);
+   const double upper=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(q)+1)*eta);
    const double lp=lower ? log_complement(upper) : upper;
    return log ? lp : std::exp(lp);
   }
   if (moments.status!=CmpStatus::Ok) return special::kNaN;
   const bool down=q<moments.center;
-  long double k=down ? q : q+1, term=1, sum=1;
+  CPPUNIV_EXTENDED_REAL k=down ? q : q+1, term=1, sum=1;
   const double first=density(static_cast<double>(k),true);
   bool done=false;
   for (int i=0;i<1000000;++i) {
    if (down && k==0) {done=true; break;}
-   const long double lr=down ? nu*std::log(k)-eta : eta-nu*std::log(k+1);
-   const long double ratio=std::exp(lr);
-   if (ratio<1 && term*ratio/(-std::expm1(lr))<=1e-18L*sum) {done=true; break;}
+   const CPPUNIV_EXTENDED_REAL lr=down ? nu*std::log(k)-eta : eta-nu*std::log(k+1);
+   const CPPUNIV_EXTENDED_REAL ratio=std::exp(lr);
+   if (ratio<1 && term*ratio/(-std::expm1(lr))<=CPPUNIV_EXTENDED_LITERAL(1e-18,1e-18L)*sum) {done=true; break;}
    term*=ratio; sum+=term; k+=down ? -1 : 1;
   }
   if (!done) return special::kNaN;

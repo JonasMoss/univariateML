@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/precision.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
@@ -11,7 +12,7 @@ inline SkellamResult skellam_mle(span x,double tol=1e-9,int maxit=150,
   const auto fail=[](SkellamStatus s) {return SkellamResult{special::kNaN,special::kNaN,special::kNaN,0,s};};
   if(x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
      (f1 && !(std::isfinite(mu1) && mu1>=0)) || (f2 && !(std::isfinite(mu2) && mu2>=0))) return fail(SkellamStatus::InvalidInput);
-  long double sum=0;double xmin=INFINITY,xmax=-INFINITY;
+  CPPUNIV_EXTENDED_REAL sum=0;double xmin=INFINITY,xmax=-INFINITY;
   for(double v:x) {if(!std::isfinite(v) || v!=std::floor(v)) return fail(SkellamStatus::InvalidInput);sum+=v;xmin=std::min(xmin,v);xmax=std::max(xmax,v);}
   const double m=static_cast<double>(sum/x.size());
   const auto ll=[&](double a,double b) {double out=0;for(double v:x) out+=skellam_detail::logmass(v,a,b);return out;};

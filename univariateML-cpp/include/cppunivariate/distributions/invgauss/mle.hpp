@@ -3,6 +3,7 @@
 //   1/lambda = mean(1/x) - 1/mu
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
 
@@ -31,16 +32,16 @@ inline InvGaussResult invgauss_mle(span x) {
   for (auto v : x) {
     sum_log += std::log(v);
   }
-  long double total = 0.0L;
+  CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) total += v;
   const double mu = static_cast<double>(total / dn);
   double lambda;
-  long double relative_ss = 0.0L;
+  CPPUNIV_EXTENDED_REAL relative_ss = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) {
-    const long double y = static_cast<long double>(v) / mu;
-    relative_ss += (y - 1.0L) * (y - 1.0L) / y;
+    const CPPUNIV_EXTENDED_REAL y = static_cast<CPPUNIV_EXTENDED_REAL>(v) / mu;
+    relative_ss += (y - CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)) * (y - CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)) / y;
   }
-  lambda = static_cast<double>(static_cast<long double>(mu) * dn / relative_ss);
+  lambda = static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(mu) * dn / relative_ss);
   const double L = sum_log / dn;
 
   // At the profiled lambda, the quadratic term equals n exactly.
@@ -54,11 +55,11 @@ inline InvGaussResult invgauss_mle(span x,double mu,double shape) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || (!std::isnan(mu) && !(mu>0 && std::isfinite(mu))) ||
      (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))))return {nan,nan,nan,InvGaussStatus::InvalidInput};
-  long double total=0,logs=0;
+  CPPUNIV_EXTENDED_REAL total=0,logs=0;
   for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,InvGaussStatus::InvalidInput};total+=v;logs+=std::log(v);}
   const double n=static_cast<double>(x.size());
   if(std::isnan(mu))mu=static_cast<double>(total/n);
-  long double q=0;for(double v:x){const long double d=(static_cast<long double>(v)-mu)/mu;q+=d*d/v;}
+  CPPUNIV_EXTENDED_REAL q=0;for(double v:x){const CPPUNIV_EXTENDED_REAL d=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-mu)/mu;q+=d*d/v;}
   if(std::isnan(shape) && q==0)return {mu,nan,nan,InvGaussStatus::Unbounded};
   if(std::isnan(shape))shape=static_cast<double>(n/q);
   const double ll=static_cast<double>(0.5*n*(std::log(shape)-std::log(2*M_PI))-1.5*logs-0.5*shape*q);

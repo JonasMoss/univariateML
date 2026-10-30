@@ -1,6 +1,7 @@
 // Lomax profile search on the dimensionless bounded existence interval.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "../../core/reductions.hpp"
 #include "../../core/span.hpp"
@@ -48,9 +49,9 @@ inline LomaxResult lomax_newton_candidate(
   const std::size_t n = x.size();
   if (n == 0 || maxit<1) return {0.0, 0.0, kNaN, 0, LomaxStatus::InvalidStart};
 
-  long double total = 0.0L;
+  CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) total += v;
-  const double unit = static_cast<double>(total / static_cast<long double>(n));
+  const double unit = static_cast<double>(total / static_cast<CPPUNIV_EXTENDED_REAL>(n));
   if (unit > 0.0 && std::isfinite(unit) && (unit < 1e-3 || unit > 1e3)) {
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / unit;
@@ -194,7 +195,7 @@ inline LomaxResult lomax_mle(span x, double tol, int maxit,
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0 || maxit<1 || !(tol>0) || !std::isfinite(tol)) return {nan,nan,nan,0,LomaxStatus::InvalidStart};
-  long double total = 0.0L;
+  CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (double v : x) {
     if (!(v > 0.0) || !std::isfinite(v))
       return {nan,nan,nan,0,LomaxStatus::InvalidStart};
@@ -331,7 +332,7 @@ inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double l
   const double n=static_cast<double>(x.size());int iterations=0;
   if(std::isnan(lambda)) {
     double lo=-745,hi=710;
-    for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=(lo+hi)/2;long double score=n;for(double v:x){const double z=mid+std::log(v);score-=(kappa+1)/(1+std::exp(-z));}if(score>0)lo=mid;else hi=mid;++iterations;}
+    for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=(lo+hi)/2;CPPUNIV_EXTENDED_REAL score=n;for(double v:x){const double z=mid+std::log(v);score-=(kappa+1)/(1+std::exp(-z));}if(score>0)lo=mid;else hi=mid;++iterations;}
     if(hi-lo>1e-12)return {nan,kappa,nan,iterations,LomaxStatus::IterationFailure};
     lambda=std::exp((lo+hi)/2);
   }

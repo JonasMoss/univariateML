@@ -92,3 +92,15 @@ TEST_CASE("dgamma: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::dgamma_mle(x,1e-8,1).status==cppunivariate::DgammaStatus::IterationFailure);
 }
+
+// mpmath 1.3.0, 60 decimal digits: log(gammainc(a,x,inf,regularized=True)).
+TEST_CASE("dgamma: certified deep upper tail at large shape") {
+  const double logq=cppunivariate::special::fs_gamma_p(1040000,1000000,false,true);
+  CHECK(logq==doctest::Approx(-783.89531375263302684).epsilon(1e-10));
+}
+
+#ifdef BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
+TEST_CASE("dgamma: uncertified extreme upper tail reports failure") {
+  CHECK(std::isnan(cppunivariate::special::fs_gamma_p(1e14+4e8,1e14,false,true)));
+}
+#endif

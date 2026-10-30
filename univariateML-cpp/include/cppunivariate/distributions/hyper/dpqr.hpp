@@ -4,6 +4,7 @@
 // Public arguments follow README (m, N, k); failures n = N - m.
 
 #pragma once
+#include "../../core/precision.hpp"
 
 #include "mle.hpp"
 
@@ -28,12 +29,12 @@ inline double tail(double q, double N, double m, double k, bool lower_tail) {
   q = std::floor(q);
   if (q < lo) return lower_tail ? 0.0 : 1.0;
   if (q >= hi) return lower_tail ? 1.0 : 0.0;
-  long double s = 0.0L;
+  CPPUNIV_EXTENDED_REAL s = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   const double from = lower_tail ? lo : q + 1.0, to = lower_tail ? q : hi;
   for (double x = from; x <= to; x += 1.0) {
-    s += std::exp(static_cast<long double>(hyper_log_pmf(x, N, m, k)));
+    s += std::exp(static_cast<CPPUNIV_EXTENDED_REAL>(hyper_log_pmf(x, N, m, k)));
   }
-  return static_cast<double>(std::min(s, 1.0L));
+  return static_cast<double>(std::min(s, CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)));
 }
 
 }  // namespace hyper_dpqr_detail
@@ -68,9 +69,9 @@ inline double qhyper(double p, double m, double N, double k, bool lower_tail,
   if (p == 0.0) return lo;
   if (p == 1.0) return hi;
   p *= 1.0 - 1000.0 * DBL_EPSILON;
-  long double s = 0.0L;
+  CPPUNIV_EXTENDED_REAL s = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (double x = lo; x < hi; x += 1.0) {
-    s += std::exp(static_cast<long double>(hyper_log_pmf(x, N, m, k)));
+    s += std::exp(static_cast<CPPUNIV_EXTENDED_REAL>(hyper_log_pmf(x, N, m, k)));
     if (s >= p) return x;
   }
   return hi;
