@@ -29,11 +29,24 @@ reference_case <- function(ref, fun, at, args, compare, tolerance) {
 
 # The fGarch families: d, p, q and the log density at one parameter
 # point, then d, p, q over a shape and skew grid.
+#
+# The `q` cases get a looser tolerance than `d`/`p`: qstd/qsstd invert via
+# `beta_logit_q` and qged/qsged via `gamma_logq` (both in
+# cppunivariate/include/cppunivariate/distributions/{gb2/beta_tails,ged/tails}.hpp),
+# iterative bisections that converge to the ULP of a transformed
+# log-coordinate through a chain of series/continued-fraction evaluations.
+# Comparing that chain's output to a frozen external value at the same
+# 1e-12 used for direct d/p formula evaluations leaves no room for
+# last-bit differences in those evaluations across libm/Boost.Math
+# versions (TASK-75); 1e-9 keeps three orders of magnitude of margin above
+# the observed cross-machine drift while staying far tighter than any
+# plausible algorithmic regression.
 fgarch_cases <- function(id, pars, grid) {
   cases <- list()
   add <- function(op, at, args, compare = "max_relative") {
+    tolerance <- if (op == "q") 1e-9 else 1e-12
     cases[[length(cases) + 1L]] <<- reference_case(
-      paste0("fGarch::", op, id), paste0(op, id), at, args, compare, 1e-12
+      paste0("fGarch::", op, id), paste0(op, id), at, args, compare, tolerance
     )
   }
   for (op in c("d", "p", "q")) {
