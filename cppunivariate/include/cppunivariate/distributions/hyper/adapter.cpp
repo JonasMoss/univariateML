@@ -32,12 +32,14 @@ Rcpp::List mlhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> k,
   if (N.isNull() && m.isNull() && k.isNull())
     Rcpp::stop("Joint estimation of m, N and k is not implemented: the interior and binomial and Poisson limit faces require a certified global comparison.");
   if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of N and m is not implemented; it can escape to the binomial limit, for which use mlbinom(x, size = k).");
-  if (k.isNull() && (N.isNull() || m.isNull())) Rcpp::stop("Joint estimation with k free is not supported by this fitter.");
+  if (k.isNull() && N.isNull()) Rcpp::stop("Joint estimation with k free is not supported by this fitter.");
   const double design=held_value(k, "k");
   const double N_held = held_value(N, "N"), m_held = held_value(m, "m");
   const auto res = cppunivariate::hyper_mle(dist_impl::as_span(x), design, N_held, m_held);
   const char *estimated = k.isNull() ? "k" : (N.isNull() ? "N" : "m");
   switch (res.status) {
+    case cppunivariate::HyperStatus::NumericalFailure:
+      Rcpp::stop("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
     case cppunivariate::HyperStatus::BothFree:
       Rcpp::stop("Supply the population size `N` or the number of successes `m` "
                  "as well as `k`: estimating both is not supported. As `N` grows "

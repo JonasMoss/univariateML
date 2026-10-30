@@ -15,7 +15,7 @@ params:
   simulate: 50
   integer: yes
   kind: design
-  advice: Supply the population size; this fitter estimates composition with N held.
+  advice: Supply the population size, or hold `m` to estimate it.
 - name: r
   role: white balls required to stop sampling
   domain: '[0, m]'
@@ -26,8 +26,8 @@ r:
   density: dnhyper
   sampler: rnhyper
   control:
-    r: "Stopping count of white balls; explicit `NULL` estimates it when `m` and `N` are supplied."
-    "N": "Known population size; must be supplied. Joint estimation of population and composition is not supported."
+    r: "Stopping count of white balls; explicit `NULL` estimates it with either `m` or `N` supplied."
+    "N": "Population size; explicit `NULL` estimates it with `m` held."
     m: "White-ball count; `NULL` estimates it with `N` known, otherwise holds it fixed."
 log_density: "loggamma(x) - loggamma(r) - loggamma(x-r+1) + loggamma(N-x+1) - loggamma(m-r+1) - loggamma(N-m-x+r+1) - loggamma(N+1) + loggamma(N-m+1) + loggamma(m+1)"
 references:
@@ -43,15 +43,6 @@ holds:
 - held: [r]
   status: not-implemented
   reason: A certified comparison against the negative-binomial growing-urn limit and global tail bound are not available.
-- held: [m]
-  status: not-implemented
-  reason: Joint estimation of N and r requires a certified integer profile search.
-- held: [m, r]
-  status: not-implemented
-  reason: Estimating N with m held is not supported by this fitter.
-- held: ["N"]
-  status: not-implemented
-  reason: Estimating r jointly with m requires a certified finite-grid search.
 fit_args:
   'N': 50
   r: 3
@@ -78,8 +69,8 @@ smallest white-ball count is returned with a warning. Counts must be below
 $2^{53}$.
 
 The known-population design ensures a finite maximum for every feasible
-sample. Jointly estimating population and composition is not supported. Estimating
-`N` with `m` held is not implemented. With both `m` and `N` held, explicit
+sample. Jointly estimating population and composition without either held is not supported. Estimating
+`N` with `m` held uses the finite grid described below. With both `m` and `N` held, explicit
 `r = NULL` estimates the stopping count on its finite feasible integer grid;
 the consecutive likelihood ratio decreases, permitting bisection.
 For positive `r`, if both counts grow with a fixed white proportion, `x - r` tends to a
@@ -87,3 +78,19 @@ negative binomial with size `r`; its fitted probability is
 $r/\bar x$. Use `mlnbinom(x - r, size = r)` for that limit model.
 This is a limit of the unrestricted family, not an escape in the supported
 known-population fit.
+
+Finite-grid fits use long-double sums of log-gamma differences. Negative hypergeometric with only `N` held searches positive
+`r <= min(x)` and `r <= m <= N-max(x)+r`. With `m` held and `N` free,
+each positive `r <= min(m,min(x))` searches from `m+max(x)-r` through
+`max(m+max(x)-r, floor(m*max(x)/r))`; a held `r` selects one line.
+The population tail bound follows from the adjacent population ratio,
+whose factors are below one beyond `m*max(x)/r`.
+Zero-only negative-hypergeometric samples select `r=0`, `N=m` when free,
+and `m=0` when free; mixed zero and positive observations are infeasible.
+Two passes find the maximum then the lexicographically smallest coefficient
+vector within 64 double-precision ulps relative to the likelihood magnitude.
+These are numerical comparisons, not exact ordering certificates. A total
+budget of 10^7 candidate likelihood evaluations includes both passes;
+exceeding it, the exact-integer range, or encountering a nonfinite likelihood
+stops with numerical failure, without returning a partial maximum.
+New joint grids resolve ties silently; existing one-coordinate warnings remain.
