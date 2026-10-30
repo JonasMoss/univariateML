@@ -45,9 +45,11 @@ chosen.
   high-precision truth tables; extraDistr and actuar leave Imports
   (board TASK-78 and subtasks).
 - The new R d/p/q/r are **internal**: `dml`/`pml`/`qml`/`rml` reach them,
-  the namespace does not grow. This is not option B or C above; the
-  "extraDistr++" question (export them, or a companion package) is still
-  open and can be taken up once the functions exist and are checked.
+  the namespace does not grow. This is not option B or C above.
+- **2026-10-30: no densities are exported** (Jonas: "Dont export any
+  densities"), including the 18 families that had exported d/p/q/r before
+  any release. The "extraDistr++" option is closed for this package; a
+  companion package (option C) remains possible later.
 - The 14 families on `stats` stay on `stats` for now. **Not banked**: this
   can change with the project's direction (an exported density layer, the
   Python shell, or one parametrization source for every family).

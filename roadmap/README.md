@@ -113,7 +113,7 @@ the queue.
 - [2026-10-28 — R package scope revisited](2026-10-28-r-package-scope-revisited.md):
   ML-only with external d/p/q/r vs one package exposing the C++ d/p/q/r;
   *(2026-10-29: own internal d/p/q/r for every non-stats family, stats kept
-  for now but not banked; exporting them is still open)*.
+  for now but not banked; 2026-10-30: no densities exported)*.
 - [2026-10-28 — New distributions and reference-package imports](2026-10-28-new-distributions.md):
   evaluation of issues #52/#7 (ZINB and constrained GPD first) and of
   sads (imports VGAM; buggy `pzipf`/`qzipf`).
