@@ -53,15 +53,15 @@ examples: |
 holds:
 - held: []
   status: not-implemented
-  reason: Free size with a free shape awaits the P0 existence proof.
+  reason: "P0 leaves the free-size boundary comparison unresolved: fixed-size binomial and two-point escapes must be profiled over size, the negative-binomial face must respect held shapes, and no reliable integer-tail stopping rule is available."
 - held:
   - alpha
   status: not-implemented
-  reason: Free size with a free shape awaits the P0 existence proof.
+  reason: "P0 leaves the free-size boundary comparison unresolved: fixed-size binomial and two-point escapes must be profiled over size, the negative-binomial face must respect held shapes, and no reliable integer-tail stopping rule is available."
 - held:
   - beta
   status: not-implemented
-  reason: Free size with a free shape awaits the P0 existence proof.
+  reason: "P0 leaves the free-size boundary comparison unresolved: fixed-size binomial and two-point escapes must be profiled over size, the negative-binomial face must respect held shapes, and no reliable integer-tail stopping rule is available."
 fit_args:
   size: 10
 ---
@@ -74,4 +74,4 @@ The beta-binomial distribution is a binomial with a beta-distributed success pro
 
 `extraDistr` has no `qbbinom`; `qml()` and `plot()` use the generalised inverse of `extraDistr::pbbinom` (see `univariateML_reference_quantiles`). `extraDistr::dbbinom` and `pbbinom` lose accuracy when both shapes are very large, around `1e10` and beyond (see `KNOWN_ISSUES.md`); the fitter compares the actual binomial face rather than substituting huge shapes for that face. The generic quantile inherits any inaccuracy in the reference CDF.
 
-Holding both positive shapes gives an attained integer-size maximum. Each observed mass decreases once `size + 1 >= x * (alpha + beta - 1) / alpha`; the fitter enumerates through that bound. More than one million candidates stops with a work-budget failure. With size also held this evaluates the likelihood, including size zero. Free size with either shape free remains pending the incomplete P0 proof.
+Holding both positive shapes gives an attained integer-size maximum. Each observed mass decreases once `size + 1 >= x * (alpha + beta - 1) / alpha`; the fitter enumerates through that bound. More than one million candidates stops with a work-budget failure. With size also held this evaluates the likelihood, including size zero. Free size with either shape free remains unavailable: the fixed-size kernel can itself escape to binomial or two-point laws, which must be compared across all sizes rather than terminating at the first such candidate. P0b also has no justified stopping rule for the integer tail. Holding beta is not equivalent to holding alpha under reflection when size is free, because reflecting the sample would depend on the candidate size.

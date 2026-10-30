@@ -91,4 +91,57 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=100,
   double ll=0; for (int v:x) ll+=tab.lp[v];
   return {fitted_prob,nu,ll,iterations,CmbStatus::Ok};
 }
+
+struct CmbSizeResult { double size; CmbResult fit; };
+// Both canonical coordinates held. Enumerate all integers, and bound the
+// entire remaining tail by a single normalizer term. This does not assume
+// unimodality in size (which is not implied by exponential-family concavity).
+inline CmbSizeResult cmb_size_mle(ispan x,double prob,double nu,
+                                 double tol=1e-10,int maxit=100) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto fail=[&](CmbStatus s) {return CmbSizeResult{nan,{prob,nu,nan,0,s}};};
+  if(x.size()==0 || !std::isfinite(prob)||prob<0||prob>1||!std::isfinite(nu)||
+     !(tol>0)||!std::isfinite(tol)||maxit<1)return fail(CmbStatus::InvalidInput);
+  int mx=0;double sx=0;
+  for(int v:x){if(v<0)return fail(CmbStatus::InvalidInput);mx=std::max(mx,v);sx+=v;}
+  if(prob==0 || prob==1) {
+    for(int v:x)if(v!=(prob==0 ? 0 : mx))return fail(CmbStatus::InvalidInput);
+    return {double(mx),{prob,nu,0,0,CmbStatus::Ok}};
+  }
+  if(mx==0)return {0,{prob,nu,0,0,CmbStatus::Ok}};
+  const double eta=std::log(prob)-std::log1p(-prob),n=double(x.size());
+  CmbSizeResult best{nan,{prob,nu,-INFINITY,0,CmbStatus::IterationFailure}};
+  // Work budget counts enumerated normalizer terms, not size magnitude.
+  // Table also computes moments and tails, so charge its full support.
+  std::size_t work=0;
+  for(int N=mx;;++N) {
+    if(static_cast<std::size_t>(N)+1>4000000-work)return fail(CmbStatus::IterationFailure);
+    work+=static_cast<std::size_t>(N)+1;
+    const auto f=cmb_mle(x,N,tol,maxit,prob,nu);
+    if(f.status!=CmbStatus::Ok)return {double(N),f};
+    if(!std::isfinite(f.logLik))return fail(CmbStatus::IterationFailure);
+    if(f.logLik>best.fit.logLik)best={double(N),f};
+    // nu=0: weights r^x are independent of size and the normalizer strictly
+    // increases, so the first feasible size is the exact optimum.
+    if(nu==0)return best;
+    double upper=0;
+    if(nu>0) {
+      const double next=double(N)+1;
+      const int k=mx+1;
+      for(int v:x) {
+        double ratio=0;
+        for(int j=v;j<k;++j)ratio+=std::log((j+1)/(next-j));
+        upper+=nu*ratio+(v-double(k))*eta;
+      }
+      // C(M,v)/C(M,k) decreases in M for v<k; one term of Z
+      // gives this bound simultaneously for every M>=N+1.
+    } else {
+      // Z>=max(1,exp(M*eta)); every positive logchoose(M,v)
+      // increases in M, while nu<0. Thus this bound also decreases.
+      for(int v:x)upper+=nu*cmb_detail::logchoose(N+1,v);
+      upper+=eta*sx-n*std::max(0.,(N+1.)*eta);
+    }
+    if(upper<best.fit.logLik-1e-10*n)return best;
+  }
+}
 }

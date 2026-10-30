@@ -23,7 +23,7 @@ r:
   density: dcmb
   sampler: rcmb
   control:
-    size: "Required known number of trials, a nonnegative integer at least max(x), at most 1e7; always held fixed."
+    size: "Required number of trials; NULL estimates it when prob and nu are both held. Fixed sizes are limited to 1e7 for allocation safety."
     prob: "Optional fixed canonical probability between zero and one inclusive; NULL estimates it."
     nu: "Optional fixed finite real dispersion; NULL estimates it. Both prob and nu may be held fixed."
     reltol: "Relative tolerance on the dispersion moment residual."
@@ -49,20 +49,15 @@ examples: |
 holds:
 - held: []
   status: not-implemented
-  reason: Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).
+  reason: "Free size with a free CMB coordinate is not implemented: P0 omits Conway-Maxwell-Poisson and geometric size-limit faces; their constrained comparison remains unresolved."
 - held:
   - prob
   status: not-implemented
-  reason: Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).
+  reason: "Free size with a free CMB coordinate is not implemented: P0 omits Conway-Maxwell-Poisson and geometric size-limit faces; their constrained comparison remains unresolved."
 - held:
   - nu
   status: not-implemented
-  reason: Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).
-- held:
-  - prob
-  - nu
-  status: not-implemented
-  reason: Free size awaits resolution of the P0 reference-cap assumption (1e7 is an allocation limit).
+  reason: "Free size with a free CMB coordinate is not implemented: P0 omits Conway-Maxwell-Poisson and geometric size-limit faces; their constrained comparison remains unresolved."
 fit_args:
   size: 10
 ---
@@ -74,3 +69,5 @@ The Conway--Maxwell--binomial distribution extends the binomial by raising its c
 The size is a required design quantity. The canonical probability is generally not the mean divided by size. Dispersion is unrestricted in sign, and `nu = 1` is binomial. The fitter profiles the canonical log odds by mean matching and solves the remaining dispersion moment equation. Finite log-sum-exp enumeration costs O(size) per evaluation; size is limited to 1e7 for allocation safety.
 
 For size at least two, the joint MLE is attained when the mean sufficient statistic lies inside the convex polygon of the statistic points or is an endpoint vertex. Other boundary samples stop with a named limiting law. With fixed dispersion, endpoint point masses are attained. With fixed probability, dispersion can escape only toward the central mode(s) or the endpoints; constants elsewhere can have finite fits. With both coordinates fixed there is no optimization or escape. Size zero is the attained point mass at zero: unidentified free prob and nu are represented by 0.5 and one. Endpoint samples with free prob return prob zero or one, with unidentified free nu represented by one. Endpoint probability holds are accepted only for compatible observations. With size one, dispersion is unidentified: an unspecified dispersion is set to one with a warning for interior probabilities and marked fixed, leaving a Bernoulli fit.
+
+With both `prob` and `nu` held, `size = NULL` enumerates feasible integer sizes until a decreasing upper bound excludes the entire remaining tail. For positive dispersion the bound uses a normalizer term at `max(x) + 1`; for negative dispersion it uses the endpoint terms. At zero dispersion the normalizer increases with size, so the smallest feasible size is optimal. This argument does not assume size-profile unimodality. Four million cumulative normalizer terms form a work budget; exhaustion stops rather than returning a capped estimate. Endpoint probabilities and size zero are handled exactly. The free-coordinate size profiles remain unavailable because their limiting laws and constrained likelihood comparisons are not established by P0b; in particular, positive held dispersion can approach a Conway–Maxwell–Poisson law, rather than a two-point law.

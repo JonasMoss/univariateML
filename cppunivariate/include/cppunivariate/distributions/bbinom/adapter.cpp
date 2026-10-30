@@ -14,7 +14,7 @@ Rcpp::List mlbbinom_(const Rcpp::IntegerVector &x, Rcpp::Nullable<double> size,
   const double N = size.isNotNull()?Rcpp::as<double>(size):std::numeric_limits<double>::quiet_NaN();
   if (size.isNotNull() && (!std::isfinite(N) || N < 0 || N != std::floor(N) || N > 1e7))
     Rcpp::stop("`size` must be a nonnegative integer (at most 1e7).");
-  if(size.isNull() && (alpha.isNull() || beta.isNull()))Rcpp::stop("Free size with a free shape awaits the P0 existence proof.");
+  if(size.isNull() && (alpha.isNull() || beta.isNull()))Rcpp::stop("P0 leaves the free-size boundary comparison unresolved: fixed-size binomial and two-point escapes must be profiled over size, the negative-binomial face must respect held shapes, and no reliable integer-tail stopping rule is available.");
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = alpha.isNotNull() ? Rcpp::as<double>(alpha) : nan;
   const double b = beta.isNotNull() ? Rcpp::as<double>(beta) : nan;
