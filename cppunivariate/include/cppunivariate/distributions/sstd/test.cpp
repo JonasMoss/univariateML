@@ -221,3 +221,78 @@ TEST_CASE("sstd: classified holds preserve values and handle tied/singleton data
   const auto collapse=cppunivariate::sstd_mle(mltest::as_span(one),1e-9,300,.2,nan,4.2,1.3);
   CHECK(collapse.status==cppunivariate::SstdStatus::Unbounded);
 }
+
+TEST_CASE("sstd: all P0b hold subsets retain golden holds") {
+  const auto g=mltest::load_distribution_golden("sstd");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask:std::vector<int>{1,2,4,8,3,5,9,6,10,12,7,11}) {
+    const double m=mask&1 ? g.estimates.at("mean") : nan;
+    const double sd=mask&2 ? g.estimates.at("sd") : nan;
+    const double nu=mask&4 ? g.estimates.at("nu") : nan;
+    const double xi=mask&8 ? g.estimates.at("xi") : nan;
+    const auto r=cppunivariate::sstd_mle(mltest::as_span(g.data),1e-6,1000,m,sd,nu,xi);
+    INFO(mask);
+    CHECK(r.status==cppunivariate::SstdStatus::Ok);
+    if(mask&1) CHECK(r.mu==m);
+    if(mask&2) CHECK(r.sigma==sd);
+    if(mask&4) CHECK(r.nu==nu);
+    if(mask&8) CHECK(r.xi==xi);
+    CHECK(r.logLik>=g.logLik-1e-5*g.data.size());
+  }
+}
+
+TEST_CASE("sstd: P0b tie collapse includes the held-sd df-two path") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> heavy{0,0,0,0,0,0,0,1,2};
+  for(int mask:std::vector<int>{1,2,4,8,3,5,9,10,12,11}) {
+    const auto r=cppunivariate::sstd_mle(mltest::as_span(heavy),1e-6,300,
+      mask&1 ? 0:nan,mask&2 ? 1:nan,mask&4 ? 3:nan,mask&8 ? 1:nan);
+    INFO(mask);
+    CHECK(r.status==cppunivariate::SstdStatus::Unbounded);
+  }
+  const std::vector<double> equality{0,0,0,0,1,2};
+  CHECK(cppunivariate::sstd_mle(mltest::as_span(equality),1e-6,300,nan,1).status==
+        cppunivariate::SstdStatus::ScaleBoundary);
+  // Holding both sd and nu removes scale collapse despite the heavy tie.
+  const auto bounded=cppunivariate::sstd_mle(mltest::as_span(heavy),1e-6,500,nan,1,3);
+  CHECK(bounded.status!=cppunivariate::SstdStatus::Unbounded);
+  CHECK(std::isfinite(bounded.logLik));
+}
+
+TEST_CASE("sstd: P0b normal, df-two and forced half-t faces") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> uniform;
+  for(int i=0;i<20;++i) uniform.push_back((i+.5)/10.-1);
+  const auto normal=cppunivariate::sstd_mle(mltest::as_span(uniform),1e-6,500,nan,nan,nan,1);
+  CHECK(normal.status==cppunivariate::SstdStatus::SnormBoundary);
+  const std::vector<double> heavy{-10,-.5,-.2,-.1,0,.1,.2,.5,10};
+  const auto two=cppunivariate::sstd_mle(mltest::as_span(heavy),1e-6,500,0,nan,nan,1);
+  CHECK(two.status==cppunivariate::SstdStatus::DfTwoBoundary);
+  CHECK(two.mu==0); // the held MEAN remains exact on an escape result, too.
+  double left=-20,right=20;
+  for(int i=0;i<100;++i) {
+    const double t=std::exp((left+right)/2);
+    double score=-static_cast<double>(heavy.size());
+    for(double a:heavy) score+=3*a*a/(2*t*t+a*a);
+    if(score>0) left=std::log(t); else right=std::log(t);
+  }
+  const double scale=std::exp((left+right)/2);
+  double ll=0;
+  for(double a:heavy) ll+=cppunivariate::special::dt(a/scale,2,true)-std::log(scale);
+  CHECK(two.logLik==doctest::Approx(ll).epsilon(1e-9));
+  std::vector<double> one{.5,1,1.5,2,2.5,3,10};
+  for(int side:std::vector<int>{1,-1}) {
+    std::vector<double> x;
+    for(double a:one) x.push_back(side*a);
+    const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,500,0,1,5);
+    CHECK(r.status==(side==1 ? cppunivariate::SstdStatus::RightHalfTBoundary : cppunivariate::SstdStatus::LeftHalfTBoundary));
+    CHECK(r.mu==0);
+    CHECK(r.sigma==1);
+    CHECK(r.nu==5);
+    const double m=std::sqrt(5.0)/(.75*3.14159265358979323846);
+    const double t=1/std::sqrt(5.0/3-m*m),c=-side*m*t;
+    double ll=0;
+    for(double a:x) ll+=std::log(2/t)+cppunivariate::special::dt((a-c)/t,5,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-9));
+  }
+}

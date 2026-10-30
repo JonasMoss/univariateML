@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "hold_search.hpp"
 
 #include "../snorm/mle.hpp"
 #include "../../core/bfgs.hpp"
@@ -662,7 +663,14 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
      (hn && !(fixed_nu>2 && std::isfinite(fixed_nu))) ||
      (hx && !(fixed_xi>0 && std::isfinite(fixed_xi))) || x.size()==0 || !(tol>0) || maxit<1) return out;
   for(double v:x) if(!std::isfinite(v)) return out;
-  if(!(hn && hx && (hm || hs))) { out.status=SstdStatus::UnsupportedHold; return out; }
+  if(!(hn && hx && (hm || hs))) {
+    const auto r=skew_hold_detail::fit(x,true,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);
+    const std::vector<SstdStatus> statuses{SstdStatus::Ok,SstdStatus::BfgsFailure,SstdStatus::InvalidStart,SstdStatus::Unbounded,SstdStatus::ScaleBoundary,SstdStatus::SnormBoundary,SstdStatus::SnormBoundary,SstdStatus::RightHalfTBoundary,SstdStatus::LeftHalfTBoundary,SstdStatus::DfTwoBoundary};
+    auto status=statuses[r.status];
+    if((r.status==7 || r.status==8) && std::isinf(r.nu))
+      status=r.status==7 ? SstdStatus::RightHalfNormalBoundary : SstdStatus::LeftHalfNormalBoundary;
+    return {r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
+  }
   double lo=inf, hi=-inf;
   for(double v:x) { lo=std::min(lo,v); hi=std::max(hi,v); }
   if(!hs && lo==hi && lo==fixed_mean) { out.status=SstdStatus::Unbounded; return out; }

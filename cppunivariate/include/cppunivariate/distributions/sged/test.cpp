@@ -122,3 +122,76 @@ TEST_CASE("sged: P3 restrictions and closed faces") {
  CHECK(f.nu==1);CHECK(f.restricted==16u);
  const auto h=cppunivariate::sged_mle(data,1e-8,1000,0,1,1,1);CHECK(h.restricted==0u);
 }
+
+TEST_CASE("sged: all P0b hold subsets retain golden holds") {
+  const auto g=mltest::load_distribution_golden("sged");
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask:std::vector<int>{1,2,4,8,3,5,9,6,10,12,7,11}) {
+    const double m=mask&1 ? g.estimates.at("mean") : nan;
+    const double sd=mask&2 ? g.estimates.at("sd") : nan;
+    const double nu=mask&4 ? g.estimates.at("nu") : nan;
+    const double xi=mask&8 ? g.estimates.at("xi") : nan;
+    const auto r=cppunivariate::sged_mle(mltest::as_span(g.data),1e-6,1000,m,sd,nu,xi);
+    INFO(mask);
+    CHECK(r.status==cppunivariate::SgedStatus::Ok);
+    if(mask&1) CHECK(r.mu==m);
+    if(mask&2) CHECK(r.sigma==sd);
+    if(mask&4) CHECK(r.nu==nu);
+    if(mask&8) CHECK(r.xi==xi);
+    CHECK(r.logLik>=g.logLik-1e-5*g.data.size());
+  }
+}
+
+TEST_CASE("sged: P0b constant collapse and the held-shape exemption") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> constant{0,0,0};
+  for(int mask:std::vector<int>{1,4,8,5,9,12}) {
+    const auto r=cppunivariate::sged_mle(mltest::as_span(constant),1e-6,300,
+      mask&1 ? 0:nan,nan,mask&4 ? 2:nan,mask&8 ? 1:nan);
+    INFO(mask);
+    CHECK(r.status==cppunivariate::SgedStatus::Unbounded);
+  }
+  const std::vector<double> x{-10,-.5,-.2,-.1,0,.1,.2,.5,10};
+  const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,0,1,nan,1);
+  CHECK(r.status==cppunivariate::SgedStatus::Ok);
+  CHECK(r.nu==1);
+  CHECK(r.restricted==16u);
+  const auto held=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,nan,nan,.8,1);
+  CHECK(held.status==cppunivariate::SgedStatus::Ok);
+  CHECK(held.nu==.8);
+  CHECK(held.restricted==0u);
+}
+
+TEST_CASE("sged: P0b uniform and forced half-GED faces") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> uniform;
+  for(int i=0;i<20;++i) uniform.push_back((i+.5)/10.-1);
+  const auto u=cppunivariate::sged_mle(mltest::as_span(uniform),1e-6,500,0,nan,nan,1);
+  CHECK(u.status==cppunivariate::SgedStatus::UniformBoundary);
+  CHECK(u.logLik==doctest::Approx(-20*std::log(1.9)));
+  const std::vector<double> one{.5,1,1.5,2,2.5,3,10};
+  for(int side:std::vector<int>{1,-1}) {
+    std::vector<double> x;
+    for(double a:one) x.push_back(side*a);
+    const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,0,1,2);
+    CHECK(r.status==(side==1 ? cppunivariate::SgedStatus::RightHalfGedBoundary : cppunivariate::SgedStatus::LeftHalfGedBoundary));
+    CHECK(r.mu==0);
+    CHECK(r.sigma==1);
+    CHECK(r.nu==2);
+    const double m=1/std::sqrt(3.14159265358979323846);
+    const double t=1/std::sqrt(.5-m*m),c=-side*m*t;
+    double ll=x.size()*(std::log(2/t)-.5*std::log(3.14159265358979323846));
+    for(double a:x) ll-=((a-c)/t)*((a-c)/t);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-9));
+  }
+}
+
+TEST_CASE("sged: P0b uniform endpoints retain pinned-moment penalties") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{-std::sqrt(3.0),std::sqrt(3.0)};
+  const auto pinned=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,0,1,nan,1);
+  CHECK(pinned.status==cppunivariate::SgedStatus::UniformBoundary);
+  CHECK(pinned.logLik==doctest::Approx(-2*std::log(std::sqrt(12.0))-2*std::exp(-0.5772156649015328606)));
+  const auto width=cppunivariate::sged_mle(mltest::as_span(x),1e-6,500,nan,1,nan,1);
+  CHECK(width.status==cppunivariate::SgedStatus::ScaleBoundary);
+}

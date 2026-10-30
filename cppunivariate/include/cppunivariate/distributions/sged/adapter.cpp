@@ -22,9 +22,9 @@ Rcpp::List mlsged_(const Rcpp::NumericVector &x,
   const double held_xi=xi.isNotNull() ? Rcpp::as<double>(xi) : nan;
   if(xi.isNotNull() && (!(std::isfinite(held_xi) && held_xi>0))) Rcpp::stop("Invalid held `xi`: requires a finite value in its parameter domain.");
   auto res=cppunivariate::sged_mle(dist_impl::as_span(x),gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
-  if(res.status==cppunivariate::SgedStatus::UnsupportedHold) Rcpp::stop("Hold subset existence remains unresolved (P0); currently hold `nu`, `xi` and at least one of `mean`, `sd`.");
+  if(res.status==cppunivariate::SgedStatus::UnsupportedHold) Rcpp::stop("Unsupported conditional fit.");
   if(res.status==cppunivariate::SgedStatus::Unbounded) Rcpp::stop("Scale collapse: likelihood is unbounded at the held mean; no MLE.");
-  if(res.status==cppunivariate::SgedStatus::ScaleBoundary) Rcpp::stop("Scale-collapse boundary could not be certified; no finite MLE returned.");
+  if(res.status==cppunivariate::SgedStatus::ScaleBoundary) Rcpp::stop("Scale-collapse or constrained uniform endpoint boundary could not be certified; no finite MLE returned.");
   if (res.status == cppunivariate::SgedStatus::InvalidStart) {
     Rcpp::stop("Skew GED MLE requires at least 2 finite observations with "
                "positive variance.");
@@ -33,9 +33,13 @@ Rcpp::List mlsged_(const Rcpp::NumericVector &x,
     Rcpp::stop("SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.");
   }
   if (res.status == cppunivariate::SgedStatus::RightHalfGedBoundary) {
+    if(mean.isNotNull() || sd.isNotNull())
+      Rcpp::stop("The likelihood is maximised by a translated half-GED with endpoint constrained by the held moments; no MLE in the skewed family.");
     Rcpp::stop("The likelihood is maximised by a translated half-GED with mode at the sample minimum; no MLE in the skewed family.");
   }
   if (res.status == cppunivariate::SgedStatus::LeftHalfGedBoundary) {
+    if(mean.isNotNull() || sd.isNotNull())
+      Rcpp::stop("The likelihood is maximised by a translated half-GED with reflected endpoint constrained by the held moments; no MLE in the skewed family.");
     Rcpp::stop("The likelihood is maximised by a translated half-GED with mode at the sample maximum; no MLE in the skewed family.");
   }
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
