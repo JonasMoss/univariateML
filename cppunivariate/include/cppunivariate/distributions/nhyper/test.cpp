@@ -32,22 +32,22 @@ TEST_CASE("nhyper: golden and large populations") {
 TEST_CASE("nhyper: scalar tails, quantiles, RNG and invalid inputs") {
   namespace d=cppunivariate::distributions;
   for (double x=2;x<=14;++x) {
-    const double p=d::pnhyper(x,12,8,2,true,false);
-    CHECK(p+d::pnhyper(x,12,8,2,false,false)==doctest::Approx(1).epsilon(1e-13));
-    CHECK(d::qnhyper(p,12,8,2,true,false)==x);
+    const double p=d::pnhyper(x,8,20,2,true,false);
+    CHECK(p+d::pnhyper(x,8,20,2,false,false)==doctest::Approx(1).epsilon(1e-13));
+    CHECK(d::qnhyper(p,8,20,2,true,false)==x);
   }
-  CHECK(d::qnhyper(-1e-100,12,8,2,true,true)==14);
-  CHECK(d::qnhyper(-1e-100,12,8,2,false,true)==2);
-  CHECK(d::qnhyper(-1000,12,8,2,true,true)==2);
-  CHECK(d::qnhyper(-1000,12,8,2,false,true)==14);
-  CHECK(d::dnhyper(2,0,20,2,false)==1);
-  CHECK(d::qnhyper(.5,0,20,2,true,false)==2);
+  CHECK(d::qnhyper(-1e-100,8,20,2,true,true)==14);
+  CHECK(d::qnhyper(-1e-100,8,20,2,false,true)==2);
+  CHECK(d::qnhyper(-1000,8,20,2,true,true)==2);
+  CHECK(d::qnhyper(-1000,8,20,2,false,true)==14);
+  CHECK(d::dnhyper(2,20,20,2,false)==1);
+  CHECK(d::qnhyper(.5,20,20,2,true,false)==2);
   CHECK(d::dnhyper(0,0,0,0,false)==1);
-  CHECK(std::isnan(d::dnhyper(0,1,1,2,false)));
-  CHECK(std::isnan(d::qnhyper(2,1,1,1,true,false)));
+  CHECK(std::isnan(d::dnhyper(0,1,2,2,false)));
+  CHECK(std::isnan(d::qnhyper(2,1,2,1,true,false)));
   cppunivariate::distributions::StdRng<> rng(42);
   for (int i=0;i<50;++i) {
-    const double v=d::rnhyper(rng,12,8,2);
+    const double v=d::rnhyper(rng,8,20,2);
     CHECK(v>=2); CHECK(v<=14);
   }
 }
@@ -97,4 +97,14 @@ TEST_CASE("nhyper: population size is returned unchanged as a coefficient") {
   const auto b = cppunivariate::nhyper_mle(mltest::as_span(x),2,20,8);
   CHECK(b.m == 8);
   CHECK(b.N == 20);
+}
+
+TEST_CASE("nhyper: README total population validation") {
+  cppunivariate::distributions::StdRng<> rng(94);
+  for (double N : {3.0, 10.5, double(INFINITY), double(NAN)}) {
+    CHECK(std::isnan(cppunivariate::distributions::dnhyper(0.5, 4.0, N, 2.0, true)));
+    CHECK(std::isnan(cppunivariate::distributions::pnhyper(0.5, 4.0, N, 2.0, false, true)));
+    CHECK(std::isnan(cppunivariate::distributions::qnhyper(0.5, 4.0, N, 2.0, false, true)));
+    CHECK(std::isnan(cppunivariate::distributions::rnhyper(rng, 4.0, N, 2.0)));
+  }
 }

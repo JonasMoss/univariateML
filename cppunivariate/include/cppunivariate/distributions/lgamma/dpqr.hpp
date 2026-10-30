@@ -25,7 +25,7 @@ inline double dlgamma(double x, double shapelog, double ratelog, bool log) {
   }
   // f_lgamma(x) = f_gamma(log(x); shapelog, scale=1/ratelog) / x
   const double log_density = cppunivariate::distributions::dgamma(
-                                 std::log(x), shapelog, ratelog,
+                                 std::log(x), shapelog, 1.0 / ratelog,
                                  /*log=*/true) -
                              std::log(x);
   return log ? log_density : std::exp(log_density);
@@ -33,12 +33,12 @@ inline double dlgamma(double x, double shapelog, double ratelog, bool log) {
 
 inline double plgamma(double q, double shapelog, double ratelog,
                       bool lower_tail, bool log_p) {
-  return cppunivariate::distributions::pgamma(q<=1.0 ? 0.0 : std::log(q),shapelog,ratelog,lower_tail,log_p);
+  return cppunivariate::distributions::pgamma(q<=1.0 ? 0.0 : std::log(q),shapelog,1.0/ratelog,lower_tail,log_p);
 }
 
 inline double qlgamma(double p, double shapelog, double ratelog,
                       bool lower_tail, bool log_p) {
-  return std::exp(cppunivariate::distributions::qgamma(p,shapelog,ratelog,lower_tail,log_p));
+  return std::exp(cppunivariate::distributions::qgamma(p,shapelog,1.0/ratelog,lower_tail,log_p));
 }
 
 template <typename Rng>

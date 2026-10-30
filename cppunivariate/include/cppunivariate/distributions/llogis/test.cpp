@@ -11,13 +11,13 @@
 TEST_CASE("rllogis samples are positive; CDF round-trip at p=0.7") {
   cppunivariate::distributions::StdRng<> rng(163);
   for (int i = 0; i < 5000; ++i) {
-    const double x = cppunivariate::distributions::rllogis(rng, 2.0, 3.0);
+    const double x = cppunivariate::distributions::rllogis(rng, 2.0, 1.0 / 3.0);
     CHECK(x > 0.0);
   }
   const double q =
-      cppunivariate::distributions::qllogis(0.7, 2.0, 3.0, true, false);
+      cppunivariate::distributions::qllogis(0.7, 2.0, 1.0 / 3.0, true, false);
   const double back =
-      cppunivariate::distributions::pllogis(q, 2.0, 3.0, true, false);
+      cppunivariate::distributions::pllogis(q, 2.0, 1.0 / 3.0, true, false);
   CHECK(std::abs(back - 0.7) < 1e-10);
 }
 
@@ -54,8 +54,6 @@ TEST_CASE("llogis P2 every held subset") {
   const auto g=mltest::load_distribution_golden("llogis");
   std::vector<double> x=g.data;
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  // held[1] is the scale; dpqr.hpp's dllogis keeps the old rate
-  // parameterisation (1/scale).
   const std::vector<double> held{g.estimates.at("shape"),g.estimates.at("scale")};
   { const auto r=cppunivariate::loglogistic_mle(mltest::as_span(x),1e-10,200,held[0],nan);
     CHECK(r.shape==held[0]);
@@ -63,7 +61,7 @@ TEST_CASE("llogis P2 every held subset") {
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dllogis(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,1.0/r.scale};
+    std::vector<double> p{r.shape,r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
@@ -73,7 +71,7 @@ TEST_CASE("llogis P2 every held subset") {
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dllogis(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,1.0/r.scale};
+    std::vector<double> p{r.shape,r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[0]));a[0]+=h;b[0]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
@@ -83,7 +81,7 @@ TEST_CASE("llogis P2 every held subset") {
     CHECK(std::isfinite(r.logLik));
     CHECK(r.logLik>=g.logLik-1e-6*x.size());
     auto ll=[&](const std::vector<double> &p){double s=0;for(double v:x)s+=cppunivariate::distributions::dllogis(v,p[0],p[1],true);return s;};
-    std::vector<double> p{r.shape,1.0/r.scale};
+    std::vector<double> p{r.shape,r.scale};
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
   }
 }
@@ -119,4 +117,21 @@ TEST_CASE("llogis: P3 unfinished optimizer is a failure") {
 TEST_CASE("llogis: P3 constant data retain the unbounded diagnostic") {
   const std::vector<double> values{1,1,1};
   CHECK(cppunivariate::loglogistic_mle(mltest::as_span(values),1e-8,100).status==cppunivariate::LogLogisticStatus::Unbounded);
+}
+
+TEST_CASE("llogis: README scale validation") {
+  cppunivariate::distributions::StdRng<> rng(94);
+  for (double scale : {0.0, -1.0, double(INFINITY), double(NAN)}) {
+    CHECK(std::isnan(cppunivariate::distributions::dllogis(0.5, 2.0, scale, false)));
+    CHECK(std::isnan(cppunivariate::distributions::pllogis(0.5, 2.0, scale, false, true)));
+    CHECK(std::isnan(cppunivariate::distributions::qllogis(0.5, 2.0, scale, false, true)));
+    CHECK(std::isnan(cppunivariate::distributions::rllogis(rng, 2.0, scale)));
+  }
+}
+
+TEST_CASE("llogis: finite scale with overflowing reciprocal") {
+  const double scale = 1e-320;
+  CHECK(std::isfinite(cppunivariate::distributions::dllogis(scale, 2.0, scale, true)));
+  CHECK(std::isfinite(cppunivariate::distributions::pllogis(scale, 2.0, scale, false, true)));
+  CHECK(cppunivariate::distributions::qllogis(0.5, 2.0, scale, true, false) > 0.0);
 }

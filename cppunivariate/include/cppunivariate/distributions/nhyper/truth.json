@@ -3,14 +3,14 @@
   "id": "nhyper",
   "digits": 80,
   "parameter_names": [
-    "n",
     "m",
+    "N",
     "r"
   ],
   "parameters": [
     [
-      30.0,
       20.0,
+      50.0,
       3.0
     ]
   ],
@@ -18,7 +18,7 @@
     {
       "point": 0,
       "mass": "1.0",
-      "seconds": 0.060156310006277636
+      "seconds": 0.024909461004426703
     }
   ],
   "values": [
@@ -674,5 +674,5 @@
     ]
   ],
   "quantile_limits": "nearest binary64; overflow signed infinity; underflow signed zero or finite support edge",
-  "density_sha256": "d258c233a6e713e414222cc75e2fd76ba8768b4fc996a8ffa29399cfee6af748"
+  "density_sha256": "9a2dec11660f0883de6c405e6e5b4823539d6865652a454d01778d3c08b33720"
 }

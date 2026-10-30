@@ -6,6 +6,6 @@ import mpmath as mp
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t):
-    sigma=t['sigma']
-    return Reference(lambda x:pair(mp.log(2/mp.pi*mp.atan(x/sigma))) if x<=sigma
-                     else pair(mp.log(2/mp.pi*mp.atan(sigma/x)),False),0)
+    mu,sigma=t['mu'],t['sigma']
+    return Reference(lambda x:pair(mp.log(2/mp.pi*mp.atan((x-mu)/sigma))) if x-mu<=sigma
+                     else pair(mp.log(2/mp.pi*mp.atan(sigma/(x-mu))),False),mu)

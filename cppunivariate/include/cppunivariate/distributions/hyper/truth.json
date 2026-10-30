@@ -4,13 +4,13 @@
   "digits": 80,
   "parameter_names": [
     "m",
-    "n",
+    "N",
     "k"
   ],
   "parameters": [
     [
       20.0,
-      30.0,
+      50.0,
       10.0
     ]
   ],
@@ -18,7 +18,7 @@
     {
       "point": 0,
       "mass": "1.0",
-      "seconds": 0.045256393001182005
+      "seconds": 0.025901874992996454
     }
   ],
   "values": [
@@ -534,5 +534,5 @@
     ]
   ],
   "quantile_limits": "nearest binary64; overflow signed infinity; underflow signed zero or finite support edge",
-  "density_sha256": "5ea6d6a6482818630e52fa01a03643959f2d6016246d9c637db053d9db5572e3"
+  "density_sha256": "9b79efd0213f0dbf1b52d2e903f67f79f8e617201c4982b37a982ca68911d6df"
 }
