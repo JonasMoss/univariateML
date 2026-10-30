@@ -19,6 +19,8 @@ Imports:
     Rcpp
 Suggests:
     jsonlite,
+    yaml,
+    withr,
     testthat,
     knitr,
     rmarkdown

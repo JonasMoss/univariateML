@@ -1,8 +1,8 @@
 # Frozen values from the packages that used to supply the d/p/q/r of
 # families the package now defines itself (fGarch, logitnorm, nakagami,
 # sads). They live in distributions/<id>/reference.json, written by
-# scripts/reference_values.R. Like the goldens they sit outside the
-# package; without UMVL_DISTRIBUTIONS_DIR the check is skipped.
+# scripts/reference_values.R. Test-only copies ship with the source package;
+# UMVL_DISTRIBUTIONS_DIR optionally selects canonical dossiers.
 expect_reference_values <- function(id) {
   root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
   path <- file.path(root, id, "reference.json")

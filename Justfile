@@ -2,6 +2,10 @@ set shell := ["bash", "-lc"]
 
 repo_root := justfile_directory()
 
+# Stable generation ordering/formatting, independent of the caller's locale.
+export LC_ALL := "C.UTF-8"
+export TZ := "UTC"
+
 # Compiler cache for every C++ build (R compiles go through ccache via
 # ~/.R/Makevars; CMake gets CMAKE_CXX_COMPILER_LAUNCHER in cpp-test). A
 # cache of its own, so other projects cannot evict it, and paths relative
@@ -58,6 +62,11 @@ check: regen
 	cd univariateML-r && R CMD build --no-build-vignettes . && \
 	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
 	  R CMD check --no-manual --ignore-vignettes univariateML_*.tar.gz
+
+# Check a tarball outside the repository, with repository reads denied
+# (Linux Landlock via setpriv).
+check-standalone: regen
+	bash dev/tools/r-standalone-check.sh
 
 # Regenerate distributions/<id>/golden.json from the current R/C++ pipeline.
 # Run only when intentionally accepting a new baseline (e.g. algorithm

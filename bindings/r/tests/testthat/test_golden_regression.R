@@ -10,12 +10,8 @@
 # leave these untouched. To intentionally accept a new baseline, re-run
 # scripts/gen_goldens.R and commit the diff.
 
-# Goldens live in distributions/<id>/golden.json, outside the R-package
-# tarball. The dispatcher Justfile sets UMVL_DISTRIBUTIONS_DIR; when run from
-# inside an installed package or a tarball-based check, the env var is
-# unset and this entire test file becomes a no-op (zero tests emitted),
-# which is the desired CRAN behaviour.
-# Goldens live in distributions/<id>/golden.json, outside the package.
+# The fixture helper defaults to test-only copies shipped in the source package;
+# UMVL_DISTRIBUTIONS_DIR can override them with canonical dossiers.
 DISTRIBUTIONS_DIR <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR", "")
 
 # Golden comparisons cannot be tighter than the fitters' declared convergence

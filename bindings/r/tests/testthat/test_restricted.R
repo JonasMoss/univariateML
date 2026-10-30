@@ -79,7 +79,12 @@ test_that("C++ restriction constants match README fit domains", {
   skip_if(!nzchar(root), "repository metadata unavailable")
   metadata <- getFromNamespace("univariateML_metadata", "univariateML")
   for (id in c("lst", "frechet", "ht", "gev", "gpd", "tlambda", "ged", "sged")) {
-    header <- readLines(file.path(root, id, "mle.hpp"))
+    path <- file.path(root, id, "mle.hpp")
+    if (!file.exists(path)) {
+      path <- system.file("include", "cppunivariate", "distributions", id,
+                          "mle.hpp", package = "univariateML", mustWork = TRUE)
+    }
+    header <- readLines(path)
     constants <- grep("inline constexpr double k.*(Lower|Upper) =", header, value = TRUE)
     constants <- as.numeric(sub(".* = ([0-9.-]+);", "\\1", constants))
     bounds <- unlist(lapply(metadata[[paste0("ml", id)]]$params, function(p) {

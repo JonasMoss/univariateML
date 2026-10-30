@@ -7,10 +7,10 @@
 # generated files (ml00_metadata.R, ml02_wrappers.R, RcppExports.*,
 # NAMESPACE, man/*.Rd) on top in subsequent regen steps.
 
-PKG_DIR <- "../../univariateML-r"
+PKG_DIR <- Sys.getenv("UMVL_PKG_DIR", "../../univariateML-r")
 
 unlink(PKG_DIR, recursive = TRUE, force = TRUE)
-dir.create(PKG_DIR)
+dir.create(PKG_DIR, recursive = TRUE)
 
 top_files <- c(
   "DESCRIPTION", "NAMESPACE", ".Rbuildignore", "LICENSE", "LICENSE.md",
@@ -57,6 +57,22 @@ for (folder in list.dirs(binding_dist_dir, full.names = TRUE, recursive = FALSE)
   if (file.exists(test)) {
     file.copy(test, file.path(PKG_DIR, "tests", "testthat", paste0("test-dist-", id, ".R")))
   }
+}
+
+# Test-only evidence: front matter and all frozen JSON, never installed.
+fixtures <- file.path(PKG_DIR, "tests", "testthat", "fixtures")
+for (folder in list.dirs(dist_dir, full.names = TRUE, recursive = FALSE)) {
+  id <- basename(folder)
+  readme <- file.path(folder, "README.md")
+  if (!file.exists(readme)) next
+  target <- file.path(fixtures, id)
+  dir.create(target, recursive = TRUE, showWarnings = FALSE)
+  lines <- readLines(readme, warn = FALSE, encoding = "UTF-8")
+  marks <- which(trimws(lines) == "---")
+  stopifnot(length(marks) >= 2L, marks[1L] == 1L)
+  writeLines(lines[seq_len(marks[2L])], file.path(target, "README.md"))
+  json <- list.files(folder, pattern = "\\.json$", full.names = TRUE)
+  if (length(json)) file.copy(json, target)
 }
 
 source(file.path("scripts", "codegen_dpqr.R"))
