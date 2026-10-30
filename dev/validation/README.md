@@ -1,0 +1,277 @@
+# Validation guide
+
+The checks below test specific inputs, not entire parameter spaces. A pass can
+contain skips; inspect them and any permitted failures. Source and tolerances in
+the linked code govern when they differ from a report. Mathematical proofs,
+independent numerical comparisons, internal identities and regression fixtures
+are different kinds of evidence.
+
+| Check | Command | Kind of evidence | Runs in |
+|---|---|---|---|
+| C++ fit goldens | `just cpp-test` | regression (our own frozen output) | ordinary |
+| C++ family cases: holds, limits, closed forms, score residuals | `just cpp-test` | internal identities; closed forms where derived | ordinary |
+| C++ truth tables | `just cpp-test` | independent numerical, given the README density | ordinary |
+| C++ shared targets: BFGS, sampling, no-throw, CMP, tails | `just cpp-test` | internal identities, finite examples | ordinary |
+| R golden regression, conformance | `just test` | regression; interface contracts | ordinary, tarball check |
+| R generated d/p/q/r against truth tables | `just test` | independent numerical, given the README density | ordinary, tarball check |
+| R reference values (fGarch, logitnorm, nakagami, sads) | `just test` | another implementation, with its own defects | ordinary, tarball check |
+| R scale equivariance, restrictions, parameter infrastructure | `just test` | internal identities; contracts | ordinary (generator test: checkout only) |
+| Codegen signature, control and example checks | `just gen` | contracts, not numerics | every regeneration |
+| Self-contained R package | `just check-standalone` | self-containment under CRAN-like conditions | extended |
+| Quality harness: likelihood, score, observed information, eight starts | `just quality` | independent numerical; multistart is not a proof | extended, needs Python tools |
+| Truth-table regeneration | `just dpqr-truth` | produces the oracle; rewrites tracked files | extended, needs Python tools |
+| Slow-oracle sweep | `dev/research/ml-behaviour-sweep.R` | independent optimizer on finite samples | historical, needs extraDistr |
+| C++ export without R; assembly reproducibility | `dev/tools/` scripts | portability; reproducibility | extended |
+| Existence, uniqueness and limit results | dossier `## Details`, `ml-behaviour.tex`, reports | proof, where a proof is given | not a check |
+
+From the repository root, use the local CPU slot lock and keep temporary files in
+the worktree:
+
+```sh
+export TMPDIR="$PWD/build/tmp" XDG_RUNTIME_DIR="$PWD/build/tmp"
+mkdir -p "$TMPDIR" build/scratch
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+```
+
+Use `/tmp/umvl-cpu/run` for one thread and `/tmp/umvl-cpu/run4` for
+four-slot builds and full suites; prefix long jobs with `nice -n 10`.
+The [Justfile](../../Justfile) defines the recipes. Targeted examples below
+assume the build or generated package already exists. Family names in doctest
+filters match case names, so inspect `--list-test-cases` before interpreting a
+filtered run.
+
+## C++ tests
+
+`/tmp/umvl-cpu/run4 nice -n 10 just cpp-test` configures, builds and runs six
+ctest targets. For a family, run, for example:
+
+```sh
+/tmp/umvl-cpu/run univariateML-cpp/build/tests/distribution_tests --test-case='exp*'
+```
+
+The [target list](../../univariateML-cpp/tests/CMakeLists.txt) globs all
+family `test.cpp` files. A passing ctest target exits zero; doctest reports
+cases, assertions, skips and any `may_fail` cases. Read the individual cases.
+
+- Family fit goldens replay stored data and fit arguments from each
+  `golden.json`. They are frozen output of our own R/C++ pipeline, generated
+  by [goldens.R](../../bindings/r/scripts/goldens.R), not independent MLEs.
+  Shared [tolerances](../../univariateML-cpp/tests/test_support.hpp) use a
+  small rounding floor for closed-form fits and a wider finite-difference
+  allowance based on observed cross-machine drift. Some cases choose their
+  own tolerance. Do not regenerate fixtures merely to make a test pass;
+  `just goldens` rewrites all of them.
+- Family cases also exercise held subsets, status and limit decisions,
+  support, endpoints, analytic cases, independent optimizers and score
+  residuals where implemented. For examples see [exp](../../univariateML-cpp/include/cppunivariate/distributions/exp/test.cpp),
+  [gamma](../../univariateML-cpp/include/cppunivariate/distributions/gamma/test.cpp),
+  [gb2](../../univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp),
+  [sstd](../../univariateML-cpp/include/cppunivariate/distributions/sstd/test.cpp)
+  and [hyper](../../univariateML-cpp/include/cppunivariate/distributions/hyper/test.cpp).
+  A density integral or $p(q(p))$ is an internal identity; shared errors may
+  cancel. A closed form can supply mathematical evidence only when its
+  derivation and assumptions are established separately.
+- The shared [truth consumer](../../univariateML-cpp/tests/test_support.hpp)
+  compares log densities, both CDF tails and quantiles to `truth.json`;
+  natural probabilities below its floor are omitted. Quantiles also accept
+  oracle-provided brackets or adjacent lattice values. The default tolerances
+  allow binary64 arithmetic error; brackets handle representational ambiguity.
+  The family call can override them. Two seeded parameter points receive
+  empirical CDF checks with a five-binomial-standard-error allowance plus
+  a finite-sample term. This is independent numerical evidence conditional
+  on the declared density and route, not a proof of accuracy everywhere.
+- The other [shared tests](../../univariateML-cpp/tests/) check BFGS on
+  known objectives and gradient/reparameterization identities, RNG primitive
+  support and moments, no-throw behavior on selected errors, CMP analytic
+  submodels and high-precision fixtures, and tail arithmetic. Their test-local
+  tolerances reflect the specific identity or numerical reference; absent a
+  stated rationale, the original choice is unknown. Run one target with
+  `/tmp/umvl-cpu/run ctest --test-dir univariateML-cpp/build -R '^tails_tests$' --output-on-failure`.
+  These are finite examples, not universal error bounds or distributional tests.
+
+## R tests and assembly
+
+`/tmp/umvl-cpu/run4 nice -n 10 env NOT_CRAN=true just test` regenerates the
+package and runs testthat. To run one assembled family file after generation:
+
+```sh
+/tmp/umvl-cpu/run env NOT_CRAN=true UMVL_DISTRIBUTIONS_DIR="$PWD/univariateML-cpp/include/cppunivariate/distributions" Rscript -e 'testthat::test_local("univariateML-r", filter="dist-exp", stop_on_failure=TRUE)'
+```
+
+Use `filter="golden_regression"`, `"conformance"`, `"generated-dpqr"`,
+`"parameter_infrastructure"`, `"restricted"` or `"scale_equivariance"`
+for a shared file. These loops generally cover all families and do not expose
+a family selector. Testthat reports failures, warnings, skips and passes.
+
+- [Golden regression](../../bindings/r/tests/testthat/test_golden_regression.R)
+  compares the rerun fit with stored estimates and likelihood. Tolerances are
+  family-specific where numerical search warrants them, with cross-machine
+  evidence documented there and in the C++ helper. Agreement is regression
+  evidence only.
+- [Conformance](../../bindings/r/tests/testthat/test_conformance.R) checks
+  adapter formals, required diagnostics and holdable subsets against metadata
+  and one golden sample per family. A successful held fit must retain held
+  coefficients and have finite output and likelihood no worse than the golden
+  beyond a per-observation allowance for finite-difference stopping error.
+  Declared structural hold exceptions or limit messages can explain an error.
+  It does not establish existence or optimality for other data.
+- [Generated d/p/q/r](../../bindings/r/tests/testthat/test-generated-dpqr.R)
+  samples rows from the same truth tables, checks dispatch, both tails and
+  quantiles, and checks seeded draws for repeatability, length, support and
+  integrality. It omits stats-dispatched families and missing tables; the R
+  sampler checks are not distributional accuracy tests. Its numerical tolerances
+  mirror the C++ consumer. Family [reference comparisons](../../bindings/r/tests/testthat/helper-reference.R)
+  use frozen `reference.json` values from fGarch, logitnorm, nakagami and
+  sads, with case-specific tolerances and provenance in
+  [reference_values.R](../../bindings/r/scripts/reference_values.R). Quantile
+  comparisons allow more rounding drift than direct d/p values. These are
+  independent implementation comparisons, subject to reference defects; see
+  [known issues](../KNOWN_ISSUES.md). Regeneration requires those optional R
+  packages and rewrites tracked fixtures.
+- [Restricted fits](../../bindings/r/tests/testthat/test_restricted.R),
+  [parameter infrastructure](../../bindings/r/tests/testthat/test_parameter_infrastructure.R),
+  family R tests and other testthat files check specific interface contracts,
+  restrictions, diagnostics, likelihood identities and examples. Synthetic
+  generator checks require the repository sources. [Scale equivariance](../../bindings/r/tests/testthat/test_scale_equivariance.R)
+  transforms seeded samples and held endpoints and compares pulled-back fits,
+  likelihoods or errors; search tolerances account for finite-difference and
+  profile variation. This identity can detect unit sensitivity, not prove
+  numerical accuracy. The [special-function comparison](../../bindings/r/tests/testthat/test_special.R)
+  uses Rmath on a fixed grid; its case tolerances are in the test, with no
+  separate rationale recorded.
+- `just gen` and `just regen` run the generation checks: [d/p/q/r signatures](../../bindings/r/scripts/codegen_dpqr.R)
+  must match coefficient order and types, while [wrappers](../../bindings/r/scripts/codegen_wrappers.R)
+  check controls, required/default arguments and examples; [metadata](../../bindings/r/scripts/codegen_metadata.R)
+  checks expression and shift mappings. Pass means generation completes;
+  signature compatibility does not establish numerical correctness. No
+  family selector is provided.
+
+`/tmp/umvl-cpu/run4 nice -n 10 just check-standalone` builds an R source
+package and checks it with repository reads denied by Linux Landlock; see the
+[script](../tools/r-standalone-check.sh). It unsets `NOT_CRAN`, uses installed
+system and user R dependencies, and includes vignettes. `just check` instead
+checks from the checkout without vignettes. The isolated check establishes
+package self-containment under that environment, not dependency independence.
+Under CRAN conditions [special.R](../../bindings/r/tests/testthat/test_special.R)
+uses `skip_on_cran`; optional `sn` comparison skips if `{sn}` is absent. Some
+repository-source tests skip if dossiers or codegen are unavailable. The
+[step-5 record](../research/evaluations/2026-10-30-r-standalone-report.md)
+identifies the actual skips in that run. An absent fixture may silently omit a
+family in generated d/p/q/r tests; count coverage separately.
+
+## Extended numerical audits
+
+- `/tmp/umvl-cpu/run nice -n 10 just quality exp` runs one family;
+  omit `exp` for all. [check.py](quality/harness/check.py) reads one golden
+  sample, dossier metadata and the symbolic density, preferring a local
+  `spec.py` when present. It recomputes likelihood with mpmath, differentiates
+  with SymPy, checks positive observed Hessian and standardized score or
+  one-sided boundary score, and compares with eight seeded SciPy
+  Nelder–Mead/BFGS starts. It holds endpoints, integer and golden-held
+  parameters; kinks are excluded from derivative checks. The likelihood and
+  optimizer gap tolerances are numerical comparison thresholds, not error
+  bounds; their original calibration is not documented. Results and skips
+  are written to `build/quality/`; a family passes if no component fails,
+  including when a component is skipped. The baseline skipped derivative and
+  oracle checks for dunif, hyper, nhyper and unif, and derivatives for Laplace
+  at its nonsmooth observation: see the [baseline](../research/evaluations/2026-10-30-migration-baseline.md).
+  An observed Hessian here is not model Fisher information.
+- `/tmp/umvl-cpu/run nice -n 10 just dpqr-truth exp` regenerates the tracked
+  `exp/truth.json` and its audit status JSON; omit the id for all. Inspect both
+  diffs. [truth.py](quality/truth.py),
+  [truth_reference.py](quality/truth_reference.py) and family `truth.py`
+  routes use mpmath, symbolic parsing, high-precision integration or controlled
+  sums, normalization and derivative checks, tail inversion and binary64
+  brackets. Files also contain elapsed times and a hash of the entire README,
+  so a rerun need not be byte-identical even when numerical rows are unchanged.
+  The [original methodology](../research/evaluations/2026-10-29-dpqr-truth/README.md)
+  explains quadrature, omitted-tail and precision thresholds. That report's
+  family failures and gaps are historical: later routes cover all 98 families
+  in the [baseline](../research/evaluations/2026-10-30-migration-baseline.md).
+  Truth regeneration exits nonzero on gaps. Both this route and the quality
+  harness derive from dossier log densities or local overrides: a shared
+  formula error can pass both. Higher precision does not independently verify
+  the model definition. Python dependencies, including optional mpmath, SciPy,
+  SymPy, NumPy and PyYAML, are listed in [pyproject.toml](quality/pyproject.toml).
+  Run their own tests with `/tmp/umvl-cpu/run env PYTHONPATH=dev/validation python3 -m unittest discover -s dev/validation/quality -p 'test_*.py'`.
+- The historical [slow sweep](../research/ml-behaviour-sweep.R) fits seeded
+  ordinary and edge datasets and compares selected R density likelihoods with
+  six transformed-coordinate starts. It retains valid starts as candidates,
+  holds binomial/Zipf integer size, and flags escape magnitudes and likelihood
+  gaps; the threshold is in the script. It has no family selector, writes a
+  tracked report and `/tmp` results, and uses optional `extraDistr`; do not run
+  it casually. Its selected density can be our own implementation, so the
+  optimization is independent of the fitter but the objective need not be.
+  A higher feasible likelihood is a counterexample only in the same parameter
+  space; restrictions can explain a discrepancy. A clean sweep cannot certify
+  globality or existence. Use its dated results with [ml-behaviour.tex](../research/ml-behaviour.tex).
+
+For portability, `/tmp/umvl-cpu/run4 nice -n 10 bash dev/tools/standalone-export.sh`
+exports the C++ tree, audits includes and builds/tests without R in PATH;
+it requires Boost headers and has no family selector. The script uses a
+private directory under the shared cache. `bash dev/tools/r-assembly-reproducibility.sh`
+under the slot lock generates twice and diffs source content, excluding compiler
+products; it does not prove reproducible tarball metadata. `python3 dev/tools/check_links.py`
+checks local Markdown link targets, not remote links or mathematical claims.
+See the [C++ export](../research/evaluations/2026-10-30-cpp-standalone-report.md)
+and [R assembly](../research/evaluations/2026-10-30-r-standalone-report.md) records.
+
+## Interpreting fitting evidence
+
+Existence is a property of a sample and parameter space. Proofs and unresolved
+conditions belong in each dossier's `## Details`, [ml-behaviour.tex](../research/ml-behaviour.tex),
+and the [hold](../research/evaluations/2026-10-30-holds-bbinom-report.md)
+and [limit](../research/evaluations/2026-10-29-p0b.md) reports. A finite
+candidate, optimizer convergence or a small score does not prove existence.
+A proof of globality needs appropriate inequalities, bounds or exhaustive
+finite enumeration. An eight-start oracle can expose a better candidate but
+cannot rule out a missed mode, boundary or limit. The slow sweep has the same
+limitation on a broader, finite sample collection.
+
+Optimizer convergence is a termination property. Some failed solves are
+accepted only when a finite free-coordinate total score passes the documented
+residual gate; see [wrapper failure handling](../../CLAUDE.md). This is a local
+stationarity check, not a maximum or global certificate. The symbolic quality
+score is standardized using observed curvature and is a different check.
+Numerical accuracy is supported at tested points by independent comparisons,
+closed-form cases and bounded routes; goldens alone establish stability.
+Consistency is an asymptotic statistical property under stated assumptions;
+none of these checks establishes it. Runtime is measured on a stated workload
+and machine, not implied by accuracy or convergence.
+
+## Known gaps
+
+- Quality skips endpoint, integer and held coordinates, and some complete
+  derivative/oracle checks as described above. The eight-start fit is limited
+  to the one golden dataset. An independent global oracle over all free subsets
+  and samples does not exist; [fitter inventory](../research/evaluations/2026-10-30-fitter-inventory.md)
+  records further unknowns and uncertified searches.
+- Truth tables vary up to eight historical points plus the README default,
+  often holding
+  design, integer and endpoints fixed; later coordinates can get little
+  variation. Even with a table for every family, regions between grid points
+  and attained parameter boundaries without dedicated closed-form cases remain
+  unchecked. Compare [truth generator](quality/truth.py) with each family
+  `test.cpp`; a table's endpoint observations are not a boundary-parameter grid.
+  The [reviewed baseline inventory](../research/evaluations/2026-10-30-migration-baseline.md)
+  found only quantile-endpoint evidence for, for example, fatigue and hnorm,
+  and fitter-only closed forms for zip and ztpois. Those categories do not
+  establish density closure at their boundaries.
+- Holds are generically exercised on golden data only. Unbounded size/design
+  searches and limit faces remain open in the [hold reports](../research/evaluations/2026-10-30-holds-cmb-report.md)
+  and [hyper report](../research/evaluations/2026-10-30-holds-hyper-report.md).
+- Sampler checks use two parameter points and selected body CDF thresholds;
+  tail probabilities, dependence between draws and rare errors have weak or
+  no coverage. R checks use only 32 draws per point for support/repeatability.
+- CRAN skips the Rmath special-function comparison; optional `{sn}` and
+  missing repository data cause the skips above. Inference coverage and test
+  calibration are separate gaps; see the [inference plan](../roadmap/2026-10-30-inference-and-dqm.md).
+
+## Run record
+
+Record: source commit and any working-tree changes; exact commands; OS,
+compiler, R, Boost/BH and Python with mpmath/SciPy versions; seeds and workloads;
+tolerances and their code definitions; results including failures, permitted
+failures, skips and missing coverage. Record whether references and fixtures
+were regenerated and their diffs. Dated [evaluation reports](../research/evaluations/)
+are historical evidence for their tested revisions, not live coverage claims.

@@ -1,14 +1,14 @@
-# Regression check against tests/golden/*.json.
+# Regression check against per-distribution golden.json fixtures.
 #
-# Goldens are produced by scripts/gen_goldens.R: same fixed-seed dataset
+# Goldens are produced by scripts/goldens.R: same fixed-seed dataset
 # and same default-parameter sampler per distribution. This test re-runs
-# the fit on the stored dataset and asserts that estimates and logLik reproduce
-# the recorded values bit-for-bit (1e-12 tolerance for FP noise).
+# the fit on the stored dataset and compares estimates and logLik with
+# the recorded values using the tolerances below.
 #
 # This is the canary for the C++ refactor (de-Armadillo, file split,
 # vendoring): a structural change that does not change algorithms must
 # leave these untouched. To intentionally accept a new baseline, re-run
-# scripts/gen_goldens.R and commit the diff.
+# scripts/goldens.R and inspect the diff.
 
 # The fixture helper defaults to test-only copies shipped in the source package;
 # UMVL_DISTRIBUTIONS_DIR can override them with canonical dossiers.
@@ -25,7 +25,7 @@ DISTRIBUTIONS_DIR <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR", "")
 # test_support.hpp's kFdTol comment for the same rule applied to C++ checks.
 GOLDEN_TOLERANCE <- c(
   # Finite-difference BFGS on (mu, log sigma, log(nu - 2)[, log xi]);
-  # default gradtol 3e-5 (univariateML-cpp/tests/test_support.hpp kFdTol).
+  # golden comparison tolerance 3e-5 (test_support.hpp kFdTol).
   # invparalogis is paralogis_mle run on 1/x, so it shares the same fitter
   # and default.
   std = 3e-5, ged = 3e-5, sstd = 3e-5,
