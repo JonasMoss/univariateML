@@ -14,7 +14,9 @@ own rationale live in `roadmap/`; work in flight is on the board
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
 - Tests on master 32b8dfe (simbox, 2026-10-30): C++ 6/6 ctest targets
   pass; R `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 30814 ]`; `just quality`
-  98/98. Truth-table checks (TASK-78) are `may_fail`.
+  98/98. TASK-78 merged (8471607): own internal d/p/q/r for every
+  non-stats family, all 98 truth tables pass; extraDistr and actuar are
+  no longer dependencies (simbox: R `[ FAIL 0 | PASS 34188 ]`, R CMD check OK).
 - simbox runs the full suite in about 15 minutes:
   `scripts/simbox-test.sh <label> [tree]` (rsync, then `cpp-test`, `test`,
   `quality`; setup notes in the script). No known failures there since
@@ -75,8 +77,10 @@ own rationale live in `roadmap/`; work in flight is on the board
     NEWS, `notes/ml-behaviour.tex`.
   - Refinement: the missing-coefficient message offers `NULL` even where
     estimating is unsupported (e.g. pareto2); derive that from `holds:`.
-  - For TASK-78 (own d/p/q/r): R7a closure in `dpqr.hpp`; NB/ZINB size 0;
-    legacy `special/cmp.hpp` API (notes on the board).
+  - TASK-78.14: R7a endpoint closure and attained boundary parameters in
+    every `dpqr.hpp` (pig shape 0 and ZINB size 0 done); NB size 0 in
+    `special::dnbinom`; legacy `special/cmp.hpp` API; sstd/sged multistart
+    gate (`core/multistart.hpp`).
 
 ## Coverage: tier 4 (vector parameters)
 
