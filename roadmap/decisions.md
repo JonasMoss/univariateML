@@ -8,6 +8,15 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-10-30
 
+- **User-facing defaults are standard members** (TASK-104): README
+  `simulate:` values, which `mlX()` uses for unspecified coefficients,
+  follow the scipy/distributions3 convention: location 0, scale 1, and the
+  standard or symmetric member where a family has one (GEV/GPD $\xi = 0$,
+  skew-normal $\alpha = 0$, Fernandez–Steel $\xi = 1$, GED $\nu = 2$);
+  otherwise a simple interior value. Because such members are often special
+  code branches, truth-table sampler checks also run at the golden-fit
+  point, a generic interior point. Named simulation scenarios can be added
+  later as a README list if needed.
 - **No densities are exported.** The package exports fitters,
   `dml`/`pml`/`qml`/`rml`, model selection, bootstrap and plots. Every
   d/p/q/r is internal, including the 18 families that had exported d/p/q/r

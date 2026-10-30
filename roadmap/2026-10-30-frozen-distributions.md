@@ -1,7 +1,7 @@
 # Frozen distributions through the fitters
 
-**Status:** agreed direction (Jonas, 2026-10-30), not started. Planned after
-TASK-78.14; board task "frozen distributions".
+**Status:** landed 2026-10-30 (TASK-99, merge d0226d2). Defaults: standard
+members (TASK-104, decision log).
 
 No d/p/q/r are exported (decision 2026-10-30). Users still need to
 evaluate and simulate a family in its own parametrization, and examples

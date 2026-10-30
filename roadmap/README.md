@@ -126,6 +126,6 @@ the queue.
 - [2026-10-29 — Classical ML-failure families and a failure gallery](2026-10-29-classical-failure-families.md):
   skew-normal landed (mlsn); threshold families and skew-t deferred; taxonomy of failures.
 - [2026-10-30 — Frozen distributions through the fitters](2026-10-30-frozen-distributions.md)
-  *(agreed direction, not started)*: `mlX()` and `mlX(coef = ...)` without
+  *(landed 2026-10-30)*: `mlX()` and `mlX(coef = ...)` without
   data build a fixed model at README defaults; replaces `simulate_default`
   and `:::` in examples; no densities exported.
