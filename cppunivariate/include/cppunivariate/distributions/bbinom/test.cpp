@@ -275,3 +275,12 @@ TEST_CASE("bbinom: P3 unfinished optimizer is a failure") {
   const cppunivariate::ispan ix{values.data(),values.size()};
   CHECK(cppunivariate::bbinom_mle(ix,10,1e-8,1).status==cppunivariate::BbinomStatus::IterationFailure);
 }
+
+TEST_CASE("bbinom: unsupported free-size shape profiles never return an estimate") {
+  const std::vector<int> x{0, 1, 2, 4, 8};
+  for (const auto &shapes : std::vector<std::pair<double, double>>{
+           {kNaN, kNaN}, {2.0, kNaN}, {kNaN, 3.0}}) {
+    const auto result = fit(x, kNaN, shapes.first, shapes.second);
+    CHECK(result.status == cppunivariate::BbinomStatus::InvalidInput);
+  }
+}

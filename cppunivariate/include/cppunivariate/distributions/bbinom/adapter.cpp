@@ -14,7 +14,12 @@ Rcpp::List mlbbinom_(const Rcpp::IntegerVector &x, Rcpp::Nullable<double> size,
   const double N = size.isNotNull()?Rcpp::as<double>(size):std::numeric_limits<double>::quiet_NaN();
   if (size.isNotNull() && (!std::isfinite(N) || N < 0 || N != std::floor(N) || N > 1e7))
     Rcpp::stop("`size` must be a nonnegative integer (at most 1e7).");
-  if(size.isNull() && (alpha.isNull() || beta.isNull()))Rcpp::stop("P0 leaves the free-size boundary comparison unresolved: fixed-size binomial and two-point escapes must be profiled over size, the negative-binomial face must respect held shapes, and no reliable integer-tail stopping rule is available.");
+  if (size.isNull() && alpha.isNull() && beta.isNull())
+    Rcpp::stop("Free size requires comparing all fixed-size binomial and two-point faces with the negative-binomial and Poisson limits; no reliable integer-tail stopping rule is available.");
+  if (size.isNull() && alpha.isNotNull() && beta.isNull())
+    Rcpp::stop("Free size with held alpha requires comparison with the negative-binomial limit of the same shape; no reliable integer-tail stopping rule is available.");
+  if (size.isNull() && alpha.isNull() && beta.isNotNull())
+    Rcpp::stop("Free size with held beta has a proved tail bound, but it is too weak for practical enumeration; fixed-size point-mass limits also require comparison.");
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = alpha.isNotNull() ? Rcpp::as<double>(alpha) : nan;
   const double b = beta.isNotNull() ? Rcpp::as<double>(beta) : nan;
