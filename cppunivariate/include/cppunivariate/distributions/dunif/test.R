@@ -31,3 +31,11 @@ test_that("discrete uniform holds maximize enumerated reference likelihoods", {
   for(args in list(list(min=1),list(max=2),list(min=.5),list(max=Inf),list(min=NA_real_),list(max=NaN)))
     expect_error(do.call(mldunif,c(list(x=0:3),args)))
 })
+
+test_that("dunif singleton fitted law is constant", {
+  fit <- mldunif(rep(3,4))
+  expect_equal(dml(c(2,3),fit),c(0,1))
+  expect_equal(pml(c(2,3),fit),c(0,1))
+  expect_equal(qml(c(0,.5,1),fit),rep(3,3))
+  expect_equal(rml(10,fit),rep(3,10))
+})

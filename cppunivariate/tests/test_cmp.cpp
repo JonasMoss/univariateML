@@ -54,10 +54,11 @@ TEST_CASE("CMP statuses and fixed parameter paths") {
     std::vector<double> empty, zero(4,0), constant(4,3), adjacent{3,4,4,3};
     std::vector<double> geometric{0,0,0,0,0,0,0,0,1,9};
     CHECK(cppunivariate::cmp_mle({empty.data(),empty.size()}).status == cppunivariate::CmpStatus::InvalidInput);
-    for (const auto& x : {zero,constant})
+    CHECK(cppunivariate::cmp_mle({zero.data(),zero.size()}).status == cppunivariate::CmpStatus::Ok);
+    for (const auto& x : {constant})
         CHECK(cppunivariate::cmp_mle({x.data(),x.size()}).status == cppunivariate::CmpStatus::PointMassLimit);
     CHECK(cppunivariate::cmp_mle({adjacent.data(),adjacent.size()}).status == cppunivariate::CmpStatus::TwoPointLimit);
-    CHECK(cppunivariate::cmp_mle({geometric.data(),geometric.size()}).status == cppunivariate::CmpStatus::GeometricLimit);
+    CHECK(cppunivariate::cmp_mle({geometric.data(),geometric.size()}).status == cppunivariate::CmpStatus::Ok);
     for (double x : {-1., .5, cppunivariate::special::kPosInf}) {
         std::vector<double> bad{x};
         CHECK(cppunivariate::cmp_mle({bad.data(),bad.size()}).status == cppunivariate::CmpStatus::InvalidInput);
@@ -82,7 +83,7 @@ TEST_CASE("CMP statuses and fixed parameter paths") {
     REQUIRE(f.status == cppunivariate::CmpStatus::Ok);
     CHECK(cppunivariate::cmp_moments(f.eta,f.nu).mean_h == doctest::Approx(f.mean_h).epsilon(1e-9));
     ctl.fixed_lambda=.5;
-    CHECK(cppunivariate::cmp_mle({geometric.data(),geometric.size()},ctl).status == cppunivariate::CmpStatus::GeometricLimit);
+    CHECK(cppunivariate::cmp_mle({geometric.data(),geometric.size()},ctl).status == cppunivariate::CmpStatus::Ok);
     ctl.fixed_lambda=2;
     std::vector<double> bernoulli{0,1,1};
     CHECK(cppunivariate::cmp_mle({bernoulli.data(),bernoulli.size()},ctl).status == cppunivariate::CmpStatus::TwoPointLimit);
@@ -181,7 +182,7 @@ TEST_CASE("CMP geometric tie tolerance and narrow high-count data") {
     std::vector<double> geometric;
     for (int k=0;k<25;++k)
         geometric.insert(geometric.end(),static_cast<std::size_t>(std::round(1000000*std::pow(.5,k+1))),k);
-    CHECK(cppunivariate::cmp_mle({geometric.data(),geometric.size()}).status == cppunivariate::CmpStatus::GeometricLimit);
+    CHECK(cppunivariate::cmp_mle({geometric.data(),geometric.size()}).status == cppunivariate::CmpStatus::Ok);
     const std::vector<double> x{2147483645.,2147483646.,2147483647.};
     const auto f=cppunivariate::cmp_mle({x.data(),x.size()});
     INFO("nu=" << f.nu << " eta=" << f.eta << " iterations=" << f.iterations << " work=" << f.work);

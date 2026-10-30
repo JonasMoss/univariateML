@@ -1,4 +1,4 @@
-// Truncated normal d/p/q/r on (a, b); density is zero at the bounds.
+// Truncated normal d/p/q/r on [a, b]; finite bounds use the inside density limit.
 // Use normal log-tail ratios, with local quadrature for narrow intervals
 // and parent parameters whose standardization loses endpoint offsets.
 #pragma once
@@ -64,7 +64,7 @@ inline bool tnorm_linear_endpoint(double log_distance, double log_scale,
 
 inline double dtnorm(double x, double mean, double sd, double a, double b, bool log) {
   if (!tnorm_valid(mean, sd, a, b) || std::isnan(x)) return std::numeric_limits<double>::quiet_NaN();
-  if (!(x > a && x < b)) return log ? -std::numeric_limits<double>::infinity() : 0.0;
+  if (!std::isfinite(x) || x < a || x > b) return log ? -std::numeric_limits<double>::infinity() : 0.0;
   const auto c = tnorm_coordinates(mean, sd, a, b);
   const double u = (x - c.centre) / c.scale;
   const double ld = u * (c.t1 + c.t2 * u) - std::log(c.scale) -

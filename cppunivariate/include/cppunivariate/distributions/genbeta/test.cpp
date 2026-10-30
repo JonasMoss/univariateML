@@ -104,3 +104,10 @@ TEST_CASE("genbeta: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::genbeta_mle(x,1,1e-8,1).status==cppunivariate::GenbetaStatus::SearchUnresolved);
 }
+
+TEST_CASE("genbeta finite upper density limit preserves log range") {
+  // shape2=1: f(scale)=shape1*shape3/scale, from B(a,1)=1/a.
+  CHECK(cppunivariate::distributions::dgenbeta(3,1e308,1,2,3,true)==
+        doctest::Approx(std::log(1e308)+std::log(2.)-std::log(3.)));
+  CHECK(cppunivariate::distributions::dgenbeta(3,2,1,2,3,false)==doctest::Approx(4./3));
+}

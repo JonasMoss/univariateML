@@ -88,3 +88,12 @@ test_that("truncated-normal tail evaluation agrees with normal log tails", {
                      lower.tail = lower, log.p = TRUE), lp, tolerance = 1e-9)
   }
 })
+
+test_that("tnorm includes finite endpoint density limits", {
+  fit <- mltnorm(c(-.5,0,.5), mean=0, sd=1, a=-1, b=1)
+  f <- dnorm(1)/(pnorm(1)-pnorm(-1))
+  expect_equal(dml(c(-1,1),fit),rep(f,2))
+  expect_equal(dml(c(-1,1),fit,log=TRUE),rep(log(f),2))
+  expect_equal(pml(c(-1,1),fit),c(0,1))
+  expect_equal(qml(c(0,1),fit),c(-1,1))
+})

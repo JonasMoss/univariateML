@@ -150,3 +150,10 @@ test_that("P3 size-zero boundary holds and free representatives are attained", {
   expect_equal(fit[["size"]],0)
   expect_equal(attr(fit,"logLik"),0)
 })
+
+test_that("NB size-zero evaluation includes tails and quantile endpoints", {
+  fit <- mlnbinom(rep(0,3),size=0,prob=.4)
+  expect_equal(dml(c(0,1),fit,log=TRUE),c(0,-Inf))
+  expect_equal(pml(c(-1,0),fit,lower.tail=FALSE),c(1,0))
+  expect_equal(qml(c(0,.5,1),fit),c(0,0,0))
+})

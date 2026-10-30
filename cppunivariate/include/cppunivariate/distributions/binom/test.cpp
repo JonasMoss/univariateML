@@ -195,3 +195,9 @@ TEST_CASE("binom: free size search budget is iterations, not a magnitude cap") {
   const auto ok = cppunivariate::binom_mle(as_ispan(x), std::numeric_limits<double>::quiet_NaN(), 1e-10, 1000);
   CHECK(ok.status == cppunivariate::BinomStatus::Ok);
 }
+
+TEST_CASE("binom attained point sampler ignores zero uniform") {
+  // At success probability one the (possibly truncated) law is delta_size.
+  struct ZeroRng { double runif(double,double) { return 0; } } rng;
+  CHECK(cppunivariate::distributions::rbinom(rng,5,1)==5);
+}

@@ -59,6 +59,8 @@ inline double qdunif(double p,double min,double max,bool lower_tail,bool log_p) 
 
 template <typename Rng>
 inline double rdunif(Rng &rng, double min, double max) {
+  if (!detail::dunif_valid_params(min,max)) return special::kNaN;
+  if (min==max) return min;
   const double u = rng.runif(0.0, 1.0);
   return std::ceil(u * (max - min + 1.0) + min - 1.0);
 }

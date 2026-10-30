@@ -37,6 +37,8 @@ inline double qzib(double p,double size,double prob,double pi,bool lower_tail=tr
   return hi;
 }
 template <typename Rng> inline double rzib(Rng &rng,double size,double prob,double pi) {
+  if (size==0 || prob==0 || pi==1 || (pi==0 && prob==1))
+    return qzib(.5,size,prob,pi);
   return qzib(rng.runif(0,1),size,prob,pi);
 }
 } }

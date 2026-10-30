@@ -91,3 +91,9 @@ TEST_CASE("zmbinom: P3 unfinished optimizer is a failure") {
   const cppunivariate::ispan ix{values.data(),values.size()};
   CHECK(cppunivariate::zmbinom_mle(ix,1e-8,1).status==cppunivariate::ZmbinomStatus::IterationFailure);
 }
+
+TEST_CASE("zmbinom attained point sampler ignores zero uniform") {
+  // At success probability one the (possibly truncated) law is delta_size.
+  struct ZeroRng { double runif(double,double) { return 0; } } rng;
+  CHECK(cppunivariate::distributions::rzmbinom(rng,5,1,0)==5);
+}

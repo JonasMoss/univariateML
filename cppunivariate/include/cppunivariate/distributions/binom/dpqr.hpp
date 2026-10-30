@@ -76,6 +76,9 @@ inline double qbinom(double p, double size, double prob, bool lower_tail, bool l
 
 template <typename Rng>
 inline double rbinom(Rng &rng, double size, double prob) {
+  if (!(size>=0) || !std::isfinite(size) || size!=std::floor(size) || !(prob>=0 && prob<=1)) return special::kNaN;
+  if (size==0 || prob==0) return 0;
+  if (prob==1) return size;
   // Inverse-CDF via Uniform; matches R's behaviour for our test sizes.
   // For large `size` the sequential-Bernoulli alternative is faster but
   // not bit-equivalent to qbinom-on-uniform; we keep the simple path.

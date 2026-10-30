@@ -317,3 +317,40 @@ TEST_CASE("gpd: closed threshold and threshold collapse diagnostics") {
  const auto all=cppunivariate::gpd_mle(data);
  CHECK(all.status==cppunivariate::GpdStatus::InvalidData);
 }
+
+TEST_CASE("gpd R7a finite endpoint closed form") {
+  // xi=-1: GPD is uniform [mu,mu+sigma]; GEV has
+  // f(x)=exp((x-mu)/sigma-1)/sigma for x<=mu+sigma.
+  for (bool logarithm : {false,true}) {
+    CHECK(cppunivariate::distributions::dgpd(5,2,3,-1,logarithm) ==
+          doctest::Approx(logarithm ? -std::log(3.0) : 1.0/3));
+    CHECK(cppunivariate::distributions::dgpd(5,2,3,-0.5,logarithm) ==
+          doctest::Approx(logarithm ? -std::log(3.0)-std::log(2.0) : 1.0/6));
+    for (bool lower : {false,true}) {
+      CHECK(cppunivariate::distributions::pgpd(5,2,3,-1,lower,logarithm) ==
+            (logarithm ? (lower ? 0 : -INFINITY) : (lower ? 1 : 0)));
+      CHECK(cppunivariate::distributions::qgpd(logarithm ? (lower ? 0 : -INFINITY) : (lower ? 1 : 0),2,3,-1,lower,logarithm) == 5);
+    }
+  }
+}
+
+TEST_CASE("gpd xi minus one is the closed form limit law") {
+  // 0.1+0.7 rounds inside the exact binary64 support: the declared endpoint
+  // still has F=1 and S=0, including on the log scale.
+  for (bool lower : {false,true}) for (bool log : {false,true})
+    CHECK(cppunivariate::distributions::pgpd(.1+.7,.1,.7,-1,lower,log)==
+          (log ? (lower?0:-INFINITY) : (lower?1:0)));
+
+  // GPD xi=-1 is uniform; GEV xi=-1 is mu+sigma-sigma*Exp(1).
+  struct HalfRng { double runif(double,double) { return .5; } } rng;
+  CHECK(cppunivariate::distributions::rgpd(rng,2,3,-1)==doctest::Approx(3.5));
+  for (double lp : {-10000.,-10.,-1.,-.1}) {
+    const double x=cppunivariate::distributions::qgpd(lp,2,3,-1,true,true);
+    CHECK(x==doctest::Approx(2+3*std::exp(lp)));
+    if (lp > -100) CHECK(cppunivariate::distributions::pgpd(x,2,3,-1,true,true)==doctest::Approx(lp));
+  }
+  for (bool log : {false,true}) {
+    CHECK(cppunivariate::distributions::dgpd(8,2,3,-.5,log)==(log?-INFINITY:0));
+    CHECK(cppunivariate::distributions::dgpd(3.5,2,3,-2,log)==INFINITY);
+  }
+}

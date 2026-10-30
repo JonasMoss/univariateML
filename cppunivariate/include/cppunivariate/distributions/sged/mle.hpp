@@ -12,6 +12,7 @@
 #include "../sstd/hold_search.hpp"
 
 #include "../../core/bfgs.hpp"
+#include "../../core/multistart.hpp"
 #include "../../core/finite_diff.hpp"
 #include "../../core/reductions.hpp"
 #include "../../core/reparam.hpp"
@@ -337,6 +338,8 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
     }
     prefix += c;
   }
+  double attempted=best.logLik;
+  bool accepted=false;
   const double objective_divisor = n>=100000 ? dn : 1.0;
   SgedFitCost cost{span{z.data(), z.size()},objective_divisor};
   finite_diff_cost<SgedFitCost> fd{cost};
@@ -347,12 +350,10 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
   for (double xi0 : {0.5, 1.0, 2.0}) {
     const double phi0[4] = {0.0, 0.0, std::log(nu0 - 1.0), std::log(xi0)};
     auto r = bfgs_minimize(fd, phi0, ctl);
-    if (r.status != BfgsStatus::Ok && r.theta.size()==4) {
-      // A failed optimizer is usable only at a stationary returned point.
-      double g[4]; fd.gradient(r.theta.data(),g);
-      double norm=0; for(double v:g) norm+=v*v*objective_divisor*objective_divisor;
-      if(std::sqrt(norm)<1e-3) r.status=BfgsStatus::Ok;
-    }
+    if (std::isfinite(r.f)) attempted=std::max(attempted,-r.f*objective_divisor);
+    if (!bfgs_candidate_acceptable(r,objective_divisor)) continue;
+    accepted=true;
+    r.status=BfgsStatus::Ok;
     r.f *= objective_divisor;
     if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
       best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
@@ -362,6 +363,7 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
     }
   }
   }
+  if (!accepted && attempted>best.logLik+tie) best.status=SgedStatus::BfgsFailure;
   // Half-GED profile: log a = (log nu + log mean(y^nu))/nu.
   // Scale y to [0,1] and use log sums to avoid power overflow.
   for (int side : {1, -1}) {
@@ -385,14 +387,14 @@ inline SgedResult sged_mle_free(span x, double tol, int maxit) {
       const double t = (lo+hi)/2, candidate = profile(t);
       if (candidate > ll) { ll = candidate; shape = std::exp(t); }
     }
-    if (ll > best.logLik + tie) {
+    if (ll > std::max(best.logLik,attempted) + tie) {
       best.logLik = ll; best.nu = shape;
       best.status = side == 1 ? SgedStatus::RightHalfGedBoundary
                               : SgedStatus::LeftHalfGedBoundary;
     }
   }
   const double uniform = -dn * std::log(z.back() - z.front());
-  if (uniform > best.logLik + tie ||
+  if (uniform > std::max(best.logLik,attempted) + tie ||
       ((best.status == SgedStatus::RightHalfGedBoundary ||
         best.status == SgedStatus::LeftHalfGedBoundary) &&
        uniform >= best.logLik - tie)) {

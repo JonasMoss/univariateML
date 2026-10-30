@@ -157,3 +157,11 @@ test_that("zib: free size, probability and mixture agree with a reference-densit
                  tolerance = 1e-8)
   }
 })
+
+test_that("zib attained point member evaluates and samples exactly", {
+  fit <- mlzib(rep(5,4),size=5,prob=1,pi=0)
+  expect_equal(dml(c(4,5),fit),c(0,1))
+  expect_equal(pml(c(4,5),fit),c(0,1))
+  expect_equal(qml(.5,fit),5)
+  expect_equal(rml(10,fit),rep(5,10))
+})

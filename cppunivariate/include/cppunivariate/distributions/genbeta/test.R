@@ -183,3 +183,11 @@ test_that("genbeta: P3 unfinished optimizer stops", {
 test_that("genbeta: P3 held profile exhaustion stops", {
   expect_error(mlgenbeta(c(.2,.3,.5,.8),scale=1,shape1=2,shape2=3,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
 })
+
+test_that("genbeta upper endpoint uses its finite inside limit", {
+  fit <- mlgenbeta(c(1,2),scale=3,shape1=2,shape2=1,shape3=2)
+  expect_equal(dml(3,fit),4/3)
+  expect_equal(dml(3,fit,log=TRUE),log(4/3))
+  expect_equal(pml(3,fit),1)
+  expect_equal(qml(1,fit),3)
+})

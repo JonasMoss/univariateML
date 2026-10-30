@@ -53,3 +53,23 @@ TEST_CASE("CMP P3 family entry includes zero and geometric members") {
  CHECK(std::exp(r.eta)==doctest::Approx(2.5/3.5));
  CHECK(r.logLik==doctest::Approx(10*std::log(2.5/3.5)+4*std::log(1/3.5)));
 }
+
+TEST_CASE("CMP legacy entry returns attained geometric and point laws") {
+  // nu=0: P(X=k)=(1-lambda)*lambda^k; lambda=0: delta_0.
+  const std::vector<double> zero{0,0}, geometric{0,0,0,10};
+  const auto g=cppunivariate::cmp_mle({geometric.data(),geometric.size()});
+  REQUIRE(g.status==cppunivariate::CmpStatus::Ok);
+  CHECK(g.nu==0);
+  const double lambda=2.5/3.5;
+  CHECK(std::exp(g.eta)==doctest::Approx(lambda));
+  for (bool log : {false,true}) {
+    CHECK(cppunivariate::distributions::dcmp(2,lambda,0,log)==doctest::Approx(log?std::log1p(-lambda)+2*std::log(lambda):(1-lambda)*lambda*lambda));
+    for (bool lower : {false,true}) {
+      const double p=lower?1-std::pow(lambda,3):std::pow(lambda,3);
+      CHECK(cppunivariate::distributions::pcmp(2,lambda,0,lower,log)==doctest::Approx(log?std::log(p):p));
+    }
+  }
+  cppunivariate::CmpFitControl ctl; ctl.fixed_lambda=0; ctl.fixed_nu=0;
+  const auto z=cppunivariate::cmp_mle({zero.data(),zero.size()},ctl);
+  CHECK(z.status==cppunivariate::CmpStatus::Ok); CHECK(z.eta==-INFINITY); CHECK(z.logLik==0);
+}

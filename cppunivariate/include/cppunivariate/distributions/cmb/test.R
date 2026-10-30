@@ -184,3 +184,11 @@ test_that("CMB: varying dispersion with held probability reaches a geometric law
   expect_true(all(diff(errors)<0))
   expect_lt(tail(errors,1),.015)
 })
+
+test_that("cmb attained point member evaluates and samples exactly", {
+  fit <- mlcmb(rep(5,4),size=5,prob=1,nu=2)
+  expect_equal(dml(c(4,5),fit),c(0,1))
+  expect_equal(pml(c(4,5),fit),c(0,1))
+  expect_equal(qml(.5,fit),5)
+  expect_equal(rml(10,fit),rep(5,10))
+})

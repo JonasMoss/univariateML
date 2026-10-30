@@ -348,13 +348,20 @@ inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
     if (x.empty() || !(ctl.tol > 0 && ctl.tol < 1) || ctl.maxit < 1 ||
         (!std::isnan(ctl.fixed_nu) && !fn) ||
         (!std::isnan(ctl.fixed_lambda) && !fl) ||
-        (fn && ctl.fixed_nu < 0) || (fl && ctl.fixed_lambda <= 0)) return out;
+        (fn && ctl.fixed_nu < 0) || (fl && ctl.fixed_lambda < 0) || ctl.max_terms<2 ||
+        (fl && fn && ctl.fixed_nu==0 && ctl.fixed_lambda>=1)) return out;
     long double sx=0, sh=0;
     double xmin=special::kPosInf, xmax=0;
     for (double v : x) {
         if (!std::isfinite(v) || v < 0 || v != std::floor(v) || v > 2147483647.0) return out;
         sx+=v; sh+=std::lgamma(static_cast<long double>(v)+1);
         xmin=std::min(xmin,v); xmax=std::max(xmax,v);
+    }
+    if (fl && ctl.fixed_lambda==0 && xmax>0) return out;
+    if (xmax==0 && (!fl || ctl.fixed_lambda==0)) {
+        out.eta=special::kNegInf; out.nu=fn?ctl.fixed_nu:1;
+        out.logLik=0; out.mean=0; out.mean_h=0; out.status=CmpStatus::Ok;
+        return out;
     }
     const long double m=sx/x.size(), t=sh/x.size();
     const long double pivot=std::floor(m), adata=std::log(pivot+1);
@@ -401,7 +408,7 @@ inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
         if (v.status != CmpStatus::Ok) { out.status=v.status; return out; }
         geometric_eta=eg; geometric_ll=static_cast<double>(sx*eg-x.size()*v.log_z);
         if (t >= v.mean_h) {
-            out.eta=eg; out.nu=0; out.status=CmpStatus::GeometricLimit;
+            out.eta=eg; out.nu=0; out.status=CmpStatus::Ok;
             out.logLik=static_cast<double>(sx*eg-x.size()*v.log_z); return out;
         }
     }
@@ -427,7 +434,7 @@ inline CmpResult cmp_mle(span x, const CmpFitControl& ctl = {}) {
             if (!fn && std::isfinite(geometric_ll) &&
                 out.logLik-geometric_ll <= 1e-8*x.size()) {
                 out.eta=geometric_eta; out.nu=0; out.logLik=geometric_ll;
-                out.status=CmpStatus::GeometricLimit;
+                out.status=CmpStatus::Ok;
             }
             return out;
         }

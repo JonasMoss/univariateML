@@ -198,3 +198,13 @@ test_that("GEV tiny shapes approach Gumbel and logarithmic tails invert", {
                      lower.tail = lower, log.p = TRUE), lp, tolerance = 1e-10)
   }
 })
+
+test_that("gev evaluates its attained xi=-1 endpoint", {
+  fit <- suppressWarnings(mlgev(c(2,3,4), mu=2, sigma=3, xi=-1))
+  expect_equal(dml(5, fit), 1/3)
+  expect_equal(dml(5, fit, log=TRUE), -log(3))
+  expect_equal(pml(5, fit), 1)
+  expect_equal(pml(5, fit, lower.tail=FALSE, log.p=TRUE), -Inf)
+  expect_equal(qml(1, fit), 5)
+  expect_equal(qml(-Inf, fit, lower.tail=FALSE, log.p=TRUE), 5)
+})
