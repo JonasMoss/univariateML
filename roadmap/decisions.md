@@ -8,6 +8,27 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-10-30
 
+- **Dossier prose schema adopted** (Jonas; TASK-101.2): family READMEs
+  carry the fitting method in `## Details` and an optional
+  `## Decision history`, which stays source-only (dossier and future
+  site, not R help). Pilot: exp, gamma, gb2; proposal
+  `notes/evaluations/2026-10-30-dossier-schema-proposal.md`; schema in
+  `README_SCHEMA.md` ("Prose"). The per-family classification is finished
+  while filling dossiers (TASK-101.6) and the numerical inventory before
+  the simplification reviews (TASK-101.7).
+- **Migration layout** (TASK-101.3; Jonas: "do what you think fits the
+  vision best"): the plan's layout. `univariateML-cpp/` is the C++ library
+  (include paths and namespace stay `cppunivariate/`); each family folder
+  keeps the canonical dossier, `mle.hpp`, `dpqr.hpp`, `test.cpp`, golden
+  and truth table. R adapters and R tests move to
+  `bindings/r/distributions/<id>/`, with the authored R sources in
+  `bindings/r/`; the installable package is generated into the ignored
+  `univariateML-r/`. Status, roadmap, research notes, validation harness,
+  tools and the logo sources move under `dev/`. Why: a standalone C++
+  export cannot carry Rcpp adapters or testthat files, and a Python
+  binding will mirror `bindings/r/`. Per-family folders survive in each
+  layer, so D2 holds per layer.
+
 - **User-facing defaults are standard members** (TASK-104): README
   `simulate:` values, which `mlX()` uses for unspecified coefficients,
   follow the scipy/distributions3 convention: location 0, scale 1, and the

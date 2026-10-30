@@ -41,6 +41,18 @@ Only what cannot be read off the code or the front matter:
   not say (interpretation, history, caveats);
 - optional `## See also`: extra pointers beyond the density and the limit
   models, which are linked automatically.
+- `## Details` also carries the fitting method where it is not obvious
+  (adopted 2026-10-30, pilot: `exp`, `gamma`, `gb2`): what the fit
+  establishes (closed form, unique root, proved stopping rule, or only a
+  numerical search), the boundary and limit comparisons, the failure
+  behaviour, and links to evidence. Depth follows the problem: a condition
+  and a check for a closed form; objective, reduction, bracket and
+  uniqueness for a scalar solve; starts, basins, faces, fallbacks and open
+  guarantees for an involved search.
+- optional `## Decision history`: dated material choices with commit and
+  report links, including superseded approaches when they explain the
+  present design; unknown rationale is stated as unknown. It stays in the
+  dossier (and the future site): the R codegen does not render it in help.
 
 YAML 1.1 reads bare `n`, `N`, `y`, `Y` (and `yes`, `no`, `on`, `off`) as
 booleans, keys included: quote them (`name: "N"`, `"n": "N - m"`).
