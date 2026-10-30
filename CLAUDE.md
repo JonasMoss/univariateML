@@ -78,6 +78,8 @@ Open items and current test status: `STATUS.md`.
   Boost.Math on the C++ side.
 - Bayesian inference, MCMC, regression. Univariate density
   estimation only.
+- Families whose parameter vector has a user-chosen length (categorical,
+  finite mixtures such as `dmixpois`, `dmixnorm`); dropped 2026-10-30.
 - Bit-for-bit reproducibility across shells. Goldens use the C++
   core; R and Python results agree to that core's precision, not to
   scipy or fGarch.

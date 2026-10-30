@@ -4,7 +4,9 @@
 chose full coverage of both packages ("cover all of extraDistr and
 actuar"), including families whose unrestricted MLE does not exist; see
 [Full coverage plan](#full-coverage-plan-2026-10-29), which overrides the
-`dbhatt`, `dcat` and `dphtype` rows below. Tiers 1–3 are done (merged 2026-10-29); tier 4 (vector parameters) is not started.
+`dbhatt`, `dcat` and `dphtype` rows below. Tiers 1–3 are done (merged 2026-10-29). Tier 4 (vector parameters: `dcat`,
+`dmixpois`, `dmixnorm`) was dropped on 2026-10-30 ("ditch vector-parameters"):
+the package keeps a fixed, finite parameter list per model.
 
 The package fits univariate distributions with a fixed, finite number of
 parameters for each specified model. Covering another package does not
@@ -161,7 +163,8 @@ Changes to the review above:
 
 - `dbhatt` is included: three parameters, two escapes (normal as
   `a -> 0`, uniform as `sigma -> 0`).
-- `dcat` moves to the vector-parameter tier (empirical-frequency MLE).
+- `dcat` moves to the vector-parameter tier (empirical-frequency MLE); that
+  tier was dropped on 2026-10-30.
 - `dphtype` is out of scope: a phase-type law has many non-identified
   representations, and general phase-type fitting is a field of its own.
 - Tukey lambda was missing from the inventory, which scans only
@@ -184,5 +187,5 @@ Changes to the review above:
 | 1 | `hcauchy`, `ht`, `hnorm` with `mu` fixable (zero endpoint), `slash`, `bhatt`, `tpois`/`tbinom` with known bounds, `dlaplace` | small; existence clear or a short analysis |
 | 2 | `pareto2`, `pareto3`, `pareto4`, `fpareto`, `nsbeta` (held threshold or bounds, delegating to `lomax`, `llogis`, `burr`, `gb2`, `beta`), `frechet` | the held-parameter-with-reason mechanism |
 | 3 | `dnorm`/`dgamma` (discretized), `skellam` (no `p`/`q` upstream), `nhyper` (negative binomial limit), `genbeta` with scale held (three shapes; unit-gamma limit, `mllgamma` on `1/x`), Tukey lambda (own d/p) | analysis projects, one job each |
-| 4 | `cat`, `mixpois`, `mixnorm` | needs vector parameters of user-chosen length first; mixtures have label switching and local maxima; free normal-mixture scales are unbounded |
+| 4 (dropped 2026-10-30) | `cat`, `mixpois`, `mixnorm` | needs vector parameters of user-chosen length first; mixtures have label switching and local maxima; free normal-mixture scales are unbounded |
 | out | 6 multivariate laws, `discretize`, `dphtype`, random-only helpers (`rcompound`, `rmixture`, `rcomppois`, `rcomphierarc`, `rcatlp`, `rsign`) | |

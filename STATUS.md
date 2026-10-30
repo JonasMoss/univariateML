@@ -10,7 +10,7 @@ own rationale live in `roadmap/`; work in flight is on the board
   `notes/evaluations/2026-10-29-density-coverage.html` (rebuild with
   `python3 notes/evaluations/2026-10-29-density-coverage.py`). actuar is
   fully covered except `dphtype` (out of scope); extraDistr except the
-  vector-parameter tier below and four documented restrictions (fatigue
+  dropped vector-parameter families and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
 - Tests on master 32b8dfe (simbox, 2026-10-30): C++ 6/6 ctest targets
   pass; R `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 30814 ]`; `just quality`
@@ -42,7 +42,6 @@ own rationale live in `roadmap/`; work in flight is on the board
   extraDistr maintainer has been unresponsive; a draft actuar patch for
   `dpoisinvgauss` is in `notes/evaluations/2026-10-29-pig/`. Nothing has
   been posted.
-- Tier 4 below: start it or not.
 - Parameter rules (R1–R8, amendments A1–A7 adopted):
   `roadmap/2026-10-29-parameter-rules.md`.
   - Done: P0 (existence analysis, `notes/evaluations/2026-10-29-p0-summary.md`),
@@ -82,19 +81,10 @@ own rationale live in `roadmap/`; work in flight is on the board
     `special::dnbinom`; legacy `special/cmp.hpp` API; sstd/sged multistart
     gate (`core/multistart.hpp`).
 
-## Coverage: tier 4 (vector parameters)
+## Coverage
 
-`dcat`, `dmixpois`, `dmixnorm` (`roadmap/2026-10-29-density-scope.md`).
-
-- Infrastructure first: parameter vectors whose length the user chooses
-  (number of categories or components) in README metadata, adapters,
-  `coef`, `logLik` degrees of freedom, `bootstrapml`, `model_select`.
-- `mlcat`: empirical frequencies; trivial once the infrastructure exists.
-- `mlmixpois`: bounded likelihood; EM with many starts; label switching;
-  merged or empty components are boundary points.
-- `mlmixnorm`: unbounded with free component scales (a component
-  collapses on an observation); support held scales and equal scales;
-  local maxima cannot be certified.
+The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
+2026-10-30: out of scope (CLAUDE.md, "Out of vision").
 
 ## Robustness
 

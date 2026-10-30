@@ -58,11 +58,11 @@ add('extraDistr', 'Equivalent', {
 })
 add('extraDistr', 'Partial / restricted', {
     'dfatigue': 'mlfatigue fixes mu=0; free location gives an unbounded likelihood (derivation in its README).',
-    'dgev': 'mlgev restricts xi to [-0.5,1]; unrestricted xi<-1 admits endpoint blow-up.',
-    'dgpd': 'mlgpd uses a fixed threshold and xi>=-0.5.',
+    'dgev': 'mlgev restricts xi to [-1,1]; unrestricted xi<-1 admits endpoint blow-up.',
+    'dgpd': 'mlgpd uses a fixed threshold and xi>=-1.',
     'dlst': 'mllst restricts df>=1; unrestricted df>0 has scale-collapse paths.',
 })
-add('extraDistr', 'Vector-parameter tier (planned)', {
+add('extraDistr', 'Excluded vector-parameter (dropped 2026-10-30)', {
     'dcat': 'Empirical-frequency MLE; needs parameter vectors of user-chosen length.',
     'dmixnorm': 'Free component scales: unbounded likelihood; held or equal scales are bounded. Label switching, local maxima.',
     'dmixpois': 'Bounded likelihood; component count, identification and merging boundaries.',

@@ -21,7 +21,7 @@ name. <b>Partial / restricted</b> is deliberately not counted as full coverage.<
 <tr><td>Covered</td><td>36</td><td>28</td></tr>
 <tr><td>Equivalent</td><td>5</td><td>4</td></tr>
 <tr><td>Excluded multivariate</td><td>6</td><td>0</td></tr>
-<tr><td>Vector-parameter tier (planned)</td><td>3</td><td>0</td></tr>
+<tr><td>Excluded vector-parameter (dropped 2026-10-30)</td><td>3</td><td>0</td></tr>
 <tr><td>Partial / restricted</td><td>4</td><td>0</td></tr>
 <tr><td>Covered (endpoint held)</td><td>0</td><td>5</td></tr>
 <tr><td>Excluded utility</td><td>0</td><td>2</td></tr>
@@ -37,7 +37,7 @@ Poisson-inverse-Gaussian has two names. Its generalized Pareto is beta-prime, wh
 extraDistr's generalized Pareto is the threshold/EVT family. extraDistr's gamma-Poisson
 is negative binomial. A phase-type observation is scalar, so matrix-valued parameters
 do not make that law multivariate.</p>
-<h2>extraDistr 1.10.0.5</h2><p>54 d-prefixed exports; 48 univariate density names; 41 covered or equivalent. Aliases remain separate rows.</p>
+<h2>extraDistr 1.10.0.5</h2><p>54 d-prefixed exports; 45 univariate density names; 41 covered or equivalent. Aliases remain separate rows.</p>
 <table><tr><th>Density</th><th>Status</th><th>Coverage / action</th></tr>
 <tr><td>dbbinom</td><td>Covered</td><td>mlbbinom; size is known, not estimated.</td></tr>
 <tr><td>dbern</td><td>Equivalent</td><td>mlbinom(x, size=1); Bernoulli is binomial.</td></tr>
@@ -46,7 +46,7 @@ do not make that law multivariate.</p>
 <tr><td>dbnbinom</td><td>Covered</td><td>mlbnbinom; see its identification and boundary policy.</td></tr>
 <tr><td>dbvnorm</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
 <tr><td>dbvpois</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
-<tr><td>dcat</td><td>Vector-parameter tier (planned)</td><td>Empirical-frequency MLE; needs parameter vectors of user-chosen length.</td></tr>
+<tr><td>dcat</td><td>Excluded vector-parameter (dropped 2026-10-30)</td><td>Empirical-frequency MLE; needs parameter vectors of user-chosen length.</td></tr>
 <tr><td>ddgamma</td><td>Covered</td><td>mldgamma; data on two adjacent integers escape to a shifted Bernoulli.</td></tr>
 <tr><td>ddirichlet</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
 <tr><td>ddirmnom</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
@@ -56,9 +56,9 @@ do not make that law multivariate.</p>
 <tr><td>ddweibull</td><td>Covered</td><td>mldweibull</td></tr>
 <tr><td>dfatigue</td><td>Partial / restricted</td><td>mlfatigue fixes mu=0; free location gives an unbounded likelihood (derivation in its README).</td></tr>
 <tr><td>dfrechet</td><td>Covered</td><td>mlfrechet; free mu restricts lambda &gt;= 1 (GEV xi &lt;= 1), held mu is mlinvweibull on x - mu.</td></tr>
-<tr><td>dgev</td><td>Partial / restricted</td><td>mlgev restricts xi to [-0.5,1]; unrestricted xi&lt;-1 admits endpoint blow-up.</td></tr>
+<tr><td>dgev</td><td>Partial / restricted</td><td>mlgev restricts xi to [-1,1]; unrestricted xi&lt;-1 admits endpoint blow-up.</td></tr>
 <tr><td>dgompertz</td><td>Covered</td><td>mlgompertz</td></tr>
-<tr><td>dgpd</td><td>Partial / restricted</td><td>mlgpd uses a fixed threshold and xi&gt;=-0.5.</td></tr>
+<tr><td>dgpd</td><td>Partial / restricted</td><td>mlgpd uses a fixed threshold and xi&gt;=-1.</td></tr>
 <tr><td>dgpois</td><td>Equivalent</td><td>mlnbinom; gamma mixing of a Poisson is negative binomial, not generalized Poisson.</td></tr>
 <tr><td>dgumbel</td><td>Covered</td><td>mlgumbel</td></tr>
 <tr><td>dhcauchy</td><td>Covered</td><td>mlhcauchy</td></tr>
@@ -72,8 +72,8 @@ do not make that law multivariate.</p>
 <tr><td>dlgser</td><td>Covered</td><td>mllgser</td></tr>
 <tr><td>dlomax</td><td>Covered</td><td>mllomax</td></tr>
 <tr><td>dlst</td><td>Partial / restricted</td><td>mllst restricts df&gt;=1; unrestricted df&gt;0 has scale-collapse paths.</td></tr>
-<tr><td>dmixnorm</td><td>Vector-parameter tier (planned)</td><td>Free component scales: unbounded likelihood; held or equal scales are bounded. Label switching, local maxima.</td></tr>
-<tr><td>dmixpois</td><td>Vector-parameter tier (planned)</td><td>Bounded likelihood; component count, identification and merging boundaries.</td></tr>
+<tr><td>dmixnorm</td><td>Excluded vector-parameter (dropped 2026-10-30)</td><td>Free component scales: unbounded likelihood; held or equal scales are bounded. Label switching, local maxima.</td></tr>
+<tr><td>dmixpois</td><td>Excluded vector-parameter (dropped 2026-10-30)</td><td>Bounded likelihood; component count, identification and merging boundaries.</td></tr>
 <tr><td>dmnom</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
 <tr><td>dmvhyper</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
 <tr><td>dnhyper</td><td>Covered</td><td>mlnhyper; known population N and stopping count r, estimates m.</td></tr>
