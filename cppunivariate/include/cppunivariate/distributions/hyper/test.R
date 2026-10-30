@@ -65,7 +65,7 @@ test_that("hyper exact searches agree with independent finite enumeration", {
 test_that("hyper explicit NULL and bootstrap retain the population design", {
   x <- c(1,2,3,2)
   expect_error(mlhyper(x,N=NULL,k=5), "binomial limit")
-  expect_error(mlhyper(x,N=20,k=NULL), "Estimating k")
+  expect_equal(attr(suppressWarnings(mlhyper(x,N=20,k=NULL)), "fixed"), "N")
   held <- mlhyper(x,N=20,k=5,m=8)
   set.seed(130)
   b <- bootstrapml(held,reps=4,reducer=identity)
@@ -101,3 +101,22 @@ test_that("fully free hyper reports the unsupported global comparison", {
   expect_error(mlhyper(c(1, 2), N = NULL, k = NULL, m = NULL),
                "not implemented.*Poisson")
 })
+
+ test_that("held N joint hyper grid matches stats enumeration", {
+  samples <- c(list(0, rep(0,100), 4, rep(3,80), c(0,6), c(5,6,6)),
+    lapply(1:20, function(i) rep((0:6)[(i %% 4 + 1):7], (i %% 5)+1)))
+  for (x in samples) {
+    N <- 14
+    grid <- expand.grid(m=0:N,k=0:N)
+    grid <- grid[order(grid$m,grid$k),]
+    ll <- apply(grid,1,function(z) sum(stats::dhyper(x,z[1],N-z[1],z[2],log=TRUE)))
+    best <- max(ll)
+    z <- grid[which(is.finite(ll) & abs(ll-best)<=64*.Machine$double.eps*abs(best))[1],]
+    f <- mlhyper(x,N=N,k=NULL)
+    expect_equal(as.numeric(f),c(z$m,N,z$k))
+    expect_equal(as.numeric(logLik(f)),best,tolerance=1e-10)
+    expect_identical(attr(f,"fixed"),"N")
+  }
+  expect_error(mlhyper(c(0,15),N=14,k=NULL),"positive probability")
+  expect_error(mlhyper(c(0,1),N=10000,k=NULL),"numerical failure.*budget")
+ })

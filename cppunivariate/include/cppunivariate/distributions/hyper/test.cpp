@@ -268,7 +268,7 @@ TEST_CASE("hyper: escapes, nonidentification and invalid designs") {
   const std::vector<double> y{1, 2};
   CHECK(cppunivariate::hyper_mle(as_span(y), 5, kNaN, kNaN).status == cppunivariate::HyperStatus::BothFree);
   const double big = 9007199254740992.0;  // 2^53
-  for (double k : {2.5, -1.0, kNaN, big})
+  for (double k : {2.5, -1.0, big})
     CHECK(cppunivariate::hyper_mle(as_span(y), k, 10, kNaN).status == cppunivariate::HyperStatus::InvalidInput);
   CHECK(cppunivariate::hyper_mle(as_span(y), 5, big, kNaN).status == cppunivariate::HyperStatus::InvalidInput);
   CHECK(cppunivariate::hyper_mle(as_span(y), 5, 4, kNaN).status == cppunivariate::HyperStatus::InvalidInput);
@@ -392,4 +392,23 @@ TEST_CASE("hyper: free draws agree with a complete finite grid") {
       CHECK(fit.N == N);
       CHECK(std::fabs(fit.logLik - best) < 1e-11);
     }
+}
+
+TEST_CASE("hyper: held population joint finite grid") {
+  for (int N = 2; N <= 18; ++N) for (int a = 0; a <= N; ++a) {
+    const std::vector<double> x{double(a), double(std::min(N, a + 2))};
+    const auto f = cppunivariate::hyper_mle(mltest::as_span(x), kNaN, N, kNaN);
+    long double best = -1e100L;
+    for (int m = 0; m <= N; ++m) for (int k = 0; k <= N; ++k) {
+      if (x.back() > std::min(m,k) || x.front() < k-(N-m)) continue;
+      best = std::max(best, brute_ll(x,N,m,k));
+    }
+    if (best == -1e100L) { CHECK(f.status == cppunivariate::HyperStatus::Infeasible); continue; }
+    CHECK(f.status == cppunivariate::HyperStatus::Ok);
+    CHECK(std::fabs(f.logLik-best) < 1e-11);
+    CHECK(f.N == N);
+    CHECK(f.m == std::floor(f.m)); CHECK(f.k == std::floor(f.k));
+  }
+  const std::vector<double> x{0,1};
+  CHECK(cppunivariate::hyper_mle(mltest::as_span(x),kNaN,10000,kNaN).status == cppunivariate::HyperStatus::NumericalFailure);
 }

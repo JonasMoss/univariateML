@@ -28,7 +28,7 @@ r:
   args: {m: m, "n": "N - m", k: k}
   sampler: stats::rhyper
   control:
-    k: "Number of draws per observation; explicit `NULL` estimates it when `m` and `N` are supplied."
+    k: "Number of draws per observation; explicit `NULL` estimates it with `N` supplied, jointly with `m` if free."
     "N": "Population size; explicit `NULL` estimates it, which requires `m`."
     m: "Number of successes `m` in the population; `NULL` (the default) estimates it, which requires `N`."
 log_density: "loggamma(m + 1) - loggamma(x + 1) - loggamma(m - x + 1) + loggamma(N - m + 1) - loggamma(k - x + 1) - loggamma(N - m - k + x + 1) - loggamma(N + 1) + loggamma(k + 1) + loggamma(N - k + 1)"
@@ -56,9 +56,6 @@ holds:
 - held: [m]
   status: not-implemented
   reason: Joint estimation of N and k requires a certified unbounded profile search.
-- held: ["N"]
-  status: not-implemented
-  reason: Estimating k jointly with m requires a certified finite-grid search.
 fit_args:
   'N': 50
   k: 10
@@ -72,8 +69,8 @@ is restored between repetitions.
 ## Details
 
 The number of draws `k` is a design quantity; explicit `NULL` estimates it
-when both `m` and `N` are supplied, using the symmetry of the likelihood in
-`m` and `k`.
+with `N` supplied. When `m` is also held, the fitter uses the symmetry
+of the likelihood in `m` and `k`.
 Supply also the population size `N` to estimate the number of successes
 `m`, or `m` to estimate `N` (capture-recapture with `m` marked items);
 supplying all three only evaluates the likelihood. The returned coefficients are
@@ -99,3 +96,15 @@ of exact whole numbers in double precision.
 ## See also
 
 [mlbinom()] with `size = k`, the limit as `N` grows with `m / N` fixed.
+
+Finite-grid fits use long-double sums of log-gamma differences. Hyper with
+only `N` held searches `m >= max(x)` and `max(x) <= k <= N-m+min(x)`.
+The grid bounds are exactly the common-support constraints; finiteness
+proves attainment.
+Two passes find the maximum then the lexicographically smallest coefficient
+vector within 64 double-precision ulps relative to the likelihood magnitude.
+These are numerical comparisons, not exact ordering certificates. A total
+budget of 10^7 candidate likelihood evaluations includes both passes;
+exceeding it, the exact-integer range, or encountering a nonfinite likelihood
+stops with numerical failure, without returning a partial maximum.
+New joint grids resolve ties silently; existing one-coordinate warnings remain.

@@ -123,3 +123,37 @@ TEST_CASE("nhyper: free stopping count agrees with a complete finite grid") {
       CHECK(std::fabs(fit.logLik - best) < 1e-11);
     }
 }
+
+TEST_CASE("nhyper: all three new finite grids versus inline enumeration") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  for (int a=1; a<=6; ++a) for (int b=a; b<=8; ++b) {
+    const std::vector<double> x{double(a),double(b),double(b)};
+    for (int mode=0; mode<3; ++mode) {
+      const int held_m=7, held_N=12, held_r=1;
+      const auto f=cppunivariate::nhyper_mle(mltest::as_span(x),mode==2?held_r:nan,mode==0?held_N:nan,mode==0?nan:held_m);
+      long double best=-1e100L;
+      for (int r=1;r<=a;++r) {
+        if(mode==2 && r!=held_r) continue;
+        for(int m=r;m<= (mode==0?held_N:held_m);++m) {
+          if(mode!=0 && m!=held_m) continue;
+          const int lo=mode==0?held_N:m+b-r;
+          const int hi=mode==0?held_N:std::max(lo,m*b/r);
+          for(int N=lo;N<=hi;++N) {
+            if(m>N-b+r) continue;
+            long double ll=0;
+            for(double v:x) ll+=std::lgamma(v)-std::lgamma(double(r))-std::lgamma(v-r+1)+std::lgamma(double(N)-v+1)-std::lgamma(double(m-r+1))-std::lgamma(double(N-m)-v+r+1)-std::lgamma(double(N+1))+std::lgamma(double(N-m+1))+std::lgamma(double(m+1));
+            best=std::max(best,ll);
+          }
+        }
+      }
+      CHECK(f.status==cppunivariate::NhyperStatus::Ok);
+      CHECK(std::fabs(f.logLik-best)<1e-10);
+      CHECK(f.m==std::floor(f.m)); CHECK(f.N==std::floor(f.N)); CHECK(f.r==std::floor(f.r));
+    }
+  }
+  const std::vector<double> x{1,100}, mixed{0,1}, zero{0,0};
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(x),1,nan,1e7).status==cppunivariate::NhyperStatus::NumericalFailure);
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(mixed),nan,nan,7).status==cppunivariate::NhyperStatus::Infeasible);
+  const auto z=cppunivariate::nhyper_mle(mltest::as_span(zero),nan,nan,7);
+  CHECK(z.N==7); CHECK(z.r==0); CHECK(z.logLik==0);
+}
