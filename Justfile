@@ -2,6 +2,16 @@ set shell := ["bash", "-lc"]
 
 repo_root := justfile_directory()
 
+# Compiler cache for every C++ build (R compiles go through ccache via
+# ~/.R/Makevars; CMake gets CMAKE_CXX_COMPILER_LAUNCHER in cpp-test). A
+# cache of its own, so other projects cannot evict it, and paths relative
+# to the checkout root, so the main checkout and every worktree share it.
+# The directory sits inside ~/.cache/ccache, which Codex jobs may write.
+export CCACHE_DIR := env_var_or_default("UMVL_CCACHE_DIR", env_var("HOME") + "/.cache/ccache/univariateML")
+export CCACHE_BASEDIR := repo_root
+export CCACHE_NOHASHDIR := "1"
+export CCACHE_MAXSIZE := "8G"
+
 default: test
 
 # Wipe and rebuild univariateML/package/ from workspace sources.
@@ -77,7 +87,7 @@ readme-table:
 # Build & run the standalone C++ test harness from cppunivariate/.
 # This path does not require R.
 cpp-test:
-	cmake -S cppunivariate -B cppunivariate/build
+	cmake -S cppunivariate -B cppunivariate/build $(command -v ccache >/dev/null && echo -DCMAKE_CXX_COMPILER_LAUNCHER=ccache)
 	cmake --build cppunivariate/build
 	cd cppunivariate/build && ctest --output-on-failure
 
