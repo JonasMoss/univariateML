@@ -107,9 +107,9 @@ own rationale live in `roadmap/`; work in flight is on the board
     collapse for every $n$, R7a, R7, and the P0 counterexamples;
   - bugs B1–B8 and TASK-77;
   - the open mathematics.
-- Failure gallery (TASK-91, Sonnet agent, in progress):
-  `notes/failure-gallery.tex`, one entry per phenomenon with a
-  reproducer and a profile figure.
+- Failure gallery (TASK-91): `notes/failure-gallery.tex` (11 pages), ten
+  phenomena, each with condition, reproducer, frequency and a profile
+  figure (`notes/failure-gallery/fig*.R`).
 
 ## Code cleanup
 
