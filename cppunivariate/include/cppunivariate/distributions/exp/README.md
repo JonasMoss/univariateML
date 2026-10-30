@@ -29,3 +29,15 @@ The exponential distribution models nonnegative waiting times with a constant ha
 The rate estimate is the inverse sample mean.
 
 A held positive rate gives a finite likelihood even for all-zero data. A free rate has unbounded likelihood for all-zero data.
+
+
+## Decision history
+
+On 2026-05-08 the exponential dossier retained the closed-form rate fit
+(commit `e5e33a1`); the
+choice follows directly from the concave log likelihood, so no numerical
+search or competing finite boundary is needed. The positive-rate estimate
+is unique when the sum is positive; all-zero data have a supremum at
+infinite rate. The held-rate case is evaluated at the supplied value.
+See the family tests and the existence analysis in
+`notes/evaluations/2026-10-29-p0-positive.md`.

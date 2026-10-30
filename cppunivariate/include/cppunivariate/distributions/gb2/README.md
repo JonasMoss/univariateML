@@ -58,3 +58,28 @@ In the GB2 convention $(a,b,p,q)$, the coefficients are
 Each coefficient may be held at a positive finite value. The numerical search
 compares proper limiting models and stops when a face wins; a search that
 cannot resolve an interior maximum reports an error.
+
+
+The fit standardizes log observations and profiles the power and location
+for each pair of beta shapes. The inner objective is strictly concave; the
+outer search uses a grid and member-family starts, refines distinct basins
+with Newton or BFGS, and expands the search box when needed. This reduces
+the outer problem to at most two dimensions and improves conditioning.
+A small profile score and an interior position are required for a returned
+interior fit. The multibasin search is numerical: neither global optimality
+nor exhaustion of all possible limit faces is proved. An unresolved search
+reports failure. Available transformed-gamma, inverse transformed-gamma,
+lognormal, Pareto, power and double-Pareto faces are compared, as applicable
+to the held subset.
+
+## Decision history
+
+On 2026-10-29 commit `470175d` introduced the profiled search and explicit
+face comparisons. The implementation report
+`notes/evaluations/2026-10-29-gb2-implementation-report.md` records the
+derivation, independent numerical comparisons, and the failed guarantee
+of global certification. On 2026-10-30 commit `fbe1d44` reduced repeated
+work in profile evaluation; the report `notes/evaluations/2026-10-29-perf-report.md`
+records the performance investigation. The search costs repeated passes
+over the data per profile evaluation; the implementation report includes
+measured workloads and the slower BFGS-only comparison.
