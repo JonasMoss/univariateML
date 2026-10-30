@@ -54,8 +54,8 @@ Main findings.
     std stops with ``use \code{mlnorm}'' (or an infinite-variance message
     for the $\nu\to2^+$ face); snorm is fitted exactly through a
     one-dimensional profile (Section~\ref{sec:snorm}) and reports the
-    translated half-normal faces. sstd still escapes silently; its returned
-    point can have a lower likelihood than the limit model.
+    translated half-normal faces. sstd now compares its limiting faces and
+    stops when a limit wins; its global comparisons remain numerical.
   \item ged and sged have \emph{no} MLE for any nonconstant sample: the
     likelihood is unbounded as the shape tends to $0$ \cite{tumlinson2015}.
     Their large-shape ``uniform'' fits are local maxima only.
@@ -664,7 +664,7 @@ hnorm (held $\mu$) & translated half-normal, $\mu$ kind \code{threshold} &
   $\mu$ to $\min(x)$, with closed-form $\hat\sigma^2$ (proved). R7a
   (2026-10-28) makes the endpoint exactly attained, replacing the earlier
   ``largest double below $x_{(1)}$'' convention \\
-hcauchy & fixed-zero endpoint (translation not yet implemented, P4) &
+hcauchy & translated endpoint $\mu$ (required threshold) &
   Scale score $n-\sum_i 2\sigma^2/(\sigma^2+x_i^2)$ strictly decreasing from
   $n-2k$ to $-n$, $k=\#$ zeros: unique MLE iff $2k<n$; unbounded if $2k>n$;
   finite unattained supremum at $2k=n$ (proved) \\
@@ -863,12 +863,12 @@ free coefficients:
 \toprule
 family & restricted coefficient & $c$ & exempt when held \\
 \midrule
-lst & \code{df} & $\mathrm{df}$ & \code{mu}? (open) \\
+lst & \code{df} & $\mathrm{df}$ & \code{mu} \\
 frechet & \code{lambda} & $\lambda$ & \code{mu} (inverse Weibull on $x-\mu$) \\
-ht & \code{nu} & $\nu$ & \code{mu} (today's fixed-zero threshold) \\
+ht & \code{nu} & $\nu$ & \code{mu} \\
 gev ($\xi>0$) & \code{xi} & $1/\xi$ & none (P0: diverges with \code{mu} or
   \code{sigma} held) \\
-tlambda ($\lambda<0$) & \code{lambda} & $-1/\lambda$ & \code{mu}? (open) \\
+tlambda ($\lambda<0$) & \code{lambda} & $-1/\lambda$ & \code{mu} \\
 hcauchy, slash & --- & $1$ (fixed) & none needed: $c=1$ already, so
   $k<n/2$ alone suffices \\
 \bottomrule
@@ -981,6 +981,20 @@ $60$--$72\%$ of normal samples and up to $62\%$ of Cauchy samples at
 $n=1000$. The fix is not a restriction but a kind change: \code{epsilon}
 becomes \code{design}, required, not free by default.
 
+\subsection*{P2b conditional skew fits}
+
+The sstd and sged hold searches cover the previously unimplemented subsets.
+Fixed-shape scale profiles and the sstd tie-collapse exponent are analytic;
+the remaining joint and face comparisons use numerical searches, which do
+not certify global optimality. Searches that exhaust their guards stop.
+For sstd, holding \code{sd} alone does not prevent collapse: as free
+$\nu\to2$, the ordinary $t$ scale shrinks even at fixed standard deviation.
+Holding both \code{sd} and \code{nu} prevents this path. Holding the mean
+is not holding the mode: their displacement depends on scale and shape,
+including on limiting faces. The equality case of the sstd collapse criterion
+and an sged uniform endpoint rate remain unresolved. These results and their
+numerical qualifications are recorded in \code{notes/evaluations/2026-10-29-p2b-skew-report.md}.
+
 \subsection*{P0's evidence}
 
 Across the ten P0 jobs, $97$--$641$ finite package fits per group were
@@ -994,7 +1008,7 @@ binomial-type groups needed a new R5 restriction, since every discrete
 likelihood is $\le1$ and cannot diverge. Every job flags the same residual
 limitation: multistart optimisation is evidence, not a certificate, of a
 global maximum, and several exact criteria (GB2/genbeta joint faces,
-sstd/sged complete hold tables, beta-binomial free size) remain proved only
+sstd/sged global hold searches, beta-binomial free size) remain proved only
 on subsets (\S\ref{sec:open}).
 
 \section{Bugs found}\label{sec:bugs}
@@ -1076,7 +1090,7 @@ on subsets (\S\ref{sec:open}).
     the minimum when deciding whether the fixed-shape collapse applies,
     rejecting some samples whose MLE exists; fixed to count the minimum's
     own multiplicity and reject exactly when $\xi k \ge n-k$. The equality
-    case $k=n/2$ is still rejected conservatively (open).
+    case $k=n/2$ now compares the interior with the collapse face.
   \item[B7] \textbf{Attained boundary maxima rejected} (partly fixed,
     \code{p3-domains}). cmp's point-mass ($\lambda=0$) and geometric
     ($\nu=0$, $\lambda<1$) faces, NB/ZINB \code{size=0}, PIG
@@ -1155,17 +1169,16 @@ on subsets (\S\ref{sec:open}).
     uniform junction at $\lambda=1$ is not upper semicontinuous.
   \item Negative hypergeometric: the inverse-sampling design (unknown
     population size) is unsupported.
-  \item Truncated binomial: estimating \code{size} jointly with
-    \code{prob} is unsupported (the P0 compactification argument is
-    unproved).
+  \item Truncated binomial: free-size searches are implemented, but their
+    global integer-profile search is numerical and not certified.
   \item Free-threshold fits with another parameter held (Pareto II--IV,
     Feller--Pareto, nonstandard beta): each subset is its own open
     existence question (A4).
-  \item Translated half-$t$ needs a \code{df} lower bound to have an MLE;
-    whether to add one is an open policy question, not a mathematical one.
+  \item Translated half-$t$ uses the collapse restriction $\nu\ge1$
+    when its threshold is free.
   \item Beta-binomial with fixed size: existence proved for size $2$, open
     for size $\ge3$.
-  \item sstd and sged: complete hold tables, and a proof that the listed
+  \item sstd and sged: a proof that the listed
     translated half-family faces exhaust every joint escape.
   \item Beta-negative-binomial: an explicit sample statistic for the
     NB/Poisson face criterion (only the implicit ``some finite point beats
