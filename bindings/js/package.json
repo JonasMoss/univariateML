@@ -1,0 +1,15 @@
+{
+  "name": "univariateml-wasm-pilot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bash build.sh",
+    "test": "node --v8-pool-size=1 --test test.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs"
+    }
+  }
+}

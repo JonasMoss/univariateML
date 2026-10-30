@@ -161,3 +161,10 @@ note-build-all:
         fi
     done
     exit $fail
+
+# Emscripten pilot; callers reserve CPU slots as for native builds.
+js-build:
+    bash bindings/js/build.sh
+
+js-test:
+    node --v8-pool-size=1 --test bindings/js/test.mjs
