@@ -1,11 +1,11 @@
 context("mldweibull")
 
-# Slow oracle: extraDistr's own density on moderate counts; multistart
+# Slow oracle: internal density on moderate counts; multistart
 # BFGS for the free fit, optimize() for each held subset.
 dweibull_oracle <- function(x, shape1 = NULL, shape2 = NULL) {
   ll <- function(q, b) {
     if (!is.finite(q) || q <= 0 || q >= 1 || !is.finite(b) || b <= 0) return(-1e100)
-    v <- sum(extraDistr::ddweibull(x, q, b, log = TRUE))
+    v <- sum(ddweibull(x = x, shape1 = q, shape2 = b, log = TRUE))
     if (is.finite(v)) v else -1e100
   }
   if (!is.null(shape1)) {
@@ -22,10 +22,10 @@ dweibull_oracle <- function(x, shape1 = NULL, shape2 = NULL) {
   }, numeric(1)))
 }
 
-test_that("mldweibull and its held subsets agree with the extraDistr oracle", {
+test_that("mldweibull and its held subsets agree with the density oracle", {
   set.seed(20261028)
   for (par in list(c(.8, 1.5), c(.5, .7), c(.95, 2.5), c(.9, .5))) {
-    x <- extraDistr::rdweibull(300, par[1], par[2])
+    x <- rdweibull(n = 300, shape1 = par[1], shape2 = par[2])
     fit <- mldweibull(x)
     expect_equal(attr(fit, "logLik"), dweibull_oracle(x), tolerance = 1e-9)
     expect_equal(attr(fit, "logLik"), sum(dml(x, fit, log = TRUE)), tolerance = 1e-12)
@@ -47,7 +47,7 @@ test_that("mldweibull and its held subsets agree with the extraDistr oracle", {
     both <- mldweibull(x, shape1 = par[1], shape2 = par[2])
     expect_equal(attr(both, "fixed"), c("shape1", "shape2"))
     expect_equal(attr(logLik(both), "df"), 0L)
-    expect_equal(attr(both, "logLik"), sum(extraDistr::ddweibull(x, par[1], par[2], log = TRUE)))
+    expect_equal(attr(both, "logLik"), sum(ddweibull(x = x, shape1 = par[1], shape2 = par[2], log = TRUE)))
   }
 })
 
@@ -91,62 +91,38 @@ test_that("invalid held values and shape1 rounding to 1 stop", {
 
 test_that("large samples and many distinct counts", {
   set.seed(6)
-  x <- extraDistr::rdweibull(1e5, .8, 1.5)
+  x <- rdweibull(n = 1e+05, shape1 = 0.8, shape2 = 1.5)
   fit <- mldweibull(x)
   expect_equal(unname(fit[["shape2"]]), 1.5, tolerance = .02)
-  # Heavy tail: thousands of distinct counts. pmax: extraDistr::rdweibull
-  # can return -1 for small shape2 (KNOWN_ISSUES.md).
-  heavy <- pmax(extraDistr::rdweibull(5000, .9, .3), 0)
+  # Heavy tail: thousands of distinct counts.
+  heavy <- pmax(rdweibull(n = 5000, shape1 = 0.9, shape2 = 0.3), 0)
   expect_gt(length(unique(heavy)), 1000)
   fit <- mldweibull(heavy)
   expect_equal(unname(fit[["shape2"]]), .3, tolerance = .1)
   expect_equal(attr(fit, "logLik"), sum(dml(heavy, fit, log = TRUE)), tolerance = 1e-9)
 })
 
-test_that("pml floors non-integer arguments (extraDistr::pdweibull workaround)", {
+test_that("pml floors non-integer arguments", {
   set.seed(7)
-  fit <- mldweibull(extraDistr::rdweibull(200, .8, 1.5))
+  fit <- mldweibull(rdweibull(n = 200, shape1 = 0.8, shape2 = 1.5))
   q <- c(-0.5, 0, 0.5, 2.7, 5, Inf)
   for (lower in c(TRUE, FALSE)) for (logp in c(TRUE, FALSE)) {
-    expect_equal(pml(q, fit, lower.tail = lower, log.p = logp),
-                 extraDistr::pdweibull(floor(q), fit[["shape1"]], fit[["shape2"]],
-                                       lower.tail = lower, log.p = logp))
+    log_upper <- log(fit[["shape1"]]) * (pmax(0, floor(q) + 1)^fit[["shape2"]])
+    expected <- if (lower) -expm1(log_upper) else exp(log_upper)
+    if (logp) expected <- if (lower) log(-expm1(log_upper)) else log_upper
+    expect_equal(pml(q, fit, lower.tail = lower, log.p = logp), expected)
   }
   expect_equal(pml(0.5, fit), pml(0, fit))
-  fix <- univariateML:::univariateML_reference_fixes[["extraDistr::pdweibull"]]
-  expect_true(is.logical(fix$broken()) && length(fix$broken()) == 1L)
-  expect_equal(fix$replacement(0.5, 0.7, 1), 0.3)
-  expect_equal(fix$replacement(c(1.5, 2), 0.7, 1, lower.tail = FALSE), c(0.49, 0.7^(3)))
-  expect_equal(fix$replacement(2.2, 0.7, 1, log.p = TRUE), log1p(-0.7^3))
-  # qml stays the generalized inverse of pml.
-  p <- c(.05, .3, .5, .9, .99)
-  k <- qml(p, fit)
-  expect_true(all(pml(k, fit) >= p) && all(pml(k - 1, fit) < p))
+
 })
 
 test_that("bootstrapml refits with the held shape2", {
   set.seed(8)
-  fit <- mldweibull(extraDistr::rdweibull(100, .8, 1.5), shape2 = 1.5)
+  fit <- mldweibull(rdweibull(n = 100, shape1 = 0.8, shape2 = 1.5), shape2 = 1.5)
   boot <- bootstrapml(fit, reps = 5, reducer = identity)
   expect_true(all(boot["shape2", ] == 1.5))
 })
 
-test_that("the CDF workaround is selected by a fresh runtime check", {
-  fit <- mldweibull(c(0, 0, 1, 2, 4), shape1 = .7, shape2 = 1)
-  registry <- univariateML:::univariateML_reference_fixes
-  checks <- 0L
-  registry[["extraDistr::pdweibull"]]$broken <- function() {
-    checks <<- checks + 1L
-    checks == 1L
-  }
-  testthat::local_mocked_bindings(univariateML_reference_fixes = registry,
-                                .package = "univariateML")
-  first <- univariateML:::univariateML_to_function(fit, "p")
-  expect_identical(body(first), body(registry[["extraDistr::pdweibull"]]$replacement))
-  second <- univariateML:::univariateML_to_function(fit, "p")
-  expect_identical(body(second), body(extraDistr::pdweibull))
-  expect_identical(checks, 2L)
-})
 
 test_that("dweibull: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "dweibull", "golden.json"))

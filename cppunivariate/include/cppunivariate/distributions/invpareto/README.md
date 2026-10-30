@@ -14,8 +14,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: actuar::dinvpareto
-  sampler: actuar::rinvpareto
+  density: dinvpareto
+  sampler: rinvpareto
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.

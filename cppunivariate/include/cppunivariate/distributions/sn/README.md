@@ -19,18 +19,6 @@ params:
   simulate: 3
   kind: regular
 r:
-  export:
-    defaults:
-      xi: 0
-      omega: 1
-      alpha: 0
-    params:
-      xi: Finite location.
-      omega: Positive finite scale.
-      alpha: Finite real shape.
-    details: Uses the Azzalini skew-normal direct parameters. This differs from the Fernandez--Steel
-      two-piece normal (mlsnorm). Tail probabilities use Owen's T or direct scaled density quadrature
-      to avoid cancellation. Quantiles use bracketed bisection. Random draws use two normal variates.
   density: dsn
   sampler: rsn
   control:
@@ -66,3 +54,7 @@ The normal member has singular direct-parameter Fisher information. The fitter s
 Any subset of the three parameters can be held fixed. A fixed shape leaves a concave problem in inverse scale and location divided by scale. With fixed location, an infinite shape remains possible only if every observation lies on the corresponding side of that location; observations equal to the fixed location contribute an additional log(2) penalty at the limit. Fixed scale is retained in the face comparison. No penalised likelihood is used.
 
 An unfinished inner solve is accepted only when the normalized free-coordinate score at the returned point is below `max(reltol, 1e-3/n)` (with `n` observations). This is the Euclidean score norm in log inverse scale and scaled location divided by the sample size, with held coordinates removed.
+
+## d/p/q/r
+
+Uses direct skew-normal parameters, distinct from the Fernandez–Steel family; probabilities use Owen’s T and quadrature.

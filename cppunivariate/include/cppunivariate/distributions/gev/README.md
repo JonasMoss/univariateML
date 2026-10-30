@@ -30,8 +30,8 @@ params:
       reason: xi <= 1 prevents collapse, including with mu or sigma held (P0 extreme).
   kind: regular
 r:
-  density: extraDistr::dgev
-  sampler: extraDistr::rgev
+  density: dgev
+  sampler: rgev
   control:
     mu: Location to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
@@ -44,7 +44,7 @@ limits:
 - {name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, xi) point beats the xi -> 1 collapse face's limiting likelihood."}
 examples: |
   set.seed(1)
-  mlgev(extraDistr::rgev(100, mu = 0, sigma = 2, xi = 0.3))
+  mlgev(univariateML:::rgev(n = 100, mu = 0, sigma = 2, xi = 0.3))
 ---
 
 The generalized extreme value distribution models maxima; positive `xi` gives a heavy right tail, and `xi = 0` is the included Gumbel member.
@@ -52,8 +52,6 @@ The generalized extreme value distribution models maxima; positive `xi` gives a 
 ## Details
 
 For positive held shape, collapse is governed by the multiplicity of the sample minimum; ties at other values do not cause this collapse.
-
-`extraDistr::qgev`, `rgev` and the upper-tail log of `pgev` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
 
 Free-shape fitting restricts xi to [-1, 1], with the attained closed
 reversed-exponential member at xi=-1. The default fit requires

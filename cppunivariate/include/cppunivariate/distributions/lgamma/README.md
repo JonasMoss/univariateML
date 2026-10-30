@@ -14,8 +14,8 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  density: actuar::dlgamma
-  sampler: actuar::rlgamma
+  density: dlgamma
+  sampler: rlgamma
   control:
     shapelog: Optional held shapelog; NULL estimates it.
     ratelog: Optional held ratelog; NULL estimates it.

@@ -77,64 +77,64 @@ lines(mlweibull(egypt$age))
 |---|---|---|
 | Azzalini skew-normal | `mlsn` | univariateML |
 | Beta | `mlbeta` | stats |
-| BetaPrime | `mlbetapr` | extraDistr |
-| Bhattacharjee | `mlbhatt` | extraDistr |
-| Birnbaum-Saunders | `mlfatigue` | extraDistr |
-| Burr | `mlburr` | actuar |
+| BetaPrime | `mlbetapr` | univariateML |
+| Bhattacharjee | `mlbhatt` | univariateML |
+| Birnbaum-Saunders | `mlfatigue` | univariateML |
+| Burr | `mlburr` | univariateML |
 | Cauchy | `mlcauchy` | stats |
 | Exponential | `mlexp` | stats |
 | Exponentially Modified Gaussian | `mlemg` | univariateML |
-| Feller-Pareto | `mlfpareto` | actuar |
+| Feller-Pareto | `mlfpareto` | univariateML |
 | Folded Normal | `mlfoldnorm` | univariateML |
-| Frechet | `mlfrechet` | extraDistr |
+| Frechet | `mlfrechet` | univariateML |
 | Gamma | `mlgamma` | stats |
-| Generalized beta of the first kind | `mlgenbeta` | actuar |
+| Generalized beta of the first kind | `mlgenbeta` | univariateML |
 | Generalized Error | `mlged` | univariateML |
-| Generalized extreme value | `mlgev` | extraDistr |
-| Generalized Pareto | `mlgpd` | extraDistr |
-| Gompertz | `mlgompertz` | extraDistr |
-| Gumbel | `mlgumbel` | extraDistr |
-| Half-Cauchy | `mlhcauchy` | extraDistr |
-| Half-t | `mlht` | extraDistr |
-| Huber | `mlhuber` | extraDistr |
-| Inverse Burr | `mlinvburr` | actuar |
-| Inverse exponential | `mlinvexp` | actuar |
-| Inverse Gaussian | `mlinvgauss` | actuar |
-| Inverse paralogistic | `mlinvparalogis` | actuar |
-| Inverse Pareto | `mlinvpareto` | actuar |
-| Inverse transformed gamma | `mlinvtrgamma` | actuar |
-| InverseWeibull | `mlinvweibull` | actuar |
-| InvGamma | `mlinvgamma` | extraDistr |
-| Kumaraswamy | `mlkumar` | extraDistr |
-| Laplace | `mllaplace` | extraDistr |
-| Location-scale Student-t | `mllst` | extraDistr |
-| Loggamma | `mllgamma` | actuar |
+| Generalized extreme value | `mlgev` | univariateML |
+| Generalized Pareto | `mlgpd` | univariateML |
+| Gompertz | `mlgompertz` | univariateML |
+| Gumbel | `mlgumbel` | univariateML |
+| Half-Cauchy | `mlhcauchy` | univariateML |
+| Half-t | `mlht` | univariateML |
+| Huber | `mlhuber` | univariateML |
+| Inverse Burr | `mlinvburr` | univariateML |
+| Inverse exponential | `mlinvexp` | univariateML |
+| Inverse Gaussian | `mlinvgauss` | univariateML |
+| Inverse paralogistic | `mlinvparalogis` | univariateML |
+| Inverse Pareto | `mlinvpareto` | univariateML |
+| Inverse transformed gamma | `mlinvtrgamma` | univariateML |
+| InverseWeibull | `mlinvweibull` | univariateML |
+| InvGamma | `mlinvgamma` | univariateML |
+| Kumaraswamy | `mlkumar` | univariateML |
+| Laplace | `mllaplace` | univariateML |
+| Location-scale Student-t | `mllst` | univariateML |
+| Loggamma | `mllgamma` | univariateML |
 | Logistic | `mllogis` | stats |
 | LogitNormal | `mllogitnorm` | univariateML |
-| Loglogistic | `mlllogis` | actuar |
+| Loglogistic | `mlllogis` | univariateML |
 | Lognormal | `mllnorm` | stats |
-| Lomax | `mllomax` | extraDistr |
+| Lomax | `mllomax` | univariateML |
 | Nakagami | `mlnaka` | univariateML |
-| Nonstandard beta | `mlnsbeta` | extraDistr |
+| Nonstandard beta | `mlnsbeta` | univariateML |
 | Normal | `mlnorm` | stats |
-| Paralogistic | `mlparalogis` | actuar |
-| Pareto | `mlpareto` | extraDistr |
-| Pareto type II | `mlpareto2` | actuar |
-| Pareto type III | `mlpareto3` | actuar |
-| Pareto type IV | `mlpareto4` | actuar |
-| PowerDist | `mlpower` | extraDistr |
-| Rayleigh | `mlrayleigh` | extraDistr |
+| Paralogistic | `mlparalogis` | univariateML |
+| Pareto | `mlpareto` | univariateML |
+| Pareto type II | `mlpareto2` | univariateML |
+| Pareto type III | `mlpareto3` | univariateML |
+| Pareto type IV | `mlpareto4` | univariateML |
+| PowerDist | `mlpower` | univariateML |
+| Rayleigh | `mlrayleigh` | univariateML |
 | Shifted Gompertz | `mlsgomp` | univariateML |
 | Skew Generalized Error | `mlsged` | univariateML |
 | Skew Normal | `mlsnorm` | univariateML |
 | Skew Student-t | `mlsstd` | univariateML |
-| Slash | `mlslash` | extraDistr |
+| Slash | `mlslash` | univariateML |
 | Student-t | `mlstd` | univariateML |
-| Transformed beta (GB2) | `mlgb2` | actuar |
-| Transformed gamma | `mltrgamma` | actuar |
-| Translated Half-Normal | `mlhnorm` | extraDistr |
-| Triangular | `mltriang` | extraDistr |
-| Truncated Normal | `mltnorm` | extraDistr |
+| Transformed beta (GB2) | `mlgb2` | univariateML |
+| Transformed gamma | `mltrgamma` | univariateML |
+| Translated Half-Normal | `mlhnorm` | univariateML |
+| Triangular | `mltriang` | univariateML |
+| Truncated Normal | `mltnorm` | univariateML |
 | Tukey lambda | `mltlambda` | univariateML |
 | Uniform | `mlunif` | stats |
 | Weibull | `mlweibull` | stats |
@@ -143,39 +143,39 @@ lines(mlweibull(egypt$age))
 
 | Distribution | Function | d/p/q/r from |
 |---|---|---|
-| Beta negative binomial | `mlbnbinom` | extraDistr |
-| Beta-binomial | `mlbbinom` | extraDistr |
+| Beta negative binomial | `mlbnbinom` | univariateML |
+| Beta-binomial | `mlbbinom` | univariateML |
 | Binomial | `mlbinom` | stats |
 | Conway--Maxwell--binomial | `mlcmb` | univariateML |
 | Conway--Maxwell--Poisson | `mlcmp` | univariateML |
-| Discrete Laplace | `mldlaplace` | extraDistr |
-| Discrete uniform | `mldunif` | extraDistr |
-| Discrete Weibull | `mldweibull` | extraDistr |
-| Discretized gamma | `mldgamma` | extraDistr |
-| Discretized normal | `mldnorm` | extraDistr |
+| Discrete Laplace | `mldlaplace` | univariateML |
+| Discrete uniform | `mldunif` | univariateML |
+| Discrete Weibull | `mldweibull` | univariateML |
+| Discretized gamma | `mldgamma` | univariateML |
+| Discretized normal | `mldnorm` | univariateML |
 | Geometric | `mlgeom` | stats |
 | Hypergeometric | `mlhyper` | stats |
-| Logarithmic series | `mllgser` | extraDistr |
+| Logarithmic series | `mllgser` | univariateML |
 | Negative binomial | `mlnbinom` | stats |
-| Negative hypergeometric | `mlnhyper` | extraDistr |
+| Negative hypergeometric | `mlnhyper` | univariateML |
 | Poisson | `mlpois` | stats |
-| Poisson-inverse Gaussian | `mlpig` | actuar |
+| Poisson-inverse Gaussian | `mlpig` | univariateML |
 | Skellam | `mlskellam` | univariateML |
-| Truncated binomial | `mltbinom` | extraDistr |
-| Truncated Poisson | `mltpois` | extraDistr |
+| Truncated binomial | `mltbinom` | univariateML |
+| Truncated Poisson | `mltpois` | univariateML |
 | Yule--Simon | `mlyulesimon` | univariateML |
-| Zero-inflated binomial | `mlzib` | extraDistr |
-| Zero-inflated negative binomial | `mlzinb` | extraDistr |
-| Zero-inflated Poisson | `mlzip` | extraDistr |
-| Zero-modified binomial | `mlzmbinom` | actuar |
-| Zero-modified geometric | `mlzmgeom` | actuar |
-| Zero-modified logarithmic | `mlzmlogarithmic` | actuar |
-| Zero-modified negative binomial | `mlzmnbinom` | actuar |
-| Zero-modified Poisson | `mlzmpois` | actuar |
-| Zero-truncated binomial | `mlztbinom` | actuar |
-| Zero-truncated geometric | `mlztgeom` | actuar |
-| Zero-truncated negative binomial | `mlztnbinom` | actuar |
-| Zero-truncated Poisson | `mlztpois` | actuar |
+| Zero-inflated binomial | `mlzib` | univariateML |
+| Zero-inflated negative binomial | `mlzinb` | univariateML |
+| Zero-inflated Poisson | `mlzip` | univariateML |
+| Zero-modified binomial | `mlzmbinom` | univariateML |
+| Zero-modified geometric | `mlzmgeom` | univariateML |
+| Zero-modified logarithmic | `mlzmlogarithmic` | univariateML |
+| Zero-modified negative binomial | `mlzmnbinom` | univariateML |
+| Zero-modified Poisson | `mlzmpois` | univariateML |
+| Zero-truncated binomial | `mlztbinom` | univariateML |
+| Zero-truncated geometric | `mlztgeom` | univariateML |
+| Zero-truncated negative binomial | `mlztnbinom` | univariateML |
+| Zero-truncated Poisson | `mlztpois` | univariateML |
 | Zeta | `mlzeta` | univariateML |
 | Zipf | `mlzipf` | univariateML |
 

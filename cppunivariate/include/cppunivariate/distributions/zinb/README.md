@@ -19,8 +19,8 @@ params:
   simulate: 0.3
   kind: regular
 r:
-  density: extraDistr::dzinb
-  sampler: extraDistr::rzinb
+  density: dzinb
+  sampler: rzinb
   control:
     reltol: "Tolerance on the scalar log-size search interval."
     iterlim: "Maximum number of scalar search iterations."
@@ -51,6 +51,4 @@ Zero inflation may be estimated as zero, an attained negative binomial member.
 Holding a finite nonnegative `size` fixed removes the infinite-size escape; no
 unattained limit remains for that subset. Fractional sizes are allowed.
 All-zero data with free size return `size = 0`, preserving holds and using `prob = 0.5`, `pi = 0` for unidentified free coordinates. With positive size held, a free probability is one; if probability is held below one, free inflation is one. Boundary fits are silent.
-`extraDistr::dzinb(log = TRUE)` and the upper-tail log CDF underflow to `-Inf` far in the tail (see `KNOWN_ISSUES.md`); `logLik` is unaffected.
-
 Held probability removes the infinite-size ZIP escape. Held inflation compares against the ZIP face with the same inflation. With both probability and inflation held below one, all-zero data attain size zero. Endpoint holds incompatible with positive observations stop. Scalar profile peaks are searched numerically; this is not a certified global optimization.

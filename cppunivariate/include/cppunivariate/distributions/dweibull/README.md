@@ -14,8 +14,8 @@ params:
   simulate: 1.5
   kind: regular
 r:
-  density: extraDistr::ddweibull
-  sampler: extraDistr::rdweibull
+  density: ddweibull
+  sampler: rdweibull
   control:
     shape1: "Optional value in (0, 1) at which to hold `shape1`; `NULL` (the default) estimates it."
     shape2: "Optional positive value at which to hold `shape2`; `NULL` (the default) estimates it. `shape2 = 1` is the geometric distribution."
@@ -63,8 +63,6 @@ The maximum likelihood estimator is therefore unique when it exists. With both p
 With `shape1` held and all observations 0 the likelihood does not depend on `shape2`: the fitter warns and returns `shape2 = 1`.
 
 Doubles close to 1 resolve $-\log \mathrm{shape1}$ only coarsely. When the fitted `shape1` is within `1e-6` of 1, `shape2` is refitted with that representable `shape1` held; when it rounds to 1 (the Weibull scale to the power `shape2` exceeds about $2^{53}$, e.g. counts near 40 with `shape2 = 10`) the fit stops with an error.
-`extraDistr::pdweibull` does not floor non-integer arguments, so `pml` floors them while that defect persists; `extraDistr::ddweibull(log = TRUE)` underflows to `-Inf` far in the tail, and `qdweibull` and `rdweibull` can return `-1` for very small `shape2`. `logLik` is unaffected.
-
 
 ## Why a single profile bracket is global
 

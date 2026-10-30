@@ -15,8 +15,8 @@ params:
   bound: lower
   kind: endpoint
 r:
-  density: extraDistr::dpareto
-  sampler: extraDistr::rpareto
+  density: dpareto
+  sampler: rpareto
   control:
     a: Optional held a; NULL estimates it.
     b: Optional held b; NULL estimates it.

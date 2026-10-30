@@ -1,5 +1,5 @@
 # Independent truth checks of the generated R shell, never the selected
-# external reference. Per parameter point: five evenly spaced value rows;
+# selected reference. Per parameter point: five evenly spaced value rows;
 # three evenly spaced quantile rows in EACH tail/scale group; 32 RNG draws.
 # Tolerances/brackets follow cppunivariate/tests/test_support.hpp defaults.
 test_that("generated d/p/q/r agree with independent truth tables", {
@@ -35,11 +35,18 @@ test_that("generated d/p/q/r agree with independent truth tables", {
       v <- values[values[, 1] == point - 1L, , drop = FALSE]
       v <- v[pick(nrow(v), 5L), , drop = FALSE]
       info <- paste(id, "point", point - 1L)
+      fit <- univariateML_construct(unlist(theta), paste0("ml", id),
+                                    list(logLik = 0, n = 1L, call = NULL))
+      expect_equal(suppressWarnings(dml(v[, 2], fit, log = TRUE)),
+                   suppressWarnings(do.call(fun[[1]], c(list(v[, 2]), theta, list(log = TRUE)))),
+                   info = paste(info, "density dispatch"))
       expect_true(all(close_log(suppressWarnings(do.call(fun[[1]], c(list(v[, 2]), theta, list(log = TRUE)))), v[, 3])), info = info)
       for (lower in c(TRUE, FALSE)) {
         expected <- v[, if (lower) 4L else 5L]
         got <- do.call(fun[[2]], c(list(v[, 2]), theta, list(lower.tail = lower, log.p = TRUE)))
         expect_true(all(close_log(got, expected)), info = paste(info, "log tail", lower))
+        expect_equal(pml(v[, 2], fit, lower.tail = lower, log.p = TRUE), got,
+                     info = paste(info, "CDF dispatch", lower))
         natural <- exp(expected)
         keep <- natural > 1e-300
         got <- do.call(fun[[2]], c(list(v[keep, 2]), theta, list(lower.tail = lower)))
@@ -51,6 +58,8 @@ test_that("generated d/p/q/r agree with independent truth tables", {
           if (!nrow(q)) next
           q <- q[pick(nrow(q), 3L), , drop = FALSE]
           got <- do.call(fun[[3]], c(list(q[, 4]), theta, list(lower.tail = lower, log.p = log_input)))
+          expect_equal(qml(q[, 4], fit, lower.tail = lower, log.p = log_input), got,
+                       info = paste(info, "quantile dispatch", lower, log_input))
           expected <- q[, 5]
           good <- got == expected | (is.finite(got) & is.finite(expected) &
             abs(got - expected) <= 1e-9 * abs(expected)) | (got >= q[, 6] & got <= q[, 7])

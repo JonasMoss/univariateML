@@ -28,8 +28,8 @@ params:
     are not supported.'
   kind: threshold
 r:
-  density: actuar::dpareto4
-  sampler: actuar::rpareto4
+  density: dpareto4
+  sampler: rpareto4
   control:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.

@@ -2,15 +2,15 @@
 
 ## Architecture
 
-* The package is now scoped to maximum-likelihood estimation only.
-  The 116 per-distribution `d`/`p`/`q`/`r` functions previously
-  re-exported from the package have been removed; users should call
-  the canonical implementations in `extraDistr`, `actuar`, `fGarch`,
-  `logitnorm` or `nakagami` directly (since replaced by the package's own
-  functions with the same names; see below). Imports are now only Rcpp,
-  extraDistr and actuar. These packages are
-  now in `Imports:` and resolved at runtime by metadata-driven
-  dispatch.
+* extraDistr and actuar are no longer dependencies. `dml`, `pml`, `qml`
+  and `rml` use the package's own C++ d/p/q/r for those families, checked
+  against independent high-precision truth tables. The fourteen stats
+  families continue to use stats. Random streams from `rml` change for
+  the switched families.
+
+* All family-specific d/p/q/r are internal. This includes the previously
+  exported functions for eighteen own families, which were never released.
+  Use `dml`, `pml`, `qml` and `rml` with a fitted object. Imports is now Rcpp.
 
 * Suggests is down to jsonlite, testthat, knitr and rmarkdown. fGarch,
   logitnorm, nakagami and sads are no longer used: the tests compare the
@@ -92,8 +92,7 @@
   `mlpig()` (Poisson-inverse Gaussian).
 
 * `mldweibull()` (discrete Weibull type I) and `mlbbinom()` (beta-binomial
-  with known `size`; its `qml()` inverts the reference CDF because
-  extraDistr has no `qbbinom`).
+  with known `size`; evaluation uses the internal d/p/q/r).
 
 * `mlsgomp()` (shifted Gompertz; the exponential is the attained member
   `eta = 0`) with its own `dsgomp()`, `psgomp()`, `qsgomp()`, `rsgomp()`
@@ -185,8 +184,8 @@
   normal plus uniform). The slash MLE exists when no value holds half the
   sample; `mlbhatt` stops with "use `mlnorm`" or "use `mlunif`" at its two
   limits, which normal and uniform samples reach often (the normal limit in
-  about half of normal samples, at any sample size). Their quantiles invert
-  the reference CDFs, which extraDistr provides without a quantile function.
+  about half of normal samples, at any sample size). Evaluation uses the
+  internal d/p/q/r, including direct logarithmic tails.
 
 * Zero-truncated `mlztpois()`, `mlztgeom()`, `mlztnbinom()`, `mlztbinom()`;
   zero-modified `mlzmpois()`, `mlzmgeom()`, `mlzmnbinom()`, `mlzmbinom()`,
@@ -223,12 +222,8 @@
   their p/q/r) with fGarch's names and arguments; fGarch is no longer
   imported, and far-tail log densities no longer underflow to `-Inf`.
 
-* Known defects in reference packages that fitted models can reach are
-  repaired at runtime, each switching itself off once the reference is
-  fixed: `extraDistr` `ptriang`, `pdweibull`, truncated normal d/p/q
-  (also used by `mlhnorm()`), and `qgev`/`rgev`/upper-tail `pgev`, and
-  `actuar` generalized gamma d/p/q/r. The list is in the package help page
-  (`?univariateML`); fitting and `logLik()` never use these functions.
+* Runtime reference repairs and missing-reference quantile inversion are
+  removed; the internal C++ implementations cover these families.
 
 * `mllomax()` and `mlinvpareto()` decide existence exactly: the moment
   condition `mean(x^2) < 2*mean(x)^2` they used to stop on is only a local

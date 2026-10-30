@@ -7,7 +7,7 @@ test_that("slash agrees with an independent multistart density oracle", {
   }
   set.seed(709)
   samples <- c(list(c(0,1),c(0,0,1,2),c(-10,-9,0,1,2,20)),
-               lapply(seq_len(18),function(j) extraDistr::rslash(5+j, j%%3, .5+j%%4)))
+               lapply(seq_len(18),function(j) rslash(n = 5 + j, mu = j%%3, sigma = 0.5 + j%%4)))
   for(x in samples) {
     f <- mlslash(x)
     oracle <- -Inf
@@ -52,31 +52,31 @@ test_that("continuous slash quantiles recycle and retain log tails", {
   expect_equal(d(f[1]),unname(1/(2*sqrt(2*pi)*f[2])),tolerance=1e-12)
   expect_equal(d(f[1]+1e-10),d(f[1]),tolerance=1e-12)
   set.seed(35); actual <- rml(10,f)
-  set.seed(35); expected <- extraDistr::rslash(10,f[1],f[2])
+  set.seed(35); expected <- rslash(n = 10, mu = f[1], sigma = f[2])
   expect_identical(actual,expected)
 })
 test_that("continuous inversion avoids standardized overflow at tiny scales", {
-  q <- univariateML_continuous_quantile(univariateML_reference_quantiles[["extraDistr::qslash"]])
-  p <- univariateML_reference_fixes[["extraDistr::pslash"]]$replacement
-  x <- q(-1000,mu=0,sigma=1e-300,log.p=TRUE,lower.tail=FALSE)
+  q <- qslash
+  p <- pslash
+  x <- q(p = -1000, mu = 0, sigma = 1e-300, lower.tail = FALSE, log.p = TRUE)
   expect_true(is.finite(x))
-  expect_equal(p(x,mu=0,sigma=1e-300,log.p=TRUE,lower.tail=FALSE),-1000,tolerance=1e-10)
+  expect_equal(p(q = x, mu = 0, sigma = 1e-300, lower.tail = FALSE, log.p = TRUE),-1000,tolerance=1e-10)
 })
 test_that("slash CDF matches its normal mixture and algebraic tail", {
-  p <- univariateML_reference_fixes[["extraDistr::pslash"]]$replacement
+  p <- pslash
   for(x in c(-5,-1,0,1,5)) {
     oracle <- integrate(function(u)pnorm(x*u),0,1,rel.tol=1e-12)$value
-    expect_equal(p(x),oracle,tolerance=1e-12)
+    expect_equal(p(q = x, mu = 0, sigma = 1),oracle,tolerance=1e-12)
   }
-  expect_equal(p(1e200,lower.tail=FALSE,log.p=TRUE),-.5*log(2*pi)-log(1e200),tolerance=1e-12)
+  expect_equal(p(q = 1e+200, mu = 0, sigma = 1, lower.tail = FALSE, log.p = TRUE),-.5*log(2*pi)-log(1e200),tolerance=1e-12)
 })
 test_that("slash globally searches separated location modes with held scale", {
   x <- c(-100,100)
   f <- mlslash(x,sigma=1)
   expect_gt(abs(f[["mu"]]),90)
-  candidate <- sum(extraDistr::dslash(x,mu=-100,sigma=1,log=TRUE))
+  candidate <- sum(dslash(x = x, mu = -100, sigma = 1, log = TRUE))
   expect_gte(attr(f,"logLik"),candidate)
-  expect_gt(attr(f,"logLik"),sum(extraDistr::dslash(x,mu=0,sigma=1,log=TRUE))+5)
+  expect_gt(attr(f,"logLik"),sum(dslash(x = x, mu = 0, sigma = 1, log = TRUE))+5)
 })
 test_that("slash fits and likelihoods are equivariant over extreme units", {
   x <- c(-3,-1,0,2,8); f <- mlslash(x)
@@ -96,15 +96,15 @@ test_that("slash normalizes by the bulk rather than a remote outlier", {
 })
 
 test_that("unrepresentable finite slash probabilities give infinite quantiles", {
-  q <- univariateML_continuous_quantile(univariateML_reference_quantiles[["extraDistr::qslash"]])
-  expect_equal(q(-1000,log.p=TRUE),-Inf)
-  expect_equal(q(-1000,lower.tail=FALSE,log.p=TRUE),Inf)
+  q <- qslash
+  expect_equal(q(p = -1000, mu = 0, sigma = 1, log.p = TRUE),-Inf)
+  expect_equal(q(p = -1000, mu = 0, sigma = 1, lower.tail = FALSE, log.p = TRUE),Inf)
 })
 test_that("slash half mass with zero reciprocal sum can have an attained MLE", {
   x <- c(rep(0,10),-1,rep(9,9)); n <- length(x)
   expect_equal(sum(1/x[x!=0]),0,tolerance=1e-15)
   boundary <- -.5*n*log(2*pi)-.5*n*log(2)-2*sum(log(abs(x[x!=0])))
-  candidate <- sum(extraDistr::dslash(x,mu=4,sigma=3,log=TRUE))
+  candidate <- sum(dslash(x = x, mu = 4, sigma = 3, log = TRUE))
   expect_gt(candidate,boundary+.3)
   f <- mlslash(x)
   expect_gte(attr(f,"logLik"),candidate-1e-9)
@@ -112,8 +112,8 @@ test_that("slash half mass with zero reciprocal sum can have an attained MLE", {
 test_that("slash free-scale location profile has separated finite maxima", {
   x <- c(rep(0,10),-1,rep(10,9)); n <- length(x)
   boundary <- -.5*n*log(2*pi)-.5*n*log(2)-2*sum(log(abs(x[x!=0])))
-  left <- sum(extraDistr::dslash(x,mu=-1/625,sigma=1/5,log=TRUE))
-  right <- sum(extraDistr::dslash(x,mu=9/2,sigma=7/2,log=TRUE))
+  left <- sum(dslash(x = x, mu = -1/625, sigma = 1/5, log = TRUE))
+  right <- sum(dslash(x = x, mu = 9/2, sigma = 7/2, log = TRUE))
   expect_gt(left,boundary+1e-4)
   expect_gt(right,boundary+.05)
   f <- mlslash(x)

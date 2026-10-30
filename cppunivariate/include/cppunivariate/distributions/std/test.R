@@ -2,8 +2,8 @@ context("mlstd")
 
 ## Data generation.
 set.seed(313)
-small_data <- rstd(500, 2, 3, 4)
-tiny_data <- rstd(100, 2, 3, 4)
+small_data <- rstd(n = 500, mean = 2, sd = 3, nu = 4)
+tiny_data <- rstd(n = 100, mean = 2, sd = 3, nu = 4)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlstd(c(tiny_data, NA)))
@@ -17,7 +17,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlstd(small_data, na.rm = TRUE)
 expect_equal(
-  sum(dstd(small_data, est[1], est[2], est[3], log = TRUE)),
+  sum(dstd(x = small_data, mean = est[1], sd = est[2], nu = est[3], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -57,7 +57,7 @@ test_that("Student-t escapes name the limiting model", {
   set.seed(1)
   expect_error(mlstd(rnorm(200)), "Use `mlnorm`", fixed = TRUE)
   set.seed(313)
-  expect_error(mlstd(rstd(100, 2, 3, 4)),
+  expect_error(mlstd(rstd(n = 100, mean = 2, sd = 3, nu = 4)),
                "nu -> 2 (infinite variance)", fixed = TRUE)
   x <- c(seq(-1e-4, 1e-4, length = 30),
          seq(0.9999, 1.0001, length = 10))
@@ -66,10 +66,10 @@ test_that("Student-t escapes name the limiting model", {
 
 test_that("Student-t interior fit and large-nu log likelihood agree with independent dt", {
   set.seed(313)
-  x <- rstd(500, nu = 4)
+  x <- rstd(n = 500, mean = 0, sd = 1, nu = 4)
   fit <- mlstd(x)
   expect_equal(attr(fit, "logLik"),
-               sum(dstd(x, fit[1], fit[2], fit[3], log = TRUE)),
+               sum(dstd(x = x, mean = fit[1], sd = fit[2], nu = fit[3], log = TRUE)),
                tolerance = 1e-10)
   for (nu in c(10, 100, 343, 344, 1000, 9999, 1e4, 1e5, 1e6, 1e7)) {
     expect_equal(univariateML:::student_t_loglik_cpp(x, 0.3, 1.2, nu),
@@ -101,8 +101,7 @@ test_that("fixed nu agrees with density oracle and records two free parameters",
   x <- c(-5,-2,-1,0,0,1,2,9)
   for (nu in c(2.1,4,30)) {
     fit <- mlstd(x, nu = nu, gradtol = 1e-8, iterlim = 5000)
-    objective <- function(p) -sum(dstd(x, mean = p[1],
-      sd = exp(p[2]), nu = nu, log = TRUE))
+    objective <- function(p) -sum(dstd(x = x, mean = p[1], sd = exp(p[2]), nu = nu, log = TRUE))
     oracle <- optim(c(0,1), objective, method = "BFGS",
                     control = list(reltol = 1e-13, maxit = 3000))
     expect_equal(attr(fit, "logLik"), -oracle$value, tolerance = 1e-9)
@@ -187,28 +186,28 @@ test_that("std dpqr integrate, invert and preserve extreme tails", {
 })
 
 test_that("std dpqr recycle, propagate missing values and use R RNG", {
-  expect_length(dstd(numeric()), 0)
-  expect_equal(dstd(c(0, 1, 2), mean = c(0, 1)),
-    c(dstd(0), dstd(1, mean = 1), dstd(2)))
-  expect_identical(dstd(NA_real_), NA_real_)
-  expect_true(is.nan(pstd(NaN)))
-  expect_warning(expect_true(is.nan(dstd(0, sd = -1))), "NaNs produced")
-  expect_warning(expect_true(is.nan(qstd(1.1))), "NaNs produced")
-  expect_warning(expect_true(is.nan(rstd(1, sd = -1))), "NaNs produced")
-  set.seed(81); first <- rstd(100)
-  set.seed(81); expect_identical(rstd(100), first)
-  expect_length(rstd(1:7), 7)
-  expect_length(rstd(0), 0)
-  expect_length(rstd(3, mean = numeric()), 0)
-  expect_identical(rstd(1, mean = NA_real_), NA_real_)
+  expect_length(dstd(x = numeric(), mean = 0, sd = 1, nu = 5), 0)
+  expect_equal(dstd(x = c(0, 1, 2), mean = c(0, 1), sd = 1, nu = 5),
+    c(dstd(x = 0, mean = 0, sd = 1, nu = 5), dstd(x = 1, mean = 1, sd = 1, nu = 5), dstd(x = 2, mean = 0, sd = 1, nu = 5)))
+  expect_identical(dstd(x = NA_real_, mean = 0, sd = 1, nu = 5), NA_real_)
+  expect_true(is.nan(pstd(q = NaN, mean = 0, sd = 1, nu = 5)))
+  expect_warning(expect_true(is.nan(dstd(x = 0, mean = 0, sd = -1, nu = 5))), "NaNs produced")
+  expect_warning(expect_true(is.nan(qstd(p = 1.1, mean = 0, sd = 1, nu = 5))), "NaNs produced")
+  expect_warning(expect_true(is.nan(rstd(n = 1, mean = 0, sd = -1, nu = 5))), "NaNs produced")
+  set.seed(81); first <- rstd(n = 100, mean = 0, sd = 1, nu = 5)
+  set.seed(81); expect_identical(rstd(n = 100, mean = 0, sd = 1, nu = 5), first)
+  expect_length(rstd(n = 1:7, mean = 0, sd = 1, nu = 5), 7)
+  expect_length(rstd(n = 0, mean = 0, sd = 1, nu = 5), 0)
+  expect_length(rstd(n = 3, mean = numeric(), sd = 1, nu = 5), 0)
+  expect_identical(rstd(n = 1, mean = NA_real_, sd = 1, nu = 5), NA_real_)
   set.seed(712)
-  draws <- rstd(5000)
+  draws <- rstd(n = 5000, mean = 0, sd = 1, nu = 5)
   for (prob in c(.1, .5, .9))
-    expect_lt(abs(mean(draws <= qstd(prob)) - prob), .025)
+    expect_lt(abs(mean(draws <= qstd(p = prob, mean = 0, sd = 1, nu = 5)) - prob), .025)
   for (bad in c(-1, 0, Inf)) {
-    expect_warning(expect_true(is.nan(dstd(0, sd = bad))), "NaNs produced")
-    expect_warning(expect_true(is.nan(pstd(0, sd = bad))), "NaNs produced")
-    expect_warning(expect_true(is.nan(qstd(.5, sd = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dstd(x = 0, mean = 0, sd = bad, nu = 5))), "NaNs produced")
+    expect_warning(expect_true(is.nan(pstd(q = 0, mean = 0, sd = bad, nu = 5))), "NaNs produced")
+    expect_warning(expect_true(is.nan(qstd(p = 0.5, mean = 0, sd = bad, nu = 5))), "NaNs produced")
   }
   fit <- mlstd(small_data)
   expect_equal(as.numeric(logLik(fit)), sum(dml(small_data, fit, log = TRUE)),
@@ -226,23 +225,23 @@ test_that("std matches frozen fGarch values (reference.json)", {
 test_that("std log density survives the fGarch underflow defect", {
   expected <- dt(1e6*sqrt(1e6/(1e6-2)), df = 1e6, log = TRUE) +
     log(sqrt(1e6/(1e6-2)))
-  expect_true(is.finite(dstd(1e6, nu = 1e6, log = TRUE)))
-  expect_equal(dstd(1e6, nu = 1e6, log = TRUE), expected, tolerance = 1e-13)
+  expect_true(is.finite(dstd(x = 1e+06, mean = 0, sd = 1, nu = 1e+06, log = TRUE)))
+  expect_equal(dstd(x = 1e+06, mean = 0, sd = 1, nu = 1e+06, log = TRUE), expected, tolerance = 1e-13)
 })
 
 test_that("std parameter domain is enforced", {
   for (bad in c(-1, 0, 2, Inf))
-    expect_warning(expect_true(is.nan(dstd(0, nu = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dstd(x = 0, mean = 0, sd = 1, nu = bad))), "NaNs produced")
 })
 
 test_that("std log tails exceed the backend exponent range", {
   for (lower in c(TRUE, FALSE)) {
-    x <- qstd(-20000, nu = 1000, lower.tail = lower, log.p = TRUE)
+    x <- qstd(p = -20000, mean = 0, sd = 1, nu = 1000, lower.tail = lower, log.p = TRUE)
     expect_true(is.finite(x))
-    expect_equal(pstd(x, nu = 1000, lower.tail = lower, log.p = TRUE), -20000,
+    expect_equal(pstd(q = x, mean = 0, sd = 1, nu = 1000, lower.tail = lower, log.p = TRUE), -20000,
                  tolerance = 1e-10)
-    x <- qstd(-1e-30, nu = 1000, lower.tail = lower, log.p = TRUE)
-    expect_equal(pstd(x, nu = 1000, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
+    x <- qstd(p = -1e-30, mean = 0, sd = 1, nu = 1000, lower.tail = lower, log.p = TRUE)
+    expect_equal(pstd(q = x, mean = 0, sd = 1, nu = 1000, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
                  tolerance = 1e-10)
   }
 })

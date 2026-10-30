@@ -1,8 +1,8 @@
 test_that("ztnbinom agrees with a multi-start reference-density oracle", {
   set.seed(13226)
-  x <- do.call(actuar::rztnbinom, list(250, size = 2, prob = 0.4))
+  x <- do.call(rztnbinom, list(250, size = 2, prob = 0.4))
   fit <- mlztnbinom(x)
-  density <- actuar::dztnbinom
+  density <- dztnbinom
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
   oracle <- function(held = NULL) {
@@ -55,22 +55,22 @@ test_that("ztnbinom preserves fixed size at attained boundaries", {
 test_that("ztnbinom fixed zero size agrees with the reference oracle", {
  x <- c(1,1,1,2,3,10,30)
  fit <- mlztnbinom(x,size=0)
- objective <- function(t) -sum(actuar::dztnbinom(x,size=0,prob=plogis(t[1]),log=TRUE))
+ objective <- function(t) -sum(dztnbinom(x = x, size = 0, prob = plogis(t[1]), log = TRUE))
  best <- min(vapply(c(-1,0,1),function(s)optim(rep(s,1),objective,method="BFGS",control=list(reltol=1e-12))$value,numeric(1)))
  expect_equal(attr(fit,"logLik"),-best,tolerance=1e-7)
- expect_equal(sum(actuar::dztnbinom(x,size=0,prob=fit["prob"],log=TRUE)),attr(fit,"logLik"),tolerance=1e-10)
+ expect_equal(sum(dztnbinom(x = x, size = 0, prob = fit["prob"], log = TRUE)),attr(fit,"logLik"),tolerance=1e-10)
 })
 
 # P2: independent multistart reference-density oracle for every nonempty hold.
 local({
   id <- "ztnbinom"
   base <- c(size=2,prob=0.4)
-  density <- actuar::dztnbinom
+  density <- dztnbinom
   test_that("P2 holds agree with independent multistart reference likelihoods", {
     set.seed(81029)
     samples <- list(simulate_default(paste0("ml",id),20),
                     simulate_default(paste0("ml",id),100),
-                    c(1,1,1,2,2,4), c(1,2), actuar::rztpois(20,2))
+                    c(1,1,1,2,2,4), c(1,2), rztpois(n = 20, lambda = 2))
     nm <- names(base)
     for (x in samples) for (mask in seq_len(2^length(nm)-1)) {
       held <- nm[as.logical(intToBits(mask)[seq_along(nm)])]
@@ -129,7 +129,7 @@ test_that("P2 truncated NB held probability includes logarithmic endpoint", {
   a<-mlztnbinom(rep(1,3),prob=1)
   expect_equal(attr(a,'logLik'),0)
   b<-mlztnbinom(c(1,2,5),size=0,prob=.4)
-  expect_equal(attr(b,'logLik'),sum(actuar::dlogarithmic(c(1,2,5),.6,log=TRUE)))
+  expect_equal(attr(b,'logLik'),sum(dlgser(x = c(1, 2, 5), theta = 0.6, log = TRUE)))
   expect_error(mlztnbinom(c(1,2,5),size=-1,prob=.4),"size")
 })
 

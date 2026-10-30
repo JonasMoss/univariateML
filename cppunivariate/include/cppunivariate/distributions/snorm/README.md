@@ -19,17 +19,6 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export:
-    title: SNORM distribution
-    defaults:
-      mean: 0
-      sd: 1
-      xi: 1.5
-    params:
-      mean: Finite mean.
-      sd: Finite positive standard deviation.
-      xi: Finite positive Fernandez--Steel skewness.
-    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dsnorm
   sampler: rsnorm
   control:
@@ -77,3 +66,7 @@ When either moment is free its vanishing adjustment removes this penalty.
 A conditional search that reaches a finite numerical tail guard without a
 winning analytic face stops with a convergence reason. A guard value is
 never returned as an estimated coefficient.
+
+## d/p/q/r
+
+Uses the fGarch mean and standard deviation parameterisation.

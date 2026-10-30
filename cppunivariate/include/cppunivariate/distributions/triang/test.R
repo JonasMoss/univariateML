@@ -1,6 +1,6 @@
 context("mltriang")
 x <- c(.02, .2, .3, .4, .45, .65, .9)
-ll <- function(p, x) sum(extraDistr::dtriang(x, p[1], p[2], p[3], log = TRUE))
+ll <- function(p, x) sum(dtriang(x = x, a = p[1], b = p[2], c = p[3], log = TRUE))
 for (mask in 0:7) {
   held <- c("a", "b", "c")[as.logical(intToBits(mask)[1:3])]
   values <- c(a = 0, b = 1, c = .4)
@@ -38,16 +38,6 @@ expect_error(mltriang(x, iterlim = 0), "iterlim")
 expect_equal(pml(0, tie), 0)
 expect_equal(pml(0, tie, lower.tail = FALSE), 1)
 expect_equal(pml(0, tie, log.p = TRUE), -Inf)
-fix <- univariateML:::univariateML_reference_fixes[["extraDistr::ptriang"]]
-expect_true(fix$broken())
-expect_identical(formals(fix$replacement), formals(extraDistr::ptriang))
-for (lower in c(TRUE, FALSE)) for (logged in c(TRUE, FALSE)) {
-  q <- c(-1, 0, .1, .4, .9, 1, 2, NA_real_)
-  expect_equal(fix$replacement(q, 0, 1, .4, lower, logged),
-    extraDistr::ptriang(q, 0, 1, .4, lower, logged))
-  expect_equal(fix$replacement(q[q > 0 & !is.na(q)], 0, 1, 0, lower, logged),
-    extraDistr::ptriang(q[q > 0 & !is.na(q)], 0, 1, 0, lower, logged))
-}
 # Independent mode grid with a separate endpoint optim at every grid point.
 fit <- mltriang(x)
 for (mode in seq(0, 1, length.out = 31)) {
@@ -78,7 +68,7 @@ test_that("constant triangular samples with exterior held mode", {
     fit <- do.call(mltriang,args)
     expect_equal(unname(fit["a"]), -1)
     expect_equal(unname(fit["b"]), if (is.na(b)) 2*v+1 else b)
-    expect_equal(as.numeric(logLik(fit)), sum(extraDistr::dtriang(x,fit[1],fit[2],fit[3],log=TRUE)))
+    expect_equal(as.numeric(logLik(fit)), sum(dtriang(x = x, a = fit[1], b = fit[2], c = fit[3], log = TRUE)))
   }
 })
 
@@ -93,7 +83,7 @@ test_that("P2 reflected constant exterior-mode maxima", {
 
 test_that("P2 triangular subsets dominate independent multistart endpoint searches", {
   set.seed(8131)
-  samples <- list(extraDistr::rtriang(20,0,1,.4),extraDistr::rtriang(100,0,1,.4),
+  samples <- list(rtriang(n = 20, a = 0, b = 1, c = 0.4),rtriang(n = 100, a = 0, b = 1, c = 0.4),
                   runif(20),c(.2,.2,.6,.8),c(.2,.8),rep(.4,5))
   values <- c(a=0,b=1,c=.4)
   for (x in samples) for (mask in 0:7) {
@@ -110,7 +100,7 @@ test_that("P2 triangular subsets dominate independent multistart endpoint search
         for (i in seq_along(free)) p[free[i]] <- if (free[i]=="a")
           min(x,mode)-exp(z[i]) else max(x,mode)+exp(z[i])
         if (p[1]>=p[2] || p[3]<p[1] || p[3]>p[2]) return(1e100)
-        v <- -sum(extraDistr::dtriang(x,p[1],p[2],p[3],log=TRUE))
+        v <- -sum(dtriang(x = x, a = p[1], b = p[2], c = p[3], log = TRUE))
         if (is.finite(v)) v else 1e100
       }
       if (!length(free)) best <- max(best,-objective(numeric())) else

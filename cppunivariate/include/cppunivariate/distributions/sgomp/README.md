@@ -14,14 +14,6 @@ params:
   simulate: 3
   kind: regular
 r:
-  export:
-    params:
-      b: Positive finite rate.
-      eta: Nonnegative finite shape.
-    details: The shifted Gompertz family includes the exponential member eta = 0. There is no
-      location parameter; b is a rate. Quantiles use safeguarded bisection. Random generation
-      takes the maximum of an exponential and a Gumbel variate; eta = 0 uses only the exponential
-      variate.
   density: dsgomp
   sampler: rsgomp
   control:
@@ -32,7 +24,7 @@ r:
 log_density: log(b) - b*x - eta*exp(-b*x) + log(1 + eta*(1-exp(-b*x)))
 examples: |
   set.seed(3)
-  mlsgomp(rsgomp(100, 1, 3))
+  mlsgomp(univariateML:::rsgomp(n = 100, b = 1, eta = 3))
 holds: []
 ---
 
@@ -50,3 +42,7 @@ maximum, and uniqueness is not asserted. The shape is profiled by its strictly
 monotone score; all grid-bracketed rate maxima are refined on a finite interval
 bounded by likelihood envelopes. This numerical search is not a certified
 enumeration of every stationary point.
+
+## d/p/q/r
+
+The eta = 0 member is exponential, with rate b; there is no location parameter.

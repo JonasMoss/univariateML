@@ -1,8 +1,8 @@
 test_that("zmgeom agrees with a multi-start reference-density oracle", {
   set.seed(13000)
-  x <- do.call(actuar::rzmgeom, list(250, prob = 0.4, p0 = 0.3))
+  x <- do.call(rzmgeom, list(250, prob = 0.4, p0 = 0.3))
   fit <- mlzmgeom(x)
-  density <- actuar::dzmgeom
+  density <- dzmgeom
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
   oracle <- function(held = NULL) {
@@ -30,7 +30,7 @@ test_that("zmgeom agrees with a multi-start reference-density oracle", {
 local({
   id <- "zmgeom"
   base <- c(prob=0.4,p0=0.3)
-  density <- actuar::dzmgeom
+  density <- dzmgeom
   test_that("P2 holds agree with independent multistart reference likelihoods", {
     set.seed(81029)
     samples <- list(simulate_default(paste0("ml",id),20),

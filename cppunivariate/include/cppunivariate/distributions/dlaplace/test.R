@@ -1,19 +1,19 @@
 test_that("discrete Laplace exact median profile and fixed subsets", {
  set.seed(192)
  for(j in 1:20) {
-  x<-extraDistr::rdlaplace(41,2,.6)
+  x<-rdlaplace(n = 41, location = 2, scale = 0.6)
   f<-mldlaplace(x)
-  oracle<-max(vapply(seq(min(x),max(x)),function(mu)optimize(function(p)sum(extraDistr::ddlaplace(x,mu,p,log=TRUE)),c(.00001,.99999),maximum=TRUE,tol=1e-10)$objective,0.))
+  oracle<-max(vapply(seq(min(x),max(x)),function(mu)optimize(function(p)sum(ddlaplace(x = x, location = mu, scale = p, log = TRUE)),c(.00001,.99999),maximum=TRUE,tol=1e-10)$objective,0.))
   expect_equal(attr(f,"logLik"),oracle,tolerance=1e-8)
   for(mu in c(-3,2,9)) {
    g<-mldlaplace(x,location=mu)
-   o<-optimize(function(p)sum(extraDistr::ddlaplace(x,mu,p,log=TRUE)),c(.00001,.99999),maximum=TRUE)
+   o<-optimize(function(p)sum(ddlaplace(x = x, location = mu, scale = p, log = TRUE)),c(.00001,.99999),maximum=TRUE)
    expect_equal(attr(g,"logLik"),o$objective,tolerance=1e-7)
   }
   g<-mldlaplace(x,scale=.4)
   expect_equal(g[[1]],median(x))
   h<-mldlaplace(x,location=2,scale=.4)
-  expect_equal(attr(h,"logLik"),sum(extraDistr::ddlaplace(x,2,.4,log=TRUE)))
+  expect_equal(attr(h,"logLik"),sum(ddlaplace(x = x, location = 2, scale = 0.4, log = TRUE)))
  }
  expect_warning(f<-mldlaplace(c(-3,4)),"smallest integer median")
  expect_equal(f[[1]],-3)

@@ -14,8 +14,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::ddgamma
-  sampler: extraDistr::rdgamma
+  density: ddgamma
+  sampler: rdgamma
   control:
     shape: "Optional held value; NULL estimates it."
     rate: "Optional positive held value; NULL estimates it."

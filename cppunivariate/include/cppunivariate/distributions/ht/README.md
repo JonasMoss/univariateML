@@ -22,8 +22,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::dht
-  sampler: extraDistr::rht
+  density: dht
+  sampler: rht
   control: {}
 log_density: log(2) + loggamma((nu+1)/2) - loggamma(nu/2) - log(nu*pi)/2 - log(sigma) - (nu+1)*log(1+x**2/(nu*sigma**2))/2
 limits:
@@ -55,7 +55,7 @@ The df profile need not be unimodal: `c(.12773, 12.5979, 3.91782, 2.58658, .1382
 
 A free translated endpoint is deliberately excluded: moving it to the sample minimum and choosing sufficiently small positive df makes the likelihood unbounded through scale collapse. The translated half-t faces of the skew-t fitter therefore are not this fixed-zero-endpoint model.
 
-The d/p/q/r functions use extraDistr, with runtime-checked tail repairs.
+Evaluation uses the internal d/p/q/r functions.
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
 and emit a warning of class `univariateML_restricted`. Held coefficients are

@@ -2,8 +2,8 @@ context("mllgamma")
 
 ## Data generation.
 set.seed(313)
-small_data <- actuar::rlgamma(100, 2, 3)
-tiny_data <- actuar::rlgamma(10, 2, 1)
+small_data <- rlgamma(n = 100, shapelog = 2, ratelog = 3)
+tiny_data <- rlgamma(n = 10, shapelog = 2, ratelog = 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mllgamma(c(tiny_data, NA)))
@@ -25,7 +25,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mllgamma(small_data, na.rm = TRUE)
 expect_equal(
-  sum(actuar::dlgamma(small_data, est[1], est[2], log = TRUE)),
+  sum(dlgamma(x = small_data, shapelog = est[1], ratelog = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -50,7 +50,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("shapelog","ratelog")
   held_default <- c(2.0,3.0)
   names(held_default) <- pn
-  density <- actuar::dlgamma
+  density <- dlgamma
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

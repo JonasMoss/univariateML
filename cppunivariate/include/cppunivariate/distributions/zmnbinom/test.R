@@ -1,8 +1,8 @@
 test_that("zmnbinom agrees with a multi-start reference-density oracle", {
   set.seed(13219)
-  x <- do.call(actuar::rzmnbinom, list(250, size = 2, prob = 0.4, p0 = 0.3))
+  x <- do.call(rzmnbinom, list(250, size = 2, prob = 0.4, p0 = 0.3))
   fit <- mlzmnbinom(x)
-  density <- actuar::dzmnbinom
+  density <- dzmnbinom
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
   oracle <- function(held = NULL) {
@@ -58,17 +58,17 @@ test_that("zmnbinom preserves fixed size at attained boundaries", {
 test_that("zmnbinom fixed zero size agrees with the reference oracle", {
  x <- c(0,0,1,1,1,2,3,10,30)
  fit <- mlzmnbinom(x,size=0)
- objective <- function(t) -sum(actuar::dzmnbinom(x,size=0,prob=plogis(t[1]),p0=plogis(t[2]),log=TRUE))
+ objective <- function(t) -sum(dzmnbinom(x = x, size = 0, prob = plogis(t[1]), p0 = plogis(t[2]), log = TRUE))
  best <- min(vapply(c(-1,0,1),function(s)optim(rep(s,2),objective,method="BFGS",control=list(reltol=1e-12))$value,numeric(1)))
  expect_equal(attr(fit,"logLik"),-best,tolerance=1e-7)
- expect_equal(sum(actuar::dzmnbinom(x,size=0,prob=fit["prob"],p0=fit["p0"],log=TRUE)),attr(fit,"logLik"),tolerance=1e-10)
+ expect_equal(sum(dzmnbinom(x = x, size = 0, prob = fit["prob"], p0 = fit["p0"], log = TRUE)),attr(fit,"logLik"),tolerance=1e-10)
 })
 
 # P2: independent multistart reference-density oracle for every nonempty hold.
 local({
   id <- "zmnbinom"
   base <- c(size=2,prob=0.4,p0=0.3)
-  density <- actuar::dzmnbinom
+  density <- dzmnbinom
   test_that("P2 holds agree with independent multistart reference likelihoods", {
     set.seed(81029)
     samples <- list(simulate_default(paste0("ml",id),20),

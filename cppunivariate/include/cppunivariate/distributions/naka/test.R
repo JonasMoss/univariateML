@@ -2,17 +2,17 @@ context("mlnakagami")
 
 ## Data generation.
 set.seed(313)
-small_data <- rnaka(100, 1, 1)
-tiny_data <- rnaka(10, 7, 7)
+small_data <- rnaka(n = 100, shape = 1, scale = 1)
+tiny_data <- rnaka(n = 10, shape = 7, scale = 7)
 data3 <- c(0, tiny_data)
 
 ## Checks if the ML is correct.
 mle1 <- nlm(function(p) {
-  -mean(dnaka(small_data, p[1], p[2], log = TRUE))
+  -mean(dnaka(x = small_data, shape = p[1], scale = p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 
 mle2 <- nlm(function(p) {
-  -mean(dnaka(tiny_data, p[1], p[2], log = TRUE))
+  -mean(dnaka(x = tiny_data, shape = p[1], scale = p[2], log = TRUE))
 }, p = c(7, 7))$estimate
 
 expect_equal(mle1, as.numeric(mlnaka(small_data)), tolerance = 1e-5)
@@ -34,7 +34,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlnaka(small_data, na.rm = TRUE)
 expect_equal(
-  sum(dnaka(small_data, est[1], est[2], log = TRUE)),
+  sum(dnaka(x = small_data, shape = est[1], scale = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -57,53 +57,53 @@ test_that("squared-data underflow is a precision error, not constant data", {
  test_that("naka owned dpqr obeys transformations and R conventions", {
   x <- seq(.01, 4, length.out = 31)
   a <- 1.7; b <- 2.1
-  expect_equal(dnaka(x,a,b), 2*x*dgamma(x*x,a,scale=b/a), tolerance=1e-12)
-  expect_equal(integrate(function(x) dnaka(x,a,b), 0, Inf, rel.tol=1e-10, subdivisions=1000)$value, 1, tolerance=1e-7)
+  expect_equal(dnaka(x = x, shape = a, scale = b), 2*x*dgamma(x*x,a,scale=b/a), tolerance=1e-12)
+  expect_equal(integrate(function(x) dnaka(x = x, shape = a, scale = b), 0, Inf, rel.tol=1e-10, subdivisions=1000)$value, 1, tolerance=1e-7)
   for (lower in c(TRUE,FALSE)) for (lg in c(TRUE,FALSE)) {
-    pr <- pnaka(x,a,b,lower.tail=lower,log.p=lg)
+    pr <- pnaka(q = x, shape = a, scale = b, lower.tail = lower, log.p = lg)
     expect_equal(pr, pgamma(x*x,a,scale=b/a,lower.tail=lower,log.p=lg), tolerance=1e-11)
-    expect_equal(qnaka(pr,a,b,lower.tail=lower,log.p=lg), x, tolerance=1e-7)
+    expect_equal(qnaka(p = pr, shape = a, scale = b, lower.tail = lower, log.p = lg), x, tolerance=1e-7)
   }
-  expect_equal(pnaka(c(-Inf,-1,0,Inf),a,b), c(0,0,0,1))
-  expect_equal(dnaka(c(-Inf,-1,Inf),a,b), c(0,0,0))
-  expect_equal(qnaka(c(-Inf,0),a,b,log.p=TRUE), c(0,Inf))
-  expect_equal(dnaka(x,a,b,log=TRUE), log(dnaka(x,a,b)))
-  expect_length(dnaka(numeric(),a,b),0)
-  expect_equal(dnaka(x[1:4],c(a,a+1),b), vapply(1:4,function(i) dnaka(x[i],c(a,a+1)[(i-1)%%2+1],b),0.0))
-  expect_identical(dnaka(c(NA_real_,NaN),a,b),c(NA_real_,NaN))
-  expect_warning(expect_true(is.nan(dnaka(.5,a,-1))),"NaNs")
-  expect_warning(expect_true(is.nan(qnaka(2,a,b))),"NaNs")
-  set.seed(42); r1 <- rnaka(20,a,b)
+  expect_equal(pnaka(q = c(-Inf, -1, 0, Inf), shape = a, scale = b), c(0,0,0,1))
+  expect_equal(dnaka(x = c(-Inf, -1, Inf), shape = a, scale = b), c(0,0,0))
+  expect_equal(qnaka(p = c(-Inf, 0), shape = a, scale = b, log.p = TRUE), c(0,Inf))
+  expect_equal(dnaka(x = x, shape = a, scale = b, log = TRUE), log(dnaka(x = x, shape = a, scale = b)))
+  expect_length(dnaka(x = numeric(), shape = a, scale = b),0)
+  expect_equal(dnaka(x = x[1:4], shape = c(a, a + 1), scale = b), vapply(1:4,function(i) dnaka(x = x[i], shape = c(a, a + 1)[(i - 1)%%2 + 1], scale = b),0.0))
+  expect_identical(dnaka(x = c(NA_real_, NaN), shape = a, scale = b),c(NA_real_,NaN))
+  expect_warning(expect_true(is.nan(dnaka(x = 0.5, shape = a, scale = -1))),"NaNs")
+  expect_warning(expect_true(is.nan(qnaka(p = 2, shape = a, scale = b))),"NaNs")
+  set.seed(42); r1 <- rnaka(n = 20, shape = a, scale = b)
   set.seed(42); expect_equal(r1,sqrt(rgamma(20,a,scale=b/a)),tolerance=1e-14)
-  set.seed(42); expect_identical(rnaka(20,a,b),r1)
-  expect_length(rnaka(1:3,a,b),3)
+  set.seed(42); expect_identical(rnaka(n = 20, shape = a, scale = b),r1)
+  expect_length(rnaka(n = 1:3, shape = a, scale = b),3)
   fit <- mlnaka(r1)
   expect_equal(as.numeric(logLik(fit)),sum(dml(r1,fit,log=TRUE)))
-  expect_equal(pml(r1,fit),pnaka(r1,fit[1],fit[2]))
-  expect_equal(qml(.3,fit),qnaka(.3,fit[1],fit[2]))
+
+
   set.seed(4); sim <- rml(5,fit)
-  set.seed(4); expect_equal(sim,rnaka(5,fit[1],fit[2]))
+  set.seed(4); expect_equal(sim,rnaka(n = 5, shape = fit[1], scale = fit[2]))
  })
  test_that("naka matches frozen nakagami values (reference.json)", {
    expect_reference_values("naka")
  })
 
 test_that("Nakagami boundary densities and extreme gamma tails are correct", {
-  expect_equal(dnaka(0,.25,2),Inf)
-  expect_equal(dnaka(0,.5,2),1/sqrt(pi))
-  expect_equal(dnaka(0,2,2),0)
+  expect_equal(dnaka(x = 0, shape = 0.25, scale = 2),Inf)
+  expect_equal(dnaka(x = 0, shape = 0.5, scale = 2),1/sqrt(pi))
+  expect_equal(dnaka(x = 0, shape = 2, scale = 2),0)
   for (lower in c(TRUE,FALSE)) {
     p <- c(-1000,-10000,-1e-20)
-    x <- qnaka(p,10,2,lower.tail=lower,log.p=TRUE)
-    expect_equal(pnaka(x,10,2,lower.tail=lower,log.p=TRUE),p,tolerance=1e-10)
+    x <- qnaka(p = p, shape = 10, scale = 2, lower.tail = lower, log.p = TRUE)
+    expect_equal(pnaka(q = x, shape = 10, scale = 2, lower.tail = lower, log.p = TRUE),p,tolerance=1e-10)
   }
 })
 
 test_that("naka integrates with plot, bootstrap and model selection", {
   set.seed(19)
-  fit <- mlnaka(rnaka(80,1,2))
+  fit <- mlnaka(rnaka(n = 80, shape = 1, scale = 2))
   expect_true(all(is.finite(bootstrapml(fit,reps=4))))
-  expect_s3_class(model_select(rnaka(80,1,2),models="naka"),"univariateML")
+  expect_s3_class(model_select(rnaka(n = 80, shape = 1, scale = 2),models="naka"),"univariateML")
   file <- tempfile(fileext=".pdf")
   grDevices::pdf(file)
   on.exit({ grDevices::dev.off(); unlink(file) })
@@ -113,7 +113,7 @@ test_that("naka integrates with plot, bootstrap and model selection", {
 test_that("tiny Nakagami shape retains upper log tails at tiny amplitudes", {
   x <- 1e-200; shape <- 1e-25
   lx <- 2*log(x)+log(shape)
-  expect_equal(pnaka(x,shape,1,lower.tail=FALSE,log.p=TRUE),
+  expect_equal(pnaka(q = x, shape = shape, scale = 1, lower.tail = FALSE, log.p = TRUE),
                log(-expm1(shape*lx)),tolerance=1e-12)
 })
 

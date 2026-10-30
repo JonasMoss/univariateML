@@ -1,40 +1,40 @@
 test_that("EMG evaluation matches independent convolution and direct tails", {
   for (lambda in c(.01, 1, 100, 1e6)) for (x in c(-40, -2, 0, 2, 40)) {
     ld <- log(lambda) - lambda*x + lambda^2/2 + pnorm(x-lambda, log.p=TRUE)
-    if (lambda <= 100) expect_equal(demg(x, 0, 1, lambda, log=TRUE), ld, tolerance=1e-9)
-    expect_equal(demg(x,0,1,lambda), exp(demg(x,0,1,lambda,log=TRUE)))
-    expect_equal(pemg(x,0,1,lambda)+pemg(x,0,1,lambda,lower.tail=FALSE), 1)
+    if (lambda <= 100) expect_equal(demg(x = x, mu = 0, sigma = 1, lambda = lambda, log = TRUE), ld, tolerance=1e-9)
+    expect_equal(demg(x = x, mu = 0, sigma = 1, lambda = lambda), exp(demg(x = x, mu = 0, sigma = 1, lambda = lambda, log = TRUE)))
+    expect_equal(pemg(q = x, mu = 0, sigma = 1, lambda = lambda)+pemg(q = x, mu = 0, sigma = 1, lambda = lambda, lower.tail = FALSE), 1)
   }
   for (x in c(-5, 0, 5)) {
     oracle <- integrate(function(t) dnorm(t)*pexp(x-t), -Inf, x, rel.tol=1e-11)$value
-    expect_equal(pemg(x,0,1,1), oracle, tolerance=1e-10)
+    expect_equal(pemg(q = x, mu = 0, sigma = 1, lambda = 1), oracle, tolerance=1e-10)
   }
 })
 test_that("EMG tails, recycling and random generation follow stats conventions", {
   for (lambda in c(1e-300,1e-8,1,100,1e6)) for (lower in c(TRUE,FALSE)) {
     p <- c(-1000,-100,-10,log(.5),-.0001,-1e-100)
-    q <- qemg(p,0,1,lambda,lower.tail=lower,log.p=TRUE)
-    expect_equal(pemg(q,0,1,lambda,lower.tail=lower,log.p=TRUE)/p,rep(1,length(p)),tolerance=1e-7)
+    q <- qemg(p = p, mu = 0, sigma = 1, lambda = lambda, lower.tail = lower, log.p = TRUE)
+    expect_equal(pemg(q = q, mu = 0, sigma = 1, lambda = lambda, lower.tail = lower, log.p = TRUE)/p,rep(1,length(p)),tolerance=1e-7)
   }
-  expect_equal(demg(c(0,1),0,c(1,2),1),c(demg(0,0,1,1),demg(1,0,2,1)))
-  expect_true(is.na(demg(NA_real_,0,1,1)))
-  expect_warning(expect_true(is.nan(demg(0,0,-1,1))),"NaNs")
-  expect_warning(expect_true(is.nan(qemg(2,0,1,1))),"NaNs")
-  expect_equal(pemg(100,0,1,1,log.p=TRUE)/(-exp(-99.5)),1,tolerance=1e-12)
-  expect_equal(pemg(100,0,1,1e-300,lower.tail=FALSE,log.p=TRUE)/(-1e-298),1,tolerance=1e-12)
-  expect_length(remg(0,0,1,1),0)
-  expect_equal(pemg(c(-1e100,-1e150),0,1,1,log.p=TRUE),-c(1e200,1e300)/2,tolerance=1e-14)
-  q <- qemg(1e-300,0,1,1e-320)
+  expect_equal(demg(x = c(0, 1), mu = 0, sigma = c(1, 2), lambda = 1),c(demg(x = 0, mu = 0, sigma = 1, lambda = 1),demg(x = 1, mu = 0, sigma = 2, lambda = 1)))
+  expect_true(is.na(demg(x = NA_real_, mu = 0, sigma = 1, lambda = 1)))
+  expect_warning(expect_true(is.nan(demg(x = 0, mu = 0, sigma = -1, lambda = 1))),"NaNs")
+  expect_warning(expect_true(is.nan(qemg(p = 2, mu = 0, sigma = 1, lambda = 1))),"NaNs")
+  expect_equal(pemg(q = 100, mu = 0, sigma = 1, lambda = 1, log.p = TRUE)/(-exp(-99.5)),1,tolerance=1e-12)
+  expect_equal(pemg(q = 100, mu = 0, sigma = 1, lambda = 1e-300, lower.tail = FALSE, log.p = TRUE)/(-1e-298),1,tolerance=1e-12)
+  expect_length(remg(n = 0, mu = 0, sigma = 1, lambda = 1),0)
+  expect_equal(pemg(q = c(-1e+100, -1e+150), mu = 0, sigma = 1, lambda = 1, log.p = TRUE),-c(1e200,1e300)/2,tolerance=1e-14)
+  q <- qemg(p = 1e-300, mu = 0, sigma = 1, lambda = 9.99988867182683e-321)
   expect_true(is.finite(q))
-  expect_equal(pemg(q,0,1,1e-320,log.p=TRUE),log(1e-300),tolerance=1e-12)
-  set.seed(123); a <- remg(20,0,1,1)
-  set.seed(123); expect_identical(a,remg(20,0,1,1))
-  set.seed(124); z <- remg(30000,2,1,2)
+  expect_equal(pemg(q = q, mu = 0, sigma = 1, lambda = 9.99988867182683e-321, log.p = TRUE),log(1e-300),tolerance=1e-12)
+  set.seed(123); a <- remg(n = 20, mu = 0, sigma = 1, lambda = 1)
+  set.seed(123); expect_identical(a,remg(n = 20, mu = 0, sigma = 1, lambda = 1))
+  set.seed(124); z <- remg(n = 30000, mu = 2, sigma = 1, lambda = 2)
   expect_equal(mean(z),2.5,tolerance=.03)
   expect_equal(var(z),1.25,tolerance=.04)
 })
 test_that("EMG fixed subsets agree with a slow independent optimizer", {
-  x <- qemg((seq_len(40)-.5)/40,0,1,1)
+  x <- qemg(p = (seq_len(40) - 0.5)/40, mu = 0, sigma = 1, lambda = 1)
   objective <- function(t) {
     mu <- t[1]; sigma <- exp(t[2]); lambda <- exp(t[3])
     -sum(log(lambda)+lambda*(mu-x)+lambda^2*sigma^2/2+pnorm((x-mu)/sigma-lambda*sigma,log.p=TRUE))
@@ -64,7 +64,7 @@ test_that("EMG fixed subsets agree with a slow independent optimizer", {
   expect_error(mlemg(c(0,0,.1,4)),"translated exponential")
 })
 test_that("EMG integrates with plotting, bootstrap and model selection", {
-  x <- qemg((seq_len(40)-.5)/40,0,1,1)
+  x <- qemg(p = (seq_len(40) - 0.5)/40, mu = 0, sigma = 1, lambda = 1)
   fit <- mlemg(x,mu=0,sigma=1,lambda=1)
   set.seed(17)
   boot <- bootstrapml(fit,reps=2,reducer=mean)

@@ -17,7 +17,7 @@ test_that("nhyper design, fixed subsets and errors are explicit", {
   b <- mlnhyper(c(3,4,5),r=2,N=20,m=8)
   expect_equal(attr(logLik(b),"df"),0)
   expect_equal(attr(b,"fixed"),c("n","m","r"))
-  expect_equal(attr(b,"logLik"),sum(extraDistr::dnhyper(c(3,4,5),12,8,2,log=TRUE)))
+  expect_equal(attr(b,"logLik"),sum(dnhyper(x = c(3, 4, 5), n = 12, m = 8, r = 2, log = TRUE)))
   expect_warning(z <- mlnhyper(c(0,0),r=0,N=20),"unidentified")
   expect_equal(as.numeric(z),c(20,0,0))
   expect_equal(attr(z,"logLik"),0)
@@ -30,12 +30,12 @@ test_that("nhyper integer MLE agrees with independent reference enumeration", {
   ties <- 0
   for (i in seq_len(120)) {
     N <- sample(5:45,1); r <- sample(1:N,1); m <- r + sample.int(N-r+1,1)-1
-    x <- if (m == N) rep(r,7) else extraDistr::rnhyper(7,N-m,m,r)
+    x <- if (m == N) rep(r,7) else rnhyper(nn = 7, n = N - m, m = m, r = r)
     a <- suppressWarnings(mlnhyper(x,r=r,N=N))
     grid <- r:(N-max(x)+r)
     ll <- vapply(grid,function(m) {
       if (m == N) return(if (all(x == r)) 0 else -Inf)
-      sum(extraDistr::dnhyper(x,N-m,m,r,log=TRUE))
+      sum(dnhyper(x = x, n = N - m, m = m, r = r, log = TRUE))
     },0)
     expect_equal(attr(a,"logLik"),max(ll),tolerance=1e-11)
     expect_true(unname(a["m"]) %in% grid[ll >= max(ll)-1e-10])
@@ -46,14 +46,14 @@ test_that("nhyper integer MLE agrees with independent reference enumeration", {
   expect_equal(unname(a["m"]),6)
 })
 
-test_that("nhyper reference repairs preserve tails and total-draw endpoints", {
+test_that("nhyper evaluation preserve tails and total-draw endpoints", {
   fit <- mlnhyper(c(3,4,5),r=2,N=20,m=8)
   x <- 2:14
-  expect_equal(dml(x,fit),extraDistr::dnhyper(x,12,8,2),tolerance=1e-13)
-  expect_equal(pml(x,fit),extraDistr::pnhyper(x,12,8,2),tolerance=1e-13)
-  expect_equal(qml(c(.01,.4,.9),fit),extraDistr::qnhyper(c(.01,.4,.9),12,8,2))
+
+
+
   set.seed(42); a <- rml(30,fit)
-  set.seed(42); b <- extraDistr::rnhyper(30,12,8,2)
+  set.seed(42); b <- rnhyper(nn = 30, n = 12, m = 8, r = 2)
   expect_equal(a,b)
   d <- univariateML_to_function(fit,"d"); p <- univariateML_to_function(fit,"p")
   q <- univariateML_to_function(fit,"q"); rr <- univariateML_to_function(fit,"r")

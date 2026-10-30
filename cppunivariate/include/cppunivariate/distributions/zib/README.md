@@ -20,8 +20,8 @@ params:
   simulate: 0.4
   kind: regular
 r:
-  density: extraDistr::dzib
-  sampler: extraDistr::rzib
+  density: dzib
+  sampler: rzib
   control:
     size: "Optional fixed size; NULL estimates size."
     reltol: "Tolerance for scalar profile search."

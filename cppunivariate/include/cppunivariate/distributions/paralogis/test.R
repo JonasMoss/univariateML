@@ -1,12 +1,12 @@
 context("mlparalogis")
 
-## Data generation (actuar's shape/scale parameterisation).
+## Data generation (shape/scale parameterisation).
 set.seed(313)
-small_data <- actuar::rparalogis(100, shape = 2, scale = 3)
-medium_data <- actuar::rparalogis(1000, shape = 0.8, scale = 0.5)
+small_data <- rparalogis(n = 100, shape = 2, scale = 3)
+medium_data <- rparalogis(n = 1000, shape = 0.8, scale = 0.5)
 
 oracle <- function(x) {
-  nll <- function(p) -sum(actuar::dparalogis(x, shape = exp(p[1]), scale = exp(p[2]), log = TRUE))
+  nll <- function(p) -sum(dparalogis(x = x, shape = exp(p[1]), scale = exp(p[2]), log = TRUE))
   o <- optim(c(0, log(median(x))), nll, method = "BFGS", control = list(reltol = 1e-14, maxit = 1000))
   list(estimates = exp(o$par), logLik = -o$value)
 }
@@ -18,7 +18,7 @@ for (x in list(small_data, medium_data)) {
   expect_gte(attr(fit, "logLik"), o$logLik - 1e-6)
   expect_equal(unname(coef(fit)), o$estimates, tolerance = 1e-3)
   expect_equal(attr(fit, "logLik"),
-               sum(actuar::dparalogis(x, shape = coef(fit)[["shape"]], scale = coef(fit)[["scale"]], log = TRUE)))
+               sum(dparalogis(x = x, shape = coef(fit)[["shape"]], scale = coef(fit)[["scale"]], log = TRUE)))
 }
 
 ## Both parameters are estimated (univariateML 1.x held the scale at 1).
@@ -39,7 +39,7 @@ test_that("fixed scale agrees with reference-density oracle and records df", {
   for (s in c(.2, 1, 7)) {
     x <- c(.03, .1, .4, .7, 1, 2, 4, 12) * s
     fit <- mlparalogis(x, scale=s)
-    objective <- function(p) -sum(actuar::dparalogis(x, exp(p[1]), scale=s, log=TRUE))
+    objective <- function(p) -sum(dparalogis(x = x, shape = exp(p[1]), scale = s, log = TRUE))
     oracle <- optim(0, objective, method="BFGS",
                     control=list(reltol=1e-13, maxit=3000))
     expect_equal(attr(fit, "logLik"), -oracle$value, tolerance=1e-9)
@@ -74,7 +74,7 @@ test_that("constant free-scale paralogis data have an unbounded likelihood", {
 
 test_that("paralogis large-sample fitting preserves likelihood under replication", {
   p<-((1:1000)-.5)/1000
-  x<-actuar::qparalogis(p,shape=1,scale=1)
+  x<-qparalogis(p = p, shape = 1, scale = 1)
   base<-mlparalogis(x)
   f<-mlparalogis(rep(x,100))
   expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
@@ -85,9 +85,9 @@ test_that("P2 paralogis holds agree with independent multistart reference likeli
   pars <- c(shape=2, scale=1)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)
-  density <- actuar::dparalogis
+  density <- dparalogis
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(actuar::qparalogis, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qparalogis, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- qexp(((1:20)-.5)/20)

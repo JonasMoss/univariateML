@@ -5,7 +5,7 @@ zinb_oracle <- function(x, size = NULL) {
     r <- if (is.null(size)) exp(t[1]) else size
     p <- plogis(t[if (is.null(size)) 2 else 1])
     pi <- plogis(t[if (is.null(size)) 3 else 2])
-    -sum(extraDistr::dzinb(x, r, p, pi, log = TRUE))
+    -sum(dzinb(x = x, size = r, prob = p, pi = pi, log = TRUE))
   }
   min(vapply(c(.2, 1, 5, 20), function(r) {
     start <- c(if (is.null(size)) log(r), qlogis(.4), qlogis(.2))
@@ -16,7 +16,7 @@ zinb_oracle <- function(x, size = NULL) {
 test_that("profiled ZINB agrees with multistart external oracle", {
   set.seed(718)
   for (r in c(.5, 2, 5)) {
-    x <- extraDistr::rzinb(1500, r, .35, .3)
+    x <- rzinb(n = 1500, size = r, prob = 0.35, pi = 0.3)
     fit <- mlzinb(x)
     expect_equal(attr(fit,"logLik"), -zinb_oracle(x), tolerance=1e-7)
     fixed <- mlzinb(x, size=1.5)
@@ -51,7 +51,7 @@ test_that("all-zero representative supports external probability evaluation", {
 local({
   id <- "zinb"
   base <- c(size=2,prob=0.4,pi=0.3)
-  density <- extraDistr::dzinb
+  density <- dzinb
   test_that("P2 holds agree with independent multistart reference likelihoods", {
     set.seed(81029)
     samples <- list(simulate_default(paste0("ml",id),20),
@@ -135,7 +135,7 @@ test_that("P2 fixed size and inflation compare separated probability peaks", {
   x<-c(rep(0,99),10)
   for(pi in c(.001,.1,.9)) {
     fit<-mlzinb(x,size=2,pi=pi)
-    objective<-function(t) -sum(extraDistr::dzinb(x,2,plogis(t),pi,log=TRUE))
+    objective<-function(t) -sum(dzinb(x = x, size = 2, prob = plogis(t), pi = pi, log = TRUE))
     values<-vapply(seq(-5,5,length.out=9),function(t)
       optim(t,objective,method="BFGS",control=list(maxit=500,reltol=1e-12))$value,0)
     expect_gte(attr(fit,"logLik"),-min(values)-1e-7)

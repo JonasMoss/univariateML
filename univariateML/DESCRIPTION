@@ -16,9 +16,7 @@ LazyData: true
 Depends: 
     R (>= 3.5)
 Imports:
-    Rcpp,
-    extraDistr,
-    actuar
+    Rcpp
 Suggests:
     jsonlite,
     testthat,

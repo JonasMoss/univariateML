@@ -9,8 +9,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: actuar::dinvexp
-  sampler: actuar::rinvexp
+  density: dinvexp
+  sampler: rinvexp
   control:
     rate: Optional held rate; NULL estimates it.
 log_density: -log(rate) - 2*log(x) - 1/(rate*x)

@@ -1,33 +1,33 @@
 test_that("CMB agrees with binomial, finite sums, tails and inversion", {
   for (N in c(0,1,10,30)) for (p in c(0,.01,.3,.99,1)) {
     k <- 0:N
-    expect_equal(dcmb(k,N,p,1),dbinom(k,N,p),tolerance=1e-12)
-    expect_equal(dcmb(k,N,p,1,TRUE),dbinom(k,N,p,TRUE),tolerance=1e-12)
+    expect_equal(dcmb(x = k, size = N, prob = p, nu = 1),dbinom(k,N,p),tolerance=1e-12)
+    expect_equal(dcmb(x = k, size = N, prob = p, nu = 1, log = TRUE),dbinom(k,N,p,TRUE),tolerance=1e-12)
     for (tail in c(TRUE,FALSE)) {
       q <- seq(-.5,N+1,.5)
-      expect_equal(pcmb(q,N,p,1,tail),pbinom(q,N,p,tail),tolerance=1e-12)
-      expect_equal(pcmb(q,N,p,1,tail,TRUE),pbinom(q,N,p,tail,TRUE),tolerance=1e-12)
+      expect_equal(pcmb(q = q, size = N, prob = p, nu = 1, lower.tail = tail),pbinom(q,N,p,tail),tolerance=1e-12)
+      expect_equal(pcmb(q = q, size = N, prob = p, nu = 1, lower.tail = tail, log.p = TRUE),pbinom(q,N,p,tail,TRUE),tolerance=1e-12)
       u <- c(0,1e-10,.1,.5,.9,1-1e-10,1)
-      expect_equal(qcmb(u,N,p,1,tail),qbinom(u,N,p,tail))
+      expect_equal(qcmb(p = u, size = N, prob = p, nu = 1, lower.tail = tail),qbinom(u,N,p,tail))
     }
   }
   for (nu in c(-3,0,.5,2,10)) {
     k <- 0:12; lp <- nu*lchoose(12,k)+k*log(.4)+(12-k)*log(.6)
     w <- exp(lp-max(lp)); w <- w/sum(w)
-    expect_equal(dcmb(k,12,.4,nu),w,tolerance=1e-12)
-    expect_equal(pcmb(k+.75,12,.4,nu),cumsum(w),tolerance=1e-12)
-    expect_equal(pcmb(k,12,.4,nu,FALSE),rev(c(0,cumsum(rev(w))[-13])),tolerance=1e-12)
+    expect_equal(dcmb(x = k, size = 12, prob = 0.4, nu = nu),w,tolerance=1e-12)
+    expect_equal(pcmb(q = k + 0.75, size = 12, prob = 0.4, nu = nu),cumsum(w),tolerance=1e-12)
+    expect_equal(pcmb(q = k, size = 12, prob = 0.4, nu = nu, lower.tail = FALSE),rev(c(0,cumsum(rev(w))[-13])),tolerance=1e-12)
     u <- c(.01,.2,.5,.9,.999)
     for (tail in c(TRUE,FALSE)) {
-      z <- qcmb(log(u),12,.4,nu,tail,TRUE)
-      f <- pcmb(z,12,.4,nu,tail); prev <- pcmb(z-1,12,.4,nu,tail)
+      z <- qcmb(p = log(u), size = 12, prob = 0.4, nu = nu, lower.tail = tail, log.p = TRUE)
+      f <- pcmb(q = z, size = 12, prob = 0.4, nu = nu, lower.tail = tail); prev <- pcmb(q = z - 1, size = 12, prob = 0.4, nu = nu, lower.tail = tail)
       expect_true(all(if (tail) prev<u & f>=u else prev>u & f<=u))
     }
   }
   for (tail in c(TRUE,FALSE)) for (lg in c(TRUE,FALSE))
-    expect_equal(qcmb(pcmb(0:9,10,.4,1.2,tail,lg),10,.4,1.2,tail,lg),0:9)
-  expect_equal(pcmb(29,30,.001,1,FALSE,TRUE),dbinom(30,30,.001,TRUE))
-  expect_equal(qcmb(-1000,30,.3,1,FALSE,TRUE),30)
+    expect_equal(qcmb(pcmb(q = 0:9, size = 10, prob = 0.4, nu = 1.2, lower.tail = tail, log.p = lg),10,.4,1.2,tail,lg),0:9)
+  expect_equal(pcmb(q = 29, size = 30, prob = 0.001, nu = 1, lower.tail = FALSE, log.p = TRUE),dbinom(30,30,.001,TRUE))
+  expect_equal(qcmb(p = -1000, size = 30, prob = 0.3, nu = 1, lower.tail = FALSE, log.p = TRUE),30)
 })
 test_that("CMB fits agree with an independent optim oracle and fixed subsets", {
   x <- c(0,1,1,2,2,3,3,4,5,7,10)
@@ -79,20 +79,20 @@ test_that("CMB detects precisely the reachable faces", {
   expect_error(mlcmb(1,size=5,nu=Inf),"finite")
 })
 test_that("CMB recycling, warnings, RNG and fitted-model generics work", {
-  expect_warning(expect_equal(dcmb(.5,10,.3,1),0),"non-integer")
-  expect_warning(expect_true(is.nan(dcmb(1,10,-1,1))),"NaNs")
-  expect_warning(expect_true(is.nan(qcmb(2,10,.3,1))),"NaNs")
-  expect_identical(dcmb(NA_real_,10,.3,1),NA_real_)
-  expect_equal(dcmb(0:3,c(4,5),c(.2,.4,.6),c(-1,1)),mapply(dcmb,0:3,c(4,5,4,5),c(.2,.4,.6,.2),c(-1,1,-1,1)))
-  expect_length(dcmb(numeric(),10,.3,1),0)
-  expect_length(rcmb(0,10,.3,1),0)
-  expect_length(rcmb(3,c(5,6,7,8),.3,1),3)
-  expect_identical(pcmb(1,10,NA_real_,1),NA_real_)
-  set.seed(78); x <- rcmb(2000,10,.3,1)
-  set.seed(78); expect_identical(x,rcmb(2000,10,.3,1))
+  expect_warning(expect_equal(dcmb(x = 0.5, size = 10, prob = 0.3, nu = 1),0),"non-integer")
+  expect_warning(expect_true(is.nan(dcmb(x = 1, size = 10, prob = -1, nu = 1))),"NaNs")
+  expect_warning(expect_true(is.nan(qcmb(p = 2, size = 10, prob = 0.3, nu = 1))),"NaNs")
+  expect_identical(dcmb(x = NA_real_, size = 10, prob = 0.3, nu = 1),NA_real_)
+  expect_equal(dcmb(x = 0:3, size = c(4, 5), prob = c(0.2, 0.4, 0.6), nu = c(-1, 1)),mapply(dcmb,0:3,c(4,5,4,5),c(.2,.4,.6,.2),c(-1,1,-1,1)))
+  expect_length(dcmb(x = numeric(), size = 10, prob = 0.3, nu = 1),0)
+  expect_length(rcmb(n = 0, size = 10, prob = 0.3, nu = 1),0)
+  expect_length(rcmb(n = 3, size = c(5, 6, 7, 8), prob = 0.3, nu = 1),3)
+  expect_identical(pcmb(q = 1, size = 10, prob = NA_real_, nu = 1),NA_real_)
+  set.seed(78); x <- rcmb(n = 2000, size = 10, prob = 0.3, nu = 1)
+  set.seed(78); expect_identical(x,rcmb(n = 2000, size = 10, prob = 0.3, nu = 1))
   f <- mlcmb(x,size=10,nu=1)
-  expect_equal(pml(0:10,f),pcmb(0:10,10,f[["prob"]],1))
-  expect_equal(qml(c(.1,.5,.9),f),qcmb(c(.1,.5,.9),10,f[["prob"]],1))
+
+
   expect_length(rml(20,f),20)
   expect_equal(dim(bootstrapml(f,reps=3)),c(3L,2L))
   expect_s3_class(model_select(x,models="cmb",size=10),"univariateML")

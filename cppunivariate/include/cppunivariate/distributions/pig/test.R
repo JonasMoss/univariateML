@@ -9,21 +9,21 @@ test_that("Poisson and zero faces are explicit", {
   expect_equal(as.numeric(mlpig(rep(0,3),mean=2)),c(2,0))
   expect_error(mlpig(rep(0,3), shape=2), "point-mass")
   fit <- mlpig(rep(0,3), mean=2,shape=3)
-  expect_equal(attr(fit,"logLik"),3*actuar::dpoisinvgauss(0,2,3,log=TRUE))
+  expect_equal(attr(fit,"logLik"),3*dpig(x = 0, mean = 2, shape = 3, log = TRUE))
 })
-test_that("all fixed subsets agree with accurate actuar oracle", {
+test_that("all fixed subsets agree with accurate density oracle", {
   x <- c(0,0,0,0,1,2,3,5,10)
   for (held in list(list(),list(mean=3),list(shape=3),list(mean=3,shape=3))) {
     fit <- do.call(mlpig,c(list(x=x),held))
     expect_equal(sort(attr(fit,"fixed")),sort(if (is.null(names(held))) character() else names(held)))
-    expect_equal(attr(fit,"logLik"),sum(actuar::dpoisinvgauss(x,fit[["mean"]],fit[["shape"]],log=TRUE)),tolerance=1e-9)
+    expect_equal(attr(fit,"logLik"),sum(dpig(x = x, mean = fit[["mean"]], shape = fit[["shape"]], log = TRUE)),tolerance=1e-9)
     expect_equal(attr(logLik(fit),"df"),2L-length(held))
     free <- setdiff(c("mean","shape"),names(held))
     if (length(free)) {
       objective <- function(z) {
         pars <- as.list(setNames(as.numeric(fit),names(fit)))
         pars[free] <- exp(z)
-        -sum(do.call(actuar::dpoisinvgauss,c(list(x=x,log=TRUE),pars)))
+        -sum(do.call(dpig,c(list(x=x,log=TRUE),pars)))
       }
       for (mult in c(.5,1,2)) {
         opt <- optim(log(as.numeric(fit[free])*mult),objective,method="BFGS",control=list(reltol=1e-12))

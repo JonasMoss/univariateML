@@ -14,13 +14,6 @@ params:
   simulate: 3
   kind: regular
 r:
-  export:
-    params:
-      mu1: Nonnegative finite Poisson rate.
-      mu2: Nonnegative finite Poisson rate.
-    details: The distribution is the difference of independent Poisson counts with nonnegative
-      finite rates. Zero rates give the corresponding signed Poisson member. Random generation
-      subtracts independent Poisson draws.
   density: dskellam
   sampler: rskellam
   control:
@@ -46,3 +39,7 @@ Zero rates are attained members, including the point mass at zero when both vani
 For a joint interior fit, writing $s=\sqrt{\mu_1\mu_2}$ and $\theta=\log(\mu_1/\mu_2)/2$ gives the score equation $\mu_1-\mu_2=\bar x$. The remaining equation is $n^{-1}\sum_i I'_{|x_i|}(2s)/I_{|x_i|}(2s)=\cosh\theta$, with $I'_v(z)=I_{v+1}(z)+vI_v(z)/z$. The fitter searches the resulting scalar profile and compares every nominated maximum with the exact zero-rate face. Faces win log likelihood ties within $10^{-8}n$. Uniqueness is not assumed. The search uses a finite logarithmic grid and local refinement; this is numerical global-search evidence rather than a proof that every maximum is found.
 
 The mean and variance identify both rates. Likelihoods are bounded by one per observation. Both-sided samples exclude zero-rate faces. A convolution mass is at most the maximal mass of either Poisson factor, which vanishes when that rate diverges. Continuity on the closed quadrant therefore gives a finite maximizer for every finite integer sample, also with fixed rates whenever the support permits the sample. Constant data $k$ have the joint MLE $(k,0)$ for $k>0$, $(0,-k)$ for $k<0$, and $(0,0)$ for zero: condition on the opposite Poisson count and use the decreasing maximal Poisson mass as its integer mode increases. For nonnegative data with positive mean, the inward profile derivative per observation at the Poisson face is $\bar x\,n^{-1}\sum_i 1/(x_i+1)-1$; reflect the data for the other face. This is a local boundary diagnostic, not a sufficient global rule; the fitter compares likelihoods.
+
+## d/p/q/r
+
+Zero rates include the signed Poisson limits; sampling subtracts two independent Poisson variates.

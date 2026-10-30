@@ -24,19 +24,6 @@ params:
   simulate: 2.0
   kind: regular
 r:
-  export:
-    title: SSTD distribution
-    defaults:
-      mean: 0
-      sd: 1
-      nu: 5
-      xi: 1.5
-    params:
-      mean: Finite mean.
-      sd: Finite positive standard deviation.
-      nu: Finite shape, greater than two.
-      xi: Finite positive Fernandez--Steel skewness.
-    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dsstd
   sampler: rsstd
   control:
@@ -112,3 +99,7 @@ the held mean. The likelihood is unbounded at scale zero when
 $k>\nu(n-k)$. Equality is reported as an uncertified scale-collapse
 boundary; with strict inequality reversed the likelihood vanishes at both
 scale endpoints. With scale held, location maxima exist even with ties.
+
+## d/p/q/r
+
+Uses the fGarch mean and standard deviation parameterisation.

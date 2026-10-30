@@ -17,7 +17,7 @@ test_that("pareto4: required endpoint, reference likelihood and reproducibility"
    co <- as.list(as.numeric(fit)); names(co)<-names(fit)
    if(any(!is.finite(z)) || any(abs(z)>500)) return(1e100)
    co[par]<-as.list(exp(z))
-   f <- get(paste0("d","pareto4"),asNamespace("actuar"))
+   f <- get(paste0("d","pareto4"), asNamespace("univariateML"))
    value <- suppressWarnings(-sum(do.call(f,c(list(x=x,log=TRUE),co))))
    if(is.finite(value)) value else 1e100
  }
@@ -28,7 +28,7 @@ test_that("pareto4: required endpoint, reference likelihood and reproducibility"
 })
 
 test_that("pareto4: fixed scale and shifted escape messages", {
- x <- actuar::qpareto4((1:100-.5)/100,2,.5,2,scale=3)
+ x <- qpareto4(p = (1:100 - 0.5)/100, shape1 = 0.5, shape2 = 2, scale = 3, min = 2)
  a <- mlpareto4(x,min=2,scale=3); b <- mlburr(x-2,scale=3,abstol=1e-10,iterlim=1000)
  expect_equal(as.numeric(a[1:3]),as.numeric(b),tolerance=1e-10)
  expect_equal(attr(a,"fixed"),c("min","scale"))
@@ -44,9 +44,9 @@ test_that("pareto4: free-scale faces preserve the threshold", {
 
 test_that("pareto4: reference mapping and unbounded unrestricted path", {
  x <- c(1e-12,.01,.1,1,20,1e10)
- expect_lt(max(abs((actuar::dpareto4(x,0,.3,.7,scale=2,log=TRUE))-(actuar::dburr(x,.3,.7,scale=2,log=TRUE)))),1e-12)
+ expect_lt(max(abs((dpareto4(x = x, shape1 = 0.3, shape2 = 0.7, scale = 2, min = 0, log = TRUE))-(dburr(x = x, shape1 = 0.3, shape2 = 0.7, scale = 2, log = TRUE)))),1e-12)
  y <- c(1,2,4,7)
- ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(actuar::dpareto4(y,1-e,2,.5,scale=1,log=TRUE)))
+ ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(dpareto4(x = y, shape1 = 2, shape2 = 0.5, scale = 1, min = 1 - e, log = TRUE)))
  expect_true(all(diff(ll)>0))
 })
 
@@ -55,9 +55,9 @@ test_that("P2 pareto4 holds agree with independent multistart reference likeliho
   pars <- c(shape1=0.3, shape2=0.7, scale=1, min=0)
   thresholds <- c("min")
   regular <- setdiff(names(pars), thresholds)
-  density <- actuar::dpareto4
+  density <- dpareto4
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(actuar::qpareto4, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qpareto4, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- qexp(((1:20)-.5)/20)

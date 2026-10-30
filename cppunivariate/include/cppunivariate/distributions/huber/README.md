@@ -21,8 +21,8 @@ params:
   advice: epsilon = 1.345 is a conventional tuning choice; NULL fits epsilon with
     normal and Laplace escapes.
 r:
-  density: extraDistr::dhuber
-  sampler: extraDistr::rhuber
+  density: dhuber
+  sampler: rhuber
   control:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
@@ -46,7 +46,7 @@ limits:
     status: LaplaceLimit
 examples: |
   set.seed(1)
-  mlhuber(extraDistr::rhuber(100, epsilon = 1.345), epsilon = 1.345)
+  mlhuber(univariateML:::rhuber(n = 100, mu = 0, sigma = 1, epsilon = 1.345), epsilon = 1.345)
 holds: []
 fit_args:
   epsilon: 1.345

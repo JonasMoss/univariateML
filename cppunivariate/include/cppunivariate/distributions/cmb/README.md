@@ -20,15 +20,6 @@ params:
   simulate: 1.5
   kind: regular
 r:
-  export:
-    params:
-      size: Known number of trials.
-      prob: Canonical probability coordinate; generally not the mean divided by size.
-      nu: Real dispersion coordinate.
-    details: Support is 0 to size. size is a nonnegative integer at most 1e7; prob lies between
-      zero and one (inclusive), and nu is any finite real number. The member nu = 1 is binomial.
-      Normalization enumerates the finite support in log scale. Tables are shared by repeated
-      parameter tuples within each call. Tails are summed directly. Random draws use inversion.
   density: dcmb
   sampler: rcmb
   control:
@@ -83,3 +74,7 @@ The Conway--Maxwell--binomial distribution extends the binomial by raising its c
 The size is a required design quantity. The canonical probability is generally not the mean divided by size. Dispersion is unrestricted in sign, and `nu = 1` is binomial. The fitter profiles the canonical log odds by mean matching and solves the remaining dispersion moment equation. Finite log-sum-exp enumeration costs O(size) per evaluation; size is limited to 1e7 for allocation safety.
 
 For size at least two, the joint MLE is attained when the mean sufficient statistic lies inside the convex polygon of the statistic points or is an endpoint vertex. Other boundary samples stop with a named limiting law. With fixed dispersion, endpoint point masses are attained. With fixed probability, dispersion can escape only toward the central mode(s) or the endpoints; constants elsewhere can have finite fits. With both coordinates fixed there is no optimization or escape. Size zero is the attained point mass at zero: unidentified free prob and nu are represented by 0.5 and one. Endpoint samples with free prob return prob zero or one, with unidentified free nu represented by one. Endpoint probability holds are accepted only for compatible observations. With size one, dispersion is unidentified: an unspecified dispersion is set to one with a warning for interior probabilities and marked fixed, leaving a Bernoulli fit.
+
+## d/p/q/r
+
+Finite log normalization is reused for tables; the binomial is the nu = 1 member. The size cap is 1e7.

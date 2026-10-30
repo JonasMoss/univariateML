@@ -15,8 +15,8 @@ params:
   simulate: 0.4
   kind: regular
 r:
-  density: extraDistr::ddlaplace
-  sampler: extraDistr::rdlaplace
+  density: ddlaplace
+  sampler: rdlaplace
   control:
     location: Optional fixed integer location; NULL estimates it.
     scale: Optional fixed probability strictly between zero and one; NULL estimates it.

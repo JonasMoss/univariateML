@@ -9,8 +9,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::dhcauchy
-  sampler: extraDistr::rhcauchy
+  density: dhcauchy
+  sampler: rhcauchy
   control:
     sigma: Held positive finite scale; NULL estimates it.
 log_density: log(2/pi) - log(sigma) - log(1+x**2/sigma**2)
@@ -32,7 +32,7 @@ The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint f
 
 If $k$ of $n$ observations are zero, a positive-scale MLE exists uniquely iff $2k<n$. Indeed, the log-scale score is $n-\sum_i 2\sigma^2/(\sigma^2+x_i^2)$, strictly decreasing from $n-2k$ to $-n$ whenever some observation is positive. For $2k=n$ it is strictly negative at every positive scale: the finite scale-zero supremum is unattained. For $2k>n$, including all-zero data, the likelihood is unbounded as scale tends to zero. Negative and nonfinite observations are rejected. Even one strictly positive observation identifies a unique scale estimate.
 
-The d/p/q/r functions use extraDistr, with runtime-checked repairs for log densities and extreme probability tails. The endpoint density is positive.
+Evaluation uses the internal d/p/q/r functions. The endpoint density is positive.
 
 A positive finite held `sigma` is evaluated directly, including for all-zero
 data; the scale-collapse conditions apply only when scale is estimated.

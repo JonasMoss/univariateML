@@ -46,10 +46,10 @@ test_that("adapters flag estimated bounds and suppress held and exempt bounds", 
   expect_warning(f <- mlfrechet(c(.01,.02,.1,1,10,100,1000), mu = NULL, sigma = 1),
                  class = "univariateML_restricted")
   expect_identical(attr(f, "restricted"), c(lambda = "lower"))
-  expect_warning(upper <- mlgev(extraDistr::qgev(((1:400)-.5)/400, xi = 2)),
+  expect_warning(upper <- mlgev(qgev(p = ((1:400) - 0.5)/400, mu = 0, sigma = 1, xi = 2)),
                  class = "univariateML_restricted")
   expect_identical(attr(upper, "restricted"), c(xi = "upper"))
-  expect_warning(lower <- mltlambda(qtlambda(((1:100)-.5)/100, lambda = -2)),
+  expect_warning(lower <- mltlambda(qtlambda(p = ((1:100) - 0.5)/100, mu = 0, sigma = 1, lambda = -2)),
                  class = "univariateML_restricted")
   expect_identical(attr(lower, "restricted"), c(lambda = "lower"))
   expect_warning(partial <- mllst(x, sigma = 1), class = "univariateML_restricted")

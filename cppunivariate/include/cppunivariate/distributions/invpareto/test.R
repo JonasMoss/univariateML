@@ -1,8 +1,8 @@
-test_that("invpareto matches a multistart actuar oracle", {
+test_that("invpareto matches a multistart density oracle", {
   set.seed(871)
-  x <- actuar::rinvpareto(300, shape=1.3, scale=2.7)
+  x <- rinvpareto(n = 300, shape = 1.3, scale = 2.7)
   fit <- mlinvpareto(x, reltol=1e-10, iterlim=1000)
-  objective <- function(p) -sum(actuar::dinvpareto(x, shape=exp(p[1]), scale=exp(p[2]), log=TRUE))
+  objective <- function(p) -sum(dinvpareto(x = x, shape = exp(p[1]), scale = exp(p[2]), log = TRUE))
   oracles <- lapply(c(.4,1,3), function(s) optim(rep(log(s), 2), objective, method="BFGS", control=list(reltol=1e-12,maxit=2000)))
   oracle <- oracles[[which.min(vapply(oracles, function(o) o$value, 0.0))]]
   expect_equal(as.numeric(fit),exp(oracle$par),tolerance=1e-4)
@@ -10,7 +10,7 @@ test_that("invpareto matches a multistart actuar oracle", {
 })
 test_that("invpareto mapping and limit", {
  x<-c(.13,.7,2,11)
- expect_equal(actuar::dinvpareto(x,shape=2.3,scale=3,log=TRUE),extraDistr::dlomax(1/x,lambda=3,kappa=2.3,log=TRUE)-2*log(x))
+ expect_equal(dinvpareto(x = x, shape = 2.3, scale = 3, log = TRUE),dlomax(x = 1/x, lambda = 3, kappa = 2.3, log = TRUE)-2*log(x))
  expect_error(mlinvpareto(rep(1,10)),"Use `mlinvexp`")
 })
 
@@ -42,7 +42,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("shape","scale")
   held_default <- c(2,1)
   names(held_default) <- pn
-  density <- actuar::dinvpareto
+  density <- dinvpareto
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

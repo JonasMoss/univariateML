@@ -14,8 +14,8 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  density: extraDistr::dzip
-  sampler: extraDistr::rzip
+  density: dzip
+  sampler: rzip
   control:
     lambda: "Optional held lambda; NULL estimates it."
     pi: "Optional held pi; NULL estimates it."

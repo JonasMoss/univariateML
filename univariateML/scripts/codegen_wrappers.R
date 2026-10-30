@@ -146,8 +146,11 @@ gen_doc <- function(model) {
   if (!length(desc)) stop("codegen_wrappers: ", model$id, ": README.md has no description")
 
   details <- c(
-    nl("For the density function of the ", model$name, " distribution see ",
-       rd_link(model$density), args_clause(model), "."),
+    if (startsWith(model$density, "stats::"))
+      nl("For the density function of the ", model$name, " distribution see ",
+         rd_link(model$density), args_clause(model), ".") else
+      "Evaluate the fitted distribution with [dml()], [pml()], [qml()] and [rml()].",
+    rd_math(s[["d/p/q/r"]] %||% character()),
     vapply(model$limits, limit_sentence, character(1), model = model),
     rd_math(s$details %||% character())
   )
@@ -166,7 +169,7 @@ gen_doc <- function(model) {
   }, character(1))
   control_items <- c(fixed_items, control_items)
   seealso <- unique(c(
-    nl(rd_link(model$density), " for the density."),
+    if (startsWith(model$density, "stats::")) nl(rd_link(model$density), " for the density.") else "[dml()] for density evaluation.",
     unlist(lapply(model$limits, function(l) if (!is.null(l$model)) nl("[ml", l$model, "()] for the limit model."))),
     rd_math(s[["see also"]] %||% character())
   ))

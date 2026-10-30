@@ -16,14 +16,6 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  export:
-    title: Finite Zipf distribution
-    params:
-      "N": Upper support endpoint.
-      s: Nonnegative shape.
-    details: Support is 1 to N; N is a positive integer at most .Machine$integer.max, and s is
-      finite and nonnegative. The member s = 0 is uniform. Tails are summed directly. Random draws
-      use inversion.
   density: dzipf
   sampler: rzipf
   control:
@@ -55,3 +47,7 @@ The fitted upper endpoint `N` is `max(x)` and is a positive integer. The support
 For fixed `s > 1`, the limit as `N` tends to infinity is the zeta distribution, fitted by `mlzeta`.
 
 With `N` held above one, all-ones samples have no finite shape MLE. Holding `s` always selects `N = max(x)` when the endpoint is free.
+
+## d/p/q/r
+
+N is capped at .Machine$integer.max; s = 0 is uniform. Both tails are summed directly.

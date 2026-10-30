@@ -31,19 +31,6 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export:
-    title: SGED distribution
-    defaults:
-      mean: 0
-      sd: 1
-      nu: 2
-      xi: 1.5
-    params:
-      mean: Finite mean.
-      sd: Finite positive standard deviation.
-      nu: Finite shape, positive (including shapes below one).
-      xi: Finite positive Fernandez--Steel skewness.
-    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dsged
   sampler: rsged
   control:
@@ -141,3 +128,7 @@ and emit a warning of class `univariateML_restricted`. Held coefficients are
 not flagged. README hold exemptions apply to free coefficients. Failed
 optimizers return a failure status unless the score norm in fitting
 coordinates is below `1e-3`; unresolved scalar searches stop.
+
+## d/p/q/r
+
+Uses the fGarch mean and standard deviation parameterisation.

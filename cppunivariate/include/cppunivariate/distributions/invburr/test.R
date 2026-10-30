@@ -1,7 +1,7 @@
 invburr_scale_oracle <- function(x) {
   nll <- function(t) {
     p <- exp(t)
-    v <- -sum(actuar::dburr(x, shape1=p[1], shape2=p[2], scale=p[3], log=TRUE))
+    v <- -sum(dburr(x = x, shape1 = p[1], shape2 = p[2], scale = p[3], log = TRUE))
     if (is.finite(v)) v else 1e100
   }
   starts <- expand.grid(k=c(.01,.1,.5,1,5,100), c=c(.5,2,10))
@@ -23,10 +23,10 @@ invburr_scale_oracle <- function(x) {
   list(ll=max(ll,faces), face=face, estimates=exp(best$par))
 }
 
-test_that("inverse Burr agrees with reciprocal actuar oracle", {
+test_that("inverse Burr agrees with reciprocal density oracle", {
   for (n in c(20,200)) for (seed in 1:6) {
     set.seed(seed)
-    y <- actuar::rburr(n,shape1=1,shape2=2,scale=3)
+    y <- rburr(n = n, shape1 = 1, shape2 = 2, scale = 3)
     x <- 1/y
     oracle <- suppressWarnings(invburr_scale_oracle(y))
     if (oracle$face == "interior") {
@@ -34,7 +34,7 @@ test_that("inverse Burr agrees with reciprocal actuar oracle", {
       expect_named(fit,c("shape1","shape2","scale"))
       expect_equal(as.numeric(fit),c(oracle$estimates[1:2],1/oracle$estimates[3]),tolerance=1e-3)
       expect_equal(attr(fit,"logLik"),oracle$ll-2*sum(log(x)),tolerance=1e-6)
-      expect_equal(sum(actuar::dinvburr(x,shape1=fit[1],shape2=fit[2],scale=fit[3],log=TRUE)),
+      expect_equal(sum(dinvburr(x = x, shape1 = fit[1], shape2 = fit[2], scale = fit[3], log = TRUE)),
                    attr(fit,"logLik"),tolerance=1e-10)
       forward <- mlburr(y)
       expect_equal(as.numeric(fit),unname(c(forward[1:2],1/forward[3])),tolerance=1e-5)
@@ -60,9 +60,9 @@ test_that("inverse Burr limits name inverse Weibull and power", {
   }
 })
 
-test_that("invburr accepts actuar-named starts and rejects invalid starts", {
+test_that("invburr accepts shape/scale starts and rejects invalid starts", {
   set.seed(1)
-  x <- actuar::rinvburr(200,shape1=1,shape2=2,scale=3)
+  x <- rinvburr(n = 200, shape1 = 1, shape2 = 2, scale = 3)
   a <- mlinvburr(x)
   b <- mlinvburr(x,shape10=.5,shape20=3,scale0=2,gradtol=1e-8,reltol=1e-12,iterlim=1000)
   expect_equal(attr(a,"logLik"),attr(b,"logLik"),tolerance=1e-8)
@@ -86,7 +86,7 @@ test_that("invburr fixed scale reproduces 6c89a8c and a reference oracle", {
     expect_equal(attr(logLik(z),"df"),2)
     expect_equal(unname(z[1:2]),unname(fit[1:2]),tolerance=1e-10)
     expect_equal(attr(z,"logLik"),attr(fit,"logLik")-length(x)*log(s),tolerance=1e-10)
-    nll <- function(t) -sum(actuar::dinvburr(y,shape1=exp(t[1]),shape2=exp(t[2]),scale=s,log=TRUE))
+    nll <- function(t) -sum(dinvburr(x = y, shape1 = exp(t[1]), shape2 = exp(t[2]), scale = s, log = TRUE))
     oracle <- optim(log(c(.7,1.5)),nll,method="BFGS",control=list(reltol=1e-13,maxit=2000))
     expect_equal(unname(z[1:2]),exp(oracle$par),tolerance=1e-5)
     expect_equal(attr(z,"logLik"),-oracle$value,tolerance=1e-9)
@@ -99,7 +99,7 @@ test_that("invburr fixed scale reproduces 6c89a8c and a reference oracle", {
 test_that("invburr fixed scale uses a profile fallback when moments have no root", {
   x <- 1/c(.5,2,3,4,5)
   z <- mlinvburr(x,scale=1,abstol=1e-10)
-  nll <- function(t) -sum(actuar::dinvburr(x,shape1=exp(t[1]),shape2=exp(t[2]),scale=1,log=TRUE))
+  nll <- function(t) -sum(dinvburr(x = x, shape1 = exp(t[1]), shape2 = exp(t[2]), scale = 1, log = TRUE))
   oracle <- optim(log(c(.7,1.5)),nll,method="BFGS",control=list(reltol=1e-13,maxit=2000))
   expect_equal(as.numeric(z[1:2]),exp(oracle$par),tolerance=1e-5)
   expect_equal(attr(z,"logLik"),-oracle$value,tolerance=1e-9)
@@ -121,9 +121,9 @@ test_that("P2 invburr holds agree with independent multistart reference likeliho
   pars <- c(shape1=1, shape2=2, scale=1)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)
-  density <- actuar::dinvburr
+  density <- dinvburr
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(actuar::qinvburr, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qinvburr, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- qexp(((1:20)-.5)/20)

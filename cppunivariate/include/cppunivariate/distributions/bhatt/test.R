@@ -16,7 +16,7 @@ bhatt_oracle_density <- function(x,m,s,a) {
 test_that("bhatt interior and faces agree with an independent multistart oracle", {
   set.seed(710)
   samples <- c(list(seq(-1,1,length.out=20),qnorm((1:30-.5)/30)),
-               lapply(seq_len(8),function(j) extraDistr::rbhatt(20+5*j,0,1,3)))
+               lapply(seq_len(8),function(j) rbhatt(n = 20 + 5 * j, mu = 0, sigma = 1, a = 3)))
   for(x in samples) {
     f <- tryCatch(mlbhatt(x),error=identity)
     normal <- sum(dnorm(x,mean(x),sqrt(mean((x-mean(x))^2)),log=TRUE))
@@ -43,7 +43,7 @@ test_that("bhatt held scales have conditional faces and valid interior fits", {
   f <- mlbhatt(x,sigma=1,a=2)
   expect_equal(f[[1]],0,tolerance=1e-6)
   expect_equal(attr(f,"fixed"),c("sigma","a"))
-  expect_equal(attr(f,"logLik"),sum(extraDistr::dbhatt(x,0,1,2,log=TRUE)),tolerance=1e-10)
+  expect_equal(attr(f,"logLik"),sum(dbhatt(x = x, mu = 0, sigma = 1, a = 2, log = TRUE)),tolerance=1e-10)
   expect_error(mlbhatt(x,a=4),"mlunif")
   expect_error(mlbhatt(rep(2,5)),"unbounded")
   expect_error(mlbhatt(x,sigma=-1),"positive")
@@ -54,7 +54,7 @@ test_that("bhatt held scales have conditional faces and valid interior fits", {
   expect_equal(unname(mlbhatt(c(-10,rep(0,20),10))["a"]),0)
   expect_error(mlbhatt(seq(-1,1,length.out=40)),"mlunif")
 })
-test_that("bhatt reference repairs and continuous inversion retain tails", {
+test_that("bhatt evaluation and continuous inversion retain tails", {
   f <- mlbhatt(c(-3,-1,0,1,3),sigma=1,a=2)
   d <- univariateML_to_function(f,"d");p <- univariateML_to_function(f,"p")
   q <- univariateML_to_function(f,"q")
@@ -70,7 +70,7 @@ test_that("bhatt reference repairs and continuous inversion retain tails", {
   expect_true(is.na(q(NA_real_)))
   expect_warning(expect_true(is.nan(q(2))),"NaNs")
   set.seed(36); actual <- rml(10,f)
-  set.seed(36); expected <- extraDistr::rbhatt(10,f[1],f[2],f[3])
+  set.seed(36); expected <- rbhatt(n = 10, mu = f[1], sigma = f[2], a = f[3])
   expect_identical(actual,expected)
 })
 test_that("each singly held bhatt scale agrees with a conditional oracle", {
@@ -94,11 +94,11 @@ test_that("each singly held bhatt scale agrees with a conditional oracle", {
   }
 })
 test_that("bhatt CDF matches an independent normal mixture integral", {
-  p <- univariateML_reference_fixes[["extraDistr::pbhatt"]]$replacement
+  p <- pbhatt
   for(x in c(-5,-1,0,1,5)) {
     oracle <- integrate(function(u)pnorm(x-u),-2,2,rel.tol=1e-12)$value/4
-    expect_equal(p(x,mu=0,sigma=1,a=2),oracle,tolerance=1e-12)
-    expect_equal(p(-x,mu=0,sigma=1,a=2,lower.tail=FALSE),oracle,tolerance=1e-12)
+    expect_equal(p(q = x, mu = 0, sigma = 1, a = 2),oracle,tolerance=1e-12)
+    expect_equal(p(q = -x, mu = 0, sigma = 1, a = 2, lower.tail = FALSE),oracle,tolerance=1e-12)
   }
 })
 test_that("bhatt constant samples respect each held subset", {
@@ -117,10 +117,10 @@ test_that("bhatt held-scale fits respect extreme changes of units", {
 })
 
 test_that("bhatt retains finite log tails when a is below coordinate resolution", {
-  d <- univariateML_reference_fixes[["extraDistr::dbhatt"]]$replacement
-  p <- univariateML_reference_fixes[["extraDistr::pbhatt"]]$replacement
-  expect_equal(d(1,sigma=1e-100,a=1e-200,log=TRUE),dnorm(1,sd=1e-100,log=TRUE),tolerance=1e-12)
-  expect_equal(p(1,sigma=1e-100,a=1e-200,lower.tail=FALSE,log.p=TRUE),
+  d <- dbhatt
+  p <- pbhatt
+  expect_equal(d(x = 1, mu = 0, sigma = 1e-100, a = 1e-200, log = TRUE),dnorm(1,sd=1e-100,log=TRUE),tolerance=1e-12)
+  expect_equal(p(q = 1, mu = 0, sigma = 1e-100, a = 1e-200, lower.tail = FALSE, log.p = TRUE),
                pnorm(1,sd=1e-100,lower.tail=FALSE,log.p=TRUE),tolerance=1e-12)
 })
 

@@ -2,21 +2,21 @@ context("mlgumbel")
 
 ## Data generation.
 set.seed(313)
-small_data <- extraDistr::rgumbel(100, 1, 1)
-tiny_data <- extraDistr::rgumbel(10, 3, 7)
-medium_data <- extraDistr::rgumbel(1000, 9, 11)
+small_data <- rgumbel(n = 100, mu = 1, sigma = 1)
+tiny_data <- rgumbel(n = 10, mu = 3, sigma = 7)
+medium_data <- rgumbel(n = 1000, mu = 9, sigma = 11)
 
 ## Checks if the ML is correct.
 mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dgumbel(small_data, p[1], p[2], log = TRUE))
+  -sum(dgumbel(x = small_data, mu = p[1], sigma = p[2], log = TRUE))
 }, p = c(1, 1)))
 
 mle2 <- nlm(function(p) {
-  -sum(extraDistr::dgumbel(tiny_data, p[1], p[2], log = TRUE))
+  -sum(dgumbel(x = tiny_data, mu = p[1], sigma = p[2], log = TRUE))
 }, p = c(3, 7))
 
 mle3 <- nlm(function(p) {
-  -sum(extraDistr::dgumbel(medium_data, p[1], p[2], log = TRUE))
+  -sum(dgumbel(x = medium_data, mu = p[1], sigma = p[2], log = TRUE))
 }, p = c(9, 11))
 
 expect_equal(mle1$estimate, as.numeric(mlgumbel(small_data)),
@@ -63,8 +63,8 @@ expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
 test_that("gumbel handles a seeded sample with a large outlier", {
   set.seed(7)
-  x <- c(extraDistr::rgumbel(199), 1e3)
-  objective <- function(p) -sum(extraDistr::dgumbel(x, p[1], exp(p[2]), log = TRUE))
+  x <- c(rgumbel(n = 199, mu = 0, sigma = 1), 1e3)
+  objective <- function(p) -sum(dgumbel(x = x, mu = p[1], sigma = exp(p[2]), log = TRUE))
   oracle <- optim(c(median(x), log(stats::mad(x))), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
   expected <- c(oracle$par[1], exp(oracle$par[2]))
@@ -102,7 +102,7 @@ test_that("gumbel new holds agree with independent multistart likelihoods", {
   held_values <- c(mu=0.2,sigma=1.3)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
                   qnorm((1:20-.5)/20),seq(-1,1,length.out=20))
-  ld <- function(x,p) extraDistr::dgumbel(x,p[1],p[2],log=TRUE)
+  ld <- function(x,p) dgumbel(x = x, mu = p[1], sigma = p[2], log = TRUE)
   for(x in samples)for(mask in 1:3) {
     held <- names(held_values)[as.logical(intToBits(mask)[seq_along(held_values)])]
     args <- as.list(held_values[held])

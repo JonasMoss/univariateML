@@ -27,8 +27,8 @@ params:
         need a separate diagnostic.
   kind: regular
 r:
-  density: extraDistr::dlst
-  sampler: extraDistr::rlst
+  density: dlst
+  sampler: rlst
   control:
     df: Optional held df; NULL estimates it.
     sigma: Optional held sigma; NULL estimates it.
@@ -55,7 +55,7 @@ limits:
     status: NormalBoundary
 examples: |
   set.seed(3)
-  mllst(extraDistr::rlst(200, df = 3, mu = 2, sigma = 1))
+  mllst(univariateML:::rlst(n = 200, mu = 2, sigma = 1, df = 3))
 holds: []
 ---
 

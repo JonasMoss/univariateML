@@ -1,6 +1,6 @@
 context("mlhuber")
 set.seed(782)
-x <- extraDistr::rhuber(120, mu = 2, sigma = 3, epsilon = 1.345)
+x <- rhuber(n = 120, mu = 2, sigma = 3, epsilon = 1.345)
 for (e in c(.5, 1.345, 3, 10)) {
   for (fm in c(FALSE, TRUE)) for (fs in c(FALSE, TRUE)) {
     args <- list(x = x, epsilon = e)
@@ -15,7 +15,7 @@ for (e in c(.5, 1.345, 3, 10)) {
     obj <- function(p) {
       m <- if (fm) 1 else p[1]
       s <- if (fs) 2 else exp(p[length(p)])
-      -sum(extraDistr::dhuber(x, m, s, e, log = TRUE))
+      -sum(dhuber(x = x, mu = m, sigma = s, epsilon = e, log = TRUE))
     }
     if (!(fm && fs)) {
       vals <- sapply(c(-2, 0, 2), function(shift) {
@@ -24,7 +24,7 @@ for (e in c(.5, 1.345, 3, 10)) {
       })
       expect_equal(-as.numeric(logLik(fit)), min(vals), tolerance = 1e-7)
     }
-    expect_equal(as.numeric(logLik(fit)), sum(extraDistr::dhuber(x, fit[1], fit[2], e, log=TRUE)), tolerance=1e-10)
+    expect_equal(as.numeric(logLik(fit)), sum(dhuber(x = x, mu = fit[1], sigma = fit[2], epsilon = e, log = TRUE)), tolerance=1e-10)
   }
 }
 # Direct clipped-score Huber location iteration at a held scale.
@@ -59,7 +59,7 @@ for (args in list(list(), list(mu=0), list(sigma=1), list(mu=0, sigma=1))) {
 }
 
 # Free-shape fit versus an independent direct three-coordinate oracle.
-z <- extraDistr::qhuber(((1:160)-.5)/160, mu=2, sigma=3, epsilon=.8)
+z <- qhuber(p = ((1:160) - 0.5)/160, mu = 2, sigma = 3, epsilon = 0.8)
 for (fm in c(FALSE, TRUE)) for (fs in c(FALSE, TRUE)) {
   args <- list(x=z, epsilon=NULL)
   if (fm) args$mu <- 2
@@ -71,7 +71,7 @@ for (fm in c(FALSE, TRUE)) for (fs in c(FALSE, TRUE)) {
     j <- 1L
     m <- if(fm) 2 else {j <- j+1L; p[1]}
     s <- if(fs) 3 else {j <- j+1L; exp(p[j-1L])}
-    -sum(extraDistr::dhuber(z,m,s,exp(p[j]),log=TRUE))
+    -sum(dhuber(x = z, mu = m, sigma = s, epsilon = exp(p[j]), log = TRUE))
   }
   starts <- expand.grid(m=c(0,2,4), s=c(1,3), e=c(.2,.8,2))
   vals <- apply(starts,1,function(a) optim(c(if(!fm) a[1], if(!fs) log(a[2]),log(a[3])),

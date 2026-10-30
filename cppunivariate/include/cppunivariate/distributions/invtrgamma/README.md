@@ -19,8 +19,8 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  density: actuar::dinvtrgamma
-  sampler: actuar::rinvtrgamma
+  density: dinvtrgamma
+  sampler: rinvtrgamma
   control:
     scale: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.
@@ -50,7 +50,7 @@ references:
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
 examples: |
   set.seed(1)
-  mlinvtrgamma(actuar::rinvtrgamma(500, shape1 = 2, shape2 = 1.5, scale = 0.5))
+  mlinvtrgamma(univariateML:::rinvtrgamma(n = 500, shape1 = 2, shape2 = 1.5, scale = 0.5))
 holds: []
 ---
 
@@ -59,8 +59,6 @@ reciprocal of a transformed gamma variable; it models heavy-tailed
 positive losses.
 
 ## Details
-
-`actuar::dinvtrgamma`, `pinvtrgamma`, `qinvtrgamma` and `rinvtrgamma` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
 
 The fit is the transformed gamma fit of `1/x` with scale `1/scale`; the
 log likelihoods differ by `-2 * sum(log(x))`. The inverse gamma
@@ -76,7 +74,5 @@ The C++ face helper `trgamma_faces_log` accepts logarithms of observations
 and returns the maximised lognormal and power likelihoods and their fitted
 parameters. The derivation and numerical search qualifications are in
 `notes/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
-
-actuar's `invtrgamma` functions lose accuracy at extreme shapes (density cancellation, infinite or zero quantiles, underflowing CDFs); see `KNOWN_ISSUES.md`. `logLik` is computed independently in C++.
 
 Held-scale fits use the reciprocal transformed gamma profile. With shape2 also held shape1 has one score root; with shape1 held the power likelihood is strictly concave unless every observation equals scale. The held-scale Pareto face is compared numerically.

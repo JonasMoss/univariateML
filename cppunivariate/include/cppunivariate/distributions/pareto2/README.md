@@ -23,8 +23,8 @@ params:
     Fits with min free and other parameters held are not supported.'
   kind: threshold
 r:
-  density: actuar::dpareto2
-  sampler: actuar::rpareto2
+  density: dpareto2
+  sampler: rpareto2
   control:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.

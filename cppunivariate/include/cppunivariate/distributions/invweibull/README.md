@@ -14,8 +14,8 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  density: actuar::dinvweibull
-  sampler: actuar::rinvweibull
+  density: dinvweibull
+  sampler: rinvweibull
   control:
     shape: Optional held shape; NULL estimates it.
     rate: Optional held rate; NULL estimates it.

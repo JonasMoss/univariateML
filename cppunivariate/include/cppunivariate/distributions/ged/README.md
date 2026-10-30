@@ -26,17 +26,6 @@ params:
         locscale).
   kind: regular
 r:
-  export:
-    title: GED distribution
-    defaults:
-      mean: 0
-      sd: 1
-      nu: 2
-    params:
-      mean: Finite mean.
-      sd: Finite positive standard deviation.
-      nu: Finite shape, positive (including shapes below one).
-    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dged
   sampler: rged
   control:
@@ -95,3 +84,7 @@ and emit a warning of class `univariateML_restricted`. Held coefficients are
 not flagged. README hold exemptions apply to free coefficients. Failed
 optimizers return a failure status unless the score norm in fitting
 coordinates is below `1e-3`; unresolved scalar searches stop.
+
+## d/p/q/r
+
+Uses the fGarch mean and standard deviation parameterisation.

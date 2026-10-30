@@ -19,8 +19,8 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: actuar::dinvburr
-  sampler: actuar::rinvburr
+  density: dinvburr
+  sampler: rinvburr
   control:
     shape2: Known positive finite coefficient; NULL estimates it.
     shape1: Known positive finite coefficient; NULL estimates it.
@@ -58,7 +58,7 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York."
 examples: |
   set.seed(42)
-  mlinvburr(actuar::rinvburr(1000, shape1 = 1, shape2 = 2, scale = 3))
+  mlinvburr(univariateML:::rinvburr(n = 1000, shape1 = 1, shape2 = 2, scale = 3))
 holds: []
 ---
 

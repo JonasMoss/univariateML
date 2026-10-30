@@ -18,8 +18,8 @@ params:
   integer: yes
   kind: endpoint
 r:
-  density: extraDistr::ddunif
-  sampler: extraDistr::rdunif
+  density: ddunif
+  sampler: rdunif
   control:
     min: "Optional held integer lower endpoint; NULL estimates it."
     max: "Optional held integer upper endpoint; NULL estimates it."

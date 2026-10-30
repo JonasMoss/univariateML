@@ -1,7 +1,6 @@
 trgamma_oracle <- function(x) {
   nll <- function(p) {
-    v <- -sum(actuar::dtrgamma(x, shape1 = exp(p[1]), shape2 = exp(p[2]),
-                               scale = exp(p[3]), log = TRUE))
+    v <- -sum(dtrgamma(x = x, shape1 = exp(p[1]), shape2 = exp(p[2]), scale = exp(p[3]), log = TRUE))
     if (is.finite(v)) v else 1e100
   }
   y <- log(x)
@@ -21,7 +20,7 @@ trgamma_oracle <- function(x) {
   list(ll = max(ll, faces), face = face, estimates = exp(best$par))
 }
 
-test_that("mltrgamma agrees with a multistart actuar oracle and its faces", {
+test_that("mltrgamma agrees with a multistart density oracle and its faces", {
   cases <- list(
     list(n = 30, a = 2, t = 1.5, s = 2), list(n = 200, a = 2, t = 1.5, s = 2),
     list(n = 100, a = .4, t = 3, s = 1), list(n = 100, a = 1, t = .8, s = 5),
@@ -30,7 +29,7 @@ test_that("mltrgamma agrees with a multistart actuar oracle and its faces", {
   )
   for (case in cases) for (seed in 1:3) {
     set.seed(seed)
-    x <- actuar::rtrgamma(case$n, shape1 = case$a, shape2 = case$t, scale = case$s)
+    x <- rtrgamma(n = case$n, shape1 = case$a, shape2 = case$t, scale = case$s)
     oracle <- suppressWarnings(trgamma_oracle(x))
     fit <- tryCatch(mltrgamma(x), error = function(e) e)
     info <- paste(case$n, case$a, seed)
@@ -40,7 +39,7 @@ test_that("mltrgamma agrees with a multistart actuar oracle and its faces", {
       expect_gte(attr(fit, "logLik"), oracle$ll - 1e-7 * case$n)
       expect_equal(attr(fit, "logLik"), oracle$ll, tolerance = 1e-6, info = info)
       if (case$a < 50) expect_equal(as.numeric(fit), oracle$estimates, tolerance = 1e-3, info = info)
-      expect_equal(sum(actuar::dtrgamma(x, fit[1], fit[2], scale = fit[3], log = TRUE)),
+      expect_equal(sum(dtrgamma(x = x, shape1 = fit[1], shape2 = fit[2], scale = fit[3], log = TRUE)),
                    attr(fit, "logLik"), tolerance = 1e-10)
     } else {
       expect_error(mltrgamma(x), paste0("Use `ml", oracle$face, "`"), info = info)
@@ -69,7 +68,7 @@ test_that("mltrgamma faces are triggered by data from the limit models", {
 
 test_that("mltrgamma fixed shapes reduce to gamma, Weibull and exact profiles", {
   set.seed(3)
-  x <- actuar::rtrgamma(150, shape1 = 2, shape2 = 1.5, scale = 2)
+  x <- rtrgamma(n = 150, shape1 = 2, shape2 = 1.5, scale = 2)
   n <- length(x)
   for (tau in c(.4, 1, 2.5)) {
     fit <- mltrgamma(x, shape2 = tau)
@@ -89,7 +88,7 @@ test_that("mltrgamma fixed shapes reduce to gamma, Weibull and exact profiles", 
   for (a in c(.2, 3, 30)) {
     fit <- mltrgamma(x, shape1 = a)
     nll <- function(p) {
-      value <- suppressWarnings(-sum(actuar::dtrgamma(x, a, exp(p[1]), scale = exp(p[2]), log = TRUE)))
+      value <- suppressWarnings(-sum(dtrgamma(x = x, shape1 = a, shape2 = exp(p[1]), scale = exp(p[2]), log = TRUE)))
       if (is.finite(value)) value else 1e100
     }
     o <- optim(unname(c(log(fit[2]) + .3, log(fit[3]) - .3)), nll,
@@ -98,7 +97,7 @@ test_that("mltrgamma fixed shapes reduce to gamma, Weibull and exact profiles", 
     expect_equal(attr(fit, "logLik"), -o$value, tolerance = 1e-9)
     expect_equal(unname(fit[2:3]), unname(exp(o$par)), tolerance = 1e-5)
     both <- mltrgamma(x, shape1 = a, shape2 = 1.2)
-    o <- optimize(function(s) -sum(actuar::dtrgamma(x, a, 1.2, scale = exp(s), log = TRUE)),
+    o <- optimize(function(s) -sum(dtrgamma(x = x, shape1 = a, shape2 = 1.2, scale = exp(s), log = TRUE)),
                   c(-20, 20), tol = 1e-12)
     expect_equal(attr(both, "logLik"), -o$objective, tolerance = 1e-10)
     expect_identical(attr(both, "fixed"), c("shape1", "shape2"))
@@ -114,86 +113,27 @@ test_that("mltrgamma fixed shapes reduce to gamma, Weibull and exact profiles", 
 
 test_that("mltrgamma and mlinvtrgamma are reciprocal fits", {
   set.seed(7)
-  x <- actuar::rtrgamma(250, shape1 = .8, shape2 = 2, scale = 3)
+  x <- rtrgamma(n = 250, shape1 = 0.8, shape2 = 2, scale = 3)
   a <- mltrgamma(x)
   b <- mlinvtrgamma(1 / x)
   expect_equal(unname(b[1:2]), unname(a[1:2]), tolerance = 1e-8)
   expect_equal(unname(b[3]), unname(1 / a[3]), tolerance = 1e-8)
   expect_equal(attr(b, "logLik"), attr(a, "logLik") + 2 * sum(log(x)), tolerance = 1e-12)
-  expect_equal(actuar::dinvtrgamma(1 / x[1:5], 2, 1.5, scale = 1 / 3, log = TRUE),
-               actuar::dtrgamma(x[1:5], 2, 1.5, scale = 3, log = TRUE) + 2 * log(x[1:5]))
+  expect_equal(dinvtrgamma(x = 1/x[1:5], shape1 = 2, shape2 = 1.5, scale = 1/3, log = TRUE),
+               dtrgamma(x = x[1:5], shape1 = 2, shape2 = 1.5, scale = 3, log = TRUE) + 2 * log(x[1:5]))
 })
 
-test_that("runtime gamma-transform repairs detect defects and retain ordinary values", {
-  fixes <- univariateML:::univariateML_reference_fixes
-  family <- "trgamma"
-  for (type in c("d", "p", "q", "r")) {
-    fix <- fixes[[paste0("actuar::", type, family)]]
-    expect_true(fix$broken())
-    ref <- getExportedValue("actuar", paste0(type, family))
-    if (type == "r") {
-      set.seed(21); actual <- fix$replacement(20, 2, 1.5, scale = 3)
-      set.seed(21); expected <- ref(20, 2, 1.5, scale = 3)
-      expect_equal(actual, expected, tolerance = 1e-12)
-      set.seed(21); seed <- .Random.seed
-      expect_true(fix$broken())
-      expect_identical(.Random.seed, seed)
-      set.seed(21); actual <- fix$replacement(20, c(2,3), c(1.5,2), scale = c(3,4))
-      set.seed(21); expected <- ref(20, c(2,3), c(1.5,2), scale = c(3,4))
-      expect_equal(actual, expected, tolerance = 1e-12)
-      # Independent small-shape gamma asymptote: log(G) = (log(U)+lgamma(1+a))/a.
-      set.seed(21); u <- runif(20)
-      expected <- exp(1 * (log(u) + lgamma(1+1e-6))/(1e-6*1e6))
-      set.seed(21); actual <- fix$replacement(20, 1e-6, 1e6)
-      expect_equal(actual, expected, tolerance = 1e-12)
-    } else if (type == "d") {
-      for (logs in c(FALSE, TRUE))
-        expect_equal(fix$replacement(c(.5, 1, 3), c(2,3,4), 1.5, scale = 3, log = logs),
-                     ref(c(.5,1,3), c(2,3,4), 1.5, scale = 3, log = logs), tolerance = 1e-12)
-      expect_equal(fix$replacement(1, 1e12, 1, scale = 1e-12, log = TRUE),
-                   dgamma(1, 1e12, scale = 1e-12, log = TRUE), tolerance = 1e-12)
-    } else {
-      for (lower in c(FALSE, TRUE)) for (logs in c(FALSE, TRUE)) {
-        x <- if (type == "q") c(.1,.4,.9) else c(.5,1,3)
-        if (type == "q" && logs) x <- log(x)
-        expect_equal(fix$replacement(x, c(2,3,4), 1.5, scale = 3,
-                                     lower.tail = lower, log.p = logs),
-                     ref(x, c(2,3,4), 1.5, scale = 3, lower.tail = lower, log.p = logs),
-                     tolerance = 1e-12)
-        # Independent gamma small-argument asymptote, not the repair's anchor.
-        if (type == "q") {
-          u <- c(.2,.5,.8)
-          gprob <- if (FALSE != lower) u else 1-u
-          expected <- exp(1 * (log(gprob)+lgamma(1+1e-6))/(1e-6*1e6))
-          actual <- fix$replacement(if (logs) log(u) else u, 1e-6, 1e6,
-                                    lower.tail = lower, log.p = logs)
-        } else {
-          x <- exp(1 * log(c(.2,.5,.8)))
-          lp <- 1 * log(x) - lgamma(1+1e-6)
-          expected <- if (FALSE != lower) exp(lp) else -expm1(lp)
-          if (logs) expected <- log(expected)
-          actual <- fix$replacement(x, 1e-6, 1e6, lower.tail = lower, log.p = logs)
-        }
-        expect_equal(actual, expected, tolerance = 1e-12)
-      }
-    }
-  }
-})
 
 test_that("trgamma log quantiles and large power transforms remain representable", {
-  f <- univariateML:::univariateML_reference_fixes[["actuar::qtrgamma"]]$replacement
+  f <- qtrgamma
   # At shape2=1, compare directly to R's stable gamma quantile.
-  expect_equal(f(-1000, 2, 1, log.p = TRUE),
+  expect_equal(f(p = -1000, shape1 = 2, shape2 = 1, scale = 1/1, log.p = TRUE),
                qgamma(-1000, 2, log.p = TRUE), tolerance = 1e-12)
   a <- 100; tau <- .0067; scale <- exp(-1 * log(a)/tau)
   u <- c(.01,.5,.99)
   expected <- exp(log(scale) + log(qgamma(u, a, lower.tail = TRUE))/tau)
-  expect_equal(f(u, a, tau, scale = scale), expected, tolerance = 1e-12)
-  rfix <- univariateML:::univariateML_reference_fixes[["actuar::rtrgamma"]]
-  if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
-    rm(".Random.seed", envir = .GlobalEnv)
-  expect_true(rfix$broken())
-  expect_false(exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+  expect_equal(f(p = u, shape1 = a, shape2 = tau, scale = scale), expected, tolerance = 1e-12)
+
 })
 
 
@@ -201,9 +141,9 @@ test_that("P2 trgamma holds agree with independent multistart reference likeliho
   pars <- c(shape1=3, shape2=1.5, scale=2)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)
-  density <- actuar::dtrgamma
+  density <- dtrgamma
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(actuar::qtrgamma, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qtrgamma, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- qexp(((1:20)-.5)/20)

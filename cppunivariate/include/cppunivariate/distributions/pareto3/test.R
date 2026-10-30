@@ -17,7 +17,7 @@ test_that("pareto3: required endpoint, reference likelihood and reproducibility"
    co <- as.list(as.numeric(fit)); names(co)<-names(fit)
    if(any(!is.finite(z)) || any(abs(z)>500)) return(1e100)
    co[par]<-as.list(exp(z))
-   f <- get(paste0("d","pareto3"),asNamespace("actuar"))
+   f <- get(paste0("d","pareto3"), asNamespace("univariateML"))
    value <- suppressWarnings(-sum(do.call(f,c(list(x=x,log=TRUE),co))))
    if(is.finite(value)) value else 1e100
  }
@@ -29,9 +29,9 @@ test_that("pareto3: required endpoint, reference likelihood and reproducibility"
 
 test_that("pareto3: reference mapping and unbounded unrestricted path", {
  x <- c(1e-12,.01,.1,1,20,1e10)
- expect_lt(max(abs((actuar::dpareto3(x,0,.7,scale=2,log=TRUE))-(actuar::dllogis(x,.7,scale=2,log=TRUE)))),1e-12)
+ expect_lt(max(abs((dpareto3(x = x, shape = 0.7, scale = 2, min = 0, log = TRUE))-(dllogis(x = x, shape = 0.7, rate = 1/2, log = TRUE)))),1e-12)
  y <- c(1,2,4,7)
- ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(actuar::dpareto3(y,1-e,.5,scale=1,log=TRUE)))
+ ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(dpareto3(x = y, shape = 0.5, scale = 1, min = 1 - e, log = TRUE)))
  expect_true(all(diff(ll)>0))
 })
 
@@ -40,9 +40,9 @@ test_that("P2 pareto3 holds agree with independent multistart reference likeliho
   pars <- c(shape=2, scale=1, min=0)
   thresholds <- c("min")
   regular <- setdiff(names(pars), thresholds)
-  density <- actuar::dpareto3
+  density <- dpareto3
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(actuar::qpareto3, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qpareto3, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- qexp(((1:20)-.5)/20)

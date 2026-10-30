@@ -14,8 +14,8 @@ params:
   simulate: 4.0
   kind: regular
 r:
-  density: actuar::dinvgauss
-  sampler: actuar::rinvgauss
+  density: dinvgauss
+  sampler: rinvgauss
   control:
     mean: Optional held mean; NULL estimates it.
     shape: Optional held shape; NULL estimates it.

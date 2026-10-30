@@ -14,17 +14,6 @@ params:
   simulate: 1
   kind: regular
 r:
-  export:
-    title: Folded normal distribution
-    defaults:
-      mu: 0
-      sigma: 1
-    params:
-      mu: Nonnegative finite parent normal location.
-      sigma: Positive finite parent normal scale.
-    details: The distribution is the absolute value of a normal variable with nonnegative location
-      mu and positive scale sigma. The sign of the parent location is unidentifiable. mu = 0 is
-      half-normal. Quantiles use safeguarded bisection. Random draws are abs(rnorm(n, mu, sigma)).
   density: dfoldnorm
   sampler: rfoldnorm
   control:
@@ -35,7 +24,7 @@ r:
 log_density: -log(sigma) - log(2*pi)/2 - (x-mu)**2/(2*sigma**2) + log(1+exp(-2*x*mu/sigma**2))
 examples: |
   set.seed(7)
-  mlfoldnorm(rfoldnorm(100, mu = 2, sigma = 1))
+  mlfoldnorm(univariateML:::rfoldnorm(n = 100, mu = 2, sigma = 1))
 holds: []
 ---
 
@@ -48,3 +37,7 @@ The sign of the parent normal location is unidentifiable, so `mu` is restricted 
 For nonconstant nonnegative data the maximum is attained, including the half-normal boundary. Constant data have an unbounded likelihood when both parameters are estimated. Zeros are allowed and use the continuous endpoint density. Either parameter can be held fixed; with positive scale fixed, constant data are also permitted.
 
 The likelihood can have competing boundary and interior maxima. The fitter compares the boundary with all maxima located by a grid over an analytically bounded one-dimensional profile, followed by bracket refinement. Convex-chord upper bounds check the joint profile search to a likelihood tolerance. This does not assume uniqueness.
+
+## d/p/q/r
+
+The sign of mu is unidentifiable; mu = 0 gives the half-normal.

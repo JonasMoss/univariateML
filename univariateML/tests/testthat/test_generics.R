@@ -27,7 +27,7 @@ expect_identical(plot(obj), obj)
 expect_identical(points(obj), obj)
 expect_identical(lines(obj), obj)
 
-x <- extraDistr::rpower(10, 2, 3)
+x <- rpower(n = 10, alpha = 2, beta = 3)
 obj <- mlpower(x)
 expect_identical(plot(obj), obj)
 expect_identical(points(obj), obj)

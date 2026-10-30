@@ -8,18 +8,18 @@ extreme_closed_density <- function(id, x, ..., log = FALSE) {
     ll[x > mu+sigma+slack | (id == "gpd" & x < mu)] <- -Inf
     return(if(log) ll else exp(ll))
   }
-  do.call(getExportedValue("extraDistr", paste0("d",id)), c(list(x=x,log=log),a))
+  do.call(get(paste0("d",id), asNamespace("univariateML")), c(list(x=x,log=log),a))
 }
 
 test_that("mlgev matches constrained reference density oracles", {
   set.seed(20261029)
   for (shape in c(-.9, -.3, 0, .3, 2)) {
-    x <- extraDistr::rgev(100, xi = shape)
+    x <- rgev(n = 100, mu = 0, sigma = 1, xi = shape)
     fit <- suppressWarnings(mlgev(x), classes = "univariateML_restricted")
     objective <- function(p, fixed = NULL) {
       k <- if (is.null(fixed)) p[3] else fixed
       if (k < -1 || k > 1) return(1e100)
-      ans <- -sum(extraDistr::dgev(x, mu = p[1], sigma = exp(p[2]), xi = k, log = TRUE))
+      ans <- -sum(dgev(x = x, mu = p[1], sigma = exp(p[2]), xi = k, log = TRUE))
       if (is.finite(ans)) ans else 1e100
     }
     starts <- c(-.5, -.2, 0, .3, 1)
@@ -53,67 +53,18 @@ test_that("mlgev reports invalid inputs and returns attained bounds", {
   expect_error(suppressWarnings(mlgev(c(1,2,NA)), classes = "univariateML_restricted"))
   expect_error(suppressWarnings(mlgev(1:5, iterlim = 1), classes = "univariateML_restricted"), "converge")
   for (k in c(-.9, 2)) {
-    x <- extraDistr::qgev(((1:400)-.5)/400, xi = k)
+    x <- qgev(p = ((1:400) - 0.5)/400, mu = 0, sigma = 1, xi = k)
     fit <- suppressWarnings(mlgev(x), classes = "univariateML_restricted")
     if(k<0) expect_lt(unname(fit[["xi"]]), -.5) else expect_equal(unname(fit[["xi"]]), 1)
   }
 })
 
-test_that("runtime GEV repairs use stable Gumbel transforms and preserve RNG checks", {
-  fixes <- univariateML:::univariateML_reference_fixes
-  for (type in c("q", "p", "r")) {
-    fix <- fixes[[paste0("extraDistr::", type, "gev")]]
-    expect_true(fix$broken())
-    ref <- getExportedValue("extraDistr", paste0(type, "gev"))
-    if (type == "r") {
-      set.seed(3); actual <- fix$replacement(20, mu = 2, sigma = 3, xi = .3)
-      set.seed(3); expected <- ref(20, mu = 2, sigma = 3, xi = .3)
-      expect_equal(actual, expected, tolerance = 1e-12)
-      set.seed(3); seed <- .Random.seed
-      expect_true(fix$broken())
-      expect_identical(.Random.seed, seed)
-      rm(".Random.seed", envir = .GlobalEnv)
-      expect_true(fix$broken())
-      expect_false(exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
-      set.seed(3); actual <- fix$replacement(20, mu = c(0,1), sigma = c(1,2), xi = c(-.2,.3))
-      set.seed(3); expected <- ref(20, mu = c(0,1), sigma = c(1,2), xi = c(-.2,.3))
-      expect_equal(actual, expected, tolerance = 1e-12)
-      set.seed(3); e <- rexp(20)
-      expected <- expm1(-1e-16*log(e))/1e-16
-      set.seed(3); expect_equal(fix$replacement(20, xi = 1e-16), expected, tolerance = 1e-12)
-    } else for (lower in c(FALSE, TRUE)) for (logs in c(FALSE, TRUE)) {
-      x <- if (type == "q") c(.1,.5,.9) else c(-.5,.2,1)
-      if (type == "q" && logs) x <- log(x)
-      expect_equal(fix$replacement(x, mu = c(0,.1,.2), sigma = 2, xi = .3,
-                                   lower.tail = lower, log.p = logs),
-                   ref(x, mu = c(0,.1,.2), sigma = 2, xi = .3,
-                       lower.tail = lower, log.p = logs), tolerance = 1e-12)
-      if (type == "q") {
-        u <- c(.1,.5,.9)
-        z <- -log(if (lower) -log(u) else -log1p(-u))
-        expected <- expm1(1e-16*z)/1e-16
-        expect_equal(fix$replacement(if (logs) log(u) else u, xi = 1e-16,
-                                     lower.tail = lower, log.p = logs),
-                     expected, tolerance = 1e-12)
-        expect_equal(fix$replacement(if (logs) c(-Inf,0) else c(0,1),
-                                     xi = -.5, lower.tail = lower, log.p = logs),
-                     if (lower) c(-Inf,2) else c(2,-Inf))
-      }
-    }
-  }
-  p <- fixes[["extraDistr::pgev"]]$replacement
-  expect_equal(p(c(1000,2000), lower.tail = FALSE, log.p = TRUE), c(-1000,-2000))
-  z <- c(.1,1,10); xi <- c(-.5,0,.5)
-  t <- ifelse(xi == 0, -z, -log1p(xi*z)/xi)
-  expected <- log(-expm1(-exp(t))); expected[1] <- log(-expm1(-exp(t[1])))
-  expect_equal(p(z, xi = xi, lower.tail = FALSE, log.p = TRUE), expected, tolerance = 1e-12)
-})
 
 test_that("GEV fixed shape accepts harmless ties", {
   for (x in list(c(0,1,1,2),c(0,1,2,2,2),c(0,0,0,1))) for(k in c(-.5,0,.3)) {
     f <- suppressWarnings(mlgev(x,xi=k), classes = "univariateML_restricted")
     objective <- function(p) {
-      v <- -sum(extraDistr::dgev(x,mu=p[1],sigma=exp(p[2]),xi=k,log=TRUE))
+      v <- -sum(dgev(x = x, mu = p[1], sigma = exp(p[2]), xi = k, log = TRUE))
       if(is.finite(v)) v else 1e100
     }
     o <- optim(c(f["mu"],log(f["sigma"])),objective,method="Nelder-Mead",control=list(reltol=1e-12,maxit=2000))
@@ -128,11 +79,11 @@ test_that("gev: new holds agree with independent multistart reference fits", {
   pars <- c("mu","sigma","xi")
   masks <- c(1,2,3,5,6,7)
   samples <- list(
-    extraDistr::rgev(20, xi=.3),
-    extraDistr::rgev(100, xi=.3),
+    rgev(n = 20, mu = 0, sigma = 1, xi = 0.3),
+    rgev(n = 100, mu = 0, sigma = 1, xi = 0.3),
     c(.2,.5,.5,1,2,3,4), c(.2,.8),
-    if(id=="frechet") extraDistr::qgumbel((1:20-.5)/20) else rexp(20),
-    if(id=="gev") extraDistr::qgev((1:20-.5)/20,xi=-.9) else runif(20,.1,2))
+    if(id=="frechet") qgumbel(p = (1:20 - 0.5)/20, mu = 0, sigma = 1) else rexp(20),
+    if(id=="gev") qgev(p = (1:20 - 0.5)/20, mu = 0, sigma = 1, xi = -0.9) else runif(20,.1,2))
   density <- function(x,...,log=FALSE) extreme_closed_density(id,x,...,log=log)
   for(x in samples) for(mask in masks) {
     held <- pars[as.logical(intToBits(mask)[1:3])]
@@ -223,7 +174,7 @@ test_that("GEV new holds permit held positive shape above the free-shape bound",
   for(h in list(list(mu=-1),list(sigma=2),list(mu=0,sigma=2))) {
     f <- do.call(mlgev,c(list(x=x,xi=2),h))
     expect_identical(unname(f["xi"]),2)
-    expect_equal(as.numeric(logLik(f)),sum(extraDistr::dgev(x,f[1],f[2],f[3],log=TRUE)),tolerance=1e-8)
+    expect_equal(as.numeric(logLik(f)),sum(dgev(x = x, mu = f[1], sigma = f[2], xi = f[3], log = TRUE)),tolerance=1e-8)
   }
   expect_error(suppressWarnings(mlgev(c(0,0,1,2),mu=0,xi=2), classes = "univariateML_restricted"),"scale collapse")
 })
@@ -234,5 +185,16 @@ test_that("GEV new holds allow constant samples when scale cannot collapse", {
     f <- suppressWarnings(do.call(mlgev,c(list(x=2),h)), classes="univariateML_restricted")
     expect_equal(as.numeric(logLik(f)),sum(extreme_closed_density("gev",2,mu=f[[1]],sigma=f[[2]],xi=f[[3]],log=TRUE)),tolerance=1e-8)
     expect_identical(unname(as.numeric(f[names(h)])),unname(unlist(h)))
+  }
+})
+
+test_that("GEV tiny shapes approach Gumbel and logarithmic tails invert", {
+  fit <- mlgev(c(-1, 0, 1), mu = 0, sigma = 1, xi = 1e-16)
+  expect_equal(qml(c(.1, .5, .9), fit), -log(-log(c(.1, .5, .9))),
+               tolerance = 1e-12)
+  for (lower in c(TRUE, FALSE)) {
+    lp <- c(-1, -40, -700)
+    expect_equal(pml(qml(lp, fit, lower.tail = lower, log.p = TRUE), fit,
+                     lower.tail = lower, log.p = TRUE), lp, tolerance = 1e-10)
   }
 })

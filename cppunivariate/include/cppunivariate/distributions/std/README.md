@@ -19,17 +19,6 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export:
-    title: STD distribution
-    defaults:
-      mean: 0
-      sd: 1
-      nu: 5
-    params:
-      mean: Finite mean.
-      sd: Finite positive standard deviation.
-      nu: Finite shape, greater than two.
-    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dstd
   sampler: rstd
   control:
@@ -89,3 +78,7 @@ permit the regular fixed-parameter fit.
 
 
 Holds use the ordinary t scale sd*sqrt((nu-2)/nu). With mean held, only its tie multiplicity drives scale collapse. With sd held, the nu-to-2 limit forces ordinary scale to zero, rather than giving a finite-scale t2 law. The conditional normal face remains eligible. When sd is free, the conditional ordinary t2 face is compared separately. Profile searches are numerical, not global certificates.
+
+## d/p/q/r
+
+Uses the fGarch mean and standard deviation parameterisation.

@@ -1,8 +1,8 @@
 test_that("zmbinom agrees with a multi-start reference-density oracle", {
   set.seed(13109)
-  x <- do.call(actuar::rzmbinom, list(250, size = 8, prob = 0.4, p0 = 0.3))
+  x <- do.call(rzmbinom, list(250, size = 8, prob = 0.4, p0 = 0.3))
   fit <- mlzmbinom(x, size = NULL)
-  density <- actuar::dzmbinom
+  density <- dzmbinom
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
   oracle <- function(held = NULL) {
@@ -49,7 +49,7 @@ test_that("zmbinom preserves fixed size at attained boundaries", {
 
  test_that("zmbinom: new holds match reference-density integer and multistart oracles", {
   set.seed(810)
-  samples <- c(lapply(c(20,100),function(n) actuar::rzmbinom(n,8,.4,.3)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
+  samples <- c(lapply(c(20,100),function(n) rzmbinom(n = n, size = 8, prob = 0.4, p0 = 0.3)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
   for(x in samples) {
     for(fixed_size in c(TRUE,FALSE)) {
       held <- list(prob=.4)
@@ -58,7 +58,7 @@ test_that("zmbinom preserves fixed size at attained boundaries", {
       args <- c(list(x=x,size=if(fixed_size) 8 else NULL),held)
       fit <- suppressWarnings(do.call(mlzmbinom,args))
       sizes <- if(fixed_size) 8 else seq(max(x),200)
-      ll <- function(size, mixture=.3) sum(actuar::dzmbinom(x,size=size,prob=.4, p0=mixture,log=TRUE))
+      ll <- function(size, mixture=.3) sum(dzmbinom(x = x, size = size, prob = 0.4, p0 = mixture, log = TRUE))
       oracle <- max(vapply(sizes,function(size) {
         if(mixture) return(ll(size))
         max(c(ll(size,0),ll(size,1),vapply(c(.05,.4,.9),function(start) -optim(start,function(p) -ll(size,p),method="L-BFGS-B",lower=1e-9,upper=1-1e-9)$value,0.)))
@@ -80,7 +80,7 @@ test_that("zmbinom: held p0 profiles the remaining probability", {
    for(mix in c(0,.2,.8)) {
      if(mix==0 && any(x==0)) {expect_error(mlzmbinom(x,size=8,p0=mix));next}
      f<-suppressWarnings(mlzmbinom(x,size=8,p0=mix))
-     ll<-function(p)sum(actuar::dzmbinom(x,size=8,prob=p,p0=mix,log=TRUE))
+     ll<-function(p)sum(dzmbinom(x = x, size = 8, prob = p, p0 = mix, log = TRUE))
      oracle<-max(c(ll(0),ll(1),vapply(c(.02,.2,.5,.9,.99),function(start) -optim(start,function(p)-ll(p),method="L-BFGS-B",lower=1e-9,upper=1-1e-9)$value,0.)))
      expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
      expect_identical(unname(f["p0"]),mix)
@@ -93,7 +93,7 @@ test_that("zmbinom: held p0 profiles the remaining probability", {
 test_that("zmbinom: free-size held-mixture fits and Poisson escapes", {
  for(x in list(c(0,1,2,2,3),c(1,2,3,3,4))) {
   f<-mlzmbinom(x,size=NULL,p0=.2)
-  ll<-function(k,p)sum(actuar::dzmbinom(x,size=k,prob=p,p0=.2,log=TRUE))
+  ll<-function(k,p)sum(dzmbinom(x = x, size = k, prob = p, p0 = 0.2, log = TRUE))
   oracle<-max(vapply(seq(max(x),50),function(k)max(c(ll(k,0),ll(k,1),vapply(c(.1,.5,.9),function(start)-optim(start,function(p)-ll(k,p),method="L-BFGS-B",lower=1e-8,upper=1-1e-8)$value,0.))),0.))
   expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
  }
@@ -118,7 +118,7 @@ test_that("zmbinom: free size and probability agree with a reference-density ora
   oracle_ll <- function(x, size) {
     k <- sum(x > 0); n <- length(x); p0 <- (n - k) / n
     pos <- x[x > 0]
-    objective <- function(p) -sum(actuar::dztbinom(pos, size = size, prob = p, log = TRUE))
+    objective <- function(p) -sum(dztbinom(x = pos, size = size, prob = p, log = TRUE))
     base <- if (n - k > 0) (n - k) * log(p0) else 0
     base <- base + if (k > 0) k * log1p(-p0) else 0
     base - optimize(objective, c(1e-9, 1 - 1e-9))$objective
@@ -126,10 +126,10 @@ test_that("zmbinom: free size and probability agree with a reference-density ora
   oracle <- function(x, sizes) max(vapply(sizes, function(s) oracle_ll(x, s), 0))
 
   samples <- list(
-    n20 = actuar::rzmbinom(20, size = 8, prob = 0.4, p0 = 0.3),
-    n100 = actuar::rzmbinom(100, size = 8, prob = 0.4, p0 = 0.3),
+    n20 = rzmbinom(n = 20, size = 8, prob = 0.4, p0 = 0.3),
+    n100 = rzmbinom(n = 100, size = 8, prob = 0.4, p0 = 0.3),
     ties = c(0, 0, 2, 2, 2, 2, 3, 4, 5, 5),
-    near_poisson = actuar::rzmbinom(100, size = 500, prob = 0.02, p0 = 0.2)
+    near_poisson = rzmbinom(n = 100, size = 500, prob = 0.02, p0 = 0.2)
   )
   for (x in samples) {
     if (!any(x == 0)) next  # p0 is held at 0 (identifiability) and unaffected by this fix
@@ -145,8 +145,7 @@ test_that("zmbinom: free size and probability agree with a reference-density ora
     best <- oracle(x, unique(pmax(max(x), round(unname(fit["size"]) * c(.25,.5,.9,1,1.1,2,4)))))
     expect_gte(attr(fit, "logLik") + 1e-6, best)
     expect_equal(attr(fit, "logLik"),
-                 sum(actuar::dzmbinom(x, size = unname(fit["size"]), prob = unname(fit["prob"]),
-                                       p0 = unname(fit["p0"]), log = TRUE)),
+                 sum(dzmbinom(x = x, size = unname(fit["size"]), prob = unname(fit["prob"]), p0 = unname(fit["p0"]), log = TRUE)),
                  tolerance = 1e-8)
   }
 })

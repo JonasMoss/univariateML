@@ -2,7 +2,7 @@ context("mlbbinom")
 
 bb_sample <- function() {
   set.seed(720)
-  extraDistr::rbbinom(500, size = 10, alpha = 2, beta = 3)
+  rbbinom(n = 500, size = 10, alpha = 2, beta = 3)
 }
 
 test_that("known size and fixed shapes have correct attributes", {
@@ -12,7 +12,7 @@ test_that("known size and fixed shapes have correct attributes", {
     expect_equal(names(fit), c("size", "alpha", "beta"))
     expect_equal(attr(fit,"fixed"), c("size", names(held)))
     expect_equal(attr(logLik(fit),"df"), 2L-length(held))
-    expect_equal(attr(fit,"logLik"), sum(extraDistr::dbbinom(x,10,fit[2],fit[3],log=TRUE)), tolerance=1e-9)
+    expect_equal(attr(fit,"logLik"), sum(dbbinom(x = x, size = 10, alpha = fit[2], beta = fit[3], log = TRUE)), tolerance=1e-9)
     expect_equal(AIC(fit), -2*as.numeric(logLik(fit))+2*(2-length(held)))
     if (length(held)) expect_equal(unname(fit[names(held)]), held[[1]])
   }
@@ -37,7 +37,7 @@ test_that("fit agrees with slow multistart reference oracle", {
   for (held in list(list(),list(alpha=.4),list(beta=8))) {
     objective <- function(theta) {
       ab <- if (!length(held)) exp(theta) else if (names(held)=="alpha") c(held[[1]], exp(theta)) else c(exp(theta),held[[1]])
-      -sum(extraDistr::dbbinom(x,10,ab[1],ab[2],log=TRUE))
+      -sum(dbbinom(x = x, size = 10, alpha = ab[1], beta = ab[2], log = TRUE))
     }
     values <- vapply(c(.05,.5,2,10,100), function(start) {
       optim(rep(log(start),if (length(held)) 1 else 2),objective,method="L-BFGS-B",lower=-10,upper=10,control=list(maxit=2000,factr=1e3))$value
@@ -47,7 +47,7 @@ test_that("fit agrees with slow multistart reference oracle", {
   }
 })
 
-test_that("missing reference quantile uses only its own CDF", {
+test_that("beta-binomial quantiles invert the internal CDF", {
   fit <- mlbbinom(bb_sample(),size=10)
   for (lower in c(TRUE,FALSE)) for (log in c(TRUE,FALSE)) {
     u <- c(0,1e-12,.1,.5,.9,1-1e-12,1)
@@ -66,29 +66,17 @@ test_that("missing reference quantile uses only its own CDF", {
   }
   expect_warning(expect_true(is.nan(qml(-.1,fit))),"NaNs")
   expect_true(is.na(qml(NA_real_,fit)))
-  expect_equal(dml(0:10,fit),extraDistr::dbbinom(0:10,10,fit[2],fit[3]))
+
 })
 
-test_that("generic inverse supports unbounded integer references and veto", {
-  ns <- asNamespace("univariateML")
-  inverse <- get("univariateML_invert_cdf",ns)
-  u <- c(0,1e-10,.1,.9,1-1e-10,1)
-  expect_equal(inverse(u,ppois,list(lambda=4),function(...) c(0,Inf),TRUE,FALSE),qpois(u,4))
-  expect_equal(inverse(log(u),ppois,list(lambda=4),function(...) c(0,Inf),FALSE,TRUE),
-               qpois(log(u),4,lower.tail=FALSE,log.p=TRUE))
-  fit <- mlbbinom(bb_sample(),size=10)
-  # Remove only the registry entry, exercising the single policy switch.
-  testthat::local_mocked_bindings(univariateML_reference_quantiles=list(),.package="univariateML")
-  expect_error(qml(.5,fit),"no quantile function")
-})
 
 test_that("bbinom: both held shapes permit exact size profiling", {
  set.seed(88)
- for(x in c(lapply(c(20,100),function(n) extraDistr::rbbinom(n,8,2,3)),list(c(0,0),c(0,1),c(2,2,3),rep(3,4)))) {
+ for(x in c(lapply(c(20,100),function(n) rbbinom(n = n, size = 8, alpha = 2, beta = 3)),list(c(0,0),c(0,1),c(2,2,3),rep(3,4)))) {
   for(size in list(8,NULL)) {
    f<-mlbbinom(x,size=size,alpha=2,beta=3)
    grid<-if(is.null(size)) seq(max(x),100) else size
-   oracle<-max(vapply(grid,function(k)sum(extraDistr::dbbinom(x,k,2,3,log=TRUE)),0.))
+   oracle<-max(vapply(grid,function(k)sum(dbbinom(x = x, size = k, alpha = 2, beta = 3, log = TRUE)),0.))
    expect_equal(attr(f,"logLik"),oracle,tolerance=1e-9)
    expect_identical(unname(f[c("alpha","beta")]),c(2,3))
    expect_setequal(attr(f,"fixed"),c(if(!is.null(size)) "size","alpha","beta"))

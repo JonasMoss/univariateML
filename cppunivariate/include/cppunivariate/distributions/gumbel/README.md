@@ -14,8 +14,8 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  density: extraDistr::dgumbel
-  sampler: extraDistr::rgumbel
+  density: dgumbel
+  sampler: rgumbel
   control:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.

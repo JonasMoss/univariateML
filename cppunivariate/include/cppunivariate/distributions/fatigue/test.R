@@ -2,9 +2,9 @@ test_that("mlfatigue agrees with its reference density", {
   set.seed(313)
   x <- simulate_default("mlfatigue", 200)
   fit <- mlfatigue(x, mu = 0)
-  density <- getFromNamespace("dfatigue", "extraDistr")
+  density <- getFromNamespace("dfatigue", "univariateML")
   oracle <- optim(log(c(2, 1)), function(p) {
-    -sum(extraDistr::dfatigue(x, alpha = exp(p[1]), beta = exp(p[2]), mu = 0, log = TRUE))
+    -sum(dfatigue(x = x, alpha = exp(p[1]), beta = exp(p[2]), mu = 0, log = TRUE))
   }, method = "BFGS", control = list(reltol = 1e-12, maxit = 1000))
   expect_equal(unname(coef(fit)[1:2]), exp(oracle$par), tolerance = 1e-4)
   expect_equal(unname(coef(fit)[["mu"]]), 0)
@@ -14,10 +14,10 @@ test_that("mlfatigue agrees with its reference density", {
 test_that("the three-parameter likelihood with free mu is unbounded (why mu is fixed)", {
   # beta = eps, alpha^2 = s / eps, mu just below min(x): logL grows like -2 log(eps).
   set.seed(1)
-  x <- extraDistr::rfatigue(50, alpha = 0.5, beta = 2, mu = 1)
+  x <- rfatigue(n = 50, alpha = 0.5, beta = 2, mu = 1)
   s <- mean(x - min(x))
   path <- sapply(10^-(4:7), function(eps) {
-    sum(log(extraDistr::dfatigue(x, alpha = sqrt(s / eps), beta = eps, mu = min(x) - 10 * eps^2 / s)))
+    sum(log(dfatigue(x = x, alpha = sqrt(s/eps), beta = eps, mu = min(x) - 10 * eps^2/s)))
   })
   expect_true(all(diff(path) > 0))
   expect_equal(diff(path), rep(2 * log(10), 3), tolerance = 0.01)
@@ -52,7 +52,7 @@ test_that("fatigue holds a translated threshold and checks shifted support", {
 
 test_that("fatigue coefficient holds match independent multistart density oracles", {
   set.seed(8103)
-  samples <- list(extraDistr::rfatigue(20,.7,2),extraDistr::rfatigue(100,3,2),
+  samples <- list(rfatigue(n = 20, alpha = 0.7, beta = 2, mu = 0),rfatigue(n = 100, alpha = 3, beta = 2, mu = 0),
     c(.2,.2,1,3),.4,rep(2,4),exp(rnorm(20)),rgamma(100,.5))
   for(x in samples) for(args in list(list(alpha=.7),list(alpha=3),list(beta=1.3),list(alpha=.7,beta=1.3))) {
     f <- do.call(mlfatigue,c(list(x=x-5,mu=-5),args))
@@ -61,7 +61,7 @@ test_that("fatigue coefficient holds match independent multistart density oracle
     free <- setdiff(c("alpha","beta"),names(args))
     objective <- function(p) {
       pars <- c(args,as.list(setNames(exp(p),free)))
-      -sum(do.call(extraDistr::dfatigue,c(list(x=x,mu=0,log=TRUE),pars)))
+      -sum(do.call(dfatigue,c(list(x=x,mu=0,log=TRUE),pars)))
     }
     best <- if(!length(free)) objective(numeric()) else min(vapply(c(.03,.3,1,3,30),function(s)
       nlminb(log(s),objective,lower=-20,upper=20,control=list(iter.max=1000,rel.tol=1e-12))$objective,numeric(1)))

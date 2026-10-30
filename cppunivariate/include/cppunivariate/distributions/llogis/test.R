@@ -2,8 +2,8 @@ context("mlllogis")
 
 ## Data generation.
 set.seed(313)
-small_data <- actuar::rllogis(100, 2, 3)
-tiny_data <- actuar::rllogis(10, 1, 1)
+small_data <- rllogis(n = 100, shape = 2, rate = 3)
+tiny_data <- rllogis(n = 10, shape = 1, rate = 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlllogis(c(tiny_data, NA)))
@@ -32,7 +32,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlllogis(small_data, na.rm = TRUE)
 expect_equal(
-  sum(actuar::dllogis(small_data, est[1], est[2], log = TRUE)),
+  sum(dllogis(x = small_data, shape = est[1], rate = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -45,8 +45,8 @@ expect_equal(names(est), c("shape", "rate"))
 
 test_that("llogis handles a seeded sample with a large outlier", {
   set.seed(7)
-  x <- c(actuar::rllogis(199, 2, 1), 1e3)
-  objective <- function(p) -sum(actuar::dllogis(x, exp(p[1]), exp(p[2]), log = TRUE))
+  x <- c(rllogis(n = 199, shape = 2, rate = 1), 1e3)
+  objective <- function(p) -sum(dllogis(x = x, shape = exp(p[1]), rate = exp(p[2]), log = TRUE))
   oracle <- optim(log(c(2, 1)), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
   expected <- exp(oracle$par)
@@ -66,7 +66,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("shape","rate")
   held_default <- c(1.0,2.0)
   names(held_default) <- pn
-  density <- actuar::dllogis
+  density <- dllogis
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

@@ -15,7 +15,7 @@ tnorm_test_ll <- function(x, m, s, a, b) {
 test_that("mltnorm agrees with independent multistart likelihood oracles", {
   for (bounds in list(c(-1, 2), c(0, Inf), c(-Inf, 1))) {
     a <- bounds[1]; b <- bounds[2]
-    x <- extraDistr::qtnorm(((1:150)-.5)/150, .4, .8, a, b)
+    x <- qtnorm(p = ((1:150) - 0.5)/150, mean = 0.4, sd = 0.8, a = a, b = b)
     fit <- mltnorm(x, a = a, b = b)
     objective <- function(p) {
       ll <- tnorm_test_ll(x, p[1], exp(p[2]), a, b)
@@ -72,43 +72,19 @@ test_that("mltnorm validates known bounds and classifies escapes", {
   expect_equal(as.numeric(mltnorm(c(x, NA), na.rm = TRUE, a = -Inf, b = Inf)), as.numeric(mltnorm(x, a = -Inf, b = Inf)))
 })
 
-test_that("runtime truncated-normal repairs agree with stable normal differences", {
-  fixes <- univariateML:::univariateML_reference_fixes
-  for (type in c("d", "p", "q")) {
-    fix <- fixes[[paste0("extraDistr::", type, "tnorm")]]
-    expect_true(fix$broken())
-    ref <- getExportedValue("extraDistr", paste0(type, "tnorm"))
-    for (logs in c(FALSE, TRUE)) {
-      if (type == "d") {
-        expect_equal(fix$replacement(c(-.5,.2,1), c(0,.1,.2), 1, -1, 2, log = logs),
-                     ref(c(-.5,.2,1), c(0,.1,.2), 1, -1, 2, log = logs), tolerance = 1e-12)
-        x <- c(10.01,10.05,10.1)
-        expected <- dnorm(x, log = TRUE) - pnorm(10, lower.tail = FALSE, log.p = TRUE)
-        if (!logs) expected <- exp(expected)
-        expect_equal(fix$replacement(x, a = 10, log = logs), expected, tolerance = 1e-12)
-      } else for (lower in c(FALSE, TRUE)) {
-        x <- if (type == "p") c(-.5,.2,1) else c(.1,.5,.9)
-        if (type == "q" && logs) x <- log(x)
-        expect_equal(fix$replacement(x, c(0,.1,.2), 1, -1, 2, lower.tail = lower, log.p = logs),
-                     ref(x, c(0,.1,.2), 1, -1, 2, lower.tail = lower, log.p = logs),
-                     tolerance = 1e-12)
-        if (type == "q") {
-          u <- c(.1,.5,.9)
-          tail <- if (lower) 1-u else u
-          expected <- qnorm(pnorm(40, lower.tail = FALSE, log.p = TRUE) + log(tail),
-                            lower.tail = FALSE, log.p = TRUE)
-          actual <- fix$replacement(if (logs) log(u) else u, a = 40, b = 41,
-                                    lower.tail = lower, log.p = logs)
-        } else {
-          x <- c(40.001,40.01,40.05)
-          lp <- pnorm(x, lower.tail = FALSE, log.p = TRUE) -
-            pnorm(40, lower.tail = FALSE, log.p = TRUE)
-          expected <- if (lower) -expm1(lp) else exp(lp)
-          if (logs) expected <- log(expected)
-          actual <- fix$replacement(x, a = 40, b = 41, lower.tail = lower, log.p = logs)
-        }
-        expect_equal(actual, expected, tolerance = 1e-12)
-      }
-    }
+
+test_that("truncated-normal tail evaluation agrees with normal log tails", {
+  x <- c(40.001, 40.01, 40.05)
+  fit <- mltnorm(c(40.01, 40.02), mean = 0, sd = 1, a = 40, b = 41)
+  normalizer <- tnorm_test_logmass(40, 41)
+  expect_equal(dml(x, fit, log = TRUE), dnorm(x, log = TRUE) - normalizer,
+               tolerance = 1e-12)
+  upper <- pnorm(x, lower.tail = FALSE, log.p = TRUE) - normalizer
+  expect_equal(pml(x, fit, lower.tail = FALSE, log.p = TRUE), upper,
+               tolerance = 1e-12)
+  for (lower in c(TRUE, FALSE)) {
+    lp <- c(-1, -3, -5)
+    expect_equal(pml(qml(lp, fit, lower.tail = lower, log.p = TRUE), fit,
+                     lower.tail = lower, log.p = TRUE), lp, tolerance = 1e-9)
   }
 })

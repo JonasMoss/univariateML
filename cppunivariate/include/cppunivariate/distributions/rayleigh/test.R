@@ -2,8 +2,8 @@ context("mlrayleigh")
 
 ## Data generation.
 set.seed(313)
-small_data <- extraDistr::rrayleigh(100, 2)
-tiny_data <- extraDistr::rrayleigh(10, 3)
+small_data <- rrayleigh(n = 100, sigma = 2)
+tiny_data <- rrayleigh(n = 10, sigma = 3)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlrayleigh(c(-.1, tiny_data)))
@@ -18,7 +18,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlrayleigh(small_data, na.rm = TRUE)
 expect_equal(
-  sum(extraDistr::drayleigh(small_data, est, log = TRUE)),
+  sum(drayleigh(x = small_data, sigma = est, log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -43,7 +43,7 @@ test_that("any zero makes the Rayleigh likelihood zero", {
     expect_error(mlrayleigh(x), "identically zero")
   for (x in list(c(.1, .2, 1), c(1, 2, 5))) {
     fit <- mlrayleigh(x)
-    oracle <- optimize(function(s) -sum(extraDistr::drayleigh(x,s,log=TRUE)), c(.01,10))
+    oracle <- optimize(function(s) -sum(drayleigh(x = x, sigma = s, log = TRUE)), c(.01,10))
     expect_equal(as.numeric(logLik(fit)), -oracle$objective, tolerance=1e-8)
   }
 })
@@ -54,7 +54,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("sigma")
   held_default <- c(2.0)
   names(held_default) <- pn
-  density <- extraDistr::drayleigh
+  density <- drayleigh
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

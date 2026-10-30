@@ -19,8 +19,8 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: extraDistr::dbetapr
-  sampler: extraDistr::rbetapr
+  density: dbetapr
+  sampler: rbetapr
   control:
     shape1: Held positive finite coefficient; NULL estimates it.
     shape2: Held positive finite coefficient; NULL estimates it.
@@ -42,8 +42,7 @@ references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York."
 examples: |
   set.seed(313)
-  mlbetapr(extraDistr::rbetapr(1000, 1, 2, scale = 3))
-
+  mlbetapr(univariateML:::rbetapr(n = 1000, shape1 = 1, shape2 = 2, scale = 3))
 ---
 
 The beta prime distribution models positive ratios.

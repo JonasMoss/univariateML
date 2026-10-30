@@ -15,8 +15,8 @@ params:
   simulate: 0.4
   kind: regular
 r:
-  density: actuar::dztbinom
-  sampler: actuar::rztbinom
+  density: dztbinom
+  sampler: rztbinom
   control:
     size: "Optional fixed size; NULL estimates size."
     reltol: "Tolerance for scalar profile search."

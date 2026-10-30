@@ -1,7 +1,7 @@
 burr_scale_oracle <- function(x) {
   nll <- function(t) {
     p <- exp(t)
-    v <- -sum(actuar::dburr(x, shape1=p[1], shape2=p[2], scale=p[3], log=TRUE))
+    v <- -sum(dburr(x = x, shape1 = p[1], shape2 = p[2], scale = p[3], log = TRUE))
     if (is.finite(v)) v else 1e100
   }
   starts <- expand.grid(k=c(.01,.1,.5,1,5,100), c=c(.5,2,10))
@@ -23,10 +23,10 @@ burr_scale_oracle <- function(x) {
   list(ll=max(ll,faces), face=face, estimates=exp(best$par))
 }
 
-test_that("Burr scale fits agree with a full actuar oracle", {
+test_that("Burr scale fits agree with a full density oracle", {
   for (n in c(20,200)) for (seed in 1:6) {
     set.seed(seed)
-    x <- actuar::rburr(n,shape1=1,shape2=2,scale=3)
+    x <- rburr(n = n, shape1 = 1, shape2 = 2, scale = 3)
     oracle <- suppressWarnings(burr_scale_oracle(x))
     fit <- tryCatch(mlburr(x),error=function(e)e)
     if (oracle$face == "interior") {
@@ -35,7 +35,7 @@ test_that("Burr scale fits agree with a full actuar oracle", {
         expect_named(fit,c("shape1","shape2","scale"))
         expect_equal(as.numeric(fit),oracle$estimates,tolerance=1e-3)
         expect_equal(attr(fit,"logLik"),oracle$ll,tolerance=1e-6)
-        expect_equal(sum(actuar::dburr(x,shape1=fit[1],shape2=fit[2],scale=fit[3],log=TRUE)),
+        expect_equal(sum(dburr(x = x, shape1 = fit[1], shape2 = fit[2], scale = fit[3], log = TRUE)),
                      attr(fit,"logLik"),tolerance=1e-10)
       }
     } else expect_error(mlburr(x),paste0("Use `ml",oracle$face,"`"))
@@ -51,9 +51,9 @@ test_that("Burr limits name the fitted model regardless of data units", {
   expect_error(mlburr(c(1,2,3),scale0=-1),"positive")
 })
 
-test_that("burr accepts actuar-named starts and rejects invalid starts", {
+test_that("burr accepts shape/scale starts and rejects invalid starts", {
   set.seed(1)
-  x <- actuar::rburr(200,shape1=1,shape2=2,scale=3)
+  x <- rburr(n = 200, shape1 = 1, shape2 = 2, scale = 3)
   a <- mlburr(x)
   b <- mlburr(x,shape10=.5,shape20=3,scale0=2,gradtol=1e-8,reltol=1e-12,iterlim=1000)
   expect_equal(attr(a,"logLik"),attr(b,"logLik"),tolerance=1e-8)
@@ -64,22 +64,22 @@ test_that("burr accepts actuar-named starts and rejects invalid starts", {
 test_that("Burr limits and small-shape corners match the derived bounds", {
   x <- c(.2,1,2,3,8)
   k <- 1e5
-  expect_equal(actuar::pburr(x,shape1=k,shape2=2,scale=3*sqrt(k)),
+  expect_equal(pburr(q = x, shape1 = k, shape2 = 2, scale = 3 * sqrt(k)),
                pweibull(x,shape=2,scale=3),tolerance=1e-5)
-  # Keep (x/scale)^shape2 representable in the actuar CDF.
+  # Keep (x/scale)^shape2 representable in the CDF.
   c <- 400
-  expect_equal(actuar::pburr(x,shape1=2/c,shape2=c,scale=2),
+  expect_equal(pburr(q = x, shape1 = 2/c, shape2 = c, scale = 2),
                ifelse(x<2,0,1-(2/x)^2),tolerance=.005)
   # f_logX <= shape2/e uniformly over shape1 and scale. In particular,
   # shape2 -> 0 cannot conceal another continuous boundary distribution.
   for (c in c(.001,.01,.1)) for (k in c(.0001,1,10000)) for (s in c(1e-10,1,1e10)) {
-    ll <- sum(actuar::dburr(x,shape1=k,shape2=c,scale=s,log=TRUE))
+    ll <- sum(dburr(x = x, shape1 = k, shape2 = c, scale = s, log = TRUE))
     expect_lte(ll,length(x)*(log(c)-1)-sum(log(x))+1e-10)
   }
   # For fixed shape2 the maximum log-X density vanishes as shape1 -> 0.
   k <- 1e-8; c <- 2
   bound <- length(x)*(log(c)+(k+1)*log(k/(k+1)))-sum(log(x))
-  expect_lte(sum(actuar::dburr(x,shape1=k,shape2=c,scale=3,log=TRUE)),bound+1e-10)
+  expect_lte(sum(dburr(x = x, shape1 = k, shape2 = c, scale = 3, log = TRUE)),bound+1e-10)
 })
 
 test_that("burr fixed scale reproduces 6c89a8c and a reference oracle", {
@@ -98,7 +98,7 @@ test_that("burr fixed scale reproduces 6c89a8c and a reference oracle", {
     expect_equal(attr(logLik(z),"df"),2)
     expect_equal(unname(z[1:2]),unname(fit[1:2]),tolerance=1e-10)
     expect_equal(attr(z,"logLik"),attr(fit,"logLik")-length(x)*log(s),tolerance=1e-10)
-    nll <- function(t) -sum(actuar::dburr(y,shape1=exp(t[1]),shape2=exp(t[2]),scale=s,log=TRUE))
+    nll <- function(t) -sum(dburr(x = y, shape1 = exp(t[1]), shape2 = exp(t[2]), scale = s, log = TRUE))
     oracle <- optim(log(c(.7,1.5)),nll,method="BFGS",control=list(reltol=1e-13,maxit=2000))
     expect_equal(unname(z[1:2]),exp(oracle$par),tolerance=1e-5)
     expect_equal(attr(z,"logLik"),-oracle$value,tolerance=1e-9)
@@ -111,7 +111,7 @@ test_that("burr fixed scale reproduces 6c89a8c and a reference oracle", {
 test_that("burr fixed scale uses a profile fallback when moments have no root", {
   x <- c(.5,2,3,4,5)
   z <- mlburr(x,scale=1,abstol=1e-10)
-  nll <- function(t) -sum(actuar::dburr(x,shape1=exp(t[1]),shape2=exp(t[2]),scale=1,log=TRUE))
+  nll <- function(t) -sum(dburr(x = x, shape1 = exp(t[1]), shape2 = exp(t[2]), scale = 1, log = TRUE))
   oracle <- optim(log(c(.7,1.5)),nll,method="BFGS",control=list(reltol=1e-13,maxit=2000))
   expect_equal(as.numeric(z[1:2]),exp(oracle$par),tolerance=1e-5)
   expect_equal(attr(z,"logLik"),-oracle$value,tolerance=1e-9)
@@ -135,9 +135,9 @@ test_that("P2 burr holds agree with independent multistart reference likelihoods
   pars <- c(shape1=1, shape2=2, scale=1)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)
-  density <- actuar::dburr
+  density <- dburr
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(actuar::qburr, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qburr, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- qexp(((1:20)-.5)/20)

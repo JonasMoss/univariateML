@@ -14,11 +14,6 @@ params:
   simulate: 1.5
   kind: regular
 r:
-  export:
-    params:
-      lambda: Nonnegative rate coordinate; must be below one when nu is zero.
-      nu: Nonnegative dispersion coordinate.
-    details: Evaluation uses the CMP normalizer. Tails are summed directly. Random draws use inversion.
   density: dcmp
   sampler: rcmp
   control:
@@ -48,3 +43,7 @@ The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersi
 The rate is generally not the mean. Dispersion one is Poisson; dispersion zero is geometric when the rate is below one. Either or both coordinates may be fixed. Rate zero is the attained zero point mass; its unidentified free dispersion is represented by one. Dispersion zero is attained when lambda is below one; the joint domain requires lambda < 1 whenever nu = 0. Adjacent two-point and positive point-mass escapes still stop with a named limit.
 
 Probability evaluation uses the certified CMP normalizer, stable centered log weights and direct tail summation. A calculation exceeding the normalizer or tail work budget returns NaN with a warning. Quantile search is limited to counts below 9e15. Random generation uses inversion with R's RNG.
+
+## d/p/q/r
+
+The Conway–Maxwell–Poisson normalizer and both tails are summed directly.

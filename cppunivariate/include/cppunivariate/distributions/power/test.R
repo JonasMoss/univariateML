@@ -2,27 +2,23 @@ context("mlpower")
 
 ## Data generation.
 set.seed(313)
-small_data <- extraDistr::rpower(100, 1, 1)
-tiny_data <- extraDistr::rpower(10, 3, 7)
-medium_data <- extraDistr::rpower(1000, 9, 11)
+small_data <- rpower(n = 100, alpha = 1, beta = 1)
+tiny_data <- rpower(n = 10, alpha = 3, beta = 7)
+medium_data <- rpower(n = 1000, alpha = 9, beta = 11)
 
 epsilon <- .Machine$double.eps^0.5
 
 ## Checks if the ML is correct.
 mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(small_data, max(small_data) * (1 + epsilon), p, log = TRUE))
+  -sum(dpower(x = small_data, alpha = max(small_data) * (1 + epsilon), beta = p, log = TRUE))
 }, p = 1))
 
 mle2 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(tiny_data, max(tiny_data) * (1 + epsilon), p,
-    log = TRUE
-  ))
+  -sum(dpower(x = tiny_data, alpha = max(tiny_data) * (1 + epsilon), beta = p, log = TRUE))
 }, p = 7))
 
 mle3 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dpower(medium_data, max(medium_data) * (1 + epsilon), p,
-    log = TRUE
-  ))
+  -sum(dpower(x = medium_data, alpha = max(medium_data) * (1 + epsilon), beta = p, log = TRUE))
 }, p = 11))
 
 tolerance <- 1e-4
@@ -77,7 +73,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("alpha","beta")
   held_default <- c(1.0,2.0)
   names(held_default) <- pn
-  density <- extraDistr::dpower
+  density <- dpower
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

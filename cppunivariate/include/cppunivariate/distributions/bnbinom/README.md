@@ -19,8 +19,8 @@ params:
   simulate: 5
   kind: regular
 r:
-  density: extraDistr::dbnbinom
-  sampler: extraDistr::rbnbinom
+  density: dbnbinom
+  sampler: rbnbinom
   control:
     gradtol: "Tolerance on the average log likelihood score in log parameters."
     iterlim: "Maximum BFGS iterations per deterministic start."
@@ -43,7 +43,7 @@ references:
   - "Xekalaki, E. (1984). The Bivariate Generalized Waring Distribution and its Application to Accident Theory. JRSS A 147(3), 488-498. doi:10.2307/2981580."
 examples: |
   set.seed(4)
-  mlbnbinom(extraDistr::rbnbinom(1000, 1, 2, 5))
+  mlbnbinom(univariateML:::rbnbinom(n = 1000, size = 1, alpha = 2, beta = 5))
 holds: []
 ---
 
@@ -54,5 +54,3 @@ The beta negative binomial mixes a negative binomial success probability with a 
 Any subset of `size`, `alpha` and `beta` may be held fixed. With `size` and `beta` both free, the returned representative satisfies `size <= beta`: swapping these two coefficients gives exactly the same distribution. No ordering is imposed when either is held.
 
 A deterministic multistart search compares finite stationary points with every reachable negative binomial and Poisson face. Faces win likelihood ties within `1e-8 * length(x)`. This search does not certify global optimality or assume unimodality. An unresolved score or range endpoint raises an error. With all coefficients supplied, the likelihood is evaluated directly.
-
-`extraDistr` has no `qbnbinom`; `qml()` and `plot()` invert its CDF. Because this CDF takes work proportional to the count, inversion stops with an informative error after a finite work budget. Quantiles inherit the reference CDF's numerical accuracy.

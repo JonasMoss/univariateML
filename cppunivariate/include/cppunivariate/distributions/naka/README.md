@@ -14,12 +14,6 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export:
-    title: naka distribution
-    params:
-      shape: Positive shape.
-      scale: Positive scale, equal to the mean squared amplitude.
-    details: Parameters must be finite. Random generation transforms draws.
   density: dnaka
   sampler: rnaka
   control:
@@ -48,3 +42,7 @@ The Nakagami distribution models positive amplitudes, including radio-fading mea
 The shape $m$ may be any positive value; $m < 1/2$ is not excluded. The scale is the mean of the squared variable, rather than the scale of that gamma variable.
 
 With scale held and shape free, the likelihood is unbounded if every squared observation equals scale. Holding shape permits constant data.
+
+## d/p/q/r
+
+Scale is the mean squared amplitude; sampling takes the square root of a gamma variate.
