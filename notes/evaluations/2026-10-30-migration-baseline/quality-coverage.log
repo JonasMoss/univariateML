@@ -1,0 +1,98 @@
+bbinom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"size": {"integer": true}}}
+beta {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+betapr {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+bhatt {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+binom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"size": {"integer": true}}}
+bnbinom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+burr {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+cauchy {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+cmb {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"size": {"integer": true}}}
+cmp {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+dgamma {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+dlaplace {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"location": {"integer": true}}}
+dnorm {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+dunif {"derivative_held_parameters": [], "one_sided": null, "oracle_reason": "no regular parameters", "score_hessian_reason": "no regular parameters", "skipped_parameters": {"max": {"bound": "upper", "integer": true}, "min": {"bound": "lower", "integer": true}}}
+dweibull {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+emg {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+exp {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+fatigue {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"mu": {"fixed": true}}}
+foldnorm {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+fpareto {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"min": {"fixed": true}, "shape1": {"fixed": true}, "shape3": {"fixed": true}}}
+frechet {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+gamma {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+gb2 {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+ged {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+genbeta {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"scale": {"fixed": true}}}
+geom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+gev {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+gompertz {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+gpd {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"mu": {"fixed": true}}}
+gumbel {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+hcauchy {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"mu": {"fixed": true}}}
+hnorm {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"mu": {"bound": "lower"}}}
+ht {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"mu": {"fixed": true}}}
+huber {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"epsilon": {"fixed": true}}}
+hyper {"derivative_held_parameters": [], "one_sided": null, "oracle_reason": "no regular parameters", "score_hessian_reason": "no regular parameters", "skipped_parameters": {"N": {"integer": true}, "k": {"integer": true}, "m": {"integer": true}}}
+invburr {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+invexp {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+invgamma {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+invgauss {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+invparalogis {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+invpareto {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+invtrgamma {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+invweibull {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+kumar {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+laplace {"derivative_held_parameters": [], "one_sided": null, "oracle_reason": null, "score_hessian_reason": "nonsmooth location at an observation; observed Hessian undefined", "skipped_parameters": {}}
+lgamma {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+lgser {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+llogis {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+lnorm {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+logis {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+logitnorm {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+lomax {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+lst {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+naka {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+nbinom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+nhyper {"derivative_held_parameters": [], "one_sided": null, "oracle_reason": "no regular parameters", "score_hessian_reason": "no regular parameters", "skipped_parameters": {"N": {"integer": true}, "m": {"integer": true}, "r": {"integer": true}}}
+norm {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+nsbeta {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"max": {"fixed": true}, "min": {"fixed": true}}}
+paralogis {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+pareto {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"b": {"bound": "lower"}}}
+pareto2 {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"min": {"fixed": true}}}
+pareto3 {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"min": {"fixed": true}}}
+pareto4 {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"min": {"fixed": true}}}
+pig {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+pois {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+power {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"alpha": {"bound": "upper"}}}
+rayleigh {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+sged {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+sgomp {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+skellam {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+slash {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+sn {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+snorm {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+sstd {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+std {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+tbinom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"a": {"fixed": true}, "b": {"fixed": true}, "size": {"integer": true}}}
+tlambda {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+tnorm {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"a": {"fixed": true}, "b": {"fixed": true}}}
+tpois {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"a": {"fixed": true}, "b": {"fixed": true}}}
+trgamma {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+triang {"derivative_held_parameters": ["c"], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+unif {"derivative_held_parameters": [], "one_sided": null, "oracle_reason": "no regular parameters", "score_hessian_reason": "no regular parameters", "skipped_parameters": {"max": {"bound": "upper"}, "min": {"bound": "lower"}}}
+weibull {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+yulesimon {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+zeta {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+zib {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"size": {"integer": true}}}
+zinb {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+zip {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+zipf {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"N": {"bound": "upper", "integer": true}}}
+zmbinom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"size": {"integer": true}}}
+zmgeom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+zmlogarithmic {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+zmnbinom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+zmpois {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+ztbinom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {"size": {"integer": true}}}
+ztgeom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+ztnbinom {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}
+ztpois {"derivative_held_parameters": [], "one_sided": {}, "oracle_reason": null, "score_hessian_reason": null, "skipped_parameters": {}}

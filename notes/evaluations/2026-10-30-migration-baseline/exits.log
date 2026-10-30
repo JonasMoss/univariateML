@@ -1,0 +1,5 @@
+just cpp-test exit=0
+just test exit=0
+just check exit=0
+just quality exit=0
+log copy exit=0

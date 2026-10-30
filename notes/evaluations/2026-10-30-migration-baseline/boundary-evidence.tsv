@@ -1,0 +1,52 @@
+category	family	source	assertion (may continue on following lines)
+attained parameter	bhatt	bhatt/test.cpp:34	CHECK(cppunivariate::distributions::dbhatt(0,0,1,0)==doctest::Approx(.39894228040143267794));
+attained parameter	binom	binom/test.cpp:202	CHECK(cppunivariate::distributions::rbinom(rng,5,1)==5);
+attained parameter	cmb	cmb/test.cpp:91	CHECK(cppunivariate::distributions::rcmb(rng,5,1,2)==5);
+attained parameter	cmp	cmp/test.cpp:66	CHECK(cppunivariate::distributions::dcmp(2,lambda,0,log)==doctest::Approx(log?std::log1p(-lambda)+2*std::log(lambda):(1-lambda)*lambda*lambda));
+attained parameter	dunif	dunif/test.cpp:100	CHECK(cppunivariate::distributions::ddunif(3,3,3,log)==(log?0:1));
+attained parameter	geom	geom/test.cpp:32	CHECK(cppunivariate::special::dgeom(1.0, 1.0, true) ==
+attained parameter	gev	gev/test.cpp:276	CHECK(cppunivariate::distributions::dgev(5,2,3,-1,logarithm) ==
+attained parameter	gpd	gpd/test.cpp:325	CHECK(cppunivariate::distributions::dgpd(5,2,3,-1,logarithm) ==
+attained parameter	hyper	hyper/test.cpp:84	const long double b = brute_ll({x}, N, m, k);
+attained parameter	nbinom	nbinom/test.cpp:161	CHECK(dist::dnbinom(x,0,.4,log)==(log?(x==0?0:-INFINITY):(x==0?1:0)));
+attained parameter	nhyper	nhyper/test.cpp:43	CHECK(d::dnhyper(2,20,20,2,false)==1);
+attained parameter	pig	pig/test.cpp:169	CHECK(cppunivariate::distributions::dpig(x,2,0,false)==mass);
+attained parameter	skellam	skellam/test.cpp:9	CHECK(cppunivariate::distributions::dskellam(0,0,0)==1);
+attained parameter	tbinom	tbinom/test.cpp:158	CHECK(cppunivariate::distributions::rtbinom(rng,1,-1,6,5)==5);
+attained parameter	tlambda	tlambda/test.cpp:17	CHECK(cppunivariate::distributions::dtlambda(1,0,1,1)==.5);
+attained parameter	tpois	tpois/test.cpp:19	CHECK(cppunivariate::distributions::qtpois(1,0,-INFINITY,INFINITY)==0);
+attained parameter	triang	triang/test.cpp:86	CHECK(cppunivariate::distributions::dtriang(0,0,1,0)==2);
+attained parameter	zib	zib/test.cpp:79	CHECK(cppunivariate::distributions::dzib(0,0,.5,.3)==1);
+attained parameter	zinb	zinb/test.cpp:131	CHECK(cppunivariate::distributions::dzinb(x,0,.4,.3,false)==mass);
+attained parameter	zipf	zipf/test.cpp:79	CHECK(dist::qzipf(.5,2147483647,0)==1073741824);
+attained parameter	zmbinom	zmbinom/test.cpp:98	CHECK(cppunivariate::distributions::rzmbinom(rng,5,1,0)==5);
+attained parameter	ztbinom	ztbinom/test.cpp:113	CHECK(cppunivariate::distributions::qztbinom(0.3,5,1,true,false)==5);
+R7a density	genbeta	genbeta/test.cpp:112	CHECK(cppunivariate::distributions::dgenbeta(3,2,1,2,3,false)==doctest::Approx(4./3));
+R7a density	gev	gev/test.cpp:276	CHECK(cppunivariate::distributions::dgev(5,2,3,-1,logarithm) ==
+R7a density	gpd	gpd/test.cpp:325	CHECK(cppunivariate::distributions::dgpd(5,2,3,-1,logarithm) ==
+R7a density	hcauchy	hcauchy/test.cpp:27	CHECK(cppunivariate::distributions::dhcauchy(0,0,2,false)==doctest::Approx(1/std::acos(-1.0)));
+R7a density	nsbeta	nsbeta/test.cpp:67	CHECK(cppunivariate::distributions::dnsbeta(2,1,3,2,5,true)==0);
+R7a density	power	power/test.cpp:103	CHECK(cppunivariate::distributions::dpower(3,3,2,false) == doctest::Approx(2.0/3).scale(0.0));
+R7a density	tnorm	tnorm/test.cpp:440	CHECK(cppunivariate::distributions::dtnorm(x,0,1,-1,1,log)==doctest::Approx(log?std::log(f):f));
+R7a density	triang	triang/test.cpp:86	CHECK(cppunivariate::distributions::dtriang(0,0,1,0)==2);
+R7a quantile only	fatigue	fatigue/test.cpp:40	CHECK(cppunivariate::distributions::qfatigue(-INFINITY,1,1,0,true,true) == doctest::Approx(0).epsilon(1e-12).scale(1e-300));
+R7a quantile only	fpareto	fpareto/test.cpp:20	CHECK(cppunivariate::distributions::qfpareto(0,20,2,20,1,0,true,false)==0);
+R7a quantile only	frechet	frechet/test.cpp:63	CHECK(cppunivariate::distributions::qfrechet(-INFINITY,2,3,1,true,true) == doctest::Approx(3).epsilon(1e-12).scale(1e-300));
+R7a quantile only	hnorm	hnorm/test.cpp:81	CHECK(cppunivariate::distributions::qhnorm(cppunivariate::special::kNegInf, 0.003132226774118849, 1.0, true, true) == 0.003132226774118849);
+R7a quantile only	ht	ht/test.cpp:162	CHECK(cppunivariate::distributions::qht(0.0, mu, 3.0, 2.0, true, false) == mu);
+R7a quantile only	pareto	pareto/test.cpp:95	CHECK(cppunivariate::distributions::qpareto(-INFINITY,4,3,true,true) == 3);
+R7a quantile only	pareto2	pareto2/test.cpp:62	CHECK(cppunivariate::distributions::qpareto2(-INFINITY, 2, 3, 4, true, true) == 4);
+R7a quantile only	pareto3	pareto3/test.cpp:62	CHECK(cppunivariate::distributions::qpareto3(-INFINITY, 4, 3, 4, true, true) == 4);
+R7a quantile only	pareto4	pareto4/test.cpp:63	CHECK(cppunivariate::distributions::qpareto4(-INFINITY, 2, 4, 3, 4, true, true) == 4);
+R7a quantile only	unif	unif/test.cpp:37	CHECK(cppunivariate::distributions::qunif(-INFINITY,0,1,true,true) == doctest::Approx(0).epsilon(1e-12).scale(1e-300));
+fitter closed form only	foldnorm	foldnorm/test.cpp:29	CHECK(r.sigma==doctest::Approx(std::sqrt(.2)));
+fitter closed form only	pois	pois/test.cpp:31	CHECK(r.logLik == 0.0);
+fitter closed form only	sgomp	sgomp/test.cpp:21	CHECK(f.b==doctest::Approx(5./11));
+fitter closed form only	zip	zip/test.cpp:51	CHECK(zero.logLik == 0.0);
+fitter closed form only	zmgeom	zmgeom/test.cpp:28	CHECK(one.logLik==0);
+fitter closed form only	zmlogarithmic	zmlogarithmic/test.cpp:28	CHECK(one.logLik==0);
+fitter closed form only	zmnbinom	zmnbinom/test.cpp:35	CHECK(one.logLik==0);
+fitter closed form only	zmpois	zmpois/test.cpp:28	CHECK(one.logLik==0);
+fitter closed form only	ztgeom	ztgeom/test.cpp:26	CHECK(one.logLik==0);
+fitter closed form only	ztnbinom	ztnbinom/test.cpp:33	CHECK(one.logLik==0);
+fitter closed form only	ztpois	ztpois/test.cpp:26	CHECK(one.logLik==0);

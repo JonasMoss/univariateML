@@ -1,0 +1,27 @@
+> test_check("univariateML")
+Maximum likelihood estimates for the Weibull model 
+shape  scale  
+2.544  2.899  
+
+Maximum likelihood for the Weibull model 
+ 
+Call:  mlweibull(x = x) 
+
+Estimates: 
+   shape     scale  
+2.544195  2.899315  
+
+Data:            x (10 obs.)
+Support:         (0, Inf)
+Density:         stats::dweibull
+Log-likelihood:  -14.54088
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 37708 ]
+
+══ Skipped tests (1) ═══════════════════════════════════════════════════════════
+• {sn} is not installed (1): 'test-dist-sn.R:135:3'
+
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 37708 ]
+> 
+> proc.time()
+   user  system elapsed 
+330.848   1.593 332.584 

@@ -1,0 +1,150 @@
+bbinom/test.cpp:116 TEST_CASE("bbinom: endpoint-only, point-mass, size 0 and size 1 samples") {
+beta/test.cpp:85 TEST_CASE("beta: targeted tail and endpoint regressions") {
+beta/test.cpp:93 TEST_CASE("beta: targeted tail unit-shape endpoint limits") {
+bhatt/test.cpp:81 TEST_CASE("bhatt: support endpoints on log input") {
+bhatt/test.cpp:117 TEST_CASE("bhatt P3 normal boundary is attained with conditional coefficients") {
+binom/test.cpp:31 TEST_CASE("binom probability boundaries") {
+binom/test.cpp:51 TEST_CASE("binom dpqr: trivial trial size, CDF endpoints") {
+binom/test.cpp:84 TEST_CASE("binom: held probability profiles every integer and endpoint") {
+binom/test.cpp:199 TEST_CASE("binom attained point sampler ignores zero uniform") {
+burr/test.cpp:109 TEST_CASE("burr: held-scale endpoint spike and nonconstant escape differ") {
+cmb/test.cpp:45 TEST_CASE("CMB P3 endpoint and zero-size members are attained") {
+cmb/test.cpp:75 TEST_CASE("cmb: free-size endpoints, invalid controls and work exhaustion") {
+cmb/test.cpp:88 TEST_CASE("cmb attained point sampler ignores zero uniform") {
+cmp/test.cpp:57 TEST_CASE("CMP legacy entry returns attained geometric and point laws") {
+dgamma/test.cpp:41 TEST_CASE("dgamma: held boundaries, profile score and quantiles") {
+dlaplace/test.cpp:4 TEST_CASE("dlaplace: closed form and fixed subsets") {
+dunif/test.cpp:57 TEST_CASE("dunif: held endpoints tighten only free coordinates") {
+dunif/test.cpp:95 TEST_CASE("dunif singleton is a point law including RNG endpoints") {
+dweibull/test.cpp:98 TEST_CASE("dweibull: shape2 = 1 is the attained geometric member") {
+emg/test.cpp:68 TEST_CASE("emg portable sampling and argument boundaries") {
+foldnorm/test.cpp:24 TEST_CASE("foldnorm boundary, zeros and fixed subsets") {
+fpareto/test.cpp:19 TEST_CASE("fpareto: probability endpoints and sampler CDF") {
+frechet/test.cpp:24 TEST_CASE("frechet: probability endpoints and sampler CDF") {
+frechet/test.cpp:106 TEST_CASE("frechet: P3 restrictions and closed faces") {
+gamma/test.cpp:72 TEST_CASE("gamma P2 held boundaries and solver failure") {
+gamma/test.cpp:102 TEST_CASE("gamma: support endpoints on log input") {
+gb2/test.cpp:58 TEST_CASE("gb2: probability endpoints and sampler CDF") {
+gb2/test.cpp:118 TEST_CASE("gb2: targeted tail and endpoint regressions") {
+gb2/test.cpp:126 TEST_CASE("gb2: targeted tail finite and zero endpoint limits") {
+ged/test.cpp:113 TEST_CASE("ged: held variance uniform endpoint comparison") {
+ged/test.cpp:141 TEST_CASE("ged: targeted tail and endpoint regressions") {
+ged/test.cpp:147 TEST_CASE("ged: P3 restrictions and closed faces") {
+genbeta/test.cpp:21 TEST_CASE("genbeta: invalid observations, controls, and attained power ridge") {
+genbeta/test.cpp:34 TEST_CASE("genbeta: exact gamma and effective-endpoint power face comparisons") {
+genbeta/test.cpp:50 TEST_CASE("genbeta: probability endpoints and sampler CDF") {
+geom/test.cpp:36 TEST_CASE("geom dpqr: closed-form CDF") {
+geom/test.cpp:66 TEST_CASE("geom: P2 held boundary likelihood and domain") {
+gev/test.cpp:23 TEST_CASE("gev: attained bounds, fixed shape and Gumbel continuity") {
+gev/test.cpp:179 TEST_CASE("gev: targeted tail and endpoint regressions") {
+gev/test.cpp:189 TEST_CASE("gev: exact binary64 finite-endpoint neighbour") {
+gev/test.cpp:195 TEST_CASE("gev: P3 restrictions and closed faces") {
+gev/test.cpp:272 TEST_CASE("gev R7a finite endpoint closed form") {
+gev/test.cpp:288 TEST_CASE("gev xi minus one is the closed form limit law") {
+gompertz/test.cpp:79 TEST_CASE("gompertz P2 held boundaries and solver failure") {
+gpd/test.cpp:271 TEST_CASE("gpd: targeted tail and endpoint regressions") {
+gpd/test.cpp:281 TEST_CASE("gpd: exact binary64 finite-endpoint neighbour") {
+gpd/test.cpp:295 TEST_CASE("gpd: P3 restrictions and closed faces") {
+gpd/test.cpp:312 TEST_CASE("gpd: closed threshold and threshold collapse diagnostics") {
+gpd/test.cpp:321 TEST_CASE("gpd R7a finite endpoint closed form") {
+gpd/test.cpp:337 TEST_CASE("gpd xi minus one is the closed form limit law") {
+gumbel/test.cpp:72 TEST_CASE("gumbel: tail flags, endpoints, invalid probabilities") {
+hcauchy/test.cpp:61 TEST_CASE("hcauchy: targeted tail and endpoint regressions") {
+hnorm/test.cpp:7 TEST_CASE("hnorm: closed form and golden") {
+hnorm/test.cpp:44 TEST_CASE("hnorm: held endpoint") {
+hnorm/test.cpp:80 TEST_CASE("hnorm: support endpoints on log input") {
+ht/test.cpp:59 TEST_CASE("ht: targeted tail and endpoint regressions") {
+ht/test.cpp:65 TEST_CASE("ht: P3 restrictions and closed faces (mu held at 0)") {
+invburr/test.cpp:108 TEST_CASE("inverse burr: held-scale endpoint spike and nonconstant escape differ") {
+invgamma/test.cpp:65 TEST_CASE("invgamma P2 held boundaries and solver failure") {
+invgamma/test.cpp:84 TEST_CASE("invgamma: support endpoints on log input") {
+invgauss/test.cpp:78 TEST_CASE("invgauss P2 held boundaries and solver failure") {
+invgauss/test.cpp:93 TEST_CASE("invgauss: support endpoints on log input") {
+invpareto/test.cpp:79 TEST_CASE("invpareto P2 held boundaries and solver failure") {
+invtrgamma/test.cpp:163 TEST_CASE("invtrgamma: support endpoints on log input") {
+invweibull/test.cpp:96 TEST_CASE("invweibull P2 held boundaries and solver failure") {
+kumar/test.cpp:103 TEST_CASE("kumar: tail flags, endpoints, invalid probabilities") {
+lgamma/test.cpp:90 TEST_CASE("lgamma: support endpoints on log input") {
+lgser/test.cpp:59 TEST_CASE("lgser: P2 held boundary likelihood and domain") {
+llogis/test.cpp:89 TEST_CASE("llogis P2 held boundaries and solver failure") {
+lnorm/test.cpp:78 TEST_CASE("lnorm P2 held boundaries and solver failure") {
+lnorm/test.cpp:103 TEST_CASE("lnorm: support endpoints on log input") {
+lomax/test.cpp:123 TEST_CASE("lomax: tail flags, endpoints, invalid probabilities") {
+lomax/test.cpp:196 TEST_CASE("lomax P2 held boundaries and solver failure") {
+lst/test.cpp:140 TEST_CASE("lst: targeted tail and endpoint regressions") {
+lst/test.cpp:160 TEST_CASE("lst: P3 restrictions and closed faces") {
+naka/test.cpp:103 TEST_CASE("naka P2 held boundaries and solver failure") {
+nbinom/test.cpp:148 TEST_CASE("nbinom: P3 attained size zero preserves holds") {
+nbinom/test.cpp:155 TEST_CASE("nbinom size zero is delta zero") {
+nhyper/test.cpp:55 TEST_CASE("nhyper: statuses, held composition and boundary identification") {
+norm/test.cpp:71 TEST_CASE("norm: support endpoints on log input") {
+nsbeta/test.cpp:19 TEST_CASE("nsbeta: probability endpoints and sampler CDF") {
+nsbeta/test.cpp:61 TEST_CASE("nsbeta: targeted tail affine endpoint distances") {
+pareto/test.cpp:78 TEST_CASE("pareto P2 held boundaries and solver failure") {
+pareto2/test.cpp:19 TEST_CASE("pareto2: probability endpoints and sampler CDF") {
+pareto3/test.cpp:19 TEST_CASE("pareto3: probability endpoints and sampler CDF") {
+pareto4/test.cpp:19 TEST_CASE("pareto4: probability endpoints and sampler CDF") {
+pig/test.cpp:69 TEST_CASE("pig: probability endpoints and sampler CDF") {
+pig/test.cpp:154 TEST_CASE("PIG P3 zero shape preserves held means") {
+pig/test.cpp:163 TEST_CASE("pig: zero boundary is the attained point mass") {
+pois/test.cpp:65 TEST_CASE("pois: P2 held boundary likelihood and domain") {
+power/test.cpp:69 TEST_CASE("power P2 held boundaries and solver failure") {
+power/test.cpp:77 TEST_CASE("power closed endpoint and constant-sample profiles") {
+sged/test.cpp:119 TEST_CASE("sged: P3 restrictions and closed faces") {
+sged/test.cpp:189 TEST_CASE("sged: P0b uniform endpoints retain pinned-moment penalties") {
+skellam/test.cpp:21 TEST_CASE("skellam: attained faces, fixed subsets, validation") {
+slash/test.cpp:75 TEST_CASE("slash: support endpoints on log input") {
+snorm/test.cpp:43 TEST_CASE("snorm profile endpoints and direct grid") {
+std/test.cpp:211 TEST_CASE("std: targeted tail and endpoint regressions") {
+tbinom/test.cpp:144 TEST_CASE("tbinom: two-point saturated profile is attained, not a Poisson escape") {
+tbinom/test.cpp:155 TEST_CASE("tbinom attained point sampler ignores zero uniform") {
+tlambda/test.cpp:89 TEST_CASE("tlambda: P3 restrictions and closed faces") {
+tlambda/test.cpp:111 TEST_CASE("tlambda: targeted tail and endpoint regressions") {
+tlambda/test.cpp:122 TEST_CASE("tlambda: exact binary64 finite-endpoint neighbour") {
+tlambda/test.cpp:130 TEST_CASE("tlambda: targeted tail rounded finite-density endpoint convention") {
+tnorm/test.cpp:395 TEST_CASE("tnorm: support endpoints on log input") {
+tnorm/test.cpp:426 TEST_CASE("tnorm: log probabilities at zero endpoints preserve distances") {
+tnorm/test.cpp:436 TEST_CASE("tnorm R7a endpoint closed form") {
+trgamma/test.cpp:324 TEST_CASE("P2 trgamma held-scale power root near its endpoint") {
+trgamma/test.cpp:347 TEST_CASE("trgamma: support endpoints on log input") {
+triang/test.cpp:120 TEST_CASE("triang: endpoint modes retain the opposite small tail") {
+unif/test.cpp:42 TEST_CASE("unif: finite endpoints with overflowing width") {
+unif/test.cpp:49 TEST_CASE("unif P2 exact held endpoints and feasibility") {
+weibull/test.cpp:89 TEST_CASE("weibull P2 held boundaries and solver failure") {
+yulesimon/test.cpp:6 TEST_CASE("yulesimon: golden, boundary and invalid data") {
+zeta/test.cpp:6 TEST_CASE("zeta: golden, boundary and invalid data") {
+zib/test.cpp:31 TEST_CASE("zib: attained boundaries and invalid input") {
+zib/test.cpp:42 TEST_CASE("zib: scalar tails and quantile endpoints") {
+zib/test.cpp:73 TEST_CASE("zib fixed zero size is an attained member") {
+zib/test.cpp:157 TEST_CASE("zib attained point sampler ignores zero uniform") {
+zinb/test.cpp:37 TEST_CASE("zinb: generated face and attained NB fits") {
+zinb/test.cpp:118 TEST_CASE("zinb: P3 attained size zero preserves holds") {
+zinb/test.cpp:125 TEST_CASE("zinb: zero boundary is the attained point mass") {
+zip/test.cpp:45 TEST_CASE("zip boundaries and invalid input") {
+zipf/test.cpp:97 TEST_CASE("zipf: endpoint, shape and joint holds") {
+zmbinom/test.cpp:31 TEST_CASE("zmbinom: attained boundaries and invalid input") {
+zmbinom/test.cpp:44 TEST_CASE("zmbinom: scalar tails and quantile endpoints") {
+zmbinom/test.cpp:95 TEST_CASE("zmbinom attained point sampler ignores zero uniform") {
+zmgeom/test.cpp:23 TEST_CASE("zmgeom: attained boundaries and invalid input") {
+zmgeom/test.cpp:36 TEST_CASE("zmgeom: scalar tails and quantile endpoints") {
+zmlogarithmic/test.cpp:23 TEST_CASE("zmlogarithmic: attained boundaries and invalid input") {
+zmlogarithmic/test.cpp:36 TEST_CASE("zmlogarithmic: scalar tails and quantile endpoints") {
+zmlogarithmic/test.cpp:53 TEST_CASE("logarithmic reuse brackets near the point mass") {
+zmnbinom/test.cpp:30 TEST_CASE("zmnbinom: attained boundaries and invalid input") {
+zmnbinom/test.cpp:43 TEST_CASE("zmnbinom: scalar tails and quantile endpoints") {
+zmnbinom/test.cpp:56 TEST_CASE("zmnbinom: attained logarithmic face") {
+zmpois/test.cpp:23 TEST_CASE("zmpois: attained boundaries and invalid input") {
+zmpois/test.cpp:36 TEST_CASE("zmpois: scalar tails and quantile endpoints") {
+ztbinom/test.cpp:29 TEST_CASE("ztbinom: attained boundaries and invalid input") {
+ztbinom/test.cpp:38 TEST_CASE("ztbinom: scalar tails and quantile endpoints") {
+ztbinom/test.cpp:108 TEST_CASE("ztbinom: unit probability is a point mass at size") {
+ztbinom/test.cpp:157 TEST_CASE("ztbinom attained point sampler ignores zero uniform") {
+ztgeom/test.cpp:21 TEST_CASE("ztgeom: attained boundaries and invalid input") {
+ztgeom/test.cpp:30 TEST_CASE("ztgeom: scalar tails and quantile endpoints") {
+ztgeom/test.cpp:68 TEST_CASE("ztgeom: P2 held boundary likelihood and domain") {
+ztnbinom/test.cpp:28 TEST_CASE("ztnbinom: attained boundaries and invalid input") {
+ztnbinom/test.cpp:37 TEST_CASE("ztnbinom: scalar tails and quantile endpoints") {
+ztnbinom/test.cpp:50 TEST_CASE("ztnbinom: attained logarithmic face") {
+ztpois/test.cpp:21 TEST_CASE("ztpois: attained boundaries and invalid input") {
+ztpois/test.cpp:30 TEST_CASE("ztpois: scalar tails and quantile endpoints") {
+ztpois/test.cpp:79 TEST_CASE("ztpois: P2 held boundary likelihood and domain") {
