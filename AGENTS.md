@@ -1,34 +1,23 @@
 # univariateML agent instructions
 
 Read [CLAUDE.md](CLAUDE.md) for the current architecture, engineering conventions
-and build workflow. The current directory layout matches the migration plan; later steps
-cover C++ independence and documentation. Do not push or publish without an explicit
-user request.
+and build workflow. Do not push or publish without an explicit user request.
 
 ## Banked plans
 
 - [Package structure and mathematical documentation](dev/roadmap/2026-10-30-package-and-documentation.md):
-  light landing page, standalone `univariateML-cpp`, generated `univariateML-r`,
-  custom mathematical documentation site, and preservation of algorithm choices
-  and validation history.
+  standalone C++, generated R package, custom mathematical website and algorithm history.
 - [Inference regularity and derivative support](dev/roadmap/2026-10-30-inference-and-dqm.md):
-  conditional DQM and information classification, historical derivatives,
-  robust covariance requirements and procedures for subsets of hypotheses.
+  conditional regularity, derivatives and inference by regime and hypothesis.
 - [Python package for teaching and simulation](dev/roadmap/2026-10-30-python-teaching-and-simulation.md):
-  deferred Python bindings, distribution and fit objects, NumPy RNG integration,
-  simulation outcomes and installation for teaching; refine after the foundational
-  work lands and coordinate implementation with the user's orchestrators.
+  deferred bindings, NumPy integration, simulation workflows and student installation.
 
-These are the canonical plans. Link to them rather than copying their full
-contents into agent or orchestrator instructions. The cleanup follows the
-current density, parameterization and MLE checking work; coordinate its start
-with the user's orchestrators. A plan entry is not an instruction to start an
-unrelated migration or implement inference during another task.
+Link to these canonical plans rather than duplicating them. Coordinate planned
+work through the shared board and the user's orchestrators; a plan entry does
+not authorize unrelated implementation during another task.
 
-The target C++ component must build, test, fit, evaluate and sample without R
-or sibling repository directories. RNG adapters keep R state handling in the
-bindings. The root stays light; status, TODOs, roadmaps and historical
-development reports belong under `dev/`, while `AGENTS.md` remains at the root.
+The C++ component must build, test, fit, evaluate and sample without R or sibling
+repository directories. Keep R RNG state handling in the bindings.
 
 ## Algorithm and numerical documentation
 
@@ -53,36 +42,23 @@ Keep layout moves separate from changes to numerical behavior.
 
 ## Inference requirements
 
-Classify the model at the relevant parameter value and free subset. Record DQM,
-finite information, information rank, pointwise Hessian suitability and estimator
-asymptotics separately. Interior parameters and fixed support do not by themselves
-establish regular inference. For hypothesis tests, identify the target, null and
-nuisance parameters; known nuisance and fitted nuisance are different settings.
+Read the linked inference plan before inference work. Classify DQM, finite
+information, rank, Hessian suitability and estimator asymptotics separately at
+the relevant parameter value and free subset. Interior parameters alone do not
+establish regularity. State the hypothesis and whether nuisance parameters are
+known or fitted.
 
-Inventory per-observation scores, their cross-product sum, observed Hessians,
-model Fisher information and estimating-equation sensitivity separately. Record
-parameter order, coordinates, objective normalization and supported free subsets.
-Do not substitute the outer product of the total score for the observation-level
-cross-product sum, or an optimizer's inverse-Hessian approximation for validated
-information. Nonsmooth cases can require a different sensitivity calculation.
+Distinguish per-observation score cross-products, observed Hessians, model Fisher
+information and estimating-equation sensitivity; record coordinates and objective
+normalization. The total-score outer product and an optimizer's inverse Hessian
+are not substitutes. Nonsmooth sensitivity and historical derivatives need
+validation of their mathematical meaning and current parameterization.
 
-Historical derivative code is a recovery candidate, not an inference guarantee.
-Check its mathematical meaning, current parameterization and validation before
-reuse. In particular, a method named `hessian()` may return Fisher information,
-cover only a profiled subproblem, or use transformed coordinates.
-
-Document and mark procedure availability by regime and hypothesis: implemented
-and checked, historically recoverable, mathematically available but missing,
-unreviewed, or invalid for that procedure. Evaluate regular submodels, exact
-pivots and tests, and appropriate nonregular procedures even when joint Wald
-inference fails. Model-based inference and inference robust to misspecification
-need distinct assumptions and checks. Bootstrap availability alone establishes
-neither validity nor robustness.
-
-The [initial 98-family inventory](dev/research/evaluations/2026-10-30-inference-inventory.csv)
-is tied to the revision recorded in it. Its 29 initial conditional classifications
-and 69 unreviewed families are a historical starting point, not live coverage
-claims. Review the source and evidence before updating availability labels.
+Mark procedure availability and gaps by regime and hypothesis. Consider regular
+submodels, exact and nonregular procedures when joint Wald inference fails.
+Model-based and misspecification-robust inference need distinct assumptions;
+bootstrap availability establishes neither validity nor robustness. Dated
+inventories are historical evidence, not live coverage claims.
 
 ## Validation and coordination
 
