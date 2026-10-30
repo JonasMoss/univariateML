@@ -106,7 +106,7 @@ test_that("free stopping count matches the reference finite grid", {
   for (N in c(12, 25, 50)) for (m in c(3, 6, 9)) {
     x <- c(3, 4, 5, 4)
     grid <- max(1, max(x) - (N - m)):min(m, min(x))
-    ll <- vapply(grid, function(r) sum(extraDistr::dnhyper(x, N - m, m, r, log = TRUE)), 0.0)
+    ll <- vapply(grid, function(r) sum(dnhyper(x = x, m = m, N = N, r = r, log = TRUE)), 0.0)
     fit <- suppressWarnings(mlnhyper(x, m = m, N = N, r = NULL))
     expect_equal(as.numeric(logLik(fit)), max(ll), tolerance = 1e-10)
     expect_true(unname(fit["r"]) %in% grid[abs(ll - max(ll)) < 1e-10])
