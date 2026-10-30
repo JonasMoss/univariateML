@@ -57,3 +57,11 @@ It pins the browser to one CPU, tests the controls/filter/search/no-JS behaviour
 checks mobile overflow, and writes screenshots under `build/scratch/site-browser/`.
 During `site-dev`, rerun `just site-data` after changing front matter; production
 builds always regenerate it automatically.
+
+Explorer islands use `bindings/js/families.mjs` for coverage and the content
+collection for coefficient domains, simulation values and support. The prepare
+step builds and copies the local binding into `public/binding/`; neither Svelte
+nor WebAssembly is loaded until the island becomes visible. Emscripten is optional:
+missing emsdk omits explorers with a warning; `SITE_WASM=0 just site-check` checks
+that mode explicitly. Reserve all four slots for builds with Emscripten (`run4`),
+since `EMCC_CORES=4` can use all four. Browser checks run separately in one slot.

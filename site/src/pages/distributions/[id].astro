@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import Page from '../../layouts/Page.astro';
 import Definition from '../../components/Definition.astro';
+import Explorer from '../../components/Explorer.svelte';
+import binding from '../../data/binding.json';
 import Usage from '../../components/Usage.astro';
 import families from '../../data/families.json';
 import { markdown } from '../../lib/markdown';
@@ -11,6 +13,7 @@ export async function getStaticPaths() {
  return entries.map(entry=>({params:{id:entry.id},props:{entry,f:families.find(f=>f.id===entry.id)}}));
 }
 const {entry,f}=Astro.props;
+const explorerCatalog=(await getCollection('families')).filter(e=>binding.includes(e.id)).map(e=>({id:e.id,support:e.data.support}));
 const source=`univariateML-cpp/include/cppunivariate/distributions/${f.id}/README.md`;
 const body=entry.body || '';
 const chunks=body.split(/^## /m);
@@ -31,7 +34,7 @@ const renderedProse=await Promise.all(prose.map(async s=>({...s,html:await rende
 {refs.length>0 && <div class="references"><h2>References</h2><ol>{refs.map((r:string)=><li>{r}</li>)}</ol></div>}
 {notices(f).length>0 && <aside class="notices" aria-label="Fitting notices" set:html={await render(notices(f).join('\n\n'))}/>}
 <Definition f={f} source={source}/>
-<!-- Stage 3: mount a lazy explorer island here; prose and metadata stay independent. -->
+{binding.includes(f.id) && <Explorer client:visible family={{id:f.id,name:f.name,params:entry.data.params,support:entry.data.support}} catalog={explorerCatalog}/> }
 {introRemainder && <div set:html={await render(introRemainder)}/>}
 {renderedProse.map(s=><section><h2>{s.title}</h2><div set:html={s.html}/></section>)}
 <Usage f={f}/>

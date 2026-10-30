@@ -1,3 +1,4 @@
+import './binding.mjs';
 import {cpSync, mkdirSync, rmSync, readdirSync, readFileSync, existsSync, statSync} from 'node:fs';
 import path from 'node:path';
 import {articleSources} from '../articles.config.mjs';
