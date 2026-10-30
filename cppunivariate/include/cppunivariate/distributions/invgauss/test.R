@@ -2,27 +2,27 @@ context("mlinvgauss")
 
 ## Data generation.
 set.seed(313)
-tiny_data <- actuar::rinvgauss(10, 1, 7)
-small_data <- actuar::rinvgauss(100, 10, 3)
-medium_data <- actuar::rinvgauss(1000, 1 / 2, 2)
-large_data <- actuar::rinvgauss(10000, 20, 13)
+tiny_data <- rinvgauss(n = 10, mean = 1, shape = 7)
+small_data <- rinvgauss(n = 100, mean = 10, shape = 3)
+medium_data <- rinvgauss(n = 1000, mean = 1/2, shape = 2)
+large_data <- rinvgauss(n = 10000, mean = 20, shape = 13)
 
 ## Checks if the ML is correct.
 
 mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(actuar::dinvgauss(tiny_data, p[1], p[2], log = TRUE))
+  -sum(dinvgauss(x = tiny_data, mean = p[1], shape = p[2], log = TRUE))
 }, p = c(1, 7)))
 
 mle2 <- suppressWarnings(nlm(function(p) {
-  -sum(actuar::dinvgauss(small_data, p[1], p[2], log = TRUE))
+  -sum(dinvgauss(x = small_data, mean = p[1], shape = p[2], log = TRUE))
 }, p = c(10, 3)))
 
 mle3 <- suppressWarnings(nlm(function(p) {
-  -sum(actuar::dinvgauss(medium_data, p[1], p[2], log = TRUE))
+  -sum(dinvgauss(x = medium_data, mean = p[1], shape = p[2], log = TRUE))
 }, p = c(1 / 2, 2)))
 
 mle4 <- suppressWarnings(nlm(function(p) {
-  -sum(actuar::dinvgauss(large_data, p[1], p[2], log = TRUE))
+  -sum(dinvgauss(x = large_data, mean = p[1], shape = p[2], log = TRUE))
 }, p = c(20, 13)))
 
 ## Checks estimates.
@@ -87,7 +87,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("mean","shape")
   held_default <- c(3.0,4.0)
   names(held_default) <- pn
-  density <- actuar::dinvgauss
+  density <- dinvgauss
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

@@ -20,8 +20,8 @@ params:
   kink: yes
   kind: regular
 r:
-  density: extraDistr::dtriang
-  sampler: extraDistr::rtriang
+  density: dtriang
+  sampler: rtriang
   control:
     a: Optional held a; `NULL` estimates it.
     b: Optional held b; `NULL` estimates it.
@@ -31,8 +31,8 @@ r:
 log_density: log(2) - log(b-a) + Piecewise((log((x-a)/(c-a)), x < c), (log((b-x)/(b-c)), x > c), (0, True))
 examples: |
   set.seed(3)
-  mltriang(extraDistr::rtriang(100, 0, 1, 0.4))
-  mltriang(extraDistr::rtriang(100, 0, 1, 0.4), a = 0, b = 1)
+  mltriang(univariateML:::rtriang(n = 100, a = 0, b = 1, c = 0.4))
+  mltriang(univariateML:::rtriang(n = 100, a = 0, b = 1, c = 0.4), a = 0, b = 1)
 holds: []
 limits:
 - name: zero-width collapse
@@ -52,8 +52,6 @@ The triangular distribution describes bounded measurements with a single mode.
 ## Details
 
 Constant samples can have an attained maximum when a held endpoint or mode prevents the interval from collapsing.
-
-`extraDistr::ptriang` is repaired at runtime; the repair switches itself off once the reference is fixed.
 
 Endpoint modes are included, with one-sided density `2/(b-a)` at the mode.
 Every nonconstant compatible sample has an attained maximum; constant data

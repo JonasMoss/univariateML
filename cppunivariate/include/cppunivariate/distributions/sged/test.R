@@ -2,8 +2,8 @@ context("mlsged")
 
 ## Deterministic interior data for successful-fit contracts.
 set.seed(313)
-small_data <- qsged(((1:200) - .5)/200, 2, 3, 4)
-tiny_data <- qsged(((1:100) - .5)/100, 2, 3, 4)
+small_data <- qsged(p = ((1:200) - 0.5)/200, mean = 2, sd = 3, nu = 4, xi = 1.5)
+tiny_data <- qsged(p = ((1:100) - 0.5)/100, mean = 2, sd = 3, nu = 4, xi = 1.5)
 
 ## Finds errors with na and data out of bounds.
 expect_error(suppressWarnings(mlsged(c(tiny_data, NA)), classes = "univariateML_restricted"))
@@ -17,7 +17,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- suppressWarnings(mlsged(small_data, na.rm = TRUE), classes = "univariateML_restricted")
 expect_equal(
-  sum(dsged(small_data, est[1], est[2], est[3], est[4], log = TRUE)),
+  sum(dsged(x = small_data, mean = est[1], sd = est[2], nu = est[3], xi = est[4], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -57,17 +57,17 @@ expect_error(suppressWarnings(mlsged(seq(-1, 1, length.out = 40)), classes = "un
 x <- c(seq(-.02, .02, length.out = 18), -10, 10)
 f <- suppressWarnings(mlsged(x), classes = "univariateML_restricted")
 expect_equal(unname(f["nu"]), 1)
-expect_equal(attr(f, "logLik"), sum(dsged(x, mean=f[1], sd=f[2], nu=1, xi=f[4], log=TRUE)))
+expect_equal(attr(f, "logLik"), sum(dsged(x = x, mean = f[1], sd = f[2], nu = 1, xi = f[4], log = TRUE)))
 # Exact fGarch mapping of arbitrary two-piece Laplace parameters.
 a <- .7; b <- 2; c <- -.3; grid <- seq(-4, 4, length.out=101)
 expected <- -log(a+b) - ifelse(grid<c, (c-grid)/a, (grid-c)/b)
-expect_equal(dsged(grid, c+b-a, sqrt(a*a+b*b), 1, sqrt(b/a), log=TRUE), expected)
+expect_equal(dsged(x = grid, mean = c + b - a, sd = sqrt(a * a + b * b), nu = 1, xi = sqrt(b/a), log = TRUE), expected)
 expect_error(suppressWarnings(mlsged(-log(((0:99)+.5)/100)), classes = "univariateML_restricted"), "sample minimum")
 expect_error(suppressWarnings(mlsged(log(((0:99)+.5)/100)), classes = "univariateML_restricted"), "sample maximum")
 
 set.seed(812)
 for (shape in c(1.5, 3)) {
-  x <- rged(500, nu=shape)
+  x <- rged(n = 500, mean = 0, sd = 1, nu = shape)
   f <- suppressWarnings(mlsged(x, gradtol=1e-6, iterlim=1000), classes = "univariateML_restricted")
   expect_gt(unname(f["nu"]), 1)
   objective <- function(p) {
@@ -107,7 +107,7 @@ test_that("sged scale extremes preserve fit or declared escape", {
 
 test_that("sged large-sample fitting preserves likelihood under replication", {
   p<-((1:1000)-.5)/1000
-  x<-qsged(p,nu=3,xi=2)
+  x<-qsged(p = p, mean = 0, sd = 1, nu = 3, xi = 2)
   base<-suppressWarnings(mlsged(x), classes = "univariateML_restricted")
   f<-suppressWarnings(mlsged(rep(x,100)), classes = "univariateML_restricted")
   expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
@@ -145,28 +145,28 @@ test_that("sged dpqr integrate, invert and preserve extreme tails", {
 })
 
 test_that("sged dpqr recycle, propagate missing values and use R RNG", {
-  expect_length(dsged(numeric()), 0)
-  expect_equal(dsged(c(0, 1, 2), mean = c(0, 1)),
-    c(dsged(0), dsged(1, mean = 1), dsged(2)))
-  expect_identical(dsged(NA_real_), NA_real_)
-  expect_true(is.nan(psged(NaN)))
-  expect_warning(expect_true(is.nan(dsged(0, sd = -1))), "NaNs produced")
-  expect_warning(expect_true(is.nan(qsged(1.1))), "NaNs produced")
-  expect_warning(expect_true(is.nan(rsged(1, sd = -1))), "NaNs produced")
-  set.seed(81); first <- rsged(100)
-  set.seed(81); expect_identical(rsged(100), first)
-  expect_length(rsged(1:7), 7)
-  expect_length(rsged(0), 0)
-  expect_length(rsged(3, mean = numeric()), 0)
-  expect_identical(rsged(1, mean = NA_real_), NA_real_)
+  expect_length(dsged(x = numeric(), mean = 0, sd = 1, nu = 2, xi = 1.5), 0)
+  expect_equal(dsged(x = c(0, 1, 2), mean = c(0, 1), sd = 1, nu = 2, xi = 1.5),
+    c(dsged(x = 0, mean = 0, sd = 1, nu = 2, xi = 1.5), dsged(x = 1, mean = 1, sd = 1, nu = 2, xi = 1.5), dsged(x = 2, mean = 0, sd = 1, nu = 2, xi = 1.5)))
+  expect_identical(dsged(x = NA_real_, mean = 0, sd = 1, nu = 2, xi = 1.5), NA_real_)
+  expect_true(is.nan(psged(q = NaN, mean = 0, sd = 1, nu = 2, xi = 1.5)))
+  expect_warning(expect_true(is.nan(dsged(x = 0, mean = 0, sd = -1, nu = 2, xi = 1.5))), "NaNs produced")
+  expect_warning(expect_true(is.nan(qsged(p = 1.1, mean = 0, sd = 1, nu = 2, xi = 1.5))), "NaNs produced")
+  expect_warning(expect_true(is.nan(rsged(n = 1, mean = 0, sd = -1, nu = 2, xi = 1.5))), "NaNs produced")
+  set.seed(81); first <- rsged(n = 100, mean = 0, sd = 1, nu = 2, xi = 1.5)
+  set.seed(81); expect_identical(rsged(n = 100, mean = 0, sd = 1, nu = 2, xi = 1.5), first)
+  expect_length(rsged(n = 1:7, mean = 0, sd = 1, nu = 2, xi = 1.5), 7)
+  expect_length(rsged(n = 0, mean = 0, sd = 1, nu = 2, xi = 1.5), 0)
+  expect_length(rsged(n = 3, mean = numeric(), sd = 1, nu = 2, xi = 1.5), 0)
+  expect_identical(rsged(n = 1, mean = NA_real_, sd = 1, nu = 2, xi = 1.5), NA_real_)
   set.seed(712)
-  draws <- rsged(5000)
+  draws <- rsged(n = 5000, mean = 0, sd = 1, nu = 2, xi = 1.5)
   for (prob in c(.1, .5, .9))
-    expect_lt(abs(mean(draws <= qsged(prob)) - prob), .025)
+    expect_lt(abs(mean(draws <= qsged(p = prob, mean = 0, sd = 1, nu = 2, xi = 1.5)) - prob), .025)
   for (bad in c(-1, 0, Inf)) {
-    expect_warning(expect_true(is.nan(dsged(0, sd = bad))), "NaNs produced")
-    expect_warning(expect_true(is.nan(psged(0, sd = bad))), "NaNs produced")
-    expect_warning(expect_true(is.nan(qsged(.5, sd = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dsged(x = 0, mean = 0, sd = bad, nu = 2, xi = 1.5))), "NaNs produced")
+    expect_warning(expect_true(is.nan(psged(q = 0, mean = 0, sd = bad, nu = 2, xi = 1.5))), "NaNs produced")
+    expect_warning(expect_true(is.nan(qsged(p = 0.5, mean = 0, sd = bad, nu = 2, xi = 1.5))), "NaNs produced")
   }
   fit <- suppressWarnings(mlsged(small_data), classes = "univariateML_restricted")
   expect_equal(as.numeric(logLik(fit)), sum(dml(small_data, fit, log = TRUE)),
@@ -183,22 +183,22 @@ test_that("sged matches frozen fGarch values (reference.json)", {
 
 test_that("sged parameter domain is enforced", {
   for (bad in c(-1, 0, Inf))
-    expect_warning(expect_true(is.nan(dsged(0, nu = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dsged(x = 0, mean = 0, sd = 1, nu = bad, xi = 1.5))), "NaNs produced")
 })
 
 test_that("sged skew parameter domain is enforced", {
   for (bad in c(-1, 0, Inf))
-    expect_warning(expect_true(is.nan(dsged(0, xi = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dsged(x = 0, mean = 0, sd = 1, nu = 2, xi = bad))), "NaNs produced")
 })
 
 test_that("sged log tails exceed the backend exponent range", {
   for (lower in c(TRUE, FALSE)) {
-    x <- qsged(-20000, lower.tail = lower, log.p = TRUE)
+    x <- qsged(p = -20000, mean = 0, sd = 1, nu = 2, xi = 1.5, lower.tail = lower, log.p = TRUE)
     expect_true(is.finite(x))
-    expect_equal(psged(x, lower.tail = lower, log.p = TRUE), -20000,
+    expect_equal(psged(q = x, mean = 0, sd = 1, nu = 2, xi = 1.5, lower.tail = lower, log.p = TRUE), -20000,
                  tolerance = 1e-10)
-    x <- qsged(-1e-30, lower.tail = lower, log.p = TRUE)
-    expect_equal(psged(x, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
+    x <- qsged(p = -1e-30, mean = 0, sd = 1, nu = 2, xi = 1.5, lower.tail = lower, log.p = TRUE)
+    expect_equal(psged(q = x, mean = 0, sd = 1, nu = 2, xi = 1.5, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
                  tolerance = 1e-10)
   }
 })

@@ -19,8 +19,8 @@ params:
   simulate: 10
   kind: design
 r:
-  density: extraDistr::dtpois
-  sampler: extraDistr::rtpois
+  density: dtpois
+  sampler: rtpois
   control:
     lambda: Optional fixed parameter; NULL estimates it.
     a: "Strict lower bound; NULL estimates it as min(x) - 1."
@@ -40,8 +40,7 @@ limits:
   fixed: [a]
 examples: |
   set.seed(1)
-  mltpois(extraDistr::rtpois(100, 3, 0, 10), a = 0, b = 10)
-
+  mltpois(univariateML:::rtpois(n = 100, lambda = 3, a = 0, b = 10), a = 0, b = 10)
 holds: []
 fit_args:
   a: 0
@@ -64,9 +63,8 @@ When the conditioning event includes zero, the point mass at zero is attained
 at `lambda = 0`.
 Otherwise the corresponding zero-probability conditioning limit is reported as an escape.
 
-For `a = 0, b = Inf`, interior fits agree with `mlztpois`. Its actuar
-reference additionally defines the point mass at one at zero rate; extraDistr
-does not define that zero-probability conditioning event. Consequently
+For `a = 0, b = Inf`, interior fits agree with `mlztpois`. The zero-rate
+conditioning limit is defined as an attained member only for `mlztpois`. Thus
 `mlztpois` retains its attained boundary while `mltpois` reports the point-mass escape.
 
 With a free bound, the conditioning support tightens to the corresponding sample extreme. The strict lower bound is nonunique in `[min(x) - 1, min(x))`; the returned representative is `min(x) - 1`. On singleton support every positive rate maximizes the likelihood; a free rate is represented by one. For nonsingleton support the empirical mean must lie strictly between the effective integer bounds, except that a zero mean attains rate zero when zero is in the support. Otherwise the fitter stops at the lower or upper point-mass limit.

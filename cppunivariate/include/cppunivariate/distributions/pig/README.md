@@ -14,8 +14,8 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  density: actuar::dpoisinvgauss
-  sampler: actuar::rpoisinvgauss
+  density: dpig
+  sampler: rpig
   control:
     reltol: "Absolute tolerance on the log parameter in the scalar search."
     iterlim: "Maximum refinement iterations per bracketed scalar peak."
@@ -46,5 +46,3 @@ Either `mean` or `shape`, or both, can be held fixed. With both free the fitted 
 With both parameters free and a positive sample mean, a population-form sample variance no greater than the mean gives the Poisson supremum, including equality. Strict overdispersion guarantees a finite maximum; a gain smaller than the numerical tie tolerance still selects Poisson.
 
 Shape zero is the attained zero point mass. All-zero data with free shape return shape zero, preserving held mean or choosing mean one when unidentified. With positive shape held and mean free, all-zero data still have an unattained mean-zero supremum. With both parameters fixed the likelihood is evaluated directly. The infinite-mean Poisson-Levy face is strictly dominated for every finite sample when mean is free, including with shape fixed.
-
-The C++ fitter uses stable log masses. R evaluation through `dml`, `pml` and `qml` uses actuar, whose recurrence can underflow for large counts and whose starting probability loses precision near the Poisson limit. These failures can affect fitted models; `actuar::dpoisinvgauss(2, 2, 1e20, log = TRUE)` can return a positive log probability, and `actuar::dpoisinvgauss(1000, 1000, 1e12, log = TRUE)` can return minus infinity instead of about -4.3729. No replacement R density is installed.

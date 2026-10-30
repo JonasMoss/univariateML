@@ -19,8 +19,8 @@ params:
   simulate: 2
   kind: regular
 r:
-  density: extraDistr::dbhatt
-  sampler: extraDistr::rbhatt
+  density: dbhatt
+  sampler: rbhatt
   control:
     mu: Optional held mu; NULL estimates it.
     sigma: Optional positive held sigma; NULL estimates it.
@@ -35,7 +35,7 @@ limits:
     status: UniformLimit
 examples: |
   set.seed(12876)
-  mlbhatt(extraDistr::rbhatt(500, 0, 1, 2))
+  mlbhatt(univariateML:::rbhatt(n = 500, mu = 0, sigma = 1, a = 2))
 holds: []
 ---
 

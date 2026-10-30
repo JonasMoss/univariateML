@@ -2,17 +2,17 @@ context("mlinvgamma")
 
 ## Data generation.
 set.seed(313)
-small_data <- extraDistr::rinvgamma(100, alpha = 1, beta = 1)
-tiny_data <- extraDistr::rinvgamma(10, alpha = 3, beta = 7)
+small_data <- rinvgamma(n = 100, alpha = 1, beta = 1)
+tiny_data <- rinvgamma(n = 10, alpha = 3, beta = 7)
 data3 <- c(0, tiny_data)
 
 ## Checks if the ML is correct.
 mle1 <- nlm(function(p) {
-  -mean(extraDistr::dinvgamma(small_data, alpha = p[1], beta = p[2], log = TRUE))
+  -mean(dinvgamma(x = small_data, alpha = p[1], beta = p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 
 mle2 <- nlm(function(p) {
-  -mean(extraDistr::dinvgamma(tiny_data, alpha = p[1], beta = p[2], log = TRUE))
+  -mean(dinvgamma(x = tiny_data, alpha = p[1], beta = p[2], log = TRUE))
 }, p = c(1, 1))$estimate
 
 expect_equal(mle1, as.numeric(mlinvgamma(small_data)), tolerance = 1e-4)
@@ -34,7 +34,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlinvgamma(small_data, na.rm = TRUE)
 expect_equal(
-  sum(extraDistr::dinvgamma(small_data, alpha = est[1], beta = est[2], log = TRUE)),
+  sum(dinvgamma(x = small_data, alpha = est[1], beta = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -53,7 +53,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("alpha","beta")
   held_default <- c(3.0,4.0)
   names(held_default) <- pn
-  density <- extraDistr::dinvgamma
+  density <- dinvgamma
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

@@ -20,8 +20,8 @@ params:
   simulate: 0.3
   kind: regular
 r:
-  density: actuar::dzmlogarithmic
-  sampler: actuar::rzmlogarithmic
+  density: dzmlogarithmic
+  sampler: rzmlogarithmic
   control:
     prob: "Optional held prob; NULL estimates it."
     p0: "Optional held p0; NULL estimates it."

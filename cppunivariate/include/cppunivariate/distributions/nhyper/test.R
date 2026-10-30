@@ -17,7 +17,7 @@ test_that("nhyper design, fixed subsets and errors are explicit", {
   b <- mlnhyper(c(3,4,5),r=2,N=20,m=8)
   expect_equal(attr(logLik(b),"df"),0)
   expect_equal(attr(b,"fixed"),c("m","N","r"))
-  expect_equal(attr(b,"logLik"),sum(extraDistr::dnhyper(c(3,4,5),12,8,2,log=TRUE)))
+  expect_equal(attr(b,"logLik"),sum(dnhyper(c(3,4,5),8,20,2,log=TRUE)))
   expect_warning(z <- mlnhyper(c(0,0),r=0,N=20),"unidentified")
   expect_equal(as.numeric(z),c(0,20,0))
   expect_equal(attr(z,"logLik"),0)
@@ -30,12 +30,12 @@ test_that("nhyper integer MLE agrees with independent reference enumeration", {
   ties <- 0
   for (i in seq_len(120)) {
     N <- sample(5:45,1); r <- sample(1:N,1); m <- r + sample.int(N-r+1,1)-1
-    x <- if (m == N) rep(r,7) else extraDistr::rnhyper(7,N-m,m,r)
+    x <- if (m == N) rep(r,7) else rnhyper(n = 7, m = m, N = N, r = r)
     a <- suppressWarnings(mlnhyper(x,r=r,N=N))
     grid <- r:(N-max(x)+r)
     ll <- vapply(grid,function(m) {
       if (m == N) return(if (all(x == r)) 0 else -Inf)
-      sum(extraDistr::dnhyper(x,N-m,m,r,log=TRUE))
+      sum(dnhyper(x = x, m = m, N = N, r = r, log = TRUE))
     },0)
     expect_equal(attr(a,"logLik"),max(ll),tolerance=1e-11)
     expect_true(unname(a["m"]) %in% grid[ll >= max(ll)-1e-10])
@@ -46,35 +46,35 @@ test_that("nhyper integer MLE agrees with independent reference enumeration", {
   expect_equal(unname(a["m"]),6)
 })
 
-test_that("nhyper reference repairs preserve tails and total-draw endpoints", {
+test_that("nhyper evaluation preserve tails and total-draw endpoints", {
   fit <- mlnhyper(c(3,4,5),r=2,N=20,m=8)
   x <- 2:14
-  expect_equal(dml(x,fit),extraDistr::dnhyper(x,12,8,2),tolerance=1e-13)
-  expect_equal(pml(x,fit),extraDistr::pnhyper(x,12,8,2),tolerance=1e-13)
-  expect_equal(qml(c(.01,.4,.9),fit),extraDistr::qnhyper(c(.01,.4,.9),12,8,2))
+
+
+
   set.seed(42); a <- rml(30,fit)
-  set.seed(42); b <- extraDistr::rnhyper(30,12,8,2)
+  set.seed(42); b <- rnhyper(n = 30, m = 8, N = 20, r = 2)
   expect_equal(a,b)
   d <- univariateML_to_function(fit,"d"); p <- univariateML_to_function(fit,"p")
   q <- univariateML_to_function(fit,"q"); rr <- univariateML_to_function(fit,"r")
-  expect_equal(d(3,1e12,1e12,3,log=TRUE),log(.5^3),tolerance=1e-11)
-  expect_equal(d(1003,1000,1000,3,log=TRUE),dhyper(3,1000,1000,1003,log=TRUE)+log(3/1003))
-  expect_equal(p(500,1000,1000,3,lower.tail=FALSE,log.p=TRUE),phyper(2,1000,1000,500,log.p=TRUE))
-  expect_equal(q(-1e-100,12,8,2,log.p=TRUE),14)
-  expect_equal(q(-1e-100,12,8,2,lower.tail=FALSE,log.p=TRUE),2)
-  expect_equal(q(-1000,12,8,2,log.p=TRUE),2)
-  expect_equal(q(-1000,12,8,2,lower.tail=FALSE,log.p=TRUE),14)
-  expect_equal(p(14,12,8,2,lower.tail=FALSE,log.p=TRUE),-Inf)
-  expect_equal(d(2,0,20,2),1)
-  expect_equal(p(c(1,2),0,20,2),c(0,1))
-  expect_equal(q(c(0,.5,1),0,20,2),c(2,2,2))
-  expect_equal(rr(3,0,20,2),c(2,2,2))
+  expect_equal(d(3,1e12,2e12,3,log=TRUE),log(.5^3),tolerance=1e-11)
+  expect_equal(d(1003,1000,2000,3,log=TRUE),dhyper(3,1000,1000,1003,log=TRUE)+log(3/1003))
+  expect_equal(p(500,1000,2000,3,lower.tail=FALSE,log.p=TRUE),phyper(2,1000,1000,500,log.p=TRUE))
+  expect_equal(q(-1e-100,8,20,2,log.p=TRUE),14)
+  expect_equal(q(-1e-100,8,20,2,lower.tail=FALSE,log.p=TRUE),2)
+  expect_equal(q(-1000,8,20,2,log.p=TRUE),2)
+  expect_equal(q(-1000,8,20,2,lower.tail=FALSE,log.p=TRUE),14)
+  expect_equal(p(14,8,20,2,lower.tail=FALSE,log.p=TRUE),-Inf)
+  expect_equal(d(2,20,20,2),1)
+  expect_equal(p(c(1,2),20,20,2),c(0,1))
+  expect_equal(q(c(0,.5,1),20,20,2),c(2,2,2))
+  expect_equal(rr(3,20,20,2),c(2,2,2))
   expect_equal(d(c(0,1),0,0,0),c(1,0))
   expect_equal(p(c(-1,0),0,0,0),c(0,1))
   expect_equal(q(c(0,.5,1),0,0,0),c(0,0,0))
   expect_equal(rr(3,0,0,0),c(0,0,0))
-  expect_equal(sum(d(x,12,8,2)),1)
-  expect_equal(p(x,12,8,2)+p(x,12,8,2,lower.tail=FALSE),rep(1,length(x)))
+  expect_equal(sum(d(x,8,20,2)),1)
+  expect_equal(p(x,8,20,2)+p(x,8,20,2,lower.tail=FALSE),rep(1,length(x)))
 })
 
 
@@ -106,7 +106,7 @@ test_that("free stopping count matches the reference finite grid", {
   for (N in c(12, 25, 50)) for (m in c(3, 6, 9)) {
     x <- c(3, 4, 5, 4)
     grid <- max(1, max(x) - (N - m)):min(m, min(x))
-    ll <- vapply(grid, function(r) sum(extraDistr::dnhyper(x, N - m, m, r, log = TRUE)), 0.0)
+    ll <- vapply(grid, function(r) sum(dnhyper(x = x, m = m, N = N, r = r, log = TRUE)), 0.0)
     fit <- suppressWarnings(mlnhyper(x, m = m, N = N, r = NULL))
     expect_equal(as.numeric(logLik(fit)), max(ll), tolerance = 1e-10)
     expect_true(unname(fit["r"]) %in% grid[abs(ll - max(ll)) < 1e-10])

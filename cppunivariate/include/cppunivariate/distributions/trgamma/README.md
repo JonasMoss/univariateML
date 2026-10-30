@@ -19,8 +19,8 @@ params:
   simulate: 2.0
   kind: regular
 r:
-  density: actuar::dtrgamma
-  sampler: actuar::rtrgamma
+  density: dtrgamma
+  sampler: rtrgamma
   control:
     scale: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.
@@ -51,7 +51,7 @@ references:
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
 examples: |
   set.seed(1)
-  mltrgamma(actuar::rtrgamma(500, shape1 = 2, shape2 = 1.5, scale = 2))
+  mltrgamma(univariateML:::rtrgamma(n = 500, shape1 = 2, shape2 = 1.5, scale = 2))
 holds: []
 ---
 
@@ -60,8 +60,6 @@ distribution of `scale * G^(1/shape2)` for a unit-scale gamma variable `G`
 with shape `shape1`; it models positive sizes, losses and lifetimes.
 
 ## Details
-
-`actuar::dtrgamma`, `ptrgamma`, `qtrgamma` and `rtrgamma` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
 
 The gamma (`shape2 = 1`, scale the reciprocal gamma rate) and Weibull
 (`shape1 = 1`) distributions are members, not limits. Holding `shape2`
@@ -79,7 +77,5 @@ The C++ face helper `trgamma_faces_log` accepts logarithms of observations
 and returns the maximised lognormal and power likelihoods and their fitted
 parameters. The derivation and numerical search qualifications are in
 `notes/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
-
-actuar's `trgamma` functions lose accuracy at extreme shapes (density cancellation, infinite or zero quantiles, underflowing CDFs); see `KNOWN_ISSUES.md`. `logLik` is computed independently in C++.
 
 With scale and shape2 held the shape1 score has one root. With scale and shape1 held the shape2 likelihood is strictly concave and coercive unless every observation equals scale. With only scale held the fixed-endpoint power face is compared with the interior profile; the search is numerical.

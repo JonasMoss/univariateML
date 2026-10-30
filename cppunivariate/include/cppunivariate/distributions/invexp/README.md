@@ -9,8 +9,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: actuar::dinvexp
-  sampler: actuar::rinvexp
+  density: dinvexp
+  sampler: rinvexp
   control:
     scale: Optional held scale; NULL estimates it.
 log_density: log(scale) - 2*log(x) - scale/x

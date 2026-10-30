@@ -33,8 +33,8 @@ params:
     parameters held are not supported.'
   kind: threshold
 r:
-  density: actuar::dfpareto
-  sampler: actuar::rfpareto
+  density: dfpareto
+  sampler: rfpareto
   control:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.

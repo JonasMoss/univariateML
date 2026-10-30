@@ -9,8 +9,8 @@ params:
   simulate: 0.9
   kind: regular
 r:
-  density: extraDistr::dlgser
-  sampler: extraDistr::rlgser
+  density: dlgser
+  sampler: rlgser
   control:
     theta: "Optional held theta; NULL estimates it."
 log_density: "x*log(theta) - log(x) - log(-log(1 - theta))"

@@ -8,11 +8,11 @@ extreme_closed_density <- function(id, x, ..., log = FALSE) {
     ll[x > mu+sigma+slack | (id == "gpd" & x < mu)] <- -Inf
     return(if(log) ll else exp(ll))
   }
-  do.call(getExportedValue("extraDistr", paste0("d",id)), c(list(x=x,log=log),a))
+  do.call(get(paste0("d",id), asNamespace("univariateML")), c(list(x=x,log=log),a))
 }
 
 test_that("frechet: held location, attained shape boundary and escape", {
- x <- extraDistr::qfrechet((1:100-.5)/100,lambda=.7,mu=2,sigma=3)
+ x <- qfrechet(p = (1:100 - 0.5)/100, lambda = 0.7, mu = 2, sigma = 3)
  f <- suppressWarnings(mlfrechet(x,mu=2), classes = "univariateML_restricted")
  b <- mlinvweibull(x-2,reltol=1e-10)
  expect_equal(unname(f["lambda"]),unname(b["shape"]),tolerance=1e-10)
@@ -26,13 +26,13 @@ test_that("frechet: held location, attained shape boundary and escape", {
  expect_error(suppressWarnings(mlfrechet(rep(1,5),mu=0), classes = "univariateML_restricted"),"nonconstant")
  expect_error(suppressWarnings(mlfrechet(x,iterlim=1, mu = NULL), classes = "univariateML_restricted"),"converge")
  expect_error(suppressWarnings(mlfrechet(x,mu=2,iterlim=1), classes = "univariateML_restricted"),"converge")
- expect_error(suppressWarnings(mlfrechet(extraDistr::qgumbel((1:100-.5)/100), mu = NULL), classes = "univariateML_restricted"),"mlgumbel")
+ expect_error(suppressWarnings(mlfrechet(qgumbel(p = (1:100 - 0.5)/100, mu = 0, sigma = 1), mu = NULL), classes = "univariateML_restricted"),"mlgumbel")
  expect_equal(sum(dml(x,f,log=TRUE)),attr(f,"logLik"),tolerance=1e-10)
  set.seed(12); a<-rml(20,f);set.seed(12);expect_identical(rml(20,f),a)
  for(shape in c(.5,1,3)) {
-   y <- extraDistr::qfrechet((1:80-.5)/80,lambda=shape)
+   y <- qfrechet(p = (1:80 - 0.5)/80, lambda = shape, mu = 0, sigma = 1)
    fit <- suppressWarnings(mlfrechet(y, mu = NULL), classes = "univariateML_restricted")
-   objective <- function(z) -sum(extraDistr::dfrechet(y,lambda=1+exp(z[1]),mu=min(y)-exp(z[2]),sigma=exp(z[3]),log=TRUE))
+   objective <- function(z) -sum(dfrechet(x = y, lambda = 1 + exp(z[1]), mu = min(y) - exp(z[2]), sigma = exp(z[3]), log = TRUE))
    for(delta in c(-.3,0,.3)) {
      start <- c(log(max(fit["lambda"]-1,1e-6)),log(min(y)-fit["mu"]),log(fit["sigma"]))
      o<-optim(start+delta,objective,method="Nelder-Mead",control=list(maxit=3000,reltol=1e-12))
@@ -42,31 +42,29 @@ test_that("frechet: held location, attained shape boundary and escape", {
 })
 
 test_that("frechet and fpareto log-tail repairs remain finite", {
- source_fun <- univariateML:::univariateML_reference_fixes
- q <- source_fun[["extraDistr::qfrechet"]]$replacement(-1000,2,lower.tail=FALSE,log.p=TRUE)
+ q <- qfrechet(-1000,2,mu=0,sigma=1,lower.tail=FALSE,log.p=TRUE)
  expect_equal(log(q),500)
- p <- source_fun[["extraDistr::pfrechet"]]$replacement(q,2,lower.tail=FALSE,log.p=TRUE)
+ p <- pfrechet(q,2,mu=0,sigma=1,lower.tail=FALSE,log.p=TRUE)
  expect_equal(p,-1000)
- q <- source_fun[["actuar::qfpareto"]]$replacement(-40,0,.3,.7,.4,lower.tail=FALSE,log.p=TRUE)
+ q <- qfpareto(-40,shape1=.3,shape2=.7,shape3=.4,min=0,scale=1,lower.tail=FALSE,log.p=TRUE)
  expect_true(is.finite(q))
- expect_equal(actuar::pfpareto(q,0,.3,.7,.4,lower.tail=FALSE,log.p=TRUE),-40,tolerance=1e-12)
+ expect_equal(pfpareto(q = q, shape1 = 0.3, shape2 = 0.7, shape3 = 0.4, scale = 1/1, min = 0, lower.tail = FALSE, log.p = TRUE),-40,tolerance=1e-12)
 })
 
 test_that("frechet: reference mapping and unbounded unrestricted path", {
  x <- c(.1,.5,1,2,10,100)
- expect_lt(max(abs((extraDistr::dfrechet(x,2,0,2,log=TRUE))-(actuar::dinvweibull(x,2,scale=2,log=TRUE)))),1e-12)
+ expect_lt(max(abs((dfrechet(x = x, lambda = 2, mu = 0, sigma = 2, log = TRUE))-(dinvweibull(x = x, shape = 2, scale = 2, log = TRUE)))),1e-12)
  y <- c(1,2,4,7)
- ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(extraDistr::dfrechet(y,.1,1-e,e,log=TRUE)))
+ ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(dfrechet(x = y, lambda = 0.1, mu = 1 - e, sigma = e, log = TRUE)))
  expect_true(all(diff(ll)>0))
 })
 
 test_that("frechet: an independent Gumbel-face oracle finds no better member", {
- y <- extraDistr::qgumbel((1:80-.5)/80)
+ y <- qgumbel(p = (1:80 - 0.5)/80, mu = 0, sigma = 1)
  g <- mlgumbel(y)
  nll <- function(z) {
    if(any(!is.finite(z)) || any(abs(z)>500) || z[1]>log(1e5)) return(1e100)
-   ll <- sum(extraDistr::dfrechet(y,lambda=1+exp(z[1]),
-     mu=min(y)-exp(z[2]),sigma=exp(z[3]),log=TRUE))
+   ll <- sum(dfrechet(x = y, lambda = 1 + exp(z[1]), mu = min(y) - exp(z[2]), sigma = exp(z[3]), log = TRUE))
    if(is.finite(ll)) -ll else 1e100
  }
  for(lambda in c(3,30,300)) {
@@ -79,13 +77,12 @@ test_that("frechet: an independent Gumbel-face oracle finds no better member", {
 })
 
 test_that("threshold tail repairs retain finite answers under extreme rescaling", {
- fixes <- univariateML:::univariateML_reference_fixes
- q <- fixes[["extraDistr::qfrechet"]]$replacement(-100,.1,sigma=1e-300,
+ q <- qfrechet(-100,.1,mu=0,sigma=1e-300,
    lower.tail=FALSE,log.p=TRUE)
  expect_equal(log(q),log(1e-300)+1000,tolerance=1e-12)
- expect_equal(fixes[["extraDistr::pfrechet"]]$replacement(q,.1,sigma=1e-300,
+ expect_equal(pfrechet(q,.1,mu=0,sigma=1e-300,
    lower.tail=FALSE,log.p=TRUE),-100,tolerance=1e-12)
- q <- fixes[["actuar::qfpareto"]]$replacement(-40,0,.1,.4,.4,scale=1e-300,
+ q <- qfpareto(-40,shape1=.1,shape2=.4,shape3=.4,min=0,scale=1e-300,
    lower.tail=FALSE,log.p=TRUE)
  expect_equal(pbeta(plogis(-.4*(log(q)-log(1e-300))),.1,.4,log.p=TRUE),
    -40,tolerance=1e-12)
@@ -95,7 +92,7 @@ test_that("Frechet free location accepts ties above the minimum", {
   x <- c(0,1,2,2,2)
   f <- tryCatch(suppressWarnings(mlfrechet(x, mu = NULL), classes = "univariateML_restricted"), error=identity)
   if (inherits(f,"error")) expect_match(conditionMessage(f), "mlgumbel")
-  else expect_equal(as.numeric(logLik(f)), sum(extraDistr::dfrechet(x,f[1],f[2],f[3],log=TRUE)), tolerance=1e-8)
+  else expect_equal(as.numeric(logLik(f)), sum(dfrechet(x = x, lambda = f[1], mu = f[2], sigma = f[3], log = TRUE)), tolerance=1e-8)
 })
 
 test_that("Frechet free fit compares half-minimum ties with the free collapse face", {
@@ -122,11 +119,11 @@ test_that("frechet: new holds agree with independent multistart reference fits",
   pars <- c("lambda","mu","sigma")
   masks <- c(1,4,3,5,6,7)
   samples <- list(
-    extraDistr::rfrechet(20, lambda=2),
-    extraDistr::rfrechet(100, lambda=2),
+    rfrechet(n = 20, lambda = 2, mu = 0, sigma = 1),
+    rfrechet(n = 100, lambda = 2, mu = 0, sigma = 1),
     c(.2,.5,.5,1,2,3,4), c(.2,.8),
-    if(id=="frechet") extraDistr::qgumbel((1:20-.5)/20) else rexp(20),
-    if(id=="gev") extraDistr::qgev((1:20-.5)/20,xi=-.9) else runif(20,.1,2))
+    if(id=="frechet") qgumbel(p = (1:20 - 0.5)/20, mu = 0, sigma = 1) else rexp(20),
+    if(id=="gev") qgev(p = (1:20 - 0.5)/20, mu = 0, sigma = 1, xi = -0.9) else runif(20,.1,2))
   density <- function(x,...,log=FALSE) extreme_closed_density(id,x,...,log=log)
   for(x in samples) for(mask in masks) {
     held <- pars[as.logical(intToBits(mask)[1:3])]

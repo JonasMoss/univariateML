@@ -14,8 +14,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: actuar::dinvparalogis
-  sampler: actuar::rinvparalogis
+  density: dinvparalogis
+  sampler: rinvparalogis
   control:
     shape: Known positive finite coefficient; NULL estimates it.
     shape0: Optional positive finite starting value; NULL uses the automatic start.

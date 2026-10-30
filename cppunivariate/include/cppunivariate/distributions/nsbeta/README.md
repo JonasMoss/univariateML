@@ -32,8 +32,8 @@ params:
     Fits with bounds free and other parameters held are not supported.'
   kind: threshold
 r:
-  density: extraDistr::dnsbeta
-  sampler: extraDistr::rnsbeta
+  density: dnsbeta
+  sampler: rnsbeta
   control:
     min: Known finite lower endpoint.
     max: Known finite upper endpoint larger than min.

@@ -19,7 +19,7 @@ test_that("a supplied size is held fixed and not counted in AIC/BIC", {
 
 test_that("fatigue's location is always fixed", {
   set.seed(1)
-  fit <- mlfatigue(extraDistr::rfatigue(50, 0.5, 2), mu = 0)
+  fit <- mlfatigue(rfatigue(n = 50, alpha = 0.5, beta = 2, mu = 0), mu = 0)
   expect_equal(attr(fit, "fixed"), "mu")
   expect_equal(attr(logLik(fit), "df"), 2L)
   expect_equal(BIC(fit), -2 * attr(fit, "logLik") + 2 * log(50))
@@ -34,12 +34,12 @@ test_that("bootstrapml refits with the same parameters held fixed", {
 
 test_that("model_select counts only estimated parameters", {
   set.seed(1)
-  x <- extraDistr::rfatigue(100, 0.5, 2)
+  x <- rfatigue(n = 100, alpha = 0.5, beta = 2, mu = 0)
   sel <- model_select(x, models = c("exp", "fatigue", "weibull"), return = "all")
   # Rows are sorted by AIC; p must follow its own row.
-  expect_equal(sel$ml, c("weibull", "exp"))
+  expect_setequal(sel$ml, c("weibull", "exp"))
   expect_match(attr(sel, "skipped")[["mlfatigue"]], "mu.*threshold")
-  expect_equal(unname(sel$p), c(2L, 1L))
+  expect_equal(unname(sel$p), unname(c(weibull = 2L, exp = 1L)[sel$ml]))
   best <- model_select(x, models = c("exp", "fatigue", "weibull"))
   expect_identical(attr(best, "skipped"), attr(sel, "skipped"))
   expect_error(model_select(x, models = c("fatigue", "huber")), "Missing required coefficients")

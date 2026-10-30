@@ -98,4 +98,4 @@ of exact whole numbers in double precision.
 
 ## See also
 
-[mlbinom(, size = NULL)] with `size = k`, the limit as `N` grows with `m / N` fixed.
+[mlbinom()] with `size = k`, the limit as `N` grows with `m / N` fixed.

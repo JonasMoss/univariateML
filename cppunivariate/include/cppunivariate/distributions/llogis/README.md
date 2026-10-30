@@ -14,8 +14,8 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  density: actuar::dllogis
-  sampler: actuar::rllogis
+  density: dllogis
+  sampler: rllogis
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.

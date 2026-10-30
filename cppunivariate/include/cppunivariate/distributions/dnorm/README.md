@@ -14,8 +14,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::ddnorm
-  sampler: extraDistr::rdnorm
+  density: ddnorm
+  sampler: rdnorm
   control:
     mean: "Optional held value; NULL estimates it."
     sd: "Optional positive held value; NULL estimates it."

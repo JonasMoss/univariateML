@@ -21,8 +21,8 @@ params:
   advice: Supply a finite threshold below every observation; NULL is unsupported because
     of endpoint spikes and a normal escape.
 r:
-  density: extraDistr::dfatigue
-  sampler: extraDistr::rfatigue
+  density: dfatigue
+  sampler: rfatigue
   control:
     alpha: Held positive finite shape; NULL estimates it.
     beta: Held positive finite scale; NULL estimates it.

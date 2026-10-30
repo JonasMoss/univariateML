@@ -32,18 +32,6 @@ params:
       reason: lambda <= 1 selects the principal branch; no exemption is proved.
   kind: regular
 r:
-  export:
-    defaults:
-      mu: 0
-      sigma: 1
-      lambda: 0
-    params:
-      mu: Finite location.
-      sigma: Positive finite scale.
-      lambda: Finite shape (evaluation allows all real shapes).
-    details: The quantile function is Q(u) = mu + sigma * (u^lambda - (1-u)^lambda) / lambda,
-      with the analytic logistic limit at lambda = 0. Inversion solves for the smaller tail in
-      log probability using safeguarded Newton iterations. Random generation uses uniform draws.
   density: dtlambda
   sampler: rtlambda
   control:
@@ -57,7 +45,7 @@ references:
   - "Joiner, B. L. and Rosenblatt, J. R. (1971). Some properties of the range in samples from Tukey's symmetric lambda distributions. Journal of the American Statistical Association 66, 394-399."
 examples: |
   set.seed(1)
-  mltlambda(rtlambda(50, lambda = 0.14))
+  mltlambda(univariateML:::rtlambda(n = 50, mu = 0, sigma = 1, lambda = 0.14))
 holds: []
 limits:
   - name: scale collapse
@@ -107,3 +95,7 @@ equal the held location and scale is free.
 A held finite `lambda` may lie outside the principal branch; the bound
 applies to estimated shape. Fixed negative shape uses its actual collapse
 exponent, and held positive-shape support must contain the observations.
+
+## d/p/q/r
+
+The lambda = 0 member is logistic; quantiles use the smaller logarithmic tail in safeguarded Newton inversion.

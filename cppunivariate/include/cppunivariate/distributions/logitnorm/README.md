@@ -14,15 +14,6 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export:
-    title: logitnorm distribution
-    defaults:
-      mu: 0
-      sigma: 1
-    params:
-      mu: Normal location on the logit scale.
-      sigma: Positive normal scale on the logit scale.
-    details: Parameters must be finite. Random generation transforms draws.
   density: dlogitnorm
   sampler: rlogitnorm
   control:
@@ -49,3 +40,7 @@ The logit-normal distribution models proportions whose logits follow a normal di
 The parameters `mu` and `sigma` describe the normal distribution of the logits, not the mean and standard deviation of the proportions. The scale estimate uses divisor $n$ on the logit scale.
 
 Held coefficients apply on the logit scale. With `mu` held, the scale is the root mean squared distance of the logits from `mu`. With `sigma` held, the location is their mean, including for constant data. A free scale has no MLE exactly when every logit equals the estimated or held location. Both-held fits evaluate the likelihood.
+
+## d/p/q/r
+
+Sampling transforms a normal variate by the logistic function.

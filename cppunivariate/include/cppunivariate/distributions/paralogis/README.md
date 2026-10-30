@@ -14,8 +14,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: actuar::dparalogis
-  sampler: actuar::rparalogis
+  density: dparalogis
+  sampler: rparalogis
   control:
     shape: Known positive finite coefficient; NULL estimates it.
     shape0: Optional starting value for `shape`; `NULL` uses `max(1.5, 2 / sd(log(x / median(x))))`.

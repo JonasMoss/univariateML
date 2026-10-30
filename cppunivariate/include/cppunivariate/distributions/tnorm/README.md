@@ -26,8 +26,8 @@ params:
   kind: design
   advice: NULL estimates this bound at the sample extreme; use infinity for an unbounded side.
 r:
-  density: extraDistr::dtnorm
-  sampler: extraDistr::rtnorm
+  density: dtnorm
+  sampler: rtnorm
   control:
     a: Required lower bound; NULL estimates min(x); -Inf leaves the lower side unbounded.
     b: Required upper bound; NULL estimates max(x); Inf leaves the upper side unbounded.
@@ -58,11 +58,11 @@ references:
   - "Barndorff-Nielsen, O. (1978). Information and Exponential Families in Statistical Theory. Wiley."
 examples: |
   set.seed(1)
-  mltnorm(extraDistr::rtnorm(100, mean = 0.3, sd = 0.25, a = 0, b = 1), a = 0, b = 1)
+  mltnorm(univariateML:::rtnorm(n = 100, mean = 0.3, sd = 0.25, a = 0, b = 1), a = 0, b = 1)
   # One-sided truncation at zero.
-  mltnorm(extraDistr::rtnorm(100, mean = 1, sd = 2, a = 0), a = 0, b = Inf)
+  mltnorm(univariateML:::rtnorm(n = 100, mean = 1, sd = 2, a = 0, b = Inf), a = 0, b = Inf)
   # Hold the parent standard deviation.
-  mltnorm(extraDistr::rtnorm(100, mean = 1, sd = 2, a = 0), a = 0, b = Inf, sd = 2)
+  mltnorm(univariateML:::rtnorm(n = 100, mean = 1, sd = 2, a = 0, b = Inf), a = 0, b = Inf, sd = 2)
 holds: []
 fit_args:
   a: -.inf
@@ -73,8 +73,6 @@ The truncated normal distribution is a normal distribution restricted to an inte
 
 ## Details
 
-`extraDistr::dtnorm`, `ptnorm` and `qtnorm` are repaired at runtime; each repair switches itself off once the reference is fixed. Fitting and `logLik` do not use them.
-
 Both bounds must be supplied. A value holds the bound, `NULL` estimates
 it as the corresponding sample extreme, and `-Inf` or `Inf` leaves that side
 unbounded. The support is closed at finite bounds, with the interior density
@@ -84,8 +82,6 @@ define a Lebesgue density and are rejected. Exponential, truncated exponential
 and uniform boundary escapes are still reported through `limits:`.
 
 For fixed bounds the family is an exponential family in $\mathrm{mean}/\mathrm{sd}^2$ and $-1/(2\,\mathrm{sd}^2)$ whose log-likelihood is strictly concave; the maximum depends on the data only through `mean(x)` and the population variance. It exists unless the sample is at least as dispersed as the member with $1/\mathrm{sd}^2 = 0$ and the same mean, an exponential or truncated exponential law that the parametrisation by `sd` cannot reach. This happens with positive probability for samples from a truncated normal, with small samples especially susceptible near an exponential limit; faces win ties within `1e-8` times the sample size. With `sd` held fixed the estimate of `mean` always exists. With `mean` held fixed and both bounds finite the limit is the uniform distribution on `(a, b)`; `mlunif` is a different model, which estimates its endpoints.
-
-`extraDistr::dtnorm`, `ptnorm` and `qtnorm` subtract normal probabilities and fail when the interval lies far in a tail of the parent normal, which fits close to an escape can reach (see `KNOWN_ISSUES.md`); `logLik` is computed independently in C++.
 
 For nonconstant data, let $m$ and $v$ be the empirical mean and variance
 with divisor $n$. On finite bounds, the full natural parameter space is

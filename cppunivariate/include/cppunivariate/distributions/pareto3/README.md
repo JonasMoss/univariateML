@@ -23,8 +23,8 @@ params:
     are not supported.'
   kind: threshold
 r:
-  density: actuar::dpareto3
-  sampler: actuar::rpareto3
+  density: dpareto3
+  sampler: rpareto3
   control:
     min: Known finite lower endpoint.
     reltol: Delegate fitting tolerance.

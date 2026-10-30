@@ -15,9 +15,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::dhcauchy
-  sampler: extraDistr::rhcauchy
-  shift: mu
+  density: dhcauchy
+  sampler: rhcauchy
   control:
     mu: Required endpoint; a value holds it and explicit `NULL` estimates the translation.
     sigma: Held positive finite scale; NULL estimates it.
@@ -33,7 +32,7 @@ references:
   - extraDistr package, HalfCauchy documentation (density and parameterization).
 examples: |
   set.seed(11)
-  mlhcauchy(extraDistr::rhcauchy(100, 2) + 3, mu = NULL)
+  mlhcauchy(univariateML:::rhcauchy(n = 100, mu = 0, sigma = 2) + 3, mu = NULL)
 fit_args:
   mu: 0
 ---
@@ -44,6 +43,6 @@ The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint, 
 
 Let $k$ count the observations at the free or held endpoint ($k$ ties at `min(x)` when `mu` is estimated; at the held `mu` otherwise). The likelihood increases in `mu` up to the sample minimum, so a free endpoint is exactly `mu = min(x)`, including tied minima; a held `mu` above any observation is invalid. Given that endpoint, a positive-scale MLE exists uniquely iff $2k<n$: the log-scale score is $n-\sum_i 2\sigma^2/(\sigma^2+(x_i-\mu)^2)$, strictly decreasing from $n-2k$ to $-n$ whenever some observation exceeds the endpoint. For $2k=n$ it is strictly negative at every positive scale: the finite scale-zero supremum is unattained. For $2k>n$, including constant data, the likelihood is unbounded as scale tends to zero. Even one observation strictly above the endpoint identifies a unique scale estimate.
 
-The d/p/q/r functions use extraDistr's zero-threshold half-Cauchy, evaluated at `x - mu` (`dml`/`pml`/`qml`/`rml` shift accordingly), with runtime-checked repairs for log densities and extreme probability tails. The endpoint density is positive.
+Evaluation uses the internal d/p/q/r functions. The endpoint density is positive.
 
 A positive finite held `sigma` is evaluated directly at any `mu` (free or held), including for data entirely at the endpoint; the scale-collapse conditions apply only when scale is estimated.

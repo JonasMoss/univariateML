@@ -18,15 +18,13 @@ library("univariateML")
 univariateML_models
 ```
 
-This package follows a naming convention for the `ml***` functions. To access the
-documentation of the distribution associated with an `ml***` function, write `package::d***`,
-or `?d***` for the distributions whose d/p/q/r univariateML defines itself (such as `?dsstd`).
-For instance, to find the documentation for the log-gamma distribution write
+Each `ml***` function documents its family and fitting parameters. Evaluation
+uses `dml`, `pml`, `qml` and `rml` with a fitted object; the underlying
+family-specific d/p/q/r functions are internal. For log-gamma documentation:
 
 ```{r docs, eval = FALSE}
-?actuar::dlgamma
+?mllgamma
 ```
-
 
 Additional information about the models can found in `univariateML_metadata`.
 ```{r}
@@ -35,9 +33,9 @@ univariateML_metadata[["mllgser"]]
 
 From the metadata you can read that 
 
-* `mllgser` estimates the parameters `N` and `s`.
+* `mllgser` estimates the parameter `theta`.
 * Its a discrete distribution on $1,2,3,...$,
-* Its density function is `extraDistr::dlgser`.
+* Its internal density function is `dlgser`; use `dml(x, fit)` for evaluation.
 
 ## Problematic Distributions
 Some estimation procedures will fail under certain circumstances. Sometimes due to numerical problems,

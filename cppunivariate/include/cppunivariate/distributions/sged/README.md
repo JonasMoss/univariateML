@@ -31,19 +31,6 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  export:
-    title: SGED distribution
-    defaults:
-      mean: 0
-      sd: 1
-      nu: 2
-      xi: 1.5
-    params:
-      mean: Finite mean.
-      sd: Finite positive standard deviation.
-      nu: Finite shape, positive (including shapes below one).
-      xi: Finite positive Fernandez--Steel skewness.
-    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dsged
   sampler: rsged
   control:
@@ -164,3 +151,7 @@ endpoint retain the GED endpoint density penalty. If only sd is held
 and its limiting uniform width equals the sample range exactly, a winning
 endpoint face is reported as uncertified rather than returning a uniform
 proxy for its constrained likelihood.
+
+## d/p/q/r
+
+Uses the fGarch mean and standard deviation parameterisation.

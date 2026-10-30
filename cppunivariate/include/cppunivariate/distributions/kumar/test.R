@@ -2,21 +2,24 @@ context("mlkumar")
 
 ## Data generation.
 set.seed(313)
-small_data <- extraDistr::rkumar(100, 1, 1)
-tiny_data <- extraDistr::rkumar(10, 3, 7)
-medium_data <- extraDistr::rkumar(1000, 9, 11)
+small_data <- rkumar(n = 100, a = 1, b = 1)
+tiny_data <- rkumar(n = 10, a = 3, b = 7)
+medium_data <- rkumar(n = 1000, a = 9, b = 11)
 
 ## Checks if the ML is correct.
-mle1 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dkumar(small_data, p[1], p[2], log = TRUE))
-}, p = c(1, 1)))
+mle1 <- nlm(function(p) {
+  if (any(!is.finite(p)) || any(p <= 0)) return(1e100)
+  -sum(dkumar(x = small_data, a = p[1], b = p[2], log = TRUE))
+}, p = c(1, 1))
 
 mle2 <- nlm(function(p) {
-  -sum(extraDistr::dkumar(tiny_data, p[1], p[2], log = TRUE))
+  if (any(!is.finite(p)) || any(p <= 0)) return(1e100)
+  -sum(dkumar(x = tiny_data, a = p[1], b = p[2], log = TRUE))
 }, p = c(3, 7))
 
 mle3 <- nlm(function(p) {
-  -sum(extraDistr::dkumar(medium_data, p[1], p[2], log = TRUE))
+  if (any(!is.finite(p)) || any(p <= 0)) return(1e100)
+  -sum(dkumar(x = medium_data, a = p[1], b = p[2], log = TRUE))
 }, p = c(9, 11))
 
 expect_equal(mle1$estimate, as.numeric(mlkumar(small_data)),
@@ -77,7 +80,7 @@ test_that("clipped endpoint samples have finite profile maxima", {
     }
     starts <- expand.grid(a = c(.01, .1, 1), b = c(.05, .5))
     reference <- function(p) {
-      v <- -sum(extraDistr::dkumar(x, exp(p[1]), exp(p[2]), log = TRUE))
+      v <- -sum(dkumar(x = x, a = exp(p[1]), b = exp(p[2]), log = TRUE))
       if (is.finite(v)) v else 1e100
     }
     oracles <- apply(starts, 1, function(p) optim(log(p), reference,
@@ -106,7 +109,7 @@ test_that("constant Kumaraswamy samples have unbounded likelihood", {
 
 test_that("P2 every held subset agrees with independent multistart density fits", {
   set.seed(8129)
-  samples <- list(extraDistr::rkumar(20,2,3), extraDistr::rkumar(100,2,3),
+  samples <- list(rkumar(n = 20, a = 2, b = 3), rkumar(n = 100, a = 2, b = 3),
                   runif(20,.01,.99), runif(100,.01,.99),
                   c(.2,.2,.6,.8), c(.2,.8), rep(.4,5), .4,
                   c(1e-5, .01, .5, .99, 1-1e-5))
@@ -119,7 +122,7 @@ test_that("P2 every held subset agrees with independent multistart density fits"
     expect_identical(attr(fit,"fixed"),held)
     expect_identical(unname(coef(fit)[held]),unname(values[held]))
     expect_equal(attr(logLik(fit),"df"),2L-length(held))
-    ll <- function(p) suppressWarnings(sum(extraDistr::dkumar(x,p[1],p[2],log=TRUE)))
+    ll <- function(p) suppressWarnings(sum(dkumar(x = x, a = p[1], b = p[2], log = TRUE)))
     expect_equal(as.numeric(logLik(fit)),ll(coef(fit)),tolerance=1e-9)
     if (length(free)) {
       objective <- function(z) {

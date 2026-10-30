@@ -23,9 +23,8 @@ params:
   integer: yes
   kind: design
 r:
-  density: extraDistr::dnhyper
-  sampler: extraDistr::rnhyper
-  args: {"n": "N - m", m: m, r: r}
+  density: dnhyper
+  sampler: rnhyper
   control:
     r: "Stopping count of white balls; explicit `NULL` estimates it when `m` and `N` are supplied."
     "N": "Known population size; must be supplied. Joint estimation of population and composition is not supported."
@@ -35,7 +34,7 @@ references:
   - "Berry, K. J. and Mielke, P. W. (1998). The negative hypergeometric probability distribution: Sampling without replacement from a finite population. Perceptual and Motor Skills, 86(1), 207-210."
 examples: |
   set.seed(1)
-  x <- extraDistr::rnhyper(30, n = 30, m = 20, r = 3)
+  x <- univariateML:::rnhyper(n = 30, m = 20, N = 50, r = 3)
   mlnhyper(x, r = 3, N = 50)
 holds:
 - held: []

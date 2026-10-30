@@ -2,8 +2,8 @@ context("mllinvweibull")
 
 ## Data generation.
 set.seed(313)
-small_data <- actuar::rinvweibull(100, 7, 3)
-tiny_data <- actuar::rinvweibull(10, 1, 1)
+small_data <- rinvweibull(n = 100, shape = 7, scale = 1/3)
+tiny_data <- rinvweibull(n = 10, shape = 1, scale = 1)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlinvweibull(c(tiny_data, NA)))
@@ -22,7 +22,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlinvweibull(small_data, na.rm = TRUE)
 expect_equal(
-  sum(actuar::dinvweibull(small_data, est[1], scale = est[2], log = TRUE)),
+  sum(dinvweibull(small_data, est[1], scale = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -64,7 +64,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("shape","scale")
   held_default <- c(2.0,3.0)
   names(held_default) <- pn
-  density <- actuar::dinvweibull
+  density <- dinvweibull
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

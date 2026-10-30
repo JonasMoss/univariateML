@@ -15,8 +15,8 @@ params:
   simulate: 2.0
   kind: regular
 r:
-  density: actuar::dztpois
-  sampler: actuar::rztpois
+  density: dztpois
+  sampler: rztpois
   control:
     lambda: "Optional held lambda; NULL estimates it."
 log_density: -lambda+x*log(lambda)-loggamma(x+1)-log(1-exp(-lambda))

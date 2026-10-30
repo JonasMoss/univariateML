@@ -25,8 +25,8 @@ params:
   simulate: 12
   kind: design
 r:
-  density: extraDistr::dtbinom
-  sampler: extraDistr::rtbinom
+  density: dtbinom
+  sampler: rtbinom
   control:
     prob: "Optional fixed parameter; NULL estimates it."
     a: "Required lower bound; NULL estimates it as min(x) - 1 (strict truncation)."
@@ -70,8 +70,7 @@ limits:
   status: TpoisLimit
 examples: |
   set.seed(1)
-  mltbinom(extraDistr::rtbinom(100, 12, .4, 0, 10), a = 0, b = 10, size = 12)
-
+  mltbinom(univariateML:::rtbinom(n = 100, prob = 0.4, a = 0, b = 10, size = 12), a = 0, b = 10, size = 12)
 fit_args:
   a: 0
   b: 10

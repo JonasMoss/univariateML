@@ -63,7 +63,7 @@ simulate_default <- function(dens, n) {
     getExportedValue(parts[1], parts[2])
   } else {
     # Function lives in our own namespace.
-    getExportedValue("univariateML", parts[1])
+    get(parts[1], envir = asNamespace("univariateML"), inherits = FALSE)
   }
   draws <- do.call(fun, params)
   if (is.null(shift)) draws else draws + shift

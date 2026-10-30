@@ -19,14 +19,6 @@ params:
   simulate: 1
   kind: regular
 r:
-  export:
-    title: Exponentially modified Gaussian distribution
-    params:
-      mu: Normal component mean.
-      sigma: Positive normal component standard deviation.
-      lambda: Positive exponential rate.
-    details: The distribution is a normal plus an independent exponential. Quantiles use safeguarded
-      Newton and bisection. Random draws add independent normal and exponential draws.
   density: demg
   sampler: remg
   control:
@@ -47,7 +39,7 @@ limits:
     status: TranslatedExponentialLimit
 examples: |
   set.seed(7)
-  mlemg(remg(200, 0, 1, 1))
+  mlemg(univariateML:::remg(n = 200, mu = 0, sigma = 1, lambda = 1))
 holds: []
 ---
 
@@ -71,3 +63,7 @@ profiled by a bracketed score solve. Multiple starts in the remaining log
 scales allow competing modes. This numerical search does not certify global
 optimality. Empirical skewness sign describes local behaviour near the normal
 face and is not used as a global existence criterion.
+
+## d/p/q/r
+
+This is the sum of an independent normal and exponential variate.

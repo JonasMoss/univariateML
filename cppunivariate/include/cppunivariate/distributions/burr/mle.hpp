@@ -1,5 +1,6 @@
 // Three-parameter Burr XII MLE, with shape1 profiled exactly.
 #pragma once
+#include "../../core/multistart.hpp"
 #include "../lomax/mle.hpp"
 #include "fixed_scale.hpp"
 #include "../../core/bfgs.hpp"
@@ -134,6 +135,7 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
   finite_diff_cost<BurrProfileCost> fd{cost};
   BfgsControl ctl;
   ctl.grad_tol = tol; ctl.reltol = reltol; ctl.maxit = maxit;
+  BfgsResult attempted{}; attempted.f=INFINITY;
   BfgsResult best;
   best.f = std::numeric_limits<double>::infinity();
   best.iterations = 0;
@@ -145,7 +147,7 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
     const double loc = (special::digamma(k) + 0.5772156649015328606)/c;
     const double start[2] = {std::log(c),loc};
     auto r = bfgs_minimize(fd,start,ctl);
-    if (std::isfinite(r.f) && r.f < best.f) best = r;
+    consider_bfgs_candidate(best,r,static_cast<double>(x.size()),attempted);
   }
   // Fit the old two-shape family after centering log data. Its scale is
   // the geometric mean, so the seed is invariant to measurement units.
@@ -162,7 +164,7 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
     if (std::isfinite(seed.f) && seed.theta[1] > 0.0) {
       const double start[2] = {std::log(seed.theta[1]),0.0};
       auto r = bfgs_minimize(fd,start,ctl);
-      if (std::isfinite(r.f) && r.f < best.f) best = r;
+      consider_bfgs_candidate(best,r,static_cast<double>(x.size()),attempted);
     }
   }
   if (!std::isnan(shape10) || !std::isnan(shape20) || !std::isnan(scale0)) {
@@ -171,10 +173,10 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
     const double start[2] = {std::log(c), std::isnan(scale0) ?
       (special::digamma(k)+0.5772156649015328606)/c : std::log(scale0)-center};
     auto r = bfgs_minimize(fd,start,ctl);
-    if (std::isfinite(r.f) && r.f < best.f) best = r;
+    consider_bfgs_candidate(best,r,static_cast<double>(x.size()),attempted);
   }
   const double n = static_cast<double>(x.size());
-  const double ll = -n*(best.f+center);
+  const double ll = -n*(attempted.f+center);
   const auto w = weibull_mle(x,1e-10,std::max(maxit,100));
   const auto p = pareto_mle(x);
   const double tie = 1e-8*n;
@@ -182,9 +184,13 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
     return {INFINITY,w.shape,w.scale,w.logLik,best.iterations,BurrStatus::WeibullBoundary};
   if (p.logLik >= ll-tie)
     return {0.0,INFINITY,p.min,p.logLik,best.iterations,BurrStatus::ParetoBoundary};
-  if (!std::isfinite(best.f)) return {nan,nan,nan,nan,0,BurrStatus::IterationFailure};
+  if (!std::isfinite(best.f)) {
+    if(attempted.theta.size()!=2) return {nan,nan,nan,nan,0,BurrStatus::IterationFailure};
+    return {cost.shape1(attempted.theta.data()),std::exp(attempted.theta[0]),
+      std::exp(center+attempted.theta[1]),ll,attempted.iterations,BurrStatus::IterationFailure};
+  }
   return {cost.shape1(best.theta.data()),std::exp(best.theta[0]),
-    std::exp(center+best.theta[1]),ll,best.iterations,
+    std::exp(center+best.theta[1]),-n*(best.f+center),best.iterations,
     best.status == BfgsStatus::Ok ? BurrStatus::Ok : BurrStatus::IterationFailure};
 }
 

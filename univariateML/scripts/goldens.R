@@ -24,7 +24,7 @@ resolve_callable <- function(spec) {
   if (length(parts) == 2L) {
     getExportedValue(parts[1], parts[2])
   } else {
-    get(parts[1], mode = "function")
+    get(parts[1], envir = asNamespace("univariateML"), inherits = FALSE)
   }
 }
 

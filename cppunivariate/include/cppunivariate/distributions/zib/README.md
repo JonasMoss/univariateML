@@ -20,14 +20,14 @@ params:
   simulate: 0.4
   kind: regular
 r:
-  density: extraDistr::dzib
-  sampler: extraDistr::rzib
+  density: dzib
+  sampler: rzib
   control:
     size: "Optional fixed size; NULL estimates size."
     reltol: "Tolerance for scalar profile search."
     iterlim: "Maximum scalar search iterations."
-    prob: "Optional fixed probability in [0, 1]; NULL estimates it."
-    pi: "Optional fixed pi in [0, 1]; NULL estimates it."
+    prob: "Optional fixed probability in `[0, 1]`; NULL estimates it."
+    pi: "Optional fixed pi in `[0, 1]`; NULL estimates it."
 log_density: Piecewise((log(pi+(1-pi)*(1-prob)**size), Eq(x,0)), (log(1-pi)+loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size-x)*log(1-prob), True))
 limits:
 - model: zip

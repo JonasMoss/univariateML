@@ -2,8 +2,8 @@ context("mlged")
 
 ## Data generation.
 set.seed(313)
-small_data <- rged(100, 2, 3, 4)
-tiny_data <- rged(100, 2, 3, 4)
+small_data <- rged(n = 100, mean = 2, sd = 3, nu = 4)
+tiny_data <- rged(n = 100, mean = 2, sd = 3, nu = 4)
 
 ## Finds errors with na and data out of bounds.
 expect_error(suppressWarnings(mlged(c(tiny_data, NA)), classes = "univariateML_restricted"))
@@ -17,7 +17,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- suppressWarnings(mlged(small_data, na.rm = TRUE), classes = "univariateML_restricted")
 expect_equal(
-  sum(dged(small_data, est[1], est[2], est[3], log = TRUE)),
+  sum(dged(x = small_data, mean = est[1], sd = est[2], nu = est[3], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -58,13 +58,13 @@ expect_error(suppressWarnings(mlged(seq(-1, 1, length.out = 40)), classes = "uni
 x <- c(seq(-.02, .02, length.out = 18), -10, 10)
 f <- suppressWarnings(mlged(x), classes = "univariateML_restricted")
 expect_equal(unname(f["nu"]), 1)
-expect_equal(attr(f, "logLik"), sum(dged(x, mean=f[1], sd=f[2], nu=1, log=TRUE)))
+expect_equal(attr(f, "logLik"), sum(dged(x = x, mean = f[1], sd = f[2], nu = 1, log = TRUE)))
 a <- mean(abs(x-median(x)))
 expect_equal(attr(f, "logLik"), -length(x)*(log(2*a)+1))
 
 set.seed(812)
 for (shape in c(1.5, 3)) {
-  x <- rged(500, nu=shape)
+  x <- rged(n = 500, mean = 0, sd = 1, nu = shape)
   f <- suppressWarnings(mlged(x, gradtol=1e-6, iterlim=1000), classes = "univariateML_restricted")
   expect_gt(unname(f["nu"]), 1)
   objective <- function(p) {
@@ -98,7 +98,7 @@ test_that("ged scale extremes preserve fit or declared escape", {
 
 test_that("ged large-sample fitting preserves likelihood under replication", {
   p<-((1:1000)-.5)/1000
-  x<-qged(p,nu=3)
+  x<-qged(p = p, mean = 0, sd = 1, nu = 3)
   base<-suppressWarnings(mlged(x), classes = "univariateML_restricted")
   f<-suppressWarnings(mlged(rep(x,100)), classes = "univariateML_restricted")
   expect_equal(attr(f,"logLik")/100,attr(base,"logLik"),tolerance=1e-5)
@@ -136,28 +136,28 @@ test_that("ged dpqr integrate, invert and preserve extreme tails", {
 })
 
 test_that("ged dpqr recycle, propagate missing values and use R RNG", {
-  expect_length(dged(numeric()), 0)
-  expect_equal(dged(c(0, 1, 2), mean = c(0, 1)),
-    c(dged(0), dged(1, mean = 1), dged(2)))
-  expect_identical(dged(NA_real_), NA_real_)
-  expect_true(is.nan(pged(NaN)))
-  expect_warning(expect_true(is.nan(dged(0, sd = -1))), "NaNs produced")
-  expect_warning(expect_true(is.nan(qged(1.1))), "NaNs produced")
-  expect_warning(expect_true(is.nan(rged(1, sd = -1))), "NaNs produced")
-  set.seed(81); first <- rged(100)
-  set.seed(81); expect_identical(rged(100), first)
-  expect_length(rged(1:7), 7)
-  expect_length(rged(0), 0)
-  expect_length(rged(3, mean = numeric()), 0)
-  expect_identical(rged(1, mean = NA_real_), NA_real_)
+  expect_length(dged(x = numeric(), mean = 0, sd = 1, nu = 2), 0)
+  expect_equal(dged(x = c(0, 1, 2), mean = c(0, 1), sd = 1, nu = 2),
+    c(dged(x = 0, mean = 0, sd = 1, nu = 2), dged(x = 1, mean = 1, sd = 1, nu = 2), dged(x = 2, mean = 0, sd = 1, nu = 2)))
+  expect_identical(dged(x = NA_real_, mean = 0, sd = 1, nu = 2), NA_real_)
+  expect_true(is.nan(pged(q = NaN, mean = 0, sd = 1, nu = 2)))
+  expect_warning(expect_true(is.nan(dged(x = 0, mean = 0, sd = -1, nu = 2))), "NaNs produced")
+  expect_warning(expect_true(is.nan(qged(p = 1.1, mean = 0, sd = 1, nu = 2))), "NaNs produced")
+  expect_warning(expect_true(is.nan(rged(n = 1, mean = 0, sd = -1, nu = 2))), "NaNs produced")
+  set.seed(81); first <- rged(n = 100, mean = 0, sd = 1, nu = 2)
+  set.seed(81); expect_identical(rged(n = 100, mean = 0, sd = 1, nu = 2), first)
+  expect_length(rged(n = 1:7, mean = 0, sd = 1, nu = 2), 7)
+  expect_length(rged(n = 0, mean = 0, sd = 1, nu = 2), 0)
+  expect_length(rged(n = 3, mean = numeric(), sd = 1, nu = 2), 0)
+  expect_identical(rged(n = 1, mean = NA_real_, sd = 1, nu = 2), NA_real_)
   set.seed(712)
-  draws <- rged(5000)
+  draws <- rged(n = 5000, mean = 0, sd = 1, nu = 2)
   for (prob in c(.1, .5, .9))
-    expect_lt(abs(mean(draws <= qged(prob)) - prob), .025)
+    expect_lt(abs(mean(draws <= qged(p = prob, mean = 0, sd = 1, nu = 2)) - prob), .025)
   for (bad in c(-1, 0, Inf)) {
-    expect_warning(expect_true(is.nan(dged(0, sd = bad))), "NaNs produced")
-    expect_warning(expect_true(is.nan(pged(0, sd = bad))), "NaNs produced")
-    expect_warning(expect_true(is.nan(qged(.5, sd = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dged(x = 0, mean = 0, sd = bad, nu = 2))), "NaNs produced")
+    expect_warning(expect_true(is.nan(pged(q = 0, mean = 0, sd = bad, nu = 2))), "NaNs produced")
+    expect_warning(expect_true(is.nan(qged(p = 0.5, mean = 0, sd = bad, nu = 2))), "NaNs produced")
   }
   fit <- suppressWarnings(mlged(small_data), classes = "univariateML_restricted")
   expect_equal(as.numeric(logLik(fit)), sum(dml(small_data, fit, log = TRUE)),
@@ -174,17 +174,17 @@ test_that("ged matches frozen fGarch values (reference.json)", {
 
 test_that("ged parameter domain is enforced", {
   for (bad in c(-1, 0, Inf))
-    expect_warning(expect_true(is.nan(dged(0, nu = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dged(x = 0, mean = 0, sd = 1, nu = bad))), "NaNs produced")
 })
 
 test_that("ged log tails exceed the backend exponent range", {
   for (lower in c(TRUE, FALSE)) {
-    x <- qged(-20000, lower.tail = lower, log.p = TRUE)
+    x <- qged(p = -20000, mean = 0, sd = 1, nu = 2, lower.tail = lower, log.p = TRUE)
     expect_true(is.finite(x))
-    expect_equal(pged(x, lower.tail = lower, log.p = TRUE), -20000,
+    expect_equal(pged(q = x, mean = 0, sd = 1, nu = 2, lower.tail = lower, log.p = TRUE), -20000,
                  tolerance = 1e-10)
-    x <- qged(-1e-30, lower.tail = lower, log.p = TRUE)
-    expect_equal(pged(x, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
+    x <- qged(p = -1e-30, mean = 0, sd = 1, nu = 2, lower.tail = lower, log.p = TRUE)
+    expect_equal(pged(q = x, mean = 0, sd = 1, nu = 2, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
                  tolerance = 1e-10)
   }
 })
@@ -261,7 +261,7 @@ test_that("GED held variance uniform endpoints have the conditional limiting pen
     exp(nu*(log(sqrt(3))-log_lambda)-log(2))
   limit<--log(2*sqrt(3))-exp(-0.5772156649015328606)
   expect_equal(reference,limit,tolerance=2e-6)
-  expect_equal(dged(sqrt(3),mean=0,sd=1,nu=nu,log=TRUE),reference,tolerance=1e-8)
+  expect_equal(dged(x = sqrt(3), mean = 0, sd = 1, nu = nu, log = TRUE),reference,tolerance=1e-8)
 })
 
 

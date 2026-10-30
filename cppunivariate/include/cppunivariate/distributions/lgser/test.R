@@ -17,7 +17,7 @@ test_that("theta stays in (0, 1) when nearly every count is one", {
     expect_gt(theta, 0)
     expect_lt(theta, 1)
     expect_equal(-theta / ((1 - theta) * log1p(-theta)), mean(x), tolerance = 1e-8)
-    expect_equal(attr(fit, "logLik"), sum(extraDistr::dlgser(x, theta, log = TRUE)), tolerance = 1e-10)
+    expect_equal(attr(fit, "logLik"), sum(dlgser(x = x, theta = theta, log = TRUE)), tolerance = 1e-10)
   }
 })
 
@@ -25,12 +25,12 @@ test_that("theta stays in (0, 1) when nearly every count is one", {
 local({
   id <- "lgser"
   base <- c(theta=0.6)
-  density <- extraDistr::dlgser
+  density <- dlgser
   test_that("P2 holds agree with independent multistart reference likelihoods", {
     set.seed(81029)
     samples <- list(simulate_default(paste0("ml",id),20),
                     simulate_default(paste0("ml",id),100),
-                    c(1,1,1,2,2,4), c(1,2), actuar::rztpois(20,2))
+                    c(1,1,1,2,2,4), c(1,2), rztpois(n = 20, lambda = 2))
     nm <- names(base)
     for (x in samples) for (mask in seq_len(2^length(nm)-1)) {
       held <- nm[as.logical(intToBits(mask)[seq_along(nm)])]

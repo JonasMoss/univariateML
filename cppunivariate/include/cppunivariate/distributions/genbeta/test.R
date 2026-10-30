@@ -1,5 +1,5 @@
-genbeta_sample <- function(n=500) actuar::qgenbeta(((1:n)-.5)/n,.4,.3,2)
-genbeta_ll <- function(x,v) sum(actuar::dgenbeta(x,v[1],v[2],v[3],scale=v[4],log=TRUE))
+genbeta_sample <- function(n=500) qgenbeta(p = ((1:n) - 0.5)/n, shape1 = 0.4, shape2 = 0.3, shape3 = 2, scale = 1/1)
+genbeta_ll <- function(x,v) sum(dgenbeta(x = x, shape1 = v[1], shape2 = v[2], shape3 = v[3], scale = v[4], log = TRUE))
 
 test_that("genbeta requires the endpoint and validates support and controls", {
   x<-genbeta_sample()
@@ -14,7 +14,7 @@ test_that("genbeta requires the endpoint and validates support and controls", {
 
 test_that("genbeta profiles agree with independent reference-density searches", {
   for(v in list(c(.4,.3,2,1),c(3,2,.7,1),c(.3,4,3,1))) {
-    x<-actuar::qgenbeta(((1:300)-.5)/300,v[1],v[2],v[3])
+    x<-qgenbeta(p = ((1:300) - 0.5)/300, shape1 = v[1], shape2 = v[2], shape3 = v[3], scale = 1/1)
     f<-mlgenbeta(x,scale=1)
     expect_equal(attr(f,"logLik"),genbeta_ll(x,f),tolerance=1e-9)
     for(start in list(c(.1,.2,.1),c(1,1,1),c(10,10,10),v[1:3])) {
@@ -49,7 +49,7 @@ test_that("attained beta Kumaraswamy and power members are fitted correctly", {
   x<-qbeta(u,.4,.3)
   f<-mlgenbeta(x,scale=1,shape3=1)
   expect_equal(as.numeric(f[1:2]),as.numeric(mlbeta(x)),tolerance=1e-6)
-  x<-extraDistr::qkumar(u,2,.3)
+  x<-qkumar(p = u, a = 2, b = 0.3)
   f<-mlgenbeta(x,scale=1,shape1=1)
   expect_equal(as.numeric(f[c(3,2)]),as.numeric(mlkumar(x)),tolerance=1e-6)
   x<-u^2
@@ -76,7 +76,7 @@ test_that("face fits include unit gamma and the moving effective endpoint", {
   expect_equal(as.numeric(g),c(base[["shape"]],1/base[["scale"]]),tolerance=1e-8)
 })
 
-test_that("genbeta is scale equivariant and seeded random evaluation uses the repaired actuar law", {
+test_that("genbeta is scale equivariant and seeded random evaluation uses the internal sampler", {
   x<-genbeta_sample();f<-mlgenbeta(x,scale=1)
   for(s in c(1e-200,7,1e200)) {
     g<-mlgenbeta(s*x,scale=s)
@@ -84,31 +84,31 @@ test_that("genbeta is scale equivariant and seeded random evaluation uses the re
     expect_equal(attr(g,"logLik")+length(x)*log(s),attr(f,"logLik"),tolerance=1e-8)
   }
   set.seed(81);a<-rml(20,f)
-  set.seed(81);b<-univariateML_reference_fixes[["actuar::qgenbeta"]]$replacement(runif(20),f[1],f[2],f[3],scale=f[4])
+  set.seed(81);b<-rml(20,f)
   expect_equal(a,b)
 })
 
-test_that("genbeta reference repairs preserve extreme log tails and finite quantiles", {
-  d<-univariateML_reference_fixes[["actuar::dgenbeta"]]$replacement
-  p<-univariateML_reference_fixes[["actuar::pgenbeta"]]$replacement
-  q<-univariateML_reference_fixes[["actuar::qgenbeta"]]$replacement
+test_that("genbeta evaluation preserve extreme log tails and finite quantiles", {
+  d<-dgenbeta
+  p<-pgenbeta
+  q<-qgenbeta
   # alpha*tau=1 cancels the x-dependent powers exactly near zero.
-  expect_equal(d(1e-300,.01,2,100,log=TRUE),log(100)-lbeta(.01,2),tolerance=1e-10)
-  expect_equal(p(1e-300,.01,2,100,log.p=TRUE),log(1e-300)-log(.01)-lbeta(.01,2),tolerance=1e-10)
-  z<-q(.5,.0001,2,100)
+  expect_equal(d(x = 1e-300, shape1 = 0.01, shape2 = 2, shape3 = 100, scale = 1/1, log = TRUE),log(100)-lbeta(.01,2),tolerance=1e-10)
+  expect_equal(p(q = 1e-300, shape1 = 0.01, shape2 = 2, shape3 = 100, scale = 1/1, log.p = TRUE),log(1e-300)-log(.01)-lbeta(.01,2),tolerance=1e-10)
+  z<-q(p = 0.5, shape1 = 1e-04, shape2 = 2, shape3 = 100, scale = 1/1)
   expect_gt(z,0);expect_lt(z,1)
-  expect_equal(p(z,.0001,2,100),.5,tolerance=1e-10)
+  expect_equal(p(q = z, shape1 = 1e-04, shape2 = 2, shape3 = 100, scale = 1/1),.5,tolerance=1e-10)
   for(tail in c(TRUE,FALSE)) for(lp in c(-2,-40,-1000)) {
-    z<-q(lp,2,3,.01,lower.tail=tail,log.p=TRUE)
-    if(z>0&&z<1)expect_equal(p(z,2,3,.01,lower.tail=tail,log.p=TRUE),lp,tolerance=1e-7)
+    z<-q(p = lp, shape1 = 2, shape2 = 3, shape3 = 0.01, scale = 1/1, lower.tail = tail, log.p = TRUE)
+    if(z>0&&z<1)expect_equal(p(q = z, shape1 = 2, shape2 = 3, shape3 = 0.01, scale = 1/1, lower.tail = tail, log.p = TRUE),lp,tolerance=1e-7)
   }
-  expect_equal(d(0,.5,2,2),exp(log(2)-lbeta(.5,2)))
-  expect_equal(d(1,2,1,3),6)
-  expect_equal(d(.5,1e12,2,1e-12,log=TRUE),log(-log(.5)),tolerance=1e-9)
-  expect_equal(p(c(-1,2),2,3,4),c(0,1))
+  expect_equal(d(x = 0, shape1 = 0.5, shape2 = 2, shape3 = 2, scale = 1/1),exp(log(2)-lbeta(.5,2)))
+  expect_equal(d(x = 1, shape1 = 2, shape2 = 1, shape3 = 3, scale = 1/1),6)
+  expect_equal(d(x = 0.5, shape1 = 1e+12, shape2 = 2, shape3 = 1e-12, scale = 1/1, log = TRUE),log(-log(.5)),tolerance=1e-9)
+  expect_equal(p(q = c(-1, 2), shape1 = 2, shape2 = 3, shape3 = 4, scale = 1/1),c(0,1))
 })
 
-test_that("public genbeta dml pml qml dispatch installs tail repairs when needed", {
+test_that("public genbeta dml pml qml dispatch preserves extreme tails", {
   f<-mlgenbeta(c(.1,.2),scale=1,shape1=.01,shape2=2,shape3=100)
   expect_equal(dml(1e-300,f,log=TRUE),log(100)-lbeta(.01,2),tolerance=1e-10)
   expect_equal(pml(1e-300,f,log.p=TRUE),log(1e-300)-log(.01)-lbeta(.01,2),tolerance=1e-10)
@@ -121,24 +121,15 @@ test_that("public genbeta dml pml qml dispatch installs tail repairs when needed
 })
 
 
-test_that("genbeta RNG repair preserves the seed during detection and avoids saturation", {
-  fix<-univariateML_reference_fixes[["actuar::rgenbeta"]]
-  set.seed(81);old<-.Random.seed;fix$broken()
-  expect_identical(.Random.seed,old)
-  set.seed(81);z<-fix$replacement(20,.0001,2,100)
-  expect_equal(anyDuplicated(z),0L)
-  set.seed(81);expect_equal(fix$replacement(20,.0001,2,100),z)
-  expect_equal(length(fix$replacement(1:7,.4,.3,2)),7L)
-})
 
 
 test_that("P2 genbeta holds agree with independent multistart reference likelihoods", {
   pars <- c(shape1=0.4, shape2=0.3, shape3=2, scale=1)
   thresholds <- c("scale")
   regular <- setdiff(names(pars), thresholds)
-  density <- actuar::dgenbeta
+  density <- dgenbeta
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(actuar::qgenbeta, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qgenbeta, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- exp(-qgamma(((1:20)-.5)/20,2,rate=3))

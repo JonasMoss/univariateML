@@ -1,33 +1,34 @@
 test_that("folded normal d/p/q/r obey normal identities and tail conventions", {
   for (mu in c(0,.1,2,40)) for (sigma in c(.2,1,3)) {
     x <- c(0,1e-10,.1,1,10,40)
-    expect_equal(dfoldnorm(x,mu,sigma),dnorm(x,mu,sigma)+dnorm(-x,mu,sigma),tolerance=1e-12)
+    expect_equal(dfoldnorm(x = x, mu = mu, sigma = sigma),dnorm(x,mu,sigma)+dnorm(-x,mu,sigma),tolerance=1e-12)
     for (tail in c(TRUE,FALSE)) {
       ref <- if (tail) pnorm(x,mu,sigma)-pnorm(-x,mu,sigma) else pnorm(x,mu,sigma,FALSE)+pnorm(-x,mu,sigma)
-      expect_equal(pfoldnorm(x,mu,sigma,tail),ref,tolerance=1e-12)
+      expect_equal(pfoldnorm(q = x, mu = mu, sigma = sigma, lower.tail = tail),ref,tolerance=1e-12)
       lp <- c(-1e-10,-.7,-10,-100,if(tail) -600 else -1000)
-      q <- qfoldnorm(lp,mu,sigma,tail,TRUE)
-      expect_equal(pfoldnorm(q,mu,sigma,tail,TRUE),lp,tolerance=1e-10)
-      expect_equal(qfoldnorm(c(0,1),mu,sigma,tail),if(tail) c(0,Inf) else c(Inf,0))
+      q <- qfoldnorm(p = lp, mu = mu, sigma = sigma, lower.tail = tail, log.p = TRUE)
+      expect_equal(pfoldnorm(q = q, mu = mu, sigma = sigma, lower.tail = tail, log.p = TRUE),lp,tolerance=1e-10)
+      expect_equal(qfoldnorm(p = c(0, 1), mu = mu, sigma = sigma, lower.tail = tail),if(tail) c(0,Inf) else c(Inf,0))
     }
-    expect_equal(pfoldnorm(x,mu,sigma)+pfoldnorm(x,mu,sigma,FALSE),rep(1,length(x)),tolerance=1e-13)
+    expect_equal(pfoldnorm(q = x, mu = mu, sigma = sigma)+pfoldnorm(q = x, mu = mu, sigma = sigma, lower.tail = FALSE),rep(1,length(x)),tolerance=1e-13)
   }
-  expect_equal(pfoldnorm(40,0,1,FALSE,TRUE),log(2)+pnorm(40,log.p=TRUE,lower.tail=FALSE),tolerance=1e-13)
-  expect_equal(pfoldnorm(1e-100,40,1,log.p=TRUE),log(2e-100)+dnorm(0,40,1,log=TRUE),tolerance=1e-13)
-  expect_equal(pfoldnorm(1e-100,0,1,FALSE,TRUE)/1e-100,-sqrt(2/pi),tolerance=1e-13)
-  set.seed(72); a <- rfoldnorm(50,c(0,2),c(1,3))
+  expect_equal(pfoldnorm(q = 40, mu = 0, sigma = 1, lower.tail = FALSE, log.p = TRUE),log(2)+pnorm(40,log.p=TRUE,lower.tail=FALSE),tolerance=1e-13)
+  expect_equal(pfoldnorm(q = 1e-100, mu = 40, sigma = 1, log.p = TRUE),log(2e-100)+dnorm(0,40,1,log=TRUE),tolerance=1e-13)
+  expect_equal(pfoldnorm(q = 1e-100, mu = 0, sigma = 1, lower.tail = FALSE, log.p = TRUE)/1e-100,-sqrt(2/pi),tolerance=1e-13)
+  set.seed(72); a <- rfoldnorm(n = 50, mu = c(0, 2), sigma = c(1, 3))
   set.seed(72); expect_identical(a,abs(rnorm(50,c(0,2),c(1,3))))
-  expect_length(rfoldnorm(1:4),4)
-  expect_length(rfoldnorm(0),0)
-  expect_length(dfoldnorm(numeric()),0)
-  expect_equal(dfoldnorm(c(.1,1,2),c(0,1)),dfoldnorm(c(.1,1,2),c(0,1,0)))
-  expect_true(is.na(dfoldnorm(NA_real_)))
-  expect_true(is.nan(dfoldnorm(NaN)))
-  expect_warning(expect_true(is.nan(dfoldnorm(1,-1))),"NaNs")
-  expect_warning(expect_true(is.nan(pfoldnorm(1,sigma=0))),"NaNs")
-  expect_warning(expect_true(is.nan(qfoldnorm(2))),"NaNs")
-  expect_warning(expect_true(is.nan(rfoldnorm(1,sigma=-1))),"NaNs")
-  expect_equal(dfoldnorm(c(-1,Inf)),c(0,0))
+  expect_length(rfoldnorm(n = 1:4, mu = 0, sigma = 1),4)
+  expect_length(rfoldnorm(n = 0, mu = 0, sigma = 1),0)
+  expect_length(dfoldnorm(x = numeric(), mu = 0, sigma = 1),0)
+
+  expect_equal(dfoldnorm(c(.1,1,2), c(0,1), 1), dfoldnorm(c(.1,1,2), c(0,1,0), 1))
+  expect_true(is.na(dfoldnorm(x = NA_real_, mu = 0, sigma = 1)))
+  expect_true(is.nan(dfoldnorm(x = NaN, mu = 0, sigma = 1)))
+  expect_warning(expect_true(is.nan(dfoldnorm(x = 1, mu = -1, sigma = 1))),"NaNs")
+  expect_warning(expect_true(is.nan(pfoldnorm(q = 1, mu = 0, sigma = 0))),"NaNs")
+  expect_warning(expect_true(is.nan(qfoldnorm(p = 2, mu = 0, sigma = 1))),"NaNs")
+  expect_warning(expect_true(is.nan(rfoldnorm(n = 1, mu = 0, sigma = -1))),"NaNs")
+  expect_equal(dfoldnorm(x = c(-1, Inf), mu = 0, sigma = 1),c(0,0))
 })
 
 test_that("folded normal fits match a slow independent multistart oracle", {
@@ -53,8 +54,8 @@ test_that("folded normal fits match a slow independent multistart oracle", {
       expect_equal(attr(logLik(g),"df"),2L-length(args))
       expect_equal(as.numeric(logLik(g)),sum(dml(x,g,log=TRUE)),tolerance=1e-12)
       if (length(args)==1) {
-        o <- if (!is.null(args$mu)) optimize(function(t) -sum(dfoldnorm(x,args$mu,exp(t),TRUE)),c(-10,10),tol=1e-10) else
-          optimize(function(m) -sum(dfoldnorm(x,m,args$sigma,TRUE)),c(0,max(x)),tol=1e-10)
+        o <- if (!is.null(args$mu)) optimize(function(t) -sum(dfoldnorm(x = x, mu = args$mu, sigma = exp(t), log = TRUE)),c(-10,10),tol=1e-10) else
+          optimize(function(m) -sum(dfoldnorm(x = x, mu = m, sigma = args$sigma, log = TRUE)),c(0,max(x)),tol=1e-10)
         expect_equal(as.numeric(logLik(g)),-o$objective,tolerance=1e-8)
       }
     }
@@ -87,10 +88,10 @@ test_that("folded normal fits match a slow independent multistart oracle", {
 })
 
 test_that("folded normal integrates with fitted-object methods", {
-  set.seed(7); x <- rfoldnorm(40,2,1); f <- mlfoldnorm(x,mu=2)
+  set.seed(7); x <- rfoldnorm(n = 40, mu = 2, sigma = 1); f <- mlfoldnorm(x,mu=2)
   u <- c(.01,.3,.9)
   expect_equal(pml(qml(u,f),f),u,tolerance=1e-12)
-  set.seed(1); a <- rml(10,f); set.seed(1); expect_identical(a,rfoldnorm(10,2,f[["sigma"]]))
+  set.seed(1); a <- rml(10,f); set.seed(1); expect_identical(a,rfoldnorm(n = 10, mu = 2, sigma = f[["sigma"]]))
   expect_s3_class(model_select(x,models=c("foldnorm","norm")),"univariateML")
   expect_equal(dim(bootstrapml(f,reps=3)),c(2L,2L))
   tmp <- tempfile(fileext=".pdf"); grDevices::pdf(tmp)
@@ -99,11 +100,11 @@ test_that("folded normal integrates with fitted-object methods", {
 })
 
 test_that("folded normal log quantiles span the double exponent range", {
-  q <- qfoldnorm(-1000,0,1e300,log.p=TRUE)
+  q <- qfoldnorm(p = -1000, mu = 0, sigma = 1e+300, log.p = TRUE)
   expect_gt(q,0)
-  expect_equal(pfoldnorm(q,0,1e300,log.p=TRUE),-1000,tolerance=1e-12)
-  expect_true(is.finite(qfoldnorm(.5,1e308,1e308)))
-  expect_equal(pfoldnorm(1e300,1e300,1e-5),.5)
+  expect_equal(pfoldnorm(q = q, mu = 0, sigma = 1e+300, log.p = TRUE),-1000,tolerance=1e-12)
+  expect_true(is.finite(qfoldnorm(p = 0.5, mu = 1e+308, sigma = 1e+308)))
+  expect_equal(pfoldnorm(q = 1e+300, mu = 1e+300, sigma = 1e-05),.5)
 })
 
 test_that("folded normal compares two distinct interior profile maxima", {

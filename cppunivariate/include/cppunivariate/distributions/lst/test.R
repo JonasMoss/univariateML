@@ -1,10 +1,13 @@
-test_that("location-scale t agrees with independent extraDistr likelihood optimization", {
+test_that("location-scale t agrees with independent density likelihood optimization", {
   for (df in c(1.5, 3, 10)) for (n in c(200, 1000)) {
     set.seed(100 + n + df * 10)
-    x <- extraDistr::rlst(n, df = df, mu = 2, sigma = 1.3)
+    x <- rlst(n = n, mu = 2, sigma = 1.3, df = df)
     fit <- suppressWarnings(mllst(x, gradtol = 1e-7, iterlim = 500), classes = "univariateML_restricted")
-    objective <- function(p) -sum(extraDistr::dlst(
-      x, df = 1 + exp(p[3]), mu = p[1], sigma = exp(p[2]), log = TRUE))
+    objective <- function(p) {
+      sigma <- exp(p[2]); nu <- 1 + exp(p[3])
+      if (!all(is.finite(c(p[1],sigma,nu))) || sigma <= 0) return(1e100)
+      -sum(dlst(x = x, mu = p[1], sigma = sigma, df = nu, log = TRUE))
+    }
     candidates <- lapply(c(1.1, 2, 5, 20, 100), function(d)
       optim(c(median(x), log(IQR(x)), log(d - 1)), objective,
             method = "BFGS", control = list(maxit = 2000, reltol = 1e-12)))
@@ -13,10 +16,8 @@ test_that("location-scale t agrees with independent extraDistr likelihood optimi
     expect_equal(as.numeric(fit), c(oracle$par[1], exp(oracle$par[2]),
                                   1 + exp(oracle$par[3])), tolerance = 2e-3)
     expect_equal(names(fit), c("mu", "sigma", "df"))
-    expect_equal(attr(fit, "logLik"), sum(extraDistr::dlst(
-      x, df = fit[3], mu = fit[1], sigma = fit[2], log = TRUE)), tolerance = 1e-10)
-    expect_equal(dml(x[1:3], fit), extraDistr::dlst(
-      x[1:3], df = fit[3], mu = fit[1], sigma = fit[2]))
+    expect_equal(attr(fit, "logLik"), sum(dlst(x = x, mu = fit[1], sigma = fit[2], df = fit[3], log = TRUE)), tolerance = 1e-10)
+
   }
 })
 
@@ -45,8 +46,7 @@ test_that("std two-cluster escape has a location-scale fit", {
   expect_true(is.finite(attr(fit, "logLik")))
   # Free df prefers Cauchy here: the std face at df=2 is not the lst MLE.
   expect_equal(unname(fit[3]), 1)
-  t2 <- optim(c(0, log(1e-4)), function(p) -sum(extraDistr::dlst(
-    x, df = 2, mu = p[1], sigma = exp(p[2]), log = TRUE)),
+  t2 <- optim(c(0, log(1e-4)), function(p) -sum(dlst(x = x, mu = p[1], sigma = exp(p[2]), df = 2, log = TRUE)),
     method = "BFGS", control = list(maxit = 2000, reltol = 1e-12))
   expect_gt(attr(fit, "logLik"), -t2$value + 70)
 })
@@ -55,8 +55,7 @@ test_that("fixed df agrees with oracle and Cauchy, with correct metadata", {
   x <- c(-5,-2,-1,0,0,1,2,9)
   for (df in c(1, 2.5, 10)) {
     fit <- suppressWarnings(mllst(x, df = df, gradtol = 1e-8, iterlim = 5000), classes = "univariateML_restricted")
-    objective <- function(p) -sum(extraDistr::dlst(x, df = df,
-      mu = p[1], sigma = exp(p[2]), log = TRUE))
+    objective <- function(p) -sum(dlst(x = x, mu = p[1], sigma = exp(p[2]), df = df, log = TRUE))
     oracle <- optim(c(0,0), objective, method = "BFGS",
                     control = list(reltol = 1e-13, maxit = 3000))
     expect_equal(attr(fit, "logLik"), -oracle$value, tolerance = 1e-9)
@@ -94,7 +93,7 @@ test_that("lst new holds agree with independent multistart likelihoods", {
   held_values <- c(mu=0.2,sigma=1.3,df=3)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
                   qnorm((1:20-.5)/20),seq(-1,1,length.out=20))
-  ld <- function(x,p) extraDistr::dlst(x,mu=p[1],sigma=p[2],df=p[3],log=TRUE)
+  ld <- function(x,p) dlst(x = x, mu = p[1], sigma = p[2], df = p[3], log = TRUE)
   for(x in samples)for(mask in 1:7) {
     held <- names(held_values)[as.logical(intToBits(mask)[seq_along(held_values)])]
     args <- as.list(held_values[held])

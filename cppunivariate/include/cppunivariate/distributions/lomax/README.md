@@ -14,8 +14,8 @@ params:
   simulate: 2
   kind: regular
 r:
-  density: extraDistr::dlomax
-  sampler: extraDistr::rlomax
+  density: dlomax
+  sampler: rlomax
   control:
     lambda: Optional held lambda; NULL estimates it.
     kappa: Optional held kappa; NULL estimates it.
@@ -34,7 +34,7 @@ references:
   - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley, p. 60.
 examples: |
   set.seed(3)
-  mllomax(extraDistr::rlomax(100, 2, 4))
+  mllomax(univariateML:::rlomax(n = 100, lambda = 2, kappa = 4))
 
   # The maximum likelihood estimator does not exist for exponential-like data.
   \dontrun{

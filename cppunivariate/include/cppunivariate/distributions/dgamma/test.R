@@ -1,13 +1,13 @@
 test_that("mldgamma agrees with independent reference optimizers", {
   set.seed(617)
   samples <- list(c(0,0,0,1,2,6), c(1,1,3,8,12), c(0,2),
-                  extraDistr::rdgamma(80, .4, .3),
-                  extraDistr::rdgamma(150, 30, 3))
+                  rdgamma(n = 80, shape = 0.4, rate = 0.3),
+                  rdgamma(n = 150, shape = 30, rate = 3))
   for (x in samples) {
     f <- mldgamma(x)
     objective <- function(t) {
       a <- exp(t[1]); b <- exp(t[2])
-      z <- -sum(extraDistr::ddgamma(x,a,b,log=TRUE))
+      z <- -sum(ddgamma(x = x, shape = a, rate = b, log = TRUE))
       if (is.finite(z)) z else 1e100
     }
     starts <- expand.grid(a=c(-1,0,2),b=c(-1,0,1))
@@ -44,7 +44,7 @@ test_that("mldgamma detects escapes and validates all held subsets", {
   expect_true(is.finite(logLik(mldgamma(c(3,3),rate=2))))
 })
 
-test_that("dgamma repaired tails, integer quantiles and seeded sampling", {
+test_that("dgamma log tails, integer quantiles and seeded sampling", {
   f <- mldgamma(c(0,1,2),shape=2,rate=1)
   xs <- c(0,1,10,40,1000)
   lp <- univariateML_to_function(f,"d")(xs,log=TRUE)
@@ -65,25 +65,25 @@ test_that("dgamma repaired tails, integer quantiles and seeded sampling", {
     else { expect_true(all(univariateML_to_function(f,"p")(q,lower.tail=FALSE)<=u+1e-15)); expect_true(all(univariateML_to_function(f,"p")(q-1,lower.tail=FALSE)>u)) }
   }
   set.seed(123); a <- univariateML_to_function(f,"r")(20)
-  set.seed(123); b <- extraDistr::rdgamma(20,2,1)
+  set.seed(123); b <- rdgamma(n = 20, shape = 2, rate = 1)
   expect_equal(a,b)
-  expect_equal(dml(.5,f),0)
+  expect_warning(expect_equal(dml(.5,f),0),"non-integer")
   expect_equal(pml(0,f),univariateML_to_function(f,"p")(0))
   expect_equal(qml(.5,f),univariateML_to_function(f,"q")(.5))
-  expect_equal(univariateML_to_function(f,"d")(0),extraDistr::ddgamma(0,2,1),tolerance=1e-13)
+  expect_equal(univariateML_to_function(f,"d")(0),ddgamma(x = 0, shape = 2, rate = 1),tolerance=1e-13)
 })
 
 test_that("gamma held subsets have independent scalar optima", {
   x <- c(0,0,0,1,3,7,12)
-  ref <- univariateML_reference_fixes[["extraDistr::ddgamma"]]$replacement
+  ref <- ddgamma
   for (a in c(.2,2,20)) {
     f <- mldgamma(x,shape=a)
-    oracle <- optimize(function(t) -sum(ref(x,a,exp(t),log=TRUE)),c(-8,5),tol=1e-10)
+    oracle <- optimize(function(t) -sum(ref(x = x, shape = a, rate = exp(t), log = TRUE)),c(-8,5),tol=1e-10)
     expect_equal(as.numeric(logLik(f)),-oracle$objective,tolerance=1e-8)
   }
   for (r in c(.1,1,10)) {
     f <- mldgamma(x,rate=r)
-    oracle <- optimize(function(t) -sum(ref(x,exp(t),r,log=TRUE)),c(-8,6),tol=1e-10)
+    oracle <- optimize(function(t) -sum(ref(x = x, shape = exp(t), rate = r, log = TRUE)),c(-8,6),tol=1e-10)
     expect_equal(as.numeric(logLik(f)),-oracle$objective,tolerance=1e-8)
   }
   expect_equal(unname(mldgamma(x,shape=1)["rate"]),log1p(1/mean(x)),tolerance=1e-9)

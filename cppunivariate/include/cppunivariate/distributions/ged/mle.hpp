@@ -7,6 +7,7 @@
 // where f_unit is the standardised GED used by dged().
 
 #pragma once
+#include "../../core/multistart.hpp"
 
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
@@ -166,6 +167,8 @@ inline GedResult ged_mle_impl(span x, double tol, int maxit) {
   for (double v : z) a += std::abs(v - c) / dn;
   GedResult best{c, std::sqrt(2.0) * a, 1.0,
                  -dn * (std::log(2.0 * a) + 1.0), 0, GedStatus::Ok};
+  double attempted=best.logLik;
+  bool accepted=false;
   const double objective_divisor = n>=100000 ? dn : 1.0;
   GedFitCost cost{span{z.data(), z.size()},objective_divisor};
   finite_diff_cost<GedFitCost> fd{cost};
@@ -175,12 +178,10 @@ inline GedResult ged_mle_impl(span x, double tol, int maxit) {
   for (double nu0 : {1.5, 2.0, 4.0, 8.0}) {
     const double phi0[3] = {0.0, 0.0, std::log(nu0 - 1.0)};
     auto r = bfgs_minimize(fd, phi0, ctl);
-    if (r.status != BfgsStatus::Ok && r.theta.size()==3) {
-      // A failed optimizer is usable only at a stationary returned point.
-      double g[3]; fd.gradient(r.theta.data(),g);
-      double norm=0; for(double v:g) norm+=v*v*objective_divisor*objective_divisor;
-      if(std::sqrt(norm)<1e-3) r.status=BfgsStatus::Ok;
-    }
+    attempted=std::max(attempted,-r.f*objective_divisor);
+    if (!bfgs_candidate_acceptable(r,objective_divisor)) continue;
+    accepted=true;
+    r.status=BfgsStatus::Ok;
     r.f *= objective_divisor;
     if (std::isfinite(r.f) && -r.f > best.logLik + tie) {
       best = {r.theta[0], std::exp(r.theta[1]), 1.0 + std::exp(r.theta[2]),
@@ -188,8 +189,9 @@ inline GedResult ged_mle_impl(span x, double tol, int maxit) {
               r.status == BfgsStatus::Ok ? GedStatus::Ok : GedStatus::BfgsFailure};
     }
   }
+  if(!accepted && attempted>best.logLik+tie) best.status=GedStatus::BfgsFailure;
   const double uniform = -dn * std::log(z.back() - z.front());
-  if (uniform > best.logLik + tie) {
+  if (uniform > attempted + tie) {
     best.logLik = uniform;
     best.status = GedStatus::UniformBoundary;
   }

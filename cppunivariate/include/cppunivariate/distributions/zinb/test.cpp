@@ -121,3 +121,29 @@ TEST_CASE("zinb: P3 attained size zero preserves holds") {
  CHECK(r.status==cppunivariate::ZinbStatus::Ok);
  CHECK(r.size==0); CHECK(r.prob==.4); CHECK(r.logLik==0);
 }
+
+TEST_CASE("zinb: zero boundary is the attained point mass") {
+  const double inf=std::numeric_limits<double>::infinity();
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  cppunivariate::distributions::StdRng<> rng(290);
+  for(double x : {-inf,-1.0,-.5,0.0,.5,1.0,inf}) {
+    const double mass=x==0?1:0;
+    CHECK(cppunivariate::distributions::dzinb(x,0,.4,.3,false)==mass);
+    CHECK(cppunivariate::distributions::dzinb(x,0,.4,.3,true)==(mass==1?0:-inf));
+    for(bool lower : {false,true}) {
+      const double cdf=(x>=0)==lower?1:0;
+      CHECK(cppunivariate::distributions::pzinb(x,0,.4,.3,lower,false)==cdf);
+      CHECK(cppunivariate::distributions::pzinb(x,0,.4,.3,lower,true)==(cdf==1?0:-inf));
+    }
+  }
+  for(bool lower : {false,true}) {
+    for(double p : {0.0,.1,.5,1.0})
+      CHECK(cppunivariate::distributions::qzinb(p,0,.4,.3,lower,false)==0);
+    for(double p : {-inf,-10000.0,-1.0,0.0})
+      CHECK(cppunivariate::distributions::qzinb(p,0,.4,.3,lower,true)==0);
+    CHECK(std::isnan(cppunivariate::distributions::qzinb(nan,0,.4,.3,lower,true)));
+    CHECK(std::isnan(cppunivariate::distributions::pzinb(nan,0,.4,.3,lower,true)));
+  }
+  CHECK(std::isnan(cppunivariate::distributions::dzinb(nan,0,.4,.3,false)));
+  for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rzinb(rng,0,.4,.3)==0);
+}

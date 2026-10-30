@@ -14,8 +14,8 @@ params:
   simulate: 3.0
   kind: regular
 r:
-  density: extraDistr::dkumar
-  sampler: extraDistr::rkumar
+  density: dkumar
+  sampler: rkumar
   control:
     a: Optional held a; `NULL` estimates it.
     b: Optional held b; `NULL` estimates it.

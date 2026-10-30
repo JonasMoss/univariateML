@@ -16,9 +16,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::dhnorm
-  sampler: extraDistr::rhnorm
-  shift: mu
+  density: dhnorm
+  sampler: rhnorm
   control:
     sigma: Held positive finite coefficient; NULL estimates it.
     mu: Required endpoint; a value holds it and explicit `NULL` estimates the translation.
@@ -29,7 +28,7 @@ references:
   - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition. Wiley.
 examples: |
   set.seed(7)
-  mlhnorm(-2 + extraDistr::rhnorm(100, sigma = 3), mu = NULL)
+  mlhnorm(univariateML:::rhnorm(100, mu = -2, sigma = 3), mu = NULL)
 fit_args:
   mu: ~
 ---
@@ -38,8 +37,6 @@ The translated half-normal distribution models nonnegative normal deviations fro
 
 ## Details
 
-`dml`/`pml`/`qml`/`rml` evaluate `extraDistr::dhnorm`/`phnorm`/`qhnorm`/`rhnorm` at `x - mu` (quantiles and draws shift back); `mlhnorm(x, mu = 0)` fits the ordinary half-normal exactly as those functions define it.
-
 The support is $[\mu, \infty)$ and `sigma` is a scale, not the standard deviation.
 The likelihood is maximised at `mu = min(x)` exactly, with
 `sigma = sqrt(mean((x - mu)^2))`. At the endpoint `dml` returns the
@@ -47,7 +44,7 @@ interior limit `sqrt(2/pi)/sigma`. At least two distinct observations are
 required when both coefficients are estimated; constant data have unbounded
 likelihood as sigma tends to zero.
 
-Holding `mu` uses the closed support $[\mu, \infty)$ and requires all observations to be at least `mu`, with at least one strictly larger. The scale estimate is the root mean square distance from that endpoint, including for a single observation.
+Holding `mu` uses the closed support $[\mu, \infty)$ and requires all observations to be at least `mu`, with at least one strictly larger. The scale estimate is the root mean square distance from that endpoint, including for a single observation. `mlhnorm(x, mu = 0)` fits the ordinary half-normal. Evaluation uses the internal translated half-normal functions.
 
 Data with a sharp maximum instead of a minimum come from the reflected model; fit `mlhnorm(-x, mu = NULL)`.
 

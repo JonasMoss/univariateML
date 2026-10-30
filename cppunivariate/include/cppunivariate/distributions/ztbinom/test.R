@@ -1,8 +1,8 @@
 test_that("ztbinom agrees with a multi-start reference-density oracle", {
   set.seed(13116)
-  x <- do.call(actuar::rztbinom, list(250, size = 8, prob = 0.4))
+  x <- do.call(rztbinom, list(250, size = 8, prob = 0.4))
   fit <- mlztbinom(x, size = NULL)
-  density <- actuar::dztbinom
+  density <- dztbinom
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
   oracle <- function(held = NULL) {
@@ -46,7 +46,7 @@ test_that("ztbinom preserves fixed size at attained boundaries", {
 
  test_that("ztbinom: new holds match reference-density integer and multistart oracles", {
   set.seed(810)
-  samples <- c(lapply(c(20,100),function(n) actuar::rztbinom(n,8,.4)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
+  samples <- c(lapply(c(20,100),function(n) rztbinom(n = n, size = 8, prob = 0.4)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
   for(x in samples) {
     for(fixed_size in c(TRUE,FALSE)) {
       held <- list(prob=.4)
@@ -55,7 +55,7 @@ test_that("ztbinom preserves fixed size at attained boundaries", {
       args <- c(list(x=x,size=if(fixed_size) 8 else NULL),held)
       fit <- suppressWarnings(do.call(mlztbinom,args))
       sizes <- if(fixed_size) 8 else seq(max(x),200)
-      ll <- function(size, mixture=0) sum(actuar::dztbinom(x,size=size,prob=.4,log=TRUE))
+      ll <- function(size, mixture=0) sum(dztbinom(x = x, size = size, prob = 0.4, log = TRUE))
       oracle <- max(vapply(sizes,function(size) {
         return(ll(size))
 
@@ -92,16 +92,16 @@ test_that("ztbinom: free size and probability agree with a reference-density ora
   # than relying only on the n=250 case already covered above.
   set.seed(85087)
   oracle_ll <- function(x, size) {
-    objective <- function(p) -sum(actuar::dztbinom(x, size = size, prob = p, log = TRUE))
+    objective <- function(p) -sum(dztbinom(x = x, size = size, prob = p, log = TRUE))
     -optimize(objective, c(1e-9, 1 - 1e-9))$objective
   }
   oracle <- function(x, sizes) max(vapply(sizes, function(s) oracle_ll(x, s), 0))
 
   samples <- list(
-    n20 = actuar::rztbinom(20, size = 8, prob = 0.4),
-    n100 = actuar::rztbinom(100, size = 8, prob = 0.4),
+    n20 = rztbinom(n = 20, size = 8, prob = 0.4),
+    n100 = rztbinom(n = 100, size = 8, prob = 0.4),
     ties = c(2, 2, 2, 2, 3, 4, 5, 5),
-    near_poisson = actuar::rztbinom(100, size = 500, prob = 0.02)
+    near_poisson = rztbinom(n = 100, size = 500, prob = 0.02)
   )
   for (x in samples) {
     # The near-Poisson sample can legitimately hit the infinite-size
@@ -117,7 +117,7 @@ test_that("ztbinom: free size and probability agree with a reference-density ora
     expect_gte(attr(fit, "logLik") + 1e-6, best)
     # Reference-density agreement at the fitted point itself.
     expect_equal(attr(fit, "logLik"),
-                 sum(actuar::dztbinom(x, size = unname(fit["size"]), prob = unname(fit["prob"]), log = TRUE)),
+                 sum(dztbinom(x = x, size = unname(fit["size"]), prob = unname(fit["prob"]), log = TRUE)),
                  tolerance = 1e-8)
   }
 })

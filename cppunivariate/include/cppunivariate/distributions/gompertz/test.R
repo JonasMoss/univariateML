@@ -31,7 +31,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("a","b")
   held_default <- c(1.0,1.0)
   names(held_default) <- pn
-  density <- extraDistr::dgompertz
+  density <- dgompertz
   ref <- function(x,p) {
     a <- p[["a"]]; b <- p[["b"]]; log(a)+b*x-a*expm1(b*x)/b
   }

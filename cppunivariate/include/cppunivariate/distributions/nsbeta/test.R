@@ -17,7 +17,7 @@ test_that("nsbeta: required endpoint, reference likelihood and reproducibility",
    co <- as.list(as.numeric(fit)); names(co)<-names(fit)
    if(any(!is.finite(z)) || any(abs(z)>500)) return(1e100)
    co[par]<-as.list(exp(z))
-   f <- get(paste0("d","nsbeta"),asNamespace("extraDistr"))
+   f <- get(paste0("d","nsbeta"), asNamespace("univariateML"))
    value <- suppressWarnings(-sum(do.call(f,c(list(x=x,log=TRUE),co))))
    if(is.finite(value)) value else 1e100
  }
@@ -28,7 +28,7 @@ test_that("nsbeta: required endpoint, reference likelihood and reproducibility",
 })
 
 test_that("held bounds survive selection and bootstrap", {
- x <- extraDistr::qnsbeta((1:100-.5)/100,2,3,2,5)
+ x <- qnsbeta(p = (1:100 - 0.5)/100, shape1 = 2, shape2 = 3, min = 2, max = 5)
  fit <- mlnsbeta(x,min=2,max=5)
  expect_equal(attr(logLik(fit),"df"),2)
  set.seed(19)
@@ -45,9 +45,9 @@ test_that("held bounds survive selection and bootstrap", {
 
 test_that("nsbeta: reference mapping and unbounded unrestricted path", {
  x <- seq(.01,.99,length.out=50)
- expect_lt(max(abs((extraDistr::dnsbeta(2+3*x,2,3,2,5,log=TRUE))-(dbeta(x,2,3,log=TRUE)-log(3)))),1e-12)
+ expect_lt(max(abs((dnsbeta(x = 2 + 3 * x, shape1 = 2, shape2 = 3, min = 2, max = 5, log = TRUE))-(dbeta(x,2,3,log=TRUE)-log(3)))),1e-12)
  y <- c(1,2,4,7)
- ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(extraDistr::dnsbeta(y,.5,2,1-e,8,log=TRUE)))
+ ll <- sapply(c(1e-3,1e-6,1e-9),function(e) sum(dnsbeta(x = y, shape1 = 0.5, shape2 = 2, min = 1 - e, max = 8, log = TRUE)))
  expect_true(all(diff(ll)>0))
 })
 
@@ -56,9 +56,9 @@ test_that("P2 nsbeta holds agree with independent multistart reference likelihoo
   pars <- c(shape1=2, shape2=3, min=0, max=1)
   thresholds <- c("min", "max")
   regular <- setdiff(names(pars), thresholds)
-  density <- extraDistr::dnsbeta
+  density <- dnsbeta
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(extraDistr::qnsbeta, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qnsbeta, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- qbeta(((1:20)-.5)/20,2,3)

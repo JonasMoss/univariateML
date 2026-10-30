@@ -3,7 +3,7 @@ gb2_ll <- function(x, v) {
   s <- function(t) pmax(t, 0) + log1p(exp(-abs(t)))
   sum(log(v[2])-log(x)-lbeta(v[3],v[1])-v[3]*s(-t)-v[1]*s(t))
 }
-gb2_sample <- function(n=400) actuar::qtrbeta(((1:n)-.5)/n,.3,2,.4)
+gb2_sample <- function(n=400) qgb2(p = ((1:n) - 0.5)/n, shape1 = 0.3, shape2 = 2, shape3 = 0.4, scale = 1/1)
 
 test_that("GB2 agrees with independent multistart likelihood optimization", {
   x <- gb2_sample()
@@ -19,7 +19,7 @@ test_that("GB2 agrees with independent multistart likelihood optimization", {
     expect_gte(attr(fit,"logLik"), -o$value-1e-6)
   }
   expect_equal(attr(fit,"logLik"),gb2_ll(x,fit),tolerance=1e-10)
-  expect_equal(sum(actuar::dtrbeta(x,fit[1],fit[2],fit[3],scale=fit[4],log=TRUE)),
+  expect_equal(sum(dgb2(x = x, shape1 = fit[1], shape2 = fit[2], shape3 = fit[3], scale = fit[4], log = TRUE)),
                attr(fit,"logLik"),tolerance=1e-10)
 })
 
@@ -65,8 +65,8 @@ test_that("GB2 fixed subsets preserve metadata and constrained likelihood", {
 test_that("GB2 constrained members agree with their existing fitters", {
   u <- ((1:400)-.5)/400
   for(member in c("burr","invburr","betapr")) {
-    x <- switch(member,burr=actuar::qburr(u,.3,2),
-      invburr=actuar::qinvburr(u,.3,2),betapr=extraDistr::qbetapr(u,.3,.4))
+    x <- switch(member,burr=qburr(p = u, shape1 = 0.3, shape2 = 2, scale = 1/1),
+      invburr=qinvburr(p = u, shape1 = 0.3, shape2 = 2, scale = 1/1),betapr=qbetapr(p = u, shape1 = 0.3, shape2 = 0.4, scale = 1))
     f <- switch(member,burr=mlgb2(x,shape3=1),invburr=mlgb2(x,shape1=1),
       betapr=mlgb2(x,shape2=1))
     old <- do.call(paste0("ml",member),list(x))
@@ -77,8 +77,8 @@ test_that("GB2 constrained members agree with their existing fitters", {
 
 test_that("GB2 explicitly selects faces on deterministic face data", {
   u <- ((1:200)-.5)/200
-  cases <- list(lnorm=qlnorm(u),trgamma=actuar::qtrgamma(u,.7,2),
-    invtrgamma=actuar::qinvtrgamma(u,.7,2),pareto=(1-u)^(-1/2),power=u^(1/2),
+  cases <- list(lnorm=qlnorm(u),trgamma=qtrgamma(p = u, shape1 = 0.7, shape2 = 2, scale = 1/1),
+    invtrgamma=qinvtrgamma(p = u, shape1 = 0.7, shape2 = 2, scale = 1/1),pareto=(1-u)^(-1/2),power=u^(1/2),
     double=ifelse(u<.5,(2*u)^(1/2),(2*(1-u))^(-1/2)))
   for(id in names(cases)) {
     expect_error(mlgb2(cases[[id]]),if(id=="double") "double Pareto" else
@@ -91,9 +91,9 @@ test_that("P2 gb2 holds agree with independent multistart reference likelihoods"
   pars <- c(shape1=0.3, shape2=2, shape3=0.4, scale=1)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)
-  density <- actuar::dtrbeta
+  density <- dgb2
   samples <- lapply(c(3, 20, 100), function(n)
-    do.call(actuar::qtrbeta, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
+    do.call(qgb2, c(list(p = (seq_len(n)-.5)/n), as.list(pars))))
   samples[[4]] <- rep(samples[[2]][seq(1, 20, 2)], each=2)
   # These samples deliberately include proper limit-model data.
   samples[[5]] <- qexp(((1:20)-.5)/20)

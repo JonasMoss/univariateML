@@ -25,8 +25,8 @@ params:
   simulate: 0.3
   kind: regular
 r:
-  density: actuar::dzmnbinom
-  sampler: actuar::rzmnbinom
+  density: dzmnbinom
+  sampler: rzmnbinom
   control:
     size: Optional fixed size; NULL estimates size.
     reltol: Tolerance for scalar profile search.

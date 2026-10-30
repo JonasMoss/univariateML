@@ -4,7 +4,7 @@ betapr_oracle <- function(x) {
   # package limit fits below cover the excluded infinite-shape faces.
   f <- function(p) {
     if(any(!is.finite(p)) || any(p[1:2] > log(1e5)) || any(p < -700) || p[3] > 700) return(1e100)
-    ll <- sum(extraDistr::dbetapr(x, exp(p[1]), exp(p[2]), scale=exp(p[3]), log=TRUE))
+    ll <- sum(dbetapr(x = x, shape1 = exp(p[1]), shape2 = exp(p[2]), scale = exp(p[3]), log = TRUE))
     if(is.finite(ll)) -ll else 1e100
   }
   starts <- expand.grid(a=c(.1,.5,2,10,100),b=c(.1,.5,2,10,100))
@@ -23,16 +23,16 @@ test_that("three-parameter fits and D1 comparisons agree with a slow oracle", {
   samples <- list()
   for (seed in 1:12) {
     set.seed(seed)
-    samples[[paste0("small", seed)]] <- extraDistr::rbetapr(20, 2, 3, scale=4)
+    samples[[paste0("small", seed)]] <- rbetapr(n = 20, shape1 = 2, shape2 = 3, scale = 4)
   }
   for (seed in 1:3) {
     set.seed(seed)
-    samples[[paste0("ordinary", seed)]] <- extraDistr::rbetapr(400, .7, 1.2, scale=3)
+    samples[[paste0("ordinary", seed)]] <- rbetapr(n = 400, shape1 = 0.7, shape2 = 1.2, scale = 3)
   }
   set.seed(1)
   samples$gamma <- rgamma(300, 2, rate=.5)
   set.seed(1)
-  samples$invgamma <- extraDistr::rinvgamma(300, 2, 4)
+  samples$invgamma <- rinvgamma(n = 300, alpha = 2, beta = 4)
   set.seed(1)
   samples$lnorm <- rlnorm(300, .7, .8)
   for (label in names(samples)) {
@@ -43,7 +43,7 @@ test_that("three-parameter fits and D1 comparisons agree with a slow oracle", {
       expect_identical(names(fit), c("shape1", "shape2", "scale"))
       expect_equal(attr(fit, "logLik"), o$ll, tolerance=2e-7, info=label)
       expect_equal(as.numeric(fit), o$par, tolerance=2e-3, info=label)
-      expect_equal(sum(extraDistr::dbetapr(x, fit[1], fit[2], scale=fit[3], log=TRUE)),
+      expect_equal(sum(dbetapr(x = x, shape1 = fit[1], shape2 = fit[2], scale = fit[3], log = TRUE)),
                    attr(fit, "logLik"), tolerance=1e-10)
     } else {
       expect_error(mlbetapr(x), paste0("Use `ml", o$model, "`"), info=label)
@@ -53,9 +53,9 @@ test_that("three-parameter fits and D1 comparisons agree with a slow oracle", {
   }
 })
 
-test_that("scale, controls, validation, and external density dispatch work", {
+test_that("scale, controls and validation work", {
   set.seed(313)
-  x <- extraDistr::rbetapr(1000, 1, 2, scale=3)
+  x <- rbetapr(n = 1000, shape1 = 1, shape2 = 2, scale = 3)
   fit <- mlbetapr(x)
   expect_s3_class(fit, "univariateML")
   expect_identical(attr(fit, "model"), "Beta prime")
@@ -70,7 +70,7 @@ test_that("scale, controls, validation, and external density dispatch work", {
   moved <- mlbetapr(x * 7)
   expect_equal(as.numeric(moved[1:2]), as.numeric(fit[1:2]), tolerance=1e-4)
   expect_equal(as.numeric(moved[3]), as.numeric(fit[3])*7, tolerance=1e-4)
-  expect_equal(dml(x[1:5], fit), extraDistr::dbetapr(x[1:5], fit[1], fit[2], scale=fit[3]))
+
 })
 
 
@@ -78,7 +78,7 @@ test_that("fixed scale agrees with reference-density oracle and records df", {
   for (s in c(.2, 1, 7)) {
     x <- c(.03, .1, .4, .7, 1, 2, 4, 12) * s
     fit <- mlbetapr(x, scale=s)
-    objective <- function(p) -sum(extraDistr::dbetapr(x, exp(p[1]), exp(p[2]), scale=s, log=TRUE))
+    objective <- function(p) -sum(dbetapr(x = x, shape1 = exp(p[1]), shape2 = exp(p[2]), scale = s, log = TRUE))
     oracle <- optim(c(0,0), objective, method="BFGS",
                     control=list(reltol=1e-13, maxit=3000))
     expect_equal(attr(fit, "logLik"), -oracle$value, tolerance=1e-9)
@@ -104,7 +104,7 @@ test_that("fixed unit scale reproduces the historical golden", {
 
 test_that("fixing beta-prime scale removes the free-scale escapes", {
   set.seed(1)
-  for (x in list(rgamma(300,2,rate=.5), extraDistr::rinvgamma(300,2,4))) {
+  for (x in list(rgamma(300,2,rate=.5), rinvgamma(n = 300, alpha = 2, beta = 4))) {
     expect_s3_class(mlbetapr(x, scale=1), "univariateML")
   }
   expect_error(mlbetapr(rep(1,20),scale=1), "positive log-variance")
@@ -112,15 +112,15 @@ test_that("fixing beta-prime scale removes the free-scale escapes", {
 
 test_that("beta-prime new hold subsets agree with independent reference oracles", {
   set.seed(8104)
-  samples <- list(extraDistr::rbetapr(20,.7,1.2),extraDistr::rbetapr(100,.7,1.2),
-    c(.05,.05,.3,2,15),c(.2,4),1,rep(2,4),rgamma(20,2),extraDistr::rinvgamma(100,3))
+  samples <- list(rbetapr(n = 20, shape1 = 0.7, shape2 = 1.2, scale = 1),rbetapr(n = 100, shape1 = 0.7, shape2 = 1.2, scale = 1),
+    c(.05,.05,.3,2,15),c(.2,4),1,rep(2,4),rgamma(20,2),rinvgamma(n = 100, alpha = 3, beta = 1))
   subsets <- list(list(shape1=.7),list(shape2=1.2),list(shape1=.7,shape2=1.2),
     list(shape1=.7,scale=1.3),list(shape2=1.2,scale=1.3),list(shape1=.7,shape2=1.2,scale=1.3))
   for(x in samples)for(args in subsets) {
     free <- setdiff(c("shape1","shape2","scale"),names(args))
     objective <- function(p) {
       pars <- c(args,as.list(setNames(exp(p),free)))
-      ll <- sum(do.call(extraDistr::dbetapr,c(list(x=x,log=TRUE),pars)))
+      ll <- sum(do.call(dbetapr,c(list(x=x,log=TRUE),pars)))
       if(is.finite(ll)) -ll else 1e100
     }
     starts <- expand.grid(rep(list(log(c(.2,2,20))),length(free)))

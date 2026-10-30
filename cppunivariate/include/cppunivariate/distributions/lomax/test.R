@@ -2,22 +2,22 @@ context("mllomax")
 
 ## Data generation.
 set.seed(313)
-tiny_data <- extraDistr::rlomax(10, 1, 7)
-small_data <- extraDistr::rlomax(100, 10, 3)
-medium_data <- extraDistr::rlomax(1000, 1 / 2, 2)
-large_data <- extraDistr::rlomax(10000, 20, 13)
+tiny_data <- rlomax(n = 10, lambda = 1, kappa = 7)
+small_data <- rlomax(n = 100, lambda = 10, kappa = 3)
+medium_data <- rlomax(n = 1000, lambda = 1/2, kappa = 2)
+large_data <- rlomax(n = 10000, lambda = 20, kappa = 13)
 
 ## Checks if the ML is correct.
 mle2 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dlomax(small_data, p[1], p[2], log = TRUE))
+  -sum(dlomax(x = small_data, lambda = p[1], kappa = p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 
 mle3 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dlomax(medium_data, p[1], p[2], log = TRUE))
+  -sum(dlomax(x = medium_data, lambda = p[1], kappa = p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 
 mle4 <- suppressWarnings(nlm(function(p) {
-  -sum(extraDistr::dlomax(large_data, p[1], p[2], log = TRUE))
+  -sum(dlomax(x = large_data, lambda = p[1], kappa = p[2], log = TRUE))
 }, p = c(1, 1))$estimate)
 
 expect_equal(mle2, as.numeric(mllomax(small_data)), tolerance = 1e-3)
@@ -48,7 +48,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mllomax(small_data, na.rm = TRUE)
 expect_equal(
-  sum(extraDistr::dlomax(small_data, est[1], est[2], log = TRUE)),
+  sum(dlomax(x = small_data, lambda = est[1], kappa = est[2], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -132,7 +132,7 @@ test_that("Lomax agrees with a slow independent psi and density oracle", {
   set.seed(4801)
   for (j in seq_len(220)) {
     n <- c(2L,3L,5L,10L,50L)[1L+(j-1L)%%5L]
-    x <- if(j%%2L) rexp(n) else extraDistr::rlomax(n,1,runif(1,.3,5))
+    x <- if(j%%2L) rexp(n) else rlomax(n = n, lambda = 1, kappa = runif(1, 0.3, 5))
     y <- x/mean(x); logubar <- -mean(log(y)); ubar <- exp(logubar)
     # Independent existence criterion, including every grid-local minimum.
     psi <- function(u) mean(log(exp(-u)+u*y))
@@ -142,10 +142,10 @@ test_that("Lomax agrees with a slow independent psi and density oracle", {
                  pv[-c(1,length(pv))] <= pv[-c(1,2)])+1L
     minpsi <- min(pv)
     for (i in ids) minpsi <- min(minpsi,optimize(psi,ug[c(i-1,i+1)],tol=1e-12)$objective)
-    # Direct extraDistr density, independently profiled in log(lambda).
+    # Internal density, independently profiled in log(lambda).
     profile <- function(t) {
       q <- exp(t); kappa <- 1/mean(log1p(q*y))
-      sum(extraDistr::dlomax(y,q,kappa,log=TRUE))-n*log(mean(x))
+      sum(dlomax(x = y, lambda = q, kappa = kappa, log = TRUE))-n*log(mean(x))
     }
     # The theoretical endpoint can exceed the double exponent range.
     # Beyond log q=600 the profile is already far below the face here.
@@ -175,7 +175,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("lambda","kappa")
   held_default <- c(1,2)
   names(held_default) <- pn
-  density <- extraDistr::dlomax
+  density <- dlomax
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

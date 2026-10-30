@@ -15,8 +15,8 @@ params:
   simulate: 0.4
   kind: regular
 r:
-  density: actuar::dztgeom
-  sampler: actuar::rztgeom
+  density: dztgeom
+  sampler: rztgeom
   control:
     prob: "Optional held prob; NULL estimates it."
 log_density: log(prob)+(x-1)*log(1-prob)

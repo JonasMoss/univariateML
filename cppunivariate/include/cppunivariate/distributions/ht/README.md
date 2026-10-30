@@ -27,9 +27,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::dht
-  sampler: extraDistr::rht
-  shift: mu
+  density: dht
+  sampler: rht
   control:
     mu: Required endpoint; a value holds it and explicit `NULL` estimates the translation.
 log_density: log(2) + loggamma((nu+1)/2) - loggamma(nu/2) - log(nu*pi)/2 - log(sigma) - (nu+1)*log(1+(x-mu)**2/(nu*sigma**2))/2
@@ -51,7 +50,7 @@ references:
   - extraDistr package, HalfT documentation (density and parameterization).
 examples: |
   set.seed(5)
-  mlht(extraDistr::rht(100, 3) + 2, mu = NULL)
+  mlht(univariateML:::rht(n = 100, mu = 0, nu = 3, sigma = 1) + 2, mu = NULL)
 holds: []
 fit_args:
   mu: 0
@@ -73,7 +72,7 @@ n\log(2) + n\,\mathrm{logmode}(1) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)) = n\log
 $$
 an unattained supremum (`ScaleBoundary`) when it beats both the interior search and the normal escape, derived by taking the exact `sigma -> 0` limit of each observation's log density at the break-even `nu`, where the leading `log(sigma)` terms cancel by construction. (`logmode(nu)` is the ordinary Student t log density at zero, scale 1; at `nu = 1` it is `-log(pi)`. The factor 2 for the half density is included separately.) See `notes/evaluations/2026-10-29-p4-report.md` for the full derivation.
 
-The d/p/q/r functions use extraDistr's zero-threshold half-t, evaluated at `x - mu` (`dml`/`pml`/`qml`/`rml` shift accordingly), with runtime-checked tail repairs.
+Evaluation uses the internal d/p/q/r functions.
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
 and emit a warning of class `univariateML_restricted`. Held coefficients are

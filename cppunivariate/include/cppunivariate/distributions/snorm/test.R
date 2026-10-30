@@ -2,8 +2,8 @@ context("mlsnorm")
 
 ## Data generation.
 set.seed(313)
-small_data <- rsnorm(100)
-tiny_data <- rsnorm(100)
+small_data <- rsnorm(n = 100, mean = 0, sd = 1, xi = 1.5)
+tiny_data <- rsnorm(n = 100, mean = 0, sd = 1, xi = 1.5)
 
 ## Finds errors with na and data out of bounds.
 expect_error(mlsnorm(c(tiny_data, NA)))
@@ -17,7 +17,7 @@ expect_equal(
 ## Is the log-likelihood correct?
 est <- mlsnorm(small_data, na.rm = TRUE)
 expect_equal(
-  sum(dsnorm(small_data, est[1], est[2], est[3], log = TRUE)),
+  sum(dsnorm(x = small_data, mean = est[1], sd = est[2], xi = est[3], log = TRUE)),
   attr(est, "logLik")
 )
 
@@ -78,7 +78,7 @@ test_that("exact snorm profile agrees with 240 independent grid searches", {
   for (i in seq_len(240)) {
     n <- c(5L, 10L, 30L, 100L, 250L, 500L)[(i-1L) %% 6L + 1L]
     x <- switch((i-1L) %% 4L + 1L, rnorm(n), rexp(n),
-                rsnorm(n, xi = 2.5), -rexp(n))
+                rsnorm(n = n, mean = 0, sd = 1, xi = 2.5), -rexp(n))
     reference <- snorm_profile_reference(x)
     if (reference$boundary != 0L) {
       expect_error(mlsnorm(x), if (reference$boundary == 1L)
@@ -87,7 +87,7 @@ test_that("exact snorm profile agrees with 240 independent grid searches", {
     } else {
       fit <- mlsnorm(x)
       expect_gte(attr(fit, "logLik"), reference$logLik - 1e-9)
-      expect_equal(sum(dsnorm(x, fit[1], fit[2], fit[3], log = TRUE)),
+      expect_equal(sum(dsnorm(x = x, mean = fit[1], sd = fit[2], xi = fit[3], log = TRUE)),
                    attr(fit, "logLik"), tolerance = 1e-12)
     }
   }
@@ -101,7 +101,7 @@ test_that("two-piece conversion matches fGarch log densities", {
     mu <- c + m1*(b-a)
     sd <- sqrt(a*a-a*b+b*b-m1*m1*(b-a)^2)
     expected <- log(2/(a+b)) + dnorm((x-c)/ifelse(x<c,a,b), log=TRUE)
-    expect_lt(max(abs(dsnorm(x,mu,sd,sqrt(b/a),log=TRUE)-expected)), 1e-14)
+    expect_lt(max(abs(dsnorm(x = x, mean = mu, sd = sd, xi = sqrt(b/a), log = TRUE)-expected)), 1e-14)
   }
 })
 
@@ -143,28 +143,28 @@ test_that("snorm dpqr integrate, invert and preserve extreme tails", {
 })
 
 test_that("snorm dpqr recycle, propagate missing values and use R RNG", {
-  expect_length(dsnorm(numeric()), 0)
-  expect_equal(dsnorm(c(0, 1, 2), mean = c(0, 1)),
-    c(dsnorm(0), dsnorm(1, mean = 1), dsnorm(2)))
-  expect_identical(dsnorm(NA_real_), NA_real_)
-  expect_true(is.nan(psnorm(NaN)))
-  expect_warning(expect_true(is.nan(dsnorm(0, sd = -1))), "NaNs produced")
-  expect_warning(expect_true(is.nan(qsnorm(1.1))), "NaNs produced")
-  expect_warning(expect_true(is.nan(rsnorm(1, sd = -1))), "NaNs produced")
-  set.seed(81); first <- rsnorm(100)
-  set.seed(81); expect_identical(rsnorm(100), first)
-  expect_length(rsnorm(1:7), 7)
-  expect_length(rsnorm(0), 0)
-  expect_length(rsnorm(3, mean = numeric()), 0)
-  expect_identical(rsnorm(1, mean = NA_real_), NA_real_)
+  expect_length(dsnorm(x = numeric(), mean = 0, sd = 1, xi = 1.5), 0)
+  expect_equal(dsnorm(x = c(0, 1, 2), mean = c(0, 1), sd = 1, xi = 1.5),
+    c(dsnorm(x = 0, mean = 0, sd = 1, xi = 1.5), dsnorm(x = 1, mean = 1, sd = 1, xi = 1.5), dsnorm(x = 2, mean = 0, sd = 1, xi = 1.5)))
+  expect_identical(dsnorm(x = NA_real_, mean = 0, sd = 1, xi = 1.5), NA_real_)
+  expect_true(is.nan(psnorm(q = NaN, mean = 0, sd = 1, xi = 1.5)))
+  expect_warning(expect_true(is.nan(dsnorm(x = 0, mean = 0, sd = -1, xi = 1.5))), "NaNs produced")
+  expect_warning(expect_true(is.nan(qsnorm(p = 1.1, mean = 0, sd = 1, xi = 1.5))), "NaNs produced")
+  expect_warning(expect_true(is.nan(rsnorm(n = 1, mean = 0, sd = -1, xi = 1.5))), "NaNs produced")
+  set.seed(81); first <- rsnorm(n = 100, mean = 0, sd = 1, xi = 1.5)
+  set.seed(81); expect_identical(rsnorm(n = 100, mean = 0, sd = 1, xi = 1.5), first)
+  expect_length(rsnorm(n = 1:7, mean = 0, sd = 1, xi = 1.5), 7)
+  expect_length(rsnorm(n = 0, mean = 0, sd = 1, xi = 1.5), 0)
+  expect_length(rsnorm(n = 3, mean = numeric(), sd = 1, xi = 1.5), 0)
+  expect_identical(rsnorm(n = 1, mean = NA_real_, sd = 1, xi = 1.5), NA_real_)
   set.seed(712)
-  draws <- rsnorm(5000)
+  draws <- rsnorm(n = 5000, mean = 0, sd = 1, xi = 1.5)
   for (prob in c(.1, .5, .9))
-    expect_lt(abs(mean(draws <= qsnorm(prob)) - prob), .025)
+    expect_lt(abs(mean(draws <= qsnorm(p = prob, mean = 0, sd = 1, xi = 1.5)) - prob), .025)
   for (bad in c(-1, 0, Inf)) {
-    expect_warning(expect_true(is.nan(dsnorm(0, sd = bad))), "NaNs produced")
-    expect_warning(expect_true(is.nan(psnorm(0, sd = bad))), "NaNs produced")
-    expect_warning(expect_true(is.nan(qsnorm(.5, sd = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dsnorm(x = 0, mean = 0, sd = bad, xi = 1.5))), "NaNs produced")
+    expect_warning(expect_true(is.nan(psnorm(q = 0, mean = 0, sd = bad, xi = 1.5))), "NaNs produced")
+    expect_warning(expect_true(is.nan(qsnorm(p = 0.5, mean = 0, sd = bad, xi = 1.5))), "NaNs produced")
   }
   fit <- mlsnorm(small_data)
   expect_equal(as.numeric(logLik(fit)), sum(dml(small_data, fit, log = TRUE)),
@@ -181,17 +181,17 @@ test_that("snorm matches frozen fGarch values (reference.json)", {
 
 test_that("snorm skew parameter domain is enforced", {
   for (bad in c(-1, 0, Inf))
-    expect_warning(expect_true(is.nan(dsnorm(0, xi = bad))), "NaNs produced")
+    expect_warning(expect_true(is.nan(dsnorm(x = 0, mean = 0, sd = 1, xi = bad))), "NaNs produced")
 })
 
 test_that("snorm log tails exceed the backend exponent range", {
   for (lower in c(TRUE, FALSE)) {
-    x <- qsnorm(-20000, lower.tail = lower, log.p = TRUE)
+    x <- qsnorm(p = -20000, mean = 0, sd = 1, xi = 1.5, lower.tail = lower, log.p = TRUE)
     expect_true(is.finite(x))
-    expect_equal(psnorm(x, lower.tail = lower, log.p = TRUE), -20000,
+    expect_equal(psnorm(q = x, mean = 0, sd = 1, xi = 1.5, lower.tail = lower, log.p = TRUE), -20000,
                  tolerance = 1e-10)
-    x <- qsnorm(-1e-30, lower.tail = lower, log.p = TRUE)
-    expect_equal(psnorm(x, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
+    x <- qsnorm(p = -1e-30, mean = 0, sd = 1, xi = 1.5, lower.tail = lower, log.p = TRUE)
+    expect_equal(psnorm(q = x, mean = 0, sd = 1, xi = 1.5, lower.tail = lower, log.p = TRUE)/(-1e-30), 1,
                  tolerance = 1e-10)
   }
 })

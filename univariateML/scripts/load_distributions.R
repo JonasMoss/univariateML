@@ -76,43 +76,6 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   gsub("[[:space:]]*\n[[:space:]]*", " ", paras)
 }
 
-# P1 schema validation for optional generated d/p/q/r exports. Keep family
-# information in README front matter; this validator knows no family ids.
-.umvl_export <- function(value, coefficients, id) {
-  fail <- function(key, message) stop("load_distributions: ", id, ": r.export", key,
-                                      " ", message, call. = FALSE)
-  mapping <- function(x, key) {
-    if (!is.list(x) || is.null(names(x)) || anyNA(names(x)) ||
-        any(!nzchar(names(x))) || anyDuplicated(names(x)))
-      fail(key, "must be a mapping with unique nonempty names")
-  }
-  text <- function(x, key) {
-    if (!is.character(x) || length(x) != 1L || is.na(x) || !nzchar(trimws(x)))
-      fail(key, "must be nonempty scalar text")
-  }
-  if (identical(value, FALSE)) return(NULL)
-  mapping(value, " (or false)")
-  unknown <- setdiff(names(value), c("title", "defaults", "params", "details"))
-  if (length(unknown)) fail("", paste0("has unknown key(s): ", paste(unknown, collapse=", ")))
-  for (key in intersect(names(value), c("title", "details"))) text(value[[key]], paste0(".", key))
-  if (!is.null(value$title) && grepl("[\r\n]", value$title)) fail(".title", "must be a single line")
-  for (key in intersect(names(value), c("defaults", "params"))) {
-    mapping(value[[key]], paste0(".", key))
-    unknown <- setdiff(names(value[[key]]), coefficients)
-    if (length(unknown)) fail(paste0(".", key), paste0("names non-coefficient(s): ", paste(unknown, collapse=", ")))
-    for (name in names(value[[key]])) {
-      x <- value[[key]][[name]]
-      path <- paste0(".", key, ".", name)
-      if (key == "params") text(x, path) else {
-        if (!(is.double(x) || is.integer(x)) || length(x) != 1L || is.na(x))
-          fail(path, "must be a nonmissing real numeric scalar")
-        value[[key]][[name]] <- as.numeric(x)
-      }
-    }
-  }
-  value
-}
-
 .umvl_from_readme <- function(path, id) {
   fm <- .umvl_read_front_matter(path)
   f <- fm$front
@@ -124,8 +87,6 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   if (length(missing)) {
     stop("load_distributions: ", path, " lacks ", paste(missing, collapse = ", "))
   }
-  export <- if ("export" %in% names(f$r))
-    .umvl_export(f$r$export, vapply(f$params, `[[`, "", "name"), id) else NULL
   s <- f$support
   support <- list(
     type = if (identical(tolower(s$type), "integer")) "Z" else "R",
@@ -191,7 +152,6 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     name = f$name,
     support = support,
     params = params,
-    export = export,
     density = f$r$density,
     sampler = f$r$sampler,
     args = if (is.null(f$r$args)) NULL else unlist(f$r$args),

@@ -9,8 +9,8 @@ params:
   simulate: 2.0
   kind: regular
 r:
-  density: extraDistr::drayleigh
-  sampler: extraDistr::rrayleigh
+  density: drayleigh
+  sampler: rrayleigh
   control:
     sigma: Optional held sigma; NULL estimates it.
 log_density: log(x) - 2*log(sigma) - x**2/(2*sigma**2)

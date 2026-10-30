@@ -27,8 +27,8 @@ params:
     scale = 1)`. Free-scale fits with other shapes held are not supported.'
   kind: threshold
 r:
-  density: actuar::dgenbeta
-  sampler: actuar::rgenbeta
+  density: dgenbeta
+  sampler: rgenbeta
   control:
     scale: Known positive finite upper endpoint, strictly above every observation.
     gradtol: Tolerance on the per-observation log-shape3 profile score.

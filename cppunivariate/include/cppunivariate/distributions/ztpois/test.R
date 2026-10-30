@@ -1,8 +1,8 @@
 test_that("ztpois agrees with a multi-start reference-density oracle", {
   set.seed(13026)
-  x <- do.call(actuar::rztpois, list(250, lambda = 2))
+  x <- do.call(rztpois, list(250, lambda = 2))
   fit <- mlztpois(x)
-  density <- actuar::dztpois
+  density <- dztpois
   ll <- function(p) sum(do.call(density, c(list(x = x), as.list(p), list(log = TRUE))))
   expect_equal(attr(fit, "logLik"), ll(setNames(as.numeric(fit), names(fit))), tolerance=1e-8)
   oracle <- function(held = NULL) {
@@ -27,12 +27,12 @@ test_that("ztpois agrees with a multi-start reference-density oracle", {
 local({
   id <- "ztpois"
   base <- c(lambda=2)
-  density <- actuar::dztpois
+  density <- dztpois
   test_that("P2 holds agree with independent multistart reference likelihoods", {
     set.seed(81029)
     samples <- list(simulate_default(paste0("ml",id),20),
                     simulate_default(paste0("ml",id),100),
-                    c(1,1,1,2,2,4), c(1,2), actuar::rztpois(20,2))
+                    c(1,1,1,2,2,4), c(1,2), rztpois(n = 20, lambda = 2))
     nm <- names(base)
     for (x in samples) for (mask in seq_len(2^length(nm)-1)) {
       held <- nm[as.logical(intToBits(mask)[seq_along(nm)])]

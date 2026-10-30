@@ -24,19 +24,6 @@ params:
   simulate: 2.0
   kind: regular
 r:
-  export:
-    title: SSTD distribution
-    defaults:
-      mean: 0
-      sd: 1
-      nu: 5
-      xi: 1.5
-    params:
-      mean: Finite mean.
-      sd: Finite positive standard deviation.
-      nu: Finite shape, greater than two.
-      xi: Finite positive Fernandez--Steel skewness.
-    details: Uses the fGarch mean and standard deviation parameterisation.
   density: dsstd
   sampler: rsstd
   control:
@@ -155,3 +142,7 @@ Holding sd does not prevent collapse when nu is free: as nu tends to 2,
 the effective ordinary-t scale vanishes even at fixed sd. The same tie
 threshold applies, at the held mean when mean is held and at any sample
 tie otherwise. Holding both sd and nu prevents that collapse.
+
+## d/p/q/r
+
+Uses the fGarch mean and standard deviation parameterisation.

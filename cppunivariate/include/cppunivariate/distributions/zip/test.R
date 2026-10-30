@@ -21,8 +21,7 @@ test_that("ordinary zero-inflated samples attain the oracle likelihood", {
     expect_gte(attr(fit, "logLik"), oracle_ll[i] - 1e-6)
     expect_true(all(is.finite(fit)))
     expect_equal(attr(fit, "logLik"),
-                 sum(extraDistr::dzip(samples[[i]], lambda = fit["lambda"],
-                                      pi = fit["pi"], log = TRUE)),
+                 sum(dzip(x = samples[[i]], lambda = fit["lambda"], pi = fit["pi"], log = TRUE)),
                  tolerance = 1e-10)
   }
 })
@@ -52,7 +51,7 @@ test_that("ZIP Poisson face has an accurate likelihood at the count ceiling", {
 local({
   id <- "zip"
   base <- c(lambda=2,pi=0.3)
-  density <- extraDistr::dzip
+  density <- dzip
   test_that("P2 holds agree with independent multistart reference likelihoods", {
     set.seed(81029)
     samples <- list(simulate_default(paste0("ml",id),20),
@@ -128,7 +127,11 @@ test_that("P2 fixed inflation compares separated rate peaks", {
   x<-c(rep(0,99),10)
   for(pi in c(.001,.1,.9)) {
     fit<-mlzip(x,pi=pi)
-    objective<-function(t) -sum(extraDistr::dzip(x,exp(t),pi,log=TRUE))
+    objective<-function(t) {
+      rate<-exp(t)
+      if(!is.finite(rate)) return(1e100)
+      -sum(dzip(x = x, lambda = rate, pi = pi, log = TRUE))
+    }
     values<-vapply(seq(-5,4,length.out=9),function(t)
       optim(t,objective,method="BFGS",control=list(maxit=500,reltol=1e-12))$value,0)
     expect_gte(attr(fit,"logLik"),-min(values)-1e-7)

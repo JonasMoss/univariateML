@@ -14,8 +14,8 @@ params:
   simulate: 4.0
   kind: regular
 r:
-  density: extraDistr::dinvgamma
-  sampler: extraDistr::rinvgamma
+  density: dinvgamma
+  sampler: rinvgamma
   control:
     alpha: Optional held alpha; NULL estimates it.
     beta: Optional held beta; NULL estimates it.

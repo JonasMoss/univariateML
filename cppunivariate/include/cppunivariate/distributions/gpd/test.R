@@ -8,16 +8,16 @@ extreme_closed_density <- function(id, x, ..., log = FALSE) {
     ll[x > mu+sigma+slack | (id == "gpd" & x < mu)] <- -Inf
     return(if(log) ll else exp(ll))
   }
-  do.call(getExportedValue("extraDistr", paste0("d",id)), c(list(x=x,log=log),a))
+  do.call(get(paste0("d",id), asNamespace("univariateML")), c(list(x=x,log=log),a))
 }
 
 test_that("mlgpd agrees with multistart constrained density oracles", {
   for (shape in c(.3, 0, -.3, -.8)) {
-    x <- extraDistr::qgpd(((1:200)-.5)/200, sigma = 2, xi = shape)
+    x <- qgpd(p = ((1:200) - 0.5)/200, mu = 0, sigma = 2, xi = shape)
     fit <- suppressWarnings(mlgpd(x, mu = 0), classes = "univariateML_restricted")
     objective <- function(p) {
       if (p[2] < -1) return(1e100)
-      ans <- -sum(extraDistr::dgpd(x, sigma = exp(p[1]), xi = p[2], log = TRUE))
+      ans <- -sum(dgpd(x = x, mu = 0, sigma = exp(p[1]), xi = p[2], log = TRUE))
       if (is.finite(ans)) ans else 1e100
     }
     fits <- lapply(c(-.5, -.2, .01, .3, 1), function(k)
@@ -34,7 +34,7 @@ test_that("mlgpd agrees with multistart constrained density oracles", {
     for (k in c(-.5, -.3, 0, .3, 2)) {
       held <- suppressWarnings(mlgpd(x + 10, mu = 10, xi = k), classes = "univariateML_restricted")
       lower <- if (k < 0) log(-k*max(x)) else -30
-      oracle <- optimize(function(s) -sum(extraDistr::dgpd(x, sigma = exp(s), xi = k, log = TRUE)), c(lower + 1e-10, 20), tol = 1e-11)
+      oracle <- optimize(function(s) -sum(dgpd(x = x, mu = 0, sigma = exp(s), xi = k, log = TRUE)), c(lower + 1e-10, 20), tol = 1e-11)
       expect_equal(unname(held[["xi"]]), k)
       expect_equal(attr(held, "fixed"), c("mu", "xi"))
       expect_equal(attr(logLik(held), "df"), 1L)
@@ -58,11 +58,11 @@ test_that("gpd: new holds agree with independent multistart reference fits", {
   pars <- c("mu","sigma","xi")
   masks <- c(3,7)
   samples <- list(
-    extraDistr::rgpd(20, xi=.3),
-    extraDistr::rgpd(100, xi=.3),
+    rgpd(n = 20, mu = 0, sigma = 1, xi = 0.3),
+    rgpd(n = 100, mu = 0, sigma = 1, xi = 0.3),
     c(.2,.5,.5,1,2,3,4), c(.2,.8),
-    if(id=="frechet") extraDistr::qgumbel((1:20-.5)/20) else rexp(20),
-    if(id=="gev") extraDistr::qgev((1:20-.5)/20,xi=-.9) else runif(20,.1,2))
+    if(id=="frechet") qgumbel(p = (1:20 - 0.5)/20, mu = 0, sigma = 1) else rexp(20),
+    if(id=="gev") qgev(p = (1:20 - 0.5)/20, mu = 0, sigma = 1, xi = -0.9) else runif(20,.1,2))
   density <- function(x,...,log=FALSE) extreme_closed_density(id,x,...,log=log)
   for(x in samples) for(mask in masks) {
     held <- pars[as.logical(intToBits(mask)[1:3])]

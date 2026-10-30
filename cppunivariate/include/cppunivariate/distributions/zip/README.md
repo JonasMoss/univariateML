@@ -14,8 +14,8 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  density: extraDistr::dzip
-  sampler: extraDistr::rzip
+  density: dzip
+  sampler: rzip
   control:
     lambda: "Optional held lambda; NULL estimates it."
     pi: "Optional held pi; NULL estimates it."
@@ -43,4 +43,4 @@ The zero-inflated Poisson distribution mixes a Poisson count with an additional 
 
 For zero-deflated data the estimate is `pi = 0`, the Poisson fit. All-zero data give a nonunique point-mass fit: the fitter warns and returns `lambda = 1`, `pi = 1`. These are boundary fits within the family.
 
-Holding `lambda` profiles inflation by clipping the empirical zero fraction adjustment to [0, 1]. Holding `pi < 1` gives a finite rate when a count is positive. All-zero data then approach lambda zero, which is undefined by the reference; the fitter stops. A held zero rate is rejected for that reason. Held `pi = 1` is compatible only with zeros.
+Holding `lambda` profiles inflation by clipping the empirical zero fraction adjustment to `[0, 1]`. Holding `pi < 1` gives a finite rate when a count is positive. All-zero data then approach lambda zero, which is undefined by the reference; the fitter stops. A held zero rate is rejected for that reason. Held `pi = 1` is compatible only with zeros.

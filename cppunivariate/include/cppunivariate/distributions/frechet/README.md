@@ -29,8 +29,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::dfrechet
-  sampler: extraDistr::rfrechet
+  density: dfrechet
+  sampler: rfrechet
   control:
     mu: Threshold to hold fixed; NULL estimates it.
     lambda: Positive shape to hold fixed, or NULL to estimate.
@@ -45,7 +45,7 @@ limits:
   - {name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, lambda) point beats the lambda -> 1 collapse face's limiting likelihood."}
 examples: |
   set.seed(3)
-  mlfrechet(extraDistr::rfrechet(100), mu = 0)
+  mlfrechet(univariateML:::rfrechet(n = 100, lambda = 1, mu = 0, sigma = 1), mu = 0)
 fit_args:
   mu: ~
 ---

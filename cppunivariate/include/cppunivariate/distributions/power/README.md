@@ -15,8 +15,8 @@ params:
   simulate: 2.0
   kind: regular
 r:
-  density: extraDistr::dpower
-  sampler: extraDistr::rpower
+  density: dpower
+  sampler: rpower
   control:
     alpha: Optional held alpha; NULL estimates it.
     beta: Optional held beta; NULL estimates it.

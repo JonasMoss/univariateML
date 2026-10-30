@@ -163,3 +163,23 @@ TEST_CASE("burr: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::burr_mle(x,1e-8,1).status==cppunivariate::BurrStatus::IterationFailure);
 }
+
+TEST_CASE("multistart: rank only converged or total-score-accepted solves") {
+  cppunivariate::BfgsResult best{};best.f=INFINITY;
+  cppunivariate::BfgsResult r{{0,0},1,{2e-6,0},2e-6,16,30,cppunivariate::BfgsStatus::LineSearchFailure};
+  CHECK(cppunivariate::consider_bfgs_candidate(best,r,200));
+  CHECK(best.status==cppunivariate::BfgsStatus::Ok);
+  r.f=.5;r.grad={2e-5,0};
+  CHECK_FALSE(cppunivariate::consider_bfgs_candidate(best,r,200));
+  CHECK(best.f==1);
+  r.status=cppunivariate::BfgsStatus::Ok;
+  CHECK(cppunivariate::consider_bfgs_candidate(best,r,200));
+  CHECK(best.f==.5);
+  r.f=.25;r.grad[0]=NAN;
+  CHECK_FALSE(cppunivariate::consider_bfgs_candidate(best,r));
+  r.grad={0,0};r.status=cppunivariate::BfgsStatus::BadInit;
+  CHECK_FALSE(cppunivariate::consider_bfgs_candidate(best,r));
+  best.f=INFINITY;r.status=cppunivariate::BfgsStatus::IterationFailure;r.grad={1,0};
+  CHECK_FALSE(cppunivariate::consider_bfgs_candidate(best,r));
+  CHECK(std::isinf(best.f));
+}

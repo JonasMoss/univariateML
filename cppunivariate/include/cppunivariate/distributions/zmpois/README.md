@@ -20,8 +20,8 @@ params:
   simulate: 0.3
   kind: regular
 r:
-  density: actuar::dzmpois
-  sampler: actuar::rzmpois
+  density: dzmpois
+  sampler: rzmpois
   control:
     lambda: "Optional held lambda; NULL estimates it."
     p0: "Optional held p0; NULL estimates it."

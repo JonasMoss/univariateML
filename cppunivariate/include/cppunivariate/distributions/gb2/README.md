@@ -24,8 +24,8 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: actuar::dtrbeta
-  sampler: actuar::rtrbeta
+  density: dgb2
+  sampler: rgb2
   control:
     gradtol: Tolerance on the per-observation profile score in log beta shapes.
     iterlim: Maximum iterations per outer search start.

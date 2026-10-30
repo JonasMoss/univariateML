@@ -1,9 +1,9 @@
-# The translated half-normal is extraDistr's truncated normal with a = mean.
+# The translated half-normal is the internal half-normal with a = mean.
 dhn <- function(x, mu, sigma, log = FALSE) ifelse(x >= mu, if (log) log(2) + dnorm(x, mu, sigma, log = TRUE) else 2*dnorm(x, mu, sigma), if (log) -Inf else 0)
 
 test_that("translated half-normal closed form agrees with density oracle", {
   set.seed(73)
-  x <- extraDistr::rtnorm(200, -3, 2, a = -3)
+  x <- rhnorm(200, -3, 2)
   fit <- mlhnorm(x, mu = NULL)
   mu <- unname(fit[1])
   # Closed boundary MLE min(x), represented exactly.
@@ -25,7 +25,7 @@ test_that("translated half-normal closed form agrees with density oracle", {
   expect_error(mlhnorm(x, iterlim = 10, mu = NULL))
 })
 
-test_that("dml/pml/qml/rml map mu and sigma onto extraDistr's truncated normal", {
+test_that("dml/pml/qml/rml map mu and sigma onto the internal half-normal", {
   fit <- mlhnorm(c(-4, -3, 0, 2), mu = NULL)
   mu <- unname(fit[1]); sigma <- unname(fit[2])
   x <- c(-5, -4, -3.5, 0, 3)
@@ -40,7 +40,7 @@ test_that("dml/pml/qml/rml map mu and sigma onto extraDistr's truncated normal",
     expect_equal(pml(qml(p, fit, lower, logs), fit, lower), u, tolerance = 1e-10)
   }
   set.seed(9); actual <- rml(50, fit)
-  set.seed(9); expect_equal(actual, mu + extraDistr::rhnorm(50, sigma))
+  set.seed(9); expect_equal(actual, mu + rhnorm(n = 50, mu = 0, sigma = sigma))
   expect_true(all(actual >= mu))
   expect_length(simulate_default("mlhnorm", 10), 10)
   expect_true(all(simulate_default("mlhnorm", 100) >= 0))
@@ -48,15 +48,15 @@ test_that("dml/pml/qml/rml map mu and sigma onto extraDistr's truncated normal",
 
 test_that("bootstrap refits with mlhnorm", {
   set.seed(5)
-  fit <- mlhnorm(extraDistr::rtnorm(30, 1, 2, a = 1), mu = NULL)
+  fit <- mlhnorm(rhnorm(30, 1, 2), mu = NULL)
   boot <- bootstrapml(fit, reps = 20, reducer = identity)
   expect_equal(dim(boot), c(2L, 20L))
   expect_true(all(boot["sigma", ] > 0))
 })
 
-test_that("dhnorm shift map retains the half-normal map and endpoints", {
+test_that("internal dhnorm retains the translated half-normal endpoints", {
   expect_null(univariateML:::univariateML_args$mlhnorm)
-  expect_identical(univariateML:::univariateML_shifts$mlhnorm, "mu")
+  expect_null(univariateML:::univariateML_shifts$mlhnorm)
   fit <- mlhnorm(c(-4,-3,0,2), mu = NULL)
   mu <- unname(fit[1]); sigma <- unname(fit[2])
   x <- mu + sigma*c(-1,0,.01,.5,2)
@@ -73,7 +73,7 @@ test_that("dhnorm shift map retains the half-normal map and endpoints", {
                  expected, tolerance = 1e-12)
   }
   set.seed(12); actual <- rml(30, fit)
-  set.seed(12); expect_identical(actual, mu + extraDistr::rhnorm(30, sigma))
+  set.seed(12); expect_identical(actual, mu + rhnorm(n = 30, mu = 0, sigma = sigma))
 })
 
 test_that("half-normal preserves exact endpoints at large translations", {
@@ -90,7 +90,7 @@ test_that("held half-normal endpoint is exact, closed and counted as fixed", {
   expect_equal(attr(f,"fixed"),"mu")
   expect_equal(attr(logLik(f),"df"),1L)
   expect_equal(AIC(f),-2*attr(f,"logLik")+2)
-  expect_equal(dml(x,f),extraDistr::dhnorm(x,f[["sigma"]]))
+
   expect_equal(sum(dml(x,f,log=TRUE)),attr(f,"logLik"))
   expect_equal(mlhnorm(3,mu=0)[["sigma"]],3)
   expect_equal(mlhnorm(x+4,mu=4)[["sigma"]],f[["sigma"]])
@@ -100,7 +100,7 @@ test_that("held half-normal endpoint is exact, closed and counted as fixed", {
   for(lower in c(TRUE,FALSE)) for(lp in if(lower) -100 else c(-100,-1000))
     expect_equal(pml(qml(lp,f,lower,TRUE),f,lower,TRUE),lp,tolerance=1e-10)
   set.seed(1); a <- rml(20,f)
-  set.seed(1); expect_identical(a, f[["mu"]] + extraDistr::rhnorm(20, f[["sigma"]]))
+  set.seed(1); expect_identical(a, f[["mu"]] + rhnorm(n = 20, mu = 0, sigma = f[["sigma"]]))
   set.seed(1); boot <- bootstrapml(f,reps=3,reducer=identity)
   expect_true(all(boot["mu",]==0))
 })

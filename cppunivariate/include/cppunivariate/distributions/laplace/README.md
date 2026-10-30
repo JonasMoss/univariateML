@@ -14,8 +14,8 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: extraDistr::dlaplace
-  sampler: extraDistr::rlaplace
+  density: dlaplace
+  sampler: rlaplace
   control:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.

@@ -2,7 +2,7 @@ test_that("dunif agrees with its reference likelihood", {
   x <- c(0, 1, 2, 4)
   fit <- mldunif(x)
   expect_equal(unname(coef(fit)), c(min(x), max(x)))
-  expect_equal(attr(fit, "logLik"), sum(extraDistr::ddunif(x, fit[[1]], fit[[2]], log = TRUE)))
+  expect_equal(attr(fit, "logLik"), sum(ddunif(x = x, min = fit[[1]], max = fit[[2]], log = TRUE)))
 })
 
 test_that("discrete uniform width cannot overflow an int", {
@@ -21,7 +21,7 @@ test_that("discrete uniform holds maximize enumerated reference likelihoods", {
       lower <- if(is.null(args$min)) (min(x)-3):min(x) else args$min
       upper <- if(is.null(args$max)) max(x):(max(x)+3) else args$max
       oracle <- max(vapply(lower,function(a) max(vapply(upper,function(b)
-        sum(extraDistr::ddunif(x,a,b,log=TRUE)),0.)),0.))
+        sum(ddunif(x = x, min = a, max = b, log = TRUE)),0.)),0.))
       expect_equal(as.numeric(logLik(f)),oracle,tolerance=1e-12)
       expect_setequal(attr(f,"fixed"),names(args)[-1])
       if(!is.null(args$min))expect_identical(f[["min"]],args$min)

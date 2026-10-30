@@ -14,8 +14,8 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: extraDistr::dslash
-  sampler: extraDistr::rslash
+  density: dslash
+  sampler: rslash
   control:
     mu: Optional held mu; NULL estimates it.
     sigma: Optional positive held sigma; NULL estimates it.
@@ -29,7 +29,7 @@ limits:
     status: CollapseLimit
 examples: |
   set.seed(1)
-  mlslash(extraDistr::rslash(100))
+  mlslash(univariateML:::rslash(n = 100, mu = 0, sigma = 1))
 holds: []
 ---
 

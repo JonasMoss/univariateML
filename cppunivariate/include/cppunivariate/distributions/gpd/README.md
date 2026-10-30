@@ -27,8 +27,8 @@ params:
       reason: xi >= -1 prevents an upper-endpoint singularity.
   kind: regular
 r:
-  density: extraDistr::dgpd
-  sampler: extraDistr::rgpd
+  density: dgpd
+  sampler: rgpd
   control:
     mu: Threshold, held fixed; every observation must be at or above it.
     sigma: Positive scale to hold fixed, or NULL to estimate.
@@ -42,7 +42,7 @@ references:
   - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics, 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
 examples: |
   set.seed(1)
-  mlgpd(extraDistr::rgpd(100, mu = 10, sigma = 2, xi = 0.3), mu = 10)
+  mlgpd(univariateML:::rgpd(n = 100, mu = 10, sigma = 2, xi = 0.3), mu = 10)
 holds:
 - held: []
   status: no-mle
@@ -73,7 +73,7 @@ and scale permit scale collapse and stop.
 ## Details
 
 The shape is restricted to `xi >= -1` because the unrestricted likelihood is unbounded as an upper endpoint approaches the sample maximum at `xi < -1`.
-Data from a model with `xi < -1` give constrained fits, often at the floor `xi = -1`. `extraDistr::qgpd` and `pgpd` lose accuracy for shapes within about `1e-12` of zero (see `KNOWN_ISSUES.md`); the fit is unaffected.
+Data from a model with `xi < -1` give constrained fits, often at the floor `xi = -1`.
 
 With held threshold and shape greater than -1, scale has a unique positive
 score root, including for constant samples and one observation. Holding

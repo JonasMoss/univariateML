@@ -2,45 +2,29 @@ context("mlpareto")
 
 ## Data generation.
 set.seed(313)
-tiny_data <- extraDistr::rpareto(10, 1, 7)
-small_data <- extraDistr::rpareto(100, 3, 9)
-medium_data <- extraDistr::rpareto(1000, 1 / 2, 2)
-large_data <- extraDistr::rpareto(10000, 13, 20)
+tiny_data <- rpareto(n = 10, a = 1, b = 7)
+small_data <- rpareto(n = 100, a = 3, b = 9)
+medium_data <- rpareto(n = 1000, a = 1/2, b = 2)
+large_data <- rpareto(n = 10000, a = 13, b = 20)
 
 ## Checks logLiks.
 expect_equal(
-  sum(extraDistr::dpareto(tiny_data,
-    mlpareto(tiny_data)[1],
-    mlpareto(tiny_data)[2],
-    log = TRUE
-  )),
+  sum(dpareto(x = tiny_data, a = mlpareto(tiny_data)[1], b = mlpareto(tiny_data)[2], log = TRUE)),
   attr(mlpareto(tiny_data), "logLik"),
   tolerance = 1e-5
 )
 expect_equal(
-  sum(extraDistr::dpareto(small_data,
-    mlpareto(small_data)[1],
-    mlpareto(small_data)[2],
-    log = TRUE
-  )),
+  sum(dpareto(x = small_data, a = mlpareto(small_data)[1], b = mlpareto(small_data)[2], log = TRUE)),
   attr(mlpareto(small_data), "logLik"),
   tolerance = 1e-5
 )
 expect_equal(
-  sum(extraDistr::dpareto(medium_data,
-    mlpareto(medium_data)[1],
-    mlpareto(medium_data)[2],
-    log = TRUE
-  )),
+  sum(dpareto(x = medium_data, a = mlpareto(medium_data)[1], b = mlpareto(medium_data)[2], log = TRUE)),
   attr(mlpareto(medium_data), "logLik"),
   tolerance = 1e-5
 )
 expect_equal(
-  sum(extraDistr::dpareto(large_data,
-    mlpareto(large_data)[1],
-    mlpareto(large_data)[2],
-    log = TRUE
-  )),
+  sum(dpareto(x = large_data, a = mlpareto(large_data)[1], b = mlpareto(large_data)[2], log = TRUE)),
   attr(mlpareto(large_data), "logLik"),
   tolerance = 1e-5
 )
@@ -79,7 +63,7 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   pn <- c("a","b")
   held_default <- c(1.0,2.0)
   names(held_default) <- pn
-  density <- extraDistr::dpareto
+  density <- dpareto
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }

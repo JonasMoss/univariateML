@@ -44,7 +44,7 @@ Pareto minimum becomes the power upper endpoint; the power shape equals
 the Pareto shape. `power_mle(x, 0)` supplies the exact endpoint MLE (the
 R-facing `mlpower` defaults to a small positive endpoint offset).
 
-The independent oracle in test.R optimises the full actuar density over
+The independent optimizer in test.R optimises the internal density over
 three log parameters, with Nelder-Mead followed by BFGS from ordinary and
 extreme shape starts, and compares the package limit fits. For rburr with
 (k,c,scale)=(1,2,3), seeds 1 through 6 give 3/6 non-interior fits at n=20

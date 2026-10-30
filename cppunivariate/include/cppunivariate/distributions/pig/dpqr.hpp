@@ -1,4 +1,4 @@
-// Stable PIG log masses. The R shell continues to use actuar's dpqr.
+// Stable PIG log masses and tail probabilities.
 #pragma once
 #include <cmath>
 #include <limits>
@@ -71,10 +71,13 @@ inline std::vector<double> log_masses(int maxk, double mean, double shape) {
 }
 namespace distributions {
 inline double dpig(double x, double mean, double shape, bool log) {
-  if (!(mean > 0 && shape > 0) || !std::isfinite(shape) || std::isnan(x))
+  if (!(mean > 0 && shape >= 0) || !std::isfinite(shape) || std::isnan(x))
     return std::numeric_limits<double>::quiet_NaN();
   if (!std::isfinite(x) || x < 0 || x != std::floor(x))
     return log ? -std::numeric_limits<double>::infinity() : 0;
+  // As shape tends to zero, all probability concentrates at zero.
+  if (shape == 0) return x == 0 ? (log ? 0 : 1) :
+      (log ? -std::numeric_limits<double>::infinity() : 0);
   if(pig_detail::use_asympt(x,mean,shape)) {
     const double v=pig_detail::asympt_mass(x,mean,shape);
     return log ? v : std::exp(v);
@@ -134,11 +137,11 @@ inline double log_upper(int n,double mean,double shape) {
 }
 } namespace distributions {
 inline double ppig(double q,double mean,double shape,bool lower_tail,bool log_p) {
- if(!(mean>0 && shape>0) || !std::isfinite(mean) || !std::isfinite(shape) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
+ if(!(mean>0 && shape>=0) || !std::isfinite(mean) || !std::isfinite(shape) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
  const double inf=std::numeric_limits<double>::infinity();
  double lp;
  if(q<0) lp=lower_tail ? -inf : 0;
- else if(q==inf) lp=lower_tail ? 0 : -inf;
+ else if(q==inf || shape==0) lp=lower_tail ? 0 : -inf;
  else {
   if(pig_detail::use_asympt(std::floor(q)+1,mean,shape))
     return special::tail_probability(special::tails_from_log(pig_detail::asympt_upper(std::floor(q)+1,mean,shape),false),lower_tail,log_p);
@@ -154,8 +157,8 @@ inline double ppig(double q,double mean,double shape,bool lower_tail,bool log_p)
  return log_p ? lp : std::exp(lp);
 }
 inline double qpig(double p,double mean,double shape,bool lower_tail,bool log_p) {
- if(!(mean>0 && shape>0) || !std::isfinite(mean) || !std::isfinite(shape) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();
- return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,special::kPosInf,
+ if(!(mean>0 && shape>=0) || !std::isfinite(mean) || !std::isfinite(shape) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();
+ return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,shape==0?0:special::kPosInf,
    [&](double x) {
      const double lower=ppig(x,mean,shape,true,true);
      return lower<-.6931471805599453 ? special::tails_from_log(lower,true)
@@ -163,7 +166,8 @@ inline double qpig(double p,double mean,double shape,bool lower_tail,bool log_p)
    });
 }
 template <typename Rng> inline double rpig(Rng &rng,double mean,double shape) {
- if(!(mean>0 && shape>0) || !std::isfinite(mean) || !std::isfinite(shape)) return std::numeric_limits<double>::quiet_NaN();
+ if(!(mean>0 && shape>=0) || !std::isfinite(mean) || !std::isfinite(shape)) return std::numeric_limits<double>::quiet_NaN();
+ if(shape==0) return 0;
  return rng.rpois(rinvgauss(rng,mean,shape));
 }
 } }

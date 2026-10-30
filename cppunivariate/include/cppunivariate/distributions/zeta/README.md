@@ -9,12 +9,6 @@ params:
   simulate: 2
   kind: regular
 r:
-  export:
-    params:
-      s: Finite shape in (1, inf).
-    details: Support starts at one and has no finite upper endpoint. Quantiles beyond 2^53 use
-      the representable double grid; a result beyond the largest finite double is Inf. At that
-      scale, adjacent integers cannot be distinguished. Random draws use inversion.
   density: dzeta
   sampler: rzeta
   control:
@@ -41,3 +35,7 @@ This is the infinite-support face of finite Zipf: for fixed `s > 1`, its probabi
 All-ones samples have an unattained point-mass supremum at one and the fitter stops. Other constant samples have finite fits. Package-defined probability functions evaluate upper tails directly and use bounded-memory integer inversion. Beyond 2^53, quantiles use the representable double grid; adjacent integers cannot be distinguished, and quantiles exceeding the largest finite double are returned as infinity.
 
 With the coefficient held, the likelihood is evaluated directly, including all-ones samples.
+
+## d/p/q/r
+
+Support starts at one with no finite upper endpoint; the double grid above 2^53 may skip integers and overflowed quantiles return Inf.

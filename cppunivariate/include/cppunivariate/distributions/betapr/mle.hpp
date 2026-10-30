@@ -1,5 +1,6 @@
 // Three-parameter beta-prime MLE, with explicit likelihood comparisons to faces.
 #pragma once
+#include "../../core/multistart.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -165,6 +166,7 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
   BetaPrimeLogCost cost{x};
   BfgsControl ctl;
   ctl.grad_tol = tol; ctl.maxit = maxit; ctl.reltol = reltol; ctl.step_tol = abstol;
+  BfgsResult attempted{}; attempted.f=INFINITY;
   BfgsResult best;
   best.f = INFINITY;
   for (double a : {0.2, 1.0, 5.0, 20.0, 100.0}) {
@@ -172,7 +174,7 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
       const double start[3] = {std::log(a),std::log(b),
           lm - special::digamma(a) + special::digamma(b)};
       auto r = bfgs_minimize(cost, start, ctl);
-      if (std::isfinite(r.f) && r.f < best.f) best = r;
+      consider_bfgs_candidate(best,r,1.0,attempted);
     }
   }
   if (shape1 > 0 || shape2 > 0 || scale > 0) {
@@ -182,10 +184,14 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
         lm - special::digamma(a) + special::digamma(b);
     const double start[3] = {std::log(a),std::log(b),ls};
     auto r = bfgs_minimize(cost, start, ctl);
-    if (std::isfinite(r.f) && r.f < best.f) best = r;
+    consider_bfgs_candidate(best,r,1.0,attempted);
   }
-  if (face.logLik >= -best.f - 1e-8*n) return face;
-  if (!std::isfinite(best.f)) return {nan,nan,nan,nan,0,BetaPrimeStatus::BfgsFailure};
+  if (face.logLik >= -attempted.f - 1e-8*n) return face;
+  if (!std::isfinite(best.f)) {
+    if(attempted.theta.size()!=3) return {nan,nan,nan,nan,0,BetaPrimeStatus::BfgsFailure};
+    return {std::exp(attempted.theta[0]),std::exp(attempted.theta[1]),std::exp(attempted.theta[2]),
+      -attempted.f,attempted.iterations,BetaPrimeStatus::BfgsFailure};
+  }
   return {std::exp(best.theta[0]),std::exp(best.theta[1]),std::exp(best.theta[2]),
           -best.f,best.iterations,(best.status == BfgsStatus::Ok || (std::isfinite(best.grad_norm) && best.grad_norm < 1e-3)) ?
           BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
