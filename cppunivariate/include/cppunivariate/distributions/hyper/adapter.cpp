@@ -30,11 +30,11 @@ Rcpp::List mlhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> k,
                     Rcpp::Nullable<double> N,
                     Rcpp::Nullable<double> m = R_NilValue) {
   if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of N and m can escape to the binomial limit; use mlbinom(x, size = k).");
-  if (k.isNull()) Rcpp::stop("Estimating k is not supported by this fitter.");
-  const double design=Rcpp::as<double>(k);
+  if (k.isNull() && (N.isNull() || m.isNull())) Rcpp::stop("Joint estimation with k free is not supported by this fitter.");
+  const double design=held_value(k, "k");
   const double N_held = held_value(N, "N"), m_held = held_value(m, "m");
   const auto res = cppunivariate::hyper_mle(dist_impl::as_span(x), design, N_held, m_held);
-  const char *estimated = N.isNull() ? "N" : "m";
+  const char *estimated = k.isNull() ? "k" : (N.isNull() ? "N" : "m");
   switch (res.status) {
     case cppunivariate::HyperStatus::BothFree:
       Rcpp::stop("Supply the population size `N` or the number of successes `m` "
@@ -60,13 +60,15 @@ Rcpp::List mlhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> k,
     case cppunivariate::HyperStatus::Tie:
       Rcpp::warning("The likelihood is tied (to rounding) between `%s` = %s and %s; "
                     "returning the smaller.", estimated,
-                    whole(N.isNull() ? res.N : res.m), whole(res.tie));
+                    whole(k.isNull() ? res.k : (N.isNull() ? res.N : res.m)), whole(res.tie));
       break;
     case cppunivariate::HyperStatus::Unidentified:
       if (std::isinf(res.tie)) {
         Rcpp::warning("Every `N` from %s upwards attains the maximum likelihood "
                       "(`k = 0` or `m = 0`); returning `N` = %s.",
                       whole(res.N), whole(res.N));
+      } else if (k.isNull()) {
+        Rcpp::warning("Every `k` from %s to %s attains the maximum likelihood; returning the smaller.", whole(res.k), whole(res.tie));
       } else {
         Rcpp::warning("With `k = 0` every `m` from %s to %s attains the maximum "
                       "likelihood; returning `m` = %s.", whole(res.m),
@@ -79,7 +81,7 @@ Rcpp::List mlhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> k,
   Rcpp::CharacterVector fixed;
   if (m.isNotNull()) fixed.push_back("m");
   if (N.isNotNull()) fixed.push_back("N");
-  fixed.push_back("k");
+  if (k.isNotNull()) fixed.push_back("k");
   return Rcpp::List::create(
       Rcpp::_["estimates"] = Rcpp::NumericVector::create(
           Rcpp::_["m"] = res.m, Rcpp::_["N"] = res.N, Rcpp::_["k"] = res.k),

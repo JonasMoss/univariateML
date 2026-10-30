@@ -30,6 +30,40 @@ inline double nhyper_log_pmf(double x, double n, double m, double r) {
 inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   NhyperResult out{m, N, r, nan, nan, 0, NhyperStatus::InvalidInput};
+  if (std::isnan(r) && hyper_detail::is_count(N) &&
+      hyper_detail::is_count(m) && m <= N && x.size() != 0) {
+    for (double v : x) if (!hyper_detail::is_count(v)) return out;
+    const auto c = hyper_detail::tabulate(x);
+    if (c.max == 0) { out.r = 0; out.logLik = 0; out.status = NhyperStatus::Ok; return out; }
+    out.status = NhyperStatus::Infeasible;
+    const double lo = std::max(1.0, c.max - (N - m));
+    const double hi = std::min(m, c.min);
+    if (lo > hi) return out;
+    // L(t)/L(t-1) = product (x-t+1)(m-t+1) /
+    // ((t-1)(N-m-x+t)); each factor decreases in t.
+    const auto peak = hyper_detail::unimodal_peak(lo, hi, false, [&](double t) {
+      hyper_detail::Sum d;
+      for (std::size_t j = 0; j < c.value.size(); ++j) {
+        const long double v = c.value[j];
+        const long double a = v - t + 1, b = static_cast<long double>(m) - t + 1;
+        const long double den1 = t - 1, den2 = static_cast<long double>(N) - m - v + t;
+        const long double z = hyper_detail::product_difference(a, b, den1, den2) / (den1 * den2);
+        if (std::fabs(z) < 0.5L) {
+          d.add(c.count[j] * std::log1p(z));
+        } else {
+          d.add(c.count[j] * (std::log(a / den1) + std::log(b / den2)));
+        }
+      }
+      return d;
+    });
+    out.r = peak.at; out.tie = peak.tie; out.iterations = peak.evaluations;
+    out.status = std::isnan(peak.tie) ? NhyperStatus::Ok : NhyperStatus::Tie;
+    long double ll = 0;
+    for (std::size_t j = 0; j < c.value.size(); ++j)
+      ll += c.count[j] * nhyper_log_pmf(c.value[j], N - m, m, out.r);
+    out.logLik = static_cast<double>(ll);
+    return out;
+  }
   const bool free = std::isnan(m);
   if (x.size() == 0 || !hyper_detail::is_count(N) ||
       !hyper_detail::is_count(r) || r > N ||

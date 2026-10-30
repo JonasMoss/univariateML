@@ -108,3 +108,18 @@ TEST_CASE("nhyper: README total population validation") {
     CHECK(std::isnan(cppunivariate::distributions::rnhyper(rng, 4.0, N, 2.0)));
   }
 }
+
+TEST_CASE("nhyper: free stopping count agrees with a complete finite grid") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  for (int N = 1; N <= 20; ++N) for (int m = 1; m <= N; ++m)
+    for (int x = 1; x <= N; ++x) {
+      const std::vector<double> data{double(x), double(x)};
+      const auto fit = cppunivariate::nhyper_mle(mltest::as_span(data), nan, N, m);
+      double best = -std::numeric_limits<double>::infinity();
+      for (int r = std::max(1, x - (N - m)); r <= std::min(m, x); ++r)
+        best = std::max(best, 2 * cppunivariate::nhyper_log_pmf(x, N - m, m, r));
+      CHECK(fit.m == m);
+      CHECK(fit.N == N);
+      CHECK(std::fabs(fit.logLik - best) < 1e-11);
+    }
+}

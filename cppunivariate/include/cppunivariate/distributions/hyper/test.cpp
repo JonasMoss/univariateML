@@ -378,3 +378,18 @@ TEST_CASE("hyper: README total population validation") {
     CHECK(std::isnan(cppunivariate::distributions::rhyper(rng, 4.0, N, 2.0)));
   }
 }
+
+TEST_CASE("hyper: free draws agree with a complete finite grid") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  for (int N = 1; N <= 20; ++N) for (int m = 0; m <= N; ++m)
+    for (int x = 0; x <= m; ++x) {
+      const std::vector<double> data{double(x), double(x)};
+      const auto fit = cppunivariate::hyper_mle(mltest::as_span(data), nan, N, m);
+      double best = -std::numeric_limits<double>::infinity();
+      for (int k = x; k <= N - m + x; ++k)
+        best = std::max(best, 2 * cppunivariate::hyper_log_pmf(x, N, m, k));
+      CHECK(fit.m == m);
+      CHECK(fit.N == N);
+      CHECK(std::fabs(fit.logLik - best) < 1e-11);
+    }
+}
