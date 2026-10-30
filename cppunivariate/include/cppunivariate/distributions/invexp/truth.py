@@ -6,6 +6,6 @@ import mpmath as mp
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t):
-    rate = t['rate']
-    return Reference(lambda x: pair(-1/(rate*x)), 0, mp.inf)
+    scale = t['scale']
+    return Reference(lambda x: pair(-scale/x), 0, mp.inf)
 

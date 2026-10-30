@@ -6,8 +6,8 @@ import mpmath as mp
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t):
-    nu,sigma=t['nu'],t['sigma']
+    mu,nu,sigma=t['mu'],t['nu'],t['sigma']
     def tails(x):
-        z=(x/sigma)**2
+        z=((x-mu)/sigma)**2
         return beta(mp.mpf('.5'),nu/2,z/(nu+z),nu/(nu+z))
-    return Reference(tails,0)
+    return Reference(tails,mu)

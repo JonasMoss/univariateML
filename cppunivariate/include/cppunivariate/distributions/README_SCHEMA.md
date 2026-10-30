@@ -165,7 +165,7 @@ and `r.shift` when invoking a selected reference. Random generators use R's
 RNG through `src/rng_r.h`; an EMG R-host specialization in `src/rng_emg.h`
 preserves its established normal/exponential primitive stream. Sample size
 follows base R conventions. For a family
-with a coefficient named `n` (currently nhyper), sample size is named `nn`
+with a coefficient named `n`, sample size is named `nn`
 to avoid duplicate R formals.
 
 ### Export metadata

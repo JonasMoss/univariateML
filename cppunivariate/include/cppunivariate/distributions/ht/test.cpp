@@ -31,34 +31,34 @@ TEST_CASE("ht: fixed subsets, collapse and normal limit (mu held at 0)") {
   CHECK(cppunivariate::ht_mle(mltest::as_span(bad),0.0,nan,nan).status==cppunivariate::HtStatus::InvalidData);
 }
 TEST_CASE("ht: d/p/q/r and extreme tails") {
-  CHECK(cppunivariate::distributions::dht(-1,3,1,false)==0);
-  CHECK(std::isfinite(cppunivariate::distributions::dht(1e200,3,1e-200,true)));
+  CHECK(cppunivariate::distributions::dht(-1,0,3,1,false)==0);
+  CHECK(std::isfinite(cppunivariate::distributions::dht(1e200,0,3,1e-200,true)));
   for(double nu:{.1,1.,3.,100.}) for(bool lower:{false,true}) for(bool logs:{false,true}) for(double p:{0.,.01,.5,.99,1.}) {
-    const double q=cppunivariate::distributions::qht(logs?std::log(p):p,nu,2,lower,logs);
-    CHECK(cppunivariate::distributions::pht(q,nu,2,lower,false)==doctest::Approx(p).epsilon(1e-10));
+    const double q=cppunivariate::distributions::qht(logs?std::log(p):p,0,nu,2,lower,logs);
+    CHECK(cppunivariate::distributions::pht(q,0,nu,2,lower,false)==doctest::Approx(p).epsilon(1e-10));
   }
-  const double q=cppunivariate::distributions::qht(-100,3,1,false,true);
-  CHECK(cppunivariate::distributions::pht(q,3,1,false,true)==doctest::Approx(-100).epsilon(1e-10));
+  const double q=cppunivariate::distributions::qht(-100,0,3,1,false,true);
+  CHECK(cppunivariate::distributions::pht(q,0,3,1,false,true)==doctest::Approx(-100).epsilon(1e-10));
   cppunivariate::distributions::StdRng<> rng(9);
-  for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rht(rng,3,1)>=0);
+  for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rht(rng,0,3,1)>=0);
 }
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
 TEST_CASE("ht: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("ht",
-      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dht(x, p[0], p[1], log); },
-      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pht(x, p[0], p[1], lower, log); },
-      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qht(x, p[0], p[1], lower, log); },
-      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rht(rng, p[0], p[1]); });
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dht(x, p[0], p[1], p[2], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::pht(x, p[0], p[1], p[2], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qht(x, p[0], p[1], p[2], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rht(rng, p[0], p[1], p[2]); });
 }
 
 // Generating mpmath snippet (binary64 inputs retained exactly):
 // import mpmath as mp; mp.mp.dps=100
 // print(mp.mpf(0))  # inverse upper tail 1, equivalently log upper tail 0
 TEST_CASE("ht: targeted tail and endpoint regressions") {
-  CHECK(cppunivariate::distributions::qht(1.0, 3.0, 1.0, false, false) == doctest::Approx(0.0).epsilon(1e-10));
-  CHECK(cppunivariate::distributions::qht(0.0, 3.0, 1.0, false, true) == doctest::Approx(0.0).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qht(1.0,0, 3.0, 1.0, false, false) == doctest::Approx(0.0).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qht(0.0,0, 3.0, 1.0, false, true) == doctest::Approx(0.0).epsilon(1e-10));
 }
 
 
@@ -77,7 +77,7 @@ TEST_CASE("ht: free threshold is the sample minimum") {
   const auto r=cppunivariate::ht_mle(mltest::as_span(x),nan,nan,nan);
   CHECK(r.mu==2.0);
   CHECK(r.status==cppunivariate::HtStatus::Ok);
-  auto ll=[&](double nu,double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dht(v-r.mu,nu,s,true);return a;};
+  auto ll=[&](double nu,double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dht(v,r.mu,nu,s,true);return a;};
   CHECK(ll(r.nu,r.sigma)==doctest::Approx(r.logLik).epsilon(1e-6));
   // Held mu above an observation is invalid; at or below the minimum is fine.
   CHECK(cppunivariate::ht_mle(mltest::as_span(x),2.5,nan,nan).status==cppunivariate::HtStatus::InvalidData);
@@ -117,7 +117,7 @@ TEST_CASE("ht: free threshold, nu and sigma both free: collapse tie at 2k vs n")
     CHECK(r.status==cppunivariate::HtStatus::Ok);
     CHECK(r.mu==5.0);
     CHECK(r.nu>=1.0);
-    auto ll=[&](double nu,double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dht(v-r.mu,nu,s,true);return a;};
+    auto ll=[&](double nu,double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dht(v,r.mu,nu,s,true);return a;};
     CHECK(ll(r.nu,r.sigma)==doctest::Approx(r.logLik).epsilon(1e-6));
     // Scale score vanishes; at nu=1 the shape score satisfies the one-sided KKT condition.
     {const double h=1e-5*r.sigma;CHECK(std::abs((ll(r.nu,r.sigma+h)-ll(r.nu,r.sigma-h))/(2*h))<1e-3);}
@@ -154,4 +154,19 @@ TEST_CASE("ht: translated restriction bit follows mu, nu, sigma coefficient orde
   CHECK(held.status == cppunivariate::HtStatus::Ok);
   CHECK(held.nu == .9);
   CHECK(held.restricted == 0u);
+}
+
+TEST_CASE("ht: README threshold shifts all four operations") {
+  const double mu = 3.0;
+  CHECK(cppunivariate::distributions::dht(2.0, mu, 3.0, 2.0, false) == 0.0);
+  CHECK(cppunivariate::distributions::qht(0.0, mu, 3.0, 2.0, true, false) == mu);
+  for (bool lower : {true, false}) for (bool logs : {true, false}) {
+    CHECK(cppunivariate::distributions::dht(4.0, mu, 3.0, 2.0, logs) == doctest::Approx(cppunivariate::distributions::dht(1.0, 0.0, 3.0, 2.0, logs)));
+    CHECK(cppunivariate::distributions::pht(4.0, mu, 3.0, 2.0, lower, logs) == doctest::Approx(cppunivariate::distributions::pht(1.0, 0.0, 3.0, 2.0, lower, logs)));
+    CHECK(cppunivariate::distributions::qht((logs ? std::log(0.25) : 0.25), mu, 3.0, 2.0, lower, logs) == doctest::Approx(mu + cppunivariate::distributions::qht((logs ? std::log(0.25) : 0.25), 0.0, 3.0, 2.0, lower, logs)));
+  }
+  cppunivariate::distributions::StdRng<> a(94), b(94);
+  for (int i = 0; i < 32; ++i)
+    CHECK(cppunivariate::distributions::rht(a, mu, 3.0, 2.0) == mu + cppunivariate::distributions::rht(b, 0.0, 3.0, 2.0));
+  CHECK(std::isnan(cppunivariate::distributions::dht(4.0, INFINITY, 3.0, 2.0, true)));
 }

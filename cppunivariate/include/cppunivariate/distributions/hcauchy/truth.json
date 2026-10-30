@@ -3,19 +3,24 @@
   "id": "hcauchy",
   "digits": 80,
   "parameter_names": [
+    "mu",
     "sigma"
   ],
   "parameters": [
     [
+      0.0,
       1.0
     ],
     [
+      0.0,
       1.0371285711589315
     ],
     [
+      0.0,
       0.1
     ],
     [
+      0.0,
       10.0
     ]
   ],
@@ -23,22 +28,22 @@
     {
       "point": 0,
       "mass": "0.99999999999999999999999999999998",
-      "seconds": 0.1767696319730021
+      "seconds": 0.2937160400033463
     },
     {
       "point": 1,
       "mass": "0.99999999999999999999999999999998",
-      "seconds": 0.1676202600065153
+      "seconds": 0.4280486539937556
     },
     {
       "point": 2,
       "mass": "0.99999999999999999999999999999998",
-      "seconds": 0.16595488399616443
+      "seconds": 0.3004933549964335
     },
     {
       "point": 3,
       "mass": "0.99999999999999999999999999999998",
-      "seconds": 0.1599174719885923
+      "seconds": 0.4925007190031465
     }
   ],
   "values": [
@@ -2218,5 +2223,5 @@
     ]
   ],
   "quantile_limits": "nearest binary64; overflow signed infinity; underflow signed zero or finite support edge",
-  "density_sha256": "bea7f1faa324b5a623ba50b47672a815a76214788d77143d7c0a0d8ba078ea86"
+  "density_sha256": "cfa981f4582dd0e27cf8807e973fb4bd93e5cd134e5ddea70de3c4e6fcd1e077"
 }

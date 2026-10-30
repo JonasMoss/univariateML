@@ -24,25 +24,25 @@ TEST_CASE("hcauchy: zero multiplicities and invalid data (mu held at 0)") {
   CHECK(cppunivariate::hcauchy_mle(mltest::as_span(f),0.0).status==cppunivariate::HcauchyStatus::InvalidData);
 }
 TEST_CASE("hcauchy: reference identities, tails and sampling") {
-  CHECK(cppunivariate::distributions::dhcauchy(0,2,false)==doctest::Approx(1/std::acos(-1.0)));
-  CHECK(std::isfinite(cppunivariate::distributions::dhcauchy(1e200,1,true)));
-  CHECK(cppunivariate::distributions::phcauchy(-1,2,true,false)==0);
+  CHECK(cppunivariate::distributions::dhcauchy(0,0,2,false)==doctest::Approx(1/std::acos(-1.0)));
+  CHECK(std::isfinite(cppunivariate::distributions::dhcauchy(1e200,0,1,true)));
+  CHECK(cppunivariate::distributions::phcauchy(-1,0,2,true,false)==0);
   for(bool lower:{false,true}) for(bool logs:{false,true}) for(double p:{0.,.01,.5,.99,1.}) {
-    const double q=cppunivariate::distributions::qhcauchy(logs?std::log(p):p,2,lower,logs);
-    CHECK(cppunivariate::distributions::phcauchy(q,2,lower,false)==doctest::Approx(p).epsilon(1e-11));
+    const double q=cppunivariate::distributions::qhcauchy(logs?std::log(p):p,0,2,lower,logs);
+    CHECK(cppunivariate::distributions::phcauchy(q,0,2,lower,false)==doctest::Approx(p).epsilon(1e-11));
   }
   cppunivariate::distributions::StdRng<> rng(23);
-  for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rhcauchy(rng,2)>=0);
+  for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rhcauchy(rng,0,2)>=0);
 }
 
 // Independent high-precision oracle; see quality/truth.py.
 // Current failures: notes/evaluations/2026-10-29-dpqr-truth/summary.csv.
 TEST_CASE("hcauchy: d/p/q/r against the truth table") {
   mltest::check_dpqr_truth("hcauchy",
-      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhcauchy(x, p[0], log); },
-      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phcauchy(x, p[0], lower, log); },
-      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhcauchy(x, p[0], lower, log); },
-      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhcauchy(rng, p[0]); });
+      [](double x, const std::vector<double> &p, bool log) { return cppunivariate::distributions::dhcauchy(x, p[0], p[1], log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::phcauchy(x, p[0], p[1], lower, log); },
+      [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qhcauchy(x, p[0], p[1], lower, log); },
+      [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rhcauchy(rng, p[0], p[1]); });
 }
 
 TEST_CASE("hcauchy: held scale evaluates zeros (mu held at 0)") {
@@ -59,8 +59,8 @@ TEST_CASE("hcauchy: held scale evaluates zeros (mu held at 0)") {
 // print(mp.log(2*mp.atan(1/x)/mp.pi))
 // print(mp.mpf(0))  # inverse upper tail 1
 TEST_CASE("hcauchy: targeted tail and endpoint regressions") {
-  CHECK(cppunivariate::distributions::qhcauchy(1.0, 1.0, false, false) == doctest::Approx(0.0).epsilon(1e-10));
-  CHECK(cppunivariate::distributions::phcauchy(1e+100, 1.0, false, true) == doctest::Approx(-230.71009200469402).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::qhcauchy(1.0,0, 1.0, false, false) == doctest::Approx(0.0).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::phcauchy(1e+100,0, 1.0, false, true) == doctest::Approx(-230.71009200469402).epsilon(1e-10));
 }
 
 // P4 (C5): free threshold, held threshold and their held-scale variants.
@@ -72,7 +72,7 @@ TEST_CASE("hcauchy: free threshold is the sample minimum, tie multiplicity vs n"
     CHECK(r.status==cppunivariate::HcauchyStatus::Ok);
     CHECK(r.mu==5.0);
     CHECK(std::isfinite(r.sigma));
-    auto ll=[&](double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dhcauchy(v-r.mu,s,true);return a;};
+    auto ll=[&](double s){double a=0;for(double v:x)a+=cppunivariate::distributions::dhcauchy(v,r.mu,s,true);return a;};
     CHECK(ll(r.sigma)==doctest::Approx(r.logLik).epsilon(1e-8));
     {const double h=1e-5*r.sigma;CHECK(std::abs((ll(r.sigma+h)-ll(r.sigma-h))/(2*h))<1e-3);}
   }
@@ -97,4 +97,19 @@ TEST_CASE("hcauchy: free threshold is the sample minimum, tie multiplicity vs n"
     CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x),0.0).status==cppunivariate::HcauchyStatus::Ok);
     CHECK(cppunivariate::hcauchy_mle(mltest::as_span(x),1.0).status==cppunivariate::HcauchyStatus::Ok);
   }
+}
+
+TEST_CASE("hcauchy: README threshold shifts all four operations") {
+  const double mu = 3.0;
+  CHECK(cppunivariate::distributions::dhcauchy(2.0, mu, 2.0, false) == 0.0);
+  CHECK(cppunivariate::distributions::qhcauchy(0.0, mu, 2.0, true, false) == mu);
+  for (bool lower : {true, false}) for (bool logs : {true, false}) {
+    CHECK(cppunivariate::distributions::dhcauchy(4.0, mu, 2.0, logs) == doctest::Approx(cppunivariate::distributions::dhcauchy(1.0, 0.0, 2.0, logs)));
+    CHECK(cppunivariate::distributions::phcauchy(4.0, mu, 2.0, lower, logs) == doctest::Approx(cppunivariate::distributions::phcauchy(1.0, 0.0, 2.0, lower, logs)));
+    CHECK(cppunivariate::distributions::qhcauchy((logs ? std::log(0.25) : 0.25), mu, 2.0, lower, logs) == doctest::Approx(mu + cppunivariate::distributions::qhcauchy((logs ? std::log(0.25) : 0.25), 0.0, 2.0, lower, logs)));
+  }
+  cppunivariate::distributions::StdRng<> a(94), b(94);
+  for (int i = 0; i < 32; ++i)
+    CHECK(cppunivariate::distributions::rhcauchy(a, mu, 2.0) == mu + cppunivariate::distributions::rhcauchy(b, 0.0, 2.0));
+  CHECK(std::isnan(cppunivariate::distributions::dhcauchy(4.0, INFINITY, 2.0, true)));
 }
