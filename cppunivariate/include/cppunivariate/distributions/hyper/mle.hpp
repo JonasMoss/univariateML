@@ -1,9 +1,9 @@
-// Hypergeometric MLE with a known number of draws k.
+// Hypergeometric MLE: one-parameter searches and a finite grid with N held.
 //
 // Coefficients: N (population size), m (successes in the population) and
 // k (draws); R's stats::dhyper(x, m, n = N - m, k). Observations are iid
-// repetitions from the same urn. Exactly one of N, m is estimated, on a
-// feasible integer set:
+// repetitions from the same urn. With k held, at most one of N, m is
+// estimated on a feasible integer set:
 //
 //   known N, k: m in [max(x), N - k + min(x)];
 //   known m, k: N in [m + k - min(x), infinity).
@@ -52,6 +52,7 @@ enum class HyperStatus {
   BothFree,      // N and m both free: not supported
   InvalidInput,  // not whole numbers in [0, 2^53 - 1], k > N or m > N
   Infeasible,    // no admissible value gives all observations probability
+  NumericalFailure, // finite grid exceeds budget or nonfinite likelihood
   TooLarge       // the maximising N would exceed 2^53 - 1
 };
 
@@ -274,6 +275,17 @@ inline Peak unimodal_peak(double lo, double hi, bool open, Increment D) {
   return p;
 }
 
+// Finite-grid policy: two complete passes, at most 10^7 likelihood
+// evaluations in total. Compare to the final maximum, avoiding chained ties.
+constexpr long double kGridBudget = 10000000;
+inline long double grid_choose(long double n, long double k) {
+  return std::lgamma(n + 1) - std::lgamma(k + 1) - std::lgamma(n - k + 1);
+}
+inline bool grid_tied(long double a, long double b) {
+  return std::fabs(a - b) <= 64 * std::numeric_limits<double>::epsilon() *
+      std::max(std::fabs(a), std::fabs(b));
+}
+
 }  // namespace hyper_detail
 
 // log P(X = x) for X ~ Hypergeometric(N, m, k), with whole N, m, k,
@@ -291,11 +303,44 @@ inline double hyper_log_pmf(double x, double N, double m, double k) {
          hyper_detail::lbinom_raw(k, N, p, q);
 }
 
-// N or m NaN: estimate it. k is always held.
+// NaN requests estimation: N held permits either or both m and k free.
 inline HyperResult hyper_mle(span x, double k, double N, double m) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kInf = std::numeric_limits<double>::infinity();
   HyperResult r{N, m, k, kNaN, kNaN, 0, HyperStatus::InvalidInput};
+  if (std::isnan(k) && std::isnan(m) && !std::isnan(N)) {
+    if (x.size() == 0 || !hyper_detail::is_count(N)) return r;
+    for (double v : x) if (!hyper_detail::is_count(v)) return r;
+    const auto c = hyper_detail::tabulate(x);
+    r.status = HyperStatus::Infeasible;
+    const long double width = static_cast<long double>(N) - 2 * c.max + c.min + 1;
+    if (width <= 0) return r;
+    r.status = HyperStatus::NumericalFailure;
+    if (width * (width + 1) > hyper_detail::kGridBudget) return r;
+    long double best = -kInf;
+    for (int pass = 0; pass < 2; ++pass) {
+      for (double mm = c.max; mm <= N - c.max + c.min; ++mm) {
+        for (double kk = c.max; kk <= N - mm + c.min; ++kk) {
+          hyper_detail::Sum ll;
+          for (std::size_t j = 0; j < c.value.size(); ++j) {
+            const long double v = c.value[j];
+            ll.add(c.count[j] * (hyper_detail::grid_choose(mm, v) +
+                hyper_detail::grid_choose(static_cast<long double>(N) - mm, kk - v) -
+                hyper_detail::grid_choose(N, kk)));
+          }
+          ++r.iterations;
+          if (!std::isfinite(ll.value())) return r;
+          if (pass == 0) best = std::max(best, ll.value());
+          else if (hyper_detail::grid_tied(ll.value(), best)) {
+            r.m = mm; r.k = kk; r.logLik = static_cast<double>(ll.value());
+            r.status = HyperStatus::Ok;
+            return r; // lexicographic (m, N, k) traversal
+          }
+        }
+      }
+    }
+    return r;
+  }
   // The hypergeometric mass is symmetric in m and k. Reuse the exact
   // bounded composition search when both population parameters are held.
   if (std::isnan(k) && !std::isnan(N) && !std::isnan(m)) {

@@ -1,8 +1,10 @@
 # Status and open items
 
-Updated 2026-10-30, master `32b8dfe`. Deferred design ideas with their
-own rationale live in `roadmap/`; work in flight is on the board
-(`~/.local/bin/board`). This file is the short list of what is open.
+Updated 2026-10-30, master `32b8dfe`. Decisions and their evidence:
+`roadmap/decisions.md`. Deferred design ideas live in `roadmap/`; work in
+flight and planned work are on the board (`~/.local/bin/board`): the package
+migration is TASK-101, inference TASK-102, the optional holds and existence
+work TASK-113 to TASK-120. This file is the short list of what is open.
 
 ## Status
 
@@ -57,19 +59,19 @@ own rationale live in `roadmap/`; work in flight is on the board
     the eight C++ d/p/q/r signatures with the P4 parameters.
   - TASK-97 (terra high, 2026-10-30) analysed the rest: reports
     `notes/evaluations/2026-10-30-holds-{bbinom,cmb,hyper}-report.md`.
-  - Left: 15 `not-implemented` holds, and 60 `no-mle` entries:
+  - Left: 11 `not-implemented` holds, and 60 `no-mle` entries:
     - bbinom {}, {alpha}, {beta} and cmb {}, {prob}, {nu} with free size.
       Held-beta bbinom has a proved finite maximizer, but its tail bound
       decays like 1/log N, too loose to search. The others lack a full
       list of limit faces and a tail bound: fixed-size two-point and
       point-mass faces, NB, Poisson, CMP and geometric limits, and
       mass escaping to infinity.
-    - hyper {}, {k}, {m}, {N} and nhyper {}, {r}, {m}, {m, r}, {N}.
-      hyper {m, N} (estimate k) and nhyper {m, N} (estimate r) are now
-      implemented. The four former `no-mle` labels were wrong: constant
-      samples attain likelihood one. Most of these subsets are finite
-      grids whose maximum is attained, so a budgeted enumeration is a
-      possible next step.
+    - hyper {}, {k}, {m} and nhyper {}, {r}: the population can grow
+      without bound; each needs a tail certificate against its binomial,
+      Poisson or negative-binomial face. The finite grids (hyper {N},
+      {m, N}; nhyper {N}, {m}, {m, r}, {m, N}) are implemented by exact
+      enumeration (TASK-98). The four former `no-mle` labels were wrong:
+      constant samples attain likelihood one.
   - P0b corrections are recorded in `notes/evaluations/2026-10-29-p0b.md`
     (P5) and in the TASK-97 reports.
   - P5 docs (TASK-84) are done: README_SCHEMA, CLAUDE.md,
@@ -134,6 +136,8 @@ The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
 
 ## Open mathematics (from the job reports)
 
+Cards: TASK-113 to TASK-117 (TASK-98 for hyper/nhyper).
+
 - Global-search certification: most new fitters use grids plus local
   refinement (half-t df, dgamma shape, Skellam, slash, Bhattacharjee,
   Tukey lambda, generalized beta, GB2); none is a certified global
@@ -163,6 +167,8 @@ The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
   for size >= 3.
 
 ## Deferred families (roadmap)
+
+Card: TASK-110.
 
 `roadmap/2026-10-29-classical-failure-families.md`: threshold
 (three-parameter) Weibull, gamma and lognormal; skew-t; Prentice's

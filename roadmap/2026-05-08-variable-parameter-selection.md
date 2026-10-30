@@ -1,6 +1,6 @@
 # Variable parameter selection (deferred)
 
-**Status:** in progress (2026-10-28). Decided: named arguments with the
+**Status:** landed through the parameter rules (holds, P1-P2b, TASK-80/81/93/97); remaining hyper/nhyper holds are TASK-98. Earlier: in progress (2026-10-28). Decided: named arguments with the
 coefficient names (`mlburr(x, scale = 1)`, `mlbinom(x, size = 10)`), `NULL`
 estimates. README `params` keys `fixable: true` / `fixed: <value>`
 (schema: `distributions/README_SCHEMA.md`); adapters return `fixed`, the

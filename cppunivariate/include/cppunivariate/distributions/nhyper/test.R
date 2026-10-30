@@ -90,8 +90,8 @@ test_that("nhyper growing-urn limit counts black draws after subtracting r", {
 test_that("nhyper explicit NULL gives a reason and bootstrap replays held N", {
   x <- c(3,4,5)
   expect_error(mlnhyper(x,N=NULL,r=2), "growing-urn limit")
-  expect_error(mlnhyper(x,N=NULL,r=2,m=8), "Estimating N with m held")
-  expect_error(mlnhyper(x,N=20,r=NULL), "Estimating r")
+  expect_equal(attr(mlnhyper(x,N=NULL,r=2,m=8),"fixed"),c("m","r"))
+  expect_equal(attr(mlnhyper(x,N=20,r=NULL),"fixed"),"N")
   for (args in list(list(),list(m=8))) {
     f <- do.call(mlnhyper,c(list(x=x,N=20,r=2),args))
     set.seed(132)
@@ -116,4 +116,57 @@ test_that("free stopping count matches the reference finite grid", {
   expect_equal(unname(a["r"]), 1)
   expect_equal(unname(mlnhyper(0, m = 7, N = 20, r = NULL)["r"]), 0)
   expect_error(mlnhyper(c(0, 1), m = 7, N = 20, r = NULL), "positive probability")
+})
+
+test_that("fully free nhyper reports the unsupported global comparison", {
+  expect_error(mlnhyper(c(1, 2), N = NULL, r = NULL, m = NULL),
+               "not implemented.*negative-binomial")
+})
+
+test_that("three finite nhyper grids match whole-grid enumeration", {
+  # Independent closed form for the total number of draws x until the r-th
+  # of m white balls among N: P(X = x) = C(x-1, r-1) C(N-x, m-r) / C(N, m)
+  # on r <= x <= N - m + r. It agrees with extraDistr::dnhyper to 2e-14;
+  # extraDistr is not a dependency.
+  ref <- function(x,m,N,r) {
+    if (r==0) return(if(all(x==0)) 0 else -Inf)
+    if (any(x < r | x > N - m + r)) return(-Inf)
+    sum(lchoose(x-1, r-1) + lchoose(N-x, m-r) - lchoose(N, m))
+  }
+  samples <- c(list(0,rep(0,100),4,rep(3,80),c(1,7),c(6,7,7)),
+    lapply(1:20,function(i) rep((1:7)[(i%%4+1):7],(i%%5)+1)))
+  check <- function(x,g,args,fixed) {
+    g <- g[order(g$m,g$N,g$r),,drop=FALSE]
+    ll <- apply(g,1,function(z) ref(x,z[1],z[2],z[3]))
+    best <- max(ll)
+    z <- g[which(is.finite(ll)&abs(ll-best)<=64*.Machine$double.eps*abs(best))[1],]
+    f <- do.call(mlnhyper,c(list(x=x),args))
+    expect_equal(as.numeric(f),as.numeric(z))
+    expect_equal(as.numeric(logLik(f)),best,tolerance=1e-10)
+    expect_identical(attr(f,"fixed"),fixed)
+  }
+  for (x in samples) {
+    N <- 12
+    g <- expand.grid(m=0:N,N=N,r=0:N)
+    g <- g[g$r<=g$m & (g$r==0 | (g$r<=min(x)&g$m<=N-max(x)+g$r)),]
+    check(x,g,list(N=N,r=NULL),"N")
+    m <- 8
+    rs <- if(max(x)==0) 0 else 1:min(m,min(x))
+    g <- do.call(rbind,lapply(rs,function(r) {
+      lo <- m+max(x)-r
+      hi <- if(r==0) m else max(lo,floor(m*max(x)/r))
+      data.frame(m=m,N=lo:hi,r=r)
+    }))
+    check(x,g,list(m=m,N=NULL,r=NULL),"m")
+    r <- if(max(x)==0) 0 else min(2,min(x))
+    lo <- m+max(x)-r
+    hi <- if(r==0) m else max(lo,floor(m*max(x)/r))
+    check(x,data.frame(m=m,N=lo:hi,r=r),list(m=m,N=NULL,r=r),c("m","r"))
+  }
+  expect_error(mlnhyper(3,m=8,N=NA_real_,r=2),"not NA")
+  expect_error(mlnhyper(c(0,1),m=8,N=NULL,r=NULL),"positive probability")
+  expect_error(mlnhyper(1,m=8,N=NULL,r=2),"positive probability")
+  expect_error(mlnhyper(13,N=12,r=NULL),"positive probability")
+  expect_error(mlnhyper(c(1,2),N=1e7,r=NULL),"numerical failure.*budget")
+  expect_error(mlnhyper(c(1,100),m=1e7,N=NULL,r=1),"numerical failure.*budget")
 })

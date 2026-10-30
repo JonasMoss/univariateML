@@ -8,15 +8,19 @@
 Rcpp::List mlnhyper_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> r,
                      Rcpp::Nullable<double> N,
                      Rcpp::Nullable<double> m = R_NilValue) {
-  if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of population and composition can escape to the growing-urn limit; use mlnbinom(x - r, size = r).");
-  if (N.isNull()) Rcpp::stop("Estimating N with m held is not supported by this fitter.");
-  if (r.isNull() && m.isNull()) Rcpp::stop("Estimating r jointly with m is not supported by this fitter.");
+  if (N.isNull() && m.isNull() && r.isNull())
+    Rcpp::stop("Joint estimation of m, N and r is not implemented: the interior and negative-binomial limit faces require a certified global comparison.");
+  if (N.isNull() && m.isNull()) Rcpp::stop("Joint estimation of population and composition is not implemented; it can escape to the growing-urn limit, for which use mlnbinom(x - r, size = r).");
   const double design=r.isNull() ? std::numeric_limits<double>::quiet_NaN() : Rcpp::as<double>(r);
   if (r.isNotNull() && std::isnan(design)) Rcpp::stop("`r` must be a whole number or NULL, not NA.");
   const double held = m.isNull() ? std::numeric_limits<double>::quiet_NaN() : Rcpp::as<double>(m);
   if (m.isNotNull() && std::isnan(held)) Rcpp::stop("`m` must be a whole number or NULL, not NA.");
-  const auto fit = cppunivariate::nhyper_mle(dist_impl::as_span(x), design, Rcpp::as<double>(N), held);
+  const double population = N.isNull() ? std::numeric_limits<double>::quiet_NaN() : Rcpp::as<double>(N);
+  if (N.isNotNull() && std::isnan(population)) Rcpp::stop("`N` must be a whole number or NULL, not NA.");
+  const auto fit = cppunivariate::nhyper_mle(dist_impl::as_span(x), design, population, held);
   switch (fit.status) {
+    case cppunivariate::NhyperStatus::NumericalFailure:
+      Rcpp::stop("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
     case cppunivariate::NhyperStatus::InvalidInput:
       Rcpp::stop("Counts must be whole numbers from 0 to 2^53 - 1, with r <= m <= N.");
     case cppunivariate::NhyperStatus::Infeasible:

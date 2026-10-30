@@ -1,6 +1,8 @@
 # Parameter rules: design (2026-10-29)
 
-Status: rules agreed with Jonas on 2026-10-29: R1–R8 and choices C1–C4 as
+Status: implemented 2026-10-30 (P0–P5, TASK-79 to TASK-84, TASK-93, TASK-97);
+remaining holds are on the board (TASK-98 and follow-ups). Earlier: rules
+agreed with Jonas on 2026-10-29: R1–R8 and choices C1–C4 as
 proposed. Jonas left C5 and C6 open; this design picks them (marked
 below). Breaking changes are not a constraint; they are handled at
 release. Evidence: `notes/evaluations/2026-10-29-parameter-conventions.md`

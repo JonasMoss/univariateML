@@ -68,10 +68,11 @@
   `mltbinom(x, a = 0, b = 10, size = NULL)`. Each family's README lists
   the remaining exceptions under `holds:`: combinations with no MLE
   (`no-mle`, 60) and combinations not yet supported (`not-implemented`,
-  15: beta-binomial and Conway-Maxwell-binomial free sizes with a free
-  shape or dispersion, and most hypergeometric design estimates;
-  `mlhyper(x, m = , N = , k = NULL)` and `mlnhyper(x, m = , N = , r = NULL)`
-  are supported).
+  11: beta-binomial and Conway-Maxwell-binomial free sizes with a free
+  shape or dispersion, and the hypergeometric designs whose population can
+  grow without bound). With the population `N` held, or with `m` held for
+  `mlnhyper`, the hypergeometric designs are estimated by exact
+  enumeration.
   Existing hold examples include `mlburr(x, scale = 1)` (the 1.x fit),
   `mlstd(x, nu = 5)` and `mllst(x, df = 3)`; scale holds also include
   `mlinvburr`, `mlbetapr` and `mlparalogis`, and size holds include

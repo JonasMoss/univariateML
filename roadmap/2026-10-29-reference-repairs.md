@@ -1,6 +1,6 @@
 # Reference repairs adopted
 
-**Status:** adopted by user decision, 2026-10-29. Upstream PRs may follow
+**Status:** superseded 2026-10-30 (TASK-78.9, merge 8471607): extraDistr and actuar are no longer used and every runtime repair is deleted; kept as history. Earlier: adopted by user decision, 2026-10-29. Upstream PRs may follow
 later; extraDistr's maintainer is unresponsive, actuar's response is unknown.
 
 The package keeps runtime-checked repairs in
