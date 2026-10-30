@@ -175,7 +175,9 @@ print.univariateML <- function(x, ...) {
 #'    interval for. Each parameter must be a member of `names(object)`.
 #' @param level The confidence level.
 #' @param Nreps Number of bootstrap iterations. Passed to
-#'    [bootstrapml()].
+#'    [bootstrapml()] as `reps`.
+#' @param reps Optional alias for `Nreps`; if supplied, takes precedence
+#'    over `Nreps`. Must be named.
 #' @param ... Additional arguments passed to [bootstrapml()].
 #' @return A matrix or vector with columns giving lower and upper confidence
 #'    limits for each parameter in `parm`.
@@ -193,7 +195,8 @@ confint.univariateML <- function(
     parm = NULL,
     level = 0.95,
     Nreps = 1000,
-    ...) {
+    ...,
+    reps = Nreps) {
   ml_require_data(object)
   if (is.null(parm)) parm <- names(object)
 
@@ -207,7 +210,7 @@ confint.univariateML <- function(
 
   probs <- c((1 - level) / 2, 1 - (1 - level) / 2)
 
-  bootstrapml(object, map = map, probs = probs, Nreps = Nreps, ...)
+  bootstrapml(object, map = map, probs = probs, reps = reps, ...)
 }
 
 #' @importFrom stats nobs
