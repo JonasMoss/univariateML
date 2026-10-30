@@ -45,7 +45,9 @@ test: regen
 	  Rscript -e "testthat::test_local('.', stop_on_failure = TRUE)"
 
 check: regen
-	cd univariateML/package && R CMD build --no-build-vignettes . && R CMD check --no-manual --ignore-vignettes univariateML_*.tar.gz
+	cd univariateML/package && R CMD build --no-build-vignettes . && \
+	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	  R CMD check --no-manual --ignore-vignettes univariateML_*.tar.gz
 
 # Regenerate distributions/<id>/golden.json from the current R/C++ pipeline.
 # Run only when intentionally accepting a new baseline (e.g. algorithm
