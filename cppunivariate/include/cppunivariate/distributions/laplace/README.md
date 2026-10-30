@@ -22,8 +22,6 @@ r:
 log_density: -log(2*sigma) - Abs(x-mu)/sigma
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York."
-examples: |
-  mllaplace(precip)
 holds: []
 limits:
   - name: scale collapse
@@ -31,6 +29,10 @@ limits:
     detect: Every observation equals the fitted or held location.
     status: Unbounded
     message: "does not exist"
+examples: |
+  set.seed(1)
+  x <- rml(200, mllaplace())
+  mllaplace(x)
 ---
 
 The Laplace (double exponential) distribution is a symmetric location-scale model with exponential tails.

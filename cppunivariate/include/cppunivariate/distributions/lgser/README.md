@@ -18,7 +18,8 @@ references:
   - "Fisher, R. A., Corbet, A. S., and Williams, C. B. (1943). The relation between the number of species and the number of individuals in a random sample of an animal population. The Journal of Animal Ecology, 12(1), 42-58."
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
-  mllgser(corbet)
+  x <- corbet
+  mllgser(x)
 ---
 
 The logarithmic series distribution models positive counts and has a history of use in species-abundance data.

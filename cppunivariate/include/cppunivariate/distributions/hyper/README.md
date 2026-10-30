@@ -41,11 +41,6 @@ limits:
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
   - "Wang, W. (2015). Exact optimal confidence intervals for hypergeometric parameters. Journal of the American Statistical Association, 110(512), 1491-1499. doi:10.1080/01621459.2014.966191."
-examples: |
-  set.seed(1)
-  x <- rhyper(30, m = 20, n = 30, k = 10)
-  mlhyper(x, N = 50, k = 10)
-  mlhyper(x, m = 20, N = NULL, k = 10)
 holds:
 - held: []
   status: not-implemented
@@ -62,6 +57,10 @@ holds:
 fit_args:
   'N': 50
   k: 10
+examples: |
+  set.seed(1)
+  x <- rml(200, mlhyper())
+  mlhyper(x, N = 50L, k = 10L)
 ---
 
 The hypergeometric distribution counts the successes in `k` draws without

@@ -24,8 +24,6 @@ r:
 log_density: -log(sigma) - (x-mu)/sigma - exp(-(x-mu)/sigma)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 22. Wiley, New York."
-examples: |
-  mlgumbel(precip)
 holds: []
 limits:
   - name: scale collapse
@@ -33,6 +31,10 @@ limits:
     detect: Every observation equals the fitted or held location.
     status: Unbounded
     message: "unbounded"
+examples: |
+  set.seed(1)
+  x <- rml(200, mlgumbel())
+  mlgumbel(x)
 ---
 
 The Gumbel distribution models maxima and extreme measurements.

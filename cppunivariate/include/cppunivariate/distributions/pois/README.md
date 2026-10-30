@@ -17,7 +17,8 @@ log_density: "x*log(lambda) - lambda - loggamma(x + 1)"
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
-  mlpois(corbet)
+  x <- datasets::discoveries
+  mlpois(x)
 ---
 
 The Poisson distribution models nonnegative counts with a single rate parameter.

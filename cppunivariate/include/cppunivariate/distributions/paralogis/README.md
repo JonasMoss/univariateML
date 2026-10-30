@@ -31,9 +31,11 @@ log_density: 2*log(shape) + shape*log(x/scale) - log(x) - (shape + 1)*log(1 + (x
 references:
   - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
   - Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012). Loss Models, From Data to Decisions, Fourth Edition. Wiley.
-examples: |
-  mlparalogis(precip)
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlparalogis())
+  mlparalogis(x)
 ---
 
 The paralogistic distribution is the Burr type XII distribution with its two

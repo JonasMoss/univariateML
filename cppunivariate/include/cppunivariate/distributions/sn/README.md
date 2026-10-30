@@ -40,9 +40,11 @@ limits:
 references:
   - "Azzalini, A. (1985). A class of distributions which includes the normal ones. Scandinavian Journal of Statistics 12, 171-178."
   - "Sartori, N. (2006). Bias prevention of maximum likelihood estimates for scalar skew normal and skew t distributions. Journal of Statistical Planning and Inference 136, 4259-4275."
-examples: |
-  mlsn(c(-2, -1.5, -1, -0.8, -0.3, 0, 0.2, 0.6, 1, 2), alpha = 0)
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlsn())
+  mlsn(x)
 ---
 
 The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. Its direct location and scale differ from its mean and standard deviation.

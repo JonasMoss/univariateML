@@ -26,8 +26,6 @@ log_density: log(a) + log(b) + (a-1)*log(x) + (b-1)*log(1-x**a)
 references:
   - "Jones, M. C. (2009). Kumaraswamy’s distribution, a beta-type distribution with some tractability advantages. Statistical Methodology, 6(1), 70–81."
   - "Kumaraswamy, P. (1980). A generalized probability density function for double-bounded random processes. Journal of Hydrology, 46(1–2), 79–88."
-examples: |
-  AIC(mlkumar(USArrests$Rape / 100))
 holds: []
 limits:
 - name: point-mass collapse
@@ -35,6 +33,10 @@ limits:
   detect: All observations are equal and neither shape is held.
   status: Unbounded
   message: unbounded
+examples: |
+  set.seed(1)
+  x <- rml(200, mlkumar())
+  mlkumar(x)
 ---
 
 The Kumaraswamy distribution is a flexible distribution for continuous data between zero and one. It provides a tractable alternative to the beta distribution.

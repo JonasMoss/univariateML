@@ -48,7 +48,7 @@ expect_equal(class(attr(est, "support"))[[1]], "numeric")
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
 ## Explicit shape starts are now used and validated.
-x_start <- simulate_default("mlweibull", 100)
+x_start <- ml_simulate("mlweibull", 100)
 a_start <- mlweibull(x_start, reltol = 1e-12)
 b_start <- mlweibull(x_start, shape0 = 1.2 * coef(a_start)[["shape"]], reltol = 1e-12)
 expect_equal(coef(b_start), coef(a_start), tolerance = 1e-8)
@@ -79,8 +79,8 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }
-  samples <- list(n20=simulate_default(paste0("ml",id),20),
-                  n100=simulate_default(paste0("ml",id),100))
+  samples <- list(n20=ml_simulate(paste0("ml",id),20),
+                  n100=ml_simulate(paste0("ml",id),100))
   samples$ties <- rep(samples$n20[1:5],each=4)
   samples$small <- samples$n20[1:2]
   samples$singleton <- samples$n20[1]

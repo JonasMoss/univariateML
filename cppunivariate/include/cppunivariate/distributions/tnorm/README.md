@@ -56,17 +56,14 @@ limits:
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition, Chapter 13.10. Wiley."
   - "Barndorff-Nielsen, O. (1978). Information and Exponential Families in Statistical Theory. Wiley."
-examples: |
-  set.seed(1)
-  mltnorm(univariateML:::rtnorm(n = 100, mean = 0.3, sd = 0.25, a = 0, b = 1), a = 0, b = 1)
-  # One-sided truncation at zero.
-  mltnorm(univariateML:::rtnorm(n = 100, mean = 1, sd = 2, a = 0, b = Inf), a = 0, b = Inf)
-  # Hold the parent standard deviation.
-  mltnorm(univariateML:::rtnorm(n = 100, mean = 1, sd = 2, a = 0, b = Inf), a = 0, b = Inf, sd = 2)
 holds: []
 fit_args:
   a: -.inf
   b: .inf
+examples: |
+  set.seed(1)
+  x <- rml(200, mltnorm())
+  mltnorm(x, a = -Inf, b = Inf)
 ---
 
 The truncated normal distribution is a normal distribution restricted to an interval `[a, b]` with finite bounds closed; it models measurements that are only recorded, or only possible, inside that interval. `mean` and `sd` are the parameters of the parent normal distribution, not the mean and standard deviation of the truncated one.

@@ -37,9 +37,10 @@ limits:
     detect: mean held and every observed cell closure contains mean
     fixed: [mean]
     status: ScaleLimit
-examples: |
-  mldnorm(simulate_default("mldnorm", 100))
 holds: []
+examples: |
+  x <- diff(datasets::discoveries)
+  mldnorm(x)
 ---
 
 The discretized normal distribution is the integer part of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer.

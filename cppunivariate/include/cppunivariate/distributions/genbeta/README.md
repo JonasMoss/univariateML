@@ -42,9 +42,6 @@ limits:
     message: unbounded
   - {model: lgamma, name: unit gamma on x/scale, when: 'shape1 tends to infinity, shape3 tends to zero, shape1*shape3 stays finite; fit mllgamma(scale / x)', status: UnitGammaBoundary}
   - {model: power, when: 'shape1 tends to zero and shape3 tends to infinity; shape2 may grow exponentially to lower the effective upper endpoint', status: PowerBoundary}
-examples: |
-  set.seed(3)
-  mlgenbeta(simulate_default("mlgenbeta", 500), scale = 1)
 holds:
 - held: []
   status: no-mle
@@ -92,6 +89,10 @@ holds:
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
   scale: 1
+examples: |
+  set.seed(1)
+  x <- rml(200, mlgenbeta())
+  mlgenbeta(x, scale = 1L)
 ---
 
 The generalized beta of the first kind models positive observations below a known upper endpoint.

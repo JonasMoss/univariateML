@@ -32,6 +32,10 @@ references:
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlinvparalogis())
+  mlinvparalogis(x)
 ---
 
 The inverse paralogistic distribution models positive heavy-tailed data.

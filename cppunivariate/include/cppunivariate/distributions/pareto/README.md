@@ -23,8 +23,6 @@ r:
 log_density: log(a) + a*log(b) - (a+1)*log(x)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York."
-examples: |
-  mlpareto(precip)
 limits:
 - name: zero likelihood
   fixed: [b]
@@ -36,6 +34,10 @@ limits:
   when: Every observation equals held b.
   status: Unbounded
   message: constant data
+examples: |
+  set.seed(1)
+  x <- rml(200, mlpareto())
+  mlpareto(x)
 ---
 
 The Pareto distribution is a heavy-tailed model for positive quantities above a lower threshold.

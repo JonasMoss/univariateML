@@ -27,14 +27,16 @@ references:
   - "Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley."
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
-examples: |
-  mlinvweibull(precip)
 limits:
 - name: unbounded likelihood
   fixed: [scale]
   when: Every observation equals the held scale.
   status: Unbounded
   message: unbounded
+examples: |
+  set.seed(1)
+  x <- rml(200, mlinvweibull())
+  mlinvweibull(x)
 ---
 
 The inverse Weibull distribution is the distribution of the reciprocal of a Weibull variable, used for heavy-tailed positive data.

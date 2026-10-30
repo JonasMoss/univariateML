@@ -127,8 +127,8 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   ref <- function(x,p) {
     m <- p[["shape"]]; o <- p[["scale"]]; log(2)+m*log(m)-lgamma(m)-m*log(o)+(2*m-1)*log(x)-m*x*x/o
   }
-  samples <- list(n20=simulate_default(paste0("ml",id),20),
-                  n100=simulate_default(paste0("ml",id),100))
+  samples <- list(n20=ml_simulate(paste0("ml",id),20),
+                  n100=ml_simulate(paste0("ml",id),100))
   samples$ties <- rep(samples$n20[1:5],each=4)
   samples$small <- samples$n20[1:2]
   samples$singleton <- samples$n20[1]

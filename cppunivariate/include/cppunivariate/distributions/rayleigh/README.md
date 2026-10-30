@@ -17,7 +17,9 @@ log_density: log(x) - 2*log(sigma) - x**2/(2*sigma**2)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 18. Wiley, New York."
 examples: |
-  mlrayleigh(precip)
+  set.seed(1)
+  x <- rml(200, mlrayleigh())
+  mlrayleigh(x)
 ---
 
 The Rayleigh distribution describes the magnitude of a pair of independent centred normal variables with a common scale.

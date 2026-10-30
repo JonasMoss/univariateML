@@ -24,8 +24,6 @@ r:
 log_density: -log(pi) - log(scale) - log(1 + ((x-location)/scale)**2)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 16. Wiley, New York."
-examples: |
-  mlcauchy(airquality$Temp)
 holds: []
 limits:
   - name: scale collapse
@@ -33,6 +31,10 @@ limits:
     detect: Excessive mass at that location or vanishing residual spread.
     status: NoMLE
     message: "does not exist"
+examples: |
+  set.seed(1)
+  x <- rml(200, mlcauchy())
+  mlcauchy(x)
 ---
 
 The Cauchy distribution is a symmetric location-scale distribution with heavy tails.

@@ -25,14 +25,15 @@ r:
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - (x/scale)**shape
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York."
-examples: |
-  mlweibull(precip)
 limits:
 - name: unbounded likelihood
   fixed: [scale]
   when: Every observation equals held scale.
   status: Unbounded
   message: unbounded
+examples: |
+  x <- datasets::precip
+  mlweibull(x)
 ---
 
 The Weibull distribution is used for lifetimes and reliability data.

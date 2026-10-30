@@ -94,7 +94,7 @@ for (shape in c(1.5, 3)) {
 
 test_that("sged scale extremes preserve fit or declared escape", {
   set.seed(10)
-  x <- simulate_default("mlsged",50)
+  x <- ml_simulate("mlsged",50)
   base <- tryCatch(suppressWarnings(mlsged(x), classes = "univariateML_restricted"),error=function(e) conditionMessage(e))
   for(s in c(1e-300,1e300)) {
     f <- tryCatch(suppressWarnings(mlsged(x*s), classes = "univariateML_restricted"),error=function(e) conditionMessage(e))

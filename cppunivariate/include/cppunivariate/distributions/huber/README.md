@@ -44,12 +44,13 @@ limits:
     when: '$\epsilon \to 0$ with epsilon and sigma free, $b=\sigma/\epsilon$ fixed'
     fixed: []
     status: LaplaceLimit
-examples: |
-  set.seed(1)
-  mlhuber(univariateML:::rhuber(n = 100, mu = 0, sigma = 1, epsilon = 1.345), epsilon = 1.345)
 holds: []
 fit_args:
   epsilon: 1.345
+examples: |
+  set.seed(1)
+  x <- rml(200, mlhuber())
+  mlhuber(x, epsilon = 1.345)
 ---
 
 The Huber density has a Gaussian core and exponential tails.

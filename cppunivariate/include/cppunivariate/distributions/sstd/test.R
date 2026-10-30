@@ -136,7 +136,7 @@ test_that("mlsstd agrees with the slow oracle on interior and boundary samples",
 
 test_that("sstd scale extremes preserve fit or declared escape", {
   set.seed(10)
-  x <- simulate_default("mlsstd",50)
+  x <- ml_simulate("mlsstd",50)
   base <- tryCatch(mlsstd(x),error=function(e) conditionMessage(e))
   for(s in c(1e-300,1e300)) {
     f <- tryCatch(mlsstd(x*s),error=function(e) conditionMessage(e))

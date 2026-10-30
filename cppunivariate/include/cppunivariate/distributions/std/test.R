@@ -119,7 +119,7 @@ test_that("fixed nu agrees with density oracle and records two free parameters",
 
 test_that("std scale extremes preserve fit or declared escape", {
   set.seed(10)
-  x <- simulate_default("mlstd",50)
+  x <- ml_simulate("mlstd",50)
   base <- tryCatch(mlstd(x),error=function(e) conditionMessage(e))
   for(s in c(1e-300,1e300)) {
     f <- tryCatch(mlstd(x*s),error=function(e) conditionMessage(e))

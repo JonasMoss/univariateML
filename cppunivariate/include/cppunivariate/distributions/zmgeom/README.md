@@ -26,6 +26,10 @@ r:
     prob: "Optional held prob; NULL estimates it."
     p0: "Optional held p0; NULL estimates it."
 log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(log(prob)+(x-1)*log(1-prob)), True))
+examples: |
+  set.seed(1)
+  x <- rml(200, mlzmgeom())
+  mlzmgeom(x)
 ---
 
 Zero-modified geometric distributions model counts with a separate zero component.

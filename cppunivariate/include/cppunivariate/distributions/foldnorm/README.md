@@ -22,10 +22,11 @@ r:
     reltol: Positive tolerance for the scalar profile search.
     iterlim: Positive iteration limit for each bracket refinement.
 log_density: -log(sigma) - log(2*pi)/2 - (x-mu)**2/(2*sigma**2) + log(1+exp(-2*x*mu/sigma**2))
-examples: |
-  set.seed(7)
-  mlfoldnorm(univariateML:::rfoldnorm(n = 100, mu = 2, sigma = 1))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlfoldnorm())
+  mlfoldnorm(x)
 ---
 
 The folded normal distribution is the absolute value of a normal random variable.

@@ -50,10 +50,10 @@ limits:
     status: 'DfTwoBoundary'
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York."
-examples: |
-  # Daily DAX log returns, scaled to percent.
-  mlstd(100 * diff(log(EuStockMarkets[, "DAX"])))
 holds: []
+examples: |
+  x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
+  mlstd(x)
 ---
 
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.

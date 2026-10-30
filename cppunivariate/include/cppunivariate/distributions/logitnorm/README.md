@@ -22,8 +22,6 @@ r:
 log_density: -log(sigma) - log(2*pi)/2 - log(x) - log(1-x) - (log(x/(1-x))-mu)**2/(2*sigma**2)
 references:
   - "Aitchison, J., & Shen, S. M. (1980). Logistic-normal distributions: Some properties and uses. Biometrika, 67(2), 261-272."
-examples: |
-  AIC(mllogitnorm(USArrests$Rape / 100))
 holds: []
 limits:
 - name: zero-scale collapse
@@ -31,6 +29,10 @@ limits:
   detect: All logits equal mu (estimated or held) and sigma is free.
   status: zero scale
   message: does not exist
+examples: |
+  set.seed(1)
+  x <- rml(200, mllogitnorm())
+  mllogitnorm(x)
 ---
 
 The logit-normal distribution models proportions whose logits follow a normal distribution.

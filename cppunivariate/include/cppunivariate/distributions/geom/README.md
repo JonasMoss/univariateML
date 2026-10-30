@@ -17,7 +17,9 @@ log_density: "log(prob) + x*log(1 - prob)"
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
-  mlgeom(corbet)
+  set.seed(1)
+  x <- rml(200, mlgeom())
+  mlgeom(x)
 ---
 
 The geometric distribution models the number of failures before the first success in independent Bernoulli trials.

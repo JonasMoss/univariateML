@@ -33,10 +33,11 @@ limits:
     when: '$\sigma \to 0$'
     detect: conditional uniform face within 1e-8*n of the best interior likelihood
     status: UniformLimit
-examples: |
-  set.seed(12876)
-  mlbhatt(univariateML:::rbhatt(n = 500, mu = 0, sigma = 1, a = 2))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlbhatt())
+  mlbhatt(x)
 ---
 
 The Bhattacharjee distribution is the convolution of a normal distribution and a symmetric uniform distribution.

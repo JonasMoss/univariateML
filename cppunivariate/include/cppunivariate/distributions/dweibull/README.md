@@ -47,10 +47,11 @@ limits:
     fixed: [shape1]
 references:
   - "Nakagawa, T. and Osaki, S. (1975). The discrete Weibull distribution. IEEE Transactions on Reliability, R-24(5), 300–301. doi:10.1109/TR.1975.5214915."
-examples: |
-  AIC(mldweibull(corbet), mlgeom(corbet))
-  mldweibull(corbet, shape2 = 1)
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mldweibull())
+  mldweibull(x)
 ---
 
 The type I discrete Weibull distribution of Nakagawa and Osaki (1975) models nonnegative counts such as the number of cycles survived before failure. A count is the integer part of a continuous Weibull variable with shape `shape2`; `shape1` is the probability that the count is positive.

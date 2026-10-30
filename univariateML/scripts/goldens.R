@@ -51,12 +51,7 @@ default_args <- function(model) {
 
 # Sample size by position: stats::rhyper calls it `nn`.
 sample_one <- function(model, n) {
-  draws <- do.call(resolve_callable(model$sampler), c(list(n), default_args(model)))
-  if (!is.null(model$shift)) {
-    shift <- Filter(function(p) identical(p$name, model$shift), model$params)[[1]]$simulate
-    draws <- draws + shift
-  }
-  draws
+  rml(n, getExportedValue("univariateML", paste0("ml", model$id))())
 }
 
 # README fit_args (required design quantities) are passed to the fit.

@@ -48,9 +48,10 @@ limits:
 references:
   - "Nelson, D. B. (1991). Conditional Heteroscedasticity in Asset Returns, A New Approach. Econometrica, 59, 347–370."
   - "Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power distribution and its generalizations. Statistics & Probability Letters, 107, 111–114. doi:10.1016/j.spl.2015.08.009."
-examples: |
-  mlged(precip)
 holds: []
+examples: |
+  x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
+  mlged(x)
 ---
 
 The generalized error (exponential power) distribution is a symmetric location-scale family whose shape controls tail thickness.

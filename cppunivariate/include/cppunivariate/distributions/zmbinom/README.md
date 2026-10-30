@@ -42,6 +42,10 @@ limits:
   - p0
 fit_args:
   size: ~
+examples: |
+  set.seed(1)
+  x <- rml(200, mlzmbinom())
+  mlzmbinom(x, size = 8)
 ---
 
 Zero-modified binomial distributions model counts with a separate zero component.

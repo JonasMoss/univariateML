@@ -22,8 +22,6 @@ r:
 log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York."
-examples: |
-  mlnorm(precip)
 holds: []
 limits:
   - name: scale collapse
@@ -31,6 +29,9 @@ limits:
     detect: Every observation equals the fitted or held location.
     status: Unbounded
     message: "unbounded"
+examples: |
+  x <- datasets::trees$Height
+  mlnorm(x)
 ---
 
 The normal (Gaussian) distribution is a symmetric distribution on the real line, used to model continuous measurements and errors.

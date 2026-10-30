@@ -35,39 +35,8 @@ listmerge <- function(x, y, type = c("merge", "template")) {
   }
 }
 
-#' Simulate `n` observations from a `ml***` string using default parameters.
-#' @param dens `ml***` string.
-#' @param n Number of samples to take.
-#' @keywords internal
-#' @export
-simulate_default <- function(dens, n) {
-  to_rdist <- function(x) {
-    parts <- strsplit(x, "::", fixed = TRUE)[[1]]
-    if (length(parts) == 2L) {
-      substring(parts[2], first = 1, last = 1) <- "r"
-      paste0(parts[1], "::", parts[2])
-    } else {
-      substring(parts[1], first = 1, last = 1) <- "r"
-      parts[1]
-    }
-  }
-  params <- univariateML_metadata[[dens]]$simulate
-  names(params) <- univariateML_metadata[[dens]]$names
-  shift_name <- univariateML_shifts[[dens]]
-  shift <- if (is.null(shift_name)) NULL else unname(params[[shift_name]])
-  # Sample size by position: stats::rhyper calls it `nn`.
-  params <- c(list(n), univariateML_dpqr_args(params, dens))
-  rdist <- to_rdist(univariateML_metadata[[dens]]$density)
-  parts <- strsplit(rdist, "::", fixed = TRUE)[[1]]
-  fun <- if (length(parts) == 2L) {
-    getExportedValue(parts[1], parts[2])
-  } else {
-    # Function lives in our own namespace.
-    get(parts[1], envir = asNamespace("univariateML"), inherits = FALSE)
-  }
-  draws <- do.call(fun, params)
-  if (is.null(shift)) draws else draws + shift
-}
+# Internal tooling convenience; public simulation uses rml(n, mlX()).
+ml_simulate <- function(dens, n) rml(n, get(dens, mode = "function")())
 
 #' One-dimensional Newton--Raphson
 #' @param f_over_df The term f(x_0) / f'(x_0) in Newton--Raphson.

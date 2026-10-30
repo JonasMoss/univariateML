@@ -34,7 +34,9 @@ limits:
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
-  mlzip(corbet)
+  set.seed(1)
+  x <- rml(200, mlzip())
+  mlzip(x)
 ---
 
 The zero-inflated Poisson distribution mixes a Poisson count with an additional point mass at zero.

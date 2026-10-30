@@ -13,7 +13,9 @@
 #' calculated under. These functions are wrappers around underlying density,
 #' distribution, quantile and random generation functions where unknown
 #' parameters are filled with the maximum likelihood estimates.
-#' See the example.
+#' They also accept fixed models built by calling a fitter without data,
+#' for example `mlgamma(shape = 3)`. Unspecified coefficients then use
+#' the defaults listed on that fitter's help page.
 #'
 #' @param x,q vector of quantiles.
 #' @param p vector of probabilities.
@@ -28,6 +30,10 @@
 #'     function, `qml` gives the quantile function, and `rml`
 #'     generates random deviates.
 #' @examples
+#' fixed <- mlgamma(shape = 3)
+#' rml(5, fixed)
+#' dml(c(1, 2), fixed)
+#'
 #' ## Simple example
 #' obj <- mlnorm(airquality$Wind)
 #' dml(0.5, obj) == dnorm(0.5, mean = obj[1], sd = obj[2])

@@ -26,9 +26,6 @@ r:
 log_density: "-s*log(x) - log(Sum(k**(-s), (k, 1, N)))"
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
-examples: |
-  AIC(mlzipf(corbet))
-  AIC(mllgser(corbet))
 limits:
 - name: point mass at one
   when: '$s \to \infty$'
@@ -36,6 +33,10 @@ limits:
   status: PointMass
   fixed: ['N']
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlzipf())
+  mlzipf(x)
 ---
 
 The finite Zipf distribution describes power-law frequencies on consecutive positive integers.

@@ -48,9 +48,6 @@ limits:
     status: Degenerate
     message: unbounded
 log_density: (shape1-1)*log(((x-min)/(max-min))) + (shape2-1)*log(1-((x-min)/(max-min))) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)-log(max-min)
-examples: |
-  set.seed(3)
-  mlnsbeta(simulate_default("mlnsbeta", 100), min = 0, max = 1)
 holds:
 - held: []
   status: no-mle
@@ -123,6 +120,10 @@ holds:
 fit_args:
   min: 0
   max: 1
+examples: |
+  set.seed(1)
+  x <- rml(200, mlnsbeta())
+  mlnsbeta(x, min = 0L, max = 1L)
 ---
 
 This family has a known support endpoint and delegates fitting to beta.

@@ -42,6 +42,10 @@ limits:
   - pi
 fit_args:
   size: ~
+examples: |
+  set.seed(1)
+  x <- rml(200, mlzib())
+  mlzib(x, size = 8)
 ---
 
 Zero-inflated binomial distributions model counts with a separate zero component.

@@ -41,10 +41,11 @@ limits:
 references:
   - "Irwin, J. O. (1975). The Generalized Waring Distribution. Part I. JRSS A 138(1), 18-31. doi:10.2307/2345247."
   - "Xekalaki, E. (1984). The Bivariate Generalized Waring Distribution and its Application to Accident Theory. JRSS A 147(3), 488-498. doi:10.2307/2981580."
-examples: |
-  set.seed(4)
-  mlbnbinom(univariateML:::rbnbinom(n = 1000, size = 1, alpha = 2, beta = 5))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlbnbinom())
+  mlbnbinom(x)
 ---
 
 The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power law tails.

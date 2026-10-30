@@ -56,10 +56,11 @@ limits:
 references:
   - "Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational Statistics & Data Analysis 45, 675-687. doi:10.1016/S0167-9473(02)00367-5."
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York."
-examples: |
-  set.seed(42)
-  mlburr(univariateML:::rburr(n = 1000, shape1 = 1, shape2 = 2, scale = 3))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlburr())
+  mlburr(x)
 ---
 
 The Burr type XII distribution is a heavy-tailed distribution for positive size and loss data.

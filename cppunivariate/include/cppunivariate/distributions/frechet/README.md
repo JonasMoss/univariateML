@@ -43,11 +43,12 @@ limits:
   - {name: shape divergence, fixed: [sigma], status: InvalidData, message: "unbounded shape likelihood", when: "Constant data with free mu, or all x-mu equal held sigma."}
   - {model: gumbel, when: 'lambda tends to infinity with free location', status: GumbelLimit}
   - {name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, lambda) point beats the lambda -> 1 collapse face's limiting likelihood."}
-examples: |
-  set.seed(3)
-  mlfrechet(univariateML:::rfrechet(n = 100, lambda = 1, mu = 0, sigma = 1), mu = 0)
 fit_args:
   mu: ~
+examples: |
+  set.seed(1)
+  x <- rml(200, mlfrechet())
+  mlfrechet(x, mu = NULL)
 ---
 
 The Frechet distribution models heavy right tails and extreme maxima.

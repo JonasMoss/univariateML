@@ -44,7 +44,7 @@ test_that('synthetic codegen accepts expressions and rejects invalid signatures'
     '  - {name: sigma, role: scale, domain: "(0, inf)", simulate: 1}',
     'r:', '  density: stats::dnorm', '  sampler: stats::rnorm',
     '  shift: mu', '  args: {mean: "mu + sigma", sd: sigma}',
-    '  control: {}','fit_args: {mu: 0}', '---','A synthetic normal model.')
+    '  control: {}','fit_args: {mu: 0}', 'examples: mlsynthetic()', '---','A synthetic normal model.')
   writeLines(readme,file.path(synthetic,'README.md'))
   out <- file.path(work,'R'); dir.create(out)
   writeLines('mlsynthetic_ <- function(x, mu, sigma=NULL) NULL',file.path(out,'RcppExports.R'))
@@ -55,6 +55,9 @@ test_that('synthetic codegen accepts expressions and rejects invalid signatures'
   expect_identical(metadata$univariateML_args$mlsynthetic[['mean']], 'mu + sigma')
   expect_identical(metadata$univariateML_shifts$mlsynthetic, 'mu')
   expect_error(sys.source('scripts/codegen_wrappers.R',new.env()),NA)
+  writeLines(readme[!grepl('^examples:', readme)], file.path(synthetic,'README.md'))
+  expect_error(sys.source('scripts/codegen_wrappers.R',new.env()), 'missing examples:')
+  writeLines(readme, file.path(synthetic,'README.md'))
   writeLines('mlsynthetic_ <- function(x, mu=NULL, sigma=NULL) NULL',file.path(out,'RcppExports.R'))
   expect_error(sys.source('scripts/codegen_wrappers.R',new.env()),'required coefficient.*no adapter default')
   writeLines('mlsynthetic_ <- function(x, mu, sigma=1) NULL',file.path(out,'RcppExports.R'))

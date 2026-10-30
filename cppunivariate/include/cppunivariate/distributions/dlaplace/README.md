@@ -27,6 +27,9 @@ limits:
   detect: all observations equal the fitted or held location
   status: PointMass
 holds: []
+examples: |
+  x <- diff(datasets::discoveries)
+  mldlaplace(x)
 ---
 
 Discrete Laplace distributions model integer observations with symmetric geometric tails.

@@ -37,10 +37,11 @@ limits:
     when: '$\sigma\to0$'
     detect: Conditional translated-exponential likelihood wins within 1e-8*n.
     status: TranslatedExponentialLimit
-examples: |
-  set.seed(7)
-  mlemg(univariateML:::remg(n = 200, mu = 0, sigma = 1, lambda = 1))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlemg())
+  mlemg(x)
 ---
 
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.

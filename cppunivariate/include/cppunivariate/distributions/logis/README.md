@@ -24,8 +24,6 @@ r:
 log_density: -(x-location)/scale - log(scale) - 2*log(1 + exp(-(x-location)/scale))
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York."
-examples: |
-  mllogis(precip)
 holds: []
 limits:
   - name: scale collapse
@@ -33,6 +31,10 @@ limits:
     detect: Every observation equals the fitted or held location.
     status: InvalidInput
     message: "unbounded"
+examples: |
+  set.seed(1)
+  x <- rml(200, mllogis())
+  mllogis(x)
 ---
 
 The logistic distribution is a symmetric location-scale distribution with heavier tails than the normal distribution.

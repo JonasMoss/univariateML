@@ -25,9 +25,11 @@ log_density: "-mu1-mu2 + x*log(mu1/mu2)/2 + log(besseli(Abs(x),2*sqrt(mu1*mu2)))
 references:
   - "Skellam, J. G. (1946). The frequency distribution of the difference between two Poisson variates belonging to different populations. Journal of the Royal Statistical Society 109, 296."
   - "Johnson, N. L. (1959). On an extension of the connexion between Poisson and chi-squared distributions. Biometrika 46, 352–362."
-examples: |
-  mlskellam(c(-4, -2, -1, 0, 1, 2, 5, 8))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlskellam())
+  mlskellam(x)
 ---
 
 The Skellam distribution describes the difference between two independent Poisson counts.

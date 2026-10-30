@@ -22,14 +22,15 @@ r:
 log_density: -log(x) - log(sdlog) - log(2*pi)/2 - (log(x)-meanlog)**2/(2*sdlog**2)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York."
-examples: |
-  mllnorm(precip)
 limits:
 - name: unbounded likelihood
   fixed: [meanlog]
   when: Every log observation equals held meanlog.
   status: Unbounded
   message: unbounded
+examples: |
+  x <- datasets::precip
+  mllnorm(x)
 ---
 
 The lognormal distribution models positive quantities whose logarithms follow a normal distribution.

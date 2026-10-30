@@ -29,10 +29,6 @@ r:
     reltol: Absolute tolerance on the dimensionless concave endpoint Newton step.
     iterlim: Maximum iterations per endpoint solve.
 log_density: log(2) - log(b-a) + Piecewise((log((x-a)/(c-a)), x < c), (log((b-x)/(b-c)), x > c), (0, True))
-examples: |
-  set.seed(3)
-  mltriang(univariateML:::rtriang(n = 100, a = 0, b = 1, c = 0.4))
-  mltriang(univariateML:::rtriang(n = 100, a = 0, b = 1, c = 0.4), a = 0, b = 1)
 holds: []
 limits:
 - name: zero-width collapse
@@ -45,6 +41,10 @@ limits:
   detect: Data outside held endpoints, non-mode observed endpoints, or inconsistent parameter ordering.
   status: Incompatible
   message: incompatible
+examples: |
+  set.seed(1)
+  x <- rml(200, mltriang())
+  mltriang(x)
 ---
 
 The triangular distribution describes bounded measurements with a single mode.

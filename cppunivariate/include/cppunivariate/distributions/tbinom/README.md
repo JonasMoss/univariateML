@@ -68,13 +68,14 @@ limits:
   detect: same numerical comparison, with both bounds held
   fixed: [a, b]
   status: TpoisLimit
-examples: |
-  set.seed(1)
-  mltbinom(univariateML:::rtbinom(n = 100, prob = 0.4, a = 0, b = 10, size = 12), a = 0, b = 10, size = 12)
 fit_args:
   a: 0
   b: 10
   size: 12
+examples: |
+  set.seed(1)
+  x <- rml(200, mltbinom())
+  mltbinom(x, a = 0L, b = 10L, size = 12L)
 ---
 
 The binomial law conditioned on known bounds `a < x <= b` models truncated counts.

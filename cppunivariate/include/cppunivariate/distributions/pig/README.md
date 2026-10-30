@@ -32,9 +32,11 @@ limits:
     status: ZeroLimit
 references:
   - "Willmot, G. E. (1987). The Poisson-inverse Gaussian distribution as an alternative to the negative binomial. Scandinavian Actuarial Journal, 1987(3-4), 113-127. DOI: 10.1080/03461238.1987.10413823."
-examples: |
-  mlpig(c(0, 0, 0, 0, 10))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlpig())
+  mlpig(x)
 ---
 
 The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse Gaussian mean. It models overdispersed nonnegative counts.

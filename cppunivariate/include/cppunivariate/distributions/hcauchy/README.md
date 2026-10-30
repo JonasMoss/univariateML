@@ -30,11 +30,12 @@ limits:
     status: ScaleBoundary
 references:
   - extraDistr package, HalfCauchy documentation (density and parameterization).
-examples: |
-  set.seed(11)
-  mlhcauchy(univariateML:::rhcauchy(n = 100, mu = 0, sigma = 2) + 3, mu = NULL)
 fit_args:
   mu: 0
+examples: |
+  set.seed(1)
+  x <- rml(200, mlhcauchy())
+  mlhcauchy(x, mu = 0L)
 ---
 
 The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint, translated from zero.
