@@ -86,15 +86,27 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       best.status=ZibStatus::IterationFailure;return best;
     }
     auto best=held_profile(mx);
-    // Preserve the existing integer-profile search and compare the matching ZIP face.
-    for(int t=0;t<=24;++t) {
-      auto candidate=held_profile(std::floor(mx+std::exp(t)));if(candidate.logLik>best.logLik)best=candidate;
+    // Exponential grid + golden-section refinement, exactly as
+    // ztbinom's free-size search; not a certified unimodality result
+    // (see that file's comment and notes/evaluations/2026-10-29-tail85-report.md).
+    // The grid always covers the old depth (t<24) -- a strict superset,
+    // no existing case regresses -- then keeps growing, governed only
+    // by the iteration budget `maxit` and `patience` stable cells, not
+    // a hardcoded magnitude.
+    int since_improvement=0, t=0;
+    const int grid_floor=24, patience=10, cap=std::max(grid_floor,maxit);
+    for(; t<=cap; ++t) {
+      bool improved=false;
+      auto candidate=held_profile(std::floor(mx+std::exp(t)));
+      if(candidate.logLik>best.logLik) {best=candidate;improved=true;}
       bool done=false;
       const double opt=ztbinom_detail::maximize([&](double u){return held_profile(mx+std::exp(u)).logLik;},t-1,t+1,tol,maxit,done);
       if(!done) {best.status=ZibStatus::IterationFailure;return best;}
       for(double r:{std::floor(mx+std::exp(opt)),std::ceil(mx+std::exp(opt))}) {
-        candidate=held_profile(r);if(candidate.logLik>best.logLik)best=candidate;
+        candidate=held_profile(r);if(candidate.logLik>best.logLik) {best=candidate;improved=true;}
       }
+      if(improved) since_improvement=0; else ++since_improvement;
+      if(t>=grid_floor && since_improvement>patience) break;
     }
     const auto face=[&](double lambda) {
       double ll=0;
@@ -130,7 +142,9 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       face_best=std::max(face_best,face(lo+(hi-lo)/2));
     }
     if(face_best>=best.logLik-1e-8*n)best.status=ZibStatus::ZipLimit;
-    if(best.status==ZibStatus::Ok && best.size>=std::floor(mx+std::exp(24.)))best.status=ZibStatus::IterationFailure;
+    // Ran out of the iteration budget while still improving, rather
+    // than stabilizing: the budget, not a size, is exhausted.
+    if(best.status==ZibStatus::Ok && t>cap && since_improvement<=patience)best.status=ZibStatus::IterationFailure;
     return best;
   }
   auto profile=[&](double r) {
@@ -148,19 +162,29 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
   };
   if(fixed)return profile(fixed_size);
   auto best=profile(mx);
-  for(int t=0;t<=24;++t) {
+  // Same exponential-grid search, same caveats as the two loops above:
+  // not certified, grid depth extended via the iteration budget and
+  // stabilization rather than a hardcoded magnitude.
+  int since_improvement=0, t=0;
+  const int grid_floor=24, patience=10, cap=std::max(grid_floor,maxit);
+  for(; t<=cap; ++t) {
+    bool improved=false;
     const double r=mx+std::exp(t),ll=profile(r).logLik;
-    auto candidate=profile(std::floor(r));if(candidate.logLik>best.logLik)best=candidate;
-    if(ll<profile(mx+std::exp(t-1)).logLik||ll<profile(mx+std::exp(t+1)).logLik)continue;
-    bool done=false;
-    const double opt=ztbinom_detail::maximize([&](double s){return profile(mx+std::exp(s)).logLik;},t-1,t+1,tol,maxit,done);
-    if(!done) {best.status=ZibStatus::IterationFailure;return best;}
-    const double s=mx+std::exp(opt);
-    for(double k:{std::floor(s),std::ceil(s)}) {candidate=profile(k);if(candidate.logLik>best.logLik)best=candidate;}
+    auto candidate=profile(std::floor(r));
+    if(candidate.logLik>best.logLik) {best=candidate;improved=true;}
+    if(!(ll<profile(mx+std::exp(t-1)).logLik||ll<profile(mx+std::exp(t+1)).logLik)) {
+      bool done=false;
+      const double opt=ztbinom_detail::maximize([&](double s){return profile(mx+std::exp(s)).logLik;},t-1,t+1,tol,maxit,done);
+      if(!done) {best.status=ZibStatus::IterationFailure;return best;}
+      const double s=mx+std::exp(opt);
+      for(double k:{std::floor(s),std::ceil(s)}) {candidate=profile(k);if(candidate.logLik>best.logLik) {best=candidate;improved=true;}}
+    }
+    if(improved) since_improvement=0; else ++since_improvement;
+    if(t>=grid_floor && since_improvement>patience) break;
   }
   const auto zip=zip_mle(x);
   if(zip.status==ZipStatus::Ok && zip.logLik>=best.logLik-1e-8*n)best.status=ZibStatus::ZipLimit;
-  if(best.status==ZibStatus::Ok && best.size>=std::floor(mx+std::exp(24.0)))best.status=ZibStatus::IterationFailure;
+  if(best.status==ZibStatus::Ok && t>cap && since_improvement<=patience)best.status=ZibStatus::IterationFailure;
   return best;
 }
 }

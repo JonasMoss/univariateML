@@ -19,6 +19,7 @@ Rcpp::List mlfrechet_(const Rcpp::NumericVector &x,
  const auto r=cppunivariate::frechet_mle(dist_impl::as_span(x),reltol,iterlim,
  mu.isNotNull() ? Rcpp::as<double>(mu) : std::numeric_limits<double>::quiet_NaN(),shape,scale);
  if(r.status==cppunivariate::FrechetStatus::GumbelLimit) Rcpp::stop("Frechet selects the Gumbel limit. Use `mlgumbel`.");
+ if(r.status==cppunivariate::FrechetStatus::NoMLE) Rcpp::stop("Frechet has no finite maximum: minimum multiplicity permits scale collapse.");
  if(r.status==cppunivariate::FrechetStatus::InvalidData) Rcpp::stop("Frechet requires finite observations strictly above held mu and compatible holds. Free shape and scale require nonconstant data; the default free-mu fit requires at least three observations and admissible minimum tie multiplicity. Constant data can have an unbounded shape likelihood and fixed shape can have an unattained collapse face. Tolerance and iteration limit must be positive.");
  if(r.status!=cppunivariate::FrechetStatus::Ok) Rcpp::stop("Frechet profile search failed to converge.");
   Rcpp::CharacterVector restricted;

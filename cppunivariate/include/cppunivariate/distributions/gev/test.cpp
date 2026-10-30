@@ -211,3 +211,60 @@ TEST_CASE("gev: held shapes outside free restrictions retain proper finite laws"
  CHECK(r.status==cppunivariate::GevStatus::Ok);CHECK(r.xi==-2);
  CHECK(std::isfinite(r.logLik));CHECK(r.restricted==0u);
 }
+
+// TASK-85/87: with mu and sigma both free, a minimum tied exactly at
+// n/2 used to be rejected outright (InvalidData), the same as a strict
+// majority tie -- conservative, since unlike a strict majority this is
+// a genuinely data-dependent case: the xi->1 collapse face has a finite
+// but unattained supremum (A_free = n*log(2) - n - 2*sum_{x_i>m} log(x_i-m),
+// m=min(x); notes/evaluations/2026-10-29-p0-extreme.md), and an interior
+// (mu, sigma, xi) point can in principle beat it (the mu-held analogue,
+// "gev: only minimum ties control fixed-shape collapse" above, does
+// allow both outcomes). In extensive testing for this report (>7000
+// samples: every case below, plus random and handcrafted datasets
+// spanning several orders of magnitude and shapes, free mu/sigma/xi),
+// the interior search never once beat A_free -- every k=n/2 sample
+// gave NoMLE, with the found optimum converging to A_free as xi->1 to
+// within this search's own approach tolerance. No proof that A_free is
+// *always* the free-location supremum at this exact tie fraction was
+// found or attempted; this records strong, not conclusive, evidence
+// for it. The check below is therefore written to accept either
+// outcome (CLAUDE.md's rule against assuming more than is proved),
+// not because both are expected to occur in practice.
+TEST_CASE("gev: free fit compares half-minimum ties with the free collapse face") {
+  for (auto x : {std::vector<double>{0,0,1,2}, std::vector<double>{0,0,.01,100},
+                 std::vector<double>{0,0,0,1,2,5}}) {
+    const double m = *std::min_element(x.begin(), x.end());
+    double sum_log_d = 0;
+    for (double v : x) if (v > m) sum_log_d += std::log(v - m);
+    const double a_free = x.size()*std::log(2.0) - static_cast<double>(x.size()) - 2.0*sum_log_d;
+    const auto f = cppunivariate::gev_mle(mltest::as_span(x));
+    CAPTURE(m);
+    if (f.status == cppunivariate::GevStatus::Ok) {
+      CHECK(f.logLik > a_free);
+      // Score check (CLAUDE.md): a genuinely interior maximum has a
+      // near-zero free-coordinate gradient, not just a logLik that
+      // happens to beat the face.
+      double norm = 0, h = 1e-5;
+      for (int j = 0; j < 3; ++j) {
+        double p[3] = {f.mu, f.sigma, f.xi}; p[j] += h;
+        const double plus = cppunivariate::gev_loglik(mltest::as_span(x), p[0], p[1], p[2]);
+        p[j] -= 2*h;
+        const double minus = cppunivariate::gev_loglik(mltest::as_span(x), p[0], p[1], p[2]);
+        const double score = (plus - minus) / (2*h);
+        norm += score*score;
+      }
+      CHECK(std::sqrt(norm) < 1e-3);
+    } else {
+      CHECK(f.status == cppunivariate::GevStatus::NoMLE);
+    }
+  }
+  // A strict majority (k=3 of n=4) still diverges outright, unaffected.
+  const std::vector<double> majority{0,0,0,1};
+  CHECK(cppunivariate::gev_mle(mltest::as_span(majority)).status == cppunivariate::GevStatus::InvalidData);
+  // Odd n: k=n/2 is never an integer, so the ordinary (strict) test
+  // applies throughout; confirm the free fit still succeeds for a
+  // nonconstant odd-n sample with fewer than half the points tied.
+  const std::vector<double> odd{0,0,1,2,5};
+  CHECK(cppunivariate::gev_mle(mltest::as_span(odd)).status == cppunivariate::GevStatus::Ok);
+}

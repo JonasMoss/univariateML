@@ -98,6 +98,24 @@ test_that("Frechet free location accepts ties above the minimum", {
   else expect_equal(as.numeric(logLik(f)), sum(extraDistr::dfrechet(x,f[1],f[2],f[3],log=TRUE)), tolerance=1e-8)
 })
 
+test_that("Frechet free fit compares half-minimum ties with the free collapse face", {
+  # TASK-85/87: with mu, lambda and sigma all free, this used to be
+  # rejected outright. Mirrors gev/test.R's identical test and finding
+  # (notes/evaluations/2026-10-29-tail85-report.md): every sample tried
+  # gives the collapse-face branch, not the interior-fit one.
+  for(x in list(c(1,1,2,3),c(0,0,.01,100),c(1,1,1,2,5,20))) {
+    f <- tryCatch(suppressWarnings(mlfrechet(x, mu = NULL), classes = "univariateML_restricted"), error=identity)
+    if (inherits(f,"error")) expect_match(conditionMessage(f), "scale collapse")
+    else {
+      m <- min(x)
+      face <- length(x)*log(2)-length(x)-2*sum(log(x[x>m]-m))
+      expect_gt(as.numeric(logLik(f)),face)
+    }
+  }
+  # Strict majority (k=3 of n=4) still diverges outright, unaffected.
+  expect_error(suppressWarnings(mlfrechet(c(1,1,1,2), mu = NULL), classes = "univariateML_restricted"))
+})
+
 test_that("frechet: new holds agree with independent multistart reference fits", {
   set.seed(81029)
   id <- "frechet"

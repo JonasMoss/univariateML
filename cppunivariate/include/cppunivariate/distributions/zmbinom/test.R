@@ -108,3 +108,45 @@ test_that("zmbinom: P3 unfinished optimizer stops", {
   expect_error(mlzmbinom(x, iterlim=1, reltol=1e-10, size=NULL),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("zmbinom: free size and probability agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)", {
+  # TASK-85/87: zmbinom delegates its free-size search entirely to
+  # ztbinom_mle on the positive-value subset (mle.hpp); this exercises
+  # that delegation on the same n=20/100, ties and near-Poisson cases as
+  # ztbinom's own analogous test.
+  set.seed(85087)
+  oracle_ll <- function(x, size) {
+    k <- sum(x > 0); n <- length(x); p0 <- (n - k) / n
+    pos <- x[x > 0]
+    objective <- function(p) -sum(actuar::dztbinom(pos, size = size, prob = p, log = TRUE))
+    base <- if (n - k > 0) (n - k) * log(p0) else 0
+    base <- base + if (k > 0) k * log1p(-p0) else 0
+    base - optimize(objective, c(1e-9, 1 - 1e-9))$objective
+  }
+  oracle <- function(x, sizes) max(vapply(sizes, function(s) oracle_ll(x, s), 0))
+
+  samples <- list(
+    n20 = actuar::rzmbinom(20, size = 8, prob = 0.4, p0 = 0.3),
+    n100 = actuar::rzmbinom(100, size = 8, prob = 0.4, p0 = 0.3),
+    ties = c(0, 0, 2, 2, 2, 2, 3, 4, 5, 5),
+    near_poisson = actuar::rzmbinom(100, size = 500, prob = 0.02, p0 = 0.2)
+  )
+  for (x in samples) {
+    if (!any(x == 0)) next  # p0 is held at 0 (identifiability) and unaffected by this fix
+    # The near-Poisson sample can legitimately hit the infinite-size
+    # escape instead of a finite fit (R6: a data-dependent "use
+    # mlzmpois", not a failure); accept either outcome.
+    fit <- tryCatch(suppressWarnings(mlzmbinom(x, size = NULL)), error = identity)
+    if (inherits(fit, "error")) {
+      expect_match(conditionMessage(fit), "mlzmpois")
+      next
+    }
+    expect_true(is.finite(attr(fit, "logLik")))
+    best <- oracle(x, unique(pmax(max(x), round(unname(fit["size"]) * c(.25,.5,.9,1,1.1,2,4)))))
+    expect_gte(attr(fit, "logLik") + 1e-6, best)
+    expect_equal(attr(fit, "logLik"),
+                 sum(actuar::dzmbinom(x, size = unname(fit["size"]), prob = unname(fit["prob"]),
+                                       p0 = unname(fit["p0"]), log = TRUE)),
+                 tolerance = 1e-8)
+  }
+})

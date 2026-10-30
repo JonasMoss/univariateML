@@ -109,3 +109,42 @@ TEST_CASE("frechet: P3 restrictions and closed faces") {
  REQUIRE(f.status==cppunivariate::FrechetStatus::Ok);CHECK(f.lambda==1);CHECK(f.restricted==1u);
  const auto h=cppunivariate::frechet_mle(mltest::as_span(x),1e-10,200,0,1,1);CHECK(h.restricted==0u);
 }
+
+// TASK-85/87: with mu, lambda and sigma all free, a minimum tied
+// exactly at n/2 used to be rejected outright, conflated with a strict
+// majority tie. Mirrors gev/test.cpp's identical fix and its finding:
+// the lambda->1 collapse face has a finite but unattained supremum
+// (A_free, same closed form as GEV's since Frechet's log-likelihood at
+// a point is the GEV log-likelihood at the corresponding reparametrized
+// point); in 3000+ random trials for this report, no interior point
+// ever beat it, so the check below accepts either outcome rather than
+// asserting one.
+TEST_CASE("frechet: free fit compares half-minimum ties with the free collapse face") {
+  for (auto x : {std::vector<double>{1,1,2,3}, std::vector<double>{0,0,.01,100},
+                 std::vector<double>{1,1,1,2,5,20}}) {
+    const double m = *std::min_element(x.begin(), x.end());
+    double sum_log_d = 0;
+    for (double v : x) if (v > m) sum_log_d += std::log(v - m);
+    const double a_free = x.size()*std::log(2.0) - static_cast<double>(x.size()) - 2.0*sum_log_d;
+    const auto f = cppunivariate::frechet_mle(mltest::as_span(x));
+    CAPTURE(m);
+    if (f.status == cppunivariate::FrechetStatus::Ok) {
+      CHECK(f.logLik > a_free);
+      double norm = 0, h = 1e-5;
+      for (int j = 0; j < 3; ++j) {
+        double p[3] = {f.lambda, f.mu, f.sigma}; p[j] += h;
+        const double plus = cppunivariate::frechet_loglik(mltest::as_span(x), p[0], p[1], p[2]);
+        p[j] -= 2*h;
+        const double minus = cppunivariate::frechet_loglik(mltest::as_span(x), p[0], p[1], p[2]);
+        const double score = (plus - minus) / (2*h);
+        norm += score*score;
+      }
+      CHECK(std::sqrt(norm) < 1e-3);
+    } else {
+      CHECK(f.status == cppunivariate::FrechetStatus::NoMLE);
+    }
+  }
+  // A strict majority still diverges outright, unaffected by this fix.
+  const std::vector<double> majority{1,1,1,2};
+  CHECK(cppunivariate::frechet_mle(mltest::as_span(majority)).status == cppunivariate::FrechetStatus::InvalidData);
+}

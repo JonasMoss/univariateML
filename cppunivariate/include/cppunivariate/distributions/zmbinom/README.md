@@ -54,3 +54,5 @@ Holding size fixed removes the infinite-size escape. The point mass at one remai
 A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.
 
 Holding p0 changes only the Bernoulli zero-indicator likelihood; the positive conditional fit is unchanged. An incompatible held p0 (zero with observed zeros, or one with positives) stops.
+
+The free-size search delegates entirely to `mlztbinom` on the positive observations (the zero/Bernoulli part is closed-form), so it inherits that search's exponential grid and its caveats verbatim: no unimodality proof is known, so it is a numerical search, not a certified one; see `mlztbinom`'s own documentation and `notes/evaluations/2026-10-29-tail85-report.md`.

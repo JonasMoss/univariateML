@@ -111,3 +111,50 @@ test_that("zib: P3 unfinished optimizer stops", {
   expect_error(mlzib(x, iterlim=1, reltol=1e-10, size=NULL),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("zib: free size, probability and mixture agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)", {
+  # TASK-85/87: same exponential-grid caveat as ztbinom's analogous test;
+  # cross-checks the specific cases the task calls out.
+  set.seed(85087)
+  oracle_ll <- function(x, size) {
+    objective <- function(par) {
+      p <- plogis(par[1]); mix <- plogis(par[2])
+      val <- -sum(extraDistr::dzib(x, size = size, prob = p, pi = mix, log = TRUE))
+      if (is.finite(val)) val else 1e100
+    }
+    best <- Inf
+    for (start in list(c(-2,-2), c(0,0), c(2,-2), c(-2,2), c(2,2))) {
+      o <- optim(start, objective, method = "BFGS", control = list(reltol = 1e-12, maxit = 2000))
+      if (o$value < best) best <- o$value
+    }
+    # Boundary mixture (pi=0, i.e. plain ztbinom*zero-mass) and pi=1
+    # (point mass at zero) are not reached by the logit reparametrization.
+    ll0 <- sum(extraDistr::dzib(x, size = size, prob = max(mean(x)/size,1e-9), pi = 0, log = TRUE))
+    max(-best, ll0)
+  }
+  oracle <- function(x, sizes) max(vapply(sizes, function(s) oracle_ll(x, s), 0))
+
+  samples <- list(
+    n20 = extraDistr::rzib(20, size = 8, prob = 0.4, pi = 0.3),
+    n100 = extraDistr::rzib(100, size = 8, prob = 0.4, pi = 0.3),
+    ties = c(0, 0, 2, 2, 2, 2, 3, 4, 5, 5),
+    near_poisson = extraDistr::rzib(100, size = 500, prob = 0.02, pi = 0.2)
+  )
+  for (x in samples) {
+    # The near-Poisson sample can legitimately hit the infinite-size
+    # escape instead of a finite fit (R6: a data-dependent "use mlzip",
+    # not a failure); accept either outcome.
+    fit <- tryCatch(suppressWarnings(mlzib(x, size = NULL)), error = identity)
+    if (inherits(fit, "error")) {
+      expect_match(conditionMessage(fit), "mlzip")
+      next
+    }
+    expect_true(is.finite(attr(fit, "logLik")))
+    best <- oracle(x, unique(pmax(max(x), round(unname(fit["size"]) * c(.25,.5,.9,1,1.1,2,4)))))
+    expect_gte(attr(fit, "logLik") + 1e-5, best)
+    expect_equal(attr(fit, "logLik"),
+                 sum(extraDistr::dzib(x, size = unname(fit["size"]), prob = unname(fit["prob"]),
+                                       pi = unname(fit["pi"]), log = TRUE)),
+                 tolerance = 1e-8)
+  }
+})

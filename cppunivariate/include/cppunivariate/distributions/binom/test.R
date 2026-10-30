@@ -105,3 +105,106 @@ test_that("free binomial size agrees with exhaustive integer profiles", {
   expect_error(mlbinom(c(1,2),size=8,prob=1))
   expect_error(mlbinom(c(1,2),size=NULL,prob=0))
 })
+
+test_that("free binomial size has no magnitude cap: very large optimal sizes agree with an independent lgamma profile", {
+  # TASK-85/87: the old search hard-failed once the bracket reached 1e6.
+  # These samples are engineered (one observation at 0, v copies of v) to
+  # have x_bar just barely below the population variance, which is
+  # exactly the regime that pushes the free-size MLE far out; both have
+  # a true optimal size far beyond that old cap (DeRiggi 1983 still
+  # guarantees existence and a single profile maximum, since
+  # x_bar/var_pop > 1 for both).
+  #
+  # The oracle below is independent of mlbinom: its own lgamma profile,
+  # written from scratch in R (double precision), using the same
+  # cancellation-free algebraic form the C++ fitter now uses --
+  # subtracting the two size*log(size)-scale terms directly (as the old
+  # C++ code did) loses all precision by this magnitude; see
+  # notes/evaluations/2026-10-29-tail85-report.md.
+  binom_profile_ll <- function(uniq, counts, size) {
+    n <- sum(counts); xbar <- sum(uniq * counts) / n
+    p <- xbar / size
+    ll <- n * xbar * log(p) + n * (size - xbar) * log1p(-p)
+    for (i in seq_along(uniq))
+      ll <- ll + counts[i] * (lgamma(size + 1) - lgamma(uniq[i] + 1) - lgamma(size - uniq[i] + 1))
+    ll
+  }
+  binom_profile_increment <- function(uniq, counts, z) {
+    n <- sum(counts); xbar <- sum(uniq * counts) / n
+    phi <- function(w) {
+      if (w < 1000) return(w * log1p(1 / w) - 1)
+      term <- -1 / (2 * w); s <- term
+      for (j in 1:40) {
+        term <- term * (-(j + 1) / (j + 2)) / w
+        s <- s + term
+        if (abs(term) < abs(s) * 1e-18) break
+      }
+      s
+    }
+    sum(counts * log1p(uniq / (z + 1 - uniq))) +
+      n * (log1p(-xbar / (z + 1)) + phi(z - xbar) - phi(z))
+  }
+  binom_profile_search <- function(uniq, counts, start) {
+    lo <- start; hi <- start
+    it <- 0
+    while (binom_profile_increment(uniq, counts, hi) > 0) {
+      lo <- hi + 1; hi <- hi * 2
+      it <- it + 1; if (it > 200) stop("R oracle did not bracket")
+    }
+    while (hi > lo) {
+      mid <- lo + floor((hi - lo) / 2)
+      if (mid < lo) mid <- lo
+      if (mid >= hi) mid <- hi - 1
+      if (binom_profile_increment(uniq, counts, mid) > 0) lo <- mid + 1 else hi <- mid
+      it <- it + 1; if (it > 200) stop("R oracle did not bisect")
+    }
+    hi
+  }
+
+  for (v in c(1000, 5000)) {
+    x <- c(0, rep(v, v))
+    f <- mlbinom(x, size = NULL)
+    expect_gt(unname(f["size"]), 1e6 * (v == 5000) + 1e5 * (v == 1000))
+
+    uniq <- c(0, v); counts <- c(1, v)
+    oracle_size <- binom_profile_search(uniq, counts, v)
+    oracle_ll <- binom_profile_ll(uniq, counts, oracle_size)
+
+    # The two independent (long-double C++ vs double R) searches land on
+    # the same integer, or within a hair of it: near such a large
+    # optimum the profile is so flat (the forward difference is O(1/size^2)
+    # and its own rate of change O(1/size^3)) that double precision alone
+    # cannot always resolve the very last integer -- but the region and
+    # the attained log-likelihood agree tightly.
+    expect_equal(unname(f["size"]), oracle_size, tolerance = 1e-3)
+    expect_equal(as.numeric(logLik(f)), oracle_ll, tolerance = 1e-6)
+
+    # Unambiguous, coarsely-resolvable checks: beats the old 1e6 cap
+    # outright, and beats a grid of sizes genuinely far from the
+    # optimum. Multiples of the *found* size would stay misleadingly
+    # close in log-likelihood terms -- the profile is this flat even
+    # several multiples out, exactly because the optimum itself is so
+    # large (the first version of this test asserted exactly that and
+    # failed by 1.7e-4 at 2x the found size, which was comparing two
+    # double-precision evaluations at a scale where they cannot resolve
+    # anything that fine; see notes/evaluations/2026-10-29-tail85-report.md).
+    # Multiples of max(x) instead stay in a qualitatively different,
+    # clearly worse regime, with margins from ~4 (10x) down to a
+    # comfortably resolvable ~0.004-0.04 (100x) -- still orders of
+    # magnitude above double precision's noise floor here.
+    far_sizes <- unique(pmax(max(x), round(max(x) * c(1, 2, 5, 10, 50, 100))))
+    for (s in far_sizes) {
+      far_ll <- binom_profile_ll(uniq, counts, s)
+      expect_gte(as.numeric(logLik(f)) + 1e-6, far_ll)
+    }
+  }
+
+  # A size whose true optimum is astronomically large (~3e11): the search
+  # must not hang or fail, and must still dramatically beat the old cap.
+  v <- 1e6
+  x <- c(0, rep(v, v))
+  f <- mlbinom(x, size = NULL)
+  expect_gt(unname(f["size"]), 1e8)
+  at_cap <- sum(dbinom(x, size = 1e6, prob = mean(x) / 1e6, log = TRUE))
+  expect_gt(as.numeric(logLik(f)), at_cap + 1e6)
+})
