@@ -25,14 +25,16 @@ log_density: log(2) + shape*log(shape) - loggamma(shape) - shape*log(scale) + (2
 references:
   - "Choi, S. C, and R. Wette. \"Maximum likelihood estimation of the parameters of the gamma distribution and their bias.\" Technometrics 11.4 (1969): 683-690."
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York."
-examples: |
-  mlnaka(precip)
 limits:
 - name: unbounded likelihood
   fixed: [scale]
   when: Every squared observation equals held scale.
   status: Degenerate
   message: unbounded
+examples: |
+  set.seed(1)
+  x <- rml(200, mlnaka())
+  mlnaka(x)
 ---
 
 The Nakagami distribution models positive amplitudes, including radio-fading measurements. Its square follows a gamma distribution.

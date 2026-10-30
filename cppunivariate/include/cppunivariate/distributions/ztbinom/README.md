@@ -30,6 +30,10 @@ limits:
   status: PoissonLimit
 fit_args:
   size: ~
+examples: |
+  set.seed(1)
+  x <- rml(200, mlztbinom())
+  mlztbinom(x, size = 8)
 ---
 
 Zero-truncated binomial distributions model positive counts.

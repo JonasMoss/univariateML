@@ -21,9 +21,11 @@ limits:
     when: '$rho \to +\infty$'
     detect: all observations equal one
     status: PointMass
-examples: |
-  mlyulesimon(c(1, 1, 2, 3, 8))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlyulesimon())
+  mlyulesimon(x)
 ---
 
 The Yule--Simon distribution describes power-law frequencies on the positive integers.

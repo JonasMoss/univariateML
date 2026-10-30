@@ -65,9 +65,6 @@ limits:
   when: shape2 tends to infinity and both beta shapes tend to zero
   status: DoubleParetoBoundary
   message: GB2 selects the double Pareto limit
-examples: |
-  set.seed(1)
-  mlfpareto(simulate_default("mlfpareto", 100), min = 0)
 holds:
 - held: []
   status: no-mle
@@ -169,6 +166,10 @@ fit_args:
   min: 0
   shape1: 0.3
   shape3: 0.4
+examples: |
+  set.seed(1)
+  x <- rml(200, mlfpareto())
+  mlfpareto(x, min = 0L, shape1 = 0.3, shape3 = 0.4)
 ---
 
 This family has a known support endpoint and delegates fitting to gb2.

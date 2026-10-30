@@ -26,6 +26,10 @@ r:
     lambda: "Optional held lambda; NULL estimates it."
     p0: "Optional held p0; NULL estimates it."
 log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(-lambda+x*log(lambda)-loggamma(x+1)-log(1-exp(-lambda))), True))
+examples: |
+  set.seed(1)
+  x <- rml(200, mlzmpois())
+  mlzmpois(x)
 ---
 
 Zero-modified Poisson distributions model counts with a separate zero component.

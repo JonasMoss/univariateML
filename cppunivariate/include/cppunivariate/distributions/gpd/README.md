@@ -40,9 +40,6 @@ limits:
   - {name: threshold scale collapse, fixed: [mu], status: InvalidData, message: "scale collapse at the threshold", when: "With free scale, all data equal mu, or threshold ties permit xi*k >= n-k (free xi always permits this path)."}
 references:
   - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics, 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
-examples: |
-  set.seed(1)
-  mlgpd(univariateML:::rgpd(n = 100, mu = 10, sigma = 2, xi = 0.3), mu = 10)
 holds:
 - held: []
   status: no-mle
@@ -61,6 +58,9 @@ holds:
   reason: 'Estimating `mu` is not supported: the free-threshold GPD likelihood has no MLE (endpoint and logistic escapes).'
 fit_args:
   mu: 0.0
+examples: |
+  x <- datasets::precip[datasets::precip > 40] - 40
+  mlgpd(x, mu = 0)
 ---
 
 The generalized Pareto distribution models exceedances above a user-chosen

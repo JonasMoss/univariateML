@@ -26,7 +26,9 @@ references:
   - "Hogg, R. V. and Klugman, S. A. (1984), Loss Distributions, Wiley."
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
 examples: |
-  mllgamma(precip)
+  set.seed(1)
+  x <- rml(200, mllgamma())
+  mllgamma(x)
 ---
 
 The log-gamma distribution describes positive data whose logarithm follows a gamma distribution.

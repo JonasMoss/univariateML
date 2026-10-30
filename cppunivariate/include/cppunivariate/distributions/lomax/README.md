@@ -33,14 +33,9 @@ references:
   - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
   - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley, p. 60.
 examples: |
-  set.seed(3)
-  mllomax(univariateML:::rlomax(n = 100, lambda = 2, kappa = 4))
-
-  # The maximum likelihood estimator does not exist for exponential-like data.
-  \dontrun{
-  set.seed(5)
-  mllomax(rexp(10))
-  }
+  set.seed(1)
+  x <- rml(200, mllomax())
+  mllomax(x)
 ---
 
 The Lomax (Pareto type II) distribution is a heavy-tailed distribution on

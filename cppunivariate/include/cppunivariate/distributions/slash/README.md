@@ -27,10 +27,11 @@ limits:
     when: '$\sigma \to 0$ at a half-mass observation'
     detect: finite collapse likelihood within 1e-8*n of the best profile value
     status: CollapseLimit
+holds: []
 examples: |
   set.seed(1)
-  mlslash(univariateML:::rslash(n = 100, mu = 0, sigma = 1))
-holds: []
+  x <- rml(200, mlslash())
+  mlslash(x)
 ---
 
 The slash distribution is a normal variate divided by an independent uniform variate, with location and scale.

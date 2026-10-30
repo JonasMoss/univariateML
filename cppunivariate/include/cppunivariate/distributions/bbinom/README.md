@@ -45,11 +45,6 @@ limits:
 references:
   - "Griffiths, D. A. (1973). Maximum likelihood estimation for the beta-binomial distribution and an application to the household distribution of the total number of cases of a disease. Biometrics, 29(4), 637-648. doi:10.2307/2529131."
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
-examples: |
-  set.seed(1)
-  x <- univariateML:::rbbinom(n = 200, size = 10, alpha = 2, beta = 3)
-  mlbbinom(x, size = 10)
-  mlbbinom(x, size = 10, alpha = 2)
 holds:
 - held: []
   status: not-implemented
@@ -64,6 +59,10 @@ holds:
   reason: "With beta held, positive-count probabilities vanish uniformly as size grows, but the proved tail bound is too weak for practical enumeration and fixed-size point-mass limits still require comparison."
 fit_args:
   size: 10
+examples: |
+  set.seed(1)
+  x <- rml(200, mlbbinom())
+  mlbbinom(x, size = 10L)
 ---
 
 The beta-binomial distribution is a binomial with a beta-distributed success probability; it models overdispersed counts out of a known number of trials. `size` must be supplied.

@@ -49,10 +49,11 @@ references:
   - "Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3), 1187-1192. doi:10.1214/aoms/1177704481."
   - "Noufaily, A. and Jones, M. C. (2013). On maximization of the likelihood for the generalized gamma distribution. Computational Statistics 28, 505-517. doi:10.1007/s00180-012-0314-4."
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
+holds: []
 examples: |
   set.seed(1)
-  mltrgamma(univariateML:::rtrgamma(n = 500, shape1 = 2, shape2 = 1.5, scale = 2))
-holds: []
+  x <- rml(200, mltrgamma())
+  mltrgamma(x)
 ---
 
 The transformed gamma (Stacy's generalized gamma) distribution is the

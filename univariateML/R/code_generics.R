@@ -106,6 +106,7 @@ points.univariateML <- function(x, range = NULL, kind = c("d", "p", "q"), ...) {
 
 #' @export
 logLik.univariateML <- function(object, ...) {
+  ml_require_data(object)
   val <- attr(object, "logLik")
   attr(val, "nobs") <- attr(object, "n")
   attr(val, "df") <- univariateML_df(object)
@@ -120,6 +121,7 @@ coef.univariateML <- function(object, ...) {
 
 #' @export
 summary.univariateML <- function(object, ...) {
+  ml_require_data(object)
   data.name <- deparse(as.list(attr(object, "call"))$x)
   digits <- list(...)$digits
   support <- attr(object, "support")
@@ -145,7 +147,7 @@ summary.univariateML <- function(object, ...) {
 print.univariateML <- function(x, ...) {
   digits <- list(...)$digits
   if (is.null(digits)) digits <- 4
-  cat("Maximum likelihood estimates for the", attr(x, "model"), "model \n")
+  cat(if (isTRUE(attr(x, "frozen"))) "Fixed coefficients for the" else "Maximum likelihood estimates for the", attr(x, "model"), "model \n")
   print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
   fixed <- univariateML_fixed(x)
   if (length(fixed)) cat("Fixed: ", paste(fixed, collapse = ", "), "\n", sep = "")
@@ -192,6 +194,7 @@ confint.univariateML <- function(
     level = 0.95,
     Nreps = 1000,
     ...) {
+  ml_require_data(object)
   if (is.null(parm)) parm <- names(object)
 
   if (!all(parm %in% names(object))) {
@@ -205,4 +208,11 @@ confint.univariateML <- function(
   probs <- c((1 - level) / 2, 1 - (1 - level) / 2)
 
   bootstrapml(object, map = map, probs = probs, Nreps = Nreps, ...)
+}
+
+#' @importFrom stats nobs
+#' @export
+nobs.univariateML <- function(object, ...) {
+  ml_require_data(object)
+  attr(object, "n")
 }

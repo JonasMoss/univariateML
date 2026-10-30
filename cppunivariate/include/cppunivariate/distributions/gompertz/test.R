@@ -9,7 +9,7 @@ test_that("mlgompertz errors on overdispersed data", {
 
 test_that("gompertz fitting respects extreme scale changes", {
   set.seed(1)
-  x <- simulate_default("mlgompertz", 50)
+  x <- ml_simulate("mlgompertz", 50)
   f <- mlgompertz(x)
   for (s in c(1e-300,1e300)) {
     g <- mlgompertz(x*s)
@@ -35,8 +35,8 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   ref <- function(x,p) {
     a <- p[["a"]]; b <- p[["b"]]; log(a)+b*x-a*expm1(b*x)/b
   }
-  samples <- list(n20=simulate_default(paste0("ml",id),20),
-                  n100=simulate_default(paste0("ml",id),100))
+  samples <- list(n20=ml_simulate(paste0("ml",id),20),
+                  n100=ml_simulate(paste0("ml",id),100))
   samples$ties <- rep(samples$n20[1:5],each=4)
   samples$small <- samples$n20[1:2]
   samples$singleton <- samples$n20[1]

@@ -34,8 +34,6 @@ limits:
   - {name: unbounded, when: all shifted observations equal beta and alpha tends to zero, fixed: [beta, mu], status: Unbounded}
 references:
   - "From, S. G. and Li, L. (2006). Estimation of the parameters of the Birnbaum–Saunders distribution. Communications in Statistics, Theory and Methods, 35(12), 2157–2169. doi:10.1080/03610920600853563."
-examples: |
-  mlfatigue(precip, mu = 0)
 holds:
 - {held: [], status: no-mle, reason: 'Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.'}
 - {held: [alpha], status: no-mle, reason: 'Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.'}
@@ -43,6 +41,10 @@ holds:
 - {held: [alpha, beta], status: no-mle, reason: 'Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.'}
 fit_args:
   mu: 0.0
+examples: |
+  set.seed(1)
+  x <- rml(200, mlfatigue())
+  mlfatigue(x, mu = 0)
 ---
 
 The Birnbaum--Saunders distribution models lifetimes arising from cumulative fatigue damage.

@@ -39,6 +39,10 @@ limits:
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: size and prob are free and the maximised face likelihood wins within 1e-8 times the sample size
   status: PoissonLimit
+examples: |
+  set.seed(1)
+  x <- rml(200, mlzmnbinom())
+  mlzmnbinom(x)
 ---
 
 Zero-modified negative binomial distributions model counts with a separate zero component.

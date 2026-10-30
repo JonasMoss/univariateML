@@ -41,7 +41,9 @@ limits:
 references:
   - "Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision. MPIDR Working Paper WP 2012-008."
 examples: |
-  mlgompertz(precip)
+  set.seed(1)
+  x <- rml(200, mlgompertz())
+  mlgompertz(x)
 ---
 
 The Gompertz distribution has an exponentially increasing hazard and is used to model lifetimes.

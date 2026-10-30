@@ -57,9 +57,6 @@ limits:
   status: AllGeOne
   fixed: [scale]
   name: shifted Pareto with its endpoint held at min + scale
-examples: |
-  set.seed(3)
-  mlpareto4(simulate_default("mlpareto4", 100), min = 0)
 holds:
 - held: []
   status: no-mle
@@ -107,6 +104,10 @@ holds:
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
   min: 0
+examples: |
+  set.seed(1)
+  x <- rml(200, mlpareto4())
+  mlpareto4(x, min = 0L)
 ---
 
 This family has a known support endpoint and delegates fitting to burr.

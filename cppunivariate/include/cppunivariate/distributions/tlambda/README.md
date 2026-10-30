@@ -43,9 +43,6 @@ r:
 log_density: "-log(sigma)-log(u**(lambda-1)+(1-u)**(lambda-1))"
 references:
   - "Joiner, B. L. and Rosenblatt, J. R. (1971). Some properties of the range in samples from Tukey's symmetric lambda distributions. Journal of the American Statistical Association 66, 394-399."
-examples: |
-  set.seed(1)
-  mltlambda(univariateML:::rtlambda(n = 50, mu = 0, sigma = 1, lambda = 0.14))
 holds: []
 limits:
   - name: scale collapse
@@ -58,6 +55,10 @@ limits:
     when: Held scale and positive shape cannot contain the sample.
     status: InvalidSupport
     message: support cannot contain
+examples: |
+  set.seed(1)
+  x <- rml(200, mltlambda())
+  mltlambda(x)
 ---
 
 The Tukey lambda family is defined by its quantile function and spans symmetric heavy-tailed, logistic, approximately normal and uniform shapes.

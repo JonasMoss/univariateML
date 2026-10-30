@@ -38,13 +38,14 @@ limits:
   detect: all observations at finite highest support point
   status: UpperPointMass
   fixed: [a]
-examples: |
-  set.seed(1)
-  mltpois(univariateML:::rtpois(n = 100, lambda = 3, a = 0, b = 10), a = 0, b = 10)
 holds: []
 fit_args:
   a: 0
   b: 10
+examples: |
+  set.seed(1)
+  x <- rml(200, mltpois())
+  mltpois(x, a = 0L, b = 10L)
 ---
 
 The Poisson law conditioned on known bounds `a < x <= b` models truncated counts.

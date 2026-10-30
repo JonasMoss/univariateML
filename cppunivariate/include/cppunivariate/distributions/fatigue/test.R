@@ -1,6 +1,6 @@
 test_that("mlfatigue agrees with its reference density", {
   set.seed(313)
-  x <- simulate_default("mlfatigue", 200)
+  x <- ml_simulate("mlfatigue", 200)
   fit <- mlfatigue(x, mu = 0)
   density <- getFromNamespace("dfatigue", "univariateML")
   oracle <- optim(log(c(2, 1)), function(p) {

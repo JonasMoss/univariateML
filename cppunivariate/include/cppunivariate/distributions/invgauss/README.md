@@ -22,14 +22,15 @@ r:
 log_density: log(shape)/2 - log(2*pi)/2 - 3*log(x)/2 - shape*(x-mean)**2/(2*mean**2*x)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York."
-examples: |
-  mlinvgauss(precip)
 limits:
 - name: unbounded likelihood
   fixed: [mean]
   when: Every observation equals held mean.
   status: Unbounded
   message: constant data
+examples: |
+  x <- datasets::airquality$Wind[!is.na(datasets::airquality$Wind)]
+  mlinvgauss(x)
 ---
 
 The inverse Gaussian (Wald) distribution models positive quantities, including first-passage times of Brownian motion with positive drift.

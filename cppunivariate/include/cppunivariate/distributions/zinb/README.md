@@ -40,7 +40,9 @@ limits:
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
 examples: |
-  mlzinb(simulate_default("mlzinb", 1000))
+  set.seed(1)
+  x <- rml(200, mlzinb())
+  mlzinb(x)
 ---
 
 The zero-inflated negative binomial distribution mixes negative binomial counts with an additional point mass at zero.

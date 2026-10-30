@@ -17,6 +17,10 @@ log_density: log(scale) - 2*log(x) - scale/x
 references:
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
+examples: |
+  set.seed(1)
+  x <- rml(200, mlinvexp())
+  mlinvexp(x)
 ---
 
 The inverse exponential distribution models positive heavy-tailed data.

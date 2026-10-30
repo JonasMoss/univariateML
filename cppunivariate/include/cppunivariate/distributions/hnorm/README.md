@@ -26,11 +26,12 @@ limits:
   - {name: scale collapse, when: every observation equals the free or held endpoint and sigma tends to zero, status: DegenerateData}
 references:
   - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition. Wiley.
-examples: |
-  set.seed(7)
-  mlhnorm(univariateML:::rhnorm(100, mu = -2, sigma = 3), mu = NULL)
 fit_args:
   mu: ~
+examples: |
+  set.seed(1)
+  x <- rml(200, mlhnorm())
+  mlhnorm(x, mu = NULL)
 ---
 
 The translated half-normal distribution models nonnegative normal deviations from an unknown endpoint.

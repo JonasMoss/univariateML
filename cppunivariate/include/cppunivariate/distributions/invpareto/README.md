@@ -33,6 +33,10 @@ references:
   - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
   - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
   - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
+examples: |
+  set.seed(1)
+  x <- rml(200, mlinvpareto())
+  mlinvpareto(x)
 ---
 
 The inverse Pareto distribution models positive heavy-tailed data.

@@ -42,8 +42,8 @@ test_that("dml/pml/qml/rml map mu and sigma onto the internal half-normal", {
   set.seed(9); actual <- rml(50, fit)
   set.seed(9); expect_equal(actual, mu + rhnorm(n = 50, mu = 0, sigma = sigma))
   expect_true(all(actual >= mu))
-  expect_length(simulate_default("mlhnorm", 10), 10)
-  expect_true(all(simulate_default("mlhnorm", 100) >= 0))
+  expect_length(ml_simulate("mlhnorm", 10), 10)
+  expect_true(all(ml_simulate("mlhnorm", 100) >= 0))
 })
 
 test_that("bootstrap refits with mlhnorm", {

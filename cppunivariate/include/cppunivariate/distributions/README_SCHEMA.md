@@ -19,13 +19,13 @@ goldens), by the validation harness, and later by the Python shell.
 | `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` or coefficient expressions (see below) |
 | `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `univariateML/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
 | `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` for package-defined functions; `p`/`q` are found by swapping the first letter |
-| `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma}` for a stats reference; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
+| `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma}` for a stats reference; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` apply it |
 | `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
 | `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `reflected translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; optional `fixed: [name]` restricts a limit to fits holding those parameters fixed; see `notes/ml-behaviour.tex` |
 | `references` | no | one bibliographic entry per item |
-| `examples` | no | R example code; default `ml<id>(simulate_default("ml<id>", 100))` |
+| `examples` | yes | R example code; generation fails when absent. Use real data appropriate to the family or `rml(n, mlX())`. |
 
 Argument names follow `roadmap/2026-10-28-cran-argument-names.md`:
 `reltol` (relative step), `abstol` (absolute step), `gradtol` (gradient
@@ -57,7 +57,7 @@ no default for them. All other coefficient arguments default to `NULL`.
 A supplied value holds a coefficient; explicit `NULL` requests estimation
 where supported. Missing required coefficients stop with the kind, both ways
 out, and the optional nonempty scalar parameter `advice` text. `simulate`
-is a required numeric scalar (infinity is accepted), the simulation value only; it never selects a held fitting default.
+is a required numeric scalar (infinity is accepted), a user-facing default for models built without data, and the simulation value for validation. With data it never selects a held fitting default.
 
 The old parameter keys `default`, `fixable`, `fixed`, `required`, and
 `required_reason` are rejected. `advice` replaces `required_reason`.
@@ -167,5 +167,9 @@ to avoid duplicate R formals.
 
 All generated d/p/q/r functions are internal, with required coefficients and no
 coefficient defaults or roxygen topics. Use exported `dml`/`pml`/`qml`/`rml`
-with a fitted object. Family-specific evaluation facts belong in a short
+with a fitted or fixed object. Family-specific evaluation facts belong in a short
 `## d/p/q/r` prose section, rather than export metadata.
+
+All-held fits use the generated internal C++ density directly. Stats-dispatched
+families also receive a private `core_d<id>` entry point for this purpose;
+ordinary `dml`/`pml`/`qml`/`rml` dispatch remains as declared by `r.density`.

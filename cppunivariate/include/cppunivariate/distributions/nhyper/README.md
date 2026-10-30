@@ -32,10 +32,6 @@ r:
 log_density: "loggamma(x) - loggamma(r) - loggamma(x-r+1) + loggamma(N-x+1) - loggamma(m-r+1) - loggamma(N-m-x+r+1) - loggamma(N+1) + loggamma(N-m+1) + loggamma(m+1)"
 references:
   - "Berry, K. J. and Mielke, P. W. (1998). The negative hypergeometric probability distribution: Sampling without replacement from a finite population. Perceptual and Motor Skills, 86(1), 207-210."
-examples: |
-  set.seed(1)
-  x <- univariateML:::rnhyper(n = 30, m = 20, N = 50, r = 3)
-  mlnhyper(x, r = 3, N = 50)
 holds:
 - held: []
   status: not-implemented
@@ -46,6 +42,10 @@ holds:
 fit_args:
   'N': 50
   r: 3
+examples: |
+  set.seed(1)
+  x <- rml(200, mlnhyper())
+  mlnhyper(x, N = 50L, r = 3L)
 ---
 
 The negative hypergeometric distribution counts total draws without

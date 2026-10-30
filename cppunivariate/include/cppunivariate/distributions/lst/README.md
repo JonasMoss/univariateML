@@ -53,10 +53,10 @@ limits:
   - model: norm
     when: '$df \to \infty$'
     status: NormalBoundary
-examples: |
-  set.seed(3)
-  mllst(univariateML:::rlst(n = 200, mu = 2, sigma = 1, df = 3))
 holds: []
+examples: |
+  x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
+  mllst(x)
 ---
 
 The location-scale Student t includes heavy-tailed distributions with infinite variance.

@@ -24,8 +24,6 @@ r:
 log_density: -log(max-min)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York."
-examples: |
-  mlunif(precip)
 holds: []
 limits:
 - name: zero-width collapse
@@ -38,6 +36,10 @@ limits:
   detect: Held min exceeds the sample minimum or held max is below the sample maximum, or min >= max.
   status: Incompatible
   message: held uniform
+examples: |
+  set.seed(1)
+  x <- rml(200, mlunif())
+  mlunif(x)
 ---
 
 The uniform distribution assigns constant density to a bounded interval.

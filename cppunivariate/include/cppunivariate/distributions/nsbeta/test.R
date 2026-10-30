@@ -2,7 +2,7 @@ test_that("nsbeta: required endpoint, reference likelihood and reproducibility",
  expect_error(mlnsbeta(1:5), "unbounded")
  held <- list(min=0,max=1)
  set.seed(313)
- x <- simulate_default("mlnsbeta", 300)
+ x <- ml_simulate("mlnsbeta", 300)
  fit <- do.call(mlnsbeta, c(list(x),held))
  expect_equal(attr(fit,"fixed"), names(held))
  expect_equal(attr(fit,"logLik"), sum(dml(x,fit,log=TRUE)), tolerance=1e-10)

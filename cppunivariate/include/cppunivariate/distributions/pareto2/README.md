@@ -37,9 +37,6 @@ limits:
   detect: max over 0 < u < ubar of the profile log-likelihood gap is at most 1e-8*n
   status: ExponentialLimit
   name: shifted exp; subtract min before fitting
-examples: |
-  set.seed(3)
-  mlpareto2(simulate_default("mlpareto2", 100), min = 0)
 holds:
 - held: []
   status: no-mle
@@ -63,6 +60,10 @@ holds:
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
   min: 0
+examples: |
+  set.seed(1)
+  x <- rml(200, mlpareto2())
+  mlpareto2(x, min = 0L)
 ---
 
 This family has a known support endpoint and delegates fitting to lomax.

@@ -1,3 +1,7 @@
+# Development version
+
+* Fitters now build fixed distributions when data are omitted, using README defaults. Fully held models with data evaluate the likelihood with zero estimated parameters. Use `rml(n, mlX())` for simulation.
+
 # univariateML 1.5.0
 
 ## Architecture

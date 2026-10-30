@@ -26,7 +26,8 @@ references:
   - "Choi, S. C, and R. Wette. \"Maximum likelihood estimation of the parameters of the gamma distribution and their bias.\" Technometrics 11.4 (1969): 683-690."
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York."
 examples: |
-  mlgamma(precip)
+  x <- datasets::precip
+  mlgamma(x)
 ---
 
 The gamma distribution models positive measurements and waiting times.

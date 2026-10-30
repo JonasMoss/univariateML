@@ -36,9 +36,11 @@ limits:
     when: '$\mathrm{rate}\to\infty$ with shape held, or $\mathrm{shape}\to0$ with rate held'
     detect: all observations zero and one parameter free
     status: PointMass
-examples: |
-  mldgamma(simulate_default("mldgamma", 100))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mldgamma())
+  mldgamma(x)
 ---
 
 The discretized gamma distribution is the integer part of a continuous gamma variable. Each observation records the latent variable in an interval from the observed integer to the next integer.

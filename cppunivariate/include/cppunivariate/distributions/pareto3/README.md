@@ -38,9 +38,6 @@ limits:
     status: Unbounded
     message: unbounded
 log_density: log(shape) + log((1/scale)) + (shape - 1)*log((1/scale)*(x-min)) - 2*log(1 + ((1/scale)*(x-min))**shape)
-examples: |
-  set.seed(3)
-  mlpareto3(simulate_default("mlpareto3", 100), min = 0)
 holds:
 - held: []
   status: no-mle
@@ -64,6 +61,10 @@ holds:
     limit models prevent an unrestricted MLE (P0, A4).'
 fit_args:
   min: 0
+examples: |
+  set.seed(1)
+  x <- rml(200, mlpareto3())
+  mlpareto3(x, min = 0L)
 ---
 
 This family has a known support endpoint and delegates fitting to llogis.

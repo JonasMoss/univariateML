@@ -26,9 +26,11 @@ r:
 log_density: "-log(max - min + 1)"
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
-examples: |
-  mldunif(corbet)
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mldunif())
+  mldunif(x)
 ---
 
 The discrete uniform distribution assigns equal probability to every integer between two endpoints.

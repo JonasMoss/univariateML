@@ -150,13 +150,16 @@ gen_doc <- function(model) {
       nl("For the density function of the ", model$name, " distribution see ",
          rd_link(model$density), args_clause(model), ".") else
       "Evaluate the fitted distribution with [dml()], [pml()], [qml()] and [rml()].",
+    nl("With `x` omitted, builds a fixed model without data. Supply coefficients by name; unspecified coefficients default to ",
+       paste(vapply(model$params, function(p) paste0("`", p$name, " = ", p$simulate, "`"), ""), collapse = ", "),
+       ". Design and threshold coefficients also use these defaults. Domains apply without fitting restrictions. Evaluate or simulate with [dml()], [pml()], [qml()] and [rml()], or draw its density with [graphics::plot()]. Methods requiring data stop. With data and every coefficient held, the log likelihood is evaluated without estimation (zero degrees of freedom)."),
     rd_math(s[["d/p/q/r"]] %||% character()),
     vapply(model$limits, limit_sentence, character(1), model = model),
     rd_math(s$details %||% character())
   )
   control_items <- vapply(names(model$control), function(arg) {
     default_txt <- if (arg %in% required_names(model)) {
-      " Required; there is no default."
+      " Required with data; without data uses the fixed-model default above."
     } else {
       d <- defaults[[arg]]
       if (is.null(d)) "" else nl(" Defaults to `", format(eval(d)), "`.")
@@ -165,7 +168,7 @@ gen_doc <- function(model) {
   }, character(1))
   fixed_items <- vapply(setdiff(holdable_names(model), names(model$control)), function(arg) {
     nl("  * `", arg, "`: Value at which to hold `", arg, "` fixed; ",
-       "`NULL` (the default) estimates it.")
+       "`NULL` estimates it with data; without data uses the fixed-model default above.")
   }, character(1))
   control_items <- c(fixed_items, control_items)
   seealso <- unique(c(
@@ -173,14 +176,8 @@ gen_doc <- function(model) {
     unlist(lapply(model$limits, function(l) if (!is.null(l$model)) nl("[ml", l$model, "()] for the limit model."))),
     rd_math(s[["see also"]] %||% character())
   ))
-  examples <- if (!is.null(model$examples)) {
-    strsplit(sub("\n$", "", model$examples), "\n", fixed = TRUE)[[1]]
-  } else {
-    nl("set.seed(1); ", fname, "(simulate_default(\"", fname, "\", 100)",
-       if (length(model$fit_args)) paste0(", ", paste(vapply(names(model$fit_args), function(p)
-         paste0(p, " = ", paste(deparse(model$fit_args[[p]]), collapse=" ")), ""), collapse=", ")),
-       ")")
-  }
+  if (is.null(model$examples)) stop("codegen_wrappers: ", model$id, ": missing examples:")
+  examples <- strsplit(sub("\n$", "", model$examples), "\n", fixed = TRUE)[[1]]
 
   block <- c(
     nl(model$name, " distribution maximum likelihood estimation"),
@@ -191,15 +188,15 @@ gen_doc <- function(model) {
     "@details",
     head(c(rbind(details, "")), -1L),
     "",
-    "@param x a (non-empty) numeric vector of data values.",
+    "@param x a (non-empty) numeric vector of data values. Omit to build a fixed model without data.",
     "@param na.rm logical. Should missing values be removed?",
     if (length(control_items)) c("@param ... Optional control arguments:", control_items)
     else "@param ... Not used.",
     nl("@return `", fname, "` returns an object of [class][base::class] `univariateML`. ",
-       "This is a named numeric vector with maximum likelihood estimates for ",
+       "This is a named numeric vector with coefficients (maximum likelihood estimates when data are supplied) for ",
        and_list(param_names(model)), " and the attributes `model`, `density`, ",
        "`logLik`, `support`, `n`, `call` and `fixed` (the names of the parameters ",
-       "held fixed rather than estimated), plus `restricted` when supplied by an adapter."),
+       "held fixed rather than estimated), plus `restricted` when supplied by an adapter and `frozen = TRUE` for models built without data."),
     "@seealso",
     seealso,
     if (length(model$references)) c("@references", head(c(rbind(model$references, "")), -1L)) else NULL,
@@ -217,6 +214,13 @@ gen_wrapper <- function(model) {
     doc, "\n",
     fname, " <- function(x, na.rm = FALSE, ...) {\n",
     "  ml_check_args(", fname, "_, list(...), \"", fname, "\")\n",
+    "  if (missing(x)) {\n",
+    "    ml_check_frozen_call(sys.call())\n",
+    "    return(ml_fixed_model(\"", fname, "\", list(...), match.call(), frozen = TRUE))\n  }\n",
+    "  supplied <- match.call(", fname, "_, call = as.call(c(list(quote(", fname, "_), x = quote(x)), list(...))))\n",
+    "  held <- as.list(supplied)[-1L]; held$x <- NULL\n",
+    "  if (all(vapply(univariateML_metadata[[\"", fname, "\"]]$names, function(p) !is.null(held[[p]]), logical(1)))) {\n",
+    "    return(ml_fixed_model(\"", fname, "\", held, match.call(), x = ml_check_modify(x, na.rm, \"", fname, "\")))\n  }\n",
     nl(required_checks(model)),
     "  x <- ml_check_modify(x, na.rm = na.rm, name = \"", fname, "\")\n",
     "  n <- length(x)\n",

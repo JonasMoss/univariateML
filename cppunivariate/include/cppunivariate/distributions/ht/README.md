@@ -48,12 +48,13 @@ limits:
     status: ScaleBoundary
 references:
   - extraDistr package, HalfT documentation (density and parameterization).
-examples: |
-  set.seed(5)
-  mlht(univariateML:::rht(n = 100, mu = 0, nu = 3, sigma = 1) + 2, mu = NULL)
 holds: []
 fit_args:
   mu: 0
+examples: |
+  set.seed(1)
+  x <- rml(200, mlht())
+  mlht(x, mu = 0L)
 ---
 
 The half-t models nonnegative Student t magnitudes with an endpoint, translated from zero.

@@ -69,7 +69,7 @@ for (id in univariateML_models) {
     # The nested profile searches dominate runtime; 24 observations still
     # exercise every parameter and all transformation decisions.
     n <- if (model %in% c("mlemg", "mlbhatt", "mltlambda")) 24 else 80
-    x <- simulate_default(model, n)
+    x <- ml_simulate(model, n)
     args <- golden_fit_args(model)
     fit <- function(x, a=0, b=1) {
       transformed <- args
@@ -119,7 +119,7 @@ test_that("Student fits on DAX returns and small skew-t data are stable", {
     }
   }
   set.seed(7)
-  x <- simulate_default("mlsstd", 400)
+  x <- ml_simulate("mlsstd", 400)
   expect_equal(pull_back_scale_fit(mlsstd(1e-3*x), "mlsstd", 0, 1e-3),
                as.numeric(mlsstd(x)), tolerance = 2e-5)
 })
@@ -128,7 +128,7 @@ test_that("required endpoints transform with the observations", {
   for (model in c("mlgenbeta", "mlnsbeta", "mlpareto2", "mlpareto3",
                   "mlpareto4", "mlfpareto")) {
     set.seed(7)
-    x <- simulate_default(model, 40)
+    x <- ml_simulate(model, 40)
     args <- switch(model, mlgenbeta = list(scale = 1),
                    mlnsbeta = list(min = 0, max = 1), list(min = 0))
     fit <- function(b) tryCatch(quiet_restricted(do.call(model, c(list(b*x), lapply(args, function(v) b*v)))),
@@ -153,7 +153,7 @@ test_that("required endpoints transform with the observations", {
 
 test_that("Gompertz fits the original large-scale failure sample", {
   set.seed(7)
-  x <- simulate_default("mlgompertz", 400)
+  x <- ml_simulate("mlgompertz", 400)
   expect_equal(pull_back_scale_fit(mlgompertz(1e3*x), "mlgompertz", 0, 1e3),
                as.numeric(mlgompertz(x)), tolerance = 2e-7)
 })

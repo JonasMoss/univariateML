@@ -108,8 +108,8 @@ limits:
 references:
   - "Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American Statistical Association, 93(441), 359-371."
 examples: |
-  # Daily DAX log returns, scaled to percent.
-  mlsstd(100 * diff(log(EuStockMarkets[, "DAX"])))
+  x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
+  mlsstd(x)
 ---
 
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.

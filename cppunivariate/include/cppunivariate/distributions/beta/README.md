@@ -24,8 +24,6 @@ r:
 log_density: (shape1-1)*log(x) + (shape2-1)*log(1-x) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 references:
   - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York."
-examples: |
-  AIC(mlbeta(USArrests$Rape / 100))
 holds: []
 limits:
 - name: point-mass collapse
@@ -33,6 +31,10 @@ limits:
   detect: All observations are equal and neither shape is held.
   status: Degenerate
   message: does not exist
+examples: |
+  set.seed(1)
+  x <- rml(200, mlbeta())
+  mlbeta(x)
 ---
 
 The beta distribution models proportions and other continuous quantities between zero and one.

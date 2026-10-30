@@ -22,10 +22,11 @@ r:
     reltol: Tolerance for the scalar profile searches.
     iterlim: Maximum iterations per scalar search.
 log_density: log(b) - b*x - eta*exp(-b*x) + log(1 + eta*(1-exp(-b*x)))
-examples: |
-  set.seed(3)
-  mlsgomp(univariateML:::rsgomp(n = 100, b = 1, eta = 3))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlsgomp())
+  mlsgomp(x)
 ---
 
 The shifted Gompertz distribution models nonnegative waiting times. The

@@ -57,8 +57,8 @@ local({
   }
   test_that("P2 holds agree with independent multistart reference likelihoods", {
     set.seed(81029)
-    samples <- list(simulate_default(paste0("ml",id),20),
-                    simulate_default(paste0("ml",id),100),
+    samples <- list(ml_simulate(paste0("ml",id),20),
+                    ml_simulate(paste0("ml",id),100),
                     c(0,0,0,1,1,4), c(0,2), rpois(20,2))
     nm <- names(base)
     for (x in samples) for (mask in seq_len(2^length(nm)-1)) {

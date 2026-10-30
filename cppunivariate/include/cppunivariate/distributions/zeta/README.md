@@ -21,9 +21,11 @@ limits:
     when: '$s \to +\infty$'
     detect: all observations equal one
     status: PointMass
-examples: |
-  mlzeta(c(1, 1, 2, 3, 8))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlzeta())
+  mlzeta(x)
 ---
 
 The zeta distribution describes power-law frequencies on the positive integers.

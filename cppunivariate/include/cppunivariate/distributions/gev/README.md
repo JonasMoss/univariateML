@@ -44,7 +44,8 @@ limits:
 - {name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, xi) point beats the xi -> 1 collapse face's limiting likelihood."}
 examples: |
   set.seed(1)
-  mlgev(univariateML:::rgev(n = 100, mu = 0, sigma = 2, xi = 0.3))
+  x <- rml(200, mlgev())
+  mlgev(x)
 ---
 
 The generalized extreme value distribution models maxima; positive `xi` gives a heavy right tail, and `xi = 0` is the included Gumbel member.

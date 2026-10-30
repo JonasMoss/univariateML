@@ -69,6 +69,7 @@
 bootstrapml <- function(
     object, reps = 1000, map = identity,
     reducer = stats::quantile, ...) {
+  ml_require_data(object)
   r_fun <- univariateML_to_function(object, type = "r")
   ml_fun <- univariateML_to_function(object, type = "ml")
   # Refit with the same parameters held fixed as in the original fit.

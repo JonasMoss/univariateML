@@ -109,7 +109,7 @@ test_that("logis handles a seeded sample with a large outlier", {
 
 test_that("logis fitting respects extreme scale changes", {
   set.seed(1)
-  x <- simulate_default("mllogis", 50)
+  x <- ml_simulate("mllogis", 50)
   f <- mllogis(x)
   for (s in c(1e-300,1e300)) {
     g <- mllogis(x*s)

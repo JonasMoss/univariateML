@@ -20,6 +20,9 @@ r:
   control:
     lambda: "Optional held lambda; NULL estimates it."
 log_density: -lambda+x*log(lambda)-loggamma(x+1)-log(1-exp(-lambda))
+examples: |
+  x <- corbet
+  mlztpois(x)
 ---
 
 Zero-truncated Poisson distributions model positive counts.

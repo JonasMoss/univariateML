@@ -43,6 +43,10 @@ limits:
   - {model: power, when: 'shape2 tends to infinity and shape3 tends to zero', status: PowerBoundary}
   - {name: double Pareto, when: 'shape2 tends to infinity and both beta shapes tend to zero', status: DoubleParetoBoundary}
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlgb2())
+  mlgb2(x)
 ---
 
 The transformed beta distribution models positive observations with two power tails.

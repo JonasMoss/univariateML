@@ -33,10 +33,12 @@ references:
   - "Olkin, I., Petkau, A. J., and Zidek, J. V. (1981). A comparison of n estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642."
   - "Carroll, R. J. and Lombard, F. (1985). A Note on N Estimators for the Binomial Distribution. Journal of the American Statistical Association, 80(390), 423-426."
   - "DasGupta, A. and Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1-2), 391-404."
-examples: |
-  mlbinom(ChickWeight$weight, size = 400)
 fit_args:
   size: ~
+examples: |
+  set.seed(1)
+  x <- rml(200, mlbinom())
+  mlbinom(x, size = 10)
 ---
 
 The binomial distribution models the number of successes in a fixed number of independent Bernoulli trials. Both size and success probability are estimated unless size is supplied.

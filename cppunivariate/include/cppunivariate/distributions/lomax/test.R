@@ -68,7 +68,7 @@ expect_error(mllomax(medium_data, tol = 1e-6))
 
 test_that("lomax fitting respects extreme scale changes", {
   set.seed(1)
-  x <- simulate_default("mllomax", 50)
+  x <- ml_simulate("mllomax", 50)
   f <- mllomax(x)
   for (s in c(1e-300,1e300)) {
     g <- mllomax(x*s)
@@ -179,8 +179,8 @@ test_that("P2 held subsets agree with multistart reference likelihoods", {
   ref <- function(x,p) {
     suppressWarnings(do.call(density,c(list(x=x),as.list(p),list(log=TRUE))))
   }
-  samples <- list(n20=simulate_default(paste0("ml",id),20),
-                  n100=simulate_default(paste0("ml",id),100))
+  samples <- list(n20=ml_simulate(paste0("ml",id),20),
+                  n100=ml_simulate(paste0("ml",id),100))
   samples$ties <- rep(samples$n20[1:5],each=4)
   samples$small <- samples$n20[1:2]
   samples$singleton <- samples$n20[1]

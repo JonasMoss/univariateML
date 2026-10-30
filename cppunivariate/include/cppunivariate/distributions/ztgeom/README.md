@@ -20,6 +20,9 @@ r:
   control:
     prob: "Optional held prob; NULL estimates it."
 log_density: log(prob)+(x-1)*log(1-prob)
+examples: |
+  x <- corbet
+  mlztgeom(x)
 ---
 
 Zero-truncated geometric distributions model positive counts.

@@ -44,8 +44,6 @@ limits:
     status: EndpointLimit
 references:
   - "Kadane, J. B. (2016). Sums of Possibly Associated Bernoulli Variables: The Conway-Maxwell-Binomial Distribution. Bayesian Analysis. doi:10.1214/15-BA955."
-examples: |
-  mlcmb(c(0, 1, 2, 2, 3, 4, 6), size = 10)
 holds:
 - held: []
   status: not-implemented
@@ -60,6 +58,10 @@ holds:
   reason: "Free size with nu held requires a global profile bound: positive nu admits a Conway-Maxwell-Poisson face, while negative nu has different escaping-mass limits."
 fit_args:
   size: 10
+examples: |
+  set.seed(1)
+  x <- rml(200, mlcmb())
+  mlcmb(x, size = 10L)
 ---
 
 The Conway--Maxwell--binomial distribution extends the binomial by raising its combinatorial factor to a real dispersion power.

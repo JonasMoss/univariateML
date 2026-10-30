@@ -24,8 +24,6 @@ r:
 log_density: log(beta) - beta*log(alpha) + (beta-1)*log(x)
 references:
   - "Arslan, G. \"A new characterization of the power distribution.\" Journal of Computational and Applied Mathematics 260 (2014): 99-102."
-examples: |
-  mlpower(precip)
 holds: []
 limits:
 - name: zero likelihood
@@ -33,6 +31,10 @@ limits:
   when: Held alpha is below the sample maximum.
   status: InvalidInput
   message: zero likelihood
+examples: |
+  set.seed(1)
+  x <- rml(200, mlpower())
+  mlpower(x)
 ---
 
 The power distribution models positive quantities below a finite upper endpoint.

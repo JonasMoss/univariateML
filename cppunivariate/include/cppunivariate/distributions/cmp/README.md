@@ -31,9 +31,11 @@ limits:
     when: 'parameters diverge along an exposing direction'
     detect: constant positive observations in a joint fit
     status: PointMassLimit
-examples: |
-  mlcmp(c(0,1,1,2,2,2,3,3,4,5))
 holds: []
+examples: |
+  set.seed(1)
+  x <- rml(200, mlcmp())
+  mlcmp(x)
 ---
 
 The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersion coordinate.
