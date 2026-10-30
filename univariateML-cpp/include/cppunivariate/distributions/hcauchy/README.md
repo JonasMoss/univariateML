@@ -4,12 +4,14 @@ name: Half-Cauchy
 support: {type: real, lower: "mu", upper: inf, closed: [true, false], endpoint_log_density: {lower: "log(2/(pi*sigma))"}}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: threshold
   advice: mu = 0 is the ordinary half-Cauchy; NULL estimates the translated endpoint.
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1

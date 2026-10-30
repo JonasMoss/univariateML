@@ -4,11 +4,13 @@ name: Conway--Maxwell--Poisson
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: lambda
+  symbol: '\lambda'
   role: rate
   domain: '[0, inf)'
   simulate: 1
   kind: regular
 - name: nu
+  symbol: '\nu'
   role: dispersion
   domain: '[0, inf)'
   simulate: 1

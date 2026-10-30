@@ -4,16 +4,19 @@ name: Generalized extreme value
 support: {type: real, lower: "if (xi > 0) mu - sigma/xi else -Inf", upper: "if (xi < 0) mu - sigma/xi else Inf", closed: [true, true], endpoint_log_density: {lower: "-Inf", upper: "if (xi == -1) -log(sigma) else if (xi < -1) Inf else -Inf"}}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: regular
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: xi
+  symbol: '\xi'
   role: shape
   domain: '(-inf, inf)'
   simulate: 0
@@ -46,6 +49,16 @@ examples: |
   set.seed(1)
   x <- rml(200, mlgev())
   mlgev(x)
+
+summary: The generalized extreme-value distribution unifies the limiting laws for normalized block maxima.
+classification: specialist
+classification_reason: A standard model within extreme-value analysis.
+aliases:
+- generalized extreme value
+key_references:
+- 1
+references:
+  - "Coles, S. (2001). An Introduction to Statistical Modeling of Extreme Values. Springer. doi:10.1007/978-1-4471-3675-0."
 ---
 
 The generalized extreme value distribution models maxima; positive `xi` gives a heavy right tail, and `xi = 0` is the included Gumbel member.

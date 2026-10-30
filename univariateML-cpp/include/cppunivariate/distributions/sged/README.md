@@ -4,16 +4,19 @@ name: Skew Generalized Error
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: mean
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0.0
   kind: regular
 - name: sd
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1.0
   kind: regular
 - name: nu
+  symbol: '\nu'
   role: shape
   domain: '(0, inf)'
   simulate: 2
@@ -26,6 +29,7 @@ params:
         (P0 locscale/skewreal).
   kind: regular
 - name: xi
+  symbol: '\xi'
   role: skew
   domain: (0, inf)
   simulate: 1

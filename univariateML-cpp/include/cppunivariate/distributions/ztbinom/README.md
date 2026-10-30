@@ -4,12 +4,14 @@ name: Zero-truncated binomial
 support: {type: integer, lower: "1", upper: "size", closed: [true, true]}
 params:
 - name: size
+  symbol: 'n'
   role: trials
   domain: '[1, inf)'
   integer: yes
   simulate: 10
   kind: design
 - name: prob
+  symbol: 'p'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5

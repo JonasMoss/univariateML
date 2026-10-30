@@ -4,6 +4,7 @@ name: Translated Half-Normal
 support: {type: real, lower: "mu", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "log(2/pi)/2 - log(sigma)"}}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
@@ -11,6 +12,7 @@ params:
   kind: threshold
   advice: mu = 0 is the ordinary half-normal; NULL estimates the translated endpoint.
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1

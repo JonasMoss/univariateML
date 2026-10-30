@@ -4,16 +4,19 @@ name: Nonstandard beta
 support: {type: real, lower: "min", upper: "max", closed: [true, true], endpoint_log_density: {lower: "if (shape1 < 1) Inf else if (shape1 > 1) -Inf else log(shape2) - log(max-min)", upper: "if (shape2 < 1) Inf else if (shape2 > 1) -Inf else log(shape1) - log(max-min)"}}
 params:
 - name: shape1
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: shape2
+  symbol: '\beta'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: min
+  symbol: 'a'
   role: lower endpoint
   domain: "(-inf, max)"
   simulate: 0
@@ -23,6 +26,7 @@ params:
     Fits with bounds free and other parameters held are not supported.'
   kind: threshold
 - name: max
+  symbol: 'b'
   role: upper endpoint
   domain: "(min, inf)"
   simulate: 1

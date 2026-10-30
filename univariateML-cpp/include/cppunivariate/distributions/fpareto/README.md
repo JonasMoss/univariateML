@@ -4,26 +4,31 @@ name: Feller-Pareto
 support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "if (shape2*shape3 < 1) Inf else if (shape2*shape3 > 1) -Inf else log(shape2) - log(scale) - lbeta(shape1, shape3)"}}
 params:
 - name: shape1
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 2
   kind: regular
 - name: shape2
+  symbol: '\gamma'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: shape3
+  symbol: '\tau'
   role: shape
   domain: (0, inf)
   simulate: 2
   kind: regular
 - name: scale
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: min
+  symbol: '\mu'
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0

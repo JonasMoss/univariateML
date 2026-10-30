@@ -10,6 +10,7 @@ support:
   - false
 params:
 - name: lambda
+  symbol: '\lambda'
   role: rate
   domain: '[0, inf)'
   simulate: 1

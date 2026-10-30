@@ -4,6 +4,7 @@ name: Zeta
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:
 - name: s
+  symbol: 's'
   role: shape
   domain: (1, inf)
   simulate: 2

@@ -4,11 +4,13 @@ name: Discretized gamma
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: shape
+  symbol: 'k'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: rate
+  symbol: '\lambda'
   role: rate
   domain: (0, inf)
   simulate: 1

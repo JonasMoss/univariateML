@@ -4,6 +4,7 @@ name: Frechet
 support: {type: real, lower: "mu", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "-Inf"}}
 params:
 - name: lambda
+  symbol: '\lambda'
   role: shape
   domain: '(0, inf)'
   simulate: 1
@@ -17,6 +18,7 @@ params:
         on x - mu.
   kind: regular
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
@@ -24,6 +26,7 @@ params:
   advice: Holding mu fits inverse Weibull on x - mu; NULL estimates mu with lambda
     >= 1.
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1

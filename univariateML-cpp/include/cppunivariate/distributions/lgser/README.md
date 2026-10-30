@@ -4,6 +4,7 @@ name: Logarithmic series
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:
 - name: theta
+  symbol: '\theta'
   role: rate
   domain: (0, 1)
   simulate: 0.5

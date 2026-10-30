@@ -4,11 +4,13 @@ name: Shifted Gompertz
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: b
+  symbol: 'b'
   role: rate
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: eta
+  symbol: '\eta'
   role: shape
   domain: '[0, inf)'
   simulate: 1

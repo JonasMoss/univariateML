@@ -4,12 +4,14 @@ name: Half-t
 support: {type: real, lower: "mu", upper: inf, closed: [true, false], endpoint_log_density: {lower: "log(2) + lgamma((nu+1)/2) - lgamma(nu/2) - log(nu*pi)/2 - log(sigma)"}}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: threshold
   advice: mu = 0 is the ordinary half-t; NULL estimates the translated endpoint, restricting nu >= 1.
 - name: nu
+  symbol: '\nu'
   role: shape
   domain: (0, inf)
   simulate: 5
@@ -22,6 +24,7 @@ params:
         holding mu exempts the free shape, with exact endpoint ties still diagnosed.
   kind: regular
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1

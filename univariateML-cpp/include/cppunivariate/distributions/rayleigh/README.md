@@ -4,6 +4,7 @@ name: Rayleigh
 support: {type: real, lower: 0.0, upper: inf, closed: [true, false]}
 params:
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1

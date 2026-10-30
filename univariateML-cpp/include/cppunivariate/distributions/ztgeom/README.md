@@ -10,6 +10,7 @@ support:
   - false
 params:
 - name: prob
+  symbol: 'p'
   role: probability
   domain: (0, 1]
   simulate: 0.5

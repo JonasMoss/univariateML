@@ -4,16 +4,19 @@ name: Beta negative binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: size
+  symbol: 'r'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: alpha
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: beta
+  symbol: '\beta'
   role: shape
   domain: (0, inf)
   simulate: 1

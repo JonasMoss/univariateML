@@ -4,21 +4,25 @@ name: Truncated binomial
 support: {type: integer, lower: "max(0, floor(a)+1)", upper: "min(size, floor(b))", closed: [true, true]}
 params:
 - name: prob
+  symbol: 'p'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5
   kind: regular
 - name: a
+  symbol: 'a'
   role: known design quantity
   domain: (-inf, inf)
   simulate: 0
   kind: design
 - name: b
+  symbol: 'b'
   role: known design quantity
   domain: (-inf, inf)
   simulate: 10
   kind: design
 - name: size
+  symbol: 'n'
   role: known design quantity
   domain: '[0, inf)'
   integer: yes

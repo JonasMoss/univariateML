@@ -4,11 +4,13 @@ name: Logit-normal
 support: {type: real, lower: 0.0, upper: 1.0, closed: [false, false]}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: regular
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1
@@ -21,18 +23,26 @@ r:
     sigma: Optional held sigma; `NULL` estimates it.
 log_density: -log(sigma) - log(2*pi)/2 - log(x) - log(1-x) - (log(x/(1-x))-mu)**2/(2*sigma**2)
 references:
-  - "Aitchison, J., & Shen, S. M. (1980). Logistic-normal distributions: Some properties and uses. Biometrika, 67(2), 261-272."
+  - "Aitchison, J., & Shen, S. M. (1980). Logistic-normal distributions: Some properties and uses. Biometrika, 67(2), 261-272. doi:10.1093/biomet/67.2.261."
 holds: []
 limits:
 - name: zero-scale collapse
-  when: Free sigma tends to zero.
-  detect: All logits equal mu (estimated or held) and sigma is free.
+  when: Free sigma tends to zero
+  detect: All logits equal mu (estimated or held) and sigma is free
   status: zero scale
   message: does not exist
 examples: |
   set.seed(1)
   x <- rml(200, mllogitnorm())
   mllogitnorm(x)
+
+summary: The logit-normal distribution models proportions whose logits are normally distributed.
+classification: specialist
+classification_reason: Used for continuous proportions and logistic-normal compositional models.
+aliases:
+- logistic-normal
+key_references:
+- 1
 ---
 
 The logit-normal distribution models proportions whose logits follow a normal distribution.

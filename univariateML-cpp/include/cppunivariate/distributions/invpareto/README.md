@@ -4,11 +4,13 @@ name: Inverse Pareto
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: scale
+  symbol: '\theta'
   role: scale
   domain: (0, inf)
   simulate: 1

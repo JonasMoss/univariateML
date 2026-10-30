@@ -4,16 +4,19 @@ name: Beta prime
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape1
+  symbol: 'p'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: shape2
+  symbol: 'q'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: scale
+  symbol: 'b'
   role: scale
   domain: (0, inf)
   simulate: 1.0

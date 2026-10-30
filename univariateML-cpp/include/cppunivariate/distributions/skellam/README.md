@@ -4,11 +4,13 @@ name: Skellam
 support: {type: integer, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: mu1
+  symbol: '\mu_1'
   role: positive-count rate
   domain: '[0, inf)'
   simulate: 1
   kind: regular
 - name: mu2
+  symbol: '\mu_2'
   role: negative-count rate
   domain: '[0, inf)'
   simulate: 1

@@ -4,12 +4,14 @@ name: Discrete Laplace
 support: {type: integer, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: location
+  symbol: '\mu'
   role: integer centre
   domain: (-inf, inf)
   integer: yes
   simulate: 0
   kind: regular
 - name: scale
+  symbol: 'b'
   role: geometric probability
   domain: (0, 1)
   simulate: 0.5

@@ -4,6 +4,7 @@ name: Zipf
 support: {type: integer, lower: "1", upper: "N", closed: [true, true]}
 params:
 - name: 'N'
+  symbol: 'N'
   role: upper
   domain: '[1, inf)'
   simulate: 10
@@ -11,6 +12,7 @@ params:
   bound: upper
   kind: endpoint
 - name: s
+  symbol: 's'
   role: shape
   domain: '[0, inf)'
   simulate: 1

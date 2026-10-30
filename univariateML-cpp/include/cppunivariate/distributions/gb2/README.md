@@ -4,21 +4,25 @@ name: Transformed beta (GB2)
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape1
+  symbol: 'q'
   role: shape
   domain: (0, inf)
   simulate: 2
   kind: regular
 - name: shape2
+  symbol: 'a'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: shape3
+  symbol: 'p'
   role: shape
   domain: (0, inf)
   simulate: 2
   kind: regular
 - name: scale
+  symbol: 'b'
   role: scale
   domain: (0, inf)
   simulate: 1.0
@@ -33,7 +37,7 @@ log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape
 limits:
   - name: unbounded likelihood
     when: A free concentration can collapse on constant observations
-    detect: Constant samples; the held coefficients determine whether concentration remains free
+    detect: All observations are equal and the held coefficients still permit concentration
     status: InvalidData
     message: unbounded
   - {model: trgamma, when: 'shape1 tends to infinity with rescaled scale', status: TrGammaBoundary}
@@ -47,6 +51,16 @@ examples: |
   set.seed(1)
   x <- rml(200, mlgb2())
   mlgb2(x)
+
+summary: The generalized beta distribution of the second kind provides a flexible four-parameter model for positive data.
+classification: specialist
+classification_reason: Used in income-distribution and inequality modelling.
+aliases:
+- generalized beta of the second kind
+key_references:
+- 1
+references:
+  - "McDonald, J. B. (1984). Some Generalized Functions for the Size Distribution of Income. Econometrica, 52(3). doi:10.2307/1913469."
 ---
 
 The transformed beta distribution models positive observations with two power tails.

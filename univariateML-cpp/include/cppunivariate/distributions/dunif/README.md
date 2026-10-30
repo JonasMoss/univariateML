@@ -4,6 +4,7 @@ name: Discrete uniform
 support: {type: integer, lower: "min", upper: "max", closed: [true, true]}
 params:
 - name: min
+  symbol: 'a'
   role: lower
   domain: (-inf, max]
   simulate: 0
@@ -11,6 +12,7 @@ params:
   integer: yes
   kind: endpoint
 - name: max
+  symbol: 'b'
   role: upper
   domain: '[min, inf)'
   simulate: 10.0

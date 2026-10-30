@@ -4,16 +4,19 @@ name: Transformed gamma
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape1
+  symbol: 'k'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: shape2
+  symbol: 'p'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: scale
+  symbol: 'a'
   role: scale
   domain: (0, inf)
   simulate: 1

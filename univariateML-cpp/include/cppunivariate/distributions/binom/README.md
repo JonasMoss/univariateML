@@ -4,12 +4,14 @@ name: Binomial
 support: {type: integer, lower: "0", upper: "size", closed: [true, true]}
 params:
 - name: size
+  symbol: 'n'
   role: trials
   domain: '[0, inf)'
   simulate: 10.0
   integer: yes
   kind: design
 - name: prob
+  symbol: 'p'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5
@@ -26,11 +28,11 @@ log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + x*
 limits:
   - model: pois
     when: '$\mathrm{size} \to \infty$ with mean fixed'
-    detect: size is not supplied and the positive sample mean is no larger than the population-form sample variance
+    detect: size is free and the positive sample mean is no larger than the population-form sample variance
     status: Underdispersed
 references:
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
-  - "Olkin, I., Petkau, A. J., and Zidek, J. V. (1981). A comparison of n estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642."
+  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley. doi:10.1002/0471715816."
+  - "Olkin, I., Petkau, A. J., and Zidek, J. V. (1981). A comparison of n estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642. doi:10.1080/01621459.1981.10477697."
   - "Carroll, R. J. and Lombard, F. (1985). A Note on N Estimators for the Binomial Distribution. Journal of the American Statistical Association, 80(390), 423-426."
   - "DasGupta, A. and Rubin, H. (2005). Estimation of binomial parameters when both n,p are unknown. Journal of Statistical Planning and Inference, 130(1-2), 391-404."
 fit_args:
@@ -39,6 +41,14 @@ examples: |
   set.seed(1)
   x <- rml(200, mlbinom())
   mlbinom(x, size = 10)
+
+summary: The binomial distribution counts successes in a fixed number of independent trials with a common success probability.
+classification: classical
+classification_reason: A standard sampling model for binary trial counts.
+aliases: []
+key_references:
+- 1
+- 2
 ---
 
 The binomial distribution models the number of successes in a fixed number of independent Bernoulli trials. Both size and success probability are estimated unless size is supplied.

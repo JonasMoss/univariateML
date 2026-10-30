@@ -4,11 +4,13 @@ name: Lognormal
 support: {type: real, lower: 0.0, upper: inf, closed: [false, false]}
 params:
 - name: meanlog
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0.0
   kind: regular
 - name: sdlog
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1.0

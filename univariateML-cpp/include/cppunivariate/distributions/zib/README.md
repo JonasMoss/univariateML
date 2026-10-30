@@ -4,17 +4,20 @@ name: Zero-inflated binomial
 support: {type: integer, lower: "0", upper: "size", closed: [true, true]}
 params:
 - name: size
+  symbol: 'n'
   role: trials
   domain: '[0, inf)'
   integer: yes
   simulate: 10
   kind: design
 - name: prob
+  symbol: 'p'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5
   kind: regular
 - name: pi
+  symbol: '\pi'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5

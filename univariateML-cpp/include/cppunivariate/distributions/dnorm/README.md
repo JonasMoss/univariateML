@@ -4,11 +4,13 @@ name: Discretized normal
 support: {type: integer, lower: -inf, upper: inf, closed: [true, false]}
 params:
 - name: mean
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: regular
 - name: sd
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1

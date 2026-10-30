@@ -90,8 +90,9 @@ for folder in sorted(FAMILIES.iterdir()):
         else:
             remainder.append(term)
     density=sp.powsimp(sp.Mul(*powers)*sp.exp(sp.Add(*remainder)))
-    symbol_names={s:r'\mathrm{'+s.name+'}' for s in expr.free_symbols
-                  if len(s.name)>1 and not sp.latex(s).startswith('\\')}
+    symbol_names={sp.Symbol(p['name']): p.get('symbol', p['name']) for p in m['params']}
+    if m.get('key_references'):
+        m['key_references']=[m['references'][i-1] for i in m['key_references']]
     latex=sp.latex(density,symbol_names=symbol_names)
     readable=not density.has(sp.Piecewise,sp.Sum,sp.Integral) and sp.count_ops(density)<=55 and len(latex)<=700
     m.update(summary=m.get('summary') or re.split(r'\n\s*\n|\n## ',body.strip())[0].replace('\n',' '),

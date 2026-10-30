@@ -4,11 +4,13 @@ name: Zero-inflated Poisson
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: lambda
+  symbol: '\lambda'
   role: rate
   domain: (0, inf)
   simulate: 1.0
   kind: regular
 - name: pi
+  symbol: '\pi'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5

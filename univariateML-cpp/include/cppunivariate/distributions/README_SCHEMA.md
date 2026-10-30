@@ -25,7 +25,12 @@ goldens), by the validation harness, and later by the Python shell.
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
 | `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `reflected translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; optional `fixed: [name]` restricts a limit to fits holding those parameters fixed; see `dev/research/ml-behaviour.tex` |
-| `references` | no | one bibliographic entry per item |
+| `references` | no | one bibliographic string per item; verified DOIs may be appended; strings pass to R help unchanged |
+| `summary` | no | one sentence for the catalog and page lead; does not replace the R description |
+| `classification` | no | `classical`, `specialist`, or `uncommon`; requires `classification_reason`, a one-line account of use or standardness, never a popularity score |
+| `classification_reason` | with classification | qualitative reason for the classification |
+| `aliases` | no | list of verified alternative names; an empty list is allowed |
+| `key_references` | no | one to three distinct one-based indices into `references`; selects original, standard, or estimator sources without duplicating or changing reference strings |
 | `examples` | yes | R example code; generation fails when absent. Use real data appropriate to the family or `rml(n, mlX())`. |
 
 Argument names follow `dev/roadmap/2026-10-28-cran-argument-names.md`:
@@ -186,3 +191,27 @@ with a fitted or fixed object. Family-specific evaluation facts belong in a shor
 All-held fits use the generated internal C++ density directly. Stats-dispatched
 families also receive a private `core_d<id>` entry point for this purpose;
 ordinary `dml`/`pml`/`qml`/`rml` dispatch remains as declared by `r.density`.
+
+## Presentation metadata (TASK-101.6.4)
+
+Each coefficient may have `symbol`, a single-quoted TeX symbol without math
+fences, e.g. `symbol: '\mu'`. Symbols must be distinct within a family and
+must not be `x` (the observation). They describe the declared parameterization,
+not a change of coordinates. Related families use matching notation where their
+parameterizations agree. API names and symbolic `log_density` remain unchanged.
+The site substitutes symbols during TeX printing and in parameter tables/notices;
+the numerical harness continues to use API names.
+
+The optional catalog fields and symbols are accepted by the R loader but do not
+enter R help. `references` remains a list of strings, including its order; the
+key selection affects only the site. Bibliographic corrections and verified DOI
+additions therefore reach R help through the existing reference pipeline.
+
+A `limits` record may use `kind: nonexistence`, omit `model`, and name a
+sample-dependent unbounded likelihood. Supply `when`, `detect`, `name`, and
+`status` as usual. This records an R6 failure rather than inventing a limit law;
+R help describes the non-existence directly. Use `when` and `detect` as clauses
+without terminal punctuation. Existing records remain valid. `fixed` scopes
+held coefficients; conditions must also state which coefficients remain free
+when that determines non-existence. Numerical inability to certify a boundary
+is not itself a proof of non-existence.

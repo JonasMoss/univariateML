@@ -4,16 +4,19 @@ name: Location-scale Student-t
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0.0
   kind: regular
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1.0
   kind: regular
 - name: df
+  symbol: '\nu'
   role: df
   domain: '(0, inf)'
   simulate: 5

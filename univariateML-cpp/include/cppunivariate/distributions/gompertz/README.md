@@ -4,11 +4,13 @@ name: Gompertz
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: a
+  symbol: 'a'
   role: rate
   domain: (0, inf)
   simulate: 1.0
   kind: regular
 - name: b
+  symbol: 'b'
   role: shape
   domain: (0, inf)
   simulate: 1.0

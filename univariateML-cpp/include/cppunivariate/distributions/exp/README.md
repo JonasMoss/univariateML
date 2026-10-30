@@ -4,6 +4,7 @@ name: Exponential
 support: {type: real, lower: 0.0, upper: inf, closed: [true, false]}
 params:
 - name: rate
+  symbol: '\lambda'
   role: rate
   domain: (0, inf)
   simulate: 1.0
@@ -15,11 +16,26 @@ r:
     rate: Optional held rate; NULL estimates it.
 log_density: log(rate) - rate*x
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York."
+  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 19. Wiley, New York."
 examples: |
   set.seed(1)
   x <- rml(200, mlexp())
   mlexp(x)
+
+summary: The exponential distribution models nonnegative waiting times with a constant hazard rate.
+classification: classical
+classification_reason: A standard waiting-time and reliability model.
+aliases:
+- negative exponential
+key_references:
+- 1
+limits:
+- name: unbounded likelihood
+  when: $\lambda \to \infty$
+  detect: all observations are zero and rate is free
+  status: Unbounded
+  message: unbounded
+  kind: nonexistence
 ---
 
 The exponential distribution models nonnegative waiting times with a constant hazard rate.
