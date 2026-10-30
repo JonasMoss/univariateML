@@ -118,3 +118,38 @@ TEST_CASE("ztbinom: P3 unfinished optimizer is a failure") {
   const cppunivariate::ispan ix{values.data(),values.size()};
   CHECK(cppunivariate::ztbinom_mle(ix,1e-8,1).status==cppunivariate::ZtbinomStatus::IterationFailure);
 }
+
+// TASK-85/87: the free size+prob search is an exponential grid widened
+// to grow with the iteration budget rather than a hardcoded exponent
+// (see mle.hpp); this adds the n=20/100, ties and near-Poisson cases
+// the task calls out, cross-checked against dztbinom (a separate code
+// path from the fitter) and a coarse brute-force grid. test.R adds the
+// fully independent reference-density multistart oracle.
+TEST_CASE("ztbinom: free size oracle at n=20, n=100, ties, and near-Poisson") {
+  cppunivariate::distributions::StdRng<> rng(85087);
+  auto sample=[&](int n,double size,double prob) {
+    std::vector<int> x;
+    for(int i=0;i<n;++i) x.push_back(static_cast<int>(cppunivariate::distributions::rztbinom(rng,size,prob)));
+    return x;
+  };
+  std::vector<std::vector<int>> samples{
+    sample(20,8,.4), sample(100,8,.4),
+    {2,2,2,2,3,4,5,5},
+    sample(100,500,.02),  // near-Poisson: large size, small prob
+  };
+  for (auto &x : samples) {
+    const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-10,1000);
+    REQUIRE((f.status==cppunivariate::ZtbinomStatus::Ok || f.status==cppunivariate::ZtbinomStatus::PoissonLimit));
+    double ref=0; for(int v:x) ref+=cppunivariate::distributions::dztbinom(v,f.size,f.prob,true);
+    CHECK(f.logLik==doctest::Approx(ref).epsilon(1e-8));
+    if (f.status==cppunivariate::ZtbinomStatus::Ok) {
+      const int mx=*std::max_element(x.begin(),x.end());
+      for (double factor : {0.25,0.5,2.0,4.0}) {
+        const double alt_size=std::max<double>(mx,std::floor(f.size*factor));
+        const auto alt=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-10,1000,alt_size);
+        REQUIRE(alt.status==cppunivariate::ZtbinomStatus::Ok);
+        CHECK(f.logLik+1e-6>=alt.logLik);
+      }
+    }
+  }
+}

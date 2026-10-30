@@ -19,8 +19,8 @@ r:
   sampler: stats::rbinom
   control:
     size: "Optional fixed number of trials; NULL estimates size."
-    abstol: "Absolute tolerance on the Newton step in continuous size, before integer candidate selection; unused when size is fixed."
-    iterlim: "Maximum number of Newton iterations; unused when size is fixed."
+    abstol: "Unused by the free-size search (an exact integer bracket, not a continuous one); kept for the held-probability integer search's tail bound."
+    iterlim: "Iteration budget for the free-size bracket-and-bisect search (no fixed magnitude limit: raise this to search further) and for the held-probability integer search."
     prob: "Optional fixed probability in [0, 1]; NULL estimates it."
 log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + x*log(prob) + (size - x)*log(1 - prob)"
 limits:
@@ -43,7 +43,7 @@ The binomial distribution models the number of successes in a fixed number of in
 
 ## Details
 
-Free trial-size estimation searches the integer profile likelihood; it reports failure if it cannot bracket the maximum within its numerical search range.
+Free trial-size estimation brackets and bisects the integer profile likelihood, which DeRiggi (1983) proves unimodal whenever a finite MLE exists (checked first: the escape to `mlpois` below). There is no fixed magnitude limit on the search; it fails only by exhausting `iterlim`, which a larger value always resolves for any sample with a finite MLE.
 
 The estimate of `size` can be unstable; alternatives are discussed by Carroll and Lombard (1985) and DasGupta and Rubin (2005). Supplying `size` fixes the number of trials and estimates only `prob`; it must be at least `max(x)`. The support is the integers from zero to `size`, and `size` is a nonnegative integer.
 

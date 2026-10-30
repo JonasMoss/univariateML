@@ -16,9 +16,15 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
   std::sort(y.begin(),y.end());
   std::size_t minimum_count=1;
   while(minimum_count<y.size() && y[minimum_count]==y[0]) ++minimum_count;
-  // At positive xi the lower-endpoint collapse is controlled only by
-  // the multiplicity of the minimum. Equality is an unattained face.
-  if(std::isnan(xi) ? 2*minimum_count>=y.size() :
+  // At positive xi (lambda=1/xi) the lower-endpoint collapse is
+  // controlled only by the multiplicity of the minimum. A strict
+  // majority (k>n/2) diverges regardless of xi; exact equality
+  // (k==n/2) is data-dependent when xi is also free, since xi->1
+  // (lambda->1) is then a finite but unattained collapse face that an
+  // interior maximum elsewhere can still beat -- see gev/mle.hpp's
+  // identical fix and notes/evaluations/2026-10-29-p0-extreme.md.
+  const bool tie_half = std::isnan(xi) && 2*minimum_count==y.size();
+  if(std::isnan(xi) ? 2*minimum_count>y.size() :
       (xi>0 && xi*static_cast<double>(minimum_count)>=y.size()-minimum_count)) return bad;
   // Standardization prevents scale and translation from setting tolerances.
   const double origin=y[0],range=y.back()-origin;
@@ -59,9 +65,14 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
   // Enumerate profile-score sign changes, retaining both attained bounds.
   // Curvature turns also expose pairs of roots within a single mesh cell.
   // This is root discovery, not an assumption of global concavity.
+  //
+  // At the k==n/2 tie, xi=1 (lambda=1) is itself the unattained face
+  // (gev/mle.hpp's identical reasoning); nudge the scan's upper end
+  // strictly below it rather than evaluate there directly.
+  const double xi_hi = tie_half ? kGevXiUpper-1e-6 : kGevXiUpper;
   const int cells=32;
   for(int j=1;j<=cells;++j) {
-    const auto next=gev_profile(data,1.0*j/cells,tol,maxit);
+    const auto next=gev_profile(data,xi_hi*j/cells,tol,maxit);
     retain(next);
     if(prev.score>0 && next.score<0) root(prev,next);
     else if((prev.score>0)==(next.score>0) &&
@@ -83,10 +94,23 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
   }
   if(best.logLik <= gumbel.logLik+1e-8*y.size()) best=gumbel;
   if(failed) best.status=GevStatus::IterationFailure;
-  return restore(best);
+  GevResult result=restore(best);
+  if(result.status==GevStatus::Ok && tie_half) {
+    // A_free (GEV xi->1 collapse face, free mu and sigma) applies
+    // verbatim: Frechet's own log-likelihood at a given (mu,sigma,lambda)
+    // is the GEV log-likelihood at (mu-sigma/xi, sigma/xi, xi=1/lambda)
+    // (frechet_mle_impl's own reparametrization below), so the same
+    // closed-form supremum bounds the same face here. See gev/mle.hpp.
+    double sum_log_d=0;
+    for(double v:x) if(v>origin) sum_log_d+=std::log(v-origin);
+    const double n=static_cast<double>(y.size());
+    const double a_free=n*std::log(2.0)-n-2.0*sum_log_d;
+    if(!(result.logLik>a_free+tol*n)) result.status=GevStatus::NoMLE;
+  }
+  return result;
 }
 
-enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure };
+enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE };
 struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; };
 inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
  if(!(lambda>0) || !(sigma>0)) return -std::numeric_limits<double>::infinity();
@@ -206,6 +230,7 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
  }
  const auto r=frechet_gev_mle(x,tol,maxit);
  if(r.status==GevStatus::InvalidData) return bad;
+ if(r.status==GevStatus::NoMLE) {bad.status=FrechetStatus::NoMLE;return bad;}
  if(r.status!=GevStatus::Ok) {bad.status=FrechetStatus::IterationFailure;return bad;}
  if(r.xi==0) {bad.status=FrechetStatus::GumbelLimit;return bad;}
  return {1/r.xi,r.mu-r.sigma/r.xi,r.sigma/r.xi,r.logLik,r.iterations,FrechetStatus::Ok};

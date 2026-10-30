@@ -199,6 +199,25 @@ test_that("GEV held location compares half-minimum ties with the collapse face",
   expect_error(suppressWarnings(mlgev(rep(0,4),mu=0,xi=0), classes = "univariateML_restricted"),"scale collapse")
 })
 
+test_that("GEV free fit compares half-minimum ties with the free collapse face", {
+  # TASK-85/87: with mu, sigma and xi all free, this used to be
+  # rejected outright (InvalidData), the same as a strict majority tie.
+  # Mirrors the held-mu test above; see
+  # notes/evaluations/2026-10-29-tail85-report.md for why every sample
+  # tried gives the collapse-face branch, not the interior-fit one.
+  for(x in list(c(0,0,1,2),c(0,0,.01,100),c(0,0,0,1,2,5))) {
+    f <- tryCatch(suppressWarnings(mlgev(x), classes = "univariateML_restricted"),error=identity)
+    if(inherits(f,"error")) expect_match(conditionMessage(f),"scale collapse")
+    else {
+      m <- min(x)
+      face <- length(x)*log(2)-length(x)-2*sum(log(x[x>m]-m))
+      expect_gt(as.numeric(logLik(f)),face)
+    }
+  }
+  # Strict majority (k=3 of n=4) still diverges outright, unaffected.
+  expect_error(suppressWarnings(mlgev(c(0,0,0,1)), classes = "univariateML_restricted"),"multiplicity")
+})
+
 test_that("GEV new holds permit held positive shape above the free-shape bound", {
   x <- c(0,1,2,4,10)
   for(h in list(list(mu=-1),list(sigma=2),list(mu=0,sigma=2))) {

@@ -59,7 +59,18 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   }
   const double dn = static_cast<double>(n);
   const double x_bar = sum_x / dn;
-  const double var_pop = sum_x_sq / dn - x_bar * x_bar;
+  // Two-pass (deviations-from-mean) form, not sum_x_sq/dn - x_bar*x_bar:
+  // the naive one-pass formula cancels catastrophically whenever the
+  // dispersion gap x_bar - var_pop is small relative to x_bar*x_bar,
+  // which is exactly the regime that produces a large free-size MLE
+  // (see the "huge optimal size" test below). Getting the gap's sign
+  // right is what the Underdispersed escape depends on.
+  double var_pop = 0.0;
+  for (auto v : x) {
+    const double d = static_cast<double>(v) - x_bar;
+    var_pop += d * d;
+  }
+  var_pop /= dn;
 
   if (!std::isnan(held_prob)) {
     const auto bad = [&]() { return BinomResult{kNaN,kNaN,kNaN,0,BinomStatus::InvalidInput}; };
@@ -131,14 +142,32 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
       }
       return ll;
     }
-    const double size_m_x = size - x_bar;
-    double val = dn * x_bar * std::log(x_bar) +
-                 dn * size_m_x * std::log(size_m_x) - dn * size * std::log(size);
+    // Long double throughout: this branch runs whenever max_x/size >=
+    // 1e-5, i.e. size/max_x <= 1e5, and long double's ~19-digit lgamma
+    // difference loses only about log10(size/max_x) <~ 5 digits there --
+    // negligible. (Verified against an mpmath oracle: matches to >=10
+    // significant digits at size/max_x up to 1e5; the double-precision
+    // form this replaced was off by ~1e-3 in logLik at size ~3e7,
+    // max_x ~1e4 -- exactly the regime the free-size search above now
+    // reaches once its cap is gone.) Two further stability points:
+    // - the "entropy" term uses p = x_bar/size directly, not
+    //   (size - x_bar) via subtraction -- the same cancellation this
+    //   file's `increment` comment above explains for the search itself
+    //   applies verbatim to the old `size_m_x * log(size_m_x) -
+    //   size * log(size)` form;
+    // - lchoose uses std::lgammal (long double), matching the precedent
+    //   of calling std:: math functions directly already used in the
+    //   Poisson-scale branch above, not cppunivariate::special::lgamma
+    //   (double-only, and out of scope to change here).
+    const long double sizeL = size, x_barL = x_bar, pL = x_barL / sizeL;
+    long double val = static_cast<long double>(dn) * x_barL * std::log(pL) +
+                       static_cast<long double>(dn) * (sizeL - x_barL) * std::log1p(-pL);
     for (std::size_t i = 0; i < uniq.size(); ++i) {
-      val += static_cast<double>(counts[i]) *
-             binom_lchoose(size, static_cast<double>(uniq[i]));
+      const long double k = static_cast<long double>(uniq[i]);
+      val += static_cast<long double>(counts[i]) *
+             (std::lgamma(sizeL + 1.0L) - std::lgamma(k + 1.0L) - std::lgamma(sizeL - k + 1.0L));
     }
-    return val;
+    return static_cast<double>(val);
   };
 
   // User-supplied size.
@@ -160,34 +189,81 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
     return {kNaN, kNaN, kNaN, 0, BinomStatus::Underdispersed};
   }
 
-  // DeRiggi's unimodality gives a unimodal integer profile. Bracket its
-  // first decreasing step, then bisect those adjacent differences.
-  // Use extended precision: the differences become small in the Poisson tail.
-  auto increment = [&](long long k) {
+  // DeRiggi (1983) proves the integer profile likelihood in size, after
+  // profiling out prob at its own conditional MLE p = mean(x)/size, is
+  // unimodal: its forward difference ("increment" below) changes sign at
+  // most once, from positive to non-positive, whenever a finite MLE
+  // exists (the x_bar/var_pop > 1 case established above; the <= 1 case
+  // is the Poisson-limit escape already returned). So bracketing that
+  // single sign change and bisecting it is a certificate, not a
+  // heuristic: the maximizer is the smallest integer size for which the
+  // increment is <= 0, and there is exactly one such crossing to find,
+  // however far out it lies.
+  //
+  // There is therefore no sample for which this search should be capped
+  // at a fixed magnitude; the only legitimate stopping conditions are (a)
+  // finding the crossing, or (b) exhausting the iteration budget `maxit`
+  // (which the caller can raise without bound; doubling needs only
+  // O(log2(size)) iterations, so any size reachable in double/long double
+  // arithmetic is reachable in a modest iteration count). The bracket is
+  // kept in `long double` rather than an integer type: doubling a signed
+  // 64-bit integer without a cap can overflow (undefined behaviour) long
+  // before any real sample needs a size that large, whereas `long double`
+  // (64-bit mantissa on the x86-64 extended format this project targets)
+  // represents every integer up to 2^64 exactly and degrades gracefully,
+  // not silently, beyond that.
+  //
+  // The naive log1p rearrangement of the "entropy" part of the increment
+  // (literally -m*log1p(1/z)+(z+1-m)*log1p(-m/(z+1))-(z-m)*log1p(-m/z))
+  // cancels catastrophically once z grows past roughly max_x/eps: each of
+  // its three terms is O(z) while the sum is the O(1/z^2) increment
+  // itself, so long double's ~19 digits run out by z ~ 1e7-1e8 for
+  // typical data (verified against an independent mpmath oracle at
+  // dps=60: for a sample engineered to have its true maximizer near
+  // 3.3e7, the naive form's sign flips 5e6 early, at 2.8e7). The fix uses
+  // the exact identity g(y+1)-g(y) = log(y+1) + y*log1p(1/y) for
+  // g(w)=w*log(w) (applied to y=z-m and y=z) to remove the first level of
+  // cancellation, and then phi(w) := w*log1p(1/w) - 1 = sum_{j>=1}
+  // (-1)^j/((j+1)*w^j) -- a directly convergent series, no subtraction
+  // of near-equal O(1) numbers -- to remove the second level. Both
+  // halves are then differences of independently-accurate small
+  // quantities, not of large near-equal ones, and the formula tracks the
+  // mpmath oracle to its last representable long double digit at every
+  // scale tested, including sizes beyond 1e12 (see test.cpp/test.R).
+  auto phi = [](long double w) {
+    if (w < 1000.0L) return w*std::log1p(1.0L/w) - 1.0L;
+    long double term = -1.0L/(2.0L*w), sum = term;
+    for (int j = 1; j <= 40; ++j) {
+      term *= -(static_cast<long double>(j+1)/(j+2))/w;
+      sum += term;
+      if (std::fabs(term) < std::fabs(sum)*1e-25L) break;
+    }
+    return sum;
+  };
+  auto increment = [&](long double k) {
     const long double z=k, m=static_cast<long double>(sum_x)/n;
     long double d=0;
     for (std::size_t i=0;i<uniq.size();++i)
       d+=static_cast<long double>(counts[i])*std::log1p(
         static_cast<long double>(uniq[i])/(z+1-uniq[i]));
-    d+=static_cast<long double>(n)*(-m*std::log1p(1/z)
-       +(z+1-m)*std::log1p(-m/(z+1))-(z-m)*std::log1p(-m/z));
+    d+=static_cast<long double>(n)*(std::log1p(-m/(z+1)) + phi(z-m) - phi(z));
     return d;
   };
-  long long lo=max_x, hi=lo;
+  long double lo=max_x, hi=lo;
   int iterations=0;
-  const long long limit=1000000LL;
-  if (hi>limit) return {kNaN,kNaN,kNaN,0,BinomStatus::IterationFailure};
   while(increment(hi)>0) {
-    if (++iterations>=maxit || hi>=limit) return {kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
+    if (++iterations>=maxit || !std::isfinite(hi)) return {kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
     lo=hi+1;
-    hi=std::min(limit,hi*2);
+    hi=hi*2;
   }
-  while(lo<hi) {
+  while(hi>lo) {
     if (++iterations>=maxit) return {kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
-    const long long mid=lo+(hi-lo)/2;
+    long double mid=lo+std::floor((hi-lo)/2.0L);
+    if (mid<lo) mid=lo;           // resolution guard at extreme magnitudes
+    if (mid>=hi) mid=hi-1;        // guarantees progress every iteration
     if(increment(mid)>0) lo=mid+1; else hi=mid;
   }
-  const double best_size=static_cast<double>(lo);
+  const double best_size=static_cast<double>(hi);
   return {best_size,x_bar/best_size,log_likelihood(best_size),iterations,BinomStatus::Ok};
 }
 
