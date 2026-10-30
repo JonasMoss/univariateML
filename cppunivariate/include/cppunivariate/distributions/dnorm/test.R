@@ -61,13 +61,21 @@ test_that("dnorm log tails, integer quantiles and seeded sampling", {
     u <- c(1e-12,.1,.5,.9,1-1e-12)
     q <- univariateML_to_function(f,"q")(if (logp) log(u) else u,lower.tail=lower,log.p=logp)
     expect_equal(q,floor(q))
-    if (lower) { expect_true(all(univariateML_to_function(f,"p")(q)>=u-1e-15)); expect_true(all(univariateML_to_function(f,"p")(q-1)<u)) }
+    # binary64 log(.5) lies above exact log(.5): its lower-tail
+    # quantile is 0, whereas the quantile of ordinary .5 is -1.
+    # Comparing to rounded exp(log(.5)) would erase that distinction.
+    if (lower) {
+      expect_true(all(univariateML_to_function(f,"p")(q)>=u-1e-15))
+      ordinary <- !(logp & u == .5)
+      expect_true(all(univariateML_to_function(f,"p")(q[ordinary]-1)<u[ordinary]))
+      if (logp) expect_equal(q[u==.5],0)
+    }
     else { expect_true(all(univariateML_to_function(f,"p")(q,lower.tail=FALSE)<=u+1e-15)); expect_true(all(univariateML_to_function(f,"p")(q-1,lower.tail=FALSE)>u)) }
   }
   set.seed(123); a <- univariateML_to_function(f,"r")(20)
   set.seed(123); b <- rdnorm(n = 20, mean = 0, sd = 1)
   expect_equal(a,b)
-  expect_equal(dml(.5,f),0)
+  expect_warning(expect_equal(dml(.5,f),0),"non-integer")
   expect_equal(pml(0,f),univariateML_to_function(f,"p")(0))
   expect_equal(qml(.5,f),univariateML_to_function(f,"q")(.5))
   expect_equal(univariateML_to_function(f,"d")(0),ddnorm(x = 0, mean = 0, sd = 1),tolerance=1e-13)

@@ -142,3 +142,14 @@ TEST_CASE("zib: free size oracle at n=20, n=100, ties, and near-Poisson") {
     }
   }
 }
+
+TEST_CASE("zib: tiny zero mass remains finite without inflation") {
+  const double p=1-1e-9, expected=8*std::log1p(-p);
+  CHECK(cppunivariate::distributions::dzib(0,8,p,0,true)==doctest::Approx(expected));
+  CHECK(cppunivariate::distributions::dzib(0,8,1e-20,.5,true)==doctest::Approx(-4e-20).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::pzib(0,8,p,0,true,true)==doctest::Approx(expected));
+  CHECK(cppunivariate::distributions::pzib(0,8,1e-20,.5,false,true)==doctest::Approx(std::log(4e-20)));
+  CHECK(cppunivariate::distributions::pzib(-1,8,.4,1)==0);
+  CHECK(cppunivariate::distributions::pzib(0,8,0,.3)==1);
+  CHECK(cppunivariate::distributions::pzib(0,8,1,.3)==doctest::Approx(.3));
+}

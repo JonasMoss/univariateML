@@ -3,7 +3,11 @@ test_that("location-scale t agrees with independent density likelihood optimizat
     set.seed(100 + n + df * 10)
     x <- rlst(n = n, mu = 2, sigma = 1.3, df = df)
     fit <- suppressWarnings(mllst(x, gradtol = 1e-7, iterlim = 500), classes = "univariateML_restricted")
-    objective <- function(p) -sum(dlst(x = x, mu = p[1], sigma = exp(p[2]), df = 1 + exp(p[3]), log = TRUE))
+    objective <- function(p) {
+      sigma <- exp(p[2]); nu <- 1 + exp(p[3])
+      if (!all(is.finite(c(p[1],sigma,nu))) || sigma <= 0) return(1e100)
+      -sum(dlst(x = x, mu = p[1], sigma = sigma, df = nu, log = TRUE))
+    }
     candidates <- lapply(c(1.1, 2, 5, 20, 100), function(d)
       optim(c(median(x), log(IQR(x)), log(d - 1)), objective,
             method = "BFGS", control = list(maxit = 2000, reltol = 1e-12)))

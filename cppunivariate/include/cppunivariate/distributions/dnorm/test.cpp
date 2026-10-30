@@ -102,3 +102,15 @@ TEST_CASE("dnorm: exact and rounded half probabilities") {
   CHECK(cppunivariate::distributions::qdnorm(0.5,0,1,true,false)==-1);
   CHECK(cppunivariate::distributions::qdnorm(-0.6931471805599453,0,1,true,true)==0);
 }
+
+TEST_CASE("dnorm: exact half and rounded log half straddle the CDF jump") {
+  // At mean=0, sd=1, P(X<=-1) is exactly 1/2. The binary64
+  // logarithm -0x1.62e42fefa39efp-1 exceeds exact log(1/2).
+  const double lh=-0x1.62e42fefa39efp-1;
+  CHECK(cppunivariate::distributions::pdnorm(-1,0,1)==.5);
+  CHECK(cppunivariate::distributions::qdnorm(.5,0,1)==-1);
+  CHECK(cppunivariate::distributions::qdnorm(lh,0,1,true,true)==0);
+  CHECK(cppunivariate::distributions::qdnorm(std::nextafter(lh,-INFINITY),0,1,true,true)==-1);
+  CHECK(cppunivariate::distributions::qdnorm(lh,0,1,false,true)==-1);
+  CHECK(cppunivariate::distributions::qdnorm(std::nextafter(lh,-INFINITY),0,1,false,true)==0);
+}

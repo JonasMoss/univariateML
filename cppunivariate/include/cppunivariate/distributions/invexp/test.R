@@ -2,7 +2,11 @@ test_that("invexp matches a multistart density oracle", {
   set.seed(871)
   x <- rinvexp(n = 300, rate = 2.7)
   fit <- mlinvexp(x)
-  objective <- function(p) -sum(dinvexp(x = x, rate = exp(p[1]), log = TRUE))
+  objective <- function(p) {
+    rate <- exp(p[1])
+    if (!is.finite(rate) || rate <= 0) return(1e100)
+    -sum(dinvexp(x = x, rate = rate, log = TRUE))
+  }
   oracles <- lapply(c(.4,1,3), function(s) optim(rep(log(s), 1), objective, method="BFGS", control=list(reltol=1e-12,maxit=2000)))
   oracle <- oracles[[which.min(vapply(oracles, function(o) o$value, 0.0))]]
   expect_equal(as.numeric(fit),exp(oracle$par),tolerance=1e-4)

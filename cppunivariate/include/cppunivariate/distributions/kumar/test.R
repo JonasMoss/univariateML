@@ -7,15 +7,18 @@ tiny_data <- rkumar(n = 10, a = 3, b = 7)
 medium_data <- rkumar(n = 1000, a = 9, b = 11)
 
 ## Checks if the ML is correct.
-mle1 <- suppressWarnings(nlm(function(p) {
+mle1 <- nlm(function(p) {
+  if (any(!is.finite(p)) || any(p <= 0)) return(1e100)
   -sum(dkumar(x = small_data, a = p[1], b = p[2], log = TRUE))
-}, p = c(1, 1)))
+}, p = c(1, 1))
 
 mle2 <- nlm(function(p) {
+  if (any(!is.finite(p)) || any(p <= 0)) return(1e100)
   -sum(dkumar(x = tiny_data, a = p[1], b = p[2], log = TRUE))
 }, p = c(3, 7))
 
 mle3 <- nlm(function(p) {
+  if (any(!is.finite(p)) || any(p <= 0)) return(1e100)
   -sum(dkumar(x = medium_data, a = p[1], b = p[2], log = TRUE))
 }, p = c(9, 11))
 

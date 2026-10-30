@@ -127,7 +127,11 @@ test_that("P2 fixed inflation compares separated rate peaks", {
   x<-c(rep(0,99),10)
   for(pi in c(.001,.1,.9)) {
     fit<-mlzip(x,pi=pi)
-    objective<-function(t) -sum(dzip(x = x, lambda = exp(t), pi = pi, log = TRUE))
+    objective<-function(t) {
+      rate<-exp(t)
+      if(!is.finite(rate)) return(1e100)
+      -sum(dzip(x = x, lambda = rate, pi = pi, log = TRUE))
+    }
     values<-vapply(seq(-5,4,length.out=9),function(t)
       optim(t,objective,method="BFGS",control=list(maxit=500,reltol=1e-12))$value,0)
     expect_gte(attr(fit,"logLik"),-min(values)-1e-7)

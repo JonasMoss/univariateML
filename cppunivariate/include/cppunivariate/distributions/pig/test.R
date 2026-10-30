@@ -121,3 +121,16 @@ test_that("P3 PIG shape zero is attained under compatible holds", {
  }
  expect_equal(as.numeric(mlpig(rep(0,4),shape=0)),c(1,0))
 })
+
+test_that("pig zero boundary works through generated d/p/q/r", {
+  expect_equal(dpig(c(0,1),mean=2,shape=0),c(1,0))
+  expect_equal(dpig(c(0,1),mean=2,shape=0,log=TRUE),c(0,-Inf))
+  for(lower in c(TRUE,FALSE)) {
+    cdf <- if(lower) c(0,1,1) else c(1,0,0)
+    expect_equal(ppig(c(-1,0,1),mean=2,shape=0,lower.tail=lower),cdf)
+    expect_equal(ppig(c(-1,0,1),mean=2,shape=0,lower.tail=lower,log.p=TRUE),log(cdf))
+    expect_equal(qpig(c(0,.5,1),mean=2,shape=0,lower.tail=lower),rep(0,3))
+    expect_equal(qpig(c(-Inf,-10000,0),mean=2,shape=0,lower.tail=lower,log.p=TRUE),rep(0,3))
+  }
+  expect_equal(rpig(20,mean=2,shape=0),rep(0,20))
+})

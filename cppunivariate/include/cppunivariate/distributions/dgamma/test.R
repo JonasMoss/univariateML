@@ -67,7 +67,7 @@ test_that("dgamma log tails, integer quantiles and seeded sampling", {
   set.seed(123); a <- univariateML_to_function(f,"r")(20)
   set.seed(123); b <- rdgamma(n = 20, shape = 2, rate = 1)
   expect_equal(a,b)
-  expect_equal(dml(.5,f),0)
+  expect_warning(expect_equal(dml(.5,f),0),"non-integer")
   expect_equal(pml(0,f),univariateML_to_function(f,"p")(0))
   expect_equal(qml(.5,f),univariateML_to_function(f,"q")(.5))
   expect_equal(univariateML_to_function(f,"d")(0),ddgamma(x = 0, shape = 2, rate = 1),tolerance=1e-13)

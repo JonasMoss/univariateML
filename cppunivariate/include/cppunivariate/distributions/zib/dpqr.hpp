@@ -8,19 +8,23 @@ inline double dzib(double x,double size,double prob,double pi,bool log=false) {
   if(!zib_valid(size,prob)||!(pi>=0 && pi<=1)||std::isnan(x))return std::numeric_limits<double>::quiet_NaN();
   double l=-std::numeric_limits<double>::infinity();
   if(size==0)l=x==0?0:-std::numeric_limits<double>::infinity();
-  else if(x==0)l=std::log1p((1-pi)*std::expm1(size*std::log1p(-prob)));
+  else if(x==0) {
+    const double base=size*std::log1p(-prob);
+    const double lo=special::log_sum_exp(std::log(pi),std::log1p(-pi)+base);
+    const double up=std::log1p(-pi)+special::log1mexp(base);
+    l=lo<up ? lo : special::log1mexp(up);
+  }
   else if(x>0 && x<=size && x==std::floor(x))l=std::log1p(-pi)+zero_detail::bin_logpmf(static_cast<int>(x),size,prob);
   return log?l:std::exp(l);
 }
 inline double pzib(double q,double size,double prob,double pi,bool lower_tail=true,bool log_p=false) {
   if(!zib_valid(size,prob)||!(pi>=0 && pi<=1)||std::isnan(q))return std::numeric_limits<double>::quiet_NaN();
-  // Keep the probability of a positive count in log space: reconstructing
-  // it as 1-P(0) would erase small, representable binomial probabilities.
-  if(size==0) {const double v=q<0?0:1;return log_p?std::log(lower_tail?v:1-v):(lower_tail?v:1-v);}
-  const double s=q<0 ? 0 : std::log1p(-pi)+std::log(-std::expm1(size*std::log1p(-prob)))+
-      zero_detail::logsurvival(3,q,size,prob);
-  if(!lower_tail)return log_p?s:std::exp(s);
-  return log_p?std::log(-std::expm1(s)):-std::expm1(s);
+  if(q<0) return special::tail_probability(special::tails_from_log(special::kNegInf,true),lower_tail,log_p);
+  const auto t=binom_tails(q,size,prob);
+  const double lo=special::log_sum_exp(std::log(pi),std::log1p(-pi)+t.lower);
+  const double up=std::log1p(-pi)+t.upper;
+  return special::tail_probability(lo<up ? special::tails_from_log(lo,true)
+                                        : special::tails_from_log(up,false),lower_tail,log_p);
 }
 inline double qzib(double p,double size,double prob,double pi,bool lower_tail=true,bool log_p=false) {
   if(!zib_valid(size,prob)||!(pi>=0 && pi<=1)||std::isnan(p)||

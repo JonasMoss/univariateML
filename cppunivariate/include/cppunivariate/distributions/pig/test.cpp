@@ -159,3 +159,29 @@ TEST_CASE("PIG P3 zero shape preserves held means") {
  CHECK(r.status==cppunivariate::PigStatus::Ok); CHECK(r.mean==2);
  CHECK(cppunivariate::pig_mle({pos.data(),pos.size()},1e-9,200,2,0).status==cppunivariate::PigStatus::InvalidInput);
 }
+
+TEST_CASE("pig: zero boundary is the attained point mass") {
+  const double inf=std::numeric_limits<double>::infinity();
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  cppunivariate::distributions::StdRng<> rng(290);
+  for(double x : {-inf,-1.0,-.5,0.0,.5,1.0,inf}) {
+    const double mass=x==0?1:0;
+    CHECK(cppunivariate::distributions::dpig(x,2,0,false)==mass);
+    CHECK(cppunivariate::distributions::dpig(x,2,0,true)==(mass==1?0:-inf));
+    for(bool lower : {false,true}) {
+      const double cdf=(x>=0)==lower?1:0;
+      CHECK(cppunivariate::distributions::ppig(x,2,0,lower,false)==cdf);
+      CHECK(cppunivariate::distributions::ppig(x,2,0,lower,true)==(cdf==1?0:-inf));
+    }
+  }
+  for(bool lower : {false,true}) {
+    for(double p : {0.0,.1,.5,1.0})
+      CHECK(cppunivariate::distributions::qpig(p,2,0,lower,false)==0);
+    for(double p : {-inf,-10000.0,-1.0,0.0})
+      CHECK(cppunivariate::distributions::qpig(p,2,0,lower,true)==0);
+    CHECK(std::isnan(cppunivariate::distributions::qpig(nan,2,0,lower,true)));
+    CHECK(std::isnan(cppunivariate::distributions::ppig(nan,2,0,lower,true)));
+  }
+  CHECK(std::isnan(cppunivariate::distributions::dpig(nan,2,0,false)));
+  for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rpig(rng,2,0)==0);
+}

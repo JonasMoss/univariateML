@@ -5,6 +5,7 @@ zinb_oracle <- function(x, size = NULL) {
     r <- if (is.null(size)) exp(t[1]) else size
     p <- plogis(t[if (is.null(size)) 2 else 1])
     pi <- plogis(t[if (is.null(size)) 3 else 2])
+    if (!is.finite(r) || r < 0 || p <= 0) return(1e100)
     -sum(dzinb(x = x, size = r, prob = p, pi = pi, log = TRUE))
   }
   min(vapply(c(.2, 1, 5, 20), function(r) {
@@ -135,7 +136,11 @@ test_that("P2 fixed size and inflation compare separated probability peaks", {
   x<-c(rep(0,99),10)
   for(pi in c(.001,.1,.9)) {
     fit<-mlzinb(x,size=2,pi=pi)
-    objective<-function(t) -sum(dzinb(x = x, size = 2, prob = plogis(t), pi = pi, log = TRUE))
+    objective<-function(t) {
+      prob<-plogis(t)
+      if(prob<=0) return(1e100)
+      -sum(dzinb(x = x, size = 2, prob = prob, pi = pi, log = TRUE))
+    }
     values<-vapply(seq(-5,5,length.out=9),function(t)
       optim(t,objective,method="BFGS",control=list(maxit=500,reltol=1e-12))$value,0)
     expect_gte(attr(fit,"logLik"),-min(values)-1e-7)
@@ -158,4 +163,17 @@ test_that("P3 size-zero boundary holds and free representatives are attained", {
 
 test_that("P3 insufficient profile refinement stops", {
  expect_error(mlzinb(c(0,0,1,2,8)[c(1,2,3,4,5)],iterlim=1),"failed|converge")
+})
+
+test_that("zinb zero boundary works through generated d/p/q/r", {
+  expect_equal(dzinb(c(0,1),size=0,prob=.4,pi=.3),c(1,0))
+  expect_equal(dzinb(c(0,1),size=0,prob=.4,pi=.3,log=TRUE),c(0,-Inf))
+  for(lower in c(TRUE,FALSE)) {
+    cdf <- if(lower) c(0,1,1) else c(1,0,0)
+    expect_equal(pzinb(c(-1,0,1),size=0,prob=.4,pi=.3,lower.tail=lower),cdf)
+    expect_equal(pzinb(c(-1,0,1),size=0,prob=.4,pi=.3,lower.tail=lower,log.p=TRUE),log(cdf))
+    expect_equal(qzinb(c(0,.5,1),size=0,prob=.4,pi=.3,lower.tail=lower),rep(0,3))
+    expect_equal(qzinb(c(-Inf,-10000,0),size=0,prob=.4,pi=.3,lower.tail=lower,log.p=TRUE),rep(0,3))
+  }
+  expect_equal(rzinb(20,size=0,prob=.4,pi=.3),rep(0,20))
 })
