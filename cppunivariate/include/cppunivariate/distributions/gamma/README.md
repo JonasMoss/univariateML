@@ -35,3 +35,24 @@ The gamma distribution models positive measurements and waiting times.
 ## Details
 
 Holding either shape or scale gives a unique finite fit for any positive sample, including constant data. With both free, constant data have unbounded likelihood.
+
+
+With both coefficients free, profiling scale gives the shape score
+$\log(k)-\psi(k)=\log(\bar x)-\overline{\log x}$. Its unique positive
+root is sought by Newton iteration; near ties or after Newton failure the
+implementation uses a bracketed log-shape bisection. The bracket follows
+digamma bounds, and an exhausted bracket search reports failure. With
+shape held, scale is analytic; with scale held, the monotone digamma
+equation is bisected. This establishes uniqueness of the mathematical
+solution, subject to floating-point and solver tolerances.
+
+## Decision history
+
+The historical Newton initialization and absolute step tolerance were kept
+for compatibility with dependent fits and goldens. The near-tie fallback
+addresses cancellation in the score and likelihood; see `mle.hpp`, family
+tests and `notes/evaluations/2026-10-29-p0-positive.md`. On 2026-10-30
+commit `cd3993d` changed the reported coefficient from rate to scale;
+the rate remains an internal calculation. The original reason for the
+empirical initialization constants is unknown; historical source or an
+independent comparison of starts would settle it.
