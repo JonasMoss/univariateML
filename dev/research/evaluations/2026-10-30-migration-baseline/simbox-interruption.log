@@ -1,0 +1,52 @@
+5f11fb9e878219ac47a9a372e985eb69da6198e3
+Starting just cpp-test 2026-10-30T14:16:38+00:00
+just cpp-test exit=0
+    Start 3: distribution_tests
+3/6 Test #3: distribution_tests ...............   Passed  251.63 sec
+    Start 4: no_throw_tests
+4/6 Test #4: no_throw_tests ...................   Passed    0.00 sec
+    Start 5: cmp_tests
+5/6 Test #5: cmp_tests ........................   Passed    2.45 sec
+    Start 6: tails_tests
+6/6 Test #6: tails_tests ......................   Passed    0.00 sec
+
+100% tests passed out of 6
+
+Total Test time (real) = 254.11 sec
+Starting just test 2026-10-30T14:24:24+00:00
+just test exit=0
+
+/ |          0 | special                                                        
+v |         13 | special
+
+/ |          0 | utility                                                        
+/ |          0 | utility                                                        
+v |          4 | utility
+
+== Results =====================================================================
+Duration: 577.3 s
+
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 37713 ]
+Starting just check 2026-10-30T14:40:35+00:00
+just check exit=101
+tee: dev/research/evaluations/2026-10-30-migration-baseline/exits.log: Read-only file system
+Traceback (most recent call last):
+  File "<stdin>", line 11, in <module>
+  File "/usr/lib/python3.12/pathlib.py", line 1049, in write_text
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+OSError: [Errno 30] Read-only file system: 'dev/research/evaluations/2026-10-30-migration-baseline/check.log'
+dev/research/evaluations/2026-10-30-migration-baseline/run.sh: line 27: 92856 Segmentation fault      tail -12 "$out/$check.log"
+Starting just quality 2026-10-30T14:41:18+00:00
+just quality exit=1
+dev/research/evaluations/2026-10-30-migration-baseline/run.sh: line 29: build/scratch/baseline-quality.full.log: Read-only file system
+tee: dev/research/evaluations/2026-10-30-migration-baseline/exits.log: Read-only file system
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+FileNotFoundError: [Errno 2] No such file or directory: 'build/scratch/baseline-quality.full.log'
+dev/research/evaluations/2026-10-30-migration-baseline/run.sh: line 27: 92862 Segmentation fault      tail -12 "$out/$check.log"
+dev/research/evaluations/2026-10-30-migration-baseline/run.sh: error reading input file: Input/output error
+rsync: [sender] readdir("/home/jmoss/umvl-p0/baseline/dev/research/."): Input/output error (5)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1874) [generator=3.4.1]
+simbox-run: sync back failed

@@ -1,7 +1,0 @@
-library(univariateML,lib.loc='/tmp/umvl-p0lib')
-source('notes/evaluations/2026-10-29-p0-skewreal/density.R')
-set.seed(20261029)
-spec <- list(sn=c(xi=0,omega=1,alpha=3),snorm=c(mean=0,sd=1,xi=3),sstd=c(mean=0,sd=1,nu=3,xi=2),sged=c(mean=0,sd=1,nu=3,xi=3),emg=c(mu=0,sigma=1,lambda=1))
-out <- lapply(names(spec),function(id){x<-rnorm(100); p<-spec[[id]]; got<-do.call(get(paste0('d',id)),c(list(x=x),as.list(p),list(log=TRUE))); data.frame(id=id,max_abs_error=max(abs(got-logref(id,x,p))))})
-write.csv(do.call(rbind,out),'notes/evaluations/2026-10-29-p0-skewreal/density-check.csv',row.names=FALSE)
-print(do.call(rbind,out))

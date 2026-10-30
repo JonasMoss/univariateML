@@ -1,20 +1,20 @@
 # univariateML agent instructions
 
 Read [CLAUDE.md](CLAUDE.md) for the current architecture, engineering conventions
-and build workflow. The plans below describe future work; their proposed paths
-are not the current source layout. Do not push or publish without an explicit
+and build workflow. The current directory layout matches the migration plan; later steps
+cover C++ independence and documentation. Do not push or publish without an explicit
 user request.
 
 ## Banked plans
 
-- [Package structure and mathematical documentation](roadmap/2026-10-30-package-and-documentation.md):
+- [Package structure and mathematical documentation](dev/roadmap/2026-10-30-package-and-documentation.md):
   light landing page, standalone `univariateML-cpp`, generated `univariateML-r`,
   custom mathematical documentation site, and preservation of algorithm choices
   and validation history.
-- [Inference regularity and derivative support](roadmap/2026-10-30-inference-and-dqm.md):
+- [Inference regularity and derivative support](dev/roadmap/2026-10-30-inference-and-dqm.md):
   conditional DQM and information classification, historical derivatives,
   robust covariance requirements and procedures for subsets of hypotheses.
-- [Python package for teaching and simulation](roadmap/2026-10-30-python-teaching-and-simulation.md):
+- [Python package for teaching and simulation](dev/roadmap/2026-10-30-python-teaching-and-simulation.md):
   deferred Python bindings, distribution and fit objects, NumPy RNG integration,
   simulation outcomes and installation for teaching; refine after the foundational
   work lands and coordinate implementation with the user's orchestrators.
@@ -27,7 +27,7 @@ unrelated migration or implement inference during another task.
 
 The target C++ component must build, test, fit, evaluate and sample without R
 or sibling repository directories. RNG adapters keep R state handling in the
-bindings. The future root stays light; status, TODOs, roadmaps and historical
+bindings. The root stays light; status, TODOs, roadmaps and historical
 development reports belong under `dev/`, while `AGENTS.md` remains at the root.
 
 ## Algorithm and numerical documentation
@@ -79,7 +79,7 @@ inference fails. Model-based inference and inference robust to misspecification
 need distinct assumptions and checks. Bootstrap availability alone establishes
 neither validity nor robustness.
 
-The [initial 98-family inventory](notes/evaluations/2026-10-30-inference-inventory.csv)
+The [initial 98-family inventory](dev/research/evaluations/2026-10-30-inference-inventory.csv)
 is tied to the revision recorded in it. Its 29 initial conditional classifications
 and 69 unreviewed families are a historical starting point, not live coverage
 claims. Review the source and evidence before updating availability labels.

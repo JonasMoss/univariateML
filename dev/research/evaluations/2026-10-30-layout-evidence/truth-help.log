@@ -1,0 +1,24 @@
+usage: python3 -m quality [-h] [--timeout TIMEOUT] [--report-dir REPORT_DIR]
+                          {truth} [ids ...]
+
+Independent d/p/q oracle, derived from README/spec densities. Points: sampler
+and fitted parameters, then one-coordinate stresses, ordered by README
+parameter order. Positive distances to a single bound are multiplied by .1 and
+10; finite intervals move 90% towards each edge; unbounded nonzero coordinates
+are multiplied by .1 and 10 (zero moves to -1 and +1). Integer, design, fixed
+and endpoint coordinates remain at the fitted golden value. Family-local
+special_points take priority over stresses. At most eight historical points,
+plus the README default if absent. Sampling selects the default and fit. No
+shared distribution registry: optional truth.py beside README supplies a high-
+precision antiderivative/support correction or a documented gap. Routes are
+verified against the declarative density, not against C++, scipy or R.
+
+positional arguments:
+  {truth}
+  ids
+
+options:
+  -h, --help            show this help message and exit
+  --timeout TIMEOUT     wall-clock seconds per family (default: 900)
+  --report-dir REPORT_DIR
+                        directory for per-family generation status

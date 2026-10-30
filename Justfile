@@ -14,93 +14,93 @@ export CCACHE_MAXSIZE := "8G"
 
 default: test
 
-# Wipe and rebuild univariateML/package/ from workspace sources.
+# Wipe and rebuild univariateML-r/ from workspace sources.
 # package/ is the CRAN-shippable artefact, fully generated and
-# gitignored; univariateML/ itself holds only sources, scripts, and
+# gitignored; bindings/r/ itself holds only sources, scripts, and
 # metadata.
 assemble:
-	cd univariateML && \
-	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	cd bindings/r && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
 	  Rscript scripts/assemble_package.R
 
-# Mirror cppunivariate/include/ into univariateML/package/inst/include/.
+# Mirror univariateML-cpp/include/ into univariateML-r/inst/include/.
 # Runs after assemble (which wipes package/), required before R-side
 # compilation because the package's PKG_CPPFLAGS = -I../inst/include
 # expects the headers there.
 sync-headers: assemble
-	mkdir -p univariateML/package/inst/include
+	mkdir -p univariateML-r/inst/include
 	rsync -a --delete --prune-empty-dirs --include='*/' --include='*.hpp' --exclude='*' \
-	  cppunivariate/include/cppunivariate univariateML/package/inst/include/
+	  univariateML-cpp/include/cppunivariate univariateML-r/inst/include/
 
 # Run Rcpp::compileAttributes() in package/ (RcppExports.{R,cpp} from the
 # per-distribution adapters), then generate package/R/ml00_metadata.R and
 # ml02_wrappers.R (with roxygen docs) from distributions/<id>/README.md.
 gen: sync-headers
-	cd univariateML/package && Rscript -e "Rcpp::compileAttributes()"
-	cd univariateML && \
-	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
-	  UMVL_PKG_R_DIR={{repo_root}}/univariateML/package/R \
+	cd univariateML-r && Rscript -e "Rcpp::compileAttributes()"
+	cd bindings/r && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
+	  UMVL_PKG_R_DIR={{repo_root}}/univariateML-r/R \
 	  Rscript scripts/codegen_metadata.R
-	cd univariateML && \
-	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
-	  UMVL_PKG_R_DIR={{repo_root}}/univariateML/package/R \
+	cd bindings/r && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
+	  UMVL_PKG_R_DIR={{repo_root}}/univariateML-r/R \
 	  Rscript scripts/codegen_wrappers.R
 
 regen: gen
-	cd univariateML/package && Rscript -e "roxygen2::roxygenise()"
+	cd univariateML-r && Rscript -e "roxygen2::roxygenise()"
 
 test: regen
-	cd univariateML/package && \
-	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	cd univariateML-r && \
+	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
 	  Rscript -e "testthat::test_local('.', stop_on_failure = TRUE)"
 
 check: regen
-	cd univariateML/package && R CMD build --no-build-vignettes . && \
-	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	cd univariateML-r && R CMD build --no-build-vignettes . && \
+	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
 	  R CMD check --no-manual --ignore-vignettes univariateML_*.tar.gz
 
 # Regenerate distributions/<id>/golden.json from the current R/C++ pipeline.
 # Run only when intentionally accepting a new baseline (e.g. algorithm
 # change). After regen, inspect the diff before committing.
 goldens: regen
-	cd univariateML && \
-	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
-	  UMVL_PKG_DIR={{repo_root}}/univariateML/package \
+	cd bindings/r && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
+	  UMVL_PKG_DIR={{repo_root}}/univariateML-r \
 	  Rscript scripts/goldens.R
 
 # Rewrite distributions/<id>/reference.json: frozen values from the former
 # reference packages (fGarch, logitnorm, nakagami, sads) of the families
 # with their own d/p/q/r. Needs those packages; the tests do not.
 reference-values: regen
-	cd univariateML && \
-	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
-	  UMVL_PKG_DIR={{repo_root}}/univariateML/package \
+	cd bindings/r && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
+	  UMVL_PKG_DIR={{repo_root}}/univariateML-r \
 	  Rscript scripts/reference_values.R
 
-# Rewrite the distribution tables in univariateML/README.Rmd and README.md
+# Rewrite the distribution tables in bindings/r/README.Rmd and README.md
 # from distributions/<id>/README.md.
 readme-table:
-	cd univariateML && \
-	  UMVL_DOSSIER_DIR={{repo_root}}/cppunivariate/include/cppunivariate/distributions \
+	cd bindings/r && \
+	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
 	  Rscript scripts/readme_table.R
 
-# Build & run the standalone C++ test harness from cppunivariate/.
+# Build & run the standalone C++ test harness from univariateML-cpp/.
 # This path does not require R.
 cpp-test:
-	cmake -S cppunivariate -B cppunivariate/build $(command -v ccache >/dev/null && echo -DCMAKE_CXX_COMPILER_LAUNCHER=ccache)
-	cmake --build cppunivariate/build
-	cd cppunivariate/build && ctest --output-on-failure
+	cmake -S univariateML-cpp -B univariateML-cpp/build $(command -v ccache >/dev/null && echo -DCMAKE_CXX_COMPILER_LAUNCHER=ccache)
+	cmake --build univariateML-cpp/build
+	cd univariateML-cpp/build && ctest --output-on-failure
 
 # Check real fitter goldens against symbolic README densities.
 quality *ids:
-	PYTHONPATH={{repo_root}} python3 -m quality check {{ids}}
+	PYTHONPATH={{repo_root}}/dev/validation python3 -m quality check {{ids}}
 
 # Independent high-precision d/p/q truth from declarative densities.
 dpqr-truth *ids:
-	PYTHONPATH={{repo_root}} python3 -m quality truth {{ids}}
+	PYTHONPATH={{repo_root}}/dev/validation python3 -m quality truth {{ids}}
 
-# --- LaTeX research notes (notes/) ---
-notes_dir := "notes"
+# --- LaTeX research notes (dev/research/) ---
+notes_dir := "dev/research"
 
 # Build one note (named, or the most recently edited) and open the PDF.
 note-build name="":

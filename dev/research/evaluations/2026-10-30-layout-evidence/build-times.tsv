@@ -1,0 +1,11 @@
+phase	recipe	wall_seconds	cache_hits	cache_misses	hit_rate
+pre	cpp-test	172.34	not recorded per step	not recorded per step	not recorded per step
+pre	test	640.27	not recorded per step	not recorded per step	not recorded per step
+pre	quality	99.82	not recorded per step	not recorded per step	not recorded per step
+pre	regen	26.73	not recorded per step	not recorded per step	not recorded per step
+post	cpp-test	259.69	0	104	0.00%
+post	test	489.72	101	0	100.00%
+post	quality	92.84	0	0	N/A (no compiler calls)
+post	regen	25.78	101	0	100.00%
+rebuild	cpp-test	158.87	0	0	N/A (no compiler calls)
+rebuild	regen	26.31	101	0	100.00%

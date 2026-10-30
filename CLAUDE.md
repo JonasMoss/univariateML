@@ -9,17 +9,17 @@ core.
 
 ### Three layers
 
-1. **C++ core (primary).** `cppunivariate/include/cppunivariate/` — header-only, no Rcpp, no
+1. **C++ core (primary).** `univariateML-cpp/include/cppunivariate/` — header-only, no Rcpp, no
    Armadillo, no R headers. `cppunivariate::span` as the input boundary;
    Boost.Math (via the `BH` CRAN package or system Boost) for special
    functions and base distributions. Owns its own tests in
-   `cppunivariate/tests/` (doctest + ctest).
+   `univariateML-cpp/tests/` (doctest + ctest).
 
 2. **R shell (testing scaffold and current published artifact).**
    R wrappers and their docs are generated (`just gen`) from each
    distribution's `README.md`; they call thin Rcpp adapters
-   (`distributions/<id>/adapter.cpp`, copied into the gitignored
-   `univariateML/package/src/` by `just assemble`). testthat acts as the
+   (`bindings/r/distributions/<id>/adapter.cpp`, copied into the gitignored
+   `univariateML-r/src/` by `just assemble`). testthat acts as the
    trusted reference: every C++ change is sanity-checked against R-side
    fits, slow oracle fits, and the goldens in `distributions/<id>/golden.json`.
 
@@ -30,27 +30,26 @@ core.
 ### Status (October 2026)
 
 - 98 distributions, **one folder each** in
-  `cppunivariate/include/cppunivariate/distributions/<id>/`: `README.md`
-  (front matter + prose), `mle.hpp`, `dpqr.hpp`, `adapter.cpp`, `test.cpp`,
-  `test.R`, `golden.json`, `truth.py`, `truth.json`. See "Adding a new distribution" below. `lgamma`
+  `univariateML-cpp/include/cppunivariate/distributions/<id>/`: `README.md`
+  (front matter + prose), `mle.hpp`, `dpqr.hpp`, `test.cpp`, `golden.json`, `truth.py`, `truth.json`. See "Adding a new distribution" below. `lgamma`
   has no `mle.hpp`; its adapter fits gamma on `log(x)`.
 - Fitter behaviour at the edges (escapes to limit models, boundaries,
-  non-existence) is studied in `notes/ml-behaviour.tex`, with
-  `notes/ml-behaviour-sweep.R` (all fitters vs a slow oracle, ~6 s) and two
+  non-existence) is studied in `dev/research/ml-behaviour.tex`, with
+  `dev/research/ml-behaviour-sweep.R` (all fitters vs a slow oracle, ~6 s) and two
   research reports. Escapes that a fitter detects stop with "use `mlX`"
   (decision D1) and are declared under `limits:` in its `README.md`.
 - The R package is ML-first: it exports fitters, `dml`/`pml`/`qml`/`rml`,
   model selection, bootstrap and plots, and **no d/p/q/r** (decided
   2026-10-30). `dml` and friends call the function named by `r.density` in
   `README.md`. The 14 stats families use `stats` (kept for now, not banked:
-  `roadmap/2026-10-28-r-package-scope-revisited.md`); every other family
+  `dev/roadmap/2026-10-28-r-package-scope-revisited.md`); every other family
   uses the package's own internal d/p/q/r, generated at assembly by
-  `univariateML/scripts/codegen_dpqr.R` from `dpqr.hpp` (README
+  `bindings/r/scripts/codegen_dpqr.R` from `dpqr.hpp` (README
   coefficients in order, no defaults; entrypoints appended to the family's
   `src/dist_<id>.cpp`, library headers first because `Rmath.h` #defines
   names such as `pnorm`). `r.shift` and `r.args` remain resolver features.
   extraDistr and actuar are no longer dependencies (TASK-78); defects found
-  in them are recorded in `KNOWN_ISSUES.md` and `notes/upstream/`.
+  in them are recorded in `dev/KNOWN_ISSUES.md` and `dev/research/upstream/`.
 - Every `dpqr.hpp` is tail-accurate (`special/tails.hpp` states the rules)
   and checked against an mpmath truth table, `distributions/<id>/truth.json`
   (`just dpqr-truth <id>`; route in the family's `truth.py`), from C++
@@ -70,7 +69,7 @@ core.
   ignored under `build/quality/`. Limits are listed, not executed;
   per-distribution tests check their statuses.
 
-Open items and current test status: `STATUS.md`.
+Open items and current test status: `dev/STATUS.md`.
 
 ### Out of vision (for now)
 
@@ -109,7 +108,7 @@ go-ahead.
 
 ## C++ style guide (cppunivariate)
 
-`cppunivariate/include/cppunivariate/` is the C++ artifact. Header-only, **C++17**, depends only on
+`univariateML-cpp/include/cppunivariate/` is the C++ artifact. Header-only, **C++17**, depends only on
 `<cmath>` / `<algorithm>` / `<vector>` / `<cstddef>` and Boost.Math.
 
 ### Hard rules
@@ -117,8 +116,8 @@ go-ahead.
 - **No exceptions in cppunivariate.** Surface diagnostics via per-estimator
   `*Status` enums in the result struct. Boost.Math is called with the
   no-throw policy in `special/special.hpp`. `Rcpp::stop` is fine in the
-  R-shell adapters (`distributions/<id>/adapter.cpp`: they sit in the
-  folder but are R code, never part of the C++ library; header sync and
+  R-shell adapters (`bindings/r/distributions/<id>/adapter.cpp`: they sit in the
+  binding tree and are R code, never part of the C++ library; header sync and
   install copy `*.hpp` only), never in a header.
 - **No `using` declarations.** Always be explicit
   (`std::vector<double>`, `cppunivariate::span`, etc.).
@@ -131,36 +130,38 @@ go-ahead.
   C++17 substitute for `std::span<const double>`.
 - **Uniform parameter names** in C++: `tol` for tolerance, `maxit` for
   iteration limits, across every estimator. R-facing adapter arguments use
-  the CRAN-compatible names in `roadmap/2026-10-28-cran-argument-names.md`
+  the CRAN-compatible names in `dev/roadmap/2026-10-28-cran-argument-names.md`
   (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`).
 
 ### Layout
 
 ```
-cppunivariate/                        # the C++ artifact
-  CMakeLists.txt                      # produces INTERFACE target `cppunivariate`
+README.md                            # landing page; LICENSE.md at root
+univariateML-cpp/                    # C++17 artifact; namespace unchanged
+  CMakeLists.txt                     # INTERFACE target cppunivariate
   include/cppunivariate/
-    core/                             # span, optimisers (newton, bfgs), reductions,
-                                      # finite_diff, reparam
-    distributions/<id>/               # everything about one distribution:
-      README.md                       #   front matter + prose (schema: ../README_SCHEMA.md)
-      mle.hpp                         #   *_mle(span x, ...) -> *Result; Cost only if used by fitter
-      dpqr.hpp                        #   d/p/q/r templates
-      adapter.cpp                     #   Rcpp adapter ml<id>_ (R shell code)
-      test.cpp                        #   doctest cases -> distribution_tests
-      test.R                          #   testthat file
-      golden.json                     #   golden data + estimates
-      truth.py, truth.json            #   d/p/q truth route + mpmath table
-    distributions/rng_std.hpp         # shared sampling infrastructure (not per-dist)
-    special/                          # special.hpp (Boost.Math seam), skewed_densities.hpp
-    cppunivariate.hpp                 # aggregator (includes every <id>/mle.hpp)
-  tests/                              # shared doctest targets + helpers, R-free
-univariateML/                         # R package sources (R/, src/as_span.h, tests/,
-                                      # scripts/ for assembly, codegen, goldens);
-                                      # package/ is generated and gitignored
-quality/                              # validation harness (experimental)
-notes/                                # LaTeX research notes (just note-build)
+    core/                            # span, optimizers and reductions
+    distributions/<id>/              # canonical mathematical dossier
+      README.md, mle.hpp, dpqr.hpp, test.cpp, golden.json, truth.py, truth.json
+    special/                         # Boost.Math seam and numerical helpers
+    cppunivariate.hpp                # public aggregator
+  tests/                             # shared doctest targets and helpers
+bindings/r/                          # authored R package inputs and scripts
+  distributions/<id>/                # adapter.cpp, test.R and other R files
+bindings/python/README.md            # planned binding
+univariateML-r/                      # generated installable R package; ignored
+dev/                                # development records
+  STATUS.md, KNOWN_ISSUES.md
+  roadmap/, research/, tools/, design/
+  validation/quality/                # Python module remains named quality
 ```
+
+`just regen` assembles the R package from `bindings/r/`, copies adapters and
+R tests from `bindings/r/distributions/`, and copies C++ headers only from
+`univariateML-cpp/include/`. Dossiers, fixtures and C++ tests stay in the core.
+The `quality` and `dpqr-truth` recipes set `PYTHONPATH=dev/validation`; for
+manual module use run `PYTHONPATH=dev/validation python3 -m quality ...`.
+`python3 dev/tools/check_links.py` checks local Markdown link destinations.
 
 ### Estimator template
 
@@ -192,7 +193,7 @@ goldens stay reproducible.
 
 ### Multi-D optimiser
 
-Hand-rolled BFGS in `cppunivariate/include/cppunivariate/core/bfgs.hpp`: header-only quasi-Newton
+Hand-rolled BFGS in `univariateML-cpp/include/cppunivariate/core/bfgs.hpp`: header-only quasi-Newton
 with backtracking Armijo line search and the standard two-rank update
 on the inverse-Hessian approximation.
 
@@ -240,7 +241,7 @@ optimiser trajectory; survives golden regeneration.
 #### Wrapper failure handling
 
 Iterative failure is an error (rule R6,
-`roadmap/2026-10-29-parameter-rules.md`).
+`dev/roadmap/2026-10-29-parameter-rules.md`).
 - Preserve failure statuses through transformations and delegates, and
   stop in the adapter with the status and a clear diagnostic.
 - Keep a failed solve only when its finite free-coordinate score has
@@ -256,9 +257,10 @@ on, which let `mlstd` return its start values (TASK-77).
 
 ### Adding a new distribution
 
-**One folder per distribution** (`roadmap/2026-10-28-per-distribution-layout.md`).
-Everything about distribution `<id>` lives in
-`cppunivariate/include/cppunivariate/distributions/<id>/`; nothing shared
+**One folder per distribution** (`dev/roadmap/2026-10-28-per-distribution-layout.md`).
+Core definitions and evidence for distribution `<id>` live in
+`univariateML-cpp/include/cppunivariate/distributions/<id>/`; R adapters and
+R tests live in `bindings/r/distributions/<id>/`; nothing shared
 lists distributions by hand except the `cppunivariate.hpp` aggregator.
 Follow `lomax/` as the worked example.
 
@@ -267,9 +269,9 @@ Follow `lomax/` as the worked example.
 | `README.md` | YAML front matter (id, name, support, params, R refs, control-argument docs, log-density, limits, references, examples) + prose. Schema: `distributions/README_SCHEMA.md`. |
 | `mle.hpp` | `*_mle(span x, tol, maxit, ...)`, `*Result`, `*Status`; a `Cost` struct only when the fitter uses it |
 | `dpqr.hpp` | d/p/q/r templates |
-| `adapter.cpp` | the Rcpp adapter `ml<id>_`; copied to the package's `src/dist_<id>.cpp` by `assemble_package.R`. Argument names follow `roadmap/2026-10-28-cran-argument-names.md` (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`) and must match `README.md`'s `r.control` (codegen checks). |
+| `bindings/r/distributions/<id>/adapter.cpp` | the Rcpp adapter `ml<id>_`; copied to the package's `src/dist_<id>.cpp` by `assemble_package.R`. Argument names follow `dev/roadmap/2026-10-28-cran-argument-names.md` (`reltol`, `abstol`, `gradtol`, `iterlim`, `<param>0`) and must match `README.md`'s `r.control` (codegen checks). |
 | `test.cpp` | doctest cases; globbed into the `distribution_tests` target; `#include "test_support.hpp"` for `load_distribution_golden(id)` and tolerances |
-| `test.R` | testthat file; copied to `tests/testthat/test-dist-<id>.R` |
+| `bindings/r/distributions/<id>/test.R` | testthat file; copied to `tests/testthat/test-dist-<id>.R` |
 | `golden.json` | golden data + estimates, written by `just goldens` |
 | `truth.py`, `truth.json` | high-precision d/p/q route and its table, written by `just dpqr-truth <id>`; checked by the truth `TEST_CASE` in `test.cpp` |
 
@@ -283,10 +285,10 @@ Steps for a new distribution:
 4. `just readme-table` updates the distribution tables in the package README.
 
 R-side metadata, wrappers and roxygen docs are generated from `README.md`
-by `univariateML/scripts/load_distributions.R`, `codegen_metadata.R` and
+by `bindings/r/scripts/load_distributions.R`, `codegen_metadata.R` and
 `codegen_wrappers.R` (`just gen`). Distributions that are not Hellinger-closed
 declare their `limits`, including `fixed` for conditional limits; see
-`notes/ml-behaviour.tex`. Declare coefficient `kind` and numeric `simulate`,
+`dev/research/ml-behaviour.tex`. Declare coefficient `kind` and numeric `simulate`,
 required-argument `advice`, structural `holds` exceptions, and R5
 `fit_domain` restrictions with their mechanisms and held-set exemptions.
 Use support expressions and endpoint log limits where bounds depend on
@@ -300,7 +302,7 @@ it is not a proof for arbitrary samples.
 ## Math backend
 
 Boost.Math via the `BH` CRAN package; falls back to system Boost for
-the standalone CMake build. The seam is `cppunivariate/include/cppunivariate/special/special.hpp`
+the standalone CMake build. The seam is `univariateML-cpp/include/cppunivariate/special/special.hpp`
 — estimators never include `<boost/...>` directly. Swapping backend
 (Rmath, Cephes, hand-roll) is a single-file change at that seam,
 followed by a goldens regen + visual diff.
@@ -308,7 +310,7 @@ followed by a goldens regen + visual diff.
 What's in Boost.Math: every common univariate distribution
 (normal, gamma, beta, t, Weibull, …) plus the special functions
 (digamma, trigamma, lgamma, lbeta). What we layer on top in
-`cppunivariate/include/cppunivariate/distributions/` and `cppunivariate/include/cppunivariate/special/skewed_densities.hpp`:
+`univariateML-cpp/include/cppunivariate/distributions/` and `univariateML-cpp/include/cppunivariate/special/skewed_densities.hpp`:
 the Fernandez–Steel skew-normal/t/GED family, fatigue, log-logistic,
 nakagami, logit-normal, zipf, zip, paralogis — closed-form
 compositions over Boost primitives.

@@ -1,0 +1,310 @@
+--- pre/R/ml00_metadata.R
++++ post/R/ml00_metadata.R
+@@ -3,7 +3,7 @@
+ 
+ generated_models <- c("mlbbinom", "mlbeta", "mlbetapr", "mlbhatt", "mlbinom", "mlbnbinom", "mlburr", "mlcauchy", "mlcmb", "mlcmp", "mldgamma", "mldlaplace", "mldnorm", "mldunif", "mldweibull", "mlemg", "mlexp", "mlfatigue", "mlfoldnorm", "mlfpareto", "mlfrechet", "mlgamma", "mlgb2", "mlged", "mlgenbeta", "mlgeom", "mlgev", "mlgompertz", "mlgpd", "mlgumbel", "mlhcauchy", "mlhnorm", "mlht", "mlhuber", "mlhyper", "mlinvburr", "mlinvexp", "mlinvgamma", "mlinvgauss", "mlinvparalogis", "mlinvpareto", "mlinvtrgamma", "mlinvweibull", "mlkumar", "mllaplace", "mllgamma", "mllgser", "mlllogis", "mllnorm", "mllogis", "mllogitnorm", "mllomax", "mllst", "mlnaka", "mlnbinom", "mlnhyper", "mlnorm", "mlnsbeta", "mlparalogis", "mlpareto", "mlpareto2", "mlpareto3", "mlpareto4", "mlpig", "mlpois", "mlpower", "mlrayleigh", "mlsged", "mlsgomp", "mlskellam", "mlslash", "mlsn", "mlsnorm", "mlsstd", "mlstd", "mltbinom", "mltlambda", "mltnorm", "mltpois", "mltrgamma", "mltriang", "mlunif", "mlweibull", "mlyulesimon", "mlzeta", "mlzib", "mlzinb", "mlzip", "mlzipf", "mlzmbinom", "mlzmgeom", "mlzmlogarithmic", "mlzmnbinom", "mlzmpois", "mlztbinom", "mlztgeom", "mlztnbinom", "mlztpois")
+ 
+-# Reference samplers (pkg::fn), used by dev tooling such as notes/ml-behaviour-sweep.R.
++# Reference samplers (pkg::fn), used by dev tooling such as dev/research/ml-behaviour-sweep.R.
+ univariateML_samplers <- c(
+   mlbbinom = "rbbinom",
+   mlbeta = "stats::rbeta",
+--- pre/R/ml02_wrappers.R
++++ post/R/ml02_wrappers.R
+@@ -1919,7 +1919,7 @@
+ #' 
+ #' The df profile need not be unimodal: `c(.12773, 12.5979, 3.91782, 2.58658, .138212)` has local maxima near `nu = .41508` and `nu = 1.17074` (independently checked with the reference density), the former higher. A grid in \eqn{\log\eta=-\log\nu} refines every sampled local maximum, after exact monotone scale profiling. The small-df bound determines the lower search extent; the large-df extent is \eqn{10^8}, with an unresolved edge reported as a search failure. This numerical global search is not a certificate against peaks narrower than its grid. Scale is the ordinary Student t scale, not a standard deviation. This paragraph's unimodality example holds `mu = 0`; the same grid and golden-section refinement are reused for a free endpoint, restricted to `nu >= 1`.
+ #' 
+-#' With `mu` held, the translated endpoint reduces to this fixed-zero-endpoint model on `x - mu`, exactly as above (the measure-zero exemption noted there). With `mu` free, the likelihood increases in `mu` up to the sample minimum (the density is strictly decreasing away from the endpoint for every finite `nu`, `sigma`), so the free endpoint is exactly `mu = min(x)`, including tied minima; a held `mu` above any observation is invalid. Writing `k` for that tie multiplicity: holding `nu` reduces to the fixed-endpoint criteria above, with `k` now counting ties at the minimum. Free `nu` is restricted to `nu >= 1` whenever `mu` is free, including when scale is held. With `nu` and `sigma` both free, any tie (`k >= 1`, which a free endpoint always produces) would make the unrestricted model collapse as above; restricting `nu >= 1` bounds the collapse exponent at the break-even point `nu*(n-k) = k`, i.e. `2k = n`. For `2k > n` the restriction does not help (the break-even `nu* = k/(n-k)` itself exceeds 1, so part of the allowed range still collapses): unbounded. For `2k < n`, `nu* < 1`, so every allowed `nu >= 1` is in the existence region, and the restricted profile search (compared against the half-normal escape, as always) is data-dependent. For `2k = n` exactly, `nu* = 1`: the restricted search explores `nu > 1` and additionally compares the explicit finite `nu = 1`, `sigma -> 0` limit \deqn{ n\log(2) + n\,\mathrm{logmode}(1) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)) = n\log(2/\pi) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)), } an unattained supremum (`ScaleBoundary`) when it beats both the interior search and the normal escape, derived by taking the exact `sigma -> 0` limit of each observation's log density at the break-even `nu`, where the leading `log(sigma)` terms cancel by construction. (`logmode(nu)` is the ordinary Student t log density at zero, scale 1; at `nu = 1` it is `-log(pi)`. The factor 2 for the half density is included separately.) See `notes/evaluations/2026-10-29-p4-report.md` for the full derivation.
++#' With `mu` held, the translated endpoint reduces to this fixed-zero-endpoint model on `x - mu`, exactly as above (the measure-zero exemption noted there). With `mu` free, the likelihood increases in `mu` up to the sample minimum (the density is strictly decreasing away from the endpoint for every finite `nu`, `sigma`), so the free endpoint is exactly `mu = min(x)`, including tied minima; a held `mu` above any observation is invalid. Writing `k` for that tie multiplicity: holding `nu` reduces to the fixed-endpoint criteria above, with `k` now counting ties at the minimum. Free `nu` is restricted to `nu >= 1` whenever `mu` is free, including when scale is held. With `nu` and `sigma` both free, any tie (`k >= 1`, which a free endpoint always produces) would make the unrestricted model collapse as above; restricting `nu >= 1` bounds the collapse exponent at the break-even point `nu*(n-k) = k`, i.e. `2k = n`. For `2k > n` the restriction does not help (the break-even `nu* = k/(n-k)` itself exceeds 1, so part of the allowed range still collapses): unbounded. For `2k < n`, `nu* < 1`, so every allowed `nu >= 1` is in the existence region, and the restricted profile search (compared against the half-normal escape, as always) is data-dependent. For `2k = n` exactly, `nu* = 1`: the restricted search explores `nu > 1` and additionally compares the explicit finite `nu = 1`, `sigma -> 0` limit \deqn{ n\log(2) + n\,\mathrm{logmode}(1) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)) = n\log(2/\pi) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)), } an unattained supremum (`ScaleBoundary`) when it beats both the interior search and the normal escape, derived by taking the exact `sigma -> 0` limit of each observation's log density at the break-even `nu`, where the leading `log(sigma)` terms cancel by construction. (`logmode(nu)` is the ordinary Student t log density at zero, scale 1; at `nu = 1` it is `-log(pi)`. The factor 2 for the half density is included separately.) See `dev/research/evaluations/2026-10-29-p4-report.md` for the full derivation.
+ #' 
+ #' Evaluation uses the internal d/p/q/r functions.
+ #' 
+@@ -2440,7 +2440,7 @@
+ #' 
+ #' The fit is the transformed gamma fit of `1/x` with scale `1/scale`; the log likelihoods differ by `-2 * sum(log(x))`. The inverse gamma (`shape2 = 1`) and inverse Weibull (`shape1 = 1`) distributions are members. For nonconstant data, holding `shape1` or `shape2` fixed gives a maximum likelihood estimate; the free fit has none with positive probability. The inward likelihood slope from the lognormal face has the same sign as the sample skewness of the logarithms. Faces win likelihood ties within `1e-8` per observation. Fits very close to that limit have a scale above the largest double; `mlinvtrgamma()` then stops and reports the log scale.
+ #' 
+-#' The C++ face helper `trgamma_faces_log` accepts logarithms of observations and returns the maximised lognormal and power likelihoods and their fitted parameters. The derivation and numerical search qualifications are in `notes/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
++#' The C++ face helper `trgamma_faces_log` accepts logarithms of observations and returns the maximised lognormal and power likelihoods and their fitted parameters. The derivation and numerical search qualifications are in `dev/research/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
+ #' 
+ #' Held-scale fits use the reciprocal transformed gamma profile. With shape2 also held shape1 has one score root; with shape1 held the power likelihood is strictly concave unless every observation equals scale. The held-scale Pareto face is compared numerically.
+ #' 
+@@ -4820,7 +4820,7 @@
+ #' 
+ #' The free fit has none with positive probability. The inward likelihood slope from the lognormal face has sign opposite to the sample skewness of the logarithms. Under lognormal sampling the asymptotic boundary probability is one half. Faces win likelihood ties within `1e-8` per observation. Fits very close to the lognormal limit have a scale below the smallest positive normal double; `mltrgamma()` then stops and reports the log scale.
+ #' 
+-#' The C++ face helper `trgamma_faces_log` accepts logarithms of observations and returns the maximised lognormal and power likelihoods and their fitted parameters. The derivation and numerical search qualifications are in `notes/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
++#' The C++ face helper `trgamma_faces_log` accepts logarithms of observations and returns the maximised lognormal and power likelihoods and their fitted parameters. The derivation and numerical search qualifications are in `dev/research/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
+ #' 
+ #' With scale and shape2 held the shape1 score has one root. With scale and shape1 held the shape2 likelihood is strictly concave and coercive unless every observation equals scale. With only scale held the fixed-endpoint power face is compared with the interior profile; the search is numerical.
+ #' 
+@@ -5140,7 +5140,7 @@
+ #' 
+ #' Holding inflation leaves a scalar probability profile at each integer size. Its stationary points are isolated by the quadratic turning-point equation; the infinite-size comparison uses ZIP with the same held inflation.
+ #' 
+-#' With size free and either or both of probability and inflation also free, the search scans an exponential grid of candidate sizes (profiling the remaining free coefficients exactly at each one) and refines each local peak. As with `mlztbinom`, no unimodality proof is known for this profile, so this remains a numerical grid search, not a certified one; see `notes/evaluations/2026-10-29-tail85-report.md`. The grid has no fixed magnitude limit: it keeps growing until ten exponential steps pass without an improvement, bounded only by `iterlim`. Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
++#' With size free and either or both of probability and inflation also free, the search scans an exponential grid of candidate sizes (profiling the remaining free coefficients exactly at each one) and refines each local peak. As with `mlztbinom`, no unimodality proof is known for this profile, so this remains a numerical grid search, not a certified one; see `dev/research/evaluations/2026-10-29-tail85-report.md`. The grid has no fixed magnitude limit: it keeps growing until ten exponential steps pass without an improvement, bounded only by `iterlim`. Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
+ #' 
+ #' @param x a (non-empty) numeric vector of data values. Omit to build a fixed model without data.
+ #' @param na.rm logical. Should missing values be removed?
+@@ -5360,7 +5360,7 @@
+ #' 
+ #' Holding p0 changes only the Bernoulli zero-indicator likelihood; the positive conditional fit is unchanged. An incompatible held p0 (zero with observed zeros, or one with positives) stops.
+ #' 
+-#' The free-size search delegates entirely to `mlztbinom` on the positive observations (the zero/Bernoulli part is closed-form), so it inherits that search's exponential grid and its caveats verbatim: no unimodality proof is known, so it is a numerical search, not a certified one; see `mlztbinom`'s own documentation and `notes/evaluations/2026-10-29-tail85-report.md`.
++#' The free-size search delegates entirely to `mlztbinom` on the positive observations (the zero/Bernoulli part is closed-form), so it inherits that search's exponential grid and its caveats verbatim: no unimodality proof is known, so it is a numerical search, not a certified one; see `mlztbinom`'s own documentation and `dev/research/evaluations/2026-10-29-tail85-report.md`.
+ #' 
+ #' @param x a (non-empty) numeric vector of data values. Omit to build a fixed model without data.
+ #' @param na.rm logical. Should missing values be removed?
+@@ -5600,7 +5600,7 @@
+ #' 
+ #' A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.
+ #' 
+-#' With both size and probability free, the search profiles probability at its exact conditional-mean-matching value for each candidate size and scans an exponential grid of candidate sizes, refining each local peak. Unlike `mlbinom`'s free-size search, no unimodality proof is known for this truncated profile (DeRiggi 1983 covers the untruncated binomial only), so this remains a numerical grid search, not a certified one; see `notes/evaluations/2026-10-29-tail85-report.md`. The grid has no fixed magnitude limit: it keeps growing until it has gone ten exponential steps without an improvement, bounded only by `iterlim` (a larger `iterlim` lets it search further, never a hard cap). Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
++#' With both size and probability free, the search profiles probability at its exact conditional-mean-matching value for each candidate size and scans an exponential grid of candidate sizes, refining each local peak. Unlike `mlbinom`'s free-size search, no unimodality proof is known for this truncated profile (DeRiggi 1983 covers the untruncated binomial only), so this remains a numerical grid search, not a certified one; see `dev/research/evaluations/2026-10-29-tail85-report.md`. The grid has no fixed magnitude limit: it keeps growing until it has gone ten exponential steps without an improvement, bounded only by `iterlim` (a larger `iterlim` lets it search further, never a hard cap). Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
+ #' 
+ #' @param x a (non-empty) numeric vector of data values. Omit to build a fixed model without data.
+ #' @param na.rm logical. Should missing values be removed?
+--- pre/man/mlht.Rd
++++ post/man/mlht.Rd
+@@ -41,7 +41,7 @@
+ 
+ The df profile need not be unimodal: \code{c(.12773, 12.5979, 3.91782, 2.58658, .138212)} has local maxima near \code{nu = .41508} and \code{nu = 1.17074} (independently checked with the reference density), the former higher. A grid in \eqn{\log\eta=-\log\nu} refines every sampled local maximum, after exact monotone scale profiling. The small-df bound determines the lower search extent; the large-df extent is \eqn{10^8}, with an unresolved edge reported as a search failure. This numerical global search is not a certificate against peaks narrower than its grid. Scale is the ordinary Student t scale, not a standard deviation. This paragraph's unimodality example holds \code{mu = 0}; the same grid and golden-section refinement are reused for a free endpoint, restricted to \code{nu >= 1}.
+ 
+-With \code{mu} held, the translated endpoint reduces to this fixed-zero-endpoint model on \code{x - mu}, exactly as above (the measure-zero exemption noted there). With \code{mu} free, the likelihood increases in \code{mu} up to the sample minimum (the density is strictly decreasing away from the endpoint for every finite \code{nu}, \code{sigma}), so the free endpoint is exactly \code{mu = min(x)}, including tied minima; a held \code{mu} above any observation is invalid. Writing \code{k} for that tie multiplicity: holding \code{nu} reduces to the fixed-endpoint criteria above, with \code{k} now counting ties at the minimum. Free \code{nu} is restricted to \code{nu >= 1} whenever \code{mu} is free, including when scale is held. With \code{nu} and \code{sigma} both free, any tie (\code{k >= 1}, which a free endpoint always produces) would make the unrestricted model collapse as above; restricting \code{nu >= 1} bounds the collapse exponent at the break-even point \code{nu*(n-k) = k}, i.e. \verb{2k = n}. For \verb{2k > n} the restriction does not help (the break-even \verb{nu* = k/(n-k)} itself exceeds 1, so part of the allowed range still collapses): unbounded. For \verb{2k < n}, \verb{nu* < 1}, so every allowed \code{nu >= 1} is in the existence region, and the restricted profile search (compared against the half-normal escape, as always) is data-dependent. For \verb{2k = n} exactly, \verb{nu* = 1}: the restricted search explores \code{nu > 1} and additionally compares the explicit finite \code{nu = 1}, \code{sigma -> 0} limit \deqn{ n\log(2) + n\,\mathrm{logmode}(1) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)) = n\log(2/\pi) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)), } an unattained supremum (\code{ScaleBoundary}) when it beats both the interior search and the normal escape, derived by taking the exact \code{sigma -> 0} limit of each observation's log density at the break-even \code{nu}, where the leading \code{log(sigma)} terms cancel by construction. (\code{logmode(nu)} is the ordinary Student t log density at zero, scale 1; at \code{nu = 1} it is \code{-log(pi)}. The factor 2 for the half density is included separately.) See \code{notes/evaluations/2026-10-29-p4-report.md} for the full derivation.
++With \code{mu} held, the translated endpoint reduces to this fixed-zero-endpoint model on \code{x - mu}, exactly as above (the measure-zero exemption noted there). With \code{mu} free, the likelihood increases in \code{mu} up to the sample minimum (the density is strictly decreasing away from the endpoint for every finite \code{nu}, \code{sigma}), so the free endpoint is exactly \code{mu = min(x)}, including tied minima; a held \code{mu} above any observation is invalid. Writing \code{k} for that tie multiplicity: holding \code{nu} reduces to the fixed-endpoint criteria above, with \code{k} now counting ties at the minimum. Free \code{nu} is restricted to \code{nu >= 1} whenever \code{mu} is free, including when scale is held. With \code{nu} and \code{sigma} both free, any tie (\code{k >= 1}, which a free endpoint always produces) would make the unrestricted model collapse as above; restricting \code{nu >= 1} bounds the collapse exponent at the break-even point \code{nu*(n-k) = k}, i.e. \verb{2k = n}. For \verb{2k > n} the restriction does not help (the break-even \verb{nu* = k/(n-k)} itself exceeds 1, so part of the allowed range still collapses): unbounded. For \verb{2k < n}, \verb{nu* < 1}, so every allowed \code{nu >= 1} is in the existence region, and the restricted profile search (compared against the half-normal escape, as always) is data-dependent. For \verb{2k = n} exactly, \verb{nu* = 1}: the restricted search explores \code{nu > 1} and additionally compares the explicit finite \code{nu = 1}, \code{sigma -> 0} limit \deqn{ n\log(2) + n\,\mathrm{logmode}(1) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)) = n\log(2/\pi) - 2\sum_{x_i>\min(x)}\log(x_i-\min(x)), } an unattained supremum (\code{ScaleBoundary}) when it beats both the interior search and the normal escape, derived by taking the exact \code{sigma -> 0} limit of each observation's log density at the break-even \code{nu}, where the leading \code{log(sigma)} terms cancel by construction. (\code{logmode(nu)} is the ordinary Student t log density at zero, scale 1; at \code{nu = 1} it is \code{-log(pi)}. The factor 2 for the half density is included separately.) See \code{dev/research/evaluations/2026-10-29-p4-report.md} for the full derivation.
+ 
+ Evaluation uses the internal d/p/q/r functions.
+ 
+--- pre/man/mlinvtrgamma.Rd
++++ post/man/mlinvtrgamma.Rd
+@@ -41,7 +41,7 @@
+ 
+ The fit is the transformed gamma fit of \code{1/x} with scale \code{1/scale}; the log likelihoods differ by \code{-2 * sum(log(x))}. The inverse gamma (\code{shape2 = 1}) and inverse Weibull (\code{shape1 = 1}) distributions are members. For nonconstant data, holding \code{shape1} or \code{shape2} fixed gives a maximum likelihood estimate; the free fit has none with positive probability. The inward likelihood slope from the lognormal face has the same sign as the sample skewness of the logarithms. Faces win likelihood ties within \code{1e-8} per observation. Fits very close to that limit have a scale above the largest double; \code{mlinvtrgamma()} then stops and reports the log scale.
+ 
+-The C++ face helper \code{trgamma_faces_log} accepts logarithms of observations and returns the maximised lognormal and power likelihoods and their fitted parameters. The derivation and numerical search qualifications are in \code{notes/evaluations/2026-10-29-trgamma-derivation.md} in the source tree.
++The C++ face helper \code{trgamma_faces_log} accepts logarithms of observations and returns the maximised lognormal and power likelihoods and their fitted parameters. The derivation and numerical search qualifications are in \code{dev/research/evaluations/2026-10-29-trgamma-derivation.md} in the source tree.
+ 
+ Held-scale fits use the reciprocal transformed gamma profile. With shape2 also held shape1 has one score root; with shape1 held the power likelihood is strictly concave unless every observation equals scale. The held-scale Pareto face is compared numerically.
+ }
+--- pre/man/mltrgamma.Rd
++++ post/man/mltrgamma.Rd
+@@ -43,7 +43,7 @@
+ 
+ The free fit has none with positive probability. The inward likelihood slope from the lognormal face has sign opposite to the sample skewness of the logarithms. Under lognormal sampling the asymptotic boundary probability is one half. Faces win likelihood ties within \code{1e-8} per observation. Fits very close to the lognormal limit have a scale below the smallest positive normal double; \code{mltrgamma()} then stops and reports the log scale.
+ 
+-The C++ face helper \code{trgamma_faces_log} accepts logarithms of observations and returns the maximised lognormal and power likelihoods and their fitted parameters. The derivation and numerical search qualifications are in \code{notes/evaluations/2026-10-29-trgamma-derivation.md} in the source tree.
++The C++ face helper \code{trgamma_faces_log} accepts logarithms of observations and returns the maximised lognormal and power likelihoods and their fitted parameters. The derivation and numerical search qualifications are in \code{dev/research/evaluations/2026-10-29-trgamma-derivation.md} in the source tree.
+ 
+ With scale and shape2 held the shape1 score has one root. With scale and shape1 held the shape2 likelihood is strictly concave and coercive unless every observation equals scale. With only scale held the fixed-endpoint power face is compared with the interior profile; the search is numerical.
+ }
+--- pre/man/mlzib.Rd
++++ post/man/mlzib.Rd
+@@ -41,7 +41,7 @@
+ 
+ Holding inflation leaves a scalar probability profile at each integer size. Its stationary points are isolated by the quadratic turning-point equation; the infinite-size comparison uses ZIP with the same held inflation.
+ 
+-With size free and either or both of probability and inflation also free, the search scans an exponential grid of candidate sizes (profiling the remaining free coefficients exactly at each one) and refines each local peak. As with \code{mlztbinom}, no unimodality proof is known for this profile, so this remains a numerical grid search, not a certified one; see \code{notes/evaluations/2026-10-29-tail85-report.md}. The grid has no fixed magnitude limit: it keeps growing until ten exponential steps pass without an improvement, bounded only by \code{iterlim}. Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
++With size free and either or both of probability and inflation also free, the search scans an exponential grid of candidate sizes (profiling the remaining free coefficients exactly at each one) and refines each local peak. As with \code{mlztbinom}, no unimodality proof is known for this profile, so this remains a numerical grid search, not a certified one; see \code{dev/research/evaluations/2026-10-29-tail85-report.md}. The grid has no fixed magnitude limit: it keeps growing until ten exponential steps pass without an improvement, bounded only by \code{iterlim}. Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
+ }
+ \examples{
+ set.seed(1)
+--- pre/man/mlzmbinom.Rd
++++ post/man/mlzmbinom.Rd
+@@ -41,7 +41,7 @@
+ 
+ Holding p0 changes only the Bernoulli zero-indicator likelihood; the positive conditional fit is unchanged. An incompatible held p0 (zero with observed zeros, or one with positives) stops.
+ 
+-The free-size search delegates entirely to \code{mlztbinom} on the positive observations (the zero/Bernoulli part is closed-form), so it inherits that search's exponential grid and its caveats verbatim: no unimodality proof is known, so it is a numerical search, not a certified one; see \code{mlztbinom}'s own documentation and \code{notes/evaluations/2026-10-29-tail85-report.md}.
++The free-size search delegates entirely to \code{mlztbinom} on the positive observations (the zero/Bernoulli part is closed-form), so it inherits that search's exponential grid and its caveats verbatim: no unimodality proof is known, so it is a numerical search, not a certified one; see \code{mlztbinom}'s own documentation and \code{dev/research/evaluations/2026-10-29-tail85-report.md}.
+ }
+ \examples{
+ set.seed(1)
+--- pre/man/mlztbinom.Rd
++++ post/man/mlztbinom.Rd
+@@ -36,7 +36,7 @@
+ 
+ A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.
+ 
+-With both size and probability free, the search profiles probability at its exact conditional-mean-matching value for each candidate size and scans an exponential grid of candidate sizes, refining each local peak. Unlike \code{mlbinom}'s free-size search, no unimodality proof is known for this truncated profile (DeRiggi 1983 covers the untruncated binomial only), so this remains a numerical grid search, not a certified one; see \code{notes/evaluations/2026-10-29-tail85-report.md}. The grid has no fixed magnitude limit: it keeps growing until it has gone ten exponential steps without an improvement, bounded only by \code{iterlim} (a larger \code{iterlim} lets it search further, never a hard cap). Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
++With both size and probability free, the search profiles probability at its exact conditional-mean-matching value for each candidate size and scans an exponential grid of candidate sizes, refining each local peak. Unlike \code{mlbinom}'s free-size search, no unimodality proof is known for this truncated profile (DeRiggi 1983 covers the untruncated binomial only), so this remains a numerical grid search, not a certified one; see \code{dev/research/evaluations/2026-10-29-tail85-report.md}. The grid has no fixed magnitude limit: it keeps growing until it has gone ten exponential steps without an improvement, bounded only by \code{iterlim} (a larger \code{iterlim} lets it search further, never a hard cap). Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
+ }
+ \examples{
+ set.seed(1)
+--- pre/src/dist_invparalogis.cpp
++++ post/src/dist_invparalogis.cpp
+@@ -3,7 +3,7 @@
+ #include "cppunivariate/distributions/invparalogis/dpqr.hpp"
+ 
+ // Rcpp adapter for mlinvparalogis(). Copied into the R package's src/ by
+-// univariateML/scripts/assemble_package.R; not part of the C++ library.
++// bindings/r/scripts/assemble_package.R; not part of the C++ library.
+ 
+ #include "as_span.h"
+ #include "cppunivariate/distributions/invparalogis/mle.hpp"
+--- pre/src/dist_invpareto.cpp
++++ post/src/dist_invpareto.cpp
+@@ -3,7 +3,7 @@
+ #include "cppunivariate/distributions/invpareto/dpqr.hpp"
+ 
+ // Rcpp adapter for mlinvpareto(). Copied into the R package's src/ by
+-// univariateML/scripts/assemble_package.R; not part of the C++ library.
++// bindings/r/scripts/assemble_package.R; not part of the C++ library.
+ 
+ #include "as_span.h"
+ #include "cppunivariate/distributions/invpareto/mle.hpp"
+--- pre/src/dist_invtrgamma.cpp
++++ post/src/dist_invtrgamma.cpp
+@@ -3,7 +3,7 @@
+ #include "cppunivariate/distributions/invtrgamma/dpqr.hpp"
+ 
+ // Rcpp adapter for mlinvtrgamma(). Copied into the R package's src/ by
+-// univariateML/scripts/assemble_package.R; not part of the C++ library.
++// bindings/r/scripts/assemble_package.R; not part of the C++ library.
+ 
+ #include "as_span.h"
+ #include "cppunivariate/distributions/invtrgamma/mle.hpp"
+--- pre/src/dist_lomax.cpp
++++ post/src/dist_lomax.cpp
+@@ -3,7 +3,7 @@
+ #include "cppunivariate/distributions/lomax/dpqr.hpp"
+ 
+ // Rcpp adapter for mllomax(). Copied into the R package's src/ by
+-// univariateML/scripts/assemble_package.R; not part of the C++ library.
++// bindings/r/scripts/assemble_package.R; not part of the C++ library.
+ 
+ #include "as_span.h"
+ #include "cppunivariate/distributions/lomax/mle.hpp"
+--- pre/src/dist_paralogis.cpp
++++ post/src/dist_paralogis.cpp
+@@ -3,7 +3,7 @@
+ #include "cppunivariate/distributions/paralogis/dpqr.hpp"
+ 
+ // Rcpp adapter for mlparalogis(). Copied into the R package's src/ by
+-// univariateML/scripts/assemble_package.R; not part of the C++ library.
++// bindings/r/scripts/assemble_package.R; not part of the C++ library.
+ 
+ #include "as_span.h"
+ #include "cppunivariate/distributions/paralogis/mle.hpp"
+--- pre/src/dist_trgamma.cpp
++++ post/src/dist_trgamma.cpp
+@@ -3,7 +3,7 @@
+ #include "cppunivariate/distributions/trgamma/dpqr.hpp"
+ 
+ // Rcpp adapter for mltrgamma(). Copied into the R package's src/ by
+-// univariateML/scripts/assemble_package.R; not part of the C++ library.
++// bindings/r/scripts/assemble_package.R; not part of the C++ library.
+ 
+ #include "as_span.h"
+ #include "cppunivariate/distributions/lnorm/mle.hpp"
+--- pre/tests/testthat/test-dist-binom.R
++++ post/tests/testthat/test-dist-binom.R
+@@ -120,7 +120,7 @@
+   # cancellation-free algebraic form the C++ fitter now uses --
+   # subtracting the two size*log(size)-scale terms directly (as the old
+   # C++ code did) loses all precision by this magnitude; see
+-  # notes/evaluations/2026-10-29-tail85-report.md.
++  # dev/research/evaluations/2026-10-29-tail85-report.md.
+   binom_profile_ll <- function(uniq, counts, size) {
+     n <- sum(counts); xbar <- sum(uniq * counts) / n
+     p <- xbar / size
+@@ -187,7 +187,7 @@
+     # large (the first version of this test asserted exactly that and
+     # failed by 1.7e-4 at 2x the found size, which was comparing two
+     # double-precision evaluations at a scale where they cannot resolve
+-    # anything that fine; see notes/evaluations/2026-10-29-tail85-report.md).
++    # anything that fine; see dev/research/evaluations/2026-10-29-tail85-report.md).
+     # Multiples of max(x) instead stay in a qualitatively different,
+     # clearly worse regime, with margins from ~4 (10x) down to a
+     # comfortably resolvable ~0.004-0.04 (100x) -- still orders of
+--- pre/tests/testthat/test-dist-frechet.R
++++ post/tests/testthat/test-dist-frechet.R
+@@ -98,7 +98,7 @@
+ test_that("Frechet free fit compares half-minimum ties with the free collapse face", {
+   # TASK-85/87: with mu, lambda and sigma all free, this used to be
+   # rejected outright. Mirrors gev/test.R's identical test and finding
+-  # (notes/evaluations/2026-10-29-tail85-report.md): every sample tried
++  # (dev/research/evaluations/2026-10-29-tail85-report.md): every sample tried
+   # gives the collapse-face branch, not the interior-fit one.
+   for(x in list(c(1,1,2,3),c(0,0,.01,100),c(1,1,1,2,5,20))) {
+     f <- tryCatch(suppressWarnings(mlfrechet(x, mu = NULL), classes = "univariateML_restricted"), error=identity)
+--- pre/tests/testthat/test-dist-gev.R
++++ post/tests/testthat/test-dist-gev.R
+@@ -154,7 +154,7 @@
+   # TASK-85/87: with mu, sigma and xi all free, this used to be
+   # rejected outright (InvalidData), the same as a strict majority tie.
+   # Mirrors the held-mu test above; see
+-  # notes/evaluations/2026-10-29-tail85-report.md for why every sample
++  # dev/research/evaluations/2026-10-29-tail85-report.md for why every sample
+   # tried gives the collapse-face branch, not the interior-fit one.
+   for(x in list(c(0,0,1,2),c(0,0,.01,100),c(0,0,0,1,2,5))) {
+     f <- tryCatch(suppressWarnings(mlgev(x), classes = "univariateML_restricted"),error=identity)
+--- pre/tests/testthat/test-dist-ht.R
++++ post/tests/testthat/test-dist-ht.R
+@@ -122,7 +122,7 @@
+ })
+ 
+ test_that("half-t restricted free-threshold fit warns and carries the restricted attribute", {
+-  # Independently verified (see notes/evaluations/2026-10-29-p4-report.md): the
++  # Independently verified (see dev/research/evaluations/2026-10-29-p4-report.md): the
+   # unconstrained profile over nu peaks strictly between the collapse break-even
+   # k/(n-k) = 2/3 and 1, so the nu >= 1 restriction is active here and the
+   # restricted fit lands exactly at nu = 1.
+--- pre/tests/testthat/test-dist-sstd.R
++++ post/tests/testthat/test-dist-sstd.R
+@@ -52,7 +52,7 @@
+ ## Check support.
+ expect_equal(class(attr(est, "support"))[[1]], "numeric")
+ 
+-## Boundary faces (decision D1; notes/ml-behaviour.tex).
++## Boundary faces (decision D1; dev/research/ml-behaviour.tex).
+ test_that("mlsstd stops on the skew-normal face for normal data", {
+   set.seed(1)
+   expect_error(mlsstd(rnorm(200)), "skew-normal distribution. Use `mlsnorm`")
+--- pre/tests/testthat/test-generated-dpqr.R
++++ post/tests/testthat/test-generated-dpqr.R
+@@ -2,7 +2,7 @@
+ # selected reference. Per parameter point: five evenly spaced value rows;
+ # three evenly spaced quantile rows in EACH tail/scale group; 32 RNG draws.
+ # Tolerances, zero floors and ambiguous lattice endpoints follow the C++
+-# consumer in cppunivariate/tests/test_support.hpp.
++# consumer in univariateML-cpp/tests/test_support.hpp.
+ test_that("generated d/p/q/r agree with independent truth tables", {
+   skip_if_not_installed("jsonlite")
+   directory <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+--- pre/tests/testthat/test_golden_regression.R
++++ post/tests/testthat/test_golden_regression.R
+@@ -25,11 +25,11 @@
+ # the BFGS tolerance defaults: std's estimates differed by a mean relative of
+ # 9.4e-6, with nu's change at 2.5e-6 relative. kFdTol = 3e-5 (~3x the largest
+ # observed drift) keeps golden tests as regression canaries, not noise followers.
+-# The fitters' declared gradtol is the upper bound; see cppunivariate/tests/
++# The fitters' declared gradtol is the upper bound; see univariateML-cpp/tests/
+ # test_support.hpp's kFdTol comment for the same rule applied to C++ checks.
+ GOLDEN_TOLERANCE <- c(
+   # Finite-difference BFGS on (mu, log sigma, log(nu - 2)[, log xi]);
+-  # default gradtol 3e-5 (cppunivariate/tests/test_support.hpp kFdTol).
++  # default gradtol 3e-5 (univariateML-cpp/tests/test_support.hpp kFdTol).
+   # invparalogis is paralogis_mle run on 1/x, so it shares the same fitter
+   # and default.
+   std = 3e-5, ged = 3e-5, sstd = 3e-5,
+--- pre/tests/testthat/test_parameter_infrastructure.R
++++ post/tests/testthat/test_parameter_infrastructure.R
+@@ -32,7 +32,7 @@
+   root <- Sys.getenv('UMVL_DISTRIBUTIONS_DIR')
+   skip_if(!nzchar(root),'no repository codegen')
+   repo <- normalizePath(file.path(root,'../../../..'))
+-  # distributions is cppunivariate/include/cppunivariate/distributions.
++  # distributions is univariateML-cpp/include/cppunivariate/distributions.
+   work <- tempfile('parameter-codegen-'); dir.create(work)
+   on.exit(unlink(work,recursive=TRUE),add=TRUE)
+   dossier <- file.path(work,'distributions'); dir.create(dossier)
+@@ -48,7 +48,7 @@
+   writeLines(readme,file.path(synthetic,'README.md'))
+   out <- file.path(work,'R'); dir.create(out)
+   writeLines('mlsynthetic_ <- function(x, mu, sigma=NULL) NULL',file.path(out,'RcppExports.R'))
+-  withr::local_dir(file.path(repo,'univariateML'))
++  withr::local_dir(file.path(repo,'bindings/r'))
+   withr::local_envvar(c(UMVL_DOSSIER_DIR=dossier,UMVL_PKG_R_DIR=out))
+   expect_error(sys.source('scripts/codegen_metadata.R',new.env()),NA)
+   metadata <- new.env(); sys.source(file.path(out,'ml00_metadata.R'),metadata)
