@@ -26,22 +26,18 @@ constexpr double kFitTol = 1.220703e-4;
 constexpr int kFitMaxit = 100;
 
 // Golden-regression rule for finite-difference BFGS fitters (std, ged,
-// sstd, sged, paralogis, lst, invparalogis): a multi-D optimiser stopped
-// by a gradient- or step-norm criterion only promises its estimate to
-// within that criterion's own tolerance. Once two platforms (compiler,
-// libm, Boost.Math minor version) take a different BFGS trajectory --
-// different FP summation order in the finite-difference gradient, a
-// different number of line-search steps -- their outputs can differ by up
-// to that tolerance, concentrated in whichever coordinate is least curved
-// (e.g. a Student-t `nu` with a near-flat profile likelihood). Comparing
-// goldens any tighter than the fitter's own declared `gradtol` (kFitTol,
-// passed as `tol` in each of these families' golden test) chases that
-// platform noise, not a real regression; reuse kFitTol as the comparison
-// tolerance too. Families with their own, different default `gradtol`
-// (burr, invburr: 1e-8) are not routed through this constant -- each
-// golden check there uses its own fitter's `tol` argument directly,
+// sstd, sged, paralogis, lst, invparalogis): cross-machine drift
+// (simbox vs local, 2026-10-29) was much smaller than the fitters' declared
+// convergence tolerance (kFitTol = 1.220703e-4). std's nu differed by
+// 2.5e-6 relative in the C++ check; mean relative difference in R golden
+// checks was 9.4e-6. Using kFdTol = 3e-5 (~3x the largest observed drift)
+// keeps golden tests as regression canaries, not noise followers. The
+// fitters' declared gradtol (kFitTol) is the upper bound: comparing tighter
+// than that would be meaningless. Families with their own, different default
+// `gradtol` (burr, invburr: 1e-8) are not routed through this constant --
+// each golden check there uses its own fitter's `tol` argument directly,
 // documented at the call site.
-constexpr double kFdTol = kFitTol;
+constexpr double kFdTol = 3e-5;
 
 inline Golden load_distribution_golden(const std::string &id) {
   return load_golden(std::string(CPPUNIV_DISTRIBUTIONS_DIR) + "/" + id + "/golden.json");
