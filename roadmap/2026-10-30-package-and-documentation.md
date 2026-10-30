@@ -242,6 +242,9 @@ needed for the migration, not replacing algorithms wholesale.
 
 ## Related plans
 
+- [Inference regularity and derivative support](2026-10-30-inference-and-dqm.md):
+  conditional DQM, information rank, derivative history, robust covariance
+  requirements and procedures for parameter and hypothesis subsets.
 - [Monorepo layout](2026-05-08-monorepo-layout.md).
 - [Documentation from metadata](2026-05-08-documentation-from-metadata.md).
 - [Distribution dossiers](2026-05-08-distribution-dossiers.md).

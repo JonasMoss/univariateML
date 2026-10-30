@@ -22,6 +22,11 @@ the queue.
 
 ## Index
 
+- [2026-10-30 — Inference regularity and derivative support](2026-10-30-inference-and-dqm.md)
+  *(initial audit; implementation deferred)*: 98-family derivative inventory,
+  conditional DQM and information classification, recovered Hessian history,
+  sandwich requirements and procedures for subsets of hypotheses.
+
 - [2026-10-30 — Package structure and mathematical documentation](2026-10-30-package-and-documentation.md)
   *(banked; after current density and MLE work)*: light landing page,
   R-independent C++ library, generated R package, custom distribution website,
