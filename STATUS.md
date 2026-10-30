@@ -47,9 +47,13 @@ own rationale live in `roadmap/`; work in flight is on the board
     and P3 (restrictions, closure, domains, failed-optimizer stops; four
     jobs; TASK-82; reports `notes/evaluations/2026-10-29-p3-*-report.md`).
   - Left after P3: 41 `not-implemented` holds:
-    - sstd and sged, 12 each: existence unresolved;
+    - sstd and sged, 12 each: classified by P0b (TASK-88,
+      `notes/evaluations/2026-10-29-p0b.md`) as data-dependent, with
+      algorithms outlined; implementation pending;
     - hyper and nhyper, 3 each: C6;
-    - bbinom 3, cmb 4, tbinom 4: free size unresolved.
+    - bbinom 3, cmb 4, tbinom 4 (free size): classified by P0b as
+      data-dependent, except cmb {prob, nu} held, which always has an MLE;
+      implementation pending.
 
     Also 60 `no-mle` entries.
   - Next: P4 parametrization (TASK-83): scale over rate, half-family
