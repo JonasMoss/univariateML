@@ -1,7 +1,7 @@
 ---
 id: tlambda
 name: Tukey lambda
-support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
+support: {type: real, lower: "if (lambda > 0) mu - sigma/lambda else -Inf", upper: "if (lambda > 0) mu + sigma/lambda else Inf", closed: [true, true], endpoint_log_density: {lower: "if (lambda < 1) -Inf else if (lambda == 1) -log(2*sigma) else -log(sigma)", upper: "if (lambda < 1) -Inf else if (lambda == 1) -log(2*sigma) else -log(sigma)"}}
 params:
 - name: mu
   role: location

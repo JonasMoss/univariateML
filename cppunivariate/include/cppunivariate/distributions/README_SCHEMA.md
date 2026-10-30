@@ -20,7 +20,7 @@ goldens), by the validation harness, and later by the Python shell.
 | `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `univariateML/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
 | `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` for package-defined functions; `p`/`q` are found by swapping the first letter |
 | `r.export` | no | absent or `false` for internal functions; a mapping (including `{}`) exports generated d/p/q/r and documents `<id>-distribution`. Keys: `title`, `defaults`, `params`, `details`; see below. Boolean `true` is rejected. |
-| `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma, a: mu}` for the translated half-normal as `extraDistr::dtnorm`; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
+| `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma}`; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` and `simulate_default` apply it |
 | `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
@@ -57,8 +57,8 @@ to `regular`. Design quantities and thresholds are required: the adapter has
 no default for them. All other coefficient arguments default to `NULL`.
 A supplied value holds a coefficient; explicit `NULL` requests estimation
 where supported. Missing required coefficients stop with the kind, both ways
-out, and the optional parameter `advice` text. `simulate` is the simulation
-value only; it never selects a held fitting default.
+out, and the optional nonempty scalar parameter `advice` text. `simulate`
+is a required numeric scalar (infinity is accepted), the simulation value only; it never selects a held fitting default.
 
 The old parameter keys `default`, `fixable`, `fixed`, `required`, and
 `required_reason` are rejected. `advice` replaces `required_reason`.
@@ -83,8 +83,7 @@ are a list of these records (GEV and Tukey lambda). Mechanisms are `collapse`,
 `spike`, `branch`, and `endpoint`. `exempt_when_held` lists sufficient held sets;
 `[]` means no exemption. Exemptions use P0's almost-every-sample existence
 results; exceptional ties still require diagnostics. The metadata records the
-agreed existence bounds; P3 implements restrictions and endpoint closure
-(the current GEV/GPD numerical lower bound remains -1/2 until then).
+fitting bounds; adapters implement restrictions and endpoint closure.
 
 Top-level `holds` lists structural exceptions only (A7):
 
@@ -105,8 +104,8 @@ with those coefficients held; the removed key is the parameter-level `fixed`.
 `r.shift` names a translation coefficient: evaluate densities and CDFs at
 `x - shift`, and add the shift to quantiles and draws. Without `r.args`, the
 shift coefficient is removed from the reference arguments. With `r.args`,
-expressions explicitly determine the arguments. P1 tests this infrastructure
-on a synthetic model; family parametrization switches wait for P4.
+expressions explicitly determine the arguments. For example, translated
+half-normal uses `extraDistr::dhnorm` with `r.shift: mu`.
 
 README `fit_args` and golden JSON `fit_args` replay the same fit, preserving
 explicit nulls. JSON represents infinite bounds as strings `"Inf"` and
@@ -116,14 +115,13 @@ the golden data, estimates, or log likelihoods.
 Fitted objects retain `fixed` (held coefficients, used by degrees of freedom
 and bootstrap replay), and carry `restricted` if returned by an adapter:
 a named character vector from coefficient to `"lower"` or `"upper"`.
-Print and summary display both. P1 adds transport only; P3 adds fitter flags.
+Print and summary display both.
 `model_select` attaches `skipped`, a named character vector of families and
 reasons for skipping missing required coefficients, to both return forms.
 
-The idempotent `univariateML/scripts/migrate_parameter_rules.R` migrates the
-98 front matters from the P0 design table and exact adapter signatures.
-C5 translated hcauchy/ht thresholds and C6 hypergeometric `N` coefficients
-are introduced in P4; P1 retains their current coefficient lists.
+The conformance test checks adapter signatures, required diagnostics and each
+holdable subset against the golden data or a declared reason. These checks
+do not prove existence or global optimality on other samples.
 
 ## Support expressions and endpoint closure (R7a)
 

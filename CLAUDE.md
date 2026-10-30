@@ -43,7 +43,7 @@ core.
   `dml`/`pml`/`qml`/`rml` call an external package's functions
   (`r.density` in `README.md`), with an optional `r.args` map when their
   argument names differ from the coefficients (hnorm uses
-  `extraDistr::dtnorm` with `a = mu`). Where references are broken, heavy
+  `extraDistr::dhnorm` with `r.shift: mu`). Where references are broken, heavy
   or missing (decided 2026-10-29: Zipf, the Conway–Maxwell families, the
   former fGarch, logitnorm and nakagami models, and families that only
   VGAM had), the package defines its own d/p/q/r: `distributions/<id>/dpqr.R`
@@ -278,7 +278,15 @@ Steps for a new distribution:
 R-side metadata, wrappers and roxygen docs are generated from `README.md`
 by `univariateML/scripts/load_distributions.R`, `codegen_metadata.R` and
 `codegen_wrappers.R` (`just gen`). Distributions that are not Hellinger-closed
-declare their `limits`; see `notes/ml-behaviour.tex`.
+declare their `limits`, including `fixed` for conditional limits; see
+`notes/ml-behaviour.tex`. Declare coefficient `kind` and numeric `simulate`,
+required-argument `advice`, structural `holds` exceptions, and R5
+`fit_domain` restrictions with their mechanisms and held-set exemptions.
+Use support expressions and endpoint log limits where bounds depend on
+coefficients, and `r.shift` or `r.args` for reference mappings. The schema
+details validation and defaults. `test_conformance.R` checks exact adapter
+arguments, required diagnostics, and every holdable subset on golden data;
+it is not a proof for arbitrary samples.
 
 ---
 

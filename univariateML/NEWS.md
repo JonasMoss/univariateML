@@ -18,8 +18,9 @@
   vignette and the `abalone` data set it used are removed, and with them
   copula and dplyr.
 
-* Parameter rules (`roadmap/2026-10-29-parameter-rules.md`): design
-  quantities and thresholds have no default. `mlbinom`, `mlzib`,
+## Parameter rules
+
+* Design quantities and thresholds have no default. `mlbinom`, `mlzib`,
   `mlzmbinom` and `mlztbinom` require `size`; `mltnorm` requires `a` and
   `b`; `mlgpd`, `mlhnorm` and `mlfrechet` require `mu`; `mlhuber`
   requires `epsilon` (1.345 is the conventional choice). Pass a value to
@@ -34,12 +35,13 @@
   compare the interior fit with the collapse face instead of refusing
   outright.
 
-* Restrictions, closure and domains (parameter rules P3):
+* Restrictions, closure and domains:
   - Fits on a fitting restriction warn (class `univariateML_restricted`)
     and record it in a `restricted` attribute: lst `df = 1`, frechet
     `lambda = 1`, gev and gpd shape bounds, Tukey lambda bounds, ged and
-    sged `nu = 1`. Holding `mu` lifts the restriction for lst, frechet,
-    ht and Tukey lambda, where the held problem has an MLE without it.
+    sged `nu = 1`. Holding `mu` exempts the collapse bound for lst,
+    frechet, ht and Tukey lambda; sample-specific collapse can still stop
+    a fit, and Tukey lambda retains its upper branch bound.
   - `mlgev()` and `mlgpd()` accept shapes down to -1 (was -1/2). At -1 the
     fit is attained (the GPD is uniform); fits in [-1, -1/2) are not
     regular.
@@ -64,10 +66,15 @@
   (`no-mle`, 64) and combinations not yet supported (`not-implemented`,
   13: beta-binomial and Conway-Maxwell-binomial free sizes with a free
   shape or dispersion, and estimating the hypergeometric designs).
+  Existing hold examples include `mlburr(x, scale = 1)` (the 1.x fit),
+  `mlstd(x, nu = 5)` and `mllst(x, df = 3)`; scale holds also include
+  `mlinvburr`, `mlbetapr` and `mlparalogis`, and size holds include
+  `mlbinom` and `mlnbinom`. Held parameters appear in the `fixed` attribute and do not count toward
+  the `logLik()` degrees of freedom, AIC or BIC.
   Data-dependent non-existence stops with the reason; numerical searches
   that run out of budget stop instead of returning a capped estimate.
 
-* Parametrization (parameter rules P4):
+* Parametrization:
   - `mlgamma()`, `mlinvexp()`, `mlinvweibull()` and `mlllogis()` report
     `scale` (= 1/rate) instead of `rate`, and hold it as `scale = `.
     Families fitted through them (inverse gamma, Nakagami, log-gamma,
@@ -85,16 +92,15 @@
     "Logit-normal", "Beta prime" and "Power" (were "InverseWeibull",
     "Loglogistic", "Loggamma", "LogitNormal", "BetaPrime", "PowerDist").
 
-* Arguments to the `ml***` fitters must match exactly. A hold the fitter
-  does not support stops (`mlweibull(x, shape = 2)`: "cannot hold
-  `shape`") instead of being matched partially to a start value (`shape0`)
-  and estimated.
+* Arguments to the `ml***` fitters must match exactly. An unsupported hold
+  stops instead of being matched partially to a start value (such as
+  `shape0`) and estimated.
 
 ## New models
 
 * `mlhnorm()` (translated half-normal), `mllst()` (location-scale t),
   `mlzinb()` (zero-inflated negative binomial), `mlgpd()` (generalized
-  Pareto over a user-set threshold, shape at least -1/2), `mlinvexp()`,
+  Pareto over a user-set threshold, shape at least -1), `mlinvexp()`,
   `mlinvpareto()` and `mlinvparalogis()` (inverse exponential, inverse
   Pareto, inverse paralogistic).
 
@@ -103,7 +109,7 @@
   estimated with `mlhuber(x, epsilon = NULL)`, which stops with "use
   `mlnorm`" or "use `mllaplace`" when a limit wins).
 
-* `mlgev()` (generalized extreme value, shape in [-1/2, 1]),
+* `mlgev()` (generalized extreme value, shape in [-1, 1]),
   `mltrgamma()` and `mlinvtrgamma()` (generalized gamma and its
   reciprocal), `mltnorm()` (truncated normal with known bounds),
   `mlhyper()` (hypergeometric with known draws, `k` required) and
@@ -223,13 +229,6 @@
   (previously fixed at 1), like `mlparalogis()`. They stop with a pointer
   to the limit model (e.g. `mlweibull`, `mlpareto`, `mlgamma`) when the
   three-parameter MLE does not exist.
-
-* Some parameters can be held fixed by passing them by name, e.g.
-  `mlburr(x, scale = 1)` (the 1.x fit), `mlstd(x, nu = 5)`,
-  `mllst(x, df = 3)`; also `scale` in `mlinvburr()`, `mlbetapr()`,
-  `mlparalogis()` and `size` in `mlbinom()`, `mlnbinom()`. Held parameters
-  are listed in the `fixed` attribute and are not counted in `logLik()`
-  degrees of freedom, AIC or BIC.
 
 * The package now defines its own d/p/q/r where external references are
   broken, heavy or missing: `dzipf()`, `pzipf()`, `qzipf()`, `rzipf()`
