@@ -100,21 +100,16 @@ own rationale live in `roadmap/`; work in flight is on the board
 
 ## Write-up
 
-- `notes/ml-behaviour.tex` does not yet cover any family added on
-  2026-10-29: bnbinom, cmp, cmb, zeta, yulesimon, gb2, sgomp, foldnorm,
-  emg, sn, huber with free epsilon, hcauchy, ht, hnorm with held `mu`,
-  tpois, tbinom, dlaplace, nhyper, dnorm, dgamma, skellam, pareto2,
-  pareto3, pareto4, fpareto, nsbeta, frechet, tlambda, genbeta, slash,
-  bhatt. Their analyses are in each `README.md` and in
-  `notes/evaluations/2026-10-29-*` (reports, oracles, escape-frequency
-  tables).
-- Failure gallery: one entry per phenomenon with a reproducer and a
-  profile plot (`roadmap/2026-10-29-classical-failure-families.md`).
-  Candidates from 2026-10-29: two-adjacent-integer escape of the
-  discretized families; Bhattacharjee's normal face at about 46% for
-  every n; generalized beta's power samples escaping to a shorter power
-  law; Tukey lambda unbounded as lambda grows; the slash half-mass case;
-  bimodal half-t df profile; skew-normal bimodal profile.
+- `notes/ml-behaviour.tex` (19 pages, TASK-90) now covers:
+  - the 31 families added on 2026-10-29;
+  - existence under holds and restrictions: the R5 mechanisms, a
+    proposition that $c \ge 1$ is the weakest restriction excluding
+    collapse for every $n$, R7a, R7, and the P0 counterexamples;
+  - bugs B1–B8 and TASK-77;
+  - the open mathematics.
+- Failure gallery (TASK-91, Sonnet agent, in progress):
+  `notes/failure-gallery.tex`, one entry per phenomenon with a
+  reproducer and a profile figure.
 
 ## Code cleanup
 
