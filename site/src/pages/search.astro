@@ -1,0 +1,7 @@
+---
+import Page from '../layouts/Page.astro';
+---
+<Page title="Search"><p class="eyebrow">Full text</p><h1>Search the papers</h1><div id="search"></div><noscript><p>Full-text search needs JavaScript. Browse the <a href="/distributions/">complete catalog</a>.</p></noscript></Page>
+<link is:inline href="/pagefind/pagefind-ui.css" rel="stylesheet"/>
+<script is:inline src="/pagefind/pagefind-ui.js"></script>
+<script is:inline>new PagefindUI({element:'#search',showSubResults:true});</script>

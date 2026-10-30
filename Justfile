@@ -168,3 +168,18 @@ js-build:
 
 js-test:
     node --v8-pool-size=1 --test bindings/js/test.mjs
+
+# Derived site data from canonical dossiers (no authored second catalog).
+site-data:
+    python3 site/scripts/data.py
+
+site-build: site-data
+    cd site && PATH="$PWD/node_modules/.bin:$PATH" RAYON_NUM_THREADS=1 UV_THREADPOOL_SIZE=1 ASTRO_TELEMETRY_DISABLED=1 node scripts/prepare.mjs
+    cd site && PATH="$PWD/node_modules/.bin:$PATH" RAYON_NUM_THREADS=1 UV_THREADPOOL_SIZE=1 ASTRO_TELEMETRY_DISABLED=1 npm run build
+
+site-dev: site-data
+    cd site && PATH="$PWD/node_modules/.bin:$PATH" node scripts/prepare.mjs
+    cd site && PATH="$PWD/node_modules/.bin:$PATH" RAYON_NUM_THREADS=1 UV_THREADPOOL_SIZE=1 ASTRO_TELEMETRY_DISABLED=1 npm run dev
+
+site-check: site-build
+    python3 site/scripts/check.py

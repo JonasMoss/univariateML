@@ -1,0 +1,19 @@
+---
+import '../styles/site.css';
+const {title, description='Univariate distributions: definitions, maximum likelihood and implementation.'} = Astro.props;
+---
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width"/><meta name="description" content={description}/><link rel="icon" href="/logo.svg" type="image/svg+xml"/><title>{title} · univariateML</title>
+<script is:inline>try { const l=localStorage.getItem('usage-language'); if(['r','cpp','python','js'].includes(l)) document.documentElement.dataset.language=l; document.documentElement.dataset.detail=localStorage.getItem('implementation-detail')==='open'?'open':'closed'; } catch {} </script>
+</head><body><a class="skip" href="#main">Skip to content</a><header><a class="brand" href="/">univariateML<span> / distribution papers</span></a><nav aria-label="Main"><a href="/distributions/">Catalog</a><a href="/articles/">Articles</a><a href="/search/">Search</a></nav><div class="controls"><label>Usage <select id="language"><option value="all">All languages</option><option value="r">R</option><option value="cpp">C++</option><option value="python">Python</option><option value="js">JS</option></select></label><label><input id="detail" type="checkbox"/> Implementation</label></div></header><main id="main" data-pagefind-body><slot/></main><footer>univariateML · C++17 core · R bindings · mathematical dossiers</footer>
+<script>
+ const lang=document.querySelector<HTMLSelectElement>('#language')!;
+ const detail=document.querySelector<HTMLInputElement>('#detail')!;
+ lang.value=document.documentElement.dataset.language || 'all';
+ function language(value:string) { if(value==='all') delete document.documentElement.dataset.language; else document.documentElement.dataset.language=value; lang.value=value; document.querySelectorAll<HTMLButtonElement>('[data-select-language]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.selectLanguage===value))); try{localStorage.setItem('usage-language',value);}catch{} }
+ language(lang.value);
+ lang.addEventListener('change',()=>language(lang.value));
+ document.querySelectorAll<HTMLButtonElement>('[data-select-language]').forEach(b=>b.addEventListener('click',()=>language(b.dataset.selectLanguage!)));
+ function details(open:boolean) { document.querySelectorAll<HTMLDetailsElement>('details.implementation').forEach(d=>d.open=open); detail.checked=open; }
+ details(document.documentElement.dataset.detail==='open');
+ detail.addEventListener('change',()=>{details(detail.checked); document.documentElement.dataset.detail=detail.checked?'open':'closed'; try{localStorage.setItem('implementation-detail',detail.checked?'open':'closed');}catch{}});
+</script></body></html>

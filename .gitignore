@@ -91,3 +91,11 @@ dev/research/*.pdf
 
 build/
 Rplots.pdf
+
+# Static site dependencies, build outputs and derived dossier data
+site/node_modules/
+site/dist/
+site/.astro/
+site/src/data/families.json
+site/public/sources/
+site/public/logo.svg

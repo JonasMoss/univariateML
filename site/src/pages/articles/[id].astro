@@ -1,0 +1,12 @@
+---
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import {repoRoot} from '../../lib/paths';
+import {articles} from '../../lib/articles';
+import {markdown} from '../../lib/markdown';
+import Page from '../../layouts/Page.astro';
+export function getStaticPaths(){return articles.map(a=>({params:{id:a.id},props:{article:a}}));}
+const {article}=Astro.props;
+const body=readFileSync(path.join(repoRoot,article.source),'utf8');
+---
+<Page title={article.title}><article set:html={await markdown(body,article.source)}/></Page>

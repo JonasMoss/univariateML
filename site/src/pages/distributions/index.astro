@@ -1,0 +1,8 @@
+---
+import Page from '../../layouts/Page.astro';
+import Catalog from '../../components/Catalog.svelte';
+import families from '../../data/families.json';
+// Keep implementation and examples out of the hydrated catalog payload.
+const catalog=families.map(({id,name,summary,support,params,limits,holds,aliases})=>({id,name,summary,support,params:params.map(p=>({name:p.name})),limits:(limits||[]).map(()=>true),holds:(holds||[]).map(()=>true),aliases}));
+---
+<Page title="Distribution catalog"><p class="eyebrow">The catalog</p><h1>98 ways to describe a variable.</h1><p>Definitions, fitting behaviour and implementation notes, drawn directly from the library’s mathematical dossiers.</p><Catalog families={catalog} client:load/></Page>
