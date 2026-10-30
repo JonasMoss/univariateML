@@ -105,3 +105,18 @@ test_that("bbinom: P3 unfinished optimizer stops", {
   expect_error(mlbbinom(x, iterlim=1, reltol=1e-10, size=10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("bbinom: retained free-size guards identify the unresolved profile", {
+  for(args in list(list(),list(alpha=2),list(beta=3))) {
+    expect_error(do.call(mlbbinom,c(list(x=c(0,1,2,4,8),size=NULL),args)),
+                 "fixed-size binomial and two-point escapes.*integer-tail")
+  }
+  # Fixed alpha with beta proportional to size approaches NB with that
+  # alpha held. Reflecting x to N-x would change the observed sample.
+  x <- 0:10; alpha <- 2; mu <- 3
+  for(N in c(1000,10000)) {
+    finite <- extraDistr::dbbinom(x,N,alpha,N*alpha/mu)
+    face <- dnbinom(x,size=alpha,mu=mu)
+    expect_lt(max(abs(finite-face)),2/N)
+  }
+})

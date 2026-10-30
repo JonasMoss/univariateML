@@ -54,3 +54,33 @@ TEST_CASE("CMB P3 endpoint and zero-size members are attained") {
  CHECK(cppunivariate::cmb_mle({z.data(),z.size()},0).status==cppunivariate::CmbStatus::Ok);
  CHECK(cppunivariate::cmb_mle({bad.data(),bad.size()},5,1e-10,100,0).status==cppunivariate::CmbStatus::InvalidInput);
 }
+
+TEST_CASE("cmb: certified free-size enumeration with canonical holds") {
+  const std::vector<int> x{0,1,2,2,3,5};
+  for(double p : {.2,.6})for(double nu : {-2.,0.,.5,1.5}) {
+    const auto f=cppunivariate::cmb_size_mle({x.data(),x.size()},p,nu);
+    REQUIRE(f.fit.status==cppunivariate::CmbStatus::Ok);
+    CHECK(f.fit.prob==p);CHECK(f.fit.nu==nu);
+    double best=-INFINITY;int arg=0;
+    for(int N=5;N<=120;++N) {
+      const auto candidate=cppunivariate::cmb_mle({x.data(),x.size()},N,1e-10,100,p,nu);
+      REQUIRE(candidate.status==cppunivariate::CmbStatus::Ok);
+      if(candidate.logLik>best){best=candidate.logLik;arg=N;}
+    }
+    CHECK(f.size==arg);
+    CHECK(f.fit.logLik==doctest::Approx(best).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("cmb: free-size endpoints, invalid controls and work exhaustion") {
+  const std::vector<int> x{0,1},zero{0,0},constant{3,3},expensive{0,100};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  CHECK(cppunivariate::cmb_size_mle({zero.data(),zero.size()},.3,-2).size==0);
+  CHECK(cppunivariate::cmb_size_mle({constant.data(),constant.size()},1,-2).size==3);
+  CHECK(cppunivariate::cmb_size_mle({x.data(),x.size()},0,1).fit.status==cppunivariate::CmbStatus::InvalidInput);
+  CHECK(cppunivariate::cmb_size_mle({x.data(),x.size()},1,1).fit.status==cppunivariate::CmbStatus::InvalidInput);
+  CHECK(cppunivariate::cmb_size_mle({x.data(),x.size()},nan,1).fit.status==cppunivariate::CmbStatus::InvalidInput);
+  CHECK(cppunivariate::cmb_size_mle({x.data(),x.size()},.3,INFINITY).fit.status==cppunivariate::CmbStatus::InvalidInput);
+  CHECK(cppunivariate::cmb_size_mle({x.data(),x.size()},.3,1,1e-10,0).fit.status==cppunivariate::CmbStatus::InvalidInput);
+  CHECK(cppunivariate::cmb_size_mle({expensive.data(),expensive.size()},1e-8,1).fit.status==cppunivariate::CmbStatus::IterationFailure);
+}
