@@ -1,8 +1,10 @@
 # Status and open items
 
-Updated 2026-10-30, master `32b8dfe`. Deferred design ideas with their
-own rationale live in `roadmap/`; work in flight is on the board
-(`~/.local/bin/board`). This file is the short list of what is open.
+Updated 2026-10-30, master `32b8dfe`. Decisions and their evidence:
+`roadmap/decisions.md`. Deferred design ideas live in `roadmap/`; work in
+flight and planned work are on the board (`~/.local/bin/board`): the package
+migration is TASK-101, inference TASK-102, the optional holds and existence
+work TASK-113 to TASK-120. This file is the short list of what is open.
 
 ## Status
 
@@ -134,6 +136,8 @@ The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
 
 ## Open mathematics (from the job reports)
 
+Cards: TASK-113 to TASK-117 (TASK-98 for hyper/nhyper).
+
 - Global-search certification: most new fitters use grids plus local
   refinement (half-t df, dgamma shape, Skellam, slash, Bhattacharjee,
   Tukey lambda, generalized beta, GB2); none is a certified global
@@ -163,6 +167,8 @@ The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
   for size >= 3.
 
 ## Deferred families (roadmap)
+
+Card: TASK-110.
 
 `roadmap/2026-10-29-classical-failure-families.md`: threshold
 (three-parameter) Weibull, gamma and lognormal; skew-t; Prentice's
