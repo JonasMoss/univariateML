@@ -10,16 +10,19 @@ support:
   - false
 params:
 - name: size
+  symbol: 'r'
   role: shape
   domain: '[0, inf)'
   simulate: 1
   kind: regular
 - name: prob
+  symbol: 'p'
   role: probability
   domain: (0, 1]
   simulate: 0.5
   kind: regular
 - name: p0
+  symbol: 'p_0'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5

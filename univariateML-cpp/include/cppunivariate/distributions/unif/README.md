@@ -4,12 +4,14 @@ name: Uniform
 support: {type: real, lower: "min", upper: "max", closed: [true, true], endpoint_log_density: {lower: "-log(max-min)", upper: "-log(max-min)"}}
 params:
 - name: min
+  symbol: 'a'
   role: lower
   domain: (-inf, max)
   simulate: 0.0
   bound: lower
   kind: endpoint
 - name: max
+  symbol: 'b'
   role: upper
   domain: (min, inf)
   simulate: 1.0

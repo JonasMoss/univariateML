@@ -4,11 +4,13 @@ name: Discrete Weibull
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: shape1
+  symbol: 'q'
   role: probability
   domain: (0, 1)
   simulate: 0.5
   kind: regular
 - name: shape2
+  symbol: '\beta'
   role: shape
   domain: (0, inf)
   simulate: 1

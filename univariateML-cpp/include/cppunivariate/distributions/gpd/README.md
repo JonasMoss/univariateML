@@ -4,6 +4,7 @@ name: Generalized Pareto
 support: {type: real, lower: "mu", upper: "if (xi < 0) mu - sigma/xi else Inf", closed: [true, true], endpoint_log_density: {lower: "-log(sigma)", upper: "if (xi == -1) -log(sigma) else if (xi < -1) Inf else -Inf"}}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
@@ -11,11 +12,13 @@ params:
   advice: Supply a threshold strictly below the data; estimating it has no unrestricted
     MLE.
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: xi
+  symbol: '\xi'
   role: shape
   domain: '(-inf, inf)'
   simulate: 0

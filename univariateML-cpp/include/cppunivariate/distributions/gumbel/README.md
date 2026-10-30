@@ -4,11 +4,13 @@ name: Gumbel
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: regular
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1

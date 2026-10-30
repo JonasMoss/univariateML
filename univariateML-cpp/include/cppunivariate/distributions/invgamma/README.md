@@ -4,11 +4,13 @@ name: InvGamma
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: alpha
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: beta
+  symbol: '\beta'
   role: scale
   domain: (0, inf)
   simulate: 1

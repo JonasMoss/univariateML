@@ -47,6 +47,9 @@ and_list <- function(x) {
 limit_sentence <- function(lim, model) {
   # lim$model: id of a package model to point users to (D1: "use mlX");
   # without it, lim$name describes a limit the package does not fit.
+  if (identical(lim$kind, "nonexistence")) return(nl(
+    "When ", rd_math(lim$detect), ", the likelihood is unbounded and no finite maximum likelihood estimator exists. `ml",
+    model$id, "()` stops with an error."))
   has_target <- !is.null(lim$model)
   target_name <- if (has_target && !is.null(models[[lim$model]])) models[[lim$model]]$name
                  else lim$name %||% lim$model

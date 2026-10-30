@@ -4,11 +4,13 @@ name: Normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: mean
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0.0
   kind: regular
 - name: sd
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1.0
@@ -21,17 +23,25 @@ r:
     mean: Optional held mean; NULL estimates it.
 log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2)
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York."
+  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York."
 holds: []
 limits:
   - name: scale collapse
-    when: Scale tends to zero at the fitted or held location.
-    detect: Every observation equals the fitted or held location.
+    when: Scale tends to zero at the fitted or held location
+    detect: sd is free and every observation equals the fitted or held location
     status: Unbounded
     message: "unbounded"
 examples: |
   x <- datasets::trees$Height
   mlnorm(x)
+
+summary: The normal distribution models symmetric continuous variation through a location and a standard deviation.
+classification: classical
+classification_reason: A standard model for measurement errors and sampling approximations.
+aliases:
+- Gaussian
+key_references:
+- 1
 ---
 
 The normal (Gaussian) distribution is a symmetric distribution on the real line, used to model continuous measurements and errors.

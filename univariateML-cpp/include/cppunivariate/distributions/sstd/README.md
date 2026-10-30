@@ -4,21 +4,25 @@ name: Skew Student-t
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: mean
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0.0
   kind: regular
 - name: sd
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1.0
   kind: regular
 - name: nu
+  symbol: '\nu'
   role: df
   domain: (2, inf)
   simulate: 5
   kind: regular
 - name: xi
+  symbol: '\xi'
   role: skew
   domain: (0, inf)
   simulate: 1
@@ -106,10 +110,18 @@ limits:
     when: '$\nu \to 2^+$'
     status: DfTwoBoundary
 references:
-  - "Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American Statistical Association, 93(441), 359-371."
+  - "Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American Statistical Association, 93(441), 359-371. doi:10.1080/01621459.1998.10474117."
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
   mlsstd(x)
+
+summary: The moment-standardized Fernandez–Steel skew Student distribution allows asymmetry and heavy tails.
+classification: specialist
+classification_reason: Used for skewed heavy-tailed errors, including financial returns.
+aliases:
+- Fernandez–Steel skew Student
+key_references:
+- 1
 ---
 
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.

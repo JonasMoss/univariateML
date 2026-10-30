@@ -4,16 +4,19 @@ name: Azzalini skew-normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: xi
+  symbol: '\xi'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: regular
 - name: omega
+  symbol: '\omega'
   role: scale
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: alpha
+  symbol: '\alpha'
   role: shape
   domain: (-inf, inf)
   simulate: 0

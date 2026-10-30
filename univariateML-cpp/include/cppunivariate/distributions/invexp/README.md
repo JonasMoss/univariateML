@@ -4,6 +4,7 @@ name: Inverse exponential
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: scale
+  symbol: '\theta'
   role: scale
   domain: (0, inf)
   simulate: 1

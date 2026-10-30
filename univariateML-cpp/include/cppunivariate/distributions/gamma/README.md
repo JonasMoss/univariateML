@@ -4,11 +4,13 @@ name: Gamma
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape
+  symbol: 'k'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: scale
+  symbol: '\theta'
   role: scale
   domain: (0, inf)
   simulate: 1
@@ -23,11 +25,26 @@ r:
     iterlim: Maximum number of iterations.
 log_density: -shape*log(scale) - loggamma(shape) + (shape - 1)*log(x) - x/scale
 references:
-  - "Choi, S. C, and R. Wette. \"Maximum likelihood estimation of the parameters of the gamma distribution and their bias.\" Technometrics 11.4 (1969): 683-690."
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York."
+  - "Choi, S. C, and R. Wette. \"Maximum likelihood estimation of the parameters of the gamma distribution and their bias.\" Technometrics 11.4 (1969): 683-690. doi:10.1080/00401706.1969.10490731."
+  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York."
 examples: |
   x <- datasets::precip
   mlgamma(x)
+
+summary: The gamma distribution models positive measurements with separate shape and scale coefficients.
+classification: classical
+classification_reason: A standard model for waiting times and positive skewed data.
+aliases: []
+key_references:
+- 1
+- 2
+limits:
+- name: unbounded likelihood
+  when: The free shape tends to infinity while scale tends to zero at fixed mean
+  detect: all observations are equal and both shape and scale are free
+  status: Degenerate
+  message: does not exist
+  kind: nonexistence
 ---
 
 The gamma distribution models positive measurements and waiting times.

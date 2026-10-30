@@ -4,12 +4,14 @@ name: Hypergeometric
 support: {type: integer, lower: "max(0, k - (N - m))", upper: "min(k, m)", closed: [true, true]}
 params:
 - name: m
+  symbol: 'K'
   role: successes in the population
   domain: '[0, N]'
   simulate: 5
   integer: yes
   kind: regular
 - name: "N"
+  symbol: 'N'
   role: population size
   domain: '[0, inf)'
   simulate: 10
@@ -18,6 +20,7 @@ params:
   advice: Supply the population size, or `m`, or both; estimating both together
     is not implemented and can escape to the binomial limit.
 - name: k
+  symbol: 'n'
   role: draws
   domain: '[0, N]'
   simulate: 5
@@ -39,7 +42,7 @@ limits:
     status: AllZero
     fixed: [m]
 references:
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley. doi:10.1002/0471715816."
   - "Wang, W. (2015). Exact optimal confidence intervals for hypergeometric parameters. Journal of the American Statistical Association, 110(512), 1491-1499. doi:10.1080/01621459.2014.966191."
 holds:
 - held: []
@@ -58,6 +61,13 @@ examples: |
   set.seed(1)
   x <- rml(200, mlhyper())
   mlhyper(x, N = 10L, k = 5L)
+
+summary: The hypergeometric distribution counts marked items in sampling without replacement from a finite population.
+classification: classical
+classification_reason: A standard finite-population sampling model.
+aliases: []
+key_references:
+- 1
 ---
 
 The hypergeometric distribution counts the successes in `k` draws without

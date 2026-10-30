@@ -4,11 +4,13 @@ name: Pareto
 support: {type: real, lower: "b", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "log(a) - log(b)"}}
 params:
 - name: a
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 1.0
   kind: regular
 - name: b
+  symbol: 'b'
   role: lower
   domain: (0, inf)
   simulate: 1

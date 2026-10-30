@@ -4,17 +4,20 @@ name: Beta-binomial
 support: {type: integer, lower: "0", upper: "size", closed: [true, true]}
 params:
 - name: size
+  symbol: 'n'
   role: trials
   domain: '[0, inf)'
   simulate: 10
   integer: yes
   kind: design
 - name: alpha
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: beta
+  symbol: '\beta'
   role: shape
   domain: (0, inf)
   simulate: 1

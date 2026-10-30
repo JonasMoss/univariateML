@@ -4,12 +4,14 @@ name: Negative hypergeometric
 support: {type: integer, lower: "r", upper: "if (r == 0) 0 else N-m+r", closed: [true, true]}
 params:
 - name: m
+  symbol: 'K'
   role: white balls in the population
   domain: '[0, N]'
   simulate: 5
   integer: yes
   kind: regular
 - name: "N"
+  symbol: 'N'
   role: population size
   domain: '[0, inf)'
   simulate: 10
@@ -17,6 +19,7 @@ params:
   kind: design
   advice: Supply the population size, or hold `m` to estimate it.
 - name: r
+  symbol: 'r'
   role: white balls required to stop sampling
   domain: '[0, m]'
   simulate: 3

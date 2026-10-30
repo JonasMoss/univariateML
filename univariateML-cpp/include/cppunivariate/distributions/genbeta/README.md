@@ -4,21 +4,25 @@ name: Generalized beta of the first kind
 support: {type: real, lower: "0", upper: "scale", closed: [false, true], endpoint_log_density: {upper: "if (shape2 < 1) Inf else if (shape2 > 1) -Inf else log(shape3) - log(scale) - lbeta(shape1, shape2)"}}
 params:
 - name: shape1
+  symbol: 'p'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: shape2
+  symbol: 'q'
   role: shape
   domain: (0, inf)
   simulate: 2
   kind: regular
 - name: shape3
+  symbol: 'a'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: scale
+  symbol: 'b'
   role: upper endpoint
   domain: (0, inf)
   simulate: 1

@@ -10,11 +10,13 @@ support:
   - false
 params:
 - name: prob
+  symbol: 'p'
   role: probability
   domain: '[0, 1)'
   simulate: 0.5
   kind: regular
 - name: p0
+  symbol: 'p_0'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5

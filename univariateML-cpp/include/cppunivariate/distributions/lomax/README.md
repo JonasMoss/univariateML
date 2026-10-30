@@ -4,11 +4,13 @@ name: Lomax
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: lambda
+  symbol: '\lambda'
   role: rate
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: kappa
+  symbol: '\kappa'
   role: shape
   domain: (0, inf)
   simulate: 1

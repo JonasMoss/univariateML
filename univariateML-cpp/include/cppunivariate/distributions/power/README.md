@@ -4,12 +4,14 @@ name: Power
 support: {type: real, lower: "0", upper: "alpha", closed: [false, true], endpoint_log_density: {upper: "log(beta) - log(alpha)"}}
 params:
 - name: alpha
+  symbol: 'a'
   role: upper
   domain: (0, inf)
   simulate: 1.0
   bound: upper
   kind: endpoint
 - name: beta
+  symbol: 'b'
   role: shape
   domain: (0, inf)
   simulate: 1

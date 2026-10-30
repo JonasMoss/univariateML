@@ -4,6 +4,7 @@ name: Yule--Simon
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:
 - name: rho
+  symbol: '\rho'
   role: shape
   domain: (0, inf)
   simulate: 1

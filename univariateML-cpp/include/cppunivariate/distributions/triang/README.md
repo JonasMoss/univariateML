@@ -4,16 +4,19 @@ name: Triangular
 support: {type: real, lower: "a", upper: "b", closed: [true, true], endpoint_log_density: {lower: "if (c == a) log(2) - log(b-a) else -Inf", upper: "if (c == b) log(2) - log(b-a) else -Inf"}}
 params:
 - name: a
+  symbol: 'a'
   role: location
   domain: (-inf, b)
   simulate: 0
   kind: endpoint
 - name: b
+  symbol: 'b'
   role: location
   domain: (a, inf)
   simulate: 1
   kind: endpoint
 - name: c
+  symbol: 'c'
   role: location
   domain: '[a, b]'
   simulate: 0.5

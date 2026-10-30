@@ -4,11 +4,13 @@ name: Beta
 support: {type: real, lower: 0, upper: 1, closed: [false, false]}
 params:
 - name: shape1
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: shape2
+  symbol: '\beta'
   role: shape
   domain: (0, inf)
   simulate: 1
@@ -27,14 +29,22 @@ references:
 holds: []
 limits:
 - name: point-mass collapse
-  when: Both free shapes grow without bound on constant data.
-  detect: All observations are equal and neither shape is held.
+  when: Both free shapes grow without bound on constant data
+  detect: All observations are equal and neither shape is held
   status: Degenerate
   message: does not exist
 examples: |
   set.seed(1)
   x <- rml(200, mlbeta())
   mlbeta(x)
+
+summary: The beta distribution models continuous proportions on the unit interval.
+classification: classical
+classification_reason: A standard two-shape model for proportions and probabilities.
+aliases:
+- beta of the first kind
+key_references:
+- 1
 ---
 
 The beta distribution models proportions and other continuous quantities between zero and one.

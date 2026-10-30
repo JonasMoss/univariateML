@@ -4,11 +4,13 @@ name: Logistic
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: location
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0.0
   kind: regular
 - name: scale
+  symbol: 's'
   role: scale
   domain: (0, inf)
   simulate: 1.0

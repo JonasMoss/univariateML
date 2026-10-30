@@ -4,11 +4,13 @@ name: Nakagami
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape
+  symbol: 'm'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: scale
+  symbol: '\Omega'
   role: scale
   domain: (0, inf)
   simulate: 1

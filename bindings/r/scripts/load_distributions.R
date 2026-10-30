@@ -87,6 +87,20 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   if (length(missing)) {
     stop("load_distributions: ", path, " lacks ", paste(missing, collapse = ", "))
   }
+  scalar_text <- function(x) is.character(x) && length(x) == 1L && !is.na(x) && nzchar(x)
+  for (key in c("summary", "classification_reason"))
+    if (!is.null(f[[key]]) && !scalar_text(f[[key]])) stop("load_distributions: invalid ", key, " for ", id)
+  if (!is.null(f$classification) &&
+      (!scalar_text(f$classification) || !f$classification %in% c("classical", "specialist", "uncommon") ||
+       !scalar_text(f$classification_reason))) stop("load_distributions: invalid classification for ", id)
+  if (!is.null(f$aliases) && length(f$aliases) && !all(vapply(f$aliases, scalar_text, TRUE)))
+    stop("load_distributions: invalid aliases for ", id)
+  if (length(f$references) && !all(vapply(f$references, scalar_text, TRUE)))
+    stop("load_distributions: references must remain strings for ", id)
+  keys <- unlist(f$key_references)
+  if (length(keys) && (length(keys) > 3L || !is.numeric(keys) || anyNA(keys) ||
+      any(keys != floor(keys) | keys < 1 | keys > length(f$references)) || anyDuplicated(keys)))
+    stop("load_distributions: invalid key_references for ", id)
   s <- f$support
   support <- list(
     type = if (identical(tolower(s$type), "integer")) "Z" else "R",
@@ -99,6 +113,8 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   params <- lapply(f$params, function(p) {
     obsolete <- intersect(names(p), c("default", "fixable", "fixed", "required", "required_reason"))
     if (length(obsolete)) stop("load_distributions: ", id, ": obsolete parameter keys: ", paste(obsolete, collapse=", "))
+    if (!is.null(p$symbol) && (!scalar_text(p$symbol) || p$symbol == "x"))
+      stop("load_distributions: invalid symbol for ", id, ": ", p$name)
     p$kind <- p$kind %||% "regular"
     if (!p$kind %in% c("design", "threshold", "endpoint", "regular"))
       stop("load_distributions: ", id, ": invalid kind for ", p$name)
@@ -133,6 +149,8 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     }
     p
   })
+  symbols <- vapply(params, function(p) p$symbol %||% p$name, "")
+  if (anyDuplicated(symbols)) stop("load_distributions: duplicate symbols for ", id)
   pn <- vapply(params, `[[`, "", "name")
   for (h in f$holds %||% list()) {
     if (!h$status %in% c("no-mle", "not-implemented") ||
@@ -150,6 +168,11 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   list(
     id = id,
     name = f$name,
+    summary = f$summary,
+    classification = f$classification,
+    classification_reason = f$classification_reason,
+    aliases = f$aliases,
+    key_references = keys,
     support = support,
     params = params,
     density = f$r$density,

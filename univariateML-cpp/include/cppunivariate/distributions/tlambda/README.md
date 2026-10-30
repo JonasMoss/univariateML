@@ -4,16 +4,19 @@ name: Tukey lambda
 support: {type: real, lower: "if (lambda > 0) mu - sigma/lambda else -Inf", upper: "if (lambda > 0) mu + sigma/lambda else Inf", closed: [true, true], endpoint_log_density: {lower: "if (lambda < 1) -Inf else if (lambda == 1) -log(2*sigma) else -log(sigma)", upper: "if (lambda < 1) -Inf else if (lambda == 1) -log(2*sigma) else -log(sigma)"}}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: regular
 - name: sigma
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: lambda
+  symbol: '\lambda'
   role: shape
   domain: '(-inf, inf)'
   simulate: 0

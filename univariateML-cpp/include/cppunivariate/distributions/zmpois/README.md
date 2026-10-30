@@ -10,11 +10,13 @@ support:
   - false
 params:
 - name: lambda
+  symbol: '\lambda'
   role: rate
   domain: '[0, inf)'
   simulate: 1
   kind: regular
 - name: p0
+  symbol: 'p_0'
   role: probability
   domain: '[0, 1]'
   simulate: 0.5

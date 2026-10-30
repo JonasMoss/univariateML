@@ -4,11 +4,13 @@ name: Log-gamma
 support: {type: real, lower: 1, upper: inf, closed: [false, false]}
 params:
 - name: shapelog
+  symbol: 'k'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: ratelog
+  symbol: '\lambda'
   role: rate
   domain: (0, inf)
   simulate: 1

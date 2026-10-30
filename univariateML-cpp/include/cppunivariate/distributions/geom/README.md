@@ -4,6 +4,7 @@ name: Geometric
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: prob
+  symbol: 'p'
   role: probability
   domain: (0, 1]
   simulate: 0.5

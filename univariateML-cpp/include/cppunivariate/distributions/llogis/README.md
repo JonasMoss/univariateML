@@ -4,11 +4,13 @@ name: Log-logistic
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:
 - name: shape
+  symbol: '\beta'
   role: shape
   domain: (0, inf)
   simulate: 1.0
   kind: regular
 - name: scale
+  symbol: '\alpha'
   role: scale
   domain: (0, inf)
   simulate: 1

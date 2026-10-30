@@ -4,11 +4,13 @@ name: Kumaraswamy
 support: {type: real, lower: 0, upper: 1, closed: [false, false]}
 params:
 - name: a
+  symbol: 'a'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: b
+  symbol: 'b'
   role: shape
   domain: (0, inf)
   simulate: 1

@@ -4,16 +4,19 @@ name: Pareto type II
 support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "log(shape) - log(scale)"}}
 params:
 - name: shape
+  symbol: '\alpha'
   role: shape
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: scale
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: min
+  symbol: '\mu'
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0

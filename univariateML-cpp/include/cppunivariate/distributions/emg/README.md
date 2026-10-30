@@ -4,16 +4,19 @@ name: Exponentially Modified Gaussian
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:
 - name: mu
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: regular
 - name: sigma
+  symbol: '\sigma'
   role: normal scale
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: lambda
+  symbol: '\lambda'
   role: exponential rate
   domain: (0, inf)
   simulate: 1

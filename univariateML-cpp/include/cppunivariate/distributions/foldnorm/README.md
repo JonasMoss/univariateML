@@ -4,11 +4,13 @@ name: Folded Normal
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:
 - name: mu
+  symbol: '\mu'
   role: parent normal location
   domain: '[0, inf)'
   simulate: 1
   kind: regular
 - name: sigma
+  symbol: '\sigma'
   role: parent normal scale
   domain: (0, inf)
   simulate: 1

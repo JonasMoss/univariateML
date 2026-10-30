@@ -4,22 +4,26 @@ name: Truncated Normal
 support: {type: real, lower: "a", upper: "b", closed: [true, true]}
 params:
 - name: mean
+  symbol: '\mu'
   role: location
   domain: (-inf, inf)
   simulate: 0
   kind: regular
 - name: sd
+  symbol: '\sigma'
   role: scale
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: a
+  symbol: 'a'
   role: lower
   domain: '[-inf, inf)'
   simulate: -inf
   kind: design
   advice: NULL estimates this bound at the sample extreme; use infinity for an unbounded side.
 - name: b
+  symbol: 'b'
   role: upper
   domain: (-inf, inf]
   simulate: inf

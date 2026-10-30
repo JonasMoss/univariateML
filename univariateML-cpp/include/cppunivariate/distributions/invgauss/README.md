@@ -4,11 +4,13 @@ name: Inverse Gaussian
 support: {type: real, lower: 0.0, upper: inf, closed: [false, false]}
 params:
 - name: mean
+  symbol: '\mu'
   role: location
   domain: (0, inf)
   simulate: 1
   kind: regular
 - name: shape
+  symbol: '\lambda'
   role: shape
   domain: (0, inf)
   simulate: 1
