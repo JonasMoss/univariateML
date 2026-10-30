@@ -10,10 +10,13 @@ TEST_CASE("invburr three parameter golden and reciprocal fit") {
  auto g = mltest::load_distribution_golden("invburr");
  auto r = cppunivariate::invburr_mle(mltest::as_span(g.data),1e-8,1000);
  REQUIRE(r.status == cppunivariate::InvBurrStatus::Ok);
- CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(1e-12));
- CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(1e-12));
- CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(1e-12));
- CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-12));
+ // Same reasoning as burr/test.cpp: compare at the fit's own gradtol
+ // (1e-8, adapter.cpp's default), not a bit-exactness that a
+ // multi-D finite-difference BFGS fit never promised.
+ CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(1e-8));
+ CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(1e-8));
+ CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(1e-8));
+ CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-8));
  // Independent full actuar multistart oracle on this ordinary sample.
  CHECK(r.logLik == doctest::Approx(-625.40647696836618).epsilon(1e-8));
  // Independent full likelihood scores, including the freely fitted scale.

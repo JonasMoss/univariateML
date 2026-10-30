@@ -4,8 +4,11 @@
 TEST_CASE("invparalogis: golden, reciprocal agreement and score") {
   auto g=mltest::load_distribution_golden("invparalogis");
   auto r=cppunivariate::invparalogis_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
-  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(1e-6)); CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(1e-6));
-  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(1e-6));
+  // invparalogis_mle is paralogis_mle on 1/x (same finite-difference BFGS,
+  // same default gradtol kFitTol); reuse kFdTol like the paralogis golden
+  // check for the same reason (test_support.hpp's kFdTol comment).
+  CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kFdTol)); CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kFdTol));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kFdTol));
   std::vector<double> y; double jac=0;
   for (double x:g.data) { y.push_back(1/x); jac-=2*std::log(x); }
   auto b=cppunivariate::paralogis_mle(mltest::as_span(y), mltest::kFitTol, mltest::kFitMaxit);

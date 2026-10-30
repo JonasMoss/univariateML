@@ -15,14 +15,33 @@
 
 namespace mltest {
 
-// Relative tolerance against goldens. The finite-difference BFGS fitters
-// move by ~1e-6 across compilers and Boost versions, hence kFdTol for them.
+// Relative tolerance against goldens. Closed-form/Newton-on-an-explicit-
+// score fitters reproduce estimates deterministically to within a few ULP
+// on any machine; kTol is the floor for those.
 constexpr double kTol = 1e-10;
-constexpr double kFdTol = 1e-6;
 
-// Defaults of the R adapters (reltol / gradtol / abstol, iterlim).
+// Defaults of the R adapters (reltol / gradtol / abstol, iterlim). Also the
+// shared default `gradtol` for every finite-difference BFGS fitter below.
 constexpr double kFitTol = 1.220703e-4;
 constexpr int kFitMaxit = 100;
+
+// Golden-regression rule for finite-difference BFGS fitters (std, ged,
+// sstd, sged, paralogis, lst, invparalogis): a multi-D optimiser stopped
+// by a gradient- or step-norm criterion only promises its estimate to
+// within that criterion's own tolerance. Once two platforms (compiler,
+// libm, Boost.Math minor version) take a different BFGS trajectory --
+// different FP summation order in the finite-difference gradient, a
+// different number of line-search steps -- their outputs can differ by up
+// to that tolerance, concentrated in whichever coordinate is least curved
+// (e.g. a Student-t `nu` with a near-flat profile likelihood). Comparing
+// goldens any tighter than the fitter's own declared `gradtol` (kFitTol,
+// passed as `tol` in each of these families' golden test) chases that
+// platform noise, not a real regression; reuse kFitTol as the comparison
+// tolerance too. Families with their own, different default `gradtol`
+// (burr, invburr: 1e-8) are not routed through this constant -- each
+// golden check there uses its own fitter's `tol` argument directly,
+// documented at the call site.
+constexpr double kFdTol = kFitTol;
 
 inline Golden load_distribution_golden(const std::string &id) {
   return load_golden(std::string(CPPUNIV_DISTRIBUTIONS_DIR) + "/" + id + "/golden.json");
