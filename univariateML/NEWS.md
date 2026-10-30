@@ -58,14 +58,32 @@
 
 * Every coefficient can be held (`p = value`) or estimated (`p = NULL`):
   e.g. `mlgamma(x, shape = 2)`, `mlnorm(x, mean = 0)`,
-  `mlweibull(x, shape = 2)`. Of the 228 hold entries marked not
-  implemented after P1, P2 implemented or settled 175.
-  Each family's README lists the remaining exceptions under `holds:`:
-  combinations with no MLE (`no-mle`, 61) and combinations not yet
-  supported (`not-implemented`, 53). The not-yet-supported ones are skew-t
-  and skew-GED subsets whose existence is open, truncated-normal bound
-  estimation, the hypergeometric population size and some free trial
-  sizes. Data-dependent non-existence stops with the reason.
+  `mlweibull(x, shape = 2)`, `mlsstd(x, mean = 0, xi = 1.5)`,
+  `mltbinom(x, a = 0, b = 10, size = NULL)`. Each family's README lists
+  the remaining exceptions under `holds:`: combinations with no MLE
+  (`no-mle`, 64) and combinations not yet supported (`not-implemented`,
+  13: beta-binomial and Conway-Maxwell-binomial free sizes with a free
+  shape or dispersion, and estimating the hypergeometric designs).
+  Data-dependent non-existence stops with the reason; numerical searches
+  that run out of budget stop instead of returning a capped estimate.
+
+* Parametrization (parameter rules P4):
+  - `mlgamma()`, `mlinvexp()`, `mlinvweibull()` and `mlllogis()` report
+    `scale` (= 1/rate) instead of `rate`, and hold it as `scale = `.
+    Families fitted through them (inverse gamma, Nakagami, log-gamma,
+    Frechet, Pareto III, inverse Burr) changed with them; exponential,
+    Lomax, Gompertz and log-gamma keep their rates.
+  - `mlhcauchy()` and `mlht()` have a threshold `mu`, like `mlhnorm()`:
+    `mu` is required (`mu = 0` is the former fit, `NULL` estimates it as
+    the sample minimum). With `mu` free, half-Cauchy has an MLE iff fewer
+    than half the observations sit at the minimum, and half-t uses the
+    restriction `nu >= 1`.
+  - `mlhyper()` and `mlnhyper()` report the population size `N` instead
+    of `n = N - m`; `N` is required, and `mlhyper(x, k = , m = , N = NULL)`
+    estimates it.
+  - Display names: "Inverse Weibull", "Log-logistic", "Log-gamma",
+    "Logit-normal", "Beta prime" and "Power" (were "InverseWeibull",
+    "Loglogistic", "Loggamma", "LogitNormal", "BetaPrime", "PowerDist").
 
 * Arguments to the `ml***` fitters must match exactly. A hold the fitter
   does not support stops (`mlweibull(x, shape = 2)`: "cannot hold
@@ -131,7 +149,8 @@
   `size` and `beta` are interchangeable, so with both free the fit reports
   the representative with `size <= beta`.
 
-* `mlhcauchy()` and `mlht()` (half-Cauchy and half-t with endpoint 0),
+* `mlhcauchy()` and `mlht()` (half-Cauchy and half-t; translated by a
+  threshold `mu` since P4),
   and `mlhnorm(x, mu = 0)`: `mu` can now be held, giving extraDistr's
   half-normal. The half-t stops with "use `mlhnorm(x, mu = 0)`" at its
   normal limit; with free df any zero in the data makes its likelihood
