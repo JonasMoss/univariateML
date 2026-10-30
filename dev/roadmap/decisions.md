@@ -8,6 +8,15 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-10-30
 
+- **Website and JS binding** (Jonas set the goals and left the machinery
+  to Claude): the JS library is the C++ core compiled to WebAssembly
+  (Emscripten, `bindings/js/`), checked by the same goldens and truth
+  tables; the site is an Astro project in `site/` reading the README
+  dossiers directly, with Svelte islands for interactivity and MathML at
+  build time. Family pages are micropapers with generated notices, usage
+  tabs for R, C++, Python and JS, and folded implementation detail and
+  decision history. Supersedes the Quarto preference. Plan and staging:
+  `dev/roadmap/2026-10-30-site-and-js-binding.md`.
 - **Dossier prose schema adopted** (Jonas; TASK-101.2): family READMEs
   carry the fitting method in `## Details` and an optional
   `## Decision history`, which stays source-only (dossier and future

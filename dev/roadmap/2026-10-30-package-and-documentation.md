@@ -81,8 +81,10 @@ for BH. The R package may continue to obtain Boost headers through BH.
 ## Distribution catalog and website
 
 Build a custom static site with a searchable, filterable catalog and stable
-pages for individual distributions. Quarto is the initial tooling preference,
-with custom styling and MathML rendered at build time. GitHub Pages can host
+pages for individual distributions, with custom styling and MathML rendered
+at build time. Tooling, the JavaScript binding and the page structure are
+decided in [site-and-js-binding](2026-10-30-site-and-js-binding.md) (Astro,
+WebAssembly from the C++ core; Quarto was the initial preference). GitHub Pages can host
 the site; `univariateml.jonasmoss.com` is the proposed custom domain. These are
 future hosting choices, not instructions to publish or change DNS now.
 
