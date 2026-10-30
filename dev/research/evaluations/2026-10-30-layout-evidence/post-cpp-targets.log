@@ -1,0 +1,204 @@
+Start testing: Oct 30 18:42 CET
+----------------------------------------------------------
+1/6 Testing: bfgs_tests
+1/6 Test: bfgs_tests
+Command: "/home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/build/tests/bfgs_tests"
+Directory: /home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/tests
+"bfgs_tests" start time: Oct 30 18:42 CET
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 0 skipped
+[doctest] assertions: 21 | 21 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"bfgs_tests" end time: Oct 30 18:42 CET
+"bfgs_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/6 Testing: sample_tests
+2/6 Test: sample_tests
+Command: "/home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/build/tests/sample_tests"
+Directory: /home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/tests
+"sample_tests" start time: Oct 30 18:42 CET
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:     1 |     1 passed | 0 failed | 0 skipped
+[doctest] assertions: 10204 | 10204 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"sample_tests" end time: Oct 30 18:42 CET
+"sample_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/6 Testing: distribution_tests
+3/6 Test: distribution_tests
+Command: "/home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/build/tests/distribution_tests"
+Directory: /home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/tests
+"distribution_tests" start time: Oct 30 18:42 CET
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:     915 |     915 passed | 0 failed | 0 skipped
+[doctest] assertions: 1281358 | 1281358 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time = 160.65 sec
+----------------------------------------------------------
+Test Passed.
+"distribution_tests" end time: Oct 30 18:45 CET
+"distribution_tests" time elapsed: 00:02:40
+----------------------------------------------------------
+
+4/6 Testing: no_throw_tests
+4/6 Test: no_throw_tests
+Command: "/home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/build/tests/no_throw_tests"
+Directory: /home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/tests
+"no_throw_tests" start time: Oct 30 18:45 CET
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 0 skipped
+[doctest] assertions: 56 | 56 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"no_throw_tests" end time: Oct 30 18:45 CET
+"no_throw_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/6 Testing: cmp_tests
+5/6 Test: cmp_tests
+Command: "/home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/build/tests/cmp_tests"
+Directory: /home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/tests
+"cmp_tests" start time: Oct 30 18:45 CET
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+CMP_REF -27.631 0.01 0 2.917 0 0 0 0 0 0
+CMP_REF -27.631 0.05 0 2.843 0 0 0 0 1.97884e-16 0
+CMP_REF -27.631 0.075 0 2.755 0 0 0 0 0 0
+CMP_REF -27.631 0.3 0 2.856 0 0 0 0 0 0
+CMP_REF -27.631 1 0 2.794 0 0 0 0 0 0
+CMP_REF -27.631 2 0 2.755 0 0 0 0 0 0
+CMP_REF -27.631 10 0 2.851 0 0 0 0 0 0
+CMP_REF -27.631 100 0 2.111 0 0 0 0 0 0
+CMP_REF -6.90776 0.01 0 6.888 0 0 0 0 0 0
+CMP_REF -6.90776 0.05 0 6.048 0 0 0 0 2.26934e-16 1.57795e-16
+CMP_REF -6.90776 0.075 0 6.137 0 0 0 0 1.1547e-16 0
+CMP_REF -6.90776 0.3 0 6.329 0 0 0 0 0 0
+CMP_REF -6.90776 1 0 5.446 0 0 0 0 0 0
+CMP_REF -6.90776 2 0 5.355 0 0 0 0 0 0
+CMP_REF -6.90776 10 0 3.708 0 0 0 0 0 0
+CMP_REF -6.90776 100 0 2.115 0 0 0 0 0 0
+CMP_REF -0.693147 0.01 0 48.539 0 0 0 0 1.19969e-16 1.31741e-16
+CMP_REF -0.693147 0.05 0 43.366 0 0 0 0 1.56928e-16 1.62639e-16
+CMP_REF -0.693147 0.075 0 40.912 0 0 0 0 1.82258e-16 0
+CMP_REF -0.693147 0.3 0 25.953 0 0 0 0 0 1.9813e-16
+CMP_REF -0.693147 1 0 14.228 0 0 0 0 1.53108e-16 1.7686e-16
+CMP_REF -0.693147 2 0 9.659 0 0 0 0 0 0
+CMP_REF -0.693147 10 0 3.662 0 0 0 0 0 0
+CMP_REF -0.693147 100 0 2.04 0 0 0 0 0 0
+CMP_REF -0.105361 0.01 0 249.402 0 0 1.28938e-16 0 3.34308e-16 0
+CMP_REF -0.105361 0.05 0 123.569 0 0 0 0 1.85536e-16 0
+CMP_REF -0.105361 0.075 0 93.255 0 0 1.32077e-16 0 1.62903e-16 1.52038e-16
+CMP_REF -0.105361 0.3 0 36.321 0 0 1.41247e-16 0 2.18287e-16 0
+CMP_REF -0.105361 1 0 16.818 0 0 0 0 1.58728e-16 0
+CMP_REF -0.105361 2 0 10.795 0 0 0 0 0 0
+CMP_REF -0.105361 10 0 3.774 0 0 0 0 0 0
+CMP_REF -0.105361 100 0 2.034 0 0 0 0 0 0
+CMP_REF -0.0100503 0.01 0 571.68 0 0 0 0 1.84383e-16 1.61408e-16
+CMP_REF -0.0100503 0.05 0 167.727 0 0 1.61687e-16 0 2.3033e-16 1.39324e-16
+CMP_REF -0.0100503 0.075 0 119.026 0 0 0 0 2.59161e-16 1.39406e-16
+CMP_REF -0.0100503 0.3 0 39.653 0 0 0 0 1.45029e-16 0
+CMP_REF -0.0100503 1 0 17.417 0 0 0 0 0 0
+CMP_REF -0.0100503 2 0 10.734 0 0 0 0 0 0
+CMP_REF -0.0100503 10 0 3.689 0 0 0 1.62677e-16 1.17395e-16 0
+CMP_REF -0.0100503 100 0 2.026 0 0 0 0 0 0
+CMP_REF 0 0.01 0 647.055 0 0 0 0 3.46967e-16 0
+CMP_REF 0 0.05 0 173.31 0 0 0 0 1.99486e-16 2.46201e-16
+CMP_REF 0 0.075 0 121.769 0 0 0 0 3.48889e-16 1.27152e-16
+CMP_REF 0 0.3 0 39.582 0 0 2.18651e-16 0 1.38767e-16 0
+CMP_REF 0 1 0 17.4 0 0 0 0 0 0
+CMP_REF 0 2 0 10.684 0 0 0 0 1.53933e-16 0
+CMP_REF 0 10 0 3.659 0 0 0 0 1.15639e-16 2.13755e-16
+CMP_REF 0 100 0 1.983 0 0 0 0 0 0
+CMP_REF 0.693147 0.01 2 1424.49 0 0 0 0 0 0
+CMP_REF 0.693147 0.05 2 868.237 0 0 0 0 0 0
+CMP_REF 0.693147 0.075 0 6372.17 0 0 0 0 0 0
+CMP_REF 0.693147 0.3 0 82.439 0 0 0 0 0 0
+CMP_REF 0.693147 1 0 20.212 0 0 0 0 0 0
+CMP_REF 0.693147 2 0 11.375 0 0 0 0 0 0
+CMP_REF 0.693147 10 0 3.694 0 0 0 0 0 0
+CMP_REF 0.693147 100 0 1.347 0 0 0 0 0 0
+CMP_REF 2.30259 0.01 2 1455.19 0 0 0 0 0 0
+CMP_REF 2.30259 0.05 2 1411.77 0 0 0 0 0 0
+CMP_REF 2.30259 0.075 2 1426.5 0 0 0 0 0 0
+CMP_REF 2.30259 0.3 0 1413.97 0 0 0 0 0 0
+CMP_REF 2.30259 1 0 41.704 0 0 0 0 1.27212e-16 0
+CMP_REF 2.30259 2 0 16.821 0 0 0 0 0 0
+CMP_REF 2.30259 10 0 3.934 0 0 0 0 0 0
+CMP_REF 2.30259 100 0 1.299 0 0 0 0 0 0
+CMP_REF 6.90776 0.01 2 1448.14 0 0 0 0 0 0
+CMP_REF 6.90776 0.05 2 1437.93 0 0 0 1.66497e-16 0 0
+CMP_REF 6.90776 0.075 2 1426.59 0 0 0 0 0 0
+CMP_REF 6.90776 0.3 2 1414.98 0 0 0 0 0 0
+CMP_REF 6.90776 1 0 524.003 0 0 0 0 0 0
+CMP_REF 6.90776 2 0 60.44 0 0 0 0 0 0
+CMP_REF 6.90776 10 0 4.587 0 0 0 0 0 0
+CMP_REF 6.90776 100 0 1.354 0 0 0 0 0 0
+CMP_REF 1.38629 2 0 12.96 0 0 0 0 0 0
+CMP grid: 73 calls, 0.0239087 s; maximum relative error 3.48889e-16
+CMP million-observation fit: 0.178059 s, 1418 summands
+===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 0 skipped
+[doctest] assertions: 619 | 619 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.72 sec
+----------------------------------------------------------
+Test Passed.
+"cmp_tests" end time: Oct 30 18:45 CET
+"cmp_tests" time elapsed: 00:00:01
+----------------------------------------------------------
+
+6/6 Testing: tails_tests
+6/6 Test: tails_tests
+Command: "/home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/build/tests/tails_tests"
+Directory: /home/jonas/Files/programming/univariateML.wt/layout/univariateML-cpp/tests
+"tails_tests" start time: Oct 30 18:45 CET
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:   4 |   4 passed | 0 failed | 0 skipped
+[doctest] assertions: 147 | 147 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"tails_tests" end time: Oct 30 18:45 CET
+"tails_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 30 18:45 CET

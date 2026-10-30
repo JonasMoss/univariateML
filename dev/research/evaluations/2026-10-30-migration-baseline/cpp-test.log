@@ -1,0 +1,259 @@
+cmake -S cppunivariate -B cppunivariate/build
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+-- The CXX compiler identification is GNU 15.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Boost.Math: using BH headers at /home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include
+-- Configuring done (0.4s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/jonas/Files/programming/univariateML.wt/baseline/cppunivariate/build
+cmake --build cppunivariate/build
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/cauchy/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/cauchy/test.cpp:3:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/cauchy/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/cauchy/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/dlaplace/test.cpp:16:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/dlaplace/dpqr.hpp: In function ‘double cppunivariate::distributions::qdlaplace(double, double, double, bool, bool)’:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/dlaplace/dpqr.hpp:18:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   18 |  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+      |  ^~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/dlaplace/dpqr.hpp:18:56: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   18 |  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+      |                                                        ^~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/dunif/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/dunif/test.cpp:3:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/dunif/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/dunif/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/exp/dpqr.hpp:14,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/exp/test.cpp:5:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/exp/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/exp/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/frechet/../invweibull/dpqr.hpp:4,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/frechet/dpqr.hpp:14,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/frechet/test.cpp:2:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/frechet/../invweibull/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/frechet/../invweibull/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gev/dpqr.hpp:3,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gev/test.cpp:2:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gev/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gev/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gpd/dpqr.hpp:3,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gpd/test.cpp:2:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gpd/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gpd/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gumbel/dpqr.hpp:11,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gumbel/test.cpp:3:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gumbel/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/gumbel/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/huber/test.cpp: In function ‘void DOCTEST_ANON_FUNC_30()’:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/huber/test.cpp:279:30: warning: unused variable ‘ix’ [-Wunused-variable]
+  279 |   const cppunivariate::ispan ix{values.data(),values.size()};
+      |                              ^~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp: In function ‘void DOCTEST_ANON_FUNC_10()’:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:54:2: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |  ^~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:54:29: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   54 |  for (double &v : w) v=1/v; for (double &v : p) v=1/v;
+      |                             ^~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invexp/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invexp/test.cpp:6:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invexp/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invexp/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invpareto/../invburr/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invpareto/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invpareto/test.cpp:6:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invpareto/../invburr/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invpareto/../invburr/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invweibull/dpqr.hpp:4,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invweibull/test.cpp:4:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invweibull/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/invweibull/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/laplace/dpqr.hpp:11,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/laplace/test.cpp:4:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/laplace/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/laplace/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/llogis/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/llogis/test.cpp:4:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/llogis/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/llogis/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/lomax/dpqr.hpp:10,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/lomax/test.cpp:7:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/lomax/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/lomax/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp: In function ‘void DOCTEST_ANON_FUNC_12()’:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp:51:34: warning: loop variable ‘bad’ creates a copy from type ‘const std::vector<double>’ [-Wrange-loop-construct]
+   51 |   for (const std::vector<double> bad : {std::vector<double>{0,1}, {0,0,1,2}, {1,1,1,1}})
+      |                                  ^~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/lst/test.cpp:51:34: note: use reference type to prevent copying
+   51 |   for (const std::vector<double> bad : {std::vector<double>{0,1}, {0,0,1,2}, {1,1,1,1}})
+      |                                  ^~~
+      |                                  &
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/pareto/dpqr.hpp:10,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/pareto/test.cpp:5:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/pareto/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/pareto/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp: In function ‘void DOCTEST_ANON_FUNC_12()’:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp:32:31: warning: loop variable ‘x’ creates a copy from type ‘const std::vector<int>’ [-Wrange-loop-construct]
+   32 |   for (const std::vector<int> x: {std::vector<int>{1,1,1}, {0,1,1,2}, {0,2}, {0,0,0}}) {
+      |                               ^
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp:32:31: note: use reference type to prevent copying
+   32 |   for (const std::vector<int> x: {std::vector<int>{1,1,1}, {0,1,1,2}, {0,2}, {0,0,0}}) {
+      |                               ^
+      |                               &
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/power/dpqr.hpp:10,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/power/test.cpp:5:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/power/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/power/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/rayleigh/dpqr.hpp:10,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/rayleigh/test.cpp:5:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/rayleigh/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/rayleigh/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tbinom/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tbinom/test.cpp:16:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tbinom/../tpois/dpqr_core.hpp: In function ‘double cppunivariate::truncated_detail::quantile(double, double, double, double, double, bool, bool)’:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tbinom/../tpois/dpqr_core.hpp:38:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |   ^~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tbinom/../tpois/dpqr_core.hpp:38:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |                                       ^~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp:3,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tlambda/test.cpp:3:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tpois/test.cpp:16:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr_core.hpp: In function ‘double cppunivariate::truncated_detail::quantile(double, double, double, double, double, bool, bool)’:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr_core.hpp:38:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |   ^~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr_core.hpp:38:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   38 |   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
+      |                                       ^~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/triang/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/triang/test.cpp:3:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/unif/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/unif/test.cpp:3:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/unif/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/unif/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/weibull/test.cpp:4:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+In file included from /home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/tests/test_tails.cpp:3:
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/special/tails.hpp:313:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  313 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/baseline/univariateML-cpp/include/cppunivariate/special/tails.hpp:314:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  314 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+cd cppunivariate/build && ctest --output-on-failure
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+Test project /home/jonas/Files/programming/univariateML.wt/baseline/cppunivariate/build
+    Start 1: bfgs_tests
+1/6 Test #1: bfgs_tests .......................   Passed    0.00 sec
+    Start 2: sample_tests
+2/6 Test #2: sample_tests .....................   Passed    0.03 sec
+    Start 3: distribution_tests
+3/6 Test #3: distribution_tests ...............   Passed  485.94 sec
+    Start 4: no_throw_tests
+4/6 Test #4: no_throw_tests ...................   Passed    0.00 sec
+    Start 5: cmp_tests
+5/6 Test #5: cmp_tests ........................   Passed    5.16 sec
+    Start 6: tails_tests
+6/6 Test #6: tails_tests ......................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 6
+
+Total Test time (real) = 491.15 sec

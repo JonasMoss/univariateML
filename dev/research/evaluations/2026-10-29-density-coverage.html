@@ -1,0 +1,150 @@
+<!doctype html><html lang="en"><meta charset="utf-8">
+<title>extraDistr and actuar: MLE coverage</title>
+<style>body{font:16px/1.5 system-ui;max-width:1250px;margin:40px auto;padding:0 24px;color:#202a35}
+table{border-collapse:collapse;width:100%;margin:20px 0}td,th{padding:9px 12px;border-bottom:1px solid #dce1e6;text-align:left;vertical-align:top}th{background:#eef3f7}code{white-space:nowrap}h2{margin-top:38px}a{color:#1466a2}</style>
+<h1>extraDistr and actuar: MLE coverage</h1>
+<p>Audit date: 29 October 2026. Inventory comes from installed namespace exports;
+coverage comes from distribution folders in this checkout, including recently added
+families whose board tasks still say queued. This is an API and model-domain audit,
+not a new numerical validation of the fitters or reference d/p/q/r functions.</p>
+<p><b>Covered</b> means a fitter exists within its documented sample, fixed-design and
+boundary policies. <b>Covered (endpoint held)</b>: the unrestricted likelihood is unbounded
+for every sample, so the fitter requires the endpoint and its stop message says why.
+<b>Equivalent</b> means a reparameterization or alias, not an exported wrapper for that
+name. <b>Partial / restricted</b> is deliberately not counted as full coverage.</p>
+<p>Inclusion decisions are recorded in the
+<a href="../../roadmap/2026-10-29-density-scope.md">density scope decisions</a>
+(full coverage plan, 29 October 2026). extraDistr's Tukey lambda exports only
+<code>qtlambda</code>/<code>rtlambda</code>, so it is not a row below; it is covered by
+<code>mltlambda</code> with the package's own d/p/q/r, lambda in [-1, 1].</p>
+<table><tr><th>Classification</th><th>extraDistr</th><th>actuar</th></tr>
+<tr><td>Covered</td><td>36</td><td>28</td></tr>
+<tr><td>Equivalent</td><td>5</td><td>4</td></tr>
+<tr><td>Excluded multivariate</td><td>6</td><td>0</td></tr>
+<tr><td>Excluded vector-parameter (dropped 2026-10-30)</td><td>3</td><td>0</td></tr>
+<tr><td>Partial / restricted</td><td>4</td><td>0</td></tr>
+<tr><td>Covered (endpoint held)</td><td>0</td><td>5</td></tr>
+<tr><td>Excluded utility</td><td>0</td><td>2</td></tr>
+<tr><td>Excluded (out of scope)</td><td>0</td><td>1</td></tr>
+</table><h2>Remaining</h2>
+<p>The vector-parameter tier (categorical, Poisson and normal mixtures) needs parameter
+vectors whose length the user chooses. The partial rows keep documented restrictions:
+fatigue's location is fixed at zero, the GEV and GPD shapes are bounded, and the
+location-scale t has df at least one.</p>
+<h2>Counting traps</h2>
+<p>actuar's log-Gompertz is inverse Weibull; Pearson6 is its transformed-beta alias;
+Poisson-inverse-Gaussian has two names. Its generalized Pareto is beta-prime, whereas
+extraDistr's generalized Pareto is the threshold/EVT family. extraDistr's gamma-Poisson
+is negative binomial. A phase-type observation is scalar, so matrix-valued parameters
+do not make that law multivariate.</p>
+<h2>extraDistr 1.10.0.5</h2><p>54 d-prefixed exports; 45 univariate density names; 41 covered or equivalent. Aliases remain separate rows.</p>
+<table><tr><th>Density</th><th>Status</th><th>Coverage / action</th></tr>
+<tr><td>dbbinom</td><td>Covered</td><td>mlbbinom; size is known, not estimated.</td></tr>
+<tr><td>dbern</td><td>Equivalent</td><td>mlbinom(x, size=1); Bernoulli is binomial.</td></tr>
+<tr><td>dbetapr</td><td>Covered</td><td>mlbetapr; scale estimated or fixed.</td></tr>
+<tr><td>dbhatt</td><td>Covered</td><td>mlbhatt; stops at its normal and uniform limits.</td></tr>
+<tr><td>dbnbinom</td><td>Covered</td><td>mlbnbinom; see its identification and boundary policy.</td></tr>
+<tr><td>dbvnorm</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>dbvpois</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>dcat</td><td>Excluded vector-parameter (dropped 2026-10-30)</td><td>Empirical-frequency MLE; needs parameter vectors of user-chosen length.</td></tr>
+<tr><td>ddgamma</td><td>Covered</td><td>mldgamma; data on two adjacent integers escape to a shifted Bernoulli.</td></tr>
+<tr><td>ddirichlet</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>ddirmnom</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>ddlaplace</td><td>Covered</td><td>mldlaplace; integer location.</td></tr>
+<tr><td>ddnorm</td><td>Covered</td><td>mldnorm; data on two adjacent integers escape to a shifted Bernoulli.</td></tr>
+<tr><td>ddunif</td><td>Covered</td><td>mldunif</td></tr>
+<tr><td>ddweibull</td><td>Covered</td><td>mldweibull</td></tr>
+<tr><td>dfatigue</td><td>Partial / restricted</td><td>mlfatigue fixes mu=0; free location gives an unbounded likelihood (derivation in its README).</td></tr>
+<tr><td>dfrechet</td><td>Covered</td><td>mlfrechet; free mu restricts lambda &gt;= 1 (GEV xi &lt;= 1), held mu is mlinvweibull on x - mu.</td></tr>
+<tr><td>dgev</td><td>Partial / restricted</td><td>mlgev restricts xi to [-1,1]; unrestricted xi&lt;-1 admits endpoint blow-up.</td></tr>
+<tr><td>dgompertz</td><td>Covered</td><td>mlgompertz</td></tr>
+<tr><td>dgpd</td><td>Partial / restricted</td><td>mlgpd uses a fixed threshold and xi&gt;=-1.</td></tr>
+<tr><td>dgpois</td><td>Equivalent</td><td>mlnbinom; gamma mixing of a Poisson is negative binomial, not generalized Poisson.</td></tr>
+<tr><td>dgumbel</td><td>Covered</td><td>mlgumbel</td></tr>
+<tr><td>dhcauchy</td><td>Covered</td><td>mlhcauchy</td></tr>
+<tr><td>dhnorm</td><td>Covered</td><td>mlhnorm(x, mu = 0).</td></tr>
+<tr><td>dht</td><td>Covered</td><td>mlht</td></tr>
+<tr><td>dhuber</td><td>Covered</td><td>mlhuber, including estimated epsilon.</td></tr>
+<tr><td>dinvchisq</td><td>Equivalent</td><td>mlinvgamma; alpha=nu/2, beta=nu*tau/2.</td></tr>
+<tr><td>dinvgamma</td><td>Covered</td><td>mlinvgamma</td></tr>
+<tr><td>dkumar</td><td>Covered</td><td>mlkumar</td></tr>
+<tr><td>dlaplace</td><td>Covered</td><td>mllaplace</td></tr>
+<tr><td>dlgser</td><td>Covered</td><td>mllgser</td></tr>
+<tr><td>dlomax</td><td>Covered</td><td>mllomax</td></tr>
+<tr><td>dlst</td><td>Partial / restricted</td><td>mllst restricts df&gt;=1; unrestricted df&gt;0 has scale-collapse paths.</td></tr>
+<tr><td>dmixnorm</td><td>Excluded vector-parameter (dropped 2026-10-30)</td><td>Free component scales: unbounded likelihood; held or equal scales are bounded. Label switching, local maxima.</td></tr>
+<tr><td>dmixpois</td><td>Excluded vector-parameter (dropped 2026-10-30)</td><td>Bounded likelihood; component count, identification and merging boundaries.</td></tr>
+<tr><td>dmnom</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>dmvhyper</td><td>Excluded multivariate</td><td>Joint law; outside the univariate inventory.</td></tr>
+<tr><td>dnhyper</td><td>Covered</td><td>mlnhyper; known population N and stopping count r, estimates m.</td></tr>
+<tr><td>dnsbeta</td><td>Covered</td><td>mlnsbeta with min and max held (free bounds: unbounded likelihood, explained in the stop message).</td></tr>
+<tr><td>dpareto</td><td>Covered</td><td>mlpareto (type I)</td></tr>
+<tr><td>dpower</td><td>Covered</td><td>mlpower</td></tr>
+<tr><td>dprop</td><td>Equivalent</td><td>mlbeta for default prior=0: size=alpha+beta, mean=alpha/size. Fixed positive prior constrains shapes; free prior is not identifiable.</td></tr>
+<tr><td>drayleigh</td><td>Covered</td><td>mlrayleigh</td></tr>
+<tr><td>dsgomp</td><td>Covered</td><td>mlsgomp</td></tr>
+<tr><td>dskellam</td><td>Covered</td><td>mlskellam with own d/p/q/r (extraDistr has no p/q).</td></tr>
+<tr><td>dslash</td><td>Covered</td><td>mlslash</td></tr>
+<tr><td>dtbinom</td><td>Covered</td><td>mltbinom with known bounds and size.</td></tr>
+<tr><td>dtnorm</td><td>Covered</td><td>mltnorm with known truncation bounds.</td></tr>
+<tr><td>dtpois</td><td>Covered</td><td>mltpois with known bounds.</td></tr>
+<tr><td>dtriang</td><td>Covered</td><td>mltriang; endpoints and mode can be fixed.</td></tr>
+<tr><td>dwald</td><td>Equivalent</td><td>mlinvgauss; same inverse Gaussian family.</td></tr>
+<tr><td>dzib</td><td>Covered</td><td>mlzib with known size.</td></tr>
+<tr><td>dzinb</td><td>Covered</td><td>mlzinb</td></tr>
+<tr><td>dzip</td><td>Covered</td><td>mlzip</td></tr>
+</table>
+<h2>actuar 3.3.7</h2><p>40 d-prefixed exports; 37 univariate density names; 37 covered or equivalent. Aliases remain separate rows.</p>
+<table><tr><th>Density</th><th>Status</th><th>Coverage / action</th></tr>
+<tr><td>dburr</td><td>Covered</td><td>mlburr</td></tr>
+<tr><td>dfpareto</td><td>Covered (endpoint held)</td><td>mlfpareto with min held (min = 0 is mlgb2). Free min: singular endpoint for shape2*shape3&lt;1.</td></tr>
+<tr><td>dgenbeta</td><td>Covered (endpoint held)</td><td>mlgenbeta with scale held (GB1). Free scale: singular upper endpoint for shape2&lt;1.</td></tr>
+<tr><td>dgenpareto</td><td>Equivalent</td><td>mlbetapr: actuar shape1 is beta-prime shape2, actuar shape2 is beta-prime shape1. NOT extraDistr dgpd.</td></tr>
+<tr><td>dgumbel</td><td>Covered</td><td>mlgumbel; check location/scale parameter mapping.</td></tr>
+<tr><td>dinvburr</td><td>Covered</td><td>mlinvburr</td></tr>
+<tr><td>dinvexp</td><td>Covered</td><td>mlinvexp</td></tr>
+<tr><td>dinvgamma</td><td>Covered</td><td>mlinvgamma</td></tr>
+<tr><td>dinvgauss</td><td>Covered</td><td>mlinvgauss</td></tr>
+<tr><td>dinvparalogis</td><td>Covered</td><td>mlinvparalogis</td></tr>
+<tr><td>dinvpareto</td><td>Covered</td><td>mlinvpareto</td></tr>
+<tr><td>dinvtrgamma</td><td>Covered</td><td>mlinvtrgamma</td></tr>
+<tr><td>dinvweibull</td><td>Covered</td><td>mlinvweibull</td></tr>
+<tr><td>discretise</td><td>Excluded utility</td><td>Discretization utility, not a density.</td></tr>
+<tr><td>discretize</td><td>Excluded utility</td><td>Discretization utility, not a density.</td></tr>
+<tr><td>dlgamma</td><td>Covered</td><td>mllgamma</td></tr>
+<tr><td>dlgompertz</td><td>Equivalent</td><td>Alias of dinvweibull; NOT the ordinary Gompertz family.</td></tr>
+<tr><td>dllogis</td><td>Covered</td><td>mlllogis</td></tr>
+<tr><td>dlogarithmic</td><td>Covered</td><td>mllgser</td></tr>
+<tr><td>dparalogis</td><td>Covered</td><td>mlparalogis</td></tr>
+<tr><td>dpareto</td><td>Covered</td><td>mllomax; actuar pareto is type II with zero endpoint.</td></tr>
+<tr><td>dpareto1</td><td>Covered</td><td>mlpareto; type I, estimates its lower endpoint.</td></tr>
+<tr><td>dpareto2</td><td>Covered (endpoint held)</td><td>mlpareto2 with min held (mlpareto2(x, min = 0) is mllomax). Free min: unbounded along min=m-epsilon, scale=epsilon, shape&lt;k/(n-k).</td></tr>
+<tr><td>dpareto3</td><td>Covered (endpoint held)</td><td>mlpareto3 with min held (min = 0 is mlllogis). Free min: singular endpoint for shape&lt;1.</td></tr>
+<tr><td>dpareto4</td><td>Covered (endpoint held)</td><td>mlpareto4 with min held (min = 0 is mlburr). Free min: singular endpoint for shape2&lt;1.</td></tr>
+<tr><td>dpearson6</td><td>Equivalent</td><td>Alias of dtrbeta in this package (all three shapes); mlgb2.</td></tr>
+<tr><td>dphtype</td><td>Excluded (out of scope)</td><td>Phase-type: many non-identified representations of one law; general phase-type fitting is a field of its own.</td></tr>
+<tr><td>dpig</td><td>Covered</td><td>mlpig</td></tr>
+<tr><td>dpoisinvgauss</td><td>Equivalent</td><td>Alias of dpig; mlpig.</td></tr>
+<tr><td>dtrbeta</td><td>Covered</td><td>mlgb2</td></tr>
+<tr><td>dtrgamma</td><td>Covered</td><td>mltrgamma</td></tr>
+<tr><td>dzmbinom</td><td>Covered</td><td>mlzmbinom with known size.</td></tr>
+<tr><td>dzmgeom</td><td>Covered</td><td>mlzmgeom</td></tr>
+<tr><td>dzmlogarithmic</td><td>Covered</td><td>mlzmlogarithmic</td></tr>
+<tr><td>dzmnbinom</td><td>Covered</td><td>mlzmnbinom</td></tr>
+<tr><td>dzmpois</td><td>Covered</td><td>mlzmpois</td></tr>
+<tr><td>dztbinom</td><td>Covered</td><td>mlztbinom with known size.</td></tr>
+<tr><td>dztgeom</td><td>Covered</td><td>mlztgeom</td></tr>
+<tr><td>dztnbinom</td><td>Covered</td><td>mlztnbinom</td></tr>
+<tr><td>dztpois</td><td>Covered</td><td>mlztpois</td></tr>
+</table>
+<h2>Evidence and reproduction</h2>
+<p>Primary evidence: installed extraDistr and actuar help pages and function signatures;
+this checkout's per-distribution README metadata and implementation files. Public
+references: <a href="https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf">extraDistr manual</a>,
+<a href="https://cran.r-project.org/web/packages/actuar/actuar.pdf">actuar manual</a>,
+<a href="https://stat.ethz.ch/CRAN/web/packages/actuar/vignettes/distributions.pdf">actuar family inventory</a>.
+The nonexistence arguments above are deductions from these densities.</p>
+<p>Run <code>python3 dev/research/evaluations/2026-10-29-density-coverage.py</code> from the
+repository. It regenerates this HTML and the adjacent CSV, and fails if a d-prefixed
+export is unclassified or disappears. Model classifications require human review
+when the implementation changes.</p></html>
