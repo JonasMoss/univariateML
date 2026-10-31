@@ -37,6 +37,49 @@ def target(file,url):
     return p
 pages={p:Document(p.read_text()) for p in DIST.rglob('*.html')}
 errors=[]
+# Availability is checked against the canonical generator, never inferred from DQM.
+sys.path.insert(0,str(ROOT/'dev/validation'))
+from inference_availability import generate, OUTPUT, STATUSES
+availability=generate()
+assert json.loads(OUTPUT.read_text())==availability, 'stale canonical inference availability'
+assert {r['family'] for r in availability['rows']}=={f['id'] for f in DATA}
+for f in DATA:
+    assert f['inference']==[r for r in availability['rows'] if r['family']==f['id']], f['id']
+
+def evidence_anchor(ref):
+    path,anchor=ref.split('#',1)
+    text=(ROOT/path).read_text()
+    # GitHub-compatible slugs for the plain-text headings in these reports.
+    slugs={re.sub(r'[^\w\- ]','',line.lstrip('#').strip().lower()).replace(' ','-')
+           for line in text.splitlines() if line.startswith('#')}
+    assert anchor in slugs, f'missing evidence anchor: {ref}'
+
+keys=set()
+for r in availability['rows']:
+    key=(r['family'],r['regime'],r['target'])
+    assert key not in keys, f'duplicate inference scope: {key}'
+    keys.add(key)
+    assert r['status'] in STATUSES and r['assumptions'] and r['theory'] and r['procedures']
+    evidence_anchor(r['evidence'])
+    if r['calibration']: evidence_anchor(r['calibration'])
+    if r['status'] in ('implemented','historically recoverable','available but missing'):
+        assert r['implementation'], f'positive scope without supporting implementation: {key}'
+        for implementation in r['implementation']:
+            text=(ROOT/implementation['path']).read_text()
+            assert re.search(r'\b'+re.escape(implementation['function'])+r'\s*\(',text),key
+    if r['status']=='implemented':
+        assert r['calibration'] and r['checks'], key
+    for check in r['checks']: assert (ROOT/check).is_file(),check
+inference_page=DIST/'inference/index.html'
+inference_html=inference_page.read_text()
+assert len(re.findall(r'<tr\b[^>]*\bdata-inference-row(?:\s|>)',inference_html))==len(availability['rows']), 'missing static inference rows'
+assert 'C++ only' in inference_html and '<noscript>' in inference_html
+assert not re.search(r'<astro-island',inference_html), 'availability must render without hydration'
+assert not re.search(r'<tr[^>]*data-inference-row[^>]*\shidden(?:[ >])',inference_html)
+for status in STATUSES: assert status in inference_html
+print(f"PASS: inference: {len(availability['rows'])} unique scopes, 98 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.")
+subprocess.run([str(ROOT/'site/node_modules/.bin/node'), str(ROOT/'site/scripts/inference-browser.mjs')], check=True)
+
 # Check the atlas independently against every dossier-derived record.
 graph_page=DIST/'graph/index.html'
 assert graph_page.exists(), 'missing /graph/'
