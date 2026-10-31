@@ -140,3 +140,21 @@ TEST_CASE("triang P2 exact constant exterior mode profile") {
   CHECK(r.b==2);
   CHECK(r.a==doctest::Approx(-1.2));
 }
+
+TEST_CASE("triang TASK-134 rationalized endpoint inverses on both tails") {
+  for(double p:{1e-300,1e-100,1e-30,1e-12}) {
+    const double x=cppunivariate::distributions::qtriang(p,0,1,0);
+    CHECK(x>0);
+    CHECK(x/(p/(1+std::sqrt(1-p)))==doctest::Approx(1).epsilon(2e-13));
+    const double y=cppunivariate::distributions::qtriang(p,-1,0,0,false);
+    CHECK(y<0);
+    CHECK(y/(-p/(1+std::sqrt(1-p)))==doctest::Approx(1).epsilon(2e-13));
+    CHECK(cppunivariate::distributions::qtriang(p,0,1,1)/std::sqrt(p)==doctest::Approx(1).epsilon(2e-13));
+  }
+}
+
+TEST_CASE("triang TASK-134 scales before exponentiating extreme log probabilities") {
+  const double expected=std::exp(std::log(1e300)-800-std::log(2.));
+  CHECK(cppunivariate::distributions::qtriang(-800,0,1e300,0,true,true)/expected==doctest::Approx(1).epsilon(2e-13));
+  CHECK(cppunivariate::distributions::qtriang(-800,-1e300,0,0,false,true)/(-expected)==doctest::Approx(1).epsilon(2e-13));
+}

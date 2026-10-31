@@ -103,3 +103,22 @@ With both `prob` and `nu` held, `size = NULL` enumerates feasible integer sizes 
 ## d/p/q/r
 
 Finite log normalization is reused for tables; the binomial is the nu = 1 member. The size cap is 1e7.
+
+### Exact dpqr submodels (TASK-134)
+
+At size zero or probability zero/one, d/p/q evaluate the atom directly without
+constructing the enumeration table. Quantile endpoint queries retain the
+nominal design interval `[0, size]`. At `nu = 1`, d/p/q delegate to the binomial
+implementation: the binomial theorem supplies its normalizer. Apart from
+these and the geometric submodel below, members retain finite enumeration; no new complexity guarantee is made at the size cap
+for nondegenerate, non-binomial members. Seeded sampling retains its existing
+inverse-transform path and atomic shortcuts.
+
+At `nu = 0`, weights are proportional to `exp(k*eta)` with
+`eta = log(prob)-log1p(-prob)`. The normalizer is the finite geometric
+sum `(1-exp((size+1)*eta))/(1-exp(eta))`; positive eta is handled by
+reflection, and eta zero uses the uniform limit. Direct lower and upper
+partial sums use `log1mexp` before quantile bisection on the finite design
+support. Size one is binomial for every nu. These algebraic reductions are
+exact; agreement of their floating-point evaluations with enumeration is
+checked numerically.

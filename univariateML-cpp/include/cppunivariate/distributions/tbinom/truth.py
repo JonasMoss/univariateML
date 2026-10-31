@@ -23,8 +23,8 @@ def boundary_adjust(t):
     if t['size'] == 0: return {**t, 'a': -1., 'b': 0.}
     return {**t, 'a': -1.} if t['prob'] == 0 else t
 
-# Positive-truncation zero-probability limit is independent but public dpqr
-# currently fails; retain its complete reference separately from active rows.
+# The weak limit exists, but the dossier excludes zero-probability
+# conditioning events; retain its independent reference outside active rows.
 boundary_parameter_sets = [{'prob': 0., 'a': 0., 'b': 10., 'size': 10.}]
-truth_point_exclusions = [([0., 0., 10., 10.],
-    'TASK-106: positive-truncated binomial probability-zero limit returns NaN; see boundary report')]
+truth_point_exclusions = [([0.0, 0.0, 10.0, 10.0],
+    'TASK-134: excluded by tbinom/README.md Details: zero-probability conditioning event is an escape, not an attained member; public d/p/q/r intentionally return NaN. Use ztbinom for the attained positive-truncation boundary.')]

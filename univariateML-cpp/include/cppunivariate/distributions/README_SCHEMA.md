@@ -365,3 +365,26 @@ all composed parent coefficients, the mixing-family map and the total shift
 symbolically. Thus Yule--Simon's shifted beta-geometric mixture is inherited
 from its beta-negative-binomial relation, beta mixing of negative binomial,
 and the geometric size-one member; no redundant direct mixture arrow is kept.
+
+## Discrete quantile endpoints (TASK-134, 2026-10-31)
+
+For an explicit finite design support, quantiles at lower-tail probability zero
+and one return its nominal minimum and maximum, respectively, even when a
+parameter makes one of those endpoints have zero mass. Upper-tail probabilities
+reverse these endpoints; log probabilities use the identical rule. Interior
+probabilities invert the actual CDF. Positive truncation has minimum one;
+zero modification includes zero even at zero modification mass. An unbounded
+law that collapses to finitely many atoms uses its actual last atom as maximum.
+
+This keeps endpoint queries tied to the supplied design bounds and preserves
+parameter continuity of those endpoint queries through collapse. It matches
+R's `qbinom(c(0,1), 10, prob)` convention: both `prob = 0` and
+`prob = 1` return the nominal endpoints zero and ten (checked in R 4.6.1). Interior
+quantiles need not be continuous at an atomic probability jump. A nominal
+endpoint is a quantile convention, not an assertion of positive endpoint mass.
+
+An inclusive coefficient bound does not override the requirement that a
+conditioning event have positive probability. The tpois/tbinom dossiers exclude
+zero-probability conditioning events; their archived positive-truncation weak
+limits are not public members. The ztpois/ztbinom dossiers separately include
+those limits.

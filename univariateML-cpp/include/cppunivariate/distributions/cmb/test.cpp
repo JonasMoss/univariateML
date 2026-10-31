@@ -90,3 +90,31 @@ TEST_CASE("cmb attained point sampler ignores zero uniform") {
   struct ZeroRng { double runif(double,double) { return 0; } } rng;
   CHECK(cppunivariate::distributions::rcmb(rng,5,1,2)==5);
 }
+
+TEST_CASE("cmb TASK-134 size-cap atoms and binomial submodel") {
+  for(double p:{0.,1.}) {
+    const double atom=p==0?0:1e7;
+    CHECK(cppunivariate::distributions::dcmb(atom,1e7,p,2)==1);
+    CHECK(cppunivariate::distributions::pcmb(atom,1e7,p,2)==1);
+    CHECK(cppunivariate::distributions::qcmb(.5,1e7,p,2)==atom);
+    CHECK(cppunivariate::distributions::qcmb(1,1e7,p,2)==1e7);
+    CHECK(cppunivariate::distributions::qcmb(0,1e7,p,2)==0);
+  }
+  CHECK(cppunivariate::distributions::dcmb(3,10,.3,1)==cppunivariate::distributions::dbinom(3,10,.3,false));
+}
+
+TEST_CASE("cmb TASK-134 finite geometric shortcut agrees with enumeration") {
+  for(double p:{1e-12,.2,.5,.8,1-1e-12}) {
+    const auto t=cppunivariate::cmb_detail::table(20,p,0);
+    for(int k=0;k<=20;++k) {
+      CHECK(cppunivariate::distributions::dcmb(k,20,p,0,true)==doctest::Approx(t.density(k,true)).epsilon(1e-12));
+      for(bool lower:{false,true}) {
+        const double actual=cppunivariate::distributions::pcmb(k,20,p,0,lower,true);
+        const double expected=t.cdf(k,lower,true);
+        if(std::isinf(expected)) CHECK(actual==expected);
+        else CHECK(actual==doctest::Approx(expected).epsilon(1e-12));
+      }
+    }
+    CHECK(cppunivariate::distributions::qcmb(.3,20,p,0)==t.quantile(.3,true,false));
+  }
+}

@@ -19,14 +19,3 @@ def boundary_adjust(t):
     # Exercise the attained size cap on the exact atomic submodel, avoiding
     # ten million mpmath terms. This does not cover its nondegenerate members.
     return {**t, 'prob': 0.} if t['size'] == 10000000 else t
-
-def truth_workload_exclusion(theta, kind, row):
-    # Every C++ call constructs 10,000,001 entries, even on the atomic face.
-    # Keep both support endpoints and both interior median quantiles active.
-    # The complete independent rows remain stored as excluded references.
-    if theta['size'] != 10000000: return None
-    keep = (row[1] in (0., 10000000.) if kind == 'values' else
-            row[1:4] in ([1, 0, .5], [0, 0, .5]))
-    if not keep:
-        return 'TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report'
-    return None

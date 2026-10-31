@@ -81,10 +81,12 @@ inline special::LogTails zero_tails(int kind,double q,double a,double b,double p
 inline double cdf(int kind,double q,double a,double b,double p0,bool lower,bool log) {
   return special::tail_probability(zero_tails(kind,q,a,b,p0),lower,log);
 }
-inline double quantile(int kind,double p,double a,double b,double p0,bool lower,bool log) {
+inline double quantile(int kind,double p,double a,double b,double p0,bool lower,bool log,double start=-1) {
   if(!valid(kind,a,b)||!(p0>=0 && p0<=1))return special::kNaN;
-  const double start=p0==0?1:0;
-  const double end=p0==1?0:(point(kind,a,b)?1:(kind==3?a:special::kPosInf));
+  // Modification wrappers explicitly retain zero even when its mass is zero.
+  // The default preserves positive-truncation callers (including lgser).
+  if(start<0) start=p0==0?1:0;
+  const double end=kind==3?a:(p0==1?0:(point(kind,a,b)?1:special::kPosInf));
   return special::discrete_quantile(special::discrete_log_tails(p,lower,log),start,end,
       [=](double x){return zero_tails(kind,x,a,b,p0);});
 }

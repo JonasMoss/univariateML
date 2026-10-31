@@ -66,7 +66,7 @@ TEST_CASE("zib retains tiny positive probabilities") {
  CHECK(std::isfinite(cppunivariate::distributions::dzib(1,10,1e-20,.5,true)));
  CHECK(cppunivariate::distributions::pzib(0,10,1e-20,.5,false,true)==doctest::Approx(std::log(5e-20)));
  CHECK(cppunivariate::distributions::qzib(-50,10,1e-20,.5,false,true)==1);
- CHECK(cppunivariate::distributions::qzib(1,10,.4,1)==0);
+ CHECK(cppunivariate::distributions::qzib(1,10,.4,1)==10);
  CHECK(cppunivariate::distributions::pzib(4,5,1,.3)==doctest::Approx(.3));
 }
 
