@@ -48,10 +48,10 @@ export function supportTex(f: any, sym: Map<string, string>): string {
 }
 
 // Replace coefficient names in plain text by their TeX symbols (as notices.ts does).
-export function phrase(text: string, sym: Map<string, string>): string {
+export function phrase(text: string, sym: Map<string, string>, keepEnd = false): string {
   const symbol = (name: string) => `$${sym.get(name) || name}$`;
-  const parts = String(text).replace(/\\mathrm\{([^}]+)\}/g, (match, name) => sym.get(name) || match).trim().replace(/[.;]+$/, '').split(/(\$[^$]*\$|`[^`]*`)/g);
-  const out = parts.map((part, i) => i % 2 ? (part.startsWith('`') && sym.has(part.slice(1, -1)) ? symbol(part.slice(1, -1)) : part) : part.replace(/\b[A-Za-z][A-Za-z0-9_]*\b/g, w => sym.has(w) ? symbol(w) : w)).join('');
+  const parts = String(text).replace(/\\mathrm\{([^}]+)\}/g, (match, name) => sym.get(name) || match).trim().replace(keepEnd ? /$^/ : /[.;]+$/, '').split(/(\$[^$]*\$|`[^`]*`)/g);
+  const out = parts.map((part, i) => i % 2 ? (part.startsWith('`') && sym.has(part.slice(1, -1)) ? symbol(part.slice(1, -1)) : part) : part.replace(/(?<![\w-])[A-Za-z][A-Za-z0-9_]*(?![\w-])/g, w => sym.has(w) ? symbol(w) : w)).join('');
   return out.charAt(0).toUpperCase() + out.slice(1);
 }
 
@@ -66,7 +66,7 @@ const NONEXISTENCE = new Set(['Unbounded', 'Degenerate', 'UnboundedLikelihood', 
 export function groupLimits(f: any): LimitGroup[] {
   const groups = new Map<string, any>();
   for (const l of f.limits || []) {
-    const key = l.model ? `m:${l.model}` : `n:${l.name || l.status}`;
+    const key = l.model ? `m:${l.model}:${l.status}` : `n:${l.name || l.status}`;
     let g = groups.get(key);
     if (!g) { g = { model: l.model, name: l.name, status: l.status, kind: l.kind, free: false, held: [], freeRec: null, heldRec: null }; groups.set(key, g); }
     if (l.fixed?.length) { g.held.push(l.fixed); g.heldRec ??= l; }

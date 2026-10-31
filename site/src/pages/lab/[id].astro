@@ -36,7 +36,8 @@ const clean=(text:string)=>text.split(/^(?=### )/m).filter(part=>{if(part.starts
 const kept=sections.filter((s:any)=>{const t=s.title.toLowerCase();if(t==='decision history')return false;if(dated(s.title)){hiddenNotes++;return false;}return true;}).map((s:any)=>({...s,body:clean(s.body)})).filter((s:any)=>s.body.trim());
 const defProse=kept.filter((s:any)=>s.title.toLowerCase()==='d/p/q/r');
 const seeAlso=kept.filter((s:any)=>s.title.toLowerCase()==='see also');
-const mlProse=kept.filter((s:any)=>!['d/p/q/r','see also'].includes(s.title.toLowerCase()));
+const rNotes=kept.filter((s:any)=>s.title.toLowerCase()==='r notes');
+const mlProse=kept.filter((s:any)=>!['d/p/q/r','see also','r notes'].includes(s.title.toLowerCase()));
 const hasHistory=sections.some((s:any)=>s.title.toLowerCase()==='decision history');
 
 // Relations: limit models go to the ML section; the rest is structure.
@@ -61,13 +62,14 @@ const infoDensity=f.density_latex && f.density_latex.length < 160 ? await displa
 const cdfHtml=f.cdf_latex ? await display(`F(x) = ${f.cdf_latex}`) : '';
 const quantileHtml=f.quantile_latex ? await display(`Q(p) = ${f.quantile_latex}`) : '';
 const limitRows=await Promise.all(limits.map(async g=>({...g,whenHtml:await render(phrase(g.when,sym)),pathHtml:unwrap(await render(phrase(g.path,sym))),detectHtml:g.detect?unwrap(await render(phrase(g.detect,sym))):'',whenInline:lower(unwrap(await render(phrase(g.when,sym)))),modelName:(families as any[]).find(x=>x.id===g.model)?.name,heldHtml:await Promise.all(g.held.map(s=>inline(heldTex(s,sym))))})));
-const holdRows=await Promise.all(holds.map(async (h:any)=>({...h,heldHtml:h.held.length ? await inline(heldTex(h.held,sym)) : 'none (all free)',reasonHtml:await render(phrase(h.reason,sym))})));
+const holdRows=await Promise.all(holds.map(async (h:any)=>({...h,heldHtml:h.held.length ? await inline(heldTex(h.held,sym)) : 'none (all free)',reasonHtml:await render(phrase(h.reason,sym,true))})));
 const restrRows=await Promise.all(restr.map(async r=>{const s=sym.get(r.param)||r.param;const b=[r.lower!==undefined?`${s} \\ge ${r.lower}`:'',r.upper!==undefined?`${s} \\le ${r.upper}`:''].filter(Boolean).join(',\\ ');return {...r,boundHtml:await inline(b),reasonHtml:await render(phrase(r.reason.replace(/^\s*[A-Za-z_]\w*\s*(>=|<=)\s*-?[\d.]+\s*/,''),sym)),exemptHtml:r.exempt.length?await Promise.all(r.exempt.map(e=>inline(heldTex(e,sym)))):[]};}));
 const exStatement=f.existence?.statement ? await render(f.existence.statement) : '';
 const exReason=f.existence?.reason ? await render(f.existence.reason) : '';
 const freeRows=limitRows.filter(g=>g.free);
 const nonexist=freeRows.filter(g=>g.nonexistence);
 const boundary=freeRows.filter(g=>!g.nonexistence);
+const limitModels=[...new Map(limitRows.filter(g=>g.model).map(g=>[g.model,g])).values()];
 const heldCount=limitRows.filter(g=>g.held.length>0).length+holds.filter((h:any)=>h.held.length>0).length;
 const kindGroups=(()=>{const m=new Map<string,any>();for(const [i,p] of f.params.entries()){if(!p.kind||p.kind==='regular')continue;if(!m.has(p.kind))m.set(p.kind,{kind:p.kind,idx:[]});m.get(p.kind).idx.push(i);}return [...m.values()];})();
 const kindText:Record<string,[string,string,string,string]>={
@@ -82,6 +84,7 @@ const otherHolds=holdRows.filter((h:any)=>h.held.length>0);
 const relRows=await Promise.all(relations.map(async (r:any)=>({...r,noteHtml:r.note?await render(r.note):''})));
 const leadHtml=await render([f.summary,lead].filter(Boolean).join('\n\n'));
 const defProseHtml=await Promise.all(defProse.map(async (s:any)=>render(s.body)));
+const rNotesHtml=await Promise.all(rNotes.map(async (s:any)=>render(s.body)));
 const seeAlsoHtml=await Promise.all(seeAlso.map(async (s:any)=>render(s.body)));
 const mlProseHtml=await Promise.all(mlProse.map(async (s:any)=>({title:s.title,html:await render(s.body)})));
 const refs:string[]=f.references || [];
@@ -150,10 +153,11 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  {exReason && <div class="reason" set:html={exReason}/>}
  <p>{!exStatement && nonexist.length===0 && boundary.length===0 && blockingHolds.length===0 && 'No obstacle to existence is declared. '}
   {!exStatement && nonexist.length>0 && <>No MLE exists when {nonexist.map((g,i)=><>{i>0 && (i===nonexist.length-1 ? ' or ' : '; ')}<span set:html={lower(g.whenInline)}/></>)}. </>}
-  {boundary.length>0 && <>{nonexist.length>0 ? 'It can also fail to exist' : 'The MLE can fail to exist'} when the likelihood approaches its supremum in a limit: {boundary.map((g,i)=><>{i>0 && '; '}<span set:html={g.pathHtml}/> ({g.model ? <a href={`/lab/${g.model}/`}>{g.modelName || g.model}</a> : g.name})</>)}. </>}
-  {blockingHolds.map((h:any)=><>{h.status==='not-implemented' ? 'The fit with all coefficients free is not implemented' : 'No MLE exists with all coefficients free'}: <span set:html={lower(unwrap(h.reasonHtml))}/>. </>)}
-  {restrRows.length>0 && <>Fits are restricted to {restrRows.map((r:any,i:number)=><>{i>0 && (i===restrRows.length-1 ? ' and ' : ', ')}<span set:html={r.boundHtml}/> (<span set:html={lower(unwrap(r.reasonHtml))}/>)</>)}. </>}
-  {heldCount>0 ? <>This is for all coefficients free; holding coefficients changes it in {heldCount} case{heldCount>1 ? 's' : ''} (<a href="#ml-more">below</a>). </> : ''}
+  {!exStatement && boundary.length>0 && <>{nonexist.length>0 ? 'It can also fail to exist' : 'The MLE can fail to exist'} when the likelihood approaches its supremum in a limit: {boundary.map((g,i)=><>{i>0 && '; '}<span set:html={g.pathHtml}/> ({g.model ? <a href={`/lab/${g.model}/`}>{g.modelName || g.model}</a> : g.name})</>)}. </>}
+  {!exStatement && blockingHolds.map((h:any)=><>{h.status==='not-implemented' ? 'The fit with all coefficients free is not implemented' : 'No MLE exists with all coefficients free'}: <span set:html={lower(unwrap(h.reasonHtml))}/>. </>)}
+  {!exStatement && restrRows.length>0 && <>Fits are restricted to {restrRows.map((r:any,i:number)=><>{i>0 && (i===restrRows.length-1 ? ' and ' : ', ')}<span set:html={r.boundHtml}/> (<span set:html={lower(unwrap(r.reasonHtml))}/>)</>)}. </>}
+  {exStatement && limitModels.length>0 && <>Limit models: {limitModels.map((g,i)=><>{i>0 && ', '}<a href={`/lab/${g.model}/`}>{g.modelName || g.model}</a></>)}. </>}
+  {!exStatement && heldCount>0 ? <>This is for all coefficients free; holding coefficients changes it in {heldCount} case{heldCount>1 ? 's' : ''} (<a href="#ml-more">below</a>). </> : ''}
   {!f.existence?.uniqueness || f.existence.uniqueness==='unknown' ? 'Uniqueness has not been shown.' : f.existence.uniqueness==='numerical' ? 'Uniqueness rests on a numerical search, not a proof.' : ''}
  </p>
  <h3>Algorithm</h3>
@@ -169,7 +173,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
    </tr>)}
   </tbody></table>}
   {otherHolds.length>0 && <table><thead><tr><th>Held</th><th>Status</th><th>Reason</th></tr></thead><tbody>
-   {otherHolds.map((h:any)=><tr><td set:html={h.heldHtml}/><td>{h.status}</td><td set:html={h.reasonHtml}/></tr>)}
+   {otherHolds.map((h:any)=><tr><td set:html={h.heldHtml}/><td>{({'no-mle':'no MLE','not-implemented':'not implemented'} as Record<string,string>)[h.status] || h.status}</td><td set:html={h.reasonHtml}/></tr>)}
   </tbody></table>}
   {mlProseHtml.map(s=><>{s.title.toLowerCase()!=='details' && <h3>{s.title}</h3>}<div set:html={s.html}/></>)}
  </details>
@@ -179,6 +183,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
 <section aria-labelledby="usage">
  <h2 id="usage">Usage</h2>
  <h3>R</h3><pre><code>{f.examples}</code></pre>
+ {rNotesHtml.map(h=><div class="r-notes" set:html={h}/>)}
  {advised.length>0 && <ul class="r-notes">{advised.map((p:any)=><li><code>{p.name}</code>: {p.advice}</li>)}</ul>}
  <h3>C++</h3><pre><code>{f.cpp}</code></pre>
  <p class="small">Header-only C++17 with Boost.Math. Check the returned status before using a fit.</p>

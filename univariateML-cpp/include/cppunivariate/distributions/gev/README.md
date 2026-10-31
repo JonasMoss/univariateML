@@ -25,12 +25,12 @@ params:
     restriction:
       mechanism: endpoint
       exempt_when_held: []
-      reason: xi >= -1 prevents an upper-endpoint singularity.
+      reason: For xi below -1 the density is unbounded at the upper end of its support, so placing that end at the sample maximum makes the likelihood unbounded.
   - upper: 1.0
     restriction:
       mechanism: collapse
       exempt_when_held: []
-      reason: xi <= 1 prevents collapse, including with mu or sigma held (P0 extreme).
+      reason: Without an upper bound on xi, shrinking the scale while the lower end of the support moves to the sample minimum makes the likelihood unbounded for every sample, also with mu or sigma held. The bound xi <= 1 prevents this whenever fewer than half of the observations are tied at the minimum.
   kind: regular
 r:
   density: dgev
@@ -43,8 +43,8 @@ r:
     iterlim: Maximum iterations per scalar solve.
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
-- {name: held-location collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "Held mu equals the minimum and the scale-collapse face wins or diverges."}
-- {name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, xi) point beats the xi -> 1 collapse face's limiting likelihood."}
+- {name: scale collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum', detect: '$\mu$ is held at the sample minimum and at least half of the observations are tied there (with $\xi > 0$ held, already when $\xi k \ge n - k$ for $k$ ties)'}
+- {name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'at least half of the observations equal the sample minimum and, at exactly half, no interior fit beats this limit'}
 examples: |
   set.seed(1)
   x <- rml(200, mlgev())
@@ -71,53 +71,38 @@ fit:
   note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
 areas:
 - extremes and environment
+existence:
+  uniqueness: unknown
+  statement: >-
+    Without restrictions the likelihood is unbounded for every sample, so
+    fits keep the shape in $-1 \le \xi \le 1$. Within that range the only
+    known obstacle is a tie at the sample minimum. If more than half of the
+    observations equal the minimum, no MLE exists. If exactly half do, the
+    supremum is approached as $\xi \to 1$ and the scale shrinks, unless an
+    interior fit does better.
+  reason: >-
+    Near an end point of the support the density behaves like a power of the
+    distance to it. For $\xi < -1$ that power is negative at the upper end,
+    so moving the end point onto the sample maximum makes the likelihood
+    unbounded. At the lower end, shrinking the scale onto a
+    minimum tied $k$ times makes the likelihood behave like
+    $\sigma^{(n-k)/\xi - k}$, which is unbounded when $\xi k > n - k$; for
+    $\xi \le 1$ this needs $k > n/2$, and $k = n/2$ at $\xi = 1$ is the
+    boundary case.
 ---
 
-The generalized extreme value distribution models maxima; positive `xi` gives a heavy right tail, and `xi = 0` is the included Gumbel member.
+The generalized extreme value distribution models maxima. A positive shape $\xi$ gives a heavy right tail, a negative one a finite upper end point, and $\xi = 0$ is the Gumbel distribution.
 
 ## Details
 
-For positive held shape, collapse is governed by the multiplicity of the sample minimum; ties at other values do not cause this collapse.
+Fits restrict the shape to $-1 \le \xi \le 1$; see the existence notes for why. At $\xi = -1$ the upper end point belongs to the support, so the boundary fit, the reversed exponential distribution, is a proper member of the family. Fits with $-1 \le \xi < -1/2$ are non-regular: the usual asymptotic theory for the MLE does not apply there.
 
-Free-shape fitting restricts xi to `[-1, 1]`, with the attained closed
-reversed-exponential member at xi=-1. The default fit requires
-three finite nonconstant observations. Only ties at the minimum enter the
-collapse test. With held positive xi and free location and scale, a minimum
-repeated k times requires xi*k < n-k. With mu held at the minimum and
-scale free the same condition applies (with free xi, majority minimum ties diverge; half-minimum ties require
-comparison with the finite collapse face). Other held-location or held-scale fits
-permit small and constant samples when their likelihood has a finite
-maximum; incompatible support is rejected. Held coefficients are exact.
+Only ties at the sample minimum matter. Let $k$ observations equal the minimum. With $\xi > 0$ held and $\mu$ and $\sigma$ free, the likelihood is bounded only if $\xi k < n - k$. With all three coefficients free, more than $n/2$ ties always make it unbounded. At exactly $k = n/2$ the supremum is finite but is approached only in the limit; the fit compares the best interior fit with that limit and stops unless the interior fit is strictly better. In every sample tried so far the limit has won, but no proof covers all samples. The same conditions apply with $\mu$ held at the sample minimum and $\sigma$ free.
 
-With location, scale and shape all free, a minimum repeated more than
-n/2 times always diverges. At exactly n/2 (even n only), the xi -> 1
-collapse face has a finite but unattained supremum (free mu and sigma
-both move toward the degenerate limit); the fit compares the best
-interior candidate found by the ordinary shape-profile search against
-that closed-form limit and returns the interior fit when it is
-strictly higher, or stops with the same "scale collapse" reason
-otherwise. Fewer ties than n/2 are unaffected. In extensive testing, no
-interior candidate ever beat the limit at an exact n/2 tie, so this
-remains a "stops with the reason" case in every sample tried; no proof
-that this holds for every sample is claimed.
+Held shapes above 1 are accepted when the tie condition allows them. A held shape below $-1$ is accepted only when $\mu$ is held at or above the sample maximum, or when every coefficient is held.
 
-With fixed shape, held scale leaves a scalar location fit (the Gumbel
-location has an exact solution). Held location leaves a scalar scale fit
-above its support bound. With shape free, the shape profile compares
-interior maxima and both attained shape bounds. The implementation scans
-and refines scalar brackets after standardization; global discovery is
-checked against independent multistart density fits rather than proved.
+With the shape held, holding the scale leaves a one-dimensional fit for the location (exact for the Gumbel case), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The search is checked against independent multistart fits; it is not certified. The default fit needs three finite, non-constant observations.
 
-A held xi above one is accepted whenever the stated collapse test permits
-it. Held xi below -1 is accepted for fully held evaluation, or with mu held
-at or above the sample maximum; other subsets have endpoint divergence.
+## R notes
 
-The fitting restriction is for existence. Fits with `xi` in `[-1, -1/2)`
-are non-regular. At `xi = -1` the likelihood uses the closed upper endpoint
-(R7a): the uniform GPD or reversed-exponential GEV is attained.
-
-Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
-and emit a warning of class `univariateML_restricted`. Held coefficients are
-not flagged. README hold exemptions apply to free coefficients. Failed
-optimizers return a failure status unless the score norm in fitting
-coordinates is below `1e-3`; unresolved scalar searches stop.
+Estimated coefficients on a `fit_domain` bound carry `restricted` and emit a warning of class `univariateML_restricted`; held coefficients are not flagged. Failed optimizers return a failure status unless the score norm in fitting coordinates is below `1e-3`; unresolved scalar searches stop.

@@ -57,9 +57,10 @@ limit_sentence <- function(lim, model) {
   held <- unlist(lim$fixed)
   nl(
     if (length(held)) nl("With ", and_list(held), " held fixed: w") else "W",
-    "hen ", if (!is.null(lim$detect)) nl("`", lim$detect, "`") else "the data point to this limit",
+    "hen ", if (!is.null(lim$detect)) rd_math(lim$detect) else "the data point to this limit",
     ", the maximum likelihood estimator does not exist: the likelihood ",
-    "increases toward the ", target_name, " distribution",
+    if (has_target) nl("increases toward the ", target_name, " distribution")
+    else nl("approaches its supremum only in a limit (", target_name, ")"),
     if (!is.null(lim$when)) nl(" as ", rd_math(lim$when)) else "",
     ". `ml", model$id, "()` then stops with an error",
     if (has_target) nl("; use [ml", lim$model, "()] instead.") else "."
@@ -158,7 +159,8 @@ gen_doc <- function(model) {
        ". Design and threshold coefficients also use these defaults. Domains apply without fitting restrictions. Evaluate or simulate with [dml()], [pml()], [qml()] and [rml()], or draw its density with [graphics::plot()]. Methods requiring data stop. With data and every coefficient held, the log likelihood is evaluated without estimation (zero degrees of freedom)."),
     rd_math(s[["d/p/q/r"]] %||% character()),
     vapply(model$limits, limit_sentence, character(1), model = model),
-    rd_math(s$details %||% character())
+    rd_math(s$details %||% character()),
+    rd_math(s[["r notes"]] %||% character())
   )
   control_items <- vapply(names(model$control), function(arg) {
     default_txt <- if (arg %in% required_names(model)) {

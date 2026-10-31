@@ -10,6 +10,7 @@ params:
   simulate: 10
   integer: yes
   kind: design
+  advice: Supply the number of trials.
 - name: alpha
   symbol: '\alpha'
   role: shape
@@ -35,15 +36,15 @@ log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + lo
 limits:
   - model: binom
     when: '$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed'
-    detect: the binomial likelihood at prob = mean(x)/size is within 1e-8 times the sample size of the best beta-binomial fit, with the entire finite search interval bounded above independently of the dispersion score
+    detect: no beta-binomial fit beats the binomial with success probability $\bar x / n$ (up to $10^{-8}$ per observation)
     status: BinomialLimit
-  - name: two-point (0 and size)
+  - name: two-point law on 0 and n
     when: '$\alpha, \beta \to 0$ with $\alpha/(\alpha + \beta)$ fixed'
-    detect: size >= 2 and every observation is 0 or size, both values occurring
+    detect: '$n \ge 2$, every observation is 0 or $n$, and both values occur'
     status: TwoPointLimit
   - model: binom
     when: '$\alpha/(\alpha + \beta) \to 0$ or $1$'
-    detect: all observations are 0 or all equal size
+    detect: 'all observations are 0, or all equal $n$'
     status: PointMass
 references:
   - "Griffiths, D. A. (1973). Maximum likelihood estimation for the beta-binomial distribution and an application to the household distribution of the total number of cases of a disease. Biometrics, 29(4), 637-648. doi:10.2307/2529131."
@@ -51,15 +52,15 @@ references:
 holds:
 - held: []
   status: not-implemented
-  reason: "Free size requires comparing every finite-size binomial and two-point face with the negative-binomial and Poisson limits; no reliable global integer-tail bound is available."
+  reason: "Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known."
 - held:
   - alpha
   status: not-implemented
-  reason: "With alpha held, the negative-binomial limit has that same shape; no reliable integer-tail bound excludes a later size beating both the finite profile and this limit."
+  reason: "Estimating size with alpha held is not implemented. As size grows the fit approaches a negative binomial with the same alpha, and no usable bound rules out a larger size beating both."
 - held:
   - beta
   status: not-implemented
-  reason: "With beta held, positive-count probabilities vanish uniformly as size grows, but the proved tail bound is too weak for practical enumeration and fixed-size point-mass limits still require comparison."
+  reason: "Estimating size with beta held is not implemented. A tail bound shows that the likelihood eventually decreases in size when some count is positive, but it is too weak for a practical search, and the point-mass limits at each size still need comparison."
 fit_args:
   size: 10
 examples: |
@@ -79,12 +80,24 @@ areas:
 - counts and ecology
 classification: specialist
 classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+existence:
+  uniqueness: unknown
+  statement: >-
+    With $n$ known and both shapes free, no MLE exists in three cases: when
+    no beta-binomial fits better than the binomial with the same mean, when
+    every count is 0 or $n$ with both values present, and when all counts
+    are 0 or all equal $n$. The likelihood is then maximised in the limit by
+    a binomial, by a two-point law on 0 and $n$, or by a point mass. Holding
+    one shape removes the first two cases. With $n = 1$ the shapes are not
+    identified, because the model is a Bernoulli distribution.
 ---
 
-The beta-binomial distribution is a binomial with a beta-distributed success probability; it models overdispersed counts out of a known number of trials. `size` must be supplied.
+The beta-binomial distribution is a binomial distribution whose success probability is itself beta distributed. It models overdispersed counts out of a known number of trials $n$.
 
 ## Details
 
-`size` is a required design coefficient. A supplied value is held fixed and is not counted in `logLik()` degrees of freedom, AIC or BIC. Passing `NULL` estimates it when both shapes are held. Holding just `alpha` or just `beta` at fixed size removes the binomial and two-point escapes; only all-0 or all-`size` samples then have no maximum likelihood estimate. With `size = 1` both shapes free are not identified (the model is Bernoulli). `model_select()` skips the beta-binomial because it cannot supply `size`.
+The number of trials $n$ is normally known. With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. The search stops after one million candidates. Estimating $n$ with a shape free is not implemented, because the fit at each fixed $n$ can itself escape to a binomial or two-point law, and these limits must be compared across all $n$. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
 
-Holding both positive shapes gives an attained integer-size maximum. Each observed mass decreases once `size + 1 >= x * (alpha + beta - 1) / alpha`; the fitter enumerates through that bound. More than one million candidates stops with a work-budget failure. With size also held this evaluates the likelihood, including size zero. Free size with either shape free remains unavailable: the fixed-size kernel can itself escape to binomial or two-point laws, which must be compared across all sizes rather than terminating at the first such candidate. For held beta, a uniform tail bound proves coercivity for samples containing a positive count, but is too weak for a practical search. For the other subsets a useful tail bound remains open. Holding beta is not equivalent to holding alpha under reflection when size is free, because reflecting the sample would depend on the candidate size.
+## R notes
+
+`size = NULL` estimates the number of trials when both shapes are held. A supplied `size` is held fixed and is not counted in the degrees of freedom of `logLik()`, AIC or BIC. `model_select()` skips this family because it cannot supply `size`.
