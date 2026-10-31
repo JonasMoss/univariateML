@@ -20,6 +20,8 @@ def snippet(folder, m):
     # Public result-returning overloads, excluding detail solvers.
     matches = list(re.finditer(r'inline\s+([\w:]+)\s+((?:\w+_mle|fit_\w+))\s*\(\s*(i?span)\s+\w+\s*[,)]', header))
     adapter = (ROOT/f'bindings/r/distributions/{folder.name}/adapter.cpp').read_text()
+    shared = ROOT/f'bindings/common/distributions/{folder.name}/fit.hpp'
+    if shared.exists(): adapter += '\n' + shared.read_text()
     choices = [s for s in matches if s[2] in adapter]
     if not choices: raise ValueError(f'No public fitter for {folder.name}')
     def required_arguments(match):

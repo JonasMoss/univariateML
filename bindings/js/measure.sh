@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Run through run4 (EMCC_CORES=4); builds are sequential.
+# Reserve all four CPU slots before invoking; builds remain sequential.
+# Pilot optimization/native timings remain in the 2026-10-30 report/base revision.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
-for opt in O2 O3 Os; do bash bindings/js/build.sh "$opt" "$opt"; done
-for family in EXP GAMMA GB2; do bash bindings/js/build.sh O2 "without-${family}" "-DOMIT_${family}"; done
-node --v8-pool-size=1 bindings/js/benchmark.mjs
-boost=$(Rscript -e 'cat(system.file("include", package="BH"))')
-c++ -std=c++17 -Wall -Wextra -Wpedantic -IunivariateML-cpp/include -IunivariateML-cpp/tests -I"$boost" bindings/js/benchmark.cpp -o build/scratch/native-benchmark
-build/scratch/native-benchmark > build/scratch/native-benchmark.txt
-c++ -O2 -std=c++17 -IunivariateML-cpp/include -IunivariateML-cpp/tests -I"$boost" bindings/js/benchmark.cpp -o build/scratch/native-benchmark-O2
-build/scratch/native-benchmark-O2 > build/scratch/native-benchmark-O2.txt
+export TMPDIR="$PWD/build/tmp" JUST_TEMPDIR="$PWD/build/tmp" XDG_RUNTIME_DIR="$PWD/build/tmp"
+mkdir -p "$TMPDIR" build/scratch
+JS_FAMILIES=exp bash bindings/js/build.sh O2 exp-only > build/scratch/js-exp-build.log 2>&1
+JS_FAMILIES=gb2 bash bindings/js/build.sh O2 gb2-only > build/scratch/js-gb2-build.log 2>&1
+unset JS_FAMILIES
+just js-build > build/scratch/js-final-build.log 2>&1
+node --v8-pool-size=1 bindings/js/measure-all.mjs exp-only gb2-only univariateML > build/scratch/module-layout.log 2>&1
+just js-test > build/scratch/js-final-test.log 2>&1

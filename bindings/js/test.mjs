@@ -11,6 +11,10 @@ test('public facade',async()=>{
  const facade=await import('./index.mjs');
  const api=await facade.default();
  assert.deepEqual(Object.keys(api),facade.families);
+ for(const f of facade.families) {
+  for(const op of ["d","p","q","r"]) assert.equal(typeof api[f][op],"function",`${f}.${op}`);
+  assert.equal(typeof api[f].fit,facade.fitFamilies.includes(f)?"function":"undefined",`${f}.fit`);
+ }
  for(const f of ['exp','gamma','gb2']) {
   const g=read(f,'golden'),p=Object.values(g.estimates),x=new Float64Array([.2,.5]);
   assert.deepEqual(api[f].d(x,p,{log:true}),m['d'+f](x,p,true,true));
@@ -24,15 +28,9 @@ test('public facade',async()=>{
  assert.throws(()=>api.exp.r(1,[1],-1),RangeError);
 });
 const failures=[];let checks=0;
-const close=(a,b,t)=>a===b||Number.isNaN(a)&&Number.isNaN(b)||Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=t*Math.max(1,Math.abs(b));
-for(const f of ['exp','gamma','gb2']) {
- test(`${f} golden`,()=>{
-  const g=read(f,'golden'),r=m[`fit${f}`](new Float64Array(g.data),{},{});
-  assert.equal(r.status,'Ok');
-  for(const [k,v] of Object.entries(g.estimates)) assert.ok(Math.abs(r.estimates[k]-v)<=(f==='gb2'?1e-5:1e-10)*Math.max(Math.abs(v),Math.abs(r.estimates[k])),`${k}: ${r.estimates[k]} vs ${v}`);
-  assert.ok(Math.abs(r.logLik-g.logLik)<=(f==='gb2'?1e-9:1e-10)*Math.max(Math.abs(r.logLik),Math.abs(g.logLik)));
- });
- test(`${f} truth (all entries, native tolerances)`,()=>{
+const dpqrFamilies=JSON.parse(readFileSync(new URL('../../build/js/generated/families.json',import.meta.url),'utf8'));
+for(const f of dpqrFamilies) test(`${f} generated truth and sampler`,()=>checkTruth(f));
+function checkTruth(f) {
   const t=read(f,'truth');const call=(op,x,p,lower=true,log=true)=>m[`${op}${f}`](new Float64Array([x]),p,lower,log)[0];
   function check(kind,row,a,b,ok){checks++;if(!ok)failures.push({family:f,kind,row,actual:a,truth:b,error:Math.abs(a-b),scaledError:Math.abs(a-b)/Math.max(1,Math.abs(b))});}
   for(const row of t.values){const [i,x,d,l,u]=row,p=t.parameters[i];
@@ -50,10 +48,20 @@ for(const f of ['exp','gamma','gb2']) {
    for(const row of t.values){if(row[0]!==i)continue;const p=Math.exp(row[3]);if(p<1e-3||p>1-1e-3)continue;const got=draw.reduce((s,x)=>s+(x<=row[1]),0)/n;check('r_cdf',row,got,p,Math.abs(got-p)<=5*Math.sqrt(p*(1-p)/n)+1/n);}
   }
   const own=failures.filter(x=>x.family===f);assert.equal(own.length,0,JSON.stringify(own));
+}
+
+const close=(a,b,t)=>a===b||Number.isNaN(a)&&Number.isNaN(b)||Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=t*Math.max(1,Math.abs(b));
+for(const f of ['exp','gamma','gb2']) {
+ test(`${f} golden`,()=>{
+  const g=read(f,'golden'),r=m[`fit${f}`](new Float64Array(g.data),{},{});
+  assert.equal(r.status,'Ok');
+  for(const [k,v] of Object.entries(g.estimates)) assert.ok(Math.abs(r.estimates[k]-v)<=(f==='gb2'?1e-5:1e-10)*Math.max(Math.abs(v),Math.abs(r.estimates[k])),`${k}: ${r.estimates[k]} vs ${v}`);
+  assert.ok(Math.abs(r.logLik-g.logLik)<=(f==='gb2'?1e-9:1e-10)*Math.max(Math.abs(r.logLik),Math.abs(g.logLik)));
  });
  test(`${f} every held subset`,()=>{const g=read(f,'golden'),names=Object.keys(g.estimates);for(let mask=1;mask<1<<names.length;mask++){const held=Object.fromEntries(names.filter((_,i)=>mask>>i&1).map(k=>[k,g.estimates[k]]));const r=m[`fit${f}`](new Float64Array(g.data),held,{});for(const [k,v] of Object.entries(held))assert.equal(r.estimates[k],v);assert.equal(r.status,'Ok');}});
 }
 test('diagnostics and vector flags',()=>{
+ for(const data of [[-1,3],[NaN,2],[Infinity,2]]) assert.throws(()=>m.fitexp(new Float64Array(data),{},{}),/Data must be nonnegative and finite/);
  assert.throws(()=>m.fitexp(new Float64Array([0,0]),{},{}),/does not exist when every observation is zero/);
  assert.throws(()=>m.fitgamma(new Float64Array([1,1]),{},{}),/does not exist for constant data/);
  assert.throws(()=>m.fitgamma(new Float64Array(read('gamma','golden').data),{scale:.5},{iterlim:1}),/Gamma delegate optimizer IterationFailure; increase iterlim./);
