@@ -2,6 +2,7 @@
 #include "../tpois/profile.hpp"
 #include "../binom/dpqr.hpp"
 #include "../binom/mle.hpp"
+#include <map>
 namespace cppunivariate {
 inline truncated_detail::Result tbinom_mle(ispan x, double a, double b, double size, double held=std::numeric_limits<double>::quiet_NaN()) {
   if(x.size()==0)return {0,0,0,truncated_detail::Status::InvalidInput};
@@ -38,6 +39,10 @@ enum class TbinomStatus {
   Ok, InvalidInput, LowerPointMass, UpperPointMass, Unidentified, NumericalFailure, TpoisLimit
 };
 namespace tbinom_detail {
+#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
+struct SizeSearchDiagnostic { bool certified; double cutoff; double work; };
+inline thread_local SizeSearchDiagnostic size_search_diagnostic{false,0,0};
+#endif
 // Poisson-scale coordinates: eta = log(size * prob / (1-prob)).
 // Removing size^x from the combinatorial factor leaves only log1p(-j/size)
 // corrections. Unlike lgamma(size-x+1)-lgamma(size+1), this remains accurate
@@ -122,6 +127,9 @@ struct TbinomDesignResult {
 };
 inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double size,
     double prob=std::numeric_limits<double>::quiet_NaN()) {
+#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
+  tbinom_detail::size_search_diagnostic={false,0,0};
+#endif
   const auto invalid=[&]() {return TbinomDesignResult{0,a,b,size,0,0,TbinomStatus::InvalidInput};};
   if(x.size()==0)return invalid();
   int xmin=x[0],xmax=x[0];for(int v:x){if(v<0)return invalid();xmin=std::min(xmin,v);xmax=std::max(xmax,v);}
@@ -180,9 +188,14 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
       (r.status==BinomStatus::Underdispersed ? TbinomStatus::TpoisLimit : TbinomStatus::NumericalFailure);
     return {r.prob,a,b,r.size,r.logLik,r.iterations,status};
   }
+  std::map<double,TbinomDesignResult> evaluated;
   const auto evaluate=[&](double k) {
+    const auto found=evaluated.find(k);
+    if(found!=evaluated.end())return found->second;
     const auto r=tbinom_detail::profile(x,lo,upper,k);
-    return TbinomDesignResult{r.parameter,a,b,k,r.logLik,r.iterations,tbinom_detail::convert(r.status)};
+    const TbinomDesignResult result{r.parameter,a,b,k,r.logLik,r.iterations,tbinom_detail::convert(r.status)};
+    evaluated.emplace(k,result);
+    return result;
   };
   auto best=evaluate(xmax);
   if(best.status!=TbinomStatus::Ok)return best;
@@ -225,6 +238,67 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
     near_face=std::abs(candidate.logLik-tp.logLik)<allowance ? near_face+1 : 0;
     if(j>128 && near_face>=4) {
       if(best.logLik<=tp.logLik+allowance)best.status=TbinomStatus::TpoisLimit;
+      else if(std::isfinite(upper)) {
+        // For N>=U the difference from the Poisson profile is bounded by
+        // sum_i (c_N(x_i)-c_N(U)), c_N(k)=sum_{h<k} log(1-h/N).
+        // This bound decreases in N. Comparisons use the existing likelihood
+        // margin, not directed rounding; see the size-search report.
+        if(upper>2000000 || upper>=4503599627370496.)return best;
+        std::vector<int> counts(static_cast<std::size_t>(upper)+1,0);
+        for(int v:x)++counts[static_cast<std::size_t>(v)];
+        const auto correction=[&](double size) {
+          double sum=0;std::size_t count=0;
+          for(int h=0;h<static_cast<int>(upper);++h) {
+            count+=static_cast<std::size_t>(counts[static_cast<std::size_t>(h)]);
+            if(count)sum-=static_cast<double>(count)*std::log1p(-h/size);
+          }
+          return sum;
+        };
+        const auto cutoff=[&](double target) {
+          double l=upper,h=upper;
+          while(!(tp.logLik+correction(h)<target)) {
+            if(h>=2251799813685248.)return std::numeric_limits<double>::infinity();
+            h=std::max(h+1,2*h);
+          }
+          while(h-l>1) {
+            const double mid=std::floor(l+(h-l)/2);
+            if(tp.logLik+correction(mid)<target)h=mid;else l=mid;
+          }
+          return tp.logLik+correction(l)<target ? l : h;
+        };
+        double end=cutoff(best.logLik-allowance);
+        // Estimate work as observation/kernel operations plus 100 scans of
+        // the conditioning window per profile, with a 400-operation floor.
+        // Forty million units bounds cheap profiles to 100,000 evaluations.
+        double per_profile=static_cast<double>(x.size())+100*(upper-lo+1);
+        for(int v:x)per_profile+=v;
+        per_profile=std::max(400.,per_profile);
+        double missing=end-static_cast<double>(xmax)+1;
+        for(const auto &entry:evaluated)
+          if(entry.first>=xmax && entry.first<=end)missing-=1;
+#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
+        tbinom_detail::size_search_diagnostic.cutoff=end;
+        tbinom_detail::size_search_diagnostic.work=missing*per_profile;
+#endif
+        if(!std::isfinite(end) || end+1==end || missing*per_profile>40000000.)return best;
+        const auto original=best;
+        // Sizes below U have changing conditioning support and must also be
+        // enumerated if the exploratory search did not already visit them.
+        for(double size=xmax;size<=end;size+=1) {
+          if(!std::isfinite(end) || size+1==size)return original;
+          if(evaluated.find(size)!=evaluated.end())continue;
+          const auto f=evaluate(size);
+          if(f.status!=TbinomStatus::Ok)return original;
+          if(f.logLik>best.logLik) {
+            best=f;
+            end=cutoff(best.logLik-allowance);
+          }
+        }
+#ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
+        tbinom_detail::size_search_diagnostic.certified=true;
+        tbinom_detail::size_search_diagnostic.cutoff=end;
+#endif
+      }
       return best;
     }
     older=previous;old_value=previous_value;previous=k;previous_value=candidate.logLik;

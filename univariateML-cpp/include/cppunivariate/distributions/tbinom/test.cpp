@@ -157,3 +157,29 @@ TEST_CASE("tbinom attained point sampler ignores zero uniform") {
   struct ZeroRng { double runif(double,double) { return 0; } } rng;
   CHECK(cppunivariate::distributions::rtbinom(rng,1,-1,6,5)==5);
 }
+
+TEST_CASE("tbinom: finite window tail certificate enumerates the remaining sizes") {
+  const std::vector<int> x{7,7,7,8,8,5,7,5,5,6,7,5,7,7,7,6};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},nan,nan,nan);
+  REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
+  CHECK(f.size==8);
+  const auto face=cppunivariate::tbinom_detail::profile({x.data(),x.size()},5,8,-1);
+  REQUIRE(face.status==cppunivariate::truncated_detail::Status::Ok);
+  CHECK(f.logLik>face.logLik+1e-9*x.size());
+  // Independent enumeration through the numerical tail cutoff 327.
+  for(int size=8;size<=327;++size) {
+    const auto g=cppunivariate::tbinom_mle({x.data(),x.size()},4,8,size);
+    REQUIRE(g.status==cppunivariate::truncated_detail::Status::Ok);
+    CHECK(g.logLik<=f.logLik+1e-8);
+  }
+}
+
+TEST_CASE("tbinom: expensive certificate preserves the numerical fit") {
+  std::vector<int> x(101,100);x[0]=0;
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto f=cppunivariate::tbinom_design_mle({x.data(),x.size()},-1,2000,nan);
+  REQUIRE(f.status==cppunivariate::TbinomStatus::Ok);
+  CHECK(f.size==3350);
+  CHECK(f.logLik==doctest::Approx(-421.73150333619617).epsilon(1e-10));
+}
