@@ -167,6 +167,10 @@ Cards: TASK-113 to TASK-117 (TASK-98 for hyper/nhyper).
 
 ## Deferred families (roadmap)
 
+[Useful density proposals](roadmap/2026-10-31-useful-density-proposals.md) banks
+exponentiated Weibull, GIG, PGW, sinh–arcsinh and unified Prentice gamma, with
+priorities and preliminary ML/dpqr risks. No implementation is underway.
+
 Card: TASK-110.
 
 `dev/roadmap/2026-10-29-classical-failure-families.md`: threshold

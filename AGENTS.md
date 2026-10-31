@@ -5,6 +5,9 @@ and build workflow. Do not push or publish without an explicit user request.
 
 ## Banked plans
 
+- [Useful density proposals](dev/roadmap/2026-10-31-useful-density-proposals.md):
+  exponentiated Weibull, GIG, PGW, sinh–arcsinh and unified Prentice gamma; priorities and preliminary ML/dpqr risks.
+
 - [Package structure and mathematical documentation](dev/roadmap/2026-10-30-package-and-documentation.md):
   standalone C++, generated R package, custom mathematical website and algorithm history.
 - [Inference regularity and derivative support](dev/roadmap/2026-10-30-inference-and-dqm.md):

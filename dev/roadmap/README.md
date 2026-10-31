@@ -22,6 +22,10 @@ the queue.
 
 ## Index
 
+- [2026-10-31 — Useful density proposals](2026-10-31-useful-density-proposals.md)
+  *(banked)*: five application-oriented candidates, parameter domains, priorities,
+  references and preliminary ML/dpqr difficulty assessment.
+
 - [Decision log](decisions.md): dated project decisions with evidence; read
   this first for what was chosen and why.
 
