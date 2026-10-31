@@ -83,3 +83,18 @@ test_that("truncated Poisson null bounds, singleton and escape paths", {
   for(args in list(list(a=2,b=NULL),list(a=NULL,b=2),list(a=NA_real_,b=10),list(a=-1,b=NaN),list(a=-1,b=10,lambda=NA_real_),list(a=-1,b=10,lambda=-1),list(a=-1,b=10,lambda=Inf)))
     expect_error(do.call(mltpois,c(list(x=1:4),args)))
 })
+
+test_that("TASK-134 zero-rate conditional law respects the declared domain", {
+  expect_equal(dtpois(0, 0, -1, 10), 1)
+  expect_equal(ptpois(0, 0, -1, 10), 1)
+  expect_equal(qtpois(.5, 0, -1, 10), 0)
+  expect_true(is.nan(expect_warning(dtpois(1, 0, 0, 10), "NaNs produced")))
+  expect_true(is.nan(expect_warning(ptpois(1, 0, 0, 10), "NaNs produced")))
+  expect_true(is.nan(expect_warning(qtpois(.5, 0, 0, 10), "NaNs produced")))
+  expect_true(all(is.nan(expect_warning(rtpois(3, 0, 0, 10), "NaNs produced"))))
+})
+
+test_that("TASK-134 finite conditioning designs retain quantile endpoints", {
+  expect_equal(qtpois(c(0, .5, 1), 0, -1, 10), c(0, 0, 10))
+  expect_equal(qtpois(c(0, 1), 0, -1, 10, lower.tail = FALSE), c(10, 0))
+})

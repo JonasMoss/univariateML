@@ -169,3 +169,13 @@ test_that("tbinom attained point member evaluates and samples exactly", {
   expect_equal(qml(.5,fit),5)
   expect_equal(rml(10,fit),rep(5,10))
 })
+
+test_that("TASK-134 zero-probability conditioning is excluded explicitly", {
+  expect_equal(dtbinom(0, 0, -1, 10, 10), 1)
+  expect_equal(ptbinom(0, 0, -1, 10, 10), 1)
+  expect_equal(qtbinom(.5, 0, -1, 10, 10), 0)
+  expect_true(is.nan(expect_warning(dtbinom(1, 0, 0, 10, 10), "NaNs produced")))
+  expect_true(is.nan(expect_warning(ptbinom(1, 0, 0, 10, 10), "NaNs produced")))
+  expect_true(is.nan(expect_warning(qtbinom(.5, 0, 0, 10, 10), "NaNs produced")))
+  expect_true(all(is.nan(expect_warning(rtbinom(3, 0, 0, 10, 10), "NaNs produced"))))
+})

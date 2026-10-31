@@ -82,3 +82,22 @@ The mean and variance identify both rates. Likelihoods are bounded by one per ob
 ## d/p/q/r
 
 Zero rates include the signed Poisson limits; sampling subtracts two independent Poisson variates.
+
+### Boundary log tails (TASK-134)
+
+When one rate is zero, CDF evaluation delegates to the Poisson log-tail
+implementation, reflecting the count and reversing the tail for a negative
+Poisson law. With both rates positive, probabilities below `1e-280` are summed
+in log mass coordinates rather than taking a logarithm of a subnormal CDF.
+Skellam masses are log-concave (convolution of a Poisson sequence and a
+reflected Poisson sequence). In a descending tail, the next mass ratio thus
+bounds subsequent ratios, giving a geometric remainder bound. Summation stops
+when that bound is at most `2e-16` times the sum; inability to advance the count
+returns NaN. This is a numerical stopping certificate using computed masses,
+not a directed-rounding bound on the Bessel approximations.
+
+For a negative count `v`, the positive Bessel series also gives
+`I_(n+1)(z)/I_n(z) <= z/(2*(n+1))`, hence the next descending mass ratio
+is at most `mu2/(1-v)`. This analytic geometric bound can certify a
+single-term tail at enormous counts where the next integer is not
+representable. It avoids treating representational stagnation as convergence.

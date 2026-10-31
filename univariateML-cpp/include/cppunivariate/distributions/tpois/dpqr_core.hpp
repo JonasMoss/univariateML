@@ -34,7 +34,7 @@ inline double quantile(double p,double parameter,double a,double b,double size,b
   const double lp=logp?p:std::log(p),lo=std::max(0.,std::floor(a)+1),hi=std::min(std::floor(b),size<0?INFINITY:size);
   if(std::isnan(lp)||lp>0||(!logp&&p<0))return std::numeric_limits<double>::quiet_NaN();
   if(std::isnan(evaluate(false,lo,parameter,a,b,size,true,true)))return std::numeric_limits<double>::quiet_NaN();
-  if(size<0 && parameter==0)return 0;
+  if(size<0 && parameter==0 && !std::isfinite(hi))return 0;
   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
   auto reached=[&](double q){double v=evaluate(true,q,parameter,a,b,size,lower,true);return lower?v>=lp:v<=lp;};
   double left=lo-1,right=std::isfinite(hi)?hi:std::max(1.,lo);

@@ -4739,7 +4739,7 @@
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "647898d93c7bf74204b67f73ad58864401bf9fc0063db7d416c78f60d26bf27b",
+  "input_sha256": "6a3911880b30e928d7779e002b878c8cc4e30f062615704b7fb52dd824239021",
   "sampler_points": [
     [
       4
@@ -4756,7 +4756,7 @@
         10.0,
         10.0
       ],
-      "reason": "TASK-106: positive-truncated binomial probability-zero limit returns NaN; see boundary report",
+      "reason": "TASK-134: excluded by tbinom/README.md Details: zero-probability conditioning event is an escape, not an attained member; public d/p/q/r intentionally return NaN. Use ztbinom for the attained positive-truncation boundary.",
       "normalization": [
         {
           "point": 0,

@@ -97,3 +97,9 @@ conditioning limit is defined as an attained member only for `mlztpois`. Thus
 `mlztpois` retains its attained boundary while `mltpois` reports the point-mass escape.
 
 With a free bound, the conditioning support tightens to the corresponding sample extreme. The strict lower bound is nonunique in `[min(x) - 1, min(x))`; the returned representative is `min(x) - 1`. On singleton support every positive rate maximizes the likelihood; a free rate is represented by one. For nonsingleton support the empirical mean must lie strictly between the effective integer bounds, except that a zero mean attains rate zero when zero is in the support. Otherwise the fitter stops at the lower or upper point-mass limit.
+
+Scalar d/p/q/r use the same positive-probability conditioning contract. At
+`lambda = 0`, they accept a nonempty window containing zero and return its
+atom at zero; a window excluding zero returns NaN. Its weak-limit atom at the
+first allowed count is not an attained member here. Use the separately defined
+ztpois family for its attained positive-truncation zero-rate limit.

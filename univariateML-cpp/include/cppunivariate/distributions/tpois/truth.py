@@ -21,5 +21,5 @@ def boundary_adjust(t):
 
 # Retain the independent weak limit under strictly positive truncation too.
 boundary_parameter_sets = [{'lambda': 0., 'a': 0., 'b': 10.}]
-truth_point_exclusions = [([0., 0., 10.],
-    'TASK-106: positive-truncated Poisson zero-rate limit returns NaN; see boundary report')]
+truth_point_exclusions = [([0.0, 0.0, 10.0],
+    'TASK-134: excluded by tpois/README.md Details: zero-probability conditioning event is an escape, not an attained member; public d/p/q/r intentionally return NaN. Use ztpois for the attained positive-truncation boundary.')]

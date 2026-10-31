@@ -7017,10 +7017,98 @@
       0.0,
       0,
       0.0
+    ],
+    [
+      8,
+      1,
+      1,
+      0.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      8,
+      1,
+      0,
+      1.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      8,
+      0,
+      1,
+      "-Inf",
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      8,
+      0,
+      0,
+      0.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      11,
+      1,
+      1,
+      0.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      11,
+      1,
+      0,
+      1.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      11,
+      0,
+      1,
+      "-Inf",
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      11,
+      0,
+      0,
+      0.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "2db9effaa640bb2a0b9c5eaea361b13c80ee0f59a426c528f9ad25f1f3fcd3ef",
+  "input_sha256": "fd7234a90c1dad791fcbc5be69e201fc7c299385824edfda77ebcd0e7e525b32",
   "sampler_points": [
     [
       6
@@ -7028,119 +7116,5 @@
     [
       1
     ]
-  ],
-  "excluded_quantiles": [
-    {
-      "row": [
-        8,
-        1,
-        1,
-        0.0,
-        10.0,
-        10.0,
-        10.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        8,
-        1,
-        0,
-        1.0,
-        10.0,
-        10.0,
-        10.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        8,
-        0,
-        1,
-        "-Inf",
-        10.0,
-        10.0,
-        10.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        8,
-        0,
-        0,
-        0.0,
-        10.0,
-        10.0,
-        10.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        11,
-        1,
-        1,
-        0.0,
-        10.0,
-        10.0,
-        10.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        11,
-        1,
-        0,
-        1.0,
-        10.0,
-        10.0,
-        10.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        11,
-        0,
-        1,
-        "-Inf",
-        10.0,
-        10.0,
-        10.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        11,
-        0,
-        0,
-        0.0,
-        10.0,
-        10.0,
-        10.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    }
   ]
 }

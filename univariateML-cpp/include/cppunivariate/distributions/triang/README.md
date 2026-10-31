@@ -88,3 +88,13 @@ the smallest mode is returned for numerical ties, with a warning when another
 candidate is within `1e-10 * length(x)` in log likelihood.
 
 For a constant sample at `z` and held mode `c < z`, a free lower endpoint equals `c`; a free upper endpoint is `z + sqrt((z-a)*(z-c))`. The reflected formulas apply when `c > z`. These attained exterior-mode maxima are evaluated directly.
+
+### Endpoint-mode inversion (TASK-134)
+
+For `c = a`, write `z = (x-a)/(b-a)`. Then `F = z(2-z)`, so the
+lower inverse is `z = p/(1+sqrt(1-p))`. For `c = b` the reflected
+formula gives the distance from `b`. These identities avoid cancellation in
+the short distance; the other half of each inverse uses the direct square
+root. Public quantiles use log-tail inputs before exponentiating the required
+small probability. The historical sampling transform is retained for seeded
+sampling compatibility.

@@ -14,30 +14,3 @@ def build(t, logd):
         k=1 if t['prob'] == 0 else hi
         return atomic({0: t['p0'], k: 1-t['p0']}, lo, hi)
     return finite_pmf(logd,0,t['size'])
-
-
-# Independent rows retained outside active checks; exact findings in the TASK-106 report.
-truth_exclusions = {'quantiles': [([10.0, 0.0, 0.5], [1, 1, 0.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.0, 0.5], [1, 0, 1.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.0, 0.5], [0, 1, '-Inf'],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.0, 0.5], [0, 0, 0.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.5, 0.0], [1, 1, '-Inf'],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.5, 0.0], [1, 0, 0.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.5, 0.0], [0, 1, 0.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.5, 0.0], [0, 0, 1.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.5, 1.0], [1, 1, 0.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.5, 1.0], [1, 0, 1.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.5, 1.0], [0, 1, '-Inf'],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
-               ([10.0, 0.5, 1.0], [0, 0, 0.0],
-                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report')]}

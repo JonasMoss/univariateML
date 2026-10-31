@@ -97,3 +97,10 @@ TEST_CASE("zmbinom attained point sampler ignores zero uniform") {
   struct ZeroRng { double runif(double,double) { return 0; } } rng;
   CHECK(cppunivariate::distributions::rzmbinom(rng,5,1,0)==5);
 }
+
+TEST_CASE("zmbinom TASK-134 nominal design endpoints with absent masses") {
+  CHECK(cppunivariate::distributions::qzmbinom(0,10,.5,0)==0);
+  CHECK(cppunivariate::distributions::qzmbinom(1,10,0,.5)==10);
+  CHECK(cppunivariate::distributions::qzmbinom(-INFINITY,10,.5,1,false,true)==10);
+  CHECK(cppunivariate::distributions::qzmbinom(.75,10,0,.5)==1);
+}

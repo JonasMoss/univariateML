@@ -12466,6 +12466,27 @@
       "-Inf",
       0.0,
       "-Inf"
+    ],
+    [
+      8,
+      174.0,
+      -728.1745671728157,
+      0.0,
+      -733.3336553100814
+    ],
+    [
+      8,
+      175.0,
+      -733.3393531467393,
+      0.0,
+      -738.5041715855841
+    ],
+    [
+      8,
+      176.0,
+      -738.5098371417774,
+      0.0,
+      -743.6803532349307
     ]
   ],
   "quantiles": [
@@ -17311,7 +17332,7 @@
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "b0bbe22f95a8fef1034cd95ff5177c898b42dd390686f2e8641545df3c105542",
+  "input_sha256": "8169c236b22058fa5a1653ff1cbfed91ad6d191b57c3062c7dffcf961175df43",
   "sampler_points": [
     [
       6
@@ -17319,37 +17340,5 @@
     [
       1
     ]
-  ],
-  "excluded_values": [
-    {
-      "row": [
-        8,
-        174.0,
-        -728.1745671728157,
-        0.0,
-        -733.3336553100814
-      ],
-      "reason": "TASK-106 dpqr boundary mismatch; see boundary report"
-    },
-    {
-      "row": [
-        8,
-        175.0,
-        -733.3393531467393,
-        0.0,
-        -738.5041715855841
-      ],
-      "reason": "TASK-106 dpqr boundary mismatch; see boundary report"
-    },
-    {
-      "row": [
-        8,
-        176.0,
-        -738.5098371417774,
-        0.0,
-        -743.6803532349307
-      ],
-      "reason": "TASK-106 dpqr boundary mismatch; see boundary report"
-    }
   ]
 }

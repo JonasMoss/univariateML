@@ -16508,10 +16508,54 @@
       0.0,
       0,
       0.0
+    ],
+    [
+      8,
+      1,
+      1,
+      "-Inf",
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      8,
+      1,
+      0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      8,
+      0,
+      1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      8,
+      0,
+      0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "f43725b522c9cef67efff5d03a07f11e8db3a1cfd783f943cf136498475ec2ce",
+  "input_sha256": "3ab1743dc6088891b1193efb61c2ecd3449e69d68cc071c45dcbc33e0937f940",
   "sampler_points": [
     [
       6
@@ -16519,63 +16563,5 @@
     [
       1
     ]
-  ],
-  "excluded_quantiles": [
-    {
-      "row": [
-        8,
-        1,
-        1,
-        "-Inf",
-        0.0,
-        0.0,
-        0.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        8,
-        1,
-        0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        8,
-        0,
-        1,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    },
-    {
-      "row": [
-        8,
-        0,
-        0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0,
-        0.0
-      ],
-      "reason": "TASK-106 finite-support endpoint convention differs from the declared support; see boundary report"
-    }
   ]
 }
