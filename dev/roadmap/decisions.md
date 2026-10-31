@@ -6,6 +6,17 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-10-31
+
+- **Family taxonomy before theory articles** (Jonas: organisation and
+  classification first; "make something plausible"): families are tagged by
+  support, coefficients and existence profile (derived), and by group,
+  construction, relations, fitting method and certainty, and application
+  areas (written, controlled vocabularies). Special-case and
+  transformation relations are checked symbolically. The theory articles
+  (TASK-101.6.3) wait and will explain these tags. Plan:
+  `dev/roadmap/2026-10-31-family-taxonomy.md`.
+
 ## 2026-10-30
 
 - **Website and JS binding** (Jonas set the goals and left the machinery
