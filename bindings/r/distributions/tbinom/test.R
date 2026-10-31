@@ -84,6 +84,7 @@ test_that("tbinom: fixed-probability free-size profiles exhaust bounds subsets",
 })
 
 test_that("tbinom: all four free-size probability profiles match reference oracles", {
+  skip_unless_tier("full")
   set.seed(9301)
   samples <- c(lapply(c(20,100), function(n) rtbinom(n = n, size = 12, prob = .4, a = 0, b = 10)),
                list(c(1,1,1,1,2,3,8,10), c(2,3,4), rep(c(2,3),10), rep(3,20)),

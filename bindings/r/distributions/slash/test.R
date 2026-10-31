@@ -1,4 +1,5 @@
 test_that("slash agrees with an independent multistart density oracle", {
+  skip_unless_tier("full")
   logdensity <- function(x, m, s) {
     z <- (x-m)/s; t <- z*z/2
     ans <- -.5*log(2*pi)-log(s)+log(-expm1(-t))-2*log(abs(z))
@@ -122,6 +123,7 @@ test_that("slash free-scale location profile has separated finite maxima", {
 
 
 test_that("slash new holds agree with independent multistart likelihoods", {
+  skip_unless_tier("full")
   set.seed(8100+5457)
   held_values <- c(mu=0.2,sigma=1.3)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
@@ -184,6 +186,7 @@ test_that("slash conditional collapse, feasibility and invalid holds", {
 
 
 test_that("slash independent density oracle agrees with a mixture integral at the centre", {
+  skip_unless_tier("full")
   for(z in c(0,1e-12,1e-6,.3)) {
     reference <- integrate(function(u) u*dnorm(u*z),0,1,rel.tol=1e-12)$value
     actual <- if(z==0) 1/(2*sqrt(2*pi)) else -expm1(-z*z/2)/(sqrt(2*pi)*z*z)

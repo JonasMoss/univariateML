@@ -97,6 +97,7 @@ test_that("ged scale extremes preserve fit or declared escape", {
 })
 
 test_that("ged large-sample fitting preserves likelihood under replication", {
+  skip_unless_tier("full")
   p<-((1:1000)-.5)/1000
   x<-qged(p = p, mean = 0, sd = 1, nu = 3)
   base<-suppressWarnings(mlged(x), classes = "univariateML_restricted")
@@ -191,6 +192,7 @@ test_that("ged log tails exceed the backend exponent range", {
 
 
 test_that("ged new holds agree with independent multistart likelihoods", {
+  skip_unless_tier("full")
   set.seed(8100+6806)
   held_values <- c(mean=0.2,sd=1.3,nu=1.5)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),

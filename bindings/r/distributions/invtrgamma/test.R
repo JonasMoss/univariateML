@@ -1,4 +1,5 @@
 test_that("mlinvtrgamma agrees with a multistart density oracle", {
+  skip_unless_tier("full")
   nll_for <- function(x) function(p) {
     v <- suppressWarnings(-sum(dinvtrgamma(x = x, shape1 = exp(p[1]), shape2 = exp(p[2]), scale = exp(p[3]), log = TRUE)))
     if (is.finite(v)) v else 1e100
@@ -82,6 +83,7 @@ test_that("invtrgamma log quantiles and large power transforms remain representa
 
 
 test_that("P2 invtrgamma holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape1=3, shape2=1.5, scale=0.5)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)

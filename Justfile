@@ -54,12 +54,18 @@ gen: sync-headers
 	  Rscript scripts/codegen_links.R
 
 regen: gen
-	cd univariateML-r && Rscript -e "roxygen2::roxygenise()"
+	cd univariateML-r && PKG_BUILD_EXTRA_FLAGS=false Rscript -e "options(pkg.build_extra_flags = FALSE); roxygen2::roxygenise()"
 
+# Default development tier; reserve all four CPU slots before invoking.
 test: regen
 	cd univariateML-r && \
 	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
-	  Rscript -e "testthat::test_local('.', stop_on_failure = TRUE)"
+	  UMVL_TEST_TIER=${UMVL_TEST_TIER:-dev} PKG_BUILD_EXTRA_FLAGS=false TESTTHAT_CPUS=4 \
+	  Rscript ../bindings/r/scripts/test_local.R
+
+# Exhaustive pre-merge/release suite, including slow independent oracles.
+test-full:
+	UMVL_TEST_TIER=full just test
 
 check: regen
 	cd univariateML-r && R CMD build --no-build-vignettes . && \
@@ -109,7 +115,7 @@ cpp-test:
         cmake -S univariateML-cpp -B univariateML-cpp/build "${launcher[@]}" -DBoost_INCLUDE_DIR="$boost"
     fi
     cmake --build univariateML-cpp/build -j "${CMAKE_BUILD_PARALLEL_LEVEL:-1}"
-    ctest --test-dir univariateML-cpp/build --output-on-failure
+    ctest --test-dir univariateML-cpp/build --output-on-failure -j "${CMAKE_BUILD_PARALLEL_LEVEL:-1}" -L "${UMVL_TEST_TIER:-dev}"
 
 # Exercise the entire core with double-width extended intermediates.
 cpp-test-no-long-double:

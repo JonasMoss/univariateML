@@ -21,6 +21,7 @@ trgamma_oracle <- function(x) {
 }
 
 test_that("mltrgamma agrees with a multistart density oracle and its faces", {
+  skip_unless_tier("full")
   cases <- list(
     list(n = 30, a = 2, t = 1.5, s = 2), list(n = 200, a = 2, t = 1.5, s = 2),
     list(n = 100, a = .4, t = 3, s = 1), list(n = 100, a = 1, t = .8, s = 5),
@@ -138,6 +139,7 @@ test_that("trgamma log quantiles and large power transforms remain representable
 
 
 test_that("P2 trgamma holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape1=3, shape2=1.5, scale=2)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)

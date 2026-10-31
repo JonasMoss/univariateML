@@ -1,4 +1,5 @@
 test_that("zmlogarithmic agrees with a multi-start reference-density oracle", {
+  skip_unless_tier("full")
   set.seed(13747)
   x <- do.call(rzmlogarithmic, list(250, prob = 0.4, p0 = 0.3))
   fit <- mlzmlogarithmic(x)
@@ -32,6 +33,7 @@ local({
   base <- c(prob=0.4,p0=0.3)
   density <- dzmlogarithmic
   test_that("P2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
     set.seed(81029)
     samples <- list(ml_simulate(paste0("ml",id),20),
                     ml_simulate(paste0("ml",id),100),

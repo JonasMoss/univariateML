@@ -1,4 +1,5 @@
 test_that("ztbinom agrees with a multi-start reference-density oracle", {
+  skip_unless_tier("full")
   set.seed(13116)
   x <- do.call(rztbinom, list(250, size = 8, prob = 0.4))
   fit <- mlztbinom(x, size = NULL)
@@ -45,6 +46,7 @@ test_that("ztbinom preserves fixed size at attained boundaries", {
 })
 
  test_that("ztbinom: new holds match reference-density integer and multistart oracles", {
+  skip_unless_tier("full")
   set.seed(810)
   samples <- c(lapply(c(20,100),function(n) rztbinom(n = n, size = 8, prob = 0.4)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
   for(x in samples) {
@@ -86,6 +88,7 @@ test_that("ztbinom: P3 unfinished optimizer stops", {
 })
 
 test_that("ztbinom: free size and probability agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)", {
+  skip_unless_tier("full")
   # TASK-85/87: the free size+prob search is an exponential grid, not a
   # certified unimodality result (see mle.hpp); this independently
   # cross-checks it over the specific cases the task calls out, rather

@@ -31,10 +31,12 @@ test_that("generated d/p/q/r agree with independent truth tables", {
     values <- matrix_of(truth$values)
     quantiles <- matrix_of(truth$quantiles)
     fun <- lapply(paste0(c("d", "p", "q", "r"), id), get, envir = ns, inherits = FALSE)
-    for (point in seq_len(nrow(parameters))) {
+    points <- if (tier_at_least("full")) seq_len(nrow(parameters)) else
+      pick(nrow(parameters), if (tier_at_least("dev")) 3L else 1L)
+    for (point in points) {
       theta <- setNames(as.list(parameters[point, ]), unlist(truth$parameter_names))
       v <- values[values[, 1] == point - 1L, , drop = FALSE]
-      v <- v[pick(nrow(v), 5L), , drop = FALSE]
+      v <- v[pick(nrow(v), if (tier_at_least("dev")) 5L else 2L), , drop = FALSE]
       info <- paste(id, "point", point - 1L)
       fit <- univariateML_construct(unlist(theta), paste0("ml", id),
                                     list(logLik = 0, n = 1L, call = NULL))
@@ -57,7 +59,7 @@ test_that("generated d/p/q/r agree with independent truth tables", {
           q <- quantiles[quantiles[, 1] == point - 1L & quantiles[, 2] == lower &
                            quantiles[, 3] == log_input, , drop = FALSE]
           if (!nrow(q)) next
-          q <- q[pick(nrow(q), 3L), , drop = FALSE]
+          q <- q[pick(nrow(q), if (tier_at_least("dev")) 3L else 1L), , drop = FALSE]
           got <- do.call(fun[[3]], c(list(q[, 4]), theta, list(lower.tail = lower, log.p = log_input)))
           expect_equal(qml(q[, 4], fit, lower.tail = lower, log.p = log_input), got,
                        info = paste(info, "quantile dispatch", lower, log_input))

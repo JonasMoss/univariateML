@@ -74,6 +74,7 @@ snorm_profile_reference <- function(x) {
 }
 
 test_that("exact snorm profile agrees with 240 independent grid searches", {
+  skip_unless_tier("full")
   set.seed(28012026)
   for (i in seq_len(240)) {
     n <- c(5L, 10L, 30L, 100L, 250L, 500L)[(i-1L) %% 6L + 1L]
@@ -208,6 +209,7 @@ snorm_hold_logref <- function(x,p) {
 }
 
 test_that("snorm classified holds agree with independent multistart oracles", {
+  skip_unless_tier("full")
   set.seed(81029)
   p <- c(mean=.2,sd=1.4,xi=1.3)
   subsets <- lapply(1:7,function(mask) names(p)[as.logical(intToBits(mask)[1:3])])

@@ -14,6 +14,7 @@ bhatt_oracle_density <- function(x,m,s,a) {
   l+log(-expm1(pmin(0,r-l)))-log(2*a)
 }
 test_that("bhatt interior and faces agree with an independent multistart oracle", {
+  skip_unless_tier("full")
   set.seed(710)
   samples <- c(list(seq(-1,1,length.out=20),qnorm((1:30-.5)/30)),
                lapply(seq_len(8),function(j) rbhatt(n = 20 + 5 * j, mu = 0, sigma = 1, a = 3)))
@@ -74,6 +75,7 @@ test_that("bhatt evaluation and continuous inversion retain tails", {
   expect_identical(actual,expected)
 })
 test_that("each singly held bhatt scale agrees with a conditional oracle", {
+  skip_unless_tier("full")
   x <- c(-3,-2,-1,0,.5,1,2,3)
   for(held in c("sigma","a")) {
     value <- if(held=="sigma") .2 else .5
@@ -149,6 +151,7 @@ test_that("bhatt log probabilities close to one retain relative accuracy", {
 
 
 test_that("bhatt new holds agree with independent multistart likelihoods", {
+  skip_unless_tier("full")
   set.seed(8100+6378)
   held_values <- c(mu=0.2,sigma=1.3,a=0.5)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
@@ -206,6 +209,7 @@ test_that("bhatt conditional collapse, feasibility and invalid holds", {
 
 
 test_that("bhatt independent density oracle retains tiny uniform widths", {
+  skip_unless_tier("full")
   for(a in c(1e-2,1e-6,1e-12))for(x in c(-2,0,2)) {
     reference <- integrate(function(u) dnorm(x-u,.2,1.3),-a,a,
                            rel.tol=1e-12)$value/(2*a)

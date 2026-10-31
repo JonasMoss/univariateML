@@ -124,6 +124,7 @@ test_that("public genbeta dml pml qml dispatch preserves extreme tails", {
 
 
 test_that("P2 genbeta holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape1=0.4, shape2=0.3, shape3=2, scale=1)
   thresholds <- c("scale")
   regular <- setdiff(names(pars), thresholds)

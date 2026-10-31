@@ -30,6 +30,7 @@ test_that("CMP inversion preserves both tail inequalities", {
   }
 })
 test_that("CMP fitting agrees with a slow independent series oracle", {
+  skip_unless_tier("full")
  x <- c(0,1,1,2,2,2,3,3,4,5)
  objective <- function(z) {
    l <- exp(z[1]); n <- exp(z[2]); k <- 0:500

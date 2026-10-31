@@ -92,6 +92,7 @@ test_that("logitnorm integrates with plot, bootstrap and model selection", {
 })
 
 test_that("P2 every held subset agrees with independent multistart density fits", {
+  skip_unless_tier("full")
   set.seed(8129)
   samples <- list(plogis(rnorm(20,.3,1.2)), plogis(rnorm(100,.3,1.2)),
                   runif(20,.01,.99), runif(100,.01,.99),

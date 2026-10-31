@@ -63,6 +63,7 @@ tlambda_oracle_ld <- function(x,mu,sigma,l) {
   },numeric(1))
 }
 test_that("Tukey lambda independent oracle on varied fixed and free samples", {
+  skip_unless_tier("full")
   for(x in list(c(-4,-1,-.2,0,.5,1,9),c(-3,-2,-1,0,1,2,3),c(-10,-1,-.1,0,.1,1,10))) {
     for(l in c(-1,0,.14)) {
       f <- suppressWarnings(mltlambda(x,lambda=l), classes = "univariateML_restricted")
@@ -187,6 +188,7 @@ test_that("Tukey lambda rejects numerical merging of distinct data", {
 
 
 test_that("tlambda new holds agree with independent multistart likelihoods", {
+  skip_unless_tier("full")
   set.seed(8100+9190)
   held_values <- c(mu=0.2,sigma=1.3,lambda=0)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),

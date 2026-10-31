@@ -129,6 +129,7 @@ test_that("Lomax exact criterion resolves nonlocal maxima", {
 })
 
 test_that("Lomax agrees with a slow independent psi and density oracle", {
+  skip_unless_tier("full")
   set.seed(4801)
   for (j in seq_len(220)) {
     n <- c(2L,3L,5L,10L,50L)[1L+(j-1L)%%5L]
@@ -170,6 +171,7 @@ test_that("Lomax agrees with a slow independent psi and density oracle", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "lomax"
   pn <- c("lambda","kappa")

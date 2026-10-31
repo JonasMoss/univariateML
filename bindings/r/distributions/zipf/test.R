@@ -27,6 +27,7 @@ test_that("Zipf returns the attained uniform face at the count ceiling", {
   expect_equal(attr(f,"logLik"),-length(x)*log(max(x)))
 })
 test_that("large-support Zipf likelihood agrees with a slow sum oracle", {
+  skip_unless_tier("full")
   x <- c(rep(1,9),100000L)
   f <- mlzipf(x)
   objective <- function(t) {s<-exp(t); s*sum(log(x))+length(x)*log(sum((1:max(x))^-s))}
@@ -113,6 +114,7 @@ test_that("zipf matches frozen sads values (reference.json)", {
 })
 
 test_that("Zipf all hold subsets match enumerated multistart reference fits", {
+  skip_unless_tier("full")
   set.seed(811)
   samples <- list(sample(1:8,20,TRUE),sample(1:8,100,TRUE),c(1,2),c(1,1,2,4),rep(4,5),pmin(rzeta(n = 20, s = 2),10))
   for(x in samples) for(mask in 0:3) {

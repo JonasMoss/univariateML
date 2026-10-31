@@ -80,6 +80,7 @@ test_that("Student-t interior fit and large-nu log likelihood agree with indepen
 })
 
 test_that("large-nu interior fit matches dt and a slow oracle", {
+  skip_unless_tier("full")
   x <- qt(((1:4000) - .5)/4000, df = 300)
   fit <- mlstd(x, gradtol = 1e-7, iterlim = 500)
   expect_gt(unname(fit[3]), 343)
@@ -98,6 +99,7 @@ test_that("large-nu interior fit matches dt and a slow oracle", {
 })
 
 test_that("fixed nu agrees with density oracle and records two free parameters", {
+  skip_unless_tier("full")
   x <- c(-5,-2,-1,0,0,1,2,9)
   for (nu in c(2.1,4,30)) {
     fit <- mlstd(x, nu = nu, gradtol = 1e-8, iterlim = 5000)
@@ -131,6 +133,7 @@ test_that("std scale extremes preserve fit or declared escape", {
 })
 
 test_that("std large-sample fitting preserves likelihood under replication", {
+  skip_unless_tier("full")
   x<-qt(((1:1000)-.5)/1000,df=4)/sqrt(2)
   base<-mlstd(x)
   y<-rep(x,100)
@@ -248,6 +251,7 @@ test_that("std log tails exceed the backend exponent range", {
 
 
 test_that("std new holds agree with independent multistart likelihoods", {
+  skip_unless_tier("full")
   set.seed(8100+9553)
   held_values <- c(mean=0.2,sd=1.3,nu=5)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),

@@ -61,6 +61,7 @@ test_that("held half-Cauchy scale evaluates every sample without scale collapse 
 })
 
 test_that("half-Cauchy free threshold is the sample minimum, independent of a multistart mu/sigma oracle", {
+  skip_unless_tier("full")
   set.seed(91017)
   samples <- list(c(5,5,7,9,20), c(.3,1,4,9), abs(rnorm(30))+2)
   for (x in samples) {

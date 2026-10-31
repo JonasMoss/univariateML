@@ -52,6 +52,7 @@ test_that("constant Laplace data have no attained MLE", {
 
 
 test_that("laplace new holds agree with independent multistart likelihoods", {
+  skip_unless_tier("full")
   set.seed(8100+1615)
   held_values <- c(mu=0.2,sigma=1.3)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),

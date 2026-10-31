@@ -44,6 +44,7 @@ test_that('parameter kinds, required messages and adapter signatures conform', {
 })
 
 test_that('every holdable subset fits golden data or gives a declared reason', {
+  skip_unless_tier('dev')
   root <- Sys.getenv('UMVL_DISTRIBUTIONS_DIR')
   skip_if(!nzchar(root), 'no distribution goldens')
   for (id in names(univariateML_metadata)) {
@@ -52,7 +53,13 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
     estimates <- setNames(as.numeric(g$estimates),names(g$estimates))
     adapter <- getFromNamespace(paste0(id,'_'),'univariateML')
     holdable <- intersect(meta$names,names(formals(adapter)))
-    for (held in subsets(holdable)) {
+    held_sets <- subsets(holdable)
+    if (!tier_at_least("full")) {
+      regular <- vapply(Filter(function(p) p$kind == "regular", meta$params), `[[`, "", "name")
+      held_sets <- Filter(function(held) length(held) <= 1L ||
+        setequal(held, intersect(regular, holdable)), held_sets)
+    }
+    for (held in held_sets) {
       # Non-coefficient controls remain as in the golden.
       # Required coefficients are explicit NULL
       # unless held in this subset; regular coefficients use their default.

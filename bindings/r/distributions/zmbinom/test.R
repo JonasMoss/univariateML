@@ -1,4 +1,5 @@
 test_that("zmbinom agrees with a multi-start reference-density oracle", {
+  skip_unless_tier("full")
   set.seed(13109)
   x <- do.call(rzmbinom, list(250, size = 8, prob = 0.4, p0 = 0.3))
   fit <- mlzmbinom(x, size = NULL)
@@ -48,6 +49,7 @@ test_that("zmbinom preserves fixed size at attained boundaries", {
 })
 
  test_that("zmbinom: new holds match reference-density integer and multistart oracles", {
+  skip_unless_tier("full")
   set.seed(810)
   samples <- c(lapply(c(20,100),function(n) rzmbinom(n = n, size = 8, prob = 0.4, p0 = 0.3)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
   for(x in samples) {
@@ -110,6 +112,7 @@ test_that("zmbinom: P3 unfinished optimizer stops", {
 })
 
 test_that("zmbinom: free size and probability agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)", {
+  skip_unless_tier("full")
   # TASK-85/87: zmbinom delegates its free-size search entirely to
   # ztbinom_mle on the positive-value subset (mle.hpp); this exercises
   # that delegation on the same n=20/100, ties and near-Poisson cases as
