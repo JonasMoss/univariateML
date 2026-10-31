@@ -8,6 +8,15 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-10-31
 
+- **Test tiers** (Jonas: "we dont need supertesting all the time"): R and
+  C++ tests run in tiers. `cran` (R CMD check without NOT_CRAN: API, one
+  golden fit per family, sampled truth rows, about a minute); `dev`, the
+  default for `just test` and agent jobs (all goldens, conformance on
+  core held subsets, more truth rows; 1-2 minutes with four workers);
+  `full` (`just test-full`, before merges and releases: everything); audits
+  on demand (quality, no-long-double, standalone check, relations,
+  dpqr-truth). Tiers follow measured cost. testthat runs in parallel and
+  the C++ doctest cases run through ctest in parallel.
 - **Family taxonomy before theory articles** (Jonas: organisation and
   classification first; "make something plausible"): families are tagged by
   support, coefficients and existence profile (derived), and by group,
