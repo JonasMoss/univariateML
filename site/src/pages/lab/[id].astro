@@ -2,7 +2,6 @@
 // Layout lab: Wikipedia-style family page. Same data as /distributions/<id>/.
 import { getCollection } from 'astro:content';
 import Page from '../../layouts/Page.astro';
-import Explorer from '../../components/Explorer.svelte';
 import MiniPlot from '../../components/lab/MiniPlot.svelte';
 import binding from '../../data/binding.json';
 import families from '../../data/families.json';
@@ -68,7 +67,7 @@ const mlProseHtml=await Promise.all(mlProse.map(async (s:any)=>({title:s.title,h
 const refs:string[]=f.references || [];
 const key=new Set<number>((f.key_references||[]).map((i:number)=>i-1));
 const advice=f.params.filter((p:any)=>p.advice || (p.kind && p.kind!=='regular'));
-const toc=[['definition','Definition'],relations.length||seeAlso.length?['relations','Relations']:null,showML?['ml','Maximum likelihood']:null,hasBinding?['explore','Explore and fit']:null,['usage','Usage'],refs.length?['references','References']:null].filter(Boolean) as string[][];
+const toc=[['definition','Definition'],relations.length||seeAlso.length?['relations','Relations']:null,showML?['ml','Maximum likelihood']:null,['usage','Usage'],refs.length?['references','References']:null].filter(Boolean) as string[][];
 ---
 <Page title={f.name} description={f.summary}>
 <article class="lab" data-family={f.id}>
@@ -105,7 +104,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
   {f.areas?.length>0 && <p class="areas">Used in {f.areas.join('; ')}.</p>}
  </div>
 
- <nav class="toc" aria-label="Contents"><strong>Contents</strong><ol>{toc.map(([id,t])=><li><a href={`#${id}`}>{t}</a></li>)}</ol></nav>
+ <nav class="toc" aria-labelledby="toc-title"><p id="toc-title">Contents</p><ol>{toc.map(([id,t])=><li><a href={`#${id}`}>{t}</a></li>)}</ol></nav>
 
  <section class="definition" aria-labelledby="definition">
   <h2 id="definition">Definition</h2>
@@ -155,7 +154,6 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  {mlProseHtml.map(s=><>{s.title.toLowerCase()!=='details' && <h3>{s.title}</h3>}<div set:html={s.html}/></>)}
 </section>}
 
-{hasBinding && <div id="explore"><Explorer client:visible family={{id:f.id,name:f.name,params:entry.data.params,support:entry.data.support}} catalog={(await getCollection('families')).filter((e:any)=>(binding as string[]).includes(e.id)).map((e:any)=>({id:e.id,support:e.data.support}))}/></div>}
 
 <section aria-labelledby="usage">
  <h2 id="usage">Usage</h2>
@@ -189,8 +187,12 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  .lab .lead{font-size:1.08rem}
  .lab .lead p:first-child{font-size:1.2rem;line-height:1.5}
  .lab .areas{color:#4c5550;font-size:.95rem}
- .lab .toc{border:1px solid #d5d4c9;background:#fbf9f3;padding:.5rem 1rem;font:.85rem system-ui,sans-serif;justify-self:start;margin:.5rem 0 0}
- .lab .toc ol{margin:.3rem 0 0;padding-left:1.3rem}
+ .lab .toc{display:block;justify-self:start;min-width:14rem;margin:.6rem 0 0;padding:.7rem 1.2rem .8rem;border:1px solid #d5d4c9;background:#fbf9f3;font:.88rem/1.5 system-ui,sans-serif}
+ .lab .toc p{margin:0 0 .35rem;font-weight:600;letter-spacing:.02em}
+ .lab .toc ol{list-style:none;counter-reset:toc;margin:0;padding:0}
+ .lab .toc li{counter-increment:toc;display:grid;grid-template-columns:1.6rem 1fr;align-items:baseline;padding:.08rem 0}
+ .lab .toc li::before{content:counter(toc) ".";color:#656c66;font-variant-numeric:tabular-nums;text-align:right;padding-right:.5rem}
+ .lab .toc a{text-decoration:none}.lab .toc a:hover{text-decoration:underline}
  .lab .definition h2{margin-top:1.4rem}
  .lab table.limits td{vertical-align:top}
  .lab table.limits td small{display:block;color:#656c66}
