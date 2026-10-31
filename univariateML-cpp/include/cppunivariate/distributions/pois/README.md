@@ -53,15 +53,35 @@ summary: Poisson provides a model for independent event counts at constant inten
 aliases: []
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    For every nonempty sample of nonnegative integer counts, the free-rate
+    MLE exists and is unique, including the boundary estimate $\hat\lambda=0$
+    for all-zero data. A held positive rate gives positive likelihood for
+    every such sample. A held zero rate is compatible only with all-zero data.
+  reason: >-
+    Writing $m$ for sample size and $S$ for the sum, the parameter-dependent
+    log likelihood is $S\log\lambda-m\lambda$ for $\lambda>0$.
+    If $S>0$, it is strictly concave and maximized at $S/m$.
+    If $S=0$, it decreases strictly and is maximized at the included endpoint zero.
+
 ---
 
-The Poisson distribution models nonnegative counts with a single rate parameter.
+The Poisson distribution models counts of independent events over a fixed observation interval.
 
 ## Details
 
-All-zero data give the boundary estimate `lambda = 0`, a point mass at zero.
+The rate $\lambda$ describes the expected event count over that interval.
+Its estimate is the sample mean. All-zero data give the included boundary
+estimate $\hat\lambda=0$, a point mass at zero.
 
-Supplying `lambda` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.
+Holding the rate evaluates the likelihood at the supplied value. A positive
+held rate is compatible with every nonnegative integer sample. A held zero
+rate requires every observation to be zero. Values outside the parameter
+domain or incompatible with the counts are rejected.
+
+## Decision history
 
 ### Diagnostic status contract (2026-10-31)
 

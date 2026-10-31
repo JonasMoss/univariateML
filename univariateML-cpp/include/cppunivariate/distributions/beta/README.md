@@ -29,8 +29,8 @@ references:
 holds: []
 limits:
 - name: point-mass collapse
-  when: Both free shapes grow without bound on constant data
-  detect: All observations are equal and neither shape is held
+  when: Both shapes grow as $\alpha=tc$ and $\beta=t(1-c)$ with $t\to\infty$ and $0<c<1$
+  detect: All observations equal the same value $c$ and both shapes are free
   status: Degenerate
   message: does not exist
 examples: |
@@ -71,13 +71,51 @@ fit:
     unsupported endpoint fits stop.'
 areas:
 - proportions
+existence:
+  uniqueness: proved
+  statement: >-
+    For a nonempty sample strictly between zero and one, the MLE with both
+    shapes free exists if and only if the observations are not all equal,
+    and it is then unique. With either finite positive shape held, the
+    remaining shape has a unique finite MLE even for constant data.
+    With both shapes held, the likelihood is evaluated at those values.
+  reason: >-
+    The beta family is a minimal regular exponential family with natural
+    parameter $(\alpha-1,\beta-1)$ and statistic $(\log x,\log(1-x))$.
+    Its log likelihood is strictly concave. The interior of the convex support
+    is $e^u+e^v<1$. Strict Jensen inequalities put the mean statistic there
+    exactly for nonconstant samples, giving existence of the finite maximum.
+    For constant data $x=c$, the path $(\alpha,\beta)=(tc,t(1-c))$ has
+    density at $c$ growing as $\sqrt{t}$ by Stirling's formula.
+    With one shape $h>0$ held, the free-shape score per observation is
+    $a+\psi(z+h)-\psi(z)$, where $a<0$ is the corresponding mean log observation.
+    Its derivative is $\psi_1(z+h)-\psi_1(z)<0$, and its limits are
+    positive infinity at zero and $a<0$ at infinity.
+
 ---
 
-The beta distribution models proportions and other continuous quantities between zero and one.
+The beta distribution models proportions and other continuous quantities strictly between zero and one.
 
 ## Details
 
-With either positive finite shape held, the remaining shape has a unique finite maximum even for constant data. Its strictly decreasing digamma score is solved by bracketing. With both shapes free, constant data have unbounded likelihood; with both held the likelihood is evaluated.
+The shapes $\alpha$ and $\beta$ control behavior near zero and one,
+respectively. Values below one allow density to increase towards the
+corresponding endpoint. Their ratio determines the center, while their
+sum controls concentration at a fixed ratio.
+
+With both shapes free, nonconstant data have a unique finite maximum.
+The fit uses a scalar Newton iteration with an inner digamma inversion.
+If this route fails, damped Newton ascent on the strictly concave joint
+log likelihood provides a fallback. Exhausted solves report numerical failure.
+Constant data have unbounded likelihood as both shapes increase at a fixed ratio.
+
+With either finite positive shape held, the remaining shape has a unique
+finite maximum even for constant data. Its strictly decreasing digamma
+score is solved by bracketing. With both shapes held, the likelihood is
+evaluated at the supplied values. Observations at zero or one are excluded
+in every case.
+
+## Decision history
 
 ### Diagnostic status contract (2026-10-31)
 
