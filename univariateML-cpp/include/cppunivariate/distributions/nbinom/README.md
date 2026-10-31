@@ -26,8 +26,8 @@ r:
 log_density: "loggamma(x + size) - loggamma(size) - loggamma(x + 1) + size*log(prob) + x*log(1 - prob)"
 limits:
   - model: pois
-    when: '$\mathrm{size} \to \infty$ with mean fixed'
-    detect: size and prob are both free and the population-form sample variance is no larger than the sample mean
+    when: 'the size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p=\bar x>0$ fixed'
+    detect: 'both coefficients are free, $\bar x>0$, and $S^2=n^{-1}\sum_i(x_i-\bar x)^2\le\bar x$'
     status: Underdispersed
 references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
@@ -73,16 +73,45 @@ aliases:
 - "gamma–Poisson"
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free and at least one positive count, a finite
+    MLE exists and is unique if and only if $S^2>\bar x$, where
+    $S^2=n^{-1}\sum_i(x_i-\bar x)^2$. Otherwise the supremum is the
+    Poisson limit. For all-zero data, the maximum is attained by every
+    pair with $r=0$ or $p=1$, so the coefficients are not unique.
+    With $r>0$ held, the free probability has a unique MLE, including
+    $p=1$ for all-zero data. With $0<p<1$ held, the free size has a unique
+    MLE, including $r=0$ for all-zero data. Held $r=0$ or $p=1$ permits
+    only zeros and leaves the other free coefficient unidentified.
+    Holding both coefficients leaves only likelihood evaluation.
+  reason: >-
+    The free-fit criterion and uniqueness for positive-mean samples are
+    proved by Aragón, J., Eberly, D. and Eberly, S. (1992),
+    "Existence and uniqueness of the maximum likelihood estimator for the
+    two-parameter negative binomial distribution", Statistics & Probability
+    Letters, 15(5), 375–379, doi:10.1016/0167-7152(92)90157-Z.
+    For held positive size, maximizing in probability gives
+    $p=r/(r+\bar x)$. For held $0<p<1$, the size score is
+    $n\log p+\sum_i\sum_{j=0}^{x_i-1}(r+j)^{-1}$.
+    If some count is positive, it decreases strictly from infinity to
+    $n\log p<0$, so it has one root. If all counts vanish, the likelihood
+    is $p^{nr}$ and its maximum is attained at $r=0$.
 ---
 
-The negative binomial distribution models nonnegative counts with overdispersion relative to a Poisson distribution. The size parameter need not be an integer.
+The negative binomial distribution models nonnegative counts with overdispersion relative to a Poisson distribution. The size $r$ need not be an integer. The probability $p$ determines the mean together with $r$, through $r(1-p)/p$.
 
 ## Details
 
-Supplying `size` holds any finite nonnegative size; size zero is the point mass at zero and is incompatible with positive observations. All-zero data with free size return the attained member `size = 0`, preserving held probability or choosing `prob = 0.5` when unidentified. With positive size held, all-zero data estimate `prob = 1`. These boundary fits are silent.
+With both coefficients free and a positive sample mean, the probability profiles out as $p=r/(r+\bar x)$. The size estimate solves a scalar score equation. A finite solution exists exactly when the sample variance, computed with divisor $n$, exceeds the sample mean. Equality also gives an unattained Poisson supremum. Holding a positive size removes this escape. Holding a probability strictly below one leaves a strictly decreasing size score and a unique finite solution when a count is positive.
 
-With `prob` held strictly below one, the size score is strictly decreasing and has a unique root whenever a count is positive. Held `prob = 1` is compatible only with zeros.
+Size zero and probability one each describe the point mass at zero. These are attained members of the family, not escapes. All-zero samples therefore have a maximum, but the free pair of coefficients is not identified. Held size zero or held probability one is incompatible with positive observations. Holding both coefficients evaluates the likelihood without estimation.
 
-### Adapter independence (2026-10-30)
+## R notes
 
-The held-size/free-probability precision guard now lives in the core: positive count total with size/(size+mean(x)) rounding to one returns `PrecisionFailure`, preserving the former adapter rejection.
+Supplying `size` holds any finite nonnegative size, including fractional values. `size = NULL` estimates it, and `prob = NULL` estimates the probability. All-zero data with free size return `size = 0`, preserving a held probability or choosing `prob = 0.5` as a representative when both are free. With positive size held, all-zero data estimate `prob = 1`. These attained boundary fits are silent. For positive-mean data whose variance is no greater than their mean, the free fit stops and recommends `mlpois`.
+
+## Decision history
+
+2026-10-30 (adapter independence): the held-size/free-probability precision guard now lives in the core. A positive count total with `size/(size+mean(x))` rounding to one returns `PrecisionFailure`, preserving the former adapter rejection.

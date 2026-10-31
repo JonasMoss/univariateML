@@ -30,7 +30,8 @@ references:
 limits:
 - name: unbounded likelihood
   fixed: [mean]
-  when: Every observation equals held mean.
+  when: 'the free shape $\lambda$ tends to infinity with mean $\mu$ held'
+  detect: 'every observation equals the held $\mu$ and $\lambda$ is free'
   status: Unbounded
   message: constant data
 examples: |
@@ -55,18 +56,39 @@ aliases:
 - "Wald"
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    For a nonempty positive sample with both coefficients free, the MLE
+    exists and is unique exactly when the observations are not all equal.
+    With $\mu$ held and $\lambda$ free, it exists and is unique unless
+    every observation equals $\mu$. With $\lambda$ held, the free mean
+    has a unique MLE even for constant data. Holding both coefficients
+    leaves only likelihood evaluation.
+  reason: >-
+    Apart from a constant, the log-likelihood is
+    $(n/2)\log\lambda-(\lambda/2)Q(\mu)$, where
+    $Q(\mu)=\sum_i(x_i-\mu)^2/(\mu^2 x_i)$.
+    Its derivative is $Q'(\mu)=2(n\mu-\sum_i x_i)/\mu^3$, so its unique
+    minimum over positive $\mu$ is at $\bar x$. For a fixed or fitted mean,
+    $Q>0$ gives the unique maximum $\lambda=n/Q$. If $Q=0$, the
+    log-likelihood grows without bound as $\lambda\to\infty$.
 ---
 
 The inverse Gaussian (Wald) distribution models positive quantities, including first-passage times of Brownian motion with positive drift.
 
 ## Details
 
-The `mean` parameter is the positive mean and `shape` is the positive inverse Gaussian shape, rather than a dispersion. For nonconstant positive data the MLE is finite. Although the family has a Levy limit as the mean tends to infinity with shape fixed, no limit status is reported by this fitter.
+The coefficient $\mu$ is the positive mean and $\lambda$ is a positive shape coefficient. Increasing $\lambda$ at fixed $\mu$ concentrates the distribution about its mean. The shape is not a dispersion coefficient.
 
-With mean held and shape free, the likelihood is unbounded if every observation equals that mean. A held positive shape permits constant data. Held parameters must be finite.
+The free mean estimate is the arithmetic sample mean, whether the shape is free or held. With the mean supplied or fitted, the shape estimate is the reciprocal of the average squared relative residual weighted by $1/x_i$. It is finite unless all observations equal that mean. In that case the likelihood is unbounded as $\lambda$ increases. Holding a positive shape permits constant data.
 
-### Diagnostic status contract (2026-10-31)
+Although the distribution tends to a Lévy law as $\mu\to\infty$ with $\lambda$ fixed, this is not a likelihood escape for a finite positive sample: the likelihood in the mean is uniquely maximized at $\bar x$.
 
-Invalid and empty samples carry non-success statuses, including delegate paths.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp`.
+## R notes
+
+`mean = NULL` and `shape = NULL` estimate the corresponding coefficients. Held coefficients must be finite and positive. Both held coefficients evaluate the likelihood without estimation. Empty or invalid samples and unattained or numerically unrepresentable fits stop with an error.
+
+## Decision history
+
+2026-10-31 (TASK-132): invalid and empty samples carry failure statuses, including delegate paths. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the appended cases in `test.cpp` for the validation scope.

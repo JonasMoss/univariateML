@@ -28,7 +28,8 @@ references:
 limits:
 - name: unbounded likelihood
   fixed: [meanlog]
-  when: Every log observation equals held meanlog.
+  when: 'the free log scale $\sigma$ tends to zero with log mean $\mu$ held'
+  detect: 'every $\log x_i$ equals the held $\mu$ and $\sigma$ is free'
   status: Unbounded
   message: unbounded
 examples: |
@@ -61,21 +62,39 @@ aliases:
 - "Galton"
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    For a nonempty positive sample with both coefficients free, the MLE
+    exists and is unique exactly when the observations are not all equal.
+    With $\mu$ held and $\sigma$ free, it exists and is unique unless every
+    $\log x_i$ equals $\mu$. With $\sigma$ held, the free mean has a unique
+    MLE even for constant data. Holding both coefficients leaves only
+    likelihood evaluation.
+  reason: >-
+    Put $y_i = \log x_i$. The Jacobian is independent of the coefficients,
+    so maximization is the normal likelihood problem. For each positive
+    $\sigma$, the unique free mean is $\bar y$. For a fixed or fitted mean,
+    write $Q = \sum_i(y_i-\mu)^2$. The scale likelihood is
+    $-n\log\sigma-Q/(2\sigma^2)$ plus a constant. If $Q>0$, its unique
+    maximum is at $\sigma^2=Q/n$; if $Q=0$, it is unbounded as
+    $\sigma\to0$.
 ---
 
 The lognormal distribution models positive quantities whose logarithms follow a normal distribution.
 
 ## Details
 
+The coefficient $\mu$ is the mean of the logarithms and $\sigma$ is their standard deviation. Neither is the mean or standard deviation on the original scale. Fitting takes logarithms and fits a normal distribution, retaining the Jacobian in the reported likelihood. With both coefficients free, the fitted log mean is the sample mean of the logarithms and the fitted log variance uses divisor $n$.
+
+Holding $\mu$ makes the scale estimate the root mean square log residual about that supplied mean. If every log residual is zero, shrinking $\sigma$ makes the likelihood unbounded. Holding a positive $\sigma$ removes this collapse and permits constant data.
+
+## R notes
+
+`meanlog = NULL` and `sdlog = NULL` estimate the corresponding coefficients. Supplied coefficients are held fixed. Both held coefficients evaluate the likelihood without estimation. Invalid or empty data and unbounded likelihoods stop with an error. Numerical failures from the normal fit are preserved.
+
+## Decision history
+
 2026-10-30 (TASK-125): when squared log residuals overflow, divide them by their maximum magnitude before summation, then restore the scale. The held-mean 1e300 regression exercises this path.
 
-The parameters describe the normal distribution of the logarithms: `meanlog` is their sample mean and `sdlog` uses divisor $n$.
-
-With meanlog held and sdlog free, the likelihood is unbounded if every log observation equals meanlog. A positive held sdlog permits constant data.
-
-### Diagnostic status contract (2026-10-31)
-
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+2026-10-31 (TASK-132): the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) records invalid-input, degeneracy and delegate-failure behavior. The appended cases in `test.cpp` establish the tested scope.
