@@ -221,6 +221,14 @@ held coefficients; conditions must also state which coefficients remain free
 when that determines non-existence. Numerical inability to certify a boundary
 is not itself a proof of non-existence.
 
+Optional `existence` states what is known about existence and uniqueness of
+the MLE, for the site's "Existence and uniqueness" paragraph: `statement` (all
+coefficients free first, then held cases), `reason` (the short argument, e.g.
+strict concavity in natural parameters; cite where a proof is long), and
+`uniqueness`: `proved`, `numerical` (only a search is available) or `unknown`.
+Math in `$...$`, as in the prose. Limits and holds remain the machine-readable
+record; `existence` does not replace them.
+
 ## Family taxonomy (first version, 2026-10-31)
 
 These presentation fields are required for the canonical catalog dossiers and

@@ -60,6 +60,8 @@ const quantileHtml=f.quantile_latex ? await display(`Q(p) = ${f.quantile_latex}`
 const limitRows=await Promise.all(limits.map(async g=>({...g,whenHtml:await render(phrase(g.when,sym)),pathHtml:unwrap(await render(phrase(g.path,sym))),detectHtml:g.detect?unwrap(await render(phrase(g.detect,sym))):'',whenInline:lower(unwrap(await render(phrase(g.when,sym)))),modelName:(families as any[]).find(x=>x.id===g.model)?.name,heldHtml:await Promise.all(g.held.map(s=>inline(heldTex(s,sym))))})));
 const holdRows=await Promise.all(holds.map(async (h:any)=>({...h,heldHtml:h.held.length ? await inline(heldTex(h.held,sym)) : 'none (all free)',reasonHtml:await render(phrase(h.reason,sym))})));
 const restrRows=await Promise.all(restr.map(async r=>{const s=sym.get(r.param)||r.param;const b=[r.lower!==undefined?`${s} \\ge ${r.lower}`:'',r.upper!==undefined?`${s} \\le ${r.upper}`:''].filter(Boolean).join(',\\ ');return {...r,boundHtml:await inline(b),reasonHtml:await render(phrase(r.reason.replace(/^\s*[A-Za-z_]\w*\s*(>=|<=)\s*-?[\d.]+\s*/,''),sym)),exemptHtml:r.exempt.length?await Promise.all(r.exempt.map(e=>inline(heldTex(e,sym)))):[]};}));
+const exStatement=f.existence?.statement ? await render(f.existence.statement) : '';
+const exReason=f.existence?.reason ? await render(f.existence.reason) : '';
 const freeRows=limitRows.filter(g=>g.free);
 const nonexist=freeRows.filter(g=>g.nonexistence);
 const boundary=freeRows.filter(g=>!g.nonexistence);
@@ -134,13 +136,16 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
 
 {showML && <section aria-labelledby="ml">
  <h2 id="ml">Maximum likelihood</h2>
- <h3>Existence</h3>
- <p>{nonexist.length===0 && boundary.length===0 && blockingHolds.length===0 && 'No obstacle to existence is declared.'}
-  {nonexist.length>0 && <>No MLE exists when {nonexist.map((g,i)=><>{i>0 && (i===nonexist.length-1 ? ' or ' : '; ')}<span set:html={lower(g.whenInline)}/></>)}. </>}
+ <h3>Existence and uniqueness</h3>
+ {exStatement && <div set:html={exStatement}/>}
+ {exReason && <div class="reason" set:html={exReason}/>}
+ <p>{!exStatement && nonexist.length===0 && boundary.length===0 && blockingHolds.length===0 && 'No obstacle to existence is declared. '}
+  {!exStatement && nonexist.length>0 && <>No MLE exists when {nonexist.map((g,i)=><>{i>0 && (i===nonexist.length-1 ? ' or ' : '; ')}<span set:html={lower(g.whenInline)}/></>)}. </>}
   {boundary.length>0 && <>{nonexist.length>0 ? 'It can also fail to exist' : 'The MLE can fail to exist'} when the likelihood approaches its supremum in a limit: {boundary.map((g,i)=><>{i>0 && '; '}<span set:html={g.pathHtml}/> ({g.model ? <a href={`/lab/${g.model}/`}>{g.modelName || g.model}</a> : g.name})</>)}. </>}
   {blockingHolds.map((h:any)=><>{h.status==='not-implemented' ? 'The fit with all coefficients free is not implemented' : 'No MLE exists with all coefficients free'}: <span set:html={lower(unwrap(h.reasonHtml))}/>. </>)}
   {restrRows.length>0 && <>Fits are restricted to {restrRows.map((r:any,i:number)=><>{i>0 && (i===restrRows.length-1 ? ' and ' : ', ')}<span set:html={r.boundHtml}/> (<span set:html={lower(unwrap(r.reasonHtml))}/>)</>)}. </>}
-  {heldCount>0 ? <>This is for all coefficients free; holding coefficients changes it in {heldCount} case{heldCount>1 ? 's' : ''} (<a href="#ml-more">below</a>).</> : ''}
+  {heldCount>0 ? <>This is for all coefficients free; holding coefficients changes it in {heldCount} case{heldCount>1 ? 's' : ''} (<a href="#ml-more">below</a>). </> : ''}
+  {!f.existence?.uniqueness || f.existence.uniqueness==='unknown' ? 'Uniqueness has not been shown.' : f.existence.uniqueness==='numerical' ? 'Uniqueness rests on a numerical search, not a proof.' : ''}
  </p>
  <h3>Algorithm</h3>
  <p>Fitted by {methodLabel[f.fit.method] || f.fit.method}.{(nonexist.length+boundary.length)>0 && ' Where no MLE exists, the fit stops with an error that names the limit.'}</p>
@@ -205,7 +210,8 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  .lab table.limits td small{display:block;color:#656c66}
  .lab table.limits details{margin:0}.lab table.limits details>summary{padding:0;font-size:.85rem}
  .lab li.key{font-weight:600}
- .lab .formula.plain{border:0;background:none;padding:.2rem 0}
+ .lab .formula.plain{border:0;background:none;padding:.2rem 0;display:flex;justify-content:safe center}
+ .lab .formula.plain math[display=block]{width:auto}
  .lab .formula.plain math[display=block]{margin:.4rem 0}
  .lab section h3{font-size:1.1rem;font-weight:600;margin:1.4rem 0 .3rem}
  .lab details.more{border-top:1px solid #d5d4c9;margin-top:1.2rem}

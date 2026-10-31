@@ -64,6 +64,22 @@ fit:
 areas:
 - reliability and survival
 - waiting times and queues
+existence:
+  uniqueness: proved
+  statement: >-
+    With $k$ and $\theta$ free, the MLE exists if and only if the
+    observations are not all equal, and it is then unique. With $k$ or
+    $\theta$ held, it exists and is unique for every positive sample.
+  reason: >-
+    The gamma family is a regular exponential family with sufficient
+    statistic $(\log x, x)$ and natural parameter $(k, -1/\theta)$, a
+    one-to-one reparameterization. The log-likelihood is strictly concave in
+    the natural parameter, so it has at most one maximizer. A maximizer
+    exists exactly when the mean sufficient statistic lies in the interior of
+    its convex support, here $\overline{\log x} < \log \bar x$, which holds by
+    Jensen's inequality unless all observations are equal. Holding one
+    coefficient leaves a concave one-dimensional slice whose score changes
+    sign for every positive sample.
 ---
 
 The gamma distribution models positive measurements and waiting times.
