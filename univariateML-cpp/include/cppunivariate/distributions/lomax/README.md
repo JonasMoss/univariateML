@@ -27,8 +27,8 @@ r:
 log_density: log(lambda) + log(kappa) - (kappa + 1)*log(1 + lambda*x)
 limits:
   - model: exp
-    when: '$\kappa \to \infty$ with $\lambda \kappa$ fixed'
-    detect: max over 0 < u < ubar of the profile log-likelihood gap is at most 1e-8*n
+    when: '$\kappa$ tends to infinity while $\lambda\kappa$ tends to a positive exponential rate'
+    detect: 'both coefficients are free and the numerical profile search finds no improvement over the best exponential larger than $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit
 references:
 - del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability
@@ -81,13 +81,38 @@ aliases:
 - "Pareto of the second kind (zero threshold)"
 key_references:
 - 4
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both coefficients free, a finite MLE exists exactly when
+    $\psi(u) \le 0$ for some $0 < u < \bar u$, with $\psi$ and $\bar u$
+    defined below. Otherwise the supremum is the exponential limit.
+    Joint uniqueness is not established. Holding either coefficient gives
+    a unique finite MLE for every nonempty positive sample, including constant data.
+  reason: >-
+    Put $y_i=x_i/\bar x$, $q=\lambda\bar x$ and
+    $A(q)=n^{-1}\sum_i\log(1+qy_i)$. Profiling gives $\hat\kappa=1/A(q)$
+    and a log-likelihood gap from the best exponential of
+    $n\{\log q-\log A(q)-A(q)\}$. This tends to zero as $q\to0$ and
+    to $-\infty$ as $q\to\infty$. At $q=ue^u$ its sign is that of
+    $-\psi(u)$. For $u\ge\bar u$, $\psi(u)>\log(u/\bar u)\ge0$.
+    With $\lambda$ held the likelihood is strictly concave in $\kappa$.
+    With $\kappa$ held the score in $\log\lambda$ strictly decreases
+    from $n$ to $-n\kappa$.
 ---
 
-The Lomax (Pareto type II) distribution is a heavy-tailed distribution on
-the positive half-line, used for incomes, losses and waiting times.
+The Lomax (Pareto type II) distribution models positive incomes, losses and waiting times with a heavy right tail.
 
 ## Details
 
-The exact existence criterion is $\psi(u)\leq0$ for some $0<u<\bar u$, where $y_i=x_i/\bar x$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ and $\bar u=\bar x/(\prod_i x_i)^{1/n}$; the implementation prefers the exponential face within $10^{-8}n$ log-likelihood units. The moment condition decides only local behaviour at that face: samples with `mean(x^2) < 2*mean(x)^2` can have an MLE, for example `c(1, 100)`. A pair has an MLE iff larger/smaller exceeds approximately 28.81.
+The rate $\lambda$ sets the inverse scale, and the shape $\kappa$ controls the tail. Smaller $\kappa$ gives a heavier tail.
 
-Holding either lambda or kappa gives a unique finite fit for positive samples, including constant data. The exponential escape concerns the fit with both free.
+For the existence criterion, put $y_i=x_i/\bar x$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ and $\bar u=\bar x/(\prod_i x_i)^{1/n}$. The finite MLE exists if and only if $\psi(u)\le0$ somewhere in $0<u<\bar u$. This follows by comparing the profiled likelihood with the best exponential likelihood, as shown above. It does not establish uniqueness. The fit searches this bounded interval numerically and refines candidate maxima. The search is not a global certificate.
+
+The moment condition $\overline{x^2}<2\bar x^2$ decides only local behaviour at the exponential limit and does not rule out a finite MLE. For example, the sample $(1,100)$ has an MLE despite satisfying that condition. For two observations, the transition occurs at a larger-to-smaller ratio of approximately 28.81, obtained numerically; the criterion above determines whether the transition value itself is included.
+
+Holding either coefficient removes the exponential escape and gives a unique finite fit, even for constant data. Holding both evaluates the likelihood at the supplied coefficients.
+
+## R notes
+
+The implementation prefers the exponential limit when the largest profile improvement it finds is at most $10^{-8}n$ log-likelihood units and stops with a recommendation to use `mlexp`. This tolerance can reject a mathematical MLE that ties or only slightly improves on the limit.

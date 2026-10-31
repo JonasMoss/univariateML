@@ -30,8 +30,8 @@ references:
 holds: []
 limits:
   - name: scale collapse
-    when: Scale tends to zero at the fitted or held location.
-    detect: Every observation equals the fitted or held location.
+    when: '$s$ tends to zero at the fitted or held location $\mu$'
+    detect: '$s$ is free and every observation equals the fitted or held location $\mu$'
     status: InvalidInput
     message: "unbounded"
 examples: |
@@ -64,13 +64,32 @@ aliases:
 - "sech-squared"
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists for every
+    nonconstant real sample. Constant data have unbounded likelihood as
+    scale shrinks at their common value. Holding location gives a unique
+    finite scale estimate unless every observation equals that location.
+    Holding scale gives a unique finite location estimate, including for
+    constant data. Holding both leaves only likelihood evaluation.
+  reason: >-
+    In coordinates $a=\mu/s$ and $b=1/s>0$, the log-likelihood is
+    $n\log b-2\sum_i\log\{2\cosh((bx_i-a)/2)\}$.
+    Its Hessian is negative definite: the first term is strictly concave
+    in $b$, and each summand has strictly negative curvature in $bx_i-a$.
+    For nonconstant data, $\sum_i|bx_i-a|$ grows at least linearly in $b$
+    after minimising over $a$, so the likelihood tends to $-\infty$ as
+    $b\to\infty$. It also tends to $-\infty$ as $b\to0$ or as $|a|\to\infty$
+    with $b$ bounded away from zero and infinity. Thus a unique maximum
+    is attained. Held scale fixes $b$; held location imposes $a=\mu b$,
+    and the same argument applies unless all residuals vanish.
 ---
 
-The logistic distribution is a symmetric location-scale distribution with heavier tails than the normal distribution.
+The logistic distribution models symmetric errors with heavier tails than the normal distribution. The location $\mu$ is its centre and median, and the positive scale $s$ controls its spread.
 
 ## Details
 
-The location is unrestricted and the scale is positive.
+For nonconstant data the joint fit has a unique maximum. The likelihood is strictly concave in location divided by scale and inverse scale, although it need not be concave in location and scale themselves. The fit uses Newton iteration with a line search.
 
-
-Holding location gives a unique scale maximum unless every observation equals that location. Holding scale gives an attained location maximum, including for constant samples. Both conditional scores are solved by bisection.
+Holding location leaves a unique scale maximum unless every observation equals that location, when scale can collapse to zero. Holding scale gives a unique location maximum even for constant samples. Both conditional scores are solved by bisection. Holding both evaluates the likelihood.
