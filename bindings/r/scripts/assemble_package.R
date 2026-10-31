@@ -81,4 +81,7 @@ for (folder in list.dirs(dist_dir, full.names = TRUE, recursive = FALSE)) {
 
 source(file.path("scripts", "codegen_dpqr.R"))
 
+source(file.path("scripts", "unity_build.R"))
+configure_unity_build(PKG_DIR)
+
 invisible(NULL)
