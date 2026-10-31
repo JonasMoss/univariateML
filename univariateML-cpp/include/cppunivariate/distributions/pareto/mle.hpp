@@ -40,7 +40,7 @@ inline ParetoResult pareto_mle(span x) {
   const double dn = static_cast<double>(n);
   const double alpha = dn / sum_log_ratio;
   const double logLik = dn * (std::log(alpha)-1.0) - sum_log_x;
-  return {alpha, xmin, logLik};
+  return {alpha, xmin, logLik, sum_log_ratio == 0.0 ? ParetoStatus::Unbounded : ParetoStatus::Ok};
 }
 
 inline ParetoResult pareto_mle(span x,double a,double b) {

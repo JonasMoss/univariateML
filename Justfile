@@ -49,6 +49,9 @@ gen: sync-headers
 	  UMVL_DOSSIER_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
 	  UMVL_PKG_R_DIR={{repo_root}}/univariateML-r/R \
 	  Rscript scripts/codegen_wrappers.R
+	cd bindings/r && \
+	  UMVL_PKG_R_DIR={{repo_root}}/univariateML-r/R \
+	  Rscript scripts/codegen_links.R
 
 regen: gen
 	cd univariateML-r && Rscript -e "roxygen2::roxygenise()"

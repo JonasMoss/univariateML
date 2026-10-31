@@ -1,16 +1,26 @@
 """Assemble the fix queue from oracle inventory and standalone C++ audit CSVs.
 
-Usage: python -m quality.truth_report /tmp/umvl-codex/dpqrtruth/checks
+Usage: python -m quality.truth_report build/truth-checks
+Outputs (including timing CSVs) go to ignored build/truth-audit/.
 The audit is independent of the expected-failure decorations in test.cpp.
 """
 import csv
 import json
 import re
+import shutil
 import sys
 from quality.truth import DISTS, REPORT, ROOT
 
 
 def main():
+    REPORT.mkdir(parents=True, exist_ok=True)
+    # Preserve the dated validation/support inventory as input evidence while
+    # writing new reports (including timing CSVs) only under build/.
+    history = ROOT/'dev/research/evaluations/2026-10-29-dpqr-truth'
+    for name in ('support-corrections.json', 'validation.json'):
+        target = REPORT/name
+        if not target.exists() and (history/name).exists():
+            shutil.copyfile(history/name, target)
     checks = __import__('pathlib').Path(sys.argv[1])
     probe = {}
     with (ROOT/'dev/research/evaluations/2026-10-29-dpqr-probe/results.csv').open() as f:
