@@ -1,0 +1,42 @@
+import {chromium} from 'playwright-core';
+import {createServer} from 'node:http';
+import {readFileSync,existsSync,readdirSync,mkdirSync,statSync,writeFileSync} from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+const root=path.resolve(import.meta.dirname,'../..'),dist=path.join(root,'site/dist'),scratch=path.join(root,'build/scratch/inference-6');
+mkdirSync(scratch,{recursive:true});
+const cache=path.join(os.homedir(),'.cache/ms-playwright');
+const executable=process.env.BROWSER_EXECUTABLE||readdirSync(cache).filter(n=>/^chromium_headless_shell-/.test(n)).sort().reverse().map(n=>path.join(cache,n,'chrome-headless-shell-linux64/chrome-headless-shell')).find(existsSync);
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml'};
+const server=createServer((req,res)=>{let file=path.join(dist,decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(existsSync(file)&&statSync(file).isDirectory())file=path.join(file,'index.html');if(!file.startsWith(dist)||!existsSync(file)){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');res.end(readFileSync(file));});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));let browser;
+try{
+ browser=await chromium.launch({executablePath:executable,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const page=await browser.newPage({viewport:{width:1280,height:1100}}),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ const url=`http://127.0.0.1:${server.address().port}/inference/`;
+ const canonical=JSON.parse(readFileSync(path.join(root,'dev/validation/inference-availability.json'))),n=canonical.rows.length;
+ await page.goto(url);await page.locator('#inference-filters').waitFor({state:'visible'});
+ if(await page.locator('[data-inference-row]:visible').count()!==n)throw Error('Initial rows');
+ await page.screenshot({path:path.join(scratch,'desktop.png')});
+ for(const status of canonical.statuses){await page.locator('#status').selectOption(status);if(await page.locator('[data-inference-row]:visible').count()!==canonical.rows.filter(r=>r.status===status).length)throw Error('Status filter '+status);}
+ await page.locator('#reset').click();await page.locator('#family').selectOption('gamma');await page.locator('#status').selectOption('implemented');
+ await page.locator('#regime').fill('misspecification');
+ if(await page.locator('[data-inference-row]:visible').count()!==2)throw Error('Combined filters');
+ await page.locator('[data-inference-row]:visible details').first().locator('summary').click();
+ await page.locator('#inference-filters').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(scratch,'desktop-evidence.png')});
+ await page.locator('#regime').fill('no such regime');if(!await page.locator('#no-results').isVisible())throw Error('Empty state');
+ await page.locator('#reset').click();
+ await page.setViewportSize({width:390,height:1000});await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:path.join(scratch,'mobile.png')});
+ if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))throw Error('Mobile overflow');
+ await page.locator('#family').selectOption('triang');await page.locator('#status').selectOption('implemented');await page.locator('[data-inference-row]:visible details summary').click();
+ await page.locator('[data-inference-row]:visible').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(scratch,'mobile-evidence.png')});
+ if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))throw Error('Expanded mobile overflow');
+ const plain=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}}),p=await plain.newPage();await p.goto(url);
+ if(await p.locator('[data-inference-row]:visible').count()!==n)throw Error('No-JS coverage');
+ if(await p.locator('#inference-filters').isVisible())throw Error('No-JS filters should be hidden');
+ const row=p.locator('[data-inference-row][data-family=pareto][data-status=implemented]').first();await row.locator('summary').click();if(!await row.getByText('pareto_shape_exact_interval',{exact:true}).isVisible())throw Error('No-JS evidence');
+ await plain.close();if(errors.length)throw Error(errors.join('\n'));
+ const result={rows:n,families:98,desktop:[1280,1100],mobile:[390,1000],checks:['all status filters','combined family/status/regime filters','empty state','reset','native evidence disclosure','no horizontal overflow','all rows and evidence without JavaScript','no page errors']};
+ writeFileSync(path.join(scratch,'browser.json'),JSON.stringify(result,null,2)+'\n');console.log('PASS inference browser: '+JSON.stringify(result));
+}finally{await browser?.close();await new Promise(r=>server.close(r));}

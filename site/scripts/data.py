@@ -101,6 +101,9 @@ def derived_tags(m):
                 coefficient_tags=[str(len(m['params']))]+sorted({p.get('kind','regular') for p in m['params']}),
                 existence_tags=tags or ['always'])
 
+from inference_availability import generate as inference_availability
+inference = inference_availability()
+
 started=time.monotonic()
 out=[]
 for folder in sorted(FAMILIES.iterdir()):
@@ -131,6 +134,7 @@ for folder in sorted(FAMILIES.iterdir()):
              log_latex=sp.latex(expr,symbol_names=symbol_names), density_latex=latex if readable else None,
              cpp=snippet(folder,m))
     m.update(derived_tags(m))
+    m['inference']=[r for r in inference['rows'] if r['family']==folder.name]
     out.append(clean(m))
 # Invert relations once, retaining their direction and coefficient maps.
 relation_labels = {
