@@ -10,7 +10,7 @@
 Rcpp::List mlfatigue_(const Rcpp::NumericVector &x, Rcpp::Nullable<double> mu, double abstol = 1.220703e-4,
                       int iterlim = 100, Rcpp::Nullable<double> alpha = R_NilValue,
                       Rcpp::Nullable<double> beta = R_NilValue) {
-  if (mu.isNull()) Rcpp::stop("Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.");
+  if (mu.isNull()) Rcpp::stop("The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.");
   const double threshold = Rcpp::as<double>(mu);
   if (!std::isfinite(threshold)) Rcpp::stop("`mu` must be finite.");
   const double nan=std::numeric_limits<double>::quiet_NaN();

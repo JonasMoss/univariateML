@@ -45,7 +45,7 @@ test_that("fatigue holds a translated threshold and checks shifted support", {
   expect_equal(attr(translated,"logLik"),attr(base,"logLik"))
   expect_identical(attr(translated,"fixed"),"mu")
   expect_equal(sum(dml(x-5,translated,log=TRUE)),attr(base,"logLik"))
-  expect_error(mlfatigue(x, mu=NULL),"endpoint spikes.*normal escape")
+  expect_error(mlfatigue(x, mu=NULL),"unbounded for every sample with a unique minimum")
   expect_error(mlfatigue(x, mu=min(x)),"strictly above")
   expect_error(mlfatigue(x, mu=Inf),"finite")
 })
@@ -72,7 +72,7 @@ test_that("fatigue coefficient holds match independent multistart density oracle
   expect_s3_class(mlfatigue(rep(2,4),mu=0,alpha=3,beta=2),"univariateML")
   for(nm in c("alpha","beta"))for(bad in c(0,-1,Inf,NaN))
     expect_error(do.call(mlfatigue,c(list(x=1:3,mu=0),setNames(list(bad),nm))),"positive finite")
-  expect_error(mlfatigue(1:3,mu=NULL,alpha=1,beta=1),"endpoint spikes")
+  expect_error(mlfatigue(1:3,mu=NULL,alpha=1,beta=1),"not estimated, even with alpha and beta held")
   expect_error(mlfatigue(c(.1,1,5),mu=0,alpha=1,iterlim=1),"did not converge")
 })
 

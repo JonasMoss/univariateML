@@ -15,11 +15,11 @@ Rcpp::List mlbbinom_(const Rcpp::IntegerVector &x, Rcpp::Nullable<double> size,
   if (size.isNotNull() && (!std::isfinite(N) || N < 0 || N != std::floor(N) || N > 1e7))
     Rcpp::stop("`size` must be a nonnegative integer (at most 1e7).");
   if (size.isNull() && alpha.isNull() && beta.isNull())
-    Rcpp::stop("Free size requires comparing all fixed-size binomial and two-point faces with the negative-binomial and Poisson limits; no reliable integer-tail stopping rule is available.");
+    Rcpp::stop("Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known.");
   if (size.isNull() && alpha.isNotNull() && beta.isNull())
-    Rcpp::stop("Free size with held alpha requires comparison with the negative-binomial limit of the same shape; no reliable integer-tail stopping rule is available.");
+    Rcpp::stop("Estimating size with alpha held is not implemented. As size grows the fit approaches a negative binomial with the same alpha, and no usable bound rules out a larger size beating both.");
   if (size.isNull() && alpha.isNull() && beta.isNotNull())
-    Rcpp::stop("Free size with held beta has a proved tail bound, but it is too weak for practical enumeration; fixed-size point-mass limits also require comparison.");
+    Rcpp::stop("Estimating size with beta held is not implemented. A tail bound shows that the likelihood eventually decreases in size when some count is positive, but it is too weak for a practical search, and the point-mass limits at each size still need comparison.");
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = alpha.isNotNull() ? Rcpp::as<double>(alpha) : nan;
   const double b = beta.isNotNull() ? Rcpp::as<double>(beta) : nan;
