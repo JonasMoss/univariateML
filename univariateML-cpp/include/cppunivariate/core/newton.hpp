@@ -1,3 +1,5 @@
+// Contract, retained choices, evidence and known numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
 // 1D Newton-Raphson helpers.
 //
 // `newton_raphson_1d` mirrors the R-side convention from R/code_misc.R:64-86
@@ -9,7 +11,8 @@
 // estimators rely on (e.g. gamma_mle's `|step| < tol` rule). Goldens
 // reproduce bit-for-bit only if the convergence test is preserved.
 //
-// Both bail on NaN with converged=false.
+// The relative variant rejects a NaN next iterate; the absolute variant
+// rejects a NaN step. Callers validate starts and the returned score/domain.
 
 #pragma once
 

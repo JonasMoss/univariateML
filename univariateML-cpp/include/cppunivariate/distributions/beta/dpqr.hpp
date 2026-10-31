@@ -9,7 +9,7 @@
 
 #include "../../special/constants.hpp"
 #include "../../special/special.hpp"
-#include "../gb2/beta_tails.hpp"
+#include "../../special/beta_tails.hpp"
 
 #include <cmath>
 

@@ -1,9 +1,10 @@
 #pragma once
-#include "../../special/special.hpp"
+#include "special.hpp"
 #include <cmath>
 #include <limits>
 namespace cppunivariate { namespace missing_detail {
-// Local beta log-coordinate bridge, replaceable by special/tails.hpp.
+// Shared beta log-coordinate bridge. Contract and numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
 inline double softplus(double x) { return std::fmax(x,0)+std::log1p(std::exp(-std::abs(x))); }
 inline double logprob(double p,bool log_p) {
  if(std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();

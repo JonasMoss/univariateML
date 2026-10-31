@@ -1,3 +1,5 @@
+// Contract, retained choices, evidence and known numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
 // Pure-libm scalar density helpers for the skew-symmetric family
 // (snorm, std, sstd, ged, sged) plus the small bag of utility helpers
 // (sign1, heaviside, ged_lambda, ged_g, *_sigma) shared by the estimator
@@ -78,8 +80,8 @@ inline double log_dged_unit(double z, double nu) {
 // log of the unit-variance t density at 0: the z-free part of log_dstd_unit.
 inline double log_dstd_unit_const(double nu) {
   // log Gamma(z+1/2)/Gamma(z) = log(z)/2 - 1/(8z)
-  // + 1/(192z^3) - 1/(640z^5) + O(z^-7). At nu >= 128
-  // the omitted term is below double precision; avoid lgamma cancellation.
+  // + 1/(192z^3) - 1/(640z^5) + O(z^-7). Use at nu >= 128
+  // to avoid lgamma cancellation; see the contract note for accuracy limits.
   const double inv = 1.0 / nu;
   const double ratio = nu >= 128.0
       ? 0.5 * std::log(0.5 * nu) - 0.25 * inv +

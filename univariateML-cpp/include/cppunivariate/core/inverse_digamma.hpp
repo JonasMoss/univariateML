@@ -1,8 +1,10 @@
+// Contract, retained choices, evidence and known numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
 // Inverse digamma: solve digamma(y) = x for y.
 //
 // Asymptotic expansion for very negative x; small Newton refinement
-// otherwise. Up to four polishing Newton steps using Rmath digamma/
-// trigamma. Used by Beta MLE (implicit) and Kumaraswamy MLE (explicit).
+// otherwise. Up to four polishing Newton steps using the Boost-seam digamma/
+// trigamma. Currently used by Kumaraswamy initialization.
 
 #pragma once
 
