@@ -1,0 +1,56 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp
+@@ -4,11 +4,25 @@
+ #include "dpqr.hpp"
+ #include "../../core/span.hpp"
+ #include <vector>
++#include <array>
+ 
+ namespace cppunivariate {
+ enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure };
+ struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus status; };
+ namespace emg_detail {
++inline double likelihood(span x,double mu,double sigma,double lambda) {
++  if(!valid(mu,sigma,lambda))return special::kNaN;
++  const CPPUNIV_EXTENDED_REAL a=static_cast<CPPUNIV_EXTENDED_REAL>(lambda)*sigma;
++  const CPPUNIV_EXTENDED_REAL lograte=std::log(static_cast<CPPUNIV_EXTENDED_REAL>(lambda));
++  double ll=0;
++  for(double v:x) {
++    if(!std::isfinite(v))return special::kNegInf;
++    const CPPUNIV_EXTENDED_REAL z=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-mu)/sigma;
++    ll+=static_cast<double>(lograte+logterm(z,a));
++  }
++  return ll;
++}
++
+ struct Profile {
+   const std::vector<double>& x;
+   double mu,sigma,lambda;
+@@ -24,7 +38,7 @@
+           sum+=z-h;deriv-=(t+h)*h/s;
+         } else {const CPPUNIV_EXTENDED_REAL r=std::exp(-logmills(t));sum+=a-r;deriv-=r*(r-t)/s;}
+       }
+-      return std::vector<CPPUNIV_EXTENDED_REAL>{sum,deriv};
++      return std::array<CPPUNIV_EXTENDED_REAL,2>{{sum,deriv}};
+     };
+     double step=std::max(s,1/l),lo=x.front()-step,hi=x.back()+step;
+     for(int k=0;k<100 && score(lo)[0]<0;++k) {step*=2;lo-=step;}
+@@ -46,7 +60,7 @@
+     const double l=std::isnan(lambda)?std::exp(-t[k++]):lambda;
+     if(!(s>0 && l>0 && std::isfinite(s) && std::isfinite(l))) return {0,s,l,special::kNegInf,0,EmgStatus::IterationFailure};
+     const double m=location(s,l);
+-    double ll=0;for(double v:x) ll+=distributions::demg(v,m,s,l,true);
++    const double ll=emg_detail::likelihood(span{x.data(),x.size()},m,s,l);
+     return {m,s,l,ll,0,EmgStatus::Ok};
+   }
+ };
+@@ -86,8 +100,7 @@
+     const double m=std::isnan(p.mu)?t[k++]:p.mu;
+     const double s=std::isnan(p.sigma)?std::exp(t[k++]):p.sigma;
+     const double b=std::isnan(p.lambda)?std::exp(-t[k++]):p.lambda;
+-    double ll=0;for(double x:p.x)ll+=distributions::demg(x,m,s,b,true);
+-    return ll;
++    return emg_detail::likelihood(span{p.x.data(),p.x.size()},m,s,b);
+   };
+   if(multistart_score_acceptable(theta,likelihood)) {
+     best.logLik=likelihood(theta);best.status=EmgStatus::Ok;

@@ -126,6 +126,13 @@ The skew generalized error distribution extends the exponential-power family wit
 
 ## Details
 
+The 2026-10-31 fit-speed revision computes the fixed shape/skew density
+normalizers and kernel scale once in the conditional location/scale search. Each
+density contribution retains the previous arithmetic grouping and observation
+order. Search grids, observation-kink refinements and failure handling are
+unchanged. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 Fitting restricts the shape to $\nu \ge 1$, the log-concave GED range,
 including the attained Laplace member at $\nu=1$. Without this restriction
 the likelihood is unbounded as $\nu \to 0$ for nonconstant samples

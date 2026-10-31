@@ -82,6 +82,19 @@ The transformed beta distribution models positive observations with two power ta
 
 ## Details
 
+For samples larger than 1000, the 2026-10-31 fit-speed revision forms the Burr,
+inverse-Burr and beta-prime member seeds from 1000 deterministically selected
+observations, one distinct index from each of 1000 contiguous index blocks.
+This changes only candidate starts;
+samples of size at most 1000 use the original member fits. Transformed-gamma and
+reciprocal transformed-gamma boundary fits, all profile likelihoods, basin
+refinement, boundary comparisons and score/failure gates still use the complete
+sample. This is a numerical search change, not an exact-equivalence theorem for
+arbitrary samples. A repeated-golden large-sample comparison and a regression
+exercise the new branch; the prescribed small-sample comparison does not
+exercise subsampling. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 2026-10-30 (TASK-125): the shared beta log-coordinate bridge uses the continued fraction when the backend input is subnormal or its result is below 1e-290, avoiding relative precision loss before taking logs. The existing independent truth rows measure the selected cases; this is not a uniform error bound. Logit quantile bisection returns NaN if it cannot bracket or reach adjacent floating-point endpoints.
 
 In the GB2 convention $(a,b,p,q)$, the coefficients are

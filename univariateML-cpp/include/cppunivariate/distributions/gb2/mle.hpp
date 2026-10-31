@@ -298,11 +298,25 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
   std::vector<std::array<double,2>> starts;
   for(double lp:{-4.0,-1.0,0.0,2.0,5.0})for(double lq:{-4.0,-1.0,0.0,2.0,5.0})starts.push_back({{lp,lq}});
   if(std::isnan(a)&&std::isnan(b)&&std::isnan(p)&&std::isnan(q)) {
-    const auto bu=burr_mle(x,1e-8,300);
+    // Only member seeds use a bounded deterministic subsample.
+    // All face comparisons and final profile/score gates retain the full data.
+    std::vector<double> seed_data;
+    if(x.size()>1000) {
+      // One distinct index per block avoids a modular stride aliasing n.
+      // Quotient/remainder construction also avoids multiplying n by j.
+      const std::size_t width=x.size()/1000,remainder=x.size()%1000;
+      for(std::size_t j=0;j<1000;++j) {
+        const std::size_t begin=j*width+j*remainder/1000;
+        const std::size_t end=(j+1)*width+(j+1)*remainder/1000;
+        seed_data.push_back(x[begin+(j*104729u)%(end-begin)]);
+      }
+    }
+    const span seed=seed_data.empty()?x:span{seed_data.data(),seed_data.size()};
+    const auto bu=burr_mle(seed,1e-8,300);
     if(bu.status==BurrStatus::Ok) starts.push_back({{0,std::log(bu.shape1)}});
-    const auto ib=invburr_mle(x,1e-8,300);
+    const auto ib=invburr_mle(seed,1e-8,300);
     if(ib.status==InvBurrStatus::Ok) starts.push_back({{std::log(ib.shape1),0}});
-    const auto bp=betapr_mle(x);
+    const auto bp=betapr_mle(seed);
     if(bp.status==BetaPrimeStatus::Ok) starts.push_back({{std::log(bp.alpha),std::log(bp.beta)}});
   }
   if(!std::isnan(p)||!std::isnan(q)) {

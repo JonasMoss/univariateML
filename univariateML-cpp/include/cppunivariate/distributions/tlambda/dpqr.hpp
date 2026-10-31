@@ -22,17 +22,22 @@ inline double logexprel(double z) {
   return std::log(std::expm1(z)/z);
 }
 // log |Q(u)| for log(u)<=log(1/2); scale and location omitted.
-inline double logmag(double lu,double lambda) {
-  const double lv=std::log1p(-std::exp(lu)),delta=lv-lu;
+inline double logmag_from_logs(double lu,double lv,double lambda) {
+  const double delta=lv-lu;
   if(delta==0) return -INFINITY;
   if(lambda*delta>1e-5) return lambda*lv+std::log(-std::expm1(-lambda*delta))-std::log(lambda);
   if(lambda*delta< -1e-5) return lambda*lu+std::log(-std::expm1(lambda*delta))-std::log(-lambda);
   return lambda*lv+std::log(delta)+logexprel(-lambda*delta);
 }
-inline double logderiv(double lu,double lambda) {
-  const double lv=std::log1p(-std::exp(lu));
+inline double logmag(double lu,double lambda) {
+  return logmag_from_logs(lu,std::log1p(-std::exp(lu)),lambda);
+}
+inline double logderiv_from_logs(double lu,double lv,double lambda) {
   if(lambda==1) return std::log(2.0);
   return logadd((lambda-1)*lu,(lambda-1)*lv);
+}
+inline double logderiv(double lu,double lambda) {
+  return logderiv_from_logs(lu,std::log1p(-std::exp(lu)),lambda);
 }
 // Endpoint deficit 1-lambda*|Q(u)|, without subtracting nearly equal values.
 inline double logdeficit(double lu,double lambda) {
@@ -76,10 +81,12 @@ inline double logsmall_log(double target,double lambda,double logslack=std::nume
   }
   double t=lo+(hi-lo)/2;
   for(int k=0;k<100;++k) {
-    const double f=logmag(-t,lambda)-target;
+    const double lv=std::log1p(-std::exp(-t));
+    const double magnitude=logmag_from_logs(-t,lv,lambda);
+    const double f=magnitude-target;
     if(std::abs(f)<2e-14) break;
     if(f>0) hi=t; else lo=t;
-    const double slope=std::exp(logderiv(-t,lambda)-t-logmag(-t,lambda));
+    const double slope=std::exp(logderiv_from_logs(-t,lv,lambda)-t-magnitude);
     double next=t-f/slope;
     if(!(next>lo && next<hi) || !std::isfinite(next)) next=lo+(hi-lo)/2;
     if(std::abs(next-t)<2e-14*(1+t)) {t=next;break;}

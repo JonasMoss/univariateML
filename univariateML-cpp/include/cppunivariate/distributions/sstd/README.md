@@ -143,6 +143,14 @@ The skew Student-t distribution combines heavy tails with asymmetry using the Fe
 
 ## Details
 
+The 2026-10-31 fit-speed revision stops the fixed-shape scale bisection when its
+midpoint rounds to an endpoint: the remaining iterations cannot change the
+represented final midpoint or scale. The shared held-fit helper retains the same
+grid and all refinements. In held location/scale fits with fixed shape and skew,
+density normalizers are computed once while per-observation arithmetic grouping
+is preserved. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 A tie of multiplicity $k>2(n-k)$ makes the free-df likelihood unbounded even at fixed skewness (the two side scales change the coefficient, not the collapse exponent); equality is reported as an uncertified scale-collapse boundary, and a half-t face has a positive scale root only when $\nu(n-k)>k$.
 
 This is the fGarch parameterisation: `mean` and `sd` are the mean and standard deviation, `nu` is greater than 2, and `xi = 1` gives the Student-t distribution.

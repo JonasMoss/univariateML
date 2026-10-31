@@ -138,3 +138,16 @@ TEST_CASE("gb2: P3 unfinished optimizer is a failure") {
 TEST_CASE("gb2: beta logit inversion fails when a finite bracket cannot be represented") {
   CHECK(std::isnan(cppunivariate::missing_detail::beta_logit_q(-1e308,1e-308,2,true)));
 }
+
+TEST_CASE("gb2: bounded member seeds retain the full-data repeated-sample fit") {
+  const auto g=mltest::load_distribution_golden("gb2");
+  std::vector<double> repeated;
+  for(int j=0;j<3;++j)repeated.insert(repeated.end(),g.data.begin(),g.data.end());
+  const auto fit=cppunivariate::gb2_mle(mltest::as_span(repeated));
+  REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+  CHECK(fit.logLik==doctest::Approx(3*g.logLik).epsilon(1e-12));
+  CHECK(fit.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-7));
+  CHECK(fit.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-7));
+  CHECK(fit.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(1e-7));
+  CHECK(fit.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-7));
+}

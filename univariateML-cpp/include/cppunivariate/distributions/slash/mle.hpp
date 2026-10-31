@@ -15,9 +15,14 @@ struct Profile {
     if(std::isnan(s)) {
       CPPUNIV_EXTENDED_REAL radius=0;for(double v:x)radius=std::max(radius,std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-m));
       double lo=-350,hi=static_cast<double>(std::log(std::max(radius,CPPUNIV_EXTENDED_LITERAL(1e-150,1e-150L))))+1;
+      std::vector<double> residuals;
+      residuals.reserve(x.size());
+      for(double v:x)residuals.push_back(v-m);
       for(int k=0;k<65;++k) {
-        const double mid=(lo+hi)/2,ss=std::exp(mid);double score=0;
-        for(double v:x) {const double z=(v-m)/ss,t=z*z/2;score+=t<1e-7 ? -1+t-t*t/6 : (t>700?1:1-2*t/std::expm1(t));}
+        const double mid=(lo+hi)/2;
+        if(mid==lo || mid==hi)break;
+        const double ss=std::exp(mid);double score=0;
+        for(double delta:residuals) {const double z=delta/ss,t=z*z/2;score+=t<1e-7 ? -1+t-t*t/6 : (t>700?1:1-2*t/std::expm1(t));}
         if(score>0)lo=mid;else hi=mid;
       }
       s=std::exp((lo+hi)/2);

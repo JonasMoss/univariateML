@@ -1,0 +1,60 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp
+@@ -7,6 +7,7 @@
+ #include "../betapr/mle.hpp"
+ #include "../lnorm/mle.hpp"
+ #include <array>
++#include <map>
+ 
+ namespace cppunivariate {
+ enum class Gb2Status { Ok, TrGammaBoundary, InvTrGammaBoundary,
+@@ -148,12 +149,19 @@
+ }
+ // A small dimension BFGS with analytic envelope scores; no pointer API.
+ inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
+-                    double p,double q,double a,double b,double box,int maxit,int &evals) {
++                    double p,double q,double a,double b,double box,int maxit,int &evals,
++                    std::map<std::array<double,2>,Point>& cache) {
+   const std::array<bool,2> free{{std::isnan(p),std::isnan(q)}};
+   auto get=[&](std::array<double,2> w) {
+     ++evals;
+     if((free[0] && std::abs(w[0])>box)||(free[1] && std::abs(w[1])>box)) return Point{};
+-    return profile(d,free[0]?std::exp(w[0]):p,free[1]?std::exp(w[1]):q,a,b);
++    const std::array<double,2> shapes{{free[0]?std::exp(w[0]):p,free[1]?std::exp(w[1]):q}};
++    const auto found=cache.find(shapes);
++    if(found!=cache.end())return found->second;
++    const auto value=profile(d,shapes[0],shapes[1],a,b);
++    if(cache.size()>=4096)cache.clear();
++    cache.emplace(shapes,value);
++    return value;
+   };
+   Point cur=get(v);
+   std::array<double,4> H{{1,0,0,1}};
+@@ -326,6 +334,9 @@
+     if(!std::isnan(p)&&!std::isnan(q))starts={{{std::log(p),std::log(q)}}};
+   }
+   gb2_detail::Point best;
++  // Profiles depend only on the two beta shapes within this fit. Keep
++  // requested evaluation counts unchanged, including cache hits.
++  std::map<std::array<double,2>,gb2_detail::Point> cache;
+   int evals=0;double box=8, searched_box=8;
+   bool explored=false;
+   for(int expansion=0;expansion<3;++expansion) {
+@@ -335,7 +346,7 @@
+     // following the same long, flat escape from many seeds.
+     std::vector<gb2_detail::Point> basins;
+     for(auto v:starts) {
+-      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,std::min(20,maxit),evals);
++      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,std::min(20,maxit),evals,cache);
+       if(candidate.ok) {
+         basins.push_back(candidate);
+         if(candidate.ll>best.ll)best=candidate;
+@@ -351,7 +362,7 @@
+       }
+       if(!distinct)continue;
+       selected.push_back(v);
+-      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,maxit,evals);
++      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,maxit,evals,cache);
+       explored=explored||(candidate.ok&&candidate.outer_done);
+       if(candidate.ok&&candidate.ll>best.ll)best=candidate;
+       if(selected.size()>=8)break;
