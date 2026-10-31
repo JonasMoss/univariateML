@@ -229,6 +229,17 @@ strict concavity in natural parameters; cite where a proof is long), and
 Math in `$...$`, as in the prose. Limits and holds remain the machine-readable
 record; `existence` does not replace them.
 
+### Site prose
+
+The site shows `summary`, `existence`, the `when` and `detect` clauses of
+`limits`, `holds` and `fit_domain` reasons, and the `## Details` prose to a
+statistician who does not know the package (think of an MSc student). Write
+those for that reader: full sentences, one idea per sentence, no chains of
+colons and semicolons, coefficient symbols (`$\mu$`) rather than API names,
+and no R or C++ idiom (`NULL`, `mlX(...)` calls, status names). State the
+statistical fact instead: "with $\mu$ estimated, no MLE exists", not "NULL is
+unsupported". `advice` is R-facing; the site shows it only under Usage.
+
 ## Family taxonomy (first version, 2026-10-31)
 
 These presentation fields are required for the canonical catalog dossiers and

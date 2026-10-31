@@ -69,7 +69,13 @@ const freeRows=limitRows.filter(g=>g.free);
 const nonexist=freeRows.filter(g=>g.nonexistence);
 const boundary=freeRows.filter(g=>!g.nonexistence);
 const heldCount=limitRows.filter(g=>g.held.length>0).length+holds.filter((h:any)=>h.held.length>0).length;
-const specialGroups=(()=>{const m=new Map<string,any>();for(const p of f.params.filter((p:any)=>p.kind && p.kind!=='regular')){const k=p.kind+'|'+(p.advice||'');if(!m.has(k))m.set(k,{kind:p.kind,advice:p.advice,names:[]});m.get(k).names.push(p.name);}return [...m.values()];})();
+const kindGroups=(()=>{const m=new Map<string,any>();for(const [i,p] of f.params.entries()){if(!p.kind||p.kind==='regular')continue;if(!m.has(p.kind))m.set(p.kind,{kind:p.kind,idx:[]});m.get(p.kind).idx.push(i);}return [...m.values()];})();
+const kindText:Record<string,[string,string,string,string]>={
+ design:['The coefficient','The coefficients','is set by the study design and is normally known in advance','are set by the study design and are normally known in advance'],
+ threshold:['The threshold','The thresholds','marks an end of the support and is normally known in advance','mark the ends of the support and are normally known in advance'],
+ endpoint:['The coefficient','The coefficients','is an end point of the support','are the end points of the support'],
+};
+const advised=f.params.filter((p:any)=>p.advice);
 const heldRows=limitRows.filter(g=>g.held.length>0);
 const blockingHolds=holdRows.filter((h:any)=>h.held.length===0);
 const otherHolds=holdRows.filter((h:any)=>h.held.length>0);
@@ -124,7 +130,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
   <h2 id="definition">Definition</h2>
   <p>The {f.density_latex ? (discrete ? 'probability mass function' : 'density') : 'log-density'} is</p>
   <div class="formula plain" set:html={densityHtml}/>
-  <p>for <span set:html={supportHtml}/> and zero elsewhere, where {f.params.map((p:any,i:number)=><>{i>0 && (i===f.params.length-1 ? ' and ' : ', ')}<span set:html={paramDomains[i]}/> is <code>{p.name}</code>{p.role!==p.name && <> ({p.role})</>}</>)}.{specialGroups.map((g:any)=><> {g.names.length>1 ? <>{g.names.map((n:string,i:number)=><>{i>0 && (i===g.names.length-1 ? ' and ' : ', ')}<code>{n}</code></>)} are {g.kind} coefficients</> : <><code>{g.names[0]}</code> is a {g.kind} coefficient</>}: {g.advice ? g.advice : 'required, and held when fitting.'}</>)}</p>
+  <p>for <span set:html={supportHtml}/> and zero elsewhere, where {f.params.map((p:any,i:number)=><>{i>0 && (i===f.params.length-1 ? ' and ' : ', ')}<span set:html={paramDomains[i]}/> is <code>{p.name}</code>{p.role!==p.name && <> ({p.role})</>}</>)}.{kindGroups.map((g:any)=>{const t=kindText[g.kind]||['The coefficient','The coefficients',`is a ${g.kind} coefficient`,`are ${g.kind} coefficients`];const many=g.idx.length>1;return <> {many ? t[1] : t[0]} {g.idx.map((i:number,j:number)=><>{j>0 && (j===g.idx.length-1 ? ' and ' : ', ')}<span set:html={paramLabels[i]}/></>)} {many ? t[3] : t[2]}.</>;})}</p>
   {defProseHtml.map(h=><div set:html={h}/>)}
  </section>
 </div>
@@ -153,7 +159,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  <h3>Algorithm</h3>
  <p>Fitted by {methodLabel[f.fit.method] || f.fit.method}.{(nonexist.length+boundary.length)>0 && ' Where no MLE exists, the fit stops with an error that names the limit.'}</p>
  <details class="more" id="ml-more"><summary>More on the fit{heldCount>0 ? ` (including ${heldCount} case${heldCount>1?'s':''} with held coefficients)` : ''}</summary>
-  <p><strong>Certification:</strong> {f.fit.certified}. {f.fit.note}</p>
+  <p>{({yes:'The global maximum is certified.',partial:'The global maximum is certified only in part.',no:'The search is numerical; the global maximum is not certified.',unknown:'Whether the search always finds the global maximum has not been established.'} as Record<string,string>)[f.fit.certified] || ''}</p>
   {limitRows.length>0 && <table class="limits"><thead><tr><th>Limit</th><th>Path</th><th>Detected when</th><th>Applies</th></tr></thead><tbody>
    {limitRows.map(g=><tr>
     <td>{g.model ? <a href={`/lab/${g.model}/`}><code>ml{g.model}</code></a> : g.nonexistence ? 'no MLE' : g.name}{g.model && g.name && <small> {g.name}</small>}</td>
@@ -173,6 +179,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
 <section aria-labelledby="usage">
  <h2 id="usage">Usage</h2>
  <h3>R</h3><pre><code>{f.examples}</code></pre>
+ {advised.length>0 && <ul class="r-notes">{advised.map((p:any)=><li><code>{p.name}</code>: {p.advice}</li>)}</ul>}
  <h3>C++</h3><pre><code>{f.cpp}</code></pre>
  <p class="small">Header-only C++17 with Boost.Math. Check the returned status before using a fit.</p>
 </section>
@@ -223,6 +230,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  .lab details.more{border-top:1px solid #d5d4c9;margin-top:1.2rem}
  .lab details.more>summary{font-size:.92rem}
  .lab .ib-param code{font-size:.75rem;color:#4c5550;margin-left:.2rem}
+ .lab .r-notes{font-size:.88rem;color:#3d4542;margin:.4rem 0 1rem;padding-left:1.2rem}
  .lab .small{font-size:.85rem;color:#4c5550}
  .lab .source{margin-top:3rem;border-top:1px solid #c9c8bc;padding-top:1rem;font:.85rem system-ui,sans-serif;color:#4c5550}
  @media (max-width:860px){
