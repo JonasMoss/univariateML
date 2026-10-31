@@ -53,7 +53,10 @@
     n=200;xs=Float64Array.from({length:n},(_,i)=>P0+(P1-P0)*i/(n-1));
     ys=Array.from(model.q(xs,vals));plotLeft=0;plotRight=1;
    }else{
-    left=model.q(new Float64Array([P0]),fr)[0];right=model.q(new Float64Array([P1]),fr)[0];
+    // Window: the central 99% of mass, trimmed to 3 IQRs beyond the quartiles for heavy tails.
+    const [qa,q1,q3,qb]=model.q(new Float64Array([P0,.25,.75,P1]),fr);
+    const iqr=q3-q1;left=qa;right=qb;
+    if(Number.isFinite(iqr)&&iqr>0){left=Math.max(qa,q1-3*iqr);right=Math.min(qb,q3+3*iqr);}
     if(!Number.isFinite(left)||!Number.isFinite(right))return {error:'Plot range is not finite for these values.'};
     const w=right-left;
     if(Number.isFinite(supportBounds[0])&&left-supportBounds[0]<.25*w)left=supportBounds[0];
@@ -68,7 +71,10 @@
    const finite=ys.filter(Number.isFinite).sort((a,b)=>a-b);
    if(!finite.length)return {error:'No finite values to plot.'};
    let low=finite[0],high=finite[finite.length-1];
-   if(view==='density'&&!useLog){low=0;if(finite.length>10){const q=finite[Math.floor(.97*(finite.length-1))];if(high>4*q)high=1.5*q;}}
+   if(view==='density'&&!useLog){low=0;
+    // Clip only a spike at the window edge (a density pole at a support bound), never an interior peak.
+    const im=ys.indexOf(high),edge=im<=1||im>=n-2;
+    if(edge&&finite.length>10){const q=finite[Math.floor(.97*(finite.length-1))];if(high>4*q)high=1.5*q;}}
    if(view==='cdf'&&!useLog){low=0;high=1;}
    if(view==='cdf'&&useLog)high=0;
    if(useLog)low=Math.max(low,high-40);

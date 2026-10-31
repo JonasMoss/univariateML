@@ -13,7 +13,7 @@ export function exprTex(s: string, sym: Map<string, string>): string {
   if (m) return `\\begin{cases} ${exprTex(m[2], sym)} & ${exprTex(m[1], sym)} \\\\ ${exprTex(m[3], sym)} & \\text{otherwise} \\end{cases}`;
   return s
     .replace(/(-?)\binf(inity)?\b/gi, (_x, minus) => `${minus}\\infty`)
-    .replace(/\b[A-Za-z_][A-Za-z0-9_]*\b/g, w => sym.get(w) ?? w)
+    .replace(/\b[A-Za-z_][A-Za-z0-9_]*\b/g, w => sym.get(w) ?? (['max', 'min', 'log', 'exp'].includes(w) ? `\\${w}` : w))
     .replace(/==/g, '=').replace(/>=/g, '\\ge ').replace(/<=/g, '\\le ')
     .replace(/\*/g, ' ');
 }

@@ -26,7 +26,10 @@ const hasBinding=(binding as string[]).includes(f.id);
 // Dossier body: lead paragraphs, then ## sections routed by title.
 const body=entry.body || '';
 const chunks=body.split(/^## /m);
-const lead=f.summary ? chunks[0].trim() : chunks[0].trim().split(/\n\s*\n/).slice(1).join('\n\n');
+const words=(t:string)=>new Set(t.toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(w=>w.length>2));
+const similar=(a:string,b:string)=>{const A=words(a),B=words(b);const inter=[...A].filter(w=>B.has(w)).length;return inter/Math.max(1,Math.min(A.size,B.size))>.7;};
+// The summary already says what the first paragraph usually says; drop near-duplicates.
+const lead=(f.summary ? chunks[0].trim() : chunks[0].trim().split(/\n\s*\n/).slice(1).join('\n\n')).split(/\n\s*\n/).filter((para:string,i:number)=>!(i===0 && f.summary && similar(para,f.summary))).join('\n\n');
 const sections=chunks.slice(1).map((s:string)=>{const i=s.indexOf('\n');return {title:s.slice(0,i).trim(),body:s.slice(i+1)};});
 let hiddenNotes=0;
 const clean=(text:string)=>text.split(/^(?=### )/m).filter(part=>{if(part.startsWith('### ')&&dated(part.split('\n')[0])){hiddenNotes++;return false;}return true;}).join('').split(/\n\s*\n/).filter(p=>{if(dated(p)){hiddenNotes++;return false;}return p.trim();}).join('\n\n');
@@ -112,7 +115,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  <div class="lead">
   <div set:html={leadHtml}/>
   {f.aliases?.length>0 && <p>Also known as {f.aliases.join(', ')}.</p>}
-  {f.areas?.length>0 && <p class="areas">Used in {f.areas.join('; ')}.</p>}
+  {f.areas?.length>0 && <p class="areas">Areas: {f.areas.join('; ')}.</p>}
  </div>
 
  <nav class="toc" aria-labelledby="toc-title"><p id="toc-title">Contents</p><ol>{toc.map(([id,t])=><li><a href={`#${id}`}>{t}</a></li>)}</ol></nav>
@@ -190,10 +193,13 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  .lab .head{grid-area:head}.lab .lead{grid-area:lead}.lab .toc{grid-area:toc}.lab .definition{grid-area:def}
  .lab .infobox{grid-area:box;align-self:start;border:1px solid #c9c8bc;background:#fbf9f3;padding:.7rem;font-size:.85rem;margin-top:1rem}
  .lab .ib-title{font:600 1rem system-ui,sans-serif;text-align:center;margin-bottom:.5rem}
- .lab .infobox table{display:table;font-size:.82rem;margin-top:.6rem}
+ .lab .infobox table{display:table;table-layout:fixed;width:100%;font-size:.82rem;margin-top:.6rem}
  .lab .infobox th{width:6.5rem;vertical-align:top;padding:.35rem .5rem .35rem 0}
  .lab .infobox td{padding:.35rem 0;vertical-align:top}
  .lab .ib-formula{overflow-x:auto;font-size:.95rem}
+ .lab .infobox td{overflow-wrap:anywhere}
+ .lab math:not([display=block]){max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}
+ .lab .infobox td>math,.lab .infobox td span>math{display:inline-block}
  .lab .ib-formula math[display=block]{margin:0}
  .lab .ib-param small{color:#656c66}
  .lab .lead{font-size:1.08rem}
