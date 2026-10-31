@@ -52,14 +52,30 @@ summary: Rayleigh provides a model for amplitudes formed from two independent ce
 aliases: []
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    Every nonempty strictly positive sample has a unique MLE for the free
+    scale. If any observation is zero, the likelihood is zero for every
+    scale, so every scale ties and there is no unique estimate. Such samples
+    are rejected. With the scale held, only the likelihood is evaluated,
+    and zero observations are still rejected.
+  reason: >-
+    For positive data put $t=\sigma^2$ and $S=\sum_i x_i^2>0$.
+    Apart from a constant the log-likelihood is $-n\log t-S/(2t)$.
+    Its derivative $(S/2-nt)/t^2$ is positive below $S/(2n)$ and negative
+    above it, proving existence and uniqueness. At zero the density is
+    zero for every positive scale, making the entire sample likelihood zero.
 ---
 
-The Rayleigh distribution describes the magnitude of a pair of independent centred normal variables with a common scale.
+The Rayleigh distribution describes the magnitude of a pair of independent centred normal variables with a common standard deviation $\sigma$.
 
 ## Details
 
-An observation at zero makes the likelihood identically zero for every scale, so the scale is not identifiable.
+The scale estimate is the square root of half the empirical second moment, with divisor $n$. It exists even for a positive constant sample or a single positive observation.
 
-The scale estimate is the square root of half the empirical second moment.
+An observation at zero makes the likelihood identically zero for every scale. The sample therefore provides no likelihood preference among scales, and the fit rejects it. Holding a positive scale leaves only likelihood evaluation, with the same rejection of zero observations.
 
-A held positive sigma evaluates the likelihood without estimation. Any zero observation makes the likelihood identically zero for every scale and stops.
+## R notes
+
+`sigma = NULL` estimates the scale. A supplied positive finite `sigma` is held fixed. Any zero observation stops with an error, including when `sigma` is held.

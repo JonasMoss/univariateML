@@ -73,19 +73,39 @@ aliases:
 - "Vinci"
 key_references:
 - 4
+existence:
+  uniqueness: proved
+  statement: >-
+    For a nonempty positive sample with both coefficients free, the MLE
+    exists and is unique exactly when the observations are not all equal.
+    Holding either $\alpha$ or $\beta$ gives a unique finite estimate of
+    the other coefficient even for constant data. Holding both coefficients
+    leaves only likelihood evaluation.
+  reason: >-
+    The transformation $y_i=1/x_i$ gives a gamma likelihood with shape
+    $\alpha$ and rate $\beta$, plus a coefficient-independent Jacobian.
+    Profiling the rate gives $\beta=\alpha/\bar y$ and the equation
+    $\log\alpha-\psi(\alpha)=\log\bar y-\overline{\log y}$.
+    The left side decreases strictly from infinity to zero, and Jensen's
+    inequality makes the right side positive exactly for nonconstant data.
+    For constant data the profile is unbounded as $\alpha\to\infty$.
+    With $\alpha$ held the rate formula still applies. With $\beta$ held,
+    $\psi(\alpha)=\log\beta+\overline{\log y}$ has a unique root because
+    the digamma function increases from minus infinity to infinity.
 ---
 
-The inverse gamma distribution is the distribution of the reciprocal of a gamma variable.
+The inverse gamma distribution models positive quantities whose reciprocals follow a gamma distribution.
 
 ## Details
 
-The parameter `beta` is the rate of the gamma variable `1/x`, and is the scale parameter in the inverse gamma density.
+The coefficient $\alpha$ controls the shape and the polynomial right tail. The coefficient $\beta$ is a scale: multiplying $\beta$ by a positive constant multiplies the observations by the same constant. It is also the rate of the gamma variable $1/X$.
 
-Holding either alpha or beta permits constant data; the unconstrained fit has unbounded likelihood there.
+Fitting takes reciprocals and fits a gamma distribution, retaining the Jacobian in the reported likelihood. The free rate profiles out analytically, leaving a monotone digamma equation for the shape. Holding either coefficient permits constant data. With both free, constant data have unbounded likelihood as both coefficients grow at a fixed ratio. Holding both leaves only likelihood evaluation.
 
-### Diagnostic status contract (2026-10-31)
+## R notes
 
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+`alpha = NULL` and `beta = NULL` estimate the corresponding coefficients. Supplied coefficients are held fixed. Empty or invalid data and unbounded likelihoods stop with an error. A reciprocal transformation outside floating-point range or a failed gamma solve also stops. `abstol` and `iterlim` control the gamma shape solve.
+
+## Decision history
+
+2026-10-31 (TASK-132): failures survive the reciprocal transformation. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the appended cases in `test.cpp` for the validation scope.
