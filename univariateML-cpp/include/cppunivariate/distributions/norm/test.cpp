@@ -187,3 +187,62 @@ TEST_CASE("norm: inference validity and total normalization") {
   x[0]=NAN;
   CHECK(cppunivariate::norm_inference(mltest::as_span(x),0,1,0).status==cppunivariate::InferenceStatus::InvalidObservation);
 }
+
+namespace {
+struct ThreeInferenceModel {
+  static constexpr std::size_t count=3;
+  std::array<std::string,3> names() const {return {"a","b","c"};}
+  std::string conditions() const {return "synthetic quadratic";}
+  bool valid() const {return true;}
+  bool support(double) const {return true;}
+  std::array<double,9> fisher() const {return {1,0,0,0,2,0,0,0,4};}
+  void observation(double x,std::array<double,3>& s,std::array<double,9>& h) const {
+    s={x,2*x,3*x}; h=fisher();
+  }
+};
+}
+TEST_CASE("norm: inference storage and eigenvalue diagnostics beyond two coordinates") {
+  std::vector<double> x{1,2};
+  const auto r=cppunivariate::inference_detail::accumulate(
+    mltest::as_span(x),ThreeInferenceModel{},7,cppunivariate::inference_detail::Discard{});
+  REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(r.dimension==3);
+  CHECK(r.score[2]==9);
+  CHECK(r.fisher[8]==8);
+  CHECK(r.fisher_condition==doctest::Approx(4));
+  CHECK(r.opg_status==cppunivariate::InferenceStatus::Singular);
+  std::array<double,9> a{1,0,0,0,1e-10,0,0,0,2};
+  double condition=0;
+  CHECK(cppunivariate::inference_detail::matrix_status(a,3,true,condition)==cppunivariate::InferenceStatus::IllConditioned);
+  CHECK(condition==doctest::Approx(2e10));
+  a[4]=1e-16;
+  CHECK(cppunivariate::inference_detail::matrix_status(a,3,true,condition)==cppunivariate::InferenceStatus::Singular);
+}
+TEST_CASE("norm: extreme natural units have explicit arithmetic failure") {
+  for(double sd : {1e-200,1e200}) {
+    std::vector<double> x{sd};
+    CHECK(cppunivariate::norm_inference(mltest::as_span(x),0,sd).status==cppunivariate::InferenceStatus::NumericalFailure);
+  }
+}
+
+namespace {
+struct OversizedInferenceModel {static constexpr std::size_t count=9;};
+}
+TEST_CASE("norm: unsupported inference dimension fails before model evaluation") {
+  std::vector<double> x{1};
+  const auto r=cppunivariate::inference_detail::accumulate(mltest::as_span(x),
+    OversizedInferenceModel{},0,cppunivariate::inference_detail::Discard{});
+  CHECK(r.status==cppunivariate::InferenceStatus::DimensionExceeded);
+}
+
+TEST_CASE("norm: dense symmetric free information condition numbers") {
+  double condition=0;
+  std::array<double,9> dense{2,1,0,1,2,0,0,0,4};
+  CHECK(cppunivariate::inference_detail::matrix_status(dense,3,true,condition)==cppunivariate::InferenceStatus::Ok);
+  CHECK(condition==doctest::Approx(4));
+  std::array<double,64> maximum{};
+  for(std::size_t j=0;j<8;++j) for(std::size_t k=0;k<8;++k)
+    maximum[j*8+k]=(j==k ? 2 : 1);
+  CHECK(cppunivariate::inference_detail::matrix_status(maximum,8,true,condition)==cppunivariate::InferenceStatus::Ok);
+  CHECK(condition==doctest::Approx(9));
+}

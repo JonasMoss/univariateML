@@ -11,10 +11,16 @@ struct GammaModel {
   std::string conditions() const {return "shape, scale > 0 finite; x > 0 finite; independent data";}
   bool valid() const {return shape>0 && scale>0 && std::isfinite(shape) && std::isfinite(scale);}
   bool support(double x) const {return x>0 && std::isfinite(x);}
-  std::array<double,4> fisher() const { return {special::trigamma(shape),1/scale,1/scale,shape/scale/scale}; }
+  std::array<double,4> fisher() const {
+    const double v=shape/scale/scale;
+    return {special::trigamma(shape),1/scale,1/scale,v==0 ? NAN : v};
+  }
   void observation(double x, std::array<double,2>& s, std::array<double,4>& h) const {
     const double inv=1/scale;
-    s={std::log(x)-std::log(scale)-special::digamma(shape),(x/scale-shape)*inv};
+    const double ratio=x/scale;
+    const double log_ratio=ratio>0 && std::isfinite(ratio)
+      ? std::log(ratio) : std::log(x)-std::log(scale);
+    s={log_ratio-special::digamma(shape),(x/scale-shape)*inv};
     h={special::trigamma(shape),inv,inv,(2*x/scale-shape)*inv*inv};
   }
 };

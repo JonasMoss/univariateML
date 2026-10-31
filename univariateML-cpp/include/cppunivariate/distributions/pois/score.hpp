@@ -13,7 +13,7 @@ struct PoisModel {
   bool support(double x) const {return x>=0 && std::isfinite(x) && std::floor(x)==x;}
   std::array<double,4> fisher() const { return {1/lambda,0,0,0}; }
   void observation(double x, std::array<double,2>& s, std::array<double,4>& h) const {
-    s={x/lambda-1,0}; h={x/lambda/lambda,0,0,0};
+    s={(x-lambda)/lambda,0}; h={x/lambda/lambda,0,0,0};
   }
 };
 } // namespace inference_detail

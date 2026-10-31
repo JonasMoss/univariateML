@@ -181,3 +181,12 @@ TEST_CASE("pois: integer input and boundary observed information") {
   CHECK(r.score[0]==-2);
   CHECK(r.opg[0]==2);
 }
+
+TEST_CASE("pois: large counts retain near-zero scores") {
+  for(double rate : {1e6,1e9,1e12}) {
+    std::vector<double> x{rate+1};
+    const auto r=cppunivariate::pois_inference(mltest::as_span(x),rate);
+    REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(r.score[0]==doctest::Approx(1/rate).epsilon(1e-14));
+  }
+}

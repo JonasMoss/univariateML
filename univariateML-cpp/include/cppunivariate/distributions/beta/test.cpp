@@ -183,3 +183,21 @@ TEST_CASE("beta: inference validity and total normalization") {
   x[0]=1;
   CHECK(cppunivariate::beta_inference(mltest::as_span(x),2,3,0).status==cppunivariate::InferenceStatus::InvalidObservation);
 }
+
+TEST_CASE("beta: small concentrated and imbalanced inference") {
+  for(double a : {1e-3,1.,1e6}) for(double b : {1e-3,1.,1e6}) {
+    std::vector<double> x{a/(a+b)};
+    const auto r=cppunivariate::beta_inference(mltest::as_span(x),a,b);
+    CHECK(r.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(r.fisher[0]>0);
+    CHECK(r.fisher[3]>0);
+    CHECK(r.fisher_condition>=1);
+  }
+}
+
+TEST_CASE("beta: cancellation-safe differences obey special-function recurrences") {
+  for(double z : {19.,20.,99.,100.,1000.,1e5,1e6}) {
+    CHECK(cppunivariate::inference_detail::beta_psi_increment(z,1)==doctest::Approx(1/z).epsilon(2e-12));
+    CHECK(cppunivariate::inference_detail::beta_tri_difference(z,1)==doctest::Approx(1/z/z).epsilon(2e-12));
+  }
+}
