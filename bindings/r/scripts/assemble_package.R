@@ -40,6 +40,10 @@ if (dir.exists(file.path("man", "figures"))) {
   )
 }
 
+# Binding-neutral validation and fit results, shared with WebAssembly.
+file.copy("../common", file.path(PKG_DIR, "src"), recursive = TRUE)
+file.copy("scripts/common_fit.h", file.path(PKG_DIR, "src"))
+
 # One folder per distribution: copy each distributions/<id>/adapter.cpp to
 # src/dist_<id>.cpp and test.R to tests/testthat/test-dist-<id>.R.
 dist_dir <- Sys.getenv(

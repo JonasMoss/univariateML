@@ -1,0 +1,36 @@
+#pragma once
+#include "../../fit.hpp"
+#include "cppunivariate/distributions/gb2/mle.hpp"
+namespace umvl_binding {
+inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, double gradtol = 1e-7, int iterlim = 300) {
+
+  if (shape1_arg.supplied && (!(shape1_arg.value > 0) || !std::isfinite(shape1_arg.value))) return failure("`shape1` must be a positive finite number.");
+  double shape1=shape1_arg.supplied ? shape1_arg.value : NAN;
+  if (shape2_arg.supplied && (!(shape2_arg.value > 0) || !std::isfinite(shape2_arg.value))) return failure("`shape2` must be a positive finite number.");
+  double shape2=shape2_arg.supplied ? shape2_arg.value : NAN;
+  if (shape3_arg.supplied && (!(shape3_arg.value > 0) || !std::isfinite(shape3_arg.value))) return failure("`shape3` must be a positive finite number.");
+  double shape3=shape3_arg.supplied ? shape3_arg.value : NAN;
+  if (scale_arg.supplied && (!(scale_arg.value > 0) || !std::isfinite(scale_arg.value))) return failure("`scale` must be a positive finite number.");
+  double scale=scale_arg.supplied ? scale_arg.value : NAN;
+  auto r=cppunivariate::gb2_mle(cppunivariate::span{x.data(),x.size()},gradtol,iterlim,shape1,shape2,shape3,scale);
+  switch(r.status) {
+    case cppunivariate::Gb2Status::Ok: break;
+    case cppunivariate::Gb2Status::TrGammaBoundary: return failure("GB2 selects a limiting model. Use `mltrgamma`.");
+    case cppunivariate::Gb2Status::InvTrGammaBoundary: return failure("GB2 selects a limiting model. Use `mlinvtrgamma`.");
+    case cppunivariate::Gb2Status::LognormalBoundary: return failure("GB2 selects a limiting model. Use `mllnorm`.");
+    case cppunivariate::Gb2Status::ParetoBoundary: return failure("GB2 selects a limiting model. Use `mlpareto`.");
+    case cppunivariate::Gb2Status::PowerBoundary: return failure("GB2 selects a limiting model. Use `mlpower`.");
+    case cppunivariate::Gb2Status::DoubleParetoBoundary: return failure("GB2 selects the double Pareto limit; this package has no double Pareto fitter.");
+    case cppunivariate::Gb2Status::InvalidData: return failure("GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood.");
+    case cppunivariate::Gb2Status::InvalidFixed: return failure("GB2 fixed parameters must be positive and finite.");
+    case cppunivariate::Gb2Status::ScaleOutOfRange: return failure("GB2 scale is outside the representable range.");
+    default: return failure("GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models.");
+  }
+  FitResult out;
+  out.estimates.emplace_back("shape1",r.shape1); if(shape1_arg.supplied) out.fixed.push_back("shape1");
+  out.estimates.emplace_back("shape2",r.shape2); if(shape2_arg.supplied) out.fixed.push_back("shape2");
+  out.estimates.emplace_back("shape3",r.shape3); if(shape3_arg.supplied) out.fixed.push_back("shape3");
+  out.estimates.emplace_back("scale",r.scale); if(scale_arg.supplied) out.fixed.push_back("scale");
+  out.logLik=r.logLik; out.iterations=r.iterations; return out;
+}
+}
