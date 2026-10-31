@@ -201,3 +201,13 @@ TEST_CASE("beta: cancellation-safe differences obey special-function recurrences
     CHECK(cppunivariate::inference_detail::beta_tri_difference(z,1)==doctest::Approx(1/z/z).epsilon(2e-12));
   }
 }
+
+TEST_CASE("beta mean nuisance concentration inference") {
+  std::vector<double> x{.1,.2,.4,.6,.8};cppunivariate::span data{x.data(),x.size()};
+  const auto r=cppunivariate::beta_mean_inference(data,.5);
+  REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+  const auto ci=cppunivariate::beta_mean_lr_interval(data,3.841458820694124);
+  REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(ci.lower<r.estimate);CHECK(ci.upper>r.estimate);
+  for(double t:{ci.lower,ci.upper}) CHECK(cppunivariate::beta_mean_inference(data,t).likelihood_ratio.statistic==doctest::Approx(3.841458820694124).epsilon(1e-7));
+}

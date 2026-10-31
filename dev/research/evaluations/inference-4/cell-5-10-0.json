@@ -1,0 +1,49 @@
+{
+  "key": "5-10-0",
+  "family": "gamma",
+  "target": "shape",
+  "parameters": [
+    5.0,
+    0.4
+  ],
+  "n": 10,
+  "misspecified": false,
+  "reps": 2000,
+  "seed": [
+    102420261031,
+    5,
+    10,
+    0
+  ],
+  "identity": "bf741bfca944e664c9d7579aa227ca2d55581abc481ff59915109be4c32e130c",
+  "fit_failures": 0,
+  "boundaries": 0,
+  "failure_reasons": {},
+  "procedures": {
+    "wald_F": {
+      "covered": 1935,
+      "failed": 3,
+      "rejected": 62
+    },
+    "wald_H": {
+      "covered": 1935,
+      "failed": 3,
+      "rejected": 62
+    },
+    "wald_S": {
+      "covered": 1778,
+      "failed": 3,
+      "rejected": 219
+    },
+    "score": {
+      "covered": 1934,
+      "failed": 0,
+      "rejected": 66
+    },
+    "LR": {
+      "covered": 1840,
+      "failed": 0,
+      "rejected": 160
+    }
+  }
+}

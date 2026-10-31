@@ -1,0 +1,54 @@
+{
+  "key": "1-100-0",
+  "family": "norm",
+  "target": "mean",
+  "parameters": [
+    2.0,
+    3.0
+  ],
+  "n": 100,
+  "misspecified": false,
+  "reps": 2000,
+  "seed": [
+    102420261031,
+    1,
+    100,
+    0
+  ],
+  "identity": "bf741bfca944e664c9d7579aa227ca2d55581abc481ff59915109be4c32e130c",
+  "fit_failures": 0,
+  "boundaries": 0,
+  "failure_reasons": {},
+  "procedures": {
+    "wald_F": {
+      "covered": 1885,
+      "failed": 0,
+      "rejected": 115
+    },
+    "wald_H": {
+      "covered": 1885,
+      "failed": 0,
+      "rejected": 115
+    },
+    "wald_S": {
+      "covered": 1885,
+      "failed": 0,
+      "rejected": 115
+    },
+    "score": {
+      "covered": 1892,
+      "failed": 0,
+      "rejected": 108
+    },
+    "LR": {
+      "covered": 1889,
+      "failed": 0,
+      "rejected": 111
+    },
+    "exact": {
+      "covered": 1891,
+      "failed": 0,
+      "rejected": 109
+    }
+  }
+}

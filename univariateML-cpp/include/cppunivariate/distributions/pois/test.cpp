@@ -190,3 +190,14 @@ TEST_CASE("pois: large counts retain near-zero scores") {
     CHECK(r.score[0]==doctest::Approx(1/rate).epsilon(1e-14));
   }
 }
+
+TEST_CASE("Poisson exact boundary and nuisance free intervals") {
+  std::vector<double> x{0,0,0};cppunivariate::span data{x.data(),x.size()};
+  const auto ci=cppunivariate::pois_rate_exact_interval(data);
+  REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(ci.lower==0);CHECK(ci.upper==doctest::Approx(-std::log(.025)/3));
+  const auto score=cppunivariate::pois_rate_score_interval(data,3.841458820694124);
+  CHECK(score.lower==0);CHECK(score.upper==doctest::Approx(3.841458820694124/3));
+  CHECK(cppunivariate::pois_rate_lr_interval(data,3.841458820694124).upper==doctest::Approx(3.841458820694124/6));
+  CHECK(cppunivariate::pois_rate_inference(data,.2).wald.status!=cppunivariate::InferenceStatus::Ok);
+}

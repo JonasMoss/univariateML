@@ -1,0 +1,56 @@
+{
+  "key": "8-30-0",
+  "family": "pois",
+  "target": "rate",
+  "parameters": [
+    0.2,
+    1.0
+  ],
+  "n": 30,
+  "misspecified": false,
+  "reps": 2000,
+  "seed": [
+    102420261031,
+    8,
+    30,
+    0
+  ],
+  "identity": "bf741bfca944e664c9d7579aa227ca2d55581abc481ff59915109be4c32e130c",
+  "fit_failures": 5,
+  "boundaries": 5,
+  "failure_reasons": {
+    "zero-count boundary": 5
+  },
+  "procedures": {
+    "wald_F": {
+      "covered": 1871,
+      "failed": 5,
+      "rejected": 124
+    },
+    "wald_H": {
+      "covered": 1871,
+      "failed": 5,
+      "rejected": 124
+    },
+    "wald_S": {
+      "covered": 1856,
+      "failed": 5,
+      "rejected": 139
+    },
+    "score": {
+      "covered": 1878,
+      "failed": 0,
+      "rejected": 122
+    },
+    "LR": {
+      "covered": 1929,
+      "failed": 0,
+      "rejected": 71
+    },
+    "exact": {
+      "covered": 1929,
+      "failed": 0,
+      "rejected": 71
+    }
+  }
+}

@@ -227,3 +227,29 @@ TEST_CASE("gamma: small shapes and extreme units inference") {
     }
   }
 }
+
+TEST_CASE("gamma nuisance aware inference and profile intervals") {
+  std::vector<double> x{.2,.5,1,2,4};cppunivariate::span data{x.data(),x.size()};
+  const auto f=cppunivariate::gamma_mle(data,1e-11,2000);
+  const auto r=cppunivariate::gamma_target_inference(data,cppunivariate::GammaTarget::Mean,1.5);
+  REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+  // In (mean,shape), model information is orthogonal: var(mean)=mean^2/(n*shape).
+  CHECK(r.uncertainty.variance==doctest::Approx(f.shape*f.scale*f.scale/x.size()));
+  for(auto target:{cppunivariate::GammaTarget::Mean,cppunivariate::GammaTarget::Shape}) {
+    const auto ci=cppunivariate::gamma_target_lr_interval(data,target,3.841458820694124);
+    REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+    for(double t:{ci.lower,ci.upper}) {
+      const auto p=cppunivariate::gamma_target_inference(data,target,t);
+      REQUIRE(p.likelihood_ratio.status==cppunivariate::InferenceStatus::Ok);
+      CHECK(p.likelihood_ratio.statistic==doctest::Approx(3.841458820694124).epsilon(1e-7));
+    }
+  }
+  const auto near=cppunivariate::gamma_target_inference(data,cppunivariate::GammaTarget::Mean,5.);
+  const auto far=cppunivariate::gamma_target_inference(data,cppunivariate::GammaTarget::Mean,20.);
+  REQUIRE(near.score.status==cppunivariate::InferenceStatus::Ok);
+  REQUIRE(far.score.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(far.score.statistic<near.score.statistic);
+  const auto invalid=cppunivariate::gamma_target_inference(data,cppunivariate::GammaTarget::Mean,-1);
+  CHECK(invalid.status==cppunivariate::InferenceStatus::InvalidParameter);
+  CHECK(invalid.score.status!=cppunivariate::InferenceStatus::Ok);
+}
