@@ -64,3 +64,9 @@ The inverse Gaussian (Wald) distribution models positive quantities, including f
 The `mean` parameter is the positive mean and `shape` is the positive inverse Gaussian shape, rather than a dispersion. For nonconstant positive data the MLE is finite. Although the family has a Levy limit as the mean tends to infinity with shape fixed, no limit status is reported by this fitter.
 
 With mean held and shape free, the likelihood is unbounded if every observation equals that mean. A held positive shape permits constant data. Held parameters must be finite.
+
+### Diagnostic status contract (2026-10-31)
+
+Invalid and empty samples carry non-success statuses, including delegate paths.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp`.

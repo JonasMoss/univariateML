@@ -67,3 +67,10 @@ TEST_CASE("nsbeta: targeted tail affine endpoint distances") {
   CHECK(cppunivariate::distributions::dnsbeta(2,1,3,2,5,true)==0);
   CHECK(cppunivariate::distributions::qnsbeta(0,2,3,2,5,false,false)==5);
 }
+
+TEST_CASE("nsbeta: TASK-132 empty and invalid delegates preserve non-success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2},std::vector<double>{-1,2}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::nsbeta_mle(x,0,1,1e-8,200).status != cppunivariate::BetaStatus::Ok);
+  }
+}

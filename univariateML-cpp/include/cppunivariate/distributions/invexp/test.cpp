@@ -64,3 +64,17 @@ TEST_CASE("invexp: finite scale with overflowing reciprocal") {
   CHECK(std::isfinite(cppunivariate::distributions::pinvexp(scale, scale, false, true)));
   CHECK(cppunivariate::distributions::qinvexp(0.5, scale, true, false) > 0.0);
 }
+
+TEST_CASE("invexp: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::invexp_mle(x).status != cppunivariate::InvExpStatus::Ok);
+  }
+}
+
+TEST_CASE("invexp: TASK-132 reciprocal overflow is numerical failure") {
+  const std::vector<double> data{1,std::numeric_limits<double>::denorm_min()};
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::invexp_mle(x).status == cppunivariate::InvExpStatus::IterationFailure);
+  CHECK(cppunivariate::invexp_mle(x,1.0).status == cppunivariate::InvExpStatus::IterationFailure);
+}

@@ -73,3 +73,27 @@ TEST_CASE("pareto4: default golden coefficients and likelihood") {
   CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kPareto4GoldenTol));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
 }
+
+TEST_CASE("pareto4: TASK-132 precision comparison retains independent likelihood and score") {
+  const auto g=mltest::load_distribution_golden("pareto4");
+  const auto r=cppunivariate::pareto4_mle(mltest::as_span(g.data),g.estimates.at("min"),1e-10,1000);
+  REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+  // Analytic total likelihood scores in log(shape1), log(shape2), log(scale).
+  // These are independent of the optimizer's finite-difference objective.
+  long double ll=0, gk=g.data.size(), gc=g.data.size();
+  long double gs=-static_cast<long double>(g.data.size())*r.shape2;
+  for(double v:g.data) {
+    const long double t=std::log((static_cast<long double>(v)-r.min)/r.scale);
+    const long double z=r.shape2*t;
+    const long double sp=std::max(z,0.0L)+std::log1p(std::exp(-std::abs(z)));
+    const long double p=z>0?1/(1+std::exp(-z)):std::exp(z)/(1+std::exp(z));
+    ll+=std::log(static_cast<long double>(r.shape1))+std::log(static_cast<long double>(r.shape2))-
+      std::log(static_cast<long double>(r.scale))+(r.shape2-1)*t-(r.shape1+1)*sp;
+    gk-=r.shape1*sp;
+    gc+=z-(r.shape1+1)*z*p;
+    gs+=(r.shape1+1)*r.shape2*p;
+  }
+  CHECK(std::abs(ll-g.logLik)<1e-8L);
+  CHECK(std::abs(ll-r.logLik)<1e-8L);
+  CHECK(std::sqrt(gk*gk+gc*gc+gs*gs)<1e-3L);
+}

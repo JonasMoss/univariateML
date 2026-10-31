@@ -51,6 +51,12 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, BinomStatus::IterationFailure};
 
+  for (int v : x) if (v < 0)
+    return {kNaN,kNaN,kNaN,0,BinomStatus::InvalidInput};
+  if (!std::isnan(size_or_nan) &&
+      !(std::isfinite(size_or_nan) && size_or_nan >= 0 && size_or_nan == std::floor(size_or_nan)))
+    return {kNaN,kNaN,kNaN,0,BinomStatus::InvalidInput};
+
   double sum_x = 0.0, sum_x_sq = 0.0;
   int max_x = x[0];
   for (auto v : x) {

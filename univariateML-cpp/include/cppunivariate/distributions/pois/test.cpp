@@ -97,3 +97,10 @@ TEST_CASE("pois: adjacent noninteger at zero has no mass") {
   // mp.dps=100; x=mpf(float.fromhex("0x0.0000000000001p-1022")); print(x==floor(x))
   CHECK(cppunivariate::distributions::dpois(std::nextafter(0.0,1.0),2,false)==0);
 }
+
+TEST_CASE("pois: TASK-132 invalid counts and empty input have statuses") {
+  const std::vector<int> empty, negative{-1,2}, zero(4,0), one(4,1);
+  CHECK(cppunivariate::pois_mle(cppunivariate::ispan{empty.data(),empty.size()}).status == cppunivariate::PoisStatus::InvalidInput);
+  CHECK(cppunivariate::pois_mle(cppunivariate::ispan{negative.data(),negative.size()}).status == cppunivariate::PoisStatus::InvalidInput);
+  CHECK(cppunivariate::pois_mle(cppunivariate::ispan{zero.data(),zero.size()}).status == cppunivariate::PoisStatus::Ok);
+}

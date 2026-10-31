@@ -39,8 +39,11 @@ constexpr double kBurrGoldenTol = 1e-7;
 constexpr double kBurrGoldenTol = 1e-8;
 #endif
 
-// The shifted Burr golden has a separate wasm coefficient comparison tolerance.
-#if defined(__EMSCRIPTEN__)
+// The shifted Burr double-only baseline differs by <=4.18e-7 relatively;
+// independent total log-coordinate score norm is 2.02e-5 (gate 1e-3),
+// and its independent likelihood differs from the golden by 1.1e-12.
+// TASK-132 report and dev/validation/pareto4-precision.cpp reproduce this.
+#if defined(__EMSCRIPTEN__) || defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS) || LDBL_MANT_DIG <= DBL_MANT_DIG
 constexpr double kPareto4GoldenTol = 5e-7;
 #else
 constexpr double kPareto4GoldenTol = 1e-8;

@@ -32,6 +32,8 @@ inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held
     }
   }
   auto res = cppunivariate::invweibull_mle(x, reltol, iterlim, start, shape_held, scale_held);
+  if (res.status == cppunivariate::InvWeibullStatus::InvalidInput)
+    return fail("Inverse Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim.");
   if (res.status == cppunivariate::InvWeibullStatus::Unbounded)
     return fail("The invweibull maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale.");
   if (res.status == cppunivariate::InvWeibullStatus::IterationFailure)

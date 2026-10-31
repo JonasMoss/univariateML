@@ -86,3 +86,10 @@ TEST_CASE("lgser: extreme tails and discrete support") {
   CHECK(cppunivariate::distributions::qlgser(-10000, 0.9, false, true) == 94817.0);
   CHECK(cppunivariate::distributions::dlgser(0.5, 0.9, false) == 0);
 }
+
+TEST_CASE("lgser: TASK-132 invalid counts and empty input have statuses") {
+  const std::vector<int> empty, negative{-1,2}, zero(4,0), one(4,1);
+  CHECK(cppunivariate::lgser_mle(cppunivariate::ispan{empty.data(),empty.size()}).status == cppunivariate::LgserStatus::InvalidInput);
+  CHECK(cppunivariate::lgser_mle(cppunivariate::ispan{negative.data(),negative.size()}).status == cppunivariate::LgserStatus::InvalidInput);
+  CHECK(cppunivariate::lgser_mle(cppunivariate::ispan{one.data(),one.size()}).status == cppunivariate::LgserStatus::PointMass);
+}

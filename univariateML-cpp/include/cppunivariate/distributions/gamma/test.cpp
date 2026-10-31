@@ -136,3 +136,10 @@ TEST_CASE("gamma: finite scale with overflowing reciprocal") {
   CHECK(std::isfinite(cppunivariate::distributions::pgamma(scale, 2.0, scale, false, true)));
   CHECK(cppunivariate::distributions::qgamma(0.5, 2.0, scale, true, false) > 0.0);
 }
+
+TEST_CASE("gamma: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::gamma_mle(x,1e-8,200).status != cppunivariate::GammaStatus::Ok);
+  }
+}

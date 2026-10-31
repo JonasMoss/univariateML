@@ -20,8 +20,10 @@ inline FitResult fit_laplace(cppunivariate::span x, Held mu_arg = {}, Held sigma
   if(sigma.supplied)fixed.push_back("sigma");
 
   auto res = cppunivariate::laplace_mle(x,held_mu,held_sigma);
-  if (!(res.sigma>0.0) || !std::isfinite(res.sigma))
+  if (res.status == cppunivariate::LaplaceStatus::Unbounded)
     return fail("The Laplace maximum likelihood estimator does not exist for constant data; other data may exceed double precision.");
+  if (res.status == cppunivariate::LaplaceStatus::InvalidInput) return fail("Laplace requires nonempty finite data and valid held parameters.");
+  if (res.status != cppunivariate::LaplaceStatus::Ok) return fail("Laplace likelihood exceeds double precision.");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return out; }();
 
 }

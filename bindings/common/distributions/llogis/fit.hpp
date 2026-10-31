@@ -26,6 +26,8 @@ inline FitResult fit_llogis(cppunivariate::span x, Held shape_arg = {}, Held sca
 
   cppunivariate::LogLogisticResult res =
       cppunivariate::loglogistic_mle(x, abstol, iterlim, shape_held, scale_held);
+  if (res.status == cppunivariate::LogLogisticStatus::InvalidInput)
+    return fail("Log-logistic requires nonempty positive finite data, valid held parameters, positive abstol and positive iterlim.");
   if (res.status == cppunivariate::LogLogisticStatus::Unbounded)
     return fail("The log-logistic maximum likelihood estimator does not exist: the likelihood is unbounded for these constant transformed observations.");
   if (res.status == cppunivariate::LogLogisticStatus::IterationFailure)

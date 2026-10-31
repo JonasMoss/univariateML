@@ -60,3 +60,15 @@ TEST_CASE("exp: all-zero free rate is unbounded, held rate is finite") {
   CHECK(held.status == cppunivariate::ExpStatus::Ok);
   CHECK(held.logLik == doctest::Approx(4 * std::log(2.0)));
 }
+
+TEST_CASE("exp: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::exp_mle(x).status != cppunivariate::ExpStatus::Ok);
+  }
+}
+
+TEST_CASE("exp: TASK-132 a zero mixed with positive data is valid") {
+  const std::vector<double> data{0,2};
+  CHECK(cppunivariate::exp_mle(cppunivariate::span{data.data(),data.size()}).status == cppunivariate::ExpStatus::Ok);
+}

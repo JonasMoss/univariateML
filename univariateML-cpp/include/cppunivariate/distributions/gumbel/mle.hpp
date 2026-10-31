@@ -30,6 +30,9 @@ struct GumbelResult {
 inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
                                       double theta0 = std::numeric_limits<double>::quiet_NaN()) {
   const std::size_t n = x.size();
+  if (n == 0 || !(tol > 0 && std::isfinite(tol)) || maxit < 1)
+    return {NAN,NAN,NAN,0,GumbelStatus::InvalidInput};
+  for (double v : x) if (!std::isfinite(v)) return {NAN,NAN,NAN,0,GumbelStatus::InvalidInput};
   const double dn = static_cast<double>(n);
 
   double sum_x = 0.0;
@@ -115,6 +118,10 @@ inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double
   if(std::isnan(mu)&&std::isnan(sigma))return fit_gumbel_newton(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.empty()||!(tol>0)||maxit<1)return {nan,nan,nan,0,GumbelStatus::InvalidInput};
+  for (double v : x) if (!std::isfinite(v)) return {nan,nan,nan,0,GumbelStatus::InvalidInput};
+  if ((!std::isnan(mu) && !std::isfinite(mu)) ||
+      (!std::isnan(sigma) && !(sigma > 0 && std::isfinite(sigma))))
+    return {nan,nan,nan,0,GumbelStatus::InvalidInput};
   double m=mu,s=sigma;int it=0;
   if(std::isnan(m)) {
     double low=x[0];for(double v:x)low=std::min(low,v);

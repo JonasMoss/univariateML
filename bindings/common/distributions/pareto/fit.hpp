@@ -26,7 +26,8 @@ inline FitResult fit_pareto(cppunivariate::span x, Held a_arg = {}, Held b_arg =
 
   auto res = cppunivariate::pareto_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, a_held, b_held);
-  if (!(res.shape>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.logLik))
+  if (res.status == cppunivariate::ParetoStatus::InvalidInput) return fail("Pareto requires nonempty positive finite data and compatible held parameters.");
+  if (res.status != cppunivariate::ParetoStatus::Ok || !(res.shape>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.logLik))
     return fail("The Pareto maximum likelihood estimator does not exist for constant data; other data may exceed double precision.");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"a",res.shape},{"b",res.min}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();
 

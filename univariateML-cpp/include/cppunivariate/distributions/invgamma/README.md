@@ -72,3 +72,10 @@ The inverse gamma distribution is the distribution of the reciprocal of a gamma 
 The parameter `beta` is the rate of the gamma variable `1/x`, and is the scale parameter in the inverse gamma density.
 
 Holding either alpha or beta permits constant data; the unconstrained fit has unbounded likelihood there.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

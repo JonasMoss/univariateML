@@ -137,3 +137,10 @@ TEST_CASE("gumbel: P3 affine rescue preserves Newton failure") {
   const std::vector<double> values{1e200,2e200,4e200,8e200};
   CHECK(cppunivariate::fit_gumbel_newton(mltest::as_span(values),1e-10,1).status==cppunivariate::GumbelStatus::IterationFailure);
 }
+
+TEST_CASE("gumbel: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::fit_gumbel_newton(x,1e-8,200).status != cppunivariate::GumbelStatus::Ok);
+  }
+}

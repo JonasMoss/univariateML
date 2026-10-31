@@ -108,3 +108,16 @@ TEST_CASE("pareto: constant positive data have unbounded free shape") {
   CHECK(r.min == 2.0);
   CHECK(r.logLik == std::numeric_limits<double>::infinity());
 }
+
+TEST_CASE("pareto: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::pareto_mle(x).status != cppunivariate::ParetoStatus::Ok);
+  }
+}
+
+TEST_CASE("pareto: TASK-132 unresolved likelihood has numerical failure status") {
+  const std::vector<double> data{100.0,200.0};
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::pareto_mle(x,1e308,1.0).status == cppunivariate::ParetoStatus::IterationFailure);
+}

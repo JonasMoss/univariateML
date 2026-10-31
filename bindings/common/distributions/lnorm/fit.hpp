@@ -24,9 +24,11 @@ inline FitResult fit_lnorm(cppunivariate::span x, Held meanlog_arg = {}, Held sd
 
   auto res = cppunivariate::lognormal_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, meanlog_held, sdlog_held);
-  if (!(res.sdlog > 0.0) || !std::isfinite(res.sdlog)) {
+  if (res.status == cppunivariate::LognormalStatus::Unbounded) {
     return fail("The lnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero.");
   }
+  if (res.status == cppunivariate::LognormalStatus::InvalidInput) return fail("Lognormal requires nonempty positive finite data and valid held parameters.");
+  if (res.status != cppunivariate::LognormalStatus::Ok) return fail("Lognormal likelihood exceeds double precision.");
   if (!std::isfinite(res.meanlog) || !std::isfinite(res.logLik)) return fail("Lognormal likelihood exceeds double precision.");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"meanlog",res.meanlog},{"sdlog",res.sdlog}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();
 

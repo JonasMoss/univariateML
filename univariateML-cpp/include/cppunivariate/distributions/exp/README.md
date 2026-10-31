@@ -79,3 +79,10 @@ is unique when the sum is positive; all-zero data have a supremum at
 infinite rate. The held-rate case is evaluated at the supplied value.
 See the family tests and the existence analysis in
 `dev/research/evaluations/2026-10-29-p0-positive.md`.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

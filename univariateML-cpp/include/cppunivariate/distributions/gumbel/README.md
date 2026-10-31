@@ -75,3 +75,10 @@ This is the Gumbel distribution for maxima; `sigma` is positive.
 
 
 Holding mu gives a unique inverse-scale maximum unless every observation equals that mu. Holding sigma gives an exact location profile and permits constant samples.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.
