@@ -124,9 +124,6 @@ The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
 
 ## Code cleanup
 
-- `univariateML_continuous_quantile` (`code_helpers.R`) checks `sigma`
-  and `a` by name (slash, Bhattacharjee); make the parameter checks
-  generic before a third family uses it.
 - Done: test argument switches replaced by golden `fit_args` (P1); the
   `mlhnorm` special case removed (P3); actuar `dgumbel(x, alpha, scale)`
   equals `extraDistr::dgumbel(x, mu, sigma)` with alpha = mu, scale =
