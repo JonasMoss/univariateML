@@ -60,7 +60,8 @@ areas:
 classification: specialist
 classification_reason: Used to model rank frequencies with a finite power-law cutoff.
 summary: Zipf provides a model for rank frequencies with a finite power-law cutoff.
-aliases: []
+aliases:
+- "finite Zipfian"
 key_references:
 - 1
 ---

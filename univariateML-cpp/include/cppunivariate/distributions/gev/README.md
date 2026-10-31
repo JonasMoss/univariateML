@@ -54,7 +54,8 @@ summary: The generalized extreme-value distribution unifies the limiting laws fo
 classification: specialist
 classification_reason: Used to model block maxima spanning the three extreme-value tail regimes.
 aliases:
-- generalized extreme value
+- "GEV"
+- "Fisher–Tippett"
 key_references:
 - 1
 references:

@@ -88,7 +88,8 @@ classification: specialist
 classification_reason: Used to model lifetimes and severity sizes related to gamma by a power transform.
 summary: Transformed gamma provides a model for lifetimes and severity sizes related to gamma by a power transform.
 aliases:
-- Stacy generalized gamma
+- "Stacy generalized gamma"
+- "generalized gamma"
 key_references:
 - 4
 ---

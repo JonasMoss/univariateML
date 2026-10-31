@@ -61,7 +61,8 @@ areas:
 classification: specialist
 classification_reason: Used to model Poisson event counts with an additional structural-zero component.
 summary: Zero-inflated Poisson provides a model for Poisson event counts with an additional structural-zero component.
-aliases: []
+aliases:
+- "ZIP"
 key_references:
 - 1
 ---

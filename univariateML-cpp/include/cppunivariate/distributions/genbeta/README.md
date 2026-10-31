@@ -125,7 +125,8 @@ classification: specialist
 classification_reason: Used to model bounded loss sizes with a power transform and two beta shapes.
 summary: Generalized beta of the first kind provides a model for bounded loss sizes with a power transform and two
   beta shapes.
-aliases: []
+aliases:
+- "GB1"
 references:
 - 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'

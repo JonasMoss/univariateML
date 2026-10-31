@@ -78,7 +78,10 @@ classification_reason: A standard model for robust location-scale errors allowin
   two.
 summary: Location-scale Student-t provides a model for robust location-scale errors allowing Student degrees of
   freedom below two.
-aliases: []
+aliases:
+- "location-scale t"
+- "Student t"
+- "Pearson type VII"
 references:
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'

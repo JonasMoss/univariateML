@@ -60,7 +60,8 @@ classification: specialist
 classification_reason: Used to model geometric positive counts with an independently adjustable zero probability.
 summary: Zero-modified geometric provides a model for geometric positive counts with an independently adjustable
   zero probability.
-aliases: []
+aliases:
+- "hurdle geometric"
 references:
 - 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'

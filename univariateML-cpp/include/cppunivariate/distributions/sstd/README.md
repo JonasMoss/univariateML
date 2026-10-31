@@ -119,7 +119,7 @@ summary: The moment-standardized Fernandez–Steel skew Student distribution all
 classification: specialist
 classification_reason: Used to model financial returns requiring both asymmetry and polynomial tails.
 aliases:
-- Fernandez–Steel skew Student
+- "Fernández–Steel skew Student"
 key_references:
 - 1
 

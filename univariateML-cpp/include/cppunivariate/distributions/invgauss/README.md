@@ -52,7 +52,7 @@ classification: classical
 classification_reason: A standard model for first-passage times of Brownian motion with positive drift.
 summary: Inverse Gaussian provides a model for first-passage times of Brownian motion with positive drift.
 aliases:
-- Wald
+- "Wald"
 key_references:
 - 2
 ---

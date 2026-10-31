@@ -48,7 +48,8 @@ classification: specialist
 classification_reason: Used to model species abundance and other highly skewed positive frequencies.
 summary: Logarithmic series provides a model for species abundance and other highly skewed positive frequencies.
 aliases:
-- Logarithmic series
+- "logarithmic"
+- "log-series"
 key_references:
 - 2
 ---

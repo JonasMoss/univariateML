@@ -40,7 +40,7 @@ summary: The logit-normal distribution models proportions whose logits are norma
 classification: specialist
 classification_reason: Used to model continuous proportions represented by Gaussian log odds.
 aliases:
-- logistic-normal
+- "logistic-normal"
 key_references:
 - 1
 

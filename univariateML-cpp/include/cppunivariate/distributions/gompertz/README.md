@@ -65,7 +65,8 @@ areas:
 classification: specialist
 classification_reason: Used to model adult mortality and lifetimes with an exponentially increasing hazard.
 summary: Gompertz provides a model for adult mortality and lifetimes with an exponentially increasing hazard.
-aliases: []
+aliases:
+- "truncated Gumbel"
 key_references:
 - 2
 ---

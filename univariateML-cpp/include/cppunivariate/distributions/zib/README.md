@@ -72,7 +72,8 @@ areas:
 classification: specialist
 classification_reason: Used to model bounded success counts with an additional structural-zero component.
 summary: Zero-inflated binomial provides a model for bounded success counts with an additional structural-zero component.
-aliases: []
+aliases:
+- "ZIB"
 references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 key_references:

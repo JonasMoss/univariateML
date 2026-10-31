@@ -64,7 +64,9 @@ areas:
 classification: specialist
 classification_reason: Used to model radio-fading amplitudes whose squared magnitude is gamma distributed.
 summary: Nakagami provides a model for radio-fading amplitudes whose squared magnitude is gamma distributed.
-aliases: []
+aliases:
+- "Nakagami-m"
+- "m-distribution"
 key_references:
 - 3
 ---

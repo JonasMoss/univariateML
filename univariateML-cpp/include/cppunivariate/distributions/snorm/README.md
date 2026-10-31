@@ -72,7 +72,9 @@ classification: specialist
 classification_reason: Used to model two-piece Gaussian errors with unequal scales on the two sides.
 summary: Skew Normal provides a model for two-piece Gaussian errors with unequal scales on the two sides.
 aliases:
-- Two-piece normal
+- "two-piece normal"
+- "split normal"
+- "Fernández–Steel skew-normal"
 key_references:
 - 2
 ---

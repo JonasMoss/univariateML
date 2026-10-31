@@ -64,7 +64,8 @@ areas:
 classification: specialist
 classification_reason: Used to model rounded Gaussian measurements recorded on the integer lattice.
 summary: Discretized normal provides a model for rounded Gaussian measurements recorded on the integer lattice.
-aliases: []
+aliases:
+- "discrete normal"
 references:
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'

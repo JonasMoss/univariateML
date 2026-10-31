@@ -80,7 +80,8 @@ areas:
 classification: specialist
 classification_reason: Used to model survival times with a nonmonotone hazard and polynomial upper tail.
 summary: Log-logistic provides a model for survival times with a nonmonotone hazard and polynomial upper tail.
-aliases: []
+aliases:
+- "Fisk"
 key_references:
 - 4
 ---

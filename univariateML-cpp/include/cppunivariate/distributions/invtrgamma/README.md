@@ -92,7 +92,8 @@ classification: specialist
 classification_reason: Used to model insurance severity with reciprocal generalized-gamma tail behaviour.
 summary: Inverse transformed gamma provides a model for insurance severity with reciprocal generalized-gamma tail
   behaviour.
-aliases: []
+aliases:
+- "inverse generalized gamma"
 key_references:
 - 3
 ---

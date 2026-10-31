@@ -62,7 +62,10 @@ areas:
 classification: classical
 classification_reason: A standard model for block maxima in the exponential-tail extreme-value domain.
 summary: Gumbel provides a model for block maxima in the exponential-tail extreme-value domain.
-aliases: []
+aliases:
+- "type I extreme value"
+- "type I Fisher–Tippett"
+- "maximum extreme value"
 key_references:
 - 2
 ---

@@ -65,7 +65,8 @@ classification: specialist
 classification_reason: Used to model nonnegative counts obtained by grouping gamma waiting times into unit intervals.
 summary: Discretized gamma provides a model for nonnegative counts obtained by grouping gamma waiting times into
   unit intervals.
-aliases: []
+aliases:
+- "discrete gamma"
 references:
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'

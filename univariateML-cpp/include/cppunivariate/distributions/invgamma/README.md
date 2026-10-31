@@ -66,7 +66,11 @@ areas:
 classification: classical
 classification_reason: A standard model for positive inverse scales and loss sizes with a tunable polynomial tail.
 summary: InvGamma provides a model for positive inverse scales and loss sizes with a tunable polynomial tail.
-aliases: []
+aliases:
+- "inverse gamma"
+- "inverted gamma"
+- "scaled inverse chi-squared"
+- "Vinci"
 key_references:
 - 4
 ---

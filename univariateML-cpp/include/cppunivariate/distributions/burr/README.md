@@ -107,7 +107,9 @@ classification: specialist
 classification_reason: Used to model insurance severity and size data needing a flexible polynomial upper tail.
 summary: Burr provides a model for insurance severity and size data needing a flexible polynomial upper tail.
 aliases:
-- Burr type XII
+- "Burr type XII"
+- "Singh–Maddala"
+- "beta-P"
 key_references:
 - 3
 ---

@@ -60,7 +60,8 @@ areas:
 classification: classical
 classification_reason: A standard model for symmetric errors with heavier tails than Gaussian errors.
 summary: Logistic provides a model for symmetric errors with heavier tails than Gaussian errors.
-aliases: []
+aliases:
+- "sech-squared"
 key_references:
 - 1
 ---

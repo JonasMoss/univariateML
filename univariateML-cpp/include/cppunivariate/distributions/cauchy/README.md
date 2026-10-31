@@ -60,7 +60,10 @@ areas:
 classification: classical
 classification_reason: A standard model for symmetric errors whose extreme values require tails without finite variance.
 summary: Cauchy provides a model for symmetric errors whose extreme values require tails without finite variance.
-aliases: []
+aliases:
+- "Lorentz"
+- "Cauchy–Lorentz"
+- "Breit–Wigner"
 key_references:
 - 1
 ---

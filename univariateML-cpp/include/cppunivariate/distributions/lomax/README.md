@@ -76,7 +76,9 @@ areas:
 classification: specialist
 classification_reason: Used to model positive losses and waiting times with a Pareto tail from zero.
 summary: Lomax provides a model for positive losses and waiting times with a Pareto tail from zero.
-aliases: []
+aliases:
+- "Pareto type II (zero threshold)"
+- "Pareto of the second kind (zero threshold)"
 key_references:
 - 4
 ---

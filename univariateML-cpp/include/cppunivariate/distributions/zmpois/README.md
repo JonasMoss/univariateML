@@ -54,7 +54,8 @@ areas:
 classification: specialist
 classification_reason: Used to model Poisson positive counts with a separately fitted zero probability.
 summary: Zero-modified Poisson provides a model for Poisson positive counts with a separately fitted zero probability.
-aliases: []
+aliases:
+- "hurdle Poisson"
 references:
 - 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'

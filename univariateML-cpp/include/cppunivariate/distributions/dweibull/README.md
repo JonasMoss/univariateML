@@ -78,7 +78,8 @@ areas:
 classification: specialist
 classification_reason: Used to model discrete lifetimes with duration-dependent failure probabilities.
 summary: Discrete Weibull provides a model for discrete lifetimes with duration-dependent failure probabilities.
-aliases: []
+aliases:
+- "discrete Weibull type I"
 key_references:
 - 2
 ---
