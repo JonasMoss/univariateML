@@ -100,6 +100,10 @@ permit the regular fixed-parameter fit.
 
 Conditional fits preserve held mu and sigma. With mu held and sigma free, only ties at that mu contribute to collapse: the exponent is df(n-k)-k. A negative exponent is unbounded; at equality and fixed df the collapse supremum is not attained. Free df has lower bound 1 with mu free; held mu exempts that bound. The conditional normal face is compared in either case. Held sigma removes scale collapse. Shape and held-scale location profiles use numerical multistart searches; they do not certify isolation of every mode.
 
+The shared profile search caches each grid-point value within a search. This
+avoids repeating nested location profiles while preserving the grid, refinement,
+comparisons and convergence checks; it does not strengthen global guarantees.
+
 With df free, any observation equal to held mu permits scale collapse
 through sufficiently small positive df when scale is free, and fitting stops.
 

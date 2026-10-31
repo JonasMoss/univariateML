@@ -97,6 +97,10 @@ permit the regular fixed-parameter fit.
 
 Holds use the ordinary t scale sd*sqrt((nu-2)/nu). With mean held, only its tie multiplicity drives scale collapse. With sd held, the nu-to-2 limit forces ordinary scale to zero, rather than giving a finite-scale t2 law. The conditional normal face remains eligible. When sd is free, the conditional ordinary t2 face is compared separately. Profile searches are numerical, not global certificates.
 
+The shared profile search caches grid-point values, avoiding repeated nested
+location profiles without changing the grid, refinement or convergence checks.
+This reuse does not certify that the grid finds every mode.
+
 ## d/p/q/r
 
 Uses the fGarch mean and standard deviation parameterisation.
