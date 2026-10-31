@@ -218,10 +218,18 @@ namespace lst_detail {
 struct Maximum {double point;bool converged;};
 template <typename F>
 inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit) {
-  double best=grid.front(),value=f(best);bool converged=grid.size()==1;
+  // A profile evaluation can itself perform a complete nuisance search.
+  // Cache grid values without changing the nominated maxima or refinements.
+  std::vector<double> values(grid.size());
+  std::vector<bool> evaluated(grid.size(),false);
+  auto at=[&](std::size_t j) {
+    if(!evaluated[j]) {values[j]=f(grid[j]);evaluated[j]=true;}
+    return values[j];
+  };
+  double best=grid.front(),value=at(0);bool converged=grid.size()==1;
   for(std::size_t j=0;j<grid.size();++j) {
-    const double v=f(grid[j]);if(v>value){value=v;best=grid[j];converged=false;}
-    if((j&&v<f(grid[j-1]))||(j+1<grid.size()&&v<f(grid[j+1])))continue;
+    const double v=at(j);if(v>value){value=v;best=grid[j];converged=false;}
+    if((j&&v<at(j-1))||(j+1<grid.size()&&v<at(j+1)))continue;
     double lo=grid[j?j-1:0],hi=grid[j+1<grid.size()?j+1:j];
     double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
     double fa=f(a),fb=f(b);
