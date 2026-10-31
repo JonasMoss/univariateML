@@ -69,15 +69,39 @@ aliases:
 - "Furry"
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    For every nonempty sample of nonnegative integer counts, the free-probability
+    MLE exists and is unique. All-zero data give $\hat p=1$.
+    A held probability $0<p<1$ gives positive likelihood for every such sample.
+    Holding $p=1$ is compatible only with all-zero data.
+  reason: >-
+    For sample size $m$ and sum $S$, the log likelihood is
+    $m\log p+S\log(1-p)$. If $S>0$, strict concavity gives the unique
+    maximum $\hat p=m/(m+S)$. If $S=0$, the likelihood increases strictly
+    up to the included endpoint $p=1$.
+
 ---
 
 The geometric distribution models the number of failures before the first success in independent Bernoulli trials.
 
 ## Details
 
-The count starts at zero, following the R convention. All-zero data give the boundary estimate `prob = 1`.
+The success probability $p$ controls how quickly the first success occurs.
+The count starts at zero. The estimate is $\hat p=1/(1+\bar x)$.
+All-zero data give the included boundary estimate $\hat p=1$, a point mass at zero.
 
-Supplying `prob` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.
+Holding the probability evaluates the likelihood at that value. Every held
+$0<p<1$ is compatible with every nonnegative integer sample. Holding $p=1$
+requires every observation to be zero. Values outside the parameter domain
+or incompatible with the counts are rejected.
+
+## R notes
+
+The count of failures starting at zero follows the convention of `stats::dgeom`.
+
+## Decision history
 
 ### Diagnostic status contract (2026-10-31)
 

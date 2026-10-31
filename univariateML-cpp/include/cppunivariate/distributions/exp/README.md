@@ -33,8 +33,8 @@ key_references:
 - 1
 limits:
 - name: unbounded likelihood
-  when: $\lambda \to \infty$
-  detect: all observations are zero and rate is free
+  when: The rate grows without bound, $\lambda \to \infty$
+  detect: All observations are zero and the rate is free
   status: Unbounded
   message: unbounded
   kind: nonexistence
@@ -75,16 +75,28 @@ fit:
 areas:
 - reliability and survival
 - waiting times and queues
+existence:
+  uniqueness: proved
+  statement: >-
+    For a nonempty sample of finite nonnegative observations, the free-rate
+    MLE exists and is unique if and only if at least one observation is positive.
+    Holding a finite positive rate gives a finite likelihood for every such sample.
+  reason: >-
+    For sample size $m$ and sum $S$, the log likelihood is
+    $m\log\lambda-\lambda S$. Its second derivative is $-m/\lambda^2<0$.
+    If $S>0$, its unique maximum is $\hat\lambda=m/S$.
+    If $S=0$, it increases without bound as $\lambda\to\infty$.
+
 ---
 
 The exponential distribution models nonnegative waiting times with a constant hazard rate.
 
 ## Details
 
-The rate estimate is the inverse sample mean.
-
-A held positive rate gives a finite likelihood even for all-zero data. A free rate has unbounded likelihood for all-zero data.
-
+The rate $\lambda$ controls how quickly events occur. Larger rates describe
+shorter waiting times. The free-rate estimate is the inverse sample mean.
+A held finite positive rate gives a finite likelihood even for all-zero data.
+With the rate free, all-zero data have unbounded likelihood.
 
 ## Decision history
 
@@ -92,8 +104,8 @@ On 2026-05-08 the exponential dossier retained the closed-form rate fit
 (commit `e5e33a1`); the
 choice follows directly from the concave log likelihood, so no numerical
 search or competing finite boundary is needed. The positive-rate estimate
-is unique when the sum is positive; all-zero data have a supremum at
-infinite rate. The held-rate case is evaluated at the supplied value.
+is unique when the sum is positive; all-zero data have unbounded
+likelihood as the rate increases. The held-rate case is evaluated at the supplied value.
 See the family tests and the existence analysis in
 `dev/research/evaluations/2026-10-29-p0-positive.md`.
 
