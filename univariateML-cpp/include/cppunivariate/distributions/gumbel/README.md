@@ -37,6 +37,25 @@ examples: |
   set.seed(1)
   x <- rml(200, mlgumbel())
   mlgumbel(x)
+
+group: extreme value
+construction:
+- base
+relations:
+  special_case_of:
+  - family: gev
+    at:
+      mu: mu
+      sigma: sigma
+      xi: 0
+fit:
+  method: profile-search
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- extremes and environment
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The Gumbel distribution models maxima and extreme measurements.

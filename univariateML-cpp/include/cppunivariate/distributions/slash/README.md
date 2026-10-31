@@ -34,6 +34,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlslash())
   mlslash(x)
+
+group: skewed and robust location-scale
+construction:
+- location-scale
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- robust modelling
+classification: specialist
+classification_reason: Used within robust modelling; classified by its specialised modelling role.
 ---
 
 The slash distribution is a normal variate divided by an independent uniform variate, with location and scale.

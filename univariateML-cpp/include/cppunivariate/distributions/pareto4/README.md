@@ -112,6 +112,38 @@ examples: |
   set.seed(1)
   x <- rml(200, mlpareto4())
   mlpareto4(x, min = 0L)
+
+group: Pareto and Lomax
+construction:
+- base
+- generalisation
+relations:
+  special_case_of:
+  - family: fpareto
+    at:
+      shape1: shape1
+      shape2: shape2
+      shape3: 1
+      scale: scale
+      min: min
+  transform_of:
+  - family: burr
+    transform: shift
+    at:
+      shape1: shape1
+      shape2: shape2
+      scale: scale
+    shift: min
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- actuarial
+- economics and income
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 This family has a known support endpoint and delegates fitting to burr.

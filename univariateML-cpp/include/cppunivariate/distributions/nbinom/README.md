@@ -35,6 +35,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlnbinom())
   mlnbinom(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- compounding
+relations: {}
+fit:
+  method: scalar-solve
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The negative binomial distribution models nonnegative counts with overdispersion relative to a Poisson distribution. The size parameter need not be an integer.

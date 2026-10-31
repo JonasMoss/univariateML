@@ -21,6 +21,24 @@ examples: |
   set.seed(1)
   x <- rml(200, mlgeom())
   mlgeom(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- base
+relations:
+  special_case_of:
+  - family: nbinom
+    at:
+      size: 1
+      prob: prob
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The geometric distribution models the number of failures before the first success in independent Bernoulli trials.

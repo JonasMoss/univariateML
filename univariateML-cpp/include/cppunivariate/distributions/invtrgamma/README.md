@@ -56,6 +56,29 @@ examples: |
   set.seed(1)
   x <- rml(200, mlinvtrgamma())
   mlinvtrgamma(x)
+
+group: gamma and Weibull
+construction:
+- transformation
+- generalisation
+relations:
+  transform_of:
+  - family: trgamma
+    transform: inverse
+    at:
+      shape1: shape1
+      shape2: shape2
+      scale: 1/scale
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- reliability and survival
+classification: uncommon
+classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
+  surveyed.
 ---
 
 The inverse transformed gamma distribution is the distribution of the

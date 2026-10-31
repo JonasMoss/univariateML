@@ -55,6 +55,20 @@ holds: []
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
   mlged(x)
+
+group: skewed and robust location-scale
+construction:
+- location-scale
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- robust modelling
+classification: specialist
+classification_reason: Used within robust modelling; classified by its specialised modelling role.
 ---
 
 The generalized error (exponential power) distribution is a symmetric location-scale family whose shape controls tail thickness.

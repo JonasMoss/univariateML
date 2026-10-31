@@ -48,6 +48,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mltriang())
   mltriang(x)
+
+group: bounded continuous
+construction:
+- base
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- proportions
+classification: specialist
+classification_reason: Used within proportions; classified by its specialised modelling role.
 ---
 
 The triangular distribution describes bounded measurements with a single mode.

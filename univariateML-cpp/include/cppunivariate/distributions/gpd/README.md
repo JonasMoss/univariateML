@@ -64,6 +64,21 @@ fit_args:
 examples: |
   x <- datasets::precip[datasets::precip > 40] - 40
   mlgpd(x, mu = 0)
+
+group: extreme value
+construction:
+- base
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- extremes and environment
+classification: specialist
+classification_reason: Used within extremes and environment; classified by its specialised modelling role.
 ---
 
 The generalized Pareto distribution models exceedances above a user-chosen

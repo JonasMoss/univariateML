@@ -43,6 +43,20 @@ holds: []
 examples: |
   x <- diff(datasets::discoveries)
   mldnorm(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- discretisation
+relations: {}
+fit:
+  method: convex-solve
+  certified: partial
+  note: Details establishes strict concavity for the joint natural-coordinate solve; numerical convergence
+    and held-mean scale searches require separate checks.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The discretized normal distribution is the integer part of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer.

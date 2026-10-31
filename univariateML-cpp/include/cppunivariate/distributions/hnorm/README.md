@@ -34,6 +34,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlhnorm())
   mlhnorm(x, mu = NULL)
+
+group: normal and Student
+construction:
+- folding
+relations: {}
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- measurement and errors
+classification: specialist
+classification_reason: Used within measurement and errors; classified by its specialised modelling role.
 ---
 
 The translated half-normal distribution models nonnegative normal deviations from an unknown endpoint.

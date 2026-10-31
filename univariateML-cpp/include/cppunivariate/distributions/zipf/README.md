@@ -39,6 +39,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlzipf())
   mlzipf(x)
+
+group: discrete heavy-tailed
+construction:
+- base
+relations: {}
+fit:
+  method: scalar-solve
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- rank-frequency
+classification: specialist
+classification_reason: Used within rank-frequency; classified by its specialised modelling role.
 ---
 
 The finite Zipf distribution describes power-law frequencies on consecutive positive integers.

@@ -24,6 +24,19 @@ log_density: -lambda+x*log(lambda)-loggamma(x+1)-log(1-exp(-lambda))
 examples: |
   x <- corbet
   mlztpois(x)
+
+group: modified counts
+construction:
+- truncation
+relations: {}
+fit:
+  method: scalar-solve
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 Zero-truncated Poisson distributions model positive counts.

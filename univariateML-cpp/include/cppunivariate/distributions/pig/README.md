@@ -39,6 +39,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlpig())
   mlpig(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- compounding
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse Gaussian mean. It models overdispersed nonnegative counts.

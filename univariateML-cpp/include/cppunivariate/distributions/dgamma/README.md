@@ -43,6 +43,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mldgamma())
   mldgamma(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- discretisation
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The discretized gamma distribution is the integer part of a continuous gamma variable. Each observation records the latent variable in an interval from the observed integer to the next integer.

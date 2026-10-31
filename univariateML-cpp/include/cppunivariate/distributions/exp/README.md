@@ -36,6 +36,28 @@ limits:
   status: Unbounded
   message: unbounded
   kind: nonexistence
+
+group: gamma and Weibull
+construction:
+- base
+relations:
+  special_case_of:
+  - family: gamma
+    at:
+      shape: 1
+      scale: 1/rate
+  - family: weibull
+    at:
+      shape: 1
+      scale: 1/rate
+fit:
+  method: closed-form
+  certified: partial
+  note: Unique inverse-mean solution for positive sample sum; degenerate data and held cases are documented
+    in Details.
+areas:
+- reliability and survival
+- waiting times and queues
 ---
 
 The exponential distribution models nonnegative waiting times with a constant hazard rate.

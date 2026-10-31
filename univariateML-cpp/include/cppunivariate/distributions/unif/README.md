@@ -42,6 +42,26 @@ examples: |
   set.seed(1)
   x <- rml(200, mlunif())
   mlunif(x)
+
+group: bounded continuous
+construction:
+- base
+relations:
+  special_case_of:
+  - family: nsbeta
+    at:
+      shape1: 1
+      shape2: 1
+      min: min
+      max: max
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- proportions
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The uniform distribution assigns constant density to a bounded interval.

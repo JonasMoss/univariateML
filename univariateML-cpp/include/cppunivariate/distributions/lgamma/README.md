@@ -31,6 +31,27 @@ examples: |
   set.seed(1)
   x <- rml(200, mllgamma())
   mllgamma(x)
+
+group: gamma and Weibull
+construction:
+- transformation
+relations:
+  transform_of:
+  - family: gamma
+    transform: log
+    at:
+      shape: shapelog
+      scale: 1/ratelog
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- reliability and survival
+classification: uncommon
+classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
+  surveyed.
 ---
 
 The log-gamma distribution describes positive data whose logarithm follows a gamma distribution.

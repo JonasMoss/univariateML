@@ -122,6 +122,20 @@ aliases:
 - Fernandez–Steel skew Student
 key_references:
 - 1
+
+group: skewed and robust location-scale
+construction:
+- skewing
+- location-scale
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- finance
+- measurement and errors
 ---
 
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.

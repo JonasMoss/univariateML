@@ -37,6 +37,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlcauchy())
   mlcauchy(x)
+
+group: skewed and robust location-scale
+construction:
+- location-scale
+relations: {}
+fit:
+  method: profile-search
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- robust modelling
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The Cauchy distribution is a symmetric location-scale distribution with heavy tails.

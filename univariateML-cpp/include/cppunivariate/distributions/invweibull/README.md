@@ -39,6 +39,32 @@ examples: |
   set.seed(1)
   x <- rml(200, mlinvweibull())
   mlinvweibull(x)
+
+group: gamma and Weibull
+construction:
+- transformation
+relations:
+  special_case_of:
+  - family: invtrgamma
+    at:
+      shape1: 1
+      shape2: shape
+      scale: scale
+  transform_of:
+  - family: weibull
+    transform: inverse
+    at:
+      shape: shape
+      scale: 1/scale
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- reliability and survival
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 The inverse Weibull distribution is the distribution of the reciprocal of a Weibull variable, used for heavy-tailed positive data.

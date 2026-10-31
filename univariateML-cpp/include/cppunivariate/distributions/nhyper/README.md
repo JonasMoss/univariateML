@@ -49,6 +49,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlnhyper())
   mlnhyper(x, N = 10L, r = 3L)
+
+group: finite sampling
+construction:
+- base
+relations: {}
+fit:
+  method: integer-search
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- sampling and quality control
+classification: specialist
+classification_reason: Used within sampling and quality control; classified by its specialised modelling role.
 ---
 
 The negative hypergeometric distribution counts total draws without

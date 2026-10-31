@@ -27,8 +27,13 @@ goldens), by the validation harness, and later by the Python shell.
 | `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `reflected translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; optional `fixed: [name]` restricts a limit to fits holding those parameters fixed; see `dev/research/ml-behaviour.tex` |
 | `references` | no | one bibliographic string per item; verified DOIs may be appended; strings pass to R help unchanged |
 | `summary` | no | one sentence for the catalog and page lead; does not replace the R description |
-| `classification` | no | `classical`, `specialist`, or `uncommon`; requires `classification_reason`, a one-line account of use or standardness, never a popularity score |
+| `classification` | yes | `classical`, `specialist`, or `uncommon`; requires `classification_reason`, a one-line account of use or standardness, never a popularity score |
 | `classification_reason` | with classification | qualitative reason for the classification |
+| `group` | yes | primary catalog group; controlled vocabulary below |
+| `construction` | yes | nonempty list of construction tags; vocabulary below |
+| `relations` | yes | special-case and transformation edges; `{}` if none declared |
+| `fit` | yes | primary `method`, `certified` strength and scoped `note` |
+| `areas` | yes | one to three application areas; vocabulary below |
 | `aliases` | no | list of verified alternative names; an empty list is allowed |
 | `key_references` | no | one to three distinct one-based indices into `references`; selects original, standard, or estimator sources without duplicating or changing reference strings |
 | `examples` | yes | R example code; generation fails when absent. Use real data appropriate to the family or `rml(n, mlX())`. |
@@ -215,3 +220,53 @@ without terminal punctuation. Existing records remain valid. `fixed` scopes
 held coefficients; conditions must also state which coefficients remain free
 when that determines non-existence. Numerical inability to certify a boundary
 is not itself a proof of non-existence.
+
+## Family taxonomy (first version, 2026-10-31)
+
+These presentation fields are required for the canonical catalog dossiers and
+do not change R help or fitter behaviour. For compatibility, minimal codegen
+clients may omit the entire taxonomy block; any supplied taxonomy requires
+all five fields plus classification/reason and undergoes full validation.
+Classification and its reason are populated for every family. Application and
+prevalence assignments are editorial first-version judgements, not a usage survey.
+
+- `group`: one value from `Pareto and Lomax`, `Poisson, binomial and negative binomial`, `beta and generalised beta`, `bounded continuous`, `discrete heavy-tailed`, `extreme value`, `finite sampling`, `gamma and Weibull`, `modified counts`, `normal and Student`, `other positive`, `skewed and robust location-scale`.
+- `construction`: a nonempty unique list from `base`, `compounding`, `discretisation`, `folding`, `generalisation`, `location-scale`, `modification`, `skewing`, `transformation`, `truncation`.
+- `areas`: a nonempty unique list of at most three from `actuarial`, `counts and ecology`, `economics and income`, `extremes and environment`, `finance`, `measurement and errors`, `proportions`, `rank-frequency`, `reliability and survival`, `robust modelling`, `sampling and quality control`, `waiting times and queues`.
+- `fit`: `{method, certified, note}`; method is `closed-form`, `scalar-solve`,
+  `profile-search`, `multistart`, `integer-search`, `delegation`, or `convex-solve`.
+  The last is a plan extension for the grouped-normal joint concave solve. This names
+  the primary route; held subsets can use others. `certified` is a quoted string
+  `yes`, `partial`, `no`, or `unknown`; YAML booleans are invalid. Use `unknown`
+  unless existing evidence states the strength. `note` states scope and evidence;
+  certification is about fitting, not inference regularity or coverage.
+- `relations`: a map (empty `{}` allowed) with lists `special_case_of` and/or
+  `transform_of`. Each edge has `family` (an existing different id) and `at`,
+  mapping **every parent coefficient** to a numeric constant or pure arithmetic
+  expression in child coefficient names. Neither display symbols nor undeclared
+  variables are allowed. Example: exponential has
+  `{family: gamma, at: {shape: 1, scale: 1/rate}}`.
+  A transform additionally has `transform`: `log`, `logit`, `inverse`, `power`,
+  `negate`, `abs`, or `shift`. It means `T(X)` has the parent law. `power`
+  requires a `power` expression (currently positive exponent and positive support);
+  `shift` requires a `shift` expression and means `X - shift`. `abs` means
+  the child is the absolute value of a full-real parent, summing both branches.
+  Other transforms include the absolute Jacobian. Existing `limits` remain
+  separate asymptotic claims; this check does not verify them.
+
+`just relations` checks every declared edge from `log_density`, including
+mapped support bounds. Continuous endpoint inclusion is interpreted modulo
+null sets; discrete endpoint inclusion must match exactly. Symbolic equality
+is distinguished from numerical agreement (24 seeded interior samples, relative
+log-density tolerance `2e-9`). Numerical checks are regression evidence, not proof.
+
+Derived site tags: `support_tags` contains one of `real`, `positive`, `unit`,
+`bounded`, `counts`, `finite-counts`, plus `dependent` when bounds reference
+coefficients. Coefficient tags contain their count and distinct kinds.
+Existence tags are additive: `escapes` for a named limit law, `restricted` for
+any fit-domain restriction, `needs-held` for `no-mle` holds, `partial` for
+`not-implemented` holds. `degenerate-only` applies when all nonexistence
+records explicitly concern constant/all-zero/collapsed samples and none of the
+other tags apply. `always` means no declared obstacle; it is a metadata
+default, **not an existence theorem**. Unclassified unnamed failure records
+are conservatively tagged `partial` rather than asserting `always`.

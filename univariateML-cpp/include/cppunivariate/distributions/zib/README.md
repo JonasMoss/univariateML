@@ -49,6 +49,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlzib())
   mlzib(x, size = 10)
+
+group: modified counts
+construction:
+- modification
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 Zero-inflated binomial distributions model counts with a separate zero component.

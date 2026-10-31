@@ -65,6 +65,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlcmb())
   mlcmb(x, size = 10L)
+
+group: Poisson, binomial and negative binomial
+construction:
+- base
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The Conway--Maxwell--binomial distribution extends the binomial by raising its combinatorial factor to a real dispersion power.

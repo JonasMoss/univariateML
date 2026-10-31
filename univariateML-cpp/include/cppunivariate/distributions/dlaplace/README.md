@@ -32,6 +32,20 @@ holds: []
 examples: |
   x <- diff(datasets::discoveries)
   mldlaplace(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- base
+relations: {}
+fit:
+  method: closed-form
+  certified: 'yes'
+  note: Details proves global maximality from integer medians and the unique scale-score root for all supported
+    held subsets; constant-sample collapse is reported.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 Discrete Laplace distributions model integer observations with symmetric geometric tails.

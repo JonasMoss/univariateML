@@ -29,6 +29,26 @@ examples: |
   set.seed(1)
   x <- rml(200, mlfoldnorm())
   mlfoldnorm(x)
+
+group: other positive
+construction:
+- folding
+relations:
+  transform_of:
+  - family: norm
+    transform: abs
+    at:
+      mean: mu
+      sd: sigma
+fit:
+  method: profile-search
+  certified: partial
+  note: Details records an analytically bounded profile and convex-chord upper bounds to a likelihood
+    tolerance; this does not establish uniqueness.
+areas:
+- reliability and survival
+classification: specialist
+classification_reason: Used within reliability and survival; classified by its specialised modelling role.
 ---
 
 The folded normal distribution is the absolute value of a normal random variable.

@@ -45,6 +45,25 @@ limits:
   status: Degenerate
   message: does not exist
   kind: nonexistence
+
+group: gamma and Weibull
+construction:
+- base
+relations:
+  special_case_of:
+  - family: trgamma
+    at:
+      shape1: shape
+      shape2: 1
+      scale: scale
+fit:
+  method: scalar-solve
+  certified: partial
+  note: Unique scalar solution and bracketed fallback documented in Details; subject to floating-point solver
+    tolerances.
+areas:
+- reliability and survival
+- waiting times and queues
 ---
 
 The gamma distribution models positive measurements and waiting times.

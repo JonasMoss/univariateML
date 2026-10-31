@@ -38,6 +38,27 @@ examples: |
   set.seed(1)
   x <- rml(200, mlinvparalogis())
   mlinvparalogis(x)
+
+group: beta and generalised beta
+construction:
+- base
+relations:
+  special_case_of:
+  - family: invburr
+    at:
+      shape1: shape
+      shape2: shape
+      scale: scale
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- economics and income
+classification: uncommon
+classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
+  surveyed.
 ---
 
 The inverse paralogistic distribution models positive heavy-tailed data.

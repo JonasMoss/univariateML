@@ -68,6 +68,18 @@ classification_reason: A standard finite-population sampling model.
 aliases: []
 key_references:
 - 1
+
+group: finite sampling
+construction:
+- base
+relations: {}
+fit:
+  method: integer-search
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- sampling and quality control
 ---
 
 The hypergeometric distribution counts the successes in `k` draws without

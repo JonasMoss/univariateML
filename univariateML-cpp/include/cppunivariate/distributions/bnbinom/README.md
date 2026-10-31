@@ -49,6 +49,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlbnbinom())
   mlbnbinom(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- compounding
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power law tails.

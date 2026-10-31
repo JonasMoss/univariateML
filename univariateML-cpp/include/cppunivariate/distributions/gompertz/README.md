@@ -46,6 +46,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlgompertz())
   mlgompertz(x)
+
+group: other positive
+construction:
+- base
+relations: {}
+fit:
+  method: profile-search
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+classification: specialist
+classification_reason: Used within reliability and survival; classified by its specialised modelling role.
 ---
 
 The Gompertz distribution has an exponentially increasing hazard and is used to model lifetimes.

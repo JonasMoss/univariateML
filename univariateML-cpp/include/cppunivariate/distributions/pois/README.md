@@ -20,6 +20,19 @@ references:
 examples: |
   x <- datasets::discoveries
   mlpois(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- base
+relations: {}
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The Poisson distribution models nonnegative counts with a single rate parameter.

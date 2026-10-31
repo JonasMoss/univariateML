@@ -38,6 +38,26 @@ examples: |
   set.seed(1)
   x <- rml(200, mllomax())
   mllomax(x)
+
+group: Pareto and Lomax
+construction:
+- base
+relations:
+  special_case_of:
+  - family: burr
+    at:
+      shape1: kappa
+      shape2: 1
+      scale: 1/lambda
+fit:
+  method: profile-search
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- economics and income
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 The Lomax (Pareto type II) distribution is a heavy-tailed distribution on

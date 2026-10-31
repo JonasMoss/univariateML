@@ -47,6 +47,27 @@ examples: |
   set.seed(1)
   x <- rml(200, mlbetapr())
   mlbetapr(x)
+
+group: beta and generalised beta
+construction:
+- base
+relations:
+  special_case_of:
+  - family: gb2
+    at:
+      shape1: shape2
+      shape2: 1
+      shape3: shape1
+      scale: scale
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- economics and income
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 The beta prime distribution models positive ratios.

@@ -32,6 +32,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlskellam())
   mlskellam(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- base
+relations: {}
+fit:
+  method: scalar-solve
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The Skellam distribution describes the difference between two independent Poisson counts.

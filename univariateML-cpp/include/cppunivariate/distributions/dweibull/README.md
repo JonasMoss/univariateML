@@ -54,6 +54,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mldweibull())
   mldweibull(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- discretisation
+relations: {}
+fit:
+  method: scalar-solve
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The type I discrete Weibull distribution of Nakagawa and Osaki (1975) models nonnegative counts such as the number of cycles survived before failure. A count is the integer part of a continuous Weibull variable with shape `shape2`; `shape1` is the probability that the count is positive.

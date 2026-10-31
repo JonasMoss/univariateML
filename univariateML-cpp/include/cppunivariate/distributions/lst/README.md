@@ -60,6 +60,20 @@ holds: []
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
   mllst(x)
+
+group: normal and Student
+construction:
+- location-scale
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- measurement and errors
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The location-scale Student t includes heavy-tailed distributions with infinite variance.

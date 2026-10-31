@@ -39,6 +39,26 @@ examples: |
   set.seed(1)
   x <- rml(200, mlinvpareto())
   mlinvpareto(x)
+
+group: Pareto and Lomax
+construction:
+- base
+relations:
+  special_case_of:
+  - family: invburr
+    at:
+      shape1: shape
+      shape2: 1
+      scale: scale
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- economics and income
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 The inverse Pareto distribution models positive heavy-tailed data.

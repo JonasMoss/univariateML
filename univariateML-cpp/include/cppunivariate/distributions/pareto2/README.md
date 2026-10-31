@@ -67,6 +67,36 @@ examples: |
   set.seed(1)
   x <- rml(200, mlpareto2())
   mlpareto2(x, min = 0L)
+
+group: Pareto and Lomax
+construction:
+- base
+- generalisation
+relations:
+  special_case_of:
+  - family: pareto4
+    at:
+      shape1: shape
+      shape2: 1
+      scale: scale
+      min: min
+  transform_of:
+  - family: lomax
+    transform: shift
+    at:
+      kappa: shape
+      lambda: 1/scale
+    shift: min
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- actuarial
+- economics and income
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 This family has a known support endpoint and delegates fitting to lomax.

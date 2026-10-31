@@ -197,3 +197,7 @@ site-dev: site-data
 
 site-check: site-build
     python3 site/scripts/check.py
+
+# Verify declared special cases and transforms against dossier densities/supports.
+relations:
+    PYTHONPATH={{repo_root}}/dev/validation python3 -m quality.relations

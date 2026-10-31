@@ -64,6 +64,28 @@ examples: |
   set.seed(1)
   x <- rml(200, mlinvburr())
   mlinvburr(x)
+
+group: beta and generalised beta
+construction:
+- transformation
+- generalisation
+relations:
+  transform_of:
+  - family: burr
+    transform: inverse
+    at:
+      shape1: shape1
+      shape2: shape2
+      scale: 1/scale
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- economics and income
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 The inverse Burr distribution is the distribution of the reciprocal of a Burr type XII variable.
