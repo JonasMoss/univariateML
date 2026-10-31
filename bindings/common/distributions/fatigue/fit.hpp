@@ -12,7 +12,7 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
   const Held beta = beta_arg;
   const Held mu = mu_arg;
 
-  if (!mu.supplied) return fail("Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.");
+  if (!mu.supplied) return fail("The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.");
   const double threshold = mu.value;
   if (!std::isfinite(threshold)) return fail("`mu` must be finite.");
   const double nan=std::numeric_limits<double>::quiet_NaN();

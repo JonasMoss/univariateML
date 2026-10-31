@@ -1,0 +1,244 @@
+---
+// Layout lab: Wikipedia-style family page. Same data as /distributions/<id>/.
+import { getCollection } from 'astro:content';
+import Page from '../../layouts/Page.astro';
+import MiniPlot from '../../components/lab/MiniPlot.svelte';
+import binding from '../../data/binding.json';
+import families from '../../data/families.json';
+import { markdown } from '../../lib/markdown';
+import { symbols, domainTex, supportTex, phrase, heldTex, groupLimits, restrictions, existenceLabel, methodLabel, dated } from '../../lib/lab';
+export async function getStaticPaths() {
+ const entries=await getCollection('families');
+ return entries.map(entry=>({params:{id:entry.id},props:{entry,f:families.find((f:any)=>f.id===entry.id)}}));
+}
+const {entry,f}=Astro.props as any;
+const dossier=`univariateML-cpp/include/cppunivariate/distributions/${f.id}`;
+const source=`${dossier}/README.md`;
+const render=(s:string)=>markdown(s,source);
+const sym=symbols(f);
+const unwrap=(html:string)=>html.trim().replace(/^<p>/,'').replace(/<\/p>$/,'');
+const inline=async (tex:string)=>unwrap(await render(`$${tex}$`));
+const lower=(h:string)=>h.replace(/^([A-Z])(?=[a-z ])/,c=>c.toLowerCase());
+const display=(tex:string)=>render(`$$\n${tex}\n$$`);
+const discrete=f.support.type==='integer';
+const hasBinding=(binding as string[]).includes(f.id);
+
+// Dossier body: lead paragraphs, then ## sections routed by title.
+const body=entry.body || '';
+const chunks=body.split(/^## /m);
+const words=(t:string)=>new Set(t.toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(w=>w.length>2));
+const similar=(a:string,b:string)=>{const A=words(a),B=words(b);const inter=[...A].filter(w=>B.has(w)).length;return inter/Math.max(1,Math.min(A.size,B.size))>.7;};
+// The summary already says what the first paragraph usually says; drop near-duplicates.
+const lead=(f.summary ? chunks[0].trim() : chunks[0].trim().split(/\n\s*\n/).slice(1).join('\n\n')).split(/\n\s*\n/).filter((para:string,i:number)=>!(i===0 && f.summary && similar(para,f.summary))).join('\n\n');
+const sections=chunks.slice(1).map((s:string)=>{const i=s.indexOf('\n');return {title:s.slice(0,i).trim(),body:s.slice(i+1)};});
+let hiddenNotes=0;
+const clean=(text:string)=>text.split(/^(?=### )/m).filter(part=>{if(part.startsWith('### ')&&dated(part.split('\n')[0])){hiddenNotes++;return false;}return true;}).join('').split(/\n\s*\n/).filter(p=>{if(dated(p)){hiddenNotes++;return false;}return p.trim();}).join('\n\n');
+const kept=sections.filter((s:any)=>{const t=s.title.toLowerCase();if(t==='decision history')return false;if(dated(s.title)){hiddenNotes++;return false;}return true;}).map((s:any)=>({...s,body:clean(s.body)})).filter((s:any)=>s.body.trim());
+const defProse=kept.filter((s:any)=>s.title.toLowerCase()==='d/p/q/r');
+const seeAlso=kept.filter((s:any)=>s.title.toLowerCase()==='see also');
+const rNotes=kept.filter((s:any)=>s.title.toLowerCase()==='r notes');
+const mlProse=kept.filter((s:any)=>!['d/p/q/r','see also','r notes'].includes(s.title.toLowerCase()));
+const hasHistory=sections.some((s:any)=>s.title.toLowerCase()==='decision history');
+
+// Relations: limit models go to the ML section; the rest is structure.
+const seen=new Set<string>();
+const relations=f.related.filter((r:any)=>r.kind!=='Limit model').filter((r:any)=>{const k=r.kind+r.family;if(seen.has(k))return false;seen.add(k);return true;});
+const mapping=(r:any)=>r.edge ? `${r.edge.transform ? r.edge.transform+': ' : ''}${Object.entries(r.edge.at).map(([k,v])=>`${k} = ${v}`).join(', ')}` : '';
+const byKind=(k:string)=>relations.filter((r:any)=>r.kind===k);
+
+// ML obstacles, grouped.
+const limits=groupLimits(f);
+const holds=f.holds || [];
+const restr=restrictions(f);
+const showML=limits.length>0 || holds.length>0 || restr.length>0 || mlProse.length>0;
+
+// Pre-rendered pieces.
+const paramLabels=await Promise.all(f.params.map((p:any)=>inline(p.symbol || p.name)));
+const paramDomains=await Promise.all(f.params.map((p:any)=>inline(domainTex(p,sym))));
+const supportHtml=await inline(supportTex(f,sym));
+const densitySymbol=discrete ? 'p' : 'f';
+const densityHtml=f.density_latex ? await display(`${densitySymbol}(x) = ${f.density_latex}`) : await display(`\\log ${densitySymbol}(x) = ${f.log_latex}`);
+const infoDensity=f.density_latex && f.density_latex.length < 160 ? await display(f.density_latex) : '';
+const cdfHtml=f.cdf_latex ? await display(`F(x) = ${f.cdf_latex}`) : '';
+const quantileHtml=f.quantile_latex ? await display(`Q(p) = ${f.quantile_latex}`) : '';
+const limitRows=await Promise.all(limits.map(async g=>({...g,whenHtml:await render(phrase(g.when,sym)),pathHtml:unwrap(await render(phrase(g.path,sym))),detectHtml:g.detect?unwrap(await render(phrase(g.detect,sym))):'',whenInline:lower(unwrap(await render(phrase(g.when,sym)))),modelName:(families as any[]).find(x=>x.id===g.model)?.name,heldHtml:await Promise.all(g.held.map(s=>inline(heldTex(s,sym))))})));
+const holdRows=await Promise.all(holds.map(async (h:any)=>({...h,heldHtml:h.held.length ? await inline(heldTex(h.held,sym)) : 'none (all free)',reasonHtml:await render(phrase(h.reason,sym,true))})));
+const restrRows=await Promise.all(restr.map(async r=>{const s=sym.get(r.param)||r.param;const b=[r.lower!==undefined?`${s} \\ge ${r.lower}`:'',r.upper!==undefined?`${s} \\le ${r.upper}`:''].filter(Boolean).join(',\\ ');return {...r,boundHtml:await inline(b),reasonHtml:await render(phrase(r.reason.replace(/^\s*[A-Za-z_]\w*\s*(>=|<=)\s*-?[\d.]+\s*/,''),sym)),exemptHtml:r.exempt.length?await Promise.all(r.exempt.map(e=>inline(heldTex(e,sym)))):[]};}));
+const exStatement=f.existence?.statement ? await render(f.existence.statement) : '';
+const exReason=f.existence?.reason ? await render(f.existence.reason) : '';
+const freeRows=limitRows.filter(g=>g.free);
+const nonexist=freeRows.filter(g=>g.nonexistence);
+const boundary=freeRows.filter(g=>!g.nonexistence);
+const limitModels=[...new Map(limitRows.filter(g=>g.model).map(g=>[g.model,g])).values()];
+const heldCount=limitRows.filter(g=>g.held.length>0).length+holds.filter((h:any)=>h.held.length>0).length;
+const kindGroups=(()=>{const m=new Map<string,any>();for(const [i,p] of f.params.entries()){if(!p.kind||p.kind==='regular')continue;if(!m.has(p.kind))m.set(p.kind,{kind:p.kind,idx:[]});m.get(p.kind).idx.push(i);}return [...m.values()];})();
+const kindText:Record<string,[string,string,string,string]>={
+ design:['The coefficient','The coefficients','is set by the study design and is normally known in advance','are set by the study design and are normally known in advance'],
+ threshold:['The threshold','The thresholds','marks an end of the support and is normally known in advance','mark the ends of the support and are normally known in advance'],
+ endpoint:['The coefficient','The coefficients','is an end point of the support','are the end points of the support'],
+};
+const advised=f.params.filter((p:any)=>p.advice);
+const heldRows=limitRows.filter(g=>g.held.length>0);
+const blockingHolds=holdRows.filter((h:any)=>h.held.length===0);
+const otherHolds=holdRows.filter((h:any)=>h.held.length>0);
+const relRows=await Promise.all(relations.map(async (r:any)=>({...r,noteHtml:r.note?await render(r.note):''})));
+const leadHtml=await render([f.summary,lead].filter(Boolean).join('\n\n'));
+const defProseHtml=await Promise.all(defProse.map(async (s:any)=>render(s.body)));
+const rNotesHtml=await Promise.all(rNotes.map(async (s:any)=>render(s.body)));
+const seeAlsoHtml=await Promise.all(seeAlso.map(async (s:any)=>render(s.body)));
+const mlProseHtml=await Promise.all(mlProse.map(async (s:any)=>({title:s.title,html:await render(s.body)})));
+const refs:string[]=f.references || [];
+const key=new Set<number>((f.key_references||[]).map((i:number)=>i-1));
+const toc=[['definition','Definition'],relations.length||seeAlso.length?['relations','Relations']:null,showML?['ml','Maximum likelihood']:null,['usage','Usage'],refs.length?['references','References']:null].filter(Boolean) as string[][];
+---
+<Page title={f.name} description={f.summary}>
+<article class="lab" data-family={f.id}>
+<div class="top">
+ <div class="head">
+  <p class="eyebrow"><a href="/distributions/">Distributions</a></p>
+  <h1>{f.name}</h1>
+ </div>
+
+ <aside class="infobox" aria-label="Summary">
+  <div class="ib-title">{f.name}</div>
+  {hasBinding && <MiniPlot client:load family={{id:f.id,params:entry.data.params,support:entry.data.support}} labels={paramLabels}/>}
+  <table>
+   <tbody>
+   <tr><th>Parameters</th><td>{f.params.map((p:any,i:number)=><div class="ib-param"><span set:html={paramDomains[i]}/> <code>{p.name}</code>{(p.role!==p.name || (p.kind && p.kind!=='regular')) && <small> {[p.role!==p.name ? p.role : '', p.kind && p.kind!=='regular' ? p.kind : ''].filter(Boolean).join(', ')}</small>}</div>)}</td></tr>
+   <tr><th>Support</th><td set:html={supportHtml}/></tr>
+   <tr><th>{discrete ? 'PMF' : 'PDF'}</th><td>{infoDensity ? <div class="ib-formula" set:html={infoDensity}/> : <a href="#definition">{f.density_latex ? 'see Definition' : 'log-density in Definition'}</a>}</td></tr>
+   {cdfHtml && <tr><th>CDF</th><td class="ib-formula" set:html={cdfHtml}/></tr>}
+   {quantileHtml && <tr><th>Quantile</th><td class="ib-formula" set:html={quantileHtml}/></tr>}
+   {byKind('Parent').length>0 && <tr><th>Special case of</th><td>{byKind('Parent').map((r:any,i:number)=><>{i>0 && ', '}<a href={`/lab/${r.family}/`}>{r.name}</a></>)}</td></tr>}
+   {byKind('Special case').length>0 && <tr><th>Special cases</th><td>{byKind('Special case').map((r:any,i:number)=><>{i>0 && ', '}<a href={`/lab/${r.family}/`}>{r.name}</a></>)}</td></tr>}
+   {byKind('Transform parent').length>0 && <tr><th>Transform of</th><td>{byKind('Transform parent').map((r:any,i:number)=><>{i>0 && ', '}<a href={`/lab/${r.family}/`}>{r.name}</a></>)}</td></tr>}
+   {byKind('Transformed family').length>0 && <tr><th>Transforms</th><td>{byKind('Transformed family').map((r:any,i:number)=><>{i>0 && ', '}<a href={`/lab/${r.family}/`}>{r.name}</a></>)}</td></tr>}
+   <tr><th>Group</th><td>{f.group}</td></tr>
+   <tr><th>MLE</th><td>{methodLabel[f.fit.method] || f.fit.method}; {f.existence_tags.map((t:string)=>existenceLabel[t]||t).join('; ')}{showML && <> · <a href="#ml">details</a></>}</td></tr>
+   <tr><th>R</th><td><code>ml{f.id}()</code></td></tr>
+   <tr><th>C++</th><td><code>cppunivariate::{f.id}_mle</code></td></tr>
+   </tbody>
+  </table>
+ </aside>
+
+ <div class="lead">
+  <div set:html={leadHtml}/>
+  {f.aliases?.length>0 && <p>Also known as {f.aliases.join(', ')}.</p>}
+  {f.areas?.length>0 && <p class="areas">Areas: {f.areas.join('; ')}.</p>}
+ </div>
+
+ <nav class="toc" aria-labelledby="toc-title"><p id="toc-title">Contents</p><ol>{toc.map(([id,t])=><li><a href={`#${id}`}>{t}</a></li>)}</ol></nav>
+
+ <section class="definition" aria-labelledby="definition">
+  <h2 id="definition">Definition</h2>
+  <p>The {f.density_latex ? (discrete ? 'probability mass function' : 'density') : 'log-density'} is</p>
+  <div class="formula plain" set:html={densityHtml}/>
+  <p>for <span set:html={supportHtml}/> and zero elsewhere, where {f.params.map((p:any,i:number)=><>{i>0 && (i===f.params.length-1 ? ' and ' : ', ')}<span set:html={paramDomains[i]}/> is <code>{p.name}</code>{p.role!==p.name && <> ({p.role})</>}</>)}.{kindGroups.map((g:any)=>{const t=kindText[g.kind]||['The coefficient','The coefficients',`is a ${g.kind} coefficient`,`are ${g.kind} coefficients`];const many=g.idx.length>1;return <> {many ? t[1] : t[0]} {g.idx.map((i:number,j:number)=><>{j>0 && (j===g.idx.length-1 ? ' and ' : ', ')}<span set:html={paramLabels[i]}/></>)} {many ? t[3] : t[2]}.</>;})}</p>
+  {defProseHtml.map(h=><div set:html={h}/>)}
+ </section>
+</div>
+
+{(relations.length>0 || seeAlso.length>0) && <section aria-labelledby="relations">
+ <h2 id="relations">Relations</h2>
+ {relations.length>0 && <table><thead><tr><th>Relation</th><th>Family</th><th>Mapping</th></tr></thead><tbody>
+  {relRows.map((r:any)=><tr><td>{r.kind}</td><td><a href={`/lab/${r.family}/`}>{r.name}</a></td><td><code>{mapping(r)}</code>{r.noteHtml && <span set:html={r.noteHtml}/>}</td></tr>)}
+ </tbody></table>}
+ {seeAlsoHtml.map(h=><div set:html={h}/>)}
+</section>}
+
+{showML && <section aria-labelledby="ml">
+ <h2 id="ml">Maximum likelihood</h2>
+ <h3>Existence and uniqueness</h3>
+ {exStatement && <div set:html={exStatement}/>}
+ {exReason && <div class="reason" set:html={exReason}/>}
+ <p>{!exStatement && nonexist.length===0 && boundary.length===0 && blockingHolds.length===0 && 'No obstacle to existence is declared. '}
+  {!exStatement && nonexist.length>0 && <>No MLE exists when {nonexist.map((g,i)=><>{i>0 && (i===nonexist.length-1 ? ' or ' : '; ')}<span set:html={lower(g.whenInline)}/></>)}. </>}
+  {!exStatement && boundary.length>0 && <>{nonexist.length>0 ? 'It can also fail to exist' : 'The MLE can fail to exist'} when the likelihood approaches its supremum in a limit: {boundary.map((g,i)=><>{i>0 && '; '}<span set:html={g.pathHtml}/> ({g.model ? <a href={`/lab/${g.model}/`}>{g.modelName || g.model}</a> : g.name})</>)}. </>}
+  {!exStatement && blockingHolds.map((h:any)=><>{h.status==='not-implemented' ? 'The fit with all coefficients free is not implemented' : 'No MLE exists with all coefficients free'}: <span set:html={lower(unwrap(h.reasonHtml))}/>. </>)}
+  {!exStatement && restrRows.length>0 && <>Fits are restricted to {restrRows.map((r:any,i:number)=><>{i>0 && (i===restrRows.length-1 ? ' and ' : ', ')}<span set:html={r.boundHtml}/> (<span set:html={lower(unwrap(r.reasonHtml))}/>)</>)}. </>}
+  {exStatement && limitModels.length>0 && <>Limit models: {limitModels.map((g,i)=><>{i>0 && ', '}<a href={`/lab/${g.model}/`}>{g.modelName || g.model}</a></>)}. </>}
+  {!exStatement && heldCount>0 ? <>This is for all coefficients free; holding coefficients changes it in {heldCount} case{heldCount>1 ? 's' : ''} (<a href="#ml-more">below</a>). </> : ''}
+  {!f.existence?.uniqueness || f.existence.uniqueness==='unknown' ? 'Uniqueness has not been shown.' : f.existence.uniqueness==='numerical' ? 'Uniqueness rests on a numerical search, not a proof.' : ''}
+ </p>
+ <h3>Algorithm</h3>
+ <p>Fitted by {methodLabel[f.fit.method] || f.fit.method}.{(nonexist.length+boundary.length)>0 && ' Where no MLE exists, the fit stops with an error that names the limit.'}</p>
+ <details class="more" id="ml-more"><summary>More on the fit{heldCount>0 ? ` (including ${heldCount} case${heldCount>1?'s':''} with held coefficients)` : ''}</summary>
+  <p>{({yes:'The global maximum is certified.',partial:'The global maximum is certified only in part.',no:'The search is numerical; the global maximum is not certified.',unknown:'Whether the search always finds the global maximum has not been established.'} as Record<string,string>)[f.fit.certified] || ''}</p>
+  {limitRows.length>0 && <table class="limits"><thead><tr><th>Limit</th><th>Path</th><th>Detected when</th><th>Applies</th></tr></thead><tbody>
+   {limitRows.map(g=><tr>
+    <td>{g.model ? <a href={`/lab/${g.model}/`}><code>ml{g.model}</code></a> : g.nonexistence ? 'no MLE' : g.name}{g.model && g.name && <small> {g.name}</small>}</td>
+    <td set:html={g.pathHtml}/>
+    <td set:html={g.detectHtml || '–'}/>
+    <td>{g.free && 'all free'}{g.free && g.held.length>0 && '; '}{g.held.length>0 && <>held {g.heldHtml.map((h,i)=><>{i>0 && '; '}<span set:html={h}/></>)}</>}</td>
+   </tr>)}
+  </tbody></table>}
+  {otherHolds.length>0 && <table><thead><tr><th>Held</th><th>Status</th><th>Reason</th></tr></thead><tbody>
+   {otherHolds.map((h:any)=><tr><td set:html={h.heldHtml}/><td>{({'no-mle':'no MLE','not-implemented':'not implemented'} as Record<string,string>)[h.status] || h.status}</td><td set:html={h.reasonHtml}/></tr>)}
+  </tbody></table>}
+  {mlProseHtml.map(s=><>{s.title.toLowerCase()!=='details' && <h3>{s.title}</h3>}<div set:html={s.html}/></>)}
+ </details>
+</section>}
+
+
+<section aria-labelledby="usage">
+ <h2 id="usage">Usage</h2>
+ <h3>R</h3><pre><code>{f.examples}</code></pre>
+ {rNotesHtml.map(h=><div class="r-notes" set:html={h}/>)}
+ {advised.length>0 && <ul class="r-notes">{advised.map((p:any)=><li><code>{p.name}</code>: {p.advice}</li>)}</ul>}
+ <h3>C++</h3><pre><code>{f.cpp}</code></pre>
+ <p class="small">Header-only C++17 with Boost.Math. Check the returned status before using a fit.</p>
+</section>
+
+{refs.length>0 && <section aria-labelledby="references">
+ <h2 id="references">References</h2>
+ <ol>{refs.map((r,i)=><li class={key.has(i) ? 'key' : ''}>{r}</li>)}</ol>
+</section>}
+
+<footer class="source">
+ Source: <a href={`/sources/${source}`}>dossier <code>README.md</code></a> (implementation notes{hasHistory ? ', decision history' : ''}{hiddenNotes ? `, ${hiddenNotes} dated change note${hiddenNotes>1?'s':''}` : ''}), <a href={`/sources/${dossier}/mle.hpp`}><code>mle.hpp</code></a>, <a href={`/sources/${dossier}/dpqr.hpp`}><code>dpqr.hpp</code></a>.
+</footer>
+</article>
+</Page>
+<style is:global>
+ main:has(article.lab){max-width:1180px}
+ .lab .top{display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-areas:"head box" "lead box" "toc box" "def box";grid-template-rows:auto auto auto 1fr;column-gap:2.2rem}
+ .lab .head{grid-area:head}.lab .lead{grid-area:lead}.lab .toc{grid-area:toc}.lab .definition{grid-area:def}
+ .lab .infobox{grid-area:box;align-self:start;border:1px solid #c9c8bc;background:#fbf9f3;padding:.7rem;font-size:.85rem;margin-top:1rem}
+ .lab .ib-title{font:600 1rem system-ui,sans-serif;text-align:center;margin-bottom:.5rem}
+ .lab .infobox table{display:table;table-layout:fixed;width:100%;font-size:.82rem;margin-top:.6rem}
+ .lab .infobox th{width:6.5rem;vertical-align:top;padding:.35rem .5rem .35rem 0}
+ .lab .infobox td{padding:.35rem 0;vertical-align:top}
+ .lab .ib-formula{overflow-x:auto;font-size:.95rem}
+ .lab .infobox td{overflow-wrap:anywhere}
+ .lab math:not([display=block]){max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle}
+ .lab .infobox td>math,.lab .infobox td span>math{display:inline-block}
+ .lab .ib-formula math[display=block]{margin:0}
+ .lab .ib-param small{color:#656c66}
+ .lab .lead{font-size:1.08rem}
+ .lab .lead p:first-child{font-size:1.2rem;line-height:1.5}
+ .lab .areas{color:#4c5550;font-size:.95rem}
+ .lab .toc{display:block;justify-self:start;min-width:14rem;margin:.6rem 0 0;padding:.7rem 1.2rem .8rem;border:1px solid #d5d4c9;background:#fbf9f3;font:.88rem/1.5 system-ui,sans-serif}
+ .lab .toc p{margin:0 0 .35rem;font-weight:600;letter-spacing:.02em}
+ .lab .toc ol{list-style:none;counter-reset:toc;margin:0;padding:0}
+ .lab .toc li{counter-increment:toc;display:grid;grid-template-columns:1.6rem 1fr;align-items:baseline;padding:.08rem 0}
+ .lab .toc li::before{content:counter(toc) ".";color:#656c66;font-variant-numeric:tabular-nums;text-align:right;padding-right:.5rem}
+ .lab .toc a{text-decoration:none}.lab .toc a:hover{text-decoration:underline}
+ .lab .definition h2{margin-top:1.4rem}
+ .lab table.limits td{vertical-align:top}
+ .lab table.limits td small{display:block;color:#656c66}
+ .lab table.limits details{margin:0}.lab table.limits details>summary{padding:0;font-size:.85rem}
+ .lab li.key{font-weight:600}
+ .lab .formula.plain{border:0;background:none;padding:.2rem 0;display:flex;justify-content:safe center}
+ .lab .formula.plain math[display=block]{width:auto}
+ .lab .formula.plain math[display=block]{margin:.4rem 0}
+ .lab section h3{font-size:1.1rem;font-weight:600;margin:1.4rem 0 .3rem}
+ .lab details.more{border-top:1px solid #d5d4c9;margin-top:1.2rem}
+ .lab details.more>summary{font-size:.92rem}
+ .lab .ib-param code{font-size:.75rem;color:#4c5550;margin-left:.2rem}
+ .lab .r-notes{font-size:.88rem;color:#3d4542;margin:.4rem 0 1rem;padding-left:1.2rem}
+ .lab .small{font-size:.85rem;color:#4c5550}
+ .lab .source{margin-top:3rem;border-top:1px solid #c9c8bc;padding-top:1rem;font:.85rem system-ui,sans-serif;color:#4c5550}
+ @media (max-width:860px){
+  .lab .top{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "lead" "box" "toc" "def";grid-template-rows:auto}
+ }
+</style>

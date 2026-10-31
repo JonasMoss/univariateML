@@ -283,6 +283,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     control = f$r$control %||% list(),
     holds = f$holds %||% list(),
     limits = f$limits %||% list(),
+    existence = f$existence,
     references = unlist(f$references %||% list()),
     examples = f$examples %||% NULL,
     sections = .umvl_body_sections(fm$body)

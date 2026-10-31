@@ -86,6 +86,22 @@ fit:
     for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - measurement and errors
+existence:
+  uniqueness: proved
+  statement: >-
+    With $\mu$ and $\sigma$ free, the MLE exists if and only if the
+    observations are not all equal; it is then unique, with $\hat\mu = \bar x$
+    and $\hat\sigma^2 = n^{-1}\sum_i (x_i - \bar x)^2$. With $\sigma$ held,
+    $\hat\mu = \bar x$ always. With $\mu$ held, the MLE exists unless every
+    observation equals $\mu$.
+  reason: >-
+    The normal family is a regular exponential family with sufficient
+    statistic $(x, x^2)$ and natural parameter
+    $(\mu/\sigma^2, -1/(2\sigma^2))$. The log-likelihood is strictly concave
+    in the natural parameter, so it has at most one maximizer, and one exists
+    exactly when $(\bar x, \overline{x^2})$ lies inside the convex hull of the
+    parabola $\{(x, x^2)\}$, that is when $\overline{x^2} > \bar x^2$; this
+    fails only for constant samples.
 ---
 
 The normal (Gaussian) distribution is a symmetric distribution on the real line, used to model continuous measurements and errors.

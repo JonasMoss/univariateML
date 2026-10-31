@@ -9,6 +9,11 @@ cpSync('../dev/design/logo/logo_F.svg','public/logo.svg');
 rmSync('public/sources',{recursive:true,force:true});
 const dossier='univariateML-cpp/include/cppunivariate/distributions';
 const files=readdirSync(path.join(root,dossier),{withFileTypes:true}).filter(x=>x.isDirectory()).map(x=>`${dossier}/${x.name}/README.md`);
+// Family pages link their dossier sources (implementation notes, decision history).
+for(const file of files) for(const name of ['README.md','mle.hpp','dpqr.hpp']) {
+ const rel=path.join(path.dirname(file),name);if(!existsSync(path.join(root,rel))) continue;
+ mkdirSync(path.join('public/sources',path.dirname(rel)),{recursive:true});cpSync(path.join(root,rel),path.join('public/sources',rel));
+}
 files.push(...articleSources.map(a=>a.source).filter(source=>existsSync(path.join(root,source))));
 for(const source of files) {
  const text=readFileSync(path.join(root,source),'utf8');

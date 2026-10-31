@@ -62,13 +62,25 @@ limit_sentence <- function(lim, model) {
   held <- unlist(lim$fixed)
   nl(
     if (length(held)) nl("With ", and_list(held), " held fixed: w") else "W",
-    "hen ", if (!is.null(lim$detect)) nl("`", lim$detect, "`") else "the data point to this limit",
+    "hen ", if (is.null(lim$detect)) "the data point to this limit"
+            else if (grepl("$", lim$detect, fixed = TRUE)) rd_math(lim$detect)
+            else nl("`", lim$detect, "`"),
     ", the maximum likelihood estimator does not exist: the likelihood ",
-    "increases toward the ", target_name, " distribution",
+    if (has_target) nl("increases toward the ", target_name, " distribution")
+    else nl("approaches its supremum only in a limit (", target_name, ")"),
     if (!is.null(lim$when)) nl(" as ", rd_math(lim$when)) else "",
     ". `ml", model$id, "()` then stops with an error",
     if (has_target) nl("; use [ml", lim$model, "()] instead.") else "."
   )
+}
+
+# "Notation: \eqn{\alpha} is `alpha`, ..." so prose and limit sentences that
+# use the README symbols can be read against the argument names.
+notation_sentence <- function(model) {
+  syms <- Filter(function(p) !is.null(p$symbol), model$params)
+  if (!length(syms)) return(character())
+  nl("Notation: ", paste(vapply(syms, function(p)
+    nl(rd_math(nl("$", p$symbol, "$")), " is `", p$name, "`"), ""), collapse = ", "), ".")
 }
 
 # Parameters the user may hold fixed: an adapter argument named like the
@@ -179,9 +191,12 @@ gen_doc <- function(model) {
     nl("With `x` omitted, builds a fixed model without data. Supply coefficients by name; unspecified coefficients default to ",
        paste(vapply(model$params, function(p) paste0("`", p$name, " = ", p$simulate, "`"), ""), collapse = ", "),
        ". Design and threshold coefficients also use these defaults. Domains apply without fitting restrictions. Evaluate or simulate with [dml()], [pml()], [qml()] and [rml()], or draw its density with [graphics::plot()]. Methods requiring data stop. With data and every coefficient held, the log likelihood is evaluated without estimation (zero degrees of freedom)."),
+    notation_sentence(model),
     rd_math(s[["d/p/q/r"]] %||% character()),
     vapply(model$limits, limit_sentence, character(1), model = model),
-    rd_math(s$details %||% character())
+    rd_math(c(model$existence$statement, model$existence$reason)),
+    rd_math(s$details %||% character()),
+    rd_math(s[["r notes"]] %||% character())
   )
   control_items <- vapply(names(model$control), function(arg) {
     default_txt <- if (arg %in% required_names(model)) {

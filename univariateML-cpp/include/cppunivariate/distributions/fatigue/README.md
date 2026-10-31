@@ -21,8 +21,8 @@ params:
   domain: (-inf, inf)
   simulate: 0.0
   kind: threshold
-  advice: Supply a finite threshold below every observation; NULL is unsupported because
-    of endpoint spikes and a normal escape.
+  advice: It must be finite and below every observation. The threshold cannot be estimated,
+    because the likelihood is then unbounded.
 r:
   density: dfatigue
   sampler: rfatigue
@@ -33,18 +33,18 @@ r:
     iterlim: Maximum number of iterations.
 log_density: log(x-mu+beta) - 3*log(x-mu)/2 - log(beta)/2 - log(2*alpha) - log(2*pi)/2 - ((x-mu)/beta + beta/(x-mu)-2)/(2*alpha**2)
 limits:
-  - {name: unbounded, when: constant shifted observations with alpha and beta free, fixed: [mu], status: Unbounded}
-  - {name: unbounded, when: all shifted observations equal beta and alpha tends to zero, fixed: [beta, mu], status: Unbounded}
+  - {name: point mass, kind: nonexistence, fixed: [mu], status: Unbounded, when: '$\alpha \to 0$ with $\beta$ equal to the common value of $x - \mu$', detect: 'all shifted observations $x - \mu$ are equal and $\alpha$ and $\beta$ are free'}
+  - {name: point mass, kind: nonexistence, fixed: [beta, mu], status: Unbounded, when: '$\alpha \to 0$', detect: 'every shifted observation $x - \mu$ equals the held $\beta$'}
 references:
 - From, S. G. and Li, L. (2006). Estimation of the parameters of the Birnbaum–Saunders distribution. Communications
   in Statistics, Theory and Methods, 35(12), 2157–2169. doi:10.1080/03610920600853563.
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds:
-- {held: [], status: no-mle, reason: 'Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.'}
-- {held: [alpha], status: no-mle, reason: 'Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.'}
-- {held: [beta], status: no-mle, reason: 'Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.'}
-- {held: [alpha, beta], status: no-mle, reason: 'Estimating `mu` is not supported under the A4 threshold policy, including with alpha or beta held: the unrestricted three-parameter fatigue likelihood has endpoint spikes and a normal escape, with no weakest shape restriction. Supply a held threshold.'}
+- {held: [], status: no-mle, reason: 'The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.'}
+- {held: [alpha], status: not-implemented, reason: 'The threshold mu is not estimated, even with alpha held. A maximum likelihood estimate exists in this case, but the package does not compute it. Supply mu.'}
+- {held: [beta], status: not-implemented, reason: 'The threshold mu is not estimated, even with beta held. A maximum likelihood estimate exists for some held values of beta, but the package does not compute it. Supply mu.'}
+- {held: [alpha, beta], status: not-implemented, reason: 'The threshold mu is not estimated, even with alpha and beta held. Supply mu.'}
 fit_args:
   mu: 0.0
 examples: |
@@ -71,20 +71,37 @@ aliases:
 - "fatigue-life"
 key_references:
 - 2
+existence:
+  uniqueness: unknown
+  statement: >-
+    With the threshold $\mu$ estimated, no MLE exists: the likelihood is
+    unbounded for every sample with a unique minimum. The threshold is
+    therefore supplied. With $\mu$ known, the likelihood is unbounded only
+    when all shifted observations $x - \mu$ are equal (or, with $\beta$ also
+    held, all equal to $\beta$).
+  reason: >-
+    Put $\beta = \varepsilon$, $\alpha^2 = s/\varepsilon$ and
+    $\mu = \min_i x_i - c\varepsilon^2/s$ for fixed $s, c > 0$. As
+    $\varepsilon \to 0$, half of the probability mass collapses onto the
+    smallest observation, whose log-density grows like $-2\log\varepsilon$,
+    while the other observations keep a finite log-density. The
+    three-parameter lognormal has the same defect.
 ---
 
 The Birnbaum--Saunders distribution models lifetimes arising from cumulative fatigue damage.
 
 ## Details
 
-Supply the threshold `mu`; `alpha` and `beta` may each be held or estimated on `x - mu`. A held threshold must be finite and strictly below every observation. `beta` is a scale parameter. Shifted observations must be strictly positive.
+The threshold $\mu$ is supplied, and $\alpha$ and $\beta$ are fitted to the shifted observations $x - \mu$, which must all be positive. Either $\alpha$ or $\beta$ can also be held. The coefficient $\beta$ is a scale.
 
-Estimating `mu` as well is not possible: the three-parameter likelihood is unbounded for every sample with a unique minimum. Along $\beta = \varepsilon$, $\alpha^2 = s/\varepsilon$ and $\mu = \min(x) - c\varepsilon^2/s$, half of the probability mass collapses onto the smallest observation, whose log-density grows like $-2\log\varepsilon$, while the other observations keep a finite log-density. Pass a known threshold as `mu`; `mu = NULL` stops with this reason.
+With $\beta$ held, $\hat\alpha$ is the root mean square of $\sqrt{t/\beta} - \sqrt{\beta/t}$ over the shifted observations $t = x - \mu$. It is zero only when every $t$ equals $\beta$, and the likelihood is then unbounded. Holding $\alpha$ removes this collapse for constant samples. With $\alpha$ held, the likelihood in $\beta$ can have several local maxima, and the fit compares all the maxima it finds.
 
-With beta held, alpha is the root mean square of $\sqrt{t/\beta}-\sqrt{\beta/t}$, where $t=x-\mu$. It collapses to zero only when every shifted observation equals held beta; that likelihood is unbounded. Holding alpha positive removes constant-sample collapse. With alpha held the beta likelihood can have several maxima; the fitter compares all sampled profile peaks. Both held coefficients are evaluated directly.
+The threshold is not estimated even when $\alpha$ or $\beta$ is held. This is a design choice rather than a mathematical necessity: in some of these cases an MLE exists.
 
-The A4 threshold policy also rejects `mu = NULL` when alpha or beta is held. This is a structural policy exception, rather than a claim that every such restricted likelihood lacks a maximum: P0 proves existence for held alpha and some held-beta subsets.
+## R notes
 
-### Adapter independence (2026-10-30)
+`mu = NULL` stops with the reason above. Both held coefficients are used as given.
 
-`fatigue_mle_shifted` now owns held-threshold translation (unit Jacobian), validates shifted support, and preserves the delegate status. Its four held-subset regressions reproduce the former adapter arithmetic.
+## Decision history
+
+2026-10-30 (adapter independence): `fatigue_mle_shifted` owns the held-threshold translation (unit Jacobian), validates the shifted support and preserves the delegate status. Its four held-subset regressions reproduce the former adapter arithmetic.
