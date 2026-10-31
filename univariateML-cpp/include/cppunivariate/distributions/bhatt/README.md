@@ -82,6 +82,12 @@ The Bhattacharjee distribution is the convolution of a normal distribution and a
 
 ## Details
 
+For fixed dimensionless shape $k=a/\sigma$, the log-likelihood is strictly
+concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
+it has a unique finite maximum in these coordinates; constant observations
+collapse when location and scale are free. Holding the physical half-width fixed is a different constraint. This is a mathematical property,
+not a certificate of the current search over shape. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
+
 A constant sample has unbounded likelihood when both scales are free. The normal and uniform faces are fitted conditionally on held scales and compared with the interior within $10^{-8}n$. Holding sigma removes the uniform face; holding a removes the normal face. With a held and sample range exactly 2a, endpoint masses contribute an optimized binomial penalty on the uniform face. For fixed positive scales the location likelihood is strictly log concave; scale optimization uses a grid of simplex starts and is a numerical global search, without a certificate excluding other scale modes.
 
 Identification follows from $E[X]=\mu$, $\kappa_4=-2a^4/15$ and $\operatorname{Var}(X)=\sigma^2+a^2/3$. The density is bounded above by both $1/(2a)$ and $1/(\sqrt{2\pi}\sigma)$, so either scale tending to infinity forces likelihood to zero, including joint scale divergence. With bounded scales, location escaping to infinity also forces likelihood to zero. Joint scale collapse is unbounded only for constant data; for nonconstant data the normal and uniform faces exhaust the remaining nonzero limits. These are direct arguments using the [extraDistr density definition](https://search.r-project.org/CRAN/refmans/extraDistr/html/Bhattacharjee.html).

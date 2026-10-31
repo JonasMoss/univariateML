@@ -87,6 +87,12 @@ The exponentially modified Gaussian is the sum of independent normal and exponen
 
 ## Details
 
+For fixed dimensionless shape $k=\lambda\sigma$, the log-likelihood is strictly
+concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
+it has a unique finite maximum in these coordinates; constant observations
+collapse when location and scale are free. Holding the physical rate fixed is a different constraint. This is a mathematical property,
+not a certificate of the current search over shape. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
+
 The 2026-10-31 fit-speed revision returns location scores in a fixed-size array
 instead of allocating a vector. Starts, density evaluations, location
 convergence, boundary comparisons and failed-optimizer score checks are
