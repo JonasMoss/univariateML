@@ -51,6 +51,7 @@ test_that("fatigue holds a translated threshold and checks shifted support", {
 })
 
 test_that("fatigue coefficient holds match independent multistart density oracles", {
+  skip_unless_tier("full")
   set.seed(8103)
   samples <- list(rfatigue(n = 20, alpha = 0.7, beta = 2, mu = 0),rfatigue(n = 100, alpha = 3, beta = 2, mu = 0),
     c(.2,.2,1,3),.4,rep(2,4),exp(rnorm(20)),rgamma(100,.5))

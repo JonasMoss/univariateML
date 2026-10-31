@@ -37,6 +37,7 @@ test_that("exponential rejects all zero and avoids sum overflow", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "exp"
   pn <- c("rate")

@@ -12,6 +12,7 @@ test_that("Poisson and zero faces are explicit", {
   expect_equal(attr(fit,"logLik"),3*dpig(x = 0, mean = 2, shape = 3, log = TRUE))
 })
 test_that("all fixed subsets agree with accurate density oracle", {
+  skip_unless_tier("full")
   x <- c(0,0,0,0,1,2,3,5,10)
   for (held in list(list(),list(mean=3),list(shape=3),list(mean=3,shape=3))) {
     fit <- do.call(mlpig,c(list(x=x),held))
@@ -56,6 +57,7 @@ local({
       log(besselK(z,abs(x-.5),expon.scaled=TRUE))-z-lgamma(x+1)
   }
   test_that("P2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
     set.seed(81029)
     samples <- list(ml_simulate(paste0("ml",id),20),
                     ml_simulate(paste0("ml",id),100),

@@ -1,4 +1,5 @@
 test_that("ztgeom agrees with a multi-start reference-density oracle", {
+  skip_unless_tier("full")
   set.seed(13007)
   x <- do.call(rztgeom, list(250, prob = 0.4))
   fit <- mlztgeom(x)
@@ -29,6 +30,7 @@ local({
   base <- c(prob=0.4)
   density <- dztgeom
   test_that("P2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
     set.seed(81029)
     samples <- list(ml_simulate(paste0("ml",id),20),
                     ml_simulate(paste0("ml",id),100),

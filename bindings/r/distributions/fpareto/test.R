@@ -43,6 +43,7 @@ test_that("fpareto: held subsets map to GB2", {
 })
 
 test_that("fpareto: all delegate escapes name the shifted fit", {
+  skip_unless_tier("dev")
  u <- (1:200-.5)/200
  cases <- list(lnorm=qlnorm(u),trgamma=qtrgamma(p = u, shape1 = 0.7, shape2 = 2, scale = 1/1),
    invtrgamma=qinvtrgamma(p = u, shape1 = 0.7, shape2 = 2, scale = 1/1),pareto=(1-u)^(-1/2),power=u^(1/2),
@@ -79,6 +80,7 @@ test_that("fpareto: held scale preserves delegate endpoint-search outcomes", {
 
 
 test_that("P2 fpareto holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape1=0.3, shape2=2, shape3=0.4, scale=1, min=0)
   thresholds <- c("min")
   regular <- setdiff(names(pars), thresholds)

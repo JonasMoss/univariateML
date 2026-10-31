@@ -82,6 +82,7 @@ test_that("inverse Gaussian resolves scale extremes and near ties", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "invgauss"
   pn <- c("mean","shape")

@@ -106,6 +106,7 @@ sstd_oracle <- function(x) {
 }
 
 test_that("mlsstd agrees with the slow oracle on interior and boundary samples", {
+  skip_unless_tier("full")
   face_of <- function(msg) {
     if (grepl("skew-normal|half-normal", msg)) "snorm"
     else if (grepl("half-t", msg)) "half_t" else if (grepl("nu -> 2", msg)) "t2" else msg
@@ -148,6 +149,7 @@ test_that("sstd scale extremes preserve fit or declared escape", {
 })
 
 test_that("sstd large-sample fitting preserves likelihood under replication", {
+  skip_unless_tier("full")
   x<-qt(((1:1000)-.5)/1000,df=4)/sqrt(2)
   base<-mlsstd(x)
   y<-rep(x,100)
@@ -271,6 +273,7 @@ sstd_hold_logref <- function(x,p) {
 }
 
 test_that("sstd classified holds agree with independent multistart oracles", {
+  skip_unless_tier("full")
   set.seed(81029)
   p <- c(mean=.2,sd=1.4,nu=4.2,xi=1.3)
   subsets <- list(c('mean','nu','xi'),c('sd','nu','xi'),names(p))
@@ -329,6 +332,7 @@ test_that("sstd held domains and controls reject invalid requests", {
 
 
 test_that("sstd P0b subsets agree with independent README oracles", {
+  skip_unless_tier("full")
   set.seed(931029)
   p <- c(mean=.2, sd=1.4, nu=4.2, xi=1.3)
   subsets <- list('mean','sd','nu','xi',c('mean','sd'),c('mean','nu'),

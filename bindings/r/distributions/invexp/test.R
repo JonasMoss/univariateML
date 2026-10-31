@@ -1,4 +1,5 @@
 test_that("invexp matches a multistart density oracle", {
+  skip_unless_tier("full")
   set.seed(871)
   x <- rinvexp(n = 300, scale = 1/2.7)
   fit <- mlinvexp(x)
@@ -23,6 +24,7 @@ test_that("inverse exponential rejects unrepresentable reciprocal moments", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "invexp"
   pn <- c("scale")

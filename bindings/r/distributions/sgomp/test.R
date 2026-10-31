@@ -53,6 +53,7 @@ test_that("sgomp faces and fixed subsets have consistent likelihood", {
   }
 })
 test_that("sgomp profile agrees with slow multistart oracle", {
+  skip_unless_tier("full")
   for (x in list(c(.5, .8, 1, 1.2, 1.8), c(0, .1, 1, 2, 8), c(.1, 1, 3, 10))) {
     f <- mlsgomp(x)
     objective <- function(t) -sum(dsgomp(x = x, b = exp(t[1]), eta = exp(t[2]), log = TRUE))
@@ -73,6 +74,7 @@ test_that("sgomp fitted-model evaluation and utilities work", {
   expect_silent(model_select(x, models = c('sgomp', 'exp')))
 })
 test_that("sgomp held-coordinate fits agree with scalar oracles", {
+  skip_unless_tier("full")
   x <- c(0, .2, .7, 1, 2, 3)
   for (b in c(.1, 1, 10)) {
     f <- mlsgomp(x, b = b)

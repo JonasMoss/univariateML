@@ -44,6 +44,7 @@ test_that("pareto2: reference mapping and unbounded unrestricted path", {
 
 
 test_that("P2 pareto2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape=0.4, scale=1, min=0)
   thresholds <- c("min")
   regular <- setdiff(names(pars), thresholds)

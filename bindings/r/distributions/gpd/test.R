@@ -12,6 +12,7 @@ extreme_closed_density <- function(id, x, ..., log = FALSE) {
 }
 
 test_that("mlgpd agrees with multistart constrained density oracles", {
+  skip_unless_tier("full")
   for (shape in c(.3, 0, -.3, -.8)) {
     x <- qgpd(p = ((1:200) - 0.5)/200, mu = 0, sigma = 2, xi = shape)
     fit <- suppressWarnings(mlgpd(x, mu = 0), classes = "univariateML_restricted")
@@ -53,6 +54,7 @@ test_that("mlgpd rejects invalid thresholds, shapes and observations", {
 })
 
 test_that("gpd: new holds agree with independent multistart reference fits", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "gpd"
   pars <- c("mu","sigma","xi")

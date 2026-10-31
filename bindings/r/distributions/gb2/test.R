@@ -6,6 +6,7 @@ gb2_ll <- function(x, v) {
 gb2_sample <- function(n=400) qgb2(p = ((1:n) - 0.5)/n, shape1 = 0.3, shape2 = 2, shape3 = 0.4, scale = 1/1)
 
 test_that("GB2 agrees with independent multistart likelihood optimization", {
+  skip_unless_tier("full")
   x <- gb2_sample()
   fit <- mlgb2(x)
   nll <- function(z) {
@@ -76,6 +77,7 @@ test_that("GB2 constrained members agree with their existing fitters", {
 })
 
 test_that("GB2 explicitly selects faces on deterministic face data", {
+  skip_unless_tier("dev")
   u <- ((1:200)-.5)/200
   cases <- list(lnorm=qlnorm(u),trgamma=qtrgamma(p = u, shape1 = 0.7, shape2 = 2, scale = 1/1),
     invtrgamma=qinvtrgamma(p = u, shape1 = 0.7, shape2 = 2, scale = 1/1),pareto=(1-u)^(-1/2),power=u^(1/2),
@@ -88,6 +90,7 @@ test_that("GB2 explicitly selects faces on deterministic face data", {
 
 
 test_that("P2 gb2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape1=0.3, shape2=2, shape3=0.4, scale=1)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)

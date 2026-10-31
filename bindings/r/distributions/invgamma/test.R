@@ -48,6 +48,7 @@ test_that("constant data have no attained invgamma MLE", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "invgamma"
   pn <- c("alpha","beta")

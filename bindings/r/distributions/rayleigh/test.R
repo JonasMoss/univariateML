@@ -49,6 +49,7 @@ test_that("any zero makes the Rayleigh likelihood zero", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "rayleigh"
   pn <- c("sigma")

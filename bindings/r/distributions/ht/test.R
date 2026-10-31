@@ -7,6 +7,7 @@ ht_oracle <- function(x, sigma = NULL) {
   fits[[which.min(vapply(fits, `[[`, numeric(1), "value"))]]
 }
 test_that("half-t global profile agrees with independent multistart density oracle (mu held at 0)", {
+  skip_unless_tier("full")
   set.seed(213)
   samples <- list(c(.12773,12.5979,3.91782,2.58658,.138212), c(.001,.01,.1,1,10,100), rht(n = 80, mu = 0, nu = 0.5, sigma = 2), rht(n = 100, mu = 0, nu = 3, sigma = 1), c(.0001,.2,.3,.4,5,1000))
   for(x in samples) {
@@ -148,6 +149,7 @@ test_that("bootstrapml replays a held or estimated ht mu", {
 })
 
 test_that("translated half-t restricted fits agree with independent joint multistart oracles", {
+  skip_unless_tier("full")
   for (x in list(c(2,5,7,9,20),c(5,5,7,9,20),c(-3,-2.99,-2.9,-2,7,97))) {
     f <- suppressWarnings(mlht(x,mu=NULL),classes="univariateML_restricted")
     # Reference density only; optimize mu jointly under its support bound.

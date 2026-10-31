@@ -45,6 +45,7 @@ test_that("constant data have no attained lgamma MLE", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "lgamma"
   pn <- c("shapelog","ratelog")

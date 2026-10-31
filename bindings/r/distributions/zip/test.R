@@ -7,6 +7,7 @@ set.seed(1)
 expect_equal(unname(mlzip(rpois(10, 1))[2]), 0)
 
 test_that("ordinary zero-inflated samples attain the oracle likelihood", {
+  skip_unless_tier("full")
   samples <- list(
     c(0, 1, 2, 1, 1, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3),
     c(0, 0, 4)
@@ -53,6 +54,7 @@ local({
   base <- c(lambda=2,pi=0.3)
   density <- dzip
   test_that("P2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
     set.seed(81029)
     samples <- list(ml_simulate(paste0("ml",id),20),
                     ml_simulate(paste0("ml",id),100),

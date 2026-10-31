@@ -40,6 +40,7 @@ test_that("untruncated zero-rate boundary is attained", {
 })
 
 test_that("truncated Poisson sweeps every hold against a multistart oracle", {
+  skip_unless_tier("full")
   set.seed(813)
   samples <- list(sample(1:7,20,TRUE),sample(1:7,100,TRUE),c(1,3),c(1,1,2,4),c(0,1,0,1))
   for(x in samples) for(mask in 0:7) {

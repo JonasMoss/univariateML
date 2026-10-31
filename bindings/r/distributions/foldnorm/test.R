@@ -32,6 +32,7 @@ test_that("folded normal d/p/q/r obey normal identities and tail conventions", {
 })
 
 test_that("folded normal fits match a slow independent multistart oracle", {
+  skip_unless_tier("full")
   samples <- list(c(0,0,0,0,1), c(0,.1,.3,.8,2),c(1,2,3,4,5),c(9,10,10,11),c(rep(.1,15),1,3),c(rep(1,99),5))
   for (x in samples) {
     f <- mlfoldnorm(x)

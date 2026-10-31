@@ -1,4 +1,5 @@
 test_that("zmnbinom agrees with a multi-start reference-density oracle", {
+  skip_unless_tier("full")
   set.seed(13219)
   x <- do.call(rzmnbinom, list(250, size = 2, prob = 0.4, p0 = 0.3))
   fit <- mlzmnbinom(x)
@@ -56,6 +57,7 @@ test_that("zmnbinom preserves fixed size at attained boundaries", {
 })
 
 test_that("zmnbinom fixed zero size agrees with the reference oracle", {
+  skip_unless_tier("full")
  x <- c(0,0,1,1,1,2,3,10,30)
  fit <- mlzmnbinom(x,size=0)
  objective <- function(t) -sum(dzmnbinom(x = x, size = 0, prob = plogis(t[1]), p0 = plogis(t[2]), log = TRUE))
@@ -70,6 +72,7 @@ local({
   base <- c(size=2,prob=0.4,p0=0.3)
   density <- dzmnbinom
   test_that("P2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
     set.seed(81029)
     samples <- list(ml_simulate(paste0("ml",id),20),
                     ml_simulate(paste0("ml",id),100),

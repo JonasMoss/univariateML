@@ -58,6 +58,7 @@ test_that("Pareto handles concentration and a huge support ratio", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "pareto"
   pn <- c("a","b")

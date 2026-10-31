@@ -1,4 +1,5 @@
 test_that("invparalogis matches a multistart density oracle", {
+  skip_unless_tier("full")
   set.seed(871)
   x <- rinvparalogis(n = 300, shape = 1.3, scale = 2.7)
   fit <- mlinvparalogis(x, gradtol=1e-10, iterlim=1000)
@@ -9,6 +10,7 @@ test_that("invparalogis matches a multistart density oracle", {
   expect_equal(attr(fit,"logLik"),-oracle$value,tolerance=1e-8)
 })
 test_that("invparalogis fixed scale matches density oracle", {
+  skip_unless_tier("full")
  x<-c(.03,.1,.4,.7,1,2,4,12)
  held<-3.7
  fit<-mlinvparalogis(x,scale=held)
@@ -47,6 +49,7 @@ test_that("constant free-scale invparalogis data have an unbounded likelihood", 
 
 
 test_that("P2 invparalogis holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape=2, scale=1)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)

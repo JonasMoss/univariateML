@@ -2,6 +2,7 @@
 dhn <- function(x, mu, sigma, log = FALSE) ifelse(x >= mu, if (log) log(2) + dnorm(x, mu, sigma, log = TRUE) else 2*dnorm(x, mu, sigma), if (log) -Inf else 0)
 
 test_that("translated half-normal closed form agrees with density oracle", {
+  skip_unless_tier("full")
   set.seed(73)
   x <- rhnorm(200, -3, 2)
   fit <- mlhnorm(x, mu = NULL)
@@ -106,6 +107,7 @@ test_that("held half-normal endpoint is exact, closed and counted as fixed", {
 })
 
 test_that("held half-normal scale and every combined hold match density oracles", {
+  skip_unless_tier("full")
   set.seed(8101)
   samples <- list(abs(rnorm(20)),abs(rnorm(100)),c(0,0,1,2),1,rep(2,4))
   for(x in samples) for(mu in list(NULL,min(x)-.5)) {

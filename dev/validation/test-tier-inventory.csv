@@ -1,0 +1,976 @@
+file,test,baseline_seconds,minimum_tier,purpose
+test_argument_names,"held coefficients are matched exactly, never to start values",0.076,cran,"API, identities, faces and regression"
+test_argument_names,a coefficient the adapter does not accept is named as an unsupported hold,0.01,cran,"API, identities, faces and regression"
+test_closure,closed endpoints give the exact fitted likelihood,0.096,cran,"API, identities, faces and regression"
+test_closure,truncation bounds profile to sample extremes and retain closed density,0.0740000000000001,cran,"API, identities, faces and regression"
+test_closure,resolved endpoints agree in both probability tails and log modes,0.046,cran,"API, identities, faces and regression"
+test_closure,GPD and GEV endpoint limits include the uniform xi=-1 member,0.0129999999999999,cran,"API, identities, faces and regression"
+test_closure,tpois support preserves its strict lower truncation,0.00900000000000012,cran,"API, identities, faces and regression"
+test_closure,"declared endpoint limits cover zero, finite and infinite densities",0.038,cran,"API, identities, faces and regression"
+test_closure,closed reference functions retain positional coefficient overrides,0.00399999999999978,cran,"API, identities, faces and regression"
+test_confint_nreps,confint uses the requested number of bootstrap draws,0.0370000000000001,cran,"API, identities, faces and regression"
+test_confint_nreps,the named reps alias takes precedence over Nreps,0.01,cran,"API, identities, faces and regression"
+test_conformance,"parameter kinds, required messages and adapter signatures conform",1.137,cran,"API, identities, faces and regression"
+test_conformance,every holdable subset fits golden data or gives a declared reason,568.614,dev,core subsets in dev; exhaustive in full
+test_fixed,a supplied size is held fixed and not counted in AIC/BIC,0.0249999999999773,cran,"API, identities, faces and regression"
+test_fixed,fatigue's location is always fixed,0.00300000000004275,cran,"API, identities, faces and regression"
+test_fixed,bootstrapml refits with the same parameters held fixed,0.00599999999997181,cran,"API, identities, faces and regression"
+test_fixed,model_select counts only estimated parameters,0.0480000000000018,cran,"API, identities, faces and regression"
+test_frozen,"all 98 families build, evaluate, simulate and hold coefficients",4.86500000000001,cran,"API, identities, faces and regression"
+test_frozen,frozen models use domains and reject incompatible held data,0.0460000000000491,cran,"API, identities, faces and regression"
+test_golden_regression,golden: bbinom,0.00499999999999545,cran,"API, identities, faces and regression"
+test_golden_regression,golden: beta,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: betapr,0.0149999999999864,cran,"API, identities, faces and regression"
+test_golden_regression,golden: bhatt,2.80100000000004,cran,"API, identities, faces and regression"
+test_golden_regression,golden: binom,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: bnbinom,0.318000000000097,cran,"API, identities, faces and regression"
+test_golden_regression,golden: burr,0.02800000000002,cran,"API, identities, faces and regression"
+test_golden_regression,golden: cauchy,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: cmb,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: cmp,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: dgamma,0.0790000000000646,cran,"API, identities, faces and regression"
+test_golden_regression,golden: dlaplace,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: dnorm,0.00200000000006639,cran,"API, identities, faces and regression"
+test_golden_regression,golden: dunif,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: dweibull,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: emg,4.58600000000001,cran,"API, identities, faces and regression"
+test_golden_regression,golden: exp,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: fatigue,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: foldnorm,0.0109999999999673,cran,"API, identities, faces and regression"
+test_golden_regression,golden: fpareto,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: frechet,0.0080000000000382,cran,"API, identities, faces and regression"
+test_golden_regression,golden: gamma,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: gb2,0.119000000000028,cran,"API, identities, faces and regression"
+test_golden_regression,golden: ged,0.0339999999999918,cran,"API, identities, faces and regression"
+test_golden_regression,golden: genbeta,0.00699999999994816,cran,"API, identities, faces and regression"
+test_golden_regression,golden: geom,0.00499999999999545,cran,"API, identities, faces and regression"
+test_golden_regression,golden: gev,0.00499999999999545,cran,"API, identities, faces and regression"
+test_golden_regression,golden: gompertz,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: gpd,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: gumbel,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: hcauchy,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: hnorm,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: ht,0.116999999999962,cran,"API, identities, faces and regression"
+test_golden_regression,golden: huber,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: hyper,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: invburr,0.0259999999999536,cran,"API, identities, faces and regression"
+test_golden_regression,golden: invexp,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: invgamma,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: invgauss,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: invparalogis,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: invpareto,0.00599999999997181,cran,"API, identities, faces and regression"
+test_golden_regression,golden: invtrgamma,0.00999999999999091,cran,"API, identities, faces and regression"
+test_golden_regression,golden: invweibull,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: kumar,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: laplace,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: lgamma,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: lgser,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: llogis,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: lnorm,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: logis,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: logitnorm,0.00199999999995271,cran,"API, identities, faces and regression"
+test_golden_regression,golden: lomax,0.00599999999997181,cran,"API, identities, faces and regression"
+test_golden_regression,golden: lst,0.0289999999999964,cran,"API, identities, faces and regression"
+test_golden_regression,golden: naka,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: nbinom,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: nhyper,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: norm,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: nsbeta,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: paralogis,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: pareto2,0.00499999999999545,cran,"API, identities, faces and regression"
+test_golden_regression,golden: pareto3,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: pareto4,0.0180000000000291,cran,"API, identities, faces and regression"
+test_golden_regression,golden: pareto,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: pig,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: pois,0.0040000000000191,cran,"API, identities, faces and regression"
+test_golden_regression,golden: power,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: rayleigh,0.00199999999995271,cran,"API, identities, faces and regression"
+test_golden_regression,golden: sged,0.295999999999935,cran,"API, identities, faces and regression"
+test_golden_regression,golden: sgomp,0.0200000000000955,cran,"API, identities, faces and regression"
+test_golden_regression,golden: skellam,0.0230000000000246,cran,"API, identities, faces and regression"
+test_golden_regression,golden: slash,1.38199999999995,cran,"API, identities, faces and regression"
+test_golden_regression,golden: sn,0.256000000000085,cran,"API, identities, faces and regression"
+test_golden_regression,golden: snorm,0.00599999999997181,cran,"API, identities, faces and regression"
+test_golden_regression,golden: sstd,0.0330000000000155,cran,"API, identities, faces and regression"
+test_golden_regression,golden: std,0.00700000000006185,cran,"API, identities, faces and regression"
+test_golden_regression,golden: tbinom,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: tlambda,4.0680000000001,cran,"API, identities, faces and regression"
+test_golden_regression,golden: tnorm,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: tpois,0.00599999999997181,cran,"API, identities, faces and regression"
+test_golden_regression,golden: trgamma,0.0080000000000382,cran,"API, identities, faces and regression"
+test_golden_regression,golden: triang,0.0169999999999391,cran,"API, identities, faces and regression"
+test_golden_regression,golden: unif,0.00200000000006639,cran,"API, identities, faces and regression"
+test_golden_regression,golden: weibull,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: yulesimon,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zeta,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zib,0.00599999999997181,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zinb,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zipf,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zip,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zmbinom,0.00599999999997181,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zmgeom,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zmlogarithmic,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zmnbinom,0.00700000000006185,cran,"API, identities, faces and regression"
+test_golden_regression,golden: zmpois,0.00300000000004275,cran,"API, identities, faces and regression"
+test_golden_regression,golden: ztbinom,0.00599999999997181,cran,"API, identities, faces and regression"
+test_golden_regression,golden: ztgeom,0.00299999999992906,cran,"API, identities, faces and regression"
+test_golden_regression,golden: ztnbinom,0.00799999999992451,cran,"API, identities, faces and regression"
+test_golden_regression,golden: ztpois,0.00200000000006639,cran,"API, identities, faces and regression"
+test_parameter_infrastructure,synthetic mappings evaluate expressions and translate d/p/q/r,0.0130000000000337,cran,"API, identities, faces and regression"
+test_parameter_infrastructure,restriction attributes survive construction and are displayed,0.00699999999994816,cran,"API, identities, faces and regression"
+test_parameter_infrastructure,synthetic codegen accepts expressions and rejects invalid signatures,0.119000000000028,cran,"API, identities, faces and regression"
+test_restricted,restriction warnings name README bounds and reasons,0.0389999999999873,cran,"API, identities, faces and regression"
+test_restricted,adapters flag estimated bounds and suppress held and exempt bounds,1.72299999999996,cran,"API, identities, faces and regression"
+test_restricted,failed BFGS paths do not return starts as fits,0.0399999999999636,cran,"API, identities, faces and regression"
+test_restricted,C++ restriction constants match README fit domains,0.0080000000000382,cran,"API, identities, faces and regression"
+test_restricted,GPD accepts its closed threshold and diagnoses threshold collapse,0.01400000000001,cran,"API, identities, faces and regression"
+test_scale_equivariance,mlbetapr is equivariant in its dimensional parameters,0.0270000000000437,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlbhatt is equivariant in its dimensional parameters,0.336999999999989,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlburr is equivariant in its dimensional parameters,0.0159999999999627,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlcauchy is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlemg is equivariant in its dimensional parameters,1.29699999999991,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlexp is equivariant in its dimensional parameters,0.0110000000000809,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlfatigue is equivariant in its dimensional parameters,0.00799999999992451,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlfoldnorm is equivariant in its dimensional parameters,0.0120000000000573,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlfrechet is equivariant in its dimensional parameters,0.00999999999999091,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlgamma is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlgb2 is equivariant in its dimensional parameters,0.0769999999999982,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlged is equivariant in its dimensional parameters,0.0219999999999345,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlgev is equivariant in its dimensional parameters,0.00900000000001455,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlgompertz is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlgpd is equivariant in its dimensional parameters,0.0119999999999436,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlgumbel is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlhcauchy is equivariant in its dimensional parameters,0.00900000000001455,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlhnorm is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlht is equivariant in its dimensional parameters,0.0619999999998981,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlhuber is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlinvburr is equivariant in its dimensional parameters,0.0170000000000528,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlinvexp is equivariant in its dimensional parameters,0.00799999999992451,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlinvgamma is equivariant in its dimensional parameters,0.00700000000006185,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlinvgauss is equivariant in its dimensional parameters,0.00999999999999091,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlinvparalogis is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlinvpareto is equivariant in its dimensional parameters,0.00899999999990087,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlinvtrgamma is equivariant in its dimensional parameters,0.00900000000001455,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlinvweibull is equivariant in its dimensional parameters,0.00799999999992451,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mllaplace is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlllogis is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mllnorm is equivariant in its dimensional parameters,0.00699999999994816,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mllogis is equivariant in its dimensional parameters,0.00700000000006185,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mllomax is equivariant in its dimensional parameters,0.0130000000000337,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mllst is equivariant in its dimensional parameters,0.0209999999999582,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlnaka is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlnorm is equivariant in its dimensional parameters,0.00699999999994816,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlparalogis is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlpareto is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlpower is equivariant in its dimensional parameters,0.00699999999994816,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlrayleigh is equivariant in its dimensional parameters,0.00699999999994816,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlsged is equivariant in its dimensional parameters,0.363000000000056,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlsgomp is equivariant in its dimensional parameters,0.0190000000000055,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlslash is equivariant in its dimensional parameters,0.149999999999977,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlsn is equivariant in its dimensional parameters,0.128000000000043,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlsnorm is equivariant in its dimensional parameters,0.0109999999999673,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlsstd is equivariant in its dimensional parameters,0.0230000000000246,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlstd is equivariant in its dimensional parameters,0.00999999999999091,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mltlambda is equivariant in its dimensional parameters,0.552000000000021,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mltnorm is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mltrgamma is equivariant in its dimensional parameters,0.00900000000001455,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mltriang is equivariant in its dimensional parameters,0.0109999999999673,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlunif is equivariant in its dimensional parameters,0.0109999999999673,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,mlweibull is equivariant in its dimensional parameters,0.0080000000000382,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,Student fits on DAX returns and small skew-t data are stable,0.42999999999995,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,required endpoints transform with the observations,0.41700000000003,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_scale_equivariance,Gompertz fits the original large-scale failure sample,0.00300000000004275,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test_special,special functions match Rmath,0.0080000000000382,dev,Rmath comparison; existing skip_on_cran
+test-audit-input,empty and out-of-range counts fail before native conversion,0.738999999999919,cran,"API, identities, faces and regression"
+test-dist-bbinom,known size and fixed shapes have correct attributes,0.0350000000000819,cran,"API, identities, faces and regression"
+test-dist-bbinom,faces and nonidentification are explicit,0.0179999999999154,cran,"API, identities, faces and regression"
+test-dist-bbinom,fit agrees with slow multistart reference oracle,0.210999999999899,full,independent numerical oracle or replication stress
+test-dist-bbinom,beta-binomial quantiles invert the internal CDF,0.0310000000000628,cran,"API, identities, faces and regression"
+test-dist-bbinom,bbinom: both held shapes permit exact size profiling,0.0480000000000018,cran,"API, identities, faces and regression"
+test-dist-bbinom,bbinom: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-bbinom,bbinom: retained free-size guards identify the unresolved profile,0.0149999999999864,cran,"API, identities, faces and regression"
+test-dist-beta,constant data have no attained beta MLE,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-beta,beta fits data at both ends of the open support,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-beta,P2 every held subset agrees with independent multistart density fits,0.468000000000075,full,independent numerical oracle or replication stress
+test-dist-beta,P2 held shape solves stop on exhausted brackets,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-beta,beta: P3 unfinished optimizer stops,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-betapr,three-parameter fits and D1 comparisons agree with a slow oracle,9.99199999999996,full,independent numerical oracle or replication stress
+test-dist-betapr,"scale, controls and validation work",0.09800000000007,cran,"API, identities, faces and regression"
+test-dist-betapr,fixed scale agrees with reference-density oracle and records df,0.0519999999999072,full,independent numerical oracle or replication stress
+test-dist-betapr,fixed unit scale reproduces the historical golden,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-betapr,fixing beta-prime scale removes the free-scale escapes,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-betapr,beta-prime new hold subsets agree with independent reference oracles,0.657000000000039,full,independent numerical oracle or replication stress
+test-dist-betapr,betapr: P3 unfinished optimizer stops,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-betapr,betapr: P3 finite failed default BFGS stops,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt interior and faces agree with an independent multistart oracle,3.53599999999994,full,independent numerical oracle or replication stress
+test-dist-bhatt,bhatt held scales have conditional faces and valid interior fits,0.117000000000075,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt evaluation and continuous inversion retain tails,0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-bhatt,each singly held bhatt scale agrees with a conditional oracle,0.0259999999999536,full,independent numerical oracle or replication stress
+test-dist-bhatt,bhatt CDF matches an independent normal mixture integral,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt constant samples respect each held subset,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt held-scale fits respect extreme changes of units,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt retains finite log tails when a is below coordinate resolution,0.00199999999995271,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt evaluation preserves the reference normal limit at a zero,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt log probabilities close to one retain relative accuracy,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt new holds agree with independent multistart likelihoods,0.809999999999945,full,independent numerical oracle or replication stress
+test-dist-bhatt,"bhatt conditional collapse, feasibility and invalid holds",0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-bhatt,bhatt independent density oracle retains tiny uniform widths,0.00699999999994816,full,independent numerical oracle or replication stress
+test-dist-bhatt,P3 bhatt returns the normal maximum as an attained member,0.0610000000000355,cran,"API, identities, faces and regression"
+test-dist-binom,binomial probability boundaries have log likelihood zero,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-binom,other discrete zero-data fits have the point-mass likelihood,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-binom,a held size must be a nonnegative integer,0.0159999999999627,cran,"API, identities, faces and regression"
+test-dist-binom,mean equal to variance escapes to the Poisson,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-binom,huge held binomial sizes have stable likelihoods,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-binom,free binomial size agrees with exhaustive integer profiles,0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-binom,binom: new holds match reference-density integer and multistart oracles,0.05600000000004,full,independent numerical oracle or replication stress
+test-dist-binom,free binomial size has no magnitude cap: very large optimal sizes agree with an independent lgamma profile,0.15300000000002,cran,"API, identities, faces and regression"
+test-dist-bnbinom,closed-form pmf agrees with the internal density and its mirror,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-bnbinom,all fixed subsets agree with an independent multistart oracle,0.901000000000067,full,independent numerical oracle or replication stress
+test-dist-bnbinom,reachable faces and fully held likelihoods behave correctly,0.145999999999958,cran,"API, identities, faces and regression"
+test-dist-bnbinom,quantiles invert the internal CDF,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-bnbinom,model selection tolerates a failed beta negative binomial fit,0.0259999999999536,cran,"API, identities, faces and regression"
+test-dist-bnbinom,bnbinom: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-bnbinom,unit beta-negative-binomial quantiles allow neighbouring integers at jumps,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-burr,Burr scale fits agree with a full density oracle,2.71400000000006,full,independent numerical oracle or replication stress
+test-dist-burr,Burr limits name the fitted model regardless of data units,0.0849999999999227,cran,"API, identities, faces and regression"
+test-dist-burr,burr accepts shape/scale starts and rejects invalid starts,0.0220000000000482,cran,"API, identities, faces and regression"
+test-dist-burr,Burr limits and small-shape corners match the derived bounds,0.0199999999999818,cran,"API, identities, faces and regression"
+test-dist-burr,burr fixed scale reproduces 6c89a8c and a reference oracle,0.0800000000000409,full,independent numerical oracle or replication stress
+test-dist-burr,burr fixed scale uses a profile fallback when moments have no root,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-burr,held-scale Burr endpoint penalty is not a Pareto likelihood equality,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-burr,P2 burr holds agree with independent multistart reference likelihoods,0.32000000000005,full,independent numerical oracle or replication stress
+test-dist-burr,P2 burr validates new held values,0.0259999999999536,cran,"API, identities, faces and regression"
+test-dist-burr,P2 burr constant samples respect the held tangent,0.0200000000000955,cran,"API, identities, faces and regression"
+test-dist-burr,burr: P3 unfinished optimizer stops,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-burr,burr: P3 held profile exhaustion stops,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-cauchy,cauchy handles a seeded sample with a large outlier,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-cauchy,Cauchy fits three observations and diagnoses nonexistent MLEs,0.0160000000000764,cran,"API, identities, faces and regression"
+test-dist-cauchy,balanced two-point Cauchy data have attained nonunique maxima,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-cauchy,Cauchy fitting respects extreme scale changes,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-cauchy,cauchy new holds agree with independent multistart likelihoods,0.103000000000065,full,independent numerical oracle or replication stress
+test-dist-cauchy,"cauchy conditional collapse, feasibility and invalid holds",0.0230000000000246,cran,"API, identities, faces and regression"
+test-dist-cauchy,cauchy held profiles preserve tiny and large units,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-cmb,"CMB agrees with binomial, finite sums, tails and inversion",0.15300000000002,cran,"API, identities, faces and regression"
+test-dist-cmb,CMB fits agree with an independent optim oracle and fixed subsets,0.0240000000000009,full,independent numerical oracle or replication stress
+test-dist-cmb,CMB detects precisely the reachable faces,0.0339999999999918,cran,"API, identities, faces and regression"
+test-dist-cmb,"CMB recycling, warnings, RNG and fitted-model generics work",0.0760000000000218,cran,"API, identities, faces and regression"
+test-dist-cmb,P3 CMB finite endpoints preserve held dispersion,0.0470000000000255,cran,"API, identities, faces and regression"
+test-dist-cmb,P3 Bernoulli endpoint fits are silent,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-cmb,CMB: held canonical coordinates give a certified integer profile,3.54399999999998,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test-dist-cmb,"CMB: free size validates holds, endpoints and resource failures",0.742999999999938,cran,"API, identities, faces and regression"
+test-dist-cmb,CMB: the P0 two-point limit omits a genuine CMP face,0.0809999999999036,cran,"API, identities, faces and regression"
+test-dist-cmb,CMB: varying dispersion with held probability reaches a geometric law,0.177999999999997,cran,"API, identities, faces and regression"
+test-dist-cmb,cmb attained point member evaluates and samples exactly,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-cmp,CMP Poisson and geometric members have accurate tails,1.14700000000005,cran,"API, identities, faces and regression"
+test-dist-cmp,CMP inversion preserves both tail inequalities,0.124000000000024,cran,"API, identities, faces and regression"
+test-dist-cmp,CMP fitting agrees with a slow independent series oracle,0.0359999999999445,full,independent numerical oracle or replication stress
+test-dist-cmp,"CMP recycling, RNG and model generics work",0.0320000000000391,cran,"API, identities, faces and regression"
+test-dist-cmp,CMP returns held rates without log-exp rounding,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-cmp,P3 CMP boundaries respect all holds and geometric normalizability,0.0230000000000246,cran,"API, identities, faces and regression"
+test-dist-dgamma,mldgamma agrees with independent reference optimizers,2.99599999999998,full,independent numerical oracle or replication stress
+test-dist-dgamma,mldgamma detects escapes and validates all held subsets,0.0470000000000255,cran,"API, identities, faces and regression"
+test-dist-dgamma,"dgamma log tails, integer quantiles and seeded sampling",0.0320000000000391,cran,"API, identities, faces and regression"
+test-dist-dgamma,gamma held subsets have independent scalar optima,0.0370000000000346,cran,"API, identities, faces and regression"
+test-dist-dgamma,dgamma: P3 unfinished optimizer stops,0.01299999999992,cran,"API, identities, faces and regression"
+test-dist-dlaplace,discrete Laplace exact median profile and fixed subsets,0.175999999999931,cran,"API, identities, faces and regression"
+test-dist-dnorm,mldnorm agrees with independent reference optimizers,0.256000000000085,cran,"API, identities, faces and regression"
+test-dist-dnorm,mldnorm detects escapes and validates all held subsets,0.0470000000000255,cran,"API, identities, faces and regression"
+test-dist-dnorm,"dnorm log tails, integer quantiles and seeded sampling",0.0349999999999682,cran,"API, identities, faces and regression"
+test-dist-dnorm,normal held subsets have independent scalar optima,0.0159999999999627,cran,"API, identities, faces and regression"
+test-dist-dunif,dunif agrees with its reference likelihood,0.00199999999995271,cran,"API, identities, faces and regression"
+test-dist-dunif,discrete uniform width cannot overflow an int,0.00200000000006639,cran,"API, identities, faces and regression"
+test-dist-dunif,discrete uniform holds maximize enumerated reference likelihoods,0.0749999999999318,cran,"API, identities, faces and regression"
+test-dist-dunif,dunif singleton fitted law is constant,0.00600000000008549,cran,"API, identities, faces and regression"
+test-dist-dweibull,mldweibull and its held subsets agree with the density oracle,0.363000000000056,full,independent numerical oracle or replication stress
+test-dist-dweibull,shape2 = 1 is the attained geometric member,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-dweibull,each escape is reported from data of its limit law,0.0289999999999964,cran,"API, identities, faces and regression"
+test-dist-dweibull,invalid held values and shape1 rounding to 1 stop,0.0349999999999682,cran,"API, identities, faces and regression"
+test-dist-dweibull,large samples and many distinct counts,0.0480000000000018,cran,"API, identities, faces and regression"
+test-dist-dweibull,pml floors non-integer arguments,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-dweibull,bootstrapml refits with the held shape2,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-dweibull,dweibull: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-emg,EMG evaluation matches independent convolution and direct tails,0.0430000000000064,cran,"API, identities, faces and regression"
+test-dist-emg,"EMG tails, recycling and random generation follow stats conventions",0.105999999999995,cran,"API, identities, faces and regression"
+test-dist-emg,EMG fixed subsets agree with a slow independent optimizer,1.73200000000008,full,independent numerical oracle or replication stress
+test-dist-emg,"EMG integrates with plotting, bootstrap and model selection",0.745999999999981,cran,"API, identities, faces and regression"
+test-dist-emg,emg: P3 unfinished optimizer stops,0.158000000000015,cran,"API, identities, faces and regression"
+test-dist-exp,exponential rejects all zero and avoids sum overflow,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-exp,P2 held subsets agree with multistart reference likelihoods,0.0480000000000018,full,independent numerical oracle or replication stress
+test-dist-exp,P2 held existence boundaries,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-fatigue,mlfatigue agrees with its reference density,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-fatigue,the three-parameter likelihood with free mu is unbounded (why mu is fixed),0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-fatigue,fatigue handles ties and extreme scales without invalid estimates,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-fatigue,fatigue holds a translated threshold and checks shifted support,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-fatigue,fatigue coefficient holds match independent multistart density oracles,0.212999999999965,full,independent numerical oracle or replication stress
+test-dist-fatigue,fatigue: P3 unfinished optimizer stops,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-foldnorm,folded normal d/p/q/r obey normal identities and tail conventions,0.0810000000000173,cran,"API, identities, faces and regression"
+test-dist-foldnorm,folded normal fits match a slow independent multistart oracle,0.223999999999933,full,independent numerical oracle or replication stress
+test-dist-foldnorm,folded normal integrates with fitted-object methods,0.0149999999999864,cran,"API, identities, faces and regression"
+test-dist-foldnorm,folded normal log quantiles span the double exponent range,0.00500000000010914,cran,"API, identities, faces and regression"
+test-dist-foldnorm,folded normal compares two distinct interior profile maxima,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-fpareto,"fpareto: required endpoint, reference likelihood and reproducibility",0.236999999999966,cran,"API, identities, faces and regression"
+test-dist-fpareto,fpareto: held subsets map to GB2,0.782000000000039,cran,"API, identities, faces and regression"
+test-dist-fpareto,fpareto: all delegate escapes name the shifted fit,5.05499999999995,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test-dist-fpareto,fpareto: reference mapping and unbounded unrestricted path,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-fpareto,fpareto: held scale preserves delegate endpoint-search outcomes,0.476999999999975,cran,"API, identities, faces and regression"
+test-dist-fpareto,P2 fpareto holds agree with independent multistart reference likelihoods,1.73700000000008,full,independent numerical oracle or replication stress
+test-dist-fpareto,P2 fpareto constant samples with coercive holds fit,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-frechet,"frechet: held location, attained shape boundary and escape",0.0780000000000882,cran,"API, identities, faces and regression"
+test-dist-frechet,frechet and fpareto log-tail repairs remain finite,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-frechet,frechet: reference mapping and unbounded unrestricted path,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-frechet,frechet: an independent Gumbel-face oracle finds no better member,0.105000000000018,full,independent numerical oracle or replication stress
+test-dist-frechet,threshold tail repairs retain finite answers under extreme rescaling,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-frechet,Frechet free location accepts ties above the minimum,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-frechet,Frechet free fit compares half-minimum ties with the free collapse face,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-frechet,frechet: new holds agree with independent multistart reference fits,0.479000000000042,full,independent numerical oracle or replication stress
+test-dist-frechet,"Frechet holds diagnose collapse, constant shape divergence and domains",0.0570000000000164,cran,"API, identities, faces and regression"
+test-dist-frechet,Frechet fixed shape rejects a constant sample with both scales free,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-frechet,Frechet tiny held shape retains its exact scale limit,0.00199999999995271,cran,"API, identities, faces and regression"
+test-dist-gamma,constant data have no attained gamma MLE,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-gamma,gamma resolves near ties and extreme scales,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-gamma,P2 held subsets agree with multistart reference likelihoods,0.15300000000002,full,independent numerical oracle or replication stress
+test-dist-gamma,P2 held existence boundaries,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-gamma,P2 held solver respects iterlim,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-gamma,gamma: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-gb2,GB2 agrees with independent multistart likelihood optimization,0.277000000000044,full,independent numerical oracle or replication stress
+test-dist-gb2,GB2 reciprocal symmetry and scale equivariance,0.468000000000075,cran,"API, identities, faces and regression"
+test-dist-gb2,GB2 fixed subsets preserve metadata and constrained likelihood,0.459999999999923,cran,"API, identities, faces and regression"
+test-dist-gb2,GB2 constrained members agree with their existing fitters,0.543000000000006,cran,"API, identities, faces and regression"
+test-dist-gb2,GB2 explicitly selects faces on deterministic face data,5.94900000000007,dev,"transformation, face or finite-profile stress sweep; cheap API/face checks remain in cran"
+test-dist-gb2,P2 gb2 holds agree with independent multistart reference likelihoods,1.35399999999993,full,independent numerical oracle or replication stress
+test-dist-gb2,P2 gb2 constant samples with coercive holds fit,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-gb2,gb2: P3 unfinished optimizer stops,0.0930000000000746,cran,"API, identities, faces and regression"
+test-dist-gb2,gb2: P3 held profile exhaustion stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-ged,ged scale extremes preserve fit or declared escape,0.0149999999999864,cran,"API, identities, faces and regression"
+test-dist-ged,ged large-sample fitting preserves likelihood under replication,4.90099999999995,full,independent numerical oracle or replication stress
+test-dist-ged,"ged dpqr integrate, invert and preserve extreme tails",0.0139999999998963,cran,"API, identities, faces and regression"
+test-dist-ged,"ged dpqr recycle, propagate missing values and use R RNG",0.0469999999999118,cran,"API, identities, faces and regression"
+test-dist-ged,ged matches frozen fGarch values (reference.json),0.0120000000000573,cran,"API, identities, faces and regression"
+test-dist-ged,ged parameter domain is enforced,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-ged,ged log tails exceed the backend exponent range,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-ged,ged new holds agree with independent multistart likelihoods,0.394000000000005,full,independent numerical oracle or replication stress
+test-dist-ged,"ged conditional collapse, feasibility and invalid holds",0.0190000000000055,cran,"API, identities, faces and regression"
+test-dist-ged,GED held variance uniform endpoints have the conditional limiting penalty,0.0190000000000055,cran,"API, identities, faces and regression"
+test-dist-ged,ged held profiles preserve tiny and large units,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-genbeta,genbeta requires the endpoint and validates support and controls,0.138000000000034,cran,"API, identities, faces and regression"
+test-dist-genbeta,genbeta profiles agree with independent reference-density searches,0.59699999999998,cran,"API, identities, faces and regression"
+test-dist-genbeta,all held-shape subsets retain the constrained likelihood and degrees of freedom,0.161000000000058,cran,"API, identities, faces and regression"
+test-dist-genbeta,attained beta Kumaraswamy and power members are fitted correctly,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-genbeta,face fits include unit gamma and the moving effective endpoint,0.0190000000000055,cran,"API, identities, faces and regression"
+test-dist-genbeta,genbeta is scale equivariant and seeded random evaluation uses the internal sampler,0.115999999999985,cran,"API, identities, faces and regression"
+test-dist-genbeta,genbeta evaluation preserve extreme log tails and finite quantiles,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-genbeta,public genbeta dml pml qml dispatch preserves extreme tails,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-genbeta,P2 genbeta holds agree with independent multistart reference likelihoods,0.305999999999926,full,independent numerical oracle or replication stress
+test-dist-genbeta,P2 genbeta constant samples with coercive holds fit,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-genbeta,genbeta: P3 unfinished optimizer stops,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-genbeta,genbeta: P3 held profile exhaustion stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-genbeta,genbeta upper endpoint uses its finite inside limit,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-geom,geom agrees with its reference likelihood,0.00199999999995271,cran,"API, identities, faces and regression"
+test-dist-geom,P2 holds agree with independent multistart reference likelihoods,0.0169999999999391,full,independent numerical oracle or replication stress
+test-dist-geom,P2 held prob validates domain and compatibility,0.0199999999999818,cran,"API, identities, faces and regression"
+test-dist-gev,mlgev matches constrained reference density oracles,0.309999999999945,full,independent numerical oracle or replication stress
+test-dist-gev,mlgev reports invalid inputs and returns attained bounds,0.0360000000000582,cran,"API, identities, faces and regression"
+test-dist-gev,GEV fixed shape accepts harmless ties,0.0159999999999627,cran,"API, identities, faces and regression"
+test-dist-gev,gev: new holds agree with independent multistart reference fits,0.758000000000038,full,independent numerical oracle or replication stress
+test-dist-gev,"GEV holds validate support, controls and finite coefficients",0.0289999999999964,cran,"API, identities, faces and regression"
+test-dist-gev,GEV held location compares half-minimum ties with the collapse face,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-gev,GEV free fit compares half-minimum ties with the free collapse face,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-gev,GEV new holds permit held positive shape above the free-shape bound,0.01299999999992,cran,"API, identities, faces and regression"
+test-dist-gev,GEV new holds allow constant samples when scale cannot collapse,0.0150000000001,cran,"API, identities, faces and regression"
+test-dist-gev,GEV tiny shapes approach Gumbel and logarithmic tails invert,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-gev,gev evaluates its attained xi=-1 endpoint,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-gompertz,mlgompertz errors on overdispersed data,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-gompertz,gompertz fitting respects extreme scale changes,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-gompertz,Gompertz moment equality selects the exponential face,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-gompertz,constant positive Gompertz data have an unbounded likelihood,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-gompertz,P2 held subsets agree with multistart reference likelihoods,0.256999999999948,full,independent numerical oracle or replication stress
+test-dist-gompertz,P2 held existence boundaries,0.0209999999999582,cran,"API, identities, faces and regression"
+test-dist-gompertz,P2 held solver respects iterlim,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-gompertz,gompertz: P3 unfinished optimizer stops,0.00500000000010914,cran,"API, identities, faces and regression"
+test-dist-gpd,mlgpd agrees with multistart constrained density oracles,0.176000000000045,full,independent numerical oracle or replication stress
+test-dist-gpd,"mlgpd rejects invalid thresholds, shapes and observations",0.0329999999999018,cran,"API, identities, faces and regression"
+test-dist-gpd,gpd: new holds agree with independent multistart reference fits,0.0930000000000746,full,independent numerical oracle or replication stress
+test-dist-gpd,GPD scale holds validate support and retain free-threshold rejection,0.0309999999999491,cran,"API, identities, faces and regression"
+test-dist-gpd,gpd evaluates its attained xi=-1 endpoint,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-gumbel,gumbel handles a seeded sample with a large outlier,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-gumbel,constant data have no attained gumbel MLE,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-gumbel,Gumbel variance survives a large offset,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-gumbel,Gumbel fitting respects extreme scale changes,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-gumbel,gumbel new holds agree with independent multistart likelihoods,0.120000000000005,full,independent numerical oracle or replication stress
+test-dist-gumbel,"gumbel conditional collapse, feasibility and invalid holds",0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-gumbel,gumbel: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-gumbel,gumbel: P3 affine rescue preserves Newton failure,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-hcauchy,half-Cauchy scale agrees with independent density optimization (mu held at 0),0.0360000000000582,cran,"API, identities, faces and regression"
+test-dist-hcauchy,half-Cauchy evaluation preserves ordinary values and tails,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-hcauchy,half-Cauchy d/p/q/r shift with a nonzero threshold,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-hcauchy,held half-Cauchy scale evaluates every sample without scale collapse (mu held at 0),0.0449999999999591,cran,"API, identities, faces and regression"
+test-dist-hcauchy,"half-Cauchy free threshold is the sample minimum, independent of a multistart mu/sigma oracle",0.0629999999999882,full,independent numerical oracle or replication stress
+test-dist-hcauchy,"half-Cauchy free threshold: tie multiplicity vs n (2k<n, 2k=n, 2k>n)",0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-hcauchy,half-Cauchy held mu above an observation is invalid,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-hcauchy,bootstrapml replays a held or estimated hcauchy mu,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-hnorm,translated half-normal closed form agrees with density oracle,0.02699999999993,full,independent numerical oracle or replication stress
+test-dist-hnorm,dml/pml/qml/rml map mu and sigma onto the internal half-normal,0.0180000000000291,cran,"API, identities, faces and regression"
+test-dist-hnorm,bootstrap refits with mlhnorm,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-hnorm,internal dhnorm retains the translated half-normal endpoints,0.0160000000000764,cran,"API, identities, faces and regression"
+test-dist-hnorm,half-normal preserves exact endpoints at large translations,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-hnorm,"held half-normal endpoint is exact, closed and counted as fixed",0.0289999999999964,cran,"API, identities, faces and regression"
+test-dist-hnorm,held half-normal scale and every combined hold match density oracles,0.0690000000000737,full,independent numerical oracle or replication stress
+test-dist-ht,half-t global profile agrees with independent multistart density oracle (mu held at 0),0.321000000000026,full,independent numerical oracle or replication stress
+test-dist-ht,half-t held subsets have their own existence conditions (mu held at 0),0.0869999999999891,cran,"API, identities, faces and regression"
+test-dist-ht,half-t reference tails and seeded RNG,0.0260000000000673,cran,"API, identities, faces and regression"
+test-dist-ht,half-t d/p/q/r shift with a nonzero held threshold,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-ht,half-t free threshold is the sample minimum,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-ht,"half-t free threshold, nu held, reduces to the held-mu model",0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-ht,half-t free threshold restricts free nu even with held sigma,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-ht,"half-t free threshold, nu and sigma both free: tie multiplicity vs n",0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-ht,half-t restricted free-threshold fit warns and carries the restricted attribute,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-ht,half-t free threshold escapes to the half-normal,0.0489999999999782,cran,"API, identities, faces and regression"
+test-dist-ht,bootstrapml replays a held or estimated ht mu,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-ht,translated half-t restricted fits agree with independent joint multistart oracles,0.0570000000000164,full,independent numerical oracle or replication stress
+test-dist-ht,half-t compares the half-normal face even at an exact half-minimum tie,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-huber,huber: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-huber,huber: P3 fixed-scale fallback requires its location score,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-hyper,hyper requires its design and preserves fixed constraints,0.0389999999999873,cran,"API, identities, faces and regression"
+test-dist-hyper,hyper warns deterministically for ties and unidentified designs,0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-hyper,hyper exact searches agree with independent finite enumeration,0.119000000000028,cran,"API, identities, faces and regression"
+test-dist-hyper,hyper explicit NULL and bootstrap retain the population design,0.0209999999999582,cran,"API, identities, faces and regression"
+test-dist-hyper,free draws match the reference finite grid,0.0350000000000819,cran,"API, identities, faces and regression"
+test-dist-hyper,fully free hyper reports the unsupported global comparison,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-hyper,held N joint hyper grid matches stats enumeration,0.109000000000037,cran,"API, identities, faces and regression"
+test-dist-invburr,inverse Burr agrees with reciprocal density oracle,2.81500000000005,full,independent numerical oracle or replication stress
+test-dist-invburr,inverse Burr limits name inverse Weibull and power,0.0960000000000036,cran,"API, identities, faces and regression"
+test-dist-invburr,invburr accepts shape/scale starts and rejects invalid starts,0.0359999999999445,cran,"API, identities, faces and regression"
+test-dist-invburr,invburr fixed scale reproduces 6c89a8c and a reference oracle,0.0769999999999982,full,independent numerical oracle or replication stress
+test-dist-invburr,invburr fixed scale uses a profile fallback when moments have no root,0.00600000000008549,cran,"API, identities, faces and regression"
+test-dist-invburr,held-scale inverse Burr endpoint penalty is not a power likelihood equality,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-invburr,P2 invburr holds agree with independent multistart reference likelihoods,0.438999999999965,full,independent numerical oracle or replication stress
+test-dist-invburr,P2 invburr validates new held values,0.0289999999999964,cran,"API, identities, faces and regression"
+test-dist-invburr,P2 invburr constant samples respect the held tangent,0.0220000000000482,cran,"API, identities, faces and regression"
+test-dist-invburr,invburr: P3 unfinished optimizer stops,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-invburr,invburr: P3 held profile exhaustion stops,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-invexp,invexp matches a multistart density oracle,0.0080000000000382,full,independent numerical oracle or replication stress
+test-dist-invexp,invexp scale is the reciprocal-exponential rate,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-invexp,inverse exponential rejects unrepresentable reciprocal moments,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-invexp,P2 held subsets agree with multistart reference likelihoods,0.0539999999999736,full,independent numerical oracle or replication stress
+test-dist-invexp,P2 held existence boundaries,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-invgamma,constant data have no attained invgamma MLE,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-invgamma,P2 held subsets agree with multistart reference likelihoods,0.159999999999968,full,independent numerical oracle or replication stress
+test-dist-invgamma,P2 held existence boundaries,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-invgamma,P2 held solver respects iterlim,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-invgamma,invgamma: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-invgauss,inverse Gaussian resolves scale extremes and near ties,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-invgauss,P2 held subsets agree with multistart reference likelihoods,0.274999999999977,full,independent numerical oracle or replication stress
+test-dist-invgauss,P2 held existence boundaries,0.00600000000008549,cran,"API, identities, faces and regression"
+test-dist-invparalogis,invparalogis matches a multistart density oracle,0.0220000000000482,full,independent numerical oracle or replication stress
+test-dist-invparalogis,invparalogis fixed scale matches density oracle,0.0219999999999345,full,independent numerical oracle or replication stress
+test-dist-invparalogis,inverse paralogistic diagnoses an unrepresentable extreme-range fit,0.0170000000000528,cran,"API, identities, faces and regression"
+test-dist-invparalogis,constant free-scale invparalogis data have an unbounded likelihood,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-invparalogis,P2 invparalogis holds agree with independent multistart reference likelihoods,0.129999999999995,full,independent numerical oracle or replication stress
+test-dist-invparalogis,P2 invparalogis validates new held values,0.0190000000000055,cran,"API, identities, faces and regression"
+test-dist-invparalogis,P2 invparalogis held shape fits constant observations,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-invparalogis,invparalogis: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-invparalogis,invparalogis: P3 held profile exhaustion stops,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-invpareto,invpareto matches a multistart density oracle,0.0209999999999582,full,independent numerical oracle or replication stress
+test-dist-invpareto,invpareto mapping and limit,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-invpareto,inverse Pareto inherits the Lomax equality comparison,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-invpareto,inverse Pareto inherits the global Lomax criterion,0.0430000000000064,cran,"API, identities, faces and regression"
+test-dist-invpareto,P2 held subsets agree with multistart reference likelihoods,0.177000000000021,full,independent numerical oracle or replication stress
+test-dist-invpareto,P2 held existence boundaries,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-invpareto,P2 held solver respects iterlim,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-invpareto,invpareto: P3 held profile exhaustion stops,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-invtrgamma,mlinvtrgamma agrees with a multistart density oracle,14.675,full,independent numerical oracle or replication stress
+test-dist-invtrgamma,mlinvtrgamma mirrors the lognormal and Pareto faces,0.0590000000000828,cran,"API, identities, faces and regression"
+test-dist-invtrgamma,mlinvtrgamma fixed shapes reduce to inverse gamma and inverse Weibull,0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-invtrgamma,invtrgamma log quantiles and large power transforms remain representable,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-invtrgamma,P2 invtrgamma holds agree with independent multistart reference likelihoods,0.418000000000006,full,independent numerical oracle or replication stress
+test-dist-invtrgamma,P2 invtrgamma validates new held values,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-invtrgamma,P2 invtrgamma held scale conditional shapes on constant data,0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-invtrgamma,invtrgamma: P3 unfinished optimizer stops,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-invtrgamma,invtrgamma: P3 held profile exhaustion stops,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-invweibull,constant data have no attained invweibull MLE,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-invweibull,invweibull near ties have finite concentrated fits,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-invweibull,P2 held subsets agree with multistart reference likelihoods,0.163999999999987,full,independent numerical oracle or replication stress
+test-dist-invweibull,P2 held existence boundaries,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-invweibull,P2 held solver respects iterlim,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-invweibull,P2 failed held solver is distinguished from constant-data collapse,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-invweibull,P2 analytic held shape needs no iterative search,0.00199999999995271,cran,"API, identities, faces and regression"
+test-dist-invweibull,invweibull: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-kumar,clipped endpoint samples have finite profile maxima,0.126999999999953,cran,"API, identities, faces and regression"
+test-dist-kumar,constant Kumaraswamy samples have unbounded likelihood,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-kumar,P2 every held subset agrees with independent multistart density fits,0.506999999999948,full,independent numerical oracle or replication stress
+test-dist-kumar,P2 held shape solves stop on exhausted brackets,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-kumar,kumar: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-laplace,laplace handles a seeded sample with a large outlier,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-laplace,constant Laplace data have no attained MLE,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-laplace,laplace new holds agree with independent multistart likelihoods,0.0849999999999227,full,independent numerical oracle or replication stress
+test-dist-laplace,"laplace conditional collapse, feasibility and invalid holds",0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-lgamma,constant data have no attained lgamma MLE,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-lgamma,P2 held subsets agree with multistart reference likelihoods,0.153999999999996,full,independent numerical oracle or replication stress
+test-dist-lgamma,P2 held existence boundaries,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-lgamma,P2 held solver respects iterlim,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-lgamma,lgamma: P3 unfinished gamma delegate stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-lgser,"theta stays in (0, 1) when nearly every count is one",0.0370000000000346,cran,"API, identities, faces and regression"
+test-dist-lgser,P2 holds agree with independent multistart reference likelihoods,0.0240000000000009,full,independent numerical oracle or replication stress
+test-dist-lgser,P2 held theta validates domain and compatibility,0.0309999999999491,cran,"API, identities, faces and regression"
+test-dist-llogis,llogis handles a seeded sample with a large outlier,0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-llogis,constant log-logistic data have no attained MLE,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-llogis,P2 held subsets agree with multistart reference likelihoods,0.17999999999995,full,independent numerical oracle or replication stress
+test-dist-llogis,P2 held existence boundaries,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-llogis,P2 held solver respects iterlim,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-llogis,P2 failed held solver is distinguished from constant-data collapse,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-llogis,llogis: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-lnorm,lnorm handles a seeded sample with a large outlier,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-lnorm,constant data have no attained lnorm MLE,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-lnorm,P2 held subsets agree with multistart reference likelihoods,0.134000000000015,full,independent numerical oracle or replication stress
+test-dist-lnorm,P2 held existence boundaries,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-lnorm,P2 distant held lognormal mean retains a finite scale,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-logis,logis handles a seeded sample with a large outlier,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-logis,logis fitting respects extreme scale changes,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-logis,logis new holds agree with independent multistart likelihoods,0.08299999999997,full,independent numerical oracle or replication stress
+test-dist-logis,"logis conditional collapse, feasibility and invalid holds",0.0170000000000528,cran,"API, identities, faces and regression"
+test-dist-logis,logis held profiles preserve tiny and large units,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-logitnorm,constant data have no attained logitnorm MLE,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-logitnorm,logitnorm owned dpqr obeys transformations and R conventions,0.02800000000002,cran,"API, identities, faces and regression"
+test-dist-logitnorm,logitnorm matches frozen logitnorm values (reference.json),0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-logitnorm,logitnorm extreme normal log tails survive inversion,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-logitnorm,"logitnorm integrates with plot, bootstrap and model selection",0.0330000000000155,cran,"API, identities, faces and regression"
+test-dist-logitnorm,P2 every held subset agrees with independent multistart density fits,0.284999999999968,full,independent numerical oracle or replication stress
+test-dist-logitnorm,P2 held logit location collapse and held scale constant fits,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-lomax,lomax fitting respects extreme scale changes,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-lomax,Lomax moment equality can have an attained fit or exponential escape,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-lomax,a negative Lomax boundary score need not imply global escape,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-lomax,unresolvable Lomax starting hints fall back to the moment start,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-lomax,Lomax exact criterion resolves nonlocal maxima,0.0469999999999118,cran,"API, identities, faces and regression"
+test-dist-lomax,Lomax agrees with a slow independent psi and density oracle,10.669,full,independent numerical oracle or replication stress
+test-dist-lomax,P2 held subsets agree with multistart reference likelihoods,0.170999999999935,full,independent numerical oracle or replication stress
+test-dist-lomax,P2 held existence boundaries,0.00600000000008549,cran,"API, identities, faces and regression"
+test-dist-lomax,P2 held solver respects iterlim,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-lomax,lomax: P3 unfinished optimizer stops,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-lomax,lomax: P3 compressed profile rejects exhaustion,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-lst,location-scale t agrees with independent density likelihood optimization,1.09899999999993,full,independent numerical oracle or replication stress
+test-dist-lst,Cauchy is attained and normal escapes name mlnorm,0.0400000000000773,cran,"API, identities, faces and regression"
+test-dist-lst,collapse configurations are rejected and allowed ties fit,0.0209999999999582,cran,"API, identities, faces and regression"
+test-dist-lst,std two-cluster escape has a location-scale fit,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-lst,"fixed df agrees with oracle and Cauchy, with correct metadata",0.0349999999999682,full,independent numerical oracle or replication stress
+test-dist-lst,held huge degrees of freedom retain the normal log density,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-lst,held Cauchy degrees of freedom allow balanced two-point maxima,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-lst,lst new holds agree with independent multistart likelihoods,0.769999999999982,full,independent numerical oracle or replication stress
+test-dist-lst,"lst conditional collapse, feasibility and invalid holds",0.0330000000000155,cran,"API, identities, faces and regression"
+test-dist-lst,location-scale t held-location half ties compare all eligible faces,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-lst,lst held profiles preserve tiny and large units,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-naka,constant data have no attained naka MLE,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-naka,"squared-data underflow is a precision error, not constant data",0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-naka,naka owned dpqr obeys transformations and R conventions,0.0910000000000082,cran,"API, identities, faces and regression"
+test-dist-naka,naka matches frozen nakagami values (reference.json),0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-naka,Nakagami boundary densities and extreme gamma tails are correct,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-naka,"naka integrates with plot, bootstrap and model selection",0.0240000000000009,cran,"API, identities, faces and regression"
+test-dist-naka,tiny Nakagami shape retains upper log tails at tiny amplitudes,0.00200000000006639,cran,"API, identities, faces and regression"
+test-dist-naka,P2 held subsets agree with multistart reference likelihoods,0.13900000000001,full,independent numerical oracle or replication stress
+test-dist-naka,P2 held existence boundaries,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-naka,P2 held solver respects iterlim,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-naka,naka: P3 unfinished optimizer stops,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-nbinom,fractional fixed size is preserved,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-nbinom,variance equal to the mean escapes to the Poisson,0.0169999999999391,cran,"API, identities, faces and regression"
+test-dist-nbinom,overdispersed data where Newton leaves the domain still fit,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-nbinom,"a held size must be nonnegative, finite and compatible",0.0180000000000291,cran,"API, identities, faces and regression"
+test-dist-nbinom,unrepresentable held-size probability is diagnosed,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-nbinom,P2 holds agree with independent multistart reference likelihoods,0.0710000000000264,full,independent numerical oracle or replication stress
+test-dist-nbinom,P2 NB held prob has a unique finite size or declared zero escape,0.0359999999999445,cran,"API, identities, faces and regression"
+test-dist-nbinom,P2 held NB probability close to one retains a finite size root,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-nbinom,P3 size-zero boundary holds and free representatives are attained,0.0249999999999773,cran,"API, identities, faces and regression"
+test-dist-nbinom,NB size-zero evaluation includes tails and quantile endpoints,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-nhyper,"nhyper design, fixed subsets and errors are explicit",0.0590000000000828,cran,"API, identities, faces and regression"
+test-dist-nhyper,nhyper integer MLE agrees with independent reference enumeration,0.298999999999978,cran,"API, identities, faces and regression"
+test-dist-nhyper,nhyper evaluation preserve tails and total-draw endpoints,0.0190000000000055,cran,"API, identities, faces and regression"
+test-dist-nhyper,nhyper growing-urn limit counts black draws after subtracting r,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-nhyper,nhyper explicit NULL gives a reason and bootstrap replays held N,0.0199999999999818,cran,"API, identities, faces and regression"
+test-dist-nhyper,free stopping count matches the reference finite grid,0.0319999999999254,cran,"API, identities, faces and regression"
+test-dist-nhyper,fully free nhyper reports the unsupported global comparison,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-nhyper,three finite nhyper grids match whole-grid enumeration,0.279999999999973,cran,"API, identities, faces and regression"
+test-dist-norm,norm handles a seeded sample with a large outlier,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-norm,constant data have no attained norm MLE,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-norm,normal moments retain tiny and huge scales and near ties,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-norm,norm new holds agree with independent multistart likelihoods,0.0810000000000173,full,independent numerical oracle or replication stress
+test-dist-norm,"norm conditional collapse, feasibility and invalid holds",0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-nsbeta,"nsbeta: required endpoint, reference likelihood and reproducibility",0.0439999999999827,cran,"API, identities, faces and regression"
+test-dist-nsbeta,held bounds survive selection and bootstrap,0.0249999999999773,cran,"API, identities, faces and regression"
+test-dist-nsbeta,nsbeta: reference mapping and unbounded unrestricted path,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-nsbeta,P2 nsbeta holds agree with independent multistart reference likelihoods,0.113000000000056,full,independent numerical oracle or replication stress
+test-dist-nsbeta,P2 nsbeta validates new held values,0.0349999999999682,cran,"API, identities, faces and regression"
+test-dist-nsbeta,P2 nsbeta constant samples with coercive holds fit,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-paralogis,fixed scale agrees with reference-density oracle and records df,0.05499999999995,full,independent numerical oracle or replication stress
+test-dist-paralogis,fixed unit scale reproduces the historical golden,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-paralogis,fixed-scale paralogistic fits even constant observations,0.00200000000006639,cran,"API, identities, faces and regression"
+test-dist-paralogis,constant free-scale paralogis data have an unbounded likelihood,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-paralogis,paralogis large-sample fitting preserves likelihood under replication,0.123000000000047,full,independent numerical oracle or replication stress
+test-dist-paralogis,P2 paralogis holds agree with independent multistart reference likelihoods,0.131999999999948,full,independent numerical oracle or replication stress
+test-dist-paralogis,P2 paralogis validates new held values,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-paralogis,P2 paralogis held shape fits constant observations,0.00600000000008549,cran,"API, identities, faces and regression"
+test-dist-paralogis,paralogis: P3 unfinished optimizer stops,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-paralogis,paralogis: P3 held profile exhaustion stops,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-pareto,Pareto handles concentration and a huge support ratio,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-pareto,P2 held subsets agree with multistart reference likelihoods,0.131999999999948,full,independent numerical oracle or replication stress
+test-dist-pareto,P2 held existence boundaries,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-pareto2,"pareto2: required endpoint, reference likelihood and reproducibility",0.0400000000000773,cran,"API, identities, faces and regression"
+test-dist-pareto2,pareto2: shifted exponential escape and unsupported subsets,0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-pareto2,pareto2: reference mapping and unbounded unrestricted path,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-pareto2,P2 pareto2 holds agree with independent multistart reference likelihoods,0.144999999999982,full,independent numerical oracle or replication stress
+test-dist-pareto2,P2 pareto2 validates new held values,0.0309999999999491,cran,"API, identities, faces and regression"
+test-dist-pareto2,P2 pareto2 constant data with held shape fit,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-pareto3,"pareto3: required endpoint, reference likelihood and reproducibility",0.04200000000003,cran,"API, identities, faces and regression"
+test-dist-pareto3,pareto3: reference mapping and unbounded unrestricted path,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-pareto3,P2 pareto3 holds agree with independent multistart reference likelihoods,0.177999999999997,full,independent numerical oracle or replication stress
+test-dist-pareto3,P2 pareto3 validates new held values,0.0369999999999209,cran,"API, identities, faces and regression"
+test-dist-pareto3,P2 pareto3 constant data with held shape fit,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-pareto3,pareto3: P3 failed logistic delegate stops,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-pareto4,"pareto4: required endpoint, reference likelihood and reproducibility",0.0640000000000782,cran,"API, identities, faces and regression"
+test-dist-pareto4,pareto4: fixed scale and shifted escape messages,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-pareto4,pareto4: free-scale faces preserve the threshold,0.0480000000000018,cran,"API, identities, faces and regression"
+test-dist-pareto4,pareto4: reference mapping and unbounded unrestricted path,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-pareto4,P2 pareto4 holds agree with independent multistart reference likelihoods,0.355000000000018,full,independent numerical oracle or replication stress
+test-dist-pareto4,P2 pareto4 validates new held values,0.0400000000000773,cran,"API, identities, faces and regression"
+test-dist-pareto4,P2 pareto4 constant samples respect the held tangent,0.0209999999999582,cran,"API, identities, faces and regression"
+test-dist-pig,Poisson and zero faces are explicit,0.0259999999999536,cran,"API, identities, faces and regression"
+test-dist-pig,all fixed subsets agree with accurate density oracle,0.0270000000000437,full,independent numerical oracle or replication stress
+test-dist-pig,fixed controls reject invalid values,0.02699999999993,cran,"API, identities, faces and regression"
+test-dist-pig,a tiny finite overdispersion gain loses the mandated face tie,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-pig,P2 holds agree with independent multistart reference likelihoods,0.0879999999999654,full,independent numerical oracle or replication stress
+test-dist-pig,P3 PIG shape zero is attained under compatible holds,0.02800000000002,cran,"API, identities, faces and regression"
+test-dist-pig,pig zero boundary works through generated d/p/q/r,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-pois,Poisson agrees with its reference likelihood,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-pois,Poisson likelihood retains precision near the count ceiling,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-pois,P2 holds agree with independent multistart reference likelihoods,0.0209999999999582,full,independent numerical oracle or replication stress
+test-dist-pois,P2 held lambda validates domain and compatibility,0.0260000000000673,cran,"API, identities, faces and regression"
+test-dist-power,power compatibility epsilon is validated and leaves the exact endpoint,0.0120000000000573,cran,"API, identities, faces and regression"
+test-dist-power,P2 held subsets agree with multistart reference likelihoods,0.134000000000015,full,independent numerical oracle or replication stress
+test-dist-power,P2 held existence boundaries,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-rayleigh,Rayleigh fits extreme scales and rejects all zero,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-rayleigh,any zero makes the Rayleigh likelihood zero,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-rayleigh,P2 held subsets agree with multistart reference likelihoods,0.05499999999995,full,independent numerical oracle or replication stress
+test-dist-rayleigh,P2 held existence boundaries,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-sged,sged scale extremes preserve fit or declared escape,0.130999999999972,cran,"API, identities, faces and regression"
+test-dist-sged,sged large-sample fitting preserves likelihood under replication,55.611,full,independent numerical oracle or replication stress
+test-dist-sged,"sged dpqr integrate, invert and preserve extreme tails",0.0170000000000528,cran,"API, identities, faces and regression"
+test-dist-sged,"sged dpqr recycle, propagate missing values and use R RNG",0.166999999999916,cran,"API, identities, faces and regression"
+test-dist-sged,sged matches frozen fGarch values (reference.json),0.0299999999999727,cran,"API, identities, faces and regression"
+test-dist-sged,sged parameter domain is enforced,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-sged,sged skew parameter domain is enforced,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-sged,sged log tails exceed the backend exponent range,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-sged,sged classified holds agree with independent multistart oracles,0.562000000000012,full,independent numerical oracle or replication stress
+test-dist-sged,"sged holds validate values, ties, and all-held evaluation",0.0670000000000073,cran,"API, identities, faces and regression"
+test-dist-sged,sged held domains and controls reject invalid requests,0.0349999999999682,cran,"API, identities, faces and regression"
+test-dist-sged,sged P0b subsets agree with independent README oracles,7.43200000000002,full,independent numerical oracle or replication stress
+test-dist-sged,"sged P0b collapse, restriction and forced half faces are enforced",0.0380000000000109,cran,"API, identities, faces and regression"
+test-dist-sged,sged exact uniform endpoints retain conditional penalties,0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-sged,sged conditional failed iterates are never returned as fits,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-sgomp,sgomp includes the exponential member,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-sgomp,sgomp extreme tails invert directly,0.0149999999999864,cran,"API, identities, faces and regression"
+test-dist-sgomp,sgomp recycling missing values and RNG follow R,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-sgomp,sgomp faces and fixed subsets have consistent likelihood,0.02800000000002,cran,"API, identities, faces and regression"
+test-dist-sgomp,sgomp profile agrees with slow multistart oracle,0.0149999999999864,full,independent numerical oracle or replication stress
+test-dist-sgomp,sgomp fitted-model evaluation and utilities work,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-sgomp,sgomp held-coordinate fits agree with scalar oracles,0.00900000000001455,full,independent numerical oracle or replication stress
+test-dist-sgomp,sgomp: P3 unfinished optimizer stops,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-skellam,"Skellam faces, recycling and RNG work",0.0529999999999973,cran,"API, identities, faces and regression"
+test-dist-skellam,Skellam likelihood agrees with independent reference optimizations,0.0879999999999654,cran,"API, identities, faces and regression"
+test-dist-skellam,Skellam tails agree with independent Poisson-mixture summation,0.0220000000000482,cran,"API, identities, faces and regression"
+test-dist-skellam,"Skellam integrates with plotting, bootstrap and model selection",0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-skellam,Skellam endpoints and extreme logs retain their tail convention,0.0449999999999591,cran,"API, identities, faces and regression"
+test-dist-skellam,Skellam held zero rates use exact signed Poisson fits,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-skellam,Skellam nonconstant underdispersed samples attain Poisson faces,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-skellam,skellam: P3 unfinished optimizer stops,0.0160000000000764,cran,"API, identities, faces and regression"
+test-dist-slash,slash agrees with an independent multistart density oracle,0.216999999999985,full,independent numerical oracle or replication stress
+test-dist-slash,slash collapse and input errors are explicit,0.02800000000002,cran,"API, identities, faces and regression"
+test-dist-slash,continuous slash quantiles recycle and retain log tails,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-slash,continuous inversion avoids standardized overflow at tiny scales,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-slash,slash CDF matches its normal mixture and algebraic tail,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-slash,slash globally searches separated location modes with held scale,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-slash,slash fits and likelihoods are equivariant over extreme units,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-slash,slash normalizes by the bulk rather than a remote outlier,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-slash,unrepresentable finite slash probabilities give infinite quantiles,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-slash,slash half mass with zero reciprocal sum can have an attained MLE,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-slash,slash free-scale location profile has separated finite maxima,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-slash,slash new holds agree with independent multistart likelihoods,0.104000000000042,full,independent numerical oracle or replication stress
+test-dist-slash,"slash conditional collapse, feasibility and invalid holds",0.0240000000000009,cran,"API, identities, faces and regression"
+test-dist-slash,slash independent density oracle agrees with a mixture integral at the centre,0.0080000000000382,full,independent numerical oracle or replication stress
+test-dist-slash,slash: P3 unfinished local profile stops,0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-sn,"sn density and CDF integrate and reflect, including half-normal regimes",0.0960000000000036,cran,"API, identities, faces and regression"
+test-dist-sn,sn inverse inequalities and logarithmic extreme tails,0.132000000000062,cran,"API, identities, faces and regression"
+test-dist-sn,"sn vectorisation, invalid input, NA and seeded RNG follow stats",0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-sn,sn all fixed subsets agree with slow multistart exact-density oracle,0.367999999999938,full,independent numerical oracle or replication stress
+test-dist-sn,sn symmetry is stationary but does not trap the global search,0.0660000000000309,cran,"API, identities, faces and regression"
+test-dist-sn,sn detects both exact half-normal faces and respects fixed location,0.249000000000024,cran,"API, identities, faces and regression"
+test-dist-sn,sn package density routes through fitted object operations,0.144999999999982,cran,"API, identities, faces and regression"
+test-dist-sn,sn optional reference density agrees with sn package,0.00200000000006639,cran,"API, identities, faces and regression"
+test-dist-sn,sn: P3 unfinished optimizer stops,0.0240000000000009,cran,"API, identities, faces and regression"
+test-dist-sn,sn: P3 unfinished fixed-shape inner fit stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-snorm,exact snorm profile agrees with 240 independent grid searches,2.74800000000005,full,independent numerical oracle or replication stress
+test-dist-snorm,two-piece conversion matches fGarch log densities,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-snorm,half-normal boundary messages name the available fitter,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-snorm,"snorm dpqr integrate, invert and preserve extreme tails",0.0160000000000764,cran,"API, identities, faces and regression"
+test-dist-snorm,"snorm dpqr recycle, propagate missing values and use R RNG",0.0480000000000018,cran,"API, identities, faces and regression"
+test-dist-snorm,snorm matches frozen fGarch values (reference.json),0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-snorm,snorm skew parameter domain is enforced,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-snorm,snorm log tails exceed the backend exponent range,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-snorm,snorm classified holds agree with independent multistart oracles,1.02300000000002,full,independent numerical oracle or replication stress
+test-dist-snorm,"snorm holds validate values, ties, and all-held evaluation",0.0499999999999545,cran,"API, identities, faces and regression"
+test-dist-snorm,snorm normal member uses exact held normal solutions,0.0299999999999727,cran,"API, identities, faces and regression"
+test-dist-snorm,snorm held-moment endpoint faces retain shrinking-side penalties,0.0180000000000291,cran,"API, identities, faces and regression"
+test-dist-sstd,mlsstd stops on the skew-normal face for normal data,0.0180000000000291,cran,"API, identities, faces and regression"
+test-dist-sstd,mlsstd stops on the translated half-normal and half-t faces,0.116999999999962,cran,"API, identities, faces and regression"
+test-dist-sstd,mlsstd stops on the df-2 face for skewed Cauchy data,0.0199999999999818,cran,"API, identities, faces and regression"
+test-dist-sstd,mlsstd agrees with the slow oracle on interior and boundary samples,2.78399999999999,full,independent numerical oracle or replication stress
+test-dist-sstd,sstd scale extremes preserve fit or declared escape,0.0230000000000246,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd large-sample fitting preserves likelihood under replication,4.25400000000002,full,independent numerical oracle or replication stress
+test-dist-sstd,skew t detects tie collapse before free df and face fits,0.0159999999999627,cran,"API, identities, faces and regression"
+test-dist-sstd,"sstd dpqr integrate, invert and preserve extreme tails",0.0199999999999818,cran,"API, identities, faces and regression"
+test-dist-sstd,"sstd dpqr recycle, propagate missing values and use R RNG",0.0620000000000118,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd matches frozen fGarch values (reference.json),0.0450000000000728,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd parameter domain is enforced,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd skew parameter domain is enforced,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd log tails exceed the backend exponent range,0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd classified holds agree with independent multistart oracles,0.298000000000002,full,independent numerical oracle or replication stress
+test-dist-sstd,"sstd holds validate values, ties, and all-held evaluation",0.0720000000000027,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd held domains and controls reject invalid requests,0.0410000000000537,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd P0b subsets agree with independent README oracles,15.6,full,independent numerical oracle or replication stress
+test-dist-sstd,"sstd P0b collapse, equality and moment constraints are enforced",0.0570000000000164,cran,"API, identities, faces and regression"
+test-dist-sstd,sstd conditional optimizer failure stops the wrapper,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-std,Student-t escapes name the limiting model,0.0170000000000528,cran,"API, identities, faces and regression"
+test-dist-std,Student-t interior fit and large-nu log likelihood agree with independent dt,0.0190000000000055,cran,"API, identities, faces and regression"
+test-dist-std,large-nu interior fit matches dt and a slow oracle,0.159999999999968,full,independent numerical oracle or replication stress
+test-dist-std,fixed nu agrees with density oracle and records two free parameters,0.0430000000000064,full,independent numerical oracle or replication stress
+test-dist-std,std scale extremes preserve fit or declared escape,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-std,std large-sample fitting preserves likelihood under replication,0.76299999999992,full,independent numerical oracle or replication stress
+test-dist-std,free Student t detects strict tie collapse and separates equality,0.0270000000000437,cran,"API, identities, faces and regression"
+test-dist-std,"std dpqr integrate, invert and preserve extreme tails",0.0270000000000437,cran,"API, identities, faces and regression"
+test-dist-std,"std dpqr recycle, propagate missing values and use R RNG",0.0709999999999127,cran,"API, identities, faces and regression"
+test-dist-std,std matches frozen fGarch values (reference.json),0.0240000000000009,cran,"API, identities, faces and regression"
+test-dist-std,std log density survives the fGarch underflow defect,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-std,std parameter domain is enforced,0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-std,std log tails exceed the backend exponent range,0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-std,std new holds agree with independent multistart likelihoods,1.327,full,independent numerical oracle or replication stress
+test-dist-std,"std conditional collapse, feasibility and invalid holds",0.0310000000000628,cran,"API, identities, faces and regression"
+test-dist-std,Student-t conditional lower shape faces respect held mean and sd,0.00899999999990087,cran,"API, identities, faces and regression"
+test-dist-std,std held profiles preserve tiny and large units,0.00600000000008549,cran,"API, identities, faces and regression"
+test-dist-std,std: P3 unfinished optimizer stops,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-tbinom,tbinom agrees with independent reference likelihood searches,0.0729999999999791,cran,"API, identities, faces and regression"
+test-dist-tbinom,tbinom fixed parameters and repaired extreme tails,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-tbinom,binomial endpoints with positive conditioning mass are attained,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-tbinom,tbinom: all estimated-bound subsets match independent conditional fits,0.148000000000025,cran,"API, identities, faces and regression"
+test-dist-tbinom,tbinom: fixed-probability free-size profiles exhaust bounds subsets,0.139999999999986,cran,"API, identities, faces and regression"
+test-dist-tbinom,tbinom: all four free-size probability profiles match reference oracles,2.45600000000002,full,independent numerical oracle or replication stress
+test-dist-tbinom,"tbinom: uncapped size, exact attained faces and invalid free designs",0.0400000000000773,cran,"API, identities, faces and regression"
+test-dist-tbinom,tbinom: a peak beyond the dense grid is refined over integer size,0.0459999999999354,cran,"API, identities, faces and regression"
+test-dist-tbinom,tbinom: fractional held bounds are exact and work failures stop,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-tbinom,tbinom attained point member evaluates and samples exactly,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-tlambda,"Tukey lambda tails, endpoints and analytic limits",0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda vector and RNG conventions,0.0149999999999864,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda existence guards and exact uniform faces,0.0480000000000018,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda independent oracle on varied fixed and free samples,1.35000000000002,full,independent numerical oracle or replication stress
+test-dist-tlambda,"Tukey lambda dispatch, affine equivariance and attained bounds",1.00099999999998,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda avoids standardized overflow in heavy tails,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-tlambda,"Tukey lambda bootstrap, selection and plots use owned evaluation",0.0289999999999964,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda quantiles keep log tails and the logistic limit,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda bounded-tail inversion resolves endpoint deficits,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda sampler is inversion with R's RNG,0.00200000000006639,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda accepts ties strictly below half the sample,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda handles finite log tails beyond 1e307,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda large-tail logarithms retain tiny nonzero values,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda keeps shifted finite results after intermediate overflow,0.00600000000008549,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda rejects numerical merging of distinct data,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-tlambda,tlambda new holds agree with independent multistart likelihoods,17.766,full,independent numerical oracle or replication stress
+test-dist-tlambda,"tlambda conditional collapse, feasibility and invalid holds",0.0259999999999536,cran,"API, identities, faces and regression"
+test-dist-tlambda,Tukey lambda held-location half ties can have an attained maximum,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-tnorm,mltnorm agrees with independent multistart likelihood oracles,0.0769999999999982,full,independent numerical oracle or replication stress
+test-dist-tnorm,mltnorm validates known bounds and classifies escapes,0.06899999999996,cran,"API, identities, faces and regression"
+test-dist-tnorm,truncated-normal tail evaluation agrees with normal log tails,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-tnorm,tnorm includes finite endpoint density limits,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-tpois,tpois agrees with independent reference likelihood searches,0.0810000000000173,cran,"API, identities, faces and regression"
+test-dist-tpois,tpois fixed parameters and repaired extreme tails,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-tpois,truncated Poisson overlaps ordinary and zero truncated fits,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-tpois,untruncated zero-rate boundary is attained,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-tpois,truncated Poisson sweeps every hold against a multistart oracle,0.206000000000017,full,independent numerical oracle or replication stress
+test-dist-tpois,"truncated Poisson null bounds, singleton and escape paths",0.0529999999999973,cran,"API, identities, faces and regression"
+test-dist-trgamma,mltrgamma agrees with a multistart density oracle and its faces,48.52,full,independent numerical oracle or replication stress
+test-dist-trgamma,mltrgamma faces are triggered by data from the limit models,0.130999999999972,cran,"API, identities, faces and regression"
+test-dist-trgamma,"mltrgamma fixed shapes reduce to gamma, Weibull and exact profiles",0.108000000000061,cran,"API, identities, faces and regression"
+test-dist-trgamma,mltrgamma and mlinvtrgamma are reciprocal fits,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-trgamma,trgamma log quantiles and large power transforms remain representable,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-trgamma,P2 trgamma holds agree with independent multistart reference likelihoods,0.605999999999995,full,independent numerical oracle or replication stress
+test-dist-trgamma,P2 trgamma validates new held values,0.0190000000000055,cran,"API, identities, faces and regression"
+test-dist-trgamma,P2 trgamma held scale conditional shapes on constant data,0.0169999999999391,cran,"API, identities, faces and regression"
+test-dist-trgamma,trgamma: P3 unfinished optimizer stops,0.0120000000000573,cran,"API, identities, faces and regression"
+test-dist-trgamma,trgamma: P3 held profile exhaustion stops,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-triang,constant triangular samples with exterior held mode,0.0259999999999536,cran,"API, identities, faces and regression"
+test-dist-triang,P2 reflected constant exterior-mode maxima,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-triang,P2 triangular subsets dominate independent multistart endpoint searches,1.63299999999992,full,independent numerical oracle or replication stress
+test-dist-unif,constant data have no attained unif MLE,0.0130000000000337,cran,"API, identities, faces and regression"
+test-dist-unif,P2 uniform held endpoints are exact constrained maxima,0.163000000000011,cran,"API, identities, faces and regression"
+test-dist-weibull,constant data have no attained weibull MLE,0.0109999999999673,cran,"API, identities, faces and regression"
+test-dist-weibull,weibull near ties have finite concentrated fits,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-weibull,P2 held subsets agree with multistart reference likelihoods,0.201000000000022,full,independent numerical oracle or replication stress
+test-dist-weibull,P2 held existence boundaries,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-weibull,P2 held solver respects iterlim,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-weibull,P2 tiny held Weibull shape has the geometric-mean scale limit,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-weibull,P2 failed held solver is distinguished from constant-data collapse,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-weibull,P2 analytic held shape needs no iterative search,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-weibull,weibull: P3 unfinished optimizer stops,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-yulesimon,yulesimon fits agree with a slow independent oracle,0.0380000000000109,full,independent numerical oracle or replication stress
+test-dist-yulesimon,"yulesimon density sums, direct tails and inverse inequalities agree",0.0480000000000018,cran,"API, identities, faces and regression"
+test-dist-yulesimon,"yulesimon recycling, warnings, RNG and model generics work",0.0940000000000509,cran,"API, identities, faces and regression"
+test-dist-yulesimon,Yule--Simon equals shifted beta negative binomial,0.01400000000001,cran,"API, identities, faces and regression"
+test-dist-yulesimon,Yule--Simon preserves extreme log probabilities and invalid domains,0.0190000000000055,cran,"API, identities, faces and regression"
+test-dist-yulesimon,yulesimon held coefficient evaluates the independent likelihood,0.0489999999999782,cran,"API, identities, faces and regression"
+test-dist-yulesimon,unit Yule-Simon quantiles allow neighbouring integers at jumps,0.0119999999999436,cran,"API, identities, faces and regression"
+test-dist-zeta,zeta fits agree with a slow independent oracle,0.0679999999999836,full,independent numerical oracle or replication stress
+test-dist-zeta,"zeta density sums, direct tails and inverse inequalities agree",0.0550000000000637,cran,"API, identities, faces and regression"
+test-dist-zeta,"zeta recycling, warnings, RNG and model generics work",2.1049999999999,cran,"API, identities, faces and regression"
+test-dist-zeta,zeta has correct huge tails and the infinite Zipf face,0.00899999999990087,cran,"API, identities, faces and regression"
+test-dist-zeta,zeta preserves extreme log probabilities and invalid domains,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-zeta,zeta held coefficient evaluates the independent likelihood,0.0389999999999873,cran,"API, identities, faces and regression"
+test-dist-zib,zib agrees with a multi-start reference-density oracle,1.38199999999995,full,independent numerical oracle or replication stress
+test-dist-zib,zib declares its infinite-size escape,0.00600000000008549,cran,"API, identities, faces and regression"
+test-dist-zib,zib preserves fixed size at attained boundaries,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-zib,zib accepts fixed zero size for all-zero data,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-zib,zib: new holds match reference-density integer and multistart oracles,0.76299999999992,full,independent numerical oracle or replication stress
+test-dist-zib,zib: held pi profiles the remaining probability,0.115000000000009,cran,"API, identities, faces and regression"
+test-dist-zib,zib: free-size held-mixture fits and Poisson escapes,0.151000000000067,cran,"API, identities, faces and regression"
+test-dist-zib,zib: P3 unfinished optimizer stops,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-zib,"zib: free size, probability and mixture agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)",0.172000000000025,full,independent numerical oracle or replication stress
+test-dist-zib,zib attained point member evaluates and samples exactly,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-zinb,profiled ZINB agrees with multistart external oracle,1.19299999999998,full,independent numerical oracle or replication stress
+test-dist-zinb,ZINB faces and fixed-size subset have the declared behavior,0.0289999999999964,cran,"API, identities, faces and regression"
+test-dist-zinb,all-zero representative supports external probability evaluation,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-zinb,P2 holds agree with independent multistart reference likelihoods,0.335000000000036,full,independent numerical oracle or replication stress
+test-dist-zinb,"P2 ZINB held boundaries, incompatible data and constrained faces",0.0540000000000873,cran,"API, identities, faces and regression"
+test-dist-zinb,P2 constrained ZINB reports insufficient iterations,0.00799999999992451,cran,"API, identities, faces and regression"
+test-dist-zinb,P2 fixed size and inflation compare separated probability peaks,0.0310000000000628,cran,"API, identities, faces and regression"
+test-dist-zinb,P3 size-zero boundary holds and free representatives are attained,0.0270000000000437,cran,"API, identities, faces and regression"
+test-dist-zinb,P3 insufficient profile refinement stops,0.00399999999990541,cran,"API, identities, faces and regression"
+test-dist-zinb,zinb zero boundary works through generated d/p/q/r,0.00899999999990087,cran,"API, identities, faces and regression"
+test-dist-zip,ordinary zero-inflated samples attain the oracle likelihood,0.00999999999999091,full,independent numerical oracle or replication stress
+test-dist-zip,ZIP boundary fits are finite and represent their distributions,0.0139999999998963,cran,"API, identities, faces and regression"
+test-dist-zip,ZIP Poisson face has an accurate likelihood at the count ceiling,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-zip,P2 holds agree with independent multistart reference likelihoods,0.0880000000000791,full,independent numerical oracle or replication stress
+test-dist-zip,P2 ZIP held boundaries and zero escape,0.0399999999999636,cran,"API, identities, faces and regression"
+test-dist-zip,P2 fixed inflation compares separated rate peaks,0.0320000000000391,cran,"API, identities, faces and regression"
+test-dist-zipf,qml for zipf is the discrete inverse of pml,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-zipf,Zipf returns the attained uniform face at the count ceiling,0.00299999999992906,cran,"API, identities, faces and regression"
+test-dist-zipf,large-support Zipf likelihood agrees with a slow sum oracle,0.0219999999999345,full,independent numerical oracle or replication stress
+test-dist-zipf,Zipf d/p/q/r agree with finite sums on tails and log scales,0.234000000000037,cran,"API, identities, faces and regression"
+test-dist-zipf,Zipf quantiles at CDF atoms use the smallest support point,0.0080000000000382,cran,"API, identities, faces and regression"
+test-dist-zipf,Zipf large supports and tiny upper tails remain accurate,0.0169999999999391,cran,"API, identities, faces and regression"
+test-dist-zipf,"Zipf R conventions, recycling and RNG work",0.04200000000003,cran,"API, identities, faces and regression"
+test-dist-zipf,own Zipf functions work through every fitted-model route,0.0149999999999864,cran,"API, identities, faces and regression"
+test-dist-zipf,zipf matches frozen sads values (reference.json),0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-zipf,Zipf all hold subsets match enumerated multistart reference fits,0.121999999999957,full,independent numerical oracle or replication stress
+test-dist-zmbinom,zmbinom agrees with a multi-start reference-density oracle,1.76599999999996,full,independent numerical oracle or replication stress
+test-dist-zmbinom,zmbinom declares its infinite-size escape,0.0150000000001,cran,"API, identities, faces and regression"
+test-dist-zmbinom,zmbinom preserves fixed size at attained boundaries,0.00899999999990087,cran,"API, identities, faces and regression"
+test-dist-zmbinom,zmbinom: new holds match reference-density integer and multistart oracles,0.924000000000092,full,independent numerical oracle or replication stress
+test-dist-zmbinom,zmbinom: held p0 profiles the remaining probability,0.146999999999935,cran,"API, identities, faces and regression"
+test-dist-zmbinom,zmbinom: free-size held-mixture fits and Poisson escapes,0.192000000000007,cran,"API, identities, faces and regression"
+test-dist-zmbinom,zmbinom: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-zmbinom,"zmbinom: free size and probability agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)",0.0470000000000255,full,independent numerical oracle or replication stress
+test-dist-zmbinom,zmbinom attained point member evaluates and samples exactly,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-zmgeom,zmgeom agrees with a multi-start reference-density oracle,0.039000000000101,full,independent numerical oracle or replication stress
+test-dist-zmgeom,P2 holds agree with independent multistart reference likelihoods,0.118999999999915,full,independent numerical oracle or replication stress
+test-dist-zmgeom,P2 modified holds separate zero and positive likelihoods,0.0570000000000164,cran,"API, identities, faces and regression"
+test-dist-zmgeom,P2 held positive point mass checks support,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-zmlogarithmic,zmlogarithmic agrees with a multi-start reference-density oracle,0.0360000000000582,full,independent numerical oracle or replication stress
+test-dist-zmlogarithmic,P2 holds agree with independent multistart reference likelihoods,0.12399999999991,full,independent numerical oracle or replication stress
+test-dist-zmlogarithmic,P2 modified holds separate zero and positive likelihoods,0.0470000000000255,cran,"API, identities, faces and regression"
+test-dist-zmlogarithmic,P2 held positive point mass checks support,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-zmnbinom,zmnbinom agrees with a multi-start reference-density oracle,0.0990000000000464,full,independent numerical oracle or replication stress
+test-dist-zmnbinom,zmnbinom declares its infinite-size escape,0.00700000000006185,cran,"API, identities, faces and regression"
+test-dist-zmnbinom,zmnbinom returns the attained logarithmic member,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-zmnbinom,zmnbinom preserves fixed size at attained boundaries,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-zmnbinom,zmnbinom fixed zero size agrees with the reference oracle,0.00900000000001455,full,independent numerical oracle or replication stress
+test-dist-zmnbinom,P2 holds agree with independent multistart reference likelihoods,0.310000000000059,full,independent numerical oracle or replication stress
+test-dist-zmnbinom,P2 modified holds separate zero and positive likelihoods,0.04099999999994,cran,"API, identities, faces and regression"
+test-dist-zmnbinom,P2 held p0 retains the conditional Poisson escape,0.0110000000000809,cran,"API, identities, faces and regression"
+test-dist-zmnbinom,P2 held-probability search respects iteration failure,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-zmnbinom,P3 insufficient profile refinement stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-zmpois,zmpois agrees with a multi-start reference-density oracle,0.0249999999999773,full,independent numerical oracle or replication stress
+test-dist-zmpois,P2 holds agree with independent multistart reference likelihoods,0.0899999999999181,full,independent numerical oracle or replication stress
+test-dist-zmpois,P2 modified holds separate zero and positive likelihoods,0.0380000000000109,cran,"API, identities, faces and regression"
+test-dist-zmpois,P2 held positive point mass checks support,0.00900000000001455,cran,"API, identities, faces and regression"
+test-dist-ztbinom,ztbinom agrees with a multi-start reference-density oracle,0.990999999999985,full,independent numerical oracle or replication stress
+test-dist-ztbinom,ztbinom declares its infinite-size escape,0.00699999999994816,cran,"API, identities, faces and regression"
+test-dist-ztbinom,ztbinom preserves fixed size at attained boundaries,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-ztbinom,ztbinom: new holds match reference-density integer and multistart oracles,0.07000000000005,full,independent numerical oracle or replication stress
+test-dist-ztbinom,ztbinom: held endpoints are attained exactly when feasible,0.00999999999999091,cran,"API, identities, faces and regression"
+test-dist-ztbinom,ztbinom: P3 unfinished optimizer stops,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-ztbinom,"ztbinom: free size and probability agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)",0.0349999999999682,full,independent numerical oracle or replication stress
+test-dist-ztbinom,ztbinom attained point member evaluates and samples exactly,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-ztgeom,ztgeom agrees with a multi-start reference-density oracle,0.0169999999999391,full,independent numerical oracle or replication stress
+test-dist-ztgeom,P2 holds agree with independent multistart reference likelihoods,0.0210000000000719,full,independent numerical oracle or replication stress
+test-dist-ztgeom,P2 held prob validates domain and compatibility,0.0259999999999536,cran,"API, identities, faces and regression"
+test-dist-ztnbinom,ztnbinom agrees with a multi-start reference-density oracle,0.0670000000000073,full,independent numerical oracle or replication stress
+test-dist-ztnbinom,ztnbinom declares its infinite-size escape,0.00599999999997181,cran,"API, identities, faces and regression"
+test-dist-ztnbinom,ztnbinom returns the attained logarithmic member,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-ztnbinom,ztnbinom preserves fixed size at attained boundaries,0.00499999999999545,cran,"API, identities, faces and regression"
+test-dist-ztnbinom,ztnbinom fixed zero size agrees with the reference oracle,0.00499999999999545,full,independent numerical oracle or replication stress
+test-dist-ztnbinom,P2 holds agree with independent multistart reference likelihoods,0.109000000000037,full,independent numerical oracle or replication stress
+test-dist-ztnbinom,P2 truncated NB held probability includes logarithmic endpoint,0.02699999999993,cran,"API, identities, faces and regression"
+test-dist-ztnbinom,P2 held-probability search respects iteration failure,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-ztnbinom,P3 insufficient profile refinement stops,0.0040000000000191,cran,"API, identities, faces and regression"
+test-dist-ztpois,ztpois agrees with a multi-start reference-density oracle,0.0249999999999773,full,independent numerical oracle or replication stress
+test-dist-ztpois,P2 holds agree with independent multistart reference likelihoods,0.0219999999999345,full,independent numerical oracle or replication stress
+test-dist-ztpois,P2 held lambda validates domain and compatibility,0.0220000000000482,cran,"API, identities, faces and regression"
+test-generated-dpqr,generated d/p/q/r agree with independent truth tables,20.354,cran,deterministic rows/points by tier; full retains baseline sample
+test-generated-dpqr,generated wrappers recycle and preserve missing values and warnings,0.0190000000000055,cran,"API, identities, faces and regression"
+test-generated-dpqr,EMG retains its established R primitive stream,0.00300000000004275,cran,"API, identities, faces and regression"
+test-dist-bbinom,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-beta,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-binom,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-bnbinom,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-cauchy,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-dweibull,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-exp,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-gamma,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-ged,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-gompertz,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-gumbel,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-huber,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-invexp,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-invgamma,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-invgauss,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-invpareto,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-invweibull,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-kumar,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-laplace,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-lgamma,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-lgser,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-llogis,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-lnorm,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-logis,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-logitnorm,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-lomax,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-naka,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-nbinom,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-norm,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-paralogis,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-pareto,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-pig,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-power,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-rayleigh,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-sged,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-snorm,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-sstd,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-std,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-triang,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-unif,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-weibull,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-zinb,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-zip,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-zipf,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test-dist-sged,sged interior multistart oracle (formerly top-level),,full,independent optimizer; original reporter did not separate its cost
+test_bootstrap,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test_confint,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test_functions,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test_generics,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test_helpers,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test_model_select,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test_probability_plots,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter
+test_utility,legacy top-level assertions,,cran,API/likelihood/class contracts; cost not separately recorded by baseline reporter

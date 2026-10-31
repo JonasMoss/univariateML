@@ -12,6 +12,7 @@ extreme_closed_density <- function(id, x, ..., log = FALSE) {
 }
 
 test_that("mlgev matches constrained reference density oracles", {
+  skip_unless_tier("full")
   set.seed(20261029)
   for (shape in c(-.9, -.3, 0, .3, 2)) {
     x <- rgev(n = 100, mu = 0, sigma = 1, xi = shape)
@@ -74,6 +75,7 @@ test_that("GEV fixed shape accepts harmless ties", {
 })
 
 test_that("gev: new holds agree with independent multistart reference fits", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "gev"
   pars <- c("mu","sigma","xi")

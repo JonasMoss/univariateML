@@ -1,4 +1,5 @@
 test_that("location-scale t agrees with independent density likelihood optimization", {
+  skip_unless_tier("full")
   for (df in c(1.5, 3, 10)) for (n in c(200, 1000)) {
     set.seed(100 + n + df * 10)
     x <- rlst(n = n, mu = 2, sigma = 1.3, df = df)
@@ -52,6 +53,7 @@ test_that("std two-cluster escape has a location-scale fit", {
 })
 
 test_that("fixed df agrees with oracle and Cauchy, with correct metadata", {
+  skip_unless_tier("full")
   x <- c(-5,-2,-1,0,0,1,2,9)
   for (df in c(1, 2.5, 10)) {
     fit <- suppressWarnings(mllst(x, df = df, gradtol = 1e-8, iterlim = 5000), classes = "univariateML_restricted")
@@ -89,6 +91,7 @@ test_that("held Cauchy degrees of freedom allow balanced two-point maxima", {
 
 
 test_that("lst new holds agree with independent multistart likelihoods", {
+  skip_unless_tier("full")
   set.seed(8100+4336)
   held_values <- c(mu=0.2,sigma=1.3,df=3)
   samples <- list(rlogis(20),rlogis(100),c(-2,-1,0,0,1,3),c(-1,2),
