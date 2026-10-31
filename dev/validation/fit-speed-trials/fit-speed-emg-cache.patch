@@ -1,0 +1,40 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp
+@@ -4,6 +4,8 @@
+ #include "dpqr.hpp"
+ #include "../../core/span.hpp"
+ #include <vector>
++#include <map>
++#include <array>
+ 
+ namespace cppunivariate {
+ enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure };
+@@ -24,7 +26,7 @@
+           sum+=z-h;deriv-=(t+h)*h/s;
+         } else {const CPPUNIV_EXTENDED_REAL r=std::exp(-logmills(t));sum+=a-r;deriv-=r*(r-t)/s;}
+       }
+-      return std::vector<CPPUNIV_EXTENDED_REAL>{sum,deriv};
++      return std::array<CPPUNIV_EXTENDED_REAL,2>{{sum,deriv}};
+     };
+     double step=std::max(s,1/l),lo=x.front()-step,hi=x.back()+step;
+     for(int k=0;k<100 && score(lo)[0]<0;++k) {step*=2;lo-=step;}
+@@ -40,7 +42,19 @@
+     }
+     return m;
+   }
++  // Cache only finite coordinates. Search status/iterations are attached
++  // to copies, so a cache hit preserves the exact objective and profile result.
++  mutable std::map<std::vector<double>,EmgResult> cache;
+   EmgResult evaluate(const std::vector<double>& t) const {
++    for(double coordinate:t)if(!std::isfinite(coordinate))return evaluate_uncached(t);
++    const auto found=cache.find(t);
++    if(found!=cache.end())return found->second;
++    const auto value=evaluate_uncached(t);
++    if(cache.size()>=4096)cache.clear();
++    cache.emplace(t,value);
++    return value;
++  }
++  EmgResult evaluate_uncached(const std::vector<double>& t) const {
+     int k=0;
+     const double s=std::isnan(sigma)?std::exp(t[k++]):sigma;
+     const double l=std::isnan(lambda)?std::exp(-t[k++]):lambda;

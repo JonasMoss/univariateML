@@ -218,6 +218,12 @@ This family has a known support endpoint and delegates fitting to gb2.
 
 ## Details
 
+The 2026-10-31 GB2 member-seed subsampling for samples larger than 1000
+also applies through this delegate when all four GB2 coefficients are free.
+The held-threshold shift, validation and full-data final checks are unchanged;
+see [GB2](../gb2/README.md) and the
+[paired evidence](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 Identification transfers from GB2 on x-min. Interior optimization and enumeration of competing faces are numerical, not a proof of global concavity. The delegate compares faces within 1e-8*n and reports unresolved searches explicitly. All-held fits evaluate the density rather than estimate free coefficients.
 
 The GB2 coefficients are unchanged: shape2 is its power, shape3 its lower beta shape, and shape1 its upper beta shape.

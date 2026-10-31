@@ -1,0 +1,27 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/lst/mle.hpp
+@@ -10,6 +10,7 @@
+ #include <cmath>
+ #include <limits>
+ #include <vector>
++#include <map>
+ 
+ namespace cppunivariate {
+ inline constexpr double kLstDfLower = 1.0;
+@@ -217,7 +218,15 @@
+ // The grid nominates modes numerically; it is not an interval certificate.
+ struct Maximum {double point;bool converged;};
+ template <typename F>
+-inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit) {
++inline Maximum maximize(F evaluate,const std::vector<double>& grid,double tol,int maxit) {
++  std::map<double,double> cache;
++  auto f=[&](double point) {
++    const auto found=cache.find(point);
++    if(found!=cache.end())return found->second;
++    const double value=evaluate(point);
++    cache.emplace(point,value);
++    return value;
++  };
+   // A profile evaluation can itself perform a complete nuisance search.
+   // Cache grid values without changing the nominated maxima or refinements.
+   std::vector<double> values(grid.size());

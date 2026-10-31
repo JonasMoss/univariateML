@@ -91,6 +91,15 @@ The Tukey lambda family is defined by its quantile function and spans symmetric 
 
 ## Details
 
+The 2026-10-31 fit-speed revision shares the smaller-tail complement log and
+quantile magnitude between Newton value and derivative calculations. Brackets,
+Newton steps, stopping rules and objective reduction order are unchanged. A
+sorted warm-start trial was rejected after pointwise agreement failed to
+translate into a useful speed-up of the slowest held-scale fit; a pilot also
+exceeded the coefficient comparison tolerance. See the [paired evidence and
+rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 Evaluation permits all finite shapes. With location free, estimated shape uses the principal unimodal branch, -1 <= lambda <= 1, including both attained bounds. Held location exempts the lower bound. The default fit requires at least three finite observations with every tie multiplicity strictly less than half the sample size. Numerical fitting also requires a finite sample range and standardization that preserves distinct values. Every coefficient may be held; a held finite shape may lie outside the fitted branch, including lambda = 2 as an exact uniform alias. The two uniform representations have scales differing by a factor of two, so unrestricted shape is not identifiable.
 
 The unrestricted likelihood is unbounded. Set location at one observation and sigma = lambda times A, where A exceeds every distance to that observation. At the centre the density is 2^(lambda-2)/(lambda A). At each nonzero distance d, the density is asymptotic to 1/(lambda abs(d)). Thus, with k observations at the centre, the log likelihood grows as k lambda log(2) - n log(lambda) plus a bounded term. No unrestricted MLE is returned.

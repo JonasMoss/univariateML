@@ -73,6 +73,14 @@ The exponentially modified Gaussian is the sum of independent normal and exponen
 
 ## Details
 
+The 2026-10-31 fit-speed revision returns location scores in a fixed-size array
+instead of allocating a vector. Starts, density evaluations, location
+convergence, boundary comparisons and failed-optimizer score checks are
+unchanged. Full-profile caching and likelihood-invariant hoisting were tried
+without a useful default-fit timing improvement. See the [paired evidence and
+rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 `mu` is the normal component mean, rather than the mean of the sum.
 Constant observations can have unbounded likelihood. A finite interior maximum
 need not exist. Normal and translated exponential faces are compared with

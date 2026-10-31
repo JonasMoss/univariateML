@@ -186,7 +186,11 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
       } else {
         double left=-32,right=32;
         for(int j=0;j<110;++j) {
-          const double mid=(left+right)/2,scale=std::exp(mid);
+          const double mid=(left+right)/2;
+          // Once the midpoint rounds to an endpoint, the remaining
+          // updates cannot change the represented final midpoint or scale.
+          if(mid==left || mid==right)break;
+          const double scale=std::exp(mid);
           double score=-n;
           for(double a:y) {
             const double w=(a-c)/(scale*(a<c ? 1/fx : fx));

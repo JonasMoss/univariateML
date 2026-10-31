@@ -715,9 +715,16 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
   for(double v:x) y.push_back((v-origin)/unit);
   double shift=0;
   const double scale=dens::sstd_sigma(fixed_nu,fixed_xi,shift);
+  const double log_g=std::log(2.0/(fixed_xi+1.0/fixed_xi));
+  const double normalizer=dens::log_dstd_unit_const(fixed_nu);
   auto cost=[&](double mean, double sd) {
     double neg=x.size()*(std::log(sd)-std::log(scale));
-    for(double v:y) neg-=dens::log_dsstd_core((v-mean)*scale/sd+shift,fixed_nu,fixed_xi);
+    for(double v:y) {
+      const double z=(v-mean)*scale/sd+shift;
+      const double Xi=std::pow(fixed_xi,dens::sign1(z));
+      const double u=z/Xi;
+      neg-=log_g+(normalizer-0.5*(fixed_nu+1.0)*std::log1p(u*u/(fixed_nu-2.0)));
+    }
     return neg;
   };
   double mean=0, sd=hs ? fixed_sd/unit : 1;

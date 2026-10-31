@@ -90,6 +90,14 @@ The location-scale Student t includes heavy-tailed distributions with infinite v
 
 ## Details
 
+The 2026-10-31 fit-speed revision computes the fixed-df likelihood normalizer
+once per conditional nuisance search. It retains the scale reconstruction
+exp(log(s)), per-observation grouping and input-order reduction of LstCost, so
+repeated evaluations have the same represented values. The shared routine is
+also used by held-scale standardized Student-t fits. No grid or stopping rule
+changes. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 `sigma` is a scale, not a standard deviation. With location free, estimating shape restricts `df` to be at least 1 and includes the attained Cauchy member at `df = 1`. Unrestricted positive degrees of freedom allow unbounded likelihood through scale collapse. The fitter requires at least three observations and rejects samples in which any value occurs at least half the time, including equality.
 
 A multistart profile grid and joint refinement compare finite fits with Cauchy and normal fits. The joint problem need not be unimodal; the search does not certify a global maximum. Log-likelihood differences within `1e-8` per observation are treated as ties, preferring Cauchy and then other attained finite members. On the unresolved normal approach (`df >= 1e5`) a numerical tie selects the normal boundary.

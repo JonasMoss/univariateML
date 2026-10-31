@@ -93,6 +93,13 @@ The Student-t distribution is a symmetric, heavy-tailed alternative to the norma
 
 ## Details
 
+The 2026-10-31 fit-speed revision hoists the fixed-df normalizer in the shared
+lst conditional search used by held-scale fits. It preserves scale
+reconstruction, likelihood grouping, observation order and all nominated/refined
+points. See the lst dossier for the shared method; this does not certify the
+existing numerical grid globally. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 With free degrees of freedom, a tie of multiplicity $k>2(n-k)$ makes the likelihood unbounded; equality is reported as an uncertified scale-collapse boundary rather than as unbounded.
 
 This is the fGarch parameterisation: `mean` and `sd` are the mean and standard deviation, and `nu` is greater than 2. A location-scale t distribution with 2 degrees of freedom has infinite variance and cannot be represented by finite coefficients in this parameterisation.

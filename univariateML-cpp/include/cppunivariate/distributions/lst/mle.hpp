@@ -247,7 +247,19 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
   LstResult bad{nan,nan,df,nan,0,LstStatus::InvalidStart};
   if(x.empty()||!(tol>0)||maxit<1||!std::isfinite(df)||!(df>0))return bad;
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
-  auto ll=[&](double m,double s){const double p[]={m,std::log(s)};return -LstCost{x,df,true}(p);};
+  // Shape is fixed throughout this nuisance search; preserve LstCost's
+  // per-observation grouping and input-order reduction exactly.
+  const double c=df>1e4 ? -0.5*std::log(2.0*M_PI)-0.25/df :
+    special::lgamma((df+1.0)/2.0)-special::lgamma(df/2.0)-0.5*std::log(df*M_PI);
+  auto ll=[&](double m,double s) -> double {
+    const double ls=std::log(s);
+    // LstCost reconstructs s from log(s); keep that rounding.
+    const double represented=std::exp(ls);
+    if(!(represented>0) || !std::isfinite(represented))return -INFINITY;
+    double f=0;
+    for(double v:x) {const double z=(v-m)/represented;f+=ls-c+0.5*(df+1.0)*std::log1p(z*z/df);}
+    return -f;
+  };
   double m=mu,s=sigma;
   if(std::isnan(s)) {
     std::size_t k=0;double r=0;for(double v:y){k+=v==m;r=std::max(r,std::abs(v-m));}
