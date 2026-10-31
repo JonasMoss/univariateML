@@ -28,7 +28,7 @@ function intervalTex(name: string, lb: string, lo: string, hi: string, rb: strin
     if (hiInf) return `${name} \\in \\{${start}, ${next}, \\dots\\}`;
     return `${name} \\in \\{${start}, \\dots, ${H}\\}`;
   }
-  if (loInf && hiInf) return `${name} \\in \\mathbb{R}`;
+  if (loInf && hiInf) return `${name} \\in ℝ`;
   if (hiInf) return `${name} ${lb === '(' ? '>' : '\\ge'} ${L}`;
   if (loInf) return `${name} ${rb === ')' ? '<' : '\\le'} ${H}`;
   if (/cases/.test(L + H)) return `${name} \\in ${lb === '(' ? '(' : '['}${L},\\ ${H}${rb === ')' ? ')' : ']'}`;
@@ -57,22 +57,26 @@ export function phrase(text: string, sym: Map<string, string>): string {
 
 export const heldTex = (set: string[], sym: Map<string, string>) => set.map(n => sym.get(n) || n).join(', ');
 
-export interface LimitGroup { model?: string; name?: string; kind?: string; when: string; free: boolean; held: string[][] }
+export interface LimitGroup { model?: string; name?: string; status?: string; path: string; detect?: string; when: string; free: boolean; held: string[][]; nonexistence: boolean }
+
+const NONEXISTENCE = new Set(['Unbounded', 'Degenerate', 'UnboundedLikelihood', 'DegenerateData', 'NoMLE']);
 
 // One row per limit model (or named boundary), not one per held subset.
+// path: the mathematical description (`when`); detect: the fitter's criterion.
 export function groupLimits(f: any): LimitGroup[] {
   const groups = new Map<string, any>();
   for (const l of f.limits || []) {
     const key = l.model ? `m:${l.model}` : `n:${l.name || l.status}`;
     let g = groups.get(key);
-    if (!g) { g = { model: l.model, name: l.name, kind: l.kind, whenFree: null, whenHeld: null, free: false, held: [] }; groups.set(key, g); }
-    const text = l.detect || l.when;
-    if (l.fixed?.length) { g.held.push(l.fixed); g.whenHeld ??= text; }
-    else { g.free = true; g.whenFree ??= text; g.name = l.name || g.name; g.kind = l.kind || g.kind; }
+    if (!g) { g = { model: l.model, name: l.name, status: l.status, kind: l.kind, free: false, held: [], freeRec: null, heldRec: null }; groups.set(key, g); }
+    if (l.fixed?.length) { g.held.push(l.fixed); g.heldRec ??= l; }
+    else { g.free = true; g.freeRec ??= l; g.name = l.name || g.name; g.status = l.status || g.status; g.kind = l.kind || g.kind; }
   }
-  return [...groups.values()]
-    .map(g => ({ model: g.model, name: g.name, kind: g.kind, when: g.whenFree ?? g.whenHeld, free: g.free, held: g.held }))
-    .sort((a, b) => Number(b.free) - Number(a.free));
+  return [...groups.values()].map(g => {
+    const r = g.freeRec || g.heldRec;
+    const nonexistence = !g.model && (g.kind === 'nonexistence' || NONEXISTENCE.has(g.status));
+    return { model: g.model, name: g.name, status: g.status, path: r.when, detect: r.detect, when: nonexistence ? (r.detect || r.when) : r.when, free: g.free, held: g.held, nonexistence };
+  }).sort((a, b) => Number(b.free) - Number(a.free));
 }
 
 export function restrictions(f: any): { param: string; lower?: number; upper?: number; reason: string; exempt: string[][] }[] {
