@@ -1,0 +1,27 @@
+--- univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp	2026-10-31 18:26:53.730310588 +0100
++++ build/scratch/logconcave-candidate/cppunivariate/distributions/bhatt/mle.hpp	2026-10-31 18:34:24.815339821 +0100
+@@ -1,4 +1,5 @@
+ #pragma once
++#include "../../core/logconcave_trial.hpp"
+ #include "../../core/precision.hpp"
+ #include "../../core/multistart.hpp"
+ #include "dpqr.hpp"
+@@ -152,6 +153,10 @@
+   auto attempted=best;
+   const std::vector<double> starts={-4,-1,0,1};
+   const std::vector<double> widths={-4,-1,-.3,-.05};
++  if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(a)) {
++    const auto candidate=logconcave_trial::search(y,[](double z,double k) {return distributions::dbhatt(z,0,1,k,true);},maxit);
++    if(candidate.ok)best=attempted={candidate.u/candidate.b,1/candidate.b,candidate.k/candidate.b,candidate.ll,0,BhattStatus::Ok};
++  } else {
+   for(double s:starts)for(double b:widths){
+     if(!std::isnan(sigma)&&s!=starts.front())continue;
+     if(!std::isnan(a)&&b!=widths.front())continue;
+@@ -159,6 +164,7 @@
+     const auto f=bhatt_detail::search(p,t,tol,maxit);if(std::isfinite(f.logLik) && f.logLik>attempted.logLik)attempted=f;
+     if(f.status==BhattStatus::Ok && std::isfinite(f.logLik) && f.logLik>best.logLik)best=f;
+   }
++  }
+   if(!std::isfinite(best.logLik))best=attempted;
+   double comparison=attempted.logLik;
+   const double tie=1e-8*n;
