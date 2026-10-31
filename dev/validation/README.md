@@ -220,8 +220,37 @@ family in generated d/p/q/r tests; count coverage separately.
   [truth_reference.py](quality/truth_reference.py) and family `truth.py`
   routes use mpmath, symbolic parsing, high-precision integration or controlled
   sums, normalization and derivative checks, tail inversion and binary64
-  brackets. Files also contain elapsed times and a hash of the entire README,
-  so a rerun need not be byte-identical even when numerical rows are unchanged.
+  brackets. The historical interior/default/fitted grid is retained. Attained
+  coefficient-domain bounds (inclusive brackets) are appended without the
+  historical eight-point cap, including integer designs and dependent bounds.
+  Dependent inclusive domains are projected to compatible values; routes may
+  select a valid conditional submodel (CMP's geometric face, for example).
+  GEV/GPD also explicitly cover the attained fit restriction `xi = -1`.
+  Every point includes support endpoints, adjacent binary64 probes, both log
+  tails, and quantile inputs at probabilities zero and one in both scales.
+  Finite continuous endpoints use the declarative one-sided density limit;
+  atomic count limits use exact closed-form masses, retaining the family's
+  finite design endpoints and collapsing unbounded atomic supports. These are
+  independent mathematical references,
+  never C++ or R evaluations. One-coordinate faces do not exhaust their
+  intersections or all possible endpoint density regimes.
+  Tables contain a semantic input hash (generator, reference, route, density
+  and numerical metadata), with timings confined to the audit output. They
+  are byte-reproducible within the recorded Python environment. The boundary
+  [report](../research/evaluations/2026-10-31-truth-boundaries-report.md)
+  records per-family additions, exclusions and unresolved dpqr findings.
+  Exact local `truth_exclusions` declarations retain known failing references
+  in `excluded_values` / `excluded_quantiles`, with reasons, outside active
+  checks. They change neither the oracle nor its tolerances. Complete unsupported
+  laws are retained in `excluded_parameter_points`, with their parameters,
+  normalization and full reference rows, so R consumers do not try to sample
+  an unsupported member. The public default and fitted sampler points cannot
+  be excluded. The positive-truncated Poisson/binomial zero-rate limits use
+  this complete-law archive; ordinary zero-rate conditional representatives
+  remain active. The CMB size-cap
+  workload filter retains both support endpoints and both natural-scale median
+  quantiles as active checks; its remaining independently computed probes stay
+  in those excluded arrays because every C++ call enumerates 10,000,001 terms.
   The [original methodology](../research/evaluations/2026-10-29-dpqr-truth/README.md)
   explains quadrature, omitted-tail and precision thresholds. That report's
   family failures and gaps are historical: later routes cover all 98 families

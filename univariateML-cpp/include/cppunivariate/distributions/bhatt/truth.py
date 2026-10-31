@@ -3,9 +3,15 @@
 The route contains only mathematical definitions, no C++/R/reference calls.
 """
 import mpmath as mp
+from quality.truth_reference import atomic
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t):
+    # Uniform(-a,a) collapses to zero at a=0, leaving the normal law.
+    if t['a'] == 0:
+        m,s=t['mu'],t['sigma']
+        return Reference(lambda x:normal((x-m)/s),
+            log_density=lambda x:-mp.log(s)-mp.log(2*mp.pi)/2-((x-m)/s)**2/2)
     m,s,a=t['mu'],t['sigma'],t['a']
     def primitive(z):
         return z*mp.erfc(-z/mp.sqrt(2))/2+mp.exp(-z*z/2)/mp.sqrt(2*mp.pi)

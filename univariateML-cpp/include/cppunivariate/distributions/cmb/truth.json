@@ -42,6 +42,26 @@
       10.0,
       0.5,
       1.0
+    ],
+    [
+      0.0,
+      0.5,
+      1.0
+    ],
+    [
+      10000000.0,
+      0.0,
+      1.0
+    ],
+    [
+      10.0,
+      0.0,
+      1.0
+    ],
+    [
+      10.0,
+      1.0,
+      1.0
     ]
   ],
   "normalization": [
@@ -71,6 +91,22 @@
     },
     {
       "point": 6,
+      "mass": "1.0"
+    },
+    {
+      "point": 7,
+      "mass": "1.0"
+    },
+    {
+      "point": 8,
+      "mass": "1.0"
+    },
+    {
+      "point": 9,
+      "mass": "1.0"
+    },
+    {
+      "point": 10,
       "mass": "1.0"
     }
   ],
@@ -854,6 +890,272 @@
     ],
     [
       6,
+      10.000000000000002,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      7,
+      -5e-324,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      7,
+      0.0,
+      0.0,
+      0.0,
+      "-Inf"
+    ],
+    [
+      7,
+      5e-324,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      7,
+      0.5,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      8,
+      0.0,
+      0.0,
+      0.0,
+      "-Inf"
+    ],
+    [
+      8,
+      10000000.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      -5e-324,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      9,
+      0.0,
+      0.0,
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      5e-324,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      0.5,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      1.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      2.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      3.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      4.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      5.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      6.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      7.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      8.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      9.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      9.999999999999998,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      10.0,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      9,
+      10.000000000000002,
+      "-Inf",
+      0.0,
+      "-Inf"
+    ],
+    [
+      10,
+      -5e-324,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      0.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      5e-324,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      0.5,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      1.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      2.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      3.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      4.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      5.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      6.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      7.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      8.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      9.0,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      9.999999999999998,
+      "-Inf",
+      "-Inf",
+      0.0
+    ],
+    [
+      10,
+      10.0,
+      0.0,
+      0.0,
+      "-Inf"
+    ],
+    [
+      10,
       10.000000000000002,
       "-Inf",
       0.0,
@@ -4248,10 +4550,1484 @@
       0.0,
       0,
       0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -690.7755278982137,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -230.25850929940458,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -69.07755278982137,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -27.631021115928547,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -13.815510557964274,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -4.605170185988092,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -1.3862943611198906,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -0.6931471805599453,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -800.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      -10000.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      "-Inf",
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      1e-300,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      1e-100,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      1e-30,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      1e-12,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      1e-06,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      0.01,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      1,
+      0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -690.7755278982137,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -230.25850929940458,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -69.07755278982137,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -27.631021115928547,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -13.815510557964274,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -4.605170185988092,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -1.3862943611198906,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -0.6931471805599453,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -800.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      -10000.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      "-Inf",
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      1e-300,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      1e-100,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      1e-30,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      1e-12,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      1e-06,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      0.01,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      7,
+      0,
+      0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      8,
+      1,
+      0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      8,
+      0,
+      0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -690.7755278982137,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -230.25850929940458,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -69.07755278982137,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -27.631021115928547,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -13.815510557964274,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -4.605170185988092,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -1.3862943611198906,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -0.6931471805599453,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -800.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      -10000.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      "-Inf",
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      1,
+      0.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      1e-300,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      1e-100,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      1e-30,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      1e-12,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      1e-06,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      0.01,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      1,
+      0,
+      1.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -690.7755278982137,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -230.25850929940458,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -69.07755278982137,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -27.631021115928547,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -13.815510557964274,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -4.605170185988092,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -1.3862943611198906,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -0.6931471805599453,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -800.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      -10000.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      "-Inf",
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      1e-300,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      1e-100,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      1e-30,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      1e-12,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      1e-06,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      0.01,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      0.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      9,
+      0,
+      0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -690.7755278982137,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -230.25850929940458,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -69.07755278982137,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -27.631021115928547,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -13.815510557964274,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -4.605170185988092,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -1.3862943611198906,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -0.6931471805599453,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -800.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      -10000.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      "-Inf",
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      1,
+      0.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      1e-300,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      1e-100,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      1e-30,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      1e-12,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      1e-06,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      0.01,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      0.25,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      0.5,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      1,
+      0,
+      1.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -690.7755278982137,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -230.25850929940458,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -69.07755278982137,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -27.631021115928547,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -13.815510557964274,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -4.605170185988092,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -1.3862943611198906,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -0.6931471805599453,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -800.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      -10000.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      "-Inf",
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      1e-300,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      1e-100,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      1e-30,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      1e-12,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      1e-06,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      0.01,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      0.25,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      0.5,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      0.0,
+      10.0,
+      10.0,
+      10.0,
+      0,
+      0.0
+    ],
+    [
+      10,
+      0,
+      0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0,
+      0.0
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "2455d353b54ee030c504462f636a8760c6bf50609e5c0fb52f7e9a3a864120fa",
+  "input_sha256": "915b305eac9d7de787fa6657b5b74cbfafe40a01c97c9712eb1b6388af9e3a15",
   "sampler_points": [
     [
       6
@@ -4259,5 +6035,2637 @@
     [
       1
     ]
+  ],
+  "excluded_values": [
+    {
+      "row": [
+        8,
+        -5e-324,
+        "-Inf",
+        "-Inf",
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        5e-324,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0.5,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        2.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        3.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        4.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        5.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        6.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        7.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        8.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        9.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        10.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        11.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        12.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        13.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        14.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        15.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        16.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        17.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        18.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        19.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        20.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        21.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        22.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        23.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        24.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        25.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        26.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        27.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        28.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        29.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        30.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        31.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        32.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        33.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        34.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        35.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        36.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        37.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        38.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        39.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        40.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        41.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        42.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        43.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        44.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        45.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        46.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        47.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        48.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        49.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        50.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        51.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        52.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        53.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        54.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        55.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        56.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        57.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        58.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        59.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        60.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        61.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        62.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        63.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        64.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        65.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        66.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        67.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        68.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        69.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        70.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        71.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        72.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        73.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        74.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        75.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        76.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        77.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        78.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        79.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        80.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        81.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        82.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        83.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        84.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        85.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        86.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        87.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        88.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        89.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        90.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        91.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        92.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        93.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        94.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        95.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        96.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        97.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        98.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        99.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        100.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        101.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        102.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        103.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        104.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        105.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        106.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        107.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        108.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        109.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        110.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        111.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        112.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        113.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        114.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        115.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        116.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        117.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        118.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        119.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        120.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        121.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        122.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        123.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        124.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        125.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        126.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        127.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        128.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        129.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        130.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        131.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        132.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        133.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        134.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        135.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        136.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        137.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        138.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        139.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        140.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        141.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        142.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        143.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        144.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        145.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        146.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        147.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        148.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        149.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        150.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        151.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        152.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        153.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        154.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        155.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        156.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        157.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        158.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        159.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        160.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        161.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        162.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        163.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        164.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        165.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        166.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        167.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        168.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        169.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        170.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        171.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        172.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        173.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        174.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        175.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        176.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        177.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        178.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        179.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        180.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        181.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        182.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        183.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        184.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        185.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        186.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        187.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        188.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        189.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        190.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        191.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        192.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        193.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        194.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        195.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        196.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        197.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        198.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        199.0,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        9999999.999999998,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        10000000.000000002,
+        "-Inf",
+        0.0,
+        "-Inf"
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    }
+  ],
+  "excluded_quantiles": [
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -690.7755278982137,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -230.25850929940458,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -69.07755278982137,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -27.631021115928547,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -13.815510557964274,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -4.605170185988092,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -1.3862943611198906,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -0.6931471805599453,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -800.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        -10000.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        "-Inf",
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        1,
+        0.0,
+        10000000.0,
+        10000000.0,
+        10000000.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        1e-300,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        1e-100,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        1e-30,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        1e-12,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        1e-06,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        0.01,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        0.25,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        1,
+        0,
+        1.0,
+        10000000.0,
+        10000000.0,
+        10000000.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -690.7755278982137,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -230.25850929940458,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -69.07755278982137,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -27.631021115928547,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -13.815510557964274,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -4.605170185988092,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -1.3862943611198906,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -0.6931471805599453,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -800.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        -10000.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        "-Inf",
+        10000000.0,
+        10000000.0,
+        10000000.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        1e-300,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        1e-100,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        1e-30,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        1e-12,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        1e-06,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        0.01,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        0.25,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        0.0,
+        10000000.0,
+        10000000.0,
+        10000000.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    },
+    {
+      "row": [
+        8,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0
+      ],
+      "reason": "TASK-106 CMB size-cap workload: each call enumerates 10,000,001 entries; see boundary report"
+    }
   ]
 }

@@ -5720,7 +5720,7 @@
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "input_sha256": "312034d03e4732b1247c49f25daa66fb34ca8b6d24a307208a369f46a421b238",
+  "input_sha256": "b444e0c70f514ee0bc5edabe264887fdafb0d3e01d16f6bd8fb98d4cfebb17a7",
   "sampler_points": [
     [
       8
