@@ -35,8 +35,8 @@ references:
 holds: []
 limits:
 - name: point-mass collapse
-  when: Both free shapes diverge on constant data.
-  detect: All observations are equal and neither shape is held.
+  when: '$a$ tends to infinity and $b=c^{-a}$ for a fixed $0<c<1$'
+  detect: 'every observation equals $c$ and neither shape is held'
   status: Unbounded
   message: unbounded
 examples: |
@@ -76,14 +76,33 @@ summary: Kumaraswamy provides a model for bounded proportions needing an explici
 aliases: []
 key_references:
 - 3
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both shapes free, a finite MLE exists for every nonconstant
+    sample in $(0,1)$, but joint uniqueness is not established. Constant
+    data have unbounded likelihood. Holding either shape gives a unique
+    finite MLE even for constant interior data. Holding both leaves only
+    likelihood evaluation.
+  reason: >-
+    Put $t_i=-\log x_i$ and $S(a)=\sum_i\log(1-e^{-at_i})$.
+    Profiling gives $\hat b=-n/S(a)$. As $a\to0$ the profile behaves like
+    $-n\log|\log a|+O(1)$. As $a\to\infty$ it is
+    $a(n\min_i t_i-\sum_i t_i)+n\log a+O(1)$, which tends to
+    $-\infty$ for nonconstant data and to $+\infty$ for constant data.
+    Hence the continuous profile attains a maximum in the nonconstant case.
+    With $a$ held the likelihood is strictly concave in $b$.
+    With $b$ held the score in $a$ strictly decreases from $+\infty$ to
+    $-\sum_i t_i<0$. For $b<1$ its derivative is at most $-nb/a^2<0$,
+    using $(at_i)^2e^{at_i}/(e^{at_i}-1)^2\le1$.
 ---
 
-The Kumaraswamy distribution is a flexible distribution for continuous data between zero and one. It provides a tractable alternative to the beta distribution.
+The Kumaraswamy distribution models continuous proportions strictly between zero and one. Its two shapes control behaviour near the lower and upper ends of the interval. It offers an elementary quantile function as an alternative to the beta distribution.
 
 ## Details
 
-For constant observations the likelihood is unbounded, so no finite maximum likelihood estimate exists.
+With both shapes free, constant observations have unbounded likelihood. If their common value is $c$, taking $a\to\infty$ and $b=c^{-a}$ concentrates the distribution at $c$ and makes its density there grow without bound.
 
-The maximum likelihood estimate exists for every nonconstant sample in $(0, 1)$: with `b` profiled out, the log-likelihood tends to $-\infty$ both as $a \to 0$ and as $a \to \infty$, so the family has no escapes.
+Every nonconstant interior sample has a finite maximum because the likelihood, after profiling out $b$, tends to $-\infty$ at both ends of the positive range of $a$. This proves existence, but does not prove uniqueness of the maximum or certify the numerical root search. The fit uses Newton iteration with a bracketed profile fallback.
 
-With `a` held, `b = -n / sum(log(1-x^a))`. With `b` held, the strictly decreasing score for `a` has a unique positive root, found by bracketing. These fits exist even for constant interior data. Constant data have unbounded likelihood only when both shapes are free. Both-held fits evaluate the likelihood.
+With $a$ held, $\hat b=-n/\sum_i\log(1-x_i^a)$. With $b$ held, the strictly decreasing score for $a$ has a unique positive root, found by bracketing. These conditional fits exist even for constant interior data. Holding both evaluates the likelihood.

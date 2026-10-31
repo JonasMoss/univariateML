@@ -31,7 +31,8 @@ references:
 limits:
 - name: unbounded likelihood
   fixed: [scale]
-  when: Every observation equals held scale.
+  when: '$k$ tends to infinity with scale $\lambda$ held at the common observation value'
+  detect: '$k$ is free and every observation equals the held scale $\lambda$'
   status: Unbounded
   message: unbounded
 examples: |
@@ -76,19 +77,40 @@ aliases:
 - "Rosin–Rammler"
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists for every
+    nonconstant positive sample. Constant data have unbounded likelihood.
+    Holding shape gives a unique finite scale estimate even for constant data.
+    Holding scale gives a unique finite shape estimate unless every observation
+    equals that scale, when the likelihood is unbounded. Holding both leaves
+    only likelihood evaluation.
+  reason: >-
+    Write $z_i=\log x_i$. After profiling scale, the shape score per
+    observation is $1/k+\bar z-\sum_i z_i e^{kz_i}/\sum_i e^{kz_i}$.
+    Its derivative is $-1/k^2$ minus a weighted variance. For nonconstant
+    data it decreases from $+\infty$ to $\bar z-\max_i z_i<0$.
+    With scale held, put $r_i=\log(x_i/\lambda)$. The score
+    $n/k+\sum_i r_i(1-e^{kr_i})$ has derivative
+    $-n/k^2-\sum_i r_i^2e^{kr_i}<0$ and crosses zero unless every $r_i=0$.
+    With shape held, $\hat\lambda=(n^{-1}\sum_i x_i^k)^{1/k}$.
 ---
 
-The Weibull distribution is used for lifetimes and reliability data.
+The Weibull distribution models lifetimes and reliability data. Its scale $\lambda$ sets the time unit. Its shape $k$ gives a decreasing hazard when $k<1$, a constant hazard when $k=1$, and an increasing hazard when $k>1$.
 
 ## Details
 
-The optional `shape0` start is functional here; it was documented but ignored in univariateML 1.x.
+The joint fit transforms the observations to $-\log x$ and fits a Gumbel distribution. This reduces the problem to a unique scalar root after profiling location. Constant data instead allow the shape to grow without bound while scale remains at their common value, so no finite MLE exists.
 
-With scale held, the likelihood is unbounded exactly when every observation equals that scale. Holding shape permits constant data.
+Holding shape gives an explicit scale estimate. Holding scale leaves a strictly decreasing shape score, solved by bracketing. This fit is finite unless all observations equal the held scale. Holding both evaluates the likelihood.
 
-### Diagnostic status contract (2026-10-31)
+## R notes
 
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+The optional `shape0` starting value is used and must be positive and finite.
+
+## Decision history
+
+The `shape0` argument was documented but ignored in univariateML 1.x; it is functional in the current fitter.
+
+2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on the held coefficients, and failures from the Gumbel fit survive transformation. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.

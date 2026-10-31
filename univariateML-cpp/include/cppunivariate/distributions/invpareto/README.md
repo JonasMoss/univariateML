@@ -27,8 +27,8 @@ r:
 log_density: log(shape) + log(scale) - 2*log(x) - (shape+1)*log(1+scale/x)
 limits:
   - model: invexp
-    when: '$\mathrm{shape} \to \infty$ with $\mathrm{shape} \cdot \mathrm{scale}$ fixed'
-    detect: the reciprocal Lomax profile gap maximised over 0 < u < ubar is at most 1e-8*n
+    when: '$\alpha$ tends to infinity while $\alpha\theta$ tends to a positive inverse exponential scale'
+    detect: 'both coefficients are free and the numerical profile search on the reciprocals finds no improvement over the best inverse exponential larger than $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit
 references:
 - del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability
@@ -82,14 +82,34 @@ summary: Inverse Pareto provides a model for positive loss sizes using the recip
 aliases: []
 key_references:
 - 5
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both coefficients free, a finite MLE exists exactly when the
+    Lomax MLE for the reciprocals $1/x_i$ exists. Otherwise the supremum
+    is the inverse exponential limit. Joint uniqueness is not established.
+    Holding either shape or scale gives a unique finite MLE for every
+    nonempty positive sample, including constant data.
+  reason: >-
+    The transformation $z_i=1/x_i$ gives a Lomax likelihood with
+    $\lambda=\theta$ and $\kappa=\alpha$, plus the parameter-independent
+    log-Jacobian $-2\sum_i\log x_i$. It preserves existence and uniqueness
+    for every held subset. The Lomax profile comparison below gives the
+    exact existence criterion.
 ---
 
-The inverse Pareto distribution models positive heavy-tailed data.
+The inverse Pareto distribution models positive heavy-tailed data as the reciprocal of a Lomax variable.
 
 ## Details
 
-The fit is the reciprocal of the Lomax fit on `1/x`.
+The coefficient $\theta$ is a scale for the observations, and $\alpha$ controls their shape. Taking reciprocals gives a Lomax distribution with rate $\theta$ and shape $\alpha$. The fit uses this transformation and includes its Jacobian in the likelihood.
 
-The MLE exists exactly when the Lomax MLE of `1/x` exists (see `mllomax`): with $y_i = (1/x_i)/\overline{1/x}$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ must be nonpositive for some $0<u<\bar u$, $\bar u = \overline{1/x}\,(\prod_i x_i)^{1/n}$; the implementation prefers the inverse exponential face within $10^{-8}n$ log-likelihood units. The moment condition `mean(1/x^2) < 2*mean(1/x)^2` decides only local behaviour at that face: `mlinvpareto(c(1, 0.01))` has an MLE. A pair has an MLE iff larger/smaller exceeds approximately 28.81.
+Put $y_i=(1/x_i)/\overline{1/x}$, $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uy_i)$ and $\bar u=\overline{1/x}(\prod_i x_i)^{1/n}$. The MLE exists exactly when $\psi(u)\le0$ for some $0<u<\bar u$. The Lomax argument compares the profiled likelihood with its exponential limit; reciprocation turns that limit into the inverse exponential. The bounded profile search is numerical and has no global certificate or proof of joint uniqueness.
 
-Holding either shape or scale gives a unique finite fit for positive samples, including constant data. The inverse exponential escape concerns the fit with both free.
+The condition $\overline{1/x^2}<2\overline{1/x}^{\,2}$ decides only local behaviour at the limit. The sample $(1,0.01)$ satisfies it but has a finite MLE. For two observations, the numerical transition is at a larger-to-smaller ratio of approximately 28.81; the exact criterion above handles equality.
+
+Holding either shape or scale removes the inverse exponential escape and gives a unique finite fit, even for constant data. Holding both evaluates the likelihood at the supplied coefficients.
+
+## R notes
+
+The implementation prefers the inverse exponential limit when the largest profile improvement it finds is at most $10^{-8}n$ log-likelihood units and stops with a recommendation to use `mlinvexp`. This tolerance can reject a mathematical MLE that ties or only slightly improves on the limit.
