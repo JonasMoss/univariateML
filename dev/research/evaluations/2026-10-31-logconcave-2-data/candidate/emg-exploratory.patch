@@ -1,0 +1,37 @@
+--- univariateML-cpp/include/cppunivariate/distributions/emg/mle.hpp	2026-10-31 18:26:53.736409813 +0100
++++ build/scratch/logconcave2-emg-exploratory-mle.hpp	2026-10-31 20:09:09.780036844 +0100
+@@ -1,4 +1,5 @@
+ #pragma once
++#include "../../core/logconcave_trial.hpp"
+ #include "../../core/precision.hpp"
+ #include "../../core/multistart.hpp"
+ #include "dpqr.hpp"
+@@ -113,6 +114,20 @@
+   // A grid of starts covers both faces and the interior. It is a numerical
+   // global search, not a certificate that every stationary mode is isolated.
+   const std::vector<double> starts={-6,-3,-1,0,1};
++  if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(lambda)) {
++    const auto candidate=logconcave_trial::search(y,[](double z,double k) {
++      const CPPUNIV_EXTENDED_REAL t=static_cast<CPPUNIV_EXTENDED_REAL>(k)-z;
++      CPPUNIV_EXTENDED_REAL g,h;
++      if(t>=12) { CPPUNIV_EXTENDED_REAL r=0;for(int j=40;j>=2;--j)r=j/(t+r);const CPPUNIV_EXTENDED_REAL v=1/(t+r);g=-z+v;h=-(t+v)*v; }
++      else {const CPPUNIV_EXTENDED_REAL r=std::exp(-emg_detail::logmills(t));g=r-k;h=-r*(r-t);}
++      return std::array<CPPUNIV_EXTENDED_REAL,3>{{distributions::demg(z,0,1,k,true),g,h}};
++    },maxit);
++    if(candidate.ok) {
++      const double sig=1/candidate.b,lam=candidate.k*candidate.b;
++      const auto polished=emg_detail::search(p,{std::log(sig),-std::log(lam)},tol,maxit);
++      if(polished.status==EmgStatus::Ok)best=attempted=polished;
++    }
++  } else {
+   for(double a:starts)for(double b:starts) {
+     if(!std::isnan(sigma)&&a!=starts.front())continue;
+     if(!std::isnan(lambda)&&b!=starts.front())continue;
+@@ -121,6 +136,7 @@
+     if(std::isfinite(fit.logLik) && fit.logLik>attempted.logLik)attempted=fit;
+     if(fit.status==EmgStatus::Ok && std::isfinite(fit.logLik) && fit.logLik>best.logLik)best=fit;
+   }
++  }
+   if(!std::isfinite(best.logLik))best=attempted;
+   double comparison=attempted.logLik;
+   const double n=static_cast<double>(x.size()),tie=1e-8*n;
