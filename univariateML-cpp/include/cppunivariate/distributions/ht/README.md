@@ -58,6 +58,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlht())
   mlht(x, mu = 0L)
+
+group: normal and Student
+construction:
+- folding
+relations: {}
+fit:
+  method: profile-search
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- measurement and errors
+classification: specialist
+classification_reason: Used within measurement and errors; classified by its specialised modelling role.
 ---
 
 The half-t models nonnegative Student t magnitudes with an endpoint, translated from zero.

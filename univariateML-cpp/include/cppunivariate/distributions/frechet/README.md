@@ -52,6 +52,26 @@ examples: |
   set.seed(1)
   x <- rml(200, mlfrechet())
   mlfrechet(x, mu = NULL)
+
+group: extreme value
+construction:
+- base
+relations:
+  transform_of:
+  - family: invweibull
+    transform: shift
+    at:
+      shape: lambda
+      scale: sigma
+    shift: mu
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- extremes and environment
+classification: specialist
+classification_reason: Used within extremes and environment; classified by its specialised modelling role.
 ---
 
 The Frechet distribution models heavy right tails and extreme maxima.

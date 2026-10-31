@@ -32,6 +32,26 @@ examples: |
   set.seed(1)
   x <- rml(200, mlinvgamma())
   mlinvgamma(x)
+
+group: gamma and Weibull
+construction:
+- transformation
+relations:
+  transform_of:
+  - family: gamma
+    transform: inverse
+    at:
+      shape: alpha
+      scale: 1/beta
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- reliability and survival
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The inverse gamma distribution is the distribution of the reciprocal of a gamma variable.

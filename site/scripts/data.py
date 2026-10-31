@@ -71,6 +71,36 @@ int main() {{
 }}
 '''
 
+def derived_tags(m):
+    support=m['support']
+    def numeric(v):
+        try: return float(v)
+        except (TypeError, ValueError): return None
+    lo,hi=numeric(support['lower']),numeric(support['upper'])
+    dependent=lo is None or hi is None
+    if support['type']=='integer':
+        shape='finite-counts' if hi is None or math.isfinite(hi) else 'counts'
+    elif lo==0 and hi==1: shape='unit'
+    elif lo is not None and hi is not None and math.isinf(lo) and math.isinf(hi): shape='real'
+    elif lo==0 and hi==math.inf: shape='positive'
+    elif (lo is None or math.isfinite(lo)) and (hi is None or math.isfinite(hi)): shape='bounded'
+    else: shape='positive' if hi==math.inf else 'real'
+    tags=[]
+    limits=m.get('limits',[])
+    if any(l.get('model') or re.search(r'half.family|half.normal|half.t|exponential|uniform|double pareto|shifted|two.point|two-piece|bernoulli|fixed.endpoint',str(l.get('name','')),re.I) for l in limits): tags.append('escapes')
+    if any(p.get('fit_domain') for p in m['params']): tags.append('restricted')
+    if any(h['status']=='no-mle' for h in m.get('holds',[])): tags.append('needs-held')
+    if any(h['status']=='not-implemented' for h in m.get('holds',[])): tags.append('partial')
+    if not tags and limits:
+        text=lambda l:' '.join(str(l.get(k,'')) for k in ('name','when','detect','status')).lower()
+        degenerate=lambda l:bool(re.search(r'constant|all.zero|all observations (?:are )?(?:equal|zero|one|at )|every (?:log |squared )?observation equals|all logits equal|degenerate|singleton',text(l)))
+        tags.append('degenerate-only' if all(degenerate(l) for l in limits) else 'partial')
+    return dict(support_tags=[shape]+(['dependent'] if dependent else []),
+                support_shape=shape, support_dependence='dependent' if dependent else 'fixed',
+                coefficient_count=str(len(m['params'])), coefficient_kinds=sorted({p.get('kind','regular') for p in m['params']}),
+                coefficient_tags=[str(len(m['params']))]+sorted({p.get('kind','regular') for p in m['params']}),
+                existence_tags=tags or ['always'])
+
 started=time.monotonic()
 out=[]
 for folder in sorted(FAMILIES.iterdir()):
@@ -100,7 +130,19 @@ for folder in sorted(FAMILIES.iterdir()):
     m.update(summary=m.get('summary') or re.split(r'\n\s*\n|\n## ',body.strip())[0].replace('\n',' '),
              log_latex=sp.latex(expr,symbol_names=symbol_names), density_latex=latex if readable else None,
              cpp=snippet(folder,m))
+    m.update(derived_tags(m))
     out.append(clean(m))
+# Invert relations once, retaining their direction and coefficient maps.
+for m in out:
+    related=[]
+    for kind,edges in m.get('relations',{}).items():
+        related.extend(dict(family=e['family'],kind='Parent' if kind=='special_case_of' else 'Transform parent',edge=e) for e in edges)
+    for child in out:
+        for kind,edges in child.get('relations',{}).items():
+            related.extend(dict(family=child['id'],kind='Special case' if kind=='special_case_of' else 'Transformed family',edge=e) for e in edges if e['family']==m['id'])
+    related.extend(dict(family=e['model'],kind='Limit model',note=e['when']) for e in m.get('limits',[]) if e.get('model'))
+    m['related']=[dict(r,name=next(f['name'] for f in out if f['id']==r['family'])) for r in related]
+    m['unlinked_limits']=[e for e in m.get('limits',[]) if not e.get('model')]
 path=ROOT/'site/src/data/families.json'
 path.parent.mkdir(parents=True,exist_ok=True)
 path.write_text(json.dumps(out,indent=2,allow_nan=False)+'\n')

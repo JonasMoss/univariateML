@@ -62,6 +62,21 @@ examples: |
   set.seed(1)
   x <- rml(200, mltlambda())
   mltlambda(x)
+
+group: skewed and robust location-scale
+construction:
+- location-scale
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- robust modelling
+classification: specialist
+classification_reason: Used within robust modelling; classified by its specialised modelling role.
 ---
 
 The Tukey lambda family is defined by its quantile function and spans symmetric heavy-tailed, logistic, approximately normal and uniform shapes.

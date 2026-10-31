@@ -39,6 +39,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlzip())
   mlzip(x)
+
+group: modified counts
+construction:
+- modification
+relations: {}
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The zero-inflated Poisson distribution mixes a Poisson count with an additional point mass at zero.

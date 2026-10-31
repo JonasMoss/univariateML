@@ -21,6 +21,25 @@ examples: |
   set.seed(1)
   x <- rml(200, mlrayleigh())
   mlrayleigh(x)
+
+group: gamma and Weibull
+construction:
+- base
+relations:
+  special_case_of:
+  - family: weibull
+    at:
+      shape: 2
+      scale: sqrt(2)*sigma
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+- waiting times and queues
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The Rayleigh distribution describes the magnitude of a pair of independent centred normal variables with a common scale.

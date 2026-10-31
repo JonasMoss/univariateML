@@ -97,6 +97,22 @@ examples: |
   set.seed(1)
   x <- rml(200, mlgenbeta())
   mlgenbeta(x, scale = 1L)
+
+group: beta and generalised beta
+construction:
+- base
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- actuarial
+- economics and income
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 The generalized beta of the first kind models positive observations below a known upper endpoint.

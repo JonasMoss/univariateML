@@ -175,6 +175,32 @@ examples: |
   set.seed(1)
   x <- rml(200, mlfpareto())
   mlfpareto(x, min = 0L, shape1 = 0.3, shape3 = 0.4)
+
+group: Pareto and Lomax
+construction:
+- base
+- generalisation
+relations:
+  transform_of:
+  - family: gb2
+    transform: shift
+    at:
+      shape1: shape1
+      shape2: shape2
+      shape3: shape3
+      scale: scale
+    shift: min
+fit:
+  method: delegation
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- actuarial
+- economics and income
+classification: uncommon
+classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
+  surveyed.
 ---
 
 This family has a known support endpoint and delegates fitting to gb2.

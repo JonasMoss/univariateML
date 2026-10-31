@@ -38,6 +38,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlhcauchy())
   mlhcauchy(x, mu = 0L)
+
+group: other positive
+construction:
+- folding
+relations: {}
+fit:
+  method: profile-search
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+classification: specialist
+classification_reason: Used within reliability and survival; classified by its specialised modelling role.
 ---
 
 The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint, translated from zero.

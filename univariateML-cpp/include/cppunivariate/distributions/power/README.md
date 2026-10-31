@@ -37,6 +37,26 @@ examples: |
   set.seed(1)
   x <- rml(200, mlpower())
   mlpower(x)
+
+group: bounded continuous
+construction:
+- base
+relations:
+  special_case_of:
+  - family: genbeta
+    at:
+      shape1: beta
+      shape2: 1
+      shape3: 1
+      scale: alpha
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- proportions
+classification: specialist
+classification_reason: Used within proportions; classified by its specialised modelling role.
 ---
 
 The power distribution models positive quantities below a finite upper endpoint.

@@ -33,6 +33,19 @@ limits:
 examples: |
   x <- datasets::airquality$Wind[!is.na(datasets::airquality$Wind)]
   mlinvgauss(x)
+
+group: other positive
+construction:
+- base
+relations: {}
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The inverse Gaussian (Wald) distribution models positive quantities, including first-passage times of Brownian motion with positive drift.

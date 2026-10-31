@@ -46,6 +46,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlzinb())
   mlzinb(x)
+
+group: modified counts
+construction:
+- modification
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The zero-inflated negative binomial distribution mixes negative binomial counts with an additional point mass at zero.

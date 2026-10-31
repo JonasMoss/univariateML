@@ -46,6 +46,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlzmnbinom())
   mlzmnbinom(x)
+
+group: modified counts
+construction:
+- modification
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 Zero-modified negative binomial distributions model counts with a separate zero component.

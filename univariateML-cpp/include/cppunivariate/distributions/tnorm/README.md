@@ -68,6 +68,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mltnorm())
   mltnorm(x, a = -Inf, b = Inf)
+
+group: normal and Student
+construction:
+- truncation
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- measurement and errors
+classification: specialist
+classification_reason: Used within measurement and errors; classified by its specialised modelling role.
 ---
 
 The truncated normal distribution is a normal distribution restricted to an interval `[a, b]` with finite bounds closed; it models measurements that are only recorded, or only possible, inside that interval. `mean` and `sd` are the parameters of the parent normal distribution, not the mean and standard deviation of the truncated one.

@@ -29,6 +29,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlsgomp())
   mlsgomp(x)
+
+group: other positive
+construction:
+- base
+relations: {}
+fit:
+  method: scalar-solve
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- reliability and survival
+classification: specialist
+classification_reason: Used within reliability and survival; classified by its specialised modelling role.
 ---
 
 The shifted Gompertz distribution models nonnegative waiting times. The

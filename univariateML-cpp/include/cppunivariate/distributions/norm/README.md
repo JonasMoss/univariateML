@@ -42,6 +42,23 @@ aliases:
 - Gaussian
 key_references:
 - 1
+
+group: normal and Student
+construction:
+- location-scale
+relations:
+  special_case_of:
+  - family: sn
+    at:
+      xi: mean
+      omega: sd
+      alpha: 0
+fit:
+  method: closed-form
+  certified: partial
+  note: Analytic maximum for positive residual variance; scale collapse and holds are documented in Details.
+areas:
+- measurement and errors
 ---
 
 The normal (Gaussian) distribution is a symmetric distribution on the real line, used to model continuous measurements and errors.

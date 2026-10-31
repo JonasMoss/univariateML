@@ -43,6 +43,23 @@ aliases:
 - logistic-normal
 key_references:
 - 1
+
+group: bounded continuous
+construction:
+- transformation
+relations:
+  transform_of:
+  - family: norm
+    transform: logit
+    at:
+      mean: mu
+      sd: sigma
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- proportions
 ---
 
 The logit-normal distribution models proportions whose logits follow a normal distribution.

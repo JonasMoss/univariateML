@@ -22,6 +22,30 @@ examples: |
   set.seed(1)
   x <- rml(200, mlinvexp())
   mlinvexp(x)
+
+group: gamma and Weibull
+construction:
+- transformation
+relations:
+  special_case_of:
+  - family: invgamma
+    at:
+      alpha: 1
+      beta: scale
+  transform_of:
+  - family: exp
+    transform: inverse
+    at:
+      rate: scale
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- reliability and survival
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 The inverse exponential distribution models positive heavy-tailed data.

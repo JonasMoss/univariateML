@@ -49,6 +49,18 @@ aliases: []
 key_references:
 - 1
 - 2
+
+group: Poisson, binomial and negative binomial
+construction:
+- base
+relations: {}
+fit:
+  method: integer-search
+  certified: partial
+  note: Inventory records free-size profile unimodality and held-probability tail bound; budget exhaustion
+    stops.
+areas:
+- counts and ecology
 ---
 
 The binomial distribution models the number of successes in a fixed number of independent Bernoulli trials. Both size and success probability are estimated unless size is supplied.

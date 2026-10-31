@@ -80,6 +80,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mltbinom())
   mltbinom(x, a = 0L, b = 10L, size = 10L)
+
+group: modified counts
+construction:
+- truncation
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The binomial law conditioned on known bounds `a < x <= b` models truncated counts.

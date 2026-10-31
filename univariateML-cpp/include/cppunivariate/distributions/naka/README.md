@@ -37,6 +37,27 @@ examples: |
   set.seed(1)
   x <- rml(200, mlnaka())
   mlnaka(x)
+
+group: gamma and Weibull
+construction:
+- transformation
+relations:
+  transform_of:
+  - family: gamma
+    transform: power
+    at:
+      shape: shape
+      scale: scale/shape
+    power: 2
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+- waiting times and queues
+classification: specialist
+classification_reason: Used within reliability and survival; classified by its specialised modelling role.
 ---
 
 The Nakagami distribution models positive amplitudes, including radio-fading measurements. Its square follows a gamma distribution.

@@ -57,6 +57,21 @@ examples: |
   set.seed(1)
   x <- rml(200, mltrgamma())
   mltrgamma(x)
+
+group: gamma and Weibull
+construction:
+- base
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+- waiting times and queues
+classification: specialist
+classification_reason: Used within reliability and survival; classified by its specialised modelling role.
 ---
 
 The transformed gamma (Stacy's generalized gamma) distribution is the

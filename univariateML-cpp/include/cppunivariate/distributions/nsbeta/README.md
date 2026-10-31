@@ -128,6 +128,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlnsbeta())
   mlnsbeta(x, min = 0L, max = 1L)
+
+group: bounded continuous
+construction:
+- base
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- proportions
+classification: uncommon
+classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
+  surveyed.
 ---
 
 This family has a known support endpoint and delegates fitting to beta.

@@ -38,6 +38,31 @@ examples: |
   set.seed(1)
   x <- rml(200, mlllogis())
   mlllogis(x)
+
+group: other positive
+construction:
+- base
+relations:
+  special_case_of:
+  - family: burr
+    at:
+      shape1: 1
+      shape2: shape
+      scale: scale
+  transform_of:
+  - family: logis
+    transform: log
+    at:
+      location: log(scale)
+      scale: 1/shape
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+classification: specialist
+classification_reason: Used within reliability and survival; classified by its specialised modelling role.
 ---
 
 The log-logistic distribution describes positive data whose logarithm has a logistic distribution. It is used for size, lifetime and loss data.

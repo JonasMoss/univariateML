@@ -94,6 +94,21 @@ references:
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
   mlsged(x)
+
+group: skewed and robust location-scale
+construction:
+- skewing
+- location-scale
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- finance
+- measurement and errors
+classification: specialist
+classification_reason: Used within finance; classified by its specialised modelling role.
 ---
 
 The skew generalized error distribution extends the exponential-power family with Fernandez-Steel asymmetry. Its location and scale parameters are the mean and standard deviation.

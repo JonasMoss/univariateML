@@ -36,6 +36,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlztbinom())
   mlztbinom(x, size = 10)
+
+group: modified counts
+construction:
+- truncation
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 Zero-truncated binomial distributions model positive counts.

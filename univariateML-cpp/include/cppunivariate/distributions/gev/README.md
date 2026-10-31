@@ -59,6 +59,18 @@ key_references:
 - 1
 references:
   - "Coles, S. (2001). An Introduction to Statistical Modeling of Extreme Values. Springer. doi:10.1007/978-1-4471-3675-0."
+
+group: extreme value
+construction:
+- base
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- extremes and environment
 ---
 
 The generalized extreme value distribution models maxima; positive `xi` gives a heavy right tail, and `xi = 0` is the included Gumbel member.

@@ -64,6 +64,28 @@ examples: |
   set.seed(1)
   x <- rml(200, mlburr())
   mlburr(x)
+
+group: beta and generalised beta
+construction:
+- base
+- generalisation
+relations:
+  special_case_of:
+  - family: gb2
+    at:
+      shape1: shape1
+      shape2: shape2
+      shape3: 1
+      scale: scale
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- economics and income
+classification: specialist
+classification_reason: Used within actuarial; classified by its specialised modelling role.
 ---
 
 The Burr type XII distribution is a heavy-tailed distribution for positive size and loss data.

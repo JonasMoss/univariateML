@@ -48,6 +48,21 @@ examples: |
   set.seed(1)
   x <- rml(200, mlsn())
   mlsn(x)
+
+group: skewed and robust location-scale
+construction:
+- skewing
+- location-scale
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
+    subsets may have stronger guarantees.
+areas:
+- robust modelling
+classification: specialist
+classification_reason: Used within robust modelling; classified by its specialised modelling role.
 ---
 
 The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. Its direct location and scale differ from its mean and standard deviation.

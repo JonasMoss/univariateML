@@ -33,6 +33,26 @@ limits:
 examples: |
   x <- datasets::precip
   mllnorm(x)
+
+group: normal and Student
+construction:
+- transformation
+relations:
+  transform_of:
+  - family: norm
+    transform: log
+    at:
+      mean: meanlog
+      sd: sdlog
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- finance
+- measurement and errors
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The lognormal distribution models positive quantities whose logarithms follow a normal distribution.

@@ -45,6 +45,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlemg())
   mlemg(x)
+
+group: skewed and robust location-scale
+construction:
+- compounding
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- measurement and errors
+classification: specialist
+classification_reason: Used within measurement and errors; classified by its specialised modelling role.
 ---
 
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.

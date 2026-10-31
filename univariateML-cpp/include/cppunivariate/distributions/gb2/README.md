@@ -61,6 +61,20 @@ key_references:
 - 1
 references:
   - "McDonald, J. B. (1984). Some Generalized Functions for the Size Distribution of Income. Econometrica, 52(3). doi:10.2307/1913469."
+
+group: beta and generalised beta
+construction:
+- base
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: 'no'
+  note: Details describes a numerical profile or multistart search without a global optimality certificate;
+    supported held subsets may be stronger.
+areas:
+- actuarial
+- economics and income
 ---
 
 The transformed beta distribution models positive observations with two power tails.

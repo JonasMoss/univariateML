@@ -38,6 +38,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlcmp())
   mlcmp(x)
+
+group: Poisson, binomial and negative binomial
+construction:
+- base
+- generalisation
+relations: {}
+fit:
+  method: multistart
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersion coordinate.

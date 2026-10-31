@@ -24,6 +24,19 @@ log_density: log(prob)+(x-1)*log(1-prob)
 examples: |
   x <- corbet
   mlztgeom(x)
+
+group: modified counts
+construction:
+- truncation
+relations: {}
+fit:
+  method: scalar-solve
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- counts and ecology
+classification: specialist
+classification_reason: Used within counts and ecology; classified by its specialised modelling role.
 ---
 
 Zero-truncated geometric distributions model positive counts.

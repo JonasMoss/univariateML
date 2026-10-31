@@ -36,6 +36,26 @@ limits:
 examples: |
   x <- datasets::precip
   mlweibull(x)
+
+group: gamma and Weibull
+construction:
+- base
+relations:
+  special_case_of:
+  - family: trgamma
+    at:
+      shape1: 1
+      shape2: shape
+      scale: scale
+fit:
+  method: delegation
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+- waiting times and queues
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The Weibull distribution is used for lifetimes and reliability data.

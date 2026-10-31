@@ -45,6 +45,17 @@ aliases:
 - beta of the first kind
 key_references:
 - 1
+
+group: beta and generalised beta
+construction:
+- base
+relations: {}
+fit:
+  method: scalar-solve
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- proportions
 ---
 
 The beta distribution models proportions and other continuous quantities between zero and one.

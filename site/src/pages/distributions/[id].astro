@@ -24,6 +24,8 @@ const implementation=sections.find(s=>s.title.toLowerCase()==='details');
 const history=sections.find(s=>s.title.toLowerCase()==='decision history');
 const render=(s:string)=>markdown(s,source);
 const refs=f.key_references || f.references || [];
+const unlinked=await Promise.all(f.unlinked_limits.map(async r=>({...r,noteHtml:await render(r.when)})));
+const related=await Promise.all(f.related.map(async r=>({...r,noteHtml:r.note ? await render(r.note) : ''})));
 const renderedProse=await Promise.all(prose.map(async s=>({...s,html:await render(s.body)})));
 ---
 <Page title={f.name} description={f.summary}>
@@ -33,6 +35,20 @@ const renderedProse=await Promise.all(prose.map(async s=>({...s,html:await rende
 {f.aliases?.length && <p>Also known as {f.aliases.join(', ')}.</p>}
 {refs.length>0 && <div class="references"><h2>References</h2><ol>{refs.map((r:string)=><li>{r}</li>)}</ol></div>}
 {notices(f).length>0 && <aside class="notices" aria-label="Fitting notices" set:html={await render(notices(f).join('\n\n'))}/>}
+<section aria-label="Family taxonomy"><h2>Family taxonomy</h2>
+<p>{f.group} · {f.classification}</p><p>{f.classification_reason}</p>
+<dl><dt>Support</dt><dd>{f.support_tags.join(', ')}</dd>
+<dt>Coefficients</dt><dd>{f.coefficient_tags.join(', ')}</dd>
+<dt>Construction</dt><dd>{f.construction.join(', ')}</dd>
+<dt>Existence</dt><dd>{f.existence_tags.join(', ')}</dd>
+<dt>Fit</dt><dd>{f.fit.method}; certification: {f.fit.certified}. {f.fit.note}</dd>
+<dt>Areas</dt><dd>{f.areas.join('; ')}</dd></dl>
+<p class="count">First-version editorial taxonomy. “Always” means no obstacle is declared; it is not an existence theorem. Fit certification does not describe inference validity.</p>
+</section>
+<section aria-label="Related families"><h2>Related families</h2>
+{f.related.length ? <ul>{related.map(r=><li>{r.kind}: <a data-relation href={`/distributions/${r.family}/`}>{r.name}</a>{r.edge && <span> ({r.edge.transform ? `${r.edge.transform}: ` : ''}{Object.entries(r.edge.at).map(([key,value])=>`${key} = ${value}`).join(', ')})</span>}{r.note && <span set:html={r.noteHtml}/>}</li>)}</ul> : <p>No relation is declared yet.</p>}
+{unlinked.length>0 && <details><summary>Other declared limits and failure boundaries ({unlinked.length})</summary><ul>{unlinked.map(r=><li>{r.name || r.status}{r.fixed?.length ? ` (held: ${r.fixed.join(', ')})` : ''}: <span set:html={r.noteHtml}/></li>)}</ul></details>}
+</section>
 <Definition f={f} source={source}/>
 {binding.includes(f.id) && <Explorer client:visible family={{id:f.id,name:f.name,params:entry.data.params,support:entry.data.support}} catalog={explorerCatalog}/> }
 {introRemainder && <div set:html={await render(introRemainder)}/>}

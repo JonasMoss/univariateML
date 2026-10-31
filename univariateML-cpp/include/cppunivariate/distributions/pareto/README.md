@@ -40,6 +40,20 @@ examples: |
   set.seed(1)
   x <- rml(200, mlpareto())
   mlpareto(x)
+
+group: Pareto and Lomax
+construction:
+- base
+relations: {}
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- actuarial
+- economics and income
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The Pareto distribution is a heavy-tailed model for positive quantities above a lower threshold.

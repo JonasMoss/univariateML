@@ -33,6 +33,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mldunif())
   mldunif(x)
+
+group: finite sampling
+construction:
+- base
+relations: {}
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- sampling and quality control
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The discrete uniform distribution assigns equal probability to every integer between two endpoints.

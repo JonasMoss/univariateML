@@ -53,6 +53,14 @@ for f in DATA:
     p=DIST/f"distributions/{f['id']}/index.html"
     if p not in pages: errors.append(f'missing {p}')
     elif pages[p].math==0 or pages[p].display_math==0: errors.append(f'no display MathML: {p}')
+for f in DATA:
+    p=DIST/f"distributions/{f['id']}/index.html"
+    links={url for tag,key,url in pages[p].links if tag=='a' and key=='href'}
+    for relation in f['related']:
+        expected=f"/distributions/{relation['family']}/"
+        if expected not in links or not target(p,expected).exists():
+            errors.append(f"missing relation link {f['id']}: {expected}")
+print('PASS: every declared and inverted relation and limit link is rendered and resolves.')
 for p,d in pages.items():
     for src in d.scripts:
         if re.search(r'mathjax|katex',src,re.I): errors.append(f'math runtime {p}: {src}')

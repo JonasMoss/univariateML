@@ -35,6 +35,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mllaplace())
   mllaplace(x)
+
+group: skewed and robust location-scale
+construction:
+- location-scale
+relations: {}
+fit:
+  method: closed-form
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- robust modelling
+classification: classical
+classification_reason: A standard distribution in introductory probability or applied statistical modelling.
 ---
 
 The Laplace (double exponential) distribution is a symmetric location-scale model with exponential tails.

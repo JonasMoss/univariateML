@@ -39,6 +39,26 @@ examples: |
   set.seed(1)
   x <- rml(200, mlkumar())
   mlkumar(x)
+
+group: bounded continuous
+construction:
+- base
+relations:
+  special_case_of:
+  - family: genbeta
+    at:
+      shape1: 1
+      shape2: b
+      shape3: a
+      scale: 1
+fit:
+  method: scalar-solve
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- proportions
+classification: specialist
+classification_reason: Used within proportions; classified by its specialised modelling role.
 ---
 
 The Kumaraswamy distribution is a flexible distribution for continuous data between zero and one. It provides a tractable alternative to the beta distribution.

@@ -48,6 +48,19 @@ examples: |
   set.seed(1)
   x <- rml(200, mlfatigue())
   mlfatigue(x, mu = 0)
+
+group: other positive
+construction:
+- base
+relations: {}
+fit:
+  method: profile-search
+  certified: unknown
+  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+areas:
+- reliability and survival
+classification: specialist
+classification_reason: Used within reliability and survival; classified by its specialised modelling role.
 ---
 
 The Birnbaum--Saunders distribution models lifetimes arising from cumulative fatigue damage.
