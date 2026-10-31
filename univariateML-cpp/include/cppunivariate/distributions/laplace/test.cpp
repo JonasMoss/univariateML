@@ -99,3 +99,50 @@ TEST_CASE("laplace: TASK-132 unresolved likelihood has numerical failure status"
   const cppunivariate::span x{data.data(),data.size()};
   CHECK(cppunivariate::laplace_mle(x,0.0,1e-300).status == cppunivariate::LaplaceStatus::IterationFailure);
 }
+
+#include "cppunivariate/distributions/laplace/inference.hpp"
+
+TEST_CASE("laplace: TASK-102.5 inference analytic and invalid-input checks") {
+
+  const std::vector<double> x{1,2,3,4,5,6,7,8,9,10};
+  const auto sign=cppunivariate::median_sign_interval(mltest::as_span(x));
+  REQUIRE(sign.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(sign.lower==2);CHECK(sign.upper==9); // Coverage = 1-22/1024.
+  const std::vector<double> one{2};
+  const auto unbounded=cppunivariate::median_sign_interval(mltest::as_span(one));
+  CHECK(unbounded.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(unbounded.lower==-INFINITY);CHECK(unbounded.upper==INFINITY);
+  const auto s=cppunivariate::median_sandwich(mltest::as_span(x));
+  REQUIRE(s.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(s.median==6);CHECK(s.bandwidth==doctest::Approx(1.06*3/std::log(2.)*std::pow(10.,-.2)));
+  CHECK(s.uncertainty.variance==doctest::Approx(1/(40*s.density*s.density)));
+  std::vector<double> y;for(double v:x)y.push_back(7+3*v);
+  const auto t=cppunivariate::median_sandwich(mltest::as_span(y));
+  CHECK(t.bandwidth==doctest::Approx(3*s.bandwidth));CHECK(t.density==doctest::Approx(s.density/3));
+  CHECK(t.uncertainty.variance==doctest::Approx(9*s.uncertainty.variance));
+  const auto ci=cppunivariate::laplace_location_wald_interval(mltest::as_span(x));
+  CHECK((ci.lower+ci.upper)/2==doctest::Approx(6));
+  CHECK((ci.upper-ci.lower)/2==doctest::Approx(1.959963984540054*2.5/std::sqrt(10.)));
+  const std::vector<double> flat{2,2,2};
+  CHECK(cppunivariate::median_sandwich(mltest::as_span(flat)).status==cppunivariate::InferenceStatus::NumericalFailure);
+
+  const std::vector<double> empty;
+  const cppunivariate::span data{empty.data(),empty.size()};
+  CHECK(cppunivariate::median_sign_interval(data).status==cppunivariate::InferenceStatus::EmptySample);
+  const std::vector<double> invalid{NAN,1,2};
+  const cppunivariate::span bad{invalid.data(),invalid.size()};
+  CHECK(cppunivariate::median_sign_interval(bad).status==cppunivariate::InferenceStatus::InvalidObservation);
+}
+
+TEST_CASE("laplace: TASK-102.5 invalid confidence levels") {
+  const std::vector<double> x{.2,.4,.6,.8};
+  const auto data=mltest::as_span(x);
+  for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
+    CHECK(cppunivariate::median_sign_interval(data,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
+}
+
+TEST_CASE("laplace: TASK-102.5 underflowed uncertainty fails") {
+  const std::vector<double> x{-2e-200,-1e-200,1e-200,2e-200};
+  CHECK(cppunivariate::laplace_location_wald_interval(mltest::as_span(x)).status==cppunivariate::InferenceStatus::NumericalFailure);
+  CHECK(cppunivariate::median_sandwich(mltest::as_span(x)).status==cppunivariate::InferenceStatus::NumericalFailure);
+}

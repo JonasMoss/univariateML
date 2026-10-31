@@ -1,0 +1,25 @@
+{
+  "signature": {
+    "identity": "2c58ce1305786db1af46b130649442f2fe6b24940ddef608ebe0e3ff9825def8",
+    "reps": 5000,
+    "reference_reps": 10000,
+    "seed": 102520261031,
+    "key": "exp-model-2-1000"
+  },
+  "rows": [
+    {
+      "family": "exp",
+      "regime": "model",
+      "parameter": 2,
+      "n": 1000,
+      "procedure": "exact rate",
+      "coverage": 0.9476,
+      "mcse": 0.003151324800778238,
+      "covered": 4738,
+      "failures": 0,
+      "reps": 5000
+    }
+  ],
+  "reference_critical": null,
+  "reference_mcse_probability": null
+}

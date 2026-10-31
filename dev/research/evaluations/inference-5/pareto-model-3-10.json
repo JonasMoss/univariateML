@@ -1,0 +1,37 @@
+{
+  "signature": {
+    "identity": "2c58ce1305786db1af46b130649442f2fe6b24940ddef608ebe0e3ff9825def8",
+    "reps": 5000,
+    "reference_reps": 10000,
+    "seed": 102520261031,
+    "key": "pareto-model-3-10"
+  },
+  "rows": [
+    {
+      "family": "pareto",
+      "regime": "model",
+      "parameter": 3,
+      "n": 10,
+      "procedure": "shape endpoint fitted",
+      "coverage": 0.9524,
+      "mcse": 0.0030111207215918786,
+      "covered": 4762,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "pareto",
+      "regime": "model",
+      "parameter": 3,
+      "n": 10,
+      "procedure": "shape endpoint known",
+      "coverage": 0.951,
+      "mcse": 0.0030528347482299146,
+      "covered": 4755,
+      "failures": 0,
+      "reps": 5000
+    }
+  ],
+  "reference_critical": null,
+  "reference_mcse_probability": null
+}

@@ -70,3 +70,37 @@ TEST_CASE("unif: TASK-132 invalid data never report success") {
     CHECK(cppunivariate::unif_mle(x).status != cppunivariate::UnifStatus::Ok);
   }
 }
+
+#include "cppunivariate/distributions/unif/inference.hpp"
+
+TEST_CASE("unif: TASK-102.5 inference analytic and invalid-input checks") {
+
+  const std::vector<double> x{.2,.8};
+  const auto ci=cppunivariate::unif_exact_interval(mltest::as_span(x),cppunivariate::UniformTarget::Width);
+  REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(ci.lower==doctest::Approx(.6/(1-std::sqrt(.025))));
+  CHECK(ci.upper==doctest::Approx(.6/(1-std::sqrt(.975))));
+  const auto left=cppunivariate::unif_exact_interval(mltest::as_span(x),cppunivariate::UniformTarget::Minimum);
+  const auto right=cppunivariate::unif_exact_interval(mltest::as_span(x),cppunivariate::UniformTarget::Maximum);
+  CHECK(left.lower==doctest::Approx(.2-.6*(1/.025-1)));
+  CHECK(left.upper==doctest::Approx(.2-.6*(1/.975-1)));
+  CHECK(left.lower==doctest::Approx(1-right.upper));CHECK(left.upper==doctest::Approx(1-right.lower));
+  const auto known=cppunivariate::unif_endpoint_known_opposite_interval(mltest::as_span(x),true,0);
+  CHECK(known.lower==doctest::Approx(.8/std::sqrt(.975)));
+  CHECK(known.upper==doctest::Approx(.8/std::sqrt(.025)));
+  CHECK(cppunivariate::unif_endpoint_known_opposite_interval(mltest::as_span(x),true,.3).status==cppunivariate::InferenceStatus::InvalidObservation);
+
+  const std::vector<double> empty;
+  const cppunivariate::span data{empty.data(),empty.size()};
+  CHECK(cppunivariate::unif_exact_interval(data,cppunivariate::UniformTarget::Width).status==cppunivariate::InferenceStatus::EmptySample);
+  const std::vector<double> invalid{NAN,1,2};
+  const cppunivariate::span bad{invalid.data(),invalid.size()};
+  CHECK(cppunivariate::unif_exact_interval(bad,cppunivariate::UniformTarget::Width).status==cppunivariate::InferenceStatus::InvalidObservation);
+}
+
+TEST_CASE("unif: TASK-102.5 invalid confidence levels") {
+  const std::vector<double> x{.2,.4,.6,.8};
+  const auto data=mltest::as_span(x);
+  for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
+    CHECK(cppunivariate::unif_exact_interval(data,cppunivariate::UniformTarget::Width,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
+}

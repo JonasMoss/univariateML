@@ -1,0 +1,84 @@
+{
+  "source_revision": "bfdf257a2ec2c44fb0b986d2ade376239e9c0d55",
+  "branch": "codex/inference-5",
+  "environment": {
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+    "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "R": "R version 4.6.1 (2026-06-24)",
+    "BH": "1.90.0.1",
+    "BH_include": "/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include",
+    "python": {
+      "python": "3.14.5",
+      "numpy": "2.4.6",
+      "scipy": "1.18.0"
+    },
+    "thread_limits": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    }
+  },
+  "source_hashes": {
+    "dev/validation/inference-5.py": "ca9ecf6461bf5e938ae52ee87e3afc6e805d1a80c899e0e746eefe3e820f9af6",
+    "dev/validation/inference-5.sh": "c7e403bed6ea25b8a15acedee19c4817c672d57d0022c0bccd63c0ac32ae78d4",
+    "dev/validation/inference-5-probe.cpp": "949c6b25052843d22ed40928c30fadd6ff7c4eb51ffc3ddf3e78e0bbce42f4cd",
+    "univariateML-cpp/include/cppunivariate/core/inference.hpp": "4822c8fc1027df88b3a54527810c9c6789d4fd3157eec65146a73d79b58b2451",
+    "univariateML-cpp/include/cppunivariate/distributions/laplace/inference.hpp": "8714648d36f670df24f52d936eb7bfd1e7b8bdcdf4bb0d33a968ecb6a72dbc2e",
+    "univariateML-cpp/include/cppunivariate/distributions/laplace/mle.hpp": "4f11181bfebaa6d4e7edfb249473999a7c187c8ad28492d0bd82253de7b5e7b9",
+    "univariateML-cpp/include/cppunivariate/distributions/laplace/test.cpp": "b4124c0b984f05d2d56db631ea37f788ac211e7cfb64cf9b0945ffb1af543b72",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto/inference.hpp": "ccc15d0245f0432ad9e63350f1ff0b49cdc7c813924b51bb7184a52b91e62d5e",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto/mle.hpp": "cb2dfacec9edfc1d5ba5ac7e10870bc17872b88a2b2c805dede6a0072cea1fc8",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto/test.cpp": "e926c341bba88f264155d5d28887137b02f93974a7c74707c3f2d21f9a38f3ca",
+    "univariateML-cpp/include/cppunivariate/distributions/exp/inference.hpp": "b09f9168f3990d545fb4a3bc2684d578f023762e0d25049422359983fa5671a5",
+    "univariateML-cpp/include/cppunivariate/distributions/exp/mle.hpp": "e16c4fea794531d5301c6eca91e24034a25df16e1fb77fcbdec95ee2a990ea2e",
+    "univariateML-cpp/include/cppunivariate/distributions/exp/test.cpp": "35cf61a5cec1ffd994d9f98e017fb2ba37fb5d28113df1ff1d0e18611c08972c",
+    "univariateML-cpp/include/cppunivariate/distributions/norm/inference.hpp": "618f0854881b069e90200875681713718c97dc14104f01b670fe24b875c16146",
+    "univariateML-cpp/include/cppunivariate/distributions/norm/mle.hpp": "2ca588e634d2a25805d9f8463d7fe4eec0583a2e38f738a08e6373401f0c45a5",
+    "univariateML-cpp/include/cppunivariate/distributions/norm/test.cpp": "542ce3dc54356ee09be875e4d3aade4a240a6f939e0c549d6dfd2303ff1541c4",
+    "univariateML-cpp/include/cppunivariate/distributions/unif/inference.hpp": "5c12e325d6b65023216cb38e87eceabc793a7d3e560cd15f2e668e4734587637",
+    "univariateML-cpp/include/cppunivariate/distributions/unif/mle.hpp": "5e228c850b054f4224282eab93749806deb8642087cde961c5250d6ce9cac470",
+    "univariateML-cpp/include/cppunivariate/distributions/unif/test.cpp": "166864d2a5acf3da5d702fbe4d2bcb0b158ed9eb68004476540ba2d1d723ff3f",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/inference.hpp": "a51a4d2de0121112e984738d72e640a14794627cd8f19da73c7d3aa6544a787f",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp": "b5c32177c5dd0a201e8a332984710fad7a2d5ca58c833eb2fa3eb3fd8f6881c9",
+    "univariateML-cpp/include/cppunivariate/distributions/triang/test.cpp": "414e3419e7801f8eea405d9e4192dee14c84425680889e9ba95824f343366807",
+    "univariateML-cpp/include/cppunivariate/core/inference.md": "25965b65ccdd2ba68a2e1a461dbdf5ef816a2b4b471102b16a959d8b17fcda84",
+    "dev/validation/inference-5-report.py": "32e17b38c32993028ebe5953d76c33b4e843bcb0bf08bac651d0d1c10a46dd5b",
+    "dev/validation/inference-5-check.sh": "7a383cdcfeac93484501e7a4f96493d8c9920004c97ce1d9b3105461c94b7ddd"
+  },
+  "final_runs": {
+    "cpp-dev": {
+      "passed_shards": 105,
+      "failed_shards": 0
+    },
+    "cpp-no-long-double": {
+      "passed_shards": 126,
+      "failed_shards": 0
+    },
+    "cpp-full": {
+      "passed_shards": 126,
+      "failed_shards": 0
+    },
+    "r-dev": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 151,
+      "pass": 19843
+    },
+    "r-full": {
+      "fail": 0,
+      "warn": 0,
+      "skip": 1,
+      "pass": 41289
+    }
+  },
+  "stages": "2026-10-31T21:09:25+01:00 START cpp-dev\n2026-10-31T21:11:48+01:00 PASS cpp-dev\n2026-10-31T21:11:48+01:00 START cpp-no-long-double\n2026-10-31T21:17:34+01:00 PASS cpp-no-long-double\n2026-10-31T21:17:34+01:00 START calibration\n2026-10-31T21:27:58+01:00 PASS calibration\n2026-10-31T21:27:58+01:00 START r-dev\n2026-10-31T21:31:57+01:00 PASS r-dev\n2026-10-31T21:31:57+01:00 START cpp-full\n2026-10-31T21:38:33+01:00 PASS cpp-full\n2026-10-31T21:38:33+01:00 START r-full\n2026-10-31T21:47:22+01:00 PASS r-full\n",
+  "calibration_identity": "2c58ce1305786db1af46b130649442f2fe6b24940ddef608ebe0e3ff9825def8",
+  "topology": {
+    "input": "triang 0.5 10 .1 .1 .1 .1 .1 .9 .9 .9 .9 .9\n",
+    "output": "0 0 0 10.21651247531981 0 -0.085938509691368514 0.28593850969136853 \n",
+    "expected_lr": 10.216512475319812,
+    "critical_chi_square_1_95": 3.8414588206941285,
+    "tolerance_absolute": 2e-12,
+    "result": "passed"
+  }
+}
