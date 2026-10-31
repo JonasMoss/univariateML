@@ -99,3 +99,12 @@ TEST_CASE("pareto: deep tails and log inversion regressions") {
   CHECK(cppunivariate::distributions::ppareto(std::exp(1.0),1e-320,1,true,true) == doctest::Approx(std::log(1e-320)).scale(0.0));
 
 }
+
+TEST_CASE("pareto: constant positive data have unbounded free shape") {
+  const std::vector<double> x(4, 2.0);
+  const auto r = cppunivariate::pareto_mle(mltest::as_span(x));
+  CHECK(r.status == cppunivariate::ParetoStatus::Unbounded);
+  CHECK(r.shape == std::numeric_limits<double>::infinity());
+  CHECK(r.min == 2.0);
+  CHECK(r.logLik == std::numeric_limits<double>::infinity());
+}

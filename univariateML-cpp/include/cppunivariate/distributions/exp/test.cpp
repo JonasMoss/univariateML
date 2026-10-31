@@ -46,3 +46,17 @@ TEST_CASE("exp P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
   }
 }
+
+TEST_CASE("exp: all-zero free rate is unbounded, held rate is finite") {
+  const std::vector<double> x(4, 0.0);
+  const auto r = cppunivariate::exp_mle(mltest::as_span(x));
+  CHECK(r.status == cppunivariate::ExpStatus::Unbounded);
+  CHECK(r.rate == std::numeric_limits<double>::infinity());
+  CHECK(r.logLik == std::numeric_limits<double>::infinity());
+  const auto delegated = cppunivariate::exp_mle(mltest::as_span(x),
+      std::numeric_limits<double>::quiet_NaN());
+  CHECK(delegated.status == cppunivariate::ExpStatus::Unbounded);
+  const auto held = cppunivariate::exp_mle(mltest::as_span(x), 2.0);
+  CHECK(held.status == cppunivariate::ExpStatus::Ok);
+  CHECK(held.logLik == doctest::Approx(4 * std::log(2.0)));
+}

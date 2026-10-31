@@ -31,28 +31,23 @@
   "normalization": [
     {
       "point": 0,
-      "mass": "1.0",
-      "seconds": 0.01380898800198338
+      "mass": "1.0"
     },
     {
       "point": 1,
-      "mass": "1.0",
-      "seconds": 0.006950107002921868
+      "mass": "1.0"
     },
     {
       "point": 2,
-      "mass": "1.0",
-      "seconds": 0.006675021999399178
+      "mass": "1.0"
     },
     {
       "point": 3,
-      "mass": "1.0",
-      "seconds": 0.006611936001718277
+      "mass": "1.0"
     },
     {
       "point": 4,
-      "mass": "1.0",
-      "seconds": 0.007260589001816697
+      "mass": "1.0"
     }
   ],
   "values": [
@@ -2949,7 +2944,7 @@
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
-  "density_sha256": "211af3c23ed6ae61c23416e1056a063ff33c75e3c49e8cf4f9cacf2a0e9e0115",
+  "input_sha256": "22f6c805407cacdb7c5f975b7fb332df1382516711f34da404d7ae004211867b",
   "sampler_points": [
     [
       4

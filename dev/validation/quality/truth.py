@@ -29,7 +29,7 @@ from quality.truth_reference import Reference
 
 ROOT = Path(__file__).resolve().parents[3]
 DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
-REPORT = ROOT/'dev/research/evaluations/2026-10-29-dpqr-truth'
+REPORT = ROOT/'build/truth-audit'
 U = ('1e-300', '1e-100', '1e-30', '1e-12', '1e-6', '.01', '.25', '.5')
 DIGITS = 80
 
@@ -57,6 +57,31 @@ def read(folder):
     meta = yaml.safe_load((folder/'README.md').read_text().split('---', 2)[1])
     g = json.loads((folder/'golden.json').read_text())
     return meta, g
+
+
+def input_sha256(folder):
+    """Versioned dependency fingerprint; dossier prose is deliberately excluded.
+
+    Include point selection inputs, the local route/spec, and shared numerical
+    code. External Python dependencies belong to the recorded run environment.
+    Keep absent parameter keys absent: points() tests membership for `fixed`.
+    """
+    meta, g = read(folder)
+    keys = ('name', 'domain', 'role', 'integer', 'bound', 'fixed', 'required',
+            'kind', 'simulate', 'default')
+    inputs = dict(version=1, log_density=meta['log_density'], support=meta['support'],
+                  params=[{k: p[k] for k in keys if k in p} for p in meta['params']],
+                  r_args=meta.get('r', {}).get('args', {}),
+                  golden={k: g[k] for k in ('estimates', 'fixed', 'fit_args', 'sampler_args') if k in g})
+    sources = {'route': folder/'truth.py', 'generator': Path(__file__),
+               'density': Path(__file__).with_name('density.py'),
+               'reference': Path(__file__).with_name('truth_reference.py')}
+    route = module_at(folder/'truth.py')
+    if getattr(route, 'use_spec', False):
+        sources['spec'] = folder/'spec.py'
+    inputs['sources'] = {k: p.read_text() for k, p in sources.items()}
+    return hashlib.sha256(json.dumps(inputs, sort_keys=True, separators=(',', ':'),
+                                     allow_nan=False).encode()).hexdigest()
 
 
 def bound(text, values):
@@ -247,7 +272,7 @@ def make(folder):
                   parameter_names=[p['name'] for p in meta['params']],
                   parameters=[], normalization=[], values=[], quantiles=[],
                   quantile_limits='nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale',
-                  density_sha256=hashlib.sha256((folder/'README.md').read_bytes()).hexdigest())
+                  input_sha256=input_sha256(folder))
     default = {p['name']: float(p['simulate']) for p in meta['params']}
     fit = {p['name']: float(g['estimates'][p['name']]) for p in meta['params']}
     # Explicit indices keep special defaults and general fitted branches covered.
@@ -269,7 +294,7 @@ def make(folder):
         if not mp.isfinite(mass) or abs(mass-1) > mp.mpf('1e-25'):
             raise ArithmeticError('normalization failed at '+str(theta)+': '+mp.nstr(mass,40))
         result['parameters'].append([encode(theta[p['name']]) for p in meta['params']])
-        result['normalization'].append(dict(point=index, mass=mp.nstr(mass,40), seconds=time.monotonic()-started))
+        result['normalization'].append(dict(point=index, mass=mp.nstr(mass,40)))
         xs = set()
         for lower in (True, False):
             for u in U:

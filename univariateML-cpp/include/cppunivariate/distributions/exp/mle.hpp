@@ -34,7 +34,7 @@ inline ExpResult exp_mle(span x) {
     rate = static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(n) / total);
   }
   const double logLik = dn * (std::log(rate) - 1.0);
-  return {rate, logLik};
+  return {rate, logLik, sum == 0.0 ? ExpStatus::Unbounded : ExpStatus::Ok};
 }
 
 inline ExpResult exp_mle(span x,double rate) {
