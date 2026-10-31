@@ -19,6 +19,8 @@ export CCACHE_MAXSIZE := "8G"
 default: test
 
 # Wipe and rebuild univariateML-r/ from workspace sources.
+# UMVL_UNITY_GROUPS=0 selects per-family compilation for debugging; positive
+# values select the number of deterministic unity groups (default: 4).
 # package/ is the CRAN-shippable artefact, fully generated and
 # gitignored; bindings/r/ itself holds only sources, scripts, and
 # metadata.
