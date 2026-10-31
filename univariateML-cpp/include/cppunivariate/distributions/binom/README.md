@@ -66,6 +66,12 @@ relations:
       prob: prob
       a: -1
       b: size
+  - family: cmb
+    at:
+      size: size
+      prob: prob
+      nu: 1
+    when: size <= 10000000
 fit:
   method: integer-search
   certified: 'yes'

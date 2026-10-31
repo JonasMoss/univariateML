@@ -61,7 +61,12 @@ examples: |
 group: gamma and Weibull
 construction:
 - discretisation
-relations: {}
+relations:
+  discretisation_of:
+  - family: weibull
+    at:
+      shape: shape2
+      scale: (-log(shape1))**(-1/shape2)
 fit:
   method: scalar-solve
   certified: 'yes'

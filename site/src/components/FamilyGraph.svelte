@@ -23,7 +23,7 @@
 <div class="graph-controls">
  <label>Find a family <input type="search" bind:value={query} placeholder="Name or id, e.g. gamma" /></label>
  <label>Group <select aria-label="Group" bind:value={group}><option value="">All 13 groups</option>{#each data.groups as g}<option>{g}</option>{/each}</select></label>
- <fieldset><legend>Edge kinds / line styles</legend>{#each Object.entries(kinds) as [k,label]}<label><input type="checkbox" bind:group={enabled} value={k}/><svg class="key" viewBox="0 0 24 8" aria-hidden="true"><path d="M0 4 H24" stroke="currentColor" stroke-width="1.5" stroke-dasharray={edgeDash(k)}/></svg>{label}</label>{/each}</fieldset>
+ <fieldset><legend>Edge kinds / line styles</legend>{#each Object.entries(kinds) as [k,label]}<label><input type="checkbox" bind:group={enabled} value={k}/><svg class="key" viewBox="0 0 24 8" aria-hidden="true"><path d="M0 4 H24" stroke="currentColor" stroke-width="1.5" stroke-dasharray={edgeDash(k)}/></svg>{label}</label>{/each}<span>Conditional: dotted (condition in edge title)</span></fieldset>
  {#if matches.length}<ul class="results">{#each matches as f}<li><button onclick={()=>locate(f.id)}>{f.name} · {f.id}</button></li>{/each}</ul>{:else if query}<p role="status">No matching family.</p>{/if}
 </div>
 <p class="hint">Arrows point to parents. Hover or focus a node to trace its neighbours; click or press Enter to select it below. Modified click opens its dossier. Bold labels mark common reference families. Limits are off initially. On mobile, use the atlas below for full-size labels.</p>

@@ -47,7 +47,12 @@ examples: |
 group: normal and Student
 construction:
 - discretisation
-relations: {}
+relations:
+  discretisation_of:
+  - family: norm
+    at:
+      mean: mean
+      sd: sd
 fit:
   method: convex-solve
   certified: 'yes'

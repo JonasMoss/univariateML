@@ -31,7 +31,7 @@ goldens), by the validation harness, and later by the Python shell.
 | `classification_reason` | with classification | qualitative reason for the classification |
 | `group` | yes | primary catalog group; controlled vocabulary below |
 | `construction` | yes | nonempty list of construction tags; vocabulary below |
-| `relations` | yes | special-case and transformation edges; `{}` if none declared |
+| `relations` | yes | immediate identities and construction edges; `{}` if none declared |
 | `fit` | yes | primary `method`, `certified` strength and scoped `note` |
 | `areas` | yes | one to three application areas; vocabulary below |
 | `aliases` | no | list of verified alternative names; an empty list is allowed |
@@ -241,13 +241,13 @@ prevalence assignments are editorial first-version judgements, not a usage surve
   only when the fitting evidence is genuinely absent. `note` states scope and evidence;
   certification is about fitting, not inference regularity or coverage.
 - `relations`: a map (empty `{}` allowed) with lists `special_case_of`, `transform_of`, `truncation_of` and/or
-  `modification_of` (the latter two are defined below). Each edge has `family` (an existing different id) and `at`,
+  `modification_of`, `convolution_of`, `mixture_of`, and/or `discretisation_of` (defined below). Ordinary one-parent edges have `family` (an existing different id) and `at`,
   mapping **every parent coefficient** to a numeric constant or pure arithmetic
   expression in child coefficient names. Neither display symbols nor undeclared
   variables are allowed. Example: exponential has
   `{family: gamma, at: {shape: 1, scale: 1/rate}}`.
   A transform additionally has `transform`: `log`, `logit`, `inverse`, `power`,
-  `negate`, `abs`, or `shift`. It means `T(X)` has the parent law. `power`
+  `negate`, `abs`, `shift`, `exp`, `expit`, or `affine`. It means `T(X)` has the parent law. `power`
   requires a `power` expression (currently positive exponent and positive support);
   `shift` requires a `shift` expression and means `X - shift`. `abs` means
   the child is the absolute value of a full-real parent, summing both branches.
@@ -313,3 +313,55 @@ positive observations. The 24 seeded parameter neighbourhoods and `2e-9`
 relative log-density tolerance provide regression evidence, not a global proof
 or validated interval arithmetic. New edge types appear in both directions in
 Related families and as declared-relation catalog facets.
+
+### Construction edges and conditions (2026-10-31)
+
+Any edge may have `when`, a scalar logical expression in child coefficients
+using comparisons and `&&` / `||`. It restricts the identity, not the family
+or fit domain. Verification accepts only valid child draws satisfying it;
+24 accepted draws are required within 480 attempts. Empty or unreachable
+conditions fail. The graph uses dotted lines and retains the condition in
+its title. Maps admit pure `exp` and `expit` expressions as well as arithmetic.
+
+- `convolution_of`: `components` contains exactly two `{family, at}` maps,
+  `operation` is `sum` or `difference`, and optional `shift` defaults to zero.
+  All components are independent: X = shift + A + B or shift + A - B.
+  `family` repeats the first component id for compatibility with one-parent
+  consumers; there is no top-level `at`. Both components must have the child's
+  base measure. Every component coefficient must be mapped.
+- `mixture_of`: `family` is the conditional parent, `at` its complete map,
+  `mixed` names its one randomized coefficient, and `mixing` is a complete
+  `{family, at}` map for a continuous mixing law. The reserved symbol `mix`
+  may occur only in the `mixed` entry of the parent map. It is the random
+  variate drawn from the mixing law, not necessarily the coefficient itself.
+  Optional `shift` means X = shift + Y. For slash, Y given mix is
+  Normal(mean=mu, sd=sigma/mix), with mix Uniform(0,1) and mixed=`sd`.
+- `discretisation_of`: complete ordinary `family` and `at` map; X=floor(Y)
+  for a continuous parent. The child's integer support must agree with the
+  floor image. Its mass is the integral of the parent density over [k,k+1].
+- `exp` and `expit` mean exp(X) and 1/(1+exp(-X)) have the parent law.
+  `affine` requires `shift` and positive `scale`, meaning
+  (X-shift)/scale has the parent law. Inverse images and absolute Jacobians
+  are checked. Reverse log/exp and logit/expit arrows must not both be declared.
+
+Construction checks use 35-digit mpmath direct quadrature or infinite discrete
+summation, with 24 seeded accepted coefficient draws and relative log-density
+tolerance `2e-8`. Existing edges retain `2e-9`. This is numerical regression
+evidence, not a proof, tail-error certificate or interval integration. Domain,
+map and support errors fail explicitly. Conditional parent maps are checked
+at every mixing quadrature node. Graphs show each distinct component and
+mixing family; repeated identical-family components remain one graph arrow
+with both maps preserved in its title.
+
+The immediate-edge check rejects special-case paths, a same-transform path
+with special-case steps, and an analogous one-construction path for the three
+new construction kinds. Conditional steps never establish an unconditional
+redundancy. This conservative graph policy does not attempt symbolic implication
+between conditions or general composition of multivariate constructions.
+
+For mixtures, the checker additionally composes a child shift or special-case
+map with one mixture and an optional parent special-case embedding. It compares
+all composed parent coefficients, the mixing-family map and the total shift
+symbolically. Thus Yule--Simon's shifted beta-geometric mixture is inherited
+from its beta-negative-binomial relation, beta mixing of negative binomial,
+and the geometric size-one member; no redundant direct mixture arrow is kept.

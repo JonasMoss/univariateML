@@ -43,7 +43,12 @@ examples: |
 group: discrete heavy-tailed
 construction:
 - base
-relations: {}
+relations:
+  truncation_of:
+  - family: zeta
+    at:
+      s: s
+    when: s > 1
 fit:
   method: scalar-solve
   certified: 'yes'

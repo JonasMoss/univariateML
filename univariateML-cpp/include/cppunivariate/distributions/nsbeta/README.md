@@ -142,6 +142,13 @@ relations:
       scale: max-min
     transform: shift
     shift: min
+  - family: beta
+    at:
+      shape1: shape1
+      shape2: shape2
+    transform: affine
+    shift: min
+    scale: max-min
 fit:
   method: multistart
   certified: 'yes'

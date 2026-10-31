@@ -45,7 +45,20 @@ examples: |
 group: normal convolutions
 construction:
 - compounding
-relations: {}
+relations:
+  convolution_of:
+  - family: norm
+    operation: sum
+    components:
+    - family: norm
+      at:
+        mean: mu
+        sd: sigma
+    - family: unif
+      at:
+        min: -a
+        max: a
+    when: a > 0
 fit:
   method: multistart
   certified: partial

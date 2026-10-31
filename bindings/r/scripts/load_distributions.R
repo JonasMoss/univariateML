@@ -28,7 +28,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   parsed <- tryCatch(parse(text = v), error = function(e) NULL)
   allowed <- c("+", "-", "*", "/", "^", "(", "if", "<", ">", "<=", ">=", "==",
                "!=", "&&", "||", "min", "max", "floor", "ceiling", "log", "sqrt",
-               "lgamma", "lbeta", "dnorm", "dt")
+               "lgamma", "lbeta", "dnorm", "dt", "exp", "expit")
   calls <- function(x) {
     if (!is.call(x)) return(character())
     c(as.character(x[[1]]), unlist(lapply(as.list(x)[-1], calls)))
@@ -122,7 +122,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
         c("closed-form", "scalar-solve", "profile-search", "multistart", "integer-search", "delegation", "convex-solve") ||
         !scalar_text(f$fit$certified) || !f$fit$certified %in% c("yes", "partial", "no", "unknown") ||
         !scalar_text(f$fit$note)) stop("load_distributions: invalid fit taxonomy for ", id)
-    if (is.null(f$relations) || length(setdiff(names(f$relations), c("special_case_of", "transform_of", "truncation_of", "modification_of"))))
+    if (is.null(f$relations) || length(setdiff(names(f$relations), c("special_case_of", "transform_of", "truncation_of", "modification_of", "convolution_of", "mixture_of", "discretisation_of"))))
       stop("load_distributions: invalid relations for ", id)
     for (kind in names(f$relations)) for (edge in f$relations[[kind]]) {
       target <- file.path(dirname(dirname(path)), edge$family, "README.md")
@@ -132,10 +132,47 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
       parent <- .umvl_read_front_matter(target)$front
       parent_names <- vapply(parent$params, `[[`, "", "name")
       child_names <- vapply(f$params, `[[`, "", "name")
-      if (!setequal(names(edge$at), parent_names) || anyDuplicated(names(edge$at)))
-        stop("load_distributions: invalid relation coefficient map for ", id)
-      # Same pure expression validator as support bounds, with ** accepted by R.
-      for (value in edge$at) .umvl_support_expr(value, child_names)
+      validate_map <- function(spec, variables) {
+        target_path <- file.path(dirname(dirname(path)), spec$family, "README.md")
+        if (!scalar_text(spec$family) || !file.exists(target_path) || spec$family == id)
+          stop("load_distributions: invalid construction target for ", id)
+        meta <- .umvl_read_front_matter(target_path)$front
+        expected <- vapply(meta$params, `[[`, "", "name")
+        if (!setequal(names(spec$at), expected) || anyDuplicated(names(spec$at)))
+          stop("load_distributions: invalid relation coefficient map for ", id)
+        for (value in spec$at) .umvl_support_expr(value, variables)
+        meta
+      }
+      if (!is.null(edge$when)) {
+        if (!scalar_text(edge$when)) stop("load_distributions: invalid relation condition for ", id)
+        .umvl_support_expr(edge$when, child_names)
+        probe <- setNames(lapply(f$params, `[[`, "simulate"), child_names)
+        probe$expit <- function(x) stats::plogis(x)
+        result <- eval(parse(text=edge$when), envir=probe)
+        if (!is.logical(result) || length(result)!=1L || is.na(result))
+          stop("load_distributions: condition must be scalar logical for ", id)
+      }
+      if (kind == "convolution_of") {
+        if (length(edge$components)!=2L || !scalar_text(edge$operation) || !edge$operation %in% c("sum", "difference") ||
+            !identical(edge$family, edge$components[[1]]$family))
+          stop("load_distributions: invalid convolution for ", id)
+        for (component in edge$components) {
+          meta <- validate_map(component, child_names)
+          if (meta$support$type != f$support$type) stop("load_distributions: convolution measure mismatch for ", id)
+        }
+      } else {
+        validate_map(edge, c(child_names, if (kind=="mixture_of") "mix"))
+      }
+      if (kind == "mixture_of") {
+        meta <- validate_map(edge$mixing, child_names)
+        if (meta$support$type != "real" || !scalar_text(edge$mixed) || !edge$mixed %in% parent_names ||
+            !"mix" %in% all.vars(parse(text=as.character(edge$at[[edge$mixed]]))) ||
+            any(vapply(edge$at[setdiff(parent_names,edge$mixed)], function(v) "mix" %in% all.vars(parse(text=as.character(v))), FALSE)))
+          stop("load_distributions: invalid mixed coefficient for ", id)
+      }
+      if (!is.null(edge$shift)) .umvl_support_expr(edge$shift, child_names)
+      if (kind == "discretisation_of" && (f$support$type != "integer" || parent$support$type != "real"))
+        stop("load_distributions: discretisation measure mismatch for ", id)
       if (kind == "modification_of") {
         if (!scalar_text(edge$type) || !edge$type %in% c("zero-truncated", "zero-modified", "zero-inflated"))
           stop("load_distributions: invalid modification type for ", id)
@@ -150,9 +187,9 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
         stop("load_distributions: truncation measure mismatch for ", id)
       if (kind == "transform_of") {
         if (!scalar_text(edge$transform) || !edge$transform %in%
-            c("log", "logit", "inverse", "power", "negate", "abs", "shift"))
+            c("log", "logit", "inverse", "power", "negate", "abs", "shift", "exp", "expit", "affine"))
           stop("load_distributions: invalid relation transform for ", id)
-        for (arg in unique(c(intersect(edge$transform, c("power", "shift")), if (edge$transform == "abs" && !is.null(edge$shift)) "shift"))) {
+        for (arg in unique(c(if (edge$transform == "affine") c("shift", "scale"), intersect(edge$transform, c("power", "shift")), if (edge$transform == "abs" && !is.null(edge$shift)) "shift"))) {
           if (is.null(edge[[arg]])) stop("load_distributions: missing transform argument for ", id)
           .umvl_support_expr(edge[[arg]], child_names)
         }

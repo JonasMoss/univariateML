@@ -46,6 +46,17 @@ relations:
       size: size
       prob: prob
       pi: 0
+  mixture_of:
+  - family: pois
+    at:
+      lambda: mix
+    mixed: lambda
+    mixing:
+      family: gamma
+      at:
+        shape: size
+        scale: (1-prob)/prob
+    when: size > 0 && prob < 1
 fit:
   method: scalar-solve
   certified: 'yes'
