@@ -138,13 +138,20 @@ Cards: TASK-113 to TASK-117 (TASK-98 for hyper/nhyper).
   refinement (half-t df, dgamma shape, Skellam, slash, Bhattacharjee,
   Tukey lambda, generalized beta, GB2); none is a certified global
   optimum.
-- dgamma: is the shape profile unimodal?
-- Skellam: uniqueness of the joint maximum.
-- Slash: a closed sample condition for the exactly-half-tied case (the
-  implemented criterion is variational).
-- Generalized beta: is the list of limit models complete?
-- Tukey lambda: the U-shaped branch 1 < lambda < 2 is not fitted (the
-  uniform junction at lambda = 1 is not upper semicontinuous).
+- dgamma (discretised gamma): is the shape profile unimodal? Reduced to
+  the rate-profiled shape curve; conjectured, unproved (TASK-117 report).
+- Skellam: uniqueness of the joint maximum. Reduced to a scalar
+  Bessel-ratio equation; conjectured, unproved (TASK-117 report).
+- Slash: a closed sample condition for the exactly-half-tied case. A
+  sufficient condition is proved (nonzero reciprocal sum at the
+  largest-collapse tie, TASK-117 report); a zero sum remains undecided.
+- Generalized beta: is the list of limit models complete for maximising
+  sequences? Conjectured; mixed weak limits exist but do not win on the
+  paths checked (TASK-117 report).
+- Tukey lambda: the U-shaped branch 1 < lambda < 2 is not fitted. Proved
+  (TASK-117 report): as lambda decreases to 1 the endpoint density is twice
+  the uniform one, so with sample extremes on the support endpoints the
+  branch supremum can be unattained; a fitter needs a junction status.
 - Negative hypergeometric: the inverse-sampling design (estimate the
   population size) is unsupported.
 - Truncated binomial with free size and free probability: a numerical
@@ -159,8 +166,9 @@ Cards: TASK-113 to TASK-117 (TASK-98 for hyper/nhyper).
   is its own existence question.
 - Translated half-t: with `mu` free the fit uses the restriction
   nu >= 1 (P4); the nu search is numerical.
-- Beta-binomial with fixed size: existence rule proved for size 2, open
-  for size >= 3.
+- Beta-binomial with fixed size: overdispersion is sufficient for every
+  size and necessary for size 2 (proved); necessity for size >= 3 is
+  conjectured (TASK-117 report). The fitter could use the rule.
 
 ## Deferred families (roadmap)
 
