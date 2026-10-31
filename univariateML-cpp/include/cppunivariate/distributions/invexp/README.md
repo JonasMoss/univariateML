@@ -16,8 +16,12 @@ r:
     scale: Optional held scale; NULL estimates it.
 log_density: log(scale) - 2*log(x) - scale/x
 references:
-  - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
-  - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
+- Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition,
+  Wiley.
+- 'Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical
+  Software, 25(7), 1-37.'
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 examples: |
   set.seed(1)
   x <- rml(200, mlinvexp())
@@ -32,6 +36,10 @@ relations:
     at:
       alpha: 1
       beta: scale
+  - family: invweibull
+    at:
+      shape: 1
+      scale: scale
   transform_of:
   - family: exp
     transform: inverse
@@ -39,13 +47,19 @@ relations:
       rate: scale
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'invexp/README.md, Details; invexp/mle.hpp (public fitter and held overloads); invexp/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - actuarial
 - reliability and survival
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model positive reciprocal waiting times with a fixed polynomial tail index.
+summary: Inverse exponential provides a model for positive reciprocal waiting times with a fixed polynomial tail
+  index.
+aliases: []
+key_references:
+- 3
 ---
 
 The inverse exponential distribution models positive heavy-tailed data.
@@ -55,3 +69,10 @@ The inverse exponential distribution models positive heavy-tailed data.
 The scale equals the exponential rate fitted on `1/x`.
 
 A held positive scale evaluates the likelihood without estimation.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

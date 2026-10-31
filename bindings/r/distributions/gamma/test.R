@@ -68,6 +68,7 @@ test_that("gamma resolves near ties and extreme scales", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "gamma"
   pn <- c("shape","scale")

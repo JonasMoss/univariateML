@@ -52,7 +52,10 @@ limits:
     when: '$\nu \to 2^+$'
     status: 'DfTwoBoundary'
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, Chapter 13.
+  Wiley, New York.
+- 'fGarch documentation (accessed 2026-10-31). fGarch: Rmetrics - Autoregressive Conditional Heteroskedastic Modelling.
+  R package reference manual. https://cran.r-project.org/web/packages/fGarch/fGarch.pdf.'
 holds: []
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
@@ -61,22 +64,46 @@ examples: |
 group: normal and Student
 construction:
 - location-scale
-relations: {}
+relations:
+  special_case_of:
+  - family: sstd
+    at:
+      mean: mean
+      sd: sd
+      nu: nu
+      xi: 1
+  - family: lst
+    at:
+      mu: mean
+      sigma: sd*sqrt((nu-2)/nu)
+      df: nu
 fit:
   method: multistart
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'std/README.md, Details; std/mle.hpp (public fitter and held overloads); std/test.cpp: With mean and nu
+    held, ordinary-t scale has a strictly monotone score (collapse exponent decides existence); free location or
+    nu uses EM or profile searches without a global certificate.'
 areas:
 - finance
 - measurement and errors
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for finite-variance Student errors parameterised by mean and standard deviation.
+summary: Student-t provides a model for finite-variance Student errors parameterised by mean and standard deviation.
+aliases: []
+key_references:
+- 2
 ---
 
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.
 
 ## Details
+
+The 2026-10-31 fit-speed revision hoists the fixed-df normalizer in the shared
+lst conditional search used by held-scale fits. It preserves scale
+reconstruction, likelihood grouping, observation order and all nominated/refined
+points. See the lst dossier for the shared method; this does not certify the
+existing numerical grid globally. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
 With free degrees of freedom, a tie of multiplicity $k>2(n-k)$ makes the likelihood unbounded; equality is reported as an uncertified scale-collapse boundary rather than as unbounded.
 
@@ -96,6 +123,10 @@ permit the regular fixed-parameter fit.
 
 
 Holds use the ordinary t scale sd*sqrt((nu-2)/nu). With mean held, only its tie multiplicity drives scale collapse. With sd held, the nu-to-2 limit forces ordinary scale to zero, rather than giving a finite-scale t2 law. The conditional normal face remains eligible. When sd is free, the conditional ordinary t2 face is compared separately. Profile searches are numerical, not global certificates.
+
+The shared profile search caches grid-point values, avoiding repeated nested
+location profiles without changing the grid, refinement or convergence checks.
+This reuse does not certify that the grid finds every mode.
 
 ## d/p/q/r
 

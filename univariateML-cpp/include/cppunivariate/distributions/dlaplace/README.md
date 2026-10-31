@@ -33,19 +33,39 @@ examples: |
   x <- diff(datasets::discoveries)
   mldlaplace(x)
 
-group: Poisson, binomial and negative binomial
+group: skewed and robust location-scale
 construction:
 - base
-relations: {}
+relations:
+  convolution_of:
+  - family: geom
+    operation: difference
+    components:
+    - family: geom
+      at:
+        prob: 1-scale
+    - family: geom
+      at:
+        prob: 1-scale
+    shift: location
 fit:
   method: closed-form
   certified: 'yes'
-  note: Details proves global maximality from integer medians and the unique scale-score root for all supported
-    held subsets; constant-sample collapse is reported.
+  note: 'dlaplace/README.md, Details; dlaplace/mle.hpp (public fitter and held overloads); dlaplace/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model integer deviations with geometric decay on either side of a central value.
+summary: Discrete Laplace provides a model for integer deviations with geometric decay on either side of a central
+  value.
+aliases:
+- "two-sided geometric"
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 Discrete Laplace distributions model integer observations with symmetric geometric tails.

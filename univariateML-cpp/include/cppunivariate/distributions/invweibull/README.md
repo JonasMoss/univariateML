@@ -26,9 +26,13 @@ r:
     iterlim: Maximum number of iterations.
 log_density: log(shape) + shape*log(scale) - (shape + 1)*log(x) - (x/scale)**(-shape)
 references:
-  - "Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley."
-  - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
-  - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
+- Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.
+- Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition,
+  Wiley.
+- 'Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical
+  Software, 25(7), 1-37.'
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 limits:
 - name: unbounded likelihood
   fixed: [scale]
@@ -50,21 +54,39 @@ relations:
       shape1: 1
       shape2: shape
       scale: scale
+  - family: frechet
+    at:
+      lambda: shape
+      mu: 0
+      sigma: scale
   transform_of:
   - family: weibull
     transform: inverse
     at:
       shape: shape
       scale: 1/scale
+  - family: gumbel
+    at:
+      mu: log(scale)
+      sigma: 1/shape
+    transform: log
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'invweibull/README.md, Details; invweibull/mle.hpp (public fitter and held overloads); invweibull/test.cpp:
+    Gumbel location is profiled exactly and its scale equation has a unique root; held location has a strictly concave
+    inverse-scale likelihood. Log/reciprocal transformations preserve this structure.'
 areas:
 - actuarial
 - reliability and survival
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model heavy-tailed lifetimes and positive extreme measurements.
+summary: Inverse Weibull provides a model for heavy-tailed lifetimes and positive extreme measurements.
+aliases:
+- "inverted Weibull"
+- "two-parameter Fréchet"
+key_references:
+- 4
 ---
 
 The inverse Weibull distribution is the distribution of the reciprocal of a Weibull variable, used for heavy-tailed positive data.
@@ -74,3 +96,10 @@ The inverse Weibull distribution is the distribution of the reciprocal of a Weib
 The optional `shape0` start was documented but ignored in univariateML 1.x.
 
 With scale held, the likelihood is unbounded if every reciprocal observation equals `1/scale`. Holding shape permits constant data.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

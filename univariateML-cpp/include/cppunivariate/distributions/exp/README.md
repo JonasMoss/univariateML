@@ -24,9 +24,11 @@ examples: |
 
 summary: The exponential distribution models nonnegative waiting times with a constant hazard rate.
 classification: classical
-classification_reason: A standard waiting-time and reliability model.
+classification_reason: A standard model for waiting times under a constant event hazard.
 aliases:
-- negative exponential
+- "negative exponential"
+- "one-parameter exponential"
+- "antilogarithmic"
 key_references:
 - 1
 limits:
@@ -50,11 +52,26 @@ relations:
     at:
       shape: 1
       scale: 1/rate
+  - family: gpd
+    at:
+      mu: 0
+      sigma: 1/rate
+      xi: 0
+  - family: sgomp
+    at:
+      b: rate
+      eta: 0
+  transform_of:
+  - family: laplace
+    at:
+      mu: 0
+      sigma: 1/rate
+    transform: abs
 fit:
   method: closed-form
-  certified: partial
-  note: Unique inverse-mean solution for positive sample sum; degenerate data and held cases are documented
-    in Details.
+  certified: 'yes'
+  note: 'exp/README.md, Details; exp/mle.hpp (public fitter and held overloads); exp/test.cpp: Closed-form maximum
+    for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - reliability and survival
 - waiting times and queues
@@ -79,3 +96,10 @@ is unique when the sum is positive; all-zero data have a supremum at
 infinite rate. The held-rate case is evaluated at the supplied value.
 See the family tests and the existence analysis in
 `dev/research/evaluations/2026-10-29-p0-positive.md`.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

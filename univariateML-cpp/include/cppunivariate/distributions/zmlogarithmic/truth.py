@@ -3,9 +3,12 @@
 The route contains only mathematical definitions, no C++/R/reference calls.
 """
 import mpmath as mp
+from quality.truth_reference import atomic
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t, logd):
+    if t['prob'] == 0: return atomic({0: t['p0'], 1: 1-t['p0']})
+    if t['p0'] == 1: return atomic({0: 1})
     from functools import lru_cache
     from quality.truth_reference import logarithmic_tail
     p=t['prob']

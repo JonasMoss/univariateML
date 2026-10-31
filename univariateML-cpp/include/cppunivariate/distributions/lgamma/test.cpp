@@ -125,3 +125,10 @@ TEST_CASE("lgamma core matches previous adapter for every held subset") {
   const std::vector<double> ties{2,2};
   CHECK(cppunivariate::lgamma_mle(mltest::as_span(ties),1e-8,100).status==cppunivariate::LgammaStatus::Degenerate);
 }
+
+TEST_CASE("lgamma: TASK-132 empty and invalid delegates preserve non-success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2},std::vector<double>{-1,2}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::lgamma_mle(x,1e-8,200).status != cppunivariate::LgammaStatus::Ok);
+  }
+}

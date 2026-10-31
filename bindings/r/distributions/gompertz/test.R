@@ -26,6 +26,7 @@ test_that("constant positive Gompertz data have an unbounded likelihood", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "gompertz"
   pn <- c("a","b")

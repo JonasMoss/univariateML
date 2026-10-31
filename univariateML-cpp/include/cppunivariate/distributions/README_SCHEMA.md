@@ -31,7 +31,7 @@ goldens), by the validation harness, and later by the Python shell.
 | `classification_reason` | with classification | qualitative reason for the classification |
 | `group` | yes | primary catalog group; controlled vocabulary below |
 | `construction` | yes | nonempty list of construction tags; vocabulary below |
-| `relations` | yes | special-case and transformation edges; `{}` if none declared |
+| `relations` | yes | immediate identities and construction edges; `{}` if none declared |
 | `fit` | yes | primary `method`, `certified` strength and scoped `note` |
 | `areas` | yes | one to three application areas; vocabulary below |
 | `aliases` | no | list of verified alternative names; an empty list is allowed |
@@ -249,7 +249,7 @@ all five fields plus classification/reason and undergoes full validation.
 Classification and its reason are populated for every family. Application and
 prevalence assignments are editorial first-version judgements, not a usage survey.
 
-- `group`: one value from `Pareto and Lomax`, `Poisson, binomial and negative binomial`, `beta and generalised beta`, `bounded continuous`, `discrete heavy-tailed`, `extreme value`, `finite sampling`, `gamma and Weibull`, `modified counts`, `normal and Student`, `other positive`, `skewed and robust location-scale`.
+- `group`: one value from `Pareto and Lomax`, `Poisson, binomial and negative binomial`, `beta and generalised beta`, `bounded continuous`, `discrete heavy-tailed`, `extreme value`, `finite sampling`, `gamma and Weibull`, `modified counts`, `normal and Student`, `normal convolutions`, `other positive`, `skewed and robust location-scale`.
 - `construction`: a nonempty unique list from `base`, `compounding`, `discretisation`, `folding`, `generalisation`, `location-scale`, `modification`, `skewing`, `transformation`, `truncation`.
 - `areas`: a nonempty unique list of at most three from `actuarial`, `counts and ecology`, `economics and income`, `extremes and environment`, `finance`, `measurement and errors`, `proportions`, `rank-frequency`, `reliability and survival`, `robust modelling`, `sampling and quality control`, `waiting times and queues`.
 - `fit`: `{method, certified, note}`; method is `closed-form`, `scalar-solve`,
@@ -257,16 +257,16 @@ prevalence assignments are editorial first-version judgements, not a usage surve
   The last is a plan extension for the grouped-normal joint concave solve. This names
   the primary route; held subsets can use others. `certified` is a quoted string
   `yes`, `partial`, `no`, or `unknown`; YAML booleans are invalid. Use `unknown`
-  unless existing evidence states the strength. `note` states scope and evidence;
+  only when the fitting evidence is genuinely absent. `note` states scope and evidence;
   certification is about fitting, not inference regularity or coverage.
-- `relations`: a map (empty `{}` allowed) with lists `special_case_of` and/or
-  `transform_of`. Each edge has `family` (an existing different id) and `at`,
+- `relations`: a map (empty `{}` allowed) with lists `special_case_of`, `transform_of`, `truncation_of` and/or
+  `modification_of`, `convolution_of`, `mixture_of`, and/or `discretisation_of` (defined below). Ordinary one-parent edges have `family` (an existing different id) and `at`,
   mapping **every parent coefficient** to a numeric constant or pure arithmetic
   expression in child coefficient names. Neither display symbols nor undeclared
   variables are allowed. Example: exponential has
   `{family: gamma, at: {shape: 1, scale: 1/rate}}`.
   A transform additionally has `transform`: `log`, `logit`, `inverse`, `power`,
-  `negate`, `abs`, or `shift`. It means `T(X)` has the parent law. `power`
+  `negate`, `abs`, `shift`, `exp`, `expit`, or `affine`. It means `T(X)` has the parent law. `power`
   requires a `power` expression (currently positive exponent and positive support);
   `shift` requires a `shift` expression and means `X - shift`. `abs` means
   the child is the absolute value of a full-real parent, summing both branches.
@@ -289,3 +289,121 @@ records explicitly concern constant/all-zero/collapsed samples and none of the
 other tags apply. `always` means no declared obstacle; it is a metadata
 default, **not an existence theorem**. Unclassified unnamed failure records
 are conservatively tagged `partial` rather than asserting `always`.
+
+### Taxonomy round two (2026-10-31)
+
+`normal convolutions` is an additional group for EMG and Bhattacharjee:
+their independent-component construction is more informative than their
+full-real support. Folding retains the parent family's primary group.
+Groups are navigation choices and need not partition mathematical constructions.
+
+Certification is assigned from the actual default and documented held fits:
+`yes` requires closed forms or a unique solution with a monotone equation,
+certified bracket, concavity argument or exhaustive bounded search for every
+supported subset; `partial` identifies specific certified subsets or regions;
+`no` means the nontrivial fitting routes remain numerical searches;
+`unknown` is reserved for genuinely missing evidence. Unsupported subsets and
+numerical precision limitations must be named. All-held density evaluation alone
+does not justify `partial`. A converged local score is not a global certificate.
+Each note cites a file and section; no tag establishes inference validity.
+
+Additional density relations (the complete-map rule still applies):
+
+- `truncation_of`: the child is the parent conditioned on the child's declared
+  support. No extra bound fields are needed. Its density is the parent density
+  divided by its mass on that support. Supports must have the same base measure;
+  the conditioning support must be a nonempty subset. Integer bounds are the
+  effective included lattice bounds, so strict lower truncation stays strict.
+- `modification_of`: integer zero modification, with `type` equal to
+  `zero-truncated`, `zero-modified`, or `zero-inflated`. If parent mass at zero
+  is q, zero-truncated positive masses are f(k)/(1-q). Zero-modified additionally
+  requires `mass`, an expression in child coefficients: zero has that mass p,
+  positives have (1-p)f(k)/(1-q). Zero-inflated uses zero mass p+(1-p)q and
+  positive masses (1-p)f(k). These formulas are checked at interior parameters;
+  zero-denominator boundary extensions require separate family tests.
+- An `abs` transform may have `shift`, meaning the child is shift + |parent|.
+  Both inverse branches and the shifted support are checked. For example,
+  hnorm maps to norm with mean=0, sd=sigma and shift=mu.
+
+The checker integrates the mapped parent density on continuous truncation
+supports and sums it on finite integer supports at 35-digit working precision.
+Zero modifications use the mapped parent's zero mass and test both zero and
+positive observations. The 24 seeded parameter neighbourhoods and `2e-9`
+relative log-density tolerance provide regression evidence, not a global proof
+or validated interval arithmetic. New edge types appear in both directions in
+Related families and as declared-relation catalog facets.
+
+### Construction edges and conditions (2026-10-31)
+
+Any edge may have `when`, a scalar logical expression in child coefficients
+using comparisons and `&&` / `||`. It restricts the identity, not the family
+or fit domain. Verification accepts only valid child draws satisfying it;
+24 accepted draws are required within 480 attempts. Empty or unreachable
+conditions fail. The graph uses dotted lines and retains the condition in
+its title. Maps admit pure `exp` and `expit` expressions as well as arithmetic.
+
+- `convolution_of`: `components` contains exactly two `{family, at}` maps,
+  `operation` is `sum` or `difference`, and optional `shift` defaults to zero.
+  All components are independent: X = shift + A + B or shift + A - B.
+  `family` repeats the first component id for compatibility with one-parent
+  consumers; there is no top-level `at`. Both components must have the child's
+  base measure. Every component coefficient must be mapped.
+- `mixture_of`: `family` is the conditional parent, `at` its complete map,
+  `mixed` names its one randomized coefficient, and `mixing` is a complete
+  `{family, at}` map for a continuous mixing law. The reserved symbol `mix`
+  may occur only in the `mixed` entry of the parent map. It is the random
+  variate drawn from the mixing law, not necessarily the coefficient itself.
+  Optional `shift` means X = shift + Y. For slash, Y given mix is
+  Normal(mean=mu, sd=sigma/mix), with mix Uniform(0,1) and mixed=`sd`.
+- `discretisation_of`: complete ordinary `family` and `at` map; X=floor(Y)
+  for a continuous parent. The child's integer support must agree with the
+  floor image. Its mass is the integral of the parent density over [k,k+1].
+- `exp` and `expit` mean exp(X) and 1/(1+exp(-X)) have the parent law.
+  `affine` requires `shift` and positive `scale`, meaning
+  (X-shift)/scale has the parent law. Inverse images and absolute Jacobians
+  are checked. Reverse log/exp and logit/expit arrows must not both be declared.
+
+Construction checks use 35-digit mpmath direct quadrature or infinite discrete
+summation, with 24 seeded accepted coefficient draws and relative log-density
+tolerance `2e-8`. Existing edges retain `2e-9`. This is numerical regression
+evidence, not a proof, tail-error certificate or interval integration. Domain,
+map and support errors fail explicitly. Conditional parent maps are checked
+at every mixing quadrature node. Graphs show each distinct component and
+mixing family; repeated identical-family components remain one graph arrow
+with both maps preserved in its title.
+
+The immediate-edge check rejects special-case paths, a same-transform path
+with special-case steps, and an analogous one-construction path for the three
+new construction kinds. Conditional steps never establish an unconditional
+redundancy. This conservative graph policy does not attempt symbolic implication
+between conditions or general composition of multivariate constructions.
+
+For mixtures, the checker additionally composes a child shift or special-case
+map with one mixture and an optional parent special-case embedding. It compares
+all composed parent coefficients, the mixing-family map and the total shift
+symbolically. Thus Yule--Simon's shifted beta-geometric mixture is inherited
+from its beta-negative-binomial relation, beta mixing of negative binomial,
+and the geometric size-one member; no redundant direct mixture arrow is kept.
+
+## Discrete quantile endpoints (TASK-134, 2026-10-31)
+
+For an explicit finite design support, quantiles at lower-tail probability zero
+and one return its nominal minimum and maximum, respectively, even when a
+parameter makes one of those endpoints have zero mass. Upper-tail probabilities
+reverse these endpoints; log probabilities use the identical rule. Interior
+probabilities invert the actual CDF. Positive truncation has minimum one;
+zero modification includes zero even at zero modification mass. An unbounded
+law that collapses to finitely many atoms uses its actual last atom as maximum.
+
+This keeps endpoint queries tied to the supplied design bounds and preserves
+parameter continuity of those endpoint queries through collapse. It matches
+R's `qbinom(c(0,1), 10, prob)` convention: both `prob = 0` and
+`prob = 1` return the nominal endpoints zero and ten (checked in R 4.6.1). Interior
+quantiles need not be continuous at an atomic probability jump. A nominal
+endpoint is a quantile convention, not an assertion of positive endpoint mass.
+
+An inclusive coefficient bound does not override the requirement that a
+conditioning event have positive probability. The tpois/tbinom dossiers exclude
+zero-probability conditioning events; their archived positive-truncation weak
+limits are not public members. The ztpois/ztbinom dossiers separately include
+those limits.

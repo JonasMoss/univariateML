@@ -84,15 +84,28 @@ examples: |
 group: modified counts
 construction:
 - truncation
-relations: {}
+relations:
+  truncation_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'tbinom/README.md, Details; tbinom/mle.hpp (public fitter and held overloads); tbinom/test.cpp: Fixed size
+    has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability
+    grids lack a global unimodality certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model success counts observed only within a specified conditioning window.
+summary: Truncated binomial provides a model for success counts observed only within a specified conditioning window.
+aliases: []
+references:
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
+key_references:
+- 1
 ---
 
 The binomial law conditioned on known bounds `a < x <= b` models truncated counts.
@@ -114,3 +127,11 @@ Otherwise the corresponding zero-probability conditioning limit is reported as a
 At fixed size, free truncation bounds select the smallest conditioning support containing the sample: `a = min(x) - 1`, `b = max(x)`. The likelihood cannot decrease when unobserved support is removed. Singleton support attains likelihood one with any interior probability; an unspecified probability is returned as 0.5. A held boundary probability requires the conditioning event to have positive probability.
 
 With probability held in (0,1), integer-size profiling bounds the entire tail by geometric ratios below a finite upper bound, or binomial stochastic ordering without an upper bound. A constant sample at a nonsingleton finite upper edge escapes as size increases. A million-candidate budget stops instead of returning a capped estimate. With probability free, the search scans 128 consecutive sizes, expands a bracket geometrically and refines every observed peak over integers. It compares the profile with the exact truncated-Poisson face on the same bounds; this is a numerical search, without a proof of global unimodality. Four consecutive expansions within `1e-9 * length(x)` of the face stop the search. A finite fit must beat that face by this tolerance; otherwise fitting stops with `use mltpois`. Two-point conditioning windows attain their saturated likelihood at finite size and are returned directly. The budget is 512 expansions, with no size magnitude cap; unresolved searches stop with numerical failure. Poisson-scale coordinates and `log1p` corrections avoid cancellation at large sizes. Constant samples attain likelihood one at `size = max(x), prob = 1`.
+
+For a finite upper conditioning bound and an `Ok` candidate exceeding the Poisson face by `1e-9 * length(x)`, the fitter computes a tail cutoff. If every previously unvisited feasible integer through the cutoff fits within 40 million estimated operation units, it profiles all of them, including sizes below the upper bound; fixed-size profiling is concave in logit probability. The estimate charges at least 400 units per profile, plus a sample- and window-dependent estimate. When the cutoff or extra profiles cannot be resolved or exceed the budget, the original numerical search result is returned unchanged. The completed pass is a numerical certificate using the stated margin, not interval arithmetic or a directed-rounding proof. The face-win decision and all other results remain numerical. Infinite upper windows retain the earlier numerical search. See the [size-search investigation](../../../../../dev/research/evaluations/2026-10-31-size-search-report.md) for the proof and limitations.
+
+Scalar d/p/q/r use the same positive-probability conditioning contract. At
+`prob = 0` or `prob = 1`, the window must contain zero or size, respectively;
+otherwise they return NaN. The atom at the corresponding extreme allowed
+count exists as a weak limit but is not an attained member here. The ztbinom
+family separately includes its positive-truncation probability-zero limit.

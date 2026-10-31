@@ -1,4 +1,5 @@
 test_that("invpareto matches a multistart density oracle", {
+  skip_unless_tier("full")
   set.seed(871)
   x <- rinvpareto(n = 300, shape = 1.3, scale = 2.7)
   fit <- mlinvpareto(x, reltol=1e-10, iterlim=1000)
@@ -37,6 +38,7 @@ test_that("inverse Pareto inherits the global Lomax criterion", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "invpareto"
   pn <- c("shape","scale")

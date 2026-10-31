@@ -36,6 +36,7 @@ expect_equal(attr(mlparalogis(small_data), "model"), "Paralogistic")
 
 
 test_that("fixed scale agrees with reference-density oracle and records df", {
+  skip_unless_tier("full")
   for (s in c(.2, 1, 7)) {
     x <- c(.03, .1, .4, .7, 1, 2, 4, 12) * s
     fit <- mlparalogis(x, scale=s)
@@ -73,6 +74,7 @@ test_that("constant free-scale paralogis data have an unbounded likelihood", {
 })
 
 test_that("paralogis large-sample fitting preserves likelihood under replication", {
+  skip_unless_tier("full")
   p<-((1:1000)-.5)/1000
   x<-qparalogis(p = p, shape = 1, scale = 1)
   base<-mlparalogis(x)
@@ -82,6 +84,7 @@ test_that("paralogis large-sample fitting preserves likelihood under replication
 
 
 test_that("P2 paralogis holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape=2, scale=1)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)

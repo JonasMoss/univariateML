@@ -27,7 +27,7 @@ r:
     iterlim: "Maximum number of Newton iterations."
 log_density: "-s*log(x) - log(Sum(k**(-s), (k, 1, N)))"
 references:
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 limits:
 - name: point mass at one
   when: '$s \to \infty$'
@@ -43,15 +43,27 @@ examples: |
 group: discrete heavy-tailed
 construction:
 - base
-relations: {}
+relations:
+  truncation_of:
+  - family: zeta
+    at:
+      s: s
+    when: s > 1
 fit:
   method: scalar-solve
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'zipf/README.md, Details; zipf/mle.hpp (public fitter and held overloads); zipf/test.cpp: Strictly monotone
+    one-parameter exponential-family or log-shape score gives a bracketed unique root or the documented boundary;
+    finite Zipf endpoint and modified zero mass profile exactly.'
 areas:
 - rank-frequency
 classification: specialist
-classification_reason: Used within rank-frequency; classified by its specialised modelling role.
+classification_reason: Used to model rank frequencies with a finite power-law cutoff.
+summary: Zipf provides a model for rank frequencies with a finite power-law cutoff.
+aliases:
+- "finite Zipfian"
+key_references:
+- 1
 ---
 
 The finite Zipf distribution describes power-law frequencies on consecutive positive integers.

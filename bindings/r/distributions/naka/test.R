@@ -118,6 +118,7 @@ test_that("tiny Nakagami shape retains upper log tails at tiny amplitudes", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "naka"
   pn <- c("shape","scale")

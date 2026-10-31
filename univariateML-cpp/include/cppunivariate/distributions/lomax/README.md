@@ -31,9 +31,14 @@ limits:
     detect: max over 0 < u < ubar of the profile log-likelihood gap is at most 1e-8*n
     status: ExponentialLimit
 references:
-  - "del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021."
-  - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
-  - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley, p. 60.
+- del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability
+  Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021.
+- Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics
+  35(2), 185–191. doi:10.1080/00401706.1993.10485040.
+- Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley, p.
+  60.
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 examples: |
   set.seed(1)
   x <- rml(200, mllomax())
@@ -49,15 +54,33 @@ relations:
       shape1: kappa
       shape2: 1
       scale: 1/lambda
+  - family: pareto2
+    at:
+      shape: kappa
+      scale: 1/lambda
+      min: 0
+  - family: betapr
+    at:
+      shape1: 1
+      shape2: kappa
+      scale: 1/lambda
 fit:
   method: profile-search
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'lomax/README.md, Details; lomax/mle.hpp (public fitter and held overloads); lomax/test.cpp: Either held
+    coefficient gives a unique finite fit; joint scale profile and exponential-face comparison remain numerical
+    rather than a global certificate.'
 areas:
 - actuarial
 - economics and income
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model positive losses and waiting times with a Pareto tail from zero.
+summary: Lomax provides a model for positive losses and waiting times with a Pareto tail from zero.
+aliases:
+- "Pareto type II (zero threshold)"
+- "Pareto of the second kind (zero threshold)"
+key_references:
+- 4
 ---
 
 The Lomax (Pareto type II) distribution is a heavy-tailed distribution on

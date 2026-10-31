@@ -136,14 +136,22 @@ relations:
     shift: min
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: Held
+    threshold transfers to Lomax, log-logistic or Burr; conditional monotone subsets are certified but joint excess
+    profiles inherit numerical-search qualifications. Free thresholds stop.'
 areas:
 - actuarial
 - economics and income
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model thresholded income and losses with a Burr excess distribution.
+summary: Pareto type IV provides a model for thresholded income and losses with a Burr excess distribution.
+aliases: []
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 This family has a known support endpoint and delegates fitting to burr.
@@ -162,3 +170,16 @@ With scale held, endpoint limit models retain the endpoint min + scale;
 a free-endpoint Pareto or power fit would be a different constrained model.
 
 With min held, every shape hold reduces to the corresponding Burr fit on x - min, including its held-power Weibull escape.
+
+### Golden comparison precision (2026-10-31)
+
+The double-only baseline and TASK-132 headers return bit-identical estimates;
+the largest relative coefficient difference from the extended-precision golden
+is 4.18e-7. The double-only comparison uses 5e-7 (also used for wasm), retaining
+the 1e-8 native tolerance. An independent analytic total score in log(shape1),
+log(shape2), log(scale) has norm 2.02e-5 and independently summed likelihood is
+within 1.1e-12 of the golden. These are numerical stationarity/regression checks,
+not a global optimality proof. The appended precision case retains a 1e-3 score
+gate and 1e-8 absolute likelihood checks. Reproducer:
+[pareto4-precision.cpp](../../../../../dev/validation/pareto4-precision.cpp).
+The fitter and golden are unchanged.

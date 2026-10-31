@@ -53,16 +53,31 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    type: zero-inflated
+    mass: pi
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'zib/README.md, Details; zib/mle.hpp (public fitter and held overloads); zib/test.cpp: Fixed size has exact
+    conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability grids
+    lack a global unimodality certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model bounded success counts with an additional structural-zero component.
+summary: Zero-inflated binomial provides a model for bounded success counts with an additional structural-zero component.
+aliases:
+- "ZIB"
+references:
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
+key_references:
+- 1
 ---
 
 Zero-inflated binomial distributions model counts with a separate zero component.
@@ -77,3 +92,5 @@ A held probability is preserved exactly. With probability strictly between zero 
 Holding inflation leaves a scalar probability profile at each integer size. Its stationary points are isolated by the quadratic turning-point equation; the infinite-size comparison uses ZIP with the same held inflation.
 
 With size free and either or both of probability and inflation also free, the search scans an exponential grid of candidate sizes (profiling the remaining free coefficients exactly at each one) and refines each local peak. As with `mlztbinom`, no unimodality proof is known for this profile, so this remains a numerical grid search, not a certified one; see `dev/research/evaluations/2026-10-29-tail85-report.md`. The grid has no fixed magnitude limit: it keeps growing until ten exponential steps pass without an improvement, bounded only by `iterlim`. Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
+
+The grid and ZIP-face comparison do not certify the global optimum. The [size-search investigation](../../../../../dev/research/evaluations/2026-10-31-size-search-report.md) gives the reduction to positive-binomial and binomial branches and identifies the remaining gap.

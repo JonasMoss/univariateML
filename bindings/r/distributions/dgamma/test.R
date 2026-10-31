@@ -1,4 +1,5 @@
 test_that("mldgamma agrees with independent reference optimizers", {
+  skip_unless_tier("full")
   set.seed(617)
   samples <- list(c(0,0,0,1,2,6), c(1,1,3,8,12), c(0,2),
                   rdgamma(n = 80, shape = 0.4, rate = 0.3),

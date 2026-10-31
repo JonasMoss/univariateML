@@ -44,7 +44,7 @@ examples: |
 
 summary: The binomial distribution counts successes in a fixed number of independent trials with a common success probability.
 classification: classical
-classification_reason: A standard sampling model for binary trial counts.
+classification_reason: A standard model for success counts from independent trials with a common success probability.
 aliases: []
 key_references:
 - 1
@@ -53,12 +53,31 @@ key_references:
 group: Poisson, binomial and negative binomial
 construction:
 - base
-relations: {}
+relations:
+  special_case_of:
+  - family: zib
+    at:
+      size: size
+      prob: prob
+      pi: 0
+  - family: tbinom
+    at:
+      size: size
+      prob: prob
+      a: -1
+      b: size
+  - family: cmb
+    at:
+      size: size
+      prob: prob
+      nu: 1
+    when: size <= 10000000
 fit:
   method: integer-search
-  certified: partial
-  note: Inventory records free-size profile unimodality and held-probability tail bound; budget exhaustion
-    stops.
+  certified: 'yes'
+  note: 'binom/README.md, Details; binom/mle.hpp (public fitter and held overloads); binom/test.cpp: Free-size profile
+    is unimodal (DeRiggi result cited in Details); held-probability search excludes the entire integer tail. Fixed-size
+    probability is analytic; work-budget exhaustion stops.'
 areas:
 - counts and ecology
 ---
@@ -72,3 +91,9 @@ Free trial-size estimation brackets and bisects the integer profile likelihood, 
 The estimate of `size` can be unstable; alternatives are discussed by Carroll and Lombard (1985) and DasGupta and Rubin (2005). Supplying `size` fixes the number of trials and estimates only `prob`; it must be at least `max(x)`. The support is the integers from zero to `size`, and `size` is a nonnegative integer.
 
 A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.
+
+### Diagnostic status contract (2026-10-31)
+
+Invalid and empty samples carry non-success statuses, including delegate paths.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp`.

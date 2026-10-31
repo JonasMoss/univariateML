@@ -34,7 +34,9 @@ r:
     m: "White-ball count; `NULL` estimates it with `N` known, otherwise holds it fixed."
 log_density: "loggamma(x) - loggamma(r) - loggamma(x-r+1) + loggamma(N-x+1) - loggamma(m-r+1) - loggamma(N-m-x+r+1) - loggamma(N+1) + loggamma(N-m+1) + loggamma(m+1)"
 references:
-  - "Berry, K. J. and Mielke, P. W. (1998). The negative hypergeometric probability distribution: Sampling without replacement from a finite population. Perceptual and Motor Skills, 86(1), 207-210."
+- 'Berry, K. J. and Mielke, P. W. (1998). The negative hypergeometric probability distribution: Sampling without
+  replacement from a finite population. Perceptual and Motor Skills, 86(1), 207-210.'
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 holds:
 - held: []
   status: not-implemented
@@ -53,16 +55,30 @@ examples: |
 group: finite sampling
 construction:
 - base
-relations: {}
+relations:
+  transform_of:
+  - family: bbinom
+    at:
+      size: (N-m)*min(1,r)
+      alpha: max(1,r)
+      beta: m-r+1
+    transform: shift
+    shift: r
 fit:
   method: integer-search
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: 'yes'
+  note: 'nhyper/README.md, Details; nhyper/mle.hpp (public fitter and held overloads); nhyper/test.cpp: Supported
+    integer grids are exhaustive with a proved population tail bound; one-coordinate likelihood ratios decrease.
+    Unsupported joint population/composition designs stop; floating-point tie tolerances remain.'
 areas:
 - sampling and quality control
 classification: specialist
-classification_reason: Used within sampling and quality control; classified by its specialised modelling role.
+classification_reason: Used to model finite-population waiting counts up to a specified number of successes.
+summary: Negative hypergeometric provides a model for finite-population waiting counts up to a specified number
+  of successes.
+aliases: []
+key_references:
+- 2
 ---
 
 The negative hypergeometric distribution counts total draws without

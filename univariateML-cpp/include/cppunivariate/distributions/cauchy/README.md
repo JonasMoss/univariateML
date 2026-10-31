@@ -25,7 +25,8 @@ r:
     iterlim: Maximum number of iterations.
 log_density: -log(pi) - log(scale) - log(1 + ((x-location)/scale)**2)
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 16. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 16.
+  Wiley, New York.
 holds: []
 limits:
   - name: scale collapse
@@ -41,15 +42,30 @@ examples: |
 group: skewed and robust location-scale
 construction:
 - location-scale
-relations: {}
+relations:
+  special_case_of:
+  - family: lst
+    at:
+      mu: location
+      sigma: scale
+      df: 1
 fit:
   method: profile-search
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'cauchy/README.md, Details; cauchy/mle.hpp (public fitter and held overloads); cauchy/test.cpp: Held location
+    leaves a unique monotone scale solve; free location can be multimodal and the observation-gap search has no
+    root-isolation certificate.'
 areas:
 - robust modelling
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for symmetric errors whose extreme values require tails without finite variance.
+summary: Cauchy provides a model for symmetric errors whose extreme values require tails without finite variance.
+aliases:
+- "Lorentz"
+- "Cauchy–Lorentz"
+- "Breit–Wigner"
+key_references:
+- 1
 ---
 
 The Cauchy distribution is a symmetric location-scale distribution with heavy tails.

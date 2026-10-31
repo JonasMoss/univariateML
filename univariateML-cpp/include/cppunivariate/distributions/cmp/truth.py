@@ -3,6 +3,7 @@
 The route contains only mathematical definitions, no C++/R/reference calls.
 """
 import mpmath as mp
+from quality.truth_reference import atomic
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def expression(symbols,x):
@@ -10,6 +11,14 @@ def expression(symbols,x):
     return sp.S.Zero  # exact log series evaluated below, not golden spec
 
 def build(t):
+    if t['lambda'] == 0: return atomic({0: 1})
+    if t['nu'] == 0:
+        if t['lambda'] >= 1: raise ValueError('nu=0 requires lambda<1 for normalization')
+        a=t['lambda']
+        out=Reference(lambda x:pair((x+1)*mp.log(a),False),0,mp.inf,True,
+                      log_density=lambda x:mp.log1p(-a)+x*mp.log(a))
+        out.normalization=mp.mpf(1)
+        return out
     a,b=t['lambda'],t['nu']
     from functools import lru_cache
     @lru_cache(maxsize=100000)
@@ -31,3 +40,7 @@ def build(t):
     out.normalization=geometric_sum(lambda k:mp.exp(ld(mp.mpf(k))),0,ratio)
     return out
 
+
+def boundary_adjust(t):
+    # The nu=0 face is geometric only on lambda<1.
+    return {**t, 'lambda': .5} if t['nu'] == 0 and t['lambda'] >= 1 else t

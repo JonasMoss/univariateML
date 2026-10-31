@@ -82,6 +82,7 @@ test_that("P2 reflected constant exterior-mode maxima", {
 })
 
 test_that("P2 triangular subsets dominate independent multistart endpoint searches", {
+  skip_unless_tier("full")
   set.seed(8131)
   samples <- list(rtriang(n = 20, a = 0, b = 1, c = 0.4),rtriang(n = 100, a = 0, b = 1, c = 0.4),
                   runif(20),c(.2,.2,.6,.8),c(.2,.8),rep(.4,5))

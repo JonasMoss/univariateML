@@ -41,7 +41,10 @@ limits:
   detect: 'mean(x^2) >= 2*mean(x)^2'
   status: 'Overdispersed'
 references:
-  - "Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision. MPIDR Working Paper WP 2012-008."
+- Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision.
+  MPIDR Working Paper WP 2012-008.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 examples: |
   set.seed(1)
   x <- rml(200, mlgompertz())
@@ -53,12 +56,19 @@ construction:
 relations: {}
 fit:
   method: profile-search
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'gompertz/README.md, Details; gompertz/mle.hpp (public fitter and held overloads); gompertz/test.cpp: Held
+    b gives analytic a; held a has a strictly concave b likelihood; profiling a leaves a strictly decreasing shape
+    score. Exponential boundary comparisons precede return.'
 areas:
 - reliability and survival
 classification: specialist
-classification_reason: Used within reliability and survival; classified by its specialised modelling role.
+classification_reason: Used to model adult mortality and lifetimes with an exponentially increasing hazard.
+summary: Gompertz provides a model for adult mortality and lifetimes with an exponentially increasing hazard.
+aliases:
+- "truncated Gumbel"
+key_references:
+- 2
 ---
 
 The Gompertz distribution has an exponentially increasing hazard and is used to model lifetimes.

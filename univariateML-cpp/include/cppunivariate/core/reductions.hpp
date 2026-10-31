@@ -1,3 +1,5 @@
+// Contract, retained choices, evidence and known numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
 // Common scalar reductions over an cppunivariate::span. Centralises what every
 // estimator otherwise hand-rolls. All inline; zero overhead vs writing the
 // loop directly.

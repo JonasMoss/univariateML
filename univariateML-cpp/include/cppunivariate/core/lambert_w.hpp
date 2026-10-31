@@ -1,5 +1,7 @@
-// Real Lambert W branches: W_0 for Zero-Inflated Poisson and W_{-1}
-// for Logarithmic-Series MLEs. Fritsch iteration with relative convergence;
+// Contract, retained choices, evidence and known numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
+// Real Lambert W branches: W_0 for Zero-Inflated Poisson; W_{-1} is
+// currently unused. Newton-step refinement with a second-order correction;
 // series approximation near 0 on the principal branch.
 
 #pragma once

@@ -40,8 +40,27 @@
  }
  onMount(async()=>{try{const url='/binding/index.mjs';const {default:create}=await import(/* @vite-ignore */ url);api=await create();}catch(e){error=e.message;}});
  async function simulate(){busy=true;fit=null;fitError='';await new Promise(r=>setTimeout(r,0));try{sample=Array.from(api[family.id].r(+n,values,+seed));const fixed=Object.fromEntries(family.params.filter(p=>held[p.name]).map(p=>[p.name,values[family.params.indexOf(p)]]));if(api[family.id].fit)fit=api[family.id].fit(new Float64Array(sample),fixed);}catch(e){fitError=e.message;}finally{busy=false;}}
- function admits(f,x){const s=f.support;const lo=Number(String(s.lower).replace('inf','Infinity')),hi=Number(String(s.upper).replace('inf','Infinity'));return x.every(v=>(s.type!=='integer'||Number.isInteger(v))&&(s.closed[0]?v>=lo:v>lo)&&(s.closed[1]?v<=hi:v<hi));}
- async function rank(){busy=true;ranking=[];await new Promise(r=>setTimeout(r,0));try{const tokens=text.trim().split(/[\s,;]+/).filter(Boolean),x=tokens.map(Number);if(!text.trim()||x.some(v=>!Number.isFinite(v)))throw Error('Enter finite observations separated by spaces, commas or newlines.');ranking=catalog.map(f=>{if(!api[f.id].fit)return {id:f.id,error:'Fitting is not yet available for this family.'};if(!admits(f,x))return {id:f.id,error:'Support does not admit these observations.'};try{const result=api[f.id].fit(new Float64Array(x));return {id:f.id,result,aic:2*(Object.keys(result.estimates).length-result.fixed.length)-2*result.logLik};}catch(e){return {id:f.id,error:e.message};}}).sort((a,b)=>(a.aic??Infinity)-(b.aic??Infinity));}catch(e){ranking=[{id:'Input',error:e.message}];}finally{busy=false;}}
+ function admits(f,x){const s=f.support,lo=numeric(s.lower),hi=numeric(s.upper);return x.every(v=>(s.type!=='integer'||Number.isInteger(v))&&(Number.isNaN(lo)||(s.closed[0]?v>=lo:v>lo))&&(Number.isNaN(hi)||(s.closed[1]?v<=hi:v<hi)));}
+ async function rank(){
+  busy=true;ranking=[];
+  await new Promise(r=>setTimeout(r,0));
+  try{
+   const tokens=text.trim().split(/[\s,;]+/).filter(Boolean),x=tokens.map(Number);
+   if(!text.trim()||x.some(v=>!Number.isFinite(v)))throw Error('Enter finite observations separated by spaces, commas or newlines.');
+   const rows=[];
+   for(const f of catalog){
+    await new Promise(r=>setTimeout(r,0));
+    if(!api[f.id].fit){rows.push({id:f.id,error:'Fitting is not yet available for this family.'});continue;}
+    if(!admits(f,x)){rows.push({id:f.id,error:'Support does not admit these observations.'});continue;}
+    try{
+     const result=api[f.id].fit(new Float64Array(x));
+     rows.push({id:f.id,result,aic:2*(Object.keys(result.estimates).length-result.fixed.length)-2*result.logLik});
+    }catch(e){rows.push({id:f.id,error:e.message});}
+   }
+   ranking=rows.sort((a,b)=>(a.aic??Infinity)-(b.aic??Infinity));
+  }catch(e){ranking=[{id:'Input',error:e.message}];}finally{busy=false;}
+ }
+
 </script>
 <section class="explorer" aria-label="Distribution explorer">
  <h2>Explore and fit</h2>
@@ -68,7 +87,7 @@
  <label>Seed <input type="number" min="0" max="4294967295" step="1" bind:value={seed}/></label>
  <button disabled={!api||!good||busy||!Number.isInteger(n)||n<2||n>10000||!Number.isInteger(seed)||seed<0||seed>4294967295} onclick={simulate}>Simulate and fit</button>
  <div aria-live="polite">{#if busy}<p>Fitting…</p>{/if}{#if fitError}<p role="alert">{fitError}</p>{/if}
- {#if fit}<p class="fit-status">Status: {fit.status}; logLik {fmt(fit.logLik)}</p><table><thead><tr><th>Coefficient</th><th>True</th><th>Estimate</th></tr></thead><tbody>{#each family.params as p,i}<tr><th>{p.name}</th><td>{fmt(values[i])}</td><td>{fmt(fit.estimates[p.name])}{held[p.name]?' (held)':''}</td></tr>{/each}</tbody></table>{/if}</div>
+ {#if fit}<p class="fit-status">Status: {fit.status}; logLik {fmt(fit.logLik)}</p>{#each fit.warnings??[] as message}<p class="fit-warning">{message}</p>{/each}{#if Object.keys(fit.restricted??{}).length}<p>Restriction boundary: {Object.entries(fit.restricted).map(([name,side])=>`${name} (${side})`).join(', ')}.</p>{/if}<table><thead><tr><th>Coefficient</th><th>True</th><th>Estimate</th></tr></thead><tbody>{#each family.params as p,i}<tr><th>{p.name}</th><td>{fmt(values[i])}</td><td>{fmt(fit.estimates[p.name])}{held[p.name]?' (held)':''}</td></tr>{/each}</tbody></table>{/if}</div>
  <h3>Your data</h3><label for="observations">Observations (spaces, commas or newlines)</label><textarea id="observations" rows="4" bind:value={text}></textarea>
  <button disabled={!api||busy} onclick={rank}>Fit and rank models</button><p>AIC ranks fitted models and does not test them. All binding families are considered; unsupported data and failed fits retain their diagnostics.</p>
  <div aria-live="polite" class="ranking">{#each ranking as row}<p><strong>{row.id}</strong>: {#if row.error}{row.error}{:else}AIC {fmt(row.aic)}; status {row.result.status}; logLik {fmt(row.result.logLik)}; {Object.entries(row.result.estimates).map(([k,v])=>`${k} = ${fmt(v)}`).join(', ')}{/if}</p>{/each}</div>

@@ -71,6 +71,7 @@ test_that('sn vectorisation, invalid input, NA and seeded RNG follow stats', {
 })
 
 test_that('sn all fixed subsets agree with slow multistart exact-density oracle', {
+  skip_unless_tier("full")
   set.seed(219); x <- rsn(n = 100, xi = 0, omega = 1, alpha = 3)
   for (mask in 0:7) {
     held <- list(xi=0,omega=1,alpha=3)[as.logical(intToBits(mask)[1:3])]

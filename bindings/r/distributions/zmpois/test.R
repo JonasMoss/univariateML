@@ -1,4 +1,5 @@
 test_that("zmpois agrees with a multi-start reference-density oracle", {
+  skip_unless_tier("full")
   set.seed(13019)
   x <- do.call(rzmpois, list(250, lambda = 2, p0 = 0.3))
   fit <- mlzmpois(x)
@@ -32,6 +33,7 @@ local({
   base <- c(lambda=2,p0=0.3)
   density <- dzmpois
   test_that("P2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
     set.seed(81029)
     samples <- list(ml_simulate(paste0("ml",id),20),
                     ml_simulate(paste0("ml",id),100),

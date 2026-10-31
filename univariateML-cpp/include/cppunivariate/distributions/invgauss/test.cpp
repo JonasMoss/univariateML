@@ -112,3 +112,13 @@ TEST_CASE("invgauss: extreme observation log tails and density") {
 TEST_CASE("invgauss: upper quantile stays inside its bracket") {
   CHECK(cppunivariate::distributions::qinvgauss(1e-100,3,4,false,false) == doctest::Approx(1001.2408093734702).epsilon(1e-11));
 }
+
+TEST_CASE("invgauss: TASK-132 invalid and degenerate data have statuses") {
+  for (const auto& data : {std::vector<double>{}, std::vector<double>{-1,2},
+      std::vector<double>{0,2}, std::vector<double>{NAN,2},
+      std::vector<double>{INFINITY,2}, std::vector<double>{-INFINITY,2}}) {
+    CHECK(cppunivariate::invgauss_mle(cppunivariate::span{data.data(),data.size()}).status == cppunivariate::InvGaussStatus::InvalidInput);
+  }
+  const std::vector<double> constant(4,2);
+  CHECK(cppunivariate::invgauss_mle(cppunivariate::span{constant.data(),constant.size()}).status == cppunivariate::InvGaussStatus::Unbounded);
+}

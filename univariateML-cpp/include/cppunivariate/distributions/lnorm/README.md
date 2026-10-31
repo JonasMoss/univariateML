@@ -23,7 +23,8 @@ r:
     sdlog: Optional held sdlog; NULL estimates it.
 log_density: -log(x) - log(sdlog) - log(2*pi)/2 - (log(x)-meanlog)**2/(2*sdlog**2)
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 14. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 14.
+  Wiley, New York.
 limits:
 - name: unbounded likelihood
   fixed: [meanlog]
@@ -46,13 +47,20 @@ relations:
       sd: sdlog
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'lnorm/README.md, Details; lnorm/mle.hpp (public fitter and held overloads); lnorm/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - finance
 - measurement and errors
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for positive multiplicative variation represented by Gaussian logarithms.
+summary: Lognormal provides a model for positive multiplicative variation represented by Gaussian logarithms.
+aliases:
+- "log-normal"
+- "Galton"
+key_references:
+- 1
 ---
 
 The lognormal distribution models positive quantities whose logarithms follow a normal distribution.
@@ -64,3 +72,10 @@ The lognormal distribution models positive quantities whose logarithms follow a 
 The parameters describe the normal distribution of the logarithms: `meanlog` is their sample mean and `sdlog` uses divisor $n$.
 
 With meanlog held and sdlog free, the likelihood is unbounded if every log observation equals meanlog. A positive held sdlog permits constant data.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

@@ -25,7 +25,10 @@ r:
     epsilon: Deprecated compatibility argument, validated but ignored; alpha is exactly max(x).
 log_density: log(beta) - beta*log(alpha) + (beta-1)*log(x)
 references:
-  - "Arslan, G. \"A new characterization of the power distribution.\" Journal of Computational and Applied Mathematics 260 (2014): 99-102."
+- 'Arslan, G. "A new characterization of the power distribution." Journal of Computational and Applied Mathematics
+  260 (2014): 99-102.'
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 limits:
 - name: zero likelihood
@@ -49,14 +52,38 @@ relations:
       shape2: 1
       shape3: 1
       scale: alpha
+  - family: nsbeta
+    at:
+      shape1: beta
+      shape2: 1
+      min: 0
+      max: alpha
+  transform_of:
+  - family: unif
+    at:
+      min: 0
+      max: alpha**beta
+    transform: power
+    power: beta
+  - family: pareto
+    at:
+      a: beta
+      b: 1/alpha
+    transform: inverse
 fit:
   method: closed-form
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'power/README.md, Details; power/mle.hpp (public fitter and held overloads); power/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - proportions
 classification: specialist
-classification_reason: Used within proportions; classified by its specialised modelling role.
+classification_reason: Used to model bounded positive sizes with a simple power-shaped distribution function.
+summary: Power provides a model for bounded positive sizes with a simple power-shaped distribution function.
+aliases:
+- "power-function"
+key_references:
+- 2
 ---
 
 The power distribution models positive quantities below a finite upper endpoint.

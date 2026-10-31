@@ -46,12 +46,25 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'cmp/README.md, Details; cmp/mle.hpp (public fitter and held overloads); cmp/test.cpp: Moment matching exploits
+    exponential-family convexity for fixed design/dispersion subsets; integer-tail or normalizer bounds certify
+    only their stated scope, not every joint numerical solve.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model event counts with either underdispersion or overdispersion relative to Poisson.
+summary: Conway--Maxwell--Poisson provides a model for event counts with either underdispersion or overdispersion
+  relative to Poisson.
+aliases:
+- "CMP"
+- "COM–Poisson"
+references:
+- 'Shmueli, G., Minka, T. P., Kadane, J. B., Borle, S. and Boatwright, P. (2005). A useful distribution for fitting
+  discrete data: revival of the Conway–Maxwell–Poisson distribution. Journal of the Royal Statistical Society: Series
+  C (Applied Statistics), 54, 127–142. doi:10.1111/j.1467-9876.2005.00474.x.'
+key_references:
+- 1
 ---
 
 The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersion coordinate.

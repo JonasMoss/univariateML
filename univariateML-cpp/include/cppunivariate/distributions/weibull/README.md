@@ -26,7 +26,8 @@ r:
     iterlim: Maximum number of iterations.
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - (x/scale)**shape
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 21. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 21.
+  Wiley, New York.
 limits:
 - name: unbounded likelihood
   fixed: [scale]
@@ -47,15 +48,34 @@ relations:
       shape1: 1
       shape2: shape
       scale: scale
+  transform_of:
+  - family: exp
+    at:
+      rate: 1/scale**shape
+    transform: power
+    power: shape
+  - family: gev
+    at:
+      mu: -scale
+      sigma: scale/shape
+      xi: -1/shape
+    transform: negate
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'weibull/README.md, Details; weibull/mle.hpp (public fitter and held overloads); weibull/test.cpp: Gumbel
+    location is profiled exactly and its scale equation has a unique root; held location has a strictly concave
+    inverse-scale likelihood. Log/reciprocal transformations preserve this structure.'
 areas:
 - reliability and survival
 - waiting times and queues
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for reliability lifetimes with a power-shaped hazard.
+summary: Weibull provides a model for reliability lifetimes with a power-shaped hazard.
+aliases:
+- "Rosin–Rammler"
+key_references:
+- 1
 ---
 
 The Weibull distribution is used for lifetimes and reliability data.
@@ -65,3 +85,10 @@ The Weibull distribution is used for lifetimes and reliability data.
 The optional `shape0` start is functional here; it was documented but ignored in univariateML 1.x.
 
 With scale held, the likelihood is unbounded exactly when every observation equals that scale. Holding shape permits constant data.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

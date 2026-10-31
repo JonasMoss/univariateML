@@ -11,6 +11,8 @@ import mpmath as mp
 from quality.truth_reference import Reference, pair
 
 
+boundary_parameter_sets = [{'mu1': 0., 'mu2': 0.}]
+
 def build(p, logd):
     a,b=p['mu1'],p['mu2']
     @lru_cache(maxsize=20000)

@@ -8,6 +8,7 @@ inline FitResult fit_exp(cppunivariate::span x, Held rate_arg = {}) {
   double rate=rate_arg.supplied ? rate_arg.value : NAN;
   auto r=cppunivariate::exp_mle(cppunivariate::span{x.data(),x.size()},rate);
   if(r.status==cppunivariate::ExpStatus::Unbounded) return failure("The exponential maximum likelihood estimator does not exist when every observation is zero: the likelihood is unbounded as the rate grows.");
+  if(r.status==cppunivariate::ExpStatus::InvalidInput) return failure("Exponential requires nonempty nonnegative finite data and a valid held rate.");
   if(!std::isfinite(r.rate)) return failure(std::any_of(x.begin(),x.end(),[](double z){return z>0;}) ? "Exponential MLE rate exceeds double precision." : "The exponential maximum likelihood estimator does not exist when every observation is zero: the likelihood is unbounded as the rate grows.");
   if(!std::isfinite(r.logLik)) return failure("Exponential likelihood exceeds double precision.");
   FitResult out;

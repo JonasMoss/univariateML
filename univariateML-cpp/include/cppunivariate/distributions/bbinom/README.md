@@ -47,8 +47,9 @@ limits:
     detect: 'all observations are 0, or all equal $n$'
     status: PointMass
 references:
-  - "Griffiths, D. A. (1973). Maximum likelihood estimation for the beta-binomial distribution and an application to the household distribution of the total number of cases of a disease. Biometrics, 29(4), 637-648. doi:10.2307/2529131."
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+- Griffiths, D. A. (1973). Maximum likelihood estimation for the beta-binomial distribution and an application to
+  the household distribution of the total number of cases of a disease. Biometrics, 29(4), 637-648. doi:10.2307/2529131.
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 holds:
 - held: []
   status: not-implemented
@@ -71,32 +72,62 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - compounding
-relations: {}
+relations:
+  mixture_of:
+  - family: binom
+    at:
+      size: size
+      prob: mix
+    mixed: prob
+    mixing:
+      family: beta
+      at:
+        shape1: alpha
+        shape2: beta
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'bbinom/README.md, Details; bbinom/mle.hpp (public fitter and held overloads); bbinom/test.cpp: Both shapes
+    held give an integer-size tail bound; fixed-size free-shape fits use numerical optimization and some free-size
+    profiles are unsupported.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model overdispersed success counts with heterogeneous binomial probabilities.
+summary: Beta-binomial provides a model for overdispersed success counts with heterogeneous binomial probabilities.
+aliases: []
+key_references:
+- 2
 existence:
   uniqueness: unknown
   statement: >-
-    With $n$ known and both shapes free, no MLE exists in three cases: when
-    no beta-binomial fits better than the binomial with the same mean, when
-    every count is 0 or $n$ with both values present, and when all counts
-    are 0 or all equal $n$. The likelihood is then maximised in the limit by
-    a binomial, by a two-point law on 0 and $n$, or by a point mass. Holding
-    one shape removes the first two cases. With $n = 1$ the shapes are not
-    identified, because the model is a Bernoulli distribution.
+    Take $n$ known and both shapes free. If every count is 0 or $n$, no MLE
+    exists: the likelihood is maximised in the limit by a two-point law on 0
+    and $n$ when both values occur, and by a point mass when only one does.
+    Otherwise the only possible escape is to the binomial, and an MLE exists
+    exactly when some beta-binomial fits at least as well as the best
+    binomial. Overdispersion, $S^2 > n\hat p(1-\hat p)$ with
+    $\hat p = \bar x/n$ and $S^2$ the sample variance with the number of
+    observations as divisor, is sufficient. For $n = 2$ it is also necessary;
+    for $n \ge 3$ that is a conjecture. Holding one shape leaves only the
+    point-mass case. With $n = 1$ the shapes are not identified, because the
+    model is a Bernoulli distribution.
+  reason: >-
+    Write $p = \alpha/(\alpha+\beta)$ and $s = 1/(\alpha+\beta)$. A sample with
+    a count strictly between 0 and $n$ loses all likelihood as $s \to \infty$
+    or as $p$ tends to 0 or 1, so the binomial face $s = 0$ is its only
+    escape. On that face the profile score in $s$ has the sign of
+    $S^2 - n\hat p(1-\hat p)$, so overdispersion makes the likelihood increase
+    into the interior.
 ---
 
 The beta-binomial distribution is a binomial distribution whose success probability is itself beta distributed. It models overdispersed counts out of a known number of trials $n$.
 
 ## Details
 
-The number of trials $n$ is normally known. With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. The search stops after one million candidates. Estimating $n$ with a shape free is not implemented, because the fit at each fixed $n$ can itself escape to a binomial or two-point law, and these limits must be compared across all $n$. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
+The number of trials $n$ is normally known. The fit with both shapes free does not test for overdispersion; it compares the best interior fit with the binomial likelihood, within $10^{-8}$ per observation. Evidence for the existence results: `dev/research/evaluations/2026-10-31-open-existence-report.md`.
+
+With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. The search stops after one million candidates. With $n$ also held, the likelihood is simply evaluated. Estimating $n$ with a shape free is not implemented, because the fit at each fixed $n$ can itself escape to a binomial or two-point law, and these limits must be compared across all $n$. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
 
 ## R notes
 

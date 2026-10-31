@@ -61,6 +61,7 @@ test_that("constant log-logistic data have no attained MLE", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "llogis"
   pn <- c("shape","scale")

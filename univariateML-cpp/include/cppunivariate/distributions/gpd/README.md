@@ -42,7 +42,10 @@ log_density: Piecewise((-log(sigma)-(x-mu)/sigma, Eq(xi,0)), (-log(sigma)-(1+1/x
 limits:
   - {name: threshold scale collapse, fixed: [mu], status: InvalidData, message: "scale collapse at the threshold", when: "With free scale, all data equal mu, or threshold ties permit xi*k >= n-k (free xi always permits this path)."}
 references:
-  - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics, 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
+- Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics,
+  35(2), 185–191. doi:10.1080/00401706.1993.10485040.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds:
 - held: []
   status: no-mle
@@ -72,13 +75,19 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'gpd/README.md, Details; gpd/mle.hpp (public fitter and held overloads); gpd/test.cpp: Exponential shape-zero
+    and fixed-shape endpoint members have exact subsets; general scale/shape profile search is numerical. The required
+    threshold is held.'
 areas:
 - extremes and environment
 classification: specialist
-classification_reason: Used within extremes and environment; classified by its specialised modelling role.
+classification_reason: Used to model threshold exceedances in extreme-value analysis.
+summary: Generalized Pareto provides a model for threshold exceedances in extreme-value analysis.
+aliases:
+- "GPD"
+key_references:
+- 2
 ---
 
 The generalized Pareto distribution models exceedances above a user-chosen

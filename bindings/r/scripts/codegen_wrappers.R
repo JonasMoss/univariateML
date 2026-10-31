@@ -34,7 +34,12 @@ rd_math <- function(x) {
 # "pkg::fn" -> roxygen link "[pkg::fn()]"; bare names -> "[fn()]".
 rd_link <- function(ref) paste0("[", ref, "()]")
 
-roxy <- function(lines) paste0("#' ", lines)
+# roxygen treats a backtick span beginning with "r " as inline R. Emit
+# an Rd code macro for those literal spans, wherever dossier prose uses them.
+roxy <- function(lines) {
+  lines <- gsub("`(r[[:space:]][^`]*)`", "\\\\code{\\1}", lines)
+  paste0("#' ", lines)
+}
 
 param_names <- function(model) vapply(model$params, function(p) p$name, character(1))
 
@@ -124,14 +129,32 @@ required_checks <- function(model) {
   if (!length(req)) return(character())
   checks <- c(nl("  supplied <- match.call(", fname, "_, call = as.call(c(\n",
        "    list(quote(", fname, "_), x = quote(x)), list(...))))\n"),
-    vapply(req, function(p) nl(
-    "  if (!\"", p$name, "\" %in% names(supplied)) {\n",
-    "    stop(", encodeString(paste0("`", fname, "` requires `", p$name,
-      "` (", p$kind, "). Hold a value, e.g. `", p$name, " = ", p$simulate, "`, or use `", p$name, " = NULL` to estimate it where supported.",
-      if (!is.null(p$advice)) paste0(" ", p$advice) else ""),
-      quote = '"'), ", call. = FALSE)\n",
-    "  }\n"
-  ), character(1)))
+    "  supplied_values <- list(...)\n",
+    '  names(supplied_values) <- setdiff(names(supplied), c("", "x"))\n',
+    "  supplied_holds <- names(Filter(function(v) !is.null(v), supplied_values))\n",
+    vapply(req, function(p) {
+      # With this coefficient free, the remaining actual holds determine
+      # whether a structural exception prevents offering NULL.
+      exceptions <- Filter(function(h) !p$name %in% unlist(h$held), model$holds)
+      blocked <- vapply(exceptions, function(h) {
+        held <- unlist(h$held)
+        other <- setdiff(holdable_names(model), p$name)
+        conditions <- vapply(other, function(q) {
+          nl(if (!q %in% held) "!" else "", "\"", q, "\" %in% supplied_holds")
+        }, "")
+        if (length(conditions)) paste(conditions, collapse=" && ") else "TRUE"
+      }, "")
+      offer <- paste0(", or use `", p$name, " = NULL` to estimate it where supported")
+      message <- paste0("`", fname, "` requires `", p$name,
+        "` (", p$kind, "). Hold a value, e.g. `", p$name, " = ", p$simulate, "`")
+      nl("  if (!\"", p$name, "\" %in% names(supplied)) {\n",
+         "    stop(paste0(", encodeString(message, quote='"'), ", ",
+         if (length(blocked)) nl("if (", paste(paste0("(",blocked,")"),collapse=" || "),
+           ") \"\" else ") else "",
+         encodeString(offer,quote='"'), ", ",
+         encodeString(paste0(".", if (!is.null(p$advice)) paste0(" ",p$advice) else ""),quote='"'),
+         "), call. = FALSE)\n  }\n")
+    }, character(1)))
   # Use the matched names so supported positional adapter calls keep working.
   checks <- c(checks, "  dots <- as.list(supplied)[-1L]\n")
   # An exact held-set structural exception can be diagnosed before conversion.
@@ -171,6 +194,7 @@ gen_doc <- function(model) {
     notation_sentence(model),
     rd_math(s[["d/p/q/r"]] %||% character()),
     vapply(model$limits, limit_sentence, character(1), model = model),
+    rd_math(c(model$existence$statement, model$existence$reason)),
     rd_math(s$details %||% character()),
     rd_math(s[["r notes"]] %||% character())
   )

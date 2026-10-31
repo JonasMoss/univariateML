@@ -26,16 +26,20 @@ struct LognormalResult {
 inline LognormalResult lognormal_mle(span x) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {kNaN, kNaN, kNaN};
+  if (n == 0) return {kNaN, kNaN, kNaN, LognormalStatus::InvalidInput};
 
   std::vector<double> y(n);
   double sum_log = 0.0;
   for (std::size_t i = 0; i < n; ++i) {
+    if (!(x[i] > 0 && std::isfinite(x[i]))) return {kNaN,kNaN,kNaN,LognormalStatus::InvalidInput};
     y[i] = std::log(x[i]);
     sum_log += y[i];
   }
   const auto r = norm_mle(span{y.data(), n});
-  return {r.mean, r.sd, r.logLik - sum_log};
+  const LognormalStatus status = r.status == NormStatus::Ok ? LognormalStatus::Ok :
+    r.status == NormStatus::Unbounded ? LognormalStatus::Unbounded :
+    r.status == NormStatus::InvalidInput ? LognormalStatus::InvalidInput : LognormalStatus::IterationFailure;
+  return {r.mean, r.sd, r.logLik - sum_log, status};
 }
 
 inline LognormalResult lognormal_mle(span x,double meanlog,double sdlog) {
@@ -60,7 +64,7 @@ inline LognormalResult lognormal_mle(span x,double meanlog,double sdlog) {
   if(std::isnan(sdlog))sdlog=static_cast<double>(std::sqrt(ss/n));
   if(!(sdlog>0))return {meanlog,sdlog,nan,LognormalStatus::Unbounded};
   const double ll=static_cast<double>(jac-n*(std::log(sdlog)+0.5*std::log(2*M_PI))-ss/(2*static_cast<CPPUNIV_EXTENDED_REAL>(sdlog)*sdlog));
-  return {meanlog,sdlog,ll};
+  return {meanlog,sdlog,ll,std::isfinite(ll) ? LognormalStatus::Ok : LognormalStatus::IterationFailure};
 }
 
 }  // namespace cppunivariate

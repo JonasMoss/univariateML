@@ -20,10 +20,13 @@ The helper's threshold makes it <2e-50 per ratio.
 """
 from functools import lru_cache
 import mpmath as mp
+from quality.truth_reference import atomic
 from quality.truth_reference import Reference, pair, loggamma_ratio
 
 
 def build(p, logd):
+    # As shape tends to zero, the mixing Laplace transform tends to one.
+    if p['shape'] == 0: return atomic({0: 1})
     m,s=p['mean'],p['shape']
     z=mp.sqrt(s*(2+s/m**2)); c=z*z/4
     A=2*m*m/(s+2*m*m); C=m/mp.sqrt(1+2*m*m/s)

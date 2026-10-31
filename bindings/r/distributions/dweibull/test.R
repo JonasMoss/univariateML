@@ -23,6 +23,7 @@ dweibull_oracle <- function(x, shape1 = NULL, shape2 = NULL) {
 }
 
 test_that("mldweibull and its held subsets agree with the density oracle", {
+  skip_unless_tier("full")
   set.seed(20261028)
   for (par in list(c(.8, 1.5), c(.5, .7), c(.95, 2.5), c(.9, .5))) {
     x <- rdweibull(n = 300, shape1 = par[1], shape2 = par[2])

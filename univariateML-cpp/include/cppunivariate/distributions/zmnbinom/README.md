@@ -50,16 +50,33 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: nbinom
+    at:
+      size: size
+      prob: prob
+    type: zero-modified
+    mass: p0
 fit:
   method: multistart
   certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  note: 'zmnbinom/README.md, Details; zmnbinom/mle.hpp (public fitter and held overloads); zmnbinom/test.cpp: Default
+    and nontrivial conditional fits use multistart, finite grids or local profile refinement without a global certificate;
+    all-held density evaluation is not counted as certification.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model overdispersed positive counts with a separately fitted zero probability.
+summary: Zero-modified negative binomial provides a model for overdispersed positive counts with a separately fitted
+  zero probability.
+aliases:
+- "hurdle negative binomial"
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-modified negative binomial distributions model counts with a separate zero component.

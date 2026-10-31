@@ -26,8 +26,12 @@ r:
     iterlim: Maximum number of iterations.
 log_density: log(a) + log(b) + (a-1)*log(x) + (b-1)*log(1-x**a)
 references:
-  - "Jones, M. C. (2009). Kumaraswamy’s distribution, a beta-type distribution with some tractability advantages. Statistical Methodology, 6(1), 70–81."
-  - "Kumaraswamy, P. (1980). A generalized probability density function for double-bounded random processes. Journal of Hydrology, 46(1–2), 79–88."
+- Jones, M. C. (2009). Kumaraswamy’s distribution, a beta-type distribution with some tractability advantages. Statistical
+  Methodology, 6(1), 70–81.
+- Kumaraswamy, P. (1980). A generalized probability density function for double-bounded random processes. Journal
+  of Hydrology, 46(1–2), 79–88.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 limits:
 - name: point-mass collapse
@@ -40,7 +44,7 @@ examples: |
   x <- rml(200, mlkumar())
   mlkumar(x)
 
-group: bounded continuous
+group: beta and generalised beta
 construction:
 - base
 relations:
@@ -51,14 +55,27 @@ relations:
       shape2: b
       shape3: a
       scale: 1
+  transform_of:
+  - family: beta
+    at:
+      shape1: 1
+      shape2: b
+    transform: power
+    power: a
 fit:
   method: scalar-solve
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'kumar/README.md, Details; kumar/mle.hpp (public fitter and held overloads); kumar/test.cpp: Held a gives
+    analytic b and held b a decreasing bracketed score; coercivity of the joint profile proves existence, not uniqueness
+    of its numerical root.'
 areas:
 - proportions
 classification: specialist
-classification_reason: Used within proportions; classified by its specialised modelling role.
+classification_reason: Used to model bounded proportions needing an explicit elementary quantile function.
+summary: Kumaraswamy provides a model for bounded proportions needing an explicit elementary quantile function.
+aliases: []
+key_references:
+- 3
 ---
 
 The Kumaraswamy distribution is a flexible distribution for continuous data between zero and one. It provides a tractable alternative to the beta distribution.

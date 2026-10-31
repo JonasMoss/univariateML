@@ -36,6 +36,7 @@ test_that("beta fits data at both ends of the open support", {
 })
 
 test_that("P2 every held subset agrees with independent multistart density fits", {
+  skip_unless_tier("full")
   set.seed(8129)
   samples <- list(rbeta(20,2,3), rbeta(100,2,3),
                   runif(20,.01,.99), runif(100,.01,.99),

@@ -38,7 +38,10 @@ limits:
     when: '$\xi \to 0$'
     status: 'LeftHalfNormalBoundary'
 references:
-  - "Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American Statistical Association, 93(441), 359–371."
+- Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American
+  Statistical Association, 93(441), 359–371.
+- 'fGarch documentation (accessed 2026-10-31). fGarch: Rmetrics - Autoregressive Conditional Heteroskedastic Modelling. R package reference
+  manual. https://cran.r-project.org/web/packages/fGarch/fGarch.pdf.'
 holds: []
 examples: |
   set.seed(1)
@@ -49,16 +52,31 @@ group: skewed and robust location-scale
 construction:
 - skewing
 - location-scale
-relations: {}
+relations:
+  special_case_of:
+  - family: sged
+    at:
+      mean: mean
+      sd: sd
+      nu: 2
+      xi: xi
 fit:
   method: profile-search
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'snorm/README.md, Details; snorm/mle.hpp (public fitter and held overloads); snorm/test.cpp: Held shape
+    gives a concave location/inverse-scale problem; free skewness uses finite scans and local refinement, not a
+    global certificate.'
 areas:
 - robust modelling
 classification: specialist
-classification_reason: Used within robust modelling; classified by its specialised modelling role.
+classification_reason: Used to model two-piece Gaussian errors with unequal scales on the two sides.
+summary: Skew Normal provides a model for two-piece Gaussian errors with unequal scales on the two sides.
+aliases:
+- "two-piece normal"
+- "split normal"
+- "Fernández–Steel skew-normal"
+key_references:
+- 2
 ---
 
 The Fernandez--Steel skew-normal distribution introduces skewness by giving the two sides of a normal density different scales.

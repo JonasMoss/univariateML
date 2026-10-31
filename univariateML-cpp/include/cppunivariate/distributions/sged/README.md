@@ -88,9 +88,13 @@ limits:
     detect: Left translated half-GED profile wins.
     status: LeftHalfGedBoundary
 references:
-  - "Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American Statistical Association, 93(441), 359-371."
-  - "Nelson, D. B. (1991). Conditional Heteroskedasticity in Asset Returns: A New Approach. Econometrica, 59, 347-370."
-  - "Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power distribution and its generalizations. Statistics & Probability Letters, 107, 111-114. doi:10.1016/j.spl.2015.08.009."
+- Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American
+  Statistical Association, 93(441), 359-371.
+- 'Nelson, D. B. (1991). Conditional Heteroskedasticity in Asset Returns: A New Approach. Econometrica, 59, 347-370.'
+- Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power
+  distribution and its generalizations. Statistics & Probability Letters, 107, 111-114. doi:10.1016/j.spl.2015.08.009.
+- 'fGarch documentation (accessed 2026-10-31). fGarch: Rmetrics - Autoregressive Conditional Heteroskedastic Modelling. R package reference
+  manual. https://cran.r-project.org/web/packages/fGarch/fGarch.pdf.'
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
   mlsged(x)
@@ -102,18 +106,32 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'no'
+  note: 'sged/README.md, Details; sged/mle.hpp (public fitter and held overloads); sged/test.cpp: Default and nontrivial
+    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
+    density evaluation is not counted as certification.'
 areas:
 - finance
 - measurement and errors
 classification: specialist
-classification_reason: Used within finance; classified by its specialised modelling role.
+classification_reason: Used to model asymmetric financial errors with separate skewness and exponential-power tails.
+summary: Skew Generalized Error provides a model for asymmetric financial errors with separate skewness and exponential-power
+  tails.
+aliases: []
+key_references:
+- 4
 ---
 
 The skew generalized error distribution extends the exponential-power family with Fernandez-Steel asymmetry. Its location and scale parameters are the mean and standard deviation.
 
 ## Details
+
+The 2026-10-31 fit-speed revision computes the fixed shape/skew density
+normalizers and kernel scale once in the conditional location/scale search. Each
+density contribution retains the previous arithmetic grouping and observation
+order. Search grids, observation-kink refinements and failure handling are
+unchanged. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
 Fitting restricts the shape to $\nu \ge 1$, the log-concave GED range,
 including the attained Laplace member at $\nu=1$. Without this restriction

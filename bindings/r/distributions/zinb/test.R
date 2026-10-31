@@ -15,6 +15,7 @@ zinb_oracle <- function(x, size = NULL) {
 }
 
 test_that("profiled ZINB agrees with multistart external oracle", {
+  skip_unless_tier("full")
   set.seed(718)
   for (r in c(.5, 2, 5)) {
     x <- rzinb(n = 1500, size = r, prob = 0.35, pi = 0.3)
@@ -54,6 +55,7 @@ local({
   base <- c(size=2,prob=0.4,pi=0.3)
   density <- dzinb
   test_that("P2 holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
     set.seed(81029)
     samples <- list(ml_simulate(paste0("ml",id),20),
                     ml_simulate(paste0("ml",id),100),

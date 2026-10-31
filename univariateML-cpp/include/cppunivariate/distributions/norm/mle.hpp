@@ -70,10 +70,11 @@ inline NormResult norm_mle(span x) {
     constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
     return {kNaN, kNaN, kNaN, NormStatus::InvalidInput};
   }
+  for (double v : x) if (!std::isfinite(v)) return {NAN,NAN,NAN,NormStatus::InvalidInput};
   const auto m = norm_detail::moments(x);
   const double dn = static_cast<double>(n);
   const double logLik = -0.5 * dn * (std::log(2.0 * M_PI) + 1.0) - dn * std::log(m.sd);
-  return {m.mean, m.sd, logLik, m.sd==0 ? NormStatus::Unbounded : NormStatus::Ok};
+  return {m.mean, m.sd, logLik, m.sd==0 ? NormStatus::Unbounded : std::isfinite(m.mean) && std::isfinite(m.sd) && std::isfinite(logLik) ? NormStatus::Ok : NormStatus::IterationFailure};
 }
 
 
@@ -82,11 +83,15 @@ inline NormResult norm_mle(span x, double mean, double sd) {
   if (std::isnan(mean) && std::isnan(sd)) return norm_mle(x);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.empty()) return {nan,nan,nan,NormStatus::InvalidInput};
+  if ((!std::isnan(mean) && !std::isfinite(mean)) ||
+      (!std::isnan(sd) && !(sd > 0 && std::isfinite(sd))))
+    return {nan,nan,nan,NormStatus::InvalidInput};
+  for (double v : x) if (!std::isfinite(v)) return {NAN,NAN,NAN,NormStatus::InvalidInput};
   const double m=std::isnan(mean)?norm_detail::moments(x).mean:mean;
   CPPUNIV_EXTENDED_REAL ss=0; for(double v:x) {const CPPUNIV_EXTENDED_REAL d=static_cast<CPPUNIV_EXTENDED_REAL>(v)-m;ss+=d*d;}
   const double s=std::isnan(sd)?static_cast<double>(std::sqrt(ss/x.size())):sd;
   const double ll=-static_cast<double>(x.size())*(std::log(s)+.5*std::log(2*M_PI))-static_cast<double>(ss/(2*static_cast<CPPUNIV_EXTENDED_REAL>(s)*s));
-  return {m,s,ll,s==0 ? NormStatus::Unbounded : NormStatus::Ok};
+  return {m,s,ll,s==0 ? NormStatus::Unbounded : std::isfinite(m) && std::isfinite(s) && std::isfinite(ll) ? NormStatus::Ok : NormStatus::IterationFailure};
 }
 
 }  // namespace cppunivariate

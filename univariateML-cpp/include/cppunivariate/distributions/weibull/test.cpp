@@ -107,3 +107,15 @@ TEST_CASE("weibull: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::weibull_mle(x,1e-8,1).status==cppunivariate::WeibullStatus::IterationFailure);
 }
+
+TEST_CASE("weibull: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::weibull_mle(x,1e-8,200).status != cppunivariate::WeibullStatus::Ok);
+  }
+}
+
+TEST_CASE("weibull: TASK-132 preserves invalid Gumbel controls") {
+  const std::vector<double> data{1,2,3};
+  CHECK(cppunivariate::weibull_mle(cppunivariate::span{data.data(),data.size()},1e-8,0).status == cppunivariate::WeibullStatus::InvalidInput);
+}

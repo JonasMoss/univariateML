@@ -39,7 +39,14 @@ inline double qtriang(double p,double a,double b,double c,bool lower_tail=true,b
   if (!t.valid) return special::kNaN;
   if (t.lower==special::kNegInf) return a;
   if (t.upper==special::kNegInf) return b;
+  // Rationalized endpoint-mode inverses avoid subtracting nearly equal widths.
   const double lw=std::log(b-a);
+  if(c==a) return t.lower<=-0.6931471805599453
+      ? a+std::exp(lw+t.lower-std::log1p(std::exp(t.upper/2)))
+      : b-std::exp(lw+t.upper/2);
+  if(c==b) return t.upper<=-0.6931471805599453
+      ? b-std::exp(lw+t.upper-std::log1p(std::exp(t.lower/2)))
+      : a+std::exp(lw+t.lower/2);
   return t.lower<=std::log(c-a)-lw ? a+std::exp((t.lower+lw+std::log(c-a))/2) : b-std::exp((t.upper+lw+std::log(b-c))/2);
 }
 // Preserve the original inverse transform for seeded sampler draws.

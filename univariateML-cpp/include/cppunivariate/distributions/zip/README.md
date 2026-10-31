@@ -34,7 +34,7 @@ limits:
     status: InvalidInput
     message: lambda positive
 references:
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 examples: |
   set.seed(1)
   x <- rml(200, mlzip())
@@ -43,15 +43,28 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: pois
+    at:
+      lambda: lambda
+    type: zero-inflated
+    mass: pi
 fit:
   method: closed-form
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'zip/README.md, Details; zip/mle.hpp (public fitter and held overloads); zip/test.cpp: Free inflation is
+    an exact clipped profile and the free fit reduces to the zero-truncated rate equation; held inflation uses a
+    numerical rate search without a global root certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model Poisson event counts with an additional structural-zero component.
+summary: Zero-inflated Poisson provides a model for Poisson event counts with an additional structural-zero component.
+aliases:
+- "ZIP"
+key_references:
+- 1
 ---
 
 The zero-inflated Poisson distribution mixes a Poisson count with an additional point mass at zero.

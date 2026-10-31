@@ -31,8 +31,12 @@ limits:
     message: unbounded
 log_density: 2*log(shape) + shape*log(scale/x) - log(x) - (shape+1)*log(1+(scale/x)**shape)
 references:
-  - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
-  - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
+- Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition,
+  Wiley.
+- 'Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical
+  Software, 25(7), 1-37.'
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 holds: []
 examples: |
   set.seed(1)
@@ -49,16 +53,27 @@ relations:
       shape1: shape
       shape2: shape
       scale: scale
+  transform_of:
+  - family: paralogis
+    at:
+      shape: shape
+      scale: 1/scale
+    transform: inverse
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'invparalogis/README.md, Details; invparalogis/mle.hpp (public fitter and held overloads); invparalogis/test.cpp:
+    Reciprocal paralogistic delegation preserves its held-shape monotone scale solve; the joint BFGS fit has no
+    global certificate.'
 areas:
 - actuarial
 - economics and income
-classification: uncommon
-classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
-  surveyed.
+classification: specialist
+classification_reason: Used to model insurance severity using a constrained inverse Burr family.
+summary: Inverse paralogistic provides a model for insurance severity using a constrained inverse Burr family.
+aliases: []
+key_references:
+- 3
 ---
 
 The inverse paralogistic distribution models positive heavy-tailed data.

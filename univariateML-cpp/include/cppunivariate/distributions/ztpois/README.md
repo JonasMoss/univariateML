@@ -28,15 +28,35 @@ examples: |
 group: modified counts
 construction:
 - truncation
-relations: {}
+relations:
+  modification_of:
+  - family: pois
+    at:
+      lambda: lambda
+    type: zero-truncated
+  special_case_of:
+  - family: zmpois
+    at:
+      lambda: lambda
+      p0: 0
 fit:
   method: scalar-solve
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'ztpois/README.md, Details; ztpois/mle.hpp (public fitter and held overloads); ztpois/test.cpp: Conditional
+    mean is strictly increasing in log rate (derivative is conditional variance), giving a unique bracketed root;
+    bounds profile to sample extremes and zero mass separates analytically.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model Poisson counts sampled only when positive.
+summary: Zero-truncated Poisson provides a model for Poisson counts sampled only when positive.
+aliases:
+- "positive Poisson"
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-truncated Poisson distributions model positive counts.

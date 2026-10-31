@@ -20,6 +20,7 @@ betapr_oracle <- function(x) {
        model=if(max(faces) >= -fit$value-1e-8*n) face else 'betapr')
 }
 test_that("three-parameter fits and D1 comparisons agree with a slow oracle", {
+  skip_unless_tier("full")
   samples <- list()
   for (seed in 1:12) {
     set.seed(seed)
@@ -75,6 +76,7 @@ test_that("scale, controls and validation work", {
 
 
 test_that("fixed scale agrees with reference-density oracle and records df", {
+  skip_unless_tier("full")
   for (s in c(.2, 1, 7)) {
     x <- c(.03, .1, .4, .7, 1, 2, 4, 12) * s
     fit <- mlbetapr(x, scale=s)
@@ -111,6 +113,7 @@ test_that("fixing beta-prime scale removes the free-scale escapes", {
 })
 
 test_that("beta-prime new hold subsets agree with independent reference oracles", {
+  skip_unless_tier("full")
   set.seed(8104)
   samples <- list(rbetapr(n = 20, shape1 = 0.7, shape2 = 1.2, scale = 1),rbetapr(n = 100, shape1 = 0.7, shape2 = 1.2, scale = 1),
     c(.05,.05,.3,2,15),c(.2,4),1,rep(2,4),rgamma(20,2),rinvgamma(n = 100, alpha = 3, beta = 1))

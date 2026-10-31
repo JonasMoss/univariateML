@@ -22,10 +22,13 @@ struct ExpResult {
 inline ExpResult exp_mle(span x) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {kNaN, kNaN};
+  if (n == 0) return {kNaN, kNaN, ExpStatus::InvalidInput};
 
   double sum = 0.0;
-  for (auto v : x) sum += v;
+  for (auto v : x) {
+    if (!(v >= 0 && std::isfinite(v))) return {kNaN,kNaN,ExpStatus::InvalidInput};
+    sum += v;
+  }
   const double dn = static_cast<double>(n);
   double rate = dn / sum;
   if (!std::isfinite(sum)) {
@@ -34,7 +37,8 @@ inline ExpResult exp_mle(span x) {
     rate = static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(n) / total);
   }
   const double logLik = dn * (std::log(rate) - 1.0);
-  return {rate, logLik, sum == 0.0 ? ExpStatus::Unbounded : ExpStatus::Ok};
+  return {rate, logLik, sum == 0.0 ? ExpStatus::Unbounded :
+    (!(rate > 0) || !std::isfinite(rate) || !std::isfinite(logLik)) ? ExpStatus::IterationFailure : ExpStatus::Ok};
 }
 
 inline ExpResult exp_mle(span x,double rate) {

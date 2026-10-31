@@ -46,24 +46,60 @@ examples: |
   x <- rml(200, mlemg())
   mlemg(x)
 
-group: skewed and robust location-scale
+group: normal convolutions
 construction:
 - compounding
-relations: {}
+relations:
+  convolution_of:
+  - family: norm
+    operation: sum
+    components:
+    - family: norm
+      at:
+        mean: mu
+        sd: sigma
+    - family: exp
+      at:
+        rate: lambda
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'emg/README.md, Details; emg/mle.hpp (public fitter and held overloads); emg/test.cpp: Location is strictly
+    concave with scales held; joint scales use multistart/grid optimization without a global certificate.'
 areas:
 - measurement and errors
 classification: specialist
-classification_reason: Used within measurement and errors; classified by its specialised modelling role.
+classification_reason: Used to model chromatographic peaks combining Gaussian broadening and exponential delay.
+summary: Exponentially Modified Gaussian provides a model for chromatographic peaks combining Gaussian broadening
+  and exponential delay.
+aliases:
+- "exponentially modified normal"
+- "ex-Gaussian"
+- "EMG"
+references:
+- Grushka, E. (1972). Characterization of exponentially modified Gaussian peaks in chromatography. Analytical Chemistry,
+  44(11), 1733–1738. doi:10.1021/ac60319a011.
+key_references:
+- 1
 ---
 
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.
 
 ## Details
+
+For fixed dimensionless shape $k=\lambda\sigma$, the log-likelihood is strictly
+concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
+it has a unique finite maximum in these coordinates; constant observations
+collapse when location and scale are free. Holding the physical rate fixed is a different constraint. This is a mathematical property,
+not a certificate of the current search over shape. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
+
+The 2026-10-31 fit-speed revision returns location scores in a fixed-size array
+instead of allocating a vector. Starts, density evaluations, location
+convergence, boundary comparisons and failed-optimizer score checks are
+unchanged. Full-profile caching and likelihood-invariant hoisting were tried
+without a useful default-fit timing improvement. See the [paired evidence and
+rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
 `mu` is the normal component mean, rather than the mean of the sum.
 Constant observations can have unbounded likelihood. A finite interior maximum

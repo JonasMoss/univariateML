@@ -49,8 +49,12 @@ limits:
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     status: ParetoBoundary
 references:
-  - "Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3), 1187-1192. doi:10.1214/aoms/1177704481."
-  - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
+- Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3),
+  1187-1192. doi:10.1214/aoms/1177704481.
+- Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition,
+  Wiley.
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 holds: []
 examples: |
   set.seed(1)
@@ -69,16 +73,29 @@ relations:
       shape1: shape1
       shape2: shape2
       scale: 1/scale
+  - family: invgamma
+    at:
+      alpha: shape1
+      beta: scale**shape2
+    transform: power
+    power: shape2
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'invtrgamma/README.md, Details; invtrgamma/mle.hpp (public fitter and held overloads); invtrgamma/test.cpp:
+    Held power reduces to gamma and held gamma shape to a concave transformed problem; the free-power/shape profile
+    and face enumeration are numerical.'
 areas:
 - actuarial
 - reliability and survival
-classification: uncommon
-classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
-  surveyed.
+classification: specialist
+classification_reason: Used to model insurance severity with reciprocal generalized-gamma tail behaviour.
+summary: Inverse transformed gamma provides a model for insurance severity with reciprocal generalized-gamma tail
+  behaviour.
+aliases:
+- "inverse generalized gamma"
+key_references:
+- 3
 ---
 
 The inverse transformed gamma distribution is the distribution of the

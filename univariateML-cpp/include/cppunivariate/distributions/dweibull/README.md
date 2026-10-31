@@ -48,25 +48,40 @@ limits:
     status: HeldBernoulliLimit
     fixed: [shape1]
 references:
-  - "Nakagawa, T. and Osaki, S. (1975). The discrete Weibull distribution. IEEE Transactions on Reliability, R-24(5), 300–301. doi:10.1109/TR.1975.5214915."
+- Nakagawa, T. and Osaki, S. (1975). The discrete Weibull distribution. IEEE Transactions on Reliability, R-24(5),
+  300–301. doi:10.1109/TR.1975.5214915.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 examples: |
   set.seed(1)
   x <- rml(200, mldweibull())
   mldweibull(x)
 
-group: Poisson, binomial and negative binomial
+group: gamma and Weibull
 construction:
 - discretisation
-relations: {}
+relations:
+  discretisation_of:
+  - family: weibull
+    at:
+      shape: shape2
+      scale: (-log(shape1))**(-1/shape2)
 fit:
   method: scalar-solve
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'dweibull/README.md, Details; dweibull/mle.hpp (public fitter and held overloads); dweibull/test.cpp: The
+    likelihood is strictly concave in log(-log(shape1)) and shape2. Both holds are affine restrictions; safeguarded
+    inner Newton and bracketed decreasing profile scores find the unique maximum.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model discrete lifetimes with duration-dependent failure probabilities.
+summary: Discrete Weibull provides a model for discrete lifetimes with duration-dependent failure probabilities.
+aliases:
+- "discrete Weibull type I"
+key_references:
+- 2
 ---
 
 The type I discrete Weibull distribution of Nakagawa and Osaki (1975) models nonnegative counts such as the number of cycles survived before failure. A count is the integer part of a continuous Weibull variable with shape `shape2`; `shape1` is the probability that the count is positive.

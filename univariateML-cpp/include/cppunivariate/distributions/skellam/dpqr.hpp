@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/precision.hpp"
+#include "../pois/dpqr.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
@@ -67,6 +68,8 @@ inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool 
   if(!skellam_detail::valid(mu1,mu2) || std::isnan(q)) return special::kNaN;
   if(!std::isfinite(q)) {const bool one=(q>0)==lower_tail;return log_p ? (one?0:-INFINITY) : (one?1:0);}
   const double k=std::floor(q);
+  if(mu2==0) return ppois(k,mu1,lower_tail,log_p);
+  if(mu1==0) return ppois(-k-1,mu2,!lower_tail,log_p);
   if(!lower_tail) return pskellam(-k-1,mu2,mu1,true,log_p);
   if(mu1==0 && mu2==0) return log_p ? (k>=0?0:-INFINITY) : (k>=0?1:0);
   if(mu2==0 && k<0) return log_p ? -INFINITY : 0;
@@ -75,13 +78,25 @@ inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool 
       mu1==0 ? special::poisson_cdf(-k-1,mu2,false) : k>=0 ? special::pnchisq(2*mu1,2*(k+1),2*mu2,false)
                         : special::pnchisq(2*mu2,-2*k,2*mu1,true);
   if(!log_p) return prob;
-  if(prob>0 && prob<1) return std::log(prob);
+  if(prob>1e-280 && prob<1) return std::log(prob);
   if(prob==1) return std::log1p(-pskellam(k,mu1,mu2,false,false));
   double total=-INFINITY;
   for(double v=k;;--v) {
     const double term=skellam_detail::logmass(v,mu1,mu2);
     total=skellam_detail::logadd(total,term);
-    if(term<total-40 || v-1==v) break;
+    // Skellam masses are log-concave (convolution of Poisson sequences).
+    // Once descending, the next ratio bounds all remaining ratios.
+    // I_(n+1)(z)/I_n(z) <= z/(2(n+1)), termwise in the
+    // positive Bessel series. Thus negative-tail ratios are <= mu2/(1-v),
+    // also when the next integer is not representable in binary64.
+    if(v<=0) {
+      const double lr=std::log(mu2)-std::log1p(-v);
+      if(lr<0 && term-total+lr<=std::log(2e-16)+std::log1p(-std::exp(lr))) break;
+    }
+    if(v-1==v) return special::kNaN;
+    const double next=skellam_detail::logmass(v-1,mu1,mu2);
+    const double ratio=std::exp(next-term);
+    if(ratio<1 && next-total<=std::log(2e-16)+std::log1p(-ratio)) break;
   }
   return total;
 }

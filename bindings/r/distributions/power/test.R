@@ -68,6 +68,7 @@ test_that("power compatibility epsilon is validated and leaves the exact endpoin
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "power"
   pn <- c("alpha","beta")

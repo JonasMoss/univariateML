@@ -90,3 +90,100 @@ TEST_CASE("norm: standardization and affine overflow") {
   CHECK(cppunivariate::distributions::dnorm(1e308,-1e308,1e308,true) == doctest::Approx(-712.1151471753707).epsilon(1e-12));
   CHECK(cppunivariate::distributions::pnorm(1e308,-1e308,1e308,false,true) == doctest::Approx(-3.783184333682032).epsilon(1e-12));
 }
+
+TEST_CASE("norm: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::norm_mle(x).status != cppunivariate::NormStatus::Ok);
+  }
+}
+
+TEST_CASE("norm: TASK-132 unresolved likelihood has numerical failure status") {
+  const std::vector<double> data{1.0,2.0};
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::norm_mle(x,0.0,1e-300).status == cppunivariate::NormStatus::IterationFailure);
+}
+
+#include "cppunivariate/distributions/norm/score.hpp"
+TEST_CASE("norm: inference every free subset and MLE score") {
+  std::vector<double> x{-1,0.2,0.8,2,3};
+  const auto full=cppunivariate::norm_inference(mltest::as_span(x),0.3, 1.7);
+  REQUIRE(full.status==cppunivariate::InferenceStatus::Ok);
+  for(unsigned mask=0; mask<4; ++mask) {
+    std::vector<double> sums(2,0);
+    std::array<double,4> products{};
+    std::size_t rows=0;
+    const auto a=cppunivariate::norm_inference(mltest::as_span(x),0.3, 1.7,mask,
+      [&](const std::vector<double>& row) {++rows; for(std::size_t j=0;j<row.size();++j) { sums[j]+=row[j]; for(std::size_t k=0;k<row.size();++k) products[j*row.size()+k]+=row[j]*row[k]; }});
+    REQUIRE(a.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(rows==x.size());
+    CHECK(a.observations==x.size());
+    for(std::size_t j=0;j<a.dimension;++j) {
+      CHECK(a.score[j]==doctest::Approx(sums[j]));
+      CHECK(a.score[j]==doctest::Approx(full.score[a.free_indices[j]]));
+      for(std::size_t k=0;k<a.dimension;++k) {
+        const auto dst=j*a.dimension+k, src=a.free_indices[j]*2+a.free_indices[k];
+        CHECK(a.opg[dst]==doctest::Approx(full.opg[src]));
+        CHECK(a.opg[dst]==doctest::Approx(products[dst]));
+        CHECK(a.observed[dst]==doctest::Approx(full.observed[src]));
+        CHECK(a.fisher[dst]==doctest::Approx(full.fisher[src]));
+      }
+    }
+    const auto f=cppunivariate::norm_mle(mltest::as_span(x), (mask&1)?NAN:0.3, (mask&2)?NAN:1.7);
+    REQUIRE(f.status==cppunivariate::NormStatus::Ok);
+    const auto fitted=cppunivariate::norm_inference(mltest::as_span(x),f.mean,f.sd,mask);
+    REQUIRE(fitted.status==cppunivariate::InferenceStatus::Ok);
+    for(std::size_t j=0;j<fitted.dimension;++j) CHECK(std::abs(fitted.score[j])<1e-7);
+  }
+  CHECK(cppunivariate::norm_inference(mltest::as_span(x),0.3, 1.7,4).status==cppunivariate::InferenceStatus::InvalidSubset);
+  CHECK(cppunivariate::norm_inference(cppunivariate::span{x.data(),0},0.3, 1.7).status==cppunivariate::InferenceStatus::EmptySample);
+}
+
+TEST_CASE("norm: inference invalid and singular diagnostics") {
+  std::vector<double> x{0,0};
+  CHECK(cppunivariate::norm_inference(mltest::as_span(x),0,0).status==cppunivariate::InferenceStatus::InvalidParameter);
+  auto r=cppunivariate::norm_inference(mltest::as_span(x),0,1);
+  CHECK(r.opg_status==cppunivariate::InferenceStatus::Singular);
+  CHECK(r.observed[3]<0); // valid indefinite information away from an MLE
+  x[0]=INFINITY;
+  CHECK(cppunivariate::norm_inference(mltest::as_span(x),0,1).status==cppunivariate::InferenceStatus::InvalidObservation);
+  x={1e308,-1e308};
+  CHECK(cppunivariate::norm_inference(mltest::as_span(x),0,1e-308).status==cppunivariate::InferenceStatus::NumericalFailure);
+}
+
+TEST_CASE("norm: analytic information versus log density central differences") {
+  std::vector<double> x{0.9}, p{0.3,1.7};
+  const auto r=cppunivariate::norm_inference(mltest::as_span(x),p[0],p[1]);
+  REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+  const auto ld=[&]() {return cppunivariate::distributions::dnorm(x[0],p[0],p[1],true);};
+  const double step=1e-4, base=ld();
+  for(std::size_t j=0;j<2;++j) {
+    const double saved=p[j];
+    p[j]=saved+step; const double plus=ld();
+    p[j]=saved-step; const double minus=ld(); p[j]=saved;
+    CHECK(r.score[j]==doctest::Approx((plus-minus)/(2*step)).epsilon(2e-6));
+    CHECK(r.observed[j*2+j]==doctest::Approx(-(plus-2*base+minus)/(step*step)).epsilon(2e-6));
+  }
+  p[0]+=step; p[1]+=step; const double pp=ld();
+  p[1]-=2*step; const double pm=ld();
+  p[0]-=2*step; const double mm=ld();
+  p[1]+=2*step; const double mp=ld();
+  CHECK(r.observed[1]==doctest::Approx(-(pp-pm-mp+mm)/(4*step*step)).epsilon(2e-6));
+}
+
+TEST_CASE("norm: inference validity and total normalization") {
+  std::vector<double> x{1};
+  const auto one=cppunivariate::norm_inference(mltest::as_span(x),0,1);
+  x.push_back(x[0]);
+  const auto two=cppunivariate::norm_inference(mltest::as_span(x),0,1);
+  REQUIRE(two.status==cppunivariate::InferenceStatus::Ok);
+  for(std::size_t j=0;j<two.dimension;++j) CHECK(two.score[j]==doctest::Approx(2*one.score[j]));
+  for(std::size_t j=0;j<two.dimension*two.dimension;++j) {
+    CHECK(two.opg[j]==doctest::Approx(2*one.opg[j]));
+    CHECK(two.observed[j]==doctest::Approx(2*one.observed[j]));
+    CHECK(two.fisher[j]==doctest::Approx(2*one.fisher[j]));
+  }
+  CHECK(cppunivariate::norm_inference(mltest::as_span(x),0,0).status==cppunivariate::InferenceStatus::InvalidParameter);
+  x[0]=NAN;
+  CHECK(cppunivariate::norm_inference(mltest::as_span(x),0,1,0).status==cppunivariate::InferenceStatus::InvalidObservation);
+}

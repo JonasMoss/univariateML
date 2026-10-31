@@ -218,10 +218,18 @@ namespace lst_detail {
 struct Maximum {double point;bool converged;};
 template <typename F>
 inline Maximum maximize(F f,const std::vector<double>& grid,double tol,int maxit) {
-  double best=grid.front(),value=f(best);bool converged=grid.size()==1;
+  // A profile evaluation can itself perform a complete nuisance search.
+  // Cache grid values without changing the nominated maxima or refinements.
+  std::vector<double> values(grid.size());
+  std::vector<bool> evaluated(grid.size(),false);
+  auto at=[&](std::size_t j) {
+    if(!evaluated[j]) {values[j]=f(grid[j]);evaluated[j]=true;}
+    return values[j];
+  };
+  double best=grid.front(),value=at(0);bool converged=grid.size()==1;
   for(std::size_t j=0;j<grid.size();++j) {
-    const double v=f(grid[j]);if(v>value){value=v;best=grid[j];converged=false;}
-    if((j&&v<f(grid[j-1]))||(j+1<grid.size()&&v<f(grid[j+1])))continue;
+    const double v=at(j);if(v>value){value=v;best=grid[j];converged=false;}
+    if((j&&v<at(j-1))||(j+1<grid.size()&&v<at(j+1)))continue;
     double lo=grid[j?j-1:0],hi=grid[j+1<grid.size()?j+1:j];
     double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
     double fa=f(a),fb=f(b);
@@ -239,7 +247,19 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
   LstResult bad{nan,nan,df,nan,0,LstStatus::InvalidStart};
   if(x.empty()||!(tol>0)||maxit<1||!std::isfinite(df)||!(df>0))return bad;
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
-  auto ll=[&](double m,double s){const double p[]={m,std::log(s)};return -LstCost{x,df,true}(p);};
+  // Shape is fixed throughout this nuisance search; preserve LstCost's
+  // per-observation grouping and input-order reduction exactly.
+  const double c=df>1e4 ? -0.5*std::log(2.0*M_PI)-0.25/df :
+    special::lgamma((df+1.0)/2.0)-special::lgamma(df/2.0)-0.5*std::log(df*M_PI);
+  auto ll=[&](double m,double s) -> double {
+    const double ls=std::log(s);
+    // LstCost reconstructs s from log(s); keep that rounding.
+    const double represented=std::exp(ls);
+    if(!(represented>0) || !std::isfinite(represented))return -INFINITY;
+    double f=0;
+    for(double v:x) {const double z=(v-m)/represented;f+=ls-c+0.5*(df+1.0)*std::log1p(z*z/df);}
+    return -f;
+  };
   double m=mu,s=sigma;
   if(std::isnan(s)) {
     std::size_t k=0;double r=0;for(double v:y){k+=v==m;r=std::max(r,std::abs(v-m));}

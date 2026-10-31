@@ -49,6 +49,7 @@ test_that("constant data have no attained lnorm MLE", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "lnorm"
   pn <- c("meanlog","sdlog")

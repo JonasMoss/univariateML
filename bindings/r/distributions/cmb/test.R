@@ -30,6 +30,7 @@ test_that("CMB agrees with binomial, finite sums, tails and inversion", {
   expect_equal(qcmb(p = -1000, size = 30, prob = 0.3, nu = 1, lower.tail = FALSE, log.p = TRUE),30)
 })
 test_that("CMB fits agree with an independent optim oracle and fixed subsets", {
+  skip_unless_tier("full")
   x <- c(0,1,1,2,2,3,3,4,5,7,10)
   objective <- function(z) {
     k <- 0:10; lp <- z[1]*k+z[2]*lchoose(10,k)
@@ -119,6 +120,7 @@ test_that("P3 Bernoulli endpoint fits are silent", {
 })
 
 test_that("CMB: held canonical coordinates give a certified integer profile", {
+  skip_unless_tier("dev")
   set.seed(9302)
   samples <- c(lapply(c(20,100),function(n) rcmb(n,10,.3,1.5)),
                list(c(0,0,1,1,2,4,8,10),rep(c(2,3),10),rep(0,20)),

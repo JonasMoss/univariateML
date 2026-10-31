@@ -42,25 +42,51 @@ examples: |
   x <- rml(200, mlbhatt())
   mlbhatt(x)
 
-group: skewed and robust location-scale
+group: normal convolutions
 construction:
 - compounding
-relations: {}
+relations:
+  convolution_of:
+  - family: norm
+    operation: sum
+    components:
+    - family: norm
+      at:
+        mean: mu
+        sd: sigma
+    - family: unif
+      at:
+        min: -a
+        max: a
+    when: a > 0
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'bhatt/README.md, Details; bhatt/mle.hpp (public fitter and held overloads); bhatt/test.cpp: Location is
+    strictly concave with scales held; joint scales use multistart/grid optimization without a global certificate.'
 areas:
 - measurement and errors
 classification: uncommon
-classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
-  surveyed.
+classification_reason: Introduced for dimensional chains involving rectangular and normal errors; broader adoption
+  is not established by the sources checked.
+summary: Bhattacharjee provides a model for dimensional tolerance chains combining rectangular and Gaussian errors.
+aliases: []
+references:
+- Bhattacharjee, G. P., Pandit, S. N. N. and Mohan, R. (1963). Dimensional chains involving rectangular and normal
+  error-distributions. Technometrics, 5, 404–406.
+key_references:
+- 1
 ---
 
 The Bhattacharjee distribution is the convolution of a normal distribution and a symmetric uniform distribution.
 
 ## Details
+
+For fixed dimensionless shape $k=a/\sigma$, the log-likelihood is strictly
+concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
+it has a unique finite maximum in these coordinates; constant observations
+collapse when location and scale are free. Holding the physical half-width fixed is a different constraint. This is a mathematical property,
+not a certificate of the current search over shape. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
 
 A constant sample has unbounded likelihood when both scales are free. The normal and uniform faces are fitted conditionally on held scales and compared with the interior within $10^{-8}n$. Holding sigma removes the uniform face; holding a removes the normal face. With a held and sample range exactly 2a, endpoint masses contribute an optimized binomial penalty on the uniform face. For fixed positive scales the location likelihood is strictly log concave; scale optimization uses a grid of simplex starts and is a numerical global search, without a certificate excluding other scale modes.
 

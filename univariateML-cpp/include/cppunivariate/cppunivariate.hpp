@@ -125,3 +125,9 @@
 #include "distributions/bhatt/mle.hpp"
 
 #include "distributions/lgamma/mle.hpp"
+
+// Per-observation inference in natural README coordinates.
+#include "distributions/norm/score.hpp"
+#include "distributions/gamma/score.hpp"
+#include "distributions/beta/score.hpp"
+#include "distributions/pois/score.hpp"

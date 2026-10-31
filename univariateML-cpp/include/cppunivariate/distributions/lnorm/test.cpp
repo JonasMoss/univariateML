@@ -114,3 +114,22 @@ TEST_CASE("lnorm: extreme observation log tails and density") {
   CHECK(cppunivariate::distributions::plnorm(1e100, 0.0, 1.0, true, true) == doctest::Approx(0.0).epsilon(1e-11));
   CHECK(cppunivariate::distributions::plnorm(1e100, 0.0, 1.0, false, true) == doctest::Approx(-26515.84871241671).epsilon(1e-11));
 }
+
+TEST_CASE("lnorm: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::lognormal_mle(x).status != cppunivariate::LognormalStatus::Ok);
+  }
+}
+
+TEST_CASE("lnorm: TASK-132 normal delegate preserves collapse status") {
+  const std::vector<double> data(4,2);
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::lognormal_mle(x).status == cppunivariate::LognormalStatus::Unbounded);
+}
+
+TEST_CASE("lnorm: TASK-132 unresolved likelihood has numerical failure status") {
+  const std::vector<double> data{2.0,3.0};
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::lognormal_mle(x,0.0,1e-300).status == cppunivariate::LognormalStatus::IterationFailure);
+}

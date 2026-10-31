@@ -30,7 +30,7 @@ limits:
     detect: size and prob are both free and the population-form sample variance is no larger than the sample mean
     status: Underdispersed
 references:
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 examples: |
   set.seed(1)
   x <- rml(200, mlnbinom())
@@ -39,15 +39,40 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - compounding
-relations: {}
+relations:
+  special_case_of:
+  - family: zinb
+    at:
+      size: size
+      prob: prob
+      pi: 0
+  mixture_of:
+  - family: pois
+    at:
+      lambda: mix
+    mixed: lambda
+    mixing:
+      family: gamma
+      at:
+        shape: size
+        scale: (1-prob)/prob
+    when: size > 0 && prob < 1
 fit:
   method: scalar-solve
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'nbinom/README.md, Details; nbinom/mle.hpp (public fitter and held overloads); nbinom/test.cpp: Profile
+    size has the documented unique root when overdispersed; bracketed fallback, monotone held-probability solve
+    and analytic held-size probability cover holds.'
 areas:
 - counts and ecology
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for overdispersed event counts with gamma-mixed Poisson intensity.
+summary: Negative binomial provides a model for overdispersed event counts with gamma-mixed Poisson intensity.
+aliases:
+- "Pólya"
+- "gamma–Poisson"
+key_references:
+- 1
 ---
 
 The negative binomial distribution models nonnegative counts with overdispersion relative to a Poisson distribution. The size parameter need not be an integer.

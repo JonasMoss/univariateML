@@ -261,3 +261,29 @@ def negative_binomial(r, p, x):
             term*=ratio;total+=term
         raise ArithmeticError('NB positive tail series remainder')
     return beta(r,x+1,p)
+
+
+def atomic(weights, lower=0, upper=None):
+    """Exact atomic law; collapse an unbounded count support to its last atom.
+
+    The weights are closed-form probabilities or parameter limits, not
+    numerical approximations to nearby interior parameters.
+    """
+    weights = {mp.mpf(k): mp.mpf(v) for k, v in weights.items() if v != 0}
+    if upper is None: upper = max(weights)
+    def tails(x):
+        return (mp.log(mp.fsum(v for k, v in weights.items() if k <= x)),
+                mp.log(mp.fsum(v for k, v in weights.items() if k > x)))
+    ref = Reference(tails, lower, upper, True,
+                    log_density=lambda x: mp.log(weights.get(x, 0)))
+    ref.normalization = mp.fsum(weights.values())
+    ref.atoms = sorted(weights)
+    original = ref.quantile
+    def quantile(lp, lower):
+        if lp in (-mp.inf, 0): return original(lp, lower)
+        for k in sorted(weights):
+            tail = ref.tails(k)[0 if lower else 1]
+            if (tail >= lp if lower else tail <= lp): return k
+        raise ArithmeticError('atomic quantile not bracketed')
+    ref.quantile = quantile
+    return ref

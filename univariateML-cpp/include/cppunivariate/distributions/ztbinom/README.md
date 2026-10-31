@@ -40,16 +40,37 @@ examples: |
 group: modified counts
 construction:
 - truncation
-relations: {}
+relations:
+  modification_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    type: zero-truncated
+  special_case_of:
+  - family: zmbinom
+    at:
+      size: size
+      prob: prob
+      p0: 0
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'ztbinom/README.md, Details; ztbinom/mle.hpp (public fitter and held overloads); ztbinom/test.cpp: Fixed
+    size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability
+    grids lack a global unimodality certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model binomial success counts sampled only when positive.
+summary: Zero-truncated binomial provides a model for binomial success counts sampled only when positive.
+aliases:
+- "positive binomial"
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-truncated binomial distributions model positive counts.
@@ -62,3 +83,5 @@ Holding size fixed removes the infinite-size escape. The point mass at one remai
 A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.
 
 With both size and probability free, the search profiles probability at its exact conditional-mean-matching value for each candidate size and scans an exponential grid of candidate sizes, refining each local peak. Unlike `mlbinom`'s free-size search, no unimodality proof is known for this truncated profile (DeRiggi 1983 covers the untruncated binomial only), so this remains a numerical grid search, not a certified one; see `dev/research/evaluations/2026-10-29-tail85-report.md`. The grid has no fixed magnitude limit: it keeps growing until it has gone ten exponential steps without an improvement, bounded only by `iterlim` (a larger `iterlim` lets it search further, never a hard cap). Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
+
+DeRiggi (1994) reports a counterexample to general continuous positive-binomial likelihood unimodality; this does not itself establish a counterexample for integer sizes. The grid and its Poisson-face comparison do not certify the global optimum. See the [size-search investigation](../../../../../dev/research/evaluations/2026-10-31-size-search-report.md) for the reference and the remaining gap.

@@ -14,20 +14,25 @@
 
 namespace cppunivariate {
 
+enum class GeomStatus { Ok, InvalidInput, NumericalFailure };
+
 struct GeomResult {
   double prob;
   double logLik;
+  GeomStatus status = GeomStatus::Ok;
 };
 
 inline GeomResult geom_mle(ispan x, double fixed=std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {kNaN, kNaN};
+  if (n == 0) return {kNaN,kNaN,GeomStatus::InvalidInput};
+
+  for (int v : x) if (v < 0) return {kNaN,kNaN,GeomStatus::InvalidInput};
 
   if(!std::isnan(fixed)) {
-    if(!(fixed>0 && fixed<=1 && std::isfinite(fixed)))return {kNaN,kNaN};
-    double ll=0;for(int v:x) {if(v<0)return {kNaN,kNaN};ll+=special::dgeom(v,fixed,true);}
-    return {fixed,ll};
+    if(!(fixed>0 && fixed<=1 && std::isfinite(fixed)))return {kNaN,kNaN,GeomStatus::InvalidInput};
+    double ll=0;for(int v:x) {if(v<0)return {kNaN,kNaN,GeomStatus::InvalidInput};ll+=special::dgeom(v,fixed,true);}
+    return {fixed,ll,std::isfinite(ll)?GeomStatus::Ok:GeomStatus::InvalidInput};
   }
   double sum = 0.0;
   for (auto v : x) sum += static_cast<double>(v);
@@ -38,7 +43,7 @@ inline GeomResult geom_mle(ispan x, double fixed=std::numeric_limits<double>::qu
   for (auto v : x) {
     logLik += ::cppunivariate::special::dgeom(static_cast<double>(v), prob, 1);
   }
-  return {prob, logLik};
+  return {prob,logLik,std::isfinite(logLik)?GeomStatus::Ok:GeomStatus::NumericalFailure};
 }
 
 }  // namespace cppunivariate

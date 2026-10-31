@@ -67,6 +67,7 @@ for (id in univariateML_models) {
   if (univariateML:::univariateML_metadata[[model]]$support$type != "R") next
   if (model %in% names(scale_exclusions)) next
   test_that(paste(model, "is equivariant in its dimensional parameters"), {
+  skip_unless_tier("dev")
     set.seed(7)
     # The nested profile searches dominate runtime; 24 observations still
     # exercise every parameter and all transformation decisions.
@@ -102,6 +103,7 @@ for (id in univariateML_models) {
 
 # The original failures: small returns and a false df-two escape.
 test_that("Student fits on DAX returns and small skew-t data are stable", {
+  skip_unless_tier("dev")
   x <- diff(log(EuStockMarkets[, "DAX"]))
   f <- mlstd(x)
   # Optimum nu = 4.19447 (independent optim); the FD-BFGS stopping point
@@ -127,6 +129,7 @@ test_that("Student fits on DAX returns and small skew-t data are stable", {
 })
 
 test_that("required endpoints transform with the observations", {
+  skip_unless_tier("dev")
   for (model in c("mlgenbeta", "mlnsbeta", "mlpareto2", "mlpareto3",
                   "mlpareto4", "mlfpareto")) {
     set.seed(7)
@@ -154,6 +157,7 @@ test_that("required endpoints transform with the observations", {
 })
 
 test_that("Gompertz fits the original large-scale failure sample", {
+  skip_unless_tier("dev")
   set.seed(7)
   x <- ml_simulate("mlgompertz", 400)
   expect_equal(pull_back_scale_fit(mlgompertz(1e3*x), "mlgompertz", 0, 1e3),

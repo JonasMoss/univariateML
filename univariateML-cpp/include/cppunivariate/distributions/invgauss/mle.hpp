@@ -25,7 +25,9 @@ struct InvGaussResult {
 inline InvGaussResult invgauss_mle(span x) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN};
+  if (n == 0) return {0.0, 0.0, kNaN, InvGaussStatus::InvalidInput};
+  for (double v : x) if (!(v > 0 && std::isfinite(v)))
+    return {kNaN,kNaN,kNaN,InvGaussStatus::InvalidInput};
 
   const double dn = static_cast<double>(n);
   double sum_log = 0.0;
@@ -42,12 +44,15 @@ inline InvGaussResult invgauss_mle(span x) {
     relative_ss += (y - CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)) * (y - CPPUNIV_EXTENDED_LITERAL(1.0,1.0L)) / y;
   }
   lambda = static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(mu) * dn / relative_ss);
+  if (relative_ss == 0) return {mu,lambda,INFINITY,InvGaussStatus::Unbounded};
   const double L = sum_log / dn;
 
   // At the profiled lambda, the quadratic term equals n exactly.
   const double logLik = -0.5 * dn *
       (3.0 * L - std::log(lambda) + std::log(2.0 * M_PI) + 1.0);
-  return {mu, lambda, logLik};
+  return {mu, lambda, logLik,
+    std::isfinite(mu) && std::isfinite(lambda) && std::isfinite(logLik) ?
+      InvGaussStatus::Ok : InvGaussStatus::IterationFailure};
 }
 
 inline InvGaussResult invgauss_mle(span x,double mu,double shape) {

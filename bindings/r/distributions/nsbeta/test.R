@@ -53,6 +53,7 @@ test_that("nsbeta: reference mapping and unbounded unrestricted path", {
 
 
 test_that("P2 nsbeta holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape1=2, shape2=3, min=0, max=1)
   thresholds <- c("min", "max")
   regular <- setdiff(names(pars), thresholds)

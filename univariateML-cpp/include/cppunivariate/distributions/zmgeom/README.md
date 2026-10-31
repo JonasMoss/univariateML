@@ -36,15 +36,37 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: geom
+    at:
+      prob: prob
+    type: zero-modified
+    mass: p0
+  special_case_of:
+  - family: zmnbinom
+    at:
+      size: 1
+      prob: prob
+      p0: p0
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'zmgeom/README.md, Details; zmgeom/mle.hpp (public fitter and held overloads); zmgeom/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model geometric positive counts with an independently adjustable zero probability.
+summary: Zero-modified geometric provides a model for geometric positive counts with an independently adjustable
+  zero probability.
+aliases:
+- "hurdle geometric"
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-modified geometric distributions model counts with a separate zero component.

@@ -16,7 +16,9 @@ export default async function create(options = {}) {
     },
     ...(fitFamilies.includes(id) ? {fit: (x, held = {}, control = {}) => {
       const result = module[`fit${id}`](x, held, control);
-      if (result.error) throw new Error(result.error);
+      if (result.error) {
+        const error = new Error(result.error); error.warnings = result.warnings || []; throw error;
+      }
       return result;
     }} : {}),
   }]));

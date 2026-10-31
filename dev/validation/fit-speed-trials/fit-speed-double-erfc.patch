@@ -1,0 +1,16 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/bhatt/dpqr.hpp
++++ b/univariateML-cpp/include/cppunivariate/distributions/bhatt/dpqr.hpp
+@@ -22,11 +22,11 @@
+ // tail algorithms above use the double overloads and do not borrow range.
+ inline CPPUNIV_EXTENDED_REAL logphi_extended(CPPUNIV_EXTENDED_REAL z){return -CPPUNIV_EXTENDED_LITERAL(.91893853320467274178,.91893853320467274178L)-z*z/2;}
+ inline CPPUNIV_EXTENDED_REAL mills_extended(CPPUNIV_EXTENDED_REAL t) {
+-  if(t<12)return std::sqrt(std::acos(-CPPUNIV_EXTENDED_LITERAL(1.0,1.0L))/2)*std::exp(t*t/2)*std::erfc(t/std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)));
++  if(t<12)return std::sqrt(std::acos(-CPPUNIV_EXTENDED_LITERAL(1.0,1.0L))/2)*std::exp(t*t/2)*std::erfc(static_cast<double>(t/std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L))));
+   CPPUNIV_EXTENDED_REAL r=0;for(int k=40;k>=1;--k)r=k/(t+r);return 1/(t+r);
+ }
+ inline CPPUNIV_EXTENDED_REAL logQ_extended(CPPUNIV_EXTENDED_REAL z) {
+-  return z>=0?logphi_extended(z)+std::log(mills_extended(z)):std::log1p(-std::erfc(-z/std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)))/2);
++  return z>=0?logphi_extended(z)+std::log(mills_extended(z)):std::log1p(-std::erfc(static_cast<double>(-z/std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L))))/2);
+ }
+ inline CPPUNIV_EXTENDED_REAL logdiff_extended(CPPUNIV_EXTENDED_REAL a,CPPUNIV_EXTENDED_REAL b){return a+std::log(-std::expm1(std::min(CPPUNIV_EXTENDED_LITERAL(0.0,0.0L),b-a)));}
+ inline CPPUNIV_EXTENDED_REAL logH_extended(CPPUNIV_EXTENDED_REAL z) {

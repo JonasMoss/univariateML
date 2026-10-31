@@ -25,9 +25,13 @@ r:
     iterlim: Maximum number of iterations.
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - 2*log(1 + (x/scale)**shape)
 references:
-  - "Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley."
-  - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
-  - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
+- Kleiber, C. and Kotz, S. (2003), Statistical Size Distributions in Economics and Actuarial Sciences, Wiley.
+- Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition,
+  Wiley.
+- 'Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical
+  Software, 25(7), 1-37.'
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 limits:
 - name: unbounded likelihood
   fixed: [scale]
@@ -39,7 +43,7 @@ examples: |
   x <- rml(200, mlllogis())
   mlllogis(x)
 
-group: other positive
+group: beta and generalised beta
 construction:
 - base
 relations:
@@ -49,6 +53,16 @@ relations:
       shape1: 1
       shape2: shape
       scale: scale
+  - family: invburr
+    at:
+      shape1: 1
+      shape2: shape
+      scale: scale
+  - family: pareto3
+    at:
+      shape: shape
+      scale: scale
+      min: 0
   transform_of:
   - family: logis
     transform: log
@@ -57,12 +71,19 @@ relations:
       scale: 1/shape
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'llogis/README.md, Details; llogis/mle.hpp (public fitter and held overloads); llogis/test.cpp: Log transform
+    transfers to the unique logistic maximum; held shape gives monotone log-location and held scale a monotone shape
+    score, both bisected.'
 areas:
 - reliability and survival
 classification: specialist
-classification_reason: Used within reliability and survival; classified by its specialised modelling role.
+classification_reason: Used to model survival times with a nonmonotone hazard and polynomial upper tail.
+summary: Log-logistic provides a model for survival times with a nonmonotone hazard and polynomial upper tail.
+aliases:
+- "Fisk"
+key_references:
+- 4
 ---
 
 The log-logistic distribution describes positive data whose logarithm has a logistic distribution. It is used for size, lifetime and loss data.
@@ -72,3 +93,10 @@ The log-logistic distribution describes positive data whose logarithm has a logi
 Fitting requires strictly positive observations.
 
 With scale held, the likelihood is unbounded if every observation equals that scale. Holding shape permits constant data.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

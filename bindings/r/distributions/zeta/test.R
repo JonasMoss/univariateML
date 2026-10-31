@@ -1,4 +1,5 @@
 test_that("zeta fits agree with a slow independent oracle", {
+  skip_unless_tier("full")
   samples <- list(c(1,1,2,3,10,100),rep(2,8),c(rep(1,1000),2),c(1,1000000000))
   for (x in samples) {
     objective <- function(t) {

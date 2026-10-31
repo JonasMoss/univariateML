@@ -1,5 +1,5 @@
 #pragma once
-#include "../gb2/beta_tails.hpp"
+#include "../../special/beta_tails.hpp"
 #include "../../special/tails.hpp"
 namespace cppunivariate { namespace student_detail {
 inline double softplus(double x) { return missing_detail::softplus(x); }

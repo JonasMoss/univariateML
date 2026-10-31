@@ -1,6 +1,7 @@
 // Exact finite enumeration for the Conway--Maxwell--binomial family.
 #pragma once
 #include "../../core/precision.hpp"
+#include "../binom/dpqr.hpp"
 #include "../../special/constants.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
@@ -12,6 +13,27 @@ namespace cmb_detail {
 inline bool valid(double size,double prob,double nu) {
   return std::isfinite(size) && size>=0 && size<=1e7 && size==std::floor(size) &&
     std::isfinite(prob) && prob>=0 && prob<=1 && std::isfinite(nu);
+}
+// nu=0 is a finite geometric series. Reflect positive log odds so every
+// exponential has a nonpositive argument; eta=0 is the uniform limit.
+inline double geometric_logmass(double x,double size,double eta) {
+  if(x<0 || x>size || x!=std::floor(x)) return special::kNegInf;
+  if(eta==0) return -std::log1p(size);
+  if(eta>0) {x=size-x;eta=-eta;}
+  return x*eta+special::log1mexp(eta)-special::log1mexp((size+1)*eta);
+}
+inline special::LogTails geometric_tails(double q,double size,double eta) {
+  if(q<0) return special::tails_from_log(special::kNegInf,true);
+  if(q>=size) return special::tails_from_log(special::kNegInf,false);
+  q=std::floor(q);
+  if(eta>0) {
+    const auto t=geometric_tails(size-q-1,size,-eta);
+    return {t.upper,t.lower,t.valid};
+  }
+  const double z=eta==0 ? std::log1p(size) : special::log1mexp((size+1)*eta);
+  const double lo=eta==0 ? std::log1p(q)-z : special::log1mexp((q+1)*eta)-z;
+  const double up=eta==0 ? std::log(size-q)-z : (q+1)*eta+special::log1mexp((size-q)*eta)-z;
+  return lo<up ? special::tails_from_log(lo,true) : special::tails_from_log(up,false);
 }
 inline double logchoose(int N,int k) {
   k=std::min(k,N-k);
@@ -99,14 +121,37 @@ inline Table table(int N,double p,double nu) {
 namespace distributions {
 inline double dcmb(double x,double size,double prob,double nu,bool log=false) {
   if (!cmb_detail::valid(size,prob,nu) || std::isnan(x)) return special::kNaN;
+  if(size==0 || prob==0 || prob==1) {
+    const double v=x==(prob==1?size:0)?0:special::kNegInf;
+    return log?v:std::exp(v);
+  }
+  if(nu==0 && prob>0 && prob<1) {
+    const double v=cmb_detail::geometric_logmass(x,size,std::log(prob)-std::log1p(-prob));
+    return log?v:std::exp(v);
+  }
+  if(nu==1 || size==1) return dbinom(x,size,prob,log);
   return cmb_detail::table(static_cast<int>(size),prob,nu).density(x,log);
 }
 inline double pcmb(double q,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
   if (!cmb_detail::valid(size,prob,nu) || std::isnan(q)) return special::kNaN;
+  if(size==0 || prob==0 || prob==1) {
+    const bool one=lower_tail ? q>=(prob==1?size:0) : q<(prob==1?size:0);
+    return log_p?(one?0:special::kNegInf):(one?1:0);
+  }
+  if(nu==0 && prob>0 && prob<1)
+    return special::tail_probability(cmb_detail::geometric_tails(q,size,std::log(prob)-std::log1p(-prob)),lower_tail,log_p);
+  if(nu==1 || size==1) return pbinom(q,size,prob,lower_tail,log_p);
   return cmb_detail::table(static_cast<int>(size),prob,nu).cdf(q,lower_tail,log_p);
 }
 inline double qcmb(double p,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
   if (!cmb_detail::valid(size,prob,nu)) return special::kNaN;
+  if(size==0 || prob==0 || prob==1 || nu==1 || size==1)
+    return qbinom(p,size,prob,lower_tail,log_p);
+  if(nu==0) {
+    const double eta=std::log(prob)-std::log1p(-prob);
+    return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,size,
+        [=](double q){return cmb_detail::geometric_tails(q,size,eta);});
+  }
   return cmb_detail::table(static_cast<int>(size),prob,nu).quantile(p,lower_tail,log_p);
 }
 template <typename Rng>

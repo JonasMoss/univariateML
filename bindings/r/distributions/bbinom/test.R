@@ -33,6 +33,7 @@ test_that("faces and nonidentification are explicit", {
 })
 
 test_that("fit agrees with slow multistart reference oracle", {
+  skip_unless_tier("full")
   x <- bb_sample()
   for (held in list(list(),list(alpha=.4),list(beta=8))) {
     objective <- function(theta) {

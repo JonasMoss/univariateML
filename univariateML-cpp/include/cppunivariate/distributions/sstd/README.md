@@ -117,9 +117,9 @@ examples: |
 
 summary: The moment-standardized Fernandez–Steel skew Student distribution allows asymmetry and heavy tails.
 classification: specialist
-classification_reason: Used for skewed heavy-tailed errors, including financial returns.
+classification_reason: Used to model financial returns requiring both asymmetry and polynomial tails.
 aliases:
-- Fernandez–Steel skew Student
+- "Fernández–Steel skew Student"
 key_references:
 - 1
 
@@ -131,8 +131,9 @@ relations: {}
 fit:
   method: multistart
   certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  note: 'sstd/README.md, Details; sstd/mle.hpp (public fitter and held overloads); sstd/test.cpp: Default and nontrivial
+    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
+    density evaluation is not counted as certification.'
 areas:
 - finance
 - measurement and errors
@@ -141,6 +142,14 @@ areas:
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.
 
 ## Details
+
+The 2026-10-31 fit-speed revision stops the fixed-shape scale bisection when its
+midpoint rounds to an endpoint: the remaining iterations cannot change the
+represented final midpoint or scale. The shared held-fit helper retains the same
+grid and all refinements. In held location/scale fits with fixed shape and skew,
+density normalizers are computed once while per-observation arithmetic grouping
+is preserved. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
 A tie of multiplicity $k>2(n-k)$ makes the free-df likelihood unbounded even at fixed skewness (the two side scales change the coefficient, not the collapse exponent); equality is reported as an uncertified scale-collapse boundary, and a half-t face has a positive scale root only when $\nu(n-k)>k$.
 

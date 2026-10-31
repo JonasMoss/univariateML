@@ -82,3 +82,17 @@ TEST_CASE("skellam: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::skellam_mle(x,1e-8,1).status==cppunivariate::SkellamStatus::IterationFailure);
 }
+
+TEST_CASE("skellam TASK-134 subnormal log tails and near-zero face") {
+  const double expected[]={-733.33365531008144,-738.50417158558412,-743.68035323493075};
+  for(int k=174;k<=176;++k) {
+    const double face=cppunivariate::distributions::pskellam(k,1,0,false,true);
+    CHECK(face==doctest::Approx(expected[k-174]).epsilon(2e-13));
+    // Coupling: shifting by an independent Poisson(e) changes this tail
+    // by a relative factor between exp(-e) and one.
+    const double near=cppunivariate::distributions::pskellam(k,1,1e-8,false,true);
+    CHECK(near<=face+2e-12);
+    CHECK(near>=face-1e-8-2e-12);
+    CHECK(cppunivariate::distributions::pskellam(-k-1,1e-8,1,true,true)==near);
+  }
+}

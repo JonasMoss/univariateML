@@ -141,6 +141,47 @@ def points(meta, g, route):
     default = {p['name']: float(p['simulate']) for p in ps}
     if default not in result:
         result.append(default)
+    for pt in boundary_points(meta, route):
+        if pt not in result:
+            result.append(pt)
+    return result
+
+
+def boundary_points(meta, route=None):
+    """One attained face at a time, independent of the historical point cap.
+
+    Dependent inclusive bounds are projected until stable (e.g. N=0 forces
+    m=k=0). Open bounds are never projected. Infinite attained endpoints
+    (truncated normal) are retained. Fit restrictions are not model domains.
+    """
+    default = {p['name']: float(p['simulate']) for p in meta['params']}
+    result = []
+    for p, edges in zip(meta['params'], domains(meta, default)):
+        for closed, edge in zip((p['domain'][0] == '[', p['domain'][-1] == ']'), edges):
+            if not closed:
+                continue
+            pt = {**default, p['name']: float(edge)}
+            if route is not None and hasattr(route, 'boundary_adjust'):
+                pt = route.boundary_adjust(pt)
+            for _ in range(len(meta['params'])+1):
+                previous = pt.copy()
+                for q, (lo, hi) in zip(meta['params'], domains(meta, pt)):
+                    name = q['name']
+                    if pt[name] < lo and q['domain'][0] == '[': pt[name] = float(lo)
+                    if pt[name] > hi and q['domain'][-1] == ']': pt[name] = float(hi)
+                if pt == previous: break
+            if all(lo <= pt[q['name']] <= hi and
+                   not (pt[q['name']] == lo and q['domain'][0] == '(') and
+                   not (pt[q['name']] == hi and q['domain'][-1] == ')')
+                   for q, (lo, hi) in zip(meta['params'], domains(meta, pt))):
+                if pt not in result: result.append(pt)
+    for name, values in getattr(route, 'boundary_parameters', {}).items():
+        for value in values:
+            pt = {**default, name: float(value)}
+            if pt not in result: result.append(pt)
+    for overrides in getattr(route, 'boundary_parameter_sets', []):
+        pt = {**default, **overrides}
+        if pt not in result: result.append(pt)
     return result
 
 
@@ -188,7 +229,9 @@ def verify(ref, logd):
         lo = int(ref.lower) if mp.isfinite(ref.lower) else -6
         for k in range(lo, min(int(ref.upper) if mp.isfinite(ref.upper) else lo+12, lo+12)+1):
             before, after = ref.tails(k-1), ref.tails(k)
-            if after[0] < -mp.log(2):
+            if after[0] == -mp.inf or before[1] == -mp.inf:
+                observed = mp.mpf(0)
+            elif after[0] < -mp.log(2):
                 observed = mp.exp(after[0])*(-mp.expm1(before[0]-after[0]))
             else:
                 observed = mp.exp(before[1])*(-mp.expm1(after[1]-before[1]))
@@ -241,13 +284,15 @@ def quantile_acceptance(ref, logd, q, inp, lower, logp):
         a = b = rounded
         if mp.isfinite(q) and abs(q) < 2**53 and math.isfinite(inp) and (inp < 0 if logp else 0 < inp < 1):
             probe = number(inp)
-            for j in (q-1, q):
+            jumps = (list(zip(ref.atoms, ref.atoms[1:])) if hasattr(ref, 'atoms')
+                     else [(q-1, q), (q, q+1)])
+            for j, next_atom in jumps:
                 if not ref.lower <= j < ref.upper:
                     continue
                 tail = ref.tails(j)[0 if lower else 1]
                 value = tail if logp else mp.exp(tail)
                 if abs(value-probe) <= abs(probe)*mp.mpf('1e-12'):
-                    a, b, ambiguous = as_double(j), as_double(j+1), 1
+                    a, b, ambiguous = as_double(j), as_double(next_atom), 1
                     break
     elif math.isfinite(rounded):
         a = rounded if number(rounded) <= q else a
@@ -261,13 +306,13 @@ def quantile_acceptance(ref, logd, q, inp, lower, logp):
     return a, b, ambiguous, floor
 
 
-def make(folder):
+def make(folder, parameter_points=None):
     meta, g = read(folder)
     if not (folder/'truth.py').exists():
         raise ValueError('gap: no independently validated antiderivative/support route')
     route = module_at(folder/'truth.py')
     if hasattr(route, 'gap'): raise ValueError('gap: '+route.gap)
-    pts = points(meta, g, route)
+    pts = points(meta, g, route) if parameter_points is None else parameter_points
     result = dict(schema=3, id=folder.name, digits=DIGITS,
                   parameter_names=[p['name'] for p in meta['params']],
                   parameters=[], normalization=[], values=[], quantiles=[],
@@ -276,13 +321,20 @@ def make(folder):
     default = {p['name']: float(p['simulate']) for p in meta['params']}
     fit = {p['name']: float(g['estimates'][p['name']]) for p in meta['params']}
     # Explicit indices keep special defaults and general fitted branches covered.
-    result['sampler_points'] = [[pts.index(default)], [pts.index(fit)]]
+    result['sampler_points'] = [[pts.index(pt)] if pt in pts else [] for pt in (default, fit)]
     for index, theta in enumerate(pts):
         started = time.monotonic()
         small = min([float(theta[p['name']]) for p in meta['params'] if p['role']=='shape' and float(theta[p['name']])>1e-6] or [1.])
         mp.mp.dps = DIGITS
         t = {k: number(v) for k, v in theta.items()}
-        logd = declarative(folder, meta, theta, route)
+        # Routes with exact limiting log densities need not instantiate a
+        # singular symbolic formula (or a many-million-term normalizer).
+        density_cache = []
+        def logd(v):
+            if not density_cache:
+                density_cache.append(declarative(folder, meta, theta, route))
+                density_cache[0].upper = getattr(logd, "upper", mp.inf)
+            return density_cache[0](v)
         ref = route.build(t, logd) if len(inspect.signature(route.build).parameters) == 2 else route.build(t)
         if not hasattr(ref, 'normalization_integrand') and ((mp.isfinite(ref.lower) and ref.lower != 0) or mp.isfinite(ref.upper)):
             mp.mp.dps = min(600,max(DIGITS,int(40/small)+20))
@@ -328,6 +380,74 @@ def make(folder):
                 a, b, ambiguous, floor = quantile_acceptance(ref, logd, q, inp, lower, logp)
                 result['quantiles'].append([index,int(lower),int(logp),encode(inp),encode(q),encode(a),encode(b),ambiguous,encode(floor)])
         print(folder.name, index, 'verified', round(time.monotonic()-started,2), flush=True)
+    return apply_exclusions(result, route)
+
+
+def apply_point_exclusions(result, route):
+    """Archive complete independent laws whose public d/p/q/r member fails.
+
+    Remove their active indices so R consumers do not sample an unsupported
+    member. The archived rows use a local point index zero. Public default
+    and golden sampler points may never be excluded.
+    """
+    declarations = getattr(route, 'truth_point_exclusions', [])
+    removed = {}
+    for index, theta in enumerate(result['parameters']):
+        reasons = [reason for params, reason in declarations if theta == params]
+        if reasons: removed[index] = '; '.join(reasons)
+    if not removed: return result
+    if any(row[0] in removed for row in result['sampler_points'] if row):
+        raise ValueError('cannot exclude a default or fitted sampler point')
+    mapping = {}
+    parameters, normalization = [], []
+    for index, theta in enumerate(result['parameters']):
+        if index not in removed:
+            mapping[index] = len(parameters)
+            parameters.append(theta)
+        else:
+            entry = dict(parameters=theta, reason=removed[index])
+            entry['normalization'] = [dict(point=0, mass=r['mass']) for r in result['normalization'] if r['point'] == index]
+            for key in ('values', 'quantiles'):
+                entry[key] = [[0, *r[1:]] for r in result[key] if r[0] == index]
+            result.setdefault('excluded_parameter_points', []).append(entry)
+    for r in result['normalization']:
+        if r['point'] not in removed:
+            normalization.append({**r, 'point': mapping[r['point']]})
+    for key in ('values', 'quantiles'):
+        result[key] = [[mapping[r[0]], *r[1:]] for r in result[key] if r[0] not in removed]
+    result['parameters'], result['normalization'] = parameters, normalization
+    result['sampler_points'] = [[mapping[row[0]]] if row else [] for row in result['sampler_points']]
+    return result
+
+
+def apply_exclusions(result, route):
+    """Keep independently computed failing rows visible, outside active checks.
+
+    Each local declaration names exact encoded parameters and input fields,
+    plus a reason. No tolerance is relaxed and no oracle value is replaced.
+    """
+    apply_point_exclusions(result, route)
+    declarations = getattr(route, 'truth_exclusions', {})
+    if set(declarations) - {'values', 'quantiles'}:
+        raise ValueError('unknown truth exclusion category')
+    for key in ('values', 'quantiles'):
+        exclusions = declarations.get(key, [])
+        kept, excluded = [], []
+        for row in result[key]:
+            probe = row[1:2] if key == 'values' else row[1:4]
+            reasons = [reason for theta, at, reason in exclusions
+                       if result['parameters'][row[0]] == theta and probe == at]
+            if hasattr(route, 'truth_workload_exclusion'):
+                theta = dict(zip(result['parameter_names'], result['parameters'][row[0]]))
+                reason = route.truth_workload_exclusion(theta, key, row)
+                if reason: reasons.append(reason)
+            if reasons:
+                excluded.append(dict(row=row, reason='; '.join(reasons)))
+            else:
+                kept.append(row)
+        result[key] = kept
+        if excluded:
+            result['excluded_'+key] = excluded
     return result
 
 

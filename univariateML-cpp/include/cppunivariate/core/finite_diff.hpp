@@ -1,3 +1,5 @@
+// Contract, retained choices, evidence and known numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
 // Central-difference gradient + adapter that lets a Cost without an
 // analytic gradient be passed to bfgs_minimize.
 //

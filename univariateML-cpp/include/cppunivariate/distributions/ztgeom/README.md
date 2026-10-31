@@ -28,15 +28,50 @@ examples: |
 group: modified counts
 construction:
 - truncation
-relations: {}
+relations:
+  modification_of:
+  - family: geom
+    at:
+      prob: prob
+    type: zero-truncated
+  special_case_of:
+  - family: ztnbinom
+    at:
+      size: 1
+      prob: prob
+  - family: zmgeom
+    at:
+      prob: prob
+      p0: 0
+  transform_of:
+  - family: geom
+    at:
+      prob: prob
+    transform: shift
+    shift: 1
+  truncation_of:
+  - family: dlaplace
+    at:
+      location: 1
+      scale: 1-prob
+    when: prob < 1
 fit:
   method: scalar-solve
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'ztgeom/README.md, Details; ztgeom/mle.hpp (public fitter and held overloads); ztgeom/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model geometric waiting counts sampled only when positive.
+summary: Zero-truncated geometric provides a model for geometric waiting counts sampled only when positive.
+aliases:
+- "geometric on positive integers"
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-truncated geometric distributions model positive counts.

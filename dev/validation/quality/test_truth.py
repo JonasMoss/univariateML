@@ -4,6 +4,7 @@ import mpmath as mp
 from quality.truth_reference import normal, pair, gamma, Reference, beta_normalization, complement, negative_binomial
 from quality.truth import DISTS, module_at, points, read, declarative, verify, number, quantile_acceptance
 import json
+import inspect
 from types import SimpleNamespace
 
 
@@ -246,6 +247,18 @@ class QuantileAcceptance(unittest.TestCase):
             self.assertEqual(quantile_acceptance(tiny,None,mp.mpf(0),-1e-15,True,True)[2],0)
             self.assertEqual(quantile_acceptance(tiny,None,mp.mpf(0),float(mp.exp(-mp.mpf('1e-15'))),True,False)[2],1)
 
+    def test_atomic_jump_bounds_skip_zero_mass_counts(self):
+        from quality.truth_reference import atomic
+        with mp.workdps(80):
+            ref = atomic({0: mp.mpf('.5'), 10: mp.mpf('.5')}, upper=10)
+            for lower in (True, False):
+                for logp, inp in ((False, .5), (True, -0.6931471805599453)):
+                    lp = number(inp) if logp else mp.log(number(inp))
+                    q = ref.quantile(lp, lower)
+                    self.assertEqual(quantile_acceptance(ref, None, q, inp, lower, logp),
+                                     (0., 10., 1, 0.))
+            self.assertEqual(quantile_acceptance(ref, None, mp.mpf(0), .4, True, False)[2], 0)
+
     def test_zero_floor_scales_with_the_model(self):
         with mp.workdps(80):
             for scale in (mp.mpf('.01'),mp.mpf(10)):
@@ -255,6 +268,109 @@ class QuantileAcceptance(unittest.TestCase):
                 self.assertEqual((a,b,flag),(0.,0.,0))
                 self.assertAlmostEqual(floor/float(scale),float(mp.mpf('1e-12')*mp.sqrt(2*mp.pi)),places=24)
                 self.assertEqual(quantile_acceptance(ref,logd,mp.mpf(1),.8,True,False)[3],0.)
+
+
+class AttainedBoundaries(unittest.TestCase):
+    def test_bounds_survive_historical_cap_and_project_dependent_domains(self):
+        from quality.truth import boundary_points
+        meta, golden = read(DISTS/'hyper')
+        pts = boundary_points(meta)
+        self.assertIn({'m': 0., 'N': 0., 'k': 0.}, pts)
+        for theta in pts:
+            self.assertIn(theta, points(meta, golden, SimpleNamespace()))
+        meta, _ = read(DISTS/'triang')
+        self.assertEqual([p['c'] for p in boundary_points(meta)], [0., 1.])
+
+    def test_atomic_law_preserves_nominal_endpoints_and_zero_mass(self):
+        from quality.truth_reference import atomic
+        with mp.workdps(80):
+            ref = atomic({0: mp.mpf('.25'), 1: mp.mpf('.75')}, upper=10)
+            self.assertEqual(verify(ref, ref.log_density), 1)
+            self.assertEqual(ref.quantile(-mp.inf, False), 10)
+            self.assertEqual(ref.quantile(mp.log(mp.mpf('.1')), True), 0)
+            self.assertEqual(ref.quantile(mp.log(mp.mpf('.5')), True), 1)
+            self.assertEqual(ref.log_density(2), -mp.inf)
+            self.assertEqual(ref.tails(2), (0, -mp.inf))
+
+    def test_exclusions_preserve_the_independent_reference(self):
+        from quality.truth import apply_exclusions
+        value = [0, 0., 0., 0., '-Inf']
+        quantile = [0, 1, 0, 1., 'Inf', 'Inf', 'Inf', 0, 0.]
+        table = dict(parameters=[[0.]], values=[value], quantiles=[quantile])
+        route = SimpleNamespace(truth_exclusions={
+            'quantiles': [([0.], [1, 0, 1.], 'documented endpoint convention')]})
+        result = apply_exclusions(table, route)
+        self.assertEqual(result['values'], [value])
+        self.assertEqual(result['quantiles'], [])
+        self.assertEqual(result['excluded_quantiles'][0]['row'], quantile)
+        self.assertEqual(result['excluded_quantiles'][0]['reason'],
+                         'documented endpoint convention')
+
+    def test_complete_law_archive_preserves_reference_and_remaps_points(self):
+        from quality.truth import apply_exclusions
+        table = dict(parameter_names=['rate'], parameters=[[1.], [0.], [2.]],
+                     sampler_points=[[0], [0]],
+                     normalization=[dict(point=i, mass='1.0') for i in range(3)],
+                     values=[[i, 0., 0., 0., '-Inf'] for i in range(3)],
+                     quantiles=[[i, 1, 0, .5, 0., 0., 0., 0, 0.] for i in range(3)])
+        result = apply_exclusions(table, SimpleNamespace(
+            truth_point_exclusions=[([0.], 'unsupported public member')]))
+        self.assertEqual(result['parameters'], [[1.], [2.]])
+        self.assertEqual([r[0] for r in result['values']], [0, 1])
+        archived = result['excluded_parameter_points'][0]
+        self.assertEqual(archived['parameters'], [0.])
+        self.assertEqual(archived['values'], [[0, 0., 0., 0., '-Inf']])
+        self.assertEqual(archived['normalization'], [dict(point=0, mass='1.0')])
+        with self.assertRaises(ValueError):
+            apply_exclusions(result, SimpleNamespace(
+                truth_point_exclusions=[([1.], 'must not exclude the sampler')]))
+
+    def test_cmb_workload_keeps_both_support_endpoints(self):
+        route = module_at(DISTS/'cmb/truth.py')
+        theta = {'size': 10000000., 'prob': 0., 'nu': 1.}
+        for x in (0., 10000000.):
+            self.assertIsNone(route.truth_workload_exclusion(theta, 'values', [0, x]))
+        self.assertTrue(route.truth_workload_exclusion(theta, 'values', [0, 1.]))
+        for lower in (0, 1):
+            self.assertIsNone(route.truth_workload_exclusion(
+                theta, 'quantiles', [0, lower, 0, .5]))
+
+    def test_every_attained_face_has_a_stored_reference(self):
+        from quality.truth import boundary_points, encode
+        for filename in sorted(DISTS.glob('*/README.md')):
+            meta, _ = read(filename.parent)
+            route = module_at(filename.with_name('truth.py'))
+            table = json.loads(filename.with_name('truth.json').read_text())
+            for theta in boundary_points(meta, route):
+                with self.subTest(family=filename.parent.name, theta=theta):
+                    row = [encode(theta[p['name']]) for p in meta['params']]
+                    stored = table['parameters'] + [r['parameters'] for r in table.get('excluded_parameter_points', [])]
+                    self.assertIn(row, stored)
+
+    def test_triangular_endpoint_modes_preserve_tiny_tails(self):
+        with mp.workdps(80):
+            route = module_at(DISTS/'triang/truth.py')
+            tiny = mp.mpf('1e-300')
+            left = route.build({'a': mp.mpf(0), 'b': mp.mpf(1), 'c': mp.mpf(0)})
+            right = route.build({'a': mp.mpf(0), 'b': mp.mpf(1), 'c': mp.mpf(1)})
+            self.assertEqual(left.tails(tiny)[0], mp.log(tiny)+mp.log(2-tiny))
+            self.assertEqual(right.tails(tiny)[0], 2*mp.log(tiny))
+
+    def test_zero_rate_and_truncated_limits(self):
+        with mp.workdps(80):
+            for id, theta, atom in (
+                ('pois', {'lambda': 0}, 0),
+                ('ztpois', {'lambda': 0}, 1),
+                ('tpois', {'lambda': 0, 'a': 2, 'b': 8}, 3),
+                ('nbinom', {'size': 0, 'prob': .5}, 0)):
+                route = module_at(DISTS/id/'truth.py')
+                values = {k: number(v) for k,v in theta.items()}
+                ref = (route.build(values, None) if len(inspect.signature(route.build).parameters) == 2
+                       else route.build(values))
+                self.assertEqual(verify(ref, ref.log_density), 1)
+                self.assertEqual(ref.quantile(mp.log(mp.mpf('.5')), True), atom)
+                if id != 'tpois':
+                    self.assertEqual(ref.quantile(-mp.inf, False), atom)
 
 
 if __name__=='__main__':

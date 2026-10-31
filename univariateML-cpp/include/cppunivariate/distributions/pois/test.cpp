@@ -97,3 +97,87 @@ TEST_CASE("pois: adjacent noninteger at zero has no mass") {
   // mp.dps=100; x=mpf(float.fromhex("0x0.0000000000001p-1022")); print(x==floor(x))
   CHECK(cppunivariate::distributions::dpois(std::nextafter(0.0,1.0),2,false)==0);
 }
+
+TEST_CASE("pois: TASK-132 invalid counts and empty input have statuses") {
+  const std::vector<int> empty, negative{-1,2}, zero(4,0), one(4,1);
+  CHECK(cppunivariate::pois_mle(cppunivariate::ispan{empty.data(),empty.size()}).status == cppunivariate::PoisStatus::InvalidInput);
+  CHECK(cppunivariate::pois_mle(cppunivariate::ispan{negative.data(),negative.size()}).status == cppunivariate::PoisStatus::InvalidInput);
+  CHECK(cppunivariate::pois_mle(cppunivariate::ispan{zero.data(),zero.size()}).status == cppunivariate::PoisStatus::Ok);
+}
+
+#include "cppunivariate/distributions/pois/score.hpp"
+TEST_CASE("pois: inference every free subset and MLE score") {
+  std::vector<double> x{0,1,2,4,7}; std::vector<int> ix{0,1,2,4,7};
+  const auto full=cppunivariate::pois_inference(mltest::as_span(x),2.3);
+  REQUIRE(full.status==cppunivariate::InferenceStatus::Ok);
+  for(unsigned mask=0; mask<2; ++mask) {
+    std::vector<double> sums(1,0);
+    std::array<double,4> products{};
+    std::size_t rows=0;
+    const auto a=cppunivariate::pois_inference(mltest::as_span(x),2.3,mask,
+      [&](const std::vector<double>& row) {++rows; for(std::size_t j=0;j<row.size();++j) { sums[j]+=row[j]; for(std::size_t k=0;k<row.size();++k) products[j*row.size()+k]+=row[j]*row[k]; }});
+    REQUIRE(a.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(rows==x.size());
+    CHECK(a.observations==x.size());
+    for(std::size_t j=0;j<a.dimension;++j) {
+      CHECK(a.score[j]==doctest::Approx(sums[j]));
+      CHECK(a.score[j]==doctest::Approx(full.score[a.free_indices[j]]));
+      for(std::size_t k=0;k<a.dimension;++k) {
+        const auto dst=j*a.dimension+k, src=a.free_indices[j]*1+a.free_indices[k];
+        CHECK(a.opg[dst]==doctest::Approx(full.opg[src]));
+        CHECK(a.opg[dst]==doctest::Approx(products[dst]));
+        CHECK(a.observed[dst]==doctest::Approx(full.observed[src]));
+        CHECK(a.fisher[dst]==doctest::Approx(full.fisher[src]));
+      }
+    }
+    const auto f=cppunivariate::pois_mle(cppunivariate::ispan{ix.data(),ix.size()},(mask&1)?NAN:2.3);
+    REQUIRE(f.status==cppunivariate::PoisStatus::Ok);
+    const auto fitted=cppunivariate::pois_inference(mltest::as_span(x),f.lambda,mask);
+    REQUIRE(fitted.status==cppunivariate::InferenceStatus::Ok);
+    for(std::size_t j=0;j<fitted.dimension;++j) CHECK(std::abs(fitted.score[j])<1e-7);
+  }
+  CHECK(cppunivariate::pois_inference(mltest::as_span(x),2.3,2).status==cppunivariate::InferenceStatus::InvalidSubset);
+  CHECK(cppunivariate::pois_inference(cppunivariate::span{x.data(),0},2.3).status==cppunivariate::InferenceStatus::EmptySample);
+}
+
+TEST_CASE("pois: analytic information versus log density central differences") {
+  std::vector<double> x{3.0}, p{2.3};
+  const auto r=cppunivariate::pois_inference(mltest::as_span(x),p[0]);
+  REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+  const auto ld=[&]() {return cppunivariate::distributions::dpois(x[0],p[0],true);};
+  const double step=1e-4, base=ld();
+  for(std::size_t j=0;j<1;++j) {
+    const double saved=p[j];
+    p[j]=saved+step; const double plus=ld();
+    p[j]=saved-step; const double minus=ld(); p[j]=saved;
+    CHECK(r.score[j]==doctest::Approx((plus-minus)/(2*step)).epsilon(2e-6));
+    CHECK(r.observed[j*1+j]==doctest::Approx(-(plus-2*base+minus)/(step*step)).epsilon(2e-6));
+  }
+}
+
+TEST_CASE("pois: inference validity and total normalization") {
+  std::vector<double> x{1};
+  const auto one=cppunivariate::pois_inference(mltest::as_span(x),2);
+  x.push_back(x[0]);
+  const auto two=cppunivariate::pois_inference(mltest::as_span(x),2);
+  REQUIRE(two.status==cppunivariate::InferenceStatus::Ok);
+  for(std::size_t j=0;j<two.dimension;++j) CHECK(two.score[j]==doctest::Approx(2*one.score[j]));
+  for(std::size_t j=0;j<two.dimension*two.dimension;++j) {
+    CHECK(two.opg[j]==doctest::Approx(2*one.opg[j]));
+    CHECK(two.observed[j]==doctest::Approx(2*one.observed[j]));
+    CHECK(two.fisher[j]==doctest::Approx(2*one.fisher[j]));
+  }
+  CHECK(cppunivariate::pois_inference(mltest::as_span(x),0).status==cppunivariate::InferenceStatus::InvalidParameter);
+  x[0]=0.5;
+  CHECK(cppunivariate::pois_inference(mltest::as_span(x),2,0).status==cppunivariate::InferenceStatus::InvalidObservation);
+}
+
+TEST_CASE("pois: integer input and boundary observed information") {
+  std::vector<int> x{0,0};
+  const auto r=cppunivariate::pois_inference(cppunivariate::ispan{x.data(),x.size()},2);
+  CHECK(r.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(r.observed_status==cppunivariate::InferenceStatus::Singular);
+  CHECK(r.fisher_status==cppunivariate::InferenceStatus::Ok);
+  CHECK(r.score[0]==-2);
+  CHECK(r.opg[0]==2);
+}

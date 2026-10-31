@@ -65,32 +65,36 @@ expect_equal(dsged(x = grid, mean = c + b - a, sd = sqrt(a * a + b * b), nu = 1,
 expect_error(suppressWarnings(mlsged(-log(((0:99)+.5)/100)), classes = "univariateML_restricted"), "sample minimum")
 expect_error(suppressWarnings(mlsged(log(((0:99)+.5)/100)), classes = "univariateML_restricted"), "sample maximum")
 
-set.seed(812)
-for (shape in c(1.5, 3)) {
-  x <- rged(n = 500, mean = 0, sd = 1, nu = shape)
-  f <- suppressWarnings(mlsged(x, gradtol=1e-6, iterlim=1000), classes = "univariateML_restricted")
-  expect_gt(unname(f["nu"]), 1)
-  objective <- function(p) {
-    nu <- 1+exp(p[3])
-    lambda <- exp((-2/nu*log(2)+lgamma(1/nu)-lgamma(3/nu))/2)
-    z <- (x-p[1])/exp(p[2])
-    factor <- -p[2]
-    xi <- exp(p[4])
-    m1 <- exp(lgamma(2/nu)-(lgamma(1/nu)+lgamma(3/nu))/2)
-    su <- sqrt((1-m1*m1)*(xi*xi+1/(xi*xi))+2*m1*m1-1)
-    z <- z*su+m1*(xi-1/xi)
-    z <- z/ifelse(z>0,xi,1/xi)
-    factor <- factor+log(su)+log(2/(xi+1/xi))
-    value <- -sum(factor+log(nu)-log(lambda)-(1+1/nu)*log(2)-
-                    lgamma(1/nu)-.5*(abs(z)/lambda)^nu)
-    if (is.finite(value)) value else 1e100
+test_that("sged interior multistart oracle", {
+  skip_unless_tier("full")
+  set.seed(812)
+  for (shape in c(1.5, 3)) {
+    x <- rged(n = 500, mean = 0, sd = 1, nu = shape)
+    f <- suppressWarnings(mlsged(x, gradtol=1e-6, iterlim=1000), classes = "univariateML_restricted")
+    expect_gt(unname(f["nu"]), 1)
+    objective <- function(p) {
+      nu <- 1+exp(p[3])
+      lambda <- exp((-2/nu*log(2)+lgamma(1/nu)-lgamma(3/nu))/2)
+      z <- (x-p[1])/exp(p[2])
+      factor <- -p[2]
+      xi <- exp(p[4])
+      m1 <- exp(lgamma(2/nu)-(lgamma(1/nu)+lgamma(3/nu))/2)
+      su <- sqrt((1-m1*m1)*(xi*xi+1/(xi*xi))+2*m1*m1-1)
+      z <- z*su+m1*(xi-1/xi)
+      z <- z/ifelse(z>0,xi,1/xi)
+      factor <- factor+log(su)+log(2/(xi+1/xi))
+      value <- -sum(factor+log(nu)-log(lambda)-(1+1/nu)*log(2)-
+                      lgamma(1/nu)-.5*(abs(z)/lambda)^nu)
+      if (is.finite(value)) value else 1e100
+    }
+    values <- sapply(c(1.1,1.5,2,4,8), function(nu) {
+      optim(c(mean(x), log(sd(x)), log(nu-1), 0), objective,
+            method="Nelder-Mead", control=list(maxit=10000, reltol=1e-11))$value
+    })
+    expect_gte(attr(f,"logLik") + 1e-4, -min(values))
   }
-  values <- sapply(c(1.1,1.5,2,4,8), function(nu) {
-    optim(c(mean(x), log(sd(x)), log(nu-1), 0), objective,
-          method="Nelder-Mead", control=list(maxit=10000, reltol=1e-11))$value
-  })
-  expect_gte(attr(f,"logLik") + 1e-4, -min(values))
-}
+
+})
 
 test_that("sged scale extremes preserve fit or declared escape", {
   set.seed(10)
@@ -106,6 +110,7 @@ test_that("sged scale extremes preserve fit or declared escape", {
 })
 
 test_that("sged large-sample fitting preserves likelihood under replication", {
+  skip_unless_tier("full")
   p<-((1:1000)-.5)/1000
   x<-qsged(p = p, mean = 0, sd = 1, nu = 3, xi = 2)
   base<-suppressWarnings(mlsged(x), classes = "univariateML_restricted")
@@ -215,6 +220,7 @@ sged_hold_logref <- function(x,p) {
 }
 
 test_that("sged classified holds agree with independent multistart oracles", {
+  skip_unless_tier("full")
   set.seed(81029)
   p <- c(mean=.2,sd=1.4,nu=1.7,xi=1.3)
   subsets <- list(c('mean','nu','xi'),c('sd','nu','xi'),names(p))
@@ -272,6 +278,7 @@ test_that("sged held domains and controls reject invalid requests", {
 
 
 test_that("sged P0b subsets agree with independent README oracles", {
+  skip_unless_tier("full")
   set.seed(931029)
   p <- c(mean=.2, sd=1.4, nu=1.7, xi=1.3)
   subsets <- list('mean','sd','nu','xi',c('mean','sd'),c('mean','nu'),

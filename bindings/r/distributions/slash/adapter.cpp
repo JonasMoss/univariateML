@@ -1,22 +1,11 @@
-#include "as_span.h"
+#include "common/distributions/slash/fit.hpp"
+#include "common_fit.h"
 #include "dpqr.h"
-#include "cppunivariate/distributions/slash/mle.hpp"
 // [[Rcpp::export]]
 Rcpp::List mlslash_(const Rcpp::NumericVector& x,
     Rcpp::Nullable<double> sigma=R_NilValue,
     double reltol=1e-8,int iterlim=500, Rcpp::Nullable<double> mu=R_NilValue) {
-  const double f_sigma=sigma.isNotNull()?Rcpp::as<double>(sigma):cppunivariate::special::kNaN;
-  if((sigma.isNotNull() && !(std::isfinite(f_sigma) && f_sigma>0)))Rcpp::stop("Fixed scales must be positive finite numbers.");
-  const double f_mu=mu.isNotNull()?Rcpp::as<double>(mu):cppunivariate::special::kNaN;
-  if(mu.isNotNull()&&!std::isfinite(f_mu))Rcpp::stop("Held mu must be finite.");
-  const auto f=cppunivariate::slash_mle(dist_impl::as_span(x),reltol,iterlim,f_sigma,f_mu);
-  if(f.status==cppunivariate::SlashStatus::Unbounded)Rcpp::stop("Slash likelihood is unbounded: a value has more than half the sample mass.");
-  if(f.status==cppunivariate::SlashStatus::CollapseLimit)Rcpp::stop("Slash likelihood selects scale collapse; no finite fit is returned.");
-  if(f.status!=cppunivariate::SlashStatus::Ok)Rcpp::stop("Slash fit failed: check inputs, reltol and iterlim.");
-  Rcpp::CharacterVector fixed;
-  if(mu.isNotNull())fixed.push_back("mu");
-  if(sigma.isNotNull())fixed.push_back("sigma");
-  return Rcpp::List::create(Rcpp::_["estimates"]=Rcpp::NumericVector::create(Rcpp::_["mu"]=f.mu,Rcpp::_["sigma"]=f.sigma),Rcpp::_["logLik"]=f.logLik,Rcpp::_["iterations"]=f.iterations,Rcpp::_["fixed"]=fixed);
+  return common_result(umvl_binding::fit_slash(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(mu), common_held(sigma), reltol, iterlim));
 }
 // [[Rcpp::export]]
 Rcpp::NumericVector dslash_reference_(Rcpp::NumericVector x,Rcpp::NumericVector mu,Rcpp::NumericVector sigma,bool log=false) {

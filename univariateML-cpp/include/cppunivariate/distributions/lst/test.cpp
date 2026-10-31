@@ -164,3 +164,15 @@ TEST_CASE("lst: P3 restrictions and closed faces") {
  const auto h=cppunivariate::lst_mle(data,1e-8,1000,0,1,.5);
  CHECK(h.status==cppunivariate::LstStatus::Ok);CHECK(h.restricted==0u);
 }
+
+TEST_CASE("lst: profile search evaluates each grid point once") {
+  const std::vector<double> grid{-1.0,0.0,1.0};
+  int grid_calls=0;
+  const auto result=cppunivariate::lst_detail::maximize([&](double x) {
+    if (x==-1.0 || x==0.0 || x==1.0) ++grid_calls;
+    return -x*x;
+  },grid,1e-8,0);
+  CHECK(result.point==0.0);
+  CHECK_FALSE(result.converged);
+  CHECK(grid_calls==3);
+}

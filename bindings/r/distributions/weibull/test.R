@@ -70,6 +70,7 @@ test_that("weibull near ties have finite concentrated fits", {
 })
 
 test_that("P2 held subsets agree with multistart reference likelihoods", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "weibull"
   pn <- c("shape","scale")

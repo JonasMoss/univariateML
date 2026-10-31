@@ -1,4 +1,5 @@
 test_that("zib agrees with a multi-start reference-density oracle", {
+  skip_unless_tier("full")
   set.seed(12670)
   x <- do.call(rzib, list(250, size = 8, prob = 0.4, pi = 0.4))
   fit <- mlzib(x, size = NULL)
@@ -51,6 +52,7 @@ test_that("zib accepts fixed zero size for all-zero data", {
 })
 
  test_that("zib: new holds match reference-density integer and multistart oracles", {
+  skip_unless_tier("full")
   set.seed(810)
   samples <- c(lapply(c(20,100),function(n) rzib(n = n, size = 8, prob = 0.4, pi = 0.3)),list(c(1,2,2),rep(2,4),c(1,1,2,3)))
   for(x in samples) {
@@ -113,6 +115,7 @@ test_that("zib: P3 unfinished optimizer stops", {
 })
 
 test_that("zib: free size, probability and mixture agree with a reference-density oracle (n=20, n=100, ties, near-Poisson)", {
+  skip_unless_tier("full")
   # TASK-85/87: same exponential-grid caveat as ztbinom's analogous test;
   # cross-checks the specific cases the task calls out.
   set.seed(85087)

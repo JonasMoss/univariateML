@@ -33,7 +33,10 @@ limits:
     fixed: [shape]
     status: ZeroLimit
 references:
-  - "Willmot, G. E. (1987). The Poisson-inverse Gaussian distribution as an alternative to the negative binomial. Scandinavian Actuarial Journal, 1987(3-4), 113-127. DOI: 10.1080/03461238.1987.10413823."
+- 'Willmot, G. E. (1987). The Poisson-inverse Gaussian distribution as an alternative to the negative binomial.
+  Scandinavian Actuarial Journal, 1987(3-4), 113-127. DOI: 10.1080/03461238.1987.10413823.'
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 holds: []
 examples: |
   set.seed(1)
@@ -43,15 +46,34 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - compounding
-relations: {}
+relations:
+  mixture_of:
+  - family: pois
+    at:
+      lambda: mix
+    mixed: lambda
+    mixing:
+      family: invgauss
+      at:
+        mean: mean
+        shape: shape
+    when: shape > 0
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'no'
+  note: 'pig/README.md, Details; pig/mle.hpp (public fitter and held overloads); pig/test.cpp: Default and nontrivial
+    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
+    density evaluation is not counted as certification.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model insurance claim frequencies with inverse-Gaussian heterogeneity in intensity.
+summary: Poisson-inverse Gaussian provides a model for insurance claim frequencies with inverse-Gaussian heterogeneity
+  in intensity.
+aliases:
+- "PIG"
+key_references:
+- 2
 ---
 
 The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse Gaussian mean. It models overdispersed nonnegative counts.

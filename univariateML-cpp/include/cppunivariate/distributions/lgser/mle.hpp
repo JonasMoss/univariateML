@@ -18,10 +18,13 @@
 
 namespace cppunivariate {
 
+enum class LgserStatus { Ok, InvalidInput, NumericalFailure, PointMass };
+
 struct LgserResult {
   double theta;
   double logLik;
   bool all_ones;
+  LgserStatus status = LgserStatus::Ok;
 };
 
 namespace lgser_detail {
@@ -38,20 +41,22 @@ inline double q(double u) {
 inline LgserResult lgser_mle(ispan x, double fixed=std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, kNaN, false};
+  if (n == 0) return {0.0,kNaN,false,LgserStatus::InvalidInput};
+
+  for (int v : x) if (v < 1) return {kNaN,kNaN,false,LgserStatus::InvalidInput};
 
   if(!std::isnan(fixed)) {
-    if(!(fixed>0 && fixed<1 && std::isfinite(fixed)))return {kNaN,kNaN,false};
-    double ll=0;for(int v:x) {if(v<1)return {kNaN,kNaN,false};ll+=v*std::log(fixed)-std::log(v)-std::log(-std::log1p(-fixed));}
+    if(!(fixed>0 && fixed<1 && std::isfinite(fixed)))return {kNaN,kNaN,false,LgserStatus::InvalidInput};
+    double ll=0;for(int v:x) {if(v<1)return {kNaN,kNaN,false,LgserStatus::InvalidInput};ll+=v*std::log(fixed)-std::log(v)-std::log(-std::log1p(-fixed));}
     return {fixed,ll,false};
   }
   double sumx = 0.0;
   for (auto v : x) sumx += static_cast<double>(v);
   const double dn = static_cast<double>(n);
-  if (sumx == dn) return {kNaN, kNaN, true};
+  if (sumx == dn) return {kNaN,kNaN,true,LgserStatus::PointMass};
   // Integer counts: sumx - n is exact, so delta carries one rounding.
   const double delta = (sumx - dn) / dn;
-  if (!(delta > 0.0) || !std::isfinite(delta)) return {kNaN, kNaN, false};
+  if (!(delta > 0.0) || !std::isfinite(delta)) return {kNaN,kNaN,false,LgserStatus::NumericalFailure};
 
   double hi = 1.0;
   while (lgser_detail::q(hi) < delta) hi *= 2.0;
@@ -67,7 +72,7 @@ inline LgserResult lgser_mle(ispan x, double fixed=std::numeric_limits<double>::
   double sum_log_x = 0.0;
   for (auto v : x) sum_log_x += std::log(static_cast<double>(v));
   const double logLik = -dn * std::log(u) + sumx * std::log(theta) - sum_log_x;
-  return {theta, logLik, false};
+  return {theta,logLik,false,std::isfinite(logLik) && theta>0 && theta<1 ? LgserStatus::Ok : LgserStatus::NumericalFailure};
 }
 
 }  // namespace cppunivariate

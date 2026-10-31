@@ -4,6 +4,7 @@
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
+#include <array>
 
 namespace cppunivariate {
 enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure };
@@ -24,7 +25,7 @@ struct Profile {
           sum+=z-h;deriv-=(t+h)*h/s;
         } else {const CPPUNIV_EXTENDED_REAL r=std::exp(-logmills(t));sum+=a-r;deriv-=r*(r-t)/s;}
       }
-      return std::vector<CPPUNIV_EXTENDED_REAL>{sum,deriv};
+      return std::array<CPPUNIV_EXTENDED_REAL,2>{{sum,deriv}};
     };
     double step=std::max(s,1/l),lo=x.front()-step,hi=x.back()+step;
     for(int k=0;k<100 && score(lo)[0]<0;++k) {step*=2;lo-=step;}

@@ -38,9 +38,9 @@ examples: |
 
 summary: The logit-normal distribution models proportions whose logits are normally distributed.
 classification: specialist
-classification_reason: Used for continuous proportions and logistic-normal compositional models.
+classification_reason: Used to model continuous proportions represented by Gaussian log odds.
 aliases:
-- logistic-normal
+- "logistic-normal"
 key_references:
 - 1
 
@@ -56,8 +56,9 @@ relations:
       sd: sigma
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'logitnorm/README.md, Details; logitnorm/mle.hpp (public fitter and held overloads); logitnorm/test.cpp:
+    Closed-form maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - proportions
 ---
@@ -75,3 +76,10 @@ Held coefficients apply on the logit scale. With `mu` held, the scale is the roo
 ## d/p/q/r
 
 Sampling transforms a normal variate by the logistic function.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

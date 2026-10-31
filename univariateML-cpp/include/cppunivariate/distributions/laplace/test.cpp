@@ -86,3 +86,16 @@ TEST_CASE("laplace: held scale removes constant-sample collapse") {
   CHECK(cppunivariate::laplace_mle(mltest::as_span(x),2,nan).status==cppunivariate::LaplaceStatus::Unbounded);
   CHECK(cppunivariate::laplace_mle(mltest::as_span(x),nan,1).status==cppunivariate::LaplaceStatus::Ok);
 }
+
+TEST_CASE("laplace: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::laplace_mle(x).status != cppunivariate::LaplaceStatus::Ok);
+  }
+}
+
+TEST_CASE("laplace: TASK-132 unresolved likelihood has numerical failure status") {
+  const std::vector<double> data{1e308,1e308};
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::laplace_mle(x,0.0,1e-300).status == cppunivariate::LaplaceStatus::IterationFailure);
+}

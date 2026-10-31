@@ -3,9 +3,11 @@
 The route contains only mathematical definitions, no C++/R/reference calls.
 """
 import mpmath as mp
+from quality.truth_reference import atomic
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t, logd):
+    if t['pi'] == 1: return atomic({0: 1})
     r=t['lambda']
     base=lambda x: gamma(x+1,r)[::-1]
     ratio=lambda k:r/(k+1)

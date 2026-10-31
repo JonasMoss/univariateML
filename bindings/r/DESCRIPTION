@@ -33,3 +33,5 @@ Roxygen: list(markdown = TRUE)
 LinkingTo:
     Rcpp,
     BH
+Config/testthat/edition: 3
+Config/testthat/parallel: true

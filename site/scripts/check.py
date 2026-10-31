@@ -37,6 +37,33 @@ def target(file,url):
     return p
 pages={p:Document(p.read_text()) for p in DIST.rglob('*.html')}
 errors=[]
+# Check the atlas independently against every dossier-derived record.
+graph_page=DIST/'graph/index.html'
+assert graph_page.exists(), 'missing /graph/'
+graph_html=graph_page.read_text()
+node_ids=re.findall(r'data-node="([^\"]+)"',graph_html)
+assert sorted(node_ids)==sorted(f['id'] for f in DATA), 'graph node coverage/uniqueness'
+expected=[]
+for f in DATA:
+    for kind, edges in f.get('relations',{}).items():
+        for i,e in enumerate(edges):
+            targets=list(dict.fromkeys(c['family'] for c in e['components'])) if kind=='convolution_of' else list(dict.fromkeys([e['family'],e['mixing']['family']])) if kind=='mixture_of' else [e['family']]
+            expected.extend(f"{f['id']}-{kind}-{i}-{j}" for j in range(len(targets)))
+    expected.extend(f"{f['id']}-limit-{i}" for i,e in enumerate(f.get('limits',[])) if e.get('model'))
+assert sorted(re.findall(r'data-edge="([^\"]+)"',graph_html))==sorted(expected), 'graph edge coverage'
+assert sorted(re.findall(r'data-map-node="([^"]+)"',graph_html))==sorted(f['id'] for f in DATA), 'map node coverage'
+assert sorted(re.findall(r'data-map-edge="([^"]+)"',graph_html))==sorted(expected), 'map edge coverage'
+assert graph_html.count('data-family-map=""')==1, 'one overview SVG'
+node=str(ROOT/'site/node_modules/.bin/node')
+command=[node,str(ROOT/'site/scripts/graph-check.mjs')]
+first=subprocess.check_output(command); second=subprocess.check_output(command)
+assert first==second, 'non-deterministic SVG generator'
+for svg in json.loads(first):
+    # Empty limit panels are deliberately omitted.
+    if 'data-edge=' in svg or 'data-node=' in svg or 'data-family-map=' in svg:
+        assert svg in graph_html, 'rendered SVG differs from deterministic generator'
+assert all(target(graph_page,url).exists() for tag,key,url in pages[graph_page].links if tag=='a' and key=='href' and url.startswith('/distributions/'))
+print(f'PASS: graph: {len(node_ids)} unique nodes, {len(expected)} edges, resolving family links; SVG generated twice byte-identically and matches built HTML.')
 coverage=json.loads((ROOT/'site/src/data/binding.json').read_text())
 for f in DATA:
     html=(DIST/f"distributions/{f['id']}/index.html").read_text()

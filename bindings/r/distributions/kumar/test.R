@@ -108,6 +108,7 @@ test_that("constant Kumaraswamy samples have unbounded likelihood", {
 })
 
 test_that("P2 every held subset agrees with independent multistart density fits", {
+  skip_unless_tier("full")
   set.seed(8129)
   samples <- list(rkumar(n = 20, a = 2, b = 3), rkumar(n = 100, a = 2, b = 3),
                   runif(20,.01,.99), runif(100,.01,.99),

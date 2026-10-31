@@ -67,18 +67,39 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'lst/README.md, Details; lst/mle.hpp (public fitter and held overloads); lst/test.cpp: With mu and df held,
+    scale has a strictly monotone score with the documented tie criterion; free location/df uses EM or multistart
+    profiles without a global certificate.'
 areas:
 - measurement and errors
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for robust location-scale errors allowing Student degrees of freedom below
+  two.
+summary: Location-scale Student-t provides a model for robust location-scale errors allowing Student degrees of
+  freedom below two.
+aliases:
+- "location-scale t"
+- "Student t"
+- "Pearson type VII"
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The location-scale Student t includes heavy-tailed distributions with infinite variance.
 
 ## Details
+
+The 2026-10-31 fit-speed revision computes the fixed-df likelihood normalizer
+once per conditional nuisance search. It retains the scale reconstruction
+exp(log(s)), per-observation grouping and input-order reduction of LstCost, so
+repeated evaluations have the same represented values. The shared routine is
+also used by held-scale standardized Student-t fits. No grid or stopping rule
+changes. See the [paired evidence and rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
 `sigma` is a scale, not a standard deviation. With location free, estimating shape restricts `df` to be at least 1 and includes the attained Cauchy member at `df = 1`. Unrestricted positive degrees of freedom allow unbounded likelihood through scale collapse. The fitter requires at least three observations and rejects samples in which any value occurs at least half the time, including equality.
 
@@ -99,6 +120,10 @@ permit the regular fixed-parameter fit.
 
 
 Conditional fits preserve held mu and sigma. With mu held and sigma free, only ties at that mu contribute to collapse: the exponent is df(n-k)-k. A negative exponent is unbounded; at equality and fixed df the collapse supremum is not attained. Free df has lower bound 1 with mu free; held mu exempts that bound. The conditional normal face is compared in either case. Held sigma removes scale collapse. Shape and held-scale location profiles use numerical multistart searches; they do not certify isolation of every mode.
+
+The shared profile search caches each grid-point value within a search. This
+avoids repeating nested location profiles while preserving the grid, refinement,
+comparisons and convergence checks; it does not strengthen global guarantees.
 
 With df free, any observation equal to held mu permits scale collapse
 through sufficiently small positive df when scale is free, and fitting stops.

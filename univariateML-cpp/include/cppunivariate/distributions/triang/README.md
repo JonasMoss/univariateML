@@ -55,12 +55,21 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'triang/README.md, Details; triang/mle.hpp (public fitter and held overloads); triang/test.cpp: Constant
+    samples with a held exterior mode have the explicit endpoint maxima in Details; general nonconstant fits enumerate
+    numerical profile candidates without a global certificate.'
 areas:
 - proportions
 classification: specialist
-classification_reason: Used within proportions; classified by its specialised modelling role.
+classification_reason: Used to model bounded measurements with a specified interior or endpoint mode.
+summary: Triangular provides a model for bounded measurements with a specified interior or endpoint mode.
+aliases: []
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The triangular distribution describes bounded measurements with a single mode.
@@ -79,3 +88,13 @@ the smallest mode is returned for numerical ties, with a warning when another
 candidate is within `1e-10 * length(x)` in log likelihood.
 
 For a constant sample at `z` and held mode `c < z`, a free lower endpoint equals `c`; a free upper endpoint is `z + sqrt((z-a)*(z-c))`. The reflected formulas apply when `c > z`. These attained exterior-mode maxima are evaluated directly.
+
+### Endpoint-mode inversion (TASK-134)
+
+For `c = a`, write `z = (x-a)/(b-a)`. Then `F = z(2-z)`, so the
+lower inverse is `z = p/(1+sqrt(1-p))`. For `c = b` the reflected
+formula gives the distance from `b`. These identities avoid cancellation in
+the short distance; the other half of each inverse uses the direct square
+root. Public quantiles use log-tail inputs before exponentiating the required
+small probability. The historical sampling transform is retained for seeded
+sampling compatibility.

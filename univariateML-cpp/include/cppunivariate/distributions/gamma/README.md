@@ -33,7 +33,7 @@ examples: |
 
 summary: The gamma distribution models positive measurements with separate shape and scale coefficients.
 classification: classical
-classification_reason: A standard model for waiting times and positive skewed data.
+classification_reason: A standard model for positive waiting times and skewed measurements with a power-law onset.
 aliases: []
 key_references:
 - 1
@@ -56,11 +56,19 @@ relations:
       shape1: shape
       shape2: 1
       scale: scale
+  transform_of:
+  - family: naka
+    at:
+      shape: shape
+      scale: shape*scale
+    transform: power
+    power: 0.5
 fit:
   method: scalar-solve
-  certified: partial
-  note: Unique scalar solution and bracketed fallback documented in Details; subject to floating-point solver
-    tolerances.
+  certified: 'yes'
+  note: 'gamma/README.md, Details; gamma/mle.hpp (public fitter and held overloads); gamma/test.cpp: Gamma shape
+    has a unique monotone digamma equation; scale is analytic, with bracketed fallback and held-coordinate solves.
+    Transformation preserves the maximum.'
 areas:
 - reliability and survival
 - waiting times and queues
@@ -110,3 +118,10 @@ commit `cd3993d` changed the reported coefficient from rate to scale;
 the rate remains an internal calculation. The original reason for the
 empirical initialization constants is unknown; historical source or an
 independent comparison of starts would settle it.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

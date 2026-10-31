@@ -40,20 +40,35 @@ examples: |
 
 summary: The beta distribution models continuous proportions on the unit interval.
 classification: classical
-classification_reason: A standard two-shape model for proportions and probabilities.
+classification_reason: A standard model for continuous proportions with two independently adjustable boundary shapes.
 aliases:
-- beta of the first kind
+- "beta of the first kind"
 key_references:
 - 1
 
 group: beta and generalised beta
 construction:
 - base
-relations: {}
+relations:
+  special_case_of:
+  - family: genbeta
+    at:
+      shape1: shape1
+      shape2: shape2
+      shape3: 1
+      scale: 1
+  - family: nsbeta
+    at:
+      shape1: shape1
+      shape2: shape2
+      min: 0
+      max: 1
 fit:
   method: scalar-solve
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'beta/README.md, Details; beta/mle.hpp (public fitter and held overloads); beta/test.cpp: Strictly concave
+    beta likelihood in its two shapes; held-shape digamma scores decrease strictly. nsbeta uses supplied endpoints;
+    unsupported endpoint fits stop.'
 areas:
 - proportions
 ---
@@ -63,3 +78,10 @@ The beta distribution models proportions and other continuous quantities between
 ## Details
 
 With either positive finite shape held, the remaining shape has a unique finite maximum even for constant data. Its strictly decreasing digamma score is solved by bracketing. With both shapes free, constant data have unbounded likelihood; with both held the likelihood is evaluated.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

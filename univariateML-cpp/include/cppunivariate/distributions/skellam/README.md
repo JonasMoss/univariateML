@@ -25,8 +25,11 @@ r:
     iterlim: "Maximum iterations for each scalar refinement."
 log_density: "-mu1-mu2 + x*log(mu1/mu2)/2 + log(besseli(Abs(x),2*sqrt(mu1*mu2)))"
 references:
-  - "Skellam, J. G. (1946). The frequency distribution of the difference between two Poisson variates belonging to different populations. Journal of the Royal Statistical Society 109, 296."
-  - "Johnson, N. L. (1959). On an extension of the connexion between Poisson and chi-squared distributions. Biometrika 46, 352–362."
+- Skellam, J. G. (1946). The frequency distribution of the difference between two Poisson variates belonging to
+  different populations. Journal of the Royal Statistical Society 109, 296.
+- Johnson, N. L. (1959). On an extension of the connexion between Poisson and chi-squared distributions. Biometrika
+  46, 352–362.
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 holds: []
 examples: |
   set.seed(1)
@@ -36,16 +39,32 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - base
-relations: {}
+relations:
+  convolution_of:
+  - family: pois
+    operation: difference
+    components:
+    - family: pois
+      at:
+        lambda: mu1
+    - family: pois
+      at:
+        lambda: mu2
+    when: mu1 > 0 && mu2 > 0
 fit:
   method: scalar-solve
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'skellam/README.md, Details; skellam/mle.hpp (public fitter and held overloads); skellam/test.cpp: One held
+    positive rate gives a strictly concave bracketed solve; joint scalar profile uses a finite grid without a uniqueness
+    certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model differences between independent Poisson event counts.
+summary: Skellam provides a model for differences between independent Poisson event counts.
+aliases: []
+key_references:
+- 3
 ---
 
 The Skellam distribution describes the difference between two independent Poisson counts.
@@ -63,3 +82,22 @@ The mean and variance identify both rates. Likelihoods are bounded by one per ob
 ## d/p/q/r
 
 Zero rates include the signed Poisson limits; sampling subtracts two independent Poisson variates.
+
+### Boundary log tails (TASK-134)
+
+When one rate is zero, CDF evaluation delegates to the Poisson log-tail
+implementation, reflecting the count and reversing the tail for a negative
+Poisson law. With both rates positive, probabilities below `1e-280` are summed
+in log mass coordinates rather than taking a logarithm of a subnormal CDF.
+Skellam masses are log-concave (convolution of a Poisson sequence and a
+reflected Poisson sequence). In a descending tail, the next mass ratio thus
+bounds subsequent ratios, giving a geometric remainder bound. Summation stops
+when that bound is at most `2e-16` times the sum; inability to advance the count
+returns NaN. This is a numerical stopping certificate using computed masses,
+not a directed-rounding bound on the Bessel approximations.
+
+For a negative count `v`, the positive Bessel series also gives
+`I_(n+1)(z)/I_n(z) <= z/(2*(n+1))`, hence the next descending mass ratio
+is at most `mu2/(1-v)`. This analytic geometric bound can certify a
+single-term tail at enormous counts where the next integer is not
+representable. It avoids treating representational stagnation as convergence.

@@ -37,9 +37,14 @@ examples: |
 
 summary: The normal distribution models symmetric continuous variation through a location and a standard deviation.
 classification: classical
-classification_reason: A standard model for measurement errors and sampling approximations.
+classification_reason: A standard model for additive measurement errors and approximately Gaussian fluctuations.
 aliases:
-- Gaussian
+- "Gaussian"
+- "Gauss"
+- "Laplace–Gauss"
+- "law of error"
+- "law of facility of errors"
+- "Laplace's second law"
 key_references:
 - 1
 
@@ -53,10 +58,32 @@ relations:
       xi: mean
       omega: sd
       alpha: 0
+  - family: snorm
+    at:
+      mean: mean
+      sd: sd
+      xi: 1
+  - family: ged
+    at:
+      mean: mean
+      sd: sd
+      nu: 2
+  - family: bhatt
+    at:
+      mu: mean
+      sigma: sd
+      a: 0
+  - family: tnorm
+    at:
+      mean: mean
+      sd: sd
+      a: -Inf
+      b: Inf
 fit:
   method: closed-form
-  certified: partial
-  note: Analytic maximum for positive residual variance; scale collapse and holds are documented in Details.
+  certified: 'yes'
+  note: 'norm/README.md, Details; norm/mle.hpp (public fitter and held overloads); norm/test.cpp: Closed-form maximum
+    for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - measurement and errors
 existence:
@@ -85,3 +112,10 @@ The estimated `sd` uses the variance with divisor $n$, rather than the unbiased 
 
 
 With mean held, scale is the root mean square residual about that value. Scale collapses only when every observation equals the held mean. Holding sd removes collapse, including for constant samples.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

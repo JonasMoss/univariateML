@@ -45,7 +45,10 @@ r:
     iterlim: "Maximum simplex iterations per search start."
 log_density: "-log(sigma)-log(u**(lambda-1)+(1-u)**(lambda-1))"
 references:
-  - "Joiner, B. L. and Rosenblatt, J. R. (1971). Some properties of the range in samples from Tukey's symmetric lambda distributions. Journal of the American Statistical Association 66, 394-399."
+- Joiner, B. L. and Rosenblatt, J. R. (1971). Some properties of the range in samples from Tukey's symmetric lambda
+  distributions. Journal of the American Statistical Association 66, 394-399.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 limits:
   - name: scale collapse
@@ -71,23 +74,37 @@ relations: {}
 fit:
   method: multistart
   certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  note: 'tlambda/README.md, Details; tlambda/mle.hpp (public fitter and held overloads); tlambda/test.cpp: Default
+    and nontrivial conditional fits use multistart, finite grids or local profile refinement without a global certificate;
+    all-held density evaluation is not counted as certification.'
 areas:
 - robust modelling
 classification: specialist
-classification_reason: Used within robust modelling; classified by its specialised modelling role.
+classification_reason: Used to model symmetric error shapes specified through a flexible quantile function.
+summary: Tukey lambda provides a model for symmetric error shapes specified through a flexible quantile function.
+aliases: []
+key_references:
+- 2
 ---
 
 The Tukey lambda family is defined by its quantile function and spans symmetric heavy-tailed, logistic, approximately normal and uniform shapes.
 
 ## Details
 
+The 2026-10-31 fit-speed revision shares the smaller-tail complement log and
+quantile magnitude between Newton value and derivative calculations. Brackets,
+Newton steps, stopping rules and objective reduction order are unchanged. A
+sorted warm-start trial was rejected after pointwise agreement failed to
+translate into a useful speed-up of the slowest held-scale fit; a pilot also
+exceeded the coefficient comparison tolerance. See the [paired evidence and
+rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
 Evaluation permits all finite shapes. With location free, estimated shape uses the principal unimodal branch, -1 <= lambda <= 1, including both attained bounds. Held location exempts the lower bound. The default fit requires at least three finite observations with every tie multiplicity strictly less than half the sample size. Numerical fitting also requires a finite sample range and standardization that preserves distinct values. Every coefficient may be held; a held finite shape may lie outside the fitted branch, including lambda = 2 as an exact uniform alias. The two uniform representations have scales differing by a factor of two, so unrestricted shape is not identifiable.
 
 The unrestricted likelihood is unbounded. Set location at one observation and sigma = lambda times A, where A exceeds every distance to that observation. At the centre the density is 2^(lambda-2)/(lambda A). At each nonzero distance d, the density is asymptotic to 1/(lambda abs(d)). Thus, with k observations at the centre, the log likelihood grows as k lambda log(2) - n log(lambda) plus a bounded term. No unrestricted MLE is returned.
 
-The principal branch excludes the U-shaped interval 1 < lambda < 2 and the subsequent increasingly concentrated branch. Merely capping shape at 2 leaves a density discontinuity at lambda = 1: at a support endpoint, the density as lambda decreases to 1 from above is twice the uniform density. On the chosen branch the endpoint density is zero below 1 and the uniform endpoint density at 1 makes the likelihood upper semicontinuous.
+The principal branch excludes the U-shaped interval 1 < lambda < 2 and the subsequent increasingly concentrated branch. Merely capping shape at 2 leaves a density discontinuity at lambda = 1: at a support endpoint, the density as lambda decreases to 1 from above is twice the uniform density. On the chosen branch the endpoint density is zero below 1 and the uniform endpoint density at 1 makes the likelihood upper semicontinuous. Fitting the U-shaped branch would need a junction status: for the sample (-1, 1) with shape in (1, 2], every density is at most 1/sigma and support containment forces sigma >= lambda, so the likelihood stays below 1, while mu = 0, sigma = lambda approaches 1 as lambda decreases to 1. The supremum is not attained ([TASK-117 report](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md)).
 
 For lambda = -a < 0, scale collapse at a location with multiplicity k has likelihood proportional to sigma^((n-k)/a-k). Bounding a by 1 and requiring 2k < n excludes collapse. More generally, uniformly over the fitted branch the standardized density is bounded and z^2 f(z) is bounded. Consequently, near a collapsing location the likelihood is bounded by a constant times sigma^(n-2k), while diverging scale or location gives likelihood tending to zero. Compactness and upper semicontinuity then give an attained maximum. When location and scale are both free, the existing tie guard is sufficient, not necessary; unsupported tie configurations are rejected also with fixed shape.
 

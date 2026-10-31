@@ -39,6 +39,7 @@ test_that("closed-form pmf agrees with the internal density and its mirror", {
 })
 
 test_that("all fixed subsets agree with an independent multistart oracle", {
+  skip_unless_tier("full")
   set.seed(4821)
   x <- rbnbinom(n = 1200, size = 0.7, alpha = 1.8, beta = 6)
   fixed_sets <- list(list(),list(size=.7),list(alpha=1.8),list(beta=6),

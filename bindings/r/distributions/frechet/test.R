@@ -60,6 +60,7 @@ test_that("frechet: reference mapping and unbounded unrestricted path", {
 })
 
 test_that("frechet: an independent Gumbel-face oracle finds no better member", {
+  skip_unless_tier("full")
  y <- qgumbel(p = (1:80 - 0.5)/80, mu = 0, sigma = 1)
  g <- mlgumbel(y)
  nll <- function(z) {
@@ -114,6 +115,7 @@ test_that("Frechet free fit compares half-minimum ties with the free collapse fa
 })
 
 test_that("frechet: new holds agree with independent multistart reference fits", {
+  skip_unless_tier("full")
   set.seed(81029)
   id <- "frechet"
   pars <- c("lambda","mu","sigma")

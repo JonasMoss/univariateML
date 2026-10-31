@@ -24,6 +24,7 @@ invburr_scale_oracle <- function(x) {
 }
 
 test_that("inverse Burr agrees with reciprocal density oracle", {
+  skip_unless_tier("full")
   for (n in c(20,200)) for (seed in 1:6) {
     set.seed(seed)
     y <- rburr(n = n, shape1 = 1, shape2 = 2, scale = 3)
@@ -71,6 +72,7 @@ test_that("invburr accepts shape/scale starts and rejects invalid starts", {
 })
 
 test_that("invburr fixed scale reproduces 6c89a8c and a reference oracle", {
+  skip_unless_tier("full")
   root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
   skip_if(!nzchar(root), "Historical fixture needs the distribution source tree")
   golden <- jsonlite::fromJSON(file.path(root,"invburr","fixed-scale-golden.json"))
@@ -118,6 +120,7 @@ test_that("held-scale inverse Burr endpoint penalty is not a power likelihood eq
 
 
 test_that("P2 invburr holds agree with independent multistart reference likelihoods", {
+  skip_unless_tier("full")
   pars <- c(shape1=1, shape2=2, scale=1)
   thresholds <- c()
   regular <- setdiff(names(pars), thresholds)

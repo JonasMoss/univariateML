@@ -34,6 +34,7 @@ test_that("EMG tails, recycling and random generation follow stats conventions",
   expect_equal(var(z),1.25,tolerance=.04)
 })
 test_that("EMG fixed subsets agree with a slow independent optimizer", {
+  skip_unless_tier("full")
   x <- qemg(p = (seq_len(40) - 0.5)/40, mu = 0, sigma = 1, lambda = 1)
   objective <- function(t) {
     mu <- t[1]; sigma <- exp(t[2]); lambda <- exp(t[3])

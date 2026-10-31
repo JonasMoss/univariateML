@@ -26,7 +26,7 @@
 
 namespace cppunivariate {
 
-enum class BetaStatus { Ok = 0, Degenerate, IterationFailure };
+enum class BetaStatus { Ok = 0, Degenerate, IterationFailure, InvalidInput };
 
 struct BetaResult {
   double alpha;
@@ -131,7 +131,10 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0)
-    return {0.0, 0.0, kNaN, 0};
+    return {0.0, 0.0, kNaN, 0, BetaStatus::InvalidInput};
+
+  for (double v : x) if (!(v > 0 && v < 1 && std::isfinite(v)))
+    return {kNaN,kNaN,kNaN,0,BetaStatus::InvalidInput};
 
   const double dn = static_cast<double>(n);
   double sum_log_x = 0.0, sum_log_1mx = 0.0, sum_x = 0.0, sum_xsq = 0.0;

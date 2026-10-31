@@ -25,7 +25,8 @@ r:
     max: Optional held max; `NULL` estimates it.
 log_density: -log(max-min)
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26.
+  Wiley, New York.
 holds: []
 limits:
 - name: zero-width collapse
@@ -54,14 +55,38 @@ relations:
       shape2: 1
       min: min
       max: max
+  - family: tlambda
+    at:
+      mu: (min+max)/2
+      sigma: (max-min)/2
+      lambda: 1
+  - family: gpd
+    at:
+      mu: min
+      sigma: max-min
+      xi: -1
+  transform_of:
+  - family: power
+    at:
+      alpha: max-min
+      beta: 1
+    transform: shift
+    shift: min
 fit:
   method: closed-form
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'unif/README.md, Details; unif/mle.hpp (public fitter and held overloads); unif/test.cpp: Closed-form maximum
+    for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - proportions
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for continuous values with equal density over a bounded interval.
+summary: Uniform provides a model for continuous values with equal density over a bounded interval.
+aliases:
+- "rectangular"
+- "continuous uniform"
+key_references:
+- 1
 ---
 
 The uniform distribution assigns constant density to a bounded interval.
@@ -71,3 +96,10 @@ The uniform distribution assigns constant density to a bounded interval.
 The endpoint estimates are `min(x)` and `max(x)`, so the MLE lies on the boundary determined by the sample order statistics. The fitted support is the closed interval between these endpoints, which must be distinct.
 
 A free endpoint is its sample extreme; a held endpoint must contain every observation. A constant sample has a finite maximum exactly when a held endpoint lies strictly outside the observation. Both-held intervals must have positive width and contain the sample; otherwise fitting stops.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

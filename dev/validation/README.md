@@ -8,6 +8,7 @@ are different kinds of evidence.
 
 | Check | Command | Kind of evidence | Runs in |
 |---|---|---|---|
+| [Core diagnostic sweep](diagnostics.md) (98 families, supported holds, invalid/degenerate data) | `just cpp-test` | status/domain regression, not an existence proof | monorepo dev/full |
 | C++ fit goldens | `just cpp-test` | regression (our own frozen output) | ordinary |
 | C++ family cases: holds, limits, closed forms, score residuals | `just cpp-test` | internal identities; closed forms where derived | ordinary |
 | C++ truth tables | `just cpp-test` | independent numerical, given the README density | ordinary |
@@ -28,22 +29,60 @@ From the repository root, use the local CPU slot lock and keep temporary files i
 the worktree:
 
 ```sh
-export TMPDIR="$PWD/build/tmp" XDG_RUNTIME_DIR="$PWD/build/tmp"
+export TMPDIR="$PWD/build/tmp" XDG_RUNTIME_DIR="$PWD/build/tmp" JUST_TEMPDIR="$PWD/build/tmp"
 mkdir -p "$TMPDIR" build/scratch
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 ```
 
 Use `/tmp/umvl-cpu/run` for one thread and `/tmp/umvl-cpu/run4` for
 four-slot builds and full suites; prefix long jobs with `nice -n 10`.
-The [Justfile](../../Justfile) defines the recipes. Targeted examples below
+The [Justfile](../../Justfile) defines the recipes; the
+[tier timing report](../research/evaluations/2026-10-31-test-tiers-report.md) records
+the paired workload, counts and measured limitations. Targeted examples below
 assume the build or generated package already exists. Family names in doctest
 filters match case names, so inspect `--list-test-cases` before interpreting a
 filtered run.
 
+## Test tiers
+
+Reserve all four slots with `/tmp/umvl-cpu/run4` for `just test`,
+`just test-full`, `just cpp-test` and `just check-standalone`. Set
+`JUST_TEMPDIR="$PWD/build/tmp"` as well as the temporary variables above.
+`just regen` and `just test` disable pkgbuild's debug compiler flags;
+regeneration recreates the generated source tree, preventing reuse of an old
+`-O0` DLL. The workstation R compiler flags supply `-O2`; ccache remains active.
+
+`UMVL_TEST_TIER=cran|dev|full` selects coverage. The common testthat helper
+uses `cran` when `NOT_CRAN` is absent or false and `dev` otherwise;
+`just test` explicitly defaults to `dev`, and `just test-full` selects `full`.
+Invalid tier names are errors. R CMD check uses serial tests unless the caller
+sets `TESTTHAT_PARALLEL=true`; local recipes use four testthat workers.
+Edition 3 enables scheduling; the setup file retains edition 2 comparisons and
+condition handling so the existing expectation contracts remain comparable.
+
+| Tier | R workload | C++ ctest labels |
+|---|---|---|
+| `cran` | API, errors, faces, identities, frozen references, one golden fit per family; one deterministic truth parameter point and 2 value/1 quantile rows per group | `cran`: ordinary family/shared checks |
+| `dev` | CRAN checks plus transformation/face/profile stress sweeps and conformance with none held, each single coefficient and all regular coefficients held; 3 deterministic truth points and 5 value/3 quantile rows | `dev`: ordinary family/shared checks |
+| `full` | Every pre-tier expectation, exhaustive held subsets, all baseline truth points/rows, independent optimizer comparisons and large-sample replication | `full`: ordinary and expensive family shards |
+
+All unlisted/new tests default to all tiers; use `skip_unless_tier("full")`
+inside expensive test bodies, preserving inexpensive checks in the same file.
+[Measured inventory](test-tier-inventory.csv) classifies every baseline test by
+cost and purpose. Oracle comparisons and replication stress checks run in full;
+Cheap API/identity/face checks remain in all tiers even in expensive family files.
+The measured GB2/shifted-Pareto face sweeps, CMB profile grid and shared scale
+transformation sweeps start in dev.
+`UMVL_TEST_TIER=full just cpp-test` selects exhaustive C++ checks.
+C++ source shards use complementary case filters for oracle, multistart and
+replication/large-sample, exhaustive held-subset and slow-reference names;
+full runs both. No fitter or fixture changes
+are implied by tier membership. Audits (`quality`, no-long-double, standalone,
+relations and truth regeneration) remain explicit commands.
+
 ## C++ tests
 
-`/tmp/umvl-cpu/run4 nice -n 10 just cpp-test` configures, builds and runs six
-ctest targets. For a family, run, for example:
+`/tmp/umvl-cpu/run4 nice -n 10 just cpp-test` builds the family/shared binaries and monorepo diagnostic sweep, and runs the selected ctest shards. For a family, run, for example:
 
 ```sh
 /tmp/umvl-cpu/run univariateML-cpp/build/tests/distribution_tests --test-case='exp*'
@@ -91,11 +130,11 @@ cases, assertions, skips and any `may_fail` cases. Read the individual cases.
 
 ## R tests and assembly
 
-`/tmp/umvl-cpu/run4 nice -n 10 env NOT_CRAN=true just test` regenerates the
+`/tmp/umvl-cpu/run4 nice -n 10 just test` regenerates the
 package and runs testthat. To run one assembled family file after generation:
 
 ```sh
-/tmp/umvl-cpu/run env NOT_CRAN=true UMVL_DISTRIBUTIONS_DIR="$PWD/univariateML-cpp/include/cppunivariate/distributions" Rscript -e 'testthat::test_local("univariateML-r", filter="dist-exp", stop_on_failure=TRUE)'
+/tmp/umvl-cpu/run env NOT_CRAN=true UMVL_DISTRIBUTIONS_DIR="$PWD/univariateML-cpp/include/cppunivariate/distributions" PKG_BUILD_EXTRA_FLAGS=false Rscript -e 'options(pkg.build_extra_flags=FALSE); testthat::test_local("univariateML-r", filter="dist-exp", stop_on_failure=TRUE)'
 ```
 
 Use `filter="golden_regression"`, `"conformance"`, `"generated-dpqr"`,
@@ -182,8 +221,37 @@ family in generated d/p/q/r tests; count coverage separately.
   [truth_reference.py](quality/truth_reference.py) and family `truth.py`
   routes use mpmath, symbolic parsing, high-precision integration or controlled
   sums, normalization and derivative checks, tail inversion and binary64
-  brackets. Files also contain elapsed times and a hash of the entire README,
-  so a rerun need not be byte-identical even when numerical rows are unchanged.
+  brackets. The historical interior/default/fitted grid is retained. Attained
+  coefficient-domain bounds (inclusive brackets) are appended without the
+  historical eight-point cap, including integer designs and dependent bounds.
+  Dependent inclusive domains are projected to compatible values; routes may
+  select a valid conditional submodel (CMP's geometric face, for example).
+  GEV/GPD also explicitly cover the attained fit restriction `xi = -1`.
+  Every point includes support endpoints, adjacent binary64 probes, both log
+  tails, and quantile inputs at probabilities zero and one in both scales.
+  Finite continuous endpoints use the declarative one-sided density limit;
+  atomic count limits use exact closed-form masses, retaining the family's
+  finite design endpoints and collapsing unbounded atomic supports. These are
+  independent mathematical references,
+  never C++ or R evaluations. One-coordinate faces do not exhaust their
+  intersections or all possible endpoint density regimes.
+  Tables contain a semantic input hash (generator, reference, route, density
+  and numerical metadata), with timings confined to the audit output. They
+  are byte-reproducible within the recorded Python environment. The boundary
+  [report](../research/evaluations/2026-10-31-truth-boundaries-report.md)
+  records per-family additions, exclusions and unresolved dpqr findings.
+  Exact local `truth_exclusions` declarations retain known failing references
+  in `excluded_values` / `excluded_quantiles`, with reasons, outside active
+  checks. They change neither the oracle nor its tolerances. Complete unsupported
+  laws are retained in `excluded_parameter_points`, with their parameters,
+  normalization and full reference rows, so R consumers do not try to sample
+  an unsupported member. The public default and fitted sampler points cannot
+  be excluded. The positive-truncated Poisson/binomial zero-rate limits use
+  this complete-law archive; ordinary zero-rate conditional representatives
+  remain active. The CMB size-cap
+  workload filter retains both support endpoints and both natural-scale median
+  quantiles as active checks; its remaining independently computed probes stay
+  in those excluded arrays because every C++ call enumerates 10,000,001 terms.
   The [original methodology](../research/evaluations/2026-10-29-dpqr-truth/README.md)
   explains quadrature, omitted-tail and precision thresholds. That report's
   family failures and gaps are historical: later routes cover all 98 families
