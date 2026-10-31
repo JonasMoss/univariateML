@@ -71,7 +71,18 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - compounding
-relations: {}
+relations:
+  mixture_of:
+  - family: binom
+    at:
+      size: size
+      prob: mix
+    mixed: prob
+    mixing:
+      family: beta
+      at:
+        shape1: alpha
+        shape2: beta
 fit:
   method: multistart
   certified: partial

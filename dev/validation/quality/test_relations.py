@@ -27,12 +27,12 @@ class RelationsTest(unittest.TestCase):
 
     def test_support_mismatch(self):
         child=copy.deepcopy(self.models['lnorm']);child['support']['lower']=1
-        edge=child['relations']['transform_of'][0]
+        edge=dict(family='norm',at=dict(mean='meanlog',sd='sdlog'),transform='log')
         with self.assertRaisesRegex(ValueError,'support mismatch'):
             check_edge(child,self.models['norm'],'transform_of',edge)
 
     def test_log_jacobian(self):
-        child=self.models['lnorm'];edge=child['relations']['transform_of'][0]
+        child=self.models['lnorm'];edge=dict(family='norm',at=dict(mean='meanlog',sd='sdlog'),transform='log')
         self.assertIn('verified',check_edge(child,self.models['norm'],'transform_of',edge))
         edge=copy.deepcopy(edge);edge['transform']='inverse'
         with self.assertRaises(ValueError): check_edge(child,self.models['norm'],'transform_of',edge)
@@ -353,5 +353,117 @@ class ImmediateDeclarationTest(unittest.TestCase):
             rows = json.loads((Path(folder)/'build/quality/relations.json').read_text())['results']
             self.assertEqual(sum(row['status']=='failed' for row in rows), 1)
             self.assertIn('derivable special case', next(row['detail'] for row in rows if row['status']=='failed'))
+
+
+class ConstructionRelationsTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls): cls.models=read_models()
+
+    def check(self, child, kind, mutation=None):
+        edge=copy.deepcopy(self.models[child]['relations'][kind][-1])
+        if mutation: mutation(edge)
+        return check_edge(self.models[child],self.models[edge['family']],kind,edge)
+
+    def test_each_construction_and_bad_map(self):
+        for child,kind in [('emg','convolution_of'),('skellam','convolution_of'),('bbinom','mixture_of'),('slash','mixture_of'),('dnorm','discretisation_of')]:
+            with self.subTest(child=child), patch.object(relations,'TRIALS',2):
+                self.assertIn('numerically',self.check(child,kind))
+                def corrupt(e):
+                    if kind=='convolution_of': e['components'][0]['at'][next(iter(e['components'][0]['at']))]=9
+                    else: e['at'][next(iter(e['at']))]=9
+                with self.assertRaises(ValueError): self.check(child,kind,corrupt)
+
+    def test_conditions_exclude_invalid_seeds_and_empty_region(self):
+        child=copy.deepcopy(self.models['geom']);child['params'][0]['simulate']=1
+        edge=dict(family='dweibull',at=dict(shape1='1-prob',shape2=1),when='prob < 1')
+        with patch.object(relations,'TRIALS',2):
+            self.assertIn('verified',check_edge(child,self.models['dweibull'],'special_case_of',edge))
+            edge['when']='prob > 2'
+            with self.assertRaisesRegex(ValueError,'could not draw'): check_edge(child,self.models['dweibull'],'special_case_of',edge)
+        self.assertFalse(relations.condition('prob < 1 && prob > 0',dict(prob=1)))
+        self.assertTrue(relations.condition('prob < 1 || prob == 1',dict(prob=1)))
+
+    def test_new_transforms_and_wrong_jacobian(self):
+        # Dossier edges point from the constructed family (lnorm, logitnorm hold
+        # log/logit edges), so the reverse exp/expit identities are built here.
+        built={('norm','exp'):dict(family='lnorm',at=dict(meanlog='mean',sdlog='sd'),transform='exp'),
+               ('norm','expit'):dict(family='logitnorm',at=dict(mu='mean',sigma='sd'),transform='expit')}
+        for child,tr in [('norm','exp'),('norm','expit'),('nsbeta','affine')]:
+            edge=copy.deepcopy(built[(child,tr)]) if (child,tr) in built else next(copy.deepcopy(e) for e in self.models[child]['relations']['transform_of'] if e['transform']==tr)
+            with self.subTest(transform=tr), patch.object(relations,'TRIALS',2):
+                self.assertIn('verified',check_edge(self.models[child],self.models[edge['family']],'transform_of',edge))
+                edge['transform']='negate'
+                with self.assertRaises(ValueError):check_edge(self.models[child],self.models[edge['family']],'transform_of',edge)
+
+    def test_conditional_path_is_not_unconditional_redundancy(self):
+        models=copy.deepcopy(self.models)
+        # The binomial-to-CMB edge cannot establish an unconditional path.
+        models['cmb']['relations']={'special_case_of':[dict(family='bbinom',at={})]}
+        models['binom']['relations']['special_case_of'].append(dict(family='bbinom',at={}))
+        errors=declaration_errors(models)
+        ref=('binom','special_case_of',len(models['binom']['relations']['special_case_of'])-1)
+        self.assertNotIn(ref,errors)
+
+    def test_yulesimon_mixture_is_true_but_derivable(self):
+        edge=dict(family='geom',at=dict(prob='mix'),mixed='prob',mixing=dict(family='beta',at=dict(shape1='rho',shape2=1)),shift=1)
+        models=copy.deepcopy(self.models)
+        with patch.object(relations,'TRIALS',2):
+            self.assertIn('numerically',check_edge(models['yulesimon'],models['geom'],'mixture_of',edge))
+        models['yulesimon']['relations']['mixture_of']=[edge]
+        self.assertIn('derivable mapped mixture',declaration_errors(models)[('yulesimon','mixture_of',0)])
+        models['bnbinom']['relations'].pop('mixture_of')
+        self.assertNotIn(('yulesimon','mixture_of',0),declaration_errors(models))
+
+    def test_distinct_constructions_do_not_establish_redundancy(self):
+        def model(rel):return dict(params=[],relations=rel)
+        first=dict(family='b',mixed='prob',mixing=dict(family='d'))
+        second=dict(family='c',mixed='prob',mixing=dict(family='e'))
+        models={'a':model(dict(mixture_of=[first,second])),
+                'b':model(dict(special_case_of=[dict(family='c')])),
+                'c':model({}), 'd':model({}), 'e':model({})}
+        self.assertEqual(declaration_errors(models),{})
+        # Parallel constructions with different mixing laws are distinct.
+        second['family']='b'
+        self.assertEqual(declaration_errors(models),{})
+
+    def test_construction_derivation_and_reverse_transform(self):
+        def model(rel):return dict(params=[],relations=rel)
+        models={'a':model(dict(discretisation_of=[dict(family='b'),dict(family='c')])),
+                'b':model(dict(special_case_of=[dict(family='c')])), 'c':model({})}
+        self.assertIn(('a','discretisation_of',1),declaration_errors(models))
+        models={'a':model(dict(transform_of=[dict(family='b',transform='exp')])),
+                'b':model(dict(transform_of=[dict(family='a',transform='log')]))}
+        self.assertEqual(len(declaration_errors(models)),2)
+
+@unittest.skipUnless(shutil.which('Rscript'), 'Rscript unavailable')
+class ConstructionLoaderTest(unittest.TestCase):
+    def test_construction_schema(self):
+        script=r'''
+source('bindings/r/scripts/load_distributions.R')
+root <- 'univariateML-cpp/include/cppunivariate/distributions'
+original <- .umvl_read_front_matter
+probe <- function(id, mutate, reject=TRUE) {
+ path <- file.path(root,id,'README.md'); modified <- original(path)
+ modified$front <- mutate(modified$front)
+ assign('.umvl_read_front_matter',function(p) if(identical(p,path)) modified else original(p),envir=.GlobalEnv)
+ failed <- inherits(try(.umvl_from_readme(path,id),silent=TRUE),'try-error')
+ assign('.umvl_read_front_matter',original,envir=.GlobalEnv)
+ stopifnot(identical(failed,reject))
+}
+stopifnot(length(load_distributions(root))==98)
+probe('emg',function(f) {f$relations$convolution_of[[1]]$operation <- 'product';f})
+probe('emg',function(f) {f$relations$convolution_of[[1]]$components[[2]]$at <- list();f})
+probe('emg',function(f) {f$relations$convolution_of[[1]]$components[[2]]$family <- 'absent';f})
+probe('slash',function(f) {f$relations$mixture_of[[1]]$mixed <- 'absent';f})
+probe('slash',function(f) {f$relations$mixture_of[[1]]$at$mean <- 'mix';f})
+probe('slash',function(f) {f$relations$mixture_of[[1]]$mixing$at$max <- 'unknown';f})
+probe('dnorm',function(f) {f$relations$discretisation_of[[1]]$family <- 'geom'; f$relations$discretisation_of[[1]]$at <- list(prob=.5);f})
+probe('geom',function(f) {f$relations$special_case_of[[2]]$when <- 'unknown < 1';f})
+probe('geom',function(f) {f$relations$special_case_of[[2]]$when <- 'prob';f})
+probe('geom',function(f) {f$relations$special_case_of[[2]]$when <- 'system("false")';f})
+probe('nsbeta',function(f) {f$relations$transform_of[[length(f$relations$transform_of)]]$scale <- NULL;f})
+'''
+        result=subprocess.run(['Rscript','-e',script],cwd=ROOT,capture_output=True,text=True)
+        self.assertEqual(result.returncode,0,result.stdout+result.stderr)
 
 if __name__=='__main__': unittest.main()

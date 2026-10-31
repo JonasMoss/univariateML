@@ -28,7 +28,7 @@ def read_models():
 def expression(value, symbols):
     source=str(value).replace('^', '**')
     local={'inf': sp.oo, 'Inf': sp.oo, 'Min': sp.Min, 'Max': sp.Max,
-           'min': sp.Min, 'max': sp.Max, 'floor': sp.floor, 'ceiling': sp.ceiling}
+           'min': sp.Min, 'max': sp.Max, 'floor': sp.floor, 'ceiling': sp.ceiling, 'expit': lambda x: 1/(1+sp.exp(-x))}
     # Prefix coefficient identifiers, including Python keywords such as lambda.
     for name in sorted(symbols, key=len, reverse=True):
         alias='_relation_'+name
@@ -57,7 +57,7 @@ def special_path(models, start, target, excluded_pair=None):
     for node, path in queue:
         for edge in models[node].get('relations', {}).get('special_case_of', []):
             dest = edge['family']
-            if (node, dest) == excluded_pair:
+            if edge.get('when') or (node, dest) == excluded_pair:
                 continue
             if dest == target:
                 return path+[dest]
@@ -78,7 +78,7 @@ def same_expression(a, b):
     return a == b or (a is not None and b is not None and sp.simplify(a-b) == 0)
 
 
-def transform_derivation(models, child, index, edge):
+def transform_derivation(models, child, index, edge, relation_kind="transform_of"):
     """Find a family path with one same-kind transform and >=1 special case.
 
     This is the declaration graph's policy: alternative coefficient maps or
@@ -88,15 +88,20 @@ def transform_derivation(models, child, index, edge):
     queue = [(child, False, [child])]
     seen = {(child, False)}
     for node, transformed, path in queue:
-        for kind in ('special_case_of', 'transform_of'):
-            if kind == 'transform_of' and transformed:
+        for kind in ('special_case_of', relation_kind):
+            if kind == relation_kind and transformed:
                 continue
             for i, step in enumerate(models[node].get('relations', {}).get(kind, [])):
-                if (node, kind, i) == (child, 'transform_of', index):
+                if step.get('when') or (node, kind, i) == (child, relation_kind, index):
                     continue
-                if kind == 'transform_of' and step['transform'] != edge['transform']:
+                if kind == 'transform_of' and step.get('transform') != edge.get('transform'):
                     continue
-                used = transformed or kind == 'transform_of'
+                if kind == 'convolution_of' and (step.get('operation') != edge.get('operation') or
+                        [c['family'] for c in step.get('components',[])[1:]] != [c['family'] for c in edge.get('components',[])[1:]]):
+                    continue
+                if kind == 'mixture_of' and (step.get('mixing',{}).get('family'),step.get('mixed')) != (edge.get('mixing',{}).get('family'),edge.get('mixed')):
+                    continue
+                used = transformed or kind == relation_kind
                 next_path = path+[step['family']]
                 if step['family'] == edge['family'] and used and len(next_path) >= 3:
                     return next_path
@@ -105,6 +110,39 @@ def transform_derivation(models, child, index, edge):
                     continue
                 seen.add(state)
                 queue.append((step['family'], used, next_path))
+    return None
+
+
+def mixture_derivation(models, child, edge):
+    """Compose one shift/special-case, one mixture, and a parent submodel.
+
+    Unlike the coarse graph path check, this pattern compares every composed
+    coefficient map, the mixing law and the additive shift symbolically.
+    It catches Yule--Simon -> beta-NB -> NB(size=1) = geometric.
+    """
+    coordinates=relation_symbols(models[child]);coordinates['mix']=sp.Symbol('relation_mix',positive=True)
+    for kind in ('special_case_of','transform_of'):
+        for step in models[child].get('relations',{}).get(kind,[]):
+            if step.get('when') or (kind=='transform_of' and step['transform']!='shift'): continue
+            middle=step['family']; mapping={k:expression(v,coordinates) for k,v in step['at'].items()}
+            mapping['mix']=coordinates['mix']
+            shift=expression(step.get('shift',0),coordinates)
+            for mix in models[middle].get('relations',{}).get('mixture_of',[]):
+                if mix.get('when') or mix['mixing']['family']!=edge['mixing']['family']: continue
+                def same_maps(left,right):
+                    return set(left)==set(right) and all(sp.simplify(left[k]-right[k])==0 for k in left)
+                target_mixing={k:expression(v,coordinates) for k,v in edge['mixing']['at'].items()}
+                composed_mixing={k:expression(v,mapping) for k,v in mix['mixing']['at'].items()}
+                if not same_maps(target_mixing,composed_mixing):continue
+                if sp.simplify(shift+expression(mix.get('shift',0),mapping)-expression(edge.get('shift',0),coordinates))!=0:continue
+                composed_parent={k:expression(v,mapping) for k,v in mix['at'].items()}
+                target_parent={k:expression(v,coordinates) for k,v in edge['at'].items()}
+                candidates=([dict(family=edge['family'],at={k:k for k in target_parent})] if edge['family']==mix['family'] else [])
+                candidates+=models[edge['family']].get('relations',{}).get('special_case_of',[])
+                for parent_step in candidates:
+                    if parent_step.get('when') or parent_step['family']!=mix['family']:continue
+                    lifted={k:expression(v,target_parent) for k,v in parent_step['at'].items()}
+                    if same_maps(lifted,composed_parent):return [child,middle,mix['family'],edge['family']]
     return None
 
 
@@ -117,7 +155,9 @@ def declaration_errors(models):
         for kind, edges in model.get('relations', {}).items():
             for i, edge in enumerate(edges):
                 ref = (child, kind, i)
-                key = (kind, edge['family'], edge.get('transform'))
+                key = (kind, edge['family'], edge.get('transform'), edge.get('when'),
+                       edge.get('operation'), tuple(c['family'] for c in edge.get('components',[])),
+                       edge.get('mixing',{}).get('family'), edge.get('mixed'))
                 messages = []
                 if key in seen:
                     messages.append('duplicate declaration for family/kind/transform')
@@ -140,6 +180,18 @@ def declaration_errors(models):
                     path = transform_derivation(models, child, i, edge)
                     if path:
                         messages.append('derivable transform: '+' -> '.join(path))
+                elif kind in ('discretisation_of', 'mixture_of', 'convolution_of'):
+                    path = transform_derivation(models, child, i, edge, kind)
+                    if path:
+                        messages.append('derivable construction: '+' -> '.join(path))
+                if kind == 'mixture_of':
+                    path=mixture_derivation(models,child,edge)
+                    if path: messages.append('derivable mapped mixture: '+' -> '.join(path))
+                if kind == 'transform_of':
+                    reverse = {'exp':'log','log':'exp','expit':'logit','logit':'expit'}
+                    if edge['transform'] in reverse and any(other['family']==child and other['transform']==reverse[edge['transform']]
+                            for other in models[edge['family']].get('relations',{}).get('transform_of',[])):
+                        messages.append('both directions of inverse transform')
                 if messages:
                     errors[ref] = '; '.join(messages)
     return errors
@@ -166,6 +218,9 @@ def support(meta, values, substitutions=None):
 def transform_x(edge, x, symbols):
     kind = edge.get('transform')
     if kind is None: return x
+    if kind == 'exp': return sp.exp(x)
+    if kind == 'expit': return 1/(1+sp.exp(-x))
+    if kind == 'affine': return (x-expression(edge['shift'], symbols))/expression(edge['scale'], symbols)
     if kind == 'log': return sp.log(x)
     if kind == 'logit': return sp.log(x / (1-x))
     if kind == 'inverse': return 1/x
@@ -182,6 +237,12 @@ def mapped_support(edge, lo, hi, symbols):
     if kind == 'abs':
         if lo != -math.inf or hi != math.inf: raise ValueError('abs requires full real parent support')
         return float(expression(edge.get('shift',0), symbols)), math.inf
+    if kind == 'exp': return (math.log(lo) if lo > 0 else -math.inf), (math.log(hi) if hi != math.inf else math.inf)
+    if kind == 'expit': return (math.log(lo/(1-lo)) if lo > 0 else -math.inf), (math.log(hi/(1-hi)) if hi < 1 else math.inf)
+    if kind == 'affine':
+        scale=float(expression(edge['scale'],symbols)); shift=float(expression(edge['shift'],symbols))
+        if scale <= 0: raise ValueError('affine scale must be positive')
+        return lo*scale+shift, hi*scale+shift
     if kind == 'log': return math.exp(lo), math.exp(hi) if hi != math.inf else math.inf
     if kind == 'logit':
         logistic = lambda v: 0. if v == -math.inf else 1. if v == math.inf else 1/(1+math.exp(-v))
@@ -229,6 +290,8 @@ def skellam_boundary(parent, ps, x, rhs, at):
 
 
 def check_edge(child, parent, kind, edge):
+    if kind in ('convolution_of','mixture_of','discretisation_of'):
+        return check_construction(child, parent, kind, edge)
     if kind not in ('special_case_of','transform_of','truncation_of','modification_of'):
         raise ValueError('unknown relation kind')
     if kind == 'modification_of':
@@ -321,7 +384,7 @@ def check_edge(child, parent, kind, edge):
             if v<a or v>b or (v==a and p['domain'][0]=='(') or (v==b and p['domain'][-1]==')'):
                 valid = False
                 break
-        if not valid:
+        if not valid or (edge.get('when') is not None and not condition(edge['when'],values)):
             continue
         if child['support']['type']=='integer' and edge.get('transform')=='shift':
             shift=float(expression(edge['shift'],values))
@@ -368,7 +431,7 @@ def check_edge(child, parent, kind, edge):
             with mp.workdps(35):
                 density=sp.lambdify(px,sp.exp(rhs.subs({names[k]:v for k,v in values.items()})),modules='mpmath')
                 if kind == 'truncation_of':
-                    mass = (mp.fsum(density(k) for k in range(math.ceil(clo),math.floor(chi)+1))
+                    mass = ((mp.fsum(density(k) for k in range(math.ceil(clo),math.floor(chi)+1)) if math.isfinite(chi) else mp.nsum(density,[math.ceil(clo),mp.inf]))
                             if child['support']['type']=='integer' else mp.quad(density,[clo,chi]))
                     if not mp.isfinite(mass) or mass <= 0: raise ValueError('invalid conditioning mass')
                     b=complex(mp.log(density(point)/mass))
@@ -393,6 +456,126 @@ def check_edge(child, parent, kind, edge):
     return 'verified symbolically' if symbolic else 'verified numerically'
 
 
+def condition(source, values):
+    """Evaluate scalar R-style boolean syntax without losing numeric equality."""
+    import ast
+    import operator
+    source=str(source).replace('&&',' and ').replace('||',' or ')
+    tree=ast.parse(source,mode='eval')
+    comparisons={ast.Lt:operator.lt,ast.LtE:operator.le,ast.Gt:operator.gt,
+                 ast.GtE:operator.ge,ast.Eq:operator.eq,ast.NotEq:operator.ne}
+    def evaluate(node):
+        if isinstance(node,ast.BoolOp):
+            parts=[evaluate(v) for v in node.values]
+            return all(parts) if isinstance(node.op,ast.And) else any(parts)
+        if isinstance(node,ast.Compare):
+            nodes=[node.left]+node.comparators
+            numbers=[float(expression(ast.get_source_segment(source,n),values)) for n in nodes]
+            return all(comparisons[type(op)](a,b) for op,a,b in zip(node.ops,numbers,numbers[1:]))
+        raise ValueError('condition must be scalar logical comparisons')
+    return evaluate(tree.body)
+
+
+def valid_parameters(model, values):
+    for p in model['params']:
+        v=float(values[p['name']]); a,b=(bound(t.strip(),values) for t in p['domain'][1:-1].split(','))
+        if not math.isfinite(v) or v<a or v>b or (v==a and p['domain'][0]=='(') or (v==b and p['domain'][-1]==')'):
+            return False
+        if p.get('integer') and not v.is_integer(): return False
+    return True
+
+
+def numerical_density(model, values):
+    import mpmath as mp
+    if set(values) != {p['name'] for p in model['params']}:
+        raise ValueError('map must cover every parent coefficient')
+    if not valid_parameters(model, values): raise ValueError('mapped coefficient outside parent domain')
+    syms,x,logf=density_expression(FAMILIES/model['id'],model,[(-math.inf,math.inf)]*len(model['params']),prefer_spec=False)
+    expr=logf.subs(dict(zip(syms,[values[p['name']] for p in model['params']])), simultaneous=True)
+    f=sp.lambdify(x,sp.exp(expr),modules='mpmath')
+    lo,hi=support(model,values)
+    def density(t):
+        if t<lo or t>hi: return mp.mpf(0)
+        # Poisson's attained zero rate has a removable 0*log(0).
+        if model['id']=='pois' and float(values['lambda'])==0: return mp.mpf(t==0)
+        return f(t)
+    return density,lo,hi
+
+
+def check_construction(child, parent, kind, edge):
+    """Direct independent convolution / continuous mixing / unit-cell integration.
+
+    24 seeded accepted parameter draws; 35-digit quadrature and infinite sums.
+    This is numerical identity evidence, not validated interval quadrature.
+    """
+    import mpmath as mp
+    models=read_models(); rng=random.Random(SEED); accepted=0
+    with mp.workdps(35):
+        for attempt in range(20*TRIALS):
+            values={}
+            for p in child['params']:
+                v=float(p['simulate'])
+                lattice=p.get('integer') or (p.get('kind')=='design' and child['support']['type']=='integer')
+                if attempt:
+                    if lattice: v=round(v)+rng.randint(0,4)
+                    elif v>0: v*=rng.uniform(.65,1.6)
+                    else: v+=rng.uniform(-.3,.3)
+                values[p['name']]=sp.Integer(round(v)) if lattice else sp.Float(v)
+            if not valid_parameters(child,values) or (edge.get('when') and not condition(edge['when'],values)): continue
+            lhs,lo,hi=numerical_density(child,values)
+            point=rng.uniform(max(-3,lo),min(3,hi)) if math.isfinite(lo) and math.isfinite(hi) else (lo+rng.uniform(.2,4) if math.isfinite(lo) else rng.uniform(-3,3))
+            if child['support']['type']=='integer': point=rng.randint(int(max(0,lo)) if math.isfinite(lo) else -3,int(min(hi,6)) if math.isfinite(hi) else 6)
+            def mapped(spec, extra=None):
+                names=dict(values,**(extra or {}))
+                return numerical_density(models[spec['family']],{k:expression(v,names) for k,v in spec['at'].items()})
+            if kind=='discretisation_of':
+                if child['support']['type']!='integer' or parent['support']['type']!='real': raise ValueError('discretisation measure mismatch')
+                f,a,b=mapped(edge)
+                if (math.floor(a) if math.isfinite(a) else a)!=lo or (math.ceil(b)-1 if math.isfinite(b) else b)!=hi: raise ValueError('discretisation support mismatch')
+                rhs=mp.quad(f,[point,point+1])
+            elif kind=='mixture_of':
+                mixing=edge['mixing']; mf,a,b=mapped(mixing)
+                if models[mixing['family']]['support']['type']!='real': raise ValueError('mixing family must be continuous')
+                mixed=edge['mixed']; names=[p['name'] for p in parent['params']]
+                if mixed not in names or 'mix' not in str(edge['at'][mixed]): raise ValueError('mixed coefficient must depend on mix')
+                if any('mix' in str(v) for k,v in edge['at'].items() if k!=mixed): raise ValueError('only mixed coefficient may depend on mix')
+                shift=float(expression(edge.get('shift',0),values))
+                # Compile the conditional density once; validate mapped domains
+                # at every quadrature node, including random-scale maps.
+                ps,x,lf=density_expression(FAMILIES/parent['id'],parent,[(-math.inf,math.inf)]*len(names),prefer_spec=False)
+                mix=sp.Symbol('mix',positive=True); env=dict(values,mix=mix)
+                at={p:expression(edge['at'][n],env) for p,n in zip(ps,names)}
+                fn=sp.lambdify((x,mix),sp.exp(lf.subs(at,simultaneous=True)),modules='mpmath')
+                def integrand(u):
+                    vals={n:expression(edge['at'][n],dict(values,mix=sp.Float(str(u),35))) for n in names}
+                    if not valid_parameters(parent,vals): raise ValueError('mapped coefficient outside parent domain')
+                    plo,phi=support(parent,vals)
+                    if not(close(lo,plo+shift) and close(hi,phi+shift)): raise ValueError('mixture support mismatch')
+                    if child['support']['type']!=parent['support']['type'] or (child['support']['type']=='integer' and not shift.is_integer()): raise ValueError('mixture measure or lattice mismatch')
+                    return fn(point-shift,u)*mf(u)
+                rhs=mp.quad(integrand,[a,b])
+            else:
+                components=edge['components']
+                if len(components)!=2 or edge['family']!=components[0]['family'] or edge['operation'] not in ('sum','difference'): raise ValueError('convolution requires two components and sum/difference')
+                f,a,b=mapped(components[0]);g,c,d=mapped(components[1]); operation=edge['operation']
+                offset=float(expression(edge.get('shift',0),values)); z=point-offset
+                discrete=models[components[0]['family']]['support']['type']=='integer'
+                if discrete and not offset.is_integer(): raise ValueError('convolution shift must preserve lattice')
+                if models[components[1]['family']]['support']['type']!=('integer' if discrete else 'real') or child['support']['type']!=('integer' if discrete else 'real'): raise ValueError('convolution measure mismatch')
+                expected=(a+c+offset,b+d+offset) if operation=='sum' else (a-d+offset,b-c+offset)
+                if not(close(lo,expected[0]) and close(hi,expected[1])): raise ValueError('convolution support mismatch')
+                lower=max(a,z-d) if operation=='sum' else max(a,z+c)
+                upper=min(b,z-c) if operation=='sum' else min(b,z+d)
+                integrand=lambda t:f(t)*g(z-t if operation=='sum' else t-z)
+                rhs=mp.nsum(integrand,[math.ceil(lower) if math.isfinite(lower) else -mp.inf,math.floor(upper) if math.isfinite(upper) else mp.inf]) if discrete else mp.quad(integrand,[lower,upper])
+            actual=lhs(point)
+            if not (mp.isfinite(rhs) and rhs>0 and actual>0) or abs(mp.log(actual)-mp.log(rhs))>mp.mpf('2e-8')*(1+abs(mp.log(actual))+abs(mp.log(rhs))):
+                raise ValueError(f'construction log-density mismatch at {point}: {actual} vs {rhs}')
+            accepted+=1
+            if accepted==TRIALS: return 'verified numerically'
+    raise ValueError('could not draw 24 valid child parameter values')
+
+
 def main():
     models=read_models(); results=[]
     errors=declaration_errors(models)
@@ -407,7 +590,7 @@ def main():
                 row=dict(child=id,parent=edge['family'],kind=kind,edge=edge,status=status,detail=detail)
                 results.append(row);print(f"{id} -> {edge['family']} ({kind}): {status} {detail}",flush=True)
     path=ROOT/'build/quality/relations.json';path.parent.mkdir(parents=True,exist_ok=True)
-    path.write_text(json.dumps(dict(seed=SEED,trials=TRIALS,tolerance=TOL,results=results),indent=2)+'\n')
+    path.write_text(json.dumps(dict(seed=SEED,trials=TRIALS,tolerance=TOL,construction_tolerance=2e-8,working_precision=35,results=results),indent=2)+'\n')
     print(f'{len(results)} edges; '+str(sum(r['status']=='failed' for r in results))+' failed')
     return int(any(r['status']=='failed' for r in results))
 

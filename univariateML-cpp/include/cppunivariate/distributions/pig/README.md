@@ -46,7 +46,18 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - compounding
-relations: {}
+relations:
+  mixture_of:
+  - family: pois
+    at:
+      lambda: mix
+    mixed: lambda
+    mixing:
+      family: invgauss
+      at:
+        mean: mean
+        shape: shape
+    when: shape > 0
 fit:
   method: multistart
   certified: 'no'

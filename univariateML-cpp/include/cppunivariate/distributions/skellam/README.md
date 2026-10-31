@@ -39,7 +39,18 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - base
-relations: {}
+relations:
+  convolution_of:
+  - family: pois
+    operation: difference
+    components:
+    - family: pois
+      at:
+        lambda: mu1
+    - family: pois
+      at:
+        lambda: mu2
+    when: mu1 > 0 && mu2 > 0
 fit:
   method: scalar-solve
   certified: partial

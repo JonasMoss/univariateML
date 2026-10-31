@@ -1,11 +1,11 @@
 // Pure layout: sorted inputs, integer coordinates, no browser measurement or randomness.
-export const kinds = {special_case_of:'Special case', transform_of:'Transform', truncation_of:'Truncation', modification_of:'Modification', limit:'Limit'};
+export const kinds = {special_case_of:'Special case', transform_of:'Transform', truncation_of:'Truncation', modification_of:'Modification', convolution_of:'Convolution', mixture_of:'Mixture', discretisation_of:'Discretisation', limit:'Limit'};
 export const colors = ['#23645e','#854d74','#8a531e','#365e9d','#7b5928','#974337','#526c28','#66589a','#237285','#9a4160','#536634','#69594c','#335b70'];
 export function graphData(families) {
  const nodes=[...families].sort((a,b)=>a.id.localeCompare(b.id,'en'));
  const groups=[...new Set(nodes.map(f=>f.group))].sort();
  const edges=nodes.flatMap(f=>[
-  ...Object.entries(f.relations||{}).flatMap(([kind,es])=>es.map((e,i)=>({id:`${f.id}-${kind}-${i}`,source:f.id,target:e.family,kind,note:JSON.stringify(e)}))),
+  ...Object.entries(f.relations||{}).flatMap(([kind,es])=>es.flatMap((e,i)=>[...new Set(kind==='convolution_of'?e.components.map(c=>c.family):kind==='mixture_of'?[e.family,e.mixing.family]:[e.family])].map((target,j)=>({id:`${f.id}-${kind}-${i}-${j}`,source:f.id,target,kind,conditional:!!e.when,note:JSON.stringify(e)})))),
   ...(f.limits||[]).flatMap((e,i)=>e.model?[{id:`${f.id}-limit-${i}`,source:f.id,target:e.model,kind:'limit',note:e.when}]:[])
  ]);
  return {nodes:nodes.map(({id,name,group})=>({id,name,group})),groups,edges};
@@ -25,7 +25,7 @@ export function atlasSvg(data,group,limits=false) {
    const target=data.nodes.find(n=>n.id===e.target);
    const split=target.name.length>35?target.name.lastIndexOf(' ',35):-1;
    const targetLabel=split>0?`${esc(target.name.slice(0,split))}<tspan x="59" dy="16">${esc(target.name.slice(split+1))}</tspan>`:esc(target.name);
-   body.push(`<g data-edge="${e.id}" data-source="${e.source}" data-target="${e.target}" data-kind="${e.kind}"><title>${esc(e.note)}</title><path d="M 27 ${top+21} V ${y-4} H 46" fill="none" stroke="${color}" stroke-width="1.5" ${e.kind==='transform_of'?'stroke-dasharray="6 3"':e.kind==='limit'?'stroke-dasharray="2 4"':e.kind==='modification_of'?'stroke-dasharray="8 3 2 3"':e.kind==='truncation_of'?'stroke-dasharray="1 3"':''} marker-end="url(#arrow-${data.groups.indexOf(group)}-${limits})"/><a href="/distributions/${e.target}/" data-family="${e.target}"><text x="59" y="${y}" fill="#263b38">${targetLabel}</text><text x="59" y="${y+(split>0?33:17)}" font-size="11" fill="#626761">${esc(kinds[e.kind])} · ${esc(e.target)}</text></a></g>`);
+   body.push(`<g data-edge="${e.id}" data-source="${e.source}" data-target="${e.target}" data-kind="${e.kind}"><title>${esc(e.note)}</title><path d="M 27 ${top+21} V ${y-4} H 46" fill="none" stroke="${color}" stroke-width="1.5" stroke-dasharray="${edgeDash(e.kind,e.conditional)}" marker-end="url(#arrow-${data.groups.indexOf(group)}-${limits})"/><a href="/distributions/${e.target}/" data-family="${e.target}"><text x="59" y="${y}" fill="#263b38">${targetLabel}</text><text x="59" y="${y+(split>0?33:17)}" font-size="11" fill="#626761">${esc(kinds[e.kind])} · ${esc(e.target)}</text></a></g>`);
    y+=split>0?59:43;
   }
   if(!edges.length){body.push(`<text x="25" y="${y+1}" fill="#71756d" font-size="12">No declared ${limits?'named limits':'relations'} →</text>`);y+=32;}
@@ -34,7 +34,7 @@ export function atlasSvg(data,group,limits=false) {
  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 ${y}" width="360" height="${y}" role="group" aria-label="${esc(group)}: ${limits?'limit models':'relations'}, arrows point to parents or limit models"><defs><marker id="arrow-${data.groups.indexOf(group)}-${limits}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="${color}"/></marker></defs>${body.join('')}</svg>`;
 }
 
-export const edgeDash = kind => ({transform_of:'6 3',truncation_of:'1 3',modification_of:'8 3 2 3',limit:'2 4'}[kind]||'');
+export const edgeDash = (kind,conditional=false) => conditional?'1 4':({convolution_of:'10 3',mixture_of:'4 2 1 2',discretisation_of:'3 3',transform_of:'6 3',truncation_of:'1 3',modification_of:'8 3 2 3',limit:'2 4'}[kind]||'');
 // Discrete, bounded optimisation. Fixed slots make label separation an invariant.
 export function mapLayout(data) {
  const relations=data.edges.filter(e=>e.kind!=='limit');
@@ -96,7 +96,7 @@ export function mapSvg(data) {
  const sr=regions[data.groups.indexOf(source.group)],tr=regions[data.groups.indexOf(target.group)];
  if(source.group!==target.group&&sr.x===tr.x){const lane=sr.x+117+offset/3;x1=a.x+(a.x<lane?46:-46);x2=b.x+(b.x<lane?46:-46);gutterRoute=`M${x1} ${a.y} C${Math.round(lane)} ${a.y} ${Math.round(lane)} ${b.y} ${x2} ${b.y}`;}
  const route=gutterRoute||(e.source===e.target?`M${a.x+40} ${a.y-10} C${a.x+65} ${a.y-35} ${a.x+65} ${a.y+35} ${a.x+40} ${a.y+10}`:`M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}`);
- out.push(`<g data-map-edge="${e.id}" data-source="${e.source}" data-target="${e.target}" data-kind="${e.kind}"${e.kind==='limit'?' style="display:none"':''}><title>${esc(e.note)}</title><path d="${route}" stroke="${e.kind==='transform_of'?'#426c8c':'#53685f'}" stroke-width="${e.kind==='limit'?'.7':'1.2'}" opacity="${e.kind==='limit'?'.2':'.65'}" stroke-dasharray="${edgeDash(e.kind)}" fill="none" marker-end="url(#map-arrow)"/></g>`);}
+ out.push(`<g data-map-edge="${e.id}" data-source="${e.source}" data-target="${e.target}" data-kind="${e.kind}"${e.kind==='limit'?' style="display:none"':''}><title>${esc(e.note)}</title><path d="${route}" stroke="${e.kind==='transform_of'?'#426c8c':'#53685f'}" stroke-width="${e.kind==='limit'?'.7':'1.2'}" opacity="${e.kind==='limit'?'.2':'.65'}" stroke-dasharray="${edgeDash(e.kind,e.conditional)}" fill="none" marker-end="url(#map-arrow)"/></g>`);}
  out.push(...headers);
  for(const n of data.nodes){const p=positions[n.id],color=colors[data.groups.indexOf(n.group)],hub=['norm','gamma','beta','binom','pois'].includes(n.id);out.push(`<a data-map-node="${n.id}" data-family="${n.id}" href="/distributions/${n.id}/" aria-label="${esc(n.name)} (${n.id})"><title>${esc(n.name)} · ${esc(n.group)}. Select for neighbourhood; modified click opens dossier.</title><rect x="${p.x-45}" y="${p.y-10}" width="90" height="21" rx="5" fill="#fffdf8" stroke="${color}" stroke-opacity="${hub?'.9':'.25'}"/><text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="12.5" font-weight="${hub?'700':'400'}" fill="${hub?'#203d35':color}">${n.id}</text></a>`);}
  out.push('</svg>');return out.join('');

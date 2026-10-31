@@ -39,6 +39,22 @@ relations:
     at:
       prob: prob
       p0: prob
+  - family: dgamma
+    at:
+      shape: 1
+      rate: -log(1-prob)
+    when: prob < 1
+  - family: dweibull
+    at:
+      shape1: 1-prob
+      shape2: 1
+    when: prob < 1
+  truncation_of:
+  - family: dlaplace
+    at:
+      location: 0
+      scale: 1-prob
+    when: prob < 1
 fit:
   method: closed-form
   certified: 'yes'

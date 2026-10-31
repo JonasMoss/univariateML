@@ -49,7 +49,18 @@ examples: |
 group: normal convolutions
 construction:
 - compounding
-relations: {}
+relations:
+  convolution_of:
+  - family: norm
+    operation: sum
+    components:
+    - family: norm
+      at:
+        mean: mu
+        sd: sigma
+    - family: exp
+      at:
+        rate: lambda
 fit:
   method: multistart
   certified: partial

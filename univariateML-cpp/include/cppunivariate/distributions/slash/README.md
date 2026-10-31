@@ -38,7 +38,18 @@ examples: |
 group: skewed and robust location-scale
 construction:
 - location-scale
-relations: {}
+relations:
+  mixture_of:
+  - family: norm
+    at:
+      mean: mu
+      sd: sigma/mix
+    mixed: sd
+    mixing:
+      family: unif
+      at:
+        min: 0
+        max: 1
 fit:
   method: multistart
   certified: partial

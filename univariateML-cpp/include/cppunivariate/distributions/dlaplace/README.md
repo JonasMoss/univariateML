@@ -36,7 +36,18 @@ examples: |
 group: skewed and robust location-scale
 construction:
 - base
-relations: {}
+relations:
+  convolution_of:
+  - family: geom
+    operation: difference
+    components:
+    - family: geom
+      at:
+        prob: 1-scale
+    - family: geom
+      at:
+        prob: 1-scale
+    shift: location
 fit:
   method: closed-form
   certified: 'yes'

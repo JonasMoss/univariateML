@@ -46,7 +46,9 @@ assert sorted(node_ids)==sorted(f['id'] for f in DATA), 'graph node coverage/uni
 expected=[]
 for f in DATA:
     for kind, edges in f.get('relations',{}).items():
-        expected.extend(f"{f['id']}-{kind}-{i}" for i,e in enumerate(edges))
+        for i,e in enumerate(edges):
+            targets=list(dict.fromkeys(c['family'] for c in e['components'])) if kind=='convolution_of' else list(dict.fromkeys([e['family'],e['mixing']['family']])) if kind=='mixture_of' else [e['family']]
+            expected.extend(f"{f['id']}-{kind}-{i}-{j}" for j in range(len(targets)))
     expected.extend(f"{f['id']}-limit-{i}" for i,e in enumerate(f.get('limits',[])) if e.get('model'))
 assert sorted(re.findall(r'data-edge="([^\"]+)"',graph_html))==sorted(expected), 'graph edge coverage'
 assert sorted(re.findall(r'data-map-node="([^"]+)"',graph_html))==sorted(f['id'] for f in DATA), 'map node coverage'

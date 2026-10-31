@@ -47,7 +47,12 @@ examples: |
 group: gamma and Weibull
 construction:
 - discretisation
-relations: {}
+relations:
+  discretisation_of:
+  - family: gamma
+    at:
+      shape: shape
+      scale: 1/rate
 fit:
   method: multistart
   certified: partial

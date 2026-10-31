@@ -49,6 +49,12 @@ relations:
       prob: prob
     transform: shift
     shift: 1
+  truncation_of:
+  - family: dlaplace
+    at:
+      location: 1
+      scale: 1-prob
+    when: prob < 1
 fit:
   method: scalar-solve
   certified: 'yes'
