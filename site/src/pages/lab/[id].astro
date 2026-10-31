@@ -58,7 +58,11 @@ const cdfHtml=f.cdf_latex ? await display(`F(x) = ${f.cdf_latex}`) : '';
 const quantileHtml=f.quantile_latex ? await display(`Q(p) = ${f.quantile_latex}`) : '';
 const limitRows=await Promise.all(limits.map(async g=>({...g,whenHtml:await render(phrase(g.when,sym)),heldHtml:await Promise.all(g.held.map(s=>inline(heldTex(s,sym))))})));
 const holdRows=await Promise.all(holds.map(async (h:any)=>({...h,heldHtml:h.held.length ? await inline(heldTex(h.held,sym)) : 'none (all free)',reasonHtml:await render(phrase(h.reason,sym))})));
-const restrRows=await Promise.all(restr.map(async r=>{const s=sym.get(r.param)||r.param;const b=[r.lower!==undefined?`${s} \\ge ${r.lower}`:'',r.upper!==undefined?`${s} \\le ${r.upper}`:''].filter(Boolean).join(',\\ ');return {...r,boundHtml:await inline(b),reasonHtml:await render(phrase(r.reason,sym)),exemptHtml:r.exempt.length?await Promise.all(r.exempt.map(e=>inline(heldTex(e,sym)))):[]};}));
+const restrRows=await Promise.all(restr.map(async r=>{const s=sym.get(r.param)||r.param;const b=[r.lower!==undefined?`${s} \\ge ${r.lower}`:'',r.upper!==undefined?`${s} \\le ${r.upper}`:''].filter(Boolean).join(',\\ ');return {...r,boundHtml:await inline(b),reasonHtml:await render(phrase(r.reason.replace(/^\s*[A-Za-z_]\w*\s*(>=|<=)\s*-?[\d.]+\s*/,''),sym)),exemptHtml:r.exempt.length?await Promise.all(r.exempt.map(e=>inline(heldTex(e,sym)))):[]};}));
+const freeRows=limitRows.filter(g=>g.free);
+const heldRows=limitRows.filter(g=>g.held.length>0);
+const blockingHolds=holdRows.filter((h:any)=>h.held.length===0);
+const otherHolds=holdRows.filter((h:any)=>h.held.length>0);
 const relRows=await Promise.all(relations.map(async (r:any)=>({...r,noteHtml:r.note?await render(r.note):''})));
 const leadHtml=await render([f.summary,lead].filter(Boolean).join('\n\n'));
 const defProseHtml=await Promise.all(defProse.map(async (s:any)=>render(s.body)));
@@ -66,7 +70,6 @@ const seeAlsoHtml=await Promise.all(seeAlso.map(async (s:any)=>render(s.body)));
 const mlProseHtml=await Promise.all(mlProse.map(async (s:any)=>({title:s.title,html:await render(s.body)})));
 const refs:string[]=f.references || [];
 const key=new Set<number>((f.key_references||[]).map((i:number)=>i-1));
-const advice=f.params.filter((p:any)=>p.advice || (p.kind && p.kind!=='regular'));
 const toc=[['definition','Definition'],relations.length||seeAlso.length?['relations','Relations']:null,showML?['ml','Maximum likelihood']:null,['usage','Usage'],refs.length?['references','References']:null].filter(Boolean) as string[][];
 ---
 <Page title={f.name} description={f.summary}>
@@ -82,7 +85,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
   {hasBinding && <MiniPlot client:load family={{id:f.id,params:entry.data.params,support:entry.data.support}} labels={paramLabels}/>}
   <table>
    <tbody>
-   <tr><th>Parameters</th><td>{f.params.map((p:any,i:number)=><div class="ib-param"><span set:html={paramDomains[i]}/> <small>{p.role}{p.kind && p.kind!=='regular' ? `, ${p.kind}` : ''}</small></div>)}</td></tr>
+   <tr><th>Parameters</th><td>{f.params.map((p:any,i:number)=><div class="ib-param"><span set:html={paramDomains[i]}/> <code>{p.name}</code>{(p.role!==p.name || (p.kind && p.kind!=='regular')) && <small> {[p.role!==p.name ? p.role : '', p.kind && p.kind!=='regular' ? p.kind : ''].filter(Boolean).join(', ')}</small>}</div>)}</td></tr>
    <tr><th>Support</th><td set:html={supportHtml}/></tr>
    <tr><th>{discrete ? 'PMF' : 'PDF'}</th><td>{infoDensity ? <div class="ib-formula" set:html={infoDensity}/> : <a href="#definition">{f.density_latex ? 'see Definition' : 'log-density in Definition'}</a>}</td></tr>
    {cdfHtml && <tr><th>CDF</th><td class="ib-formula" set:html={cdfHtml}/></tr>}
@@ -112,7 +115,8 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
   <p>{f.density_latex ? (discrete ? 'Probability mass function' : 'Density') : 'Log-density'} for <span set:html={supportHtml}/>; zero elsewhere.</p>
   {cdfHtml && <><h3>Distribution function</h3><div class="formula" set:html={cdfHtml}/></>}
   {quantileHtml && <><h3>Quantile function</h3><div class="formula" set:html={quantileHtml}/></>}
-  {advice.length>0 && <dl class="advice">{advice.map((p:any)=><><dt><code>{p.name}</code> ({p.kind || 'regular'})</dt><dd>{p.advice || 'Required; held when fitting.'}</dd></>)}</dl>}
+  <p class="where-intro">where</p>
+  <ul class="where">{f.params.map((p:any,i:number)=><li><span set:html={paramDomains[i]}/> is <code>{p.name}</code>{p.role!==p.name && <>, the {p.role}</>}{p.kind && p.kind!=='regular' && <> ({p.kind}{p.advice ? `: ${p.advice}` : '; required, held when fitting'})</>}</li>)}</ul>
   {defProseHtml.map(h=><div set:html={h}/>)}
  </section>
 </div>
@@ -127,31 +131,28 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
 
 {showML && <section aria-labelledby="ml">
  <h2 id="ml">Maximum likelihood</h2>
- <p><strong>Method:</strong> {methodLabel[f.fit.method] || f.fit.method}. <strong>Certified:</strong> {f.fit.certified}. {f.fit.note}</p>
- {limitRows.length>0 && <>
-  <h3>When the fit stops</h3>
-  <table class="limits"><thead><tr><th>Boundary</th><th>Fit stops when</th><th>All free</th><th>Held subsets</th></tr></thead><tbody>
-  {limitRows.map(g=><tr>
-   <td>{g.model ? <a href={`/lab/${g.model}/`}><code>ml{g.model}</code></a> : g.kind==='nonexistence' ? 'no MLE' : g.name}{g.model && g.name && <small> {g.name}</small>}</td>
-   <td set:html={g.whenHtml}/>
-   <td>{g.free ? '✓' : '–'}</td>
-   <td>{g.held.length===0 ? '–' : g.held.length<=3 ? g.heldHtml.map((h,i)=><>{i>0 && '; '}<span set:html={h}/></>) : <details><summary>{g.held.length} subsets</summary>{g.heldHtml.map((h,i)=><>{i>0 && '; '}<span set:html={h}/></>)}</details>}</td>
-  </tr>)}
-  </tbody></table>
+ <p>Fitted by {methodLabel[f.fit.method] || f.fit.method}{f.fit.certified!=='unknown' && <> (certified: {f.fit.certified})</>}.{freeRows.length===0 && blockingHolds.length===0 && restrRows.length===0 && ' No obstacle is declared for fits with all coefficients free.'}</p>
+ {(freeRows.length>0 || blockingHolds.length>0 || restrRows.length>0) && <>
+  <p>With all coefficients free, the fit stops instead of returning an estimate when:</p>
+  <ul class="stops">
+   {freeRows.map(g=><li><span set:html={unwrap(g.whenHtml)}/>{g.model ? <> — use <a href={`/lab/${g.model}/`}><code>ml{g.model}</code></a>{g.name && <small> ({g.name})</small>}</> : g.kind==='nonexistence' ? ' — no MLE exists' : g.name ? <> — <em>{g.name}</em></> : ''}.</li>)}
+   {blockingHolds.map((h:any)=><li>{h.status==='not-implemented' ? 'Always: this fit is not implemented' : 'Always: no MLE exists'}. <span set:html={unwrap(h.reasonHtml)}/></li>)}
+  </ul>
+  {restrRows.map((r:any)=><p>Fits restrict <span set:html={r.boundHtml}/>: <span set:html={unwrap(r.reasonHtml)}/>{r.exemptHtml.length>0 && <> Exempt when {r.exemptHtml.map((h:string,i:number)=><>{i>0 && ' or '}<span set:html={h}/></>)} held.</>}</p>)}
  </>}
- {holdRows.length>0 && <>
-  <h3>Held subsets without a fit</h3>
-  <table><thead><tr><th>Held</th><th>Status</th><th>Reason</th></tr></thead><tbody>
-  {holdRows.map((h:any)=><tr><td set:html={h.heldHtml}/><td>{h.status}</td><td set:html={h.reasonHtml}/></tr>)}
-  </tbody></table>
- </>}
- {restrRows.length>0 && <>
-  <h3>Restricted fit domain</h3>
-  <table><thead><tr><th>Restriction</th><th>Reason</th><th>Exempt when held</th></tr></thead><tbody>
-  {restrRows.map((r:any)=><tr><td set:html={r.boundHtml}/><td set:html={r.reasonHtml}/><td>{r.exemptHtml.length ? r.exemptHtml.map((h:string,i:number)=><>{i>0 && '; '}<span set:html={h}/></>) : '–'}</td></tr>)}
-  </tbody></table>
- </>}
- {mlProseHtml.map(s=><>{s.title.toLowerCase()!=='details' && <h3>{s.title}</h3>}<div set:html={s.html}/></>)}
+ {(heldRows.length>0 || otherHolds.length>0 || mlProseHtml.length>0) && <details class="more"><summary>More on the fit{heldRows.length+otherHolds.length>0 ? ` (with held coefficients: ${heldRows.length+otherHolds.length} more case${heldRows.length+otherHolds.length>1?'s':''})` : ''}</summary>
+  {heldRows.length>0 && <table class="limits"><thead><tr><th>Boundary</th><th>Fit stops when</th><th>Held subsets</th></tr></thead><tbody>
+   {heldRows.map(g=><tr>
+    <td>{g.model ? <a href={`/lab/${g.model}/`}><code>ml{g.model}</code></a> : g.kind==='nonexistence' ? 'no MLE' : g.name}{g.model && g.name && <small> {g.name}</small>}</td>
+    <td set:html={g.whenHtml}/>
+    <td>{g.heldHtml.map((h,i)=><>{i>0 && '; '}<span set:html={h}/></>)}</td>
+   </tr>)}
+  </tbody></table>}
+  {otherHolds.length>0 && <table><thead><tr><th>Held</th><th>Status</th><th>Reason</th></tr></thead><tbody>
+   {otherHolds.map((h:any)=><tr><td set:html={h.heldHtml}/><td>{h.status}</td><td set:html={h.reasonHtml}/></tr>)}
+  </tbody></table>}
+  {mlProseHtml.map(s=><>{s.title.toLowerCase()!=='details' && <h3>{s.title}</h3>}<div set:html={s.html}/></>)}
+ </details>}
 </section>}
 
 
@@ -198,7 +199,14 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  .lab table.limits td small{display:block;color:#656c66}
  .lab table.limits details{margin:0}.lab table.limits details>summary{padding:0;font-size:.85rem}
  .lab li.key{font-weight:600}
- .lab .advice dt{font-family:system-ui,sans-serif;font-size:.85rem}
+ .lab .where-intro{margin:.4rem 0 .2rem}
+ .lab ul.where{margin:0 0 1rem;padding-left:1.2rem}
+ .lab ul.where li{margin:.15rem 0}
+ .lab ul.stops li{margin:.3rem 0}
+ .lab ul.stops small{color:#656c66}
+ .lab details.more{border-top:1px solid #d5d4c9;margin-top:1.2rem}
+ .lab details.more>summary{font-size:.92rem}
+ .lab .ib-param code{font-size:.75rem;color:#4c5550;margin-left:.2rem}
  .lab .small{font-size:.85rem;color:#4c5550}
  .lab .source{margin-top:3rem;border-top:1px solid #c9c8bc;padding-top:1rem;font:.85rem system-ui,sans-serif;color:#4c5550}
  @media (max-width:860px){
