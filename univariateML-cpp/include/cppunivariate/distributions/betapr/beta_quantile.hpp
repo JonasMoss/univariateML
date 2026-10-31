@@ -1,5 +1,5 @@
 #pragma once
-#include "../gb2/beta_tails.hpp"
+#include "../../special/beta_tails.hpp"
 #include "../../special/tails.hpp"
 #include <cmath>
 namespace cppunivariate { namespace betapr_detail {

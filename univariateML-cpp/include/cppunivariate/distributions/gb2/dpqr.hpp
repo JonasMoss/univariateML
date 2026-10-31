@@ -22,7 +22,7 @@ inline double dgb2(double x,double shape1,double shape2,double shape3,
 } // namespace distributions
 } // namespace cppunivariate
 
-#include "beta_tails.hpp"
+#include "../../special/beta_tails.hpp"
 namespace cppunivariate { namespace distributions {
 inline double pgb2(double q,double shape1,double shape2,double shape3,double scale,bool lower_tail,bool log_p) {
  if(!(shape1>0 && shape2>0 && shape3>0 && scale>0) || !std::isfinite(shape1+shape2+shape3+scale) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();

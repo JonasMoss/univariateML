@@ -1,3 +1,5 @@
+// Contract, retained choices, evidence and known numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
 // Multi-dimensional BFGS quasi-Newton minimiser.
 //
 // Cost concept (compile-time, not runtime):

@@ -1,3 +1,5 @@
+// Contract, retained choices, evidence and known numerical limitations:
+// dev/research/evaluations/2026-10-31-step7-routines.md (repository root).
 // Tail-accurate d/p/q rules: compute the smaller tail directly in log space;
 // derive its complement with log1mexp, never 1-p near p=1. Quantiles use
 // the accurate log tail, including log inputs -1e4 and below; do not first
