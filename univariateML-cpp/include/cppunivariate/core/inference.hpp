@@ -17,10 +17,11 @@
 #include <vector>
 #include <cmath>
 #include <limits>
+#include <type_traits>
 
 namespace cppunivariate {
 enum class InferenceStatus { Ok, InvalidParameter, InvalidObservation,
-  EmptySample, InvalidSubset, NumericalFailure, Singular, IllConditioned };
+  EmptySample, InvalidSubset, NumericalFailure, Singular, IllConditioned, DimensionExceeded };
 enum class InferenceCoordinates { Natural };
 enum class InferenceNormalization { Total };
 
@@ -32,43 +33,74 @@ enum class InferenceNormalization { Total };
 // On non-Ok overall status numerical fields are unusable. Matrix statuses are
 // independent diagnostics: singular/ill-conditioned J or H does not invalidate
 // scores. H may be indefinite at an arbitrary point; Ok does not mean positive.
-// Singular means a zero diagonal (PSD matrices) or exactly zero scaled
-// determinant; IllConditioned means |scaled determinant| <= 64*epsilon.
+// See matrix_status for eigenvalue-based numerical thresholds.
 // No pseudoinverse is ever formed. Nonfinite arithmetic is NumericalFailure.
 // Finite precision can diagnose numerical rank loss even in full-rank models.
+inline constexpr std::size_t inference_max_parameters = 8;
 struct InferenceResult {
   InferenceStatus status = InferenceStatus::Ok;
   InferenceStatus opg_status = InferenceStatus::Ok;
   InferenceStatus observed_status = InferenceStatus::Ok;
   InferenceStatus fisher_status = InferenceStatus::Ok;
-  std::array<std::string, 2> parameter_names{};
-  std::array<std::size_t, 2> free_indices{};
+  std::array<std::string, inference_max_parameters> parameter_names{};
+  std::array<std::size_t, inference_max_parameters> free_indices{};
   std::size_t parameter_count = 0, dimension = 0, observations = 0;
+  double opg_condition = 1, observed_condition = 1, fisher_condition = 1;
   unsigned free_mask = 0;
   InferenceCoordinates coordinates = InferenceCoordinates::Natural;
   InferenceNormalization normalization = InferenceNormalization::Total;
   std::string validity_conditions;
-  std::array<double, 2> score{};
-  std::array<double, 4> opg{}, observed{}, fisher{};
+  std::array<double, inference_max_parameters> score{};
+  std::array<double, inference_max_parameters*inference_max_parameters> opg{}, observed{}, fisher{};
 };
 namespace inference_detail {
-inline InferenceStatus matrix_status(const std::array<double,4>& m,
-                                      std::size_t p, bool psd) {
-  if (p == 0) return InferenceStatus::Ok;
-  double scale = 0;
-  for (std::size_t i=0; i<p*p; ++i) {
-    if (!std::isfinite(m[i])) return InferenceStatus::NumericalFailure;
-    scale = std::max(scale, std::abs(m[i]));
+// Symmetric Jacobi eigenvalues of max-entry-scaled free blocks.
+// Condition is max |eigenvalue| / min |eigenvalue| in README units.
+// Numerical singularity: min/max <= 64 epsilon; ill conditioning: <= sqrt(epsilon).
+template<std::size_t N>
+inline InferenceStatus matrix_status(const std::array<double,N>& m,
+                                      std::size_t p, bool psd, double& condition) {
+  condition=1;
+  if(p==0) return InferenceStatus::Ok;
+  double scale=0;
+  for(std::size_t i=0;i<p*p;++i) {
+    if(!std::isfinite(m[i])) {condition=INFINITY; return InferenceStatus::NumericalFailure;}
+    scale=std::max(scale,std::abs(m[i]));
   }
-  if (scale == 0 || (psd && (m[0] <= 0 || (p==2 && m[3] <= 0))))
-    return InferenceStatus::Singular;
-  if (p==1) return InferenceStatus::Ok;
-  const double det = (m[0]/scale)*(m[3]/scale)-(m[1]/scale)*(m[2]/scale);
-  if (det == 0) return InferenceStatus::Singular;
-  if (std::abs(det) <= 64*std::numeric_limits<double>::epsilon())
-    return InferenceStatus::IllConditioned;
+  if(scale==0) {condition=INFINITY; return InferenceStatus::Singular;}
+  std::array<double,N> a{};
+  for(std::size_t i=0;i<p*p;++i) a[i]=m[i]/scale;
+  bool converged=false;
+  for(std::size_t iter=0;iter<128*p*p;++iter) {
+    std::size_t u=0,v=0; double largest=0;
+    for(std::size_t j=0;j<p;++j) for(std::size_t k=j+1;k<p;++k)
+      if(std::abs(a[j*p+k])>largest) {largest=std::abs(a[j*p+k]);u=j;v=k;}
+    if(largest<=std::numeric_limits<double>::epsilon()) {converged=true;break;}
+    const double angle=.5*std::atan2(2*a[u*p+v],a[v*p+v]-a[u*p+u]);
+    const double c=std::cos(angle),s=std::sin(angle);
+    const double au=a[u*p+u],av=a[v*p+v],off=a[u*p+v];
+    for(std::size_t k=0;k<p;++k) if(k!=u && k!=v) {
+      const double x=a[k*p+u],y=a[k*p+v];
+      a[k*p+u]=a[u*p+k]=c*x-s*y;
+      a[k*p+v]=a[v*p+k]=s*x+c*y;
+    }
+    a[u*p+u]=c*c*au-2*c*s*off+s*s*av;
+    a[v*p+v]=s*s*au+2*c*s*off+c*c*av;
+    a[u*p+v]=a[v*p+u]=0;
+  }
+  if(!converged) {condition=INFINITY; return InferenceStatus::NumericalFailure;}
+  double lo=INFINITY,hi=0;
+  for(std::size_t j=0;j<p;++j) {
+    if(psd && a[j*p+j]<-64*std::numeric_limits<double>::epsilon())
+      return InferenceStatus::NumericalFailure;
+    lo=std::min(lo,std::abs(a[j*p+j])); hi=std::max(hi,std::abs(a[j*p+j]));
+  }
+  condition=lo==0 ? INFINITY : hi/lo;
+  if(lo<=64*std::numeric_limits<double>::epsilon()*hi) return InferenceStatus::Singular;
+  if(lo<=std::sqrt(std::numeric_limits<double>::epsilon())*hi) return InferenceStatus::IllConditioned;
   return InferenceStatus::Ok;
 }
+struct Discard { template<class Row> void operator()(const Row&) const {} };
 // emit(row) receives one packed score row per observation, in input order.
 // It may copy into caller-owned storage or perform additional accumulation;
 // it must not throw. No n*p storage is allocated internally. Invalid input
@@ -76,7 +108,13 @@ inline InferenceStatus matrix_status(const std::array<double,4>& m,
 template<class Data, class Model, class Emit>
 inline InferenceResult accumulate(Data x, const Model& model, unsigned mask, Emit emit) {
   InferenceResult r;
-  r.parameter_count=Model::count; r.parameter_names=model.names();
+  r.parameter_count=Model::count;
+  if constexpr(Model::count > inference_max_parameters) {
+    r.status=InferenceStatus::DimensionExceeded; return r;
+  }
+  else {
+  const auto names=model.names();
+  for(std::size_t j=0;j<Model::count;++j) r.parameter_names[j]=names[j];
   r.free_mask=mask; r.observations=x.size();
   r.validity_conditions=model.conditions();
   if (mask >= (1u<<Model::count)) {r.status=InferenceStatus::InvalidSubset; return r;}
@@ -85,11 +123,14 @@ inline InferenceResult accumulate(Data x, const Model& model, unsigned mask, Emi
   if (!model.valid()) {r.status=InferenceStatus::InvalidParameter; return r;}
   if (x.empty()) {r.status=InferenceStatus::EmptySample; return r;}
   const auto f=model.fisher();
-  std::vector<double> row(r.dimension);
+  // Preserve legacy vector callbacks; the default path has stack-only rows.
+  std::conditional_t<std::is_same<Emit,Discard>::value,
+    std::array<double,inference_max_parameters>,std::vector<double>> row{};
+  if constexpr(!std::is_same<Emit,Discard>::value) row.resize(r.dimension);
   for (auto v:x) {
     if (!model.support(v)) {r.status=InferenceStatus::InvalidObservation; return r;}
-    std::array<double,2> s{};
-    std::array<double,4> h{};
+    std::array<double, (Model::count<2 ? 2 : Model::count)> s{};
+    std::array<double, (Model::count<2 ? 4 : Model::count*Model::count)> h{};
     model.observation(v,s,h);
     for(std::size_t j=0;j<r.dimension;++j) {
       const auto a=r.free_indices[j]; row[j]=s[a];
@@ -105,14 +146,15 @@ inline InferenceResult accumulate(Data x, const Model& model, unsigned mask, Emi
   }
   for(std::size_t j=0;j<r.dimension;++j)
     if(!std::isfinite(r.score[j])) r.status=InferenceStatus::NumericalFailure;
-  r.opg_status=matrix_status(r.opg,r.dimension,true);
-  r.observed_status=matrix_status(r.observed,r.dimension,false);
-  r.fisher_status=matrix_status(r.fisher,r.dimension,true);
+  r.opg_status=matrix_status(r.opg,r.dimension,true,r.opg_condition);
+  r.observed_status=matrix_status(r.observed,r.dimension,false,r.observed_condition);
+  r.fisher_status=matrix_status(r.fisher,r.dimension,true,r.fisher_condition);
   if(r.opg_status==InferenceStatus::NumericalFailure ||
      r.observed_status==InferenceStatus::NumericalFailure ||
      r.fisher_status==InferenceStatus::NumericalFailure) r.status=InferenceStatus::NumericalFailure;
   return r;
+  }
 }
-struct Discard { void operator()(const std::vector<double>&) const {} };
+
 } // namespace inference_detail
 } // namespace cppunivariate

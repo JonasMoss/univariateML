@@ -11,7 +11,11 @@ struct NormModel {
   std::string conditions() const {return "finite mean; sd > 0 finite; finite real observations; independent data";}
   bool valid() const {return std::isfinite(mean) && sd>0 && std::isfinite(sd);}
   bool support(double x) const {return std::isfinite(x);}
-  std::array<double,4> fisher() const { return {1/sd/sd,0,0,2/sd/sd}; }
+  std::array<double,4> fisher() const {
+    const double v=1/sd/sd;
+    // Positive mathematical information underflow is an arithmetic failure.
+    return {v==0 ? NAN : v,0,0,v==0 ? NAN : 2/sd/sd};
+  }
   void observation(double x, std::array<double,2>& s, std::array<double,4>& h) const {
     const double z=(x-mean)/sd, inv=1/sd;
     s={z*inv,(z*z-1)*inv};

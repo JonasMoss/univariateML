@@ -215,3 +215,15 @@ TEST_CASE("gamma: inference validity and total normalization") {
   x[0]=0;
   CHECK(cppunivariate::gamma_inference(mltest::as_span(x),2,1,0).status==cppunivariate::InferenceStatus::InvalidObservation);
 }
+
+TEST_CASE("gamma: small shapes and extreme units inference") {
+  for(double a : {1e-3,1e-2,1e-1}) {
+    std::vector<double> x{a};
+    CHECK(cppunivariate::gamma_inference(mltest::as_span(x),a,1).status==cppunivariate::InferenceStatus::Ok);
+    for(double t : {1e-200,1e200}) {
+      x[0]=a*t;
+      CHECK(cppunivariate::gamma_inference(mltest::as_span(x),a,t).status==cppunivariate::InferenceStatus::NumericalFailure);
+      CHECK(cppunivariate::gamma_inference(mltest::as_span(x),a,t,1).status==cppunivariate::InferenceStatus::Ok);
+    }
+  }
+}
