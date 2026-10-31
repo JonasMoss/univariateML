@@ -39,9 +39,9 @@ references:
   - "From, S. G. and Li, L. (2006). Estimation of the parameters of the Birnbaum–Saunders distribution. Communications in Statistics, Theory and Methods, 35(12), 2157–2169. doi:10.1080/03610920600853563."
 holds:
 - {held: [], status: no-mle, reason: 'The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.'}
-- {held: [alpha], status: no-mle, reason: 'The threshold mu is not estimated, even with alpha held. A maximum likelihood estimate exists in this case, but the package does not compute it. Supply mu.'}
-- {held: [beta], status: no-mle, reason: 'The threshold mu is not estimated, even with beta held. A maximum likelihood estimate exists for some held values of beta, but the package does not compute it. Supply mu.'}
-- {held: [alpha, beta], status: no-mle, reason: 'The threshold mu is not estimated, even with alpha and beta held. Supply mu.'}
+- {held: [alpha], status: not-implemented, reason: 'The threshold mu is not estimated, even with alpha held. A maximum likelihood estimate exists in this case, but the package does not compute it. Supply mu.'}
+- {held: [beta], status: not-implemented, reason: 'The threshold mu is not estimated, even with beta held. A maximum likelihood estimate exists for some held values of beta, but the package does not compute it. Supply mu.'}
+- {held: [alpha, beta], status: not-implemented, reason: 'The threshold mu is not estimated, even with alpha and beta held. Supply mu.'}
 fit_args:
   mu: 0.0
 examples: |
