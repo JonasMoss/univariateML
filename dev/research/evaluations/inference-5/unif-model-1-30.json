@@ -1,0 +1,73 @@
+{
+  "signature": {
+    "identity": "2c58ce1305786db1af46b130649442f2fe6b24940ddef608ebe0e3ff9825def8",
+    "reps": 5000,
+    "reference_reps": 10000,
+    "seed": 102520261031,
+    "key": "unif-model-1-30"
+  },
+  "rows": [
+    {
+      "family": "unif",
+      "regime": "model",
+      "parameter": 1,
+      "n": 30,
+      "procedure": "minimum both fitted",
+      "coverage": 0.9474,
+      "mcse": 0.0031569998416217885,
+      "covered": 4737,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "unif",
+      "regime": "model",
+      "parameter": 1,
+      "n": 30,
+      "procedure": "maximum both fitted",
+      "coverage": 0.9492,
+      "mcse": 0.003105458420265838,
+      "covered": 4746,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "unif",
+      "regime": "model",
+      "parameter": 1,
+      "n": 30,
+      "procedure": "width both fitted",
+      "coverage": 0.945,
+      "mcse": 0.003224127789030703,
+      "covered": 4725,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "unif",
+      "regime": "model",
+      "parameter": 1,
+      "n": 30,
+      "procedure": "maximum minimum known",
+      "coverage": 0.9494,
+      "mcse": 0.0030996657884359074,
+      "covered": 4747,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "unif",
+      "regime": "model",
+      "parameter": 1,
+      "n": 30,
+      "procedure": "minimum maximum known",
+      "coverage": 0.9462,
+      "mcse": 0.0031907854832313614,
+      "covered": 4731,
+      "failures": 0,
+      "reps": 5000
+    }
+  ],
+  "reference_critical": null,
+  "reference_mcse_probability": null
+}

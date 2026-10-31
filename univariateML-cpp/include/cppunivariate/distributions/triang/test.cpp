@@ -158,3 +158,35 @@ TEST_CASE("triang TASK-134 scales before exponentiating extreme log probabilitie
   CHECK(cppunivariate::distributions::qtriang(-800,0,1e300,0,true,true)/expected==doctest::Approx(1).epsilon(2e-13));
   CHECK(cppunivariate::distributions::qtriang(-800,-1e300,0,0,false,true)/(-expected)==doctest::Approx(1).epsilon(2e-13));
 }
+
+#include "cppunivariate/distributions/triang/inference.hpp"
+
+TEST_CASE("triang: TASK-102.5 inference analytic and invalid-input checks") {
+
+  const std::vector<double> x{.1,.2,.3,.4,.6,.8,.9};
+  const auto ci=cppunivariate::triang_mode_wald_interval(mltest::as_span(x),0,1);
+  REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+  const auto f=cppunivariate::triang_mle(mltest::as_span(x),1e-12,100,0,1,NAN);
+  CHECK((ci.lower+ci.upper)/2==doctest::Approx(f.c));
+  const auto t=cppunivariate::triang_mode_tests(mltest::as_span(x),0,1,.5);
+  REQUIRE(t.score.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(t.score.statistic==doctest::Approx(1./7));
+  CHECK(t.likelihood_ratio.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(t.likelihood_ratio.statistic>=0);
+  CHECK(cppunivariate::triang_mode_tests(mltest::as_span(x),0,1,0).score.status==cppunivariate::InferenceStatus::InvalidParameter);
+  CHECK(cppunivariate::triang_mode_tests(mltest::as_span(x),0,1,.4).score.status==cppunivariate::InferenceStatus::InvalidObservation);
+
+  const std::vector<double> empty;
+  const cppunivariate::span data{empty.data(),empty.size()};
+  CHECK(cppunivariate::triang_mode_wald_interval(data,0,1).status==cppunivariate::InferenceStatus::EmptySample);
+  const std::vector<double> invalid{NAN,1,2};
+  const cppunivariate::span bad{invalid.data(),invalid.size()};
+  CHECK(cppunivariate::triang_mode_wald_interval(bad,0,1).status==cppunivariate::InferenceStatus::InvalidObservation);
+}
+
+TEST_CASE("triang: TASK-102.5 invalid confidence levels") {
+  const std::vector<double> x{.2,.4,.6,.8};
+  const auto data=mltest::as_span(x);
+  for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
+    CHECK(cppunivariate::triang_mode_wald_interval(data,0,1,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
+}

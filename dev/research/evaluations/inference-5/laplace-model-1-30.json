@@ -1,0 +1,49 @@
+{
+  "signature": {
+    "identity": "2c58ce1305786db1af46b130649442f2fe6b24940ddef608ebe0e3ff9825def8",
+    "reps": 5000,
+    "reference_reps": 10000,
+    "seed": 102520261031,
+    "key": "laplace-model-1-30"
+  },
+  "rows": [
+    {
+      "family": "laplace",
+      "regime": "model",
+      "parameter": 1,
+      "n": 30,
+      "procedure": "model Wald",
+      "coverage": 0.8918,
+      "mcse": 0.00439301172318035,
+      "covered": 4459,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "laplace",
+      "regime": "model",
+      "parameter": 1,
+      "n": 30,
+      "procedure": "median sandwich",
+      "coverage": 0.9754,
+      "mcse": 0.002190654696660337,
+      "covered": 4877,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "laplace",
+      "regime": "model",
+      "parameter": 1,
+      "n": 30,
+      "procedure": "exact sign",
+      "coverage": 0.9564,
+      "mcse": 0.0028878725733660748,
+      "covered": 4782,
+      "failures": 0,
+      "reps": 5000
+    }
+  ],
+  "reference_critical": null,
+  "reference_mcse_probability": null
+}

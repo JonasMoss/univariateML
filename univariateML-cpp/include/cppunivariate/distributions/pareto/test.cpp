@@ -121,3 +121,34 @@ TEST_CASE("pareto: TASK-132 unresolved likelihood has numerical failure status")
   const cppunivariate::span x{data.data(),data.size()};
   CHECK(cppunivariate::pareto_mle(x,1e308,1.0).status == cppunivariate::ParetoStatus::IterationFailure);
 }
+
+#include "cppunivariate/distributions/pareto/inference.hpp"
+
+TEST_CASE("pareto: TASK-102.5 inference analytic and invalid-input checks") {
+
+  const std::vector<double> x{2,4},one{4};
+  const auto ci=cppunivariate::pareto_shape_exact_interval(mltest::as_span(x));
+  REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(ci.lower==doctest::Approx(-std::log(.975)/std::log(2.)));
+  CHECK(ci.upper==doctest::Approx(-std::log(.025)/std::log(2.)));
+  const auto known=cppunivariate::pareto_shape_exact_interval(mltest::as_span(one),.05,2);
+  CHECK(known.lower==doctest::Approx(ci.lower));CHECK(known.upper==doctest::Approx(ci.upper));
+  CHECK(cppunivariate::pareto_shape_exact_interval(mltest::as_span(one)).status==cppunivariate::InferenceStatus::InvalidParameter);
+  CHECK(cppunivariate::pareto_shape_exact_interval(mltest::as_span(x),.05,3).status==cppunivariate::InferenceStatus::InvalidObservation);
+  const std::vector<double> flat{2,2};
+  CHECK(cppunivariate::pareto_shape_exact_interval(mltest::as_span(flat)).status==cppunivariate::InferenceStatus::NumericalFailure);
+
+  const std::vector<double> empty;
+  const cppunivariate::span data{empty.data(),empty.size()};
+  CHECK(cppunivariate::pareto_shape_exact_interval(data).status==cppunivariate::InferenceStatus::EmptySample);
+  const std::vector<double> invalid{NAN,1,2};
+  const cppunivariate::span bad{invalid.data(),invalid.size()};
+  CHECK(cppunivariate::pareto_shape_exact_interval(bad).status==cppunivariate::InferenceStatus::InvalidObservation);
+}
+
+TEST_CASE("pareto: TASK-102.5 invalid confidence levels") {
+  const std::vector<double> x{.2,.4,.6,.8};
+  const auto data=mltest::as_span(x);
+  for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
+    CHECK(cppunivariate::pareto_shape_exact_interval(data,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
+}

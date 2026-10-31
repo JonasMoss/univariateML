@@ -365,3 +365,25 @@ inline InferenceInterval profile_lr_interval(double center,Statistic statistic,
 }
 } // namespace inference_detail
 } // namespace cppunivariate
+
+// Exact and nonsmooth procedures: see inference.md for theory and hypotheses.
+namespace cppunivariate {
+namespace inference_detail {
+inline bool valid_alpha(double alpha) { return alpha>0 && alpha<1; }
+inline InferenceStatus finite_sample(span x) {
+  if(x.empty()) return InferenceStatus::EmptySample;
+  for(double v:x) if(!std::isfinite(v)) return InferenceStatus::InvalidObservation;
+  return InferenceStatus::Ok;
+}
+// Finite endpoints only. Infinite bounds are reserved for exact sign intervals.
+inline InferenceInterval finite_interval(double lo,double hi) {
+  if(!std::isfinite(lo) || !std::isfinite(hi) || lo>hi)
+    return {InferenceStatus::NumericalFailure,NAN,NAN};
+  return {InferenceStatus::Ok,lo,hi};
+}
+inline InferenceInterval positive_interval(double lo,double hi) {
+  if(!(lo>0 && hi>lo)) return {InferenceStatus::NumericalFailure,NAN,NAN};
+  return finite_interval(lo,hi);
+}
+} // namespace inference_detail
+} // namespace cppunivariate

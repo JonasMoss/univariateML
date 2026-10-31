@@ -72,3 +72,31 @@ TEST_CASE("exp: TASK-132 a zero mixed with positive data is valid") {
   const std::vector<double> data{0,2};
   CHECK(cppunivariate::exp_mle(cppunivariate::span{data.data(),data.size()}).status == cppunivariate::ExpStatus::Ok);
 }
+
+#include "cppunivariate/distributions/exp/inference.hpp"
+
+TEST_CASE("exp: TASK-102.5 inference analytic and invalid-input checks") {
+
+  const std::vector<double> x{2};
+  const auto ci=cppunivariate::exp_rate_exact_interval(mltest::as_span(x));
+  REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(ci.lower==doctest::Approx(-std::log(.975)/2));
+  CHECK(ci.upper==doctest::Approx(-std::log(.025)/2));
+  const std::vector<double> zero{0},negative{-1};
+  CHECK(cppunivariate::exp_rate_exact_interval(mltest::as_span(zero)).status==cppunivariate::InferenceStatus::NumericalFailure);
+  CHECK(cppunivariate::exp_rate_exact_interval(mltest::as_span(negative)).status==cppunivariate::InferenceStatus::InvalidObservation);
+
+  const std::vector<double> empty;
+  const cppunivariate::span data{empty.data(),empty.size()};
+  CHECK(cppunivariate::exp_rate_exact_interval(data).status==cppunivariate::InferenceStatus::EmptySample);
+  const std::vector<double> invalid{NAN,1,2};
+  const cppunivariate::span bad{invalid.data(),invalid.size()};
+  CHECK(cppunivariate::exp_rate_exact_interval(bad).status==cppunivariate::InferenceStatus::InvalidObservation);
+}
+
+TEST_CASE("exp: TASK-102.5 invalid confidence levels") {
+  const std::vector<double> x{.2,.4,.6,.8};
+  const auto data=mltest::as_span(x);
+  for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
+    CHECK(cppunivariate::exp_rate_exact_interval(data,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
+}

@@ -1,0 +1,61 @@
+{
+  "signature": {
+    "identity": "2c58ce1305786db1af46b130649442f2fe6b24940ddef608ebe0e3ff9825def8",
+    "reps": 5000,
+    "reference_reps": 10000,
+    "seed": 102520261031,
+    "key": "triang-model-0.5-100"
+  },
+  "rows": [
+    {
+      "family": "triang",
+      "regime": "model",
+      "parameter": 0.5,
+      "n": 100,
+      "procedure": "mode Wald",
+      "coverage": 0.8958,
+      "mcse": 0.004320702720623116,
+      "covered": 4479,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "triang",
+      "regime": "model",
+      "parameter": 0.5,
+      "n": 100,
+      "procedure": "mode score chi2",
+      "coverage": 0.9424,
+      "mcse": 0.0032949124419322583,
+      "covered": 4712,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "triang",
+      "regime": "model",
+      "parameter": 0.5,
+      "n": 100,
+      "procedure": "mode LR chi2",
+      "coverage": 0.9378,
+      "mcse": 0.003415586626042444,
+      "covered": 4689,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "triang",
+      "regime": "model",
+      "parameter": 0.5,
+      "n": 100,
+      "procedure": "mode LR simulated",
+      "coverage": 0.9498,
+      "mcse": 0.003088040155179334,
+      "covered": 4749,
+      "failures": 0,
+      "reps": 5000
+    }
+  ],
+  "reference_critical": 4.257194703317977,
+  "reference_mcse_probability": 0.002179231559509454
+}

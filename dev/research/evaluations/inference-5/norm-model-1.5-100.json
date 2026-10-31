@@ -1,0 +1,37 @@
+{
+  "signature": {
+    "identity": "2c58ce1305786db1af46b130649442f2fe6b24940ddef608ebe0e3ff9825def8",
+    "reps": 5000,
+    "reference_reps": 10000,
+    "seed": 102520261031,
+    "key": "norm-model-1.5-100"
+  },
+  "rows": [
+    {
+      "family": "norm",
+      "regime": "model",
+      "parameter": 1.5,
+      "n": 100,
+      "procedure": "variance mean fitted",
+      "coverage": 0.9512,
+      "mcse": 0.0030469184432800286,
+      "covered": 4756,
+      "failures": 0,
+      "reps": 5000
+    },
+    {
+      "family": "norm",
+      "regime": "model",
+      "parameter": 1.5,
+      "n": 100,
+      "procedure": "variance mean known",
+      "coverage": 0.9526,
+      "mcse": 0.0030051036587778464,
+      "covered": 4763,
+      "failures": 0,
+      "reps": 5000
+    }
+  ],
+  "reference_critical": null,
+  "reference_mcse_probability": null
+}

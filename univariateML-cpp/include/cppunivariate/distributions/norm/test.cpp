@@ -298,3 +298,33 @@ TEST_CASE("inference covariance eight coordinates and singular meat") {
   r.dimension=9;
   CHECK(cppunivariate::inference_covariance(r).status==cppunivariate::InferenceStatus::DimensionExceeded);
 }
+
+#include "cppunivariate/distributions/norm/inference.hpp"
+
+TEST_CASE("norm: TASK-102.5 inference analytic and invalid-input checks") {
+
+  const std::vector<double> x{-1,0,1},knownx{-1,1};
+  const auto ci=cppunivariate::norm_variance_exact_interval(mltest::as_span(x));
+  REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(ci.lower==doctest::Approx(-1/std::log(.025)));
+  CHECK(ci.upper==doctest::Approx(-1/std::log(.975)));
+  const auto known=cppunivariate::norm_variance_exact_interval(mltest::as_span(knownx),.05,0);
+  CHECK(known.lower==doctest::Approx(ci.lower));CHECK(known.upper==doctest::Approx(ci.upper));
+  const std::vector<double> shifted{7,10,13};
+  const auto transformed=cppunivariate::norm_variance_exact_interval(mltest::as_span(shifted));
+  CHECK(transformed.lower==doctest::Approx(9*ci.lower));CHECK(transformed.upper==doctest::Approx(9*ci.upper));
+
+  const std::vector<double> empty;
+  const cppunivariate::span data{empty.data(),empty.size()};
+  CHECK(cppunivariate::norm_variance_exact_interval(data).status==cppunivariate::InferenceStatus::EmptySample);
+  const std::vector<double> invalid{NAN,1,2};
+  const cppunivariate::span bad{invalid.data(),invalid.size()};
+  CHECK(cppunivariate::norm_variance_exact_interval(bad).status==cppunivariate::InferenceStatus::InvalidObservation);
+}
+
+TEST_CASE("norm: TASK-102.5 invalid confidence levels") {
+  const std::vector<double> x{.2,.4,.6,.8};
+  const auto data=mltest::as_span(x);
+  for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
+    CHECK(cppunivariate::norm_variance_exact_interval(data,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
+}

@@ -1,0 +1,10 @@
+{
+  "source_hashes": "matched",
+  "tracked_file_scope": "allowed only",
+  "report_links": "all resolve",
+  "cells": 40,
+  "reps_per_cell": 5000,
+  "temporary_cells": 0,
+  "reproduction_commands": "identical to completed foreground sequence",
+  "git_diff_check": "passed"
+}
