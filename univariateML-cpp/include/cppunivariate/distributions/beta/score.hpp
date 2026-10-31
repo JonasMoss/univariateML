@@ -65,3 +65,36 @@ inline InferenceResult beta_inference(span x, double shape1, double shape2,
   return inference_detail::accumulate(x,inference_detail::BetaModel{shape1, shape2},free_mask,emit);
 }
 } // namespace cppunivariate
+
+#include "mle.hpp"
+namespace cppunivariate {
+inline TargetInferenceResult beta_mean_inference(span x,double null_mean,
+    CovarianceKind kind=CovarianceKind::Fisher) {
+  TargetInferenceResult failure;failure.status=InferenceStatus::NumericalFailure;
+  if(!(null_mean>0 && null_mean<1 && std::isfinite(null_mean))) {failure.status=InferenceStatus::InvalidParameter;return failure;}
+  const auto f=beta_mle(x,1e-11,2000);
+  if(f.status!=BetaStatus::Ok) return failure;
+  double l=0,r=0;for(auto v:x){l+=std::log(v);r+=std::log1p(-v);}l/=x.size();r/=x.size();
+  // Along the positive ray (a,b)=k*(m,1-m), strict concavity of the beta
+  // exponential-family likelihood gives a strictly decreasing k score.
+  const auto root=inference_detail::positive_concave_root([&](double k) {
+    return null_mean*(l+inference_detail::beta_psi_increment(null_mean*k,(1-null_mean)*k))+
+      (1-null_mean)*(r+inference_detail::beta_psi_increment((1-null_mean)*k,null_mean*k));
+  });
+  if(root.status!=InferenceStatus::Ok) return failure;
+  const double a=null_mean*root.statistic,b=(1-null_mean)*root.statistic;
+  const auto c=beta_mle(x,1e-11,2000,a,b);
+  if(c.status!=BetaStatus::Ok) return failure;
+  std::array<double,inference_max_parameters> g{};const double sum=f.alpha+f.beta;
+  g[0]=(f.beta/sum)/sum;g[1]=-(f.alpha/sum)/sum;
+  return inference_detail::target_result(f.alpha/sum,null_mean,g,beta_inference(x,f.alpha,f.beta),
+    beta_inference(x,a,b),f.logLik,c.logLik,kind);
+}
+inline InferenceInterval beta_mean_lr_interval(span x,double critical) {
+  const auto f=beta_mle(x,1e-11,2000);
+  if(f.status!=BetaStatus::Ok) return {InferenceStatus::NumericalFailure,NAN,NAN};
+  return inference_detail::profile_lr_interval(std::log(f.alpha/f.beta),
+    [&](double t){return beta_mean_inference(x,t).likelihood_ratio;},
+    [](double t){return t<0?std::exp(t)/(1+std::exp(t)):1/(1+std::exp(-t));},critical);
+}
+} // namespace cppunivariate

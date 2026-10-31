@@ -1,0 +1,39 @@
+{
+  "key": "6-30-1",
+  "family": "beta",
+  "target": "mean",
+  "parameters": [
+    0.5,
+    0.5
+  ],
+  "n": 30,
+  "misspecified": true,
+  "reps": 2000,
+  "seed": [
+    102420261031,
+    6,
+    30,
+    1
+  ],
+  "identity": "bf741bfca944e664c9d7579aa227ca2d55581abc481ff59915109be4c32e130c",
+  "fit_failures": 0,
+  "boundaries": 0,
+  "failure_reasons": {},
+  "procedures": {
+    "wald_F": {
+      "covered": 1890,
+      "failed": 0,
+      "rejected": 110
+    },
+    "wald_H": {
+      "covered": 1890,
+      "failed": 0,
+      "rejected": 110
+    },
+    "wald_S": {
+      "covered": 1880,
+      "failed": 0,
+      "rejected": 120
+    }
+  }
+}

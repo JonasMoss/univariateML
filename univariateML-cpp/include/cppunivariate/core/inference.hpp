@@ -1,5 +1,5 @@
 // Scores and information for independent observations, in README coordinates.
-// No covariance, inversion, optimization or asymptotic claim is made here.
+// Covariance extensions below require a successful MLE supplied by the caller.
 // For these four fixed-support interior models, local finite covariance of
 // exponential-family sufficient statistics gives DQM and full-rank model
 // information, also for each nonempty free subset. This does not prove a
@@ -21,7 +21,7 @@
 
 namespace cppunivariate {
 enum class InferenceStatus { Ok, InvalidParameter, InvalidObservation,
-  EmptySample, InvalidSubset, NumericalFailure, Singular, IllConditioned, DimensionExceeded };
+  EmptySample, InvalidSubset, NumericalFailure, Singular, IllConditioned, DimensionExceeded, Indefinite };
 enum class InferenceCoordinates { Natural };
 enum class InferenceNormalization { Total };
 
@@ -156,5 +156,212 @@ inline InferenceResult accumulate(Data x, const Model& model, unsigned mask, Emi
   }
 }
 
+} // namespace inference_detail
+} // namespace cppunivariate
+
+namespace cppunivariate {
+// All matrices use the free-coordinate order of InferenceResult. No n factor.
+enum class CovarianceKind { Fisher, Observed, Sandwich };
+struct CovarianceResult {
+  InferenceStatus status=InferenceStatus::Ok;
+  std::size_t dimension=0;
+  double condition=1;
+  std::array<double,inference_max_parameters*inference_max_parameters> matrix{};
+};
+// Reject negative pivots separately from rank/conditioning diagnostics.
+inline CovarianceResult inference_covariance(const InferenceResult& r,
+    CovarianceKind kind=CovarianceKind::Fisher) {
+  CovarianceResult out; out.dimension=r.dimension;
+  if(r.status!=InferenceStatus::Ok) {out.status=r.status;return out;}
+  const auto p=r.dimension;
+  if(p>inference_max_parameters) {out.status=InferenceStatus::DimensionExceeded;return out;}
+  const auto& a=kind==CovarianceKind::Fisher?r.fisher:r.observed;
+  std::array<double,inference_max_parameters*inference_max_parameters> l{},inv{};
+  double scale=0;
+  for(std::size_t i=0;i<p*p;++i) {
+    if(!std::isfinite(a[i])) {out.status=InferenceStatus::NumericalFailure;return out;}
+    scale=std::max(scale,std::abs(a[i]));
+  }
+  if(p && scale==0) {out.status=InferenceStatus::Singular;return out;}
+  for(std::size_t i=0;i<p;++i) for(std::size_t j=0;j<=i;++j) {
+    if(std::abs(a[i*p+j]-a[j*p+i])>64*std::numeric_limits<double>::epsilon()*scale) {
+      out.status=InferenceStatus::NumericalFailure;return out;
+    }
+    double v=a[i*p+j]/scale;
+    for(std::size_t k=0;k<j;++k) v-=l[i*p+k]*l[j*p+k];
+    if(i==j) {
+      if(v<=0) {out.status=v<0?InferenceStatus::Indefinite:InferenceStatus::Singular;return out;}
+      l[i*p+j]=std::sqrt(v);
+    } else l[i*p+j]=v/l[j*p+j];
+  }
+  out.status=inference_detail::matrix_status(a,p,false,out.condition);
+  if(out.status!=InferenceStatus::Ok) return out;
+  for(std::size_t col=0;col<p;++col) {
+    std::array<double,inference_max_parameters> y{},z{};
+    for(std::size_t i=0;i<p;++i) {
+      double v=i==col?1:0;
+      for(std::size_t k=0;k<i;++k) v-=l[i*p+k]*y[k];
+      y[i]=v/l[i*p+i];
+    }
+    for(std::size_t ii=p;ii>0;--ii) {
+      const auto i=ii-1; double v=y[i];
+      for(std::size_t k=i+1;k<p;++k) v-=l[k*p+i]*z[k];
+      z[i]=v/l[i*p+i];inv[i*p+col]=z[i]/scale;
+    }
+  }
+  for(std::size_t i=0;i<p;++i) if(!(inv[i*p+i]>0 && std::isfinite(inv[i*p+i]))) {
+    out.status=InferenceStatus::NumericalFailure;return out;
+  }
+  out.matrix=inv;
+  if(kind==CovarianceKind::Sandwich) {
+    // Singular empirical meat is allowed; no inversion of J is needed.
+    double condition=1;
+    const auto s=inference_detail::matrix_status(r.opg,p,true,condition);
+    if(s==InferenceStatus::NumericalFailure) {out.status=s;return out;}
+    out.matrix.fill(0);
+    for(std::size_t i=0;i<p;++i) for(std::size_t j=0;j<p;++j)
+      for(std::size_t k=0;k<p;++k) for(std::size_t h=0;h<p;++h)
+        out.matrix[i*p+j]+=inv[i*p+k]*r.opg[k*p+h]*inv[j*p+h];
+  }
+  for(std::size_t i=0;i<p*p;++i) if(!std::isfinite(out.matrix[i])) out.status=InferenceStatus::NumericalFailure;
+  return out;
+}
+struct ContrastResult {
+  InferenceStatus status=InferenceStatus::Ok;
+  double variance=NAN, standard_error=NAN;
+};
+inline ContrastResult inference_delta(const CovarianceResult& c,
+    const std::array<double,inference_max_parameters>& gradient) {
+  ContrastResult r; r.status=c.status;
+  if(r.status!=InferenceStatus::Ok) return r;
+  if(c.dimension>inference_max_parameters) {r.status=InferenceStatus::DimensionExceeded;return r;}
+  double v=0;
+  for(std::size_t i=0;i<c.dimension;++i) for(std::size_t j=0;j<c.dimension;++j)
+    v+=gradient[i]*c.matrix[i*c.dimension+j]*gradient[j];
+  if(!(v>0 && std::isfinite(v))) {r.status=InferenceStatus::NumericalFailure;return r;}
+  r.variance=v;r.standard_error=std::sqrt(v);return r;
+}
+struct ScalarTestResult {
+  InferenceStatus status=InferenceStatus::Ok;
+  double statistic=NAN;
+};
+inline ScalarTestResult inference_wald(double estimate,double null_value,const ContrastResult& c) {
+  if(c.status!=InferenceStatus::Ok) return {c.status,NAN};
+  const double z=(estimate-null_value)/c.standard_error;
+  return std::isfinite(z)?ScalarTestResult{InferenceStatus::Ok,z*z}:
+    ScalarTestResult{InferenceStatus::NumericalFailure,NAN};
+}
+// At a constrained null MLE with nuisance score zero: S' F^-1 S is Rao.
+// The caller must fit nuisance under the null and retain the FULL free block.
+inline ScalarTestResult inference_rao(const InferenceResult& null_fit) {
+  const auto c=inference_covariance(null_fit);
+  if(c.status!=InferenceStatus::Ok) return {c.status,NAN};
+  double v=0;
+  for(std::size_t i=0;i<c.dimension;++i) for(std::size_t j=0;j<c.dimension;++j)
+    v+=null_fit.score[i]*c.matrix[i*c.dimension+j]*null_fit.score[j];
+  if(!(v>=0 && std::isfinite(v))) return {InferenceStatus::NumericalFailure,NAN};
+  return {InferenceStatus::Ok,v};
+}
+// Log likelihoods must be from successful unrestricted/constrained maximizers.
+inline ScalarTestResult inference_lr(double unrestricted,double constrained) {
+  const double v=2*(unrestricted-constrained);
+  if(!std::isfinite(v) || v < -64*std::numeric_limits<double>::epsilon()*(1+std::abs(unrestricted)))
+    return {InferenceStatus::NumericalFailure,NAN};
+  return {InferenceStatus::Ok,std::max(0.0,v)};
+}
+} // namespace cppunivariate
+
+namespace cppunivariate {
+struct InferenceInterval {
+  InferenceStatus status=InferenceStatus::Ok;
+  double lower=NAN,upper=NAN;
+};
+// Critical values are supplied explicitly (e.g. z_.975 or chi-square_1,.95).
+inline InferenceInterval inference_wald_interval(double estimate,const ContrastResult& c,double critical) {
+  if(c.status!=InferenceStatus::Ok) return {c.status,NAN,NAN};
+  if(!(critical>0 && std::isfinite(critical) && std::isfinite(estimate)))
+    return {InferenceStatus::InvalidParameter,NAN,NAN};
+  const double width=critical*c.standard_error;
+  if(!std::isfinite(width) || !std::isfinite(estimate-width) || !std::isfinite(estimate+width))
+    return {InferenceStatus::NumericalFailure,NAN,NAN};
+  return {InferenceStatus::Ok,estimate-width,estimate+width};
+}
+struct TargetInferenceResult {
+  InferenceStatus status=InferenceStatus::Ok;
+  double estimate=NAN,null_value=NAN;
+  ContrastResult uncertainty{InferenceStatus::NumericalFailure,NAN,NAN};
+  ScalarTestResult wald{InferenceStatus::NumericalFailure,NAN};
+  ScalarTestResult score{InferenceStatus::NumericalFailure,NAN};
+  ScalarTestResult likelihood_ratio{InferenceStatus::NumericalFailure,NAN};
+};
+namespace inference_detail {
+// The caller establishes a continuous strictly decreasing derivative on (0,inf).
+// Positive and negative signs certify a unique global maximum. No capped iterate.
+template<class Derivative>
+inline ScalarTestResult positive_concave_root(Derivative derivative) {
+  double lo=1,hi=1,fl=derivative(lo),fh=fl;
+  for(int i=0;i<1000 && std::isfinite(fl) && fl<=0;++i) {lo*=.5;fl=derivative(lo);}
+  for(int i=0;i<1000 && std::isfinite(fh) && fh>=0;++i) {hi*=2;fh=derivative(hi);}
+  if(!(fl>0 && fh<0 && std::isfinite(fl) && std::isfinite(fh)))
+    return {InferenceStatus::NumericalFailure,NAN};
+  double l=std::log(lo),h=std::log(hi);
+  for(int i=0;i<160 && h-l>1e-12;++i) {
+    const double m=(l+h)/2, f=derivative(std::exp(m));
+    if(!std::isfinite(f)) return {InferenceStatus::NumericalFailure,NAN};
+    if(f>0) l=m;else h=m;
+  }
+  if(h-l>1e-12) return {InferenceStatus::NumericalFailure,NAN};
+  return {InferenceStatus::Ok,std::exp((l+h)/2)};
+}
+inline TargetInferenceResult target_result(double estimate,double null_value,
+    const std::array<double,inference_max_parameters>& gradient,
+    const InferenceResult& fitted,const InferenceResult& constrained,
+    double fitted_loglik,double constrained_loglik,CovarianceKind kind) {
+  TargetInferenceResult r;r.status=InferenceStatus::Ok;r.estimate=estimate;r.null_value=null_value;
+  r.uncertainty=inference_delta(inference_covariance(fitted,kind),gradient);
+  r.wald=inference_wald(estimate,null_value,r.uncertainty);
+  r.score=inference_rao(constrained);
+  r.likelihood_ratio=inference_lr(fitted_loglik,constrained_loglik);
+  // Each procedure retains its own diagnostic; overall reports any failure.
+  for(auto s:{r.wald.status,r.score.status,r.likelihood_ratio.status})
+    if(s!=InferenceStatus::Ok) r.status=s;
+  return r;
+}
+// LR superlevel sets for the pilot targets are intervals: the normal/gamma
+// mean profile derivative has sign(xbar-m); gamma shape profiles are concave;
+// beta's concave likelihood has convex superlevel sets whose a/(a+b) image
+// is an interval. Caller supplies log-coordinate or logit-coordinate target.
+// This inversion is ONLY for those certified unimodal profiles, not arbitrary
+// score statistics. Endpoints require sign brackets and finite evaluations.
+template<class Statistic,class Transform>
+inline InferenceInterval profile_lr_interval(double center,Statistic statistic,
+    Transform transform,double critical) {
+  if(!(critical>0 && std::isfinite(critical) && std::isfinite(center)))
+    return {InferenceStatus::InvalidParameter,NAN,NAN};
+  const auto middle=statistic(transform(center));
+  if(middle.status!=InferenceStatus::Ok || middle.statistic>critical)
+    return {InferenceStatus::NumericalFailure,NAN,NAN};
+  InferenceInterval out;
+  for(int side:{-1,1}) {
+    double inside=center,outside=center,step=1;bool bracket=false;
+    for(int iter=0;iter<12;++iter) {
+      outside=center+side*step;const double t=transform(outside);
+      if(!std::isfinite(t)) break;
+      const auto v=statistic(t);
+      if(v.status!=InferenceStatus::Ok) return {v.status,NAN,NAN};
+      if(v.statistic>critical) {bracket=true;break;}
+      step*=2;
+    }
+    if(!bracket) return {InferenceStatus::NumericalFailure,NAN,NAN};
+    for(int iter=0;iter<160 && std::abs(outside-inside)>1e-10*(1+std::abs(center));++iter) {
+      const double mid=(inside+outside)/2;const auto v=statistic(transform(mid));
+      if(v.status!=InferenceStatus::Ok) return {v.status,NAN,NAN};
+      if(v.statistic>critical) outside=mid;else inside=mid;
+    }
+    if(std::abs(outside-inside)>1e-10*(1+std::abs(center))) return {InferenceStatus::NumericalFailure,NAN,NAN};
+    if(side<0) out.lower=transform((inside+outside)/2);else out.upper=transform((inside+outside)/2);
+  }
+  return out;
+}
 } // namespace inference_detail
 } // namespace cppunivariate

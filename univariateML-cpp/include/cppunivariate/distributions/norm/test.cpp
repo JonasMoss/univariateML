@@ -246,3 +246,55 @@ TEST_CASE("norm: dense symmetric free information condition numbers") {
   CHECK(cppunivariate::inference_detail::matrix_status(maximum,8,true,condition)==cppunivariate::InferenceStatus::Ok);
   CHECK(condition==doctest::Approx(9));
 }
+
+TEST_CASE("inference covariance solves and nuisance contrasts") {
+  std::vector<double> x{-2,-1,0,1,2};
+  const auto r=cppunivariate::norm_inference({x.data(),x.size()},0,std::sqrt(2.0));
+  const auto c=cppunivariate::inference_covariance(r);
+  REQUIRE(c.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(c.matrix[0]==doctest::Approx(0.4));
+  CHECK(c.matrix[3]==doctest::Approx(0.2));
+  const auto s=cppunivariate::inference_covariance(r,cppunivariate::CovarianceKind::Sandwich);
+  REQUIRE(s.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(s.matrix[0]==doctest::Approx(0.4));
+  std::array<double,cppunivariate::inference_max_parameters> g{};g[0]=1;
+  CHECK(cppunivariate::inference_delta(c,g).variance==doctest::Approx(.4));
+  auto bad=r;bad.fisher[0]=-1;
+  CHECK(cppunivariate::inference_covariance(bad).status==cppunivariate::InferenceStatus::Indefinite);
+  bad=r;bad.fisher[0]=0;bad.fisher[1]=bad.fisher[2]=0;
+  CHECK(cppunivariate::inference_covariance(bad).status==cppunivariate::InferenceStatus::Singular);
+  bad=r;bad.fisher[0]=1e-10;
+  CHECK(cppunivariate::inference_covariance(bad).status==cppunivariate::InferenceStatus::IllConditioned);
+  CHECK(cppunivariate::inference_lr(-10,-11).statistic==doctest::Approx(2));
+  CHECK(cppunivariate::inference_lr(-11,-10).status==cppunivariate::InferenceStatus::NumericalFailure);
+}
+
+TEST_CASE("normal mean fitted variance interval inversion") {
+  std::vector<double> x{-2,-1,0,1,2};cppunivariate::span data{x.data(),x.size()};
+  const double critical=3.841458820694124;
+  const auto ci=cppunivariate::norm_mean_lr_interval(data,critical);
+  const auto si=cppunivariate::norm_mean_score_interval(data,critical);
+  const auto exact=cppunivariate::norm_mean_exact_interval(data);
+  REQUIRE(ci.status==cppunivariate::InferenceStatus::Ok);
+  REQUIRE(si.status==cppunivariate::InferenceStatus::Ok);
+  REQUIRE(exact.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(cppunivariate::norm_mean_inference(data,ci.upper).likelihood_ratio.statistic==doctest::Approx(critical));
+  CHECK(cppunivariate::norm_mean_inference(data,si.upper).score.statistic==doctest::Approx(critical));
+  CHECK(exact.upper==doctest::Approx(2.7764451051977987*std::sqrt(.5)));
+}
+
+TEST_CASE("inference covariance eight coordinates and singular meat") {
+  cppunivariate::InferenceResult r;r.dimension=8;
+  for(std::size_t i=0;i<8;++i) {r.fisher[i*8+i]=i+1.;r.observed[i*8+i]=i+1.;}
+  const auto c=cppunivariate::inference_covariance(r);
+  REQUIRE(c.status==cppunivariate::InferenceStatus::Ok);
+  for(std::size_t i=0;i<8;++i) CHECK(c.matrix[i*8+i]==doctest::Approx(1./(i+1.)));
+  // Singular empirical meat does not prevent the SPD sensitivity solve.
+  const auto s=cppunivariate::inference_covariance(r,cppunivariate::CovarianceKind::Sandwich);
+  REQUIRE(s.status==cppunivariate::InferenceStatus::Ok);
+  for(double v:s.matrix) CHECK(v==0);
+  r.fisher[1]=1;
+  CHECK(cppunivariate::inference_covariance(r).status==cppunivariate::InferenceStatus::NumericalFailure);
+  r.dimension=9;
+  CHECK(cppunivariate::inference_covariance(r).status==cppunivariate::InferenceStatus::DimensionExceeded);
+}

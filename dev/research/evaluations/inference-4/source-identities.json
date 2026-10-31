@@ -1,0 +1,16 @@
+{
+  "univariateML-cpp/include/cppunivariate/core/inference.hpp": "d185075fb3bea9b7755831110944ca296819736319127f821c50eab16e0e9c9a",
+  "univariateML-cpp/include/cppunivariate/core/inference.md": "30446d784a6f0b2f84d85ffbb09685fc82018455a52a480e9bee56271a34018d",
+  "univariateML-cpp/include/cppunivariate/distributions/norm/score.hpp": "ceb534e327c696698ab6d4958b0d7725c7d39b34bbfd8d85167b4932df76e6e4",
+  "univariateML-cpp/include/cppunivariate/distributions/norm/test.cpp": "f35f68d316b552a9d4e9e03f850dad0ed98ec51ba11544f131a5f5513863aaff",
+  "univariateML-cpp/include/cppunivariate/distributions/gamma/score.hpp": "f0954e30f376b4552c1a27e0d222d73018f9a68c4c9dc6d05703449c7c259a9f",
+  "univariateML-cpp/include/cppunivariate/distributions/gamma/test.cpp": "39fbf9beae4349fe8a0b7540aa673bdcb3fe5354b818edcf255a1b516506ed45",
+  "univariateML-cpp/include/cppunivariate/distributions/beta/score.hpp": "e842ff5ad7a2de30d3641890d8fb8fa7b726c174466ad2475e09aea1bf051926",
+  "univariateML-cpp/include/cppunivariate/distributions/beta/test.cpp": "f6f75c97157d9864a41a83d26e3e9cd82dee222032080c34418326500c97cc3c",
+  "univariateML-cpp/include/cppunivariate/distributions/pois/score.hpp": "8deb3e404c816760c2e71404ac740b02a70dd6e296d7df04bd3de33e01c65f6f",
+  "univariateML-cpp/include/cppunivariate/distributions/pois/test.cpp": "0e73c8c137ecce405469a711d3b33c1cf01ea8443c07cad1da1253d7e95dc394",
+  "dev/validation/inference-4.py": "fe6b8c2c1be0731d2a5826107c7e8b6900108aafb9aa21c4ababcabab657bae6",
+  "dev/validation/inference-4-probe.cpp": "9b7e3d6e6b481cd4dba8d4b0e6483b5364eaf664cc265e1adfc65aee70883db5",
+  "dev/validation/inference-4.sh": "b5425c76c2687f98429e5e3f9c83537bb04f841a8d285bc71c9e3617d395ce2f",
+  "dev/validation/inference-4-summary.py": "879ed24c2ee8d793641e153e3bdd26d6749238f1a347c539d5c162af4d3d5bfd"
+}

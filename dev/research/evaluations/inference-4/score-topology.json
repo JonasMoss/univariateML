@@ -1,0 +1,31 @@
+{
+  "n": 100,
+  "data": "20 repetitions of [.2,.5,1,2,4]",
+  "points": [
+    {
+      "log_null_mean": 0.43178241642553783,
+      "constrained_shape": 1.1884868699879327,
+      "rao": 0.0,
+      "accepted": true
+    },
+    {
+      "log_null_mean": 3.0,
+      "constrained_shape": 0.3214268937539638,
+      "rao": 27.402749625327996,
+      "accepted": false
+    },
+    {
+      "log_null_mean": 10.0,
+      "constrained_shape": 0.0908576948090777,
+      "rao": 9.084499045968602,
+      "accepted": false
+    },
+    {
+      "log_null_mean": 100.0,
+      "constrained_shape": 0.009697520961963295,
+      "rao": 0.9697520961963295,
+      "accepted": true
+    }
+  ],
+  "scope": "independent analytic calculation; no coordinate-conditioning override of production API"
+}
