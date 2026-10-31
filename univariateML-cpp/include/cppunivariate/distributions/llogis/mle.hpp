@@ -28,10 +28,13 @@ struct LogLogisticResult {
 inline LogLogisticResult loglogistic_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0};
+  if (n == 0) return {0.0, 0.0, kNaN, 0, LogLogisticStatus::InvalidInput};
 
   if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0] && v>0 && std::isfinite(v);}))
     return {kNaN,kNaN,kNaN,0,LogLogisticStatus::Unbounded};
+
+  for (double v : x) if (!(v > 0 && std::isfinite(v)))
+    return {NAN,NAN,NAN,0,LogLogisticStatus::InvalidInput};
 
   std::vector<double> y(n);
   for (std::size_t i = 0; i < n; ++i) y[i] = std::log(x[i]);

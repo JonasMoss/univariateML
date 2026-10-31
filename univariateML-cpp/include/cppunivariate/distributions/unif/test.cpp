@@ -63,3 +63,10 @@ TEST_CASE("unif P2 exact held endpoints and feasibility") {
   CHECK(cppunivariate::unif_mle(mltest::as_span(z),.4).status==cppunivariate::UnifStatus::Unbounded);
   CHECK(cppunivariate::unif_mle(mltest::as_span(z),0).status==cppunivariate::UnifStatus::Ok);
 }
+
+TEST_CASE("unif: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::unif_mle(x).status != cppunivariate::UnifStatus::Ok);
+  }
+}

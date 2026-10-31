@@ -8,6 +8,7 @@ are different kinds of evidence.
 
 | Check | Command | Kind of evidence | Runs in |
 |---|---|---|---|
+| [Core diagnostic sweep](diagnostics.md) (98 families, supported holds, invalid/degenerate data) | `just cpp-test` | status/domain regression, not an existence proof | monorepo dev/full |
 | C++ fit goldens | `just cpp-test` | regression (our own frozen output) | ordinary |
 | C++ family cases: holds, limits, closed forms, score residuals | `just cpp-test` | internal identities; closed forms where derived | ordinary |
 | C++ truth tables | `just cpp-test` | independent numerical, given the README density | ordinary |
@@ -81,7 +82,7 @@ relations and truth regeneration) remain explicit commands.
 
 ## C++ tests
 
-`/tmp/umvl-cpu/run4 nice -n 10 just cpp-test` builds six test binaries and runs the selected ctest shards. For a family, run, for example:
+`/tmp/umvl-cpu/run4 nice -n 10 just cpp-test` builds the family/shared binaries and monorepo diagnostic sweep, and runs the selected ctest shards. For a family, run, for example:
 
 ```sh
 /tmp/umvl-cpu/run univariateML-cpp/build/tests/distribution_tests --test-case='exp*'

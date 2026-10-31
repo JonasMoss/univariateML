@@ -170,3 +170,16 @@ With scale held, endpoint limit models retain the endpoint min + scale;
 a free-endpoint Pareto or power fit would be a different constrained model.
 
 With min held, every shape hold reduces to the corresponding Burr fit on x - min, including its held-power Weibull escape.
+
+### Golden comparison precision (2026-10-31)
+
+The double-only baseline and TASK-132 headers return bit-identical estimates;
+the largest relative coefficient difference from the extended-precision golden
+is 4.18e-7. The double-only comparison uses 5e-7 (also used for wasm), retaining
+the 1e-8 native tolerance. An independent analytic total score in log(shape1),
+log(shape2), log(scale) has norm 2.02e-5 and independently summed likelihood is
+within 1.1e-12 of the golden. These are numerical stationarity/regression checks,
+not a global optimality proof. The appended precision case retains a 1e-3 score
+gate and 1e-8 absolute likelihood checks. Reproducer:
+[pareto4-precision.cpp](../../../../../dev/validation/pareto4-precision.cpp).
+The fitter and golden are unchanged.

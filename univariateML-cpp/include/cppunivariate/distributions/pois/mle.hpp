@@ -13,9 +13,12 @@
 
 namespace cppunivariate {
 
+enum class PoisStatus { Ok, InvalidInput, NumericalFailure };
+
 struct PoisResult {
   double lambda;
   double logLik;
+  PoisStatus status = PoisStatus::Ok;
 };
 
 namespace pois_detail {
@@ -44,12 +47,14 @@ inline double logpmf(double k, double lambda) {
 inline PoisResult pois_mle(ispan x, double fixed=std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {kNaN, kNaN};
+  if (n == 0) return {kNaN,kNaN,PoisStatus::InvalidInput};
+
+  for (int v : x) if (v < 0) return {kNaN,kNaN,PoisStatus::InvalidInput};
 
   if(!std::isnan(fixed)) {
-    if(!(fixed>=0 && std::isfinite(fixed)))return {kNaN,kNaN};
-    double ll=0;for(int v:x) {if(v<0)return {kNaN,kNaN};ll+=pois_detail::logpmf(v,fixed);}
-    return {fixed,ll};
+    if(!(fixed>=0 && std::isfinite(fixed)))return {kNaN,kNaN,PoisStatus::InvalidInput};
+    double ll=0;for(int v:x) {if(v<0)return {kNaN,kNaN,PoisStatus::InvalidInput};ll+=pois_detail::logpmf(v,fixed);}
+    return {fixed,ll,std::isfinite(ll)?PoisStatus::Ok:PoisStatus::InvalidInput};
   }
   double sum = 0.0;
   for (auto v : x) sum += static_cast<double>(v);
@@ -59,7 +64,7 @@ inline PoisResult pois_mle(ispan x, double fixed=std::numeric_limits<double>::qu
   for (auto v : x) {
     logLik += pois_detail::logpmf(static_cast<double>(v),lambda);
   }
-  return {lambda, logLik};
+  return {lambda,logLik,std::isfinite(logLik)?PoisStatus::Ok:PoisStatus::NumericalFailure};
 }
 
 }  // namespace cppunivariate

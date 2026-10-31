@@ -23,6 +23,7 @@ inline FitResult fit_nsbeta(cppunivariate::span x, Held shape1_arg = {}, Held sh
  if(shape1.supplied) fixed.push_back("shape1");
  if(shape2.supplied) fixed.push_back("shape2");
  auto res=cppunivariate::nsbeta_mle(x,min,max,reltol,iterlim,shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN);
+  if (res.status == cppunivariate::BetaStatus::InvalidInput) return fail("Nonstandard beta requires nonempty finite data strictly inside its held bounds.");
   if (res.status == cppunivariate::BetaStatus::Degenerate) {
     return fail("The beta maximum likelihood estimator does not exist for constant data: "
                "the likelihood is unbounded as both shapes grow.");

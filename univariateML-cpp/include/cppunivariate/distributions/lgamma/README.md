@@ -80,3 +80,9 @@ Gamma iteration failure is preserved; constant and precision-collapsed
 transforms are distinguished. No new search or convergence guarantee is added.
 The appended C++ regression compares all four held subsets with the previous
 adapter computation; golden agreement is numerical evidence.
+
+### Diagnostic status contract (2026-10-31)
+
+Invalid and empty samples carry non-success statuses, including delegate paths.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp`.

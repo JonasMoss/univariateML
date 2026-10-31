@@ -26,7 +26,7 @@ inline FitResult fit_unif(cppunivariate::span x, Held min_arg = {}, Held max_arg
     return fail("Invalid held uniform endpoints: require finite min < max.");
   if (res.status == cppunivariate::UnifStatus::Incompatible)
     return fail("Data outside held uniform endpoints.");
-  if (!std::isfinite(res.min) || !std::isfinite(res.max)) {
+  if (res.status == cppunivariate::UnifStatus::Unbounded) {
     return fail("The uniform maximum likelihood estimator does not exist for constant data: "
                "the likelihood is unbounded as max - min shrinks to zero.");
   }

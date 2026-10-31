@@ -29,7 +29,10 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
                                   double shape0 = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0};
+  if (n == 0) return {0.0, 0.0, kNaN, 0, WeibullStatus::InvalidInput};
+
+  for (double v : x) if (!(v > 0 && std::isfinite(v)))
+    return {NAN,NAN,NAN,0,WeibullStatus::InvalidInput};
 
   std::vector<double> log_x(n);
   double sum_log_x = 0.0;
@@ -51,6 +54,7 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
   return {shape, scale, logLik, g.iterations,
       g.status == GumbelStatus::Ok ? WeibullStatus::Ok :
       g.status == GumbelStatus::Unbounded ? WeibullStatus::Unbounded :
+      g.status == GumbelStatus::InvalidInput ? WeibullStatus::InvalidInput :
       WeibullStatus::IterationFailure};
 }
 

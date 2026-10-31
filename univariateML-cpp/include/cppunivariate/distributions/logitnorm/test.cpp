@@ -78,3 +78,22 @@ TEST_CASE("logitnorm P2 exact held normal fits") {
 TEST_CASE("logitnorm: symmetric median survives certified tail inversion") {
   CHECK(cppunivariate::distributions::qlogitnorm(std::log(.5),0,1,true,true)==doctest::Approx(.5));
 }
+
+TEST_CASE("logitnorm: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0},std::vector<double>{1.0,0.5},std::vector<double>{2.0,0.5}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::logitnorm_mle(x).status != cppunivariate::LogitnormStatus::Ok);
+  }
+}
+
+TEST_CASE("logitnorm: TASK-132 normal delegate preserves collapse status") {
+  const std::vector<double> data(4,0.5);
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::logitnorm_mle(x).status == cppunivariate::LogitnormStatus::Unbounded);
+}
+
+TEST_CASE("logitnorm: TASK-132 unresolved likelihood has numerical failure status") {
+  const std::vector<double> data{0.5,0.6};
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::logitnorm_mle(x,1.0,1e-300).status == cppunivariate::LogitnormStatus::IterationFailure);
+}

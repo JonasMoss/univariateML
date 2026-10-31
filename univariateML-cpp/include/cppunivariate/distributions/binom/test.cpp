@@ -201,3 +201,9 @@ TEST_CASE("binom attained point sampler ignores zero uniform") {
   struct ZeroRng { double runif(double,double) { return 0; } } rng;
   CHECK(cppunivariate::distributions::rbinom(rng,5,1)==5);
 }
+
+TEST_CASE("binom: TASK-132 negative counts never report success") {
+  const std::vector<int> data{-1,-2,-3};
+  for (double size : {double(NAN),10.0})
+    CHECK(cppunivariate::binom_mle(cppunivariate::ispan{data.data(),data.size()},size,1e-8,200).status == cppunivariate::BinomStatus::InvalidInput);
+}

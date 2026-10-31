@@ -21,9 +21,11 @@ inline FitResult fit_norm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
 
   auto res =
       cppunivariate::norm_mle(x,held_mean,held_sd);
-  if (!(res.sd > 0.0) || !std::isfinite(res.sd)) {
+  if (res.status == cppunivariate::NormStatus::Unbounded) {
     return fail("The norm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero.");
   }
+  if (res.status == cppunivariate::NormStatus::InvalidInput) return fail("Norm requires nonempty finite data and valid held parameters.");
+  if (res.status != cppunivariate::NormStatus::Ok) return fail("Norm likelihood exceeds double precision.");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mean},{"sd",res.sd}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return out; }();
 
 }

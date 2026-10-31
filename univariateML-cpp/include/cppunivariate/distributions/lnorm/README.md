@@ -71,3 +71,10 @@ The lognormal distribution models positive quantities whose logarithms follow a 
 The parameters describe the normal distribution of the logarithms: `meanlog` is their sample mean and `sdlog` uses divisor $n$.
 
 With meanlog held and sdlog free, the likelihood is unbounded if every log observation equals meanlog. A positive held sdlog permits constant data.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

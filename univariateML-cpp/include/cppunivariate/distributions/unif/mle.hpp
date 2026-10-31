@@ -27,7 +27,7 @@ inline UnifResult unif_mle(span x,
     double max = std::numeric_limits<double>::quiet_NaN()) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {kNaN, kNaN, kNaN};
+  if (n == 0) return {kNaN, kNaN, kNaN, UnifStatus::InvalidInput};
 
   for (double v : x) if (!std::isfinite(v))
     return {kNaN,kNaN,kNaN,UnifStatus::InvalidInput};

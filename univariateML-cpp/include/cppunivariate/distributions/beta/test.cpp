@@ -104,3 +104,10 @@ TEST_CASE("beta: P3 unfinished optimizer is a failure") {
 TEST_CASE("beta: symmetric median is an exact logit root") {
   CHECK(cppunivariate::distributions::qbeta(0.5,2,2,true,false)==doctest::Approx(0.5));
 }
+
+TEST_CASE("beta: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0},std::vector<double>{1.0,0.5},std::vector<double>{2.0,0.5}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::beta_mle(x,1e-8,200).status != cppunivariate::BetaStatus::Ok);
+  }
+}

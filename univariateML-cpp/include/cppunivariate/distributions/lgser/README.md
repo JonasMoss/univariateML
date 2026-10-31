@@ -60,3 +60,10 @@ The logarithmic series distribution models positive counts and has a history of 
 When every observation is one, the optimum lies at $\theta \to 0$, the point-mass boundary. The fitter reports an error instead of returning this boundary fit.
 
 Supplying `theta` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

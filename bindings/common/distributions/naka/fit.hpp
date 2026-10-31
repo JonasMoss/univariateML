@@ -25,11 +25,11 @@ inline FitResult fit_naka(cppunivariate::span x, Held shape_arg = {}, Held scale
   }
 
   auto res = cppunivariate::naka_mle(x, abstol, iterlim, shape_held, scale_held);
+  if (res.status == cppunivariate::GammaStatus::InvalidInput) return fail("Nakagami requires nonempty positive finite data and valid held parameters.");
+  if (res.status == cppunivariate::GammaStatus::TransformFailure) return fail("naka MLE failed: transformed observations exceed double precision.");
   if (res.status == cppunivariate::GammaStatus::IterationFailure)
     return fail("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if (res.status == cppunivariate::GammaStatus::Degenerate) {
-    if (!std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
-      return fail("naka MLE failed: transformed observations exceed double precision.");
     return fail("The Nakagami maximum likelihood estimator does not exist for constant data: "
                "the likelihood is unbounded as the shape grows.");
   }

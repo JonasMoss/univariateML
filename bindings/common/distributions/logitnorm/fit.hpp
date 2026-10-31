@@ -22,10 +22,11 @@ inline FitResult fit_logitnorm(cppunivariate::span x, Held mu_arg = {}, Held sig
   if (sigma.supplied) fixed.push_back("sigma");
   auto res = cppunivariate::logitnorm_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, checked_mu, checked_sigma);
-  if (!(res.sigma > 0.0) || !std::isfinite(res.sigma)) {
+  if (res.status == cppunivariate::LogitnormStatus::Unbounded) {
     return fail("The logitnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero.");
   }
-  if (!std::isfinite(res.logLik))
+  if (res.status == cppunivariate::LogitnormStatus::InvalidInput) return fail("Logit-normal requires nonempty finite data strictly between zero and one and valid held parameters.");
+  if (res.status != cppunivariate::LogitnormStatus::Ok || !std::isfinite(res.logLik))
     return fail("Logit-normal MLE failed: likelihood cannot be resolved in double precision.");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return out; }();
 

@@ -84,3 +84,10 @@ The Weibull distribution is used for lifetimes and reliability data.
 The optional `shape0` start is functional here; it was documented but ignored in univariateML 1.x.
 
 With scale held, the likelihood is unbounded exactly when every observation equals that scale. Holding shape permits constant data.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

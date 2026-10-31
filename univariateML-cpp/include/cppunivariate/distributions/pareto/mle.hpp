@@ -25,11 +25,14 @@ struct ParetoResult {
 inline ParetoResult pareto_mle(span x) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {kNaN, kNaN, kNaN};
+  if (n == 0) return {kNaN, kNaN, kNaN, ParetoStatus::InvalidInput};
+
+  for (double v : x) if (!(v > 0 && std::isfinite(v)))
+    return {kNaN,kNaN,kNaN,ParetoStatus::InvalidInput};
 
   double xmin = x[0];
   for (std::size_t i = 1; i < n; ++i) xmin = std::min(xmin, x[i]);
-  if (xmin <= 0.0) return {kNaN, kNaN, kNaN};
+  if (xmin <= 0.0) return {kNaN, kNaN, kNaN, ParetoStatus::InvalidInput};
 
   double sum_log_ratio = 0.0;
   double sum_log_x = 0.0;
@@ -40,7 +43,7 @@ inline ParetoResult pareto_mle(span x) {
   const double dn = static_cast<double>(n);
   const double alpha = dn / sum_log_ratio;
   const double logLik = dn * (std::log(alpha)-1.0) - sum_log_x;
-  return {alpha, xmin, logLik, sum_log_ratio == 0.0 ? ParetoStatus::Unbounded : ParetoStatus::Ok};
+  return {alpha, xmin, logLik, sum_log_ratio == 0.0 ? ParetoStatus::Unbounded : std::isfinite(alpha) && std::isfinite(logLik) ? ParetoStatus::Ok : ParetoStatus::IterationFailure};
 }
 
 inline ParetoResult pareto_mle(span x,double a,double b) {
@@ -55,7 +58,8 @@ inline ParetoResult pareto_mle(span x,double a,double b) {
   const double n=static_cast<double>(x.size());
   if(std::isnan(a) && gap==0)return {nan,b,nan,ParetoStatus::Unbounded};
   if(std::isnan(a))a=static_cast<double>(n/gap);
-  return {a,b,static_cast<double>(n*std::log(a)-a*gap-logs)};
+  const double ll=static_cast<double>(n*std::log(a)-a*gap-logs);
+  return {a,b,ll,std::isfinite(a) && std::isfinite(ll) ? ParetoStatus::Ok : ParetoStatus::IterationFailure};
 }
 
 }  // namespace cppunivariate

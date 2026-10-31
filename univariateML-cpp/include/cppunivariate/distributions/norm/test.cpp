@@ -90,3 +90,16 @@ TEST_CASE("norm: standardization and affine overflow") {
   CHECK(cppunivariate::distributions::dnorm(1e308,-1e308,1e308,true) == doctest::Approx(-712.1151471753707).epsilon(1e-12));
   CHECK(cppunivariate::distributions::pnorm(1e308,-1e308,1e308,false,true) == doctest::Approx(-3.783184333682032).epsilon(1e-12));
 }
+
+TEST_CASE("norm: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::norm_mle(x).status != cppunivariate::NormStatus::Ok);
+  }
+}
+
+TEST_CASE("norm: TASK-132 unresolved likelihood has numerical failure status") {
+  const std::vector<double> data{1.0,2.0};
+  const cppunivariate::span x{data.data(),data.size()};
+  CHECK(cppunivariate::norm_mle(x,0.0,1e-300).status == cppunivariate::NormStatus::IterationFailure);
+}

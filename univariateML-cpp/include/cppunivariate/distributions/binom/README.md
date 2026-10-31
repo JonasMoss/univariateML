@@ -91,3 +91,9 @@ Free trial-size estimation brackets and bisects the integer profile likelihood, 
 The estimate of `size` can be unstable; alternatives are discussed by Carroll and Lombard (1985) and DasGupta and Rubin (2005). Supplying `size` fixes the number of trials and estimates only `prob`; it must be at least `max(x)`. The support is the integers from zero to `size`, and `size` is a nonnegative integer.
 
 A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.
+
+### Diagnostic status contract (2026-10-31)
+
+Invalid and empty samples carry non-success statuses, including delegate paths.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp`.

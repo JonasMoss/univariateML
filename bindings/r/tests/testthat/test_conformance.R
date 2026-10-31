@@ -32,7 +32,11 @@ test_that('parameter kinds, required messages and adapter signatures conform', {
       expect_match(text, paste0('requires `',p,'`'), fixed=TRUE)
       expect_match(text, paste0('(',info$kind,')'), fixed=TRUE)
       expect_match(text, 'Hold a value', fixed=TRUE)
-      expect_match(text, paste0(p,' = NULL'), fixed=TRUE)
+      held <- names(Filter(function(v) !is.null(v), supplied))
+      blocked <- any(vapply(meta$holds, function(h)
+        !p %in% unlist(h$held) && setequal(unlist(h$held), intersect(held, meta$names)), logical(1)))
+      expect_identical(grepl(paste0('or use `',p,' = NULL`'), text, fixed=TRUE), !blocked,
+                       info=paste(id,p,paste(held,collapse=',')))
       if (!is.null(info$advice)) expect_match(text, info$advice, fixed=TRUE)
       # NULL must reach estimation or a declared unsupported-fit reason,
       # never the missing-argument diagnostic.
@@ -70,12 +74,12 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
       label <- paste(id,paste(held,collapse=','))
       fit <- tryCatch(do.call(get(id),c(list(x=as.numeric(g$data)),args)),error=identity)
       if(inherits(fit,'error')) {
-        # A nonempty holds entry covers supersets of its held set unless
-        # an exact free-required exception (which enumerates the whole set).
+        # Free-coordinate exceptions enumerate exact held sets. Only an
+        # unsupported adapter coefficient covers supersets containing it.
         exceptions <- Filter(function(h) {
           hheld <- unlist(h$held)
-          setequal(hheld,held) || (length(hheld) && all(hheld %in% held) &&
-            !grepl('Estimating',h$reason,fixed=TRUE))
+          setequal(hheld,held) || (h$status == 'not-implemented' && length(hheld) &&
+            any(!hheld %in% holdable) && all(hheld %in% held))
         },meta$holds)
         reasons <- vapply(exceptions, `[[`, '', 'reason')
         limits <- vapply(meta$limits,function(l) if(!is.null(l$message)) l$message else if(!is.null(l$model)) paste0('ml', l$model) else if(!is.null(l$name)) sub(';.*$', '', sub('^shifted ', '', l$name)) else '', '')
@@ -93,6 +97,49 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
         # numerical stopping error, without changing any golden values.
         expect_gte(attr(fit,'logLik'),g$logLik-1e-6*g$n,label=label)
       }
+    }
+  }
+})
+
+
+test_that('required NULL offers follow the actual other holds', {
+  diagnostic <- function(fn, ...) conditionMessage(tryCatch(fn(c(1,2,3), ...), error=identity))
+  expect_false(grepl('or use `min = NULL`', diagnostic(mlpareto2), fixed=TRUE))
+  expect_false(grepl('or use `min = NULL`', diagnostic(mlpareto2, shape=2, scale=1), fixed=TRUE))
+  expect_match(diagnostic(mlhnorm), 'or use `mu = NULL`', fixed=TRUE)
+  # CMB can estimate its required size only when both other coordinates are held.
+  expect_false(grepl('or use `size = NULL`', diagnostic(mlcmb), fixed=TRUE))
+  expect_match(diagnostic(mlcmb, prob=.4, nu=1), 'or use `size = NULL`', fixed=TRUE)
+  # Named and positional arguments describe the same holds.
+  outcome <- function(expr) tryCatch(as.numeric(suppressWarnings(expr)), error=conditionMessage)
+  expect_equal(outcome(mlcmb(c(1,2,3), FALSE, NULL, .4, 1)),
+               outcome(mlcmb(c(1,2,3), size=NULL, prob=.4, nu=1)))
+  null <- NULL
+  expect_false(grepl('or use `size = NULL`', diagnostic(mlcmb, prob=null), fixed=TRUE))
+})
+
+
+test_that('TASK-118 required offers conform for every other held subset', {
+  skip_unless_tier('dev')
+  root <- Sys.getenv('UMVL_DISTRIBUTIONS_DIR')
+  skip_if(!nzchar(root), 'no distribution goldens')
+  for (id in names(univariateML_metadata)) {
+    meta <- univariateML_metadata[[id]]
+    if (!length(meta$required)) next
+    g <- jsonlite::fromJSON(file.path(root,sub('^ml','',id),'golden.json'))
+    for (p in meta$required) for (held in subsets(setdiff(meta$names,p))) {
+      args <- golden_fit_args(id)
+      args[intersect(names(args), meta$names)] <- NULL
+      args[setdiff(meta$required,p)] <- rep(list(NULL),length(setdiff(meta$required,p)))
+      args[held] <- as.list(g$estimates[held])
+      err <- tryCatch(do.call(get(id),c(list(x=c(1,2,3)),args)),error=identity)
+      expect_true(inherits(err,'error'),info=paste(id,p))
+      text <- conditionMessage(err)
+      expect_match(text,paste0('requires `',p,'`'),fixed=TRUE)
+      blocked <- any(vapply(meta$holds,function(h)
+        !p %in% unlist(h$held) && setequal(unlist(h$held),held),logical(1)))
+      expect_identical(grepl(paste0('or use `',p,' = NULL`'),text,fixed=TRUE),!blocked,
+                       info=paste(id,p,paste(held,collapse=',')))
     }
   }
 })

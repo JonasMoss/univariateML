@@ -32,7 +32,7 @@
 
 namespace cppunivariate {
 
-enum class GammaStatus { Ok = 0, Degenerate, IterationFailure };
+enum class GammaStatus { Ok = 0, Degenerate, IterationFailure, InvalidInput, TransformFailure };
 
 struct GammaResult {
   double shape;
@@ -94,7 +94,10 @@ inline double robust_s(span x, double mean_hat) {
 inline GammaResult gamma_mle(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0};
+  if (n == 0) return {0.0, 0.0, kNaN, 0, GammaStatus::InvalidInput};
+
+  for (double v : x) if (!(v > 0 && std::isfinite(v)))
+    return {kNaN,kNaN,kNaN,0,GammaStatus::InvalidInput};
 
   const double dn = static_cast<double>(n);
   double mean_hat = cppunivariate::mean(x);

@@ -113,3 +113,31 @@ TEST_CASE("naka: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::naka_mle(x,1e-8,1).status==cppunivariate::GammaStatus::IterationFailure);
 }
+
+TEST_CASE("naka: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::naka_mle(x,1e-8,200).status != cppunivariate::GammaStatus::Ok);
+  }
+}
+
+TEST_CASE("naka: TASK-132 squared-data range loss has transform status") {
+  for (double unit : {1e-300,1e300}) {
+    const std::vector<double> data{unit,2*unit,3*unit};
+    CHECK(cppunivariate::naka_mle(mltest::as_span(data),1e-8,200).status == cppunivariate::GammaStatus::TransformFailure);
+  }
+}
+
+TEST_CASE("naka: TASK-132 held shape distinguishes lost scale from valid evaluation") {
+  const std::vector<double> data{1e-300,2e-300,3e-300};
+  const auto x=mltest::as_span(data);
+  CHECK(cppunivariate::naka_mle(x,1e-8,200,2.0,NAN).status == cppunivariate::GammaStatus::TransformFailure);
+  CHECK(cppunivariate::naka_mle(x,1e-8,200,2.0,3.0).status == cppunivariate::GammaStatus::Ok);
+}
+
+TEST_CASE("naka: TASK-132 constant samples retain analytic nonexistence across ranges") {
+  for(double point : {std::numeric_limits<double>::denorm_min(),1e-300,2.0,1e300}) {
+    const std::vector<double> data(4,point);
+    CHECK(cppunivariate::naka_mle(mltest::as_span(data),1e-8,200).status == cppunivariate::GammaStatus::Degenerate);
+  }
+}

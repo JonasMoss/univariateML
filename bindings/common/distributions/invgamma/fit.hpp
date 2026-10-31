@@ -25,11 +25,11 @@ inline FitResult fit_invgamma(cppunivariate::span x, Held alpha_arg = {}, Held b
   }
 
   auto res = cppunivariate::invgamma_mle(x, abstol, iterlim, alpha_held, beta_held);
+  if (res.status == cppunivariate::GammaStatus::InvalidInput) return fail("Inverse gamma requires nonempty positive finite data and valid held parameters.");
+  if (res.status == cppunivariate::GammaStatus::TransformFailure) return fail("invgamma MLE failed: transformed observations exceed double precision.");
   if (res.status == cppunivariate::GammaStatus::IterationFailure)
     return fail("Gamma delegate optimizer IterationFailure; increase iterlim.");
   if (res.status == cppunivariate::GammaStatus::Degenerate) {
-    if (!std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
-      return fail("invgamma MLE failed: transformed observations exceed double precision.");
     return fail("The inverse gamma maximum likelihood estimator does not exist for constant "
                "data: the likelihood is unbounded as the shape grows.");
   }

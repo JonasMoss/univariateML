@@ -84,3 +84,10 @@ The Pareto distribution is a heavy-tailed model for positive quantities above a 
 The lower endpoint `b` is estimated by `min(x)`, a boundary MLE at an order statistic; `a` is the tail shape. The fitted support is $[b, \infty)$, with $b>0$.
 
 A held b must not exceed min(x). With a free the likelihood is unbounded if all observations equal b. Holding a permits constant data and estimates b=min(x).
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

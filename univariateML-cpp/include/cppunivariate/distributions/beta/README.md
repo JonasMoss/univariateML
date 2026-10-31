@@ -78,3 +78,10 @@ The beta distribution models proportions and other continuous quantities between
 ## Details
 
 With either positive finite shape held, the remaining shape has a unique finite maximum even for constant data. Its strictly decreasing digamma score is solved by bracketing. With both shapes free, constant data have unbounded likelihood; with both held the likelihood is evaluated.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

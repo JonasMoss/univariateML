@@ -73,3 +73,10 @@ The location estimate is a sample median and the scale estimate is the mean abso
 
 
 With mu held, sigma is the mean absolute residual about that value. Scale collapses only when every observation equals the held mu. Holding sigma permits constant samples.
+
+### Diagnostic status contract (2026-10-31)
+
+Empty or invalid input carries a non-success status. Degenerate samples depend
+on which coefficients are free; delegate failures survive transformations.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp` for the validation scope.

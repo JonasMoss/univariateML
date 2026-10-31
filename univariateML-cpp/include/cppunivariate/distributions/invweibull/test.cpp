@@ -124,3 +124,15 @@ TEST_CASE("invweibull: finite scale with overflowing reciprocal") {
   CHECK(std::isfinite(cppunivariate::distributions::pinvweibull(scale, 2.0, scale, false, true)));
   CHECK(cppunivariate::distributions::qinvweibull(0.5, 2.0, scale, true, false) > 0.0);
 }
+
+TEST_CASE("invweibull: TASK-132 invalid data never report success") {
+  for (const auto& data : {std::vector<double>{},std::vector<double>{NAN,2.0},std::vector<double>{INFINITY,2.0},std::vector<double>{-INFINITY,2.0},std::vector<double>{-1.0,2.0},std::vector<double>{0.0,2.0}}) {
+    const cppunivariate::span x{data.data(),data.size()};
+    CHECK(cppunivariate::invweibull_mle(x,1e-8,200).status != cppunivariate::InvWeibullStatus::Ok);
+  }
+}
+
+TEST_CASE("invweibull: TASK-132 preserves invalid Gumbel controls") {
+  const std::vector<double> data{1,2,3};
+  CHECK(cppunivariate::invweibull_mle(cppunivariate::span{data.data(),data.size()},1e-8,0).status == cppunivariate::InvWeibullStatus::InvalidInput);
+}

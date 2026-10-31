@@ -180,3 +180,9 @@ Observations must be strictly inside the held support. Free endpoints with other
 With the opposite bound held beyond the sample, a shape a < 1 and its bound approaching the corresponding extreme at distance epsilon gives k factors proportional to epsilon^(a-1); all other factors approach positive constants. Thus the likelihood diverges. The held-bounds fit transforms to beta and subtracts n log(max-min) from log likelihood.
 
 With both bounds held, either held beta shape leaves a strictly decreasing score with one root for the other shape, even on constant samples strictly inside the bounds.
+
+### Diagnostic status contract (2026-10-31)
+
+Invalid and empty samples carry non-success statuses, including delegate paths.
+See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the appended TASK-132 cases in `test.cpp`.

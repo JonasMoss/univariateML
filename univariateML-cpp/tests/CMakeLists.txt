@@ -89,3 +89,14 @@ add_test(NAME tails_tests COMMAND tails_tests
 
 set_tests_properties(bfgs_tests sample_tests no_throw_tests cmp_tests tails_tests
   PROPERTIES LABELS "cran;dev;full")
+
+# The monorepo audit is generated from binding call routing, but its checked-in
+# C++ source depends only on the standalone core. Do not require bindings or
+# Python when building the independently distributed C++ tree.
+set(_diagnostics_source "${CMAKE_SOURCE_DIR}/../dev/validation/diagnostics-audit.cpp")
+if(EXISTS "${_diagnostics_source}")
+  cppuniv_test(diagnostics_tests "${_diagnostics_source}")
+  target_compile_options(diagnostics_tests PRIVATE -O2)
+  add_test(NAME diagnostics_tests COMMAND diagnostics_tests)
+  set_tests_properties(diagnostics_tests PROPERTIES LABELS "dev;full" TIMEOUT 60)
+endif()

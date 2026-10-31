@@ -24,7 +24,8 @@ inline FitResult fit_invgauss(cppunivariate::span x, Held mean_arg = {}, Held sh
 
   auto res = cppunivariate::invgauss_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, mean_held, shape_held);
-  if (!(res.lambda > 0.0) || !std::isfinite(res.lambda) || !std::isfinite(res.logLik)) {
+  if (res.status == cppunivariate::InvGaussStatus::InvalidInput) return fail("Inverse Gaussian requires nonempty positive finite data and valid held parameters.");
+  if (res.status != cppunivariate::InvGaussStatus::Ok || !(res.lambda > 0.0) || !std::isfinite(res.lambda) || !std::isfinite(res.logLik)) {
     return fail("Inverse Gaussian MLE failed: constant data have no attained maximum; other data may exceed double precision.");
   }
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mu},{"shape",res.lambda}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();

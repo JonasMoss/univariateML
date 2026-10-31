@@ -22,6 +22,8 @@ inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_
   if(sigma.supplied)fixed.push_back("sigma");
 
   cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(x,reltol,iterlim,held_mu,held_sigma);
+  if (res.status == cppunivariate::GumbelStatus::InvalidInput) return fail("Gumbel requires nonempty finite data, valid held parameters, a positive tolerance and positive iterlim.");
+  if (res.status == cppunivariate::GumbelStatus::Unbounded) return fail("The Gumbel maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
   if (res.status == cppunivariate::GumbelStatus::IterationFailure)
     return fail("Gumbel optimizer IterationFailure; increase iterlim.");
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) || !std::isfinite(res.logLik)) {
