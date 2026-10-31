@@ -53,7 +53,19 @@ key_references:
 group: Poisson, binomial and negative binomial
 construction:
 - base
-relations: {}
+relations:
+  special_case_of:
+  - family: zib
+    at:
+      size: size
+      prob: prob
+      pi: 0
+  - family: tbinom
+    at:
+      size: size
+      prob: prob
+      a: -1
+      b: size
 fit:
   method: integer-search
   certified: 'yes'

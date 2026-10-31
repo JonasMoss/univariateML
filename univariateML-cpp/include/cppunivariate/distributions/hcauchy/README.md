@@ -52,6 +52,12 @@ relations:
       scale: sigma
     transform: abs
     shift: mu
+  special_case_of:
+  - family: ht
+    at:
+      mu: mu
+      sigma: sigma
+      nu: 1
 fit:
   method: profile-search
   certified: 'yes'

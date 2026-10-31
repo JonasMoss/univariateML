@@ -53,6 +53,16 @@ relations:
       shape1: 1
       shape2: shape
       scale: scale
+  - family: invburr
+    at:
+      shape1: 1
+      shape2: shape
+      scale: scale
+  - family: pareto3
+    at:
+      shape: shape
+      scale: scale
+      min: 0
   transform_of:
   - family: logis
     transform: log

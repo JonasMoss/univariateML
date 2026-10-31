@@ -46,13 +46,12 @@ group: gamma and Weibull
 construction:
 - transformation
 relations:
-  transform_of:
-  - family: gamma
-    transform: power
+  special_case_of:
+  - family: trgamma
     at:
-      shape: shape
-      scale: scale/shape
-    power: 2
+      shape1: shape
+      shape2: 2
+      scale: sqrt(scale/shape)
 fit:
   method: delegation
   certified: 'yes'

@@ -132,7 +132,16 @@ examples: |
 group: beta and generalised beta
 construction:
 - base
-relations: {}
+relations:
+  transform_of:
+  - family: genbeta
+    at:
+      shape1: shape1
+      shape2: shape2
+      shape3: 1
+      scale: max-min
+    transform: shift
+    shift: min
 fit:
   method: multistart
   certified: 'yes'

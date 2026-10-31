@@ -43,6 +43,12 @@ relations:
       theta: prob
     type: zero-modified
     mass: p0
+  special_case_of:
+  - family: zmnbinom
+    at:
+      size: 0
+      prob: 1-prob
+      p0: p0
 fit:
   method: multistart
   certified: 'yes'

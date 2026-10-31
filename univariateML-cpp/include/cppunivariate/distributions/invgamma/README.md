@@ -48,6 +48,12 @@ relations:
     at:
       shape: alpha
       scale: 1/beta
+  special_case_of:
+  - family: invtrgamma
+    at:
+      shape1: alpha
+      shape2: 1
+      scale: beta
 fit:
   method: delegation
   certified: 'yes'

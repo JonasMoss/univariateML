@@ -52,7 +52,14 @@ group: skewed and robust location-scale
 construction:
 - skewing
 - location-scale
-relations: {}
+relations:
+  special_case_of:
+  - family: sged
+    at:
+      mean: mean
+      sd: sd
+      nu: 2
+      xi: xi
 fit:
   method: profile-search
   certified: partial

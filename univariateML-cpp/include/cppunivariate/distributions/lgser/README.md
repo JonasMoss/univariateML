@@ -26,7 +26,16 @@ examples: |
 group: discrete heavy-tailed
 construction:
 - base
-relations: {}
+relations:
+  special_case_of:
+  - family: zmlogarithmic
+    at:
+      prob: theta
+      p0: 0
+  - family: ztnbinom
+    at:
+      size: 0
+      prob: 1-theta
 fit:
   method: scalar-solve
   certified: 'yes'

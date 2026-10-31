@@ -42,7 +42,13 @@ examples: |
 group: skewed and robust location-scale
 construction:
 - location-scale
-relations: {}
+relations:
+  special_case_of:
+  - family: ged
+    at:
+      mean: mu
+      sd: sqrt(2)*sigma
+      nu: 1
 fit:
   method: closed-form
   certified: 'yes'

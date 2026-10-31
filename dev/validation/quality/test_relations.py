@@ -3,8 +3,16 @@ import copy
 import unittest
 import shutil
 import subprocess
+import io
+import json
+import tempfile
+from pathlib import Path
+from contextlib import redirect_stdout
+from unittest.mock import patch
+from . import relations
 from .relations import ROOT
-from .relations import read_models, check_edge
+from .relations import read_models, check_edge, skellam_boundary, declaration_errors
+import sympy as sp
 
 class RelationsTest(unittest.TestCase):
     @classmethod
@@ -125,5 +133,225 @@ class ConditionalRelationsTest(unittest.TestCase):
         for id in ('norm','std','ged'):
             for edge in self.models[id]['relations']['special_case_of']:
                 self.assertIn('verified',check_edge(self.models[id],self.models[edge['family']],'special_case_of',edge))
+
+    def test_tukey_lambda_attained_members(self):
+        for child, at in (
+            ('logis', dict(mu='location', sigma='scale', **{'lambda': 0})),
+            ('unif', dict(mu='(min+max)/2', sigma='(max-min)/2', **{'lambda': 1})),
+            ('unif', dict(mu='(min+max)/2', sigma='max-min', **{'lambda': 2})),
+        ):
+            with self.subTest(child=child, at=at):
+                self.assertIn('verified', check_edge(self.models[child], self.models['tlambda'],
+                              'special_case_of', dict(at=at)))
+        with self.assertRaisesRegex(ValueError, 'log-density mismatch'):
+            check_edge(self.models['logis'], self.models['tlambda'], 'special_case_of',
+                       dict(at=dict(mu='location', sigma='2*scale', **{'lambda': 0})))
+
+    def test_shifted_yule_simon(self):
+        edge = dict(at=dict(size=1, alpha='rho', beta=1), transform='shift', shift=1)
+        self.assertIn('verified', check_edge(self.models['yulesimon'], self.models['bnbinom'],
+                                           'transform_of', edge))
+        edge['shift'] = 0
+        with self.assertRaisesRegex(ValueError, 'support mismatch'):
+            check_edge(self.models['yulesimon'], self.models['bnbinom'], 'transform_of', edge)
+
+    def test_bhattacharjee_removable_boundary(self):
+        edge = dict(at=dict(mu='mean', sigma='sd', a=0))
+        self.assertIn('verified', check_edge(self.models['norm'], self.models['bhatt'],
+                                           'special_case_of', edge))
+        edge['at']['sigma'] = '2*sd'
+        with self.assertRaisesRegex(ValueError, 'log-density mismatch'):
+            check_edge(self.models['norm'], self.models['bhatt'], 'special_case_of', edge)
+
+    def test_logarithmic_attained_boundaries(self):
+        for child, parent, at in (
+            ('lgser', 'ztnbinom', dict(size=0, prob='1-theta')),
+            ('zmlogarithmic', 'zmnbinom', dict(size=0, prob='1-prob', p0='p0')),
+        ):
+            with self.subTest(child=child):
+                self.assertIn('verified', check_edge(self.models[child], self.models[parent],
+                                                   'special_case_of', dict(at=at)))
+                wrong = dict(at)
+                wrong['prob'] = 'theta' if child == 'lgser' else 'prob'
+                with self.assertRaisesRegex(ValueError, 'log-density mismatch'):
+                    check_edge(self.models[child], self.models[parent],
+                               'special_case_of', dict(at=wrong))
+
+    def test_negative_hypergeometric_including_zero_stop(self):
+        edge = self.models['nhyper']['relations']['transform_of'][0]
+        for stop in (0, 3):
+            child = copy.deepcopy(self.models['nhyper'])
+            next(p for p in child['params'] if p['name'] == 'r')['simulate'] = stop
+            with self.subTest(stop=stop):
+                self.assertIn('verified', check_edge(child, self.models['bbinom'],
+                                                   'transform_of', edge))
+        wrong = copy.deepcopy(edge)
+        wrong['shift'] = 'r+1'
+        with self.assertRaisesRegex(ValueError, 'support mismatch'):
+            check_edge(self.models['nhyper'], self.models['bbinom'], 'transform_of', wrong)
+
+    def test_invalid_child_draws_do_not_count_as_trials(self):
+        child = copy.deepcopy(self.models['nhyper'])
+        next(p for p in child['params'] if p['name'] == 'r')['domain'] = '[100, inf)'
+        edge = child['relations']['transform_of'][0]
+        with self.assertRaisesRegex(ValueError, 'could not draw 24 valid child'):
+            check_edge(child, self.models['bbinom'], 'transform_of', edge)
+
+    def test_signed_poisson_skellam_faces(self):
+        for kind in ('special_case_of', 'transform_of'):
+            edge = next(e for e in self.models['pois']['relations'][kind] if e['family'] == 'skellam')
+            self.assertIn('verified', check_edge(self.models['pois'], self.models['skellam'], kind, edge))
+        edge = dict(at=dict(mu1='2*lambda', mu2=0))
+        with self.assertRaisesRegex(ValueError, 'log-density mismatch'):
+            check_edge(self.models['pois'], self.models['skellam'], 'special_case_of', edge)
+
+    def test_skellam_extension_against_interior_and_zero_corner(self):
+        a, b = sp.symbols('a b', nonnegative=True)
+        x = sp.Symbol('x', integer=True)
+        raw = -a-b+x*sp.log(a/b)/2+sp.log(sp.besseli(sp.Abs(x), 2*sp.sqrt(a*b)))
+        original = copy.deepcopy(self.models['skellam'])
+        for sign, at in ((1, {a: a, b: 0}), (-1, {a: 0, b: b})):
+            meta, face = skellam_boundary(original, [a,b], x, raw, at)
+            for k in (0, 1, 5):
+                interior = {a: sp.Float('2.3') if sign == 1 else sp.Float('1e-9'),
+                            b: sp.Float('1e-9') if sign == 1 else sp.Float('2.3'), x: sign*k}
+                boundary = {a: sp.Float('2.3') if sign == 1 else 0,
+                            b: 0 if sign == 1 else sp.Float('2.3'), x: sign*k}
+                self.assertAlmostEqual(float(raw.evalf(35, subs=interior)),
+                                       float(face.subs(boundary).evalf(35)), places=7)
+            self.assertEqual(face.subs({a:0,b:0,x:0}), 0)
+            self.assertEqual(face.subs({a:0,b:0,x:sign}), -sp.oo)
+        self.assertEqual(original, self.models['skellam'])
+        meta, face = skellam_boundary(original, [a,b], x, raw, {a:0,b:0})
+        self.assertEqual((meta['support']['lower'],meta['support']['upper']), (0,0))
+        with self.assertRaisesRegex(ValueError, 'unrecognized Skellam density'):
+            skellam_boundary(original, [a,b], x, raw+1, {a:a,b:0})
+
+    def test_cmp_series_members_keep_normalizer(self):
+        for child, at in (('pois', {'lambda':'lambda','nu':1}),
+                          ('geom', {'lambda':'1-prob','nu':0})):
+            self.assertIn('verified', check_edge(self.models[child], self.models['cmp'],
+                                               'special_case_of', dict(at=at)))
+        with self.assertRaisesRegex(ValueError, 'log-density mismatch'):
+            check_edge(self.models['pois'], self.models['cmp'], 'special_case_of',
+                       dict(at={'lambda':'2*lambda','nu':1}))
+
+    def test_zero_modified_zero_atom_removed(self):
+        for child, parent in (('ztbinom','zmbinom'), ('ztgeom','zmgeom'),
+                              ('ztnbinom','zmnbinom'), ('ztpois','zmpois'),
+                              ('lgser','zmlogarithmic'), ('lgser','zmnbinom')):
+            # lgser -> zmnbinom is deliberately not declared: it follows
+            # through ztnbinom or zmlogarithmic. Still test the support fix.
+            edge = (dict(at=dict(size=0, prob='1-theta', p0=0))
+                    if (child,parent) == ('lgser','zmnbinom') else
+                    next(e for e in self.models[child]['relations']['special_case_of']
+                         if e['family'] == parent))
+            self.assertIn('verified', check_edge(self.models[child], self.models[parent],
+                                               'special_case_of', edge))
+        wrong = copy.deepcopy(edge)
+        wrong['at']['p0'] = .1
+        with self.assertRaisesRegex(ValueError, 'support mismatch'):
+            check_edge(self.models['lgser'], self.models['zmnbinom'], 'special_case_of', wrong)
+
+    def test_inverse_gev_endpoint_cancels_before_rounding(self):
+        # A regression probe for the endpoint evaluator, not a declaration:
+        # reciprocal Weibull is represented in invweibull's dossier.
+        edge = dict(transform='inverse', at=dict(mu='1/scale',
+                    sigma='1/(scale*shape)', xi='1/shape'))
+        self.assertIn('verified', check_edge(self.models['weibull'], self.models['gev'],
+                                           'transform_of', edge))
+        wrong = copy.deepcopy(edge)
+        wrong['at']['mu'] = '-scale'
+        with self.assertRaisesRegex(ValueError, 'inverse currently requires positive'):
+            check_edge(self.models['weibull'], self.models['gev'], 'transform_of', wrong)
+
+
+class ImmediateDeclarationTest(unittest.TestCase):
+    def models(self, **relations_by_id):
+        return {name: dict(id=name, params=[dict(name='scale', domain='(0, inf)')],
+                           relations=value) for name,value in relations_by_id.items()}
+
+    def special(self, family, scale='scale'):
+        return dict(family=family, at=dict(scale=scale))
+
+    def transform(self, family, transform='inverse', scale='scale', **kwargs):
+        return dict(family=family, at=dict(scale=scale), transform=transform, **kwargs)
+
+    def test_transitive_special_case_search(self):
+        models = self.models(a=dict(special_case_of=[self.special('b'), self.special('d')]),
+                             b=dict(special_case_of=[self.special('c')]),
+                             c=dict(special_case_of=[self.special('d')]), d={})
+        errors = declaration_errors(models)
+        self.assertEqual(set(errors), {('a','special_case_of',1)})
+        self.assertIn('a -> b -> c -> d', errors[('a','special_case_of',1)])
+        models['a']['relations']['special_case_of'].pop()
+        self.assertEqual(declaration_errors(models), {})
+
+    def test_duplicates_include_equivalent_spelling_and_alias_maps(self):
+        models = self.models(a=dict(special_case_of=[self.special('b'), self.special('b','2*scale')],
+                                    transform_of=[self.transform('b'), self.transform('b',scale='(scale)')]), b={})
+        errors = declaration_errors(models)
+        for kind in ('special_case_of','transform_of'):
+            self.assertIn('duplicate', errors[('a',kind,1)])
+
+    def test_identity_transforms_are_algebraic(self):
+        for transform, argument, value in (('power','power','scale/scale'),
+                                           ('shift','shift','scale-scale')):
+            models = self.models(a=dict(transform_of=[self.transform('b',transform,**{argument:value})]),b={})
+            self.assertIn('identity transform', declaration_errors(models)[('a','transform_of',0)])
+        models = self.models(a=dict(transform_of=[self.transform('b','abs',shift=0)]),b={})
+        self.assertEqual(declaration_errors(models), {})
+
+    def test_involutions_have_one_direction(self):
+        for transform in ('inverse','negate'):
+            models = self.models(a=dict(transform_of=[self.transform('b',transform)]),
+                                 b=dict(transform_of=[self.transform('a',transform)]))
+            self.assertEqual(len(declaration_errors(models)), 2)
+            models['b']['relations'] = {}
+            self.assertEqual(declaration_errors(models), {})
+
+    def test_special_then_same_transform_is_family_level(self):
+        models = self.models(a=dict(special_case_of=[self.special('b','2*scale')],
+                                    transform_of=[self.transform('c','power','4*scale**2',power=2)]),
+                             b=dict(transform_of=[self.transform('c','power','scale**2',power=2)]),c={})
+        self.assertIn('derivable transform', declaration_errors(models)[('a','transform_of',0)])
+        models['a']['relations']['transform_of'][0]['power'] = 3
+        self.assertIn('derivable transform', declaration_errors(models)[('a','transform_of',0)])
+        models['a']['relations']['transform_of'][0]['transform'] = 'log'
+        self.assertEqual(declaration_errors(models), {})
+
+    def test_transform_then_special_is_family_level(self):
+        models = self.models(a=dict(transform_of=[self.transform('b',scale='1/scale'),
+                                                  self.transform('c',scale='2/scale')]),
+                             b=dict(special_case_of=[self.special('c','2*scale')]), c={})
+        self.assertIn('derivable transform', declaration_errors(models)[('a','transform_of',1)])
+        models['a']['relations']['transform_of'][1]['at']['scale'] = '3/scale'
+        self.assertIn('derivable transform', declaration_errors(models)[('a','transform_of',1)])
+        models['a']['relations']['transform_of'][1]['transform'] = 'negate'
+        self.assertEqual(declaration_errors(models), {})
+
+    def test_special_chains_on_both_sides_of_transform(self):
+        models = self.models(a=dict(special_case_of=[self.special('b')],
+                                    transform_of=[self.transform('e',scale='1/scale')]),
+                             b=dict(special_case_of=[self.special('c')]),
+                             c=dict(transform_of=[self.transform('d',scale='1/scale')]),
+                             d=dict(special_case_of=[self.special('e')]),e={})
+        self.assertIn('a -> b -> c -> d -> e', declaration_errors(models)[('a','transform_of',0)])
+
+    def test_special_cycles_fail_without_recursing_forever(self):
+        models = self.models(a=dict(special_case_of=[self.special('b')]),
+                             b=dict(special_case_of=[self.special('a')]))
+        self.assertTrue(all('cycle' in value for value in declaration_errors(models).values()))
+
+    def test_cli_fails_even_when_density_checks_would_pass(self):
+        models = self.models(a=dict(special_case_of=[self.special('b'),self.special('c')]),
+                             b=dict(special_case_of=[self.special('c')]),c={})
+        with tempfile.TemporaryDirectory(dir=ROOT/'build/tmp') as folder:
+            with patch.object(relations,'ROOT',Path(folder)), patch.object(relations,'read_models',return_value=models), \
+                    patch.object(relations,'check_edge',return_value='verified symbolically'), redirect_stdout(io.StringIO()):
+                self.assertEqual(relations.main(), 1)
+            rows = json.loads((Path(folder)/'build/quality/relations.json').read_text())['results']
+            self.assertEqual(sum(row['status']=='failed' for row in rows), 1)
+            self.assertIn('derivable special case', next(row['detail'] for row in rows if row['status']=='failed'))
 
 if __name__=='__main__': unittest.main()

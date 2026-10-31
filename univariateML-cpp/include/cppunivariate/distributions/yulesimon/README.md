@@ -31,7 +31,15 @@ examples: |
 group: discrete heavy-tailed
 construction:
 - base
-relations: {}
+relations:
+  transform_of:
+  - family: bnbinom
+    at:
+      size: 1
+      alpha: rho
+      beta: 1
+    transform: shift
+    shift: 1
 fit:
   method: scalar-solve
   certified: 'yes'

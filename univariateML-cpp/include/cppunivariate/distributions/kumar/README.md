@@ -55,6 +55,13 @@ relations:
       shape2: b
       shape3: a
       scale: 1
+  transform_of:
+  - family: beta
+    at:
+      shape1: 1
+      shape2: b
+    transform: power
+    power: a
 fit:
   method: scalar-solve
   certified: partial

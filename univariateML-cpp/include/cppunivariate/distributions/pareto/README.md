@@ -47,7 +47,20 @@ examples: |
 group: Pareto and Lomax
 construction:
 - base
-relations: {}
+relations:
+  special_case_of:
+  - family: pareto2
+    at:
+      shape: a
+      scale: b
+      min: b
+  transform_of:
+  - family: gpd
+    at:
+      mu: log(b)
+      sigma: 1/a
+      xi: 0
+    transform: log
 fit:
   method: closed-form
   certified: 'yes'

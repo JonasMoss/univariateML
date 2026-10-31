@@ -50,6 +50,21 @@ relations:
     at:
       shape: 1
       scale: 1/rate
+  - family: gpd
+    at:
+      mu: 0
+      sigma: 1/rate
+      xi: 0
+  - family: sgomp
+    at:
+      b: rate
+      eta: 0
+  transform_of:
+  - family: laplace
+    at:
+      mu: 0
+      sigma: 1/rate
+    transform: abs
 fit:
   method: closed-form
   certified: 'yes'

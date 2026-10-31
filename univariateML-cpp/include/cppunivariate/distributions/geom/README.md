@@ -31,6 +31,14 @@ relations:
     at:
       size: 1
       prob: prob
+  - family: cmp
+    at:
+      lambda: 1-prob
+      nu: 0
+  - family: zmgeom
+    at:
+      prob: prob
+      p0: prob
 fit:
   method: closed-form
   certified: 'yes'

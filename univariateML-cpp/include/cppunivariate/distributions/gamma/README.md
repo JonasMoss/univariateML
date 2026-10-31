@@ -56,6 +56,13 @@ relations:
       shape1: shape
       shape2: 1
       scale: scale
+  transform_of:
+  - family: naka
+    at:
+      shape: shape
+      scale: shape*scale
+    transform: power
+    power: 0.5
 fit:
   method: scalar-solve
   certified: 'yes'

@@ -53,6 +53,12 @@ relations:
       shape1: shape
       shape2: shape
       scale: scale
+  transform_of:
+  - family: paralogis
+    at:
+      shape: shape
+      scale: 1/scale
+    transform: inverse
 fit:
   method: delegation
   certified: partial

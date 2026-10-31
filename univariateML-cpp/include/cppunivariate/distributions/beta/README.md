@@ -49,7 +49,20 @@ key_references:
 group: beta and generalised beta
 construction:
 - base
-relations: {}
+relations:
+  special_case_of:
+  - family: genbeta
+    at:
+      shape1: shape1
+      shape2: shape2
+      shape3: 1
+      scale: 1
+  - family: nsbeta
+    at:
+      shape1: shape1
+      shape2: shape2
+      min: 0
+      max: 1
 fit:
   method: scalar-solve
   certified: 'yes'

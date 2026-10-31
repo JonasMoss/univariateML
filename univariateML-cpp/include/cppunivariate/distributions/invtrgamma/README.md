@@ -73,6 +73,12 @@ relations:
       shape1: shape1
       shape2: shape2
       scale: 1/scale
+  - family: invgamma
+    at:
+      alpha: shape1
+      beta: scale**shape2
+    transform: power
+    power: shape2
 fit:
   method: delegation
   certified: partial

@@ -80,6 +80,11 @@ relations:
       shape2: 1
       scale: scale
       min: min
+  - family: gpd
+    at:
+      mu: min
+      sigma: scale/shape
+      xi: 1/shape
   transform_of:
   - family: lomax
     transform: shift

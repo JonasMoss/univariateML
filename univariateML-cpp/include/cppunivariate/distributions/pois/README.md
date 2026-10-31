@@ -24,7 +24,22 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - base
-relations: {}
+relations:
+  special_case_of:
+  - family: cmp
+    at:
+      lambda: lambda
+      nu: 1
+  - family: skellam
+    at:
+      mu1: lambda
+      mu2: 0
+  transform_of:
+  - family: skellam
+    at:
+      mu1: 0
+      mu2: lambda
+    transform: negate
 fit:
   method: closed-form
   certified: 'yes'

@@ -66,7 +66,23 @@ group: beta and generalised beta
 construction:
 - base
 - generalisation
-relations: {}
+relations:
+  special_case_of:
+  - family: fpareto
+    at:
+      shape1: shape1
+      shape2: shape2
+      shape3: shape3
+      scale: scale
+      min: 0
+  transform_of:
+  - family: betapr
+    at:
+      shape1: shape3
+      shape2: shape1
+      scale: scale**shape2
+    transform: power
+    power: shape2
 fit:
   method: multistart
   certified: partial
