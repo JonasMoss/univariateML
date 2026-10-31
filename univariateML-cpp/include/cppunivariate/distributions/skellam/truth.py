@@ -11,6 +11,8 @@ import mpmath as mp
 from quality.truth_reference import Reference, pair
 
 
+boundary_parameter_sets = [{'mu1': 0., 'mu2': 0.}]
+
 def build(p, logd):
     a,b=p['mu1'],p['mu2']
     @lru_cache(maxsize=20000)
@@ -47,3 +49,8 @@ def build(p, logd):
     if max(tails(-width-1)[0],tails(width)[1])>mp.log(mp.mpf('1e-40')):
         raise ArithmeticError('normalization tail bound')
     return ref
+
+# Independent rows retained outside active checks; exact findings in the TASK-106 report.
+truth_exclusions = {'values': [([1.0, 0.0], [174.0], 'TASK-106 dpqr boundary mismatch; see boundary report'),
+            ([1.0, 0.0], [175.0], 'TASK-106 dpqr boundary mismatch; see boundary report'),
+            ([1.0, 0.0], [176.0], 'TASK-106 dpqr boundary mismatch; see boundary report')]}

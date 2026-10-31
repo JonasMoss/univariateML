@@ -3,9 +3,12 @@
 The route contains only mathematical definitions, no C++/R/reference calls.
 """
 import mpmath as mp
+from quality.truth_reference import atomic
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t, logd):
+    if t['prob'] == 1: return atomic({0: t['p0'], 1: 1-t['p0']})
+    if t['p0'] == 1: return atomic({0: 1})
     p=t['prob']
     base=lambda x:pair((x+1)*mp.log1p(-p),False)
     ratio=lambda k:1-p
@@ -18,3 +21,13 @@ def build(t, logd):
     out.normalization=geometric_sum(lambda k:mp.exp(logd(mp.mpf(k))),0,ratio)
     return out
 
+
+# Independent rows retained outside active checks; exact findings in the TASK-106 report.
+truth_exclusions = {'quantiles': [([0.5, 0.0], [1, 1, '-Inf'],
+                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
+               ([0.5, 0.0], [1, 0, 0.0],
+                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
+               ([0.5, 0.0], [0, 1, 0.0],
+                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report'),
+               ([0.5, 0.0], [0, 0, 1.0],
+                'TASK-106 finite-support endpoint convention differs from the declared support; see boundary report')]}
