@@ -111,3 +111,75 @@ TEST_CASE("beta: TASK-132 invalid data never report success") {
     CHECK(cppunivariate::beta_mle(x,1e-8,200).status != cppunivariate::BetaStatus::Ok);
   }
 }
+
+#include "cppunivariate/distributions/beta/score.hpp"
+TEST_CASE("beta: inference every free subset and MLE score") {
+  std::vector<double> x{0.08,0.2,0.4,0.6,0.8};
+  const auto full=cppunivariate::beta_inference(mltest::as_span(x),1.3, 2.7);
+  REQUIRE(full.status==cppunivariate::InferenceStatus::Ok);
+  for(unsigned mask=0; mask<4; ++mask) {
+    std::vector<double> sums(2,0);
+    std::array<double,4> products{};
+    std::size_t rows=0;
+    const auto a=cppunivariate::beta_inference(mltest::as_span(x),1.3, 2.7,mask,
+      [&](const std::vector<double>& row) {++rows; for(std::size_t j=0;j<row.size();++j) { sums[j]+=row[j]; for(std::size_t k=0;k<row.size();++k) products[j*row.size()+k]+=row[j]*row[k]; }});
+    REQUIRE(a.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(rows==x.size());
+    CHECK(a.observations==x.size());
+    for(std::size_t j=0;j<a.dimension;++j) {
+      CHECK(a.score[j]==doctest::Approx(sums[j]));
+      CHECK(a.score[j]==doctest::Approx(full.score[a.free_indices[j]]));
+      for(std::size_t k=0;k<a.dimension;++k) {
+        const auto dst=j*a.dimension+k, src=a.free_indices[j]*2+a.free_indices[k];
+        CHECK(a.opg[dst]==doctest::Approx(full.opg[src]));
+        CHECK(a.opg[dst]==doctest::Approx(products[dst]));
+        CHECK(a.observed[dst]==doctest::Approx(full.observed[src]));
+        CHECK(a.fisher[dst]==doctest::Approx(full.fisher[src]));
+      }
+    }
+    const auto f=cppunivariate::beta_mle(mltest::as_span(x),1e-12,2000,(mask&1)?NAN:1.3,(mask&2)?NAN:2.7);
+    REQUIRE(f.status==cppunivariate::BetaStatus::Ok);
+    const auto fitted=cppunivariate::beta_inference(mltest::as_span(x),f.alpha,f.beta,mask);
+    REQUIRE(fitted.status==cppunivariate::InferenceStatus::Ok);
+    for(std::size_t j=0;j<fitted.dimension;++j) CHECK(std::abs(fitted.score[j])<1e-7);
+  }
+  CHECK(cppunivariate::beta_inference(mltest::as_span(x),1.3, 2.7,4).status==cppunivariate::InferenceStatus::InvalidSubset);
+  CHECK(cppunivariate::beta_inference(cppunivariate::span{x.data(),0},1.3, 2.7).status==cppunivariate::InferenceStatus::EmptySample);
+}
+
+TEST_CASE("beta: analytic information versus log density central differences") {
+  std::vector<double> x{0.4}, p{1.3,2.7};
+  const auto r=cppunivariate::beta_inference(mltest::as_span(x),p[0],p[1]);
+  REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+  const auto ld=[&]() {return cppunivariate::distributions::dbeta(x[0],p[0],p[1],true);};
+  const double step=1e-4, base=ld();
+  for(std::size_t j=0;j<2;++j) {
+    const double saved=p[j];
+    p[j]=saved+step; const double plus=ld();
+    p[j]=saved-step; const double minus=ld(); p[j]=saved;
+    CHECK(r.score[j]==doctest::Approx((plus-minus)/(2*step)).epsilon(2e-6));
+    CHECK(r.observed[j*2+j]==doctest::Approx(-(plus-2*base+minus)/(step*step)).epsilon(2e-6));
+  }
+  p[0]+=step; p[1]+=step; const double pp=ld();
+  p[1]-=2*step; const double pm=ld();
+  p[0]-=2*step; const double mm=ld();
+  p[1]+=2*step; const double mp=ld();
+  CHECK(r.observed[1]==doctest::Approx(-(pp-pm-mp+mm)/(4*step*step)).epsilon(2e-6));
+}
+
+TEST_CASE("beta: inference validity and total normalization") {
+  std::vector<double> x{.4};
+  const auto one=cppunivariate::beta_inference(mltest::as_span(x),2,3);
+  x.push_back(x[0]);
+  const auto two=cppunivariate::beta_inference(mltest::as_span(x),2,3);
+  REQUIRE(two.status==cppunivariate::InferenceStatus::Ok);
+  for(std::size_t j=0;j<two.dimension;++j) CHECK(two.score[j]==doctest::Approx(2*one.score[j]));
+  for(std::size_t j=0;j<two.dimension*two.dimension;++j) {
+    CHECK(two.opg[j]==doctest::Approx(2*one.opg[j]));
+    CHECK(two.observed[j]==doctest::Approx(2*one.observed[j]));
+    CHECK(two.fisher[j]==doctest::Approx(2*one.fisher[j]));
+  }
+  CHECK(cppunivariate::beta_inference(mltest::as_span(x),2,-1).status==cppunivariate::InferenceStatus::InvalidParameter);
+  x[0]=1;
+  CHECK(cppunivariate::beta_inference(mltest::as_span(x),2,3,0).status==cppunivariate::InferenceStatus::InvalidObservation);
+}
