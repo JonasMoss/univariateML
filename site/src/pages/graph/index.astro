@@ -1,0 +1,15 @@
+---
+import Page from '../../layouts/Page.astro';
+import FamilyGraph from '../../components/FamilyGraph.svelte';
+import families from '../../data/families.json';
+import {graphData,atlasSvg,mapSvg,colors} from '../../lib/graph';
+import '../../styles/graph.css';
+const data=graphData(families);
+---
+<Page title="Family graph"><p class="eyebrow">A map of the catalog</p><h1>The family graph</h1><p class="summary">98 families in 13 groups. Trace the 60 relations; turn on 104 limit paths to see where families converge.</p>
+<FamilyGraph {data} client:visible>
+ <div slot="map" class="overview" set:html={mapSvg(data)} />
+ <details slot="atlas" class="atlas-disclosure"><summary>All relations, family by family</summary><div class="atlas">
+ {data.groups.map((group,i)=><section data-group={group} style={`--group-color:${colors[i]}`}><h2>{group}<small>{data.nodes.filter(f=>f.group===group).length} families</small></h2><div class="diagram" set:html={atlasSvg(data,group)}/>{data.edges.some(e=>e.kind==='limit'&&data.nodes.find(f=>f.id===e.source)?.group===group)&&<details><summary>Limit models</summary><div class="diagram" set:html={atlasSvg(data,group,true)}/></details>}</section>)}
+ </div></details>
+</FamilyGraph><noscript><p>The overview shows relations only. All family links and atlas disclosures work without JavaScript.</p></noscript></Page>

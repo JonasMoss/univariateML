@@ -1,0 +1,48 @@
+import {chromium} from 'playwright-core';
+import {createServer} from 'node:http';
+import {readFileSync,writeFileSync,existsSync,readdirSync,mkdirSync,statSync} from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+const root=path.resolve(import.meta.dirname,'../..'),dist=path.join(root,'site/dist'),scratch=path.join(root,'build/scratch/graph');mkdirSync(scratch,{recursive:true});
+const cache=path.join(os.homedir(),'.cache/ms-playwright');
+const executable=process.env.BROWSER_EXECUTABLE||readdirSync(cache).filter(n=>/^chromium_headless_shell-/.test(n)).sort().reverse().map(n=>path.join(cache,n,'chrome-headless-shell-linux64/chrome-headless-shell')).find(existsSync);
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml'};
+const server=createServer((req,res)=>{let file=path.join(dist,decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(existsSync(file)&&statSync(file).isDirectory())file=path.join(file,'index.html');if(!file.startsWith(dist)||!existsSync(file)){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');res.end(readFileSync(file));});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));let browser;
+try{
+ browser=await chromium.launch({executablePath:executable,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ const page=await browser.newPage({viewport:{width:1280,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const url=`http://127.0.0.1:${server.address().port}/graph/`,version=process.env.GRAPH_VERSION||'final';
+ await page.goto(url);await page.locator('astro-island:not([ssr])').waitFor();
+ await page.locator('.overview').screenshot({path:path.join(scratch,`${version}-map-desktop.png`)});
+ await page.screenshot({path:path.join(scratch,`${version}-desktop.png`),fullPage:true});
+ if(await page.locator('[data-map-node]').count()!==98)throw Error('Map nodes');
+ const collisions=await page.locator('[data-map-node] rect').evaluateAll(ns=>ns.flatMap((n,i)=>ns.slice(i+1).filter(m=>{const a=n.getBBox(),b=m.getBBox();return a.x<b.x+b.width&&b.x<a.x+a.width&&a.y<b.y+b.height&&b.y<a.y+a.height;}).map(m=>[n.parentElement.dataset.mapNode,m.parentElement.dataset.mapNode])));
+ if(collisions.length)throw Error('Map label collisions: '+JSON.stringify(collisions));
+
+ if(await page.locator('[data-map-edge][data-kind=limit]:visible').count())throw Error('Limits initially visible');
+ await page.locator('[data-map-node=norm]').focus();
+ await page.waitForFunction(()=>document.querySelector('[data-map-node=zipf]').style.opacity==='0.18');
+ await page.locator('[data-map-node=norm]').press('Enter');
+ await page.waitForFunction(()=>document.querySelector('.selection').open);
+ if(!await page.locator('.neighbourhood').innerText().then(s=>s.includes('Normal')))throw Error('Map selection');
+ await page.locator('.selection summary').click();
+ await page.getByLabel('Limit',{exact:true}).check();
+ await page.waitForFunction(()=>[...document.querySelectorAll('[data-map-edge][data-kind=limit]')].every(n=>n.style.display!=='none'));
+ await page.mouse.move(0,0);await page.locator('.overview').screenshot({path:path.join(scratch,`${version}-limits-desktop.png`)});
+ await page.locator('[data-map-node=ht]').focus();await page.locator('.overview').screenshot({path:path.join(scratch,`${version}-limits-ht-desktop.png`)});
+ await page.getByLabel('Limit',{exact:true}).uncheck();await page.locator('[data-map-node=ht]').blur();
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(scratch,`${version}-mobile.png`),fullPage:true});
+ await page.locator('.overview').screenshot({path:path.join(scratch,`${version}-map-mobile.png`)});
+ if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))throw Error('Mobile overflow');
+ await page.getByRole('searchbox').fill('gamma');await page.getByRole('button',{name:'Gamma · gamma',exact:true}).click();
+ await page.waitForFunction(()=>document.activeElement?.getAttribute('data-map-node')==='gamma');
+ await page.locator('[data-map-node=gamma]').press('Enter');if(!await page.locator('.neighbourhood').innerText().then(s=>s.includes('Gamma')))throw Error('Selected neighbourhood missing');
+ await page.getByLabel('Special case',{exact:true}).uncheck();if(!await page.locator('[data-map-edge][data-kind=special_case_of]').evaluateAll(ns=>ns.every(n=>getComputedStyle(n).display==='none')))throw Error('Kind filter failed');
+ await page.locator('.atlas-disclosure>summary').click();await page.getByLabel('Group',{exact:true}).selectOption({index:1});if(await page.locator('.atlas>section:visible').count()!==1)throw Error('Group filter failed');
+ const plain=await browser.newContext({javaScriptEnabled:false});const p=await plain.newPage();await p.goto(url);
+ if(await p.locator('[data-map-node]').count()!==98||await p.locator('[data-node]').count()!==98)throw Error('No-JS node coverage');
+ if(await p.locator('[data-map-edge][data-kind=limit]:visible').count())throw Error('No-JS map limits');
+ await p.locator('.atlas-disclosure>summary').click();await p.locator('.atlas details').first().locator('summary').click();if(!await p.locator('.atlas details[open] [data-kind=limit]').count())throw Error('No-JS limits failed');await plain.close();
+ if(errors.length)throw Error(errors.join('\n'));console.log('PASS graph browser: 98 map nodes, relations-only default, limits toggle, keyboard highlight/selection, search focus, filters, desktop/mobile screenshots, no overflow, no-JS map and atlas; no browser errors.');
+}finally{await browser?.close();await new Promise(r=>server.close(r));}
