@@ -1,53 +1,10 @@
-// Rcpp adapter for mlinvparalogis(). Copied into the R package's src/ by
-// bindings/r/scripts/assemble_package.R; not part of the C++ library.
-
-#include "as_span.h"
-#include "cppunivariate/distributions/invparalogis/mle.hpp"
-
-#include <Rcpp.h>
-
-#include <cmath>
-#include <algorithm>
-#include <limits>
-
+#include "common/distributions/invparalogis/fit.hpp"
+#include "common_fit.h"
 // [[Rcpp::export]]
 Rcpp::List mlinvparalogis_(const Rcpp::NumericVector &x,
                         Rcpp::Nullable<double> shape0 = R_NilValue,
                         double gradtol = 1.220703e-4, int iterlim = 100,
                         Rcpp::Nullable<double> scale = R_NilValue,
                         Rcpp::Nullable<double> shape = R_NilValue) {
- if(shape.isNotNull() && (!(Rcpp::as<double>(shape)>0)||!std::isfinite(Rcpp::as<double>(shape)))) Rcpp::stop("`shape` must be positive and finite.");
-
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (shape0.isNotNull()) {
-    start = Rcpp::as<double>(shape0);
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      Rcpp::stop("`shape0` must be a positive finite number.");
-    }
-  }
-  const double held = scale.isNotNull() ? Rcpp::as<double>(scale) : 1.0;
-  if (!(held > 0) || !std::isfinite(held))
-    Rcpp::stop("`scale` must be a positive finite number.");
-  auto res = shape.isNotNull() ? cppunivariate::invparalogis_mle_holds(dist_impl::as_span(x),Rcpp::as<double>(shape),scale.isNotNull()?held:NA_REAL,gradtol,iterlim) : scale.isNotNull()
-      ? cppunivariate::invparalogis_mle_fixed_scale(dist_impl::as_span(x), held, gradtol, iterlim, start)
-      : cppunivariate::invparalogis_mle(dist_impl::as_span(x), gradtol, iterlim, start);
-  if(res.status==cppunivariate::ParalogisStatus::Unbounded)
-    Rcpp::stop("The invparalogis maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
-
-  if (res.status == cppunivariate::ParalogisStatus::InvalidStart) {
-    Rcpp::stop("Inverse paralogistic MLE requires positive, finite observations.");
-  }
-  if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
-    Rcpp::stop("Inverse paralogistic MLE failed: fitted parameters or likelihood exceed double precision");
-  }
-  if (res.status == cppunivariate::ParalogisStatus::BfgsFailure)
-    Rcpp::stop("Inverse paralogistic optimizer BfgsFailure; increase iterlim.");
-  Rcpp::CharacterVector fixed;
-  if(shape.isNotNull()) fixed.push_back("shape");
-  if(scale.isNotNull()) fixed.push_back("scale");
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(
-          Rcpp::_["shape"] = res.shape, Rcpp::_["scale"] = res.scale),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations,
-      Rcpp::_["fixed"] = fixed);
+  return common_result(umvl_binding::fit_invparalogis(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(shape), common_held(scale), common_held(shape0), gradtol, iterlim));
 }

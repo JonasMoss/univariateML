@@ -1,29 +1,7 @@
-#include "as_span.h"
-#include "cppunivariate/distributions/nsbeta/mle.hpp"
-#include <Rcpp.h>
-#include <cmath>
-#include <algorithm>
+#include "common/distributions/nsbeta/fit.hpp"
+#include "common_fit.h"
 // [[Rcpp::export]]
 Rcpp::List mlnsbeta_(const Rcpp::NumericVector &x, double min, double max,
  double reltol = 1e-10, int iterlim = 1000, Rcpp::Nullable<double> shape1 = R_NilValue, Rcpp::Nullable<double> shape2 = R_NilValue) {
- if(shape1.isNotNull() && (!(Rcpp::as<double>(shape1)>0)||!std::isfinite(Rcpp::as<double>(shape1)))) Rcpp::stop("`shape1` must be positive and finite.");
- if(shape2.isNotNull() && (!(Rcpp::as<double>(shape2)>0)||!std::isfinite(Rcpp::as<double>(shape2)))) Rcpp::stop("`shape2` must be positive and finite.");
-
- if (!std::isfinite(min) || !std::isfinite(max) || !(max>min) || !std::isfinite(max-min)) Rcpp::stop("Held bounds must be finite and ordered.");
- for(double v:x) if (!(v>min) || !(v<max)) Rcpp::stop("Observations must lie strictly inside the held support.");
- Rcpp::CharacterVector fixed=Rcpp::CharacterVector::create("min", "max");
- if(shape1.isNotNull()) fixed.push_back("shape1");
- if(shape2.isNotNull()) fixed.push_back("shape2");
- auto res=cppunivariate::nsbeta_mle(dist_impl::as_span(x),min,max,reltol,iterlim,shape1.isNotNull()?Rcpp::as<double>(shape1):NA_REAL,shape2.isNotNull()?Rcpp::as<double>(shape2):NA_REAL);
-  if (res.status == cppunivariate::BetaStatus::Degenerate) {
-    Rcpp::stop("The beta maximum likelihood estimator does not exist for constant data: "
-               "the likelihood is unbounded as both shapes grow.");
-  }
-  if(res.status==cppunivariate::BetaStatus::IterationFailure) Rcpp::stop("Nonstandard beta delegate search failed to converge.");
-  if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.logLik)) {
-    Rcpp::stop("Beta MLE failed: the data are too close to a point mass to resolve the shapes in double precision.");
-  }
-  return Rcpp::List::create(
-      Rcpp::_["estimates"] = Rcpp::NumericVector::create(Rcpp::_["shape1"] = res.shape1, Rcpp::_["shape2"] = res.shape2, Rcpp::_["min"] = min, Rcpp::_["max"] = max),
-      Rcpp::_["logLik"] = res.logLik, Rcpp::_["iterations"] = res.iterations, Rcpp::_["fixed"] = fixed);
+  return common_result(umvl_binding::fit_nsbeta(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(shape1), common_held(shape2), common_held(min), common_held(max), reltol, iterlim));
 }

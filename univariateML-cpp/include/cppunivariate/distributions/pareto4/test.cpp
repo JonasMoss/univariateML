@@ -63,3 +63,13 @@ TEST_CASE("pareto4: shifted deep-tail delegation") {
   CHECK(cppunivariate::distributions::qpareto4(-INFINITY, 2, 4, 3, 4, true, true) == 4);
   CHECK(cppunivariate::distributions::ppareto4(INFINITY, 2, 4, 3, 4, false, true) == -INFINITY);
 }
+
+TEST_CASE("pareto4: default golden coefficients and likelihood") {
+  const auto g = mltest::load_distribution_golden("pareto4");
+  const auto r = cppunivariate::pareto4_mle(mltest::as_span(g.data), g.estimates.at("min"), 1e-10, 1000);
+  REQUIRE(r.status == cppunivariate::BurrStatus::Ok);
+  CHECK(r.shape1 == doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kPareto4GoldenTol));
+  CHECK(r.shape2 == doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kPareto4GoldenTol));
+  CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kPareto4GoldenTol));
+  CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kTol));
+}

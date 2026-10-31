@@ -23,10 +23,20 @@ emscripten::val diagnostic(const std::string& message) {
 }
 #include "generated/dpqr.hpp"
 emscripten::val fit_output(const umvl_binding::FitResult& result) {
-  if(!result.error.empty()) return diagnostic(result.error);
+  if(!result.error.empty()) {
+    auto out=diagnostic(result.error), warnings=emscripten::val::array();
+    for(const auto& message:result.warnings) warnings.call<void>("push",message);
+    out.set("warnings",warnings); return out;
+  }
   auto out=emscripten::val::object(), estimates=emscripten::val::object(), fixed=emscripten::val::array();
   for(const auto& item:result.estimates) estimates.set(item.first,item.second);
   for(const auto& name:result.fixed) fixed.call<void>("push",name);
+  auto warnings=emscripten::val::array(), restricted=emscripten::val::object();
+  for(const auto& message:result.warnings) warnings.call<void>("push",message);
+  for(const auto& item:result.restricted) restricted.set(item.first,item.second);
+  for(const auto& item:result.extra) out.set(item.first,item.second);
+  for(const auto& item:result.extra_vectors) out.set(item.first,output(item.second));
+  out.set("warnings",warnings); out.set("restricted",restricted);
   out.set("estimates",estimates); out.set("fixed",fixed); out.set("logLik",result.logLik);
   out.set("iterations",result.iterations); out.set("status",std::string("Ok")); return out;
 }

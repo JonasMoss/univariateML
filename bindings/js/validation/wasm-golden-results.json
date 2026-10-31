@@ -1,0 +1,53 @@
+[
+  {
+    "id": "bhatt",
+    "result": {
+      "warnings": [],
+      "restricted": {},
+      "estimates": {
+        "mu": -0.0038000690836424017,
+        "sigma": 1.0578973264527367,
+        "a": 1.733605928633986
+      },
+      "fixed": [],
+      "logLik": -896.3104598272383,
+      "iterations": 61,
+      "status": "Ok"
+    }
+  },
+  {
+    "id": "burr",
+    "result": {
+      "warnings": [],
+      "restricted": {},
+      "estimates": {
+        "shape1": 1.3346376397588124,
+        "shape2": 1.8604176090941429,
+        "scale": 1.1969912411233226
+      },
+      "fixed": [],
+      "logLik": -613.6797967508303,
+      "iterations": 9,
+      "status": "Ok"
+    }
+  },
+  {
+    "id": "pareto4",
+    "result": {
+      "warnings": [],
+      "restricted": {},
+      "estimates": {
+        "shape1": 0.3157265376327026,
+        "shape2": 0.6623715356754056,
+        "scale": 1.088747513651919,
+        "min": 0
+      },
+      "fixed": [
+        "min"
+      ],
+      "logLik": -3607.2382431667843,
+      "iterations": 16,
+      "status": "Ok"
+    }
+  }
+]

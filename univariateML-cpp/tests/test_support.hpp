@@ -25,10 +25,25 @@ constexpr double kTol = 1e-10;
 // slightly different point: relative coefficient changes were <=1.61e-8,
 // and its independent score norm was 5.73e-6 (gate 1e-3). Applies under the
 // proxy macro and on platforms whose long double is double (macOS arm64, MSVC).
-#if defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS) || LDBL_MANT_DIG <= DBL_MANT_DIG
+#if defined(__EMSCRIPTEN__)
+constexpr double kBhattGoldenTol = 5e-7;
+#elif defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS) || LDBL_MANT_DIG <= DBL_MANT_DIG
 constexpr double kBhattGoldenTol = 5e-8;
 #else
 constexpr double kBhattGoldenTol = 1e-12;
+#endif
+
+#if defined(__EMSCRIPTEN__)
+constexpr double kBurrGoldenTol = 1e-7;
+#else
+constexpr double kBurrGoldenTol = 1e-8;
+#endif
+
+// The shifted Burr golden has a separate wasm coefficient comparison tolerance.
+#if defined(__EMSCRIPTEN__)
+constexpr double kPareto4GoldenTol = 5e-7;
+#else
+constexpr double kPareto4GoldenTol = 1e-8;
 #endif
 
 // Defaults of the R adapters (reltol / gradtol / abstol, iterlim). Also the
