@@ -50,7 +50,9 @@ limits:
     when: '$\sigma \to 0$, $\nu(n-k)=k$'
     status: ScaleBoundary
 references:
-  - extraDistr package, HalfT documentation (density and parameterization).
+- extraDistr package, HalfT documentation (density and parameterization).
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 fit_args:
   mu: 0
@@ -62,16 +64,29 @@ examples: |
 group: normal and Student
 construction:
 - folding
-relations: {}
+relations:
+  transform_of:
+  - family: lst
+    at:
+      mu: 0
+      sigma: sigma
+      df: nu
+    transform: abs
+    shift: mu
 fit:
   method: profile-search
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'ht/README.md, Details; ht/mle.hpp (public fitter and held overloads); ht/test.cpp: Endpoint and held-df
+    scale solve are exact/monotone; free-df profile is demonstrably multimodal and a finite grid cannot exclude
+    narrower peaks.'
 areas:
 - measurement and errors
 classification: specialist
-classification_reason: Used within measurement and errors; classified by its specialised modelling role.
+classification_reason: Used to model one-sided heavy-tailed deviations measured from a lower endpoint.
+summary: Half-t provides a model for one-sided heavy-tailed deviations measured from a lower endpoint.
+aliases: []
+key_references:
+- 2
 ---
 
 The half-t models nonnegative Student t magnitudes with an endpoint, translated from zero.

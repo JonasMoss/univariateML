@@ -52,7 +52,7 @@ examples: |
 
 summary: The generalized extreme-value distribution unifies the limiting laws for normalized block maxima.
 classification: specialist
-classification_reason: A standard model within extreme-value analysis.
+classification_reason: Used to model block maxima spanning the three extreme-value tail regimes.
 aliases:
 - generalized extreme value
 key_references:
@@ -67,8 +67,10 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'no'
+  note: 'gev/README.md, Details; gev/mle.hpp (public fitter and held overloads); gev/test.cpp: Default and nontrivial
+    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
+    density evaluation is not counted as certification.'
 areas:
 - extremes and environment
 ---

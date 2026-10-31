@@ -54,7 +54,7 @@ examples: |
 
 summary: The generalized beta distribution of the second kind provides a flexible four-parameter model for positive data.
 classification: specialist
-classification_reason: Used in income-distribution and inequality modelling.
+classification_reason: Used to model income and loss sizes with independently adjustable tails and scale.
 aliases:
 - generalized beta of the second kind
 key_references:
@@ -69,9 +69,10 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'gb2/README.md, Details; gb2/mle.hpp (public fitter and held overloads); gb2/test.cpp: With beta shapes
+    held, the inner power/location likelihood is strictly concave; free beta-shape multibasin profiles and face
+    comparisons remain numerical.'
 areas:
 - actuarial
 - economics and income

@@ -25,8 +25,11 @@ r:
     iterlim: "Maximum iterations for each scalar refinement."
 log_density: "-mu1-mu2 + x*log(mu1/mu2)/2 + log(besseli(Abs(x),2*sqrt(mu1*mu2)))"
 references:
-  - "Skellam, J. G. (1946). The frequency distribution of the difference between two Poisson variates belonging to different populations. Journal of the Royal Statistical Society 109, 296."
-  - "Johnson, N. L. (1959). On an extension of the connexion between Poisson and chi-squared distributions. Biometrika 46, 352–362."
+- Skellam, J. G. (1946). The frequency distribution of the difference between two Poisson variates belonging to
+  different populations. Journal of the Royal Statistical Society 109, 296.
+- Johnson, N. L. (1959). On an extension of the connexion between Poisson and chi-squared distributions. Biometrika
+  46, 352–362.
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 holds: []
 examples: |
   set.seed(1)
@@ -39,13 +42,18 @@ construction:
 relations: {}
 fit:
   method: scalar-solve
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'skellam/README.md, Details; skellam/mle.hpp (public fitter and held overloads); skellam/test.cpp: One held
+    positive rate gives a strictly concave bracketed solve; joint scalar profile uses a finite grid without a uniqueness
+    certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model differences between independent Poisson event counts.
+summary: Skellam provides a model for differences between independent Poisson event counts.
+aliases: []
+key_references:
+- 3
 ---
 
 The Skellam distribution describes the difference between two independent Poisson counts.

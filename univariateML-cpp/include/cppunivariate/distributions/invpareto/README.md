@@ -31,10 +31,16 @@ limits:
     detect: the reciprocal Lomax profile gap maximised over 0 < u < ubar is at most 1e-8*n
     status: ExponentialLimit
 references:
-  - "del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021."
-  - "Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics 35(2), 185–191. doi:10.1080/00401706.1993.10485040."
-  - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
-  - "Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical Software, 25(7), 1-37."
+- del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability
+  Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021.
+- Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics
+  35(2), 185–191. doi:10.1080/00401706.1993.10485040.
+- Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition,
+  Wiley.
+- 'Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical
+  Software, 25(7), 1-37.'
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 examples: |
   set.seed(1)
   x <- rml(200, mlinvpareto())
@@ -52,13 +58,19 @@ relations:
       scale: scale
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'invpareto/README.md, Details; invpareto/mle.hpp (public fitter and held overloads); invpareto/test.cpp:
+    Either held coefficient gives a unique finite fit; joint scale profile and exponential-face comparison remain
+    numerical rather than a global certificate.'
 areas:
 - actuarial
 - economics and income
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model positive loss sizes using the reciprocal Lomax family.
+summary: Inverse Pareto provides a model for positive loss sizes using the reciprocal Lomax family.
+aliases: []
+key_references:
+- 5
 ---
 
 The inverse Pareto distribution models positive heavy-tailed data.

@@ -44,7 +44,7 @@ examples: |
 
 summary: The binomial distribution counts successes in a fixed number of independent trials with a common success probability.
 classification: classical
-classification_reason: A standard sampling model for binary trial counts.
+classification_reason: A standard model for success counts from independent trials with a common success probability.
 aliases: []
 key_references:
 - 1
@@ -56,9 +56,10 @@ construction:
 relations: {}
 fit:
   method: integer-search
-  certified: partial
-  note: Inventory records free-size profile unimodality and held-probability tail bound; budget exhaustion
-    stops.
+  certified: 'yes'
+  note: 'binom/README.md, Details; binom/mle.hpp (public fitter and held overloads); binom/test.cpp: Free-size profile
+    is unimodal (DeRiggi result cited in Details); held-probability search excludes the entire integer tail. Fixed-size
+    probability is analytic; work-budget exhaustion stops.'
 areas:
 - counts and ecology
 ---

@@ -41,7 +41,7 @@ limits:
     detect: size and prob are free and the winning ZIP face has zero inflation
     status: PoissonLimit
 references:
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 examples: |
   set.seed(1)
   x <- rml(200, mlzinb())
@@ -50,16 +50,29 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: nbinom
+    at:
+      size: size
+      prob: prob
+    type: zero-inflated
+    mass: pi
 fit:
   method: multistart
   certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  note: 'zinb/README.md, Details; zinb/mle.hpp (public fitter and held overloads); zinb/test.cpp: Default and nontrivial
+    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
+    density evaluation is not counted as certification.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model overdispersed counts with an additional structural-zero component.
+summary: Zero-inflated negative binomial provides a model for overdispersed counts with an additional structural-zero
+  component.
+aliases: []
+key_references:
+- 1
 ---
 
 The zero-inflated negative binomial distribution mixes negative binomial counts with an additional point mass at zero.

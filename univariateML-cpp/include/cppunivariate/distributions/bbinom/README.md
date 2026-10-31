@@ -46,8 +46,9 @@ limits:
     detect: all observations are 0 or all equal size
     status: PointMass
 references:
-  - "Griffiths, D. A. (1973). Maximum likelihood estimation for the beta-binomial distribution and an application to the household distribution of the total number of cases of a disease. Biometrics, 29(4), 637-648. doi:10.2307/2529131."
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+- Griffiths, D. A. (1973). Maximum likelihood estimation for the beta-binomial distribution and an application to
+  the household distribution of the total number of cases of a disease. Biometrics, 29(4), 637-648. doi:10.2307/2529131.
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 holds:
 - held: []
   status: not-implemented
@@ -73,12 +74,18 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'bbinom/README.md, Details; bbinom/mle.hpp (public fitter and held overloads); bbinom/test.cpp: Both shapes
+    held give an integer-size tail bound; fixed-size free-shape fits use numerical optimization and some free-size
+    profiles are unsupported.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model overdispersed success counts with heterogeneous binomial probabilities.
+summary: Beta-binomial provides a model for overdispersed success counts with heterogeneous binomial probabilities.
+aliases: []
+key_references:
+- 2
 ---
 
 The beta-binomial distribution is a binomial with a beta-distributed success probability; it models overdispersed counts out of a known number of trials. `size` must be supplied.

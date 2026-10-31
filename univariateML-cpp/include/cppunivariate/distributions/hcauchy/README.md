@@ -31,7 +31,9 @@ limits:
     when: '$\sigma \to 0$ with exactly half the observations at the free or held endpoint'
     status: ScaleBoundary
 references:
-  - extraDistr package, HalfCauchy documentation (density and parameterization).
+- extraDistr package, HalfCauchy documentation (density and parameterization).
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 fit_args:
   mu: 0
 examples: |
@@ -39,18 +41,31 @@ examples: |
   x <- rml(200, mlhcauchy())
   mlhcauchy(x, mu = 0L)
 
-group: other positive
+group: skewed and robust location-scale
 construction:
 - folding
-relations: {}
+relations:
+  transform_of:
+  - family: cauchy
+    at:
+      location: 0
+      scale: sigma
+    transform: abs
+    shift: mu
 fit:
   method: profile-search
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'hcauchy/README.md, Details; hcauchy/mle.hpp (public fitter and held overloads); hcauchy/test.cpp: Endpoint
+    is the sample minimum; the strictly decreasing log-scale score has a unique root exactly below the documented
+    tie threshold; held scale is direct.'
 areas:
 - reliability and survival
 classification: specialist
-classification_reason: Used within reliability and survival; classified by its specialised modelling role.
+classification_reason: Used to model unsigned Cauchy errors with a supplied or estimated lower endpoint.
+summary: Half-Cauchy provides a model for unsigned Cauchy errors with a supplied or estimated lower endpoint.
+aliases: []
+key_references:
+- 2
 ---
 
 The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint, translated from zero.

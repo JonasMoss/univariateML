@@ -58,8 +58,11 @@ limits:
     detect: 'mean((x - mean)^2) >= ((b - mean)^3 - (a - mean)^3) / (3 * (b - a))'
     status: UniformBoundary
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition, Chapter 13.10. Wiley."
-  - "Barndorff-Nielsen, O. (1978). Information and Exponential Families in Statistical Theory. Wiley."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition,
+  Chapter 13.10. Wiley.
+- Barndorff-Nielsen, O. (1978). Information and Exponential Families in Statistical Theory. Wiley.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 fit_args:
   a: -.inf
@@ -72,15 +75,26 @@ examples: |
 group: normal and Student
 construction:
 - truncation
-relations: {}
+relations:
+  truncation_of:
+  - family: norm
+    at:
+      mean: mean
+      sd: sd
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'tnorm/README.md, Details; tnorm/mle.hpp (public fitter and held overloads); tnorm/test.cpp: Fixed-bound
+    likelihood is strictly concave in mean/sd^2 and -1/(2*sd^2); holding mean or sd gives affine restrictions. Free
+    bounds profile exactly to sample extremes; boundary and collapse cases stop.'
 areas:
 - measurement and errors
 classification: specialist
-classification_reason: Used within measurement and errors; classified by its specialised modelling role.
+classification_reason: Used to model Gaussian measurements recorded only within a supplied interval.
+summary: Truncated Normal provides a model for Gaussian measurements recorded only within a supplied interval.
+aliases: []
+key_references:
+- 3
 ---
 
 The truncated normal distribution is a normal distribution restricted to an interval `[a, b]` with finite bounds closed; it models measurements that are only recorded, or only possible, inside that interval. `mean` and `sd` are the parameters of the parent normal distribution, not the mean and standard deviation of the truncated one.

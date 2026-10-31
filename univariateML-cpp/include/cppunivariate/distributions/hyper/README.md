@@ -64,7 +64,7 @@ examples: |
 
 summary: The hypergeometric distribution counts marked items in sampling without replacement from a finite population.
 classification: classical
-classification_reason: A standard finite-population sampling model.
+classification_reason: A standard model for success counts in finite-population sampling without replacement.
 aliases: []
 key_references:
 - 1
@@ -75,9 +75,10 @@ construction:
 relations: {}
 fit:
   method: integer-search
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: 'yes'
+  note: 'hyper/README.md, Details; hyper/mle.hpp (public fitter and held overloads); hyper/test.cpp: Supported one-coordinate
+    integer fits are unimodal; fixed-population joint grids exhaust the feasible set. Unsupported joint population
+    designs stop. Likelihood comparisons retain floating-point tie tolerances.'
 areas:
 - sampling and quality control
 ---

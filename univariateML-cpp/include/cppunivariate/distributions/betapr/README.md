@@ -42,7 +42,10 @@ limits:
   - {model: gamma, when: 'shape2 tends to infinity with scale/shape2 fixed', status: GammaBoundary}
   - {model: invgamma, when: 'shape1 tends to infinity with scale*shape1 fixed', status: InvGammaBoundary}
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25.
+  Wiley, New York.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 examples: |
   set.seed(1)
   x <- rml(200, mlbetapr())
@@ -61,13 +64,19 @@ relations:
       scale: scale
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'betapr/README.md, Details; betapr/mle.hpp (public fitter and held overloads); betapr/test.cpp: Fixed-scale
+    beta fit and both-shapes-held scale solve are unique; a single held shape with free scale uses a grid without
+    a global certificate.'
 areas:
 - actuarial
 - economics and income
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model positive ratios with separate lower-tail and upper-tail shapes.
+summary: Beta prime provides a model for positive ratios with separate lower-tail and upper-tail shapes.
+aliases: []
+key_references:
+- 2
 ---
 
 The beta prime distribution models positive ratios.

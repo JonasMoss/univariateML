@@ -40,7 +40,7 @@ examples: |
 
 summary: The beta distribution models continuous proportions on the unit interval.
 classification: classical
-classification_reason: A standard two-shape model for proportions and probabilities.
+classification_reason: A standard model for continuous proportions with two independently adjustable boundary shapes.
 aliases:
 - beta of the first kind
 key_references:
@@ -52,8 +52,10 @@ construction:
 relations: {}
 fit:
   method: scalar-solve
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'beta/README.md, Details; beta/mle.hpp (public fitter and held overloads); beta/test.cpp: Strictly concave
+    beta likelihood in its two shapes; held-shape digamma scores decrease strictly. nsbeta uses supplied endpoints;
+    unsupported endpoint fits stop.'
 areas:
 - proportions
 ---

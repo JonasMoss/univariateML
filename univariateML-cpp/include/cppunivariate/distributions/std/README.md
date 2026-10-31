@@ -52,7 +52,10 @@ limits:
     when: '$\nu \to 2^+$'
     status: 'DfTwoBoundary'
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 13. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, Chapter 13.
+  Wiley, New York.
+- 'fGarch documentation (accessed 2026-10-31). fGarch: Rmetrics - Autoregressive Conditional Heteroskedastic Modelling.
+  R package reference manual. https://cran.r-project.org/web/packages/fGarch/fGarch.pdf.'
 holds: []
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
@@ -61,17 +64,29 @@ examples: |
 group: normal and Student
 construction:
 - location-scale
-relations: {}
+relations:
+  special_case_of:
+  - family: sstd
+    at:
+      mean: mean
+      sd: sd
+      nu: nu
+      xi: 1
 fit:
   method: multistart
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'std/README.md, Details; std/mle.hpp (public fitter and held overloads); std/test.cpp: With mean and nu
+    held, ordinary-t scale has a strictly monotone score (collapse exponent decides existence); free location or
+    nu uses EM or profile searches without a global certificate.'
 areas:
 - finance
 - measurement and errors
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for finite-variance Student errors parameterised by mean and standard deviation.
+summary: Student-t provides a model for finite-variance Student errors parameterised by mean and standard deviation.
+aliases: []
+key_references:
+- 2
 ---
 
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.

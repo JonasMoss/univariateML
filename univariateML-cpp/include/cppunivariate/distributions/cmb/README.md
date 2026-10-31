@@ -46,7 +46,9 @@ limits:
     detect: all data in {0, size} with both present in a joint fit; any endpoint-only data with interior prob fixed
     status: EndpointLimit
 references:
-  - "Kadane, J. B. (2016). Sums of Possibly Associated Bernoulli Variables: The Conway-Maxwell-Binomial Distribution. Bayesian Analysis. doi:10.1214/15-BA955."
+- 'Kadane, J. B. (2016). Sums of Possibly Associated Bernoulli Variables: The Conway-Maxwell-Binomial Distribution.
+  Bayesian Analysis. doi:10.1214/15-BA955.'
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 holds:
 - held: []
   status: not-implemented
@@ -73,12 +75,19 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'cmb/README.md, Details; cmb/mle.hpp (public fitter and held overloads); cmb/test.cpp: Moment matching exploits
+    exponential-family convexity for fixed design/dispersion subsets; integer-tail or normalizer bounds certify
+    only their stated scope, not every joint numerical solve.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model bounded counts with dispersion departing from independent Bernoulli trials.
+summary: Conway--Maxwell--binomial provides a model for bounded counts with dispersion departing from independent
+  Bernoulli trials.
+aliases: []
+key_references:
+- 2
 ---
 
 The Conway--Maxwell--binomial distribution extends the binomial by raising its combinatorial factor to a real dispersion power.

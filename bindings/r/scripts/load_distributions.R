@@ -108,7 +108,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     if (length(absent)) stop("load_distributions: incomplete taxonomy for ", id, ": ", paste(absent, collapse=", "))
     # Taxonomy is presentation metadata; it does not enter generated R help.
     vocab <- list(
-      group = c("Pareto and Lomax", "Poisson, binomial and negative binomial", "beta and generalised beta", "bounded continuous", "discrete heavy-tailed", "extreme value", "finite sampling", "gamma and Weibull", "modified counts", "normal and Student", "other positive", "skewed and robust location-scale"),
+      group = c("Pareto and Lomax", "Poisson, binomial and negative binomial", "beta and generalised beta", "bounded continuous", "discrete heavy-tailed", "extreme value", "finite sampling", "gamma and Weibull", "modified counts", "normal and Student", "normal convolutions", "other positive", "skewed and robust location-scale"),
       construction = c("base", "compounding", "discretisation", "folding", "generalisation", "location-scale", "modification", "skewing", "transformation", "truncation"),
       areas = c("actuarial", "counts and ecology", "economics and income", "extremes and environment", "finance", "measurement and errors", "proportions", "rank-frequency", "reliability and survival", "robust modelling", "sampling and quality control", "waiting times and queues"))
     for (key in names(vocab)) {
@@ -122,7 +122,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
         c("closed-form", "scalar-solve", "profile-search", "multistart", "integer-search", "delegation", "convex-solve") ||
         !scalar_text(f$fit$certified) || !f$fit$certified %in% c("yes", "partial", "no", "unknown") ||
         !scalar_text(f$fit$note)) stop("load_distributions: invalid fit taxonomy for ", id)
-    if (is.null(f$relations) || length(setdiff(names(f$relations), c("special_case_of", "transform_of"))))
+    if (is.null(f$relations) || length(setdiff(names(f$relations), c("special_case_of", "transform_of", "truncation_of", "modification_of"))))
       stop("load_distributions: invalid relations for ", id)
     for (kind in names(f$relations)) for (edge in f$relations[[kind]]) {
       target <- file.path(dirname(dirname(path)), edge$family, "README.md")
@@ -136,11 +136,23 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
         stop("load_distributions: invalid relation coefficient map for ", id)
       # Same pure expression validator as support bounds, with ** accepted by R.
       for (value in edge$at) .umvl_support_expr(value, child_names)
+      if (kind == "modification_of") {
+        if (!scalar_text(edge$type) || !edge$type %in% c("zero-truncated", "zero-modified", "zero-inflated"))
+          stop("load_distributions: invalid modification type for ", id)
+        if (edge$type != "zero-truncated") {
+          if (is.null(edge$mass)) stop("load_distributions: missing modification mass for ", id)
+          .umvl_support_expr(edge$mass, child_names)
+        }
+        if (f$support$type != "integer" || parent$support$type != "integer")
+          stop("load_distributions: zero modifications require integer laws for ", id)
+      }
+      if (kind == "truncation_of" && f$support$type != parent$support$type)
+        stop("load_distributions: truncation measure mismatch for ", id)
       if (kind == "transform_of") {
         if (!scalar_text(edge$transform) || !edge$transform %in%
             c("log", "logit", "inverse", "power", "negate", "abs", "shift"))
           stop("load_distributions: invalid relation transform for ", id)
-        for (arg in intersect(edge$transform, c("power", "shift"))) {
+        for (arg in unique(c(intersect(edge$transform, c("power", "shift")), if (edge$transform == "abs" && !is.null(edge$shift)) "shift"))) {
           if (is.null(edge[[arg]])) stop("load_distributions: missing transform argument for ", id)
           .umvl_support_expr(edge[[arg]], child_names)
         }

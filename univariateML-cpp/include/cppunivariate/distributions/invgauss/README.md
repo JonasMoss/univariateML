@@ -23,7 +23,10 @@ r:
     shape: Optional held shape; NULL estimates it.
 log_density: log(shape)/2 - log(2*pi)/2 - 3*log(x)/2 - shape*(x-mean)**2/(2*mean**2*x)
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 15. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 15.
+  Wiley, New York.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 limits:
 - name: unbounded likelihood
   fixed: [mean]
@@ -40,12 +43,18 @@ construction:
 relations: {}
 fit:
   method: closed-form
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'invgauss/README.md, Details; invgauss/mle.hpp (public fitter and held overloads); invgauss/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - reliability and survival
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for first-passage times of Brownian motion with positive drift.
+summary: Inverse Gaussian provides a model for first-passage times of Brownian motion with positive drift.
+aliases:
+- Wald
+key_references:
+- 2
 ---
 
 The inverse Gaussian (Wald) distribution models positive quantities, including first-passage times of Brownian motion with positive drift.

@@ -24,7 +24,7 @@ examples: |
 
 summary: The exponential distribution models nonnegative waiting times with a constant hazard rate.
 classification: classical
-classification_reason: A standard waiting-time and reliability model.
+classification_reason: A standard model for waiting times under a constant event hazard.
 aliases:
 - negative exponential
 key_references:
@@ -52,9 +52,9 @@ relations:
       scale: 1/rate
 fit:
   method: closed-form
-  certified: partial
-  note: Unique inverse-mean solution for positive sample sum; degenerate data and held cases are documented
-    in Details.
+  certified: 'yes'
+  note: 'exp/README.md, Details; exp/mle.hpp (public fitter and held overloads); exp/test.cpp: Closed-form maximum
+    for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - reliability and survival
 - waiting times and queues

@@ -25,7 +25,8 @@ r:
     max: Optional held max; `NULL` estimates it.
 log_density: -log(max-min)
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 26.
+  Wiley, New York.
 holds: []
 limits:
 - name: zero-width collapse
@@ -56,12 +57,17 @@ relations:
       max: max
 fit:
   method: closed-form
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'unif/README.md, Details; unif/mle.hpp (public fitter and held overloads); unif/test.cpp: Closed-form maximum
+    for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - proportions
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for continuous values with equal density over a bounded interval.
+summary: Uniform provides a model for continuous values with equal density over a bounded interval.
+aliases: []
+key_references:
+- 1
 ---
 
 The uniform distribution assigns constant density to a bounded interval.

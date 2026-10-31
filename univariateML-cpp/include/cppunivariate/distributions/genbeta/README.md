@@ -105,14 +105,23 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'genbeta/README.md, Details; genbeta/mle.hpp (public fitter and held overloads); genbeta/test.cpp: With
+    endpoint and power held, beta-shape fitting is strictly concave; the free-power mesh and envelope-score search
+    do not certify every maximum.'
 areas:
 - actuarial
 - economics and income
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model bounded loss sizes with a power transform and two beta shapes.
+summary: Generalized beta of the first kind provides a model for bounded loss sizes with a power transform and two
+  beta shapes.
+aliases: []
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 The generalized beta of the first kind models positive observations below a known upper endpoint.

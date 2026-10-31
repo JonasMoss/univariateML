@@ -16,7 +16,7 @@ r:
     lambda: "Optional held lambda; NULL estimates it."
 log_density: "x*log(lambda) - lambda - loggamma(x + 1)"
 references:
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 examples: |
   x <- datasets::discoveries
   mlpois(x)
@@ -27,12 +27,17 @@ construction:
 relations: {}
 fit:
   method: closed-form
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'pois/README.md, Details; pois/mle.hpp (public fitter and held overloads); pois/test.cpp: Closed-form maximum
+    for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - counts and ecology
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for independent event counts at constant intensity.
+summary: Poisson provides a model for independent event counts at constant intensity.
+aliases: []
+key_references:
+- 1
 ---
 
 The Poisson distribution models nonnegative counts with a single rate parameter.

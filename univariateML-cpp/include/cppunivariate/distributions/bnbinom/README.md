@@ -42,8 +42,10 @@ limits:
     detect: all observations zero and at least one parameter free
     status: PointMass
 references:
-  - "Irwin, J. O. (1975). The Generalized Waring Distribution. Part I. JRSS A 138(1), 18-31. doi:10.2307/2345247."
-  - "Xekalaki, E. (1984). The Bivariate Generalized Waring Distribution and its Application to Accident Theory. JRSS A 147(3), 488-498. doi:10.2307/2981580."
+- Irwin, J. O. (1975). The Generalized Waring Distribution. Part I. JRSS A 138(1), 18-31. doi:10.2307/2345247.
+- Xekalaki, E. (1984). The Bivariate Generalized Waring Distribution and its Application to Accident Theory. JRSS
+  A 147(3), 488-498. doi:10.2307/2981580.
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 holds: []
 examples: |
   set.seed(1)
@@ -57,12 +59,18 @@ relations: {}
 fit:
   method: multistart
   certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  note: 'bnbinom/README.md, Details; bnbinom/mle.hpp (public fitter and held overloads); bnbinom/test.cpp: Default
+    and nontrivial conditional fits use multistart, finite grids or local profile refinement without a global certificate;
+    all-held density evaluation is not counted as certification.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model clustered event counts with power-law tails from beta mixing.
+summary: Beta negative binomial provides a model for clustered event counts with power-law tails from beta mixing.
+aliases:
+- Generalized Waring
+key_references:
+- 3
 ---
 
 The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power law tails.

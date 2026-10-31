@@ -53,15 +53,27 @@ examples: |
 group: modified counts
 construction:
 - truncation
-relations: {}
+relations:
+  truncation_of:
+  - family: pois
+    at:
+      lambda: lambda
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'tpois/README.md, Details; tpois/mle.hpp (public fitter and held overloads); tpois/test.cpp: Conditional
+    mean is strictly increasing in log rate (derivative is conditional variance), giving a unique bracketed root;
+    bounds profile to sample extremes and zero mass separates analytically.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model Poisson counts recorded only within a specified conditioning window.
+summary: Truncated Poisson provides a model for Poisson counts recorded only within a specified conditioning window.
+aliases: []
+references:
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
+key_references:
+- 1
 ---
 
 The Poisson law conditioned on known bounds `a < x <= b` models truncated counts.

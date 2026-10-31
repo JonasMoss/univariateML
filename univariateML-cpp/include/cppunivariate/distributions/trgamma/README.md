@@ -49,9 +49,14 @@ limits:
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     status: PowerBoundary
 references:
-  - "Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3), 1187-1192. doi:10.1214/aoms/1177704481."
-  - "Noufaily, A. and Jones, M. C. (2013). On maximization of the likelihood for the generalized gamma distribution. Computational Statistics 28, 505-517. doi:10.1007/s00180-012-0314-4."
-  - "Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition, Wiley."
+- Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3),
+  1187-1192. doi:10.1214/aoms/1177704481.
+- Noufaily, A. and Jones, M. C. (2013). On maximization of the likelihood for the generalized gamma distribution.
+  Computational Statistics 28, 505-517. doi:10.1007/s00180-012-0314-4.
+- Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition,
+  Wiley.
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 holds: []
 examples: |
   set.seed(1)
@@ -65,13 +70,20 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'trgamma/README.md, Details; trgamma/mle.hpp (public fitter and held overloads); trgamma/test.cpp: Held
+    power reduces to gamma and held gamma shape to a concave transformed problem; the free-power/shape profile and
+    face enumeration are numerical.'
 areas:
 - reliability and survival
 - waiting times and queues
 classification: specialist
-classification_reason: Used within reliability and survival; classified by its specialised modelling role.
+classification_reason: Used to model lifetimes and severity sizes related to gamma by a power transform.
+summary: Transformed gamma provides a model for lifetimes and severity sizes related to gamma by a power transform.
+aliases:
+- Stacy generalized gamma
+key_references:
+- 4
 ---
 
 The transformed gamma (Stacy's generalized gamma) distribution is the
