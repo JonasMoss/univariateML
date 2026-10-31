@@ -55,7 +55,15 @@ examples: |
 group: finite sampling
 construction:
 - base
-relations: {}
+relations:
+  transform_of:
+  - family: bbinom
+    at:
+      size: (N-m)*min(1,r)
+      alpha: max(1,r)
+      beta: m-r+1
+    transform: shift
+    shift: r
 fit:
   method: integer-search
   certified: 'yes'

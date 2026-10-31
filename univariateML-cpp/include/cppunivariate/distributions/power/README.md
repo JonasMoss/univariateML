@@ -52,6 +52,24 @@ relations:
       shape2: 1
       shape3: 1
       scale: alpha
+  - family: nsbeta
+    at:
+      shape1: beta
+      shape2: 1
+      min: 0
+      max: alpha
+  transform_of:
+  - family: unif
+    at:
+      min: 0
+      max: alpha**beta
+    transform: power
+    power: beta
+  - family: pareto
+    at:
+      a: beta
+      b: 1/alpha
+    transform: inverse
 fit:
   method: closed-form
   certified: 'yes'

@@ -47,6 +47,12 @@ relations:
       size: size
       prob: prob
     type: zero-truncated
+  special_case_of:
+  - family: zmbinom
+    at:
+      size: size
+      prob: prob
+      p0: 0
 fit:
   method: multistart
   certified: partial

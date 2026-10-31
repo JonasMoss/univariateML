@@ -43,6 +43,12 @@ relations:
       prob: prob
     type: zero-modified
     mass: p0
+  special_case_of:
+  - family: zmnbinom
+    at:
+      size: 1
+      prob: prob
+      p0: p0
 fit:
   method: multistart
   certified: 'yes'

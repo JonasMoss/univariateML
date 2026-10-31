@@ -73,6 +73,14 @@ relations:
       df: nu
     transform: abs
     shift: mu
+  special_case_of:
+  - family: fpareto
+    at:
+      shape1: nu/2
+      shape2: 2
+      shape3: 0.5
+      scale: sigma*sqrt(nu)
+      min: mu
 fit:
   method: profile-search
   certified: partial

@@ -34,6 +34,21 @@ relations:
     at:
       prob: prob
     type: zero-truncated
+  special_case_of:
+  - family: ztnbinom
+    at:
+      size: 1
+      prob: prob
+  - family: zmgeom
+    at:
+      prob: prob
+      p0: 0
+  transform_of:
+  - family: geom
+    at:
+      prob: prob
+    transform: shift
+    shift: 1
 fit:
   method: scalar-solve
   certified: 'yes'

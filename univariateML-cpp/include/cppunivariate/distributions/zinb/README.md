@@ -58,6 +58,12 @@ relations:
       prob: prob
     type: zero-inflated
     mass: pi
+  special_case_of:
+  - family: zmnbinom
+    at:
+      size: size
+      prob: prob
+      p0: pi+(1-pi)*prob**size
 fit:
   method: multistart
   certified: 'no'

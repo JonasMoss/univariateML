@@ -49,6 +49,18 @@ relations:
       sd: sigma
     transform: abs
     shift: mu
+  - family: foldnorm
+    at:
+      mu: 0
+      sigma: sigma
+    transform: shift
+    shift: mu
+  - family: naka
+    at:
+      shape: 0.5
+      scale: sigma**2
+    transform: shift
+    shift: mu
 fit:
   method: delegation
   certified: 'yes'

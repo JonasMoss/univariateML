@@ -54,6 +54,16 @@ relations:
       shape1: kappa
       shape2: 1
       scale: 1/lambda
+  - family: pareto2
+    at:
+      shape: kappa
+      scale: 1/lambda
+      min: 0
+  - family: betapr
+    at:
+      shape1: 1
+      shape2: kappa
+      scale: 1/lambda
 fit:
   method: profile-search
   certified: partial

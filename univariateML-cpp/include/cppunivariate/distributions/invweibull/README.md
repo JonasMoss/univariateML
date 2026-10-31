@@ -54,12 +54,22 @@ relations:
       shape1: 1
       shape2: shape
       scale: scale
+  - family: frechet
+    at:
+      lambda: shape
+      mu: 0
+      sigma: scale
   transform_of:
   - family: weibull
     transform: inverse
     at:
       shape: shape
       scale: 1/scale
+  - family: gumbel
+    at:
+      mu: log(scale)
+      sigma: 1/shape
+    transform: log
 fit:
   method: delegation
   certified: 'yes'

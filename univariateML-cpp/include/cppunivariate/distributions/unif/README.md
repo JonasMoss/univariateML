@@ -55,6 +55,23 @@ relations:
       shape2: 1
       min: min
       max: max
+  - family: tlambda
+    at:
+      mu: (min+max)/2
+      sigma: (max-min)/2
+      lambda: 1
+  - family: gpd
+    at:
+      mu: min
+      sigma: max-min
+      xi: -1
+  transform_of:
+  - family: power
+    at:
+      alpha: max-min
+      beta: 1
+    transform: shift
+    shift: min
 fit:
   method: closed-form
   certified: 'yes'

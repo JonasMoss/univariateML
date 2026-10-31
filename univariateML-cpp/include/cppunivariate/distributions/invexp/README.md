@@ -36,6 +36,10 @@ relations:
     at:
       alpha: 1
       beta: scale
+  - family: invweibull
+    at:
+      shape: 1
+      scale: scale
   transform_of:
   - family: exp
     transform: inverse

@@ -102,7 +102,16 @@ group: beta and generalised beta
 construction:
 - base
 - generalisation
-relations: {}
+relations:
+  transform_of:
+  - family: nsbeta
+    at:
+      shape1: shape1
+      shape2: shape2
+      min: 0
+      max: scale**shape3
+    transform: power
+    power: shape3
 fit:
   method: multistart
   certified: partial

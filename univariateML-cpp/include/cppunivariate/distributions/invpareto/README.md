@@ -56,6 +56,17 @@ relations:
       shape1: shape
       shape2: 1
       scale: scale
+  - family: betapr
+    at:
+      shape1: shape
+      shape2: 1
+      scale: scale
+  transform_of:
+  - family: lomax
+    at:
+      lambda: scale
+      kappa: shape
+    transform: inverse
 fit:
   method: delegation
   certified: partial

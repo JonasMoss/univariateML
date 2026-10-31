@@ -34,6 +34,10 @@ relations:
     at:
       shape: 2
       scale: sqrt(2)*sigma
+  - family: naka
+    at:
+      shape: 1
+      scale: 2*sigma**2
 fit:
   method: closed-form
   certified: 'yes'

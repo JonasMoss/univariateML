@@ -37,7 +37,21 @@ examples: |
 group: finite sampling
 construction:
 - base
-relations: {}
+relations:
+  transform_of:
+  - family: bbinom
+    at:
+      size: max-min
+      alpha: 1
+      beta: 1
+    transform: shift
+    shift: min
+  - family: zipf
+    at:
+      'N': max-min+1
+      s: 0
+    transform: shift
+    shift: min-1
 fit:
   method: closed-form
   certified: 'yes'

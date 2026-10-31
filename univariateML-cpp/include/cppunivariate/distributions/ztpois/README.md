@@ -34,6 +34,11 @@ relations:
     at:
       lambda: lambda
     type: zero-truncated
+  special_case_of:
+  - family: zmpois
+    at:
+      lambda: lambda
+      p0: 0
 fit:
   method: scalar-solve
   certified: 'yes'

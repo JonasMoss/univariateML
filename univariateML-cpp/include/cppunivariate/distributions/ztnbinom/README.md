@@ -50,6 +50,12 @@ relations:
       size: size
       prob: prob
     type: zero-truncated
+  special_case_of:
+  - family: zmnbinom
+    at:
+      size: size
+      prob: prob
+      p0: 0
 fit:
   method: multistart
   certified: 'no'

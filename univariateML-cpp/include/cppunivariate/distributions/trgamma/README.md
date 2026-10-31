@@ -67,7 +67,14 @@ group: gamma and Weibull
 construction:
 - base
 - generalisation
-relations: {}
+relations:
+  transform_of:
+  - family: gamma
+    at:
+      shape: shape1
+      scale: scale**shape2
+    transform: power
+    power: shape2
 fit:
   method: multistart
   certified: partial

@@ -58,6 +58,22 @@ relations:
       mean: mean
       sd: sd
       xi: 1
+  - family: ged
+    at:
+      mean: mean
+      sd: sd
+      nu: 2
+  - family: bhatt
+    at:
+      mu: mean
+      sigma: sd
+      a: 0
+  - family: tnorm
+    at:
+      mean: mean
+      sd: sd
+      a: -Inf
+      b: Inf
 fit:
   method: closed-form
   certified: 'yes'

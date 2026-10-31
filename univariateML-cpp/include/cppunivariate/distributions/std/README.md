@@ -72,6 +72,11 @@ relations:
       sd: sd
       nu: nu
       xi: 1
+  - family: lst
+    at:
+      mu: mean
+      sigma: sd*sqrt((nu-2)/nu)
+      df: nu
 fit:
   method: multistart
   certified: partial

@@ -27,7 +27,8 @@ def read_models():
 
 def expression(value, symbols):
     source=str(value).replace('^', '**')
-    local={'inf': sp.oo, 'Inf': sp.oo, 'Min': sp.Min, 'Max': sp.Max, 'floor': sp.floor, 'ceiling': sp.ceiling}
+    local={'inf': sp.oo, 'Inf': sp.oo, 'Min': sp.Min, 'Max': sp.Max,
+           'min': sp.Min, 'max': sp.Max, 'floor': sp.floor, 'ceiling': sp.ceiling}
     # Prefix coefficient identifiers, including Python keywords such as lambda.
     for name in sorted(symbols, key=len, reverse=True):
         alias='_relation_'+name
@@ -36,18 +37,130 @@ def expression(value, symbols):
     return sp.sympify(source, locals=local)
 
 
-def bound(value, values):
+def relation_symbols(model):
+    """Use only sign assumptions explicitly guaranteed by the domains."""
+    result = {}
+    for p in model['params']:
+        assumptions = dict(real=True)
+        if p['domain'].strip().split(',')[0].strip() == '(0':
+            assumptions['positive'] = True
+        if p.get('integer'):
+            assumptions['integer'] = True
+        result[p['name']] = sp.Symbol('relation_'+p['name'], **assumptions)
+    return result
+
+
+def special_path(models, start, target, excluded_pair=None):
+    """A nonempty special-case path, excluding all parallel direct edges."""
+    queue = [(start, [start])]
+    seen = {start}
+    for node, path in queue:
+        for edge in models[node].get('relations', {}).get('special_case_of', []):
+            dest = edge['family']
+            if (node, dest) == excluded_pair:
+                continue
+            if dest == target:
+                return path+[dest]
+            if dest not in seen:
+                seen.add(dest)
+                queue.append((dest, path+[dest]))
+    return None
+
+
+def transform_signature(edge, coordinates):
+    transform = edge['transform']
+    argument = (expression(edge['power'], coordinates) if transform == 'power' else
+                expression(edge.get('shift', 0), coordinates) if transform in ('shift','abs') else None)
+    return transform, argument
+
+
+def same_expression(a, b):
+    return a == b or (a is not None and b is not None and sp.simplify(a-b) == 0)
+
+
+def transform_derivation(models, child, index, edge):
+    """Find a family path with one same-kind transform and >=1 special case.
+
+    This is the declaration graph's policy: alternative coefficient maps or
+    power/shift arguments do not warrant another arrow of the same type.
+    The separate density check validates the retained coefficient map.
+    """
+    queue = [(child, False, [child])]
+    seen = {(child, False)}
+    for node, transformed, path in queue:
+        for kind in ('special_case_of', 'transform_of'):
+            if kind == 'transform_of' and transformed:
+                continue
+            for i, step in enumerate(models[node].get('relations', {}).get(kind, [])):
+                if (node, kind, i) == (child, 'transform_of', index):
+                    continue
+                if kind == 'transform_of' and step['transform'] != edge['transform']:
+                    continue
+                used = transformed or kind == 'transform_of'
+                next_path = path+[step['family']]
+                if step['family'] == edge['family'] and used and len(next_path) >= 3:
+                    return next_path
+                state = (step['family'], used)
+                if state in seen:
+                    continue
+                seen.add(state)
+                queue.append((step['family'], used, next_path))
+    return None
+
+
+def declaration_errors(models):
+    """Return per-edge violations of the immediate-declaration policy."""
+    errors = {}
+    for child, model in models.items():
+        seen = set()
+        symbols = relation_symbols(model)
+        for kind, edges in model.get('relations', {}).items():
+            for i, edge in enumerate(edges):
+                ref = (child, kind, i)
+                key = (kind, edge['family'], edge.get('transform'))
+                messages = []
+                if key in seen:
+                    messages.append('duplicate declaration for family/kind/transform')
+                seen.add(key)
+                if kind == 'special_case_of':
+                    path = special_path(models, child, edge['family'], (child, edge['family']))
+                    if path:
+                        messages.append('derivable special case: '+' -> '.join(path))
+                    if special_path(models, edge['family'], child):
+                        messages.append('cycle in special_case_of declarations')
+                elif kind == 'transform_of':
+                    transform, argument = transform_signature(edge, symbols)
+                    if (transform == 'power' and same_expression(argument, sp.Integer(1)) or
+                            transform == 'shift' and same_expression(argument, sp.Integer(0))):
+                        messages.append('identity transform')
+                    if transform in ('inverse','negate') and any(
+                            other['family'] == child and other['transform'] == transform
+                            for other in models[edge['family']].get('relations', {}).get('transform_of', [])):
+                        messages.append('both directions of involutive '+transform+' transform')
+                    path = transform_derivation(models, child, i, edge)
+                    if path:
+                        messages.append('derivable transform: '+' -> '.join(path))
+                if messages:
+                    errors[ref] = '; '.join(messages)
+    return errors
+
+
+def bound(value, values, substitutions=None):
     text = str(value)
     match = re.fullmatch(r'if \((.*?)\) (.*?) else (.*)', text)
     if match:
         cond, yes, no = match.groups()
-        return bound(yes if bool(expression(cond, values)) else no, values)
-    return float(expression(re.sub(r'\bmin\(', 'Min(', re.sub(r'\bmax\(', 'Max(', text)), values))
+        condition = expression(cond, values)
+        if substitutions is not None: condition = sp.simplify(condition).subs(substitutions)
+        return bound(yes if bool(condition) else no, values, substitutions)
+    result = expression(re.sub(r'\bmin\(', 'Min(', re.sub(r'\bmax\(', 'Max(', text)), values)
+    if substitutions is not None: result = sp.simplify(result).subs(substitutions)
+    return float(result)
 
 
-def support(meta, values):
+def support(meta, values, substitutions=None):
     s = meta['support']
-    return bound(s['lower'], values), bound(s['upper'], values)
+    return bound(s['lower'], values, substitutions), bound(s['upper'], values, substitutions)
 
 
 def transform_x(edge, x, symbols):
@@ -91,6 +204,30 @@ def close(a, b):
     return a == b or (math.isfinite(a) and math.isfinite(b) and abs(a-b) <= TOL*(1+abs(a)+abs(b)))
 
 
+def skellam_boundary(parent, ps, x, rhs, at):
+    """Continuous Bessel extension on a fixed zero-rate face.
+
+    I_n(2 sqrt(a b)) ~ (a b)^(n/2)/Gamma(n+1) gives the
+    signed Poisson law; two zero rates give the atom at zero.
+    """
+    if parent['id'] != 'skellam' or not (at[ps[0]] == 0 or at[ps[1]] == 0):
+        return parent, rhs
+    a, b = ps
+    expected = -a-b+x*sp.log(a/b)/2+sp.log(sp.besseli(sp.Abs(x), 2*sp.sqrt(a*b)))
+    if sp.simplify(rhs-expected) != 0:
+        raise ValueError('unrecognized Skellam density for boundary extension')
+    positive = at[ps[1]] == 0
+    rate, count = (ps[0], x) if positive else (ps[1], -x)
+    rhs = sp.Piecewise((0, sp.And(sp.Eq(rate, 0), sp.Eq(count, 0))),
+                       (-sp.oo, sp.Eq(rate, 0)),
+                       (-rate+count*sp.log(rate)-sp.loggamma(count+1), True))
+    bounds = dict(lower=0, upper='inf', closed=[True, False]) if positive else dict(
+        lower='-inf', upper=0, closed=[False, True])
+    if at[ps[0]] == 0 and at[ps[1]] == 0:
+        bounds = dict(lower=0, upper=0, closed=[True, True])
+    return dict(parent, support=dict(parent['support'], **bounds)), rhs
+
+
 def check_edge(child, parent, kind, edge):
     if kind not in ('special_case_of','transform_of','truncation_of','modification_of'):
         raise ValueError('unknown relation kind')
@@ -106,12 +243,47 @@ def check_edge(child, parent, kind, edge):
     domains = [(-math.inf, math.inf)]*len(child['params'])
     syms, x, lhs = density_expression(FAMILIES/child['id'], child, domains, prefer_spec=False)
     names = dict(zip([p['name'] for p in child['params']], syms))
+    if child['id'] == 'nhyper':
+        # The attained r=0 stopping time is identically zero; the generic
+        # gamma quotient only describes positive stopping counts.
+        lhs = sp.Piecewise((0, sp.And(sp.Eq(names['r'], 0), sp.Eq(x, 0))),
+                           (-sp.oo, sp.Eq(names['r'], 0)), (lhs, True))
     ps, px, rhs = density_expression(FAMILIES/parent['id'], parent,
                                      [(-math.inf, math.inf)]*len(parent['params']), prefer_spec=False)
     if set(edge['at']) != {p['name'] for p in parent['params']}: raise ValueError('map must cover every parent coefficient')
     at = {s: expression(edge['at'][p['name']], names) for s,p in zip(ps,parent['params'])}
+    parent, rhs = skellam_boundary(parent, ps, px, rhs, at)
+    if parent['id'] in ('zmbinom','zmgeom','zmnbinom','zmpois','zmlogarithmic'):
+        if at[ps[[p['name'] for p in parent['params']].index('p0')]] == 0:
+            parent = dict(parent, support=dict(parent['support'], lower=1))
     tx = transform_x(edge, x, names) if kind == 'transform_of' else x
+    # The attained a=0 Bhattacharjee member has a removable 0/0 in
+    # its erf quotient. Derive its continuous extension from the density,
+    # rather than replacing it with the candidate child's formula.
+    if parent['id'] == 'bhatt' and at[ps[2]] == 0:
+        rhs = sp.log(sp.limit(sp.exp(rhs), ps[2], 0, dir='+'))
+    if parent['id'] in ('ztnbinom', 'zmnbinom') and at[ps[0]] == 0:
+        # Gamma(r)*(1-p**r) -> -log(p) as r -> 0+. Remove
+        # these two cancelling singular log terms before substitution.
+        # For zero modification, keep the separate atom unchanged.
+        size, prob = ps[:2]
+        positive = rhs if parent['id'] == 'ztnbinom' else rhs.args[1].expr
+        regular = positive + sp.loggamma(size) + sp.log(1-prob**size)
+        boundary = regular.subs(size, 0) - sp.log(-sp.log(prob))
+        rhs = (boundary if parent['id'] == 'ztnbinom' else
+               sp.Piecewise((rhs.args[0].expr, sp.Eq(px, 0)), (boundary, True)))
     rhs = rhs.subs(at, simultaneous=True)
+    if parent['id'] == 'cmp' and at[ps[1]] in (0, 1):
+        # SymPy 1.14 Sum.evalf(subs=...) can omit the normalizer;
+        # resolve these exact geometric/exponential series first.
+        rhs = rhs.doit()
+    # Tukey lambda's dossier writes its density in u=F(x). At lambda=0
+    # the quantile is mu+sigma*log(u/(1-u)); invert it exactly. At
+    # lambda=1 or 2 the density is already independent of u. Other
+    # shapes still require an implicit inverse and are not certified here.
+    if parent['id'] == 'tlambda' and at[ps[2]] == 0:
+        mu, sigma = at[ps[0]], at[ps[1]]
+        rhs = rhs.subs(sp.Symbol('u'), 1/(1+sp.exp(-(px-mu)/sigma)))
     if edge.get('transform') == 'abs':
         rhs = sp.log(sp.exp(rhs.subs(px,x-expression(edge.get('shift',0),names))) + sp.exp(rhs.subs(px,-x+expression(edge.get('shift',0),names))))
     else:
@@ -122,7 +294,8 @@ def check_edge(child, parent, kind, edge):
     residual = sp.simplify(lhs-rhs) if not conditional else sp.nan
     symbolic = residual == 0
     rng = random.Random(SEED)
-    for trial in range(TRIALS):
+    trial = 0
+    for attempt in range(20*TRIALS):
         values = {}
         for p in child['params']:
             v = float(p['simulate'])
@@ -130,13 +303,26 @@ def check_edge(child, parent, kind, edge):
                 if conditional and p['name'] in ('a','b'): v = -1.5 if p['name']=='a' else 2.5
                 else: raise ValueError('nonfinite simulation seed')
             lattice = p.get('integer') or (p.get('kind') == 'design' and child['support']['type']=='integer')
-            if lattice: v = max(2, round(v)+rng.randint(0,4))
+            if attempt == 0: v = round(v) if lattice else v
+            elif lattice: v = max(2, round(v)+rng.randint(0,4))
             elif p['role'] in ('location','threshold','endpoint') or p['name'] in ('min','max','mu','mean','meanlog'): v += rng.uniform(-.3,.3)
             elif v > 0: v *= rng.uniform(.65,1.6)
             values[p['name']] = sp.Integer(v) if lattice else sp.Float(v)
         if conditional and 'a' in values and 'b' in values and values['a'] >= values['b']: values['b']=values['a']+3
         # Maintain ordered endpoints; this is a seed neighbourhood, not full-domain coverage.
         if 'min' in values and 'max' in values and values['min'] >= values['max']: values['max']=values['min']+2
+        # Dependent child domains (e.g. r<=m<=N) must hold before
+        # testing a map. Count accepted draws, never skipped invalid ones.
+        valid = True
+        for p in child['params']:
+            interval = p['domain'].strip()[1:-1].split(',')
+            a, b = (bound(v.strip(), values) for v in interval)
+            v = float(values[p['name']])
+            if v<a or v>b or (v==a and p['domain'][0]=='(') or (v==b and p['domain'][-1]==')'):
+                valid = False
+                break
+        if not valid:
+            continue
         if child['support']['type']=='integer' and edge.get('transform')=='shift':
             shift=float(expression(edge['shift'],values))
             if not shift.is_integer(): raise ValueError('integer shift must preserve the lattice')
@@ -148,7 +334,12 @@ def check_edge(child, parent, kind, edge):
             if v<a or v>b or (v==a and p['domain'][0]=='(') or (v==b and p['domain'][-1]==')'):
                 raise ValueError('mapped coefficient outside parent domain: '+p['name'])
         clo,chi = support(child, values)
-        plo,phi = mapped_support(edge, *support(parent,mapped), values)
+        # Cancel mapped endpoint identities before floating evaluation.
+        # In particular mu-sigma/xi may be exactly zero on a GEV image;
+        # a rounded negative residue must not invalidate an inverse map.
+        symbolic_map = {p['name']: at[s] for s,p in zip(ps,parent['params'])}
+        child_subs = {names[k]:v for k,v in values.items()}
+        plo,phi = mapped_support(edge, *support(parent,symbolic_map,child_subs), values)
         if conditional:
             if child['support']['type']=='integer' and (not child['support']['closed'][0] or (math.isfinite(chi) and not child['support']['closed'][1])):
                 raise ValueError('integer conditioning endpoints must be included')
@@ -159,7 +350,10 @@ def check_edge(child, parent, kind, edge):
                 if not close(clo,expected_lo) or not close(chi,phi): raise ValueError('modification support mismatch')
         elif child['support']['type'] != parent['support']['type'] or not(close(clo,plo) and close(chi,phi)):
             raise ValueError(f'support mismatch: {(clo,chi)} vs {(plo,phi)}')
-        if not conditional and child['support']['type']=='integer' and child['support']['closed'] != parent['support']['closed']:
+        parent_closed = list(parent['support']['closed'])
+        if edge.get('transform') == 'negate':
+            parent_closed.reverse()
+        if not conditional and child['support']['type']=='integer' and child['support']['closed'] != parent_closed:
             raise ValueError('integer endpoint inclusion differs')
         if math.isfinite(clo) and math.isfinite(chi): point=rng.uniform(clo,chi)
         elif math.isfinite(clo): point=clo+rng.uniform(.05,5)
@@ -191,17 +385,26 @@ def check_edge(child, parent, kind, edge):
         else: b=complex(rhs.evalf(35,subs=subs))
         if abs(a.imag)>TOL or abs(b.imag)>TOL or not(math.isfinite(a.real) and math.isfinite(b.real)) or not close(a.real,b.real):
             raise ValueError(f'log-density mismatch at {point}: {a} vs {b}')
+        trial += 1
+        if trial == TRIALS:
+            break
+    else:
+        raise ValueError('could not draw 24 valid child parameter values')
     return 'verified symbolically' if symbolic else 'verified numerically'
 
 
 def main():
     models=read_models(); results=[]
+    errors=declaration_errors(models)
     for id,child in models.items():
         for kind,edges in child.get('relations',{}).items():
-            for edge in edges:
-                try: status=check_edge(child,models[edge['family']],kind,edge);detail=''
+            for i,edge in enumerate(edges):
+                try:
+                    if (id,kind,i) in errors:
+                        raise ValueError(errors[(id,kind,i)])
+                    status=check_edge(child,models[edge['family']],kind,edge);detail=''
                 except Exception as e: status='failed';detail=str(e)
-                row=dict(child=id,parent=edge['family'],kind=kind,status=status,detail=detail)
+                row=dict(child=id,parent=edge['family'],kind=kind,edge=edge,status=status,detail=detail)
                 results.append(row);print(f"{id} -> {edge['family']} ({kind}): {status} {detail}",flush=True)
     path=ROOT/'build/quality/relations.json';path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(dict(seed=SEED,trials=TRIALS,tolerance=TOL,results=results),indent=2)+'\n')

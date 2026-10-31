@@ -81,6 +81,19 @@ relations:
       shape2: shape2
       shape3: 1
       scale: scale
+  - family: pareto4
+    at:
+      shape1: shape1
+      shape2: shape2
+      scale: scale
+      min: 0
+  transform_of:
+  - family: lomax
+    at:
+      lambda: 1/scale**shape2
+      kappa: shape1
+    transform: power
+    power: shape2
 fit:
   method: multistart
   certified: partial

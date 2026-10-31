@@ -42,7 +42,13 @@ examples: |
 group: skewed and robust location-scale
 construction:
 - location-scale
-relations: {}
+relations:
+  special_case_of:
+  - family: lst
+    at:
+      mu: location
+      sigma: scale
+      df: 1
 fit:
   method: profile-search
   certified: partial

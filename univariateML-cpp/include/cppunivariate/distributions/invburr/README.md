@@ -81,6 +81,19 @@ relations:
       shape1: shape1
       shape2: shape2
       scale: 1/scale
+  - family: invpareto
+    at:
+      shape: shape1
+      scale: scale**shape2
+    transform: power
+    power: shape2
+  special_case_of:
+  - family: gb2
+    at:
+      shape1: 1
+      shape2: shape2
+      shape3: shape1
+      scale: scale
 fit:
   method: delegation
   certified: partial

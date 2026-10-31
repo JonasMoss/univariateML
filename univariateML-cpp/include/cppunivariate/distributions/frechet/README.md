@@ -64,6 +64,12 @@ relations:
       shape: lambda
       scale: sigma
     shift: mu
+  special_case_of:
+  - family: gev
+    at:
+      mu: mu+sigma
+      sigma: sigma/lambda
+      xi: 1/lambda
 fit:
   method: delegation
   certified: partial

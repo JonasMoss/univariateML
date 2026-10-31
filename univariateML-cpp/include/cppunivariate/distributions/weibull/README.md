@@ -48,6 +48,18 @@ relations:
       shape1: 1
       shape2: shape
       scale: scale
+  transform_of:
+  - family: exp
+    at:
+      rate: 1/scale**shape
+    transform: power
+    power: shape
+  - family: gev
+    at:
+      mu: -scale
+      sigma: scale/shape
+      xi: -1/shape
+    transform: negate
 fit:
   method: delegation
   certified: 'yes'

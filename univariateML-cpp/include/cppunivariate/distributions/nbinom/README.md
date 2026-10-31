@@ -39,7 +39,13 @@ examples: |
 group: Poisson, binomial and negative binomial
 construction:
 - compounding
-relations: {}
+relations:
+  special_case_of:
+  - family: zinb
+    at:
+      size: size
+      prob: prob
+      pi: 0
 fit:
   method: scalar-solve
   certified: 'yes'
