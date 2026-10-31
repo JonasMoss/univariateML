@@ -53,16 +53,30 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    type: zero-inflated
+    mass: pi
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'zib/README.md, Details; zib/mle.hpp (public fitter and held overloads); zib/test.cpp: Fixed size has exact
+    conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability grids
+    lack a global unimodality certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model bounded success counts with an additional structural-zero component.
+summary: Zero-inflated binomial provides a model for bounded success counts with an additional structural-zero component.
+aliases: []
+references:
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
+key_references:
+- 1
 ---
 
 Zero-inflated binomial distributions model counts with a separate zero component.

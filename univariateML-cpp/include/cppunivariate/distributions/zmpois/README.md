@@ -36,15 +36,30 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: pois
+    at:
+      lambda: lambda
+    type: zero-modified
+    mass: p0
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'zmpois/README.md, Details; zmpois/mle.hpp (public fitter and held overloads); zmpois/test.cpp: Conditional
+    mean is strictly increasing in log rate (derivative is conditional variance), giving a unique bracketed root;
+    bounds profile to sample extremes and zero mass separates analytically.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model Poisson positive counts with a separately fitted zero probability.
+summary: Zero-modified Poisson provides a model for Poisson positive counts with a separately fitted zero probability.
+aliases: []
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-modified Poisson distributions model counts with a separate zero component.

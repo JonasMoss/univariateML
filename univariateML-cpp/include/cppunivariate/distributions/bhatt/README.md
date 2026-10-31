@@ -42,20 +42,27 @@ examples: |
   x <- rml(200, mlbhatt())
   mlbhatt(x)
 
-group: skewed and robust location-scale
+group: normal convolutions
 construction:
 - compounding
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'bhatt/README.md, Details; bhatt/mle.hpp (public fitter and held overloads); bhatt/test.cpp: Location is
+    strictly concave with scales held; joint scales use multistart/grid optimization without a global certificate.'
 areas:
 - measurement and errors
 classification: uncommon
-classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
-  surveyed.
+classification_reason: Introduced for dimensional chains involving rectangular and normal errors; broader adoption
+  is not established by the sources checked.
+summary: Bhattacharjee provides a model for dimensional tolerance chains combining rectangular and Gaussian errors.
+aliases: []
+references:
+- Bhattacharjee, G. P., Pandit, S. N. N. and Mohan, R. (1963). Dimensional chains involving rectangular and normal
+  error-distributions. Technometrics, 5, 404–406.
+key_references:
+- 1
 ---
 
 The Bhattacharjee distribution is the convolution of a normal distribution and a symmetric uniform distribution.

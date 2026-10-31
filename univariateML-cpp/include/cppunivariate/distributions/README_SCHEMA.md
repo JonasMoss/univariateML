@@ -230,7 +230,7 @@ all five fields plus classification/reason and undergoes full validation.
 Classification and its reason are populated for every family. Application and
 prevalence assignments are editorial first-version judgements, not a usage survey.
 
-- `group`: one value from `Pareto and Lomax`, `Poisson, binomial and negative binomial`, `beta and generalised beta`, `bounded continuous`, `discrete heavy-tailed`, `extreme value`, `finite sampling`, `gamma and Weibull`, `modified counts`, `normal and Student`, `other positive`, `skewed and robust location-scale`.
+- `group`: one value from `Pareto and Lomax`, `Poisson, binomial and negative binomial`, `beta and generalised beta`, `bounded continuous`, `discrete heavy-tailed`, `extreme value`, `finite sampling`, `gamma and Weibull`, `modified counts`, `normal and Student`, `normal convolutions`, `other positive`, `skewed and robust location-scale`.
 - `construction`: a nonempty unique list from `base`, `compounding`, `discretisation`, `folding`, `generalisation`, `location-scale`, `modification`, `skewing`, `transformation`, `truncation`.
 - `areas`: a nonempty unique list of at most three from `actuarial`, `counts and ecology`, `economics and income`, `extremes and environment`, `finance`, `measurement and errors`, `proportions`, `rank-frequency`, `reliability and survival`, `robust modelling`, `sampling and quality control`, `waiting times and queues`.
 - `fit`: `{method, certified, note}`; method is `closed-form`, `scalar-solve`,
@@ -238,10 +238,10 @@ prevalence assignments are editorial first-version judgements, not a usage surve
   The last is a plan extension for the grouped-normal joint concave solve. This names
   the primary route; held subsets can use others. `certified` is a quoted string
   `yes`, `partial`, `no`, or `unknown`; YAML booleans are invalid. Use `unknown`
-  unless existing evidence states the strength. `note` states scope and evidence;
+  only when the fitting evidence is genuinely absent. `note` states scope and evidence;
   certification is about fitting, not inference regularity or coverage.
-- `relations`: a map (empty `{}` allowed) with lists `special_case_of` and/or
-  `transform_of`. Each edge has `family` (an existing different id) and `at`,
+- `relations`: a map (empty `{}` allowed) with lists `special_case_of`, `transform_of`, `truncation_of` and/or
+  `modification_of` (the latter two are defined below). Each edge has `family` (an existing different id) and `at`,
   mapping **every parent coefficient** to a numeric constant or pure arithmetic
   expression in child coefficient names. Neither display symbols nor undeclared
   variables are allowed. Example: exponential has
@@ -270,3 +270,46 @@ records explicitly concern constant/all-zero/collapsed samples and none of the
 other tags apply. `always` means no declared obstacle; it is a metadata
 default, **not an existence theorem**. Unclassified unnamed failure records
 are conservatively tagged `partial` rather than asserting `always`.
+
+### Taxonomy round two (2026-10-31)
+
+`normal convolutions` is an additional group for EMG and Bhattacharjee:
+their independent-component construction is more informative than their
+full-real support. Folding retains the parent family's primary group.
+Groups are navigation choices and need not partition mathematical constructions.
+
+Certification is assigned from the actual default and documented held fits:
+`yes` requires closed forms or a unique solution with a monotone equation,
+certified bracket, concavity argument or exhaustive bounded search for every
+supported subset; `partial` identifies specific certified subsets or regions;
+`no` means the nontrivial fitting routes remain numerical searches;
+`unknown` is reserved for genuinely missing evidence. Unsupported subsets and
+numerical precision limitations must be named. All-held density evaluation alone
+does not justify `partial`. A converged local score is not a global certificate.
+Each note cites a file and section; no tag establishes inference validity.
+
+Additional density relations (the complete-map rule still applies):
+
+- `truncation_of`: the child is the parent conditioned on the child's declared
+  support. No extra bound fields are needed. Its density is the parent density
+  divided by its mass on that support. Supports must have the same base measure;
+  the conditioning support must be a nonempty subset. Integer bounds are the
+  effective included lattice bounds, so strict lower truncation stays strict.
+- `modification_of`: integer zero modification, with `type` equal to
+  `zero-truncated`, `zero-modified`, or `zero-inflated`. If parent mass at zero
+  is q, zero-truncated positive masses are f(k)/(1-q). Zero-modified additionally
+  requires `mass`, an expression in child coefficients: zero has that mass p,
+  positives have (1-p)f(k)/(1-q). Zero-inflated uses zero mass p+(1-p)q and
+  positive masses (1-p)f(k). These formulas are checked at interior parameters;
+  zero-denominator boundary extensions require separate family tests.
+- An `abs` transform may have `shift`, meaning the child is shift + |parent|.
+  Both inverse branches and the shifted support are checked. For example,
+  hnorm maps to norm with mean=0, sd=sigma and shift=mu.
+
+The checker integrates the mapped parent density on continuous truncation
+supports and sums it on finite integer supports at 35-digit working precision.
+Zero modifications use the mapped parent's zero mass and test both zero and
+positive observations. The 24 seeded parameter neighbourhoods and `2e-9`
+relative log-density tolerance provide regression evidence, not a global proof
+or validated interval arithmetic. New edge types appear in both directions in
+Related families and as declared-relation catalog facets.

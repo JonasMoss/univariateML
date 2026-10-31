@@ -37,7 +37,7 @@ examples: |
 
 summary: The normal distribution models symmetric continuous variation through a location and a standard deviation.
 classification: classical
-classification_reason: A standard model for measurement errors and sampling approximations.
+classification_reason: A standard model for additive measurement errors and approximately Gaussian fluctuations.
 aliases:
 - Gaussian
 key_references:
@@ -53,10 +53,16 @@ relations:
       xi: mean
       omega: sd
       alpha: 0
+  - family: snorm
+    at:
+      mean: mean
+      sd: sd
+      xi: 1
 fit:
   method: closed-form
-  certified: partial
-  note: Analytic maximum for positive residual variance; scale collapse and holds are documented in Details.
+  certified: 'yes'
+  note: 'norm/README.md, Details; norm/mle.hpp (public fitter and held overloads); norm/test.cpp: Closed-form maximum
+    for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - measurement and errors
 ---

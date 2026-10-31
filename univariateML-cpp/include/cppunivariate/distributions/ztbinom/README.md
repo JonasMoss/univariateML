@@ -40,16 +40,30 @@ examples: |
 group: modified counts
 construction:
 - truncation
-relations: {}
+relations:
+  modification_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    type: zero-truncated
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'ztbinom/README.md, Details; ztbinom/mle.hpp (public fitter and held overloads); ztbinom/test.cpp: Fixed
+    size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability
+    grids lack a global unimodality certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model binomial success counts sampled only when positive.
+summary: Zero-truncated binomial provides a model for binomial success counts sampled only when positive.
+aliases: []
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-truncated binomial distributions model positive counts.

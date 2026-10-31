@@ -41,8 +41,10 @@ limits:
     detect: left translated half-normal supremum wins the profile comparison; use mlhnorm on -x
     status: LeftHalfNormalBoundary
 references:
-  - "Azzalini, A. (1985). A class of distributions which includes the normal ones. Scandinavian Journal of Statistics 12, 171-178."
-  - "Sartori, N. (2006). Bias prevention of maximum likelihood estimates for scalar skew normal and skew t distributions. Journal of Statistical Planning and Inference 136, 4259-4275."
+- Azzalini, A. (1985). A class of distributions which includes the normal ones. Scandinavian Journal of Statistics
+  12, 171-178.
+- Sartori, N. (2006). Bias prevention of maximum likelihood estimates for scalar skew normal and skew t distributions.
+  Journal of Statistical Planning and Inference 136, 4259-4275.
 holds: []
 examples: |
   set.seed(1)
@@ -56,13 +58,18 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'sn/README.md, Details; sn/mle.hpp (public fitter and held overloads); sn/test.cpp: Held shape gives a concave
+    location/inverse-scale problem; free skewness uses finite scans and local refinement, not a global certificate.'
 areas:
 - robust modelling
 classification: specialist
-classification_reason: Used within robust modelling; classified by its specialised modelling role.
+classification_reason: Used to model smoothly asymmetric Gaussian-like measurements under the Azzalini construction.
+summary: Azzalini skew-normal provides a model for smoothly asymmetric Gaussian-like measurements under the Azzalini
+  construction.
+aliases: []
+key_references:
+- 1
 ---
 
 The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. Its direct location and scale differ from its mean and standard deviation.

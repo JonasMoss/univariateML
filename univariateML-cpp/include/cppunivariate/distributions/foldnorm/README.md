@@ -30,7 +30,7 @@ examples: |
   x <- rml(200, mlfoldnorm())
   mlfoldnorm(x)
 
-group: other positive
+group: normal and Student
 construction:
 - folding
 relations:
@@ -43,12 +43,20 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: Details records an analytically bounded profile and convex-chord upper bounds to a likelihood
-    tolerance; this does not establish uniqueness.
+  note: 'foldnorm/README.md, Details; foldnorm/mle.hpp (public fitter and held overloads); foldnorm/test.cpp: Joint
+    profile has analytic bounds and convex-chord likelihood bounds; held-coordinate profiles are searched numerically.
+    The joint tolerance certificate does not establish every held subset.'
 areas:
 - reliability and survival
 classification: specialist
-classification_reason: Used within reliability and survival; classified by its specialised modelling role.
+classification_reason: Used to model unsigned Gaussian measurements when the sign is discarded.
+summary: Folded Normal provides a model for unsigned Gaussian measurements when the sign is discarded.
+aliases: []
+references:
+- Leone, F. C., Nelson, L. S. and Nottingham, R. B. (1961). The Folded Normal Distribution. Technometrics, 3(4),
+  543–550. doi:10.1080/00401706.1961.10489974.
+key_references:
+- 1
 ---
 
 The folded normal distribution is the absolute value of a normal random variable.

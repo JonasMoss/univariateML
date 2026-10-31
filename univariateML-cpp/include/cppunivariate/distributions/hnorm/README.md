@@ -27,7 +27,10 @@ log_density: log(2/pi)/2 - log(sigma) - (x-mu)**2/(2*sigma**2)
 limits:
   - {name: scale collapse, when: every observation equals the free or held endpoint and sigma tends to zero, status: DegenerateData}
 references:
-  - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition. Wiley.
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition.
+  Wiley.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 fit_args:
   mu: ~
 examples: |
@@ -38,15 +41,27 @@ examples: |
 group: normal and Student
 construction:
 - folding
-relations: {}
+relations:
+  transform_of:
+  - family: norm
+    at:
+      mean: 0
+      sd: sigma
+    transform: abs
+    shift: mu
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'hnorm/README.md, Details; hnorm/mle.hpp (public fitter and held overloads); hnorm/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - measurement and errors
 classification: specialist
-classification_reason: Used within measurement and errors; classified by its specialised modelling role.
+classification_reason: Used to model one-sided Gaussian deviations from a lower endpoint.
+summary: Translated Half-Normal provides a model for one-sided Gaussian deviations from a lower endpoint.
+aliases: []
+key_references:
+- 2
 ---
 
 The translated half-normal distribution models nonnegative normal deviations from an unknown endpoint.

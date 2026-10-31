@@ -129,19 +129,28 @@ examples: |
   x <- rml(200, mlnsbeta())
   mlnsbeta(x, min = 0L, max = 1L)
 
-group: bounded continuous
+group: beta and generalised beta
 construction:
 - base
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'nsbeta/README.md, Details; nsbeta/mle.hpp (public fitter and held overloads); nsbeta/test.cpp: Strictly
+    concave beta likelihood in its two shapes; held-shape digamma scores decrease strictly. nsbeta uses supplied
+    endpoints; unsupported endpoint fits stop.'
 areas:
 - proportions
-classification: uncommon
-classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
-  surveyed.
+classification: specialist
+classification_reason: Used to model beta-shaped measurements on a supplied physical interval.
+summary: Nonstandard beta provides a model for beta-shaped measurements on a supplied physical interval.
+aliases:
+- Non-standard beta
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 This family has a known support endpoint and delegates fitting to beta.

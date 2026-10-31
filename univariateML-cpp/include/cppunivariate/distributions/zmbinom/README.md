@@ -53,16 +53,31 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    type: zero-modified
+    mass: p0
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'zmbinom/README.md, Details; zmbinom/mle.hpp (public fitter and held overloads); zmbinom/test.cpp: Fixed
+    size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability
+    grids lack a global unimodality certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model bounded counts with an independently adjustable zero probability.
+summary: Zero-modified binomial provides a model for bounded counts with an independently adjustable zero probability.
+aliases: []
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-modified binomial distributions model counts with a separate zero component.

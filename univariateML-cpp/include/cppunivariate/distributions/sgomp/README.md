@@ -36,13 +36,21 @@ construction:
 relations: {}
 fit:
   method: scalar-solve
-  certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  certified: partial
+  note: 'sgomp/README.md, Details; sgomp/mle.hpp (public fitter and held overloads); sgomp/test.cpp: Held rate leaves
+    a strictly monotone shape score; joint rate grid refines sampled peaks without certifying enumeration of all
+    stationary points.'
 areas:
 - reliability and survival
 classification: specialist
-classification_reason: Used within reliability and survival; classified by its specialised modelling role.
+classification_reason: Used to model waiting times with flexible onset in diffusion and adoption models.
+summary: Shifted Gompertz provides a model for waiting times with flexible onset in diffusion and adoption models.
+aliases: []
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The shifted Gompertz distribution models nonnegative waiting times. The

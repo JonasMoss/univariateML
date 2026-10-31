@@ -66,12 +66,20 @@ relations:
     shift: mu
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'frechet/README.md, Details; frechet/mle.hpp (public fitter and held overloads); frechet/test.cpp: Held
+    location delegates to the certified inverse-Weibull fit; free location uses numerical constrained profile searches.'
 areas:
 - extremes and environment
 classification: specialist
-classification_reason: Used within extremes and environment; classified by its specialised modelling role.
+classification_reason: Used to model block maxima with polynomially decaying upper tails.
+summary: Frechet provides a model for block maxima with polynomially decaying upper tails.
+aliases: []
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The Frechet distribution models heavy right tails and extreme maxima.

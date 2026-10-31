@@ -49,8 +49,11 @@ limits:
     detect: Uniform log-likelihood exceeds all finite candidates.
     status: UniformBoundary
 references:
-  - "Nelson, D. B. (1991). Conditional Heteroscedasticity in Asset Returns, A New Approach. Econometrica, 59, 347–370."
-  - "Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power distribution and its generalizations. Statistics & Probability Letters, 107, 111–114. doi:10.1016/j.spl.2015.08.009."
+- Nelson, D. B. (1991). Conditional Heteroscedasticity in Asset Returns, A New Approach. Econometrica, 59, 347–370.
+- Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power
+  distribution and its generalizations. Statistics & Probability Letters, 107, 111–114. doi:10.1016/j.spl.2015.08.009.
+- 'fGarch documentation (accessed 2026-10-31). fGarch: Rmetrics - Autoregressive Conditional Heteroskedastic Modelling. R package reference
+  manual. https://cran.r-project.org/web/packages/fGarch/fGarch.pdf.'
 holds: []
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
@@ -60,15 +63,30 @@ group: skewed and robust location-scale
 construction:
 - location-scale
 - generalisation
-relations: {}
+relations:
+  special_case_of:
+  - family: sged
+    at:
+      mean: mean
+      sd: sd
+      nu: nu
+      xi: 1
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'ged/README.md, Details; ged/mle.hpp (public fitter and held overloads); ged/test.cpp: Held shape at least
+    one gives a convex location problem and analytic scale profile; free shape search is numerical, including uniform-face
+    comparisons.'
 areas:
 - robust modelling
 classification: specialist
-classification_reason: Used within robust modelling; classified by its specialised modelling role.
+classification_reason: Used to model symmetric financial errors with exponential-power rather than Gaussian tails.
+summary: Generalized Error provides a model for symmetric financial errors with exponential-power rather than Gaussian
+  tails.
+aliases:
+- Exponential power
+key_references:
+- 3
 ---
 
 The generalized error (exponential power) distribution is a symmetric location-scale family whose shape controls tail thickness.

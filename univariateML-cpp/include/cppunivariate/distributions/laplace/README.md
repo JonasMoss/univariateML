@@ -23,7 +23,10 @@ r:
     mu: Optional held mu; NULL estimates it.
 log_density: -log(2*sigma) - Abs(x-mu)/sigma
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 24.
+  Wiley, New York.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 limits:
   - name: scale collapse
@@ -42,12 +45,18 @@ construction:
 relations: {}
 fit:
   method: closed-form
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'laplace/README.md, Details; laplace/mle.hpp (public fitter and held overloads); laplace/test.cpp: Closed-form
+    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - robust modelling
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for symmetric errors with a sharp central peak and exponential tails.
+summary: Laplace provides a model for symmetric errors with a sharp central peak and exponential tails.
+aliases:
+- Double exponential
+key_references:
+- 2
 ---
 
 The Laplace (double exponential) distribution is a symmetric location-scale model with exponential tails.

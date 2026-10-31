@@ -192,15 +192,26 @@ relations:
     shift: min
 fit:
   method: delegation
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'fpareto/README.md, Details; fpareto/mle.hpp (public fitter and held overloads); fpareto/test.cpp: With
+    threshold and beta shapes held, the GB2 delegate has a strictly concave inner power/location problem; joint
+    beta-shape search and face enumeration remain numerical.'
 areas:
 - actuarial
 - economics and income
-classification: uncommon
-classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
-  surveyed.
+classification: specialist
+classification_reason: Used to model insurance loss severity with independently adjustable tails above a supplied
+  threshold.
+summary: Feller-Pareto provides a model for insurance loss severity with independently adjustable tails above a
+  supplied threshold.
+aliases: []
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+- 'Dutang, C., Goulet, V. and Langevin, N. (2022). Feller-Pareto and Related Distributions: Numerical Implementation
+  and Actuarial Applications. Journal of Statistical Software, 103(6), 1–22. doi:10.18637/jss.v103.i06.'
+key_references:
+- 2
 ---
 
 This family has a known support endpoint and delegates fitting to gb2.

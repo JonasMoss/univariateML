@@ -16,7 +16,7 @@ r:
     prob: "Optional held prob; NULL estimates it."
 log_density: "log(prob) + x*log(1 - prob)"
 references:
-  - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley-Blackwell."
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 examples: |
   set.seed(1)
   x <- rml(200, mlgeom())
@@ -33,12 +33,17 @@ relations:
       prob: prob
 fit:
   method: closed-form
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'geom/README.md, Details; geom/mle.hpp (public fitter and held overloads); geom/test.cpp: Closed-form maximum
+    for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - counts and ecology
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for failures before the first success in repeated independent trials.
+summary: Geometric provides a model for failures before the first success in repeated independent trials.
+aliases: []
+key_references:
+- 1
 ---
 
 The geometric distribution models the number of failures before the first success in independent Bernoulli trials.

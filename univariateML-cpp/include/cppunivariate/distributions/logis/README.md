@@ -25,7 +25,8 @@ r:
     iterlim: Maximum number of iterations.
 log_density: -(x-location)/scale - log(scale) - 2*log(1 + exp(-(x-location)/scale))
 references:
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 23. Wiley, New York."
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 2, Chapter 23.
+  Wiley, New York.
 holds: []
 limits:
   - name: scale collapse
@@ -44,12 +45,18 @@ construction:
 relations: {}
 fit:
   method: profile-search
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'logis/README.md, Details; logis/mle.hpp (public fitter and held overloads); logis/test.cpp: Joint likelihood
+    is strictly concave in location/scale and inverse scale; Newton seeks its unique stationary maximum. Both conditional
+    scores are monotone and bisected.'
 areas:
 - robust modelling
 classification: classical
-classification_reason: A standard distribution in introductory probability or applied statistical modelling.
+classification_reason: A standard model for symmetric errors with heavier tails than Gaussian errors.
+summary: Logistic provides a model for symmetric errors with heavier tails than Gaussian errors.
+aliases: []
+key_references:
+- 1
 ---
 
 The logistic distribution is a symmetric location-scale distribution with heavier tails than the normal distribution.

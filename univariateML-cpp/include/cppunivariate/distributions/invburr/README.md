@@ -57,8 +57,12 @@ limits:
     detect: 'all(x <= scale)'
     status: 'AllLeOne'
 references:
-  - "Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational Statistics & Data Analysis 45, 675-687. doi:10.1016/S0167-9473(02)00367-5."
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York."
+- Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational
+  Statistics & Data Analysis 45, 675-687. doi:10.1016/S0167-9473(02)00367-5.
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, Chapter 20.
+  Wiley, New York.
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 holds: []
 examples: |
   set.seed(1)
@@ -79,13 +83,19 @@ relations:
       scale: 1/scale
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'invburr/README.md, Details; invburr/mle.hpp (public fitter and held overloads); invburr/test.cpp: One-free-coordinate
+    and transformed Lomax subsets have monotone scores; free shapes/scale use numerical profiles or BFGS. Reciprocal
+    delegation inherits these qualifications.'
 areas:
 - actuarial
 - economics and income
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model insurance loss severity with the reciprocal Burr tail pattern.
+summary: Inverse Burr provides a model for insurance loss severity with the reciprocal Burr tail pattern.
+aliases: []
+key_references:
+- 3
 ---
 
 The inverse Burr distribution is the distribution of the reciprocal of a Burr type XII variable.

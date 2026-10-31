@@ -117,7 +117,7 @@ examples: |
 
 summary: The moment-standardized Fernandez–Steel skew Student distribution allows asymmetry and heavy tails.
 classification: specialist
-classification_reason: Used for skewed heavy-tailed errors, including financial returns.
+classification_reason: Used to model financial returns requiring both asymmetry and polynomial tails.
 aliases:
 - Fernandez–Steel skew Student
 key_references:
@@ -131,8 +131,9 @@ relations: {}
 fit:
   method: multistart
   certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  note: 'sstd/README.md, Details; sstd/mle.hpp (public fitter and held overloads); sstd/test.cpp: Default and nontrivial
+    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
+    density evaluation is not counted as certification.'
 areas:
 - finance
 - measurement and errors

@@ -25,8 +25,12 @@ r:
     iterlim: Maximum number of iterations.
 log_density: log(2) + shape*log(shape) - loggamma(shape) - shape*log(scale) + (2*shape - 1)*log(x) - shape*x**2/scale
 references:
-  - "Choi, S. C, and R. Wette. \"Maximum likelihood estimation of the parameters of the gamma distribution and their bias.\" Technometrics 11.4 (1969): 683-690."
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995) Continuous Univariate Distributions, Volume 1, Chapter 17. Wiley, New York."
+- 'Choi, S. C, and R. Wette. "Maximum likelihood estimation of the parameters of the gamma distribution and their
+  bias." Technometrics 11.4 (1969): 683-690.'
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 17.
+  Wiley, New York.
+- Nakagami, M. (1960). The m-Distribution—A General Formula of Intensity Distribution of Rapid Fading. In Statistical
+  Methods in Radio Wave Propagation. Pergamon Press. doi:10.1016/B978-0-08-009306-2.50005-4.
 limits:
 - name: unbounded likelihood
   fixed: [scale]
@@ -51,13 +55,19 @@ relations:
     power: 2
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'naka/README.md, Details; naka/mle.hpp (public fitter and held overloads); naka/test.cpp: Free scale is
+    the empirical second moment; shape solves the decreasing gamma log-shape/digamma equation. Held scale has the
+    same monotone shape equation or an explicit collapse.'
 areas:
 - reliability and survival
 - waiting times and queues
 classification: specialist
-classification_reason: Used within reliability and survival; classified by its specialised modelling role.
+classification_reason: Used to model radio-fading amplitudes whose squared magnitude is gamma distributed.
+summary: Nakagami provides a model for radio-fading amplitudes whose squared magnitude is gamma distributed.
+aliases: []
+key_references:
+- 3
 ---
 
 The Nakagami distribution models positive amplitudes, including radio-fading measurements. Its square follows a gamma distribution.

@@ -36,15 +36,31 @@ examples: |
 group: modified counts
 construction:
 - modification
-relations: {}
+relations:
+  modification_of:
+  - family: lgser
+    at:
+      theta: prob
+    type: zero-modified
+    mass: p0
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'zmlogarithmic/README.md, Details; zmlogarithmic/mle.hpp (public fitter and held overloads); zmlogarithmic/test.cpp:
+    Strictly monotone one-parameter exponential-family or log-shape score gives a bracketed unique root or the documented
+    boundary; finite Zipf endpoint and modified zero mass profile exactly.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model logarithmic-series positive counts with a separately fitted zero probability.
+summary: Zero-modified logarithmic provides a model for logarithmic-series positive counts with a separately fitted
+  zero probability.
+aliases: []
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-modified logarithmic distributions model counts with a separate zero component.

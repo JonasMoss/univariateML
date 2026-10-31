@@ -33,7 +33,7 @@ examples: |
 
 summary: The gamma distribution models positive measurements with separate shape and scale coefficients.
 classification: classical
-classification_reason: A standard model for waiting times and positive skewed data.
+classification_reason: A standard model for positive waiting times and skewed measurements with a power-law onset.
 aliases: []
 key_references:
 - 1
@@ -58,9 +58,10 @@ relations:
       scale: scale
 fit:
   method: scalar-solve
-  certified: partial
-  note: Unique scalar solution and bracketed fallback documented in Details; subject to floating-point solver
-    tolerances.
+  certified: 'yes'
+  note: 'gamma/README.md, Details; gamma/mle.hpp (public fitter and held overloads); gamma/test.cpp: Gamma shape
+    has a unique monotone digamma equation; scale is analytic, with bracketed fallback and held-coordinate solves.
+    Transformation preserves the maximum.'
 areas:
 - reliability and survival
 - waiting times and queues

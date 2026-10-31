@@ -84,15 +84,28 @@ examples: |
 group: modified counts
 construction:
 - truncation
-relations: {}
+relations:
+  truncation_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'tbinom/README.md, Details; tbinom/mle.hpp (public fitter and held overloads); tbinom/test.cpp: Fixed size
+    has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability
+    grids lack a global unimodality certificate.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model success counts observed only within a specified conditioning window.
+summary: Truncated binomial provides a model for success counts observed only within a specified conditioning window.
+aliases: []
+references:
+- Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
+key_references:
+- 1
 ---
 
 The binomial law conditioned on known bounds `a < x <= b` models truncated counts.

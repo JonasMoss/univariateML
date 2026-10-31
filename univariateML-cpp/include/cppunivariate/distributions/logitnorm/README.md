@@ -38,7 +38,7 @@ examples: |
 
 summary: The logit-normal distribution models proportions whose logits are normally distributed.
 classification: specialist
-classification_reason: Used for continuous proportions and logistic-normal compositional models.
+classification_reason: Used to model continuous proportions represented by Gaussian log odds.
 aliases:
 - logistic-normal
 key_references:
@@ -56,8 +56,9 @@ relations:
       sd: sigma
 fit:
   method: delegation
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: 'yes'
+  note: 'logitnorm/README.md, Details; logitnorm/mle.hpp (public fitter and held overloads); logitnorm/test.cpp:
+    Closed-form maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - proportions
 ---

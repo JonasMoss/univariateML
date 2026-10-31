@@ -45,7 +45,10 @@ r:
     iterlim: "Maximum simplex iterations per search start."
 log_density: "-log(sigma)-log(u**(lambda-1)+(1-u)**(lambda-1))"
 references:
-  - "Joiner, B. L. and Rosenblatt, J. R. (1971). Some properties of the range in samples from Tukey's symmetric lambda distributions. Journal of the American Statistical Association 66, 394-399."
+- Joiner, B. L. and Rosenblatt, J. R. (1971). Some properties of the range in samples from Tukey's symmetric lambda
+  distributions. Journal of the American Statistical Association 66, 394-399.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 limits:
   - name: scale collapse
@@ -71,12 +74,17 @@ relations: {}
 fit:
   method: multistart
   certified: 'no'
-  note: Details explicitly qualifies the search as numerical rather than globally certified; conditional
-    subsets may have stronger guarantees.
+  note: 'tlambda/README.md, Details; tlambda/mle.hpp (public fitter and held overloads); tlambda/test.cpp: Default
+    and nontrivial conditional fits use multistart, finite grids or local profile refinement without a global certificate;
+    all-held density evaluation is not counted as certification.'
 areas:
 - robust modelling
 classification: specialist
-classification_reason: Used within robust modelling; classified by its specialised modelling role.
+classification_reason: Used to model symmetric error shapes specified through a flexible quantile function.
+summary: Tukey lambda provides a model for symmetric error shapes specified through a flexible quantile function.
+aliases: []
+key_references:
+- 2
 ---
 
 The Tukey lambda family is defined by its quantile function and spans symmetric heavy-tailed, logistic, approximately normal and uniform shapes.

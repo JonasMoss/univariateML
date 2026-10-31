@@ -55,12 +55,21 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'triang/README.md, Details; triang/mle.hpp (public fitter and held overloads); triang/test.cpp: Constant
+    samples with a held exterior mode have the explicit endpoint maxima in Details; general nonconstant fits enumerate
+    numerical profile candidates without a global certificate.'
 areas:
 - proportions
 classification: specialist
-classification_reason: Used within proportions; classified by its specialised modelling role.
+classification_reason: Used to model bounded measurements with a specified interior or endpoint mode.
+summary: Triangular provides a model for bounded measurements with a specified interior or endpoint mode.
+aliases: []
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The triangular distribution describes bounded measurements with a single mode.

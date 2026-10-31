@@ -44,19 +44,27 @@ examples: |
   x <- diff(datasets::discoveries)
   mldnorm(x)
 
-group: Poisson, binomial and negative binomial
+group: normal and Student
 construction:
 - discretisation
 relations: {}
 fit:
   method: convex-solve
-  certified: partial
-  note: Details establishes strict concavity for the joint natural-coordinate solve; numerical convergence
-    and held-mean scale searches require separate checks.
+  certified: 'yes'
+  note: 'dnorm/README.md, Details; dnorm/mle.hpp (public fitter and held overloads); dnorm/test.cpp: The grouped-normal
+    likelihood is strictly concave in centred mean/sd and inverse sd. Held mean is a linear restriction in these
+    coordinates, held sd fixes inverse sd; damped Newton targets the unique maximum.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model rounded Gaussian measurements recorded on the integer lattice.
+summary: Discretized normal provides a model for rounded Gaussian measurements recorded on the integer lattice.
+aliases: []
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The discretized normal distribution is the integer part of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer.

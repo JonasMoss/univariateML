@@ -57,8 +57,12 @@ limits:
     detect: 'all(x >= scale)'
     status: 'AllGeOne'
 references:
-  - "Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational Statistics & Data Analysis 45, 675-687. doi:10.1016/S0167-9473(02)00367-5."
-  - "Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 1, Chapter 20. Wiley, New York."
+- Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational
+  Statistics & Data Analysis 45, 675-687. doi:10.1016/S0167-9473(02)00367-5.
+- Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, Chapter 20.
+  Wiley, New York.
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 holds: []
 examples: |
   set.seed(1)
@@ -79,13 +83,20 @@ relations:
       scale: scale
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'burr/README.md, Details; burr/mle.hpp (public fitter and held overloads); burr/test.cpp: One-free-coordinate
+    and transformed Lomax subsets have monotone scores; free shapes/scale use numerical profiles or BFGS. Reciprocal
+    delegation inherits these qualifications.'
 areas:
 - actuarial
 - economics and income
 classification: specialist
-classification_reason: Used within actuarial; classified by its specialised modelling role.
+classification_reason: Used to model insurance severity and size data needing a flexible polynomial upper tail.
+summary: Burr provides a model for insurance severity and size data needing a flexible polynomial upper tail.
+aliases:
+- Burr type XII
+key_references:
+- 3
 ---
 
 The Burr type XII distribution is a heavy-tailed distribution for positive size and loss data.

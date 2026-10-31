@@ -43,16 +43,30 @@ examples: |
 group: modified counts
 construction:
 - truncation
-relations: {}
+relations:
+  modification_of:
+  - family: nbinom
+    at:
+      size: size
+      prob: prob
+    type: zero-truncated
 fit:
   method: multistart
   certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  note: 'ztnbinom/README.md, Details; ztnbinom/mle.hpp (public fitter and held overloads); ztnbinom/test.cpp: Default
+    and nontrivial conditional fits use multistart, finite grids or local profile refinement without a global certificate;
+    all-held density evaluation is not counted as certification.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model negative-binomial counts sampled only when positive.
+summary: Zero-truncated negative binomial provides a model for negative-binomial counts sampled only when positive.
+aliases: []
+references:
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+key_references:
+- 1
 ---
 
 Zero-truncated negative binomial distributions model positive counts.

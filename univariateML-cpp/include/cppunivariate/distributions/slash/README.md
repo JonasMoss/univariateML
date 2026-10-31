@@ -41,12 +41,21 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'slash/README.md, Details; slash/mle.hpp (public fitter and held overloads); slash/test.cpp: Held location
+    has a unique scale root; free-location profiles are demonstrably multimodal and observation-gap scans do not
+    certify mode isolation.'
 areas:
 - robust modelling
 classification: specialist
-classification_reason: Used within robust modelling; classified by its specialised modelling role.
+classification_reason: Used to model robust errors obtained by randomly magnifying Gaussian deviations.
+summary: Slash provides a model for robust errors obtained by randomly magnifying Gaussian deviations.
+aliases: []
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The slash distribution is a normal variate divided by an independent uniform variate, with location and scale.

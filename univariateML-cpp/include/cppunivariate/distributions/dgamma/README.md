@@ -44,19 +44,28 @@ examples: |
   x <- rml(200, mldgamma())
   mldgamma(x)
 
-group: Poisson, binomial and negative binomial
+group: gamma and Weibull
 construction:
 - discretisation
 relations: {}
 fit:
   method: multistart
-  certified: 'no'
-  note: Details describes a numerical profile or multistart search without a global optimality certificate;
-    supported held subsets may be stronger.
+  certified: partial
+  note: 'dgamma/README.md, Details; dgamma/mle.hpp (public fitter and held overloads); dgamma/test.cpp: Held shape
+    gives a strictly concave rate solve; joint and held-rate shape profiles use numerical grids without certified
+    mode isolation.'
 areas:
 - counts and ecology
 classification: specialist
-classification_reason: Used within counts and ecology; classified by its specialised modelling role.
+classification_reason: Used to model nonnegative counts obtained by grouping gamma waiting times into unit intervals.
+summary: Discretized gamma provides a model for nonnegative counts obtained by grouping gamma waiting times into
+  unit intervals.
+aliases: []
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The discretized gamma distribution is the integer part of a continuous gamma variable. Each observation records the latent variable in an interval from the observed integer to the next integer.

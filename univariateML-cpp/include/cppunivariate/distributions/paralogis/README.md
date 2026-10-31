@@ -31,8 +31,11 @@ limits:
     message: unbounded
 log_density: 2*log(shape) + shape*log(x/scale) - log(x) - (shape + 1)*log(1 + (x/scale)^shape)
 references:
-  - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
-  - Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012). Loss Models, From Data to Decisions, Fourth Edition. Wiley.
+- Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
+- Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012). Loss Models, From Data to Decisions, Fourth Edition.
+  Wiley.
+- 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
+  Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 holds: []
 examples: |
   set.seed(1)
@@ -51,14 +54,19 @@ relations:
       scale: scale
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'paralogis/README.md, Details; paralogis/mle.hpp (public fitter and held overloads); paralogis/test.cpp:
+    With shape held, the Burr delegate solves the strictly monotone log-scale equation; the default joint shape/scale
+    BFGS has no global certificate.'
 areas:
 - actuarial
 - economics and income
-classification: uncommon
-classification_reason: A less routinely used extension within this catalog; prevalence has not been independently
-  surveyed.
+classification: specialist
+classification_reason: Used to model insurance severity with a constrained Burr shape relationship.
+summary: Paralogistic provides a model for insurance severity with a constrained Burr shape relationship.
+aliases: []
+key_references:
+- 3
 ---
 
 The paralogistic distribution is the Burr type XII distribution with its two

@@ -133,13 +133,19 @@ for folder in sorted(FAMILIES.iterdir()):
     m.update(derived_tags(m))
     out.append(clean(m))
 # Invert relations once, retaining their direction and coefficient maps.
+relation_labels = {
+    'special_case_of': ('Parent', 'Special case'),
+    'transform_of': ('Transform parent', 'Transformed family'),
+    'truncation_of': ('Untruncated parent', 'Truncated family'),
+    'modification_of': ('Unmodified parent', 'Zero modification'),
+}
 for m in out:
     related=[]
     for kind,edges in m.get('relations',{}).items():
-        related.extend(dict(family=e['family'],kind='Parent' if kind=='special_case_of' else 'Transform parent',edge=e) for e in edges)
+        related.extend(dict(family=e['family'],kind=relation_labels[kind][0],edge=e) for e in edges)
     for child in out:
         for kind,edges in child.get('relations',{}).items():
-            related.extend(dict(family=child['id'],kind='Special case' if kind=='special_case_of' else 'Transformed family',edge=e) for e in edges if e['family']==m['id'])
+            related.extend(dict(family=child['id'],kind=relation_labels[kind][1],edge=e) for e in edges if e['family']==m['id'])
     related.extend(dict(family=e['model'],kind='Limit model',note=e['when']) for e in m.get('limits',[]) if e.get('model'))
     m['related']=[dict(r,name=next(f['name'] for f in out if f['id']==r['family'])) for r in related]
     m['unlinked_limits']=[e for e in m.get('limits',[]) if not e.get('model')]

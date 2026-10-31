@@ -43,10 +43,10 @@ const renderedProse=await Promise.all(prose.map(async s=>({...s,html:await rende
 <dt>Existence</dt><dd>{f.existence_tags.join(', ')}</dd>
 <dt>Fit</dt><dd>{f.fit.method}; certification: {f.fit.certified}. {f.fit.note}</dd>
 <dt>Areas</dt><dd>{f.areas.join('; ')}</dd></dl>
-<p class="count">First-version editorial taxonomy. “Always” means no obstacle is declared; it is not an existence theorem. Fit certification does not describe inference validity.</p>
+<p class="count">Editorial taxonomy. “Always” means no obstacle is declared; it is not an existence theorem. Fit certification does not describe inference validity.</p>
 </section>
 <section aria-label="Related families"><h2>Related families</h2>
-{f.related.length ? <ul>{related.map(r=><li>{r.kind}: <a data-relation href={`/distributions/${r.family}/`}>{r.name}</a>{r.edge && <span> ({r.edge.transform ? `${r.edge.transform}: ` : ''}{Object.entries(r.edge.at).map(([key,value])=>`${key} = ${value}`).join(', ')})</span>}{r.note && <span set:html={r.noteHtml}/>}</li>)}</ul> : <p>No relation is declared yet.</p>}
+{f.related.length ? <ul>{related.map(r=><li>{r.kind}: <a data-relation href={`/distributions/${r.family}/`}>{r.name}</a>{r.edge && <span> ({r.edge.type ? `${r.edge.type}: ` : ''}{r.edge.mass ? `mass = ${r.edge.mass}; ` : ''}{r.edge.shift && r.edge.transform === 'abs' ? `shift = ${r.edge.shift}; ` : ''}{r.edge.transform ? `${r.edge.transform}: ` : ''}{Object.entries(r.edge.at).map(([key,value])=>`${key} = ${value}`).join(', ')})</span>}{r.note && <span set:html={r.noteHtml}/>}</li>)}</ul> : <p>No relation is declared yet.</p>}
 {unlinked.length>0 && <details><summary>Other declared limits and failure boundaries ({unlinked.length})</summary><ul>{unlinked.map(r=><li>{r.name || r.status}{r.fixed?.length ? ` (held: ${r.fixed.join(', ')})` : ''}: <span set:html={r.noteHtml}/></li>)}</ul></details>}
 </section>
 <Definition f={f} source={source}/>

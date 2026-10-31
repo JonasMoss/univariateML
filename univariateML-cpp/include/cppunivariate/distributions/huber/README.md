@@ -61,12 +61,20 @@ construction:
 relations: {}
 fit:
   method: multistart
-  certified: unknown
-  note: Primary route from the 2026-10-30 fitter inventory; guarantees across held subsets are not classified.
+  certified: partial
+  note: 'huber/README.md, Details; huber/mle.hpp (public fitter and held overloads); huber/test.cpp: Held epsilon
+    gives a concave location/inverse-scale fit; free epsilon is searched numerically with normal and Laplace comparisons.'
 areas:
 - robust modelling
 classification: specialist
-classification_reason: Used within robust modelling; classified by its specialised modelling role.
+classification_reason: Used to model robust errors with a Gaussian centre and exponential tails.
+summary: Huber provides a model for robust errors with a Gaussian centre and exponential tails.
+aliases: []
+references:
+- 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
+  reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
+key_references:
+- 1
 ---
 
 The Huber density has a Gaussian core and exponential tails.

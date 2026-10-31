@@ -27,7 +27,7 @@ def read_models():
 
 def expression(value, symbols):
     source=str(value).replace('^', '**')
-    local={'inf': sp.oo, 'Inf': sp.oo, 'Min': sp.Min, 'Max': sp.Max}
+    local={'inf': sp.oo, 'Inf': sp.oo, 'Min': sp.Min, 'Max': sp.Max, 'floor': sp.floor, 'ceiling': sp.ceiling}
     # Prefix coefficient identifiers, including Python keywords such as lambda.
     for name in sorted(symbols, key=len, reverse=True):
         alias='_relation_'+name
@@ -68,7 +68,7 @@ def mapped_support(edge, lo, hi, symbols):
     kind = edge.get('transform')
     if kind == 'abs':
         if lo != -math.inf or hi != math.inf: raise ValueError('abs requires full real parent support')
-        return 0., math.inf
+        return float(expression(edge.get('shift',0), symbols)), math.inf
     if kind == 'log': return math.exp(lo), math.exp(hi) if hi != math.inf else math.inf
     if kind == 'logit':
         logistic = lambda v: 0. if v == -math.inf else 1. if v == math.inf else 1/(1+math.exp(-v))
@@ -92,6 +92,15 @@ def close(a, b):
 
 
 def check_edge(child, parent, kind, edge):
+    if kind not in ('special_case_of','transform_of','truncation_of','modification_of'):
+        raise ValueError('unknown relation kind')
+    if kind == 'modification_of':
+        if edge.get('type') not in ('zero-truncated','zero-modified','zero-inflated'):
+            raise ValueError('unknown modification type')
+        if child['support']['type'] != 'integer' or parent['support']['type'] != 'integer':
+            raise ValueError('zero modifications require integer laws')
+    if kind in ('truncation_of','modification_of') and child['support']['type'] != parent['support']['type']:
+        raise ValueError('conditional relation measure mismatch')
     if kind == 'transform_of' and child['support']['type']=='integer' and edge['transform'] not in ('shift','negate'):
         raise ValueError('nonlinear integer transforms require a lattice proof')
     domains = [(-math.inf, math.inf)]*len(child['params'])
@@ -104,23 +113,28 @@ def check_edge(child, parent, kind, edge):
     tx = transform_x(edge, x, names) if kind == 'transform_of' else x
     rhs = rhs.subs(at, simultaneous=True)
     if edge.get('transform') == 'abs':
-        rhs = sp.log(sp.exp(rhs.subs(px,x)) + sp.exp(rhs.subs(px,-x)))
+        rhs = sp.log(sp.exp(rhs.subs(px,x-expression(edge.get('shift',0),names))) + sp.exp(rhs.subs(px,-x+expression(edge.get('shift',0),names))))
     else:
         rhs = rhs.subs(px, tx) + sp.log(sp.Abs(sp.diff(tx,x)))
     # Avoid forced log identities without sign assumptions. Numerical checks
     # below always run, including when the symbolic residual is zero.
-    residual = sp.simplify(lhs-rhs)
+    conditional = kind in ('truncation_of', 'modification_of')
+    residual = sp.simplify(lhs-rhs) if not conditional else sp.nan
     symbolic = residual == 0
     rng = random.Random(SEED)
     for trial in range(TRIALS):
         values = {}
         for p in child['params']:
             v = float(p['simulate'])
-            if not math.isfinite(v): raise ValueError('nonfinite simulation seed')
-            if p.get('integer') or p.get('kind') == 'design': v = max(2, round(v)+rng.randint(0,4))
+            if not math.isfinite(v):
+                if conditional and p['name'] in ('a','b'): v = -1.5 if p['name']=='a' else 2.5
+                else: raise ValueError('nonfinite simulation seed')
+            lattice = p.get('integer') or (p.get('kind') == 'design' and child['support']['type']=='integer')
+            if lattice: v = max(2, round(v)+rng.randint(0,4))
             elif p['role'] in ('location','threshold','endpoint') or p['name'] in ('min','max','mu','mean','meanlog'): v += rng.uniform(-.3,.3)
             elif v > 0: v *= rng.uniform(.65,1.6)
-            values[p['name']] = sp.Float(v)
+            values[p['name']] = sp.Integer(v) if lattice else sp.Float(v)
+        if conditional and 'a' in values and 'b' in values and values['a'] >= values['b']: values['b']=values['a']+3
         # Maintain ordered endpoints; this is a seed neighbourhood, not full-domain coverage.
         if 'min' in values and 'max' in values and values['min'] >= values['max']: values['max']=values['min']+2
         if child['support']['type']=='integer' and edge.get('transform')=='shift':
@@ -135,17 +149,46 @@ def check_edge(child, parent, kind, edge):
                 raise ValueError('mapped coefficient outside parent domain: '+p['name'])
         clo,chi = support(child, values)
         plo,phi = mapped_support(edge, *support(parent,mapped), values)
-        if child['support']['type'] != parent['support']['type'] or not(close(clo,plo) and close(chi,phi)):
+        if conditional:
+            if child['support']['type']=='integer' and (not child['support']['closed'][0] or (math.isfinite(chi) and not child['support']['closed'][1])):
+                raise ValueError('integer conditioning endpoints must be included')
+            if kind == 'truncation_of':
+                if clo < plo or chi > phi or clo > chi or (clo == chi and child['support']['type']!='integer'): raise ValueError('truncation support is not a nonempty parent subset')
+            else:
+                expected_lo = max(1,plo) if edge['type']=='zero-truncated' else 0
+                if not close(clo,expected_lo) or not close(chi,phi): raise ValueError('modification support mismatch')
+        elif child['support']['type'] != parent['support']['type'] or not(close(clo,plo) and close(chi,phi)):
             raise ValueError(f'support mismatch: {(clo,chi)} vs {(plo,phi)}')
-        if child['support']['type']=='integer' and child['support']['closed'] != parent['support']['closed']:
+        if not conditional and child['support']['type']=='integer' and child['support']['closed'] != parent['support']['closed']:
             raise ValueError('integer endpoint inclusion differs')
         if math.isfinite(clo) and math.isfinite(chi): point=rng.uniform(clo,chi)
         elif math.isfinite(clo): point=clo+rng.uniform(.05,5)
         elif math.isfinite(chi): point=chi-rng.uniform(.05,5)
         else: point=rng.uniform(-4,4)
-        if child['support']['type']=='integer': point=math.ceil(point)
+        if child['support']['type']=='integer': point=rng.randint(math.ceil(clo), int(min(chi, max(clo+5,10))))
+        if kind == 'modification_of' and edge['type']!='zero-truncated' and trial % 2 == 0: point=0
         subs={names[k]:v for k,v in values.items()};subs[x]=point
-        a=complex(lhs.evalf(35,subs=subs)); b=complex(rhs.evalf(35,subs=subs))
+        a=complex(lhs.subs(subs).doit().evalf(35)) if conditional else complex(lhs.evalf(35,subs=subs))
+        if conditional:
+            import mpmath as mp
+            with mp.workdps(35):
+                density=sp.lambdify(px,sp.exp(rhs.subs({names[k]:v for k,v in values.items()})),modules='mpmath')
+                if kind == 'truncation_of':
+                    mass = (mp.fsum(density(k) for k in range(math.ceil(clo),math.floor(chi)+1))
+                            if child['support']['type']=='integer' else mp.quad(density,[clo,chi]))
+                    if not mp.isfinite(mass) or mass <= 0: raise ValueError('invalid conditioning mass')
+                    b=complex(mp.log(density(point)/mass))
+                else:
+                    zero = density(0) if plo <= 0 else mp.mpf(0)
+                    variant=edge['type']
+                    weight=mp.mpf(str(expression(edge['mass'],values))) if variant!='zero-truncated' else mp.mpf(0)
+                    if not 0 <= weight <= 1: raise ValueError('modification mass outside [0,1]')
+                    if variant=='zero-inflated':
+                        mass=weight+(1-weight)*zero if point==0 else (1-weight)*density(point)
+                    else:
+                        mass=weight if point==0 else (1-weight)*density(point)/(1-zero)
+                    b=complex(mp.log(mass))
+        else: b=complex(rhs.evalf(35,subs=subs))
         if abs(a.imag)>TOL or abs(b.imag)>TOL or not(math.isfinite(a.real) and math.isfinite(b.real)) or not close(a.real,b.real):
             raise ValueError(f'log-density mismatch at {point}: {a} vs {b}')
     return 'verified symbolically' if symbolic else 'verified numerically'
