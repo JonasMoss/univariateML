@@ -42,7 +42,7 @@ summary: The beta distribution models continuous proportions on the unit interva
 classification: classical
 classification_reason: A standard model for continuous proportions with two independently adjustable boundary shapes.
 aliases:
-- beta of the first kind
+- "beta of the first kind"
 key_references:
 - 1
 

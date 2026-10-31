@@ -72,7 +72,10 @@ classification: specialist
 classification_reason: Used to model chromatographic peaks combining Gaussian broadening and exponential delay.
 summary: Exponentially Modified Gaussian provides a model for chromatographic peaks combining Gaussian broadening
   and exponential delay.
-aliases: []
+aliases:
+- "exponentially modified normal"
+- "ex-Gaussian"
+- "EMG"
 references:
 - Grushka, E. (1972). Characterization of exponentially modified Gaussian peaks in chromatography. Analytical Chemistry,
   44(11), 1733–1738. doi:10.1021/ac60319a011.

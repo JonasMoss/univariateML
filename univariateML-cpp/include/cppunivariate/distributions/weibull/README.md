@@ -72,7 +72,8 @@ areas:
 classification: classical
 classification_reason: A standard model for reliability lifetimes with a power-shaped hazard.
 summary: Weibull provides a model for reliability lifetimes with a power-shaped hazard.
-aliases: []
+aliases:
+- "Rosin–Rammler"
 key_references:
 - 1
 ---

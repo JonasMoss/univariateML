@@ -68,7 +68,9 @@ areas:
 classification: classical
 classification_reason: A standard model for overdispersed event counts with gamma-mixed Poisson intensity.
 summary: Negative binomial provides a model for overdispersed event counts with gamma-mixed Poisson intensity.
-aliases: []
+aliases:
+- "Pólya"
+- "gamma–Poisson"
 key_references:
 - 1
 ---

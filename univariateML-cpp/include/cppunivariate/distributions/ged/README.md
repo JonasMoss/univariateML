@@ -84,7 +84,10 @@ classification_reason: Used to model symmetric financial errors with exponential
 summary: Generalized Error provides a model for symmetric financial errors with exponential-power rather than Gaussian
   tails.
 aliases:
-- Exponential power
+- "exponential power"
+- "symmetric generalized normal"
+- "Subbotin"
+- "generalized Gaussian"
 key_references:
 - 3
 ---

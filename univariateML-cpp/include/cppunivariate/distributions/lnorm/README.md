@@ -57,7 +57,8 @@ classification: classical
 classification_reason: A standard model for positive multiplicative variation represented by Gaussian logarithms.
 summary: Lognormal provides a model for positive multiplicative variation represented by Gaussian logarithms.
 aliases:
-- Log-normal
+- "log-normal"
+- "Galton"
 key_references:
 - 1
 ---

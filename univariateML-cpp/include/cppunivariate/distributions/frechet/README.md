@@ -80,7 +80,8 @@ areas:
 classification: specialist
 classification_reason: Used to model block maxima with polynomially decaying upper tails.
 summary: Frechet provides a model for block maxima with polynomially decaying upper tails.
-aliases: []
+aliases:
+- "type II extreme value"
 references:
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'

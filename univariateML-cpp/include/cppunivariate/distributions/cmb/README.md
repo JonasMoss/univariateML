@@ -85,7 +85,10 @@ classification: specialist
 classification_reason: Used to model bounded counts with dispersion departing from independent Bernoulli trials.
 summary: Conway--Maxwell--binomial provides a model for bounded counts with dispersion departing from independent
   Bernoulli trials.
-aliases: []
+aliases:
+- "CMB"
+- "COM-binomial"
+- "CMP-binomial"
 key_references:
 - 2
 ---

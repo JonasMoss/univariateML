@@ -70,7 +70,8 @@ classification: specialist
 classification_reason: Used to model overdispersed positive counts with a separately fitted zero probability.
 summary: Zero-modified negative binomial provides a model for overdispersed positive counts with a separately fitted
   zero probability.
-aliases: []
+aliases:
+- "hurdle negative binomial"
 references:
 - 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'

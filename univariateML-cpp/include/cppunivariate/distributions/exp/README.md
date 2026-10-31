@@ -26,7 +26,9 @@ summary: The exponential distribution models nonnegative waiting times with a co
 classification: classical
 classification_reason: A standard model for waiting times under a constant event hazard.
 aliases:
-- negative exponential
+- "negative exponential"
+- "one-parameter exponential"
+- "antilogarithmic"
 key_references:
 - 1
 limits:

@@ -59,7 +59,8 @@ classification: specialist
 classification_reason: Used to model integer deviations with geometric decay on either side of a central value.
 summary: Discrete Laplace provides a model for integer deviations with geometric decay on either side of a central
   value.
-aliases: []
+aliases:
+- "two-sided geometric"
 references:
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'

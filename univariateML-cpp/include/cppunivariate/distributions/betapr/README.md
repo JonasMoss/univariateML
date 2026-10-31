@@ -74,7 +74,12 @@ areas:
 classification: specialist
 classification_reason: Used to model positive ratios with separate lower-tail and upper-tail shapes.
 summary: Beta prime provides a model for positive ratios with separate lower-tail and upper-tail shapes.
-aliases: []
+aliases:
+- "beta of the second kind"
+- "inverted beta"
+- "scaled beta prime"
+- "scaled F"
+- "Pearson type VI"
 key_references:
 - 2
 ---

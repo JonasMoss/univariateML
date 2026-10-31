@@ -56,7 +56,9 @@ classification: specialist
 classification_reason: Used to model event counts with either underdispersion or overdispersion relative to Poisson.
 summary: Conway--Maxwell--Poisson provides a model for event counts with either underdispersion or overdispersion
   relative to Poisson.
-aliases: []
+aliases:
+- "CMP"
+- "COM–Poisson"
 references:
 - 'Shmueli, G., Minka, T. P., Kadane, J. B., Borle, S. and Boatwright, P. (2005). A useful distribution for fitting
   discrete data: revival of the Conway–Maxwell–Poisson distribution. Journal of the Royal Statistical Society: Series

@@ -82,7 +82,9 @@ areas:
 classification: classical
 classification_reason: A standard model for continuous values with equal density over a bounded interval.
 summary: Uniform provides a model for continuous values with equal density over a bounded interval.
-aliases: []
+aliases:
+- "rectangular"
+- "continuous uniform"
 key_references:
 - 1
 ---

@@ -161,7 +161,8 @@ classification: specialist
 classification_reason: Used to model beta-shaped measurements on a supplied physical interval.
 summary: Nonstandard beta provides a model for beta-shaped measurements on a supplied physical interval.
 aliases:
-- Non-standard beta
+- "non-standard beta"
+- "four-parameter beta"
 references:
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'

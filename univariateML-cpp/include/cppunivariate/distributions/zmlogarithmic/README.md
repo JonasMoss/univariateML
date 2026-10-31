@@ -61,7 +61,8 @@ classification: specialist
 classification_reason: Used to model logarithmic-series positive counts with a separately fitted zero probability.
 summary: Zero-modified logarithmic provides a model for logarithmic-series positive counts with a separately fitted
   zero probability.
-aliases: []
+aliases:
+- "hurdle logarithmic"
 references:
 - 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'

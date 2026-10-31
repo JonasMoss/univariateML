@@ -80,7 +80,8 @@ areas:
 classification: specialist
 classification_reason: Used to model bounded positive sizes with a simple power-shaped distribution function.
 summary: Power provides a model for bounded positive sizes with a simple power-shaped distribution function.
-aliases: []
+aliases:
+- "power-function"
 key_references:
 - 2
 ---

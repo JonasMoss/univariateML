@@ -76,7 +76,8 @@ classification: specialist
 classification_reason: Used to model overdispersed counts with an additional structural-zero component.
 summary: Zero-inflated negative binomial provides a model for overdispersed counts with an additional structural-zero
   component.
-aliases: []
+aliases:
+- "ZINB"
 key_references:
 - 1
 ---

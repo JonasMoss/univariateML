@@ -60,7 +60,7 @@ classification: classical
 classification_reason: A standard model for symmetric errors with a sharp central peak and exponential tails.
 summary: Laplace provides a model for symmetric errors with a sharp central peak and exponential tails.
 aliases:
-- Double exponential
+- "double exponential"
 key_references:
 - 2
 ---

@@ -70,7 +70,8 @@ classification: specialist
 classification_reason: Used to model insurance claim frequencies with inverse-Gaussian heterogeneity in intensity.
 summary: Poisson-inverse Gaussian provides a model for insurance claim frequencies with inverse-Gaussian heterogeneity
   in intensity.
-aliases: []
+aliases:
+- "PIG"
 key_references:
 - 2
 ---

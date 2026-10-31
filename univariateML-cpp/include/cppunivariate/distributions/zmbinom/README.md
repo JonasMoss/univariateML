@@ -72,7 +72,8 @@ areas:
 classification: specialist
 classification_reason: Used to model bounded counts with an independently adjustable zero probability.
 summary: Zero-modified binomial provides a model for bounded counts with an independently adjustable zero probability.
-aliases: []
+aliases:
+- "hurdle binomial"
 references:
 - 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'

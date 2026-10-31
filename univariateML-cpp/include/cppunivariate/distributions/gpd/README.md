@@ -84,7 +84,8 @@ areas:
 classification: specialist
 classification_reason: Used to model threshold exceedances in extreme-value analysis.
 summary: Generalized Pareto provides a model for threshold exceedances in extreme-value analysis.
-aliases: []
+aliases:
+- "GPD"
 key_references:
 - 2
 ---

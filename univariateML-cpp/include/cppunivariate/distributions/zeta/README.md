@@ -43,7 +43,9 @@ areas:
 classification: specialist
 classification_reason: Used to model unbounded positive frequencies following a pure power law.
 summary: Zeta provides a model for unbounded positive frequencies following a pure power law.
-aliases: []
+aliases:
+- "Zipf (infinite support)"
+- "discrete Pareto"
 references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 key_references:

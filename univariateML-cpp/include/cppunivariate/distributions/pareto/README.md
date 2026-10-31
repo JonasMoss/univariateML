@@ -72,7 +72,8 @@ areas:
 classification: classical
 classification_reason: A standard model for sizes above a minimum with a constant log-log survival slope.
 summary: Pareto provides a model for sizes above a minimum with a constant log-log survival slope.
-aliases: []
+aliases:
+- "Pareto type I"
 key_references:
 - 2
 ---

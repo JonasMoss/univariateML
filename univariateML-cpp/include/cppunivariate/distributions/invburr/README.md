@@ -106,7 +106,12 @@ areas:
 classification: specialist
 classification_reason: Used to model insurance loss severity with the reciprocal Burr tail pattern.
 summary: Inverse Burr provides a model for insurance loss severity with the reciprocal Burr tail pattern.
-aliases: []
+aliases:
+- "Burr type III"
+- "Dagum"
+- "Dagum type I"
+- "beta-K"
+- "three-parameter kappa"
 key_references:
 - 3
 ---

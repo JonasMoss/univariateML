@@ -79,7 +79,8 @@ classification: specialist
 classification_reason: Used to model clustered event counts with power-law tails from beta mixing.
 summary: Beta negative binomial provides a model for clustered event counts with power-law tails from beta mixing.
 aliases:
-- Generalized Waring
+- "generalized Waring"
+- "inverse Markov–Pólya"
 key_references:
 - 3
 ---

@@ -39,7 +39,12 @@ summary: The normal distribution models symmetric continuous variation through a
 classification: classical
 classification_reason: A standard model for additive measurement errors and approximately Gaussian fluctuations.
 aliases:
-- Gaussian
+- "Gaussian"
+- "Gauss"
+- "Laplace–Gauss"
+- "law of error"
+- "law of facility of errors"
+- "Laplace's second law"
 key_references:
 - 1
 

@@ -65,7 +65,8 @@ areas:
 classification: classical
 classification_reason: A standard model for failures before the first success in repeated independent trials.
 summary: Geometric provides a model for failures before the first success in repeated independent trials.
-aliases: []
+aliases:
+- "Furry"
 key_references:
 - 1
 ---

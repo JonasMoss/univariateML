@@ -56,7 +56,10 @@ summary: The generalized beta distribution of the second kind provides a flexibl
 classification: specialist
 classification_reason: Used to model income and loss sizes with independently adjustable tails and scale.
 aliases:
-- generalized beta of the second kind
+- "generalized beta of the second kind"
+- "GB2"
+- "transformed beta"
+- "generalized F"
 key_references:
 - 1
 references:

@@ -83,7 +83,8 @@ classification: specialist
 classification_reason: Used to model heavy-tailed lifetimes and positive extreme measurements.
 summary: Inverse Weibull provides a model for heavy-tailed lifetimes and positive extreme measurements.
 aliases:
-- Inverse Weibull
+- "inverted Weibull"
+- "two-parameter Fréchet"
 key_references:
 - 4
 ---
