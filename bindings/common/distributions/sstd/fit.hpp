@@ -1,0 +1,81 @@
+#pragma once
+#include "../../fit.hpp"
+#include "cppunivariate/distributions/sstd/mle.hpp"
+#include <algorithm>
+#include <cmath>
+#include <limits>
+namespace umvl_binding {
+inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, Held xi_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+  std::vector<std::string> warnings;
+  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const Held mean = mean_arg;
+  const Held sd = sd_arg;
+  const Held nu = nu_arg;
+  const Held xi = xi_arg;
+
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double held_mean=mean.supplied ? mean.value : nan;
+  if(mean.supplied && (!std::isfinite(held_mean))) return fail("Invalid held `mean`: requires a finite value.");
+  const double held_sd=sd.supplied ? sd.value : nan;
+  if(sd.supplied && (!(std::isfinite(held_sd) && held_sd>0))) return fail("Invalid held `sd`: requires a finite value in its parameter domain.");
+  const double held_nu=nu.supplied ? nu.value : nan;
+  if(nu.supplied && (!(std::isfinite(held_nu) && held_nu>2))) return fail("Invalid held `nu`: requires a finite value in its parameter domain.");
+  const double held_xi=xi.supplied ? xi.value : nan;
+  if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return fail("Invalid held `xi`: requires a finite value in its parameter domain.");
+  auto res=cppunivariate::sstd_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
+  if(res.status==cppunivariate::SstdStatus::UnsupportedHold) return fail("Unsupported conditional fit.");
+  if (res.status == cppunivariate::SstdStatus::Unbounded)
+    return fail("Likelihood is unbounded at a tie of multiplicity k > nu*(n-k) with nu held, or k > 2*(n-k) with nu free; no MLE.");
+  if (res.status == cppunivariate::SstdStatus::ScaleBoundary)
+    return fail("Tie equality scale-collapse boundary; a regular MLE is not certified.");
+  if (res.status == cppunivariate::SstdStatus::InvalidStart) {
+    return fail("Skew Student-t MLE requires at least 2 finite observations "
+               "with positive variance.");
+  }
+  if (res.status == cppunivariate::SstdStatus::SnormBoundary) {
+    return fail("The skew Student-t likelihood is maximised as nu -> Inf, i.e. by "
+               "the skew-normal distribution. Use `mlsnorm` to fit this model.");
+  }
+  if (res.status == cppunivariate::SstdStatus::RightHalfNormalBoundary) {
+    return fail("The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, "
+               "i.e. by a translated half-normal with endpoint at the sample minimum. "
+               "Use `mlhnorm` to fit this model.");
+  }
+  if (res.status == cppunivariate::SstdStatus::LeftHalfNormalBoundary) {
+    return fail("The skew Student-t likelihood is maximised as nu -> Inf and xi -> 0, "
+               "i.e. by a reflected translated half-normal with endpoint at the sample "
+               "maximum. Use `mlhnorm` on `-x` to fit this model.");
+  }
+  if (res.status == cppunivariate::SstdStatus::RightHalfTBoundary ||
+      res.status == cppunivariate::SstdStatus::LeftHalfTBoundary) {
+    const bool right = res.status == cppunivariate::SstdStatus::RightHalfTBoundary;
+    if(mean.supplied || sd.supplied)
+      return fail("The skew Student-t likelihood is maximised as xi -> %s by a translated half-t "
+                 "with %.4g degrees of freedom and endpoint constrained by held moments; "
+                 "the MLE does not exist. Use `mlht` on signed distances from this endpoint.",
+                 right ? "Inf" : "0",res.nu);
+    return fail("The skew Student-t likelihood is maximised as xi -> %s, i.e. by a "
+               "translated half-t with %.4g degrees of freedom and endpoint at the "
+               "sample %s; the MLE does not exist. Use `mlht` on signed distances from this endpoint.",
+               right ? "Inf" : "0", res.nu, right ? "minimum" : "maximum");
+  }
+  if (res.status == cppunivariate::SstdStatus::DfTwoBoundary) {
+    return fail("The skew Student-t likelihood is maximised as nu -> 2, i.e. by a "
+               "two-piece t with 2 degrees of freedom (infinite variance); the MLE "
+               "does not exist in the mean/sd parameterisation.");
+  }
+  if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
+      !std::isfinite(res.nu) || !std::isfinite(res.xi)) {
+    return fail("Skew Student-t MLE failed to converge (check inputs)");
+  }
+  if(res.status==cppunivariate::SstdStatus::BfgsFailure)
+    return fail("Skew fit optimizer failed its free-coordinate score check; increase `iterlim`.");
+  std::vector<std::string> fixed;
+  if(mean.supplied) fixed.push_back("mean");
+  if(sd.supplied) fixed.push_back("sd");
+  if(nu.supplied) fixed.push_back("nu");
+  if(xi.supplied) fixed.push_back("xi");
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu},{"xi",res.xi}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+
+}
+}
