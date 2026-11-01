@@ -61,6 +61,14 @@ classification: specialist
 classification_reason: Used to model unsigned Gaussian measurements when the sign is discarded.
 summary: Folded Normal provides a model for unsigned Gaussian measurements when the sign is discarded.
 aliases: []
+limits:
+  - name: scale collapse
+    firmness: proved
+    when: 'As $\sigma\to0$ with $\mu=x_0\ge0$, the density at $x_0$ diverges.'
+    detect: 'Scale is free and all observations equal $x_0$; location is free or held at $x_0$.'
+    status: Unbounded
+    message: unbounded
+    kind: nonexistence
 references:
 - Leone, F. C., Nelson, L. S. and Nottingham, R. B. (1961). The Folded Normal Distribution. Technometrics, 3(4),
   543–550. doi:10.1080/00401706.1961.10489974.
@@ -95,6 +103,8 @@ The coefficients $\mu$ and $\sigma$ are the parent normal location and scale. Th
 For nonconstant nonnegative data a maximum is attained, possibly at the half-normal boundary. Constant data have unbounded likelihood when both coefficients are free. Holding location prevents this collapse unless all observations equal that location. Holding positive scale permits constant data and gives a unique location fit.
 
 Boundary and interior candidates can compete. The joint fitter compares the half-normal boundary with candidates from an analytically bounded scalar profile. Convex-chord upper bounds certify the joint search to a likelihood tolerance. With positive location held, similar bounds check the scale search. Exhausted bounds report numerical failure. These comparisons do not prove uniqueness of the joint or held-location maximum.
+
+At constant $x_0=\mu>0$, the positive normal component alone is $1/(\sqrt{2\pi}\sigma)$; at $x_0=\mu=0$ the density is twice this. This proves the declared scale-collapse paths.
 
 ## R notes
 

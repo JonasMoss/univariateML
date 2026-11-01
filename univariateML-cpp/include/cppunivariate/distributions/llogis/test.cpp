@@ -142,3 +142,10 @@ TEST_CASE("llogis: TASK-132 invalid data never report success") {
     CHECK(cppunivariate::loglogistic_mle(x,1e-8,200).status != cppunivariate::LogLogisticStatus::Ok);
   }
 }
+
+TEST_CASE("llogis R6 all-free constant collapse") {
+  for (double value : {.5,2.}) {
+    const std::vector<double> x(3,value);
+    CHECK(cppunivariate::loglogistic_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::LogLogisticStatus::Unbounded);
+  }
+}

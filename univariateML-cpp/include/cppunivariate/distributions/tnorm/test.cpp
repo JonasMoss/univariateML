@@ -447,3 +447,45 @@ TEST_CASE("tnorm R7a endpoint closed form") {
     }
   }
 }
+
+TEST_CASE("tnorm R6 exact collapse and endpoint escapes precede searches") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  for (double endpoint : {0.,1.}) {
+    const std::vector<double> x(3,endpoint);
+    for (double mu : {endpoint, endpoint == 0 ? -1. : 2.}) {
+      for (bool profile : {false,true}) {
+        const auto r=cppunivariate::tnorm_mle(mltest::as_span(x),
+          profile && endpoint==0 ? nan : 0., profile && endpoint==1 ? nan : 1.,1e-12,1,mu);
+        CHECK(r.status==cppunivariate::TnormStatus::DegenerateData);
+        CHECK(r.iterations==0);
+      }
+    }
+    for (bool profile : {false,true}) {
+      const auto r=cppunivariate::tnorm_mle(mltest::as_span(x),
+        profile && endpoint==0 ? nan : 0.,profile && endpoint==1 ? nan : 1.,1e-12,1,nan,1.);
+      CHECK(r.status==cppunivariate::TnormStatus::UnboundedLocation);
+      CHECK(r.iterations==0);
+    }
+    CHECK(cppunivariate::tnorm_mle(mltest::as_span(x),0,1,1e-12,100,-1,1).status==cppunivariate::TnormStatus::Ok);
+  }
+  const std::vector<double> inside(3,.5), nonconstant{.2,.4,.6};
+  CHECK(cppunivariate::tnorm_mle(mltest::as_span(inside),0,1,1e-12,100,nan,1).status==cppunivariate::TnormStatus::Ok);
+  CHECK(cppunivariate::tnorm_mle(mltest::as_span(nonconstant),0,1).status==cppunivariate::TnormStatus::Ok);
+}
+
+TEST_CASE("tnorm R6 collapse on one-sided and untruncated supports") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double inf=std::numeric_limits<double>::infinity();
+  const std::vector<double> x(3,0.);
+  for (const auto& bounds : {std::vector<double>{0,inf},std::vector<double>{-inf,0},std::vector<double>{-inf,inf}}) {
+    const double mu=bounds[0]==0 ? -1 : bounds[1]==0 ? 1 : 0;
+    CHECK(cppunivariate::tnorm_mle(mltest::as_span(x),bounds[0],bounds[1],1e-12,1,mu).status==cppunivariate::TnormStatus::DegenerateData);
+    CHECK(cppunivariate::tnorm_mle(mltest::as_span(x),bounds[0],bounds[1],1e-12,1).status==cppunivariate::TnormStatus::DegenerateData);
+    if (bounds[0]==0 || bounds[1]==0)
+      CHECK(cppunivariate::tnorm_mle(mltest::as_span(x),bounds[0],bounds[1],1e-12,1,nan,1).status==cppunivariate::TnormStatus::UnboundedLocation);
+  }
+  CHECK(cppunivariate::tnorm_mle(mltest::as_span(x),nan,nan).status==cppunivariate::TnormStatus::InvalidBounds);
+  // A constant sample away from the projected held mean can have a finite scale.
+  const std::vector<double> away(3,1.);
+  CHECK(cppunivariate::tnorm_mle(mltest::as_span(away),0,inf,1e-12,100,0).status==cppunivariate::TnormStatus::Ok);
+}

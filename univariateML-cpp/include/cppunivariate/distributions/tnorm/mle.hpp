@@ -30,12 +30,13 @@ enum class TnormStatus {
   InvalidBounds,     // NaN bound, a >= b, a = inf or b = -inf
   OutsideBounds,     // an observation is outside [a, b]
   InvalidFixed,      // held mean not finite, or held sd not finite and positive
-  DegenerateData,    // free sd with constant data: unbounded likelihood
+  DegenerateData,    // scale collapse at the projected mean: unbounded likelihood
   ExponentialBoundary,           // b = inf: a + exponential face
   ReflectedExponentialBoundary,  // a = -inf: b - exponential face
   TruncatedExponentialBoundary,  // finite a, b: exp(rate*x) on (a, b) face
   UniformBoundary,               // mean held, finite a, b: uniform face
-  IterationFailure
+  IterationFailure,
+  UnboundedLocation // held sd, constant data at a finite endpoint
 };
 
 struct TnormResult {
@@ -373,12 +374,14 @@ inline TnormResult tnorm_mle(span x,
   }
   const double n = static_cast<double>(x.size());
   double sum = 0;
+  bool constant = true;
   for (double v : x) {
     if (!std::isfinite(v)) return res;
     if (!(v >= a && v <= b)) {
       res.status = TnormStatus::OutsideBounds;
       return res;
     }
+    constant = constant && v == x[0];
     sum += v - x[0];
   }
   const double xbar = x[0] + sum / n;
@@ -399,9 +402,21 @@ inline TnormResult tnorm_mle(span x,
     return res;
   }
 
+  // Exact data tests precede every search. For scale collapse the common
+  // observation must minimize squared distance to the held parent mean.
+  if (constant && !hold_sd &&
+      (!hold_mean || x[0] == std::min(std::max(fixed_mean, a), b))) {
+    res.status = TnormStatus::DegenerateData;
+    return res;
+  }
+  if (constant && hold_sd && (x[0] == a || x[0] == b)) {
+    res.status = TnormStatus::UnboundedLocation;
+    return res;
+  }
+
   if (hold_sd) {
     // Location only: a regular one-parameter family in mean/sd^2 whose
-    // sufficient statistic mean(x) lies inside (a, b); the MLE always exists.
+    // sufficient statistic mean(x) lies inside (a, b) after the endpoint test.
     const double sd = fixed_sd;
     res.sd = sd;
     const double m2 = var / (sd * sd);

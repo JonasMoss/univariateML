@@ -34,6 +34,14 @@ r:
     abstol: Absolute step tolerance in shapelog.
     iterlim: Maximum number of iterations.
 log_density: shapelog*log(ratelog) - loggamma(shapelog) + (shapelog - 1)*log(log(x)) - (ratelog + 1)*log(x)
+limits:
+  - name: unbounded likelihood
+    firmness: proved
+    when: 'As shape and rate grow to infinity with shape/rate fixed at $\log(x_0)$, the density at $x_0>1$ diverges.'
+    detect: 'Both coefficients are free and every observation equals $x_0>1$.'
+    status: Degenerate
+    message: does not exist
+    kind: nonexistence
 references:
 - Hogg, R. V. and Klugman, S. A. (1984), Loss Distributions, Wiley.
 - 'Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical
@@ -60,7 +68,8 @@ fit:
   certified: 'yes'
   note: 'lgamma/README.md, Details; lgamma/mle.hpp (public fitter and held overloads); lgamma/test.cpp: Gamma shape
     has a unique monotone digamma equation; scale is analytic, with bracketed fallback and held-coordinate solves.
-    Transformation preserves the maximum.'
+    Transformation preserves the maximum. Exact constant-data collapse stops; iterative solves retain
+    their convergence checks and floating-point limitations.'
 areas:
 - actuarial
 - reliability and survival
@@ -95,6 +104,8 @@ The log-gamma distribution models observations above one whose logarithms follow
 The coefficients $k$ and $\lambda$ are the gamma shape and rate of the logarithms. This is the actuarial log-gamma convention. Fitting applies gamma estimation to the logarithms and subtracts their sum from the gamma log likelihood to account for the Jacobian.
 
 Holding either coefficient gives a unique finite estimate of the other, even for constant observations above one. With both free, constant data have unbounded likelihood as shape and rate tend to infinity at a fixed ratio. Both-held fits evaluate the likelihood.
+
+For constant $x_0>1$, put $y_0=\log x_0$ and rate $=k/y_0$. Stirling's formula gives density at $x_0$ asymptotic to $\sqrt{k/(2\pi)}/(x_0 y_0)$ as shape $k\to\infty$, proving unboundedness at fixed shape/rate ratio.
 
 ## R notes
 

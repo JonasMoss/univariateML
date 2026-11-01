@@ -46,6 +46,7 @@ limits:
     detect: 'Every observation equals the fitted or held mean and scale is free.'
     status: Unbounded
     message: "Scale collapse"
+    kind: nonexistence
   - model: hnorm
     firmness: proved
     when: 'As $\xi\to\infty$, the distribution tends to a translated right half-normal with the limiting mean and standard deviation.'
@@ -118,6 +119,8 @@ existence:
 The Fernández–Steel skew-normal distribution models skewness through different Gaussian scales on the two sides of a mode.
 
 ## Details
+
+Fully free constant finite samples, including a singleton, report unbounded likelihood before profile construction: the normal member with mean at the observation has density proportional to $1/\sigma$. Empty or nonfinite samples remain invalid.
 
 The coefficients $\mu$ and $\sigma$ are the distribution's mean and standard deviation. The positive coefficient $\xi$ controls the side-scale ratio, and $\xi=1$ gives a normal distribution. The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) describes the limiting paths and boundary comparisons.
 

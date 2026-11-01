@@ -131,3 +131,11 @@ test_that("llogis: P3 unfinished optimizer stops", {
   expect_error(mlllogis(x, iterlim=1, abstol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("llogis R6 collapse diagnostics and held exceptions", {
+  for (v in c(.5,2)) {
+    expect_error(mlllogis(rep(v,3)),"does not exist")
+    expect_error(mlllogis(rep(v,3),scale=v),"unbounded")
+    expect_true(is.finite(logLik(mlllogis(rep(v,3),shape=2))))
+  }
+})

@@ -132,3 +132,11 @@ test_that("folded normal compares two distinct interior profile maxima", {
   expect_equal(as.numeric(f),c(mu[k],sqrt(v[k])),tolerance=1e-5)
   expect_gt(as.numeric(logLik(f)),as.numeric(logLik(mlfoldnorm(x,mu=0))))
 })
+
+test_that("foldnorm R6 collapse diagnostics and held exceptions", {
+  for (v in c(0,2)) {
+    expect_error(mlfoldnorm(rep(v,3)),"unbounded")
+    expect_error(mlfoldnorm(rep(v,3),mu=v),"unbounded")
+  }
+  expect_true(is.finite(logLik(mlfoldnorm(rep(2,3),sigma=1))))
+})

@@ -45,6 +45,13 @@ references:
 limits:
 - name: unbounded likelihood
   firmness: proved
+  when: 'As shape $\beta\to\infty$ with scale $\alpha=x_0>0$, the density at $x_0$ is $\beta/(4x_0)$ and diverges.'
+  detect: 'Both coefficients are free and every observation equals $x_0>0$.'
+  status: Unbounded
+  message: does not exist
+  kind: nonexistence
+- name: unbounded likelihood
+  firmness: proved
   fixed: [scale]
   when: The free shape $\beta$ tends to infinity while scale $\alpha$ is held at the common observation.
   detect: Shape is free and every observation equals the held scale $\alpha$.
@@ -86,7 +93,8 @@ fit:
   certified: 'yes'
   note: 'llogis/README.md, Details; llogis/mle.hpp (public fitter and held overloads); llogis/test.cpp: Log transform
     transfers to the unique logistic maximum; held shape gives monotone log-location and held scale a monotone shape
-    score, both bisected.'
+    score, both bisected. Exact constant-data collapse stops; finite solves use convergence tolerances
+    on their monotone scores.'
 areas:
 - reliability and survival
 classification: specialist

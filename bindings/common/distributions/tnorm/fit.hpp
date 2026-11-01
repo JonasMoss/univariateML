@@ -35,7 +35,9 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
     case cppunivariate::TnormStatus::OutsideBounds:
       return fail("Truncated normal observations must lie within the closed bounds [a, b].");
     case cppunivariate::TnormStatus::DegenerateData:
-      return fail("Truncated normal MLE with free `sd` requires observations that are not all equal (to `mean`, when it is held); the likelihood is unbounded as sd -> 0.");
+      return fail("Truncated normal likelihood is unbounded as sd -> 0: all observations equal the fitted mean or the projection of the held mean onto [a, b].");
+    case cppunivariate::TnormStatus::UnboundedLocation:
+      return fail("Truncated normal likelihood is unbounded with held `sd`: all observations equal a finite endpoint and the parent mean escapes beyond that endpoint.");
     case cppunivariate::TnormStatus::ExponentialBoundary:
       return fail("The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate " + decay + ", as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit.");
     case cppunivariate::TnormStatus::ReflectedExponentialBoundary:
