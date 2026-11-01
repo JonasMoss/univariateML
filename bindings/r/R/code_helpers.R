@@ -43,7 +43,7 @@ decorator <- function(name) {
 
     params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)
     univariateML_construct(out$estimates, name = name, params = params, fixed = out$fixed,
-                           restricted = out$restricted)
+                           restricted = out$restricted, data = x)
   }
   meta <- univariateML_metadata[[name]]
   meta$parameters <- meta$names
@@ -59,9 +59,10 @@ decorator <- function(name) {
 #' @param params List of `loglik`, `call`, and `n`.
 #' @param fixed Names of the parameters held fixed rather than estimated.
 #' @param restricted Named character vector of coefficients at lower/upper fitting restrictions.
+#' @param data Checked observations retained for inference, or `NULL`.
 #' @return Object of class `univariateML`
 
-univariateML_construct <- function(estimates, name, params, fixed = NULL, restricted = NULL) {
+univariateML_construct <- function(estimates, name, params, fixed = NULL, restricted = NULL, data = NULL) {
   estimates <- unname(estimates)
   class <- "univariateML"
   args <- c(.Data = list(estimates), params, univariateML_metadata[[name]], class = class)
@@ -75,6 +76,10 @@ univariateML_construct <- function(estimates, name, params, fixed = NULL, restri
   attr(object, "continuous") <- (univariateML_metadata[[name]]$support$type == "R")
   attr(object, "support") <- univariateML_metadata[[name]]$support$bounds
   attr(object, "fixed") <- as.character(fixed)
+  if (!is.null(data)) {
+    attr(object, "inference_data") <- data
+    attr(object, "inference_free") <- stats::setNames(!names(object) %in% as.character(fixed), names(object))
+  }
   if (!is.null(restricted)) attr(object, "restricted") <- restricted
   if (length(restricted)) univariateML_warn_restricted(name, restricted)
   object
