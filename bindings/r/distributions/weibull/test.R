@@ -150,3 +150,8 @@ test_that("weibull: P3 unfinished optimizer stops", {
   expect_error(mlweibull(x, iterlim=1, reltol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("constant Weibull data report the correct collapse", {
+  expect_error(mlweibull(rep(2, 5)), "unbounded.*fitted or held scale")
+  expect_error(mlweibull(rep(2, 5), scale = 2), "unbounded.*fitted or held scale")
+})

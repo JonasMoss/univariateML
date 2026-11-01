@@ -113,7 +113,22 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
     return {size_fixed, prob, ll, 0, false};
   }
 
-  const double var_hat = sum_x_sq / dn - x_bar * x_bar;
+  double var_hat = sum_x_sq / dn - x_bar * x_bar;
+  // The difference of raw moments can lose the entire variance when counts
+  // are large. Recompute in centered coordinates before calling the sample
+  // underdispersed; retain the original route for ordinary free fits.
+  if (var_hat <= x_bar) {
+    long double centered = 0.0L;
+    for (int v : x) {
+      const long double delta = static_cast<long double>(v) - static_cast<long double>(x_bar);
+      centered += delta * delta;
+    }
+    var_hat = static_cast<double>(centered / static_cast<long double>(n));
+    // The raw calculation disagreed with the centered calculation. Avoid
+    // both a false Poisson diagnosis and a poorly resolved near-limit fit.
+    if (var_hat > x_bar)
+      return {kNaN, kNaN, kNaN, 0, false, NbinomStatus::PrecisionFailure};
+  }
   // At var_hat == x_bar the profile score is negative for all finite sizes
   // too: the supremum is the Poisson limit, not a finite size.
   if (var_hat <= x_bar) {
@@ -189,9 +204,9 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
     return {size, prob, log_likelihood(size), iter, false};
   }
 
-  // Fallback: bracket the root in log(size) and bisect. Beyond kSizeMax the
-  // fitted law equals the Poisson to double precision; a score that is still
-  // nonnegative there means the variance excess is below rounding level.
+  // Fallback: bracket the root in log(size) and bisect. An unresolved
+  // score at the numerical search limit is a precision failure, not proof
+  // that the likelihood is maximized at the Poisson limit.
   constexpr double kSizeMax = 1e15;
   double lo = (std::isfinite(size0) && size0 > 0.0) ? std::min(size0, kSizeMax) : 1.0;
   double hi = lo;
@@ -202,15 +217,17 @@ inline NbinomResult nbinom_mle(ispan x, double tol, int maxit,
   }
   while (score(hi) >= 0.0) {
     if (hi >= kSizeMax * std::max(1.0, x_bar)) {
-      return {kNaN, kNaN, kNaN, iter + evals, true, NbinomStatus::Underdispersed};
+      return {kNaN, kNaN, kNaN, iter + evals, false, NbinomStatus::PrecisionFailure};
     }
     hi *= 2.0;
     ++evals;
   }
-  if (!(score(lo) > 0.0)) return {kNaN, kNaN, kNaN, iter + evals, false};
+  if (!(score(lo) > 0.0) || !(score(hi) < 0.0)) return {kNaN, kNaN, kNaN, iter + evals, false, NbinomStatus::PrecisionFailure};
   for (int k = 0; k < 200 && hi / lo - 1.0 > 4.0 * std::numeric_limits<double>::epsilon(); ++k) {
     const double mid = std::sqrt(lo) * std::sqrt(hi);
-    if (score(mid) > 0.0) lo = mid; else hi = mid;
+    const double smid = score(mid);
+    if (!std::isfinite(smid)) return {kNaN, kNaN, kNaN, iter + evals, false, NbinomStatus::PrecisionFailure};
+    if (smid > 0.0) lo = mid; else hi = mid;
     ++evals;
   }
   size = std::sqrt(lo) * std::sqrt(hi);

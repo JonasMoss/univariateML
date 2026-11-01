@@ -290,7 +290,7 @@ to_univariateML <- function(y, obj) {
 }
 
 
-#' Reject argument names that are not exact adapter arguments.
+#' Reject argument names that are not exact adapter arguments
 #'
 #' The generated `ml***` wrappers pass `...` to their adapters, and R
 #' matches argument names partially: `mlweibull(x, shape = 2)` would match

@@ -143,3 +143,12 @@ test_that('TASK-118 required offers conform for every other held subset', {
     }
   }
 })
+
+test_that('constant-collapse limits are recorded for free fits', {
+  for (id in c('mllnorm', 'mlinvgauss', 'mlinvgamma', 'mlweibull')) {
+    limits <- univariateML_metadata[[id]]$limits
+    expect_true(any(vapply(limits, function(l)
+      identical(l$kind, 'nonexistence') && is.null(l$fixed) &&
+        grepl('both coefficients are free', l$detect, fixed = TRUE), logical(1))), info=id)
+  }
+})

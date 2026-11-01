@@ -35,7 +35,7 @@ inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held sc
   if (res.status == cppunivariate::WeibullStatus::InvalidInput)
     return fail("Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim.");
   if (res.status == cppunivariate::WeibullStatus::Unbounded)
-    return fail("The weibull maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale.");
+    return fail("The weibull maximum likelihood estimator does not exist: the likelihood is unbounded for constant data at the fitted or held scale.");
   if (res.status == cppunivariate::WeibullStatus::IterationFailure)
     return fail("The held-parameter weibull score solver failed to converge; increase iterlim.");
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {

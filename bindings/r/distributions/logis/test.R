@@ -187,3 +187,8 @@ test_that("logis held profiles preserve tiny and large units", {
     expect_equal(as.numeric(logLik(fit))+length(x)*log(unit),as.numeric(logLik(base)),tolerance=1e-8)
   }
 })
+
+test_that("constant logistic data report unbounded likelihood", {
+  expect_error(mllogis(rep(2, 5)), "unbounded")
+  expect_error(mllogis(rep(2, 5), location = 2), "unbounded")
+})

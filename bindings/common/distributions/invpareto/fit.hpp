@@ -31,9 +31,7 @@ inline FitResult fit_invpareto(cppunivariate::span x, Held shape_arg = {}, Held 
   }
   auto res = cppunivariate::invpareto_mle(x, reltol, iterlim, start, shape_held, scale_held);
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
-    return fail("The inverse Pareto maximum likelihood estimator does not exist for data "
-               "whose likelihood is maximized on the inverse exponential face. Use `mlinvexp` to fit an "
-               "inverse exponential distribution.");
+    return fail("The numerical profile search found no improvement over the inverse exponential limit beyond its tolerance. Use `mlinvexp` to fit that limit model.");
   }
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.scale) ||
       !std::isfinite(res.shape)) {

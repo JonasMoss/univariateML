@@ -30,6 +30,7 @@ limits:
     when: '$\kappa$ tends to infinity while $\lambda\kappa$ tends to a positive exponential rate'
     detect: 'both coefficients are free and the numerical profile search finds no improvement over the best exponential larger than $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit
+    numerical: true
 references:
 - del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability
   Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021.

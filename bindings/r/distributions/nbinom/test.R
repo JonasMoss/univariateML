@@ -158,3 +158,23 @@ test_that("NB size-zero evaluation includes tails and quantile endpoints", {
   expect_equal(pml(c(-1,0),fit,lower.tail=FALSE),c(1,0))
   expect_equal(qml(c(0,.5,1),fit),c(0,0,0))
 })
+
+test_that("overdispersed near-boundary samples are not called underdispersed", {
+  for (n in c(10L, 100L, 1000L, 10000L)) {
+    x <- rep(c(0, 2), n / 2)
+    x[2] <- 3
+    expect_gt(mean((x - mean(x))^2), mean(x))
+    result <- tryCatch(mlnbinom(x, iterlim = 1), error = identity)
+    if (inherits(result, "error")) {
+      expect_match(conditionMessage(result), "precision|bracket|convergence")
+      expect_false(grepl("mlpois", conditionMessage(result), fixed = TRUE))
+    } else expect_true(all(is.finite(result)))
+  }
+})
+
+
+test_that("large counts with variance above their mean signal precision failure", {
+  k <- 9743L
+  m <- k * k - 1
+  expect_error(mlnbinom(c(m-k, m+k), iterlim=1), "insufficient precision")
+})

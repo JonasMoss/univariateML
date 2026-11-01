@@ -31,9 +31,7 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
   }
   auto res = cppunivariate::lomax_mle(x, reltol, iterlim, start, lambda_held, kappa_held);
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
-    return fail("The Lomax maximum likelihood estimator does not exist for data "
-               "whose likelihood is maximized on the exponential face. Use `mlexp` to fit an "
-               "exponential distribution.");
+    return fail("The numerical profile search found no improvement over the exponential limit beyond its tolerance. Use `mlexp` to fit that limit model.");
   }
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.lambda) ||
       !std::isfinite(res.kappa)) {

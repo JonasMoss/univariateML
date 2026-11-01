@@ -101,3 +101,13 @@ test_that("P2 held solver respects iterlim", {
 test_that("invpareto: P3 held profile exhaustion stops", {
   expect_error(mlinvpareto(c(.3,.8,1.7,4.2),shape=2,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
 })
+
+test_that("limit detector describes its numerical comparison", {
+  expect_error(mlinvpareto(rep(1, 5)), "numerical profile search.*tolerance")
+})
+
+test_that("inverse Pareto help describes the detector as numerical", {
+  rd <- paste(readLines(file.path("..", "..", "man", "mlinvpareto.Rd"), warn = FALSE), collapse = " ")
+  rd <- gsub("[[:space:]]+", " ", rd)
+  expect_match(rd, "numerical search does not establish a finite maximum", fixed = TRUE)
+})
