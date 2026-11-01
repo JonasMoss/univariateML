@@ -1,0 +1,90 @@
+--- dev/validation/fit-speed-comparison.cpp	2026-10-31 18:26:53.724787061 +0100
++++ dev/validation/logconcave3-trace-driver.cpp	2026-10-31 20:32:54.199724248 +0100
+@@ -11,6 +11,7 @@
+ int main(int argc,char**argv){
+ if(argc<3)return 2;
+ const std::string id=argv[1]; const int mode=std::stoi(argv[2]);
++cppunivariate::logconcave_trial::trace_family=id.c_str();
+ const double nan=std::numeric_limits<double>::quiet_NaN();
+ std::cout<<std::setprecision(17);
+ std::mt19937_64 rng(13320261031ULL);std::normal_distribution<double> norm;
+@@ -19,6 +20,7 @@
+ const std::vector<double> held_values={0.184478447547003,0.04752470610558923,1.0988151244928166};
+ const unsigned subsets=1u<<3;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(v+(sample%5==0?0.1*v*v:0));}}
+@@ -39,6 +41,7 @@
+ const std::vector<double> held_values={0.17576157248036894,1.0518147225573364,1.209185930245896};
+ const unsigned subsets=1u<<3;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(v+(sample%5==0?0.1*v*v:0));}}
+@@ -59,6 +62,7 @@
+ const std::vector<double> held_values={1.057897350270679,1.7336058787117143,-0.0038000682197418395};
+ const unsigned subsets=1u<<3;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(v+(sample%5==0?0.1*v*v:0));}}
+@@ -79,6 +83,7 @@
+ const std::vector<double> held_values={0.012734271748561354,1.0184483076867987,2.9622019441967624,1.9114750836827714};
+ const unsigned subsets=1u<<4;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(v+(sample%5==0?0.1*v*v:0));}}
+@@ -99,6 +104,7 @@
+ const std::vector<double> held_values={-0.032496865700421936,0.9390299202739361,3.4208324500711944,2.5890673965717057};
+ const unsigned subsets=1u<<4;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(v+(sample%5==0?0.1*v*v:0));}}
+@@ -119,6 +125,7 @@
+ const std::vector<double> held_values={1.1437689913361664,-0.010630182705389644};
+ const unsigned subsets=1u<<2;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(v+(sample%5==0?0.1*v*v:0));}}
+@@ -139,6 +146,7 @@
+ const std::vector<double> held_values={0,0.3,1.9802932530684678,0.4,1.0087842921157315};
+ const unsigned subsets=1u<<5;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(std::exp(v));}}
+@@ -160,6 +168,7 @@
+ const std::vector<double> held_values={0.5710330324328029,1.123220989970799,0.7116483765738807,1.0079365599415882};
+ const unsigned subsets=1u<<4;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(std::exp(v));}}
+@@ -180,6 +189,7 @@
+ const std::vector<double> held_values={-0.0062603717426506856,0.8395065634734545,3.977653882598804};
+ const unsigned subsets=1u<<3;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(v+(sample%5==0?0.1*v*v:0));}}
+@@ -200,6 +210,7 @@
+ const std::vector<double> held_values={0.0745507089520688,1.0270947160838733,3.024242725580454};
+ const unsigned subsets=1u<<3;
+ for(int sample=0;sample<(mode==1?(argc>4?std::stoi(argv[4]):620):(mode==3?20:1));++sample){
++cppunivariate::logconcave_trial::trace_sample=sample;
+ int n=sample<600?(sample/200==0?8:sample/200==1?16:32):500;
+ std::vector<double> x=golden;
+ if(mode==1){x.clear();for(int j=0;j<n;++j){double v=norm(rng);x.push_back(v+(sample%5==0?0.1*v*v:0));}}

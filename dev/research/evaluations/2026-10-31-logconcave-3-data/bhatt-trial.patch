@@ -1,0 +1,53 @@
+--- univariateML-cpp/include/cppunivariate/distributions/bhatt/mle.hpp	2026-10-31 18:26:53.730310588 +0100
++++ build/scratch/logconcave-round3-improved/cppunivariate/distributions/bhatt/mle.hpp	2026-10-31 20:46:36.429175393 +0100
+@@ -1,4 +1,5 @@
+ #pragma once
++#include "../../core/logconcave_trial.hpp"
+ #include "../../core/precision.hpp"
+ #include "../../core/multistart.hpp"
+ #include "dpqr.hpp"
+@@ -152,6 +153,36 @@
+   auto attempted=best;
+   const std::vector<double> starts={-4,-1,0,1};
+   const std::vector<double> widths={-4,-1,-.3,-.05};
++  if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(a)) {
++    const auto candidate=logconcave_trial::search(y,[](CPPUNIV_EXTENDED_REAL z,CPPUNIV_EXTENDED_REAL k) {
++      if(k*(1+std::abs(z))<0.05) {
++        constexpr CPPUNIV_EXTENDED_REAL nodes[4]={.18343464249564980494L,.52553240991632898582L,.79666647741362673959L,.96028985649753623168L};
++        constexpr CPPUNIV_EXTENDED_REAL weights[4]={.36268378337836198297L,.31370664587788728734L,.22238103445337447054L,.10122853629037625915L};
++        CPPUNIV_EXTENDED_REAL sum=0,m=0,m2=0;
++        for(int i=0;i<4;++i)for(int sign:{-1,1}) {
++          const CPPUNIV_EXTENDED_REAL t=sign*k*nodes[i],w=weights[i]*std::exp(z*t-t*t/2)/2;
++          sum+=w;m+=w*t;m2+=w*t*t;
++        }
++        m/=sum;m2/=sum;
++        return std::array<CPPUNIV_EXTENDED_REAL,3>{{bhatt_detail::logphi_extended(z)+std::log(sum),m-z,m2-m*m-1}};
++      }
++      const CPPUNIV_EXTENDED_REAL u=static_cast<CPPUNIV_EXTENDED_REAL>(z)-k,v=static_cast<CPPUNIV_EXTENDED_REAL>(z)+k;
++      const CPPUNIV_EXTENDED_REAL lu=bhatt_detail::logphi_extended(u),lv=bhatt_detail::logphi_extended(v);
++      const CPPUNIV_EXTENDED_REAL logd=(u < -12 && v > 12)?0:
++        (u>=0?bhatt_detail::logdiff_extended(bhatt_detail::logQ_extended(u),bhatt_detail::logQ_extended(v)):
++        bhatt_detail::logdiff_extended(bhatt_detail::logQ_extended(-v),bhatt_detail::logQ_extended(-u)));
++      const CPPUNIV_EXTENDED_REAL A=std::exp(lu-logd),B=std::exp(lv-logd);
++      CPPUNIV_EXTENDED_REAL g=0;
++      if(lu!=lv) {const CPPUNIV_EXTENDED_REAL ln=std::max(lu,lv)+std::log(-std::expm1(-std::abs(lu-lv)));g=(lv>lu?1:-1)*std::exp(ln-logd);}
++      return std::array<CPPUNIV_EXTENDED_REAL,3>{{logd-std::log(2*static_cast<CPPUNIV_EXTENDED_REAL>(k)),g,u*A-v*B-g*g}};
++    },maxit);
++    if(candidate.ok) {
++      const double sig=1/candidate.b,width=candidate.k/candidate.b;
++      const auto polished=bhatt_detail::search(p,{std::log(sig),std::log(width)},tol,maxit);
++      if(polished.status==BhattStatus::Ok)best=attempted=polished;
++    }
++  }
++  if(!std::isfinite(best.logLik)) {
+   for(double s:starts)for(double b:widths){
+     if(!std::isnan(sigma)&&s!=starts.front())continue;
+     if(!std::isnan(a)&&b!=widths.front())continue;
+@@ -159,6 +190,7 @@
+     const auto f=bhatt_detail::search(p,t,tol,maxit);if(std::isfinite(f.logLik) && f.logLik>attempted.logLik)attempted=f;
+     if(f.status==BhattStatus::Ok && std::isfinite(f.logLik) && f.logLik>best.logLik)best=f;
+   }
++  }
+   if(!std::isfinite(best.logLik))best=attempted;
+   double comparison=attempted.logLik;
+   const double tie=1e-8*n;

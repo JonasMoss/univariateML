@@ -100,3 +100,14 @@ TEST_CASE("emg: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::emg_mle(x,1e-8,1).status==cppunivariate::EmgStatus::IterationFailure);
 }
+
+TEST_CASE("logconcave fixed-shape normal inner solution") {
+  const std::vector<double> x={-2,-1,0,1,2};
+  const auto normal=[](CPPUNIV_EXTENDED_REAL z,CPPUNIV_EXTENDED_REAL) {
+    return std::array<CPPUNIV_EXTENDED_REAL,3>{{-z*z/2,-z,-1}};
+  };
+  const auto fit=cppunivariate::logconcave_detail::inner(x,1,normal,100);
+  REQUIRE(fit.ok);
+  CHECK(fit.u==doctest::Approx(0).epsilon(1e-12));
+  CHECK(fit.b==doctest::Approx(1/std::sqrt(2.0)).epsilon(1e-12));
+}

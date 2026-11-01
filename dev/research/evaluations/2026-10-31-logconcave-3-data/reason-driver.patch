@@ -1,0 +1,18 @@
+--- dev/validation/fit-speed-comparison.cpp	2026-10-31 18:26:53.724787061 +0100
++++ dev/validation/logconcave3-reason-driver.cpp	2026-10-31 20:57:42.395409293 +0100
+@@ -50,6 +50,7 @@
+ const auto begin=std::chrono::steady_clock::now();
+ const auto r=cppunivariate::emg_mle({x.data(),x.size()},1e-8,1000,(mask&1?held_values[0]:nan),(mask&2?held_values[1]:nan),(mask&4?held_values[2]:nan));
+ const double seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-begin).count();
++std::cerr<<id<<","<<sample<<","<<(cppunivariate::logconcave_trial::fallback_used?1:0)<<","<<cppunivariate::logconcave_trial::fallback_reason<<"\n";
+ std::cout<<id<<" "<<sample<<" "<<mask<<" "<<static_cast<int>(r.status)<<" "<<r.mu<<" "<<r.sigma<<" "<<r.lambda<<" "<<r.logLik; if(mode!=1 && mode!=3)std::cout<<" "<<seconds;std::cout<<std::endl;
+ }
+ }
+@@ -70,6 +71,7 @@
+ const auto begin=std::chrono::steady_clock::now();
+ const auto r=cppunivariate::bhatt_mle({x.data(),x.size()},1e-8,1000,(mask&1?held_values[0]:nan),(mask&2?held_values[1]:nan),(mask&4?held_values[2]:nan));
+ const double seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-begin).count();
++std::cerr<<id<<","<<sample<<","<<(cppunivariate::logconcave_trial::fallback_used?1:0)<<","<<cppunivariate::logconcave_trial::fallback_reason<<"\n";
+ std::cout<<id<<" "<<sample<<" "<<mask<<" "<<static_cast<int>(r.status)<<" "<<r.sigma<<" "<<r.a<<" "<<r.mu<<" "<<r.logLik; if(mode!=1 && mode!=3)std::cout<<" "<<seconds;std::cout<<std::endl;
+ }
+ }

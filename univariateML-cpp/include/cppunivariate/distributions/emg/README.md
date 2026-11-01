@@ -62,10 +62,9 @@ relations:
       at:
         rate: lambda
 fit:
-  method: multistart
+  method: profile-search
   certified: partial
-  note: 'emg/README.md, Details; emg/mle.hpp (public fitter and held overloads); emg/test.cpp: Location is strictly
-    concave with scales held; joint scales use multistart/grid optimization without a global certificate.'
+  note: 'emg/README.md, Details: fixed-shape location-scale objective is strictly concave; the shape grid and face comparison are numerical.'
 areas:
 - measurement and errors
 classification: specialist
@@ -86,6 +85,21 @@ key_references:
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.
 
 ## Details
+
+For a fully free fit, fix the dimensionless shape $k=\lambda\sigma$ and optimize the
+location and inverse scale jointly. The fixed-shape objective is strictly
+concave, and the inner solve uses analytic derivatives with damped Newton
+steps and a scaled score check. A grid in log shape is traversed outward
+with warm starts; local grid maxima are refined and the best candidate is
+polished by the existing local optimizer. One existing multistart seed is also
+polished and retained when its likelihood is at least as high, preserving the
+established fit precision. If the grid has no interior local
+maximum, the grid-end likelihoods are compared with the normal and translated-exponential faces using
+the existing face rules. This outer search and face comparison are numerical;
+they do not certify that no mode lies beyond or between grid points. Failed
+inner solves, unsuccessful polishing and unresolved face comparisons fall
+back to the existing multistart; held-parameter fits retain that path. A test
+hook counts fallbacks when enabled. See the [round-four evidence](../../../../../dev/research/evaluations/2026-10-31-logconcave-4-report.md).
 
 For fixed dimensionless shape $k=\lambda\sigma$, the log-likelihood is strictly
 concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
@@ -112,10 +126,7 @@ fitter for the translated exponential: `mlexp(x - min(x))` fits its distances.
 With a held endpoint exactly at the minimum the limiting density there is
 half the exponential density. Repeated minima count separately.
 
-The location likelihood is strictly concave for fixed positive scales and is
-profiled by a bracketed score solve. Multiple starts in the remaining log
-scales allow competing modes. This numerical search does not certify global
-optimality. Empirical skewness sign describes local behaviour near the normal
+The multistart fallback profiles location by a bracketed score solve and searches the remaining log scales. Neither numerical search certifies global optimality. Empirical skewness sign describes local behaviour near the normal
 face and is not used as a global existence criterion.
 
 ## d/p/q/r
