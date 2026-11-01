@@ -1,5 +1,15 @@
 ---
 id: pareto
+inference_numeric:
+  - regime: "shape with endpoint held"
+    available: true
+    condition: "finite a > 0 free; finite b > 0 held"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+  - regime: "endpoint free"
+    available: false
+    condition: "finite a > 0; b free"
+    reason: "the fitted endpoint is non-DQM and is not a free inference coordinate"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Pareto
 support: {type: real, lower: "b", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "log(a) - log(b)"}}
 params:

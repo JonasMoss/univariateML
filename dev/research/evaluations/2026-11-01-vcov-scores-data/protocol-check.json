@@ -1,0 +1,13 @@
+{
+  "source_hash": "003016fe6c146eeac6fd902541d87a1c971fc48178539c97af8d0070fc5ab526",
+  "source_summary": "build/scratch/inference-numeric-mc/003016fe6c146eea/summary.json",
+  "interpretation": "Protocol validation only; recorded failed replications, skips and flags are not passes.",
+  "counts": {
+    "complete": 77,
+    "complete_with_recorded_failures": 6,
+    "skipped_slow": 7,
+    "skipped_budget": 0,
+    "failed_replications": 122,
+    "flagged_coordinates": 18
+  }
+}

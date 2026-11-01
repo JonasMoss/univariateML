@@ -1,5 +1,18 @@
 ---
 id: zinb
+inference_numeric:
+  - regime: "negative-binomial member with inflation known"
+    available: true
+    condition: "finite size > 0 and 0 < prob < 1; pi = 0 held; size and/or prob free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: "known point-mass member"
+    available: true
+    condition: "finite size > 0 and 0 < prob < 1; pi = 1 held; remaining information is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: primary interior
+    available: true
+    condition: "finite size > 0, 0 < prob < 1 and 0 < pi < 1; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Zero-inflated negative binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

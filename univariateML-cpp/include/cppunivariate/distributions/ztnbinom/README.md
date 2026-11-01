@@ -1,5 +1,14 @@
 ---
 id: ztnbinom
+inference_numeric:
+  - regime: "known zero negative-binomial size"
+    available: true
+    condition: "size = 0 held; 0 < prob < 1 free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: primary interior
+    available: true
+    condition: "finite size > 0 and 0 < prob < 1; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Zero-truncated negative binomial
 support:
   type: integer

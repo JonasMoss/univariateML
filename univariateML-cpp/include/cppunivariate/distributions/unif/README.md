@@ -1,5 +1,11 @@
 ---
 id: unif
+inference_numeric:
+  - regime: "endpoint free"
+    available: false
+    condition: "finite min < max; at least one endpoint free"
+    reason: "moving endpoints are non-DQM and no regular free coefficient remains when both are held"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Uniform
 support: {type: real, lower: "min", upper: "max", closed: [true, true], endpoint_log_density: {lower: "-log(max-min)", upper: "-log(max-min)"}}
 params:

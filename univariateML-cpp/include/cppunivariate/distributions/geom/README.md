@@ -1,5 +1,15 @@
 ---
 id: geom
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "0 < prob < 1; prob free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "prob = 0 or prob = 1"
+    reason: "probability is on a boundary; the count distribution is improper or degenerate"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Geometric
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

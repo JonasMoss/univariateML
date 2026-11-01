@@ -1,5 +1,10 @@
 ---
 id: gompertz
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite a > 0 and b > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Gompertz
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:

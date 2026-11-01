@@ -1,5 +1,14 @@
 ---
 id: bhatt
+inference_numeric:
+  - regime: "normal member with width known"
+    available: true
+    condition: "finite mu and sigma > 0; a = 0 held; mu and/or sigma free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: primary interior
+    available: true
+    condition: "finite mu, sigma > 0 and a > 0; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Bhattacharjee
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

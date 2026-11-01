@@ -1,5 +1,15 @@
 ---
 id: exp
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "finite rate > 0; rate free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "rate zero or nonfinite"
+    reason: "rate is on a boundary or outside the proper finite model"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Exponential
 support: {type: real, lower: 0.0, upper: inf, closed: [true, false]}
 params:

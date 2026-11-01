@@ -1,5 +1,10 @@
 ---
 id: yulesimon
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite rho > 0; rho free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Yule--Simon
 support: {type: integer, lower: 1, upper: inf, closed: [true, false]}
 params:

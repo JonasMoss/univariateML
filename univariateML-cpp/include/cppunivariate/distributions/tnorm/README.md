@@ -1,5 +1,10 @@
 ---
 id: tnorm
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite mean and sd > 0; a < b known and held with positive truncation probability; mean and/or sd free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Truncated Normal
 support: {type: real, lower: "a", upper: "b", closed: [true, true]}
 params:

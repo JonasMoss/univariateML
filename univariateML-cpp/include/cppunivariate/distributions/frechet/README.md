@@ -1,5 +1,10 @@
 ---
 id: frechet
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite lambda > 0, sigma > 0 and mu; mu held; lambda and/or sigma free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Frechet
 support: {type: real, lower: "mu", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "-Inf"}}
 params:

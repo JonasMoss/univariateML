@@ -1,5 +1,10 @@
 ---
 id: lst
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite mu, sigma > 0 and df > 0; when df and mu are both free require df > 1; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Location-scale Student-t
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

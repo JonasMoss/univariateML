@@ -1,5 +1,11 @@
 ---
 id: tlambda
+inference_numeric:
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "interior joint regime"
+    reason: "DQM and support-dependent regularity remain open in the cited classification"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Tukey lambda
 support: {type: real, lower: "if (lambda > 0) mu - sigma/lambda else -Inf", upper: "if (lambda > 0) mu + sigma/lambda else Inf", closed: [true, true], endpoint_log_density: {lower: "if (lambda < 1) -Inf else if (lambda == 1) -log(2*sigma) else -log(sigma)", upper: "if (lambda < 1) -Inf else if (lambda == 1) -log(2*sigma) else -log(sigma)"}}
 params:

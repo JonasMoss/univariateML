@@ -23,6 +23,7 @@ goldens), by the validation harness, and later by the Python shell.
 | `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma}` for a stats reference; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `dml`/`pml`/`qml`/`rml` apply it |
 | `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
+| `inference_numeric` | yes | list of numeric-inference regime claims; see below |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
 | `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `reflected translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; optional `fixed: [name]` restricts a limit to fits holding those parameters fixed; see `dev/research/ml-behaviour.tex` |
 | `references` | no | one bibliographic string per item; verified DOIs may be appended; strings pass to R help unchanged |
@@ -41,6 +42,21 @@ goldens), by the validation harness, and later by the Python shell.
 Argument names follow `dev/roadmap/2026-10-28-cran-argument-names.md`:
 `reltol` (relative step), `abstol` (absolute step), `gradtol` (gradient
 norm), `iterlim`, and `<param>0` for optional start values.
+
+## Numerical inference eligibility
+
+`inference_numeric` is a list of scopes with a unique `regime` string,
+boolean `available`, nonempty `condition` and `classification` link, and a
+nonempty `reason` whenever unavailable. `condition` identifies the free subset,
+held design or threshold parameters and parameter-dependent regularity regime;
+it does not by itself establish rank or estimator asymptotics. The
+`classification` link points to the supporting classification section. An open
+classification is unavailable and its reason states what is open. This field is
+populated with at least an initial scope across the family dossiers; some held
+subsets and boundary scopes remain open. `available` records mathematical
+qualification only; it does not assert that a family adapter is implemented,
+that the fit is successful, or that an estimator has a root-n limit. The loader
+permits omission for minimal fixtures without a presentation metadata block.
 
 ## Prose
 

@@ -1,5 +1,10 @@
 ---
 id: fatigue
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite alpha > 0, beta > 0 and mu; mu held; alpha and/or beta free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Birnbaum-Saunders
 support: {type: real, lower: "mu", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "-Inf"}}
 params:

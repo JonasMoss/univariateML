@@ -1,5 +1,10 @@
 ---
 id: nsbeta
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite shape1 > 0 and shape2 > 0; finite min < max held; either shape free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Nonstandard beta
 support: {type: real, lower: "min", upper: "max", closed: [true, true], endpoint_log_density: {lower: "if (shape1 < 1) Inf else if (shape1 > 1) -Inf else log(shape2) - log(max-min)", upper: "if (shape2 < 1) Inf else if (shape2 > 1) -Inf else log(shape1) - log(max-min)"}}
 params:

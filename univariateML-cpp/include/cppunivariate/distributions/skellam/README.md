@@ -1,5 +1,10 @@
 ---
 id: skellam
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite mu1 > 0 and mu2 > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Skellam
 support: {type: integer, lower: -inf, upper: inf, closed: [false, false]}
 params:

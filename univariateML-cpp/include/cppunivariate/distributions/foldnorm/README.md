@@ -1,5 +1,14 @@
 ---
 id: foldnorm
+inference_numeric:
+  - regime: "symmetric fixed location"
+    available: true
+    condition: "mu = 0 held, finite sigma > 0 free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+  - regime: primary interior
+    available: true
+    condition: "finite mu > 0 and sigma > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Folded Normal
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:

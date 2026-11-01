@@ -1,5 +1,10 @@
 ---
 id: dnorm
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite mean and sd > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Discretized normal
 support: {type: integer, lower: -inf, upper: inf, closed: [true, false]}
 params:

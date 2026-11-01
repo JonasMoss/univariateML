@@ -1,5 +1,11 @@
 ---
 id: hyper
+inference_numeric:
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "composition or design free"
+    reason: "all coefficients are integer valued; there is no continuous free inference coordinate"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
 name: Hypergeometric
 support: {type: integer, lower: "max(0, k - (N - m))", upper: "min(k, m)", closed: [true, true]}
 params:

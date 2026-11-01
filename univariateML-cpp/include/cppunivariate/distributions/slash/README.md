@@ -1,5 +1,10 @@
 ---
 id: slash
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite mu and sigma > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Slash
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

@@ -1,5 +1,15 @@
 ---
 id: ht
+inference_numeric:
+  - regime: "known threshold"
+    available: true
+    condition: "finite mu held, nu > 0 and sigma > 0; nu and/or sigma free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "threshold free"
+    reason: "a free threshold changes support with positive endpoint density and is non-DQM"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Half-t
 support: {type: real, lower: "mu", upper: inf, closed: [true, false], endpoint_log_density: {lower: "log(2) + lgamma((nu+1)/2) - lgamma(nu/2) - log(nu*pi)/2 - log(sigma)"}}
 params:

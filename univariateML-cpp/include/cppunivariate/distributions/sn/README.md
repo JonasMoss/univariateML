@@ -1,5 +1,10 @@
 ---
 id: sn
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite xi, omega > 0 and finite alpha; any regular subset free; information is singular at alpha = 0 when xi and alpha are both free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#cusps-and-singularities"
 name: Azzalini skew-normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

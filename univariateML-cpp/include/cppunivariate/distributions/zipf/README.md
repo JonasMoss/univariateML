@@ -1,5 +1,14 @@
 ---
 id: zipf
+inference_numeric:
+  - regime: "size one"
+    available: true
+    condition: "known N = 1; finite s > 0 free; the law is a point mass, so information is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: primary interior
+    available: true
+    condition: "known integer N >= 2 held and finite s > 0 free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
 name: Zipf
 support: {type: integer, lower: "1", upper: "N", closed: [true, true]}
 params:

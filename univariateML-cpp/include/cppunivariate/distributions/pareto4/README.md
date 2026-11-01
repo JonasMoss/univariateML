@@ -1,5 +1,10 @@
 ---
 id: pareto4
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite shape1 > 0, shape2 > 0, scale > 0 and min; min held; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Pareto type IV
 support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "if (shape2 < 1) Inf else if (shape2 > 1) -Inf else log(shape1) - log(scale)"}}
 params:

@@ -1,5 +1,23 @@
 ---
 id: ged
+inference_numeric:
+  - regime: "cusp moving with smooth exponent"
+    available: true
+    condition: "finite mean, sd > 0 and nu > 2; any regular subset free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+  - regime: "held location"
+    available: true
+    condition: "finite mean held and sd > 0, nu > 0; if nu is free require nu > 1"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+  - regime: "normal member with shape held"
+    available: true
+    condition: "finite mean and sd > 0, nu = 2 held; mean and/or sd free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "joint cusp-moving regime with 0 < nu <= 2, except the held-shape normal member"
+    reason: "the C2 and held-subset classification at the moving cusp has not yet been completed"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#cusps-and-singularities"
 name: Generalized Error
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

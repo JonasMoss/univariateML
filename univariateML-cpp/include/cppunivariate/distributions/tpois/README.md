@@ -1,5 +1,14 @@
 ---
 id: tpois
+inference_numeric:
+  - regime: "singleton retained support"
+    available: true
+    condition: "known truncation bounds with exactly one retained integer; finite lambda > 0 free; the conditional law is a point mass, so information is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: primary interior
+    available: true
+    condition: "finite lambda > 0 free; known a and b held; retained support has at least two integers"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Truncated Poisson
 support: {type: integer, lower: "max(0, floor(a)+1)", upper: "floor(b)", closed: [true, true]}
 params:

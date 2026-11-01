@@ -1,5 +1,10 @@
 ---
 id: invtrgamma
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite shape1 > 0, shape2 > 0 and scale > 0; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Inverse transformed gamma
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:

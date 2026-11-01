@@ -1,5 +1,15 @@
 ---
 id: lnorm
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "finite meanlog and sdlog > 0; either or both free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "sdlog = 0 or nonfinite parameters"
+    reason: "zero scale and infinite coefficients are outside the interior model"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Lognormal
 support: {type: real, lower: 0.0, upper: inf, closed: [false, false]}
 params:

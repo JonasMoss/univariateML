@@ -1,5 +1,10 @@
 ---
 id: dlaplace
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "integer location known and held; 0 < scale < 1 free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
 name: Discrete Laplace
 support: {type: integer, lower: -inf, upper: inf, closed: [false, false]}
 params:

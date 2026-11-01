@@ -1,5 +1,10 @@
 ---
 id: pareto2
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite shape > 0, scale > 0 and min; min held; shape and/or scale free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Pareto type II
 support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "log(shape) - log(scale)"}}
 params:

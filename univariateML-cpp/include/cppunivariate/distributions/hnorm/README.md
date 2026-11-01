@@ -1,5 +1,10 @@
 ---
 id: hnorm
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite mu held and sigma > 0 free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Translated Half-Normal
 support: {type: real, lower: "mu", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "log(2/pi)/2 - log(sigma)"}}
 params:

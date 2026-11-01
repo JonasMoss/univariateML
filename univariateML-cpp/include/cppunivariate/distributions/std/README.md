@@ -1,5 +1,10 @@
 ---
 id: std
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite mean, sd > 0 and nu > 2; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Student-t
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

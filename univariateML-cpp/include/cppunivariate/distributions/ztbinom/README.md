@@ -1,5 +1,14 @@
 ---
 id: ztbinom
+inference_numeric:
+  - regime: "size one"
+    available: true
+    condition: "known size = 1; 0 < prob < 1 free; the zero-truncated law is a point mass, so information is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: primary interior
+    available: true
+    condition: "known integer size >= 2 held; 0 < prob < 1 free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Zero-truncated binomial
 support: {type: integer, lower: "1", upper: "size", closed: [true, true]}
 params:

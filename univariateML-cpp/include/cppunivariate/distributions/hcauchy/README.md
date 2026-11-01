@@ -1,5 +1,15 @@
 ---
 id: hcauchy
+inference_numeric:
+  - regime: "known threshold scale"
+    available: true
+    condition: "finite mu held and sigma > 0 free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "threshold free"
+    reason: "a free threshold changes support with positive endpoint density and is non-DQM"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Half-Cauchy
 support: {type: real, lower: "mu", upper: inf, closed: [true, false], endpoint_log_density: {lower: "log(2/(pi*sigma))"}}
 params:

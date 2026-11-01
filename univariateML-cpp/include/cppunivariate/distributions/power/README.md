@@ -1,5 +1,10 @@
 ---
 id: power
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite alpha > 0 held and beta > 0 free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Power
 support: {type: real, lower: "0", upper: "alpha", closed: [false, true], endpoint_log_density: {upper: "log(beta) - log(alpha)"}}
 params:
