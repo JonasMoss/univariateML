@@ -57,7 +57,7 @@ export function phrase(text: string, sym: Map<string, string>, keepEnd = false):
 
 export const heldTex = (set: string[], sym: Map<string, string>) => set.map(n => sym.get(n) || n).join(', ');
 
-export interface LimitGroup { model?: string; name?: string; status?: string; path: string; detect?: string; when: string; free: boolean; held: string[][]; nonexistence: boolean }
+export interface LimitGroup { model?: string; name?: string; status?: string; path: string; detect?: string; when: string; free: boolean; held: string[][]; nonexistence: boolean; firmness?: string; numerical?: boolean }
 
 const NONEXISTENCE = new Set(['Unbounded', 'Degenerate', 'UnboundedLikelihood', 'DegenerateData', 'NoMLE']);
 
@@ -75,7 +75,7 @@ export function groupLimits(f: any): LimitGroup[] {
   return [...groups.values()].map(g => {
     const r = g.freeRec || g.heldRec;
     const nonexistence = !g.model && (g.kind === 'nonexistence' || NONEXISTENCE.has(g.status));
-    return { model: g.model, name: g.name, status: g.status, path: r.when, detect: r.detect, when: nonexistence ? (r.detect || r.when) : r.when, free: g.free, held: g.held, nonexistence };
+    return { model: g.model, name: g.name, status: g.status, path: r.when, detect: r.detect, when: nonexistence ? (r.detect || r.when) : r.when, free: g.free, held: g.held, nonexistence, firmness: r.firmness, numerical: r.numerical };
   }).sort((a, b) => Number(b.free) - Number(a.free));
 }
 

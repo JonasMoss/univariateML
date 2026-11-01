@@ -110,6 +110,11 @@ for folder in sorted(FAMILIES.iterdir()):
     if not (folder/'README.md').exists(): continue
     _, front, body = (folder/'README.md').read_text().split('---',2)
     m=yaml.safe_load(front)
+    for lim in m.get('limits', []):
+        if 'firmness' in lim and lim['firmness'] not in ('proved','argued','numerical','conjecture'): raise ValueError(f'{folder.name}: invalid limit firmness')
+        if 'numerical' in lim and not isinstance(lim['numerical'], bool): raise ValueError(f'{folder.name}: invalid numerical flag')
+    for edge in m.get('relations', {}).get('closure_point', []):
+        if not all(isinstance(edge.get(k), str) and edge[k].strip() for k in ('name','path','reason')) or edge.get('reachability') != 'never': raise ValueError(f'{folder.name}: invalid closure point')
     # Neutral real assumptions avoid treating design-dependent domains as numbers.
     syms,x,expr=density_expression(folder,m,[(-math.inf,math.inf)]*len(m['params']), prefer_spec=False)
     expr=expr.xreplace({s:sp.Symbol(p['name']) for s,p in zip(syms,m['params'])})
@@ -169,9 +174,11 @@ def relation_display(edge):
 for m in out:
     related=[]
     for kind,edges in m.get('relations',{}).items():
+        if kind == 'closure_point': continue
         related.extend(dict(family=target,kind=relation_labels[kind][0],edge=relation_display(e)) for e in edges for target in relation_targets(kind,e))
     for child in out:
         for kind,edges in child.get('relations',{}).items():
+            if kind == 'closure_point': continue
             related.extend(dict(family=child['id'],kind=relation_labels[kind][1],edge=relation_display(e)) for e in edges if m['id'] in relation_targets(kind,e))
     related.extend(dict(family=e['model'],kind='Limit model',note=e['when']) for e in m.get('limits',[]) if e.get('model'))
     m['related']=[dict(r,name=next(f['name'] for f in out if f['id']==r['family'])) for r in related]

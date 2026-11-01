@@ -101,6 +101,13 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   if (length(keys) && (length(keys) > 3L || !is.numeric(keys) || anyNA(keys) ||
       any(keys != floor(keys) | keys < 1 | keys > length(f$references)) || anyDuplicated(keys)))
     stop("load_distributions: invalid key_references for ", id)
+  for (lim in f$limits %||% list()) {
+    if (!is.null(lim$firmness) && (!scalar_text(lim$firmness) ||
+        !lim$firmness %in% c("proved", "argued", "numerical", "conjecture")))
+      stop("load_distributions: invalid limit firmness for ", id)
+    if (!is.null(lim$numerical) && (!is.logical(lim$numerical) || length(lim$numerical) != 1L || is.na(lim$numerical)))
+      stop("load_distributions: invalid numerical detection flag for ", id)
+  }
   # Minimal code-generation clients may omit the entire presentation block.
   taxonomy_keys <- c("group", "construction", "relations", "fit", "areas")
   if (any(taxonomy_keys %in% names(f))) {
@@ -122,9 +129,15 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
         c("closed-form", "scalar-solve", "profile-search", "multistart", "integer-search", "delegation", "convex-solve") ||
         !scalar_text(f$fit$certified) || !f$fit$certified %in% c("yes", "partial", "no", "unknown") ||
         !scalar_text(f$fit$note)) stop("load_distributions: invalid fit taxonomy for ", id)
-    if (is.null(f$relations) || length(setdiff(names(f$relations), c("special_case_of", "transform_of", "truncation_of", "modification_of", "convolution_of", "mixture_of", "discretisation_of"))))
+    if (is.null(f$relations) || length(setdiff(names(f$relations), c("special_case_of", "transform_of", "truncation_of", "modification_of", "convolution_of", "mixture_of", "discretisation_of", "closure_point"))))
       stop("load_distributions: invalid relations for ", id)
     for (kind in names(f$relations)) for (edge in f$relations[[kind]]) {
+      if (kind == "closure_point") {
+        if (!all(vapply(edge[c("name", "path", "reason")], scalar_text, FALSE)) ||
+            !identical(edge$reachability, "never"))
+          stop("load_distributions: invalid closure point for ", id)
+        next
+      }
       target <- file.path(dirname(dirname(path)), edge$family, "README.md")
       if (!scalar_text(edge$family) || !edge$family %in% basename(list.dirs(dirname(dirname(path)), recursive=FALSE)) ||
           !file.exists(target) || edge$family == id)

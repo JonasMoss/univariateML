@@ -39,8 +39,8 @@ limits:
   - {name: positive log-variance, when: constant observations with both shapes free cause unbounded likelihood, status: InvalidStart}
   - {model: gamma, fixed: [shape1], when: shape2 and scale tend to infinity with scale/shape2 fixed and shape1 held, status: GammaBoundary}
   - {model: invgamma, fixed: [shape2], when: shape1 tends to infinity and scale tends to zero with scale*shape1 fixed and shape2 held, status: InvGammaBoundary}
-  - {model: gamma, when: 'shape2 tends to infinity with scale/shape2 fixed', status: GammaBoundary}
-  - {model: invgamma, when: 'shape1 tends to infinity with scale*shape1 fixed', status: InvGammaBoundary}
+  - {model: gamma, firmness: argued, when: 'shape2 tends to infinity with scale/shape2 fixed', status: GammaBoundary}
+  - {model: invgamma, firmness: argued, when: 'shape1 tends to infinity with scale*shape1 fixed', status: InvGammaBoundary}
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25.
   Wiley, New York.

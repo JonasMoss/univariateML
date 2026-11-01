@@ -92,9 +92,11 @@ limits:
   - {name: scale collapse, fixed: [mean, nu, xi], when: "sd tends to zero", status: Unbounded, message: "Likelihood is unbounded at a tie"}
   - {name: scale-collapse equality, fixed: [mean, nu, xi], when: "k = nu*(n-k)", status: ScaleBoundary, message: "Tie equality scale-collapse boundary"}
   - model: snorm
+    firmness: numerical
     when: '$\nu \to \infty$'
     status: SnormBoundary
   - model: hnorm
+    firmness: numerical
     when: '$\nu \to \infty$ and $\xi \to \infty$'
     status: RightHalfNormalBoundary
   - name: reflected translated half-normal

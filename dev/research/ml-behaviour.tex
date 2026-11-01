@@ -67,34 +67,32 @@ Main findings.
     criterion, Theorem~\ref{thm:lomax} (Section~\ref{sec:lomax}).
 \end{enumerate}
 
-\section{Definitions}
+\section{Definitions}\label{sec:closure-frame}
 
-\begin{definition}
-For densities $f,g$ with respect to a common measure,
+For probability laws $P,Q$, write $H^2(P,Q)=\tfrac12\int(\sqrt p-\sqrt q)^2$ with respect to a common dominating measure. Hellinger-closed means that every Hellinger limit is a member. Earlier tables use ``closed apart from point masses'' as a separate convention, not as the definition of Hellinger closure.
+
+Fix a sample $x=(x_1,\ldots,x_n)$ and a parameter space $\Theta$, including any holds and fit restrictions. Write $L_x(\theta)=\sum_i\log f_\theta(x_i)$, with R7a's pointwise endpoint convention and extended-real values. Choose a Hausdorff topology on a space $K$ containing $\Theta$ densely. The \emph{joint sample likelihood envelope} is
 \[
-  H^2(f,g) = \tfrac12 \int \bigl(\sqrt f - \sqrt g\bigr)^2 .
+ L_x^*(z)=\limsup_{\theta\to z,\,\theta\in\Theta} L_x(\theta).
 \]
-A family $\cF$ is \emph{Hellinger-closed} if every Hellinger limit of a
-sequence in $\cF$ is either in $\cF$ or a point mass.
-\end{definition}
+This is the upper semicontinuous closure of the joint density values at the data (equivalently the log of the limsup of their product). A separate limsup for each observation cannot in general be multiplied: the paths attaining them may be incompatible. The envelope may distinguish paths leading to the same law; density values at isolated points are not determined by a probability law. An escape occurs when the original supremum is not attained and a maximizing sequence approaches a closure point outside $\Theta$. If all maximizing sequences have this property, the escape is unavoidable. A named limit law is justified only when that path also converges to it, in Hellinger or weak topology as appropriate. Collapse may have infinite likelihood and a weak point-mass limit.
 
-\begin{definition}
-For a sample $x_1,\dots,x_n$ the MLE \emph{escapes} if
-$\sup_\theta \ell_n(\theta)$ is not attained and every maximising sequence
-$\theta_k$ has $f_{\theta_k}$ converging to some $g \in \bar\cF \setminus \cF$.
-We call $g$ (with its own parameters fitted) the \emph{limit model}.
-\end{definition}
+\begin{lemma}[Likelihood closure]\label{lem:closure}
+Suppose $K$ is compact and metrizable, $\Theta$ is dense, and $L_x$ is upper semicontinuous on $\Theta$. Let $L_x^*$ be its upper semicontinuous envelope on $K$. Then
+\[
+ \sup_{\theta\in\Theta} L_x(\theta)=\max_{z\in K} L_x^*(z).
+\]
+If the maximum is finite and attained only outside $\Theta$, every maximizing sequence has a subsequence converging to a maximizing boundary point. The same conclusion holds when compactness is replaced by compactness of a set eventually containing some maximizing sequence; to apply it to \emph{every} maximizing sequence require this property for each one.
+\end{lemma}
+\begin{proof}
+The envelope is upper semicontinuous and dominates $L_x$; upper semicontinuity on $\Theta$ gives equality there. Every envelope value is at most $S=\sup_\Theta L_x$, while density of $\Theta$ gives the reverse inequality for the supremum. An upper semicontinuous extended-real function attains its maximum on compact $K$. Compactness yields a convergent subsequence of a maximizing sequence, and upper semicontinuity makes its limit a maximizer. The local compactness variant follows by the same subsequence argument.
+\end{proof}
+This lemma does \emph{not} by itself identify $L_x^*(z)$ with the ordinary likelihood of a limiting law. That requires an additional, sample-specific compatibility condition: the joint envelope at each relevant boundary point equals the stated limit-model likelihood, including at endpoints, and the parametrization covers the candidate face. When the maximizing boundary lies on such a face and its likelihood maximum is attained, the family supremum equals that face's maximized log likelihood. A limiting law or upper semicontinuity alone does not prove that equality. Nor does weak convergence ensure tightness of arbitrary sequences. We assume maximizing sequences are tight as laws when invoking weak limit laws, and separately assume the parameter/likelihood compactness needed above; tightness alone neither supplies it nor excludes pointwise density spikes. No defective sub-probability limit was observed in the 98-family study; finite mixtures, where loss of mass can occur, are outside scope.
 
-\begin{remark}
-Point masses are excluded because they are approached only for degenerate
-samples (all observations equal, or all equal to a support endpoint). Escape
-needs a non-closed family, but non-closure does not imply escape: invgauss
-is not closed, yet its MLE always exists (Section~\ref{sec:exists}). In
-every escape observed so far, $\sup_\theta \ell_n(\theta)$ equals the
-maximised log-likelihood of the limit model. The fitter should therefore
-either report the escape and name the limit model, or return the limit fit.
-Which of the two is a policy decision that is still open.
-\end{remark}
+\section{Statistical meaning}\label{sec:statistical-meaning}
+For the normalization above, $H^2\leq\mathrm{TV}\leq\sqrt2H$: these metrics generate the same topology. Continuous laws can converge weakly to a point mass while their TV distance from it remains one; discrete point masses can be Hellinger limits or attained members (R7). For proofs and examples see \href{../../univariateML-cpp/notes/limits.md}{the limits article}. Under misspecification an expected-log-likelihood maximizer, when well-defined and attained, is a KL projection onto the closure. Wald-type consistency of fitted laws for that projection additionally needs identifiability or a set-valued target, uniform convergence and appropriate compactness/tightness and integrability; Hellinger convergence alone gives neither KL convergence nor empirical likelihood convergence. A finite-sample escape does not establish those assumptions.
+
+\paragraph{Family-level verification.} The classification tables record path arguments, code and probes, not a verification of the hypotheses of Lemma~\ref{lem:closure}. For all 98 families and their held subsets the joint-envelope continuity, compactness and tightness conditions are \emph{assumed}; individual paths carry the arguments and qualifications cited in their dossiers. The closed-form inverse-Gaussian mean comparison verifies non-reachability of its fixed-shape L\'evy face on finite positive samples, but not the global hypotheses of the lemma.
 
 \section{Classification}
 

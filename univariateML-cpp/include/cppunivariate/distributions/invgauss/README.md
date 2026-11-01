@@ -47,7 +47,12 @@ examples: |
 group: other positive
 construction:
 - base
-relations: {}
+relations:
+  closure_point:
+  - name: Lévy
+    path: '$\mu\to\infty$ with $\lambda$ fixed'
+    reachability: never
+    reason: 'For every finite positive sample and fixed positive shape, the likelihood in the mean is uniquely maximized at the sample mean.'
 fit:
   method: closed-form
   certified: 'yes'

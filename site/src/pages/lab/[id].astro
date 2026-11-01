@@ -16,6 +16,7 @@ const dossier=`univariateML-cpp/include/cppunivariate/distributions/${f.id}`;
 const source=`${dossier}/README.md`;
 const render=(s:string)=>markdown(s,source);
 const sym=symbols(f);
+const closurePoints=await Promise.all((f.relations.closure_point || []).map(async (r:any)=>({...r,pathHtml:await render(r.path)})));
 const unwrap=(html:string)=>html.trim().replace(/^<p>/,'').replace(/<\/p>$/,'');
 const inline=async (tex:string)=>unwrap(await render(`$${tex}$`));
 const lower=(h:string)=>h.replace(/^([A-Z])(?=[a-z ])/,c=>c.toLowerCase());
@@ -89,7 +90,7 @@ const seeAlsoHtml=await Promise.all(seeAlso.map(async (s:any)=>render(s.body)));
 const mlProseHtml=await Promise.all(mlProse.map(async (s:any)=>({title:s.title,html:await render(s.body)})));
 const refs:string[]=f.references || [];
 const key=new Set<number>((f.key_references||[]).map((i:number)=>i-1));
-const toc=[['definition','Definition'],relations.length||seeAlso.length?['relations','Relations']:null,showML?['ml','Maximum likelihood']:null,['usage','Usage'],refs.length?['references','References']:null].filter(Boolean) as string[][];
+const toc=[['definition','Definition'],relations.length||seeAlso.length||closurePoints.length?['relations','Relations']:null,showML?['ml','Maximum likelihood']:null,['usage','Usage'],refs.length?['references','References']:null].filter(Boolean) as string[][];
 ---
 <Page title={f.name} description={f.summary}>
 <article class="lab" data-family={f.id}>
@@ -138,8 +139,9 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  </section>
 </div>
 
-{(relations.length>0 || seeAlso.length>0) && <section aria-labelledby="relations">
+{(relations.length>0 || seeAlso.length>0 || closurePoints.length>0) && <section aria-labelledby="relations">
  <h2 id="relations">Relations</h2>
+ {closurePoints.map((r:any)=><p>Closure point: {r.name}. <span set:html={r.pathHtml}/> Never a likelihood supremum in the stated scope: {r.reason}</p>)}
  {relations.length>0 && <table><thead><tr><th>Relation</th><th>Family</th><th>Mapping</th></tr></thead><tbody>
   {relRows.map((r:any)=><tr><td>{r.kind}</td><td><a href={`/lab/${r.family}/`}>{r.name}</a></td><td><code>{mapping(r)}</code>{r.noteHtml && <span set:html={r.noteHtml}/>}</td></tr>)}
  </tbody></table>}
@@ -164,13 +166,13 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length?['relati
  <p>Fitted by {methodLabel[f.fit.method] || f.fit.method}.{(nonexist.length+boundary.length)>0 && ' Where no MLE exists, the fit stops with an error that names the limit.'}</p>
  <details class="more" id="ml-more"><summary>More on the fit{heldCount>0 ? ` (including ${heldCount} case${heldCount>1?'s':''} with held coefficients)` : ''}</summary>
   <p>{({yes:'The global maximum is certified.',partial:'The global maximum is certified only in part.',no:'The search is numerical; the global maximum is not certified.',unknown:'Whether the search always finds the global maximum has not been established.'} as Record<string,string>)[f.fit.certified] || ''}</p>
-  {limitRows.length>0 && <table class="limits"><thead><tr><th>Limit</th><th>Path</th><th>Detected when</th><th>Applies</th></tr></thead><tbody>
+  {limitRows.length>0 && <table class="limits"><thead><tr><th>Limit</th><th>Path</th><th>Detected when</th><th>Applies</th><th>Firmness</th></tr></thead><tbody>
    {limitRows.map(g=><tr>
     <td>{g.model ? <a href={`/lab/${g.model}/`}><code>ml{g.model}</code></a> : g.nonexistence ? 'no MLE' : g.name}{g.model && g.name && <small> {g.name}</small>}</td>
     <td set:html={g.pathHtml}/>
     <td set:html={g.detectHtml || '–'}/>
     <td>{g.free && 'all free'}{g.free && g.held.length>0 && '; '}{g.held.length>0 && <>held {g.heldHtml.map((h,i)=><>{i>0 && '; '}<span set:html={h}/></>)}</>}</td>
-   </tr>)}
+   <td>{g.firmness || 'unassessed'}{g.numerical ? ' (numerical detection)' : ''}</td></tr>)}
   </tbody></table>}
   {otherHolds.length>0 && <table><thead><tr><th>Held</th><th>Status</th><th>Reason</th></tr></thead><tbody>
    {otherHolds.map((h:any)=><tr><td set:html={h.heldHtml}/><td>{({'no-mle':'no MLE','not-implemented':'not implemented'} as Record<string,string>)[h.status] || h.status}</td><td set:html={h.reasonHtml}/></tr>)}

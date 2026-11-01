@@ -27,6 +27,7 @@ r:
 log_density: log(lambda) + log(kappa) - (kappa + 1)*log(1 + lambda*x)
 limits:
   - model: exp
+    firmness: argued
     when: '$\kappa$ tends to infinity while $\lambda\kappa$ tends to a positive exponential rate'
     detect: 'both coefficients are free and the numerical profile search finds no improvement over the best exponential larger than $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit

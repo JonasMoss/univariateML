@@ -31,12 +31,14 @@ limits:
   status: Unbounded
   message: unbounded
 - name: exponential face
+  firmness: numerical
   model: exp
   fixed: [a]
   when: sum(x) <= a*sum(x^2)/2 and sum(x)>0.
   status: Overdispersed
   message: mlexp
 - model: 'exp'
+  firmness: numerical
   when: '$b \to 0$ with $a$ fixed'
   detect: 'mean(x^2) >= 2*mean(x)^2'
   status: 'Overdispersed'
