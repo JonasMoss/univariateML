@@ -544,9 +544,11 @@ units (model, sandwich).
 | bnbinom, size 5, alpha 6, beta 4 | 196/200 | size: model +5.9, sandwich +0.2; beta +3.3 / -1.4 |
 | bnbinom, size 2, alpha 6, beta 10 | 393/400 | size +2.6 / +0.2 (median SE 0.65 model, 0.43 sandwich); beta +4.2 / +1.8 |
 
-Open: bnbinom observed-information SEs exceed the sandwich and the empirical
-SD under the model even away from the size = beta symmetry ridge, while the
-derivative validation passes. Size and beta are weakly identified at
-n = 500 (heavy-tailed estimates); a larger-n run (the MC driver fixes
-n = 500) should show whether the two covariances converge before bnbinom's
-observed vcov is trusted.
+At n = 500, bnbinom observed-information SEs exceeded the sandwich and the
+empirical SD even away from the size = beta symmetry ridge. Rerun at
+n = 5000 (`UMVL_MC_N`, 0b42e0b; same truth, 200/200 ok): size SD 0.337,
+model 0.313 (-1.9), sandwich 0.269 (-1.8); alpha -1.4/-1.5; beta -1.4/-1.6;
+median SEs agree (size 0.217 vs 0.215, alpha 0.729 vs 0.738, beta 2.46 vs
+2.44). The n = 500 gap is finite-sample weak identification of size and
+beta, not an implementation error; at moderate n the two covariances can
+differ substantially for this family.
