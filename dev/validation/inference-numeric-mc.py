@@ -44,7 +44,14 @@ for family in families:
     path=DIST/family/'README.md'
     h.update(str(path.relative_to(ROOT)).encode());h.update(path.read_bytes())
 identity=h.hexdigest()
-OUT=ROOT/'build/scratch/inference-numeric-mc'/identity[:16]
+# Optional overrides for larger runs (defaults reproduce the pilot):
+# UMVL_MC_REPS (<= 1000: seeds are 1000 apart per family), UMVL_MC_SLOW_LIMIT
+# (CPU seconds per probe), UMVL_MC_BUDGET (CPU seconds), UMVL_MC_OUT (directory).
+REPS=int(os.environ.get('UMVL_MC_REPS','200'))
+if not 2<=REPS<=1000: raise SystemExit('UMVL_MC_REPS must be in [2, 1000]')
+SLOW_LIMIT=float(os.environ.get('UMVL_MC_SLOW_LIMIT','0.25'))
+BUDGET=float(os.environ.get('UMVL_MC_BUDGET','3200'))
+OUT=Path(os.environ['UMVL_MC_OUT']) if os.environ.get('UMVL_MC_OUT') else ROOT/'build/scratch/inference-numeric-mc'/identity[:16]
 OUT.mkdir(parents=True,exist_ok=True)
 cache=ROOT/'univariateML-cpp/build/CMakeCache.txt'
 boost=os.environ.get('BOOST_INCLUDE_DIR','')
@@ -180,21 +187,21 @@ for index,family in enumerate(families):
     probe_cpu=float(lines[0].split()[2])
     item={'truth':{k:(v if math.isfinite(v) else ('Inf' if v>0 else '-Inf')) for k,v in zip(names,truth)},'held':[names[i] for i in range(len(names)) if held[i]],
           'free':[names[i] for i in free],'probe_cpu_seconds':probe_cpu}
-    if probe_cpu>.25:
-        item.update(status='skipped_slow',reason='one n=500 sampling, fit and inference probe exceeded 0.25 CPU seconds')
-    elif used_cpu>=3200 or projected+probe_cpu*200>3200:
-        item.update(status='skipped_budget',reason='projected simulation exceeds the 3,200 CPU-second pilot budget')
+    if probe_cpu>SLOW_LIMIT:
+        item.update(status='skipped_slow',reason=f'one n=500 sampling, fit and inference probe exceeded {SLOW_LIMIT} CPU seconds')
+    elif used_cpu>=BUDGET or projected+probe_cpu*REPS>BUDGET:
+        item.update(status='skipped_budget',reason=f'projected simulation exceeds the {BUDGET} CPU-second budget')
     else:
-        projected+=probe_cpu*200
+        projected+=probe_cpu*REPS
         with checkpoint.open('a') as dest:
-            for rep in range(len(lines),200):
+            for rep in range(len(lines),REPS):
                 line=subprocess.run([str(binary),str(rep)],text=True,capture_output=True,check=True).stdout.strip()
                 assert int(line.split()[0])==rep,(family,line)
                 lines.append(line);dest.write(line+'\n');dest.flush()
                 used_cpu+=float(line.split()[2])
-                if used_cpu>=3200: break
-        if len(lines)<200:
-            item.update(status='skipped_budget',reason='actual simulation CPU use reached 3,200 seconds',replications=len(lines))
+                if used_cpu>=BUDGET: break
+        if len(lines)<REPS:
+            item.update(status='skipped_budget',reason=f'actual simulation CPU use reached {BUDGET} seconds',replications=len(lines))
             results[family]=item
             summary.write_text(json.dumps({'source_hash':identity,'actual_simulation_cpu_seconds':used_cpu,
                 'projected_cpu_seconds':projected,'families':results},indent=2)+'\n')
@@ -221,7 +228,7 @@ for index,family in enumerate(families):
                 item['coordinates'][names[free[j]]]=coord
     results[family]=item
     summary.write_text(json.dumps({'revision':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-                       'source_hash':identity,'sample_size':500,'replications':200,'seed':'20261101 + 1000*family_index + replication',
+                       'source_hash':identity,'sample_size':500,'replications':REPS,'seed':'20261101 + 1000*family_index + replication',
                        'family_order':families,'projected_cpu_seconds':projected,
                        'actual_simulation_cpu_seconds':used_cpu,'families':results},indent=2)+'\n')
     print(family,item['status'],item.get('successes',''),flush=True)
