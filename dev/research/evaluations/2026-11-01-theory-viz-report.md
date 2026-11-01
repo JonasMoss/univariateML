@@ -148,9 +148,8 @@ all six static figures and four escape messages without JavaScript, numerical
 table disclosure, and absence of page errors. Numerical failure injection also
 checks that an entirely failed profile displays diagnostics rather than a curve.
 
-![Normal likelihood contours with the free fit and both held fits on desktop](../../../build/scratch/theory-viz/desktop-faces-figure.png)
-
-![The same normal held-face contour on a 390-pixel mobile viewport](../../../build/scratch/theory-viz/mobile-faces-figure.png)
+The screenshots were working files in the job worktree and were not kept; the
+figures are reproduced by `just site-check` (build-time SVG on `/theory/`).
 
 Open requested items: none. The optional `{sn}` reference comparison remains
 unexecuted as recorded above; the finite plotting grids provide illustrations,
