@@ -97,9 +97,30 @@ test_that("free draws match the reference finite grid", {
   expect_error(mlhyper(4, m = 3, N = 10, k = NULL), "positive probability")
 })
 
-test_that("fully free hyper reports the unsupported global comparison", {
-  expect_error(mlhyper(c(1, 2), N = NULL, k = NULL, m = NULL),
-               "not implemented.*Poisson")
+test_that("fully free hyper fits and reports boundary outcomes", {
+  f <- mlhyper(c(2,2,2,3,3,3), N=NULL, k=NULL, m=NULL)
+  expect_equal(as.numeric(logLik(f)), 6*log(.5), tolerance=1e-9)
+  expect_length(attr(f, "fixed"), 0)
+  expect_error(mlhyper(c(0,1),N=NULL,k=NULL,m=NULL), "matched the binomial face")
+  expect_error(mlhyper(c(0,0,0,5,5,5),N=NULL,k=NULL,m=NULL), "Poisson face.*not excluded|not excluded.*Poisson face")
+  expect_error(mlhyper(c(0,100001),N=NULL,k=NULL,m=NULL), "numerical failure")
+  expect_error(mlhyper(c(8,8,9,9),N=NULL,k=NULL,m=NULL), "numerical failure.*budget")
+})
+
+test_that("fully free seeded fits agree with independent population grids", {
+  set.seed(12112)
+  for (i in 1:3) {
+    x <- rhyper(40,2,2,3)
+    f <- mlhyper(x,N=NULL,k=NULL,m=NULL)
+    count <- tabulate(x+1L, nbins=3)
+    best <- -Inf
+    for (N in 2:200) for (m in 0:N) {
+      k <- 0:N
+      ll <- count[2]*dhyper(1,m,N-m,k,log=TRUE) + count[3]*dhyper(2,m,N-m,k,log=TRUE)
+      best <- max(best, ll, na.rm=TRUE)
+    }
+    expect_equal(as.numeric(logLik(f)),best,tolerance=1e-9)
+  }
 })
 
  test_that("held N joint hyper grid matches stats enumeration", {

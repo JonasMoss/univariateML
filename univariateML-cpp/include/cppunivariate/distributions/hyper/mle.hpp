@@ -311,6 +311,121 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kInf = std::numeric_limits<double>::infinity();
   HyperResult r{N, m, k, kNaN, kNaN, 0, HyperStatus::InvalidInput};
+  if (std::isnan(N) && std::isnan(m) && std::isnan(k)) {
+    if (x.size() == 0) return r;
+    for (double v : x) if (!hyper_detail::is_count(v)) return r;
+    const auto c = hyper_detail::tabulate(x);
+    if (c.min == c.max) {
+      r.N = c.max; r.m = c.max; r.k = c.max; r.logLik = 0;
+      r.status = HyperStatus::Ok; return r;
+    }
+    r.status = HyperStatus::NumericalFailure;
+    if (c.max > 100000 || !std::isfinite(c.sum) || c.sum <= 0) return r;
+    const double mean = c.sum / c.h;
+    double poisson = 0;
+    for (std::size_t j = 0; j < c.value.size(); ++j)
+      poisson += c.count[j] * (c.value[j] * std::log(mean) - mean - std::lgamma(c.value[j] + 1));
+    if (!std::isfinite(poisson)) return r;
+    const double margin = 1e-9 * (1 + std::fabs(poisson));
+    double best = -kInf;
+    HyperResult winner = r;
+    int work = 0;
+    auto evaluate = [&](double size, double nn) {
+      if (work >= hyper_detail::kGridBudget) return false;
+      const HyperResult f = hyper_mle(x, size, nn, kNaN);
+      work += std::max(1, f.iterations);
+      r.iterations = work;
+      if (work >= hyper_detail::kGridBudget ||
+          (f.status != HyperStatus::Ok && f.status != HyperStatus::Tie &&
+           f.status != HyperStatus::Unidentified) || !std::isfinite(f.logLik)) return false;
+      if (f.logLik > best) {
+        best = f.logLik; winner = f;
+        winner.m = std::min(size, f.m); winner.k = std::max(size, f.m);
+      }
+      return true;
+    };
+    auto face = [&](double size) {
+      ++work; r.iterations = work;
+      if (work >= hyper_detail::kGridBudget) return kNaN;
+      const double p = mean / size;
+      double ll = 0;
+      for (std::size_t j = 0; j < c.value.size(); ++j)
+        ll += c.count[j] * hyper_detail::lbinom_raw(c.value[j], size, p, 1-p);
+      return ll;
+    };
+    // Search a growing rectangle in the smaller size and population. At
+    // each population the existing unimodal search profiles the other size.
+    const double exploration_sizes = 16;
+    if (c.max + exploration_sizes + 256 >= hyper_detail::kMaxCount) return r;
+    for (double size = c.max; size < c.max + exploration_sizes; ++size) {
+      const double lo = size + c.max - c.min;
+      for (double nn = lo; nn < lo + 128; ++nn)
+        if (!evaluate(size, nn)) return r;
+    }
+    // A face at least as good as the candidate prevents a strict certificate.
+    // tie records the observed binomial size, or zero for the Poisson face.
+    double face_best = poisson, face_size = 0;
+    for (double size = c.max; size < c.max + exploration_sizes; ++size) {
+      const double b = face(size);
+      if (!std::isfinite(b)) return r;
+      if (b > face_best) { face_best = b; face_size = size; }
+    }
+    const double initial_margin = 1e-9 * (1 + std::fabs(face_best));
+    if (best <= face_best + initial_margin) {
+      r.status = std::fabs(best-face_best) <= initial_margin ? HyperStatus::FaceTie : HyperStatus::FaceUnresolved;
+      r.tie = face_size; r.iterations = work; return r;
+    }
+    // Divide the candidate/Poisson gap between the two corrections. All
+    // larger smaller-sizes are covered by the uniform Poisson envelope.
+    const double gap = best - poisson - margin;
+    if (!(gap > 0)) return r;
+    const double den_s = -std::expm1(-gap / (4 * c.sum));
+    const double den_n = -std::expm1(-gap / (2 * c.sum));
+    if (!(den_s > 0) || !(den_n > 0)) return r;
+    const double S = std::max(c.max + 1, std::floor(c.max / den_s) + 2);
+    const double n0 = std::max(c.max + 1, std::floor(c.max / den_n) + 2);
+    if (!std::isfinite(S) || !std::isfinite(n0) || S > 100000 || n0 >= hyper_detail::kMaxCount) return r;
+    // Each smaller-size face has its own, usually much smaller, cutoff.
+    // -c_N(s) <= s(s-1)/(2(N-s+1)). Preflight before returning any fit.
+    std::vector<double> ends;
+    double populations = 0;
+    for (double size = c.max; size < S; ++size) {
+      const double b = face(size);
+      if (!std::isfinite(b)) return r;
+      const double face_margin = 1e-9 * (1 + std::fabs(b));
+      if (best <= b + face_margin) {
+        r.status = std::fabs(best-b) <= face_margin ? HyperStatus::FaceTie : HyperStatus::FaceUnresolved;
+        r.tie = size; r.iterations = work; return r;
+      }
+      const double d = best - b - face_margin;
+      const double cutoff = std::floor(size - 1 + c.h * size * (size - 1) / (2 * d)) + 2;
+      const double lo = size + c.max - c.min;
+      if (!std::isfinite(cutoff) || cutoff >= hyper_detail::kMaxCount) return r;
+      const double end = std::max(lo, cutoff);
+      ends.push_back(end);
+      populations += end - lo;
+      if (populations + work >= hyper_detail::kGridBudget) return r;
+    }
+    // For sizes >= S the envelope applies only above n0. Below n0,
+    // enumerate the smaller size through its support bound at each N.
+    for (double nn = 2*c.max-c.min; nn < n0; ++nn) {
+      const double hi = std::floor((nn + c.min) / 2);
+      if (hi >= S) populations += hi - S + 1;
+      if (populations + work >= hyper_detail::kGridBudget) return r;
+    }
+    for (double size = c.max; size < S; ++size) {
+      const double lo = size + c.max - c.min;
+      for (double nn = lo; nn < ends[static_cast<std::size_t>(size-c.max)]; ++nn)
+        if (!evaluate(size, nn)) return r;
+    }
+    for (double nn = 2*c.max-c.min; nn < n0; ++nn) {
+      const double hi = std::floor((nn + c.min) / 2);
+      for (double size = S; size <= hi; ++size)
+        if (!evaluate(size, nn)) return r;
+    }
+    winner.iterations = work; winner.status = HyperStatus::Ok;
+    return winner;
+  }
   // One held sample/population size and both other counts free. The
   // composition profile at each population is found by the existing
   // one-coordinate search. Every population below the tail cutoff is visited.

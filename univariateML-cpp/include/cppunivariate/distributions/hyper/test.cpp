@@ -470,3 +470,54 @@ TEST_CASE("hyper: certified joint population profiles and unresolved face") {
   const std::vector<double> large{0,1};
   CHECK(cppunivariate::hyper_mle(mltest::as_span(large),100001,nan,nan).status == cppunivariate::HyperStatus::NumericalFailure);
 }
+
+TEST_CASE("hyper: fully free search, faces and work limit") {
+  const std::vector<double> sample{2,2,2,3,3,3};
+  const auto fit = cppunivariate::hyper_mle(as_span(sample),kNaN,kNaN,kNaN);
+  REQUIRE(fit.status == cppunivariate::HyperStatus::Ok);
+  CHECK(fit.logLik == doctest::Approx(6*std::log(0.5)).epsilon(1e-10));
+  CHECK(fit.m <= fit.k);
+  const std::vector<double> zeros{0,0}, constant{7,7};
+  for (const auto &x : {zeros,constant}) {
+    const auto f = cppunivariate::hyper_mle(as_span(x),kNaN,kNaN,kNaN);
+    CHECK(f.status == cppunivariate::HyperStatus::Ok);
+    CHECK(f.logLik == 0);
+  }
+  const std::vector<double> tie{0,1}, spread{0,0,0,5,5,5};
+  const auto t = cppunivariate::hyper_mle(as_span(tie),kNaN,kNaN,kNaN);
+  CHECK(t.status == cppunivariate::HyperStatus::FaceTie);
+  CHECK(t.tie == 1);
+  const auto s = cppunivariate::hyper_mle(as_span(spread),kNaN,kNaN,kNaN);
+  CHECK(s.status == cppunivariate::HyperStatus::FaceUnresolved);
+  CHECK(s.tie == 0);
+  const std::vector<double> large{0,100001};
+  CHECK(cppunivariate::hyper_mle(as_span(large),kNaN,kNaN,kNaN).status == cppunivariate::HyperStatus::NumericalFailure);
+  const std::vector<double> invalid{1,1.5}, empty;
+  CHECK(cppunivariate::hyper_mle(as_span(invalid),kNaN,kNaN,kNaN).status == cppunivariate::HyperStatus::InvalidInput);
+  CHECK(cppunivariate::hyper_mle(as_span(empty),kNaN,kNaN,kNaN).status == cppunivariate::HyperStatus::InvalidInput);
+  const std::vector<double> budget{8,8,9,9};
+  const auto exhausted = cppunivariate::hyper_mle(as_span(budget),kNaN,kNaN,kNaN);
+  CHECK(exhausted.status == cppunivariate::HyperStatus::NumericalFailure);
+  CHECK(exhausted.iterations >= cppunivariate::hyper_detail::kGridBudget);
+  CHECK(std::isnan(exhausted.logLik));
+}
+
+TEST_CASE("hyper: fully free seeded fits match independent population grids") {
+  dist::StdRng<> rng(12112);
+  for (int rep=0; rep<3; ++rep) {
+    const auto x = draw(rng,40,4,2,3);
+    const auto fit = cppunivariate::hyper_mle(as_span(x),kNaN,kNaN,kNaN);
+    REQUIRE(fit.status == cppunivariate::HyperStatus::Ok);
+    int n1=0, n2=0;
+    for (double v : x) { if (v==1) ++n1; else if (v==2) ++n2; }
+    REQUIRE(n1>0); REQUIRE(n2>0);
+    const std::vector<double> one{1}, two{2};
+    long double best = -std::numeric_limits<long double>::infinity();
+    for (int N=2; N<=200; ++N) for (int m=2; m<=N; ++m)
+      for (int k=m; k<=N-m+1; ++k) {
+        const long double ll = n1*brute_ll(one,N,m,k)+n2*brute_ll(two,N,m,k);
+        best = std::max(best,ll);
+      }
+    CHECK(fit.logLik == doctest::Approx(static_cast<double>(best)).epsilon(1e-9));
+  }
+}
