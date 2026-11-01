@@ -343,3 +343,49 @@ tolerances and their code definitions; results including failures, permitted
 failures, skips and missing coverage. Record whether references and fixtures
 were regenerated and their diffs. Dated [evaluation reports](../research/evaluations/)
 are historical evidence for their tested revisions, not live coverage claims.
+
+## GitHub Actions CI
+
+All three workflows run on every branch push, pull request and manual dispatch.
+They have read-only repository permissions, cancel superseded runs of the same
+workflow/ref, and publish no package or website. They do not compute coverage
+percentages or replace the independent numerical and inference audits above.
+
+- [core](../../.github/workflows/core.yaml): standalone Release CMake build and
+  full ctest labels on Ubuntu 24.04/GCC, macOS 15 **arm64**/Apple Clang and
+  Windows 2022/MinGW UCRT64 GCC (not MSVC: the test build uses GCC-style flags).
+  Boost 1.87.0 is downloaded with SHA256 verification and cached; compiler caches
+  are partitioned by OS/architecture. No R is involved. This tests finite core
+  cases, not all parameter values or other compilers/architectures.
+- [r-check](../../.github/workflows/r-check.yaml): R release and r-lib dependency
+  caching on those three operating systems; portable assembly equivalent to
+  `just regen`, source build including vignettes/manual, and
+  `R CMD check --as-cran` via rcmdcheck. Errors and warnings fail; notes remain
+  visible in logs. The check uses the CRAN test tier, not the full oracle suite.
+  Tarballs, check logs and environment records are retained for 14 days, including
+  on failure. It does not test old R releases, R-devel or CRAN's infrastructure.
+- [site](../../.github/workflows/site.yaml): Ubuntu, Emscripten 6.0.13 (matching
+  the workstation), locked npm dependencies and Node 22.23.4; `just js-build`,
+  `just js-test`, `just site-check`. Caches cover SDK downloads, npm downloads and
+  `node_modules`. Python PyYAML/SymPy and R's BH are build dependencies. This
+  installs Playwright's Chromium headless shell for the mandatory inference and
+  theory browser checks, and supplies BH's header path to the standalone snippet
+  compiler. It checks generated WebAssembly, static structure and those browser
+  paths, not comprehensive accessibility, other browsers or deployment.
+
+Before the R check, the golden regression file runs separately with
+`UMVL_GOLDEN_DRIFT_FILE` set to a CSV path. Its ordinary assertions and tolerances
+remain enabled. The CSV contains each family's maximum componentwise relative
+error across estimates and log likelihood, plus its assertion tolerance; zero
+references use absolute error, equal signed infinities count as zero, and
+nonfinite mismatches count as infinity. This metric differs from testthat's
+vector comparison and must not be read as its pass/fail criterion. These are
+frozen-output regressions, not independent accuracy bounds. TASK-129 must inspect
+the first arm64/Windows artifacts before choosing any tolerance changes. Fit
+errors may leave a partial CSV; the reporting runner requires all 98 rows.
+
+The portable scripts in [.github/scripts](../../.github/scripts/) are also local
+entry points: `Rscript .github/scripts/assemble.R`, then
+`Rscript .github/scripts/golden-drift.R` and `Rscript .github/scripts/r-check.R`.
+Use the CPU slot lock for local runs. Hosted package installation, cache restore,
+action execution and actual macOS/Windows results require the first push.

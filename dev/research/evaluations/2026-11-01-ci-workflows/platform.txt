@@ -1,0 +1,111 @@
+$platform
+                                                      sysname 
+                                                      "Linux" 
+                                                      release 
+                                           "7.0.0-38-generic" 
+                                                      version 
+"#38-Ubuntu SMP PREEMPT_DYNAMIC Fri Sep  4 09:10:14 UTC 2026" 
+                                                     nodename 
+                                                    "JonasBI" 
+                                                      machine 
+                                                     "x86_64" 
+                                                        login 
+                                                      "jonas" 
+                                                         user 
+                                                      "jonas" 
+                                               effective_user 
+                                                      "jonas" 
+
+$machine
+$machine$double.eps
+[1] 2.220446e-16
+
+$machine$double.neg.eps
+[1] 1.110223e-16
+
+$machine$double.xmin
+[1] 2.225074e-308
+
+$machine$double.xmax
+[1] 1.797693e+308
+
+$machine$double.base
+[1] 2
+
+$machine$double.digits
+[1] 53
+
+$machine$double.rounding
+[1] 5
+
+$machine$double.guard
+[1] 0
+
+$machine$double.ulp.digits
+[1] -52
+
+$machine$double.neg.ulp.digits
+[1] -53
+
+$machine$double.exponent
+[1] 11
+
+$machine$double.min.exp
+[1] -1022
+
+$machine$double.max.exp
+[1] 1024
+
+$machine$integer.max
+[1] 2147483647
+
+$machine$sizeof.long
+[1] 8
+
+$machine$sizeof.longlong
+[1] 8
+
+$machine$sizeof.longdouble
+[1] 16
+
+$machine$sizeof.pointer
+[1] 8
+
+$machine$sizeof.time_t
+[1] 8
+
+$machine$longdouble.eps
+[1] 1.084202e-19
+
+$machine$longdouble.neg.eps
+[1] 5.421011e-20
+
+$machine$longdouble.digits
+[1] 64
+
+$machine$longdouble.rounding
+[1] 5
+
+$machine$longdouble.guard
+[1] 0
+
+$machine$longdouble.ulp.digits
+[1] -63
+
+$machine$longdouble.neg.ulp.digits
+[1] -64
+
+$machine$longdouble.exponent
+[1] 15
+
+$machine$longdouble.min.exp
+[1] -16382
+
+$machine$longdouble.max.exp
+[1] 16384
+
+
+$packages
+        BH       Rcpp   testthat 
+"1.90.0.1"    "1.1.2"    "3.3.2" 
+

@@ -252,7 +252,6 @@ test_that("limit detector describes its numerical comparison", {
 })
 
 test_that("Lomax help describes the detector as numerical", {
-  rd <- paste(readLines(file.path("..", "..", "man", "mllomax.Rd"), warn = FALSE), collapse = " ")
-  rd <- gsub("[[:space:]]+", " ", rd)
+  rd <- umvl_rd_text("mllomax.Rd")
   expect_match(rd, "numerical search does not establish a finite maximum", fixed = TRUE)
 })

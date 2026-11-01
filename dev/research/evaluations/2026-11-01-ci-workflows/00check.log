@@ -1,0 +1,215 @@
+* using log directory ‘/home/jonas/Files/programming/univariateML.wt/ci-workflows/build/ci-r/univariateML.Rcheck’
+* using R version 4.6.1 (2026-06-24)
+* using platform: x86_64-pc-linux-gnu
+* R was compiled by
+    gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+    GNU Fortran (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+* running under: Ubuntu 26.04.1 LTS
+* using session charset: UTF-8
+* current time: 2026-11-01 10:16:28 UTC
+* using option ‘--as-cran’
+* checking for file ‘univariateML/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘univariateML’ version ‘1.5.0’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... [4s/20s] WARNING
+Maintainer: ‘Jonas Moss <jonas.gjertsen@gmail.com>’
+
+Insufficient package version (submitted: 1.5.0, existing: 1.5.0)
+
+Found the following (possibly) invalid URLs:
+  URL: https://feb.kuleuven.be/public/u0043181/modelselection/datasets/egyptlives_data.txt
+    From: man/egypt.Rd
+    Status: 502
+    Message: Bad Gateway
+  URL: https://jonasmoss.github.io/univariateML/
+    From: DESCRIPTION
+          man/univariateML-package.Rd
+    Status: 404
+    Message: Not Found
+  URL: https://jonasmoss.github.io/univariateML/articles/distributions.html
+    From: README.md
+    Status: 404
+    Message: Not Found
+  URL: https://jonasmoss.github.io/univariateML/articles/overview.html
+    From: README.md
+    Status: 404
+    Message: Not Found
+  URL: https://jonasmoss.github.io/univariateML/index.html
+    From: README.md
+    Status: 404
+    Message: Not Found
+
+Found the following URLs which should use \doi (with the DOI name only):
+  File ‘mlbinom.Rd’:
+    https://doi.org/10.1080/01621459.1983.10477949
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘univariateML’ can be installed ... [190s/62s] OK
+* used C++ compiler: ‘g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0’
+* checking C++ specification ... INFO
+  specified C++17
+* checking installed package size ... INFO
+  installed size is 43.1Mb
+  sub-directories of 1Mb or more:
+    include   2.0Mb
+    libs     39.3Mb
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking ‘build’ directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of ‘data’ directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking LazyData ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking line endings in C/C++/Fortran sources/headers ... OK
+* checking line endings in Makefiles ... OK
+* checking compilation flags in Makevars ... OK
+* checking for GNU extensions in Makefiles ... OK
+* checking for portable use of $(BLAS_LIBS) and $(LAPACK_LIBS) ... OK
+* checking use of PKG_*FLAGS in Makefiles ... OK
+* checking use of SHLIB_OPENMP_*FLAGS in Makefiles ... OK
+* checking pragmas in C/C++ headers and code ... OK
+* checking compilation flags used ... OK
+* checking compiled code ... OK
+* checking installed files from ‘inst/doc’ ... OK
+* checking files in ‘vignettes’ ... OK
+* checking relative paths in package URLs ... NOTE
+Found the following (possibly) invalid URLs:
+  URL: ../../../../../dev/research/evaluations/2026-10-31-logconcave-4-report.md
+    From: man/mlbhatt.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md
+    From: man/mlbhatt.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-logconcave-4-report.md
+    From: man/mlemg.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md
+    From: man/mlemg.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mlemg.Rd
+  URL: ../gb2/README.md
+    From: man/mlfpareto.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mlfpareto.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mlgb2.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlgumbel.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlinvexp.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlinvweibull.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mllaplace.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mllgamma.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mllgser.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlllogis.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mllogitnorm.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mllst.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlnaka.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlnorm.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlnsbeta.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlpareto.Rd
+  URL: ../../../../../dev/validation/pareto4-precision.cpp
+    From: man/mlpareto4.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mlsged.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mlslash.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md
+    From: man/mlslash.Rd
+  URL: ../../../../../dev/research/evaluations/2026-11-01-sn-speed-report.md
+    From: man/mlsn.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mlsstd.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mlstd.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-size-search-report.md
+    From: man/mltbinom.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md
+    From: man/mltlambda.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md
+    From: man/mltlambda.Rd
+  URL: ../../../../../dev/validation/diagnostics.md
+    From: man/mlunif.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-size-search-report.md
+    From: man/mlzib.Rd
+  URL: ../../../../../dev/research/evaluations/2026-10-31-size-search-report.md
+    From: man/mlztbinom.Rd
+* checking examples ... OK
+* checking examples with --run-donttest ... OK
+* checking for unstated dependencies in ‘tests’ ... WARNING
+'::' or ':::' import not declared from: ‘sn’
+* checking tests ... [46s/46s] ERROR
+  Running ‘testthat.R’ [46s/46s]
+Running the tests in ‘tests/testthat.R’ failed.
+Last 13 lines of output:
+   2. └─base::readLines(...)
+   3.   └─base::file(con, "r")
+  ── Error ('test-dist-lomax.R:255:3'): Lomax help describes the detector as numerical ──
+  Error in `file(con, "r")`: cannot open the connection
+  Backtrace:
+      ▆
+   1. ├─base::paste(...) at test-dist-lomax.R:255:3
+   2. └─base::readLines(file.path("..", "..", "man", "mllomax.Rd"), warn = FALSE)
+   3.   └─base::file(con, "r")
+  
+  [ FAIL 3 | WARN 3 | SKIP 215 | PASS 13514 ]
+  Error:
+  ! Test failures.
+  Execution halted
+  Ran 1/1 deferred expressions
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes ... OK
+* checking re-building of vignette outputs ... OK
+* checking PDF version of manual ... OK
+* checking HTML version of manual ... NOTE
+Skipping checking HTML validation: no command 'tidy' found.
+Please obtain a recent version of HTML Tidy by downloading a binary
+release or compiling the source code from <https://www.html-tidy.org/>.
+Skipping checking math rendering: package 'V8' unavailable
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 1 ERROR, 2 WARNINGs, 2 NOTEs

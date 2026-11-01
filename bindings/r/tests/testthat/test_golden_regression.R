@@ -63,6 +63,23 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
       got <- as.numeric(fit)
       # jsonlite encodes infinite held bounds as "Inf" / "-Inf".
       want <- as.numeric(unlist(g$estimates, use.names = FALSE))
+      # Opt-in CI observation only: preserve the ordinary assertions above/below.
+      report <- Sys.getenv("UMVL_GOLDEN_DRIFT_FILE")
+      if (nzchar(report)) {
+        observed <- c(got, unname(attr(fit, "logLik")))
+        reference <- c(want, g$logLik)
+        # Componentwise relative error; zero uses absolute error. Equal signed
+        # infinities have zero drift; all other nonfinite mismatches are Inf.
+        drift <- rep(Inf, length(reference))
+        same <- !is.na(observed) & !is.na(reference) & observed == reference
+        drift[same] <- 0
+        finite <- is.finite(observed) & is.finite(reference)
+        drift[finite] <- abs(observed[finite] - reference[finite]) /
+          ifelse(reference[finite] == 0, 1, abs(reference[finite]))
+        write.table(data.frame(family = g$id, max_relative_difference = max(drift),
+                               tolerance = tol), report, sep = ",", row.names = FALSE,
+                    col.names = !file.exists(report), append = file.exists(report))
+      }
       expect_equal(got, want, tolerance = tol)
     })
   }

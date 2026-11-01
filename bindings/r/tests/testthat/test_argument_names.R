@@ -20,7 +20,7 @@ test_that("a coefficient the adapter does not accept is named as an unsupported 
 })
 
 test_that("ml_check_args help title has no terminal period", {
-  rd <- tools::parse_Rd(file.path("..", "..", "man", "ml_check_args.Rd"))
+  rd <- umvl_rd("ml_check_args.Rd")
   title <- rd[[which(vapply(rd, function(x) identical(attr(x, "Rd_tag"), "\\title"), logical(1)))]]
   expect_false(grepl("\\.$", trimws(as.character(title[[1]]))))
 })
