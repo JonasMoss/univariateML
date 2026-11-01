@@ -141,3 +141,14 @@ exponent, and held positive-shape support must contain the observations.
 ## d/p/q/r
 
 The lambda = 0 member is logistic; quantiles use the smaller logarithmic tail in safeguarded Newton inversion.
+
+### Affine overflow portability (2026-11-01)
+
+Quantiles whose unscaled displacement overflows use
+`2 * (mu/2 + signed_displacement/2)`. At finite positive-shape endpoints,
+the half displacement is `(sigma/2)/lambda`; at interior probabilities it is
+`(sigma/2)*exp(logmag)`. This algebraic identity avoids relying on Windows
+`fma` to cancel an overflowing product. The ordinary finite-product path is
+unchanged. Symmetric binary64 regression cases use `sigma=1e308`,
+`mu=+/-1e308`, `lambda=.5`, endpoints and probabilities .001/.999;
+these are numerical checks, not general floating-point error bounds.

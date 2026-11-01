@@ -16,22 +16,23 @@ DISTRIBUTIONS_DIR <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR", "")
 
 # Iterative fit coefficients can move more than the objective/gradient stop:
 # its tolerance is not a bound on parameter error without curvature bounds.
-# For these golden data use at least four times the largest measured Linux or
-# macOS drift, rounded upward. As a guard against making these canaries too
+# For these golden data use at least four times the largest measured Linux,
+# macOS or Windows drift, rounded upward. As a guard against making these canaries too
 # loose, require each allowance to be at most ten times the square root of
 # its relevant stopping tolerance (the inner scale stop for ht). This is a
 # practical rule, not a bound on parameter error. The FD BFGS group retains
 # its earlier calibration.
 # Closed-form/default families retain 1e-12. See the portability report for
-# stopping rules, both observations, and the limits of this empirical rule.
+# stopping rules, all three platform observations, and the limits of this empirical rule.
 GOLDEN_TOLERANCE <- c(
   std = 3e-5, ged = 3e-5, sstd = 3e-5, sged = 3e-5,
   paralogis = 3e-5, invparalogis = 3e-5, lst = 3e-5,
   betapr = 3e-7, bhatt = 2e-6, bnbinom = 2e-6,
   burr = 1e-6, invburr = 5e-7, dgamma = 1e-7,
   emg = 3e-7, gev = 2e-10, gompertz = 1e-11,
-  ht = 2e-7, pareto4 = 1e-7, pig = 1e-7,
-  trgamma = 2e-11, zinb = 3e-9, zmnbinom = 3e-6
+  ht = 5e-7, pareto4 = 1e-7, pig = 1e-7,
+  gb2 = 5e-10, invtrgamma = 2e-10, tlambda = 3e-7,
+  trgamma = 2e-11, zinb = 4e-9, zmnbinom = 3e-6
 )
 
 # Adapter controls, or the implementation's inner stopping tolerance for ht.
@@ -42,6 +43,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   betapr = 1e-6, bhatt = 1e-8, bnbinom = 1e-8,
   burr = 1e-8, invburr = 1e-8, dgamma = 1e-8, emg = 1e-8,
   gev = 1e-10, gompertz = 1.220703e-4, ht = 2e-14,
+  gb2 = 1e-7, invtrgamma = 1e-10, tlambda = 1e-7,
   pareto4 = 1e-10, pig = 1e-9, trgamma = 1e-10,
   zinb = 1e-10, zmnbinom = 1e-10
 )

@@ -120,15 +120,21 @@ inline double qtlambda(double p,double mu=0,double sigma=1,double lambda=0,bool 
   const double lu=std::min(lp,lq);
   if(lu==-INFINITY && lambda>0) {
     const double width=sigma/lambda;
-    return std::isfinite(width)?mu+(left?-width:width):std::fma(left?-2.0:2.0,(sigma/2)/lambda,mu);
+    return std::isfinite(width)?mu+(left?-width:width):2*(mu/2+(left?-1.0:1.0)*((sigma/2)/lambda));
   }
   const double lm=lu==-INFINITY ? (lambda>0 ? -std::log(lambda) : INFINITY) : tlambda_detail::logmag(lu,lambda);
   const double mag=std::exp(lm);
-  if(mag>0 && std::isfinite(mag)) return std::fma(left?-sigma:sigma,mag,mu);
+  if(mag>0 && std::isfinite(mag)) {
+    // Some Windows libm fma implementations overflow the product before
+    // cancellation. Scale only the overflowing path; retain ordinary results.
+    if(mag>1 && sigma>std::numeric_limits<double>::max()/mag)
+      return 2*(mu/2+(left?-sigma/2:sigma/2)*mag);
+    return std::fma(left?-sigma:sigma,mag,mu);
+  }
   const double size=std::log(sigma)+lm;
   const double offset=std::exp(size);
   if(std::isfinite(offset)) return mu+(left?-offset:offset);
-  return std::fma(left?-2.0:2.0,std::exp(size-std::log(2.0)),mu);
+  return 2*(mu/2+(left?-1.0:1.0)*std::exp(size-std::log(2.0)));
 }
 inline double ptlambda(double q,double mu=0,double sigma=1,double lambda=0,bool lower_tail=true,bool log_p=false) {
   if(!tlambda_detail::valid(mu,sigma,lambda) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
