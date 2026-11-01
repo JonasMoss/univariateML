@@ -14,8 +14,6 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   const Held N = N_arg;
   const Held k = k_arg;
 
-  if (!N.supplied && !m.supplied && !k.supplied)
-    return fail("Joint estimation of m, N and k is not implemented: the interior and binomial and Poisson limit faces require a certified global comparison.");
   for (const auto& named : {std::make_pair(std::string("k"), k),
                             std::make_pair(std::string("N"), N),
                             std::make_pair(std::string("m"), m)}) {
@@ -36,8 +34,14 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   const std::string estimated = !k.supplied ? "k" : (!N.supplied ? "N" : "m");
   switch (res.status) {
     case cppunivariate::HyperStatus::FaceUnresolved:
+      if (!N.supplied && !m.supplied && !k.supplied)
+        return res.tie == 0 ? fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.") :
+          fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size %s may dominate; use mlbinom for the limit model.", whole(res.tie));
       return fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).");
     case cppunivariate::HyperStatus::FaceTie:
+      if (!N.supplied && !m.supplied && !k.supplied)
+        return res.tie == 0 ? fail("A finite likelihood matched the Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlpois for the limit model.") :
+          fail("A finite likelihood matched the binomial face of size %s within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.", whole(res.tie));
       return fail("A finite likelihood matched the binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.");
     case cppunivariate::HyperStatus::NumericalFailure:
       return fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
