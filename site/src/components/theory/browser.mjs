@@ -4,8 +4,8 @@ import {createServer} from 'node:http';
 import {readFileSync,existsSync,readdirSync,mkdirSync,statSync,writeFileSync} from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-const root=path.resolve(import.meta.dirname,'../../../..'),dist=path.join(root,'site/dist'),scratch=path.join(root,'build/scratch/theory-viz');
-mkdirSync(scratch,{recursive:true});
+const root=path.resolve(import.meta.dirname,'../../../..'),dist=path.join(root,'site/dist'),scratch=path.join(root,'build/scratch/theory-viz'),kept=path.join(root,'dev/research/evaluations/2026-11-01-viz-polish');
+mkdirSync(scratch,{recursive:true});mkdirSync(kept,{recursive:true});
 const cache=path.join(os.homedir(),'.cache/ms-playwright');
 const executable=process.env.BROWSER_EXECUTABLE||readdirSync(cache).filter(n=>/^chromium_headless_shell-/.test(n)).sort().reverse().map(n=>path.join(cache,n,'chrome-headless-shell-linux64/chrome-headless-shell')).find(existsSync);
 const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.wasm':'application/wasm','.css':'text/css','.svg':'image/svg+xml'};
@@ -25,10 +25,16 @@ try{
   for(const section of ['profiles','escapes','faces']){
    await page.locator('#'+section).evaluate(el=>el.scrollIntoView({block:'start'}));
    await page.screenshot({path:path.join(scratch,`${label}-${section}.png`)});
+   if(section==='profiles')await page.screenshot({path:path.join(kept,`${label}-page.png`)});
+   if(section==='faces')await page.locator('#'+section+' .conditional .figure').screenshot({path:path.join(kept,`${label}-held-face.png`)});
    await page.locator('#'+section+' .figure').first().screenshot({path:path.join(scratch,`${label}-${section}-figure.png`)});
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+' overflow '+section);
   }
  }
+ await faces.getByRole('button',{name:'Recompute held-rate example'}).click();
+ assert.equal(await faces.locator('svg[data-conditional]').count(),1);
+ assert.match(await faces.locator('.conditional').textContent(),/mlexp/);
+ assert.ok(await page.locator('math').count()>8);
  for(const id of ['lomax','std','nbinom','burr']){
   const card=page.locator(`[data-escape=${id}]`);
   await card.getByRole('button',{name:'Recompute preset'}).scrollIntoViewIfNeeded();
@@ -45,12 +51,13 @@ try{
  await profiles.getByRole('button',{name:'Simulate 60 & fit'}).click();await page.waitForFunction(()=>document.querySelector('#profiles .diagnostic').textContent.includes('60 observations'));
  const simulated=await profiles.locator('textarea').inputValue();await profiles.getByRole('button',{name:'Simulate 60 & fit'}).click();await page.waitForFunction(()=>document.querySelector('#profiles .theory-view').getAttribute('aria-busy')==='false');assert.equal(await profiles.locator('textarea').inputValue(),simulated,'seed reproducibility');
  await profiles.getByRole('button',{name:'Reset preset'}).click();await page.waitForFunction(()=>document.querySelector('#profiles .diagnostic').textContent.includes('12 observations'));
- await faces.getByLabel('Held mean',{exact:true}).fill('0.5');await faces.getByLabel('Held sd',{exact:true}).fill('1.5');await faces.getByRole('button',{name:'Fit pasted data'}).click();await page.waitForFunction(()=>document.querySelector('#faces tbody tr:nth-child(2) td:nth-child(2)').textContent==='0.500000');
+ await faces.getByLabel('Held mean',{exact:true}).fill('0.5');await faces.getByLabel('Held sd',{exact:true}).fill('1.5');await faces.getByRole('button',{name:'Fit pasted data'}).click();await page.waitForFunction(()=>document.querySelector('#faces .theory-view tbody tr:nth-child(2) td:nth-child(2)').textContent==='0.500000');
  await faces.getByLabel('Held sd',{exact:true}).fill('-1');await faces.getByRole('button',{name:'Fit pasted data'}).click();await faces.getByRole('alert').waitFor();
  const plain=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}}),p=await plain.newPage();await p.goto(url);
+ assert.equal(await p.locator('svg[data-conditional]').count(),1);assert.ok(await p.locator('math').count()>8);
  assert.equal(await p.locator('svg[data-profile]').count(),5);assert.equal(await p.locator('svg[data-faces]').count(),1);assert.equal(await p.locator('fieldset:disabled').count(),2);
  assert.equal(await p.locator('[data-escape] code').count(),4);await p.locator('#profiles details summary').click();assert.equal(await p.locator('#profiles tbody tr').count(),65);
  await p.screenshot({path:path.join(scratch,'mobile-no-js.png')});await plain.close();assert.deepEqual(errors,[]);
- writeFileSync(path.join(scratch,'browser.json'),JSON.stringify({checks:['desktop/mobile each section','no horizontal overflow','hydration','four gallery recomputations','family changes','paste','invalid data retains figure','seed reproducibility','reset','held faces change','invalid held sd','six static figures and four messages without JS','no page errors'],screenshots:13},null,2)+'\n');
+ writeFileSync(path.join(scratch,'browser.json'),JSON.stringify({checks:['desktop/mobile each section','no horizontal overflow','hydration','four gallery recomputations','family changes','paste','invalid data retains figure','seed reproducibility','reset','Gompertz recomputation and conditional escape','held faces change','invalid held sd','seven static figures, MathML and four gallery messages without JS','no page errors'],screenshots:17},null,2)+'\n');
  console.log('PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.');
 }finally{await browser?.close();await new Promise(r=>server.close(r));}

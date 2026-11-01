@@ -38,7 +38,7 @@
  {/if}
  {#if error}<p class="error" role="alert">{error} The last displayed figure is retained.</p>{/if}
  {#if mode==='profile'}
- <p>{specs[result.id].explanation}</p>
+ <p>{#if result.id==='lomax'}<math><mi>κ</mi><mo>→</mo><mi>∞</mi></math> while <math><mi>λ</mi><mi>κ</mi></math> tends to the fitted exponential rate.{:else if result.id==='std'}<math><mi>ν</mi><mo>→</mo><mi>∞</mi></math>; mean and standard deviation are refitted. This parameterization requires <math><mi>ν</mi><mo>&gt;</mo><mn>2</mn></math>.{:else if result.id==='nbinom'}Size grows and <math><mi>p</mi><mo>→</mo><mn>1</mn></math>, preserving the sample mean.{:else if result.id==='burr'}Scale is held at <math><mn>1</mn></math>. <math><msub><mi>k</mi><mn>2</mn></msub><mo>→</mo><mi>∞</mi></math> and <math><msub><mi>k</mi><mn>1</mn></msub><msub><mi>k</mi><mn>2</mn></msub></math> tends to the Pareto shape; its lower endpoint is <math><mn>1</mn></math>. This is a conditional escape.{:else}{specs[result.id].explanation}{/if}</p>
  <div class="figure">{@html profileSvg(result)}</div>
  <p class="legend"><span class="curve">━</span> held-fit profile{#if result.free.fit} · ● free fit{/if} {#if result.limit?.fit}<span class="limit">┄</span> maximised limit model{/if}</p>
  <div class="diagnostic" aria-live="polite">

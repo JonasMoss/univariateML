@@ -1,7 +1,8 @@
 ---
 import Page from '../../layouts/Page.astro';
+import Conditional from '../../components/theory/Conditional.svelte';
 import Viewer from '../../components/theory/Viewer.svelte';
-import {profile,preset,faces,faceSample} from '../../components/theory/model.mjs';
+import {profile,preset,faces,faceSample,conditional} from '../../components/theory/model.mjs';
 import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 const bindingUrl = pathToFileURL(resolve('../bindings/js/index.mjs')).href;
@@ -10,6 +11,7 @@ const api = await create();
 const initial=profile(api,'gamma',preset('gamma'));
 const escapes=['lomax','std','nbinom','burr'].map(id=>profile(api,id,preset(id)));
 const held=faces(api,faceSample);
+const conditionalHeld=conditional(api);
 ---
 <Page title="Likelihood geometry" description="Profile likelihoods, escapes to limit models and held-parameter faces, computed with the C++ fitters.">
  <div class="theory-page"><p class="eyebrow">Theory visualisations</p><h1>Likelihood geometry</h1><p class="summary">Follow a likelihood as coefficients are held, refitted, or sent towards a limit model.</p>
@@ -21,7 +23,7 @@ const held=faces(api,faceSample);
  <section id="escapes"><h2>Escape gallery</h2><p>An escaping fit has no finite maximiser in the fitted family. The dashed line is the fitted limit model's likelihood. The messages below come directly from the fitters; the curves illustrate their behaviour without independently proving it. See the <a href="/graph/">family graph</a> for declared limit paths.</p>
  {escapes.map(result=><section data-escape={result.id}><h3><a href={`/distributions/${result.id}/`}>{result.id==='burr'?'Burr → Pareto (scale held at 1)':result.id==='std'?'Student t → normal':result.id==='nbinom'?'Negative binomial → Poisson':'Lomax → exponential'}</a></h3><Viewer initial={result} gallery={true} client:visible/></section>)}
  </section>
- <section id="faces"><h2>Held-parameter faces</h2><p>For the two-parameter normal family, each dashed line is a submodel with one coefficient held. Its marked fit maximises the likelihood along that line. The free fit maximises over both coefficients. For nonconstant samples these fits have closed forms; the plotted contours evaluate the same normal log-density on a grid.</p><Viewer initial={held} mode="faces" client:load/></section>
+ <section id="faces"><h2>Held-parameter faces</h2><h3>Gompertz: holding the rate changes the limit</h3><p>For the same sample, the two-parameter <a href="/distributions/gompertz/">Gompertz</a> free fit is finite, as are the fits holding <math><mi>a</mi><mo>=</mo><mn>0.2</mn></math> or <math><mn>1</mn></math>. Holding <math><mi>a</mi><mo>=</mo><mn>2</mn></math> instead sends <math><mi>b</mi><mo>→</mo><mn>0</mn></math> towards an exponential with rate <math><mn>2</mn></math>; its rate stays held, rather than being refitted. Each curve varies only <math><mi>b</mi></math> on that held face. This conditional limit is declared in the dossier with numerical evidence; the finite grid illustrates it without certifying a maximum or escape.</p><Conditional initial={conditionalHeld} client:load/><h3>Normal: finite held faces</h3><p>For the two-parameter normal family, each dashed line is a submodel with one coefficient held. Its marked fit maximises the likelihood along that line. The free fit maximises over both coefficients. For nonconstant samples these fits have closed forms; the plotted contours evaluate the same normal log-density on a grid.</p><Viewer initial={held} mode="faces" client:load/></section>
  <p>Simulation uses the displayed seed (default 20261101). Static presets are deterministic and listed with each figure. Family definitions, parameter domains and declared limits are linked in the <a href="/distributions/">catalog</a>.</p>
  </div>
 </Page>

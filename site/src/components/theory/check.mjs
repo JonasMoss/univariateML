@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import create from '../../../../bindings/js/index.mjs';
-import {specs,preset,parseSample,profile,profileSvg,faces,facesSvg,faceSample} from './model.mjs';
+import {specs,preset,parseSample,profile,profileSvg,faces,facesSvg,faceSample,conditional,conditionalSvg,niceTicks} from './model.mjs';
 const api=await create(),html=readFileSync(new URL('../../../dist/theory/index.html',import.meta.url),'utf8'),results=[];
 assert.deepEqual(parseSample('1, 2; 3\n4'),[1,2,3,4]);
 for(const bad of ['', '1 2', '1 junk 3','1 Infinity 3'])assert.throws(()=>parseSample(bad));
@@ -32,3 +32,22 @@ assert.equal(fail.points.filter(p=>p.y===null).length,65);assert.match(profileSv
 const broken=profile(api,'gamma',[-1,-2,-3]);assert.ok(broken.free.error);assert.ok(broken.points.every(p=>p.y===null));
 mkdirSync('build/scratch/theory-viz',{recursive:true});writeFileSync('build/scratch/theory-viz/numerical.json',JSON.stringify(results,null,2)+'\n');
 console.log('PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.');
+
+assert.deepEqual(niceTicks(-70,-30),[-70,-60,-50,-40,-30]);
+assert.deepEqual(niceTicks(.1,100,true),[.1,.2,.5,1,2,5,10,20,50,100].filter((v,i)=>i%2===0));
+for(const [lo,hi] of [[-67.9,-36.09],[.003,.019],[-3,8],[0,2]]) {
+ const ticks=niceTicks(lo,hi);assert.ok(ticks.length>=2&&ticks.length<=7);
+ const step=ticks[1]-ticks[0],mantissa=step/10**Math.floor(Math.log10(step));assert.ok([1,2,5,10].some(m=>Math.abs(m-mantissa)<1e-10));
+ assert.ok(ticks.every(t=>t>=lo-1e-12&&t<=hi+1e-12));
+}
+const c=conditional(api);assert.ok(c.free.fit);assert.ok(c.free.fit.estimates.b>0&&c.free.fit.estimates.b<2);assert.ok(c.held[0].fit&&c.held[1].fit);assert.match(c.held[2].error,/mlexp/);
+assert.ok(html.includes(conditionalSvg(c)),'conditional static/live SVG equality');
+const sum=c.sample.reduce((s,x)=>s+x,0),sum2=c.sample.reduce((s,x)=>s+x*x,0);
+assert.ok(sum<2*sum2/2,'held-a dossier criterion');
+for(const h of c.held){
+ assert.equal(h.points[0].y,c.sample.length*Math.log(h.a)-h.a*sum);
+ if(h.fit){assert.ok(h.fit.estimates.b>0&&h.fit.estimates.b<c.xmax);assert.ok(h.fit.logLik<=c.free.fit.logLik+1e-8);assert.ok(h.points.every(p=>p.y<=h.fit.logLik+1e-8));}
+ else {assert.ok(h.points.slice(1).every(p=>p.y<h.points[0].y));}
+}
+assert.ok(html.includes('<math'));assert.ok(!/<script[^>]*(mathjax|katex)/i.test(html));
+console.log('PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.');
