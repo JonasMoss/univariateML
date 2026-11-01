@@ -27,7 +27,7 @@ r:
     mu1: "Optional fixed nonnegative finite positive-count rate; NULL estimates it."
     mu2: "Optional fixed nonnegative finite negative-count rate; NULL estimates it."
     reltol: "Relative tolerance for the scalar profile search."
-    iterlim: "Maximum iterations for each scalar refinement."
+    iterlim: "Maximum iterations for each scalar refinement; also sets the branch-and-bound work limit."
 log_density: "-mu1-mu2 + x*log(mu1/mu2)/2 + log(besseli(Abs(x),2*sqrt(mu1*mu2)))"
 references:
 - Skellam, J. G. (1946). The frequency distribution of the difference between two Poisson variates belonging to
@@ -58,10 +58,9 @@ relations:
     when: mu1 > 0 && mu2 > 0
 fit:
   method: scalar-solve
-  certified: partial
-  note: 'skellam/README.md, Details; skellam/mle.hpp (public fitter and held overloads); skellam/test.cpp: One held
-    positive rate gives a strictly concave bracketed solve; joint scalar profile uses a finite grid without a uniqueness
-    certificate.'
+  certified: 'yes'
+  note: 'skellam/README.md, Details; one held rate has a strictly concave bracketed solve; the joint profile uses
+    branch-and-bound with a tail bound, conditional on computed comparisons and a practical likelihood margin.'
 areas:
 - counts and ecology
 classification: specialist
@@ -80,9 +79,35 @@ The Skellam distribution describes the difference between two independent Poisso
 
 Zero rates are attained members, including the point mass at zero when both vanish. A positive or negative Poisson boundary may therefore be returned directly. Constant nonzero data need not give a point mass. With one positive rate fixed, the log likelihood is strictly concave in the other rate; a bracketed score solve finds its unique maximum, including the zero endpoint. Holding either or both rates fixed is supported; data outside a fixed zero-rate member's support are rejected.
 
-For a joint interior fit, writing $s=\sqrt{\mu_1\mu_2}$ and $\theta=\log(\mu_1/\mu_2)/2$ gives the score equation $\mu_1-\mu_2=\bar x$. The remaining equation is $n^{-1}\sum_i I'_{|x_i|}(2s)/I_{|x_i|}(2s)=\cosh\theta$, with $I'_v(z)=I_{v+1}(z)+vI_v(z)/z$. The fitter searches the resulting scalar profile and compares every nominated maximum with the exact zero-rate face. Faces win log likelihood ties within $10^{-8}n$. Uniqueness is not assumed. The search uses a finite logarithmic grid and local refinement; this is numerical global-search evidence rather than a proof that every maximum is found.
+For a joint interior fit, writing $s=\sqrt{\mu_1\mu_2}$ and $\theta=\log(\mu_1/\mu_2)/2$ gives the score equation $\mu_1-\mu_2=\bar x$. The remaining equation is $n^{-1}\sum_i I'_{|x_i|}(2s)/I_{|x_i|}(2s)=\cosh\theta$, with $I'_v(z)=I_{v+1}(z)+vI_v(z)/z$. The fitter searches the resulting scalar profile and compares the exact zero-rate face. Faces win computed log likelihood ties within $0.5\cdot10^{-8}n$. A logarithmic grid and local refinements nominate candidates; a separate branch-and-bound pass bounds the remaining finite interval. The Poisson-mode bound excludes the far tail, and the positive series bounds the interval adjacent to zero. Uniqueness is not assumed. If comparisons are exact, the returned likelihood is within $10^{-8}n$ of the global maximum. In floating point this is a practical margin, conditional on the computed masses, scores and comparisons, not a directed-rounding guarantee. Nonfinite values, representational stagnation or an exhausted search return iteration failure.
 
 The mean and variance identify both rates. Likelihoods are bounded by one per observation. Both-sided samples exclude zero-rate faces. A convolution mass is at most the maximal mass of either Poisson factor, which vanishes when that rate diverges. Continuity on the closed quadrant therefore gives a finite maximizer for every finite integer sample, also with fixed rates whenever the support permits the sample. Constant data $k$ have the joint MLE $(k,0)$ for $k>0$, $(0,-k)$ for $k<0$, and $(0,0)$ for zero: condition on the opposite Poisson count and use the decreasing maximal Poisson mass as its integer mode increases. For nonnegative data with positive mean, the inward profile derivative per observation at the Poisson face is $\bar x\,n^{-1}\sum_i 1/(x_i+1)-1$; reflect the data for the other face. This is a local boundary diagnostic, not a sufficient global rule; the fitter compares likelihoods.
+
+The following curvature bound does not require concavity or unimodality.
+Put $t=\min(\mu_1,\mu_2)$, $d=|\bar x|$, and $q=t(t+d)$.
+Conditional on a difference $k$, the paired count $J$ has weights
+proportional to $q^j/[j!(j+|k|)!]$. Its successive ratios satisfy
+$(j+1)p_{j+1}/p_j=q/(j+|k|+1)$, which decreases in $j$.
+Consequently the size-biased $J-1$ is stochastically dominated by $J$,
+so $\operatorname{Var}(J)\leq E J$; also
+$E J\leq q/(|k|+1)$. Differentiating the positive series along the
+mean-constrained line and discarding nonpositive terms gives
+\[
+  {d^2\over dt^2}\log p_k(t)\leq {2 E J\over t(t+d)}
+  \leq {2\over |k|+1}.
+\]
+Thus the sum of these bounds supplies a quadratic upper envelope for
+branch-and-bound intervals. The midpoint score is computed from the two
+neighboring mass ratios. For an interval of half-width $h$, the midpoint
+likelihood plus $|\ell'|h+Mh^2/2$ is an upper bound, where $M$ is the sum
+of the per-observation curvature bounds. The search bisects until every
+bound is within $0.5\cdot10^{-8}n$ of the best candidate, reserving the
+same amount for a possible face tie. On $[0,\epsilon]$, the positive
+series bounds the profile by $\ell(\epsilon)+2n\epsilon$. Above the
+finite search interval, a convolution mass is bounded by the maximal
+Poisson mass, at most $1/\sqrt{2\pi\lfloor t\rfloor}$ for $t\ge2$.
+This establishes a bound, not profile unimodality. The computed masses
+and comparisons are not outward rounded.
 
 ## d/p/q/r
 

@@ -138,3 +138,15 @@ test_that("skellam: P3 unfinished optimizer stops", {
   expect_error(mlskellam(x, iterlim=1, reltol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("Skellam joint fit dominates a profile grid and its faces", {
+  for (x in list(c(-4,-2,-1,0,1,2,5,8), c(0,0,1,2,8,20),
+                 c(-20,-8,-2,-1,0,0), c(-1,0,1))) {
+    fit <- mlskellam(x)
+    t <- c(0, exp(seq(-12, 5, length.out = 120)))
+    m <- mean(x)
+    values <- vapply(t, function(z)
+      sum(dskellam(x, z + max(m, 0), z + max(-m, 0), log = TRUE)), 0.0)
+    expect_gte(as.numeric(logLik(fit)) + 1e-8 * length(x), max(values))
+  }
+})
