@@ -70,19 +70,30 @@ summary: Inverse exponential provides a model for positive reciprocal waiting ti
 aliases: []
 key_references:
 - 3
+existence:
+  uniqueness: proved
+  statement: >-
+    Every nonempty finite positive sample has a unique finite scale MLE,
+    including constant samples. Holding scale leaves likelihood evaluation.
+  reason: >-
+    The scale-dependent log likelihood is
+    $n\log\theta-\theta\sum_i x_i^{-1}$.
+    Its second derivative is $-n/\theta^2<0$, and its unique stationary
+    point is $\hat\theta=n/\sum_i x_i^{-1}>0$.
 ---
 
-The inverse exponential distribution models positive heavy-tailed data.
+The inverse exponential distribution models positive heavy-tailed data obtained by taking the reciprocal of an exponential variable. Its positive scale $\theta$ is the rate of that reciprocal variable.
 
 ## Details
 
-The scale equals the exponential rate fitted on `1/x`.
+Reciprocating the observations reduces scale estimation to an exponential rate fit. The Jacobian changes the log likelihood by a term independent of scale, so it preserves the maximizer. The estimate $n/\sum_i x_i^{-1}$ is the harmonic mean of the observations. Constant positive samples also have a unique finite estimate.
 
 A held positive scale evaluates the likelihood without estimation.
 
-### Diagnostic status contract (2026-10-31)
+## R notes
 
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+Supplying `scale` holds it. Reciprocals that cannot be represented finitely produce a numerical failure rather than a boundary estimate.
+
+## Decision history
+
+2026-10-31 (diagnostic status contract): Empty or invalid input carries a non-success status. Delegate failures survive the reciprocal transformation. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the appended TASK-132 cases in `test.cpp` for the validation scope.

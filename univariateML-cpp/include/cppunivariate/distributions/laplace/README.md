@@ -41,8 +41,8 @@ holds: []
 limits:
   - name: scale collapse
     firmness: proved
-    when: Scale tends to zero at the fitted or held location.
-    detect: Every observation equals the fitted or held location.
+    when: 'The scale $b$ tends to zero at the estimated or held location $\mu$.'
+    detect: Scale is free and every observation equals the estimated or held location.
     status: Unbounded
     message: "does not exist"
 examples: |
@@ -74,22 +74,40 @@ aliases:
 - "double exponential"
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a finite MLE exists exactly for nonconstant
+    samples. Its locations are all sample medians, and its scale is unique.
+    The location is unique exactly when the median interval is a singleton.
+    With location held, a unique positive scale MLE exists unless every
+    observation equals that location, when the likelihood is unbounded.
+    With positive scale held, all sample medians maximize the likelihood,
+    including the unique common value for constant samples.
+    Holding both coefficients leaves likelihood evaluation.
+  reason: >-
+    Let $A(\mu)=\sum_i|x_i-\mu|$. This convex function is minimized
+    precisely on the median interval and is constant there.
+    For $A>0$, maximizing $-n\log b-A/b$ gives the unique scale $b=A/n$.
+    The profiled likelihood decreases strictly in $A$, so all and only
+    medians maximize it. If $A=0$, the likelihood grows without bound
+    as $b\to0$.
 ---
 
-The Laplace (double exponential) distribution is a symmetric location-scale model with exponential tails.
+The Laplace (double exponential) distribution models symmetric errors with a sharp central peak and exponential tails. Its location $\mu$ is the centre, and its positive scale $b$ sets the mean absolute deviation from that centre.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives the boundary conditions for free and held coefficients.
 
-The location estimate is a sample median and the scale estimate is the mean absolute deviation from it. For even sample size, every point between the two central order statistics maximises the location likelihood; this fitter returns the upper endpoint of that interval.
+The location estimates are the sample medians. Scale is the mean absolute deviation from any such median, with the same value throughout the median interval. For even sample size, every point between the two central order statistics maximizes the likelihood. The fit selects the upper endpoint of that interval.
 
+Holding location estimates scale from absolute residuals about the supplied value. Collapse occurs only when all those residuals vanish. Holding positive scale permits constant samples and leaves the same median rule for location. Holding both coefficients evaluates the likelihood.
 
-With mu held, sigma is the mean absolute residual about that value. Scale collapses only when every observation equals the held mu. Holding sigma permits constant samples.
+## R notes
 
-### Diagnostic status contract (2026-10-31)
+Supplying `mu` or `sigma` holds that coefficient. Constant data stop when scale is free and the fitted or held location equals their common value.
 
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+## Decision history
+
+2026-10-31 (diagnostic status contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the appended TASK-132 cases in `test.cpp` for the validation scope.
