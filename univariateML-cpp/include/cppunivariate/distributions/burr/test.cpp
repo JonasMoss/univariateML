@@ -183,3 +183,28 @@ TEST_CASE("multistart: rank only converged or total-score-accepted solves") {
   CHECK_FALSE(cppunivariate::consider_bfgs_candidate(best,r));
   CHECK(std::isinf(best.f));
 }
+
+TEST_CASE("burr: constant data off a held scale collapse only with both shapes free") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for (double scale : {0.3,1.0,3.0}) {
+    std::vector<double> x(3,.5*scale);
+    const auto data=mltest::as_span(x);
+    const auto r=cppunivariate::burr_mle_fixed_scale(data,scale);
+    CHECK(r.status==cppunivariate::BurrStatus::Unbounded);
+    CHECK(r.logLik==INFINITY);
+    CHECK(r.iterations==0);
+    CHECK(r.scale==scale);
+    CHECK(cppunivariate::burr_mle_holds(data,nan,nan,scale).status==cppunivariate::BurrStatus::Unbounded);
+    // Holding k removes the off-scale concentrating path; holding c
+    // also leaves an ordinary finite fit (including the all-held case).
+    for (int mask : {1,2,3}) {
+      const auto h=cppunivariate::burr_mle_holds(data,mask&1?2.0:nan,mask&2?3.0:nan,scale);
+      CHECK(h.status==cppunivariate::BurrStatus::Ok);
+      CHECK(std::isfinite(h.logLik));
+    }
+    x.back()=std::nextafter(x.back(),INFINITY);
+    CHECK(cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),scale).status!=cppunivariate::BurrStatus::Unbounded);
+  }
+  std::vector<double> invalid{.5,.5,INFINITY};
+  CHECK(cppunivariate::burr_mle_fixed_scale(mltest::as_span(invalid),1).status==cppunivariate::BurrStatus::InvalidInit);
+}

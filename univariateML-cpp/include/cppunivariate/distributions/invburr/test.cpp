@@ -234,3 +234,28 @@ TEST_CASE("invburr: default multistart retains the seed-3 stationary fit") {
   double g[2];fd.gradient(theta,g);
   CHECK(x.size()*std::hypot(g[0],g[1])<1e-3);
 }
+
+TEST_CASE("invburr: constant data off a held scale collapse only with both shapes free") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for (double scale : {0.3,1.0,3.0}) {
+    std::vector<double> x(3,2.0*scale);
+    const auto data=mltest::as_span(x);
+    const auto r=cppunivariate::invburr_mle_fixed_scale(data,scale);
+    CHECK(r.status==cppunivariate::InvBurrStatus::Unbounded);
+    CHECK(r.logLik==INFINITY);
+    CHECK(r.iterations==0);
+    CHECK(r.scale==scale);
+    CHECK(cppunivariate::invburr_mle_holds(data,nan,nan,scale).status==cppunivariate::InvBurrStatus::Unbounded);
+    // Holding k removes the off-scale concentrating path; holding c
+    // also leaves an ordinary finite fit (including the all-held case).
+    for (int mask : {1,2,3}) {
+      const auto h=cppunivariate::invburr_mle_holds(data,mask&1?2.0:nan,mask&2?3.0:nan,scale);
+      CHECK(h.status==cppunivariate::InvBurrStatus::Ok);
+      CHECK(std::isfinite(h.logLik));
+    }
+    x.back()=std::nextafter(x.back(),INFINITY);
+    CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),scale).status!=cppunivariate::InvBurrStatus::Unbounded);
+  }
+  std::vector<double> invalid{2.0,2.0,INFINITY};
+  CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(invalid),1).status==cppunivariate::InvBurrStatus::InvalidInit);
+}
