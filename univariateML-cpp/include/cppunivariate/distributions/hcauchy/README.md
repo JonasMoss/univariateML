@@ -19,7 +19,7 @@ params:
   domain: (-inf, inf)
   simulate: 0
   kind: threshold
-  advice: mu = 0 is the ordinary half-Cauchy; NULL estimates the translated endpoint.
+  advice: Set mu = 0 for the ordinary half-Cauchy model. Set mu = NULL to estimate the translated endpoint.
 - name: sigma
   symbol: '\sigma'
   role: scale
@@ -36,11 +36,13 @@ log_density: log(2/pi) - log(sigma) - log(1+(x-mu)**2/sigma**2)
 limits:
   - name: unbounded scale collapse
     firmness: proved
-    when: '$\sigma \to 0$ with more than half the observations at the free or held endpoint'
+    when: 'The scale $\sigma$ tends to zero at the estimated or held endpoint $\mu$.'
+    detect: 'Scale is free and more than half the observations equal the endpoint.'
     status: Unbounded
   - name: finite unattained scale-zero supremum
     firmness: proved
-    when: '$\sigma \to 0$ with exactly half the observations at the free or held endpoint'
+    when: 'The scale $\sigma$ tends to zero at the estimated or held endpoint $\mu$.'
+    detect: 'Scale is free and exactly half the observations equal the endpoint.'
     status: ScaleBoundary
 references:
 - extraDistr package, HalfCauchy documentation (density and parameterization).
@@ -84,16 +86,39 @@ summary: Half-Cauchy provides a model for unsigned Cauchy errors with a supplied
 aliases: []
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists exactly when
+    the multiplicity $k$ of the sample minimum satisfies $2k<n$.
+    With endpoint held at $\mu\le\min_i x_i$, the same criterion applies
+    with $k$ counting observations equal to that endpoint.
+    Equality gives a finite unattained scale-zero supremum, and $2k>n$
+    gives unbounded likelihood. With positive scale held, the free endpoint
+    has the unique estimate $\min_i x_i$, even for constant data.
+    Holding both coefficients leaves likelihood evaluation on their support.
+  reason: >-
+    For any positive scale the likelihood increases strictly as the endpoint
+    rises to the sample minimum. At that endpoint, or a held endpoint,
+    the log-scale score is
+    $n-2\sum_i\sigma^2/(\sigma^2+(x_i-\mu)^2)$.
+    If some residual is positive, this score decreases strictly from
+    $n-2k$ to $-n$, giving exactly one root when $2k<n$.
+    The likelihood near zero scale is proportional to $\sigma^{n-2k}$.
+    At equality the score is negative for every positive scale, so the
+    finite supremum is unattained. All-zero residuals give unbounded collapse.
 ---
 
-The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint, translated from zero.
+The half-Cauchy distribution models magnitudes with heavy tails above a lower endpoint $\mu$. Its positive scale $\sigma$ sets the width. The endpoint has positive density and is included in the support.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) derives these boundary conditions, including the relevant held parameters.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) gives the endpoint and collapse arguments.
 
-Let $k$ count the observations at the free or held endpoint ($k$ ties at `min(x)` when `mu` is estimated; at the held `mu` otherwise). The likelihood increases in `mu` up to the sample minimum, so a free endpoint is exactly `mu = min(x)`, including tied minima; a held `mu` above any observation is invalid. Given that endpoint, a positive-scale MLE exists uniquely iff $2k<n$: the log-scale score is $n-\sum_i 2\sigma^2/(\sigma^2+(x_i-\mu)^2)$, strictly decreasing from $n-2k$ to $-n$ whenever some observation exceeds the endpoint. For $2k=n$ it is strictly negative at every positive scale: the finite scale-zero supremum is unattained. For $2k>n$, including constant data, the likelihood is unbounded as scale tends to zero. Even one observation strictly above the endpoint identifies a unique scale estimate.
+For every positive scale, increasing the endpoint towards the sample minimum increases the likelihood. The estimated endpoint is therefore the sample minimum, including tied minima. A held endpoint must not exceed any observation.
 
-Evaluation uses the internal d/p/q/r functions. The endpoint density is positive.
+Let $k$ count observations at the estimated or held endpoint. A finite positive scale exists uniquely when $2k<n$. At $2k=n$, the scale-zero supremum is finite and unattained. For $2k>n$, including data entirely at the endpoint, the likelihood is unbounded. These conditions apply only when scale is free. A held positive scale allows data entirely at the endpoint and still gives a unique free endpoint estimate.
 
-A positive finite held `sigma` is evaluated directly at any `mu` (free or held), including for data entirely at the endpoint; the scale-collapse conditions apply only when scale is estimated.
+## R notes
+
+Supply `mu` explicitly. Setting `mu = 0` gives the ordinary half-Cauchy model, while `mu = NULL` estimates the translated endpoint. Supplying `sigma` holds scale. Evaluation uses the internal density, distribution, quantile and random-generation functions.

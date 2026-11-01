@@ -43,8 +43,8 @@ holds: []
 limits:
   - name: scale collapse
     firmness: proved
-    when: Scale tends to zero at the fitted or held location.
-    detect: Every observation equals the fitted or held location.
+    when: 'The scale $\sigma$ tends to zero at the estimated or held location $\mu$.'
+    detect: Scale is free and every observation equals the estimated or held location.
     status: Unbounded
     message: "unbounded"
 examples: |
@@ -79,22 +79,44 @@ aliases:
 - "maximum extreme value"
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists for every
+    nonconstant finite sample. Constant samples have unbounded likelihood.
+    With location held, a unique positive scale MLE exists unless every
+    observation equals that location. With positive scale held, the location
+    MLE is unique even for constant data. Holding both coefficients leaves
+    likelihood evaluation.
+  reason: >-
+    Profiling location gives
+    $\mu(\sigma)=-\sigma\log(n^{-1}\sum_i e^{-x_i/\sigma})$.
+    The scale equation is $F(\sigma)=\sigma+E_\sigma[x]-\bar x=0$,
+    with weights proportional to $e^{-x_i/\sigma}$.
+    Its derivative is $1+\operatorname{Var}_\sigma(x)/\sigma^2>0$.
+    For nonconstant data, its limit at zero is $\min_i x_i-\bar x<0$,
+    and it tends to infinity with scale. The profile score has sign $-F$,
+    giving a unique maximum. With location held, put $t=1/\sigma$
+    and $d_i=x_i-\mu$. The inverse-scale score
+    $n/t-\sum_i d_i(1-e^{-td_i})$ has derivative
+    $-n/t^2-\sum_i d_i^2e^{-td_i}<0$ and crosses zero whenever
+    some $d_i\ne0$. All-zero residuals instead give unbounded collapse.
 ---
 
-The Gumbel distribution models maxima and extreme measurements.
+The Gumbel distribution models maxima in the exponential-tail extreme-value domain. Its location $\mu$ shifts the distribution, and its positive scale $\sigma$ sets the spread. This is the convention for maxima.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives the boundary conditions for free and held coefficients.
 
-This is the Gumbel distribution for maxima; `sigma` is positive.
+With both coefficients free, location profiles out exactly and scale solves a strictly monotone scalar equation. Nonconstant samples have a unique finite maximum. Constant data allow scale to shrink to zero at their common value, giving unbounded likelihood.
 
+Holding location leaves a strictly concave likelihood in inverse scale. It has a unique maximum unless all observations equal the supplied location. Holding positive scale gives an explicit unique location estimate and permits constant samples. Holding both coefficients evaluates the likelihood.
 
-Holding mu gives a unique inverse-scale maximum unless every observation equals that mu. Holding sigma gives an exact location profile and permits constant samples.
+## R notes
 
-### Diagnostic status contract (2026-10-31)
+Supplying `mu` or `sigma` holds that coefficient. The free joint fit uses Newton iteration in log scale. Failure to converge stops the fit.
 
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+## Decision history
+
+2026-10-31 (diagnostic status contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the appended TASK-132 cases in `test.cpp` for the validation scope.
