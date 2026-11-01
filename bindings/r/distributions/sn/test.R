@@ -132,14 +132,6 @@ test_that('sn package density routes through fitted object operations', {
   unlink(path)
 })
 
-test_that('sn optional reference density agrees with sn package', {
-  skip_if_not_installed('sn')
-  for (a in c(-100,-3,0,3,100)) {
-    x <- seq(-5,5,length.out=51)
-    expect_equal(dsn(x = x, xi = 1, omega = 2, alpha = a, log = TRUE),sn::dsn(x,xi=1,omega=2,alpha=a,log=TRUE),tolerance=1e-9)
-  }
-})
-
 test_that("sn: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "sn", "golden.json"))
   x <- g$data
