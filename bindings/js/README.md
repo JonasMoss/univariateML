@@ -60,6 +60,26 @@ C++ test constants; native and likelihood tolerances remain unchanged.
 score comparison against the frozen wasm outputs (requires existing mpmath).
 This is numerical stationarity evidence, not a proof of global optimality.
 
+## Covariance and standard errors
+
+```js
+const data = new Float64Array([0.5, 0.8, 1.1, 1.6, 2.2, 3.0]);
+const fit = api.gamma.fit(data);
+const robust = api.gamma.vcov(data, fit); // default: sandwich
+const model = api.gamma.vcov(data, fit, 'observed');
+const standardErrors = Object.fromEntries(
+  robust.names.map((name, i) => [name, Math.sqrt(robust.matrix[i][i])])
+);
+console.log(standardErrors, model.condition, robust.warnings);
+```
+
+No additional division by sample size is needed. Near singular members (such
+as sn near alpha = 0 with free location, or bhatt near a = 0), weak
+identification at small sample sizes and heavy tails can make standard errors
+unreliable even without a warning. See the companion site's `/inference/`
+catalogue and `/articles/inference/` theory article for conditional scope and
+the limits of the Monte Carlo evidence.
+
 Covariance uses `api.gamma.vcov(data, fit, type = 'sandwich')`; `observed`
 is also supported. The family-level method follows the existing family API
 and takes observations explicitly instead of retaining a hidden data copy in
