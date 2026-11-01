@@ -39,12 +39,14 @@ references:
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 limits:
 - kind: nonexistence
+  firmness: proved
   name: unbounded likelihood
   when: '$\mu$ equals the common observation and $\lambda$ tends to infinity'
   detect: 'both coefficients are free and all observations are equal'
   status: Unbounded
   message: constant data
 - name: unbounded likelihood
+  firmness: proved
   fixed: [mean]
   when: 'the free shape $\lambda$ tends to infinity with mean $\mu$ held'
   detect: 'every observation equals the held $\mu$ and $\lambda$ is free'
@@ -99,6 +101,8 @@ existence:
 The inverse Gaussian (Wald) distribution models positive quantities, including first-passage times of Brownian motion with positive drift.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The coefficient $\mu$ is the positive mean and $\lambda$ is a positive shape coefficient. Increasing $\lambda$ at fixed $\mu$ concentrates the distribution about its mean. The shape is not a dispersion coefficient.
 

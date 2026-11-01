@@ -40,6 +40,7 @@ references:
 holds: []
 limits:
   - name: scale collapse
+    firmness: proved
     when: '$s$ tends to zero at the fitted or held location $\mu$'
     detect: '$s$ is free and every observation equals the fitted or held location $\mu$'
     status: InvalidInput
@@ -99,6 +100,8 @@ existence:
 The logistic distribution models symmetric errors with heavier tails than the normal distribution. The location $\mu$ is its centre and median, and the positive scale $s$ controls its spread.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
 For nonconstant data the joint fit has a unique maximum. The likelihood is strictly concave in location divided by scale and inverse scale, although it need not be concave in location and scale themselves. The fit uses Newton iteration with a line search.
 

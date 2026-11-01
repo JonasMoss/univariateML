@@ -46,19 +46,23 @@ r:
 log_density: loggamma((df+1)/2) - loggamma(df/2) - log(df*pi)/2 - log(sigma) - (df+1)*log(1+((x-mu)/sigma)**2/df)/2
 limits:
   - name: scale collapse
+    firmness: proved
     when: Scale tends to zero at the fitted or held location.
     detect: Excessive mass at that location or vanishing residual spread.
     status: Unbounded
     message: "scale"
   - name: scale collapse
+    firmness: proved
     fixed: [df]
     when: "tie multiplicity k > df*(n-k)"
     status: Unbounded
   - name: tie equality boundary
+    firmness: argued
     fixed: [df]
     when: "tie multiplicity k = df*(n-k)"
     status: ScaleBoundary
   - model: norm
+    firmness: proved
     when: '$df \to \infty$'
     status: NormalBoundary
 holds: []
@@ -97,6 +101,8 @@ key_references:
 The location-scale Student t includes heavy-tailed distributions with infinite variance.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The 2026-10-31 fit-speed revision computes the fixed-df likelihood normalizer
 once per conditional nuisance search. It retains the scale reconstruction

@@ -48,35 +48,42 @@ r:
 log_density: "x*log(prob)+(size-x)*log(1-prob)-loggamma(x+1)-loggamma(size-x+1)-log(Sum(exp(k*log(prob)+(size-k)*log(1-prob)-loggamma(k+1)-loggamma(size-k+1)), (k, Max(0, floor(a)+1), Min(size, floor(b)))))"
 limits:
 - name: point mass at lowest support point
+  firmness: proved
   when: $prob \to 0$
   detect: all observations at a strictly positive lowest support point
   status: LowerPointMass
 - name: point mass at highest support point
+  firmness: proved
   when: $prob \to 1$
   detect: all observations at finite highest support point below size
   status: UpperPointMass
 - name: point mass at highest support point
+  firmness: proved
   when: $size \to \infty$ at a fixed interior probability
   detect: constant data at a finite upper support edge with nonsingleton support
   fixed:
   - prob
   status: UpperPointMass
 - model: tpois
+  firmness: proved
   when: '$size \to \infty$, $prob \to 0$ with $size \cdot prob$ finite'
   detect: free size and probability; numerical profile approaches the truncated-Poisson face without exceeding it by 1e-9 times the sample size
   fixed: []
   status: TpoisLimit
 - model: tpois
+  firmness: proved
   when: '$size \to \infty$, $prob \to 0$ with $size \cdot prob$ finite'
   detect: same numerical comparison, with the lower bound held
   fixed: [a]
   status: TpoisLimit
 - model: tpois
+  firmness: proved
   when: '$size \to \infty$, $prob \to 0$ with $size \cdot prob$ finite'
   detect: same numerical comparison, with the upper bound held
   fixed: [b]
   status: TpoisLimit
 - model: tpois
+  firmness: proved
   when: '$size \to \infty$, $prob \to 0$ with $size \cdot prob$ finite'
   detect: same numerical comparison, with both bounds held
   fixed: [a, b]
@@ -120,6 +127,8 @@ key_references:
 The binomial law conditioned on known bounds `a < x <= b` models truncated counts.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
 
 Bounds must be supplied explicitly to avoid silently ignoring the sampling design.
 Size is also required; `NULL` estimates it by an integer profile. With probability held the search uses explicit tail bounds.

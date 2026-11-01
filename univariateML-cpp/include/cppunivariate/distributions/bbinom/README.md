@@ -52,14 +52,17 @@ r:
 log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + loggamma(x + alpha) + loggamma(size - x + beta) - loggamma(size + alpha + beta) - loggamma(alpha) - loggamma(beta) + loggamma(alpha + beta)"
 limits:
   - model: binom
+    firmness: proved
     when: '$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed'
     detect: no beta-binomial fit beats the binomial with success probability $\bar x / n$ (up to $10^{-8}$ per observation)
     status: BinomialLimit
   - name: two-point law on 0 and n
+    firmness: proved
     when: '$\alpha, \beta \to 0$ with $\alpha/(\alpha + \beta)$ fixed'
     detect: '$n \ge 2$, every observation is 0 or $n$, and both values occur'
     status: TwoPointLimit
   - model: binom
+    firmness: proved
     when: '$\alpha/(\alpha + \beta) \to 0$ or $1$'
     detect: 'all observations are 0, or all equal $n$'
     status: PointMass
@@ -141,6 +144,8 @@ existence:
 The beta-binomial distribution is a binomial distribution whose success probability is itself beta distributed. It models overdispersed counts out of a known number of trials $n$.
 
 ## Details
+
+The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md); numerical face searches do not certify global optimality.
 
 The number of trials $n$ is normally known. The fit with both shapes free does not test for overdispersion; it compares the best interior fit with the binomial likelihood, within $10^{-8}$ per observation. Evidence for the existence results: `dev/research/evaluations/2026-10-31-open-existence-report.md`.
 

@@ -37,12 +37,14 @@ references:
   Wiley, New York.
 limits:
 - kind: nonexistence
+  firmness: proved
   name: unbounded likelihood
   when: '$\mu$ equals the common log observation and $\sigma$ tends to zero'
   detect: 'both coefficients are free and all observations are equal'
   status: Unbounded
   message: unbounded
 - name: unbounded likelihood
+  firmness: proved
   fixed: [meanlog]
   when: 'the free log scale $\sigma$ tends to zero with log mean $\mu$ held'
   detect: 'every $\log x_i$ equals the held $\mu$ and $\sigma$ is free'
@@ -100,6 +102,8 @@ existence:
 The lognormal distribution models positive quantities whose logarithms follow a normal distribution.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The coefficient $\mu$ is the mean of the logarithms and $\sigma$ is their standard deviation. Neither is the mean or standard deviation on the original scale. Fitting takes logarithms and fits a normal distribution, retaining the Jacobian in the reported likelihood. With both coefficients free, the fitted log mean is the sample mean of the logarithms and the fitted log variance uses divisor $n$.
 

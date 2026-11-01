@@ -41,6 +41,7 @@ r:
     scale: Known positive finite coefficient; NULL estimates it.
 limits:
   - name: unbounded likelihood
+    firmness: argued
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: Unbounded
@@ -116,6 +117,8 @@ key_references:
 This family has a known support endpoint and delegates fitting to llogis.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 For at least two finite, nonconstant observations strictly above min, the held-threshold MLE is unique and attained. On log(x-min), the logistic likelihood is strictly concave in inverse scale and standardized location. Constant samples have unbounded likelihood as log-logistic shape grows.
 

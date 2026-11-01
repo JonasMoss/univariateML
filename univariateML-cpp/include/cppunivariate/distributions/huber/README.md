@@ -41,15 +41,18 @@ r:
 log_density: -log(sigma)-log(sqrt(2*pi)*erf(epsilon/sqrt(2))+2*exp(-epsilon**2/2)/epsilon)-Piecewise(((x-mu)**2/(2*sigma**2), Abs((x-mu)/sigma)<=epsilon), (epsilon*Abs((x-mu)/sigma)-epsilon**2/2, True))
 limits:
   - name: scale collapse
+    firmness: proved
     when: Scale tends to zero at the fitted or held location.
     detect: Every observation equals the fitted or held location.
     status: UnboundedLikelihood
     message: "unbounded"
   - model: norm
+    firmness: proved
     when: '$\epsilon \to \infty$ with epsilon free'
     fixed: []
     status: NormalLimit
   - model: laplace
+    firmness: proved
     when: '$\epsilon \to 0$ with epsilon and sigma free, $b=\sigma/\epsilon$ fixed'
     fixed: []
     status: LaplaceLimit
@@ -86,6 +89,8 @@ key_references:
 The Huber density has a Gaussian core and exponential tails.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
 The tuning constant `epsilon` is required. Supply a held value (for example 1.345), or set
 `epsilon = NULL` to estimate it. The free shape uses a log-scale grid and

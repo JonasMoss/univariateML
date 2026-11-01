@@ -24,6 +24,7 @@ r:
 log_density: "log(rho) + loggamma(x) + loggamma(rho+1) - loggamma(x+rho+1)"
 limits:
   - name: point mass at one
+    firmness: proved
     when: '$rho \to +\infty$'
     detect: all observations equal one
     status: PointMass

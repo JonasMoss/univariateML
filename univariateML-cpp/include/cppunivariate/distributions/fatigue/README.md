@@ -38,8 +38,8 @@ r:
     iterlim: Maximum number of iterations.
 log_density: log(x-mu+beta) - 3*log(x-mu)/2 - log(beta)/2 - log(2*alpha) - log(2*pi)/2 - ((x-mu)/beta + beta/(x-mu)-2)/(2*alpha**2)
 limits:
-  - {name: point mass, kind: nonexistence, fixed: [mu], status: Unbounded, when: '$\alpha \to 0$ with $\beta$ equal to the common value of $x - \mu$', detect: 'all shifted observations $x - \mu$ are equal and $\alpha$ and $\beta$ are free'}
-  - {name: point mass, kind: nonexistence, fixed: [beta, mu], status: Unbounded, when: '$\alpha \to 0$', detect: 'every shifted observation $x - \mu$ equals the held $\beta$'}
+  - {firmness: proved, name: point mass, kind: nonexistence, fixed: [mu], status: Unbounded, when: '$\alpha \to 0$ with $\beta$ equal to the common value of $x - \mu$', detect: 'all shifted observations $x - \mu$ are equal and $\alpha$ and $\beta$ are free'}
+  - {firmness: proved, name: point mass, kind: nonexistence, fixed: [beta, mu], status: Unbounded, when: '$\alpha \to 0$', detect: 'every shifted observation $x - \mu$ equals the held $\beta$'}
 references:
 - From, S. G. and Li, L. (2006). Estimation of the parameters of the Birnbaum–Saunders distribution. Communications
   in Statistics, Theory and Methods, 35(12), 2157–2169. doi:10.1080/03610920600853563.
@@ -96,6 +96,8 @@ existence:
 The Birnbaum--Saunders distribution models lifetimes arising from cumulative fatigue damage.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The threshold $\mu$ is supplied, and $\alpha$ and $\beta$ are fitted to the shifted observations $x - \mu$, which must all be positive. Either $\alpha$ or $\beta$ can also be held. The coefficient $\beta$ is a scale.
 

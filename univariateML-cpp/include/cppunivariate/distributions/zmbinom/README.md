@@ -59,10 +59,12 @@ r:
 log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size-x)*log(1-prob)-log(1-(1-prob)**size)), True))
 limits:
 - model: zmpois
+  firmness: proved
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: the maximised face likelihood wins within 1e-8 times the sample size
   status: PoissonLimit
 - model: zmpois
+  firmness: proved
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: the matching held-mixture Poisson face wins the integer profile
   status: PoissonLimit
@@ -109,6 +111,8 @@ key_references:
 Zero-modified binomial distributions model counts with a separate zero component.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
 
 With no positives the fitter returns `p0 = 1`, keeps a supplied size and picks conventional base parameters with a warning. With no zeros it returns `p0 = 0`. Positive observations all equal to one give an attained two-point law; the fitter warns that `mlbinom(x, size = 1)` fits it exactly.
 Holding size fixed removes the infinite-size escape. The point mass at one remains attained for every fixed size.

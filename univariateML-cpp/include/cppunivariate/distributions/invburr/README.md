@@ -42,25 +42,26 @@ r:
 log_density: log(shape1) + log(shape2) - log(x) + shape2*log(scale/x) - (shape1+1)*log(1+(scale/x)**shape2)
 limits:
   - name: unbounded likelihood
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: Unbounded
     message: unbounded
   - model: invweibull
-    firmness: argued
+    firmness: proved
     fixed: [shape2]
     when: Fixed-power Lomax profile is maximised on its exponential face
     status: InvWeibullBoundary
   - model: 'invweibull'
-    firmness: argued
+    firmness: proved
     when: '$\mathrm{shape1} \to \infty$ with $\mathrm{scale}\,\mathrm{shape1}^{1/\mathrm{shape2}}$ fixed'
     status: 'InvWeibullBoundary'
   - model: 'power'
-    firmness: argued
+    firmness: proved
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     status: 'PowerBoundary'
   - model: 'power'
-    firmness: argued
+    firmness: proved
     fixed: [scale]
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     detect: 'all(x <= scale)'
@@ -128,6 +129,8 @@ key_references:
 The inverse Burr distribution is the distribution of the reciprocal of a Burr type XII variable.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 With scale held at $s$ and nonconstant observations all at most $s$, the inverse Burr supremum is the endpoint-$s$ power log-likelihood minus $Z\log 2$, where $Z$ counts observations equal to $s$; if every observation equals $s$, the likelihood is unbounded.
 

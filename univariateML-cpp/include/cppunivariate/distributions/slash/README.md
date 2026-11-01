@@ -31,6 +31,7 @@ r:
 log_density: -log(sigma)-log(2*pi)/2+log(1-exp(-((x-mu)/sigma)**2/2))-2*log(Abs((x-mu)/sigma))
 limits:
   - name: point mass collapse
+    firmness: proved
     when: '$\sigma \to 0$ at a half-mass observation'
     detect: finite collapse likelihood within 1e-8*n of the best profile value
     status: CollapseLimit
@@ -77,6 +78,8 @@ key_references:
 The slash distribution is a normal variate divided by an independent uniform variate, with location and scale.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
 The 2026-10-31 fit-speed revision skips only the suffix of scale bisections
 after the midpoint rounds to an endpoint. That suffix cannot change the

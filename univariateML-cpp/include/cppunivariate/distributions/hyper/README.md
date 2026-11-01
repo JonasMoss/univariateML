@@ -42,6 +42,7 @@ r:
 log_density: "loggamma(m + 1) - loggamma(x + 1) - loggamma(m - x + 1) + loggamma(N - m + 1) - loggamma(k - x + 1) - loggamma(N - m - k + x + 1) - loggamma(N + 1) + loggamma(k + 1) + loggamma(N - k + 1)"
 limits:
   - name: degenerate
+    firmness: proved
     when: '$N \to \infty$, a point mass at zero'
     detect: all observations are 0 while m and k are positive
     status: AllZero
@@ -88,6 +89,8 @@ observations are independent repetitions from the same population, which
 is restored between repetitions.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
 
 The number of draws `k` is a design quantity; explicit `NULL` estimates it
 with `N` supplied. When `m` is also held, the fitter uses the symmetry

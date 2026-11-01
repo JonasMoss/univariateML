@@ -47,17 +47,21 @@ r:
 log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2) - log((erf((b-mean)/(sd*sqrt(2))) - erf((a-mean)/(sd*sqrt(2))))/2)
 limits:
   - model: exp
+    firmness: proved
     when: '$\mathrm{sd} \to \infty$ and $\mathrm{mean}/\mathrm{sd}^2 \to -1/(\bar x - a)$, with $a$ finite and $b = \infty$: the law of $a + Y$, $Y$ exponential'
     detect: 'is.infinite(b) && mean((x - mean(x))^2) >= (mean(x) - a)^2'
     status: ExponentialBoundary
   - model: exp
+    firmness: proved
     when: '$\mathrm{sd} \to \infty$ and $\mathrm{mean}/\mathrm{sd}^2 \to 1/(b - \bar x)$, with $a = -\infty$ and $b$ finite: the law of $b - Y$, $Y$ exponential'
     detect: 'is.infinite(a) && mean((x - mean(x))^2) >= (b - mean(x))^2'
     status: ReflectedExponentialBoundary
   - name: truncated exponential
+    firmness: proved
     when: '$\mathrm{sd} \to \infty$ and $\mathrm{mean}/\mathrm{sd}^2 \to r$, with $a$ and $b$ finite: the law on $(a, b)$ with density proportional to $e^{r x}$, uniform when $r = 0$'
     status: TruncatedExponentialBoundary
   - name: uniform
+    firmness: proved
     fixed: [mean]
     when: '$\mathrm{sd} \to \infty$, with $a$ and $b$ finite: the uniform law on $(a, b)$'
     detect: 'mean((x - mean)^2) >= ((b - mean)^3 - (a - mean)^3) / (3 * (b - a))'
@@ -105,6 +109,8 @@ key_references:
 The truncated normal distribution is a normal distribution restricted to an interval `[a, b]` with finite bounds closed; it models measurements that are only recorded, or only possible, inside that interval. `mean` and `sd` are the parameters of the parent normal distribution, not the mean and standard deviation of the truncated one.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) derives the stated limits and held-parameter conditions.
 
 Both bounds must be supplied. A value holds the bound, `NULL` estimates
 it as the corresponding sample extreme, and `-Inf` or `Inf` leaves that side

@@ -37,7 +37,7 @@ r:
 log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + x*log(prob) + (size - x)*log(1 - prob)"
 limits:
   - model: pois
-    firmness: numerical
+    firmness: proved
     when: The trial count tends to infinity and the probability tends to zero with $np=\bar x>0$ fixed
     detect: Both $n$ and $p$ are free and $0<\bar x\le m^{-1}\sum_i(x_i-\bar x)^2$, where $m$ is sample size
     status: Underdispersed

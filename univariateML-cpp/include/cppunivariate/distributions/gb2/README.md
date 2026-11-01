@@ -41,16 +41,17 @@ r:
 log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log(x/scale)-(shape3+shape1)*log(1+(x/scale)**shape2)
 limits:
   - name: unbounded likelihood
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: All observations are equal and the held coefficients still permit concentration
     status: InvalidData
     message: unbounded
-  - {model: trgamma, when: 'shape1 tends to infinity with rescaled scale', status: TrGammaBoundary}
-  - {model: invtrgamma, when: 'shape3 tends to infinity with rescaled scale', status: InvTrGammaBoundary}
-  - {model: lnorm, when: 'both beta shapes tend to infinity and shape2 tends to zero', status: LognormalBoundary}
-  - {model: pareto, when: 'shape2 tends to infinity and shape1 tends to zero', status: ParetoBoundary}
-  - {model: power, when: 'shape2 tends to infinity and shape3 tends to zero', status: PowerBoundary}
-  - {name: double Pareto, when: 'shape2 tends to infinity and both beta shapes tend to zero', status: DoubleParetoBoundary}
+  - {firmness: proved, model: trgamma, when: 'shape1 tends to infinity with shape2 and shape3 fixed and scale divided by shape1^(1/shape2) fixed', status: TrGammaBoundary}
+  - {firmness: proved, model: invtrgamma, when: 'shape3 tends to infinity with shape1 and shape2 fixed and scale times shape3^(1/shape2) fixed', status: InvTrGammaBoundary}
+  - {firmness: proved, model: lnorm, when: 'shape1 = shape3 = K tends to infinity, shape2 = sqrt(2*trigamma(K))/sigma, and scale = exp(mu), with sigma > 0 and mu fixed', status: LognormalBoundary}
+  - {firmness: proved, model: pareto, when: 'shape2 tends to infinity with shape1*shape2 positive and fixed, and shape3 and scale fixed', status: ParetoBoundary}
+  - {firmness: proved, model: power, when: 'shape2 tends to infinity with shape3*shape2 positive and fixed, and shape1 and scale fixed', status: PowerBoundary}
+  - {firmness: proved, name: double Pareto, when: 'shape2 tends to infinity with shape1*shape2 and shape3*shape2 positive and fixed, and scale fixed', status: DoubleParetoBoundary}
 holds: []
 examples: |
   set.seed(1)
@@ -105,6 +106,8 @@ areas:
 The transformed beta distribution models positive observations with two power tails.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-28-gb2.md) describes the limiting paths and the scope of the boundary comparisons.
 
 For samples larger than 1000, the 2026-10-31 fit-speed revision forms the Burr,
 inverse-Burr and beta-prime member seeds from 1000 deterministically selected

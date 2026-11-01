@@ -31,15 +31,18 @@ r:
 log_density: "log((lowergamma(shape, rate*(x+1)) - lowergamma(shape, rate*x))/gamma(shape))"
 limits:
   - name: point mass
+    firmness: proved
     when: '$\mathrm{shape}\to\infty$ with the latent distribution concentrating inside one cell'
     detect: both parameters free and all observations equal
     status: PointMass
   - model: binom
+    firmness: proved
     name: shifted Bernoulli
     when: 'the latent distribution concentrates around the shared boundary of two adjacent cells'
     detect: both parameters free and max(x) - min(x) = 1
     status: TwoPointLimit
   - name: point mass at zero
+    firmness: proved
     when: '$\mathrm{rate}\to\infty$ with shape held, or $\mathrm{shape}\to0$ with rate held'
     detect: all observations zero and one parameter free
     status: PointMass
@@ -82,6 +85,8 @@ key_references:
 The discretized gamma distribution is the integer part of a continuous gamma variable. Each observation records the latent variable in an interval from the observed integer to the next integer.
 
 ## Details
+
+The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md); numerical face searches do not certify global optimality.
 
 2026-10-30 (TASK-125): the shared gamma upper-tail helper switches to its asymptotic expansion before the backend tail becomes subnormal. The existing high-precision truth rows test the affected rate/shape cases; the expansion is not a uniform error guarantee.
 

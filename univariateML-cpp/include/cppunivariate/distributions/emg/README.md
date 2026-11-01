@@ -38,10 +38,12 @@ r:
 log_density: log(lambda/2) + lambda*(mu-x) + lambda**2*sigma**2/2 + log(erfc((mu+lambda*sigma**2-x)/(sqrt(2)*sigma)))
 limits:
   - model: norm
+    firmness: argued
     when: '$\lambda\to\infty$'
     detect: Conditional normal likelihood wins within 1e-8*n.
     status: NormalLimit
   - name: translated exponential
+    firmness: argued
     when: '$\sigma\to0$'
     detect: Conditional translated-exponential likelihood wins within 1e-8*n.
     status: TranslatedExponentialLimit
@@ -90,6 +92,8 @@ key_references:
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) describes the limiting paths and the scope of the boundary comparisons.
 
 For a fully free fit, fix the dimensionless shape $k=\lambda\sigma$ and optimize the
 location and inverse scale jointly. The fixed-shape objective is strictly

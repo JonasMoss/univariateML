@@ -29,6 +29,7 @@ r:
 log_density: "-s*log(x) - log(zeta(s))"
 limits:
   - name: point mass at one
+    firmness: proved
     when: '$s \to +\infty$'
     detect: all observations equal one
     status: PointMass

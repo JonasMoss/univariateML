@@ -40,12 +40,13 @@ r:
     xi: "Optional held xi; NULL estimates it where the hold subset is supported."
 log_density: log(sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)) - log(sd) + log(2/(xi+1/xi)) - log(2*pi)/2 - Piecewise(((sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))**2/xi**2, (sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))>0), ((sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))**2*xi**2, True))/2
 limits:
-  - {name: scale collapse, when: "free scale with constant data at the free or held mean", status: Unbounded, message: "Scale collapse"}
+  - {firmness: proved, name: scale collapse, when: "free scale with constant data at the free or held mean", status: Unbounded, message: "Scale collapse"}
   - model: hnorm
-    firmness: argued
+    firmness: proved
     when: '$\xi \to \infty$'
     status: 'RightHalfNormalBoundary'
   - name: 'reflected translated half-normal'
+    firmness: proved
     when: '$\xi \to 0$'
     status: 'LeftHalfNormalBoundary'
 references:
@@ -93,6 +94,8 @@ key_references:
 The Fernandez--Steel skew-normal distribution introduces skewness by giving the two sides of a normal density different scales.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) describes the limiting paths and the scope of the boundary comparisons.
 
 This is the two-piece normal family, rather than the Azzalini skew-normal family. The coefficients `mean` and `sd` are its mean and standard deviation; `xi = 1` gives the normal distribution. The translated half-normal boundary has its mode at the sample minimum or maximum.
 

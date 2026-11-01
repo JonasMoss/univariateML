@@ -35,9 +35,11 @@ r:
 log_density: log(2/pi) - log(sigma) - log(1+(x-mu)**2/sigma**2)
 limits:
   - name: unbounded scale collapse
+    firmness: proved
     when: '$\sigma \to 0$ with more than half the observations at the free or held endpoint'
     status: Unbounded
   - name: finite unattained scale-zero supremum
+    firmness: proved
     when: '$\sigma \to 0$ with exactly half the observations at the free or held endpoint'
     status: ScaleBoundary
 references:
@@ -87,6 +89,8 @@ key_references:
 The half-Cauchy models nonnegative magnitudes with heavy tails and an endpoint, translated from zero.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) derives these boundary conditions, including the relevant held parameters.
 
 Let $k$ count the observations at the free or held endpoint ($k$ ties at `min(x)` when `mu` is estimated; at the held `mu` otherwise). The likelihood increases in `mu` up to the sample minimum, so a free endpoint is exactly `mu = min(x)`, including tied minima; a held `mu` above any observation is invalid. Given that endpoint, a positive-scale MLE exists uniquely iff $2k<n$: the log-scale score is $n-\sum_i 2\sigma^2/(\sigma^2+(x_i-\mu)^2)$, strictly decreasing from $n-2k$ to $-n$ whenever some observation exceeds the endpoint. For $2k=n$ it is strictly negative at every positive scale: the finite scale-zero supremum is unattained. For $2k>n$, including constant data, the likelihood is unbounded as scale tends to zero. Even one observation strictly above the endpoint identifies a unique scale estimate.
 

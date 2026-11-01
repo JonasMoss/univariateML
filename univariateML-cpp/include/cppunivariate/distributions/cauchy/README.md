@@ -40,6 +40,7 @@ references:
 holds: []
 limits:
   - name: scale collapse
+    firmness: proved
     when: Scale tends to zero at the fitted or held location.
     detect: Excessive mass at that location or vanishing residual spread.
     status: NoMLE
@@ -81,6 +82,8 @@ key_references:
 The Cauchy distribution is a symmetric location-scale distribution with heavy tails.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
 No maximum likelihood estimator exists when a value has at least half the sample mass, except for two distinct values with equal multiplicities. In that exception the maximum is attained and nonunique; the fitter returns the midpoint and half the distance as location and scale. Other such samples report `NoMLE`.
 

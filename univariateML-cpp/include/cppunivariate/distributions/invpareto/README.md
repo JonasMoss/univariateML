@@ -32,6 +32,7 @@ r:
 log_density: log(shape) + log(scale) - 2*log(x) - (shape+1)*log(1+scale/x)
 limits:
   - model: invexp
+    firmness: proved
     when: '$\alpha$ tends to infinity while $\alpha\theta$ tends to a positive inverse exponential scale'
     detect: 'both coefficients are free and the numerical profile search on the reciprocals finds no improvement over the best inverse exponential larger than $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit
@@ -107,6 +108,8 @@ existence:
 The inverse Pareto distribution models positive heavy-tailed data as the reciprocal of a Lomax variable.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The coefficient $\theta$ is a scale for the observations, and $\alpha$ controls their shape. Taking reciprocals gives a Lomax distribution with rate $\theta$ and shape $\alpha$. The fit uses this transformation and includes its Jacobian in the likelihood.
 

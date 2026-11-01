@@ -59,7 +59,7 @@ for article,expected in [('limits',expected_limits),('holds',expected_holds),('r
     assert pages[DIST/f'articles/{article}/index.html'].records==expected, f'{article} catalogue differs from dossiers'
 # Boundary grades and non-reachable external laws are visible, not only embedded metadata.
 lomax_html=(DIST/'distributions/lomax/index.html').read_text()
-assert 'firmness argued' in lomax_html and 'numerical detection' in lomax_html
+assert 'firmness proved' in lomax_html and 'numerical detection' in lomax_html
 assert 'Lévy' in (DIST/'distributions/invgauss/index.html').read_text()
 assert 'Firmness' in (DIST/'articles/limits/index.html').read_text()
 # The Markdown transformer otherwise intentionally converts unresolved paths to text.

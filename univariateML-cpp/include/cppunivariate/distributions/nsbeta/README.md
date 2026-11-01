@@ -52,6 +52,7 @@ r:
     shape2: Known positive finite coefficient; NULL estimates it.
 limits:
   - name: unbounded likelihood
+    firmness: argued
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: Degenerate
@@ -178,6 +179,8 @@ key_references:
 This family has a known support endpoint and delegates fitting to beta.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 For at least two finite, nonconstant observations strictly between the held bounds, the MLE is unique and attained: the transformed beta log likelihood is strictly concave in its two shapes. Constant transformed data have unbounded likelihood as both shapes grow.
 

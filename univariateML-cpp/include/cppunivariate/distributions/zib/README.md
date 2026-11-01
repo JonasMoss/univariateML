@@ -63,10 +63,12 @@ r:
 log_density: Piecewise((log(pi+(1-pi)*(1-prob)**size), Eq(x,0)), (log(1-pi)+loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size-x)*log(1-prob), True))
 limits:
 - model: zip
+  firmness: proved
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: the maximised face likelihood wins within 1e-8 times the sample size
   status: ZipLimit
 - model: zip
+  firmness: proved
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: the matching held-mixture Poisson face wins the integer profile
   status: ZipLimit
@@ -112,6 +114,8 @@ key_references:
 Zero-inflated binomial distributions model counts with a separate zero component.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
 
 Holding size fixed removes the infinite-size escape. The binomial face remains attained; all-zero data return `prob = pi = 0`.
 Fixed `size = 0` is the attained point mass at zero and requires all-zero data.

@@ -38,19 +38,23 @@ r:
 log_density: log(shape2) + shape1*shape2*log(scale/x) - (scale/x)**shape2 - log(x) - loggamma(shape1)
 limits:
   - name: fixed-endpoint Pareto face
+    firmness: argued
     fixed: [scale]
     when: shape1 tends to zero and shape2 tends to infinity at fixed product
     status: ParetoBoundary
     message: fixed-endpoint Pareto face
   - name: unbounded likelihood
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: InvalidData
     message: unbounded
   - model: lnorm
+    firmness: proved
     when: '$\mathrm{shape1} \to \infty$ with $\mathrm{shape2}\sqrt{\mathrm{shape1}}$ and $\log \mathrm{scale} - \log(\mathrm{shape1})/\mathrm{shape2}$ fixed'
     status: LognormalBoundary
   - model: pareto
+    firmness: proved
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     status: ParetoBoundary
 references:
@@ -108,6 +112,8 @@ reciprocal of a transformed gamma variable; it models heavy-tailed
 positive losses.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The fit is the transformed gamma fit of `1/x` with scale `1/scale`; the
 log likelihoods differ by `-2 * sum(log(x))`. The inverse gamma

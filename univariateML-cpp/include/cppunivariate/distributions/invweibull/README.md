@@ -45,6 +45,7 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 limits:
 - name: unbounded likelihood
+  firmness: proved
   fixed: [scale]
   when: Every observation equals the held scale.
   status: Unbounded
@@ -102,6 +103,8 @@ key_references:
 The inverse Weibull distribution is the distribution of the reciprocal of a Weibull variable, used for heavy-tailed positive data.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The optional `shape0` start was documented but ignored in univariateML 1.x.
 

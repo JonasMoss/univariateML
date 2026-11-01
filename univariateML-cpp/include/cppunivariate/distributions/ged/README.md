@@ -58,11 +58,13 @@ r:
 log_density: -log(sd) - Abs(x-mean)**nu/(2*(sd*sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu)))**nu) + log(nu) - 3*loggamma(1/nu)/2 + loggamma(3/nu)/2 - log(2)
 limits:
   - name: scale collapse
+    firmness: proved
     when: Scale tends to zero at the fitted or held location.
     detect: Every observation equals the fitted or held location.
     status: InvalidStart
     message: "unbounded"
   - model: unif
+    firmness: proved
     when: '$\nu \to \infty$'
     detect: Uniform log-likelihood exceeds all finite candidates.
     status: UniformBoundary
@@ -113,6 +115,8 @@ key_references:
 The generalized error (exponential power) distribution is a symmetric location-scale family whose shape controls tail thickness.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 
 Fitting restricts the shape to $\nu \ge 1$, the log-concave GED range,
 including the attained Laplace member at $\nu=1$. Without this restriction

@@ -39,6 +39,7 @@ references:
 holds: []
 limits:
 - name: point-mass collapse
+  firmness: proved
   when: Both shapes grow as $\alpha=tc$ and $\beta=t(1-c)$ with $t\to\infty$ and $0<c<1$
   detect: All observations equal the same value $c$ and both shapes are free
   status: Degenerate
@@ -107,6 +108,8 @@ existence:
 The beta distribution models proportions and other continuous quantities strictly between zero and one.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
 
 The shapes $\alpha$ and $\beta$ control behavior near zero and one,
 respectively. Values below one allow density to increase towards the

@@ -52,27 +52,34 @@ r:
 log_density: log(shape2)-log((x-min))-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log((x-min)/scale)-(shape3+shape1)*log(1+((x-min)/scale)**shape2)
 limits:
 - name: unbounded likelihood
+  firmness: proved
   when: A free concentration can collapse on constant observations
   detect: Constant samples; the held coefficients determine whether concentration remains free
   status: InvalidData
   message: unbounded
-- when: shape1 tends to infinity with rescaled scale
+- when: shape1 tends to infinity with shape2 and shape3 fixed and scale divided by shape1^(1/shape2) fixed
+  firmness: proved
   status: TrGammaBoundary
   name: shifted trgamma; subtract min before fitting
-- when: shape3 tends to infinity with rescaled scale
+- when: shape3 tends to infinity with shape1 and shape2 fixed and scale times shape3^(1/shape2) fixed
+  firmness: proved
   status: InvTrGammaBoundary
   name: shifted invtrgamma; subtract min before fitting
-- when: both beta shapes tend to infinity and shape2 tends to zero
+- when: shape1 = shape3 = K tends to infinity, shape2 = sqrt(2*trigamma(K))/sigma, and scale = exp(mu), with sigma > 0 and mu fixed
+  firmness: proved
   status: LognormalBoundary
   name: shifted lnorm; subtract min before fitting
-- when: shape2 tends to infinity and shape1 tends to zero
+- when: shape2 tends to infinity with shape1*shape2 positive and fixed, and shape3 and scale fixed
+  firmness: proved
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
-- when: shape2 tends to infinity and shape3 tends to zero
+- when: shape2 tends to infinity with shape3*shape2 positive and fixed, and shape1 and scale fixed
+  firmness: proved
   status: PowerBoundary
   name: shifted power; subtract min before fitting
 - name: shifted double Pareto; subtract min before fitting
-  when: shape2 tends to infinity and both beta shapes tend to zero
+  firmness: proved
+  when: shape2 tends to infinity with shape1*shape2 and shape3*shape2 positive and fixed, and scale fixed
   status: DoubleParetoBoundary
   message: GB2 selects the double Pareto limit
 holds:
@@ -222,6 +229,8 @@ key_references:
 This family has a known support endpoint and delegates fitting to gb2.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-28-gb2.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The 2026-10-31 GB2 member-seed subsampling for samples larger than 1000
 also applies through this delegate when all four GB2 coefficients are free.

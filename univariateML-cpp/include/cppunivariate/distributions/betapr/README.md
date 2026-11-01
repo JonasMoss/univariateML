@@ -41,9 +41,9 @@ r:
     iterlim: Maximum number of iterations.
 log_density: (shape1-1)*log(x/scale) - log(scale) - (shape1+shape2)*log(1+x/scale) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 limits:
-  - {name: positive log-variance, when: constant observations with both shapes free cause unbounded likelihood, status: InvalidStart}
-  - {model: gamma, fixed: [shape1], when: shape2 and scale tend to infinity with scale/shape2 fixed and shape1 held, status: GammaBoundary}
-  - {model: invgamma, fixed: [shape2], when: shape1 tends to infinity and scale tends to zero with scale*shape1 fixed and shape2 held, status: InvGammaBoundary}
+  - {firmness: proved, name: positive log-variance, when: constant observations with both shapes free cause unbounded likelihood, status: InvalidStart}
+  - {firmness: argued, model: gamma, fixed: [shape1], when: shape2 and scale tend to infinity with scale/shape2 fixed and shape1 held, status: GammaBoundary}
+  - {firmness: argued, model: invgamma, fixed: [shape2], when: shape1 tends to infinity and scale tends to zero with scale*shape1 fixed and shape2 held, status: InvGammaBoundary}
   - {model: gamma, firmness: argued, when: 'shape2 tends to infinity with scale/shape2 fixed', status: GammaBoundary}
   - {model: invgamma, firmness: argued, when: 'shape1 tends to infinity with scale*shape1 fixed', status: InvGammaBoundary}
 references:
@@ -92,6 +92,8 @@ key_references:
 The beta prime distribution models positive ratios.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) describes the limiting paths and the scope of the boundary comparisons.
 
 2026-10-30 (TASK-125): with identical observations and exactly one held shape, profiling the scale makes the likelihood monotone in the free shape. The gamma or inverse-gamma face is the supremum: the sign follows from `psi(a+b)-psi(b) > log((a+b)/b)`. This avoids cancellation in the finite grid comparison.
 

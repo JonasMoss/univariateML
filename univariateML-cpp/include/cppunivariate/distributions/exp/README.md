@@ -43,6 +43,7 @@ key_references:
 - 1
 limits:
 - name: unbounded likelihood
+  firmness: proved
   when: The rate grows without bound, $\lambda \to \infty$
   detect: All observations are zero and the rate is free
   status: Unbounded
@@ -102,6 +103,8 @@ existence:
 The exponential distribution models nonnegative waiting times with a constant hazard rate.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The rate $\lambda$ controls how quickly events occur. Larger rates describe
 shorter waiting times. The free-rate estimate is the inverse sample mean.

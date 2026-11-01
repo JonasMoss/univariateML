@@ -40,12 +40,14 @@ references:
   Wiley, New York.
 limits:
 - kind: nonexistence
+  firmness: proved
   name: unbounded likelihood
   when: '$\lambda$ equals the common observation and $k$ tends to infinity'
   detect: 'both coefficients are free and all observations are equal'
   status: Unbounded
   message: unbounded
 - name: unbounded likelihood
+  firmness: proved
   fixed: [scale]
   when: '$k$ tends to infinity with scale $\lambda$ held at the common observation value'
   detect: '$k$ is free and every observation equals the held scale $\lambda$'
@@ -116,6 +118,8 @@ existence:
 The Weibull distribution models lifetimes and reliability data. Its scale $\lambda$ sets the time unit. Its shape $k$ gives a decreasing hazard when $k<1$, a constant hazard when $k=1$, and an increasing hazard when $k>1$.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The joint fit transforms the observations to $-\log x$ and fits a Gumbel distribution. This reduces the problem to a unique scalar root after profiling location. Constant data instead allow the shape to grow without bound while scale remains at their common value, so no finite MLE exists.
 

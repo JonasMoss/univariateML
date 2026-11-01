@@ -30,10 +30,12 @@ r:
 log_density: "log(2*shape/pi)/2 - loggamma(x+1) + shape/mean + (x-1/2)*log(shape/(2+shape/mean**2))/2 + log(besselk(x-1/2, sqrt(shape*(2+shape/mean**2))))"
 limits:
   - model: pois
+    firmness: proved
     when: '$\mathrm{shape} \to \infty$ at finite mean'
     detect: Poisson maximised likelihood wins, including ties within 1e-8 times sample size
     status: PoissonLimit
   - model: pois
+    firmness: proved
     when: 'mean tends to zero with positive shape held'
     detect: all observations are zero, mean is free, and positive shape is held
     fixed: [shape]
@@ -85,6 +87,8 @@ key_references:
 The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse Gaussian mean. It models overdispersed nonnegative counts.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) derives the stated limits and held-parameter conditions.
 
 Either `mean` or `shape`, or both, can be held fixed. With both free the fitted mean is exactly the sample mean. The fitter searches all bracketed peaks on a broad log-parameter grid and compares the Poisson likelihood; it does not assume a unique peak. A search reaching its range boundary without a winning Poisson face reports failure.
 

@@ -47,15 +47,18 @@ r:
 log_density: log(2) + loggamma((nu+1)/2) - loggamma(nu/2) - log(nu*pi)/2 - log(sigma) - (nu+1)*log(1+(x-mu)**2/(nu*sigma**2))/2
 limits:
   - model: hnorm
+    firmness: proved
     name: half-normal with the same endpoint; use mlhnorm(x, mu = 0) after a held
       translation, or mlhnorm(x, mu = NULL) with a free one
     when: '$\nu \to \infty$'
     status: NormalLimit
   - name: unbounded scale collapse
+    firmness: proved
     when: '$\sigma \to 0$, $\nu(n-k)<k$, where $k$ counts observations at the
       free or held endpoint'
     status: Unbounded
   - name: finite unattained scale-zero supremum
+    firmness: proved
     fixed: [nu]
     when: '$\sigma \to 0$, $\nu(n-k)=k$'
     status: ScaleBoundary
@@ -110,6 +113,8 @@ key_references:
 The half-t models nonnegative Student t magnitudes with an endpoint, translated from zero.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) derives these boundary conditions, including the relevant held parameters.
 
 The finite family is identifiable: its tail exponent determines `nu`, and its density at the endpoint then determines `sigma`. Any coefficient may be held fixed. With free scale and held `nu`, the log-scale score $\sum_i(\nu+1)w_i^2/(\nu+w_i^2)-n$, $w_i=(x_i-\mu)/\sigma$, is strictly decreasing. A unique root exists iff $\nu(n-k)>k$, where $k$ counts observations at the free or held endpoint. Equality gives a finite unattained scale-zero supremum; a strict reverse inequality gives unbounded likelihood. With both `nu` and `sigma` free and `mu` held, any tie at that held value permits a small positive `nu` and scale collapse with unbounded likelihood; this is a measure-zero event for continuous data away from an exact coincidence. Holding scale removes collapse regardless of `mu`, so ties are allowed in that subset; with a free `mu`, free `nu` still uses the declared `nu >= 1` fitting domain. All held coefficients must be finite, `mu` of any sign, `nu` and `sigma` positive. With `nu` and `sigma` both held, the likelihood is simply evaluated, including on data entirely at the endpoint.
 

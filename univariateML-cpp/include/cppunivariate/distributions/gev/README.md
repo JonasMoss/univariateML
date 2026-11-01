@@ -53,8 +53,8 @@ r:
     iterlim: Maximum iterations per scalar solve.
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
-- {name: scale collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum', detect: '$\mu$ is held at the sample minimum and at least half of the observations are tied there (with $\xi > 0$ held, already when $\xi k \ge n - k$ for $k$ ties)'}
-- {name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'at least half of the observations equal the sample minimum and, at exactly half, no interior fit beats this limit'}
+- {firmness: numerical, name: scale collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum', detect: '$\mu$ is held at the sample minimum and at least half of the observations are tied there (with $\xi > 0$ held, already when $\xi k \ge n - k$ for $k$ ties)'}
+- {firmness: numerical, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'at least half of the observations equal the sample minimum and, at exactly half, no interior fit beats this limit'}
 examples: |
   set.seed(1)
   x <- rml(200, mlgev())
@@ -107,6 +107,8 @@ existence:
 The generalized extreme value distribution models maxima. A positive shape $\xi$ gives a heavy right tail, a negative one a finite upper end point, and $\xi = 0$ is the Gumbel distribution.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) describes the limiting paths and the scope of the boundary comparisons.
 
 Fits restrict the shape to $-1 \le \xi \le 1$, because outside that range the likelihood can be made unbounded: at the upper end of the support for $\xi < -1$, and at a tied sample minimum for large $\xi$. At $\xi = -1$ the upper end point belongs to the support, so the boundary fit, the reversed exponential distribution, is a proper member of the family. Fits with $-1 \le \xi < -1/2$ are non-regular: the usual asymptotic theory for the MLE does not apply there.
 

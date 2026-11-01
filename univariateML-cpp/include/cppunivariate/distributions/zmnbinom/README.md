@@ -48,6 +48,7 @@ r:
 log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(loggamma(size+x)-loggamma(size)-loggamma(x+1)+size*log(prob)+x*log(1-prob)-log(1-prob**size)), True))
 limits:
 - model: zmpois
+  firmness: proved
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: size and prob are free and the maximised face likelihood wins within 1e-8 times the sample size
   status: PoissonLimit
@@ -91,6 +92,8 @@ key_references:
 Zero-modified negative binomial distributions model counts with a separate zero component.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) derives the stated limits and held-parameter conditions.
 
 Actuar defines `size = 0` as the logarithmic series with `theta = 1 - prob`; this attained member is returned. Fixed size may be zero.
 With no positives the fitter returns `p0 = 1`, keeps a supplied size and picks conventional base parameters with a warning. With no zeros it returns `p0 = 0`. Positive observations all equal to one give an attained two-point law; the fitter warns that `mlbinom(x, size = 1)` fits it exactly.

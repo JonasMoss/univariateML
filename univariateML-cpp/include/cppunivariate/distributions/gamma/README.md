@@ -50,6 +50,7 @@ key_references:
 - 2
 limits:
 - name: unbounded likelihood
+  firmness: proved
   when: The free shape tends to infinity while scale tends to zero at fixed mean
   detect: all observations are equal and both shape and scale are free
   status: Degenerate
@@ -103,6 +104,8 @@ existence:
 The gamma distribution models positive measurements and waiting times.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 2026-10-30 (TASK-125): when the held-shape total overflows, the scale is computed from the mean accumulated as `sum(x/n)`, and the likelihood penalty as `sum(x/scale)`. The existing held-shape overflow test checks the result; it is not an error bound for arbitrary sample sizes.
 

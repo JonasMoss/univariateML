@@ -38,19 +38,23 @@ r:
 log_density: log(shape2) + shape1*shape2*log(x/scale) - (x/scale)**shape2 - log(x) - loggamma(shape1)
 limits:
   - name: fixed-endpoint power face
+    firmness: argued
     fixed: [scale]
     when: shape1 tends to zero and shape2 tends to infinity at fixed product
     status: PowerBoundary
     message: fixed-endpoint power face
   - name: unbounded likelihood
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: InvalidData
     message: unbounded
   - model: lnorm
+    firmness: proved
     when: '$\mathrm{shape1} \to \infty$ with $\mathrm{shape2}\sqrt{\mathrm{shape1}}$ and $\log \mathrm{scale} + \log(\mathrm{shape1})/\mathrm{shape2}$ fixed'
     status: LognormalBoundary
   - model: power
+    firmness: proved
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     status: PowerBoundary
 references:
@@ -104,6 +108,8 @@ distribution of `scale * G^(1/shape2)` for a unit-scale gamma variable `G`
 with shape `shape1`; it models positive sizes, losses and lifetimes.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The gamma (`shape2 = 1`, scale the reciprocal gamma rate) and Weibull
 (`shape1 = 1`) distributions are members, not limits. Holding `shape2`

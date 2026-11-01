@@ -43,6 +43,7 @@ references:
   Methods in Radio Wave Propagation. Pergamon Press. doi:10.1016/B978-0-08-009306-2.50005-4.
 limits:
 - name: unbounded likelihood
+  firmness: proved
   fixed: [scale]
   when: Every squared observation equals held scale.
   status: Degenerate
@@ -84,6 +85,8 @@ key_references:
 The Nakagami distribution models positive amplitudes, including radio-fading measurements. Its square follows a gamma distribution.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The shape $m$ may be any positive value; $m < 1/2$ is not excluded. The scale is the mean of the squared variable, rather than the scale of that gamma variable.
 

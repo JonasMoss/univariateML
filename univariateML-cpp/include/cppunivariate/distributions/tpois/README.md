@@ -41,11 +41,13 @@ r:
 log_density: "x*log(lambda)-loggamma(x+1)-log(Sum(exp(k*log(lambda)-loggamma(k+1)), (k, Max(0, floor(a)+1), floor(b))))"
 limits:
 - name: point mass at lowest support point
+  firmness: proved
   when: '$\lambda \to 0$'
   detect: all observations at a strictly positive lowest support point
   status: LowerPointMass
   fixed: [b]
 - name: point mass at highest support point
+  firmness: proved
   when: '$\lambda \to \infty$'
   detect: all observations at finite highest support point
   status: UpperPointMass
@@ -88,6 +90,8 @@ key_references:
 The Poisson law conditioned on known bounds `a < x <= b` models truncated counts.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) derives the stated limits and held-parameter conditions.
 
 Bounds must be supplied explicitly to avoid silently ignoring the sampling design.
 Untruncated bounds `a = -Inf, b = Inf` recover the ordinary Poisson interior fit.

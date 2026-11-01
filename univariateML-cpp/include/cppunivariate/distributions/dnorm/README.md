@@ -31,15 +31,18 @@ r:
 log_density: "log((erf((x + 1 - mean)/(sqrt(2)*sd)) - erf((x - mean)/(sqrt(2)*sd)))/2)"
 limits:
   - name: point mass
+    firmness: proved
     when: '$sd\to0$ with the latent distribution concentrating inside one cell'
     detect: both parameters free and all observations equal
     status: PointMass
   - model: binom
+    firmness: proved
     name: shifted Bernoulli
     when: 'the latent distribution concentrates around the shared boundary of two adjacent cells'
     detect: both parameters free and max(x) - min(x) = 1
     status: TwoPointLimit
   - name: zero-scale limit
+    firmness: proved
     when: '$\mathrm{sd}\to0$'
     detect: mean held and every observed cell closure contains mean
     fixed: [mean]
@@ -81,6 +84,8 @@ key_references:
 The discretized normal distribution is the integer part of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer.
 
 ## Details
+
+The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md); numerical face searches do not certify global optimality.
 
 2026-10-30 (TASK-125): log interval probabilities use the shared normal log-tail helper, whose Mills expansion starts before the backend tail becomes subnormal. The first omitted term bounds the alternating expansion in the selected large-tail regime; truth rows check the resulting interval differences.
 
