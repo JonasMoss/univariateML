@@ -43,7 +43,7 @@ r:
   density: dcmb
   sampler: rcmb
   control:
-    size: "Required number of trials; NULL estimates it when nu is held. Fixed sizes are limited to 1e7 for allocation safety."
+    size: "Required number of trials; NULL estimates it where supported. Fixed sizes are limited to 1e7 for allocation safety."
     prob: "Optional fixed canonical probability between zero and one inclusive; NULL estimates it."
     nu: "Optional fixed finite real dispersion; NULL estimates it. Both prob and nu may be held fixed."
     reltol: "Relative tolerance on the dispersion moment residual."
@@ -73,14 +73,6 @@ references:
 - 'Kadane, J. B. (2016). Sums of Possibly Associated Bernoulli Variables: The Conway-Maxwell-Binomial Distribution.
   Bayesian Analysis. doi:10.1214/15-BA955.'
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
-holds:
-- held: []
-  status: not-implemented
-  reason: "Free size with both coordinates free requires a global truncated two-coordinate optimizer and comparison with finite-size dispersion-limit faces; no reliable stopping rule is established."
-- held:
-  - prob
-  status: not-implemented
-  reason: "Free size with prob held requires a global truncated dispersion optimizer and held-probability limit-face comparison, including finite-size dispersion limits; no reliable stopping rule is established."
 fit_args:
   size: 10
 examples: |
@@ -121,7 +113,9 @@ The size is a required design quantity. The canonical probability is generally n
 
 For size at least two, the joint MLE is attained when the mean sufficient statistic lies inside the convex polygon of the statistic points or is an endpoint vertex. Other boundary samples stop with a named limiting law. With fixed dispersion, endpoint point masses are attained. With fixed probability, dispersion can escape only toward the central mode(s) or the endpoints; constants elsewhere can have finite fits. With both coordinates fixed there is no optimization or escape. Size zero is the attained point mass at zero: unidentified free prob and nu are represented by 0.5 and one. Endpoint samples with free prob return prob zero or one, with unidentified free nu represented by one. Endpoint probability holds are accepted only for compatible observations. With size one, dispersion is unidentified: an unspecified dispersion is set to one with a warning for interior probabilities and marked fixed, leaving a Bernoulli fit.
 
-With both `prob` and `nu` held, `size = NULL` enumerates feasible integer sizes until a decreasing upper bound excludes the entire remaining tail. For positive dispersion the bound uses a normalizer term at `max(x) + 1`; for negative dispersion it uses the endpoint terms. At zero dispersion the normalizer increases with size, so the smallest feasible size is optimal. This argument does not assume size-profile unimodality. Four million cumulative normalizer terms form a work budget; exhaustion stops rather than returning a capped estimate. Endpoint probabilities and size zero are handled exactly. With `nu` held and `prob` free, the separate search below handles the CMP face and bounds the remaining sizes. The two free-dispersion profiles remain unavailable.
+With both `prob` and `nu` held, `size = NULL` enumerates feasible integer sizes until a decreasing upper bound excludes the entire remaining tail. For positive dispersion the bound uses a normalizer term at `max(x) + 1`; for negative dispersion it uses the endpoint terms. At zero dispersion the normalizer increases with size, so the smallest feasible size is optimal. This argument does not assume size-profile unimodality. Four million cumulative normalizer terms form a work budget; exhaustion stops rather than returning a capped estimate. Endpoint probabilities and size zero are handled exactly. With `nu` held and `prob` free, the separate search below handles the CMP face and bounds the remaining sizes. With free dispersion, constant samples are handled exactly as described below; other samples stop as not implemented.
+
+For a constant sample at `k`, free probability attains likelihood one at size `k`, probability one (or probability zero for `k = 0`). With probability held at an interior value, `k = 0` attains likelihood one at size zero. For `0 < k <= 5000000`, size `2*k` is supported and `nu -> +inf` concentrates its mass at `k`: the supremum is one and no finite member attains it. Held probability one attains the constant sample at size `k`; held probability zero is incompatible with positive observations. Positive constants above 5000000 with an interior held probability remain unimplemented because the central size exceeds the supported size cap.
 
 ### Free-size profile bounds (2026-11-01)
 

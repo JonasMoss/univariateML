@@ -213,3 +213,13 @@ test_that("CMB free size with fixed dispersion compares the whole integer tail",
   expect_error(mlcmb(c(0,10000000),size=NULL,nu=1),"work budget")
   expect_equal(mlcmb(c(3,3),size=NULL,nu=-1)[["size"]],3)
 })
+
+test_that("CMB free dispersion handles constant free-size samples", {
+  f <- mlcmb(rep(3, 4), size = NULL)
+  expect_equal(unname(as.numeric(f)), c(3, 1, 1))
+  expect_equal(attr(f, "logLik"), 0)
+  f <- mlcmb(rep(0, 4), size = NULL, prob = .4)
+  expect_equal(unname(as.numeric(f)), c(0, .4, 1))
+  expect_error(mlcmb(rep(3, 4), size = NULL, prob = .4), "point mass")
+  expect_error(mlcmb(rep(3, 4), size = NULL, prob = 0), "between zero and size")
+})
