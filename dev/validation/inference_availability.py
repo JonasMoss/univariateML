@@ -1,8 +1,9 @@
-"""Canonical procedure availability; conservative projection of TASK-102.1/4/5.
+"""Canonical procedure availability; conservative projection of TASK-102.1/4/5/7/8.
 
 Run directly to regenerate inference-availability.json. No inference is inferred
 from a DQM flag, a historical method name, or a successful optimizer.
 """
+import argparse
 import csv
 import json
 import re
@@ -16,6 +17,89 @@ REPORT = 'dev/research/evaluations/2026-10-31-inference-{}-report.md'
 STATUSES = ['implemented', 'historically recoverable', 'available but missing',
             'unreviewed', 'invalid for the procedure']
 PREFIX = 'univariateML-cpp/include/cppunivariate/distributions/'
+
+
+VCOV_REPORT = 'dev/research/evaluations/2026-11-01-vcov-scores-report.md'
+VCOV_R_REPORT = 'dev/research/evaluations/2026-11-01-vcov-r-report.md'
+VCOV_DATA = 'dev/research/evaluations/2026-11-01-vcov-scores-data/'
+
+
+def covariance_rows(eligibility):
+    """Project dossier scopes; retain numerical evidence without extrapolating it."""
+    report = (ROOT / VCOV_REPORT).read_text()
+    pilot = json.loads((ROOT / (VCOV_DATA + 'summary.json')).read_text())
+    validators = {}
+    for path in sorted((ROOT / VCOV_DATA).glob('validator-*.json')):
+        data = json.loads(path.read_text())
+        # The reference files record family keys in nested result mappings.
+        def contains(value, family):
+            if isinstance(value, dict):
+                return family in value or any(contains(v, family) for v in value.values())
+            if isinstance(value, list):
+                return any(contains(v, family) for v in value)
+            return value == family
+        for family in eligibility:
+            if contains(data, family):
+                validators.setdefault(family, []).append(str(path.relative_to(ROOT)))
+    followups = {}
+    for path in sorted((ROOT / VCOV_DATA / 'simbox').glob('*.json')):
+        data = json.loads(path.read_text())
+        for family, result in data['families'].items():
+            followups.setdefault(family, []).append((str(path.relative_to(ROOT)), data, result))
+    # Retain the report's interpretations verbatim as data, including later
+    # corrections to the first follow-up; never synthesize a coverage claim.
+    followup_text = report.split('## Follow-up on simbox', 1)[1]
+    for family, scopes in eligibility.items():
+        caveats = [' · '.join(part.strip() for part in line.strip('|').split('|')) for line in followup_text.splitlines()
+                   if line.startswith('| ' + family + ' ') or line.startswith('| ' + family + ',')]
+        if family == 'bnbinom':
+            caveats.append(followup_text.split('At n = 500, bnbinom', 1)[1].strip())
+            caveats[-1] = 'At n = 500, bnbinom ' + caveats[-1]
+        evidence = [dict(label='Independent derivative validation', path=VCOV_REPORT+'#independent-derivative-validation'),
+                    dict(label='Pilot Monte Carlo table', path=VCOV_REPORT+'#monte-carlo-sanity-check'),
+                    dict(label='R vcov interface and assumptions', path=VCOV_R_REPORT+'#interface-and-mathematical-scope')]
+        evidence += [dict(label='Derivative results: '+Path(path).stem, path=path)
+                     for path in validators.get(family, [])]
+        result = pilot['families'].get(family)
+        runs = []
+        if result:
+            evidence.append(dict(label='Pilot Monte Carlo data', path=VCOV_DATA+'summary.json'))
+            runs.append(dict(path=VCOV_DATA+'summary.json', sample_size=pilot['sample_size'], result=result))
+        for path, data, result in followups.get(family, []):
+            evidence.append(dict(label='Simbox Monte Carlo data', path=path))
+            runs.append(dict(path=path, sample_size=data['sample_size'], result=result))
+        if family in followups:
+            evidence += [dict(label='Simbox follow-up table', path=VCOV_REPORT+'#follow-up-on-simbox-2026-11-01'),
+                         dict(label='Second simbox follow-up table', path=VCOV_REPORT+'#second-simbox-follow-up-truth-points-away-from-singular-members')]
+        runs = [dict(path=r['path'], sample_size=r['sample_size'],
+                     **{k: r['result'].get(k) for k in ('truth', 'held', 'free', 'status', 'replications', 'successes')},
+                     failure_count=len(r['result'].get('failures', []))) for r in runs]
+        for scope in scopes:
+            available = scope['available']
+            reason = scope.get('reason', '')
+            unreviewed = any(word in reason.lower() for word in ('not yet', 'open', 'not been completed'))
+            yield dict(family=family, regime=scope['regime'], kind='covariance',
+                target='Free-coefficient covariance',
+                status='implemented' if available else ('unreviewed' if unreviewed else 'invalid for the procedure'),
+                procedures='Sandwich and observed covariance · C++ and R vcov (default sandwich)',
+                theory='Numerical covariance API; eligibility does not establish rank, estimator asymptotics or coverage',
+                assumptions=scope['condition']+'; '+
+                    'IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. '
+                    'Observed inference requires correct specification and regular estimator asymptotics; '
+                    'robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.',
+                dqm='Conditional classification in the linked source',
+                information='Derivative eligibility only; no automatic finite-information claim',
+                rank='Scope may be singular; runtime singular, indefinite and ill-conditioned solves fail',
+                evidence=scope['classification'], calibration=VCOV_REPORT+'#monte-carlo-sanity-check',
+                evidence_links=[dict(label='Canonical dossier', path=PREFIX+family+'/README.md'), *evidence],
+                implementation=([dict(path='univariateML-cpp/include/cppunivariate/core/inference_families.hpp', function='family_inference'),
+                    dict(path='univariateML-cpp/include/cppunivariate/core/inference.hpp', function='inference_covariance'),
+                    dict(path='bindings/r/R/code_vcov.R', function='vcov.univariateML')] if available else []),
+                checks=['dev/validation/inference-numeric-registry.py', 'bindings/r/tests/testthat/test-vcov.R'] if available else [],
+                gap=(reason+' ' if reason else '')+'Pointwise SE/SD comparisons are not coverage validation. '
+                    'Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. '
+                    'Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.',
+                caveats=caveats, monte_carlo=runs, historical_sources='', historical_validation='')
 
 
 def generate():
@@ -178,12 +262,20 @@ def generate():
                     raise ValueError(f'missing inference classification anchor {scope["classification"]}: {dossier}')
                 seen.add(scope['regime'])
         numeric_eligibility[meta['id']] = scopes
-    return dict(schema_version=1, sources=[INVENTORY, *[REPORT.format(i) for i in [1,4,5]]],
+    rows.extend(covariance_rows(numeric_eligibility))
+    return dict(schema_version=2, sources=[VCOV_REPORT, VCOV_R_REPORT, INVENTORY, *[REPORT.format(i) for i in [1,4,5]]],
                 statuses=STATUSES, rows=rows, numeric_eligibility=numeric_eligibility)
 
 
 if __name__ == '__main__':
     data = generate()
-    OUTPUT.write_text(json.dumps(data, indent=2)+'\n')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--check', action='store_true')
+    args = parser.parse_args()
+    if args.check:
+        if not OUTPUT.is_file() or json.loads(OUTPUT.read_text()) != data:
+            raise SystemExit('stale inference-availability.json; regenerate without --check')
+    else:
+        OUTPUT.write_text(json.dumps(data, indent=2)+'\n')
     from collections import Counter
     print(len(data['rows']), dict(Counter(r['status'] for r in data['rows'])))
