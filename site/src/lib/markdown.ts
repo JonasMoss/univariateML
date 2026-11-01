@@ -33,7 +33,9 @@ export function sourceLinks(source: string) {
           const [file, fragment] = url.split('#');
           const absolute = path.resolve(path.dirname(path.join(root, source)), file);
           const relative = path.relative(root, absolute);
-          if (relative.startsWith('univariateML-cpp/include/cppunivariate/distributions/') && /\/README.md$/.test(relative)) {
+          if (/^univariateML-cpp\/notes\/(existence|limits|holds|restrictions)\.md$/.test(relative)) {
+            node.url = '/articles/' + path.basename(relative, '.md') + '/' + (fragment ? '#'+fragment : '');
+          } else if (relative.startsWith('univariateML-cpp/include/cppunivariate/distributions/') && /\/README.md$/.test(relative)) {
             node.url = '/distributions/' + relative.split('/').at(-2) + '/' + (fragment ? '#'+fragment : '');
           } else if (!relative.startsWith('..') && existsSync(absolute) && statSync(absolute).isFile()) {
             node.url = '/sources/' + relative; // Copy performed by prepare.mjs.

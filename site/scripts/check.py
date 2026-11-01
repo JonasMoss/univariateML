@@ -10,9 +10,14 @@ DATA=json.loads((ROOT/'site/src/data/families.json').read_text())
 class Document(HTMLParser):
     def __init__(self, text):
         super().__init__(); self.links=[]; self.assets=[]; self.ids=set(); self.math=0; self.display_math=0; self.scripts=[]; self.in_script=False; self.inline_js=0
-        self.feed(text)
+        self.records={}; self.feed(text)
     def handle_starttag(self, tag, attrs):
         a=dict(attrs)
+        for k in ('data-limit','data-holds','data-domain'):
+            if k in a:
+                key=(k,a[k])
+                if key in self.records: raise AssertionError(f'duplicate catalogue row {key}')
+                self.records[key]=json.loads(a['data-record'])
         if 'id' in a: self.ids.add(a['id'])
         if tag=='math':
             self.math+=1
@@ -37,6 +42,33 @@ def target(file,url):
     return p
 pages={p:Document(p.read_text()) for p in DIST.rglob('*.html')}
 errors=[]
+# Compare rendered catalogue records directly with each canonical YAML dossier.
+import yaml
+canonical=[]
+for f in DATA:
+    dossier=ROOT/'univariateML-cpp/include/cppunivariate/distributions'/f['id']/'README.md'
+    canonical.append(yaml.safe_load(dossier.read_text().split('---',2)[1]))
+for article in ('existence','limits','holds','restrictions'):
+    p=DIST/f'articles/{article}/index.html'
+    assert p in pages, f'missing article {article}'
+    assert pages[p].math or article in ('holds','restrictions'), f'missing article math {article}'
+expected_limits={("data-limit",f"{f['id']}:{i}"):e for f in canonical for i,e in enumerate(f.get('limits',[]))}
+expected_holds={("data-holds",f['id']):{'params':[p['name'] for p in f['params']],'holds':f.get('holds',[])} for f in canonical}
+expected_domains={("data-domain",f"{f['id']}:{p['name']}"):p['fit_domain'] for f in canonical for p in f['params'] if p.get('fit_domain')}
+for article,expected in [('limits',expected_limits),('holds',expected_holds),('restrictions',expected_domains)]:
+    assert pages[DIST/f'articles/{article}/index.html'].records==expected, f'{article} catalogue differs from dossiers'
+# The Markdown transformer otherwise intentionally converts unresolved paths to text.
+for source in (ROOT/'univariateML-cpp/notes').glob('*.md'):
+    for url in re.findall(r'(?<!!)\[[^]]+\]\(([^)]+)\)',source.read_text()):
+        if url.startswith(('/', '#', 'http:', 'https:')): continue
+        assert (source.parent/url.split('#')[0]).is_file(), f'unresolved article source link {source}: {url}'
+required_article_links={'/articles/existence/#what-can-fail', '/articles/limits/#declared-limits', '/articles/holds/#meaning-and-allowed-subsets', '/articles/restrictions/#scope-and-exemptions'}
+for f in canonical:
+    page=pages[DIST/f"distributions/{f['id']}/index.html"]
+    assert required_article_links <= {url for tag,key,url in page.links if tag=='a' and key=='href'}, f['id']
+index=pages[DIST/'articles/index.html']
+assert all(f'/articles/{name}/' in {url for tag,key,url in index.links if tag=='a' and key=='href'} for name in ('existence','limits','holds','restrictions'))
+print(f'PASS: four articles; dossier catalogues: {len(expected_limits)} limits, {len(expected_holds)} families, {len(expected_domains)} fit domains.')
 # Availability is checked against the canonical generator, never inferred from DQM.
 sys.path.insert(0,str(ROOT/'dev/validation'))
 from inference_availability import generate, OUTPUT, STATUSES

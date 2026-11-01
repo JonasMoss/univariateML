@@ -2,4 +2,4 @@
 import Page from '../../layouts/Page.astro';
 import {articles} from '../../lib/articles';
 ---
-<Page title="Articles"><p class="eyebrow">Shared methods</p><h1>Articles</h1>{articles.length ? <ul>{articles.map(a=><li><a href={`/articles/${a.id}/`}>{a.title}</a></li>)}</ul> : <p>Shared theory and validation articles will appear here as they become available.</p>}</Page>
+<Page title="Articles"><p class="eyebrow">Shared methods</p><h1>Articles</h1>{['Theory','Methods'].map(group=><section><h2>{group}</h2><ul>{articles.filter(a=>a.group===group).map(a=><li><a href={`/articles/${a.id}/`}>{a.title}</a></li>)}</ul></section>)}</Page>
