@@ -39,27 +39,31 @@ log_density: loggamma((nu+1)/2) - loggamma(nu/2) - log((nu-2)*pi)/2 - (nu+1)*log
 limits:
   - name: scale collapse
     firmness: proved
-    when: Scale tends to zero at the fitted or held location.
-    detect: Excessive mass at that location or vanishing residual spread.
+    when: The free scale tends to zero at the fitted or held location.
+    detect: The collapse exponent is negative at an attainable location; equality is treated separately as an uncertified boundary.
     status: Unbounded
     message: "collapse"
   - name: scale collapse
     firmness: proved
     fixed: [nu]
-    when: "tie multiplicity k > nu*(n-k)"
+    when: "The ordinary t scale tends to zero at the free or held location."
+    detect: 'The location has multiplicity $k>\nu(n-k)$ in a sample of size $n$.'
     status: Unbounded
   - name: tie equality boundary
     firmness: argued
     fixed: [nu]
-    when: "tie multiplicity k = nu*(n-k)"
+    when: "The ordinary t scale tends to zero at the free or held location."
+    detect: 'The location has multiplicity $k=\nu(n-k)$; a regular maximum is not certified.'
     status: ScaleBoundary
   - model: 'norm'
     firmness: proved
-    when: '$\nu \to \infty$ with mean and sd fixed'
+    when: 'The shape $\nu$ tends to infinity with mean and sd fixed.'
+    detect: The numerically compared limiting face is selected over the retained finite candidates.
     status: 'NormalBoundary'
   - model: lst
     firmness: proved
-    when: '$\nu \to 2^+$ with mean and ordinary t scale fixed'
+    when: 'The shape $\nu$ decreases to two with mean and ordinary t scale fixed; sd diverges.'
+    detect: The numerically compared limiting face is selected over the retained finite candidates.
     status: 'DfTwoBoundary'
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, Chapter 13.
@@ -102,23 +106,52 @@ summary: Student-t provides a model for finite-variance Student errors parameter
 aliases: []
 key_references:
 - 2
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, a finite MLE is not guaranteed: scale collapse, a normal limit or a location-scale $t_2$ limit can prevent attainment. Global uniqueness is unknown. Holding $\nu>2$ removes both shape limits; a tie of multiplicity $k$ gives unbounded likelihood if $k>\nu(n-k)$, while equality requires separate boundary analysis. With $\mu$ and shape held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$, where $k$ counts observations at that location. Holding $\sigma$ removes scale collapse only when shape is also held; free shape can still collapse as $\nu\downarrow2$. Other held subsets use numerical profiles and reachable boundary comparisons. Holding all coefficients leaves likelihood evaluation.
+  reason: >-
+    For ordinary t scale $a$, collapse contributes $a^{\nu(n-k)-k}$. With location and shape held, the log-scale score $\sum_i(\nu+1)d_i^2/(\nu a^2+d_i^2)-n$ decreases strictly from $\nu(n-k)-k$ to $-n$ when any residual is nonzero. The density limits in Details establish the shape faces, not global profile optimality.
 ---
 
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.
 
 ## Details
 
-For fixed mean and sd, the ordinary t scale is
-$\mathrm{sd}\sqrt{(\nu-2)/\nu}$; the gamma ratio in the t normalizer
+The location $\mu$ is the mean and $\sigma$ is the standard deviation. Smaller $\nu>2$ gives heavier tails. Holding either moment preserves it during estimation of the remaining coefficients.
+
+For fixed mean and standard deviation, the ordinary t scale is
+$\sigma\sqrt{(\nu-2)/\nu}$; the gamma ratio in the t normalizer
 and $(1+z^2/\nu)^{-(\nu+1)/2}\to e^{-z^2/2}$ give the normal
 density as $\nu\to\infty$. For the $t_2$ face, instead fix ordinary
-t scale $a>0$ and let sd $=a\sqrt{\nu/(\nu-2)}$ diverge as
+t scale $a>0$ and let $\sigma=a\sqrt{\nu/(\nu-2)}$ diverge as
 $\nu\downarrow2$; continuity of the ordinary t density gives the
 location-scale $t_2$ density. Scheffé's lemma upgrades each to
 total-variation convergence. Neither limit certifies the fitter's
 numerical boundary comparison.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
+
+With free degrees of freedom, a tie of multiplicity $k>2(n-k)$ makes the likelihood unbounded; equality is reported as an uncertified scale-collapse boundary rather than as unbounded.
+
+This is the fGarch parameterisation: $\mu$ and $\sigma$ are the mean and standard deviation, and $\nu$ is greater than 2. A location-scale t distribution with 2 degrees of freedom has infinite variance and cannot be represented by finite coefficients in this parameterisation.
+
+With $\nu$ held fixed, only location and scale are estimated by monotone
+EM, stopping when the norm of the scale-standardized location and log-scale
+scores is below the requested score tolerance. Failure to reach that tolerance is an error.
+The normal and two-degree-of-freedom escapes do not apply to this subset.
+Fixed $\nu$ must exceed 2.
+For multiplicity $k$ in a sample of size $n$, collapse of ordinary t scale $a$ has likelihood
+proportional to $a^{\nu(n-k)-k}$. A negative exponent is reported as
+unbounded; equality is reported separately as a scale-collapse boundary,
+without claiming unboundedness or certifying a regular MLE (Cauchy equality
+can have nonunique attained fits). Strictly positive exponents for every tie
+permit the regular fixed-parameter fit.
+
+
+Holds use the ordinary t scale $\sigma\sqrt{(\nu-2)/\nu}$. With mean held, only its tie multiplicity drives scale collapse. With standard deviation held, the $\nu\downarrow2$ limit forces ordinary scale to zero, rather than giving a finite-scale t2 law. The conditional normal face remains eligible. When the standard deviation is free, the conditional ordinary t2 face is compared separately. Profile searches are numerical, not global certificates.
+
+## Decision history
 
 The 2026-10-31 fit-speed revision hoists the fixed-df normalizer in the shared
 lst conditional search used by held-scale fits. It preserves scale
@@ -127,29 +160,6 @@ points. See the lst dossier for the shared method; this does not certify the
 existing numerical grid globally. See the [paired evidence and rejected
 trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
-With free degrees of freedom, a tie of multiplicity $k>2(n-k)$ makes the likelihood unbounded; equality is reported as an uncertified scale-collapse boundary rather than as unbounded.
-
-This is the fGarch parameterisation: `mean` and `sd` are the mean and standard deviation, and `nu` is greater than 2. A location-scale t distribution with 2 degrees of freedom has infinite variance and cannot be represented by finite coefficients in this parameterisation.
-
-With `nu` held fixed, only location and scale are estimated by monotone
-EM, stopping when the norm of the scale-standardized location and log-scale
-scores is below `gradtol`. Failure to reach that tolerance is an error.
-The normal and df-2 escape does not apply to this subset.
-Fixed `nu` must exceed 2.
-For multiplicity `k` in a sample of size `n`, scale collapse has likelihood
-proportional to `scale^(nu*(n-k)-k)`. A negative exponent is reported as
-unbounded; equality is reported separately as a scale-collapse boundary,
-without claiming unboundedness or certifying a regular MLE (Cauchy equality
-can have nonunique attained fits). Strictly positive exponents for every tie
-permit the regular fixed-parameter fit.
-
-
-Holds use the ordinary t scale sd*sqrt((nu-2)/nu). With mean held, only its tie multiplicity drives scale collapse. With sd held, the nu-to-2 limit forces ordinary scale to zero, rather than giving a finite-scale t2 law. The conditional normal face remains eligible. When sd is free, the conditional ordinary t2 face is compared separately. Profile searches are numerical, not global certificates.
-
 The shared profile search caches grid-point values, avoiding repeated nested
 location profiles without changing the grid, refinement or convergence checks.
 This reuse does not certify that the grid finds every mode.
-
-## d/p/q/r
-
-Uses the fGarch mean and standard deviation parameterisation.
