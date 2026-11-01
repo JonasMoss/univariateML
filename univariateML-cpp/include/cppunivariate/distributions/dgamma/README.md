@@ -146,3 +146,22 @@ Integrating over each fixed interval in $t$ preserves log concavity, so the
 inner log-rate score has a unique zero for samples containing a positive
 count. The fitter brackets and solves this score with safeguarded Newton
 iteration before the outer shape search.
+
+## TASK-116: outer search evidence
+
+This is **discretized** gamma, not the continuous double-gamma family.
+Write $a$ for shape and $r$ for rate. For a cell $[k,k+1)$,
+differentiating under the integral gives
+$$\partial_a\log p_k(a,r)=\log r-\psi(a)+E[\log Y\mid k\leq Y<k+1],$$
+where $Y$ has gamma shape $a$ and rate $r$. For $k\geq1$ the conditional
+expectation lies between $\log k$ and $\log(k+1)$. The zero-cell lower
+bound needs a separate integrable bound near zero. These inequalities are
+valid with fixed rate and, at an accurately solved interior rate optimum,
+the envelope derivative has the same expression summed over cells.
+
+| Question | Evidence |
+|---|---|
+| Inner log-rate | Strict concavity and uniqueness are proved above. The numerical solver accepts a score below $10^{-11}\min(1,a)$ per observation or a relative log-rate bracket width below $10^{-12}$. |
+| Shape on bounded intervals | The score identity and positive-cell bounds are proved; they do not establish unimodality or a usable certified enclosure for the profiled score when rate is free. |
+| Shape faces | The small-shape uniform bound and large-shape existence argument are proved above. Neither supplies the finite, outward-rounded tail cutoff needed by the current numerical search. |
+| Global certificate | Open: enclose the zero-cell score, the optimal rate and the profile variation, and turn the face limits into finite likelihood bounds with numerical error control. The present grid search is numerical. |
