@@ -50,6 +50,8 @@ enum class BbinomStatus {
   TwoPointLimit,     // alpha, beta -> 0: all observations in {0, size}, both present
   PointMass,         // all observations 0 or all equal size
   Unidentified,      // size = 0, or size = 1 with both shapes free
+  SizeBudget,
+  ProfileTie,
   IterationFailure
 };
 
@@ -272,6 +274,45 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
   BbinomResult out{size, nan, nan, nan, 0, BbinomStatus::InvalidInput};
   const bool fix_a = !std::isnan(alpha_fixed), fix_b = !std::isnan(beta_fixed);
   if (x.size() == 0 || !(tol > 0) || !std::isfinite(tol) || maxit < 1) return out;
+  if (std::isnan(size) && !fix_a && fix_b) {
+    if (!(beta_fixed > 0) || !std::isfinite(beta_fixed)) return out;
+    int mx = 0, mn = std::numeric_limits<int>::max(), positives = 0;
+    for (int v : x) {
+      if (v < 0) return out;
+      mx = std::max(mx, v); mn = std::min(mn, v);
+      if (v > 0) ++positives;
+    }
+    if (mx == 0) { out.status = BbinomStatus::Unidentified; return out; }
+    if (mn == mx) { out.status = BbinomStatus::PointMass; return out; }
+    // At N+1 the alpha score is positive below m/(h H), H=sum 1/(b+j).
+    // The size ratio is <=1 for alpha >= M(b-1)/(N+1-M).
+    // (N+1-M)/H is increasing, so the first such N controls the tail.
+    constexpr int budget = 1000;
+    if (mx > budget) { out.status = BbinomStatus::SizeBudget; return out; }
+    double harmonic = 0;
+    for (int j = 0; j <= mx; ++j) harmonic += 1 / (beta_fixed + j);
+    int end = mx;
+    const double margin = 1 + 256 * std::numeric_limits<double>::epsilon() * (budget + beta_fixed + 1);
+    while (beta_fixed > 1 &&
+           static_cast<double>(positives) * (end + 1.0 - mx) <
+             margin * x.size() * mx * (beta_fixed - 1) * harmonic) {
+      if (end >= budget) { out.status = BbinomStatus::SizeBudget; return out; }
+      ++end;
+      harmonic += 1 / (beta_fixed + end);
+    }
+    BbinomResult best{nan, nan, beta_fixed, -std::numeric_limits<double>::infinity(), 0, BbinomStatus::IterationFailure};
+    double runner = -std::numeric_limits<double>::infinity();
+    for (int n = mx; n <= end; ++n) {
+      const BbinomResult candidate = bbinom_mle(x, n, tol, maxit, nan, beta_fixed);
+      if (candidate.status != BbinomStatus::Ok) return candidate;
+      if (candidate.logLik > best.logLik) { runner = best.logLik; best = candidate; }
+      else runner = std::max(runner, candidate.logLik);
+    }
+    if (runner + 2e-8 * x.size() >= best.logLik) {
+      best.status = BbinomStatus::ProfileTie;
+    }
+    return best;
+  }
   if (std::isnan(size) && fix_a && fix_b) {
     if (!(alpha_fixed>0 && beta_fixed>0) || !std::isfinite(alpha_fixed+beta_fixed)) return out;
     int mx=0; for(int v:x) {if(v<0)return out;mx=std::max(mx,v);}

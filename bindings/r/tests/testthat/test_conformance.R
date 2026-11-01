@@ -82,8 +82,9 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
         # The unbounded urn profiles may stop without a finite certificate.
         unresolved_urn <- (id == 'mlhyper' && (length(held) == 0 || (length(held) == 1 && held %in% c('m','k')))) ||
           (id == 'mlnhyper' && (length(held) == 0 || setequal(held,'r'))) ||
-          (id == 'mlcmb' && setequal(held,'nu'))
-        if (unresolved_urn && grepl('numerical failure|not excluded|work budget', conditionMessage(fit), ignore.case=TRUE)) {
+          (id == 'mlcmb' && setequal(held,'nu')) ||
+          (id == 'mlbbinom' && setequal(held,'beta'))
+        if (unresolved_urn && grepl('numerical failure|not excluded|work budget|numerical tie', conditionMessage(fit), ignore.case=TRUE)) {
           expect_true(TRUE, info=label)
           next
         }
