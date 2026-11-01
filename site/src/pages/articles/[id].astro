@@ -4,9 +4,16 @@ import path from 'node:path';
 import {repoRoot} from '../../lib/paths';
 import {articles} from '../../lib/articles';
 import {markdown} from '../../lib/markdown';
+import families from '../../data/families.json';
 import Page from '../../layouts/Page.astro';
 export function getStaticPaths(){return articles.map(a=>({params:{id:a.id},props:{article:a}}));}
 const {article}=Astro.props;
 const body=readFileSync(path.join(repoRoot,article.source),'utf8');
+const limits=await Promise.all(families.flatMap(f=>(f.limits || []).map(async (e,i)=>({f,e,i,when:await markdown(e.when,article.source),detect:await markdown(e.detect || "Not specified",article.source)}))));
+const restrictions=families.flatMap(f=>f.params.filter(p=>p.fit_domain).map(p=>({f,p})));
 ---
-<Page title={article.title}><article set:html={await markdown(body,article.source)}/></Page>
+<Page title={article.title}><article set:html={await markdown(body,article.source)}/>
+{article.id==='limits' && <section aria-label="Declared limit catalogue"><h2>Catalogue by kind</h2>{['Package model','Other limit or failure boundary'].map(kind=><section><h3>{kind}</h3><div class="table-scroll"><table><thead><tr><th>Family</th><th>Target</th><th>Path</th><th>Held</th><th>Detection and status</th></tr></thead><tbody>{limits.filter(r=>Boolean(r.e.model)===(kind==='Package model')).map(({f,e,i,when,detect})=><tr data-limit={`${f.id}:${i}`} data-record={JSON.stringify(e)}><td><a href={`/distributions/${f.id}/`}>{f.name}</a></td><td>{e.model ? <a href={`/distributions/${e.model}/`}>{e.model}</a> : e.name || 'Failure boundary'}</td><td set:html={when}/><td>{e.fixed?.join(', ') || '—'}</td><td><span set:html={detect}/>{e.status}</td></tr>)}</tbody></table></div></section>)}</section>}
+{article.id==='holds' && <section aria-label="Held subset catalogue"><h2>Family subsets</h2><p>Each exception identifies the exact held set; an empty set means all coefficients are free.</p><div class="table-scroll"><table><thead><tr><th>Family</th><th>Coefficients</th><th>Structural exceptions</th></tr></thead><tbody>{families.map(f=><tr data-holds={f.id} data-record={JSON.stringify({params:f.params.map(p=>p.name),holds:f.holds || []})}><td><a href={`/distributions/${f.id}/`}>{f.name}</a></td><td>{f.params.map(p=>p.name).join(', ')}</td><td>{f.holds?.length ? <ul>{f.holds.map(h=><li>{h.held.join(', ') || 'None'}: {h.status} — {h.reason}</li>)}</ul> : 'None declared'}</td></tr>)}</tbody></table></div></section>}
+{article.id==='restrictions' && <section aria-label="Fit domain catalogue"><h2>Declared fit domains</h2><div class="table-scroll"><table><thead><tr><th>Family</th><th>Coefficient</th><th>Restriction and exemptions</th></tr></thead><tbody>{restrictions.map(({f,p})=><tr data-domain={`${f.id}:${p.name}`} data-record={JSON.stringify(p.fit_domain)}><td><a href={`/distributions/${f.id}/`}>{f.name}</a></td><td>{p.name}</td><td><code>{JSON.stringify(p.fit_domain)}</code></td></tr>)}</tbody></table></div></section>}
+</Page>
