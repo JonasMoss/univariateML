@@ -41,11 +41,33 @@ r:
     iterlim: Maximum number of iterations.
 log_density: (shape1-1)*log(x/scale) - log(scale) - (shape1+shape2)*log(1+x/scale) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 limits:
-  - {firmness: proved, name: positive log-variance, when: constant observations with both shapes free cause unbounded likelihood, status: InvalidStart}
-  - {firmness: proved, model: gamma, fixed: [shape1], when: shape2 and scale tend to infinity with scale/shape2 fixed and shape1 held, status: GammaBoundary}
-  - {firmness: proved, model: invgamma, fixed: [shape2], when: shape1 tends to infinity and scale tends to zero with scale*shape1 fixed and shape2 held, status: InvGammaBoundary}
-  - {model: gamma, firmness: proved, when: 'shape2 tends to infinity with scale/shape2 fixed', status: GammaBoundary}
-  - {model: invgamma, firmness: proved, when: 'shape1 tends to infinity with scale*shape1 fixed', status: InvGammaBoundary}
+  - firmness: proved
+    name: positive log-variance
+    when: Both free shapes $p$ and $q$ tend to infinity with their ratio and scale chosen to concentrate at the common observation.
+    detect: All observations are equal and both shapes are free.
+    status: InvalidStart
+  - firmness: proved
+    model: gamma
+    fixed: [shape1]
+    when: With $p$ held, $q$ and $b$ tend to infinity while $b/q$ tends to a positive gamma scale.
+    detect: A numerical comparison selects the gamma limit within $10^{-8}n$ log-likelihood units. Constant data with only $p$ held select this limit analytically.
+    status: GammaBoundary
+  - firmness: proved
+    model: invgamma
+    fixed: [shape2]
+    when: With $q$ held, $p$ tends to infinity and $b$ tends to zero while $bp$ tends to a positive inverse-gamma scale.
+    detect: A numerical comparison selects the inverse-gamma limit within $10^{-8}n$ log-likelihood units. Constant data with only $q$ held select this limit analytically.
+    status: InvGammaBoundary
+  - model: gamma
+    firmness: proved
+    when: The shape $q$ tends to infinity while $p$ tends to a positive finite shape and $b/q$ tends to a positive gamma scale.
+    detect: A numerical comparison selects the gamma limit within $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
+    status: GammaBoundary
+  - model: invgamma
+    firmness: proved
+    when: The shape $p$ tends to infinity while $q$ tends to a positive finite shape and $bp$ tends to a positive inverse-gamma scale.
+    detect: A numerical comparison selects the inverse-gamma limit within $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
+    status: InvGammaBoundary
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25.
   Wiley, New York.
@@ -87,48 +109,85 @@ aliases:
 - "Pearson type VI"
 key_references:
 - 2
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, constant positive data have unbounded likelihood.
+    For nonconstant data the gamma and inverse-gamma limits can compete with
+    finite fits. A complete joint sample criterion and joint uniqueness are
+    not established. With scale held, a unique finite MLE exists exactly when
+    the sample is nonconstant if both shapes are free. With scale and either
+    shape held, the remaining shape has a unique finite maximum even for
+    constant data. With both shapes held, scale has a unique finite maximum
+    for every positive sample. With just $p$ held, the gamma limit remains;
+    with just $q$ held, the inverse-gamma limit remains. Constant samples
+    select these respective limits, and a general sample criterion and
+    uniqueness for these two conditional problems are not established.
+    Holding all coefficients leaves likelihood evaluation.
+  reason: >-
+    With scale $b$ held, $y_i=x_i/(b+x_i)$ transforms the likelihood to a
+    beta likelihood with a data-only Jacobian. Strict concavity in the beta
+    natural parameters gives uniqueness, and nonconstant interior data give
+    existence. A single beta shape has a strictly decreasing digamma score
+    that changes sign. With both shapes held, the log-scale score strictly
+    decreases from $nq$ to $-np$, so it has one root. Gamma-ratio asymptotics
+    establish the two limiting densities, but do not decide whether either
+    dominates all finite fits.
 ---
 
-The beta prime distribution models positive ratios.
+The beta prime distribution models positive ratios. The scale $b$ sets the
+measurement scale. The shape $p$ controls the lower-tail power and $q$
+controls the polynomial upper tail.
 
 ## Details
 
-For shapes $a,b$ and scale $s$, the density is
-$x^{a-1}s^{-a}(1+x/s)^{-a-b}/B(a,b)$. If $a$ is fixed,
-$b\to\infty$ and $s/b\to\theta>0$, the gamma ratio
-$\Gamma(a+b)/\Gamma(b)\sim b^a$ and
-$(1+x/s)^{-a-b}\to e^{-x/\theta}$ give the gamma density with shape
-$a$ and scale $\theta$. If $b$ is fixed, $a\to\infty$ and
-$as\to\theta>0$, the same ratio and
-$(1+s/x)^{-a-b}\to e^{-\theta/x}$ give the inverse-gamma density
-with shape $b$ and scale $\theta$. These limits hold for each $x>0$;
-Scheffé's lemma gives convergence in total variation. They do not certify
-which face wins the numerical likelihood comparison.
+Fitting requires a nonempty positive finite sample. The
+[family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md)
+describes the limiting paths and boundary comparisons.
+With $p$ fixed, $q\to\infty$ and $b/q\to\theta>0$ give a gamma density
+with shape $p$ and scale $\theta$. With $q$ fixed, $p\to\infty$ and
+$pb\to\theta>0$ give an inverse-gamma density with shape $q$ and scale
+$\theta$. These follow from $\Gamma(p+q)/\Gamma(q)\sim q^p$ in the first
+case and the corresponding ratio with $p$ and $q$ interchanged in the second.
+The pointwise density limits for $x>0$ imply total-variation convergence by
+Scheffé's lemma. They do not certify which limit wins a likelihood comparison.
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) describes the limiting paths and the scope of the boundary comparisons.
+Holding scale excludes these nondegenerate escapes. The transformation
+$y=x/(b+x)$ gives a beta likelihood, with a unique finite maximum for
+nonconstant data. Constant data instead have unbounded likelihood as both
+shapes grow with their ratio chosen to concentrate at the observation.
+At held scale, sending only $q$ to infinity concentrates mass at zero;
+sending only $p$ to infinity sends mass to infinity. Sending both to infinity
+with finite positive ratio gives a point mass, rather than gamma or inverse gamma.
 
-2026-10-30 (TASK-125): with identical observations and exactly one held shape, profiling the scale makes the likelihood monotone in the free shape. The gamma or inverse-gamma face is the supremum: the sign follows from `psi(a+b)-psi(b) > log((a+b)/b)`. This avoids cancellation in the finite grid comparison.
+At held scale, holding one shape leaves a strictly decreasing digamma score.
+Holding both shapes gives a strictly decreasing log-scale score with a unique
+root, even for constant data. Holding just one shape leaves the corresponding
+gamma or inverse-gamma escape. The limit comparison retains that shape and
+optimizes the limit scale. For constant data, profiling scale gives a likelihood
+strictly increasing in the remaining shape, so the supremum is the limit.
+For example, with $p$ held its derivative per observation is
+$\psi(p+q)-\psi(q)-\log((p+q)/q)>0$.
+The inequality follows by integrating $\psi'(t)>1/t$ from $q$ to $q+p$.
+Reciprocation proves the other case.
 
-univariateML 1.x estimated only the shapes, with the scale fixed at 1.
+The joint fit compares numerical candidate maxima against gamma and
+inverse-gamma limits. With one shape held, the remaining shape is profiled
+at each scale and a log-scale grid refines sampled maxima. This search is
+numerical and does not certify global optimality. An unresolved numerical
+edge produces failure rather than an unchecked estimate.
 
-Supply `scale` to hold it at a positive finite value. With scale fixed,
-there are no nondegenerate limit-model escapes.
-For positive finite nonconstant data the fixed-scale MLE exists uniquely,
-by the beta transformation $y=x/(s+x)$. Constant data have an unbounded
-likelihood as both shapes grow with their ratio fixed.
-With scale held, sending only shape2 to infinity collapses the distribution
-at zero; sending only shape1 to infinity sends its mass to infinity.
-Sending both shapes to infinity with a finite positive ratio gives a point
-mass, rather than a gamma or inverse-gamma distribution.
+## R notes
 
-Either shape may also be held. At fixed scale, a single free shape is solved
-by its strictly decreasing digamma score. With both shapes held the log-scale
-score is strictly decreasing and has a unique root, even for constant data.
-With just shape1 held the only nondegenerate escaping face is gamma with
-that shape; with just shape2 held it is inverse-gamma with that shape.
-The comparison retains the held shape and optimizes the face scale.
-The remaining shape is profiled exactly at each scale; a log-scale grid
-refines every sampled maximum. This search is numerical, rather than a
-certificate of global optimality. It stops if an unresolved numerical edge
-wins; comparisons within $10^{-8}n$ select the escaping face. A single held
-shape removes the constant-sample collapse from the two-free-shape fit.
+Supply `scale` to hold it at a positive finite value. Either shape may also
+be held with `shape1` or `shape2`. Limit comparisons within $10^{-8}n$
+log-likelihood units select the escaping model and stop with a recommendation
+to use `mlgamma` or `mlinvgamma`. This numerical preference can reject a finite
+maximum tied with or only slightly better than a limit.
+
+## Decision history
+
+univariateML 1.x estimated only the shapes, with scale fixed at 1.
+On 2026-10-30 (TASK-125), identical observations with exactly one held shape
+were assigned directly to the appropriate gamma or inverse-gamma limit using
+the digamma inequality above. This avoids cancellation in the finite grid comparison.

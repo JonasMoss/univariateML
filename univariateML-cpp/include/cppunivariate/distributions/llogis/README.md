@@ -46,7 +46,8 @@ limits:
 - name: unbounded likelihood
   firmness: proved
   fixed: [scale]
-  when: Every observation equals the held scale.
+  when: The free shape $\beta$ tends to infinity while scale $\alpha$ is held at the common observation.
+  detect: Shape is free and every observation equals the held scale $\alpha$.
   status: Unbounded
   message: unbounded
 examples: |
@@ -95,21 +96,43 @@ aliases:
 - "Fisk"
 key_references:
 - 4
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists for every nonconstant
+    positive sample. Constant data have unbounded likelihood. With shape held,
+    the scale estimate exists uniquely even for constant data. With scale held,
+    a unique finite shape estimate exists unless every observation equals that
+    scale. Holding both leaves likelihood evaluation.
+  reason: >-
+    The transformation $y_i=\log x_i$ gives a logistic likelihood with location
+    $\mu=\log\alpha$ and inverse scale $\beta$. In coordinates
+    $(a,b)=(\beta\mu,\beta)$ it is, up to a data-only term,
+    $n\log b-2\sum_i\log\{2\cosh((by_i-a)/2)\}$.
+    Its Hessian is negative definite. For nonconstant data it tends to
+    $-\infty$ at the boundary after profiling $a$, so its maximum exists
+    uniquely. Holding shape fixes $b$. Holding scale imposes $a=b\log\alpha$;
+    the same strict concavity and boundary argument applies unless all
+    residuals vanish.
 ---
 
-The log-logistic distribution describes positive data whose logarithm has a logistic distribution. It is used for size, lifetime and loss data.
+The log-logistic distribution describes positive data whose logarithm has a logistic distribution. It is used for size, lifetime and loss data. The scale $\alpha$ is the median, and the shape $\beta$ controls spread on the logarithmic axis and the polynomial upper tail.
 
 ## Details
 
+Fitting requires a nonempty sample of strictly positive finite observations.
+The fit transforms observations to logarithms and fits a logistic distribution.
+The Jacobian changes the log-likelihood by a term depending only on the data,
+so it preserves its maximizer. Holding shape fixes the spread on the log axis;
+holding scale fixes its centre. Both conditional scores are monotone and solved
+by bisection. Holding shape permits constant data. With scale held, the
+likelihood is unbounded only when every observation equals that scale.
+
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
-Fitting requires strictly positive observations.
+## Decision history
 
-With scale held, the likelihood is unbounded if every observation equals that scale. Holding shape permits constant data.
-
-### Diagnostic status contract (2026-10-31)
-
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+The diagnostic contract recorded on 2026-10-31 rejects empty or invalid input,
+distinguishes degenerate samples by the free coefficients and preserves delegate
+failures through transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
+and the TASK-132 cases in `test.cpp` for the validation scope.
