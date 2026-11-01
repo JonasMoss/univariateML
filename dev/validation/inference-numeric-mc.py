@@ -48,6 +48,7 @@ identity=h.hexdigest()
 # UMVL_MC_REPS (<= 1000: seeds are 1000 apart per family), UMVL_MC_SLOW_LIMIT
 # (CPU seconds per probe), UMVL_MC_BUDGET (CPU seconds), UMVL_MC_OUT (directory).
 REPS=int(os.environ.get('UMVL_MC_REPS','200'))
+SAMPLE_N=int(os.environ.get('UMVL_MC_N','500'))
 if not 2<=REPS<=1000: raise SystemExit('UMVL_MC_REPS must be in [2, 1000]')
 SLOW_LIMIT=float(os.environ.get('UMVL_MC_SLOW_LIMIT','0.25'))
 BUDGET=float(os.environ.get('UMVL_MC_BUDGET','3200'))
@@ -131,8 +132,8 @@ int main(int argc,char** argv) {{
   const auto fail=[&](const std::string& why,const std::string& detail=std::string{{}}) {{std::cout<<rep<<" "<<why<<" "<<elapsed()<<" "<<std::quoted(detail)<<"\\n";}};
   std::cout<<std::setprecision(17);cppunivariate::distributions::StdRng<> rng(20261101ULL+1000ULL*{index}+rep);
   const std::array<double,{len(names)}> truth={{{q}}}; std::vector<double> data;std::vector<int> counts;
-  data.reserve(500);counts.reserve(500);
-  for(int i=0;i<500;++i) {{
+  data.reserve({SAMPLE_N});counts.reserve({SAMPLE_N});
+  for(int i=0;i<{SAMPLE_N};++i) {{
     const double v=cppunivariate::distributions::r{family}(rng,{sampler});
     {integer_check}
     data.push_back(v);
@@ -231,7 +232,7 @@ for index,family in enumerate(families):
                 item['coordinates'][names[free[j]]]=coord
     results[family]=item
     summary.write_text(json.dumps({'revision':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-                       'source_hash':identity,'sample_size':500,'replications':REPS,'seed':'20261101 + 1000*family_index + replication',
+                       'source_hash':identity,'sample_size':SAMPLE_N,'replications':REPS,'seed':'20261101 + 1000*family_index + replication',
                        'family_order':families,'projected_cpu_seconds':projected,
                        'actual_simulation_cpu_seconds':used_cpu,'families':results},indent=2)+'\n')
     print(family,item['status'],item.get('successes',''),flush=True)
