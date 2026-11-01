@@ -231,7 +231,7 @@ for index,family in enumerate(families):
                                   'difference_mcse_paired':diff_mcse,'flag_2mcse':abs(avg-sd)>2*diff_mcse}
                 item['coordinates'][names[free[j]]]=coord
     results[family]=item
-    summary.write_text(json.dumps({'revision':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+    summary.write_text(json.dumps({'revision':(subprocess.run(['git','rev-parse','HEAD'],cwd=ROOT,text=True,capture_output=True).stdout.strip() or os.environ.get('UMVL_REVISION','unknown')),
                        'source_hash':identity,'sample_size':SAMPLE_N,'replications':REPS,'seed':'20261101 + 1000*family_index + replication',
                        'family_order':families,'projected_cpu_seconds':projected,
                        'actual_simulation_cpu_seconds':used_cpu,'families':results},indent=2)+'\n')
