@@ -80,6 +80,19 @@ for status in STATUSES: assert status in inference_html
 print(f"PASS: inference: {len(availability['rows'])} unique scopes, 98 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.")
 subprocess.run([str(ROOT/'site/node_modules/.bin/node'), str(ROOT/'site/scripts/inference-browser.mjs')], check=True)
 
+# Theory defaults must be complete before hydration, and match the live fit API.
+theory_html=(DIST/'theory/index.html').read_text()
+assert all(f'id="{section}"' in theory_html for section in ['profiles','escapes','faces'])
+assert theory_html.count('data-profile=')==5 and 'data-faces' in theory_html
+assert theory_html.count('data-limit-line')==4
+assert all(f'data-escape="{id}"' in theory_html for id in ['lomax','std','nbinom','burr'])
+assert '<noscript>' in theory_html
+for source,model in [('lomax','exp'),('std','norm'),('nbinom','pois'),('burr','pareto')]:
+    record=next(f for f in DATA if f['id']==source)
+    assert any(limit.get('model')==model and (source!='burr' or limit.get('fixed')==['scale']) for limit in record.get('limits',[])), f'undeclared theory escape: {source}'
+subprocess.run([str(ROOT/'site/node_modules/.bin/node'), str(ROOT/'site/src/components/theory/check.mjs')], check=True)
+subprocess.run([str(ROOT/'site/node_modules/.bin/node'), str(ROOT/'site/src/components/theory/browser.mjs')], check=True)
+
 # Check the atlas independently against every dossier-derived record.
 graph_page=DIST/'graph/index.html'
 assert graph_page.exists(), 'missing /graph/'

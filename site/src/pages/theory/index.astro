@@ -1,0 +1,28 @@
+---
+import Page from '../../layouts/Page.astro';
+import Viewer from '../../components/theory/Viewer.svelte';
+import {profile,preset,faces,faceSample} from '../../components/theory/model.mjs';
+import {pathToFileURL} from 'node:url';
+import {resolve} from 'node:path';
+const bindingUrl = pathToFileURL(resolve('../bindings/js/index.mjs')).href;
+const {default:create} = await import(/* @vite-ignore */ bindingUrl);
+const api = await create();
+const initial=profile(api,'gamma',preset('gamma'));
+const escapes=['lomax','std','nbinom','burr'].map(id=>profile(api,id,preset(id)));
+const held=faces(api,faceSample);
+---
+<Page title="Likelihood geometry" description="Profile likelihoods, escapes to limit models and held-parameter faces, computed with the C++ fitters.">
+ <div class="theory-page"><p class="eyebrow">Theory visualisations</p><h1>Likelihood geometry</h1><p class="summary">Follow a likelihood as coefficients are held, refitted, or sent towards a limit model.</p>
+ <nav aria-label="Theory sections"><a href="#profiles">Profiles</a><a href="#escapes">Escapes</a><a href="#faces">Held faces</a></nav>
+ <noscript><p>All default figures, diagnostics and samples are available below. Enable JavaScript to change data and refit.</p></noscript>
+ <section id="profiles"><h2>Profile likelihood viewer</h2><p>At each horizontal coordinate, hold one coefficient and maximise over the others using the existing family fitter. A profile differs from a slice, which holds every other coefficient constant. The black dot marks the free fit when it lies within the plotted range; its coefficients and likelihood are also printed below.</p>
+ <Viewer {initial} client:load/>
+ </section>
+ <section id="escapes"><h2>Escape gallery</h2><p>An escaping fit has no finite maximiser in the fitted family. The dashed line is the fitted limit model's likelihood. The messages below come directly from the fitters; the curves illustrate their behaviour without independently proving it. See the <a href="/graph/">family graph</a> for declared limit paths.</p>
+ {escapes.map(result=><section data-escape={result.id}><h3><a href={`/distributions/${result.id}/`}>{result.id==='burr'?'Burr → Pareto (scale held at 1)':result.id==='std'?'Student t → normal':result.id==='nbinom'?'Negative binomial → Poisson':'Lomax → exponential'}</a></h3><Viewer initial={result} gallery={true} client:visible/></section>)}
+ </section>
+ <section id="faces"><h2>Held-parameter faces</h2><p>For the two-parameter normal family, each dashed line is a submodel with one coefficient held. Its marked fit maximises the likelihood along that line. The free fit maximises over both coefficients. For nonconstant samples these fits have closed forms; the plotted contours evaluate the same normal log-density on a grid.</p><Viewer initial={held} mode="faces" client:load/></section>
+ <p>Simulation uses the displayed seed (default 20261101). Static presets are deterministic and listed with each figure. Family definitions, parameter domains and declared limits are linked in the <a href="/distributions/">catalog</a>.</p>
+ </div>
+</Page>
+<style>.theory-page{max-width:900px;margin:auto}</style>
