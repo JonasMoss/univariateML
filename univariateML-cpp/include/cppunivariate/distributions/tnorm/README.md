@@ -26,14 +26,14 @@ params:
   domain: '[-inf, inf)'
   simulate: -inf
   kind: design
-  advice: NULL estimates this bound at the sample extreme; use infinity for an unbounded side.
+  advice: Supply NULL to estimate this bound at the sample extreme, or an infinite value for an unbounded side.
 - name: b
   symbol: 'b'
   role: upper
   domain: (-inf, inf]
   simulate: inf
   kind: design
-  advice: NULL estimates this bound at the sample extreme; use infinity for an unbounded side.
+  advice: Supply NULL to estimate this bound at the sample extreme, or an infinite value for an unbounded side.
 r:
   density: dtnorm
   sampler: rtnorm
@@ -48,23 +48,24 @@ log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2) - log((erf((b-mean)/
 limits:
   - model: exp
     firmness: proved
-    when: '$\mathrm{sd} \to \infty$ and $\mathrm{mean}/\mathrm{sd}^2 \to -1/(\bar x - a)$, with $a$ finite and $b = \infty$: the law of $a + Y$, $Y$ exponential'
-    detect: 'is.infinite(b) && mean((x - mean(x))^2) >= (mean(x) - a)^2'
+    when: 'As $\sigma\to\infty$ and $\mu/\sigma^2\to-1/(\bar x-a)$ with $a$ finite and $b=\infty$, the distribution tends to $a+Y$, where $Y$ is exponential.'
+    detect: 'The sample is nonconstant, both parent coefficients are free, $a$ is finite, $b=\infty$, and the empirical variance is at least $(\bar x-a)^2$.'
     status: ExponentialBoundary
   - model: exp
     firmness: proved
-    when: '$\mathrm{sd} \to \infty$ and $\mathrm{mean}/\mathrm{sd}^2 \to 1/(b - \bar x)$, with $a = -\infty$ and $b$ finite: the law of $b - Y$, $Y$ exponential'
-    detect: 'is.infinite(a) && mean((x - mean(x))^2) >= (b - mean(x))^2'
+    when: 'As $\sigma\to\infty$ and $\mu/\sigma^2\to1/(b-\bar x)$ with $a=-\infty$ and $b$ finite, the distribution tends to $b-Y$, where $Y$ is exponential.'
+    detect: 'The sample is nonconstant, both parent coefficients are free, $a=-\infty$, $b$ is finite, and the empirical variance is at least $(b-\bar x)^2$.'
     status: ReflectedExponentialBoundary
   - name: truncated exponential
     firmness: proved
-    when: '$\mathrm{sd} \to \infty$ and $\mathrm{mean}/\mathrm{sd}^2 \to r$, with $a$ and $b$ finite: the law on $(a, b)$ with density proportional to $e^{r x}$, uniform when $r = 0$'
+    when: 'As $\sigma\to\infty$ and $\mu/\sigma^2\to r$ with both bounds finite, the distribution tends to the law with density proportional to $e^{rx}$ on $[a,b]$. It is uniform when $r=0$.'
+    detect: 'The sample is nonconstant, both parent coefficients are free, both bounds are finite, and the empirical variance is at least that of the exponential tilt with the same empirical mean.'
     status: TruncatedExponentialBoundary
   - name: uniform
     firmness: proved
     fixed: [mean]
-    when: '$\mathrm{sd} \to \infty$, with $a$ and $b$ finite: the uniform law on $(a, b)$'
-    detect: 'mean((x - mean)^2) >= ((b - mean)^3 - (a - mean)^3) / (3 * (b - a))'
+    when: 'With $\mu$ held and both bounds finite, $\sigma\to\infty$ gives the uniform distribution on $[a,b]$.'
+    detect: 'The parent mean $\mu$ is held, scale is free, both bounds are finite, and the empirical squared distance from $\mu$ is at least $((b-\mu)^3-(a-\mu)^3)/(3(b-a))$.'
     status: UniformBoundary
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition,
@@ -104,23 +105,41 @@ summary: Truncated Normal provides a model for Gaussian measurements recorded on
 aliases: []
 key_references:
 - 3
+existence:
+  uniqueness: proved
+  statement: >-
+    With all coefficients free, the bounds profile to the sample extremes.
+    For a nonconstant sample, a finite parent-normal MLE exists exactly when
+    its empirical variance is smaller than that of the exponential tilt on
+    those bounds having the same empirical mean. It is then unique.
+    The same criterion applies with bounds held, with the one-sided and
+    untruncated cases described below. Constant samples have unbounded
+    likelihood when both parent coefficients are free and the bounds form
+    a nonempty interval. With $\sigma$ held, a unique finite location estimate
+    exists exactly when the empirical mean is strictly inside the bounds.
+    With $\mu$ held, the squared-distance criterion below characterizes a
+    unique finite scale estimate. With both parent coefficients held,
+    compatible observations on a nonempty interval require only likelihood
+    evaluation after profiling any free bounds. In every case, coincident
+    profiled bounds give no continuous-density MLE.
+  reason: >-
+    Tightening a free bound to its sample extreme strictly increases likelihood.
+    At fixed bounds the log likelihood is strictly concave in
+    $(\mu/\sigma^2,-1/(2\sigma^2))$, so any finite maximum is unique.
+    Holding either parent coefficient restricts these natural parameters
+    to an affine line. The scores compare the empirical sufficient statistic
+    with its model expectation. The endpoint expectations give the stated
+    existence tests, including the exponential or uniform limit when the
+    quadratic coefficient reaches zero.
 ---
 
-The truncated normal distribution is a normal distribution restricted to an interval `[a, b]` with finite bounds closed; it models measurements that are only recorded, or only possible, inside that interval. `mean` and `sd` are the parameters of the parent normal distribution, not the mean and standard deviation of the truncated one.
+The truncated normal distribution models Gaussian measurements recorded or possible only within an interval. Its coefficients $\mu$ and $\sigma$ describe the parent normal distribution, rather than the mean and standard deviation after truncation.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) derives the stated limits and held-parameter conditions.
+Finite bounds are closed and use the density limit from within the interval. A bound may be held or estimated. Tightening a free bound increases the likelihood for every parent location and scale, so its estimate is exactly the corresponding sample extreme. Coincident bounds do not define a continuous density and are rejected.
 
-Both bounds must be supplied. A value holds the bound, `NULL` estimates
-it as the corresponding sample extreme, and `-Inf` or `Inf` leaves that side
-unbounded. The support is closed at finite bounds, with the interior density
-limit there. Tightening a free bound increases the likelihood at every parent
-mean and scale, so the endpoint profile is exact. Coincident bounds do not
-define a Lebesgue density and are rejected. Exponential, truncated exponential
-and uniform boundary escapes are still reported through `limits:`.
-
-For fixed bounds the family is an exponential family in $\mathrm{mean}/\mathrm{sd}^2$ and $-1/(2\,\mathrm{sd}^2)$ whose log-likelihood is strictly concave; the maximum depends on the data only through `mean(x)` and the population variance. It exists unless the sample is at least as dispersed as the member with $1/\mathrm{sd}^2 = 0$ and the same mean, an exponential or truncated exponential law that the parametrisation by `sd` cannot reach. This happens with positive probability for samples from a truncated normal, with small samples especially susceptible near an exponential limit; faces win ties within `1e-8` times the sample size. With `sd` held fixed the estimate of `mean` always exists. With `mean` held fixed and both bounds finite the limit is the uniform distribution on `(a, b)`; `mlunif` is a different model, which estimates its endpoints.
+For fixed bounds the likelihood is strictly concave in the natural parameters $\mu/\sigma^2$ and $-1/(2\sigma^2)$. This establishes uniqueness when a finite maximum exists. A sample can be too dispersed for a finite parent-normal fit, with the supremum instead attained in an exponential limit. Such samples have positive probability under the truncated normal, especially near this limit. With positive scale held, a finite location estimate exists when the sample mean is strictly inside the interval. If every observation is at one finite endpoint, location escapes towards that endpoint and the likelihood is unbounded.
 
 For nonconstant data, let $m$ and $v$ be the empirical mean and variance
 with divisor $n$. On finite bounds, the full natural parameter space is
@@ -146,15 +165,21 @@ MLE. Constant samples with both parent parameters free have unbounded
 likelihood as the scale collapses. With a held mean, the sufficient
 statistic is the empirical squared distance from that mean; on a finite
 interval its upper boundary test compares it with the uniform's squared
-distance. On an infinite interval that expectation diverges and there is
-no uniform escape. These conditions follow by profiling the strictly
+distance. On an unbounded interval that expectation diverges and there is
+no uniform escape. A finite scale estimate also requires the empirical squared
+distance to exceed its infimum over the support. Equality means that every
+observation is at the closest support point to the held mean, and scale
+collapse makes the likelihood unbounded. These conditions follow by profiling the strictly
 concave natural likelihood and testing its derivative at zero quadratic
-coefficient. Numerical face ties use the tolerance stated above.
-
-## See also
-
-`mlhnorm` for the half-normal with an estimated endpoint and `mlnorm` for the untruncated fit.
+coefficient. Numerical comparisons use a likelihood tolerance, as described in the R notes.
 
 
-Any subset of the four coefficients can be held, subject to the same
-collapse and exponential boundary conditions after profiling the bounds.
+With parent mean held, write $q=n^{-1}\sum_i(x_i-\mu)^2$ and $q_0=\inf_{a\le x\le b}(x-\mu)^2$. A finite scale estimate exists exactly when $q>q_0$ and, for finite bounds, $q$ is smaller than the uniform distribution's expected squared distance. On unbounded intervals there is no upper restriction. These strict inequalities also cover compatible constant samples away from the closest support point to the held mean. Every statement assumes a nonempty interval and observations in its closed support.
+
+## R notes
+
+Supply both `a` and `b`. A numeric value holds a bound, `NULL` estimates it at the corresponding sample extreme, and `-Inf` or `Inf` leaves that side unbounded. Any subset of the four coefficients can be held. The same collapse and exponential boundary tests apply after profiling free bounds. Constant data with coincident estimated bounds are rejected.
+
+Boundary comparisons favour the limiting model within `1e-8` times sample size in log likelihood. Exponential, truncated exponential and uniform escapes stop rather than returning a finite parent-normal estimate. `mlunif` estimates its own endpoints and is a different model from the uniform limit on held bounds. See `mlhnorm` for a half-normal with an estimated endpoint and `mlnorm` for the untruncated fit.
+
+For constant data at a finite endpoint, the current scale solver can return a tiny positive `sd` when the held parent mean lies outside the interval, despite the unbounded likelihood. This value is not an MLE. The [existence review](../../../../../dev/research/evaluations/2026-11-02-existence-6-report.md) records a reproducer and the outstanding diagnostic correction.

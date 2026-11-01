@@ -70,29 +70,38 @@ summary: Log-gamma provides a model for insurance sizes above one whose logarith
 aliases: []
 key_references:
 - 3
+existence:
+  uniqueness: proved
+  statement: >-
+    For observations above one, the MLE with both coefficients free exists
+    exactly when the sample is nonconstant and is then unique. Holding either
+    $k$ or $\lambda$ gives a unique finite estimate of the other coefficient
+    for every such sample, including constant samples.
+  reason: >-
+    The one-to-one transformation $y=\log x$ has a coefficient-independent
+    Jacobian and reduces the problem to gamma estimation with shape $k$
+    and rate $\lambda$. Profiling rate gives
+    $\log k-\psi(k)=\log\bar y-\overline{\log y}$.
+    The left side decreases strictly from infinity to zero, and the right
+    side is positive exactly for nonconstant data by strict Jensen inequality.
+    Holding shape gives $\hat\lambda=k/\bar y$; holding rate leaves a
+    strictly increasing digamma equation with one positive root.
 ---
 
-The log-gamma distribution describes positive data whose logarithm follows a gamma distribution.
+The log-gamma distribution models observations above one whose logarithms follow a gamma distribution.
 
 ## Details
 
-The support is above 1: `log(x)` has gamma shape `shapelog` and rate `ratelog`. This is the actuar log-gamma convention, rather than the distribution of the logarithm of a gamma variable.
+The coefficients $k$ and $\lambda$ are the gamma shape and rate of the logarithms. This is the actuarial log-gamma convention. Fitting applies gamma estimation to the logarithms and subtracts their sum from the gamma log likelihood to account for the Jacobian.
 
-Holding either shapelog or ratelog gives a unique finite fit even for constant data above one. With both free the likelihood is unbounded for constant data.
+Holding either coefficient gives a unique finite estimate of the other, even for constant observations above one. With both free, constant data have unbounded likelihood as shape and rate tend to infinity at a fixed ratio. Both-held fits evaluate the likelihood.
 
-### C++ independence (2026-10-30)
+## R notes
 
-`lgamma_mle` owns the previous R adapter's exact transform and sum order:
-fit gamma to `log(x)` and subtract `sum(log(x))` from its log likelihood.
-The change-of-variables identity is exact mathematically. NaN marks free
-coefficients; held ratelog is passed as reciprocal scale and returned verbatim.
-Gamma iteration failure is preserved; constant and precision-collapsed
-transforms are distinguished. No new search or convergence guarantee is added.
-The appended C++ regression compares all four held subsets with the previous
-adapter computation; golden agreement is numerical evidence.
+`shapelog` and `ratelog` refer to the gamma law of `log(x)`. The support requires `x > 1`.
 
-### Diagnostic status contract (2026-10-31)
+## Decision history
 
-Invalid and empty samples carry non-success statuses, including delegate paths.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp`.
+On 2026-10-30 the core fitter took ownership of the previous R adapter's exact transform and sum order. Internally, NaN marks a free coefficient. Held rate is passed to the gamma fitter as reciprocal scale and returned unchanged. Gamma iteration failure is preserved, and constant samples are distinguished from transforms collapsed by floating-point precision. This adds no search or convergence guarantee beyond the gamma solver. The C++ regression compares all four held subsets with the previous adapter computation; golden agreement is numerical evidence.
+
+The 2026-10-31 diagnostic audit checks invalid and empty samples, including delegate paths. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in the family C++ tests.

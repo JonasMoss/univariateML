@@ -66,18 +66,36 @@ references:
   543–550. doi:10.1080/00401706.1961.10489974.
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both coefficients free, a finite maximum exists for every nonconstant
+    nonnegative sample, including a possible maximum at $\mu=0$. Constant
+    samples have unbounded likelihood. With $\mu$ held and scale free, a
+    finite maximum exists unless every observation equals $\mu$. With positive
+    $\sigma$ held, the location maximum exists and is unique. Joint uniqueness
+    and uniqueness with positive $\mu$ held are not established here.
+  reason: >-
+    For a nonconstant sample, the likelihood tends to zero as scale vanishes
+    or as the coefficients escape to infinity, so a maximum is attained.
+    The same argument applies with location held unless all residuals vanish.
+    With scale held, the positive-location score equation is
+    $n^{-1}\sum_i x_i\tanh(x_i\mu/\sigma^2)/\mu=1$.
+    Its left side decreases strictly for positive $\mu$ whenever any observation
+    is positive. Thus there is one positive maximizer if
+    $n^{-1}\sum_i x_i^2>\sigma^2$, and otherwise the unique maximizer is zero.
 ---
 
-The folded normal distribution is the absolute value of a normal random variable.
+The folded normal distribution models unsigned Gaussian measurements, obtained by taking the absolute value of a normal variable.
 
 ## Details
 
-The sign of the parent normal location is unidentifiable, so `mu` is restricted to nonnegative values. The attained member `mu = 0` is the half-normal with endpoint zero, whereas `mlhnorm` estimates its endpoint.
+The coefficients $\mu$ and $\sigma$ are the parent normal location and scale. The sign of the parent location is unidentifiable, so $\mu$ is restricted to nonnegative values. The attained member $\mu=0$ is the half-normal with endpoint zero. Zeros are allowed and use the density limit from above.
 
-For nonconstant nonnegative data the maximum is attained, including the half-normal boundary. Constant data have an unbounded likelihood when both parameters are estimated. Zeros are allowed and use the continuous endpoint density. Either parameter can be held fixed; with positive scale fixed, constant data are also permitted.
+For nonconstant nonnegative data a maximum is attained, possibly at the half-normal boundary. Constant data have unbounded likelihood when both coefficients are free. Holding location prevents this collapse unless all observations equal that location. Holding positive scale permits constant data and gives a unique location fit.
 
-The likelihood can have competing boundary and interior maxima. The fitter compares the boundary with all maxima located by a grid over an analytically bounded one-dimensional profile, followed by bracket refinement. Convex-chord upper bounds check the joint profile search to a likelihood tolerance. This does not assume uniqueness.
+Boundary and interior candidates can compete. The joint fitter compares the half-normal boundary with candidates from an analytically bounded scalar profile. Convex-chord upper bounds certify the joint search to a likelihood tolerance. With positive location held, similar bounds check the scale search. Exhausted bounds report numerical failure. These comparisons do not prove uniqueness of the joint or held-location maximum.
 
-## d/p/q/r
+## R notes
 
-The sign of mu is unidentifiable; mu = 0 gives the half-normal.
+Either coefficient can be held by supplying its value. `mlhnorm` also allows the half-normal endpoint to be estimated, whereas `mlfoldnorm` keeps the folding point at zero.
