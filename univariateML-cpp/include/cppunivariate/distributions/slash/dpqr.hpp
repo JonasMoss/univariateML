@@ -5,17 +5,24 @@
 namespace cppunivariate {
 namespace distributions {
 // Preserve a standardized distance above binary64 range for the power tail.
-inline double slash_log_distance(double x, double mu, double sigma) {
+inline double slash_log_distance_cached(double x, double mu, double log_sigma) {
   const double distance=std::abs(x-mu);
   const double ld=std::isfinite(distance) || !std::isfinite(x) ? std::log(distance)
       : special::log_sum_exp(std::log(std::abs(x)),std::log(std::abs(mu)));
-  return ld-std::log(sigma);
+  return ld-log_sigma;
+}
+inline double slash_log_distance(double x, double mu, double sigma) {
+  return slash_log_distance_cached(x,mu,std::log(sigma));
+}
+// Internal finite-parameter path: reuse log(sigma) across a likelihood pass.
+inline double slash_log_density_cached(double x,double mu,double sigma,double log_sigma) {
+  const double z=special::scaled_difference(x,mu,sigma), t=(0.5*z)*z;
+  const double kernel=t<1e-8 ? -std::log(2.0)-t/2+t*t/24 : std::log(-std::expm1(-t))-2*slash_log_distance_cached(x,mu,log_sigma);
+  return kernel-0.91893853320467274178-log_sigma;
 }
 inline double dslash(double x,double mu=0,double sigma=1,bool log=false) {
   if (!std::isfinite(mu)||!std::isfinite(sigma)||sigma<=0||std::isnan(x)) return special::kNaN;
-  const double z=special::scaled_difference(x,mu,sigma), t=(0.5*z)*z;
-  const double kernel=t<1e-8 ? -std::log(2.0)-t/2+t*t/24 : std::log(-std::expm1(-t))-2*slash_log_distance(x,mu,sigma);
-  const double ld=kernel-0.91893853320467274178-std::log(sigma);
+  const double ld=slash_log_density_cached(x,mu,sigma,std::log(sigma));
   return log ? ld : std::exp(ld);
 }
 inline double pslash(double q,double mu=0,double sigma=1,bool lower_tail=true,bool log_p=false) {

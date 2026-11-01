@@ -98,3 +98,28 @@ TEST_CASE("slash: P3 failed refinement cannot inherit a grid point status") {
   const std::vector<double> values{-2,-.3,.1,.8,4};
   CHECK(cppunivariate::slash_mle(mltest::as_span(values),1e-9,1).status==cppunivariate::SlashStatus::IterationFailure);
 }
+
+TEST_CASE("slash: scale score saturation preserves binary64 subtraction") {
+  const double edge=42;
+  for(double t:{std::nextafter(edge,0.0),edge,std::nextafter(edge,100.0),43.,50.,100.,700.}) {
+    CAPTURE(t);
+    CHECK(1-2*t/std::expm1(t)==1.0);
+  }
+  // Cover the preceding transition as well as the exact saturation edge.
+  for(int i=0;i<=10000;++i) {
+    const double t=40+i*.0005;
+    const double original=1-2*t/std::expm1(t);
+    CHECK((t>=42?1:original)==original);
+  }
+}
+
+TEST_CASE("slash: cached scale logarithm agrees with direct density formula") {
+  for(double s:{1e-300,1e-5,1.,1e5,1e300})for(double m:{-1e308,0.,1e308})
+    for(double x:{-1e308,-1.,0.,1e-10,1.,1e308}) {
+      const double z=cppunivariate::special::scaled_difference(x,m,s),t=(.5*z)*z;
+      const double kernel=t<1e-8 ? -std::log(2.)-t/2+t*t/24 : std::log(-std::expm1(-t))-2*cppunivariate::distributions::slash_log_distance(x,m,s);
+      const double original=kernel-.91893853320467274178-std::log(s);
+      CHECK(cppunivariate::distributions::slash_log_density_cached(x,m,s,std::log(s))==original);
+      CHECK(cppunivariate::distributions::dslash(x,m,s,true)==original);
+    }
+}
