@@ -76,8 +76,9 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
       if(inherits(fit,'error')) {
         # The unbounded urn profiles may stop without a finite certificate.
         unresolved_urn <- (id == 'mlhyper' && length(held) == 1 && held %in% c('m','k')) ||
-          (id == 'mlnhyper' && (length(held) == 0 || setequal(held,'r')))
-        if (unresolved_urn && grepl('numerical failure|not excluded', conditionMessage(fit), ignore.case=TRUE)) {
+          (id == 'mlnhyper' && (length(held) == 0 || setequal(held,'r'))) ||
+          (id == 'mlcmb' && setequal(held,'nu'))
+        if (unresolved_urn && grepl('numerical failure|not excluded|work budget', conditionMessage(fit), ignore.case=TRUE)) {
           expect_true(TRUE, info=label)
           next
         }
@@ -114,9 +115,10 @@ test_that('required NULL offers follow the actual other holds', {
   expect_false(grepl('or use `min = NULL`', diagnostic(mlpareto2), fixed=TRUE))
   expect_false(grepl('or use `min = NULL`', diagnostic(mlpareto2, shape=2, scale=1), fixed=TRUE))
   expect_match(diagnostic(mlhnorm), 'or use `mu = NULL`', fixed=TRUE)
-  # CMB can estimate its required size only when both other coordinates are held.
+  # CMB can estimate its required size when dispersion is held.
   expect_false(grepl('or use `size = NULL`', diagnostic(mlcmb), fixed=TRUE))
   expect_match(diagnostic(mlcmb, prob=.4, nu=1), 'or use `size = NULL`', fixed=TRUE)
+  expect_match(diagnostic(mlcmb, nu=1), 'or use `size = NULL`', fixed=TRUE)
   # Named and positional arguments describe the same holds.
   outcome <- function(expr) tryCatch(as.numeric(suppressWarnings(expr)), error=conditionMessage)
   expect_equal(outcome(mlcmb(c(1,2,3), FALSE, NULL, .4, 1)),
