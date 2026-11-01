@@ -40,7 +40,7 @@ jobs:
         # every platform; the PDF manual needs Courier (pcrr8t).
         run: |
           tinytex::tlmgr_update(self = TRUE, all = FALSE)
-          tinytex::tlmgr_install("courier")
+          tinytex::tlmgr_install(c("courier", "makeindex"))
           stopifnot(nzchar(system2("kpsewhich", "pcrr8t.tfm", stdout = TRUE)))
         shell: Rscript {0}
       - name: Assemble and document
