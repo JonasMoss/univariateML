@@ -1,0 +1,80 @@
+{
+  "source_revision": "90ec2153ea2a4272bb47259bb6091d2602a176e6",
+  "python": "3.14.5",
+  "numpy": "2.4.6",
+  "scipy": "1.18.0",
+  "data": [
+    0.1,
+    0.2,
+    0.4,
+    0.7,
+    1.0
+  ],
+  "uniform_exact_endpoints": [
+    -0.125,
+    1.225
+  ],
+  "uniform_fits": [
+    {
+      "start": [
+        -3.0,
+        -3.0
+      ],
+      "success": true,
+      "endpoints": [
+        -0.12499999800493813,
+        1.224999999642108
+      ],
+      "max_abs_error": 1.9950618657116337e-09
+    },
+    {
+      "start": [
+        0.0,
+        0.0
+      ],
+      "success": true,
+      "endpoints": [
+        -0.12499999616388605,
+        1.2250000086834472
+      ],
+      "max_abs_error": 8.683447072499462e-09
+    },
+    {
+      "start": [
+        -2.0,
+        1.0
+      ],
+      "success": true,
+      "endpoints": [
+        -0.12499999959623029,
+        1.2249999976761776
+      ],
+      "max_abs_error": 2.3238224677868402e-09
+    }
+  ],
+  "gpd_shape": -1.5,
+  "gpd_endpoint_path": [
+    {
+      "epsilon": 0.01,
+      "log_likelihood": 0.1314004233128543,
+      "log_product_spacings": -12.590980905660993
+    },
+    {
+      "epsilon": 0.0001,
+      "log_likelihood": 1.7233100892392863,
+      "log_product_spacings": -15.521624090297365
+    },
+    {
+      "epsilon": 1e-08,
+      "log_likelihood": 4.79400215032082,
+      "log_product_spacings": -21.656665098523092
+    },
+    {
+      "epsilon": 1e-12,
+      "log_likelihood": 7.864086030906924,
+      "log_product_spacings": -27.796822370961806
+    }
+  ],
+  "ties": "ordinary MPS is zero (log objective minus infinity)",
+  "scope": "Analytic identity and numerical path illustration; no global GPD fit, production CDF test, simulation or inference calibration."
+}

@@ -22,6 +22,11 @@ the queue.
 
 ## Index
 
+- [2026-11-01 — Estimation beyond ML](2026-11-01-estimation-beyond-ml.md)
+  *(banked; preliminary exploration)*: closure-compatible coordinates,
+  model-restricted Hellinger/KL Bayes actions, posterior propriety gates,
+  maximum product of spacings and competing CDF/quantile estimators.
+
 - [2026-10-31 — Useful density proposals](2026-10-31-useful-density-proposals.md)
   *(banked)*: five application-oriented candidates, parameter domains, priorities,
   references and preliminary ML/dpqr difficulty assessment.
