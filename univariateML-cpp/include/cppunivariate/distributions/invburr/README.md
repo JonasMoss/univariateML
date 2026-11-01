@@ -43,28 +43,31 @@ log_density: log(shape1) + log(shape2) - log(x) + shape2*log(scale/x) - (shape1+
 limits:
   - name: unbounded likelihood
     firmness: proved
-    when: A free concentration can collapse on constant observations
-    detect: Constant samples; the held coefficients determine whether concentration remains free
+    when: The free power $c$ tends to infinity while the free scale follows a concentrating path at the common observation. With scale held, concentration is also possible at a common observation above $s$ by letting $k$ grow, or at $s$ itself.
+    detect: All observations are equal and $c$ and $s$ are free. With $s$ held, $c$ is free and either every observation equals $s$, or both shapes are free and the common observation is above $s$.
     status: Unbounded
     message: unbounded
   - model: invweibull
     firmness: proved
     fixed: [shape2]
-    when: Fixed-power Lomax profile is maximised on its exponential face
+    when: With $c$ held, $k$ tends to infinity and $s k^{1/c}$ stays at a positive inverse Weibull scale.
+    detect: With $c$ held, the numerical comparison for the transformed observations selects the exponential limit of the Lomax likelihood. This is not an exact sample criterion.
     status: InvWeibullBoundary
   - model: 'invweibull'
     firmness: proved
-    when: '$\mathrm{shape1} \to \infty$ with $\mathrm{scale}\,\mathrm{shape1}^{1/\mathrm{shape2}}$ fixed'
+    when: The shape $k$ tends to infinity while $s k^{1/c}$ tends to a positive inverse Weibull scale.
+    detect: A numerical comparison finds no candidate finite fit improving on this limit by more than $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
     status: 'InvWeibullBoundary'
   - model: 'power'
     firmness: proved
-    when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
+    when: The power $c$ tends to infinity while $kc$ tends to a positive power shape and $s$ stays at its endpoint.
+    detect: A numerical comparison finds no candidate finite fit improving on this limit by more than $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
     status: 'PowerBoundary'
   - model: 'power'
     firmness: proved
     fixed: [scale]
-    when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
-    detect: 'all(x <= scale)'
+    when: The power $c$ tends to infinity while $kc$ tends to a positive power shape and $s$ stays at its endpoint.
+    detect: Only scale is held and all observations are at most $s$. The all-equal-to-$s$ case has unbounded likelihood instead.
     status: 'AllLeOne'
 references:
 - Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational
@@ -124,23 +127,81 @@ aliases:
 - "three-parameter kappa"
 key_references:
 - 3
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, constant positive data have unbounded likelihood.
+    For nonconstant data, the inverse Weibull and power limits can compete with finite
+    fits. A complete joint sample criterion and joint uniqueness are not established.
+    With only scale $s$ held, a finite maximum exists for nonconstant data if some observation is
+    above $s$. Constant data above $s$ have unbounded likelihood.
+    If all observations are at most $s$, the supremum is on the
+    power path, except that all observations equal to $s$ give unbounded likelihood.
+    Holding $k$ gives a unique finite fit for nonconstant data, but constant data
+    remain unbounded when $c$ and $s$ are free. Holding $c$ reduces existence to
+    the Lomax criterion on $x_i^{-c}$, with a possible inverse Weibull limit.
+    Holding both shapes gives a unique scale estimate for any positive sample.
+    Holding $k$ and $s$ gives a unique finite $c$ estimate unless all observations
+    equal $s$. Holding $c$ and $s$ gives a unique finite $k$ estimate.
+    Holding all coefficients leaves likelihood evaluation.
+  reason: >-
+    Reciprocation transports the Burr arguments and changes likelihood only by a data-dependent Jacobian. With $k$ held, the log-data likelihood is strictly concave in
+    $c$ and $c\log s$, with coercive profiles for nonconstant samples.
+    With $c$ held, a power transformation gives a Lomax likelihood.
+    With $s$ held, profiling $k$ gives a one-dimensional likelihood whose
+    endpoints yield the stated existence and power conditions.
+    The single-coordinate scores are strictly decreasing in suitable coordinates.
+    These conditional arguments do not certify the joint numerical search.
 ---
 
-The inverse Burr distribution is the distribution of the reciprocal of a Burr type XII variable.
+The inverse Burr distribution is the distribution of the reciprocal of a Burr type XII variable. It models positive size and loss data.
+The scale $s$ sets the measurement scale. The shapes $k$ and $c$ control the
+lower and upper tails. The upper-tail exponent is $c$,
+and the lower-tail power is $kc$.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
+Fitting requires a nonempty positive finite sample. The
+[family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)
+describes the limiting paths and the scope of the boundary comparisons.
+The fit delegates to Burr on reciprocal observations, mapping a held scale to its reciprocal.
 
-With scale held at $s$ and nonconstant observations all at most $s$, the inverse Burr supremum is the endpoint-$s$ power log-likelihood minus $Z\log 2$, where $Z$ counts observations equal to $s$; if every observation equals $s$, the likelihood is unbounded.
+With only scale held at $s$ and nonconstant observations all at most $s$,
+the supremum is the endpoint-$s$ power log-likelihood minus $Z\log 2$,
+where $Z$ counts observations equal to $s$. This endpoint penalty must be
+retained when comparing likelihoods. If every observation equals $s$, the
+likelihood is unbounded. For nonconstant data, if any observation is above $s$, a finite maximum
+exists, although uniqueness is not established here. Constant data above $s$
+instead have unbounded likelihood: $k$ can grow as $c$ tends to infinity,
+concentrating the distribution at that common value even with scale held.
 
-univariateML 1.x estimated only the shapes, with the scale fixed at 1.
+The constant-sample concentrating path above a held scale is the reciprocal
+of the path below a held Burr scale. The explicit profiled-density calculation
+in the [Burr dossier](../burr/README.md) proves that its likelihood is unbounded.
+
+Holding $c$ gives a Lomax likelihood on $x^{-c}$, whose exponential
+limit becomes inverse Weibull with that power held. Its existence criterion is the
+one in the [Lomax dossier](../lomax/README.md), applied to the transformed
+observations. Holding $k$ instead gives a strictly concave log-data likelihood
+in inverse spread and standardized location for nonconstant samples.
+With $k$ and $s$ held, a free $c$ is unbounded only when every observation
+equals $s$. Holding $c$ and $s$ leaves an explicit estimate of $k$.
+
+## R notes
 
 Supply `scale = s` to estimate only the shapes. This fits the historical
 scale-1 family to `x / s` and subtracts `length(x) * log(s)` from its
-log likelihood. The fixed-scale path profiles shape1 and refines shape2
+log-likelihood. The fixed-scale path profiles `shape1` and refines `shape2`
 by Newton iteration, with a profile-likelihood fallback start. Starting
-controls `shape10`, `shape20`, `scale0`, and BFGS tolerances apply only
-to the free-scale path. The fixed-scale limit has endpoint `s`.
+controls `shape10`, `shape20`, `scale0`, and BFGS tolerances apply only to
+the free-scale path. Detected limits stop with a recommendation to fit
+`mlinvweibull` or `mlpower`.
+A limit recommendation from a numerical comparison is not an exact sample criterion.
+The free-scale comparisons prefer a limit within $10^{-8}n$ log-likelihood
+units, so a tied or very slightly better finite maximum can be rejected.
 
-Held-shape existence conditions are transported from Burr by reciprocation. The exponential face on x^(-shape2) is the inverse Weibull with shape2 held. A free shape2 is unbounded when every observation equals the held scale.
+## Decision history
+
+univariateML 1.x estimated only the shapes, with scale fixed at 1.
+The current default also estimates scale. The fixed-scale limit retains
+endpoint $s$, including the likelihood penalty at observations equal to it.
