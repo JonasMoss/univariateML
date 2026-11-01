@@ -96,3 +96,19 @@ TEST_CASE("skellam TASK-134 subnormal log tails and near-zero face") {
     CHECK(cppunivariate::distributions::pskellam(-k-1,1e-8,1,true,true)==near);
   }
 }
+
+TEST_CASE("skellam: certified profile dominates a dense finite grid") {
+  for(const std::vector<double> x: {std::vector<double>{-4,-2,-1,0,1,2,5,8},
+                                  {0,0,1,2,8,20}, {-20,-8,-2,-1,0,0},
+                                  {-1,0,1}}) {
+    const auto fit=cppunivariate::skellam_mle(mltest::as_span(x));
+    REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
+    double mean=0;for(double v:x) mean+=v;mean/=x.size();
+    for(int i=0;i<=240;++i) {
+      const double t=std::exp(-12.0+17.0*i/240);
+      double ll=0;
+      for(double v:x) ll+=cppunivariate::distributions::dskellam(v,t+std::max(mean,0.0),t+std::max(-mean,0.0),true);
+      CHECK(ll<=fit.logLik+1e-8*x.size());
+    }
+  }
+}

@@ -74,6 +74,7 @@ inline SkellamResult skellam_mle(span x,double tol=1e-9,int maxit=150,
   for(double u=-32;u<=upper;u+=0.5) {
     const double t=std::exp(u),v=value(t);
     grid.push_back(u);values.push_back(v);
+    if(v>best) {best=v;best_t=t;}
     // A convolution mass cannot exceed the largest mass of its Poisson
     // factor of rate >= t. Stirling bounds that mode by
     // 1/sqrt(2*pi*floor(t)). This certifies exclusion of the far tail.
@@ -95,8 +96,47 @@ inline SkellamResult skellam_mle(span x,double tol=1e-9,int maxit=150,
     iterations=std::max(iterations,it);
     if(it==maxit) return fail(SkellamStatus::IterationFailure);
     const double t=std::exp(fa>fb?a:b),l=std::max(fa,fb);
-    if(l>best+1e-8*x.size()) {best=l;best_t=t;}
+    if(l>best) {best=l;best_t=t;}
   }
+  // Certify the entire finite interval, not just the grid nominations.
+  // The profile's second derivative is at most 2 sum 1/(|x_i|+1).
+  // See the dossier for the conditional-count argument and error margin.
+  double curvature=0;
+  for(double v:x) curvature+=2/(std::abs(v)+1);
+  // Half the total budget is reserved for a possible face tie.
+  const double margin=0.5e-8*x.size();
+  const double first=std::exp(grid.front()),last=std::exp(grid.back());
+  const double low=value(first)+2*x.size()*first;
+  if(!std::isfinite(low) || low>best+margin) return fail(SkellamStatus::IterationFailure);
+  struct Interval { double lo,hi; };
+  std::vector<Interval> pending{{first,last}};
+  int checked=0;
+  while(!pending.empty()) {
+    if(++checked>maxit*1000LL) return fail(SkellamStatus::IterationFailure);
+    const Interval interval=pending.back();pending.pop_back();
+    const double mid=interval.lo+(interval.hi-interval.lo)/2;
+    if(!(mid>interval.lo && mid<interval.hi)) return fail(SkellamStatus::IterationFailure);
+    const auto r=rates(mid);
+    double l=0,g=0;
+    for(double v:x) {
+      if(v-1==v || v+1==v) return fail(SkellamStatus::IterationFailure);
+      const double p=skellam_detail::logmass(v,r[0],r[1]);
+      const double pminus=skellam_detail::logmass(v-1,r[0],r[1]);
+      const double pplus=skellam_detail::logmass(v+1,r[0],r[1]);
+      l+=p;g+=std::expm1(pminus-p)+std::expm1(pplus-p);
+    }
+    if(!std::isfinite(l) || !std::isfinite(g)) return fail(SkellamStatus::IterationFailure);
+    if(l>best) {best=l;best_t=mid;}
+    const double h=(interval.hi-interval.lo)/2;
+    const double bound=l+std::abs(g)*h+0.5*curvature*h*h;
+    if(!std::isfinite(bound)) return fail(SkellamStatus::IterationFailure);
+    if(bound>best+margin) {
+      pending.push_back({interval.lo,mid});
+      pending.push_back({mid,interval.hi});
+    }
+  }
+  const double face=value(0);
+  if(std::isfinite(face) && best<=face+margin) {best=face;best_t=0;}
   if(!std::isfinite(best)) return fail(SkellamStatus::Impossible);
   const auto r=rates(best_t);
   return {r[0],r[1],best,iterations,SkellamStatus::Ok};
