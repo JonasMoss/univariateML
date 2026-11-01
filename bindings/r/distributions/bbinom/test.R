@@ -85,7 +85,7 @@ test_that("bbinom: both held shapes permit exact size profiling", {
  }
  expect_error(mlbbinom(1:3,size=NULL),"together with both shapes is not implemented")
  expect_error(mlbbinom(1:3,size=NULL,alpha=2),"with alpha held is not implemented")
- expect_error(mlbbinom(1:3,size=NULL,beta=3),"tail bound")
+ expect_error(mlbbinom(rep(3,3),size=NULL,beta=3),"point mass")
 })
 
 test_that("bbinom: P3 unfinished optimizer stops", {
@@ -98,7 +98,7 @@ test_that("bbinom: P3 unfinished optimizer stops", {
 test_that("bbinom: retained free-size guards identify the unresolved profile", {
   expect_error(mlbbinom(c(0,1,2,4,8),size=NULL), "binomial and two-point limits.*no usable bound")
   expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,alpha=2), "negative binomial with the same alpha.*no usable bound")
-  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,beta=3), "tail bound.*global comparison")
+  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,beta=1e9), "work budget")
   # Fixed alpha with beta proportional to size approaches NB with that
   # alpha held. Reflecting x to N-x would change the observed sample.
   x <- 0:10; alpha <- 2; mu <- 3
@@ -106,5 +106,29 @@ test_that("bbinom: retained free-size guards identify the unresolved profile", {
     finite <- dbbinom(x=x,size=N,alpha=alpha,beta=N*alpha/mu)
     face <- dnbinom(x,size=alpha,mu=mu)
     expect_lt(max(abs(finite-face)),2/N)
+  }
+})
+
+
+test_that("held beta free-size fit has a certified tail", {
+ x <- c(0, 1, 2, 4)
+ f <- mlbbinom(x, size=NULL, beta=.5)
+ expect_equal(unname(f["size"]), 4)
+ expect_equal(attr(f,"fixed"), "beta")
+ grid <- vapply(4:30, function(n) attr(mlbbinom(x,size=n,beta=.5),"logLik"), 0.)
+ expect_equal(attr(f,"logLik"), max(grid), tolerance=1e-8)
+ expect_error(mlbbinom(rep(3,4),size=NULL,beta=2), "point mass")
+ expect_error(mlbbinom(c(0,0),size=NULL,beta=2), "not identified")
+ expect_error(mlbbinom(x,size=NULL,beta=1e9), "work budget")
+})
+
+test_that("seeded held-beta profiles agree with dense size enumeration", {
+  set.seed(113)
+  for (rep in 1:6) {
+    x <- c(0, 4, sample(0:4, 8, replace=TRUE))
+    b <- if (rep %% 2) .5 else 1.2
+    fit <- mlbbinom(x, size=NULL, beta=b)
+    oracle <- vapply(4:40, function(n) attr(mlbbinom(x,size=n,beta=b),"logLik"), 0.)
+    expect_gte(attr(fit,"logLik"), max(oracle)-1e-7)
   }
 })

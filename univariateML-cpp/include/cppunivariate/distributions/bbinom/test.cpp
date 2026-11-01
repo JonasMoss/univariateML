@@ -279,8 +279,42 @@ TEST_CASE("bbinom: P3 unfinished optimizer is a failure") {
 TEST_CASE("bbinom: unsupported free-size shape profiles never return an estimate") {
   const std::vector<int> x{0, 1, 2, 4, 8};
   for (const auto &shapes : std::vector<std::pair<double, double>>{
-           {kNaN, kNaN}, {2.0, kNaN}, {kNaN, 3.0}}) {
+           {kNaN, kNaN}, {2.0, kNaN}}) {
     const auto result = fit(x, kNaN, shapes.first, shapes.second);
     CHECK(result.status == cppunivariate::BbinomStatus::InvalidInput);
+  }
+}
+
+TEST_CASE("bbinom: held beta free size certificates") {
+  const std::vector<int> x{0, 1, 2, 4};
+  const auto result = fit(x, kNaN, kNaN, 0.5);
+  REQUIRE(result.status == cppunivariate::BbinomStatus::Ok);
+  CHECK(result.size == 4);
+  for (int n = 4; n <= 30; ++n) {
+    const auto candidate = fit(x, n, kNaN, 0.5);
+    REQUIRE(candidate.status == cppunivariate::BbinomStatus::Ok);
+    CHECK(result.logLik >= candidate.logLik - 1e-7);
+  }
+  CHECK(fit(std::vector<int>{3,3}, kNaN, kNaN, 2).status == cppunivariate::BbinomStatus::PointMass);
+  CHECK(fit(std::vector<int>{0,0}, kNaN, kNaN, 2).status == cppunivariate::BbinomStatus::Unidentified);
+  CHECK(fit(x, kNaN, kNaN, 1e9).status == cppunivariate::BbinomStatus::SizeBudget);
+}
+
+TEST_CASE("bbinom: seeded held-beta searches agree with a dense size grid") {
+  unsigned int seed = 113;
+  for (int rep = 0; rep < 6; ++rep) {
+    std::vector<int> x{0, 4};
+    for (int i = 0; i < 8; ++i) {
+      seed = seed * 1664525u + 1013904223u;
+      x.push_back(static_cast<int>((seed >> 16) % 5));
+    }
+    const double b = rep % 2 ? 1.2 : 0.5;
+    const auto result = fit(x, kNaN, kNaN, b);
+    REQUIRE(result.status == cppunivariate::BbinomStatus::Ok);
+    for (int n = 4; n <= 40; ++n) {
+      const auto candidate = fit(x, n, kNaN, b);
+      REQUIRE(candidate.status == cppunivariate::BbinomStatus::Ok);
+      CHECK(result.logLik >= candidate.logLik - 1e-7);
+    }
   }
 }
