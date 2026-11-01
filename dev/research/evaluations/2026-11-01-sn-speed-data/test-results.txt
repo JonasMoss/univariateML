@@ -1,0 +1,12 @@
+Base: f9092af03bdaa982e9abc21f1a527db2d3f3113b
+Uncommitted sn/mle.hpp SHA-256: 5ff2b2384ab6e4394d1d5bad460da4d54e2e8ac9137d44f12824ac55acf66f44
+All commands ran separately via /tmp/umvl-cpu/run4; all exit 0.
+just cpp-test: 105/105
+just cpp-test-no-long-double: 126/126
+just test: FAIL 0; WARN 0; SKIP 151; PASS 19843
+just test-full: FAIL 0; WARN 0; SKIP 1; PASS 41289
+just js-build: pass, exit 0
+just js-test: 400/400; fail 0; skipped 0
+R full skip: optional R package sn unavailable.
+Initial C++ compile failure: two-argument CAPTURE in new test; fixed before final passing run.
+Acceptance: 612 samples, 4896 paired fits; status, logLik and profile evaluation differences all zero.

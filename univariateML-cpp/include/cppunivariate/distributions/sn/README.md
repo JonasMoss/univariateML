@@ -98,6 +98,27 @@ remain numerical and do not certify a global free-shape maximum.
 
 An unfinished inner solve is accepted only when the normalized free-coordinate score at the returned point is below `max(reltol, 1e-3/n)` (with `n` observations). This is the Euclidean score norm in log inverse scale and scaled location divided by the sample size, with held coordinates removed.
 
+### Accepted-point cache (2026-11-01)
+
+The analytic Newton solve retains each observation's log-CDF at the last
+accepted objective evaluation. Below the existing tail threshold
+$\alpha z<-10$, the same 24-level continued fraction computes and retains
+both the inverse Mills ratio and its derivative. The next Newton step
+reuses these quantities; rejected line-search trials overwrite the cache,
+and an accepted trial supplies all entries before the next step. If the
+line search fails, the existing independent returned-point score check is
+used. With both location and scale held, the objective is evaluated once
+without computing an unused score or information matrix.
+
+This changes evaluation cost, not the objective, shape grid, local
+refinement, score gates or half-normal comparisons. It adds three temporary
+vectors of length $n$ per inner solve. Warm starts and a coarser outer grid
+were not adopted: their effect on the existing numerical search and status
+behavior would require separate evidence. The finite free-shape search
+still has no global certificate; caching adds no new optimality claim.
+See the [speed evaluation](../../../../../dev/research/evaluations/2026-11-01-sn-speed-report.md)
+for paired regression evidence, timings and remaining guarantees.
+
 ## d/p/q/r
 
 Uses direct skew-normal parameters, distinct from the Fernandez–Steel family; probabilities use Owen’s T and quadrature.

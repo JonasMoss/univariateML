@@ -134,3 +134,19 @@ TEST_CASE("sn fixed shape inverse-scale concavity examples") {
   for(double alpha:{-5.0,-1.0,0.0,1.0,5.0})
     CHECK(ll(0.1,1.2,alpha)>=0.5*(ll(-0.4,0.7,alpha)+ll(0.6,1.7,alpha))-1e-12);
 }
+
+TEST_CASE("sn cached Newton evaluations retain returned-point likelihood and score") {
+  const std::vector<double> x{-1.7,-0.9,-0.2,0.15,0.3,0.8,1.6,3.2};
+  const double nan=cppunivariate::special::kNaN;
+  for(double a:{-1000.0,-30.0,-2.0,0.0,2.0,30.0,1000.0})
+    for(int mask=0;mask<4;++mask) {
+      const double xi=mask&1?0.2:nan,omega=mask&2?1.3:nan;
+      const auto f=cppunivariate::sn_detail::inner(x,a,xi,omega,1e-9,200);
+      CAPTURE(a); CAPTURE(mask);
+      REQUIRE(f.converged);
+      double ll=x.size()*std::log(f.eta);
+      for(double v:x)ll+=cppunivariate::sn_detail::log_density(f.eta*v-f.h,a);
+      CHECK(f.ll==doctest::Approx(ll).epsilon(1e-14));
+      CHECK(cppunivariate::sn_detail::score_residual(x,a,xi,omega,f.eta,f.h)<1e-6);
+    }
+}
