@@ -38,8 +38,8 @@ holds: []
 limits:
 - name: zero-scale collapse
   firmness: proved
-  when: Free sigma tends to zero
-  detect: All logits equal mu (estimated or held) and sigma is free
+  when: 'The free scale $\sigma$ tends to zero at the fitted or held logit location.'
+  detect: 'Scale is free and every logit equals the fitted or held location $\mu$.'
   status: zero scale
   message: does not exist
 examples: |
@@ -72,27 +72,38 @@ fit:
     Closed-form maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - proportions
+existence:
+  uniqueness: proved
+  statement: >-
+    For observations strictly between zero and one, the MLE with both
+    coefficients free exists exactly when the sample is nonconstant, and is
+    unique. With $\mu$ held it exists uniquely unless every logit equals
+    $\mu$. With positive $\sigma$ held the location estimate always exists
+    and is unique, including for constant samples.
+  reason: >-
+    The transformation $y=\log(x/(1-x))$ is one-to-one and its Jacobian
+    is independent of the coefficients. Maximization therefore reduces to
+    normal likelihood maximization on the logits. The unique location is
+    their mean and the unique squared scale is their mean squared distance
+    from the fitted or held location, unless that distance is zero.
 ---
 
-The logit-normal distribution models proportions whose logits follow a normal distribution.
+The logit-normal distribution models proportions whose log odds follow a normal distribution.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
+The coefficients $\mu$ and $\sigma$ are the mean and standard deviation of the logits, rather than of the proportions. Every observation must lie strictly between zero and one. Fitting transforms the data to logits and fits a normal distribution, with a coefficient-independent Jacobian adjustment to the likelihood. The scale estimate uses divisor $n$.
 
-2026-10-30 (TASK-125): normal log tails use the shared normal-tail helper, including its Mills expansion before subnormal loss; quantile inversion uses the same log-tail calculation. The quantile checks its monotone bracket and requires adjacent floating-point endpoints, otherwise returning NaN. Truth rows and extreme round trips validate selected tails.
+With location held, the scale is the root mean squared distance of the logits from that value. With scale held, location is their mean, including for constant data. A free scale has no MLE exactly when every logit equals the fitted or held location. With both coefficients held, the likelihood is evaluated directly.
 
-The parameters `mu` and `sigma` describe the normal distribution of the logits, not the mean and standard deviation of the proportions. The scale estimate uses divisor $n$ on the logit scale.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) gives the boundary argument. Sampling applies the logistic transformation to a normal variate.
 
-Held coefficients apply on the logit scale. With `mu` held, the scale is the root mean squared distance of the logits from `mu`. With `sigma` held, the location is their mean, including for constant data. A free scale has no MLE exactly when every logit equals the estimated or held location. Both-held fits evaluate the likelihood.
+## R notes
 
-## d/p/q/r
+Held `mu` and `sigma` apply on the logit scale. Both-held fits evaluate the likelihood.
 
-Sampling transforms a normal variate by the logistic function.
+## Decision history
 
-### Diagnostic status contract (2026-10-31)
+On 2026-10-30 (TASK-125), normal log tails began using the shared normal-tail helper, including its Mills expansion before subnormal loss. Quantile inversion uses the same calculation and checks a monotone bracket until adjacent floating-point endpoints are reached, otherwise returning NaN. Truth rows and extreme round trips validate selected tails.
 
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+The 2026-10-31 diagnostic audit checks that empty or invalid input has a non-success status and that delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in the family C++ tests.

@@ -15,7 +15,7 @@ params:
   simulate: 0
   bound: lower
   kind: threshold
-  advice: mu = 0 is the ordinary half-normal; NULL estimates the translated endpoint.
+  advice: Supply mu = 0 for the ordinary half-normal, or NULL to estimate the translated endpoint.
 - name: sigma
   symbol: '\sigma'
   role: scale
@@ -30,7 +30,11 @@ r:
     mu: Required endpoint; a value holds it and explicit `NULL` estimates the translation.
 log_density: log(2/pi)/2 - log(sigma) - (x-mu)**2/(2*sigma**2)
 limits:
-  - {firmness: proved, name: scale collapse, when: every observation equals the free or held endpoint and sigma tends to zero, status: DegenerateData}
+  - firmness: proved
+    name: scale collapse
+    when: 'The scale tends to zero at the fitted or held endpoint $\mu$.'
+    detect: 'Scale is free and every observation equals the fitted or held endpoint.'
+    status: DegenerateData
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition.
   Wiley.
@@ -79,29 +83,36 @@ summary: Translated Half-Normal provides a model for one-sided Gaussian deviatio
 aliases: []
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique MLE exists exactly when the sample
+    is nonconstant. The endpoint is $\hat\mu=\min_i x_i$. With $\mu$ held,
+    a unique scale estimate exists when all observations are at least $\mu$
+    and at least one exceeds it. With positive $\sigma$ held, the free
+    endpoint is uniquely estimated by the sample minimum, even for constant data.
+  reason: >-
+    For every positive scale the likelihood increases as the endpoint moves
+    towards the sample minimum. At that endpoint, or at a held compatible
+    endpoint, maximizing over scale gives
+    $\hat\sigma^2=n^{-1}\sum_i(x_i-\mu)^2$ uniquely when this is positive.
+    If it is zero, the likelihood diverges as $\sigma\to0$.
 ---
 
-The translated half-normal distribution models nonnegative normal deviations from an unknown endpoint.
+The translated half-normal distribution models one-sided Gaussian deviations from a lower endpoint, which may be known or estimated.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) describes the limiting paths and the scope of the boundary comparisons.
+The endpoint is $\mu$, and $\sigma$ is the parent normal scale, not the standard deviation of the observations. With both coefficients free, the endpoint estimate is the sample minimum and the scale estimate is the root mean squared distance from it. Constant samples have unbounded likelihood as scale tends to zero.
 
-The support is $[\mu, \infty)$ and `sigma` is a scale, not the standard deviation.
-The likelihood is maximised at `mu = min(x)` exactly, with
-`sigma = sqrt(mean((x - mu)^2))`. At the endpoint `dml` returns the
-interior limit `sqrt(2/pi)/sigma`. At least two distinct observations are
-required when both coefficients are estimated; constant data have unbounded
-likelihood as sigma tends to zero.
+Holding the endpoint requires every observation to be at least that value. With scale free, at least one observation must exceed the endpoint. Holding positive scale removes collapse and permits singleton and constant samples. With both coefficients held, compatible data only require likelihood evaluation. The density at the endpoint is its limit from inside the support.
 
-Holding `mu` uses the closed support $[\mu, \infty)$ and requires all observations to be at least `mu`, with at least one strictly larger. The scale estimate is the root mean square distance from that endpoint, including for a single observation. `mlhnorm(x, mu = 0)` fits the ordinary half-normal. Evaluation uses the internal translated half-normal functions.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) gives the boundary arguments.
 
-Data with a sharp maximum instead of a minimum come from the reflected model; fit `mlhnorm(-x, mu = NULL)`.
+## R notes
 
-Holding positive finite `sigma` removes scale collapse, including for singleton
-and constant samples. The free endpoint is sample minimum exactly; a held endpoint
-may equal the observations. Both held coefficients are returned unchanged.
+Supply `mu = 0` for the ordinary half-normal, or `mu = NULL` to estimate the translated endpoint. The internal translated half-normal functions provide evaluation, including the endpoint density `sqrt(2/pi)/sigma`. For data with a sharp maximum, fit `mlhnorm(-x, mu = NULL)` and reflect the fitted distribution.
 
-### Adapter independence (2026-10-30)
+## Decision history
 
-The adapter now returns the core held-scale log likelihood directly. The removed duplicate used the identical sum order and formula; support and finite-likelihood checks already live in `hnorm_mle`.
+On 2026-10-30 the adapter began returning the core held-scale log likelihood directly. The removed duplicate used the same sum order and formula. Support and finite-likelihood checks remain in the core fitter.

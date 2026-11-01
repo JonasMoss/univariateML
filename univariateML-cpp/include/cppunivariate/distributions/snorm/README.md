@@ -40,14 +40,19 @@ r:
     xi: "Optional held xi; NULL estimates it where the hold subset is supported."
 log_density: log(sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)) - log(sd) + log(2/(xi+1/xi)) - log(2*pi)/2 - Piecewise(((sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))**2/xi**2, (sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))>0), ((sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)*(x-mean)/sd + sqrt(2/pi)*(xi-1/xi))**2*xi**2, True))/2
 limits:
-  - {firmness: proved, name: scale collapse, when: "free scale with constant data at the free or held mean", status: Unbounded, message: "Scale collapse"}
+  - firmness: proved
+    name: scale collapse
+    when: 'The free standard deviation $\sigma$ tends to zero at the fitted or held mean.'
+    detect: 'Every observation equals the fitted or held mean and scale is free.'
+    status: Unbounded
+    message: "Scale collapse"
   - model: hnorm
     firmness: proved
-    when: '$\xi \to \infty$'
+    when: 'As $\xi\to\infty$, the distribution tends to a translated right half-normal with the limiting mean and standard deviation.'
     status: 'RightHalfNormalBoundary'
   - name: 'reflected translated half-normal'
     firmness: proved
-    when: '$\xi \to 0$'
+    when: 'As $\xi\to0$, the distribution tends to a reflected translated half-normal with the limiting mean and standard deviation.'
     status: 'LeftHalfNormalBoundary'
 references:
 - Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American
@@ -89,27 +94,43 @@ aliases:
 - "Fernández–Steel skew-normal"
 key_references:
 - 2
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, nonconstant samples have a finite MLE exactly
+    when the two-piece profile described below attains its global minimum at
+    an interior mode. Otherwise the supremum is a translated half-normal
+    limit. Constant samples have unbounded likelihood. Joint uniqueness is
+    not established. Holding $\xi=1$ gives the usual unique normal MLE
+    whenever scale does not collapse. For other held subsets, half-normal
+    limits must respect the held moments, and no general existence or
+    uniqueness classification is asserted here.
+  reason: >-
+    For a proposed mode $c$, let $A(c)=\sum_{x_i<c}(x_i-c)^2$ and
+    $B(c)=\sum_{x_i\ge c}(x_i-c)^2$. Profiling the two side scales
+    makes maximization equivalent to minimizing
+    $Q(c)=(A(c)^{1/3}+B(c)^{1/3})^3$ on the interval between the sample
+    extremes. An interior minimizer gives positive side scales. Endpoint
+    minimizers give half-normal limits. This compact profile establishes
+    attainment in the closure, but does not establish uniqueness.
 ---
 
-The Fernandez--Steel skew-normal distribution introduces skewness by giving the two sides of a normal density different scales.
+The Fernández–Steel skew-normal distribution models skewness through different Gaussian scales on the two sides of a mode.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) describes the limiting paths and the scope of the boundary comparisons.
+The coefficients $\mu$ and $\sigma$ are the distribution's mean and standard deviation. The positive coefficient $\xi$ controls the side-scale ratio, and $\xi=1$ gives a normal distribution. The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) describes the limiting paths and boundary comparisons.
 
-This is the two-piece normal family, rather than the Azzalini skew-normal family. The coefficients `mean` and `sd` are its mean and standard deviation; `xi = 1` gives the normal distribution. The translated half-normal boundary has its mode at the sample minimum or maximum.
+With all coefficients free, the fitter profiles the two side scales analytically and searches the mode between the sample extremes. Between consecutive observations the stationary candidates satisfy a polynomial equation of degree at most seven. Comparing these candidates and the endpoints gives a global comparison in exact arithmetic, conditional on the computed root comparisons. It does not imply that a finite maximizer is unique. The right and left half-normal limits have their endpoints at the sample minimum and maximum respectively.
 
-Use `mlhnorm(x, mu = NULL)` for the right boundary and `mlhnorm(-x, mu = NULL)` for the left boundary, reflecting the fitted half-normal back at the sample maximum.
-
-
-Any subset of `mean`, `sd`, and `xi` can be held. With skewness held,
+Any subset of the three coefficients can be held. With skewness held,
 location and inverse scale have a concave likelihood. With skewness free,
 both half-normal faces are compared under the held moment constraints.
 The conditional search uses nested one-dimensional minimizations and scans
 log skewness; this numerical search is not a global certificate. Constant
 data at a held mean have unbounded likelihood when scale is free.
 
-With both mean and sd held, an observation at the limiting half-normal
+With both mean and standard deviation held, an observation at the limiting half-normal
 endpoint retains a finite residual on the shrinking side. Each such
 observation contributes the penalty $m^2/(8h^4)$ to the limiting log
 likelihood, where $m=\sqrt{2/\pi}$ and $h=\sqrt{1-2/\pi}$.
@@ -119,6 +140,9 @@ A conditional search that reaches a finite numerical tail guard without a
 winning analytic face stops with a convergence reason. A guard value is
 never returned as an estimated coefficient.
 
-## d/p/q/r
 
-Uses the fGarch mean and standard deviation parameterisation.
+## R notes
+
+This is the two-piece normal family. `mlsn` fits the Azzalini skew-normal family. Any subset of `mean`, `sd`, and `xi` can be held. Evaluation uses the fGarch mean and standard deviation parameterization.
+
+Use `mlhnorm(x, mu = NULL)` for the right half-normal boundary. For the left boundary, fit `mlhnorm(-x, mu = NULL)` and reflect the resulting distribution back to the original axis.
