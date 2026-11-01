@@ -32,7 +32,8 @@ GOLDEN_TOLERANCE <- c(
   emg = 3e-7, gev = 2e-10, gompertz = 1e-11,
   ht = 5e-7, pareto4 = 1e-7, pig = 1e-7,
   gb2 = 5e-10, invtrgamma = 2e-10, tlambda = 3e-7,
-  trgamma = 2e-11, zinb = 4e-9, zmnbinom = 3e-6
+  trgamma = 2e-11, zinb = 4e-9, zmnbinom = 3e-6,
+  st = 5e-7
 )
 
 # Adapter controls, or the implementation's inner stopping tolerance for ht.
@@ -45,7 +46,8 @@ GOLDEN_STOP_TOLERANCE <- c(
   gev = 1e-10, gompertz = 1.220703e-4, ht = 2e-14,
   gb2 = 1e-7, invtrgamma = 1e-10, tlambda = 1e-7,
   pareto4 = 1e-10, pig = 1e-9, trgamma = 1e-10,
-  zinb = 1e-10, zmnbinom = 1e-10
+  zinb = 1e-10, zmnbinom = 1e-10,
+  st = 1e-6
 )
 stopifnot(identical(sort(names(GOLDEN_TOLERANCE)), sort(names(GOLDEN_STOP_TOLERANCE))),
           all(GOLDEN_TOLERANCE <= 10 * sqrt(GOLDEN_STOP_TOLERANCE[names(GOLDEN_TOLERANCE)])))
