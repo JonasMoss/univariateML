@@ -61,7 +61,8 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
     if (!isTRUE(valid)) stop("`", name, "`: held `", p$name, "` must be in ", domain, call. = FALSE)
   }
   obj <- univariateML_construct(unlist(values), name,
-    list(n = length(x), call = deparse(call)), fixed = meta$names)
+    list(n = length(x), call = deparse(call)), fixed = meta$names,
+    data = if (frozen) NULL else x)
   # A median evaluation also checks joint parameter constraints and lattice
   # parameters in the reference evaluator, without imposing fit_domain.
   q <- suppressWarnings(qml(0.5, obj))

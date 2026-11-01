@@ -270,7 +270,7 @@ gen_wrapper <- function(model) {
     "  n <- length(x)\n",
     "  out <- ", fname, "_(x = x, ...)\n",
     "  params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)\n",
-    "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params, fixed = out$fixed, restricted = out$restricted)\n",
+    "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params, fixed = out$fixed, restricted = out$restricted, data = x)\n",
     "}\n\n"
   )
 }
