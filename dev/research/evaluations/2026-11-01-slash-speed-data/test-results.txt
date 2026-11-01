@@ -1,0 +1,12 @@
+All final runs used the local workstation through /tmp/umvl-cpu/run4.
+just cpp-test: exit 0, 105/105 (repeated after final density-helper edit)
+just cpp-test-no-long-double: exit 0, 126/126
+just test: exit 0, FAIL 0, WARN 0, SKIP 151, PASS 19950
+just test-full: exit 0, FAIL 0, WARN 0, SKIP 0, PASS 41418
+just js-build: exit 0
+just js-test: exit 0, 409/409, fail 0, cancelled 0, skipped 0
+Source base: 8fab6b4909bd054db65b1c32b04a133cd293d159, branch codex/slash-speed, uncommitted slash changes.
+mle.hpp SHA-256 b58849c2f48735fa9488534b8ec22bb2f3a1b5351f1af7c0293a72385f21e6e5
+dpqr.hpp SHA-256 5461ea7e2135243fa04cb675117929c5ddcf8e86ef3551eb3d30c2c26cb1e9e4
+test.cpp SHA-256 faeb0a29205f1d72aad96a1db7b21f23ec779248140f74ce41e80181dd577c1c
+README.md SHA-256 957eb9b624a27819281023916cdccb5b63c422ca4ece64e0dad5129857811834

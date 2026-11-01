@@ -22,12 +22,15 @@ struct Profile {
         const double mid=(lo+hi)/2;
         if(mid==lo || mid==hi)break;
         const double ss=std::exp(mid);double score=0;
-        for(double delta:residuals) {const double z=delta/ss,t=z*z/2;score+=t<1e-7 ? -1+t-t*t/6 : (t>700?1:1-2*t/std::expm1(t));}
+        // For t >= 42 the subtracted term is below half the spacing
+        // immediately below 1, so the original binary64 expression is 1.
+        for(double delta:residuals) {const double z=delta/ss,t=z*z/2;score+=t<1e-7 ? -1+t-t*t/6 : (t>=42?1:1-2*t/std::expm1(t));}
         if(score>0)lo=mid;else hi=mid;
       }
       s=std::exp((lo+hi)/2);
     }
-    double ll=0;for(double v:x)ll+=distributions::dslash(v,m,s,true);
+    const double log_s=std::log(s);
+    double ll=0;for(double v:x)ll+=distributions::slash_log_density_cached(v,m,s,log_s);
     return {m,s,ll,0,SlashStatus::Ok};
   }
 };

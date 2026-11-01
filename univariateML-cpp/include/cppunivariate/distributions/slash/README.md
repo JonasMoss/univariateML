@@ -90,6 +90,17 @@ boundary/failure comparisons are unchanged; no global mode-isolation claim is
 added. See the [paired evidence and rejected
 trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
+The 2026-11-01 slash-speed revision also omits `expm1(t)` in the scale
+score for $t\ge42$. The function $2t/(e^t-1)$ is decreasing for positive
+$t$, and at 42 it is below $4.83\times10^{-17}<2^{-54}$. Thus
+`1-2*t/expm1(t)` rounds to exactly one in binary64 round-to-nearest,
+with ample margin for ordinary libm rounding. The previous shortcut at
+$t>700$ is extended to this earlier saturation point. The density pass caches `log(sigma)` once per profile, reusing it in
+the distance and normalization terms without changing their arithmetic order.
+Division, squaring, score summation and bisection midpoints stay unchanged;
+no tolerance or search change is involved. See the [paired profile and
+validation report](../../../../../dev/research/evaluations/2026-11-01-slash-speed-report.md).
+
 A value with more than half the sample mass makes the free-scale likelihood unbounded. With every multiplicity strictly below half, the maximum is attained. At exactly half, the finite collapse likelihood must be compared with the interior profile; ties within $10^{-8}n$ select collapse. Holding sigma removes collapse. The scale score has a unique root for every location away from the observations. The location profile can be multimodal; a grid over every observation gap nominates all numerical local maxima for refinement. This search is numerical, not a proof that every mode is isolated.
 
 For an exact existence criterion in the half-mass case, put $c=1/\sqrt{2\pi}$ and $B_v=c^n2^{-n/2}\prod_{x_i\ne v}|x_i-v|^{-2}$ at each half-mass value $v$. For a location $m$ away from such values, let $s(m)$ be the unique positive zero of $\sum_i[1-2t_i/(e^{t_i}-1)]$, $t_i=(x_i-m)^2/(2s^2)$. An MLE exists if and only if some interior profile value $L(m,s(m))$ is at least $\max_v B_v$; if the maximum multiplicity is below half, the comparison is vacuous. This is an exact variational criterion; the implementation evaluates it numerically, with the stated tie preference. It is not a multiplicity-only rule: `c(0, 1)` has an interior maximum, whereas `c(0, 0, -1, 1)` numerically selects collapse. Location lies in the sample range; the likelihood tends to zero at all other escaping paths. The density decreases strictly with absolute standardized distance. Together these facts prove attainment below half. At a half-mass point, $L(v,s)<B_v$ for every positive scale. If $\sum_{x_i\ne v}1/(x_i-v)\ne0$, choosing $m-v$ proportional to $s^2$ increases the likelihood above $B_v$ for sufficiently small $s$, proving existence (subject to comparison with any other half-mass point). It suffices to check the sum at a half-mass value with the largest $B_v$; a sample of two values with equal counts always passes, since both sums are nonzero and the two $B_v$ agree. A zero sum is not decided by this test ([TASK-117 report](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md)).
