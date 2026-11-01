@@ -6,7 +6,8 @@
 #include <limits>
 namespace cppunivariate {
 enum class CmbStatus { Ok, InvalidInput, PointMass, AdjacentLimit, EndpointLimit,
-                       Unidentified, IterationFailure, FaceUnresolved, FaceTie };
+                       Unidentified, IterationFailure, FaceUnresolved, FaceTie,
+                       NotImplemented };
 struct CmbResult { double prob,nu,logLik; int iterations; CmbStatus status; };
 namespace cmb_detail {
 inline double probability(double eta) {
@@ -94,6 +95,32 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=100,
 }
 
 struct CmbSizeResult { double size; CmbResult fit; };
+
+// Constant samples have an exact solution (or point-mass supremum). Other
+// free-dispersion samples need the global size and face comparison.
+inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
+    double prob=std::numeric_limits<double>::quiet_NaN(),
+    double tol=1e-10,int maxit=100) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto fail=[&](CmbStatus s) {return CmbSizeResult{nan,{nan,nan,nan,0,s}};};
+  const bool fixed=!std::isnan(prob);
+  if(x.size()==0 || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
+     (fixed && !(prob>=0 && prob<=1)))return fail(CmbStatus::InvalidInput);
+  int mn=10000001,mx=0;
+  for(int v:x) {
+    if(v<0 || v>10000000)return fail(CmbStatus::InvalidInput);
+    mn=std::min(mn,v);mx=std::max(mx,v);
+  }
+  if(fixed && prob==0 && mx>0)return fail(CmbStatus::InvalidInput);
+  if(fixed && prob==1 && mn!=mx)return fail(CmbStatus::InvalidInput);
+  if(mn!=mx)return fail(CmbStatus::NotImplemented);
+  if(!fixed || mx==0 || prob==1)
+    return {double(mx),{fixed?prob:(mx==0?0.:1.),1.,0.,0,CmbStatus::Ok}};
+  // If 2*mx is in the supported size range, nu -> +infinity at size
+  // 2*mx concentrates on mx. No finite interior-probability member does.
+  if(mx<=5000000)return fail(CmbStatus::PointMass);
+  return fail(CmbStatus::NotImplemented);
+}
 
 // Free probability and fixed dispersion. All finite-size profiles are checked;
 // the truncation comparison below bounds every unvisited size simultaneously.

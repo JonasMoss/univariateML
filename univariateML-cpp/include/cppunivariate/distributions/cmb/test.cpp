@@ -161,3 +161,18 @@ TEST_CASE("cmb fixed dispersion seeded size grid") {
   CHECK(fit.size==arg);
   CHECK(fit.fit.logLik==doctest::Approx(best).epsilon(1e-10));
 }
+
+TEST_CASE("cmb free dispersion constant samples") {
+  const std::vector<int> z{0,0}, c{3,3}, mixed{1,2};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  auto f=cppunivariate::cmb_size_free_nu_mle({c.data(),c.size()});
+  CHECK(f.fit.status==cppunivariate::CmbStatus::Ok);
+  CHECK(f.size==3); CHECK(f.fit.prob==1); CHECK(f.fit.logLik==0);
+  f=cppunivariate::cmb_size_free_nu_mle({z.data(),z.size()},.4);
+  CHECK(f.fit.status==cppunivariate::CmbStatus::Ok); CHECK(f.size==0);
+  CHECK(f.fit.prob==.4);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({c.data(),c.size()},.4).fit.status==cppunivariate::CmbStatus::PointMass);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({c.data(),c.size()},0).fit.status==cppunivariate::CmbStatus::InvalidInput);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({mixed.data(),mixed.size()},nan).fit.status==cppunivariate::CmbStatus::NotImplemented);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({c.data(),c.size()},nan,1e-10,0).fit.status==cppunivariate::CmbStatus::InvalidInput);
+}
