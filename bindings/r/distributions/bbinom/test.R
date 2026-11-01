@@ -98,7 +98,7 @@ test_that("bbinom: P3 unfinished optimizer stops", {
 test_that("bbinom: retained free-size guards identify the unresolved profile", {
   expect_error(mlbbinom(c(0,1,2,4,8),size=NULL), "binomial and two-point limits.*no usable bound")
   expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,alpha=2), "negative binomial with the same alpha.*no usable bound")
-  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,beta=3), "tail bound.*too weak")
+  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,beta=3), "tail bound.*global comparison")
   # Fixed alpha with beta proportional to size approaches NB with that
   # alpha held. Reflecting x to N-x would change the observed sample.
   x <- 0:10; alpha <- 2; mu <- 3

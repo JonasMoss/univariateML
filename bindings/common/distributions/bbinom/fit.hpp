@@ -19,7 +19,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   if (!size.supplied && alpha.supplied && !beta.supplied)
     return failure("Estimating size with alpha held is not implemented. As size grows the fit approaches a negative binomial with the same alpha, and no usable bound rules out a larger size beating both.");
   if (!size.supplied && !alpha.supplied && beta.supplied)
-    return failure("Estimating size with beta held is not implemented. A tail bound shows that the likelihood eventually decreases in size when some count is positive, but it is too weak for a practical search, and the point-mass limits at each size still need comparison.");
+    return failure("Estimating size with beta held is not implemented. A joint tail bound tends to zero when some count is positive, but a certified search still needs global comparison of fixed-size profiles and point-mass limits.");
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = alpha.supplied ? alpha.value : nan;
   const double b = beta.supplied ? beta.value : nan;

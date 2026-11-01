@@ -78,7 +78,7 @@ holds:
 - held:
   - beta
   status: not-implemented
-  reason: "Estimating size with beta held is not implemented. A tail bound shows that the likelihood eventually decreases in size when some count is positive, but it is too weak for a practical search, and the point-mass limits at each size still need comparison."
+  reason: "Estimating size with beta held is not implemented. A joint tail bound tends to zero when some count is positive, but a certified search still needs global comparison of fixed-size profiles and point-mass limits."
 fit_args:
   size: 10
 examples: |
@@ -145,6 +145,45 @@ The beta-binomial distribution is a binomial distribution whose success probabil
 The number of trials $n$ is normally known. The fit with both shapes free does not test for overdispersion; it compares the best interior fit with the binomial likelihood, within $10^{-8}$ per observation. Evidence for the existence results: `dev/research/evaluations/2026-10-31-open-existence-report.md`.
 
 With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. The search stops after one million candidates. With $n$ also held, the likelihood is simply evaluated. Estimating $n$ with a shape free is not implemented, because the fit at each fixed $n$ can itself escape to a binomial or two-point law, and these limits must be compared across all $n$. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
+
+## Free-size research: joint held-beta tail
+
+Let $h$ be the number of observations, $m>0$ the number of positive
+observations, $M=\max x_i$, and let $b>0$ be held. For $N\ge2M$ put
+$H_N=\sum_{j=0}^{N-1}(b+1+j)^{-1}$. The held-beta inequalities proved in
+`dev/research/evaluations/2026-10-30-holds-bbinom-report.md` give, for
+$0<a\le1$, $P_0\le e^{-aH_N}$ and
+$P_x\le 2^x a e^{-aH_N}$ for $x>0$. For $a\ge1$, stochastic monotonicity
+and the same report give $P_0\le e^{-H_N}$ and
+$P_x\le(2^{x+1}-1)e^{-H_N}$. Thus the **whole likelihood**, uniformly in
+$a>0$, is at most
+
+$$
+\max\left\{2^{\sum_i x_i}\left(\frac{m}{e h H_N}\right)^m,
+ e^{-hH_N}\prod_{x_i>0}(2^{x_i+1}-1)\right\}.
+$$
+
+The first term maximises $a^m e^{-haH_N}$ over all $a>0$; allowing
+$a>1$ in that maximisation only weakens the bound. Both terms decrease in
+$N$. A candidate with positive likelihood supplies a finite cutoff, but
+that cutoff can be impractically large. This improves the earlier
+single-observation $O(1/\log N)$ likelihood bound to
+$O((\log N)^{-m})$. The power is sharp in general: along
+$a=t/\log N$ for fixed $t>0$, $P_0\to e^{-t}$ and
+$P_x\sim e^{-t}t/(x\log N)$ for each fixed $x>0$. Consequently the
+likelihood times $(\log N)^m$ tends to
+$e^{-ht}t^m/\prod_{x_i>0}x_i$.
+
+This bound alone does not certify the integer profile comparison: the
+existing fixed-size shape optimizer supplies an approximate profile with a
+nonzero likelihood allowance, and those upper allowances must be retained
+when comparing sizes and point-mass faces. Held alpha has a fixed-shape
+negative-binomial face, while the unrestricted subset also has arbitrary
+negative-binomial and Poisson faces and fixed-size binomial and endpoint
+faces. A uniform tail correction against those faces and a global
+comparison of the finite-size faces remain open. No additional subset is
+implemented by this bound. Details and numerical checks are recorded in
+`dev/research/evaluations/2026-11-01-bbinom-size-report.md`.
 
 ## R notes
 
