@@ -107,7 +107,6 @@ test_that("limit detector describes its numerical comparison", {
 })
 
 test_that("inverse Pareto help describes the detector as numerical", {
-  rd <- paste(readLines(file.path("..", "..", "man", "mlinvpareto.Rd"), warn = FALSE), collapse = " ")
-  rd <- gsub("[[:space:]]+", " ", rd)
+  rd <- umvl_rd_text("mlinvpareto.Rd")
   expect_match(rd, "numerical search does not establish a finite maximum", fixed = TRUE)
 })

@@ -1,0 +1,66 @@
+name: r-check
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    env:
+      OMP_NUM_THREADS: 1
+      OPENBLAS_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
+      MAKEFLAGS: -j4
+      UMVL_TEST_TIER: cran
+      R_KEEP_PKG_SOURCE: 'yes'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-tinytex@v2
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: bindings/r
+          extra-packages: any::roxygen2, any::pkgload, any::devtools, any::rcmdcheck
+      - name: Assemble and document
+        id: assemble
+        run: Rscript .github/scripts/assemble.R
+        shell: bash
+      - name: Record environment
+        run: |
+          dir.create("build/ci-r", recursive = TRUE, showWarnings = FALSE)
+          capture.output(sessionInfo(), file = "build/ci-r/session.txt")
+          capture.output(list(platform = Sys.info(), machine = .Machine,
+                              packages = sapply(c("BH", "Rcpp", "testthat"), function(p) as.character(packageVersion(p)))),
+                         file = "build/ci-r/platform.txt")
+          capture.output(system2(file.path(R.home("bin"), "R"), c("CMD", "config", "CXX17"), stdout = TRUE),
+                         file = "build/ci-r/compiler.txt")
+        shell: Rscript {0}
+      - name: Golden drift (assertions remain enabled)
+        run: Rscript .github/scripts/golden-drift.R
+        shell: bash
+      - name: Build and check source tarball
+        if: ${{ !cancelled() && steps.assemble.outcome == 'success' }}
+        run: Rscript .github/scripts/r-check.R
+        shell: bash
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r-check-${{ runner.os }}-${{ runner.arch }}
+          retention-days: 14
+          path: |
+            build/ci-r/
+            univariateML_*.tar.gz

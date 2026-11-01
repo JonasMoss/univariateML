@@ -1,0 +1,8 @@
+root <- normalizePath(".", winslash = "/", mustWork = TRUE)
+dir.create("build/ci-r", recursive = TRUE, showWarnings = FALSE)
+report <- file.path(root, "build/ci-r/golden-drift.csv")
+unlink(report)
+Sys.setenv(UMVL_GOLDEN_DRIFT_FILE = report, PKG_BUILD_EXTRA_FLAGS = "false")
+options(pkg.build_extra_flags = FALSE)
+testthat::test_local("univariateML-r", filter = "golden_regression", stop_on_failure = TRUE)
+stopifnot(file.exists(report), nrow(read.csv(report)) == 98L)

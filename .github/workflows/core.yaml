@@ -1,0 +1,78 @@
+name: core
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  ctest:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    env:
+      OMP_NUM_THREADS: 1
+      OPENBLAS_NUM_THREADS: 1
+      CCACHE_DIR: ${{ github.workspace }}/build/ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_NOHASHDIR: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: msys2/setup-msys2@v2
+        id: msys2
+        if: runner.os == 'Windows'
+        with:
+          msystem: UCRT64
+          install: mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-ccache
+          path-type: inherit
+          cache: true
+      - name: Select MinGW tools
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
+        run: '"$env:MSYS2_LOCATION/ucrt64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append'
+      - name: Install compiler cache
+        if: runner.os != 'Windows'
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then
+            sudo apt-get update
+            sudo apt-get install -y ccache ninja-build
+          else
+            brew install ccache ninja
+          fi
+      - uses: actions/cache@v4
+        with:
+          path: build/boost_1_87_0
+          key: boost-1.87.0-${{ runner.os }}-${{ runner.arch }}
+      - uses: actions/cache@v4
+        with:
+          path: build/ccache
+          key: core-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('univariateML-cpp/**', 'dev/validation/diagnostics-audit.cpp') }}
+          restore-keys: core-${{ runner.os }}-${{ runner.arch }}-
+      - run: python .github/scripts/boost.py
+      - name: Configure, build and test (full)
+        run: |
+          cmake -S univariateML-cpp -B build/ci-core -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DBoost_INCLUDE_DIR="$PWD/build/boost_1_87_0"
+          cmake --build build/ci-core --parallel 4
+          ctest --test-dir build/ci-core --output-on-failure -j4 -L full
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: core-${{ runner.os }}-${{ runner.arch }}
+          path: |
+            build/ci-core/Testing/Temporary/
+            build/ci-core/CMakeCache.txt
+            build/ci-core/CMakeFiles/*/CMakeCXXCompiler.cmake
