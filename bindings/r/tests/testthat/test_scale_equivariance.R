@@ -23,13 +23,13 @@ scale_exclusions <- c(
 affine_models <- c("mlbhatt", "mlcauchy", "mlemg", "mlfrechet", "mlged",
                    "mlgev", "mlgumbel", "mlhnorm", "mlhuber", "mllaplace",
                    "mllogis", "mllst", "mlnorm", "mlsged", "mlslash",
-                   "mlsn", "mlsnorm", "mlsstd", "mlstd", "mltlambda",
+                   "mlsn", "mlst", "mlsnorm", "mlsstd", "mlstd", "mltlambda",
                    "mltnorm", "mltriang", "mlunif")
 
 pull_back_scale_fit <- function(fit, model, a, b) {
   p <- setNames(as.numeric(fit), names(fit))
   loc <- intersect(names(p), c("mean", "mu", "xi", "location"))
-  if (model != "mlsn") loc <- setdiff(loc, "xi")
+  if (!(model %in% c("mlsn", "mlst"))) loc <- setdiff(loc, "xi")
   if (model %in% c("mltriang", "mlunif")) loc <- names(p)
   # All remaining named dimensional parameters have the usual scale law.
   scl <- intersect(names(p), c("sd", "sigma", "scale", "beta", "omega"))
@@ -60,7 +60,7 @@ pull_back_scale_fit <- function(fit, model, a, b) {
 # exposes coefficient variation around 1e-6; retain the separate likelihood check.
 scale_search_models <- c("mlbetapr", "mlburr", "mlemg", "mlgb2", "mlged",
                          "mlht", "mlhuber", "mllst", "mlinvburr", "mlinvparalogis", "mlparalogis",
-                         "mlsged", "mlsn", "mlsstd", "mlstd", "mlbhatt")
+                         "mlsged", "mlsn", "mlst", "mlsstd", "mlstd", "mlbhatt")
 
 for (id in univariateML_models) {
   model <- paste0("ml", id)
@@ -92,8 +92,15 @@ for (id in univariateML_models) {
         expect_false(is.character(got))
         if (is.character(got)) next
         tol <- if (model %in% scale_search_models) 2e-5 else 2e-7
-        expect_equal(pull_back_scale_fit(got, model, a, b),
-                     as.numeric(base), tolerance = tol)
+        pulled <- pull_back_scale_fit(got, model, a, b)
+        if (model == "mlst") {
+          # The finite-difference df score is ill-conditioned near the normal
+          # face; retain a separate likelihood check below.
+          expect_equal(pulled[1:3], as.numeric(base)[1:3], tolerance = tol)
+          expect_equal(pulled[4], as.numeric(base)[4], tolerance = 2e-4)
+        } else {
+          expect_equal(pulled, as.numeric(base), tolerance = tol)
+        }
         delta <- attr(got, "logLik") + length(x) * log(b) - attr(base, "logLik")
         expect_lt(abs(delta) / length(x), 2e-8)
       }

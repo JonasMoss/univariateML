@@ -3320,6 +3320,25 @@
       "gap": "Kink sensitivity, identification, density estimation and calibration unvalidated.",
       "historical_sources": "",
       "historical_validation": ""
+    },
+    {
+      "family": "st",
+      "regime": "unreviewed",
+      "target": "Other hypotheses: not reviewed",
+      "status": "unreviewed",
+      "procedures": "No audited procedure for this scope",
+      "theory": "Unreviewed estimator limit; DQM alone is insufficient",
+      "assumptions": "all parameter values and free subsets",
+      "dqm": "Unreviewed",
+      "information": "Unreviewed",
+      "rank": "Unreviewed",
+      "evidence": "univariateML-cpp/include/cppunivariate/distributions/st/README.md#information-at-symmetry",
+      "calibration": "",
+      "implementation": [],
+      "checks": [],
+      "gap": "Full DQM, information rank and numerical inference have not been reviewed.",
+      "historical_sources": "",
+      "historical_validation": ""
     }
   ],
   "numeric_eligibility": {
@@ -4225,6 +4244,15 @@
         "condition": "joint cusp-moving regime with xi != 1",
         "reason": "the two-piece log density has a moving second-derivative kink",
         "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "st": [
+      {
+        "regime": "unreviewed",
+        "available": false,
+        "condition": "all parameter values and free subsets",
+        "reason": "Full DQM, information rank and numerical inference have not been reviewed.",
+        "classification": "univariateML-cpp/include/cppunivariate/distributions/st/README.md#information-at-symmetry"
       }
     ],
     "std": [

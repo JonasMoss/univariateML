@@ -4,6 +4,7 @@ import {readFileSync,writeFileSync,existsSync,readdirSync,mkdirSync,statSync} fr
 import path from 'node:path';
 import os from 'node:os';
 const root=path.resolve(import.meta.dirname,'../..'),dist=path.join(root,'site/dist'),scratch=path.join(root,'build/scratch/graph');mkdirSync(scratch,{recursive:true});
+const familyCount=JSON.parse(readFileSync(path.join(root,'site/src/data/families.json'))).length;
 const cache=path.join(os.homedir(),'.cache/ms-playwright');
 const executable=process.env.BROWSER_EXECUTABLE||readdirSync(cache).filter(n=>/^chromium_headless_shell-/.test(n)).sort().reverse().map(n=>path.join(cache,n,'chrome-headless-shell-linux64/chrome-headless-shell')).find(existsSync);
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml'};
@@ -16,7 +17,7 @@ try{
  await page.goto(url);await page.locator('astro-island:not([ssr])').waitFor();
  await page.locator('.overview').screenshot({path:path.join(scratch,`${version}-map-desktop.png`)});
  await page.screenshot({path:path.join(scratch,`${version}-desktop.png`),fullPage:true});
- if(await page.locator('[data-map-node]').count()!==98)throw Error('Map nodes');
+ if(await page.locator('[data-map-node]').count()!==familyCount)throw Error('Map nodes');
  const collisions=await page.locator('[data-map-node] rect').evaluateAll(ns=>ns.flatMap((n,i)=>ns.slice(i+1).filter(m=>{const a=n.getBBox(),b=m.getBBox();return a.x<b.x+b.width&&b.x<a.x+a.width&&a.y<b.y+b.height&&b.y<a.y+a.height;}).map(m=>[n.parentElement.dataset.mapNode,m.parentElement.dataset.mapNode])));
  if(collisions.length)throw Error('Map label collisions: '+JSON.stringify(collisions));
 
@@ -41,8 +42,8 @@ try{
  await page.getByLabel('Special case',{exact:true}).uncheck();if(!await page.locator('[data-map-edge][data-kind=special_case_of]').evaluateAll(ns=>ns.every(n=>getComputedStyle(n).display==='none')))throw Error('Kind filter failed');
  await page.locator('.atlas-disclosure>summary').click();await page.getByLabel('Group',{exact:true}).selectOption({index:1});if(await page.locator('.atlas>section:visible').count()!==1)throw Error('Group filter failed');
  const plain=await browser.newContext({javaScriptEnabled:false});const p=await plain.newPage();await p.goto(url);
- if(await p.locator('[data-map-node]').count()!==98||await p.locator('[data-node]').count()!==98)throw Error('No-JS node coverage');
+ if(await p.locator('[data-map-node]').count()!==familyCount||await p.locator('[data-node]').count()!==familyCount)throw Error('No-JS node coverage');
  if(await p.locator('[data-map-edge][data-kind=limit]:visible').count())throw Error('No-JS map limits');
  await p.locator('.atlas-disclosure>summary').click();await p.locator('.atlas details').first().locator('summary').click();if(!await p.locator('.atlas details[open] [data-kind=limit]').count())throw Error('No-JS limits failed');await plain.close();
- if(errors.length)throw Error(errors.join('\n'));console.log('PASS graph browser: 98 map nodes, relations-only default, limits toggle, keyboard highlight/selection, search focus, filters, desktop/mobile screenshots, no overflow, no-JS map and atlas; no browser errors.');
+ if(errors.length)throw Error(errors.join('\n'));console.log('PASS graph browser: '+familyCount+' map nodes, relations-only default, limits toggle, keyboard highlight/selection, search focus, filters, desktop/mobile screenshots, no overflow, no-JS map and atlas; no browser errors.');
 }finally{await browser?.close();await new Promise(r=>server.close(r));}

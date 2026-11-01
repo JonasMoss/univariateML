@@ -80,7 +80,7 @@ export function mapLayout(data) {
 }
 export function mapSvg(data) {
  const {regions,positions}=mapLayout(data),out=[],headers=[];
- out.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" width="1000" height="800" role="group" aria-label="Overview of all 98 families and 13 groups" data-family-map=""><defs><marker id="map-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="context-stroke"/></marker></defs>');
+ out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" width="1000" height="800" role="group" aria-label="Overview of all ${data.nodes.length} families and ${data.groups.length} groups" data-family-map=""><defs><marker id="map-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="context-stroke"/></marker></defs>`);
  for(const r of regions){const words=r.group.split(' '),lines=[''];for(const w of words){if((lines.at(-1)+' '+w).trim().length>28)lines.push(w);else lines[lines.length-1]=(lines.at(-1)+' '+w).trim();}
  out.push(`<g data-region="${esc(r.group)}"><rect x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" rx="20" fill="${r.color}" fill-opacity=".065" stroke="${r.color}" stroke-opacity=".3"/></g>`);
  headers.push(`<g data-region-label="${esc(r.group)}"><rect x="${r.x+8}" y="${r.y+6}" width="${r.width-16}" height="${lines.length*14+5}" rx="6" fill="#fffdf8" fill-opacity=".9"/><text x="${r.x+12}" y="${r.y+19}" font-size="12" font-weight="600" fill="${r.color}">${lines.map((l,i)=>`<tspan x="${r.x+12}" dy="${i?14:0}">${esc(l)}</tspan>`).join('')}</text></g>`);}

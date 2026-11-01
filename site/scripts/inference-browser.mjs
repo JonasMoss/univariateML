@@ -37,6 +37,6 @@ try{
  if(await p.locator('#inference-filters').isVisible())throw Error('No-JS filters should be hidden');
  const row=p.locator('[data-inference-row][data-family=pareto][data-status=implemented]').first();await row.locator('summary').click();if(!await row.getByText('pareto_shape_exact_interval',{exact:true}).isVisible())throw Error('No-JS evidence');
  await plain.close();if(errors.length)throw Error(errors.join('\n'));
- const result={rows:n,families:98,desktop:[1280,1100],mobile:[390,1000],checks:['all status filters','combined family/status/regime filters','empty state','reset','native evidence disclosure','no horizontal overflow','all rows and evidence without JavaScript','no page errors']};
+ const result={rows:n,families:new Set(canonical.rows.map(r=>r.family)).size,desktop:[1280,1100],mobile:[390,1000],checks:['all status filters','combined family/status/regime filters','empty state','reset','native evidence disclosure','no horizontal overflow','all rows and evidence without JavaScript','no page errors']};
  writeFileSync(path.join(scratch,'browser.json'),JSON.stringify(result,null,2)+'\n');console.log('PASS inference browser: '+JSON.stringify(result));
 }finally{await browser?.close();await new Promise(r=>server.close(r));}
