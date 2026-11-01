@@ -59,3 +59,27 @@ C++ test constants; native and likelihood tolerances remain unchanged.
 `validation/check-wasm-scores.py` reproduces the 60-digit likelihood/analytic
 score comparison against the frozen wasm outputs (requires existing mpmath).
 This is numerical stationarity evidence, not a proof of global optimality.
+
+Covariance uses `api.gamma.vcov(data, fit, type = 'sandwich')`; `observed`
+is also supported. The family-level method follows the existing family API
+and takes observations explicitly instead of retaining a hidden data copy in
+fits. Supply the original data and fit from that family, without modifying
+estimates, coefficient order, fixed names or restrictions.
+It returns `{matrix, names, held, type, condition, validity, warnings}`:
+`matrix` contains owned Float64Array rows, and `names` labels both axes in
+canonical free-coefficient order. All-held fits return an empty matrix.
+Held coefficients are treated as known, not fitted nuisance parameters.
+The condition number describes total observed information in natural units;
+the R warning above 1e6 is returned in `warnings`, consistent with fit diagnostics.
+Unavailable subsets, regimes, boundaries and information failures throw the
+same reasons as R. This calls the existing C++ inference implementation;
+no fitter behavior changes. Sandwich validity additionally requires independent
+observations, finite score variance, nonsingular sensitivity and appropriate
+estimator asymptotics; availability does not establish finite-sample coverage.
+
+`just js-build` also builds the native covariance reference
+`build/scratch/vcov-native` using the existing host compiler and Boost.
+To rebuild it alone use
+`c++ -std=c++17 -O2 -IunivariateML-cpp/include bindings/js/validation/vcov-native.cpp -o build/scratch/vcov-native`
+(add the existing BH include path if system Boost is absent). They compare both
+covariances at identical JS estimates against the native C++ entry point.
