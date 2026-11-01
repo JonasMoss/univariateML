@@ -84,6 +84,9 @@ for f in DATA:
     assert f['inference']==[r for r in availability['rows'] if r['family']==f['id']], f['id']
 
 def evidence_anchor(ref):
+    if '#' not in ref:
+        assert (ROOT/ref).is_file(), f'missing evidence file: {ref}'
+        return
     path,anchor=ref.split('#',1)
     text=(ROOT/path).read_text()
     # GitHub-compatible slugs for the plain-text headings in these reports.
@@ -91,6 +94,29 @@ def evidence_anchor(ref):
            for line in text.splitlines() if line.startswith('#')}
     assert anchor in slugs, f'missing evidence anchor: {ref}'
 
+covariance=[r for r in availability['rows'] if r.get('kind')=='covariance']
+assert len(covariance)==sum(len(s) for s in availability['numeric_eligibility'].values())
+for family, scopes in availability['numeric_eligibility'].items():
+    for scope in scopes:
+        matches=[r for r in covariance if r['family']==family and r['regime']==scope['regime']]
+        assert len(matches)==1, (family, scope)
+        row=matches[0]
+        assert (row['status']=='implemented')==scope['available']
+        assert scope['condition'] in row['assumptions']
+        assert row['evidence']==scope['classification']
+        if not scope['available']: assert scope['reason'] in row['gap']
+        assert row['evidence_links']
+        for run in row['monte_carlo']:
+            source=json.loads((ROOT/run['path']).read_text())
+            record=source['families'][family]
+            assert run['sample_size']==source['sample_size']
+            for field in ('truth','held','free','status','replications','successes'):
+                assert run[field]==record.get(field), (family,field)
+            assert run['failure_count']==len(record.get('failures',[]))
+for family in ('sn','bhatt','bnbinom','invtrgamma'):
+    assert all(r['caveats'] for r in covariance if r['family']==family)
+
+print('Covariance scopes:', len(covariance), {status:sum(r['status']==status for r in covariance) for status in STATUSES})
 keys=set()
 for r in availability['rows']:
     key=(r['family'],r['regime'],r['target'])
@@ -98,12 +124,13 @@ for r in availability['rows']:
     keys.add(key)
     assert r['status'] in STATUSES and r['assumptions'] and r['theory'] and r['procedures']
     evidence_anchor(r['evidence'])
+    for link in r.get('evidence_links', []): evidence_anchor(link['path'])
     if r['calibration']: evidence_anchor(r['calibration'])
     if r['status'] in ('implemented','historically recoverable','available but missing'):
         assert r['implementation'], f'positive scope without supporting implementation: {key}'
         for implementation in r['implementation']:
             text=(ROOT/implementation['path']).read_text()
-            assert re.search(r'\b'+re.escape(implementation['function'])+r'\s*\(',text),key
+            assert re.search(r'\b'+re.escape(implementation['function'])+r'\s*(?:<-\s*function\s*)?\(',text),key
     if r['status']=='implemented':
         assert r['calibration'] and r['checks'], key
     for check in r['checks']: assert (ROOT/check).is_file(),check

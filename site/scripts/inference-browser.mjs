@@ -19,6 +19,14 @@ try{
  await page.goto(url);await page.locator('#inference-filters').waitFor({state:'visible'});
  if(await page.locator('[data-inference-row]:visible').count()!==n)throw Error('Initial rows');
  await page.screenshot({path:path.join(scratch,'desktop.png')});
+ await page.locator('#kind').selectOption('covariance');
+ if(await page.locator('[data-inference-row]:visible').count()!==canonical.rows.filter(r=>r.kind==='covariance').length)throw Error('Covariance filter');
+ await page.locator('#family').selectOption('bnbinom');
+ await page.locator('#status').selectOption('implemented');
+ if(await page.locator('[data-inference-row]:visible').count()!==1)throw Error('Covariance combined filters');
+ await page.locator('[data-inference-row]:visible details summary').click();
+ if(!await page.locator('[data-inference-row]:visible').getByText('Second simbox follow-up table',{exact:true}).isVisible())throw Error('Covariance evidence');
+ await page.locator('#reset').click();
  for(const status of canonical.statuses){await page.locator('#status').selectOption(status);if(await page.locator('[data-inference-row]:visible').count()!==canonical.rows.filter(r=>r.status===status).length)throw Error('Status filter '+status);}
  await page.locator('#reset').click();await page.locator('#family').selectOption('gamma');await page.locator('#status').selectOption('implemented');
  await page.locator('#regime').fill('misspecification');
@@ -37,6 +45,6 @@ try{
  if(await p.locator('#inference-filters').isVisible())throw Error('No-JS filters should be hidden');
  const row=p.locator('[data-inference-row][data-family=pareto][data-status=implemented]').first();await row.locator('summary').click();if(!await row.getByText('pareto_shape_exact_interval',{exact:true}).isVisible())throw Error('No-JS evidence');
  await plain.close();if(errors.length)throw Error(errors.join('\n'));
- const result={rows:n,families:98,desktop:[1280,1100],mobile:[390,1000],checks:['all status filters','combined family/status/regime filters','empty state','reset','native evidence disclosure','no horizontal overflow','all rows and evidence without JavaScript','no page errors']};
+ const result={rows:n,families:98,desktop:[1280,1100],mobile:[390,1000],checks:['covariance and combined filters with follow-up evidence','all status filters','combined family/status/regime filters','empty state','reset','native evidence disclosure','no horizontal overflow','all rows and evidence without JavaScript','no page errors']};
  writeFileSync(path.join(scratch,'browser.json'),JSON.stringify(result,null,2)+'\n');console.log('PASS inference browser: '+JSON.stringify(result));
 }finally{await browser?.close();await new Promise(r=>server.close(r));}
