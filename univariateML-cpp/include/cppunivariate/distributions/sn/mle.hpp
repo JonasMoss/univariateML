@@ -31,28 +31,41 @@ inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,
   double eta=fw ? 1/omega : 1/std::hypot(1.0,fx ? xi : 0.0);
   double h=fx ? xi*eta : 0;
   const double n=static_cast<double>(x.size());
+  // Each Newton iteration starts with the accepted point in this cache.
+  // Line-search trials overwrite it; only acceptance starts another step.
+  // Reuse its special functions for the next score and information matrix.
+  std::vector<double> log_cdf(x.size()),tail_mills(x.size()),tail_derivative(x.size());
   const auto objective=[&](double e,double b) {
     if (!(e>0)) return special::kNegInf;
     double ll=n*std::log(e);
-    for(double v:x) ll+=log_density(e*v-b,a);
-    return ll;
-  };
-  double ll=objective(eta,h);
-  for(int it=0;it<maxit;++it) {
-    double ge=n/eta,gh=0,weight=0,weighted_mean=0,central=0;
-    double fixed_gradient=n/eta,fixed_information=n/(eta*eta);
-    for(double v:x) {
-      const double z=eta*v-h,t=a*z;
-      double r,dr;
+    for(std::size_t i=0;i<x.size();++i) {
+      const double z=e*x[i]-b;
+      const double t=a*z;
       if(t < -10) {
         double f=0,df=0;
         for(int k=24;k>=1;--k) {
           const double den=-t+f;
           df=-k*(1+df)/(den*den); f=k/den;
         }
-        r=-t+f; dr=-1-df;
+        tail_mills[i]=-t+f; tail_derivative[i]=-1-df;
+        log_cdf[i]=-0.5*t*t-0.5*std::log(2*M_PI)-std::log(-t+f);
+      } else log_cdf[i]=log_phi_cdf(t);
+      ll+=std::log(2.0)-0.5*std::log(2*M_PI)-0.5*z*z+log_cdf[i];
+    }
+    return ll;
+  };
+  double ll=objective(eta,h);
+  if(fx && fw) return {eta,h,ll,true};
+  for(int it=0;it<maxit;++it) {
+    double ge=n/eta,gh=0,weight=0,weighted_mean=0,central=0;
+    double fixed_gradient=n/eta,fixed_information=n/(eta*eta);
+    for(std::size_t i=0;i<x.size();++i) {
+      const double v=x[i],z=eta*v-h,t=a*z;
+      double r,dr;
+      if(t < -10) {
+        r=tail_mills[i]; dr=tail_derivative[i];
       } else {
-        r=std::exp(-0.5*t*t-0.5*std::log(2*M_PI)-log_phi_cdf(t));
+        r=std::exp(-0.5*t*t-0.5*std::log(2*M_PI)-log_cdf[i]);
         dr=-r*(t+r);
       }
       const double g=-z+a*r,d=-1+a*a*dr;
