@@ -1,0 +1,197 @@
+{
+  "revision": "01764bfd3a00a5b8b6e17a1dfab7d2b91191097c",
+  "source_hash": "2fe4ca721bbef8ac7b66c93480fc675c35244f2cd647fd0681f4095d0b19f70f",
+  "sample_size": 500,
+  "replications": 200,
+  "seed": "20261101 + 1000*family_index + replication",
+  "family_order": [
+    "bbinom",
+    "beta",
+    "betapr",
+    "bhatt",
+    "binom",
+    "bnbinom",
+    "burr",
+    "cauchy",
+    "cmb",
+    "cmp",
+    "dgamma",
+    "dlaplace",
+    "dnorm",
+    "dweibull",
+    "emg",
+    "exp",
+    "fatigue",
+    "foldnorm",
+    "fpareto",
+    "frechet",
+    "gamma",
+    "gb2",
+    "ged",
+    "genbeta",
+    "geom",
+    "gev",
+    "gompertz",
+    "gpd",
+    "gumbel",
+    "hcauchy",
+    "hnorm",
+    "ht",
+    "invburr",
+    "invexp",
+    "invgamma",
+    "invgauss",
+    "invparalogis",
+    "invpareto",
+    "invtrgamma",
+    "invweibull",
+    "kumar",
+    "laplace",
+    "lgamma",
+    "lgser",
+    "llogis",
+    "lnorm",
+    "logis",
+    "logitnorm",
+    "lomax",
+    "lst",
+    "naka",
+    "nbinom",
+    "norm",
+    "nsbeta",
+    "paralogis",
+    "pareto",
+    "pareto2",
+    "pareto3",
+    "pareto4",
+    "pois",
+    "power",
+    "rayleigh",
+    "sged",
+    "sgomp",
+    "skellam",
+    "slash",
+    "sn",
+    "snorm",
+    "sstd",
+    "std",
+    "tbinom",
+    "tnorm",
+    "tpois",
+    "trgamma",
+    "weibull",
+    "yulesimon",
+    "zeta",
+    "zib",
+    "zinb",
+    "zip",
+    "zipf",
+    "zmbinom",
+    "zmgeom",
+    "zmlogarithmic",
+    "zmnbinom",
+    "zmpois",
+    "ztbinom",
+    "ztgeom",
+    "ztnbinom",
+    "ztpois"
+  ],
+  "projected_cpu_seconds": 86.29520000000001,
+  "actual_simulation_cpu_seconds": 70.409457,
+  "families": {
+    "sged": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0,
+        "nu": 3,
+        "xi": 1.0
+      },
+      "held": [],
+      "free": [
+        "mean",
+        "sd",
+        "nu",
+        "xi"
+      ],
+      "probe_cpu_seconds": 0.431476,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.04580976405233352,
+          "empirical_sd_mcse": 0.002343352249666969,
+          "model": {
+            "mean_se": 0.04405220179809423,
+            "mean_se_mcse": 8.78494722453515e-05,
+            "difference": -0.0017575622542392935,
+            "difference_mcse_paired": 0.0023598165776881233,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.044553422266751685,
+            "mean_se_mcse": 0.00012233497636913684,
+            "difference": -0.0012563417855818368,
+            "difference_mcse_paired": 0.002361689413181231,
+            "flag_2mcse": false
+          }
+        },
+        "sd": {
+          "empirical_sd": 0.026634392210073497,
+          "empirical_sd_mcse": 0.0013067071920710033,
+          "model": {
+            "mean_se": 0.02643544339890373,
+            "mean_se_mcse": 8.131341564356195e-05,
+            "difference": -0.00019894881116976765,
+            "difference_mcse_paired": 0.0013167796585881366,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.026723025413703708,
+            "mean_se_mcse": 8.289807297260699e-05,
+            "difference": 8.863320363021107e-05,
+            "difference_mcse_paired": 0.0013141292845712915,
+            "flag_2mcse": false
+          }
+        },
+        "nu": {
+          "empirical_sd": 0.3691521895842918,
+          "empirical_sd_mcse": 0.018869329683835128,
+          "model": {
+            "mean_se": 0.3732376432129444,
+            "mean_se_mcse": 0.0049413846201588,
+            "difference": 0.004085453628652591,
+            "difference_mcse_paired": 0.017581420765188215,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.364435438333314,
+            "mean_se_mcse": 0.005453832808574739,
+            "difference": -0.004716751250977813,
+            "difference_mcse_paired": 0.017557179071825614,
+            "flag_2mcse": false
+          }
+        },
+        "xi": {
+          "empirical_sd": 0.09711483985591843,
+          "empirical_sd_mcse": 0.004484396197358043,
+          "model": {
+            "mean_se": 0.08890143600286411,
+            "mean_se_mcse": 0.0008256767660185195,
+            "difference": -0.008213403853054316,
+            "difference_mcse_paired": 0.004310671159525244,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.08671111137650976,
+            "mean_se_mcse": 0.0009170193574027236,
+            "difference": -0.010403728479408667,
+            "difference_mcse_paired": 0.004236841819642394,
+            "flag_2mcse": true
+          }
+        }
+      }
+    }
+  }
+}

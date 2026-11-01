@@ -506,3 +506,28 @@ validator results ([pilot](2026-11-01-vcov-scores-data/validator-pilot.json),
 [special regimes](2026-11-01-vcov-scores-data/validator-special.json)).
 Per-replication records (2.6 MB) were not kept; the run is reproducible from
 the source hash and seeds.
+
+## Follow-up on simbox (2026-11-01)
+
+The seven slow-skipped families (200 replications) and the five flagged ones
+(1,000 replications) were run on simbox with `UMVL_MC_REPS`,
+`UMVL_MC_SLOW_LIMIT=1e9` and per-family output directories (master 3b62fb2;
+same truth points, seeds and n=500). Summaries: [simbox/](2026-11-01-vcov-scores-data/simbox/).
+Entries are mean SE minus empirical SD in paired MCSE units (model, sandwich).
+
+| Family | Reps (ok) | Result |
+|---|---:|---|
+| fatigue, lgser, paralogis, invgauss | 1000 | all coordinates within 1.5 MCSE: the pilot flags were chance |
+| invtrgamma | 1000 | SEs about 5-13% low (shape1 -1.9/-2.9, scale -2.8/-3.3): finite-sample bias of a three-shape family at n=500 |
+| emg, sged, slash | 200 | within 2.5 MCSE (sged xi sandwich -2.5) |
+| cmp | 200 | lambda +2.8/+2.7, nu +1.5/+1.3 |
+| sn (alpha = 0.5) | 200 | omega +14.5/+13.7; xi, alpha heavy-tailed SEs (max 40, 51): the truth point is near alpha = 0, where the direct-parameter information is singular |
+| bhatt (a = 0.7, sigma = 1) | 119/200 | sigma +7.4/+7.0, a +3.6/+5.8; 81 failed replications: near the normal limit a -> 0 |
+| bnbinom (size = alpha = beta = 1) | 200 | size: model median SE 0.52, sandwich 0.093, empirical SD 0.25; beta <= 1 gives an infinite mean, so the score's second moments are suspect at this point |
+
+No derivative error is indicated: the independent derivative validation above
+passes for these families. The sn, bhatt and bnbinom rows show that Wald
+covariance is unreliable near singular-information members and in heavy
+tails at n=500; an R `vcov` should report the conditioning diagnostic and
+say so. A bnbinom check at a point with beta > 2 would separate a heavy-tail
+effect from an implementation problem.
