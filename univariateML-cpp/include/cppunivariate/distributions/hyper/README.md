@@ -17,8 +17,7 @@ params:
   simulate: 10
   integer: yes
   kind: design
-  advice: Supply the population size, or `m`, or both; estimating both together
-    is not implemented and can escape to the binomial limit.
+  advice: Supply the population size, or hold `m` or `k`; unbounded searches may stop when their numerical certificate is unavailable.
 - name: k
   symbol: 'n'
   role: draws
@@ -32,8 +31,8 @@ r:
   sampler: stats::rhyper
   control:
     k: "Number of draws per observation; explicit `NULL` estimates it with `N` supplied, jointly with `m` if free."
-    "N": "Population size; explicit `NULL` estimates it, which requires `m`."
-    m: "Number of successes `m` in the population; `NULL` (the default) estimates it, which requires `N`."
+    "N": "Population size; explicit `NULL` estimates it with `m` or `k` held."
+    m: "Number of successes `m` in the population; `NULL` (the default) estimates it."
 log_density: "loggamma(m + 1) - loggamma(x + 1) - loggamma(m - x + 1) + loggamma(N - m + 1) - loggamma(k - x + 1) - loggamma(N - m - k + x + 1) - loggamma(N + 1) + loggamma(k + 1) + loggamma(N - k + 1)"
 limits:
   - name: degenerate
@@ -48,12 +47,6 @@ holds:
 - held: []
   status: not-implemented
   reason: Joint estimation is not implemented; it requires a certified search over binomial and Poisson boundary faces and the finite interior.
-- held: [k]
-  status: not-implemented
-  reason: A certified comparison against the binomial limit and global tail bound are not available.
-- held: [m]
-  status: not-implemented
-  reason: Joint estimation of N and k requires a certified unbounded profile search.
 fit_args:
   'N': 50
   k: 10
@@ -109,8 +102,7 @@ it warns and returns the smaller; with `k = 0`, or `m = 0` when `N` is
 estimated, every admissible value attains it, and the fitter warns and
 returns the smallest.
 
-Estimating `N` and `m` together, with only `k` known, is not supported:
-its likelihood can increase toward the binomial limit as `N` grows. To
+With `k` held, `N` and `m` can be estimated jointly; by symmetry the same applies with `m` held. To
 hold the number of failures `N - m` fixed instead of `m`, fit `k - x`
 with `m` set to that number. All counts must be below $2^{53}$, the range
 of exact whole numbers in double precision.
@@ -130,3 +122,38 @@ budget of 10^7 candidate likelihood evaluations includes both passes;
 exceeding it, the exact-integer range, or encountering a nonfinite likelihood
 stops with numerical failure, without returning a partial maximum.
 New joint grids resolve ties silently; existing one-coordinate warnings remain.
+
+### Growing-population bound (2026-11-01)
+
+For fixed positive `k` (or fixed `m` by symmetry), put
+`c_N(t) = sum_{j=0}^{t-1} log(1-j/N)` and `p=m/N`. For `N >= k`,
+the hypergeometric mass divided by the binomial mass with size `k` and
+probability `p` is
+`exp(c_m(x)+c_{N-m}(k-x)-c_N(k))`, with zero factors interpreted by
+continuity. Since each numerator correction is at most zero, for `h`
+observations the profile at size `N` is at most
+`B_k - h*c_N(k)`, where `B_k` is the maximised binomial log likelihood
+at `p = mean(x)/k`. The correction is nonnegative, decreases in `N`,
+and tends to zero. Thus a finite likelihood strictly above `B_k` gives
+an eventual cutoff: enumerate every feasible smaller population and stop
+when this upper bound is strictly below that candidate. For `k=0` the
+model is the zero point mass; the symmetric statement holds for `m=0`.
+
+The fitter profiles composition at each integer population, initially over
+256 feasible populations. If it finds a value above the face by more than
+`1e-9*(1+abs(face))`, it computes a cutoff from the bound and exhaustively
+checks all populations below it, subject to the 10^7 evaluation budget.
+It requires the tail upper bound to be below the candidate by that margin.
+These floating-point margins are a practical comparison policy, not a
+proved rounding enclosure; the profile searches also use numerical signs.
+If the exploratory search finds no strict improvement, it stops with an
+unresolved face status, or a face-tie status when a finite likelihood matches
+within the margin. Neither status proves a global maximum or escape.
+The fully free case additionally permits growing binomial sizes and the
+Poisson face; this correction is not uniform in the free size.
+
+For an interior face probability `p=mean(x)/k`, the first-order coefficient
+in `t=1/N` at the face is one half of the sum over observations of
+`k*(k-1) - x*(x-1)/p - (k-x)*(k-x-1)/(1-p)`.
+Its sign diagnoses the local direction at the face; it is not a global
+search certificate. The symmetric formula applies with `m` held.

@@ -170,3 +170,28 @@ TEST_CASE("nhyper: symmetric lattice median allows adjacent log-half answers") {
   CHECK(adjacent(cppunivariate::distributions::qnhyper(-0.6931471805599453,5,10,3,true,true),5));
   CHECK(adjacent(cppunivariate::distributions::qnhyper(-0.6931471805599453,5,10,3,false,true),5));
 }
+
+TEST_CASE("nhyper: certified joint population profiles and unresolved face") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{3,3,3,4,4,4};
+  for (double rr : {2.0, nan}) {
+    const auto f = cppunivariate::nhyper_mle(mltest::as_span(x),rr,nan,nan);
+    REQUIRE(f.status == cppunivariate::NhyperStatus::Ok);
+    double best = -INFINITY;
+    for (int N=4; N<=300; ++N) for (int r=1; r<=3; ++r) {
+      if (!std::isnan(rr) && r!=rr) continue;
+      for (int m=r; m<=N-4+r; ++m) {
+        double ll=0; for (double v:x) ll+=cppunivariate::nhyper_log_pmf(v,N-m,m,r);
+        best=std::max(best,ll);
+      }
+    }
+    CHECK(f.logLik == doctest::Approx(best).epsilon(1e-10));
+  }
+  const std::vector<double> tie{2,2};
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(tie),2,nan,nan).status == cppunivariate::NhyperStatus::Ok);
+  const std::vector<double> spread{1,1,1,1,1,30};
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(spread),1,nan,nan).status == cppunivariate::NhyperStatus::FaceUnresolved);
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(spread),nan,nan,nan).status == cppunivariate::NhyperStatus::FaceUnresolved);
+  const std::vector<double> large{1,100001};
+  CHECK(cppunivariate::nhyper_mle(mltest::as_span(large),1,nan,nan).status == cppunivariate::NhyperStatus::NumericalFailure);
+}

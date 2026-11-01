@@ -1,0 +1,4 @@
+hyper held k finite: -227.2679 ; brute best through 200: -227.2693 
+hyper held m finite: -227.2679 ; brute best through 200: -227.2693 
+nhyper held r finite: -288.8419 ; brute best through 200: -288.8419 
+nhyper free finite: -288.8419 ; brute best through 200: -288.8419 

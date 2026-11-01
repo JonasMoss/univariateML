@@ -64,7 +64,7 @@ test_that("hyper exact searches agree with independent finite enumeration", {
 
 test_that("hyper explicit NULL and bootstrap retain the population design", {
   x <- c(1,2,3,2)
-  expect_error(mlhyper(x,N=NULL,k=5), "binomial limit")
+  expect_true(is.finite(as.numeric(logLik(mlhyper(x,N=NULL,k=5)))))
   expect_equal(attr(suppressWarnings(mlhyper(x,N=20,k=NULL)), "fixed"), "N")
   held <- mlhyper(x,N=20,k=5,m=8)
   set.seed(130)
@@ -120,3 +120,30 @@ test_that("fully free hyper reports the unsupported global comparison", {
   expect_error(mlhyper(c(0,15),N=14,k=NULL),"positive probability")
   expect_error(mlhyper(c(0,1),N=10000,k=NULL),"numerical failure.*budget")
  })
+
+test_that("joint population fits agree with a finite reference grid", {
+  x <- c(2,2,2,3,3,3)
+  f <- mlhyper(x, k=5, N=NULL, m=NULL)
+  g <- mlhyper(x, m=5, N=NULL, k=NULL)
+  ll <- vapply(5:500, function(N) {
+    max(vapply(0:N, function(m) sum(dhyper(x,m,N-m,5,log=TRUE)), 0.0))
+  }, 0.0)
+  expect_equal(as.numeric(logLik(f)), max(ll), tolerance=1e-9)
+  expect_equal(as.numeric(logLik(g)), max(ll), tolerance=1e-9)
+  expect_equal(as.numeric(logLik(mlhyper(c(0,1),k=1,N=NULL,m=NULL))),2*log(.5))
+  expect_error(mlhyper(c(0,1),k=100001,N=NULL,m=NULL),"numerical failure")
+})
+
+test_that("seeded joint hyper fits match population grids", {
+  set.seed(12101)
+  for (i in 1:3) {
+    x <- rhyper(100,6,6,6)
+    f <- mlhyper(x,k=6,N=NULL,m=NULL)
+    g <- mlhyper(x,m=6,N=NULL,k=NULL)
+    best <- max(vapply(6:120,function(N)
+      max(vapply(0:N,function(m) sum(dhyper(x,m,N-m,6,log=TRUE)),0.0)),0.0))
+    expect_equal(as.numeric(logLik(f)),best,tolerance=1e-8)
+    expect_equal(as.numeric(logLik(g)),best,tolerance=1e-8)
+  }
+  expect_error(mlhyper(c(0,0,0,5,5,5),k=5,N=NULL,m=NULL),"not excluded")
+})

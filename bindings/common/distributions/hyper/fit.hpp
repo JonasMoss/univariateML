@@ -16,8 +16,6 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
 
   if (!N.supplied && !m.supplied && !k.supplied)
     return fail("Joint estimation of m, N and k is not implemented: the interior and binomial and Poisson limit faces require a certified global comparison.");
-  if (!N.supplied && !m.supplied) return fail("Joint estimation of N and m is not implemented; it can escape to the binomial limit, for which use mlbinom(x, size = k).");
-  if (!k.supplied && !N.supplied) return fail("Joint estimation with k free is not supported by this fitter.");
   for (const auto& named : {std::make_pair(std::string("k"), k),
                             std::make_pair(std::string("N"), N),
                             std::make_pair(std::string("m"), m)}) {
@@ -37,6 +35,10 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   const auto res = cppunivariate::hyper_mle(x, design, N_held, m_held);
   const std::string estimated = !k.supplied ? "k" : (!N.supplied ? "N" : "m");
   switch (res.status) {
+    case cppunivariate::HyperStatus::FaceUnresolved:
+      return fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).");
+    case cppunivariate::HyperStatus::FaceTie:
+      return fail("A finite likelihood matched the binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.");
     case cppunivariate::HyperStatus::NumericalFailure:
       return fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
     case cppunivariate::HyperStatus::BothFree:

@@ -266,7 +266,7 @@ TEST_CASE("hyper: escapes, nonidentification and invalid designs") {
   CHECK(m_zero.logLik == 0);
 
   const std::vector<double> y{1, 2};
-  CHECK(cppunivariate::hyper_mle(as_span(y), 5, kNaN, kNaN).status == cppunivariate::HyperStatus::BothFree);
+  CHECK(cppunivariate::hyper_mle(as_span(y), 5, kNaN, kNaN).status == cppunivariate::HyperStatus::Ok);
   const double big = 9007199254740992.0;  // 2^53
   for (double k : {2.5, -1.0, big})
     CHECK(cppunivariate::hyper_mle(as_span(y), k, 10, kNaN).status == cppunivariate::HyperStatus::InvalidInput);
@@ -423,4 +423,26 @@ TEST_CASE("hyper: symmetric lattice median allows adjacent log-half answers") {
   CHECK(adjacent(cppunivariate::distributions::qhyper(.5,5,10,5,false,false),2));
   CHECK(adjacent(cppunivariate::distributions::qhyper(-0.6931471805599453,5,10,5,true,true),2));
   CHECK(adjacent(cppunivariate::distributions::qhyper(-0.6931471805599453,5,10,5,false,true),2));
+}
+
+TEST_CASE("hyper: certified joint population profiles and unresolved face") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{2,2,2,3,3,3};
+  const auto f = cppunivariate::hyper_mle(mltest::as_span(x),5,nan,nan);
+  REQUIRE(f.status == cppunivariate::HyperStatus::Ok);
+  double best = -INFINITY;
+  for (int N=5; N<=500; ++N) for (int m=0; m<=N; ++m) {
+    double ll=0; for (double v:x) ll+=cppunivariate::hyper_log_pmf(v,N,m,5);
+    best=std::max(best,ll);
+  }
+  CHECK(f.logLik == doctest::Approx(best).epsilon(1e-10));
+  const auto symmetric = cppunivariate::hyper_mle(mltest::as_span(x),nan,nan,5);
+  CHECK(symmetric.status == cppunivariate::HyperStatus::Ok);
+  CHECK(symmetric.N == f.N); CHECK(symmetric.k == f.m);
+  const std::vector<double> tie{0,1};
+  CHECK(cppunivariate::hyper_mle(mltest::as_span(tie),1,nan,nan).status == cppunivariate::HyperStatus::Ok);
+  const std::vector<double> spread{0,0,0,5,5,5};
+  CHECK(cppunivariate::hyper_mle(mltest::as_span(spread),5,nan,nan).status == cppunivariate::HyperStatus::FaceUnresolved);
+  const std::vector<double> large{0,1};
+  CHECK(cppunivariate::hyper_mle(mltest::as_span(large),100001,nan,nan).status == cppunivariate::HyperStatus::NumericalFailure);
 }

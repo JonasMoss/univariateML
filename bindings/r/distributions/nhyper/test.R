@@ -89,7 +89,7 @@ test_that("nhyper growing-urn limit counts black draws after subtracting r", {
 
 test_that("nhyper explicit NULL gives a reason and bootstrap replays held N", {
   x <- c(3,4,5)
-  expect_error(mlnhyper(x,N=NULL,r=2), "growing-urn limit")
+  expect_true(is.finite(as.numeric(logLik(mlnhyper(x,N=NULL,r=2)))))
   expect_equal(attr(mlnhyper(x,N=NULL,r=2,m=8),"fixed"),c("m","r"))
   expect_equal(attr(mlnhyper(x,N=20,r=NULL),"fixed"),"N")
   for (args in list(list(),list(m=8))) {
@@ -118,9 +118,8 @@ test_that("free stopping count matches the reference finite grid", {
   expect_error(mlnhyper(c(0, 1), m = 7, N = 20, r = NULL), "positive probability")
 })
 
-test_that("fully free nhyper reports the unsupported global comparison", {
-  expect_error(mlnhyper(c(1, 2), N = NULL, r = NULL, m = NULL),
-               "not implemented.*negative-binomial")
+test_that("fully free nhyper can estimate the population", {
+  expect_true(is.finite(as.numeric(logLik(mlnhyper(c(1, 2), N = NULL, r = NULL, m = NULL)))))
 })
 
 test_that("three finite nhyper grids match whole-grid enumeration", {
@@ -169,4 +168,34 @@ test_that("three finite nhyper grids match whole-grid enumeration", {
   expect_error(mlnhyper(13,N=12,r=NULL),"positive probability")
   expect_error(mlnhyper(c(1,2),N=1e7,r=NULL),"numerical failure.*budget")
   expect_error(mlnhyper(c(1,100),m=1e7,N=NULL,r=1),"numerical failure.*budget")
+})
+
+test_that("joint population fits agree with a finite reference grid", {
+  x <- c(3,3,3,4,4,4)
+  ll <- function(N,r) max(vapply(r:(N-4+r), function(m)
+    sum(dnhyper(x,m,N,r,log=TRUE)), 0.0))
+  for (rr in list(2,NULL)) {
+    f <- mlnhyper(x,r=rr,N=NULL,m=NULL)
+    best <- max(vapply(4:300,function(N) max(vapply(if(is.null(rr)) 1:3 else rr,
+      function(r) ll(N,r),0.0)),0.0))
+    expect_equal(as.numeric(logLik(f)),best,tolerance=1e-9)
+  }
+  expect_equal(as.numeric(logLik(mlnhyper(c(2,2),r=2,N=NULL,m=NULL))),0)
+  expect_error(mlnhyper(c(1,100001),r=1,N=NULL,m=NULL),"numerical failure")
+})
+
+test_that("seeded joint nhyper fits match population grids", {
+  set.seed(12102)
+  for (i in 1:3) {
+    x <- rnhyper(100,7,14,3)
+    for (rr in list(3,NULL)) {
+      f <- mlnhyper(x,r=rr,N=NULL,m=NULL)
+      best <- max(vapply(max(x):120,function(N)
+        max(vapply(if(is.null(rr)) 1:min(x) else rr,function(r)
+          max(vapply(r:(N-max(x)+r),function(m)
+            sum(dnhyper(x,m,N,r,log=TRUE)),0.0)),0.0)),0.0))
+      expect_equal(as.numeric(logLik(f)),best,tolerance=1e-8)
+    }
+  }
+  expect_error(mlnhyper(c(1,1,1,1,1,30),r=1,N=NULL,m=NULL),"not excluded")
 })
