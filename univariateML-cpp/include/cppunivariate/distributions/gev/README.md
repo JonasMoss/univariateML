@@ -108,11 +108,23 @@ The generalized extreme value distribution models maxima. A positive shape $\xi$
 
 ## Details
 
+For the held-location collapse, put $\mu=m=\min x_i$, fix $\xi>0$
+and let $\sigma\downarrow0$. Each of the $k$ minimum terms is
+$e^{-1}/\sigma$; for $d_i=x_i-m>0$ each other term is asymptotic to
+$\xi^{-1-1/\xi}d_i^{-1-1/\xi}\sigma^{1/\xi}$. Hence the product is
+asymptotic to a positive constant times
+$\sigma^{(n-k)/\xi-k}$. Equality has a finite positive path limit,
+not a proof that the global likelihood is maximized there. With location
+free and $\xi=1$, set $\mu=m+\sigma/2$; the minimum terms become
+$4e^{-2}/\sigma$ and the remaining terms are asymptotic to
+$\sigma/d_i^2$, again giving a finite limit at $k=n/2$. Optimization
+over all finite parameters and all joint paths is a separate open step.
+
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) describes the limiting paths and the scope of the boundary comparisons.
 
 Fits restrict the shape to $-1 \le \xi \le 1$, because outside that range the likelihood can be made unbounded: at the upper end of the support for $\xi < -1$, and at a tied sample minimum for large $\xi$. At $\xi = -1$ the upper end point belongs to the support, so the boundary fit, the reversed exponential distribution, is a proper member of the family. Fits with $-1 \le \xi < -1/2$ are non-regular: the usual asymptotic theory for the MLE does not apply there.
 
-Only ties at the sample minimum matter. Let $k$ observations equal the minimum. With $\xi > 0$ held and $\mu$ and $\sigma$ free, the likelihood is bounded only if $\xi k < n - k$. With all three coefficients free, more than $n/2$ ties always make it unbounded. At exactly $k = n/2$ the supremum is finite but is approached only in the limit; the fit compares the best interior fit with that limit and stops unless the interior fit is strictly better. In every sample tried so far the limit has won, but no proof covers all samples. The same conditions apply with $\mu$ held at the sample minimum and $\sigma$ free.
+Only ties at the sample minimum matter. Let $k$ observations equal the minimum. With $\xi > 0$ held and $\mu$ and $\sigma$ free, the likelihood is bounded only if $\xi k < n - k$. With all three coefficients free, more than $n/2$ ties always make it unbounded. At exactly $k = n/2$ the collapse path has a finite limit; the fit compares the best interior fit with that limit and stops unless the interior fit is strictly better. The path alone does not establish the global supremum or its attainment. In every sample tried so far the limit has won, but no proof covers all samples. The same conditions apply with $\mu$ held at the sample minimum and $\sigma$ free.
 
 Held shapes above 1 are accepted when the tie condition allows them. A held shape below $-1$ is accepted only when $\mu$ is held at or above the sample maximum, or when every coefficient is held.
 

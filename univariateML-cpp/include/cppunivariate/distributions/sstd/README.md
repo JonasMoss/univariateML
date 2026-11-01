@@ -49,81 +49,81 @@ r:
     iterlim: "Maximum number of optimisation iterations."
 log_density: "log(sqrt((1 - (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2)*(xi**2 + xi**(-2)) + 2*(gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2 - 1)) - log(sd) + log(2/(xi + 1/xi)) + loggamma((nu + 1)/2) - loggamma(nu/2) - log((nu - 2)*pi)/2 - (nu + 1)*log(1 + (Piecewise(((sqrt((1 - (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2)*(xi**2 + xi**(-2)) + 2*(gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2 - 1)*(x - mean)/sd + (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))*(xi - 1/xi))/xi, (sqrt((1 - (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2)*(xi**2 + xi**(-2)) + 2*(gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2 - 1)*(x - mean)/sd + (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))*(xi - 1/xi)) > 0), ((sqrt((1 - (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2)*(xi**2 + xi**(-2)) + 2*(gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))**2 - 1)*(x - mean)/sd + (gamma((nu - 1)/2)/gamma(nu/2)*sqrt((nu - 2)/pi))*(xi - 1/xi))*xi, True)))**2/(nu - 2))/2"
 limits:
-  - {firmness: argued, model: hnorm, name: right translated half-normal, fixed: [mean], when: "nu and xi tend to their half-normal corner with held moments retained", status: RightHalfNormalBoundary}
-  - {firmness: argued, model: hnorm, name: left translated half-normal, fixed: [mean], when: "nu and xi tend to their half-normal corner with held moments retained", status: LeftHalfNormalBoundary}
-  - {firmness: argued, model: hnorm, name: right translated half-normal, fixed: [sd], when: "nu and xi tend to their half-normal corner with held moments retained", status: RightHalfNormalBoundary}
-  - {firmness: argued, model: hnorm, name: left translated half-normal, fixed: [sd], when: "nu and xi tend to their half-normal corner with held moments retained", status: LeftHalfNormalBoundary}
-  - {firmness: argued, model: hnorm, name: right translated half-normal, fixed: [mean, sd], when: "nu and xi tend to their half-normal corner with held moments retained", status: RightHalfNormalBoundary}
-  - {firmness: argued, model: hnorm, name: left translated half-normal, fixed: [mean, sd], when: "nu and xi tend to their half-normal corner with held moments retained", status: LeftHalfNormalBoundary}
+  - {firmness: proved, model: hnorm, name: right translated half-normal, fixed: [mean], when: "nu and xi tend to their half-normal corner with held moments retained", status: RightHalfNormalBoundary}
+  - {firmness: proved, model: hnorm, name: left translated half-normal, fixed: [mean], when: "nu and xi tend to their half-normal corner with held moments retained", status: LeftHalfNormalBoundary}
+  - {firmness: proved, model: hnorm, name: right translated half-normal, fixed: [sd], when: "nu and xi tend to their half-normal corner with held moments retained", status: RightHalfNormalBoundary}
+  - {firmness: proved, model: hnorm, name: left translated half-normal, fixed: [sd], when: "nu and xi tend to their half-normal corner with held moments retained", status: LeftHalfNormalBoundary}
+  - {firmness: proved, model: hnorm, name: right translated half-normal, fixed: [mean, sd], when: "nu and xi tend to their half-normal corner with held moments retained", status: RightHalfNormalBoundary}
+  - {firmness: proved, model: hnorm, name: left translated half-normal, fixed: [mean, sd], when: "nu and xi tend to their half-normal corner with held moments retained", status: LeftHalfNormalBoundary}
   - {firmness: proved, name: tie collapse, fixed: [mean], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [mean], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: snorm, fixed: [mean], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
-  - {firmness: argued, name: two-piece t with 2 degrees of freedom, fixed: [mean], when: "nu tends to 2 with ordinary t scale finite and held mean retained", status: DfTwoBoundary}
-  - {firmness: argued, model: ht, name: right translated half-family, fixed: [mean], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
-  - {firmness: argued, model: ht, name: left translated half-family, fixed: [mean], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
+  - {firmness: proved, model: snorm, fixed: [mean], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
+  - {firmness: proved, name: two-piece t with 2 degrees of freedom, fixed: [mean], when: "nu tends to 2 with ordinary t scale finite and held mean retained", status: DfTwoBoundary}
+  - {firmness: proved, model: ht, name: right translated half-family, fixed: [mean], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
+  - {firmness: proved, model: ht, name: left translated half-family, fixed: [mean], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
   - {firmness: proved, name: tie collapse, fixed: [sd], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [sd], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: snorm, fixed: [sd], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
-  - {firmness: argued, model: ht, name: right translated half-family, fixed: [sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
-  - {firmness: argued, model: ht, name: left translated half-family, fixed: [sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
+  - {firmness: proved, model: snorm, fixed: [sd], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
+  - {firmness: proved, model: ht, name: right translated half-family, fixed: [sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
+  - {firmness: proved, model: ht, name: left translated half-family, fixed: [sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
   - {firmness: proved, name: tie collapse, fixed: [nu], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [nu], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: ht, name: right translated half-family, fixed: [nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
-  - {firmness: argued, model: ht, name: left translated half-family, fixed: [nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
+  - {firmness: proved, model: ht, name: right translated half-family, fixed: [nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
+  - {firmness: proved, model: ht, name: left translated half-family, fixed: [nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
   - {firmness: proved, name: tie collapse, fixed: [xi], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [xi], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: snorm, fixed: [xi], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
-  - {firmness: argued, name: two-piece t with 2 degrees of freedom, fixed: [xi], when: "nu tends to 2 with ordinary t scale finite and held mean retained", status: DfTwoBoundary}
+  - {firmness: proved, model: snorm, fixed: [xi], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
+  - {firmness: proved, name: two-piece t with 2 degrees of freedom, fixed: [xi], when: "nu tends to 2 with ordinary t scale finite and held mean retained", status: DfTwoBoundary}
   - {firmness: proved, name: tie collapse, fixed: [mean, sd], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [mean, sd], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: snorm, fixed: [mean, sd], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
-  - {firmness: argued, model: ht, name: right translated half-family, fixed: [mean, sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
-  - {firmness: argued, model: ht, name: left translated half-family, fixed: [mean, sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
+  - {firmness: proved, model: snorm, fixed: [mean, sd], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
+  - {firmness: proved, model: ht, name: right translated half-family, fixed: [mean, sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
+  - {firmness: proved, model: ht, name: left translated half-family, fixed: [mean, sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
   - {firmness: proved, name: tie collapse, fixed: [mean, nu], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [mean, nu], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: ht, name: right translated half-family, fixed: [mean, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
-  - {firmness: argued, model: ht, name: left translated half-family, fixed: [mean, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
+  - {firmness: proved, model: ht, name: right translated half-family, fixed: [mean, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
+  - {firmness: proved, model: ht, name: left translated half-family, fixed: [mean, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
   - {firmness: proved, name: tie collapse, fixed: [mean, xi], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [mean, xi], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: snorm, fixed: [mean, xi], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
-  - {firmness: argued, name: two-piece t with 2 degrees of freedom, fixed: [mean, xi], when: "nu tends to 2 with ordinary t scale finite and held mean retained", status: DfTwoBoundary}
-  - {firmness: argued, model: ht, name: right translated half-family, fixed: [sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
-  - {firmness: argued, model: ht, name: left translated half-family, fixed: [sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
+  - {firmness: proved, model: snorm, fixed: [mean, xi], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
+  - {firmness: proved, name: two-piece t with 2 degrees of freedom, fixed: [mean, xi], when: "nu tends to 2 with ordinary t scale finite and held mean retained", status: DfTwoBoundary}
+  - {firmness: proved, model: ht, name: right translated half-family, fixed: [sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
+  - {firmness: proved, model: ht, name: left translated half-family, fixed: [sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
   - {firmness: proved, name: tie collapse, fixed: [sd, xi], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [sd, xi], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: snorm, fixed: [sd, xi], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
+  - {firmness: proved, model: snorm, fixed: [sd, xi], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
   - {firmness: proved, name: tie collapse, fixed: [nu, xi], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [nu, xi], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: ht, name: right translated half-family, fixed: [mean, sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
-  - {firmness: argued, model: ht, name: left translated half-family, fixed: [mean, sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
+  - {firmness: proved, model: ht, name: right translated half-family, fixed: [mean, sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfTBoundary}
+  - {firmness: proved, model: ht, name: left translated half-family, fixed: [mean, sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfTBoundary}
   - {firmness: proved, name: tie collapse, fixed: [mean, sd, xi], when: "An achievable tie has k > nu*(n-k), using nu=2 when shape is free", status: Unbounded}
   - {firmness: numerical, name: uncertified tie equality, fixed: [mean, sd, xi], when: "An achievable tie has k = nu*(n-k), using nu=2 when shape is free", status: ScaleBoundary}
-  - {firmness: argued, model: snorm, fixed: [mean, sd, xi], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
+  - {firmness: proved, model: snorm, fixed: [mean, sd, xi], when: "nu tends to infinity with the held moment constraints", status: SnormBoundary}
   - {firmness: proved, name: scale collapse, fixed: [mean, nu, xi], when: "sd tends to zero", status: Unbounded, message: "Likelihood is unbounded at a tie"}
   - {firmness: numerical, name: scale-collapse equality, fixed: [mean, nu, xi], when: "k = nu*(n-k)", status: ScaleBoundary, message: "Tie equality scale-collapse boundary"}
   - model: snorm
-    firmness: numerical
+    firmness: proved
     when: '$\nu \to \infty$'
     status: SnormBoundary
   - model: hnorm
-    firmness: numerical
+    firmness: proved
     when: '$\nu \to \infty$ and $\xi \to \infty$'
     status: RightHalfNormalBoundary
   - name: reflected translated half-normal
-    firmness: numerical
+    firmness: proved
     when: '$\nu \to \infty$ and $\xi \to 0$'
     status: LeftHalfNormalBoundary
   - name: translated half-t
-    firmness: numerical
+    firmness: proved
     when: '$\xi \to \infty$, endpoint at the sample minimum'
     status: RightHalfTBoundary
   - name: reflected translated half-t
-    firmness: numerical
+    firmness: proved
     when: '$\xi \to 0$, endpoint at the sample maximum'
     status: LeftHalfTBoundary
   - name: two-piece t with 2 degrees of freedom
-    firmness: numerical
-    when: '$\nu \to 2^+$'
+    firmness: proved
+    when: '$\nu \to 2^+$ with ordinary t scale and skew fixed'
     status: DfTwoBoundary
 references:
   - "Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American Statistical Association, 93(441), 359-371. doi:10.1080/01621459.1998.10474117."
@@ -158,6 +158,40 @@ areas:
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.
 
 ## Details
+
+
+### Density limits (2026-11-01)
+
+Write $g_\nu$ for the ordinary unit-scale Student density, $r=\xi$,
+$c$ for the mode and $a>0$ for the ordinary t scale. The density is
+$2g_\nu((x-c)/(ar))/(a(r+r^{-1}))$ for $x\ge c$, and uses
+$(x-c)r/a$ on the other side. If $m_\nu=E|T_\nu|$, its mean is
+$c+a m_\nu(r-r^{-1})$ and its variance is
+$a^2\{\nu(r^2+r^{-2}-1)/(\nu-2)-m_\nu^2(r-r^{-1})^2\}$.
+These identities follow by integrating the two half densities. Thus held
+mean and/or sd are enforced by solving these two displayed equations along
+the path, rather than holding the mode or ordinary scale fixed.
+
+For fixed finite $r$, the gamma-ratio form of $g_\nu$ gives
+$g_\nu\to\phi$ and $m_\nu\to\sqrt{2/\pi}$ as $\nu\to\infty$;
+the variance formula converges too. This proves the moment-standardized
+skew-normal faces, including the listed held subsets. For $r\to\infty$
+with $ar\to b>0$ and $c\to c_0$, the negative-side probability is
+$1/(1+r^2)$ and the positive-side density tends to
+$2g_\nu((x-c_0)/b)/b$. The reflected statement follows by $r\mapsto
+1/r$ and reflection. The limiting mean and sd are $c_0\pm bm_\nu$
+and $b\sqrt{\nu/(\nu-2)-m_\nu^2}$; they determine the endpoint and
+scale when moments are held. If also $\nu\to\infty$, these become the
+corresponding half-normal moments. These are density limits away from
+the endpoint (and distributional limits); endpoint density values can
+depend on the approach and matter in likelihood comparisons.
+
+Finally, with finite $r$ and $a\to a_0>0$, $g_\nu\to g_2$ as
+$\nu\downarrow2$ and $m_\nu\to\sqrt2$. Thus the limit is the stated
+two-piece $t_2$, with mean $c_0+a_0\sqrt2(r-r^{-1})$ and infinite
+variance. In particular this path requires sd to diverge and is not
+reachable with sd held. These proofs establish the declared faces, not
+that a numerical fit or comparison is globally optimal.
 
 The [conditional skew analysis](../../../../../dev/research/evaluations/2026-10-29-p2b-skew-report.md) derives the collapse exponents and face constraints; its equality cases and global comparisons remain uncertified.
 

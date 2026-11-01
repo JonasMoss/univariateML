@@ -38,7 +38,7 @@ r:
 log_density: log(shape2) + shape1*shape2*log(x/scale) - (x/scale)**shape2 - log(x) - loggamma(shape1)
 limits:
   - name: fixed-endpoint power face
-    firmness: argued
+    firmness: proved
     fixed: [scale]
     when: shape1 tends to zero and shape2 tends to infinity at fixed product
     status: PowerBoundary
@@ -108,6 +108,15 @@ distribution of `scale * G^(1/shape2)` for a unit-scale gamma variable `G`
 with shape `shape1`; it models positive sizes, losses and lifetimes.
 
 ## Details
+
+With $a=\mathrm{shape1}\downarrow0$, $b=\mathrm{shape2}\to\infty$
+and $ab\to q>0$, $b/\Gamma(a)\to q$. In the displayed density,
+put $u=x/scale$. For $u<1$, $u^b\to0$ and the density tends to
+$q u^q/x$; for $u>1$ it tends to zero. This is the power density
+with endpoint scale (support below the endpoint). Scheffé's lemma gives
+total-variation convergence. The endpoint value and a global likelihood
+comparison are separate questions.
+
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 

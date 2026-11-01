@@ -50,8 +50,8 @@ limits:
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: InvalidData
     message: unbounded
-  - {firmness: argued, model: lgamma, name: unit gamma on x/scale, when: 'shape1 tends to infinity, shape3 tends to zero, shape1*shape3 stays finite; fit mllgamma(scale / x)', status: UnitGammaBoundary}
-  - {firmness: argued, model: power, when: 'shape1 tends to zero and shape3 tends to infinity; shape2 may grow exponentially to lower the effective upper endpoint', status: PowerBoundary}
+  - {firmness: proved, model: lgamma, name: log-gamma on scale / x, when: 'shape1 tends to infinity, shape3 tends to zero, shape1*shape3 tends to a positive constant and shape2 is fixed; fit mllgamma(scale / x)', status: UnitGammaBoundary}
+  - {firmness: proved, model: power, when: 'shape3 tends to infinity, shape1*shape3 tends to a positive constant, and shape2 is bounded away from zero with log(shape2)/shape3 tending to c >= 0', status: PowerBoundary}
 holds:
 - held: []
   status: no-mle
@@ -162,6 +162,19 @@ A logarithmic mesh and analytic envelope-score root search compare its
 local maxima with gamma and power limits, using a 1e-8*n log-likelihood
 tie tolerance. This numerical global search is not a certificate that
 an arbitrarily narrow basin cannot be missed. An unresolved search stops.
+
+For the two faces, the density of $Y=-\log(X/\theta)$ is
+$\tau e^{-\alpha\tau y}(1-e^{-\tau y})^{\beta-1}/B(\alpha,\beta)$
+for $y>0$. If $\alpha\tau\to\lambda>0$, $\tau\to0$ and
+$\beta>0$ is fixed, $\Gamma(\alpha+\beta)/\Gamma(\alpha)\sim
+\alpha^\beta$ gives the gamma density pointwise. If instead
+$\tau\to\infty$, $\beta$ is bounded away from zero and
+$\log\beta/\tau\to c\ge0$, then $1/B(\alpha,\beta)\sim
+\alpha\beta^\alpha$ and the factor in parentheses tends to zero for
+$y<c$ and one for $y>c$. The limit is
+$\lambda e^{-\lambda(y-c)}\mathbf1_{y>c}$. Scheffé's lemma gives
+convergence in total variation; transformation back to $X$ gives the
+stated power face. These paths do not certify the numerical search.
 
 If alpha increases and tau decreases with alpha*tau = lambda, Y converges
 to gamma(beta, rate=lambda). The corresponding actuar log-gamma has

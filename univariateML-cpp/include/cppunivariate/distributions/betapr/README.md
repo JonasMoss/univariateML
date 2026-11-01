@@ -42,10 +42,10 @@ r:
 log_density: (shape1-1)*log(x/scale) - log(scale) - (shape1+shape2)*log(1+x/scale) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 limits:
   - {firmness: proved, name: positive log-variance, when: constant observations with both shapes free cause unbounded likelihood, status: InvalidStart}
-  - {firmness: argued, model: gamma, fixed: [shape1], when: shape2 and scale tend to infinity with scale/shape2 fixed and shape1 held, status: GammaBoundary}
-  - {firmness: argued, model: invgamma, fixed: [shape2], when: shape1 tends to infinity and scale tends to zero with scale*shape1 fixed and shape2 held, status: InvGammaBoundary}
-  - {model: gamma, firmness: argued, when: 'shape2 tends to infinity with scale/shape2 fixed', status: GammaBoundary}
-  - {model: invgamma, firmness: argued, when: 'shape1 tends to infinity with scale*shape1 fixed', status: InvGammaBoundary}
+  - {firmness: proved, model: gamma, fixed: [shape1], when: shape2 and scale tend to infinity with scale/shape2 fixed and shape1 held, status: GammaBoundary}
+  - {firmness: proved, model: invgamma, fixed: [shape2], when: shape1 tends to infinity and scale tends to zero with scale*shape1 fixed and shape2 held, status: InvGammaBoundary}
+  - {model: gamma, firmness: proved, when: 'shape2 tends to infinity with scale/shape2 fixed', status: GammaBoundary}
+  - {model: invgamma, firmness: proved, when: 'shape1 tends to infinity with scale*shape1 fixed', status: InvGammaBoundary}
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25.
   Wiley, New York.
@@ -92,6 +92,18 @@ key_references:
 The beta prime distribution models positive ratios.
 
 ## Details
+
+For shapes $a,b$ and scale $s$, the density is
+$x^{a-1}s^{-a}(1+x/s)^{-a-b}/B(a,b)$. If $a$ is fixed,
+$b\to\infty$ and $s/b\to\theta>0$, the gamma ratio
+$\Gamma(a+b)/\Gamma(b)\sim b^a$ and
+$(1+x/s)^{-a-b}\to e^{-x/\theta}$ give the gamma density with shape
+$a$ and scale $\theta$. If $b$ is fixed, $a\to\infty$ and
+$as\to\theta>0$, the same ratio and
+$(1+s/x)^{-a-b}\to e^{-\theta/x}$ give the inverse-gamma density
+with shape $b$ and scale $\theta$. These limits hold for each $x>0$;
+Scheffé's lemma gives convergence in total variation. They do not certify
+which face wins the numerical likelihood comparison.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) describes the limiting paths and the scope of the boundary comparisons.
 

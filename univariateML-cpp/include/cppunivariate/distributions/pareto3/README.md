@@ -41,7 +41,7 @@ r:
     scale: Known positive finite coefficient; NULL estimates it.
 limits:
   - name: unbounded likelihood
-    firmness: argued
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: Unbounded
@@ -117,6 +117,12 @@ key_references:
 This family has a known support endpoint and delegates fitting to llogis.
 
 ## Details
+
+For a constant sample at $x>\min$, choose scale $x-\min$ and let
+shape $a\to\infty$. The density at every observation is
+$a/[4(x-\min)]$, so the likelihood diverges. This constructs a path
+when shape and scale can take those values; holding a coefficient may
+remove it.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
