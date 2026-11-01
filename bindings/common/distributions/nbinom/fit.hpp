@@ -18,7 +18,7 @@ inline FitResult fit_nbinom(cppunivariate::ispan x, Held size_arg = {}, Held pro
   const auto r=cppunivariate::nbinom_mle(x,reltol,iterlim,
       size.supplied?size.value:nan,prob.supplied?prob.value:nan);
   if(r.status==cppunivariate::NbinomStatus::PrecisionFailure)
-    return fail("Negative binomial MLE probability rounds to one: held size exceeds double precision for these data.");
+    return fail(size.supplied ? "Negative binomial MLE probability rounds to one: held size exceeds double precision for these data." : "Negative binomial MLE failed: insufficient precision to resolve the size estimate.");
   if(r.status==cppunivariate::NbinomStatus::Underdispersed)
     return fail("The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead.");
   if(r.status!=cppunivariate::NbinomStatus::Ok || !std::isfinite(r.logLik))

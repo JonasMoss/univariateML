@@ -175,3 +175,17 @@ TEST_CASE("nbinom core preserves adapter held-size precision rejection") {
   const auto r=cppunivariate::nbinom_mle(cppunivariate::ispan{x.data(),x.size()},1e-8,100,1e30);
   CHECK(r.status==cppunivariate::NbinomStatus::PrecisionFailure);
 }
+
+TEST_CASE("nbinom: unresolved overdispersed fallback is not underdispersion") {
+  const std::vector<int> x{0, 0, 1, 3, 6};
+  const auto r = cppunivariate::nbinom_mle(as_ispan(x), 1e-12, 1);
+  CHECK(r.status != cppunivariate::NbinomStatus::Underdispersed);
+}
+
+TEST_CASE("nbinom: centered variance avoids false underdispersion for large counts") {
+  const int k = 9743;
+  const int m = k * k - 1;
+  const std::vector<int> x{m - k, m + k};
+  const auto r = cppunivariate::nbinom_mle(as_ispan(x), 1e-8, 1);
+  CHECK(r.status == cppunivariate::NbinomStatus::PrecisionFailure);
+}

@@ -29,6 +29,12 @@ references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 21.
   Wiley, New York.
 limits:
+- kind: nonexistence
+  name: unbounded likelihood
+  when: '$\lambda$ equals the common observation and $k$ tends to infinity'
+  detect: 'both coefficients are free and all observations are equal'
+  status: Unbounded
+  message: unbounded
 - name: unbounded likelihood
   fixed: [scale]
   when: '$k$ tends to infinity with scale $\lambda$ held at the common observation value'

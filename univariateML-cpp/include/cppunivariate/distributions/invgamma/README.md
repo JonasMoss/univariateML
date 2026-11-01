@@ -33,6 +33,13 @@ references:
   37 (1): 79–90'
 - 'Dutang, C., Goulet, V. and Pigeon, M. (2008). actuar: An R Package for Actuarial Science. Journal of Statistical
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
+limits:
+- kind: nonexistence
+  name: unbounded likelihood
+  when: '$\alpha$ tends to infinity with $\beta/\alpha$ equal to the common observation'
+  detect: 'both coefficients are free and all observations are equal'
+  status: Degenerate
+  message: unbounded
 examples: |
   set.seed(1)
   x <- rml(200, mlinvgamma())

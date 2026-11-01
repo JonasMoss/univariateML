@@ -55,6 +55,9 @@ limit_sentence <- function(lim, model) {
   if (identical(lim$kind, "nonexistence")) return(nl(
     "When ", rd_math(lim$detect), ", the likelihood is unbounded and no finite maximum likelihood estimator exists. `ml",
     model$id, "()` stops with an error."))
+  if (isTRUE(lim$numerical)) return(nl(
+    "When ", rd_math(lim$detect), ", the numerical search does not establish a finite maximum above its tolerance. `ml",
+    model$id, "()` stops; use [ml", lim$model, "()] to fit the limit model."))
   has_target <- !is.null(lim$model)
   target_name <- if (has_target && !is.null(models[[lim$model]])) models[[lim$model]]$name
                  else lim$name %||% lim$model

@@ -26,6 +26,12 @@ references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994) Continuous Univariate Distributions, Volume 1, Chapter 14.
   Wiley, New York.
 limits:
+- kind: nonexistence
+  name: unbounded likelihood
+  when: '$\mu$ equals the common log observation and $\sigma$ tends to zero'
+  detect: 'both coefficients are free and all observations are equal'
+  status: Unbounded
+  message: unbounded
 - name: unbounded likelihood
   fixed: [meanlog]
   when: 'the free log scale $\sigma$ tends to zero with log mean $\mu$ held'

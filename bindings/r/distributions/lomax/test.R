@@ -246,3 +246,13 @@ test_that("lomax: P3 compressed profile rejects exhaustion", {
   expect_equal(unname(fit["lambda"]),g$estimates$lambda,tolerance=1e-5)
   expect_equal(unname(fit["kappa"]),g$estimates$kappa,tolerance=1e-5)
 })
+
+test_that("limit detector describes its numerical comparison", {
+  expect_error(mllomax(rep(1, 5)), "numerical profile search.*tolerance")
+})
+
+test_that("Lomax help describes the detector as numerical", {
+  rd <- paste(readLines(file.path("..", "..", "man", "mllomax.Rd"), warn = FALSE), collapse = " ")
+  rd <- gsub("[[:space:]]+", " ", rd)
+  expect_match(rd, "numerical search does not establish a finite maximum", fixed = TRUE)
+})

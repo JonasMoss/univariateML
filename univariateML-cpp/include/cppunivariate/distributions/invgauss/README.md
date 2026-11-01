@@ -28,6 +28,12 @@ references:
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 limits:
+- kind: nonexistence
+  name: unbounded likelihood
+  when: '$\mu$ equals the common observation and $\lambda$ tends to infinity'
+  detect: 'both coefficients are free and all observations are equal'
+  status: Unbounded
+  message: constant data
 - name: unbounded likelihood
   fixed: [mean]
   when: 'the free shape $\lambda$ tends to infinity with mean $\mu$ held'

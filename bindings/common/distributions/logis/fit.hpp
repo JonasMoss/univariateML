@@ -24,6 +24,8 @@ inline FitResult fit_logis(cppunivariate::span x, Held location_arg = {}, Held s
     return fail("Logistic scale likelihood is unbounded: all observations equal the held location.");
   cppunivariate::LogisticResult res =
       cppunivariate::logistic_mle(x,abstol,iterlim,held_location,held_scale);
+  if (!scale.supplied && !x.empty() && std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }) && (!location.supplied || location.value == x[0]))
+    return fail("Logistic likelihood is unbounded for constant data at the fitted or held location.");
   if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))
     return fail("Logistic MLE failed: non-finite or invalid parameters");
   if(res.status==cppunivariate::LogisticStatus::IterationFailure)return fail("Conditional fit did not converge; increase iterlim.");

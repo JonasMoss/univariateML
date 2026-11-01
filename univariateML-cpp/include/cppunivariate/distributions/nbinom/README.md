@@ -59,10 +59,8 @@ relations:
     when: size > 0 && prob < 1
 fit:
   method: scalar-solve
-  certified: 'yes'
-  note: 'nbinom/README.md, Details; nbinom/mle.hpp (public fitter and held overloads); nbinom/test.cpp: Profile
-    size has the documented unique root when overdispersed; bracketed fallback, monotone held-probability solve
-    and analytic held-size probability cover holds.'
+  certified: 'partial'
+  note: 'Held size has an analytic probability fit and held probability has a monotone size score. The free-size root is unique under overdispersion, but floating-point score signs and Newton convergence are not certified.'
 areas:
 - counts and ecology
 classification: classical
@@ -115,3 +113,21 @@ Supplying `size` holds any finite nonnegative size, including fractional values.
 ## Decision history
 
 2026-10-30 (adapter independence): the held-size/free-probability precision guard now lives in the core. A positive count total with `size/(size+mean(x))` rounding to one returns `PrecisionFailure`, preserving the former adapter rejection.
+
+The profile score is positive near zero for nonzero, overdispersed data,
+and negative for sufficiently large size: its leading large-size term is
+proportional to the mean minus the population-form sample variance. The
+existence and uniqueness result of Aragon, Eberly and Eberly (1992) therefore
+places the finite maximizer between any two sizes with opposite score signs.
+The computed signs are floating-point approximations, however, and are not
+interval-certified. Failure to find a usable bracket is a precision failure,
+not evidence of a Poisson escape. Newton convergence and the floating-point
+score signs still require independent certification.
+
+2026-11-01 (variance cancellation): the raw-moment variance can fall below
+its true value for large, tightly clustered counts. Before classifying a
+sample as underdispersed the fitter recomputes its variance around the sample
+mean. For example, the two counts $m-k,m+k$, with $m=k^2-1$, have mean $m$
+and population variance $k^2$ exactly. This reduces cancellation in the
+classification; it is not an exact-arithmetic certificate for every possible
+input or platform.

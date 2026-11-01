@@ -30,6 +30,7 @@ limits:
     when: '$\alpha$ tends to infinity while $\alpha\theta$ tends to a positive inverse exponential scale'
     detect: 'both coefficients are free and the numerical profile search on the reciprocals finds no improvement over the best inverse exponential larger than $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit
+    numerical: true
 references:
 - del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability
   Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021.
