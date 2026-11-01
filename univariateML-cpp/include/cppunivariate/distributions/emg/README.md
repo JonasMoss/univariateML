@@ -1,5 +1,10 @@
 ---
 id: emg
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite mu, sigma > 0 and lambda > 0; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Exponentially Modified Gaussian
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

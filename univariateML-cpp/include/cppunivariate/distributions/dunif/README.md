@@ -1,5 +1,11 @@
 ---
 id: dunif
+inference_numeric:
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "integer endpoints free"
+    reason: "integer endpoints are discrete and excluded from the free inference vector"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
 name: Discrete uniform
 support: {type: integer, lower: "min", upper: "max", closed: [true, true]}
 params:

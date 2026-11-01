@@ -1,5 +1,14 @@
 ---
 id: sgomp
+inference_numeric:
+  - regime: "exponential member with shape known"
+    available: true
+    condition: "finite b > 0 free; eta = 0 held"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: primary interior
+    available: true
+    condition: "finite b > 0 and eta > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Shifted Gompertz
 support: {type: real, lower: 0, upper: inf, closed: [true, false]}
 params:

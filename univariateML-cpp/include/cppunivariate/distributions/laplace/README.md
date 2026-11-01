@@ -1,5 +1,15 @@
 ---
 id: laplace
+inference_numeric:
+  - regime: "scale with location held"
+    available: true
+    condition: "finite mu held; finite sigma > 0 free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#laplace"
+  - regime: "location free"
+    available: false
+    condition: "finite mu and sigma > 0; location free"
+    reason: "the log density has a moving absolute-value kink; the pointwise Hessian misses sensitivity"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#laplace"
 name: Laplace
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

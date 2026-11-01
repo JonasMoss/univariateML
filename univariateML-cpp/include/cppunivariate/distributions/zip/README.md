@@ -1,5 +1,18 @@
 ---
 id: zip
+inference_numeric:
+  - regime: "Poisson member with inflation known"
+    available: true
+    condition: "finite lambda > 0 free; pi = 0 held"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: "known point-mass member"
+    available: true
+    condition: "finite lambda > 0 free; pi = 1 held; information is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: primary interior
+    available: true
+    condition: "finite lambda > 0 and 0 < pi < 1; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Zero-inflated Poisson
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

@@ -1,5 +1,15 @@
 ---
 id: beta
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "shape1 > 0 and shape2 > 0 finite; either or both free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "a shape at zero or a nonfinite limit"
+    reason: "beta boundary and limit models are outside the interior derivative regime"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Beta
 support: {type: real, lower: 0, upper: 1, closed: [false, false]}
 params:

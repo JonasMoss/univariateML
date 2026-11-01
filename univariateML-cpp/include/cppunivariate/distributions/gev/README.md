@@ -1,5 +1,15 @@
 ---
 id: gev
+inference_numeric:
+  - regime: "gumbel member with shape held"
+    available: true
+    condition: "finite mu and sigma > 0; xi = 0 held; mu and/or sigma free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "joint moving-support regime with xi free or nonzero"
+    reason: "the moving-support C2 and fitted-subset classification for this numerical procedure is not yet completed"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Generalized extreme value
 support: {type: real, lower: "if (xi > 0) mu - sigma/xi else -Inf", upper: "if (xi < 0) mu - sigma/xi else Inf", closed: [true, true], endpoint_log_density: {lower: "-Inf", upper: "if (xi == -1) -log(sigma) else if (xi < -1) Inf else -Inf"}}
 params:

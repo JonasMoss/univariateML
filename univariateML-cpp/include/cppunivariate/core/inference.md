@@ -326,3 +326,199 @@ are known; the retained finite reference bank has its own Monte Carlo error.
 These numerical findings motivate explicit procedure selection and preserving
 the exact alternatives; they are not proofs of coverage outside the tested
 grid or a validated universal bandwidth choice.
+
+## Finite-difference inference and family dispatch
+
+`inference_numeric.hpp` provides the finite-difference engine, and
+`inference_families.hpp` supplies family dispatch and explicit eligibility
+checks. The caller must verify a successful interior fit, use the correct held
+coordinates and declare whether endpoints or design coefficients are known.
+The dispatch checks its documented regimes but cannot establish an estimator's limit law,
+or the validity of a sandwich under misspecification. It does not calculate
+Fisher information; Fisher covariance requests for nonempty free subsets fail.
+`numeric_inference_checked` accepts an explicit family-supplied eligibility
+assessment and permitted free-coordinate mask. Its default assessment rejects
+unavailable families, and it propagates boundary and regime statuses and the
+reason. The family adapters construct these assessments for their documented
+scopes; other scopes return an unavailable status.
+
+For each free coordinate, the numerical engine maps to an unconstrained real
+coordinate: identity, log, logit, or log of the distance above a fixed bound.
+For example, free Student-t `df` uses a shift of one when its location is also
+free and that fitting restriction applies. A free GED shape uses a shift of
+two in a moving-cusp smooth scope and a shift of one for the held-location fit
+restriction; a held shape is not transformed. With internal coordinate `z`, the per-observation score uses central differences
+at `h=1e-4*(1+abs(z))` and `h/2`, extrapolated as `(4 D(h/2)-D(h))/3` and divided
+by `d theta/d z`. The observed information differentiates these natural scores
+using internal steps `3e-4*(1+abs(z))` and half that value, Richardson
+extrapolates those differences, divides by the corresponding Jacobian,
+and symmetrizes mixed entries. Thus the score-dependent coordinate correction
+is retained even away from a stationary point. It uses the total observed
+information and the per-observation score outer-product sum with the existing
+conditioning-aware covariance solve; no extra factor of sample size is added.
+
+Under sufficient smoothness, exact arithmetic gives fourth-order truncation
+for each Richardson difference, including the outer score derivative; floating-point cancellation, density evaluation error,
+the nested difference and an ill-conditioned coordinate Jacobian can dominate.
+These orders are not certified error bounds. A nonfinite result or a transformed
+stencil whose natural values coincide fails. The pilot validator tests normal,
+gamma, beta and Poisson at moderate seeded points and golden observations, not
+extreme parameters or coverage and calibration. Separate standard, registry,
+and conditional-regime validators extend the numerical comparisons to the
+documented eligible families and golden fits. These finite checks are not
+uniform error bounds or proofs of coverage and calibration.
+
+`inference_families.hpp` selects the four analytic headers for normal, gamma,
+beta and Poisson. Other implemented scopes are explicitly enumerated in
+`inference_numeric_generated.hpp` and `inference_numeric_special.hpp`; the
+former is regenerated and checked by `dev/validation/inference-family-registry.py`.
+The special header checks held parameters, discrete designs and regime-specific
+conditions. An unimplemented family returns `FamilyUnavailable`, and an
+unavailable free subset returns `RegimeUnavailable` or `InvalidSubset` with a
+reason. These interfaces do not establish successful estimation, consistency,
+root-n asymptotics, rank in every regime or misspecification robustness. In
+particular, a fitted support endpoint or integer design is not a known constant:
+the caller must include it in the free mask, and the interface rejects it.
+Numerical validation and calibration coverage remain scoped to their recorded
+families and regimes, not implied by the existence of a dispatch branch.
+
+## Pointwise smoothness for GED submodels
+
+For GED, with the location held, its scale and shape log-density terms are
+smooth for positive scale and shape, including an observation exactly at the
+held location: the power contribution is identically zero there. When the
+location is free, `|x-mean|^nu` has continuous second derivatives jointly in
+the free coefficients locally at the cusp for `nu > 2`; if `nu = 2` is held,
+the normal member is also smooth. The skew GED has the same `nu > 2` conclusion
+at its moving join because the two one-sided power terms and their first two
+join derivatives vanish there. When skew is held at one, skew GED reduces
+to GED, including the held-location and held-shape normal submodels described
+above. These elementary pointwise smoothness statements
+are separate from the cited DQM argument, information-rank questions, the GED
+fit restriction, and the numerical derivative validation, which remain separate
+checks. The `nu <= 2` joint skew-GED scope is left open, not asserted non-DQM.
+
+## Known-threshold and fixed-shape submodels
+
+With the threshold known, half-Cauchy scale and half-t scale/shape are fixed
+foldings of their symmetric parent distributions. Their pointwise log densities
+are smooth in the remaining positive coefficients. The Student-t shape score
+has at most logarithmic tail growth, which is square-integrable for every
+positive degrees of freedom; its scale score stays bounded. This supplies the
+DQM and finite-information argument for those submodels, independently of the
+non-DQM free-threshold direction. It is not a calibration result. GEV with its
+shape fixed at zero is a Gumbel submodel, and GPD with its known threshold and
+shape fixed at zero is a shifted exponential submodel. With positive GPD shape,
+the support starts at that fixed threshold and the log density is smooth in the
+positive shape and scale. These statements do not settle the remaining moving
+support scopes or estimator limits.
+
+## Finite-support rank and known-design submodels
+
+For beta-binomial size `N >= 2`, write `s = alpha + beta` and
+`m = alpha/s`. The first two factorial moments, divided by `N` and
+`N*(N-1)`, are `m` and `m*m + m*(1-m)/(s+1)`. Their Jacobian with respect
+to `(m,s)` is nonsingular for positive finite shapes, and the map from
+`(alpha,beta)` to `(m,s)` is nonsingular. On the finite support, a zero
+information direction would make every moment derivative zero, contradicting
+that Jacobian. This proves full rank, conditional on known integer `N >= 2`;
+it does not prove existence or asymptotics of the numerical estimator. For
+`N=1` the distribution depends only on `m`: the joint information has rank
+one, while either shape alone is identifiable if the other is known. At
+`N=0` both shape scores vanish.
+
+For CMB at known `N=1`, the law is Bernoulli and does not depend on `nu`;
+probability alone is identifiable when `nu` is known. At `N=0` neither
+coefficient is identified. At zero-inflated-binomial `N=1`, only
+`(1-pi)*prob` is identified; either coefficient alone is identifiable when
+the other is known and interior. A zero-modified binomial at `N=1` identifies
+`p0` but not `prob`. A zero-truncated binomial or finite Zipf with known
+`N=1`, and any truncated count model with a singleton retained support, is a
+point mass and has zero information in its continuous coefficients. These
+finite-support statements are exact rank arguments, not claims about the fit's
+sampling distribution. A nonempty zero-information free block returns a
+singular status rather than an inverse, after checking that the observations
+lie in the model's discrete support.
+
+## Requirements for a future R covariance method
+
+The current `univariateML_construct` stores the estimates, likelihood, sample
+size, call, metadata, `fixed` coefficient names and any restriction flags, but
+not the checked observations. A later R `vcov` method needs the actual data
+used by the fit (or an explicit, verified data input), including an explicit
+policy for old serialized and data-free frozen objects. It must preserve which
+coefficients were genuinely held before fitting, not relabel a fitted endpoint
+or design as known. It must carry the fitter's boundary/restriction and failure
+status to the inference call, map unavailable, singular, indefinite,
+ill-conditioned and numerical statuses to clear R conditions, and name rows
+and columns in README/free-coefficient order. The model and sandwich choices
+must retain their distinct assumptions; computing either matrix does not by
+itself establish estimator asymptotics or misspecification robustness.
+
+## Known boundary submodels
+
+Holding the Bhattacharjee width at `a = 0` gives a normal distribution: the
+known-width mean and scale submodel is smooth and regular, while estimating
+`a` at that boundary is not covered by this ordinary interior calculation.
+Holding the zero-inflation probability at zero gives the corresponding
+Poisson, negative-binomial or known-size binomial model. Holding the zero-mass
+probability at zero in a zero-modified model gives its positive-truncated
+count model. These are exact density identities, and their remaining free
+coefficients inherit the corresponding DQM and pointwise smoothness under the
+stated interior and design conditions. Holding the zero-inflation or zero-mass
+probability at one instead gives a point mass at zero, so any remaining count
+parameter has zero information. These claims condition on the boundary value
+being known; they do not justify treating a fitted boundary estimate as known.
+
+Additional known-boundary identities are useful when only the modification
+probability is fitted. A zero-modified Poisson at known zero rate, geometric at
+known unit probability, logarithmic-series at known zero parameter, or binomial
+at known zero or unit probability has a positive component concentrated at one
+(respectively at the binomial size for unit probability). Mixing that point with
+zero gives an ordinary Bernoulli submodel for interior `p0`. A zero-inflated
+known-size binomial at known unit probability likewise gives a Bernoulli
+submodel for interior `pi`. With zero negative-binomial size held known, the
+positive-truncated negative-binomial distribution is logarithmic-series with
+parameter `1-prob`; the zero-modified version adds an independent zero-mass
+parameter. With Conway--Maxwell--Poisson `nu = 0` held, the proper submodel
+`0 < lambda < 1` is geometric. Shifted Gompertz with `eta = 0` held is
+exponential. These identities establish the stated fixed-boundary submodels,
+not the asymptotics of a fit that estimated the boundary coefficient.
+
+## Pointwise smoothness of fixed-support scopes
+
+For the fixed-support scopes in the generated registry, the stated interior
+parameter conditions make the likelihood terms compositions of smooth
+arithmetic, logarithms of positive quantities, exponentials, gamma or beta
+functions at positive arguments, positive normal CDFs, and (for Skellam)
+positive modified Bessel functions at positive arguments. Finite normalizers
+are smooth sums; the Zipf/zeta normalizing series and their required
+log-weighted derivatives converge locally uniformly in the stated regime.
+Count-model case splits depend on the observed
+integer, not on a free coefficient. With a threshold held, the same argument
+applies to the stated Pareto and positive-support families for observations in
+the interior support. Discretized normal and gamma masses are positive integrals
+on fixed bins; derivatives pass under the bin integral on compact interior
+parameter neighborhoods. For the gamma bin touching zero, the needed
+logarithmic derivatives remain integrable because shape is bounded away from
+zero locally. The slash density has the positive integral representation
+`integral_0^1 u*phi(u*(x-mu)/sigma) du / sigma`, whose derivatives pass under
+the finite integral; this also resolves the removable expression at `x = mu`.
+These are pointwise real-arithmetic smoothness arguments, separate from the
+cited DQM/tail arguments, rank and estimator consistency. They do not certify
+the accuracy of finite-difference evaluations, especially near a boundary or
+in extreme tails; those are checked numerically on the reported grids.
+
+## Difference-step decision (2026-11-01)
+
+An outer Richardson stencil with multiplier `1e-3` produced a maximum
+per-observation scaled Hessian error `6.85e-5` on the seeded/golden skew-GED
+check, exceeding the `2e-5` tolerance near its smooth but higher-derivative
+cusp. Reducing the multiplier to `3e-4` gave `1.35e-6` on the same check.
+The reference was the 40-digit mpmath driver
+`dev/validation/inference-numeric-special.py`, seed 20261102, and its error
+scale was `1 + abs(reference)`. This is finite-grid evidence for the chosen
+step, not a universal error bound. The intermediate header was uncommitted and used `log(nu)` rather than the
+later shifted coordinate. Reconstructing the earlier check therefore also
+requires restoring that coordinate in an isolated copy; the earlier source
+hash was not retained.

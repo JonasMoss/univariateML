@@ -1,5 +1,14 @@
 ---
 id: cmp
+inference_numeric:
+  - regime: "geometric member with dispersion known"
+    available: true
+    condition: "0 < lambda < 1 free; nu = 0 held"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: primary interior
+    available: true
+    condition: "finite lambda > 0 and nu > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Conway--Maxwell--Poisson
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

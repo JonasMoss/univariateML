@@ -1,5 +1,15 @@
 ---
 id: norm
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "finite mean and sd > 0; mean and/or sd free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "sd = 0 or nonfinite coefficients"
+    reason: "zero scale is outside the interior continuous model"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Normal
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

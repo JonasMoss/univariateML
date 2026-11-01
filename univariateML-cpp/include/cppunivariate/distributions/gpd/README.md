@@ -1,5 +1,19 @@
 ---
 id: gpd
+inference_numeric:
+  - regime: "positive shape fixed support"
+    available: true
+    condition: "finite mu held, sigma > 0 and xi > 0; sigma and/or xi free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+  - regime: "exponential member with shape held"
+    available: true
+    condition: "finite mu held, sigma > 0 free and xi = 0 held"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "joint moving-support regime with xi <= 0 and xi free"
+    reason: "the moving-support C2 and fitted-subset classification for this numerical procedure is not yet completed"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
 name: Generalized Pareto
 support: {type: real, lower: "mu", upper: "if (xi < 0) mu - sigma/xi else Inf", closed: [true, true], endpoint_log_density: {lower: "-log(sigma)", upper: "if (xi == -1) -log(sigma) else if (xi < -1) Inf else -Inf"}}
 params:

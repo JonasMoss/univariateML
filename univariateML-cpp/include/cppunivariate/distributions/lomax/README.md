@@ -1,5 +1,10 @@
 ---
 id: lomax
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite lambda > 0 and kappa > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Lomax
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:

@@ -1,5 +1,22 @@
 ---
 id: zmgeom
+inference_numeric:
+  - regime: "known unit geometric probability"
+    available: true
+    condition: "prob = 1 held; 0 < p0 < 1 free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: "positive-count member with zero mass known"
+    available: true
+    condition: "0 < prob < 1 free, p0 = 0 held"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: "known point-mass member"
+    available: true
+    condition: "0 < prob < 1 free, p0 = 1 held; information is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: primary interior
+    available: true
+    condition: "0 < prob < 1 and 0 < p0 < 1; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Zero-modified geometric
 support:
   type: integer

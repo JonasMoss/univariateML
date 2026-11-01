@@ -1,5 +1,34 @@
 ---
 id: zib
+inference_numeric:
+  - regime: size zero
+    available: true
+    condition: "known integer size = 0 held; the law is a point mass and every regular score is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: "known unit binomial probability"
+    available: true
+    condition: "known integer size >= 1, prob = 1 held, 0 < pi < 1 free"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: "binomial member with inflation known"
+    available: true
+    condition: "integer size >= 1 held, 0 < prob < 1 free, pi = 0 held"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: "known point-mass member"
+    available: true
+    condition: "known integer size >= 1, 0 < prob < 1 free, pi = 1 held; information is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+  - regime: "size one with one coefficient known"
+    available: true
+    condition: "known size = 1; exactly one of prob and pi free, the other held in (0,1); the remaining scalar Bernoulli parameter is identifiable"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: "size one with both coefficients free"
+    available: true
+    condition: "known size = 1; prob and pi both free in (0,1); DQM and pointwise C2 hold but the joint information has rank one"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: primary interior
+    available: true
+    condition: "known integer size >= 2 held; 0 < prob < 1 and 0 < pi < 1; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Zero-inflated binomial
 support: {type: integer, lower: "0", upper: "size", closed: [true, true]}
 params:

@@ -5,7 +5,9 @@ from a DQM flag, a historical method name, or a successful optimizer.
 """
 import csv
 import json
+import re
 from pathlib import Path
+import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = Path(__file__).with_name('inference-availability.json')
@@ -140,8 +142,44 @@ def generate():
             row['implementation'].append(dict(path='univariateML-cpp/include/cppunivariate/core/inference.hpp', function='inference_wald_interval'))
         if row['family']=='norm' and row['target']=='mean score interval':
             row['assumptions'] += ' Bounded interval API requires n > critical; otherwise it fails explicitly.'
+    # Dossier eligibility is separate from audited procedure availability.
+    # Every canonical dossier supplies explicit scopes; unreviewed scopes are
+    # unavailable with reasons, never inferred from DQM alone.
+    numeric_eligibility = {}
+    families = ROOT / PREFIX
+    for dossier in sorted(families.glob('*/README.md')):
+        parts = dossier.read_text(encoding='utf-8').split('---', 2)
+        if len(parts) != 3:
+            raise ValueError(f'invalid dossier front matter: {dossier}')
+        meta = yaml.safe_load(parts[1])
+        scopes = meta.get('inference_numeric')
+        if scopes is None:
+            raise ValueError(f'missing inference scopes: {dossier}')
+        if scopes is not None:
+            if not isinstance(scopes, list) or not scopes:
+                raise ValueError(f'invalid inference scopes: {dossier}')
+            seen = set()
+            for scope in scopes:
+                required = ('regime', 'condition', 'classification')
+                if (not isinstance(scope, dict) or
+                    set(scope) - {'regime', 'available', 'condition', 'reason', 'classification'} or
+                    any(not isinstance(scope.get(k), str) or not scope[k].strip() for k in required) or
+                    not isinstance(scope.get('available'), bool) or
+                    (not scope['available'] and (not isinstance(scope.get('reason'), str) or not scope['reason'].strip())) or
+                    ('reason' in scope and (not isinstance(scope['reason'], str) or not scope['reason'].strip())) or
+                    scope['regime'] in seen):
+                    raise ValueError(f'invalid inference scope: {dossier}')
+                ref = scope['classification'].split('#', 1)
+                if len(ref) != 2 or not ref[1] or not (ROOT / ref[0]).is_file():
+                    raise ValueError(f'invalid inference classification link: {dossier}')
+                headings=(line.lstrip('#').strip().lower() for line in (ROOT/ref[0]).read_text().splitlines() if line.startswith('#'))
+                slugs={re.sub(r'[^\w\- ]','',line).replace(' ','-') for line in headings}
+                if ref[1] not in slugs:
+                    raise ValueError(f'missing inference classification anchor {scope["classification"]}: {dossier}')
+                seen.add(scope['regime'])
+        numeric_eligibility[meta['id']] = scopes
     return dict(schema_version=1, sources=[INVENTORY, *[REPORT.format(i) for i in [1,4,5]]],
-                statuses=STATUSES, rows=rows)
+                statuses=STATUSES, rows=rows, numeric_eligibility=numeric_eligibility)
 
 
 if __name__ == '__main__':

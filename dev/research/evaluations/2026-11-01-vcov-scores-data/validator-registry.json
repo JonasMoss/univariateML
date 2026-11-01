@@ -1,0 +1,1578 @@
+{
+  "revision": "fd905f1b1c155ad03c6dd2305124f3156421788e",
+  "source_sha256": {
+    "dev/validation/inference-numeric-registry.py": "72abac23361a35f5c8025462df4f61a080a5c6f35f91df3f0a6dc2b4641823e5",
+    "univariateML-cpp/include/cppunivariate/core/inference_numeric.hpp": "e7be4d3a8d3a43c73b0e7c8ce18e9b4da12459024ceca99daea3056263d8de09",
+    "univariateML-cpp/include/cppunivariate/core/inference_families.hpp": "3ec93a155361195621939b03401550811954cd25e01cc3bfde3ebfe946e6f943",
+    "univariateML-cpp/include/cppunivariate/core/inference_numeric_generated.hpp": "cc9b73c272d693af8382c950cbb3282e67c034d3e878b1927eafd16b6fefe815",
+    "univariateML-cpp/include/cppunivariate/core/inference_numeric_special.hpp": "efbc282432a219d7b3ecc66718797ef9f44138da9ad0757dc5662b333c74b677",
+    "univariateML-cpp/include/cppunivariate/distributions/bbinom/README.md": "ea502bd64cb3cb66ad9af7307a653a291a41acaeac91442ff37896b5039782b0",
+    "univariateML-cpp/include/cppunivariate/distributions/bbinom/dpqr.hpp": "45346f95704895fefde61ef51247f4a1602ce4054696fae3c5336f5eafcea28a",
+    "univariateML-cpp/include/cppunivariate/distributions/bbinom/golden.json": "ee37ca92a337f2f8d1fdd5a0cfedd76976daaf4722a8c5fae8f7cb631364f127",
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/README.md": "19f44d69d70e4706dc1eb678bc73e7e8ebf48504062fac1adb8bdc65c4a54bef",
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/dpqr.hpp": "5c6bf958c50e9334d317157ff4588d2197c752b46e2bf63739132e0b96705a2f",
+    "univariateML-cpp/include/cppunivariate/distributions/betapr/golden.json": "d29eaec9f8028a9f342e5a296142beb2b3726f912e92cf12b1e28272bca44287",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/README.md": "aea239030f82e501c2f4374a303485334697bfe37f22a884807bf30f3f5366f4",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/dpqr.hpp": "48507a2f577f445355f78fd626fa6de46bc7650342d4db78d0b698c9b36480c6",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/golden.json": "7d27bbac4e44adc6aadc6791660767695605c452352d088d040cf78fdb8b1975",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md": "1e30a9ab2c09f67a455cc0df7771f3baa6b9e4edd8b3c0f2934fb56c215d8d0a",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/dpqr.hpp": "fe1815df835e856950acf92f4251449526534ad012f5c35ff7c557dd528e41df",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/golden.json": "0de183786766e278851859371879fae2338fabaab9249dd714cd808edaa36e00",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/README.md": "4b17c81b26018ea67ae82a428f4e0e17f634b37861a1f4af33290e45ea624470",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/dpqr.hpp": "4bea7523d3acfb4f0c400952ce93682d0426f76f5f4148a5baf1f6049b263649",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/golden.json": "2f4d8979571367d0c92511f966f7a263b795a07fca47e32e2284444fdfcfb38b",
+    "univariateML-cpp/include/cppunivariate/distributions/cauchy/README.md": "bf2a58e5dc487d77782ac700400e410ee0cd1080fc1da2db772a2b8fbd324b16",
+    "univariateML-cpp/include/cppunivariate/distributions/cauchy/dpqr.hpp": "9f3e2fe3987e4069593d80b039c6b8a81fafc0f68de841223a8e11cd5326c7da",
+    "univariateML-cpp/include/cppunivariate/distributions/cauchy/golden.json": "633e5cdfcb1f15ce3143ddcd4c8d3173525e8d787cfb992432fa20cd86b2684f",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md": "c947c2055cbf0166835fd1aa7432ae146c39202551300bd91b7ec90328eafd9e",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/dpqr.hpp": "64c0e227f193ce367631344affd805c49e19059099572d0b7ac5a8e3a1b1f798",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/golden.json": "3995b03337d5492f797f8c5971df8bf8de2b59ca4b9181032b313d665ebabab8",
+    "univariateML-cpp/include/cppunivariate/distributions/dlaplace/README.md": "b8c014c9972a28daebef5ccbc9d8aaf93fa2e379a8477ca985d9e625ce1f8c47",
+    "univariateML-cpp/include/cppunivariate/distributions/dlaplace/dpqr.hpp": "0c9eff1ffe2ba13c65ff77fe9488d8acec3d8e04e2215962dbfc7d9b261bfa98",
+    "univariateML-cpp/include/cppunivariate/distributions/dlaplace/golden.json": "ef02e61c171bca7b8e4a738852d367800e158bb2e86b41efebed8682bab5fb91",
+    "univariateML-cpp/include/cppunivariate/distributions/dnorm/README.md": "efae99500d18aac6054bb5308a1f56ea04abf036385ea5fc750a26b41b53185e",
+    "univariateML-cpp/include/cppunivariate/distributions/dnorm/dpqr.hpp": "ff9a4055a65a3d1664ffd237e1a6f9ea36c6b6caabfc2736d79e0082cc2c4cb7",
+    "univariateML-cpp/include/cppunivariate/distributions/dnorm/golden.json": "512c2da22cc2c24d8821d2936dd80b717c07b09cd74fb685a52e9fe702e12c13",
+    "univariateML-cpp/include/cppunivariate/distributions/dweibull/README.md": "6c4e697bdd9c3d0e87a23d4d0f09ba6608eb3751a042dca8b00ae1721070cc6f",
+    "univariateML-cpp/include/cppunivariate/distributions/dweibull/dpqr.hpp": "393e1ae312258aa401b8723e467de7e4a11e54d408a41803bfe4e1c6277cff70",
+    "univariateML-cpp/include/cppunivariate/distributions/dweibull/golden.json": "c7d038f659e4ba1cf7558c08b7da49c819598cf33f8b08bddcd7f8c101ff3a22",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/README.md": "eb8a8d80695bc7c83e92ae16658c37f540bb3710d486e3db1b787d9491a9e028",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/dpqr.hpp": "ea779104354696084799640928fb245a2a5994017597e3d9a4bc575509b4dce5",
+    "univariateML-cpp/include/cppunivariate/distributions/emg/golden.json": "f5b23432d5904db50b57a54e32c4c26923829cd6d661c191626f8bd402047208",
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/README.md": "0dcccd087dbeed96e47379d986bb9b6edc766454d1ec68ae3a57c3b5a25c4475",
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/dpqr.hpp": "ea6a2f44f82ef780647f5bcffdb87e41cf7aeff22edf64c2b082136f426fa3c8",
+    "univariateML-cpp/include/cppunivariate/distributions/fatigue/golden.json": "b89872b5088b8d038157cb6146b2a60eef0dd4ec03441ea78191458a1181be58",
+    "univariateML-cpp/include/cppunivariate/distributions/foldnorm/README.md": "b2b85dac860bbfa1924340952452ba650ecdd333db083714c55a638ea95f98d2",
+    "univariateML-cpp/include/cppunivariate/distributions/foldnorm/dpqr.hpp": "3d7861fb569e967c6af5a1f8ba79460fa1d26917004c2f4d0d903819a8275cc8",
+    "univariateML-cpp/include/cppunivariate/distributions/foldnorm/golden.json": "536c343ec594c0942c3e7a40fa4a18cbbf25cd09a11247a46ea40dfa9d5dcd77",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md": "b935faa23b80c8065b1d5d0143e1b64bbbc6b66ce02d10dc73e9f0981008b369",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/dpqr.hpp": "643fcec132629b3f70d982729a606f749f18df11805c04b022c70848dcd9c5e2",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/golden.json": "9b80a2516ffc6fdc7d6f028e10deb5c5af790f4608ec767423bac4a42d27670e",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/README.md": "0805a6e2942f075951d52f60c888aa2a90a2a0688155184196bacb046df256c6",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/dpqr.hpp": "f68fa78cca65626a1a94d994368022db33baa6f2e55a5a985a5c96bd2ce8025f",
+    "univariateML-cpp/include/cppunivariate/distributions/frechet/golden.json": "75f1d6a9522220315ba16faceeb71730e786bd6e81439b05a221e9aac4c6457c",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/README.md": "5ea6244d80eb1daa99f457af8b6845312c01800921166592d7804af240c73489",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/dpqr.hpp": "16d7470266cd241be612a70a0810b16180daa8728e7298d342a46e0f3af73539",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/golden.json": "8bdbf52ac2f4debadd163c93052933a07c6a16cac957d88035cdb753d5ff7419",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/README.md": "1748b3f6c120117205df059117672b84c594359a6a3e062d8d2ee0e096b9438d",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/dpqr.hpp": "65eb7553ee9c5c3464f58e7ec5aac08393ece39166da099aa886715bd6219203",
+    "univariateML-cpp/include/cppunivariate/distributions/genbeta/golden.json": "0815180e18764c9426d97b5dd9416b7e85fec06c82d575a13fd0d1f1a88b66b7",
+    "univariateML-cpp/include/cppunivariate/distributions/gompertz/README.md": "603da5ffce376f3108ec4508f4bf5c1f75592cdab91c96b0acc28261af5ebf6f",
+    "univariateML-cpp/include/cppunivariate/distributions/gompertz/dpqr.hpp": "98c1330e49d7e6296fa0452f5823e0884006195d461f6bae6b6a791532a53623",
+    "univariateML-cpp/include/cppunivariate/distributions/gompertz/golden.json": "c93d9279252ff0fc084818f8294722233a99a610ec6fa87293ffbc2f5d964f92",
+    "univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md": "1599ce912e70f0511e2b568df7bb7994b5203480193b76251a641beb4884c1bc",
+    "univariateML-cpp/include/cppunivariate/distributions/gumbel/dpqr.hpp": "a1328e970546f2b24a3e292fca4426efc228286ac66e44afec27cfdb76f0352a",
+    "univariateML-cpp/include/cppunivariate/distributions/gumbel/golden.json": "ba6fe433e395a95388b88c21b403ada6071c7f8a3422a159f9a9e79d3a26ce21",
+    "univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md": "5d2354f1cd0505a30c693552eb356f4425e08adbcaeabc96fd2ebe634a69511a",
+    "univariateML-cpp/include/cppunivariate/distributions/hcauchy/dpqr.hpp": "9fe1cc1a7bec0aa3b46444c664f9c455d2f4a1344299ddf7a8c64ba74ebfda70",
+    "univariateML-cpp/include/cppunivariate/distributions/hcauchy/golden.json": "e3a5c363f5fcdd02ab64c6df11c0ecd34fb744d5fcc79b1067f2272e0f9e53d6",
+    "univariateML-cpp/include/cppunivariate/distributions/hnorm/README.md": "d04248bc9fb54c9b43ec218fe3ac4453878d9a0fc44ef92ce7c654e8feb461bd",
+    "univariateML-cpp/include/cppunivariate/distributions/hnorm/dpqr.hpp": "ed3bfa86456b98c75d01d9838833db478ce3166593180ae069e3da8ec2b81375",
+    "univariateML-cpp/include/cppunivariate/distributions/hnorm/golden.json": "a4360ecf7c320353cd53ec64de6ace4485fb43af7de17b3b1a1db6509bacf4eb",
+    "univariateML-cpp/include/cppunivariate/distributions/ht/README.md": "e0e0dbcb617468ceb71d59e72b465445732b7410d102748d0853f45c41e5e95f",
+    "univariateML-cpp/include/cppunivariate/distributions/ht/dpqr.hpp": "a045edcc1ce86cbc2684d35df9f02ef27ab9f388753624d606450c9255e790d9",
+    "univariateML-cpp/include/cppunivariate/distributions/ht/golden.json": "199ecbc8a93786045d89ed66761a865398f4bfad124dabee180c1db150536f34",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/README.md": "c5a55c1751965713bf60d1a52f159de8c608d8e91cc167141a3cd48b9638e682",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/dpqr.hpp": "76bbebe932c5d35cca193500dd82d98b45f79aa38153d761ebdb122e62b2db47",
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/golden.json": "e062b73434fd4b7880aa0e26f9f3ec090d6bc474549853a23d67c236c0cfcbf9",
+    "univariateML-cpp/include/cppunivariate/distributions/invexp/README.md": "9ec14ebbff4fca8fdd84592877d472cfd135a9b443c6309e91e36c7068b7fa71",
+    "univariateML-cpp/include/cppunivariate/distributions/invexp/dpqr.hpp": "ade0960b3037d3fd0c57e674926a6579439ebfb52e0d057257662d3c4644c74f",
+    "univariateML-cpp/include/cppunivariate/distributions/invexp/golden.json": "ac615d7e5ae0892cb7c9e1064c325718b488693c1999c83f1bf9acd9ecfb488e",
+    "univariateML-cpp/include/cppunivariate/distributions/invgamma/README.md": "c15b0afb678e7444e15a659750ff2551ea0816ed17c11fb5b3a95283dd5122f5",
+    "univariateML-cpp/include/cppunivariate/distributions/invgamma/dpqr.hpp": "a1b352b1865279ad6f401b8a3087ce68d6ecf40cb9262fbcecef3c3f145838ce",
+    "univariateML-cpp/include/cppunivariate/distributions/invgamma/golden.json": "60636c37f4b037639e0a9c4cd3ad84b4cfc72768aaf722ac45e7ef184fd027d6",
+    "univariateML-cpp/include/cppunivariate/distributions/invgauss/README.md": "b9067056c21c44eaa145d2b7a5619a91fd6c5c71131d89d579ebd8f8cf4c4da1",
+    "univariateML-cpp/include/cppunivariate/distributions/invgauss/dpqr.hpp": "a2ba299c25711393a68eca0058e36df1c37132afab517f8722f6b99671ea1739",
+    "univariateML-cpp/include/cppunivariate/distributions/invgauss/golden.json": "61eec3252bc9c2018c7c3f900cb06b1bc8bd030e35e239a784bef0e314cfbf94",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md": "d6a27dd520aeaed6ee6854c78b3c9f112057f5f64899c28f645b36a96ad97331",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/dpqr.hpp": "8b62f24c5fb75760c048132e9daf845fd6c9fa579cb8c334a0ceb4533de207ce",
+    "univariateML-cpp/include/cppunivariate/distributions/invparalogis/golden.json": "e2d16de010dce241c301ea218fb23d9d9a8fc09a50c5e3d40b9e9ef88ad9284b",
+    "univariateML-cpp/include/cppunivariate/distributions/invpareto/README.md": "5755935c944f84696c5377fa8b36e902506caeaaca309e4164b23f514c99962e",
+    "univariateML-cpp/include/cppunivariate/distributions/invpareto/dpqr.hpp": "744d4f70e242951b954aa6c5c710d7cba2920e384b2f4501b16d83ff3faf6097",
+    "univariateML-cpp/include/cppunivariate/distributions/invpareto/golden.json": "1aba2d0b9cc945b9ed76ae47a290a15666673eeceab9e2aecd6b453a5ace6cfa",
+    "univariateML-cpp/include/cppunivariate/distributions/invtrgamma/README.md": "7d2c26fe8ac4569c53da4af9670be3c8913fe754675661fade619031649c0cb2",
+    "univariateML-cpp/include/cppunivariate/distributions/invtrgamma/dpqr.hpp": "2da868aa185c7adc56160abd0f7327482b3b9909e2bcd1a1187026967a9145a0",
+    "univariateML-cpp/include/cppunivariate/distributions/invtrgamma/golden.json": "87dead567ce9736f17931ccec4666df6d3baed7c3f904cd363ed9a81091b38d8",
+    "univariateML-cpp/include/cppunivariate/distributions/invweibull/README.md": "df497838f4e06960c26422f7767732bceaba47495fb643fab7feba03e6716c60",
+    "univariateML-cpp/include/cppunivariate/distributions/invweibull/dpqr.hpp": "77a6bc732462b501aca9df998daf14e4a677281ace9ef4ff31e9ac812bfbef00",
+    "univariateML-cpp/include/cppunivariate/distributions/invweibull/golden.json": "4d669f9d6275fe5548107b74d5d77cf379b990be19e7eca8cf500217f77e4fac",
+    "univariateML-cpp/include/cppunivariate/distributions/kumar/README.md": "5e158756da43a10edc4c6a1d1fedd68cd6fb414dd074eeb67f7cbd4c65904f6a",
+    "univariateML-cpp/include/cppunivariate/distributions/kumar/dpqr.hpp": "644e5b9f9694d08e0320e08c0e1537cb4517259f7621dccf4a5d1848cf32a57f",
+    "univariateML-cpp/include/cppunivariate/distributions/kumar/golden.json": "16dbafb2752125a6b7c77a43d2137dd07da0d8cc60aa4a8afd41c52283dfa5f6",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/README.md": "782c3d329b97adce3958c2871fda387dc5e69bae379bf33ecfc06e23aab3a0a2",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/dpqr.hpp": "8e041fb3bb014ddb1b404e3a7d04d014f6b8cc6097b2e9d2281cd0407c2f5f0a",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/golden.json": "3cc8418e82775a67e9244e812b6e18bb267829ff9d54e40a32df5ddc28f47e1f",
+    "univariateML-cpp/include/cppunivariate/distributions/llogis/README.md": "52025fc80a0d49dc30873d53d8a24a4f2945eff7e2bc9cf8a8b2330c7a261497",
+    "univariateML-cpp/include/cppunivariate/distributions/llogis/dpqr.hpp": "4a3f029e59228efa744c33d4efbb418f318100abec97d1f7f1cb5400226d131e",
+    "univariateML-cpp/include/cppunivariate/distributions/llogis/golden.json": "23725adc3b6fc6aa8ec33259349feb5ac1f1689ed2a9460c71ece4eba16367f2",
+    "univariateML-cpp/include/cppunivariate/distributions/logis/README.md": "11af1c596281ce126b0f876bd61be72753182cdc795a7e88b4cf6a53c656bcf1",
+    "univariateML-cpp/include/cppunivariate/distributions/logis/dpqr.hpp": "eb780b1667e2043f01d218775171df1c00f92b091ede5750d3aacf653c6f3cf8",
+    "univariateML-cpp/include/cppunivariate/distributions/logis/golden.json": "7eaae587b7367f73bf3012b75ee34feb020c951fa8c9e9e7934827122816e23e",
+    "univariateML-cpp/include/cppunivariate/distributions/lomax/README.md": "dd956b9e12174f581947d0d316a0bb38364c3a6b3e106244d6017d6d54b8723e",
+    "univariateML-cpp/include/cppunivariate/distributions/lomax/dpqr.hpp": "77b5bc873dab6d0662dd4dcaec10141206fe134da4b17a3c4f3e5db2cf8e9bfd",
+    "univariateML-cpp/include/cppunivariate/distributions/lomax/golden.json": "54d34964a071c7eccba4321c9eb7a7ff84c239a124fb4908d00efe9842e45b43",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/README.md": "55f648650d8e549a1b1e3ec1ab1ba66bb99cceaaf2d5feecb10cdd5af52e7db2",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/dpqr.hpp": "bb74f02e293f037cf71b7d4b3f5d8febec4876d5864745ed03b57ab739d4c548",
+    "univariateML-cpp/include/cppunivariate/distributions/lst/golden.json": "b6d077a9bc629723933fbccd693d878331cb4892ffe4cf538b6001ff478d86b6",
+    "univariateML-cpp/include/cppunivariate/distributions/naka/README.md": "8f70b86bd64a6ff4ee8bd0bfc1d2b27a1204791911e19fa915ff60b448a1f722",
+    "univariateML-cpp/include/cppunivariate/distributions/naka/dpqr.hpp": "c9a055160d6e46bebac3e70654d19ae98ff9373dd58ce4c43496c0815b14dee8",
+    "univariateML-cpp/include/cppunivariate/distributions/naka/golden.json": "3a087b76c6a3376fe689f50dac2f91978fed5572f202a75ccd97d5f116c0597b",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md": "a11ba1f4df57091c277d6af943c98bc7d3eba4022af1162214d655476874f467",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/dpqr.hpp": "08e691a6c6105f88e367f94e7a357a9f45d744eb41e4e8761cb77316f28839e1",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/golden.json": "d06e13be0e5c585dccd68062c3232ccbe9e1f15287e1b6e9ebdf08a341de63d6",
+    "univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md": "e59faa19352da4e7a3ede6d18a07602c3d5f22abcfabbfed2b6a3d298ed39673",
+    "univariateML-cpp/include/cppunivariate/distributions/nsbeta/dpqr.hpp": "bb76581f93b11fe11600665ec384eece1f1aec89b5f386c6bbb1af9670182cf8",
+    "univariateML-cpp/include/cppunivariate/distributions/nsbeta/golden.json": "5fb0eca9a90fa93b8d680db465e59a23e26e96ba84b4af893fed3774bc63aea8",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/README.md": "ca9ef7523a3ea489a6c157457b329776c89c261a3649cd3512321e906e6c8b0e",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/dpqr.hpp": "f4fb1844c7787be6cae163b9fa2b4f835305a35991d22d0985ed7146be0b2529",
+    "univariateML-cpp/include/cppunivariate/distributions/paralogis/golden.json": "adf1ee807cfeb57743c33fa160096503a7bd361c1bffa24d29dcbb9239f212df",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto/README.md": "f8fcd3f1a0beba740bd9c8f2d220f92652f59c5b10ac3d9343c5b0fa9780fe73",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto/dpqr.hpp": "ac050caefbef594feacead6e111fb0bf343f3ea5ad5020ef49e2b3ad78531d2e",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto/golden.json": "a2f51def8b3ae6e8a4fb78c0ef47b194293cf67352d19ebe7a4f46e7b4e8b523",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md": "291161e86f12ddf75a3279889cc325dd26e76bd12a7c1fd41abe68e5eb4b3c3b",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto2/dpqr.hpp": "7c07eac66ca5945afc8910c17d3c3bb5b4508935a459e3a73e212663901c3e69",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto2/golden.json": "123311add7608b86e64fdd7ef3718779f21b326afa2e1d4782b552041f69ff09",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto3/README.md": "dcf8d7ff9ea2a1721150129271174888908ecc48d0355d02ab5818b0b296df00",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto3/dpqr.hpp": "8a715f103cb474dbfcbffb4279444891cf6995dc491beee5df3ac156d854528f",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto3/golden.json": "abce11b3319340c96376251b9fbcbd3fc991afe9c451b7f79b1aeefac2f5b97a",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md": "f9d7d6df80ab3f53ae13627d4ba8adfb95c281912064c3bf6291399c35c2c69a",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/dpqr.hpp": "88a970065cc795d7091c4345672d353cd5c30e73348cd602a1f4fbc1a4e172df",
+    "univariateML-cpp/include/cppunivariate/distributions/pareto4/golden.json": "8975ddbf74b08364bab0f1bd543e58410b94b43c9c18a078bc9b6dae66932a00",
+    "univariateML-cpp/include/cppunivariate/distributions/power/README.md": "e0a98b8952a8312f8e9bae3c54e74ab7811fe5a3e00ffbc16e0fcb292825982a",
+    "univariateML-cpp/include/cppunivariate/distributions/power/dpqr.hpp": "5622a890645f104369beed8793262533bc3590f168ecdaef84e088d42187c5a1",
+    "univariateML-cpp/include/cppunivariate/distributions/power/golden.json": "1d1eda20b004c79a696de5a2fcde8c209c84397e7e75320bcc8555ce9c5a6bca",
+    "univariateML-cpp/include/cppunivariate/distributions/sgomp/README.md": "7393555a57d3216de0067247a8f5d0ff9fced6b0714149455e681e72a57f1a3f",
+    "univariateML-cpp/include/cppunivariate/distributions/sgomp/dpqr.hpp": "2ed2955034a67c6a77b118b2ff6bd4a054a23d1986ff7a38a1205b8c6a7e459a",
+    "univariateML-cpp/include/cppunivariate/distributions/sgomp/golden.json": "53849eead819a4284fdcb8537cc4e47b8745c8b33e9522abcbe9a06532b0ecf6",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/README.md": "7c7fc68bebe78f4d1c89b858d02d8034238da6cd4fd6e30a339e9b3b7181dbca",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/dpqr.hpp": "8830f09dbdb564eb569469ae4bb2e84f4de35b9c4c6013f75ff6c79527dbe35f",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/golden.json": "c7fcb7ee611735b87480a3e8bf25c980f8709302788719a595d87d9752b04f31",
+    "univariateML-cpp/include/cppunivariate/distributions/slash/README.md": "6094455fba94910074e2b936d805c65e38a9eee0248108a6ae9b4734ea89bcdb",
+    "univariateML-cpp/include/cppunivariate/distributions/slash/dpqr.hpp": "c8d0983238ef432394db7a524714c8c8bc9a67b8478ed34de7339a1c43faaec1",
+    "univariateML-cpp/include/cppunivariate/distributions/slash/golden.json": "269daf182eda50c8753e860db790ef6c0a080217ab931cf482a3252307d9e0cb",
+    "univariateML-cpp/include/cppunivariate/distributions/sn/README.md": "77358235eef1cd0074f717f26b967e6e68086803207ba4d163b510f8b3b9f22c",
+    "univariateML-cpp/include/cppunivariate/distributions/sn/dpqr.hpp": "f62729bd6860c1d9b2f2cc3fd0a23aebd3a48e94215c779d3377a58de1efae8e",
+    "univariateML-cpp/include/cppunivariate/distributions/sn/golden.json": "3e3571016ff4f5b616004fe069a83d4e832b60ed1c85932d756d79971382762b",
+    "univariateML-cpp/include/cppunivariate/distributions/std/README.md": "10fd201074f2cdc43a4aea71f397eaf6cef172549249e8badbae73d0bf1822ec",
+    "univariateML-cpp/include/cppunivariate/distributions/std/dpqr.hpp": "d27726222f134336b8854dd9265ffa0aff74646b6e5da5cd5a6dcf7c9cba627b",
+    "univariateML-cpp/include/cppunivariate/distributions/std/golden.json": "ae2f02e1f1e0f1fe8b8672fb2969657573c8c3da1cf17cc5615d95e8d0212e1d",
+    "univariateML-cpp/include/cppunivariate/distributions/trgamma/README.md": "375508526ef9885df43dca3b34cf9470283a6864fe451c1302c9570854117984",
+    "univariateML-cpp/include/cppunivariate/distributions/trgamma/dpqr.hpp": "73cb0d090b6df869172df10e1d81308ff72459e685aa6099238a6cd140ff9c9d",
+    "univariateML-cpp/include/cppunivariate/distributions/trgamma/golden.json": "50a7f0e2786f79bcc57d78775f3338a43b48762dd2d7173d70b24256b22f66f4",
+    "univariateML-cpp/include/cppunivariate/distributions/weibull/README.md": "38e7f1c179720a96fb4f50badb716da1c4197ceeac76485120bb53128a252126",
+    "univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp": "75ee0f37c2a23cf91c027d203b6a6a6b8292a5c0718121cb91468a09a8a4d1f5",
+    "univariateML-cpp/include/cppunivariate/distributions/weibull/golden.json": "7f41a7ceae81a163fea0a7ad9f4829f6b9455fbdbdf50f1a2149b02ffd4ae453",
+    "univariateML-cpp/include/cppunivariate/distributions/yulesimon/README.md": "e88d4bc8d3eeb0ead73aa5301fdcc80a336ce9e9d8da5835cd2188c9e48d5227",
+    "univariateML-cpp/include/cppunivariate/distributions/yulesimon/dpqr.hpp": "f4ac4d0b3bd611ae386fda9c01740e52c983c8147e60578329065b36fbcb1500",
+    "univariateML-cpp/include/cppunivariate/distributions/yulesimon/golden.json": "62348366826437c630156bb57d5ae7f9305af895ddc71deda554a61508c96a2d",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/README.md": "d13437cad12326d528bf4a0845dc7aea94e53f7bf6a54dee489768a94cc273ca",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/dpqr.hpp": "cd0d6f26d6fbd70c4a9df10e9376cfd98aa62787074114574cbf9859bda28cbc",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/golden.json": "7af48b17b18f5605d8b57f6118c12f7aab357ca26d72b009e10bcfea44a52926",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/README.md": "ce3f92c3f007bf76917633d036ff39b5075c32321e0fd5c0b92bf60e03252960",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/dpqr.hpp": "4ee686dca029c8d1b041ab6b99e113d42c87d088a79d59080ffe5f925ef29e59",
+    "univariateML-cpp/include/cppunivariate/distributions/zib/golden.json": "1bf64b76d724ebffdadc8cea4d2baef0f20f2fdcb4bfdea6ceb0564b102a1b67",
+    "univariateML-cpp/include/cppunivariate/distributions/zinb/README.md": "9bdbfbf5599121c110a47042d71d6d606567578e05d19133519ea4a17fd963b8",
+    "univariateML-cpp/include/cppunivariate/distributions/zinb/dpqr.hpp": "d07bea0b08d1f3d13e9bc79038fff96d5a6e095a9df436687ed35e2646692775",
+    "univariateML-cpp/include/cppunivariate/distributions/zinb/golden.json": "a5a2ed5e6855c630ce532fe778f579b52781d3ae0c2ed9c673a08cd3f031633e",
+    "univariateML-cpp/include/cppunivariate/distributions/zip/README.md": "a7efc2fc50912ce83dfc67ecd0bece6d9d91f4a1288a684516145a10ec1e03ab",
+    "univariateML-cpp/include/cppunivariate/distributions/zip/dpqr.hpp": "bc82b0bda96e6e53b201e5fa06baa1b1e8e7214ee994e5f2ad07e742ef7c05eb",
+    "univariateML-cpp/include/cppunivariate/distributions/zip/golden.json": "cef45652d08dccc54ba3887f587b301a2dfb426b58b7654757ba1f6197c8e591",
+    "univariateML-cpp/include/cppunivariate/distributions/zipf/README.md": "6a0487689cf4f40cc1e2eb77e52d82fb611937386d30a7554d548589328591fe",
+    "univariateML-cpp/include/cppunivariate/distributions/zipf/dpqr.hpp": "e996b63d1e3c72e8248cfc0552627561b91deda94ad72fff957c3df76f4199a6",
+    "univariateML-cpp/include/cppunivariate/distributions/zipf/golden.json": "369d35555a4d0fc3160f947e8616110e6532e97f1a61d8f9f0e05fa2e080526b",
+    "univariateML-cpp/include/cppunivariate/distributions/zmgeom/README.md": "3a29c9d70e7c7964c9faed7d55b6cc5eed9681c093ae9e81cf761b2b80bec702",
+    "univariateML-cpp/include/cppunivariate/distributions/zmgeom/dpqr.hpp": "a2b72efaad9b64001851f5d2c7efc8d444aaa708bece87adb7ee9c792a983a33",
+    "univariateML-cpp/include/cppunivariate/distributions/zmgeom/golden.json": "9043c3ccc417bd9eaf23148abceb11aac1088e1dd4402bf6e08e6fa5ce055d2e",
+    "univariateML-cpp/include/cppunivariate/distributions/zmlogarithmic/README.md": "c861c986a484e59382d7eca174f575f5712e49378ec782a81c1c5916e1dc3dfe",
+    "univariateML-cpp/include/cppunivariate/distributions/zmlogarithmic/dpqr.hpp": "a2736c4dbdd3b4da6189ca2145d89a168ef29e66aa041f398192073aba37442c",
+    "univariateML-cpp/include/cppunivariate/distributions/zmlogarithmic/golden.json": "664a1d7df326ec3b5a96c78df1089f670db450fd09979e3ce29ec18a6d88cb0c",
+    "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/README.md": "ee4c5551b724be1e02ea6a47063a2abaa0f53814a785f8c2773db10e726cc94c",
+    "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/dpqr.hpp": "b3ce5d96f373dc5e4575adff9d9c1f8cd7d0226601bff296ecb8a539cdc29ce4",
+    "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/golden.json": "88f68f9244e3ec0988b297e75f5a455c052fe6d10361725903d37cc5ec2e960c",
+    "univariateML-cpp/include/cppunivariate/distributions/zmpois/README.md": "0b6d4e378b4ff632d70bbb1c21a73e0fa334693a1fa17a72443597d74cfb0f40",
+    "univariateML-cpp/include/cppunivariate/distributions/zmpois/dpqr.hpp": "0a1071ccc83968ba2de0aa304d76de593ac052f993189b93f30429111bea7735",
+    "univariateML-cpp/include/cppunivariate/distributions/zmpois/golden.json": "7feabb61e01448ec8772164664bf183ee00f900ae16928cda897c4749903c160",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/README.md": "63b09eeeb76c7fc207957d05937abb572e2090495667ecdfdc6c770a849ac939",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/dpqr.hpp": "8502c1b0d89eb780d35abcf0c667b4e62b9ea6031866265d9fa9e882429b6d1f",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/golden.json": "73386ada833c676422d92b4d3014f580f30f24e2355b4e0d1df3105a61235ef8",
+    "univariateML-cpp/include/cppunivariate/distributions/ztgeom/README.md": "967f4b7382510dc6700c2d630b8c085cc847fe2b7deeaacc5c770c61620be08f",
+    "univariateML-cpp/include/cppunivariate/distributions/ztgeom/dpqr.hpp": "69a7e4de44922023d9212779141018066f7ef873615a5b058ab0f080b06500f1",
+    "univariateML-cpp/include/cppunivariate/distributions/ztgeom/golden.json": "75ca78757b45c877a7d9b04aed41562c5aa9042c7cd7fac5686f8189fce192d6",
+    "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/README.md": "da1080f2dfaeea76e6197d9862416581c4400621fdde9883087dd8848218e75b",
+    "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/dpqr.hpp": "769159bce41344b98e13614cfb8b515a37e8744e5057badbc566f001a0b3089f",
+    "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/golden.json": "ae2a59c21fa82040b987c9b9d0863be0983886304f96245db4a6b46573e6f78a",
+    "univariateML-cpp/include/cppunivariate/distributions/ztpois/README.md": "3414346306aefea19d007e19d49beee05148213af864b63c81275e5ae1177b66",
+    "univariateML-cpp/include/cppunivariate/distributions/ztpois/dpqr.hpp": "cf46651ca6005c093fb364acb9ba9b88de076975694a80ce24319601449fc1ce",
+    "univariateML-cpp/include/cppunivariate/distributions/ztpois/golden.json": "57f4fef77d24fa47305c37ede75d5617780363a20876343c2a20aecd75fdd44e"
+  },
+  "python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+  "sympy": "1.14.0",
+  "mpmath": "1.3.0",
+  "seed": 20261101,
+  "mpmath_dps": 40,
+  "tolerance_score": 2e-06,
+  "tolerance_observed": 2e-05,
+  "golden_total_score_tolerance": 0.001,
+  "errors_scaled_by": "1 + abs(reference)",
+  "families": {
+    "bbinom": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "alpha",
+        "beta"
+      ],
+      "max_score_error": 9.976116374079638e-12,
+      "max_observed_error": 8.448178238495778e-09,
+      "total_score_error": 1.9189218283837725e-09,
+      "held_regular": [
+        "size"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.9831600158488222e-08,
+      "golden_total_score": [
+        -1.918963377089966e-09,
+        -1.5304815748073963e-10
+      ]
+    },
+    "betapr": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "max_score_error": 1.007407041723557e-11,
+      "max_observed_error": 4.717331935621867e-08,
+      "total_score_error": 2.5283575264540245e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.2050007469143866e-08,
+      "golden_total_score": [
+        6.008260555745437e-11,
+        5.02952179903815e-10,
+        -5.477136300058305e-09
+      ]
+    },
+    "bhatt": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mu",
+        "sigma",
+        "a"
+      ],
+      "max_score_error": 4.558891251292101e-12,
+      "max_observed_error": 2.638368626428422e-08,
+      "total_score_error": 3.186369721903814e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 2.7097601379839842e-08,
+      "golden_total_score": [
+        5.182965168160081e-12,
+        1.4685542613634972e-06,
+        1.3491965108469728e-06
+      ]
+    },
+    "bnbinom": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "size",
+        "alpha",
+        "beta"
+      ],
+      "max_score_error": 4.1241357083352334e-11,
+      "max_observed_error": 1.189547067154893e-07,
+      "total_score_error": 7.351951669416913e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 5.076525252331408e-09,
+      "golden_total_score": [
+        7.402711729026512e-07,
+        -1.2178232644544096e-07,
+        1.504973025888423e-07
+      ]
+    },
+    "burr": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "max_score_error": 8.512749733926705e-12,
+      "max_observed_error": 3.2327372305729695e-08,
+      "total_score_error": 2.3522108192738143e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 3.0331882938020467e-09,
+      "golden_total_score": [
+        2.351744077255802e-10,
+        -4.635480051251584e-06,
+        -8.5498011818258e-06
+      ]
+    },
+    "cauchy": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "location",
+        "scale"
+      ],
+      "max_score_error": 2.471237378795138e-11,
+      "max_observed_error": 2.14843170995319e-07,
+      "total_score_error": 2.589154137100715e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 9.3549838139623e-09,
+      "golden_total_score": [
+        2.390843079069782e-11,
+        -2.440964097516485e-10
+      ]
+    },
+    "dgamma": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "rate"
+      ],
+      "max_score_error": 4.950709905259336e-12,
+      "max_observed_error": 3.646688617779422e-08,
+      "total_score_error": 2.7688216984549706e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 3.0520899798571516e-09,
+      "golden_total_score": [
+        -1.8923233113810056e-07,
+        -2.5850099838464757e-11
+      ]
+    },
+    "dlaplace": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "scale"
+      ],
+      "max_score_error": 4.114847693353818e-12,
+      "max_observed_error": 1.8832289953060755e-08,
+      "total_score_error": 7.519911785473453e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 3.651854387487053e-09,
+      "golden_total_score": [
+        -7.5197936766358e-10
+      ]
+    },
+    "dnorm": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mean",
+        "sd"
+      ],
+      "max_score_error": 4.18023162283619e-12,
+      "max_observed_error": 3.3788832811730737e-08,
+      "total_score_error": 1.5887606954277646e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 9.487575294774607e-07,
+      "golden_total_score": [
+        1.5892558380414812e-09,
+        -4.068655412581279e-10
+      ]
+    },
+    "dweibull": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2"
+      ],
+      "max_score_error": 2.355179998435914e-12,
+      "max_observed_error": 1.9006457655783557e-08,
+      "total_score_error": 2.7968899248863883e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.106328018752789e-09,
+      "golden_total_score": [
+        2.79365863775638e-10,
+        5.537015290713043e-12
+      ]
+    },
+    "emg": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mu",
+        "sigma",
+        "lambda"
+      ],
+      "max_score_error": 4.380745828413588e-12,
+      "max_observed_error": 2.889677103903454e-08,
+      "total_score_error": 6.071974896350654e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.4907462584591025e-09,
+      "golden_total_score": [
+        6.927569629056052e-12,
+        4.440872440225618e-06,
+        -2.3308737453486827e-06
+      ]
+    },
+    "fatigue": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "alpha",
+        "beta"
+      ],
+      "max_score_error": 5.9161441722740015e-12,
+      "max_observed_error": 2.0129644057477215e-08,
+      "total_score_error": 3.4793430269484606e-11,
+      "held_regular": [
+        "mu"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 3.5145091063187176e-08,
+      "golden_total_score": [
+        -1.8582836658342927e-11,
+        -3.889152146302477e-07
+      ]
+    },
+    "foldnorm": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mu",
+        "sigma"
+      ],
+      "max_score_error": 5.627795536771355e-12,
+      "max_observed_error": 2.6265213903832236e-08,
+      "total_score_error": 5.436206639545606e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 8.240633171790028e-10,
+      "golden_total_score": [
+        -5.425526343749709e-07,
+        2.139049140925664e-06
+      ]
+    },
+    "fpareto": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape2",
+        "scale"
+      ],
+      "max_score_error": 2.5049911028348562e-11,
+      "max_observed_error": 1.5580994891325892e-07,
+      "total_score_error": 1.9554334613360764e-10,
+      "held_regular": [
+        "min",
+        "shape1",
+        "shape3"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 2.0771460273056657e-08,
+      "golden_total_score": [
+        1.4549132662522446e-09,
+        3.0435465259159855e-10
+      ]
+    },
+    "frechet": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "lambda",
+        "sigma"
+      ],
+      "max_score_error": 8.357837027059e-12,
+      "max_observed_error": 4.3908773624402715e-08,
+      "total_score_error": 4.802002523461318e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [
+        "mu"
+      ],
+      "total_observed_error": 4.4426361429472086e-09,
+      "golden_total_score": [
+        -1.4139756900066747e-10,
+        -4.804037168071318e-10
+      ]
+    },
+    "gb2": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2",
+        "shape3",
+        "scale"
+      ],
+      "max_score_error": 7.041976057317198e-11,
+      "max_observed_error": 1.3841311811922062e-07,
+      "total_score_error": 3.5280217384885526e-08,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.5855014496316942e-07,
+      "golden_total_score": [
+        1.2094617751756687e-08,
+        -5.866582775126972e-10,
+        -3.526981995349843e-08,
+        1.511120117925202e-10
+      ]
+    },
+    "genbeta": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2",
+        "shape3"
+      ],
+      "max_score_error": 8.870685221612662e-11,
+      "max_observed_error": 1.0692408408411983e-07,
+      "total_score_error": 4.2355557375653176e-08,
+      "held_regular": [
+        "scale"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 3.203851225027415e-08,
+      "golden_total_score": [
+        1.525477833164146e-06,
+        1.501705120254826e-07,
+        5.7157447053146626e-08
+      ]
+    },
+    "gompertz": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "a",
+        "b"
+      ],
+      "max_score_error": 6.421510526848615e-12,
+      "max_observed_error": 3.9945200125722575e-08,
+      "total_score_error": 1.555206862515363e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 2.158548494958032e-09,
+      "golden_total_score": [
+        -1.5434212241594025e-10,
+        -1.837761609557731e-10
+      ]
+    },
+    "gumbel": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mu",
+        "sigma"
+      ],
+      "max_score_error": 2.184344052764613e-12,
+      "max_observed_error": 4.932608385933842e-09,
+      "total_score_error": 2.4949813162815372e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.255100365449213e-09,
+      "golden_total_score": [
+        1.2879142197164128e-11,
+        -6.250817163877542e-08
+      ]
+    },
+    "hcauchy": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "sigma"
+      ],
+      "max_score_error": 1.439108978889413e-11,
+      "max_observed_error": 9.582450039459693e-08,
+      "total_score_error": 3.75961527325846e-10,
+      "held_regular": [
+        "mu"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.6614741606295903e-09,
+      "golden_total_score": [
+        3.748314436613498e-10
+      ]
+    },
+    "hnorm": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "sigma"
+      ],
+      "max_score_error": 3.694960138209924e-12,
+      "max_observed_error": 7.906499235280191e-09,
+      "total_score_error": 1.8862974117854863e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [
+        "mu"
+      ],
+      "total_observed_error": 2.2664342164920842e-10,
+      "golden_total_score": [
+        -1.8951729074956347e-11
+      ]
+    },
+    "ht": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "nu",
+        "sigma"
+      ],
+      "max_score_error": 7.169167539860268e-12,
+      "max_observed_error": 3.293542498107194e-08,
+      "total_score_error": 4.3409183019228985e-11,
+      "held_regular": [
+        "mu"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 9.698644094487091e-09,
+      "golden_total_score": [
+        -1.9576375125604506e-06,
+        4.312583623544697e-11
+      ]
+    },
+    "invburr": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "max_score_error": 6.809633560437983e-12,
+      "max_observed_error": 1.1456604632990408e-07,
+      "total_score_error": 5.544217494544446e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.0575438850806596e-08,
+      "golden_total_score": [
+        -5.481037845811443e-11,
+        -9.706660065944561e-06,
+        1.163938597303904e-05
+      ]
+    },
+    "invexp": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "scale"
+      ],
+      "max_score_error": 1.3986693236275695e-11,
+      "max_observed_error": 7.10846352987396e-08,
+      "total_score_error": 1.1113620341806856e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.0936596751196563e-09,
+      "golden_total_score": [
+        1.1149597911597198e-10
+      ]
+    },
+    "invgamma": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "alpha",
+        "beta"
+      ],
+      "max_score_error": 2.0732487716382063e-12,
+      "max_observed_error": 5.063334652330688e-09,
+      "total_score_error": 7.8590286895403e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 4.997205562816195e-09,
+      "golden_total_score": [
+        7.859740636106949e-10,
+        4.216160753856002e-11
+      ]
+    },
+    "invgauss": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mean",
+        "shape"
+      ],
+      "max_score_error": 2.2885619952707443e-12,
+      "max_observed_error": 5.40169097149984e-09,
+      "total_score_error": 1.1701058661830542e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.770613900021092e-09,
+      "golden_total_score": [
+        1.1712028569199617e-10,
+        1.4852563623435344e-11
+      ]
+    },
+    "invparalogis": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 1.632978176678452e-11,
+      "max_observed_error": 8.872692705755468e-08,
+      "total_score_error": 1.5335822800158673e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 3.608086705482112e-09,
+      "golden_total_score": [
+        3.378659875719059e-05,
+        -7.789061542318176e-05
+      ]
+    },
+    "invpareto": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 1.2757410489491817e-11,
+      "max_observed_error": 8.777000459071494e-08,
+      "total_score_error": 2.262368899561231e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 6.149516883534708e-09,
+      "golden_total_score": [
+        -8.539946527719167e-12,
+        1.2475970256886626e-09
+      ]
+    },
+    "invtrgamma": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "max_score_error": 4.1904782502322806e-12,
+      "max_observed_error": 2.8515119150791283e-08,
+      "total_score_error": 5.278312679908671e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 2.6772908460606896e-10,
+      "golden_total_score": [
+        1.8781307065118824e-10,
+        4.739502124095907e-10,
+        1.9283907803924194e-11
+      ]
+    },
+    "invweibull": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 4.492679840060061e-12,
+      "max_observed_error": 2.1120013159681034e-08,
+      "total_score_error": 7.694007861063375e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 3.8128530151681395e-10,
+      "golden_total_score": [
+        2.0238033471287054e-11,
+        7.631961729259729e-11
+      ]
+    },
+    "kumar": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "a",
+        "b"
+      ],
+      "max_score_error": 2.3855107310935787e-12,
+      "max_observed_error": 4.379113448683041e-09,
+      "total_score_error": 4.857534093777998e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 4.798025232755793e-10,
+      "golden_total_score": [
+        1.0280106699789293e-06,
+        -4.991956847888446e-11
+      ]
+    },
+    "lgser": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "theta"
+      ],
+      "max_score_error": 1.956363981607543e-11,
+      "max_observed_error": 9.52193412930553e-08,
+      "total_score_error": 3.5555372865128056e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.7223935706049778e-09,
+      "golden_total_score": [
+        -3.5648994867187866e-10
+      ]
+    },
+    "llogis": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 1.302246576374237e-11,
+      "max_observed_error": 6.359651090783052e-08,
+      "total_score_error": 6.453859645452431e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.2758096716108954e-07,
+      "golden_total_score": [
+        -7.050496297900111e-10,
+        -1.293831708437665e-11
+      ]
+    },
+    "logis": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "location",
+        "scale"
+      ],
+      "max_score_error": 7.361922632338186e-12,
+      "max_observed_error": 9.000912854639934e-08,
+      "total_score_error": 4.599748498591989e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 9.333747492995634e-08,
+      "golden_total_score": [
+        -2.9849234195467034e-11,
+        4.602277725584969e-10
+      ]
+    },
+    "lomax": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "lambda",
+        "kappa"
+      ],
+      "max_score_error": 7.1130706315929094e-12,
+      "max_observed_error": 6.2954336052555e-08,
+      "total_score_error": 2.725490502954798e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 5.153549271192343e-09,
+      "golden_total_score": [
+        2.157716286865785e-06,
+        -4.1666614603030894e-11
+      ]
+    },
+    "lst": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mu",
+        "sigma",
+        "df"
+      ],
+      "max_score_error": 2.3744728059424263e-11,
+      "max_observed_error": 1.5360793163945293e-07,
+      "total_score_error": 1.7284125389772261e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 8.712618925867515e-08,
+      "golden_total_score": [
+        -2.985871483396352e-08,
+        2.2687658318698567e-07,
+        -9.884374022051112e-08
+      ]
+    },
+    "naka": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 4.954036818439928e-12,
+      "max_observed_error": 1.0954237852538863e-08,
+      "total_score_error": 2.289422396477329e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 4.769768191005968e-08,
+      "golden_total_score": [
+        -2.3175572572142755e-11,
+        -2.16417994636231e-11
+      ]
+    },
+    "nbinom": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "size",
+        "prob"
+      ],
+      "max_score_error": 1.7002314244609884e-11,
+      "max_observed_error": 1.2234621941530388e-08,
+      "total_score_error": 4.2406961116399835e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 6.684667320977293e-09,
+      "golden_total_score": [
+        1.3727783076955546e-09,
+        -4.239131712324706e-09
+      ]
+    },
+    "nsbeta": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2"
+      ],
+      "max_score_error": 5.423662094624154e-12,
+      "max_observed_error": 6.565431774638307e-09,
+      "total_score_error": 1.9160850708302225e-09,
+      "held_regular": [
+        "max",
+        "min"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.1105228885906183e-08,
+      "golden_total_score": [
+        -3.5040540469211123e-09,
+        1.9776501547497105e-09
+      ]
+    },
+    "paralogis": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 1.3692898708309203e-11,
+      "max_observed_error": 1.1971153948064925e-07,
+      "total_score_error": 1.4051582308992219e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.1889405029527568e-09,
+      "golden_total_score": [
+        5.0811147862539485e-06,
+        3.335795102854533e-05
+      ]
+    },
+    "pareto": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "a"
+      ],
+      "max_score_error": 8.822278306396179e-12,
+      "max_observed_error": 8.769399471497466e-08,
+      "total_score_error": 1.7948864610609312e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 4.945082016227833e-09,
+      "golden_total_score": [
+        1.7922191508645824e-10
+      ]
+    },
+    "pareto2": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 3.915314507581782e-11,
+      "max_observed_error": 1.9962379393447047e-07,
+      "total_score_error": 8.584231552866156e-10,
+      "held_regular": [
+        "min"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.421897105869003e-08,
+      "golden_total_score": [
+        -8.594831513164536e-10,
+        5.2776127912324e-10
+      ]
+    },
+    "pareto3": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 1.0607273306815987e-11,
+      "max_observed_error": 5.5646468559746593e-08,
+      "total_score_error": 4.0231831958688426e-10,
+      "held_regular": [
+        "min"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 2.5516575574630658e-08,
+      "golden_total_score": [
+        -3.8698076602616815e-06,
+        -8.091770662410624e-06
+      ]
+    },
+    "pareto4": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "max_score_error": 7.55908034404233e-11,
+      "max_observed_error": 2.9159637483443393e-07,
+      "total_score_error": 2.391304154105041e-09,
+      "held_regular": [
+        "min"
+      ],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.6954662783233433e-08,
+      "golden_total_score": [
+        -2.3909629831564416e-09,
+        3.7401553307780944e-05,
+        5.900267942851589e-06
+      ]
+    },
+    "power": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "beta"
+      ],
+      "max_score_error": 2.0032521931713745e-12,
+      "max_observed_error": 7.589903430964354e-09,
+      "total_score_error": 3.325413735064534e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 8.468032225651449e-10,
+      "golden_total_score": [
+        3.3259894838266746e-11
+      ]
+    },
+    "sgomp": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "b",
+        "eta"
+      ],
+      "max_score_error": 1.2859899043209299e-11,
+      "max_observed_error": 4.669162140101826e-08,
+      "total_score_error": 4.05016448844812e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.1779613575910035e-09,
+      "golden_total_score": [
+        9.084183829388692e-06,
+        2.4905433271271704e-10
+      ]
+    },
+    "skellam": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mu1",
+        "mu2"
+      ],
+      "max_score_error": 5.960224766714891e-13,
+      "max_observed_error": 1.4207143689522159e-09,
+      "total_score_error": 5.8101560899614984e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.4432061861163058e-09,
+      "golden_total_score": [
+        9.268901373649108e-07,
+        1.2770327921240998e-06
+      ]
+    },
+    "slash": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mu",
+        "sigma"
+      ],
+      "max_score_error": 2.596137916184359e-11,
+      "max_observed_error": 1.7169092364950204e-07,
+      "total_score_error": 3.1364307305758477e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 5.009114936004545e-09,
+      "golden_total_score": [
+        -1.2658924031516694e-05,
+        3.137692328181174e-10
+      ]
+    },
+    "sn": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "xi",
+        "omega",
+        "alpha"
+      ],
+      "max_score_error": 5.380791190920724e-12,
+      "max_observed_error": 4.880970725772435e-08,
+      "total_score_error": 3.313824131614739e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 8.201541215722576e-10,
+      "golden_total_score": [
+        -4.39992198453254e-07,
+        -7.440766560673495e-07,
+        -1.7025245909487157e-06
+      ]
+    },
+    "std": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "mean",
+        "sd",
+        "nu"
+      ],
+      "max_score_error": 7.967450581777217e-12,
+      "max_observed_error": 1.3838991237042504e-07,
+      "total_score_error": 2.7414327263884226e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 6.919519622630203e-08,
+      "golden_total_score": [
+        4.776999634503731e-05,
+        -2.6287152622650467e-05,
+        2.0792118211099275e-05
+      ]
+    },
+    "trgamma": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "max_score_error": 3.3903735520037734e-12,
+      "max_observed_error": 2.1951079760194945e-08,
+      "total_score_error": 3.076685051083755e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 5.43019344454706e-09,
+      "golden_total_score": [
+        -3.0748967261295945e-10,
+        1.6509538180997652e-10,
+        4.980710288648993e-12
+      ]
+    },
+    "weibull": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "max_score_error": 1.1890753685942039e-12,
+      "max_observed_error": 3.059778653679218e-09,
+      "total_score_error": 2.697559439337195e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 2.1687535989920165e-10,
+      "golden_total_score": [
+        8.115949305942394e-07,
+        -7.940814672480201e-12
+      ]
+    },
+    "yulesimon": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "rho"
+      ],
+      "max_score_error": 2.723813908863254e-12,
+      "max_observed_error": 1.1253978139292375e-08,
+      "total_score_error": 3.397049266632807e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.73043016608242e-09,
+      "golden_total_score": [
+        -5.334296560022267e-09
+      ]
+    },
+    "zeta": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "s"
+      ],
+      "max_score_error": 5.866876632357637e-12,
+      "max_observed_error": 7.678180629648122e-08,
+      "total_score_error": 1.349696242363561e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.064583289802681e-08,
+      "golden_total_score": [
+        3.532806713835157e-09
+      ]
+    },
+    "zib": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "prob",
+        "pi"
+      ],
+      "max_score_error": 1.9399750532653886e-11,
+      "max_observed_error": 2.3391313706453423e-07,
+      "total_score_error": 1.0132375192260986e-08,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [
+        "size"
+      ],
+      "total_observed_error": 4.900263371562224e-08,
+      "golden_total_score": [
+        -1.013243688952059e-08,
+        5.303912864462745e-10
+      ]
+    },
+    "zinb": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "size",
+        "prob",
+        "pi"
+      ],
+      "max_score_error": 8.623827467324178e-12,
+      "max_observed_error": 1.8023736899770988e-07,
+      "total_score_error": 2.0606673863002207e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.4870264653495066e-08,
+      "golden_total_score": [
+        -4.928088545019804e-07,
+        -2.06072403585722e-09,
+        8.626555025870175e-10
+      ]
+    },
+    "zip": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "lambda",
+        "pi"
+      ],
+      "max_score_error": 1.1990883070685446e-11,
+      "max_observed_error": 1.8736390431097195e-07,
+      "total_score_error": 1.557145914264643e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.565380484077736e-08,
+      "golden_total_score": [
+        -2.667425169633475e-10,
+        -1.5571661737823206e-09
+      ]
+    },
+    "zipf": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "s"
+      ],
+      "max_score_error": 1.9102382947315845e-12,
+      "max_observed_error": 2.528420620030822e-08,
+      "total_score_error": 1.0054380442787823e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 3.580759146015292e-08,
+      "golden_total_score": [
+        -1.007620875626003e-09
+      ]
+    },
+    "zmgeom": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "prob",
+        "p0"
+      ],
+      "max_score_error": 7.234451928246464e-12,
+      "max_observed_error": 1.90856039177332e-07,
+      "total_score_error": 9.027941099372496e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.2265308968669102e-05,
+      "golden_total_score": [
+        -9.026708269743722e-10,
+        1.742377353508573e-10
+      ]
+    },
+    "zmlogarithmic": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "prob",
+        "p0"
+      ],
+      "max_score_error": 8.1129629495468e-12,
+      "max_observed_error": 1.3882975905172074e-07,
+      "total_score_error": 6.515492673407799e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 6.1497122428037656e-06,
+      "golden_total_score": [
+        6.517373307701746e-10,
+        -4.850089219132769e-10
+      ]
+    },
+    "zmnbinom": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "size",
+        "prob",
+        "p0"
+      ],
+      "max_score_error": 9.521816826829805e-12,
+      "max_observed_error": 1.1828319360514288e-07,
+      "total_score_error": 3.787910214810082e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.1085520826393667e-05,
+      "golden_total_score": [
+        3.9638863891244824e-06,
+        -3.787793634302261e-09,
+        2.2874411254036886e-09
+      ]
+    },
+    "zmpois": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "lambda",
+        "p0"
+      ],
+      "max_score_error": 1.9798065147119983e-12,
+      "max_observed_error": 6.379928878657127e-08,
+      "total_score_error": 2.2581827997855053e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.1344264168686363e-06,
+      "golden_total_score": [
+        9.439726778026625e-12,
+        -2.2581692071810266e-09
+      ]
+    },
+    "ztbinom": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "prob"
+      ],
+      "max_score_error": 7.901431482670735e-12,
+      "max_observed_error": 2.9483446335374857e-08,
+      "total_score_error": 2.22896595415071e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [
+        "size"
+      ],
+      "total_observed_error": 1.5790351053519427e-08,
+      "golden_total_score": [
+        2.23336904525695e-10
+      ]
+    },
+    "ztgeom": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "prob"
+      ],
+      "max_score_error": 2.8363752016885278e-12,
+      "max_observed_error": 2.728998566155682e-08,
+      "total_score_error": 1.6674949143826816e-09,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.7612982166767293e-09,
+      "golden_total_score": [
+        1.6675132386012592e-09
+      ]
+    },
+    "ztnbinom": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "size",
+        "prob"
+      ],
+      "max_score_error": 8.939242209617704e-12,
+      "max_observed_error": 3.81359176024893e-08,
+      "total_score_error": 7.775060325091385e-10,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.0951065588308918e-08,
+      "golden_total_score": [
+        -3.895327102432233e-06,
+        -7.77202302515434e-10
+      ]
+    },
+    "ztpois": {
+      "status": "pass",
+      "reason": "",
+      "n": 500,
+      "seeded": 5,
+      "free": [
+        "lambda"
+      ],
+      "max_score_error": 9.929766789206848e-13,
+      "max_observed_error": 4.81527812854656e-09,
+      "total_score_error": 9.161336487180974e-11,
+      "held_regular": [],
+      "conditioned_on_fitted_structural": [],
+      "total_observed_error": 1.1703843203421346e-09,
+      "golden_total_score": [
+        -9.15946207769025e-11
+      ]
+    }
+  }
+}

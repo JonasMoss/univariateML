@@ -1,5 +1,15 @@
 ---
 id: binom
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "known integer size >= 1, 0 < prob < 1; prob free and size held"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "size = 0, prob = 0 or prob = 1"
+    reason: "the law is degenerate, so the probability information is zero; unknown size is discrete"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Binomial
 support: {type: integer, lower: "0", upper: "size", closed: [true, true]}
 params:

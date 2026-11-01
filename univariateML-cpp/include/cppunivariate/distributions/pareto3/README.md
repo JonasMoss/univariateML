@@ -1,5 +1,10 @@
 ---
 id: pareto3
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite shape > 0, scale > 0 and min; min held; shape and/or scale free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Pareto type III
 support: {type: real, lower: "min", upper: "inf", closed: [true, false], endpoint_log_density: {lower: "if (shape < 1) Inf else if (shape > 1) -Inf else -log(scale)"}}
 params:

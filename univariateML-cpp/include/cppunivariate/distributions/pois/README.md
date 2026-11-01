@@ -1,5 +1,15 @@
 ---
 id: pois
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "finite lambda > 0; lambda free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "lambda = 0 or lambda nonfinite"
+    reason: "zero rate is an attained boundary and infinite rate is not an interior model"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Poisson
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

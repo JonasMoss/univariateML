@@ -1,5 +1,16 @@
 ---
 id: triang
+inference_numeric:
+  - regime: "interior mode"
+    available: false
+    condition: "known endpoints a < c < b; mode c free"
+    reason: "the moving kink invalidates ordinary observed-Hessian sensitivity despite DQM"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#triangular"
+  - regime: "endpoints free"
+    available: false
+    condition: "at least one endpoint free"
+    reason: "moving endpoints have divergent squared scores and are not free inference coordinates"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#triangular"
 name: Triangular
 support: {type: real, lower: "a", upper: "b", closed: [true, true], endpoint_log_density: {lower: "if (c == a) log(2) - log(b-a) else -Inf", upper: "if (c == b) log(2) - log(b-a) else -Inf"}}
 params:

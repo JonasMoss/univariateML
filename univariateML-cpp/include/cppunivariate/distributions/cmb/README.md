@@ -1,5 +1,22 @@
 ---
 id: cmb
+inference_numeric:
+  - regime: size zero
+    available: true
+    condition: "known integer size = 0 held; the law is a point mass and every regular score is zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: "size one with dispersion known"
+    available: true
+    condition: "known size = 1; 0 < prob < 1 free and finite nu held; the Bernoulli probability is identifiable; dispersion is not"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: "size one with dispersion free"
+    available: true
+    condition: "known size = 1; nu free; DQM and pointwise C2 hold but the dispersion score is identically zero"
+    classification: "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+  - regime: primary interior
+    available: true
+    condition: "known integer size >= 2 held, 0 < prob < 1, finite nu; prob and/or nu free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Conway--Maxwell--binomial
 support: {type: integer, lower: "0", upper: "size", closed: [true, true]}
 params:

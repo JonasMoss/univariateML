@@ -21,7 +21,8 @@
 
 namespace cppunivariate {
 enum class InferenceStatus { Ok, InvalidParameter, InvalidObservation,
-  EmptySample, InvalidSubset, NumericalFailure, Singular, IllConditioned, DimensionExceeded, Indefinite };
+  EmptySample, InvalidSubset, NumericalFailure, Singular, IllConditioned, DimensionExceeded, Indefinite,
+  FamilyUnavailable, RegimeUnavailable, BoundaryOrLimit };
 enum class InferenceCoordinates { Natural };
 enum class InferenceNormalization { Total };
 

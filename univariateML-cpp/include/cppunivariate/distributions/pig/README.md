@@ -1,5 +1,11 @@
 ---
 id: pig
+inference_numeric:
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "interior joint regime"
+    reason: "DQM and score tail domination are open in the cited classification"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Poisson-inverse Gaussian
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

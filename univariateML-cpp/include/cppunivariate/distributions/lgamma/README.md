@@ -1,5 +1,15 @@
 ---
 id: lgamma
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "finite shapelog > 0 and ratelog > 0; either or both free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "a parameter is zero or nonfinite"
+    reason: "a gamma parameter is on a boundary or outside the finite model"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Log-gamma
 support: {type: real, lower: 1, upper: inf, closed: [false, false]}
 params:

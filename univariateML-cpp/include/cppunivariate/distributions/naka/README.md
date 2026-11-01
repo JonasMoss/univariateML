@@ -1,5 +1,15 @@
 ---
 id: naka
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "finite shape > 0 and scale > 0; either or both free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+  - regime: boundary or limit
+    available: false
+    condition: "one or more coefficients at an excluded boundary or nonfinite limit"
+    reason: "this scope requires the stated finite interior parameters; boundary behavior is separate"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Nakagami
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:

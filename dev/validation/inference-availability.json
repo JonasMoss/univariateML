@@ -3321,5 +3321,1321 @@
       "historical_sources": "",
       "historical_validation": ""
     }
-  ]
+  ],
+  "numeric_eligibility": {
+    "bbinom": [
+      {
+        "regime": "size zero",
+        "available": true,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with one shape known",
+        "available": true,
+        "condition": "known size = 1; exactly one positive finite shape free; the other shape known; rank one for the two-shape model; the scalar known-nuisance submodel is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with both shapes free",
+        "available": true,
+        "condition": "known size = 1; both positive finite shapes free; DQM and pointwise C2 hold, but joint information has rank one and covariance is singular",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; finite alpha > 0 and beta > 0; either or both free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      }
+    ],
+    "beta": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "shape1 > 0 and shape2 > 0 finite; either or both free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "a shape at zero or a nonfinite limit",
+        "reason": "beta boundary and limit models are outside the interior derivative regime",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "betapr": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0 and scale > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "bhatt": [
+      {
+        "regime": "normal member with width known",
+        "available": true,
+        "condition": "finite mu and sigma > 0; a = 0 held; mu and/or sigma free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mu, sigma > 0 and a > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "binom": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "known integer size >= 1, 0 < prob < 1; prob free and size held",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "size = 0, prob = 0 or prob = 1",
+        "reason": "the law is degenerate, so the probability information is zero; unknown size is discrete",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "bnbinom": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite size > 0, alpha > 0 and beta > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "burr": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0 and scale > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "cauchy": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite location and finite scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "cmb": [
+      {
+        "regime": "size zero",
+        "available": true,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with dispersion known",
+        "available": true,
+        "condition": "known size = 1; 0 < prob < 1 free and finite nu held; the Bernoulli probability is identifiable; dispersion is not",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with dispersion free",
+        "available": true,
+        "condition": "known size = 1; nu free; DQM and pointwise C2 hold but the dispersion score is identically zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held, 0 < prob < 1, finite nu; prob and/or nu free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "cmp": [
+      {
+        "regime": "geometric member with dispersion known",
+        "available": true,
+        "condition": "0 < lambda < 1 free; nu = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 and nu > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "dgamma": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape > 0 and rate > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "dlaplace": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "integer location known and held; 0 < scale < 1 free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
+      }
+    ],
+    "dnorm": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mean and sd > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "dunif": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "integer endpoints free",
+        "reason": "integer endpoints are discrete and excluded from the free inference vector",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
+      }
+    ],
+    "dweibull": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "0 < shape1 < 1 and finite shape2 > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "emg": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mu, sigma > 0 and lambda > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "exp": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite rate > 0; rate free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "rate zero or nonfinite",
+        "reason": "rate is on a boundary or outside the proper finite model",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "fatigue": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite alpha > 0, beta > 0 and mu; mu held; alpha and/or beta free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "foldnorm": [
+      {
+        "regime": "symmetric fixed location",
+        "available": true,
+        "condition": "mu = 0 held, finite sigma > 0 free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mu > 0 and sigma > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "fpareto": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0; finite min held; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "frechet": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0, sigma > 0 and mu; mu held; lambda and/or sigma free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "gamma": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "shape > 0 and scale > 0 finite; shape and/or scale free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "shape or scale at a boundary or limit",
+        "reason": "gamma boundary and limit models are outside the interior derivative regime",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "gb2": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "ged": [
+      {
+        "regime": "cusp moving with smooth exponent",
+        "available": true,
+        "condition": "finite mean, sd > 0 and nu > 2; any regular subset free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "held location",
+        "available": true,
+        "condition": "finite mean held and sd > 0, nu > 0; if nu is free require nu > 1",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "normal member with shape held",
+        "available": true,
+        "condition": "finite mean and sd > 0, nu = 2 held; mean and/or sd free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with 0 < nu <= 2, except the held-shape normal member",
+        "reason": "the C2 and held-subset classification at the moving cusp has not yet been completed",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#cusps-and-singularities"
+      }
+    ],
+    "genbeta": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0; scale held; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "geom": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "0 < prob < 1; prob free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "prob = 0 or prob = 1",
+        "reason": "probability is on a boundary; the count distribution is improper or degenerate",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "gev": [
+      {
+        "regime": "gumbel member with shape held",
+        "available": true,
+        "condition": "finite mu and sigma > 0; xi = 0 held; mu and/or sigma free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint moving-support regime with xi free or nonzero",
+        "reason": "the moving-support C2 and fitted-subset classification for this numerical procedure is not yet completed",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "gompertz": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite a > 0 and b > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "gpd": [
+      {
+        "regime": "positive shape fixed support",
+        "available": true,
+        "condition": "finite mu held, sigma > 0 and xi > 0; sigma and/or xi free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+      },
+      {
+        "regime": "exponential member with shape held",
+        "available": true,
+        "condition": "finite mu held, sigma > 0 free and xi = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint moving-support regime with xi <= 0 and xi free",
+        "reason": "the moving-support C2 and fitted-subset classification for this numerical procedure is not yet completed",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "gumbel": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite mu and finite sigma > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "hcauchy": [
+      {
+        "regime": "known threshold scale",
+        "available": true,
+        "condition": "finite mu held and sigma > 0 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "threshold free",
+        "reason": "a free threshold changes support with positive endpoint density and is non-DQM",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "hnorm": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mu held and sigma > 0 free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "ht": [
+      {
+        "regime": "known threshold",
+        "available": true,
+        "condition": "finite mu held, nu > 0 and sigma > 0; nu and/or sigma free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-threshold-and-fixed-shape-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "threshold free",
+        "reason": "a free threshold changes support with positive endpoint density and is non-DQM",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "huber": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint kink-moving parameters",
+        "reason": "the piecewise quadratic log density has a moving second-derivative kink, so the joint pointwise C2 condition fails",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "hyper": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "composition or design free",
+        "reason": "all coefficients are integer valued; there is no continuous free inference coordinate",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
+      }
+    ],
+    "invburr": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0 and scale > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "invexp": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite scale > 0; scale free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "invgamma": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite alpha > 0 and beta > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "invgauss": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite mean > 0 and shape > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "invparalogis": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape > 0 and scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "invpareto": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape > 0 and scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "invtrgamma": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0 and scale > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "invweibull": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite shape > 0 and scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "kumar": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite a > 0 and b > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "laplace": [
+      {
+        "regime": "scale with location held",
+        "available": true,
+        "condition": "finite mu held; finite sigma > 0 free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#laplace"
+      },
+      {
+        "regime": "location free",
+        "available": false,
+        "condition": "finite mu and sigma > 0; location free",
+        "reason": "the log density has a moving absolute-value kink; the pointwise Hessian misses sensitivity",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#laplace"
+      }
+    ],
+    "lgamma": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite shapelog > 0 and ratelog > 0; either or both free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "a parameter is zero or nonfinite",
+        "reason": "a gamma parameter is on a boundary or outside the finite model",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "lgser": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "0 < theta < 1; theta free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "llogis": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite shape > 0 and scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "lnorm": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite meanlog and sdlog > 0; either or both free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "sdlog = 0 or nonfinite parameters",
+        "reason": "zero scale and infinite coefficients are outside the interior model",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "logis": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite location and finite scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "logitnorm": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite mu and sigma > 0; either or both free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "sigma = 0 or nonfinite parameters",
+        "reason": "zero scale and infinite coefficients are outside the interior model",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "lomax": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 and kappa > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "lst": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mu, sigma > 0 and df > 0; when df and mu are both free require df > 1; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "naka": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite shape > 0 and scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "nbinom": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite size > 0 and 0 < prob < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "nhyper": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "composition or design free",
+        "reason": "all coefficients are integer valued; there is no continuous free inference coordinate",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
+      }
+    ],
+    "norm": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite mean and sd > 0; mean and/or sd free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "sd = 0 or nonfinite coefficients",
+        "reason": "zero scale is outside the interior continuous model",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "nsbeta": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0 and shape2 > 0; finite min < max held; either shape free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "paralogis": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape > 0 and scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "pareto": [
+      {
+        "regime": "shape with endpoint held",
+        "available": true,
+        "condition": "finite a > 0 free; finite b > 0 held",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      },
+      {
+        "regime": "endpoint free",
+        "available": false,
+        "condition": "finite a > 0; b free",
+        "reason": "the fitted endpoint is non-DQM and is not a free inference coordinate",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "pareto2": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape > 0, scale > 0 and min; min held; shape and/or scale free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "pareto3": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape > 0, scale > 0 and min; min held; shape and/or scale free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "pareto4": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0, scale > 0 and min; min held; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "pig": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "interior joint regime",
+        "reason": "DQM and score tail domination are open in the cited classification",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "pois": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite lambda > 0; lambda free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "lambda = 0 or lambda nonfinite",
+        "reason": "zero rate is an attained boundary and infinite rate is not an interior model",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "power": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite alpha > 0 held and beta > 0 free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "rayleigh": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite sigma > 0; sigma free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "sigma = 0 or nonfinite",
+        "reason": "zero scale and infinite scale are outside the interior model",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "sged": [
+      {
+        "regime": "symmetric member with held location",
+        "available": true,
+        "condition": "finite mean held, sd > 0 and nu > 0; xi = 1 held; if nu is free require nu > 1",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "symmetric normal member",
+        "available": true,
+        "condition": "finite mean and sd > 0; nu = 2 and xi = 1 held; mean and/or sd free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "cusp moving with smooth exponent",
+        "available": true,
+        "condition": "finite mean, sd > 0, xi > 0 and nu > 2; any regular subset free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#pointwise-smoothness-for-ged-submodels"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with 0 < nu <= 2, excluding the stated symmetric held-parameter scopes",
+        "reason": "the C2 and held-subset classification at the moving cusp has not yet been completed",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "sgomp": [
+      {
+        "regime": "exponential member with shape known",
+        "available": true,
+        "condition": "finite b > 0 free; eta = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite b > 0 and eta > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "skellam": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mu1 > 0 and mu2 > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "slash": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mu and sigma > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "sn": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite xi, omega > 0 and finite alpha; any regular subset free; information is singular at alpha = 0 when xi and alpha are both free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#cusps-and-singularities"
+      }
+    ],
+    "snorm": [
+      {
+        "regime": "symmetric member with skew held",
+        "available": true,
+        "condition": "finite mean and sd > 0; xi = 1 held; mean and/or sd free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with xi != 1",
+        "reason": "the two-piece log density has a moving second-derivative kink",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "sstd": [
+      {
+        "regime": "symmetric member with skew held",
+        "available": true,
+        "condition": "finite mean, sd > 0 and nu > 2; xi = 1 held; any other subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "joint cusp-moving regime with xi != 1",
+        "reason": "the two-piece log density has a moving second-derivative kink",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "std": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mean, sd > 0 and nu > 2; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "tbinom": [
+      {
+        "regime": "singleton retained support",
+        "available": true,
+        "condition": "known design and truncation bounds with exactly one retained integer; probability free in (0,1); the conditional law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size, known a and b held; 0 < prob < 1 free; retained support has at least two integers",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "tlambda": [
+      {
+        "regime": "unreviewed or unavailable",
+        "available": false,
+        "condition": "interior joint regime",
+        "reason": "DQM and support-dependent regularity remain open in the cited classification",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "tnorm": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite mean and sd > 0; a < b known and held with positive truncation probability; mean and/or sd free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "tpois": [
+      {
+        "regime": "singleton retained support",
+        "available": true,
+        "condition": "known truncation bounds with exactly one retained integer; finite lambda > 0 free; the conditional law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 free; known a and b held; retained support has at least two integers",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "trgamma": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite shape1 > 0, shape2 > 0 and scale > 0; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "triang": [
+      {
+        "regime": "interior mode",
+        "available": false,
+        "condition": "known endpoints a < c < b; mode c free",
+        "reason": "the moving kink invalidates ordinary observed-Hessian sensitivity despite DQM",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#triangular"
+      },
+      {
+        "regime": "endpoints free",
+        "available": false,
+        "condition": "at least one endpoint free",
+        "reason": "moving endpoints have divergent squared scores and are not free inference coordinates",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#triangular"
+      }
+    ],
+    "unif": [
+      {
+        "regime": "endpoint free",
+        "available": false,
+        "condition": "finite min < max; at least one endpoint free",
+        "reason": "moving endpoints are non-DQM and no regular free coefficient remains when both are held",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#moving-support"
+      }
+    ],
+    "weibull": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite shape > 0 and scale > 0; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "yulesimon": [
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite rho > 0; rho free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zeta": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite s > 1; s free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zib": [
+      {
+        "regime": "size zero",
+        "available": true,
+        "condition": "known integer size = 0 held; the law is a point mass and every regular score is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "known unit binomial probability",
+        "available": true,
+        "condition": "known integer size >= 1, prob = 1 held, 0 < pi < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "binomial member with inflation known",
+        "available": true,
+        "condition": "integer size >= 1 held, 0 < prob < 1 free, pi = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "known integer size >= 1, 0 < prob < 1 free, pi = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "size one with one coefficient known",
+        "available": true,
+        "condition": "known size = 1; exactly one of prob and pi free, the other held in (0,1); the remaining scalar Bernoulli parameter is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with both coefficients free",
+        "available": true,
+        "condition": "known size = 1; prob and pi both free in (0,1); DQM and pointwise C2 hold but the joint information has rank one",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 and 0 < pi < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zinb": [
+      {
+        "regime": "negative-binomial member with inflation known",
+        "available": true,
+        "condition": "finite size > 0 and 0 < prob < 1; pi = 0 held; size and/or prob free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "finite size > 0 and 0 < prob < 1; pi = 1 held; remaining information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite size > 0, 0 < prob < 1 and 0 < pi < 1; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zip": [
+      {
+        "regime": "Poisson member with inflation known",
+        "available": true,
+        "condition": "finite lambda > 0 free; pi = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "finite lambda > 0 free; pi = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 and 0 < pi < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zipf": [
+      {
+        "regime": "size one",
+        "available": true,
+        "condition": "known N = 1; finite s > 0 free; the law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer N >= 2 held and finite s > 0 free",
+        "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
+      }
+    ],
+    "zmbinom": [
+      {
+        "regime": "known boundary binomial probability",
+        "available": true,
+        "condition": "known integer size >= 1; prob = 0 or prob = 1 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "known integer size >= 2 held, 0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "known integer size >= 1 held, 0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "size one with probability known",
+        "available": true,
+        "condition": "known size = 1; prob held in (0,1), p0 free in (0,1); the remaining zero-mass parameter is identifiable",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "size one with probability free",
+        "available": true,
+        "condition": "known size = 1; prob free; the conditional positive distribution is a point mass and the probability score vanishes",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zmgeom": [
+      {
+        "regime": "known unit geometric probability",
+        "available": true,
+        "condition": "prob = 1 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zmlogarithmic": [
+      {
+        "regime": "known zero positive-count parameter",
+        "available": true,
+        "condition": "prob = 0 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "0 < prob < 1 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "0 < prob < 1 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zmnbinom": [
+      {
+        "regime": "known zero negative-binomial size",
+        "available": true,
+        "condition": "size = 0 held; 0 < prob < 1 and 0 < p0 < 1; prob and/or p0 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite size > 0, 0 < prob < 1 and 0 < p0 < 1; any regular subset free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "zmpois": [
+      {
+        "regime": "known zero Poisson rate",
+        "available": true,
+        "condition": "lambda = 0 held; 0 < p0 < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "positive-count member with zero mass known",
+        "available": true,
+        "condition": "finite lambda > 0 free, p0 = 0 held",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "known point-mass member",
+        "available": true,
+        "condition": "finite lambda > 0 free, p0 = 1 held; information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite lambda > 0 and 0 < p0 < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "ztbinom": [
+      {
+        "regime": "size one",
+        "available": true,
+        "condition": "known size = 1; 0 < prob < 1 free; the zero-truncated law is a point mass, so information is zero",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#finite-support-rank-and-known-design-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "known integer size >= 2 held; 0 < prob < 1 free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "ztgeom": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "0 < prob < 1; prob free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "ztnbinom": [
+      {
+        "regime": "known zero negative-binomial size",
+        "available": true,
+        "condition": "size = 0 held; 0 < prob < 1 free",
+        "classification": "univariateML-cpp/include/cppunivariate/core/inference.md#known-boundary-submodels"
+      },
+      {
+        "regime": "primary interior",
+        "available": true,
+        "condition": "finite size > 0 and 0 < prob < 1; either or both free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "ztpois": [
+      {
+        "regime": "interior",
+        "available": true,
+        "condition": "finite lambda > 0; lambda free",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      },
+      {
+        "regime": "boundary or limit",
+        "available": false,
+        "condition": "one or more coefficients at an excluded boundary or nonfinite limit",
+        "reason": "this scope requires the stated finite interior parameters; boundary behavior is separate",
+        "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ]
+  }
 }

@@ -328,3 +328,316 @@ TEST_CASE("norm: TASK-102.5 invalid confidence levels") {
   for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
     CHECK(cppunivariate::norm_variance_exact_interval(data,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
 }
+
+#include "cppunivariate/core/inference_numeric.hpp"
+#include "cppunivariate/distributions/norm/score.hpp"
+TEST_CASE("numeric inference: normal derivatives and held scale") {
+  const auto g=mltest::load_distribution_golden("norm");
+  const double mean=g.estimates.at("mean"),sd=g.estimates.at("sd");
+  std::array<cppunivariate::NumericParameter,cppunivariate::inference_max_parameters> p{};
+  p[0]={"mean",mean,cppunivariate::NumericCoordinate::Real,0};
+  p[1]={"sd",sd,cppunivariate::NumericCoordinate::Positive,0};
+  const auto density=[](double x,const auto& v) {return cppunivariate::distributions::dnorm(x,v[0],v[1],true);};
+  for(unsigned mask=1;mask<4;++mask) {
+    const auto a=cppunivariate::norm_inference(mltest::as_span(g.data),mean,sd,mask);
+    const auto n=cppunivariate::numeric_inference(mltest::as_span(g.data),p,2,mask,density);
+    REQUIRE(n.status==cppunivariate::InferenceStatus::Ok);
+    for(std::size_t i=0;i<n.dimension;++i) {
+      CHECK(std::abs(n.score[i]-a.score[i])<1e-6*(1+std::abs(a.score[i])));
+      for(std::size_t j=0;j<n.dimension;++j) {
+        const auto k=i*n.dimension+j;
+        CHECK(std::abs(n.observed[k]-a.observed[k])<2e-5*(1+std::abs(a.observed[k])));
+        CHECK(std::abs(n.opg[k]-a.opg[k])<1e-6*(1+std::abs(a.opg[k])));
+      }
+    }
+    CHECK(cppunivariate::inference_covariance(n,cppunivariate::CovarianceKind::Observed).status==cppunivariate::InferenceStatus::Ok);
+    CHECK(cppunivariate::inference_covariance(n,cppunivariate::CovarianceKind::Fisher).status==cppunivariate::InferenceStatus::NumericalFailure);
+  }
+}
+
+#include "cppunivariate/distributions/gamma/dpqr.hpp"
+#include "cppunivariate/distributions/gamma/score.hpp"
+#include "cppunivariate/distributions/beta/dpqr.hpp"
+#include "cppunivariate/distributions/beta/score.hpp"
+#include "cppunivariate/distributions/pois/dpqr.hpp"
+#include "cppunivariate/distributions/pois/score.hpp"
+TEST_CASE("numeric inference: analytic gamma beta and Poisson at nonstationary points") {
+  const std::vector<double> x={0.2,0.4,0.7};
+  const std::vector<double> counts={0,1,3,4};
+  std::array<cppunivariate::NumericParameter,cppunivariate::inference_max_parameters> p{};
+  p[0]={"shape1",2,cppunivariate::NumericCoordinate::Positive,0};
+  p[1]={"shape2",3,cppunivariate::NumericCoordinate::Positive,0};
+  const auto compare=[](const auto& numeric,const auto& analytic) {
+    REQUIRE(numeric.status==cppunivariate::InferenceStatus::Ok);
+    REQUIRE(analytic.status==cppunivariate::InferenceStatus::Ok);
+    for(std::size_t i=0;i<numeric.dimension;++i) {
+      CHECK(std::abs(numeric.score[i]-analytic.score[i])<2e-6*(1+std::abs(analytic.score[i])));
+      for(std::size_t j=0;j<numeric.dimension;++j) {
+        const auto k=i*numeric.dimension+j;
+        CHECK(std::abs(numeric.observed[k]-analytic.observed[k])<2e-5*(1+std::abs(analytic.observed[k])));
+        CHECK(std::abs(numeric.opg[k]-analytic.opg[k])<2e-6*(1+std::abs(analytic.opg[k])));
+      }
+    }
+  };
+  for(unsigned mask=1;mask<4;++mask) {
+    const auto beta=[](double v,const auto& a) {return cppunivariate::distributions::dbeta(v,a[0],a[1],true);};
+    const auto gamma=[](double v,const auto& a) {return cppunivariate::distributions::dgamma(v,a[0],a[1],true);};
+    compare(cppunivariate::numeric_inference(mltest::as_span(x),p,2,mask,beta),cppunivariate::beta_inference(mltest::as_span(x),2,3,mask));
+    compare(cppunivariate::numeric_inference(mltest::as_span(x),p,2,mask,gamma),cppunivariate::gamma_inference(mltest::as_span(x),2,3,mask));
+  }
+  const auto pois=[](double v,const auto& a) {return cppunivariate::distributions::dpois(v,a[0],true);};
+  compare(cppunivariate::numeric_inference(mltest::as_span(counts),p,1,1,pois),cppunivariate::pois_inference(mltest::as_span(counts),2,1));
+}
+
+TEST_CASE("numeric inference: logit coordinate and invalid domains") {
+  const std::vector<double> x={0,1,1,1};
+  std::array<cppunivariate::NumericParameter,cppunivariate::inference_max_parameters> p{};
+  p[0]={"p",0.4,cppunivariate::NumericCoordinate::UnitInterval,0};
+  const auto density=[](double v,const auto& a) {return v ? std::log(a[0]) : std::log1p(-a[0]);};
+  const auto result=cppunivariate::numeric_inference(mltest::as_span(x),p,1,1,density);
+  REQUIRE(result.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(result.score[0]==doctest::Approx(3/0.4-1/0.6).epsilon(1e-7));
+  CHECK(result.observed[0]==doctest::Approx(3/(0.4*0.4)+1/(0.6*0.6)).epsilon(1e-5));
+  p[0].value=1;
+  CHECK(cppunivariate::numeric_inference(mltest::as_span(x),p,1,1,density).status==cppunivariate::InferenceStatus::InvalidParameter);
+  p[0]={"shifted",2,cppunivariate::NumericCoordinate::LowerBounded,2};
+  CHECK(cppunivariate::numeric_inference(mltest::as_span(x),p,1,1,density).status==cppunivariate::InferenceStatus::InvalidParameter);
+}
+
+TEST_CASE("numeric inference: reject collapsed transformed stencils") {
+  const std::vector<double> x={0,1};
+  std::array<cppunivariate::NumericParameter,cppunivariate::inference_max_parameters> p{};
+  p[0]={"p",std::nextafter(1.0,0.0),cppunivariate::NumericCoordinate::UnitInterval,0};
+  const auto density=[](double v,const auto& a) {return v ? std::log(a[0]) : std::log1p(-a[0]);};
+  CHECK(cppunivariate::numeric_inference(mltest::as_span(x),p,1,1,density).status==cppunivariate::InferenceStatus::NumericalFailure);
+}
+
+TEST_CASE("numeric inference: normal covariance and observation score callback") {
+  const auto g=mltest::load_distribution_golden("norm");
+  const double mean=g.estimates.at("mean"),sd=g.estimates.at("sd");
+  std::array<cppunivariate::NumericParameter,cppunivariate::inference_max_parameters> p{};
+  p[0]={"mean",mean,cppunivariate::NumericCoordinate::Real,0};
+  p[1]={"sd",sd,cppunivariate::NumericCoordinate::Positive,0};
+  const auto density=[](double x,const auto& a) {return cppunivariate::distributions::dnorm(x,a[0],a[1],true);};
+  std::size_t nrows=0;
+  std::array<double,2> sum{};
+  const auto emit=[&](const auto& row) {++nrows;sum[0]+=row[0];sum[1]+=row[1];};
+  const auto numeric=cppunivariate::numeric_inference(mltest::as_span(g.data),p,2,3,density,emit);
+  const auto analytic=cppunivariate::norm_inference(mltest::as_span(g.data),mean,sd);
+  REQUIRE(numeric.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(nrows==g.data.size());
+  for(std::size_t i=0;i<2;++i) CHECK(sum[i]==doctest::Approx(numeric.score[i]));
+  for(const auto kind:{cppunivariate::CovarianceKind::Observed,cppunivariate::CovarianceKind::Sandwich}) {
+    const auto actual=cppunivariate::inference_covariance(numeric,kind);
+    const auto reference=cppunivariate::inference_covariance(analytic,kind);
+    REQUIRE(actual.status==cppunivariate::InferenceStatus::Ok);
+    REQUIRE(reference.status==cppunivariate::InferenceStatus::Ok);
+    for(std::size_t i=0;i<4;++i)
+      CHECK(std::abs(actual.matrix[i]-reference.matrix[i])<1e-6*(1+std::abs(reference.matrix[i])));
+  }
+}
+
+TEST_CASE("numeric inference: checked adapter refuses unavailable regimes and structural free coordinates") {
+  const std::vector<double> x={0,1};
+  std::array<cppunivariate::NumericParameter,cppunivariate::inference_max_parameters> p{};
+  p[0]={"mean",0,cppunivariate::NumericCoordinate::Real,0};
+  p[1]={"sd",1,cppunivariate::NumericCoordinate::Positive,0};
+  const auto density=[](double v,const auto& a) {return cppunivariate::distributions::dnorm(v,a[0],a[1],true);};
+  const cppunivariate::NumericEligibility unavailable{cppunivariate::InferenceStatus::FamilyUnavailable,0,"not classified"};
+  const auto rejected=cppunivariate::numeric_inference_checked(mltest::as_span(x),p,2,1,unavailable,density);
+  CHECK(rejected.status==cppunivariate::InferenceStatus::FamilyUnavailable);
+  CHECK(rejected.validity_conditions=="not classified");
+  const cppunivariate::NumericEligibility restricted{cppunivariate::InferenceStatus::Ok,1,"scale held"};
+  CHECK(cppunivariate::numeric_inference_checked(mltest::as_span(x),p,2,3,restricted,density).status==cppunivariate::InferenceStatus::InvalidSubset);
+  const auto allowed=cppunivariate::numeric_inference_checked(mltest::as_span(x),p,2,1,restricted,density);
+  CHECK(allowed.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(allowed.validity_conditions=="scale held");
+  const cppunivariate::NumericEligibility boundary{cppunivariate::InferenceStatus::BoundaryOrLimit,0,"boundary fit"};
+  CHECK(cppunivariate::numeric_inference_checked(mltest::as_span(x),p,2,1,boundary,density).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+}
+
+#include "cppunivariate/core/inference_families.hpp"
+TEST_CASE("family inference: analytic precedence, structural holds and unclassified status") {
+  const std::vector<double> x={0,1,2,1};
+  std::array<double,cppunivariate::inference_max_parameters> p{};
+  p[0]=1;
+  const auto actual=cppunivariate::family_inference(mltest::as_span(x),"pois",p,1);
+  const auto reference=cppunivariate::pois_inference(mltest::as_span(x),1,1);
+  REQUIRE(actual.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(actual.score[0]==reference.score[0]);
+  CHECK(actual.fisher[0]==reference.fisher[0]);
+  CHECK(cppunivariate::family_inference(mltest::as_span(x),"laplace",p,1).status==cppunivariate::InferenceStatus::RegimeUnavailable);
+  p[0]=4;p[1]=0.4;
+  CHECK(cppunivariate::family_inference(mltest::as_span(x),"binom",p,1).status==cppunivariate::InferenceStatus::InvalidSubset);
+  const auto binom=cppunivariate::family_inference(mltest::as_span(x),"binom",p,2);
+  REQUIRE(binom.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(binom.dimension==1);
+  CHECK(binom.free_indices[0]==1);
+  CHECK(binom.score[0]==doctest::Approx(4/0.4-12/0.6).epsilon(1e-7));
+  p[1]=1;
+  CHECK(cppunivariate::family_inference(mltest::as_span(x),"binom",p,2).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+}
+
+TEST_CASE("numeric inference: held infinite bounds reach the density") {
+  const std::vector<double> x={0,1,2};
+  std::array<cppunivariate::NumericParameter,cppunivariate::inference_max_parameters> p{};
+  p[0]={"mean",0,cppunivariate::NumericCoordinate::Real,0};
+  p[1]={"upper",std::numeric_limits<double>::infinity(),cppunivariate::NumericCoordinate::Real,0};
+  const auto density=[](double v,const auto& a) {
+    return a[1]>v ? cppunivariate::distributions::dnorm(v,a[0],1,true) : -INFINITY;
+  };
+  const auto held=cppunivariate::numeric_inference(mltest::as_span(x),p,2,1,density);
+  REQUIRE(held.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(held.score[0]==doctest::Approx(3).epsilon(1e-8));
+  CHECK(cppunivariate::numeric_inference(mltest::as_span(x),p,2,3,density).status==cppunivariate::InferenceStatus::InvalidParameter);
+}
+
+TEST_CASE("family inference: nonsmooth submodels and infinite truncation bounds") {
+  const std::vector<double> x={-1,0,1};
+  std::array<double,cppunivariate::inference_max_parameters> p{};
+  p[0]=0;p[1]=1;
+  const auto laplace=cppunivariate::family_inference(mltest::as_span(x),"laplace",p,2);
+  REQUIRE(laplace.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(laplace.score[0]==doctest::Approx(-1).epsilon(1e-7));
+  CHECK(cppunivariate::family_inference(mltest::as_span(x),"laplace",p,1).status==cppunivariate::InferenceStatus::RegimeUnavailable);
+  CHECK(cppunivariate::family_inference(mltest::as_span(x),"triang",p,1).status==cppunivariate::InferenceStatus::FamilyUnavailable);
+  p[2]=-std::numeric_limits<double>::infinity();p[3]=std::numeric_limits<double>::infinity();
+  const auto truncated=cppunivariate::family_inference(mltest::as_span(x),"tnorm",p,3);
+  const auto normal=cppunivariate::norm_inference(mltest::as_span(x),0,1);
+  REQUIRE(truncated.status==cppunivariate::InferenceStatus::Ok);
+  for(std::size_t i=0;i<2;++i) CHECK(std::abs(truncated.score[i]-normal.score[i])<1e-6);
+  for(std::size_t i=0;i<4;++i) CHECK(std::abs(truncated.observed[i]-normal.observed[i])<2e-5);
+  CHECK(cppunivariate::family_inference(mltest::as_span(x),"tnorm",p,4).status==cppunivariate::InferenceStatus::RegimeUnavailable);
+}
+
+TEST_CASE("family inference: eligible golden data or documented status") {
+#include "inference_goldens.inc"
+}
+
+TEST_CASE("family inference: symmetric skew GED normal member") {
+  const std::vector<double> x={-1,0,1};
+  std::array<double,cppunivariate::inference_max_parameters> p{};
+  p[0]=0;p[1]=1;p[2]=2;p[3]=1;
+  const auto skew=cppunivariate::family_inference(mltest::as_span(x),"sged",p,3);
+  const auto normal=cppunivariate::norm_inference(mltest::as_span(x),0,1);
+  REQUIRE(skew.status==cppunivariate::InferenceStatus::Ok);
+  for(std::size_t i=0;i<2;++i) CHECK(std::abs(skew.score[i]-normal.score[i])<1e-6);
+  for(std::size_t i=0;i<4;++i) CHECK(std::abs(skew.observed[i]-normal.observed[i])<2e-5);
+  CHECK(cppunivariate::family_inference(mltest::as_span(x),"sged",p,11).status==cppunivariate::InferenceStatus::RegimeUnavailable);
+}
+
+TEST_CASE("family inference: finite-support rank and scalar submodels") {
+  const std::vector<double> bernoulli={0,1,1};
+  std::array<double,cppunivariate::inference_max_parameters> p{};
+  p[0]=1;p[1]=2;p[2]=3;
+  const auto beta_binomial=cppunivariate::family_inference(mltest::as_span(bernoulli),"bbinom",p,2);
+  REQUIRE(beta_binomial.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(beta_binomial.score[0]==doctest::Approx(0.4).epsilon(1e-7));
+  CHECK(beta_binomial.observed[0]==doctest::Approx(0.38).epsilon(1e-5));
+  CHECK(cppunivariate::family_inference(mltest::as_span(bernoulli),"bbinom",p,6).status==cppunivariate::InferenceStatus::Singular);
+  p[1]=.4;p[2]=.8;
+  const auto cmb=cppunivariate::family_inference(mltest::as_span(bernoulli),"cmb",p,2);
+  REQUIRE(cmb.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(cmb.score[0]==doctest::Approx(2/.4-1/.6).epsilon(1e-7));
+  CHECK(cppunivariate::family_inference(mltest::as_span(bernoulli),"cmb",p,4).status==cppunivariate::InferenceStatus::Singular);
+  p[1]=.4;p[2]=.2;
+  const auto zm=cppunivariate::family_inference(mltest::as_span(bernoulli),"zmbinom",p,4);
+  REQUIRE(zm.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(zm.score[0]==doctest::Approx(1/.2-2/.8).epsilon(1e-7));
+  CHECK(cppunivariate::family_inference(mltest::as_span(bernoulli),"zmbinom",p,2).status==cppunivariate::InferenceStatus::Singular);
+  CHECK(cppunivariate::family_inference(mltest::as_span(bernoulli),"ztbinom",p,2).status==cppunivariate::InferenceStatus::InvalidObservation);
+  const std::vector<double> singleton={1,1};
+  CHECK(cppunivariate::family_inference(mltest::as_span(singleton),"ztbinom",p,2).status==cppunivariate::InferenceStatus::Singular);
+  CHECK(cppunivariate::family_inference(mltest::as_span(singleton),"zipf",p,2).status==cppunivariate::InferenceStatus::Singular);
+  p[0]=2;p[1]=0;p[2]=1;
+  CHECK(cppunivariate::family_inference(mltest::as_span(singleton),"tpois",p,1).status==cppunivariate::InferenceStatus::Singular);
+  p[0]=.4;p[1]=0;p[2]=1;p[3]=4;
+  CHECK(cppunivariate::family_inference(mltest::as_span(singleton),"tbinom",p,1).status==cppunivariate::InferenceStatus::Singular);
+}
+
+TEST_CASE("family inference: known boundary members retain regular submodels") {
+  const std::vector<double> real={-1,0,1};
+  const std::vector<double> counts={0,1,2,3};
+  const std::vector<double> positive={1,2,3};
+  std::array<double,cppunivariate::inference_max_parameters> p{};
+  p[0]=0;p[1]=1;p[2]=0;
+  const auto bhatt=cppunivariate::family_inference(mltest::as_span(real),"bhatt",p,3);
+  const auto normal=cppunivariate::norm_inference(mltest::as_span(real),0,1);
+  REQUIRE(bhatt.status==cppunivariate::InferenceStatus::Ok);
+  for(std::size_t i=0;i<2;++i) CHECK(std::abs(bhatt.score[i]-normal.score[i])<1e-6);
+  for(std::size_t i=0;i<4;++i) CHECK(std::abs(bhatt.observed[i]-normal.observed[i])<2e-5);
+  CHECK(cppunivariate::family_inference(mltest::as_span(real),"bhatt",p,7).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+  p[0]=2;p[1]=0;
+  const auto zip=cppunivariate::family_inference(mltest::as_span(counts),"zip",p,1);
+  const auto pois=cppunivariate::pois_inference(mltest::as_span(counts),2);
+  REQUIRE(zip.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(zip.score[0]==doctest::Approx(pois.score[0]).epsilon(1e-7));
+  CHECK(zip.observed[0]==doctest::Approx(pois.observed[0]).epsilon(1e-5));
+  CHECK(cppunivariate::family_inference(mltest::as_span(counts),"zip",p,3).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+  p[1]=1;
+  CHECK(cppunivariate::family_inference(mltest::as_span(counts),"zip",p,1).status==cppunivariate::InferenceStatus::InvalidObservation);
+  const std::vector<double> zeros={0,0};
+  CHECK(cppunivariate::family_inference(mltest::as_span(zeros),"zip",p,1).status==cppunivariate::InferenceStatus::Singular);
+  p[0]=2;p[1]=0;
+  const auto zm=cppunivariate::family_inference(mltest::as_span(positive),"zmpois",p,1);
+  const auto zt=cppunivariate::family_inference(mltest::as_span(positive),"ztpois",p,1);
+  REQUIRE(zm.status==cppunivariate::InferenceStatus::Ok);
+  REQUIRE(zt.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(std::abs(zm.score[0]-zt.score[0])<1e-7);
+  CHECK(std::abs(zm.observed[0]-zt.observed[0])<1e-5);
+}
+
+TEST_CASE("family inference: unavailable triangular model explains the kink") {
+  const std::vector<double> x={0.2,0.6};
+  std::array<double,cppunivariate::inference_max_parameters> p{};
+  p[0]=0;p[1]=1;p[2]=.5;
+  const auto result=cppunivariate::family_inference(mltest::as_span(x),"triang",p,4);
+  CHECK(result.status==cppunivariate::InferenceStatus::FamilyUnavailable);
+  CHECK(result.validity_conditions.find("kink")!=std::string::npos);
+}
+
+TEST_CASE("family inference: further known boundary identities") {
+  const std::vector<double> counts={0,1,1};
+  std::array<double,cppunivariate::inference_max_parameters> p{};
+  p[0]=.3;p[1]=0;
+  const auto cmp=cppunivariate::family_inference(mltest::as_span(counts),"cmp",p,1);
+  REQUIRE(cmp.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(cmp.score[0]==doctest::Approx(2/.3-3/.7).epsilon(1e-7));
+  CHECK(cppunivariate::family_inference(mltest::as_span(counts),"cmp",p,3).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
+  for(const auto& family:{std::string("zmpois"),std::string("zmgeom"),std::string("zmlogarithmic")}) {
+    p[0]=family=="zmgeom"?1:0;p[1]=.25;
+    const auto r=cppunivariate::family_inference(mltest::as_span(counts),family,p,2);
+    CAPTURE(family);
+    REQUIRE(r.status==cppunivariate::InferenceStatus::Ok);
+    CHECK(r.score[0]==doctest::Approx(1/.25-2/.75).epsilon(1e-7));
+  }
+  p[0]=4;p[1]=0;p[2]=.25;
+  const auto zmb=cppunivariate::family_inference(mltest::as_span(counts),"zmbinom",p,4);
+  REQUIRE(zmb.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(zmb.score[0]==doctest::Approx(1/.25-2/.75).epsilon(1e-7));
+  const std::vector<double> extremal={0,4,4};p[1]=1;
+  const auto zmb_unit=cppunivariate::family_inference(mltest::as_span(extremal),"zmbinom",p,4);
+  REQUIRE(zmb_unit.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(zmb_unit.score[0]==doctest::Approx(1/.25-2/.75).epsilon(1e-7));
+  const auto zib=cppunivariate::family_inference(mltest::as_span(extremal),"zib",p,4);
+  REQUIRE(zib.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(zib.score[0]==doctest::Approx(1/.25-2/.75).epsilon(1e-7));
+  const std::vector<double> logseries={0,1,2,3};p[0]=0;p[1]=.4;p[2]=.3;
+  const auto modified=cppunivariate::family_inference(mltest::as_span(logseries),"zmnbinom",p,6);
+  p[0]=.6;p[1]=.3;
+  const auto logarithmic=cppunivariate::family_inference(mltest::as_span(logseries),"zmlogarithmic",p,3);
+  REQUIRE(modified.status==cppunivariate::InferenceStatus::Ok);
+  REQUIRE(logarithmic.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(std::abs(modified.score[0]+logarithmic.score[0])<1e-6);
+  CHECK(std::abs(modified.score[1]-logarithmic.score[1])<1e-6);
+  CHECK(std::abs(modified.observed[0]-logarithmic.observed[0])<2e-5);
+  CHECK(std::abs(modified.observed[1]+logarithmic.observed[1])<2e-5);
+  CHECK(std::abs(modified.observed[3]-logarithmic.observed[3])<2e-5);
+  const std::vector<double> positive={.2,.5,1.};p[0]=2;p[1]=0;
+  const auto sgomp=cppunivariate::family_inference(mltest::as_span(positive),"sgomp",p,1);
+  const auto exponential=cppunivariate::family_inference(mltest::as_span(positive),"exp",p,1);
+  REQUIRE(sgomp.status==cppunivariate::InferenceStatus::Ok);
+  REQUIRE(exponential.status==cppunivariate::InferenceStatus::Ok);
+  CHECK(std::abs(sgomp.score[0]-exponential.score[0])<1e-7);
+  CHECK(std::abs(sgomp.observed[0]-exponential.observed[0])<1e-5);
+}

@@ -1,5 +1,15 @@
 ---
 id: rayleigh
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "finite sigma > 0; sigma free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "sigma = 0 or nonfinite"
+    reason: "zero scale and infinite scale are outside the interior model"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Rayleigh
 support: {type: real, lower: 0.0, upper: inf, closed: [true, false]}
 params:

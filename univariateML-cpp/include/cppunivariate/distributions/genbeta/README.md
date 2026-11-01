@@ -1,5 +1,10 @@
 ---
 id: genbeta
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite shape1 > 0, shape2 > 0, shape3 > 0 and scale > 0; scale held; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Generalized beta of the first kind
 support: {type: real, lower: "0", upper: "scale", closed: [false, true], endpoint_log_density: {upper: "if (shape2 < 1) Inf else if (shape2 > 1) -Inf else log(shape3) - log(scale) - lbeta(shape1, shape2)"}}
 params:

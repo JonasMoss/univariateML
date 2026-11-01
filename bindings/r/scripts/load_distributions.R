@@ -40,6 +40,32 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   as.character(v)
 }
 
+# Claims are explicit and never inferred from DQM. Legacy/minimal metadata
+# may omit this block while the inventory is filled.
+.umvl_validate_numeric_inference <- function(scopes, id) {
+  scalar_text <- function(x) is.character(x) && length(x) == 1L && !is.na(x) && nzchar(x)
+  if (!is.null(scopes)) {
+    if (!is.list(scopes) || !length(scopes))
+      stop("load_distributions: invalid numeric inference scopes for ", id)
+    names_seen <- character()
+    for (scope in scopes) {
+      if (!is.list(scope) || !scalar_text(scope$regime) ||
+          !is.logical(scope$available) || length(scope$available) != 1L ||
+          is.na(scope$available) || !scalar_text(scope$condition) ||
+          !scalar_text(scope$classification) ||
+          !grepl("^[^#]+#[^#]+$", scope$classification) ||
+          (!scope$available && !scalar_text(scope$reason)) ||
+          (!is.null(scope$reason) && !scalar_text(scope$reason)) ||
+          length(setdiff(names(scope), c("regime", "available", "condition", "reason", "classification"))))
+        stop("load_distributions: invalid numeric inference scope for ", id)
+      names_seen <- c(names_seen, scope$regime)
+    }
+    if (anyDuplicated(names_seen))
+      stop("load_distributions: duplicate numeric inference regime for ", id)
+  }
+  invisible(NULL)
+}
+
 # Split "---\n<yaml>\n---\n<body>" into list(front = <list>, body = <chr>).
 .umvl_read_front_matter <- function(path) {
   lines <- readLines(path, warn = FALSE, encoding = "UTF-8")
@@ -93,6 +119,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   if (!is.null(f$classification) &&
       (!scalar_text(f$classification) || !f$classification %in% c("classical", "specialist", "uncommon") ||
        !scalar_text(f$classification_reason))) stop("load_distributions: invalid classification for ", id)
+  .umvl_validate_numeric_inference(f$inference_numeric, id)
   if (!is.null(f$aliases) && length(f$aliases) && !all(vapply(f$aliases, scalar_text, TRUE)))
     stop("load_distributions: invalid aliases for ", id)
   if (length(f$references) && !all(vapply(f$references, scalar_text, TRUE)))
@@ -111,6 +138,8 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   # Minimal code-generation clients may omit the entire presentation block.
   taxonomy_keys <- c("group", "construction", "relations", "fit", "areas")
   if (any(taxonomy_keys %in% names(f))) {
+    if (is.null(f$inference_numeric))
+      stop("load_distributions: missing numeric inference scopes for ", id)
     absent <- setdiff(c(taxonomy_keys, "classification", "classification_reason"), names(f))
     if (length(absent)) stop("load_distributions: incomplete taxonomy for ", id, ": ", paste(absent, collapse=", "))
     # Taxonomy is presentation metadata; it does not enter generated R help.
@@ -297,6 +326,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
     holds = f$holds %||% list(),
     limits = f$limits %||% list(),
     existence = f$existence,
+    inference_numeric = f$inference_numeric,
     references = unlist(f$references %||% list()),
     examples = f$examples %||% NULL,
     sections = .umvl_body_sections(fm$body)

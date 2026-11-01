@@ -1,0 +1,4840 @@
+{
+  "revision": "fd905f1b1c155ad03c6dd2305124f3156421788e",
+  "source_hash": "003016fe6c146eeac6fd902541d87a1c971fc48178539c97af8d0070fc5ab526",
+  "sample_size": 500,
+  "replications": 200,
+  "seed": "20261101 + 1000*family_index + replication",
+  "family_order": [
+    "bbinom",
+    "beta",
+    "betapr",
+    "bhatt",
+    "binom",
+    "bnbinom",
+    "burr",
+    "cauchy",
+    "cmb",
+    "cmp",
+    "dgamma",
+    "dlaplace",
+    "dnorm",
+    "dweibull",
+    "emg",
+    "exp",
+    "fatigue",
+    "foldnorm",
+    "fpareto",
+    "frechet",
+    "gamma",
+    "gb2",
+    "ged",
+    "genbeta",
+    "geom",
+    "gev",
+    "gompertz",
+    "gpd",
+    "gumbel",
+    "hcauchy",
+    "hnorm",
+    "ht",
+    "invburr",
+    "invexp",
+    "invgamma",
+    "invgauss",
+    "invparalogis",
+    "invpareto",
+    "invtrgamma",
+    "invweibull",
+    "kumar",
+    "laplace",
+    "lgamma",
+    "lgser",
+    "llogis",
+    "lnorm",
+    "logis",
+    "logitnorm",
+    "lomax",
+    "lst",
+    "naka",
+    "nbinom",
+    "norm",
+    "nsbeta",
+    "paralogis",
+    "pareto",
+    "pareto2",
+    "pareto3",
+    "pareto4",
+    "pois",
+    "power",
+    "rayleigh",
+    "sged",
+    "sgomp",
+    "skellam",
+    "slash",
+    "sn",
+    "snorm",
+    "sstd",
+    "std",
+    "tbinom",
+    "tnorm",
+    "tpois",
+    "trgamma",
+    "weibull",
+    "yulesimon",
+    "zeta",
+    "zib",
+    "zinb",
+    "zip",
+    "zipf",
+    "zmbinom",
+    "zmgeom",
+    "zmlogarithmic",
+    "zmnbinom",
+    "zmpois",
+    "ztbinom",
+    "ztgeom",
+    "ztnbinom",
+    "ztpois"
+  ],
+  "projected_cpu_seconds": 227.22120000000007,
+  "actual_simulation_cpu_seconds": 247.41270099999966,
+  "families": {
+    "bbinom": {
+      "truth": {
+        "size": 10.0,
+        "alpha": 1.0,
+        "beta": 1.0
+      },
+      "held": [
+        "size"
+      ],
+      "free": [
+        "alpha",
+        "beta"
+      ],
+      "probe_cpu_seconds": 0.012448,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "alpha": {
+          "empirical_sd": 0.08192715817492979,
+          "empirical_sd_mcse": 0.00510513868278758,
+          "model": {
+            "mean_se": 0.08385040429895572,
+            "mean_se_mcse": 0.0005325942477470586,
+            "difference": 0.0019232461240259319,
+            "difference_mcse_paired": 0.004993267611132925,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0839663309974294,
+            "mean_se_mcse": 0.0005694017479734417,
+            "difference": 0.002039172822499602,
+            "difference_mcse_paired": 0.005010010957711735,
+            "flag_2mcse": false
+          }
+        },
+        "beta": {
+          "empirical_sd": 0.08568222286465055,
+          "empirical_sd_mcse": 0.004148061314029285,
+          "model": {
+            "mean_se": 0.08379731007592925,
+            "mean_se_mcse": 0.0005538387431237098,
+            "difference": -0.001884912788721299,
+            "difference_mcse_paired": 0.004122854491281981,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.08345513546542589,
+            "mean_se_mcse": 0.0005852825948997771,
+            "difference": -0.002227087399224656,
+            "difference_mcse_paired": 0.004128307994867486,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "beta": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape1",
+        "shape2"
+      ],
+      "probe_cpu_seconds": 0.000365,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.06304815679759646,
+          "empirical_sd_mcse": 0.003031345755686716,
+          "model": {
+            "mean_se": 0.058587010262105096,
+            "mean_se_mcse": 0.0002783633675221109,
+            "difference": -0.004461146535491359,
+            "difference_mcse_paired": 0.0029972492167539295,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0582377838082697,
+            "mean_se_mcse": 0.0003580853559170348,
+            "difference": -0.004810372989326753,
+            "difference_mcse_paired": 0.0029944383038937347,
+            "flag_2mcse": false
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.06346172005522212,
+          "empirical_sd_mcse": 0.003059573238234387,
+          "model": {
+            "mean_se": 0.05876706944084653,
+            "mean_se_mcse": 0.0002805846451886891,
+            "difference": -0.004694650614375587,
+            "difference_mcse_paired": 0.0030566154494163656,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05838231514667841,
+            "mean_se_mcse": 0.00034773739599494667,
+            "difference": -0.005079404908543708,
+            "difference_mcse_paired": 0.003073619961906263,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "betapr": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.020746,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.10560216207973332,
+          "empirical_sd_mcse": 0.005240991455949711,
+          "model": {
+            "mean_se": 0.10299675628804879,
+            "mean_se_mcse": 0.0013130332328114159,
+            "difference": -0.0026054057916845286,
+            "difference_mcse_paired": 0.005007761055196694,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.10246934395119263,
+            "mean_se_mcse": 0.001456354399443067,
+            "difference": -0.0031328181285406875,
+            "difference_mcse_paired": 0.004988859829274716,
+            "flag_2mcse": false
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.10078509637678476,
+          "empirical_sd_mcse": 0.004805341851094067,
+          "model": {
+            "mean_se": 0.10031236296436395,
+            "mean_se_mcse": 0.0012860093098816699,
+            "difference": -0.0004727334124208088,
+            "difference_mcse_paired": 0.004533294179918124,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.09938533034908745,
+            "mean_se_mcse": 0.0012607398071251838,
+            "difference": -0.0013997660276973134,
+            "difference_mcse_paired": 0.00463204092788534,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.28246548423518236,
+          "empirical_sd_mcse": 0.015654282720655083,
+          "model": {
+            "mean_se": 0.2690442317118916,
+            "mean_se_mcse": 0.005632364781373635,
+            "difference": -0.013421252523290739,
+            "difference_mcse_paired": 0.014081325082788664,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.26786542384084644,
+            "mean_se_mcse": 0.005680671020109325,
+            "difference": -0.014600060394335923,
+            "difference_mcse_paired": 0.014206589192820133,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "bhatt": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0,
+        "a": 0.7
+      },
+      "held": [],
+      "free": [
+        "mu",
+        "sigma",
+        "a"
+      ],
+      "probe_cpu_seconds": 1.041939,
+      "status": "skipped_slow",
+      "reason": "one n=500 sampling, fit and inference probe exceeded 0.25 CPU seconds"
+    },
+    "binom": {
+      "truth": {
+        "size": 10.0,
+        "prob": 0.5
+      },
+      "held": [
+        "size"
+      ],
+      "free": [
+        "prob"
+      ],
+      "probe_cpu_seconds": 0.002817,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.007207579483436183,
+          "empirical_sd_mcse": 0.0003432462401750608,
+          "model": {
+            "mean_se": 0.007070336215715761,
+            "mean_se_mcse": 7.071410433151473e-08,
+            "difference": -0.0001372432677204218,
+            "difference_mcse_paired": 0.00034417111490695027,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.007043978239300351,
+            "mean_se_mcse": 1.5933479944979878e-05,
+            "difference": -0.0001636012441358324,
+            "difference_mcse_paired": 0.00034642764733264653,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "bnbinom": {
+      "truth": {
+        "size": 1.0,
+        "alpha": 1.0,
+        "beta": 1.0
+      },
+      "held": [],
+      "free": [
+        "size",
+        "alpha",
+        "beta"
+      ],
+      "probe_cpu_seconds": 0.482684,
+      "status": "skipped_slow",
+      "reason": "one n=500 sampling, fit and inference probe exceeded 0.25 CPU seconds"
+    },
+    "burr": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.06889,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.16738620228824083,
+          "empirical_sd_mcse": 0.009290341003908907,
+          "model": {
+            "mean_se": 0.17042774731300558,
+            "mean_se_mcse": 0.0029144633691002004,
+            "difference": 0.0030415450247647524,
+            "difference_mcse_paired": 0.008640733596764039,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.16846110133986347,
+            "mean_se_mcse": 0.0028312015382865497,
+            "difference": 0.0010748990516226409,
+            "difference_mcse_paired": 0.008791925801536302,
+            "flag_2mcse": false
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.07055048347429224,
+          "empirical_sd_mcse": 0.0036592223359589397,
+          "model": {
+            "mean_se": 0.06945130696067203,
+            "mean_se_mcse": 0.0004981396296485732,
+            "difference": -0.0010991765136202092,
+            "difference_mcse_paired": 0.003490349028318579,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06941858838584634,
+            "mean_se_mcse": 0.0005758891134971844,
+            "difference": -0.0011318950884458973,
+            "difference_mcse_paired": 0.003532280163596533,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.2716146518906852,
+          "empirical_sd_mcse": 0.016851384575106643,
+          "model": {
+            "mean_se": 0.27827616685021245,
+            "mean_se_mcse": 0.007580081123617574,
+            "difference": 0.0066615149595272705,
+            "difference_mcse_paired": 0.01400420850342794,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.27572429324061254,
+            "mean_se_mcse": 0.007468039801486726,
+            "difference": 0.004109641349927362,
+            "difference_mcse_paired": 0.01418472966153301,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "cauchy": {
+      "truth": {
+        "location": 0.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "location",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.001886,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "location": {
+          "empirical_sd": 0.06252178957002248,
+          "empirical_sd_mcse": 0.0032440216516637964,
+          "model": {
+            "mean_se": 0.06357857141060576,
+            "mean_se_mcse": 0.00028197381070185664,
+            "difference": 0.0010567818405832763,
+            "difference_mcse_paired": 0.003268341729507714,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06384338901155805,
+            "mean_se_mcse": 0.0003282586035026672,
+            "difference": 0.0013215994415355647,
+            "difference_mcse_paired": 0.0032836028749958467,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.062314086117046065,
+          "empirical_sd_mcse": 0.003080125430679785,
+          "model": {
+            "mean_se": 0.0635175119015541,
+            "mean_se_mcse": 0.0002903182836319757,
+            "difference": 0.001203425784508029,
+            "difference_mcse_paired": 0.0030623777202030346,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06366045545399113,
+            "mean_se_mcse": 0.0003474436587726842,
+            "difference": 0.0013463693369450622,
+            "difference_mcse_paired": 0.003062327967231468,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "cmb": {
+      "truth": {
+        "size": 10.0,
+        "prob": 0.5,
+        "nu": 1.0
+      },
+      "held": [
+        "size"
+      ],
+      "free": [
+        "prob",
+        "nu"
+      ],
+      "probe_cpu_seconds": 0.05199,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.007107544915664025,
+          "empirical_sd_mcse": 0.0004598579618002093,
+          "model": {
+            "mean_se": 0.007089742007249724,
+            "mean_se_mcse": 1.4739319316175566e-05,
+            "difference": -1.780290841430117e-05,
+            "difference_mcse_paired": 0.0004589080226017364,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0070921702878423,
+            "mean_se_mcse": 1.507231244418878e-05,
+            "difference": -1.5374627821724586e-05,
+            "difference_mcse_paired": 0.00045943413001995324,
+            "flag_2mcse": false
+          }
+        },
+        "nu": {
+          "empirical_sd": 0.06572442018009475,
+          "empirical_sd_mcse": 0.003020042745036214,
+          "model": {
+            "mean_se": 0.0674696690065154,
+            "mean_se_mcse": 0.0002825721800866233,
+            "difference": 0.001745248826420645,
+            "difference_mcse_paired": 0.0030077046352291236,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06687361637371977,
+            "mean_se_mcse": 0.0003531560384495813,
+            "difference": 0.001149196193625024,
+            "difference_mcse_paired": 0.0029879691297615054,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "cmp": {
+      "truth": {
+        "lambda": 1.0,
+        "nu": 1.0
+      },
+      "held": [],
+      "free": [
+        "lambda",
+        "nu"
+      ],
+      "probe_cpu_seconds": 0.652841,
+      "status": "skipped_slow",
+      "reason": "one n=500 sampling, fit and inference probe exceeded 0.25 CPU seconds"
+    },
+    "dgamma": {
+      "truth": {
+        "shape": 1.0,
+        "rate": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "rate"
+      ],
+      "probe_cpu_seconds": 0.114296,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.12020512428301974,
+          "empirical_sd_mcse": 0.005455455732434323,
+          "model": {
+            "mean_se": 0.12220296075958872,
+            "mean_se_mcse": 0.0009940141664060776,
+            "difference": 0.0019978364765689816,
+            "difference_mcse_paired": 0.005709718586364338,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.12170695574349476,
+            "mean_se_mcse": 0.0011238744349825992,
+            "difference": 0.0015018314604750144,
+            "difference_mcse_paired": 0.005744701094741122,
+            "flag_2mcse": false
+          }
+        },
+        "rate": {
+          "empirical_sd": 0.11786377714310843,
+          "empirical_sd_mcse": 0.006186859989044882,
+          "model": {
+            "mean_se": 0.11808375967156401,
+            "mean_se_mcse": 0.0009783281525353096,
+            "difference": 0.00021998252845557842,
+            "difference_mcse_paired": 0.0062579044697308505,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.11736980171607138,
+            "mean_se_mcse": 0.0012301566038886728,
+            "difference": -0.0004939754270370522,
+            "difference_mcse_paired": 0.006294743820302933,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "dlaplace": {
+      "truth": {
+        "location": 0,
+        "scale": 0.5
+      },
+      "held": [
+        "location"
+      ],
+      "free": [
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.000907,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "scale": {
+          "empirical_sd": 0.01489514877992289,
+          "empirical_sd_mcse": 0.0007874188220323822,
+          "model": {
+            "mean_se": 0.015026572035369471,
+            "mean_se_mcse": 1.1324549152846691e-05,
+            "difference": 0.00013142325544658086,
+            "difference_mcse_paired": 0.0007910508422504116,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.014925444383166203,
+            "mean_se_mcse": 4.3744051896601416e-05,
+            "difference": 3.029560324331257e-05,
+            "difference_mcse_paired": 0.0007930585599398343,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "dnorm": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0
+      },
+      "held": [],
+      "free": [
+        "mean",
+        "sd"
+      ],
+      "probe_cpu_seconds": 0.018675,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.04728557425102943,
+          "empirical_sd_mcse": 0.0023558087196432695,
+          "model": {
+            "mean_se": 0.04656817590976413,
+            "mean_se_mcse": 0.00010667059836640893,
+            "difference": -0.0007173983412653018,
+            "difference_mcse_paired": 0.002372559627714375,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.046566287189113466,
+            "mean_se_mcse": 0.00010665643768290269,
+            "difference": -0.0007192870619159644,
+            "difference_mcse_paired": 0.0023725504774912798,
+            "flag_2mcse": false
+          }
+        },
+        "sd": {
+          "empirical_sd": 0.03512616656490303,
+          "empirical_sd_mcse": 0.0017620172723660195,
+          "model": {
+            "mean_se": 0.034209709489585516,
+            "mean_se_mcse": 7.234758273868617e-05,
+            "difference": -0.0009164570753175116,
+            "difference_mcse_paired": 0.0017830295678854396,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.03433470814517642,
+            "mean_se_mcse": 0.000152475892445561,
+            "difference": -0.0007914584197266095,
+            "difference_mcse_paired": 0.0017915671315722331,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "dweibull": {
+      "truth": {
+        "shape1": 0.5,
+        "shape2": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape1",
+        "shape2"
+      ],
+      "probe_cpu_seconds": 0.003905,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.02133492631852607,
+          "empirical_sd_mcse": 0.0011237902797166896,
+          "model": {
+            "mean_se": 0.021682697186978742,
+            "mean_se_mcse": 1.043054123427723e-05,
+            "difference": 0.0003477708684526716,
+            "difference_mcse_paired": 0.0011280027073127536,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.021699215199648524,
+            "mean_se_mcse": 3.0026675778819168e-05,
+            "difference": 0.0003642888811224536,
+            "difference_mcse_paired": 0.001127778131759685,
+            "flag_2mcse": false
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.04461912597283706,
+          "empirical_sd_mcse": 0.0022566602458799967,
+          "model": {
+            "mean_se": 0.04823406686848918,
+            "mean_se_mcse": 0.00013948843230780767,
+            "difference": 0.003614940895652119,
+            "difference_mcse_paired": 0.0022633712974661742,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04785842329701586,
+            "mean_se_mcse": 0.0002463877552558481,
+            "difference": 0.003239297324178797,
+            "difference_mcse_paired": 0.002267750578849237,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "emg": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0,
+        "lambda": 1.0
+      },
+      "held": [],
+      "free": [
+        "mu",
+        "sigma",
+        "lambda"
+      ],
+      "probe_cpu_seconds": 0.997851,
+      "status": "skipped_slow",
+      "reason": "one n=500 sampling, fit and inference probe exceeded 0.25 CPU seconds"
+    },
+    "exp": {
+      "truth": {
+        "rate": 1.0
+      },
+      "held": [],
+      "free": [
+        "rate"
+      ],
+      "probe_cpu_seconds": 0.000354,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "rate": {
+          "empirical_sd": 0.049200025515669196,
+          "empirical_sd_mcse": 0.002507942276343116,
+          "model": {
+            "mean_se": 0.04476281541989876,
+            "mean_se_mcse": 0.00015558414157270878,
+            "difference": -0.004437210095770437,
+            "difference_mcse_paired": 0.002484121877201013,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04463450138074797,
+            "mean_se_mcse": 0.0002142296256515529,
+            "difference": -0.004565524134921228,
+            "difference_mcse_paired": 0.0024920374200877228,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "fatigue": {
+      "truth": {
+        "alpha": 1.0,
+        "beta": 1.0,
+        "mu": 0.0
+      },
+      "held": [
+        "mu"
+      ],
+      "free": [
+        "alpha",
+        "beta"
+      ],
+      "probe_cpu_seconds": 0.005761,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "alpha": {
+          "empirical_sd": 0.02969009167864643,
+          "empirical_sd_mcse": 0.0015083425558643161,
+          "model": {
+            "mean_se": 0.03145964345650003,
+            "mean_se_mcse": 6.639163665367454e-05,
+            "difference": 0.0017695517778535987,
+            "difference_mcse_paired": 0.0015229648644507839,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.031069121774739937,
+            "mean_se_mcse": 0.0001223911428781402,
+            "difference": 0.001379030096093508,
+            "difference_mcse_paired": 0.0015376397192217552,
+            "flag_2mcse": false
+          }
+        },
+        "beta": {
+          "empirical_sd": 0.03409925171831175,
+          "empirical_sd_mcse": 0.0018571195189313408,
+          "model": {
+            "mean_se": 0.03925595068316569,
+            "mean_se_mcse": 0.00011579194131082481,
+            "difference": 0.005156698964853941,
+            "difference_mcse_paired": 0.0018595350152011871,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.03908568848792849,
+            "mean_se_mcse": 0.00012418249546380757,
+            "difference": 0.004986436769616742,
+            "difference_mcse_paired": 0.00186674837240343,
+            "flag_2mcse": true
+          }
+        }
+      }
+    },
+    "foldnorm": {
+      "truth": {
+        "mu": 1,
+        "sigma": 1.0
+      },
+      "held": [],
+      "free": [
+        "mu",
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.016772,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mu": {
+          "empirical_sd": 0.0693385627798078,
+          "empirical_sd_mcse": 0.006084332336030078,
+          "model": {
+            "mean_se": 0.07516242561099279,
+            "mean_se_mcse": 0.0021952913144919323,
+            "difference": 0.005823862831184995,
+            "difference_mcse_paired": 0.004431453192755547,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0746364779849919,
+            "mean_se_mcse": 0.00210414614752691,
+            "difference": 0.005297915205184106,
+            "difference_mcse_paired": 0.004536267460722868,
+            "flag_2mcse": false
+          }
+        },
+        "sigma": {
+          "empirical_sd": 0.06481305522235585,
+          "empirical_sd_mcse": 0.004509026522426573,
+          "model": {
+            "mean_se": 0.06361027303691097,
+            "mean_se_mcse": 0.001144721519819447,
+            "difference": -0.0012027821854448811,
+            "difference_mcse_paired": 0.003833614835886679,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06211488568928077,
+            "mean_se_mcse": 0.001199401094789724,
+            "difference": -0.0026981695330750774,
+            "difference_mcse_paired": 0.003949881384131748,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "fpareto": {
+      "truth": {
+        "shape1": 2.0,
+        "shape2": 1.0,
+        "shape3": 2.0,
+        "scale": 1.0,
+        "min": 0.0
+      },
+      "held": [
+        "min"
+      ],
+      "free": [
+        "shape1",
+        "shape2",
+        "shape3",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.095485,
+      "status": "complete",
+      "replications": 200,
+      "successes": 186,
+      "failures": [
+        "18 fit_failure 0.90064999999999995 \"GB2 selects a limiting model. Use `mltrgamma(x - min)`.\"",
+        "21 inference_failure 0.099204000000000001 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "31 inference_failure 0.156087 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "61 inference_failure 0.099154000000000006 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "63 fit_failure 1.2404029999999999 \"GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.\"",
+        "94 fit_failure 0.64485000000000003 \"GB2 selects a limiting model. Use `mltrgamma(x - min)`.\"",
+        "119 fit_failure 0.92890300000000003 \"GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.\"",
+        "120 fit_failure 1.0190509999999999 \"GB2 selects a limiting model. Use `mltrgamma(x - min)`.\"",
+        "121 inference_failure 0.13187399999999999 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "137 inference_failure 0.107984 \"inference=0, model=6, sandwich=6: finite interior scope; structural coefficients held\"",
+        "143 inference_failure 0.094893000000000005 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "161 fit_failure 0.82618899999999995 \"GB2 selects a limiting model. Use `mltrgamma(x - min)`.\"",
+        "173 inference_failure 0.110961 \"inference=0, model=6, sandwich=6: finite interior scope; structural coefficients held\"",
+        "194 fit_failure 0.40351500000000001 \"GB2 selects a limiting model. Use `mlinvtrgamma(x - min)`.\""
+      ],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 2.340669319943922,
+          "empirical_sd_mcse": 0.2918803741597092,
+          "model": {
+            "mean_se": 3.381060361702341,
+            "mean_se_mcse": 0.5099483090472389,
+            "difference": 1.040391041758419,
+            "difference_mcse_paired": 0.24958371701159215,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 3.203383690486715,
+            "mean_se_mcse": 0.4674111031320122,
+            "difference": 0.8627143705427929,
+            "difference_mcse_paired": 0.21342541172992385,
+            "flag_2mcse": true
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.37702531660133254,
+          "empirical_sd_mcse": 0.029371674304640733,
+          "model": {
+            "mean_se": 0.432472484437965,
+            "mean_se_mcse": 0.0069916115278085235,
+            "difference": 0.05544716783663245,
+            "difference_mcse_paired": 0.02456384617554446,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.42585247983972135,
+            "mean_se_mcse": 0.008789135333854874,
+            "difference": 0.048827163238388815,
+            "difference_mcse_paired": 0.02473443691068081,
+            "flag_2mcse": false
+          }
+        },
+        "shape3": {
+          "empirical_sd": 2.0663962909624907,
+          "empirical_sd_mcse": 0.21778430088743023,
+          "model": {
+            "mean_se": 3.0540782732604304,
+            "mean_se_mcse": 0.41420896327583157,
+            "difference": 0.9876819822979397,
+            "difference_mcse_paired": 0.21408354848310482,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 2.8977028068600483,
+            "mean_se_mcse": 0.3797066900481582,
+            "difference": 0.8313065158975577,
+            "difference_mcse_paired": 0.18378841213318267,
+            "flag_2mcse": true
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.8570212565328904,
+          "empirical_sd_mcse": 0.29606850097317977,
+          "model": {
+            "mean_se": 0.8978266443946613,
+            "mean_se_mcse": 0.30564982516285805,
+            "difference": 0.0408053878617709,
+            "difference_mcse_paired": 0.0572530099342244,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.833994431627281,
+            "mean_se_mcse": 0.27459113072537433,
+            "difference": -0.023026824905609367,
+            "difference_mcse_paired": 0.058735923674970734,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "frechet": {
+      "truth": {
+        "lambda": 1.0,
+        "mu": 0.0,
+        "sigma": 1.0
+      },
+      "held": [
+        "mu"
+      ],
+      "free": [
+        "lambda",
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.001123,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "lambda": {
+          "empirical_sd": 0.036296907799773945,
+          "empirical_sd_mcse": 0.0018307292596832345,
+          "model": {
+            "mean_se": 0.03501694249002731,
+            "mean_se_mcse": 9.26808726410543e-05,
+            "difference": -0.001279965309746632,
+            "difference_mcse_paired": 0.0018389430068238763,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.03468585969932716,
+            "mean_se_mcse": 0.0001682698433612026,
+            "difference": -0.0016110481004467866,
+            "difference_mcse_paired": 0.0018311603207960966,
+            "flag_2mcse": false
+          }
+        },
+        "sigma": {
+          "empirical_sd": 0.04920013837825276,
+          "empirical_sd_mcse": 0.002348904011722683,
+          "model": {
+            "mean_se": 0.047294877582684046,
+            "mean_se_mcse": 0.00023305721958695282,
+            "difference": -0.001905260795568714,
+            "difference_mcse_paired": 0.002374038465059881,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04730655057991041,
+            "mean_se_mcse": 0.00023359840159169272,
+            "difference": -0.0018935877983423527,
+            "difference_mcse_paired": 0.002374296787524426,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "gamma": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.000134,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.05530720824592027,
+          "empirical_sd_mcse": 0.002506174235200954,
+          "model": {
+            "mean_se": 0.056106690008453024,
+            "mean_se_mcse": 0.00023716247121903717,
+            "difference": 0.0007994817625327569,
+            "difference_mcse_paired": 0.0025115737821955262,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05588123125840805,
+            "mean_se_mcse": 0.00030844270876709246,
+            "difference": 0.0005740230124877815,
+            "difference_mcse_paired": 0.002499966417266426,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.06849860050107709,
+          "empirical_sd_mcse": 0.0031814762250960576,
+          "model": {
+            "mean_se": 0.07113871918278615,
+            "mean_se_mcse": 0.00037834366070199285,
+            "difference": 0.002640118681709061,
+            "difference_mcse_paired": 0.0031913542785109426,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07076503372363446,
+            "mean_se_mcse": 0.0004651854084059766,
+            "difference": 0.0022664332225573736,
+            "difference_mcse_paired": 0.003188755082291623,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "gb2": {
+      "truth": {
+        "shape1": 2.0,
+        "shape2": 1.0,
+        "shape3": 2.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape1",
+        "shape2",
+        "shape3",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.141135,
+      "status": "complete",
+      "replications": 200,
+      "successes": 168,
+      "failures": [
+        "1 inference_failure 0.113437 \"inference=0, model=6, sandwich=6: finite interior scope; structural coefficients held\"",
+        "10 fit_failure 1.3532150000000001 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "14 fit_failure 1.139775 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "21 fit_failure 0.67295899999999997 \"GB2 selects a limiting model. Use `mlinvtrgamma`.\"",
+        "27 fit_failure 0.93171800000000005 \"GB2 selects a limiting model. Use `mlinvtrgamma`.\"",
+        "33 inference_failure 0.101426 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "38 inference_failure 0.105826 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "51 fit_failure 0.86136000000000001 \"GB2 selects a limiting model. Use `mlinvtrgamma`.\"",
+        "54 fit_failure 0.39288200000000001 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "58 inference_failure 0.11246299999999999 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "65 inference_failure 0.104071 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "73 fit_failure 0.45774300000000001 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "82 inference_failure 0.115166 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "86 inference_failure 0.117312 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "90 inference_failure 0.089647000000000004 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "97 inference_failure 0.107737 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "99 fit_failure 2.0569809999999999 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "123 inference_failure 0.108102 \"inference=0, model=6, sandwich=6: finite interior scope; structural coefficients held\"",
+        "130 fit_failure 1.5084310000000001 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "146 fit_failure 0.85504999999999998 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "149 fit_failure 0.96291099999999996 \"GB2 selects a limiting model. Use `mlinvtrgamma`.\"",
+        "156 inference_failure 0.090943999999999997 \"inference=0, model=6, sandwich=6: finite interior scope; structural coefficients held\"",
+        "159 inference_failure 0.13206100000000001 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "165 inference_failure 0.121626 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "171 fit_failure 0.566187 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "173 inference_failure 0.10367800000000001 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "177 inference_failure 0.089598999999999998 \"inference=0, model=6, sandwich=6: finite interior scope; structural coefficients held\"",
+        "179 fit_failure 1.902156 \"GB2 selects a limiting model. Use `mltrgamma`.\"",
+        "184 inference_failure 0.095175999999999997 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "188 inference_failure 0.098794999999999994 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "191 inference_failure 0.109315 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "195 fit_failure 0.72957399999999994 \"GB2 selects a limiting model. Use `mltrgamma`.\""
+      ],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 2.1058047915066482,
+          "empirical_sd_mcse": 0.2660820493262082,
+          "model": {
+            "mean_se": 3.112175472481796,
+            "mean_se_mcse": 0.4548236541270317,
+            "difference": 1.0063706809751478,
+            "difference_mcse_paired": 0.22090736886003934,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 2.901635354812034,
+            "mean_se_mcse": 0.4073522362372101,
+            "difference": 0.7958305633053859,
+            "difference_mcse_paired": 0.178880969473106,
+            "flag_2mcse": true
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.37847128322442836,
+          "empirical_sd_mcse": 0.027415640165992988,
+          "model": {
+            "mean_se": 0.42303738317349765,
+            "mean_se_mcse": 0.007537353364375929,
+            "difference": 0.04456609994906929,
+            "difference_mcse_paired": 0.021158683846251525,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.41572753010126995,
+            "mean_se_mcse": 0.009537101543877897,
+            "difference": 0.03725624687684159,
+            "difference_mcse_paired": 0.01990281086361261,
+            "flag_2mcse": false
+          }
+        },
+        "shape3": {
+          "empirical_sd": 2.2989867781369537,
+          "empirical_sd_mcse": 0.28836675582078725,
+          "model": {
+            "mean_se": 3.334525650322931,
+            "mean_se_mcse": 0.5115544540904576,
+            "difference": 1.035538872185977,
+            "difference_mcse_paired": 0.2485480520677178,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 3.116326113150952,
+            "mean_se_mcse": 0.459021879053503,
+            "difference": 0.8173393350139984,
+            "difference_mcse_paired": 0.2020042579184235,
+            "flag_2mcse": true
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.5862344506809675,
+          "empirical_sd_mcse": 0.10074371110320149,
+          "model": {
+            "mean_se": 0.6901348781861769,
+            "mean_se_mcse": 0.14943500226976297,
+            "difference": 0.10390042750520945,
+            "difference_mcse_paired": 0.055633982749142816,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.6473756310247498,
+            "mean_se_mcse": 0.13756653052763707,
+            "difference": 0.06114118034378235,
+            "difference_mcse_paired": 0.043177893155111904,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "ged": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0,
+        "nu": 3
+      },
+      "held": [],
+      "free": [
+        "mean",
+        "sd",
+        "nu"
+      ],
+      "probe_cpu_seconds": 0.050023,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.038600901688527325,
+          "empirical_sd_mcse": 0.0018817187287998136,
+          "model": {
+            "mean_se": 0.041771350688141015,
+            "mean_se_mcse": 0.00010754547699297234,
+            "difference": 0.0031704489996136898,
+            "difference_mcse_paired": 0.0018828818556900831,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04183562723025172,
+            "mean_se_mcse": 0.00011948192828778723,
+            "difference": 0.0032347255417243953,
+            "difference_mcse_paired": 0.0018771057777818513,
+            "flag_2mcse": false
+          }
+        },
+        "sd": {
+          "empirical_sd": 0.026729802726412958,
+          "empirical_sd_mcse": 0.001172345769500356,
+          "model": {
+            "mean_se": 0.026374618425156326,
+            "mean_se_mcse": 7.730926144084204e-05,
+            "difference": -0.0003551843012566322,
+            "difference_mcse_paired": 0.0011796002711830793,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.026552441187814014,
+            "mean_se_mcse": 8.094517529300092e-05,
+            "difference": -0.0001773615385989441,
+            "difference_mcse_paired": 0.0011758328118794464,
+            "flag_2mcse": false
+          }
+        },
+        "nu": {
+          "empirical_sd": 0.3467520255442216,
+          "empirical_sd_mcse": 0.01550704207532639,
+          "model": {
+            "mean_se": 0.3655975637866844,
+            "mean_se_mcse": 0.004420651469851856,
+            "difference": 0.018845538242462823,
+            "difference_mcse_paired": 0.01432905048178049,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.3545046585117556,
+            "mean_se_mcse": 0.004838411980106686,
+            "difference": 0.007752632967534034,
+            "difference_mcse_paired": 0.014367737273185263,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "genbeta": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 2.0,
+        "shape3": 1.0,
+        "scale": 1.0
+      },
+      "held": [
+        "scale"
+      ],
+      "free": [
+        "shape1",
+        "shape2",
+        "shape3"
+      ],
+      "probe_cpu_seconds": 0.003413,
+      "status": "complete",
+      "replications": 200,
+      "successes": 151,
+      "failures": [
+        "0 fit_failure 0.0034129999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "1 fit_failure 0.0048209999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "2 fit_failure 0.0052329999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "13 fit_failure 0.006143 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "15 inference_failure 0.015254999999999999 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "17 fit_failure 0.0037590000000000002 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "23 fit_failure 0.0035070000000000001 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "26 fit_failure 0.0078720000000000005 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "28 fit_failure 0.005921 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "29 fit_failure 0.0051079999999999997 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "40 inference_failure 0.017648 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "41 fit_failure 0.0077130000000000002 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "43 fit_failure 0.0067279999999999996 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "56 fit_failure 0.0031830000000000001 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "58 fit_failure 0.0049490000000000003 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "59 fit_failure 0.007084 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "66 fit_failure 0.0065389999999999997 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "67 fit_failure 0.0053160000000000004 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "68 fit_failure 0.010848 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "75 fit_failure 0.0068630000000000002 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "81 fit_failure 0.0085609999999999992 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "83 fit_failure 0.0027420000000000001 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "84 fit_failure 0.0039179999999999996 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "85 fit_failure 0.0036960000000000001 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "86 fit_failure 0.006731 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "89 fit_failure 0.0026830000000000001 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "95 fit_failure 0.0028019999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "97 fit_failure 0.0028639999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "98 fit_failure 0.0042240000000000003 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "99 fit_failure 0.0048549999999999999 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "100 fit_failure 0.0057089999999999997 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "110 fit_failure 0.0026310000000000001 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "111 fit_failure 0.0062979999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "117 fit_failure 0.0070629999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "120 fit_failure 0.0058700000000000002 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "128 fit_failure 0.0053340000000000002 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "137 fit_failure 0.0061399999999999996 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "143 fit_failure 0.0061619999999999999 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "144 fit_failure 0.0061840000000000003 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "152 fit_failure 0.002686 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "161 fit_failure 0.0053369999999999997 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "167 fit_failure 0.0026949999999999999 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "170 fit_failure 0.0032049999999999999 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "171 fit_failure 0.0056299999999999996 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "178 fit_failure 0.0057260000000000002 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "182 fit_failure 0.002689 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "190 fit_failure 0.0035379999999999999 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "195 fit_failure 0.0065269999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\"",
+        "198 fit_failure 0.0026909999999999998 \"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.\""
+      ],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.6565310040551354,
+          "empirical_sd_mcse": 0.051277043660404094,
+          "model": {
+            "mean_se": 1.53558859667404,
+            "mean_se_mcse": 0.21156446487642186,
+            "difference": 0.8790575926189045,
+            "difference_mcse_paired": 0.16524358040183157,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 1.535619216015129,
+            "mean_se_mcse": 0.21809898414864443,
+            "difference": 0.8790882119599935,
+            "difference_mcse_paired": 0.17329242964416344,
+            "flag_2mcse": true
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.2444718666863632,
+          "empirical_sd_mcse": 0.016938310073104562,
+          "model": {
+            "mean_se": 0.2610755579502115,
+            "mean_se_mcse": 0.00772532193538726,
+            "difference": 0.01660369126384828,
+            "difference_mcse_paired": 0.013282180245702583,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.2643026581969026,
+            "mean_se_mcse": 0.00887233587514378,
+            "difference": 0.019830791510539375,
+            "difference_mcse_paired": 0.01363946724946293,
+            "flag_2mcse": false
+          }
+        },
+        "shape3": {
+          "empirical_sd": 0.6710366101862042,
+          "empirical_sd_mcse": 0.03662365592727484,
+          "model": {
+            "mean_se": 0.9126876948527219,
+            "mean_se_mcse": 0.017554881068690357,
+            "difference": 0.24165108466651775,
+            "difference_mcse_paired": 0.03142966255272819,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.911354253421924,
+            "mean_se_mcse": 0.02383405555463776,
+            "difference": 0.2403176432357198,
+            "difference_mcse_paired": 0.03390822389607303,
+            "flag_2mcse": true
+          }
+        }
+      }
+    },
+    "geom": {
+      "truth": {
+        "prob": 0.5
+      },
+      "held": [],
+      "free": [
+        "prob"
+      ],
+      "probe_cpu_seconds": 0.000355,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.01630282611388429,
+          "empirical_sd_mcse": 0.0007810725677256346,
+          "model": {
+            "mean_se": 0.015821522012175453,
+            "mean_se_mcse": 1.798797382015737e-05,
+            "difference": -0.00048130410170883764,
+            "difference_mcse_paired": 0.0007819686220311335,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.01571645397521084,
+            "mean_se_mcse": 5.171958331403358e-05,
+            "difference": -0.0005863721386734494,
+            "difference_mcse_paired": 0.000783778548766407,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "gev": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0,
+        "xi": 0
+      },
+      "held": [
+        "xi"
+      ],
+      "free": [
+        "mu",
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.000984,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mu": {
+          "empirical_sd": 0.04368492321953553,
+          "empirical_sd_mcse": 0.002245757693525814,
+          "model": {
+            "mean_se": 0.04679706306778172,
+            "mean_se_mcse": 0.00012008776844624081,
+            "difference": 0.0031121398482461884,
+            "difference_mcse_paired": 0.002256530641574759,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.046802523770430184,
+            "mean_se_mcse": 0.00012041898339993699,
+            "difference": 0.0031176005508946544,
+            "difference_mcse_paired": 0.0022559841008526187,
+            "flag_2mcse": false
+          }
+        },
+        "sigma": {
+          "empirical_sd": 0.03603585268483966,
+          "empirical_sd_mcse": 0.001656091918457065,
+          "model": {
+            "mean_se": 0.03465950526247686,
+            "mean_se_mcse": 9.24474587877716e-05,
+            "difference": -0.0013763474223627975,
+            "difference_mcse_paired": 0.0016619399678086762,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.03460011932590957,
+            "mean_se_mcse": 0.00014954298092981604,
+            "difference": -0.0014357333589300886,
+            "difference_mcse_paired": 0.001673060335456399,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "gompertz": {
+      "truth": {
+        "a": 1.0,
+        "b": 1.0
+      },
+      "held": [],
+      "free": [
+        "a",
+        "b"
+      ],
+      "probe_cpu_seconds": 0.003439,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "a": {
+          "empirical_sd": 0.07547167203166656,
+          "empirical_sd_mcse": 0.0037619134041922586,
+          "model": {
+            "mean_se": 0.07761404775370911,
+            "mean_se_mcse": 0.0003154649859503807,
+            "difference": 0.0021423757220425527,
+            "difference_mcse_paired": 0.0037731801814335497,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07739716294765765,
+            "mean_se_mcse": 0.00037087262359491736,
+            "difference": 0.0019254909159910905,
+            "difference_mcse_paired": 0.0037428631962991422,
+            "flag_2mcse": false
+          }
+        },
+        "b": {
+          "empirical_sd": 0.11722748393678442,
+          "empirical_sd_mcse": 0.005523007231906481,
+          "model": {
+            "mean_se": 0.10688695709336819,
+            "mean_se_mcse": 0.0002934978079366626,
+            "difference": -0.010340526843416228,
+            "difference_mcse_paired": 0.005469000477312947,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.10629388396397134,
+            "mean_se_mcse": 0.0006620436285347864,
+            "difference": -0.010933599972813082,
+            "difference_mcse_paired": 0.005468779394271142,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "gpd": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0,
+        "xi": 0.2
+      },
+      "held": [
+        "mu"
+      ],
+      "free": [
+        "sigma",
+        "xi"
+      ],
+      "probe_cpu_seconds": 0.003962,
+      "status": "complete",
+      "replications": 200,
+      "successes": 199,
+      "failures": [
+        "28 inference_failure 0.0021410000000000001 \"inference=11, model=11, sandwich=11: shape must be positive, or zero held known, with threshold held\""
+      ],
+      "coordinates": {
+        "sigma": {
+          "empirical_sd": 0.07437665524656,
+          "empirical_sd_mcse": 0.0035491073050957773,
+          "model": {
+            "mean_se": 0.06974183379400668,
+            "mean_se_mcse": 0.0003364918418391854,
+            "difference": -0.004634821452553312,
+            "difference_mcse_paired": 0.0035277492819540015,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06935604943207163,
+            "mean_se_mcse": 0.00041414823356102944,
+            "difference": -0.005020605814488363,
+            "difference_mcse_paired": 0.0035331138104408716,
+            "flag_2mcse": false
+          }
+        },
+        "xi": {
+          "empirical_sd": 0.05385115638237683,
+          "empirical_sd_mcse": 0.0026891578283367227,
+          "model": {
+            "mean_se": 0.05428483427259973,
+            "mean_se_mcse": 0.00024075588255538066,
+            "difference": 0.0004336778902229027,
+            "difference_mcse_paired": 0.0026796123903589644,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05207763971026579,
+            "mean_se_mcse": 0.0003243319308589929,
+            "difference": -0.0017735166721110363,
+            "difference_mcse_paired": 0.0027475691139068063,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "gumbel": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0
+      },
+      "held": [],
+      "free": [
+        "mu",
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.001244,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mu": {
+          "empirical_sd": 0.04714729679036547,
+          "empirical_sd_mcse": 0.002527416008548777,
+          "model": {
+            "mean_se": 0.04694010395953404,
+            "mean_se_mcse": 0.0001235840094437819,
+            "difference": -0.0002071928308314333,
+            "difference_mcse_paired": 0.002535345831233653,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04694781558252793,
+            "mean_se_mcse": 0.00012338891096977422,
+            "difference": -0.0001994812078375402,
+            "difference_mcse_paired": 0.00253611624499165,
+            "flag_2mcse": false
+          }
+        },
+        "sigma": {
+          "empirical_sd": 0.037142221546518014,
+          "empirical_sd_mcse": 0.002047311642386913,
+          "model": {
+            "mean_se": 0.03482298971301672,
+            "mean_se_mcse": 9.367832451360047e-05,
+            "difference": -0.0023192318335012937,
+            "difference_mcse_paired": 0.002056725526187184,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0345133356703984,
+            "mean_se_mcse": 0.00015993219504740886,
+            "difference": -0.002628885876119612,
+            "difference_mcse_paired": 0.0020576473485699794,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "hcauchy": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0
+      },
+      "held": [
+        "mu"
+      ],
+      "free": [
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.00278,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "sigma": {
+          "empirical_sd": 0.06253101509013026,
+          "empirical_sd_mcse": 0.0037069513817196576,
+          "model": {
+            "mean_se": 0.0631122765612297,
+            "mean_se_mcse": 0.0002956153255759173,
+            "difference": 0.0005812614710994368,
+            "difference_mcse_paired": 0.0037020476574189942,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06319897278757491,
+            "mean_se_mcse": 0.0003704488062630018,
+            "difference": 0.0006679576974446544,
+            "difference_mcse_paired": 0.003704517117623568,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "hnorm": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0
+      },
+      "held": [
+        "mu"
+      ],
+      "free": [
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.000457,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "sigma": {
+          "empirical_sd": 0.031716574736609444,
+          "empirical_sd_mcse": 0.0015194767157039742,
+          "model": {
+            "mean_se": 0.031534753743424807,
+            "mean_se_mcse": 7.092041722096836e-05,
+            "difference": -0.0001818209931846379,
+            "difference_mcse_paired": 0.0015376080986642625,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.03130293328075595,
+            "mean_se_mcse": 0.00013515325676008148,
+            "difference": -0.00041364145585349316,
+            "difference_mcse_paired": 0.001536835794744484,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "ht": {
+      "truth": {
+        "mu": 0.0,
+        "nu": 5.0,
+        "sigma": 1.0
+      },
+      "held": [
+        "mu"
+      ],
+      "free": [
+        "nu",
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.104872,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "nu": {
+          "empirical_sd": 1.3340770368299935,
+          "empirical_sd_mcse": 0.10143768768399217,
+          "model": {
+            "mean_se": 1.3443402980861983,
+            "mean_se_mcse": 0.05133628163196969,
+            "difference": 0.010263261256204803,
+            "difference_mcse_paired": 0.07012003480699275,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 1.2876978614091827,
+            "mean_se_mcse": 0.04602293207093882,
+            "difference": -0.046379175420810714,
+            "difference_mcse_paired": 0.07401952781862121,
+            "flag_2mcse": false
+          }
+        },
+        "sigma": {
+          "empirical_sd": 0.0543528770840377,
+          "empirical_sd_mcse": 0.0024306208836594296,
+          "model": {
+            "mean_se": 0.05482702035748446,
+            "mean_se_mcse": 0.00024753082161880336,
+            "difference": 0.00047414327344676155,
+            "difference_mcse_paired": 0.0023870484503177155,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05423200048131225,
+            "mean_se_mcse": 0.0003390553939262746,
+            "difference": -0.00012087660272545181,
+            "difference_mcse_paired": 0.002383201449342309,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "invburr": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.021725,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.17044932801926788,
+          "empirical_sd_mcse": 0.009296622978953641,
+          "model": {
+            "mean_se": 0.17080061154923362,
+            "mean_se_mcse": 0.0029246329142876963,
+            "difference": 0.00035128352996574574,
+            "difference_mcse_paired": 0.008161765792281457,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.16839554102706528,
+            "mean_se_mcse": 0.0029008416654183813,
+            "difference": -0.0020537869922025997,
+            "difference_mcse_paired": 0.00829666649712735,
+            "flag_2mcse": false
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.0660610024154093,
+          "empirical_sd_mcse": 0.003623644899558098,
+          "model": {
+            "mean_se": 0.06882489475766768,
+            "mean_se_mcse": 0.0004783885795092947,
+            "difference": 0.0027638923422583783,
+            "difference_mcse_paired": 0.003571721492160452,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06838297497491354,
+            "mean_se_mcse": 0.0005685022213070668,
+            "difference": 0.00232197255950424,
+            "difference_mcse_paired": 0.003562000314905529,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.24744698661658573,
+          "empirical_sd_mcse": 0.013081789318344101,
+          "model": {
+            "mean_se": 0.25875259503989434,
+            "mean_se_mcse": 0.003071374432943962,
+            "difference": 0.011305608423308605,
+            "difference_mcse_paired": 0.01306317362414491,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.2559285688003923,
+            "mean_se_mcse": 0.0032160707392474143,
+            "difference": 0.00848158218380654,
+            "difference_mcse_paired": 0.012933426050013377,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "invexp": {
+      "truth": {
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.00076,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "scale": {
+          "empirical_sd": 0.0414170819703514,
+          "empirical_sd_mcse": 0.0023167360691096098,
+          "model": {
+            "mean_se": 0.04469446833041145,
+            "mean_se_mcse": 0.00013097231302978474,
+            "difference": 0.0032773863600600514,
+            "difference_mcse_paired": 0.002300067639090136,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04440177327950625,
+            "mean_se_mcse": 0.00018943412964304374,
+            "difference": 0.002984691309154852,
+            "difference_mcse_paired": 0.002307672687211203,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "invgamma": {
+      "truth": {
+        "alpha": 1.0,
+        "beta": 1.0
+      },
+      "held": [],
+      "free": [
+        "alpha",
+        "beta"
+      ],
+      "probe_cpu_seconds": 0.002758,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "alpha": {
+          "empirical_sd": 0.05340475196823745,
+          "empirical_sd_mcse": 0.002883566654679924,
+          "model": {
+            "mean_se": 0.055947524025319655,
+            "mean_se_mcse": 0.00022901097350499426,
+            "difference": 0.0025427720570822057,
+            "difference_mcse_paired": 0.0028703069894759265,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05568843030400634,
+            "mean_se_mcse": 0.00030702111259475203,
+            "difference": 0.002283678335768889,
+            "difference_mcse_paired": 0.00285487183270934,
+            "flag_2mcse": false
+          }
+        },
+        "beta": {
+          "empirical_sd": 0.06871940472431379,
+          "empirical_sd_mcse": 0.003298919432282573,
+          "model": {
+            "mean_se": 0.07162309595717563,
+            "mean_se_mcse": 0.00032011153547034654,
+            "difference": 0.002903691232861841,
+            "difference_mcse_paired": 0.0032864768264069854,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07173216171175263,
+            "mean_se_mcse": 0.00044144640463289426,
+            "difference": 0.0030127569874388443,
+            "difference_mcse_paired": 0.00327867961603493,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "invgauss": {
+      "truth": {
+        "mean": 1.0,
+        "shape": 1.0
+      },
+      "held": [],
+      "free": [
+        "mean",
+        "shape"
+      ],
+      "probe_cpu_seconds": 0.002919,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.04300401212987121,
+          "empirical_sd_mcse": 0.0019939311469890234,
+          "model": {
+            "mean_se": 0.04476450953462427,
+            "mean_se_mcse": 0.00022709020218239796,
+            "difference": 0.0017604974047530572,
+            "difference_mcse_paired": 0.0020359564665633225,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04472035847291251,
+            "mean_se_mcse": 0.0002894819067433605,
+            "difference": 0.0017163463430412973,
+            "difference_mcse_paired": 0.002055874742341336,
+            "flag_2mcse": false
+          }
+        },
+        "shape": {
+          "empirical_sd": 0.06916471439312193,
+          "empirical_sd_mcse": 0.003166884162040925,
+          "model": {
+            "mean_se": 0.06331175182223853,
+            "mean_se_mcse": 0.00030931400695182945,
+            "difference": -0.005852962570883399,
+            "difference_mcse_paired": 0.003156314483369439,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06272099635908417,
+            "mean_se_mcse": 0.00037756003018348623,
+            "difference": -0.00644371803403776,
+            "difference_mcse_paired": 0.003195590125955789,
+            "flag_2mcse": true
+          }
+        }
+      }
+    },
+    "invparalogis": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.007082,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.028270890329786195,
+          "empirical_sd_mcse": 0.001349090442026756,
+          "model": {
+            "mean_se": 0.027423186808160915,
+            "mean_se_mcse": 6.070119053973298e-05,
+            "difference": -0.0008477035216252794,
+            "difference_mcse_paired": 0.001339486494434268,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.027470889304161337,
+            "mean_se_mcse": 0.00011024895269031037,
+            "difference": -0.000800001025624858,
+            "difference_mcse_paired": 0.001359305149183746,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.09174669046074457,
+          "empirical_sd_mcse": 0.004126132814255567,
+          "model": {
+            "mean_se": 0.08752887874616011,
+            "mean_se_mcse": 0.0007105315582757579,
+            "difference": -0.004217811714584463,
+            "difference_mcse_paired": 0.004233045945521456,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.08762097147569191,
+            "mean_se_mcse": 0.0007495011342878867,
+            "difference": -0.004125718985052665,
+            "difference_mcse_paired": 0.004246156739272327,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "invpareto": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.009736,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.09707188697477943,
+          "empirical_sd_mcse": 0.006517214042696117,
+          "model": {
+            "mean_se": 0.09170459053049425,
+            "mean_se_mcse": 0.0009521979742523449,
+            "difference": -0.005367296444285186,
+            "difference_mcse_paired": 0.006127722950489979,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.09131228960857084,
+            "mean_se_mcse": 0.0010524351796575573,
+            "difference": -0.005759597366208596,
+            "difference_mcse_paired": 0.006077938209731577,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.1542384930792874,
+          "empirical_sd_mcse": 0.0078065068214656155,
+          "model": {
+            "mean_se": 0.15489123979469815,
+            "mean_se_mcse": 0.0016172665562391028,
+            "difference": 0.000652746715410768,
+            "difference_mcse_paired": 0.007540473281395272,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.15460620209816534,
+            "mean_se_mcse": 0.001781541833920793,
+            "difference": 0.0003677090188779486,
+            "difference_mcse_paired": 0.0076072882943719455,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "invtrgamma": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.01412,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.2981003848293396,
+          "empirical_sd_mcse": 0.020847485333207384,
+          "model": {
+            "mean_se": 0.26150826998942855,
+            "mean_se_mcse": 0.007725566619167721,
+            "difference": -0.03659211483991104,
+            "difference_mcse_paired": 0.017137205334821524,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.2552978767231068,
+            "mean_se_mcse": 0.007559758068817849,
+            "difference": -0.04280250810623282,
+            "difference_mcse_paired": 0.016974967043812905,
+            "flag_2mcse": true
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.1659286317451758,
+          "empirical_sd_mcse": 0.008373953507698926,
+          "model": {
+            "mean_se": 0.1502805235844613,
+            "mean_se_mcse": 0.0014942205808570104,
+            "difference": -0.01564810816071449,
+            "difference_mcse_paired": 0.007861442181177758,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.14689762903585554,
+            "mean_se_mcse": 0.00148666041789157,
+            "difference": -0.01903100270932026,
+            "difference_mcse_paired": 0.007954417289728555,
+            "flag_2mcse": true
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.5393926008404938,
+          "empirical_sd_mcse": 0.09408288798004155,
+          "model": {
+            "mean_se": 0.43245213875186367,
+            "mean_se_mcse": 0.03550087837715371,
+            "difference": -0.10694046208863012,
+            "difference_mcse_paired": 0.06552161193614543,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.42448015466303185,
+            "mean_se_mcse": 0.03666094464829409,
+            "difference": -0.11491244617746194,
+            "difference_mcse_paired": 0.06337622298820615,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "invweibull": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.002415,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.033779129052843894,
+          "empirical_sd_mcse": 0.001700758487198648,
+          "model": {
+            "mean_se": 0.03507217216631693,
+            "mean_se_mcse": 8.841933239935809e-05,
+            "difference": 0.0012930431134730372,
+            "difference_mcse_paired": 0.001711236899634028,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0349074314598891,
+            "mean_se_mcse": 0.000144257135020484,
+            "difference": 0.0011283024070452077,
+            "difference_mcse_paired": 0.0017186525897087443,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.04803660895875844,
+          "empirical_sd_mcse": 0.0020353249638593992,
+          "model": {
+            "mean_se": 0.04687329044389337,
+            "mean_se_mcse": 0.0002228988001351896,
+            "difference": -0.0011633185148650707,
+            "difference_mcse_paired": 0.0020336071881302607,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04687906475610808,
+            "mean_se_mcse": 0.00022300410075365497,
+            "difference": -0.0011575442026503652,
+            "difference_mcse_paired": 0.002033893869596802,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "kumar": {
+      "truth": {
+        "a": 1.0,
+        "b": 1.0
+      },
+      "held": [],
+      "free": [
+        "a",
+        "b"
+      ],
+      "probe_cpu_seconds": 0.003105,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "a": {
+          "empirical_sd": 0.059399382668841545,
+          "empirical_sd_mcse": 0.003192997511605428,
+          "model": {
+            "mean_se": 0.058761222771136136,
+            "mean_se_mcse": 0.00020849881585242007,
+            "difference": -0.0006381598977054093,
+            "difference_mcse_paired": 0.0031550516599837194,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.058420980882968945,
+            "mean_se_mcse": 0.0002972220577932974,
+            "difference": -0.0009784017858726,
+            "difference_mcse_paired": 0.0031654471849074132,
+            "flag_2mcse": false
+          }
+        },
+        "b": {
+          "empirical_sd": 0.06409951227544582,
+          "empirical_sd_mcse": 0.003000188294801546,
+          "model": {
+            "mean_se": 0.05919370128319477,
+            "mean_se_mcse": 0.0003130231810878565,
+            "difference": -0.004905810992251049,
+            "difference_mcse_paired": 0.0029882857063474634,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05923589090887699,
+            "mean_se_mcse": 0.00039975889031200696,
+            "difference": -0.004863621366568829,
+            "difference_mcse_paired": 0.0030371771706610385,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "laplace": {
+      "truth": {
+        "mu": 0,
+        "sigma": 1.0
+      },
+      "held": [
+        "mu"
+      ],
+      "free": [
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.000426,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "sigma": {
+          "empirical_sd": 0.043880255061247514,
+          "empirical_sd_mcse": 0.002127993129935056,
+          "model": {
+            "mean_se": 0.04470624468788707,
+            "mean_se_mcse": 0.00013876155008410231,
+            "difference": 0.0008259896266395589,
+            "difference_mcse_paired": 0.002146833191564986,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04444662921843878,
+            "mean_se_mcse": 0.00019918374409698728,
+            "difference": 0.0005663741571912684,
+            "difference_mcse_paired": 0.0021508363126737573,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "lgamma": {
+      "truth": {
+        "shapelog": 1.0,
+        "ratelog": 1.0
+      },
+      "held": [],
+      "free": [
+        "shapelog",
+        "ratelog"
+      ],
+      "probe_cpu_seconds": 0.003725,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shapelog": {
+          "empirical_sd": 0.05828762344745921,
+          "empirical_sd_mcse": 0.003220331053474823,
+          "model": {
+            "mean_se": 0.0560355967710806,
+            "mean_se_mcse": 0.0002501110814260147,
+            "difference": -0.00225202667637861,
+            "difference_mcse_paired": 0.0031579191077573806,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.056054734561584454,
+            "mean_se_mcse": 0.00033717053120236066,
+            "difference": -0.002232888885874758,
+            "difference_mcse_paired": 0.0031700579578521322,
+            "flag_2mcse": false
+          }
+        },
+        "ratelog": {
+          "empirical_sd": 0.07195290264990692,
+          "empirical_sd_mcse": 0.0035204121697435514,
+          "model": {
+            "mean_se": 0.07175681968047594,
+            "mean_se_mcse": 0.0003335575107952962,
+            "difference": -0.00019608296943098014,
+            "difference_mcse_paired": 0.003491560149852176,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07156607711564507,
+            "mean_se_mcse": 0.0004705918175614776,
+            "difference": -0.0003868255342618504,
+            "difference_mcse_paired": 0.0034594935442292607,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "lgser": {
+      "truth": {
+        "theta": 0.5
+      },
+      "held": [],
+      "free": [
+        "theta"
+      ],
+      "probe_cpu_seconds": 0.000381,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "theta": {
+          "empirical_sd": 0.021458061542498474,
+          "empirical_sd_mcse": 0.0011566804688160624,
+          "model": {
+            "mean_se": 0.024904780776488094,
+            "mean_se_mcse": 2.644224049042963e-05,
+            "difference": 0.00344671923398962,
+            "difference_mcse_paired": 0.0011600509787773512,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.024727419335734094,
+            "mean_se_mcse": 9.636579979703545e-05,
+            "difference": 0.00326935779323562,
+            "difference_mcse_paired": 0.001169789888631656,
+            "flag_2mcse": true
+          }
+        }
+      }
+    },
+    "llogis": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.003663,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.03626204907673121,
+          "empirical_sd_mcse": 0.002145232325335423,
+          "model": {
+            "mean_se": 0.037450748548204266,
+            "mean_se_mcse": 9.732200358589395e-05,
+            "difference": 0.0011886994714730564,
+            "difference_mcse_paired": 0.002144152590890824,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.037548780352727525,
+            "mean_se_mcse": 0.00015309501241531548,
+            "difference": 0.0012867312759963154,
+            "difference_mcse_paired": 0.0021490368926649194,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.08268923934784789,
+          "empirical_sd_mcse": 0.004314186818590885,
+          "model": {
+            "mean_se": 0.07732495698140943,
+            "mean_se_mcse": 0.0004913237198859368,
+            "difference": -0.005364282366438461,
+            "difference_mcse_paired": 0.004268310295564161,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07734430351315572,
+            "mean_se_mcse": 0.0004997921680471707,
+            "difference": -0.005344935834692172,
+            "difference_mcse_paired": 0.004270493844023442,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "lnorm": {
+      "truth": {
+        "meanlog": 0.0,
+        "sdlog": 1.0
+      },
+      "held": [],
+      "free": [
+        "meanlog",
+        "sdlog"
+      ],
+      "probe_cpu_seconds": 0.001776,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "meanlog": {
+          "empirical_sd": 0.043814315343162206,
+          "empirical_sd_mcse": 0.0020263698335014394,
+          "model": {
+            "mean_se": 0.044558373515443485,
+            "mean_se_mcse": 9.861127958112296e-05,
+            "difference": 0.0007440581722812784,
+            "difference_mcse_paired": 0.0020326208467312773,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04455837351555261,
+            "mean_se_mcse": 9.861127953431827e-05,
+            "difference": 0.0007440581723904063,
+            "difference_mcse_paired": 0.0020326208465460817,
+            "flag_2mcse": false
+          }
+        },
+        "sdlog": {
+          "empirical_sd": 0.03118362466309144,
+          "empirical_sd_mcse": 0.001547545215578015,
+          "model": {
+            "mean_se": 0.03150752807327943,
+            "mean_se_mcse": 6.972870450127118e-05,
+            "difference": 0.0003239034101879916,
+            "difference_mcse_paired": 0.0015614492822937315,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.031572688038791666,
+            "mean_se_mcse": 0.00016114411904461545,
+            "difference": 0.0003890633757002264,
+            "difference_mcse_paired": 0.0015767454087212622,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "logis": {
+      "truth": {
+        "location": 0.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "location",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.001935,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "location": {
+          "empirical_sd": 0.08235852692135004,
+          "empirical_sd_mcse": 0.004064893838719754,
+          "model": {
+            "mean_se": 0.07749003626623044,
+            "mean_se_mcse": 0.00019116335886868114,
+            "difference": -0.0048684906551196006,
+            "difference_mcse_paired": 0.004070784957098354,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07755396858166388,
+            "mean_se_mcse": 0.0002079507447741889,
+            "difference": -0.004804558339686155,
+            "difference_mcse_paired": 0.004068337141171924,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.03455262725677879,
+          "empirical_sd_mcse": 0.0018407213407381675,
+          "model": {
+            "mean_se": 0.03740256716847456,
+            "mean_se_mcse": 9.131850282179795e-05,
+            "difference": 0.00284993991169577,
+            "difference_mcse_paired": 0.001845134845347579,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.037359041774331456,
+            "mean_se_mcse": 0.00014890088708636797,
+            "difference": 0.0028064145175526675,
+            "difference_mcse_paired": 0.0018489477061688776,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "logitnorm": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0
+      },
+      "held": [],
+      "free": [
+        "mu",
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.002358,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mu": {
+          "empirical_sd": 0.04424608339795226,
+          "empirical_sd_mcse": 0.0022719369429148786,
+          "model": {
+            "mean_se": 0.04467800090284113,
+            "mean_se_mcse": 0.00010403986320728515,
+            "difference": 0.0004319175048888707,
+            "difference_mcse_paired": 0.002279987714303793,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04467800090295119,
+            "mean_se_mcse": 0.0001040398631991359,
+            "difference": 0.0004319175049989285,
+            "difference_mcse_paired": 0.002279987714369183,
+            "flag_2mcse": false
+          }
+        },
+        "sigma": {
+          "empirical_sd": 0.03290029352035538,
+          "empirical_sd_mcse": 0.001535355911198906,
+          "model": {
+            "mean_se": 0.03159211740917098,
+            "mean_se_mcse": 7.356729279904306e-05,
+            "difference": -0.0013081761111844031,
+            "difference_mcse_paired": 0.0015465890048148808,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.031225949932441745,
+            "mean_se_mcse": 0.0001336942704535337,
+            "difference": -0.0016743435879136362,
+            "difference_mcse_paired": 0.0015394298075593193,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "lomax": {
+      "truth": {
+        "lambda": 1.0,
+        "kappa": 1.0
+      },
+      "held": [],
+      "free": [
+        "lambda",
+        "kappa"
+      ],
+      "probe_cpu_seconds": 0.007574,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "lambda": {
+          "empirical_sd": 0.15133141195235916,
+          "empirical_sd_mcse": 0.007043379584400643,
+          "model": {
+            "mean_se": 0.15699968654914584,
+            "mean_se_mcse": 0.001620535842915124,
+            "difference": 0.0056682745967866766,
+            "difference_mcse_paired": 0.006849699334060571,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.15697784921462138,
+            "mean_se_mcse": 0.001796107148736453,
+            "difference": 0.005646437262262216,
+            "difference_mcse_paired": 0.006863180622253402,
+            "flag_2mcse": false
+          }
+        },
+        "kappa": {
+          "empirical_sd": 0.09323148940447504,
+          "empirical_sd_mcse": 0.0046289333858952845,
+          "model": {
+            "mean_se": 0.09066196042637366,
+            "mean_se_mcse": 0.0008954500221304223,
+            "difference": -0.002569528978101379,
+            "difference_mcse_paired": 0.004345288922538414,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.09022109298430157,
+            "mean_se_mcse": 0.000978988375280751,
+            "difference": -0.003010396420173464,
+            "difference_mcse_paired": 0.004394166083098235,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "lst": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0,
+        "df": 5.0
+      },
+      "held": [],
+      "free": [
+        "mu",
+        "sigma",
+        "df"
+      ],
+      "probe_cpu_seconds": 0.018295,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mu": {
+          "empirical_sd": 0.05199044672800413,
+          "empirical_sd_mcse": 0.0023976861144703486,
+          "model": {
+            "mean_se": 0.051656376607154185,
+            "mean_se_mcse": 0.00014780782405408066,
+            "difference": -0.0003340701208499469,
+            "difference_mcse_paired": 0.0024161322872451488,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05183180968818829,
+            "mean_se_mcse": 0.000153763786686782,
+            "difference": -0.00015863703981584126,
+            "difference_mcse_paired": 0.002416506448189671,
+            "flag_2mcse": false
+          }
+        },
+        "sigma": {
+          "empirical_sd": 0.0512121457845969,
+          "empirical_sd_mcse": 0.0029930271901931005,
+          "model": {
+            "mean_se": 0.05464771837280266,
+            "mean_se_mcse": 0.00021453695053034617,
+            "difference": 0.0034355725882057597,
+            "difference_mcse_paired": 0.0029830919873972974,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.054518427969838995,
+            "mean_se_mcse": 0.00030372052565727975,
+            "difference": 0.003306282185242093,
+            "difference_mcse_paired": 0.0029968999119370254,
+            "flag_2mcse": false
+          }
+        },
+        "df": {
+          "empirical_sd": 1.4478450942267926,
+          "empirical_sd_mcse": 0.17863932805062294,
+          "model": {
+            "mean_se": 1.3515794243681813,
+            "mean_se_mcse": 0.05769718884058494,
+            "difference": -0.09626566985861129,
+            "difference_mcse_paired": 0.13669326349282276,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 1.326883373526624,
+            "mean_se_mcse": 0.0586820072710965,
+            "difference": -0.12096172070016853,
+            "difference_mcse_paired": 0.13384179268724705,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "naka": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.003333,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.05424981249412642,
+          "empirical_sd_mcse": 0.00259561242388106,
+          "model": {
+            "mean_se": 0.05638886841456171,
+            "mean_se_mcse": 0.00023285289959959512,
+            "difference": 0.0021390559204352913,
+            "difference_mcse_paired": 0.002534065022057266,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05574880554308133,
+            "mean_se_mcse": 0.0003020347809396211,
+            "difference": 0.0014989930489549066,
+            "difference_mcse_paired": 0.002530225944563899,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.04362091496888421,
+          "empirical_sd_mcse": 0.0021987739343400843,
+          "model": {
+            "mean_se": 0.044559592229519385,
+            "mean_se_mcse": 0.00016710080773845996,
+            "difference": 0.000938677260635172,
+            "difference_mcse_paired": 0.002245964258396349,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04447312995355081,
+            "mean_se_mcse": 0.00018581629223931385,
+            "difference": 0.0008522149846665952,
+            "difference_mcse_paired": 0.0022505011404891457,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "nbinom": {
+      "truth": {
+        "size": 1.0,
+        "prob": 0.5
+      },
+      "held": [],
+      "free": [
+        "size",
+        "prob"
+      ],
+      "probe_cpu_seconds": 0.005647,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "size": {
+          "empirical_sd": 0.1719935354661875,
+          "empirical_sd_mcse": 0.0102047021293052,
+          "model": {
+            "mean_se": 0.1661359817414747,
+            "mean_se_mcse": 0.002881518327615863,
+            "difference": -0.005857553724712805,
+            "difference_mcse_paired": 0.009036601289084754,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.16483314201755522,
+            "mean_se_mcse": 0.002908014775782854,
+            "difference": -0.007160393448632285,
+            "difference_mcse_paired": 0.009139779152870805,
+            "flag_2mcse": false
+          }
+        },
+        "prob": {
+          "empirical_sd": 0.04354737106324392,
+          "empirical_sd_mcse": 0.0020322212672637735,
+          "model": {
+            "mean_se": 0.0423609826032637,
+            "mean_se_mcse": 0.00017690420686117446,
+            "difference": -0.0011863884599802171,
+            "difference_mcse_paired": 0.0020138097049600726,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04189496453552175,
+            "mean_se_mcse": 0.00027539193273303186,
+            "difference": -0.0016524065277221667,
+            "difference_mcse_paired": 0.002030747567339189,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "norm": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0
+      },
+      "held": [],
+      "free": [
+        "mean",
+        "sd"
+      ],
+      "probe_cpu_seconds": 9.4e-05,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.04382802453338589,
+          "empirical_sd_mcse": 0.0022637210523546725,
+          "model": {
+            "mean_se": 0.04477299852528568,
+            "mean_se_mcse": 9.102094738485804e-05,
+            "difference": 0.0009449739918997863,
+            "difference_mcse_paired": 0.0022769309081254545,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.044772998525285684,
+            "mean_se_mcse": 9.102094738485852e-05,
+            "difference": 0.0009449739918997932,
+            "difference_mcse_paired": 0.002276930908125454,
+            "flag_2mcse": false
+          }
+        },
+        "sd": {
+          "empirical_sd": 0.028783350852249617,
+          "empirical_sd_mcse": 0.001551783065980409,
+          "model": {
+            "mean_se": 0.03165929087128479,
+            "mean_se_mcse": 6.43615291258568e-05,
+            "difference": 0.0028759400190351697,
+            "difference_mcse_paired": 0.0015472200419296288,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.03157391318067935,
+            "mean_se_mcse": 0.0001287871209544987,
+            "difference": 0.0027905623284297312,
+            "difference_mcse_paired": 0.0015565917017393567,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "nsbeta": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "held": [
+        "min",
+        "max"
+      ],
+      "free": [
+        "shape1",
+        "shape2"
+      ],
+      "probe_cpu_seconds": 0.005736,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.05906141256085452,
+          "empirical_sd_mcse": 0.0025864708210678014,
+          "model": {
+            "mean_se": 0.05900788840214484,
+            "mean_se_mcse": 0.0002621490749929165,
+            "difference": -5.352415870968352e-05,
+            "difference_mcse_paired": 0.0025529796345977293,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05881764633885301,
+            "mean_se_mcse": 0.0003462803372835172,
+            "difference": -0.00024376622200151382,
+            "difference_mcse_paired": 0.002553231997429055,
+            "flag_2mcse": false
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.05680870952611515,
+          "empirical_sd_mcse": 0.002465145181034675,
+          "model": {
+            "mean_se": 0.05892240026078816,
+            "mean_se_mcse": 0.000251314042051854,
+            "difference": 0.0021136907346730113,
+            "difference_mcse_paired": 0.002446940091387113,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05865211634209065,
+            "mean_se_mcse": 0.0003431232077822223,
+            "difference": 0.0018434068159755013,
+            "difference_mcse_paired": 0.0024470866943383496,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "paralogis": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.007076,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.026485849496730576,
+          "empirical_sd_mcse": 0.0013375508046314546,
+          "model": {
+            "mean_se": 0.027334400909004252,
+            "mean_se_mcse": 5.87487752758421e-05,
+            "difference": 0.0008485514122736765,
+            "difference_mcse_paired": 0.0013266059043259373,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.02731370141823812,
+            "mean_se_mcse": 0.00011680197026709271,
+            "difference": 0.0008278519215075449,
+            "difference_mcse_paired": 0.0013320786088274652,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.09806160268687265,
+          "empirical_sd_mcse": 0.004775668325822492,
+          "model": {
+            "mean_se": 0.08810477012643246,
+            "mean_se_mcse": 0.0005318750602474213,
+            "difference": -0.009956832560440193,
+            "difference_mcse_paired": 0.0047866340187283415,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.08787730745868283,
+            "mean_se_mcse": 0.000567863163915085,
+            "difference": -0.010184295228189824,
+            "difference_mcse_paired": 0.004797103039597845,
+            "flag_2mcse": true
+          }
+        }
+      }
+    },
+    "pareto": {
+      "truth": {
+        "a": 1.0,
+        "b": 1.0
+      },
+      "held": [
+        "b"
+      ],
+      "free": [
+        "a"
+      ],
+      "probe_cpu_seconds": 0.000827,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "a": {
+          "empirical_sd": 0.04115466260438025,
+          "empirical_sd_mcse": 0.001990416223418398,
+          "model": {
+            "mean_se": 0.04481778656504301,
+            "mean_se_mcse": 0.00013014247022720968,
+            "difference": 0.003663123960662762,
+            "difference_mcse_paired": 0.001997760938641915,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04468221431224615,
+            "mean_se_mcse": 0.00019670767103666066,
+            "difference": 0.0035275517078659016,
+            "difference_mcse_paired": 0.002005886489004228,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "pareto2": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0,
+        "min": 0.0
+      },
+      "held": [
+        "min"
+      ],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.009795,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.10100321318501689,
+          "empirical_sd_mcse": 0.006483725173144674,
+          "model": {
+            "mean_se": 0.09225439878240327,
+            "mean_se_mcse": 0.001018002659600587,
+            "difference": -0.008748814402613617,
+            "difference_mcse_paired": 0.0062026490514699535,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0920969599650419,
+            "mean_se_mcse": 0.0010149554131152747,
+            "difference": -0.008906253219974986,
+            "difference_mcse_paired": 0.006276054873641126,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.16465360791202643,
+          "empirical_sd_mcse": 0.008478490423319416,
+          "model": {
+            "mean_se": 0.16178566367270536,
+            "mean_se_mcse": 0.002063651059054391,
+            "difference": -0.002867944239321074,
+            "difference_mcse_paired": 0.007975152285388297,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.1614894301520367,
+            "mean_se_mcse": 0.002086402195813771,
+            "difference": -0.003164177759989728,
+            "difference_mcse_paired": 0.00804322667872124,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "pareto3": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0,
+        "min": 0.0
+      },
+      "held": [
+        "min"
+      ],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.006091,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.03929081078896326,
+          "empirical_sd_mcse": 0.0018726344327471204,
+          "model": {
+            "mean_se": 0.03751867981787527,
+            "mean_se_mcse": 0.00010332086345567504,
+            "difference": -0.0017721309710879915,
+            "difference_mcse_paired": 0.0018712791588571807,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.037583352292185845,
+            "mean_se_mcse": 0.00014612749067556896,
+            "difference": -0.0017074584967774128,
+            "difference_mcse_paired": 0.0018781447645662885,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.07897832257165328,
+          "empirical_sd_mcse": 0.0039265737849076355,
+          "model": {
+            "mean_se": 0.07752353982149388,
+            "mean_se_mcse": 0.000505875557173915,
+            "difference": -0.0014547827501594085,
+            "difference_mcse_paired": 0.0038231910177783522,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07751785988649665,
+            "mean_se_mcse": 0.0005117643198926828,
+            "difference": -0.0014604626851566355,
+            "difference_mcse_paired": 0.0038215657392422888,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "pareto4": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 1.0,
+        "scale": 1.0,
+        "min": 0.0
+      },
+      "held": [
+        "min"
+      ],
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.03012,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.1636962100892168,
+          "empirical_sd_mcse": 0.007992803243412887,
+          "model": {
+            "mean_se": 0.17416341676199917,
+            "mean_se_mcse": 0.0029092582541652774,
+            "difference": 0.010467206672782364,
+            "difference_mcse_paired": 0.007560551262574395,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.17208283259727844,
+            "mean_se_mcse": 0.002838888880003835,
+            "difference": 0.00838662250806163,
+            "difference_mcse_paired": 0.007651595292289438,
+            "flag_2mcse": false
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.07054436123358022,
+          "empirical_sd_mcse": 0.0035212254084692786,
+          "model": {
+            "mean_se": 0.0683253776249033,
+            "mean_se_mcse": 0.0004889507418313133,
+            "difference": -0.002218983608676922,
+            "difference_mcse_paired": 0.003353523955450712,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.06805564113075499,
+            "mean_se_mcse": 0.0005499551982782479,
+            "difference": -0.0024887201028252343,
+            "difference_mcse_paired": 0.0033530651470913978,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.2795718072001514,
+          "empirical_sd_mcse": 0.016271430126911863,
+          "model": {
+            "mean_se": 0.28956675990088815,
+            "mean_se_mcse": 0.007816781602048711,
+            "difference": 0.009994952700736748,
+            "difference_mcse_paired": 0.014003465938596514,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.28720931804359134,
+            "mean_se_mcse": 0.0077553585364364625,
+            "difference": 0.007637510843439943,
+            "difference_mcse_paired": 0.014056381056469459,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "pois": {
+      "truth": {
+        "lambda": 1.0
+      },
+      "held": [],
+      "free": [
+        "lambda"
+      ],
+      "probe_cpu_seconds": 0.000134,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "lambda": {
+          "empirical_sd": 0.04383933091042071,
+          "empirical_sd_mcse": 0.002072973700992647,
+          "model": {
+            "mean_se": 0.0447229536458231,
+            "mean_se_mcse": 6.936239381806357e-05,
+            "difference": 0.0008836227354023923,
+            "difference_mcse_paired": 0.0020810796251667218,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04480991037528926,
+            "mean_se_mcse": 0.00011401252154070162,
+            "difference": 0.0009705794648685526,
+            "difference_mcse_paired": 0.00208618953723843,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "power": {
+      "truth": {
+        "alpha": 1.0,
+        "beta": 1.0
+      },
+      "held": [
+        "alpha"
+      ],
+      "free": [
+        "beta"
+      ],
+      "probe_cpu_seconds": 0.000601,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "beta": {
+          "empirical_sd": 0.04466413159437325,
+          "empirical_sd_mcse": 0.0024144184826422324,
+          "model": {
+            "mean_se": 0.044660769394401716,
+            "mean_se_mcse": 0.00014124038555261804,
+            "difference": -3.362199971532198e-06,
+            "difference_mcse_paired": 0.0023838698189477176,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04468087783910664,
+            "mean_se_mcse": 0.00021806379718005263,
+            "difference": 1.6746244733391313e-05,
+            "difference_mcse_paired": 0.00238133333847821,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "rayleigh": {
+      "truth": {
+        "sigma": 1.0
+      },
+      "held": [],
+      "free": [
+        "sigma"
+      ],
+      "probe_cpu_seconds": 0.001002,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "sigma": {
+          "empirical_sd": 0.022895885057590888,
+          "empirical_sd_mcse": 0.0011349019305232162,
+          "model": {
+            "mean_se": 0.02235830581861405,
+            "mean_se_mcse": 3.620157294245108e-05,
+            "difference": -0.0005375792389768382,
+            "difference_mcse_paired": 0.0011371436152083575,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.022204656876280877,
+            "mean_se_mcse": 8.263811494325328e-05,
+            "difference": -0.0006912281813100107,
+            "difference_mcse_paired": 0.0011344700782741101,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "sged": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0,
+        "nu": 3,
+        "xi": 1.0
+      },
+      "held": [],
+      "free": [
+        "mean",
+        "sd",
+        "nu",
+        "xi"
+      ],
+      "probe_cpu_seconds": 0.398476,
+      "status": "skipped_slow",
+      "reason": "one n=500 sampling, fit and inference probe exceeded 0.25 CPU seconds"
+    },
+    "sgomp": {
+      "truth": {
+        "b": 1.0,
+        "eta": 1
+      },
+      "held": [],
+      "free": [
+        "b",
+        "eta"
+      ],
+      "probe_cpu_seconds": 0.021134,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "b": {
+          "empirical_sd": 0.053351125453425303,
+          "empirical_sd_mcse": 0.002709986050220955,
+          "model": {
+            "mean_se": 0.05554436397053668,
+            "mean_se_mcse": 0.00015684342052652383,
+            "difference": 0.0021932385171113747,
+            "difference_mcse_paired": 0.0027161429972214473,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05500885324134058,
+            "mean_se_mcse": 0.00029406781413321876,
+            "difference": 0.0016577277879152794,
+            "difference_mcse_paired": 0.002758806177072201,
+            "flag_2mcse": false
+          }
+        },
+        "eta": {
+          "empirical_sd": 0.18142640140215588,
+          "empirical_sd_mcse": 0.009041025276920195,
+          "model": {
+            "mean_se": 0.18103329734289372,
+            "mean_se_mcse": 0.0005715956726169018,
+            "difference": -0.00039310405926215597,
+            "difference_mcse_paired": 0.008914026768531196,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.18035939200884407,
+            "mean_se_mcse": 0.000701098717616836,
+            "difference": -0.0010670093933118074,
+            "difference_mcse_paired": 0.00890951620609032,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "skellam": {
+      "truth": {
+        "mu1": 1.0,
+        "mu2": 1.0
+      },
+      "held": [],
+      "free": [
+        "mu1",
+        "mu2"
+      ],
+      "probe_cpu_seconds": 0.029208,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mu1": {
+          "empirical_sd": 0.07884196637139336,
+          "empirical_sd_mcse": 0.003856516720051742,
+          "model": {
+            "mean_se": 0.0745102773141309,
+            "mean_se_mcse": 0.0003191021762461445,
+            "difference": -0.004331689057262458,
+            "difference_mcse_paired": 0.003830804115369854,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07422263770609383,
+            "mean_se_mcse": 0.00041284724336403204,
+            "difference": -0.00461932866529953,
+            "difference_mcse_paired": 0.0038496199475109975,
+            "flag_2mcse": false
+          }
+        },
+        "mu2": {
+          "empirical_sd": 0.06910104184594383,
+          "empirical_sd_mcse": 0.003128836143689871,
+          "model": {
+            "mean_se": 0.07444678227279383,
+            "mean_se_mcse": 0.00030835476367948743,
+            "difference": 0.005345740426850001,
+            "difference_mcse_paired": 0.003125313011959563,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.07431836361617482,
+            "mean_se_mcse": 0.00040090391050323767,
+            "difference": 0.005217321770230987,
+            "difference_mcse_paired": 0.0031466590255257044,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "slash": {
+      "truth": {
+        "mu": 0.0,
+        "sigma": 1.0
+      },
+      "held": [],
+      "free": [
+        "mu",
+        "sigma"
+      ],
+      "probe_cpu_seconds": 1.147811,
+      "status": "skipped_slow",
+      "reason": "one n=500 sampling, fit and inference probe exceeded 0.25 CPU seconds"
+    },
+    "sn": {
+      "truth": {
+        "xi": 0.0,
+        "omega": 1.0,
+        "alpha": 0.5
+      },
+      "held": [],
+      "free": [
+        "xi",
+        "omega",
+        "alpha"
+      ],
+      "probe_cpu_seconds": 0.274273,
+      "status": "skipped_slow",
+      "reason": "one n=500 sampling, fit and inference probe exceeded 0.25 CPU seconds"
+    },
+    "snorm": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0,
+        "xi": 1
+      },
+      "held": [
+        "xi"
+      ],
+      "free": [
+        "mean",
+        "sd"
+      ],
+      "probe_cpu_seconds": 0.002724,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.045866076316409626,
+          "empirical_sd_mcse": 0.0024088509439764197,
+          "model": {
+            "mean_se": 0.044636499588828794,
+            "mean_se_mcse": 9.008207917748194e-05,
+            "difference": -0.001229576727580832,
+            "difference_mcse_paired": 0.0024166318075491394,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04463649959082777,
+            "mean_se_mcse": 9.008207931864087e-05,
+            "difference": -0.0012295767255818546,
+            "difference_mcse_paired": 0.0024166318075199453,
+            "flag_2mcse": false
+          }
+        },
+        "sd": {
+          "empirical_sd": 0.028486454612105905,
+          "empirical_sd_mcse": 0.001447193713758257,
+          "model": {
+            "mean_se": 0.0315627715493778,
+            "mean_se_mcse": 6.369764903988089e-05,
+            "difference": 0.003076316937271891,
+            "difference_mcse_paired": 0.0014539497654252518,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.03129300465469958,
+            "mean_se_mcse": 0.00013081492505139373,
+            "difference": 0.002806550042593673,
+            "difference_mcse_paired": 0.0014596229293577384,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "sstd": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0,
+        "nu": 5.0,
+        "xi": 1
+      },
+      "held": [
+        "xi"
+      ],
+      "free": [
+        "mean",
+        "sd",
+        "nu"
+      ],
+      "probe_cpu_seconds": 0.035446,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.038822323997572544,
+          "empirical_sd_mcse": 0.0019209039677259945,
+          "model": {
+            "mean_se": 0.03989512381693603,
+            "mean_se_mcse": 0.00010671707267777486,
+            "difference": 0.001072799819363486,
+            "difference_mcse_paired": 0.001919157590733927,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.040010137920338,
+            "mean_se_mcse": 0.00010846734287893155,
+            "difference": 0.0011878139227654572,
+            "difference_mcse_paired": 0.00192320618801158,
+            "flag_2mcse": false
+          }
+        },
+        "sd": {
+          "empirical_sd": 0.056622814202512674,
+          "empirical_sd_mcse": 0.0034258708238031448,
+          "model": {
+            "mean_se": 0.05618820514683602,
+            "mean_se_mcse": 0.0011016211695901495,
+            "difference": -0.00043460905567665326,
+            "difference_mcse_paired": 0.00306672008330905,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.055262429698106554,
+            "mean_se_mcse": 0.0011824501193199916,
+            "difference": -0.0013603845044061202,
+            "difference_mcse_paired": 0.0030133082353504034,
+            "flag_2mcse": false
+          }
+        },
+        "nu": {
+          "empirical_sd": 2.167175703263064,
+          "empirical_sd_mcse": 0.4059346797916248,
+          "model": {
+            "mean_se": 1.551351801008187,
+            "mean_se_mcse": 0.12718642202564764,
+            "difference": -0.615823902254877,
+            "difference_mcse_paired": 0.29361050926744103,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 1.4669455555308684,
+            "mean_se_mcse": 0.11183734561060797,
+            "difference": -0.7002301477321957,
+            "difference_mcse_paired": 0.3060271783035688,
+            "flag_2mcse": true
+          }
+        }
+      }
+    },
+    "std": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0,
+        "nu": 5.0
+      },
+      "held": [],
+      "free": [
+        "mean",
+        "sd",
+        "nu"
+      ],
+      "probe_cpu_seconds": 0.007566,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.03836386678248955,
+          "empirical_sd_mcse": 0.0019813189334046064,
+          "model": {
+            "mean_se": 0.04005651070291754,
+            "mean_se_mcse": 0.00010528917825358054,
+            "difference": 0.0016926439204279914,
+            "difference_mcse_paired": 0.0019785172878478913,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04019418391367752,
+            "mean_se_mcse": 0.00010678680895352307,
+            "difference": 0.0018303171311879682,
+            "difference_mcse_paired": 0.0019800139666656335,
+            "flag_2mcse": false
+          }
+        },
+        "sd": {
+          "empirical_sd": 0.052606538666333184,
+          "empirical_sd_mcse": 0.0031259946605156435,
+          "model": {
+            "mean_se": 0.05597654009088377,
+            "mean_se_mcse": 0.0009595322102019917,
+            "difference": 0.0033700014245505866,
+            "difference_mcse_paired": 0.003029116618632805,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05481832776953059,
+            "mean_se_mcse": 0.0009743471888785688,
+            "difference": 0.0022117891031974077,
+            "difference_mcse_paired": 0.0030532729761504306,
+            "flag_2mcse": false
+          }
+        },
+        "nu": {
+          "empirical_sd": 1.6733114502151054,
+          "empirical_sd_mcse": 0.2588245463609696,
+          "model": {
+            "mean_se": 1.4236869452075165,
+            "mean_se_mcse": 0.08210842526693757,
+            "difference": -0.24962450500758893,
+            "difference_mcse_paired": 0.18989403286490286,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 1.3642974675859934,
+            "mean_se_mcse": 0.0740355826834088,
+            "difference": -0.30901398262911206,
+            "difference_mcse_paired": 0.1976894543059588,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "tbinom": {
+      "truth": {
+        "prob": 0.5,
+        "a": 0.0,
+        "b": 10.0,
+        "size": 10.0
+      },
+      "held": [
+        "a",
+        "b",
+        "size"
+      ],
+      "free": [
+        "prob"
+      ],
+      "probe_cpu_seconds": 0.005559,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.006578766626690475,
+          "empirical_sd_mcse": 0.0003014487225058134,
+          "model": {
+            "mean_se": 0.007102251443736446,
+            "mean_se_mcse": 2.2839853335848947e-07,
+            "difference": 0.0005234848170459711,
+            "difference_mcse_paired": 0.000302248302026065,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.007108795721737011,
+            "mean_se_mcse": 1.3572902377077712e-05,
+            "difference": 0.0005300290950465353,
+            "difference_mcse_paired": 0.0003024976593113022,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "tnorm": {
+      "truth": {
+        "mean": 0.0,
+        "sd": 1.0,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "held": [
+        "a",
+        "b"
+      ],
+      "free": [
+        "mean",
+        "sd"
+      ],
+      "probe_cpu_seconds": 0.022502,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "mean": {
+          "empirical_sd": 0.045795672876393176,
+          "empirical_sd_mcse": 0.0022970946406096217,
+          "model": {
+            "mean_se": 0.04472565886401036,
+            "mean_se_mcse": 9.905940752950782e-05,
+            "difference": -0.001070014012382818,
+            "difference_mcse_paired": 0.0023008167150373056,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.044725658863443644,
+            "mean_se_mcse": 9.905940754109292e-05,
+            "difference": -0.0010700140129495314,
+            "difference_mcse_paired": 0.0023008167150614612,
+            "flag_2mcse": false
+          }
+        },
+        "sd": {
+          "empirical_sd": 0.0313253351394974,
+          "empirical_sd_mcse": 0.0014672253279965047,
+          "model": {
+            "mean_se": 0.031625816676636394,
+            "mean_se_mcse": 7.004557877258786e-05,
+            "difference": 0.0003004815371389913,
+            "difference_mcse_paired": 0.0014543466895618438,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.03135972424734208,
+            "mean_se_mcse": 0.0001405149817290724,
+            "difference": 3.4389107844680356e-05,
+            "difference_mcse_paired": 0.0014611227933582134,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "tpois": {
+      "truth": {
+        "lambda": 1.0,
+        "a": 0.0,
+        "b": 10.0
+      },
+      "held": [
+        "a",
+        "b"
+      ],
+      "free": [
+        "lambda"
+      ],
+      "probe_cpu_seconds": 0.003633,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "lambda": {
+          "empirical_sd": 0.05312328918923218,
+          "empirical_sd_mcse": 0.003019548266064068,
+          "model": {
+            "mean_se": 0.05491118035207804,
+            "mean_se_mcse": 7.976400057142132e-05,
+            "difference": 0.0017878911628458546,
+            "difference_mcse_paired": 0.0030203147388977183,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.054910841389471596,
+            "mean_se_mcse": 0.00015071599252949823,
+            "difference": 0.0017875522002394131,
+            "difference_mcse_paired": 0.003027875569857327,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "trgamma": {
+      "truth": {
+        "shape1": 1.0,
+        "shape2": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape1",
+        "shape2",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.007159,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape1": {
+          "empirical_sd": 0.2573809598306409,
+          "empirical_sd_mcse": 0.016853123230388792,
+          "model": {
+            "mean_se": 0.25248839213405094,
+            "mean_se_mcse": 0.0063006711665433935,
+            "difference": -0.004892567696589967,
+            "difference_mcse_paired": 0.014390848222472646,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.2463623178013244,
+            "mean_se_mcse": 0.005985997341939198,
+            "difference": -0.011018642029316517,
+            "difference_mcse_paired": 0.014561235342372707,
+            "flag_2mcse": false
+          }
+        },
+        "shape2": {
+          "empirical_sd": 0.15824172749346163,
+          "empirical_sd_mcse": 0.011788992790551482,
+          "model": {
+            "mean_se": 0.14857272494646456,
+            "mean_se_mcse": 0.0014928661805195288,
+            "difference": -0.009669002546997069,
+            "difference_mcse_paired": 0.011057205545809653,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.1445605950159746,
+            "mean_se_mcse": 0.0015333434988793657,
+            "difference": -0.013681132477487035,
+            "difference_mcse_paired": 0.011133879684104519,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.28807440444260696,
+          "empirical_sd_mcse": 0.014159642850096377,
+          "model": {
+            "mean_se": 0.28964634169511955,
+            "mean_se_mcse": 0.0016552761585243306,
+            "difference": 0.0015719372525125896,
+            "difference_mcse_paired": 0.014913737203633934,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.28434085312583934,
+            "mean_se_mcse": 0.0019625742209066484,
+            "difference": -0.0037335513167676138,
+            "difference_mcse_paired": 0.015016249247388426,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "weibull": {
+      "truth": {
+        "shape": 1.0,
+        "scale": 1.0
+      },
+      "held": [],
+      "free": [
+        "shape",
+        "scale"
+      ],
+      "probe_cpu_seconds": 0.002592,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "shape": {
+          "empirical_sd": 0.033233927509910895,
+          "empirical_sd_mcse": 0.0018161508598547418,
+          "model": {
+            "mean_se": 0.03493813251594956,
+            "mean_se_mcse": 8.709472374140185e-05,
+            "difference": 0.001704205006038663,
+            "difference_mcse_paired": 0.0018001768610134627,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.034730946835578695,
+            "mean_se_mcse": 0.00014612711342408942,
+            "difference": 0.0014970193256678005,
+            "difference_mcse_paired": 0.001792038304783085,
+            "flag_2mcse": false
+          }
+        },
+        "scale": {
+          "empirical_sd": 0.05016336273312648,
+          "empirical_sd_mcse": 0.002719680740409879,
+          "model": {
+            "mean_se": 0.046979488950400376,
+            "mean_se_mcse": 0.00015116288059295856,
+            "difference": -0.003183873782726103,
+            "difference_mcse_paired": 0.002705218374257599,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04697868533675435,
+            "mean_se_mcse": 0.0001513007689185113,
+            "difference": -0.0031846773963721264,
+            "difference_mcse_paired": 0.002704948172766757,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "yulesimon": {
+      "truth": {
+        "rho": 1.0
+      },
+      "held": [],
+      "free": [
+        "rho"
+      ],
+      "probe_cpu_seconds": 0.002404,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "rho": {
+          "empirical_sd": 0.05281522321638836,
+          "empirical_sd_mcse": 0.0028079450146000586,
+          "model": {
+            "mean_se": 0.05646157567814832,
+            "mean_se_mcse": 0.00026176840668812264,
+            "difference": 0.003646352461759962,
+            "difference_mcse_paired": 0.002738262046256323,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05619319951334509,
+            "mean_se_mcse": 0.0003121078195143193,
+            "difference": 0.003377976296956728,
+            "difference_mcse_paired": 0.0027441652738695687,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zeta": {
+      "truth": {
+        "s": 2.0
+      },
+      "held": [],
+      "free": [
+        "s"
+      ],
+      "probe_cpu_seconds": 0.020531,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "s": {
+          "empirical_sd": 0.050341288105236956,
+          "empirical_sd_mcse": 0.0023997036130059403,
+          "model": {
+            "mean_se": 0.047567490719812304,
+            "mean_se_mcse": 0.00018669482294799184,
+            "difference": -0.002773797385424652,
+            "difference_mcse_paired": 0.0024055710028638307,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.04743626925956669,
+            "mean_se_mcse": 0.0002549699861100306,
+            "difference": -0.0029050188456702652,
+            "difference_mcse_paired": 0.0024223380031600256,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zib": {
+      "truth": {
+        "size": 10.0,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "held": [
+        "size"
+      ],
+      "free": [
+        "prob",
+        "pi"
+      ],
+      "probe_cpu_seconds": 0.006423,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.011333613601455239,
+          "empirical_sd_mcse": 0.0005440288487869689,
+          "model": {
+            "mean_se": 0.010030994904436904,
+            "mean_se_mcse": 1.5809151436653813e-05,
+            "difference": -0.0013026186970183356,
+            "difference_mcse_paired": 0.0005453456640641863,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.009979877438079645,
+            "mean_se_mcse": 3.157453095609795e-05,
+            "difference": -0.0013537361633755938,
+            "difference_mcse_paired": 0.0005432193814568028,
+            "flag_2mcse": true
+          }
+        },
+        "pi": {
+          "empirical_sd": 0.022341172363932505,
+          "empirical_sd_mcse": 0.001112226070610177,
+          "model": {
+            "mean_se": 0.02236100375874211,
+            "mean_se_mcse": 2.317615094670155e-06,
+            "difference": 1.983139480960655e-05,
+            "difference_mcse_paired": 0.0011172658338702557,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.022361001547822897,
+            "mean_se_mcse": 2.3176321737011935e-06,
+            "difference": 1.9829183890391483e-05,
+            "difference_mcse_paired": 0.00111726589274113,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zinb": {
+      "truth": {
+        "size": 1.0,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "held": [],
+      "free": [
+        "size",
+        "prob",
+        "pi"
+      ],
+      "probe_cpu_seconds": 0.012189,
+      "status": "complete",
+      "replications": 200,
+      "successes": 175,
+      "failures": [
+        "2 inference_failure 0.00083199999999999995 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "28 inference_failure 0.00072599999999999997 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "31 inference_failure 0.00071299999999999998 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "34 inference_failure 0.00067599999999999995 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "44 inference_failure 0.00036200000000000002 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "64 inference_failure 0.00062399999999999999 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "67 inference_failure 0.00066100000000000002 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "68 inference_failure 0.00039100000000000002 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "69 inference_failure 0.00090399999999999996 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "79 inference_failure 0.00068499999999999995 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "85 inference_failure 0.00061799999999999995 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "88 fit_failure 0.000495 \"The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlzip` instead.\"",
+        "94 inference_failure 0.00085800000000000004 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "97 inference_failure 0.017586000000000001 \"inference=0, model=7, sandwich=7: finite interior scope; structural coefficients held\"",
+        "104 inference_failure 0.00092100000000000005 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "117 inference_failure 0.00068000000000000005 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "126 inference_failure 0.00066399999999999999 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "161 inference_failure 0.00072400000000000003 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "163 inference_failure 0.00072599999999999997 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "170 inference_failure 0.00095200000000000005 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "173 inference_failure 0.001274 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "180 inference_failure 0.00036699999999999998 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "184 inference_failure 0.00066699999999999995 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "188 inference_failure 0.00069200000000000002 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\"",
+        "189 inference_failure 0.00070899999999999999 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\""
+      ],
+      "coordinates": {
+        "size": {
+          "empirical_sd": 1.7336272459726167,
+          "empirical_sd_mcse": 0.2614073667411278,
+          "model": {
+            "mean_se": 1.614890203774231,
+            "mean_se_mcse": 0.2049346029549844,
+            "difference": -0.11873704219838577,
+            "difference_mcse_paired": 0.09116550798314652,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 1.5112315372018275,
+            "mean_se_mcse": 0.17843586412364645,
+            "difference": -0.2223957087707893,
+            "difference_mcse_paired": 0.11398958034827444,
+            "flag_2mcse": false
+          }
+        },
+        "prob": {
+          "empirical_sd": 0.1241176849645833,
+          "empirical_sd_mcse": 0.006155502757536412,
+          "model": {
+            "mean_se": 0.12297651219734244,
+            "mean_se_mcse": 0.0013981866719765881,
+            "difference": -0.00114117276724085,
+            "difference_mcse_paired": 0.0059853085685222344,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.11569629683493286,
+            "mean_se_mcse": 0.0016638879197438973,
+            "difference": -0.008421388129650431,
+            "difference_mcse_paired": 0.006193266408117074,
+            "flag_2mcse": false
+          }
+        },
+        "pi": {
+          "empirical_sd": 0.14159745658077574,
+          "empirical_sd_mcse": 0.009577101800374231,
+          "model": {
+            "mean_se": 0.17492484800824654,
+            "mean_se_mcse": 0.011856214190067943,
+            "difference": 0.03332739142747079,
+            "difference_mcse_paired": 0.007244363587602864,
+            "flag_2mcse": true
+          },
+          "sandwich": {
+            "mean_se": 0.16971228067767913,
+            "mean_se_mcse": 0.011608706365892025,
+            "difference": 0.028114824096903385,
+            "difference_mcse_paired": 0.006978157697081714,
+            "flag_2mcse": true
+          }
+        }
+      }
+    },
+    "zip": {
+      "truth": {
+        "lambda": 1.0,
+        "pi": 0.5
+      },
+      "held": [],
+      "free": [
+        "lambda",
+        "pi"
+      ],
+      "probe_cpu_seconds": 0.003112,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "lambda": {
+          "empirical_sd": 0.0971027064305687,
+          "empirical_sd_mcse": 0.0049743330289491365,
+          "model": {
+            "mean_se": 0.09801416055709546,
+            "mean_se_mcse": 0.0003377335388937492,
+            "difference": 0.0009114541265267534,
+            "difference_mcse_paired": 0.004957568255423914,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.09736026445530026,
+            "mean_se_mcse": 0.0005211817133599491,
+            "difference": 0.0002575580247315551,
+            "difference_mcse_paired": 0.004964684457500744,
+            "flag_2mcse": false
+          }
+        },
+        "pi": {
+          "empirical_sd": 0.041708205155127555,
+          "empirical_sd_mcse": 0.0020223730489773886,
+          "model": {
+            "mean_se": 0.044076489013341776,
+            "mean_se_mcse": 0.00034566171361114997,
+            "difference": 0.0023682838582142207,
+            "difference_mcse_paired": 0.002069213545215993,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.043979028864675224,
+            "mean_se_mcse": 0.0003571551144201605,
+            "difference": 0.002270823709547669,
+            "difference_mcse_paired": 0.0020672383364222758,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zipf": {
+      "truth": {
+        "N": 10.0,
+        "s": 1.0
+      },
+      "held": [
+        "N"
+      ],
+      "free": [
+        "s"
+      ],
+      "probe_cpu_seconds": 0.003486,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "s": {
+          "empirical_sd": 0.05453507307541403,
+          "empirical_sd_mcse": 0.0026323015696420914,
+          "model": {
+            "mean_se": 0.056313500270919956,
+            "mean_se_mcse": 1.6157209422224863e-05,
+            "difference": 0.001778427195505923,
+            "difference_mcse_paired": 0.0026352767922926063,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05632623335984638,
+            "mean_se_mcse": 8.182327285478242e-05,
+            "difference": 0.0017911602844323457,
+            "difference_mcse_paired": 0.002630278637822959,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zmbinom": {
+      "truth": {
+        "size": 10.0,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "held": [
+        "size"
+      ],
+      "free": [
+        "prob",
+        "p0"
+      ],
+      "probe_cpu_seconds": 0.008994,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.009923283912706898,
+          "empirical_sd_mcse": 0.0004761847440489819,
+          "model": {
+            "mean_se": 0.010008212193478826,
+            "mean_se_mcse": 1.6233816165952583e-05,
+            "difference": 8.492828077192802e-05,
+            "difference_mcse_paired": 0.000480085660668051,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.009966921049300454,
+            "mean_se_mcse": 3.261547018840037e-05,
+            "difference": 4.3637136593556794e-05,
+            "difference_mcse_paired": 0.00047965004924969897,
+            "flag_2mcse": false
+          }
+        },
+        "p0": {
+          "empirical_sd": 0.022801560380353244,
+          "empirical_sd_mcse": 0.0012742630247388552,
+          "model": {
+            "mean_se": 0.022336705542016173,
+            "mean_se_mcse": 2.6020326248718125e-06,
+            "difference": -0.00046485483833707056,
+            "difference_mcse_paired": 0.0012799729157277843,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.022336705582596414,
+            "mean_se_mcse": 2.6020343213090892e-06,
+            "difference": -0.00046485479775683,
+            "difference_mcse_paired": 0.0012799729176839114,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zmgeom": {
+      "truth": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "held": [],
+      "free": [
+        "prob",
+        "p0"
+      ],
+      "probe_cpu_seconds": 0.0021,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.022418189319411596,
+          "empirical_sd_mcse": 0.0009184494452079984,
+          "model": {
+            "mean_se": 0.0223247737457963,
+            "mean_se_mcse": 5.0082391035798305e-05,
+            "difference": -9.341557361529709e-05,
+            "difference_mcse_paired": 0.0009215809580529694,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.02224644891363776,
+            "mean_se_mcse": 0.00010924549927704693,
+            "difference": -0.00017174040577383476,
+            "difference_mcse_paired": 0.0009201037518748756,
+            "flag_2mcse": false
+          }
+        },
+        "p0": {
+          "empirical_sd": 0.02214324993283371,
+          "empirical_sd_mcse": 0.0011408805825865419,
+          "model": {
+            "mean_se": 0.02233877508302211,
+            "mean_se_mcse": 2.252548289027524e-06,
+            "difference": 0.00019552515018840186,
+            "difference_mcse_paired": 0.001145970752954924,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.022338775126201773,
+            "mean_se_mcse": 2.2525501731972382e-06,
+            "difference": 0.0001955251933680631,
+            "difference_mcse_paired": 0.0011459707548525562,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zmlogarithmic": {
+      "truth": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "held": [],
+      "free": [
+        "prob",
+        "p0"
+      ],
+      "probe_cpu_seconds": 0.002808,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.03826632228141606,
+          "empirical_sd_mcse": 0.001891295685427644,
+          "model": {
+            "mean_se": 0.03528458390265371,
+            "mean_se_mcse": 8.038865729333702e-05,
+            "difference": -0.0029817383787623525,
+            "difference_mcse_paired": 0.0019075417098719822,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0350558413281983,
+            "mean_se_mcse": 0.00019311639780038872,
+            "difference": -0.0032104809532177633,
+            "difference_mcse_paired": 0.0019233865294241098,
+            "flag_2mcse": false
+          }
+        },
+        "p0": {
+          "empirical_sd": 0.020260412671217747,
+          "empirical_sd_mcse": 0.001380946469957783,
+          "model": {
+            "mean_se": 0.022342341445358113,
+            "mean_se_mcse": 2.5172601003321976e-06,
+            "difference": 0.0020819287741403666,
+            "difference_mcse_paired": 0.0013869124207024797,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.022342341495524484,
+            "mean_se_mcse": 2.517262081570772e-06,
+            "difference": 0.0020819288243067377,
+            "difference_mcse_paired": 0.0013869124227088938,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zmnbinom": {
+      "truth": {
+        "size": 1.0,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "held": [],
+      "free": [
+        "size",
+        "prob",
+        "p0"
+      ],
+      "probe_cpu_seconds": 0.012767,
+      "status": "complete",
+      "replications": 200,
+      "successes": 199,
+      "failures": [
+        "144 inference_failure 0.0052389999999999997 \"inference=12, model=12, sandwich=12: outside the recorded interior scope\""
+      ],
+      "coordinates": {
+        "size": {
+          "empirical_sd": 0.6381162601234652,
+          "empirical_sd_mcse": 0.04579707060008881,
+          "model": {
+            "mean_se": 0.6162269439306503,
+            "mean_se_mcse": 0.022910153383011063,
+            "difference": -0.021889316192814978,
+            "difference_mcse_paired": 0.03248120485773572,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.5938889986740876,
+            "mean_se_mcse": 0.021871970244387695,
+            "difference": -0.04422726144937761,
+            "difference_mcse_paired": 0.03308550894914394,
+            "flag_2mcse": false
+          }
+        },
+        "prob": {
+          "empirical_sd": 0.08131332185884885,
+          "empirical_sd_mcse": 0.003859284973124502,
+          "model": {
+            "mean_se": 0.08300233993947034,
+            "mean_se_mcse": 0.0005964235002006745,
+            "difference": 0.001689018080621496,
+            "difference_mcse_paired": 0.003808643517542412,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0794142098235363,
+            "mean_se_mcse": 0.0007620649966283951,
+            "difference": -0.001899112035312553,
+            "difference_mcse_paired": 0.0038684621207936195,
+            "flag_2mcse": false
+          }
+        },
+        "p0": {
+          "empirical_sd": 0.02217888063121086,
+          "empirical_sd_mcse": 0.0011521265544825446,
+          "model": {
+            "mean_se": 0.02233854264845226,
+            "mean_se_mcse": 2.3036539998978725e-06,
+            "difference": 0.00015966201724140067,
+            "difference_mcse_paired": 0.0011572948390885648,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.022338542664505336,
+            "mean_se_mcse": 2.3036559126265793e-06,
+            "difference": 0.0001596620332944762,
+            "difference_mcse_paired": 0.0011572948410433713,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "zmpois": {
+      "truth": {
+        "lambda": 1.0,
+        "p0": 0.5
+      },
+      "held": [],
+      "free": [
+        "lambda",
+        "p0"
+      ],
+      "probe_cpu_seconds": 0.001486,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "lambda": {
+          "empirical_sd": 0.07673282067433414,
+          "empirical_sd_mcse": 0.0038387579634171346,
+          "model": {
+            "mean_se": 0.07783726100578918,
+            "mean_se_mcse": 0.00019125867155929955,
+            "difference": 0.0011044403314550422,
+            "difference_mcse_paired": 0.003875287231349144,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.0771785052692075,
+            "mean_se_mcse": 0.0003136508385535851,
+            "difference": 0.00044568459487336065,
+            "difference_mcse_paired": 0.0038973149336766597,
+            "flag_2mcse": false
+          }
+        },
+        "p0": {
+          "empirical_sd": 0.02118362883580778,
+          "empirical_sd_mcse": 0.0009490974917236252,
+          "model": {
+            "mean_se": 0.022340217681750634,
+            "mean_se_mcse": 1.844246629676493e-06,
+            "difference": 0.001156588845942854,
+            "difference_mcse_paired": 0.0009532491293920778,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.022340217746969964,
+            "mean_se_mcse": 1.8442492985775951e-06,
+            "difference": 0.001156588911162184,
+            "difference_mcse_paired": 0.0009532491318789835,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "ztbinom": {
+      "truth": {
+        "size": 10.0,
+        "prob": 0.5
+      },
+      "held": [
+        "size"
+      ],
+      "free": [
+        "prob"
+      ],
+      "probe_cpu_seconds": 0.006063,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.006783742714379915,
+          "empirical_sd_mcse": 0.00031242615695867553,
+          "model": {
+            "mean_se": 0.007101751804911929,
+            "mean_se_mcse": 2.4184205308811354e-07,
+            "difference": 0.0003180090905320135,
+            "difference_mcse_paired": 0.0003132358123556861,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.007114579246584755,
+            "mean_se_mcse": 1.4593515970456215e-05,
+            "difference": 0.0003308365322048394,
+            "difference_mcse_paired": 0.0003131143819904587,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "ztgeom": {
+      "truth": {
+        "prob": 0.5
+      },
+      "held": [],
+      "free": [
+        "prob"
+      ],
+      "probe_cpu_seconds": 0.000812,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "prob": {
+          "empirical_sd": 0.015527292744106186,
+          "empirical_sd_mcse": 0.0007483642748334354,
+          "model": {
+            "mean_se": 0.01580806935015845,
+            "mean_se_mcse": 1.718835410086506e-05,
+            "difference": 0.00028077660605226214,
+            "difference_mcse_paired": 0.0007486480479408979,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.01573651648245238,
+            "mean_se_mcse": 4.961073176926222e-05,
+            "difference": 0.00020922373834619291,
+            "difference_mcse_paired": 0.0007523987771306,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "ztnbinom": {
+      "truth": {
+        "size": 1.0,
+        "prob": 0.5
+      },
+      "held": [],
+      "free": [
+        "size",
+        "prob"
+      ],
+      "probe_cpu_seconds": 0.009151,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "size": {
+          "empirical_sd": 0.3908553484765863,
+          "empirical_sd_mcse": 0.017804420108130343,
+          "model": {
+            "mean_se": 0.40630760989193404,
+            "mean_se_mcse": 0.008688079025447862,
+            "difference": 0.015452261415347723,
+            "difference_mcse_paired": 0.016475539779307696,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.40467550276537034,
+            "mean_se_mcse": 0.008816702591618979,
+            "difference": 0.013820154288784026,
+            "difference_mcse_paired": 0.016377155253249016,
+            "flag_2mcse": false
+          }
+        },
+        "prob": {
+          "empirical_sd": 0.057835890521403824,
+          "empirical_sd_mcse": 0.002560365422674053,
+          "model": {
+            "mean_se": 0.058634554843144206,
+            "mean_se_mcse": 0.00030132403115600806,
+            "difference": 0.0007986643217403819,
+            "difference_mcse_paired": 0.002621313212936314,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.05834367474447986,
+            "mean_se_mcse": 0.00044044065267190616,
+            "difference": 0.000507784223076034,
+            "difference_mcse_paired": 0.00261886382369053,
+            "flag_2mcse": false
+          }
+        }
+      }
+    },
+    "ztpois": {
+      "truth": {
+        "lambda": 1.0
+      },
+      "held": [],
+      "free": [
+        "lambda"
+      ],
+      "probe_cpu_seconds": 0.00183,
+      "status": "complete",
+      "replications": 200,
+      "successes": 200,
+      "failures": [],
+      "coordinates": {
+        "lambda": {
+          "empirical_sd": 0.05519515136556515,
+          "empirical_sd_mcse": 0.002672448503857382,
+          "model": {
+            "mean_se": 0.05501820939174844,
+            "mean_se_mcse": 8.291978553749074e-05,
+            "difference": -0.00017694197381671467,
+            "difference_mcse_paired": 0.002684495332781302,
+            "flag_2mcse": false
+          },
+          "sandwich": {
+            "mean_se": 0.054891068797257865,
+            "mean_se_mcse": 0.0001445994251077006,
+            "difference": -0.0003040825683072873,
+            "difference_mcse_paired": 0.002693187413939466,
+            "flag_2mcse": false
+          }
+        }
+      }
+    }
+  }
+}

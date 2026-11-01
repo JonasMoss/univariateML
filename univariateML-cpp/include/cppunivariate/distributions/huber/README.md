@@ -1,5 +1,11 @@
 ---
 id: huber
+inference_numeric:
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "joint kink-moving parameters"
+    reason: "the piecewise quadratic log density has a moving second-derivative kink, so the joint pointwise C2 condition fails"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Huber
 support: {type: real, lower: -inf, upper: inf, closed: [false, false]}
 params:

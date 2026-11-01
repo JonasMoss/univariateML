@@ -1,5 +1,10 @@
 ---
 id: bnbinom
+inference_numeric:
+  - regime: primary interior
+    available: true
+    condition: "finite size > 0, alpha > 0 and beta > 0; any regular subset free"
+    classification: "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
 name: Beta negative binomial
 support: {type: integer, lower: 0, upper: inf, closed: [true, false]}
 params:

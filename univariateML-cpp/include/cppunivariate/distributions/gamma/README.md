@@ -1,5 +1,15 @@
 ---
 id: gamma
+inference_numeric:
+  - regime: interior
+    available: true
+    condition: "shape > 0 and scale > 0 finite; shape and/or scale free"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+  - regime: boundary or limit
+    available: false
+    condition: "shape or scale at a boundary or limit"
+    reason: "gamma boundary and limit models are outside the interior derivative regime"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Gamma
 support: {type: real, lower: 0, upper: inf, closed: [false, false]}
 params:

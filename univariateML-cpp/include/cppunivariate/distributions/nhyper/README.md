@@ -1,5 +1,11 @@
 ---
 id: nhyper
+inference_numeric:
+  - regime: unreviewed or unavailable
+    available: false
+    condition: "composition or design free"
+    reason: "all coefficients are integer valued; there is no continuous free inference coordinate"
+    classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#discrete-coordinates"
 name: Negative hypergeometric
 support: {type: integer, lower: "r", upper: "if (r == 0) 0 else N-m+r", closed: [true, true]}
 params:
