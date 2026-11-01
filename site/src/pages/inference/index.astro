@@ -29,11 +29,11 @@ const source=(path)=>repo+path;
 <div class="filters" id="inference-filters" hidden>
 <label>Procedure<select id="kind"><option value="">All procedures</option><option value="covariance">Covariance</option><option value="procedure">Other procedures</option></select></label>
 <label>Status<select id="status"><option value="">All statuses</option>{statuses.map(s=><option value={s}>{s}</option>)}</select></label>
-<label>Family<select id="family"><option value="">All 98 families</option>{families.map(f=><option value={f.id}>{f.name} · {f.id}</option>)}</select></label>
+<label>Family<select id="family"><option value="">All {families.length} families</option>{families.map(f=><option value={f.id}>{f.name} · {f.id}</option>)}</select></label>
 <label>Regime contains<input id="regime" type="search" placeholder="e.g. endpoint known"/></label>
 <button id="reset" type="button">Reset</button>
 </div>
-<p class="count" id="row-count" aria-live="polite">{rows.length} rows · 98 families · {rows.filter(r=>r.status==='implemented').length} implemented scopes</p>
+<p class="count" id="row-count" aria-live="polite">{rows.length} rows · {families.length} families · {rows.filter(r=>r.status==='implemented').length} implemented scopes</p>
 <noscript><p>All rows and evidence are shown below. Browser search can locate a family; interactive filters require JavaScript.</p></noscript>
 <div class="availability"><table><caption>Procedures by family, regime and target</caption><thead><tr><th scope="col">Family / regime</th><th scope="col">Target and availability</th><th scope="col">Theory, assumptions and evidence</th></tr></thead><tbody>
 {rows.map((r,i)=><tr data-inference-row data-kind={r.kind||'procedure'} data-status={r.status} data-family={r.family} data-regime={r.regime.toLowerCase()} id={`scope-${i}`}>

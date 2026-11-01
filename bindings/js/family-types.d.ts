@@ -75,6 +75,7 @@ export interface GeneratedAPI {
   sn: Family<{xi: number; omega: number; alpha: number}, [xi: number, omega: number, alpha: number], {reltol?: number; iterlim?: number}>;
   snorm: Family<{mean: number; sd: number; xi: number}, [mean: number, sd: number, xi: number], Record<string, never>>;
   sstd: Family<{mean: number; sd: number; nu: number; xi: number}, [mean: number, sd: number, nu: number, xi: number], {gradtol?: number; iterlim?: number}>;
+  st: Family<{xi: number; omega: number; alpha: number; nu: number}, [xi: number, omega: number, alpha: number, nu: number], {reltol?: number; iterlim?: number}>;
   std: Family<{mean: number; sd: number; nu: number}, [mean: number, sd: number, nu: number], {gradtol?: number; iterlim?: number}>;
   tbinom: Family<{prob: number; a: number; b: number; size: number}, [prob: number, a: number, b: number, size: number], Record<string, never>>;
   tlambda: Family<{mu: number; sigma: number; lambda: number}, [mu: number, sigma: number, lambda: number], {reltol?: number; iterlim?: number}>;

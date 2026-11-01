@@ -3324,6 +3324,25 @@
       "historical_validation": ""
     },
     {
+      "family": "st",
+      "regime": "unreviewed",
+      "target": "Other hypotheses: not reviewed",
+      "status": "unreviewed",
+      "procedures": "No audited procedure for this scope",
+      "theory": "Unreviewed estimator limit; DQM alone is insufficient",
+      "assumptions": "all parameter values and free subsets",
+      "dqm": "Unreviewed",
+      "information": "Unreviewed",
+      "rank": "Unreviewed",
+      "evidence": "univariateML-cpp/include/cppunivariate/distributions/st/README.md#information-at-symmetry",
+      "calibration": "",
+      "implementation": [],
+      "checks": [],
+      "gap": "Full DQM, information rank and numerical inference have not been reviewed.",
+      "historical_sources": "",
+      "historical_validation": ""
+    },
+    {
       "family": "bbinom",
       "regime": "size zero",
       "kind": "covariance",
@@ -13274,6 +13293,46 @@
       "historical_validation": ""
     },
     {
+      "family": "st",
+      "regime": "unreviewed",
+      "kind": "covariance",
+      "target": "Free-coefficient covariance",
+      "status": "invalid for the procedure",
+      "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
+      "theory": "Numerical covariance API; eligibility does not establish rank, estimator asymptotics or coverage",
+      "assumptions": "all parameter values and free subsets; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
+      "dqm": "Conditional classification in the linked source",
+      "information": "Derivative eligibility only; no automatic finite-information claim",
+      "rank": "Scope may be singular; runtime singular, indefinite and ill-conditioned solves fail",
+      "evidence": "univariateML-cpp/include/cppunivariate/distributions/st/README.md#information-at-symmetry",
+      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "evidence_links": [
+        {
+          "label": "Canonical dossier",
+          "path": "univariateML-cpp/include/cppunivariate/distributions/st/README.md"
+        },
+        {
+          "label": "Independent derivative validation",
+          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#independent-derivative-validation"
+        },
+        {
+          "label": "Pilot Monte Carlo table",
+          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check"
+        },
+        {
+          "label": "R vcov interface and assumptions",
+          "path": "dev/research/evaluations/2026-11-01-vcov-r-report.md#interface-and-mathematical-scope"
+        }
+      ],
+      "implementation": [],
+      "checks": [],
+      "gap": "Full DQM, information rank and numerical inference have not been reviewed. Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
+      "caveats": [],
+      "monte_carlo": [],
+      "historical_sources": "",
+      "historical_validation": ""
+    },
+    {
       "family": "std",
       "regime": "primary interior",
       "kind": "covariance",
@@ -18951,6 +19010,15 @@
         "condition": "joint cusp-moving regime with xi != 1",
         "reason": "the two-piece log density has a moving second-derivative kink",
         "classification": "dev/research/evaluations/2026-10-31-inference-1-report.md#family-by-family-classification"
+      }
+    ],
+    "st": [
+      {
+        "regime": "unreviewed",
+        "available": false,
+        "condition": "all parameter values and free subsets",
+        "reason": "Full DQM, information rank and numerical inference have not been reviewed.",
+        "classification": "univariateML-cpp/include/cppunivariate/distributions/st/README.md#information-at-symmetry"
       }
     ],
     "std": [

@@ -141,7 +141,7 @@ assert 'C++ only' in inference_html and '<noscript>' in inference_html
 assert not re.search(r'<astro-island',inference_html), 'availability must render without hydration'
 assert not re.search(r'<tr[^>]*data-inference-row[^>]*\shidden(?:[ >])',inference_html)
 for status in STATUSES: assert status in inference_html
-print(f"PASS: inference: {len(availability['rows'])} unique scopes, 98 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.")
+print(f"PASS: inference: {len(availability['rows'])} unique scopes, {len(DATA)} families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.")
 subprocess.run([str(ROOT/'site/node_modules/.bin/node'), str(ROOT/'site/scripts/inference-browser.mjs')], check=True)
 
 # Theory defaults must be complete before hydration, and match the live fit API.
@@ -200,7 +200,7 @@ else:
     assert not (DIST/'binding/univariateML.wasm').exists()
 print('PASS: explorer coverage matches binding registry; optional build assets agree.')
 family_pages=list((DIST/'distributions').glob('*/index.html'))
-assert len(family_pages)==98, len(family_pages)
+assert len(family_pages)==len(DATA), len(family_pages)
 for f in DATA:
     p=DIST/f"distributions/{f['id']}/index.html"
     if p not in pages: errors.append(f'missing {p}')
@@ -251,7 +251,7 @@ for f in DATA:
     file=scratch/(f['id']+'.cpp');file.write_text(f['cpp'])
     subprocess.run(compiler+['-std=c++17','-c','-I'+str(ROOT/'univariateML-cpp/include')]+['-I'+str(p) for p in boost]+[str(file),'-o',str(file.with_suffix('.o'))],check=True)
     subprocess.run(['g++',str(file.with_suffix('.o')),'-o',str(file.with_suffix('.exe'))],check=True)
-print('PASS: 98 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).')
+print(f'PASS: {len(DATA)} generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).')
 # Representative HTML inspection assertions: pilots plus ten contrasting laws.
 spots=['exp','gamma','gb2','binom','beta','hyper','sstd','gev','gpd','tnorm','pois','unif','pareto']
 for id in spots:

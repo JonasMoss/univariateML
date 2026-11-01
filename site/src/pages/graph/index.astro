@@ -6,7 +6,7 @@ import {graphData,atlasSvg,mapSvg,colors} from '../../lib/graph';
 import '../../styles/graph.css';
 const data=graphData(families);
 ---
-<Page title="Family graph"><p class="eyebrow">A map of the catalog</p><h1>The family graph</h1><p class="summary">98 families in 13 groups. Trace the 60 relations; turn on 104 limit paths to see where families converge.</p>
+<Page title="Family graph"><p class="eyebrow">A map of the catalog</p><h1>The family graph</h1><p class="summary">{data.nodes.length} families in {data.groups.length} groups. Trace the {data.edges.filter(e=>e.kind!=='limit').length} relations; turn on {data.edges.filter(e=>e.kind==='limit').length} limit paths to see where families converge.</p>
 <FamilyGraph {data} client:visible>
  <div slot="map" class="overview" set:html={mapSvg(data)} />
  <details slot="atlas" class="atlas-disclosure"><summary>All relations, family by family</summary><div class="atlas">

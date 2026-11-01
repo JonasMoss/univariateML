@@ -262,6 +262,23 @@ def generate():
                     raise ValueError(f'missing inference classification anchor {scope["classification"]}: {dossier}')
                 seen.add(scope['regime'])
         numeric_eligibility[meta['id']] = scopes
+    # The dated inventory is historical evidence, not a list of all current
+    # families. New dossiers receive explicitly unreviewed procedure rows
+    # without rewriting the historical inventory or inferring availability.
+    inventoried = {row['family'] for row in rows}
+    for family, scopes in numeric_eligibility.items():
+        if family in inventoried:
+            continue
+        for scope in scopes:
+            rows.append(dict(family=family, regime=scope['regime'],
+                target='Other hypotheses: not reviewed', status='unreviewed',
+                procedures='No audited procedure for this scope',
+                theory='Unreviewed estimator limit; DQM alone is insufficient',
+                assumptions=scope['condition'], dqm='Unreviewed',
+                information='Unreviewed', rank='Unreviewed',
+                evidence=scope['classification'], calibration='', implementation=[],
+                checks=[], gap=scope.get('reason', 'No audited procedure for this scope'),
+                historical_sources='', historical_validation=''))
     rows.extend(covariance_rows(numeric_eligibility))
     return dict(schema_version=2, sources=[VCOV_REPORT, VCOV_R_REPORT, INVENTORY, *[REPORT.format(i) for i in [1,4,5]]],
                 statuses=STATUSES, rows=rows, numeric_eligibility=numeric_eligibility)
