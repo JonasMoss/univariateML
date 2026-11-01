@@ -30,6 +30,7 @@ r:
     iterlim: Maximum number of iterations.
 limits:
   - name: unbounded likelihood
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: InvalidStart
@@ -84,5 +85,7 @@ key_references:
 The inverse paralogistic distribution models positive heavy-tailed data.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The fit is the reciprocal of the paralogistic fit on `1/x`, with a held scale mapped to its reciprocal.

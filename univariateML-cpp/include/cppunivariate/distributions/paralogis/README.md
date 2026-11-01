@@ -30,6 +30,7 @@ r:
     iterlim: Maximum number of BFGS or fixed-scale Newton iterations.
 limits:
   - name: unbounded likelihood
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: InvalidStart
@@ -78,6 +79,8 @@ The paralogistic distribution is the Burr type XII distribution with its two
 shape parameters equal. It is used for size and loss data.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 Both `shape` and `scale` are estimated. univariateML 1.x estimated only the
 shape, with the scale held at 1.

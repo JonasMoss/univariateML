@@ -35,10 +35,12 @@ r:
 log_density: "x*log(lambda)-nu*loggamma(x+1)-log(Sum(lambda**k/factorial(k)**nu,(k,0,oo)))"
 limits:
   - name: adjacent two-point law
+    firmness: proved
     when: '$\nu \to \infty$ with the rate adjusted'
     detect: adjacent observations in a joint fit; observations in {0,1} with fixed lambda
     status: TwoPointLimit
   - name: point mass
+    firmness: proved
     when: 'parameters diverge along an exposing direction'
     detect: constant positive observations in a joint fit
     status: PointMassLimit
@@ -79,6 +81,8 @@ key_references:
 The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersion coordinate.
 
 ## Details
+
+The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md); numerical face searches do not certify global optimality.
 
 2026-10-30 (TASK-125): moment sums use compensated accumulation, the saddle-point quotient retains its division residual, and geometric tail bounds can be evaluated in log coordinates. For mode zero or one, the second-count weight uses `exp((2-mode)*eta)*exp2(-nu)`, avoiding amplification of rounding in `log(2)`. The 73-row independent reference grid measures errors; the truncation certificate excludes floating-point roundoff.
 

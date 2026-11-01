@@ -47,10 +47,10 @@ r:
     iterlim: Maximum iterations per scalar solve.
 log_density: log(lambda)-log(sigma)-(lambda+1)*log((x-mu)/sigma)-((x-mu)/sigma)**(-lambda)
 limits:
-  - {name: fixed-shape collapse, fixed: [lambda], status: InvalidData, message: "unattained collapse face", when: "With free mu and sigma, lambda*(n-k) <= k at minimum multiplicity k."}
-  - {name: shape divergence, fixed: [sigma], status: InvalidData, message: "unbounded shape likelihood", when: "Constant data with free mu, or all x-mu equal held sigma."}
-  - {model: gumbel, when: 'lambda tends to infinity with free location', status: GumbelLimit}
-  - {name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, lambda) point beats the lambda -> 1 collapse face's limiting likelihood."}
+  - {firmness: proved, name: fixed-shape collapse, fixed: [lambda], status: InvalidData, message: "unattained collapse face", when: "With free mu and sigma, lambda*(n-k) <= k at minimum multiplicity k."}
+  - {firmness: proved, name: shape divergence, fixed: [sigma], status: InvalidData, message: "unbounded shape likelihood", when: "Constant data with free mu, or all x-mu equal held sigma."}
+  - {firmness: argued, model: gumbel, when: 'lambda tends to infinity with free location', status: GumbelLimit}
+  - {firmness: numerical, name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, lambda) point beats the lambda -> 1 collapse face's limiting likelihood."}
 fit_args:
   mu: ~
 examples: |
@@ -97,6 +97,8 @@ key_references:
 The Frechet distribution models heavy right tails and extreme maxima.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) describes the limiting paths and the scope of the boundary comparisons.
 
 When the location is free, the minimum multiplicity controls the positive-shape collapse; ties above the minimum do not cause it.
 

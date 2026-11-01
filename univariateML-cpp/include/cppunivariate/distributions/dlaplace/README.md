@@ -30,6 +30,7 @@ r:
 log_density: "log(1-scale)-log(1+scale)+Abs(x-location)*log(scale)"
 limits:
 - name: point mass at location
+  firmness: proved
   when: '$scale \to 0$'
   detect: all observations equal the fitted or held location
   status: PointMass

@@ -46,10 +46,12 @@ r:
 log_density: "Piecewise((log(pi + (1 - pi)*prob**size), Eq(x, 0)), (log(1 - pi) + loggamma(x + size) - loggamma(size) - loggamma(x + 1) + size*log(prob) + x*log(1 - prob), True))"
 limits:
   - model: zip
+    firmness: proved
     when: '$\mathrm{size}\to\infty$ with NB mean fixed and positive inflation'
     detect: size and prob are free and the maximized ZIP likelihood wins within 1e-8 times sample size
     status: ZipLimit
   - model: pois
+    firmness: proved
     when: '$\mathrm{size}\to\infty$ with NB mean fixed and inflation tending to zero'
     detect: size and prob are free and the winning ZIP face has zero inflation
     status: PoissonLimit
@@ -98,6 +100,8 @@ key_references:
 The zero-inflated negative binomial distribution mixes negative binomial counts with an additional point mass at zero.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) derives the stated limits and held-parameter conditions.
 
 Zero inflation may be estimated as zero, an attained negative binomial member.
 Holding a finite nonnegative `size` fixed removes the infinite-size escape; no

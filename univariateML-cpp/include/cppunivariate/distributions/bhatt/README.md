@@ -42,6 +42,7 @@ r:
 log_density: log((erf((x-mu+a)/(sqrt(2)*sigma))-erf((x-mu-a)/(sqrt(2)*sigma)))/(4*a))
 limits:
   - model: unif
+    firmness: proved
     when: '$\sigma \to 0$'
     detect: conditional uniform face within 1e-8*n of the best interior likelihood
     status: UniformLimit
@@ -89,6 +90,8 @@ key_references:
 The Bhattacharjee distribution is the convolution of a normal distribution and a symmetric uniform distribution.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 
 For a fully free fit, fix the dimensionless shape $k=a/\sigma$ and optimize the
 location and inverse scale jointly. The fixed-shape objective is strictly

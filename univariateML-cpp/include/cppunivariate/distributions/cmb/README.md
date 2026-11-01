@@ -58,14 +58,17 @@ limits:
     firmness: proved
     numerical: true
   - name: point mass
+    firmness: proved
     when: '$\nu$ diverges along an exposing direction toward an interior point mass'
     detect: constant interior data in a joint fit; central constant data with interior prob fixed
     status: PointMass
   - name: adjacent two-point law
+    firmness: proved
     when: '$\nu \to +\infty$ with the canonical probability adjusted'
     detect: size at least two, with both adjacent integers observed in a joint fit; only the two central integers with interior prob fixed
     status: AdjacentLimit
   - name: endpoint two-point law
+    firmness: proved
     when: '$\nu \to -\infty$'
     detect: all data in {0, size} with both present in a joint fit; any endpoint-only data with interior prob fixed
     status: EndpointLimit
@@ -116,6 +119,8 @@ key_references:
 The Conway--Maxwell--binomial distribution extends the binomial by raising its combinatorial factor to a real dispersion power.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
 
 The size is a required design quantity. The canonical probability is generally not the mean divided by size. Dispersion is unrestricted in sign, and `nu = 1` is binomial. The fitter profiles the canonical log odds by mean matching and solves the remaining dispersion moment equation. Finite log-sum-exp enumeration costs O(size) per evaluation; size is limited to 1e7 for allocation safety.
 

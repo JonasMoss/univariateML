@@ -54,7 +54,7 @@ r:
     iterlim: Maximum number of bisection iterations per root.
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma, Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma), True))
 limits:
-  - {name: threshold scale collapse, fixed: [mu], status: InvalidData, message: "scale collapse at the threshold", when: "With free scale, all data equal mu, or threshold ties permit xi*k >= n-k (free xi always permits this path)."}
+  - {firmness: argued, name: threshold scale collapse, fixed: [mu], status: InvalidData, message: "scale collapse at the threshold", when: "With free scale, all data equal mu, or threshold ties permit xi*k >= n-k (free xi always permits this path)."}
 references:
 - Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics,
   35(2), 185–191. doi:10.1080/00401706.1993.10485040.
@@ -112,6 +112,8 @@ when the density limit there is positive. Threshold ties with free shape
 and scale permit scale collapse and stop.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The shape is restricted to `xi >= -1` because the unrestricted likelihood is unbounded as an upper endpoint approaches the sample maximum at `xi < -1`.
 Data from a model with `xi < -1` give constrained fits, often at the floor `xi = -1`.

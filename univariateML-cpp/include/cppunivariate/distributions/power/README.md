@@ -37,6 +37,7 @@ references:
 holds: []
 limits:
 - name: zero likelihood
+  firmness: proved
   fixed: [alpha]
   when: Held alpha is below the sample maximum.
   status: InvalidInput
@@ -94,6 +95,8 @@ key_references:
 The power distribution models positive quantities below a finite upper endpoint.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The fitted support is $(0, \alpha]$. The upper endpoint is exactly
 `max(x)` when estimated; its density is `beta/alpha`, the interior limit.

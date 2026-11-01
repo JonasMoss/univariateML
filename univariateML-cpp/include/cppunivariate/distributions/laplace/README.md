@@ -40,6 +40,7 @@ references:
 holds: []
 limits:
   - name: scale collapse
+    firmness: proved
     when: Scale tends to zero at the fitted or held location.
     detect: Every observation equals the fitted or held location.
     status: Unbounded
@@ -78,6 +79,8 @@ key_references:
 The Laplace (double exponential) distribution is a symmetric location-scale model with exponential tails.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
 The location estimate is a sample median and the scale estimate is the mean absolute deviation from it. For even sample size, every point between the two central order statistics maximises the location likelihood; this fitter returns the upper endpoint of that interval.
 

@@ -40,11 +40,13 @@ references:
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 limits:
 - name: zero likelihood
+  firmness: proved
   fixed: [b]
   when: Held b exceeds the sample minimum.
   status: InvalidInput
   message: zero likelihood
 - name: unbounded likelihood
+  firmness: proved
   fixed: [b]
   when: Every observation equals held b.
   status: Unbounded
@@ -91,6 +93,8 @@ key_references:
 The Pareto distribution is a heavy-tailed model for positive quantities above a lower threshold.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The lower endpoint `b` is estimated by `min(x)`, a boundary MLE at an order statistic; `a` is the tail shape. The fitted support is $[b, \infty)$, with $b>0$.
 

@@ -35,15 +35,18 @@ r:
 log_density: "loggamma(size+x)-loggamma(size)-loggamma(x+1)+loggamma(alpha+size)+loggamma(beta+x)-loggamma(alpha+size+beta+x)-loggamma(alpha)-loggamma(beta)+loggamma(alpha+beta)"
 limits:
   - model: nbinom
-    when: '$\alpha,\beta\to\infty$ with their ratio fixed, or the mirror path exchanging size and beta'
+    firmness: proved
+    when: '$\alpha,\beta\to\infty$ with their ratio and positive size $r$ fixed, or the mirror path exchanging $r$ and $\beta$ with positive $\beta$ fixed'
     detect: alpha and at least one interchangeable shape are free, and the reachable negative binomial face wins within 1e-8 times sample size
     status: NegativeBinomialLimit
   - model: pois
+    firmness: proved
     when: '$r,\beta,\alpha\to\infty$ with $r\beta/\alpha$ fixed'
     detect: all parameters free and the Poisson face wins within 1e-8 times sample size
     status: PoissonLimit
   - model: pois
-    when: '$r\to0$, $\beta\to0$, or $\alpha\to\infty$'
+    firmness: proved
+    when: '$r\to0$, $\beta\to0$, or $\alpha\to\infty$, with the other two coefficients fixed and positive'
     detect: all observations zero and at least one parameter free
     status: PointMass
 references:
@@ -93,6 +96,8 @@ key_references:
 The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power law tails.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) describes the limiting paths and the scope of the boundary comparisons.
 
 Any subset of `size`, `alpha` and `beta` may be held fixed. With `size` and `beta` both free, the returned representative satisfies `size <= beta`: swapping these two coefficients gives exactly the same distribution. No ordering is imposed when either is held.
 

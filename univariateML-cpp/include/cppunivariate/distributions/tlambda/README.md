@@ -58,11 +58,13 @@ references:
 holds: []
 limits:
   - name: scale collapse
+    firmness: proved
     when: Scale tends to zero at the fitted or held location.
     detect: Excessive mass at that location or vanishing residual spread.
     status: CollapseLimit
     message: "collapse"
   - name: infeasible held support
+    firmness: proved
     fixed: [sigma, lambda]
     when: Held scale and positive shape cannot contain the sample.
     status: InvalidSupport
@@ -96,6 +98,8 @@ key_references:
 The Tukey lambda family is defined by its quantile function and spans symmetric heavy-tailed, logistic, approximately normal and uniform shapes.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The 2026-10-31 fit-speed revision shares the smaller-tail complement log and
 quantile magnitude between Newton value and derivative calculations. Brackets,

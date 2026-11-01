@@ -38,10 +38,12 @@ r:
 log_density: "log(2)-log(omega)-log(2*pi)/2-((x-xi)/omega)**2/2+log((1+erf(alpha*(x-xi)/(omega*sqrt(2))))/2)"
 limits:
   - model: hnorm
+    firmness: proved
     when: '$\alpha \to +\infty$'
     detect: right translated half-normal supremum wins the profile comparison
     status: RightHalfNormalBoundary
   - name: reflected translated half-normal
+    firmness: proved
     when: '$\alpha \to -\infty$'
     detect: left translated half-normal supremum wins the profile comparison; use mlhnorm on -x
     status: LeftHalfNormalBoundary
@@ -80,6 +82,8 @@ key_references:
 The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. Its direct location and scale differ from its mean and standard deviation.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) derives the stated limits and held-parameter conditions.
 
 The normal member has singular direct-parameter Fisher information. The fitter searches both signs of shape, profiles the strictly concave location-scale problem, and compares both exact half-normal suprema; faces win ties within 1e-8 times the sample size. Shape search uses a finite grid and local refinement and is a numerical global search, not a mathematical certificate. An infinite shape estimate stops with a recommendation to use the appropriate translated half-normal.
 

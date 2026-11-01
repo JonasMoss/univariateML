@@ -36,11 +36,13 @@ references:
 holds: []
 limits:
 - name: zero-width collapse
+  firmness: proved
   when: Free interval width tends to zero.
   detect: Constant data and no held endpoint strictly outside the data.
   status: Unbounded
   message: does not exist
 - name: incompatible held endpoints
+  firmness: proved
   when: A held endpoint excludes observations or min is not below max.
   detect: Held min exceeds the sample minimum or held max is below the sample maximum, or min >= max.
   status: Incompatible
@@ -98,6 +100,8 @@ key_references:
 The uniform distribution assigns constant density to a bounded interval.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
 
 The endpoint estimates are `min(x)` and `max(x)`, so the MLE lies on the boundary determined by the sample order statistics. The fitted support is the closed interval between these endpoints, which must be distinct.
 

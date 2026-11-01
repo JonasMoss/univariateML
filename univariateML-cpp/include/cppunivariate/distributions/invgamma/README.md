@@ -45,6 +45,7 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 limits:
 - kind: nonexistence
+  firmness: proved
   name: unbounded likelihood
   when: '$\alpha$ tends to infinity with $\beta/\alpha$ equal to the common observation'
   detect: 'both coefficients are free and all observations are equal'
@@ -114,6 +115,8 @@ existence:
 The inverse gamma distribution models positive quantities whose reciprocals follow a gamma distribution.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The coefficient $\alpha$ controls the shape and the polynomial right tail. The coefficient $\beta$ is a scale: multiplying $\beta$ by a positive constant multiplies the observations by the same constant. It is also the rate of the gamma variable $1/X$.
 

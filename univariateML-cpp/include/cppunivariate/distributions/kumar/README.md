@@ -40,6 +40,7 @@ references:
 holds: []
 limits:
 - name: point-mass collapse
+  firmness: proved
   when: '$a$ tends to infinity and $b=c^{-a}$ for a fixed $0<c<1$'
   detect: 'every observation equals $c$ and neither shape is held'
   status: Unbounded
@@ -105,6 +106,8 @@ existence:
 The Kumaraswamy distribution models continuous proportions strictly between zero and one. Its two shapes control behaviour near the lower and upper ends of the interval. It offers an elementary quantile function as an alternative to the beta distribution.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
 
 With both shapes free, constant observations have unbounded likelihood. If their common value is $c$, taking $a\to\infty$ and $b=c^{-a}$ concentrates the distribution at $c$ and makes its density there grow without bound.
 

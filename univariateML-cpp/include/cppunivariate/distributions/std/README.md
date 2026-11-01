@@ -38,15 +38,18 @@ r:
 log_density: loggamma((nu+1)/2) - loggamma(nu/2) - log((nu-2)*pi)/2 - (nu+1)*log(1+((x-mean)/sd)**2/(nu-2))/2 - log(sd)
 limits:
   - name: scale collapse
+    firmness: proved
     when: Scale tends to zero at the fitted or held location.
     detect: Excessive mass at that location or vanishing residual spread.
     status: Unbounded
     message: "collapse"
   - name: scale collapse
+    firmness: proved
     fixed: [nu]
     when: "tie multiplicity k > nu*(n-k)"
     status: Unbounded
   - name: tie equality boundary
+    firmness: argued
     fixed: [nu]
     when: "tie multiplicity k = nu*(n-k)"
     status: ScaleBoundary
@@ -104,6 +107,8 @@ key_references:
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The 2026-10-31 fit-speed revision hoists the fixed-df normalizer in the shared
 lst conditional search used by held-scale fits. It preserves scale

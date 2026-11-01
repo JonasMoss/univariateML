@@ -42,6 +42,7 @@ references:
 holds: []
 limits:
   - name: scale collapse
+    firmness: proved
     when: Scale tends to zero at the fitted or held location.
     detect: Every observation equals the fitted or held location.
     status: Unbounded
@@ -83,6 +84,8 @@ key_references:
 The Gumbel distribution models maxima and extreme measurements.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
 This is the Gumbel distribution for maxima; `sigma` is positive.
 

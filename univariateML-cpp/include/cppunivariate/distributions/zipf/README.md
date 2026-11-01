@@ -39,6 +39,7 @@ references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 limits:
 - name: point mass at one
+  firmness: proved
   when: '$s \to \infty$'
   detect: all observations are one and held N exceeds one
   status: PointMass
@@ -78,6 +79,8 @@ key_references:
 The finite Zipf distribution describes power-law frequencies on consecutive positive integers.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) derives the stated limits and held-parameter conditions.
 
 The fitted upper endpoint `N` is `max(x)` and is a positive integer. The support is the integers from one to `N`. A nonpositive score at zero selects the attained uniform boundary `s = 0`. Large supports use bounded-memory Euler–Maclaurin harmonic sums. With all observations equal to one the estimate is not unique and the fitter warns. This function fits observations directly; for rank-abundance data see `sads::fitzipf`.
 

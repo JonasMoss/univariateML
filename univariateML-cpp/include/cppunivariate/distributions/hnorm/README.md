@@ -30,7 +30,7 @@ r:
     mu: Required endpoint; a value holds it and explicit `NULL` estimates the translation.
 log_density: log(2/pi)/2 - log(sigma) - (x-mu)**2/(2*sigma**2)
 limits:
-  - {name: scale collapse, when: every observation equals the free or held endpoint and sigma tends to zero, status: DegenerateData}
+  - {firmness: proved, name: scale collapse, when: every observation equals the free or held endpoint and sigma tends to zero, status: DegenerateData}
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition.
   Wiley.
@@ -84,6 +84,8 @@ key_references:
 The translated half-normal distribution models nonnegative normal deviations from an unknown endpoint.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The support is $[\mu, \infty)$ and `sigma` is a scale, not the standard deviation.
 The likelihood is maximised at `mu = min(x)` exactly, with

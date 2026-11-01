@@ -36,6 +36,7 @@ r:
 log_density: loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size-x)*log(1-prob)-log(1-(1-prob)**size)
 limits:
 - model: ztpois
+  firmness: proved
   when: $size \to \infty$ with the positive conditional mean fixed
   detect: the maximised face likelihood wins within 1e-8 times the sample size
   status: PoissonLimit
@@ -85,6 +86,8 @@ key_references:
 Zero-truncated binomial distributions model positive counts.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
 
 Actuar defines the point mass at one at `prob = 0`. This boundary is returned as an attained member.
 Holding size fixed removes the infinite-size escape. The point mass at one remains attained for every fixed size.

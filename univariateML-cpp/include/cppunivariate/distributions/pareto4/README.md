@@ -48,21 +48,25 @@ r:
 log_density: log(shape1) + log(shape2) - log((x-min)) - shape2*log(scale/(x-min)) - (shape1+1)*log(1+((x-min)/scale)**shape2)
 limits:
 - name: unbounded likelihood
+  firmness: proved
   when: A free concentration can collapse on constant observations
   detect: Constant samples; the held coefficients determine whether concentration remains free
   status: Unbounded
   message: unbounded
 - when: $\mathrm{shape1} \to \infty$ with $\mathrm{scale}\,\mathrm{shape1}^{-1/\mathrm{shape2}}$
     fixed
+  firmness: proved
   status: WeibullBoundary
   name: shifted weibull; subtract min before fitting
 - when: $\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale
     fixed
+  firmness: proved
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
 - when: $\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale
     fixed
-  detect: all(x >= scale)
+  firmness: proved
+  detect: all(x - min >= scale)
   status: AllGeOne
   fixed: [scale]
   name: shifted Pareto with its endpoint held at min + scale
@@ -162,6 +166,8 @@ key_references:
 This family has a known support endpoint and delegates fitting to burr.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 Identification and sample existence conditions transfer exactly from Burr on x-min. Free-scale likelihoods need the delegate global search and comparison with Weibull and Pareto faces, using the 1e-8*n tie rule. Held-scale fits retain the separate Burr sample conditions; constant observations exactly at min+scale give unbounded likelihood.
 

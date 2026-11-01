@@ -45,12 +45,13 @@ r:
 log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
 limits:
   - name: unbounded likelihood
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: InvalidData
     message: unbounded
-  - {model: lgamma, name: unit gamma on x/scale, when: 'shape1 tends to infinity, shape3 tends to zero, shape1*shape3 stays finite; fit mllgamma(scale / x)', status: UnitGammaBoundary}
-  - {model: power, when: 'shape1 tends to zero and shape3 tends to infinity; shape2 may grow exponentially to lower the effective upper endpoint', status: PowerBoundary}
+  - {firmness: argued, model: lgamma, name: unit gamma on x/scale, when: 'shape1 tends to infinity, shape3 tends to zero, shape1*shape3 stays finite; fit mllgamma(scale / x)', status: UnitGammaBoundary}
+  - {firmness: argued, model: power, when: 'shape1 tends to zero and shape3 tends to infinity; shape2 may grow exponentially to lower the effective upper endpoint', status: PowerBoundary}
 holds:
 - held: []
   status: no-mle
@@ -142,6 +143,8 @@ key_references:
 The generalized beta of the first kind models positive observations below a known upper endpoint.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 The actuar coefficients are shape1 = alpha, shape2 = beta, shape3 = tau,
 and scale = theta. Then (X/theta)^tau is beta(alpha,beta).

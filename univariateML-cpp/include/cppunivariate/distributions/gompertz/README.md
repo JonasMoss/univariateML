@@ -31,19 +31,20 @@ r:
 log_density: log(a) + b*x - (a/b)*(exp(b*x)-1)
 limits:
 - name: unbounded likelihood
+  firmness: proved
   fixed: [b]
   when: All observations are zero and a is free.
   status: Unbounded
   message: unbounded
 - name: exponential face
-  firmness: numerical
+  firmness: proved
   model: exp
   fixed: [a]
   when: sum(x) <= a*sum(x^2)/2 and sum(x)>0.
   status: Overdispersed
   message: mlexp
 - model: 'exp'
-  firmness: numerical
+  firmness: proved
   when: '$b \to 0$ with $a$ fixed'
   detect: 'mean(x^2) >= 2*mean(x)^2'
   status: 'Overdispersed'
@@ -81,6 +82,8 @@ key_references:
 The Gompertz distribution has an exponentially increasing hazard and is used to model lifetimes.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 The hazard is $a\exp(bx)$, with both parameters positive.
 

@@ -44,6 +44,7 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 limits:
 - name: unbounded likelihood
+  firmness: proved
   fixed: [scale]
   when: Every observation equals the held scale.
   status: Unbounded
@@ -99,6 +100,8 @@ key_references:
 The log-logistic distribution describes positive data whose logarithm has a logistic distribution. It is used for size, lifetime and loss data.
 
 ## Details
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 Fitting requires strictly positive observations.
 

@@ -31,23 +31,28 @@ r:
 log_density: "Piecewise((log(1 - shape1), Eq(x, 0)), (log(shape1**(x**shape2) - shape1**((x + 1)**shape2)), True))"
 limits:
   - name: degenerate
+    firmness: proved
     when: '$\mathrm{shape2}\to\infty$ with $(-\log \mathrm{shape1})^{-1/\mathrm{shape2}}$ fixed between the observed value and the next integer (at 0: $\mathrm{shape1} \to 0$)'
     detect: shape1 and shape2 are free and all observations are equal
     status: PointMass
   - name: degenerate
+    firmness: proved
     when: '$\mathrm{shape1}\to 0$'
     detect: shape2 is held and all observations are 0
     status: PointMass
     fixed: [shape2]
   - model: binom
+    firmness: proved
     when: '$\mathrm{shape2}\to\infty$ with $\mathrm{shape1}$ at the fraction of ones (a binomial with size 1)'
     detect: shape1 and shape2 are free and the observations are 0 and 1, both present
     status: BernoulliLimit
   - name: adjacent two-point
+    firmness: proved
     when: '$\mathrm{shape2}\to\infty$ with $\mathrm{shape1}^{(k+1)^{\mathrm{shape2}}}$ at the fraction of observations equal to $k+1$'
     detect: shape1 and shape2 are free and the observations take two adjacent values k and k + 1, k at least 1, both present
     status: TwoPointLimit
   - name: Bernoulli(shape1)
+    firmness: proved
     when: '$\mathrm{shape2}\to\infty$'
     detect: shape1 is held and the observations are 0 and 1, with at least one 1
     status: HeldBernoulliLimit
@@ -92,6 +97,8 @@ key_references:
 The type I discrete Weibull distribution of Nakagawa and Osaki (1975) models nonnegative counts such as the number of cycles survived before failure. A count is the integer part of a continuous Weibull variable with shape `shape2`; `shape1` is the probability that the count is positive.
 
 ## Details
+
+The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md); numerical face searches do not certify global optimality.
 
 The Weibull scale is $(-\log \mathrm{shape1})^{-1/\mathrm{shape2}}$, and `shape2 = 1` gives the geometric distribution with `prob = 1 - shape1`, an attained member.
 The log-likelihood is strictly concave in $(\log(-\log \mathrm{shape1}), \mathrm{shape2})$ once an observation is positive: each count is an interval-censored observation of a log-Weibull variable.

@@ -37,6 +37,7 @@ references:
 holds: []
 limits:
 - name: zero-scale collapse
+  firmness: proved
   when: Free sigma tends to zero
   detect: All logits equal mu (estimated or held) and sigma is free
   status: zero scale
@@ -76,6 +77,8 @@ areas:
 The logit-normal distribution models proportions whose logits follow a normal distribution.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
 
 2026-10-30 (TASK-125): normal log tails use the shared normal-tail helper, including its Mills expansion before subnormal loss; quantile inversion uses the same log-tail calculation. The quantile checks its monotone bracket and requires adjacent floating-point endpoints, otherwise returning NaN. Truth rows and extreme round trips validate selected tails.
 

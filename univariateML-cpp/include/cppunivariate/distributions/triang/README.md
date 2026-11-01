@@ -46,11 +46,13 @@ log_density: log(2) - log(b-a) + Piecewise((log((x-a)/(c-a)), x < c), (log((b-x)
 holds: []
 limits:
 - name: zero-width collapse
+  firmness: proved
   when: Free interval width tends to zero.
   detect: Constant data and every held coefficient equals the observation.
   status: Unbounded
   message: unbounded
 - name: incompatible held parameters
+  firmness: proved
   when: Held parameters prevent positive likelihood.
   detect: Data outside held endpoints, non-mode observed endpoints, or inconsistent parameter ordering.
   status: Incompatible
@@ -86,6 +88,8 @@ key_references:
 The triangular distribution describes bounded measurements with a single mode.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
 
 Constant samples can have an attained maximum when a held endpoint or mode prevents the interval from collapsing.
 

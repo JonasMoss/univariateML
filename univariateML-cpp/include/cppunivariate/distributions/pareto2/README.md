@@ -42,6 +42,7 @@ r:
 log_density: log((1/scale)) + log(shape) - (shape + 1)*log(1 + (1/scale)*(x-min))
 limits:
 - when: $\kappa \to \infty$ with $\lambda \kappa$ fixed
+  firmness: proved
   detect: max over 0 < u < ubar of the profile log-likelihood gap is at most 1e-8*n
   status: ExponentialLimit
   name: shifted exp; subtract min before fitting
@@ -120,6 +121,8 @@ key_references:
 This family has a known support endpoint and delegates fitting to lomax.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 With min held, identification and existence transfer exactly from Lomax on x-min. Its global profile search, exponential-face comparison and 1e-8*n tie rule are retained; the sample criterion is given in the mllomax documentation.
 

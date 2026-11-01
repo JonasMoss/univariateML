@@ -37,11 +37,13 @@ r:
 log_density: "Piecewise((log(pi + (1 - pi)*exp(-lambda)), Eq(x, 0)), (log(1 - pi) - lambda + x*log(lambda) - loggamma(x + 1), True))"
 limits:
   - model: pois
+    firmness: proved
     when: '$lambda \to 0$ with inflation held below one'
     detect: all observations are zero
     fixed: [pi]
     status: ZeroLimit
   - name: undefined zero-rate reference
+    firmness: proved
     when: held lambda is zero
     fixed: [lambda]
     status: InvalidInput
@@ -83,6 +85,8 @@ key_references:
 The zero-inflated Poisson distribution mixes a Poisson count with an additional point mass at zero.
 
 ## Details
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) derives the stated limits and held-parameter conditions.
 
 For zero-deflated data the estimate is `pi = 0`, the Poisson fit. All-zero data give a nonunique point-mass fit: the fitter warns and returns `lambda = 1`, `pi = 1`. These are boundary fits within the family.
 

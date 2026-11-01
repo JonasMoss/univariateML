@@ -31,7 +31,7 @@ r:
 log_density: "loggamma(x + size) - loggamma(size) - loggamma(x + 1) + size*log(prob) + x*log(1 - prob)"
 limits:
   - model: pois
-    firmness: numerical
+    firmness: proved
     when: 'the size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p=\bar x>0$ fixed'
     detect: 'both coefficients are free, $\bar x>0$, and $S^2=n^{-1}\sum_i(x_i-\bar x)^2\le\bar x$'
     status: Underdispersed
