@@ -150,9 +150,8 @@ test_that("CMB: free size validates holds, endpoints and resource failures", {
     expect_setequal(attr(f,"fixed"),c("prob","nu"))
     expect_error(mlcmb(c(0,1),size=NULL,prob=p,nu=nu),"between zero and size")
   }
-  expect_error(mlcmb(1:4,size=NULL,prob=.3),"global profile bound")
-  expect_error(mlcmb(1:4,size=NULL,nu=1),"global profile bound")
-  expect_error(mlcmb(1:4,size=NULL),"global profile bound")
+  expect_error(mlcmb(1:4,size=NULL,prob=.3),"global truncated")
+  expect_error(mlcmb(1:4,size=NULL),"global truncated")
   expect_error(mlcmb(1:4,size=NULL,prob=NaN,nu=1),"prob")
   expect_error(mlcmb(1:4,size=NULL,prob=.3,nu=Inf),"finite")
   expect_error(mlcmb(1:4,size=NULL,prob=.3,nu=1,iterlim=0),"positive")
@@ -193,4 +192,24 @@ test_that("cmb attained point member evaluates and samples exactly", {
   expect_equal(pml(c(4,5),fit),c(0,1))
   expect_equal(qml(.5,fit),5)
   expect_equal(rml(10,fit),rep(5,10))
+})
+
+test_that("CMB free size with fixed dispersion compares the whole integer tail", {
+  skip_unless_tier("full")
+  set.seed(1142026)
+  samples <- list(c(0,0,1,1,2,2,2,3,3,4), rcmb(100,4,.4,.5))
+  for (x in samples) for (nu in c(-1,0,.5)) {
+    f <- mlcmb(x,size=NULL,nu=nu)
+    profile <- vapply(seq(max(x),300), function(N) {
+      objective <- function(eta) -sum(dcmb(x,N,plogis(eta),nu,log=TRUE))
+      -optimize(objective,c(-25,25),tol=1e-10)$objective
+    },0.)
+    expect_equal(attr(f,"logLik"),max(profile),tolerance=1e-7)
+    expect_equal(f[["size"]],max(x)+which.max(profile)-1)
+    expect_setequal(attr(f,"fixed"),"nu")
+  }
+  expect_error(mlcmb(c(0,2),size=NULL,nu=1),"larger finite maximum is not excluded")
+  expect_error(mlcmb(c(rep(0,9),6),size=NULL,nu=0.0030483655389936895),"matched the Conway-Maxwell-Poisson face")
+  expect_error(mlcmb(c(0,10000000),size=NULL,nu=1),"work budget")
+  expect_equal(mlcmb(c(3,3),size=NULL,nu=-1)[["size"]],3)
 })

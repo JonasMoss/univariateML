@@ -2,10 +2,11 @@
 #pragma once
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
+#include "../../special/cmp.hpp"
 #include <limits>
 namespace cppunivariate {
 enum class CmbStatus { Ok, InvalidInput, PointMass, AdjacentLimit, EndpointLimit,
-                       Unidentified, IterationFailure };
+                       Unidentified, IterationFailure, FaceUnresolved, FaceTie };
 struct CmbResult { double prob,nu,logLik; int iterations; CmbStatus status; };
 namespace cmb_detail {
 inline double probability(double eta) {
@@ -93,6 +94,100 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=100,
 }
 
 struct CmbSizeResult { double size; CmbResult fit; };
+
+// Free probability and fixed dispersion. All finite-size profiles are checked;
+// the truncation comparison below bounds every unvisited size simultaneously.
+inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
+                                           double tol=1e-10,int maxit=100) {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto fail=[&](CmbStatus s) {return CmbSizeResult{nan,{nan,nu,nan,0,s}};};
+  if(x.size()==0 || !std::isfinite(nu) || !(tol>0) || !std::isfinite(tol) || maxit<1)
+    return fail(CmbStatus::InvalidInput);
+  int mn=10000001,mx=0; double sx=0,sh=0;
+  for(int v:x) {
+    if(v<0 || v>10000000)return fail(CmbStatus::InvalidInput);
+    mn=std::min(mn,v);mx=std::max(mx,v);sx+=v;sh+=std::lgamma(v+1.0);
+  }
+  if(mn==mx) return {double(mx),{mx==0?0.:1.,nu,0.,0,CmbStatus::Ok}};
+  const double n=double(x.size()),mean=sx/n;
+  const std::size_t budget=10000000;
+  std::size_t work=0;
+  CmbSizeResult best{nan,{nan,nu,-INFINITY,0,CmbStatus::IterationFailure}};
+  const auto evaluate=[&](int N) {
+    if(N>10000000 || std::size_t(N)+1>budget-work)return false;
+    work+=std::size_t(N)+1;
+    const auto f=cmb_mle(x,N,tol,maxit,nan,nu);
+    if(f.status!=CmbStatus::Ok || !std::isfinite(f.logLik))return false;
+    if(f.logLik>best.fit.logLik)best={double(N),f};
+    return true;
+  };
+  if(!evaluate(mx))return fail(CmbStatus::IterationFailure);
+  if(nu==0)return best;
+  // The endpoint terms imply L_N <= prod choose(N,x_i)^nu for nu<0.
+  if(nu<0) {
+    for(int N=mx+1;N<=10000000;++N) {
+      double upper=0;
+      for(int v:x)upper+=nu*cmb_detail::logchoose(N,v);
+      if(upper<best.fit.logLik-1e-9*(1+std::abs(best.fit.logLik)))return best;
+      if(!evaluate(N))return fail(CmbStatus::IterationFailure);
+    }
+    return fail(CmbStatus::IterationFailure);
+  }
+  CmpFitControl ctl; ctl.fixed_nu=nu; ctl.tol=1e-12; ctl.maxit=maxit;
+  ctl.max_terms=std::min(std::size_t(1000000),budget/std::size_t(maxit));
+  if(ctl.max_terms<2)return fail(CmbStatus::IterationFailure);
+  double eta=0; std::size_t face_work=0;
+  const CmpMoments face_mom=cmp_detail::mean_match(mean,nu,eta,ctl,face_work);
+  if(face_mom.status!=CmpStatus::Ok || !std::isfinite(face_mom.log_z) || face_work>budget-work)
+    return fail(CmbStatus::IterationFailure);
+  work+=face_work;
+  const double face=sx*eta-n*face_mom.log_z-nu*sh;
+  if(!std::isfinite(face))return fail(CmbStatus::IterationFailure);
+  const double margin=1e-9*(1+std::abs(face));
+  bool tie=std::abs(best.fit.logLik-face)<=margin;
+  for(int N=mx+1;N<=mx+255;++N) {
+    if(!evaluate(N))return fail(CmbStatus::IterationFailure);
+    tie=tie || std::abs(best.fit.logLik-face)<=margin;
+  }
+  if(best.fit.logLik<=face+margin)
+    return fail(tie?CmbStatus::FaceTie:CmbStatus::FaceUnresolved);
+  // Optimize the truncated CMP likelihood. Mean matching is monotone; the
+  // bracket supplies a numerical upper allowance for its remaining width.
+  int K=std::max(mx+1,32);
+  double truncated=INFINITY;
+  for(;K<=8192;K*=2) {
+    double lo=-64,hi=64;
+    const auto objective=[&](double a,double& m) {
+      double top=-INFINITY;
+      for(int k=0;k<=K;++k)top=std::max(top,k*a-nu*std::lgamma(k+1.));
+      double z=0,s=0;
+      for(int k=0;k<=K;++k) {const double w=std::exp(k*a-nu*std::lgamma(k+1.)-top);z+=w;s+=k*w;}
+      m=s/z; return sx*a-n*(top+std::log(z))-nu*sh;
+    };
+    double ml=0,mh=0; objective(lo,ml);objective(hi,mh);
+    if(!(ml<mean && mh>mean))return fail(CmbStatus::IterationFailure);
+    for(int i=0;i<100;++i) {double m=0;const double mid=(lo+hi)/2;objective(mid,m);if(m<mean)lo=mid;else hi=mid;}
+    double m=0;truncated=objective((lo+hi)/2,m)+n*K*(hi-lo)+margin;
+    if(truncated<best.fit.logLik-margin)break;
+  }
+  if(K>8192 || K>10000000)return fail(CmbStatus::IterationFailure);
+  const auto bound=[&](int N) {
+    double ck=0,s=0;
+    for(int j=0;j<K;++j)ck+=std::log1p(-double(j)/N);
+    for(int v:x)for(int j=0;j<v;++j)s+=std::log1p(-double(j)/N);
+    return truncated+nu*(s-n*ck);
+  };
+  int hi=std::max(K,mx+256);
+  while(bound(hi)>=best.fit.logLik-margin) {
+    if(hi>5000000)return fail(CmbStatus::IterationFailure);
+    hi*=2;
+  }
+  int lo=std::max(K,mx+256);
+  while(hi-lo>1) {const int mid=lo+(hi-lo)/2;if(bound(mid)<best.fit.logLik-margin)hi=mid;else lo=mid;}
+  // No feasible size is skipped, including sizes below K.
+  for(int N=mx+256;N<hi;++N)if(!evaluate(N))return fail(CmbStatus::IterationFailure);
+  return best;
+}
 // Both canonical coordinates held. Enumerate all integers, and bound the
 // entire remaining tail by a single normalizer term. This does not assume
 // unimodality in size (which is not implied by exponential-family concavity).

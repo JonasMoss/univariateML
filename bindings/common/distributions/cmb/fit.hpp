@@ -10,7 +10,7 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   const Held prob = prob_arg;
   const Held nu = nu_arg;
 
-  if(!size.supplied && (!prob.supplied || !nu.supplied))
+  if(!size.supplied && !nu.supplied)
     return fail("Free size with a free CMB coordinate is not implemented: no reliable global profile stopping rule is established for the Conway-Maxwell-Poisson, geometric and escaping-mass limit faces.");
   double trials=size.supplied ? size.value : 0;
   if (size.supplied && (!std::isfinite(trials) || trials<0 || trials>1e7 || trials!=std::floor(trials)))
@@ -24,7 +24,8 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   cppunivariate::CmbResult res;
   if(size.supplied)res=cppunivariate::cmb_mle(x,static_cast<int>(trials),reltol,iterlim,p,v);
   else {
-    const auto profile=cppunivariate::cmb_size_mle(x,p,v,reltol,iterlim);
+    const auto profile=prob.supplied ? cppunivariate::cmb_size_mle(x,p,v,reltol,iterlim) :
+      cppunivariate::cmb_size_fixed_nu_mle(x,v,reltol,iterlim);
     trials=profile.size;res=profile.fit;
   }
   switch (res.status) {
@@ -39,7 +40,14 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
       return fail("With size = 0 both parameters are unidentified.");
     case cppunivariate::CmbStatus::InvalidInput:
       return fail("CMB requires counts between zero and size, positive reltol and positive iterlim.");
-    default: return fail("CMB MLE failed to converge or exhausted its normalizer work budget.");
+    case cppunivariate::CmbStatus::FaceUnresolved:
+      return fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed.");
+    case cppunivariate::CmbStatus::FaceTie:
+      return fail("A finite likelihood matched the Conway-Maxwell-Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlcmp with nu held fixed for the limit model.");
+    default:
+      if (!size.supplied && !prob.supplied && nu.supplied && v>0)
+        return fail("CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed.");
+      return fail("CMB MLE failed to converge or exhausted its normalizer work budget.");
   }
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");

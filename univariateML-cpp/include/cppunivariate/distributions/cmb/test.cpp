@@ -1,6 +1,7 @@
 #include "test_support.hpp"
 #include "cppunivariate/distributions/cmb/mle.hpp"
 #include <vector>
+#include <random>
 TEST_CASE("cmb golden and moment score") {
   const auto g=mltest::load_distribution_golden("cmb");
   std::vector<int> x; for (double v:g.data) x.push_back(static_cast<int>(v));
@@ -117,4 +118,46 @@ TEST_CASE("cmb TASK-134 finite geometric shortcut agrees with enumeration") {
     }
     CHECK(cppunivariate::distributions::qcmb(.3,20,p,0)==t.quantile(.3,true,false));
   }
+}
+
+TEST_CASE("cmb free size with fixed dispersion bounds the full tail") {
+  const std::vector<int> x{0,0,1,1,2,2,2,3,3,4};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double nu:{-1.,0.,.5}) {
+    const auto fit=cppunivariate::cmb_size_fixed_nu_mle({x.data(),x.size()},nu);
+    REQUIRE(fit.fit.status==cppunivariate::CmbStatus::Ok);
+    double best=-INFINITY;int arg=-1;
+    for(int N=4;N<=300;++N) {
+      const auto f=cppunivariate::cmb_mle({x.data(),x.size()},N,1e-10,100,nan,nu);
+      REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+      if(f.logLik>best){best=f.logLik;arg=N;}
+    }
+    CHECK(fit.size==arg);
+    CHECK(fit.fit.logLik==doctest::Approx(best).epsilon(1e-10));
+    CHECK(fit.fit.nu==nu);
+  }
+  const std::vector<int> face{0,2}, huge{0,10000000}, constant{3,3};
+  CHECK(cppunivariate::cmb_size_fixed_nu_mle({face.data(),face.size()},1).fit.status==cppunivariate::CmbStatus::FaceUnresolved);
+  const std::vector<int> tie{0,0,0,0,0,0,0,0,0,6};
+  CHECK(cppunivariate::cmb_size_fixed_nu_mle({tie.data(),tie.size()},0.0030483655389936895).fit.status==cppunivariate::CmbStatus::FaceTie);
+  CHECK(cppunivariate::cmb_size_fixed_nu_mle({huge.data(),huge.size()},1).fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(cppunivariate::cmb_size_fixed_nu_mle({constant.data(),constant.size()},-1).size==3);
+}
+
+TEST_CASE("cmb fixed dispersion seeded size grid") {
+  std::mt19937 rng(1142026);
+  std::binomial_distribution<int> draw(4,.4);
+  std::vector<int> x(100);
+  for(int& v:x)v=draw(rng);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto fit=cppunivariate::cmb_size_fixed_nu_mle({x.data(),x.size()},.5);
+  REQUIRE(fit.fit.status==cppunivariate::CmbStatus::Ok);
+  double best=-INFINITY;int arg=0;
+  for(int N=*std::max_element(x.begin(),x.end());N<=300;++N) {
+    const auto f=cppunivariate::cmb_mle({x.data(),x.size()},N,1e-10,100,nan,.5);
+    REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+    if(f.logLik>best){best=f.logLik;arg=N;}
+  }
+  CHECK(fit.size==arg);
+  CHECK(fit.fit.logLik==doctest::Approx(best).epsilon(1e-10));
 }
