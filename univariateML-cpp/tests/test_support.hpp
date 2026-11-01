@@ -22,13 +22,15 @@ namespace mltest {
 // on any machine; kTol is the floor for those.
 constexpr double kTol = 1e-10;
 // With double-width intermediates the Bhattacharjee simplex stops at a
-// slightly different point: relative coefficient changes were <=1.61e-8,
-// and its independent score norm was 5.73e-6 (gate 1e-3). Applies under the
-// proxy macro and on platforms whose long double is double (macOS arm64, MSVC).
+// slightly different point: relative coefficient changes were <=1.61e-8 on
+// the workstation, 2.27e-7 on simbox (GCC 13 and 15) and 4.39e-7 in the macOS
+// R golden drift; its independent score norm was 5.73e-6 (gate 1e-3). As for
+// the R golden table: at least 4x the largest observed drift. Applies under
+// the proxy macro and on platforms whose long double is double (macOS arm64, MSVC).
 #if defined(__EMSCRIPTEN__)
 constexpr double kBhattGoldenTol = 5e-7;
 #elif defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS) || LDBL_MANT_DIG <= DBL_MANT_DIG
-constexpr double kBhattGoldenTol = 5e-8;
+constexpr double kBhattGoldenTol = 2e-6;
 #else
 constexpr double kBhattGoldenTol = 1e-12;
 #endif
