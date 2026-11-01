@@ -217,3 +217,16 @@ TEST_CASE("sged: symmetric member has exact median and signed log-half offset") 
     else CHECK(got==0);
   }
 }
+
+TEST_CASE("sged fixed shape inverse-scale concavity examples") {
+  const std::vector<double> x{-1.4, -0.1, 0.3, 2.0};
+  const auto ll=[&](double u,double b,double nu,double xi) {
+    double value=0;
+    for(double v:x) value+=std::log(b)+cppunivariate::distributions::dsged(b*v-u,0,1,nu,xi,true);
+    return value;
+  };
+  for(double nu:{1.0,1.2,2.0,5.0}) for(double xi:{0.4,1.0,2.5})
+    CHECK(ll(0.1,1.2,nu,xi)>=0.5*(ll(-0.4,0.7,nu,xi)+ll(0.6,1.7,nu,xi))-1e-12);
+  const auto f=[](double z){return cppunivariate::distributions::dsged(z,0,1,0.5,1.0,true);};
+  CHECK(f(2)<0.5*(f(1)+f(3)));
+}

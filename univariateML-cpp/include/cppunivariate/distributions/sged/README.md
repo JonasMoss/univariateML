@@ -172,6 +172,34 @@ searches scan before refining competing brackets. Numerical multistart and
 finite scans provide evidence rather than a global optimality certificate.
 A search reaching its numerical guard stops instead of returning a fit.
 
+For fixed finite $\xi>0$ and $\nu\ge1$, the standardized log-density is
+a constant minus a positive, side-dependent multiple of $|z-c|^\nu$.
+This piecewise power is convex: the one-sided slopes match at the join for
+$\nu>1$, and are ordered there for $\nu=1$. Hence the log-likelihood is
+concave in $(\mu/\sigma,1/\sigma)$ after the fixed-shape affine
+standardization. At $\nu=1$ the kink requires subgradient treatment; for
+$0<\nu<1$ the kernel is not log-concave. Infinite shape and vanishing or
+infinite skew lead to uniform or half-family limiting faces, which must be
+compared separately. The default free fit still uses numerical multistart
+optimization over both shapes and location-scale parameters; fixed-shape
+concavity alone does not certify that search.
+
+For a possible further reduction, parameterize the kernel by its mode $c$
+and positive left and right scales $a,b$. For fixed $c,\nu$, put
+$A=\sum_{x_i<c}(c-x_i)^\nu$, $B=\sum_{x_i>c}(x_i-c)^\nu$ and
+$p=1/(\nu+1)$. When $A,B>0$, the scale score equations give
+$a=(\nu/n)^{1/\nu}A^p(A^p+B^p)^{1/\nu}$ and the analogous expression
+for $b$. The profiled likelihood therefore decreases with $A^p+B^p$.
+This removes the side scales, but it does not by itself prove unimodality
+or provide a stopping rule for the remaining mode and shape searches;
+zero-side and uniform limits also require separate treatment.
+
+| TASK-116 property | Evidence |
+|---|---|
+| Fixed finite $\xi>0$, $\nu\ge1$ | Concavity in inverse-scale coordinates, proved as above. |
+| Conditional fits | Numerical scans and refinements; not an interval-certified inner solve. |
+| Default free shapes and limiting faces | Multistart and face comparisons; numerical, with no global shape certificate. |
+
 With mean and shapes held, scale maxima exist unless all observations equal
 the held mean, when scale collapse makes the likelihood unbounded. Held
 positive shapes below one are accepted for these conditional fits; the

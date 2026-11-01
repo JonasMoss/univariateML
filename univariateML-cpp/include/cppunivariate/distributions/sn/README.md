@@ -80,6 +80,22 @@ The normal member has singular direct-parameter Fisher information. The fitter s
 
 Any subset of the three parameters can be held fixed. A fixed shape leaves a concave problem in inverse scale and location divided by scale. With fixed location, an infinite shape remains possible only if every observation lies on the corresponding side of that location; observations equal to the fixed location contribute an additional log(2) penalty at the limit. Fixed scale is retained in the face comparison. No penalised likelihood is used.
 
+For finite $\alpha$, $\log\phi(z)$ is strictly concave and
+$\log\Phi(\alpha z)$ is concave. Thus, with $b=1/\omega>0$ and
+$u=\xi/\omega$, the fixed-shape likelihood
+$n\log b+\sum_i\log[2\phi(bx_i-u)\Phi(\alpha(bx_i-u))]$ is strictly
+concave in $(u,b)$ for nonconstant data. At $\alpha=0$ this is the normal
+member; as $\alpha\to\pm\infty$ the corresponding translated half-normal
+is a separate limiting face. The existing Newton inner solve already uses
+this concavity; its floating-point stopping check and the outer shape grid
+remain numerical and do not certify a global free-shape maximum.
+
+| TASK-116 property | Evidence |
+|---|---|
+| Fixed finite shape, nonconstant data | Strict concavity in inverse-scale coordinates, proved as above. |
+| Computed inner maximum | Newton iteration and a floating-point score check; numerical. |
+| Free shape and half-normal faces | Grid, local refinement and face comparison; numerical, with no global shape certificate. |
+
 An unfinished inner solve is accepted only when the normalized free-coordinate score at the returned point is below `max(reltol, 1e-3/n)` (with `n` observations). This is the Euclidean score norm in log inverse scale and scaled location divided by the sample size, with held coordinates removed.
 
 ## d/p/q/r

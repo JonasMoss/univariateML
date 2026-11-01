@@ -151,3 +151,16 @@ TEST_CASE("ged: P3 restrictions and closed faces") {
  const auto h=cppunivariate::ged_mle(data,1e-8,1000,0,1,1);
  CHECK(h.restricted==0u);
 }
+
+TEST_CASE("ged fixed shape inverse-scale concavity examples") {
+  const std::vector<double> x{-1.4, -0.1, 0.3, 2.0};
+  const auto ll=[&](double u,double b,double nu) {
+    double value=0;
+    for(double v:x) value+=std::log(b)+cppunivariate::distributions::dged(b*v-u,0,1,nu,true);
+    return value;
+  };
+  for(double nu:{1.0,1.2,2.0,5.0})
+    CHECK(ll(0.1,1.2,nu)>=0.5*(ll(-0.4,0.7,nu)+ll(0.6,1.7,nu))-1e-12);
+  const auto f=[](double z){return cppunivariate::distributions::dged(z,0,1,0.5,true);};
+  CHECK(f(2)<0.5*(f(1)+f(3)));
+}
