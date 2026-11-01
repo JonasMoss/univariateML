@@ -90,6 +90,9 @@ def setup(family):
     if family in ('bbinom','zib','ztbinom','zmbinom','cmb','zipf'):
         name='N' if family=='zipf' else 'size'
         if truth[names.index(name)]<2: override(name,10,True)
+    # UMVL_MC_TRUTH="name=value,..." overrides truth values (free coefficients stay free).
+    for item in filter(None,os.environ.get('UMVL_MC_TRUTH','').split(',')):
+        key,value=item.split('=');override(key.strip(),float(value))
     fitfile=COMMON/'distributions'/family/'fit.hpp'
     fittext=fitfile.read_text()
     hit=re.search(r'inline\s+FitResult\s+fit_'+re.escape(family)+r'\s*\(\s*cppunivariate::(ispan|span)\s+\w+\s*,?([^)]*)',fittext,re.S)
