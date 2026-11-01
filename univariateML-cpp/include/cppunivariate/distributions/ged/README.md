@@ -116,6 +116,22 @@ the mean absolute deviation from that median.
 
 For each held or profiled nu, the location minimizes the sum of absolute residuals to that power (a median at nu=1); the free scale has an exact power-mean profile. A held location collapses only when all residuals vanish. Held sd removes scale collapse. Free nu retains the existing restriction nu>=1 and is compared with the conditional uniform face. With both location and sd held, observations at a uniform endpoint contribute their limiting GED penalty. Shape search is numerical.
 
+For fixed $\nu\ge1$, the standardized log-density is a constant minus a
+positive multiple of $|z|^\nu$, hence is concave. Consequently the
+location-scale log-likelihood is concave in $(u,b)=(\mu/\sigma,1/\sigma)$:
+it is $n\log b$ plus concave terms evaluated at $bx_i-u$. At $\nu=1$
+the kernel has a kink and a median need not be unique; as $\nu\to\infty$
+the uniform is a separate limiting face. For $0<\nu<1$ the kernel is
+not log-concave. The default free fit currently uses multistart optimization,
+not a certified concave inner solve; the conditional power-mean profile
+and the outer numerical search do not certify the default free fit.
+
+| TASK-116 property | Evidence |
+|---|---|
+| Fixed $\nu\ge1$ | Concavity in inverse-scale coordinates, proved as above. |
+| Conditional location and scale | Median or numerical monotone-score root and analytic scale profile. |
+| Default free shape and uniform face | Multistart and face comparison; numerical, with no global shape certificate. |
+
 With sd held and a limiting uniform endpoint forced onto an observation, each such observation has limiting log-density penalty $e^{-\gamma}$, where $\gamma$ is Euler's constant. If mean is free and both endpoints are forced, with endpoint counts k and l the total penalty is $2e^{-\gamma}\sqrt{kl}$ after profiling the location shift of order $1/\nu$.
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`

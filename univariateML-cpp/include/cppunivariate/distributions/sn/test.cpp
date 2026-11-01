@@ -123,3 +123,14 @@ TEST_CASE("sn: symmetric member has exact median and signed log-half offset") {
     else CHECK(got==0);
   }
 }
+
+TEST_CASE("sn fixed shape inverse-scale concavity examples") {
+  const std::vector<double> x{-1.4, -0.1, 0.3, 2.0};
+  const auto ll=[&](double u,double b,double alpha) {
+    double value=0;
+    for(double v:x) value+=std::log(b)+cppunivariate::distributions::dsn(b*v-u,0,1,alpha,true);
+    return value;
+  };
+  for(double alpha:{-5.0,-1.0,0.0,1.0,5.0})
+    CHECK(ll(0.1,1.2,alpha)>=0.5*(ll(-0.4,0.7,alpha)+ll(0.6,1.7,alpha))-1e-12);
+}
