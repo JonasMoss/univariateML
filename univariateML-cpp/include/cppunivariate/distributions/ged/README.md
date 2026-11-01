@@ -43,8 +43,8 @@ params:
     restriction:
       mechanism: spike
       exempt_when_held: []
-      reason: nu >= 1 selects the Laplace member; spikes persist with sd held (P0
-        locscale).
+      reason: Estimating nu is restricted to nu >= 1 to exclude the small-shape spike.
+        Holding sd alone does not exclude that mechanism.
   kind: regular
 r:
   density: dged
@@ -59,14 +59,14 @@ log_density: -log(sd) - Abs(x-mean)**nu/(2*(sd*sqrt(2**(-2/nu)*gamma(1/nu)/gamma
 limits:
   - name: scale collapse
     firmness: proved
-    when: Scale tends to zero at the fitted or held location.
+    when: The free scale tends to zero at the fitted or held location.
     detect: Every observation equals the fitted or held location.
     status: InvalidStart
     message: "unbounded"
   - model: unif
     firmness: proved
-    when: '$\nu \to \infty$'
-    detect: Uniform log-likelihood exceeds all finite candidates.
+    when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
+    detect: The numerically compared uniform log likelihood exceeds all retained finite candidates; this comparison does not certify the global supremum.
     status: UniformBoundary
 references:
 - Nelson, D. B. (1991). Conditional Heteroscedasticity in Asset Returns, A New Approach. Econometrica, 59, 347–370.
@@ -110,33 +110,40 @@ aliases:
 - "generalized Gaussian"
 key_references:
 - 3
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, fitting restricts $\nu\ge1$; constant data have unbounded scale likelihood, and nonconstant data may select the unattained uniform limit. Without the fitting restriction, the all-free likelihood is unbounded for every sample. Global uniqueness with free shape in the restricted domain is unknown. For held $\nu>1$, nonconstant data have a unique location-scale maximum; at $\nu=1$, median intervals can give nonunique locations. With shape held, holding $\mu$ gives a unique scale maximum unless all residuals vanish. Holding $\sigma$ removes scale collapse; with shape held above one its location maximum is unique, while shape one permits median intervals. Free shape retains its fitting restriction and conditional uniform comparison. Held positive shapes below one also admit a location maximum at an observation and an explicit scale profile when residual spread is positive, but locations can tie. Holding all coefficients leaves likelihood evaluation.
+  reason: >-
+    At fixed shape, location minimizes $\sum_i|x_i-\mu|^\nu$, strictly convex for $\nu>1$ and minimized by medians for $\nu=1$. The free scale is an explicit positive multiple of the residual power mean. For nonconstant data this yields a unique location and scale when $\nu>1$. It does not prove uniqueness in shape.
 ---
 
 The generalized error (exponential power) distribution is a symmetric location-scale family whose shape controls tail thickness.
 
 ## Details
 
+The coefficients $\mu$ and $\sigma$ are the mean and standard deviation. Shape $\nu=1$ gives Laplace tails and $\nu=2$ gives the normal distribution. Larger shape gives lighter tails and approaches a uniform distribution. Holding a coefficient preserves its value while the remaining coefficients are estimated.
+
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 
 Fitting restricts the shape to $\nu \ge 1$, the log-concave GED range,
 including the attained Laplace member at $\nu=1$. Without this restriction
 the likelihood is unbounded as $\nu \to 0$ for nonconstant samples
-(Tumlinson, 2015). Very sharp-peaked shapes below one are not fitted.
-fGarch's own `gedFit` allows positive shapes below one and returns local
-solutions. Density, probability, quantile and random generation functions
+(Tumlinson, 2015). Estimated shapes below one are excluded; held positive shapes below one are accepted in conditional fits.
+Density, probability, quantile and random generation functions
 retain the full $\nu>0$ domain. Coefficients follow fGarch's mean and
 standard deviation parameterisation.
 
 The fitter compares several interior starts with the exact Laplace fit
 and the uniform limit. Total log-likelihood differences of at most
 $10^{-8}n$ are ties, with an attained member preferred to a limit.
-A winning uniform limit is reported with a recommendation to use `mlunif`.
+A winning uniform limit is reported rather than returned as a finite shape estimate.
 
-With location and scale free, at the Laplace face mean is a sample median and sd is $\sqrt{2}$ times
+With location and scale free, at the Laplace face $\mu$ is a sample median and $\sigma$ is $\sqrt{2}$ times
 the mean absolute deviation from that median.
 
 
-For each held or profiled nu, the location minimizes the sum of absolute residuals to that power (a median at nu=1); the free scale has an exact power-mean profile. A held location collapses only when all residuals vanish. Held sd removes scale collapse. Free nu retains the existing restriction nu>=1 and is compared with the conditional uniform face. With both location and sd held, observations at a uniform endpoint contribute their limiting GED penalty. Shape search is numerical.
+For each held or profiled shape, location minimizes the sum of absolute residuals to that power (a median at shape one, or an observation for held shape below one); the free scale has an exact power-mean profile. A held location collapses only when all residuals vanish. Held standard deviation removes scale collapse. Free shape retains the existing restriction $\nu\ge1$ and is compared with the conditional uniform face. With both location and standard deviation held, observations at a uniform endpoint contribute their limiting GED penalty. Shape search is numerical.
 
 For fixed $\nu\ge1$, the standardized log-density is a constant minus a
 positive multiple of $|z|^\nu$, hence is concave. Consequently the
@@ -154,7 +161,9 @@ and the outer numerical search do not certify the default free fit.
 | Conditional location and scale | Median or numerical monotone-score root and analytic scale profile. |
 | Default free shape and uniform face | Multistart and face comparison; numerical, with no global shape certificate. |
 
-With sd held and a limiting uniform endpoint forced onto an observation, each such observation has limiting log-density penalty $e^{-\gamma}$, where $\gamma$ is Euler's constant. If mean is free and both endpoints are forced, with endpoint counts k and l the total penalty is $2e^{-\gamma}\sqrt{kl}$ after profiling the location shift of order $1/\nu$.
+With standard deviation held and a limiting uniform endpoint forced onto an observation, each such observation has limiting log-density penalty $e^{-\gamma}$, where $\gamma$ is Euler's constant. If mean is free and both endpoints are forced, with endpoint counts k and l the total penalty is $2e^{-\gamma}\sqrt{kl}$ after profiling the location shift of order $1/\nu$.
+
+## R notes
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
 and emit a warning of class `univariateML_restricted`. Held coefficients are
@@ -162,6 +171,4 @@ not flagged. README hold exemptions apply to free coefficients. Failed
 optimizers return a failure status unless the score norm in fitting
 coordinates is below `1e-3`; unresolved scalar searches stop.
 
-## d/p/q/r
-
-Uses the fGarch mean and standard deviation parameterisation.
+The fGarch mean and standard deviation convention is used. Its `gedFit` permits positive shapes below one and returns local solutions. A winning uniform limit here stops with advice to use `mlunif`.
