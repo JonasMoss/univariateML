@@ -7,7 +7,7 @@
 
 namespace cppunivariate {
 
-enum class NhyperStatus { Ok, Tie, Unidentified, InvalidInput, Infeasible, NumericalFailure };
+enum class NhyperStatus { Ok, Tie, Unidentified, InvalidInput, Infeasible, NumericalFailure, FaceUnresolved, FaceTie };
 struct NhyperResult {
   double m, N, r, logLik, tie;
   int iterations;
@@ -45,6 +45,85 @@ inline CPPUNIV_EXTENDED_REAL population_bound(double m, double b, double r) {
 inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   NhyperResult out{m, N, r, nan, nan, 0, NhyperStatus::InvalidInput};
+  if (std::isnan(N) && std::isnan(m)) {
+    if (x.size() == 0 || (!std::isnan(r) && !hyper_detail::is_count(r))) return out;
+    for (double v : x) if (!hyper_detail::is_count(v)) return out;
+    const auto c = hyper_detail::tabulate(x);
+    out.status = NhyperStatus::Infeasible;
+    if (c.max == 0) {
+      if (!std::isnan(r) && r != 0) return out;
+      out.N = 0; out.m = 0; out.r = 0; out.logLik = 0;
+      out.status = NhyperStatus::Ok; return out;
+    }
+    if (c.min == 0 || r == 0 || (!std::isnan(r) && r > c.min)) return out;
+    if (c.min == c.max && (std::isnan(r) || r == c.min)) {
+      out.N = c.min; out.m = c.min; out.r = c.min; out.logLik = 0;
+      out.status = NhyperStatus::Ok; return out;
+    }
+    const double rlo = std::isnan(r) ? 1 : r;
+    const double rhi = std::isnan(r) ? c.min : r;
+    out.status = NhyperStatus::NumericalFailure;
+    if (c.max > 100000 || rhi > 100000 ||
+        (rhi-rlo+1) * static_cast<double>(c.value.size()) > 1000000 ||
+        c.max * static_cast<double>(c.value.size()) > 1000000) return out;
+    double face = -std::numeric_limits<double>::infinity();
+    for (double rr = rlo; rr <= rhi; ++rr) {
+      const double p = rr * c.h / c.sum;
+      double ll = 0;
+      for (std::size_t j = 0; j < c.value.size(); ++j) {
+        const double v = c.value[j], y = v-rr;
+        const double qterm = y == 0 ? 0 : y*std::log1p(-p);
+        ll += c.count[j] * (std::lgamma(v)-std::lgamma(rr)-std::lgamma(y+1) + rr*std::log(p) + qterm);
+      }
+      face = std::max(face, ll);
+    }
+    if (!std::isfinite(face)) return out;
+    const double margin = 1e-9 * (1 + std::fabs(face));
+    double best = -std::numeric_limits<double>::infinity();
+    NhyperResult winner = out;
+    int work = 0;
+    bool face_tie = false;
+    auto evaluate = [&](double nn) {
+      for (double rr = rlo; rr <= rhi; ++rr) {
+        const NhyperResult f = nhyper_mle(x, rr, nn, nan);
+        work += std::max(1, f.iterations);
+        if ((f.status != NhyperStatus::Ok && f.status != NhyperStatus::Tie &&
+             f.status != NhyperStatus::Unidentified) || !std::isfinite(f.logLik)) return false;
+        if (f.logLik > best) { best = f.logLik; winner = f; }
+        if (std::fabs(f.logLik-face) <= margin) face_tie = true;
+        if (work >= hyper_detail::kGridBudget) return false;
+      }
+      return true;
+    };
+    const double lo = c.max;
+    if (lo + 255 >= hyper_detail::kMaxCount) return out;
+    for (double nn = lo; nn <= lo + 255; ++nn) if (!evaluate(nn)) return out;
+    if (best <= face + margin) {
+      out.status = face_tie ? NhyperStatus::FaceTie : NhyperStatus::FaceUnresolved;
+      out.iterations = work; return out;
+    }
+    auto correction = [&](double nn) {
+      double s = 0;
+      for (std::size_t j = 0; j < c.value.size(); ++j)
+        for (double h = 1; h < c.value[j]; ++h)
+          s -= c.count[j] * std::log1p(-h/nn);
+      return s;
+    };
+    double end = lo;
+    while (face + correction(end) >= best-margin) {
+      if (end >= hyper_detail::kMaxCount/2) return out;
+      end *= 2;
+    }
+    double lower = lo;
+    while (end-lower > 1) {
+      const double mid = lower + std::floor((end-lower)/2);
+      if (face + correction(mid) < best-margin) end = mid; else lower = mid;
+    }
+    if ((end-lo)*(rhi-rlo+1) > hyper_detail::kGridBudget/4) return out;
+    for (double nn = lo; nn < end; ++nn) if (!evaluate(nn)) return out;
+    out = winner; out.iterations = work; out.status = NhyperStatus::Ok;
+    return out;
+  }
   // New finite grids: N held alone, or m held with N free.
   if ((std::isnan(r) && std::isnan(m) && !std::isnan(N)) ||
       (std::isnan(N) && !std::isnan(m))) {

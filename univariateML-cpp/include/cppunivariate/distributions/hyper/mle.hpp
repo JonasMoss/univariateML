@@ -51,6 +51,8 @@ enum class HyperStatus {
   Unidentified,  // every feasible value maximises (k = 0, or m = 0 for N)
   AllZero,       // N free, m, k > 0, all x = 0: sup at N -> infinity
   BothFree,      // N and m both free: not supported
+  FaceUnresolved, // no strict improvement found in the exploratory search
+  FaceTie,       // a finite point matched the face numerically; globality unknown
   InvalidInput,  // not whole numbers in [0, 2^53 - 1], k > N or m > N
   Infeasible,    // no admissible value gives all observations probability
   NumericalFailure, // finite grid exceeds budget or nonfinite likelihood
@@ -309,6 +311,88 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kInf = std::numeric_limits<double>::infinity();
   HyperResult r{N, m, k, kNaN, kNaN, 0, HyperStatus::InvalidInput};
+  // One held sample/population size and both other counts free. The
+  // composition profile at each population is found by the existing
+  // one-coordinate search. Every population below the tail cutoff is visited.
+  if (std::isnan(N) && (std::isnan(k) != std::isnan(m))) {
+    const bool held_k = !std::isnan(k);
+    const double size = held_k ? k : m;
+    if (x.size() == 0 || !hyper_detail::is_count(size)) return r;
+    for (double v : x) if (!hyper_detail::is_count(v)) return r;
+    const auto c = hyper_detail::tabulate(x);
+    r.status = HyperStatus::Infeasible;
+    if (c.max > size) return r;
+    // N=size makes the observed count deterministic when the sample is constant.
+    if (c.min == c.max) {
+      r.N = size; r.m = held_k ? c.max : size;
+      r.k = held_k ? size : c.max; r.logLik = 0;
+      r.status = HyperStatus::Ok; return r;
+    }
+    // For size one the entire family is Bernoulli, and p=sum(x)/h is
+    // attained exactly by N=h and the free count sum(x).
+    if (size == 1 && c.h <= hyper_detail::kMaxCount) {
+      r.N = c.h; r.m = held_k ? c.sum : size;
+      r.k = held_k ? size : c.sum;
+      r.logLik = c.sum * std::log(c.sum/c.h) +
+                 (c.h-c.sum) * std::log1p(-c.sum/c.h);
+      r.status = HyperStatus::Ok; return r;
+    }
+    r.status = HyperStatus::NumericalFailure;
+    // Explicit work guard also bounds the correction's summation.
+    if (size > 100000 || size < 1) return r;
+    const double p = c.sum / (c.h * size);
+    double face = 0;
+    for (std::size_t j = 0; j < c.value.size(); ++j)
+      face += c.count[j] * hyper_detail::lbinom_raw(c.value[j], size, p, 1-p);
+    if (!std::isfinite(face)) return r;
+    const double margin = 1e-9 * (1 + std::fabs(face));
+    double best = -kInf;
+    HyperResult winner = r;
+    int work = 0;
+    bool face_tie = false;
+    auto evaluate = [&](double nn) {
+      const HyperResult f = hyper_mle(x, size, nn, kNaN);
+      work += std::max(1, f.iterations);
+      if ((f.status != HyperStatus::Ok && f.status != HyperStatus::Tie &&
+           f.status != HyperStatus::Unidentified) || !std::isfinite(f.logLik)) return false;
+      if (f.logLik > best) { best = f.logLik; winner = f; }
+      if (std::fabs(f.logLik-face) <= margin) face_tie = true;
+      return true;
+    };
+    const double lo = size + c.max - c.min;
+    const double exploratory_end = lo + 255;
+    if (exploratory_end >= hyper_detail::kMaxCount) return r;
+    for (double nn = lo; nn <= exploratory_end; ++nn)
+      if (!evaluate(nn)) return r;
+    if (best <= face + margin) {
+      r.status = face_tie ? HyperStatus::FaceTie : HyperStatus::FaceUnresolved;
+      r.iterations = work; return r;
+    }
+    auto correction = [&](double nn) {
+      double s = 0;
+      for (double j = 1; j < size; ++j) s -= std::log1p(-j/nn);
+      return c.h * s;
+    };
+    double end = std::max(lo, 1.0);
+    while (face + correction(end) >= best - margin) {
+      if (end >= hyper_detail::kMaxCount / 2) return r;
+      end *= 2;
+    }
+    double lower = lo;
+    while (end - lower > 1) {
+      const double mid = lower + std::floor((end-lower)/2);
+      if (face + correction(mid) < best-margin) end = mid; else lower = mid;
+    }
+    if (end-lo > hyper_detail::kGridBudget / 4) return r;
+    for (double nn = lo; nn < end; ++nn) {
+      if (work >= hyper_detail::kGridBudget || !evaluate(nn)) return r;
+    }
+    if (work >= hyper_detail::kGridBudget) return r;
+    if (held_k) r = winner;
+    else { r = winner; r.k = winner.m; r.m = size; }
+    r.iterations = work; r.status = HyperStatus::Ok;
+    return r;
+  }
   if (std::isnan(k) && std::isnan(m) && !std::isnan(N)) {
     if (x.size() == 0 || !hyper_detail::is_count(N)) return r;
     for (double v : x) if (!hyper_detail::is_count(v)) return r;

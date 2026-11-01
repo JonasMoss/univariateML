@@ -17,7 +17,7 @@ params:
   simulate: 10
   integer: yes
   kind: design
-  advice: Supply the population size, or hold `m` to estimate it.
+  advice: Population and composition can be estimated jointly, subject to a numerical tail certificate.
 - name: r
   symbol: 'r'
   role: white balls required to stop sampling
@@ -37,13 +37,6 @@ references:
 - 'Berry, K. J. and Mielke, P. W. (1998). The negative hypergeometric probability distribution: Sampling without
   replacement from a finite population. Perceptual and Motor Skills, 86(1), 207-210.'
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
-holds:
-- held: []
-  status: not-implemented
-  reason: Joint estimation is not implemented; a certified comparison across stopping counts, their negative-binomial limits and the finite interior is not available.
-- held: [r]
-  status: not-implemented
-  reason: A certified comparison against the negative-binomial growing-urn limit and global tail bound are not available.
 fit_args:
   'N': 50
   r: 3
@@ -102,7 +95,7 @@ smallest white-ball count is returned with a warning. Counts must be below
 $2^{53}$.
 
 The known-population design ensures a finite maximum for every feasible
-sample. Jointly estimating population and composition without either held is not supported. Estimating
+sample. Joint estimation of population and composition uses the tail certificate below. Estimating
 `N` with `m` held uses the finite grid described below. With both `m` and `N` held, explicit
 `r = NULL` estimates the stopping count on its finite feasible integer grid;
 the consecutive likelihood ratio decreases, permitting bisection.
@@ -127,3 +120,37 @@ budget of 10^7 candidate likelihood evaluations includes both passes;
 exceeding it, the exact-integer range, or encountering a nonfinite likelihood
 stops with numerical failure, without returning a partial maximum.
 New joint grids resolve ties silently; existing one-coordinate warnings remain.
+
+### Growing-population bound (2026-11-01)
+
+For positive `r`, write `c_t(j) = sum_{i=0}^{j-1} log(1-i/t)`.
+The waiting-time mass divided by the negative-binomial mass of `x-r`
+with size `r` and success probability `p=m/N` equals
+`exp(c_m(r)+c_{N-m}(x-r)-c_N(x))`, with endpoints understood by
+continuity. Both numerator corrections are nonpositive. Consequently,
+for observations `x_i` and `N >= max(x_i)`, the profile for fixed `r`
+is bounded above by `B_r - sum_i c_N(x_i)`, where `B_r` is the
+negative-binomial face supremum at `p = r/mean(x)`. The correction is
+nonnegative, decreases with `N`, and tends to zero. With `r` free and
+positive observations, `1 <= r <= min(x_i)`, so replacing `B_r` by the
+maximum over that finite set gives the same uniform tail bound. A finite
+candidate strictly above the appropriate face supremum gives an eventual
+cutoff; every feasible point below it must still be checked. For `r=0`,
+the only possible observation is zero and finite maximizers exist.
+
+The fitter profiles composition at each integer population and each feasible
+stopping count, initially over 256 populations. A candidate exceeding the
+largest face by more than `1e-9*(1+abs(face))` gives a tail cutoff; every
+population below it is searched, subject to the 10^7 evaluation budget.
+The upper bound must fall below the candidate by that margin. These margins
+and profile signs are numerical comparisons, not directed-rounding proofs.
+If no strict improvement is found in the exploratory search, the fitter
+stops with an unresolved face status, or a face-tie status when a finite
+likelihood matches within the margin. Neither status proves a global
+maximum or escape.
+
+For an interior face probability `p=r/mean(x)`, the first-order coefficient
+in `t=1/N` is one half of the sum over observations of
+`x*(x-1) - r*(r-1)/p - (x-r)*(x-r-1)/(1-p)`. Its sign is a local
+diagnostic, not a global search certificate; for free `r` it applies to
+each face separately.

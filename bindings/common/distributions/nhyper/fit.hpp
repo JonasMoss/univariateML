@@ -11,9 +11,6 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   const Held N = N_arg;
   const Held r = r_arg;
 
-  if (!N.supplied && !m.supplied && !r.supplied)
-    return fail("Joint estimation of m, N and r is not implemented: the interior and negative-binomial limit faces require a certified global comparison.");
-  if (!N.supplied && !m.supplied) return fail("Joint estimation of population and composition is not implemented; it can escape to the growing-urn limit, for which use mlnbinom(x - r, size = r).");
   const double design=!r.supplied ? std::numeric_limits<double>::quiet_NaN() : r.value;
   if (r.supplied && std::isnan(design)) return fail("`r` must be a whole number or NULL, not NA.");
   const double held = !m.supplied ? std::numeric_limits<double>::quiet_NaN() : m.value;
@@ -22,6 +19,10 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   if (N.supplied && std::isnan(population)) return fail("`N` must be a whole number or NULL, not NA.");
   const auto fit = cppunivariate::nhyper_mle(x, design, population, held);
   switch (fit.status) {
+    case cppunivariate::NhyperStatus::FaceUnresolved:
+      return fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. For the negative-binomial growing-urn limit use mlnbinom(x - r, size = r).");
+    case cppunivariate::NhyperStatus::FaceTie:
+      return fail("A finite likelihood matched the negative-binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlnbinom(x - r, size = r) for the limit model.");
     case cppunivariate::NhyperStatus::NumericalFailure:
       return fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
     case cppunivariate::NhyperStatus::InvalidInput:
