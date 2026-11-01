@@ -124,6 +124,10 @@ assert theory_html.count('data-profile=')==5 and 'data-faces' in theory_html
 assert theory_html.count('data-limit-line')==4
 assert all(f'data-escape="{id}"' in theory_html for id in ['lomax','std','nbinom','burr'])
 assert '<noscript>' in theory_html
+assert 'data-conditional' in theory_html and '<math' in theory_html
+assert not re.search(r'<script[^>]*(?:mathjax|katex)', theory_html, re.I)
+gompertz_record=next(f for f in DATA if f['id']=='gompertz')
+assert any(limit.get('model')=='exp' and limit.get('fixed')==['a'] for limit in gompertz_record['limits'])
 for source,model in [('lomax','exp'),('std','norm'),('nbinom','pois'),('burr','pareto')]:
     record=next(f for f in DATA if f['id']==source)
     assert any(limit.get('model')==model and (source!='burr' or limit.get('fixed')==['scale']) for limit in record.get('limits',[])), f'undeclared theory escape: {source}'
