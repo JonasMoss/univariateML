@@ -5,6 +5,7 @@
 #include <cmath>
 #include "cppunivariate/distributions/rng_std.hpp"
 #include "common/fit.hpp"
+#include "cppunivariate/core/inference_families.hpp"
 #include "generated/fit_includes.hpp"
 namespace {
 std::vector<double> input(emscripten::val x) {
@@ -47,7 +48,27 @@ double control(emscripten::val c,const char* name,double value) {
   return c[name].isUndefined() ? value : c[name].as<double>();
 }
 #include "generated/fits.hpp"
+emscripten::val vcov_output(emscripten::val data, const std::string& family,
+                             emscripten::val coefficients, unsigned mask, bool sandwich) {
+  auto x=input(data), p=input(coefficients);
+  if(p.size()>cppunivariate::inference_max_parameters) return diagnostic("invalid inference coefficient dimensions");
+  std::array<double,cppunivariate::inference_max_parameters> values{};
+  for(std::size_t i=0;i<p.size();++i) values[i]=p[i];
+  const auto result=cppunivariate::family_inference(cppunivariate::span{x.data(),x.size()},family,values,mask);
+  const auto covariance=cppunivariate::inference_covariance(result,sandwich ?
+      cppunivariate::CovarianceKind::Sandwich : cppunivariate::CovarianceKind::Observed);
+  auto out=emscripten::val::object(), matrix=emscripten::val::array();
+  for(std::size_t i=0;i<covariance.dimension;++i) {
+    std::vector<double> row(covariance.dimension);
+    for(std::size_t j=0;j<row.size();++j) row[j]=covariance.matrix[i*row.size()+j];
+    matrix.call<void>("push",output(row));
+  }
+  out.set("matrix",matrix); out.set("condition",covariance.condition);
+  out.set("status",static_cast<int>(covariance.status)); out.set("validity",result.validity_conditions);
+  return out;
+}
 EMSCRIPTEN_BINDINGS(univariateML) {
+  emscripten::function("vcov", &vcov_output);
 #include "generated/exports.hpp"
 #include "generated/fit_exports.hpp"
 }

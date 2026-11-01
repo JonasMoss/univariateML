@@ -76,3 +76,5 @@ process.on('exit',()=>{mkdirSync(new URL('../../build/scratch/',import.meta.url)
 
 // Shared-fit goldens, all held subsets and diagnostics for every migrated family.
 await import('./fit-test.mjs');
+
+await import('./vcov-test.mjs');
