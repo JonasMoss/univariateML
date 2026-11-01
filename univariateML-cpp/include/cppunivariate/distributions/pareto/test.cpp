@@ -152,3 +152,11 @@ TEST_CASE("pareto: TASK-102.5 invalid confidence levels") {
   for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
     CHECK(cppunivariate::pareto_shape_exact_interval(data,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
 }
+
+TEST_CASE("pareto: finite support ratios beyond floating-point range") {
+  const std::vector<double> x{1e-300, 1.0, 1e300};
+  const auto fit = cppunivariate::pareto_mle(mltest::as_span(x));
+  REQUIRE(fit.status == cppunivariate::ParetoStatus::Ok);
+  CHECK(fit.shape == doctest::Approx(3.0 / (900 * std::log(10.0))).epsilon(1e-14));
+  CHECK(std::isfinite(fit.logLik));
+}

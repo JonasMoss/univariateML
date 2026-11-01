@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/inverse_digamma.hpp"
 #include "../../core/reductions.hpp"
 #include "../../core/span.hpp"
@@ -148,12 +149,12 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
     if (!(b > 0.0) || !std::isfinite(b)) return kNaN;
     const double tri = cppunivariate::special::trigamma(b);
     const double tetra = cppunivariate::special::tetragamma(b);
-    const double basel = M_PI * M_PI / 6.0;
+    const double basel = cppunivariate::pi * cppunivariate::pi / 6.0;
     const double f = a0 * tri * (basel - tri - a0 * a0 * sigma2);
     const double df = a0 * tetra * mu - 2.0 * tri * (basel + tri);
     return f / df;
   };
-  double a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
+  double a0 = std::sqrt((cppunivariate::pi * cppunivariate::pi / 6.0) / sigma2);
   if (std::isnan(start)) {
     for (int i = 0; i < maxit; ++i) {
       if (!(a0 > 0.0) || !std::isfinite(a0) || !std::isfinite(a0 * mu))
@@ -162,7 +163,7 @@ inline KumarResult kumar_mle(span x, double tol, int maxit,
       a0 -= step;
       if (std::abs(step) < (std::abs(a0) * tol + tol)) break;
     }
-    if (a0 <= 0.0) a0 = std::sqrt((M_PI * M_PI / 6.0) / sigma2);
+    if (a0 <= 0.0) a0 = std::sqrt((cppunivariate::pi * cppunivariate::pi / 6.0) / sigma2);
 
   } else {
     if (!(start > 0.0) || !std::isfinite(start))

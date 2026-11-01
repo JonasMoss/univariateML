@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include "test_support.hpp"
 #include "cppunivariate/distributions/gumbel/mle.hpp"
 #include "cppunivariate/distributions/gumbel/dpqr.hpp"
@@ -22,7 +23,7 @@ TEST_CASE("rgumbel samples; mean = mu + sigma*gamma_const, var = pi^2*sigma^2/6"
   const double var = sum_sq / n - mean * mean;
   const double euler_mascheroni = 0.5772156649015329;
   const double expected_mean = mu + sigma * euler_mascheroni;
-  const double expected_var = M_PI * M_PI * sigma * sigma / 6.0;
+  const double expected_var = cppunivariate::pi * cppunivariate::pi * sigma * sigma / 6.0;
   CHECK(std::abs(mean - expected_mean) < 0.1);
   CHECK(std::abs(var - expected_var) < 0.5);
 }

@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include "test_support.hpp"
 #include "cppunivariate/distributions/cauchy/mle.hpp"
 #include "cppunivariate/distributions/cauchy/dpqr.hpp"
@@ -57,9 +58,9 @@ TEST_CASE("cauchy: d/p/q/r against the truth table") {
 // mpmath reproduction: import mpmath as m; m.mp.dps=100
 // logS=lambda x:m.log(m.atan(1/x)/m.pi); Q=lambda l:1/m.tan(m.pi*m.exp(l))
 TEST_CASE("cauchy: extreme tail regressions") {
-  CHECK(cppunivariate::distributions::pcauchy(1e300,0,1,false,true) == doctest::Approx(-std::log(1e300)-std::log(M_PI)).epsilon(1e-12).scale(1e-300));
-  CHECK(cppunivariate::distributions::qcauchy(-800,0,1e-100,false,true) == doctest::Approx(std::exp(800-100*std::log(10.0)-std::log(M_PI))).epsilon(1e-12).scale(1e-300));
-  CHECK(cppunivariate::distributions::dcauchy(1e300,0,1,true) == doctest::Approx(-std::log(M_PI)-2*std::log(1e300)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::pcauchy(1e300,0,1,false,true) == doctest::Approx(-std::log(1e300)-std::log(cppunivariate::pi)).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::qcauchy(-800,0,1e-100,false,true) == doctest::Approx(std::exp(800-100*std::log(10.0)-std::log(cppunivariate::pi))).epsilon(1e-12).scale(1e-300));
+  CHECK(cppunivariate::distributions::dcauchy(1e300,0,1,true) == doctest::Approx(-std::log(cppunivariate::pi)-2*std::log(1e300)).epsilon(1e-12).scale(1e-300));
 }
 
 // mpmath: m.mp.dps=100; p=m.exp(m.mpf(float(-math.log(2))))
@@ -79,7 +80,7 @@ TEST_CASE("cauchy: quarter quantile and cancelling location") {
 // mpmath: m.mp.dps=100; x=m.mpf('1e308'); s=m.mpf('1e-308')
 // log(1/(m.pi*s*(1+(x/s)**2))) = -log(pi)-3*log(1e308).
 TEST_CASE("cauchy: log density survives standardized overflow") {
-  CHECK(cppunivariate::distributions::dcauchy(1e308,0,1e-308,true) == doctest::Approx(-std::log(M_PI)-3*std::log(1e308)).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::dcauchy(1e308,0,1e-308,true) == doctest::Approx(-std::log(cppunivariate::pi)-3*std::log(1e308)).epsilon(1e-12));
 }
 
 

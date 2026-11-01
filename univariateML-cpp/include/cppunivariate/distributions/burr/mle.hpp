@@ -1,5 +1,6 @@
 // Three-parameter Burr XII MLE, with shape1 profiled exactly.
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
 #include "../lomax/mle.hpp"
 #include "fixed_scale.hpp"
@@ -143,7 +144,7 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
   // Match log moments at a grid of shape1 values, including log-logistic.
   // Extra endpoint starts probe the two different boundary basins.
   for (double k : {0.01,0.05,0.2,0.5,1.0,2.0,10.0,100.0}) {
-    const double c = std::sqrt((M_PI*M_PI/6.0 + special::trigamma(k))/variance);
+    const double c = std::sqrt((cppunivariate::pi*cppunivariate::pi/6.0 + special::trigamma(k))/variance);
     const double loc = (special::digamma(k) + 0.5772156649015328606)/c;
     const double start[2] = {std::log(c),loc};
     auto r = bfgs_minimize(fd,start,ctl);

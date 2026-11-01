@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "cppunivariate/core/constants.hpp"
 #include "../../special/tails.hpp"
 #include "../../special/special.hpp"
 #include <cmath>
@@ -22,7 +23,7 @@ inline double fatigue_normal_log_tail(double a) {
   const double inv=1/a/a;
   double term=1, sum=1;
   for (int k=1;k<=16;++k) { term*=-(2*k-1)*inv; sum+=term; }
-  return -(0.5*a)*a-std::log(a)-0.5*std::log(2*M_PI)+std::log(sum);
+  return -(0.5*a)*a-std::log(a)-0.5*std::log(2*cppunivariate::pi)+std::log(sum);
 }
 inline double fatigue_w(double x,double alpha,double beta,double mu) {
   const double lz=std::log(x-mu)-std::log(beta);
@@ -37,7 +38,7 @@ inline double dfatigue(double x, double alpha, double beta, double mu,
   if (x<=mu || x==special::kPosInf) return log ? special::kNegInf : 0;
   const double lz=std::log(x-mu), a=0.5*(lz-std::log(beta));
   const double w=fatigue_w(x,alpha,beta,mu);
-  const double ld=special::log_sum_exp(a,-a)-std::log(2.0)-std::log(alpha)-lz-0.5*std::log(2*M_PI)-(0.5*w)*w;
+  const double ld=special::log_sum_exp(a,-a)-std::log(2.0)-std::log(alpha)-lz-0.5*std::log(2*cppunivariate::pi)-(0.5*w)*w;
   return log ? ld : std::exp(ld);
 }
 

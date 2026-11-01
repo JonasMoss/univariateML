@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include <algorithm>
 #include <limits>
 #include "test_support.hpp"
@@ -18,7 +19,7 @@ TEST_CASE("rrayleigh samples are positive; mean = sigma * sqrt(pi/2)") {
     CHECK(x >= 0.0);
     sum += x;
   }
-  const double expected = sigma * std::sqrt(M_PI / 2.0);
+  const double expected = sigma * std::sqrt(cppunivariate::pi / 2.0);
   CHECK(std::abs(sum / n - expected) < 0.1);
 }
 

@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include "test_support.hpp"
 #include "cppunivariate/distributions/sged/mle.hpp"
 #include "cppunivariate/distributions/sged/dpqr.hpp"
@@ -208,7 +209,7 @@ TEST_CASE("sged exhausted interior cannot return analytic Laplace as a fit") {
 
 // At symmetry F(0)=1/2; the local inverse is delta_p/f(0).
 TEST_CASE("sged: symmetric member has exact median and signed log-half offset") {
-  const double offset=2.3190468138462995584e-17*(std::sqrt(M_PI/2));
+  const double offset=2.3190468138462995584e-17*(std::sqrt(cppunivariate::pi/2));
   for(bool lower:{true,false}) for(bool log:{true,false}) {
     const double p=log?-0.6931471805599453:.5;
     const double expected=log?(lower?offset:-offset):0;

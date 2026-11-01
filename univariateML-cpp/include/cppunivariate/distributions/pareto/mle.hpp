@@ -13,6 +13,14 @@
 
 namespace cppunivariate {
 
+// log(v / b), retaining close ratios without overflowing wide ratios.
+inline CPPUNIV_EXTENDED_REAL pareto_log_ratio(double v, double b) {
+  const double difference = v - b;
+  return difference <= std::numeric_limits<CPPUNIV_EXTENDED_REAL>::max() * static_cast<CPPUNIV_EXTENDED_REAL>(b)
+      ? std::log1p((static_cast<CPPUNIV_EXTENDED_REAL>(v) - b) / b)
+      : std::log(v) - std::log(b);
+}
+
 enum class ParetoStatus { Ok, InvalidInput, Unbounded, IterationFailure };
 
 struct ParetoResult {
@@ -37,7 +45,7 @@ inline ParetoResult pareto_mle(span x) {
   double sum_log_ratio = 0.0;
   double sum_log_x = 0.0;
   for (auto v : x) {
-    sum_log_ratio += static_cast<double>(std::log1p((static_cast<CPPUNIV_EXTENDED_REAL>(v)-xmin)/xmin));
+    sum_log_ratio += static_cast<double>(pareto_log_ratio(v, xmin));
     sum_log_x += std::log(v);
   }
   const double dn = static_cast<double>(n);
@@ -54,7 +62,7 @@ inline ParetoResult pareto_mle(span x,double a,double b) {
   double low=x[0];for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,ParetoStatus::InvalidInput};low=std::min(low,v);}
   if(std::isnan(b))b=low;
   if(b>low)return {nan,b,nan,ParetoStatus::InvalidInput};
-  CPPUNIV_EXTENDED_REAL gap=0,logs=0;for(double v:x){gap+=std::log1p((static_cast<CPPUNIV_EXTENDED_REAL>(v)-b)/b);logs+=std::log(v);}
+  CPPUNIV_EXTENDED_REAL gap=0,logs=0;for(double v:x){gap+=pareto_log_ratio(v,b);logs+=std::log(v);}
   const double n=static_cast<double>(x.size());
   if(std::isnan(a) && gap==0)return {nan,b,nan,ParetoStatus::Unbounded};
   if(std::isnan(a))a=static_cast<double>(n/gap);

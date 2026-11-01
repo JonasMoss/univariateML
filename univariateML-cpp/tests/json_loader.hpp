@@ -12,6 +12,7 @@
 #include "cppunivariate/core/span.hpp"
 
 #include <cstddef>
+#include <cstdlib>
 #include <fstream>
 #include <map>
 #include <limits>
@@ -183,15 +184,16 @@ inline std::vector<std::vector<double>> truth_matrix(const std::string &s,
       const bool quoted = s[p] == '"';
       if (quoted) ++p;
       const std::size_t end = s.find_first_of(quoted ? "\"" : ",] \r\n", p);
+      if (end == std::string::npos) return {};
       const std::string cell = s.substr(p, end-p);
       long double value = 0;
       if (cell == "Inf") value = std::numeric_limits<double>::infinity();
       else if (cell == "-Inf") value = -std::numeric_limits<double>::infinity();
       else if (cell == "NaN") value = std::numeric_limits<double>::quiet_NaN();
       else {
-        std::istringstream input(cell);
-        input >> value;
-        if (input.fail()) return {};
+        char *endptr = nullptr;
+        value = std::strtold(cell.c_str(), &endptr);
+        if (endptr == cell.c_str() || *endptr != '\0') return {};
       }
       row.push_back(static_cast<double>(value));
       p = end + (quoted ? 1 : 0);

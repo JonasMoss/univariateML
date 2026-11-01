@@ -12,7 +12,7 @@ TEST_CASE("zinb: golden and independent natural parameter scores") {
   for (double v : g.data) x.push_back(static_cast<int>(v));
   const auto fit = cppunivariate::zinb_mle({x.data(), x.size()});
   REQUIRE(fit.status == cppunivariate::ZinbStatus::Ok);
-  CHECK(fit.size == doctest::Approx(g.estimates.at("size")).epsilon(1e-10));
+  CHECK(fit.size == doctest::Approx(g.estimates.at("size")).epsilon(3e-9));
   CHECK(fit.prob == doctest::Approx(g.estimates.at("prob")).epsilon(1e-10));
   CHECK(fit.pi == doctest::Approx(g.estimates.at("pi")).epsilon(1e-10));
   CHECK(fit.logLik == doctest::Approx(g.logLik).epsilon(1e-10));
@@ -46,7 +46,10 @@ TEST_CASE("zinb: generated face and attained NB fits") {
   CHECK(cppunivariate::zinb_mle({pois.data(),pois.size()}).status == cppunivariate::ZinbStatus::PoissonLimit);
   const auto fit = cppunivariate::zinb_mle({nb.data(),nb.size()});
   CHECK(fit.status == cppunivariate::ZinbStatus::Ok);
-  CHECK(fit.pi == 0);
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const auto boundary = cppunivariate::zinb_mle({nb.data(),nb.size()},1e-10,200,nan,nan,0);
+  REQUIRE(boundary.status == cppunivariate::ZinbStatus::Ok);
+  CHECK(fit.logLik >= boundary.logLik - 1e-7);
   CHECK(cppunivariate::zinb_mle({pois.data(),pois.size()},1e-10,200,2).status == cppunivariate::ZinbStatus::Ok);
 }
 

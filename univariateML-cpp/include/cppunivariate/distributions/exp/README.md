@@ -125,3 +125,12 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+### Range portability (2026-11-01)
+
+If the ordinary sum overflows, the free-rate calculation scales each datum by
+its largest value before summing. This evaluates the same closed form without
+relying on an extended exponent range. If a held-rate sum overflows,
+the likelihood instead sums the individually rate-weighted observations.
+The R extreme-value test and appended C++ held-rate case use two
+observations of `1e308`.

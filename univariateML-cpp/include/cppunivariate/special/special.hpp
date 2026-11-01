@@ -7,6 +7,7 @@
 // Swap this file to retarget another backend.
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../core/precision.hpp"
 
 #include "constants.hpp"
@@ -95,7 +96,7 @@ inline double dnorm(double x, double mean, double sd, bool log) {
     return kNaN;
   }
   const double z = (x - mean) / sd;
-  const double log_pref = -std::log(sd) - 0.5 * std::log(2.0 * M_PI);
+  const double log_pref = -std::log(sd) - 0.5 * std::log(2.0 * cppunivariate::pi);
   const double log_density = log_pref - 0.5 * z * z;
   return log ? log_density : std::exp(log_density);
 }
@@ -221,7 +222,7 @@ inline double dt(double x, double df, bool log) {
   if (log) {
     // Closed-form log-density: tail-stable.
     return std::lgamma((df + 1.0) / 2.0) - std::lgamma(df / 2.0) -
-           0.5 * std::log(df * M_PI) -
+           0.5 * std::log(df * cppunivariate::pi) -
            ((df + 1.0) / 2.0) * std::log1p(x * x / df);
   }
   return boost::math::pdf(boost::math::students_t_distribution<double, NoThrowPolicy>(df), x);
@@ -344,7 +345,7 @@ inline double fs_normal_p(double x, bool lower, bool log_p) {
     const double inv = 1.0/a/a;
     double sum = 1.0, term = 1.0;
     for (int k=1; k<=12; ++k) { term *= -(2*k-1)*inv; sum += term; }
-    lp = -0.5*a*a - std::log(a) - 0.5*std::log(2.0*M_PI) + std::log(sum);
+    lp = -0.5*a*a - std::log(a) - 0.5*std::log(2.0*cppunivariate::pi) + std::log(sum);
   }
   if ((x < 0.0) != lower) lp = fs_log1mexp(lp);
   return log_p ? lp : std::exp(lp);
@@ -413,7 +414,7 @@ inline double fs_t_p(double x, double nu, bool lower, bool log_p) {
     const double z = std::exp(stable_logz);
     const double aa=nu/2.0;
     // Gamma ratio from Boost avoids cancellation at large degrees of freedom.
-    const double logbeta = std::log(boost::math::tgamma_delta_ratio(aa,0.5,NoThrowPolicy{})) + 0.5*std::log(M_PI);
+    const double logbeta = std::log(boost::math::tgamma_delta_ratio(aa,0.5,NoThrowPolicy{})) + 0.5*std::log(cppunivariate::pi);
     lp = -std::log(2.0) + aa*stable_logz + 0.5*std::log1p(-z)
         - logbeta + std::log(fs_beta_fraction(aa,0.5,z)/aa);
   }

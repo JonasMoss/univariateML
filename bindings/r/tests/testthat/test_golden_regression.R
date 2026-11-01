@@ -14,34 +14,39 @@
 # UMVL_DISTRIBUTIONS_DIR can override them with canonical dossiers.
 DISTRIBUTIONS_DIR <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR", "")
 
-# Golden comparisons cannot be tighter than the fitters' declared convergence
-# tolerance (the `gradtol`/`reltol`/`abstol` default in each distribution's
-# README `r.control`, i.e. the `tol` it was actually given below). But
-# cross-machine drift (simbox vs local, 2026-10-29) was much smaller than
-# the BFGS tolerance defaults: std's estimates differed by a mean relative of
-# 9.4e-6, with nu's change at 2.5e-6 relative. kFdTol = 3e-5 (~3x the largest
-# observed drift) keeps golden tests as regression canaries, not noise followers.
-# The fitters' declared gradtol is the upper bound; see univariateML-cpp/tests/
-# test_support.hpp's kFdTol comment for the same rule applied to C++ checks.
+# Iterative fit coefficients can move more than the objective/gradient stop:
+# its tolerance is not a bound on parameter error without curvature bounds.
+# For these golden data use at least four times the largest measured Linux or
+# macOS drift, rounded upward. As a guard against making these canaries too
+# loose, require each allowance to be at most ten times the square root of
+# its relevant stopping tolerance (the inner scale stop for ht). This is a
+# practical rule, not a bound on parameter error. The FD BFGS group retains
+# its earlier calibration.
+# Closed-form/default families retain 1e-12. See the portability report for
+# stopping rules, both observations, and the limits of this empirical rule.
 GOLDEN_TOLERANCE <- c(
-  # Finite-difference BFGS on (mu, log sigma, log(nu - 2)[, log xi]);
-  # golden comparison tolerance 3e-5 (test_support.hpp kFdTol).
-  # invparalogis is paralogis_mle run on 1/x, so it shares the same fitter
-  # and default.
-  std = 3e-5, ged = 3e-5, sstd = 3e-5,
-  sged = 3e-5, paralogis = 3e-5, lst = 3e-5,
-  invparalogis = 3e-5,
-  # Finite-difference BFGS on (shape1, shape2, scale); own default gradtol
-  # (distributions/<id>/adapter.cpp).
-  burr = 1e-8, invburr = 1e-8,
-  # Hand-rolled finite-difference-gradient BFGS on log(size, alpha, beta)
-  # over the per-observation-averaged likelihood; own default gradtol
-  # (distributions/bnbinom/adapter.cpp).
-  bnbinom = 1e-8,
-  # Bhattacharjee simplex: its stopping point moves by up to 1.6e-8 relative
-  # where long double is double (macOS arm64); TASK-125 report.
-  bhatt = 5e-8
+  std = 3e-5, ged = 3e-5, sstd = 3e-5, sged = 3e-5,
+  paralogis = 3e-5, invparalogis = 3e-5, lst = 3e-5,
+  betapr = 3e-7, bhatt = 2e-6, bnbinom = 2e-6,
+  burr = 1e-6, invburr = 5e-7, dgamma = 1e-7,
+  emg = 3e-7, gev = 2e-10, gompertz = 1e-11,
+  ht = 2e-7, pareto4 = 1e-7, pig = 1e-7,
+  trgamma = 2e-11, zinb = 3e-9, zmnbinom = 3e-6
 )
+
+# Adapter controls, or the implementation's inner stopping tolerance for ht.
+GOLDEN_STOP_TOLERANCE <- c(
+  std = 1.220703e-4, ged = 1.220703e-4, sstd = 1.220703e-4,
+  sged = 1.220703e-4, paralogis = 1.220703e-4,
+  invparalogis = 1.220703e-4, lst = 1.220703e-4,
+  betapr = 1e-6, bhatt = 1e-8, bnbinom = 1e-8,
+  burr = 1e-8, invburr = 1e-8, dgamma = 1e-8, emg = 1e-8,
+  gev = 1e-10, gompertz = 1.220703e-4, ht = 2e-14,
+  pareto4 = 1e-10, pig = 1e-9, trgamma = 1e-10,
+  zinb = 1e-10, zmnbinom = 1e-10
+)
+stopifnot(identical(sort(names(GOLDEN_TOLERANCE)), sort(names(GOLDEN_STOP_TOLERANCE))),
+          all(GOLDEN_TOLERANCE <= 10 * sqrt(GOLDEN_STOP_TOLERANCE[names(GOLDEN_TOLERANCE)])))
 
 if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
   golden_files <- Sys.glob(file.path(DISTRIBUTIONS_DIR, "*", "golden.json"))

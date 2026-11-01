@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "cppunivariate/core/constants.hpp"
 #include <cmath>
 
 namespace cppunivariate {
@@ -35,7 +36,7 @@ inline double ged_g(double nu, double lambda) {
 
 // Skew-normal scale/shift: returns sigma; writes mu via out param.
 inline double snorm_sigma(double xi, double &mu_out) {
-  const double m1 = 2.0 / std::sqrt(2.0 * M_PI);
+  const double m1 = 2.0 / std::sqrt(2.0 * cppunivariate::pi);
   mu_out = m1 * (xi - 1.0 / xi);
   return std::sqrt((1.0 - m1 * m1) * (xi * xi + 1.0 / (xi * xi)) +
                    2.0 * m1 * m1 - 1.0);
@@ -49,7 +50,7 @@ inline double sstd_sigma(double nu, double xi, double &mu_out) {
   // qsstd values (and a self-consistent but biased mlsstd golden).
   // lgamma, not a tgamma ratio: tgamma overflows for nu > 343.
   const double m1 = std::exp(std::lgamma(0.5 * (nu - 1.0)) - std::lgamma(0.5 * nu)) *
-                    std::sqrt((nu - 2.0) / M_PI);
+                    std::sqrt((nu - 2.0) / cppunivariate::pi);
   mu_out = m1 * (xi - 1.0 / xi);
   return std::sqrt((1.0 - m1 * m1) * (xi * xi + 1.0 / (xi * xi)) +
                    2.0 * m1 * m1 - 1.0);
@@ -67,7 +68,7 @@ inline double sged_sigma(double nu, double xi, double &mu_out) {
 // --- pure-libm unit log-densities (mean=0, sd=1) ---------------------------
 
 inline double log_dnorm_unit(double z) {
-  static const double kLog2Pi = std::log(2.0 * M_PI);
+  static const double kLog2Pi = std::log(2.0 * cppunivariate::pi);
   return -0.5 * kLog2Pi - 0.5 * z * z;
 }
 
@@ -87,7 +88,7 @@ inline double log_dstd_unit_const(double nu) {
       ? 0.5 * std::log(0.5 * nu) - 0.25 * inv +
             inv * inv * inv / 24.0 - std::pow(inv, 5) / 20.0
       : std::lgamma(0.5 * (nu + 1.0)) - std::lgamma(0.5 * nu);
-  return ratio - 0.5 * std::log((nu - 2.0) * M_PI);
+  return ratio - 0.5 * std::log((nu - 2.0) * cppunivariate::pi);
 }
 
 inline double log_dstd_unit(double z, double nu) {

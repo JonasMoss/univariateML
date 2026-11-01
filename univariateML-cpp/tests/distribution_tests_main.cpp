@@ -18,3 +18,16 @@ TEST_CASE("truth table loader: nonfinite and subnormal cells") {
   CHECK(rows[1][1]==1e300);
   CHECK(mltest::truth_matrix(R"({"cells":[[invalid]]})","cells").empty());
 }
+
+TEST_CASE("truth table loader accepts range errors and rejects trailing junk") {
+  const auto rows = mltest::truth_matrix(
+      R"({"cells":[[1e-400,-1e-400,1e400,-1e400]]})", "cells");
+  REQUIRE(rows.size() == 1);
+  REQUIRE(rows[0].size() == 4);
+  CHECK(rows[0][0] == 0.0);
+  CHECK(std::signbit(rows[0][1]));
+  CHECK(rows[0][2] == std::numeric_limits<double>::infinity());
+  CHECK(rows[0][3] == -std::numeric_limits<double>::infinity());
+  CHECK(mltest::truth_matrix(R"({"cells":[[1abc]]})", "cells").empty());
+  CHECK(mltest::truth_matrix("{\"cells\":[[\"1", "cells").empty());
+}

@@ -149,6 +149,25 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
       }
       return ll;
     }
+    // On double-width long double, the lgamma differences below can lose
+    // many digits. For moderate counts sum the exact falling-factorial
+    // correction after combining k*log(size) with k*log(p).
+    if (std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits <=
+            std::numeric_limits<double>::digits && max_x <= 100000) {
+      double ll = 0.0;
+      const double p = x_bar / size;
+      std::vector<double> correction(static_cast<std::size_t>(max_x) + 1, 0.0);
+      for (int j = 1; j <= max_x; ++j)
+        correction[static_cast<std::size_t>(j)] = correction[static_cast<std::size_t>(j - 1)] +
+            std::log1p(-(j - 1) / size);
+      for (std::size_t i = 0; i < uniq.size(); ++i) {
+        const int k = uniq[i];
+        ll += counts[i] * (k * std::log(x_bar) - std::lgamma(k + 1.0) +
+                           correction[static_cast<std::size_t>(k)] +
+                           (size - k) * std::log1p(-p));
+      }
+      return ll;
+    }
     // Long double throughout: this branch runs whenever max_x/size >=
     // 1e-5, i.e. size/max_x <= 1e5, and CPPUNIV_EXTENDED_REAL's ~19-digit lgamma
     // difference loses only about log10(size/max_x) <~ 5 digits there --

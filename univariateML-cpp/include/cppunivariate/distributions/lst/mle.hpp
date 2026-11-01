@@ -1,5 +1,6 @@
 // Location-scale Student t, constrained to df >= 1.
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/span.hpp"
@@ -33,9 +34,9 @@ struct LstCost {
     if (!(s > 0.0) || !std::isfinite(s) || !std::isfinite(df) || (!exact_fixed && df > 1e7))
       return std::numeric_limits<double>::infinity();
     // Gamma ratio expansion avoids cancellation on the normal approach.
-    const double c = df > 1e4 ? -0.5 * std::log(2.0 * M_PI) - 0.25 / df :
+    const double c = df > 1e4 ? -0.5 * std::log(2.0 * cppunivariate::pi) - 0.25 / df :
       cppunivariate::special::lgamma((df + 1.0) / 2.0) -
-      cppunivariate::special::lgamma(df / 2.0) - 0.5 * std::log(df * M_PI);
+      cppunivariate::special::lgamma(df / 2.0) - 0.5 * std::log(df * cppunivariate::pi);
     double f = 0.0;
     for (double v : x) {
       const double z = (v - p[0]) / s;
@@ -154,7 +155,7 @@ inline LstResult lst_mle_impl(span x, double tol, int maxit) {
   for (double &v : y) { v = (v-center)/unit; mean += v / n; }
   double variance = 0.0;
   for (double v : y) variance += (v-mean)*(v-mean)/n;
-  const double normal = -0.5*n*(std::log(2.0*M_PI*variance)+1.0);
+  const double normal = -0.5*n*(std::log(2.0*cppunivariate::pi*variance)+1.0);
   BfgsControl ctl;
   ctl.grad_tol = tol;
   ctl.maxit = maxit;
@@ -249,8 +250,8 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
   // Shape is fixed throughout this nuisance search; preserve LstCost's
   // per-observation grouping and input-order reduction exactly.
-  const double c=df>1e4 ? -0.5*std::log(2.0*M_PI)-0.25/df :
-    special::lgamma((df+1.0)/2.0)-special::lgamma(df/2.0)-0.5*std::log(df*M_PI);
+  const double c=df>1e4 ? -0.5*std::log(2.0*cppunivariate::pi)-0.25/df :
+    special::lgamma((df+1.0)/2.0)-special::lgamma(df/2.0)-0.5*std::log(df*cppunivariate::pi);
   auto ll=[&](double m,double s) -> double {
     const double ls=std::log(s);
     // LstCost reconstructs s from log(s); keep that rounding.
@@ -298,7 +299,7 @@ inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma
   if(std::isnan(sigma)) {
     std::size_t k=0;for(double v:x)k+=v==mu;
     if((floor==0 && k>0) || 2*k>x.size())return {mu,nan,1,INFINITY,0,LstStatus::Unbounded};
-    if(2*k==x.size()){collapse=-static_cast<double>(x.size())*std::log(M_PI);for(double v:x)if(v!=mu)collapse-=2*std::log(std::abs(v-mu));}
+    if(2*k==x.size()){collapse=-static_cast<double>(x.size())*std::log(cppunivariate::pi);for(double v:x)if(v!=mu)collapse-=2*std::log(std::abs(v-mu));}
   }
   auto profile=[&](double t){return lst_detail::conditional(x,floor+std::exp(t),mu,sigma,tol,maxit);};
   std::vector<double> grid;for(double t=-12;t<=16;t+=.5)grid.push_back(t);

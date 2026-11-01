@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 #include "hold_search.hpp"
 
@@ -104,7 +105,7 @@ struct SstdCost {
     // m1(m) = Gamma((m+1)/2) / Gamma((m+2)/2) * sqrt(m / pi).
     const double log_m1 =
         std::lgamma(0.5 * (m + 1.0)) - std::lgamma(0.5 * (m + 2.0)) +
-        0.5 * std::log(m / M_PI);
+        0.5 * std::log(m / cppunivariate::pi);
     const double m1 = std::exp(log_m1);
     const double dlogm1_dm =
         0.5 * (cppunivariate::special::digamma(0.5 * (m + 1.0)) -

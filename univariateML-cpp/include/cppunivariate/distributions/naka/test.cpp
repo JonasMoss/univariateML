@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include <algorithm>
 #include "test_support.hpp"
 #include "cppunivariate/distributions/naka/mle.hpp"
@@ -38,7 +39,7 @@ TEST_CASE("naka dpqr support and extreme log probabilities") {
   CHECK(cppunivariate::distributions::pnaka(-1,2,3,false)==1);
   CHECK(cppunivariate::distributions::dnaka(-1,2,3)==0);
   CHECK(std::isinf(cppunivariate::distributions::dnaka(0,.25,2)));
-  CHECK(cppunivariate::distributions::dnaka(0,.5,2)==doctest::Approx(1/std::sqrt(M_PI)));
+  CHECK(cppunivariate::distributions::dnaka(0,.5,2)==doctest::Approx(1/std::sqrt(cppunivariate::pi)));
   CHECK(cppunivariate::distributions::dnaka(0,2,2)==0);
   CHECK(std::isnan(cppunivariate::distributions::dnaka(1,-1,2)));
   for (bool lower : {true,false}) {

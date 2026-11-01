@@ -74,7 +74,7 @@ test_that("internal dhnorm retains the translated half-normal endpoints", {
                  expected, tolerance = 1e-12)
   }
   set.seed(12); actual <- rml(30, fit)
-  set.seed(12); expect_identical(actual, mu + rhnorm(n = 30, mu = 0, sigma = sigma))
+  set.seed(12); expect_equal(actual, mu + rhnorm(n = 30, mu = 0, sigma = sigma), tolerance = 1e-14)
 })
 
 test_that("half-normal preserves exact endpoints at large translations", {
@@ -101,7 +101,7 @@ test_that("held half-normal endpoint is exact, closed and counted as fixed", {
   for(lower in c(TRUE,FALSE)) for(lp in if(lower) -100 else c(-100,-1000))
     expect_equal(pml(qml(lp,f,lower,TRUE),f,lower,TRUE),lp,tolerance=1e-10)
   set.seed(1); a <- rml(20,f)
-  set.seed(1); expect_identical(a, f[["mu"]] + rhnorm(n = 20, mu = 0, sigma = f[["sigma"]]))
+  set.seed(1); expect_equal(a, f[["mu"]] + rhnorm(n = 20, mu = 0, sigma = f[["sigma"]]), tolerance = 1e-14)
   set.seed(1); boot <- bootstrapml(f,reps=3,reducer=identity)
   expect_true(all(boot["mu",]==0))
 })

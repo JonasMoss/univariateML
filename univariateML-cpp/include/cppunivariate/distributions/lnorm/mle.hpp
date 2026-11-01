@@ -2,6 +2,7 @@
 // includes the change-of-variable Jacobian -sum(log(x)).
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -59,11 +60,11 @@ inline LognormalResult lognormal_mle(span x,double meanlog,double sdlog) {
     if (std::isnan(sdlog)) sdlog=big*std::sqrt(scaled/n);
     if (!(sdlog>0 && std::isfinite(sdlog))) return {meanlog,sdlog,nan,LognormalStatus::IterationFailure};
     const double ratio=big/sdlog;
-    return {meanlog,sdlog,jac-n*(std::log(sdlog)+0.5*std::log(2*M_PI))-0.5*scaled*ratio*ratio};
+    return {meanlog,sdlog,jac-n*(std::log(sdlog)+0.5*std::log(2*cppunivariate::pi))-0.5*scaled*ratio*ratio};
   }
   if(std::isnan(sdlog))sdlog=static_cast<double>(std::sqrt(ss/n));
   if(!(sdlog>0))return {meanlog,sdlog,nan,LognormalStatus::Unbounded};
-  const double ll=static_cast<double>(jac-n*(std::log(sdlog)+0.5*std::log(2*M_PI))-ss/(2*static_cast<CPPUNIV_EXTENDED_REAL>(sdlog)*sdlog));
+  const double ll=static_cast<double>(jac-n*(std::log(sdlog)+0.5*std::log(2*cppunivariate::pi))-ss/(2*static_cast<CPPUNIV_EXTENDED_REAL>(sdlog)*sdlog));
   return {meanlog,sdlog,ll,std::isfinite(ll) ? LognormalStatus::Ok : LognormalStatus::IterationFailure};
 }
 

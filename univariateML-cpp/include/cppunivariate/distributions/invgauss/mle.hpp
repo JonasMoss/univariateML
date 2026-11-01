@@ -3,6 +3,7 @@
 //   1/lambda = mean(1/x) - 1/mu
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -49,7 +50,7 @@ inline InvGaussResult invgauss_mle(span x) {
 
   // At the profiled lambda, the quadratic term equals n exactly.
   const double logLik = -0.5 * dn *
-      (3.0 * L - std::log(lambda) + std::log(2.0 * M_PI) + 1.0);
+      (3.0 * L - std::log(lambda) + std::log(2.0 * cppunivariate::pi) + 1.0);
   return {mu, lambda, logLik,
     std::isfinite(mu) && std::isfinite(lambda) && std::isfinite(logLik) ?
       InvGaussStatus::Ok : InvGaussStatus::IterationFailure};
@@ -67,7 +68,7 @@ inline InvGaussResult invgauss_mle(span x,double mu,double shape) {
   CPPUNIV_EXTENDED_REAL q=0;for(double v:x){const CPPUNIV_EXTENDED_REAL d=(static_cast<CPPUNIV_EXTENDED_REAL>(v)-mu)/mu;q+=d*d/v;}
   if(std::isnan(shape) && q==0)return {mu,nan,nan,InvGaussStatus::Unbounded};
   if(std::isnan(shape))shape=static_cast<double>(n/q);
-  const double ll=static_cast<double>(0.5*n*(std::log(shape)-std::log(2*M_PI))-1.5*logs-0.5*shape*q);
+  const double ll=static_cast<double>(0.5*n*(std::log(shape)-std::log(2*cppunivariate::pi))-1.5*logs-0.5*shape*q);
   return {mu,shape,ll};
 }
 

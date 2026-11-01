@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include "test_support.hpp"
 #include "cppunivariate/distributions/sstd/mle.hpp"
 #include "cppunivariate/distributions/sstd/dpqr.hpp"
@@ -299,7 +300,7 @@ TEST_CASE("sstd: P0b normal, df-two and forced half-t faces") {
 
 // At symmetry F(0)=1/2; the local inverse is delta_p/f(0).
 TEST_CASE("sstd: symmetric member has exact median and signed log-half offset") {
-  const double offset=2.3190468138462995584e-17*(3*M_PI*std::sqrt(3.0)/16);
+  const double offset=2.3190468138462995584e-17*(3*cppunivariate::pi*std::sqrt(3.0)/16);
   for(bool lower:{true,false}) for(bool log:{true,false}) {
     const double p=log?-0.6931471805599453:.5;
     const double expected=log?(lower?offset:-offset):0;

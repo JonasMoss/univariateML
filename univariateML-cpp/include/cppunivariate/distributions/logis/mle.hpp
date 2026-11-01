@@ -8,6 +8,7 @@
 // engine of Log-Logistic via a log-transform.
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -127,7 +128,7 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
   double sample_var = (n > 1) ? M2 / static_cast<double>(n - 1) : 0.0;
   if (!(sample_var > 0.0) || !std::isfinite(sample_var))
     return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
-  double theta = std::log(std::sqrt(sample_var) * std::sqrt(3.0) / M_PI);
+  double theta = std::log(std::sqrt(sample_var) * std::sqrt(3.0) / cppunivariate::pi);
 
   int iter = 0;
   for (iter = 0; iter < maxit; ++iter) {

@@ -2,6 +2,7 @@
 // standardised (mean, sd, xi) coordinates.
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/reparam.hpp"
@@ -75,7 +76,7 @@ inline SnormResult held_fit(span x, double mu, double sd, double xi) {
     for(double v:x) ss+=(v-mean)*(v-mean);
     if(!hs) sigma=std::sqrt(ss/x.size());
     if(!(sigma>0)) return out;
-    return {mean,sigma,xi,-static_cast<double>(x.size())*(std::log(sigma)+0.5*std::log(2*M_PI))-ss/(2*sigma*sigma),0,SnormStatus::Ok};
+    return {mean,sigma,xi,-static_cast<double>(x.size())*(std::log(sigma)+0.5*std::log(2*cppunivariate::pi))-ss/(2*sigma*sigma),0,SnormStatus::Ok};
   }
   const double origin=hm ? mu : lo+(hi-lo)/2;
   double unit=hs ? sd : std::max(hi-lo,std::max(std::abs(lo-origin),std::abs(hi-origin)));
@@ -83,7 +84,7 @@ inline SnormResult held_fit(span x, double mu, double sd, double xi) {
   std::vector<double> y;
   for(double v:x) y.push_back((v-origin)/unit);
   const double n=static_cast<double>(x.size()), yl=(lo-origin)/unit, yh=(hi-origin)/unit;
-  const double m1=std::sqrt(2/M_PI), h=std::sqrt(1-m1*m1);
+  const double m1=std::sqrt(2/cppunivariate::pi), h=std::sqrt(1-m1*m1);
   double best_mu=0, best_sd=1;
   auto profile=[&](double lx) {
     const double skew=hx ? xi : std::exp(lx);
@@ -132,7 +133,7 @@ inline SnormResult held_fit(span x, double mu, double sd, double xi) {
     if(!(b>0)) continue;
     const double c=hm ? -side*m1*b : centre;
     if((side==1 && c>yl+1e-12) || (side==-1 && c<yh-1e-12)) continue;
-    double ll=n*(0.5*std::log(2/M_PI)-std::log(b)-std::log(unit));
+    double ll=n*(0.5*std::log(2/cppunivariate::pi)-std::log(b)-std::log(unit));
     for(double v:y) {
       ll-=0.5*((v-c)/b)*((v-c)/b);
       // If both moments are held, the mode approaches this endpoint from
@@ -243,14 +244,14 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int /*maxit*/,
     for (std::size_t j=0; j<p.size(); ++j) p[j]-=q[j];
     for (CPPUNIV_EXTENDED_REAL t : snorm_detail::roots(p)) consider(l+h*t,k);
   }
-  const double ll=static_cast<double>(n*(CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/M_PI)-std::log(scale)
+  const double ll=static_cast<double>(n*(CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi)-std::log(scale)
                      -CPPUNIV_EXTENDED_LITERAL(1.5,1.5L)*std::log(best)+CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(static_cast<CPPUNIV_EXTENDED_REAL>(n))-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)));
   if (mode == 0) return {nan,nan,nan,ll,0,SnormStatus::RightHalfNormalBoundary};
   if (mode == 1) return {nan,nan,nan,ll,0,SnormStatus::LeftHalfNormalBoundary};
   // For the two-piece normal: E[X]=c+m1*(b-a),
   // Var[X]=a*a-a*b+b*b-m1*m1*(b-a)^2, xi=sqrt(b/a).
   const CPPUNIV_EXTENDED_REAL factor=scale*std::sqrt(best/n), a=ca*factor, b=cb*factor;
-  const CPPUNIV_EXTENDED_REAL m1=std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/M_PI);
+  const CPPUNIV_EXTENDED_REAL m1=std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi);
   const double mu=static_cast<double>(origin+scale*mode+m1*(b-a));
   const double sigma=static_cast<double>(std::sqrt(a*a-a*b+b*b-m1*m1*(b-a)*(b-a)));
   return {mu,sigma,static_cast<double>(std::sqrt(b/a)),ll,0,SnormStatus::Ok};
