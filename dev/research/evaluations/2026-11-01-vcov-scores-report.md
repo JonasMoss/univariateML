@@ -531,3 +531,22 @@ covariance is unreliable near singular-information members and in heavy
 tails at n=500; an R `vcov` should report the conditioning diagnostic and
 say so. A bnbinom check at a point with beta > 2 would separate a heavy-tail
 effect from an implementation problem.
+
+### Second simbox follow-up: truth points away from singular members
+
+`UMVL_MC_TRUTH` (master) moved the truth points; n = 500, paired MCSE
+units (model, sandwich).
+
+| Family, truth | Ok | Result |
+|---|---:|---|
+| sn, alpha = 3 | 200/200 | all within 0.5 MCSE: the alpha = 0.5 discrepancy was the singular point |
+| bhatt, a = 2 | 199/200 | mu, sigma within 0.8; a +3.6 / +2.2 |
+| bnbinom, size 5, alpha 6, beta 4 | 196/200 | size: model +5.9, sandwich +0.2; beta +3.3 / -1.4 |
+| bnbinom, size 2, alpha 6, beta 10 | 393/400 | size +2.6 / +0.2 (median SE 0.65 model, 0.43 sandwich); beta +4.2 / +1.8 |
+
+Open: bnbinom observed-information SEs exceed the sandwich and the empirical
+SD under the model even away from the size = beta symmetry ridge, while the
+derivative validation passes. Size and beta are weakly identified at
+n = 500 (heavy-tailed estimates); a larger-n run (the MC driver fixes
+n = 500) should show whether the two covariances converge before bnbinom's
+observed vcov is trusted.
