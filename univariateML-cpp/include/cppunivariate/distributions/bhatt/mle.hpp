@@ -1,4 +1,5 @@
 #pragma once
+#include "../emg/logconcave_profile.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 #include "dpqr.hpp"
@@ -150,8 +151,51 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   bhatt_detail::Profile p{y,held_s,held_a,face,held_mu};
   BhattResult best={0,0,0,special::kNegInf,0,BhattStatus::IterationFailure};
   auto attempted=best;
+  bool faces_only=false;
+  auto fallback_reason=logconcave_detail::FallbackReason::InnerFailure;
+  logconcave_detail::reset_fallback();
   const std::vector<double> starts={-4,-1,0,1};
   const std::vector<double> widths={-4,-1,-.3,-.05};
+  if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(a)) {
+    const auto candidate=logconcave_detail::search(y,[](CPPUNIV_EXTENDED_REAL z,CPPUNIV_EXTENDED_REAL k) {
+      // Conditional latent-uniform moments avoid subtracting nearly equal
+      // normal probabilities and their derivatives for a narrow interval.
+      if(k*(1+std::abs(z))<0.05) {
+        constexpr CPPUNIV_EXTENDED_REAL nodes[4]={CPPUNIV_EXTENDED_LITERAL(.18343464249564980494,.18343464249564980494L),CPPUNIV_EXTENDED_LITERAL(.52553240991632898582,.52553240991632898582L),CPPUNIV_EXTENDED_LITERAL(.79666647741362673959,.79666647741362673959L),CPPUNIV_EXTENDED_LITERAL(.96028985649753623168,.96028985649753623168L)};
+        constexpr CPPUNIV_EXTENDED_REAL weights[4]={CPPUNIV_EXTENDED_LITERAL(.36268378337836198297,.36268378337836198297L),CPPUNIV_EXTENDED_LITERAL(.31370664587788728734,.31370664587788728734L),CPPUNIV_EXTENDED_LITERAL(.22238103445337447054,.22238103445337447054L),CPPUNIV_EXTENDED_LITERAL(.10122853629037625915,.10122853629037625915L)};
+        CPPUNIV_EXTENDED_REAL sum=0,m=0,m2=0;
+        for(int i=0;i<4;++i)for(int sign:{-1,1}) {
+          const CPPUNIV_EXTENDED_REAL t=sign*k*nodes[i],w=weights[i]*std::exp(z*t-t*t/2)/2;
+          sum+=w;m+=w*t;m2+=w*t*t;
+        }
+        m/=sum;m2/=sum;
+        return std::array<CPPUNIV_EXTENDED_REAL,3>{{bhatt_detail::logphi_extended(z)+std::log(sum),m-z,m2-m*m-1}};
+      }
+      const CPPUNIV_EXTENDED_REAL u=static_cast<CPPUNIV_EXTENDED_REAL>(z)-k,v=static_cast<CPPUNIV_EXTENDED_REAL>(z)+k;
+      const CPPUNIV_EXTENDED_REAL lu=bhatt_detail::logphi_extended(u),lv=bhatt_detail::logphi_extended(v);
+      const CPPUNIV_EXTENDED_REAL logd=(u < -12 && v > 12)?0:
+        (u>=0?bhatt_detail::logdiff_extended(bhatt_detail::logQ_extended(u),bhatt_detail::logQ_extended(v)):
+        bhatt_detail::logdiff_extended(bhatt_detail::logQ_extended(-v),bhatt_detail::logQ_extended(-u)));
+      const CPPUNIV_EXTENDED_REAL A=std::exp(lu-logd),B=std::exp(lv-logd);
+      CPPUNIV_EXTENDED_REAL g=0;
+      if(lu!=lv) {const CPPUNIV_EXTENDED_REAL ln=std::max(lu,lv)+std::log(-std::expm1(-std::abs(lu-lv)));g=(lv>lu?1:-1)*std::exp(ln-logd);}
+      return std::array<CPPUNIV_EXTENDED_REAL,3>{{logd-std::log(2*static_cast<CPPUNIV_EXTENDED_REAL>(k)),g,u*A-v*B-g*g}};
+    },maxit);
+    if(candidate.ok && candidate.faces_only) {
+      faces_only=true;best=attempted={0,0,special::kNaN,candidate.ll,0,BhattStatus::IterationFailure};
+    } else if(candidate.ok) {
+      const double sig=1/candidate.b,width=candidate.k/candidate.b;
+      const auto polished=bhatt_detail::search(p,{std::log(sig),std::log(width)},tol,maxit);
+      if(polished.status==BhattStatus::Ok) {
+        best=attempted=polished;
+        // Retain the better of the profile polish and one existing central
+        // multistart seed; this also preserves the established fit precision.
+        const auto central=bhatt_detail::search(p,{-1,-.3},tol,maxit);
+        if(central.status==BhattStatus::Ok && central.logLik>=best.logLik)best=attempted=central;
+      } else fallback_reason=logconcave_detail::FallbackReason::PolishFailure;
+    }
+  }
+  auto run_multistart=[&]() {
   for(double s:starts)for(double b:widths){
     if(!std::isnan(sigma)&&s!=starts.front())continue;
     if(!std::isnan(a)&&b!=widths.front())continue;
@@ -159,9 +203,15 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     const auto f=bhatt_detail::search(p,t,tol,maxit);if(std::isfinite(f.logLik) && f.logLik>attempted.logLik)attempted=f;
     if(f.status==BhattStatus::Ok && std::isfinite(f.logLik) && f.logLik>best.logLik)best=f;
   }
+  };
+  if(!std::isfinite(best.logLik)) {
+    if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(a))logconcave_detail::record_fallback(fallback_reason);
+    run_multistart();
+  }
   if(!std::isfinite(best.logLik))best=attempted;
-  double comparison=attempted.logLik;
   const double tie=1e-8*n;
+  auto compare_faces=[&]() {
+  double comparison=attempted.logLik;
   if(std::isnan(a)) {
     double m=0;for(double z:y)m+=z/n;if(!std::isnan(mu))m=held_mu;double var=0;for(double z:y)var+=(z-m)*(z-m)/n;
     const double s=std::isnan(sigma)?std::sqrt(var):p.sigma;
@@ -179,6 +229,15 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
       }
       if(ll>=comparison-(best.a==0?0:tie))best={0,0,b,ll,0,BhattStatus::UniformLimit};
     }
+  }
+  };
+  compare_faces();
+  if(faces_only && best.status==BhattStatus::IterationFailure) {
+    logconcave_detail::record_fallback(logconcave_detail::FallbackReason::UnresolvedFaces);
+    best={0,0,0,special::kNegInf,0,BhattStatus::IterationFailure};attempted=best;
+    run_multistart();
+    if(!std::isfinite(best.logLik))best=attempted;
+    compare_faces();
   }
   best.mu=std::isnan(mu)?centre+scale*best.mu:mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.a=std::isnan(a)?scale*best.a:a;best.logLik-=n*std::log(scale);return best;
 }

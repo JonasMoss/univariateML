@@ -1,4 +1,5 @@
 #pragma once
+#include "logconcave_profile.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 #include "dpqr.hpp"
@@ -110,9 +111,34 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
   emg_detail::Profile p{y,std::isnan(mu)?mu:(mu-mean)/scale,std::isnan(sigma)?sigma:sigma/scale,std::isnan(lambda)?lambda:lambda*scale};
   EmgResult best={0,0,0,special::kNegInf,0,EmgStatus::IterationFailure};
   auto attempted=best;
+  bool faces_only=false;
+  auto fallback_reason=logconcave_detail::FallbackReason::InnerFailure;
+  logconcave_detail::reset_fallback();
   // A grid of starts covers both faces and the interior. It is a numerical
   // global search, not a certificate that every stationary mode is isolated.
   const std::vector<double> starts={-6,-3,-1,0,1};
+  if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(lambda)) {
+    const auto candidate=logconcave_detail::search(y,[](CPPUNIV_EXTENDED_REAL z,CPPUNIV_EXTENDED_REAL k) {
+      const CPPUNIV_EXTENDED_REAL t=static_cast<CPPUNIV_EXTENDED_REAL>(k)-z;
+      CPPUNIV_EXTENDED_REAL g,h;
+      if(t>=12) { CPPUNIV_EXTENDED_REAL r=0;for(int j=40;j>=2;--j)r=j/(t+r);const CPPUNIV_EXTENDED_REAL v=1/(t+r);g=-z+v;h=-(t+v)*v; }
+      else {const CPPUNIV_EXTENDED_REAL r=std::exp(-emg_detail::logmills(t));g=r-k;h=-r*(r-t);}
+      return std::array<CPPUNIV_EXTENDED_REAL,3>{{std::log(k)+emg_detail::logterm(z,k),g,h}};
+    },maxit);
+    if(candidate.ok && candidate.faces_only) {
+      faces_only=true;best=attempted={0,0,0,candidate.ll,0,EmgStatus::IterationFailure};
+    } else if(candidate.ok) {
+      const double sig=1/candidate.b,lam=candidate.k*candidate.b;
+      const auto polished=emg_detail::search(p,{std::log(sig),-std::log(lam)},tol,maxit);
+      if(polished.status==EmgStatus::Ok) {
+        best=attempted=polished;
+        // Compare one existing start to preserve established fit precision.
+        const auto central=emg_detail::search(p,{-6,0},tol,maxit);
+        if(central.status==EmgStatus::Ok && central.logLik>=best.logLik)best=attempted=central;
+      } else fallback_reason=logconcave_detail::FallbackReason::PolishFailure;
+    }
+  }
+  auto run_multistart=[&]() {
   for(double a:starts)for(double b:starts) {
     if(!std::isnan(sigma)&&a!=starts.front())continue;
     if(!std::isnan(lambda)&&b!=starts.front())continue;
@@ -121,9 +147,15 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     if(std::isfinite(fit.logLik) && fit.logLik>attempted.logLik)attempted=fit;
     if(fit.status==EmgStatus::Ok && std::isfinite(fit.logLik) && fit.logLik>best.logLik)best=fit;
   }
+  };
+  if(!std::isfinite(best.logLik)) {
+    if(std::isnan(mu)&&std::isnan(sigma)&&std::isnan(lambda))logconcave_detail::record_fallback(fallback_reason);
+    run_multistart();
+  }
   if(!std::isfinite(best.logLik))best=attempted;
-  double comparison=attempted.logLik;
   const double n=static_cast<double>(x.size()),tie=1e-8*n;
+  auto compare_faces=[&]() {
+  double comparison=attempted.logLik;
   // Conditional normal face: respect every held parameter.
   if(std::isnan(lambda)) {
     const double m=std::isnan(p.mu)?0:p.mu;
@@ -140,6 +172,15 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     // A held endpoint cannot move below the minimum to recover full density.
     if(!std::isnan(mu))ll-=ties*std::log(2.0);
     if(ll>=comparison-((best.status==EmgStatus::NormalLimit)?0:tie))best={m,0,l,ll,0,EmgStatus::TranslatedExponentialLimit};
+  }
+  };
+  compare_faces();
+  if(faces_only && best.status==EmgStatus::IterationFailure) {
+    logconcave_detail::record_fallback(logconcave_detail::FallbackReason::UnresolvedFaces);
+    best={0,0,0,special::kNegInf,0,EmgStatus::IterationFailure};attempted=best;
+    run_multistart();
+    if(!std::isfinite(best.logLik))best=attempted;
+    compare_faces();
   }
   best.mu=std::isnan(mu)?mean+scale*best.mu:mu;
   best.sigma=std::isnan(sigma)?best.sigma*scale:sigma;

@@ -129,3 +129,16 @@ TEST_CASE("bhatt P3 normal boundary is attained with conditional coefficients") 
  const auto held=cppunivariate::bhatt_mle({x.data(),x.size()},1e-8,500,4,0,1);
  CHECK(held.status==cppunivariate::BhattStatus::Ok); CHECK(held.mu==1); CHECK(held.sigma==4); CHECK(held.a==0);
 }
+
+TEST_CASE("bhatt: free fit is affine equivariant") {
+  const auto g=mltest::load_distribution_golden("bhatt");
+  const auto original=cppunivariate::bhatt_mle(mltest::as_span(g.data));
+  std::vector<double> transformed;for(double x:g.data)transformed.push_back(1.25+2.5*x);
+  const auto shifted=cppunivariate::bhatt_mle(mltest::as_span(transformed));
+  REQUIRE(original.status==cppunivariate::BhattStatus::Ok);
+  REQUIRE(shifted.status==cppunivariate::BhattStatus::Ok);
+  CHECK(shifted.mu==doctest::Approx(1.25+2.5*original.mu).epsilon(1e-5));
+  CHECK(shifted.sigma==doctest::Approx(2.5*original.sigma).epsilon(1e-5));
+  CHECK(shifted.a==doctest::Approx(2.5*original.a).epsilon(1e-5));
+  CHECK(shifted.logLik==doctest::Approx(original.logLik-g.data.size()*std::log(2.5)).epsilon(1e-10));
+}
