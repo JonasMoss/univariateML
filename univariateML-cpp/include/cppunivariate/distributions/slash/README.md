@@ -99,3 +99,23 @@ Zero reciprocal sum is not sufficient for collapse: `c(rep(0, 10), -1, rep(9, 9)
 
 
 With mu held, only its tie multiplicity k matters: 2k<n gives a unique positive scale maximum; 2k>n is unbounded, and equality selects an unattained collapse supremum. Holding sigma removes collapse even for constant samples.
+
+## TASK-116: outer search evidence
+
+This model has no free shape parameter: its outer search is over location
+$m$, with scale $s$ held or profiled. For held $s>0$, the location log
+likelihood has the global Lipschitz bound $n\sqrt{2}/s$. To see this, write
+the standardized density as a constant times
+$\int_0^1 u\exp(-u^2z^2/2)\,du$. Differentiation gives the absolute
+standardized log-density score at most $|z|$. The closed form gives the
+same score at most $2/|z|$ for nonzero $z$; the minimum of these two bounds
+is at most $\sqrt2$. Divide by $s$ and sum over observations. The score is
+continuous at zero. The sample range contains a maximizer because the
+density decreases with absolute residual.
+
+| Question | Evidence |
+|---|---|
+| Inner scale | The score has the unique root under the multiplicity conditions above. The implementation uses numerical bisection, with a fixed lower bracket, rather than a verified error enclosure. |
+| Location on bounded intervals | The held-scale Lipschitz bound just proved gives an exact-arithmetic interval upper bound; multimodality is demonstrated above. No uniform positive scale bound is established here for the free-scale profile near half-mass collapse. |
+| Faces | Range containment and collapse comparisons are established above; the implemented comparisons have numerical tolerances. |
+| Global certificate | Open: implement outward-rounded likelihood and slope bounds and a finite interval subdivision for held scale; for free scale also enclose the scale root and collapse neighborhood. The existing grid search remains numerical. |

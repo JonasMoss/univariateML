@@ -130,3 +130,40 @@ and emit a warning of class `univariateML_restricted`. Held coefficients are
 not flagged. README hold exemptions apply to free coefficients. Failed
 optimizers return a failure status unless the score norm in fitting
 coordinates is below `1e-3`; unresolved scalar searches stop.
+
+## TASK-116: outer search evidence
+
+| Question | Evidence |
+|---|---|
+| Endpoint and inner scale | Proved as above: the endpoint is the minimum when free, and the log-scale score is strictly decreasing with the stated tie criterion. The implemented bisection is numerical. |
+| Shape on bounded intervals | The displayed two-mode sample disproves general unimodality. A grid and golden-section refinement do not bound missed maxima. |
+| Shape faces | The pointwise small-df bound above proves loss of likelihood in the stated cases. Convergence to the half-normal face does not by itself bound the entire finite-df tail beyond the implementation's cutoff. |
+| Global certificate | Open: a computable uniform upper bound on the profiled likelihood over each interval and over the large-df tail, including rounding and inner-solve errors, is needed. The present fit is numerical. |
+
+For a finite bounded $\nu$ interval strictly inside the scale-existence
+region, a data-dependent scale bracket is available. Let $p=n-k$ be the
+number of strictly positive residuals, $d_{\min}$ and $d_{\max}$ their
+smallest and largest values, and $q=n/[p(\nu+1)]<1$. At the scale root,
+$\sum_{d_i>0}d_i^2/(\nu\sigma^2+d_i^2)=n/(\nu+1)$, so monotonicity
+in $d_i$ gives
+$$\frac{d_{\min}}{\sqrt{\nu q/(1-q)}}\leq\sigma_*(\nu)
+\leq\frac{d_{\max}}{\sqrt{\nu q/(1-q)}}.$$
+The bounds extend uniformly over a compact shape interval separated from
+$\nu p=k$. Combined with the analytic shape score and envelope theorem,
+they imply a finite profile derivative bound there. A practical evaluated
+bound, its floating-point error, and treatment of the tie boundary are
+still missing; this existence statement is not an implemented certificate.
+
+More explicitly, with $t=\log\nu$, $w_i=d_i^2/(\nu\sigma^2)$ and
+$A(\nu)=\log\Gamma((\nu+1)/2)-\log\Gamma(\nu/2)-\frac12\log(\pi\nu)$,
+the fixed-scale score is
+$$\partial_t\ell=n\nu A'(\nu)-\frac{\nu}{2}\sum_i\log(1+w_i)
+ +\frac{\nu+1}{2}\sum_i\frac{w_i}{1+w_i}.$$
+For $\nu\in[a,b]$ with $ap>k$, the bracket above implies
+$\sigma_*\ge s_0=d_{\min}\sqrt{(ap-k)/(an)}$. Hence
+$w_i\le W=d_{\max}^2/(a s_0^2)$ and the profiled score magnitude is at
+most $n[\sup_{a\le\nu\le b}|\nu A'(\nu)|+b\log(1+W)/2+(b+1)/2]$.
+The envelope theorem applies because the scale maximum is unique and
+interior. The analogous held-scale bound uses the held scale for $s_0$.
+A computable enclosure of the digamma term and the large-$\nu$ tail is
+still needed before this can certify the complete search.
