@@ -123,3 +123,33 @@ TEST_CASE("slash: cached scale logarithm agrees with direct density formula") {
       CHECK(cppunivariate::distributions::dslash(x,m,s,true)==original);
     }
 }
+
+TEST_CASE("slash: held-scale certificate covers separated modes") {
+  const std::vector<double> x{-100,-100,-99,98,100,100,100};
+  const auto r=cppunivariate::slash_mle(mltest::as_span(x),1e-9,200,1.0);
+  REQUIRE(r.status==cppunivariate::SlashStatus::Ok);
+  for(int i=0;i<=20000;++i) {
+    const double m=-100+200.0*i/20000;
+    double ll=0;
+    for(double v:x)ll+=cppunivariate::distributions::dslash(v,m,1,true);
+    CHECK(ll<=r.logLik+1e-9*(1+std::abs(r.logLik))+1e-10);
+  }
+}
+
+TEST_CASE("slash: held-scale subdivision work limit fails closed") {
+  const std::vector<double> x{-2,0,3};
+  const cppunivariate::slash_detail::Profile p{x,1};
+  const std::vector<double> grid{-2,3};
+  const std::vector<double> ll{p(-2).logLik,p(3).logLik};
+  auto best=p(-2);
+  double lo=0,hi=0;
+  CHECK_FALSE(cppunivariate::slash_detail::certify_held(p,grid,ll,0,best,lo,hi,0));
+  CHECK(cppunivariate::slash_detail::certify_held(p,grid,ll,0,best,lo,hi));
+}
+
+TEST_CASE("slash: held-scale extreme coordinates never return a nonfinite fit") {
+  const std::vector<double> x{-1.7e308,1.6e308,1.7e308};
+  const auto r=cppunivariate::slash_mle(mltest::as_span(x),1e-9,200,1e307);
+  CHECK((r.status==cppunivariate::SlashStatus::IterationFailure ||
+         (r.status==cppunivariate::SlashStatus::Ok && std::isfinite(r.mu) && std::isfinite(r.logLik))));
+}

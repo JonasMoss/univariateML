@@ -101,7 +101,7 @@ Division, squaring, score summation and bisection midpoints stay unchanged;
 no tolerance or search change is involved. See the [paired profile and
 validation report](../../../../../dev/research/evaluations/2026-11-01-slash-speed-report.md).
 
-A value with more than half the sample mass makes the free-scale likelihood unbounded. With every multiplicity strictly below half, the maximum is attained. At exactly half, the finite collapse likelihood must be compared with the interior profile; ties within $10^{-8}n$ select collapse. Holding sigma removes collapse. The scale score has a unique root for every location away from the observations. The location profile can be multimodal; a grid over every observation gap nominates all numerical local maxima for refinement. This search is numerical, not a proof that every mode is isolated.
+A value with more than half the sample mass makes the free-scale likelihood unbounded. With every multiplicity strictly below half, the maximum is attained. At exactly half, the finite collapse likelihood must be compared with the interior profile; ties within $10^{-8}n$ select collapse. Holding sigma removes collapse. The scale score has a unique root for every location away from the observations. The location profile can be multimodal; a grid over every observation gap nominates numerical local maxima for refinement. With free scale this search is numerical, not a proof that every mode is isolated. With scale held, the search also applies the conditional subdivision certificate below.
 
 For an exact existence criterion in the half-mass case, put $c=1/\sqrt{2\pi}$ and $B_v=c^n2^{-n/2}\prod_{x_i\ne v}|x_i-v|^{-2}$ at each half-mass value $v$. For a location $m$ away from such values, let $s(m)$ be the unique positive zero of $\sum_i[1-2t_i/(e^{t_i}-1)]$, $t_i=(x_i-m)^2/(2s^2)$. An MLE exists if and only if some interior profile value $L(m,s(m))$ is at least $\max_v B_v$; if the maximum multiplicity is below half, the comparison is vacuous. This is an exact variational criterion; the implementation evaluates it numerically, with the stated tie preference. It is not a multiplicity-only rule: `c(0, 1)` has an interior maximum, whereas `c(0, 0, -1, 1)` numerically selects collapse. Location lies in the sample range; the likelihood tends to zero at all other escaping paths. The density decreases strictly with absolute standardized distance. Together these facts prove attainment below half. At a half-mass point, $L(v,s)<B_v$ for every positive scale. If $\sum_{x_i\ne v}1/(x_i-v)\ne0$, choosing $m-v$ proportional to $s^2$ increases the likelihood above $B_v$ for sufficiently small $s$, proving existence (subject to comparison with any other half-mass point). It suffices to check the sum at a half-mass value with the largest $B_v$; a sample of two values with equal counts always passes, since both sums are nonzero and the two $B_v$ agree. A zero sum is not decided by this test ([TASK-117 report](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md)).
 
@@ -127,9 +127,51 @@ is at most $\sqrt2$. Divide by $s$ and sum over observations. The score is
 continuous at zero. The sample range contains a maximizer because the
 density decreases with absolute residual.
 
+A second, local exact-arithmetic bound can sharpen subdivision near a
+stationary point. With $h(z)=\log\int_0^1 u e^{-u^2z^2/2}\,du$,
+let expectation be under the normalized integrand. Differentiating gives
+$h''(z)=-E(u^2)+z^2\operatorname{Var}(u^2)$. Since $0\le u^2\le1$,
+$-1\le h''(z)\le z^2/4$. Thus on a location interval $I$, with
+$B_i=\max_{m\in I}|x_i-m|/s$, the total likelihood satisfies
+$\ell''(m)\le\sum_i B_i^2/(4s^2)$. Taylor's theorem gives the
+corresponding quadratic upper bound from any point of $I$. This bound can
+be loose for distant observations. The implementation also uses the closed
+form $h''(z)\le 2/z^2+1/(e^{z^2/2}-1)$ away from zero, taking the smaller
+valid bound for each observation. Its slope and likelihood evaluations are
+ordinary floating-point computations.
+
+For held scale, the existing grid and its golden-section refinements supply
+an incumbent. Each interval between consecutive grid points is pruned using
+the endpoint Lipschitz cones, or bisected and pruned using the midpoint score
+and the local curvature bound. Any better subdivision point becomes the new
+incumbent and is polished by golden-section refinement. The exact-arithmetic
+global gap is at most $10^{-9}(1+|\ell_*|)$, conditional on the computed
+likelihood, score and bound comparisons. The magnitude uses the likelihood
+in the original coordinates. This margin is a practical floating-point
+allowance, not a proved error bound or outward-rounded enclosure. Subdivision
+has a budget of one million intervals; exhausted budget, a nonfinite required
+quantity, or a midpoint that cannot be represented returns `IterationFailure`
+rather than an unchecked partial maximum. The same status is used when a
+required golden-section refinement exhausts its iteration budget.
+
+For the free-scale inner problem, an explicit exact-arithmetic root bracket
+is available at any location with $k<n/2$ exact ties. Let $d$ and $D$ be
+the smallest positive and the largest absolute residual, respectively, and
+put $T=4n/(n-2k)$. The unique scale-score root lies strictly between
+$d/\sqrt{2T}$ and $\sqrt2D$. Indeed, the summand
+$g(t)=1-2t/(e^t-1)$ is increasing, $g(0)=-1$, and
+$g(t)\ge(t-2)/(t+2)$ by $e^t\ge1+t+t^2/2$. At the lower endpoint,
+the score is at least $-k+(n-k)(T-2)/(T+2)>0$. At the upper
+endpoint all $t\le1/4$ and $g(t)\le-1+2t\le-1/2$, using
+$e^t-1\le t/(1-t)$ for $0\le t<1$. This bracket is not used by
+the implementation; evaluating its endpoints and score signs with rounding
+control remains necessary. Moreover $d$ tends to zero near an observation,
+so the bracket alone does not control a half-mass collapse neighborhood.
+See the [TASK-116 investigation](../../../../../dev/research/evaluations/2026-11-01-slash-cert-report.md).
+
 | Question | Evidence |
 |---|---|
-| Inner scale | The score has the unique root under the multiplicity conditions above. The implementation uses numerical bisection, with a fixed lower bracket, rather than a verified error enclosure. |
-| Location on bounded intervals | The held-scale Lipschitz bound just proved gives an exact-arithmetic interval upper bound; multimodality is demonstrated above. No uniform positive scale bound is established here for the free-scale profile near half-mass collapse. |
+| Inner scale | The score has the unique root under the multiplicity conditions above, and the exact-arithmetic bracket above encloses it. The implementation uses numerical bisection, with a fixed lower bracket, rather than a verified error enclosure. |
+| Location on bounded intervals | Held scale uses the Lipschitz and curvature bounds with complete subdivision, conditional on computed comparisons; multimodality is demonstrated above. No uniform positive scale bound is established here for the free-scale profile near half-mass collapse. |
 | Faces | Range containment and collapse comparisons are established above; the implemented comparisons have numerical tolerances. |
-| Global certificate | Open: implement outward-rounded likelihood and slope bounds and a finite interval subdivision for held scale; for free scale also enclose the scale root and collapse neighborhood. The existing grid search remains numerical. |
+| Global certificate | Held-scale objective gap bounded by the stated margin in exact arithmetic conditional on computed comparisons; the margin is not a proved rounding bound. Free scale remains a numerical grid search: a scale-root enclosure and uniform bounds near collapse remain open. |

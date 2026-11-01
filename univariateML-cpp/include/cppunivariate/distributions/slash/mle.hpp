@@ -34,6 +34,77 @@ struct Profile {
     return {m,s,ll,0,SlashStatus::Ok};
   }
 };
+
+// Upper curvature bound and location score at m. The variance bound is
+// complemented by the closed-form tail bound documented in the dossier.
+inline bool held_slope_curvature(const Profile& p,double m,double lo,double hi,
+                                 double& slope,double& curvature) {
+  const double s=p.held;
+  slope=0;curvature=0;
+  if(!(s>0&&std::isfinite(s)))return false;
+  for(double v:p.x) {
+    const double z=(v-m)/s, t=(.5*z)*z;
+    double score;
+    if(t<1e-4)score=z*(.5-t/12+t*t*t/720);
+    else if(t>=700)score=2/z;
+    else score=2/z-z/std::expm1(t);
+    slope+=score/s;
+    const double left=std::abs((v-lo)/s),right=std::abs((v-hi)/s);
+    const double upper=std::max(left,right);
+    const double lower=(v>=lo&&v<=hi)?0:std::min(left,right);
+    double bound=.25*upper*upper;
+    if(lower>0) {
+      const double q=(.5*lower)*lower;
+      const double tail=2/(lower*lower)+(q>=700?0:1/std::expm1(q));
+      bound=std::min(bound,tail);
+    }
+    curvature+=(bound/s)/s;
+  }
+  return std::isfinite(slope)&&std::isfinite(curvature);
+}
+
+struct HeldInterval {double lo,hi,flo,fhi;};
+
+// Conditional on floating-point comparisons: exact-arithmetic Lipschitz and
+// curvature bounds, with a practical likelihood margin, not interval math.
+inline bool certify_held(const Profile& p,const std::vector<double>& grid,
+                         const std::vector<double>& ll,double offset,
+                         SlashResult& best,double& polish_lo,double& polish_hi,
+                         std::size_t budget=1000000) {
+  if(!(p.held>0&&std::isfinite(p.held))||!std::isfinite(best.logLik)||!std::isfinite(offset))return false;
+  const double lip=static_cast<double>(p.x.size())*1.4142135623730950488/p.held;
+  if(!std::isfinite(lip))return false;
+  std::vector<HeldInterval> stack;
+  for(std::size_t i=1;i<grid.size();++i) {
+    if(!std::isfinite(ll[i-1])||!std::isfinite(ll[i]))return false;
+    stack.push_back({grid[i-1],grid[i],ll[i-1],ll[i]});
+  }
+  std::size_t work=0;
+  while(!stack.empty()) {
+    if(++work>budget)return false;
+    const HeldInterval q=stack.back();stack.pop_back();
+    const double margin=1e-9*(1+std::abs(best.logLik-offset));
+    const double width=q.hi-q.lo;
+    const double upper=std::max(std::max(q.flo,q.fhi),
+        (q.flo/2+q.fhi/2)+(lip*width)/2);
+    if(upper<=best.logLik+margin)continue;
+    const double mid=q.lo/2+q.hi/2;
+    if(!(mid>q.lo&&mid<q.hi))return false;
+    const SlashResult f=p(mid);
+    if(!std::isfinite(f.logLik))return false;
+    if(f.logLik>best.logLik){best=f;polish_lo=q.lo;polish_hi=q.hi;}
+    const double current_margin=1e-9*(1+std::abs(best.logLik-offset));
+    double slope,curvature;
+    if(held_slope_curvature(p,mid,q.lo,q.hi,slope,curvature)) {
+      const double radius=std::max(mid-q.lo,q.hi-mid);
+      const double bound=f.logLik+std::abs(slope)*radius+.5*curvature*radius*radius;
+      if(bound<=best.logLik+current_margin)continue;
+    }
+    stack.push_back({q.lo,mid,q.flo,f.logLik});
+    stack.push_back({mid,q.hi,f.logLik,q.fhi});
+  }
+  return true;
+}
 }
 inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=special::kNaN,double mu=special::kNaN) {
   SlashResult bad={special::kNaN,special::kNaN,special::kNaN,0,SlashStatus::InvalidInput};
@@ -111,8 +182,29 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=s
     if(f.logLik>best.logLik)best=f;
   }
   if(failed || !refined)best.status=SlashStatus::IterationFailure;
+  if(!std::isnan(sigma)&&best.status==SlashStatus::Ok) {
+    double lo=0,hi=0;
+    if(!slash_detail::certify_held(p,grid,ll,n*std::log(scale),best,lo,hi)) {
+      bad.status=SlashStatus::IterationFailure;return bad;
+    }
+    if(hi>lo) {
+      int it=0;
+      double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
+      auto fa=p(a),fb=p(b);
+      for(;it<maxit&&hi-lo>tol;++it) {
+        if(fa.logLik>fb.logLik){hi=b;b=a;fb=fa;a=hi-(hi-lo)*.6180339887498948482;fa=p(a);}
+        else{lo=a;a=b;fa=fb;b=lo+(hi-lo)*.6180339887498948482;fb=p(b);}
+      }
+      if(it==maxit){bad.status=SlashStatus::IterationFailure;return bad;}
+      auto f=fa.logLik>fb.logLik?fa:fb;
+      if(f.logLik>best.logLik){f.iterations=it;best=f;}
+    }
+  }
   if(boundary>=best.logLik-1e-8*n){bad.status=SlashStatus::CollapseLimit;return bad;}
   best.mu=centre+scale*best.mu;best.sigma=std::isnan(sigma)?scale*best.sigma:sigma;best.logLik-=n*std::log(scale);
+  if(!std::isnan(sigma)&&(!std::isfinite(best.mu)||!std::isfinite(best.logLik))) {
+    bad.status=SlashStatus::IterationFailure;return bad;
+  }
   return best;
 }
 }
