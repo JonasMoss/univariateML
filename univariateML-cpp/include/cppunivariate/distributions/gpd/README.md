@@ -54,7 +54,7 @@ r:
     iterlim: Maximum number of bisection iterations per root.
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma, Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma), True))
 limits:
-  - {firmness: argued, name: threshold scale collapse, fixed: [mu], status: InvalidData, message: "scale collapse at the threshold", when: "With free scale, all data equal mu, or threshold ties permit xi*k >= n-k (free xi always permits this path)."}
+  - {firmness: proved, name: threshold scale collapse, fixed: [mu], status: InvalidData, message: "scale collapse at the threshold", when: "With free scale, all data equal mu, or threshold ties permit xi*k >= n-k (free xi always permits this path)."}
 references:
 - Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics,
   35(2), 185–191. doi:10.1080/00401706.1993.10485040.
@@ -112,6 +112,17 @@ when the density limit there is positive. Threshold ties with free shape
 and scale permit scale collapse and stop.
 
 ## Details
+
+For $k$ observations at the held threshold $\mu$, each contributes
+$1/\sigma$. With fixed $\xi>0$, each other observation at distance $d>0$
+contributes asymptotically
+$\xi^{-1-1/\xi}d^{-1-1/\xi}\sigma^{1/\xi}$ as $\sigma\downarrow0$.
+Thus likelihood has order $\sigma^{(n-k)/\xi-k}$: it diverges for a
+negative exponent and has a positive finite path limit at equality. If
+all observations are at the threshold it diverges as $\sigma^{-n}$.
+With free positive shape, any $k>0$ permits a strictly negative exponent
+by choosing $\xi>(n-k)/k$. Equality alone does not prove a global
+supremum or nonattainment.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) describes the limiting paths and the scope of the boundary comparisons.
 

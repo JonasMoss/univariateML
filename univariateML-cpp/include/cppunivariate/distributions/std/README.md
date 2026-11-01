@@ -54,12 +54,12 @@ limits:
     when: "tie multiplicity k = nu*(n-k)"
     status: ScaleBoundary
   - model: 'norm'
-    firmness: argued
-    when: '$\nu \to \infty$'
+    firmness: proved
+    when: '$\nu \to \infty$ with mean and sd fixed'
     status: 'NormalBoundary'
   - model: lst
-    firmness: argued
-    when: '$\nu \to 2^+$'
+    firmness: proved
+    when: '$\nu \to 2^+$ with mean and ordinary t scale fixed'
     status: 'DfTwoBoundary'
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, Chapter 13.
@@ -107,6 +107,16 @@ key_references:
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.
 
 ## Details
+
+For fixed mean and sd, the ordinary t scale is
+$\mathrm{sd}\sqrt{(\nu-2)/\nu}$; the gamma ratio in the t normalizer
+and $(1+z^2/\nu)^{-(\nu+1)/2}\to e^{-z^2/2}$ give the normal
+density as $\nu\to\infty$. For the $t_2$ face, instead fix ordinary
+t scale $a>0$ and let sd $=a\sqrt{\nu/(\nu-2)}$ diverge as
+$\nu\downarrow2$; continuity of the ordinary t density gives the
+location-scale $t_2$ density. Scheffé's lemma upgrades each to
+total-variation convergence. Neither limit certifies the fitter's
+numerical boundary comparison.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 

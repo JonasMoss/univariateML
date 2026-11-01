@@ -66,47 +66,47 @@ log_density: "log(sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi*
 limits:
   - {firmness: numerical, name: unresolved constrained uniform endpoint rates, fixed: [sd], when: "fixed uniform width equals the sample range and its endpoint face would win", status: ScaleBoundary}
   - {firmness: numerical, name: unresolved constrained uniform endpoint rates, fixed: [sd, xi], when: "fixed uniform width equals the sample range and its endpoint face would win", status: ScaleBoundary}
-  - {firmness: argued, model: unif, fixed: [mean], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
-  - {firmness: argued, name: right translated half-family, fixed: [mean], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
-  - {firmness: argued, name: left translated half-family, fixed: [mean], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {firmness: proved, model: unif, fixed: [mean], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {firmness: proved, name: right translated half-family, fixed: [mean], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {firmness: proved, name: left translated half-family, fixed: [mean], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
   - {firmness: proved, name: constant sample scale collapse, fixed: [mean], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
-  - {firmness: argued, model: unif, fixed: [sd], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
-  - {firmness: argued, name: right translated half-family, fixed: [sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
-  - {firmness: argued, name: left translated half-family, fixed: [sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
-  - {firmness: argued, name: right translated half-family, fixed: [nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
-  - {firmness: argued, name: left translated half-family, fixed: [nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {firmness: proved, model: unif, fixed: [sd], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {firmness: proved, name: right translated half-family, fixed: [sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {firmness: proved, name: left translated half-family, fixed: [sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {firmness: proved, name: right translated half-family, fixed: [nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {firmness: proved, name: left translated half-family, fixed: [nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
   - {firmness: proved, name: constant sample scale collapse, fixed: [nu], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
-  - {firmness: argued, model: unif, fixed: [xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {firmness: proved, model: unif, fixed: [xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
   - {firmness: proved, name: constant sample scale collapse, fixed: [xi], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
-  - {firmness: argued, model: unif, fixed: [mean, sd], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
-  - {firmness: argued, name: right translated half-family, fixed: [mean, sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
-  - {firmness: argued, name: left translated half-family, fixed: [mean, sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
-  - {firmness: argued, name: right translated half-family, fixed: [mean, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
-  - {firmness: argued, name: left translated half-family, fixed: [mean, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {firmness: proved, model: unif, fixed: [mean, sd], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {firmness: proved, name: right translated half-family, fixed: [mean, sd], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {firmness: proved, name: left translated half-family, fixed: [mean, sd], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {firmness: proved, name: right translated half-family, fixed: [mean, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {firmness: proved, name: left translated half-family, fixed: [mean, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
   - {firmness: proved, name: constant sample scale collapse, fixed: [mean, nu], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
-  - {firmness: argued, model: unif, fixed: [mean, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {firmness: proved, model: unif, fixed: [mean, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
   - {firmness: proved, name: constant sample scale collapse, fixed: [mean, xi], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
-  - {firmness: argued, name: right translated half-family, fixed: [sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
-  - {firmness: argued, name: left translated half-family, fixed: [sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
-  - {firmness: argued, model: unif, fixed: [sd, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {firmness: proved, name: right translated half-family, fixed: [sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {firmness: proved, name: left translated half-family, fixed: [sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {firmness: proved, model: unif, fixed: [sd, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
   - {firmness: proved, name: constant sample scale collapse, fixed: [nu, xi], when: "All observations equal the free or held mean and sd tends to zero", status: Unbounded}
-  - {firmness: argued, name: right translated half-family, fixed: [mean, sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
-  - {firmness: argued, name: left translated half-family, fixed: [mean, sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
-  - {firmness: argued, model: unif, fixed: [mean, sd, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
+  - {firmness: proved, name: right translated half-family, fixed: [mean, sd, nu], when: "xi tends to infinity with endpoint and scale constrained by held mean and sd", status: RightHalfGedBoundary}
+  - {firmness: proved, name: left translated half-family, fixed: [mean, sd, nu], when: "xi tends to zero with endpoint and scale constrained by held mean and sd", status: LeftHalfGedBoundary}
+  - {firmness: proved, model: unif, fixed: [mean, sd, xi], when: "nu tends to infinity with the held moment constraints", status: UniformBoundary}
   - {firmness: proved, name: scale collapse, fixed: [mean, nu, xi], when: "all observations equal held mean and sd tends to zero", status: Unbounded, message: "Scale collapse"}
   - {firmness: numerical, name: uncertified scale boundary, fixed: [mean, nu, xi], when: "conditional scale search reaches its numerical tail guard", status: ScaleBoundary, message: "Scale-collapse boundary"}
   - model: unif
-    firmness: argued
+    firmness: proved
     when: '$\nu \to \infty$'
     detect: Uniform log-likelihood exceeds all finite candidates.
     status: UniformBoundary
   - name: right translated half-GED
-    firmness: argued
+    firmness: proved
     when: '$\xi \to \infty$'
     detect: Right translated half-GED profile wins.
     status: RightHalfGedBoundary
   - name: left translated half-GED
-    firmness: argued
+    firmness: proved
     when: '$\xi \to 0$'
     detect: Left translated half-GED profile wins.
     status: LeftHalfGedBoundary
@@ -148,6 +148,32 @@ key_references:
 The skew generalized error distribution extends the exponential-power family with Fernandez-Steel asymmetry. Its location and scale parameters are the mean and standard deviation.
 
 ## Details
+
+### Density limits (2026-11-01)
+
+Let $g_\nu(y)=\nu\exp(-|y|^\nu)/(2\Gamma(1/\nu))$ and
+$m_\nu=\Gamma(2/\nu)/\Gamma(1/\nu)$,
+$v_\nu=\Gamma(3/\nu)/\Gamma(1/\nu)$. With mode $c$, ordinary
+kernel scale $a$ and skew $r=\xi$, the two-piece density is
+$2g_\nu((x-c)/(ar))/(a(r+r^{-1}))$ on the right and uses
+$(x-c)r/a$ on the left. Its mean is $c+a m_\nu(r-r^{-1})$
+and its variance is
+$a^2\{v_\nu(r^2+r^{-2}-1)-m_\nu^2(r-r^{-1})^2\}$, by integration.
+These equations enforce any held mean and sd along each path.
+
+For fixed finite $r$, $g_\nu\to\mathbf1_{(-1,1)}/2$ almost everywhere,
+$m_\nu\to1/2$ and $v_\nu\to1/3$ as $\nu\to\infty$ by
+$z\Gamma(z)\to1$. The two pieces therefore join to a uniform density
+on $(c-a/r,c+ar)$, whose mean and sd agree with the limiting moment
+formulas. For $r\to\infty$ with $ar\to b>0$ and $c\to c_0$,
+the left probability $1/(1+r^2)$ vanishes and the density on the right
+converges to $2g_\nu((x-c_0)/b)/b$. Its mean and sd are
+$c_0+bm_\nu$ and $b\sqrt{v_\nu-m_\nu^2}$; reflection gives the
+left face. These limiting moment equations also cover the stated held
+subsets. Scheffé's lemma gives total-variation convergence in each case.
+Endpoint density values and coupled endpoint rates require separate
+analysis for likelihoods; these density proofs do not certify the
+numerical face comparison.
 
 The [conditional skew analysis](../../../../../dev/research/evaluations/2026-10-29-p2b-skew-report.md) derives the collapse exponents and face constraints; its equality cases and global comparisons remain uncertified.
 

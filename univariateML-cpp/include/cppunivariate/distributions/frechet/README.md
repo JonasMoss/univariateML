@@ -49,7 +49,7 @@ log_density: log(lambda)-log(sigma)-(lambda+1)*log((x-mu)/sigma)-((x-mu)/sigma)*
 limits:
   - {firmness: proved, name: fixed-shape collapse, fixed: [lambda], status: InvalidData, message: "unattained collapse face", when: "With free mu and sigma, lambda*(n-k) <= k at minimum multiplicity k."}
   - {firmness: proved, name: shape divergence, fixed: [sigma], status: InvalidData, message: "unbounded shape likelihood", when: "Constant data with free mu, or all x-mu equal held sigma."}
-  - {firmness: argued, model: gumbel, when: 'lambda tends to infinity with free location', status: GumbelLimit}
+  - {firmness: proved, model: gumbel, when: 'lambda tends to infinity with sigma/lambda fixed and mu + sigma fixed', status: GumbelLimit}
   - {firmness: numerical, name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, lambda) point beats the lambda -> 1 collapse face's limiting likelihood."}
 fit_args:
   mu: ~
@@ -97,6 +97,22 @@ key_references:
 The Frechet distribution models heavy right tails and extreme maxima.
 
 ## Details
+
+For the Gumbel face fix $b\in\mathbb R$ and $a>0$, set
+$\sigma=\lambda a$ and $\mu=b-\lambda a$, and let $\lambda\to\infty$.
+For fixed $x$, $((x-\mu)/\sigma)^{-\lambda}\to
+\exp(-(x-b)/a)$, and differentiating the Fréchet CDF gives the Gumbel
+density limit. Scheffé's lemma gives total-variation convergence. This
+is a density limit, not a certificate of the face comparison.
+
+For the free collapse path put $m=\min x_i$, $\mu=m-\varepsilon$,
+$\lambda=1$, and $\sigma=(n/k)\varepsilon$, where $k$ observations equal
+$m$. The minimum density is $(n/k)e^{-n/k}/\varepsilon$, and each
+nonminimum density is asymptotic to $(n/k)\varepsilon/(x_i-m)^2$.
+Thus the likelihood is asymptotic to a positive constant times
+$\varepsilon^{n-2k}$; at $k=n/2$ it has a finite positive limit. This
+constructs the face but does not prove that a numerical search has found
+the best finite competitor or that all joint escape paths are exhausted.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) describes the limiting paths and the scope of the boundary comparisons.
 

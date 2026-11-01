@@ -52,7 +52,7 @@ r:
     shape2: Known positive finite coefficient; NULL estimates it.
 limits:
   - name: unbounded likelihood
-    firmness: argued
+    firmness: proved
     when: A free concentration can collapse on constant observations
     detect: Constant samples; the held coefficients determine whether concentration remains free
     status: Degenerate
@@ -179,6 +179,11 @@ key_references:
 This family has a known support endpoint and delegates fitting to beta.
 
 ## Details
+
+For a constant sample at an interior point $x$, hold the endpoints
+fixed and put $p=(x-\min)/(\max-\min)\in(0,1)$. Taking beta shapes
+$tp,t(1-p)$, Stirling's formula gives density at $x$ asymptotic to
+$\sqrt{t/(2\pi p(1-p))}/(\max-\min)$. Its $n$th power diverges.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
