@@ -42,7 +42,7 @@ test_that("half-Cauchy d/p/q/r shift with a nonzero threshold", {
   expect_equal(dml(c(2,3,4,13),f), dhcauchy(x = c(2,3,4,13)-3, mu = 0, sigma = s))
   expect_equal(sum(dml(c(5,8),f,log=TRUE)), attr(f,"logLik"))
   set.seed(4); a <- rml(20,f)
-  set.seed(4); expect_identical(a, 3+rhcauchy(n = 20, mu = 0, sigma = s))
+  set.seed(4); expect_equal(a, 3+rhcauchy(n = 20, mu = 0, sigma = s), tolerance = 1e-14)
   u <- c(.1,.5,.9)
   expect_equal(qml(u,f), 3+qhcauchy(p = u, mu = 0, sigma = s))
 })

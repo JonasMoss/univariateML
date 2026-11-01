@@ -1,4 +1,5 @@
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
@@ -17,7 +18,7 @@ inline double log_phi_cdf(double t) {
   const double v=-t;
   double r=0;
   for (int k=24;k>=1;--k) r=k/(v+r);
-  return -0.5*t*t-0.5*std::log(2*M_PI)-std::log(v+r);
+  return -0.5*t*t-0.5*std::log(2*cppunivariate::pi)-std::log(v+r);
 }
 inline double inverse_mills(double t) {
   if(t < -10) {
@@ -25,17 +26,17 @@ inline double inverse_mills(double t) {
     for(int k=24;k>=1;--k) f=k/(-t+f);
     return -t+f;
   }
-  return std::exp(-0.5*t*t-0.5*std::log(2*M_PI)-log_phi_cdf(t));
+  return std::exp(-0.5*t*t-0.5*std::log(2*cppunivariate::pi)-log_phi_cdf(t));
 }
 inline double log_density(double z,double a) {
-  return std::log(2.0)-0.5*std::log(2*M_PI)-0.5*z*z+log_phi_cdf(a*z);
+  return std::log(2.0)-0.5*std::log(2*cppunivariate::pi)-0.5*z*z+log_phi_cdf(a*z);
 }
 // Cancellation-free integral of the decreasing density away from a boundary.
 // Used on the thin side, and for normal tails beyond double CDF range.
 inline double log_integral(double z,double a,bool left) {
   const double az=a*z;
   const double mills=az < -10 ? -az+1/(-az) :
-    std::exp(-0.5*az*az-0.5*std::log(2*M_PI)-log_phi_cdf(az));
+    std::exp(-0.5*az*az-0.5*std::log(2*cppunivariate::pi)-log_phi_cdf(az));
   const CPPUNIV_EXTENDED_REAL slope=-static_cast<CPPUNIV_EXTENDED_REAL>(z)+static_cast<CPPUNIV_EXTENDED_REAL>(a)*mills;
   const double scale=static_cast<double>(1/std::max(CPPUNIV_EXTENDED_LITERAL(1.0,1.0L),std::abs(slope)));
   const double base=log_density(z,a);
@@ -55,7 +56,11 @@ namespace distributions {
 inline double dsn(double x,double xi=0,double omega=1,double alpha=0,bool log=false) {
   if (!sn_detail::valid(xi,omega,alpha) || std::isnan(x)) return special::kNaN;
   if (!std::isfinite(x)) return log ? special::kNegInf : 0;
-  const double z=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x)-xi)/omega);
+  double z=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x)-xi)/omega);
+  if (!std::isfinite(z) && std::isfinite(x)) {
+    const double scaled = x/omega-xi/omega;
+    if (std::isfinite(scaled)) z=scaled;
+  }
   if(!std::isfinite(z)) return log ? special::kNegInf : 0;
   const double lp=sn_detail::log_density(z,alpha)-std::log(omega);
   return log ? lp : std::exp(lp);
@@ -63,13 +68,17 @@ inline double dsn(double x,double xi=0,double omega=1,double alpha=0,bool log=fa
 inline double psn(double q,double xi=0,double omega=1,double alpha=0,bool lower_tail=true,bool log_p=false) {
   if (!sn_detail::valid(xi,omega,alpha) || std::isnan(q)) return special::kNaN;
   double z=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(q)-xi)/omega),a=alpha;
+  if (!std::isfinite(z) && std::isfinite(q)) {
+    const double scaled = q/omega-xi/omega;
+    if (std::isfinite(scaled)) z=scaled;
+  }
   if (a<0) { a=-a; z=-z; lower_tail=!lower_tail; }
   double lp;
   if (!std::isfinite(z)) lp=((z>0)==lower_tail) ? 0 : special::kNegInf;
   else if (a==0) {
     lp=sn_detail::log_phi_cdf(lower_tail ? z : -z);
   } else if (z==0) {
-    const double small=std::log(std::atan2(1.0,a))-std::log(M_PI);
+    const double small=std::log(std::atan2(1.0,a))-std::log(cppunivariate::pi);
     lp=lower_tail ? small : sn_detail::log_complement(small);
   } else if (z>0 && z<0.5) {
     // F(z)=erf(z/sqrt(2))+F(-z). This also resolves the half-normal

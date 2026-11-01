@@ -5,6 +5,7 @@
 // downstream estimators.
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -66,7 +67,7 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
   }
 
   double theta = std::isnan(theta0)
-                     ? std::log(std::sqrt(var0) * 2.45 / M_PI)
+                     ? std::log(std::sqrt(var0) * 2.45 / cppunivariate::pi)
                      : theta0;
   int iter = 1;
   for (; iter <= maxit; ++iter) {

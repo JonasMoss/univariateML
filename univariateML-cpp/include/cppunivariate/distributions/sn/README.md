@@ -127,3 +127,11 @@ for paired regression evidence, timings and remaining guarantees.
 ## d/p/q/r
 
 Uses direct skew-normal parameters, distinct from the Fernandez–Steel family; probabilities use Owen’s T and quadrature.
+
+### Range portability (2026-11-01)
+
+Density and CDF standardization use the extended difference when available;
+if a finite input produces an infinite standardized value, they also try
+`x/omega - xi/omega`. This avoids overflow in the subtraction when the
+quotient is representable. The R density test includes opposite-sign
+`1e308` location and observation with scale `1e308`.

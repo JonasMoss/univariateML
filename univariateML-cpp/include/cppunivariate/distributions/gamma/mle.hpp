@@ -19,6 +19,7 @@
 // Stirling form. Constant data have s = 0: no MLE (point-mass limit).
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/newton.hpp"
@@ -151,7 +152,7 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   // Per observation: k log k - k - lgamma(k) - k s - mean(log x).
   const double per_obs =
       shape >= 100.0
-          ? 0.5 * std::log(shape) - 0.5 * std::log(2.0 * M_PI) -
+          ? 0.5 * std::log(shape) - 0.5 * std::log(2.0 * cppunivariate::pi) -
                 gamma_detail::stirlerr(shape) - shape * s - lx_bar
           : shape * std::log(shape) - shape - std::lgamma(shape) - shape * s - lx_bar;
   const double logLik = dn * per_obs;

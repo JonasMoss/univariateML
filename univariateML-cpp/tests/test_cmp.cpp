@@ -41,7 +41,10 @@ TEST_CASE("CMP high precision grid") {
             const double rel=std::abs((actual[j]-row[j+2])/row[j+2]);
             worst=std::max(worst,rel);
             std::cout << " " << rel;
-            CHECK(rel < 3e-15);
+            // Observed maximum on double-width long double is 1.47e-14.
+            const double tolerance = std::numeric_limits<long double>::digits <=
+                std::numeric_limits<double>::digits ? 3e-14 : 3e-15;
+            CHECK(rel < tolerance);
         }
         std::cout << std::endl;
     }

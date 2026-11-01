@@ -176,3 +176,15 @@ search also stops if its integer-resolution guard is reached.
 Invalid and empty samples carry non-success statuses, including delegate paths.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp`.
+
+### Double-width intermediate likelihood (2026-11-01)
+
+When the maximum observed count is at most 100000 and intermediates are
+double-width, the likelihood
+forms the falling-factorial correction as a sum of `log1p(-j/size)` and
+combines the size powers with the fitted probability. This avoids subtracting
+large log-gamma values. Prefix sums make this O(maximum count + number of
+distinct observations) in work and O(maximum count) in temporary memory.
+Larger counts retain the existing calculation; its accuracy on double-width
+targets is an open validation gap. The large-size
+profile comparison in `test.cpp` exercises the moderate-count path.

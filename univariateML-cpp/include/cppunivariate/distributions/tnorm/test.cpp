@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include "test_support.hpp"
 #include "cppunivariate/distributions/tnorm/mle.hpp"
 #include "cppunivariate/distributions/tnorm/dpqr.hpp"
@@ -24,7 +25,7 @@ double ref_loglik(const std::vector<double> &x, double mean, double sd, double a
   double ll = 0;
   for (double v : x) {
     const double z = (v - mean) / sd;
-    ll += -std::log(sd) - 0.5 * std::log(2 * M_PI) - z * z / 2 - lz;
+    ll += -std::log(sd) - 0.5 * std::log(2 * cppunivariate::pi) - z * z / 2 - lz;
   }
   return ll;
 }
@@ -281,7 +282,7 @@ TEST_CASE("tnorm: quadrature masses and moments") {
             doctest::Approx(ref_log_mass(alpha, alpha + width)).epsilon(1e-13));
   for (double t : {40.0, 100.0, 1e4}) {
     // log(1 - Phi(t)) = -t^2/2 - log(t sqrt(2 pi)) + log(1 - 1/t^2 + 3/t^4 - 15/t^6)
-    const double series = -t * t / 2 - std::log(t) - 0.5 * std::log(2 * M_PI) +
+    const double series = -t * t / 2 - std::log(t) - 0.5 * std::log(2 * cppunivariate::pi) +
                           std::log1p(-1 / (t * t) + 3 / std::pow(t, 4) - 15 / std::pow(t, 6) + 105 / std::pow(t, 8) - 945 / std::pow(t, 10));
     CHECK(cppunivariate::distributions::tnorm_log_mass(t, kInf) == doctest::Approx(series).epsilon(1e-14));
     CHECK(cppunivariate::distributions::tnorm_log_mass(-kInf, -t) == doctest::Approx(series).epsilon(1e-14));
@@ -289,7 +290,7 @@ TEST_CASE("tnorm: quadrature masses and moments") {
   // Narrow interval: mass = width * phi(midpoint) to second order.
   const double w = 1e-8;
   CHECK(cppunivariate::distributions::tnorm_log_mass(0.5, 0.5 + w) ==
-        doctest::Approx(std::log((0.5 + w) - 0.5) - 0.5 * std::log(2 * M_PI) - (0.5 + w / 2) * (0.5 + w / 2) / 2).epsilon(1e-14));
+        doctest::Approx(std::log((0.5 + w) - 0.5) - 0.5 * std::log(2 * cppunivariate::pi) - (0.5 + w / 2) * (0.5 + w / 2) / 2).epsilon(1e-14));
   // Truncated exponential moments: mean 1/(1 - e^{-t}) - 1/t on (0, 1).
   for (double t : {-30.0, -3.0, 1e-9, 3.0, 300.0}) {
     const auto m = cppunivariate::tnorm_detail::mass(t, 0, 0, 1);
@@ -306,7 +307,7 @@ TEST_CASE("tnorm: quadrature masses and moments") {
   CHECK(n.var == doctest::Approx(1).epsilon(1e-14));
   CHECK(std::abs(n.m3) < 1e-14);
   CHECK(n.m4 == doctest::Approx(3).epsilon(1e-14));
-  CHECK(n.log_mass == doctest::Approx(0.5 * std::log(2 * M_PI)).epsilon(1e-15));
+  CHECK(n.log_mass == doctest::Approx(0.5 * std::log(2 * cppunivariate::pi)).epsilon(1e-15));
 }
 
 TEST_CASE("tnorm: d/p/q/r") {

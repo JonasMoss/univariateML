@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cppunivariate/core/constants.hpp"
 #include "../special/special.hpp"
 
 #include <cmath>
@@ -17,7 +18,7 @@ namespace cppunivariate {
 inline double inverse_digamma_scalar(double x) {
   constexpr double GAMMA_C = 0.57721566490153286060;
   constexpr double ZETA3_C = 1.2020569031595942854;
-  constexpr double PI_C = M_PI;
+  constexpr double PI_C = cppunivariate::pi;
   constexpr double PI_SQ_C = PI_C * PI_C;
 
   double y, r;

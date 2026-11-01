@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include "test_support.hpp"
 #include "cppunivariate/distributions/sn/mle.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
@@ -29,12 +30,12 @@ TEST_CASE("sn normal, tails, inverse and random moments") {
       CHECK(std::isfinite(q));
       CHECK(cppunivariate::distributions::psn(q,0,1,a,lower,true)==doctest::Approx(p).epsilon(1e-9));
     }
-    CHECK(cppunivariate::distributions::psn(0,0,1,a)==doctest::Approx(a>=0 ? std::atan2(1.0,a)/M_PI : 1-std::atan2(1.0,-a)/M_PI).epsilon(2e-8));
+    CHECK(cppunivariate::distributions::psn(0,0,1,a)==doctest::Approx(a>=0 ? std::atan2(1.0,a)/cppunivariate::pi : 1-std::atan2(1.0,-a)/cppunivariate::pi).epsilon(2e-8));
   }
   cppunivariate::distributions::StdRng<> rng(20261029);
   double s=0,ss=0;
   for(int i=0;i<20000;++i) { const double v=cppunivariate::distributions::rsn(rng,0,1,3);s+=v;ss+=v*v; }
-  CHECK(s/20000==doctest::Approx(std::sqrt(2/M_PI)*3/std::sqrt(10.0)).epsilon(0.02));
+  CHECK(s/20000==doctest::Approx(std::sqrt(2/cppunivariate::pi)*3/std::sqrt(10.0)).epsilon(0.02));
   CHECK(ss/20000==doctest::Approx(1).epsilon(0.03));
 }
 TEST_CASE("sn concave fixed subspaces and escapes") {
@@ -114,7 +115,7 @@ TEST_CASE("sn: P3 inner exhaustion checks the returned-point score") {
 
 // At symmetry F(0)=1/2; the local inverse is delta_p/f(0).
 TEST_CASE("sn: symmetric member has exact median and signed log-half offset") {
-  const double offset=2.3190468138462995584e-17*(std::sqrt(M_PI/2));
+  const double offset=2.3190468138462995584e-17*(std::sqrt(cppunivariate::pi/2));
   for(bool lower:{true,false}) for(bool log:{true,false}) {
     const double p=log?-0.6931471805599453:.5;
     const double expected=log?(lower?offset:-offset):0;
@@ -149,4 +150,13 @@ TEST_CASE("sn cached Newton evaluations retain returned-point likelihood and sco
       CHECK(f.ll==doctest::Approx(ll).epsilon(1e-14));
       CHECK(cppunivariate::sn_detail::score_residual(x,a,xi,omega,f.eta,f.h)<1e-6);
     }
+}
+
+TEST_CASE("sn: standardization handles overflow without producing NaN") {
+  const double huge = 1e308;
+  const double density = cppunivariate::distributions::dsn(huge, -huge, huge, 0, true);
+  CHECK(density == doctest::Approx(-0.5 * std::log(2 * cppunivariate::pi) - 2 - std::log(huge)).epsilon(1e-14));
+  const double next = std::nextafter(huge, std::numeric_limits<double>::infinity());
+  CHECK(cppunivariate::distributions::dsn(next, huge, 1e-300, 0, true) ==
+        -std::numeric_limits<double>::infinity());
 }

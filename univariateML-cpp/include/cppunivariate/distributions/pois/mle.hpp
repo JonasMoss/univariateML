@@ -2,6 +2,7 @@
 // bit-identical reproduction of pre-port behaviour.
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -40,7 +41,7 @@ inline double logpmf(double k, double lambda) {
     }
     const double r=1.0/k;
     const double stirling=r*(1.0/12.0-r*r/360.0);
-    return -0.5*(std::log(2.0*M_PI)+std::log(k))-stirling-dev;
+    return -0.5*(std::log(2.0*cppunivariate::pi)+std::log(k))-stirling-dev;
 }
 } // namespace pois_detail
 

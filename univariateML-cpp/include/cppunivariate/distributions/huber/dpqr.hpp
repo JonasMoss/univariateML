@@ -1,4 +1,5 @@
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../special/tails.hpp"
 #include "mle.hpp"
 #include "../../special/special.hpp"
@@ -17,7 +18,7 @@ inline double phuber(double q, double mu, double sigma, double epsilon,
   if (!(sigma>0 && epsilon>0 && std::isfinite(mu) && std::isfinite(sigma) && std::isfinite(epsilon))) return special::kNaN;
   const double z=special::scaled_difference(q,mu,sigma), a=std::fabs(z), norm=huber_z(epsilon);
   const double lp=a>=epsilon ? -epsilon*(a-epsilon/2)-std::log(epsilon)-std::log(norm) :
-      std::log((std::sqrt(M_PI/2)*(std::erfc(a/std::sqrt(2.0))-std::erfc(epsilon/std::sqrt(2.0)))+std::exp(-epsilon*epsilon/2)/epsilon)/norm);
+      std::log((std::sqrt(cppunivariate::pi/2)*(std::erfc(a/std::sqrt(2.0))-std::erfc(epsilon/std::sqrt(2.0)))+std::exp(-epsilon*epsilon/2)/epsilon)/norm);
   return special::tail_probability(special::tails_from_log(lp,z<=0),lower_tail,log_p);
 }
 inline double qhuber(double p, double mu, double sigma, double epsilon,

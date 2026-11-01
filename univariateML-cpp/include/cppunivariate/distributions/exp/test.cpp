@@ -100,3 +100,19 @@ TEST_CASE("exp: TASK-102.5 invalid confidence levels") {
   for(double alpha:std::vector<double>{-1.,0.,1.,2.,NAN,INFINITY})
     CHECK(cppunivariate::exp_rate_exact_interval(data,alpha).status==cppunivariate::InferenceStatus::InvalidParameter);
 }
+
+TEST_CASE("exp: held rate avoids overflowing the unscaled sum") {
+  const std::vector<double> x{1e308, 1e308};
+  const auto fit = cppunivariate::exp_mle(mltest::as_span(x), 1e-308);
+  CHECK(fit.status == cppunivariate::ExpStatus::Ok);
+  CHECK(std::isfinite(fit.logLik));
+  CHECK(fit.logLik == doctest::Approx(2 * (std::log(1e-308) - 1)).epsilon(1e-14));
+}
+
+TEST_CASE("exp: free rate avoids overflowing the sum") {
+  const std::vector<double> x{1e308, 1e308};
+  const auto fit = cppunivariate::exp_mle(mltest::as_span(x));
+  REQUIRE(fit.status == cppunivariate::ExpStatus::Ok);
+  CHECK(fit.rate / 1e-308 == doctest::Approx(1.0).epsilon(1e-14));
+  CHECK(std::isfinite(fit.logLik));
+}

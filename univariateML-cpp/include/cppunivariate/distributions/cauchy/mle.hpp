@@ -5,6 +5,7 @@
 // Nonexistent MLEs and numerical failures are reported through CauchyStatus.
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -47,7 +48,7 @@ struct CauchyCost {
       const double z = (v - mu) / s;
       sum += std::log(1.0 + z * z);
     }
-    return n * (std::log(M_PI) + std::log(s)) + sum;
+    return n * (std::log(cppunivariate::pi) + std::log(s)) + sum;
   }
   void gradient(const double *theta, double *g) const {
     const double mu = theta[0];
@@ -105,7 +106,7 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
     const double mu = data.front() / 2.0 + data.back() / 2.0;
     const double scale = data.back() / 2.0 - data.front() / 2.0;
     return {mu, scale, -static_cast<double>(n) *
-            (std::log(2.0 * M_PI) + std::log(scale)), 0, CauchyStatus::Ok};
+            (std::log(2.0 * cppunivariate::pi) + std::log(scale)), 0, CauchyStatus::Ok};
   }
   std::size_t run = 1;
   for (std::size_t i = 1; i < n; ++i) {
@@ -192,7 +193,7 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
     sum_log1p_z2 += std::log1p(z * z);
   }
   const double logLik =
-      -static_cast<double>(n) * std::log(M_PI * scale) - sum_log1p_z2;
+      -static_cast<double>(n) * std::log(cppunivariate::pi * scale) - sum_log1p_z2;
   const bool finite = std::isfinite(mu) && std::isfinite(scale) && scale > 0.0 && std::isfinite(logLik);
   return {mu, scale, logLik, iter, finite && iter <= maxit ? CauchyStatus::Ok : CauchyStatus::IterationFailure};
 }
@@ -205,7 +206,7 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
   if(x.empty()||!(tol>0)||maxit<1)return bad;
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
   double m=location,s=scale;int it=0;
-  auto ll=[&](double a,double b){double f=0;for(double v:y)f-=std::log(M_PI)+std::log(b)+2*std::log(std::hypot(1.0,(v-a)/b));return f;};
+  auto ll=[&](double a,double b){double f=0;for(double v:y)f-=std::log(cppunivariate::pi)+std::log(b)+2*std::log(std::hypot(1.0,(v-a)/b));return f;};
   if(std::isnan(s)) {
     std::size_t k=0;double radius=0;for(double v:y){k+=v==m;radius=std::max(radius,std::abs(v-m));}
     if(2*k>=y.size()){bad.status=CauchyStatus::NoMLE;return bad;}

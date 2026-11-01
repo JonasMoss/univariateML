@@ -13,6 +13,7 @@
 // MLE (point-mass limit) and are flagged.
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/reductions.hpp"
@@ -58,7 +59,7 @@ inline double held_logbeta(double a, double b) {
   if (h >= 1e6) {
     const CPPUNIV_EXTENDED_REAL total = z+h;
     const auto correction = [](CPPUNIV_EXTENDED_REAL v) {return (1-1/(30*v*v))/(12*v);};
-    return CPPUNIV_EXTENDED_LITERAL(.5,.5L)*std::log(2*M_PI) - CPPUNIV_EXTENDED_LITERAL(.5,.5L)*std::log(total) -
+    return CPPUNIV_EXTENDED_LITERAL(.5,.5L)*std::log(2*cppunivariate::pi) - CPPUNIV_EXTENDED_LITERAL(.5,.5L)*std::log(total) -
       (z-CPPUNIV_EXTENDED_LITERAL(.5,.5L))*lp + (h-CPPUNIV_EXTENDED_LITERAL(.5,.5L))*(std::log(r)-lp) +
       correction(z)+correction(h)-correction(total);
   }

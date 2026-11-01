@@ -102,8 +102,14 @@ TEST_CASE("hyper: log pmf against independent formulas") {
                        Case{3, 50, 20, 10}, Case{7, 1e15, 3e14, 20}}) {
     const long double want = lchoose_sum(c.m, c.x) + lchoose_sum(c.N - c.m, c.k - c.x) -
                              lchoose_sum(c.N, c.k);
+    // This reference subtracts three sums of logarithms. Account for their
+    // rounding when long double has only double precision; the resulting
+    // bound reflects the reference calculation, not the pmf's accuracy.
+    const long double scale = std::fabs(lchoose_sum(c.m, c.x)) +
+        std::fabs(lchoose_sum(c.N-c.m, c.k-c.x)) + std::fabs(lchoose_sum(c.N,c.k));
+    const long double reference_error = 4 * c.k * std::numeric_limits<long double>::epsilon() * scale;
     CHECK(std::fabs(cppunivariate::hyper_log_pmf(c.x, c.N, c.m, c.k) - want) <=
-          1e-13 * (1 + std::fabs(want)));
+          1e-13 * (1 + std::fabs(want)) + reference_error);
   }
 }
 
@@ -134,7 +140,16 @@ TEST_CASE("hyper: m with known N agrees with enumeration, ties included") {
     CHECK(fit.k == k);
     CHECK(std::find(loose.begin(), loose.end(), fit.m) != loose.end());
     CHECK(std::fabs(fit.logLik - best) <= 1e-12 * (1 + std::fabs(best)));
-    if (tight.size() == 2) {
+    if (std::numeric_limits<long double>::digits <= std::numeric_limits<double>::digits) {
+      // The lgamma-based enumeration cannot reliably distinguish exact ties
+      // at 1e-15 in double precision. Check both reported points against its
+      // wider numerical envelope; exact tie cases are tested separately.
+      if (fit.status == cppunivariate::HyperStatus::Tie) {
+        ++ties;
+        CHECK(fit.tie == fit.m + 1);
+        CHECK(std::find(loose.begin(), loose.end(), fit.tie) != loose.end());
+      }
+    } else if (tight.size() == 2) {
       ++ties;
       CHECK(fit.status == cppunivariate::HyperStatus::Tie);
       CHECK(fit.m == tight[0]);
@@ -186,7 +201,16 @@ TEST_CASE("hyper: N with known m agrees with enumeration past the certificate") 
     CHECK(fit.m == m);
     CHECK(std::find(loose.begin(), loose.end(), fit.N) != loose.end());
     CHECK(std::fabs(fit.logLik - best) <= 1e-12 * (1 + std::fabs(best)));
-    if (tight.size() == 2) {
+    if (std::numeric_limits<long double>::digits <= std::numeric_limits<double>::digits) {
+      // The lgamma-based enumeration cannot reliably distinguish exact ties
+      // at 1e-15 in double precision. Check both reported points against its
+      // wider numerical envelope; exact tie cases are tested separately.
+      if (fit.status == cppunivariate::HyperStatus::Tie) {
+        ++ties;
+        CHECK(fit.tie == fit.N + 1);
+        CHECK(std::find(loose.begin(), loose.end(), fit.tie) != loose.end());
+      }
+    } else if (tight.size() == 2) {
       ++ties;
       CHECK(fit.status == cppunivariate::HyperStatus::Tie);
       CHECK(fit.N == tight[0]);

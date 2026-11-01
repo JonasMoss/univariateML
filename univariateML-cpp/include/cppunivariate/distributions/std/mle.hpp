@@ -8,6 +8,7 @@
 // where f_unit is the standardised t (mean 0, sd 1) used by dstd().
 
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 
@@ -280,7 +281,7 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
   if (!std::isfinite(r.f) && !std::isfinite(face.f))
     return {kNaN,kNaN,kNaN,kNaN,0,StudentTStatus::BfgsFailure};
   const double normal_ll = -dn * (std::log(normal_sd) +
-      0.5 * (std::log(2.0 * M_PI) + 1.0));
+      0.5 * (std::log(2.0 * cppunivariate::pi) + 1.0));
   // Absolute log-likelihood tie tolerance, scaled per observation. Prefer
   // a face within 1e-8 per observation of the best numerical fit; normal
   // takes precedence if the two faces tie. This is a multistart numerical

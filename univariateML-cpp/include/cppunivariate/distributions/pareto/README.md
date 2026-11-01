@@ -102,3 +102,10 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+### Range portability (2026-11-01)
+
+The log support ratio uses `log1p((x-b)/b)` near the endpoint; when that
+ratio would overflow it uses `log(x)-log(b)`. The R concentration and
+`1e-300` to `1e300` test covers both regimes. This is an arithmetic
+rearrangement of the closed-form likelihood, not a new fitting criterion.

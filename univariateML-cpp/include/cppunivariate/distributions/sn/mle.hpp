@@ -1,4 +1,5 @@
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
@@ -48,9 +49,9 @@ inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,
           df=-k*(1+df)/(den*den); f=k/den;
         }
         tail_mills[i]=-t+f; tail_derivative[i]=-1-df;
-        log_cdf[i]=-0.5*t*t-0.5*std::log(2*M_PI)-std::log(-t+f);
+        log_cdf[i]=-0.5*t*t-0.5*std::log(2*cppunivariate::pi)-std::log(-t+f);
       } else log_cdf[i]=log_phi_cdf(t);
-      ll+=std::log(2.0)-0.5*std::log(2*M_PI)-0.5*z*z+log_cdf[i];
+      ll+=std::log(2.0)-0.5*std::log(2*cppunivariate::pi)-0.5*z*z+log_cdf[i];
     }
     return ll;
   };
@@ -65,7 +66,7 @@ inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,
       if(t < -10) {
         r=tail_mills[i]; dr=tail_derivative[i];
       } else {
-        r=std::exp(-0.5*t*t-0.5*std::log(2*M_PI)-log_cdf[i]);
+        r=std::exp(-0.5*t*t-0.5*std::log(2*cppunivariate::pi)-log_cdf[i]);
         dr=-r*(t+r);
       }
       const double g=-z+a*r,d=-1+a*a*dr;
@@ -196,7 +197,7 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       for(double v:x) { if(sign*(v-c)<0) feasible=false; square+=(v-c)*(v-c); if(std::isfinite(fx) && v==c) penalty+=std::log(2.0); }
       const double w=std::isfinite(fw) ? fw : std::sqrt(square/n);
       if(!feasible || !(w>0)) continue;
-      const double ll=n*(0.5*std::log(2/M_PI)-std::log(w))-square/(2*w*w)-penalty;
+      const double ll=n*(0.5*std::log(2/cppunivariate::pi)-std::log(w))-square/(2*w*w)-penalty;
       if(ll>=best.ll-1e-8*n) return {center+unit*c,unit*w,sign*std::numeric_limits<double>::infinity(),ll-n*std::log(unit),evaluations,
         sign>0 ? SnStatus::RightHalfNormalBoundary : SnStatus::LeftHalfNormalBoundary};
     }

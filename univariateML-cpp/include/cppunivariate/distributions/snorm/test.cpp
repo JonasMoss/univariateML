@@ -1,3 +1,4 @@
+#include "cppunivariate/core/constants.hpp"
 #include "test_support.hpp"
 #include "cppunivariate/cppunivariate.hpp"
 #include "cppunivariate/distributions/snorm/dpqr.hpp"
@@ -54,7 +55,7 @@ TEST_CASE("snorm profile endpoints and direct grid") {
       const double q=std::pow(std::cbrt(A)+std::cbrt(B),3);
       if (q<best) { best=q; winner=j; }
     }
-    const double ll=data.size()/2.0*(std::log(2/M_PI)-std::log(best/data.size())-1);
+    const double ll=data.size()/2.0*(std::log(2/cppunivariate::pi)-std::log(best/data.size())-1);
     CHECK(r.logLik >= ll-1e-9);
     if (winner==0) CHECK(r.status==cppunivariate::SnormStatus::RightHalfNormalBoundary);
     else if (winner==10000) CHECK(r.status==cppunivariate::SnormStatus::LeftHalfNormalBoundary);
@@ -101,7 +102,7 @@ TEST_CASE("snorm random profiles dominate grid plus refinement") {
       if (q<best) { best=q; status=cppunivariate::SnormStatus::Ok; }
     }
     CAPTURE(sample);
-    CHECK(fit.logLik >= n/2.0*(std::log(2/M_PI)-std::log(best/n)-1)-1e-9);
+    CHECK(fit.logLik >= n/2.0*(std::log(2/cppunivariate::pi)-std::log(best/n)-1)-1e-9);
     CHECK(fit.status==status);
   }
 }
@@ -161,7 +162,7 @@ TEST_CASE("snorm: every nonempty hold subset") {
 
 // At symmetry F(0)=1/2; the local inverse is delta_p/f(0).
 TEST_CASE("snorm: symmetric member has exact median and signed log-half offset") {
-  const double offset=2.3190468138462995584e-17*(std::sqrt(M_PI/2));
+  const double offset=2.3190468138462995584e-17*(std::sqrt(cppunivariate::pi/2));
   for(bool lower:{true,false}) for(bool log:{true,false}) {
     const double p=log?-0.6931471805599453:.5;
     const double expected=log?(lower?offset:-offset):0;

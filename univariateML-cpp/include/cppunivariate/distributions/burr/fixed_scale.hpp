@@ -1,5 +1,6 @@
 // Scale-1 profile fit recovered from 6c89a8c. Kept separate from the free-scale optimizer.
 #pragma once
+#include "cppunivariate/core/constants.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
 #include <algorithm>
@@ -54,7 +55,7 @@ inline double logistic_pdf(double x) {
 
 inline RootResult invert_lower_logit(double cv, double tol, int maxit) {
   constexpr double NEULER_CST = -0.5772156649015328606;
-  constexpr double BASEL_CST = M_PI * M_PI / 6.0;
+  constexpr double BASEL_CST = cppunivariate::pi * cppunivariate::pi / 6.0;
   const double loc = -0.5495872;
   const double scl = 0.6103216;
   const double cv_lo = 0.1;
@@ -101,7 +102,7 @@ inline RootResult invert_lower_logit(double cv, double tol, int maxit) {
 
 inline RootResult invert_lower_log(double cv, double tol, int maxit) {
   constexpr double NEULER_CST = -0.5772156649015328606;
-  constexpr double BASEL_CST = M_PI * M_PI / 6.0;
+  constexpr double BASEL_CST = cppunivariate::pi * cppunivariate::pi / 6.0;
   const double loc = -0.5495872;
   const double scl = 0.6103216;
   const double cv_lo = 0.1;
@@ -148,7 +149,7 @@ inline RootResult invert_lower_log(double cv, double tol, int maxit) {
 
 inline RootResult invert_upper(double cv, double tol, int maxit) {
   constexpr double NEULER_CST = -0.5772156649015328606;
-  constexpr double BASEL_CST = M_PI * M_PI / 6.0;
+  constexpr double BASEL_CST = cppunivariate::pi * cppunivariate::pi / 6.0;
   const double thr = 0.2;
   const double eps = 1e-9;
 
@@ -190,7 +191,7 @@ inline RootResult invert_upper(double cv, double tol, int maxit) {
 
 inline BurrLmomResult burr_lmom_core(double mu, double sigma2,
                                      bool use_logit_lower) {
-  constexpr double BASEL_CST = M_PI * M_PI / 6.0;
+  constexpr double BASEL_CST = cppunivariate::pi * cppunivariate::pi / 6.0;
   constexpr double kEps = std::numeric_limits<double>::epsilon();
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
 
