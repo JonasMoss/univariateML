@@ -1,0 +1,113 @@
+---
+title: "Covariance and standard errors"
+output:
+  rmarkdown::html_vignette:
+    mathjax: null
+    pandoc_args: ["--mathml"]
+vignette: >
+  %\VignetteIndexEntry{Covariance and standard errors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(univariateML)
+```
+
+## Fit and calculate standard errors
+
+`vcov()` returns covariance in the coefficients' natural units. The default
+`"sandwich"` uses individual observation scores and observed information;
+`"observed"` returns inverse observed information and assumes a correctly
+specified model. Both require appropriate regularity and large-sample
+estimator behavior. Sandwich inference under misspecification additionally
+requires independent observations, a well-defined pseudo-true parameter,
+finite score variance and nonsingular sensitivity. It is not protection
+against arbitrary outliers, dependence or infinite score variance.
+
+```{r covariance}
+set.seed(10210)
+x <- rnorm(200, mean = 2, sd = 1)
+fit <- mlnorm(x)
+V <- vcov(fit)                       # sandwich (default)
+V_model <- vcov(fit, type = "observed")
+cbind(estimate = as.numeric(fit),
+      sandwich_se = sqrt(diag(V)),
+      observed_se = sqrt(diag(V_model)))
+attr(V, "condition")
+attr(V, "validity_conditions")
+```
+
+The diagonal entries are variances; their square roots are standard errors.
+Matrix row and column names identify the coefficients. No extra division by
+sample size is needed. These standard errors do not change `confint()`, which
+uses a parametric bootstrap. Neither method guarantees finite-sample coverage.
+
+## Held coefficients and nuisance parameters
+
+```{r held}
+known_mean <- mlnorm(x, mean = 2)
+V_known <- vcov(known_mean)
+rownames(V_known)                     # only sd is free
+attr(V_known, "held")                # mean is treated as known
+sqrt(diag(V_known))
+
+all_known <- mlnorm(x, mean = 2, sd = 1)
+dim(vcov(all_known))                 # 0 by 0: no free coefficients
+```
+
+Holding a coefficient conditions on its supplied value. Holding an estimated
+nuisance coefficient at its fitted value would discard its uncertainty. If a
+nuisance coefficient was estimated, keep it free and extract the desired
+block from the full covariance. Fully held fits with observations return an
+empty matrix; data-free frozen distributions cannot supply covariance.
+Older saved fits without retained observations must be refitted. Keep the
+original fit's coefficients, order and inference attributes intact.
+
+## Errors and conditioning
+
+Availability depends on the family, parameter regime and free subset. For
+example, estimating uniform endpoints does not permit this regular covariance:
+
+```{r unavailable}
+tryCatch(vcov(mlunif(c(0.2, 0.5, 0.9))),
+         error = function(e) conditionMessage(e))
+```
+
+An unavailable family, subset or regime means this procedure is unsupported;
+it does not imply that every possible confidence procedure is invalid.
+Boundary or limit fits outside supported conditional submodels are rejected,
+as are fits on a fitting restriction.
+Invalid observations, nonfinite numerical derivatives, singular, indefinite
+or excessively ill-conditioned information also cause errors with a reason.
+A fit can therefore succeed while `vcov()` fails. Do not replace that error
+with an optimizer's inverse Hessian or a pseudoinverse.
+
+A successful solve warns when the observed-information eigenvalue condition
+number exceeds $10^6$. This diagnostic uses natural coefficient units, so it
+changes with measurement scale. It indicates numerical sensitivity, rather
+than testing statistical validity. Rescaling data and refitting in suitable
+units may help numerical conditioning; transform the resulting covariance
+back to the desired coordinates. The absence of a warning is no validity check.
+
+## When Wald uncertainty is unreliable
+
+At the skew-normal (`sn`) member `alpha = 0`, joint information is singular
+when location is free. Bhattacharjee (`bhatt`) fits near `a = 0` approach a
+normal member with weakly identified width. Even accepted fits near these
+members can have unstable standard errors. Holding a parameter known defines
+a different submodel and needs its own validity conditions.
+
+Small samples can weakly identify several shape parameters: observed and
+sandwich standard errors can differ substantially even under the fitted
+model. Heavy tails can slow convergence or violate the score-moment assumptions.
+An infinite observation variance alone does not imply infinite score variance;
+the relevant moments depend on the model and free coefficients.
+
+The inference catalogue at `/inference/` on the companion documentation site
+lists procedure availability by regime and free subset. Consult that page and
+the family's dossier for supported subsets and conditions. Monte Carlo
+comparisons of standard errors with empirical sampling variability are
+numerical evidence at the tested points, not proofs of regularity, Wald
+coverage or robustness under misspecification.
