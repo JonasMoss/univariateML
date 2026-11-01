@@ -133,3 +133,15 @@ TEST_CASE("tlambda: targeted tail rounded finite-density endpoint convention") {
     CHECK(cppunivariate::distributions::dtlambda(x,0,1,l)==(l==1?0.5:1));
   }
 }
+
+TEST_CASE("tlambda: affine cancellation survives overflowing unscaled products") {
+  for(double sign : {-1.0, 1.0}) {
+    const double mu=-sign*1e308;
+    const double endpoint=cppunivariate::distributions::qtlambda(sign>0?1:0,mu,1e308,.5);
+    CHECK(endpoint/1e308==doctest::Approx(sign).epsilon(1e-12));
+    const double p=sign>0?.999:.001;
+    const double x=cppunivariate::distributions::qtlambda(p,mu,1e308,.5);
+    REQUIRE(std::isfinite(x));
+    CHECK(cppunivariate::distributions::ptlambda(x,mu,1e308,.5)==doctest::Approx(p).epsilon(1e-12));
+  }
+}

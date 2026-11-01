@@ -214,3 +214,172 @@ no platform branch is used. All unlisted families retain `1e-12`.
    R package V8 was unavailable. Reviewing installed-document link targets
    and providing those validation tools are separate outstanding work; no
    package installs were authorized or performed here.
+
+
+## Second run
+
+2026-11-01 · TASK-129 · job portability-2
+
+The second CI run at `bbccd5b6cfbc0b39c1d532f4bb73882338b266ae`
+passed core on Linux, macOS arm64 and Windows, R check on Linux and macOS,
+and the site workflow. Windows R check exposed two Tukey-lambda quantile
+failures, three further golden coefficient comparisons, and a missing manual
+font. This follow-up fixes those paths without changing fitters or golden
+JSON. The tested source is that revision plus this worktree's uncommitted
+changes; no commit, push, dependency installation or board edit was made.
+
+Evidence is the supplied [R check run 41308941111](https://github.com/JonasMoss/univariateML/actions/runs/41308941111),
+particularly each platform's `build/ci-r/golden-drift.csv` and Windows
+`00check.log`, `Rdlatex.log`, and `tests/testthat.Rout.fail`, downloaded under
+`build/ci-artifacts/41308941111/`. The table below preserves the measured
+values independently of those ignored downloads. The earlier table above
+remains the historical first-run calibration; this section supersedes it.
+
+### Tukey-lambda affine overflow
+
+At `p=1, mu=-1e308, sigma=1e308, lambda=.5`, `sigma/lambda`
+overflows although the endpoint is finite. The old endpoint fallback was
+`fma(2, (sigma/2)/lambda, mu)`: its multiplication is mathematically
+`2e308`, while the final sum is `1e308`. At `p=.999`, the standardized
+quantile is approximately `1.935754196671554`; the old interior call
+`fma(sigma, mag, mu)` likewise has an overflowing product but a finite sum,
+approximately `9.35754196671554e307`. These are the cancellation-sensitive
+operations on the failing Windows path. Correct fused evaluation rescues
+them on Linux/macOS; the Windows observations are consistent with loss of
+that protection. The exact internal Windows libm implementation has not been
+inspected locally.
+
+The overflowing-product paths now form twice the half-scale sum:
+`2*(mu/2 + signed_half_displacement)`. Endpoints use `(sigma/2)/lambda`,
+interior finite magnitudes use `(sigma/2)*mag`, and the logarithmic fallback
+uses `exp(size-log(2))`. The ordinary finite-product path retains its prior
+`fma` call. This avoids requiring a fused cancellation of an overflowing
+product and uses only double arithmetic. The formula is an algebraic
+identity, not a general floating-point error bound. No optimizer, search,
+default fit or golden data changed.
+
+The appended C++ case `tlambda: affine cancellation survives overflowing
+unscaled products` checks both signs, endpoint values divided by `1e308`
+(relative tolerance `1e-12`), finite interior quantiles at `.001`/`.999`,
+and CDF round trips (`1e-12`). The pre-existing R overflow regressions and
+truth-table tests also pass. The canonical tlambda dossier records the
+formula and its validation limits. Native Windows confirmation remains open.
+
+### Three-platform golden calibration
+
+The new tolerances are `gb2=5e-10`, `invtrgamma=2e-10`, and
+`tlambda=3e-7`. Rechecking every allowance against all three files also
+requires `ht=5e-7` and `zinb=4e-9` (previously `2e-7` and `3e-9`).
+All 25 listed allowances satisfy both `tolerance >= 4*max(platform drift)`
+and `tolerance <= 10*sqrt(stopping scale)`; the established FD BFGS group's
+allowances are retained. Unlisted families retain `1e-12`, and their observed
+drifts also fit the four-times margin. Drift is the maximum componentwise
+relative difference across coefficients and log likelihood, absolute for a
+zero reference, with matching signed infinities counted as zero. This is an
+empirical canary on frozen data, not a coefficient-error certificate.
+Stopping scales come from adapter defaults (the inner scale stop for `ht`).
+
+| Family | Stopping scale | Linux drift | macOS drift | Windows drift | Golden tolerance |
+|---|---:|---:|---:|---:|---:|
+| betapr | 1e-06 | 0 | 6.31404e-08 | 1.54883e-08 | 3e-07 |
+| bhatt | 1e-08 | 0 | 4.39421e-07 | 0 | 2e-06 |
+| bnbinom | 1e-08 | 2.10007e-10 | 2.92629e-07 | 3.55279e-10 | 2e-06 |
+| burr | 1e-08 | 0 | 2.36436e-07 | 1.02892e-08 | 1e-06 |
+| dgamma | 1e-08 | 0 | 2.38419e-08 | 0 | 1e-07 |
+| emg | 1e-08 | 0 | 5.31873e-08 | 0 | 3e-07 |
+| gb2 | 1e-07 | 0 | 2.3021e-13 | 1.14705e-10 | 5e-10 |
+| ged | 0.00012207 | 1.00171e-06 | 2.30709e-06 | 1.35439e-06 | 3e-05 |
+| gev | 1e-10 | 3.46323e-11 | 3.47665e-11 | 3.47328e-11 | 2e-10 |
+| gompertz | 0.00012207 | 1.20527e-12 | 1.20201e-12 | 1.20527e-12 | 1e-11 |
+| ht | 2e-14 | 0 | 4.87888e-08 | 1.24042e-07 | 5e-07 |
+| invburr | 1e-08 | 0 | 9.97613e-08 | 5.44162e-08 | 5e-07 |
+| invparalogis | 0.00012207 | 0 | 2.44597e-07 | 4.66729e-07 | 3e-05 |
+| invtrgamma | 1e-10 | 0 | 9.07305e-13 | 3.51823e-11 | 2e-10 |
+| lst | 0.00012207 | 0 | 9.30762e-15 | 2.93686e-16 | 3e-05 |
+| paralogis | 0.00012207 | 4.07844e-08 | 4.16841e-07 | 4.07844e-08 | 3e-05 |
+| pareto4 | 1e-10 | 0 | 2.17712e-08 | 0 | 1e-07 |
+| pig | 1e-09 | 0 | 2.39139e-08 | 0 | 1e-07 |
+| sged | 0.00012207 | 1.88268e-06 | 2.44709e-06 | 7.24354e-07 | 3e-05 |
+| sstd | 0.00012207 | 2.49123e-06 | 4.84975e-06 | 2.19864e-06 | 3e-05 |
+| std | 0.00012207 | 4.42459e-06 | 2.94534e-06 | 3.80936e-06 | 3e-05 |
+| tlambda | 1e-07 | 0 | 2.62699e-15 | 5.99555e-08 | 3e-07 |
+| trgamma | 1e-10 | 0 | 2.77603e-12 | 2.7623e-12 | 2e-11 |
+| zinb | 1e-10 | 0 | 7.44189e-10 | 7.88109e-10 | 4e-09 |
+| zmnbinom | 1e-10 | 0 | 6.21949e-07 | 0 | 3e-06 |
+
+### Manual font and the non-standard-file NOTE
+
+Windows `Rdlatex.log` identifies missing Courier metric `pcrr8t.tfm`.
+The R check workflow now runs `tlmgr install courier` immediately after
+`setup-tinytex`, followed by `kpsewhich pcrr8t.tfm`, identically on every
+platform. This makes a missing metric fail at the font setup step.
+
+The Windows non-standard-file NOTE names only `univariateML-manual.tex`.
+It is the failed PDF manual's intermediate, not output left by the tests.
+Linux and macOS second-run logs already mark the directory check OK.
+Consequently no test cleanup was added and no check artifacts were hidden
+or deleted. The local tarball check builds the PDF manual successfully and
+reports both non-standard things and temporary detritus OK, supporting this
+diagnosis. Windows TinyTeX confirmation still requires CI.
+
+### Final local validation
+
+All commands completed in the foreground, one at a time through the shared
+four-slot wrapper, with `nice -n 10`, single-thread BLAS/OpenMP, and temporary
+files under the worktree's `build/tmp`. Environment: Linux x86-64
+`7.0.0-38-generic`, GCC 15.2.0, R 4.6.1, BH 1.90.0-1, Rcpp 1.1.2,
+testthat 3.3.2, rcmdcheck 1.4.0. No simbox or Windows cross-compiler was used.
+The local TeX installation already supplies Courier; it does not validate
+installation into a fresh Windows TinyTeX tree. Workloads use checked-in
+golden/truth data and the existing tests' seeds; no fixtures were regenerated.
+
+Common environment and exact final commands:
+
+```sh
+export TMPDIR=$PWD/build/tmp JUST_TEMPDIR=$PWD/build/tmp
+export XDG_RUNTIME_DIR=$PWD/build/tmp
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+mkdir -p "$TMPDIR"
+/tmp/umvl-cpu/run4 nice -n 10 just cpp-test
+/tmp/umvl-cpu/run4 nice -n 10 just test
+/tmp/umvl-cpu/run4 nice -n 10 just test-full
+/tmp/umvl-cpu/run4 nice -n 10 Rscript .github/scripts/assemble.R
+UMVL_TEST_TIER=cran /tmp/umvl-cpu/run4 nice -n 10 Rscript .github/scripts/r-check.R
+```
+
+The full R run preceded the final C++ and R dev reruns; all used the final
+numerical implementation. The reruns followed a guard refinement that avoids
+computing `DBL_MAX/mag` when `mag<=1`.
+
+| Check | Final result |
+|---|---|
+| C++ dev | 105/105 shards passed |
+| R dev | FAIL 0, WARN 0, SKIP 150, PASS 19898 |
+| R full | FAIL 0, WARN 0, SKIP 0, PASS 41344 |
+| CI assembly script | exit 0 |
+| CI source-tarball check script, CRAN tier | exit 0; 0 errors, 0 warnings, 2 NOTEs |
+| Tarball tests, examples including donttest, vignettes, PDF manual | all OK |
+| Non-standard check-directory files and temporary detritus | both OK |
+| `git diff --check` | passed |
+
+Logs remain under `build/scratch/portability-2-*.log`; the tarball and complete
+R check output are under `build/ci-r/`. The two remaining NOTEs concern
+existing relative development-document links in R help and skipped HTML
+validation/math rendering (missing `tidy` and R package `V8`). They are not
+permitted test failures: all executed tests passed. The unavailable validators
+are missing coverage, and were not installed under this job's no-install rule.
+
+### Open validation
+
+1. Run the revised workflow on native Windows to confirm both overflow
+   regressions and the Courier installation/manual cleanup on its actual
+   R/libm/TinyTeX versions. The supplied failing artifacts identify the paths;
+   local Linux tests do not emulate that toolchain. No GitHub write action
+   was taken or CI run triggered by this job.
+2. HTML validation and math-rendering checks remain unexecuted locally until
+   an environment supplies `tidy` and `V8`. The existing relative R help links
+   remain a documentation NOTE; fixing those is outside this portability
+   patch. Neither NOTE prevents the CI check script from passing.
+3. The first-run binomial sign/tie certification and skew-normal boundary
+   questions above are unchanged; this follow-up makes no new mathematical
+   claims about those fitters. The parallel cmb-size job's files were untouched.
