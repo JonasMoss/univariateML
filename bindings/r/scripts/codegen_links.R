@@ -13,6 +13,17 @@ functions <- unique(unlist(lapply(files, function(file) {
 for (file in files) {
   lines <- readLines(file, warn = FALSE)
   docs <- startsWith(lines, "#'")
+  # Normalize implicit roxygen titles in the assembled copy. checkRd rejects
+  # terminal periods in titles, including titles spanning several lines.
+  starts <- which(docs & !c(FALSE, head(docs, -1L)))
+  for (start in starts) {
+    end <- start
+    while (end < length(lines) && docs[end + 1L] &&
+           nzchar(trimws(sub("^#'", "", lines[end + 1L]))) &&
+           !grepl("^#'\\s*@", lines[end + 1L])) end <- end + 1L
+    if (!grepl("^#'\\s*@", lines[start]))
+      lines[end] <- sub("\\.[[:space:]]*$", "", lines[end])
+  }
   for (topic in functions) {
     # Function-call Markdown links, including [label][function()].
     old <- paste0("[", topic, "()]")

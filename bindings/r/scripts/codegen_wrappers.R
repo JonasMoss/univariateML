@@ -49,32 +49,41 @@ and_list <- function(x) {
   paste0(paste(x[-length(x)], collapse = ", "), " and ", x[length(x)])
 }
 
+# Dossiers contain both legacy clauses and complete site-facing sentences.
+# Preserve math/code case, and never append punctuation to existing punctuation.
+rd_sentence <- function(x) {
+  if (is.null(x) || !nzchar(trimws(x))) return(character())
+  x <- trimws(x)
+  substr(x, 1L, 1L) <- toupper(substr(x, 1L, 1L))
+  if (!grepl("[.!?]$", x)) x <- paste0(x, ".")
+  # Legacy prose contains literal sets such as {0,1}. Protect those with
+  # inline code, without touching braces inside math or existing code spans.
+  spans <- gregexpr("\\$[^$]*\\$|`[^`]*`|\\{[^{}]*\\}", x, perl = TRUE)
+  regmatches(x, spans) <- lapply(regmatches(x, spans), function(parts)
+    ifelse(startsWith(parts, "{"), paste0("`", parts, "`"), parts))
+  rd_math(x)
+}
+
 limit_sentence <- function(lim, model) {
-  # lim$model: id of a package model to point users to (D1: "use mlX");
-  # without it, lim$name describes a limit the package does not fit.
-  if (identical(lim$kind, "nonexistence")) return(nl(
-    "When ", rd_math(lim$detect), ", the likelihood is unbounded and no finite maximum likelihood estimator exists. `ml",
-    model$id, "()` stops with an error."))
-  if (isTRUE(lim$numerical)) return(nl(
-    "When ", rd_math(lim$detect), ", the numerical search does not establish a finite maximum above its tolerance. `ml",
-    model$id, "()` stops; use [ml", lim$model, "()] to fit the limit model."))
   has_target <- !is.null(lim$model)
   target_name <- if (has_target && !is.null(models[[lim$model]])) models[[lim$model]]$name
                  else lim$name %||% lim$model
-  # lim$fixed: the limit applies only when these parameters are held fixed.
   held <- unlist(lim$fixed)
-  nl(
-    if (length(held)) nl("With ", and_list(held), " held fixed: w") else "W",
-    "hen ", if (is.null(lim$detect)) "the data point to this limit"
-            else if (grepl("$", lim$detect, fixed = TRUE)) rd_math(lim$detect)
-            else nl("`", lim$detect, "`"),
-    ", the maximum likelihood estimator does not exist: the likelihood ",
-    if (has_target) nl("increases toward the ", target_name, " distribution")
-    else nl("approaches its supremum only in a limit (", target_name, ")"),
-    if (!is.null(lim$when)) nl(" as ", rd_math(lim$when)) else "",
-    ". `ml", model$id, "()` then stops with an error",
-    if (has_target) nl("; use [ml", lim$model, "()] instead.") else "."
-  )
+  scope <- if (length(held)) nl("This limit applies with ", and_list(held), " held fixed. ") else ""
+  stop_text <- nl("`ml", model$id, "()` stops with an error",
+    if (has_target) nl("; use [ml", lim$model, "()] to fit the limit model.") else ".")
+  lead <- if (identical(lim$kind, "nonexistence")) {
+    "The likelihood is unbounded and no finite maximum likelihood estimator exists. "
+  } else if (isTRUE(lim$numerical)) {
+    nl("The numerical search does not establish a finite maximum above its tolerance",
+       if (!is.null(target_name)) nl(" relative to the limit (", target_name, ")") else "", ". ")
+  } else {
+    nl("The maximum likelihood estimator does not exist: the likelihood ",
+       if (has_target) nl("increases toward the ", target_name, " distribution")
+       else nl("approaches its supremum only in a limit (", target_name, ")"), ". ")
+  }
+  paste(c(nl(scope, lead, stop_text), rd_sentence(lim$when),
+          rd_sentence(lim$detect)), collapse = " ")
 }
 
 # "Notation: \eqn{\alpha} is `alpha`, ..." so prose and limit sentences that

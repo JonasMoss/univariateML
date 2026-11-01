@@ -70,17 +70,17 @@ aliases: []
 key_references: [1]
 ---
 
-# Azzalini skew-t: existence and limiting faces (2026-11-01)
+Azzalini skew-t: existence and limiting faces (2026-11-01).
 
 Grades below distinguish proofs from open work. The `st` identifier was
 unused at revision d8a62683.
 Let observations be finite, n >= 1, and write
 
-\[
+$$
  f(x)=\frac{2}{\omega}t_\nu(z)T_{\nu+1}\!\left(\alpha z
  \sqrt{\frac{\nu+1}{\nu+z^2}}\right),\quad
- z=(x-\xi)/\omega,\quad \omega,\nu>0,\quad \alpha,\xi\in\mathbb R.
-\]
+ z=(x-\xi)/\omega,\quad \omega,\nu>0,\quad \alpha,\xi\in\mathbb{R}.
+$$
 
 Here t and T are the central Student density and CDF. The parameter domain is
 finite; limits are not members. This is the univariate member of Azzalini and
