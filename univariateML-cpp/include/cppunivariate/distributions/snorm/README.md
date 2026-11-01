@@ -32,6 +32,7 @@ log_density: log(sqrt((1-2/pi)*(xi**2+xi**(-2))+4/pi-1)) - log(sd) + log(2/(xi+1
 limits:
   - {name: scale collapse, when: "free scale with constant data at the free or held mean", status: Unbounded, message: "Scale collapse"}
   - model: hnorm
+    firmness: argued
     when: '$\xi \to \infty$'
     status: 'RightHalfNormalBoundary'
   - name: 'reflected translated half-normal'

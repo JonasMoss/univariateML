@@ -64,6 +64,11 @@ probe <- function(mutator, reject=TRUE) {
   assign('.umvl_read_front_matter',original,envir=.GlobalEnv)
   stopifnot(identical(failed,reject))
 }
+probe(function(f) {f$limits <- list(list(firmness='invented')); f})
+probe(function(f) {f$limits <- list(list(firmness='argued', numerical='yes')); f})
+probe(function(f) {f$limits <- list(list(firmness='proved', numerical=TRUE)); f}, reject=FALSE)
+probe(function(f) {f$relations$closure_point <- list(list(name='test',path='x',reachability='never',reason='proof')); f}, reject=FALSE)
+probe(function(f) {f$relations$closure_point <- list(list(name='test',path='x',reachability='sometimes',reason='proof')); f})
 probe(function(f) {f$group <- 'imaginary'; f})
 probe(function(f) {f$construction <- 'imaginary'; f})
 probe(function(f) {f$areas <- 'imaginary'; f})

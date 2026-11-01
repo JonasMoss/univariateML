@@ -46,9 +46,11 @@ limits:
     when: "tie multiplicity k = nu*(n-k)"
     status: ScaleBoundary
   - model: 'norm'
+    firmness: argued
     when: '$\nu \to \infty$'
     status: 'NormalBoundary'
   - model: lst
+    firmness: argued
     when: '$\nu \to 2^+$'
     status: 'DfTwoBoundary'
 references:

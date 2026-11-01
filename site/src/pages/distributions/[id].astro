@@ -25,6 +25,7 @@ const history=sections.find(s=>s.title.toLowerCase()==='decision history');
 const render=(s:string)=>markdown(s,source);
 const refs=f.key_references || f.references || [];
 const unlinked=await Promise.all(f.unlinked_limits.map(async r=>({...r,noteHtml:await render(r.when)})));
+const closurePoints=await Promise.all((f.relations.closure_point || []).map(async r=>({...r,pathHtml:await render(r.path)})));
 const related=await Promise.all(f.related.map(async r=>({...r,noteHtml:r.note ? await render(r.note) : ''})));
 const renderedProse=await Promise.all(prose.map(async s=>({...s,html:await render(s.body)})));
 ---
@@ -40,12 +41,13 @@ const renderedProse=await Promise.all(prose.map(async s=>({...s,html:await rende
 <dl><dt>Support</dt><dd>{f.support_tags.join(', ')}</dd>
 <dt>Coefficients</dt><dd>{f.coefficient_tags.join(', ')}</dd>
 <dt>Construction</dt><dd>{f.construction.join(', ')}</dd>
-<dt>Existence</dt><dd>{f.existence_tags.join(', ')} · <a href="/articles/existence/#what-can-fail">Existence theory</a></dd>
+<dt>Existence</dt><dd>{f.existence_tags.join(', ')} · <a href="/articles/existence/#what-can-fail">Existence theory</a><ul>{(f.limits || []).map(l=><li>{l.model || l.name || l.status}: firmness {l.firmness || 'unassessed'}{l.numerical ? '; numerical detection' : ''}</li>)}</ul></dd>
 <dt>Fit</dt><dd>{f.fit.method}; certification: {f.fit.certified}. {f.fit.note}</dd>
 <dt>Areas</dt><dd>{f.areas.join('; ')}</dd></dl>
 <p class="count">Editorial taxonomy. “Always” means no obstacle is declared; it is not an existence theorem. Fit certification does not describe inference validity.</p>
 </section>
 <section aria-label="Related families"><h2>Related families</h2>
+{closurePoints.map(r=><p>Closure point: {r.name}. <span set:html={r.pathHtml}/> Never a likelihood supremum in the stated scope: {r.reason}</p>)}
 <p><a href="/articles/limits/#declared-limits">Limits and escapes</a> · <a href="/articles/holds/#meaning-and-allowed-subsets">Held parameters</a> · <a href="/articles/restrictions/#scope-and-exemptions">Fit restrictions</a></p>
 {f.related.length ? <ul>{related.map(r=><li>{r.kind}: <a data-relation href={`/distributions/${r.family}/`}>{r.name}</a>{r.edge && <span> ({r.edge.type ? `${r.edge.type}: ` : ''}{r.edge.mass ? `mass = ${r.edge.mass}; ` : ''}{r.edge.shift && r.edge.transform === 'abs' ? `shift = ${r.edge.shift}; ` : ''}{r.edge.transform ? `${r.edge.transform}: ` : ''}{Object.entries(r.edge.at).map(([key,value])=>`${key} = ${value}`).join(', ')})</span>}{r.note && <span set:html={r.noteHtml}/>}</li>)}</ul> : <p>No relation is declared yet.</p>}
 {unlinked.length>0 && <details><summary>Other declared limits and failure boundaries ({unlinked.length})</summary><ul>{unlinked.map(r=><li>{r.name || r.status}{r.fixed?.length ? ` (held: ${r.fixed.join(', ')})` : ''}: <span set:html={r.noteHtml}/></li>)}</ul></details>}

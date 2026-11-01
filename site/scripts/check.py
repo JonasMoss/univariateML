@@ -57,6 +57,11 @@ expected_holds={("data-holds",f['id']):{'params':[p['name'] for p in f['params']
 expected_domains={("data-domain",f"{f['id']}:{p['name']}"):p['fit_domain'] for f in canonical for p in f['params'] if p.get('fit_domain')}
 for article,expected in [('limits',expected_limits),('holds',expected_holds),('restrictions',expected_domains)]:
     assert pages[DIST/f'articles/{article}/index.html'].records==expected, f'{article} catalogue differs from dossiers'
+# Boundary grades and non-reachable external laws are visible, not only embedded metadata.
+lomax_html=(DIST/'distributions/lomax/index.html').read_text()
+assert 'firmness argued' in lomax_html and 'numerical detection' in lomax_html
+assert 'Lévy' in (DIST/'distributions/invgauss/index.html').read_text()
+assert 'Firmness' in (DIST/'articles/limits/index.html').read_text()
 # The Markdown transformer otherwise intentionally converts unresolved paths to text.
 for source in (ROOT/'univariateML-cpp/notes').glob('*.md'):
     for url in re.findall(r'(?<!!)\[[^]]+\]\(([^)]+)\)',source.read_text()):
@@ -134,6 +139,7 @@ assert sorted(node_ids)==sorted(f['id'] for f in DATA), 'graph node coverage/uni
 expected=[]
 for f in DATA:
     for kind, edges in f.get('relations',{}).items():
+        if kind == 'closure_point': continue
         for i,e in enumerate(edges):
             targets=list(dict.fromkeys(c['family'] for c in e['components'])) if kind=='convolution_of' else list(dict.fromkeys([e['family'],e['mixing']['family']])) if kind=='mixture_of' else [e['family']]
             expected.extend(f"{f['id']}-{kind}-{i}-{j}" for j in range(len(targets)))

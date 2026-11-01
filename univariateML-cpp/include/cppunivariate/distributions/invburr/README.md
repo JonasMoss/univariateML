@@ -42,16 +42,20 @@ limits:
     status: Unbounded
     message: unbounded
   - model: invweibull
+    firmness: argued
     fixed: [shape2]
     when: Fixed-power Lomax profile is maximised on its exponential face
     status: InvWeibullBoundary
   - model: 'invweibull'
+    firmness: argued
     when: '$\mathrm{shape1} \to \infty$ with $\mathrm{scale}\,\mathrm{shape1}^{1/\mathrm{shape2}}$ fixed'
     status: 'InvWeibullBoundary'
   - model: 'power'
+    firmness: argued
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     status: 'PowerBoundary'
   - model: 'power'
+    firmness: argued
     fixed: [scale]
     when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
     detect: 'all(x <= scale)'

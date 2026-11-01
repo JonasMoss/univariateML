@@ -154,6 +154,7 @@ def declaration_errors(models):
         symbols = relation_symbols(model)
         for kind, edges in model.get('relations', {}).items():
             for i, edge in enumerate(edges):
+                if kind == 'closure_point': continue
                 ref = (child, kind, i)
                 key = (kind, edge['family'], edge.get('transform'), edge.get('when'),
                        edge.get('operation'), tuple(c['family'] for c in edge.get('components',[])),
@@ -582,6 +583,12 @@ def main():
     for id,child in models.items():
         for kind,edges in child.get('relations',{}).items():
             for i,edge in enumerate(edges):
+                if kind == 'closure_point':
+                    valid = all(isinstance(edge.get(k), str) and edge[k].strip() for k in ('name','path','reason')) and edge.get('reachability') == 'never'
+                    status = 'declared (not checked)' if valid else 'failed'
+                    results.append(dict(child=id, parent=edge.get('name'), kind=kind, edge=edge, status=status, detail='structural validation only'))
+                    print(f"{id} -> {edge.get('name')} ({kind}): {status}", flush=True)
+                    continue
                 try:
                     if (id,kind,i) in errors:
                         raise ValueError(errors[(id,kind,i)])

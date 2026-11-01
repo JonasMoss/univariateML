@@ -4,13 +4,17 @@
 
 ### Definition: Hellinger distance
 
-For densities with respect to a common measure, $H^2(P,Q)=\frac12\int(\sqrt p-\sqrt q)^2$. The research source calls a family Hellinger-closed when every Hellinger limit is a family member or a point mass. An MLE *escapes* when the likelihood supremum is not attained and every maximizing sequence approaches a limit outside the family. Non-closure is necessary for this kind of escape, but is not sufficient: inverse Gaussian has a nontrivial limit and nevertheless has a finite MLE on its ordinary data domain. [Section “Definitions” and subsection “Not closed, but the MLE always exists” of ML behaviour](../../dev/research/ml-behaviour.tex).
+For densities with respect to a common measure, $H^2(P,Q)=\frac12\int(\sqrt p-\sqrt q)^2$. A family is Hellinger-closed when every Hellinger limit is a family member. Older tables separately use closure apart from point masses. An MLE *escapes* when the likelihood supremum is not attained and a maximizing sequence approaches a point outside the parameter family in an appropriate likelihood closure. Non-closure is necessary for this kind of escape, but is not sufficient: inverse Gaussian has a nontrivial limit and nevertheless has a finite MLE on its ordinary data domain. [Section “Definitions” and subsection “Not closed, but the MLE always exists” of ML behaviour](../../dev/research/ml-behaviour.tex).
 
 ### Proposition (proved): topology and point masses
 
 Hellinger and total variation induce the same topology on probability laws: for the normalization above, $H^2\leq\lVert P-Q\rVert_{\mathrm{TV}}\leq\sqrt2 H$. Thus convergence in either metric implies convergence in the other. The inequalities follow from factoring $p-q=(\sqrt p-\sqrt q)(\sqrt p+\sqrt q)$ and applying Cauchy–Schwarz.
 
 A continuous location-scale density collapsing to a point can converge *weakly* to a point mass without converging to it in either metric: each continuous law gives the singleton probability zero, while the point mass gives it probability one. Consequently “closure apart from point masses” is a convention about degeneracies, not a claim that a point mass is a Hellinger limit of those continuous laws. Discrete point masses can instead be attained or approached in total variation. [Section “Definitions” of ML behaviour](../../dev/research/ml-behaviour.tex); [parameter rules R7](../../dev/roadmap/2026-10-29-parameter-rules.md).
+
+### Proposition (conditional): likelihood closure
+
+For a dense parameter family in a compact metrizable closure, the upper semicontinuous envelope of the **joint** sample log likelihood attains its maximum and that maximum equals the original supremum. Compatibility with the ordinary likelihood of a limit law is an additional condition; weak or Hellinger convergence alone does not establish it, especially at endpoints. The [proof, tightness assumptions and family inventory](../../dev/research/ml-behaviour.tex) give the precise scope. Firmness grades describe the evidence for a declared boundary; the separate numerical flag describes its detection algorithm.
 
 ## Three paths to familiar models
 
