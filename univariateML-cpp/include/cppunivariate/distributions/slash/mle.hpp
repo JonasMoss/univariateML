@@ -31,7 +31,17 @@ struct Profile {
       // bracket the unique scale maximum; the gate uses the represented scale.
       const double lower=std::log(std::numeric_limits<double>::denorm_min()),upper=std::log(std::numeric_limits<double>::max());
       double lo=std::max(lower,-350.0),hi=std::min(upper,static_cast<double>(std::log(radius))+1);
-      auto score=[&](double mid){return scale_score(x,m,mid);};
+      std::vector<double> log_distance;log_distance.reserve(x.size());
+      for(double v:x)log_distance.push_back(distributions::slash_log_distance_cached(v,m,0));
+      auto score=[&](double mid){
+        double g=0;
+        for(double d:log_distance) {
+          const double logt=2*(d-mid)-std::log(2.0);
+          const double t=std::exp(std::min(logt,4.0));
+          g+=t<1e-7?-1+t-t*t/6:(t>=42?1:1-2*t/std::expm1(t));
+        }
+        return g;
+      };
       double step=32;while(score(lo)<=0 && lo>lower){lo=std::max(lower,lo-step);step*=2;}
       step=32;while(score(hi)>=0 && hi<upper){hi=std::min(upper,hi+step);step*=2;}
       if(!(score(lo)>0 && score(hi)<0))return {m,s,-INFINITY,0,SlashStatus::IterationFailure};

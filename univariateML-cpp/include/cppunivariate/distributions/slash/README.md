@@ -247,3 +247,8 @@ the distance and normalization terms without changing their arithmetic order.
 Division, squaring, score summation and bisection midpoints stay unchanged;
 no tolerance or search change is involved. See the [paired profile and
 validation report](../../../../../dev/research/evaluations/2026-11-01-slash-speed-report.md).
+
+The free-scale profile caches each observation's log distance from the
+current location before bracketing and bisecting its scale root. The cached
+distances are reused only at that location; score signs, brackets, stopping
+rules and the location certificate are unchanged.
