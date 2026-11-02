@@ -36,18 +36,18 @@ log_density: "loggamma(size+x)-loggamma(size)-loggamma(x+1)+loggamma(alpha+size)
 limits:
   - model: nbinom
     firmness: proved
-    when: '$\alpha,\beta\to\infty$ with their ratio and positive size $r$ fixed, or the mirror path exchanging $r$ and $\beta$ with positive $\beta$ fixed'
-    detect: alpha and at least one interchangeable shape are free, and the reachable negative binomial face wins within 1e-8 times sample size
+    when: 'The shapes satisfy $\alpha,\beta\to\infty$ with their ratio and $r>0$ fixed. Exchanging $r$ and $\beta$ gives the corresponding path with $\beta>0$ fixed.'
+    detect: 'The shape $\alpha$ and at least one of $r$ and $\beta$ are free. A reachable negative binomial limit matches or exceeds the best attempted finite log likelihood within $10^{-8}$ times the sample size. This numerical comparison is not a global non-existence proof.'
     status: NegativeBinomialLimit
   - model: pois
     firmness: proved
-    when: '$r,\beta,\alpha\to\infty$ with $r\beta/\alpha$ fixed'
-    detect: all parameters free and the Poisson face wins within 1e-8 times sample size
+    when: 'All three shapes tend to infinity with $r\beta/\alpha$ tending to a finite positive mean.'
+    detect: 'All coefficients are free. The Poisson limit matches or exceeds the best attempted finite log likelihood within $10^{-8}$ times the sample size. This numerical comparison is not a global non-existence proof.'
     status: PoissonLimit
   - model: pois
     firmness: proved
-    when: '$r\to0$, $\beta\to0$, or $\alpha\to\infty$, with the other two coefficients fixed and positive'
-    detect: all observations zero and at least one parameter free
+    when: 'A free shape satisfies $r\to0$, $\beta\to0$, or $\alpha\to\infty$, while the other two coefficients stay fixed and positive.'
+    detect: 'Every observation is zero and at least one coefficient is free.'
     status: PointMass
 references:
 - Irwin, J. O. (1975). The Generalized Waring Distribution. Part I. JRSS A 138(1), 18-31. doi:10.2307/2345247.
@@ -91,14 +91,38 @@ aliases:
 - "inverse Markov–Pólya"
 key_references:
 - 3
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, no general sample criterion for a finite
+    maximum is asserted here. Negative binomial and Poisson limits can
+    compete with finite fits. Exchanging $r$ and $\beta$ leaves the law
+    unchanged, so an off-diagonal maximizer cannot give a unique labeled
+    coefficient vector. All-zero samples have no finite MLE whenever any
+    coefficient is free. Holding coefficients removes some limiting paths,
+    but the nonzero-sample conditional fits are numerical searches without
+    a general uniqueness guarantee. Holding all coefficients leaves only
+    likelihood evaluation, including for all-zero data.
+  reason: >-
+    The probability mass is symmetric in $r$ and $\beta$ after expanding
+    the beta and gamma factors. Its mass at zero is strictly below one
+    at every finite positive parameter vector. It tends to one as a free
+    $r$ or $\beta$ tends to zero, or as a free $\alpha$ tends to infinity,
+    with the other coefficients fixed and positive. Comparing numerical
+    stationary points with reachable limiting models does not establish
+    that all finite maxima have been found.
 ---
 
-The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power law tails.
+The beta negative binomial mixes a negative binomial success probability with a beta distribution. Also called the generalized Waring distribution, it models counts with power-law tails. The shape $r$ is the underlying negative binomial size. The shapes $\alpha$ and $\beta$ govern the beta mixing distribution for its success probability.
 
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) describes the limiting paths and the scope of the boundary comparisons.
 
-Any subset of `size`, `alpha` and `beta` may be held fixed. With `size` and `beta` both free, the returned representative satisfies `size <= beta`: swapping these two coefficients gives exactly the same distribution. No ordering is imposed when either is held.
+Any subset of $r$, $\alpha$ and $\beta$ may be held fixed. When $r$ and $\beta$ are both free, swapping them gives exactly the same distribution. The returned representative satisfies $r\le\beta$. No ordering is imposed when either is held.
 
-A deterministic multistart search compares finite stationary points with every reachable negative binomial and Poisson face. Faces win likelihood ties within `1e-8 * length(x)`. This search does not certify global optimality or assume unimodality. An unresolved score or range endpoint raises an error. With all coefficients supplied, the likelihood is evaluated directly.
+A deterministic multistart search compares finite stationary points with every reachable negative binomial and Poisson face. Limiting models win computed likelihood ties within $10^{-8}$ times the sample size. This search does not certify global optimality or assume unimodality. An unresolved score or range endpoint stops the fit. With all coefficients supplied, the likelihood is evaluated directly. For all-zero data, any free coefficient allows the likelihood to approach one only at an excluded boundary. With every coefficient held, the all-zero likelihood is evaluated at the supplied positive values.
+
+## R notes
+
+Supply `size`, `alpha` or `beta` to hold that coefficient. A detected negative binomial limit recommends `mlnbinom`, holding its size at the supplied `size` or `beta` when either was held. A Poisson limit or all-zero free fit recommends `mlpois`. The finite search and limit comparisons do not certify a global maximum.

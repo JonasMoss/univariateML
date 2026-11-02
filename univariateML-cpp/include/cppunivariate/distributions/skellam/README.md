@@ -69,19 +69,48 @@ summary: Skellam provides a model for differences between independent Poisson ev
 aliases: []
 key_references:
 - 3
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both rates free, every nonempty finite integer sample has an
+    attained finite MLE in the closed nonnegative quadrant. General joint
+    uniqueness is not asserted. A constant sample $k$ has the maximum
+    $(\mu_1,\mu_2)=(\max(k,0),\max(-k,0))$. With one rate held,
+    the remaining rate has a unique finite MLE whenever the held model
+    permits the observations. A held zero rate restricts the observations
+    to the appropriate signed Poisson support. Holding both rates leaves
+    only likelihood evaluation.
+  reason: >-
+    A convolution mass is at most the maximal mass of either Poisson
+    factor. That bound tends to zero when either rate diverges. Continuity
+    on the closed quadrant and a positive likelihood at some finite point
+    therefore give compact positive likelihood level sets and attainment.
+    With one positive rate held, the conditional paired-count variance
+    is strictly less than its mean, giving strict concavity in the free
+    rate. With a zero rate held, the problem is an ordinary signed Poisson
+    fit. These arguments prove existence and conditional uniqueness,
+    not joint uniqueness.
 ---
 
-The Skellam distribution describes the difference between two independent Poisson counts.
+The Skellam distribution describes the difference between two independent Poisson counts. The rates $\mu_1$ and $\mu_2$ describe the positive and subtracted counts, respectively. Their difference is the mean of the observed difference.
 
 ## Details
 
-2026-10-30 (TASK-125): the large-order expression divides before multiplying and uses log coordinates when the order/argument ratio overflows. The independent truth rows at count 1e300 exercise the change.
-
 Zero rates are attained members, including the point mass at zero when both vanish. A positive or negative Poisson boundary may therefore be returned directly. Constant nonzero data need not give a point mass. With one positive rate fixed, the log likelihood is strictly concave in the other rate; a bracketed score solve finds its unique maximum, including the zero endpoint. Holding either or both rates fixed is supported; data outside a fixed zero-rate member's support are rejected.
 
-For a joint interior fit, writing $s=\sqrt{\mu_1\mu_2}$ and $\theta=\log(\mu_1/\mu_2)/2$ gives the score equation $\mu_1-\mu_2=\bar x$. The remaining equation is $n^{-1}\sum_i I'_{|x_i|}(2s)/I_{|x_i|}(2s)=\cosh\theta$, with $I'_v(z)=I_{v+1}(z)+vI_v(z)/z$. The fitter searches the resulting scalar profile and compares the exact zero-rate face. Faces win computed log likelihood ties within $0.5\cdot10^{-8}n$. A logarithmic grid and local refinements nominate candidates; a separate branch-and-bound pass bounds the remaining finite interval. The Poisson-mode bound excludes the far tail, and the positive series bounds the interval adjacent to zero. Uniqueness is not assumed. If comparisons are exact, the returned likelihood is within $10^{-8}n$ of the global maximum. In floating point this is a practical margin, conditional on the computed masses, scores and comparisons, not a directed-rounding guarantee. Nonfinite values, representational stagnation or an exhausted search return iteration failure.
-
 The mean and variance identify both rates. Likelihoods are bounded by one per observation. Both-sided samples exclude zero-rate faces. A convolution mass is at most the maximal mass of either Poisson factor, which vanishes when that rate diverges. Continuity on the closed quadrant therefore gives a finite maximizer for every finite integer sample, also with fixed rates whenever the support permits the sample. Constant data $k$ have the joint MLE $(k,0)$ for $k>0$, $(0,-k)$ for $k<0$, and $(0,0)$ for zero: condition on the opposite Poisson count and use the decreasing maximal Poisson mass as its integer mode increases. For nonnegative data with positive mean, the inward profile derivative per observation at the Poisson face is $\bar x\,n^{-1}\sum_i 1/(x_i+1)-1$; reflect the data for the other face. This is a local boundary diagnostic, not a sufficient global rule; the fitter compares likelihoods.
+
+## R notes
+
+Supply `mu1` or `mu2` to hold the corresponding rate. Holding both evaluates the likelihood. Numerical failure stops fitting, and increasing `iterlim` raises the search budget.
+
+## Decision history
+
+2026-10-30 (TASK-125): the large-order expression divides before multiplying and uses log coordinates when the order/argument ratio overflows. The independent truth rows at count 1e300 exercise the change.
+
+### Joint-search certificate (recorded 2026-11-02)
+
+For a joint interior fit, writing $s=\sqrt{\mu_1\mu_2}$ and $\theta=\log(\mu_1/\mu_2)/2$ gives the score equation $\mu_1-\mu_2=\bar x$. The remaining equation is $n^{-1}\sum_i I'_{|x_i|}(2s)/I_{|x_i|}(2s)=\cosh\theta$, with $I'_v(z)=I_{v+1}(z)+vI_v(z)/z$. The fitter searches the resulting scalar profile and compares the exact zero-rate face. Faces win computed log likelihood ties within $0.5\cdot10^{-8}n$. A logarithmic grid and local refinements nominate candidates; a separate branch-and-bound pass bounds the remaining finite interval. The Poisson-mode bound excludes the far tail, and the positive series bounds the interval adjacent to zero. Uniqueness is not assumed. If comparisons are exact, the returned likelihood is within $10^{-8}n$ of the global maximum. In floating point this is a practical margin, conditional on the computed masses, scores and comparisons, not a directed-rounding guarantee. Nonfinite values, representational stagnation or an exhausted search return iteration failure.
 
 The following curvature bound does not require concavity or unimodality.
 Put $t=\min(\mu_1,\mu_2)$, $d=|\bar x|$, and $q=t(t+d)$.
@@ -109,7 +138,7 @@ Poisson mass, at most $1/\sqrt{2\pi\lfloor t\rfloor}$ for $t\ge2$.
 This establishes a bound, not profile unimodality. The computed masses
 and comparisons are not outward rounded.
 
-## d/p/q/r
+### Probability evaluation
 
 Zero rates include the signed Poisson limits; sampling subtracts two independent Poisson variates.
 

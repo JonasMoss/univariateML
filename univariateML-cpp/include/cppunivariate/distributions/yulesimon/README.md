@@ -25,8 +25,8 @@ log_density: "log(rho) + loggamma(x) + loggamma(rho+1) - loggamma(x+rho+1)"
 limits:
   - name: point mass at one
     firmness: proved
-    when: '$rho \to +\infty$'
-    detect: all observations equal one
+    when: 'The shape satisfies $\rho\to\infty$.'
+    detect: 'The shape is free and every observation equals one.'
     status: PointMass
 holds: []
 examples: |
@@ -63,18 +63,32 @@ references:
 - Simon, H. A. (1955). On a class of skew distribution functions. Biometrika, 42(3–4), 425–440. doi:10.1093/biomet/42.3-4.425.
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    A unique finite MLE exists exactly when at least one observation exceeds
+    one. All-ones samples have an unattained point-mass supremum as
+    $\rho\to\infty$. Holding $\rho>0$ leaves only likelihood evaluation
+    and permits all-ones samples.
+  reason: >-
+    The score in $\log\rho$ is
+    $m-\sum_i\sum_{j=1}^{x_i}\rho/(\rho+j)$, where $m$ is sample size.
+    It is strictly decreasing, with limits $m$ at zero and
+    $m-\sum_i x_i$ at infinity. Thus it has exactly one zero if some
+    observation exceeds one. For all ones the score stays positive and
+    the mass at one tends to one.
 ---
 
-The Yule--Simon distribution describes power-law frequencies on the positive integers.
+The Yule--Simon distribution models positive integer frequencies with a power-law tail. Its shape $\rho$ controls tail decay, with larger values concentrating probability closer to one.
 
 ## Details
 
-This is the beta negative binomial law with `size = 1`, `alpha = rho`, `beta = 1`, shifted upward by one. In log shape the score is strictly decreasing from the sample size to the sample size minus the sum of the observations. A unique finite MLE therefore exists whenever any observation exceeds one. As `rho` decreases to zero the likelihood tends to zero; probability escapes to infinity rather than approaching a proper limiting law.
+This is a beta negative binomial law with $r=1$, $\alpha=\rho$ and $\beta=1$, shifted upward by one. The score in log shape decreases strictly from the sample size to the sample size minus the sum of observations. It therefore has one finite root whenever any observation exceeds one. Other constant samples also have finite fits.
 
-All-ones samples have an unattained point-mass supremum at one and the fitter stops. Other constant samples have finite fits. Package-defined probability functions evaluate upper tails directly and use bounded-memory integer inversion. Beyond 2^53, quantiles use the representable double grid; adjacent integers cannot be distinguished, and quantiles exceeding the largest finite double are returned as infinity.
+All-ones samples have an unattained point-mass supremum as $\rho\to\infty$. As $\rho\downarrow0$, every fixed count has probability tending to zero. Probability escapes to infinity rather than approaching a proper limiting law. Holding the shape evaluates the likelihood directly, including for all-ones samples.
 
-With the coefficient held, the likelihood is evaluated directly, including all-ones samples.
+## R notes
 
-## d/p/q/r
+A free-shape fit to all-ones data stops. Supplying `rho` holds the shape.
 
-Support starts at one with no finite upper endpoint; the double grid above 2^53 may skip integers and overflowed quantiles return Inf.
+The probability functions evaluate upper tails directly and use bounded-memory integer inversion. Beyond $2^{53}$, quantiles use the representable double grid, which cannot distinguish every adjacent integer. Quantiles exceeding the largest finite double are returned as infinity. Support starts at one and has no finite upper endpoint.

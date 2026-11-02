@@ -30,8 +30,8 @@ log_density: "-s*log(x) - log(zeta(s))"
 limits:
   - name: point mass at one
     firmness: proved
-    when: '$s \to +\infty$'
-    detect: all observations equal one
+    when: 'The exponent satisfies $s\to\infty$.'
+    detect: 'The exponent is free and every observation equals one.'
     status: PointMass
 holds: []
 examples: |
@@ -61,18 +61,33 @@ references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    A unique finite MLE exists exactly when at least one observation exceeds
+    one. All-ones samples have an unattained point-mass supremum as
+    $s\to\infty$. Holding finite $s>1$ leaves only likelihood evaluation
+    and permits all-ones samples.
+  reason: >-
+    The score per observation is $E_s[\log X]-\overline{\log x}$.
+    Its derivative is $-\operatorname{Var}_s(\log X)<0$.
+    The model mean decreases from infinity as $s\downarrow1$ to zero
+    as $s\to\infty$. A positive empirical log mean therefore gives
+    exactly one score root and a strictly concave likelihood. If every
+    observation is one, the score stays positive and the mass at one
+    tends to one.
 ---
 
-The zeta distribution describes power-law frequencies on the positive integers.
+The zeta distribution models unbounded positive integer frequencies following a pure power law. Its exponent $s>1$ controls tail decay, with larger values concentrating probability closer to one.
 
 ## Details
 
-This is the infinite-support face of finite Zipf: for fixed `s > 1`, its probabilities are the limits as `N` tends to infinity. The log-likelihood is strictly concave in `s`: its score is the sample size times the difference between the model and empirical means of `log(x)`. The model mean decreases from infinity to zero. Thus the finite MLE is unique unless all observations are one. As `s` decreases to one the likelihood tends to zero, so that endpoint never maximizes a finite sample likelihood.
+For fixed $s>1$, this is the limit of the finite Zipf distribution as its upper endpoint tends to infinity. The log likelihood is strictly concave in $s$. Its score is the sample size times the difference between the model and empirical means of $\log X$. The model mean decreases from infinity to zero, giving one finite maximum whenever some observation exceeds one. Other constant samples also have finite fits.
 
-All-ones samples have an unattained point-mass supremum at one and the fitter stops. Other constant samples have finite fits. Package-defined probability functions evaluate upper tails directly and use bounded-memory integer inversion. Beyond 2^53, quantiles use the representable double grid; adjacent integers cannot be distinguished, and quantiles exceeding the largest finite double are returned as infinity.
+All-ones samples have an unattained point-mass supremum as $s\to\infty$. As $s\downarrow1$, every fixed count has probability tending to zero, so this endpoint cannot maximize a finite sample likelihood. Holding the exponent evaluates the likelihood directly, including for all-ones samples.
 
-With the coefficient held, the likelihood is evaluated directly, including all-ones samples.
+## R notes
 
-## d/p/q/r
+A free-exponent fit to all-ones data stops. Supplying `s` holds the exponent.
 
-Support starts at one with no finite upper endpoint; the double grid above 2^53 may skip integers and overflowed quantiles return Inf.
+The probability functions evaluate upper tails directly and use bounded-memory integer inversion. Beyond $2^{53}$, quantiles use the representable double grid, which cannot distinguish every adjacent integer. Quantiles exceeding the largest finite double are returned as infinity. Support starts at one and has no finite upper endpoint.

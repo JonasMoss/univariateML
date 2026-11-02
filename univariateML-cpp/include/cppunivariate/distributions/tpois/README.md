@@ -42,14 +42,14 @@ log_density: "x*log(lambda)-loggamma(x+1)-log(Sum(exp(k*log(lambda)-loggamma(k+1
 limits:
 - name: point mass at lowest support point
   firmness: proved
-  when: '$\lambda \to 0$'
-  detect: all observations at a strictly positive lowest support point
+  when: 'The rate satisfies $\lambda\to0$ on a fixed nonsingleton window whose lowest retained count is positive.'
+  detect: 'The rate is free and every observation equals the strictly positive lowest count of a nonsingleton retained window.'
   status: LowerPointMass
   fixed: [b]
 - name: point mass at highest support point
   firmness: proved
-  when: '$\lambda \to \infty$'
-  detect: all observations at finite highest support point
+  when: 'The rate satisfies $\lambda\to\infty$ on a fixed nonsingleton window with a finite upper edge.'
+  detect: 'The rate is free and every observation equals the finite highest count of a nonsingleton retained window.'
   status: UpperPointMass
   fixed: [a]
 holds: []
@@ -85,34 +85,52 @@ references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With all coefficients free, every nonempty nonnegative integer sample
+    has a finite maximum. A nonconstant sample identifies the rate on the
+    smallest retained integer window, but the real truncation bounds are
+    not unique. A constant sample permits singleton support and does not
+    identify the rate. With data-compatible bounds held, tighten each free bound to
+    the corresponding sample extreme. On a nonsingleton window a unique
+    positive finite rate exists exactly when the sample mean lies strictly
+    between its edges. All-zero data attain rate zero if zero is retained.
+    Other edge-only samples have an unattained point-mass supremum.
+    With the rate held, tightening free bounds maximizes the likelihood
+    whenever the conditioning event and observations have positive probability.
+    Holding all coefficients leaves only likelihood evaluation.
+  reason: >-
+    Removing unobserved retained counts decreases the conditioning
+    probability and increases the likelihood. Bounds giving the same
+    integer window are equivalent. On a fixed nonsingleton window,
+    the second derivative in $\log\lambda$ is minus the sample size
+    times the conditional variance, which is positive. The conditional
+    mean increases from the lower edge to the upper edge (or infinity),
+    giving the stated root criterion. Singleton support has likelihood one
+    for every positive rate. Rate zero is an attained member only when
+    the window contains zero. The uniqueness claim concerns the rate on
+    nonsingleton support, not the complete coefficient vector.
 ---
 
-The Poisson law conditioned on known bounds `a < x <= b` models truncated counts.
+The truncated Poisson distribution models Poisson counts observed only within a conditioning window $a<X\le b$. The rate $\lambda$ describes the underlying Poisson law. The bounds describe which counts can be recorded, rather than censoring observations outside the window.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) derives the stated limits and held-parameter conditions.
+Bounds should reflect the sampling design. With both bounds estimated, the retained integer window tightens to the sample extremes. Removing unobserved counts from the window cannot decrease the conditional likelihood. Real bounds giving the same integer window are equivalent. The strict lower bound has representatives in $[\min_i x_i-1,\min_i x_i)$, and an estimated finite upper bound has representatives in $[\max_i x_i,\max_i x_i+1)$.
 
-Bounds must be supplied explicitly to avoid silently ignoring the sampling design.
-Untruncated bounds `a = -Inf, b = Inf` recover the ordinary Poisson interior fit.
-The conditional mean is strictly increasing in the natural parameter, since its
-derivative is the positive conditional variance. Thus every sample mean strictly
-between the support edges has one global maximum. Edge-only data escape to a
-point mass; a singleton support does not identify the parameter.
-The normalizer uses mode-centred recurrences with a two-million-term budget per tail.
+On a fixed nonsingleton window the conditional mean increases strictly with $\log\lambda$, because its derivative is the conditional variance. A sample mean strictly between the edges therefore gives a unique finite positive rate. An edge-only sample instead approaches a point mass. The atom at zero is attained at $\lambda=0$ when zero is retained. At a strictly positive lower edge, or at the finite upper edge of nonsingleton support, the point mass is only a limit. Singleton support has likelihood one at every positive rate and does not identify the rate.
 
-When the conditioning event includes zero, the point mass at zero is attained
-at `lambda = 0`.
-Otherwise the corresponding zero-probability conditioning limit is reported as an escape.
+Holding the rate leaves only selection of any free bounds. Holding every coefficient evaluates the conditional likelihood. Untruncated bounds recover the ordinary Poisson fit. The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) gives the boundary arguments.
 
-For `a = 0, b = Inf`, interior fits agree with `mlztpois`. The zero-rate
-conditioning limit is defined as an attained member only for `mlztpois`. Thus
-`mlztpois` retains its attained boundary while `mltpois` reports the point-mass escape.
+## R notes
 
-With a free bound, the conditioning support tightens to the corresponding sample extreme. The strict lower bound is nonunique in `[min(x) - 1, min(x))`; the returned representative is `min(x) - 1`. On singleton support every positive rate maximizes the likelihood; a free rate is represented by one. For nonsingleton support the empirical mean must lie strictly between the effective integer bounds, except that a zero mean attains rate zero when zero is in the support. Otherwise the fitter stops at the lower or upper point-mass limit.
+Supply `a` and `b` explicitly. Use `a = NULL` or `b = NULL` to estimate the corresponding bound. The returned representatives are `min(x) - 1` and `max(x)`. On singleton support a free rate is represented by one. A point-mass escape stops fitting.
 
-Scalar d/p/q/r use the same positive-probability conditioning contract. At
-`lambda = 0`, they accept a nonempty window containing zero and return its
-atom at zero; a window excluding zero returns NaN. Its weak-limit atom at the
-first allowed count is not an attained member here. Use the separately defined
-ztpois family for its attained positive-truncation zero-rate limit.
+For `a = 0, b = Inf`, interior fits agree with `mlztpois`. The zero-rate conditioning limit is an attained member only in the separately defined zero-truncated family. Thus `mlztpois` retains its attained boundary while `mltpois` reports an escape.
+
+Scalar d/p/q/r share the positive-probability conditioning contract. At `lambda = 0`, a nonempty window containing zero returns its atom at zero. A window excluding zero returns NaN, rather than its weak-limit atom at the first allowed count.
+
+## Decision history
+
+The normalizer uses mode-centred recurrences with a two-million-term budget per tail. Unresolved normalization stops with numerical failure.
