@@ -66,3 +66,45 @@ TEST_CASE("sgomp: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::sgomp_mle(x,1e-8,1).status==cppunivariate::SgompStatus::IterationFailure);
 }
+
+TEST_CASE("sgomp: shape gain survives enormous common log likelihood") {
+  for (double large:{1e17,1e100,1e300}) {
+    const std::vector<double> x{1e-300,1,large};
+    const auto f=cppunivariate::sgomp_mle(mltest::as_span(x),1e-10,200,1);
+    REQUIRE(f.status==cppunivariate::SgompStatus::Ok);
+    const double e1=std::exp(-1.0),linear=3*e1-e1*e1;
+    const double oracle=2*(1-2*e1)/(linear+std::sqrt(linear*linear+4*(1-e1*e1)*(1-2*e1)));
+    CHECK(f.eta==doctest::Approx(oracle).epsilon(1e-9));
+    double score=0,gain=0;
+    for (double v:x) {
+      const double e=std::exp(-v),a=-std::expm1(-v);
+      score+=a/(1+f.eta*a)-e;
+      gain+=std::log1p(f.eta*a)-f.eta*e;
+    }
+    CHECK(std::abs(score)<1e-10);
+    CHECK(gain>0.028);
+    const auto face=cppunivariate::sgomp_detail::profile(mltest::as_span(x),1,0,200,1e-10);
+    const auto best=cppunivariate::sgomp_detail::profile(mltest::as_span(x),1,f.eta,200,1e-10);
+    CHECK(cppunivariate::sgomp_detail::difference(mltest::as_span(x),best,face)==doctest::Approx(gain).epsilon(1e-12));
+  }
+}
+
+TEST_CASE("sgomp: a positive face score cannot be hidden by the tie margin") {
+  const std::vector<double> x{std::log(2.0)+1e-6};
+  const auto f=cppunivariate::sgomp_mle(mltest::as_span(x),1e-10,200,1);
+  REQUIRE(f.status==cppunivariate::SgompStatus::Ok);
+  const double e=std::exp(-x[0]),a=-std::expm1(-x[0]);
+  CHECK(f.eta>0);
+  CHECK(f.eta==doctest::Approx((a-e)/(a*e)).epsilon(1e-9));
+  const double gain=std::log1p(f.eta*a)-f.eta*e;
+  CHECK(gain>0);
+  CHECK(gain<1e-8);
+}
+
+TEST_CASE("sgomp: ranking tie margin never grows with the common likelihood") {
+  const std::vector<double> x{1e-300,1,1e300};
+  const cppunivariate::sgomp_detail::Candidate a{1,std::log(.2),-1e300,0,true};
+  const cppunivariate::sgomp_detail::Candidate b{1,-std::numeric_limits<double>::infinity(),-1e300,0,true};
+  CHECK(cppunivariate::sgomp_detail::ranking_difference(mltest::as_span(x),a,b)>.027);
+  CHECK(cppunivariate::sgomp_detail::ranking_difference(mltest::as_span(x),b,a)<-.027);
+}

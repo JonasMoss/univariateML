@@ -112,3 +112,15 @@ test_that("gompertz: extreme conditional bracket is checked", {
   expect_equal(unname(wide["b"])*1e308,1,tolerance=1e-9)
   expect_equal(as.numeric(logLik(wide))+2*log(1e308),2-2*expm1(1),tolerance=1e-9)
 })
+
+test_that("gompertz sampler avoids extreme intermediate overflow", {
+  f <- mlgompertz(c(1e-300,2e-300),a=1e-300)
+  set.seed(1); expect_true(all(is.finite(rml(5,f))))
+  for (p in list(c(1e-300,7e302),c(1e300,1e-300),c(1e7,1),c(1,1))) {
+    set.seed(1); u <- runif(200)
+    set.seed(1); draws <- rgompertz(200,p[1],p[2])
+    expect_true(all(is.finite(draws) & draws>0))
+    expect_equal(draws/qgompertz(log(u),p[1],p[2],FALSE,TRUE),rep(1,200),tolerance=1e-12)
+    if (identical(p,c(1,1))) expect_identical(draws,log(1-log(u)))
+  }
+})

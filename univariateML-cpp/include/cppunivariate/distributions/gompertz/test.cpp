@@ -116,3 +116,24 @@ TEST_CASE("gompertz: verified extreme conditional bracket") {
   CHECK(wide.b*1e308==doctest::Approx(1).epsilon(1e-9));
   CHECK(wide.logLik+2*std::log(1e308)==doctest::Approx(2-2*std::expm1(1.0)).epsilon(1e-9));
 }
+
+TEST_CASE("gompertz: stable sampler at fixed uniforms and ordinary arithmetic") {
+  struct FixedUniform {
+    double u;
+    double runif(double,double) { return u; }
+  };
+  for (double u:{1e-100,.1,.5,.99}) {
+    for (const auto &p:std::vector<std::vector<double>>{{1e-300,7e302},{1e300,1e-300},{1e7,1},{1,1}}) {
+      FixedUniform rng{u};
+      const double draw=cppunivariate::distributions::rgompertz(rng,p[0],p[1]);
+      REQUIRE(std::isfinite(draw));
+      CHECK(draw>0);
+      CHECK(draw==doctest::Approx(cppunivariate::distributions::qgompertz(std::log(u),p[0],p[1],false,true)).epsilon(1e-12).scale(1e-310));
+    }
+  }
+  cppunivariate::distributions::StdRng<> old_rng(1),new_rng(1);
+  for (int i=0;i<200;++i) {
+    const double u=old_rng.runif(0,1);
+    CHECK(cppunivariate::distributions::rgompertz(new_rng,1,1)==std::log(1-std::log(u)));
+  }
+}
