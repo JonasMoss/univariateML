@@ -145,10 +145,10 @@ exemptions and the boundary attainment questions are open.
 
 For a >= 0 and t >= 0, the lower thin tail at z=-t has the representation
 
-\[
+$$
  F(-t;a,\nu)=\frac1\pi\int_0^{\arctan(1/a)}
  \left(1+\frac{t^2}{\nu\sin^2 r}\right)^{-\nu/2}\,dr,
-\]
+$$
 
 with the upper endpoint pi/2 when a=0. This follows by conditioning the
 skew-normal Gaussian wedge on an independent chi-square scaling variable and
@@ -174,12 +174,12 @@ For a numerical fitter, write `h = alpha*z*sqrt((nu+1)/(nu+z*z))`
 and `R = t_(nu+1)(h)/T_(nu+1)(h)`. Differentiating the log density at
 finite parameters gives
 
-\[
+$$
 g_z=-\frac{(\nu+1)z}{\nu+z^2}
  +R\frac{\alpha\nu\sqrt{\nu+1}}{(\nu+z^2)^{3/2}},\qquad
 s_\xi=-g_z/\omega,\quad s_{\log\omega}=-1-zg_z,\quad
 s_\alpha=Rz\sqrt{\frac{\nu+1}{\nu+z^2}}.
-\]
+$$
 
 These are pointwise algebraic derivatives, not a validated implementation;
 the df score also differentiates the Student CDF with respect to its df.

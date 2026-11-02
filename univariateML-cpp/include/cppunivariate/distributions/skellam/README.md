@@ -92,10 +92,10 @@ Consequently the size-biased $J-1$ is stochastically dominated by $J$,
 so $\operatorname{Var}(J)\leq E J$; also
 $E J\leq q/(|k|+1)$. Differentiating the positive series along the
 mean-constrained line and discarding nonpositive terms gives
-\[
+$$
   {d^2\over dt^2}\log p_k(t)\leq {2 E J\over t(t+d)}
   \leq {2\over |k|+1}.
-\]
+$$
 Thus the sum of these bounds supplies a quadratic upper envelope for
 branch-and-bound intervals. The midpoint score is computed from the two
 neighboring mass ratios. For an interval of half-width $h$, the midpoint
