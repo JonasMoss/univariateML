@@ -49,8 +49,8 @@ log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(loggamma(size+x)-loggamm
 limits:
 - model: zmpois
   firmness: proved
-  when: $size \to \infty$ with the positive conditional mean fixed
-  detect: size and prob are free and the maximised face likelihood wins within 1e-8 times the sample size
+  when: 'The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ tending to a finite positive rate and $p_0$ unchanged.'
+  detect: 'Size and probability are free, and the fitted zero-modified Poisson boundary has log likelihood at least the best finite value found minus $10^{-8}$ times sample size. This numerical comparison does not certify non-existence.'
   status: PoissonLimit
 examples: |
   set.seed(1)
@@ -87,16 +87,47 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, all-zero data attain a maximum at $p_0=1$ with
+    unidentified base coefficients. Positive observations all equal to one attain
+    a maximum at $p=1$ with size unidentified. For other samples, finite-size
+    attainment depends on comparison with the infinite-size zero-modified Poisson
+    boundary; general uniqueness is unknown. Holding any finite nonnegative size,
+    or holding $0<p<1$, gives an attained maximum for compatible data. Holding
+    only $p_0$ leaves the same positive-count existence problem. Further holds
+    preserve these conclusions. Holding all coefficients leaves likelihood
+    evaluation. Held zero-probability endpoints must match the observed zero
+    indicators, and held $p=1$ permits positives only at one.
+  reason: >-
+    The zero-indicator factor is independent of the zero-truncated negative
+    binomial likelihood of the positives. When positives occur, at fixed size it has a unique
+    probability fit because its conditional mean is strictly monotone in the
+    natural parameter; size zero is the continuous logarithmic-series member. At
+    held $0<p<1$, its likelihood vanishes at infinite size and extends
+    continuously to size zero, establishing attainment. With size and probability
+    free, let $Q(r)$ be the maximized positive log likelihood at finite $r\ge0$
+    and let $Q_\infty$ be the fitted zero-truncated Poisson value. A finite
+    maximum exists if some finite $r$ has $Q(r)\ge Q_\infty$; otherwise only the
+    infinite-size boundary attains the supremum. This global characterization does
+    not certify the implemented numerical search.
 ---
 
-Zero-modified negative binomial distributions model counts with a separate zero component.
+The zero-modified negative binomial distribution assigns probability $p_0$ directly to zero and models positive counts by a zero-truncated negative binomial law. The size $r$ need not be an integer. Together with $p$, it controls the shape of the positive-count distribution.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) derives the stated limits and held-parameter conditions.
+The likelihood factors into a zero-indicator part and a positive conditional part. Holding the zero probability leaves the positive conditional fit unchanged. A free zero probability is the empirical zero fraction, including zero or one when the corresponding count category is absent.
 
-Actuar defines `size = 0` as the logarithmic series with `theta = 1 - prob`; this attained member is returned. Fixed size may be zero.
-With no positives the fitter returns `p0 = 1`, keeps a supplied size and picks conventional base parameters with a warning. With no zeros it returns `p0 = 0`. Positive observations all equal to one give an attained two-point law; the fitter warns that `mlbinom(x, size = 1)` fits it exactly.
-Holding size fixed removes the infinite-size escape. The point mass at one remains attained for every fixed size.
+Size zero is the attained logarithmic-series member, with logarithmic-series parameter $1-p$, following the actuar convention. It remains available when size is held. Probability one gives a point mass at one in the positive conditional law for every finite size. Thus positive counts all equal to one give an attained two-point law, while no positive observations leave the base coefficients unidentified.
 
-The zero-indicator likelihood and the positive conditional likelihood factorize. Holding `p0`, including its empirical optimum, leaves the positive conditional fit unchanged. Held `p0 = 0` with zeros or `p0 = 1` with positives is incompatible and stops. With no positives, base parameters are unidentified; supplied values are preserved and free base parameters use conventional representatives. Holding `prob < 1` removes the infinite-size escape; with only `p0` held the positive conditional profile can still escape to `mlzmpois`. Size zero is the attained logarithmic member. Profile searches are numerical, not certified global optimization.
+Holding finite nonnegative size removes the infinite-size escape. Holding $p<1$ also removes it. With only the zero probability held, the positive conditional profile can still approach a zero-truncated Poisson law, producing a zero-modified Poisson boundary with the same zero probability.
+
+The remaining size profiles are searched numerically without a global certificate. The attained logarithmic member is included explicitly. A boundary log likelihood within $10^{-8}$ times the sample size of the best finite value found triggers a limit report, so nearly tied finite maxima can also be rejected. The [count-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) gives the global profile characterization and held-subset arguments.
+
+## R notes
+
+Supply any coefficient to hold it; `NULL` estimates it. Fractional nonnegative sizes, including `size = 0`, are allowed. All-zero samples warn that base parameters are unidentified. Supplied values are preserved, and free base coefficients use the representatives `size = 1`, `prob = 0.5`. With free zero probability they return `p0 = 1`. A free fit with positives all equal to one warns that `mlbinom(x, size = 1)` fits the attained two-point law exactly.
+
+The infinite-size report stops with advice to use `mlzmpois`. A search that exhausts floating-point resolution or its refinement budget also stops.

@@ -78,12 +78,37 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, every nonempty count sample has an attained
+    maximum. It is unique if a positive count occurs, including $\lambda=0$ when
+    all positive counts are one. All-zero data give $p_0=1$ and leave the rate
+    unidentified. Holding either coefficient preserves attainment for compatible
+    data. A free zero probability is uniquely the empirical zero fraction. A free
+    rate is unique when positives occur and is unidentified otherwise. Holding all
+    coefficients leaves likelihood evaluation. Held $p_0=0$ excludes zeros, held
+    $p_0=1$ excludes positives, and held $\lambda=0$ permits positive counts only
+    at one.
+  reason: >-
+    The likelihood factors into a Bernoulli likelihood for the zero indicator and
+    a zero-truncated Poisson likelihood for the positives. The first has its
+    unique maximum at the empirical zero fraction. In the second, the conditional
+    mean $\lambda/(1-e^{-\lambda})$ increases strictly from one to infinity: its
+    derivative with respect to log rate is the positive conditional variance.
+    Therefore the positive sample mean determines a unique rate, with the
+    continuous endpoint $\lambda=0$ for mean one. Without positives the rate drops
+    out of the likelihood.
 ---
 
-Zero-modified Poisson distributions model counts with a separate zero component.
+The zero-modified Poisson distribution assigns probability $p_0$ directly to zero. Conditional on being positive, a count follows a zero-truncated Poisson law with rate $\lambda$. This allows both more and fewer zeros than the corresponding ordinary Poisson distribution.
 
 ## Details
 
-With no positives the fitter returns `p0 = 1` and conventional base parameters with a warning. With no zeros it returns `p0 = 0`. Positive observations all equal to one give an attained two-point law; the fitter warns that `mlbinom(x, size = 1)` fits it exactly.
+The likelihood separates the zero indicators from the positive counts. A free zero probability is the empirical zero fraction, including zero when no zeros occur. The rate is fitted only to the positive observations. Holding either coefficient leaves the fit of the other unchanged.
 
-The zero-indicator likelihood and the positive conditional likelihood factorize. Holding `p0`, including its empirical optimum, leaves the positive conditional fit unchanged. Held `p0 = 0` with zeros or `p0 = 1` with positives is incompatible and stops. With no positives, base parameters are unidentified; supplied values are preserved and free base parameters use conventional representatives.
+When all positive observations are one, the rate estimate is zero. This is an attained two-point law on zero and one. With no positives, the rate is unidentified, even if the zero probability is held below one. Held values must give positive probability to every observation. In particular, a held zero rate cannot explain counts above one.
+
+## R notes
+
+Supply lambda or p0 to hold it; `NULL` estimates it. All-zero samples warn that the rate is unidentified. A supplied rate is preserved and a free rate uses the representative `lambda = 1`. With free zero probability they return `p0 = 1`. A free fit with positives all equal to one warns that `mlbinom(x, size = 1)` fits the attained two-point law exactly.
