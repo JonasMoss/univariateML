@@ -23,7 +23,7 @@ params:
   simulate: 10
   integer: yes
   kind: design
-  advice: Population and composition can be estimated jointly, subject to a numerical tail certificate.
+  advice: Supply N to hold the population size, or set N = NULL to estimate it. Population and composition can be estimated jointly when the tail comparisons certify the fit.
 - name: r
   symbol: 'r'
   role: white balls required to stop sampling
@@ -71,6 +71,27 @@ fit:
     Unsupported joint population/composition designs stop; floating-point tie tolerances remain.'
 areas:
 - sampling and quality control
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all counts free, constant samples attain likelihood one, while
+    mixed zero and positive observations are infeasible. No complete
+    existence or uniqueness criterion is asserted for positive nonconstant
+    samples. With $N$ held, every feasible sample has a finite maximum.
+    With $K$ held, every feasible sample also has a finite maximum, whether
+    the stopping count is held or estimated. Ties can occur. With only
+    positive $r$ held, a candidate strictly above the shifted
+    negative-binomial supremum ensures finite attainment. With $r=0$,
+    only zero observations are possible and composition is unidentified.
+    Holding all counts specifies the law without optimization.
+  reason: >-
+    A known population leaves a finite integer grid. With $K$ held and
+    positive $r$, the adjacent-population ratio is below one beyond
+    $K\max_i x_i/r$, leaving finitely many candidates. A free positive
+    stopping count has only finitely many feasible values. With both
+    population and composition free, the tail bound below proves
+    attainment above the relevant negative-binomial faces, conditional on
+    the comparisons. It does not classify unresolved faces or prove uniqueness.
 classification: specialist
 classification_reason: Used to model finite-population waiting counts up to a specified number of successes.
 summary: Negative hypergeometric provides a model for finite-population waiting counts up to a specified number
@@ -80,36 +101,54 @@ key_references:
 - 2
 ---
 
+
 The negative hypergeometric distribution counts total draws without
-replacement until the `r`th white ball, from an urn with `n` black and `m`
-white balls. Each observation starts with the urn restored.
+replacement until the $r$th white ball from a population of $N$ balls,
+$K$ of them white. Each observation starts with the population restored.
 
 ## Details
 
-Supply the known population size `N` and stopping count `r`. The fitter
-estimates the integer white-ball count `m`, returning coefficients `m`, `N`, and `r`. The reference receives `n = N - m`.
-Supplying `m` too evaluates a fully specified model. The fixed constraints
-are `N, r` for estimation and `m, N, r` for likelihood evaluation, giving
-one and zero degrees of freedom respectively.
+Holding population and stopping count estimates the integer white-ball
+count. For positive $r$, the possible total draws run from $r$ to
+$N-K+r$. The likelihood ratio at consecutive composition counts decreases,
+so bisection locates a maximum, including attained boundaries. Adjacent
+counts can tie. When $r=0$, sampling stops immediately and the law is the
+point mass at zero, regardless of composition.
 
-For positive `r`, support is `r` through `n + r`. The likelihood ratio at
-consecutive white-ball counts is decreasing, so the finite integer maximum
-is found by bisection, including attained boundaries. Adjacent equal
-maxima produce a warning and the smaller count is returned. With `r = 0`,
-the observation is identically zero and composition is unidentified; the
-smallest white-ball count is returned with a warning. Counts must be below
-$2^{53}$.
+A known population permits joint estimation of composition and stopping
+count on a finite feasible grid. With composition held and population free,
+a decreasing population likelihood tail gives a finite search even when
+stopping count is estimated. Holding population and composition instead
+leaves a one-coordinate stopping-count likelihood with decreasing
+consecutive ratio.
 
-The known-population design ensures a finite maximum for every feasible
-sample. Joint estimation of population and composition uses the tail certificate below. Estimating
-`N` with `m` held uses the finite grid described below. With both `m` and `N` held, explicit
-`r = NULL` estimates the stopping count on its finite feasible integer grid;
-the consecutive likelihood ratio decreases, permitting bisection.
-For positive `r`, if both counts grow with a fixed white proportion, `x - r` tends to a
-negative binomial with size `r`; its fitted probability is
-$r/\bar x$. Use `mlnbinom(x - r, size = r)` for that limit model.
-This is a limit of the unrestricted family, not an escape in the supported
-known-population fit.
+When population and composition are both free, their ratio can tend to a
+fixed white proportion. Then the number of black draws, $x-r$, tends to a
+negative-binomial law with size $r$ and fitted success probability
+$r/\bar x$. This is a boundary of the unrestricted family, rather than an
+escape from a known-population fit. A finite candidate strictly above the
+relevant limiting suprema gives a finite search cutoff. An unresolved
+comparison with a limiting model does not prove non-existence.
+
+## R notes
+
+The coefficients are `m` ($K$), `N` and `r`. Supply `N` and `r` for the
+usual composition fit. Supplying `m` too evaluates the specified law.
+These fits record respectively `N, r` and `m, N, r` as fixed, giving one
+and zero degrees of freedom. Explicit `NULL` requests estimation of a
+design count; population and composition can also be estimated jointly.
+The reference's black-ball count is `n = N - m`.
+
+One-coordinate fits warn on adjacent ties and return the smaller count.
+At `r = 0`, free composition is represented by zero with a warning.
+Joint-grid conventions and budgets are given below. Counts must be below
+$2^{53}$. For the growing-population limit with positive `r`, use
+`mlnbinom(x - r, size = r)`. Unresolved face comparisons stop without an
+estimate.
+
+## Decision history
+
+### Integer grids and population certificates (2026-11-01)
 
 Finite-grid fits use long-double sums of log-gamma differences. Negative hypergeometric with only `N` held searches positive
 `r <= min(x)` and `r <= m <= N-max(x)+r`. With `m` held and `N` free,

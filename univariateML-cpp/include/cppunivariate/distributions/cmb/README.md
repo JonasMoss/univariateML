@@ -51,26 +51,26 @@ r:
 log_density: "nu*(loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)) + x*log(prob) + (size-x)*log(1-prob) - log(Sum((factorial(size)/(factorial(k)*factorial(size-k)))**nu * prob**k * (1-prob)**(size-k), (k, 0, size)))"
 limits:
   - model: cmp
-    when: '$size \to \infty$ with positive $\nu$ fixed and odds scaled as $size^{-\nu}$'
-    detect: with nu held positive and prob free, exploratory search finds no strict improvement; a larger finite maximum is not excluded
+    when: 'As $n\to\infty$ with positive $\nu$ held and odds proportional to $n^{-\nu}$, the law approaches a CMP member.'
+    detect: With positive $\nu$ held and $p$ free, the exploratory search finds no strict improvement over the limiting model. A larger finite maximum is not excluded.
     status: FaceUnresolved
     fixed: [nu]
     firmness: proved
     numerical: true
   - name: point mass
     firmness: proved
-    when: '$\nu$ diverges along an exposing direction toward an interior point mass'
-    detect: constant interior data in a joint fit at fixed size; central constant data at an even size at least two with interior prob fixed; or positive constant data with free size and interior prob fixed when twice the count is supported
+    when: 'As $\nu$ diverges along an exposing direction, the law concentrates at an interior support point.'
+    detect: With $n$ held and $p,\nu$ free, the data are constant at an interior point. With $n\ge2$ even and interior $p$ held, all counts equal $n/2$. With $n,\nu$ free and interior $p$ held, a positive constant count has twice its value within the supported size range.
     status: PointMass
   - name: adjacent two-point law
     firmness: proved
-    when: '$\nu \to +\infty$ with the canonical probability adjusted'
-    detect: fixed size at least two with both adjacent integers observed in a joint fit; only the two central integers at a fixed odd size at least three with interior prob fixed; free size and prob with two adjacent positive integers; or free size with prob one half and balanced adjacent positive counts when the central size is supported
+    when: 'As $\nu\to+\infty$, suitable canonical probabilities concentrate mass on two adjacent integers.'
+    detect: With $n\ge2$ held and $p,\nu$ free, both of two adjacent integers are observed. With odd $n\ge3$ and interior $p$ held, only the two central integers occur. With $n,p,\nu$ free, both of two adjacent positive integers occur. With $p=1/2$ held and $n,\nu$ free, adjacent positive counts occur equally often and the central size is supported.
     status: AdjacentLimit
   - name: endpoint two-point law
     firmness: proved
-    when: '$\nu \to -\infty$'
-    detect: both endpoints observed in a joint fit at fixed size at least two; endpoint-only data with interior prob fixed at a fixed size at least two; free size and prob with observations on zero and an integer at least two; or free size with prob one half and balanced counts at zero and an integer at least two
+    when: 'As $\nu\to-\infty$, mass concentrates on the two support endpoints.'
+    detect: With $n\ge2$ held and $p,\nu$ free, both endpoints are observed. With $n\ge2$ and interior $p$ held, all data lie at the endpoints. With $n,p,\nu$ free, the sample contains zero and an integer at least two and no other values. With $p=1/2$ held and $n,\nu$ free, zero and an integer at least two occur equally often and no other values occur.
     status: EndpointLimit
 references:
 - 'Kadane, J. B. (2016). Sums of Possibly Associated Bernoulli Variables: The Conway-Maxwell-Binomial Distribution.
@@ -99,23 +99,36 @@ areas:
 existence:
   uniqueness: unknown
   statement: >-
-    With size, prob and nu free, constant samples attain likelihood one;
-    observations on zero and one attain the Bernoulli maximum, which ties
-    the adjacent CMP face and is reported as a face tie. Observations on
+    With $n$, $p$ and $\nu$ free, constant samples attain likelihood one.
+    Observations on zero and one attain the Bernoulli maximum, which also
+    equals the adjacent CMP limiting supremum. Observations on
     two adjacent positive integers, or on zero and an integer at least two, have
     an unattained saturated supremum. A uniform empirical distribution on
     zero through a maximum of at least two attains its saturated likelihood.
     General free-size existence and uniqueness do not have a simple
-    closed-form criterion here. With size at least two held, the joint
+    closed-form criterion here. With positive $\nu$ held and $n,p$ free,
+    a finite candidate strictly above the CMP supremum ensures finite
+    attainment by the tail bound below. With $p$ held and $n,\nu$ free,
+    the constant and symmetric two-point cases below are settled, but no
+    complete criterion is asserted. With $n\ge2$ held, the joint
     finite interior maximum exists exactly when the empirical sufficient
     statistic lies in the polygon interior; endpoint vertices are also
-    attained through endpoint probabilities. For held interior probability
-    and size at least two, a finite dispersion maximum exists when the
+    attained through endpoint probabilities. For held $0<p<1$
+    and $n\ge2$, a finite dispersion maximum exists when the
     empirical mean log binomial coefficient lies strictly between its
-    minimum and maximum. At size one dispersion is unidentified.
+    minimum and maximum. With finite $\nu$ and positive $n$ held,
+    the free probability has a unique mean-matching maximum, including
+    endpoint probabilities. With $p,\nu$ held, a feasible free-size maximum
+    is attained when $0<p<1$: for positive dispersion the fixed odds force
+    mass away from bounded counts as $n$ grows, and for negative dispersion
+    the normalizer's endpoint terms bound the tail. At zero dispersion the
+    smallest feasible size is optimal. Endpoint probability holds require
+    compatible data and can leave size unidentified. At $n=0$ both remaining
+    coefficients are unidentified, and at $n=1$ dispersion is unidentified.
+    Holding all coefficients only evaluates the specified law.
   reason: >-
-    The fixed-size family is a minimal finite exponential family and its
-    polygon has consecutive-point upper edges and an endpoint lower edge.
+    For $n\ge2$, the fixed-size family is a minimal finite exponential
+    family and its polygon has consecutive-point upper edges and an endpoint lower edge.
     Saturated-likelihood comparisons establish the stated special cases;
     the free-size procedure bounds the tail and checks each remaining size,
     stopping when its numerical comparisons or work budget are insufficient.
@@ -131,9 +144,52 @@ key_references:
 - 2
 ---
 
-The Conway--Maxwell--binomial distribution extends the binomial by raising its combinatorial factor to a real dispersion power.
+
+The Conway--Maxwell--binomial distribution models bounded counts with a
+trial count $n$, canonical probability $p$ and dispersion $\nu$. Dispersion
+one gives the binomial law. The canonical probability is generally not
+the mean divided by the trial count. Dispersion can be negative.
 
 ## Details
+
+With a known trial count of at least two, the sufficient statistics are
+$x$ and $\log\binom{n}{x}$. Their points form a convex polygon with
+consecutive-point upper edges and an endpoint lower edge. An empirical
+statistic in its interior has a unique finite joint fit. Other boundary
+statistics approach point masses, adjacent two-point laws or endpoint
+two-point laws. Endpoint point masses are also attained by $p=0$ or $p=1$.
+Holding dispersion leaves a mean-matching probability fit. Holding an
+interior probability instead leaves a strictly concave dispersion fit;
+only the central mode or modes and the endpoints can support its escapes.
+A constant sample elsewhere can therefore have a finite fit.
+
+At trial count zero the law is the point mass at zero. At trial count one
+it is Bernoulli, so dispersion is unidentified. Holding both probability
+and dispersion leaves only an integer search if trial count is free.
+When all coefficients are held there is no optimization.
+
+Estimating trial count requires comparisons across different supports.
+Tail and entropy bounds can certify accepted fits in exact arithmetic,
+conditional on the computed comparisons and stated practical floating-point
+margins. Work exhaustion or an unresolved limiting-model comparison stops
+the search. General uniqueness across trial counts is not asserted.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md)
+and the retained derivations below give the special sample conditions and
+certificate scope.
+
+## R notes
+
+Supply `size`; a numeric value holds the design and `size = NULL` requests
+an integer search. Either `prob` or `nu` can also be held. Sizes are limited
+to $10^7$ for allocation safety. Endpoint probability holds require compatible
+observations. With size zero, unidentified free `prob` and `nu` are represented
+by 0.5 and one. With endpoint samples and free probability, free unidentified
+dispersion is represented by one. At size one, unspecified dispersion is
+set to one, warned about for interior probabilities, and marked fixed.
+Nonattained limiting laws and unresolved faces stop with a diagnostic.
+The detailed search budgets and stopping rules below apply to free-size fits.
+
+### Detailed held-fit conventions
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
 
@@ -151,6 +207,11 @@ size, probability `1/2` and dispersion zero. It is therefore a global fit
 for free probability or probability held at `1/2`. For size one and free
 probability it ties the adjacent CMP limit, so the face-tie policy stops;
 with probability held the unidentified dispersion is represented by one.
+
+
+## Decision history
+
+### Fixed-design analysis and free-size certificates (2026-11-01 to 2026-11-02)
 
 ### Free-size profile bounds (2026-11-01)
 

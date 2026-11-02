@@ -23,7 +23,7 @@ params:
   simulate: 10
   integer: yes
   kind: design
-  advice: Supply the population size, or use NULL to estimate it; unbounded searches may stop when their numerical certificate is unavailable.
+  advice: Supply N to hold the population size, or set N = NULL to estimate it. A population search stops if it cannot certify the remaining tail.
 - name: k
   symbol: 'n'
   role: draws
@@ -43,8 +43,8 @@ log_density: "loggamma(m + 1) - loggamma(x + 1) - loggamma(m - x + 1) + loggamma
 limits:
   - name: degenerate
     firmness: proved
-    when: '$N \to \infty$, a point mass at zero'
-    detect: all observations are 0 while m and k are positive
+    when: 'As $N\to\infty$ with positive $K$ and $n$ held, the law tends to a point mass at zero.'
+    detect: All observations are zero, only $N$ is free, and the held counts $K$ and $n$ are positive.
     status: AllZero
     fixed: [m]
 references:
@@ -59,6 +59,27 @@ examples: |
   mlhyper(x, N = 10L, k = 5L)
 
 summary: The hypergeometric distribution counts marked items in sampling without replacement from a finite population.
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all three counts free, constant samples attain likelihood one.
+    No complete sample criterion for existence or uniqueness is asserted
+    for nonconstant samples. With $N$ held, every feasible sample has a
+    finite maximum, although distinct count vectors may tie. With $K$
+    and $n$ held positive and only $N$ free, a finite maximum exists
+    exactly when some observation is positive. With either held count
+    zero, compatible all-zero data leave $N$ unidentified. With only
+    $K$ or only $n$ held, a candidate strictly above the corresponding
+    binomial supremum ensures finite attainment. With all counts held,
+    there is only likelihood evaluation.
+  reason: >-
+    A held population gives a finite feasible integer grid. With positive
+    $K,n$ held, the adjacent-population likelihood ratio is eventually
+    below one if the empirical mean is positive. For all-zero data the
+    likelihood instead increases strictly to one. Joint population
+    searches use the explicit binomial and Poisson tail bounds below.
+    Those bounds establish attainment above the faces, conditional on
+    the comparisons, but do not establish uniqueness or classify face ties.
 classification: classical
 classification_reason: A standard model for success counts in finite-population sampling without replacement.
 aliases: []
@@ -79,43 +100,56 @@ areas:
 - sampling and quality control
 ---
 
-The hypergeometric distribution counts the successes in `k` draws without
-replacement from a population of `N` items, `m` of them successes. The
-observations are independent repetitions from the same population, which
-is restored between repetitions.
+
+The hypergeometric distribution counts successes in $n$ draws without
+replacement from a population of $N$ items containing $K$ successes.
+Observations are independent repetitions with the population restored
+between repetitions.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
+Holding the population and draw count estimates its integer composition.
+Holding the composition and draw count instead estimates population size,
+as in capture-recapture sampling. The likelihood is symmetric in $K$ and
+$n$, so holding composition and population gives the corresponding draw-count
+fit. Each one-coordinate likelihood is unimodal on its feasible integers.
+Two adjacent maxima can tie, and zero draws or zero successes can leave a
+coefficient unidentified. A single draw gives a Bernoulli law on the grid
+$K/N$.
 
-The number of draws `k` is a design quantity; explicit `NULL` estimates it
-with `N` supplied. When `m` is also held, the fitter uses the symmetry
-of the likelihood in `m` and `k`.
-Supply also the population size `N` to estimate the number of successes
-`m`, or `m` to estimate `N` (capture-recapture with `m` marked items);
-explicit `NULL` for both design counts also permits all three to be estimated.
-supplying all three only evaluates the likelihood. The returned coefficients are
-`m`, `N`, and `k`; `n = N - m` is passed to `stats::dhyper` but is not itself
-a coefficient.
-The `fixed` attribute records `N` and `k` for a known-population fit,
-`m` and `k` for a known-success fit, and `m`, `N`, `k` when all are supplied;
-the degrees of freedom are respectively one, one, and zero.
-With `k = 1` the model is Bernoulli on the grid `m / N`.
-Both one-parameter
-likelihoods are unimodal on their whole-number domains, and the fitter
-finds the maximiser exactly. When two adjacent values attain the maximum
-it warns and returns the smaller; with `k = 0`, or `m = 0` when `N` is
-estimated, every admissible value attains it, and the fitter warns and
-returns the smallest.
+A known population also permits joint estimation of composition and draw
+count by finite enumeration. Holding only the draw count, or only the
+composition, requires a population search with a binomial limiting model.
+When all counts are free, Poisson limits must also be compared. The
+[family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md)
+and the bounds below explain these distinctions. A finite candidate that
+strictly exceeds all relevant limiting suprema permits an exhaustive
+search with a finite cutoff. Failure to find such a candidate does not
+prove that no finite maximum exists. Constant samples attain likelihood
+one when all counts are free, but need not identify a unique count vector.
 
-With `k` held, `N` and `m` can be estimated jointly; by symmetry the same applies with `m` held. To
-hold the number of failures `N - m` fixed instead of `m`, fit `k - x`
-with `m` set to that number. All counts must be below $2^{53}$, the range
-of exact whole numbers in double precision.
+## R notes
 
-## See also
+The coefficients are `m` ($K$), `N` and `k` ($n$). Supply `N` and `k` for
+the usual composition fit. Explicit `NULL` requests estimation of either
+design count, including joint estimation of all three. Supplying all three
+evaluates the likelihood. The `fixed` attribute records all supplied
+coefficients, including designs; a one-coordinate fit has one degree of
+freedom and a fully specified fit has zero. The reference receives
+`n = N - m`, which is not a separate coefficient.
 
-[mlbinom()] with `size = k`, the limit as `N` grows with `m / N` fixed.
+Existing one-coordinate fits warn on ties and return the smaller count.
+When every admissible count is a maximizer, they warn and return the smallest.
+Joint grids resolve ties silently as described below. All counts must be
+below $2^{53}$, the exact whole-number range in double precision.
+To hold the failure count instead of the success count, fit `k - x`
+with `m` set to the known failure count. For the growing-population
+binomial limit use `mlbinom(x, size = k)`; fully free designs may also
+approach `mlpois`. Unresolved face comparisons stop without an estimate.
+
+## Decision history
+
+### Integer grids and population certificates (2026-11-01)
 
 Finite-grid fits use long-double sums of log-gamma differences. Hyper with
 only `N` held searches `m >= max(x)` and `max(x) <= k <= N-m+min(x)`.
