@@ -39,7 +39,8 @@ limits:
 - name: zero likelihood
   firmness: proved
   fixed: [alpha]
-  when: Held alpha is below the sample maximum.
+  when: The held upper endpoint $a$ is below an observation, giving zero likelihood.
+  detect: The sample maximum exceeds the held upper endpoint $a$.
   status: InvalidInput
   message: zero likelihood
 examples: |
@@ -90,19 +91,22 @@ aliases:
 - "power-function"
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a positive finite sample has a unique MLE exactly when it is nonconstant. With $a$ held at or above the sample maximum and $b$ free, the MLE exists and is unique unless every observation equals $a$. With $b$ held, the unique free endpoint estimate is the sample maximum, even for constant data. With both held, only support compatibility is evaluated.
+  reason: >-
+    For every $b>0$, likelihood decreases strictly with $a$, so a free endpoint equals the sample maximum. At fixed $a$, the shape log-likelihood is $n\log b-bS$ plus a constant, where $S=\sum_i\log(a/x_i)$. It is strictly concave and has its unique maximum at $b=n/S$ when $S>0$. When $S=0$, it increases without bound.
 ---
 
-The power distribution models positive quantities below a finite upper endpoint.
+The power distribution models positive measurements below an upper endpoint $a$. The shape $b$ determines whether density decreases toward the endpoint ($b<1$), is uniform ($b=1$), or increases toward it ($b>1$).
 
 ## Details
 
-The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
+The support is $(0,a]$, including its upper endpoint with density $b/a$. Each coefficient may be held. A free endpoint is exactly the sample maximum. With the endpoint known, the shape estimate is the reciprocal of the sample mean of $\log(a/x)$. If every observation equals the endpoint and shape is free, likelihood is unbounded as $b\to\infty$. Holding shape prevents this failure, including for singleton samples.
 
-The fitted support is $(0, \alpha]$. The upper endpoint is exactly
-`max(x)` when estimated; its density is `beta/alpha`, the interior limit.
-`epsilon` is retained for compatibility and ignored after validation.
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and held cases. A held endpoint must be at least the sample maximum.
 
-A held alpha must be at least max(x). A free beta is the reciprocal of
-`mean(log(alpha/x))`. If all observations equal alpha, the likelihood is
-unbounded as beta tends to infinity; the fitter stops. With beta held,
-constant and singleton samples have an attained fit at alpha = max(x).
+## R notes
+
+The compatibility argument `epsilon` is validated and then ignored. It does not move the endpoint away from `max(x)`.

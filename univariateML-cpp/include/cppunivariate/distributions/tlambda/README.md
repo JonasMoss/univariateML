@@ -32,13 +32,12 @@ params:
       mechanism: collapse
       exempt_when_held:
       - - mu
-      reason: lambda >= -1 prevents free-location scale collapse; ties at held mu
-        need a separate diagnostic.
+      reason: The lower bound on shape prevents scale collapse at a freely estimated location under the strict tie condition. Holding location removes this bound, but ties at the held location require a separate collapse check.
   - upper: 1.0
     restriction:
       mechanism: branch
       exempt_when_held: []
-      reason: lambda <= 1 selects the principal branch; no exemption is proved.
+      reason: The upper bound on shape selects the principal branch, including its uniform endpoint. No exemption for held coefficients has been established.
   kind: regular
 r:
   density: dtlambda
@@ -59,14 +58,15 @@ holds: []
 limits:
   - name: scale collapse
     firmness: proved
-    when: Scale tends to zero at the fitted or held location.
-    detect: Excessive mass at that location or vanishing residual spread.
+    when: The free scale $\sigma$ tends to zero at a location occupied by observations.
+    detect: With held location $\mu$, held negative shape $\lambda$, and free scale, the tie count $k$ satisfies $(n-k)/|\lambda|-k=0$. Other collapse configurations may be unbounded or rejected by the default tie guard.
     status: CollapseLimit
     message: "collapse"
   - name: infeasible held support
     firmness: proved
     fixed: [sigma, lambda]
-    when: Held scale and positive shape cannot contain the sample.
+    when: The held scale $\sigma$ and positive shape $\lambda$ leave no positive-likelihood support containing the sample.
+    detect: The smallest radius about an eligible location containing the data exceeds $\sigma/\lambda$, or equals it when $0<\lambda<1$ and endpoint density is zero.
     status: InvalidSupport
     message: support cannot contain
 examples: |
@@ -93,13 +93,42 @@ summary: Tukey lambda provides a model for symmetric error shapes specified thro
 aliases: []
 key_references:
 - 2
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free over all finite shapes, the likelihood is unbounded. On the fitted branch $-1\le\lambda\le1$, a maximum is attained for at least three observations with every tie multiplicity strictly below half the sample size; uniqueness is unknown. Holding location removes the lower shape bound, and a tie at that location allows collapse when scale and shape are free. Holding scale prevents scale collapse. Held positive shape requires support compatibility. General conditional existence and uniqueness beyond these cases are not established.
+  reason: >-
+    On the fitted branch the standardized density and its product with squared distance are uniformly bounded. Near a collapsing location of multiplicity $k$, likelihood is bounded by a constant times $\sigma^{n-2k}$. Under the strict tie condition it vanishes at collapse, and it also vanishes at diverging scale or location. Upper semicontinuity, including the uniform endpoint member, then gives attainment. The unrestricted spike path and conditional collapse exponent are given below; numerical searches do not establish uniqueness.
 ---
 
-The Tukey lambda family is defined by its quantile function and spans symmetric heavy-tailed, logistic, approximately normal and uniform shapes.
+The Tukey lambda family describes symmetric measurements through location $\mu$, scale $\sigma$, and shape $\lambda$. Shape controls tail weight and whether support is bounded. Its quantile function spans heavy-tailed, logistic, approximately normal and uniform shapes.
 
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
+
+Evaluation permits every finite shape. With location free, estimated shape is restricted to $-1\le\lambda\le1$, including the attained bounds. Holding location removes the lower bound. A held shape can lie outside this branch. In particular, $\lambda=1$ and $\lambda=2$ both represent uniform laws, with scales differing by a factor of two, so unrestricted shape is not identifiable.
+
+The unrestricted likelihood is unbounded. Put location at an observation and take $\sigma=\lambda A$ as $\lambda\to\infty$, with $A$ greater than every distance to that observation. Central density is $2^{\lambda-2}/(\lambda A)$, while at nonzero distance $d$ it is asymptotic to $1/(\lambda|d|)$. With $k$ central observations, log likelihood grows as $k\lambda\log2-n\log\lambda+O(1)$.
+
+The fitted branch excludes the U-shaped interval $1<\lambda<2$ and the subsequent increasingly concentrated branch. Capping shape at two would leave an endpoint-density discontinuity at one: the limit from above is twice the uniform density. On the chosen branch, endpoint density is zero below one and the uniform value at one gives upper semicontinuity. For the sample $(-1,1)$ and shapes in $(1,2]$, support containment forces $\sigma\ge\lambda$, and each density is at most $1/\sigma$. Likelihood stays below one, but $\mu=0$, $\sigma=\lambda\downarrow1$ approaches one without attaining it. See the [junction argument](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md).
+
+For held $\lambda=-a<0$, collapse at a location of multiplicity $k$ has likelihood proportional to $\sigma^{(n-k)/a-k}$. A negative exponent gives unbounded likelihood. At held location, equality gives an unattained collapse supremum. With shape free and location held, even one observation at that location permits collapse through a sufficiently negative shape. Holding scale prevents scale collapse and permits small or tied samples. Positive held shape requires support containment, strictly inside the endpoints when $0<\lambda<1$; endpoints with positive limiting density are allowed for $\lambda\ge1$.
+
+On the fitted branch with location and scale free, the default tie guard is sufficient for existence, not necessary. It also rejects some tied configurations with shape held. Fitting requires a finite sample range and a standardization that preserves distinct values.
+
+The fitter standardizes the observations and searches multiple location, scale and shape starts, including a separate optimization of the lower shape face. It compares the exact uniform fit with every candidate and selects it for ties within $10^{-8}n$ in log likelihood. This is a numerical search without a certificate that every mode has been found. The uniform is an attained member. The existence argument for the declared branch requires no further limit model, but conditional searches outside that branch do not have a general existence certificate.
+
+The log density uses $u=F(x)$, defined implicitly by the quantile function. The quality specification differentiates this inverse implicitly and uses independent SciPy and mpmath evaluations. The $\lambda=0$ member is logistic. Quantile inversion uses the smaller logarithmic tail in safeguarded Newton steps.
+
+## R notes
+
+Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
+and emit a warning of class `univariateML_restricted`. Held coefficients are
+not flagged. The declared hold exemptions apply to free coefficients. A search start converges when its simplex diameter and log-likelihood spread meet the `reltol` criteria. Fitting stops if no start converges, or if an unresolved start exceeds the best converged likelihood by more than $10^{-8}n$. This family has no score-based rescue of failed starts.
+
+
+## Decision history
 
 The 2026-10-31 fit-speed revision shares the smaller-tail complement log and
 quantile magnitude between Newton value and derivative calculations. Brackets,
@@ -109,42 +138,6 @@ translate into a useful speed-up of the slowest held-scale fit; a pilot also
 exceeded the coefficient comparison tolerance. See the [paired evidence and
 rejected
 trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
-
-Evaluation permits all finite shapes. With location free, estimated shape uses the principal unimodal branch, -1 <= lambda <= 1, including both attained bounds. Held location exempts the lower bound. The default fit requires at least three finite observations with every tie multiplicity strictly less than half the sample size. Numerical fitting also requires a finite sample range and standardization that preserves distinct values. Every coefficient may be held; a held finite shape may lie outside the fitted branch, including lambda = 2 as an exact uniform alias. The two uniform representations have scales differing by a factor of two, so unrestricted shape is not identifiable.
-
-The unrestricted likelihood is unbounded. Set location at one observation and sigma = lambda times A, where A exceeds every distance to that observation. At the centre the density is 2^(lambda-2)/(lambda A). At each nonzero distance d, the density is asymptotic to 1/(lambda abs(d)). Thus, with k observations at the centre, the log likelihood grows as k lambda log(2) - n log(lambda) plus a bounded term. No unrestricted MLE is returned.
-
-The principal branch excludes the U-shaped interval 1 < lambda < 2 and the subsequent increasingly concentrated branch. Merely capping shape at 2 leaves a density discontinuity at lambda = 1: at a support endpoint, the density as lambda decreases to 1 from above is twice the uniform density. On the chosen branch the endpoint density is zero below 1 and the uniform endpoint density at 1 makes the likelihood upper semicontinuous. Fitting the U-shaped branch would need a junction status: for the sample (-1, 1) with shape in (1, 2], every density is at most 1/sigma and support containment forces sigma >= lambda, so the likelihood stays below 1, while mu = 0, sigma = lambda approaches 1 as lambda decreases to 1. The supremum is not attained ([TASK-117 report](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md)).
-
-For lambda = -a < 0, scale collapse at a location with multiplicity k has likelihood proportional to sigma^((n-k)/a-k). Bounding a by 1 and requiring 2k < n excludes collapse. More generally, uniformly over the fitted branch the standardized density is bounded and z^2 f(z) is bounded. Consequently, near a collapsing location the likelihood is bounded by a constant times sigma^(n-2k), while diverging scale or location gives likelihood tending to zero. Compactness and upper semicontinuity then give an attained maximum. When location and scale are both free, the existing tie guard is sufficient, not necessary; unsupported tie configurations are rejected also with fixed shape.
-
-The fitter standardizes the data, searches multiple location, scale and shape starts and separately optimizes the lower shape face. The exact uniform fit is compared with all candidates and wins ties within 1e-8 times sample size. This is a numerical global search, not a certificate that every mode has been found. The uniform is an attained member, so it is returned rather than an escape error. There are no missing limit models within the declared fitted branch. The log density uses u = F(x), implicitly defined by the quantile function. The quality specification differentiates this inverse implicitly and uses independent SciPy and mpmath evaluations.
-
-
-Any location or scale may be held. Holding sigma removes scale collapse and permits small or tied samples. With mu held and sigma free, only ties at that mu enter the collapse exponent. Held positive lambda requires the sample to fit inside its support; endpoints with positive limiting density are allowed, including lambda>=1. Conditional searches apply the README bounds and hold exemptions, and explicitly compare the attained uniform member. Searches nominate modes numerically.
-
-With free shape, any observation equal to held mu permits scale collapse
-through sufficiently negative lambda when scale is free. With negative
-lambda held, equality of the collapse exponent selects an unattained
-fixed-location supremum.
-
-Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
-and emit a warning of class `univariateML_restricted`. Held coefficients are
-not flagged. README hold exemptions apply to free coefficients. Failed
-optimizers return a failure status unless the score norm in fitting
-coordinates is below `1e-3`; unresolved scalar searches stop.
-
-With `mu` held, the lower shape restriction is exempt. The fitter searches
-the wider shape domain and diagnoses collapse separately when observations
-equal the held location and scale is free.
-
-A held finite `lambda` may lie outside the principal branch; the bound
-applies to estimated shape. Fixed negative shape uses its actual collapse
-exponent, and held positive-shape support must contain the observations.
-
-## d/p/q/r
-
-The lambda = 0 member is logistic; quantiles use the smaller logarithmic tail in safeguarded Newton inversion.
 
 ### Affine overflow portability (2026-11-01)
 

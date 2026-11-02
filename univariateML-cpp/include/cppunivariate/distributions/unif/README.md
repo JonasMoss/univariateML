@@ -37,14 +37,14 @@ holds: []
 limits:
 - name: zero-width collapse
   firmness: proved
-  when: Free interval width tends to zero.
-  detect: Constant data and no held endpoint strictly outside the data.
+  when: The free width $b-a$ tends to zero around the common observation.
+  detect: The sample is constant, at least one endpoint is free, and no held endpoint lies strictly outside the observation.
   status: Unbounded
   message: does not exist
 - name: incompatible held endpoints
   firmness: proved
-  when: A held endpoint excludes observations or min is not below max.
-  detect: Held min exceeds the sample minimum or held max is below the sample maximum, or min >= max.
+  when: A held endpoint excludes an observation.
+  detect: The held lower endpoint exceeds the sample minimum or the held upper endpoint is below the sample maximum.
   status: Incompatible
   message: held uniform
 examples: |
@@ -95,21 +95,26 @@ aliases:
 - "continuous uniform"
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both endpoints free, a finite MLE exists exactly when the sample is nonconstant, and it is unique. With either endpoint held, each free endpoint is its sample extreme. This gives a unique finite fit exactly when the resulting interval has positive width and contains the sample. With both endpoints held, only compatibility is evaluated.
+  reason: >-
+    For a nonempty finite sample inside the interval, the likelihood is $(b-a)^{-n}$. Each free endpoint must therefore minimize the width. For constant data, a compatible held endpoint strictly outside the observation prevents collapse; otherwise shrinking the width makes the likelihood unbounded.
 ---
 
-The uniform distribution assigns constant density to a bounded interval.
+The uniform distribution assigns constant density between a lower endpoint $a$ and an upper endpoint $b$.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
+Each free endpoint is estimated by the corresponding sample extreme. Holding an endpoint specifies a known limit of the measurement range. The fitted interval is closed and must have positive width. A constant sample has a finite fit only when a compatible held endpoint lies strictly outside the observation. With both endpoints held, the interval must contain every observation.
 
-The endpoint estimates are `min(x)` and `max(x)`, so the MLE lies on the boundary determined by the sample order statistics. The fitted support is the closed interval between these endpoints, which must be distinct.
+The [bounded-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) gives the width-minimization argument and all held cases.
 
-A free endpoint is its sample extreme; a held endpoint must contain every observation. A constant sample has a finite maximum exactly when a held endpoint lies strictly outside the observation. Both-held intervals must have positive width and contain the sample; otherwise fitting stops.
+## R notes
 
-### Diagnostic status contract (2026-10-31)
+Invalid endpoint ordering (`min >= max`) is rejected as invalid input. An endpoint that excludes observations gives a separate compatibility error.
 
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+## Decision history
+
+The diagnostic contract was recorded on 2026-10-31. Empty or invalid input has a non-success status, and constant-sample behavior depends on the held endpoints. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.

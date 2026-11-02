@@ -71,10 +71,16 @@ summary: Discrete uniform provides a model for equally likely integers in a fini
 aliases: []
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both integer endpoints free, every nonempty integer sample has a unique MLE at its sample minimum and maximum. Holding either endpoint leaves the other at its sample extreme, provided the held interval contains every observation. With both endpoints held, only compatibility is evaluated.
+  reason: >-
+    The likelihood is $(b-a+1)^{-n}$ on a compatible integer interval. It strictly decreases with its number of integers, so each free endpoint must be its sample extreme. Unlike a continuous interval, a one-point integer interval has positive probability and is admissible.
 ---
 
-The discrete uniform distribution assigns equal probability to every integer between two endpoints.
+The discrete uniform distribution assigns equal probability to each integer between a lower endpoint $a$ and an upper endpoint $b$.
 
 ## Details
 
-The boundary maximum likelihood estimates are the sample minimum and maximum. Both endpoints must be integers, with `min <= max`; the support contains every integer between them, including both endpoints.
+A free endpoint is estimated by its sample extreme. A held endpoint specifies a known integer limit and must contain the entire sample. Equal endpoints are allowed: a constant sample with both endpoints free gives a point mass at that integer. With both endpoints held, fitting evaluates the specified law after checking compatibility.
