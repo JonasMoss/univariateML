@@ -84,12 +84,35 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, every nonempty count sample has an attained
+    maximum. If positives occur it is unique, with $\hat p=1/\bar x_+$ and $\hat
+    p_0$ the empirical zero fraction, where $\bar x_+$ is the positive sample
+    mean. All-zero data give $p_0=1$ and leave $p$ unidentified. Holding either
+    coefficient preserves attainment for compatible data. A free $p_0$ is unique,
+    and a free $p$ is unique exactly when positives occur. Holding all
+    coefficients leaves likelihood evaluation. Held $p_0=0$ excludes zeros, held
+    $p_0=1$ excludes positives, and held $p=1$ permits positive counts only at
+    one.
+  reason: >-
+    The likelihood factors into a Bernoulli zero-indicator likelihood and the
+    positive geometric likelihood. For $k>0$ positive observations the latter is
+    $p^k(1-p)^{\sum_{x_i>0}(x_i-1)}$, uniquely maximized at $p=k/\sum_{x_i>0}x_i$.
+    This includes the attained endpoint $p=1$ when all positives are one. The
+    Bernoulli factor is uniquely maximized at the empirical zero fraction. Without
+    positives the likelihood is independent of $p$.
 ---
 
-Zero-modified geometric distributions model counts with a separate zero component.
+The zero-modified geometric distribution assigns probability $p_0$ to zero and uses a geometric law on the positive integers for the remaining counts. The coefficient $p$ controls the positive counts independently of the zero probability.
 
 ## Details
 
-With no positives the fitter returns `p0 = 1` and conventional base parameters with a warning. With no zeros it returns `p0 = 0`. Positive observations all equal to one give an attained two-point law; the fitter warns that `mlbinom(x, size = 1)` fits it exactly.
+The zero-indicator and positive-count likelihoods factorize. A free zero probability is the empirical zero fraction. With positive observations, the free geometric probability is the reciprocal of their mean. Holding either coefficient leaves the other estimate unchanged.
 
-The zero-indicator likelihood and the positive conditional likelihood factorize. Holding `p0`, including its empirical optimum, leaves the positive conditional fit unchanged. Held `p0 = 0` with zeros or `p0 = 1` with positives is incompatible and stops. With no positives, base parameters are unidentified; supplied values are preserved and free base parameters use conventional representatives.
+Positive observations all equal to one give the attained endpoint $p=1$, a two-point law on zero and one. With no positives the geometric probability is unidentified. Held zero-probability endpoints must agree with whether zeros or positives occur. A held unit geometric probability cannot explain counts above one.
+
+## R notes
+
+Supply prob or p0 to hold it; `NULL` estimates it. All-zero samples warn that the base probability is unidentified. Supplied values are preserved and a free base probability uses `prob = 0.5`. With free zero probability they return `p0 = 1`; samples with no zeros return `p0 = 0`. A free fit with positives all equal to one warns that `mlbinom(x, size = 1)` fits the attained two-point law exactly.

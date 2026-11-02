@@ -38,13 +38,13 @@ log_density: "Piecewise((log(pi + (1 - pi)*exp(-lambda)), Eq(x, 0)), (log(1 - pi
 limits:
   - model: pois
     firmness: proved
-    when: '$lambda \to 0$ with inflation held below one'
-    detect: all observations are zero
+    when: 'The rate $\lambda$ tends to zero with inflation $\pi<1$ held.'
+    detect: 'All observations are zero, the rate is free and inflation is held below one.'
     fixed: [pi]
     status: ZeroLimit
   - name: undefined zero-rate reference
     firmness: proved
-    when: held lambda is zero
+    when: 'The rate $\lambda$ is held at zero, outside the declared domain.'
     fixed: [lambda]
     status: InvalidInput
     message: lambda positive
@@ -80,14 +80,40 @@ aliases:
 - "ZIP"
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both coefficients free, every nonempty count sample has a finite maximum.
+    If a count is positive, the maximizing pair is unique. All-zero data are
+    maximized by $\pi=1$ with any $\lambda>0$. With $\lambda>0$ held, free
+    inflation has a unique maximum. With $\pi<1$ held, a finite rate maximum
+    exists whenever a count is positive, but uniqueness is not asserted. For
+    all-zero data and held $\pi<1$, the supremum requires $\lambda\downarrow0$ and
+    is not attained in the declared domain. Held $\pi=1$ permits only zeros and
+    leaves a free rate unidentified. Holding both coefficients leaves likelihood
+    evaluation, subject to compatibility.
+  reason: >-
+    Write $z$ for the empirical zero fraction. At a held rate, the inflation
+    maximum is $\max\{0,(z-e^{-\lambda})/(1-e^{-\lambda})\}$, with value one for
+    all-zero data. In the positive-inflation branch, the rate solves
+    $\lambda/(1-e^{-\lambda})=\bar x/(1-z)$, whose left side is strictly
+    increasing. If this branch is infeasible, the unique maximum is the Poisson
+    member $\pi=0,\lambda=\bar x$. For held $\pi<1$ and a positive count, the
+    likelihood tends to zero at both ends of the rate domain, so a finite maximum
+    exists. It need not be concave, and the numerical rate search does not prove
+    uniqueness.
 ---
 
-The zero-inflated Poisson distribution mixes a Poisson count with an additional point mass at zero.
+The zero-inflated Poisson distribution mixes a Poisson count of rate $\lambda$ with a structural-zero component of probability $\pi$. The total zero probability also includes zeros from the Poisson component.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) derives the stated limits and held-parameter conditions.
+When the empirical zero fraction is no greater than $e^{-\bar x}$, the free fit is the attained Poisson member $\pi=0$. Otherwise inflation is positive and the rate is determined by the mean of the positive observations. All-zero data identify only the point mass at zero, leaving the rate arbitrary.
 
-For zero-deflated data the estimate is `pi = 0`, the Poisson fit. All-zero data give a nonunique point-mass fit: the fitter warns and returns `lambda = 1`, `pi = 1`. These are boundary fits within the family.
+Holding the rate estimates only inflation by a clipped zero-fraction adjustment. Holding inflation below one leaves a finite rate maximum for any sample containing a positive count. This conditional likelihood can have separated peaks, which the numerical search compares without a global root certificate. With all observations zero, the rate instead tends to zero, outside the declared domain $\lambda>0$. A held zero rate is rejected. A held unit inflation is compatible only with zeros.
 
-Holding `lambda` profiles inflation by clipping the empirical zero fraction adjustment to `[0, 1]`. Holding `pi < 1` gives a finite rate when a count is positive. All-zero data then approach lambda zero, which is undefined by the reference; the fitter stops. A held zero rate is rejected for that reason. Held `pi = 1` is compatible only with zeros.
+The [count-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) records the boundary arguments and held subsets.
+
+## R notes
+
+Supply either coefficient to hold it, or use `NULL` to estimate it. The all-zero fit warns and returns `lambda = 1, pi = 1` when both are free. With unit inflation held, the free rate also uses one as a representative. All-zero data with `pi < 1` held stop with advice to use `mlpois`.
