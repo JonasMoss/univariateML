@@ -205,3 +205,20 @@ test_that("burr: P3 unfinished optimizer stops", {
 test_that("burr: P3 held profile exhaustion stops", {
   expect_error(mlburr(c(.3,.8,1.7,4.2),shape1=2,scale=1,iterlim=1), "[Ff]ail|converge|unresolved|exhausted")
 })
+
+test_that("burr detects constant off-scale collapse only with both shapes free", {
+  for (s in c(.3,1,3)) {
+    x <- rep(.5*s,3)
+    expect_error(mlburr(x,scale=s), "Likelihood is unbounded.*constant sample; no MLE")
+    for (args in list(list(shape1=2),list(shape2=3),list(shape1=2,shape2=3))) {
+      fit <- do.call(mlburr,c(list(x=x,scale=s),args))
+      expect_true(is.finite(attr(fit,"logLik")))
+      expect_identical(unname(fit["scale"]),s)
+      expect_equal(unname(as.numeric(fit[names(args)])),unname(unlist(args)))
+    }
+    # A nonconstant sample on the same side retains its finite fit.
+    x <- s*c(.3,.5,.8)
+    fit <- mlburr(x,scale=s)
+    expect_true(is.finite(attr(fit,"logLik")))
+  }
+})

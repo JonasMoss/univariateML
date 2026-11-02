@@ -201,9 +201,17 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!(scale > 0.0) || !std::isfinite(scale))
     return {nan,nan,scale,nan,0,BurrStatus::InvalidInit};
-  bool endpoint_spike = x.size() > 0;
-  for (double v : x) if (v != scale) endpoint_spike = false;
-  if (endpoint_spike) return {nan,nan,scale,INFINITY,0,BurrStatus::Unbounded};
+  // With both shapes free, constant data on this side of the held
+  // scale concentrate as shape2 grows (shape1 is profiled). Test the
+  // original observations exactly, before normalization or any search.
+  bool constant = x.size() > 0;
+  for (double v : x) {
+    if (!(v > 0.0) || !std::isfinite(v))
+      return {nan,nan,scale,nan,0,BurrStatus::InvalidInit};
+    if (v != x[0]) constant = false;
+  }
+  if (constant && x[0] <= scale)
+    return {nan,nan,scale,INFINITY,0,BurrStatus::Unbounded};
   std::vector<double> normalized;
   for (double v : x) normalized.push_back(v / scale);
   const auto r = burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},tol,maxit);
