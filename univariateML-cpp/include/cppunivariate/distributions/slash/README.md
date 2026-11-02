@@ -112,7 +112,7 @@ Multimodality is already forced with sigma held: for $(-100,100)$ and sigma 1, t
 
 Zero reciprocal sum is not sufficient for collapse: a sample of ten zeros, one $-1$ and nine $9$s has $L(4,3)/B>1.456$. Free-scale multimodality is explicit for a sample of ten zeros, one $-1$ and nine $10$s: $L(-1/625,1/5)/B>1.00012$ and $L(9/2,7/2)/B>1.066$. At location zero every finite-scale likelihood is below B; all other escaping paths on either side have likelihood at most B. Each side therefore contains an attained finite maximum. These strict bounds follow from degree-12 Taylor lower bounds on $1-e^{-t}$ and Bernoulli's inequality; they were certified using exact rational arithmetic.
 
-With mu held, only its tie multiplicity k matters: 2k<n gives a unique positive scale maximum; 2k>n is unbounded, and equality selects an unattained collapse supremum. Holding sigma removes collapse even for constant samples.
+With mu held, only its tie multiplicity k matters: 2k<n gives a unique positive scale maximum; 2k>n is unbounded, and equality selects an unattained collapse supremum. Holding sigma removes collapse even for constant samples. The total log-scale score decreases strictly from $n-2k$ to $-n$, so under $2k<n$ its unique root is the global conditional maximum. Failed scale profiles are excluded from candidate selection, and a search in which every profile fails stops as a numerical failure.
 
 ## Conditional search certificate
 
@@ -171,7 +171,7 @@ See the [TASK-116 investigation](../../../../../dev/research/evaluations/2026-11
 
 | Question | Evidence |
 |---|---|
-| Inner scale | The score has the unique root under the multiplicity conditions above, and the exact-arithmetic bracket above encloses it. The implementation uses numerical bisection, with a fixed lower bracket, rather than a verified error enclosure. |
+| Inner scale | The score has the unique root under the multiplicity conditions above, and the exact-arithmetic bracket above encloses it. The implementation expands a log-scale bracket until opposite score signs are verified, bisects, and accepts the scale only if its total log-scale score is below 1e-3 after back-transformation; otherwise it reports a numerical failure. This is conditional on computed comparisons, not an outward-rounded enclosure. |
 | Location on bounded intervals | Held scale uses the Lipschitz and curvature bounds with complete subdivision, conditional on computed comparisons; multimodality is demonstrated above. No uniform positive scale bound is established here for the free-scale profile near half-mass collapse. |
 | Faces | Range containment and collapse comparisons are established above; the implemented comparisons have numerical tolerances. |
 | Global certificate | Held-scale objective gap bounded by the stated margin in exact arithmetic conditional on computed comparisons; the margin is not a proved rounding bound. Free scale remains a numerical grid search: a scale-root enclosure and uniform bounds near collapse remain open. |
