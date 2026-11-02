@@ -19,6 +19,7 @@ TEST_CASE("slash: golden and likelihood") {
   }
   CHECK(std::sqrt(norm2)<1e-3);
 }
+
 TEST_CASE("slash: direct log tails and quantiles") {
   for(bool lower:{false,true})for(double lp:{-1e-6,-.6931471805599453,-10.,-100.,-600.}) {
     const double q=cppunivariate::distributions::qslash(lp,0,1,lower,true);
@@ -178,4 +179,37 @@ TEST_CASE("slash: verified extreme conditional bracket") {
   REQUIRE(wide.status==cppunivariate::SlashStatus::Ok);
   CHECK(std::isfinite(wide.logLik));
   CHECK(std::abs(cppunivariate::slash_detail::scale_score(opposite,big,std::log(wide.sigma)))<1e-3);
+}
+
+TEST_CASE("slash: free-scale interval bound covers conditional profiles") {
+  const std::vector<double> x{-3,-1,0,2,8};
+  const cppunivariate::slash_detail::Profile p{x,cppunivariate::special::kNaN,200};
+  for(int j=0;j<40;++j) {
+    const double a=-3+j*.25,b=a+.25;
+    std::vector<double> d;
+    for(double v:x)d.push_back(v<a?a-v:(v>b?v-b:0));
+    const double upper=cppunivariate::slash_detail::residual_upper(d);
+    for(int k=0;k<=10;++k) {
+      const auto f=p(a+(b-a)*k/10);
+      CHECK(f.status==cppunivariate::SlashStatus::Ok);
+      CHECK(f.logLik<=upper+1e-10);
+    }
+  }
+  const std::vector<double> half{0,0,1,2};
+  CHECK(std::isfinite(cppunivariate::slash_detail::residual_upper(half)));
+}
+
+TEST_CASE("slash: free-scale certificate fails closed on exhausted budget") {
+  const std::vector<double> x{-3,-1,0,2,8},grid{-3,0,8};
+  const cppunivariate::slash_detail::Profile p{x,cppunivariate::special::kNaN,200};
+  std::vector<double> ll;for(double m:grid)ll.push_back(p(m).logLik);
+  auto best=p(0);double lo=0,hi=0;
+  CHECK_FALSE(cppunivariate::slash_detail::certify_free(p,grid,ll,0,-INFINITY,best,lo,hi,0));
+}
+
+TEST_CASE("slash: adjacent represented grid points are bounded before subdivision") {
+  const std::vector<double> x{-6,-3,3,5,0,0,-1,5,4,-2,-1,1,4,-1,-4,4,-9,-2,1};
+  const auto f=cppunivariate::slash_mle(mltest::as_span(x));
+  CHECK(f.status==cppunivariate::SlashStatus::Ok);
+  CHECK(std::isfinite(f.logLik));
 }

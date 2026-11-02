@@ -212,3 +212,42 @@ test_that("slash: extreme conditional bracket is checked", {
   wide <- mlslash(c(big,-big,0),mu=big)
   expect_true(is.finite(as.numeric(logLik(wide))))
 })
+
+test_that("slash free-scale search covers near-half tied modes", {
+  samples <- list(c(rep(0, 9), -1, rep(10, 10)),
+                  c(rep(0, 10), -1, rep(10, 9)),
+                  c(rep(0, 10), -1, rep(9, 9)))
+  for (x in samples) {
+    f <- mlslash(x)
+    candidates <- rbind(c(-1/625, 1/5), c(9/2, 7/2), c(4, 3))
+    ll <- apply(candidates, 1, function(v)
+      sum(dslash(x = x, mu = v[1], sigma = v[2], log = TRUE)))
+    expect_gte(as.numeric(logLik(f)), max(ll) - 1e-7)
+    expect_equal(as.numeric(logLik(f)),
+                 sum(dslash(x = x, mu = f[["mu"]], sigma = f[["sigma"]], log = TRUE)),
+                 tolerance = 1e-10)
+  }
+})
+
+test_that("slash free-scale search dominates fixed candidate likelihoods on seeded samples", {
+  skip_unless_tier("full")
+  set.seed(1162026)
+  for (i in seq_len(600)) {
+    x <- rnorm(7 + i %% 14) / runif(7 + i %% 14, 0.1, 1)
+    f <- mlslash(x)
+    candidates <- rbind(c(median(x), sd(x)), c(mean(x), sd(x)),
+                        c(median(x), max(abs(x - median(x)))))
+    ll <- apply(candidates, 1, function(v)
+      sum(dslash(x = x, mu = v[1], sigma = v[2], log = TRUE)))
+    expect_gte(as.numeric(logLik(f)), max(ll) - 1e-7 * length(x))
+    expect_equal(as.numeric(logLik(f)),
+                 sum(dslash(x = x, mu = f[["mu"]], sigma = f[["sigma"]], log = TRUE)),
+                 tolerance = 1e-10)
+  }
+})
+
+test_that("slash handles adjacent represented location grid points", {
+  x <- c(-6,-3,3,5,0,0,-1,5,4,-2,-1,1,4,-1,-4,4,-9,-2,1)
+  f <- mlslash(x)
+  expect_true(is.finite(as.numeric(logLik(f))))
+})

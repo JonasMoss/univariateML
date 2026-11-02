@@ -115,6 +115,114 @@ inline bool certify_held(const Profile& p,const std::vector<double>& grid,
   }
   return true;
 }
+
+// Score bracket for a vector of nonnegative residuals. The log likelihood is
+// n-Lipschitz in log scale, so the final bracket also bounds root error.
+inline bool residual_root(const std::vector<double>& d,double& lo,double& hi) {
+  lo=-740;hi=710;
+  if(!(scale_score(d,0,lo)>0 && scale_score(d,0,hi)<0))return false;
+  for(int j=0;j<60;++j) {
+    const double mid=lo/2+hi/2;
+    if(mid==lo||mid==hi)break;
+    if(scale_score(d,0,mid)>0)lo=mid;else hi=mid;
+  }
+  return true;
+}
+
+// A pointwise density bound, including the finite half-mass scale limit.
+inline double residual_upper(const std::vector<double>& d) {
+  const std::size_t n=d.size(),k=std::count(d.begin(),d.end(),0.0);
+  if(2*k>n)return INFINITY;
+  if(2*k==n) {
+    double v=-static_cast<double>(n)*.91893853320467274178-(n-k)*std::log(2.0);
+    for(double z:d)if(z>0)v-=2*std::log(z);
+    return v;
+  }
+  double lo,hi;
+  if(!residual_root(d,lo,hi))return INFINITY;
+  const double z=lo/2+hi/2,s=std::exp(z);
+  if(!(s>0&&std::isfinite(s)))return INFINITY;
+  double v=0;for(double a:d)v+=distributions::slash_log_density_cached(a,0,s,z);
+  return v+n*(hi-lo);
+}
+
+inline bool certify_free(const Profile& p,const std::vector<double>& grid,const std::vector<double>& ll,
+                         double offset,double boundary,SlashResult& best,double& polish_lo,
+                         double& polish_hi,std::size_t budget=1000000) {
+  struct Interval {double lo,hi,flo,fhi;};
+  std::vector<Interval> stack;
+  for(std::size_t i=1;i<grid.size();++i)stack.push_back({grid[i-1],grid[i],ll[i-1],ll[i]});
+  std::size_t work=0;const double n=p.x.size();
+  while(!stack.empty()) {
+    if(++work>budget)return false;
+    const auto q=stack.back();stack.pop_back();
+    const double mid=q.lo/2+q.hi/2;
+    std::vector<double> near,far;
+    for(double x:p.x) {
+      near.push_back(x<q.lo?q.lo-x:(x>q.hi?x-q.hi:0));
+      far.push_back(std::max(std::abs(x-q.lo),std::abs(x-q.hi)));
+    }
+    const double raw_margin=1e-9*(1+std::abs(best.logLik-offset));
+    const double margin=std::isfinite(boundary)?std::min(raw_margin,1e-9*n):raw_margin;
+    const double cutoff=best.logLik<=boundary+1e-8*n?boundary+1e-8*n:best.logLik+margin;
+    double lower=best.sigma/2;
+    for(int j=0;j<8&&lower>0&&scale_score(near,0,std::log(lower))<=0;++j)lower/=2;
+    const bool have_lower=lower>0&&scale_score(near,0,std::log(lower))>0;
+    if(have_lower) {
+      const double lip=n*1.4142135623730951/lower,width=q.hi-q.lo;
+      const double err=n*1500*std::ldexp(1.0,-std::min(p.maxit,65));
+      double bound=INFINITY;
+      if(std::isfinite(q.flo))bound=q.flo+lip*width+err;
+      if(std::isfinite(q.fhi))bound=std::min(bound,q.fhi+lip*width+err);
+      if(std::isfinite(q.flo)&&std::isfinite(q.fhi))
+        bound=std::min(bound,std::max(std::max(q.flo,q.fhi),(q.flo/2+q.fhi/2)+lip*width/2)+err);
+      if(bound<=cutoff)continue;
+    }
+    double upper=have_lower?INFINITY:residual_upper(near);
+    if(upper<=cutoff)continue;
+    if(!(mid>q.lo&&mid<q.hi))return false;
+    const auto f=p(mid);
+    if(f.status!=SlashStatus::Ok||!std::isfinite(f.logLik))return false;
+    if(f.logLik>best.logLik+1e-12*(1+std::abs(best.logLik))){best=f;polish_lo=q.lo;polish_hi=q.hi;}
+    // Establish uniform scale bounds by score signs for the closest and
+    // furthest residual vectors. Failure only disables this sharper bound.
+    double sl=f.sigma/2,sh=f.sigma*2;
+    for(int j=0;j<50&&sl>0&&scale_score(near,0,std::log(sl))<=0;++j)sl/=2;
+    for(int j=0;j<50&&std::isfinite(sh)&&scale_score(far,0,std::log(sh))>=0;++j)sh*=2;
+    if(sl>0&&std::isfinite(sh)&&scale_score(near,0,std::log(sl))>0&&scale_score(far,0,std::log(sh))<0) {
+      double slope=0,curv=0,cross=0,info=0;
+      for(std::size_t i=0;i<p.x.size();++i) {
+        const double z=(p.x[i]-mid)/f.sigma,t=z*z/2;
+        const double score=t<1e-4?z*(.5-t/12+t*t*t/720):(t>=700?2/z:2/z-z/std::expm1(t));
+        slope+=score/f.sigma;
+        const double zl=near[i]/sh,zu=far[i]/sl,tl=zl*zl/2,tu=zu*zu/2;
+        double h=1+zu*zu/4;
+        if(tl>0&&std::isfinite(tl)) {
+          const double e=std::exp(-tl),den=-std::expm1(-tl);
+          const double peak=std::max(tl,1.0);
+          h=std::min(h,2/(zl*zl)+e/den+2*peak*std::exp(-peak)/(den*den));
+        }
+        curv+=h/(sl*sl);cross+=(1.4142135623730951+zu*h)/sl;
+        const double a=tl>=350?0:2*tl*std::exp(-2*tl),b=tu>=350?0:2*tu*std::exp(-2*tu);
+        info+=std::min(a,b);
+      }
+      if(info>0&&std::isfinite(info)) {
+        const double radius=std::max(mid-q.lo,q.hi-mid);
+        const double delta=1500*std::ldexp(1.0,-std::min(p.maxit,65))+1e-13;
+        const double err=n*delta+cross*delta*radius;
+        const double quad=f.logLik+err+std::abs(slope)*radius+.5*(curv+cross*cross/info)*radius*radius;
+        upper=std::min(upper,quad);
+      }
+    }
+    const double current_raw=1e-9*(1+std::abs(best.logLik-offset));
+    const double current_margin=std::isfinite(boundary)?std::min(current_raw,1e-9*n):current_raw;
+    const double current_cutoff=best.logLik<=boundary+1e-8*n?boundary+1e-8*n:best.logLik+current_margin;
+    if(upper<=current_cutoff)continue;
+    if(have_lower && residual_upper(near)<=current_cutoff)continue;
+    stack.push_back({q.lo,mid,q.flo,f.logLik});stack.push_back({mid,q.hi,f.logLik,q.fhi});
+  }
+  return true;
+}
 }
 inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=special::kNaN,double mu=special::kNaN) {
   SlashResult bad={special::kNaN,special::kNaN,special::kNaN,0,SlashStatus::InvalidInput};
@@ -199,6 +307,24 @@ inline SlashResult slash_mle(span x,double tol=1e-9,int maxit=200,double sigma=s
     if(f.logLik>best.logLik)best=f;
   }
   if(failed || !refined)best.status=SlashStatus::IterationFailure;
+  if(std::isnan(sigma)&&best.status==SlashStatus::Ok) {
+    double lo=0,hi=0;
+    if(!slash_detail::certify_free(p,grid,ll,n*std::log(scale),boundary,best,lo,hi)) {
+      bad.status=SlashStatus::IterationFailure;return bad;
+    }
+    if(hi>lo) {
+      int it=0;
+      double a=hi-(hi-lo)*.6180339887498948482,b=lo+(hi-lo)*.6180339887498948482;
+      auto fa=p(a),fb=p(b);
+      for(;it<maxit&&hi-lo>tol;++it) {
+        if(fa.logLik>fb.logLik){hi=b;b=a;fb=fa;a=hi-(hi-lo)*.6180339887498948482;fa=p(a);}
+        else{lo=a;a=b;fa=fb;b=lo+(hi-lo)*.6180339887498948482;fb=p(b);}
+      }
+      if(it==maxit){bad.status=SlashStatus::IterationFailure;return bad;}
+      auto f=fa.logLik>fb.logLik?fa:fb;
+      if(f.logLik>best.logLik){f.iterations=it;best=f;}
+    }
+  }
   if(!std::isnan(sigma)&&best.status==SlashStatus::Ok) {
     double lo=0,hi=0;
     if(!slash_detail::certify_held(p,grid,ll,n*std::log(scale),best,lo,hi)) {
