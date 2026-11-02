@@ -46,6 +46,21 @@ r:
     iterlim: Maximum number of Newton iterations.
 log_density: -log(sd) - log(2*pi)/2 - (x-mean)**2/(2*sd**2) - log((erf((b-mean)/(sd*sqrt(2))) - erf((a-mean)/(sd*sqrt(2))))/2)
 limits:
+  - name: scale collapse
+    firmness: proved
+    when: 'As $\sigma\to0$, mass concentrates at the projection of $\mu$ onto $[a,b]$.'
+    detect: 'Scale is free and the sample is constant; mean is free or every observation equals the projection of the held mean onto the nonempty profiled interval.'
+    status: DegenerateData
+    message: unbounded
+    kind: nonexistence
+  - name: endpoint location escape
+    firmness: proved
+    fixed: [sd]
+    when: 'With positive scale held, $\mu\to-\infty$ at a finite lower endpoint or $\mu\to\infty$ at a finite upper endpoint concentrates mass there.'
+    detect: 'Mean is free and every observation equals the same finite endpoint of the nonempty profiled interval.'
+    status: UnboundedLocation
+    message: unbounded
+    kind: nonexistence
   - model: exp
     firmness: proved
     when: 'As $\sigma\to\infty$ and $\mu/\sigma^2\to-1/(\bar x-a)$ with $a$ finite and $b=\infty$, the distribution tends to $a+Y$, where $Y$ is exponential.'
@@ -93,10 +108,11 @@ relations:
       sd: sd
 fit:
   method: multistart
-  certified: 'yes'
+  certified: partial
   note: 'tnorm/README.md, Details; tnorm/mle.hpp (public fitter and held overloads); tnorm/test.cpp: Fixed-bound
     likelihood is strictly concave in mean/sd^2 and -1/(2*sd^2); holding mean or sd gives affine restrictions. Free
-    bounds profile exactly to sample extremes; boundary and collapse cases stop.'
+    bounds profile exactly to sample extremes; collapse tests are exact. Newton solves and face comparisons
+    use floating-point quadrature and tolerances, rather than a global numerical certificate.'
 areas:
 - measurement and errors
 classification: specialist
@@ -176,10 +192,14 @@ coefficient. Numerical comparisons use a likelihood tolerance, as described in t
 
 With parent mean held, write $q=n^{-1}\sum_i(x_i-\mu)^2$ and $q_0=\inf_{a\le x\le b}(x-\mu)^2$. A finite scale estimate exists exactly when $q>q_0$ and, for finite bounds, $q$ is smaller than the uniform distribution's expected squared distance. On unbounded intervals there is no upper restriction. These strict inequalities also cover compatible constant samples away from the closest support point to the held mean. Every statement assumes a nonempty interval and observations in its closed support.
 
+The collapse tests require no tolerance. At an interior projected mean, the density grows as $1/\sigma$; at an endpoint equal to the mean it grows as $2/(\sqrt{2\pi}\sigma)$. At a finite lower endpoint $a>\mu$, writing $d=a-\mu>0$ gives normalization relative to the endpoint exponent
+$\int_0^{b-a}\exp(-(2du+u^2)/(2\sigma^2))\,du\sim\sigma^2/d$.
+Thus the endpoint density is asymptotic to $d/\sigma^2$. Reflection proves the upper-endpoint case. With scale held and $\mu\to-\infty$, the same integral is asymptotic to $\sigma^2/(a-\mu)$, proving the location escape; reflect for the upper endpoint. These arguments also hold with an infinite opposite endpoint. Profiling a free bound first preserves the argument unless both profiled bounds coincide, which is invalid.
+
 ## R notes
 
 Supply both `a` and `b`. A numeric value holds a bound, `NULL` estimates it at the corresponding sample extreme, and `-Inf` or `Inf` leaves that side unbounded. Any subset of the four coefficients can be held. The same collapse and exponential boundary tests apply after profiling free bounds. Constant data with coincident estimated bounds are rejected.
 
 Boundary comparisons favour the limiting model within `1e-8` times sample size in log likelihood. Exponential, truncated exponential and uniform escapes stop rather than returning a finite parent-normal estimate. `mlunif` estimates its own endpoints and is a different model from the uniform limit on held bounds. See `mlhnorm` for a half-normal with an estimated endpoint and `mlnorm` for the untruncated fit.
 
-For constant data at a finite endpoint, the current scale solver can return a tiny positive `sd` when the held parent mean lies outside the interval, despite the unbounded likelihood. This value is not an MLE. The [existence review](../../../../../dev/research/evaluations/2026-11-02-existence-6-report.md) records a reproducer and the outstanding diagnostic correction.
+Scale collapse is checked by exact equality before searching: constant observations must equal the projection of a held mean onto the profiled interval, or mean must be free. With scale held and mean free, constant observations at a finite endpoint instead report an unbounded location escape. Both-held fits evaluate the likelihood. Coincident profiled bounds remain invalid. The [existence review](../../../../../dev/research/evaluations/2026-11-02-existence-6-report.md) preserves the original reproducer.

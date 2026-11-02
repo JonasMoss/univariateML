@@ -203,7 +203,7 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int /*maxit*/,
     return snorm_detail::held_fit(x,fixed_mean,fixed_sd,fixed_xi);
   constexpr double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n < 2) return {nan,nan,nan,nan,0,SnormStatus::InvalidStart};
+  if (n == 0) return {nan,nan,nan,nan,0,SnormStatus::InvalidStart};
   std::vector<CPPUNIV_EXTENDED_REAL> y;
   for (double v : x) {
     if (!std::isfinite(v)) return {nan,nan,nan,nan,0,SnormStatus::InvalidStart};
@@ -211,7 +211,7 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int /*maxit*/,
   }
   std::sort(y.begin(), y.end());
   const CPPUNIV_EXTENDED_REAL origin = y.front(), scale = y.back()-origin;
-  if (!(scale > 0)) return {nan,nan,nan,nan,0,SnormStatus::InvalidStart};
+  if (scale == 0) return {nan,nan,nan,nan,0,SnormStatus::Unbounded};
   // Affine normalisation keeps the degree-seven coefficients bounded.
   for (auto& v : y) v = (v-origin)/scale;
   // Left moments about 0 and right moments about 1 avoid cancellation

@@ -294,3 +294,8 @@ test_that("snorm held-moment endpoint faces retain shrinking-side penalties", {
     } else expect_gte(as.numeric(logLik(fit)),-min(candidates)-1e-6)
   }
 })
+
+test_that("snorm R6 collapse diagnostics and held exceptions", {
+  for (x in list(0,rep(0,3),rep(2,3))) expect_error(mlsnorm(x),"[Ss]cale collapse.*unbounded")
+  expect_error(mlsnorm(rep(2,3),mean=2),"unbounded")
+})

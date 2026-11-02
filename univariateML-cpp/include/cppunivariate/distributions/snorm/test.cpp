@@ -171,3 +171,11 @@ TEST_CASE("snorm: symmetric member has exact median and signed log-half offset")
     else CHECK(got==0);
   }
 }
+
+TEST_CASE("snorm R6 free constant samples have unbounded likelihood") {
+  for (const auto& x : {std::vector<double>{0},std::vector<double>{0,0,0},std::vector<double>{2,2,2}}) {
+    const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-8,1);
+    CHECK(r.status==cppunivariate::SnormStatus::Unbounded);
+    CHECK(r.iterations==0);
+  }
+}

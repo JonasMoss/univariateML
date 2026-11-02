@@ -132,3 +132,11 @@ TEST_CASE("lgamma: TASK-132 empty and invalid delegates preserve non-success") {
     CHECK(cppunivariate::lgamma_mle(x,1e-8,200).status != cppunivariate::LgammaStatus::Ok);
   }
 }
+
+TEST_CASE("lgamma R6 constant shape-rate collapse and held exceptions") {
+  const std::vector<double> x(3,2.);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  CHECK(cppunivariate::lgamma_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::LgammaStatus::Degenerate);
+  CHECK(cppunivariate::lgamma_mle(mltest::as_span(x),1e-8,100,2).status==cppunivariate::LgammaStatus::Ok);
+  CHECK(cppunivariate::lgamma_mle(mltest::as_span(x),1e-8,100,nan,2).status==cppunivariate::LgammaStatus::Ok);
+}

@@ -62,3 +62,11 @@ TEST_CASE("foldnorm: d/p/q/r against the truth table") {
       [](double x, const std::vector<double> &p, bool lower, bool log) { return cppunivariate::distributions::qfoldnorm(x, p[0], p[1], lower, log); },
       [](cppunivariate::distributions::StdRng<> &rng, const std::vector<double> &p) { return cppunivariate::distributions::rfoldnorm(rng, p[0], p[1]); });
 }
+
+TEST_CASE("foldnorm R6 constant free and held-location collapse") {
+  for (double value : {0.,2.}) {
+    const std::vector<double> x(3,value);
+    CHECK(cppunivariate::foldnorm_mle(mltest::as_span(x)).status==cppunivariate::FoldnormStatus::Unbounded);
+    CHECK(cppunivariate::foldnorm_mle(mltest::as_span(x),1e-8,100,value).status==cppunivariate::FoldnormStatus::Unbounded);
+  }
+}

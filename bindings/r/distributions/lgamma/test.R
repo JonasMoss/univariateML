@@ -108,3 +108,9 @@ test_that("P2 held solver respects iterlim", {
 test_that("lgamma: P3 unfinished gamma delegate stops", {
   expect_error(mllgamma(c(1.1,2,4,10),abstol=1e-12,iterlim=1), "IterationFailure")
 })
+
+test_that("lgamma R6 collapse diagnostics and held exceptions", {
+  expect_error(mllgamma(rep(2,3)),"does not exist")
+  expect_true(is.finite(logLik(mllgamma(rep(2,3),shapelog=2))))
+  expect_true(is.finite(logLik(mllgamma(rep(2,3),ratelog=2))))
+})

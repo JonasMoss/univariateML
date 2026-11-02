@@ -98,3 +98,33 @@ test_that("tnorm includes finite endpoint density limits", {
   expect_equal(pml(c(-1,1),fit),c(0,1))
   expect_equal(qml(c(0,1),fit),c(-1,1))
 })
+
+ test_that("tnorm R6 exact projected-mean collapse and endpoint location escape", {
+  for (endpoint in c(0,1)) {
+    x <- rep(endpoint,3)
+    for (mu in c(endpoint,if(endpoint==0) -1 else 2)) {
+      expect_error(mltnorm(x,a=0,b=1,mean=mu,iterlim=1),"unbounded.*sd -> 0")
+      args <- list(x=x,a=0,b=1,mean=mu,iterlim=1)
+      if(endpoint==0) args['a'] <- list(NULL) else args['b'] <- list(NULL)
+      expect_error(do.call(mltnorm,args),"unbounded.*sd -> 0")
+    }
+    expect_error(mltnorm(x,a=0,b=1,sd=1,iterlim=1),"unbounded.*endpoint")
+    args <- list(x=x,a=0,b=1,sd=1,iterlim=1)
+    if(endpoint==0) args['a'] <- list(NULL) else args['b'] <- list(NULL)
+    expect_error(do.call(mltnorm,args),"unbounded.*endpoint")
+    expect_true(is.finite(logLik(mltnorm(x,a=0,b=1,mean=-1,sd=1))))
+  }
+  expect_true(is.finite(logLik(mltnorm(rep(.5,3),a=0,b=1,sd=1))))
+  expect_true(is.finite(logLik(mltnorm(c(.2,.4,.6),a=0,b=1))))
+})
+
+test_that("tnorm R6 collapse includes one-sided and untruncated supports", {
+  for (bounds in list(c(0,Inf),c(-Inf,0),c(-Inf,Inf))) {
+    mu <- if(bounds[1]==0) -1 else if(bounds[2]==0) 1 else 0
+    expect_error(mltnorm(rep(0,3),a=bounds[1],b=bounds[2],mean=mu),"unbounded")
+    expect_error(mltnorm(rep(0,3),a=bounds[1],b=bounds[2]),"unbounded")
+    if(any(bounds==0)) expect_error(mltnorm(rep(0,3),a=bounds[1],b=bounds[2],sd=1),"unbounded.*endpoint")
+  }
+  expect_error(mltnorm(rep(0,3),a=NULL,b=NULL),"bounds")
+  expect_true(is.finite(logLik(mltnorm(rep(1,3),a=0,b=Inf,mean=0))))
+})
