@@ -46,13 +46,13 @@ r:
     size: "Required number of trials; NULL estimates it where supported. Fixed sizes are limited to 1e7 for allocation safety."
     prob: "Optional fixed canonical probability between zero and one inclusive; NULL estimates it."
     nu: "Optional fixed finite real dispersion; NULL estimates it. Both prob and nu may be held fixed."
-    reltol: "Relative tolerance on the dispersion moment residual."
-    iterlim: "Maximum number of dispersion bisection iterations."
+    reltol: "Relative tolerance for the free-coordinate moment residuals."
+    iterlim: "Maximum number of dispersion bisection or natural-coordinate Newton iterations."
 log_density: "nu*(loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)) + x*log(prob) + (size-x)*log(1-prob) - log(Sum((factorial(size)/(factorial(k)*factorial(size-k)))**nu * prob**k * (1-prob)**(size-k), (k, 0, size)))"
 limits:
   - model: cmp
     when: '$size \to \infty$ with positive $\nu$ fixed and odds scaled as $size^{-\nu}$'
-    detect: exploratory search finds no strict improvement; a larger finite maximum is not excluded
+    detect: with nu held positive and prob free, exploratory search finds no strict improvement; a larger finite maximum is not excluded
     status: FaceUnresolved
     fixed: [nu]
     firmness: proved
@@ -60,17 +60,17 @@ limits:
   - name: point mass
     firmness: proved
     when: '$\nu$ diverges along an exposing direction toward an interior point mass'
-    detect: constant interior data in a joint fit; central constant data with interior prob fixed
+    detect: constant interior data in a joint fit at fixed size; central constant data at an even size at least two with interior prob fixed; or positive constant data with free size and interior prob fixed when twice the count is supported
     status: PointMass
   - name: adjacent two-point law
     firmness: proved
     when: '$\nu \to +\infty$ with the canonical probability adjusted'
-    detect: size at least two, with both adjacent integers observed in a joint fit; only the two central integers with interior prob fixed
+    detect: fixed size at least two with both adjacent integers observed in a joint fit; only the two central integers at a fixed odd size at least three with interior prob fixed; free size and prob with two adjacent positive integers; or free size with prob one half and balanced adjacent positive counts when the central size is supported
     status: AdjacentLimit
   - name: endpoint two-point law
     firmness: proved
     when: '$\nu \to -\infty$'
-    detect: all data in {0, size} with both present in a joint fit; any endpoint-only data with interior prob fixed
+    detect: both endpoints observed in a joint fit at fixed size at least two; endpoint-only data with interior prob fixed at a fixed size at least two; free size and prob with observations on zero and an integer at least two; or free size with prob one half and balanced counts at zero and an integer at least two
     status: EndpointLimit
 references:
 - 'Kadane, J. B. (2016). Sums of Possibly Associated Bernoulli Variables: The Conway-Maxwell-Binomial Distribution.
@@ -89,13 +89,36 @@ construction:
 - generalisation
 relations: {}
 fit:
-  method: multistart
+  method: profile-search
   certified: partial
   note: 'cmb/README.md, Details; cmb/mle.hpp (public fitter and held overloads); cmb/test.cpp: Moment matching exploits
-    exponential-family convexity for fixed design/dispersion subsets; integer-tail or normalizer bounds certify
-    only their stated scope, not every joint numerical solve.'
+    exponential-family convexity; entropy bounds and integer-tail comparisons certify accepted free-size fits
+    conditionally on the stated numerical margins. Budget exhaustion and unresolved faces stop.'
 areas:
 - counts and ecology
+existence:
+  uniqueness: unknown
+  statement: >-
+    With size, prob and nu free, constant samples attain likelihood one;
+    observations on zero and one attain the Bernoulli maximum, which ties
+    the adjacent CMP face and is reported as a face tie. Observations on
+    two adjacent positive integers, or on zero and an integer at least two, have
+    an unattained saturated supremum. A uniform empirical distribution on
+    zero through a maximum of at least two attains its saturated likelihood.
+    General free-size existence and uniqueness do not have a simple
+    closed-form criterion here. With size at least two held, the joint
+    finite interior maximum exists exactly when the empirical sufficient
+    statistic lies in the polygon interior; endpoint vertices are also
+    attained through endpoint probabilities. For held interior probability
+    and size at least two, a finite dispersion maximum exists when the
+    empirical mean log binomial coefficient lies strictly between its
+    minimum and maximum. At size one dispersion is unidentified.
+  reason: >-
+    The fixed-size family is a minimal finite exponential family and its
+    polygon has consecutive-point upper edges and an endpoint lower edge.
+    Saturated-likelihood comparisons establish the stated special cases;
+    the free-size procedure bounds the tail and checks each remaining size,
+    stopping when its numerical comparisons or work budget are insufficient.
 classification: specialist
 classification_reason: Used to model bounded counts with dispersion departing from independent Bernoulli trials.
 summary: Conway--Maxwell--binomial provides a model for bounded counts with dispersion departing from independent
@@ -114,13 +137,20 @@ The Conway--Maxwell--binomial distribution extends the binomial by raising its c
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
 
-The size is a required design quantity. The canonical probability is generally not the mean divided by size. Dispersion is unrestricted in sign, and `nu = 1` is binomial. The fitter profiles the canonical log odds by mean matching and solves the remaining dispersion moment equation. Finite log-sum-exp enumeration costs O(size) per evaluation; size is limited to 1e7 for allocation safety.
+The size is a design quantity that can be held or searched over feasible integers. The canonical probability is generally not the mean divided by size. Dispersion is unrestricted in sign, and `nu = 1` is binomial. For held size the fitter profiles the canonical log odds by mean matching and solves the remaining dispersion moment equation. Finite log-sum-exp enumeration costs O(size) per evaluation; size is limited to 1e7 for allocation safety.
 
 For size at least two, the joint MLE is attained when the mean sufficient statistic lies inside the convex polygon of the statistic points or is an endpoint vertex. Other boundary samples stop with a named limiting law. With fixed dispersion, endpoint point masses are attained. With fixed probability, dispersion can escape only toward the central mode(s) or the endpoints; constants elsewhere can have finite fits. With both coordinates fixed there is no optimization or escape. Size zero is the attained point mass at zero: unidentified free prob and nu are represented by 0.5 and one. Endpoint samples with free prob return prob zero or one, with unidentified free nu represented by one. Endpoint probability holds are accepted only for compatible observations. With size one, dispersion is unidentified: an unspecified dispersion is set to one with a warning for interior probabilities and marked fixed, leaving a Bernoulli fit.
 
-With both `prob` and `nu` held, `size = NULL` enumerates feasible integer sizes until a decreasing upper bound excludes the entire remaining tail. For positive dispersion the bound uses a normalizer term at `max(x) + 1`; for negative dispersion it uses the endpoint terms. At zero dispersion the normalizer increases with size, so the smallest feasible size is optimal. This argument does not assume size-profile unimodality. Four million cumulative normalizer terms form a work budget; exhaustion stops rather than returning a capped estimate. Endpoint probabilities and size zero are handled exactly. With `nu` held and `prob` free, the separate search below handles the CMP face and bounds the remaining sizes. With free dispersion, constant samples are handled exactly as described below; other samples stop as not implemented.
+With both `prob` and `nu` held, `size = NULL` enumerates feasible integer sizes until a decreasing upper bound excludes the entire remaining tail. For positive dispersion the bound uses a normalizer term at `max(x) + 1`; for negative dispersion it uses the endpoint terms. At zero dispersion the normalizer increases with size, so the smallest feasible size is optimal. This argument does not assume size-profile unimodality. Four million cumulative normalizer terms form a work budget; exhaustion stops rather than returning a capped estimate. Endpoint probabilities and size zero are handled exactly. With `nu` held and `prob` free, the separate search below handles the CMP face and bounds the remaining sizes. The free-dispersion search and its separate adjacent-sample bound are described below.
 
 For a constant sample at `k`, free probability attains likelihood one at size `k`, probability one (or probability zero for `k = 0`). With probability held at an interior value, `k = 0` attains likelihood one at size zero. For `0 < k <= 5000000`, size `2*k` is supported and `nu -> +inf` concentrates its mass at `k`: the supremum is one and no finite member attains it. Held probability one attains the constant sample at size `k`; held probability zero is incompatible with positive observations. Positive constants above 5000000 with an interior held probability remain unimplemented because the central size exceeds the supported size cap.
+
+If observations have equal positive counts at every integer from zero to
+their maximum, the empirical uniform law is attained at that maximum as
+size, probability `1/2` and dispersion zero. It is therefore a global fit
+for free probability or probability held at `1/2`. For size one and free
+probability it ties the adjacent CMP limit, so the face-tie policy stops;
+with probability held the unidentified dispersion is represented by one.
 
 ### Free-size profile bounds (2026-11-01)
 
@@ -172,6 +202,8 @@ Concavity of `c_N` and the identity
 `delta_N = log choose(N,j) - w*log choose(N,u) - (1-w)*log choose(N,v)`,
 give `delta_N >= delta` and
 `nu <= -B*(w/n_u + (1-w)/n_v)/delta` whenever `nu > 0`.
+The computed `delta` is reduced by `1e-10` times one plus the sum of the
+absolute terms in its evaluation; a nonpositive result stops the search.
 For `nu < 0` and `N > v`, the endpoint argument above gives
 `nu >= B/(n_v*log(N))`, because `choose(N,v) >= N`. Thus any fit
 beating the candidate has dispersion in a bounded interval, with its
@@ -181,14 +213,212 @@ the truncated inequality yields a uniform `O(1/N)` correction at fixed
 superlevel set, not a classification of its limiting faces. Samples spanning
 at most two adjacent values need separate boundary analysis.
 
+The implementation tightens those bounds using the empirical saturated
+log likelihood `S`. If category `v` occurs `c` times in `n` observations,
+then setting its model probability to `p` and optimizing the other category
+probabilities yields the upper bound
+
+```
+S + c*log(p/f) + (n-c)*log((1-p)/(1-f)),   f=c/n.
+```
+
+On a `B`-superlevel set, bisection on `(0,f)` gives a lower bound on `p`;
+the lower bracket endpoint is retained, with a practical rounding margin.
+Its logarithm replaces `B/c` in the dispersion inequalities above. This
+coarsened relative-entropy bound is exact in real arithmetic and can be much
+tighter when the finite candidate is close to saturation. The same binary
+inequality on `(f,1)` bounds the probability of the intermediate point
+`j` from above when it is observed. Otherwise its probability is at most
+one minus the lower bounds at `u` and `v`. Replacing the coarse
+`log p(j) <= 0` by the tighter applicable upper bound further reduces the
+positive-dispersion limit. A negative numerator excludes positive dispersion
+from the superlevel set; a nonpositive computed denominator stops the search.
+
+With free probability and dispersion and observations on both `k` and
+`k+1`, the saturated two-point likelihood is an upper bound for every
+distribution. If `k=0`, size one attains it as a Bernoulli member and the
+CMP adjacent limit ties it, so the fitter reports `FaceTie`. If
+`k>0`, size `2k+1` has these two central points and a sequence with
+`nu` tending to infinity and suitable fixed odds approaches their empirical
+proportions. Every finite feasible CMB member has additional positive-mass
+support points, so the saturated bound is not attained. This proves an
+adjacent-face stop for that subset, including under the size cap whenever
+`2k+1` is allowed; more generally a supporting slope can expose the same
+edge at any feasible size at least `k+1`.
+
+With free probability and sample support `{0,v}`, where `v>=2`, the
+saturated two-point likelihood is also a strict upper bound for every
+finite feasible CMB member. At size `v`, sending `nu` to negative infinity
+and choosing the endpoint odds matches the empirical proportions, proving
+that the endpoint face reaches this bound in the limit.
+
+For held `prob=1/2` and equally frequent observations on the adjacent pair
+`{k,k+1}`, the odd design `2k+1` gives equal central weights as
+`nu -> +inf`. When that design is supported and `k>0`, the resulting
+saturated likelihood is not attained; for `k=0`, size one attains it.
+With equally frequent observations on `{0,v}`, the size-`v` endpoints
+likewise have equal weights as `nu -> -inf`, yielding the saturated
+likelihood as an unattained supremum for `v>=2`. These are exact special
+cases; they do not settle the other held-probability adjacent samples.
+
+For arbitrary positive counts `n0,n1` on `{0,1}` with held `prob=1/2`,
+sizes one and two can be compared exactly. Size one has log likelihood
+`-(n0+n1)*log(2)`. For every size at least two, symmetry gives `p(0)=p(N)`,
+so maximizing over `p(0),p(1)` yields the upper bound
+`n0*log(n0/(2*n))+n1*log(n1/n)`. Size two attains this bound with
+`nu=log(2*n1/n0)/log(2)`. Comparing the two values proves the global fit;
+if their computed values differ by at most `1e-12` times one plus their
+largest absolute value, the fitter stops with numerical failure.
+For `{1,2}` and held probability approximately `0.69830412636804606`, the
+size-two profile and size-three central face tie numerically: the probability
+is the root in `(0.6,0.8)` of `4*(1-p)*(p^2+(1-p)^2)-p=0`. The reported
+tie does not exclude a larger finite maximum at another size.
+
+At any fixed size at least two, `(x, log choose(size,x))` is a minimal
+two-dimensional sufficient statistic: strict concavity of the log binomial
+coefficients makes its points affinely independent. The likelihood is
+strictly concave in log odds and dispersion. Its finite joint maximum exists
+exactly when the empirical statistic lies inside their convex hull. The
+upper hull consists of consecutive-point edges, and the lower hull is the
+endpoint edge; vertices are point-mass limits, with endpoint vertices also
+attained by endpoint probabilities. Holding interior probability leaves a
+strictly concave one-dimensional likelihood, with finite dispersion exactly
+when the empirical mean log binomial coefficient is strictly between its
+minimum and maximum. A small score is a practical convergence check, but
+alone does not supply a numerical upper bound for the remaining likelihood
+error without additional curvature or parameter bounds.
+
+More explicitly, the upper polygon edges join consecutive statistic
+points, while its lower edge joins the endpoints. Thus a joint fit on an
+upper edge approaches a freely weighted adjacent two-point law, and one on
+the lower edge approaches a freely weighted endpoint law. With interior
+probability held and log odds `eta`, the `nu -> -inf` endpoint law gives
+probability `logistic(N*eta)` to `N`. For odd `N=2k+1`, the
+`nu -> +inf` central law gives probability `prob` to `k+1`; for even `N`
+the upper face is the point mass at `N/2`. Size one has constant
+log-binomial statistic, so dispersion is not identified.
+
+The certificate for the truncated two-coordinate profile uses
+the following entropy dual. For `K >= max(x)`, put
+`h_k = -log(k!)`, `m = mean(x)`, and `t = mean(h_x)`. If a probability
+vector `q_0,...,q_K` satisfies `sum(q)=1`, `sum(k*q_k)=m`, and
+`sum(h_k*q_k)=t`, then for every `a,nu`
+
+```
+T_K(a,nu) <= n * sum_k q_k * log(q_k).
+```
+
+This is the nonnegativity of the relative entropy of `q` against the
+truncated exponential-family distribution; the right side is a global upper
+bound even when `a,nu` do not maximize the likelihood. It also bounds the
+held-probability subset because dropping a constraint can only increase a
+supremum. In exact arithmetic, a candidate vector can be corrected to the
+two empirical moments on any three affinely independent support points by
+solving a three-by-three linear system. The result is a certificate only if
+all corrected weights are nonnegative and the moment equations and entropy
+comparison are checked with a stated floating-point margin. A small score
+alone does not ensure nonnegative corrected weights, especially near a hull
+face. Combining such an upper bound with the candidate-dependent dispersion
+and `D_N,K` bounds above would exclude the complete large-size tail whenever
+their sum is strictly below the finite candidate. The implementation uses
+Newton iterations followed by a three-weight correction and rejects
+negative weights or failed moment checks. The entropy comparison includes
+`1e-9*(1+n*abs(entropy))` as a practical floating-point margin; it is not
+an outward-rounded interval bound.
+
+For adjacent observations `k,k+1` with fixed interior probability, write
+`eta=logit(prob)` and suppose a likelihood exceeds `B<0`. Each observed
+log probability is at least `B/n_k` or `B/n_(k+1)` respectively. Their
+log ratio equals `eta + nu*log((N-k)/(k+1))`. Consequently, uniformly for
+all `N>=N0>2k+1`, `abs(nu)` is at most
+
+```
+max(abs(B/n_(k+1)-eta), abs(-B/n_k-eta)) /
+    log((N0-k)/(k+1)).
+```
+
+The implementation uses the tighter two-outcome version of this argument.
+For fixed log ratio `d` of the two observed probabilities, the largest
+possible likelihood places all mass on those outcomes and is
+`n_(k+1)*d - n*log(1+exp(d))`. This is strictly concave in `d`. Bracketing
+both roots of its `B`-superlevel interval bounds `abs(d-eta)` and hence
+`abs(nu)` after division by the same logarithmic size factor. Retaining the
+outer bracket endpoints and a numerical margin makes the comparison
+conservative in exact arithmetic conditional on the computed values.
+
+For fixed truncation `K>k+1`, the truncated likelihood at any such `nu`
+is bounded above by its optimized `nu=0` geometric profile plus
+`n*abs(nu)*log(K!)`: every truncated log-factorial lies between zero and
+`log(K!)`. Adding the `D_N,K` correction and using the displayed bound on
+`abs(nu)` gives a decreasing all-size upper bound. The optimized geometric
+profile is bracketed by mean matching. Thus a strict finite improvement
+can be certified without assuming unimodality in size, although the bound
+can be very conservative. The finite odd-design central face has odds
+`prob/(1-prob)` and is compared explicitly; size one is an attained
+Bernoulli member. The free-probability adjacent cases are the exact
+saturated-likelihood cases above.
+
+For other nonconstant free-dispersion samples, a numerical candidate is sought through
+32 sizes above the smallest feasible size. It must exceed any applicable
+finite-design face by `1e-8*(1+abs(logLik))`; a close comparison reports a
+tie and a face above the candidate reports an unresolved result. A
+truncated-profile upper bound and decreasing correction exclude the tail;
+every size below the resulting cutoff is evaluated. The bound also covers
+the CMP, geometric and escaping-mass paths, without identifying which of
+them is largest. For free probability, an additional numerical CMP fit
+compares that face directly; if it fails, the conservative truncated bound
+remains the tail certificate. At each finite size, a moment-corrected
+entropy vector bounds the profile from above. The fixed-probability version
+matches only the log-binomial moment and retains the known odds in its dual
+bound. A finite-size candidate is accepted only when this upper bound is
+within `1e-8*(1+abs(logLik))` of its reported likelihood. The free-size
+fixed-design solves start at dispersion one and binomial mean-matching odds
+(or the held odds), take Newton steps using the sufficient-statistic
+covariance, cap the largest coordinate displacement at four and backtrack
+on likelihood, and require the free moment residuals to meet `reltol`. A
+singular covariance, unsuccessful line search, failed residual check or
+iteration limit stops the search. The cumulative
+work allowance is ten million charged support terms. Every fixed-size
+Newton normalizer and final entropy table is charged by its support length;
+truncated solves are charged separately. When a Newton solve fails, a
+budget-reserved monotone dispersion bisection is attempted, with safeguarded
+mean matching when probability is free; it must pass the same entropy check.
+The reservation covers the solver's iteration limits. These are work units,
+not a count of every arithmetic operation. Beyond the exact special cases,
+the current search stops when the observed maximum exceeds 10000, or when
+the necessary truncation would exceed 4096; it does not return a size capped
+at either threshold.
+Exhaustion, failed
+moment checks, unsupported truncations or inability to establish the
+cutoff stop without returning an estimate. Fixed-size moment solves and
+floating-point comparisons are numerical; the entropy and tail inequalities
+are exact-arithmetic arguments conditional on the stated comparisons.
+
+For the fixed-size entropy check, if `h_k=log choose(N,k)`, a feasible
+vector matching both empirical moments gives the same entropy upper bound.
+With held log odds `eta`, it suffices to match only the `h` moment: the
+upper bound becomes `n*(sum(q*log(q)) + eta*(mean(x)-sum(k*q_k)))`.
+The implementation corrects three or two probabilities respectively and
+rejects negative weights and failed moment checks. These upper bounds make
+the score test a convergence check, rather than using the score alone as
+the likelihood-error certificate.
+
+The [numerical illustration](../../../../../dev/research/evaluations/2026-11-02-cmb-free-2-data/entropy_certificate.py)
+uses `x = (0,1,2,2,3,4)` and `K = 8`, with SciPy BFGS followed by the
+three-point correction and a grid of 806 parameter pairs. At revision
+`6fea876e` plus the current uncommitted changes it gave minimum corrected
+weight `0.000530335056`, maximum moment residual `1.11e-16`, and a
+likelihood upper bound of `-10.0251201259`. This single floating-point
+example checks the construction; it is not a rounding-error proof or
+evidence that the correction succeeds in all regimes.
+
 The positive-dispersion CMP face, the zero-dispersion geometric face and
 negative-dispersion escaping-mass paths are reachable as described in the
 [earlier analysis](../../../../../dev/research/evaluations/2026-10-30-holds-cmb-report.md).
 This does not classify every joint limit with free dispersion. In particular,
-the initial bound is not uniform in unrestricted `nu`. The superlevel-set
-bound needs a global truncated two-coordinate optimization and careful
-handling of adjacent samples and held-probability limit faces before it can
-support `{}` or `{prob}`. For `{nu}`, a complete implementation
+the initial bound is not uniform in unrestricted `nu`; the candidate-dependent
+and adjacent bounds above address that issue without classifying every path.
+For `{nu}`, a complete implementation
 uses the fixed-dispersion bound. It evaluates the CMP face by mean matching,
 explores 256 sizes, and reports an unresolved face or numerical tie if no
 strict improvement is found. The comparison margin is `1e-9*(1+abs(face))`;

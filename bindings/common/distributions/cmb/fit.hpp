@@ -40,11 +40,21 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
     case cppunivariate::CmbStatus::InvalidInput:
       return fail("CMB requires counts between zero and size, positive reltol and positive iterlim.");
     case cppunivariate::CmbStatus::FaceUnresolved:
+      if (!nu.supplied)
+        return fail("No finite maximum was certified above the limiting faces; a larger finite maximum is not excluded.");
       return fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed.");
     case cppunivariate::CmbStatus::FaceTie:
+      if (!nu.supplied && !prob.supplied) {
+        bool adjacent_zero=!x.empty();
+        for(int value:x)adjacent_zero=adjacent_zero && (value==0 || value==1);
+        if(adjacent_zero)
+          return fail("The attained size-one Bernoulli fit matched a limiting face: the adjacent Conway-Maxwell-Poisson limit has the same likelihood.");
+      }
+      if (!nu.supplied)
+        return fail("A finite likelihood matched a limiting face within numerical tolerance; a larger finite maximum is not excluded.");
       return fail("A finite likelihood matched the Conway-Maxwell-Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlcmp with nu held fixed for the limit model.");
     case cppunivariate::CmbStatus::NotImplemented:
-      return fail("Free size with free dispersion is not implemented for this sample: no reliable global truncated profile stopping rule and face comparison is established.");
+      return fail("Free size with free dispersion is not implemented for this sample within the supported size range.");
     default:
       if (!size.supplied && !prob.supplied && nu.supplied && v>0)
         return fail("CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed.");
