@@ -45,7 +45,8 @@ limits:
 - name: unbounded likelihood
   firmness: proved
   fixed: [scale]
-  when: Every squared observation equals held scale.
+  when: 'The free shape $m$ tends to infinity with $\Omega$ held at the common squared observation value.'
+  detect: 'Every squared observation equals the held scale $\Omega$.'
   status: Degenerate
   message: unbounded
 examples: |
@@ -80,25 +81,38 @@ aliases:
 - "m-distribution"
 key_references:
 - 3
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists for every
+    nonconstant positive sample. Constant samples have unbounded likelihood.
+    Holding shape gives a unique finite scale estimate, including for constants.
+    Holding scale gives a unique finite shape estimate unless every squared
+    observation equals that scale, when the likelihood is unbounded.
+    Holding both leaves only likelihood evaluation.
+  reason: >-
+    Put $y_i=x_i^2$. With scale free, its maximizer is $\hat\Omega=\bar y$.
+    The remaining shape equation is $\log m-\psi(m)=s$, where
+    $s=\log\bar y-\overline{\log y}$ is positive exactly for nonconstant data.
+    With scale held, replace $s$ by the average of
+    $y_i/\Omega-1-\log(y_i/\Omega)$, which is positive unless every
+    $y_i=\Omega$. The function $\log m-\psi(m)$ decreases strictly from
+    infinity to zero because $\psi'(m)>1/m$. If $s=0$, the likelihood
+    grows without bound as $m$ tends to infinity.
 ---
 
 The Nakagami distribution models positive amplitudes, including radio-fading measurements. Its square follows a gamma distribution.
 
 ## Details
 
+The shape $m$ may be any positive value, including values below $1/2$. The shape controls concentration around the root mean squared amplitude. The scale $\Omega$ is the mean squared amplitude, rather than the scale of the gamma law of the squared amplitude. Sampling takes the square root of a gamma variable.
+
+With scale free, its estimate is the sample second moment. The remaining shape equation is the decreasing gamma log-shape/digamma equation. Holding scale gives the same equation with a different nonnegative right-hand side. It has a unique finite solution unless every squared observation equals the held scale. Holding shape permits constant data. Holding both coefficients evaluates the likelihood.
+
+The joint fit delegates to gamma fitting on squared observations, with the Jacobian included in the likelihood. A failed delegated solve remains a fitting failure. Squaring extremely small or large observations can exceed floating-point range, which is a numerical failure rather than mathematical non-existence.
+
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
-The shape $m$ may be any positive value; $m < 1/2$ is not excluded. The scale is the mean of the squared variable, rather than the scale of that gamma variable.
+## Decision history
 
-With scale held and shape free, the likelihood is unbounded if every squared observation equals scale. Holding shape permits constant data.
-
-## d/p/q/r
-
-Scale is the mean squared amplitude; sampling takes the square root of a gamma variate.
-
-### Diagnostic status contract (2026-10-31)
-
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
+2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.

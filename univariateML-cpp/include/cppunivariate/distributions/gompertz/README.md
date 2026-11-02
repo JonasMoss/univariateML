@@ -33,20 +33,22 @@ limits:
 - name: unbounded likelihood
   firmness: proved
   fixed: [b]
-  when: All observations are zero and a is free.
+  when: 'The free initial hazard $a$ tends to infinity with $b$ held fixed.'
+  detect: 'All observations are zero.'
   status: Unbounded
   message: unbounded
 - name: exponential face
   firmness: proved
   model: exp
   fixed: [a]
-  when: sum(x) <= a*sum(x^2)/2 and sum(x)>0.
+  when: 'The free growth coefficient $b$ decreases to zero with $a$ held fixed.'
+  detect: 'The sample satisfies $0<\sum_i x_i\le a\sum_i x_i^2/2$.'
   status: Overdispersed
   message: mlexp
 - model: 'exp'
   firmness: proved
-  when: '$b \to 0$ with $a$ fixed'
-  detect: 'mean(x^2) >= 2*mean(x)^2'
+  when: 'The growth coefficient $b$ decreases to zero and $a$ tends to $1/\bar x$.'
+  detect: 'Both coefficients are free, the sample is nonconstant, and $\overline{x^2}\ge 2\bar x^2$.'
   status: 'Overdispersed'
 references:
 - Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision.
@@ -77,18 +79,45 @@ aliases:
 - "truncated Gumbel"
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists for a nonconstant
+    nonnegative sample exactly when $\overline{x^2}<2\bar x^2$.
+    Otherwise a nonconstant sample selects the excluded exponential face.
+    Constant samples have unbounded likelihood. With $a$ held and a positive
+    sample sum, a unique finite estimate of $b$ exists exactly when
+    $\sum_i x_i>a\sum_i x_i^2/2$. Otherwise the supremum is at $b=0$.
+    With $a$ held and all observations zero, every positive $b$ is a maximizer.
+    With $b$ held, a unique finite estimate of $a$ exists exactly when the
+    sample sum is positive. Holding both leaves only likelihood evaluation.
+  reason: >-
+    Write $I(b)=\sum_i\int_0^{x_i}e^{bt}\,dt$. Profiling $a$ gives
+    $\hat a=n/I(b)$ and, up to constants, $b\sum_i x_i-n\log I(b)$.
+    The logarithm of this moment-generating integral is strictly convex for
+    positive sample sum. The profile derivative at zero is
+    $n(\bar x-\overline{x^2}/(2\bar x))$, and its limit at infinity is
+    $n(\bar x-\max_i x_i)<0$ for nonconstant data.
+    With $a$ held, the second derivative in $b$ is
+    $-a\sum_i\int_0^{x_i}t^2e^{bt}\,dt<0$ and the score at zero is
+    $\sum_i x_i-a\sum_i x_i^2/2$. All-zero data instead give likelihood
+    $a^n$, independent of $b$.
 ---
 
-The Gompertz distribution has an exponentially increasing hazard and is used to model lifetimes.
+The Gompertz distribution models lifetimes with an exponentially increasing hazard. The coefficient $a$ is the initial hazard, and $b$ controls how quickly it increases with time.
 
 ## Details
 
+The hazard is $a\exp(bx)$, with both coefficients positive. The exponential law is an excluded limit as $b$ decreases to zero. Profiling the initial hazard leaves a strictly concave scalar likelihood in $b$. Its derivative at zero determines whether a finite maximum exists or the exponential face has the supremum.
+
+Holding $a$ also leaves a strictly concave likelihood in $b$ whenever the sample sum is positive. For all-zero data with $a$ held the likelihood is flat in $b$. Holding $b$ gives an explicit estimate of $a$ when the sample sum is positive, and unbounded likelihood otherwise. Holding both evaluates the likelihood. With both free, a constant positive sample has unbounded likelihood as $b$ increases and $a$ decreases to concentrate the density at its common value.
+
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
-The hazard is $a\exp(bx)$, with both parameters positive.
+## R notes
 
-With a held and b free, a positive finite maximizer exists exactly when sum(x) > a*sum(x^2)/2; otherwise the supremum is the exponential face (use mlexp). All-zero data with a held give a flat likelihood in b, and b=1 is returned. With b held, a is finite when sum(x)>0; all-zero data have unbounded likelihood in a.
+When the exponential face wins, fitting stops with advice to use `mlexp`. If `a` is held and all observations are zero, the fitter returns `b = 1` as one of the equally good values.
 
-### Adapter independence (2026-10-30)
+## Decision history
 
-The fully free constant-sample rejection now lives in `gompertz_mle` as `Unbounded`, preserving the former adapter decision. Conditional all-zero handling remains in the core.
+2026-10-30 (adapter independence): The fully free constant-sample rejection moved into the core fitter with status `Unbounded`, preserving the former adapter decision. Conditional all-zero handling also remains in the core.

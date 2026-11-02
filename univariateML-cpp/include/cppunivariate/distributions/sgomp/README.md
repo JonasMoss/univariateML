@@ -60,23 +60,49 @@ references:
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both coefficients free, a finite MLE exists for every nonconstant
+    nonnegative sample. Constant samples have unbounded likelihood.
+    Holding $b$ gives a unique finite estimate of $\eta$, possibly zero.
+    Holding $\eta$ gives a unique finite estimate of $b$ exactly when the sample sum
+    is positive. An all-zero sample has unbounded likelihood when $b$ is free.
+    Joint uniqueness is not established. With $\eta=0$ held and positive
+    sample sum, the unique rate estimate is the exponential estimate. Holding both leaves only likelihood evaluation.
+  reason: >-
+    For held $b$, put $v_i=e^{-bx_i}$. The shape score is
+    $\sum_i[-v_i+(1-v_i)/(1+\eta(1-v_i))]$.
+    It decreases strictly if any observation is positive and tends to
+    $-\sum_i v_i<0$. A nonpositive score at zero selects $\eta=0$.
+    For all-zero data it is the negative constant $-n$, again selecting zero.
+    With $\eta$ held, the second rate derivative is
+    $-n/b^2-\eta\sum_i x_i^2v_i-\eta(1+\eta)\sum_i x_i^2v_i/[1+\eta(1-v_i)]^2<0$.
+    For positive sample sum the log likelihood tends to minus infinity at
+    both ends of the rate domain, proving a unique rate maximum.
+    With both free and nonconstant data, likelihood envelopes bound the rate
+    away from zero and infinity on every positive likelihood level set.
+    Bounded rate then bounds the maximizing shape. These bounds prove
+    attainment but do not prove uniqueness or completeness of the numerical
+    search.
 ---
 
-The shifted Gompertz distribution models nonnegative waiting times. The
-parameter `b` is a rate; this family has no location parameter.
+The shifted Gompertz distribution models nonnegative waiting times, including diffusion and adoption times. The coefficient $b$ sets the time scale through a rate, and $\eta$ changes the shape; there is no location coefficient.
 
 ## Details
 
-The domain includes `eta = 0`, the attained exponential member. The fitter
-prefers that member within $10^{-8}n$ log-likelihood units. With both
-parameters free, constant samples have unbounded likelihood and are rejected.
-An all-zero sample has unbounded likelihood whenever `b` is free.
-Zeros are valid observations. The joint likelihood need not have an interior
-maximum, and uniqueness is not asserted. The shape is profiled by its strictly
-monotone score; all grid-bracketed rate maxima are refined on a finite interval
-bounded by likelihood envelopes. This numerical search is not a certified
-enumeration of every stationary point.
+At a fixed rate, increasing $\eta$ shifts probability toward longer waiting times.
 
-## d/p/q/r
+The domain includes $\eta=0$, an attained exponential member with rate $b$. Zeros are valid observations. A maximum can occur at this member rather than at a positive shape. Holding the rate gives a unique shape estimate from a decreasing score, or the endpoint zero. Holding the shape leaves a strictly concave scalar rate likelihood, with an explicit exponential estimate when the held shape is zero.
 
-The eta = 0 member is exponential, with rate b; there is no location parameter.
+For a nonconstant sample, the joint likelihood attains a maximum. This existence result follows from likelihood envelopes, independently of whether the numerical search finds it. In particular, writing $m=\min_i x_i$, an upper envelope is
+$\ell\le n\log b+n\log n-b(\sum_i x_i-nm)$.
+The coefficient of $-b$ is positive for nonconstant data, so this excludes arbitrarily large rates. For $b\max_i x_i\le1$, maximizing $n\log(1+\eta)-n\eta/e$ bounds the remaining shape contribution by $n$, giving $\ell\le n\log b+n$. This excludes rates near zero. At bounded rates the likelihood decreases without bound as the shape grows. Constant positive samples instead allow $b$ to increase and $\eta=\exp(bx_1)$ to concentrate the density at their common value. All-zero data have unbounded likelihood whenever the rate is free.
+
+The fitter profiles shape and refines the rate maxima bracketed by a grid on the finite interval supplied by the envelopes. This search does not certify that every stationary point has been found. Joint uniqueness remains open. The strict concavity of either conditional likelihood does not imply joint concavity of the profiled likelihood. Failure to resolve a scalar search stops fitting.
+
+The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) records the held-parameter and boundary arguments.
+
+## R notes
+
+The fitter prefers the attained `eta = 0` member when its log likelihood is within $10^{-8}n$ of the best candidate. Constant samples with both coefficients free, and all-zero samples with `b` free, stop with an unbounded-likelihood error.
