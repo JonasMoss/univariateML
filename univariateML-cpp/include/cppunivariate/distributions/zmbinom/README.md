@@ -63,6 +63,7 @@ limits:
   when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
   detect: With both base coefficients free and at least one count above one, the fitted zero-modified Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times the number of positive observations.
   status: PoissonLimit
+  numerical: true
 - model: zmpois
   firmness: proved
   when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
@@ -70,6 +71,7 @@ limits:
   status: PoissonLimit
   fixed:
   - p0
+  numerical: true
 fit_args:
   size: ~
 examples: |
@@ -89,7 +91,7 @@ relations:
     type: zero-modified
     mass: p0
 fit:
-  method: multistart
+  method: delegation
   certified: partial
   note: 'zmbinom/README.md, Details; zmbinom/mle.hpp (public fitter and held overloads); zmbinom/test.cpp: Fixed
     size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability

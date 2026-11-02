@@ -42,11 +42,13 @@ limits:
     when: 'The rate satisfies $\lambda\to\infty$ with $\mu$ and $\sigma>0$ fixed.'
     detect: 'With rate free, the conditional normal log likelihood is at least the best numerical interior log likelihood minus $10^{-8}n$.'
     status: NormalLimit
+    numerical: true
   - name: translated exponential
     firmness: proved
     when: 'The normal scale satisfies $\sigma\to0$ with location and positive rate fixed.'
     detect: 'With scale free and location free or held at or below the sample minimum, the conditional translated-exponential log likelihood is at least the best numerical interior log likelihood minus $10^{-8}n$.'
     status: TranslatedExponentialLimit
+    numerical: true
 holds: []
 examples: |
   set.seed(1)

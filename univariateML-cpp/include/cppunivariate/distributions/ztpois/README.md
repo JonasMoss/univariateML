@@ -52,9 +52,7 @@ relations:
 fit:
   method: scalar-solve
   certified: 'yes'
-  note: 'ztpois/README.md, Details; ztpois/mle.hpp (public fitter and held overloads); ztpois/test.cpp: Conditional
-    mean is strictly increasing in log rate (derivative is conditional variance), giving a unique bracketed root;
-    bounds profile to sample extremes and zero mass separates analytically.'
+  note: "ztpois/mle.hpp: The positive conditional mean is strictly increasing in rate, giving a unique root in (0, sample mean), computed by 100 bisections; all-one data attain rate zero. Held rate evaluates compatible likelihood."
 areas:
 - counts and ecology
 classification: specialist

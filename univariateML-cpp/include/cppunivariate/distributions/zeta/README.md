@@ -46,9 +46,7 @@ relations: {}
 fit:
   method: scalar-solve
   certified: 'yes'
-  note: 'zeta/README.md, Details; zeta/mle.hpp (public fitter and held overloads); zeta/test.cpp: Strictly monotone
-    one-parameter exponential-family or log-shape score gives a bracketed unique root or the documented boundary;
-    finite Zipf endpoint and modified zero mass profile exactly.'
+  note: "zeta/mle.hpp: The strictly decreasing exponent score gives a unique bracketed root when a count exceeds one; all-one data have an excluded infinite-exponent point-mass supremum. Held exponent evaluates the likelihood."
 areas:
 - rank-frequency
 classification: specialist

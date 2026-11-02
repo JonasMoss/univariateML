@@ -70,11 +70,9 @@ relations:
     at:
       lambda: lambda
 fit:
-  method: multistart
+  method: scalar-solve
   certified: 'yes'
-  note: 'tpois/README.md, Details; tpois/mle.hpp (public fitter and held overloads); tpois/test.cpp: Conditional
-    mean is strictly increasing in log rate (derivative is conditional variance), giving a unique bracketed root;
-    bounds profile to sample extremes and zero mass separates analytically.'
+  note: "tpois/mle.hpp and profile.hpp: Bounds profile to the minimal observed integer window; a nonsingleton window has a strictly increasing conditional mean and a unique bracketed rate root or the documented excluded endpoint. Zero and singleton-support members are attained; singleton rate is unidentified."
 areas:
 - counts and ecology
 classification: specialist

@@ -55,11 +55,13 @@ limits:
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: WeibullBoundary
   name: shifted weibull; subtract min before fitting
+  numerical: true
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
+  numerical: true
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
   detect: Scale and threshold are held, both shapes are free, and every excess is at least $\sigma$. If all excesses equal $\sigma$, the likelihood is instead unbounded.
@@ -132,7 +134,7 @@ relations:
       scale: scale
     shift: min
 fit:
-  method: multistart
+  method: delegation
   certified: partial
   note: 'pareto4/README.md, Details; pareto4/mle.hpp (public fitter and held overloads); pareto4/test.cpp: Held
     threshold transfers to Lomax, log-logistic or Burr; conditional monotone subsets are certified but joint excess

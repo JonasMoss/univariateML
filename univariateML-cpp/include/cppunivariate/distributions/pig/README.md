@@ -34,6 +34,7 @@ limits:
     when: 'The concentration $\lambda$ tends to infinity with $\mu>0$ fixed.'
     detect: The Poisson likelihood at the fitted or held mean wins the numerical comparison, including ties within $10^{-8}n$. With both coefficients free and $\bar x>0$, a Poisson supremum occurs exactly when the variance with divisor $n$ is no greater than $\bar x$.
     status: PoissonLimit
+    numerical: true
   - model: pois
     firmness: proved
     when: 'The mean $\mu$ tends to zero with positive concentration $\lambda$ held.'
@@ -67,11 +68,9 @@ relations:
         shape: shape
     when: shape > 0
 fit:
-  method: multistart
+  method: profile-search
   certified: 'no'
-  note: 'pig/README.md, Details; pig/mle.hpp (public fitter and held overloads); pig/test.cpp: Default and nontrivial
-    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
-    density evaluation is not counted as certification.'
+  note: "pig/mle.hpp:39-106: The free mean profiles to the sample mean; log-shape meshes and local peak refinements, or a held-shape log-mean search, have no global certificate. Poisson selection uses a numerical likelihood tolerance."
 areas:
 - counts and ecology
 classification: specialist

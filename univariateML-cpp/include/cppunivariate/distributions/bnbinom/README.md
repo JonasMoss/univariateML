@@ -39,11 +39,13 @@ limits:
     when: 'The shapes satisfy $\alpha,\beta\to\infty$ with their ratio and $r>0$ fixed. Exchanging $r$ and $\beta$ gives the corresponding path with $\beta>0$ fixed.'
     detect: 'The shape $\alpha$ and at least one of $r$ and $\beta$ are free. A reachable negative binomial limit matches or exceeds the best attempted finite log likelihood within $10^{-8}$ times the sample size. This numerical comparison is not a global non-existence proof.'
     status: NegativeBinomialLimit
+    numerical: true
   - model: pois
     firmness: proved
     when: 'All three shapes tend to infinity with $r\beta/\alpha$ tending to a finite positive mean.'
     detect: 'All coefficients are free. The Poisson limit matches or exceeds the best attempted finite log likelihood within $10^{-8}$ times the sample size. This numerical comparison is not a global non-existence proof.'
     status: PoissonLimit
+    numerical: true
   - model: pois
     firmness: proved
     when: 'A free shape satisfies $r\to0$, $\beta\to0$, or $\alpha\to\infty$, while the other two coefficients stay fixed and positive.'

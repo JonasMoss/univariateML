@@ -59,32 +59,38 @@ limits:
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: TrGammaBoundary
   name: shifted trgamma; subtract min before fitting
+  numerical: true
 - when: The lower beta shape $\tau$ tends to infinity with $\alpha$ and $\gamma$ fixed and $\sigma\tau^{1/\gamma}$ fixed at a positive scale.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: InvTrGammaBoundary
   name: shifted invtrgamma; subtract min before fitting
+  numerical: true
 - when: Both beta shapes equal $K\to\infty$, the power is $\gamma=\sqrt{2\psi_1(K)}/s$, and scale is $\sigma=e^m$, with lognormal log-scale $s>0$ and log-location $m$ fixed. Here $\psi_1$ is the trigamma function.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: LognormalBoundary
   name: shifted lnorm; subtract min before fitting
+  numerical: true
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ positive and fixed, while $\tau$ and $\sigma$ stay fixed.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
+  numerical: true
 - when: The power $\gamma$ tends to infinity with $\tau\gamma$ positive and fixed, while $\alpha$ and $\sigma$ stay fixed.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: PowerBoundary
   name: shifted power; subtract min before fitting
+  numerical: true
 - name: shifted double Pareto; subtract min before fitting
   firmness: proved
   when: The power $\gamma$ tends to infinity with both $\alpha\gamma$ and $\tau\gamma$ positive and fixed, while $\sigma$ stays fixed.
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: DoubleParetoBoundary
   message: GB2 selects the double Pareto limit
+  numerical: true
 holds:
 - held: []
   status: no-mle

@@ -91,7 +91,7 @@ construction:
 - generalisation
 relations: {}
 fit:
-  method: multistart
+  method: profile-search
   certified: partial
   note: 'gpd/README.md, Details; gpd/mle.hpp (public fitter and held overloads); gpd/test.cpp: Exponential shape-zero
     and fixed-shape endpoint members have exact subsets; general scale/shape profile search is numerical. The required

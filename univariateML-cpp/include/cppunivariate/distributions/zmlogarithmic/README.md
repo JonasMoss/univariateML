@@ -67,11 +67,9 @@ relations:
       prob: 1-prob
       p0: p0
 fit:
-  method: multistart
+  method: scalar-solve
   certified: 'yes'
-  note: 'zmlogarithmic/README.md, Details; zmlogarithmic/mle.hpp (public fitter and held overloads); zmlogarithmic/test.cpp:
-    Strictly monotone one-parameter exponential-family or log-shape score gives a bracketed unique root or the documented
-    boundary; finite Zipf endpoint and modified zero mass profile exactly.'
+  note: "zmlogarithmic/mle.hpp and ztpois/profile.hpp: The zero-indicator likelihood separates analytically; the strictly increasing logarithmic-series mean gives a unique scalar probability root, computed by the bracketed lgser solver with a mean-residual gate and a 100-bisection fallback. All-one positive data attain probability zero; all-zero data leave it unidentified."
 areas:
 - counts and ecology
 classification: specialist

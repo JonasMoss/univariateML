@@ -43,6 +43,7 @@ limits:
   detect: With threshold held and both other coefficients free, the numerical profile search finds no improvement over the best shifted exponential greater than $10^{-8}n$ log-likelihood units.
   status: ExponentialLimit
   name: shifted exp; subtract min before fitting
+  numerical: true
 holds:
 - held: []
   status: no-mle
@@ -92,7 +93,7 @@ relations:
       lambda: 1/scale
     shift: min
 fit:
-  method: multistart
+  method: delegation
   certified: partial
   note: 'pareto2/README.md, Details; pareto2/mle.hpp (public fitter and held overloads); pareto2/test.cpp: Held
     threshold transfers to Lomax, log-logistic or Burr; conditional monotone subsets are certified but joint excess
