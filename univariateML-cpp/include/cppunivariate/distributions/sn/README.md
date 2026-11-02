@@ -39,13 +39,13 @@ log_density: "log(2)-log(omega)-log(2*pi)/2-((x-xi)/omega)**2/2+log((1+erf(alpha
 limits:
   - model: hnorm
     firmness: proved
-    when: '$\alpha \to +\infty$'
-    detect: right translated half-normal supremum wins the profile comparison
+    when: 'The shape $\alpha$ tends to $+\infty$, giving a right translated half-normal limit.'
+    detect: 'With shape free, the right half-normal supremum is at least as large as the best finite-shape likelihood, within the comparison tolerance. Any held location or scale is retained.'
     status: RightHalfNormalBoundary
   - name: reflected translated half-normal
     firmness: proved
-    when: '$\alpha \to -\infty$'
-    detect: left translated half-normal supremum wins the profile comparison; use mlhnorm on -x
+    when: 'The shape $\alpha$ tends to $-\infty$, giving a reflected translated half-normal limit.'
+    detect: 'With shape free, the reflected half-normal supremum is at least as large as the best finite-shape likelihood, within the comparison tolerance. Any held location or scale is retained.'
     status: LeftHalfNormalBoundary
 references:
 - Azzalini, A. (1985). A class of distributions which includes the normal ones. Scandinavian Journal of Statistics
@@ -76,17 +76,51 @@ summary: Azzalini skew-normal provides a model for smoothly asymmetric Gaussian-
 aliases: []
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all three coefficients free, a finite MLE need not exist: the
+    supremum can lie at either half-normal limit. A finite point strictly
+    above both limiting suprema ensures attainment for nonconstant data,
+    but uniqueness of the joint fit is not established here. Constant data
+    have unbounded likelihood when location and scale are free. Holding
+    scale still permits a half-normal escape when shape is free. With a
+    finite shape held, the remaining fit exists and is unique for
+    nonconstant data. With location also held, this remains true whenever
+    at least one observation differs from that location. With shape and
+    scale held, the location fit always exists and is unique. With location
+    held and shape free, observations strictly on both sides of the held
+    location give a unique finite fit, whether scale is held or free.
+    One-sided observations with at least one strict inequality instead
+    give an infinite-shape supremum. If all observations equal the held
+    location, free scale collapses to zero; with scale held, every shape
+    has the same likelihood. Holding all coefficients leaves no estimation.
+  reason: >-
+    For fixed finite shape, the log-likelihood is strictly concave in
+    inverse scale and location divided by scale. Gaussian tail bounds
+    ensure attainment for nonconstant data. If location is held, put
+    $d_i=x_i-\xi$, $\eta=1/\omega$ and $\beta=\alpha\eta$.
+    Apart from a constant the likelihood separates as
+    $n\log\eta-\eta^2\sum_i d_i^2/2+\sum_i\log\Phi(\beta d_i)$.
+    The shape term is strictly concave and tends to minus infinity at
+    both ends exactly when residuals of both signs occur. For one-sided
+    nonzero residuals it is strictly monotone. For free location, the
+    Gaussian envelope excludes scale collapse on nonconstant data and
+    excludes divergent location or scale on any nonempty likelihood superlevel set.
+    The remaining infinite-shape paths are bounded by the half-normal
+    suprema described below. These arguments do not establish joint
+    strict concavity or uniqueness when location and shape are both free.
 ---
 
-The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. Its direct location and scale differ from its mean and standard deviation.
+The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. The location $\xi$ and scale $\omega$ differ from its mean and standard deviation. Positive $\alpha$ gives right skewness, negative $\alpha$ gives left skewness, and $\alpha=0$ gives the normal distribution. This is distinct from the Fernandez–Steel skew-normal family.
 
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) derives the stated limits and held-parameter conditions.
 
-The normal member has singular direct-parameter Fisher information. The fitter searches both signs of shape, profiles the strictly concave location-scale problem, and compares both exact half-normal suprema; faces win ties within 1e-8 times the sample size. For free location and shape, the grid initializes a branch-and-bound search with exact-arithmetic interval and tail bounds, conditional on the computed comparisons. An infinite shape estimate stops with a recommendation to use the appropriate translated half-normal.
+At the normal member, Fisher information in these coordinates is singular when location and shape are both free. For each finite shape, the fitter maximizes over the free location and scale. It searches both signs of shape and compares the result with both half-normal limiting suprema. A limiting fit wins a numerical tie within $10^{-8}n$, where $n$ is the sample size. For free location and shape, the grid initializes a branch-and-bound search with exact-arithmetic interval and tail bounds, conditional on the computed comparisons. A half-normal supremum is a limiting fit, rather than a member with finite shape. A comparison within tolerance does not prove that no finite maximizer ties or slightly exceeds that limit.
 
-Any subset of the three parameters can be held fixed. A fixed shape leaves a concave problem in inverse scale and location divided by scale. With fixed location, an infinite shape remains possible only if every observation lies on the corresponding side of that location; observations equal to the fixed location contribute an additional log(2) penalty at the limit. Fixed scale is retained in the face comparison. No penalised likelihood is used.
+Any subset of the three parameters can be held fixed. A fixed shape leaves a concave problem in inverse scale and location divided by scale. With fixed location, an infinite shape remains possible only if every observation lies on the corresponding side of that location. Observations equal to the fixed location contribute an additional $\log 2$ penalty per such observation relative to the closed half-normal density at the limit. A held scale is retained in the limiting comparison.
 
 For finite $\alpha$, $\log\phi(z)$ is strictly concave and
 $\log\Phi(\alpha z)$ is concave. Thus, with $b=1/\omega>0$ and
@@ -95,6 +129,21 @@ $n\log b+\sum_i\log[2\phi(bx_i-u)\Phi(\alpha(bx_i-u))]$ is strictly
 concave in $(u,b)$ for nonconstant data. At $\alpha=0$ this is the normal
 member; as $\alpha\to\pm\infty$ the corresponding translated half-normal
 is a separate limiting face. The Newton inner solve uses this concavity. Its stopping check is numerical; the outer search bounds the global likelihood gap separately.
+
+## R notes
+
+Every coefficient can be held by supplying its value; `NULL` estimates it.
+A detected right half-normal limit stops with a recommendation to use
+`mlhnorm`; for the reflected limit, use `mlhnorm` on `-x` and reflect the
+result. Use `mu = NULL` when location is free. Pass a held location as
+`mu` and a held scale as `sigma` to `mlhnorm`. Negate the held location when reflecting. With location held,
+observations at that location have the
+endpoint penalty described above, so the closed half-normal likelihood
+reported by that separate fit need not equal the skew-normal supremum.
+Unresolved search bounds or an unsuccessful numerical score check stop
+with an error. No penalised likelihood is used.
+
+## Decision history
 
 | TASK-116 property | Evidence |
 |---|---|
@@ -168,9 +217,9 @@ behavior would require separate evidence. The cache itself adds no optimality cl
 See the [speed evaluation](../../../../../dev/research/evaluations/2026-11-01-sn-speed-report.md)
 for paired regression evidence, timings and remaining guarantees.
 
-## d/p/q/r
+### Probability evaluation
 
-Uses direct skew-normal parameters, distinct from the Fernandez–Steel family; probabilities use Owen’s T and quadrature.
+Probabilities use Owen’s T and quadrature in the direct skew-normal parameters.
 
 ### Range portability (2026-11-01)
 
