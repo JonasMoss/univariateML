@@ -44,7 +44,7 @@ r:
   density: dbbinom
   sampler: rbbinom
   control:
-    size: "Required number of trials; NULL estimates size when beta is held."
+    size: "Required number of trials; NULL estimates size when either shape is held."
     alpha: "Optional fixed positive alpha; NULL estimates it."
     beta: "Optional fixed value of `beta`; `NULL` (the default) estimates it."
     reltol: "Relative tolerance on the Newton steps in the logarithm of the free concentration or shape."
@@ -74,10 +74,6 @@ holds:
 - held: []
   status: not-implemented
   reason: "Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known."
-- held:
-  - alpha
-  status: not-implemented
-  reason: "Estimating size with alpha held is not implemented. As size grows the fit approaches a negative binomial with the same alpha, and no usable bound rules out a larger size beating both."
 fit_args:
   size: 10
 examples: |
@@ -131,7 +127,10 @@ existence:
     constant positive data have only a point-mass supremum; all-zero data
     attain likelihood one at size zero with alpha unidentified. For other
     samples a finite maximum exists, though the numerical search may stop
-    without resolving it.
+    without resolving it. With alpha held and size free, constant positive
+    data have a point-mass supremum and all-zero data attain likelihood one
+    at size zero with beta unidentified. Other samples may remain unresolved
+    against the negative-binomial face or the size budget.
   reason: >-
     Write $p = \alpha/(\alpha+\beta)$ and $s = 1/(\alpha+\beta)$. A sample with
     a count strictly between 0 and $n$ loses all likelihood as $s \to \infty$
@@ -149,7 +148,7 @@ The limit and sample conditions are supported by the [existence analysis](../../
 
 The number of trials $n$ is normally known. The fit with both shapes free does not test for overdispersion; it compares the best interior fit with the binomial likelihood, within $10^{-8}$ per observation. Evidence for the existence results: `dev/research/evaluations/2026-10-31-open-existence-report.md`.
 
-With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. The search stops after one million candidates. With $n$ also held, the likelihood is simply evaluated. Estimating $n$ with $\alpha$ held or both shapes free remains unsupported. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
+With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. The search stops after one million candidates. With $n$ also held, the likelihood is simply evaluated. Estimating $n$ with $\alpha$ held uses a negative-binomial face and a uniform tail bound; with both shapes free it remains unsupported. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
 
 ## Free-size research: joint held-beta tail
 
@@ -185,13 +184,13 @@ nonzero likelihood allowance, and those upper allowances must be retained
 when comparing sizes and point-mass faces. Held alpha has a fixed-shape
 negative-binomial face, while the unrestricted subset also has arbitrary
 negative-binomial and Poisson faces and fixed-size binomial and endpoint
-faces. A uniform tail correction against those faces and a global
-comparison of the finite-size faces remain open. The held-beta search below supplies a separate certificate. Details and numerical checks are recorded in
+faces. A uniform tail correction when both shapes are free and a global
+comparison of the finite-size faces remain open. The held-shape searches below supply separate certificates. Details and numerical checks are recorded in
 `dev/research/evaluations/2026-11-01-bbinom-size-report.md`.
 
 ## R notes
 
-`size = NULL` estimates the number of trials when beta is held. A supplied `size` is held fixed and is not counted in the degrees of freedom of `logLik()`, AIC or BIC. `model_select()` skips this family because it cannot supply `size`.
+`size = NULL` estimates the number of trials when either shape is held; the search may stop without resolving the face or exhausting its size budget. A supplied `size` is held fixed and is not counted in the degrees of freedom of `logLik()`, AIC or BIC. `model_select()` skips this family because it cannot supply `size`.
 
 
 ## Held beta: finite profile and size certificate
@@ -234,3 +233,74 @@ with a $2\cdot10^{-8}h$ ambiguity margin and stops on a numerical tie.
 The cutoff inequality uses an additional floating-point margin; neither
 margin is an interval-arithmetic guarantee. The fixed-size profile allowance
 is propagated in the comparison. See the task report for measurements.
+
+
+## Held alpha: negative-binomial face and uniform size bound
+
+Let $a>0$ be held, $h$ be the sample size, $S=\sum x_i>0$,
+$M=\max x_i$, and $N>M$. The consecutive-size ratio displayed above is
+at most one exactly when $a(N+1)\ge x(a+b-1)$. An upper bound on
+$b$ at all profile maxima that would force this inequality is not available
+from a fixed bound: on the path $b=N a/\mu$, the law tends to the negative
+binomial with shape $a$ and mean $\mu>0$, so $b$ diverges linearly. The
+ordinary beta score yields the weaker finite-size bound
+$b\le(hN-S)(a+N)/S$ at a stationary point.
+For nonconstant data with $S>0$, bounded $b$ makes the likelihood tend
+to zero, while the negative-binomial path gives a positive limit. More
+generally, $b/N\to0$ forces the likelihood to zero by the small-beta bound
+below, and $b/N\to\infty$ does so because
+$P(X\ge1)\le E[X]=Na/(a+b)$. On compact positive ranges of $b/N$ the
+likelihood converges uniformly to its negative-binomial counterpart, whose
+mean profile has the unique maximizer $\bar x$. Thus any global profile
+maximizers satisfy $b/N\to a/\bar x$; in particular no fixed upper bound
+on them exists.
+
+The negative-binomial face has maximized log likelihood
+$$
+F=\sum_i\log\frac{(a)_{x_i}}{x_i!}
+ + S\log\frac{\bar x}{a+\bar x}
+ + ha\log\frac{a}{a+\bar x},\quad \bar x=S/h.
+$$
+For any $c>0$ split the parameter space at $b=cN$. For $b\le cN$,
+$P_N(x)/P_N(0)\le (a)_x/x!\,[N/(N-M)]^x$, and
+$P_N(0)\le[(a+b)/(a+b+N)]^a$. Thus its log likelihood is at most
+$$
+B(N,c)=\sum_i\log\frac{(a)_{x_i}}{x_i!}
+ +S\log\frac{N}{N-M}
+ +ha\log\frac{a+cN}{a+(1+c)N}.
+$$
+For $b\ge cN$, compare to a negative binomial with shape $a$ and mean
+$aN/b$. Their exact pmf ratio is
+$$
+\prod_{j=0}^{x-1}\frac{(N-j)(N+b)}{N(b+N-x+j)}\;
+\exp\!\left[a\log(1+N/b)-\sum_{j=0}^{N-1}\log\left(1+\frac a{b+j}\right)\right].
+$$
+Bounding the product and applying $\log(1+t)\ge t-t^2/2$
+and a decreasing-sum integral bound yields the uniform upper bound
+$$
+\ell_N(b)\le F + \frac{\sum_i x_i(x_i+1)}{2(N-M)}
+ +\frac{ha^2}{2}\left(\frac1{cN}+\frac1{(cN)^2}\right).
+$$
+Both upper bounds decrease with $N$. A finite fit strictly above both
+bounds at the next size excludes every subsequent size; its fixed-size
+profile allowance and cross-size ambiguity margin are included. The code
+selects $c$ by bisection, enumerates at most size 1000, and stops on a
+numerical tie or failure. Before enumeration, it requires the first profile
+to exclude the tail beyond the budget; otherwise it reports a budget stop,
+even though a larger finite profile could improve the bound. If the first finite profile does not clearly beat
+$F$, it reports an unresolved face: this is not a proof that the face wins.
+The inequalities are proved in exact arithmetic conditional on computed
+comparisons; the practical floating-point margin is not an interval proof.
+At each fixed size, the same tangent/chord certificate used for held beta
+applies to the free beta directly. Reflection changes the data with $N$ and
+therefore cannot transfer the held-beta size-tail argument.
+
+With both shapes free, the correction above is not uniform in $a$: its
+$a^2$ factor diverges. For each fixed $a>0$ and $\mu>0$, the path
+$b=Na/\mu$ gives the negative-binomial face; taking $a\to\infty$ at fixed
+$\mu$ gives the Poisson face. The unrestricted face supremum therefore
+includes the supremum of $F(a)$ over $a>0$ and its Poisson limit. A usable
+joint bound must control the large- and small-$a$ regimes, establish which
+other joint escape paths can retain positive sample likelihood, compare
+fixed-size binomial and endpoint faces, and propagate the finite-profile
+allowances. An exhaustive closure proof and a global search remain open.

@@ -279,11 +279,12 @@ TEST_CASE("bbinom: P3 unfinished optimizer is a failure") {
 TEST_CASE("bbinom: unsupported free-size shape profiles never return an estimate") {
   const std::vector<int> x{0, 1, 2, 4, 8};
   for (const auto &shapes : std::vector<std::pair<double, double>>{
-           {kNaN, kNaN}, {2.0, kNaN}}) {
+           {kNaN, kNaN}}) {
     const auto result = fit(x, kNaN, shapes.first, shapes.second);
     CHECK(result.status == cppunivariate::BbinomStatus::InvalidInput);
   }
 }
+
 
 TEST_CASE("bbinom: held beta free size certificates") {
   const std::vector<int> x{0, 1, 2, 4};
@@ -313,6 +314,40 @@ TEST_CASE("bbinom: seeded held-beta searches agree with a dense size grid") {
     REQUIRE(result.status == cppunivariate::BbinomStatus::Ok);
     for (int n = 4; n <= 40; ++n) {
       const auto candidate = fit(x, n, kNaN, b);
+      REQUIRE(candidate.status == cppunivariate::BbinomStatus::Ok);
+      CHECK(result.logLik >= candidate.logLik - 1e-7);
+    }
+  }
+}
+
+TEST_CASE("bbinom: held alpha free-size certified and unresolved outcomes") {
+  const std::vector<int> x{0, 0, 1, 1};
+  const auto result = fit(x, kNaN, 1, kNaN);
+  REQUIRE(result.status == cppunivariate::BbinomStatus::Ok);
+  CHECK(result.size == 1);
+  for (int n = 1; n <= 30; ++n) {
+    const auto candidate = fit(x, n, 1, kNaN);
+    REQUIRE(candidate.status == cppunivariate::BbinomStatus::Ok);
+    CHECK(result.logLik >= candidate.logLik - 1e-7);
+  }
+  CHECK(fit(std::vector<int>{0, 0}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::Unidentified);
+  CHECK(fit(std::vector<int>{3, 3}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::PointMass);
+  CHECK(fit(std::vector<int>{0, 1001}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::SizeBudget);
+  CHECK(fit(std::vector<int>{0, 0, 0, 10}, kNaN, 1, kNaN).status == cppunivariate::BbinomStatus::FaceUnresolved);
+}
+
+TEST_CASE("bbinom: seeded held-alpha searches agree with finite size profiles") {
+  unsigned int seed = 113;
+  for (int rep = 0; rep < 3; ++rep) {
+    std::vector<int> x{0, 0, 0, 0, 1, 1, 1, 1};
+    for (int i = 0; i < 4; ++i) {
+      seed = seed * 1664525u + 1013904223u;
+      x.push_back(static_cast<int>((seed >> 16) & 1u));
+    }
+    const auto result = fit(x, kNaN, 1, kNaN);
+    REQUIRE(result.status == cppunivariate::BbinomStatus::Ok);
+    for (int n = 1; n <= 20; ++n) {
+      const auto candidate = fit(x, n, 1, kNaN);
       REQUIRE(candidate.status == cppunivariate::BbinomStatus::Ok);
       CHECK(result.logLik >= candidate.logLik - 1e-7);
     }
