@@ -48,18 +48,29 @@ export function niceTicks(lo,hi,log=false) {
  return Array.from({length:Math.max(0,Math.floor(hi/step+1e-10)-Math.ceil(lo/step-1e-10)+1)},(_,i)=>Number(((Math.ceil(lo/step-1e-10)+i)*step).toPrecision(12)));
 }
 const tickLabel=n=>String(Number(n.toPrecision(6)));
+// A display window only: no change to likelihood evaluations or fits.
+// Expand for annotations, including low held maxima and excluded suprema.
+export function likelihoodWindow(values,markers=[]) {
+ const finite=values.filter(Number.isFinite),marks=markers.filter(Number.isFinite);
+ const top=Math.max(...finite,...marks),bottom=Math.min(...finite),low=Math.min(Math.max(bottom,top-15),...marks);
+ const pad=Math.max(.5,(top-low)*.05);
+ return {lo:low-pad,hi:top+pad};
+}
+const plotClip=id=>`<defs><clipPath id="${id}"><rect x="92" y="35" width="528" height="225"/></clipPath></defs>`;
+const plotFrame='<path data-window-frame d="M92 35V260H620V35" fill="none" stroke="#969d94"/>';
 export function profileSvg(result) {
  const {id,points,free,limit}=result,s=specs[id],vals=points.map(p=>p.y).filter(Number.isFinite);
  if(!vals.length) return '<p role="status">No successful held fits on this grid. See diagnostics below.</p>';
  const ref=limit?.fit?.logLik, mle=free.fit?.logLik;
- const top=Math.max(...vals,...[ref,mle].filter(Number.isFinite)),bottom=Math.min(...vals),pad=Math.max(.1,(top-bottom)*.07);
- const ylo=bottom-pad,yhi=top+pad,X=x=>92+528*Math.log(x/s.lo)/Math.log(s.hi/s.lo),Y=y=>260-225*(y-ylo)/(yhi-ylo);
+ const {lo:ylo,hi:yhi}=likelihoodWindow(vals,[ref,mle]);
+ const X=x=>92+528*Math.log(x/s.lo)/Math.log(s.hi/s.lo),Y=y=>260-225*(y-ylo)/(yhi-ylo);
  let d='',gap=true;for(const p of points){if(!Number.isFinite(p.y)){gap=true;continue;}d+=`${gap?'M':'L'}${f(X(p.x))},${f(Y(p.y))} `;gap=false;}
  let svg=`<svg data-profile="${id}" viewBox="0 0 660 325" role="img" aria-label="${esc(s.title)} profile log-likelihood, logarithmic coefficient axis"><title>${esc(s.title)} profile log-likelihood</title><rect width="660" height="325" fill="#fffdf8"/>`;
  for(const y of niceTicks(ylo,yhi))svg+=`<path d="M92 ${f(Y(y))}H620" stroke="#e2e1d8"/><text x="84" y="${f(Y(y)+4)}" text-anchor="end">${tickLabel(y)}</text>`;
  for(const x of niceTicks(s.lo,s.hi,true))svg+=`<text x="${f(X(x))}" y="282" text-anchor="middle">${tickLabel(x)}</text>`;
  if(Number.isFinite(ref))svg+=`<path data-limit-line d="M92 ${f(Y(ref))}H620" stroke="#a65330" stroke-width="2" stroke-dasharray="7 5"/>`;
- svg+=`<path data-profile-curve d="${d}" fill="none" stroke="#23645e" stroke-width="3"/>`;
+ svg+=plotClip(`profile-window-${id}`)+plotFrame;
+ svg+=`<path clip-path="url(#profile-window-${id})" data-profile-curve d="${d}" fill="none" stroke="#23645e" stroke-width="3"/>`;
  const hat=free.fit?.estimates[s.coefficient];if(Number.isFinite(mle)&&hat>=s.lo&&hat<=s.hi)svg+=`<circle data-mle cx="${f(X(hat))}" cy="${f(Y(mle))}" r="5" fill="#262b2b"/>`;
  return svg+`<text x="356" y="313" text-anchor="middle">${({kappa:"κ",nu:"ν",shape:"k",shape2:"k₂",size:"size"})[s.coefficient]} (log scale)</text><text x="18" y="148" transform="rotate(-90 18 148)" text-anchor="middle">log-likelihood</text></svg>`;
 }
@@ -101,12 +112,14 @@ export function conditional(api) {
  return {sample,free,held,xmax};
 }
 export function conditionalSvg(r) {
- const lo=Math.min(...r.held.flatMap(h=>h.points.map(p=>p.y))),hi=r.free.fit.logLik+1;
+ const markers=[r.free.fit.logLik,...r.held.map(h=>h.fit?h.fit.logLik:h.points[0].y)];
+ const {lo,hi}=likelihoodWindow(r.held.flatMap(h=>h.points.map(p=>p.y)),markers);
  const X=x=>92+528*x/r.xmax,Y=y=>260-225*(y-lo)/(hi-lo),colors=['#23645e','#6553a0','#a65330'];
  let svg='<svg data-conditional viewBox="0 0 660 325" role="img" aria-label="Gompertz held-rate likelihoods; the rate 2 face escapes to b equals zero"><title>Gompertz held-rate faces</title><rect width="660" height="325" fill="#fffdf8"/>';
  for(const y of niceTicks(lo,hi))svg+=`<path d="M92 ${f(Y(y))}H620" stroke="#e2e1d8"/><text x="84" y="${f(Y(y)+4)}" text-anchor="end">${tickLabel(y)}</text>`;
  for(const x of niceTicks(0,r.xmax))svg+=`<text x="${f(X(x))}" y="282" text-anchor="middle">${tickLabel(x)}</text>`;
- r.held.forEach((h,i)=>{svg+=`<path d="${h.points.map((p,j)=>`${j?'L':'M'}${f(X(p.x))},${f(Y(p.y))}`).join(' ')}" fill="none" stroke="${colors[i]}" stroke-width="2"/>`;const p=h.fit?{x:h.fit.estimates.b,y:h.fit.logLik}:h.points[0];svg+=`<circle data-held="${h.a}" cx="${f(X(p.x))}" cy="${f(Y(p.y))}" r="5" fill="${h.fit?colors[i]:'#fffdf8'}" stroke="${colors[i]}" stroke-width="2"/>`;});
+ svg+=plotClip('conditional-window')+plotFrame;
+ r.held.forEach((h,i)=>{svg+=`<path data-held-curve clip-path="url(#conditional-window)" d="${h.points.map((p,j)=>`${j?'L':'M'}${f(X(p.x))},${f(Y(p.y))}`).join(' ')}" fill="none" stroke="${colors[i]}" stroke-width="2"/>`;const p=h.fit?{x:h.fit.estimates.b,y:h.fit.logLik}:h.points[0];svg+=`<circle data-held="${h.a}" cx="${f(X(p.x))}" cy="${f(Y(p.y))}" r="5" fill="${h.fit?colors[i]:'#fffdf8'}" stroke="${colors[i]}" stroke-width="2"/>`;});
  const fit=r.free.fit;svg+=`<circle data-free cx="${f(X(fit.estimates.b))}" cy="${f(Y(fit.logLik))}" r="5" fill="#262b2b"/>`;
  return svg+'<text x="356" y="313" text-anchor="middle">b</text><text x="18" y="148" transform="rotate(-90 18 148)" text-anchor="middle">log-likelihood</text></svg>';
 }

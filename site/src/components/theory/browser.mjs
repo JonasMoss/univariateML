@@ -4,7 +4,7 @@ import {createServer} from 'node:http';
 import {readFileSync,existsSync,readdirSync,mkdirSync,statSync,writeFileSync} from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-const root=path.resolve(import.meta.dirname,'../../../..'),dist=path.join(root,'site/dist'),scratch=path.join(root,'build/scratch/theory-viz'),kept=path.join(root,'dev/research/evaluations/2026-11-01-viz-polish');
+const root=path.resolve(import.meta.dirname,'../../../..'),dist=path.join(root,'site/dist'),scratch=path.join(root,'build/scratch/theory-viz'),kept=path.join(root,'dev/research/evaluations/2026-11-02-viz-clip');
 mkdirSync(scratch,{recursive:true});mkdirSync(kept,{recursive:true});
 const cache=path.join(os.homedir(),'.cache/ms-playwright');
 const executable=process.env.BROWSER_EXECUTABLE||readdirSync(cache).filter(n=>/^chromium_headless_shell-/.test(n)).sort().reverse().map(n=>path.join(cache,n,'chrome-headless-shell-linux64/chrome-headless-shell')).find(existsSync);
@@ -25,13 +25,15 @@ try{
   for(const section of ['profiles','escapes','faces']){
    await page.locator('#'+section).evaluate(el=>el.scrollIntoView({block:'start'}));
    await page.screenshot({path:path.join(scratch,`${label}-${section}.png`)});
-   if(section==='profiles')await page.screenshot({path:path.join(kept,`${label}-page.png`)});
-   if(section==='faces')await page.locator('#'+section+' .conditional .figure').screenshot({path:path.join(kept,`${label}-held-face.png`)});
+   if(section==='profiles')await page.locator('#profiles .figure').screenshot({path:path.join(kept,`${process.env.THEORY_CAPTURE||'after'}-${label}-profile.png`)});
+   if(section==='faces')await page.locator('#'+section+' .conditional .figure').screenshot({path:path.join(kept,`${process.env.THEORY_CAPTURE||'after'}-${label}-held-face.png`)});
    await page.locator('#'+section+' .figure').first().screenshot({path:path.join(scratch,`${label}-${section}-figure.png`)});
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),label+' overflow '+section);
   }
  }
+ const conditionalBefore=await faces.locator('svg[data-conditional]').evaluate(el=>el.outerHTML);
  await faces.getByRole('button',{name:'Recompute held-rate example'}).click();
+ assert.equal(await faces.locator('svg[data-conditional]').evaluate(el=>el.outerHTML),conditionalBefore,'held recomputation SVG equality');
  assert.equal(await faces.locator('svg[data-conditional]').count(),1);
  assert.match(await faces.locator('.conditional').textContent(),/mlexp/);
  assert.ok(await page.locator('math').count()>8);
@@ -54,6 +56,8 @@ try{
  await faces.getByLabel('Held mean',{exact:true}).fill('0.5');await faces.getByLabel('Held sd',{exact:true}).fill('1.5');await faces.getByRole('button',{name:'Fit pasted data'}).click();await page.waitForFunction(()=>document.querySelector('#faces .theory-view tbody tr:nth-child(2) td:nth-child(2)').textContent==='0.500000');
  await faces.getByLabel('Held sd',{exact:true}).fill('-1');await faces.getByRole('button',{name:'Fit pasted data'}).click();await faces.getByRole('alert').waitFor();
  const plain=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}}),p=await plain.newPage();await p.goto(url);
+ assert.equal(await p.locator('svg[data-conditional]').evaluate(el=>el.outerHTML),conditionalBefore,'no-JS/live held SVG equality');
+ assert.equal(await p.locator('#profiles svg').evaluate(el=>el.outerHTML),await profiles.locator('svg').evaluate(el=>el.outerHTML),'no-JS/live reset profile equality');
  assert.equal(await p.locator('svg[data-conditional]').count(),1);assert.ok(await p.locator('math').count()>8);
  assert.equal(await p.locator('svg[data-profile]').count(),5);assert.equal(await p.locator('svg[data-faces]').count(),1);assert.equal(await p.locator('fieldset:disabled').count(),2);
  assert.equal(await p.locator('[data-escape] code').count(),4);await p.locator('#profiles details summary').click();assert.equal(await p.locator('#profiles tbody tr').count(),65);

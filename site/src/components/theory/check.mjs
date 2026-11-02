@@ -51,3 +51,24 @@ for(const h of c.held){
 }
 assert.ok(html.includes('<math'));assert.ok(!/<script[^>]*(mathjax|katex)/i.test(html));
 console.log('PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.');
+
+// The display window retains annotations, even when one lies below the nominal band.
+const {likelihoodWindow}=await import('./model.mjs');
+assert.deepEqual(likelihoodWindow([-100,0],[0]),{lo:-15.75,hi:.75});
+assert.deepEqual(likelihoodWindow([-100,0],[-30,0]),{lo:-31.5,hi:1.5});
+assert.deepEqual(likelihoodWindow([4,4],[4]),{lo:3.5,hi:4.5});
+function checkWindow(svg){
+ assert.match(svg,/data-window-frame/);
+ const curves=[...svg.matchAll(/<path[^>]*data-(?:profile-curve|held-curve)[^>]*>/g)];
+ assert.ok(curves.length>0);
+ for(const [curve] of curves)assert.match(curve,/clip-path="url\(#(?:profile-window-\w+|conditional-window)\)"/);
+ assert.match(svg,/<clipPath[^>]*><rect x="92" y="35" width="528" height="225"/);
+ for(const match of svg.matchAll(/<circle[^>]*cy="([^"]+)"/g))assert.ok(+match[1]>=41&&+match[1]<=254,'marker clears vertical frame');
+ assert.ok(!/NaN|Infinity/.test(svg));
+}
+for(const id of Object.keys(specs))checkWindow(profileSvg(profile(api,id,preset(id))));
+checkWindow(conditionalSvg(c));
+const shifted=profile(api,'gamma',preset('gamma'));
+shifted.limit={fit:{logLik:shifted.free.fit.logLik-50}};
+checkWindow(profileSvg(shifted));
+console.log('PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.');
