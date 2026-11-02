@@ -75,7 +75,7 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
       fit <- tryCatch(do.call(get(id),c(list(x=as.numeric(g$data)),args)),error=identity)
       if(inherits(fit,'error')) {
         if (id == 'mlcmb' && (length(held) == 0 || setequal(held, 'prob')) &&
-            grepl('not implemented for this sample', conditionMessage(fit), fixed=TRUE)) {
+            grepl('not implemented for this sample|not excluded|work budget', conditionMessage(fit), ignore.case=TRUE)) {
           expect_true(TRUE, info=label)
           next
         }

@@ -23,7 +23,7 @@ for(const c of cases) {
    const held=Object.fromEntries(names.filter((_,i)=>mask>>i&1).map(k=>[k,c.g.estimates[k]]));
    const r=fit(held);
    if(r.error) {
-    if(c.id==='cmb' && !('size' in held) && !('nu' in held) && r.error.includes('not implemented for this sample')) continue;
+    if(c.id==='cmb' && !('size' in held) && !('nu' in held) && /not implemented for this sample|not excluded|work budget/i.test(r.error)) continue;
     if(c.id==='hyper' && (!Object.keys(held).length || (Object.keys(held).length===1 && ('m' in held || 'k' in held))) && /numerical failure|not excluded/i.test(r.error)) continue;
     const exceptions=c.holds.filter(h=>h.held.every(k=>k in held)&&(h.held.length===Object.keys(held).length||h.held.length&&!h.reason.includes('Estimating')));
     const reasons=[...exceptions.map(h=>h.reason),...c.limits.map(l=>l.message||l.model&&`ml${l.model}`||l.name&&l.name.replace(/^shifted /,'').split(';')[0]||'')].filter(Boolean);

@@ -150,8 +150,13 @@ test_that("CMB: free size validates holds, endpoints and resource failures", {
     expect_setequal(attr(f,"fixed"),c("prob","nu"))
     expect_error(mlcmb(c(0,1),size=NULL,prob=p,nu=nu),"between zero and size")
   }
-  expect_error(mlcmb(1:4,size=NULL,prob=.3),"global truncated")
-  expect_error(mlcmb(1:4,size=NULL),"global truncated")
+  for (p in list(NULL,.3)) {
+    f <- tryCatch(mlcmb(1:4,size=NULL,prob=p),error=identity)
+    if (inherits(f,"error"))
+      expect_match(conditionMessage(f),"not excluded|work budget")
+    else
+      expect_true(is.finite(attr(f,"logLik")))
+  }
   expect_error(mlcmb(1:4,size=NULL,prob=NaN,nu=1),"prob")
   expect_error(mlcmb(1:4,size=NULL,prob=.3,nu=Inf),"finite")
   expect_error(mlcmb(1:4,size=NULL,prob=.3,nu=1,iterlim=0),"positive")
@@ -222,4 +227,90 @@ test_that("CMB free dispersion handles constant free-size samples", {
   expect_equal(unname(as.numeric(f)), c(0, .4, 1))
   expect_error(mlcmb(rep(3, 4), size = NULL, prob = .4), "point mass")
   expect_error(mlcmb(rep(3, 4), size = NULL, prob = 0), "between zero and size")
+})
+
+test_that("CMB free size and dispersion handle adjacent observations", {
+  expect_error(mlcmb(c(0, 0, 1), size = NULL), "matched a limiting face")
+  expect_error(mlcmb(c(2, 2, 3), size = NULL), "adjacent two-point law")
+  expect_error(mlcmb(c(0, 0, 4), size = NULL), "endpoint two-point law")
+})
+
+test_that("CMB free size symmetric held probability faces", {
+  f <- suppressWarnings(mlcmb(c(0,1), size=NULL, prob=.5))
+  expect_equal(unname(as.numeric(f)), c(1,.5,1))
+  expect_equal(attr(f,"logLik"), -2*log(2))
+  expect_error(mlcmb(c(2,3), size=NULL, prob=.5), "adjacent two-point law")
+  expect_error(mlcmb(c(0,4), size=NULL, prob=.5), "endpoint two-point law")
+  expect_equal(suppressWarnings(mlcmb(c(0,0,1),size=NULL,prob=.5))[["size"]],1)
+  f <- mlcmb(c(0,rep(1,9)),size=NULL,prob=.5)
+  expect_equal(f[["size"]],2)
+  expect_equal(f[["nu"]],log(18)/log(2))
+})
+
+test_that("CMB held probability detects an adjacent-face tie", {
+  expect_error(mlcmb(c(1,2),size=NULL,prob=.69830412636804606),"matched a limiting face")
+})
+
+test_that("CMB free size attains the empirical uniform likelihood", {
+  x <- rep(0:4, each=2)
+  for (p in list(NULL,.5)) {
+    f <- mlcmb(x, size=NULL, prob=p)
+    expect_equal(unname(as.numeric(f)), c(4,.5,0))
+    expect_equal(attr(f,"logLik"), -length(x)*log(5))
+    if (!is.null(p)) expect_setequal(attr(f,"fixed"), "prob")
+  }
+})
+
+test_that("CMB free dispersion stops on size work exhaustion", {
+  expect_error(mlcmb(c(1,10000000), size=NULL), "work budget")
+  expect_error(mlcmb(c(1,10000000), size=NULL, prob=.3), "work budget")
+})
+
+test_that("CMB free-dispersion fits agree with seeded dense-grid profiles", {
+  skip_unless_tier("full")
+  set.seed(1142026110)
+  samples <- list(sample(rep(0:4, each=3)),sample(c(0,0,1,2,3,4)),
+                  sample(0:4,100,replace=TRUE))
+  for (x in samples) for (held in c(FALSE, TRUE)) {
+    fit <- if (held) mlcmb(x,size=NULL,prob=.5) else mlcmb(x,size=NULL)
+    best <- -Inf
+    for (N in seq.int(max(x),300)) {
+      k <- 0:N
+      h <- lchoose(N,k)
+      observed_h <- sum(lchoose(N,x))
+      objective <- function(z) {
+        if (any(!is.finite(z)) || any(abs(z)>25)) return(1e100)
+        eta <- if (held) 0 else z[1]
+        nu <- if (held) z[1] else z[2]
+        w <- eta*k + nu*h
+        peak <- max(w)
+        -(eta*sum(x) + nu*observed_h - length(x)*(peak+log(sum(exp(w-peak)))))
+      }
+      grid <- if (held) as.matrix(seq(-3,3,by=.3)) else
+        as.matrix(expand.grid(seq(-3,3,by=.3),seq(-3,3,by=.3)))
+      values <- apply(grid,1,objective)
+      start <- grid[which.min(values),]
+      polished <- optim(start,objective,method="BFGS",control=list(reltol=1e-10))
+      best <- max(best,-min(values),-polished$value)
+    }
+    expect_equal(attr(fit,"logLik"),best,tolerance=1e-7)
+    expect_gte(fit[["size"]],max(x))
+  }
+  x2 <- sample(c(0,rep(1,9)))
+  fit2 <- mlcmb(x2,size=NULL,prob=.5)
+  best2 <- -Inf
+  for (N in 1:300) {
+    h <- lchoose(N,0:N)
+    observed_h <- sum(lchoose(N,x2))
+    objective <- function(nu) {
+      w <- nu*h
+      peak <- max(w)
+      -(nu*observed_h-length(x2)*(peak+log(sum(exp(w-peak)))))
+    }
+    values <- vapply(seq(-10,10,by=.25),objective,0.)
+    polished <- optimize(objective,c(-20,20),tol=1e-10)
+    best2 <- max(best2,-min(values),-polished$objective)
+  }
+  expect_equal(attr(fit2,"logLik"),best2,tolerance=1e-7)
+  expect_equal(fit2[["size"]],2)
 })

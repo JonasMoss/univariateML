@@ -173,6 +173,163 @@ TEST_CASE("cmb free dispersion constant samples") {
   CHECK(f.fit.prob==.4);
   CHECK(cppunivariate::cmb_size_free_nu_mle({c.data(),c.size()},.4).fit.status==cppunivariate::CmbStatus::PointMass);
   CHECK(cppunivariate::cmb_size_free_nu_mle({c.data(),c.size()},0).fit.status==cppunivariate::CmbStatus::InvalidInput);
-  CHECK(cppunivariate::cmb_size_free_nu_mle({mixed.data(),mixed.size()},nan).fit.status==cppunivariate::CmbStatus::NotImplemented);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({mixed.data(),mixed.size()},nan).fit.status==cppunivariate::CmbStatus::AdjacentLimit);
   CHECK(cppunivariate::cmb_size_free_nu_mle({c.data(),c.size()},nan,1e-10,0).fit.status==cppunivariate::CmbStatus::InvalidInput);
+}
+
+TEST_CASE("cmb free size and dispersion adjacent samples") {
+  const std::vector<int> bernoulli{0,0,1}, adjacent{2,2,3};
+  const auto fit=cppunivariate::cmb_size_free_nu_mle({bernoulli.data(),bernoulli.size()});
+  CHECK(fit.fit.status==cppunivariate::CmbStatus::FaceTie);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({adjacent.data(),adjacent.size()}).fit.status==cppunivariate::CmbStatus::AdjacentLimit);
+}
+
+TEST_CASE("cmb free size and dispersion endpoint samples") {
+  const std::vector<int> endpoints{0,0,4};
+  CHECK(cppunivariate::cmb_size_free_nu_mle({endpoints.data(),endpoints.size()}).fit.status==cppunivariate::CmbStatus::EndpointLimit);
+}
+
+TEST_CASE("cmb free size symmetric held probability faces") {
+  const std::vector<int> bernoulli{0,1}, adjacent{2,3}, endpoints{0,4};
+  const auto fit=cppunivariate::cmb_size_free_nu_mle({bernoulli.data(),bernoulli.size()},.5);
+  CHECK(fit.fit.status==cppunivariate::CmbStatus::Ok);
+  CHECK(fit.size==1);
+  CHECK(fit.fit.prob==.5);
+  CHECK(fit.fit.logLik==doctest::Approx(-2*std::log(2.)));
+  CHECK(cppunivariate::cmb_size_free_nu_mle({adjacent.data(),adjacent.size()},.5).fit.status==cppunivariate::CmbStatus::AdjacentLimit);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({endpoints.data(),endpoints.size()},.5).fit.status==cppunivariate::CmbStatus::EndpointLimit);
+}
+
+TEST_CASE("cmb truncated entropy dual bounds a two-coordinate grid") {
+  const std::vector<int> x{0,1,2,2,3,4};
+  double upper=0;std::size_t work=0;
+  REQUIRE(cppunivariate::cmb_detail::truncated_upper({x.data(),x.size()},8,upper,work,1000000));
+  for(int ia=-12;ia<=12;++ia)for(int iv=-4;iv<=12;++iv) {
+    const double a=ia*.25,nu=iv*.25;
+    double peak=-INFINITY;
+    for(int k=0;k<=8;++k)peak=std::max(peak,k*a-nu*std::lgamma(k+1.));
+    double z=0,ll=0;
+    for(int k=0;k<=8;++k)z+=std::exp(k*a-nu*std::lgamma(k+1.)-peak);
+    for(int v:x)ll+=v*a-nu*std::lgamma(v+1.)-peak-std::log(z);
+    CHECK(ll<=upper+1e-9);
+  }
+  work=1000000;
+  CHECK_FALSE(cppunivariate::cmb_detail::truncated_upper({x.data(),x.size()},8,upper,work,1000000));
+}
+
+TEST_CASE("cmb uniform empirical support attains the saturated likelihood") {
+  const std::vector<int> x{0,0,1,1,2,2,3,3,4,4};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double p:{nan,.5}) {
+    const auto fit=cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},p);
+    REQUIRE(fit.fit.status==cppunivariate::CmbStatus::Ok);
+    CHECK(fit.size==4);
+    CHECK(fit.fit.prob==.5);
+    CHECK(fit.fit.nu==0);
+    CHECK(fit.fit.logLik==doctest::Approx(-10*std::log(5.)));
+    for(int N=4;N<=30;++N)for(int i=1;i<10;++i)for(int j=-4;j<=4;++j) {
+      const auto f=cppunivariate::cmb_mle({x.data(),x.size()},N,1e-10,100,i/10.,j*.5);
+      REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+      CHECK(f.logLik<=fit.fit.logLik+1e-9);
+    }
+  }
+}
+
+TEST_CASE("cmb free dispersion does not return a capped size") {
+  const std::vector<int> x{1,10000000};
+  CHECK(cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()}).fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},.3).fit.status==cppunivariate::CmbStatus::IterationFailure);
+}
+
+TEST_CASE("cmb fixed-size entropy dual certifies moment solves") {
+  const std::vector<int> x{0,1,2,2,3,4};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double p:{nan,.3}) {
+    const auto fit=cppunivariate::cmb_mle({x.data(),x.size()},7,1e-10,100,p,nan);
+    REQUIRE(fit.status==cppunivariate::CmbStatus::Ok);
+    std::size_t work=0;
+    const auto candidate=cppunivariate::cmb_detail::size_candidate({x.data(),x.size()},7,p,1e-10,100,work,1000000);
+    REQUIRE(candidate.status==cppunivariate::CmbStatus::Ok);
+    CHECK(candidate.logLik==doctest::Approx(fit.logLik).epsilon(1e-8));
+    double upper=0;
+    REQUIRE(cppunivariate::cmb_detail::fixed_profile_upper({x.data(),x.size()},7,candidate,!std::isnan(p),upper));
+    CHECK(upper>=candidate.logLik-1e-8);
+    CHECK(upper-candidate.logLik<1e-7);
+    work=1000000;
+    CHECK(cppunivariate::cmb_detail::size_candidate({x.data(),x.size()},7,p,1e-10,100,work,1000000).status==cppunivariate::CmbStatus::IterationFailure);
+  }
+}
+
+TEST_CASE("cmb adjacent observations with held symmetric probability") {
+  const std::vector<int> small{0,0,1}, large{0,1,1,1,1,1,1,1,1,1};
+  const auto a=cppunivariate::cmb_size_free_nu_mle({small.data(),small.size()},.5);
+  const auto b=cppunivariate::cmb_size_free_nu_mle({large.data(),large.size()},.5);
+  REQUIRE(a.fit.status==cppunivariate::CmbStatus::Ok);
+  REQUIRE(b.fit.status==cppunivariate::CmbStatus::Ok);
+  CHECK(a.size==1);CHECK(b.size==2);
+  CHECK(b.fit.nu==doctest::Approx(std::log(18.)/std::log(2.)));
+  for(int N=2;N<=80;++N)for(int j=-20;j<=20;++j) {
+    const auto f=cppunivariate::cmb_mle({large.data(),large.size()},N,1e-10,100,.5,j*.5);
+    REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+    CHECK(f.logLik<=b.fit.logLik+1e-8);
+  }
+}
+
+TEST_CASE("cmb adjacent held-probability face tie") {
+  const std::vector<int> x{1,2};
+  // The root equates the size-two profile with the size-three central face.
+  const double p=.69830412636804606;
+  CHECK(cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},p).fit.status==cppunivariate::CmbStatus::FaceTie);
+}
+
+TEST_CASE("cmb nonuniform free-dispersion fits agree with a size grid") {
+  std::vector<int> x{0,0,1,2,3,4};
+  std::mt19937 rng(1142026);
+  std::shuffle(x.begin(),x.end(),rng);
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double p:{nan,.5}) {
+    const auto fit=cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},p);
+    REQUIRE(fit.fit.status==cppunivariate::CmbStatus::Ok);
+    double best=-INFINITY;int arg=-1;
+    for(int N=4;N<=100;++N) {
+      const auto f=cppunivariate::cmb_mle({x.data(),x.size()},N,1e-10,100,p,nan);
+      REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+      if(f.logLik>best){best=f.logLik;arg=N;}
+    }
+    CHECK(fit.size==arg);
+    CHECK(fit.fit.logLik==doctest::Approx(best).epsilon(1e-8));
+  }
+}
+
+TEST_CASE("cmb superlevel probability bounds are conservative") {
+  const std::vector<int> x{0,0,1,2,3,4};
+  const double B=-10;
+  for(int category:{0,4}) {
+    const double lower=cppunivariate::cmb_detail::observed_log_lower({x.data(),x.size()},category,B);
+    const double upper_log=cppunivariate::cmb_detail::observed_log_upper({x.data(),x.size()},category,B);
+    REQUIRE(std::isfinite(lower));
+    const double n=double(x.size()),count=category==0?2.:1.,f=count/n;
+    double saturated=2*std::log(2./6)+4*std::log(1./6);
+    for(int j=1;j<1000;++j) {
+      const double p=j/1000.;
+      const double upper=saturated+count*std::log(p/f)+(n-count)*(std::log1p(-p)-std::log1p(-f));
+      if(upper>=B) {
+        CHECK(std::log(p)>=lower-1e-12);
+        CHECK(std::log(p)<=upper_log+1e-12);
+      }
+    }
+  }
+}
+
+TEST_CASE("cmb fixed-odds solver handles a near-endpoint starting step") {
+  const std::vector<int> x{0,0,1,2,3,4};
+  std::size_t work=0;
+  const auto f=cppunivariate::cmb_detail::size_candidate_rescue({x.data(),x.size()},101,.5,1e-10,100,work,10000000);
+  REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+  double upper=0;
+  REQUIRE(cppunivariate::cmb_detail::fixed_profile_upper({x.data(),x.size()},101,f,true,upper));
+  CHECK(std::abs(upper-f.logLik)<1e-8*(1+std::abs(f.logLik)));
+  const auto reference=cppunivariate::cmb_mle({x.data(),x.size()},101,1e-10,100,.5);
+  REQUIRE(reference.status==cppunivariate::CmbStatus::Ok);
+  CHECK(f.logLik==doctest::Approx(reference.logLik).epsilon(1e-8));
 }
