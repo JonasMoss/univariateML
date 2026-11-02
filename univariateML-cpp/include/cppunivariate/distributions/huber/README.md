@@ -27,8 +27,7 @@ params:
   domain: (0, inf)
   simulate: 1.345
   kind: design
-  advice: epsilon = 1.345 is a conventional tuning choice; NULL fits epsilon with
-    normal and Laplace escapes.
+  advice: Hold epsilon at a positive tuning value, such as epsilon = 1.345. Set epsilon = NULL to estimate it, with possible normal or Laplace limit diagnostics.
 r:
   density: dhuber
   sampler: rhuber
@@ -42,18 +41,18 @@ log_density: -log(sigma)-log(sqrt(2*pi)*erf(epsilon/sqrt(2))+2*exp(-epsilon**2/2
 limits:
   - name: scale collapse
     firmness: proved
-    when: Scale tends to zero at the fitted or held location.
-    detect: Every observation equals the fitted or held location.
+    when: The free scale $\sigma$ tends to zero at the fitted or held location.
+    detect: Scale is free and every observation equals the fitted or held location.
     status: UnboundedLikelihood
     message: "unbounded"
   - model: norm
     firmness: proved
-    when: '$\epsilon \to \infty$ with epsilon free'
+    when: 'The free shape satisfies $\epsilon\to\infty$, leaving the normal law at the eligible fitted or held location and scale.'
     fixed: []
     status: NormalLimit
   - model: laplace
     firmness: proved
-    when: '$\epsilon \to 0$ with epsilon and sigma free, $b=\sigma/\epsilon$ fixed'
+    when: 'The free shape and scale tend to zero with $b=\sigma/\epsilon$ fixed, giving a Laplace law.'
     fixed: []
     status: LaplaceLimit
 holds: []
@@ -84,35 +83,40 @@ references:
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With location, scale and shape free, a finite MLE need not exist: the supremum can lie at a normal or Laplace limit, and constant data permit unbounded scale collapse. No general uniqueness theorem is asserted. With shape held, a finite maximum is attained for nonconstant data, including ties. For constant data it is attained when scale is held or location is held away from the observation. With shape free, held location and scale are respected in the eligible limit comparisons; the general conditional classification remains numerical.
+  reason: >-
+    For fixed shape, write inverse scale $\eta=1/\sigma$ and scaled location $\nu=\mu/\sigma$. The log-likelihood is $n\log\eta-\sum_i\rho_\epsilon(\eta x_i-\nu)$ plus a constant, with convex Huber loss $\rho_\epsilon$. It is concave, but linear tails can give an interval of maximizing locations. Coercivity gives attainment except for the stated zero-residual collapse. Free shape is searched numerically and compared with the two limit likelihoods.
 ---
 
-The Huber density has a Gaussian core and exponential tails.
+The Huber density models symmetric measurements with a Gaussian core and exponential tails. Location $\mu$ sets the centre, scale $\sigma$ sets the residual unit, and shape $\epsilon$ sets the transition from quadratic to linear log-density loss.
 
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
-The tuning constant `epsilon` is required. Supply a held value (for example 1.345), or set
-`epsilon = NULL` to estimate it. The free shape uses a log-scale grid and
+Shape may be held as a tuning constant or estimated. The free shape uses a log-scale grid and
 refines every detected profile maximum, comparing the normal and Laplace
 faces with tolerance $10^{-8} n$. The Laplace scale is $b=\sigma/\epsilon$;
-this face requires free `sigma`. The normal face is eligible with any
-held location or scale. Both faces require free `epsilon`. For two distinct
-observations the free location-scale-shape MLE does not exist.
+this face requires free $\sigma$. The normal face is eligible with any
+held location or scale. Both faces require free $\epsilon$. For two distinct
+observations the free location-scale-shape MLE does not exist. The strict comparison with both limits is derived in the [free-shape analysis](../../../../../dev/research/evaluations/2026-10-29-huber-free-epsilon-report.md).
 
 The scale is the joint maximum-likelihood scale, not Huber's
 Proposal 2 scale. When the maximising location is an interval (the sample
-lies in the linear tails), its midpoint is returned. For held `epsilon` and nonconstant data
+lies in the linear tails), its midpoint is returned. For held $\epsilon$ and nonconstant data
 the maximum is attained, ties included; constant data have an unbounded
-likelihood unless `mu` is held at a different value or `sigma` is held.
+likelihood unless $\mu$ is held at a different value or $\sigma$ is held.
 
 ## Numerical search
 
 For free shape, the grid has log spacing at most 0.125, from -9 to
-`log(max(8, 2 * max(abs(x-mu_normal)/sigma_normal)))`, followed by
+$\log\max\{8,2\max_i |x_i-\mu_N|/\sigma_N\}$, where $(\mu_N,\sigma_N)$ is the normal fit respecting the held coefficients, followed by
 golden-section refinement of each detected local maximum. This is a
 numerical global search, not a uniqueness theorem or an interval certificate.
-The lower truncation is below the face comparison tolerance when scale is
+Write $c=\epsilon$. The lower truncation is below the face comparison tolerance when scale is
 free: since $\rho_c(z) \ge c|z|-c^2/2$, the improvement over the fitted
 Laplace likelihood is at most $nc^2/2 < 10^{-8}n$ for $c<e^{-9}$.
 The same bound raises the lower endpoint when all smaller shapes cannot
@@ -121,11 +125,15 @@ Above the upper endpoint the constrained normal fit is inside the quadratic
 core and solves the concave inner problem; only the normalizer changes,
 monotonically toward the normal face.
 
-With held `sigma`, the lower endpoint is decreased until the uniform
+With held $\sigma$, the lower endpoint is decreased until the uniform
 log-density bound $\log f \le \log c-\log(2\sigma)+c^2/2$
 is below the incumbent profile likelihood per observation.
 
 
 Every coefficient can be held together with any others. Held coefficients are preserved in both the finite fit and the eligible normal and Laplace face comparisons.
 
-A location fallback that cannot attain a normalized location score below `max(gradtol, 1e-7)` stops with an iteration failure. The score is divided by the sample size; a fixed scale does not waive this check.
+The location fallback must pass a mean standardized score check; holding scale does not waive convergence checks.
+
+## R notes
+
+Supply `epsilon = 1.345` for a conventional held tuning value, or `epsilon = NULL` to estimate shape. A selected normal or Laplace limit stops with advice to use `mlnorm` or `mllaplace`, respectively. Face comparisons use a tolerance of $10^{-8}n$, so a limit diagnostic can also occur when a finite maximizer improves on that limit by less than the tolerance. A failed location fallback stops unless its mean standardized score is below `max(gradtol, 1e-7)`, even with scale held.

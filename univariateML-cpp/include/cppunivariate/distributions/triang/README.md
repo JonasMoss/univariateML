@@ -47,14 +47,14 @@ holds: []
 limits:
 - name: zero-width collapse
   firmness: proved
-  when: Free interval width tends to zero.
-  detect: Constant data and every held coefficient equals the observation.
+  when: The free width $b-a$ tends to zero around the common observation.
+  detect: The sample is constant, at least one endpoint is free, and every held coefficient equals the observation.
   status: Unbounded
   message: unbounded
 - name: incompatible held parameters
   firmness: proved
-  when: Held parameters prevent positive likelihood.
-  detect: Data outside held endpoints, non-mode observed endpoints, or inconsistent parameter ordering.
+  when: A valid held endpoint excludes an observation or forces zero density there.
+  detect: An observation lies outside a held endpoint, or an observed held endpoint cannot also be the mode.
   status: Incompatible
   message: incompatible
 examples: |
@@ -83,9 +83,15 @@ references:
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all three coefficients free, every nonconstant finite sample has an attained MLE, which need not be unique. For compatible held coefficients, a maximum is attained unless the sample is constant and every held coefficient equals that observation. In the latter case, free endpoints permit unbounded width collapse. With all coefficients held, only positive-likelihood compatibility is evaluated.
+  reason: >-
+    The density is bounded above by $2/(b-a)$. Nonconstant data, or a held value different from a constant observation, bound the width away from zero. Likelihood tends to zero as width diverges. On the remaining bounded parameter set, the endpoint-mode convention makes likelihood upper semicontinuous, so a positive candidate yields attainment. Shrinking a compatible interval around a constant observation proves the collapse case. This argument does not establish uniqueness.
 ---
 
-The triangular distribution describes bounded measurements with a single mode.
+The triangular distribution describes bounded measurements between endpoints $a$ and $b$, with mode $c$. Holding an endpoint specifies a known bound; holding the mode specifies the peak, which may lie outside the observed range.
 
 ## Details
 
@@ -93,16 +99,21 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-boun
 
 Constant samples can have an attained maximum when a held endpoint or mode prevents the interval from collapsing.
 
-Endpoint modes are included, with one-sided density `2/(b-a)` at the mode.
+Endpoint modes are included, with one-sided density $2/(b-a)$ at the mode.
 Every nonconstant compatible sample has an attained maximum; constant data
 have unbounded likelihood only when the held parameters allow the width to
 collapse at the observation. Observations outside held endpoints, both held
-endpoints observed, or held parameters inconsistent with `a < b` and
-`a <= c <= b` give an error. Distinct maximizing modes need not be unique;
-the smallest mode is returned for numerical ties, with a warning when another
-candidate is within `1e-10 * length(x)` in log likelihood.
+endpoints observed, or held parameters inconsistent with $a<b$ and $a\le c\le b$ are incompatible with a positive-likelihood fit. Distinct maximizing modes can tie. A free mode is sought among the distinct observations, with endpoint profiles solved numerically. The interval bounds used to prune candidates do not prove uniqueness.
 
-For a constant sample at `z` and held mode `c < z`, a free lower endpoint equals `c`; a free upper endpoint is `z + sqrt((z-a)*(z-c))`. The reflected formulas apply when `c > z`. These attained exterior-mode maxima are evaluated directly.
+Nonuniqueness occurs already for observations $(0,1)$. The reflected fits $(a,b,c)=(0,3/2,0)$ and $(-1/2,1,1)$ both maximize likelihood at $16/27$. At fixed endpoints the log-likelihood is convex between successive observations as a function of mode, so a free maximizing mode can be chosen at an observation. With $c=0$, maximizing first over $a$ gives $a=0$, then maximizing $(b-1)/b^3$ gives $b=3/2$. Reflection gives the other maximizer.
+
+For a constant sample at $z$ and held mode $c<z$, a free lower endpoint equals $c$, and a free upper endpoint is $z+\sqrt{(z-a)(z-c)}$. The reflected formulas apply when $c>z$. These attained exterior-mode maxima are evaluated directly.
+
+## R notes
+
+Invalid held ordering is rejected as invalid input. The smallest mode is returned for numerical ties. A warning is emitted when another candidate is within `1e-10 * length(x)` in log likelihood.
+
+## Decision history
 
 ### Endpoint-mode inversion (TASK-134)
 
