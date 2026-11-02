@@ -31,10 +31,7 @@ params:
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0
-  advice: 'With min estimated the likelihood is unbounded: the density is singular
-    at min when shape2 < 1, so let min rise to the sample minimum. Hold it, e.g. `mlpareto4(x,
-    min = 0)`, which is `mlburr(x)`. Fits with min free and other parameters held
-    are not supported.'
+  advice: 'With all coefficients free, shape2 below 1 makes the density singular as min approaches the sample minimum. The fully free likelihood is unbounded. Hold min, for example min = 0, to fit the shifted burr family. Estimating min with other coefficients held is not supported.'
   kind: threshold
 r:
   density: dpareto4
@@ -49,72 +46,63 @@ log_density: log(shape1) + log(shape2) - log((x-min)) - shape2*log(scale/(x-min)
 limits:
 - name: unbounded likelihood
   firmness: proved
-  when: A free concentration can collapse on constant observations
-  detect: Constant samples; the held coefficients determine whether concentration remains free
+  when: A free power $\gamma$ tends to infinity while the other free coefficients concentrate the excess distribution at its common observed value.
+  detect: With threshold held, the excesses are constant and the held coefficients permit concentration. In particular, this occurs with both shapes and scale free.
   status: Unbounded
   message: unbounded
-- when: $\mathrm{shape1} \to \infty$ with $\mathrm{scale}\,\mathrm{shape1}^{-1/\mathrm{shape2}}$
-    fixed
+- when: The shape $\alpha$ tends to infinity with $\gamma$ fixed and $\sigma\alpha^{-1/\gamma}$ fixed at a positive scale.
   firmness: proved
+  detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: WeibullBoundary
   name: shifted weibull; subtract min before fitting
-- when: $\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale
-    fixed
+- when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
+  detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
-- when: $\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale
-    fixed
+- when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
-  detect: all(x - min >= scale)
+  detect: Scale and threshold are held, both shapes are free, and every excess is at least $\sigma$. If all excesses equal $\sigma$, the likelihood is instead unbounded.
   status: AllGeOne
   fixed: [scale]
   name: shifted Pareto with its endpoint held at min + scale
 holds:
 - held: []
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape1
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape2
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape1
   - shape2
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  status: not-implemented
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - scale
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape1
   - scale
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape2
   - scale
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  status: not-implemented
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape1
   - shape2
   - scale
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  status: not-implemented
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 fit_args:
   min: 0
 examples: |
@@ -161,28 +149,53 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, every nonempty sample has unbounded likelihood.
+    Holding $\mu$ gives the Burr likelihood on the excesses. Constant excesses
+    have unbounded joint likelihood, while nonconstant samples may favour
+    Weibull or Pareto limits. A complete joint existence criterion and joint
+    uniqueness are not established. Holding $\alpha$ gives a unique finite
+    fit on nonconstant excesses. Holding $\gamma$ reduces existence to Lomax
+    on powered excesses. Holding both shapes gives a unique scale estimate.
+    Holding scale alone gives a finite maximum for nonconstant excesses if
+    some excess is below it; uniqueness is not established. Other conditional
+    cases are described below. Free-threshold fits are not supported.
+    Holding all coefficients leaves likelihood evaluation.
+  reason: >-
+    A free threshold approaching the sample minimum with $\gamma<1$ creates
+    a density singularity of order $(x-\mu)^{\gamma-1}$.
+    With $\mu$ held, subtracting it gives Burr exactly. With $\alpha$ held,
+    the log-excess likelihood is strictly concave in $\gamma$ and
+    $\gamma\log\sigma$ and has coercive profiles for nonconstant data.
+    With $\gamma$ held, the transformation $(x_i-\mu)^\gamma$ gives Lomax.
+    The single-coordinate scores decrease strictly in suitable coordinates.
+    These arguments do not certify the joint numerical search.
 ---
 
-This family has a known support endpoint and delegates fitting to burr.
+Pareto type IV models sizes above a threshold $\mu$ with Burr-distributed excesses. The scale $\sigma$ sets the size unit. The shapes $\alpha$ and $\gamma$ give upper-tail exponent $\alpha\gamma$ and lower-end power $\gamma$.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
+Fitting requires finite observations strictly above a held threshold. Subtracting that threshold gives [Burr](../burr/README.md) with unchanged shapes and scale. The joint fit uses several numerical starts and compares candidate maxima with Weibull and Pareto limits. Global optimality is not certified.
 
-Identification and sample existence conditions transfer exactly from Burr on x-min. Free-scale likelihoods need the delegate global search and comparison with Weibull and Pareto faces, using the 1e-8*n tie rule. Held-scale fits retain the separate Burr sample conditions; constant observations exactly at min+scale give unbounded likelihood.
+With only scale held, nonconstant excesses all at least $\sigma$ have a supremum on the endpoint-$\sigma$ Pareto path. Its log-likelihood is the held-endpoint Pareto log-likelihood minus $Z\log2$, where $Z$ counts excesses equal to $\sigma$. The endpoint remains $\mu+\sigma$, so estimating it anew would change the constrained model. For nonconstant data with an excess below $\sigma$, a finite maximum exists. Constant excesses at or below $\sigma$ instead have unbounded likelihood with both shapes free. Constant excesses above it have a finite unattained Pareto path limit.
 
-The Burr shape1, shape2 and scale coefficients are unchanged.
+Holding $\alpha$ permits a unique joint scale/power fit for nonconstant excesses, but constant data remain unbounded when power and scale are free. Holding $\gamma$ reduces to Lomax on powered excesses, whose exponential limit becomes a Weibull limit with that power held. Holding both shapes gives a unique scale maximum, even for constant data. Holding $\alpha$ and scale gives a unique power maximum unless every excess equals scale. Holding $\gamma$ and scale gives an explicit unique estimate of $\alpha$.
 
-Observations must be strictly inside the held support. Free endpoints with other parameters held are not supported; those subsets need separate existence studies. The delegate retains its sample restrictions and limit comparisons.
+For the fully free model, choose $\gamma<1$ and let the threshold approach the sample minimum. The $k$ minimum factors diverge as $\varepsilon^{k(\gamma-1)}$ while all other density factors have positive limits. Holding some coefficients can remove this path. For example, $\gamma=1$ with both other coefficients held gives a finite endpoint maximum. The interface nevertheless requires a held threshold for every subset.
 
-At distance y above the endpoint the density is asymptotic to C y^(a-1), where a is shape2. Choose 0<a<1 and hold other parameters positive. As min approaches the sample minimum from below, k minimum factors diverge as epsilon^(k*(a-1)); all remaining factors approach positive constants. Thus unrestricted likelihood is unbounded, including constant samples.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) gives the boundary arguments and their held-parameter conditions.
 
-With scale held, endpoint limit models retain the endpoint min + scale;
-a free-endpoint Pareto or power fit would be a different constrained model.
+## R notes
 
-With min held, every shape hold reduces to the corresponding Burr fit on x - min, including its held-power Weibull escape.
+With `min = 0`, the fit agrees with `mlburr(x)` for the same holds. Numerical comparisons prefer limit models within $10^{-8}n$ log-likelihood units, so a tied or slightly better finite maximum may be rejected. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
 
-### Golden comparison precision (2026-10-31)
+## Decision history
+
+2026-10-31 (golden comparison precision):
+
 
 The double-only baseline and TASK-132 headers return bit-identical estimates;
 the largest relative coefficient difference from the extended-precision golden

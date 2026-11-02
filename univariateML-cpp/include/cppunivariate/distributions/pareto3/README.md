@@ -25,10 +25,7 @@ params:
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0
-  advice: 'With min estimated the likelihood is unbounded: the density is singular
-    at min when shape < 1, so let min rise to the sample minimum. Hold it, e.g. `mlpareto3(x,
-    min = 0)`, which is `mlllogis(x)`. Fits with min free and other parameters held
-    are not supported.'
+  advice: 'With all coefficients free, shape below 1 makes the density singular as min approaches the sample minimum. The fully free likelihood is unbounded. Hold min, for example min = 0, to fit the shifted llogis family. Estimating min with other coefficients held is not supported.'
   kind: threshold
 r:
   density: dpareto3
@@ -42,32 +39,28 @@ r:
 limits:
   - name: unbounded likelihood
     firmness: proved
-    when: A free concentration can collapse on constant observations
-    detect: Constant samples; the held coefficients determine whether concentration remains free
+    when: The shape $\gamma$ tends to infinity while $\sigma$ equals the common excess above $\mu$.
+    detect: The threshold is held, shape is free, and the sample is constant. Scale must be free or held at that common excess.
     status: Unbounded
     message: unbounded
 log_density: log(shape) + log((1/scale)) + (shape - 1)*log((1/scale)*(x-min)) - 2*log(1 + ((1/scale)*(x-min))**shape)
 holds:
 - held: []
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  status: not-implemented
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - scale
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape
   - scale
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  status: not-implemented
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 fit_args:
   min: 0
 examples: |
@@ -112,26 +105,42 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With all coefficients free, every nonempty sample has unbounded likelihood.
+    With $\mu$ held, a unique finite MLE exists for nonconstant observations
+    strictly above $\mu$. Constant excesses have unbounded likelihood.
+    Holding shape gives a unique scale estimate even for constant data.
+    Holding scale gives a unique shape estimate unless every excess equals
+    that scale, when the likelihood is unbounded. Free-threshold subsets
+    are not supported; their existence depends on the held values.
+    Holding all coefficients leaves likelihood evaluation.
+  reason: >-
+    For $0<\gamma<1$ the density near $\mu$ is proportional to
+    $(x-\mu)^{\gamma-1}$, so moving $\mu$ up to the sample minimum makes
+    the unrestricted likelihood unbounded. With $\mu$ held, put
+    $z_i=\log(x_i-\mu)$, $b=\gamma$ and $a=\gamma\log\sigma$.
+    Apart from a data-only term the likelihood is
+    $n\log b-2\sum_i\log\{2\cosh((bz_i-a)/2)\}$.
+    Its Hessian is negative definite. For nonconstant data its profiled
+    maximum tends to $-\infty$ as $b$ tends to zero or infinity.
+    Holding shape fixes $b$; holding scale restricts $a=b\log\sigma$.
+    Strict concavity gives the stated conditional results.
 ---
 
-This family has a known support endpoint and delegates fitting to llogis.
+Pareto type III models sizes above a threshold $\mu$ with log-logistic excesses. The scale $\sigma$ is the median excess. The shape $\gamma$ controls the spread of log excesses and the polynomial tail.
 
 ## Details
 
-For a constant sample at $x>\min$, choose scale $x-\min$ and let
-shape $a\to\infty$. The density at every observation is
-$a/[4(x-\min)]$, so the likelihood diverges. This constructs a path
-when shape and scale can take those values; holding a coefficient may
-remove it.
+Fitting requires finite observations strictly above a held threshold. On $\log(x_i-\mu)$ the problem is a logistic location-scale fit, so existence and uniqueness transfer from [log-logistic](../llogis/README.md). The log-logistic shape and scale are unchanged; in rate coordinates the rate is $1/\sigma$.
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
+For constant observations at $x_0>\mu$, taking $\sigma=x_0-\mu$ and $\gamma\to\infty$ gives density $\gamma/[4(x_0-\mu)]$ at every observation. Holding shape removes this concentration path and gives one log-scale score root. Holding scale leaves unbounded likelihood only when all excesses equal it; otherwise there is a unique finite shape maximum. These conditional fits use the corresponding Burr submodel.
 
-For at least two finite, nonconstant observations strictly above min, the held-threshold MLE is unique and attained. On log(x-min), the logistic likelihood is strictly concave in inverse scale and standardized location. Constant samples have unbounded likelihood as log-logistic shape grows.
+With a free threshold and $\gamma<1$, each of the $k$ observations at the sample minimum contributes an endpoint factor proportional to $\varepsilon^{\gamma-1}$ as the threshold approaches from below. The other factors tend to positive constants, so the product diverges. This is a proof for the fully free likelihood, not for every held-shape submodel. For example, with shape equal to one and scale held the threshold has a finite maximum at the sample minimum. The interface still requires the threshold to be held.
 
-The delegate coefficients map as shape=shape and scale=1/rate.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and boundary comparisons.
 
-Observations must be strictly inside the held support. Free endpoints with other parameters held are not supported; those subsets need separate existence studies. The delegate retains its sample restrictions and limit comparisons.
+## R notes
 
-At distance y above the endpoint the density is asymptotic to C y^(a-1), where a is shape. Choose 0<a<1 and hold other parameters positive. As min approaches the sample minimum from below, k minimum factors diverge as epsilon^(k*(a-1)); all remaining factors approach positive constants. Thus unrestricted likelihood is unbounded, including constant samples.
-
-With min and shape held the log-scale score has one root, including on constant samples. With min and scale held a free shape is unbounded only when all observations equal min + scale.
+With `min = 0`, the joint fit agrees with `mlllogis(x)`. Failed conditional searches stop rather than return an unresolved estimate.

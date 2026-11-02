@@ -9,7 +9,7 @@ inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held sc
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape = shape_arg;
   const Held scale = scale_arg;
-  if (!min_arg.supplied) return failure("Estimating the threshold is not supported: endpoint singularities or unattained limit models prevent an unrestricted MLE (P0, A4).");
+  if (!min_arg.supplied) return failure("Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.");
   const double min = min_arg.value;
 
  if(shape.supplied && (!(shape.value>0)||!std::isfinite(shape.value))) return fail("`shape` must be positive and finite.");
