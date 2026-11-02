@@ -60,13 +60,13 @@ log_density: Piecewise((log(p0), Eq(x, 0)), (log(1-p0)+(loggamma(size+1)-loggamm
 limits:
 - model: zmpois
   firmness: proved
-  when: $size \to \infty$ with the positive conditional mean fixed
-  detect: the maximised face likelihood wins within 1e-8 times the sample size
+  when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
+  detect: With both base coefficients free and at least one count above one, the fitted zero-modified Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times the number of positive observations.
   status: PoissonLimit
 - model: zmpois
   firmness: proved
-  when: $size \to \infty$ with the positive conditional mean fixed
-  detect: the matching held-mixture Poisson face wins the integer profile
+  when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
+  detect: With $p_0$ held, at least one count above one and both base coefficients free, the matching zero-modified Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times the number of positive observations.
   status: PoissonLimit
   fixed:
   - p0
@@ -106,19 +106,28 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, the zero probability is the empirical zero fraction and the remaining problem is zero-truncated binomial fitting on the positive observations. A general finite-MLE criterion and uniqueness result for that free-size problem are not established here. All-zero samples attain $p_0=1$ and leave the base coefficients unidentified. Positive counts all equal to one attain a maximum with nonunique base coefficients. Holding $p_0$ leaves the positive-count problem unchanged when compatible. With $n>1$ held and at least one positive count, the free probability has a unique MLE. At $n=1$, it is unidentified. With interior $p$ held and positive counts present, a finite integer maximum exists. Held $p=0$ permits only ones among positives and leaves size unidentified. Held $p=1$ requires all positive counts to equal $n$. With no positives, all compatible base coefficients remain unidentified. All-held fits only evaluate likelihood.
+  reason: >-
+    The likelihood factors into a Bernoulli zero-indicator likelihood and a zero-truncated binomial likelihood. The first has the unique empirical-fraction maximizer when free. At fixed $n>1$, the positive-count likelihood is strictly concave in logit probability. With interior probability held, its observed masses vanish as size grows, ensuring finite integer attainment. Factorization supplies no uniqueness or global search certificate for free size and probability.
 ---
 
-Zero-modified binomial distributions model counts with a separate zero component.
+The zero-modified binomial distribution describes bounded counts with an independently adjustable zero probability $p_0$. Conditional on a positive count, the distribution is binomial with trial count $n$ and success probability $p$, conditioned to be positive.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
+The likelihood separates into a zero-indicator part and a positive-count part. Holding the zero probability changes only the first part. The fit for the positive counts is the zero-truncated binomial fit, with the same held trial count or probability.
 
-With no positives the fitter returns `p0 = 1`, keeps a supplied size and picks conventional base parameters with a warning. With no zeros it returns `p0 = 0`. Positive observations all equal to one give an attained two-point law; the fitter warns that `mlbinom(x, size = 1)` fits it exactly.
-Holding size fixed removes the infinite-size escape. The point mass at one remains attained for every fixed size.
+With no positives the base coefficients are unidentified. With no zeros the free zero probability is zero. Positive counts all equal to one give an attained two-point distribution. Holding the trial count removes the infinite-size escape, and the point mass at one remains attained at every trial count. At trial count one the positive-count probability is unidentified.
 
-A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.
+A held interior probability is preserved and the integer search bounds the remaining tail before returning. Exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations. A held zero probability of zero is incompatible with observed zeros, and a held zero probability of one is incompatible with positives.
 
-Holding p0 changes only the Bernoulli zero-indicator likelihood; the positive conditional fit is unchanged. An incompatible held p0 (zero with observed zeros, or one with positives) stops.
+The free-size positive-count search uses an exponential grid and local refinement. No global unimodality certificate is established for this profile, so the result and the comparison with the Poisson limit remain numerical. See the [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md), the zero-truncated binomial dossier and the [search checks](../../../../../dev/research/evaluations/2026-10-29-tail85-report.md).
 
-The free-size search delegates entirely to `mlztbinom` on the positive observations (the zero/Bernoulli part is closed-form), so it inherits that search's exponential grid and its caveats verbatim: no unimodality proof is known, so it is a numerical search, not a certified one; see `mlztbinom`'s own documentation and `dev/research/evaluations/2026-10-29-tail85-report.md`.
+## R notes
+
+The numerical limit comparison can reject a finite mathematical maximum that ties or improves on the limit by less than the comparison tolerance. A limit diagnostic is therefore not a proof of non-existence for the supplied sample.
+
+Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimates it. Supplying `prob` or `p0` holds that coefficient. With no positives the fitter preserves supplied base coefficients and chooses conventional representatives for free ones. With both `prob` and `p0` free it warns about unidentified base coefficients on all-zero data. With both free and positive counts all equal to one it warns that `mlbinom(x, size = 1)` fits the attained law exactly. A held `size` is preserved at these boundaries. Detected infinite-size escapes stop with advice to use `mlzmpois`. Incompatible held values stop.

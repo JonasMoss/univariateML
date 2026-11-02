@@ -42,8 +42,8 @@ log_density: loggamma(size+x)-loggamma(size)-loggamma(x+1)+size*log(prob)+x*log(
 limits:
 - model: ztpois
   firmness: proved
-  when: $size \to \infty$ with the positive conditional mean fixed
-  detect: size and prob are free and the maximised face likelihood wins within 1e-8 times the sample size
+  when: As $r\to\infty$ and $p\to1$ with $r(1-p)/p\to\lambda>0$, the law tends to a zero-truncated Poisson law.
+  detect: With both coefficients free and at least one count above one, the fitted zero-truncated Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times sample size.
   status: PoissonLimit
 examples: |
   set.seed(1)
@@ -84,16 +84,28 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both coefficients free, a general finite-MLE criterion and uniqueness result are not established here. The supremum can occur at the zero-truncated Poisson limit. All-one samples attain $p=1$ and leave $r$ unidentified. With finite $r>0$ held, the probability MLE exists and is unique, including $p=1$ for all-one data. Held $r=0$ gives a logarithmic-series model with a unique probability estimate. With $0<p<1$ held, a finite size maximum exists, possibly at $r=0$, but uniqueness is not established here. Held $p=1$ requires only ones and leaves free size unidentified. Holding both coefficients leaves only likelihood evaluation.
+  reason: >-
+    For fixed positive size, the positive-count law is an exponential family in $\log(1-p)$. Its conditional mean ranges strictly from one to infinity, and its log likelihood is strictly concave in that natural parameter. At size zero the same argument applies to the logarithmic-series member. With interior probability held, likelihood is continuous at size zero and tends to zero as size tends to infinity, so a maximum is attained on $[0,\infty)$. These facts do not certify the two-free-coefficient profile search.
 ---
 
-Zero-truncated negative binomial distributions model positive counts.
+The zero-truncated negative binomial distribution models negative-binomial counts observed only when positive. The size $r$ is a nonnegative shape coefficient that can be fractional, and $p$ is the underlying negative-binomial probability.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) derives the stated limits and held-parameter conditions.
+Holding a positive size leaves a unique probability fit obtained by conditional-mean matching. Size zero is an attained logarithmic-series member with logarithmic parameter $1-p$. Probability one is the attained point mass at one. All-one samples therefore fail to identify a free size. Holding any finite size removes the infinite-size Poisson escape.
 
-Actuar defines the point mass at one at `prob = 1`. This boundary is returned as an attained member.
-Actuar defines `size = 0` as the logarithmic series with `theta = 1 - prob`; this attained member is returned. Fixed size may be zero.
-Holding size fixed removes the infinite-size escape. The point mass at one remains attained for every fixed size.
+Holding an interior probability also removes that escape. The likelihood then vanishes at infinite size, so a finite maximum exists. The fit compares size zero with peaks bracketed on a grid in log size. This numerical search does not certify that every peak has been found.
 
-Holding `prob < 1` removes the infinite-size escape. Size zero remains the attained logarithmic member and is compared with all bracketed profile peaks. Held `prob = 1` is compatible only with ones. The scalar grid search is numerical, not a certificate that every profile peak has been found.
+With both coefficients free and some count above one, the fit profiles probability by conditional-mean matching. It scans log sizes from -24 to 24, refines bracketed peaks, and compares the best value with the attained logarithmic member and the zero-truncated Poisson limit. A tolerance of $10^{-8}$ times sample size is used in these comparisons. Neither finite attainment nor global optimality is certified by this grid. Reaching the upper size endpoint with a successful candidate is treated as a numerical failure.
+
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) discusses the stated limits and held-parameter conditions. Held probability one is compatible only with ones.
+
+## R notes
+
+The numerical limit comparison can reject a finite mathematical maximum that ties or improves on the limit by less than the comparison tolerance. A limit diagnostic is therefore not a proof of non-existence for the supplied sample.
+
+Supplying `size` or `prob` holds that coefficient, while `NULL` estimates it. A held size may be zero. The attained members at `size = 0` and `prob = 1` follow actuar's conventions. Detected Poisson escapes stop with advice to use `mlztpois`. Invalid controls, incompatible held values and reported iteration failures stop. Increasing `iterlim` does not extend the fixed free-size grid or prove global optimality.

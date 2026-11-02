@@ -82,12 +82,20 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    For every nonempty sample of positive integers, the free-probability MLE exists and is unique, with $\hat p=1/\bar x$. All-one data attain $p=1$. Holding the probability leaves only likelihood evaluation. A held value $p=1$ requires all observations to equal one.
+  reason: >-
+    For $m$ observations with total $T$, the log likelihood is $m\log p+(T-m)\log(1-p)$. If $T>m$, its derivative vanishes only at $m/T$ and its second derivative is strictly negative. If $T=m$, it increases to its attained maximum at one.
 ---
 
-Zero-truncated geometric distributions model positive counts.
+The zero-truncated geometric distribution models positive waiting counts. Its probability $p$ is the success probability, and subtracting one from a count gives an ordinary geometric count of failures.
 
 ## Details
 
-Actuar defines the point mass at one at `prob = 1`. This boundary is returned as an attained member.
+The estimate is the reciprocal of the sample mean. All-one samples give the attained point mass at one. Holding the probability evaluates the supplied distribution without estimation. An interior probability permits every positive integer, whereas probability one permits only ones.
 
-Supplying `prob` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.
+## R notes
+
+Supplying `prob` holds the probability. With `prob = NULL`, it is estimated. Invalid or incompatible held values stop. The point-mass convention at `prob = 1` agrees with actuar.
