@@ -188,14 +188,24 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
 
   const double scale = std::exp(theta);
   double sum_log1p_z2 = 0.0;
+  double score_location = 0.0, score_log_scale = 0.0;
   for (std::size_t i = 0; i < n; ++i) {
     const double z = (x[i] - mu) / scale;
     sum_log1p_z2 += std::log1p(z * z);
+    const double w = 1.0 / (1.0 + z * z);
+    score_location += 2.0 * z * w;
+    score_log_scale += (z * z - 1.0) * w;
   }
   const double logLik =
       -static_cast<double>(n) * std::log(cppunivariate::pi * scale) - sum_log1p_z2;
   const bool finite = std::isfinite(mu) && std::isfinite(scale) && scale > 0.0 && std::isfinite(logLik);
-  return {mu, scale, logLik, iter, finite && iter <= maxit ? CauchyStatus::Ok : CauchyStatus::IterationFailure};
+  // Total log-likelihood score in (mu, log(scale)), measured in the
+  // hyperbolic orthonormal frame: (scale * U_mu, U_log_scale).
+  // This dimensionless gate is invariant under location/scale changes.
+  // It is a practical stationarity margin, not a likelihood-gap bound.
+  const bool stationary = std::isfinite(score_location) && std::isfinite(score_log_scale) &&
+      std::hypot(score_location, score_log_scale) < 1e-3;
+  return {mu, scale, logLik, iter, finite && stationary && iter <= maxit ? CauchyStatus::Ok : CauchyStatus::IterationFailure};
 }
 
 
