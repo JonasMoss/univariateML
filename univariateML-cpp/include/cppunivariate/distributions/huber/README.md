@@ -50,11 +50,13 @@ limits:
     when: 'The free shape satisfies $\epsilon\to\infty$, leaving the normal law at the eligible fitted or held location and scale.'
     fixed: []
     status: NormalLimit
+    numerical: true
   - model: laplace
     firmness: proved
     when: 'The free shape and scale tend to zero with $b=\sigma/\epsilon$ fixed, giving a Laplace law.'
     fixed: []
     status: LaplaceLimit
+    numerical: true
 holds: []
 fit_args:
   epsilon: 1.345
@@ -68,7 +70,7 @@ construction:
 - location-scale
 relations: {}
 fit:
-  method: multistart
+  method: profile-search
   certified: partial
   note: 'huber/README.md, Details; huber/mle.hpp (public fitter and held overloads); huber/test.cpp: Held epsilon
     gives a concave location/inverse-scale fit; free epsilon is searched numerically with normal and Laplace comparisons.'

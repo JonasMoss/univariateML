@@ -46,6 +46,7 @@ limits:
     when: 'The normal scale satisfies $\sigma\to0$ with positive half-width $a$ fixed or approaching a positive limit.'
     detect: 'With normal scale free, the compatible uniform-face log likelihood is at least the best numerical interior log likelihood minus $10^{-8}n$. Endpoint penalties depend on held coefficients.'
     status: UniformLimit
+    numerical: true
 holds: []
 examples: |
   set.seed(1)

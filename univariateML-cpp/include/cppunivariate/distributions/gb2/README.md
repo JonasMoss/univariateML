@@ -46,12 +46,12 @@ limits:
     detect: All observations are equal, and the held coefficients still permit concentration at that value.
     status: InvalidData
     message: unbounded
-  - {firmness: proved, model: trgamma, when: 'The beta shape $q$ tends to infinity with $a,p$ and $b/q^{1/a}$ fixed.', status: TrGammaBoundary}
-  - {firmness: proved, model: invtrgamma, when: 'The beta shape $p$ tends to infinity with $a,q$ and $bp^{1/a}$ fixed.', status: InvTrGammaBoundary}
-  - {firmness: proved, model: lnorm, when: 'The beta shapes satisfy $p=q=K\to\infty$, the power is $a=\sqrt{2\psi_1(K)}/\sigma$, and $b=e^\mu$, for fixed $\sigma>0$ and $\mu$. Here $\psi_1$ is the trigamma function.', status: LognormalBoundary}
-  - {firmness: proved, model: pareto, when: 'The power $a$ tends to infinity with $qa>0$, $p$ and $b$ fixed.', status: ParetoBoundary}
-  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa>0$, $q$ and $b$ fixed.', status: PowerBoundary}
-  - {firmness: proved, name: double Pareto, when: 'The power $a$ tends to infinity with $qa>0$, $pa>0$ and $b$ fixed.', status: DoubleParetoBoundary}
+  - {firmness: proved, model: trgamma, when: 'The beta shape $q$ tends to infinity with $a,p$ and $b/q^{1/a}$ fixed.', status: TrGammaBoundary, numerical: true}
+  - {firmness: proved, model: invtrgamma, when: 'The beta shape $p$ tends to infinity with $a,q$ and $bp^{1/a}$ fixed.', status: InvTrGammaBoundary, numerical: true}
+  - {firmness: proved, model: lnorm, when: 'The beta shapes satisfy $p=q=K\to\infty$, the power is $a=\sqrt{2\psi_1(K)}/\sigma$, and $b=e^\mu$, for fixed $\sigma>0$ and $\mu$. Here $\psi_1$ is the trigamma function.', status: LognormalBoundary, numerical: true}
+  - {firmness: proved, model: pareto, when: 'The power $a$ tends to infinity with $qa>0$, $p$ and $b$ fixed.', status: ParetoBoundary, numerical: true}
+  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa>0$, $q$ and $b$ fixed.', status: PowerBoundary, numerical: true}
+  - {firmness: proved, name: double Pareto, when: 'The power $a$ tends to infinity with $qa>0$, $pa>0$ and $b$ fixed.', status: DoubleParetoBoundary, numerical: true}
 holds: []
 examples: |
   set.seed(1)

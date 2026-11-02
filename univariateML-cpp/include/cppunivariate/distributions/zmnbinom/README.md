@@ -52,6 +52,7 @@ limits:
   when: 'The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ tending to a finite positive rate and $p_0$ unchanged.'
   detect: 'Size and probability are free, and the fitted zero-modified Poisson boundary has log likelihood at least the best finite value found minus $10^{-8}$ times sample size. This numerical comparison does not certify non-existence.'
   status: PoissonLimit
+  numerical: true
 examples: |
   set.seed(1)
   x <- rml(200, mlzmnbinom())
@@ -69,11 +70,9 @@ relations:
     type: zero-modified
     mass: p0
 fit:
-  method: multistart
+  method: delegation
   certified: 'no'
-  note: 'zmnbinom/README.md, Details; zmnbinom/mle.hpp (public fitter and held overloads); zmnbinom/test.cpp: Default
-    and nontrivial conditional fits use multistart, finite grids or local profile refinement without a global certificate;
-    all-held density evaluation is not counted as certification.'
+  note: "zmnbinom/mle.hpp: The zero-indicator likelihood separates analytically; positive counts delegate to ztnbinom, inheriting its finite log-size grid, local refinements and uncertified Poisson comparison."
 areas:
 - counts and ecology
 classification: specialist

@@ -67,11 +67,9 @@ construction:
 - base
 relations: {}
 fit:
-  method: multistart
-  certified: partial
-  note: 'triang/README.md, Details; triang/mle.hpp (public fitter and held overloads); triang/test.cpp: Constant
-    samples with a held exterior mode have the explicit endpoint maxima in Details; general nonconstant fits enumerate
-    numerical profile candidates without a global certificate.'
+  method: profile-search
+  certified: 'yes'
+  note: "triang/mle.hpp: Finite observation-mode enumeration uses concave endpoint solves and tangent upper bounds to prune mode intervals; unresolved candidate solves return IterationFailure. Certification is in exact arithmetic conditional on computed comparisons, with pruning allowance 1e-11*n*(1+abs(logLik)/n) and 1e-10*n separation. It does not imply uniqueness."
 areas:
 - proportions
 classification: specialist

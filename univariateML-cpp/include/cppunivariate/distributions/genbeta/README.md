@@ -48,8 +48,8 @@ limits:
     detect: All observations are equal, $q$ is free, and at least one of $p$ and $a$ is free.
     status: InvalidData
     message: unbounded
-  - {firmness: proved, model: lgamma, name: log-gamma on scale / x, when: 'The shape $p$ tends to infinity and the power $a$ tends to zero with $pa\to\lambda>0$ and $q,b$ fixed. Then $-\log(X/b)$ tends to a gamma law with shape $q$ and rate $\lambda$.', status: UnitGammaBoundary}
-  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa\to\lambda>0$, while $q$ stays bounded away from zero and $\log(q)/a\to c\ge0$. The limiting power law has upper endpoint $be^{-c}$.', status: PowerBoundary}
+  - {firmness: proved, model: lgamma, name: log-gamma on scale / x, when: 'The shape $p$ tends to infinity and the power $a$ tends to zero with $pa\to\lambda>0$ and $q,b$ fixed. Then $-\log(X/b)$ tends to a gamma law with shape $q$ and rate $\lambda$.', status: UnitGammaBoundary, numerical: true}
+  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa\to\lambda>0$, while $q$ stays bounded away from zero and $\log(q)/a\to c\ge0$. The limiting power law has upper endpoint $be^{-c}$.', status: PowerBoundary, numerical: true}
 holds:
 - held: []
   status: no-mle
@@ -97,7 +97,7 @@ relations:
     transform: power
     power: shape3
 fit:
-  method: multistart
+  method: profile-search
   certified: partial
   note: 'genbeta/README.md, Details; genbeta/mle.hpp (public fitter and held overloads); genbeta/test.cpp: With
     endpoint and power held, beta-shape fitting is strictly concave; the free-power mesh and envelope-score search

@@ -45,6 +45,7 @@ limits:
   when: As $r\to\infty$ and $p\to1$ with $r(1-p)/p\to\lambda>0$, the law tends to a zero-truncated Poisson law.
   detect: With both coefficients free and at least one count above one, the fitted zero-truncated Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times sample size.
   status: PoissonLimit
+  numerical: true
 examples: |
   set.seed(1)
   x <- rml(200, mlztnbinom())
@@ -67,11 +68,9 @@ relations:
       prob: prob
       p0: 0
 fit:
-  method: multistart
+  method: profile-search
   certified: 'no'
-  note: 'ztnbinom/README.md, Details; ztnbinom/mle.hpp (public fitter and held overloads); ztnbinom/test.cpp: Default
-    and nontrivial conditional fits use multistart, finite grids or local profile refinement without a global certificate;
-    all-held density evaluation is not counted as certification.'
+  note: "ztnbinom/mle.hpp: Log-size grids and local refinements profile the positive conditional likelihood; fixed size has a monotone probability solve, but joint and held-probability searches have no global certificate."
 areas:
 - counts and ecology
 classification: specialist

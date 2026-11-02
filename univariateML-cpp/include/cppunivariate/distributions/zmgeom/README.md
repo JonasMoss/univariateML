@@ -67,10 +67,9 @@ relations:
       prob: prob
       p0: p0
 fit:
-  method: multistart
+  method: closed-form
   certified: 'yes'
-  note: 'zmgeom/README.md, Details; zmgeom/mle.hpp (public fitter and held overloads); zmgeom/test.cpp: Closed-form
-    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
+  note: "zmgeom/mle.hpp and zmpois/profile.hpp: The zero fraction and reciprocal positive-sample mean maximize the separated Bernoulli and geometric factors; the all-one positive endpoint is attained and all-zero data leave the base probability unidentified."
 areas:
 - counts and ecology
 classification: specialist

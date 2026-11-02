@@ -118,7 +118,7 @@ relations:
     shift: min
     scale: max-min
 fit:
-  method: multistart
+  method: delegation
   certified: 'yes'
   note: 'nsbeta/README.md, Details; nsbeta/mle.hpp (public fitter and held overloads); nsbeta/test.cpp: Strictly
     concave beta likelihood in its two shapes; held-shape digamma scores decrease strictly. nsbeta uses supplied

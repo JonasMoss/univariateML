@@ -40,6 +40,7 @@ limits:
   when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law.
   detect: With both coefficients free and at least one count above one, the fitted zero-truncated Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times sample size.
   status: PoissonLimit
+  numerical: true
 fit_args:
   size: ~
 examples: |
@@ -64,7 +65,7 @@ relations:
       prob: prob
       p0: 0
 fit:
-  method: multistart
+  method: integer-search
   certified: partial
   note: 'ztbinom/README.md, Details; ztbinom/mle.hpp (public fitter and held overloads); ztbinom/test.cpp: Fixed
     size has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability

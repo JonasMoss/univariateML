@@ -49,9 +49,7 @@ relations:
 fit:
   method: scalar-solve
   certified: 'yes'
-  note: 'yulesimon/README.md, Details; yulesimon/mle.hpp (public fitter and held overloads); yulesimon/test.cpp:
-    Strictly monotone one-parameter exponential-family or log-shape score gives a bracketed unique root or the documented
-    boundary; finite Zipf endpoint and modified zero mass profile exactly.'
+  note: "yulesimon/mle.hpp: The strictly decreasing log-shape score has one root when a count exceeds one; all-one data have an excluded infinite-shape point-mass supremum. Held shape evaluates the likelihood."
 areas:
 - rank-frequency
 classification: specialist

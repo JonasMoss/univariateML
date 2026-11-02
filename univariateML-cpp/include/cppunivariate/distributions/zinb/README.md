@@ -50,11 +50,13 @@ limits:
     when: 'The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed and positive inflation.'
     detect: 'Size and probability are free, and the fitted zero-inflated Poisson boundary has positive inflation and log likelihood at least the best finite value found minus $10^{-8}$ times sample size. This numerical comparison does not certify non-existence.'
     status: ZipLimit
+    numerical: true
   - model: pois
     firmness: proved
     when: 'The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed, while inflation tends to zero.'
     detect: 'Size and probability are free, and the fitted zero-inflated Poisson boundary has zero inflation and log likelihood at least the best finite value found minus $10^{-8}$ times sample size. This numerical comparison does not certify non-existence.'
     status: PoissonLimit
+    numerical: true
 references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 examples: |
@@ -80,11 +82,9 @@ relations:
       prob: prob
       p0: pi+(1-pi)*prob**size
 fit:
-  method: multistart
+  method: profile-search
   certified: 'no'
-  note: 'zinb/README.md, Details; zinb/mle.hpp (public fitter and held overloads); zinb/test.cpp: Default and nontrivial
-    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
-    density evaluation is not counted as certification.'
+  note: "zinb/mle.hpp:130-175: Free size uses a scalar log-size mesh with local refinements and a numerical ZIP/Poisson comparison; held inflation can require an inner numerical probability profile. No global certificate is established."
 areas:
 - counts and ecology
 classification: specialist

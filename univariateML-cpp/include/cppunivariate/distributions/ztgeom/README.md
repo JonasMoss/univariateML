@@ -66,10 +66,9 @@ relations:
       scale: 1-prob
     when: prob < 1
 fit:
-  method: scalar-solve
+  method: closed-form
   certified: 'yes'
-  note: 'ztgeom/README.md, Details; ztgeom/mle.hpp (public fitter and held overloads); ztgeom/test.cpp: Closed-form
-    maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
+  note: "ztgeom/mle.hpp: The estimate is the reciprocal sample mean, including the attained probability-one member for all-one data; held probability only evaluates compatible likelihood."
 areas:
 - counts and ecology
 classification: specialist

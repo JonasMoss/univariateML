@@ -43,6 +43,7 @@ limits:
     when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.
     status: ParetoBoundary
     message: fixed-endpoint Pareto face
+    numerical: true
   - name: unbounded likelihood
     firmness: proved
     when: The free coefficients concentrate the distribution at the common positive observation.
@@ -53,10 +54,12 @@ limits:
     firmness: proved
     when: 'The gamma shape $k$ tends to infinity with $p\sqrt{k}\to1/\sigma$ and $\log a - \log(k)/p\to\mu$, for fixed $\sigma>0$ and $\mu$.'
     status: LognormalBoundary
+    numerical: true
   - model: pareto
     firmness: proved
     when: 'The power $p$ tends to infinity with $kp\to d>0$ and $a$ converging to a positive endpoint.'
     status: ParetoBoundary
+    numerical: true
 references:
 - Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3),
   1187-1192. doi:10.1214/aoms/1177704481.

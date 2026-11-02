@@ -70,24 +70,28 @@ limits:
   detect: 'Size and probability are free. The numerical size profile approaches the truncated-Poisson limit without exceeding its log likelihood by $10^{-9}$ times the sample size. This comparison does not prove non-existence of a finite maximizer.'
   fixed: []
   status: TpoisLimit
+  numerical: true
 - model: tpois
   firmness: proved
   when: 'The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same truncation window.'
   detect: 'Size and probability are free and the lower bound is held. The numerical profile does not exceed the truncated-Poisson log likelihood by $10^{-9}$ times the sample size. This is a numerical comparison rather than a non-existence proof.'
   fixed: [a]
   status: TpoisLimit
+  numerical: true
 - model: tpois
   firmness: proved
   when: 'The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same truncation window.'
   detect: 'Size and probability are free and the upper bound is held. The numerical profile does not exceed the truncated-Poisson log likelihood by $10^{-9}$ times the sample size. This is a numerical comparison rather than a non-existence proof.'
   fixed: [b]
   status: TpoisLimit
+  numerical: true
 - model: tpois
   firmness: proved
   when: 'The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same truncation window.'
   detect: 'Size and probability are free and both bounds are held. The numerical profile does not exceed the truncated-Poisson log likelihood by $10^{-9}$ times the sample size. This is a numerical comparison rather than a non-existence proof.'
   fixed: [a, b]
   status: TpoisLimit
+  numerical: true
 fit_args:
   a: 0
   b: 10
@@ -107,7 +111,7 @@ relations:
       size: size
       prob: prob
 fit:
-  method: multistart
+  method: integer-search
   certified: partial
   note: 'tbinom/README.md, Details; tbinom/mle.hpp (public fitter and held overloads); tbinom/test.cpp: Fixed size
     has exact conditional probability profiling; held probability has integer tail bounds. Free-size/free-probability

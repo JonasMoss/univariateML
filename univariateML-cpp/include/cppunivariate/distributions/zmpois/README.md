@@ -61,11 +61,9 @@ relations:
     type: zero-modified
     mass: p0
 fit:
-  method: multistart
+  method: scalar-solve
   certified: 'yes'
-  note: 'zmpois/README.md, Details; zmpois/mle.hpp (public fitter and held overloads); zmpois/test.cpp: Conditional
-    mean is strictly increasing in log rate (derivative is conditional variance), giving a unique bracketed root;
-    bounds profile to sample extremes and zero mass separates analytically.'
+  note: "zmpois/mle.hpp and zmpois/profile.hpp: The zero fraction maximizes the Bernoulli factor; positive counts delegate to the monotone zero-truncated Poisson rate solve. All-one positive data attain rate zero; all-zero data leave rate unidentified."
 areas:
 - counts and ecology
 classification: specialist

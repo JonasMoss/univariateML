@@ -57,7 +57,7 @@ relations:
         lambda: mu2
     when: mu1 > 0 && mu2 > 0
 fit:
-  method: scalar-solve
+  method: profile-search
   certified: 'yes'
   note: 'skellam/README.md, Details; one held rate has a strictly concave bracketed solve; the joint profile uses
     branch-and-bound with a tail bound, conditional on computed comparisons and a practical likelihood margin.'
