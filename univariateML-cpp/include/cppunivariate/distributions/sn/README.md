@@ -64,10 +64,9 @@ construction:
 - location-scale
 relations: {}
 fit:
-  method: multistart
+  method: profile-search
   certified: partial
-  note: 'sn/README.md, Details; sn/mle.hpp (public fitter and held overloads); sn/test.cpp: Held shape gives a concave
-    location/inverse-scale problem; free skewness uses finite scans and local refinement, not a global certificate.'
+  note: 'sn/README.md, Details; sn/mle.hpp: free location and shape use interval and tail upper bounds conditional on computed comparisons; held-location and held-shape solves remain numerical.'
 areas:
 - robust modelling
 classification: specialist
@@ -85,7 +84,7 @@ The Azzalini skew-normal extends the normal distribution by a smooth shape param
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) derives the stated limits and held-parameter conditions.
 
-The normal member has singular direct-parameter Fisher information. The fitter searches both signs of shape, profiles the strictly concave location-scale problem, and compares both exact half-normal suprema; faces win ties within 1e-8 times the sample size. Shape search uses a finite grid and local refinement and is a numerical global search, not a mathematical certificate. An infinite shape estimate stops with a recommendation to use the appropriate translated half-normal.
+The normal member has singular direct-parameter Fisher information. The fitter searches both signs of shape, profiles the strictly concave location-scale problem, and compares both exact half-normal suprema; faces win ties within 1e-8 times the sample size. For free location and shape, the grid initializes a branch-and-bound search with exact-arithmetic interval and tail bounds, conditional on the computed comparisons. An infinite shape estimate stops with a recommendation to use the appropriate translated half-normal.
 
 Any subset of the three parameters can be held fixed. A fixed shape leaves a concave problem in inverse scale and location divided by scale. With fixed location, an infinite shape remains possible only if every observation lies on the corresponding side of that location; observations equal to the fixed location contribute an additional log(2) penalty at the limit. Fixed scale is retained in the face comparison. No penalised likelihood is used.
 
@@ -95,17 +94,59 @@ $u=\xi/\omega$, the fixed-shape likelihood
 $n\log b+\sum_i\log[2\phi(bx_i-u)\Phi(\alpha(bx_i-u))]$ is strictly
 concave in $(u,b)$ for nonconstant data. At $\alpha=0$ this is the normal
 member; as $\alpha\to\pm\infty$ the corresponding translated half-normal
-is a separate limiting face. The existing Newton inner solve already uses
-this concavity; its floating-point stopping check and the outer shape grid
-remain numerical and do not certify a global free-shape maximum.
+is a separate limiting face. The Newton inner solve uses this concavity. Its stopping check is numerical; the outer search bounds the global likelihood gap separately.
 
 | TASK-116 property | Evidence |
 |---|---|
 | Fixed finite shape, nonconstant data | Strict concavity in inverse-scale coordinates, proved as above. |
 | Computed inner maximum | Newton iteration and a floating-point score check; numerical. |
-| Free shape and half-normal faces | Grid, local refinement and face comparison; numerical, with no global shape certificate. |
+| Free location and shape, including held scale | Interval and tail likelihood bounds, conditional on computed comparisons; finite branch budget. |
+| Fixed location with free shape | Separated concave one-dimensional shape score and a numerical bisection; no likelihood-gap certificate. |
 
 An unfinished inner solve is accepted only when the normalized free-coordinate score at the returned point is below `max(reltol, 1e-3/n)` (with `n` observations). This is the Euclidean score norm in log inverse scale and scaled location divided by the sample size, with held coordinates removed.
+
+### Global shape-search bounds (2026-11-02)
+
+The following inequalities hold in exact arithmetic. Write
+$z_i=\eta x_i-h$, with $\eta>0$, and standardize nonconstant data so that
+$\sum x_i=0$ and $\sum x_i^2=n$. At any finite reference point
+$(a_0,\eta_0,h_0)$, set $t_i=a_0(\eta_0x_i-h_0)$ and
+$r_i=\phi(t_i)/\Phi(t_i)$. Concavity of $\log\Phi$ gives
+$\log\Phi(a z_i)\leq\log\Phi(t_i)+r_i(a z_i-t_i)$. The resulting
+upper bound is affine in $a$ for each $(\eta,h)$. Consequently its supremum
+on $a\in[L,R]$ is the larger of its separate suprema at $L$ and $R$.
+For free location and scale, put $q=\sum r_ix_i$, $s=\sum r_i$ and
+$C=n\log(2/\sqrt{2\pi})+\sum(\log\Phi(t_i)-r_it_i)$. At either
+endpoint $a$, the bound is maximized by
+$h=-as/n$ and $\eta=(aq/n+\sqrt{(aq/n)^2+4})/2$, yielding
+$C+n\log\eta-n(\eta^2+h^2)/2+a(\eta q-hs)$. For held scale,
+use its fixed $\eta$ and the same maximizing $h$. This argument does not
+require the reference point to be an inner maximum.
+
+For $a\geq A>0$, $\Phi(t)\leq 1$ for $t\geq0$, while
+$\Phi(t)\leq\exp(-t^2/2)$ for $t<0$. Hence the tail likelihood is at most
+$n\log(2/\sqrt{2\pi})+n\log\eta-\eta^2Q_A(c)/2$, where
+$c=h/\eta$ and
+$Q_A(c)=\sum_i(x_i-c)^2[1+A^2\mathbf1\{x_i<c\}]$.
+Its minimum $Q_A^*$ is obtained by a one-dimensional convex piecewise
+quadratic minimization. With free scale the bound becomes
+$n[\log(2/\sqrt{2\pi})+\frac12\log(n/Q_A^*)-\frac12]$;
+with held scale use the fixed $\eta$ in the preceding expression. Reflect
+$x$ for the negative tail. As $A\to\infty$, $Q_A^*$ tends to
+$\sum_i(x_i-\min x)^2$, so this upper bound tends to the corresponding
+translated half-normal face likelihood. The grid and local refinements supply feasible candidates, and branch-and-bound
+bisects intervals until their upper bounds lie within $5\cdot10^{-9}n$ of
+the largest candidate or face. The two unbounded tails are doubled until
+their bounds meet the same threshold. A budget of 20,000 interval bisections,
+unresolved bounds, or an unresolvable midpoint produces `IterationFailure`.
+A face wins when within $10^{-8}n$ of the best finite point; the resulting
+exact-arithmetic gap is at most $1.5\cdot10^{-8}n$. The practical comparison
+allowance is $2\cdot10^{-8}n$ including floating-point effects, conditional on
+the computed special functions and comparisons; it is not an outward-rounded
+interval guarantee. Held location uses the separate score bisection and held
+shape uses the Newton solve, both numerical rather than likelihood-gap bounded.
+A [seeded spot check](../../../../../dev/research/evaluations/2026-11-02-sn-cert-data/check_bounds.py)
+examines feasible points under both bounds; it is numerical evidence, not a proof.
 
 ### Accepted-point cache (2026-11-01)
 
@@ -119,12 +160,11 @@ line search fails, the existing independent returned-point score check is
 used. With both location and scale held, the objective is evaluated once
 without computing an unused score or information matrix.
 
-This changes evaluation cost, not the objective, shape grid, local
-refinement, score gates or half-normal comparisons. It adds three temporary
+This cache changed evaluation cost, not the objective, shape grid, local
+refinement, score gates or half-normal comparisons at the time. It adds three temporary
 vectors of length $n$ per inner solve. Warm starts and a coarser outer grid
 were not adopted: their effect on the existing numerical search and status
-behavior would require separate evidence. The finite free-shape search
-still has no global certificate; caching adds no new optimality claim.
+behavior would require separate evidence. The cache itself adds no optimality claim; the subsequent shape bounds are described above.
 See the [speed evaluation](../../../../../dev/research/evaluations/2026-11-01-sn-speed-report.md)
 for paired regression evidence, timings and remaining guarantees.
 

@@ -105,6 +105,55 @@ inline Inner inner(const std::vector<double>& x,double a,double xi,double omega,
   }
   return {eta,h,ll,score_residual(x,a,xi,omega,eta,h)<std::max(tol,1e-3/n)};
 }
+// Global shape bounds, conditional on floating-point comparisons.
+struct ShapeTangent { long double c,q,s; };
+inline ShapeTangent shape_tangent(const std::vector<double>& x,double a,const Inner& v) {
+  long double c=0,q=0,s=0;
+  for(double y:x) {
+    const double t=a*(v.eta*y-v.h),r=inverse_mills(t);
+    c+=static_cast<long double>(log_phi_cdf(t))-static_cast<long double>(r)*t;
+    q+=static_cast<long double>(r)*y; s+=r;
+  }
+  c+=static_cast<long double>(x.size())*(std::log(2.0)-0.5*std::log(2*cppunivariate::pi));
+  return {c,q,s};
+}
+inline double shape_upper(const std::vector<double>& x,double omega,double a,const ShapeTangent& t) {
+  const long double n=x.size(); long double sx=0,sxx=0;
+  for(double y:x) { sx+=y;sxx+=static_cast<long double>(y)*y; }
+  const long double aa=a,linear=aa*(t.q-t.s*sx/n),quad=sxx-sx*sx/n;
+  if(!(quad>0) && !std::isfinite(omega)) return std::numeric_limits<double>::infinity();
+  long double eta;
+  if(std::isfinite(omega)) eta=1/static_cast<long double>(omega);
+  else { const long double root=std::sqrt(linear*linear+4*quad*n);
+    eta=linear>=0 ? (linear+root)/(2*quad) : 2*n/(root-linear); }
+  const long double h=(eta*sx-aa*t.s)/n;
+  const long double v=t.c+n*std::log(eta)-(eta*eta*sxx-2*eta*h*sx+n*h*h)/2+aa*(eta*t.q-h*t.s);
+  return std::isfinite(v) ? static_cast<double>(v) : std::numeric_limits<double>::infinity();
+}
+// Tail bound: minimize weighted Q by its monotone derivative, then use the
+// exact minimum for its active quadratic segment (avoids optimistic bisection).
+inline double shape_tail_upper(const std::vector<double>& x,double omega,double a,double sign) {
+  const long double n=x.size(),w=static_cast<long double>(a)*a;
+  long double lo=std::numeric_limits<long double>::infinity(),hi=-lo;
+  for(double y:x) { const long double z=sign*y;lo=std::min(lo,z);hi=std::max(hi,z); }
+  for(int i=0;i<100;++i) {
+    const long double mid=(lo+hi)/2;long double sw=0,sx=0;
+    for(double y:x) {const long double z=sign*y,weight=1+(z<mid ? w:0);sw+=weight;sx+=weight*(z-mid);}
+    if(sx>0) lo=mid;else hi=mid;
+  }
+  const long double mid=(lo+hi)/2;
+  long double sw=0,delta=0,q=0;
+  for(double y:x) {const long double z=sign*y,weight=1+(z<mid ? w:0),d=z-mid;sw+=weight;delta+=weight*d;q+=weight*d*d;}
+  // This quadratic is a lower bound on Q only while the active set is valid.
+  const long double optimum=mid+delta/sw;
+  bool valid=true;for(double y:x) if((sign*y<mid)!=(sign*y<optimum)) valid=false;
+  if(!valid) return std::numeric_limits<double>::infinity();
+  q-=delta*delta/sw;
+  if(!std::isfinite(q) || q<0 || (q==0 && !std::isfinite(omega))) return std::numeric_limits<double>::infinity();
+  const long double eta=std::isfinite(omega) ? 1/static_cast<long double>(omega):std::sqrt(n/q);
+  const long double value=n*(std::log(2.0)-.5L*std::log(2*cppunivariate::pi)+std::log(eta))-eta*eta*q/2;
+  return std::isfinite(value)?static_cast<double>(value):std::numeric_limits<double>::infinity();
+}
 }
 inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
                        double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN) {
@@ -131,7 +180,7 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
   const double n=static_cast<double>(x.size());
   sn_detail::Inner best={0,0,special::kNegInf,false}; double besta=0; int evaluations=0;
   const auto fit=[&](double a) { ++evaluations; return sn_detail::inner(x,a,fx,fw,tol,maxit); };
-  const auto consider=[&](double a,const sn_detail::Inner& v) { if(v.ll>best.ll) {best=v; besta=a;} };
+  const auto consider=[&](double a,const sn_detail::Inner& v) { if(v.converged && v.ll>best.ll) {best=v; besta=a;} };
   if(std::isfinite(alpha) || (constant && xi==low)) {
     besta=std::isfinite(alpha) ? alpha : 0;
     best=fit(besta);
@@ -185,8 +234,55 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       }
       if(r-l>1e-9) {bad.status=SnStatus::IterationFailure;return bad;}
     }
+    // The face is also a feasible member of the closure. Its likelihood is
+    // an incumbent, not an upper bound on nearby finite shapes.
+    double incumbent=best.ll;
+    for(double sign:{-1.0,1.0}) {
+      double c=sign>0 ? *std::min_element(x.begin(),x.end()) : *std::max_element(x.begin(),x.end());
+      double square=0;for(double y:x) square+=(y-c)*(y-c);
+      const double w=std::isfinite(fw) ? fw : std::sqrt(square/n);
+      if(w>0) incumbent=std::max(incumbent,n*(.5*std::log(2/cppunivariate::pi)-std::log(w))-square/(2*w*w));
+    }
+    // Leave half the 1e-8 n allowance for floating-point error. A face can
+    // subsequently win a tie within 1e-8 n; the resulting total allowance is
+    // 1.5e-8 n, conditional on the computed comparisons.
+    const double margin=5e-9*n;
+    double cutoff=8;
+    for(int k=0;k<50;++k) {
+      if(sn_detail::shape_tail_upper(x,fw,cutoff,1)<=incumbent+margin &&
+         sn_detail::shape_tail_upper(x,fw,cutoff,-1)<=incumbent+margin) break;
+      cutoff*=2;
+    }
+    if(!std::isfinite(cutoff) || cutoff>8*std::pow(2.0,49)) {bad.status=SnStatus::IterationFailure;return bad;}
+    struct Node {double a; sn_detail::Inner v; sn_detail::ShapeTangent tangent;};
+    struct Interval {Node l,r;};
+    std::vector<Node> nodes;
+    for(std::size_t i=0;i<grid.size();++i) if(grid[i]>-cutoff && grid[i]<cutoff)
+      nodes.push_back({grid[i],values[i],sn_detail::shape_tangent(x,grid[i],values[i])});
+    for(double a:{-cutoff,cutoff}) {
+      auto v=fit(a);consider(a,v);
+      nodes.push_back({a,v,sn_detail::shape_tangent(x,a,v)});
+    }
+    std::sort(nodes.begin(),nodes.end(),[](const Node& a,const Node& b){return a.a<b.a;});
+    std::vector<Interval> pending;
+    for(std::size_t i=1;i<nodes.size();++i) pending.push_back({nodes[i-1],nodes[i]});
+    int budget=20000;
+    while(!pending.empty()) {
+      const Interval interval=pending.back();pending.pop_back();
+      const auto bound=[&](const sn_detail::ShapeTangent& t) {
+        return std::max(sn_detail::shape_upper(x,fw,interval.l.a,t),sn_detail::shape_upper(x,fw,interval.r.a,t));
+      };
+      const double upper=std::min(bound(interval.l.tangent),bound(interval.r.tangent));
+      if(std::isfinite(upper) && upper<=std::max(incumbent,best.ll)+margin) continue;
+      const double a=interval.l.a+(interval.r.a-interval.l.a)/2;
+      if(--budget<0 || a==interval.l.a || a==interval.r.a) {bad.status=SnStatus::IterationFailure;return bad;}
+      const auto v=fit(a);consider(a,v);
+      const Node middle={a,v,sn_detail::shape_tangent(x,a,v)};
+      pending.push_back({interval.l,middle});pending.push_back({middle,interval.r});
+    }
   }
   if(!std::isfinite(alpha) && !(constant && xi==low)) {
+    SnResult face={nan,nan,nan,special::kNegInf,evaluations,SnStatus::IterationFailure};
     for(double sign:{-1.0,1.0}) {
       double endpoint=sign>0 ? -std::numeric_limits<double>::infinity() : std::numeric_limits<double>::infinity();
       for(double v:x) endpoint=sign>0 ? std::max(endpoint,-v) : std::min(endpoint,-v);
@@ -198,9 +294,10 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       const double w=std::isfinite(fw) ? fw : std::sqrt(square/n);
       if(!feasible || !(w>0)) continue;
       const double ll=n*(0.5*std::log(2/cppunivariate::pi)-std::log(w))-square/(2*w*w)-penalty;
-      if(ll>=best.ll-1e-8*n) return {center+unit*c,unit*w,sign*std::numeric_limits<double>::infinity(),ll-n*std::log(unit),evaluations,
+      if(ll>face.logLik+n*std::log(unit)) face={center+unit*c,unit*w,sign*std::numeric_limits<double>::infinity(),ll-n*std::log(unit),evaluations,
         sign>0 ? SnStatus::RightHalfNormalBoundary : SnStatus::LeftHalfNormalBoundary};
     }
+    if(face.status!=SnStatus::IterationFailure && face.logLik+n*std::log(unit)>=best.ll-1e-8*n) return face;
   }
   return {std::isfinite(xi) ? xi : center+unit*best.h/best.eta,
     std::isfinite(omega) ? omega : unit/best.eta,besta,best.ll-n*std::log(unit),evaluations,
