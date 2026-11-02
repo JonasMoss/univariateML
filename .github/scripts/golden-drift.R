@@ -5,4 +5,6 @@ unlink(report)
 Sys.setenv(UMVL_GOLDEN_DRIFT_FILE = report, PKG_BUILD_EXTRA_FLAGS = "false")
 options(pkg.build_extra_flags = FALSE)
 testthat::test_local("univariateML-r", filter = "golden_regression", stop_on_failure = TRUE)
-stopifnot(file.exists(report), nrow(read.csv(report)) == 98L)
+# One drift row per family golden.
+n_golden <- length(Sys.glob(file.path(root, "univariateML-cpp/include/cppunivariate/distributions/*/golden.json")))
+stopifnot(n_golden > 0L, file.exists(report), nrow(read.csv(report)) == n_golden)
