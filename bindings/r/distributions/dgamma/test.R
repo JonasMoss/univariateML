@@ -103,3 +103,13 @@ test_that("dgamma: P3 unfinished optimizer stops", {
   expect_error(mldgamma(x, iterlim=1, reltol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("dgamma certified search preserves likelihood and stops on exhaustion", {
+  for (x in list(c(0,0,0,1,2,6), c(1,1,3,8,12), c(0,0,1,2,4,8))) {
+    for (held in list(list(), list(rate=0.8))) {
+      f <- do.call(mldgamma,c(list(x=x),held))
+      expect_equal(as.numeric(logLik(f)), sum(univariateML_to_function(f,"d")(x,log=TRUE)), tolerance=1e-9)
+    }
+  }
+  expect_error(mldgamma(c(0,0,1,2,4,8),iterlim=1),"converge")
+})

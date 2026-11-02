@@ -104,3 +104,25 @@ TEST_CASE("dgamma: uncertified extreme upper tail reports failure") {
   CHECK(std::isnan(cppunivariate::special::fs_gamma_p(1e14+4e8,1e14,false,true)));
 }
 #endif
+
+TEST_CASE("dgamma: shape score intervals include profiled differences") {
+  const std::vector<double> x{0,0,0,1,1,2,3,5,9};
+  cppunivariate::dnorm_detail::Cells cells;
+  REQUIRE(cells.init({x.data(),x.size()}));
+  for (double a:std::vector<double>{0.2,1.0,5.0,20.0}) {
+    for (bool held:std::vector<bool>{false,true}) {
+      double lo=0,hi=0;
+      REQUIRE(cppunivariate::dgamma_detail::shape_score_bounds(cells,a*0.99,a*1.01,held,0.8,lo,hi));
+      const cppunivariate::dgamma_detail::Cost cost{cells,held,0.8,400};
+      const double t=std::log(a),h=1e-5;
+      const double slope=-(cost(std::vector<double>{t+h})-cost(std::vector<double>{t-h}))/(2*h);
+      CHECK(slope>=lo-1e-6);
+      CHECK(slope<=hi+1e-6);
+    }
+  }
+}
+
+TEST_CASE("dgamma: exhausted certificate is a numerical failure") {
+  const std::vector<double> x{0,0,1,2,4,8};
+  CHECK(cppunivariate::dgamma_mle({x.data(),x.size()},1e-8,1).status==cppunivariate::DgammaStatus::IterationFailure);
+}
