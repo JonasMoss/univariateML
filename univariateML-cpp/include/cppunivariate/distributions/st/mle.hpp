@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "dpqr.hpp"
 #include "../sn/mle.hpp"
 #include "../ht/mle.hpp"
@@ -103,6 +104,7 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
  if(std::isnan(nu)) {
   auto sn=sn_mle(sy,tol,maxit,fx,fw,alpha);
   if(sn.status!=SnStatus::Ok&&sn.status!=SnStatus::RightHalfNormalBoundary&&sn.status!=SnStatus::LeftHalfNormalBoundary){bad.status=StStatus::NumericalFailure;bad.reason=2;return bad;}
+  if(face_numerical_tie(sn.logLik,reference,tie) || face_numerical_tie(reference,sn.logLik,tie)) {bad.status=StStatus::NumericalFailure;return bad;}
   if(sn.status==SnStatus::Ok&&(sn.logLik>reference+tie||(best.ok&&best.v[3]>1e5&&sn.logLik>=reference-tie)))
    boundary={origin+unit*sn.xi,unit*sn.omega,sn.alpha,INFINITY,sn.logLik,sn.iterations,StStatus::SkewNormalBoundary};
   if((sn.status==SnStatus::RightHalfNormalBoundary||sn.status==SnStatus::LeftHalfNormalBoundary)&&sn.logLik>=reference-tie)
@@ -132,6 +134,7 @@ inline StResult st_mle(span data,double tol=1e-6,int maxit=200,double xi=special
   }
   if(failed){bad.status=StStatus::NumericalFailure;bad.reason=3;return bad;}
   if(std::isfinite(mu))for(double v:side)if(v==mu)face-=std::log(2.);
+  if(face_numerical_tie(face,reference,tie)) {bad.status=StStatus::NumericalFailure;return bad;}
   if(face>=reference-tie&&face>boundary.logLik){bool normal=winner.status==HtStatus::NormalLimit;boundary={origin+unit*sign*winner.mu,unit*winner.sigma,sign*INFINITY,winner.nu,face,winner.iterations,normal?(sign>0?StStatus::RightHalfNormalBoundary:StStatus::LeftHalfNormalBoundary):(sign>0?StStatus::RightHalfTBoundary:StStatus::LeftHalfTBoundary)};}
  }
  if(std::isfinite(boundary.logLik)){boundary.logLik-=n*std::log(unit);return boundary;}

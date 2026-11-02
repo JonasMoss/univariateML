@@ -7,6 +7,7 @@
 // where f_unit is the standardised GED used by dged().
 
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 
@@ -192,6 +193,7 @@ inline GedResult ged_mle_impl(span x, double tol, int maxit) {
   }
   if(!accepted && attempted>best.logLik+tie) best.status=GedStatus::BfgsFailure;
   const double uniform = -dn * std::log(z.back() - z.front());
+  if(face_numerical_tie(attempted,uniform,tie)) {best.status=GedStatus::BfgsFailure;return best;}
   if (uniform > attempted + tie) {
     best.logLik = uniform;
     best.status = GedStatus::UniformBoundary;
@@ -271,6 +273,7 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
   const auto optimum=ged_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
   if(!optimum.converged)return {nan,nan,nan,nan,maxit,GedStatus::BfgsFailure};
   auto best=profile(optimum.point);const auto laplace=ged_detail::conditional(x,1,mean,sd);const double tie=1e-8*x.size();
+  if(face_numerical_tie(laplace.logLik,best.logLik,tie)) {best.status=GedStatus::BfgsFailure;return best;}
   if(laplace.logLik>=best.logLik-tie)best=laplace;
   const auto mm=std::minmax_element(x.begin(),x.end());
   const double m=std::isnan(mean)?*mm.first/2+*mm.second/2:mean;
@@ -284,6 +287,7 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
       uniform-=std::exp(-0.5772156649015328606)*(std::isnan(mean)?2*std::sqrt(left*right):left+right);
     }
   }
+  if(face_numerical_tie(best.logLik,uniform,tie)) {best.status=GedStatus::BfgsFailure;return best;}
   if(uniform>best.logLik+tie){best.logLik=uniform;best.status=GedStatus::UniformBoundary;}
   return best;
 }

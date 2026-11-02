@@ -289,3 +289,33 @@ TEST_CASE("huber: P3 fixed-scale fallback requires its location score") {
   REQUIRE(fit.status==cppunivariate::HuberStatus::Ok);
   CHECK(std::abs(fit.mu-5e-302)<1e-310);
 }
+
+TEST_CASE("huber: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e20;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("huber: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::huber_mle(s,1e-10,200,nan,0,1e-10);
+  CHECK((r.status==cppunivariate::HuberStatus::Ok || r.status==cppunivariate::HuberStatus::LaplaceLimit || r.status==cppunivariate::HuberStatus::IterationFailure));
+  CHECK(r.status==cppunivariate::HuberStatus::IterationFailure);
+}
+
+TEST_CASE("huber: held-coordinate Gaussian gain cancels an enormous quadratic") {
+  const double n=2, c=3e10, sigma=1e-10;
+  // Both standardized residuals lie in the quadratic region. Thus the
+  // Gaussian and Huber kernels agree exactly; only normalization differs.
+  const double gain=n*(std::log(cppunivariate::huber_z(c))-.5*std::log(2*std::acos(-1.0)));
+  CHECK(std::abs(gain)<1e-14);
+  const double normal=-n*(std::log(sigma)+.5*std::log(2*std::acos(-1.0)))-5/(2*sigma*sigma);
+  CHECK(cppunivariate::compare_face(normal,normal,1e-8*n)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(gain,0,1e-8*n,n+std::abs(gain))==cppunivariate::FaceComparison::FirstWins);
+  // A supplied large absolute-term sum must not be hidden by a small gain.
+  CHECK(cppunivariate::compare_face(1,0,1e-8,1e20)==cppunivariate::FaceComparison::NumericalTie);
+}

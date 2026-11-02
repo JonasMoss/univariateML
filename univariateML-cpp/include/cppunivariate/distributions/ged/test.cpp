@@ -164,3 +164,19 @@ TEST_CASE("ged fixed shape inverse-scale concavity examples") {
   const auto f=[](double z){return cppunivariate::distributions::dged(z,0,1,0.5,true);};
   CHECK(f(2)<0.5*(f(1)+f(3)));
 }
+
+TEST_CASE("ged: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e20;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("ged: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::ged_mle(s,1e-6,500,0,1e-20,nan);
+  CHECK((r.status==cppunivariate::GedStatus::Ok || r.status==cppunivariate::GedStatus::BfgsFailure));
+}

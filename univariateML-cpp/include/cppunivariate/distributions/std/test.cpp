@@ -230,3 +230,20 @@ TEST_CASE("std: P3 unfinished optimizer is a failure") {
   const auto x=mltest::as_span(g.data);
   CHECK(cppunivariate::student_t_mle(x,1e-8,1).status==cppunivariate::StudentTStatus::BfgsFailure);
 }
+
+TEST_CASE("std: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e20;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("std: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::student_t_mle(s,1e-6,200,0,1e-10,nan);
+  CHECK((r.status==cppunivariate::StudentTStatus::Ok || r.status==cppunivariate::StudentTStatus::BfgsFailure || r.status==cppunivariate::StudentTStatus::IterationFailure));
+  CHECK(r.status!=cppunivariate::StudentTStatus::NormalBoundary);
+}

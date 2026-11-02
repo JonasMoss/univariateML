@@ -195,3 +195,5 @@ univariateML 1.x estimated only the shapes, with scale fixed at 1.
 On 2026-10-30 (TASK-125), identical observations with exactly one held shape
 were assigned directly to the appropriate gamma or inverse-gamma limit using
 the digamma inequality above. This avoids cancellation in the finite grid comparison.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

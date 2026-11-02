@@ -199,3 +199,19 @@ TEST_CASE("sn tail bound handles ties at a fixed scale") {
   const double face=5*(.5*std::log(2/cppunivariate::pi)-std::log(2.0));
   CHECK(upper==doctest::Approx(face).epsilon(1e-12));
 }
+
+TEST_CASE("sn: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e20;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("sn: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::sn_mle(s,1e-9,100,0,1e-10,nan);
+  CHECK((r.status==cppunivariate::SnStatus::RightHalfNormalBoundary || r.status==cppunivariate::SnStatus::IterationFailure));
+}

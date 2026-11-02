@@ -178,3 +178,5 @@ they do not certify that no mode lies beyond or between grid points. Failed
 inner solves, unsuccessful polishing and unresolved face comparisons fall
 back to the existing multistart; held-parameter fits retain that path. A test
 hook counts fallbacks when enabled. See the [round-four evidence](../../../../../dev/research/evaluations/2026-10-31-logconcave-4-report.md).
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

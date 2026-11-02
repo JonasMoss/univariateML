@@ -8,6 +8,7 @@
 // where f_unit is the standardised t (mean 0, sd 1) used by dstd().
 
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
@@ -288,6 +289,7 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
   // comparison, not an exhaustive global stationary-point certificate.
   const double tie = 1e-8 * dn;
   const double interior_ll = std::isfinite(r.f) ? -r.f : -INFINITY;
+  if(face_numerical_tie(normal_ll,interior_ll,tie) || face_numerical_tie(-face.f,interior_ll,tie) || face_numerical_tie(normal_ll,-face.f,tie)) return {kNaN,kNaN,kNaN,kNaN,0,StudentTStatus::BfgsFailure};
   if (normal_ll >= interior_ll - tie && normal_ll >= -face.f - tie) {
     return {mean_x, normal_sd, INFINITY, normal_ll, r.iterations,
             StudentTStatus::NormalBoundary};
@@ -348,6 +350,7 @@ inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,doub
     face=-static_cast<double>(x.size())*std::log(2.0);
     for(double v:x)if(v!=atom)face-=3*std::log(std::abs(v-atom));
   }
+  if(face_numerical_tie(normal.logLik,best.logLik,tie) || face_numerical_tie(face,best.logLik,tie) || face_numerical_tie(normal.logLik,face,tie)) {best.status=StudentTStatus::IterationFailure;return best;}
   if(normal.logLik>=best.logLik-tie&&normal.logLik>=face-tie)return {normal.mean,normal.sd,INFINITY,normal.logLik,0,StudentTStatus::NormalBoundary};
   if(face>=best.logLik-tie)return {mean,INFINITY,2,face,0,k==2*(x.size()-k)?StudentTStatus::ScaleBoundary:StudentTStatus::DfTwoBoundary};
   return best;

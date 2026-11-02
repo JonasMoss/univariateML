@@ -111,3 +111,20 @@ TEST_CASE("logconcave fixed-shape normal inner solution") {
   CHECK(fit.u==doctest::Approx(0).epsilon(1e-12));
   CHECK(fit.b==doctest::Approx(1/std::sqrt(2.0)).epsilon(1e-12));
 }
+
+TEST_CASE("emg: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e20;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("emg: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::emg_mle(s,1e-8,500,0,1e-10,nan);
+  CHECK((r.status==cppunivariate::EmgStatus::Ok || r.status==cppunivariate::EmgStatus::IterationFailure));
+  CHECK(r.status!=cppunivariate::EmgStatus::NormalLimit);
+}

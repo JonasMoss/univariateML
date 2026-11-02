@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
@@ -297,6 +298,7 @@ inline SnResult sn_mle(span data,double tol=1e-9,int maxit=100,
       if(ll>face.logLik+n*std::log(unit)) face={center+unit*c,unit*w,sign*std::numeric_limits<double>::infinity(),ll-n*std::log(unit),evaluations,
         sign>0 ? SnStatus::RightHalfNormalBoundary : SnStatus::LeftHalfNormalBoundary};
     }
+    if(face.status!=SnStatus::IterationFailure && face_numerical_tie(face.logLik+n*std::log(unit),best.ll,1e-8*n)) {bad.status=SnStatus::IterationFailure;return bad;}
     if(face.status!=SnStatus::IterationFailure && face.logLik+n*std::log(unit)>=best.ll-1e-8*n) return face;
   }
   return {std::isfinite(xi) ? xi : center+unit*best.h/best.eta,

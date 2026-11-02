@@ -180,3 +180,5 @@ work in profile evaluation; the report `dev/research/evaluations/2026-10-29-perf
 records the performance investigation. The search costs repeated passes
 over the data per profile evaluation; the implementation report includes
 measured workloads and the slower BFGS-only comparison.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

@@ -151,3 +151,20 @@ TEST_CASE("gb2: bounded member seeds retain the full-data repeated-sample fit") 
   CHECK(fit.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(1e-7));
   CHECK(fit.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-7));
 }
+
+TEST_CASE("gb2: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e99;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("gb2: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::gb2_mle(s,1e-7,300,nan,1,1e100,nan);
+  CHECK((r.status==cppunivariate::Gb2Status::Ok || r.status==cppunivariate::Gb2Status::SearchUnresolved || r.status==cppunivariate::Gb2Status::ScaleOutOfRange));
+  CHECK(r.status!=cppunivariate::Gb2Status::TrGammaBoundary);
+}

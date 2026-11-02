@@ -129,3 +129,5 @@ A winning Poisson comparison stops with advice to use mlpois. Its numerical
 tie tolerance is 1e-8 times sample size, so a sufficiently small finite
 improvement may also be reported as the Poisson limit. At shape = 0, the
 reported mean is the held value or one when mean is unidentified.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

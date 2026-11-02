@@ -142,3 +142,20 @@ TEST_CASE("bhatt: free fit is affine equivariant") {
   CHECK(shifted.a==doctest::Approx(2.5*original.a).epsilon(1e-5));
   CHECK(shifted.logLik==doctest::Approx(original.logLik-g.data.size()*std::log(2.5)).epsilon(1e-10));
 }
+
+TEST_CASE("bhatt: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e20;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("bhatt: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::bhatt_mle(s,1e-8,500,1e-10,nan,0);
+  CHECK((r.status==cppunivariate::BhattStatus::Ok || r.status==cppunivariate::BhattStatus::IterationFailure));
+  CHECK(!(r.status==cppunivariate::BhattStatus::Ok && r.a==0));
+}

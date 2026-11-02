@@ -1,5 +1,6 @@
 // Location-scale Student t, constrained to df >= 1.
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
 #include "../../core/bfgs.hpp"
@@ -205,6 +206,7 @@ inline LstResult lst_mle_impl(span x, double tol, int maxit) {
   if (best.theta.empty()) return {nan,nan,nan,nan,0,LstStatus::BfgsFailure};
   // Prefer an attained finite member in numerical ties, except on the
   // asymptotic normal approach (df >= 1e5 has no resolved finite optimum).
+  if((face_numerical_tie(normal,-best.f,tie) || face_numerical_tie(-best.f,normal,tie))) return {nan,nan,nan,nan,0,LstStatus::BfgsFailure};
   if (normal > -best.f + tie || (best_df >= 1e5 && normal >= -best.f-tie))
     return {center+unit*mean,unit*std::sqrt(variance),INFINITY,
             normal-n*std::log(unit),best.iterations,LstStatus::NormalBoundary};
@@ -320,8 +322,10 @@ inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma
   const auto optimum=lst_detail::maximize([&](double a){return profile(a).logLik;},grid,1e-8,maxit);
   if(!optimum.converged)return {nan,nan,nan,nan,maxit,LstStatus::IterationFailure};
   auto best=profile(optimum.point);const auto edge=lst_detail::conditional(x,1,mu,sigma,tol,maxit);
+  if(floor==1 && edge.status==LstStatus::Ok && face_numerical_tie(edge.logLik,best.logLik,1e-8*x.size())) {best.status=LstStatus::IterationFailure;return best;}
   const double tie=1e-8*x.size();if(floor==1 && edge.status==LstStatus::Ok&&edge.logLik>=best.logLik-tie)best=edge;
   const auto normal=norm_mle(x,mu,sigma);
+  if(face_numerical_tie(normal.logLik,best.logLik,tie) || face_numerical_tie(best.logLik,normal.logLik,tie) || face_numerical_tie(collapse,best.logLik,tie)) {best.status=LstStatus::IterationFailure;return best;}
   if(normal.logLik>best.logLik+tie||(best.df>1e5&&normal.logLik>=best.logLik-tie))return {normal.mean,normal.sd,INFINITY,normal.logLik,0,LstStatus::NormalBoundary};
   if(collapse>=best.logLik-tie)return {mu,0,1,collapse,0,LstStatus::ScaleBoundary};
   return best;

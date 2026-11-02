@@ -111,3 +111,20 @@ TEST_CASE("genbeta finite upper density limit preserves log range") {
         doctest::Approx(std::log(1e308)+std::log(2.)-std::log(3.)));
   CHECK(cppunivariate::distributions::dgenbeta(3,2,1,2,3,false)==doctest::Approx(4./3));
 }
+
+TEST_CASE("genbeta: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e99;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("genbeta: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{std::exp(-1.),std::exp(-2.)};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::genbeta_mle(s,1,1e-7,300,nan,1e100,nan);
+  CHECK((r.status==cppunivariate::GenbetaStatus::Ok || r.status==cppunivariate::GenbetaStatus::PowerBoundary || r.status==cppunivariate::GenbetaStatus::SearchUnresolved));
+  CHECK(r.status!=cppunivariate::GenbetaStatus::UnitGammaBoundary);
+}

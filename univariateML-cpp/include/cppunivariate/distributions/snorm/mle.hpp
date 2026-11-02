@@ -2,6 +2,7 @@
 // standardised (mean, sd, xi) coordinates.
 
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -141,6 +142,7 @@ inline SnormResult held_fit(span x, double mu, double sd, double xi) {
       if(hm && hs && std::abs(v-c)<=1e-14*(1+std::abs(c)))
         ll-=m1*m1/(8*h*h*h*h);
     }
+    if(face_numerical_tie(ll,out.logLik,1e-8*n)) {out.status=SnormStatus::BfgsFailure;return out;}
     if(ll>=out.logLik-1e-8*n) {
       out.logLik=ll;
       out.status=side==1 ? SnormStatus::RightHalfNormalBoundary : SnormStatus::LeftHalfNormalBoundary;
