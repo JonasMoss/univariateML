@@ -11,6 +11,7 @@
  <button disabled={!api} on:click={update}>Recompute held-rate example</button>
  {#if error}<p role="alert">{error}</p>{/if}
  <div class="figure">{@html conditionalSvg(result)}</div>
+ <p class="window-note">Display window: top 15 log-likelihood units, expanded to retain fit and limit markers. Tails below the window are cut at the frame.</p>
  <p>● black: free fit; green: <math><mi>a</mi><mo>=</mo><mn>0.2</mn></math>; purple: <math><mi>a</mi><mo>=</mo><mn>1</mn></math>; rust: <math><mi>a</mi><mo>=</mo><mn>2</mn></math>. The open circle marks an excluded boundary supremum, not a fitted estimate.</p>
  <table aria-label="Gompertz held fits"><thead><tr><th>Fit</th><th>a</th><th>b</th><th>Log-likelihood / diagnostic</th></tr></thead><tbody>
  <tr><td>Free</td><td>{fmt(result.free.fit.estimates.a)}</td><td>{fmt(result.free.fit.estimates.b)}</td><td>{fmt(result.free.fit.logLik)}</td></tr>
