@@ -197,3 +197,18 @@ test_that("slash independent density oracle agrees with a mixture integral at th
 test_that("slash: P3 unfinished local profile stops", {
   expect_error(mlslash(c(-2,-.3,.1,.8,4),iterlim=1), "failed")
 })
+
+test_that("slash: extreme conditional bracket is checked", {
+  expect_error(mlslash(c(0,1e-300,1),mu=0,iterlim=1))
+  expect_error(mlslash(c(0,1e-322,1e-22),mu=0))
+  f <- mlslash(c(0,1e-300,1),mu=0)
+  g <- mlslash(c(0,1e-200,1e100),mu=0)
+  t <- (1e-300/unname(f["sigma"]))^2/2
+  expect_equal(expm1(t),2*t,tolerance=1e-9)
+  expect_gt(as.numeric(logLik(f)),686)
+  expect_equal(unname(g["sigma"])/unname(f["sigma"]),1e100,tolerance=1e-9)
+  expect_equal(as.numeric(logLik(g))+3*log(1e100),as.numeric(logLik(f)),tolerance=1e-10)
+  big <- .Machine$double.xmax
+  wide <- mlslash(c(big,-big,0),mu=big)
+  expect_true(is.finite(as.numeric(logLik(wide))))
+})

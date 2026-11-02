@@ -29,7 +29,7 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if (r.status == cppunivariate::LstStatus::ScaleBoundary)
     return fail("Fixed `df` is at the tie equality scale-collapse boundary; a regular MLE is not certified.");
   if (r.status == cppunivariate::LstStatus::IterationFailure)
-    return fail("Fixed `df` EM did not converge to the score tolerance; increase iterlim.");
+    return fail("Location-scale t solve could not establish a representable score bracket or converge to the score tolerance; increase iterlim.");
   if (r.status == cppunivariate::LstStatus::NoMLE)
     return fail("Location-scale t MLE on df >= 1 requires at least 3 observations and no value repeated n/2 or more times; scale collapse otherwise prevents a regular MLE.");
   if (r.status == cppunivariate::LstStatus::NormalBoundary)

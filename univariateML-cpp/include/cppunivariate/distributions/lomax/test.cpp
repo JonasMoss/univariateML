@@ -218,3 +218,14 @@ TEST_CASE("lomax: P3 Newton candidate and compressed profile reject exhaustion")
   CHECK(fit.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-5));
   CHECK(fit.kappa==doctest::Approx(g.estimates.at("kappa")).epsilon(1e-5));
 }
+
+TEST_CASE("lomax: verified extreme conditional bracket") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{1e300,2e300};
+  CHECK(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,nan,1e300).status==cppunivariate::LomaxStatus::IterationFailure);
+  const std::vector<double> y{1,2};
+  const auto r=cppunivariate::lomax_mle(mltest::as_span(y),1e-10,100,nan,nan,1e300);
+  REQUIRE(r.status==cppunivariate::LomaxStatus::Ok);
+  CHECK(r.lambda==doctest::Approx(2e-300/3).epsilon(1e-9).scale(1e-300));
+  CHECK(r.logLik==doctest::Approx(2*(std::log(2.0/3)-1)).epsilon(1e-10));
+}

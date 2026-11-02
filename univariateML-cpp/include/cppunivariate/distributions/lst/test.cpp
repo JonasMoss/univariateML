@@ -176,3 +176,24 @@ TEST_CASE("lst: profile search evaluates each grid point once") {
   CHECK_FALSE(result.converged);
   CHECK(grid_calls==3);
 }
+
+TEST_CASE("lst: verified extreme conditional bracket") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double unit:{1.0,1e100}) {
+    const std::vector<double> x{0,1e-300*unit,unit};
+    const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-10,200,0,nan,1);
+    REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+    CHECK(r.sigma/unit==doctest::Approx(1e-300).epsilon(1e-9).scale(1e-300));
+    CHECK(r.logLik+3*std::log(unit)==doctest::Approx(-std::log(1e-300)-3*std::log(cppunivariate::pi)-std::log(2.0)).epsilon(1e-10));
+  }
+  const std::vector<double> tiny{0,1e-300,1};
+  CHECK(cppunivariate::lst_mle(mltest::as_span(tiny),1e-10,1,0,nan,1).status==cppunivariate::LstStatus::IterationFailure);
+  const std::vector<double> edge{0,std::numeric_limits<double>::denorm_min(),1};
+  CHECK(cppunivariate::lst_mle(mltest::as_span(edge),1e-10,200,0,nan,1).status==cppunivariate::LstStatus::IterationFailure);
+  const double big=std::numeric_limits<double>::max();
+  const std::vector<double> opposite{big,-big,0};
+  const auto wide=cppunivariate::lst_mle(mltest::as_span(opposite),1e-10,200,big,nan,1);
+  REQUIRE(wide.status==cppunivariate::LstStatus::Ok);
+  CHECK(wide.sigma/big==doctest::Approx(std::sqrt((std::sqrt(73.0)-5)/6)).epsilon(1e-9));
+  CHECK(std::isfinite(wide.logLik));
+}

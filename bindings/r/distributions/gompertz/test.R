@@ -100,3 +100,15 @@ test_that("gompertz: P3 unfinished optimizer stops", {
   expect_error(mlgompertz(x, iterlim=1, reltol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("gompertz: extreme conditional bracket is checked", {
+  f <- mlgompertz(c(1e-300,2e-300),a=1e-300)
+  g <- mlgompertz(c(1e-290,2e-290),a=1e-310)
+  expect_gt(unname(f["b"]),6e302)
+  expect_gt(as.numeric(logLik(f)),418)
+  expect_equal(unname(g["b"])*1e10/unname(f["b"]),1,tolerance=1e-9)
+  expect_equal(as.numeric(logLik(g))+2*log(1e10),as.numeric(logLik(f)),tolerance=1e-9)
+  wide <- mlgompertz(c(1e308,1e308),a=1e-308)
+  expect_equal(unname(wide["b"])*1e308,1,tolerance=1e-9)
+  expect_equal(as.numeric(logLik(wide))+2*log(1e308),2-2*expm1(1),tolerance=1e-9)
+})
