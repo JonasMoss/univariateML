@@ -37,8 +37,8 @@ log_density: loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)+x*log(prob)+(size
 limits:
 - model: ztpois
   firmness: proved
-  when: $size \to \infty$ with the positive conditional mean fixed
-  detect: the maximised face likelihood wins within 1e-8 times the sample size
+  when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated Poisson law.
+  detect: With both coefficients free and at least one count above one, the fitted zero-truncated Poisson log likelihood is at least the best searched finite-size value minus $10^{-8}$ times sample size.
   status: PoissonLimit
 fit_args:
   size: ~
@@ -81,19 +81,34 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both trial count and probability free, a general finite-MLE criterion and uniqueness result are not established here. The supremum can lie at the zero-truncated Poisson limit as $n$ tends to infinity. All-one data attain a maximum with nonunique coefficients. With integer $n\ge\max_i x_i$ held and $n>1$, the probability MLE exists and is unique, including its endpoints. At $n=1$, only ones are possible and $p$ is unidentified. With $0<p<1$ held, a finite integer maximum exists but uniqueness is not asserted. Held $p=0$ requires only ones and leaves $n$ unidentified. Held $p=1$ requires constant counts and sets $n$ to that count. Holding both coefficients requires compatible observations.
+  reason: >-
+    At fixed $n>1$, the log likelihood is strictly concave in logit probability, with curvature minus sample size times the conditional variance. The conditional mean ranges from one to $n$, giving a unique mean-matching solution or endpoint. At held interior probability, each observed mass tends to zero as $n$ tends to infinity, so a finite integer maximum exists. These arguments do not establish unimodality or uniqueness of the free-size profile.
 ---
 
-Zero-truncated binomial distributions model positive counts.
+The zero-truncated binomial distribution describes binomial success counts observed only when positive. The integer trial count $n$ bounds the counts, and $p$ is the success probability before conditioning.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) derives the stated limits and held-parameter conditions.
+Holding the trial count removes the infinite-size escape. For a trial count greater than one, the fit matches the conditional mean to the sample mean. All-one data give the attained endpoint $p=0$, and counts all equal to the held trial count give $p=1$. At trial count one every probability gives the same point mass, and the probability is unidentified.
 
-Actuar defines the point mass at one at `prob = 0`. This boundary is returned as an attained member.
-Holding size fixed removes the infinite-size escape. The point mass at one remains attained for every fixed size.
+With both coefficients free, probability is profiled by conditional-mean matching at each candidate size. The search scans an exponential grid and refines local peaks before comparing neighboring integer sizes. The grid extends beyond its initial range until more than ten consecutive cells give no improvement, subject to the iteration budget. This is a numerical stopping rule. Neither the grid nor its comparison with the Poisson limit certifies a global maximum.
 
-A held probability is preserved exactly. With probability strictly between zero and one, the fixed-probability integer search bounds the remaining tail before returning; exhausting its work budget is an error. Boundary probabilities must give positive likelihood to the observations.
+With an interior probability held, the integer search bounds the remaining tail before returning. Exhausting its work budget is an error. Probability zero permits only ones. Probability one permits only counts equal to the trial count. These are attained members, not escapes.
 
-With both size and probability free, the search profiles probability at its exact conditional-mean-matching value for each candidate size and scans an exponential grid of candidate sizes, refining each local peak. Unlike `mlbinom`'s free-size search, no unimodality proof is known for this truncated profile (DeRiggi 1983 covers the untruncated binomial only), so this remains a numerical grid search, not a certified one; see `dev/research/evaluations/2026-10-29-tail85-report.md`. The grid has no fixed magnitude limit: it keeps growing until it has gone ten exponential steps without an improvement, bounded only by `iterlim` (a larger `iterlim` lets it search further, never a hard cap). Cross-checked against independent reference-density multistart oracles, including tied and near-Poisson samples.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-binomial.md) discusses the boundaries. The [search checks](../../../../../dev/research/evaluations/2026-10-29-tail85-report.md) compare the fit with independent reference-density multistart oracles, including tied and near-Poisson samples. Such comparisons do not prove global optimality.
 
-DeRiggi (1994) reports a counterexample to general continuous positive-binomial likelihood unimodality; this does not itself establish a counterexample for integer sizes. The grid and its Poisson-face comparison do not certify the global optimum. See the [size-search investigation](../../../../../dev/research/evaluations/2026-10-31-size-search-report.md) for the reference and the remaining gap.
+## R notes
+
+The numerical limit comparison can reject a finite mathematical maximum that ties or improves on the limit by less than the comparison tolerance. A limit diagnostic is therefore not a proof of non-existence for the supplied sample.
+
+Supply `size` explicitly. A numeric value holds it, while `size = NULL` estimates it. Supplying `prob` holds the probability exactly. The boundary convention at `prob = 0` agrees with actuar. Detected Poisson escapes stop with advice to use `mlztpois`. Iteration exhaustion stops instead of returning a capped size. Increasing `iterlim` permits more work but does not supply a global certificate.
+
+## Decision history
+
+2026-10-29: the free-size grid's fixed magnitude cap was removed. The current search grows subject to its iteration budget and numerical stopping rule. See the search checks linked above.
+
+2026-10-31: the [size-search investigation](../../../../../dev/research/evaluations/2026-10-31-size-search-report.md) records the remaining certificate gap. DeRiggi, D. F. (1983), “Unimodality of Likelihood Functions for the Binomial Distribution”, Journal of the American Statistical Association, 78(381), 181–183, doi:10.1080/01621459.1983.10477949, concerns the untruncated law. DeRiggi, D. (1994), “Sufficient conditions for unimodality of the positive binomial likelihood function”, Statistics & Probability Letters, 19(1), 1–4, doi:10.1016/0167-7152(94)90061-2, reports a continuous-profile counterexample. As recorded in that investigation, the full paper and correction remain unchecked, and this does not establish an integer-size counterexample.

@@ -85,13 +85,22 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, every nonempty sample of nonnegative integers has an MLE. The zero probability is the observed zero fraction. If there is a positive observation, the positive-count probability is unique, including $p=0$ when every positive count is one. With all-zero data, $p_0=1$ and $p$ is unidentified. Holding either coefficient leaves the same maximization for the other, provided the held values give positive likelihood. Holding both leaves only likelihood evaluation.
+  reason: >-
+    The likelihood factors into the Bernoulli likelihood of the zero indicators and a logarithmic-series likelihood for the positive counts. The latter is a one-parameter exponential family with natural parameter $\log p$. Its mean increases strictly from one to infinity because its derivative in that parameter is its positive variance. Strict concavity therefore gives a unique root for a positive-count mean above one. At mean one the maximum is the attained member $p=0$. With no positive counts this factor is absent.
 ---
 
-Zero-modified logarithmic distributions model counts with a separate zero component.
+The zero-modified logarithmic distribution combines a freely chosen zero probability $p_0$ with logarithmic-series positive counts. Increasing $p$ increases the mean of the positive counts without changing the zero probability.
 
 ## Details
 
-With no positives the fitter returns `p0 = 1` and conventional base parameters with a warning. With no zeros it returns `p0 = 0`. Positive observations all equal to one give an attained two-point law; the fitter warns that `mlbinom(x, size = 1)` fits it exactly.
-Actuar defines `prob = 0` as the positive point mass at one.
+The zero indicators and positive counts contribute separate likelihood factors. The fitted zero probability is their empirical fraction. Holding it leaves the positive-count fit unchanged. Holding the positive-count probability leaves only estimation of the zero fraction.
 
-The zero-indicator likelihood and the positive conditional likelihood factorize. Holding `p0`, including its empirical optimum, leaves the positive conditional fit unchanged. Held `p0 = 0` with zeros or `p0 = 1` with positives is incompatible and stops. With no positives, base parameters are unidentified; supplied values are preserved and free base parameters use conventional representatives.
+If every positive observation is one, the maximum is an attained distribution on zero and one, with $p=0$. If there are no positive observations, the positive-count probability is unidentified. If there are no zeros, the free zero probability is zero. Held $p_0=0$ is incompatible with observed zeros, and held $p_0=1$ is incompatible with positives. Held $p=0$ permits only ones among the positive counts.
+
+## R notes
+
+`prob = NULL` and `p0 = NULL` estimate their respective coefficients. Supplied values are preserved. All-zero data return `p0 = 1` when it is free, and use a conventional representative for a free `prob`, with a warning about nonidentifiability. With both coefficients free, positive counts all equal to one produce a warning that `mlbinom(x, size = 1)` fits the attained two-point law exactly. The boundary convention at `prob = 0` agrees with actuar. Incompatible held values stop.

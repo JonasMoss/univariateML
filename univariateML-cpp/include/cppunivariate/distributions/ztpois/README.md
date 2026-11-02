@@ -67,12 +67,22 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    For every nonempty sample of positive integers, the free-rate MLE exists and is unique. It is $\hat\lambda=0$ when all observations equal one. Otherwise it is the unique positive solution of $\lambda/(1-e^{-\lambda})=\bar x$. Holding the rate leaves only likelihood evaluation. A held zero rate requires every observation to equal one.
+  reason: >-
+    In the natural parameter $\eta=\log\lambda$, the second derivative of the log likelihood is minus the sample size times the conditional variance, which is strictly negative. The conditional mean increases continuously from one to infinity as the rate increases from zero to infinity. Thus every sample mean above one gives exactly one score root. At mean one the attained zero-rate member maximizes the likelihood.
 ---
 
-Zero-truncated Poisson distributions model positive counts.
+The zero-truncated Poisson distribution describes Poisson counts observed only when positive. The rate $\lambda$ belongs to the underlying Poisson law before conditioning.
 
 ## Details
 
-Actuar defines the point mass at one at `lambda = 0`. This boundary is returned as an attained member.
+The fit matches the conditional mean to the sample mean by bisection between zero and the sample mean. Strict monotonicity gives a unique solution when any count exceeds one. The zero-rate member is the point mass at one and is attained when all counts are one.
 
-Supplying `lambda` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.
+Holding the rate evaluates the supplied distribution without estimation. A positive rate gives positive probability to every positive integer. A zero rate is compatible only with ones.
+
+## R notes
+
+Supplying `lambda` holds the rate. With `lambda = NULL`, the rate is estimated. Invalid or incompatible held values stop. The boundary convention at `lambda = 0` agrees with actuar.
