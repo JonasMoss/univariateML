@@ -39,13 +39,13 @@ log_density: log(lambda/2) + lambda*(mu-x) + lambda**2*sigma**2/2 + log(erfc((mu
 limits:
   - model: norm
     firmness: proved
-    when: '$\lambda\to\infty$'
-    detect: Conditional normal likelihood wins within 1e-8*n.
+    when: 'The rate satisfies $\lambda\to\infty$ with $\mu$ and $\sigma>0$ fixed.'
+    detect: 'With rate free, the conditional normal log likelihood is at least the best numerical interior log likelihood minus $10^{-8}n$.'
     status: NormalLimit
   - name: translated exponential
     firmness: proved
-    when: '$\sigma\to0$'
-    detect: Conditional translated-exponential likelihood wins within 1e-8*n.
+    when: 'The normal scale satisfies $\sigma\to0$ with location and positive rate fixed.'
+    detect: 'With scale free and location free or held at or below the sample minimum, the conditional translated-exponential log likelihood is at least the best numerical interior log likelihood minus $10^{-8}n$.'
     status: TranslatedExponentialLimit
 holds: []
 examples: |
@@ -87,17 +87,37 @@ references:
   44(11), 1733–1738. doi:10.1021/ac60319a011.
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, constant samples have unbounded likelihood.
+    For nonconstant samples a finite maximum need not exist, because a
+    normal or translated-exponential limit can compete with interior fits.
+    A complete existence criterion and joint uniqueness result are not
+    established. Holding $\lambda$ removes the normal escape; holding
+    $\sigma$ removes the translated-exponential escape. With both held,
+    free location has a unique finite maximum. Other held subsets are
+    compared with their compatible limits numerically.
+  reason: >-
+    The normal and exponential limits follow from the independent-sum
+    representation. Fixed dimensionless shape $\lambda\sigma$ gives a
+    strictly concave location and inverse-scale objective with a unique
+    finite maximum for nonconstant samples. This does not prove uniqueness
+    when shape is free or when the physical rate alone is held.
 ---
 
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.
 
 ## Details
 
+When every coefficient is held, the likelihood is evaluated at those values
+without optimization.
+
 Write $X=\mu+\sigma Z+E_\lambda$, with $Z$ standard normal and
-$E_\lambda$ independent exponential. For fixed $\mu,\sigma>0$,
+$E_\lambda$ independent exponential. For fixed finite $\mu$ and $\sigma>0$,
 $\lambda\to\infty$ makes $E_\lambda\to0$ in probability; the convolution
 density tends pointwise to the normal density by bounded convergence. For
-fixed $\mu,\lambda>0$, $\sigma\to0$ gives the translated exponential:
+fixed finite $\mu$ and $\lambda>0$, $\sigma\to0$ gives the translated exponential:
 the convolution density converges at every $x\ne\mu$ by the approximate
 identity property. Both limits also hold in distribution. At $x=\mu$ the
 latter density tends to half its one-sided value, a distinction relevant
@@ -105,6 +125,43 @@ when an observation lies exactly at the endpoint. These statements do not
 certify the numerical face comparison.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) describes the limiting paths and the scope of the boundary comparisons.
+
+For fixed dimensionless shape $k=\lambda\sigma$, the log-likelihood is strictly
+concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
+it has a unique finite maximum in these coordinates; constant observations
+collapse when location and scale are free. Holding the physical rate fixed is a different constraint. This is a mathematical property,
+not a certificate of the current search over shape. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
+
+$\mu$ is the normal component mean, $\sigma$ its standard deviation and
+$\lambda$ the exponential rate. The mean delay is $1/\lambda$.
+Constant observations can have unbounded likelihood. A finite interior maximum
+need not exist. Normal and translated exponential faces are compared with
+interior candidates, respecting held parameters. The translated exponential face has endpoint $\min_i x_i$ and rate
+$1/\overline{(x-\min_i x_i)}$ when both are free.
+With a held endpoint exactly at the minimum the limiting density there is
+half the exponential density. Repeated minima count separately.
+
+The multistart fallback profiles location by a bracketed score solve and searches the remaining log scales. Neither numerical search certifies global optimality. Empirical skewness sign describes local behaviour near the normal
+face and is not used as a global existence criterion.
+
+## R notes
+
+`mlnorm` fits an unrestricted normal and does not retain held EMG
+coefficients automatically. There is no translated-exponential fitter.
+For a free endpoint, `mlexp(x - min(x))` fits distances from the fitted
+endpoint. Held endpoints or rates require their conditional comparison.
+
+## Decision history
+
+The 2026-10-31 fit-speed revision returns location scores in a fixed-size array
+instead of allocating a vector. Starts, density evaluations, location
+convergence, boundary comparisons and failed-optimizer score checks are
+unchanged. Full-profile caching and likelihood-invariant hoisting were tried
+without a useful default-fit timing improvement. See the [paired evidence and
+rejected
+trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
+
+2026-10-31 (fixed-shape profile search):
 
 For a fully free fit, fix the dimensionless shape $k=\lambda\sigma$ and optimize the
 location and inverse scale jointly. The fixed-shape objective is strictly
@@ -120,35 +177,3 @@ they do not certify that no mode lies beyond or between grid points. Failed
 inner solves, unsuccessful polishing and unresolved face comparisons fall
 back to the existing multistart; held-parameter fits retain that path. A test
 hook counts fallbacks when enabled. See the [round-four evidence](../../../../../dev/research/evaluations/2026-10-31-logconcave-4-report.md).
-
-For fixed dimensionless shape $k=\lambda\sigma$, the log-likelihood is strictly
-concave in $(u,b)=(\mu/\sigma,1/\sigma)$. For nonconstant observations
-it has a unique finite maximum in these coordinates; constant observations
-collapse when location and scale are free. Holding the physical rate fixed is a different constraint. This is a mathematical property,
-not a certificate of the current search over shape. See the [proof and scope](../../../../../dev/research/evaluations/2026-10-31-logconcave-report.md).
-
-The 2026-10-31 fit-speed revision returns location scores in a fixed-size array
-instead of allocating a vector. Starts, density evaluations, location
-convergence, boundary comparisons and failed-optimizer score checks are
-unchanged. Full-profile caching and likelihood-invariant hoisting were tried
-without a useful default-fit timing improvement. See the [paired evidence and
-rejected
-trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
-
-`mu` is the normal component mean, rather than the mean of the sum.
-Constant observations can have unbounded likelihood. A finite interior maximum
-need not exist. Normal and translated exponential faces are compared with
-interior candidates, respecting held parameters. `mlnorm` fits the unrestricted
-normal; its interface does not retain held EMG parameters. The translated
-exponential face has endpoint `min(x)` and rate
-`1 / mean(x - min(x))` when both parameters are free. There is no package
-fitter for the translated exponential: `mlexp(x - min(x))` fits its distances.
-With a held endpoint exactly at the minimum the limiting density there is
-half the exponential density. Repeated minima count separately.
-
-The multistart fallback profiles location by a bracketed score solve and searches the remaining log scales. Neither numerical search certifies global optimality. Empirical skewness sign describes local behaviour near the normal
-face and is not used as a global existence criterion.
-
-## d/p/q/r
-
-This is the sum of an independent normal and exponential variate.

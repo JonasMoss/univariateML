@@ -32,19 +32,19 @@ log_density: "log((erf((x + 1 - mean)/(sqrt(2)*sd)) - erf((x - mean)/(sqrt(2)*sd
 limits:
   - name: point mass
     firmness: proved
-    when: '$sd\to0$ with the latent distribution concentrating inside one cell'
-    detect: both parameters free and all observations equal
+    when: 'Scale satisfies $\sigma\to0$ with the latent normal centre inside one observed cell.'
+    detect: 'Both coefficients are free and all observations are equal.'
     status: PointMass
   - model: binom
     firmness: proved
     name: shifted Bernoulli
-    when: 'the latent distribution concentrates around the shared boundary of two adjacent cells'
-    detect: both parameters free and max(x) - min(x) = 1
+    when: 'Scale satisfies $\sigma\to0$ and location approaches the shared boundary of two adjacent cells at a rate that preserves their observed proportions.'
+    detect: 'Both coefficients are free and the integer sample range is one.'
     status: TwoPointLimit
   - name: zero-scale limit
     firmness: proved
-    when: '$\mathrm{sd}\to0$'
-    detect: mean held and every observed cell closure contains mean
+    when: 'Scale satisfies $\sigma\to0$ with location fixed.'
+    detect: 'Location is held and every observed cell closure $[x_i,x_i+1]$ contains that location.'
     fixed: [mean]
     status: ScaleLimit
 holds: []
@@ -79,22 +79,37 @@ references:
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 key_references:
 - 1
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists exactly when
+    the integer sample range is at least two. Constant samples and samples
+    on two adjacent integers have unattained suprema. With $\sigma>0$
+    held, free location always has a unique finite maximum. With $\mu$
+    held, a unique finite scale maximum exists unless every observed
+    cell closure $[x_i,x_i+1]$ contains $\mu$; in that case the supremum
+    occurs only at zero scale. Holding both coefficients evaluates the
+    likelihood without optimization.
+  reason: >-
+    The grouped-normal likelihood is strictly concave in
+    $(\mu/\sigma,1/\sigma)$. Holding either coefficient imposes an affine
+    constraint in these coordinates. Away from the stated zero-scale
+    exceptions, escaping parameters lose likelihood, so continuity and
+    compactness give attainment. The direct boundary argument is given below.
 ---
 
-The discretized normal distribution is the integer part of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer.
+The discretized normal distribution is the floor of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer. The coefficients $\mu$ and $\sigma$ describe the latent normal location and standard deviation, rather than the moments of the observed integers.
 
 ## Details
 
-The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md); numerical face searches do not certify global optimality.
+The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) and the argument below establish the cell-collapse conditions. Strict concavity proves uniqueness of an attained maximum; a numerical iteration can still fail to reach it within its iteration budget.
 
-2026-10-30 (TASK-125): log interval probabilities use the shared normal log-tail helper, whose Mills expansion starts before the backend tail becomes subnormal. The first omitted term bounds the alternating expansion in the selected large-tail regime; truth rows check the resulting interval differences.
-
-With both parameters free, constant samples and samples on two adjacent integers have no finite maximum likelihood estimate. For adjacent values `k` and `k + 1`, use `mlbinom(x - k, size = 1)`.
+With both parameters free, constant samples and samples on two adjacent integers have no finite maximum likelihood estimate. The limiting adjacent-cell probabilities equal their observed proportions.
 Both held parameters evaluate the likelihood without fitting. With one parameter held the fitter handles its distinct boundary conditions explicitly.
 
-The grouped normal log likelihood is strictly concave in `(mean/sd, 1/sd)`; the fitter uses damped Newton iteration in centred versions of these coordinates. With both parameters free, every sample with range at least two has a unique finite maximum. Holding `sd` gives a unique finite location fit even for constant data. Holding `mean` gives a finite scale fit unless every observed cell closure contains that mean, in which case the zero-scale limit wins.
+The grouped normal log likelihood is strictly concave in $(\mu/\sigma,1/\sigma)$; the fitter uses damped Newton iteration in centred versions of these coordinates. With both parameters free, every sample with range at least two has a unique finite maximum. Holding $\sigma$ gives a unique finite location fit even for constant data. Holding $\mu$ gives a finite scale fit unless every observed cell closure contains that mean, in which case the zero-scale limit wins.
 
-Reference: Burridge, J. (1981), A Note on Maximum Likelihood Estimation for Regression Models Using Grouped Data, JRSS B 43, 41–45, doi:10.1111/j.2517-6161.1981.tb01146.x.
+Reference: Burridge, J. (1981). A Note on Maximum Likelihood Estimation for Regression Models Using Grouped Data. Journal of the Royal Statistical Society, Series B (Methodological), 43(1), 41–45. https://doi.org/10.1111/j.2517-6161.1981.tb01146.x.
 
 ## Existence and identification
 
@@ -129,3 +144,13 @@ its zero-scale limit (1 for an interior centre, 1/2 for a boundary centre),
 so the supremum is unattained. Otherwise compactness gives attainment.
 Neither this discrete likelihood nor its held subsets are unbounded above:
 every log probability is nonpositive.
+
+## R notes
+
+For adjacent values `k` and `k + 1`, `mlbinom(x - k, size = 1)` fits the
+limiting Bernoulli probabilities. Both held coefficients evaluate the
+likelihood without fitting.
+
+## Decision history
+
+2026-10-30 (TASK-125): log interval probabilities use the shared normal log-tail helper, whose Mills expansion starts before the backend tail becomes subnormal. The first omitted term bounds the alternating expansion in the selected large-tail regime; truth rows check the resulting interval differences.
