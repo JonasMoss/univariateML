@@ -61,7 +61,7 @@ relations:
       sigma: scale
       lambda: 0
 fit:
-  method: profile-search
+  method: convex-solve
   certified: 'yes'
   note: 'logis/README.md, Details; logis/mle.hpp (public fitter and held overloads); logis/test.cpp: Joint likelihood
     is strictly concave in location/scale and inverse scale; Newton seeks its unique stationary maximum. Both conditional

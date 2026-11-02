@@ -60,11 +60,13 @@ limits:
     when: 'The shape $\nu$ tends to infinity with mean and sd fixed.'
     detect: The numerically compared limiting face is selected over the retained finite candidates.
     status: 'NormalBoundary'
+    numerical: true
   - model: lst
     firmness: proved
     when: 'The shape $\nu$ decreases to two with mean and ordinary t scale fixed; sd diverges.'
     detect: The numerically compared limiting face is selected over the retained finite candidates.
     status: 'DfTwoBoundary'
+    numerical: true
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, Chapter 13.
   Wiley, New York.

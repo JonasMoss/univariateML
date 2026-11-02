@@ -56,6 +56,7 @@ limits:
     when: '$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed'
     detect: no beta-binomial fit beats the binomial with success probability $\bar x / n$ (up to $10^{-8}$ per observation)
     status: BinomialLimit
+    numerical: true
   - name: two-point law on 0 and n
     firmness: proved
     when: '$\alpha, \beta \to 0$ with $\alpha/(\alpha + \beta)$ fixed'
@@ -101,11 +102,9 @@ relations:
         shape1: alpha
         shape2: beta
 fit:
-  method: multistart
+  method: profile-search
   certified: partial
-  note: 'bbinom/README.md, Details; bbinom/mle.hpp (public fitter and held overloads); bbinom/test.cpp: Both shapes
-    held give an integer-size tail bound; fixed-size free-shape fits use numerical optimization and some free-size
-    profiles are unsupported.'
+  note: "bbinom/mle.hpp, bbinom_mle and bbinom_detail::certify: Fixed-size free-shape profiles use tangent/chord bounds, including the binomial face, with a 1e-8 per-observation face preference; this numerical preference is not an exact nonexistence test. Supported free-size fits use integer tail bounds, including free alpha with beta held; unresolved profile ties and budgets stop. Other free-size profiles remain unsupported."
 areas:
 - counts and ecology
 classification: specialist

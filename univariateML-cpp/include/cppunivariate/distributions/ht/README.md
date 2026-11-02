@@ -54,6 +54,7 @@ limits:
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
     detect: The numerically compared limiting face is selected over the retained finite candidates.
     status: NormalLimit
+    numerical: true
   - name: unbounded scale collapse
     firmness: proved
     when: 'The free scale $\sigma$ tends to zero at the free or held endpoint.'

@@ -72,12 +72,14 @@ limits:
     when: 'The shape $\lambda$ tends to infinity with $\sigma/\lambda=a>0$ and $\mu+\sigma=b$ fixed.'
     detect: 'A numerical comparison selects the Gumbel face over the finite candidates when location, scale and shape are free.'
     status: GumbelLimit
+    numerical: true
   - firmness: numerical
     name: free collapse
     status: NoMLE
     message: "minimum multiplicity permits scale collapse"
     when: 'The location $\mu$ approaches the sample minimum from below, $\lambda$ tends to one, and $\sigma$ decreases proportionally to the location gap.'
     detect: 'All coefficients are free, the minimum occurs exactly $n/2$ times, and no numerically found finite candidate beats the collapse face. This comparison does not certify that every finite competitor has been found.'
+    numerical: true
 fit_args:
   mu: ~
 examples: |

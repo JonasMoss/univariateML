@@ -68,6 +68,7 @@ limits:
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
     detect: The numerically compared uniform log likelihood exceeds all retained finite candidates; this comparison does not certify the global supremum.
     status: UniformBoundary
+    numerical: true
 references:
 - Nelson, D. B. (1991). Conditional Heteroscedasticity in Asset Returns, A New Approach. Econometrica, 59, 347–370.
 - Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power

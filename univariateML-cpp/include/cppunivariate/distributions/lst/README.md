@@ -69,6 +69,7 @@ limits:
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
     detect: The numerically compared limiting face is selected over the retained finite candidates.
     status: NormalBoundary
+    numerical: true
 holds: []
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))

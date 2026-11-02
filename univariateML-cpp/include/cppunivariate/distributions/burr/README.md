@@ -53,16 +53,19 @@ limits:
     when: With $c$ held, $k$ tends to infinity and $s k^{-1/c}$ stays at a positive Weibull scale.
     detect: With $c$ held, the numerical comparison for the transformed observations selects the exponential limit of the Lomax likelihood. This is not an exact sample criterion.
     status: WeibullBoundary
+    numerical: true
   - model: 'weibull'
     firmness: proved
     when: The shape $k$ tends to infinity while $s k^{-1/c}$ tends to a positive Weibull scale.
     detect: A numerical comparison finds no candidate finite fit improving on this limit by more than $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
     status: 'WeibullBoundary'
+    numerical: true
   - model: 'pareto'
     firmness: proved
     when: The power $c$ tends to infinity while $kc$ tends to a positive Pareto shape and $s$ stays at its endpoint.
     detect: A numerical comparison finds no candidate finite fit improving on this limit by more than $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
     status: 'ParetoBoundary'
+    numerical: true
   - model: 'pareto'
     firmness: proved
     fixed: [scale]
