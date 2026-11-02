@@ -100,10 +100,9 @@ relations:
       min: mu
 fit:
   method: profile-search
-  certified: partial
-  note: 'ht/README.md, Details; ht/mle.hpp (public fitter and held overloads); ht/test.cpp: Endpoint and held-df
-    scale solve are exact/monotone; free-df profile is demonstrably multimodal and a finite grid cannot exclude
-    narrower peaks.'
+  certified: 'yes'
+  note: 'ht/README.md, Details; ht/cert.hpp and ht/test.cpp: endpoint and scale profiling with a bounded global
+    df search; certificate conditional on computed comparisons with a 1e-8 n practical log-likelihood margin.'
 areas:
 - measurement and errors
 classification: specialist
@@ -134,9 +133,9 @@ With free scale and held $\nu$, the log-scale score $\sum_i(\nu+1)w_i^2/(\nu+w_i
 
 With both $\nu$ and $\sigma$ free and $\mu$ held, any tie at that held value permits a small positive $\nu$ and scale collapse with unbounded likelihood; this is a measure-zero event for continuous data away from an exact coincidence. Holding scale removes collapse regardless of $\mu$, so ties are allowed in that subset; with a free $\mu$, free $\nu$ still uses the declared $\nu\ge1$ fitting domain. All held coefficients must be finite, $\mu$ of any sign, $\nu$ and $\sigma$ positive. With shape and scale held, a held endpoint leaves likelihood evaluation, including on data entirely at that endpoint; a free endpoint is estimated by the sample minimum.
 
-For positive $x-\mu$, $f(x;\nu,\sigma,\mu)\leq 2t_\nu(0)(1+1/\nu)^{-(\nu+1)/2}/(x-\mu)$, by maximizing each individual density over scale at $\sigma=x-\mu$. This bound tends to zero as $\nu\to0$ uniformly in scale, ruling out a small-shape escape away from the endpoint. With scale held, densities at the endpoint also tend to zero as $\nu \to 0$ (the half-t mode there is $O(\sqrt\nu)$ at fixed $\sigma$). The other escaping face is the half-normal, compared at its exact root mean square scale (or at the held scale). Ties within $10^{-8}n$ log likelihood units select the half-normal face and stop.
+For positive $x-\mu$, $f(x;\nu,\sigma,\mu)\leq 2t_\nu(0)(1+1/\nu)^{-(\nu+1)/2}/(x-\mu)$, by maximizing each individual density over scale at $\sigma=x-\mu$. This bound tends to zero as $\nu\to0$ uniformly in scale, ruling out a small-shape escape away from the endpoint. With scale held, densities at the endpoint also tend to zero as $\nu \to 0$ (the half-t mode there is $O(\sqrt\nu)$ at fixed $\sigma$). The other escaping face is the half-normal, compared at its exact root mean square scale (or at the held scale). A normal face within $10^{-8}n/4$ of the retained incumbent is selected and stops; the bounds reserve the rest of the $10^{-8}n$ margin for the unresolved profile gap and floating-point allowance.
 
-The shape profile need not be unimodal: $(0.12773,12.5979,3.91782,2.58658,0.138212)$ has local maxima near $\nu=0.41508$ and $\nu=1.17074$ (independently checked with the reference density), the former higher. A grid in $\log\eta=-\log\nu$ refines every sampled local maximum, after exact monotone scale profiling. The small-shape bound determines the lower search extent; the large-shape extent is $10^8$, with an unresolved edge reported as a search failure. This numerical global search is not a certificate against peaks narrower than its grid. Scale is the ordinary Student t scale, not a standard deviation. This paragraph's unimodality example holds $\mu=0$; the same grid and golden-section refinement are reused for a free endpoint, restricted to $\nu\ge1$.
+The shape profile need not be unimodal: $(0.12773,12.5979,3.91782,2.58658,0.138212)$ has local maxima near $\nu=0.41508$ and $\nu=1.17074$ (independently checked with the reference density), the former higher. The original grid in $\log\nu$ and its local refinements initialize the incumbent. A subsequent branch-and-bound search uses the interval score bounds below to cover all shapes between explicit small- and large-shape bounds, and compares the normal face and, when applicable, the scale-zero face. A one-sided score enclosure allows the interval maximum to be checked at an endpoint. Exhausting the interval budget or encountering a numerical guard returns `IterationFailure`. Scale is the ordinary Student t scale, not a standard deviation. The example holds $\mu=0$; the same certificate applies to a free endpoint on the restricted domain $\nu\ge1$.
 
 With $\mu$ held, the translated endpoint reduces to this fixed-zero-endpoint model on $x-\mu$, exactly as above (the measure-zero exemption noted there).
 
@@ -155,9 +154,9 @@ Evaluation uses the internal d/p/q/r functions.
 | Question | Evidence |
 |---|---|
 | Endpoint and inner scale | Proved as above: the endpoint is the minimum when free, and the log-scale score is strictly decreasing with the stated tie criterion. The implemented bisection is numerical. |
-| Shape on bounded intervals | The displayed two-mode sample disproves general unimodality. A grid and golden-section refinement do not bound missed maxima. |
-| Shape faces | The pointwise small-shape bound above proves loss of likelihood in the stated cases. Convergence to the half-normal face does not by itself bound the entire finite-df tail beyond the implementation's cutoff. |
-| Global certificate | Open: a computable uniform upper bound on the profiled likelihood over each interval and over the large-shape tail, including rounding and inner-solve errors, is needed. The present fit is numerical. |
+| Shape on bounded intervals | The two-mode sample disproves general unimodality. The interval score and inner-solve bounds below bound missed maxima without assuming unimodality. |
+| Shape faces | Uniform small-shape, large-shape and tied scale-zero bounds below cover the omitted tails and boundary neighbourhood. |
+| Global certificate | In exact arithmetic, conditional on the computed comparisons, the returned finite candidate or selected face is within $10^{-8}n$ log-likelihood units of the supremum. This is a practical floating-point margin, not an outward-rounded interval guarantee. Unresolved bounds or a spent budget stop with `IterationFailure`. |
 
 For a finite bounded $\nu$ interval strictly inside the scale-existence
 region, a data-dependent scale bracket is available. Let $p=n-k$ be the
@@ -169,9 +168,8 @@ $$\frac{d_{\min}}{\sqrt{\nu q/(1-q)}}\leq\sigma_*(\nu)
 \leq\frac{d_{\max}}{\sqrt{\nu q/(1-q)}}.$$
 The bounds extend uniformly over a compact shape interval separated from
 $\nu p=k$. Combined with the analytic shape score and envelope theorem,
-they imply a finite profile derivative bound there. A practical evaluated
-bound, its floating-point error, and treatment of the tie boundary are
-still missing; this existence statement is not an implemented certificate.
+they imply a finite profile derivative bound there. The evaluated interval
+and tied-boundary bounds used by the search are given below.
 
 More explicitly, with $t=\log\nu$, $w_i=d_i^2/(\nu\sigma^2)$ and
 $A(\nu)=\log\Gamma((\nu+1)/2)-\log\Gamma(\nu/2)-\frac12\log(\pi\nu)$,
@@ -184,8 +182,152 @@ $w_i\le W=d_{\max}^2/(a s_0^2)$ and the profiled score magnitude is at
 most $n[\sup_{a\le\nu\le b}|\nu A'(\nu)|+b\log(1+W)/2+(b+1)/2]$.
 The envelope theorem applies because the scale maximum is unique and
 interior. The analogous held-scale bound uses the held scale for $s_0$.
-A computable enclosure of the digamma term and the large-$\nu$ tail is
-still needed before this can certify the complete search.
+For an explicit digamma-free bound, the digamma function is increasing and
+$\psi(z+1)-\psi(z)=1/z$, so
+$0<\psi((\nu+1)/2)-\psi(\nu/2)<2/\nu$ and
+$|\nu A'(\nu)|\le1/2$. Thus the displayed derivative bound is at most
+$n[1/2+b\log(1+W)/2+(b+1)/2]$. This can be conservative and does not by
+itself make a practical global search.
+
+#### Explicit tail and inner-solve bounds
+
+The following bounds are in exact arithmetic. The implementation uses them
+conditional on computed comparisons and reserves a practical floating-point
+margin; it does not use outward-rounded interval arithmetic. Write $d_i=x_i-\mu$,
+$p=\#\{i:d_i>0\}$, and $k=n-p$. Jensen's inequality for a gamma random
+variable gives $\Gamma(z+1/2)/\Gamma(z)\le\sqrt z$, hence
+$A(\nu)\le-\tfrac12\log(2\pi)$ and also
+$2e^{A(\nu)}\le\sqrt{2\nu/\pi}$. Maximizing each positive-observation
+density over scale, and bounding its remaining power factor by one, gives,
+for every $0<\nu\le a$,
+$$
+\ell(\nu,\sigma)\le
+\frac n2\log(2a/\pi)-\sum_{d_i>0}\log d_i-k\log\sigma_{\rm held},
+$$
+where the last term is omitted when $k=0$. When $k>0$ this formula
+requires a held scale; free scale and free shape with a held endpoint and
+an endpoint tie instead have the unboundedness described above. Thus a
+strict comparison of this bound with a finite candidate excludes the whole
+small-$\nu$ tail, not only its endpoint.
+
+For the other tail, fix $a>0$ such that $ap>k$ when scale is free. Take
+$s_0=\sigma_{\rm held}$ for held scale, or
+$s_0=d_{\min}\sqrt{(ap-k)/(an)}$ for free scale. The scale-root bracket
+above implies $\sigma_*(\nu)\ge s_0$ for every $\nu\ge a$. The inequality
+$\log(1+u)\ge u-u^2/2$ for $u\ge0$, together with the gamma-ratio bound,
+then gives the uniform profile bound
+$$
+\sup_{\sigma}\ell(\nu,\sigma)\le
+\ell_{\rm HN}^{\sup}+
+\frac{1+1/a}{4\nu}\sum_i\left(\frac{d_i}{s_0}\right)^4,
+\qquad \nu\ge a,
+$$
+where the supremum is over the free scale, or evaluation at the held scale,
+as applicable, and $\ell_{\rm HN}^{\sup}$ is the corresponding half-normal
+maximum. For free scale this comparison is made at the half-t scale root,
+not at arbitrary scales below $s_0$. Consequently any finite $D\ge a$
+whose correction is below a chosen likelihood margin excludes the entire
+tail $\nu\ge D$ up to that margin. The bound can be very conservative for
+samples with widely separated positive residuals.
+
+For a finite shape interval $[a,b]$ in the scale-existence region, suppose
+a numerical scale solve retains a genuine log-scale root bracket $[L,U]$
+and evaluates the likelihood at its midpoint. Its log-scale score lies
+between $-n$ and $p(b+1)-n$, so the error in the profiled log likelihood is
+at most $\max\{n,\,p(b+1)-n\}(U-L)/2$ in exact arithmetic. This term can
+be added to an outer interval upper bound. It does not validate a computed
+bracket or provide a floating-point margin.
+
+The implementation uses the sharper endpoint scale-score residuals in place
+of the global score bound here, and includes a sample-size-dependent
+floating-point allowance. Scale-score bisection retains a log-scale bracket
+of width at most $10^{-8}$ (or stops at adjacent representable numbers);
+the retained bracket and its endpoint residuals bound the lost likelihood.
+The ordinary-range path caches squared distances scaled by the largest
+positive residual and evaluates the rational scale score using one
+exponential per df and scale, rather than one per observation. It falls
+back to log-distance evaluation when the scaled values or scale factors
+would have an extreme range. The finite-precision certificate remains
+conditional on computed comparisons with the stated practical margin.
+For the large-shape bound it may improve $s_0$
+using the $c$ largest positive residuals: if each is at least $d_0$ and
+$c(a+1)>n$, their scale-score contributions imply
+$\sigma_*\ge d_0\sqrt{[c(a+1)-n]/(an)}$ for all $\nu\ge a$.
+
+At the exact tie $2k=n$, the scale-root bracket degenerates as
+$\nu\downarrow1$, but the boundary neighbourhood can be bounded directly.
+Put $S=\sum_{d_i>0}\log d_i$, $M=\max_{d_i>0}d_i$, $h=p(\nu-1)$, and
+$$
+B(\nu)=n(\log2+A(\nu))+\tfrac12p(\nu+1)\log\nu-(\nu+1)S.
+$$
+Factoring the positive residual terms shows that the log likelihood is at
+most $B(\nu)+h\log\sigma-\tfrac12(n+h)\log(1+\nu\sigma^2/M^2)$.
+Maximizing this bound in $\sigma$ gives, for $h>0$,
+$$
+B(\nu)+\frac h2\log\frac{M^2h}{\nu n}
+-\frac{n+h}{2}\log(1+h/n).
+$$
+The correction has limit zero at $h=0$, where $B(1)$ is the stated
+scale-zero face. For an explicit uniform bound over $1\le\nu\le1+\delta$
+with $p\delta\le n$, use
+$$
+B(1)+\frac n2\log(1+\delta)
++\frac{p(2+\delta)}2\log(1+\delta)
++\delta|S|+p\delta\max(\log M,0).
+$$
+Indeed, $|A'(\nu)|\le1/(2\nu)$ follows from the monotonicity and recurrence
+of digamma; the other terms follow by bounding $B(\nu)-B(1)$ and discarding
+the nonpositive terms in the optimized correction. This conservative
+bound tends to the boundary value with $\delta$ and closes the gap left
+by an interval certificate away from the boundary.
+
+#### A computable interval score enclosure
+
+For $a\le\nu\le b$, the scale roots can be enclosed more tightly than by
+the global $d_{\min},d_{\max}$ bracket. At a fixed scale, each positive
+residual contributes $(\nu+1)d_i^2/(\nu\sigma^2+d_i^2)$ to the scale
+score. Its derivative in $\nu$ has the sign of $d_i^2-\sigma^2$; its
+minimum and maximum on $[a,b]$ are consequently its two endpoint values.
+Summing the minima and maxima yields decreasing functions of $\sigma$
+that bracket the actual score for every $\nu$ in the interval. Their
+respective zeros bracket every scale root. An implementation must verify
+the root brackets and include their numerical solve errors.
+
+Given such a bracket, bound $w_i=d_i^2/(\nu\sigma^2)$ between $w_i^-$ and
+$w_i^+$. Set $r(w)=w/(1+w)$ and $h(w)=\log(1+w)-r(w)$; both are
+nondecreasing. The contribution of observation $i$ to the shape score,
+apart from the normalizer, is exactly $[r(w_i)-\nu h(w_i)]/2$. It therefore
+lies between $[r(w_i^-)-b h(w_i^+)]/2$ and
+$[r(w_i^+)-a h(w_i^-)]/2$. This form avoids subtracting two terms of order
+$\nu$ near the normal face; the implementation bounds the small-$w$
+series for $h$ on both sides by successive partial sums.
+
+The normalizer term $\nu A'(\nu)$ can be enclosed without assuming it is
+monotone. Increasing digamma gives the lower and upper bounds
+$$
+\frac a2\max\!\left\{0,\psi((a+1)/2)-\psi(b/2)\right\}-\frac12,
+\quad
+\frac b2\left[\psi((b+1)/2)-\psi(a/2)\right]-\frac12.
+$$
+At large $\nu$ this subtraction is poorly conditioned. The integral
+representation $A'(\nu)=\tfrac14\int_0^\infty
+e^{-\nu u/2}\tanh(u/4)\,du$, and
+$x-x^3/3\le\tanh x\le x$ for $x\ge0$, instead imply
+$$
+\frac{1}{4b}-\frac{1}{8a^3}\le \nu A'(\nu)\le\frac{1}{4a}.
+$$
+The upper bound can be sharpened to
+$1/(4a)-1/(8b^3)+1/(4a^5)$ using
+$\tanh u\le u-u^3/3+2u^5/15$. This inequality follows by differentiating
+the difference: for $u^2\le3/2$, use
+$\tanh u\ge u-u^3/3\ge0$ to bound its derivative below; for
+$u^2\ge3/2$, its remaining polynomial terms are nonnegative.
+Combining these componentwise intervals gives a profile-score enclosure.
+Integrating its bounds from an evaluated point, with the inner-solve error
+above, bounds the profile throughout the interval. The implementation checks
+an interval endpoint when the score has one sign, and otherwise bisects. It
+stops after 100,000 intervals or when its numerical checks fail. The
+$10^{-8}n$ margin is practical rather than an outward-rounded enclosure.
 
 ## R notes
 

@@ -41,6 +41,8 @@ inline FitResult fit_ht(cppunivariate::span x, Held mu_arg = {}, Held nu_arg = {
                "use `mlhnorm(x, mu = " + mu_hint + ", sigma = " + whole_mu(sc) + ")`.");
   if(r.status==cppunivariate::HtStatus::NormalLimit)
     return fail("Half-t MLE escapes as nu -> infinity; use `mlhnorm(x, mu = " + mu_hint + ")`.");
+  if(r.status==cppunivariate::HtStatus::IterationFailure)
+    return fail("Half-t MLE failed: the global shape search could not certify its result within its numerical budget.");
   if(r.status!=cppunivariate::HtStatus::Ok)
     return fail("Half-t MLE failed: check finite data at least the endpoint and numerical search range.");
   std::vector<std::string> fixed;

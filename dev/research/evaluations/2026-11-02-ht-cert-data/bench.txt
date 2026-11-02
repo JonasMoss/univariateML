@@ -1,0 +1,7 @@
+seed 116500; n=500; abs Student t(3); g++ 15.2.0 -O2; local single slot
+repetition old_seconds certified_seconds old_status certified_status intervals logLik_difference
+0 0.093272933 1.65445191 0 0 640 0
+1 0.093680817 1.64042599 0 0 640 0
+2 0.093303951 1.66656224 0 0 640 0
+3 0.094129123 1.64306112 0 0 640 0
+4 0.093041369 1.62735393 0 0 640 0

@@ -170,3 +170,67 @@ TEST_CASE("ht: README threshold shifts all four operations") {
     CHECK(cppunivariate::distributions::rht(a, mu, 3.0, 2.0) == mu + cppunivariate::distributions::rht(b, 0.0, 3.0, 2.0));
   CHECK(std::isnan(cppunivariate::distributions::dht(4.0, INFINITY, 3.0, 2.0, true)));
 }
+
+TEST_CASE("ht: outer certificate handles multiple modes and a spent budget") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{.12773,12.5979,3.91782,2.58658,.138212};
+  const auto initial=cppunivariate::ht_detail::ht_mle_zero_legacy(mltest::as_span(x));
+  REQUIRE(initial.status==cppunivariate::HtStatus::Ok);
+  const auto exhausted=cppunivariate::ht_detail::certified_search(mltest::as_span(x),nan,false,initial,0);
+  CHECK(exhausted.status==cppunivariate::HtStatus::IterationFailure);
+  const auto fit=cppunivariate::ht_mle(mltest::as_span(x),0,nan,nan);
+  REQUIRE(fit.status==cppunivariate::HtStatus::Ok);
+  CHECK(fit.nu==doctest::Approx(.41508).epsilon(1e-3));
+  CHECK(fit.logLik>=initial.logLik-1e-8*x.size());
+}
+
+#include <random>
+TEST_CASE("ht: 600 seeded profiles agree with the original search") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::mt19937_64 rng(1162026);
+  for(int i=0;i<600;++i) {
+    INFO(i);
+    const int group=i/200;
+    std::student_t_distribution<double> td(group==0?.4:group==1?80.:3.);
+    std::vector<double> x(24);
+    for(double& v:x) v=std::abs(td(rng));
+    if(group==2) {x[0]=0; x[1]=0;}
+    const auto input=mltest::as_span(x);
+    const auto old=group==2 ? cppunivariate::ht_detail::free_threshold_search(input,nan)
+                            : cppunivariate::ht_detail::ht_mle_zero_legacy(input);
+    const auto fit=cppunivariate::ht_mle(input,group==2?nan:0.,nan,nan);
+    CHECK(fit.status!=cppunivariate::HtStatus::IterationFailure);
+    CHECK(fit.status!=cppunivariate::HtStatus::SearchFailure);
+    if(old.status==cppunivariate::HtStatus::Ok && fit.status==cppunivariate::HtStatus::Ok)
+      CHECK(fit.logLik>=old.logLik-1e-8*x.size());
+    else if(old.status==cppunivariate::HtStatus::NormalLimit && fit.status==cppunivariate::HtStatus::Ok)
+      CHECK(fit.logLik>old.logLik);
+    else if(old.status==cppunivariate::HtStatus::Ok && fit.status==cppunivariate::HtStatus::NormalLimit)
+      CHECK(fit.logLik>=old.logLik-1e-8*x.size());
+    else CHECK(fit.status==old.status);
+  }
+}
+
+TEST_CASE("ht: cached and log-domain scale boxes enclose roots") {
+  for (const std::vector<double>& logs : {std::vector<double>{-2.,-1.,0.}, std::vector<double>{-300.,-1.,0.}}) {
+    std::vector<double> squares;
+    for(double d:logs) if(2*d >= -460) squares.push_back(std::exp(2*d));
+    if(squares.size()!=logs.size()) squares.clear();
+    for(bool cached : {false,true}) {
+      const std::vector<double> empty;
+      for(const auto ab : {std::pair<double,double>{.4,80.}, std::pair<double,double>{1e200,1e202}}) {
+        double lo=0,hi=0;
+        REQUIRE(cppunivariate::ht_detail::scale_box(logs,cached?squares:empty,0.,3.,ab.first,ab.second,lo,hi));
+        for(double nu : {ab.first,10*ab.first,ab.second}) {
+          double sl=-3,sh=-3;
+          for(double d:logs) {
+            sl+=(nu+1)*cppunivariate::ht_detail::logistic(2*(d-lo)-std::log(nu));
+            sh+=(nu+1)*cppunivariate::ht_detail::logistic(2*(d-hi)-std::log(nu));
+          }
+          CHECK(sl>=-1e-12);
+          CHECK(sh<=1e-12);
+        }
+      }
+    }
+  }
+}

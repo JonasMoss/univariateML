@@ -1,0 +1,7 @@
+seed 1162026; 600 samples, n=24; g++ 15.2.0 -O2; local single slot
+200 abs Student t(0.4), held threshold 0
+200 abs Student t(80), held threshold 0
+200 abs Student t(3), free threshold and two ties
+both finite 431; matching non-finite statuses 169; status changes 0; numerical failures 0
+maximum old minus new log likelihood 0; original 2.455 s; certified 41.990 s
+Earlier run before one-sided pruning and tighter large-df bounds: cases 282 and 363 exhausted 100000 intervals. Targeted rerun after the change: both finite, no loss, 0.315 s total.
