@@ -9,9 +9,9 @@ inline FitResult fit_nsbeta(cppunivariate::span x, Held shape1_arg = {}, Held sh
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape1 = shape1_arg;
   const Held shape2 = shape2_arg;
-  if (!min_arg.supplied) return failure("Estimating the threshold is not supported: endpoint singularities or unattained limit models prevent an unrestricted MLE (P0, A4).");
+  if (!min_arg.supplied) return failure("Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.");
   const double min = min_arg.value;
-  if (!max_arg.supplied) return failure("Estimating the threshold is not supported: endpoint singularities or unattained limit models prevent an unrestricted MLE (P0, A4).");
+  if (!max_arg.supplied) return failure("Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.");
   const double max = max_arg.value;
 
  if(shape1.supplied && (!(shape1.value>0)||!std::isfinite(shape1.value))) return fail("`shape1` must be positive and finite.");

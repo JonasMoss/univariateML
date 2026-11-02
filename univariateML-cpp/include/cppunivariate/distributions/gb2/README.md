@@ -42,16 +42,16 @@ log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape
 limits:
   - name: unbounded likelihood
     firmness: proved
-    when: A free concentration can collapse on constant observations
-    detect: All observations are equal and the held coefficients still permit concentration
+    when: The log-scale dispersion tends to zero at the common observation while the remaining free coefficients allow concentration.
+    detect: All observations are equal, and the held coefficients still permit concentration at that value.
     status: InvalidData
     message: unbounded
-  - {firmness: proved, model: trgamma, when: 'shape1 tends to infinity with shape2 and shape3 fixed and scale divided by shape1^(1/shape2) fixed', status: TrGammaBoundary}
-  - {firmness: proved, model: invtrgamma, when: 'shape3 tends to infinity with shape1 and shape2 fixed and scale times shape3^(1/shape2) fixed', status: InvTrGammaBoundary}
-  - {firmness: proved, model: lnorm, when: 'shape1 = shape3 = K tends to infinity, shape2 = sqrt(2*trigamma(K))/sigma, and scale = exp(mu), with sigma > 0 and mu fixed', status: LognormalBoundary}
-  - {firmness: proved, model: pareto, when: 'shape2 tends to infinity with shape1*shape2 positive and fixed, and shape3 and scale fixed', status: ParetoBoundary}
-  - {firmness: proved, model: power, when: 'shape2 tends to infinity with shape3*shape2 positive and fixed, and shape1 and scale fixed', status: PowerBoundary}
-  - {firmness: proved, name: double Pareto, when: 'shape2 tends to infinity with shape1*shape2 and shape3*shape2 positive and fixed, and scale fixed', status: DoubleParetoBoundary}
+  - {firmness: proved, model: trgamma, when: 'The beta shape $q$ tends to infinity with $a,p$ and $b/q^{1/a}$ fixed.', status: TrGammaBoundary}
+  - {firmness: proved, model: invtrgamma, when: 'The beta shape $p$ tends to infinity with $a,q$ and $bp^{1/a}$ fixed.', status: InvTrGammaBoundary}
+  - {firmness: proved, model: lnorm, when: 'The beta shapes satisfy $p=q=K\to\infty$, the power is $a=\sqrt{2\psi_1(K)}/\sigma$, and $b=e^\mu$, for fixed $\sigma>0$ and $\mu$. Here $\psi_1$ is the trigamma function.', status: LognormalBoundary}
+  - {firmness: proved, model: pareto, when: 'The power $a$ tends to infinity with $qa>0$, $p$ and $b$ fixed.', status: ParetoBoundary}
+  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa>0$, $q$ and $b$ fixed.', status: PowerBoundary}
+  - {firmness: proved, name: double Pareto, when: 'The power $a$ tends to infinity with $qa>0$, $pa>0$ and $b$ fixed.', status: DoubleParetoBoundary}
 holds: []
 examples: |
   set.seed(1)
@@ -101,6 +101,29 @@ fit:
 areas:
 - actuarial
 - economics and income
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all four coefficients free, constant positive samples have unbounded
+    likelihood. For nonconstant samples, a supremum may occur on a limiting
+    model rather than at finite coefficients. No general existence or
+    uniqueness criterion is established. Holding coefficients can remove
+    particular escapes. For nonconstant data, holding both beta shapes gives
+    a unique finite maximum in power and scale. Holding power and scale
+    instead gives a unique finite maximum in the beta shapes. With power,
+    scale and either beta shape held, the remaining shape has a unique
+    finite maximum even for constant data.
+  reason: >-
+    On the log-observation scale, put $c=-a\log b$. At fixed $p,q$ the
+    objective is $n\log a+p\sum_i(a\log x_i+c)
+    -(p+q)\sum_i\log(1+\exp(a\log x_i+c))$ plus a constant.
+    Its Hessian is negative definite. For nonconstant data it tends to
+    negative infinity as power tends to zero or infinity after profiling
+    location, so the maximum is attained. With power and scale held, the
+    logistic transform of log observations reduces the shape problem to
+    beta fitting. These arguments do not establish uniqueness of the outer
+    beta-shape profile. The limiting paths below are proved, but their
+    numerical likelihood comparisons do not exhaust all possible maxima.
 ---
 
 The transformed beta distribution models positive observations with two power tails.
@@ -108,6 +131,30 @@ The transformed beta distribution models positive observations with two power ta
 ## Details
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-28-gb2.md) describes the limiting paths and the scope of the boundary comparisons.
+
+In the GB2 convention $(a,b,p,q)$, $a$ is the power, $b$ is the scale, and $p,q$ control the lower and upper power tails. Their exponents are $ap$ near zero and $aq$ at infinity.
+Each coefficient may be held at a positive finite value. The numerical search
+compares proper limiting models and stops when a face wins; a search that
+cannot resolve an interior maximum reports an error.
+
+The fit standardizes log observations and profiles the power and location
+for each pair of beta shapes. The inner objective is strictly concave; the
+outer search uses a grid and member-family starts, refines distinct basins
+with Newton or BFGS, and expands the search box when needed. This reduces
+the outer problem to at most two dimensions and improves conditioning.
+A small profile score and an interior position are required for a returned
+interior fit. The multibasin search is numerical: neither global optimality
+nor exhaustion of all possible limit faces is proved. An unresolved search
+reports failure. Available transformed-gamma, inverse transformed-gamma,
+lognormal, Pareto, power and double-Pareto faces are compared, as applicable
+to the held subset.
+
+## R notes
+
+A detected limiting model stops with advice to fit that model. A small score
+checks stationarity of a returned fit; it does not certify global optimality.
+
+## Decision history
 
 For samples larger than 1000, the 2026-10-31 fit-speed revision forms the Burr,
 inverse-Burr and beta-prime member seeds from 1000 deterministically selected
@@ -123,27 +170,6 @@ exercise subsampling. See the [paired evidence and rejected
 trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
 2026-10-30 (TASK-125): the shared beta log-coordinate bridge uses the continued fraction when the backend input is subnormal or its result is below 1e-290, avoiding relative precision loss before taking logs. The existing independent truth rows measure the selected cases; this is not a uniform error bound. Logit quantile bisection returns NaN if it cannot bracket or reach adjacent floating-point endpoints.
-
-In the GB2 convention $(a,b,p,q)$, the coefficients are
-`shape2` = $a$, `scale` = $b$, `shape3` = $p$, and `shape1` = $q$.
-Each coefficient may be held at a positive finite value. The numerical search
-compares proper limiting models and stops when a face wins; a search that
-cannot resolve an interior maximum reports an error.
-
-
-The fit standardizes log observations and profiles the power and location
-for each pair of beta shapes. The inner objective is strictly concave; the
-outer search uses a grid and member-family starts, refines distinct basins
-with Newton or BFGS, and expands the search box when needed. This reduces
-the outer problem to at most two dimensions and improves conditioning.
-A small profile score and an interior position are required for a returned
-interior fit. The multibasin search is numerical: neither global optimality
-nor exhaustion of all possible limit faces is proved. An unresolved search
-reports failure. Available transformed-gamma, inverse transformed-gamma,
-lognormal, Pareto, power and double-Pareto faces are compared, as applicable
-to the held subset.
-
-## Decision history
 
 On 2026-10-29 commit `470175d` introduced the profiled search and explicit
 face comparisons. The implementation report

@@ -31,13 +31,13 @@ log_density: "log(2*shape/pi)/2 - loggamma(x+1) + shape/mean + (x-1/2)*log(shape
 limits:
   - model: pois
     firmness: proved
-    when: '$\mathrm{shape} \to \infty$ at finite mean'
-    detect: Poisson maximised likelihood wins, including ties within 1e-8 times sample size
+    when: 'The concentration $\lambda$ tends to infinity with $\mu>0$ fixed.'
+    detect: The Poisson likelihood at the fitted or held mean wins the numerical comparison, including ties within $10^{-8}n$. With both coefficients free and $\bar x>0$, a Poisson supremum occurs exactly when the variance with divisor $n$ is no greater than $\bar x$.
     status: PoissonLimit
   - model: pois
     firmness: proved
-    when: 'mean tends to zero with positive shape held'
-    detect: all observations are zero, mean is free, and positive shape is held
+    when: 'The mean $\mu$ tends to zero with positive concentration $\lambda$ held.'
+    detect: All observations are zero, $\mu$ is free, and $\lambda>0$ is held.
     fixed: [shape]
     status: ZeroLimit
 references:
@@ -82,6 +82,29 @@ aliases:
 - "PIG"
 key_references:
 - 2
+existence:
+  uniqueness: unknown
+  statement: >-
+    With both coefficients free and positive sample mean, a finite MLE
+    exists exactly when the variance with divisor $n$ exceeds the sample
+    mean. Otherwise the Poisson supremum is unattained. Uniqueness of a
+    finite shape maximum is not established. All-zero samples attain their
+    maximum at $\lambda=0$, with $\mu$ unidentified. With positive
+    $\lambda$ held, every sample containing a positive count has a finite
+    mean maximum; all-zero samples instead have an unattained mean-zero
+    supremum. With $\mu$ held and a sample containing positive
+    counts, a finite MLE exists if and only if some finite shape has
+    likelihood at least as large as the Poisson likelihood at that same mean. With $\lambda=0$ held, only
+    all-zero data are compatible.
+  reason: >-
+    Profiling in $t=\lambda/\mu$ at fixed
+    $z=\sqrt{\lambda(2+\lambda/\mu^2)}$ gives the unique mean
+    $\hat\mu=\bar x$. The reduced shape score is strictly positive
+    when the sample variance is no greater than the mean. Under strict
+    overdispersion, its inward derivative at the Poisson face is positive,
+    while likelihood tends to zero at the shape-zero end. The local
+    derivation linked in Details proves these signs and attainment, but
+    does not prove uniqueness of the shape maximum.
 ---
 
 The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse Gaussian mean. It models overdispersed nonnegative counts.
@@ -90,8 +113,20 @@ The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse 
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-counts.md) derives the stated limits and held-parameter conditions.
 
-Either `mean` or `shape`, or both, can be held fixed. With both free the fitted mean is exactly the sample mean. The fitter searches all bracketed peaks on a broad log-parameter grid and compares the Poisson likelihood; it does not assume a unique peak. A search reaching its range boundary without a winning Poisson face reports failure.
+The coefficient $\mu$ is the inverse-Gaussian mixing mean and $\lambda$ controls its concentration. For $\lambda>0$ the count mean is $\mu$ and smaller $\lambda$ gives more mixing variation. Either coefficient, or both, can be held fixed. With both free the fitted mean is exactly the sample mean. The fitter searches all bracketed peaks on a broad log-parameter grid and compares the Poisson likelihood; it does not assume a unique peak. A search reaching its range boundary without a winning Poisson face reports failure.
 
 With both parameters free and a positive sample mean, a population-form sample variance no greater than the mean gives the Poisson supremum, including equality. Strict overdispersion guarantees a finite maximum; a gain smaller than the numerical tie tolerance still selects Poisson.
 
-Shape zero is the attained zero point mass. All-zero data with free shape return shape zero, preserving held mean or choosing mean one when unidentified. With positive shape held and mean free, all-zero data still have an unattained mean-zero supremum. With both parameters fixed the likelihood is evaluated directly. The infinite-mean Poisson-Levy face is strictly dominated for every finite sample when mean is free, including with shape fixed.
+The value $\lambda=0$ is the attained zero point mass. All-zero data with free shape return $\lambda=0$, preserving held $\mu$ or choosing $\mu=1$ when unidentified. With positive $\lambda$ held and mean free, all-zero data still have an unattained mean-zero supremum. With both parameters fixed the likelihood is evaluated directly. The infinite-mean Poisson-Levy face is strictly dominated for every finite sample when mean is free, including with shape fixed.
+
+The [likelihood derivation](../../../../../dev/research/evaluations/2026-10-29-pig/analysis.md)
+gives the mean reduction, the global dispersion criterion and the inward
+derivative at the infinite-mean face. Its historical reference-density
+remarks describe the former external implementation.
+
+## R notes
+
+A winning Poisson comparison stops with advice to use mlpois. Its numerical
+tie tolerance is 1e-8 times sample size, so a sufficiently small finite
+improvement may also be reported as the Poisson limit. At shape = 0, the
+reported mean is the held value or one when mean is unidentified.

@@ -40,22 +40,22 @@ limits:
   - name: fixed-endpoint power face
     firmness: proved
     fixed: [scale]
-    when: shape1 tends to zero and shape2 tends to infinity at fixed product
+    when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.
     status: PowerBoundary
     message: fixed-endpoint power face
   - name: unbounded likelihood
     firmness: proved
-    when: A free concentration can collapse on constant observations
-    detect: Constant samples; the held coefficients determine whether concentration remains free
+    when: The free coefficients concentrate the distribution at the common positive observation.
+    detect: All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices when the common observation equals $a$.
     status: InvalidData
     message: unbounded
   - model: lnorm
     firmness: proved
-    when: '$\mathrm{shape1} \to \infty$ with $\mathrm{shape2}\sqrt{\mathrm{shape1}}$ and $\log \mathrm{scale} + \log(\mathrm{shape1})/\mathrm{shape2}$ fixed'
+    when: 'The gamma shape $k$ tends to infinity with $p\sqrt{k}\to1/\sigma$ and $\log a + \log(k)/p\to\mu$, for fixed $\sigma>0$ and $\mu$.'
     status: LognormalBoundary
   - model: power
     firmness: proved
-    when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
+    when: 'The power $p$ tends to infinity with $kp\to d>0$ and $a$ converging to a positive endpoint.'
     status: PowerBoundary
 references:
 - Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3),
@@ -101,40 +101,67 @@ aliases:
 - "generalized gamma"
 key_references:
 - 4
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, constant positive samples have unbounded
+    likelihood. For nonconstant samples, the lognormal or power limit
+    can prevent a finite MLE. General uniqueness of an interior maximum
+    is not established. With scale free and either shape held, a unique
+    finite MLE exists for nonconstant samples. With both shapes held,
+    the scale MLE is unique even for constant samples. With scale and
+    power held, the remaining gamma shape has a unique finite MLE.
+    With scale and gamma shape held, the power MLE is unique unless
+    every observation equals the held scale, when likelihood is unbounded.
+    With only scale held, attainment is assessed numerically against the
+    fixed-endpoint power limit.
+  reason: >-
+    Holding the power reduces fitting to the gamma family. Holding the
+    gamma shape gives a strictly concave profile in log-power after
+    eliminating scale. With scale held, the gamma-shape score is strictly
+    decreasing; at held gamma shape, the power log-likelihood has second
+    derivative $-n/p^2-\sum_i z_i^2 e^{p z_i}<0$, where
+    $z_i=\log(x_i/a)$ for transformed gamma and
+    $z_i=\log(a/x_i)$ for its reciprocal. Its score crosses zero unless
+    all $z_i=0$. Reciprocation adds a parameter-independent Jacobian and
+    preserves maximizers.
 ---
 
 The transformed gamma (Stacy's generalized gamma) distribution is the
-distribution of `scale * G^(1/shape2)` for a unit-scale gamma variable `G`
-with shape `shape1`; it models positive sizes, losses and lifetimes.
+distribution of $aG^{1/p}$ for a unit-scale gamma variable $G$ with shape $k$; it models positive sizes, losses and lifetimes.
 
 ## Details
 
-With $a=\mathrm{shape1}\downarrow0$, $b=\mathrm{shape2}\to\infty$
-and $ab\to q>0$, $b/\Gamma(a)\to q$. In the displayed density,
-put $u=x/scale$. For $u<1$, $u^b\to0$ and the density tends to
-$q u^q/x$; for $u>1$ it tends to zero. This is the power density
-with endpoint scale (support below the endpoint). Scheffé's lemma gives
+With $k\downarrow0$, $p\to\infty$ and $kp\to d>0$, $p/\Gamma(k)\to d$. In the displayed density,
+put $u=x/a$. For $u<1$, $u^p\to0$ and the density tends to
+$d u^d/x$; for $u>1$ it tends to zero. This is the power density
+with endpoint $a$ (support below the endpoint). Scheffé's lemma gives
 total-variation convergence. The endpoint value and a global likelihood
 comparison are separate questions.
 
-
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
-The gamma (`shape2 = 1`, scale the reciprocal gamma rate) and Weibull
-(`shape1 = 1`) distributions are members, not limits. Holding `shape2`
-fixed gives the gamma fit of `x^shape2`; holding `shape1` fixed gives a
-strictly concave problem (the Weibull fit when `shape1 = 1`). For nonconstant data both have a maximum likelihood estimate.
+The gamma ($p=1$) and Weibull ($k=1$) distributions are members, not limits. Holding $p$
+fixed gives the gamma fit of $x^p$; holding $k$ fixed gives a
+strictly concave problem (the Weibull fit when $k=1$). For nonconstant data both have a maximum likelihood estimate.
 
-The free fit has none with positive probability. The inward likelihood slope from the lognormal face has sign opposite
+The unrestricted fit fails to have a finite MLE with positive probability. For nonconstant samples, the inward likelihood slope from the lognormal face has sign opposite
 to the sample skewness of the logarithms. Under lognormal sampling the
 asymptotic boundary probability is one half. Faces win likelihood ties
-within `1e-8` per observation. Fits very close
-to the lognormal limit have a scale below the smallest positive normal double;
-`mltrgamma()` then stops and reports the log scale.
+within $10^{-8}$ per observation. Fits very close to the lognormal limit can have a scale outside the numerical representation range.
+
+With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the fixed-endpoint power limit is compared with the interior profile. This search is numerical.
+
+## R notes
+
+A detected limiting model stops with advice to fit that model. When the fitted
+scale cannot be represented, the error reports its logarithm.
+A near-lognormal fitted scale below the smallest positive normal double stops
+and reports the log scale.
+
+## Decision history
 
 The C++ face helper `trgamma_faces_log` accepts logarithms of observations
 and returns the maximised lognormal and power likelihoods and their fitted
 parameters. The derivation and numerical search qualifications are in
 `dev/research/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
-
-With scale and shape2 held the shape1 score has one root. With scale and shape1 held the shape2 likelihood is strictly concave and coercive unless every observation equals scale. With only scale held the fixed-endpoint power face is compared with the interior profile; the search is numerical.
