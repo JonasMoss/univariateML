@@ -42,13 +42,15 @@ limits:
 - name: zero likelihood
   firmness: proved
   fixed: [b]
-  when: Held b exceeds the sample minimum.
+  when: No parameter path within the held support can give positive likelihood.
+  detect: The held endpoint $b$ exceeds at least one observation.
   status: InvalidInput
   message: zero likelihood
 - name: unbounded likelihood
   firmness: proved
   fixed: [b]
-  when: Every observation equals held b.
+  when: The shape $\alpha$ tends to infinity with $b$ at the common observation.
+  detect: Shape is free and every observation equals the held endpoint $b$.
   status: Unbounded
   message: constant data
 examples: |
@@ -88,28 +90,33 @@ aliases:
 - "Pareto type I"
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, every nonconstant positive sample has a unique
+    finite MLE. Constant data have unbounded likelihood. Holding $\alpha$ gives the
+    unique endpoint estimate $b=\min_i x_i$, even for constant data. Holding
+    $b\le\min_i x_i$ gives a unique finite shape estimate unless every observation
+    equals $b$, when the likelihood is unbounded. A held endpoint above an
+    observation gives zero likelihood. Holding both leaves likelihood evaluation.
+  reason: >-
+    For fixed positive $\alpha$, the log-likelihood increases strictly in $b$ on
+    $0<b\le\min_i x_i$. With $b$ fixed, its shape-dependent part is
+    $n\log\alpha-\alpha\sum_i\log(x_i/b)$. It is strictly concave and has maximizer
+    $n/\sum_i\log(x_i/b)$ when that sum is positive; otherwise it increases
+    without bound as $\alpha\to\infty$.
 ---
 
-The Pareto distribution is a heavy-tailed model for positive quantities above a lower threshold.
+The Pareto distribution models positive sizes above a lower endpoint $b$. The shape $\alpha$ controls the right tail, with smaller values giving heavier tails.
 
 ## Details
 
+The endpoint estimate is the sample minimum. This is an attained boundary maximum, rather than a stationary point in the interior. Holding the endpoint fixes the lower support boundary and leaves an explicit shape estimate. Holding shape still permits estimation of the endpoint, including for constant data. A held endpoint cannot exceed any observation.
+
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
-The lower endpoint `b` is estimated by `min(x)`, a boundary MLE at an order statistic; `a` is the tail shape. The fitted support is $[b, \infty)$, with $b>0$.
+## Decision history
 
-A held b must not exceed min(x). With a free the likelihood is unbounded if all observations equal b. Holding a permits constant data and estimates b=min(x).
+2026-10-31 (diagnostic contract): Empty or invalid input carries a failure status. Degenerate samples depend on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.
 
-### Diagnostic status contract (2026-10-31)
-
-Empty or invalid input carries a non-success status. Degenerate samples depend
-on which coefficients are free; delegate failures survive transformations.
-See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
-and the appended TASK-132 cases in `test.cpp` for the validation scope.
-
-### Range portability (2026-11-01)
-
-The log support ratio uses `log1p((x-b)/b)` near the endpoint; when that
-ratio would overflow it uses `log(x)-log(b)`. The R concentration and
-`1e-300` to `1e300` test covers both regimes. This is an arithmetic
-rearrangement of the closed-form likelihood, not a new fitting criterion.
+2026-11-01 (range portability): The log support ratio uses `log1p((x-b)/b)` near the endpoint and `log(x)-log(b)` when the ratio would overflow. The R concentration and `1e-300` to `1e300` tests cover both regimes. This rearranges the closed-form likelihood without changing its maximizer.

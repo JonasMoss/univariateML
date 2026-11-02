@@ -25,10 +25,7 @@ params:
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0
-  advice: 'With min estimated the likelihood is unbounded: let min rise to the sample
-    minimum with scale equal to the gap and shape below k/(n - k), k the multiplicity
-    of the minimum. Hold it, e.g. `mlpareto2(x, min = 0)`, which is `mllomax(x)`.
-    Fits with min free and other parameters held are not supported.'
+  advice: 'With all coefficients free, letting min approach the sample minimum while scale shrinks can make the likelihood unbounded. Hold min, for example min = 0, to fit the shifted lomax family. Estimating min with other coefficients held is not supported.'
   kind: threshold
 r:
   density: dpareto2
@@ -41,32 +38,28 @@ r:
     scale: Known positive finite coefficient; NULL estimates it.
 log_density: log((1/scale)) + log(shape) - (shape + 1)*log(1 + (1/scale)*(x-min))
 limits:
-- when: $\kappa \to \infty$ with $\lambda \kappa$ fixed
+- when: The shape $\alpha$ and scale $\sigma$ tend to infinity with $\alpha/\sigma$ fixed at a positive rate.
   firmness: proved
-  detect: max over 0 < u < ubar of the profile log-likelihood gap is at most 1e-8*n
+  detect: With threshold held and both other coefficients free, the numerical profile search finds no improvement over the best shifted exponential greater than $10^{-8}n$ log-likelihood units.
   status: ExponentialLimit
   name: shifted exp; subtract min before fitting
 holds:
 - held: []
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  status: not-implemented
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - scale
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  status: not-implemented
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 - held:
   - shape
   - scale
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  status: not-implemented
+  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 fit_args:
   min: 0
 examples: |
@@ -116,20 +109,39 @@ references:
   Software, 25(7), 1–37. doi:10.18637/jss.v025.i07.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, the likelihood is unbounded for every nonempty
+    sample. With $\mu$ held and all observations strictly above it, existence
+    is exactly the Lomax existence criterion on the excesses. The exponential
+    limit may supply the supremum, and joint uniqueness is not established.
+    Holding either shape or scale as well gives a unique finite estimate of
+    the remaining coefficient. Free-threshold fits with held coefficients are
+    not supported, although some have finite maxima. Holding all coefficients
+    leaves likelihood evaluation.
+  reason: >-
+    If the sample minimum $m$ occurs $k$ times, set $\mu=m-\varepsilon$
+    and $\sigma=\varepsilon$. The likelihood has order
+    $\varepsilon^{\alpha(n-k)-k}$, which diverges for sufficiently small
+    positive $\alpha$. With $\mu$ held, subtracting it gives precisely a
+    Lomax likelihood with $\kappa=\alpha$ and $\lambda=1/\sigma$.
+    With scale held the shape likelihood is strictly concave. With shape
+    held the score in $\log\lambda$ decreases strictly from $n$ to $-n\alpha$.
 ---
 
-This family has a known support endpoint and delegates fitting to lomax.
+Pareto type II models sizes above a lower endpoint $\mu$ with Lomax-distributed excesses. The scale $\sigma$ sets the size unit and the shape $\alpha$ controls tail decay.
 
 ## Details
 
-The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
+Fitting holds the threshold fixed and requires finite observations strictly above it. Subtracting the threshold reduces the fit to [Lomax](../lomax/README.md), with shape $\kappa=\alpha$ and rate $\lambda=1/\sigma$.
 
-With min held, identification and existence transfer exactly from Lomax on x-min. Its global profile search, exponential-face comparison and 1e-8*n tie rule are retained; the sample criterion is given in the mllomax documentation.
+For the joint excess fit, put $y_i=x_i-\mu$, $z_i=y_i/\bar y$, $\bar u=\bar y/(\prod_i y_i)^{1/n}$ and $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uz_i)$. A finite maximum exists exactly when $\psi(u)\le0$ somewhere in $0<u<\bar u$. Otherwise the supremum is the shifted exponential limit. This profile comparison does not establish uniqueness. The bounded numerical search refines candidate maxima without a global certificate.
 
-The delegate coefficients map as shape=kappa and scale=1/lambda.
+Holding scale gives $\hat\alpha=n/\sum_i\log(1+y_i/\sigma)$. Holding shape gives a unique scale-score root. Both cases permit constant positive excesses. If shape and scale are held while the threshold is free, the likelihood increases up to the sample minimum, giving a finite endpoint maximum. The interface nevertheless requires a held threshold for every subset.
 
-Observations must be strictly inside the held support. Free endpoints with other parameters held are not supported; those subsets need separate existence studies. The delegate retains its sample restrictions and limit comparisons.
+The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) gives the endpoint-collapse argument and boundary comparisons.
 
-Let the minimum m occur k times. Along min = m-epsilon and scale = epsilon, each minimum density is proportional to epsilon^(-1), and each other density to epsilon^shape. Hence L is proportional to epsilon^(shape*(n-k)-k), which diverges for shape < k/(n-k), or for every shape when k=n.
+## R notes
 
-With min held, holding scale gives the explicit shape estimate n / sum(log1p((x-min)/scale)). Holding shape gives a unique scale-score root.
+With `min = 0`, the fit agrees with `mllomax(x)` after reciprocal conversion of the rate. Numerical comparisons prefer the exponential face within $10^{-8}n$ log-likelihood units, so a tied or slightly better finite maximum can be rejected. A detected face stops with a recommendation to use `mlexp(x - min)`. Unresolved searches stop.

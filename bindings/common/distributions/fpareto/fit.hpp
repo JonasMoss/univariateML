@@ -11,7 +11,7 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
   const Held shape2 = shape2_arg;
   const Held shape3 = shape3_arg;
   const Held scale = scale_arg;
-  if (!min_arg.supplied) return failure("Estimating the threshold is not supported: endpoint singularities or unattained limit models prevent an unrestricted MLE (P0, A4).");
+  if (!min_arg.supplied) return failure("Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.");
   const double min = min_arg.value;
 
  if (!std::isfinite(min)) return fail("Held bounds must be finite and ordered.");

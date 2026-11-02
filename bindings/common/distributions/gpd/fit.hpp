@@ -11,7 +11,7 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   const Held sigma = sigma_arg;
   const Held xi = xi_arg;
 
-  if (!mu.supplied) return fail("Estimating `mu` is not supported: the free-threshold GPD likelihood has no MLE (endpoint and logistic escapes). Supply a held threshold.");
+  if (!mu.supplied) return fail("Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.");
   const double threshold = mu.value;
   const double shape = xi.supplied ? xi.value :
       std::numeric_limits<double>::quiet_NaN();
