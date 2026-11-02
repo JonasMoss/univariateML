@@ -8,7 +8,7 @@ inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held s
   const Held shape1 = shape1_arg;
   const Held shape2 = shape2_arg;
   const Held shape3 = shape3_arg;
-  if (!scale_arg.supplied) return failure("Estimating the threshold is not supported: endpoint singularities or unattained limit models prevent an unrestricted MLE (P0, A4).");
+  if (!scale_arg.supplied) return failure("Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.");
   const double scale = scale_arg.value;
 
   if(!(gradtol>0)||!std::isfinite(gradtol)||iterlim<1)

@@ -40,22 +40,22 @@ limits:
   - name: fixed-endpoint Pareto face
     firmness: proved
     fixed: [scale]
-    when: shape1 tends to zero and shape2 tends to infinity at fixed product
+    when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.
     status: ParetoBoundary
     message: fixed-endpoint Pareto face
   - name: unbounded likelihood
     firmness: proved
-    when: A free concentration can collapse on constant observations
-    detect: Constant samples; the held coefficients determine whether concentration remains free
+    when: The free coefficients concentrate the distribution at the common positive observation.
+    detect: All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices when the common observation equals $a$.
     status: InvalidData
     message: unbounded
   - model: lnorm
     firmness: proved
-    when: '$\mathrm{shape1} \to \infty$ with $\mathrm{shape2}\sqrt{\mathrm{shape1}}$ and $\log \mathrm{scale} - \log(\mathrm{shape1})/\mathrm{shape2}$ fixed'
+    when: 'The gamma shape $k$ tends to infinity with $p\sqrt{k}\to1/\sigma$ and $\log a - \log(k)/p\to\mu$, for fixed $\sigma>0$ and $\mu$.'
     status: LognormalBoundary
   - model: pareto
     firmness: proved
-    when: '$\mathrm{shape2} \to \infty$ with $\mathrm{shape1}\,\mathrm{shape2}$ and scale fixed'
+    when: 'The power $p$ tends to infinity with $kp\to d>0$ and $a$ converging to a positive endpoint.'
     status: ParetoBoundary
 references:
 - Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3),
@@ -105,6 +105,30 @@ aliases:
 - "inverse generalized gamma"
 key_references:
 - 3
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free, constant positive samples have unbounded
+    likelihood. For nonconstant samples, the lognormal or Pareto limit
+    can prevent a finite MLE. General uniqueness of an interior maximum
+    is not established. With scale free and either shape held, a unique
+    finite MLE exists for nonconstant samples. With both shapes held,
+    the scale MLE is unique even for constant samples. With scale and
+    power held, the remaining gamma shape has a unique finite MLE.
+    With scale and gamma shape held, the power MLE is unique unless
+    every observation equals the held scale, when likelihood is unbounded.
+    With only scale held, attainment is assessed numerically against the
+    fixed-endpoint Pareto limit.
+  reason: >-
+    Holding the power reduces fitting to the gamma family. Holding the
+    gamma shape gives a strictly concave profile in log-power after
+    eliminating scale. With scale held, the gamma-shape score is strictly
+    decreasing; at held gamma shape, the power log-likelihood has second
+    derivative $-n/p^2-\sum_i z_i^2 e^{p z_i}<0$, where
+    $z_i=\log(x_i/a)$ for transformed gamma and
+    $z_i=\log(a/x_i)$ for its reciprocal. Its score crosses zero unless
+    all $z_i=0$. Reciprocation adds a parameter-independent Jacobian and
+    preserves maximizers.
 ---
 
 The inverse transformed gamma distribution is the distribution of the
@@ -113,30 +137,36 @@ positive losses.
 
 ## Details
 
-With $a=\mathrm{shape1}\downarrow0$, $b=\mathrm{shape2}\to\infty$
-and $ab\to q>0$, $b/\Gamma(a)\to q$. In the displayed density,
-put $u=scale/x$. For $u<1$, $u^b\to0$ and the density tends to
-$q u^q/x$; for $u>1$ it tends to zero. This is the Pareto density
-with endpoint scale (support above the endpoint). Scheffé's lemma gives
+With $k\downarrow0$, $p\to\infty$ and $kp\to d>0$, $p/\Gamma(k)\to d$. In the displayed density,
+put $u=a/x$. For $u<1$, $u^p\to0$ and the density tends to
+$d u^d/x$; for $u>1$ it tends to zero. This is the Pareto density
+with endpoint $a$ (support above the endpoint). Scheffé's lemma gives
 total-variation convergence. The endpoint value and a global likelihood
 comparison are separate questions.
 
-
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
-The fit is the transformed gamma fit of `1/x` with scale `1/scale`; the
-log likelihoods differ by `-2 * sum(log(x))`. The inverse gamma
-(`shape2 = 1`) and inverse Weibull (`shape1 = 1`) distributions are
-members. For nonconstant data, holding `shape1` or `shape2` fixed gives a maximum
-likelihood estimate; the free fit has none with positive probability. The
+The scale $a$ stretches the observations, $k$ is the gamma shape and $p$ is the reciprocal power. The fit is the transformed gamma fit of $1/x$ with scale $1/a$; the
+log likelihoods differ by $-2\sum_i\log x_i$. The inverse gamma
+($p=1$) and inverse Weibull ($k=1$) distributions are
+members. For nonconstant data, holding $k$ or $p$ fixed gives a maximum
+likelihood estimate; the unrestricted fit fails to have a finite MLE with positive probability. The
 inward likelihood slope from the lognormal face has the same sign as the
-sample skewness of the logarithms. Faces win likelihood ties within `1e-8`
-per observation. Fits very close to that limit have a scale above the
-largest double; `mlinvtrgamma()` then stops and reports the log scale.
+sample skewness of the logarithms. Faces win likelihood ties within $10^{-8}$
+per observation. Fits very close to that limit can have a scale outside the numerical representation range.
+
+Held-scale fits use the reciprocal transformed gamma profile. With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the fixed-endpoint Pareto limit is compared numerically.
+
+## R notes
+
+A detected limiting model stops with advice to fit that model. When the fitted
+scale cannot be represented, the error reports its logarithm.
+A near-lognormal fitted scale above the largest double stops and reports
+the log scale.
+
+## Decision history
 
 The C++ face helper `trgamma_faces_log` accepts logarithms of observations
 and returns the maximised lognormal and power likelihoods and their fitted
 parameters. The derivation and numerical search qualifications are in
 `dev/research/evaluations/2026-10-29-trgamma-derivation.md` in the source tree.
-
-Held-scale fits use the reciprocal transformed gamma profile. With shape2 also held shape1 has one score root; with shape1 held the power likelihood is strictly concave unless every observation equals scale. The held-scale Pareto face is compared numerically.

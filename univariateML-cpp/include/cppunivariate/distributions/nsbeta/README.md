@@ -25,20 +25,14 @@ params:
   role: lower endpoint
   domain: "(-inf, max)"
   simulate: 0
-  advice: 'With the bounds estimated the likelihood is unbounded: a shape below 1
-    makes the density singular at its bound, so let that bound approach the sample
-    extreme. Hold both, e.g. `mlnsbeta(x, min = 0, max = 1)`, which is `mlbeta(x)`.
-    Fits with bounds free and other parameters held are not supported.'
+  advice: 'With both endpoints and shapes free, the likelihood is unbounded because a shape below one creates an endpoint singularity. Supply min and max, for example mlnsbeta(x, min = 0, max = 1), equivalent to mlbeta(x). Estimating endpoints with shapes held is not supported.'
   kind: threshold
 - name: max
   symbol: 'b'
   role: upper endpoint
   domain: "(min, inf)"
   simulate: 1
-  advice: 'With the bounds estimated the likelihood is unbounded: a shape below 1
-    makes the density singular at its bound, so let that bound approach the sample
-    extreme. Hold both, e.g. `mlnsbeta(x, min = 0, max = 1)`, which is `mlbeta(x)`.
-    Fits with bounds free and other parameters held are not supported.'
+  advice: 'With both endpoints and shapes free, the likelihood is unbounded because a shape below one creates an endpoint singularity. Supply min and max, for example mlnsbeta(x, min = 0, max = 1), equivalent to mlbeta(x). Estimating endpoints with shapes held is not supported.'
   kind: threshold
 r:
   density: dnsbeta
@@ -53,80 +47,48 @@ r:
 limits:
   - name: unbounded likelihood
     firmness: proved
-    when: A free concentration can collapse on constant observations
-    detect: Constant samples; the held coefficients determine whether concentration remains free
+    when: The shapes satisfy $\alpha=tu$ and $\beta=t(1-u)$ with $t\to\infty$, where $u=(x-a)/(b-a)$ is the common transformed observation and the endpoints are held.
+    detect: All observations equal one point strictly between the held endpoints, and both shapes are free.
     status: Degenerate
     message: unbounded
 log_density: (shape1-1)*log(((x-min)/(max-min))) + (shape2-1)*log(1-((x-min)/(max-min))) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)-log(max-min)
 holds:
 - held: []
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape1]
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape2
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape2]
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape2
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape1, shape2]
+  status: not-implemented
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [min]
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - min
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape1, min]
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - min
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape2, min]
+  status: not-implemented
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape1, shape2, min]
+  status: not-implemented
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [max]
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape2
-  - min
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape1, max]
+  status: not-implemented
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape2, max]
   status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape2
-  - min
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - max
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - max
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape2
-  - max
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
-- held:
-  - shape1
-  - shape2
-  - max
-  status: no-mle
-  reason: 'Estimating the threshold is not supported: endpoint singularities or unattained
-    limit models prevent an unrestricted MLE (P0, A4).'
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+- held: [shape1, shape2, max]
+  status: not-implemented
+  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
 fit_args:
   min: 0
   max: 1
@@ -174,26 +136,55 @@ references:
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all four coefficients free, the likelihood is unbounded.
+    With both endpoints held and observations strictly between them, the
+    MLE of the two shapes exists and is unique exactly when the data are
+    nonconstant. Holding either shape as well gives a unique finite MLE
+    for the other shape, including for constant samples. Estimating an
+    endpoint with shapes held is not implemented and need not imply
+    non-existence. No joint uniqueness claim is made for free endpoints.
+  reason: >-
+    Moving a free endpoint toward its sample extreme gives an unbounded
+    likelihood if its corresponding shape is below one. With endpoints
+    held, $y=(x-a)/(b-a)$ has a beta likelihood. Its log-normalizer has
+    positive definite Hessian, the covariance of $(\log y,\log(1-y))$.
+    Strict concavity and an interior mean sufficient statistic give a
+    unique maximum for nonconstant samples. For a single free shape, the
+    digamma score strictly decreases from positive infinity to a negative
+    limit. For constant data with both shapes free, concentration at that
+    interior point makes the likelihood diverge.
 ---
 
-This family has a known support endpoint and delegates fitting to beta.
+The nonstandard beta distribution models measurements on an interval with
+supplied lower and upper endpoints. Its two shapes control behaviour near
+the lower and upper endpoints, respectively.
 
 ## Details
 
 For a constant sample at an interior point $x$, hold the endpoints
-fixed and put $p=(x-\min)/(\max-\min)\in(0,1)$. Taking beta shapes
-$tp,t(1-p)$, Stirling's formula gives density at $x$ asymptotic to
-$\sqrt{t/(2\pi p(1-p))}/(\max-\min)$. Its $n$th power diverges.
+fixed and put $u=(x-a)/(b-a)\in(0,1)$. Taking beta shapes
+$tu,t(1-u)$, Stirling's formula gives density at $x$ asymptotic to
+$\sqrt{t/(2\pi u(1-u))}/(b-a)$. Its $n$th power diverges.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
 For at least two finite, nonconstant observations strictly between the held bounds, the MLE is unique and attained: the transformed beta log likelihood is strictly concave in its two shapes. Constant transformed data have unbounded likelihood as both shapes grow.
 
-Observations must be strictly inside the held support. Free endpoints with other parameters held are not supported; those subsets need separate existence studies. The delegate retains its sample restrictions and limit comparisons.
+Observations must be strictly inside the held support. Endpoint estimation with held shapes is not implemented. It is not always a mathematical failure: with both shapes equal to one, the uniform likelihood is maximized by placing free endpoints at the sample extremes, provided the fitted interval has positive width. The fit retains the beta model's sample restrictions and limiting comparisons.
 
-With the opposite bound held beyond the sample, a shape a < 1 and its bound approaching the corresponding extreme at distance epsilon gives k factors proportional to epsilon^(a-1); all other factors approach positive constants. Thus the likelihood diverges. The held-bounds fit transforms to beta and subtracts n log(max-min) from log likelihood.
+Hold the opposite endpoint beyond the sample. If the shape $s$ associated with the free endpoint satisfies $s<1$, moving that endpoint to within $\varepsilon$ of the corresponding sample extreme gives $k$ factors proportional to $\varepsilon^{s-1}$, where $k$ observations equal that extreme. All other factors approach positive constants, so the likelihood diverges. The held-bounds fit transforms to beta and subtracts $n\log(b-a)$ from the log likelihood.
 
 With both bounds held, either held beta shape leaves a strictly decreasing score with one root for the other shape, even on constant samples strictly inside the bounds.
+
+## R notes
+
+Supply min and max. Passing NULL for either stops with the endpoint
+explanation. With min = 0 and max = 1 this is the ordinary beta fit.
+
+## Decision history
 
 ### Diagnostic status contract (2026-10-31)
 
