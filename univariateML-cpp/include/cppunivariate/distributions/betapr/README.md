@@ -52,22 +52,26 @@ limits:
     when: With $p$ held, $q$ and $b$ tend to infinity while $b/q$ tends to a positive gamma scale.
     detect: A numerical comparison selects the gamma limit within $10^{-8}n$ log-likelihood units. Constant data with only $p$ held select this limit analytically.
     status: GammaBoundary
+    numerical: true
   - firmness: proved
     model: invgamma
     fixed: [shape2]
     when: With $q$ held, $p$ tends to infinity and $b$ tends to zero while $bp$ tends to a positive inverse-gamma scale.
     detect: A numerical comparison selects the inverse-gamma limit within $10^{-8}n$ log-likelihood units. Constant data with only $q$ held select this limit analytically.
     status: InvGammaBoundary
+    numerical: true
   - model: gamma
     firmness: proved
     when: The shape $q$ tends to infinity while $p$ tends to a positive finite shape and $b/q$ tends to a positive gamma scale.
     detect: A numerical comparison selects the gamma limit within $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
     status: GammaBoundary
+    numerical: true
   - model: invgamma
     firmness: proved
     when: The shape $p$ tends to infinity while $q$ tends to a positive finite shape and $bp$ tends to a positive inverse-gamma scale.
     detect: A numerical comparison selects the inverse-gamma limit within $10^{-8}n$ log-likelihood units. This comparison is not a global certificate.
     status: InvGammaBoundary
+    numerical: true
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25.
   Wiley, New York.

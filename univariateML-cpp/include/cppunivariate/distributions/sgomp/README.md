@@ -44,7 +44,7 @@ construction:
 - base
 relations: {}
 fit:
-  method: scalar-solve
+  method: profile-search
   certified: partial
   note: 'sgomp/README.md, Details; sgomp/mle.hpp (public fitter and held overloads); sgomp/test.cpp: Held rate leaves
     a strictly monotone shape score; joint rate grid refines sampled peaks without certifying enumeration of all

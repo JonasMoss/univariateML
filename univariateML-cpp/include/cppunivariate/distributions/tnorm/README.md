@@ -66,22 +66,26 @@ limits:
     when: 'As $\sigma\to\infty$ and $\mu/\sigma^2\to-1/(\bar x-a)$ with $a$ finite and $b=\infty$, the distribution tends to $a+Y$, where $Y$ is exponential.'
     detect: 'The sample is nonconstant, both parent coefficients are free, $a$ is finite, $b=\infty$, and the empirical variance is at least $(\bar x-a)^2$.'
     status: ExponentialBoundary
+    numerical: true
   - model: exp
     firmness: proved
     when: 'As $\sigma\to\infty$ and $\mu/\sigma^2\to1/(b-\bar x)$ with $a=-\infty$ and $b$ finite, the distribution tends to $b-Y$, where $Y$ is exponential.'
     detect: 'The sample is nonconstant, both parent coefficients are free, $a=-\infty$, $b$ is finite, and the empirical variance is at least $(b-\bar x)^2$.'
     status: ReflectedExponentialBoundary
+    numerical: true
   - name: truncated exponential
     firmness: proved
     when: 'As $\sigma\to\infty$ and $\mu/\sigma^2\to r$ with both bounds finite, the distribution tends to the law with density proportional to $e^{rx}$ on $[a,b]$. It is uniform when $r=0$.'
     detect: 'The sample is nonconstant, both parent coefficients are free, both bounds are finite, and the empirical variance is at least that of the exponential tilt with the same empirical mean.'
     status: TruncatedExponentialBoundary
+    numerical: true
   - name: uniform
     firmness: proved
     fixed: [mean]
     when: 'With $\mu$ held and both bounds finite, $\sigma\to\infty$ gives the uniform distribution on $[a,b]$.'
     detect: 'The parent mean $\mu$ is held, scale is free, both bounds are finite, and the empirical squared distance from $\mu$ is at least $((b-\mu)^3-(a-\mu)^3)/(3(b-a))$.'
     status: UniformBoundary
+    numerical: true
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition,
   Chapter 13.10. Wiley.
@@ -107,7 +111,7 @@ relations:
       mean: mean
       sd: sd
 fit:
-  method: multistart
+  method: convex-solve
   certified: partial
   note: 'tnorm/README.md, Details; tnorm/mle.hpp (public fitter and held overloads); tnorm/test.cpp: Fixed-bound
     likelihood is strictly concave in mean/sd^2 and -1/(2*sd^2); holding mean or sd gives affine restrictions. Free

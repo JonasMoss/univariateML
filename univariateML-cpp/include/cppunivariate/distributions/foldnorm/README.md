@@ -51,10 +51,8 @@ relations:
       sd: sigma
 fit:
   method: profile-search
-  certified: partial
-  note: 'foldnorm/README.md, Details; foldnorm/mle.hpp (public fitter and held overloads); foldnorm/test.cpp: Joint
-    profile has analytic bounds and convex-chord likelihood bounds; held-coordinate profiles are searched numerically.
-    The joint tolerance certificate does not establish every held subset.'
+  certified: 'yes'
+  note: "foldnorm/mle.hpp, foldnorm_mle: Joint and held-positive-location profiles use analytic bounds and convex-chord upper bounds to certify the retained likelihood within tol per observation in exact arithmetic, conditional on computed comparisons. Held scale has a unique monotone location equation; held zero location gives analytic scale. Work-budget exhaustion stops; floating-point comparisons are not outward rounded."
 areas:
 - reliability and survival
 classification: specialist

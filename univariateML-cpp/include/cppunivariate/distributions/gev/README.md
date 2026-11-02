@@ -53,8 +53,8 @@ r:
     iterlim: Maximum iterations per scalar solve.
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
-- {firmness: numerical, name: scale collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum', detect: '$\mu$ is held at the sample minimum and at least half of the observations are tied there (with $\xi > 0$ held, already when $\xi k \ge n - k$ for $k$ ties)'}
-- {firmness: numerical, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'at least half of the observations equal the sample minimum and, at exactly half, no interior fit beats this limit'}
+- {firmness: numerical, name: scale collapse, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum', detect: '$\mu$ is held at the sample minimum and at least half of the observations are tied there (with $\xi > 0$ held, already when $\xi k \ge n - k$ for $k$ ties)', numerical: true}
+- {firmness: numerical, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'at least half of the observations equal the sample minimum and, at exactly half, no interior fit beats this limit', numerical: true}
 examples: |
   set.seed(1)
   x <- rml(200, mlgev())
@@ -77,11 +77,9 @@ construction:
 - generalisation
 relations: {}
 fit:
-  method: multistart
-  certified: 'no'
-  note: 'gev/README.md, Details; gev/mle.hpp (public fitter and held overloads); gev/test.cpp: Default and nontrivial
-    conditional fits use multistart, finite grids or local profile refinement without a global certificate; all-held
-    density evaluation is not counted as certification.'
+  method: profile-search
+  certified: 'partial'
+  note: "gev/mle.hpp, gev_held_profile and gev_profile: Held xi=-1 has closed-form shifted reverse-exponential fits; held xi=0 and sigma give analytic location. These nontrivial submodels are certified. General free and conditional fits use scalar profiles, finite scans and root discovery without a global enumeration certificate; half-tie face comparisons remain numerical."
 areas:
 - extremes and environment
 existence:

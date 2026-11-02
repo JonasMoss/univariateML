@@ -66,9 +66,7 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: 'cauchy/README.md, Details; cauchy/mle.hpp (public fitter and held overloads); cauchy/test.cpp: Held location
-    leaves a unique monotone scale solve; free location can be multimodal and the observation-gap search has no
-    root-isolation certificate.'
+  note: "cauchy/mle.hpp, fit_cauchy: The free fit uses safeguarded Newton in location and log scale, not a scalar profile search. Held location has a unique monotone scale equation, but the fixed lower bracket is unchecked and can miss its root; held-scale location scans have no root-isolation certificate. The balanced two-point joint maximum is explicit; general Newton step convergence is not a global certificate."
 areas:
 - robust modelling
 classification: classical
