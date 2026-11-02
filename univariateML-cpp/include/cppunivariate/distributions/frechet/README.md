@@ -19,8 +19,13 @@ params:
       mechanism: collapse
       exempt_when_held:
       - - mu
-      reason: lambda >= 1 prevents free-threshold collapse; held mu is inverse Weibull
-        on x - mu.
+      reason: >-
+        The bound lambda >= 1 excludes scale collapse at a freely fitted
+        threshold when the minimum occurs fewer than half the time. Exceptional
+        ties still require a separate check. It also excludes a shape tending to
+        zero while mu approaches the minimum, which can make the likelihood
+        unbounded even with sigma held. Holding mu gives an inverse Weibull
+        model on x - mu, for which every positive lambda is admissible.
   kind: regular
 - name: mu
   symbol: '\mu'
@@ -28,8 +33,9 @@ params:
   domain: (-inf, inf)
   simulate: 0
   kind: threshold
-  advice: Holding mu fits inverse Weibull on x - mu; NULL estimates mu with lambda
-    >= 1.
+  advice: >-
+    Holding mu fits an inverse Weibull model on x - mu. Use mu = NULL to
+    estimate the threshold with free lambda restricted to lambda >= 1.
 - name: sigma
   symbol: '\sigma'
   role: scale
@@ -47,10 +53,31 @@ r:
     iterlim: Maximum iterations per scalar solve.
 log_density: log(lambda)-log(sigma)-(lambda+1)*log((x-mu)/sigma)-((x-mu)/sigma)**(-lambda)
 limits:
-  - {firmness: proved, name: fixed-shape collapse, fixed: [lambda], status: InvalidData, message: "unattained collapse face", when: "With free mu and sigma, lambda*(n-k) <= k at minimum multiplicity k."}
-  - {firmness: proved, name: shape divergence, fixed: [sigma], status: InvalidData, message: "unbounded shape likelihood", when: "Constant data with free mu, or all x-mu equal held sigma."}
-  - {firmness: proved, model: gumbel, when: 'lambda tends to infinity with sigma/lambda fixed and mu + sigma fixed', status: GumbelLimit}
-  - {firmness: numerical, name: free collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: "The sample minimum's multiplicity equals n/2 exactly (even n only) and no interior (mu, sigma, lambda) point beats the lambda -> 1 collapse face's limiting likelihood."}
+  - firmness: proved
+    name: fixed-shape collapse
+    fixed: [lambda]
+    status: InvalidData
+    message: "unattained collapse face"
+    when: 'With shape $\lambda$ held, $\mu=m-\varepsilon$ approaches the sample minimum $m$ and $\sigma=c\varepsilon$ decreases to zero for a positive constant $c$.'
+    detect: 'Location and scale are free, and the minimum occurs $k$ times with $\lambda(n-k)\le k$. The strict inequality gives divergence. Equality gives a finite, unattained collapse face.'
+  - firmness: proved
+    name: shape divergence
+    fixed: [sigma]
+    status: InvalidData
+    message: "unbounded shape likelihood"
+    when: 'With scale $\sigma$ held, the free shape $\lambda$ tends to infinity and $\mu$ equals the common observation minus $\sigma$.'
+    detect: 'The sample is constant and location is free, or every observation minus the held location equals $\sigma$.'
+  - firmness: proved
+    model: gumbel
+    when: 'The shape $\lambda$ tends to infinity with $\sigma/\lambda=a>0$ and $\mu+\sigma=b$ fixed.'
+    detect: 'A numerical comparison selects the Gumbel face over the finite candidates when location, scale and shape are free.'
+    status: GumbelLimit
+  - firmness: numerical
+    name: free collapse
+    status: NoMLE
+    message: "minimum multiplicity permits scale collapse"
+    when: 'The location $\mu$ approaches the sample minimum from below, $\lambda$ tends to one, and $\sigma$ decreases proportionally to the location gap.'
+    detect: 'All coefficients are free, the minimum occurs exactly $n/2$ times, and no numerically found finite candidate beats the collapse face. This comparison does not certify that every finite competitor has been found.'
 fit_args:
   mu: ~
 examples: |
@@ -92,9 +119,40 @@ references:
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
 key_references:
 - 1
+existence:
+  uniqueness: unknown
+  statement: >-
+    With all coefficients free and unrestricted shape, the likelihood is
+    unbounded for every sample. The fitted model therefore restricts $\lambda\ge1$.
+    A minimum repeated more than $n/2$ times gives unbounded likelihood.
+    At exactly $n/2$ repeats, a finite collapse face must be compared with
+    finite candidates. A Gumbel limit can also prevent attainment.
+    A complete existence criterion and joint uniqueness are not established.
+    With $\mu$ held and observations strictly above it, both remaining
+    coefficients have a unique finite MLE exactly for nonconstant data.
+    Holding $\mu$ and $\lambda$ gives a unique finite scale estimate even
+    for constants. Holding $\mu$ and $\sigma$ gives a unique finite shape
+    estimate unless every $x_i-\mu=\sigma$, when likelihood is unbounded.
+    With only $\lambda$ held, a finite MLE exists exactly when
+    $\lambda(n-k)>k$, where $k$ is the minimum multiplicity.
+    Otherwise the supremum is an unattained collapse face or is unbounded. With only $\sigma$ held,
+    constant data have unbounded shape likelihood.
+    Holding $\lambda$ and $\sigma$ gives a unique finite location maximum.
+    Uniqueness for the remaining free-location fits is not established.
+    Holding all coefficients leaves only likelihood evaluation.
+  reason: >-
+    Holding location reduces the model to inverse Weibull on $x_i-\mu$,
+    whose monotone shape equation proves the stated conditional results.
+    For free location, put $\mu=m-\varepsilon$ and
+    $\sigma=c\varepsilon$. The likelihood is proportional asymptotically
+    to $\varepsilon^{\lambda(n-k)-k}$ at fixed shape.
+    The Gumbel path and the half-tie collapse face are derived in Details.
+    These paths prove obstructions and construct limiting competitors.
+    They do not prove that the numerical profile search exhausts all maxima
+    or all joint escape paths.
 ---
 
-The Frechet distribution models heavy right tails and extreme maxima.
+The Fréchet distribution models extreme maxima with heavy right tails. The threshold $\mu$ sets the lower endpoint, $\sigma$ sets the scale above it, and $\lambda$ controls the tail decay.
 
 ## Details
 
@@ -118,47 +176,24 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extr
 
 When the location is free, the minimum multiplicity controls the positive-shape collapse; ties above the minimum do not cause it.
 
-With shape and scale both free, a held-location fit requires at least two finite, nonconstant observations strictly above mu. Its identification and existence are exactly those of inverse Weibull after subtracting mu.
+With shape and scale free, a held-location fit requires a nonconstant sample strictly above the threshold. Its existence and identification are exactly those of inverse Weibull after subtracting the threshold. Holding location permits every positive shape. Holding location and shape gives the explicit scale estimate
+$\hat\sigma=(n/\sum_i(x_i-\mu)^{-\lambda})^{1/\lambda}$.
+Holding location and scale leaves a strictly concave shape likelihood, solved by bisection. These conditional cases allow a single observation and constants unless the stated shape divergence applies.
 
-The shape restriction in the parameter table applies when shape is free
-and location is free.
-With location held, inverse Weibull fitting on x-mu permits every positive
-lambda. With location and shape free, lambda is restricted to [1, infinity), and
-the attained lambda=1 member is returned. The free fit requires at least
-three finite observations. Minimum tie multiplicity strictly above half
-the sample size always diverges, as for GEV; at exactly half (even n
-only), the lambda -> 1 collapse face has a finite but unattained
-supremum, and the fit compares the best interior candidate against it,
-returning the interior fit when strictly higher or stopping with the
-same collapse reason otherwise. As for GEV, no interior candidate ever
-beat the limit in extensive testing at an exact half tie; no proof that
-this holds for every sample is claimed. The Gumbel face wins ties within 1e-8*n.
+When location and shape are free, the fitted shape is restricted to $\lambda\ge1$. The attained member $\lambda=1$ is included. The joint fitter requires at least three observations. A minimum repeated more than half the time always gives unbounded likelihood under this restriction. At an exact half tie, the fitter compares the numerically found finite candidates against the finite collapse face derived above. No interior candidate beat this face in the extensive tests recorded in the [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md). This is numerical evidence, not a proof that the face always wins.
 
-For a minimum m repeated k times, set mu=m-epsilon and sigma=c*epsilon.
-The minimum densities are proportional to epsilon^(-1), and all other
-densities to epsilon^lambda. Thus likelihood diverges when
-lambda*(n-k)-k<0, including every positive lambda for constant samples.
-The tie restriction and lambda>=1 exclude this collapse, following the
-GEV restriction xi=1/lambda<=1. These restrictions are part of the fitted
-model. The GEV mapping is location=mu+sigma, scale=sigma/lambda and
-shape=1/lambda. The profile scans score roots and compares both faces;
-global root discovery is checked numerically rather than proved.
+For a minimum repeated $k$ times, the fixed-shape collapse exponent is $\lambda(n-k)-k$. Strictly negative values give divergence, including every positive shape for constant data. With only shape held, the fitter requires $\lambda(n-k)>k$ and rejects equality as an unattained collapse face. In this fixed-shape case the rejection also follows from a global derivative bound. Put $r_i=\varepsilon/(x_i-m+\varepsilon)$ and profile out scale. Then
+$\varepsilon\ell'(\varepsilon)=n\lambda\sum_i r_i^{\lambda+1}/\sum_i r_i^\lambda-(\lambda+1)\sum_i r_i$.
+Since $r_i\le1$, the ratio is at most one, while $\sum_i r_i>k$ for nonconstant data. Thus the derivative is negative whenever $n\lambda\le(\lambda+1)k$, including equality. The supremum is confined to the unattained collapse face. If $\lambda(n-k)>k$, the profiled likelihood tends to zero both as the location gap decreases to zero and as it grows without bound. It therefore attains a finite maximum. This fixed-shape argument does not certify the search with shape free.
 
-All hold combinations are supported. With lambda and mu held, the exact
-scale is (n / sum((x-mu)^(-lambda)))^(1/lambda). With mu and sigma held,
-the shape likelihood is strictly concave and its score is solved by
-bisection; if every x-mu equals sigma it is unbounded. These cases allow
-one observation and constants unless the stated shape divergence applies.
-With lambda and sigma held, the scalar location fit permits every positive
-lambda, including lambda below one. With only lambda held, a minimum of
-multiplicity k requires lambda*(n-k)>k; equality is an unattained collapse
-face. With only sigma held, free lambda is restricted to lambda>=1 and
-constant samples have an unbounded shape likelihood. The location search
-profiles the exact scale or concave shape solve and refines sampled local
-maxima. Global search coverage is numerical; the P0 proof gaps remain.
+Holding shape and scale leaves a scalar location fit and permits every positive shape, including values below one. Its likelihood tends to zero at both ends of the location domain, so a finite maximum exists. Uniqueness follows by writing $d_i=x_i-\mu$ and $R=\sum_i d_i^{-\lambda-1}/\sum_i d_i^{-1}$. As the location gap increases, $R$ decreases strictly from infinity to zero. Indeed, under weights proportional to $d_i^{-1}$, its derivative is
+$-(\lambda+1)E_w(d^{-\lambda-1})+E_w(d^{-\lambda})E_w(d^{-1})<0$,
+since the covariance of the two decreasing powers of $d$ is nonnegative. The gap score changes sign exactly when $R=(\lambda+1)/(\lambda\sigma^\lambda)$. Holding only scale restricts the free shape to $\lambda\ge1$ and rejects constant samples because of shape divergence. The lower shape bound also excludes a different spike that is possible even with scale held. Put $\mu=m-\sigma e^{-L}$ and $\lambda=c/L$ for fixed $c>0$. As $L$ increases, each minimum density is proportional to $e^L/L$, while every other observation contributes a density proportional to $1/L$. Thus the unrestricted likelihood grows as $e^{kL}/L^n$ for any sample with minimum multiplicity $k$. The location search profiles the exact scale or the concave shape solve and refines sampled local maxima. Its global coverage remains numerical.
 
-Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
-and emit a warning of class `univariateML_restricted`. Held coefficients are
-not flagged. README hold exemptions apply to free coefficients. Failed
-optimizers return a failure status unless the score norm in fitting
-coordinates is below `1e-3`; unresolved scalar searches stop.
+The joint fit uses the generalized extreme-value coordinates: location $\mu+\sigma$, scale $\sigma/\lambda$, and shape $1/\lambda$. It scans profile score roots and compares finite candidates with the Gumbel and collapse faces. Root discovery and the face comparison have no global certificate. Unresolved scalar solves stop fitting.
+
+## R notes
+
+All hold combinations are supported. Supply `mu` explicitly: a value holds the threshold, and `mu = NULL` estimates it. With `mu` free and `lambda` free, the fit restricts `lambda >= 1`. With `mu` held, `mlinvweibull` on `x - mu` gives the corresponding two-parameter fit.
+
+The Gumbel face wins ties within $10^{-8}n$ log-likelihood units, and fitting stops with advice to use `mlgumbel`. Estimated coefficients on an applicable `fit_domain` bound carry a `restricted` attribute and emit a warning of class `univariateML_restricted`. Held coefficients are not flagged. Restriction exemptions apply to free coefficients. Failed optimizers and unresolved scalar searches stop. A small score alone does not establish global optimality.

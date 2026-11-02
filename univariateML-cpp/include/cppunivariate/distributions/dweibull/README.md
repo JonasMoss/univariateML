@@ -32,29 +32,29 @@ log_density: "Piecewise((log(1 - shape1), Eq(x, 0)), (log(shape1**(x**shape2) - 
 limits:
   - name: degenerate
     firmness: proved
-    when: '$\mathrm{shape2}\to\infty$ with $(-\log \mathrm{shape1})^{-1/\mathrm{shape2}}$ fixed between the observed value and the next integer (at 0: $\mathrm{shape1} \to 0$)'
-    detect: shape1 and shape2 are free and all observations are equal
+    when: 'The shape $\beta$ tends to infinity with $(-\log q)^{-1/\beta}$ fixed between the common positive count and the next integer. For a common count of zero, $q$ tends to zero.'
+    detect: 'Both coefficients are free and all observations are equal.'
     status: PointMass
   - name: degenerate
     firmness: proved
-    when: '$\mathrm{shape1}\to 0$'
-    detect: shape2 is held and all observations are 0
+    when: 'The free probability $q$ tends to zero with $\beta$ held fixed.'
+    detect: 'All observations are zero.'
     status: PointMass
     fixed: [shape2]
   - model: binom
     firmness: proved
-    when: '$\mathrm{shape2}\to\infty$ with $\mathrm{shape1}$ at the fraction of ones (a binomial with size 1)'
-    detect: shape1 and shape2 are free and the observations are 0 and 1, both present
+    when: 'The shape $\beta$ tends to infinity and $q$ tends to the sample fraction of ones, giving a binomial law with size one.'
+    detect: 'Both coefficients are free and the sample contains both zero and one, with no other counts.'
     status: BernoulliLimit
   - name: adjacent two-point
     firmness: proved
-    when: '$\mathrm{shape2}\to\infty$ with $\mathrm{shape1}^{(k+1)^{\mathrm{shape2}}}$ at the fraction of observations equal to $k+1$'
-    detect: shape1 and shape2 are free and the observations take two adjacent values k and k + 1, k at least 1, both present
+    when: 'The shape $\beta$ tends to infinity while $q^{(k+1)^\beta}$ tends to the sample fraction of observations equal to $k+1$.'
+    detect: 'Both coefficients are free and the sample takes exactly two adjacent values $k$ and $k+1$, with $k\ge1$.'
     status: TwoPointLimit
   - name: Bernoulli(shape1)
     firmness: proved
-    when: '$\mathrm{shape2}\to\infty$'
-    detect: shape1 is held and the observations are 0 and 1, with at least one 1
+    when: 'The free shape $\beta$ tends to infinity with $q$ held fixed, giving a Bernoulli law with success probability $q$.'
+    detect: 'All observations are zero or one, and at least one is one.'
     status: HeldBernoulliLimit
     fixed: [shape1]
 references:
@@ -92,24 +92,46 @@ aliases:
 - "discrete Weibull type I"
 key_references:
 - 2
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, a unique finite MLE exists exactly when
+    $\max_i x_i-\min_i x_i\ge2$. Constant samples and samples on two
+    adjacent counts have only an excluded limiting maximum.
+    Holding $\beta$ gives a unique finite estimate of $q$ exactly when at
+    least one observation is positive. Holding $q$ and observing at least
+    one positive count gives a unique finite estimate of $\beta$ exactly
+    when some observation is at least two. If $q$ is held and all observations
+    are zero, every positive $\beta$ maximizes the likelihood.
+    Holding both leaves only likelihood evaluation.
+  reason: >-
+    The log likelihood is strictly concave in $(\alpha,\beta)$, where
+    $\alpha=\log(-\log q)$, whenever a count is positive. The Hessian
+    argument in Details proves this directly. Either hold is an affine
+    restriction in these coordinates. As $\beta$ decreases to zero,
+    positive-count masses vanish uniformly over $q$. At the other parameter
+    boundaries the only proper limits are point masses or adjacent two-point
+    laws. A sample range of at least two therefore forces attainment on a
+    compact likelihood level set. The declared limits cover the remaining
+    cases. With $q$ held, all-zero data have likelihood $(1-q)^n$,
+    independent of $\beta$.
 ---
 
-The type I discrete Weibull distribution of Nakagawa and Osaki (1975) models nonnegative counts such as the number of cycles survived before failure. A count is the integer part of a continuous Weibull variable with shape `shape2`; `shape1` is the probability that the count is positive.
+The type I discrete Weibull distribution of Nakagawa and Osaki (1975) models nonnegative counts such as the number of cycles survived before failure. A count is the integer part of a continuous Weibull variable with shape $\beta$.
 
 ## Details
 
-The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md); numerical face searches do not certify global optimality.
+The coefficient $q$ is the probability that the count is positive.
 
-The Weibull scale is $(-\log \mathrm{shape1})^{-1/\mathrm{shape2}}$, and `shape2 = 1` gives the geometric distribution with `prob = 1 - shape1`, an attained member.
-The log-likelihood is strictly concave in $(\log(-\log \mathrm{shape1}), \mathrm{shape2})$ once an observation is positive: each count is an interval-censored observation of a log-Weibull variable.
-The maximum likelihood estimator is therefore unique when it exists. With both parameters free it exists exactly when `max(x) - min(x) >= 2`; with `shape2` held, when some observation is positive; with `shape1` held and some positive observation, when some observation is at least 2.
-With `shape1` held and all observations 0 the likelihood does not depend on `shape2`: the fitter warns and returns `shape2 = 1`.
+The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) records the limit and sample conditions. The concavity and boundary arguments below establish existence and uniqueness separately from numerical checks.
 
-Doubles close to 1 resolve $-\log \mathrm{shape1}$ only coarsely. When the fitted `shape1` is within `1e-6` of 1, `shape2` is refitted with that representable `shape1` held; when it rounds to 1 (the Weibull scale to the power `shape2` exceeds about $2^{53}$, e.g. counts near 40 with `shape2 = 10`) the fit stops with an error.
+The Weibull scale is $(-\log q)^{-1/\beta}$. The member $\beta=1$ is an attained geometric law with success probability $1-q$. Shapes below one give a decreasing probability of failure at the next count, conditional on survival. Shapes above one give an increasing probability. The log likelihood is strictly concave in $(\log(-\log q),\beta)$ once an observation is positive. The fitter solves the unique inner probability equation and brackets the decreasing profile shape score. Either held coefficient leaves a concave scalar problem. Unresolved roots stop fitting.
 
-## Why a single profile bracket is global
+With $q$ held and all observations zero, the likelihood does not depend on $\beta$. There are then infinitely many maximizers.
 
-With $a_k=k^\beta$ and $d_k=(k+1)^\beta-k^\beta$, the inner score is
+### Why a single profile bracket is global
+
+Put $t=-\log q$. With $a_k=k^\beta$ and $d_k=(k+1)^\beta-k^\beta$, the inner score is
 $\ell_t=\sum_k n_k[-a_k+d_k/\operatorname{expm1}(td_k)]$ and
 
 $$\ell_{tt}=-\sum_k n_k\frac{d_k^2e^{-td_k}}{(1-e^{-td_k})^2}<0.$$
@@ -151,3 +173,9 @@ For range one, its adjacent two-point limit attains the empirical
 saturated likelihood, strictly exceeding every finite fit; constants
 similarly escape to their point mass. These establish the stated
 existence criterion, separately from numerical checks.
+
+## R notes
+
+With `shape1` held and all observations zero, the fitter warns that the estimate is not unique and returns `shape2 = 1`.
+
+Doubles close to 1 resolve $-\log \mathrm{shape1}$ only coarsely. When the fitted `shape1` is within `1e-6` of 1, `shape2` is refitted with that representable `shape1` held; when it rounds to 1 (the Weibull scale to the power `shape2` exceeds about $2^{53}$, e.g. counts near 40 with `shape2 = 10`) the fit stops with an error.
