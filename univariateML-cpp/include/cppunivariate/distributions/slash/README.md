@@ -58,10 +58,8 @@ relations:
         max: 1
 fit:
   method: multistart
-  certified: partial
-  note: 'slash/README.md, Details; slash/mle.hpp (public fitter and held overloads); slash/test.cpp: Held location
-    has a unique scale root; free-location profiles are demonstrably multimodal and observation-gap scans do not
-    certify mode isolation.'
+  certified: 'yes'
+  note: 'slash/README.md, Details: conditional scale roots are unique, and held-scale and free-scale location searches use branch-and-bound with an objective-gap margin; exhausted numerical searches fail closed.'
 areas:
 - robust modelling
 classification: specialist
@@ -102,7 +100,7 @@ without optimization.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
-With location and scale free, a value occurring more than half the time makes likelihood unbounded. With every multiplicity strictly below half, the maximum is attained. At exactly half, the finite collapse likelihood must be compared with the interior profile; ties within $10^{-8}n$ select collapse. Holding sigma removes collapse. The scale score has a unique root for every location away from the observations. The location profile can be multimodal; a grid over every observation gap nominates numerical local maxima for refinement. With free scale this search is numerical, not a proof that every mode is isolated. With scale held, the search also applies the conditional subdivision certificate below.
+With location and scale free, a value occurring more than half the time makes likelihood unbounded. With every multiplicity strictly below half, the maximum is attained. At exactly half, the finite collapse likelihood must be compared with the interior profile; ties within $10^{-8}n$ select collapse. Holding sigma removes collapse. The scale score has a unique root for every location away from the observations. The location profile can be multimodal; a grid over every observation gap nominates numerical local maxima for refinement. Both held-scale and free-scale searches apply the conditional subdivision certificates below; these bound the objective gap without requiring every mode to be isolated.
 
 For an exact existence criterion in the half-mass case, put $c=1/\sqrt{2\pi}$ and $B_v=c^n2^{-n/2}\prod_{x_i\ne v}|x_i-v|^{-2}$ at each half-mass value $v$. For a location $m$ away from such values, let $s(m)$ be the unique positive zero of $\sum_i[1-2t_i/(e^{t_i}-1)]$, $t_i=(x_i-m)^2/(2s^2)$. An MLE exists if and only if some interior profile value $L(m,s(m))$ is at least $\max_v B_v$; if the maximum multiplicity is below half, the comparison is vacuous. This is an exact variational criterion; the implementation evaluates it numerically, with the stated tie preference. It is not a multiplicity-only rule: $(0,1)$ has an interior maximum, whereas $(0,0,-1,1)$ numerically selects collapse. Location lies in the sample range; the likelihood tends to zero at all other escaping paths. The density decreases strictly with absolute standardized distance. Together these facts prove attainment below half. At a half-mass point, $L(v,s)<B_v$ for every positive scale. If $\sum_{x_i\ne v}1/(x_i-v)\ne0$, choosing $m-v$ proportional to $s^2$ increases the likelihood above $B_v$ for sufficiently small $s$, proving existence (subject to comparison with any other half-mass point). It suffices to check the sum at a half-mass value with the largest $B_v$; a sample of two values with equal counts always passes, since both sums are nonzero and the two $B_v$ agree. A zero sum is not decided by this test ([TASK-117 report](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md)).
 
@@ -163,18 +161,70 @@ $g(t)=1-2t/(e^t-1)$ is increasing, $g(0)=-1$, and
 $g(t)\ge(t-2)/(t+2)$ by $e^t\ge1+t+t^2/2$. At the lower endpoint,
 the score is at least $-k+(n-k)(T-2)/(T+2)>0$. At the upper
 endpoint all $t\le1/4$ and $g(t)\le-1+2t\le-1/2$, using
-$e^t-1\le t/(1-t)$ for $0\le t<1$. This bracket is not used by
-the implementation; evaluating its endpoints and score signs with rounding
-control remains necessary. Moreover $d$ tends to zero near an observation,
-so the bracket alone does not control a half-mass collapse neighborhood.
-See the [TASK-116 investigation](../../../../../dev/research/evaluations/2026-11-01-slash-cert-report.md).
+$e^t-1\le t/(1-t)$ for $0\le t<1$. The implementation instead checks score signs and bisects a log-scale
+bracket, as described below. See the [TASK-116 investigation](../../../../../dev/research/evaluations/2026-11-01-slash-cert-report.md).
+
+For a free-scale interval $I=[a,b]$, put $d_i=\min_{m\in I}|x_i-m|$
+and $D_i=\max_{m\in I}|x_i-m|$. The scale score increases with absolute
+residual, so any positive $s_-$ whose score using $d_i$ is positive is a
+uniform lower bound on the profile root over $I$; similarly a scale $s_+$
+whose score using $D_i$ is negative is a uniform upper bound. Where such a
+lower bound is available, the profile is $n\sqrt2/s_-$-Lipschitz by the
+envelope theorem, allowing the same endpoint-cone test as for held scale.
+
+The quadratic test further bounds the profile curvature. Let $h(z)$ be the
+log standardized density up to a constant, $z=(x-m)/s$, and $t=z^2/2$.
+On the rectangle $m\in I$, $s\in[s_-,s_+]$, write
+$z_{i,-}=d_i/s_+$, $z_{i,+}=D_i/s_-$ and
+$t_{i,\pm}=z_{i,\pm}^2/2$. From the mixture representation,
+$|h''(z)|\le 1+z^2/4$ and $|h'(z)|\le\sqrt2$. A second bound follows by
+differentiating the closed form for $h''$: for $t_{i,-}>0$, with
+$q=\max(t_{i,-},1)$, $|h''|$ is at most
+$2/z_{i,-}^2+e^{-t_{i,-}}/(1-e^{-t_{i,-}})+2q e^{-q}/(1-e^{-t_{i,-}})^2$.
+Use the smaller bound $H_i$. Then $|\ell_{mm}|\le A=\sum H_i/s_-^2$
+and $|\ell_{m,\log s}|\le C=\sum(\sqrt2+z_{i,+}H_i)/s_-$.
+The negative log-scale curvature is at least
+$B=\sum_i\min\{2t_{i,-}e^{-2t_{i,-}},2t_{i,+}e^{-2t_{i,+}}\}$:
+for the scale-score summand $g(t)=1-2t/(e^t-1)$,
+$g'(t)\ge e^{-2t}$, and $t e^{-2t}$ has a single maximum. When $B>0$,
+implicit differentiation yields $P''=\ell_{mm}+\ell_{m,\log s}^2/
+(-\ell_{\log s,\log s})\le A+C^2/B$. Taylor's theorem then bounds $P$
+from the midpoint and its score. The log-scale score has absolute value at
+most $n$, which bounds the objective error from the finite inner-root
+bracket; the cross-derivative bound controls its effect on the location score.
+
+If a positive uniform lower scale is unavailable, a separate residual bound
+also covers collapse. The density decreases with absolute residual, hence
+$\ell(m,s)\le U_I(s)$, the log likelihood of the residuals $d_i$ at scale
+$s$. If $k$ of these residuals are zero and $2k<n$, its monotone score gives
+a unique finite maximum; if $2k=n$, its supremum is
+$n\log c-(n-k)\log 2-2\sum_{d_i>0}\log d_i$, $c=1/\sqrt{2\pi}$;
+if $2k>n$ the bound is infinite. This applies to odd and even samples and
+intervals adjacent to a half-mass value. A finite scale root is enclosed by
+score-sign bisection, and the $n$-Lipschitz bound in log scale bounds its
+remaining objective error. An earlier [numerical prototype](../../../../../dev/research/evaluations/2026-11-02-slash-free-data/residual-bound-probe.py)
+illustrates why this residual bound alone is inefficient near an interior
+maximum.
+
+Subdivision starts with the existing grid and incumbent. It compares the
+bounds to the half-mass boundary plus $10^{-8}n$ while the incumbent is
+within that collapse preference, and otherwise to the best interior
+likelihood plus its margin. The
+practical margin is $10^{-9}(1+|\ell_*|)$ in original
+coordinates, capped at $10^{-9}n$ when a half-mass boundary is present,
+so that a change of units does not enlarge the collapse decision tolerance.
+The final comparison applies the stated $10^{-8}n$ collapse preference.
+These are exact-arithmetic bounds conditional on the computed comparisons;
+the margin is not a proof of floating-point rounding error. An exhausted
+million-interval budget, nonfinite required value, or unrepresentable
+midpoint reports `IterationFailure`, never an unchecked estimate.
 
 | Question | Evidence |
 |---|---|
 | Inner scale | The score has the unique root under the multiplicity conditions above, and the exact-arithmetic bracket above encloses it. The implementation expands a log-scale bracket until opposite score signs are verified, bisects, and accepts the scale only if its total log-scale score is below 1e-3 after back-transformation; otherwise it reports a numerical failure. This is conditional on computed comparisons, not an outward-rounded enclosure. |
-| Location on bounded intervals | Held scale uses the Lipschitz and curvature bounds with complete subdivision, conditional on computed comparisons; multimodality is demonstrated above. No uniform positive scale bound is established here for the free-scale profile near half-mass collapse. |
+| Location on bounded intervals | Held scale uses the Lipschitz and curvature bounds with complete subdivision, conditional on computed comparisons; multimodality is demonstrated above. Free scale uses uniform score bounds away from collapse and a residual likelihood bound near half-mass collapse. |
 | Faces | Range containment and collapse comparisons are established above; the implemented comparisons have numerical tolerances. |
-| Global certificate | Held-scale objective gap bounded by the stated margin in exact arithmetic conditional on computed comparisons; the margin is not a proved rounding bound. Free scale remains a numerical grid search: a scale-root enclosure and uniform bounds near collapse remain open. |
+| Global certificate | Held-scale objective gap bounded by the stated margin in exact arithmetic conditional on computed comparisons; the margin is not a proved rounding bound. Free scale uses the same conditional objective-gap convention, including the collapse bound above. |
 
 ## Decision history
 

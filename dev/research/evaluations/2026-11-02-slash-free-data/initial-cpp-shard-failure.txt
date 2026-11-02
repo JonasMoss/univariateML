@@ -1,0 +1,15 @@
+        Start 113: distribution_zmbinom
+ 90/106 Test  #89: distribution_slash ...............***Failed   29.77 sec
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+../../include/cppunivariate/distributions/slash/test.cpp:33:
+TEST CASE:  slash: multiplicity, held scale and invalid inputs
+
+../../include/cppunivariate/distributions/slash/test.cpp:37: ERROR: CHECK( cppunivariate::slash_mle(mltest::as_span(half)).status==cppunivariate::SlashStatus::CollapseLimit ) is NOT correct!
+  values: CHECK( 4 == 2 )
+
+===============================================================================
+[doctest] test cases:    18 |    17 passed | 1 failed | 1074 skipped
+[doctest] assertions: 33537 | 33536 passed | 1 failed |
+[doctest] Status: FAILURE!
