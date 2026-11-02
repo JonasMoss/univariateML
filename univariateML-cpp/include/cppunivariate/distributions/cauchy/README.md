@@ -135,7 +135,24 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locs
 
 Two equally frequent distinct values have a continuum of joint maxima. The fit selects their midpoint as location and half their distance as scale. An atom with more than half the sample mass instead gives unbounded likelihood. An atom with exactly half the mass gives a finite unattained supremum unless the sample has just those two equally frequent values.
 
-Holding location leaves a strictly decreasing scale score with one root exactly below the half-mass threshold. For extremely different nonzero residual magnitudes, the current numerical scale bracket can miss that root. Holding positive scale prevents collapse, but the location likelihood can have several modes and several global maxima. The conditional fit searches across observation gaps. The joint fit uses safeguarded Newton steps. Neither that joint iteration nor the conditional location search supplies a general global certificate.
+Holding location leaves a strictly decreasing scale score with one root exactly below the half-mass threshold. Holding positive scale prevents collapse, but the location likelihood can have several modes and several global maxima. The conditional fit searches across observation gaps. The joint fit uses safeguarded Newton steps. Neither that joint iteration nor the conditional location search supplies a general global certificate.
+
+For held location, the log-scale score is
+`g(t) = -k + sum(tanh(log(abs(x-location))-t))`, summing over nonzero
+residuals. Its derivative is strictly negative and its limits are `n-2k`
+and `-n`, proving uniqueness and global maximality when `2k < n`.
+The solver starts at the smallest and largest positive log residual and expands
+until strict positive/negative endpoint scores are verified, bounded by the
+smallest positive and largest finite double scales. It then bisects to log-width
+`1e-12` (or a computed zero score), within `iterlim`. A missing bracket,
+iteration exhaustion, nonfinite result or rounded-scale score exceeding
+`1e-10*n` reports `IterationFailure`; no unchecked endpoint is returned.
+Log residuals and a log-sum-exp likelihood avoid residual-ratio overflow.
+This certificate holds in exact arithmetic conditional on the computed
+comparisons; the score gate states the practical floating-point margin,
+not an outward-rounded interval guarantee. The held-scale search is unchanged.
+The prior radius-minus-350 bracket failed for `c(0,1e-300,1)` at location zero;
+see the [regression report](../../../../../dev/research/evaluations/2026-11-02-cauchy-bracket-report.md).
 
 ## R notes
 

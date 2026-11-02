@@ -208,11 +208,60 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
   double m=location,s=scale;int it=0;
   auto ll=[&](double a,double b){double f=0;for(double v:y)f-=std::log(cppunivariate::pi)+std::log(b)+2*std::log(std::hypot(1.0,(v-a)/b));return f;};
   if(std::isnan(s)) {
-    std::size_t k=0;double radius=0;for(double v:y){k+=v==m;radius=std::max(radius,std::abs(v-m));}
-    if(2*k>=y.size()){bad.status=CauchyStatus::NoMLE;return bad;}
-    double lo=std::max(std::log(radius)-350,std::log(std::numeric_limits<double>::denorm_min())),hi=std::log(radius)+2;
-    for(;it<maxit;++it){const double t=lo/2+hi/2;s=std::exp(t);double g=-static_cast<double>(y.size());for(double v:y){const double z=(v-m)/s;g+=2*(1-1/(1+z*z));}if(g>0)lo=t;else hi=t;if(hi-lo<1e-12)break;}
-    s=std::exp(lo/2+hi/2);
+    if (!std::isfinite(m)) return bad;
+    std::size_t k = 0;
+    std::vector<double> log_residuals;
+    for (double v : y) {
+      if (v == m) { ++k; continue; }
+      const double residual = std::abs(v - m);
+      // Opposite finite extremes can have an unrepresentable difference.
+      log_residuals.push_back(std::isfinite(residual) ? std::log(residual) :
+          std::log(std::abs(v / 2 - m / 2)) + std::log(2.0));
+    }
+    if (2*k >= y.size()) { bad.status=CauchyStatus::NoMLE; return bad; }
+    const auto failure = [&]() {
+      return CauchyResult{m, nan, nan, it, CauchyStatus::IterationFailure};
+    };
+    const auto score = [&](double t) {
+      double g = -static_cast<double>(k);
+      for (double r : log_residuals) g += std::tanh(r - t);
+      return g;
+    };
+    const auto bounds = std::minmax_element(log_residuals.begin(), log_residuals.end());
+    const double floor = std::log(std::numeric_limits<double>::denorm_min());
+    const double ceiling = std::log(std::numeric_limits<double>::max());
+    double lo = std::max(floor, *bounds.first), hi = std::min(ceiling, *bounds.second);
+    double step = 1;
+    while (!(score(lo) > 0) && lo > floor) {
+      lo = std::max(floor, lo - step); step *= 2;
+    }
+    step = 1;
+    while (!(score(hi) < 0) && hi < ceiling) {
+      hi = std::min(ceiling, hi + step); step *= 2;
+    }
+    if (!(score(lo) > 0 && score(hi) < 0)) return failure();
+    bool converged = false;
+    for (; it < maxit; ++it) {
+      const double t = lo/2 + hi/2;
+      const double g = score(t);
+      if (!std::isfinite(g)) return failure();
+      if (g > 0) lo = t; else if (g < 0) hi = t;
+      else { lo = t; hi = t; }
+      if (hi-lo < 1e-12) { converged = true; break; }
+    }
+    if (!converged) return failure();
+    const double t = lo/2 + hi/2;
+    s = std::exp(t);
+    if (!(s > 0 && std::isfinite(s))) return failure();
+    // Rounding to a subnormal scale may destroy log-coordinate accuracy.
+    if (std::abs(score(std::log(s))) > 1e-10 * y.size()) return failure();
+    double logLik = -static_cast<double>(y.size()) * (std::log(cppunivariate::pi) + std::log(s));
+    for (double r : log_residuals) {
+      const double d = r - std::log(s);
+      logLik -= 2*std::max(d, 0.0) + std::log1p(std::exp(-2*std::abs(d)));
+    }
+    if (!std::isfinite(logLik)) return failure();
+    return {m, s, logLik, it, CauchyStatus::Ok};
   } else if(std::isnan(m)) {
     std::vector<double> grid=y;
     for(std::size_t j=1;j<y.size();++j)for(int k=1;k<16;++k)grid.push_back(y[j-1]+(y[j]-y[j-1])*k/16);
