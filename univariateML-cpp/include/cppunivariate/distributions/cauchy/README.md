@@ -64,9 +64,9 @@ relations:
       sigma: scale
       df: 1
 fit:
-  method: profile-search
-  certified: partial
-  note: "cauchy/mle.hpp, fit_cauchy: The free fit uses safeguarded Newton in location and log scale, not a scalar profile search. Held location has a unique monotone scale equation, but the fixed lower bracket is unchecked and can miss its root; held-scale location scans have no root-isolation certificate. The balanced two-point joint maximum is explicit; general Newton step convergence is not a global certificate."
+  method: convex-solve
+  certified: "partial"
+  note: "cauchy/mle.hpp, fit_cauchy; Details: the free fit is certified by strict geodesic convexity under the strict half-mass condition, conditional on computed comparisons and the final dimensionless total-score norm < 1e-3. Balanced two-point maxima are explicit. Held location is certified by a verified monotone-score bracket and bisection. Held-scale location scans remain uncertified; hence the aggregate tag is partial."
 areas:
 - robust modelling
 classification: classical
@@ -133,7 +133,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locs
 
 Two equally frequent distinct values have a continuum of joint maxima. The fit selects their midpoint as location and half their distance as scale. An atom with more than half the sample mass instead gives unbounded likelihood. An atom with exactly half the mass gives a finite unattained supremum unless the sample has just those two equally frequent values.
 
-Holding location leaves a strictly decreasing scale score with one root exactly below the half-mass threshold. Holding positive scale prevents collapse, but the location likelihood can have several modes and several global maxima. The conditional fit searches across observation gaps. The joint fit uses safeguarded Newton steps. Neither that joint iteration nor the conditional location search supplies a general global certificate.
+Holding location leaves a strictly decreasing scale score with one root exactly below the half-mass threshold. Holding positive scale prevents collapse, but the location likelihood can have several modes and several global maxima. The conditional fit searches across observation gaps. The joint fit uses safeguarded Newton steps with the certificate below. The conditional location search has no general global certificate.
 
 For held location, the log-scale score is
 `g(t) = -k + sum(tanh(log(abs(x-location))-t))`, summing over nonzero
@@ -155,3 +155,47 @@ see the [regression report](../../../../../dev/research/evaluations/2026-11-02-c
 ## R notes
 
 Supplying `location` or `scale` holds that coefficient. When scale is free and the applicable existence condition fails, the fit stops with a non-existence diagnostic rather than returning a collapsing scale.
+
+## Free-fit certificate
+
+Write $F=-\ell$ on the upper half-plane with metric
+$ds^2=(d\mu^2+d\sigma^2)/\sigma^2$. The vertical and circular
+parameterizations in the existence proof have unit hyperbolic speed.
+For a vertical path the second derivative of each term is
+$4(x_i-\mu)^2/(e^t+(x_i-\mu)^2e^{-t})^2$; for a circle it is the
+nonnegative expression given above. With at least three distinct observations
+the summed second derivative is positive along every geodesic.
+The hyperbolic plane is a Hadamard manifold: any two points have a connecting
+geodesic. If $dF=0$ at one endpoint, strict convexity along that geodesic
+makes $F$ strictly larger at the other endpoint. Thus an exact stationary
+point is the unique global likelihood maximum, not merely a local maximum.
+The strict sub-half-mass condition ensures interior attainment and at least
+three distinct values. The balanced two-point exception instead has an
+explicit nonunique maximum; the other half-mass and super-half-mass cases
+are rejected as described above.
+
+For $t=\log\sigma$ and $z_i=(x_i-\mu)/\sigma$, the total
+log-likelihood score is
+$U_\mu=\sigma^{-1}\sum_i2z_i/(1+z_i^2)$ and
+$U_t=\sum_i(z_i^2-1)/(1+z_i^2)$.
+The final free-fit gate is
+$\sqrt{(\sigma U_\mu)^2+U_t^2}<10^{-3}$, with finite parameters,
+positive scale, finite likelihood and iteration convergence also required.
+This is the hyperbolic gradient norm, using the score in $(\mu,\log\sigma)$
+coordinates with the location component multiplied by scale; it is a total,
+not per-observation, score and is invariant under affine changes of data units.
+A small step alone is insufficient. Failure of the gate gives
+`IterationFailure`; the binding stops on that status.
+
+This certifies the exact stationary solution in exact arithmetic, conditional
+on computed comparisons, with the stated practical floating-point score
+margin. It does not prove that a nonzero residual is an exact maximizer.
+There is no uniform positive strong-convexity constant over the whole plane:
+curvature can tend to zero toward its boundary. Consequently the gate alone
+does not supply a numerical likelihood-gap bound. If a lower geodesic Hessian
+bound $m>0$ were independently established along the path to the optimum,
+convexity would give $F-F_*\leq\|\nabla F\|^2/(2m)$.
+No such computed bound is claimed here. Safeguards, median/MAD initialization
+and iteration limits find a candidate; the geometric theorem justifies its
+global interpretation when stationary. Neither convergence from every start
+nor outward-rounded floating-point certification is asserted.

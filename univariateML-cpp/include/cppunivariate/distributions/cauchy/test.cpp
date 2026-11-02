@@ -141,3 +141,24 @@ TEST_CASE("cauchy: held location supports overflowing finite residual difference
   CHECK(r.scale/1e308==doctest::Approx(std::sqrt((std::sqrt(73.0)-5)/6)).epsilon(1e-10));
   CHECK(std::isfinite(r.logLik));
 }
+
+TEST_CASE("cauchy: free geometric certificate checks adversarial total scores") {
+  const std::vector<std::vector<double>> samples{
+      {0,0,0,0,0.01,1,2,3,4},
+      {-1e6,-100,-1,0,1,100,1e6},
+      {-101,-100,-99,98,99,100,101}};
+  for (const auto& x : samples) {
+    const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,1000);
+    REQUIRE(r.status==cppunivariate::CauchyStatus::Ok);
+    double a=0,b=0;
+    for(double v:x) {
+      const double z=(v-r.mu)/r.scale, w=1/(1+z*z);
+      a+=2*z*w; b+=(z*z-1)*w;
+    }
+    CHECK(std::hypot(a,b)<1e-3);
+  }
+  const std::vector<double> x{-8,-2,0,1,3,20,100};
+  // Deliberately loose step tolerance must not accept an unchecked iterate.
+  const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e6,100);
+  CHECK(r.status==cppunivariate::CauchyStatus::IterationFailure);
+}

@@ -215,3 +215,18 @@ test_that("held Cauchy location supports overflowing finite differences", {
   expect_equal(unname(f["scale"])/1e308, sqrt((sqrt(73)-5)/6), tolerance=1e-10)
   expect_true(is.finite(logLik(f)))
 })
+
+test_that("free Cauchy fits pass the geometric total-score gate", {
+  samples <- list(c(0,0,0,0,.01,1,2,3,4),
+                  c(-1e6,-100,-1,0,1,100,1e6),
+                  c(-101,-100,-99,98,99,100,101))
+  for (x in samples) {
+    f <- mlcauchy(x, abstol=1e-8, iterlim=1000)
+    z <- (x-unname(f["location"]))/unname(f["scale"])
+    score <- c(sum(2*z/(1+z^2)), sum((z^2-1)/(1+z^2)))
+    expect_lt(sqrt(sum(score^2)), 1e-3)
+    expect_equal(as.numeric(logLik(f)),
+                 sum(dcauchy(x, f[1], f[2], log=TRUE)), tolerance=1e-10)
+  }
+  expect_error(mlcauchy(c(-8,-2,0,1,3,20,100), abstol=1e6), "converge")
+})
