@@ -53,7 +53,13 @@ template <typename Rng>
 inline double rgompertz(Rng &rng, double a, double b) {
   // extraDistr's rng_gompertz: log(1 - b/a * log(u)) / b on U ~ Uniform(0, 1).
   const double u = rng.runif(0.0, 1.0);
-  return std::log(1.0 - (b / a) * std::log(u)) / b;
+  const double ratio=b/a, h=-ratio*std::log(u);
+  // Preserve the historical seeded draws where its arithmetic is accurate.
+  // The quantile accepts log survival directly, avoiding both b/a overflow
+  // and cancellation when adding a tiny cumulative hazard to one.
+  if (std::isfinite(ratio) && h>=1e-3 && std::isfinite(h))
+    return std::log(1.0 + h) / b;
+  return qgompertz(std::log(u),a,b,false,true);
 }
 
 } // namespace distributions

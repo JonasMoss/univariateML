@@ -97,3 +97,28 @@ test_that("sgomp: P3 unfinished optimizer stops", {
   expect_error(mlsgomp(x, iterlim=1, reltol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("sgomp shape gain survives huge common likelihood", {
+  for (large in c(1e17,1e100,1e300)) {
+    x <- c(1e-300,1,large)
+    f <- mlsgomp(x,b=1)
+    eta <- unname(f["eta"])
+    e1 <- exp(-1); linear <- 3*e1-e1^2
+    oracle <- 2*(1-2*e1)/(linear+sqrt(linear^2+4*(1-e1^2)*(1-2*e1)))
+    expect_equal(eta,oracle,tolerance=1e-9)
+    a <- -expm1(-x); e <- exp(-x)
+    expect_lt(abs(sum(a/(1+eta*a)-e)),1e-10)
+    expect_gt(sum(log1p(eta*a)-eta*e),.028)
+  }
+})
+
+test_that("sgomp positive face score overrides a tiny likelihood tie", {
+  x <- log(2)+1e-6
+  f <- mlsgomp(x,b=1)
+  e <- exp(-x); a <- -expm1(-x); eta <- unname(f["eta"])
+  expect_gt(eta,0)
+  expect_equal(eta,(a-e)/(a*e),tolerance=1e-9)
+  gain <- log1p(eta*a)-eta*e
+  expect_gt(gain,0)
+  expect_lt(gain,1e-8)
+})
