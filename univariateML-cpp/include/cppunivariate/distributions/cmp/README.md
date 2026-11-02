@@ -36,13 +36,13 @@ log_density: "x*log(lambda)-nu*loggamma(x+1)-log(Sum(lambda**k/factorial(k)**nu,
 limits:
   - name: adjacent two-point law
     firmness: proved
-    when: '$\nu \to \infty$ with the rate adjusted'
-    detect: adjacent observations in a joint fit; observations in {0,1} with fixed lambda
+    when: 'As $\nu\to\infty$, adjusting $\lambda$ can retain mass on two adjacent integers.'
+    detect: With both coefficients free, both of two adjacent integers are observed. With positive $\lambda$ held and $\nu$ free, all observations lie in $\{0,1\}$, including constant samples.
     status: TwoPointLimit
   - name: point mass
     firmness: proved
-    when: 'parameters diverge along an exposing direction'
-    detect: constant positive observations in a joint fit
+    when: 'As $\nu\to\infty$, a suitable path of $\lambda$ concentrates mass at a positive integer.'
+    detect: With both coefficients free, all observations equal the same positive integer.
     status: PointMassLimit
 holds: []
 examples: |
@@ -63,6 +63,32 @@ fit:
     only their stated scope, not every joint numerical solve.'
 areas:
 - counts and ecology
+existence:
+  uniqueness: proved
+  statement: >-
+    With both coefficients free, all-zero samples attain their maximum at
+    $\lambda=0$, with $\nu$ unidentified. Positive constants and samples
+    supported on two adjacent integers have an unattained supremum.
+    Other samples have a unique finite maximum, possibly at the geometric
+    boundary $\nu=0$. With finite $\nu$ held, the free rate has a unique
+    maximum, including zero for all-zero data. With positive $\lambda$
+    held, a unique finite dispersion maximum exists when some observation
+    exceeds one. Samples supported on zero and one instead approach their
+    supremum as $\nu\to\infty$. Holding $\lambda=0$ requires all-zero
+    data and leaves dispersion unidentified. Holding both coefficients
+    requires only a valid law and compatible data.
+  reason: >-
+    The sufficient statistics are $x$ and $\log(x!)$. Their covariance is
+    positive definite at positive rate and dispersion, giving strict
+    concavity in $(\log\lambda,-\nu)$. At a fixed positive mean, the
+    fitted mean log factorial decreases strictly with dispersion, from
+    its geometric value to the linear interpolation between the two
+    neighboring integer log factorials. Data above that lower hull give
+    an interior moment solution or the constrained geometric maximum.
+    Data on the hull give the stated exposed-face limits. With rate held,
+    the mean log factorial decreases strictly to zero as dispersion grows;
+    at its lower domain endpoint it is finite for rate below one and
+    diverges otherwise.
 classification: specialist
 classification_reason: Used to model event counts with either underdispersion or overdispersion relative to Poisson.
 summary: Conway--Maxwell--Poisson provides a model for event counts with either underdispersion or overdispersion
@@ -78,18 +104,50 @@ key_references:
 - 1
 ---
 
-The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersion coordinate.
+
+The Conway--Maxwell--Poisson distribution extends Poisson counts with a dispersion coefficient. The rate $\lambda$ is generally not the mean. Dispersion $\nu=1$ gives Poisson, while $\nu=0$ gives a geometric law when $\lambda<1$.
 
 ## Details
 
-The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md); numerical face searches do not certify global optimality.
+Either coefficient can be held. With both free, the fit matches the two
+sufficient-statistic means when the maximum is interior. Let $m=\bar x>0$
+and $t$ be the empirical mean of $\log(x!)$. The geometric law of mean
+$m$ has rate $m/(1+m)$. If $t$ is at least its mean log factorial, the
+constrained maximum is this geometric member. Otherwise dispersion is
+positive, unless the empirical statistic lies on an adjacent-point edge
+of its convex support, where only a limiting law attains the supremum.
+This is a mathematical classification; finite moment and tail budgets can
+still prevent a numerical fit.
+
+Rate zero is the attained point mass at zero. Its free dispersion is
+unidentified. When dispersion is zero, the rate must be below one for the
+law to normalize. Holding a positive rate leaves a strictly concave
+one-dimensional dispersion problem. With rate below one it can attain
+the geometric endpoint. With rate at least one the normalizable domain
+requires strictly positive dispersion.
+
+The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md)
+discusses the limit paths. A small moment residual is a numerical
+convergence check; it does not by itself certify a likelihood-error bound.
+
+## R notes
+
+Use `lambda` and `nu` to hold either coefficient. Unidentified free dispersion
+at rate zero is represented by one. Unattained adjacent and positive
+point-mass limits stop with a named diagnostic.
+
+Probability evaluation uses the certified CMP normalizer, stable centered
+log weights and direct tail summation. A calculation exceeding the
+normalizer or tail work budget returns `NaN` with a warning. Quantile
+search is limited to counts below $9\times10^{15}$. Random generation
+uses inversion with R's RNG.
+
+## Decision history
+
+### Moment and tail arithmetic (2026-10-30, TASK-125)
 
 2026-10-30 (TASK-125): moment sums use compensated accumulation, the saddle-point quotient retains its division residual, and geometric tail bounds can be evaluated in log coordinates. For mode zero or one, the second-count weight uses `exp((2-mode)*eta)*exp2(-nu)`, avoiding amplification of rounding in `log(2)`. The 73-row independent reference grid measures errors; the truncation certificate excludes floating-point roundoff.
 
-The rate is generally not the mean. Dispersion one is Poisson; dispersion zero is geometric when the rate is below one. Either or both coordinates may be fixed. Rate zero is the attained zero point mass; its unidentified free dispersion is represented by one. Dispersion zero is attained when lambda is below one; the joint domain requires lambda < 1 whenever nu = 0. Adjacent two-point and positive point-mass escapes still stop with a named limit.
-
-Probability evaluation uses the certified CMP normalizer, stable centered log weights and direct tail summation. A calculation exceeding the normalizer or tail work budget returns NaN with a warning. Quantile search is limited to counts below 9e15. Random generation uses inversion with R's RNG.
-
 ## d/p/q/r
 
-The Conway–Maxwell–Poisson normalizer and both tails are summed directly.
+The normalizer and both tails are summed directly.

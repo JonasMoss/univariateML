@@ -54,6 +54,17 @@ fit:
     finite Zipf endpoint and modified zero mass profile exactly.'
 areas:
 - rank-frequency
+existence:
+  uniqueness: proved
+  statement: >-
+    With $\theta$ free, a unique finite MLE exists exactly when $\bar x>1$.
+    An all-one sample has an unattained supremum as $\theta\to0$.
+    Holding $0<\theta<1$ specifies the law and requires no optimization.
+  reason: >-
+    In the natural parameter $\eta=\log\theta<0$, the second derivative
+    of the log likelihood is minus the sample size times the positive variance.
+    The model mean increases continuously from one to infinity, so mean
+    matching has exactly one solution when the empirical mean exceeds one.
 classification: specialist
 classification_reason: Used to model species abundance and other highly skewed positive frequencies.
 summary: Logarithmic series provides a model for species abundance and other highly skewed positive frequencies.
@@ -64,13 +75,33 @@ key_references:
 - 2
 ---
 
-The logarithmic series distribution models positive counts and has a history of use in species-abundance data.
+
+The logarithmic series distribution models positive counts, with a history of use in species-abundance data. Increasing $\theta$ increases the mean and the relative weight of large counts.
 
 ## Details
 
-When every observation is one, the optimum lies at $\theta \to 0$, the point-mass boundary. The fitter reports an error instead of returning this boundary fit.
+The fit matches the model mean to the empirical mean. Writing
+$u=-\log(1-\theta)>0$, its equation is $\operatorname{expm1}(u)/u=\bar x$.
+The left side is strictly increasing from one to infinity. A bracketed
+scalar solve therefore gives the unique maximum whenever $\bar x>1$.
+When every observation is one, the likelihood increases toward the point
+mass at one as $\theta\to0$. That boundary is excluded from this family.
+Holding $\theta$ evaluates the specified law, including on all-one samples.
 
-Supplying `theta` evaluates the likelihood at that value. Held values outside the parameter domain or incompatible with the observed counts stop.
+## R notes
+
+Supplying `theta` evaluates the likelihood at that value. Held values outside
+`(0, 1)` or incompatible with the positive integer observations stop.
+An all-one sample with `theta` free stops with a non-existence error.
+
+## Decision history
+
+### Stable scalar solve
+
+A Lambert-W expression lost precision near the all-one boundary and could
+return values outside the parameter domain. The current solver brackets
+and bisects the equation for $u$ on a logarithmic scale, using a series
+for $(\operatorname{expm1}(u)-u)/u$ near zero.
 
 ### Diagnostic status contract (2026-10-31)
 
