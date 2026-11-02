@@ -27,7 +27,7 @@ r:
     shape: "Optional held value; NULL estimates it."
     rate: "Optional positive held value; NULL estimates it."
     reltol: "Tolerance for the logarithmic search coordinates."
-    iterlim: "Maximum iterations per search start."
+    iterlim: "Maximum iterations per local search or rate solve; the outer certificate permits 1000 times this many intervals."
 log_density: "log((lowergamma(shape, rate*(x+1)) - lowergamma(shape, rate*x))/gamma(shape))"
 limits:
   - name: point mass
@@ -63,10 +63,9 @@ relations:
       scale: 1/rate
 fit:
   method: multistart
-  certified: partial
-  note: 'dgamma/README.md, Details; dgamma/mle.hpp (public fitter and held overloads); dgamma/test.cpp: Held shape
-    gives a strictly concave rate solve; joint and held-rate shape profiles use numerical grids without certified
-    mode isolation.'
+  certified: 'yes'
+  note: 'dgamma/README.md, Details; held shape uses a strictly concave rate solve; free shape uses finite tail bounds
+    and branch-and-bound, conditional on computed comparisons and a practical 1e-8 n likelihood margin.'
 areas:
 - counts and ecology
 classification: specialist
@@ -93,7 +92,7 @@ The limit and sample conditions are supported by the [existence analysis](../../
 With both parameters free, constant samples and samples on two adjacent integers have no finite maximum likelihood estimate. For adjacent values `k` and `k + 1`, use `mlbinom(x - k, size = 1)`.
 Both held parameters evaluate the likelihood without fitting. With one parameter held the fitter handles its distinct boundary conditions explicitly.
 
-Every unrestricted sample with range at least two has an attained maximum. Holding either parameter gives an attained maximum if any observation is positive; all-zero data escape to a point mass. The numerical fit uses an exact, strictly concave inner log-rate profile, a 41-point logarithmic shape grid with improving-edge expansion, and Nelder–Mead refinement of every grid-local maximum. Uniqueness has not been established; this search is not a certified global optimization algorithm. No additional proper limit model occurs as shape tends to zero: every positive fixed cell loses its probability uniformly over rate. Some mass can escape to infinity, but that does not give a positive limiting likelihood for a sample containing a positive count.
+Every unrestricted sample with range at least two has an attained maximum. Holding either parameter gives an attained maximum if any observation is positive; all-zero data escape to a point mass. The fitter initializes from a 41-point logarithmic shape grid with improving-edge expansion and Nelder–Mead refinement. It then subdivides the finite shape interval using the score bounds below; exhaustion or nonfinite calculations give `IterationFailure`. Uniqueness has not been established. No additional proper limit model occurs as shape tends to zero: every positive fixed cell loses its probability uniformly over rate. Some mass can escape to infinity, but that does not give a positive limiting likelihood for a sample containing a positive count.
 
 ## Existence and identification
 
@@ -137,8 +136,7 @@ held-subset existence conditions. In an all-zero sample, rate increasing or
 shape decreasing makes its cell probability tend to one, strictly exceeding
 every finite fit. All log likelihoods are bounded above by zero.
 These arguments establish existence, not gamma uniqueness or absence of local
-maxima; the profile-grid search and independent oracles supply numerical checks
-for the latter questions.
+maxima. The outer subdivision does not assume uniqueness.
 
 With shape held, put $T=\log Y$ and $u=\log r$. Its density is proportional
 to $\exp(a(t+u)-e^{t+u})$, strictly log-concave in the location coordinate.
@@ -159,9 +157,106 @@ bound needs a separate integrable bound near zero. These inequalities are
 valid with fixed rate and, at an accurately solved interior rate optimum,
 the envelope derivative has the same expression summed over cells.
 
+### Finite shape bounds and a profile derivative bound
+
+The following bounds are exact-arithmetic bounds; no floating-point error
+bound for the special-function evaluations is asserted. Let $w_k$ be the
+frequency of cell $k$, $n=\sum w_k$, and $\bar k=\sum kw_k/n>0$.
+Let $L_0<0$ be the log likelihood of any finite candidate. For any occupied
+positive cell $k$, the small-shape bound above and
+$\Gamma(1+a)\geq 1/(2e)$ for $0<a\leq1$ give
+$$L(a,r)\leq w_k\log\{2ea\log(1+1/k)\}.$$
+The gamma bound follows by restricting its integral to $[0,1]$. Hence every
+$a$ below the smaller of 1 and
+$\exp(L_0/w_k)/\{2e\log(1+1/k)\}$ has likelihood at most $L_0$,
+uniformly in $r$.
+
+For the other face, suppose occupied cells $l<h$ satisfy $h>l+1$.
+Put $b=l+1$, $q=\sqrt{h/b}>1$, and
+$c=\min\{q-1-\log q,\;q^{-1}-1+\log q\}>0$.
+For $m=a/r\leq\sqrt{bh}$, the gamma Chernoff upper-tail bound gives
+$p_h\leq e^{-ac}$; for $m\geq\sqrt{bh}$, the corresponding lower-tail
+bound gives $p_l\leq e^{-ac}$. Thus
+$$L(a,r)\leq -a c\min(w_l,w_h),$$
+and $a\geq-L_0/\{c\min(w_l,w_h)\}$ is excluded. This applies to
+both free and held rate. For held $r$, any sample also has the cutoff
+$a\geq\max\{2r(k_{\max}+1),-L_0/[n(\log 2-1/2)]\}$: the lower-tail
+Chernoff bound applies to every observed cell with
+$r(k_{\max}+1)/a\leq1/2$.
+
+For a bounded shape interval $[A,B]$, the rate score is
+$n(a-r\,\overline{E[Y\mid K]})$. At its root,
+$$a/(\bar k+1)\leq r\leq a/\bar k.$$
+For the zero cell, let $y_0=\min(1,1/r)$ and $d=\log(1/y_0)$.
+The kernel integral on $[0,1]$ is at least $e^{-1}y_0^a/a$, while
+the integral of $(-\log y-d)_+$ against that kernel is at most
+$y_0^a/a^2$. Consequently
+$-d-e/a\leq E[\log Y\mid K=0]\leq0$.
+Therefore the absolute derivative of the mean profile likelihood with
+respect to $t=\log a$ is bounded on $[A,B]$ by
+$$B\{\max(|\log r_-|,|\log r_+|)
+ +\max(|\psi(A)|,|\psi(B)|)
+ +\max(\max_{k\geq1,w_k>0}|\log(k+1)|,\log\max(1,r_+)+e/A)\},$$
+where $r_-=A/(\bar k+1)$ and $r_+=B/\bar k$. For held rate use
+$r_-=r_+=r$. The bound can be very loose and does not by itself establish
+a practical search budget.
+
+To account for the inner solve, a retained bracket $[u_-,u_+]$ for the
+log-rate maximizer and concavity give the upper bound
+$L(a,e^u)+\max\{g(u)(u_--u),g(u)(u_+-u)\}$, with $g$ the total
+log-rate score. The certificate uses a separate bracketed rate solve and
+includes this objective allowance; the initializer's score-only stopping
+rule alone does not provide it.
+
+The following sharper enclosure may be useful for interval subdivision. Put
+$H(a,r)=n^{-1}\sum_k w_k\log p_k(a,r)+\log\Gamma(a)-a\log r$.
+For each cell, the logarithm in $H$ is the log of an integral of
+$y^{a-1}e^{-ry}$ over that cell. Its derivative in $a$ is the conditional
+mean of $\log Y$, and its second derivative is the conditional variance of
+$\log Y$. Moreover the derivative of $H_a$ with respect to $r$ is minus the
+conditional covariance of $Y$ and $\log Y$, which is nonnegative. Thus
+$H_a$ is nondecreasing in $a$ and nonincreasing in $r$, including for the
+zero cell. If $a\in[A,B]$, $r\in[R,S]$, and $0<h<A$, convex secants give
+$$\frac{H(A,S)-H(A-h,S)}{h}\leq H_a(a,r)
+\leq\frac{H(B+h,R)-H(B,R)}{h}.$$
+Combining these with the monotonicity of digamma and the bounds on $r$
+encloses the profile score in log shape on the entire interval.
+
+For free rate the crude rate interval above can be sharpened without
+assuming that the maximizing rate is monotone in shape. Write the mean
+log-rate score as $g(a,r)=a-rM(a,r)$, where $M$ is the weighted conditional
+mean of $Y$. Since each conditional mean increases with shape,
+$$g(B,r)-(B-A)\leq g(a,r)\leq g(A,r)+(B-A).$$
+Strict concavity in log rate then lets signs of these two expressions discard
+parts of the rate interval containing no optimum for any $a\in[A,B]$.
+The implementation subdivides log shape, uses these bounds to enclose the
+profile slope, and applies the midpoint likelihood plus its rate-solve
+allowance and the worst permitted slope over each half interval. It discards
+an interval only when this upper bound is within $5\times10^{-9}$ per
+observation of the best candidate. The returned parameter's recomputed
+likelihood must be within another $5\times10^{-9}$ per observation of that
+candidate. The subdivision budget is `1000 * iterlim` intervals. Invalid or
+nonfinite bounds, collapsed secants and an exhausted budget give
+`IterationFailure`. The secant step is $10^{-4}A$; its computed bounds are
+widened by 64 machine epsilons times the magnitude of the summed terms,
+divided by that step. These are exact-arithmetic bounds conditional on the
+computed comparisons, with a practical $10^{-8}n$ likelihood allowance,
+not outward-rounded interval arithmetic or a uniform special-function error
+guarantee.
+
+Numerical checks of these bounds are retained in
+[`check_bounds.py`](../../../../../dev/research/evaluations/2026-11-02-dgamma-cert-data/check_bounds.py)
+and [`check_secants.py`](../../../../../dev/research/evaluations/2026-11-02-dgamma-cert-data/check_secants.py).
+On base revision `77a0aa214e1a51094204a72d6b9672c16fb1f27b`, with these
+documentation changes, both passed locally under `/tmp/umvl-cpu/run python3`:
+300 seeded checks of the first bounds and 100 seeded quadrature checks of
+the secant and score enclosures. The scripts specify seeds and tolerances.
+They check sampled inequalities and do not validate the proposed search or
+prove special-function error bounds.
+
 | Question | Evidence |
 |---|---|
 | Inner log-rate | Strict concavity and uniqueness are proved above. The numerical solver accepts a score below $10^{-11}\min(1,a)$ per observation or a relative log-rate bracket width below $10^{-12}$. |
-| Shape on bounded intervals | The score identity and positive-cell bounds are proved; they do not establish unimodality or a usable certified enclosure for the profiled score when rate is free. |
-| Shape faces | The small-shape uniform bound and large-shape existence argument are proved above. Neither supplies the finite, outward-rounded tail cutoff needed by the current numerical search. |
-| Global certificate | Open: enclose the zero-cell score, the optimal rate and the profile variation, and turn the face limits into finite likelihood bounds with numerical error control. The present grid search is numerical. |
+| Shape on bounded intervals | The bounds above include the zero cell and the profiled rate. Convex secants provide the score enclosure used by subdivision. |
+| Shape faces | Finite cutoffs are proved above for the unrestricted and held-rate existence regimes. |
+| Global certificate | The subdivision uses the stated practical margin and returns numerical failure when it cannot complete. It is conditional on computed comparisons, not outward-rounded arithmetic. |

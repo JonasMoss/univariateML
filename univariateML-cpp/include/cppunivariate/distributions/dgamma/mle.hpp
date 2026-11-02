@@ -93,6 +93,117 @@ inline bool search(const Cost &cost,std::vector<double> &t,double tol,int maxit,
   }
   t=v[0]; return false;
 }
+
+// Bounds here are conditional on the computed floating-point comparisons.
+// The derivation and the likelihood allowance are in the family dossier.
+inline bool enclosed_rate(const dnorm_detail::Cells &p,double a,double &r,
+                          double &upper,int maxit) {
+  const double mean=p.centre-0.5;
+  if (!(mean>0)) return false;
+  double lo=std::log(a)-std::log(mean+1),hi=std::log(a)-std::log(mean);
+  double u=(lo+hi)/2,du=0,g=0;
+  for(int i=0;i<maxit;++i) {
+    g=rate_score(p,a,u,du);
+    if(!std::isfinite(g)||!std::isfinite(du)) return false;
+    if(g>0) lo=u; else hi=u;
+    upper=std::max(g*(lo-u),g*(hi-u));
+    if(upper<1e-11) {r=std::exp(u); return std::isfinite(r)&&r>0;}
+    const double next=u-g/du;
+    u=du<0 && next>lo && next<hi ? next:(lo+hi)/2;
+  }
+  return false;
+}
+
+inline double shape_integral(const dnorm_detail::Cells &p,double a,double r,double &magnitude) {
+  const double lg=special::lgamma(a),lr=a*std::log(r);
+  double v=lg-lr;
+  magnitude=std::abs(lg)+std::abs(lr);
+  for(std::size_t j=0;j<p.x.size();++j) {
+    const double term=p.w[j]*distributions::ddgamma(p.x[j],a,r,true)/p.n;
+    v+=term; magnitude+=std::abs(term);
+  }
+  return v;
+}
+
+inline bool shape_score_bounds(const dnorm_detail::Cells &p,double A,double B,
+                               bool held,double held_r,double &lower,double &upper) {
+  const double mean=p.centre-0.5;
+  double rlo=held_r,rhi=held_r;
+  if(!held) {
+    if(!(mean>0)) return false;
+    double lo=std::log(A)-std::log(mean+1),hi=std::log(B)-std::log(mean);
+    for(int i=0;i<40;++i) {
+      const double mid=(lo+hi)/2; double d1=0,d2=0;
+      const double ga=rate_score(p,A,mid,d1),gb=rate_score(p,B,mid,d2);
+      if(!std::isfinite(ga)||!std::isfinite(gb)) return false;
+      if(gb-(B-A)>0) lo=mid;
+      else if(ga+(B-A)<0) hi=mid;
+      else break;
+    }
+    rlo=std::exp(lo);rhi=std::exp(hi);
+  }
+  if(!(rlo>0 && rhi>=rlo) || !std::isfinite(rhi)) return false;
+  const double h=1e-4*A;
+  if (!(h>0 && A-h>0 && A-h<A && B+h>B)) return false;
+  double lm1=0,lm0=0,um1=0,um0=0;
+  const double l1=shape_integral(p,A,rhi,lm1),l0=shape_integral(p,A-h,rhi,lm0);
+  const double u1=shape_integral(p,B+h,rlo,um1),u0=shape_integral(p,B,rlo,um0);
+  const double roundoff=64*std::numeric_limits<double>::epsilon()/h;
+  const double sl=std::log(rlo)-special::digamma(B)+(l1-l0)/h-roundoff*(1+lm1+lm0);
+  const double su=std::log(rhi)-special::digamma(A)+(u1-u0)/h+roundoff*(1+um1+um0);
+  if(!std::isfinite(sl)||!std::isfinite(su)||sl>su) return false;
+  lower=(sl<0 ? B:A)*sl;
+  upper=(su>0 ? B:A)*su;
+  return std::isfinite(lower)&&std::isfinite(upper);
+}
+
+inline bool certify(const dnorm_detail::Cells &p,bool held,double held_r,
+                    double &best,double &best_t,int maxit) {
+  const double L=-p.n*best;
+  double low=0;
+  for(std::size_t j=0;j<p.x.size();++j) if(p.x[j]>0) {
+    const double a=std::exp(L/p.w[j])/(2*std::exp(1.0)*std::log1p(1/p.x[j]));
+    low=std::max(low,std::min(1.0,a));
+  }
+  double high=std::numeric_limits<double>::infinity();
+  if(held) high=std::max(2*held_r*(p.x.back()+1),-L/(p.n*(std::log(2.0)-0.5)));
+  else for(std::size_t i=0;i<p.x.size();++i) for(std::size_t j=i+1;j<p.x.size();++j) {
+    if(!(p.x[j]>p.x[i]+1)) continue;
+    const double logq=0.5*std::log(p.x[j]/(p.x[i]+1));
+    const double c=std::min(std::expm1(logq)-logq,std::expm1(-logq)+logq);
+    if(c>0) high=std::min(high,-L/(c*std::min(p.w[i],p.w[j])));
+  }
+  if(!(low>0 && high>low) || !std::isfinite(high)) return false;
+  const double tlo=std::log(low),thi=std::log(high);
+  if(!(best_t>=tlo && best_t<=thi)) return false;
+  struct Interval {double lo,hi;};
+  std::vector<Interval> pending;
+  const int pieces=static_cast<int>(std::ceil((thi-tlo)/0.5));
+  if(pieces<1 || pieces>10000) return false;
+  for(int i=0;i<pieces;++i) pending.push_back({tlo+(thi-tlo)*i/pieces,tlo+(thi-tlo)*(i+1)/pieces});
+  long long count=0; const long long budget=1000LL*maxit;
+  while(!pending.empty()) {
+    if(++count>budget) return false;
+    const Interval q=pending.back();pending.pop_back();
+    const double t=(q.lo+q.hi)/2,A=std::exp(q.lo),B=std::exp(q.hi),a=std::exp(t);
+    double r=held_r,error=0;
+    if(!held && !enclosed_rate(p,a,r,error,maxit)) return false;
+    double ll=0;
+    for(std::size_t j=0;j<p.x.size();++j)
+      ll+=p.w[j]*distributions::ddgamma(p.x[j],a,r,true)/p.n;
+    if(!std::isfinite(ll)) return false;
+    if(-ll<best) {best=-ll;best_t=t;}
+    double lower=0,upper=0;
+    if(!shape_score_bounds(p,A,B,held,held_r,lower,upper)) return false;
+    const double bound=ll+error+std::max(0.0,std::max(-lower*(t-q.lo),upper*(q.hi-t)));
+    if(!std::isfinite(bound)) return false;
+    if(bound>-best+5e-9) {
+      if(!(t>q.lo && t<q.hi)) return false;
+      pending.push_back({q.lo,t});pending.push_back({t,q.hi});
+    }
+  }
+  return true;
+}
 }
 inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
     double shape=std::numeric_limits<double>::quiet_NaN(),double rate=std::numeric_limits<double>::quiet_NaN()) {
@@ -140,8 +251,15 @@ inline DgammaResult dgamma_mle(span x,double tol=1e-8,int maxit=400,
     if (ok && f<best) { best=f; best_t=t; }
   }
   if (best_t.empty()) { out.status=DgammaStatus::IterationFailure; return out; }
+  if (!dgamma_detail::certify(p,hr,rate,best,best_t[0],maxit)) { out.status=DgammaStatus::IterationFailure; return out; }
   out.shape=std::exp(best_t[0]); out.rate=rate;
   if (!hr && !dgamma_detail::profile_rate(p,out.shape,out.rate,maxit)) { out.status=DgammaStatus::IterationFailure; return out; }
-  out.logLik=-p.n*best; out.status=DgammaStatus::Ok; return out;
+  out.logLik=0;
+  for (std::size_t j=0;j<p.x.size();++j)
+    out.logLik+=p.w[j]*distributions::ddgamma(p.x[j],out.shape,out.rate,true);
+  if (!std::isfinite(out.logLik) || out.logLik/p.n < -best-5e-9) {
+    out.status=DgammaStatus::IterationFailure; return out;
+  }
+  out.status=DgammaStatus::Ok; return out;
 }
 }
