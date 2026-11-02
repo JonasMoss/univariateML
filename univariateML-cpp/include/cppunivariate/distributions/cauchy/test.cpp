@@ -109,3 +109,35 @@ TEST_CASE("cauchy: held profiles preserve extreme units") {
     CHECK(fit.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-8));
   }
 }
+
+TEST_CASE("cauchy: held location brackets disparate residuals") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  for (double a : {1e-310, 1e-300, 1e-200, 1.0, 1e200}) {
+    for (double b : {1.0, 1e200, 1e300}) {
+      if (b < a * 1e10) continue;
+      const std::vector<double> x{0, a, b};
+      const auto r = cppunivariate::fit_cauchy(mltest::as_span(x), 1e-8, 100, 0, nan);
+      REQUIRE(r.status == cppunivariate::CauchyStatus::Ok);
+      CHECK(std::abs(std::log(r.scale)-std::log(a)) < 1e-9);
+      // For b/a large, the unique root tends to a and ll tends to this expression.
+      CHECK(r.logLik == doctest::Approx(-3*std::log(cppunivariate::pi)-std::log(a)-2*std::log(b)-std::log(2.0)).epsilon(1e-10));
+    }
+  }
+  const std::vector<double> tiny{0, std::numeric_limits<double>::denorm_min(), 1};
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(tiny),1e-8,100,0,nan).status == cppunivariate::CauchyStatus::IterationFailure);
+  const std::vector<double> huge{-1e308,-1e308,-1e308};
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(huge),1e-8,100,1e308,nan).status == cppunivariate::CauchyStatus::IterationFailure);
+  const std::vector<double> x{0,1e-300,1};
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,1,0,nan).status == cppunivariate::CauchyStatus::IterationFailure);
+  const auto held = cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,100,nan,1);
+  CHECK(held.status == cppunivariate::CauchyStatus::Ok);
+  CHECK(held.scale == 1);
+}
+
+TEST_CASE("cauchy: held location supports overflowing finite residual differences") {
+  const std::vector<double> x{-1e308,0,1e308};
+  const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e-8,100,-1e308,std::numeric_limits<double>::quiet_NaN());
+  REQUIRE(r.status==cppunivariate::CauchyStatus::Ok);
+  CHECK(r.scale/1e308==doctest::Approx(std::sqrt((std::sqrt(73.0)-5)/6)).epsilon(1e-10));
+  CHECK(std::isfinite(r.logLik));
+}

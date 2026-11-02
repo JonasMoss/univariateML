@@ -193,3 +193,25 @@ test_that("cauchy held profiles preserve tiny and large units", {
     expect_equal(as.numeric(logLik(fit))+length(x)*log(unit),as.numeric(logLik(base)),tolerance=1e-8)
   }
 })
+
+test_that("held Cauchy location brackets disparate residuals", {
+  for (a in c(1e-310, 1e-300, 1e-200, 1, 1e200)) for (b in c(1, 1e200, 1e300)) {
+    if (b < a*1e10) next
+    x <- c(0, a, b)
+    f <- mlcauchy(x, location=0)
+    expect_equal(log(unname(f["scale"])), log(a), tolerance=1e-10)
+    expected <- -3*log(pi)-log(a)-2*log(b)-log(2)
+    expect_equal(as.numeric(logLik(f)), expected, tolerance=1e-10)
+  }
+  expect_error(mlcauchy(c(0, .Machine$double.xmin*.Machine$double.eps, 1), location=0), "numerical")
+  expect_error(mlcauchy(c(-1e308,-1e308,-1e308), location=1e308), "numerical")
+  expect_error(mlcauchy(c(0,1e-300,1), location=0, iterlim=1), "converge")
+  f <- mlcauchy(c(0,1e-300,1), scale=1)
+  expect_identical(unname(f["scale"]), 1)
+})
+
+test_that("held Cauchy location supports overflowing finite differences", {
+  f <- mlcauchy(c(-1e308,0,1e308), location=-1e308)
+  expect_equal(unname(f["scale"])/1e308, sqrt((sqrt(73)-5)/6), tolerance=1e-10)
+  expect_true(is.finite(logLik(f)))
+})
