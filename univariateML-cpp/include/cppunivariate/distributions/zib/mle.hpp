@@ -73,7 +73,9 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       return best;
     };
     if(fixed)return held_profile(fixed_size);
-    if(sum==0)return held_profile(fp?1:0);
+    // Size zero makes the zero mass one for every valid held subset.
+    // In particular, size one is suboptimal when p>0 and pi<1 are held.
+    if(sum==0)return held_profile(0);
     if(fp) {
       auto best=held_profile(mx);
       if(fixed_prob==0 || fixed_prob==1)return best;

@@ -159,3 +159,22 @@ TEST_CASE("zib attained point sampler ignores zero uniform") {
   struct ZeroRng { double runif(double,double) { return 0; } } rng;
   CHECK(cppunivariate::distributions::rzib(rng,5,1,0)==5);
 }
+
+TEST_CASE("zib all-zero free-size held subsets attain the exact maximum") {
+  const std::vector<int> x{0,0,0};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double p : {nan,0.,.5,1.}) for(double pi : {nan,0.,.2,1.}) {
+    const auto f=cppunivariate::zib_mle({x.data(),x.size()},1e-10,200,nan,p,pi);
+    REQUIRE(f.status==cppunivariate::ZibStatus::Ok);
+    CHECK(f.logLik==0);
+    CHECK(f.iterations==0);
+    CHECK(f.size==((std::isnan(p)&&std::isnan(pi))?1:0));
+    CHECK(f.prob==(std::isnan(p)?0:p));
+    CHECK(f.pi==(std::isnan(pi)?0:pi));
+    CHECK(cppunivariate::distributions::dzib(0,f.size,f.prob,f.pi,true)==0);
+    for(double size : {0.,1.,2.,10.}) {
+      const double q=std::isnan(p)?0:p, mix=std::isnan(pi)?0:pi;
+      CHECK(cppunivariate::distributions::dzib(0,size,q,mix)<=1);
+    }
+  }
+}
