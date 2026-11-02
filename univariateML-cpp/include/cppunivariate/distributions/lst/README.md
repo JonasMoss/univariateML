@@ -165,3 +165,5 @@ trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 The shared profile search caches each grid-point value within a search. This
 avoids repeating nested location profiles while preserving the grid, refinement,
 comparisons and convergence checks; it does not strengthen global guarantees.
+
+With location and degrees of freedom held, the log-scale score is strictly decreasing from $\nu(n-k)-k$ to $-n$, where $k$ observations equal the held location. Under the strict existence inequality the unique root is the global scale maximum. The solver expands until both score signs are verified within the representable scale range, bisects, and requires absolute total log-scale score below $10^{-3}$ at the represented result. Residual log magnitudes avoid squared-residual overflow. Missing brackets and failed score checks return `IterationFailure`; no search endpoint is returned as an estimate.

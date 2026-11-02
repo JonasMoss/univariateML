@@ -97,3 +97,22 @@ TEST_CASE("gompertz core preserves adapter constant-data rejection") {
   const std::vector<double> x{2,2,2};
   CHECK(cppunivariate::gompertz_mle(mltest::as_span(x),1e-8,100).status==cppunivariate::GompertzStatus::Unbounded);
 }
+
+TEST_CASE("gompertz: verified extreme conditional bracket") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  double base=0,rate=0;
+  for(double unit:{1.0,1e10}) {
+    const std::vector<double> x{1e-300*unit,2e-300*unit};
+    const auto r=cppunivariate::gompertz_mle(mltest::as_span(x),1e-10,100,1e-300/unit,nan);
+    REQUIRE(r.status==cppunivariate::GompertzStatus::Ok);
+    CHECK(r.b*unit>6e302);CHECK(r.logLik+2*std::log(unit)>418);
+    if(unit==1){base=r.logLik;rate=r.b;}else {CHECK(r.b*unit==doctest::Approx(rate).epsilon(1e-10));CHECK(r.logLik+2*std::log(unit)==doctest::Approx(base).epsilon(1e-10));}
+  }
+  const std::vector<double> edge{1e-310,2e-310};
+  CHECK(cppunivariate::gompertz_mle(mltest::as_span(edge),1e-10,100,1e-300,nan).status==cppunivariate::GompertzStatus::IterationFailure);
+  const std::vector<double> large{1e308,1e308};
+  const auto wide=cppunivariate::gompertz_mle(mltest::as_span(large),1e-10,100,1e-308,nan);
+  REQUIRE(wide.status==cppunivariate::GompertzStatus::Ok);
+  CHECK(wide.b*1e308==doctest::Approx(1).epsilon(1e-9));
+  CHECK(wide.logLik+2*std::log(1e308)==doctest::Approx(2-2*std::expm1(1.0)).epsilon(1e-9));
+}

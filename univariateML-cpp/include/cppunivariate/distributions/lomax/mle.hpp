@@ -331,14 +331,24 @@ inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double l
   for(double v:x)if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,0,LomaxStatus::InvalidStart};
   const double n=static_cast<double>(x.size());int iterations=0;
   if(std::isnan(lambda)) {
-    double lo=-745,hi=710;
-    for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=(lo+hi)/2;CPPUNIV_EXTENDED_REAL score=n;for(double v:x){const double z=mid+std::log(v);score-=(kappa+1)/(1+std::exp(-z));}if(score>0)lo=mid;else hi=mid;++iterations;}
-    if(hi-lo>1e-12)return {nan,kappa,nan,iterations,LomaxStatus::IterationFailure};
-    lambda=std::exp((lo+hi)/2);
+    // Strictly decreasing total log-rate score, computed with log weights.
+    // An unrepresentable root is a numerical failure, never a capped estimate.
+    const double lower=std::log(std::numeric_limits<double>::denorm_min()),upper=std::log(std::numeric_limits<double>::max());
+    auto score=[&](double t){double g=n;for(double v:x){const double z=t+std::log(v);const double logp=-std::max(-z,0.0)-std::log1p(std::exp(-std::abs(z)));g-=std::exp(std::log1p(kappa)+logp);}return g;};
+    double lo=std::max(lower,-std::log(x[0])-std::log(kappa)-2),hi=std::min(upper,lo+4),step=32;
+    lo=std::min(lo,upper);
+    while(score(lo)<=0 && lo>lower){lo=std::max(lower,lo-step);step*=2;}
+    step=32;while(score(hi)>=0 && hi<upper){hi=std::min(upper,hi+step);step*=2;}
+    if(!(score(lo)>0 && score(hi)<0))return {nan,kappa,nan,iterations,LomaxStatus::IterationFailure};
+    for(int j=0;j<maxit && hi-lo>1e-12;++j){const double mid=lo/2+hi/2;if(score(mid)>0)lo=mid;else hi=mid;++iterations;}
+    lambda=std::exp(lo/2+hi/2);
+    if(!(lambda>0 && std::isfinite(lambda) && std::abs(score(std::log(lambda)))<1e-3))return {nan,kappa,nan,iterations,LomaxStatus::IterationFailure};
   }
   double s=0;for(double v:x){const double z=std::log(lambda)+std::log(v);s+=std::max(z,0.0)+std::log1p(std::exp(-std::abs(z)));}
   if(std::isnan(kappa))kappa=n/s;
   const double ll=n*(std::log(lambda)+std::log(kappa))-(kappa+1)*s;
+  if(!(lambda>0 && std::isfinite(lambda) && kappa>0 && std::isfinite(kappa) && std::isfinite(ll)))
+    return {lambda,kappa,ll,iterations,LomaxStatus::IterationFailure};
   return {lambda,kappa,ll,iterations,LomaxStatus::Ok};
 }
 

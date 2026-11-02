@@ -153,3 +153,29 @@ TEST_CASE("slash: held-scale extreme coordinates never return a nonfinite fit") 
   CHECK((r.status==cppunivariate::SlashStatus::IterationFailure ||
          (r.status==cppunivariate::SlashStatus::Ok && std::isfinite(r.mu) && std::isfinite(r.logLik))));
 }
+
+TEST_CASE("slash: verified extreme conditional bracket") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  double base=0;
+  for(double unit:{1.0,1e100}) {
+    const std::vector<double> x{0,1e-300*unit,unit};
+    const auto r=cppunivariate::slash_mle(mltest::as_span(x),1e-8,500,nan,0);
+    REQUIRE(r.status==cppunivariate::SlashStatus::Ok);
+    const double z=(1e-300*unit)/r.sigma,t=z*z/2;
+    CHECK(std::expm1(t)==doctest::Approx(2*t).epsilon(1e-9));
+    CHECK(r.logLik+3*std::log(unit)>686);
+    if(unit==1)base=r.logLik;else CHECK(r.logLik+3*std::log(unit)==doctest::Approx(base).epsilon(1e-10));
+  }
+  const std::vector<double> limited{0,1e-300,1};
+  CHECK(cppunivariate::slash_mle(mltest::as_span(limited),1e-8,1,nan,0).status==cppunivariate::SlashStatus::IterationFailure);
+  const std::vector<double> edge{0,std::numeric_limits<double>::denorm_min(),1};
+  CHECK(cppunivariate::slash_mle(mltest::as_span(edge),1e-8,500,nan,0).status==cppunivariate::SlashStatus::IterationFailure);
+  const std::vector<double> rounded{0,1e-322,1e-22};
+  CHECK(cppunivariate::slash_mle(mltest::as_span(rounded),1e-8,500,nan,0).status==cppunivariate::SlashStatus::IterationFailure);
+  const double big=std::numeric_limits<double>::max();
+  const std::vector<double> opposite{big,-big,0};
+  const auto wide=cppunivariate::slash_mle(mltest::as_span(opposite),1e-8,500,nan,big);
+  REQUIRE(wide.status==cppunivariate::SlashStatus::Ok);
+  CHECK(std::isfinite(wide.logLik));
+  CHECK(std::abs(cppunivariate::slash_detail::scale_score(opposite,big,std::log(wide.sigma)))<1e-3);
+}

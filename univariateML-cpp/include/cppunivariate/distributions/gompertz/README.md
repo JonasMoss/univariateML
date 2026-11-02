@@ -121,3 +121,5 @@ When the exponential face wins, fitting stops with advice to use `mlexp`. If `a`
 ## Decision history
 
 2026-10-30 (adapter independence): The fully free constant-sample rejection moved into the core fitter with status `Unbounded`, preserving the former adapter decision. Conditional all-zero handling also remains in the core.
+
+With $a$ held and positive sample sum, the strictly decreasing $b$ score is evaluated relative to $\sum_i x_i$ using logarithms of the integral derivative. A log-$b$ bracket expands within the representable positive range until both signs are verified; it has no cap on $b\max_i x_i$. Bisection must pass an absolute total log-$b$ score gate of $10^{-3}$ at the represented result. Logarithmic integral accumulation also permits finite likelihoods when $\exp(bx)$ overflows. A missing bracket or failed gate returns `IterationFailure`. These are exact-arithmetic certificates conditional on computed comparisons, with a practical floating-point score margin; they do not use outward-rounded intervals.

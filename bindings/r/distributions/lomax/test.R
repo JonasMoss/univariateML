@@ -255,3 +255,10 @@ test_that("Lomax help describes the detector as numerical", {
   rd <- umvl_rd_text("mllomax.Rd")
   expect_match(rd, "numerical search does not establish a finite maximum", fixed = TRUE)
 })
+
+test_that("lomax: extreme conditional bracket is checked", {
+  expect_error(mllomax(c(1e300,2e300),kappa=1e300),"[Ff]ail|converge|score|iteration")
+  f <- mllomax(c(1,2),kappa=1e300)
+  expect_equal(unname(f["lambda"])/1e-300,2/3,tolerance=1e-9)
+  expect_equal(as.numeric(logLik(f)),2*(log(2/3)-1),tolerance=1e-10)
+})

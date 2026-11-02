@@ -168,3 +168,17 @@ test_that("lst held profiles preserve tiny and large units", {
   }
   expect_equal(unname(base["sigma"]),sqrt(mean(x^2)),tolerance=1e-8)
 })
+
+test_that("lst: extreme conditional bracket is checked", {
+  f <- mllst(c(0,1e-300,1),mu=0,df=1)
+  g <- mllst(c(0,1e-200,1e100),mu=0,df=1)
+  expect_equal(unname(f["sigma"])/1e-300,1,tolerance=1e-9)
+  expect_equal(unname(g["sigma"])/1e-200,1,tolerance=1e-9)
+  expect_gt(as.numeric(logLik(f)),686)
+  expect_equal(as.numeric(logLik(g))+3*log(1e100),as.numeric(logLik(f)),tolerance=1e-10)
+  expect_error(mllst(c(0,1e-300,1),mu=0,df=1,iterlim=1))
+  big <- .Machine$double.xmax
+  wide <- mllst(c(big,-big,0),mu=big,df=1)
+  expect_equal(unname(wide["sigma"])/big,sqrt((sqrt(73)-5)/6),tolerance=1e-9)
+  expect_true(is.finite(as.numeric(logLik(wide))))
+})

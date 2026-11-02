@@ -123,3 +123,5 @@ Holding either coefficient removes the exponential escape and gives a unique fin
 ## R notes
 
 The implementation prefers the exponential limit when the largest profile improvement it finds is at most $10^{-8}n$ log-likelihood units and stops with a recommendation to use `mlexp`. This tolerance can reject a mathematical MLE that ties or only slightly improves on the limit.
+
+With $\kappa$ held, the total log-rate score is $n-(\kappa+1)\sum_i\operatorname{logistic}(\log\lambda+\log x_i)$. It strictly decreases from $n$ to $-n\kappa$, so its unique root is the global conditional maximum. The solver expands a log-rate bracket within the representable positive range, verifies both signs, and requires absolute total score below $10^{-3}$ at the represented rate. Log probabilities avoid overflow and underflow in the weighted logistic terms. If the root cannot be represented or certified numerically, fitting returns `IterationFailure`.

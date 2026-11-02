@@ -252,26 +252,38 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
   // per-observation grouping and input-order reduction exactly.
   const double c=df>1e4 ? -0.5*std::log(2.0*cppunivariate::pi)-0.25/df :
     special::lgamma((df+1.0)/2.0)-special::lgamma(df/2.0)-0.5*std::log(df*cppunivariate::pi);
+  auto log_distance=[](double v,double m){
+    const double d=std::abs(v-m);
+    return std::isfinite(d)?std::log(d):special::log_sum_exp(std::log(std::abs(v)),std::log(std::abs(m)));
+  };
   auto ll=[&](double m,double s) -> double {
     const double ls=std::log(s);
     // LstCost reconstructs s from log(s); keep that rounding.
     const double represented=std::exp(ls);
     if(!(represented>0) || !std::isfinite(represented))return -INFINITY;
     double f=0;
-    for(double v:x) {const double z=(v-m)/represented;f+=ls-c+0.5*(df+1.0)*std::log1p(z*z/df);}
+    for(double v:x) {const double z=(v-m)/represented;const double w=2*(log_distance(v,m)-ls)-std::log(df);const double tail=std::isfinite(z*z/df)?std::log1p(z*z/df):std::max(w,0.0)+std::log1p(std::exp(-std::abs(w)));f+=ls-c+0.5*(df+1.0)*tail;}
     return -f;
   };
   double m=mu,s=sigma;
   if(std::isnan(s)) {
-    std::size_t k=0;double r=0;for(double v:y){k+=v==m;r=std::max(r,std::abs(v-m));}
+    std::size_t k=0;double log_r=-INFINITY;for(double v:y){k+=v==m;log_r=std::max(log_r,log_distance(v,m));}
     if(k>df*(y.size()-k)){bad.status=LstStatus::Unbounded;return bad;}
     // At equality every nonzero residual contributes a strict factor below
     // its collapse limit, so the supremum is never attained at held mu.
     if(k==df*(y.size()-k)){bad.status=LstStatus::ScaleBoundary;return bad;}
-    double lo=std::max(std::log(r)-350,std::log(std::numeric_limits<double>::denorm_min())),hi=std::log(r)+2;
-    for(int it=0;it<maxit;++it){const double t=lo/2+hi/2;s=std::exp(t);double g=-static_cast<double>(y.size());for(double v:y){const double q=((v-m)/s)/std::sqrt(df),q2=q*q;const double weight=q2<=1?q2/(1+q2):1/(1+1/q2);g+=(df+1)*weight;}if(g>0)lo=t;else hi=t;if(hi-lo<1e-12)break;}
-    if(hi-lo>1e-9){bad.status=LstStatus::IterationFailure;return bad;}
+    // The total log-scale score decreases strictly; expand before bisecting.
+    // Log weights also retain products of huge df and tiny tail probabilities.
+    const double lower=std::log(std::numeric_limits<double>::denorm_min()),upper=std::log(std::numeric_limits<double>::max());
+    auto score=[&](double t){double g=-static_cast<double>(y.size());for(double v:y){const double z=2*(log_distance(v,m)-t)-std::log(df);g+=std::exp(std::log1p(df)-std::max(-z,0.0)-std::log1p(std::exp(-std::abs(z))));}return g;};
+    double lo=std::max(lower,log_r-350),hi=std::min(upper,log_r+2),step=32;
+    while(score(lo)<=0 && lo>lower){lo=std::max(lower,lo-step);step*=2;}
+    step=32;while(score(hi)>=0 && hi<upper){hi=std::min(upper,hi+step);step*=2;}
+    if(!(score(lo)>0 && score(hi)<0)){bad.status=LstStatus::IterationFailure;return bad;}
+    for(int it=0;it<maxit && hi-lo>1e-12;++it){const double t=lo/2+hi/2;if(score(t)>0)lo=t;else hi=t;}
     s=std::exp(lo/2+hi/2);
+    if(!(s>0 && std::isfinite(s) && std::abs(score(std::log(s)))<1e-3)){bad.status=LstStatus::IterationFailure;return bad;}
+
   } else if(std::isnan(m)) {
     std::vector<double> grid=y;
     for(std::size_t j=1;j<y.size();++j)for(int k=1;k<8;++k)grid.push_back(y[j-1]+(y[j]-y[j-1])*k/8);
@@ -281,7 +293,9 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
     if(!optimum.converged){bad.status=LstStatus::IterationFailure;return bad;}
     m=optimum.point;
   }
-  return {m,s,df,ll(m,s),0,LstStatus::Ok};
+  const double value=ll(m,s);
+  if(!std::isfinite(value)){bad.status=LstStatus::IterationFailure;return bad;}
+  return {m,s,df,value,0,LstStatus::Ok};
 }
 }
 inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma,double df) {
