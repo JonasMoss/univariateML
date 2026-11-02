@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
@@ -476,11 +477,38 @@ inline HuberResult huber_mle(span x, double tol=1e-10, int maxit=200,
     }
   }
   const double slack=1e-8*n;
-  if (normal>=best.logLik-slack && normal>=laplace)
+  // With both coordinates held the common Gaussian quadratic cancels.
+  // rho_c(z)-z^2/2 = -max(|z|-c,0)^2/2 in exact arithmetic.
+  FaceComparison normal_comparison=compare_face(normal,best.logLik,slack);
+  if(fm && fs && best.status==HuberStatus::Ok && best.epsilon>0 &&
+      std::isfinite(best.epsilon)) {
+    double gain=n*(std::log(huber_z(best.epsilon))-.5*std::log(2*std::acos(-1.0)));
+    double gain_scale=n+std::abs(gain);
+    for(double v:y) {
+      const double excess=std::max(0.,std::abs((v-mu)/sigma)-best.epsilon);
+      gain-=.5*excess*excess;
+      gain_scale+=.5*excess*excess;
+    }
+    normal_comparison=compare_face(gain,0,slack,gain_scale);
+  }
+  if(normal_comparison==FaceComparison::NumericalTie || face_numerical_tie(laplace,best.logLik,slack) || (normal_comparison==FaceComparison::FirstWins && laplace>=best.logLik-slack && face_numerical_tie(normal,laplace,0))) {best.status=HuberStatus::IterationFailure;return best;}
+  if (normal_comparison==FaceComparison::FirstWins && normal>=laplace)
     best.status=HuberStatus::NormalLimit;
   else if (laplace>=best.logLik-slack)
     best.status=HuberStatus::LaplaceLimit;
   else if (failed) best.status=HuberStatus::IterationFailure;
+  // The held-coordinate shape search must not accept a nonstationary
+  // finite candidate merely because its sampled grid missed a narrow peak.
+  if(fm && fs && best.status==HuberStatus::Ok) {
+    const double c=best.epsilon;
+    double score=2*n*std::exp(-c*c/2)/(c*huber_z(c));
+    for(double v:y) {
+      const double z=std::abs((v-mu)/sigma);
+      if(z>c) score-=c*(z-c);
+    }
+    if(!std::isfinite(score) || std::abs(score)>1e-3)
+      best.status=HuberStatus::IterationFailure;
+  }
   return best;
 }
 } // namespace cppunivariate

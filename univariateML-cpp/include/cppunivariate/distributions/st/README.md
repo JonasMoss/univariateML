@@ -298,3 +298,5 @@ reflected limit uses `mlht` on `-x` with location transformed accordingly.
 The half-normal alternatives are `mlhnorm` and its reflection. These calls
 require the relevant held coefficients to be supplied in the new model.
 `mllst` is the symmetric location-scale Student model.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

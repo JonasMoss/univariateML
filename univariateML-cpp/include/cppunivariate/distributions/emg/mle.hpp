@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "logconcave_profile.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
@@ -162,6 +163,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     double v=0;for(double z:y)v+=(z-m)*(z-m)/n;
     const double s=std::isnan(p.sigma)?std::sqrt(v):p.sigma;
     double ll=0;for(double z:y)ll+=-std::log(s)-.91893853320467274178-(z-m)*(z-m)/(2*s*s);
+    if(face_numerical_tie(ll,comparison,tie)) {best.status=EmgStatus::IterationFailure;return;}
     if(ll>=comparison-tie){best={m,s,special::kPosInf,ll,0,EmgStatus::NormalLimit};comparison=ll;}
   }
   if(std::isnan(sigma) && (std::isnan(mu)||mu<=minimum)) {
@@ -171,6 +173,7 @@ inline EmgResult emg_mle(span x,double tol=1e-8,int maxit=500,
     double ll=n*std::log(l)-l*gap;
     // A held endpoint cannot move below the minimum to recover full density.
     if(!std::isnan(mu))ll-=ties*std::log(2.0);
+    if(face_numerical_tie(ll,comparison,((best.status==EmgStatus::NormalLimit)?0:tie))) {best.status=EmgStatus::IterationFailure;return;}
     if(ll>=comparison-((best.status==EmgStatus::NormalLimit)?0:tie))best={m,0,l,ll,0,EmgStatus::TranslatedExponentialLimit};
   }
   };

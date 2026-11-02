@@ -1,5 +1,6 @@
 // GB2 in actuar order (q,a,p,b). All optimisation uses standardized logs.
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../trgamma/mle.hpp"
 #include "../burr/mle.hpp"
@@ -362,6 +363,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-7,int maxit=300,
     starts={{{std::log(best.p),std::log(best.q)}},{{-box,-box}},{{box,box}},{{-box,box}},{{box,-box}}};
     box+=3;
   }
+  if(best.ok && explored && !face_failure && face_numerical_tie(face,best.ll,1e-8*d.n)) return {nan,nan,nan,nan,face,evals,Gb2Status::SearchUnresolved};
   if(best.ok && explored && face>=best.ll-1e-8*d.n && !face_failure) return {nan,nan,nan,nan,face,evals,fs};
   const double logb=d.mean+d.sd*best.c/best.A;
   const bool edge=(std::isnan(p)&&std::abs(std::log(best.p))>searched_box-0.3)||

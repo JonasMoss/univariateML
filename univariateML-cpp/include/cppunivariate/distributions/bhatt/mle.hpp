@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "../emg/logconcave_profile.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
@@ -216,6 +217,7 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
     double m=0;for(double z:y)m+=z/n;if(!std::isnan(mu))m=held_mu;double var=0;for(double z:y)var+=(z-m)*(z-m)/n;
     const double s=std::isnan(sigma)?std::sqrt(var):p.sigma;
     double ll=-n*(std::log(s)+.91893853320467274178)-n*var/(2*s*s);
+    if(face_numerical_tie(ll,comparison,tie)) {best.status=BhattStatus::IterationFailure;return;}
     if(ll>=comparison-tie){best={m,s,0,ll,0,BhattStatus::Ok};comparison=ll;}
   }
   if(std::isnan(sigma)) {
@@ -227,6 +229,7 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
         double left=0,right=0;for(double z:y){if(z==y.front())++left;if(z==y.back())++right;}
         ll+=left*std::log(left/(left+right))+right*std::log(right/(left+right));
       }
+    if(face_numerical_tie(ll,comparison,(best.a==0?0:tie))) {best.status=BhattStatus::IterationFailure;return;}
       if(ll>=comparison-(best.a==0?0:tie))best={0,0,b,ll,0,BhattStatus::UniformLimit};
     }
   }

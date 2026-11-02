@@ -215,3 +215,5 @@ mlgenbeta(x, scale = scale, shape2 = 1); mlpower estimates its endpoint.
 When shape2 = 1 and shape1 and shape3 are free, the fitter returns shape3 = 1
 and records it as fixed, so likelihood degrees of freedom count only the
 identified product.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

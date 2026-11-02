@@ -139,3 +139,20 @@ The location fallback must pass a mean standardized score check; holding scale d
 ## R notes
 
 Supply `epsilon = 1.345` for a conventional held tuning value, or `epsilon = NULL` to estimate shape. A selected normal or Laplace limit stops with advice to use `mlnorm` or `mllaplace`, respectively. Face comparisons use a tolerance of $10^{-8}n$, so a limit diagnostic can also occur when a finite maximizer improves on that limit by less than the tolerance. A failed location fallback stops unless its mean standardized score is below `max(gradtol, 1e-7)`, even with scale held.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
+
+When location and scale are both held, the Gaussian-face comparison instead
+uses the direct gain
+$ n\{\log Z(c)-\tfrac12\log(2\pi)\}-\tfrac12\sum_i\max(|(x_i-\mu)/\sigma|-c,0)^2 $.
+This follows from $\rho_c(z)-z^2/2=-\max(|z|-c,0)^2/2$ in exact arithmetic;
+it cancels the common quadratic before rounding. The comparison allowance
+also includes the absolute terms in this gain and a term proportional to $n$
+for the normalizer subtraction. Other held subsets retain full-objective
+comparisons with the rounding guard.
+
+For both coordinates held, a finite free-shape result also passes the total
+log-shape score gate $|2n\exp(-c^2/2)/(cZ(c))-c\sum_{|z_i|>c}(|z_i|-c)|\le10^{-3}$,
+where $z_i=(x_i-\mu)/\sigma$. A nonfinite or larger residual returns
+`IterationFailure`. This detects a missed finite peak; stationarity alone
+is not a global-optimality proof.

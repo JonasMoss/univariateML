@@ -1,5 +1,6 @@
 // Three-parameter beta-prime MLE, with explicit likelihood comparisons to faces.
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/multistart.hpp"
 #include "../../core/bfgs.hpp"
@@ -187,6 +188,7 @@ inline BetaPrimeResult betapr_mle_impl(span x, double tol = 1e-6, int maxit = 10
     auto r = bfgs_minimize(cost, start, ctl);
     consider_bfgs_candidate(best,r,1.0,attempted);
   }
+  if (face_numerical_tie(face.logLik,-attempted.f,1e-8*n)) {face.status=BetaPrimeStatus::BfgsFailure;return face;}
   if (face.logLik >= -attempted.f - 1e-8*n) return face;
   if (!std::isfinite(best.f)) {
     if(attempted.theta.size()!=3) return {nan,nan,nan,nan,0,BetaPrimeStatus::BfgsFailure};
@@ -308,6 +310,7 @@ inline BetaPrimeResult betapr_mle_holds(span x, double held_a, double held_b,
     if(it==maxit) {best.status=BetaPrimeStatus::BfgsFailure;return best;}
   }
   if(!std::isfinite(best.logLik)) {best.status=BetaPrimeStatus::BfgsFailure;return best;}
+  if(face_numerical_tie(face_ll,best.logLik,1e-8*n)) {best.status=BetaPrimeStatus::BfgsFailure;return best;}
   if(face_ll>=best.logLik-1e-8*n) return {held_a,held_b,nan,face_ll,iterations,
     fa?BetaPrimeStatus::GammaBoundary:BetaPrimeStatus::InvGammaBoundary};
   if(!std::isfinite(best.logLik) || best.alpha>=.999e8 || best.beta>=.999e8 ||

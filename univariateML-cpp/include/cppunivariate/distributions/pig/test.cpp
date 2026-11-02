@@ -185,3 +185,33 @@ TEST_CASE("pig: zero boundary is the attained point mass") {
   CHECK(std::isnan(cppunivariate::distributions::dpig(nan,2,0,false)));
   for(int i=0;i<20;++i) CHECK(cppunivariate::distributions::rpig(rng,2,0)==0);
 }
+
+TEST_CASE("pig: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e100;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("pig: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<int> x{1,2};
+  cppunivariate::ispan s{x.data(),x.size()};
+  const auto r=cppunivariate::pig_mle(s,1e-9,200,1e100,nan);
+  CHECK((r.status==cppunivariate::PigStatus::Ok || r.status==cppunivariate::PigStatus::SearchFailure));
+  CHECK(r.status!=cppunivariate::PigStatus::PoissonLimit);
+}
+
+TEST_CASE("face comparison: nonfinite values and finite extremes") {
+  const double inf=std::numeric_limits<double>::infinity();
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double big=std::numeric_limits<double>::max();
+  CHECK(cppunivariate::compare_face(nan,0,1e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-inf,-inf,1e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(0,-inf,1e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-inf,0,1e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(big,-big,1e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-big,big,1e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(0,1e-8,1e-8)==cppunivariate::FaceComparison::NumericalTie);
+}

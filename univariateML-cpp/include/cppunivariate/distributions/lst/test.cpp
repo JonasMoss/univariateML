@@ -197,3 +197,20 @@ TEST_CASE("lst: verified extreme conditional bracket") {
   CHECK(wide.sigma/big==doctest::Approx(std::sqrt((std::sqrt(73.0)-5)/6)).epsilon(1e-9));
   CHECK(std::isfinite(wide.logLik));
 }
+
+TEST_CASE("lst: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e20;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("lst: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::lst_mle(s,1e-6,200,0,1e-10,nan);
+  CHECK((r.status==cppunivariate::LstStatus::Ok || r.status==cppunivariate::LstStatus::BfgsFailure || r.status==cppunivariate::LstStatus::IterationFailure));
+  CHECK(r.status!=cppunivariate::LstStatus::NormalBoundary);
+}

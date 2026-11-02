@@ -228,3 +228,5 @@ if a finite input produces an infinite standardized value, they also try
 `x/omega - xi/omega`. This avoids overflow in the subtraction when the
 quotient is representable. The R density test includes opposite-sign
 `1e308` location and observation with scale `1e308`.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

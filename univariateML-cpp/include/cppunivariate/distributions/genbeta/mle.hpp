@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../gb2/mle.hpp"
 #include "../gamma/mle.hpp"
@@ -145,6 +146,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-7,int maxit=3
       prev=cur;
     }
   }
+  if(best.ok && face_numerical_tie(face,best.ll,1e-8*n)) return {nan,nan,nan,scale,face,evals,GenbetaStatus::SearchUnresolved};
   if(best.ok&&face>=best.ll-1e-8*n)return {nan,nan,nan,scale,face+static_cast<double>(jac),evals,fs};
   const bool ok=best.ok&&!edge&&(!std::isnan(t)||std::abs(best.score)<tol);
   return {best.a,best.b,best.t,scale,best.ll+static_cast<double>(jac),evals,

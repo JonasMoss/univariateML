@@ -141,3 +141,20 @@ TEST_CASE("betapr: P3 finite failed BFGS point is not a fit") {
   CHECK(std::isfinite(r.beta));
   CHECK(std::isfinite(r.scale));
 }
+
+TEST_CASE("betapr: face comparison cannot resolve rounded extreme objectives") {
+  const double magnitude=1e99;
+  CHECK(cppunivariate::compare_face(-magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::NumericalTie);
+  CHECK(cppunivariate::compare_face(-magnitude,-2*magnitude,2e-8)==cppunivariate::FaceComparison::FirstWins);
+  CHECK(cppunivariate::compare_face(-2*magnitude,-magnitude,2e-8)==cppunivariate::FaceComparison::SecondWins);
+  CHECK(cppunivariate::compare_face(-10.,-10.,2e-8)==cppunivariate::FaceComparison::FirstWins);
+}
+
+TEST_CASE("betapr: audited huge held-parameter magnitude") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> x{1,2};
+  cppunivariate::span s{x.data(),x.size()};
+  const auto r=cppunivariate::betapr_mle_holds(s,1e100,nan,nan);
+  CHECK((r.status==cppunivariate::BetaPrimeStatus::Ok || r.status==cppunivariate::BetaPrimeStatus::BfgsFailure));
+  CHECK(r.status!=cppunivariate::BetaPrimeStatus::GammaBoundary);
+}

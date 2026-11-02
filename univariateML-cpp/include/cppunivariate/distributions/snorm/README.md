@@ -151,3 +151,5 @@ never returned as an estimated coefficient.
 This is the two-piece normal family. `mlsn` fits the Azzalini skew-normal family. Any subset of `mean`, `sd`, and `xi` can be held. Evaluation uses the fGarch mean and standard deviation parameterization.
 
 Use `mlhnorm(x, mu = NULL)` for the right half-normal boundary. For the left boundary, fit `mlhnorm(-x, mu = NULL)` and reflect the resulting distribution back to the original axis.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).

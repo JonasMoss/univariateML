@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -95,6 +96,7 @@ inline PigResult pig_mle(ispan x, double tol=1e-9, int maxit=200,
     const double poisson=data.poisson(mean);
     auto result=pig_detail::search([&](double t) {return data.likelihood(mean,std::exp(t));},
                                   2*std::log(mean),tol,maxit,2*std::log(data.average));
+    if(face_numerical_tie(poisson,result.logLik,tie)) return {mean,shape,result.logLik,result.iterations,PigStatus::SearchFailure};
     if (poisson>=result.logLik-tie)
       return {mean,std::numeric_limits<double>::infinity(),poisson,result.iterations,PigStatus::PoissonLimit};
     return {mean,std::exp(result.mean),result.logLik,result.iterations,result.status};

@@ -165,3 +165,5 @@ trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 The shared profile search caches grid-point values, avoiding repeated nested
 location profiles without changing the grid, refinement or convergence checks.
 This reuse does not certify that the grid finds every mode.
+
+Face comparisons retain the family tolerance but stop with the existing numerical-failure status when `core/face_compare.hpp` cannot resolve the decision after its floating-point rounding allowance. This allowance concerns computed likelihood comparisons, not optimizer convergence or global optimality; see the [comparison analysis](../../../../../dev/research/evaluations/2026-11-02-face-compare-report.md).
