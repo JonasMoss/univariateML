@@ -22,7 +22,7 @@ inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg 
   if(fit.status==cppunivariate::SnStatus::LeftHalfNormalBoundary)
     return fail("The skew-normal MLE is infinite: use `mlhnorm` on `-x`.");
   if(fit.status==cppunivariate::SnStatus::InvalidInput) return fail("Skew-normal fitting requires distinct finite observations, positive reltol and positive iterlim.");
-  if(fit.status!=cppunivariate::SnStatus::Ok) return fail("Skew-normal inner fit did not converge; increase iterlim.");
+  if(fit.status!=cppunivariate::SnStatus::Ok) return fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim.");
   std::vector<std::string> fixed;
   if(xi.supplied) fixed.push_back("xi");
   if(omega.supplied) fixed.push_back("omega");

@@ -103,8 +103,8 @@ existence:
 The inverse paralogistic distribution is the reciprocal of the paralogistic distribution.
 It models positive size and loss data. The scale $\theta$ sets the measurement
 scale and the shape $\alpha$ links the lower and upper tail behaviour.
-The upper-tail exponent is $lpha$ and the
-lower-tail power is $lpha^2$.
+The upper-tail exponent is $\alpha$ and the
+lower-tail power is $\alpha^2$.
 
 ## Details
 

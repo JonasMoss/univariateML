@@ -142,3 +142,19 @@ test_that("sn: P3 unfinished optimizer stops", {
 test_that("sn: P3 unfinished fixed-shape inner fit stops", {
   expect_error(mlsn(c(-2,-.3,.1,.8,4),alpha=2,iterlim=1), "did not converge")
 })
+
+test_that('sn free-shape fit dominates fixed-shape fits on seeded samples', {
+  set.seed(20261102)
+  for (a in c(-20,-3,-0.001,0,0.001,3,20)) {
+    x <- rsn(100,0,1,a)
+    f <- tryCatch(mlsn(x), error = identity)
+    if (inherits(f,'error')) {
+      expect_match(conditionMessage(f),'mlhnorm')
+      next
+    }
+    for (fixed in c(-10,-3,0,3,10)) {
+      g <- mlsn(x,alpha=fixed)
+      expect_gte(as.numeric(logLik(f)),as.numeric(logLik(g))-2e-6)
+    }
+  }
+})

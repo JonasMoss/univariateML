@@ -160,3 +160,42 @@ TEST_CASE("sn: standardization handles overflow without producing NaN") {
   CHECK(cppunivariate::distributions::dsn(next, huge, 1e-300, 0, true) ==
         -std::numeric_limits<double>::infinity());
 }
+
+TEST_CASE("sn interval and tail bounds dominate feasible likelihoods") {
+  const std::vector<double> x{-1.8,-.7,-.2,.1,.4,.9,1.3};
+  const double nan=cppunivariate::special::kNaN;
+  const auto ll=[&](double a,double eta,double h) {
+    double value=x.size()*std::log(eta);
+    for(double v:x)value+=cppunivariate::sn_detail::log_density(eta*v-h,a);
+    return value;
+  };
+  for(double a0:{-3.,0.,3.}) {
+    const cppunivariate::sn_detail::Inner ref={1.2,.2,ll(a0,1.2,.2),true};
+    const auto t=cppunivariate::sn_detail::shape_tangent(x,a0,ref);
+    for(double omega:{nan,1.25}) {
+      const double upper=std::max(cppunivariate::sn_detail::shape_upper(x,omega,-4,t),
+                                  cppunivariate::sn_detail::shape_upper(x,omega,5,t));
+      for(double a:{-4.,-2.,0.,1.,5.}) for(double h:{-1.,0.,1.})
+        for(double eta:{.5,.8,1.5}) {
+          if(std::isfinite(omega) && eta!=.8)continue;
+          CHECK(ll(a,eta,h)<=upper+1e-10);
+        }
+      for(double sign:{-1.,1.}) {
+        const double tail=cppunivariate::sn_detail::shape_tail_upper(x,omega,3,sign);
+        REQUIRE(std::isfinite(tail));
+        for(double a:{3.,6.,20.}) for(double h:{-1.,0.,1.})
+          for(double eta:{.5,.8,1.5}) {
+            if(std::isfinite(omega) && eta!=.8)continue;
+            CHECK(ll(sign*a,eta,h)<=tail+1e-10);
+          }
+      }
+    }
+  }
+}
+
+TEST_CASE("sn tail bound handles ties at a fixed scale") {
+  const std::vector<double> x(5,0.0);
+  const double upper=cppunivariate::sn_detail::shape_tail_upper(x,2.0,64.0,1.0);
+  const double face=5*(.5*std::log(2/cppunivariate::pi)-std::log(2.0));
+  CHECK(upper==doctest::Approx(face).epsilon(1e-12));
+}

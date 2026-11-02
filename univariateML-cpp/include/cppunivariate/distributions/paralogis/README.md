@@ -96,8 +96,8 @@ existence:
 The paralogistic distribution is a Burr type XII distribution with its two shapes equal.
 It models positive size and loss data. The scale $\theta$ sets the measurement
 scale and the shape $\alpha$ links the lower and upper tail behaviour.
-The upper-tail exponent is $lpha^2$ and the
-lower-tail power is $lpha$.
+The upper-tail exponent is $\alpha^2$ and the
+lower-tail power is $\alpha$.
 
 ## Details
 
