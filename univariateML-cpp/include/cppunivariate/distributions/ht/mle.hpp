@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/span.hpp"
+#include "../../special/special.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -8,7 +9,7 @@
 namespace cppunivariate {
 inline constexpr double kHtNuLower = 1.0;
 
-enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundary, NormalLimit, SearchFailure };
+enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundary, NormalLimit, SearchFailure, IterationFailure };
 // `mu` defaults to NaN: `ht_mle_zero` and the search helpers below never set
 // it (they operate on already-translated data); the public `ht_mle` entry
 // point at the bottom of this file always fills it in before returning.
@@ -62,7 +63,8 @@ inline double normal(span x, double &ls, bool fixed_scale) {
 // Fixed-endpoint engine, also used when nu itself is held. A held mu
 // exempts the free shape from the translated-model restriction. Exact
 // ties still need the sample-dependent collapse diagnostics below.
-inline HtResult ht_mle_zero(span x, double held_nu = std::numeric_limits<double>::quiet_NaN(),
+namespace ht_detail {
+inline HtResult ht_mle_zero_legacy(span x, double held_nu = std::numeric_limits<double>::quiet_NaN(),
                        double held_sigma = std::numeric_limits<double>::quiet_NaN()) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const bool fn=!std::isnan(held_nu), fs=!std::isnan(held_sigma);
@@ -127,6 +129,7 @@ inline HtResult ht_mle_zero(span x, double held_nu = std::numeric_limits<double>
     return {std::exp(best_t),std::exp(best_ls),best,count,HtStatus::SearchFailure};
   return {std::exp(best_t),fs?held_sigma:std::exp(best_ls),best,count,HtStatus::Ok};
 }
+} // namespace ht_detail
 
 namespace ht_detail {
 // Free endpoint: search the free shape on [1, infinity), comparing the
@@ -188,6 +191,17 @@ inline HtResult free_threshold_search(span y, double held_sigma) {
 }
 } // namespace ht_detail
 
+#include "cert.hpp"
+
+inline HtResult ht_mle_zero(span x, double held_nu = std::numeric_limits<double>::quiet_NaN(),
+                            double held_sigma = std::numeric_limits<double>::quiet_NaN()) {
+  HtResult r = ht_detail::ht_mle_zero_legacy(x, held_nu, held_sigma);
+  if (std::isnan(held_nu) && (r.status == HtStatus::Ok || r.status == HtStatus::NormalLimit ||
+                              r.status == HtStatus::ScaleBoundary || r.status == HtStatus::SearchFailure))
+    r = ht_detail::certified_search(x, held_sigma, false, r);
+  return r;
+}
+
 // NaN requests estimation. The free endpoint is exactly min(x); its
 // free shape is restricted to nu>=1. Held nu values are preserved, while
 // holding mu exempts free nu from the restriction.
@@ -209,8 +223,11 @@ inline HtResult ht_mle(span x, double mu, double nu, double sigma) {
   std::vector<double> y(x.size());
   for (std::size_t i = 0; i < x.size(); ++i) y[i] = x[i] - mu_hat;
   HtResult r = (!mu_free || !std::isnan(nu))
-      ? ht_mle_zero(span{y.data(), y.size()}, nu, sigma)
+      ? ht_detail::ht_mle_zero_legacy(span{y.data(), y.size()}, nu, sigma)
       : ht_detail::free_threshold_search(span{y.data(), y.size()}, sigma);
+  if (std::isnan(nu) && (r.status == HtStatus::Ok || r.status == HtStatus::NormalLimit ||
+                         r.status == HtStatus::ScaleBoundary || r.status == HtStatus::SearchFailure))
+    r = ht_detail::certified_search(span{y.data(), y.size()}, sigma, mu_free, r);
   r.mu = mu_hat;
   return r;
 }

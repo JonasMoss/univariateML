@@ -1,0 +1,11 @@
+Pre-optimization profile: g++ 15.2.0, -O2 -pg -fno-inline, five repetitions of bench.cpp, n=500, seed 116500, local one-slot run. Instrumentation alters elapsed time; use counts to locate work, not percentages as production timing.
+Intervals: 3200 total (640 per fit).
+scale_box: 7470 calls total (1494 per fit), including 4270 profile evaluations.
+logistic: 879315360 calls total (~175.9 million per fit), largely inside scale-box bisections.
+digamma: 9200 calls total (1840 per fit).
+The -fno-inline gprof profile assigns many samples to _init/shared library machinery; it cannot reliably apportion libm time. The counts identify repeated scale-score evaluations as the dominant operation count.
+
+Round 1 versus Round 2, same 600 samples, seed 1162026, n=24, one local slot, g++ -O2:
+431 finite pairs; 169 matching limit statuses; 0 changed.
+Maximum absolute differences: logLik 0, log(nu ratio) 0, log(sigma ratio) 0; mu equal.
+Total: Round 1 38.706 s; Round 2 4.774 s.

@@ -180,3 +180,10 @@ test_that("half-t compares the half-normal face even at an exact half-minimum ti
   expect_gt(normal_ll,boundary_ll)
   expect_error(mlht(y+3,mu=NULL),"mlhnorm")
 })
+
+test_that("half-t certified search retains the higher of two profile modes", {
+  x <- c(.12773, 12.5979, 3.91782, 2.58658, .138212)
+  f <- mlht(x, mu = 0)
+  expect_equal(unname(f[["nu"]]), .41508, tolerance = 1e-3)
+  expect_equal(as.numeric(logLik(f)), sum(dht(x = x, mu = 0, nu = f[["nu"]], sigma = f[["sigma"]], log = TRUE)), tolerance = 1e-9)
+})
