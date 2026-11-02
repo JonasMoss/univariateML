@@ -154,10 +154,14 @@ When size and probability are free, an exponential grid of sizes is scanned and 
 
 Supply size explicitly: a number holds it and `size = NULL` estimates it. Supply prob or pi to hold either probability. With both probabilities free, all-zero data return `prob = pi = 0`, preserving a held size or choosing size one when size is free.
 
-For all-zero data with both probabilities held, supply `size = 0` explicitly. The current free-size path can choose size one and miss the maximum in this case.
+For all-zero data with free size and either probability held, the fitter returns size zero, preserving held values and choosing zero for a free probability. The maximum log likelihood is exactly zero. No all-zero free-size subset requires an escape or non-identification stop: as with the existing all-free convention, the fitter returns an attained representative with status `Ok`, without claiming unique coefficients.
+
+Indeed, the zero mass is $\pi+(1-\pi)(1-p)^n\leq1$, with equality exactly when $n=0$, $p=0$, or $\pi=1$ (interpreting size zero as the point mass even at $p=1$). With both probabilities held, size zero is unique if $p>0$ and $\pi<1$; otherwise every size maximizes. With only $p>0$ held, the maximizing set is $n=0$ or $\pi=1$; with $p=0$ held, both free coefficients are unidentified. With only $\pi<1$ held, the maximizing set is $n=0$ or $p=0$; with $\pi=1$ held, both free coefficients are unidentified. With neither held, the maximizing set is the union of all three faces, so no individual coefficient has a unique maximizing value. At the returned size-zero representative every free probability is unidentified. These are exact boundary statements, requiring no numerical size search.
 
 The size grid has no fixed magnitude cap. After its initial grid depth it continues until more than ten exponential steps pass without improvement, subject to the iteration budget `iterlim`. Budget or floating-point resolution failures stop. The infinite-size report recommends `mlzip`.
 
 ## Decision history
 
 The [2026-10-29 tail investigation](../../../../../dev/research/evaluations/2026-10-29-tail85-report.md) records comparisons with independent reference-density multistart oracles, including tied and near-Poisson samples. The [2026-10-31 size-search investigation](../../../../../dev/research/evaluations/2026-10-31-size-search-report.md) reduces the free profile to positive-binomial and binomial branches and identifies the remaining certification gap. These comparisons support the implementation on tested samples rather than proving globality.
+
+The [2026-11-02 all-zero correction](../../../../../dev/research/evaluations/2026-11-02-zib-zero-report.md) records the size-one non-maximizer with both probabilities held and the exact size-zero replacement.

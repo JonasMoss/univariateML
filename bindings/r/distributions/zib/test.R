@@ -168,3 +168,18 @@ test_that("zib attained point member evaluates and samples exactly", {
   expect_equal(qml(.5,fit),5)
   expect_equal(rml(10,fit),rep(5,10))
 })
+
+test_that("zib all-zero free-size held subsets attain likelihood one", {
+  for (p in list(NULL, 0, .5, 1)) for (mix in list(NULL, 0, .2, 1)) {
+    f <- mlzib(c(0, 0, 0), size=NULL, prob=p, pi=mix)
+    expect_equal(unname(f["size"]), if (is.null(p) && is.null(mix)) 1 else 0)
+    expect_equal(unname(f["prob"]), if (is.null(p)) 0 else p)
+    expect_equal(unname(f["pi"]), if (is.null(mix)) 0 else mix)
+    expect_equal(attr(f, "logLik"), 0)
+    expect_equal(sum(dml(c(0, 0, 0), f, log=TRUE)), 0)
+    expect_setequal(attr(f, "fixed"), c(character(), if (!is.null(p)) "prob", if (!is.null(mix)) "pi"))
+    expect_equal(attr(logLik(f), "df"), 3L - as.integer(!is.null(p)) - as.integer(!is.null(mix)))
+  }
+  f <- mlzib(c(0, 0, 0), size=NULL, prob=.5, pi=.2)
+  expect_gt(attr(f, "logLik"), 3*log(.6))
+})
