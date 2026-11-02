@@ -84,7 +84,6 @@ test_that("bbinom: both held shapes permit exact size profiling", {
   }
  }
  expect_error(mlbbinom(1:3,size=NULL),"together with both shapes is not implemented")
- expect_error(mlbbinom(1:3,size=NULL,alpha=2),"with alpha held is not implemented")
  expect_error(mlbbinom(rep(3,3),size=NULL,beta=3),"point mass")
 })
 
@@ -97,7 +96,6 @@ test_that("bbinom: P3 unfinished optimizer stops", {
 
 test_that("bbinom: retained free-size guards identify the unresolved profile", {
   expect_error(mlbbinom(c(0,1,2,4,8),size=NULL), "binomial and two-point limits.*no usable bound")
-  expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,alpha=2), "negative binomial with the same alpha.*no usable bound")
   expect_error(mlbbinom(c(0,1,2,4,8),size=NULL,beta=1e9), "work budget")
   # Fixed alpha with beta proportional to size approaches NB with that
   # alpha held. Reflecting x to N-x would change the observed sample.
@@ -131,4 +129,17 @@ test_that("seeded held-beta profiles agree with dense size enumeration", {
     oracle <- vapply(4:40, function(n) attr(mlbbinom(x,size=n,beta=b),"logLik"), 0.)
     expect_gte(attr(fit,"logLik"), max(oracle)-1e-7)
   }
+})
+
+test_that("held alpha free-size certificates and stopping outcomes", {
+  x <- c(0, 0, 1, 1)
+  fit <- mlbbinom(x, size=NULL, alpha=1)
+  expect_equal(unname(fit["size"]), 1)
+  expect_equal(attr(fit, "fixed"), "alpha")
+  grid <- vapply(1:30, function(n) attr(mlbbinom(x,size=n,alpha=1),"logLik"), 0.)
+  expect_equal(attr(fit,"logLik"), max(grid), tolerance=1e-7)
+  expect_error(mlbbinom(c(0,0),size=NULL,alpha=1), "not identified")
+  expect_error(mlbbinom(c(3,3),size=NULL,alpha=1), "point mass")
+  expect_error(mlbbinom(c(0,1001),size=NULL,alpha=1), "work budget")
+  expect_error(mlbbinom(c(0,0,0,10),size=NULL,alpha=1), "cannot resolve the negative binomial face")
 })

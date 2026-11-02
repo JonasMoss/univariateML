@@ -52,7 +52,8 @@ enum class BbinomStatus {
   Unidentified,      // size = 0, or size = 1 with both shapes free
   SizeBudget,
   ProfileTie,
-  IterationFailure
+  IterationFailure,
+  FaceUnresolved
 };
 
 struct BbinomResult {
@@ -265,7 +266,7 @@ inline std::vector<double> log_grid(double lo, double hi, double step) {
 }  // namespace bbinom_detail
 
 // size: known number of trials (required). alpha_fixed / beta_fixed: NaN to
-// estimate; both may be held. With size NaN, both shapes must be held. tol: relative tolerance on log shape
+// estimate; both may be held. With size NaN, at least one shape must be held. tol: relative tolerance on log shape
 // steps in the Newton refinement; maxit: iterations per refinement.
 inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int maxit = 100,
                                double alpha_fixed = std::numeric_limits<double>::quiet_NaN(),
@@ -274,6 +275,65 @@ inline BbinomResult bbinom_mle(ispan x, double size, double tol = 1e-10, int max
   BbinomResult out{size, nan, nan, nan, 0, BbinomStatus::InvalidInput};
   const bool fix_a = !std::isnan(alpha_fixed), fix_b = !std::isnan(beta_fixed);
   if (x.size() == 0 || !(tol > 0) || !std::isfinite(tol) || maxit < 1) return out;
+  if (std::isnan(size) && fix_a && !fix_b) {
+    if (!(alpha_fixed > 0) || !std::isfinite(alpha_fixed)) return out;
+    int mx = 0, mn = std::numeric_limits<int>::max();
+    double sum = 0, coeff = 0, quadratic = 0;
+    for (int v : x) {
+      if (v < 0) return out;
+      mx = std::max(mx, v); mn = std::min(mn, v); sum += v;
+      quadratic += static_cast<double>(v) * (v + 1.0) / 2;
+    }
+    if (mx == 0) { out.status = BbinomStatus::Unidentified; return out; }
+    if (mn == mx) { out.status = BbinomStatus::PointMass; return out; }
+    constexpr int budget = 1000;
+    if (mx > budget) { out.status = BbinomStatus::SizeBudget; return out; }
+    for (int v : x)
+      for (int j = 0; j < v; ++j) coeff += std::log((alpha_fixed + j) / (j + 1.0));
+    const double h = static_cast<double>(x.size()), a = alpha_fixed, mu = sum / h;
+    const double face = coeff + sum * std::log(mu / (a + mu)) - h * a * std::log1p(mu / a);
+    const double margin = 2e-8 * h + 1024 * std::numeric_limits<double>::epsilon() *
+                          (1 + std::abs(face) + std::abs(coeff) + h * a);
+    if (!std::isfinite(face) || !std::isfinite(margin)) { out.status = BbinomStatus::IterationFailure; return out; }
+    BbinomResult best{nan, a, nan, -std::numeric_limits<double>::infinity(), 0, BbinomStatus::IterationFailure};
+    double runner = -std::numeric_limits<double>::infinity();
+    auto excludes_tail = [&](double N, double value) {
+      if (N <= mx || !(value > face + margin)) return false;
+      // For beta <= cN, bound every pmf by P(0) times its exact ratio to P(0).
+      // This bound and the correction for beta >= cN both decrease with N.
+      const double common = coeff + sum * std::log(N / (N - mx));
+      auto small = [&](double c) {
+        return common + h * a * std::log((a + c * N) / (a + (1 + c) * N));
+      };
+      if (!(small(0) + margin < value)) return false;
+      double lo = 0, hi = 1;
+      while (hi < 1e12 && small(hi) + margin < value) hi *= 2;
+      for (int j = 0; j < 60; ++j) {
+        const double mid = (lo + hi) / 2;
+        if (small(mid) + margin < value) lo = mid; else hi = mid;
+      }
+      const double c = lo * 0.999;
+      if (!(c > 0) || !(small(c) + margin < value)) return false;
+      const double b = c * N;
+      const double correction = quadratic / (N - mx) + h * a * a * (1 / b + 1 / (b * b)) / 2;
+      return std::isfinite(correction) && face + correction + margin < value;
+    };
+    for (int n = mx; n <= budget; ++n) {
+      const BbinomResult candidate = bbinom_mle(x, n, tol, maxit, a, nan);
+      if (candidate.status != BbinomStatus::Ok) return candidate;
+      if (candidate.logLik > best.logLik) { runner = best.logLik; best = candidate; }
+      else runner = std::max(runner, candidate.logLik);
+      // Neither outcome asserts that a larger finite size cannot improve the fit.
+      if (n == mx && best.logLik <= face + margin) { out.status = BbinomStatus::FaceUnresolved; return out; }
+      if (n == mx && !excludes_tail(budget + 1.0, best.logLik)) { out.status = BbinomStatus::SizeBudget; return out; }
+      if (excludes_tail(n + 1.0, best.logLik)) {
+        if (runner + margin >= best.logLik) best.status = BbinomStatus::ProfileTie;
+        return best;
+      }
+    }
+    out.status = BbinomStatus::SizeBudget;
+    return out;
+  }
   if (std::isnan(size) && !fix_a && fix_b) {
     if (!(beta_fixed > 0) || !std::isfinite(beta_fixed)) return out;
     int mx = 0, mn = std::numeric_limits<int>::max(), positives = 0;

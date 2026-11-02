@@ -16,8 +16,6 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
     return failure("`size` must be a nonnegative integer (at most 1e7).");
   if (!size.supplied && !alpha.supplied && !beta.supplied)
     return failure("Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known.");
-  if (!size.supplied && alpha.supplied && !beta.supplied)
-    return failure("Estimating size with alpha held is not implemented. As size grows the fit approaches a negative binomial with the same alpha, and no usable bound rules out a larger size beating both.");
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = alpha.supplied ? alpha.value : nan;
   const double b = beta.supplied ? beta.value : nan;
@@ -48,7 +46,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
                  "or all equal `size`, and the likelihood increases toward a point mass. "
                  "Use `mlbinom(x, size = " + n_txt + ")` instead.");
     case cppunivariate::BbinomStatus::Unidentified:
-      if (!size.supplied) return failure("With all counts zero, size zero attains the maximum and alpha is not identified.");
+      if (!size.supplied) return failure("With all counts zero, size zero attains the maximum and the free shape is not identified.");
       if (N == 0) return failure("With `size = 0` the beta-binomial parameters are not identified.");
       return failure("With `size = 1` the beta-binomial is a Bernoulli distribution and "
                  "`alpha + beta` is not identified. Use `mlbinom(x, size = 1)`, or hold "
@@ -57,9 +55,11 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
       return failure("Beta-binomial fitting needs nonempty nonnegative counts, positive "
                  "`reltol` and positive `iterlim`.");
     case cppunivariate::BbinomStatus::SizeBudget:
-      return failure("Beta-binomial free-size search exhausted its work budget before the tail was excluded.");
+      return failure("Beta-binomial free-size search could not exclude the tail within its work budget.");
     case cppunivariate::BbinomStatus::ProfileTie:
       return failure("Beta-binomial free-size profiles have an unresolved numerical tie.");
+    case cppunivariate::BbinomStatus::FaceUnresolved:
+      return failure("Beta-binomial free-size search cannot resolve the negative binomial face against larger finite sizes.");
     default:
       return failure("Beta-binomial MLE failed.");
   }
