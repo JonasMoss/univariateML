@@ -333,3 +333,26 @@ TEST_CASE("cmb fixed-odds solver handles a near-endpoint starting step") {
   REQUIRE(reference.status==cppunivariate::CmbStatus::Ok);
   CHECK(f.logLik==doctest::Approx(reference.logLik).epsilon(1e-8));
 }
+
+TEST_CASE("cmb golden free size is certified and agrees with dense profiles") {
+  const auto golden=mltest::load_distribution_golden("cmb");
+  std::vector<int> x;for(double v:golden.data)x.push_back(int(v));
+  const cppunivariate::ispan data{x.data(),x.size()};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double prob:{nan,golden.estimates.at("prob")}) {
+    const auto fit=cppunivariate::cmb_size_free_nu_mle(data,prob);
+    REQUIRE(fit.fit.status==cppunivariate::CmbStatus::Ok);
+    CHECK(fit.size==(std::isnan(prob)?16.:10.));
+    double best=-INFINITY;
+    for(int N=7;N<=300;++N) {
+      std::size_t work=0;
+      const auto f=cppunivariate::cmb_detail::size_candidate_rescue(data,N,prob,1e-10,100,work,10000000);
+      REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
+      double upper=0;
+      REQUIRE(cppunivariate::cmb_detail::fixed_profile_upper(data,N,f,!std::isnan(prob),upper));
+      CHECK(upper-f.logLik<1e-8*(1+std::abs(f.logLik)));
+      best=std::max(best,f.logLik);
+    }
+    CHECK(fit.fit.logLik==doctest::Approx(best).epsilon(1e-10));
+  }
+}

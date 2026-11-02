@@ -363,7 +363,8 @@ For other nonconstant free-dispersion samples, a numerical candidate is sought t
 finite-design face by `1e-8*(1+abs(logLik))`; a close comparison reports a
 tie and a face above the candidate reports an unresolved result. A
 truncated-profile upper bound and decreasing correction exclude the tail;
-every size below the resulting cutoff is evaluated. The bound also covers
+blocks below the cutoff are excluded by a second bound or split until a
+single size is checked. The bound also covers
 the CMP, geometric and escaping-mass paths, without identifying which of
 them is largest. For free probability, an additional numerical CMP fit
 compares that face directly; if it fails, the conservative truncated bound
@@ -393,6 +394,28 @@ moment checks, unsupported truncations or inability to establish the
 cutoff stop without returning an estimate. Fixed-size moment solves and
 floating-point comparisons are numerical; the entropy and tail inequalities
 are exact-arithmetic arguments conditional on the stated comparisons.
+
+For a block `L <= N <= R` with `L >= K >= max(x)`, write
+`d(k)=c_R(k)-c_L(k)`. It is nonnegative and nondecreasing in `k`. Retain
+only normalizer terms `0,...,K`, parameterize the odds by
+`a=eta+nu*log(N)`, and relax `a` even when probability is held. The
+truncated log likelihood at `N` is at most its counterpart at `L` plus
+`nu*(sum_i d(x_i)-n*d(K))` when `nu < 0`, and at most its
+counterpart at `L` plus `nu*sum_i d(x_i)` when `nu >= 0`. Equivalently,
+using the established superlevel bounds `-negative <= nu <= positive`,
+a uniform block upper bound is the entropy-dual upper bound for the
+truncated profile at `L` plus
+`max(positive*sum_i d(x_i), negative*(n*d(K)-sum_i d(x_i)))`.
+The entropy vector matches the observed mean and mean of
+`-log(k!)+c_L(k)`. If the block upper bound is below the incumbent minus
+the comparison margin, no size in it can improve the incumbent; otherwise
+the block is bisected, and a singleton is evaluated and certified as above.
+The tail cutoff still excludes every larger size. Each truncated solve and
+block correction is charged to the same work budget. The bound is proved in
+exact arithmetic, conditional on the computed comparisons; it uses the
+existing entropy allowance and an additional `1e-9*(1+abs(anchor)+abs(correction))`
+floating-point margin, not outward-rounded intervals. It does not assume a
+unimodal size profile.
 
 For the fixed-size entropy check, if `h_k=log choose(N,k)`, a feasible
 vector matching both empirical moments gives the same entropy upper bound.

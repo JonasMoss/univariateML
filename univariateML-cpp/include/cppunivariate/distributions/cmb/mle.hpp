@@ -4,6 +4,7 @@
 #include "../../core/span.hpp"
 #include "../../special/cmp.hpp"
 #include <limits>
+#include <utility>
 namespace cppunivariate {
 enum class CmbStatus { Ok, InvalidInput, PointMass, AdjacentLimit, EndpointLimit,
                        Unidentified, IterationFailure, FaceUnresolved, FaceTie,
@@ -238,13 +239,18 @@ inline CmbResult size_candidate_rescue(ispan x,int N,double prob,double tol,int 
 // profile by minus its entropy. Correct three weights after the solve and
 // reject the certificate if the correction is not feasible.
 inline bool truncated_upper(ispan x,int K,double& upper,std::size_t& work,
-                            std::size_t budget) {
+                            std::size_t budget,int N=0) {
   const double n=double(x.size());
-  double target_x=0,target_h=0;
-  for(int v:x) {target_x+=v;target_h-=std::lgamma(v+1.);}
-  target_x/=n;target_h/=n;
+  if(N && N<K)return false;
   std::vector<double> h(K+1),q(K+1);
-  for(int k=0;k<=K;++k)h[k]=-std::lgamma(k+1.);
+  double correction=0;
+  for(int k=0;k<=K;++k) {
+    if(N && k>0)correction+=std::log1p(-double(k-1)/N);
+    h[k]=-std::lgamma(k+1.)+correction;
+  }
+  double target_x=0,target_h=0;
+  for(int v:x) {target_x+=v;target_h+=h[v];}
+  target_x/=n;target_h/=n;
   double a=0,b=1;
   for(int it=0;it<160;++it) {
     if(std::size_t(K+1)>budget-work)return false;
@@ -515,7 +521,42 @@ inline CmbSizeResult cmb_size_nonconstant_free_nu(ispan x,int mn,int mx,
     while(bound(hi)>=B && hi<10000000)hi=hi>5000000?10000000:hi*2;
     if(bound(hi)>=B)return fail(CmbStatus::IterationFailure);
     while(hi-lo>1){int mid=lo+(hi-lo)/2;if(bound(mid)<B)hi=mid;else lo=mid;}
-    for(int N=initial+1;N<hi;++N)if(!evaluate(N))return fail(CmbStatus::IterationFailure);
+    // For a block [L,R], retain 0..K and use the entropy dual at L.
+    // c_R(k)-c_L(k) is nonnegative and increases with k. Relaxing
+    // the odds even when fixed gives an upper bound for both subsets.
+    std::vector<std::pair<int,int>> blocks;
+    if(initial+1<hi)blocks.push_back({initial+1,hi-1});
+    while(!blocks.empty()) {
+      const int L=blocks.back().first,R=blocks.back().second;
+      blocks.pop_back();
+      if(L<K) {
+        if(!evaluate(L))return fail(CmbStatus::IterationFailure);
+        if(L<R)blocks.push_back({L+1,R});
+        continue;
+      }
+      double anchor=0;
+      if(!cmb_detail::truncated_upper(x,K,anchor,work,budget,L))
+        return fail(CmbStatus::IterationFailure);
+      if(std::size_t(K+1)>budget-work)return fail(CmbStatus::IterationFailure);
+      work+=std::size_t(K+1);
+      double d=0,sum=0;
+      std::vector<double> diff(K+1,0.);
+      for(int k=1;k<=K;++k) {
+        d+=std::log1p(-double(k-1)/R)-std::log1p(-double(k-1)/L);
+        diff[k]=d;
+      }
+      for(int v:x)sum+=diff[v];
+      const double extra=std::max(positive*sum,negative*(n*d-sum));
+      // Allow for rounding in the block correction and comparison.
+      const double block_upper=anchor+extra+1e-9*(1+std::abs(anchor)+std::abs(extra));
+      if(block_upper<B)continue;
+      if(L==R) {
+        if(!evaluate(L))return fail(CmbStatus::IterationFailure);
+      } else {
+        const int mid=L+(R-L)/2;
+        blocks.push_back({mid+1,R});blocks.push_back({L,mid});
+      }
+    }
     return best;
   }
   return fail(CmbStatus::FaceUnresolved);
