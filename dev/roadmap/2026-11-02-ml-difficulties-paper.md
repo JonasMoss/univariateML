@@ -40,6 +40,15 @@ to (the two-outcome procedure).
 
 ## Seams (added 2026-11-03)
 
+"Seam", "cusp" and "corner" are provisional working labels, not established
+terms ("cusp" clashes with singularity theory). Candidates for the paper:
+removable versus essential boundary. Related literature: boundary-parameter
+tests (Chernoff 1954; Self and Liang 1987), one-sided score tests for
+overdispersion (Dean and Lawless 1989; Tarone 1979), sign-extending
+reparametrizations (Prentice 1974; the Katz family; GPD), nonregular
+threshold problems (Smith 1985), singular information (Rotnitzky et al.
+2000). Citations to be checked.
+
 Many "escapes" are not boundaries but seams: a limit model that sits inside
 a larger smooth family, with the fitted family on one side. Reparametrize the
 escape coordinate so the limit is at zero and let it change sign.
@@ -63,7 +72,7 @@ presumably the lognormal corner of GB2), the first-order scores are collinear,
 the information is singular, and the answer is decided at second order.
 
 Not every face is a seam. Burr's Pareto limit is a cusp: the profile is
-`H(k) = P + n k log k + O(k)`, so it is locally stable for every sample and
+`H(k) = P + n k log k + O(k)`, so it is a local maximum of the extended likelihood for every sample and
 the first-order test is replaced by a global one (at least half the sample
 at its minimum: no finite MLE). Burr also has exact finite/face ties and a
 face crossing `P = W` with a strictly better finite fit
