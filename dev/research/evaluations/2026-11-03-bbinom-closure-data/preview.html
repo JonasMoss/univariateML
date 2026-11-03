@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beta-binomial closure and finite attainment</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<h1
+id="beta-binomial-with-size-and-both-shapes-free-closure-and-finite-attainment">Beta-binomial
+with size and both shapes free: closure and finite attainment</h1>
+<p>TASK-113, 2026-11-03. Source revision:
+f14d43321b89e5a685eec2889da9fa42679de958, branch codex/bbinom-closure.
+Research only: the additions are this report and its <a
+href="../2026-11-03-bbinom-closure-data/README.md">small reproducer/data
+directory</a>. No library, binding, dossier, test, golden, or roadmap
+changes were made.</p>
+<h2 id="results">Results</h2>
+<p>The positive-likelihood escape conjecture in the <a
+href="../2026-11-02-bbinom-map-report.md">numerical map</a> can be proved.
+If size tends to infinity and any fixed positive count retains positive
+probability, a subsequence converges to a <strong>proper negative
+binomial or Poisson distribution</strong>. There is no defective limit
+retaining mass at a positive count. Defective limits do exist, but are
+exactly subprobabilities concentrated at zero.</p>
+<p>Consequently, the full two-shape profile at size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>,
+not just a profile with one shape held, converges to the optimized
+NB/Poisson face. This is a qualitative uniform upper-tail result; it
+does not supply an implementable numerical cutoff.</p>
+<p>For a nonconstant sample with an observation strictly between zero
+and its maximum, a finite positive-shape MLE exists <strong>if and only
+if some finite beta-binomial has likelihood at least as large as the
+best boundary law</strong>. The active boundary is the best free-size
+binomial for underdispersion, Poisson for equidispersion, and the best
+NB for overdispersion. Strict improvement is sufficient and avoids
+equality questions.</p>
+<p>At equidispersion there is a useful sufficient condition:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mi>h</mi></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><msup><mover><mi>x</mi><mo accent="true">‾</mo></mover><mn>3</mn></msup><mspace width="1.0em"></mspace><mo>⇒</mo><mspace width="1.0em"></mspace><mtext mathvariant="normal">a finite positive-shape MLE exists</mtext><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\frac1h\sum_i x_i(x_i-1)(x_i-2)&lt;\bar x^3
+\quad\Longrightarrow\quad
+\text{a finite positive-shape MLE exists},
+</annotation></semantics></math></p>
+<p>provided the sample is not supported only on its two endpoints. It
+follows from the second-order expansion at Poisson proved below. The
+threshold is sharp for the sign of the second-order cancelling
+direction, not a necessary condition for global attainment.</p>
+<p>A stronger local/global counterexample than a negative NB slope is
+available: for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>7</mn><mo>,</mo><mn>7</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2,2,3,3,4,7,7)</annotation></semantics></math>,
+Poisson is a <strong>strict local maximum in the joint near-Poisson
+model</strong>, but the explicit law
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mn>7</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BB(7,2,1)</annotation></semantics></math>
+beats it. Thus a finite MLE exists despite local stability of the
+boundary. Its likelihood comparison has an exact rational
+certificate.</p>
+<h2 id="model-and-boundary-conventions">1. Model and boundary
+conventions</h2>
+<p>Write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BB(N,a,b)</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+is a nonnegative integer and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>,</mo><mi>b</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a,b&gt;0</annotation></semantics></math>.
+The observations are nonnegative integers,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">h\ge1</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>=</mo><mrow><mi>max</mi><mo>&#8289;</mo></mrow><msub><mi>x</mi><mi>i</mi></msub><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">M=\max x_i\ge1</annotation></semantics></math>.
+Set</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mo>,</mo><mspace width="2.0em"></mspace><mi>v</mi><mo>=</mo><msup><mi>h</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><munder><mo>∑</mo><mi>i</mi></munder><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mi>μ</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>F</mi><mi>j</mi></msub><mo>=</mo><msup><mi>h</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><munder><mo>∑</mo><mi>i</mi></munder><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><munder><mi>j</mi><mo accent="true">_</mo></munder></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mu=\bar x,\qquad
+v=h^{-1}\sum_i(x_i-\mu)^2,\qquad
+F_j=h^{-1}\sum_i(x_i)_{\underline j}.
+</annotation></semantics></math></p>
+<p>Likelihoods are products of probabilities, without an additional
+multinomial sample-order factor;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℓ</mi><annotation encoding="application/x-tex">\ell</annotation></semantics></math>
+denotes their logarithm. A finite MLE here means finite integer
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+and finite positive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>,</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">a,b</annotation></semantics></math>.
+A binomial or endpoint law at finite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+is a finite-size maximum in a closure, but need not be an MLE in this
+parameter space.</p>
+<p>Two identities drive the argument:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mfrac><mi>a</mi><mrow><mi>b</mi><mo>+</mo><mi>j</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><mfrac><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>−</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mi>b</mi><mo>+</mo><mi>N</mi><mo>−</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+P_N(0)=\prod_{j=0}^{N-1}\left(1+\frac a{b+j}\right)^{-1},
+\qquad
+\frac{P_N(x+1)}{P_N(x)}
+=\frac{(N-x)(a+x)}{(x+1)(b+N-x-1)}.
+\tag{1}
+</annotation></semantics></math></p>
+<p>In particular,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>N</mi><munder><mi>x</mi><mo accent="true">_</mo></munder></msub><mo stretchy="false" form="prefix">(</mo><mi>a</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub></mrow><mrow><mi>x</mi><mi>!</mi><mo stretchy="false" form="prefix">(</mo><mi>b</mi><mo>+</mo><mi>N</mi><mo>−</mo><mi>x</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{P_N(x)}{P_N(0)}
+=\frac{N_{\underline x}(a)_x}{x!(b+N-x)_x}.
+\tag{2}
+</annotation></semantics></math></p>
+<p>The <a href="../2026-11-01-bbinom-size-report.md">size
+investigation</a>, <a href="../2026-11-02-bbinom-beta-report.md">held-beta
+report</a>, and <a href="../2026-11-02-bbinom-alpha-report.md">held-alpha
+report</a> give earlier tail bounds and implementation results. Their
+held-parameter conclusions remain distinct from the unrestricted problem
+considered here.</p>
+<h2 id="exhaustive-closure">2. Exhaustive closure</h2>
+<h3 id="bounded-size">2.1 Bounded size</h3>
+<p>A bounded integer sequence of sizes has a constant-size subsequence.
+At fixed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>,
+put
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mi>a</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p=a/(a+b)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mi>a</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">s=a+b</annotation></semantics></math>.
+The compactified possibilities are:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parameter limit</th>
+<th>Law</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>p</mi><mo>&lt;</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>0</mn><mo>&lt;</mo><mi>s</mi><mo>&lt;</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">0&lt;p&lt;1,\ 0&lt;s&lt;\infty</annotation></semantics></math></td>
+<td>Ordinary beta-binomial</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>→</mo><mi>∞</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>p</mi><mo>→</mo><msub><mi>p</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">s\to\infty,\ p\to p_0</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>i</mi><mi>n</mi><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>,</mo><msub><mi>p</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Bin(N,p_0)</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>→</mo><mn>0</mn><mo>,</mo><mspace width="0.222em"></mspace><mi>p</mi><mo>→</mo><msub><mi>p</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">s\to0,\ p\to p_0</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>p</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><msub><mi>δ</mi><mn>0</mn></msub><mo>+</mo><msub><mi>p</mi><mn>0</mn></msub><msub><mi>δ</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">(1-p_0)\delta_0+p_0\delta_N</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">p\to0</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">p\to1</annotation></semantics></math>,
+at any concentration scale</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\delta_0</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mi>N</mi></msub><annotation encoding="application/x-tex">\delta_N</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>These exhaust all joint shape rates. To see this, use the beta mixing
+variable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>U</mi><annotation encoding="application/x-tex">U</annotation></semantics></math>.
+Its mean is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+its variance is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(1-p)/(s+1)</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">[</mo><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>U</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>=</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo><mi>s</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">E[U(1-U)]=p(1-p)s/(s+1)</annotation></semantics></math>.
+Large concentration concentrates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>U</mi><annotation encoding="application/x-tex">U</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>;
+small concentration concentrates it on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{0,1\}</annotation></semantics></math>;
+a mean tending to an endpoint concentrates it there. The finite binomial
+kernels are continuous in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>U</mi><annotation encoding="application/x-tex">U</annotation></semantics></math>.</p>
+<p>The parametrization by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">p\in[0,1]</annotation></semantics></math>
+and compactified
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">s\in[0,\infty]</annotation></semantics></math>
+therefore gives a compact fixed-size closure. Its likelihood maximum is
+attained, even when only by a face.</p>
+<h3
+id="unbounded-size-positive-mass-at-a-positive-count-forces-a-proper-limit">2.2
+Unbounded size: positive mass at a positive count forces a proper
+limit</h3>
+<p><strong>Theorem.</strong> Suppose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>k</mi></msub><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">N_k\to\infty</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><msub><mi>N</mi><mi>k</mi></msub><mo>,</mo><msub><mi>a</mi><mi>k</mi></msub><mo>,</mo><msub><mi>b</mi><mi>k</mi></msub></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>ϵ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">P_{N_k,a_k,b_k}(m)\ge\epsilon&gt;0</annotation></semantics></math>
+for some fixed integer
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">m\ge1</annotation></semantics></math>.
+There is a subsequence of one of the following two types:</p>
+<ol type="1">
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>k</mi></msub><mo>→</mo><mi>A</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_k\to A\in(0,\infty)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mi>k</mi></msub><mi>/</mi><msub><mi>N</mi><mi>k</mi></msub><mo>→</mo><mi>D</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">b_k/N_k\to D\in(0,\infty)</annotation></semantics></math>,
+and
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mi>A</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub></mrow><mrow><mi>x</mi><mi>!</mi></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>D</mi><mrow><mn>1</mn><mo>+</mo><mi>D</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>A</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>D</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>x</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+P_k(x)\longrightarrow
+\frac{(A)_x}{x!}
+\left(\frac D{1+D}\right)^A
+\left(\frac1{1+D}\right)^x.
+\tag{3}
+</annotation></semantics></math> This is NB with shape
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+and mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">A/D</annotation></semantics></math>.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>k</mi></msub><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">a_k\to\infty</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>k</mi></msub><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><msub><mi>b</mi><mi>k</mi></msub><mi>/</mi><msub><mi>N</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mi>λ</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_k/(1+b_k/N_k)\to\lambda\in(0,\infty)</annotation></semantics></math>,
+and
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>→</mo><msup><mi>e</mi><mrow><mi>−</mi><mi>λ</mi></mrow></msup><msup><mi>λ</mi><mi>x</mi></msup><mi>/</mi><mi>x</mi><mi>!</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+P_k(x)\longrightarrow e^{-\lambda}\lambda^x/x!.
+\tag{4}
+</annotation></semantics></math></li>
+</ol>
+<p>Both are convergence in total variation as well as weak
+convergence.</p>
+<p><strong>Proof.</strong> Extract subsequences of the nonnegative
+scales whenever needed.</p>
+<p>First exclude
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a\to0</annotation></semantics></math>,
+uniformly in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>.
+For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>≥</mo><mn>2</mn><mi>m</mi></mrow><annotation encoding="application/x-tex">N\ge2m</annotation></semantics></math>,
+(2) gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>N</mi><mrow><mi>N</mi><mo>−</mo><mi>m</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>m</mi></msup><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>m</mi></msub></mrow><mrow><mi>m</mi><mi>!</mi></mrow></mfrac><mo>≤</mo><msup><mn>2</mn><mi>m</mi></msup><mi>a</mi><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>&lt;</mo><mi>a</mi><mo>≤</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+P_N(m)\le
+\left(\frac N{N-m}\right)^m\frac{(a)_m}{m!}
+\le 2^m a,\qquad 0&lt;a\le1.
+\tag{5}
+</annotation></semantics></math></p>
+<p>The last inequality uses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>m</mi></msub><mo>≤</mo><mi>a</mi><mspace width="0.167em"></mspace><mi>m</mi><mi>!</mi></mrow><annotation encoding="application/x-tex">(a)_m\le a\,m!</annotation></semantics></math>.
+Thus the positive-count assumption bounds
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+away from zero. It does not require an observed zero.</p>
+<p>Now suppose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>→</mo><mi>A</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a\to A\in(0,\infty)</annotation></semantics></math>.
+If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>/</mi><mi>N</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">b/N\to\infty</annotation></semantics></math>,
+Markov’s inequality and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>X</mi><mo>=</mo><mi>N</mi><mi>a</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">E X=Na/(a+b)</annotation></semantics></math>
+force
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">P_N(m)\to0</annotation></semantics></math>.
+If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>/</mi><mi>N</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">b/N\to0</annotation></semantics></math>,
+use</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mi>−</mi><mi>a</mi><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><mfrac><mn>1</mn><mrow><mi>a</mi><mo>+</mo><mi>b</mi><mo>+</mo><mi>j</mi></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo>≤</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow><mrow><mi>a</mi><mo>+</mo><mi>b</mi><mo>+</mo><mi>N</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>a</mi></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+P_N(0)
+\le\exp\left[-a\sum_{j=0}^{N-1}\frac1{a+b+j}\right]
+\le\left(\frac{a+b}{a+b+N}\right)^a.
+\tag{6}
+</annotation></semantics></math></p>
+<p>Here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>t</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\log(1+t)\ge t/(1+t)</annotation></semantics></math>,
+followed by a decreasing-sum integral bound, proves both inequalities.
+Equation (2) bounds
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P_N(m)/P_N(0)</annotation></semantics></math>
+uniformly when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+stays in a compact positive interval and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>≥</mo><mn>2</mn><mi>m</mi></mrow><annotation encoding="application/x-tex">N\ge2m</annotation></semantics></math>.
+Hence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">P_N(m)\to0</annotation></semantics></math>
+in this regime too.</p>
+<p>It remains that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>/</mi><mi>N</mi><mo>→</mo><mi>D</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">b/N\to D\in(0,\infty)</annotation></semantics></math>.
+Expanding the logarithm of the product in (1), with each summand
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>N</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(N^{-1})</annotation></semantics></math>,
+gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mi>−</mi><mi>A</mi><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><mfrac><mrow><mi>d</mi><mi>t</mi></mrow><mrow><mi>D</mi><mo>+</mo><mi>t</mi></mrow></mfrac><mo>=</mo><mi>A</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mfrac><mi>D</mi><mrow><mn>1</mn><mo>+</mo><mi>D</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\log P_N(0)\longrightarrow
+-A\int_0^1\frac{dt}{D+t}
+=A\log\frac D{1+D}.
+</annotation></semantics></math></p>
+<p>The finite probability ratios converge to those in (3). Their
+normalization is that of a proper NB law.</p>
+<p>Finally let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">a\to\infty</annotation></semantics></math>
+and define
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>N</mi></msub><mo>=</mo><mi>N</mi><mi>a</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>b</mi><mo>+</mo><mi>N</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>a</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>b</mi><mi>/</mi><mi>N</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda_N=Na/(b+N)=a/(1+b/N)</annotation></semantics></math>.
+For each fixed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>=</mo><mfrac><msub><mi>λ</mi><mi>N</mi></msub><mrow><mi>j</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mfrac><mi>j</mi><mi>N</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mfrac><mi>j</mi><mi>a</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mfrac><mrow><mi>b</mi><mo>+</mo><mi>N</mi></mrow><mrow><mi>b</mi><mo>+</mo><mi>N</mi><mo>−</mo><mi>j</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mo>∼</mo><mfrac><msub><mi>λ</mi><mi>N</mi></msub><mrow><mi>j</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{P_N(j+1)}{P_N(j)}
+=\frac{\lambda_N}{j+1}
+\left(1-\frac jN\right)\left(1+\frac ja\right)
+\frac{b+N}{b+N-j-1}
+\sim\frac{\lambda_N}{j+1}.
+\tag{7}
+</annotation></semantics></math></p>
+<p>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>N</mi></msub><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda_N\to0</annotation></semantics></math>,
+multiplying the first
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+ratios forces
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">P_N(m)\to0</annotation></semantics></math>.
+If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>N</mi></msub><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\lambda_N\to\infty</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mn>1</mn><mi>/</mi><mo stretchy="false" form="prefix">[</mo><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">P_N(m)\le1/[P_N(m+1)/P_N(m)]\to0</annotation></semantics></math>.
+Extracting a further subsequence therefore leaves
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>N</mi></msub><mo>→</mo><mi>λ</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda_N\to\lambda\in(0,\infty)</annotation></semantics></math>.</p>
+<p>Then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>/</mi><mi>N</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">b/N\to\infty</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>/</mi><mi>b</mi><mo>∼</mo><mi>λ</mi><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">a/b\sim\lambda/N</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mi>/</mi><mi>b</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">j/b\to0</annotation></semantics></math>
+uniformly over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>j</mi><mo>&lt;</mo><mi>N</mi></mrow><annotation encoding="application/x-tex">0\le j&lt;N</annotation></semantics></math>.
+The product for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P_N(0)</annotation></semantics></math>
+yields
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mrow><mi>j</mi><mo>&lt;</mo><mi>N</mi></mrow></msub><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>a</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>b</mi><mo>+</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mi>λ</mi></mrow><annotation encoding="application/x-tex">\sum_{j&lt;N}\log(1+a/(b+j))\to\lambda</annotation></semantics></math>.
+Equation (7) now gives (4). Pointwise convergence of probabilities to a
+law of total mass one implies total variation convergence on this
+countable space. This proves the theorem.</p>
+<h3 id="proper-and-defective-closures">2.3 Proper and defective
+closures</h3>
+<p>It follows that the proper weak closure of the whole family consists
+exactly of:</p>
+<ul>
+<li>finite-size beta-binomials;</li>
+<li>finite-size binomials, including their point masses;</li>
+<li>endpoint mixtures on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mi>N</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{0,N\}</annotation></semantics></math>;</li>
+<li>arbitrary proper NB laws and Poisson laws.</li>
+</ul>
+<p>The same proper closure is obtained in total variation or Hellinger
+distance. Every listed law is approachable by the paths above; the
+subsequence argument excludes any other proper limit.</p>
+<p>In the topology of pointwise convergence allowing subprobabilities,
+the <strong>only additional limits</strong> are</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><msub><mi>δ</mi><mn>0</mn></msub><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>q</mi><mo>&lt;</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+q\delta_0,\qquad 0\le q&lt;1.
+\tag{8}
+</annotation></semantics></math></p>
+<p>Indeed, any limit with positive mass at a positive integer must be
+proper by the theorem. Conversely, for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">b=1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>t</mi><mi>/</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">a=t/\log N</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>→</mo><msup><mi>e</mi><mrow><mi>−</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">P_N(0)\to e^{-t}</annotation></semantics></math>
+while every fixed positive probability tends to zero. The product in (1)
+proves this because its log is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>a</mi><msub><mi>H</mi><mi>N</mi></msub><mo>+</mo><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>a</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">-aH_N+O(a^2)</annotation></semantics></math>.
+Fixed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>b</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">a&gt;0,b=1</annotation></semantics></math>
+gives the zero subprobability.</p>
+<p>This explains precisely why defective escape does not matter when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">M\ge1</annotation></semantics></math>:
+it gives zero sample likelihood. It can retain positive likelihood for
+an all-zero sample, for which
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">N=0</annotation></semantics></math>
+already attains likelihood one.</p>
+<p>No moment-tightness assumption was used. Such an assumption would be
+unsafe:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><msup><mi>N</mi><mrow><mi>−</mi><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><mo>,</mo><mi>b</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">a=N^{-1/2},b=1</annotation></semantics></math>
+gives weak convergence to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\delta_0</annotation></semantics></math>
+but
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>X</mi><mo>∼</mo><msqrt><mi>N</mi></msqrt></mrow><annotation encoding="application/x-tex">E X\sim\sqrt N</annotation></semantics></math>.</p>
+<h2 id="what-closure-proves-about-attainment">3. What closure proves
+about attainment</h2>
+<p>Let</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mi>N</mi></msub><mo>=</mo><munder><mi>sup</mi><mrow><mi>a</mi><mo>,</mo><mi>b</mi><mo>&gt;</mo><mn>0</mn></mrow></munder><msub><mi>ℓ</mi><mrow><mi>B</mi><mi>B</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>F</mi><mo>=</mo><munder><mi>sup</mi><mrow><mi>a</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mspace width="0.222em"></mspace><mi>m</mi><mo>&gt;</mo><mn>0</mn></mrow></munder><msub><mi>ℓ</mi><mrow><mi>N</mi><mi>B</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+Q_N=\sup_{a,b&gt;0}\ell_{BB}(N,a,b),\qquad
+F=\sup_{a&gt;0,\ m&gt;0}\ell_{NB}(a,m),
+\tag{9}
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+includes the Poisson limit. The NB mean profiles at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">m=\mu</annotation></semantics></math>.
+The standard NB result is that its finite-shape maximum is unique when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>&gt;</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v&gt;\mu</annotation></semantics></math>,
+whereas its supremum is Poisson when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>≤</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v\le\mu</annotation></semantics></math>;
+see <a
+href="https://www.math.ku.dk/bibliotek/arkivet/preprints-fra-ims/1988/preprint_1988_-_no._8_br_ns__hans_and_jensen__s_ren_tolver_-_maximum_likelihood_estimation_in_the---.pdf">Brøns
+and Jensen (1988), especially Section 3</a>.</p>
+<h3 id="uniform-upper-tail-convergence-of-the-full-profile">3.1 Uniform
+upper-tail convergence of the full profile</h3>
+<p><strong>Corollary.</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><munder><mi>lim</mi><mrow><mi>N</mi><mo>→</mo><mi>∞</mi></mrow></munder><msub><mi>Q</mi><mi>N</mi></msub><mo>=</mo><mi>F</mi><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{\lim_{N\to\infty}Q_N=F.}
+\tag{10}
+</annotation></semantics></math></p>
+<p>For the lower bound, approach each fixed NB law along
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mi>N</mi><mi>a</mi><mi>/</mi><mi>μ</mi></mrow><annotation encoding="application/x-tex">b=Na/\mu</annotation></semantics></math>;
+approach Poisson along
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>N</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>b</mi><mo>=</mo><msup><mi>N</mi><mn>2</mn></msup><mi>/</mi><mi>μ</mi><mo>−</mo><mi>N</mi></mrow><annotation encoding="application/x-tex">a=N,\ b=N^2/\mu-N</annotation></semantics></math>.
+Taking suprema gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>liminf</mi><mo>&#8289;</mo></mrow><msub><mi>Q</mi><mi>N</mi></msub><mo>≥</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">\liminf Q_N\ge F</annotation></semantics></math>.</p>
+<p>For the upper bound, if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mi>N</mi></msub><mo>≥</mo><mi>F</mi><mo>+</mo><mi>η</mi></mrow><annotation encoding="application/x-tex">Q_N\ge F+\eta</annotation></semantics></math>
+infinitely often, choose finite shapes with likelihood above
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>+</mo><mi>η</mi><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">F+\eta/2</annotation></semantics></math>.
+Each observed probability is then bounded below by the positive joint
+likelihood, since all other factors are at most one. Apply the theorem
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">m=M</annotation></semantics></math>.
+Its proper subsequential NB/Poisson limit has log likelihood at most
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>,
+a contradiction.</p>
+<p>The uniform statement is: for every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\eta&gt;0</annotation></semantics></math>,
+all shapes at all sufficiently large sizes have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo>≤</mo><mi>F</mi><mo>+</mo><mi>η</mi></mrow><annotation encoding="application/x-tex">\ell\le F+\eta</annotation></semantics></math>.
+It does not say that every shape path approaches the optimized face, or
+give a computable size as a function of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>.</p>
+<h3 id="finite-size-and-finite-shapes-are-different-questions">3.2
+Finite size and finite shapes are different questions</h3>
+<p>If fixed-size shape boundaries are admitted, a global maximum at a
+finite size exists <strong>if and only if</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∃</mo><mi>N</mi><mo>≥</mo><mi>M</mi><mo>:</mo><mspace width="1.0em"></mspace><msub><mi>Q</mi><mi>N</mi></msub><mo>≥</mo><mi>F</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\exists N\ge M:\quad Q_N\ge F.
+\tag{11}
+</annotation></semantics></math></p>
+<p>Each
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Q</mi><mi>N</mi></msub><annotation encoding="application/x-tex">Q_N</annotation></semantics></math>
+is attained in its compact fixed-size closure. If one exceeds
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>,
+(10) excludes the integer tail above some finite cutoff, so finitely
+many compact profiles suffice. If one equals
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>,
+either it is already a maximum or another profile exceeds
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>,
+reducing to the preceding case. If every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mi>N</mi></msub><mo>&lt;</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">Q_N&lt;F</annotation></semantics></math>,
+only the infinite-size face gives the supremum.</p>
+<p>For attainment with positive finite shapes, define
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+as the supremum over all finite-size binomial laws, including their
+Poisson limit, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi></mrow></msub><annotation encoding="application/x-tex">E_{\mathrm{end}}</annotation></semantics></math>
+as the best endpoint/point likelihood. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mrow><mi>max</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>F</mi><mo>,</mo><mi>B</mi><mo>,</mo><msub><mi>E</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">E=\max(F,B,E_{\mathrm{end}})</annotation></semantics></math>.
+Then the exact characterization is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><menclose notation="box"><mrow><mtext mathvariant="normal">A finite positive-shape MLE exists</mtext><mspace width="0.222em"></mspace><mo>⇔</mo><mspace width="0.222em"></mspace><mo>∃</mo><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> finite with </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>ℓ</mi><mrow><mi>B</mi><mi>B</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>,</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>E</mi><mi>.</mi></mrow></menclose><annotation encoding="application/x-tex">
+\boxed{\text{A finite positive-shape MLE exists}
+\ \Longleftrightarrow\
+\exists (N,a,b)\text{ finite with }\ell_{BB}(N,a,b)\ge E.}
+\tag{12}
+</annotation></semantics></math></p>
+<p>Necessity holds because all faces are approachable by actual
+beta-binomials. For sufficiency, if the global supremum is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>,
+the displayed candidate attains it. If it exceeds
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>,
+a maximizing sequence can approach neither an infinite-size limit nor
+any fixed-size shape boundary. A subsequence stays at a finite size with
+shapes in a compact positive interval and attains the supremum.</p>
+<p>Equality in (11) or (12) is an exact mathematical comparison. A small
+numerical difference is not an equality certificate.</p>
+<p>For nonconstant samples having some
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><msub><mi>x</mi><mi>i</mi></msub><mo>&lt;</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">0&lt;x_i&lt;M</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>=</mo><mi>−</mi><mi>∞</mi></mrow><annotation encoding="application/x-tex">E_{\mathrm{end}}=-\infty</annotation></semantics></math>.
+The boundary threshold simplifies:</p>
+<table>
+<thead>
+<tr>
+<th>Sample regime</th>
+<th>Boundary threshold
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+in (12)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>&lt;</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v&lt;\mu</annotation></semantics></math></td>
+<td>Best free-size binomial, at a finite integer size</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v=\mu</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><mi>i</mi><mi>s</mi><mo stretchy="false" form="prefix">(</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Pois(\mu)</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>&gt;</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v&gt;\mu</annotation></semantics></math></td>
+<td>Best finite-shape
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>a</mi><mo accent="true">̂</mo></mover><mo>,</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">NB(\widehat a,\mu)</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>The binomial ingredient is the positive-mean existence result in <a
+href="https://www.tandfonline.com/doi/abs/10.1080/01621459.1983.10477949">DeRiggi
+(1983)</a>: its finite-size maximum exists for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>&lt;</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v&lt;\mu</annotation></semantics></math>,
+while the other cases have Poisson supremum. The <a
+href="../../../../univariateML-cpp/include/cppunivariate/distributions/binom/README.md">binomial
+dossier</a> records the variance convention and integer-search
+interpretation. These two classical face results, combined with the
+closure theorem, prove the table; the table alone does not decide
+whether the BB interior beats the threshold.</p>
+<p>Exceptional samples are explicit:</p>
+<ul>
+<li>All zeros attain likelihood one at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">N=0</annotation></semantics></math>.</li>
+<li>Constant positive data have only the point-mass supremum; finite
+positive shapes cannot attain it.</li>
+<li>Nonconstant data on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{0,1\}</annotation></semantics></math>
+attain their empirical Bernoulli law at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">N=1</annotation></semantics></math>,
+with concentration unidentified.</li>
+<li>Nonconstant data on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mi>M</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{0,M\}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">M\ge2</annotation></semantics></math>,
+have the empirical endpoint-mixture supremum at size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>.
+It is not attained by positive shapes, since a finite beta-binomial at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>≥</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">N\ge M</annotation></semantics></math>
+assigns positive mass to unobserved counts.</li>
+</ul>
+<h3 id="first-order-sufficient-conditions-at-the-active-face">3.3
+First-order sufficient conditions at the active face</h3>
+<p>The <a href="../2026-11-02-bbinom-map-report.md">map report</a> derived
+these two slopes. The closure theorem upgrades strict improvement above
+the active face to an existence result for nonendpoint samples.</p>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>&lt;</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v&lt;\mu</annotation></semantics></math>,
+let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>B</mi></msub><annotation encoding="application/x-tex">N_B</annotation></semantics></math>
+maximize the binomial face and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mi>μ</mi><mi>/</mi><msub><mi>N</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">p=\mu/N_B</annotation></semantics></math>.
+The derivative toward positive intraclass correlation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mn>1</mn><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\rho=1/(a+b+1)</annotation></semantics></math>
+is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi mathvariant="normal">B</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></msub><mo>=</mo><mfrac><mrow><mi>h</mi><mo stretchy="false" form="prefix">[</mo><mi>v</mi><mo>−</mo><mi>μ</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>μ</mi><mi>/</mi><msub><mi>N</mi><mi>B</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo></mrow><mrow><mn>2</mn><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+T_{\mathrm{Bin}}
+=\frac{h[v-\mu(1-\mu/N_B)]}{2p(1-p)}.
+\tag{13}
+</annotation></semantics></math></p>
+<p>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi mathvariant="normal">B</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">T_{\mathrm{Bin}}&gt;0</annotation></semantics></math>,
+a finite positive-shape MLE exists.</p>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>&gt;</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v&gt;\mu</annotation></semantics></math>,
+the derivative from the optimized NB face in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">1/N</annotation></semantics></math>
+is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi mathvariant="normal">N</mi><mi mathvariant="normal">B</mi></mrow></msub><mo>=</mo><mfrac><mrow><mi>h</mi><mo stretchy="false" form="prefix">[</mo><msup><mi>μ</mi><mn>2</mn></msup><mo>−</mo><mover><mi>a</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo>−</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo></mrow><mrow><mn>2</mn><mo stretchy="false" form="prefix">(</mo><mover><mi>a</mi><mo accent="true">̂</mo></mover><mo>+</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+T_{\mathrm{NB}}
+=\frac{h[\mu^2-\widehat a(v-\mu)]}{2(\widehat a+\mu)}.
+\tag{14}
+</annotation></semantics></math></p>
+<p>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi mathvariant="normal">N</mi><mi mathvariant="normal">B</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">T_{\mathrm{NB}}&gt;0</annotation></semantics></math>,
+a finite positive-shape MLE exists. Equivalently, the NB ML shape is
+smaller than its moment shape
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>μ</mi><mn>2</mn></msup><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><mo>−</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu^2/(v-\mu)</annotation></semantics></math>.
+A negative slope is only a local obstruction; Section 5 gives an exact
+counterexample to its global sufficiency.</p>
+<h2 id="the-joint-poisson-expansion-and-the-nb-seam">4. The joint
+Poisson expansion and the NB seam</h2>
+<h3 id="a-second-order-expansion-valid-at-all-relative-rates">4.1 A
+second-order expansion valid at all relative rates</h3>
+<p>Hold the mean at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mu&gt;0</annotation></semantics></math>,
+set</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mn>1</mn><mi>/</mi><mi>a</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>k</mi><mo>=</mo><mn>1</mn><mi>/</mi><mi>N</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>b</mi><mo>=</mo><mi>a</mi><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mi>/</mi><mi>μ</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+u=1/a,\qquad k=1/N,\qquad b=a(N/\mu-1).
+</annotation></semantics></math></p>
+<p>For fixed observations and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>,</mo><mi>k</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">u,k\to0</annotation></semantics></math>
+through positive admissible values,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msub><mi>ℓ</mi><mrow><mi>B</mi><mi>B</mi></mrow></msub><mo>−</mo><msub><mi>ℓ</mi><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi></mrow></msub></mrow><mi>h</mi></mfrac><mo>=</mo><mfrac><mrow><mi>v</mi><mo>−</mo><mi>μ</mi></mrow><mn>2</mn></mfrac><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mi>B</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>u</mi><mn>2</mn></msup><mo>+</mo><msup><mi>k</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mfrac><mrow><mi>μ</mi><mi>v</mi></mrow><mn>2</mn></mfrac><mi>u</mi><mi>k</mi><mo>+</mo><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>+</mo><mi>k</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>3</mn></msup><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>B</mi><mo>=</mo><mfrac><mrow><msup><mi>μ</mi><mn>3</mn></msup><mo>−</mo><msub><mi>F</mi><mn>3</mn></msub></mrow><mn>6</mn></mfrac><mo>−</mo><mfrac><msub><mi>F</mi><mn>2</mn></msub><mn>4</mn></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{\ell_{BB}-\ell_{\mathrm{Pois}}}h
+=\frac{v-\mu}{2}(u-k)
++B(u^2+k^2)+\frac{\mu v}{2}uk
++O((u+k)^3),
+\qquad
+B=\frac{\mu^3-F_3}{6}-\frac{F_2}{4}.
+\tag{15}
+</annotation></semantics></math></p>
+<p>The remainder is uniform in the ratio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>/</mi><mi>k</mi></mrow><annotation encoding="application/x-tex">u/k</annotation></semantics></math>;
+its constant depends on the fixed sample and mean. This is more than
+expanding at fixed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+and then letting
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+increase.</p>
+<p>Here is a direct derivation. In these coordinates, (1) becomes</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>=</mo><mfrac><mi>μ</mi><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>x</mi><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>x</mi><mi>u</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mn>1</mn><mo>+</mo><mi>μ</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>μ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>u</mi><mi>k</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{P(x+1)}{P(x)}
+=\frac{\mu}{x+1}
+\frac{(1-xk)(1+xu)}
+ {1+\mu(u-k)-\mu(x+1)uk}.
+\tag{16}
+</annotation></semantics></math></p>
+<p>The log of the factor after
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu/(x+1)</annotation></semantics></math>
+has linear term
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>−</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x-\mu)(u-k)</annotation></semantics></math>
+and quadratic term</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mfrac><msup><mi>x</mi><mn>2</mn></msup><mn>2</mn></mfrac><mo stretchy="false" form="prefix">(</mo><msup><mi>u</mi><mn>2</mn></msup><mo>+</mo><msup><mi>k</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mfrac><msup><mi>μ</mi><mn>2</mn></msup><mn>2</mn></mfrac><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>k</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><mi>μ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>u</mi><mi>k</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+-\frac{x^2}{2}(u^2+k^2)
++\frac{\mu^2}{2}(u-k)^2+\mu(x+1)uk.
+</annotation></semantics></math></p>
+<p>The zero probability has the exact representation</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mi>μ</mi><mi>k</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>μ</mi><mi>u</mi><mi>k</mi><mi>j</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\log P(0)=
+\sum_{j=0}^{N-1}
+\log\left(1-\frac{\mu k}{1+\mu u k j}\right).
+</annotation></semantics></math></p>
+<p>Expanding uniformly over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>k</mi><mi>j</mi><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0\le kj\le1</annotation></semantics></math>
+and summing powers of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><mi>μ</mi><mo>+</mo><mfrac><msup><mi>μ</mi><mn>2</mn></msup><mn>2</mn></mfrac><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mfrac><msup><mi>μ</mi><mn>3</mn></msup><mn>3</mn></mfrac><mo stretchy="false" form="prefix">(</mo><msup><mi>u</mi><mn>2</mn></msup><mo>+</mo><msup><mi>k</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mfrac><mrow><msup><mi>μ</mi><mn>3</mn></msup><mo>−</mo><msup><mi>μ</mi><mn>2</mn></msup></mrow><mn>2</mn></mfrac><mi>u</mi><mi>k</mi><mo>+</mo><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>+</mo><mi>k</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>3</mn></msup><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\log P(0)=-\mu+\frac{\mu^2}{2}(u-k)
+-\frac{\mu^3}{3}(u^2+k^2)
++\frac{\mu^3-\mu^2}{2}uk
++O((u+k)^3).
+\tag{17}
+</annotation></semantics></math></p>
+<p>For sufficiently small
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>+</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mu(u+k)</annotation></semantics></math>,
+the Taylor remainders are bounded uniformly term by term; summing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+terms cancels their leading factor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>.
+Adding the finitely many ratio terms and averaging proves (15). The
+reproducer checks the polynomial algebra independently with SymPy.</p>
+<p>The per-observation first-order coefficient is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>x</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>2</mn><mi>μ</mi><mi>x</mi><mo>+</mo><msup><mi>μ</mi><mn>2</mn></msup></mrow><mn>2</mn></mfrac><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{x(x-1)-2\mu x+\mu^2}{2}(u-k).
+</annotation></semantics></math></p>
+<p>Thus the two shape/size directions have opposite, collinear
+first-order scores at Poisson. This is a tangent degeneracy, not a
+likelihood classification. Local reoptimization of the mean leaves (15)
+unchanged through second order: at the sample mean, the derivative in
+the mean of the summed first-order coefficient vanishes.</p>
+<h3
+id="equidispersion-a-sharp-local-threshold-and-a-global-sufficient-condition">4.2
+Equidispersion: a sharp local threshold, and a global sufficient
+condition</h3>
+<p>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">v=\mu</annotation></semantics></math>,
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub><mo>=</mo><msup><mi>μ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">F_2=\mu^2</annotation></semantics></math>,
+and the quadratic term becomes</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo>−</mo><mi>k</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><mi>G</mi><mi>u</mi><mi>k</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>G</mi><mo>=</mo><mfrac><mrow><msup><mi>μ</mi><mn>3</mn></msup><mo>−</mo><msub><mi>F</mi><mn>3</mn></msub></mrow><mn>3</mn></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+B(u-k)^2+Guk,\qquad
+G=\frac{\mu^3-F_3}{3}.
+\tag{18}
+</annotation></semantics></math></p>
+<p>Always
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">B&lt;0</annotation></semantics></math>
+in this case. Indeed, Cauchy–Schwarz gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>n</mi></msub><msup><mi>X</mi><mn>3</mn></msup><mo>≥</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>E</mi><mi>n</mi></msub><msup><mi>X</mi><mn>2</mn></msup><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mi>/</mi><msub><mi>E</mi><mi>n</mi></msub><mi>X</mi></mrow><annotation encoding="application/x-tex">E_nX^3\ge(E_nX^2)^2/E_nX</annotation></semantics></math>,
+whence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>3</mn></msub><mo>≥</mo><msup><mi>μ</mi><mn>3</mn></msup><mo>−</mo><msup><mi>μ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">F_3\ge\mu^3-\mu^2</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>≤</mo><mi>−</mi><msup><mi>μ</mi><mn>2</mn></msup><mi>/</mi><mn>12</mn><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">B\le-\mu^2/12&lt;0</annotation></semantics></math>.</p>
+<p>Consequently:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>3</mn></msub><mo>&lt;</mo><msup><mi>μ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">F_3&lt;\mu^3</annotation></semantics></math>:
+along
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mi>k</mi></mrow><annotation encoding="application/x-tex">u=k</annotation></semantics></math>,
+the likelihood increases above Poisson. For a nonendpoint sample, (12)
+proves a finite MLE exists.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>3</mn></msub><mo>&gt;</mo><msup><mi>μ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">F_3&gt;\mu^3</annotation></semantics></math>:
+the quadratic form is strictly negative throughout the positive quadrant
+away from the origin. Poisson is a strict local maximum near this
+corner, including after local mean optimization. It can still lose
+globally.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>3</mn></msub><mo>=</mo><msup><mi>μ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">F_3=\mu^3</annotation></semantics></math>:
+the quadratic term vanishes on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mi>k</mi></mrow><annotation encoding="application/x-tex">u=k</annotation></semantics></math>.
+Higher-order terms or remote comparisons are necessary.</li>
+</ul>
+<p>In particular, separate analysis of the NB and binomial axes misses
+the mixed term. Both axes lose likelihood at equidispersion, even when
+the cancelling direction gains.</p>
+<p>On the exact diagonal
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>N</mi></mrow><annotation encoding="application/x-tex">a=N</annotation></semantics></math>,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>=</mo><mfrac><mi>μ</mi><mrow><mi>x</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup><mi>/</mi><msup><mi>N</mi><mn>2</mn></msup></mrow><mrow><mn>1</mn><mo>−</mo><mi>μ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><msup><mi>N</mi><mn>2</mn></msup></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>N</mi><mn>2</mn></msup><mi>/</mi><mi>μ</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mrow><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>N</mi><mn>2</mn></msup><mi>/</mi><mi>μ</mi><mo>−</mo><mi>N</mi><mo stretchy="false" form="postfix">)</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>N</mi><mn>2</mn></msup><mi>/</mi><mi>μ</mi><mo>+</mo><mi>N</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{P(x+1)}{P(x)}
+=\frac{\mu}{x+1}\frac{1-x^2/N^2}{1-\mu(x+1)/N^2},
+\qquad
+P(0)=
+\frac{\Gamma(N^2/\mu)^2}
+{\Gamma(N^2/\mu-N)\Gamma(N^2/\mu+N)}.
+\tag{19}
+</annotation></semantics></math></p>
+<p>Thus the expansion is even in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">1/N</annotation></semantics></math>,
+and at equidispersion
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>N</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>ℓ</mi><mrow><mi>B</mi><mi>B</mi></mrow></msub><mo>−</mo><msub><mi>ℓ</mi><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mi>h</mi><mi>G</mi></mrow><annotation encoding="application/x-tex">N^2(\ell_{BB}-\ell_{\mathrm{Pois}})\to hG</annotation></semantics></math>.
+The coefficient need not be nonzero. For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,1,4)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">G=0</annotation></semantics></math>;
+expanding (19) one order further gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msub><mi>ℓ</mi><mrow><mi>B</mi><mi>B</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>,</mo><mi>N</mi><mo>,</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mi>/</mi><mn>2</mn><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>ℓ</mi><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><mn>3</mn></mfrac><mo>=</mo><mi>−</mi><mfrac><mn>37</mn><mrow><mn>15</mn><msup><mi>N</mi><mn>4</mn></msup></mrow></mfrac><mo>+</mo><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>N</mi><mrow><mi>−</mi><mn>6</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{\ell_{BB}(N,N,N(N/2-1))-\ell_{\mathrm{Pois}}(2)}3
+=-\frac{37}{15N^4}+O(N^{-6}).
+\tag{20}
+</annotation></semantics></math></p>
+<p>The script checks this coefficient as well as the second-order
+coefficients.</p>
+<p>There is also an exact equidispersed finite-model curve. At fixed
+mean,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>Var</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>μ</mi><mo>=</mo><mfrac><mrow><msup><mi>μ</mi><mn>2</mn></msup><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>−</mo><mi>a</mi><mo>−</mo><mi>μ</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>a</mi><mi>N</mi><mo>+</mo><mi>μ</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{Var}(X)-\mu
+=\frac{\mu^2(N-a-\mu-1)}{aN+\mu}.
+\tag{21}
+</annotation></semantics></math></p>
+<p>Taking
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>N</mi><mo>−</mo><mi>μ</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a=N-\mu-1&gt;0</annotation></semantics></math>
+makes the model variance exactly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>.
+Its leading joint-Poisson coefficient is still
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mi>/</mi><msup><mi>N</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">G/N^2</annotation></semantics></math>.
+The finite model therefore need not differ from Poisson in its first two
+moments to improve the likelihood.</p>
+<h3 id="why-nb-is-a-seam-but-bnb-is-not-an-extra-bb-limit">4.3 Why NB is
+a seam, but BNB is not an extra BB limit</h3>
+<p>The exact ratio to zero can also be written</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mi>N</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>a</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>b</mi><mo>−</mo><mi>N</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub><mspace width="0.167em"></mspace><mi>x</mi><mi>!</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{P(x)}{P(0)}
+=\frac{(-N)_x(a)_x}{(1-b-N)_x\,x!}.
+</annotation></semantics></math></p>
+<p>Substitution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mi>−</mi><mi>r</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>b</mi><mo>=</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo>−</mo><mi>a</mi></mrow><annotation encoding="application/x-tex">N=-r,\ b=1-\alpha-a</annotation></semantics></math>
+gives the proper BNB ratio</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mi>r</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>a</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>r</mi><mo>+</mo><mi>α</mi><mo>+</mo><mi>a</mi><msub><mo stretchy="false" form="postfix">)</mo><mi>x</mi></msub><mspace width="0.167em"></mspace><mi>x</mi><mi>!</mi></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\frac{(r)_x(a)_x}{(r+\alpha+a)_x\,x!},
+</annotation></semantics></math></p>
+<p>when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>,</mo><mi>α</mi><mo>,</mo><mi>a</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">r,\alpha,a&gt;0</annotation></semantics></math>.
+In the mean-fixed coordinates above, negative
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+corresponds to</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mi>−</mi><mn>1</mn><mi>/</mi><mi>k</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>α</mi><mo>=</mo><mn>1</mn><mo>+</mo><mi>a</mi><mi>r</mi><mi>/</mi><mi>μ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+r=-1/k,\qquad \alpha=1+ar/\mu.
+\tag{22}
+</annotation></semantics></math></p>
+<p>This BNB has mean exactly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>
+and approaches
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">NB(a,\mu)</annotation></semantics></math>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">r\to\infty</annotation></semantics></math>.
+The BB and BNB expansions meet there from opposite signs of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>.
+At the NB fitted mean, the first derivative is (14); the derivative on
+the BNB side reverses sign when expressed in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">1/r</annotation></semantics></math>.
+The reproducer checks both sides.</p>
+<p>The earlier map used
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mi>N</mi><mi>a</mi><mi>/</mi><mi>μ</mi></mrow><annotation encoding="application/x-tex">b=Na/\mu</annotation></semantics></math>,
+whose finite-size mean differs slightly from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>.
+Replacing it by the mean-fixed path subtracts
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>;
+its first-order contribution to the summed likelihood is a multiple of
+the NB mean score, which is zero at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\mu=\bar x</annotation></semantics></math>.
+Thus the fitted-face derivative is the same in the two coordinates.</p>
+<p>Similarly, the ratio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>κ</mi><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mo stretchy="false" form="prefix">[</mo><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>κ</mi><mi>μ</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\mu(1-\kappa x)/[(x+1)(1-\kappa\mu)]</annotation></semantics></math>
+describes binomial for positive reciprocal integer
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>κ</mi><annotation encoding="application/x-tex">\kappa</annotation></semantics></math>,
+Poisson at zero, and NB of shape
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>1</mn><mi>/</mi><mi>κ</mi></mrow><annotation encoding="application/x-tex">-1/\kappa</annotation></semantics></math>
+for negative
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>κ</mi><annotation encoding="application/x-tex">\kappa</annotation></semantics></math>.</p>
+<p>These statements concern analytic extensions of probability ratios
+and their asymptotic germs. Positive BB sizes are still integers.
+Substituting a negative size is not an admissible BB parameter path. A
+proper finite-parameter BNB has a power tail and is neither NB nor
+Poisson; the closure theorem excludes it as a BB limit. The seam
+explains local geometry, not an additional escape family.</p>
+<h2 id="explicit-witnesses-and-failed-conjectures">5. Explicit witnesses
+and failed conjectures</h2>
+<p>No numerical optimizer supplies an estimate in this study. Except for
+one explicitly labelled NB root refinement, all displayed parameters are
+fixed feasible witnesses. The exact certificates use rational
+arithmetic, not floating-point sign decisions.</p>
+<h3 id="dispersion-does-not-decide-attainment">Dispersion does not
+decide attainment</h3>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,1,2)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BB(2,1,1)</annotation></semantics></math>
+is uniform on the three observed values and attains the saturated bound
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>27</mn></mrow><annotation encoding="application/x-tex">L=1/27</annotation></semantics></math>.
+It is a proved global MLE, despite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mn>2</mn><mi>/</mi><mn>3</mn><mo>&lt;</mo><mi>μ</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">v=2/3&lt;\mu=1</annotation></semantics></math>.</p>
+<p>By contrast, for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,2)</annotation></semantics></math>,
+the <strong>global supremum is the binomial face</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>i</mi><mi>n</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>3</mn><mi>/</mi><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Bin(2,3/4)</annotation></semantics></math>,
+with product
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>27</mn><mi>/</mi><mn>128</mn></mrow><annotation encoding="application/x-tex">27/128</annotation></semantics></math>,
+and no finite positive shapes attain it. Here is a proof covering every
+size, even arbitrary binomial mixtures:</p>
+<p>At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">N=2</annotation></semantics></math>,
+let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mi>E</mi><msup><mi>U</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">q=E U^2</annotation></semantics></math>.
+Then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mn>2</mn></msub><mo>=</mo><mi>q</mi></mrow><annotation encoding="application/x-tex">P_2=q</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mn>1</mn></msub><mo>=</mo><mn>2</mn><mo stretchy="false" form="prefix">(</mo><mi>E</mi><mi>U</mi><mo>−</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mn>2</mn><mo stretchy="false" form="prefix">(</mo><msqrt><mi>q</mi></msqrt><mo>−</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P_1=2(E U-q)\le2(\sqrt q-q)</annotation></semantics></math>.
+Maximizing their product gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>27</mn><mi>/</mi><mn>128</mn></mrow><annotation encoding="application/x-tex">27/128</annotation></semantics></math>,
+with equality only when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo>=</mo><mn>3</mn><mi>/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">U=3/4</annotation></semantics></math>
+almost surely. A finite beta mixing law is nondegenerate, so equality is
+impossible.</p>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>≥</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">N\ge3</annotation></semantics></math>,
+the largest binomial probabilities at counts one and two are each at
+most
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mi>/</mi><mn>9</mn></mrow><annotation encoding="application/x-tex">4/9</annotation></semantics></math>.
+For fixed positive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,
+the optimized point probability decreases with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>&gt;</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">N&gt;x</annotation></semantics></math>:
+its consecutive ratio is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mn>1</mn><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>N</mi><mo>−</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>N</mi><mo>−</mo><mi>x</mi></mrow></msup></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mn>1</mn><mi>/</mi><mi>N</mi><msup><mo stretchy="false" form="postfix">)</mo><mi>N</mi></msup></mrow></mfrac><mo>&lt;</mo><mn>1</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\frac{(1+1/(N-x))^{N-x}}{(1+1/N)^N}&lt;1,
+</annotation></semantics></math></p>
+<p>because
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mn>1</mn><mi>/</mi><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">t\log(1+1/t)</annotation></semantics></math>
+increases. Mixtures obey the same pointwise bounds. Their likelihood
+product is at most
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mi>/</mi><mn>81</mn><mo>&lt;</mo><mn>27</mn><mi>/</mi><mn>128</mn></mrow><annotation encoding="application/x-tex">16/81&lt;27/128</annotation></semantics></math>.
+This excludes every larger size. Both examples are underdispersed; their
+attainment differs.</p>
+<h3 id="both-separate-axes-lose-but-a-joint-direction-gains">Both
+separate axes lose, but a joint direction gains</h3>
+<p>For</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>μ</mi><mo>=</mo><mi>v</mi><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>F</mi><mn>3</mn></msub><mo>=</mo><mn>3</mn><mi>/</mi><mn>4</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+x=(0,0,0,1,1,1,2,3),
+\qquad \mu=v=1,\qquad F_3=3/4,
+</annotation></semantics></math></p>
+<p>equation (18) gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>12</mn><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">G=1/12&gt;0</annotation></semantics></math>,
+while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mi>−</mi><mn>5</mn><mi>/</mi><mn>24</mn><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">B=-5/24&lt;0</annotation></semantics></math>.
+Hence a finite MLE exists. Explicit witnesses beating Poisson are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mn>10</mn><mo>,</mo><mn>10</mn><mo>,</mo><mn>90</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BB(10,10,90)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mn>10</mn><mo>,</mo><mn>8</mn><mo>,</mo><mn>72</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BB(10,8,72)</annotation></semantics></math>.
+The latter has <strong>exactly the sample mean and variance</strong>,
+both one. The script proves both likelihood inequalities by exact
+rational comparisons with a Taylor lower bound for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mn>8</mn></msup><annotation encoding="application/x-tex">e^8</annotation></semantics></math>.</p>
+<h3 id="even-a-strict-local-poisson-maximum-can-lose-globally">Even a
+strict local Poisson maximum can lose globally</h3>
+<p>For</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>,</mo><mn>7</mn><mo>,</mo><mn>7</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>μ</mi><mo>=</mo><mi>v</mi><mo>=</mo><mn>4</mn><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>F</mi><mn>3</mn></msub><mo>=</mo><mn>456</mn><mi>/</mi><mn>7</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+x=(2,2,3,3,4,7,7),\qquad
+\mu=v=4,\quad F_3=456/7,
+</annotation></semantics></math></p>
+<p>we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mi>−</mi><mn>88</mn><mi>/</mi><mn>21</mn></mrow><annotation encoding="application/x-tex">B=-88/21</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mi>−</mi><mn>8</mn><mi>/</mi><mn>21</mn></mrow><annotation encoding="application/x-tex">G=-8/21</annotation></semantics></math>.
+Poisson is therefore a strict local maximum in the joint near-Poisson
+model.</p>
+<p>Nevertheless
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mn>7</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BB(7,2,1)</annotation></semantics></math>
+has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>36</mn></mrow><annotation encoding="application/x-tex">P(x)=(x+1)/36</annotation></semantics></math>,
+and</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℓ</mi><mrow><mi>B</mi><mi>B</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mn>7</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>ℓ</mi><mrow><mi mathvariant="normal">P</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0.03544946687484035326</mn><mi>…</mi><mo>&gt;</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\ell_{BB}(7,2,1)-\ell_{\mathrm{Pois}}(4)
+=0.03544946687484035326\ldots&gt;0.
+</annotation></semantics></math></p>
+<p>The inequality is exact-certifiable: multiply by the factorial
+denominators and compare the resulting rational threshold with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mn>80</mn></msubsup><msup><mn>28</mn><mi>j</mi></msup><mi>/</mi><mi>j</mi><mi>!</mi><mo>&lt;</mo><msup><mi>e</mi><mn>28</mn></msup></mrow><annotation encoding="application/x-tex">\sum_{j=0}^{80}28^j/j!&lt;e^{28}</annotation></semantics></math>.
+The rational comparison is strict. All binomial and NB faces are bounded
+by Poisson for this equidispersed sample, and no endpoint face has
+positive likelihood. A finite positive-shape MLE follows from (12). The
+witness parameters are not asserted to be that MLE.</p>
+<p>For the critical case
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,1,4)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mi>v</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\mu=v=2</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>3</mn></msub><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">F_3=8</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">G=0</annotation></semantics></math>;
+(20) loses along the diagonal. Still, the uniform
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BB(4,1,1)</annotation></semantics></math>
+beats Poisson by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.19085700968597263934</mn><mi>…</mi></mrow><annotation encoding="application/x-tex">0.19085700968597263934\ldots</annotation></semantics></math>.
+A rational Taylor comparison with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mn>6</mn></msup><annotation encoding="application/x-tex">e^6</annotation></semantics></math>
+proves this too. The global decision cannot be inferred from the
+cancelling diagonal alone.</p>
+<h3 id="a-negative-nb-seam-slope-does-not-establish-nonexistence">A
+negative NB seam slope does not establish nonexistence</h3>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,1,5)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo>=</mo><mn>7</mn><mi>/</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">\mu=7/3</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mn>32</mn><mi>/</mi><mn>9</mn></mrow><annotation encoding="application/x-tex">v=32/9</annotation></semantics></math>.
+The NB shape is numerically</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>a</mi><mo accent="true">̂</mo></mover><mo>=</mo><mn>4.51202785824429370716</mn><mi>…</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>F</mi><mo>=</mo><mi>−</mi><mn>5.70476783345171442402</mn><mi>…</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\widehat a=4.51202785824429370716\ldots,\qquad
+F=-5.70476783345171442402\ldots,
+</annotation></semantics></math></p>
+<p>and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi mathvariant="normal">N</mi><mi mathvariant="normal">B</mi></mrow></msub><mo>=</mo><mi>−</mi><mn>0.01539501040659003489</mn><mi>…</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">T_{\mathrm{NB}}=-0.01539501040659003489\ldots&lt;0</annotation></semantics></math>.
+Yet the uniform
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mi>B</mi><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">BB(5,1,1)</annotation></semantics></math>
+has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo>=</mo><mi>−</mi><mn>3</mn><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mn>6</mn><mo>=</mo><mi>−</mi><mn>5.37527840768416500244</mn><mi>…</mi><mo>&gt;</mo><mi>F</mi></mrow><annotation encoding="application/x-tex">\ell=-3\log6=-5.37527840768416500244\ldots&gt;F</annotation></semantics></math>.
+Thus a finite MLE exists.</p>
+<p>This counterexample, already identified numerically in the map, now
+has a separate exact certificate. Rational atanh-series bounds for
+logarithms prove opposite NB score signs at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mn>4.51</mn></mrow><annotation encoding="application/x-tex">a=4.51</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4.52</mn><annotation encoding="application/x-tex">4.52</annotation></semantics></math>.
+The known uniqueness theorem brackets the maximizing shape. Bounding the
+score magnitude over that interval bounds the face likelihood above; the
+uniform BB likelihood exceeds that upper bound by more than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.3044</mn><annotation encoding="application/x-tex">0.3044</annotation></semantics></math>.
+The whole bracket lies above the moment shape
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>49</mn><mi>/</mi><mn>11</mn></mrow><annotation encoding="application/x-tex">49/11</annotation></semantics></math>,
+proving the seam slope is negative. The tighter 80-digit root bracket is
+reported separately as numerical evidence.</p>
+<p>These counterexamples disprove classifiers based on dispersion sign,
+first-order face slopes, or even strict local stability at Poisson. They
+do not prove that no other simple global characterization can exist.</p>
+<h2 id="reproduction-validation-and-remaining-open-questions">6.
+Reproduction, validation, and remaining open questions</h2>
+<h3 id="reproducer-and-evidence">Reproducer and evidence</h3>
+<p>The <a href="../2026-11-03-bbinom-closure-data/check.py">script</a>
+writes <a href="../2026-11-03-bbinom-closure-data/checks.csv">78 check
+rows</a> and a <a
+href="../2026-11-03-bbinom-closure-data/summary.json">summary with
+exact-certificate outcomes</a>. It uses mpmath at 80 decimal digits,
+increasing to 180 for the defective path at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><msup><mn>10</mn><mn>60</mn></msup></mrow><annotation encoding="application/x-tex">N=10^{60}</annotation></semantics></math>,
+and SymPy for algebra. All assertions passed.</p>
+<p>Workloads include NB and Poisson paths over fixed counts zero through
+six, sizes through
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>6</mn></msup><annotation encoding="application/x-tex">10^6</annotation></semantics></math>;
+defective paths through
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>60</mn></msup><annotation encoding="application/x-tex">10^{60}</annotation></semantics></math>;
+joint expansions for four samples at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>100</mn><mo>,</mo><mn>1000</mn><mo>,</mo><mn>10000</mn></mrow><annotation encoding="application/x-tex">N=100,1000,10000</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>/</mi><mi>k</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>4</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">u/k=1/4,1,4</annotation></semantics></math>;
+diagonal second- and fourth-order limits; and two-sided NB seam slopes.
+The asserted coefficient tolerances are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.003</mn><annotation encoding="application/x-tex">0.003</annotation></semantics></math>
+for the joint expansion,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>6</mn></mrow></msup><annotation encoding="application/x-tex">10^{-6}</annotation></semantics></math>
+for the diagonal limits, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.005</mn><annotation encoding="application/x-tex">0.005</annotation></semantics></math>
+for the seam. They check convergence at those points, not error bounds
+for all parameters.</p>
+<p>The strict-local/remote example was discovered deterministically
+among sorted multisets with entries in zero through seven, increasing
+sample size, then lexicographically. Five equidispersed, strictly
+local-Poisson candidates were examined before finding the displayed
+length-seven witness, using 36 fixed shape pairs at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">N=M</annotation></semantics></math>.
+The enumeration limit is only a discovery budget; no capped optimum is
+reported. The final witness is independently certified with exact
+rational arithmetic.</p>
+<p>The finite witnesses use degree-80 Taylor lower bounds for
+exponentials. The exact NB certificate uses 40 terms of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>q</mi><mo>=</mo><mn>2</mn><mrow><mi>atanh</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\log q=2\operatorname{atanh}((q-1)/(q+1))</annotation></semantics></math>,
+after rational range reduction, with a geometric bound on the remaining
+positive terms. These certificate assertions are exact integer/rational
+computations. They are stronger than the separate mpmath checks. Neither
+substitutes for the closure proof or a global numerical fitter.</p>
+<p>All computation ran on the <strong>local workstation</strong> through
+the supplied slot locks, with nice priority and one BLAS/OpenMP thread
+per worker. Environment: Linux 7.0.0-38-generic x86-64, GCC 15.2.0, R
+4.6.1, BH 1.90.0-1 / Boost 1.90, Python 3.14.5, mpmath 1.3.0, SymPy
+1.14.0. No simbox, dependency installation, sub-agent, board edit,
+commit, or publishing was used.</p>
+<p>Commands, from the worktree root:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TMPDIR</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$PWD</span><span class="st">/build/tmp&quot;</span> <span class="va">JUST_TEMPDIR</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$PWD</span><span class="st">/build/tmp&quot;</span> <span class="va">XDG_RUNTIME_DIR</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$PWD</span><span class="st">/build/tmp&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">&quot;</span><span class="va">$TMPDIR</span><span class="st">&quot;</span> build/scratch</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run</span> python3 dev/research/evaluations/2026-11-03-bbinom-closure-data/check.py</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> just cpp-test</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> just test</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> env UMVL_TEST_TIER=full just cpp-test</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> just test-full</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run</span> python3 dev/research/evaluations/2026-11-03-bbinom-closure-data/render.py</span></code></pre></div>
+<p>The reproducer was rerun after its final changes. Final suite
+results, all on the source revision named above:</p>
+<table>
+<thead>
+<tr>
+<th>Run</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C++ dev</td>
+<td>106/106 passed</td>
+</tr>
+<tr>
+<td>C++ full</td>
+<td>127/127 passed</td>
+</tr>
+<tr>
+<td>R dev</td>
+<td>20,507 passes; 0 failures, 0 warnings, 153 skips</td>
+</tr>
+<tr>
+<td>R full</td>
+<td>43,324 passes; 0 failures, 0 warnings, 0 skips</td>
+</tr>
+</tbody>
+</table>
+<p>The full R tier executed the coverage skipped in dev. These are
+regression checks of the unchanged implementation, not tests of a newly
+enabled free-size fitter. Logs are scratch files under the worktree’s
+build directory; the lasting mathematical checks and their results are
+retained beside this report.</p>
+<p>The report/data local links are checked separately by the <a
+href="../2026-11-03-bbinom-closure-data/render.py">preview renderer</a>:
+all 14 passed. The <a
+href="../2026-11-03-bbinom-closure-data/preview.html">HTML preview</a>
+contains 280 MathML elements, no scripts, and no conversion warnings.
+The repository-wide link checker found four pre-existing issues outside
+this work: the absent desktop.png and mobile-evidence.png historical
+images linked from the 2026-10-31 inference report, and two /inference/
+website routes interpreted as filesystem paths in the C++ inference
+note. Those tracked sources are unchanged from the tested revision; this
+research task does not repair their historical assets or route
+checking.</p>
+<p>Artifact-pane delivery is blocked by the viewer configuration: the
+prescribed show command returned HTTP 403, stating that this worktree is
+outside every readable root. The finished preview remains in the allowed
+report/data directory. Displaying it in that pane requires the viewer to
+register this worktree; no external configuration or other worktree was
+changed to bypass that boundary.</p>
+<h3 id="open-computable-unrestricted-tail-cutoff">Open: computable
+unrestricted tail cutoff</h3>
+<p>Equation (10) proves a uniform upper-tail limit, but its compactness
+argument does not calculate the first excluded size. An implementation
+still needs a computable upper bound valid over all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>,</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">a,b</annotation></semantics></math>,
+tied to a likelihood gap and propagated fixed-size allowances. Equation
+(5) now excludes small
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+uniformly; (6) controls small
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">b/N</annotation></semantics></math>
+on compact shape intervals; (15) controls the joint large-shape corner
+locally. Combining these into an economical global numerical
+certificate, with explicit constants and practical floating-point
+margins, remains open.</p>
+<p>The held-alpha correction proportional to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mn>2</mn></msup><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">a^2/N</annotation></semantics></math>
+cannot simply be optimized over unrestricted
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>;
+the <a href="../2026-11-02-bbinom-alpha-report.md">held-alpha report</a>
+already explains that obstruction. It is now a quantitative-bound
+problem, rather than an unidentified-limit-family problem.</p>
+<h3 id="open-deciding-genuine-infinite-size-winners-and-equality">Open:
+deciding genuine infinite-size winners and equality</h3>
+<p>No global certificate is supplied for a nonendpoint sample whose only
+maximizing size is infinity. The map’s NB candidates remain candidates
+until every finite profile is excluded. The necessary-and-sufficient
+comparison (12) and the sufficient conditions (13), (14), and (18) do
+not turn a negative local slope into that exclusion. Exact ties with a
+boundary threshold also require a separate argument.</p>
+<h3 id="open-uniqueness-and-production-inference">Open: uniqueness and
+production inference</h3>
+<p>Neither the closure theorem nor these witnesses prove uniqueness of
+unrestricted finite MLEs. No estimator asymptotics, calibration, or
+covariance procedure is established here. Enabling the unsupported
+fitter would additionally require certified shape/size comparisons and
+explicit failure outcomes; research-only authorization does not enable
+it. No change to the settled d/p/q/r or truth machinery is indicated by
+this study.</p>
+</body>
+</html>

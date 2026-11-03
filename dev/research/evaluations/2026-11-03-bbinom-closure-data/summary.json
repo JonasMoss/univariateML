@@ -1,0 +1,114 @@
+{
+  "python": "3.14.5",
+  "mpmath": "1.3.0",
+  "sympy": "1.14.0",
+  "precision": 80,
+  "rows": 78,
+  "nb_face": {
+    "sample": [
+      1,
+      1,
+      5
+    ],
+    "shape_lower": "4.512027858244293707160516247385893752155567499417940647",
+    "shape_upper": "4.512027858244293707160516247385893752155567500074799302",
+    "loglik_lower": "-5.704767833451714424021567197560205064845472228997677241",
+    "loglik_upper": "-5.704767833451714424021567197560205064845472227354908415",
+    "slope": "-0.01539501040659003489166642",
+    "uniform_candidate": "-5.375278407684165002437432"
+  },
+  "strict_local_remote": {
+    "sample": [
+      2,
+      2,
+      3,
+      3,
+      4,
+      7,
+      7
+    ],
+    "N": 7,
+    "a": 2.0,
+    "b": 1.0,
+    "gain": "0.03544946687484035326131184",
+    "mu": "4.0",
+    "F3": "65.14285714285714285714286"
+  },
+  "enumerated_equidi_strict_local": 5,
+  "exact_witnesses": [
+    {
+      "sample": [
+        1,
+        1,
+        4
+      ],
+      "N": 4,
+      "a": 1,
+      "b": 1,
+      "taylor_degree": 80,
+      "strict_rational_comparison": true
+    },
+    {
+      "sample": [
+        2,
+        2,
+        3,
+        3,
+        4,
+        7,
+        7
+      ],
+      "N": 7,
+      "a": 2,
+      "b": 1,
+      "taylor_degree": 80,
+      "strict_rational_comparison": true
+    },
+    {
+      "sample": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        3
+      ],
+      "N": 10,
+      "a": 10,
+      "b": 90,
+      "taylor_degree": 80,
+      "strict_rational_comparison": true
+    },
+    {
+      "sample": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        2,
+        3
+      ],
+      "N": 10,
+      "a": 8,
+      "b": 72,
+      "taylor_degree": 80,
+      "strict_rational_comparison": true
+    }
+  ],
+  "exact_nb_certificate": {
+    "bracket": [
+      "4.51",
+      "4.52"
+    ],
+    "score_signs_proved": true,
+    "negative_seam_slope_proved": true,
+    "uniform_bb_beats_face_proved": true,
+    "gain_lower": 0.3044705989881554,
+    "log_series_terms": 40
+  },
+  "result": "PASS: all assertions; no global numerical fit attempted"
+}
