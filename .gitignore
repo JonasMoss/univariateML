@@ -101,3 +101,6 @@ site/public/sources/
 site/public/logo.svg
 site/public/binding/
 site/src/data/binding.json
+
+# Personal literature and other local-only material (not tracked)
+local/
