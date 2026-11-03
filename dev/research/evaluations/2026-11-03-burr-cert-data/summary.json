@@ -1,0 +1,23 @@
+{
+  "seed": 138,
+  "samples": 39,
+  "profile_budget": 512,
+  "relative_value_gap": 1e-06,
+  "dual_pad": 1e-09,
+  "outcomes": {
+    "value-gap-only": 27,
+    "subdivision-budget": 12
+  },
+  "high_precision": {
+    "trials": 300,
+    "precision": 70,
+    "tolerance": "1e-55",
+    "worst_dual_violation": "0.0"
+  },
+  "total_profiles": 8353,
+  "max_dual_residual": 2.7755575615628914e-17,
+  "max_existing_shortfall": 3.552713678800501e-14,
+  "max_independent_logLik_error": 2.5579538487363607e-13,
+  "pareto_margin_over_1e_8_n": 12,
+  "note": "No output is a certified MLE or a certified winning face."
+}
