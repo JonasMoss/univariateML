@@ -432,6 +432,24 @@ $H^2\le\|p-g\|_1\le2H$. Their closures need not agree with weak or
 information-divergence closures. Exponential-family results cannot be
 transferred to Burr or BB without establishing their hypotheses.
 
+\paragraph{A candidate repair (unverified, 2026-11-03).}
+Two features of the counterexamples suggest where the draft went wrong.
+First, the likelihood is linear in the inside-support perturbation, while
+the Hellinger distance is quadratic in it. In Example~\ref{ex:leak} the
+inside change is of order $\sqrt A=t^{3/2}$ and the leakage is
+$\sigma=t^2$, so $A=o(\sigma)$ yet $\sigma=o(\sqrt A)$. The comparison
+that matters for likelihood is the pointwise inside change against
+$\sigma$, as in condition~\eqref{eq:conditional} of
+Theorem~\ref{th:leak}, not $A$ against $\sigma$. Second, the Burr
+cluster set $[0,1]$ comes from paths that also move along the Pareto
+family. Measured against the nearest point of the limit family rather
+than a fixed $g_\alpha$, the leakage of those paths dominates. A repaired
+classification would therefore measure leakage relative to the limit
+family (the face), and compare it with the pointwise first-order inside
+change at that nearest point. Whether this yields a well-posed,
+parametrization-free definition with the intended likelihood
+consequences is open.
+
 \paragraph{What remains open.}
 No exhaustive classification of the 99 dossiers is claimed here. The
 BB-to-NB transverse DQM expansion, the Burr-to-Pareto leakage cluster
