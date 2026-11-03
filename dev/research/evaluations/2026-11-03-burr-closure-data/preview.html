@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Burr XII closure and finite attainment</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<h1
+id="task-138-burr-xii-closure-and-finite-maximum-likelihood">TASK-138:
+Burr XII closure and finite maximum likelihood</h1>
+<p>Completed 2026-11-03. Tested source:
+<code>86b51aad68743e6a05d91be9d4c888639971ef74</code> on
+<code>codex/burr-closure</code>. All pre-existing tracked files are
+unchanged. This report and its <a
+href="../2026-11-03-burr-closure-data/README.md">small evidence
+directory</a> are the entire change; no commit was made.</p>
+<h2 id="result">Result</h2>
+<p>For a nonconstant positive sample, <strong>Weibull and Pareto are the
+only proper, nondegenerate escape laws on the positive
+half-line</strong>. There are no additional likelihood-preserving
+defective mixtures or partial collapses. Weak convergence alone
+nevertheless misses a likelihood detail: different approaches to the
+same Pareto law leave different density values at observations tied for
+its endpoint.</p>
+<p>A finite all-free Burr MLE exists <strong>if and only if some finite
+Burr point reaches or exceeds the better optimized Weibull/Pareto
+likelihood</strong>. Equality must be included: a construction below
+proves that finite MLEs tied exactly with Pareto really occur. The
+comparison admits an explicit compact feasibility formulation and
+explicit, although very loose, large-shape bounds.</p>
+<p>There is also a useful exact nonexistence theorem: <strong>if at
+least half the observations equal the minimum, the supremum is Pareto
+and every finite Burr point is strictly worse</strong>. In particular,
+every nonconstant two-observation sample has no finite all-free Burr
+MLE. Nonexistence also persists in open neighborhoods of these samples,
+so it is not confined to exact ties.</p>
+<p>Neither local stability at Weibull nor comparison of the two face
+values settles the general problem. Exact certificates below give a
+finite winner with a negative Weibull seam slope, a Pareto winner with a
+positive slope, and a finite winner where both faces have equal
+likelihood and are locally stable. A separate zero-slope example needs
+the second-order term.</p>
+<p>These are mathematical results and research checks, not a newly
+certified production fitter. The existing <a
+href="../../../../univariateML-cpp/include/cppunivariate/distributions/burr/README.md">Burr
+dossier</a> and <a
+href="../../../../univariateML-cpp/include/cppunivariate/distributions/burr/mle.hpp">multistart
+implementation</a> remain unchanged, including their numerical boundary
+comparisons. No settled d/p/q/r, truth fixture, generator, default fit,
+or golden needs changing for this research result.</p>
+<p>Shao’s <a href="https://doi.org/10.1016/S0167-9473(02)00367-5">2004
+paper</a> already discusses the two limiting families and multiple
+likelihood maxima. The publisher preview was checked; full text was
+inaccessible. The proofs here are self-contained, and no novelty or
+agreement with an unread theorem is claimed. The earlier <a
+href="../2026-10-29-p0-genbeta.md">P0 analysis</a> and <a
+href="../2026-11-02-burr-collapse-report.md">held-scale collapse report</a>
+provide the repository context.</p>
+<h2 id="coordinates-and-a-unique-conditional-fit">1. Coordinates and a
+unique conditional fit</h2>
+<p>Assume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n\ge2</annotation></semantics></math>
+finite positive observations with at least two distinct values.
+Write</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>=</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mi>/</mi><msub><mi>x</mi><mi>min</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="1.0em"></mspace><munder><mi>min</mi><mi>i</mi></munder><msub><mi>y</mi><mi>i</mi></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1.0em"></mspace><mi>R</mi><mo>=</mo><munder><mi>max</mi><mi>i</mi></munder><msub><mi>y</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn><mo>,</mo><mspace width="1.0em"></mspace><mi>D</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>y</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+y_i=\log(x_i/x_{\min}),\quad \min_i y_i=0,\quad
+R=\max_i y_i&gt;0,\quad D=\sum_i y_i&gt;0,
+</annotation></semantics></math></p>
+<p>and let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>&lt;</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m&lt;n</annotation></semantics></math>
+count the zero log observations. Put
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mi>/</mi><msub><mi>x</mi><mi>min</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">b=\log(s/x_{\min})</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>−</mi><mi>c</mi><mi>b</mi></mrow><annotation encoding="application/x-tex">a=-cb</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>a</mi><mo>+</mo><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">z_i=a+cy_i</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mi>z</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{sp}(z)=\log(1+e^z)</annotation></semantics></math>.
+The log-data density is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>c</mi><mi>k</mi><mfrac><msup><mi>e</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi><mi>y</mi></mrow></msup><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi><mi>y</mi></mrow></msup><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msup></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>ℓ</mi><mo>=</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>z</mi><mi>i</mi></msub><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><munder><mo>∑</mo><mi>i</mi></munder><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g(y)=ck\frac{e^{a+cy}}{(1+e^{a+cy})^{k+1}},\qquad
+\ell=n\log(ck)+\sum_i z_i-(k+1)\sum_i\operatorname{sp}(z_i).
+</annotation></semantics></math></p>
+<p>The original-data log likelihood is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo>−</mo><msub><mo>∑</mo><mi>i</mi></msub><mrow><mi>log</mi><mo>&#8289;</mo></mrow><msub><mi>x</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\ell-\sum_i\log x_i</annotation></semantics></math>;
+that fixed Jacobian is omitted throughout all comparisons. Every
+displayed likelihood is a <strong>total</strong>, not a per-observation
+mean, unless explicitly divided by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.</p>
+<p>For fixed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">k&gt;0</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\ell(c,a)</annotation></semantics></math>
+is strictly concave on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c&gt;0</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>∈</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">a\in\mathbb R</annotation></semantics></math>.
+With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>z</mi><mi>i</mi></msub></mrow></msup><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">p_i=(1+e^{-z_i})^{-1}</annotation></semantics></math>
+its negative Hessian is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>n</mi><mi>/</mi><msup><mi>c</mi><mn>2</mn></msup></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>p</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>p</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msubsup><mi>y</mi><mi>i</mi><mn>2</mn></msubsup></mtd><mtd columnalign="center" style="text-align: center"><msub><mi>y</mi><mi>i</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>y</mi><mi>i</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\begin{pmatrix}n/c^2&amp;0\\0&amp;0\end{pmatrix}
++(k+1)\sum_i p_i(1-p_i)
+\begin{pmatrix}y_i^2&amp;y_i\\y_i&amp;1\end{pmatrix},
+</annotation></semantics></math></p>
+<p>which is positive definite. The envelope in the next section proves
+coercivity for nonconstant data. Consequently the conditional
+maximum</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mi>max</mi><mrow><mi>c</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mspace width="0.222em"></mspace><mi>a</mi><mo>∈</mo><mi>ℝ</mi></mrow></munder><mi>ℓ</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>c</mi><mo>,</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+H(k)=\max_{c&gt;0,\ a\in\mathbb R}\ell(k,c,a)
+</annotation></semantics></math></p>
+<p>exists, is unique, and varies smoothly with finite positive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>.
+This reduces the remaining global problem to one shape coordinate; it
+does <strong>not</strong> imply that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+is concave or unimodal.</p>
+<p>The conditional mode
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mn>0</mn></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mi>a</mi><mo>−</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>c</mi></mrow><annotation encoding="application/x-tex">y_0=(-a-\log k)/c</annotation></semantics></math>
+lies strictly inside
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>R</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,R)</annotation></semantics></math>:
+the location-score summands
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><msub><mi>p</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">1-(k+1)p_i</annotation></semantics></math>
+are positive below the mode and negative above it, and must sum to
+zero.</p>
+<p>An alternative exact reduction, useful for the minimum-tie theorem,
+profiles
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+first. Define</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="1.0em"></mspace><mi>T</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><msub><mi>z</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="1.0em"></mspace><mover><mi>k</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>n</mi><mi>/</mi><mi>S</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S=\sum_i\operatorname{sp}(z_i),\quad
+T=\sum_i\operatorname{sp}(-z_i),\quad \widehat k=n/S.
+</annotation></semantics></math></p>
+<p>Then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>ℓ</mi><mo accent="true">̃</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mi>c</mi><mi>/</mi><mi>S</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>n</mi><mo>−</mo><mi>T</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\widetilde\ell(c,a)=n\log(nc/S)-n-T.                         \tag{1}
+</annotation></semantics></math></p>
+<h2 id="an-envelope-and-the-complete-weak-closure">2. An envelope and
+the complete weak closure</h2>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mi>k</mi><mi>c</mi></mrow><annotation encoding="application/x-tex">\alpha=kc</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mrow><mi>min</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda=\min(c,\alpha)</annotation></semantics></math>.
+The mode height is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>c</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>k</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msup><mo>≤</mo><mi>λ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g(y_0)=c\left(\frac{k}{k+1}\right)^{k+1}\le\lambda.
+</annotation></semantics></math></p>
+<p>There is a uniform exponential envelope</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mi>e</mi><mi>λ</mi><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mi>−</mi><mi>λ</mi><mo stretchy="false" form="prefix">|</mo><mi>y</mi><mo>−</mo><msub><mi>y</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mi>/</mi><mn>2</mn><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+g(y)\le e\lambda\exp\{-\lambda|y-y_0|/2\}.                 \tag{2}
+</annotation></semantics></math></p>
+<p>Here is a proof with constants independent of both shapes. At
+displacement
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+from the mode, put
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mi>c</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">v=ct</annotation></semantics></math>.
+The log-density derivative is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>k</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mi>v</mi></msup><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><msup><mi>e</mi><mi>v</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">ck(1-e^v)/(k+e^v)</annotation></semantics></math>.
+At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>2</mn><mi>/</mi><mi>λ</mi></mrow><annotation encoding="application/x-tex">t=2/\lambda</annotation></semantics></math>
+it is at most
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>λ</mi><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">-\lambda/2</annotation></semantics></math>;
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mi>−</mi><mn>2</mn><mi>/</mi><mi>λ</mi></mrow><annotation encoding="application/x-tex">t=-2/\lambda</annotation></semantics></math>
+it is at least
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\lambda/2</annotation></semantics></math>.
+For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k\ge1</annotation></semantics></math>,
+the relevant ratios are bounded below by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>e</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>e</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>&gt;</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">(e^2-1)/(e^2+1)&gt;1/2</annotation></semantics></math>.
+For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k\le1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>v</mi><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>2</mn><mi>/</mi><mi>k</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">|v|=2/k\ge2</annotation></semantics></math>
+gives the same lower bound. Concavity of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">\log g</annotation></semantics></math>
+extends these slopes outward. Inside that central interval the
+mode-height bound proves (2).</p>
+<p>For the sample,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>e</mi><mi>ℓ</mi></msup><mo>≤</mo><msup><mi>λ</mi><mi>n</mi></msup><mo>,</mo><mspace width="2.0em"></mspace><msup><mi>e</mi><mi>ℓ</mi></msup><mo>≤</mo><msup><mi>λ</mi><mi>n</mi></msup><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mi>n</mi><mo>−</mo><mi>λ</mi><mi>R</mi><mi>/</mi><mn>2</mn><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+e^\ell\le\lambda^n,\qquad
+e^\ell\le\lambda^n\exp\{n-\lambda R/2\}.                  \tag{3}
+</annotation></semantics></math></p>
+<p>The second inequality uses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mi>y</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">|</mo><mo>≥</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">\sum_i|y_i-y_0|\ge R</annotation></semantics></math>.
+In particular the likelihood is bounded for every nonconstant sample.
+Any sequence with likelihood bounded away from zero has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+bounded above and below. If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+stay bounded, its mode, and hence its location, also stay bounded. This
+proves the conditional coercivity used above.</p>
+<p>For completeness, compactify the observation space to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0,\infty]</annotation></semantics></math>,
+or equivalently the log axis to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>−</mi><mi>∞</mi><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[-\infty,\infty]</annotation></semantics></math>.
+Its entire weak closure is:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Laws in the closure</th>
+<th>How they arise</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Finite-parameter Burr XII</td>
+<td>Interior parameter limits</td>
+</tr>
+<tr>
+<td>Weibull with positive shape and scale</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">k\to\infty</annotation></semantics></math>,
+finite positive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><msup><mi>k</mi><mrow><mi>−</mi><mn>1</mn><mi>/</mi><mi>c</mi></mrow></msup></mrow><annotation encoding="application/x-tex">s k^{-1/c}</annotation></semantics></math>
+finite positive</td>
+</tr>
+<tr>
+<td>Pareto with positive endpoint and exponent</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">c\to\infty</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>c</mi><mo>→</mo><mi>α</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>∞</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">kc\to\alpha\in(0,\infty)</annotation></semantics></math>,
+finite log endpoint</td>
+</tr>
+<tr>
+<td>Point masses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>δ</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\delta_t</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>t</mi><mo>≤</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">0\le t\le\infty</annotation></semantics></math></td>
+<td>Concentration or locations escaping to an end</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><msub><mi>δ</mi><mn>0</mn></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>δ</mi><mi>∞</mi></msub></mrow><annotation encoding="application/x-tex">q\delta_0+(1-q)\delta_\infty</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>q</mi><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0\le q\le1</annotation></semantics></math></td>
+<td>Spread escaping simultaneously to both ends</td>
+</tr>
+</tbody>
+</table>
+<p>To prove exhaustiveness, extract a subsequence on which
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+tends to zero, a finite positive value, or infinity.</p>
+<ul>
+<li>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\lambda\to0</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>≤</mo><mi>λ</mi></mrow><annotation encoding="application/x-tex">g\le\lambda</annotation></semantics></math>
+makes the probability of every bounded log interval tend to zero. Any
+weak limit is supported only at the two ends. Every mixture in the last
+row is achievable: take
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c\to0</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mi>q</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">a=\log\{q/(1-q)\}</annotation></semantics></math>,
+so the CDF at each finite log observation tends to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>.</li>
+<li>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\lambda\to\infty</annotation></semantics></math>,
+(2) gives mass outside distance
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+of the mode at most
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mi>e</mi><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mi>λ</mi><mi>d</mi><mi>/</mi><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">4e\exp(-\lambda d/2)</annotation></semantics></math>.
+An extended limit of the mode therefore gives a point mass.</li>
+<li>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+stays finite positive, at least one of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>,</mo><mi>α</mi></mrow><annotation encoding="application/x-tex">c,\alpha</annotation></semantics></math>
+stays bounded. When both do, there is an interior Burr limit or an end
+point mass. When
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+stays finite and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">\alpha\to\infty</annotation></semantics></math>,
+put
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>=</mo><mi>a</mi><mo>+</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">\eta=a+\log k</annotation></semantics></math>.
+Finite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mi>c</mi><msup><mi>e</mi><mrow><mi>η</mi><mo>+</mo><mi>c</mi><mi>y</mi></mrow></msup><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mi>−</mi><msup><mi>e</mi><mrow><mi>η</mi><mo>+</mo><mi>c</mi><mi>y</mi></mrow></msup><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">g(y)\to c e^{\eta+cy}\exp\{-e^{\eta+cy}\}</annotation></semantics></math>,
+a log-Weibull density; divergent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+gives an end point mass. When
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">c\to\infty</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+stays finite, a finite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
+gives survival
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mi>−</mi><mi>α</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo>−</mo><mi>b</mi><msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\exp\{-\alpha(y-b)_+\}</annotation></semantics></math>,
+the log-Pareto law. Divergent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
+again gives an end point mass.</li>
+</ul>
+<p>These cases include all subsequences; all displayed limits have
+explicit approaching Burr sequences. In particular there is no extra
+proper lognormal, inverse-Weibull, bounded-upper-support, or
+continuous-plus-escaped- mass limit hidden in a joint rate of
+divergence.</p>
+<p>For positive likelihood on a <strong>nonconstant fixed
+sample</strong>, (3) excludes the first two cases. The remaining escape
+sequences must therefore have Weibull or Pareto limits. For a constant
+sample at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math>,
+concentration is allowed:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><msub><mi>x</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">s=x_0</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">c\to\infty</annotation></semantics></math>
+gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>c</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>4</mn><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(x_0)=c/(4x_0)</annotation></semantics></math>
+and unbounded likelihood. If such a concentration sequence keeps
+positive likelihood at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>0</mn></msub><annotation encoding="application/x-tex">x_0</annotation></semantics></math>,
+(2) forces its mode to tend to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><msub><mi>x</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\log x_0</annotation></semantics></math>;
+it cannot hide a collapse at a different observation.</p>
+<h3 id="the-pareto-density-trace">The Pareto density trace</h3>
+<p>Suppose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">c\to\infty</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>c</mi><mo>→</mo><mi>α</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">kc\to\alpha&gt;0</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>→</mo><msub><mi>b</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">b\to b_0</annotation></semantics></math>.
+Positive sample likelihood requires
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mn>0</mn></msub><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">b_0\le0</annotation></semantics></math>.
+If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mn>0</mn></msub><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">b_0&lt;0</annotation></semantics></math>,
+every observation has the usual Pareto density. If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>b</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">b_0=0</annotation></semantics></math>
+and</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mrow><mi>lim</mi><mo>&#8289;</mo></mrow><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mi>−</mi><mi>c</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>−</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\rho=\lim\frac{1}{1+\exp\{-c(0-b)\}},
+</annotation></semantics></math></p>
+<p>then the limiting density at each minimum is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mi>α</mi></mrow><annotation encoding="application/x-tex">\rho\alpha</annotation></semantics></math>,
+while at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">y_i&gt;0</annotation></semantics></math>
+it is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><msup><mi>e</mi><mrow><mi>−</mi><mi>α</mi><msub><mi>y</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">\alpha e^{-\alpha y_i}</annotation></semantics></math>.
+Positive likelihood requires
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>ρ</mi><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0&lt;\rho\le1</annotation></semantics></math>
+and the total penalty is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>ρ</mi></mrow><annotation encoding="application/x-tex">m\log\rho</annotation></semantics></math>.</p>
+<p>Every such
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>
+has the <strong>same weak Pareto law</strong>. Holding
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><msub><mi>x</mi><mi>min</mi></msub></mrow><annotation encoding="application/x-tex">s=x_{\min}</annotation></semantics></math>
+exactly gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\rho=1/2</annotation></semantics></math>
+and the familiar
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>m</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">-m\log2</annotation></semantics></math>
+penalty. The all-free upper trace has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\rho=1</annotation></semantics></math>:
+approach the endpoint from below with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">b\to0</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>c</mi><mi>b</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">-cb\to\infty</annotation></semantics></math>.
+This distinction is essential when comparing sample likelihoods and is
+consistent with the repository’s closed-endpoint Pareto convention.</p>
+<h2 id="boundary-optima-and-the-exact-attainment-criterion">3. Boundary
+optima and the exact attainment criterion</h2>
+<p>The best log-Pareto likelihood is explicit:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mi>/</mi><mi>D</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>n</mi><mo>,</mo><mspace width="2.0em"></mspace><mover><mi>α</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>n</mi><mi>/</mi><mi>D</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+P=n\log(n/D)-n,\qquad \widehat\alpha=n/D,
+</annotation></semantics></math></p>
+<p>with endpoint zero and upper density trace one. The best log-Weibull
+likelihood is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>=</mo><munder><mi>max</mi><mrow><mi>c</mi><mo>&gt;</mo><mn>0</mn></mrow></munder><mrow><mo stretchy="true" form="prefix">[</mo><mi>n</mi><mi>log</mi><mi>c</mi><mo>+</mo><mi>c</mi><mi>D</mi><mo>−</mo><mi>n</mi><mi>log</mi><mrow><mo stretchy="true" form="prefix">{</mo><msup><mi>n</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><munder><mo>∑</mo><mi>i</mi></munder><msup><mi>e</mi><mrow><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub></mrow></msup><mo stretchy="true" form="postfix">}</mo></mrow><mo>−</mo><mi>n</mi><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+W=\max_{c&gt;0}\left[n\log c+cD
+-n\log\left\{n^{-1}\sum_i e^{cy_i}\right\}-n\right].       \tag{4}
+</annotation></semantics></math></p>
+<p>Its derivative is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>/</mi><mi>c</mi><mo>+</mo><mi>D</mi><mo>−</mo><mi>n</mi><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>y</mi><mi>i</mi></msub><msup><mi>e</mi><mrow><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub></mrow></msup><mi>/</mi><msub><mo>∑</mo><mi>i</mi></msub><msup><mi>e</mi><mrow><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">n/c+D-n\sum_i y_i e^{cy_i}/\sum_i e^{cy_i}</annotation></semantics></math>
+and its second derivative is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>n</mi><mi>/</mi><msup><mi>c</mi><mn>2</mn></msup><mo>−</mo><mi>n</mi><msub><mrow><mi>Var</mi><mo>&#8289;</mo></mrow><mrow><mi>w</mi><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo stretchy="false" form="postfix">)</mo></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-n/c^2-n\operatorname{Var}_{w(c)}(y)&lt;0</annotation></semantics></math>.
+The derivative changes from positive to negative, so its root and
+maximizer are unique. Put
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mrow><mi>max</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo>,</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">B=\max(P,W)</annotation></semantics></math>.</p>
+<p>The conditional profile has endpoint limits</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mi>lim</mi><mrow><mi>k</mi><mo>↓</mo><mn>0</mn></mrow></munder><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>P</mi><mo>,</mo><mspace width="2.0em"></mspace><munder><mi>lim</mi><mrow><mi>k</mi><mo>→</mo><mi>∞</mi></mrow></munder><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>W</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\lim_{k\downarrow0}H(k)=P,\qquad \lim_{k\to\infty}H(k)=W.  \tag{5}
+</annotation></semantics></math></p>
+<p>The first limit also follows from the explicit two-sided bound below.
+For the second, the envelope makes conditional maximizing parameters
+compact in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>η</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(c,\eta)</annotation></semantics></math>
+at any fixed likelihood level below
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>.
+The kernels converge uniformly there to Weibull. Uniqueness of the
+Weibull maximum then identifies the limiting maximum; a
+Weibull-approaching sequence supplies the lower bound.</p>
+<p><strong>Attainment theorem.</strong> For nonconstant positive
+data,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">a finite Burr MLE exists</mtext><mspace width="1.0em"></mspace><mo>⇔</mo><mspace width="1.0em"></mspace><mo>∃</mo><mi>k</mi><mo>,</mo><mi>c</mi><mo>,</mo><mi>s</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> finite positive with </mtext><mspace width="0.333em"></mspace></mrow><mi>ℓ</mi><mo>≥</mo><mi>B</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{a finite Burr MLE exists}
+\quad\Longleftrightarrow\quad
+\exists k,c,s\text{ finite positive with }\ell\ge B.       \tag{6}
+</annotation></semantics></math></p>
+<p>Equivalently,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">H(k)\ge B</annotation></semantics></math>
+at some finite positive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>.
+Every escape has limiting likelihood at most
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>.
+If the unrestricted supremum is above
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>,
+a maximizing sequence cannot escape and compactness gives a finite
+maximizer. If the supremum equals
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>,
+a finite point at that level is already a maximizer. Conversely the two
+face paths make every finite global maximum at least
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>.</p>
+<p>Strict improvement is a convenient sufficient condition, but section
+8 proves that replacing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\ge</annotation></semantics></math>
+by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>&gt;</mo><annotation encoding="application/x-tex">&gt;</annotation></semantics></math>
+would lose real finite MLEs.</p>
+<h2 id="pareto-an-entropy-bound-and-the-moving-endpoint-expansion">4.
+Pareto: an entropy bound and the moving-endpoint expansion</h2>
+<p>The Pareto face is locally stable for <strong>every</strong>
+nonconstant sample. This is a global inequality near
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">k=0</annotation></semantics></math>,
+rather than a fitted numerical slope.</p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mi>n</mi><mo>−</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">r=n-m</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mn>0</mn></msub><mo>=</mo><mi>m</mi><mi>/</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">k_0=m/r</annotation></semantics></math>.
+The identity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>−</mo><mi>T</mi><mo>=</mo><mi>n</mi><mi>a</mi><mo>+</mo><mi>c</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">S-T=na+cD</annotation></semantics></math>
+gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo>=</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>α</mi><mo>−</mo><mi>α</mi><mi>D</mi><mo>−</mo><mi>n</mi><mi>k</mi><mi>a</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>T</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\ell=n\log\alpha-\alpha D-nka-(k+1)T.
+</annotation></semantics></math></p>
+<p>Since
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>≥</mo><mi>m</mi><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">T\ge m\operatorname{sp}(-a)</annotation></semantics></math>,
+maximizing the first two terms over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
+and the remaining bound over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+gives, for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>k</mi><mo>&lt;</mo><msub><mi>k</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">0&lt;k&lt;k_0</annotation></semantics></math>,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mi>P</mi><mo>+</mo><mi>Q</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mi>P</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+H(k)\le P+Q(k)&lt;P,
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>A</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>A</mi><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mi>M</mi><mo>−</mo><mi>A</mi><mo stretchy="false" form="postfix">)</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>M</mi><mo>−</mo><mi>A</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>M</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>M</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>A</mi><mo>=</mo><mi>n</mi><mi>k</mi><mo>,</mo><mspace width="1.0em"></mspace><mi>M</mi><mo>=</mo><mi>m</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+Q(k)=A\log A+(M-A)\log(M-A)-M\log M,
+\qquad A=nk,\quad M=m(1+k).                               \tag{7}
+</annotation></semantics></math></p>
+<p>Thus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo>=</mo><mi>−</mi><mi>M</mi></mrow><annotation encoding="application/x-tex">Q=-M</annotation></semantics></math>
+times the binary entropy at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>M</mi></mrow><annotation encoding="application/x-tex">A/M</annotation></semantics></math>.
+The maximizing comparison path is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mi>n</mi><mi>/</mi><mi>D</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>c</mi><mo>=</mo><mfrac><mi>n</mi><mrow><mi>k</mi><mi>D</mi></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>a</mi><mo>=</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mfrac><mrow><mi>m</mi><mo>−</mo><mi>r</mi><mi>k</mi></mrow><mrow><mi>n</mi><mi>k</mi></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\alpha=n/D,\qquad c=\frac{n}{kD},\qquad
+a=\log\frac{m-rk}{nk}.
+</annotation></semantics></math></p>
+<p>Using
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><msup><mi>e</mi><mi>u</mi></msup></mrow><annotation encoding="application/x-tex">\operatorname{sp}(u)\le e^u</annotation></semantics></math>
+for the nonminimum terms gives an explicit matching lower bound:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>+</mo><mi>Q</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mi>P</mi><mo>+</mo><mi>Q</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+P+Q(k)-E(k)\le H(k)\le P+Q(k),
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mfrac><mrow><mi>n</mi><mi>k</mi></mrow><mrow><mi>m</mi><mo>−</mo><mi>r</mi><mi>k</mi></mrow></mfrac><munder><mo>∑</mo><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn></mrow></munder><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mrow><mo stretchy="true" form="prefix">{</mo><mi>−</mi><mfrac><mrow><mi>n</mi><msub><mi>y</mi><mi>i</mi></msub></mrow><mrow><mi>k</mi><mi>D</mi></mrow></mfrac><mo stretchy="true" form="postfix">}</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+E(k)=(k+1)\frac{nk}{m-rk}
+\sum_{y_i&gt;0}\exp\left\{-\frac{ny_i}{kD}\right\}.          \tag{8}
+</annotation></semantics></math></p>
+<p>Consequently, for each fixed nonconstant sample,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>P</mi><mo>+</mo><mi>n</mi><mi>k</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>k</mi><mo>+</mo><mi>n</mi><mi>k</mi><mo stretchy="false" form="prefix">{</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mi>/</mi><mi>m</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mo>+</mo><mfrac><mrow><mi>n</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mi>m</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mn>2</mn><mi>m</mi></mrow></mfrac><msup><mi>k</mi><mn>2</mn></msup><mo>+</mo><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>k</mi><mn>3</mn></msup><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H(k)=P+nk\log k+nk\{\log(n/m)-1\}
++\frac{n(n-2m)}{2m}k^2+O(k^3).                            \tag{9}
+</annotation></semantics></math></p>
+<p>The error between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>+</mo><mi>Q</mi></mrow><annotation encoding="application/x-tex">P+Q</annotation></semantics></math>
+is nonpositive and exponentially small,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><msup><mi>e</mi><mrow><mi>−</mi><mi>γ</mi><mi>/</mi><mi>k</mi></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(k e^{-\gamma/k})</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo>=</mo><mi>n</mi><msub><mrow><mi>min</mi><mo>&#8289;</mo></mrow><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn></mrow></msub><msub><mi>y</mi><mi>i</mi></msub><mi>/</mi><mi>D</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\gamma=n\min_{y_i&gt;0}y_i/D&gt;0</annotation></semantics></math>.
+The leading deficit is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>k</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mi>/</mi><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">nk\log(1/k)</annotation></semantics></math>,
+not a finite linear seam slope.</p>
+<p>At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><msub><mi>k</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">k=k_0</annotation></semantics></math>,
+the bound before maximizing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+is also strictly below
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>:
+its last two terms reduce to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>n</mi><mi>k</mi><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-nk\operatorname{sp}(a)&lt;0</annotation></semantics></math>.
+Since the conditional maximum is attained,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>k</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>&lt;</mo><mi>P</mi></mrow><annotation encoding="application/x-tex">H(k_0)&lt;P</annotation></semantics></math>.
+Therefore <strong>every finite all-free MLE must have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>&gt;</mo><mi>m</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo>−</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">k&gt;m/(n-m)</annotation></semantics></math></strong>.</p>
+<p>The matching scale approaches the endpoint from below:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mi>−</mi><mi>a</mi><mi>/</mi><mi>c</mi><mo>∼</mo><mi>−</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mi>D</mi><mi>/</mi><mi>n</mi><mo stretchy="false" form="postfix">)</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mi>m</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">b=-a/c\sim-(kD/n)\log\{m/(nk)\}</annotation></semantics></math>.
+This explains both the logarithmic loss and why the fixed-endpoint
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">\log2</annotation></semantics></math>
+penalty disappears in the optimized all-free limit.</p>
+<h2 id="a-bounded-sample-criterion-and-explicit-tail-cutoffs">5. A
+bounded sample criterion and explicit tail cutoffs</h2>
+<p>Equation (6) can be restricted to a known compact region; there is no
+need to leave its nuisance-parameter domain unbounded. Define</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><msup><mi>e</mi><mrow><mi>B</mi><mi>/</mi><mi>n</mi></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>U</mi><mo>=</mo><mfrac><mrow><mn>4</mn><mi>n</mi></mrow><mi>R</mi></mfrac><mrow><mo stretchy="true" form="prefix">{</mo><mn>1</mn><mo>+</mo><mi>log</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>n</mi><mi>/</mi><mi>R</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>B</mi><mi>/</mi><mi>n</mi><mo stretchy="true" form="postfix">}</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>C</mi><mo>=</mo><mfrac><mi>U</mi><mrow><mrow><mi>min</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><msub><mi>k</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+L=e^{B/n},\qquad
+U=\frac{4n}{R}\left\{1+\log(2n/R)-B/n\right\},\qquad
+C=\frac{U}{\min(1,k_0)}.                                  \tag{10}
+</annotation></semantics></math></p>
+<p>Any point with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo>≥</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">\ell\ge B</annotation></semantics></math>
+has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>≤</mo><mi>λ</mi><mo>≤</mo><mi>U</mi></mrow><annotation encoding="application/x-tex">L\le\lambda\le U</annotation></semantics></math>.
+For the upper bound, put
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mi>λ</mi><mi>R</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">u=\lambda R/(2n)</annotation></semantics></math>
+in (3). The universal maximum of that bound is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>n</mi><mi>/</mi><mi>R</mi><msup><mo stretchy="false" form="postfix">)</mo><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">(2n/R)^n</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mo>=</mo><mi>B</mi><mi>/</mi><mi>n</mi><mo>−</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mi>n</mi><mi>/</mi><mi>R</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\beta=B/n-\log(2n/R)\le0</annotation></semantics></math>.
+For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">u\ge2</annotation></semantics></math>
+use
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>u</mi><mo>≤</mo><mi>u</mi><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\log u\le u/2</annotation></semantics></math>;
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>u</mi><mo>+</mo><mn>1</mn><mo>−</mo><mi>u</mi><mo>≥</mo><mi>β</mi></mrow><annotation encoding="application/x-tex">\log u+1-u\ge\beta</annotation></semantics></math>
+implies
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>≤</mo><mn>2</mn><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">u\le2(1-\beta)</annotation></semantics></math>.
+The case
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>&lt;</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">u&lt;2</annotation></semantics></math>
+satisfies the same bound.</p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ξ</mi><mo>=</mo><mn>1</mn><mi>/</mi><mi>k</mi></mrow><annotation encoding="application/x-tex">\xi=1/k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>=</mo><mi>a</mi><mo>+</mo><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">\eta=a+\log k</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>i</mi></msub><mo>=</mo><msup><mi>e</mi><mrow><mi>η</mi><mo>+</mo><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">v_i=e^{\eta+cy_i}</annotation></semantics></math>.
+Define the continuous extension</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>η</mi><mo>,</mo><mi>ξ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>c</mi><mo>+</mo><mi>n</mi><mi>η</mi><mo>+</mo><mi>c</mi><mi>D</mi><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mi>/</mi><mi>ξ</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><munder><mo>∑</mo><mi>i</mi></munder><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>ξ</mi><msub><mi>v</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>ξ</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+F(c,\eta,\xi)=n\log c+n\eta+cD
+-(1/\xi+1)\sum_i\log(1+\xi v_i),\qquad \xi&gt;0,
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>η</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>c</mi><mo>+</mo><mi>n</mi><mi>η</mi><mo>+</mo><mi>c</mi><mi>D</mi><mo>−</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>v</mi><mi>i</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+F(c,\eta,0)=n\log c+n\eta+cD-\sum_i v_i.                 \tag{11}
+</annotation></semantics></math></p>
+<p>The latter is exactly the Weibull log likelihood. A finite MLE exists
+<strong>if and only if</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>≥</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">F\ge B</annotation></semantics></math>
+somewhere in</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>≤</mo><mi>c</mi><mo>≤</mo><mi>C</mi><mo>,</mo><mspace width="2.0em"></mspace><mo>−</mo><mi>c</mi><mi>R</mi><mo>≤</mo><mi>η</mi><mo>≤</mo><mn>0</mn><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>&lt;</mo><mi>ξ</mi><mo>&lt;</mo><mfrac><mrow><mi>n</mi><mo>−</mo><mi>m</mi></mrow><mi>m</mi></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+L\le c\le C,\qquad -cR\le\eta\le0,\qquad
+0&lt;\xi&lt;\frac{n-m}{m}.                                     \tag{12}
+</annotation></semantics></math></p>
+<p>To see necessity, replace any candidate reaching
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+by its unique conditional
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(c,a)</annotation></semantics></math>
+maximum. Section 4 excludes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≤</mo><msub><mi>k</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">k\le k_0</annotation></semantics></math>,
+while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mi>c</mi><mrow><mi>min</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda=c\min(1,k)</annotation></semantics></math>
+and (10) bound
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>.
+The conditional mode lies in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>R</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,R)</annotation></semantics></math>,
+giving
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>c</mi><mi>R</mi><mo>&lt;</mo><mi>η</mi><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-cR&lt;\eta&lt;0</annotation></semantics></math>.
+Sufficiency follows directly from (6). Closing the displayed intervals,
+including
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ξ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi=0</annotation></semantics></math>,
+gives an explicit compact elementary-function feasibility problem, with
+the Weibull boundary already identified. This is an exact
+characterization, not a claim that its equality cases are automatically
+easy to decide numerically.</p>
+<p>There are also explicit
+large-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+bounds. At a conditional maximum with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">H(k)\ge B</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≥</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k\ge1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>≤</mo><mi>U</mi></mrow><annotation encoding="application/x-tex">c\le U</annotation></semantics></math>
+and the mode constraint gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>i</mi></msub><mo>≤</mo><msup><mi>e</mi><mrow><mi>U</mi><mi>R</mi></mrow></msup></mrow><annotation encoding="application/x-tex">v_i\le e^{UR}</annotation></semantics></math>.
+The elementary inequality
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>u</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>u</mi><mo>−</mo><msup><mi>u</mi><mn>2</mn></msup><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\log(1+u)\ge u-u^2/2</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">u\ge0</annotation></semantics></math>
+yields</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mi>W</mi><mo>+</mo><mfrac><mrow><mi>n</mi><msup><mi>e</mi><mrow><mn>2</mn><mi>U</mi><mi>R</mi></mrow></msup></mrow><mi>k</mi></mfrac><mspace width="1.0em"></mspace><mrow><mtext mathvariant="normal">whenever </mtext><mspace width="0.333em"></mspace></mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><mi>B</mi><mo>,</mo><mspace width="0.222em"></mspace><mi>k</mi><mo>≥</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H(k)\le W+\frac{n e^{2UR}}{k}
+\quad\text{whenever }H(k)\ge B,\ k\ge1.                 \tag{13}
+</annotation></semantics></math></p>
+<p>Indeed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>−</mo><mi>F</mi><mo stretchy="false" form="prefix">(</mo><mi>⋅</mi><mo>,</mo><mi>⋅</mi><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mi>ξ</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>ξ</mi><mo stretchy="false" form="postfix">)</mo><msub><mo>∑</mo><mi>i</mi></msub><msubsup><mi>v</mi><mi>i</mi><mn>2</mn></msubsup><mi>/</mi><mn>2</mn><mo>≤</mo><msub><mo>∑</mo><mi>i</mi></msub><msubsup><mi>v</mi><mi>i</mi><mn>2</mn></msubsup><mi>/</mi><mi>k</mi></mrow><annotation encoding="application/x-tex">F-F(\cdot,\cdot,0)\le
+\xi(1+\xi)\sum_i v_i^2/2\le\sum_i v_i^2/k</annotation></semantics></math>.
+Two useful consequences are:</p>
+<ul>
+<li>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>&gt;</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">P&gt;W</annotation></semantics></math>,
+every finite fit reaching
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≤</mo><mrow><mi>max</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>n</mi><msup><mi>e</mi><mrow><mn>2</mn><mi>U</mi><mi>R</mi></mrow></msup><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>P</mi><mo>−</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k\le\max\{1,n e^{2UR}/(P-W)\}</annotation></semantics></math>.
+Thus even the existence of a finite <strong>tie</strong> with a
+Pareto-winning face reduces to a compact
+finite-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+search.</li>
+<li>If a feasible finite witness exceeds
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\delta&gt;0</annotation></semantics></math>,
+all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≥</mo><mrow><mi>max</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mi>n</mi><msup><mi>e</mi><mrow><mn>2</mn><mi>U</mi><mi>R</mi></mrow></msup><mi>/</mi><mi>δ</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k\ge\max\{1,2n e^{2UR}/\delta\}</annotation></semantics></math>
+have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>≤</mo><mi>B</mi><mo>+</mo><mi>δ</mi><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">H(k)\le B+\delta/2</annotation></semantics></math>
+and cannot beat that witness.</li>
+</ul>
+<p>These bounds are certified in exact arithmetic conditional on their
+stated comparisons. They are deliberately coarse. For the negative-slope
+witness below, the exact rational check proves
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo>&lt;</mo><mn>112</mn></mrow><annotation encoding="application/x-tex">U&lt;112</annotation></semantics></math>,
+witness gap
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo><mn>0.06</mn></mrow><annotation encoding="application/x-tex">&gt;0.06</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>700</mn><mi>/</mi><mn>3</mn><mo stretchy="false" form="postfix">)</mo><msup><mi>e</mi><mn>224</mn></msup><mo>&lt;</mo><msup><mn>10</mn><mn>100</mn></msup></mrow><annotation encoding="application/x-tex">(700/3)e^{224}&lt;10^{100}</annotation></semantics></math>.
+Hence every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≥</mo><msup><mn>10</mn><mn>100</mn></msup></mrow><annotation encoding="application/x-tex">k\ge10^{100}</annotation></semantics></math>
+is excluded, with more than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.03</mn><annotation encoding="application/x-tex">0.03</annotation></semantics></math>
+log-likelihood separation. The 75-digit evaluation of the unrounded
+bound gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mn>10</mn></msub><mi>K</mi><mo>≈</mo><mn>99.3437</mn></mrow><annotation encoding="application/x-tex">\log_{10}K\approx99.3437</annotation></semantics></math>.
+This is a genuine finite cutoff, but an impractical enumeration budget.
+No capped estimate or new global fitting implementation is returned.</p>
+<h2 id="a-global-minimum-tie-nonexistence-theorem">6. A global
+minimum-tie nonexistence theorem</h2>
+<p>Assume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>≥</mo><mi>n</mi><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">m\ge n/2</annotation></semantics></math>.
+In (1), let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>0</mn></msub><mo>=</mo><mrow><mi>sigmoid</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_0=\operatorname{sigmoid}(a)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mo>∏</mo><mi>i</mi></msub><msub><mi>p</mi><mi>i</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mrow><mn>1</mn><mi>/</mi><mi>n</mi></mrow></msup></mrow><annotation encoding="application/x-tex">G=(\prod_i p_i)^{1/n}</annotation></semantics></math>.
+Then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>ℓ</mi><mo accent="true">̃</mo></mover><mo>−</mo><mi>P</mi><mo>=</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mfrac><mrow><mi>c</mi><mi>D</mi><mi>G</mi></mrow><mi>S</mi></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\widetilde\ell-P=n\log\frac{cDG}{S}.                     \tag{14}
+</annotation></semantics></math></p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+be the geometric mean of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>=</mo><mi>n</mi><mo>−</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">r=n-m</annotation></semantics></math>
+nonminimum
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>i</mi></msub><annotation encoding="application/x-tex">p_i</annotation></semantics></math>.
+Concavity of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>sigmoid</mi></mrow><annotation encoding="application/x-tex">\log\operatorname{sigmoid}</annotation></semantics></math>
+gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><mrow><mi>sigmoid</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>t</mi><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>d</mi><mi>t</mi><mo>≥</mo><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub><msqrt><mrow><msub><mi>p</mi><mn>0</mn></msub><msub><mi>p</mi><mi>i</mi></msub></mrow></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{sp}(a+cy_i)-\operatorname{sp}(a)
+=c y_i\int_0^1\operatorname{sigmoid}(a+tcy_i)\,dt
+\ge c y_i\sqrt{p_0p_i}.
+</annotation></semantics></math></p>
+<p>The weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math>
+and values
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><msub><mi>p</mi><mi>i</mi></msub></msqrt><annotation encoding="application/x-tex">\sqrt{p_i}</annotation></semantics></math>
+are similarly ordered, so their weighted average is at least the
+unweighted average, which is at least
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>q</mi></msqrt><annotation encoding="application/x-tex">\sqrt q</annotation></semantics></math>.
+Therefore</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mi>n</mi><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><munder><mo>∑</mo><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>&gt;</mo><mn>0</mn></mrow></munder><mo stretchy="false" form="prefix">{</mo><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>c</mi><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mrow><mi>sp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo><mo>&gt;</mo><mi>c</mi><mi>D</mi><msqrt><mrow><msub><mi>p</mi><mn>0</mn></msub><mi>q</mi></mrow></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S=n\operatorname{sp}(a)
++\sum_{y_i&gt;0}\{\operatorname{sp}(a+cy_i)-\operatorname{sp}(a)\}
+&gt;cD\sqrt{p_0q}.
+</annotation></semantics></math></p>
+<p>Since
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>0</mn></msub><mo>≤</mo><mi>q</mi></mrow><annotation encoding="application/x-tex">p_0\le q</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>/</mi><mi>n</mi><mo>≥</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">m/n\ge1/2</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>=</mo><msubsup><mi>p</mi><mn>0</mn><mrow><mi>m</mi><mi>/</mi><mi>n</mi></mrow></msubsup><msup><mi>q</mi><mrow><mi>r</mi><mi>/</mi><mi>n</mi></mrow></msup><mo>≤</mo><msqrt><mrow><msub><mi>p</mi><mn>0</mn></msub><mi>q</mi></mrow></msqrt></mrow><annotation encoding="application/x-tex">G=p_0^{m/n}q^{r/n}\le\sqrt{p_0q}</annotation></semantics></math>.
+Equation (14) is strictly negative for <strong>every</strong> finite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(c,a)</annotation></semantics></math>,
+and hence for every finite Burr parameter triple. The approaching Pareto
+path establishes that the supremum is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>.</p>
+<p>There is also a strict Weibull gap. Put
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mi>r</mi><mi>/</mi><mi>n</mi><mo>≤</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">p=r/n\le1/2</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mi>c</mi><mi>D</mi><mi>/</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">u=cD/n</annotation></semantics></math>.
+Jensen’s inequality on the positive observations gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>P</mi><mo>≤</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mfrac><mrow><mi>u</mi><msup><mi>e</mi><mi>u</mi></msup></mrow><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>+</mo><mi>p</mi><msup><mi>e</mi><mrow><mi>u</mi><mi>/</mi><mi>p</mi></mrow></msup></mrow></mfrac><mo>≤</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mfrac><mi>u</mi><mrow><mrow><mi>cosh</mi><mo>&#8289;</mo></mrow><mi>u</mi></mrow></mfrac><mo>&lt;</mo><mi>−</mi><mfrac><mi>n</mi><mn>2</mn></mfrac><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mn>2</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+W(c)-P\le n\log\frac{u e^u}{1-p+p e^{u/p}}
+\le n\log\frac{u}{\cosh u}&lt; -\frac n2\log2.              \tag{15}
+</annotation></semantics></math></p>
+<p>For the middle inequality,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>+</mo><mi>p</mi><msup><mi>e</mi><mrow><mi>u</mi><mi>/</mi><mi>p</mi></mrow></msup></mrow><annotation encoding="application/x-tex">1-p+p e^{u/p}</annotation></semantics></math>
+decreases with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+so it is at least
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mn>2</mn><mi>u</mi></mrow></msup><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">(1+e^{2u})/2</annotation></semantics></math>.
+For the last,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>cosh</mi><mo>&#8289;</mo></mrow><mi>u</mi><mo>≥</mo><mn>1</mn><mo>+</mo><msup><mi>u</mi><mn>2</mn></msup><mi>/</mi><mn>2</mn><mo>≥</mo><msqrt><mn>2</mn></msqrt><mspace width="0.167em"></mspace><mi>u</mi></mrow><annotation encoding="application/x-tex">\cosh u\ge1+u^2/2\ge\sqrt2\,u</annotation></semantics></math>,
+with strictness for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">u&gt;0</annotation></semantics></math>.
+The unique finite Weibull maximizer preserves the strict gap.</p>
+<p>This nonexistence is stable under small data perturbations. Near a
+given nonconstant majority-minimum sample,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>&gt;</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">P&gt;W</annotation></semantics></math>
+remains strict. Using just one minimum excludes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≤</mo><mn>1</mn><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">k\le1/(n-1)</annotation></semantics></math>
+uniformly; (13) excludes sufficiently large
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+uniformly. The remaining potentially competitive conditional parameters
+lie in a common compact set. At the original sample its maximum is
+strictly below
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>,
+so continuity excludes competitors throughout a neighborhood. Such
+neighborhoods contain fully distinct samples. The tie theorem is a
+simple sufficient criterion, not a necessary tie condition.</p>
+<h2 id="the-weibull-seam-and-certified-failures-of-local-classifiers">7.
+The Weibull seam, and certified failures of local classifiers</h2>
+<p>The power/GPD observation is exact:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>Pr</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>&gt;</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>ξ</mi><msup><mi>x</mi><mi>c</mi></msup><mi>/</mi><mi>σ</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn><mi>/</mi><mi>ξ</mi></mrow></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>ξ</mi><mo>=</mo><mn>1</mn><mi>/</mi><mi>k</mi><mo>,</mo><mspace width="1.0em"></mspace><mi>σ</mi><mo>=</mo><msup><mi>s</mi><mi>c</mi></msup><mi>/</mi><mi>k</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\Pr(X&gt;x)=(1+\xi x^c/\sigma)^{-1/\xi},\qquad
+\xi=1/k,\quad\sigma=s^c/k.
+</annotation></semantics></math></p>
+<p>It identifies the Weibull seam at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ξ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi=0</annotation></semantics></math>,
+but letting the power vary also creates the separate Pareto escape.
+Extending to negative
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ξ</mi><annotation encoding="application/x-tex">\xi</annotation></semantics></math>
+introduces a different bounded-support model; those laws are not Burr
+closure members.</p>
+<p>At the unique Weibull fit let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>i</mi></msub><mo>=</mo><msup><mi>e</mi><mrow><msub><mi>η</mi><mi>W</mi></msub><mo>+</mo><msub><mi>c</mi><mi>W</mi></msub><msub><mi>y</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">v_i=e^{\eta_W+c_W y_i}</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>v</mi><mi>i</mi></msub><mo>=</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">\sum_i v_i=n</annotation></semantics></math>.
+Expansion of (11), including nuisance reoptimization, gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>W</mi><mo>+</mo><mfrac><msub><mi>A</mi><mi>W</mi></msub><mi>k</mi></mfrac><mo>+</mo><mfrac><msub><mi>C</mi><mi>W</mi></msub><msup><mi>k</mi><mn>2</mn></msup></mfrac><mo>+</mo><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>k</mi><mrow><mi>−</mi><mn>3</mn></mrow></msup><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>A</mi><mi>W</mi></msub><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mi>v</mi><mi>i</mi><mn>2</mn></msubsup><mo>−</mo><mi>n</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H(k)=W+\frac{A_W}{k}+\frac{C_W}{k^2}+O(k^{-3}),
+\qquad A_W=\frac12\sum_i v_i^2-n.                         \tag{16}
+</annotation></semantics></math></p>
+<p>For clarity, in the natural coordinates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>η</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\theta=(c,\eta)</annotation></semantics></math>
+define</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>n</mi><mi>/</mi><msubsup><mi>c</mi><mi>W</mi><mn>2</mn></msubsup><mo>+</mo><munder><mo>∑</mo><mi>i</mi></munder><msubsup><mi>y</mi><mi>i</mi><mn>2</mn></msubsup><msub><mi>v</mi><mi>i</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>y</mi><mi>i</mi></msub><msub><mi>v</mi><mi>i</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>y</mi><mi>i</mi></msub><msub><mi>v</mi><mi>i</mi></msub></mtd><mtd columnalign="center" style="text-align: center"><mi>n</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>d</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>v</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>v</mi><mi>i</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>y</mi><mi>i</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+J=\begin{pmatrix}
+n/c_W^2+\sum_i y_i^2v_i&amp;\sum_i y_i v_i\\
+\sum_i y_i v_i&amp;n
+\end{pmatrix},\qquad
+d=\sum_i v_i(v_i-1)\begin{pmatrix}y_i\\1\end{pmatrix}.
+</annotation></semantics></math></p>
+<p>Then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>W</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msubsup><mi>v</mi><mi>i</mi><mn>2</mn></msubsup><mn>2</mn></mfrac><mo>−</mo><mfrac><msubsup><mi>v</mi><mi>i</mi><mn>3</mn></msubsup><mn>3</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mi>d</mi><mi>T</mi></msup><msup><mi>J</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi>d</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+C_W=\sum_i\left(\frac{v_i^2}{2}-\frac{v_i^3}{3}\right)
++\frac12 d^T J^{-1}d.                                   \tag{17}
+</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>
+is the negative <strong>total observed Weibull likelihood
+Hessian</strong>, not a Fisher-information or covariance claim. The
+nuisance displacement is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>−</mo><msub><mi>θ</mi><mi>W</mi></msub><mo>=</mo><mi>ξ</mi><msup><mi>J</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi>d</mi><mo>+</mo><mi>O</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>ξ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\theta-\theta_W=\xi J^{-1}d+O(\xi^2)</annotation></semantics></math>.
+Conditional coercivity, uniqueness at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ξ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\xi=0</annotation></semantics></math>,
+and the implicit function theorem justify expanding the conditional
+maximum itself, rather than only one fixed-parameter path.</p>
+<p>Thus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>≥</mo><mi>P</mi></mrow><annotation encoding="application/x-tex">W\ge P</annotation></semantics></math>
+together with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">A_W&gt;0</annotation></semantics></math>
+is sufficient for a finite MLE. So is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>≥</mo><mi>P</mi></mrow><annotation encoding="application/x-tex">W\ge P</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">A_W=0</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>W</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">C_W&gt;0</annotation></semantics></math>.
+Negative
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>W</mi></msub><annotation encoding="application/x-tex">A_W</annotation></semantics></math>
+makes Weibull locally stable but gives no global exclusion. At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>W</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">c_W=1</annotation></semantics></math>,
+the first coefficient reduces to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo stretchy="false" form="prefix">{</mo><mover><msup><mi>x</mi><mn>2</mn></msup><mo accent="true">¯</mo></mover><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><msup><mover><mi>x</mi><mo accent="true">‾</mo></mover><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">n\{\overline{x^2}/(2\bar x^2)-1\}</annotation></semantics></math>,
+as suggested in the brief. In general the same expression must be
+applied to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><msub><mi>c</mi><mi>W</mi></msub></msup><annotation encoding="application/x-tex">x^{c_W}</annotation></semantics></math>.</p>
+<h3 id="finite-winner-despite-negative-slope">Finite winner despite
+negative slope</h3>
+<p>Take exact log data</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>7</mn><mo>,</mo><mn>8</mn><mo>,</mo><mn>8</mn><mo>,</mo><mn>15</mn><mo>,</mo><mn>15</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>15</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+y=(0,5,7,8,8,15,15)/15.
+</annotation></semantics></math></p>
+<p>The fixed finite point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>5.16</mn></mrow><annotation encoding="application/x-tex">c=5.16</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>−</mi><mn>2.816</mn></mrow><annotation encoding="application/x-tex">a=-2.816</annotation></semantics></math>
+has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><msub><mi>x</mi><mi>min</mi></msub><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>352</mn><mi>/</mi><mn>645</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">s=x_{\min}\exp(352/645)</annotation></semantics></math>.
+Its likelihood and the optimized limits are:</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th style="text-align: right;">Numerical value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math></td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>2.84537862272227</mn></mrow><annotation encoding="application/x-tex">-2.84537862272227</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math></td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>2.43846031048140</mn></mrow><annotation encoding="application/x-tex">-2.43846031048140</annotation></semantics></math></td>
+</tr>
+<tr>
+<td>Fixed finite point</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>2.37508288368536</mn></mrow><annotation encoding="application/x-tex">-2.37508288368536</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>W</mi></msub><annotation encoding="application/x-tex">A_W</annotation></semantics></math></td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>0.05562070833942</mn></mrow><annotation encoding="application/x-tex">-0.05562070833942</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi>W</mi></msub><annotation encoding="application/x-tex">C_W</annotation></semantics></math></td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.29520353262431</mn><annotation encoding="application/x-tex">0.29520353262431</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>Exact rational certificates prove
+finite-minus-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>&gt;</mo><mn>0.063</mn></mrow><annotation encoding="application/x-tex">W&gt;0.063</annotation></semantics></math>,
+finite-minus-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>&gt;</mo><mn>0.470</mn></mrow><annotation encoding="application/x-tex">P&gt;0.470</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo>&lt;</mo><mi>−</mi><mn>0.055</mn></mrow><annotation encoding="application/x-tex">A_W&lt;-0.055</annotation></semantics></math>.
+The attainment theorem proves a finite MLE exists. The displayed point
+is a feasible witness, <strong>not a claimed globally maximizing
+estimate</strong>. Both boundary ends are locally stable, yet neither is
+globally best.</p>
+<h3 id="positive-slope-despite-global-nonexistence">Positive slope
+despite global nonexistence</h3>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">y=(0,0,1)</annotation></semantics></math>,
+the minimum-tie theorem proves every finite fit is below
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mn>3</mn><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mn>3</mn><mo>−</mo><mn>3</mn><mo>=</mo><mn>0.295836866004329</mn><mi>…</mi></mrow><annotation encoding="application/x-tex">P=3\log3-3=0.295836866004329\ldots</annotation></semantics></math>.
+Yet
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>=</mo><mi>−</mi><mn>2.335394517137318</mn><mi>…</mi></mrow><annotation encoding="application/x-tex">W=-2.335394517137318\ldots</annotation></semantics></math>
+and the exact certificate gives
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo>&gt;</mo><mn>0.007</mn></mrow><annotation encoding="application/x-tex">A_W&gt;0.007</annotation></semantics></math>;
+numerically
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo>=</mo><mn>0.007035372035697</mn><mi>…</mi></mrow><annotation encoding="application/x-tex">A_W=0.007035372035697\ldots</annotation></semantics></math>.
+The improving direction at Weibull cannot bridge the Pareto gap.</p>
+<h3 id="exactly-zero-first-order-slope">Exactly zero first-order
+slope</h3>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>7</mn><mo>,</mo><mn>8</mn><mo>,</mo><mn>8</mn><mo>,</mo><mn>15</mn><mo>,</mo><mn>15</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>15</mn></mrow><annotation encoding="application/x-tex">u=(0,5,7,8,8,15,15)/15</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">v=(0,0,0,0,0,1,1)</annotation></semantics></math>,
+and take
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mi>u</mi><mo>+</mo><mi>t</mi><mi>v</mi></mrow><annotation encoding="application/x-tex">y(t)=(1-t)u+tv</annotation></semantics></math>.
+Exact endpoint signs give a zero of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">A_W(t)</annotation></semantics></math>
+inside</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.0439243843</mn><mo>&lt;</mo><msub><mi>t</mi><mn>0</mn></msub><mo>&lt;</mo><mn>0.0439243846</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+0.0439243843&lt;t_0&lt;0.0439243846.
+</annotation></semantics></math></p>
+<p>Across that entire bracket the certificates give
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>−</mo><mi>P</mi><mo>&gt;</mo><mn>0.11</mn></mrow><annotation encoding="application/x-tex">W-P&gt;0.11</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>W</mi></msub><mo>&gt;</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">C_W&gt;0.30</annotation></semantics></math>.
+At any such zero, (16) therefore proves finite improvement and a finite
+MLE. The numerical root is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mn>0</mn></msub><mo>≈</mo><mn>0.04392438441485763</mn></mrow><annotation encoding="application/x-tex">t_0\approx0.04392438441485763</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>W</mi></msub><mo>≈</mo><mn>0.318132116623484</mn></mrow><annotation encoding="application/x-tex">C_W\approx0.318132116623484</annotation></semantics></math>.
+No uniqueness of the zero is needed for this argument.</p>
+<h3 id="raw-coefficient-of-variation-cannot-classify-attainment">Raw
+coefficient of variation cannot classify attainment</h3>
+<p>The transformation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>↦</mo><mi>d</mi><msubsup><mi>x</mi><mi>i</mi><mi>p</mi></msubsup></mrow><annotation encoding="application/x-tex">x_i\mapsto d x_i^p</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>,</mo><mi>p</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d,p&gt;0</annotation></semantics></math>,
+maps Burr to Burr with the same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+power
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>/</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">c/p</annotation></semantics></math>,
+and transformed scale. On the log axis it adds the same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">-n\log p</annotation></semantics></math>
+to every model’s optimized likelihood. All attainment decisions and seam
+signs are invariant.</p>
+<p>For the finite negative-slope example, the empirical CV of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>e</mi><mrow><mi>p</mi><mi>y</mi></mrow></msup><annotation encoding="application/x-tex">e^{p y}</annotation></semantics></math>
+is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.0032991</mn><annotation encoding="application/x-tex">0.0032991</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.01</mn></mrow><annotation encoding="application/x-tex">p=0.01</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1.55390</mn><annotation encoding="application/x-tex">1.55390</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p=10</annotation></semantics></math>.
+For the nonexistence example
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,0,1)</annotation></semantics></math>
+it is respectively
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.0047219</mn><annotation encoding="application/x-tex">0.0047219</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1.41402</mn><annotation encoding="application/x-tex">1.41402</annotation></semantics></math>.
+Here empirical variance uses divisor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.
+Either outcome therefore occurs on either side of raw CV one. These
+examples disprove the specified local and moment classifiers; they do
+not prove that no simpler global criterion can ever exist.</p>
+<figure>
+<img src="../2026-11-03-burr-closure-data/profiles.png"
+alt="Conditional Burr profiles, divided by sample size, relative to the better optimized limit. The blue and orange examples have finite points above both locally stable faces; the green example has no finite MLE despite a positive Weibull seam slope. The right panel resolves the small differences near the boundary likelihood." />
+<figcaption aria-hidden="true">Conditional Burr profiles, divided by
+sample size, relative to the better optimized limit. The blue and orange
+examples have finite points above both locally stable faces; the green
+example has no finite MLE despite a positive Weibull seam slope. The
+right panel resolves the small differences near the boundary
+likelihood.</figcaption>
+</figure>
+<p>The curves are checked <strong>conditional numerical
+profiles</strong> on a fixed grid, not a global search certificate. The
+existence and nonexistence labels use the proofs and exact finite
+certificates above.</p>
+<h2 id="where-limits-meet-finite-ties-really-occur">8. Where limits
+meet; finite ties really occur</h2>
+<h3 id="equal-face-values-can-hide-a-better-finite-fit">Equal face
+values can hide a better finite fit</h3>
+<p>Take
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>t</mi><mo>,</mo><mn>7</mn><mi>/</mi><mn>15</mn><mo>,</mo><mn>8</mn><mi>/</mi><mn>15</mn><mo>,</mo><mn>8</mn><mi>/</mi><mn>15</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">y(t)=(0,t,7/15,8/15,8/15,1,1)</annotation></semantics></math>.
+Exact bounds give opposite signs of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>−</mo><mi>P</mi></mrow><annotation encoding="application/x-tex">W-P</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0.23826</mn></mrow><annotation encoding="application/x-tex">t=0.23826</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0.23827</mn></mrow><annotation encoding="application/x-tex">t=0.23827</annotation></semantics></math>.
+Continuity gives a crossing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mo>*</mo></msub><annotation encoding="application/x-tex">t_*</annotation></semantics></math>
+inside that interval. The numerical crossing is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.23826602716416793</mn><mi>…</mi></mrow><annotation encoding="application/x-tex">0.23826602716416793\ldots</annotation></semantics></math>.</p>
+<p>Uniformly throughout the interval, the fixed finite point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>4.932</mn></mrow><annotation encoding="application/x-tex">c=4.932</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mi>−</mi><mn>2.624</mn></mrow><annotation encoding="application/x-tex">a=-2.624</annotation></semantics></math>
+exceeds <strong>both</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+by more than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.026</mn><annotation encoding="application/x-tex">0.026</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo>&lt;</mo><mi>−</mi><mn>0.087</mn></mrow><annotation encoding="application/x-tex">A_W&lt;-0.087</annotation></semantics></math>.
+At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mo>*</mo></msub><annotation encoding="application/x-tex">t_*</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">P=W</annotation></semantics></math>
+but the global supremum is strictly larger. Pareto is locally stable by
+(7), and Weibull by (16). This is a certified three-way competition, not
+a new limiting family.</p>
+<h3 id="a-finite-mle-can-equal-the-best-boundary-likelihood">A finite
+MLE can equal the best boundary likelihood</h3>
+<p>There is also an exact existence construction of finite/Pareto ties.
+Fix the rational data family</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>0.23826</mn><mi>q</mi><mo>,</mo><mspace width="0.222em"></mspace><mn>7</mn><mi>q</mi><mi>/</mi><mn>15</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>8</mn><mi>q</mi><mi>/</mi><mn>15</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>8</mn><mi>q</mi><mi>/</mi><mn>15</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>q</mi><mo>≤</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+y(q)=(0,\ 0.23826q,\ 7q/15,\ 8q/15,\ 8q/15,\ 1,\ 1),
+\qquad 0\le q\le1.                                      \tag{18}
+</annotation></semantics></math></p>
+<p>At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">q=0</annotation></semantics></math>
+five minima give strict nonexistence. At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">q=1</annotation></semantics></math>
+the preceding finite point exceeds
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+by more than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.026</mn><annotation encoding="application/x-tex">0.026</annotation></semantics></math>,
+while exact bounds give
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>−</mo><mi>P</mi><mo>&lt;</mo><mi>−</mi><mn>0.00002</mn></mrow><annotation encoding="application/x-tex">W-P&lt;-0.00002</annotation></semantics></math>.</p>
+<p>In fact
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W(q)-P(q)</annotation></semantics></math>
+is strictly increasing, so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>&gt;</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">P&gt;W</annotation></semantics></math>
+on the <strong>whole</strong> path. To prove this, normalize the data to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>D</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">r_i(q)=y_i(q)/D(q)</annotation></semantics></math>,
+whose sum is one. If the four scaled interior values sum to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>,
+each largest partial sum has the form
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>+</mo><mi>q</mi><mi>A</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">1/(2+qA)</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>+</mo><mi>q</mi><msub><mi>A</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>+</mo><mi>q</mi><mi>A</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2+qA_j)/(2+qA)</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>j</mi></msub><mo>≤</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">A_j\le A</annotation></semantics></math>.
+These decrease with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>.
+Thus smaller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+gives a vector majorizing the one at larger
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>.
+Strict convexity of the exponential, together with</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>−</mo><mi>P</mi><mo>=</mo><munder><mi>max</mi><mrow><mi>v</mi><mo>&gt;</mo><mn>0</mn></mrow></munder><mrow><mo stretchy="true" form="prefix">{</mo><mi>n</mi><mi>log</mi><mi>v</mi><mo>+</mo><mi>v</mi><mo>−</mo><mi>n</mi><mi>log</mi><munder><mo>∑</mo><mi>i</mi></munder><msup><mi>e</mi><mrow><mi>v</mi><msub><mi>r</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">}</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+W-P=\max_{v&gt;0}\left\{n\log v+v
+-n\log\sum_i e^{v r_i(q)}\right\},
+</annotation></semantics></math></p>
+<p>proves the assertion.</p>
+<p>All conditional fits reaching
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(q)</annotation></semantics></math>
+now lie in a <strong>common compact finite-parameter set</strong>. Using
+just one minimum excludes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≤</mo><mn>1</mn><mi>/</mi><mn>6</mn></mrow><annotation encoding="application/x-tex">k\le1/6</annotation></semantics></math>,
+including at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">q=0</annotation></semantics></math>.
+Uniformly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo>&lt;</mo><mn>114</mn></mrow><annotation encoding="application/x-tex">U&lt;114</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>−</mo><mi>W</mi><mo>&gt;</mo><mn>0.00002</mn></mrow><annotation encoding="application/x-tex">P-W&gt;0.00002</annotation></semantics></math>;
+(13) and an exact exponential/log certificate exclude every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≥</mo><msup><mn>10</mn><mn>106</mn></msup></mrow><annotation encoding="application/x-tex">k\ge10^{106}</annotation></semantics></math>.
+The bounds on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+and mode are uniform as well:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>&lt;</mo><mn>684</mn></mrow><annotation encoding="application/x-tex">c&lt;684</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+has a positive lower bound, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>c</mi><mo>≤</mo><mi>η</mi><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-c\le\eta\le0</annotation></semantics></math>.</p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒮</mi><annotation encoding="application/x-tex">\mathcal S</annotation></semantics></math>
+be the set of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+with some finite point strictly above
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(q)</annotation></semantics></math>.
+It is open and contains values near one. It contains no values near
+zero: on the common compact set the strict majority-minimum inequality
+at zero has a strictly positive likelihood gap, which persists by
+continuity. Therefore
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mo>*</mo></msub><mo>=</mo><mrow><mi>inf</mi><mo>&#8289;</mo></mrow><mi>𝒮</mi></mrow><annotation encoding="application/x-tex">q_*=\inf\mathcal S</annotation></semantics></math>
+belongs to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0,1)</annotation></semantics></math>.</p>
+<p>Choose improving conditional fits at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mi>j</mi></msub><mo>→</mo><msub><mi>q</mi><mo>*</mo></msub></mrow><annotation encoding="application/x-tex">q_j\to q_*</annotation></semantics></math>.
+Compactness supplies a finite limiting fit at least
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>q</mi><mo>*</mo></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(q_*)</annotation></semantics></math>.
+Openness of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒮</mi><annotation encoding="application/x-tex">\mathcal S</annotation></semantics></math>
+implies
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mo>*</mo></msub><mo>∉</mo><mi>𝒮</mi></mrow><annotation encoding="application/x-tex">q_*\notin\mathcal S</annotation></semantics></math>,
+so <strong>every</strong> finite point is at most
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>q</mi><mo>*</mo></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(q_*)</annotation></semantics></math>.
+The limiting finite fit is consequently a global MLE <strong>exactly
+equal</strong> to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>q</mi><mo>*</mo></msub><mo stretchy="false" form="postfix">)</mo><mo>&gt;</mo><mi>W</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>q</mi><mo>*</mo></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(q_*)&gt;W(q_*)</annotation></semantics></math>.</p>
+<p>This proves that equality in (6) is necessary. It also distinguishes
+existence of a finite MLE from compactness of all maximizing sequences:
+at this sample a finite maximizer and an escaping Pareto sequence
+coexist. No numerical value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mo>*</mo></msub><annotation encoding="application/x-tex">q_*</annotation></semantics></math>
+or globally optimal coefficient is asserted. The six retained family
+evaluations corroborate the endpoint inequalities and monotonicity; the
+global transition is proved by the argument above. Small perturbations
+can separate the interior and upper ties while retaining the strict
+endpoint comparisons and the same majorization proof. Thus the
+finite/Pareto tie construction also applies to some fully distinct
+samples.</p>
+<h3 id="the-two-probability-law-faces-meet-only-through-collapse">The
+two probability-law faces meet only through collapse</h3>
+<p>A proper Weibull has positive density below every positive Pareto
+endpoint, so the two nondegenerate law families do not intersect. On the
+positive sample space their common proper weak limits are point masses:
+the Weibull power and Pareto exponent diverge to concentrate at a finite
+common value. On the extended space they also share the two-end
+mixtures. For Weibull, let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c\to0</annotation></semantics></math>
+with finite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>,
+giving limiting CDF
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mrow><mi>exp</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><msup><mi>e</mi><mi>η</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">1-\exp(-e^\eta)</annotation></semantics></math>
+at every finite log value. For Pareto, let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>→</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\alpha\to0</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>→</mo><mi>−</mi><mi>∞</mi></mrow><annotation encoding="application/x-tex">b\to-\infty</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>α</mi><mi>b</mi><mo>→</mo><mi>A</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">-\alpha b\to A&gt;0</annotation></semantics></math>,
+giving limiting CDF
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mi>−</mi><mi>A</mi></mrow></msup></mrow><annotation encoding="application/x-tex">1-e^{-A}</annotation></semantics></math>.
+These extended-space mixtures have zero likelihood on the fixed positive
+sample and are irrelevant to (6).</p>
+<p>More directly, set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><msub><mi>x</mi><mn>0</mn></msub><msup><mi>e</mi><mrow><mi>ε</mi><msub><mi>t</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">x_i=x_0e^{\varepsilon t_i}</annotation></semantics></math>
+for a fixed nonconstant pattern
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.
+The exact scaling identity is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mrow><mi>ε</mi><mi>t</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>H</mi><mi>t</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>ε</mi><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>P</mi><mrow><mi>ε</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mi>t</mi></msub><mo>−</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>ε</mi><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>W</mi><mrow><mi>ε</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>W</mi><mi>t</mi></msub><mo>−</mo><mi>n</mi><mrow><mi>log</mi><mo>&#8289;</mo></mrow><mi>ε</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H_{\varepsilon t}(k)=H_t(k)-n\log\varepsilon,
+\quad P_{\varepsilon t}=P_t-n\log\varepsilon,
+\quad W_{\varepsilon t}=W_t-n\log\varepsilon.              \tag{19}
+</annotation></semantics></math></p>
+<p>For every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon&gt;0</annotation></semantics></math>
+the classification and all likelihood gaps are unchanged; the powers
+scale as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>ε</mi></mrow><annotation encoding="application/x-tex">1/\varepsilon</annotation></semantics></math>.
+At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\varepsilon=0</annotation></semantics></math>
+the data are constant and the likelihood is unbounded. Weak collapse
+therefore does not provide a new fixed-sample existence criterion.</p>
+<h2 id="reproduction-final-checks-and-precise-remaining-questions">9.
+Reproduction, final checks, and precise remaining questions</h2>
+<p>The <a href="../2026-11-03-burr-closure-data/check.py">reproducer</a>
+and <a href="../2026-11-03-burr-closure-data/cert.py">exact certificate
+code</a> passed after their final changes. Their SHA-256 hashes are
+retained in <a
+href="../2026-11-03-burr-closure-data/summary.json">summary.json</a>; the
+preview renderer checks them against the actual source. The lasting
+numerical evidence is <a
+href="../2026-11-03-burr-closure-data/checks.csv">66 convergence rows</a>
+and <a href="../2026-11-03-burr-closure-data/profiles.csv">195 conditional
+profiles</a>.</p>
+<p>The research script uses 75 decimal digits, seed 138, and checked
+conditional scores below
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>48</mn></mrow></msup><annotation encoding="application/x-tex">10^{-48}</annotation></semantics></math>.
+The Weibull solve uses a monotone expanded bracket, 260 bisections, and
+a final total-score check below
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>65</mn></mrow></msup><annotation encoding="application/x-tex">10^{-65}</annotation></semantics></math>.
+The conditional joint solve stops on failure; strict concavity
+establishes the meaning of its stationary point. No grid endpoint or
+unrestricted numerical maximum is reported as an MLE.</p>
+<p>Workloads comprise three samples over 65 log-spaced
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+values each; Pareto expansions at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>0.01</mn><mo>,</mo><mn>0.003</mn><mo>,</mo><mn>0.001</mn></mrow><annotation encoding="application/x-tex">k=0.01,0.003,0.001</annotation></semantics></math>;
+Weibull first/second orders at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><msup><mn>10</mn><mn>3</mn></msup><mo>,</mo><msup><mn>10</mn><mn>4</mn></msup><mo>,</mo><msup><mn>10</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">k=10^3,10^4,10^5</annotation></semantics></math>;
+Weibull paths through
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>6</mn></msup><annotation encoding="application/x-tex">10^6</annotation></semantics></math>;
+three Pareto endpoint traces per sample; constant collapse and two-end
+weak-mixture paths; the zero-slope second order; and six evaluations of
+(18). The convergence-row tolerances are explicit in the CSV: up to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.5</mn><annotation encoding="application/x-tex">0.5</annotation></semantics></math>
+for the second Pareto coefficient at the largest tested
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.1</mn><annotation encoding="application/x-tex">0.1</annotation></semantics></math>
+for the generic second Weibull coefficient, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.01</mn><annotation encoding="application/x-tex">0.01</annotation></semantics></math>
+for the zero-slope second coefficient. These are finite-point
+convergence checks, not uniform remainder bounds. The proofs and (8),
+rather than those tolerances, establish the asymptotic statements.</p>
+<p>There are 180 seeded checks each of the mode envelope, entropy bound,
+minimum-tie profile inequality, and logarithm lower bound: <strong>720
+passed</strong>, with numerical allowance
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>60</mn></mrow></msup><annotation encoding="application/x-tex">10^{-60}</annotation></semantics></math>.
+The compact-region and tail inequalities were also checked against
+retained profiles. A loose astronomical tail bound passing such a check
+is weak numerical evidence; its actual guarantee is the derivation in
+section 5 and the separate exact constant certificates.</p>
+<p>The exact code uses rational arithmetic, rounding every arithmetic
+operation outward to multiples of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>45</mn></mrow></msup><annotation encoding="application/x-tex">10^{-45}</annotation></semantics></math>.
+Positive exponentials use 180 Taylor terms with a geometric remainder
+bound; negative arguments use reciprocals. Logarithms use powers-of-two
+reduction and 60 atanh terms with an explicit remainder. Strict
+Weibull-score signs bracket its root, and concave tangents bound its
+optimized value. All decisive assertions compare exact rational
+endpoints; JSON decimal displays are rounded summaries. An initial wider
+zero-slope enclosure was inconclusive and was narrowed before the final
+successful run. There are no permitted final research failures.</p>
+<p>All final commands ran on the <strong>local workstation</strong>, in
+the foreground and awaited to completion, one suite per command. The
+supplied slot runners set nice priority 10 and pin BLAS/OpenMP to one
+thread per worker; the full-suite runner reserves four slots. CPU-queue
+waits were left uninterrupted. Environment: Linux 7.0.0-38-generic
+x86-64, GCC 15.2.0, R 4.6.1, Python 3.14.5, mpmath 1.3.0, NumPy 2.4.6,
+SciPy 1.18.0. No simbox, sub-agent, installation, board edit, git write,
+or publishing was used. The existing board was read once at session
+start.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Final run</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C++ dev</td>
+<td>106/106 passed</td>
+</tr>
+<tr>
+<td>C++ full</td>
+<td>127/127 passed</td>
+</tr>
+<tr>
+<td>R dev</td>
+<td>20,507 passes; 0 failures, 0 warnings, 153 tier skips</td>
+</tr>
+<tr>
+<td>R full</td>
+<td>43,324 passes; 0 failures, 0 warnings, 0 skips</td>
+</tr>
+<tr>
+<td>Final research reproducer</td>
+<td>Exact certificates, 66 convergence rows, 195 profiles, 720
+inequalities passed</td>
+</tr>
+<tr>
+<td>Figure rebuild</td>
+<td>Passed, using final retained profiles</td>
+</tr>
+</tbody>
+</table>
+<p>Commands from the worktree root:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash literal-code"><code class="literal-code sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TMPDIR</span><span class="op">=</span><span class="va">$PWD</span>/build/tmp <span class="va">JUST_TEMPDIR</span><span class="op">=</span><span class="va">$PWD</span>/build/tmp</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">XDG_RUNTIME_DIR</span><span class="op">=</span><span class="va">$PWD</span>/build/tmp</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">&quot;</span><span class="va">$TMPDIR</span><span class="st">&quot;</span> build/scratch</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> just cpp-test</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> just test</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> env UMVL_TEST_TIER=full just cpp-test</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> just test-full</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run4</span> python3 dev/research/evaluations/2026-11-03-burr-closure-data/check.py</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run</span> python3 dev/research/evaluations/2026-11-03-burr-closure-data/plot.py</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/umvl-cpu/run</span> python3 dev/research/evaluations/2026-11-03-burr-closure-data/render.py</span></code></pre></div>
+<p>These suites establish regression health of the unchanged package.
+They do not certify its present all-free multistart fitter globally.
+Scratch build and test logs remain under the worktree’s ignored build
+directory.</p>
+<p>The <a href="../2026-11-03-burr-closure-data/preview.html">HTML
+preview</a> has 381 static MathML elements and no scripts or remote
+presentation resources. Strict source and HTML note validation report
+zero errors and zero code-math candidates; all 22 local links across
+this report and the evidence README resolve. The prescribed
+artifact-pane command returned HTTP 403 because this worktree is outside
+the viewer’s configured readable roots. The finished files remain here;
+no viewer configuration, other worktree, or external destination was
+changed to bypass that restriction.</p>
+<p><strong>Open: practical global certification.</strong> The compact
+domain and explicit tails are proved, including an actual
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>100</mn></msup><annotation encoding="application/x-tex">10^{100}</annotation></semantics></math>
+exclusion, but they are too loose for direct enumeration. A production
+implementation still needs efficient global upper bounds over shape
+intervals, certified conditional solutions with propagated numerical
+allowances, and useful tail constants. No missing escape family or
+interval-arithmetic requirement is being used in place of that work. The
+existing boundary tolerance can reject genuine ties or small strict
+improvements; this research-only task changes no policy.</p>
+<p><strong>Open: a simpler general data classifier.</strong> The bounded
+criterion (12) is exact, and the sufficient conditions and
+counterexamples are sharp in their stated senses. A scalar closed-form
+replacement is not established; nor is an impossibility theorem for one.
+First- and second-order local face tests cannot alone replace global
+comparison. Cases with both
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>W</mi></msub><mo>=</mo><msub><mi>C</mi><mi>W</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">A_W=C_W=0</annotation></semantics></math>
+need higher-order local analysis if one wants a seam-based shortcut. The
+global criterion itself includes those cases and finite equality
+correctly.</p>
+<p><strong>Open: joint uniqueness.</strong> The unique conditional
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(c,a)</annotation></semantics></math>
+fit and unique Weibull fit are proved. Uniqueness of a finite
+unrestricted Burr MLE is not. The displayed profiles show multiple local
+maximizing regimes, not a proof of two distinct finite global
+maximizers. No inference calibration or estimator-asymptotic claim is
+made.</p>
+</body>
+</html>
