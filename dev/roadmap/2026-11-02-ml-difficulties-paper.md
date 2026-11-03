@@ -61,6 +61,13 @@ statistic and gives a sufficient condition; the exact existence criterion is
 global and differs. Where two seams meet (the Poisson corner of BB, and
 presumably the lognormal corner of GB2), the first-order scores are collinear,
 the information is singular, and the answer is decided at second order.
+Not every face is a seam. Burr's Pareto limit is a cusp: the profile is
+`H(k) = P + n k log k + O(k)`, so it is locally stable for every sample and
+the first-order test is replaced by a global one (at least half the sample
+at its minimum: no finite MLE). Burr also has exact finite/face ties and a
+face crossing `P = W` with a strictly better finite fit
+(`2026-11-03-burr-closure-report.md`).
+
 The bbinom reports (2026-11-02 map; 2026-11-03 closure and cert) work this out
 in full for one family; see `2026-11-03-bbinom-free-size.md`.
 
