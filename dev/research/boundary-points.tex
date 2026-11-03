@@ -1,0 +1,269 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\title{Limit models on the boundary of a statistical model:\\
+regular, singular and degenerate boundary points (draft)}
+\author{}
+\date{\today}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{Claim}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\begin{document}
+\maketitle
+
+\section*{Purpose and status}
+
+Maximum likelihood in many families of \code{univariateML} escapes to a limit
+model: Lomax to the exponential, the negative binomial to the Poisson, Burr to
+Weibull or Pareto, the beta-binomial with free size to the negative binomial.
+The research reports of 2026-11-02 and 2026-11-03 found that these limits
+behave in qualitatively different ways near the boundary. This note proposes a
+parametrization-free classification of such boundary points by their Hellinger
+tangent directions.
+
+\textbf{Status: draft.} The definitions are candidates. Before they are used
+(in dossiers or in the planned review paper,
+\code{dev/roadmap/2026-11-02-ml-difficulties-paper.md}) we must check that
+(i) they are well posed and the claims below hold, and (ii) the literature does
+not already have this classification or established names for it.
+Section~\ref{sec:open} lists both checks.
+
+\section{Setting}
+
+Let $\cM$ be a set of densities with respect to a $\sigma$-finite measure
+$\mu$. Represent $p$ by $\sqrt p$, a unit vector in $L^2(\mu)$, and use the
+Hellinger distance
+\[
+  H(p,q)=\bigl\|\sqrt p-\sqrt q\bigr\|_{L^2(\mu)} ,
+\]
+without the conventional factor $1/\sqrt2$. Let $\bar\cM$ be the closure of
+$\cM$ in this metric and $g\in\bar\cM$ a boundary point: a limit model
+outside $\cM$ (Lomax to exponential) or a point of $\cM$ on its topological
+boundary ($N(\mu,1)$ with $\mu\ge0$, at $\mu=0$). Write
+$\ell_n(p)=\sum_{i=1}^n\log p(x_i)$.
+
+\paragraph{Directions.} For $p_j\in\cM$ with $s_j=H(p_j,g)\to0$, call $u$ a
+direction of approach if $(\sqrt{p_j}-\sqrt g)/s_j\to u$ in $L^2(\mu)$ along
+a subsequence. Then $\|u\|=1$ and $\langle u,\sqrt g\rangle=0$, because
+$\langle\sqrt g,\sqrt{p_j}-\sqrt g\rangle=-s_j^2/2$. Split $u$ by the support
+of $g$:
+\[
+  u=\tfrac12\,h\sqrt g\ \mathbf 1\{g>0\}\;+\;u_\perp\,\mathbf 1\{g=0\},
+  \qquad h\in L^2(g),\quad \textstyle\int h\,g\,d\mu=0 .
+\]
+A path is differentiable in quadratic mean (DQM) with score $h$ exactly when
+its directions have $u_\perp=0$; DQM forces the mass that $p_t$ puts on
+$\{g=0\}$ to be $o(t^2)$ \cite{vdv}. Let $D_g(\cM)$ be the set of directions
+of approach (a subset of the unit sphere; its cone is a Bouligand-type
+tangent cone).
+
+\section{Definitions (candidates)}
+
+\begin{definition}[Regular boundary point]
+Every direction in $D_g(\cM)$ has $u_\perp=0$.
+\end{definition}
+
+\begin{definition}[Singular boundary point]
+Every direction in $D_g(\cM)$ has $h=0$: the model leaves $g$ by putting mass
+where $g$ has none.
+\end{definition}
+
+\begin{definition}[Degenerate boundary point]
+Regular, but distinct escape routes share a direction, so the first-order
+geometry does not determine the local likelihood. Parametric version: the map
+from the escaping coordinates to scores is rank deficient (collinear scores).
+A parametrization-free version is open (Section~\ref{sec:open}).
+\end{definition}
+
+Working labels used in reports and chat: seam (regular), cusp (singular),
+corner (degenerate). ``Cusp'' clashes with singularity theory and should not be
+used in print. An earlier proposal, removable versus essential boundary, asked
+for a regular extension of the model through $g$. Our regular examples have
+one (beta-negative-binomial, bounded-support generalized Pareto), but the
+definitions above do not need it.
+
+\section{Consequences claimed}
+
+\begin{claim}[Regular: data decide]\label{cl:regular}
+Along a regular path with score $h$ and $s=H(p,g)$,
+\[
+  \ell_n(p)-\ell_n(g)=s\sum_{i=1}^n h(x_i)+O(s^2)\quad(\text{fixed sample}).
+\]
+The first-order coefficient is a score with mean zero under $g$, so its sign
+depends on the data. If $\cM$ is locally a half-space in a regular model, then
+under $g^{\otimes n}$ the maximum likelihood estimate lies on the boundary with
+probability tending to $1/2$ \cite{chernoff,selfliang}.
+\end{claim}
+
+\begin{claim}[Singular: the limit is a local maximum for every sample]
+\label{cl:singular}
+Suppose every observation lies in $\{g>0\}$ and every direction is singular.
+Let $\sigma(p)=\int_{\{g=0\}}p\,d\mu$. Then $H(p,g)^2=\sigma(p)+o(\sigma(p))$ and
+\[
+  \ell_n(p)-\ell_n(g)\approx-n\,\sigma(p)\approx-n\,H(p,g)^2<0
+\]
+for every sample, so $g$ is a local maximum of the extended likelihood. Under
+$g^{\otimes n}$ the estimate escapes to $g$ with probability tending to one.
+\end{claim}
+
+\begin{remark}
+The fixed-sample statement needs more than an $L^2$ statement: the absolutely
+continuous part must change by $o(\sigma)$ at the observed points, not only in
+$L^2(g)$. In the Burr example the relevant limit is the best Pareto fit, whose
+support edge is the sample minimum, so all observations lie in $\{g>0\}$ by
+construction. Mixed directions ($h\ne0$ and $u_\perp\ne0$) behave like
+regular ones: the linear term is of order $s$, the singular loss of order
+$s^2$.
+\end{remark}
+
+\section{Examples}
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Family & Limit $g$ & Coordinate & Type \\
+\midrule
+$N(\mu,1)$, $\mu\ge0$ & $N(0,1)$ & $\mu$ & regular \\
+negative binomial & Poisson & $\kappa=-1/a$ & regular \\
+binomial, free size & Poisson & $\kappa=1/N$ & regular \\
+Lomax & exponential & $\xi=1/\alpha$ (GPD) & regular \\
+Burr XII & Weibull & $\xi=1/k$ on $x^c$ & regular \\
+beta-binomial, free size & negative binomial & $1/N$ & regular \\
+Burr XII & Pareto & $k\to0$, $kc$ fixed & singular \\
+beta-binomial, free size & Poisson & $(1/a,1/N)$ & degenerate \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{example}[Lomax]
+With $\xi=1/\alpha$ and $\sigma=\lambda/\alpha$ the Lomax density becomes
+$\sigma^{-1}(1+\xi x/\sigma)^{-1/\xi-1}$, the generalized Pareto family:
+$\xi>0$ Lomax, $\xi=0$ exponential, $\xi<0$ bounded support. The slope at the
+exponential is $n(\overline{x^2}/(2\bar x^2)-1)$, positive iff the coefficient
+of variation exceeds one. Local and global answers differ: for $(1,100)$ the
+slope is negative but a finite Lomax MLE exists (Lomax dossier).
+\end{example}
+
+\begin{example}[Burr to Pareto]
+On the log scale, the profile likelihood near the Pareto limit is
+$H(k)=P+nk\log k+O(k)$ for every nonconstant sample
+(\code{2026-11-03-burr-closure-report.md}). Along the report's comparison path
+for the log-scale sample $(0,0,1)$, 30-digit quadrature gives
+
+\begin{center}
+\begin{tabular}{@{}rcc@{}}
+\toprule
+$k$ & $\sigma/(k\log(1/k))$ & $H^2/(2k\log(1/k))$ \\
+\midrule
+$10^{-2}$ & 0.895 & 0.452 \\
+$10^{-3}$ & 0.938 & 0.470 \\
+$10^{-4}$ & 0.956 & 0.478 \\
+$10^{-5}$ & 0.965 & 0.482 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+(the last column uses $H^2/2=1-\int\sqrt{pg}$). So $H^2/\sigma\to1$: the
+Hellinger distance is carried by the Burr mass below the Pareto edge, and the
+deficit $nk\log(1/k)$ is $n\sigma$. This was checked on one path, not over all
+directions.
+\end{example}
+
+\begin{example}[Escape probabilities under the limit model]
+A small simulation (\code{build/scratch}, 2026-11-03): exponential data fitted
+by Lomax gave a finite MLE in 41\% ($n=50$) and 43\% ($n=400$) of 400
+samples, consistent with $1/2$; Pareto data fitted by Burr had some finite Burr
+fit beat the Pareto fit in 5\% ($n=50$) and 0\% ($n=400$) of 40 samples,
+consistent with escape probability one. Numerical evidence only.
+\end{example}
+
+\begin{example}[The Poisson corner of the beta-binomial]
+With the mean held at $\mu$, $u=1/a$ and $k=1/N$,
+$(\ell_{BB}-\ell_{\mathrm{Pois}})/n=\tfrac12(v-\mu)(u-k)+O((u+k)^2)$
+(\code{2026-11-03-bbinom-closure-report.md}): the two escape coordinates have
+collinear first-order scores, and second-order terms (third factorial moment)
+decide.
+\end{example}
+
+\section{To verify}\label{sec:open}
+
+\paragraph{Mathematics.}
+\begin{enumerate}
+\item Well-posedness: directions need not exist (no $L^2$-convergent
+  subsequence). Use weak limits, or restrict to paths? Is the classification
+  exhaustive up to mixed cases?
+\item Precise hypotheses and proofs for Claims~\ref{cl:regular}
+  and~\ref{cl:singular}, including the fixed-sample version and the
+  escape probabilities.
+\item A parametrization-free definition of degenerate points (tangent cone of
+  lower dimension than the model near $g$? a cone containing a line at a point
+  that is not interior?).
+\item Classify the limits declared or compared in all 99 dossiers. Candidates
+  for singular points: other limits with a hard support edge (skew normal to
+  half-normal, threshold families, truncated families).
+\end{enumerate}
+
+\paragraph{Literature.} Is this classification, or established names for it,
+already in the literature? Places to check first:
+Cheng and Iles \cite{chengiles} and Cheng and Traylor \cite{chengtraylor}
+(``embedded models'' reached as parameters diverge; probably the closest),
+Cheng's book \cite{chengbook}, Smith \cite{smith} (nonregular threshold
+problems), Ibragimov and Has'minskii \cite{ih} (densities with jumps),
+Le Cam and van der Vaart \cite{vdv} and Bickel et al.\ \cite{bkrw} (tangent
+sets), Chernoff \cite{chernoff} and Self and Liang \cite{selfliang} (boundary
+tests), Drton \cite{drton} (tangent cones at singular points of algebraic
+models), Rotnitzky et al.\ \cite{rcbr} (singular information), Watanabe
+\cite{watanabe} (singular learning theory), Prentice \cite{prentice}
+(generalized gamma extended through the lognormal), and the exponential-family
+closure literature (Barndorff-Nielsen; Brown; Geyer; Csisz\'ar and Mat\'u\v s).
+
+\begin{thebibliography}{99}
+\small
+\item[] \emph{All entries are from memory; titles, years and venues must be checked.}
+\bibitem{bkrw} P. J. Bickel, C. A. J. Klaassen, Y. Ritov and J. A. Wellner (1993).
+  \emph{Efficient and Adaptive Estimation for Semiparametric Models}. Johns Hopkins.
+\bibitem{chengiles} R. C. H. Cheng and T. C. Iles (1990). Embedded models in
+  three-parameter distributions and their estimation. \emph{J. R. Statist. Soc. B} 52.
+\bibitem{chengtraylor} R. C. H. Cheng and L. Traylor (1995). Non-regular maximum
+  likelihood problems. \emph{J. R. Statist. Soc. B} 57.
+\bibitem{chengbook} R. C. H. Cheng (2017). \emph{Non-Standard Parametric
+  Statistical Inference}. Oxford University Press.
+\bibitem{chernoff} H. Chernoff (1954). On the distribution of the likelihood
+  ratio. \emph{Ann. Math. Statist.} 25.
+\bibitem{drton} M. Drton (2009). Likelihood ratio tests and singularities.
+  \emph{Ann. Statist.} 37.
+\bibitem{ih} I. A. Ibragimov and R. Z. Has'minskii (1981). \emph{Statistical
+  Estimation: Asymptotic Theory}. Springer.
+\bibitem{prentice} R. L. Prentice (1974). A log gamma model and its maximum
+  likelihood estimation. \emph{Biometrika} 61.
+\bibitem{rcbr} A. Rotnitzky, D. R. Cox, M. Bottai and J. Robins (2000).
+  Likelihood-based inference with singular information matrix. \emph{Bernoulli} 6.
+\bibitem{selfliang} S. G. Self and K.-Y. Liang (1987). Asymptotic properties of
+  maximum likelihood estimators and likelihood ratio tests under nonstandard
+  conditions. \emph{J. Amer. Statist. Assoc.} 82.
+\bibitem{smith} R. L. Smith (1985). Maximum likelihood estimation in a class of
+  nonregular cases. \emph{Biometrika} 72.
+\bibitem{vdv} A. W. van der Vaart (1998). \emph{Asymptotic Statistics}.
+  Cambridge University Press. Chapters 7 and 25.
+\bibitem{watanabe} S. Watanabe (2009). \emph{Algebraic Geometry and Statistical
+  Learning Theory}. Cambridge University Press.
+\end{thebibliography}
+
+\end{document}
